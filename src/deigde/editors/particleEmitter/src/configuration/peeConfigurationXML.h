@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new configuration xml read/save. */
-	peeConfigurationXML( deLogger *logger, const char *loggerSource );
+	peeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** \brief Clean up the configuration xml read/save. */
 	virtual ~peeConfigurationXML();
 	/*@}*/
@@ -53,15 +53,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, peeConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, peeConfiguration &config);
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const peeConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const peeConfiguration &config);
 	/*@}*/
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const peeConfiguration &config );
+	void pWriteConfig(decXmlWriter &writer, const peeConfiguration &config);
 	
-	void pReadConfig( const decXmlElementTag &root, peeConfiguration &config );
+	void pReadConfig(const decXmlElementTag &root, peeConfiguration &config);
 };
 
 #endif

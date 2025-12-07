@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create decoder. */
-	dethVideoDecoder( deVideoTheora &module, decBaseFileReader *file );
+	dethVideoDecoder(deVideoTheora &module, decBaseFileReader *file);
 	
 	/** \brief Clean up decoder. */
 	virtual ~dethVideoDecoder();
@@ -115,7 +115,7 @@ public:
 	virtual int GetPosition();
 	
 	/** \brief Set file position in frames from the beginning. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/**
 	 * \brief Decode next frame into buffer and advances file position.
@@ -128,13 +128,13 @@ public:
 	 * has been decoded successfully. Otherwise \em fals is returned and an error
 	 * is signaled using the engine error signaling.
 	 */
-	virtual bool DecodeFrame( void *buffer, int size );
+	virtual bool DecodeFrame(void *buffer, int size);
 	
 	/** \brief Create default conversion parameters. */
-	void DefConvParams( sConversionParamers &convParams );
+	void DefConvParams(sConversionParamers &convParams);
 	
 	/** \brief Convert colors. */
-	void ConvertColors( void *buffer );
+	void ConvertColors(void *buffer);
 	/*@}*/
 	
 	

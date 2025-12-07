@@ -40,23 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategoryToggleHidden::gdeUCategoryToggleHidden( gdeGameDefinition *gameDefinition,
-gdeCategory *category, eCategoryType type ) :
-gdeUCategoryBase( gameDefinition, type ),
-pCategory( NULL )
+gdeUCategoryToggleHidden::gdeUCategoryToggleHidden(gdeGameDefinition *gameDefinition,
+gdeCategory *category, eCategoryType type) :
+gdeUCategoryBase(gameDefinition, type),
+pCategory(NULL)
 {
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(! category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Category toggle hidden" );
+	SetShortInfo("Category toggle hidden");
 	
 	pCategory = category;
 	category->AddReference();
 }
 
 gdeUCategoryToggleHidden::~gdeUCategoryToggleHidden(){
-	if( pCategory ){
+	if(pCategory){
 		pCategory->FreeReference();
 	}
 }
@@ -67,11 +67,11 @@ gdeUCategoryToggleHidden::~gdeUCategoryToggleHidden(){
 ///////////////
 
 void gdeUCategoryToggleHidden::Undo(){
-	pCategory->SetHidden( ! pCategory->GetHidden() );
+	pCategory->SetHidden(! pCategory->GetHidden());
 	Notify();
 }
 
 void gdeUCategoryToggleHidden::Redo(){
-	pCategory->SetHidden( ! pCategory->GetHidden() );
+	pCategory->SetHidden(! pCategory->GetHidden());
 	Notify();
 }

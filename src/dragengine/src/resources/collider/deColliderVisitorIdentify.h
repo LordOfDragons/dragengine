@@ -71,21 +71,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Collider type. */
-	inline eColliderTypes GetType() const{ return pType; }
+	inline eColliderTypes GetType() const{return pType;}
 	
 	
 	
 	/** \brief Visited collider is an unknown collider. */
-	inline bool IsUnknown() const{ return pType == ectUnknown; }
+	inline bool IsUnknown() const{return pType == ectUnknown;}
 	
 	/** \brief Visited collider is a volume collider. */
-	inline bool IsVolume() const{ return pType == ectVolume; }
+	inline bool IsVolume() const{return pType == ectVolume;}
 	
 	/** \brief Visited collider is a rig collider. */
-	inline bool IsRigged() const{ return pType == ectRig; }
+	inline bool IsRigged() const{return pType == ectRig;}
 	
 	/** \brief Visited collider is component collider. */
-	inline bool IsComponent() const{ return pType == ectComponent; }
+	inline bool IsComponent() const{return pType == ectComponent;}
 	
 	
 	
@@ -118,16 +118,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void VisitCollider( deCollider &collider );
+	virtual void VisitCollider(deCollider &collider);
 	
 	/** \brief Visit volume collider. */
-	virtual void VisitVolume( deColliderVolume &collider );
+	virtual void VisitVolume(deColliderVolume &collider);
 	
 	/** \brief Visit rig collider. */
-	virtual void VisitRig( deColliderRig &collider );
+	virtual void VisitRig(deColliderRig &collider);
 	
 	/** \brief Visit component collider. */
-	virtual void VisitComponent( deColliderComponent &collider );
+	virtual void VisitComponent(deColliderComponent &collider);
 	/*@}*/
 };
 

@@ -44,13 +44,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create application. */
-	igdeNativeNullApplication( igdeApplication &owner );
+	igdeNativeNullApplication(igdeApplication &owner);
 	
 	/** Clean up application. */
 	virtual ~igdeNativeNullApplication();
 	
 	/** Create native application. */
-	static igdeNativeNullApplication* CreateNativeApplication( igdeApplication &application );
+	static igdeNativeNullApplication* CreateNativeApplication(igdeApplication &application);
 	
 	/** Destroy native application. */
 	virtual void DestroyNativeApplication();
@@ -62,14 +62,14 @@ public:
 	/*@{*/
 	/** Get arguments from OS specific startup routine. */
 	#ifdef OS_UNIX
-	static void GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args );
+	static void GetOSStartUpArguments(decUnicodeStringList &arguments, int argCount, char **args);
 	#elif defined OS_W32
-	static void GetOSStartUpArguments( decUnicodeStringList &arguments,
-		const decUnicodeArgumentList &windowsArguments );
+	static void GetOSStartUpArguments(decUnicodeStringList &arguments,
+		const decUnicodeArgumentList &windowsArguments);
 	#endif
 	
 	/** Initialize application. */
-	void Initialize( decUnicodeStringList &arguments );
+	void Initialize(decUnicodeStringList &arguments);
 	
 	/** Run. */
 	void Run();
@@ -78,16 +78,16 @@ public:
 	void Quit();
 	
 	/** System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** Get main app font config. */
-	void GetAppFontConfig( igdeFont::sConfiguration &config ) const;
+	void GetAppFontConfig(igdeFont::sConfiguration &config) const;
 	
 	/** Show error. */
-	void ShowError( const deException &exception ) const;
+	void ShowError(const deException &exception) const;
 	
 	/** Show window modal while keeping engine properly updating. */
-	void RunModalWhileShown( igdeWindow &window );
+	void RunModalWhileShown(igdeWindow &window);
 	
 	/**
 	 * \brief Global display scaling factor for display.

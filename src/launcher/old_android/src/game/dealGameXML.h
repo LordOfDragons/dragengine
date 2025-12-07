@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game xml read. */
-	dealGameXML( deLogger *logger, const char *loggerSource );
+	dealGameXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up game xml read. */
 	virtual ~dealGameXML();
@@ -52,11 +52,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, dealGame &game );
+	void ReadFromFile(decBaseFileReader &reader, dealGame &game);
 	/*@}*/
 	
 private:
-	void pReadGame( const decXmlElementTag &root, dealGame &game );
+	void pReadGame(const decXmlElementTag &root, dealGame &game);
 };
 
 #endif

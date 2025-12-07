@@ -83,7 +83,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create animator. */
-	deAnimator( deAnimatorManager *manager );
+	deAnimator(deAnimatorManager *manager);
 	
 protected:
 	/**
@@ -99,27 +99,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig or NULL. */
-	inline deRig *GetRig() const{ return pRig; }
+	inline deRig *GetRig() const{return pRig;}
 	
 	/** \brief Set rig or NULL. */
-	void SetRig( deRig *rig );
+	void SetRig(deRig *rig);
 	
 	/** \brief Animation or NULL. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline deAnimation *GetAnimation() const{return pAnimation;}
 	
 	/** \brief Set animation or NULL. */
-	void SetAnimation( deAnimation *animation );
+	void SetAnimation(deAnimation *animation);
 	
 	/** \brief Bones. */
-	inline decStringSet &GetListBones(){ return pListBones; }
-	inline const decStringSet &GetListBones() const{ return pListBones; }
+	inline decStringSet &GetListBones(){return pListBones;}
+	inline const decStringSet &GetListBones() const{return pListBones;}
 	
 	/** \brief Notify peers list of bones changed. */
 	void NotifyBonesChanged();
 	
 	/** \brief Vertex position sets. */
-	inline decStringSet &GetListVertexPositionSets(){ return pListVertexPositionSets; }
-	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
+	inline decStringSet &GetListVertexPositionSets(){return pListVertexPositionSets;}
+	inline const decStringSet &GetListVertexPositionSets() const{return pListVertexPositionSets;}
 	
 	/** \brief Notify peers list of vertex position sets changed. */
 	void NotifyVertexPositionSetsChanged();
@@ -130,31 +130,31 @@ public:
 	/** \name Controller Management */
 	/*@{*/
 	/** \brief Count of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	inline int GetControllerCount() const{return pControllerCount;}
 	
 	/** \brief Controller at index. */
-	deAnimatorController *GetControllerAt( int index ) const;
+	deAnimatorController *GetControllerAt(int index) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController( deAnimatorController *controller ) const;
+	int IndexOfController(deAnimatorController *controller) const;
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *controller ) const;
+	int IndexOfControllerNamed(const char *controller) const;
 	
 	/** \brief Controller is present. */
-	bool HasController( deAnimatorController *controller ) const;
+	bool HasController(deAnimatorController *controller) const;
 	
 	/** \brief Add controller. */
-	void AddController( deAnimatorController *controller );
+	void AddController(deAnimatorController *controller);
 	
 	/** \brief Remove controller. */
-	void RemoveController( deAnimatorController *controller );
+	void RemoveController(deAnimatorController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
 	
 	/** \brief Notify peers controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	/*@}*/
 	
 	
@@ -162,28 +162,28 @@ public:
 	/** \name Link Management */
 	/*@{*/
 	/** \brief Count of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{return pLinkCount;}
 	
 	/** \brief Link at index. */
-	deAnimatorLink *GetLinkAt( int index ) const;
+	deAnimatorLink *GetLinkAt(int index) const;
 	
 	/** \brief Index of link or -1 if absent. */
-	int IndexOfLink( deAnimatorLink *link ) const;
+	int IndexOfLink(deAnimatorLink *link) const;
 	
 	/** \brief Link is present. */
-	bool HasLink( deAnimatorLink *link ) const;
+	bool HasLink(deAnimatorLink *link) const;
 	
 	/** \brief Add link. */
-	void AddLink( deAnimatorLink *link );
+	void AddLink(deAnimatorLink *link);
 	
 	/** \brief Remove link. */
-	void RemoveLink( deAnimatorLink *link );
+	void RemoveLink(deAnimatorLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
 	/** \brief Notify peers link changed. */
-	void NotifyLinkChangedAt( int index );
+	void NotifyLinkChangedAt(int index);
 	/*@}*/
 	
 	
@@ -194,19 +194,19 @@ public:
 	int GetRuleCount() const;
 	
 	/** \brief Rule at index. */
-	deAnimatorRule *GetRuleAt( int index ) const;
+	deAnimatorRule *GetRuleAt(int index) const;
 	
 	/** \brief Index of rule or -1 if absent. */
-	int IndexOfRule( deAnimatorRule *rule ) const;
+	int IndexOfRule(deAnimatorRule *rule) const;
 	
 	/** \brief Rule is present. */
-	bool HasRule( deAnimatorRule *rule ) const;
+	bool HasRule(deAnimatorRule *rule) const;
 	
 	/** \brief Add rule. */
-	void AddRule( deAnimatorRule *rule );
+	void AddRule(deAnimatorRule *rule);
 	
 	/** \brief Remove rule. */
-	void RemoveRule( deAnimatorRule *rule );
+	void RemoveRule(deAnimatorRule *rule);
 	
 	/** \brief Remove all rules. */
 	void RemoveAllRules();
@@ -220,10 +220,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Animator system peer. */
-	inline deBaseAnimatorAnimator *GetPeerAnimator() const{ return pPeerAnimator; }
+	inline deBaseAnimatorAnimator *GetPeerAnimator() const{return pPeerAnimator;}
 	
 	/** \brief Set animator system peer. */
-	void SetPeerAnimator( deBaseAnimatorAnimator *peer );
+	void SetPeerAnimator(deBaseAnimatorAnimator *peer);
 	/*@}*/
 	
 	

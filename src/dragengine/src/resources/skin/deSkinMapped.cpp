@@ -33,15 +33,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinMapped::deSkinMapped ( const char *name ) :
-pName( name ),
-pInputType( eitTime ),
-pInputLower( 0.0f ),
-pInputUpper( 1.0f ),
-pInputClamped( false ),
-pOutputLower( 0.0f ),
-pOutputUpper( 1.0f ),
-pRenderableComponent( ercRed ){
+deSkinMapped::deSkinMapped (const char *name) :
+pName(name),
+pInputType(eitTime),
+pInputLower(0.0f),
+pInputUpper(1.0f),
+pInputClamped(false),
+pOutputLower(0.0f),
+pOutputUpper(1.0f),
+pRenderableComponent(ercRed){
 }
 
 deSkinMapped::~deSkinMapped(){
@@ -52,45 +52,45 @@ deSkinMapped::~deSkinMapped(){
 // Management
 ///////////////
 
-void deSkinMapped::SetInputType( eInputTypes inputType ){
+void deSkinMapped::SetInputType(eInputTypes inputType){
 	pInputType = inputType;
 }
 
-void deSkinMapped::SetInputLower( float lower ){
+void deSkinMapped::SetInputLower(float lower){
 	pInputLower = lower;
 }
 
-void deSkinMapped::SetInputUpper( float upper ){
+void deSkinMapped::SetInputUpper(float upper){
 	pInputUpper = upper;
 }
 
-void deSkinMapped::SetInputClamped( bool inputClamped ){
+void deSkinMapped::SetInputClamped(bool inputClamped){
 	pInputClamped = inputClamped;
 }
 
-void deSkinMapped::SetOutputLower( float lower ){
+void deSkinMapped::SetOutputLower(float lower){
 	pOutputLower = lower;
 }
 
-void deSkinMapped::SetOutputUpper( float upper ){
+void deSkinMapped::SetOutputUpper(float upper){
 	pOutputUpper = upper;
 }
 
-void deSkinMapped::SetBone( const char *bone ){
+void deSkinMapped::SetBone(const char *bone){
 	pBone = bone;
 }
 
-void deSkinMapped::SetRenderable( const char *renderable ){
+void deSkinMapped::SetRenderable(const char *renderable){
 	pRenderable = renderable;
 }
 
-void deSkinMapped::SetRenderableComponent( eRenderableComponent component ){
+void deSkinMapped::SetRenderableComponent(eRenderableComponent component){
 	pRenderableComponent = component;
 }
 
 
 
-deSkinMapped &deSkinMapped::operator=( const deSkinMapped &mapped ){
+deSkinMapped &deSkinMapped::operator=(const deSkinMapped &mapped){
 	pCurve = mapped.pCurve;
 	pInputType = mapped.pInputType;
 	pInputLower = mapped.pInputLower;

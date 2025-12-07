@@ -49,7 +49,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new command executer. */
-	debpCommandExecuter( dePhysicsBullet *bullet );
+	debpCommandExecuter(dePhysicsBullet *bullet);
 	/** Cleans up the command executer. */
 	~debpCommandExecuter();
 	/*@}*/
@@ -57,11 +57,11 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Executes a command given on the console. */
-	void ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 private:
-	void pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
 };
 
 // end of include only once

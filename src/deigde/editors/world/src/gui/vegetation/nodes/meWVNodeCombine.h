@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeCombine( meWindowVegetation &windowVegetation, meHTVRuleCombine *rule );
+	meWVNodeCombine(meWindowVegetation &windowVegetation, meHTVRuleCombine *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleCombine *GetRuleCombine() const{ return pRuleCombine; }
+	inline meHTVRuleCombine *GetRuleCombine() const{return pRuleCombine;}
 	
 	/** \brief Update node. */
 	virtual void Update();

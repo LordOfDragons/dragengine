@@ -58,21 +58,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of particles. */
-	inline int GetParticleCount() const{ return pParticleCount; }
+	inline int GetParticleCount() const{return pParticleCount;}
 	/** Retrieves the particle at the given position. */
-	const sParticle &GetParticleAt( int index ) const;
+	const sParticle &GetParticleAt(int index) const;
 	/** Add particles to a render task particles. */
-	void AddToRenderTask( deoglAddToRenderTaskParticles &renderTask );
+	void AddToRenderTask(deoglAddToRenderTaskParticles &renderTask);
 	/** Clears the sorter. */
 	void Clear();
 	/** Adds a particle. */
-	void AddParticle( deoglRParticleEmitterInstance *instance, int particle, float distance );
+	void AddParticle(deoglRParticleEmitterInstance *instance, int particle, float distance);
 	/** Sort particles. */
 	void Sort();
 	/*@}*/
 	
 private:
-	void pSortParticle( int left, int right );
+	void pSortParticle(int left, int right);
 };
 
 #endif

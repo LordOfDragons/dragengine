@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceTaskSyncGameDefinition::ceTaskSyncGameDefinition( ceWindowMain &windowMain ) :
-pWindowMain( windowMain )
+ceTaskSyncGameDefinition::ceTaskSyncGameDefinition(ceWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Conversation Editor: Synchronize Game Definition" );
+	SetMessage("Conversation Editor: Synchronize Game Definition");
 }
 
 ceTaskSyncGameDefinition::~ceTaskSyncGameDefinition(){
@@ -60,7 +60,7 @@ ceTaskSyncGameDefinition::~ceTaskSyncGameDefinition(){
 ///////////////
 
 bool ceTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetConversation() ){
+	if(! pWindowMain.GetConversation()){
 		return false;
 	}
 	

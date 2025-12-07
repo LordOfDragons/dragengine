@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeToolBarDock::igdeToolBarDock( igdeEnvironment &environment, eSide side ) :
-igdeContainer( environment ),
-pSide( side ){
+igdeToolBarDock::igdeToolBarDock(igdeEnvironment &environment, eSide side) :
+igdeContainer(environment),
+pSide(side){
 }
 
 igdeToolBarDock::~igdeToolBarDock(){
@@ -54,22 +54,22 @@ igdeToolBarDock::~igdeToolBarDock(){
 ///////////////
 
 void igdeToolBarDock::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeToolBarDock * const native = igdeNativeToolBarDock::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeToolBarDock * const native = igdeNativeToolBarDock::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeToolBarDock::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeToolBarDock* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeToolBarDock*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }

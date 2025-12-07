@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRule::meHTVRule( int type, int slotCount ){
-	if( slotCount < 0 || type < 0 || type >= ERT_COUNT ){
-		DETHROW( deeInvalidParam );
+meHTVRule::meHTVRule(int type, int slotCount){
+	if(slotCount < 0 || type < 0 || type >= ERT_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = type;
@@ -52,39 +52,39 @@ meHTVRule::meHTVRule( int type, int slotCount ){
 	pSlots = NULL;
 	
 	try{
-		if( slotCount > 0 ){
-			pSlots = new meHTVRSlot[ slotCount ];
+		if(slotCount > 0){
+			pSlots = new meHTVRSlot[slotCount];
 			pSlotCount = slotCount;
 		}
 		
-	}catch( const deException & ){
-		if( pSlots ){
+	}catch(const deException &){
+		if(pSlots){
 			delete [] pSlots;
 		}
 		throw;
 	}
 }
 
-meHTVRule::meHTVRule( const meHTVRule &rule ) :
-pName( rule.pName ),
-pType( rule.pType ),
-pPosition( rule.pPosition ),
-pShowParameters( rule.pShowParameters ),
-pSlotCount( 0 ),
-pSlots( NULL )
+meHTVRule::meHTVRule(const meHTVRule &rule) :
+pName(rule.pName),
+pType(rule.pType),
+pPosition(rule.pPosition),
+pShowParameters(rule.pShowParameters),
+pSlotCount(0),
+pSlots(NULL)
 {
-	if( rule.pSlotCount == 0 ){
+	if(rule.pSlotCount == 0){
 		return;
 	}
 	
 	try{
-		pSlots = new meHTVRSlot[ rule.pSlotCount ];
-		for( pSlotCount=0; pSlotCount<rule.pSlotCount; pSlotCount++ ){
-			pSlots[ pSlotCount ].SetIsInput( rule.pSlots[ pSlotCount ].GetIsInput() );
+		pSlots = new meHTVRSlot[rule.pSlotCount];
+		for(pSlotCount=0; pSlotCount<rule.pSlotCount; pSlotCount++){
+			pSlots[pSlotCount].SetIsInput(rule.pSlots[pSlotCount].GetIsInput());
 		}
 		
-	}catch( const deException & ){
-		if( pSlots ){
+	}catch(const deException &){
+		if(pSlots){
 			delete [] pSlots;
 		}
 		throw;
@@ -92,7 +92,7 @@ pSlots( NULL )
 }
 
 meHTVRule::~meHTVRule(){
-	if( pSlots ){
+	if(pSlots){
 		delete [] pSlots;
 	}
 }
@@ -102,50 +102,50 @@ meHTVRule::~meHTVRule(){
 // Management
 ///////////////
 
-void meHTVRule::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+void meHTVRule::SetName(const char *name){
+	if(! name) DETHROW(deeInvalidParam);
 	
 	pName = name;
 }
 
-void meHTVRule::SetPosition( const decVector2 &position ){
+void meHTVRule::SetPosition(const decVector2 &position){
 	pPosition = position;
 }
 
-void meHTVRule::SetShowParameters( bool showParameters ){
+void meHTVRule::SetShowParameters(bool showParameters){
 	pShowParameters = showParameters;
 }
 
-meHTVRSlot &meHTVRule::GetSlotAt( int slot ) const{
-	if( slot < 0 || slot >= pSlotCount ){
-		DETHROW( deeInvalidParam );
+meHTVRSlot &meHTVRule::GetSlotAt(int slot) const{
+	if(slot < 0 || slot >= pSlotCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pSlots[ slot ];
+	return pSlots[slot];
 }
 
-bool meHTVRule::DependsOn( meHTVRule *rule ) const{
-	if( ! rule ) DETHROW( deeInvalidParam );
+bool meHTVRule::DependsOn(meHTVRule *rule) const{
+	if(! rule) DETHROW(deeInvalidParam);
 	
 	// by definition we depend on ourself
-	if( rule == this ) return true;
+	if(rule == this) return true;
 	
 	// otherwise test all input slot nodes for dependance
 	meHTVRule *linkRule;
 	int s, l, linkCount;
 	
-	for( s=0; s<pSlotCount; s++ ){
-		const meHTVRSlot &slot = pSlots[ s ];
-		if( ! slot.GetIsInput() ){
+	for(s=0; s<pSlotCount; s++){
+		const meHTVRSlot &slot = pSlots[s];
+		if(! slot.GetIsInput()){
 			continue;
 		}
 		
 		linkCount = slot.GetLinkCount();
 		
-		for( l=0; l<linkCount; l++ ){
-			const meHTVRLink &link = *slot.GetLinkAt( l );
+		for(l=0; l<linkCount; l++){
+			const meHTVRLink &link = *slot.GetLinkAt(l);
 			linkRule = link.GetSourceRule();
 			
-			if( linkRule->DependsOn( rule ) ){
+			if(linkRule->DependsOn(rule)){
 				return true;
 			}
 		}
@@ -160,13 +160,13 @@ bool meHTVRule::DependsOn( meHTVRule *rule ) const{
 void meHTVRule::Reset(){
 }
 
-void meHTVRule::Evaluate( meHTVEvaluationEnvironment &evalEnv ){
+void meHTVRule::Evaluate(meHTVEvaluationEnvironment &evalEnv){
 }
 
-float meHTVRule::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	DETHROW( deeInvalidParam );
+float meHTVRule::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	DETHROW(deeInvalidParam);
 }
 
-decVector meHTVRule::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	DETHROW( deeInvalidParam );
+decVector meHTVRule::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	DETHROW(deeInvalidParam);
 }

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeRandom( meWindowVegetation &windowVegetation, meHTVRuleRandom *rule );
+	meWVNodeRandom(meWindowVegetation &windowVegetation, meHTVRuleRandom *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -60,7 +60,7 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleRandom *GetRuleRandom() const{ return pRuleRandom; }
+	inline meHTVRuleRandom *GetRuleRandom() const{return pRuleRandom;}
 	
 	/** \brief Update node. */
 	virtual void Update();

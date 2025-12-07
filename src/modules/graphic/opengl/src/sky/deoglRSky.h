@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new render sky. */
-	deoglRSky( deoglRenderThread &renderThread );
+	deoglRSky(deoglRenderThread &renderThread);
 	
 	/** Clean up render sky. */
 	~deoglRSky();
@@ -72,42 +72,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
 	/** Background color of the sky. */
-	inline const decColor &GetBgColor() const{ return pBgColor; }
+	inline const decColor &GetBgColor() const{return pBgColor;}
 	
 	/** Set background color of the sky. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	
 	
 	
 	/** Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/** Get link at index. */
-	const deoglRSkyLink &GetLinkAt( int index ) const;
+	const deoglRSkyLink &GetLinkAt(int index) const;
 	
 	/**
 	 * Rebuild links.
 	 * 
 	 * \note Called from main thread during synchronoization.
 	 */
-	void RebuildLinks( const deSky &sky );
+	void RebuildLinks(const deSky &sky);
 	
 	
 	
 	/** Layer at index. */
-	deoglRSkyLayer &GetLayerAt( int index ) const;
+	deoglRSkyLayer &GetLayerAt(int index) const;
 	
 	/**
 	 * Rebuild layers.
 	 * 
 	 * \note Called from main thread during synchronoization.
 	 */
-	void RebuildLayers( const deSky &sky );
+	void RebuildLayers(const deSky &sky);
 	/*@}*/
 };
 

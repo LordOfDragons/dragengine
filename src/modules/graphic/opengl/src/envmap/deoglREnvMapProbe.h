@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render environment map probe. */
-	deoglREnvMapProbe( deoglRenderThread &renderThread );
+	deoglREnvMapProbe(deoglRenderThread &renderThread);
 	
 	/** Clean up render environment map probe. */
 	virtual ~deoglREnvMapProbe();
@@ -74,50 +74,50 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
 	/** Parent world or \em NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** Set parent world or \em NULL if not set. */
-	void SetParentWorld( deoglRWorld *world );
+	void SetParentWorld(deoglRWorld *world);
 	
 	/** Octree node or \em NULL if there is none. */
-	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
+	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
 	
 	/** Set octree node or \em NULL if there is none. */
-	void SetOctreeNode( deoglWorldOctree *node );
+	void SetOctreeNode(deoglWorldOctree *node);
 	
 	
 	
 	/** Get influence border size. */
-	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
+	inline float GetInfluenceBorderSize() const{return pInfluenceBorderSize;}
 	
 	/** Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	
 	
 	/** Retrieve matrix. */
-	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decDMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** Set matrix. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	
 	
 	/** Retrieves the environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetEnvironmentMap() const{ return pEnvMap; }
+	inline deoglEnvironmentMap *GetEnvironmentMap() const{return pEnvMap;}
 	
 	
 	
 	/** Update influence shape. */
-	void UpdateInfluenceShape( const decShapeList &shapeList );
+	void UpdateInfluenceShape(const decShapeList &shapeList);
 	
 	/** Update reflection shape. */
-	void UpdateReflectionShape( const decShapeList &maskShapeList, decShape *shape );
+	void UpdateReflectionShape(const decShapeList &maskShapeList, decShape *shape);
 	
 	
 	
@@ -133,13 +133,13 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
+	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
 	
 	/**
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 	
 private:

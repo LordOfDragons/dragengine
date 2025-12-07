@@ -56,8 +56,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-declListProfiles::declListProfiles( declLauncher &launcher ) :
-pLauncher( launcher ){
+declListProfiles::declListProfiles(declLauncher &launcher) :
+pLauncher(launcher){
 }
 
 declListProfiles::~declListProfiles(){
@@ -69,15 +69,15 @@ declListProfiles::~declListProfiles(){
 ///////////////
 
 void declListProfiles::PrintSyntax(){
-	printf( "Drag[en]gine Console Launcher.\n" );
-	printf( "Written by Plüss Roland ( roland@rptd.ch ).\n" );
-	printf( "Released under the GPL ( http://www.gnu.org/licenses/gpl.html ), 2011.\n" );
-	printf( "\n" );
-	printf( "Lists game profiles.\n" );
-	printf( "\n" );
-	printf( "Syntax:\n" );
-	printf( "delauncherconsole profiles\n" );
-	printf( "\n" );
+	printf("Drag[en]gine Console Launcher.\n");
+	printf("Written by Plüss Roland (roland@rptd.ch).\n");
+	printf("Released under the GPL (http://www.gnu.org/licenses/gpl.html), 2011.\n");
+	printf("\n");
+	printf("Lists game profiles.\n");
+	printf("\n");
+	printf("Syntax:\n");
+	printf("delauncherconsole profiles\n");
+	printf("\n");
 }
 
 
@@ -93,10 +93,10 @@ void declListProfiles::Run(){
 	const delGameProfileList &profiles = pLauncher.GetGameManager().GetProfiles();
 	int i, count;
 	
-	printf( "Available Game Profiles:\n" );
+	printf("Available Game Profiles:\n");
 	count = profiles.GetCount();
-	for( i=0; i<count; i++ ){
-		const delGameProfile &profile = *profiles.GetAt( i );
-		printf( "- '%s'\n", profile.GetName().GetString() );
+	for(i=0; i<count; i++){
+		const delGameProfile &profile = *profiles.GetAt(i);
+		printf("- '%s'\n", profile.GetName().GetString());
 	}
 }

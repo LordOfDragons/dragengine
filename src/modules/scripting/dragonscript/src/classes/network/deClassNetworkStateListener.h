@@ -43,24 +43,24 @@ private:
 	
 public:
 	// constructor
-	deClassNetworkStateListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassNetworkStateListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassNetworkStateListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers( dsEngine *engine );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	void CreateClassMembers(dsEngine *engine);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
 	
 private:
 	struct sInitData{
 		dsClass *clsNSL, *clsVoid, *clsInt;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfStateValueChanged );
+	DEF_NATFUNC(nfStateValueChanged);
 #undef DEF_NATFUNC
 };
 

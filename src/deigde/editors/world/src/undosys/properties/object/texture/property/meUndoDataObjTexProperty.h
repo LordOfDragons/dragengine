@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data. */
-	meUndoDataObjTexProperty( meObjectTexture *texture );
+	meUndoDataObjTexProperty(meObjectTexture *texture);
 	
 protected:
 	/** \brief Clean up undo data. */
@@ -65,23 +65,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Texture. */
-	inline meObjectTexture *GetTexture() const{ return pTexture; }
+	inline meObjectTexture *GetTexture() const{return pTexture;}
 	
 	/** \brief Old property value. */
-	inline const decString &GetOldValue() const{ return pOldValue; }
+	inline const decString &GetOldValue() const{return pOldValue;}
 	
 	/** \brief Set old property value. */
-	void SetOldValue( const char *value );
+	void SetOldValue(const char *value);
 	
 	/** \brief Property exists before redo operation. */
-	inline bool GetPropertyExists() const{ return pPropertyExists; }
+	inline bool GetPropertyExists() const{return pPropertyExists;}
 	
 	/** \brief Set if property exists before redo operation. */
-	void SetPropertyExists( bool exists );
+	void SetPropertyExists(bool exists);
 	
 	/** \brief Old properties. */
-	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }
-	inline const decStringDictionary &GetOldProperties() const{ return pOldProperties; }
+	inline decStringDictionary &GetOldProperties(){return pOldProperties;}
+	inline const decStringDictionary &GetOldProperties() const{return pOldProperties;}
 	/*@}*/
 };
 

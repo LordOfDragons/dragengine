@@ -51,7 +51,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassCurve2D( deScriptingDragonScript *ds );
+	deClassCurve2D(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassCurve2D();
 	/*@}*/
@@ -59,14 +59,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Retrieves the curve. */
-	const decCurve2D &GetCurve( dsRealObject *myself ) const;
+	const decCurve2D &GetCurve(dsRealObject *myself) const;
 	/** Pushes the curve. */
-	void PushCurve( dsRunTime *rt, const decCurve2D &curve );
+	void PushCurve(dsRunTime *rt, const decCurve2D &curve);
 	/*@}*/
 	
 private:
@@ -75,32 +75,32 @@ private:
 		dsClass *clsVec2;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPointCount );
-	DEF_NATFUNC( nfGetPointAt );
-	DEF_NATFUNC( nfIndexOfPointClosestTo );
-	DEF_NATFUNC( nfIndexOfPointBefore );
-	DEF_NATFUNC( nfAddPoint );
-	DEF_NATFUNC( nfAddPoint2 );
-	DEF_NATFUNC( nfRemovePointFrom );
-	DEF_NATFUNC( nfRemoveAllPoints );
+	DEF_NATFUNC(nfGetPointCount);
+	DEF_NATFUNC(nfGetPointAt);
+	DEF_NATFUNC(nfIndexOfPointClosestTo);
+	DEF_NATFUNC(nfIndexOfPointBefore);
+	DEF_NATFUNC(nfAddPoint);
+	DEF_NATFUNC(nfAddPoint2);
+	DEF_NATFUNC(nfRemovePointFrom);
+	DEF_NATFUNC(nfRemoveAllPoints);
 	
-	DEF_NATFUNC( nfSetDefaultCurve );
-	DEF_NATFUNC( nfOffsetPointsBy );
-	DEF_NATFUNC( nfScalePointsBy );
+	DEF_NATFUNC(nfSetDefaultCurve);
+	DEF_NATFUNC(nfOffsetPointsBy);
+	DEF_NATFUNC(nfScalePointsBy);
 	
-	DEF_NATFUNC( nfEvaluateConstant );
-	DEF_NATFUNC( nfEvaluateLinear );
+	DEF_NATFUNC(nfEvaluateConstant);
+	DEF_NATFUNC(nfEvaluateLinear);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

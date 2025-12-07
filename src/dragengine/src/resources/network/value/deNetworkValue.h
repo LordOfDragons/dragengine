@@ -109,7 +109,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

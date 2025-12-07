@@ -40,20 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategoryAdd::gdeUCategoryAdd( gdeGameDefinition *gameDefinition, gdeCategory *parent,
-gdeCategory *category, eCategoryType type ) :
-gdeUCategoryBase( gameDefinition, type ),
-pParent( NULL ),
-pCategory( NULL )
+gdeUCategoryAdd::gdeUCategoryAdd(gdeGameDefinition *gameDefinition, gdeCategory *parent,
+gdeCategory *category, eCategoryType type) :
+gdeUCategoryBase(gameDefinition, type),
+pParent(NULL),
+pCategory(NULL)
 {
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(! category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Category add" );
+	SetShortInfo("Category add");
 	
 	pParent = parent;
-	if( parent ){
+	if(parent){
 		parent->AddReference();
 	}
 	
@@ -62,10 +62,10 @@ pCategory( NULL )
 }
 
 gdeUCategoryAdd::~gdeUCategoryAdd(){
-	if( pCategory ){
+	if(pCategory){
 		pCategory->FreeReference();
 	}
-	if( pParent ){
+	if(pParent){
 		pParent->FreeReference();
 	}
 }
@@ -79,15 +79,15 @@ void gdeUCategoryAdd::Undo(){
 	gdeGameDefinition &gameDefinition = *GetGameDefinition();
 	
 	gdeCategory *activeCheck = gameDefinition.GetActiveCategory();
-	while( activeCheck ){
-		if( activeCheck == pCategory ){
-			switch( gameDefinition.GetSelectedObjectType() ){
+	while(activeCheck){
+		if(activeCheck == pCategory){
+			switch(gameDefinition.GetSelectedObjectType()){
 			case gdeGameDefinition::eotCategoryObjectClass:
 			case gdeGameDefinition::eotCategoryParticleEmitter:
 			case gdeGameDefinition::eotCategorySkin:
 			case gdeGameDefinition::eotCategorySky:
-				if( ! activeCheck->GetParent() ){
-					gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotNoSelection );
+				if(! activeCheck->GetParent()){
+					gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotNoSelection);
 				}
 				break;
 				
@@ -95,37 +95,37 @@ void gdeUCategoryAdd::Undo(){
 				break;
 			}
 			
-			gameDefinition.SetActiveCategory( activeCheck->GetParent() );
+			gameDefinition.SetActiveCategory(activeCheck->GetParent());
 			break;
 		}
 		
 		activeCheck = activeCheck->GetParent();
 	}
 	
-	if( pParent ){
-		pParent->RemoveCategory( pCategory );
+	if(pParent){
+		pParent->RemoveCategory(pCategory);
 		
 	}else{
-		switch( GetType() ){
+		switch(GetType()){
 		case ectObjectClass:
-			gameDefinition.GetCategoriesObjectClass().Remove( pCategory );
+			gameDefinition.GetCategoriesObjectClass().Remove(pCategory);
 			break;
 			
 		case ectParticleEmitter:
-			gameDefinition.GetCategoriesParticleEmitter().Remove( pCategory );
+			gameDefinition.GetCategoriesParticleEmitter().Remove(pCategory);
 			break;
 			
 		case ectSkin:
-			gameDefinition.GetCategoriesSkin().Remove( pCategory );
+			gameDefinition.GetCategoriesSkin().Remove(pCategory);
 			break;
 			
 		case ectSky:
-			gameDefinition.GetCategoriesSky().Remove( pCategory );
+			gameDefinition.GetCategoriesSky().Remove(pCategory);
 			break;
 			
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
@@ -135,51 +135,51 @@ void gdeUCategoryAdd::Undo(){
 void gdeUCategoryAdd::Redo(){
 	gdeGameDefinition &gameDefinition = *GetGameDefinition();
 	
-	if( pParent ){
-		pParent->AddCategory( pCategory );
+	if(pParent){
+		pParent->AddCategory(pCategory);
 		
 	}else{
-		switch( GetType() ){
+		switch(GetType()){
 		case ectObjectClass:
-			gameDefinition.GetCategoriesObjectClass().Add( pCategory );
+			gameDefinition.GetCategoriesObjectClass().Add(pCategory);
 			break;
 			
 		case ectParticleEmitter:
-			gameDefinition.GetCategoriesParticleEmitter().Add( pCategory );
+			gameDefinition.GetCategoriesParticleEmitter().Add(pCategory);
 			break;
 			
 		case ectSkin:
-			gameDefinition.GetCategoriesSkin().Add( pCategory );
+			gameDefinition.GetCategoriesSkin().Add(pCategory);
 			break;
 			
 		case ectSky:
-			gameDefinition.GetCategoriesSky().Add( pCategory );
+			gameDefinition.GetCategoriesSky().Add(pCategory);
 			break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
 	Notify();
 	
-	gameDefinition.SetActiveCategory( pCategory );
+	gameDefinition.SetActiveCategory(pCategory);
 	
-	switch( GetType() ){
+	switch(GetType()){
 	case ectObjectClass:
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategoryObjectClass );
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategoryObjectClass);
 		break;
 		
 	case ectParticleEmitter:
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategoryParticleEmitter );
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategoryParticleEmitter);
 		break;
 		
 	case ectSkin:
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategorySkin );
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategorySkin);
 		break;
 		
 	case ectSky:
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategorySky );
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategorySky);
 		break;
 		
 	default:

@@ -31,7 +31,7 @@
 
 namespace squish {
 
-#define VEC4_CONST( X ) Vec4( ( vector float )( X ) )
+#define VEC4_CONST(X) Vec4((vector float)(X))
 
 class Vec4
 {
@@ -40,19 +40,19 @@ public:
 
 	Vec4() {}
 		
-	explicit Vec4( vector float v ) : m_v( v ) {}
+	explicit Vec4(vector float v) : m_v(v) {}
 	
-	Vec4( Vec4 const& arg ) : m_v( arg.m_v ) {}
+	Vec4(Vec4 const& arg) : m_v(arg.m_v) {}
 	
-	Vec4& operator=( Vec4 const& arg )
+	Vec4& operator=(Vec4 const& arg)
 	{
 		m_v = arg.m_v;
 		return *this;
 	}
 	
-	explicit Vec4( float s )
+	explicit Vec4(float s)
 	{
-		union { vector float v; float c[4]; } u;
+		union {vector float v; float c[4];} u;
 		u.c[0] = s;
 		u.c[1] = s;
 		u.c[2] = s;
@@ -60,9 +60,9 @@ public:
 		m_v = u.v;
 	}
 	
-	Vec4( float x, float y, float z, float w )
+	Vec4(float x, float y, float z, float w)
 	{
-		union { vector float v; float c[4]; } u;
+		union {vector float v; float c[4];} u;
 		u.c[0] = x;
 		u.c[1] = y;
 		u.c[2] = z;
@@ -72,89 +72,89 @@ public:
 	
 	Vec3 GetVec3() const
 	{
-		union { vector float v; float c[4]; } u;
+		union {vector float v; float c[4];} u;
 		u.v = m_v;
-		return Vec3( u.c[0], u.c[1], u.c[2] );
+		return Vec3(u.c[0], u.c[1], u.c[2]);
 	}
 	
-	Vec4 SplatX() const { return Vec4( vec_splat( m_v, 0 ) ); }
-	Vec4 SplatY() const { return Vec4( vec_splat( m_v, 1 ) ); }
-	Vec4 SplatZ() const { return Vec4( vec_splat( m_v, 2 ) ); }
-	Vec4 SplatW() const { return Vec4( vec_splat( m_v, 3 ) ); }
+	Vec4 SplatX() const {return Vec4(vec_splat(m_v, 0));}
+	Vec4 SplatY() const {return Vec4(vec_splat(m_v, 1));}
+	Vec4 SplatZ() const {return Vec4(vec_splat(m_v, 2));}
+	Vec4 SplatW() const {return Vec4(vec_splat(m_v, 3));}
 
-	Vec4& operator+=( Arg v )
+	Vec4& operator+=(Arg v)
 	{
-		m_v = vec_add( m_v, v.m_v );
+		m_v = vec_add(m_v, v.m_v);
 		return *this;
 	}
 	
-	Vec4& operator-=( Arg v )
+	Vec4& operator-=(Arg v)
 	{
-		m_v = vec_sub( m_v, v.m_v );
+		m_v = vec_sub(m_v, v.m_v);
 		return *this;
 	}
 	
-	Vec4& operator*=( Arg v )
+	Vec4& operator*=(Arg v)
 	{
-		m_v = vec_madd( m_v, v.m_v, ( vector float )( -0.0f ) );
+		m_v = vec_madd(m_v, v.m_v, (vector float)(-0.0f));
 		return *this;
 	}
 	
-	friend Vec4 operator+( Vec4::Arg left, Vec4::Arg right  )
+	friend Vec4 operator+(Vec4::Arg left, Vec4::Arg right)
 	{
-		return Vec4( vec_add( left.m_v, right.m_v ) );
+		return Vec4(vec_add(left.m_v, right.m_v));
 	}
 	
-	friend Vec4 operator-( Vec4::Arg left, Vec4::Arg right  )
+	friend Vec4 operator-(Vec4::Arg left, Vec4::Arg right)
 	{
-		return Vec4( vec_sub( left.m_v, right.m_v ) );
+		return Vec4(vec_sub(left.m_v, right.m_v));
 	}
 	
-	friend Vec4 operator*( Vec4::Arg left, Vec4::Arg right  )
+	friend Vec4 operator*(Vec4::Arg left, Vec4::Arg right)
 	{
-		return Vec4( vec_madd( left.m_v, right.m_v, ( vector float )( -0.0f ) ) );
+		return Vec4(vec_madd(left.m_v, right.m_v, (vector float)(-0.0f)));
 	}
 	
 	//! Returns a*b + c
-	friend Vec4 MultiplyAdd( Vec4::Arg a, Vec4::Arg b, Vec4::Arg c )
+	friend Vec4 MultiplyAdd(Vec4::Arg a, Vec4::Arg b, Vec4::Arg c)
 	{
-		return Vec4( vec_madd( a.m_v, b.m_v, c.m_v ) );
+		return Vec4(vec_madd(a.m_v, b.m_v, c.m_v));
 	}
 	
 	//! Returns -( a*b - c )
-	friend Vec4 NegativeMultiplySubtract( Vec4::Arg a, Vec4::Arg b, Vec4::Arg c )
+	friend Vec4 NegativeMultiplySubtract(Vec4::Arg a, Vec4::Arg b, Vec4::Arg c)
 	{
-		return Vec4( vec_nmsub( a.m_v, b.m_v, c.m_v ) );
+		return Vec4(vec_nmsub(a.m_v, b.m_v, c.m_v));
 	}
 	
-	friend Vec4 Reciprocal( Vec4::Arg v )
+	friend Vec4 Reciprocal(Vec4::Arg v)
 	{
 		// get the reciprocal estimate
-		vector float estimate = vec_re( v.m_v );
+		vector float estimate = vec_re(v.m_v);
 		
 		// one round of Newton-Rhaphson refinement
-		vector float diff = vec_nmsub( estimate, v.m_v, ( vector float )( 1.0f ) );
-		return Vec4( vec_madd( diff, estimate, estimate ) );
+		vector float diff = vec_nmsub(estimate, v.m_v, (vector float)(1.0f));
+		return Vec4(vec_madd(diff, estimate, estimate));
 	}
 	
-	friend Vec4 Min( Vec4::Arg left, Vec4::Arg right )
+	friend Vec4 Min(Vec4::Arg left, Vec4::Arg right)
 	{
-		return Vec4( vec_min( left.m_v, right.m_v ) );
+		return Vec4(vec_min(left.m_v, right.m_v));
 	}
 	
-	friend Vec4 Max( Vec4::Arg left, Vec4::Arg right )
+	friend Vec4 Max(Vec4::Arg left, Vec4::Arg right)
 	{
-		return Vec4( vec_max( left.m_v, right.m_v ) );
+		return Vec4(vec_max(left.m_v, right.m_v));
 	}
 	
-	friend Vec4 Truncate( Vec4::Arg v )
+	friend Vec4 Truncate(Vec4::Arg v)
 	{
-		return Vec4( vec_trunc( v.m_v ) );
+		return Vec4(vec_trunc(v.m_v));
 	}
 	
-	friend bool CompareAnyLessThan( Vec4::Arg left, Vec4::Arg right ) 
+	friend bool CompareAnyLessThan(Vec4::Arg left, Vec4::Arg right) 
 	{
-		return vec_any_lt( left.m_v, right.m_v ) != 0;
+		return vec_any_lt(left.m_v, right.m_v) != 0;
 	}
 	
 private:

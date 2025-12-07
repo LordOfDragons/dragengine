@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	aeURuleAnimSelectSetMoves( aeRuleAnimationSelect *rule, const decStringList &newMoves,
-		const char *description = "Set animation select rule moves" );
+	aeURuleAnimSelectSetMoves(aeRuleAnimationSelect *rule, const decStringList &newMoves,
+		const char *description = "Set animation select rule moves");
 	
 protected:
 	/** Clean up undo. */

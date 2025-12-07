@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create debug overlay block info. */
-	deDebugBlockInfo( deEngine &engine );
+	deDebugBlockInfo(deEngine &engine);
 	
 	/** \brief Clean up debug overlay block info. */
 	~deDebugBlockInfo();
@@ -82,25 +82,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view to be added to debug overlay. */
-	inline deCanvasView *GetView() const{ return pView; }
+	inline deCanvasView *GetView() const{return pView;}
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline deFont *GetFont() const{return pFont;}
 	
 	/** \brief Set font. */
-	void SetFont( deFont *font );
+	void SetFont(deFont *font);
 	
 	/** \brief Padding. */
-	inline int GetPadding() const{ return pPadding; }
+	inline int GetPadding() const{return pPadding;}
 	
 	/** \brief Set padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Spacing. */
-	inline int GetSpacing() const{ return pSpacing; }
+	inline int GetSpacing() const{return pSpacing;}
 	
 	/** \brief Set spacing. */
-	void SetSpacing( int spacing );
+	void SetSpacing(int spacing);
 	
 	
 	
@@ -113,13 +113,13 @@ public:
 	
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Set title color. */
-	void SetTitleColor( const decColor &color );
+	void SetTitleColor(const decColor &color);
 	
 	/** \brief Set title background color. */
-	void SetTitleBgColor( const decColor &color );
+	void SetTitleBgColor(const decColor &color);
 	
 	
 	
@@ -127,24 +127,24 @@ public:
 	int GetEntryCount() const;
 	
 	/** \brief Add entry. */
-	void AddEntry( const char *label, const char *text,
-		const decColor &color = decColor( 1.0f, 1.0f, 1.0f ), 
-		const decColor &bgColor = decColor( 0.0f, 0.0f, 0.0f, 0.5f ) );
+	void AddEntry(const char *label, const char *text,
+		const decColor &color = decColor(1.0f, 1.0f, 1.0f), 
+		const decColor &bgColor = decColor(0.0f, 0.0f, 0.0f, 0.5f));
 	
 	/** \brief Set entry label. */
-	void SetEntryLabel( int index, const char *label );
+	void SetEntryLabel(int index, const char *label);
 	
 	/** \brief Set entry text. */
-	void SetEntryText( int index, const char *text );
+	void SetEntryText(int index, const char *text);
 	
 	/** \brief Set entry text color. */
-	void SetEntryColor( int index, const decColor &color );
+	void SetEntryColor(int index, const decColor &color);
 	
 	/** \brief Set entry background color. */
-	void SetEntryBgColor( int index, const decColor &color );
+	void SetEntryBgColor(int index, const decColor &color);
 	
 	/** \brief Remove entry. */
-	void RemoveEntry( int index );
+	void RemoveEntry(int index);
 	
 	/** \brief Remove all entries. */
 	void RemoveAllEntries();
@@ -161,7 +161,7 @@ public:
 	
 	
 	/** \brief Text size. */
-	static decPoint pTextSize( const deFont &font, const char *text );
+	static decPoint pTextSize(const deFont &font, const char *text);
 	/*@}*/
 };
 

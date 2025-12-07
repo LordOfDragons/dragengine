@@ -55,18 +55,18 @@ bool decUTF8Decoder::HasReachedEnd() const{
 	return pPosition == pLength;
 }
 
-void decUTF8Decoder::SetString( const char *string ){
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+void decUTF8Decoder::SetString(const char *string){
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	pString = string;
-	pLength = ( int )strlen( string );
+	pLength = (int)strlen(string);
 	pPosition = 0;
 }
 
-void decUTF8Decoder::SetPosition( int position ){
-	if( position < 0 || position > pLength ){
-		DETHROW( deeInvalidParam );
+void decUTF8Decoder::SetPosition(int position){
+	if(position < 0 || position > pLength){
+		DETHROW(deeInvalidParam);
 	}
 	pPosition = position;
 }
@@ -76,35 +76,35 @@ int decUTF8Decoder::DecodeNextCharacter(){
 	int character;
 	
 	// check for end of pString
-	if( pPosition == pLength ){
+	if(pPosition == pLength){
 		return -1;
 	}
 	
 	// decode start byte
-	if( ( unsigned char )pString[ pPosition ] & 0x80 ){ // 1xxxxxxx
+	if((unsigned char)pString[pPosition] & 0x80){ // 1xxxxxxx
 		
-		if( ( unsigned char )pString[ pPosition ] & 0x40 ){ // 11xxxxxx
+		if((unsigned char)pString[pPosition] & 0x40){ // 11xxxxxx
 			
-			if( ( unsigned char )pString[ pPosition ] & 0x20 ){ // 111xxxxx
+			if((unsigned char)pString[pPosition] & 0x20){ // 111xxxxx
 				
-				if( ( unsigned char )pString[ pPosition ] & 0x10 ){ // 1111xxxx
+				if((unsigned char)pString[pPosition] & 0x10){ // 1111xxxx
 					
-					if( ( unsigned char )pString[ pPosition ] & 0x08 ){ // 11111xxx not allowed
+					if((unsigned char)pString[pPosition] & 0x08){ // 11111xxx not allowed
 						pPosition++;
 						return -1;
 						
 					}else{ // 11110xxx
-						character = ( unsigned char )pString[ pPosition++ ] & 0x07;
+						character = (unsigned char)pString[pPosition++] & 0x07;
 						followBytes = 3;
 					}
 					
 				}else{ // 1110xxxx
-					character = ( unsigned char )pString[ pPosition++ ] & 0x0f;
+					character = (unsigned char)pString[pPosition++] & 0x0f;
 					followBytes = 2;
 				}
 				
 			}else{ // 110xxxxx
-				character = ( unsigned char )pString[ pPosition++ ] & 0x1f;
+				character = (unsigned char)pString[pPosition++] & 0x1f;
 				followBytes = 1;
 			}
 			
@@ -114,22 +114,22 @@ int decUTF8Decoder::DecodeNextCharacter(){
 		}
 		
 	}else{ // 0xxxxxxx
-		return ( unsigned char )pString[ pPosition++ ];
+		return (unsigned char)pString[pPosition++];
 	}
 	
 	// decode follow bytes
-	while( followBytes > 0 ){
-		if( pPosition == pLength ){
+	while(followBytes > 0){
+		if(pPosition == pLength){
 			return -1;
 		}
 		
-		if( ( unsigned char )pString[ pPosition ] & 0x80 ){ // 1xxxxxxx
-			if( ( unsigned char )pString[ pPosition ] & 0x40 ){ // 11xxxxxx is not allowed
+		if((unsigned char)pString[pPosition] & 0x80){ // 1xxxxxxx
+			if((unsigned char)pString[pPosition] & 0x40){ // 11xxxxxx is not allowed
 				//pPosition++; <= nah, this is a new start byte so don't skip it!
 				return -1;
 				
 			}else{ // 10xxxxxx
-				character = ( character << 6 ) | ( ( unsigned char )pString[ pPosition++ ] & 0x3f );
+				character = (character << 6) | ((unsigned char)pString[pPosition++] & 0x3f);
 				followBytes--;
 			}
 			

@@ -68,10 +68,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new input device. */
-	dedsInputDevice( deScriptingDragonScript &ds, deBaseInputModule &module, int deviceIndex );
+	dedsInputDevice(deScriptingDragonScript &ds, deBaseInputModule &module, int deviceIndex);
 	
 	/** \brief Create new input device. */
-	dedsInputDevice( deScriptingDragonScript &ds, deBaseVRModule &module, int deviceIndex );
+	dedsInputDevice(deScriptingDragonScript &ds, deBaseVRModule &module, int deviceIndex);
 	
 protected:
 	/** \brief Clean up the input device. */
@@ -84,31 +84,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** DragonScript module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** Device source. */
-	inline deInputEvent::eSources GetDeviceSource() const{ return pDeviceSource; }
+	inline deInputEvent::eSources GetDeviceSource() const{return pDeviceSource;}
 	
 	/** Device index. */
-	inline int GetDeviceIndex() const{ return pDeviceIndex; }
+	inline int GetDeviceIndex() const{return pDeviceIndex;}
 	
 	/** Device. */
-	inline deInputDevice *GetDevice() const{ return pDevice; }
+	inline deInputDevice *GetDevice() const{return pDevice;}
 	
 	/** Device pose. */
-	inline const deInputDevicePose &GetDevicePose() const{ return pDevicePose; }
+	inline const deInputDevicePose &GetDevicePose() const{return pDevicePose;}
 	
 	/** Count of bone poses. */
-	inline int GetBonePoseCount() const{ return pBonePoseCount; }
+	inline int GetBonePoseCount() const{return pBonePoseCount;}
 	
 	/** Bone pose at index. */
-	const deInputDevicePose &GetBonePoseAt( int index, bool withController ) const;
+	const deInputDevicePose &GetBonePoseAt(int index, bool withController) const;
 	
 	/** Count of face expressions. */
-	inline int GetFaceExpressionCount() const{ return pFaceExpressionCount; }
+	inline int GetFaceExpressionCount() const{return pFaceExpressionCount;}
 	
 	/** Face expression at index. */
-	float GetFaceExpressionAt( int index ) const;
+	float GetFaceExpressionAt(int index) const;
 	
 	/** Update poses. */
 	void OnFrameUpdate();
@@ -117,7 +117,7 @@ public:
 	 * Update device information. Only allowed to be called if device is from the same
 	 * module and the device ID is the same.
 	 */
-	void Update( const dedsInputDevice &device );
+	void Update(const dedsInputDevice &device);
 	/*@}*/
 };
 

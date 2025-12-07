@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletCompoundShape( btCompoundShape *shape );
+	debpBulletCompoundShape(btCompoundShape *shape);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
 	virtual ~debpBulletCompoundShape();
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */
-	inline btCompoundShape *GetCompoundShape() const{ return ( btCompoundShape* )GetShape(); }
+	inline btCompoundShape *GetCompoundShape() const{return (btCompoundShape*)GetShape();}
 	
 	/** \brief Add child shape to clean up once the parent shape is finished. */
-	void AddChildShape( debpBulletShape *shape );
+	void AddChildShape(debpBulletShape *shape);
 	/*@}*/
 };
 

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image information. */
-	deWebpImageInfo( decBaseFileReader &reader );
+	deWebpImageInfo(decBaseFileReader &reader);
 	
 	/** Clean up image information. */
 	virtual ~deWebpImageInfo();
@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** Data. */
-	inline const decMemoryFile &GetData() const{ return pData; }
+	inline const decMemoryFile &GetData() const{return pData;}
 	
 	/** Has alpha. */
-	inline bool GetHasAlpha() const{ return pHasAlpha; }
+	inline bool GetHasAlpha() const{return pHasAlpha;}
 	
 	/** Use grayscale. */
-	inline bool GetIsGrayscale() const{ return pIsGrayscale; }
+	inline bool GetIsGrayscale() const{return pIsGrayscale;}
 	
 	/** Image width in pixels. */
 	virtual int GetWidth();
@@ -90,7 +90,7 @@ public:
 	virtual int GetBitCount();
 	
 	/** Assert status code. .*/
-	void Assert( VP8StatusCode statusCode ) const;
+	void Assert(VP8StatusCode statusCode) const;
 	/*@}*/
 };
 

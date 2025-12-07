@@ -48,15 +48,15 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRTPTListenFinish::deoalRTPTListenFinish( deoalRTParallelEnvProbe &owner ) :
-deParallelTask( &owner.GetAudioThread().GetOal() ),
-pOwner( owner ),
-pSourceProbe( NULL ),
-pListenProbe( NULL ),
-pListener( NULL )
+deoalRTPTListenFinish::deoalRTPTListenFinish(deoalRTParallelEnvProbe &owner) :
+deParallelTask(&owner.GetAudioThread().GetOal()),
+pOwner(owner),
+pSourceProbe(NULL),
+pListenProbe(NULL),
+pListener(NULL)
 {
-	SetMarkFinishedAfterRun( true );
-	SetLowPriority( true );
+	SetMarkFinishedAfterRun(true);
+	SetLowPriority(true);
 }
 
 deoalRTPTListenFinish::~deoalRTPTListenFinish(){
@@ -67,29 +67,29 @@ deoalRTPTListenFinish::~deoalRTPTListenFinish(){
 // Manegement
 ///////////////
 
-void deoalRTPTListenFinish::AddDependencies( const decPointerList &tasks ){
+void deoalRTPTListenFinish::AddDependencies(const decPointerList &tasks){
 	const int count = tasks.GetCount();
 	int i;
 	
 	pTasks.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		deParallelTask * const task = ( deParallelTask* )tasks.GetAt( i );
-		AddDependsOn( task );
-		pTasks.Add( task );
+	for(i=0; i<count; i++){
+		deParallelTask * const task = (deParallelTask*)tasks.GetAt(i);
+		AddDependsOn(task);
+		pTasks.Add(task);
 	}
 }
 
-void deoalRTPTListenFinish::SetProbes( const deoalEnvProbe *source, const deoalEnvProbe *listen ){
+void deoalRTPTListenFinish::SetProbes(const deoalEnvProbe *source, const deoalEnvProbe *listen){
 	pSourceProbe = source;
 	pListenProbe = listen;
 }
 
-void deoalRTPTListenFinish::SetPosition( const decDVector &position ){
+void deoalRTPTListenFinish::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void deoalRTPTListenFinish::SetListener( deoalEnvProbeListener *listener ){
+void deoalRTPTListenFinish::SetListener(deoalEnvProbeListener *listener){
 	pListener = listener;
 }
 
@@ -99,20 +99,20 @@ void deoalRTPTListenFinish::Run(){
 	try{
 		pRun();
 		
-	}catch( ... ){
+	}catch(...){
 		Cancel();
-		pOwner.FinishTaskFinished( this );
+		pOwner.FinishTaskFinished(this);
 		throw;
 	}
 	
-	pOwner.FinishTaskFinished( this );
+	pOwner.FinishTaskFinished(this);
 }
 
 void deoalRTPTListenFinish::Finished(){
-	if( IsCancelled() ){
-		pOwner.FinishTaskFinished( this );
+	if(IsCancelled()){
+		pOwner.FinishTaskFinished(this);
 	}
-	pOwner.Enable( this );
+	pOwner.Enable(this);
 }
 
 
@@ -282,18 +282,18 @@ void deoalRTPTListenFinish::pRun(){
 	const float histogramRange = pListenProbe ? pListenProbe->GetRange() : pSourceProbe->GetRange();
 	const float histogramTime = histogramRange * INV_SOUND_SPEED;
 	const float histogramSlotTime = 0.001f; // 1ms
-	const int histogramSlots = ( int )( histogramTime / histogramSlotTime );
+	const int histogramSlots = (int)(histogramTime / histogramSlotTime);
 	
-	energyHistogram.SetParameters( histogramSlots, 3, histogramSlotTime * histogramSlots );
+	energyHistogram.SetParameters(histogramSlots, 3, histogramSlotTime * histogramSlots);
 	energyHistogram.Clear();
 	#endif
 	
 	// collect data from tasks
-	for( i=0; i<taskCount; i++ ){
-		const deoalRTPTListen &task = *( ( deoalRTPTListen* )pTasks.GetAt( i ) );
+	for(i=0; i<taskCount; i++){
+		const deoalRTPTListen &task = *((deoalRTPTListen*)pTasks.GetAt(i));
 		
-		if( task.IsCancelled() ){
-			DETHROW( deeInvalidAction ); // task failed
+		if(task.IsCancelled()){
+			DETHROW(deeInvalidAction); // task failed
 		}
 		
 // 		gainLow += task.GetGainLow();
@@ -310,10 +310,10 @@ void deoalRTPTListenFinish::pRun(){
 // 		}
 // 		arCount += task.GetARCount();
 		
-		if( task.GetFRMinDistance() < frMinDistance ){
+		if(task.GetFRMinDistance() < frMinDistance){
 			frMinDistance = task.GetFRMinDistance();
 		}
-		if( task.GetFRMaxDistance() > frMaxDistance ){
+		if(task.GetFRMaxDistance() > frMaxDistance){
 			frMaxDistance = task.GetFRMaxDistance();
 		}
 		frSumDistance += task.GetFRSumDistance();
@@ -369,60 +369,60 @@ void deoalRTPTListenFinish::pRun(){
 // 		}
 		
 		/*
-		if( pAudioThread.GetDebug().GetLogCalcEnvProbe() ){
+		if(pAudioThread.GetDebug().GetLogCalcEnvProbe()){
 			const deoalRTPTEnvProbeListener::sContribution * const contributions = task.GetContributions();
 			const int contributionCount = task.GetContributionCount();
-			for( int j=0; j<contributionCount; j++ ){
-				const deoalRTPTEnvProbeListener::sContribution &contribution = contributions[ j ];
+			for(int j=0; j<contributionCount; j++){
+				const deoalRTPTEnvProbeListener::sContribution &contribution = contributions[j];
 				pAudioThread.GetLogger().LogInfoFormat(
 					"- Contribution #%d:%d: dist=%.3f gain=(%.3f,%.3f,%.3f)[%.3f]",
 					i, j, contribution.distance, contribution.gainLow, contribution.gainMedium,
-					contribution.gainHigh, decMath::max( contribution.gainLow,
-						contribution.gainMedium, contribution.gainHigh ) );
+					contribution.gainHigh, decMath::max(contribution.gainLow,
+						contribution.gainMedium, contribution.gainHigh));
 			}
 		}
 		*/
 		
-		impulseResponse.Insert( task.GetImpulseResponse() );
+		impulseResponse.Insert(task.GetImpulseResponse());
 		
 		#ifdef USE_ENERGY_HISTOGRAM
-		energyHistogram.Add( task.GetImpulseResponse() );
+		energyHistogram.Add(task.GetImpulseResponse());
 		#endif
 	}
 	/*
-	if( pListenProbe ){
-		const float l = ( pListenProbe->GetPosition() - pSourceProbe->GetPosition() ).Length();
+	if(pListenProbe){
+		const float l = (pListenProbe->GetPosition() - pSourceProbe->GetPosition()).Length();
 		pOwner.GetAudioThread().GetLogger().LogInfoFormat(
 			"Direct dist=%f time=%f, Separation dist=%f time=%f ", l, l * INV_SOUND_SPEED,
 			pListenProbe->GetSepTimeFirstLateRefl() * INV_SOUND_SPEED,
-			pListenProbe->GetSepTimeFirstLateRefl() );
+			pListenProbe->GetSepTimeFirstLateRefl());
 	}
 	*/
 	
 	// calculate reverberation time using decay curve approach
 	// normalize
-	const float invRayCount = 1.0f / ( float )( pListenProbe
-		? pListenProbe->GetRayCount() : pSourceProbe->GetRayCount() );
+	const float invRayCount = 1.0f / (float)(pListenProbe
+		? pListenProbe->GetRayCount() : pSourceProbe->GetRayCount());
 	
 	impulseResponse *= invRayCount;
 	#ifdef USE_ENERGY_HISTOGRAM
 	energyHistogram *= invRayCount;
 	#endif
 	
-	if( absorptionCount > 0 ){
-		const float factor = 1.0f / ( float )absorptionCount;
+	if(absorptionCount > 0){
+		const float factor = 1.0f / (float)absorptionCount;
 		absorptionLow *= factor;
 		absorptionMedium *= factor;
 		absorptionHigh *= factor;
 	}
 	
-	if( meanFreePathCount > 0 ){
-		meanFreePath /= ( float )meanFreePathCount;
+	if(meanFreePathCount > 0){
+		meanFreePath /= (float)meanFreePathCount;
 	}
 	
 	#ifdef USE_DECAY_CURVE
-	if( decayTimeCount > 0 ){
-		const float factor = 1.0f / ( float )decayTimeCount;
+	if(decayTimeCount > 0){
+		const float factor = 1.0f / (float)decayTimeCount;
 		decayTimeLow *= factor;
 		decayTimeMedium *= factor;
 		decayTimeHigh *= factor;
@@ -433,20 +433,20 @@ void deoalRTPTListenFinish::pRun(){
 	#ifdef USE_DECAY_CURVE
 	pDecayCurve = impulseResponse;
 	pDecayCurve.BackwardIntegrate();
-	const deoalImpulseResponse::sImpulse revTime( pDecayCurve.ReverberationTime() );
+	const deoalImpulseResponse::sImpulse revTime(pDecayCurve.ReverberationTime());
 	#endif
 	
 	#if 0
 		const float rtfactor = 13.8f * -(meanFreePath * INV_SOUND_SPEED);
 		float rtlow = 0.0f, rtmed = 0.0f, rthigh = 0.0f;
-		if( absorptionLow > FLOAT_SAFE_EPSILON ){
-			rtlow = rtfactor / log( decMath::max( 1.0f - absorptionLow, 1e-5f ) );
+		if(absorptionLow > FLOAT_SAFE_EPSILON){
+			rtlow = rtfactor / log(decMath::max(1.0f - absorptionLow, 1e-5f));
 		}
-		if( absorptionMedium > FLOAT_SAFE_EPSILON ){
-			rtmed = rtfactor / log( decMath::max( 1.0f - absorptionMedium, 1e-5f ) );
+		if(absorptionMedium > FLOAT_SAFE_EPSILON){
+			rtmed = rtfactor / log(decMath::max(1.0f - absorptionMedium, 1e-5f));
 		}
-		if( absorptionHigh > FLOAT_SAFE_EPSILON ){
-			rthigh = rtfactor / log( decMath::max( 1.0f - absorptionHigh, 1e-5f ) );
+		if(absorptionHigh > FLOAT_SAFE_EPSILON){
+			rthigh = rtfactor / log(decMath::max(1.0f - absorptionHigh, 1e-5f));
 		}
 		#ifdef USE_DECAY_CURVE
 		pOwner.GetAudioThread().GetLogger().LogInfoFormat(
@@ -455,39 +455,39 @@ void deoalRTPTListenFinish::pRun(){
 			meanFreePath, absorptionLow, absorptionMedium, absorptionHigh, rtlow, rtmed, rthigh,
 			decayTimeLow, decayTimeMedium, decayTimeHigh, revTime.low, revTime.medium,
 			revTime.high, revTime.time, pSourceProbe->GetPosition().x,
-			pSourceProbe->GetPosition().y, pSourceProbe->GetPosition().z );
+			pSourceProbe->GetPosition().y, pSourceProbe->GetPosition().z);
 		#else
 		
 		float realRevTime = limitRevTimeLow + rtlow * unlimitRevTimeCount;
-		if( limitRevTimeCount + unlimitRevTimeCount > 0 ){
-			realRevTime /= ( float )( limitRevTimeCount + unlimitRevTimeCount );
+		if(limitRevTimeCount + unlimitRevTimeCount > 0){
+			realRevTime /= (float)(limitRevTimeCount + unlimitRevTimeCount);
 		}
 		
 		pOwner.GetAudioThread().GetLogger().LogInfoFormat(
 			"ListenFinish: mfp=%.3f abs=(%.3f,%.3f,%.3f) dt=(%.3f,%.3f,%.3f) lim=(%.3f,%d/%d|%.3f) pos=(%.3f,%.3f,%.3f)",
 			meanFreePath, absorptionLow, absorptionMedium, absorptionHigh, rtlow, rtmed, rthigh,
 			limitRevTimeLow, limitRevTimeCount, unlimitRevTimeCount, realRevTime,
-			pSourceProbe->GetPosition().x, pSourceProbe->GetPosition().y, pSourceProbe->GetPosition().z );
+			pSourceProbe->GetPosition().x, pSourceProbe->GetPosition().y, pSourceProbe->GetPosition().z);
 		#endif
 	#endif
 	
 	#if 0
-		const float factor = ( float )( pListenProbe ? pListenProbe->GetRayCount() : pSourceProbe->GetRayCount() );
+		const float factor = (float)(pListenProbe ? pListenProbe->GetRayCount() : pSourceProbe->GetRayCount());
 		const int count = impulseResponse.GetCount();
-		decString text( "IR-Time:" );
+		decString text("IR-Time:");
 		int i;
-		for( i=0; i<count; i++ ){
-			const deoalImpulseResponse::sImpulse &impulse = impulseResponse.GetAt( i );
-			text.AppendFormat( ",%f", impulse.time );
+		for(i=0; i<count; i++){
+			const deoalImpulseResponse::sImpulse &impulse = impulseResponse.GetAt(i);
+			text.AppendFormat(",%f", impulse.time);
 		}
-		pOwner.GetAudioThread().GetLogger().LogInfo( text );
+		pOwner.GetAudioThread().GetLogger().LogInfo(text);
 		text = "IR-Gain:";
-		for( i=0; i<count; i++ ){
-			const deoalImpulseResponse::sImpulse &impulse = impulseResponse.GetAt( i );
+		for(i=0; i<count; i++){
+			const deoalImpulseResponse::sImpulse &impulse = impulseResponse.GetAt(i);
 			//text.AppendFormat( ",%f", 20.0f * log10f( impulse.low * factor ) );
-			text.AppendFormat( ",%f", impulse.low * factor );
+			text.AppendFormat(",%f", impulse.low * factor);
 		}
-		pOwner.GetAudioThread().GetLogger().LogInfo( text );
+		pOwner.GetAudioThread().GetLogger().LogInfo(text);
 	#endif
 	
 	#ifdef USE_ENERGY_HISTOGRAM
@@ -495,12 +495,12 @@ void deoalRTPTListenFinish::pRun(){
 			const int slotCount = energyHistogram.GetSlotCount();
 			const float * const energies = energyHistogram.GetEntries();
 			decString text;
-			text.Format( "EH-Energy (dt=%f):", energyHistogram.GetSlotTime() );
+			text.Format("EH-Energy (dt=%f):", energyHistogram.GetSlotTime());
 			int i;
-			for( i=0; i<slotCount; i++ ){
-				text.AppendFormat( ",%g", energies[i] );
+			for(i=0; i<slotCount; i++){
+				text.AppendFormat(",%g", energies[i]);
 			}
-			pOwner.GetAudioThread().GetLogger().LogInfo( text );
+			pOwner.GetAudioThread().GetLogger().LogInfo(text);
 		#endif
 	#endif
 	
@@ -522,8 +522,8 @@ void deoalRTPTListenFinish::pRun(){
 	// this is direct and reverberant combined
 	// NOTE this is not including source distance offset since it is used for delay calculation
 	//      which has to be relative to the playing source which is playing at the real position
-	const float directDistance = ( float )( ( pListenProbe ? pListenProbe->GetPosition() : pPosition )
-		- pSourceProbe->GetPosition() ).Length();
+	const float directDistance = (float)((pListenProbe ? pListenProbe->GetPosition() : pPosition)
+		- pSourceProbe->GetPosition()).Length();
 // 	const float invFourPiDistSquared = 1.0f / ( 4.0 * PI * directDistance * directDistance );
 // 	const float roomPressureLow = 10.0f * log10f( invFourPiDistSquared + roomFactorLow );
 // 	const float roomPressureMedium = 10.0f * log10f( invFourPiDistSquared + roomFactorMedium );
@@ -556,13 +556,13 @@ void deoalRTPTListenFinish::pRun(){
 	float frRatioMedium = 0.0f;
 	float frRatioHigh = 0.0f;
 	
-	if( gainLow > FLOAT_SAFE_EPSILON ){
+	if(gainLow > FLOAT_SAFE_EPSILON){
 		frRatioLow = frGainLow / gainLow;
 	}
-	if( gainMedium > FLOAT_SAFE_EPSILON ){
+	if(gainMedium > FLOAT_SAFE_EPSILON){
 		frRatioMedium = frGainMedium / gainMedium;
 	}
-	if( gainHigh > FLOAT_SAFE_EPSILON ){
+	if(gainHigh > FLOAT_SAFE_EPSILON){
 		frRatioHigh = frGainHigh / gainHigh;
 	}
 	
@@ -578,13 +578,13 @@ void deoalRTPTListenFinish::pRun(){
 	float lrRatioMedium = 0.0f;
 	float lrRatioHigh = 0.0f;
 	
-	if( gainLow > FLOAT_SAFE_EPSILON ){
+	if(gainLow > FLOAT_SAFE_EPSILON){
 		lrRatioLow = lrGainLow / gainLow;
 	}
-	if( gainMedium > FLOAT_SAFE_EPSILON ){
+	if(gainMedium > FLOAT_SAFE_EPSILON){
 		lrRatioMedium = lrGainMedium / gainMedium;
 	}
-	if( gainHigh > FLOAT_SAFE_EPSILON ){
+	if(gainHigh > FLOAT_SAFE_EPSILON){
 		lrRatioHigh = lrGainHigh / gainHigh;
 	}
 	
@@ -607,27 +607,27 @@ void deoalRTPTListenFinish::pRun(){
 	// 
 	// this is actually the same as going directly from receiver to openal gain like this:
 	//   openal-gain = sqrt(receiver-intensity)
-	finalFRGainLow = sqrtf( finalFRGainLow );
-	finalFRGainMedium = sqrtf( finalFRGainMedium );
-	finalFRGainHigh = sqrtf( finalFRGainHigh );
-	finalLRGainLow = sqrtf( finalLRGainLow );
-	finalLRGainMedium = sqrtf( finalLRGainMedium );
-	finalLRGainHigh = sqrtf( finalLRGainHigh );
+	finalFRGainLow = sqrtf(finalFRGainLow);
+	finalFRGainMedium = sqrtf(finalFRGainMedium);
+	finalFRGainHigh = sqrtf(finalFRGainHigh);
+	finalLRGainLow = sqrtf(finalLRGainLow);
+	finalLRGainMedium = sqrtf(finalLRGainMedium);
+	finalLRGainHigh = sqrtf(finalLRGainHigh);
 	
 	// gains are clamped by a threshold in the sound trace task. this is by default around
 	// -60db or 0.001 . openal though goes down to -100db by definition. we need to scale
 	// the gains to avoid sound coming from nowhere near the lower end
 	/*
 	const float gainThreshold = 1e-3f;
-	const float normGainScale = 1.0f / ( 1.0f - gainThreshold );
+	const float normGainScale = 1.0f / (1.0f - gainThreshold);
 	const float normGainOffset = -gainThreshold * normGainScale;
 	
-	finalFRGainLow = decMath::max( finalFRGainLow * normGainScale + normGainOffset, 0.0f );
-	finalFRGainMedium = decMath::max( finalFRGainMedium * normGainScale + normGainOffset, 0.0f );
-	finalFRGainHigh = decMath::max( finalFRGainHigh * normGainScale + normGainOffset, 0.0f );
-	finalLRGainLow = decMath::max( finalLRGainLow * normGainScale + normGainOffset, 0.0f );
-	finalLRGainMedium = decMath::max( finalLRGainMedium * normGainScale + normGainOffset, 0.0f );
-	finalLRGainHigh = decMath::max( finalLRGainHigh * normGainScale + normGainOffset, 0.0f );
+	finalFRGainLow = decMath::max(finalFRGainLow * normGainScale + normGainOffset, 0.0f);
+	finalFRGainMedium = decMath::max(finalFRGainMedium * normGainScale + normGainOffset, 0.0f);
+	finalFRGainHigh = decMath::max(finalFRGainHigh * normGainScale + normGainOffset, 0.0f);
+	finalLRGainLow = decMath::max(finalLRGainLow * normGainScale + normGainOffset, 0.0f);
+	finalLRGainMedium = decMath::max(finalLRGainMedium * normGainScale + normGainOffset, 0.0f);
+	finalLRGainHigh = decMath::max(finalLRGainHigh * normGainScale + normGainOffset, 0.0f);
 	*/
 	
 	
@@ -635,14 +635,14 @@ void deoalRTPTListenFinish::pRun(){
 // 	float frAvgDelay = 0.0f;
 	float frMinDelay = 0.0f;
 // 	float frMaxDelay = 0.0f;
-	if( frCount > 0 ){
+	if(frCount > 0){
 // 		frAvgDelay = ( frSumDistance / ( float )frCount - directDistance ) * INV_SOUND_SPEED;
-		frMinDelay = ( frMinDistance - directDistance ) * INV_SOUND_SPEED;
+		frMinDelay = (frMinDistance - directDistance) * INV_SOUND_SPEED;
 // 		frMaxDelay = ( frMaxDistance - directDistance ) * INV_SOUND_SPEED;
-		( void )frSumDistance;
-		( void )frPanDirectionWeightSum;
-		( void )lrPanDirectionWeightSum;
-		( void )lrCount;
+		(void)frSumDistance;
+		(void)frPanDirectionWeightSum;
+		(void)lrPanDirectionWeightSum;
+		(void)lrCount;
 	}
 	
 // 	const float lrGainLow = gainLow - frGainLow;
@@ -669,17 +669,17 @@ void deoalRTPTListenFinish::pRun(){
 	float reverberationTimeHigh = pSourceProbe->GetReverberationTimeHigh();
 	float echoDelay = pSourceProbe->GetEchoDelay();
 	
-	if( pListenProbe ){
-		if( pListenProbe->GetReverberationTimeLow() > reverberationTimeLow ){
+	if(pListenProbe){
+		if(pListenProbe->GetReverberationTimeLow() > reverberationTimeLow){
 			reverberationTimeLow = pListenProbe->GetReverberationTimeLow();
 		}
-		if( pListenProbe->GetReverberationTimeMedium() > reverberationTimeMedium ){
+		if(pListenProbe->GetReverberationTimeMedium() > reverberationTimeMedium){
 			reverberationTimeMedium = pListenProbe->GetReverberationTimeMedium();
 		}
-		if( pListenProbe->GetReverberationTimeHigh() > reverberationTimeHigh ){
+		if(pListenProbe->GetReverberationTimeHigh() > reverberationTimeHigh){
 			reverberationTimeHigh = pListenProbe->GetReverberationTimeHigh();
 		}
-		if( pListenProbe->GetEchoDelay() > echoDelay ){
+		if(pListenProbe->GetEchoDelay() > echoDelay){
 			echoDelay = pListenProbe->GetEchoDelay();
 		}
 	}
@@ -690,7 +690,7 @@ void deoalRTPTListenFinish::pRun(){
 	float reverberationTimeHigh = 0.0f;
 	float echoDelay = 0.0f;
 	
-	if( pListenProbe ){
+	if(pListenProbe){
 		// this uses the global listener reverberation parameters
 		/*
 		float reverberationTimeLow = pListenProbe->GetReverberationTimeLow();
@@ -705,14 +705,14 @@ void deoalRTPTListenFinish::pRun(){
 		// the case with globel listener parameters
 		echoDelay = meanFreePath * INV_SOUND_SPEED;
 		const float rtfactor = 13.8f * -echoDelay;
-		if( absorptionLow > FLOAT_SAFE_EPSILON ){
-			reverberationTimeLow = rtfactor / logf( decMath::max( 1.0f - absorptionLow, 1e-5f ) );
+		if(absorptionLow > FLOAT_SAFE_EPSILON){
+			reverberationTimeLow = rtfactor / logf(decMath::max(1.0f - absorptionLow, 1e-5f));
 		}
-		if( absorptionMedium > FLOAT_SAFE_EPSILON ){
-			reverberationTimeMedium = rtfactor / logf( decMath::max( 1.0f - absorptionMedium, 1e-5f ) );
+		if(absorptionMedium > FLOAT_SAFE_EPSILON){
+			reverberationTimeMedium = rtfactor / logf(decMath::max(1.0f - absorptionMedium, 1e-5f));
 		}
-		if( absorptionHigh > FLOAT_SAFE_EPSILON ){
-			reverberationTimeHigh = rtfactor / logf( decMath::max( 1.0f - absorptionHigh, 1e-5f ) );
+		if(absorptionHigh > FLOAT_SAFE_EPSILON){
+			reverberationTimeHigh = rtfactor / logf(decMath::max(1.0f - absorptionHigh, 1e-5f));
 		}
 		
 	}else{
@@ -729,11 +729,11 @@ void deoalRTPTListenFinish::pRun(){
 	// tim in this case. this code is not going to fire for indoor scenes at all so it is safe
 	// to use as a fix for outdoor scenes
 	const int modifyRevTimeCount = limitRevTimeCount + unlimitRevTimeCount;
-	if( modifyRevTimeCount > 0 ){
-		const float factor = 1.0f / ( float )( limitRevTimeCount + unlimitRevTimeCount );
-		reverberationTimeLow = ( limitRevTimeLow + reverberationTimeLow * unlimitRevTimeCount ) * factor;
-		reverberationTimeMedium = ( limitRevTimeMedium + reverberationTimeMedium * unlimitRevTimeCount ) * factor;
-		reverberationTimeHigh = ( limitRevTimeHigh + reverberationTimeHigh * unlimitRevTimeCount ) * factor;
+	if(modifyRevTimeCount > 0){
+		const float factor = 1.0f / (float)(limitRevTimeCount + unlimitRevTimeCount);
+		reverberationTimeLow = (limitRevTimeLow + reverberationTimeLow * unlimitRevTimeCount) * factor;
+		reverberationTimeMedium = (limitRevTimeMedium + reverberationTimeMedium * unlimitRevTimeCount) * factor;
+		reverberationTimeHigh = (limitRevTimeHigh + reverberationTimeHigh * unlimitRevTimeCount) * factor;
 	}
 	
 	// update environment probe with found parameters
@@ -741,7 +741,7 @@ void deoalRTPTListenFinish::pRun(){
 // 	float listenReverberationGainMedium = 0.0f;
 // 	float listenReverberationGainHigh = 0.0f;
 	
-	if( pListenProbe ){
+	if(pListenProbe){
 		// in listener centric mode things are a bit more complicated. the calculated parameters
 		// represent the room the listener is located in but we need also the room the source
 		// is located in. this is done by using the source probe parameters and somehow merge
@@ -772,7 +772,7 @@ void deoalRTPTListenFinish::pRun(){
 		float roomAbsorptionLow = 0.0f;
 		float roomAbsorptionMedium = 0.0f;
 		float roomAbsorptionHigh = 0.0f;
-		if( pListenProbe->GetRoomSurface() > FLOAT_EPSILON ){
+		if(pListenProbe->GetRoomSurface() > FLOAT_EPSILON){
 			const float invRoomSurface = 1.0f / pListenProbe->GetRoomSurface();
 			roomAbsorptionLow = pListenProbe->GetRoomSabineLow() * invRoomSurface;
 			roomAbsorptionMedium = pListenProbe->GetRoomSabineMedium() * invRoomSurface;
@@ -781,27 +781,27 @@ void deoalRTPTListenFinish::pRun(){
 		
 		const float roomGLow = 10.0f
 			* log10f( decMath::max( FLOAT_SAFE_EPSILON, 4.0f * ( 1.0f - roomAbsorptionLow )
-			/ decMath::max( pListenProbe->GetRoomSabineLow(), 0.01f ) ) );
+			/ decMath::max(pListenProbe->GetRoomSabineLow(), 0.01f)));
 		const float roomGMedium = 10.0f
 			* log10f( decMath::max( FLOAT_SAFE_EPSILON, 4.0f * ( 1.0f - roomAbsorptionMedium )
-			/ decMath::max( pListenProbe->GetRoomSabineMedium(), 0.01f ) ) );
+			/ decMath::max(pListenProbe->GetRoomSabineMedium(), 0.01f)));
 		const float roomGHigh = 10.0f
 			* log10f( decMath::max( FLOAT_SAFE_EPSILON, 4.0f * ( 1.0f - roomAbsorptionHigh )
-			/ decMath::max( pListenProbe->GetRoomSabineHigh(), 0.01f ) ) );
+			/ decMath::max(pListenProbe->GetRoomSabineHigh(), 0.01f)));
 			
 		// roomG is difference of sound volume in dB relative to the original sound volume.
 		// converting this to linear scaling factor is enough
-		listenReverberationGainLow = powf( 2.0f, roomGLow / 6.0f );
-		listenReverberationGainMedium = powf( 2.0f, roomGMedium / 6.0f );
-		listenReverberationGainHigh = powf( 2.0f, roomGHigh / 6.0f );
+		listenReverberationGainLow = powf(2.0f, roomGLow / 6.0f);
+		listenReverberationGainMedium = powf(2.0f, roomGMedium / 6.0f);
+		listenReverberationGainHigh = powf(2.0f, roomGHigh / 6.0f);
 		
-		if( listenReverberationGainLow > finalLRGainLow ){
+		if(listenReverberationGainLow > finalLRGainLow){
 			finalLRGainLow = listenReverberationGainLow;
 		}
-		if( listenReverberationGainMedium > finalLRGainMedium ){
+		if(listenReverberationGainMedium > finalLRGainMedium){
 			finalLRGainMedium = listenReverberationGainMedium;
 		}
-		if( listenReverberationGainHigh > finalLRGainHigh ){
+		if(listenReverberationGainHigh > finalLRGainHigh){
 			finalLRGainHigh = listenReverberationGainHigh;
 		}
 		
@@ -809,12 +809,12 @@ void deoalRTPTListenFinish::pRun(){
 	}
 	
 // 	pListener->SetReflected( finalFRGainLow, finalFRGainMedium, finalFRGainHigh, frAvgDelay );
-	pListener->SetReflected( finalFRGainLow, finalFRGainMedium, finalFRGainHigh, frMinDelay );
-	pListener->SetReflectionPan( frPanDirection );
+	pListener->SetReflected(finalFRGainLow, finalFRGainMedium, finalFRGainHigh, frMinDelay);
+	pListener->SetReflectionPan(frPanDirection);
 	
-	pListener->SetReverberation( finalLRGainLow, finalLRGainMedium, finalLRGainHigh, revDelay );
-	pListener->SetReverberationPan( lrPanDirection );
+	pListener->SetReverberation(finalLRGainLow, finalLRGainMedium, finalLRGainHigh, revDelay);
+	pListener->SetReverberationPan(lrPanDirection);
 	
-	pListener->SetReverberationTime( reverberationTimeLow, reverberationTimeMedium, reverberationTimeHigh );
-	pListener->SetEcho( echoDelay );
+	pListener->SetReverberationTime(reverberationTimeLow, reverberationTimeMedium, reverberationTimeHigh);
+	pListener->SetEcho(echoDelay);
 }

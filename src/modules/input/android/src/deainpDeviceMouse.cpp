@@ -51,70 +51,70 @@
 // Constructor, destructor
 ////////////////////////////
 
-deainpDeviceMouse::deainpDeviceMouse( deAndroidInput &module ) :
-deainpDevice( module, esAndroid )
+deainpDeviceMouse::deainpDeviceMouse(deAndroidInput &module) :
+deainpDevice(module, esAndroid)
 {
 	decString string;
 	
-	string.Format( "%s%dmouse", AINP_DEVID_PREFIX, deainpDevice::esAndroid );
-	SetID( string );
-	SetName( "Mouse" );
-	SetType( deInputDevice::edtMouse );
+	string.Format("%s%dmouse", AINP_DEVID_PREFIX, deainpDevice::esAndroid);
+	SetID(string);
+	SetName("Mouse");
+	SetType(deInputDevice::edtMouse);
 	
-	SetAxisCount( 4 );
+	SetAxisCount(4);
 	
-	deainpDeviceAxis &axisX = GetAxisAt( 0 );
-	axisX.SetAbsolute( false );
-	axisX.SetID( "x" );
-	axisX.SetName( "X" );
-	axisX.SetType( deInputDeviceAxis::eatMouse );
+	deainpDeviceAxis &axisX = GetAxisAt(0);
+	axisX.SetAbsolute(false);
+	axisX.SetID("x");
+	axisX.SetName("X");
+	axisX.SetType(deInputDeviceAxis::eatMouse);
 	
-	deainpDeviceAxis &axisY = GetAxisAt( 1 );
-	axisY.SetAbsolute( false );
-	axisY.SetID( "y" );
-	axisY.SetName( "Y" );
-	axisY.SetType( deInputDeviceAxis::eatMouse );
+	deainpDeviceAxis &axisY = GetAxisAt(1);
+	axisY.SetAbsolute(false);
+	axisY.SetID("y");
+	axisY.SetName("Y");
+	axisY.SetType(deInputDeviceAxis::eatMouse);
 	
-	deainpDeviceAxis &scrollY = GetAxisAt( 2 );
-	scrollY.SetAbsolute( false );
-	scrollY.SetWheelOtherAxis( false );
-	scrollY.SetID( "scrollY" );
-	scrollY.SetName( "Scroll Y" );
-	scrollY.SetType( deInputDeviceAxis::eatMouseWheel );
+	deainpDeviceAxis &scrollY = GetAxisAt(2);
+	scrollY.SetAbsolute(false);
+	scrollY.SetWheelOtherAxis(false);
+	scrollY.SetID("scrollY");
+	scrollY.SetName("Scroll Y");
+	scrollY.SetType(deInputDeviceAxis::eatMouseWheel);
 	
-	deainpDeviceAxis &scrollX = GetAxisAt( 3 );
-	scrollX.SetAbsolute( false );
-	scrollX.SetWheelOtherAxis( true );
-	scrollX.SetID( "scrollX" );
-	scrollX.SetName( "Scroll X" );
-	scrollX.SetType( deInputDeviceAxis::eatMouseWheel );
+	deainpDeviceAxis &scrollX = GetAxisAt(3);
+	scrollX.SetAbsolute(false);
+	scrollX.SetWheelOtherAxis(true);
+	scrollX.SetID("scrollX");
+	scrollX.SetName("Scroll X");
+	scrollX.SetType(deInputDeviceAxis::eatMouseWheel);
 	
-	SetButtonCount( 5 );
+	SetButtonCount(5);
 	
-	deainpDeviceButton &buttonLeft = GetButtonAt( deInputEvent::embcLeft );
-	buttonLeft.SetID( "left" );
-	buttonLeft.SetName( "Left" );
-	buttonLeft.SetAICode( AMOTION_EVENT_BUTTON_PRIMARY );
+	deainpDeviceButton &buttonLeft = GetButtonAt(deInputEvent::embcLeft);
+	buttonLeft.SetID("left");
+	buttonLeft.SetName("Left");
+	buttonLeft.SetAICode(AMOTION_EVENT_BUTTON_PRIMARY);
 	
-	deainpDeviceButton &buttonRight = GetButtonAt( deInputEvent::embcRight );
-	buttonRight.SetID( "right" );
-	buttonRight.SetName( "Right" );
-	buttonRight.SetAICode( AMOTION_EVENT_BUTTON_SECONDARY );
+	deainpDeviceButton &buttonRight = GetButtonAt(deInputEvent::embcRight);
+	buttonRight.SetID("right");
+	buttonRight.SetName("Right");
+	buttonRight.SetAICode(AMOTION_EVENT_BUTTON_SECONDARY);
 	
-	deainpDeviceButton &buttonMiddle = GetButtonAt( deInputEvent::embcMiddle );
-	buttonMiddle.SetID( "middle" );
-	buttonMiddle.SetName( "Middle" );
-	buttonMiddle.SetAICode( AMOTION_EVENT_BUTTON_TERTIARY );
+	deainpDeviceButton &buttonMiddle = GetButtonAt(deInputEvent::embcMiddle);
+	buttonMiddle.SetID("middle");
+	buttonMiddle.SetName("Middle");
+	buttonMiddle.SetAICode(AMOTION_EVENT_BUTTON_TERTIARY);
 	
-	deainpDeviceButton &buttonBackward = GetButtonAt( 3 );
-	buttonBackward.SetID( "backward" );
-	buttonBackward.SetName( "Backward" );
-	buttonBackward.SetAICode( AMOTION_EVENT_BUTTON_BACK );
+	deainpDeviceButton &buttonBackward = GetButtonAt(3);
+	buttonBackward.SetID("backward");
+	buttonBackward.SetName("Backward");
+	buttonBackward.SetAICode(AMOTION_EVENT_BUTTON_BACK);
 	
-	deainpDeviceButton &buttonForward = GetButtonAt( 4 );
-	buttonForward.SetID( "forward" );
-	buttonForward.SetName( "Forward" );
-	buttonForward.SetAICode( AMOTION_EVENT_BUTTON_FORWARD );
+	deainpDeviceButton &buttonForward = GetButtonAt(4);
+	buttonForward.SetID("forward");
+	buttonForward.SetName("Forward");
+	buttonForward.SetAICode(AMOTION_EVENT_BUTTON_FORWARD);
 }
 
 deainpDeviceMouse::~deainpDeviceMouse(){

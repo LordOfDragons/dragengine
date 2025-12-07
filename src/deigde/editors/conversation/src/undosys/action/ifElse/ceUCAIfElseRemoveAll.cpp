@@ -43,23 +43,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll( ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase ){
-	if( ! topic || ! ifElse ){
-		DETHROW( deeInvalidParam );
+ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase){
+	if(! topic || ! ifElse){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pIfElse = NULL;
 	pCase = NULL;
 	
-	if( ifcase ){
+	if(ifcase){
 		pActionList = ifcase->GetActions();
 		
 	}else{
 		pActionList = ifElse->GetElseActions();
 	}
 	
-	SetShortInfo( "IfElse Remove All Actions" );
+	SetShortInfo("IfElse Remove All Actions");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -67,20 +67,20 @@ ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll( ceConversationTopic *topic, ceCAIfEl
 	pIfElse = ifElse;
 	ifElse->AddReference();
 	
-	if( ifcase ){
+	if(ifcase){
 		pCase = ifcase;
 		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElseRemoveAll::~ceUCAIfElseRemoveAll(){
-	if( pCase ){
+	if(pCase){
 		pCase->FreeReference();
 	}
-	if( pIfElse ){
+	if(pIfElse){
 		pIfElse->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -91,29 +91,29 @@ ceUCAIfElseRemoveAll::~ceUCAIfElseRemoveAll(){
 ///////////////
 
 void ceUCAIfElseRemoveAll::Undo(){
-	if( pCase ){
+	if(pCase){
 		pCase->GetActions() = pActionList;
 		
 	}else{
 		pIfElse->GetElseActions() = pActionList;
 	}
 	
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
+	if(pActionList.GetCount() > 0){
+		pTopic->SetActive(pActionList.GetAt(0), NULL);
 	}
 }
 
 void ceUCAIfElseRemoveAll::Redo(){
-	if( pCase ){
+	if(pCase){
 		pCase->GetActions().RemoveAll();
 		
 	}else{
 		pIfElse->GetElseActions().RemoveAll();
 	}
 	
-	pTopic->NotifyActionStructureChanged( pIfElse );
+	pTopic->NotifyActionStructureChanged(pIfElse);
 	
-	pTopic->SetActive( pIfElse, NULL );
+	pTopic->SetActive(pIfElse, NULL);
 }

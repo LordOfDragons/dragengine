@@ -60,10 +60,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Loading of the resource finished. */
-	virtual void LoadingFinished( const igdeResourceLoaderTask &task, deFileResource *resource );
+	virtual void LoadingFinished(const igdeResourceLoaderTask &task, deFileResource *resource);
 	
 	/** \brief Loading of the resource failed. */
-	virtual void LoadingFailed( const igdeResourceLoaderTask &task );
+	virtual void LoadingFailed(const igdeResourceLoaderTask &task);
 	/*@}*/
 };
 

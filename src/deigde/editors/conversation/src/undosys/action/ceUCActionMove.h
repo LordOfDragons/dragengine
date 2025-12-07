@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionMove( ceConversationTopic *topic, ceConversationAction *action, int newIndex );
+	ceUCActionMove(ceConversationTopic *topic, ceConversationAction *action, int newIndex);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionMove();

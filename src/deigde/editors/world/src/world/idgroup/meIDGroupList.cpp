@@ -53,50 +53,50 @@ int meIDGroupList::GetCount() const{
 	return pGroups.GetCount();
 }
 
-bool meIDGroupList::HasNamed( const char *name ) const{
-	if( ! name || strlen( name ) == 0 ){
-		DETHROW( deeInvalidParam );
+bool meIDGroupList::HasNamed(const char *name) const{
+	if(! name || strlen(name) == 0){
+		DETHROW(deeInvalidParam);
 	}
-	return pGroups.Has( name );
+	return pGroups.Has(name);
 }
 
-meIDGroup *meIDGroupList::GetNamed( const char *name ) const{
-	if( ! name || strlen( name ) == 0 ){
-		DETHROW( deeInvalidParam );
+meIDGroup *meIDGroupList::GetNamed(const char *name) const{
+	if(! name || strlen(name) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deObject *group = NULL;
 	
-	if( pGroups.GetAt( name, &group ) ){
-		return ( meIDGroup* )group;
+	if(pGroups.GetAt(name, &group)){
+		return (meIDGroup*)group;
 		
 	}else{
 		return NULL;
 	}
 }
 
-meIDGroup *meIDGroupList::GetOrAddNamed( const char *name ){
-	if( ! name || strlen( name ) == 0 ){
-		DETHROW( deeInvalidParam );
+meIDGroup *meIDGroupList::GetOrAddNamed(const char *name){
+	if(! name || strlen(name) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deObject *group = NULL;
 	
-	if( ! pGroups.GetAt( name, &group ) ){
+	if(! pGroups.GetAt(name, &group)){
 		try{
-			group = new meIDGroup( name );
-			pGroups.SetAt( name, group );
+			group = new meIDGroup(name);
+			pGroups.SetAt(name, group);
 			group->FreeReference();
 			
-		}catch( const deException & ){
-			if( group ){
+		}catch(const deException &){
+			if(group){
 				group->FreeReference();
 			}
 			throw;
 		}
 	}
 	
-	return ( meIDGroup* )group;
+	return (meIDGroup*)group;
 }
 
 void meIDGroupList::RemoveAll(){

@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a object. */
-	reCLClosestElement( reRig &rig );
+	reCLClosestElement(reRig &rig);
 	/** \brief Cleans up the object. */
 	virtual ~reCLClosestElement();
 	/*@}*/
@@ -72,37 +72,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets if the simulation rig is tested. */
-	void SetTestSimRig( bool test );
+	void SetTestSimRig(bool test);
 	/** \brief Sets if bones are tested. */
-	void SetTestBones( bool test );
+	void SetTestBones(bool test);
 	/** \brief Sets if shapes are tested. */
-	void SetTestShapes( bool test );
+	void SetTestShapes(bool test);
 	/** \brief Sets if constraints are tested. */
-	void SetTestConstraints( bool test );
+	void SetTestConstraints(bool test);
 	/** \brief Sets if pushes are tested. */
-	void SetTestPushes( bool test );
+	void SetTestPushes(bool test);
 	
 	/** \brief Resets the visitor. */
 	void Reset();
 	
 	/** \brief Determines if an element has been hit. */
-	inline bool GetHasHit() const{ return pHasHit; }
+	inline bool GetHasHit() const{return pHasHit;}
 	/** \brief Retrieves the hit distance. */
-	inline float GetHitDistance() const{ return pHitDistance; }
+	inline float GetHitDistance() const{return pHitDistance;}
 	/** \brief Retrieves the hit normal. */
-	inline const decVector &GetHitNormal() const{ return pHitNormal; }
+	inline const decVector &GetHitNormal() const{return pHitNormal;}
 	/** \brief Determines if the simulation rig itself is hit. */
-	inline bool GetHitSimRig() const{ return pHitSimRig; }
+	inline bool GetHitSimRig() const{return pHitSimRig;}
 	/** \brief Retrieves the hit simulation bone or NULL. */
-	inline reRigBone *GetHitSimBone() const{ return pHitSimBone; }
+	inline reRigBone *GetHitSimBone() const{return pHitSimBone;}
 	/** \brief Retrieves the hit bone or NULL. */
-	inline reRigBone *GetHitBone() const{ return pHitBone; }
+	inline reRigBone *GetHitBone() const{return pHitBone;}
 	/** \brief Retrieves the hit shape or NULL. */
-	inline reRigShape *GetHitShape() const{ return pHitShape; }
+	inline reRigShape *GetHitShape() const{return pHitShape;}
 	/** \brief Retrieves the hit constraint or NULL. */
-	inline reRigConstraint *GetHitConstraint() const{ return pHitConstraint; }
+	inline reRigConstraint *GetHitConstraint() const{return pHitConstraint;}
 	/** \brief Retrieves the hit push or NULL. */
-	inline reRigPush *GetHitPush() const{ return pHitPush; }
+	inline reRigPush *GetHitPush() const{return pHitPush;}
 	/*@}*/
 	
 	/** \name Notifications */
@@ -113,7 +113,7 @@ public:
 	 *          with the response to the collision. In all other cases you do
 	 *          must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	/**
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
@@ -124,18 +124,18 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/**
 	 * \brief Notifies the scripts that the properties of this collider have changed
 	 *        and that the attached element has to update.
 	 * \details This is usually called after the collision detection but can also be
 	 *          called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 	
 private:
-	void pInitResult( deCollisionInfo *info );
+	void pInitResult(deCollisionInfo *info);
 };
 
 #endif

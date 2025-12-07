@@ -46,7 +46,7 @@ deoglModelFaceList::deoglModelFaceList(){
 }
 
 deoglModelFaceList::~deoglModelFaceList(){
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
 }
@@ -56,19 +56,19 @@ deoglModelFaceList::~deoglModelFaceList(){
 // Management
 ///////////////
 
-deoglModelFace *deoglModelFaceList::GetAt( int index ) const{
-	if( index < 0 || index >= pFaceCount ) DETHROW( deeInvalidParam );
+deoglModelFace *deoglModelFaceList::GetAt(int index) const{
+	if(index < 0 || index >= pFaceCount) DETHROW(deeInvalidParam);
 	
-	return pFaces[ index ];
+	return pFaces[index];
 }
 
-int deoglModelFaceList::IndexOfFace( deoglModelFace *face ) const{
-	if( ! face ) DETHROW( deeInvalidParam );
+int deoglModelFaceList::IndexOfFace(deoglModelFace *face) const{
+	if(! face) DETHROW(deeInvalidParam);
 	
 	int l;
 	
-	for( l=0; l<pFaceCount; l++ ){
-		if( face == pFaces[ l ] ){
+	for(l=0; l<pFaceCount; l++){
+		if(face == pFaces[l]){
 			return l;
 		}
 	}
@@ -76,13 +76,13 @@ int deoglModelFaceList::IndexOfFace( deoglModelFace *face ) const{
 	return -1;
 }
 
-bool deoglModelFaceList::Has( deoglModelFace *face ) const{
-	if( ! face ) DETHROW( deeInvalidParam );
+bool deoglModelFaceList::Has(deoglModelFace *face) const{
+	if(! face) DETHROW(deeInvalidParam);
 	
 	int l;
 	
-	for( l=0; l<pFaceCount; l++ ){
-		if( face == pFaces[ l ] ){
+	for(l=0; l<pFaceCount; l++){
+		if(face == pFaces[l]){
 			return true;
 		}
 	}
@@ -90,47 +90,47 @@ bool deoglModelFaceList::Has( deoglModelFace *face ) const{
 	return false;
 }
 
-void deoglModelFaceList::Add( deoglModelFace *face ){
-	if( Has( face ) ) DETHROW( deeInvalidParam );
+void deoglModelFaceList::Add(deoglModelFace *face){
+	if(Has(face)) DETHROW(deeInvalidParam);
 	
-	pAddFace( face );
+	pAddFace(face);
 }
 
-bool deoglModelFaceList::AddIfMissing( deoglModelFace *face ){
-	if( Has( face ) ) return false;
+bool deoglModelFaceList::AddIfMissing(deoglModelFace *face){
+	if(Has(face)) return false;
 	
-	pAddFace( face );
+	pAddFace(face);
 	return true;
 }
 
-void deoglModelFaceList::Remove( deoglModelFace *face ){
-	int index = IndexOfFace( face );
+void deoglModelFaceList::Remove(deoglModelFace *face){
+	int index = IndexOfFace(face);
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	if( index < pFaceCount - 1 ){
-		pFaces[ index ] = pFaces[ pFaceCount - 1 ];
+	if(index < pFaceCount - 1){
+		pFaces[index] = pFaces[pFaceCount - 1];
 	}
 	pFaceCount--;
 }
 
-bool deoglModelFaceList::RemoveIfExisting( deoglModelFace *face ){
-	int index = IndexOfFace( face );
+bool deoglModelFaceList::RemoveIfExisting(deoglModelFace *face){
+	int index = IndexOfFace(face);
 	
-	if( index == -1 ) return false;
+	if(index == -1) return false;
 	
-	if( index < pFaceCount - 1 ){
-		pFaces[ index ] = pFaces[ pFaceCount - 1 ];
+	if(index < pFaceCount - 1){
+		pFaces[index] = pFaces[pFaceCount - 1];
 	}
 	pFaceCount--;
 	return true;
 }
 
-void deoglModelFaceList::RemoveFrom( int index ){
-	if( index < 0 || index >= pFaceCount ) DETHROW( deeInvalidParam );
+void deoglModelFaceList::RemoveFrom(int index){
+	if(index < 0 || index >= pFaceCount) DETHROW(deeInvalidParam);
 	
-	if( index < pFaceCount - 1 ){
-		pFaces[ index ] = pFaces[ pFaceCount - 1 ];
+	if(index < pFaceCount - 1){
+		pFaces[index] = pFaces[pFaceCount - 1];
 	}
 	pFaceCount--;
 }
@@ -143,13 +143,13 @@ void deoglModelFaceList::SortByIndex(){
 	deoglModelFace *temp;
 	int i;
 	
-	for( i=1; i<pFaceCount; i++ ){
-		if( pFaces[ i ]->GetIndex() < pFaces[ i - 1 ]->GetIndex() ){
-			temp = pFaces[ i - 1 ];
-			pFaces[ i - 1 ] = pFaces[ i ];
-			pFaces[ i ] = temp;
+	for(i=1; i<pFaceCount; i++){
+		if(pFaces[i]->GetIndex() < pFaces[i - 1]->GetIndex()){
+			temp = pFaces[i - 1];
+			pFaces[i - 1] = pFaces[i];
+			pFaces[i] = temp;
 			
-			if( i > 1 ){
+			if(i > 1){
 				i -= 2;
 			}
 		}
@@ -161,14 +161,14 @@ void deoglModelFaceList::SortByIndex(){
 // Private Functions
 //////////////////////
 
-void deoglModelFaceList::pAddFace( deoglModelFace *face ){
-	if( pFaceCount == pFaceSize ){
+void deoglModelFaceList::pAddFace(deoglModelFace *face){
+	if(pFaceCount == pFaceSize){
 		int newSize = pFaceCount + 10; // * 3 / 2 + 1;
-		deoglModelFace **newArray = new deoglModelFace*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deoglModelFace **newArray = new deoglModelFace*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
 		
-		if( pFaces ){
-			memcpy( newArray, pFaces, sizeof( deoglModelFace* ) * pFaceSize );
+		if(pFaces){
+			memcpy(newArray, pFaces, sizeof(deoglModelFace*) * pFaceSize);
 			delete [] pFaces;
 		}
 		
@@ -176,5 +176,5 @@ void deoglModelFaceList::pAddFace( deoglModelFace *face ){
 		pFaceSize = newSize;
 	}
 	
-	pFaces[ pFaceCount++ ] = face;
+	pFaces[pFaceCount++] = face;
 }

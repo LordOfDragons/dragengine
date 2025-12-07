@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogBrowserSkin::igdeDialogBrowserSkin( igdeEnvironment &environment, const char *title ) :
-igdeDialogBrowser( environment, title, true ){
+igdeDialogBrowserSkin::igdeDialogBrowserSkin(igdeEnvironment &environment, const char *title) :
+igdeDialogBrowser(environment, title, true){
 	UpdateCategoryList();
 	UpdateItemList();
 }
@@ -61,31 +61,31 @@ igdeDialogBrowserSkin::~igdeDialogBrowserSkin(){
 
 igdeGDSkin *igdeDialogBrowserSkin::GetSelectedSkin() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? ( igdeGDSkin* )selection->GetData() : NULL;
+	return selection ? (igdeGDSkin*)selection->GetData() : NULL;
 }
 
-void igdeDialogBrowserSkin::SetSelectedSkin( igdeGDSkin *gdSkin ){
-	if( ! gdSkin ){
+void igdeDialogBrowserSkin::SetSelectedSkin(igdeGDSkin *gdSkin){
+	if(! gdSkin){
 		return;
 	}
 	
 	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
-		decPath::CreatePathUnix( gdSkin->GetCategory() ) );
+		decPath::CreatePathUnix(gdSkin->GetCategory()));
 	
-	SelectCategory( category );
-	SelectListItemWithData( gdSkin );
+	SelectCategory(category);
+	SelectListItemWithData(gdSkin);
 }
 
 
 
-bool igdeDialogBrowserSkin::SelectSkin( igdeWidget *owner, igdeGDSkin* &skin, const char *title ){
+bool igdeDialogBrowserSkin::SelectSkin(igdeWidget *owner, igdeGDSkin* &skin, const char *title){
 	igdeDialogBrowserSkin::Ref dialog(igdeDialogBrowserSkin::Ref::NewWith(
 		owner->GetEnvironment(), title));
-	if( skin ){
-		dialog->SetSelectedSkin( skin );
+	if(skin){
+		dialog->SetSelectedSkin(skin);
 	}
 	
-	if( dialog->Run( owner ) && dialog->GetSelectedSkin() ){
+	if(dialog->Run(owner) && dialog->GetSelectedSkin()){
 		skin = dialog->GetSelectedSkin();
 		return true;
 		
@@ -94,10 +94,10 @@ bool igdeDialogBrowserSkin::SelectSkin( igdeWidget *owner, igdeGDSkin* &skin, co
 	}
 }
 
-bool igdeDialogBrowserSkin::SelectSkin( igdeWidget *owner, decString &skin, const char *title ){
+bool igdeDialogBrowserSkin::SelectSkin(igdeWidget *owner, decString &skin, const char *title){
 	const igdeGDSkinManager &skinManager = *owner->GetGameDefinition()->GetSkinManager();
-	igdeGDSkin *gdSkin = skinManager.GetSkinWithPath( skin );
-	if( SelectSkin( owner, gdSkin, title ) ){
+	igdeGDSkin *gdSkin = skinManager.GetSkinWithPath(skin);
+	if(SelectSkin(owner, gdSkin, title)){
 		skin = gdSkin->GetPath();
 		return true;
 		
@@ -115,28 +115,28 @@ igdeGDCategory *igdeDialogBrowserSkin::GetRootCategory() const{
 	return GetGameDefinition()->GetSkinManager()->GetCategories();
 }
 
-void igdeDialogBrowserSkin::AddItemsToList( igdeGDAddToListVisitor &visitor ){
+void igdeDialogBrowserSkin::AddItemsToList(igdeGDAddToListVisitor &visitor){
 	const decString &filter = GetFilter();
 	
-	if( filter.IsEmpty() ){
-		GetGameDefinition()->GetSkinManager()->VisitSkinsMatchingCategory( visitor, GetSelectedCategory() );
+	if(filter.IsEmpty()){
+		GetGameDefinition()->GetSkinManager()->VisitSkinsMatchingCategory(visitor, GetSelectedCategory());
 		
 	}else{
-		GetGameDefinition()->GetSkinManager()->VisitMatchingFilter( visitor, filter );
+		GetGameDefinition()->GetSkinManager()->VisitMatchingFilter(visitor, filter);
 	}
 }
 
-void igdeDialogBrowserSkin::RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener ){
+void igdeDialogBrowserSkin::RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener){
 	igdeGDSkin * const gdSkin = GetSelectedSkin();
-	if( gdSkin ){
-		pvmgr.ClearPreviewSkin( gdSkin );
-		pvmgr.CreatePreviewSkin( gdSkin, listener );
+	if(gdSkin){
+		pvmgr.ClearPreviewSkin(gdSkin);
+		pvmgr.CreatePreviewSkin(gdSkin, listener);
 	}
 }
 
-void igdeDialogBrowserSkin::GetSelectedItemInfo( decString &info ){
+void igdeDialogBrowserSkin::GetSelectedItemInfo(decString &info){
 	const igdeGDSkin * const gdSkin = GetSelectedSkin();
-	if( gdSkin ){
-		info.Format( "%s:\n%s", gdSkin->GetName().GetString(), gdSkin->GetDescription().GetString() );
+	if(gdSkin){
+		info.Format("%s:\n%s", gdSkin->GetName().GetString(), gdSkin->GetDescription().GetString());
 	}
 }

@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl array texture. */
-	deoglArrayTexture( deoglRenderThread &renderThread );
+	deoglArrayTexture(deoglRenderThread &renderThread);
 	/** Cleans up the opengl array texture. */
 	~deoglArrayTexture();
 	/*@}*/
@@ -78,107 +78,107 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
-	inline GLuint GetTexture() const{ return pTexture; }
+	inline GLuint GetTexture() const{return pTexture;}
 	
 	/** Size. */
-	inline const decPoint3 &GetSize() const{ return pSize; }
+	inline const decPoint3 &GetSize() const{return pSize;}
 	
 	/** Retrieves the width in pixels. */
-	inline int GetWidth() const{ return pSize.x; }
+	inline int GetWidth() const{return pSize.x;}
 	/** Retrieves the height in pixels. */
-	inline int GetHeight() const{ return pSize.y; }
+	inline int GetHeight() const{return pSize.y;}
 	/** Retrieves the number of layers. */
-	inline int GetLayerCount() const{ return pSize.z; }
+	inline int GetLayerCount() const{return pSize.z;}
 	/** Sets the size of the texture destroying the old texture if present. */
-	void SetSize( const decPoint3 &size );
-	void SetSize( int width, int height, int layerCount );
+	void SetSize(const decPoint3 &size);
+	void SetSize(int width, int height, int layerCount);
 	/** Retrieves the texture format. */
-	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
+	inline const deoglCapsTextureFormat *GetFormat() const{return pFormat;}
 	
 	/** Set texture format. */
-	void SetFormat( const deoglCapsTextureFormat *format );
+	void SetFormat(const deoglCapsTextureFormat *format);
 	
 	/** Set texture format suitable for texture mapping according to the provided texture description. */
-	void SetMapingFormat( int channels, bool useFloat, bool compressed );
+	void SetMapingFormat(int channels, bool useFloat, bool compressed);
 	
 	/** Set texture format suitable for attaching as FBO render target. */
-	void SetFBOFormat( int channels, bool useFloat );
+	void SetFBOFormat(int channels, bool useFloat);
 	
 	/** Set texture format suitable for attaching as FBO render target. */
-	void SetFBOFormatFloat32( int channels );
+	void SetFBOFormatFloat32(int channels);
 	
 	/** Set texture format suitable for rendering to an integral texture using an FBO. */
-	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
+	void SetFBOFormatIntegral(int channels, int bpp, bool useUnsigned);
 	
 	/** Set texture format suitable for attaching as FBO render target. */
-	void SetFBOFormatSNorm( int channels, int bpp );
+	void SetFBOFormatSNorm(int channels, int bpp);
 	
 	/** Set depth texture format suitable for attaching as FBO render target. */
-	void SetDepthFormat( bool packedStencil, bool useFloat );
+	void SetDepthFormat(bool packedStencil, bool useFloat);
 	
 	/** Set texture format by number from the list of mapping texture formats to use. */
-	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
+	void SetFormatMappingByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
 	
 	/** Set texture format by number from the list of fbo texture formats to use. */
-	void SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
+	void SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
 	
 	/** Determines if mip mapping has to be used on this texture. */
-	inline bool GetMipMapped() const{ return pMipMapped; }
+	inline bool GetMipMapped() const{return pMipMapped;}
 	/** Sets if mip mapping has to be used on this texture. */
-	void SetMipMapped( bool mipmapped );
+	void SetMipMapped(bool mipmapped);
 	/** Retrieves the mip map level count or 0 to let the hardware auto-generate them. */
-	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
+	inline int GetMipMapLevelCount() const{return pMipMapLevelCount;}
 	/** Sets the mip map level count or 0 to let the hardware auto-generate them. */
-	void SetMipMapLevelCount( int count );
+	void SetMipMapLevelCount(int count);
 	/** Retrieves the real mip map level count which is either mipMapLevelCount or the real texture mip map level count. */
-	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
+	inline int GetRealMipMapLevelCount() const{return pRealMipMapLevelCount;}
 	
 	/** Creates the texture if not created yet. */
 	void CreateTexture();
 	/** Destroys the texture if existing. */
 	void DestroyTexture();
 	/** Sets the base level texture pixels from a pixel buffer. */
-	void SetPixels( const deoglPixelBuffer &pixels );
+	void SetPixels(const deoglPixelBuffer &pixels);
 	/** Sets texture level pixels from a pixel buffer. */
-	void SetPixelsLevel( int level, const deoglPixelBuffer &pixels );
+	void SetPixelsLevel(int level, const deoglPixelBuffer &pixels);
 	
 	/** Copy pixels from first level into pixel buffer. */
-	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
+	void GetPixels(deoglPixelBuffer &pixelBuffer) const;
 	
 	/** Copy pixels from level into pixel buffer. */
-	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
+	void GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) const;
 	
 	/** Retrieves the size of a mip map level. */
-	void GetLevelSize( int level, int &width, int &height ) const;
+	void GetLevelSize(int level, int &width, int &height) const;
 	
 	/** Force mip map creation if the texture is mip mapped. */
 	void CreateMipMaps();
 	
 	/** Copy from another array texture to this texture. */
-	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps );
+	void CopyFrom(const deoglArrayTexture &texture, bool withMipMaps);
 	
 	/** Copy from another array texture to this texture. */
-	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer );
+	void CopyFrom(const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer);
 	
 	/** Copy area from another array texture to this texture. */
-	void CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer,
-		int width, int height, int layerCount, int srcX, int srcY, int destX, int destY );
+	void CopyFrom(const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer,
+		int width, int height, int layerCount, int srcX, int srcY, int destX, int destY);
 	
 	/** Copy from another texture to this texture. */
-	void CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer );
+	void CopyFrom(const deoglTexture &texture, bool withMipMaps, int destLayer);
 	
 	/** Copy area from another texture to this texture. */
-	void CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer,
-		int width, int height, int srcX, int srcY, int destX, int destY );
+	void CopyFrom(const deoglTexture &texture, bool withMipMaps, int destLayer,
+		int width, int height, int srcX, int srcY, int destX, int destY);
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{return pMemUse;}
 	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();
 	
 	/** Set debug object label. */
-	void SetDebugObjectLabel( const char *name );
+	void SetDebugObjectLabel(const char *name);
 	/*@}*/
 	
 private:

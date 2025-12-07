@@ -74,56 +74,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Value type. */
-	inline eValueTypes GetValueType() const{ return pValueType; }
+	inline eValueTypes GetValueType() const{return pValueType;}
 	
 	/** Set value type. */
-	void SetValueType( eValueTypes valueType );
+	void SetValueType(eValueTypes valueType);
 	
 	/** Number of components in vector. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** Set number of components in vector. */
-	void SetComponentCount( int componentCount );
+	void SetComponentCount(int componentCount);
 	
 	/** Number of vectors. */
-	inline int GetVectorCount() const{ return pVectorCount; }
+	inline int GetVectorCount() const{return pVectorCount;}
 	
 	/** Set number of vectors. */
-	void SetVectorCount( int vectorCount );
+	void SetVectorCount(int vectorCount);
 	
 	/** Array count. */
-	inline int GetArrayCount() const{ return pArrayCount; }
+	inline int GetArrayCount() const{return pArrayCount;}
 	
 	/** Set array count. */
-	void SetArrayCount( int arrayCount );
+	void SetArrayCount(int arrayCount);
 	
 	/** Set all parameters. */
-	void SetAll( eValueTypes valueType, int componentCount,
-		int vectorCount, int arrayCount );
+	void SetAll(eValueTypes valueType, int componentCount,
+		int vectorCount, int arrayCount);
 	
 	/** Offset to first value component in data block. */
-	inline int GetOffset() const{ return pOffset; }
+	inline int GetOffset() const{return pOffset;}
 	
 	/** Set offset to first value component in data block. */
-	void SetOffset( int offset );
+	void SetOffset(int offset);
 	
 	/** Vector stride. */
-	inline int GetStride() const{ return pStride; }
+	inline int GetStride() const{return pStride;}
 	
 	/** Set vector stride. */
-	void SetStride( int stride );
+	void SetStride(int stride);
 	
 	/** Array stride. */
-	inline int GetArrayStride() const{ return pArrayStride; }
+	inline int GetArrayStride() const{return pArrayStride;}
 	
 	/** Set array stride. */
-	void SetArrayStride( int arrayStride );
+	void SetArrayStride(int arrayStride);
 	
 	/** Size of data in block. */
-	inline int GetDataSize() const{ return pDataSize; }
+	inline int GetDataSize() const{return pDataSize;}
 	
 	/** Set size of data in block. */
-	void SetDataSize( int size );
+	void SetDataSize(int size);
 	/*@}*/
 };
 

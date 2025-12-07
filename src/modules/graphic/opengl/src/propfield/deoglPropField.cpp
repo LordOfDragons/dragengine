@@ -52,32 +52,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPropField::deoglPropField( deGraphicOpenGl &ogl, dePropField &propField ) :
-pOgl( ogl ),
-pPropField( propField ),
+deoglPropField::deoglPropField(deGraphicOpenGl &ogl, dePropField &propField) :
+pOgl(ogl),
+pPropField(propField),
 
-pRPropField( NULL ),
+pRPropField(NULL),
 
-pLODLevel( 0 ),
-pBestLOD( 0 ),
-pCheckLOD( false ),
+pLODLevel(0),
+pBestLOD(0),
+pCheckLOD(false),
 
-pDirtyPosition( true ),
-pDirtyExtends( true ),
-pDirtyTypes( true ),
-pDirtyInstances( true )
+pDirtyPosition(true),
+pDirtyExtends(true),
+pDirtyTypes(true),
+pDirtyInstances(true)
 {
 	const int typeCount = propField.GetTypeCount();
 	int t;
 	
 	try{
-		pRPropField = new deoglRPropField( ogl.GetRenderThread() );
+		pRPropField = new deoglRPropField(ogl.GetRenderThread());
 		
-		for( t=0; t<typeCount; t++ ){
-			TypeAdded( t, propField.GetTypeAt( t ) );
+		for(t=0; t<typeCount; t++){
+			TypeAdded(t, propField.GetTypeAt(t));
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -99,46 +99,46 @@ void deoglPropField::SyncToRender(){
 // 	if( pCheckLOD ){
 // 		SetLODLevel( pBestLOD ); // sets pCheckLOD to false
 // 	}
-	SetLODLevel( 1 ); // HACK use static lod level
+	SetLODLevel(1); // HACK use static lod level
 	
-	if( pDirtyPosition ){
-		pRPropField->SetPosition( pPropField.GetPosition() );
+	if(pDirtyPosition){
+		pRPropField->SetPosition(pPropField.GetPosition());
 		pDirtyPosition = false;
 	}
 	
-	if( pDirtyTypes ){
+	if(pDirtyTypes){
 		pRPropField->RemoveAllTypes();
 		
-		for( i=0; i<count; i++ ){
-			deoglPropFieldType &type = *( ( deoglPropFieldType* )pTypes.GetAt( i ) );
+		for(i=0; i<count; i++){
+			deoglPropFieldType &type = *((deoglPropFieldType*)pTypes.GetAt(i));
 			type.SyncToRender();
-			pRPropField->AddType( type.GetRType() );
+			pRPropField->AddType(type.GetRType());
 		}
 		
 		pDirtyTypes = false;
 		pDirtyInstances = true;
 		
 	}else{
-		for( i=0; i<count; i++ ){
-			( ( deoglPropFieldType* )pTypes.GetAt( i ) )->SyncToRender();
+		for(i=0; i<count; i++){
+			((deoglPropFieldType*)pTypes.GetAt(i))->SyncToRender();
 		}
 	}
 	
-	if( pDirtyInstances ){
+	if(pDirtyInstances){
 		UpdateInstanceCounts();
 		pDirtyInstances = false;
 	}
 	
-	if( pDirtyExtends ){
-		pRPropField->UpdateExtends( pPropField );
+	if(pDirtyExtends){
+		pRPropField->UpdateExtends(pPropField);
 		pDirtyExtends = false;
 	}
 }
 
 
 
-void deoglPropField::SetLODLevel( int level ){
-	if( level != pLODLevel ){
+void deoglPropField::SetLODLevel(int level){
+	if(level != pLODLevel){
 		pLODLevel = level;
 		pDirtyInstances = true;
 	}
@@ -146,16 +146,16 @@ void deoglPropField::SetLODLevel( int level ){
 	pCheckLOD = false;
 }
 
-void deoglPropField::TestLODLevel( const decDVector &camera ){
+void deoglPropField::TestLODLevel(const decDVector &camera){
 	// to get things started we use a simple distance formula without much
 	// brain. anything closer than 100m is set to lod level 1 and anything
 	// beyond is set to lod level 0. better solution would be to calculate
 	// the bounding sphere and use the distance minus the sphere radius as
 	// the distance to test with
-	double distance = ( camera - pPropField.GetPosition() ).Length();
+	double distance = (camera - pPropField.GetPosition()).Length();
 	int lodLevel = 0;
 	
-	if( distance < 100.0 ){
+	if(distance < 100.0){
 		lodLevel = 1;
 		
 	}else{
@@ -173,7 +173,7 @@ void deoglPropField::TestLODLevel( const decDVector &camera ){
 	// lod level and is stored. otherwise the new lod level is compared
 	// against the best one. the real change is carried out during the update
 	// call later on
-	if( ! pCheckLOD || lodLevel < pBestLOD ){
+	if(! pCheckLOD || lodLevel < pBestLOD){
 		pBestLOD = lodLevel;
 		pCheckLOD = true;
 	}
@@ -185,9 +185,9 @@ void deoglPropField::UpdateInstanceCounts(){
 	
 	// if the lod level is 0 clear the prop field of all instances but keep the
 	// types intact
-	if( pLODLevel == 0 ){
-		for( i=0; i<count; i++ ){
-			pPropField.GetTypeAt( i )->SetInstanceCount( 0 );
+	if(pLODLevel == 0){
+		for(i=0; i<count; i++){
+			pPropField.GetTypeAt(i)->SetInstanceCount(0);
 		}
 		
 	// otherwise ask the game scripts to update the instances. we do not touch
@@ -202,12 +202,12 @@ void deoglPropField::UpdateInstanceCounts(){
 		density = 1.0f;
 		
 		// tell the game scripts to update the instances
-		pPropField.NotifyCreateInstances( density );
+		pPropField.NotifyCreateInstances(density);
 	}
 	
 	// instance counts most probably changed. force an update
-	for( i=0; i<count; i++ ){
-		( ( deoglPropFieldType* )pTypes.GetAt( i ) )->InstanceCountChanged();
+	for(i=0; i<count; i++){
+		((deoglPropFieldType*)pTypes.GetAt(i))->InstanceCountChanged();
 	}
 	
 	// extends need to be updated now
@@ -238,8 +238,8 @@ int deoglPropField::GetTypeCount() const{
 	return pTypes.GetCount();
 }
 
-deoglPropFieldType &deoglPropField::GetTypeAt( int index ) const{
-	return *( ( deoglPropFieldType* )pTypes.GetAt( index ) );
+deoglPropFieldType &deoglPropField::GetTypeAt(int index) const{
+	return *((deoglPropFieldType*)pTypes.GetAt(index));
 }
 
 
@@ -257,16 +257,16 @@ void deoglPropField::PositionChanged(){
 	pDirtyExtends = true;
 }
 
-void deoglPropField::TypeAdded( int index, dePropFieldType *type ){
-	pTypes.Add( new deoglPropFieldType( *this, *type ) );
+void deoglPropField::TypeAdded(int index, dePropFieldType *type){
+	pTypes.Add(new deoglPropFieldType(*this, *type));
 	
 	pDirtyTypes = true;
 	pDirtyExtends = true;
 }
 
-void deoglPropField::TypeRemoved( int index, dePropFieldType *type ){
-	delete ( deoglPropFieldType* )pTypes.GetAt( index );
-	pTypes.RemoveFrom( index );
+void deoglPropField::TypeRemoved(int index, dePropFieldType *type){
+	delete (deoglPropFieldType*)pTypes.GetAt(index);
+	pTypes.RemoveFrom(index);
 	
 	pDirtyTypes = true;
 	pDirtyExtends = true;
@@ -276,8 +276,8 @@ void deoglPropField::AllTypesRemoved(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoglPropFieldType* )pTypes.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglPropFieldType*)pTypes.GetAt(i);
 	}
 	pTypes.RemoveAll();
 	
@@ -285,24 +285,24 @@ void deoglPropField::AllTypesRemoved(){
 	pDirtyExtends = true;
 }
 
-void deoglPropField::TypeChanged( int index, dePropFieldType *type ){
-	( ( deoglPropFieldType* )pTypes.GetAt( index ) )->TypeChanged();
+void deoglPropField::TypeChanged(int index, dePropFieldType *type){
+	((deoglPropFieldType*)pTypes.GetAt(index))->TypeChanged();
 	
 	pDirtyExtends = true;
 }
 
-void deoglPropField::InstancesChanged( int index, dePropFieldType *type ){
-	( ( deoglPropFieldType* )pTypes.GetAt( index ) )->InstancesChanged();
+void deoglPropField::InstancesChanged(int index, dePropFieldType *type){
+	((deoglPropFieldType*)pTypes.GetAt(index))->InstancesChanged();
 	
 	pDirtyExtends = true;
 }
 
-void deoglPropField::AssignmentsChanged( int index, dePropFieldType *type ){
-	( ( deoglPropFieldType* )pTypes.GetAt( index ) )->AssignmentsChanged();
+void deoglPropField::AssignmentsChanged(int index, dePropFieldType *type){
+	((deoglPropFieldType*)pTypes.GetAt(index))->AssignmentsChanged();
 }
 
-void deoglPropField::BendStatesChanged( int index, dePropFieldType *type ){
-	( ( deoglPropFieldType* )pTypes.GetAt( index ) )->BendStatesChanged();
+void deoglPropField::BendStatesChanged(int index, dePropFieldType *type){
+	((deoglPropFieldType*)pTypes.GetAt(index))->BendStatesChanged();
 }
 
 
@@ -311,7 +311,7 @@ void deoglPropField::BendStatesChanged( int index, dePropFieldType *type ){
 //////////////////////
 
 void deoglPropField::pCleanUp(){
-	if( pRPropField ){
+	if(pRPropField){
 		pRPropField->FreeReference();
 		pRPropField = NULL;
 	}

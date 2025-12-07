@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetBaseGameDefIDs::gdeUGDSetBaseGameDefIDs( gdeWindowMain &windowMain,
-gdeGameDefinition *gameDefinition, const decStringList &newValue ) :
-pWindowMain( windowMain ),
-pGameDefinition( NULL ),
-pNewValue( newValue )
+gdeUGDSetBaseGameDefIDs::gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain,
+gdeGameDefinition *gameDefinition, const decStringList &newValue) :
+pWindowMain(windowMain),
+pGameDefinition(NULL),
+pNewValue(newValue)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(! gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set base game definition IDs" );
+	SetShortInfo("Game definition set base game definition IDs");
 	
 	pOldValue = gameDefinition->GetBaseGameDefinitionIDList();
 	
@@ -59,7 +59,7 @@ pNewValue( newValue )
 }
 
 gdeUGDSetBaseGameDefIDs::~gdeUGDSetBaseGameDefIDs(){
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -70,11 +70,11 @@ gdeUGDSetBaseGameDefIDs::~gdeUGDSetBaseGameDefIDs(){
 ///////////////
 
 void gdeUGDSetBaseGameDefIDs::Undo(){
-	pGameDefinition->SetBaseGameDefinitionIDList( pOldValue );
-	pGameDefinition->UpdateBaseGameDefinitions( pWindowMain.GetLoadSaveSystem() );
+	pGameDefinition->SetBaseGameDefinitionIDList(pOldValue);
+	pGameDefinition->UpdateBaseGameDefinitions(pWindowMain.GetLoadSaveSystem());
 }
 
 void gdeUGDSetBaseGameDefIDs::Redo(){
-	pGameDefinition->SetBaseGameDefinitionIDList( pNewValue );
-	pGameDefinition->UpdateBaseGameDefinitions( pWindowMain.GetLoadSaveSystem() );
+	pGameDefinition->SetBaseGameDefinitionIDList(pNewValue);
+	pGameDefinition->UpdateBaseGameDefinitions(pWindowMain.GetLoadSaveSystem());
 }

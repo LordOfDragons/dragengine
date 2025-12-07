@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSSGroup( deScriptingDragonScript &ds );
+	deClassSSGroup(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSSGroup();
@@ -77,22 +77,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerSourceGroup *GetSource( dsRealObject *myself ) const;
+	deSynthesizerSourceGroup *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizer *synthesizer );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource( dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceGroup *source );
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceGroup *source);
 	
-	inline dsClass *GetClassSSGroupTarget() const{ return pClsSSGroupTarget; }
-	inline dsClass *GetClassSSGroupApplication() const{ return pClsSSGroupApplication; }
+	inline dsClass *GetClassSSGroupTarget() const{return pClsSSGroupTarget;}
+	inline dsClass *GetClassSSGroupApplication() const{return pClsSSGroupApplication;}
 	/*@}*/
 	
 	
@@ -112,21 +112,21 @@ private:
 		dsClass *clsSSGroupApplication;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetApplicationType );
-	DEF_NATFUNC( nfAddSource );
-	DEF_NATFUNC( nfRemoveSource );
-	DEF_NATFUNC( nfRemoveAllSources );
+	DEF_NATFUNC(nfSetApplicationType);
+	DEF_NATFUNC(nfAddSource);
+	DEF_NATFUNC(nfRemoveSource);
+	DEF_NATFUNC(nfRemoveAllSources);
 #undef DEF_NATFUNC
 };
 

@@ -43,10 +43,10 @@
 // Constructor
 ////////////////
 
-gdeMACategorySkyAdd::gdeMACategorySkyAdd( gdeWindowMain &windowMain ) :
-gdeMACategoryAdd( windowMain, "Add Sky Category...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add sky category" )
+gdeMACategorySkyAdd::gdeMACategorySkyAdd(gdeWindowMain &windowMain) :
+gdeMACategoryAdd(windowMain, "Add Sky Category...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add sky category")
 {
 }
 
@@ -55,7 +55,7 @@ gdeMACategoryAdd( windowMain, "Add Sky Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategorySkyAdd::OnAction( gdeGameDefinition &gameDefinition ){
-	return AddCategory( gameDefinition, NULL,
-		gameDefinition.GetCategoriesSky(), gdeUCategoryBase::ectSky );
+igdeUndo *gdeMACategorySkyAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, NULL,
+		gameDefinition.GetCategoriesSky(), gdeUCategoryBase::ectSky);
 }

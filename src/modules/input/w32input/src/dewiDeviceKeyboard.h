@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	dewiDeviceKeyboard( deWindowsInput &module );
+	dewiDeviceKeyboard(deWindowsInput &module);
 	
 protected:
 	/** Clean up device. */
@@ -57,23 +57,23 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Get key code for windows virtual key code. */
-	static deInputEvent::eKeyCodes KeyCodeForWICode( int code );
+	static deInputEvent::eKeyCodes KeyCodeForWICode(int code);
 	
 	/** Get key location for windows virtual key code. */
-	static deInputEvent::eKeyLocation KeyLocationForWICode( int code );
+	static deInputEvent::eKeyLocation KeyLocationForWICode(int code);
 	
 	/** Get matching priority for virtual key code. */
-	static int MatchingPriorityForWICode( int code );
+	static int MatchingPriorityForWICode(int code);
 	
 	/** Get button best matching a character. */
-	int ButtonMatchingKeyChar( int keyChar ) const;
+	int ButtonMatchingKeyChar(int keyChar) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pSetButtonAt( int index, const char *id, const char *name, int wiCode,
-		deInputEvent::eKeyCodes keyCode, int wiChar, int matchPriority );
+	void pSetButtonAt(int index, const char *id, const char *name, int wiCode,
+		deInputEvent::eKeyCodes keyCode, int wiChar, int matchPriority);
 };
 
 #endif

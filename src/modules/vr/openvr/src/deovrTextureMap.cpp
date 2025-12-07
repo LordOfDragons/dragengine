@@ -48,9 +48,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrTextureMap::deovrTextureMap( deVROpenVR &ovr, vr::TextureID_t id ) :
-pOvr( ovr ),
-pID( id )
+deovrTextureMap::deovrTextureMap(deVROpenVR &ovr, vr::TextureID_t id) :
+pOvr(ovr),
+pID(id)
 {
 	pLoadTextureMap();
 }
@@ -69,48 +69,48 @@ private:
 	deImage *pImageSolidity;
 	
 public:
-	deovrTextureMap_BuildSkin( deImage *imageColor, deImage *imageSolidity ) :
-	pImageColor( imageColor ),
-	pImageSolidity( imageSolidity ){
+	deovrTextureMap_BuildSkin(deImage *imageColor, deImage *imageSolidity) :
+	pImageColor(imageColor),
+	pImageSolidity(imageSolidity){
 	}
 	
-	virtual void BuildSkin( deSkin *skin ){
+	virtual void BuildSkin(deSkin *skin){
 		// add texture
-		deSkinTexture * const texture = new deSkinTexture( "material" );
-		skin->AddTexture( texture );
+		deSkinTexture * const texture = new deSkinTexture("material");
+		skin->AddTexture(texture);
 		
 		// add "color" property
-		if( pImageColor ){
-			deSkinPropertyImage * const property = new deSkinPropertyImage( "color" );
-			texture->AddProperty( property );
-			property->SetImage( pImageColor );
-			property->SetPath( pImageColor->GetFilename() );
+		if(pImageColor){
+			deSkinPropertyImage * const property = new deSkinPropertyImage("color");
+			texture->AddProperty(property);
+			property->SetImage(pImageColor);
+			property->SetPath(pImageColor->GetFilename());
 			
 		}else{
-			deSkinPropertyColor * const property = new deSkinPropertyColor( "color" );
-			texture->AddProperty( property );
-			property->SetColor( decColor( 0.5f, 0.5f, 0.5f ) );
+			deSkinPropertyColor * const property = new deSkinPropertyColor("color");
+			texture->AddProperty(property);
+			property->SetColor(decColor(0.5f, 0.5f, 0.5f));
 		}
 		
 		// add "solidity" property
-		if( pImageSolidity ){
-			deSkinPropertyImage * const property = new deSkinPropertyImage( "solidity" );
-			texture->AddProperty( property );
-			property->SetImage( pImageSolidity );
-			property->SetPath( pImageSolidity->GetFilename() );
+		if(pImageSolidity){
+			deSkinPropertyImage * const property = new deSkinPropertyImage("solidity");
+			texture->AddProperty(property);
+			property->SetImage(pImageSolidity);
+			property->SetPath(pImageSolidity->GetFilename());
 			
 		}else{
-			deSkinPropertyValue * const property = new deSkinPropertyValue( "solidity" );
-			texture->AddProperty( property );
-			property->SetValue( 1.0f );
+			deSkinPropertyValue * const property = new deSkinPropertyValue("solidity");
+			texture->AddProperty(property);
+			property->SetValue(1.0f);
 		}
 		
 		// add "solidity.masked" property
 		// NOTE if this is set to 0 the skin fails... why?
 		{
-		deSkinPropertyValue * const property = new deSkinPropertyValue( "solidity.masked" );
-		texture->AddProperty( property );
-		property->SetValue( 1.0f );
+		deSkinPropertyValue * const property = new deSkinPropertyValue("solidity.masked");
+		texture->AddProperty(property);
+		property->SetValue(1.0f);
 		}
 	}
 };
@@ -120,36 +120,36 @@ void deovrTextureMap::pLoadTextureMap(){
 	vr::RenderModel_TextureMap_t *textureMap = nullptr;
 	vr::EVRRenderModelError error;
 	
-	pOvr.LogInfoFormat( "Loading texture map %d", pID );
+	pOvr.LogInfoFormat("Loading texture map %d", pID);
 	decTimer timer;
 	
-	while( true ){
-		error = vrrm.LoadTexture_Async( pID, &textureMap );
-		if( error == vr::VRRenderModelError_None ){
+	while(true){
+		error = vrrm.LoadTexture_Async(pID, &textureMap);
+		if(error == vr::VRRenderModelError_None){
 			break;
 		}
-		if( error != vr::VRRenderModelError_Loading ){
-			pOvr.LogErrorFormat( "Failed loading texture map %d: %d", pID, error );
-			DETHROW_INFO( deeInvalidAction, "Failed loading texture map" );
+		if(error != vr::VRRenderModelError_Loading){
+			pOvr.LogErrorFormat("Failed loading texture map %d: %d", pID, error);
+			DETHROW_INFO(deeInvalidAction, "Failed loading texture map");
 		}
 		// sleep a bit... but not here. well cache this later ( /cache/global/textureMaps/map<id>.deskin )
 	}
 	
-	if( textureMap->format == vr::VRRenderModelTextureFormat_RGBA8_SRGB ){
-		const sRGBA8 * const srcPixels = ( const sRGBA8* )textureMap->rubTextureMapData;
+	if(textureMap->format == vr::VRRenderModelTextureFormat_RGBA8_SRGB){
+		const sRGBA8 * const srcPixels = (const sRGBA8*)textureMap->rubTextureMapData;
 		int x, y;
 		
 		{
-		pImageColor.TakeOver( pOvr.GetGameEngine()->GetImageManager()->CreateImage(
-			textureMap->unWidth, textureMap->unHeight, 1, 3, 8 ) );
+		pImageColor.TakeOver(pOvr.GetGameEngine()->GetImageManager()->CreateImage(
+			textureMap->unWidth, textureMap->unHeight, 1, 3, 8));
 		
 		sRGB8 * const destPixels = pImageColor->GetDataRGB8();
-		for( y=0; y<textureMap->unHeight; y++ ){
+		for(y=0; y<textureMap->unHeight; y++){
 			const sRGBA8 * const srcPixelLine = srcPixels + textureMap->unWidth * y;
 			sRGB8 * const destPixelLine = destPixels + textureMap->unWidth * y;
-			for( x=0; x<textureMap->unWidth; x++ ){
-				const sRGBA8 &srcPixel = srcPixelLine[ x ];
-				sRGB8 &destPixel = destPixelLine[ x ];
+			for(x=0; x<textureMap->unWidth; x++){
+				const sRGBA8 &srcPixel = srcPixelLine[x];
+				sRGB8 &destPixel = destPixelLine[x];
 				
 				destPixel.red = srcPixel.red;
 				destPixel.green = srcPixel.green;
@@ -165,15 +165,15 @@ void deovrTextureMap::pLoadTextureMap(){
 		}
 		
 		{
-		pImageSolidity.TakeOver( pOvr.GetGameEngine()->GetImageManager()->CreateImage(
-			textureMap->unWidth, textureMap->unHeight, 1, 1, 8 ) );
+		pImageSolidity.TakeOver(pOvr.GetGameEngine()->GetImageManager()->CreateImage(
+			textureMap->unWidth, textureMap->unHeight, 1, 1, 8));
 		
 		sGrayscale8 * const destPixels = pImageSolidity->GetDataGrayscale8();
-		for( y=0; y<textureMap->unHeight; y++ ){
+		for(y=0; y<textureMap->unHeight; y++){
 			const sRGBA8 * const srcPixelLine = srcPixels + textureMap->unWidth * y;
 			sGrayscale8 * const destPixelLine = destPixels + textureMap->unWidth * y;
-			for( x=0; x<textureMap->unWidth; x++ ){
-				destPixelLine[ x ].value = srcPixelLine[ x ].alpha;
+			for(x=0; x<textureMap->unWidth; x++){
+				destPixelLine[x].value = srcPixelLine[x].alpha;
 			}
 		}
 		
@@ -185,24 +185,24 @@ void deovrTextureMap::pLoadTextureMap(){
 		}
 		
 	}else{
-		pOvr.LogErrorFormat( "Unsupported texture format %d: %d", pID, textureMap->format );
+		pOvr.LogErrorFormat("Unsupported texture format %d: %d", pID, textureMap->format);
 	}
 	
-	decPath path( decPath::CreatePathUnix( "/openvr/textureMaps" ) );
+	decPath path(decPath::CreatePathUnix("/openvr/textureMaps"));
 	decString filetitle;
-	filetitle.Format( "map%u.deskin", pID );
-	path.AddComponent( filetitle );
+	filetitle.Format("map%u.deskin", pID);
+	path.AddComponent(filetitle);
 	
 	try{
-		deovrTextureMap_BuildSkin builder( pImageColor, pImageSolidity );
-		pSkin.TakeOver( pOvr.GetGameEngine()->GetSkinManager()->CreateSkin( path.GetPathUnix(), builder ) );
+		deovrTextureMap_BuildSkin builder(pImageColor, pImageSolidity);
+		pSkin.TakeOver(pOvr.GetGameEngine()->GetSkinManager()->CreateSkin(path.GetPathUnix(), builder));
 		
-	}catch( const deException & ){
-		vrrm.FreeTexture( textureMap );
+	}catch(const deException &){
+		vrrm.FreeTexture(textureMap);
 		throw;
 	}
 	
-	vrrm.FreeTexture( textureMap );
+	vrrm.FreeTexture(textureMap);
 	
-	pOvr.LogInfoFormat( "Loading texture map %d finished in %.1fms", pID, timer.GetElapsedTime() * 1e3f );
+	pOvr.LogInfoFormat("Loading texture map %d finished in %.1fms", pID, timer.GetElapsedTime() * 1e3f);
 }

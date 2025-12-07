@@ -65,7 +65,7 @@ private:
 	float pInfluenceBorderSize;
 	int pInfluencePriority;
 	
-	decString pPropertyNames[ epAttachRotation + 1 ];
+	decString pPropertyNames[epAttachRotation + 1];
 	
 	
 	
@@ -76,7 +76,7 @@ public:
 	igdeGDCEnvMapProbe();
 	
 	/** \brief Create copy of a game definition class environment map probe. */
-	igdeGDCEnvMapProbe( const igdeGDCEnvMapProbe &probe );
+	igdeGDCEnvMapProbe(const igdeGDCEnvMapProbe &probe);
 	
 	/** \brief Clean up game definition class environment map probe. */
 	virtual ~igdeGDCEnvMapProbe();
@@ -87,64 +87,64 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline const decVector &GetScaling() const{ return pScaling; }
+	inline const decVector &GetScaling() const{return pScaling;}
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	/** \brief Influence shape list. */
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline const decShapeList &GetShapeListInfluence() const{return pShapeListInfluence;}
 	
 	/** \brief Set influence shape list. */
-	void SetShapeListInfluence( const decShapeList &shapeList );
+	void SetShapeListInfluence(const decShapeList &shapeList);
 	
 	/** \brief Reflection shape or NULL if the environment map is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	inline decShape *GetShapeReflection() const{return pShapeReflection;}
 	
 	/** \brief Set reflection shape or NULL if the environment map is global. */
-	void SetShapeReflection( decShape *shape );
+	void SetShapeReflection(decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline const decShapeList &GetShapeListReflectionMask() const{return pShapeListReflectionMask;}
 	
 	/** \brief Set reflection mask shape list. */
-	void SetShapeListReflectionMask( const decShapeList &shapeList );
+	void SetShapeListReflectionMask(const decShapeList &shapeList);
 	
 	/** \brief Influence border size. */
-	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
+	inline float GetInfluenceBorderSize() const{return pInfluenceBorderSize;}
 	
 	/** \brief Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	/** \brief Influence priority. */
-	inline int GetInfluencePriority() const{ return pInfluencePriority; }
+	inline int GetInfluencePriority() const{return pInfluencePriority;}
 	
 	/** \brief Set influence priority. */
-	void SetInfluencePriority( int priority );
+	void SetInfluencePriority(int priority);
 	
 	/** \brief Determines if a property name is set or not (empty string). */
-	bool IsPropertySet( int property ) const;
+	bool IsPropertySet(int property) const;
 	
 	/** \brief Name of the given property. */
-	const decString &GetPropertyName( int property ) const;
+	const decString &GetPropertyName(int property) const;
 	
 	/** \brief Set name of the given property. */
-	void SetPropertyName( int property, const char *name );
+	void SetPropertyName(int property, const char *name);
 	
 	/** \brief Determines if one or more properties use a name. */
-	bool HasPropertyWithName( const char *name ) const;
+	bool HasPropertyWithName(const char *name) const;
 	/*@}*/
 	
 	

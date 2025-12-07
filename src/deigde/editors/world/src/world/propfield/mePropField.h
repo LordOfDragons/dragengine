@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */
-	mePropField( deEngine *engine );
+	mePropField(deEngine *engine);
 	/** Cleans up the object. */
 	~mePropField();
 	/*@}*/
@@ -69,17 +69,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent world or NULL. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	/** Sets the parent world or NULL. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Retrieves the engine height terrain. */
-	inline dePropField *GetEnginePropField() const{ return pEngPF; }
+	inline dePropField *GetEnginePropField() const{return pEngPF;}
 	
 	/** Retrieves the position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	/** Sets the position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Sets the world changed. */
 	void SetWorldChanged();
@@ -88,15 +88,15 @@ public:
 	/** \name Types */
 	/*@{*/
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{return pTypeCount;}
 	/** Retrieves the type at the given index. */
-	mePropFieldType *GetTypeAt( int index ) const;
+	mePropFieldType *GetTypeAt(int index) const;
 	/** Retrieves the index of the given type or -1 if not found. */
-	int IndexOfType( mePropFieldType *type ) const;
+	int IndexOfType(mePropFieldType *type) const;
 	/** Adds a new type. */
-	void AddType( mePropFieldType *type );
+	void AddType(mePropFieldType *type);
 	/** Removes a type. */
-	void RemoveType( mePropFieldType *type );
+	void RemoveType(mePropFieldType *type);
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/*@}*/

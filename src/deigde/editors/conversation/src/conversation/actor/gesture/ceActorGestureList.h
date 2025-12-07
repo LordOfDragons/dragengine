@@ -47,7 +47,7 @@ public:
 	ceActorGestureList();
 	
 	/** \brief Create gesture list. */
-	ceActorGestureList( const ceActorGestureList &gesture );
+	ceActorGestureList(const ceActorGestureList &gesture);
 	
 	/** \brief Clean up gesture list. */
 	~ceActorGestureList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Gesture at index. */
-	ceActorGesture *GetAt( int index ) const;
+	ceActorGesture *GetAt(int index) const;
 	
 	/** \brief Named gesture or \em NULL if absent. */
-	ceActorGesture *GetNamed( const char *name ) const;
+	ceActorGesture *GetNamed(const char *name) const;
 	
 	/** \brief Index of gesture or -1 if absent. */
-	int IndexOf( ceActorGesture *gesture ) const;
+	int IndexOf(ceActorGesture *gesture) const;
 	
 	/** \brief Index of named gesture or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Gesture is present. */
-	bool Has( ceActorGesture *gesture ) const;
+	bool Has(ceActorGesture *gesture) const;
 	
 	/** \brief Named gesture is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add gesture. */
-	void Add( ceActorGesture *gesture );
+	void Add(ceActorGesture *gesture);
 	
 	/** \brief Remove gesture. */
-	void Remove( ceActorGesture *gesture );
+	void Remove(ceActorGesture *gesture);
 	
 	/** \brief Remove all gestures. */
 	void RemoveAll();
 	
 	/** \brief Set from another list. */
-	ceActorGestureList &operator=( const ceActorGestureList &list );
+	ceActorGestureList &operator=(const ceActorGestureList &list);
 	/*@}*/
 };
 

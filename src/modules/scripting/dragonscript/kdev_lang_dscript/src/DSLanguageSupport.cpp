@@ -29,19 +29,19 @@ namespace DragonScript{
 
 DSLanguageSupport *DSLanguageSupport::pSelf = nullptr;
 
-K_PLUGIN_FACTORY_WITH_JSON( KDevDragonScriptSupportFactory,
-	"kdev_lang_dscript.json", registerPlugin<DSLanguageSupport>(); )
+K_PLUGIN_FACTORY_WITH_JSON(KDevDragonScriptSupportFactory,
+	"kdev_lang_dscript.json", registerPlugin<DSLanguageSupport>();)
 
 DSLanguageSupport::DSLanguageSupport(QObject *parent, const QVariantList& args) :
 IPlugin(QStringLiteral("dragonscriptlanguagesupport"), parent),
-pHighlighting( new Highlighting( this ) )
+pHighlighting(new Highlighting(this))
 {
 	Q_UNUSED(args);
 	qDebug() << "DSLanguageSupport: Constructor";
 	pSelf = this;
 	
-	DSCodeCompletionModel * const codeCompletion = new DSCodeCompletionModel( this );
-	new CodeCompletion( this, codeCompletion, "DragonScript" );
+	DSCodeCompletionModel * const codeCompletion = new DSCodeCompletionModel(this);
+	new CodeCompletion(this, codeCompletion, "DragonScript");
 	
 	// TODO assistences
 }
@@ -64,7 +64,7 @@ QString DSLanguageSupport::name() const{
 
 ParseJob *DSLanguageSupport::createParseJob(const IndexedString& url){
 	qDebug() << "DSLanguageSupport: createParseJob";
-	return new DSParseJob( url, this );
+	return new DSParseJob(url, this);
 }
 
 ICodeHighlighting *DSLanguageSupport::codeHighlighting() const{
@@ -75,10 +75,10 @@ int DSLanguageSupport::perProjectConfigPages() const{
 	return 1;
 }
 
-ConfigPage* DSLanguageSupport::perProjectConfigPage( int number,
-const KDevelop::ProjectConfigOptions &options, QWidget *parent ){
-	if( number == 0 ){
-		return new ProjectConfigPage( this, options, parent );
+ConfigPage* DSLanguageSupport::perProjectConfigPage(int number,
+const KDevelop::ProjectConfigOptions &options, QWidget *parent){
+	if(number == 0){
+		return new ProjectConfigPage(this, options, parent);
 	}
 	return nullptr;
 }

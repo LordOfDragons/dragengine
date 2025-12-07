@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip ){
-	if( ! topic || ! actorSpeak || ! eyesLookAt || ! newStrip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip){
+	if(! topic || ! actorSpeak || ! eyesLookAt || ! newStrip){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -53,9 +53,9 @@ ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet( ceConversationTopic *topic, ceCAActo
 	pOldStrip = NULL;
 	pNewStrip = NULL;
 	
-	SetShortInfo( "Set eyes look-at" );
+	SetShortInfo("Set eyes look-at");
 	
-	pOldStrip = new ceStrip( *eyesLookAt );
+	pOldStrip = new ceStrip(*eyesLookAt);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,19 +71,19 @@ ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet( ceConversationTopic *topic, ceCAActo
 }
 
 ceUCAASpeakEyesLASet::~ceUCAASpeakEyesLASet(){
-	if( pNewStrip ){
+	if(pNewStrip){
 		pNewStrip->FreeReference();
 	}
-	if( pOldStrip ){
+	if(pOldStrip){
 		pOldStrip->FreeReference();
 	}
-	if( pEyesLA ){
+	if(pEyesLA){
 		pEyesLA->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -95,10 +95,10 @@ ceUCAASpeakEyesLASet::~ceUCAASpeakEyesLASet(){
 
 void ceUCAASpeakEyesLASet::Undo(){
 	*pEyesLA = *pOldStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakEyesLASet::Redo(){
 	*pEyesLA = *pNewStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPCFPAdd::gdeUGDDPCFPAdd( gdeGameDefinition *gamedef,
-gdeProperty *property, gdeFilePattern *filePattern ) :
-pGameDefinition( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUGDDPCFPAdd::gdeUGDDPCFPAdd(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern) :
+pGameDefinition(NULL),
+pProperty(NULL),
+pFilePattern(NULL)
 {
-	if( ! gamedef || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(! gamedef || ! property || ! filePattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property add custom file pattern" );
+	SetShortInfo("Game definition property add custom file pattern");
 	
 	pGameDefinition = gamedef;
 	gamedef->AddReference();
@@ -64,13 +64,13 @@ pFilePattern( NULL )
 }
 
 gdeUGDDPCFPAdd::~gdeUGDDPCFPAdd(){
-	if( pFilePattern ){
+	if(pFilePattern){
 		pFilePattern->FreeReference();
 	}
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -81,11 +81,11 @@ gdeUGDDPCFPAdd::~gdeUGDDPCFPAdd(){
 ///////////////
 
 void gdeUGDDPCFPAdd::Undo(){
-	pProperty->GetCustomPathPattern().Remove( pFilePattern );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->GetCustomPathPattern().Remove(pFilePattern);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPCFPAdd::Redo(){
-	pProperty->GetCustomPathPattern().Add( pFilePattern );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->GetCustomPathPattern().Add(pFilePattern);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

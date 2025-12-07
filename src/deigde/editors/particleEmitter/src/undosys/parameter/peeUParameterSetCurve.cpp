@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetCurve::peeUParameterSetCurve( peeType *type,
-	peeParameter *parameter, const decCurveBezier &newCurve ) :
-pType( NULL ),
-pParameter( NULL ),
-pNewCurve( newCurve )
+peeUParameterSetCurve::peeUParameterSetCurve(peeType *type,
+	peeParameter *parameter, const decCurveBezier &newCurve) :
+pType(NULL),
+pParameter(NULL),
+pNewCurve(newCurve)
 {
-	if( ! type || ! parameter ){
-		DETHROW( deeInvalidParam );
+	if(! type || ! parameter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
@@ -58,7 +58,7 @@ pNewCurve( newCurve )
 }
 
 peeUParameterSetCurve::~peeUParameterSetCurve(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -68,6 +68,6 @@ peeUParameterSetCurve::~peeUParameterSetCurve(){
 // Management
 ///////////////
 
-void peeUParameterSetCurve::SetNewCurve( const decCurveBezier &curve ){
+void peeUParameterSetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }

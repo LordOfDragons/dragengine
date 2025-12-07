@@ -54,24 +54,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-projDialogDistribute::projDialogDistribute( projWindowMain &windowMain, projProfile *profile ) :
-igdeDialog( windowMain.GetEnvironment(), "Distribute" ),
+projDialogDistribute::projDialogDistribute(projWindowMain &windowMain, projProfile *profile) :
+igdeDialog(windowMain.GetEnvironment(), "Distribute"),
 
-pWindowMain( windowMain ),
-pProfile( profile ),
-pTaskDistribute( NULL ),
-pCloseDialogOnFinished( false ),
-pPrintToConsole( false ),
-pSuccess( true )
+pWindowMain(windowMain),
+pProfile(profile),
+pTaskDistribute(NULL),
+pCloseDialogOnFinished(false),
+pPrintToConsole(false),
+pSuccess(true)
 {
-	DEASSERT_NOTNULL( pProfile )
+	DEASSERT_NOTNULL(pProfile)
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	pActionShowInFSManager.TakeOver( new igdeActionExternOpen( env, "Show in File Manager",
-		env.GetStockIcon( igdeEnvironment::esiOpen ), "Show DELGA file in File Manager" ) );
+	pActionShowInFSManager.TakeOver(new igdeActionExternOpen(env, "Show in File Manager",
+		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager"));
 	
 	
 	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
@@ -79,48 +79,48 @@ pSuccess( true )
 	
 	// build information
 	igdeContainer::Ref groupBox;
-	helper.GroupBoxStatic( content, groupBox, "DELGA:" );
+	helper.GroupBoxStatic(content, groupBox, "DELGA:");
 	
-	helper.EditString( groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, NULL );
-	pEditDelgaPath->SetEditable( false );
+	helper.EditString(groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, NULL);
+	pEditDelgaPath->SetEditable(false);
 	
-	helper.EditString( groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, NULL );
-	pEditDelgaSize->SetEditable( false );
+	helper.EditString(groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, NULL);
+	pEditDelgaSize->SetEditable(false);
 	
-	helper.EditString( groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, NULL );
-	pEditDelgaFileCount->SetEditable( false );
+	helper.EditString(groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, NULL);
+	pEditDelgaFileCount->SetEditable(false);
 	
-	helper.EditString( groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL );
-	pEditDelgaDirCount->SetEditable( false );
+	helper.EditString(groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL);
+	pEditDelgaDirCount->SetEditable(false);
 	
 	// logs and info line
 	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	
-	helper.GroupBoxStaticFlow( containerLogs, groupBox, "Logs:", true );
+	helper.GroupBoxStaticFlow(containerLogs, groupBox, "Logs:", true);
 	
-	helper.EditString( groupBox, "Building logs.", pEditLogs, 80, 12, NULL );
-	pEditLogs->SetEditable( false );
+	helper.EditString(groupBox, "Building logs.", pEditLogs, 80, 12, NULL);
+	pEditLogs->SetEditable(false);
 	
 	// info line
-	groupBox.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, 5 ) );
-	containerLogs->AddChild( groupBox );
+	groupBox.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX, 5));
+	containerLogs->AddChild(groupBox);
 	
-	helper.Button( groupBox, pActionShowInFSManager );
+	helper.Button(groupBox, pActionShowInFSManager);
 	
-	content->AddChild( containerLogs );
+	content->AddChild(containerLogs);
 	
 	// button line
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar( buttonBar, "Close" );
+	CreateButtonBar(buttonBar, "Close");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
 	
 	pStartBuilding();
 }
 
 projDialogDistribute::~projDialogDistribute(){
-	if( pTaskDistribute ){
+	if(pTaskDistribute){
 		delete pTaskDistribute;
 	}
 }
@@ -130,80 +130,80 @@ projDialogDistribute::~projDialogDistribute(){
 // Management
 ///////////////
 
-void projDialogDistribute::LogMessage( const char *message ){
-	DEASSERT_NOTNULL( message )
+void projDialogDistribute::LogMessage(const char *message){
+	DEASSERT_NOTNULL(message)
 	
 	// add to text widget
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
-	pEditLogs->AppendText( decString( message ) + "\n" );
-	if( atBottom ){
-		pEditLogs->SetBottomLine( pEditLogs->GetLineCount() - 1 );
+	pEditLogs->AppendText(decString(message) + "\n");
+	if(atBottom){
+		pEditLogs->SetBottomLine(pEditLogs->GetLineCount() - 1);
 	}
 	
 	// log to log file
-	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, message );
+	pWindowMain.GetLogger()->LogInfo(LOGSOURCE, message);
 	
 	// print on console
-	if( pPrintToConsole ){
-		printf( "%s\n", message );
+	if(pPrintToConsole){
+		printf("%s\n", message);
 	}
 }
 
 void projDialogDistribute::OnFrameUpdate(){
-	if( ! pTaskDistribute ){
+	if(! pTaskDistribute){
 		return;
 	}
 	
 	try{
-		if( ! pTaskDistribute->Step() ){
+		if(! pTaskDistribute->Step()){
 			decPath path;
-			path.SetFromNative( GetEnvironment().GetGameProject()->GetDirectoryPath() );
-			path.AddUnixPath( pProfile->GetDelgaPath() );
+			path.SetFromNative(GetEnvironment().GetGameProject()->GetDirectoryPath());
+			path.AddUnixPath(pProfile->GetDelgaPath());
 			path.RemoveLastComponent();
-			pActionShowInFSManager->SetPath( path.GetPathNative() );
+			pActionShowInFSManager->SetPath(path.GetPathNative());
 			
-			if( pCloseDialogOnFinished ){
+			if(pCloseDialogOnFinished){
 				Cancel();
 			}
 			return;
 		}
 		
 		decString text;
-		text.Format( "%s (%s bytes)",
-			igdeUIHelper::FormatSize1024( pTaskDistribute->GetDelgaSize() ).GetString(),
-			igdeUIHelper::FormatSizeTousand( pTaskDistribute->GetDelgaSize() ).GetString() );
-		pEditDelgaSize->SetText( text );
+		text.Format("%s (%s bytes)",
+			igdeUIHelper::FormatSize1024(pTaskDistribute->GetDelgaSize()).GetString(),
+			igdeUIHelper::FormatSizeTousand(pTaskDistribute->GetDelgaSize()).GetString());
+		pEditDelgaSize->SetText(text);
 		
-		pEditDelgaDirCount->SetText( igdeUIHelper::FormatSizeTousand(
-			pTaskDistribute->GetDelgaDirectoryCount() ) );
-		pEditDelgaFileCount->SetText( igdeUIHelper::FormatSizeTousand(
-			pTaskDistribute->GetDelgaFileCount() ) );
+		pEditDelgaDirCount->SetText(igdeUIHelper::FormatSizeTousand(
+			pTaskDistribute->GetDelgaDirectoryCount()));
+		pEditDelgaFileCount->SetText(igdeUIHelper::FormatSizeTousand(
+			pTaskDistribute->GetDelgaFileCount()));
 		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
-		if( taskMessage != pLastTaskMessage ){
-			LogMessage( taskMessage );
+		if(taskMessage != pLastTaskMessage){
+			LogMessage(taskMessage);
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pSuccess = false;
 		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
-		if( taskMessage != pLastTaskMessage ){
-			LogMessage( taskMessage );
+		if(taskMessage != pLastTaskMessage){
+			LogMessage(taskMessage);
 		}
 		
-		LogMessage( igdeCommonDialogs::FormatException( e ) );
-		LogMessage( "Distribution Failed!" );
+		LogMessage(igdeCommonDialogs::FormatException(e));
+		LogMessage("Distribution Failed!");
 		
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
-void projDialogDistribute::SetCloseDialogOnFinished( bool closeDialogOnFinished ){
+void projDialogDistribute::SetCloseDialogOnFinished(bool closeDialogOnFinished){
 	pCloseDialogOnFinished = closeDialogOnFinished;
 }
 
-void projDialogDistribute::SetPrintToConsole( bool printToConsole ){
+void projDialogDistribute::SetPrintToConsole(bool printToConsole){
 	pPrintToConsole = printToConsole;
 }
 
@@ -214,11 +214,11 @@ void projDialogDistribute::SetPrintToConsole( bool printToConsole ){
 
 void projDialogDistribute::pStartBuilding(){
 	decPath path;
-	path.SetFromUnix( pProfile->GetDelgaPath() );
-	pEditDelgaPath->SetText( path.GetLastComponent() );
-	pEditDelgaSize->SetText( "0" );
-	pEditDelgaFileCount->SetText( "0" );
-	pEditDelgaDirCount->SetText( "0" );
+	path.SetFromUnix(pProfile->GetDelgaPath());
+	pEditDelgaPath->SetText(path.GetLastComponent());
+	pEditDelgaSize->SetText("0");
+	pEditDelgaFileCount->SetText("0");
+	pEditDelgaDirCount->SetText("0");
 	
-	pTaskDistribute = new projTaskDistribute( pWindowMain, *pWindowMain.GetProject(), *pProfile );
+	pTaskDistribute = new projTaskDistribute(pWindowMain, *pWindowMain.GetProject(), *pProfile);
 }

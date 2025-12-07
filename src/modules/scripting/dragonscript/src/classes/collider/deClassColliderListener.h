@@ -40,21 +40,21 @@ private:
 	deScriptingDragonScript *pScrMgr;
 public:
 	// constructor
-	deClassColliderListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassColliderListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassColliderListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers( dsEngine *engine );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	void CreateClassMembers(dsEngine *engine);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
 	
 	/** \brief Function index for collisionResponse(). */
-	inline int GetFuncIndexCollisionResponse() const{ return pFuncIndexCollisionResponse; }
+	inline int GetFuncIndexCollisionResponse() const{return pFuncIndexCollisionResponse;}
 	
 	/** \brief Function index for canHitCollider(). */
-	inline int GetFuncIndexCanHitCollider() const{ return pFuncIndexCanHitCollider; }
+	inline int GetFuncIndexCanHitCollider() const{return pFuncIndexCanHitCollider;}
 	
 	/** \brief Function index for colliderChanged(). */
-	inline int GetFuncIndexColliderChanged() const{ return pFuncIndexColliderChanged; }
+	inline int GetFuncIndexColliderChanged() const{return pFuncIndexColliderChanged;}
 	
 private:
 	int pFuncIndexCollisionResponse;
@@ -65,14 +65,14 @@ private:
 		dsClass *clsCLL, *clsVoid, *clsBool, *clsFlt, *clsInt, *clsCI, *clsCol, *clsComp;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfCollisionResponse );
-	DEF_NATFUNC( nfCanHitCollider );
-	DEF_NATFUNC( nfColliderChanged );
+	DEF_NATFUNC(nfCollisionResponse);
+	DEF_NATFUNC(nfCanHitCollider);
+	DEF_NATFUNC(nfColliderChanged);
 #undef DEF_NATFUNC
 };
 

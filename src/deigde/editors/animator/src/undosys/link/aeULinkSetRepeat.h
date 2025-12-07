@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetRepeat( aeLink *link, int newRepeat );
+	aeULinkSetRepeat(aeLink *link, int newRepeat);
 	
 protected:
 	/** Clean up undo. */

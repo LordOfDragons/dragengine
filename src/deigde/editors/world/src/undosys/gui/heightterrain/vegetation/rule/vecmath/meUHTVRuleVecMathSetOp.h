@@ -54,8 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleVecMathSetOp( meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule,
-		meHTVRuleVectorMath::eOperators nop );
+	meUHTVRuleVecMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule,
+		meHTVRuleVectorMath::eOperators nop);
 	
 protected:
 	/** \brief Clean up object. */

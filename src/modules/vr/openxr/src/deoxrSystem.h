@@ -89,7 +89,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create system. */
-	deoxrSystem( deoxrInstance &instance );
+	deoxrSystem(deoxrInstance &instance);
 	
 protected:
 	/** Clean up system. */
@@ -102,64 +102,64 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Instance. */
-	inline deoxrInstance &GetInstance() const{ return pInstance; }
+	inline deoxrInstance &GetInstance() const{return pInstance;}
 	
 	/** System Id. */
-	inline XrSystemId GetSystemId() const{ return pSystemId; }
+	inline XrSystemId GetSystemId() const{return pSystemId;}
 	
 	/** System name. */
-	inline const decString &GetSystemName() const{ return pSystemName; }
+	inline const decString &GetSystemName() const{return pSystemName;}
 	
 	/** System. */
-	inline eSystem GetSystem() const{ return pSystem; }
+	inline eSystem GetSystem() const{return pSystem;}
 	
 	/** Maximum render image size (swap chain image size). */
-	inline const decPoint &GetMaxRenderImageSize() const{ return pMaxRenderImageSize; }
+	inline const decPoint &GetMaxRenderImageSize() const{return pMaxRenderImageSize;}
 	
 	/** Maximum count of composite layers. */
-	inline int GetMaxLayerCount() const{ return pMaxLayerCount; }
+	inline int GetMaxLayerCount() const{return pMaxLayerCount;}
 	
 	/** Supports orientation tracking. */
-	inline bool GetSupportsOrientationTracking() const{ return pSupportsOrientationTracking; }
+	inline bool GetSupportsOrientationTracking() const{return pSupportsOrientationTracking;}
 	
 	/** Supports position tracking. */
-	inline bool GetSupportsPositionTracking() const{ return pSupportsPositionTracking; }
+	inline bool GetSupportsPositionTracking() const{return pSupportsPositionTracking;}
 	
 	/** Left eye recommended view size. */
-	inline const decPoint &GetLeftEyeViewSize() const{ return pLeftEyeViewSize; }
+	inline const decPoint &GetLeftEyeViewSize() const{return pLeftEyeViewSize;}
 	
 	/** Left eye maximum view size. */
-	inline const decPoint &GetLeftEyeViewMaxSize() const{ return pLeftEyeViewMaxSize; }
+	inline const decPoint &GetLeftEyeViewMaxSize() const{return pLeftEyeViewMaxSize;}
 	
 	/** Right eye recommended view size. */
-	inline const decPoint &GetRightEyeViewSize() const{ return pRightEyeViewSize; }
+	inline const decPoint &GetRightEyeViewSize() const{return pRightEyeViewSize;}
 	
 	/** Right eye maximum view size. */
-	inline const decPoint &GetRightEyeViewMaxSize() const{ return pRightEyeViewMaxSize; }
+	inline const decPoint &GetRightEyeViewMaxSize() const{return pRightEyeViewMaxSize;}
 	
 	/** Render size. */
-	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
+	inline const decPoint &GetRenderSize() const{return pRenderSize;}
 	
 	/** Supports hand tracking. */
-	inline bool GetSupportsHandTracking() const{ return pSupportsHandTracking; }
+	inline bool GetSupportsHandTracking() const{return pSupportsHandTracking;}
 	
 	/** Supports eye gaze tracking. */
-	inline bool GetSupportsEyeGazeTracking() const{ return pSupportsEyeGazeTracking; }
+	inline bool GetSupportsEyeGazeTracking() const{return pSupportsEyeGazeTracking;}
 	
 	/** Supports face eye tracking. */
-	inline bool GetSupportsFaceEyeTracking() const{ return pSupportsFaceEyeTracking; }
+	inline bool GetSupportsFaceEyeTracking() const{return pSupportsFaceEyeTracking;}
 	
 	/** Supports face mouth tracking. */
-	inline bool GetSupportsFaceLipTracking() const{ return pSupportsFaceLipTracking; }
+	inline bool GetSupportsFaceLipTracking() const{return pSupportsFaceLipTracking;}
 	
 	/** Supports passthrough. */
-	inline bool GetSupportsPassthrough() const{ return pSupportsPassthrough; }
+	inline bool GetSupportsPassthrough() const{return pSupportsPassthrough;}
 	
 	/** Supports environment blend mode alpha blend. */
-	inline bool GetSupportsEnvBlendModeAlphaBlend() const{ return pSupportsEnvBlendModeAlphaBlend; }
+	inline bool GetSupportsEnvBlendModeAlphaBlend() const{return pSupportsEnvBlendModeAlphaBlend;}
 	
 	/** Supports XDev space. */
-	inline bool GetSupportsXDevSpace() const{ return pSupportsXDevSpace; }
+	inline bool GetSupportsXDevSpace() const{return pSupportsXDevSpace;}
 	/*@}*/
 	
 	

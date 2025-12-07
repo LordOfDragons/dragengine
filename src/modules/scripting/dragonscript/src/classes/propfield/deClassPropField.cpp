@@ -63,12 +63,12 @@ struct sPFNatDat{
 /////////////////////
 
 // public func new()
-deClassPropField::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsPF,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassPropField::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsPF,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassPropField::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sPFNatDat *nd = ( sPFNatDat* )p_GetNativeData( myself );
-	deClassPropField *clsPF = ( deClassPropField* )GetOwnerClass();
+void deClassPropField::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sPFNatDat *nd = (sPFNatDat*)p_GetNativeData(myself);
+	deClassPropField *clsPF = (deClassPropField*)GetOwnerClass();
 	dePropFieldManager *pfmgr = clsPF->GetDS()->GetGameEngine()->GetPropFieldManager();
 	
 	// clear ( important )
@@ -76,21 +76,21 @@ void deClassPropField::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	
 	// create propfield
 	nd->propfield = pfmgr->CreatePropField();
-	if( ! nd->propfield ) DSTHROW( dueOutOfMemory );
+	if(! nd->propfield) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
-deClassPropField::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsPF,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassPropField::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsPF,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassPropField::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassPropField::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sPFNatDat *nd = ( sPFNatDat* )p_GetNativeData( myself );
+	sPFNatDat *nd = (sPFNatDat*)p_GetNativeData(myself);
 	
-	if( nd->propfield ){
+	if(nd->propfield){
 		nd->propfield->FreeReference();
 		nd->propfield = NULL;
 	}
@@ -102,19 +102,19 @@ void deClassPropField::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself
 ///////////////
 
 // public func void setPosition( DVector position )
-deClassPropField::nfSetPosition::nfSetPosition( const sInitData &init ) : dsFunction( init.clsPF,
-"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsDVec ); // position
+deClassPropField::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunction(init.clsPF,
+"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsDVec); // position
 }
-void deClassPropField::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
-	deClassPropField *clsPF = ( deClassPropField* )GetOwnerClass();
+void deClassPropField::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
+	deClassPropField *clsPF = (deClassPropField*)GetOwnerClass();
 	deClassDVector *clsDVec = clsPF->GetDS()->GetClassDVector();
 	
-	dsRealObject *objPos = rt->GetValue( 0 )->GetRealObject();
-	if( ! objPos ) DSTHROW( dueNullPointer );
+	dsRealObject *objPos = rt->GetValue(0)->GetRealObject();
+	if(! objPos) DSTHROW(dueNullPointer);
 	
-	propfield->SetPosition( clsDVec->GetDVector( objPos ) );
+	propfield->SetPosition(clsDVec->GetDVector(objPos));
 }
 
 // func World getParentWorld()
@@ -132,27 +132,27 @@ void deClassPropField::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *mys
 
 // public func int addType( Model model, Skin skin, float rotPerForce, float restitution,
 // CollisionFilter collisionFilter, int instanceCount )
-deClassPropField::nfAddType::nfAddType( const sInitData &init ) : dsFunction( init.clsPF,
-"addType", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
-	p_AddParameter( init.clsMdl ); // model
-	p_AddParameter( init.clsSkin ); // skin
-	p_AddParameter( init.clsFlt ); // rotPerForce
-	p_AddParameter( init.clsFlt ); // restitution
-	p_AddParameter( init.clsCF ); // collisionFilter
-	p_AddParameter( init.clsInt ); // instanceCount
+deClassPropField::nfAddType::nfAddType(const sInitData &init) : dsFunction(init.clsPF,
+"addType", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+	p_AddParameter(init.clsMdl); // model
+	p_AddParameter(init.clsSkin); // skin
+	p_AddParameter(init.clsFlt); // rotPerForce
+	p_AddParameter(init.clsFlt); // restitution
+	p_AddParameter(init.clsCF); // collisionFilter
+	p_AddParameter(init.clsInt); // instanceCount
 }
-void deClassPropField::nfAddType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField &propfield = *( ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield );
-	deScriptingDragonScript &ds = *( ( ( deClassPropField* )GetOwnerClass() )->GetDS() );
+void deClassPropField::nfAddType::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField &propfield = *(((sPFNatDat*)p_GetNativeData(myself))->propfield);
+	deScriptingDragonScript &ds = *(((deClassPropField*)GetOwnerClass())->GetDS());
 	deClassModel &clsMdl = *ds.GetClassModel();
 	deClassSkin &clsSkin = *ds.GetClassSkin();
 	
-	dsRealObject *objMdl = rt->GetValue( 0 )->GetRealObject();
-	dsRealObject *objSkin = rt->GetValue( 1 )->GetRealObject();
-	float rotPerForce = rt->GetValue( 2 )->GetFloat();
-	float restitution = rt->GetValue( 3 )->GetFloat();
-	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->GetCollisionFilter( rt->GetValue( 4 )->GetRealObject() );
-	int instanceCount = rt->GetValue( 5 )->GetInt();
+	dsRealObject *objMdl = rt->GetValue(0)->GetRealObject();
+	dsRealObject *objSkin = rt->GetValue(1)->GetRealObject();
+	float rotPerForce = rt->GetValue(2)->GetFloat();
+	float restitution = rt->GetValue(3)->GetFloat();
+	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->GetCollisionFilter(rt->GetValue(4)->GetRealObject());
+	int instanceCount = rt->GetValue(5)->GetInt();
 	int index = propfield.GetTypeCount();
 	
 	dePropFieldType *type = NULL;
@@ -160,64 +160,64 @@ void deClassPropField::nfAddType::RunFunction( dsRunTime *rt, dsValue *myself ){
 	try{
 		type = new dePropFieldType;
 		
-		if( objMdl ){
-			type->SetModel( clsMdl.GetModel( objMdl ) );
+		if(objMdl){
+			type->SetModel(clsMdl.GetModel(objMdl));
 		}
-		if( objSkin ){
-			type->SetSkin( clsSkin.GetSkin( objSkin ) );
+		if(objSkin){
+			type->SetSkin(clsSkin.GetSkin(objSkin));
 		}
-		type->SetRotationPerForce( rotPerForce * DEG2RAD );
-		type->SetRestitution( restitution );
-		type->SetCollisionFilter( collisionFilter );
-		type->SetInstanceCount( instanceCount );
+		type->SetRotationPerForce(rotPerForce * DEG2RAD);
+		type->SetRestitution(restitution);
+		type->SetCollisionFilter(collisionFilter);
+		type->SetInstanceCount(instanceCount);
 		
-		propfield.AddType( type );
+		propfield.AddType(type);
 		
-	}catch( ... ){
-		if( type ) delete type;
+	}catch(...){
+		if(type) delete type;
 		throw;
 	}
 	
-	rt->PushInt( index );
+	rt->PushInt(index);
 }
 
 // public func void removeAllTypes()
-deClassPropField::nfRemoveAllTypes::nfRemoveAllTypes( const sInitData &init ) : dsFunction( init.clsPF,
-"removeAllTypes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassPropField::nfRemoveAllTypes::nfRemoveAllTypes(const sInitData &init) : dsFunction(init.clsPF,
+"removeAllTypes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassPropField::nfRemoveAllTypes::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
+void deClassPropField::nfRemoveAllTypes::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
 	
 	propfield->RemoveAllTypes();
 }
 
 // public func void setInstanceAt( int type, int instance, Vector position, Vector rotation, float scaling )
-deClassPropField::nfSetInstanceAt::nfSetInstanceAt( const sInitData &init ) : dsFunction( init.clsPF,
-"setInstanceAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // type
-	p_AddParameter( init.clsInt ); // instance
-	p_AddParameter( init.clsVec ); // position
-	p_AddParameter( init.clsVec ); // rotation
-	p_AddParameter( init.clsFlt ); // scaling
+deClassPropField::nfSetInstanceAt::nfSetInstanceAt(const sInitData &init) : dsFunction(init.clsPF,
+"setInstanceAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // type
+	p_AddParameter(init.clsInt); // instance
+	p_AddParameter(init.clsVec); // position
+	p_AddParameter(init.clsVec); // rotation
+	p_AddParameter(init.clsFlt); // scaling
 }
-void deClassPropField::nfSetInstanceAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
-	deClassPropField *clsPF = ( deClassPropField* )GetOwnerClass();
+void deClassPropField::nfSetInstanceAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
+	deClassPropField *clsPF = (deClassPropField*)GetOwnerClass();
 	deClassVector *clsVec = clsPF->GetDS()->GetClassVector();
 	
-	int typeIndex = rt->GetValue( 0 )->GetInt();
-	int instanceIndex = rt->GetValue( 1 )->GetInt();
-	dsRealObject *objPos = rt->GetValue( 2 )->GetRealObject();
-	dsRealObject *objRot = rt->GetValue( 3 )->GetRealObject();
-	float scaling = rt->GetValue( 4 )->GetFloat();
+	int typeIndex = rt->GetValue(0)->GetInt();
+	int instanceIndex = rt->GetValue(1)->GetInt();
+	dsRealObject *objPos = rt->GetValue(2)->GetRealObject();
+	dsRealObject *objRot = rt->GetValue(3)->GetRealObject();
+	float scaling = rt->GetValue(4)->GetFloat();
 	
-	if( ! objPos || ! objRot ) DSTHROW( dueNullPointer );
+	if(! objPos || ! objRot) DSTHROW(dueNullPointer);
 	
-	dePropFieldInstance &instance = propfield->GetTypeAt( typeIndex )->GetInstanceAt( instanceIndex );
+	dePropFieldInstance &instance = propfield->GetTypeAt(typeIndex)->GetInstanceAt(instanceIndex);
 	
-	instance.SetPosition( clsVec->GetVector( objPos ) );
-	instance.SetRotation( clsVec->GetVector( objRot ) * DEG2RAD );
-	instance.SetScaling( scaling );
+	instance.SetPosition(clsVec->GetVector(objPos));
+	instance.SetRotation(clsVec->GetVector(objRot) * DEG2RAD);
+	instance.SetScaling(scaling);
 }
 
 
@@ -226,65 +226,65 @@ void deClassPropField::nfSetInstanceAt::RunFunction( dsRunTime *rt, dsValue *mys
 //////////////
 
 // public func PropFieldListener getListener()
-deClassPropField::nfGetListener::nfGetListener( const sInitData &init ) : dsFunction( init.clsPF,
-"getListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPFL ){
+deClassPropField::nfGetListener::nfGetListener(const sInitData &init) : dsFunction(init.clsPF,
+"getListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPFL){
 }
-void deClassPropField::nfGetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
-	deClassPropField *clsPF = ( deClassPropField* )GetOwnerClass();
-	dedsPropField *peer = ( dedsPropField* )propfield->GetPeerScripting();
+void deClassPropField::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
+	deClassPropField *clsPF = (deClassPropField*)GetOwnerClass();
+	dedsPropField *peer = (dedsPropField*)propfield->GetPeerScripting();
 	
-	if( peer ){
-		rt->PushObject( peer->GetCallback(), clsPF->GetDS()->GetClassPropFieldListener() );
+	if(peer){
+		rt->PushObject(peer->GetCallback(), clsPF->GetDS()->GetClassPropFieldListener());
 		
 	}else{
-		rt->PushObject( NULL, clsPF->GetDS()->GetClassPropFieldListener() );
+		rt->PushObject(NULL, clsPF->GetDS()->GetClassPropFieldListener());
 	}
 }
 
 // public func void setListener( PropFieldListener listener )
-deClassPropField::nfSetListener::nfSetListener( const sInitData &init ) : dsFunction( init.clsPF,
-"setListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsPFL ); // listener
+deClassPropField::nfSetListener::nfSetListener(const sInitData &init) : dsFunction(init.clsPF,
+"setListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsPFL); // listener
 }
-void deClassPropField::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
-	dedsPropField *peer = ( dedsPropField* )propfield->GetPeerScripting();
-	if( peer ){
-		peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+void deClassPropField::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
+	dedsPropField *peer = (dedsPropField*)propfield->GetPeerScripting();
+	if(peer){
+		peer->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
 }
 
 
 
 // public func int hashCode()
-deClassPropField::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsPF, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassPropField::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsPF, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassPropField::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
+void deClassPropField::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
 	
-	rt->PushInt( ( int )( intptr_t )propfield );
+	rt->PushInt((int)(intptr_t)propfield);
 }
 
 // public func bool equals( Object obj )
-deClassPropField::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsPF, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassPropField::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsPF, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassPropField::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	dePropField *propfield = ( ( sPFNatDat* )p_GetNativeData( myself ) )->propfield;
-	deClassPropField *clsPF = ( deClassPropField* )GetOwnerClass();
-	dsValue *obj = rt->GetValue( 0 );
+void deClassPropField::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	dePropField *propfield = ((sPFNatDat*)p_GetNativeData(myself))->propfield;
+	deClassPropField *clsPF = (deClassPropField*)GetOwnerClass();
+	dsValue *obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsPF ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsPF)){
+		rt->PushBool(false);
 		
 	}else{
-		dePropField *other = ( ( sPFNatDat* )p_GetNativeData( obj ) )->propfield;
+		dePropField *other = ((sPFNatDat*)p_GetNativeData(obj))->propfield;
 		
-		rt->PushBool( propfield == other );
+		rt->PushBool(propfield == other);
 	}
 }
 
@@ -297,16 +297,16 @@ void deClassPropField::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 // Constructor, destructor
 ////////////////////////////
 
-deClassPropField::deClassPropField( deScriptingDragonScript *ds ) :
-dsClass( "PropField", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
-	if( ! ds ) DSTHROW( dueInvalidParam );
+deClassPropField::deClassPropField(deScriptingDragonScript *ds) :
+dsClass("PropField", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+	if(! ds) DSTHROW(dueInvalidParam);
 	
 	pDS = ds;
 	
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sPFNatDat ) );
+	p_SetNativeDataSize(sizeof(sPFNatDat));
 }
 
 deClassPropField::~deClassPropField(){
@@ -317,11 +317,11 @@ deClassPropField::~deClassPropField(){
 // Management
 ///////////////
 
-void deClassPropField::CreateClassMembers( dsEngine *engine ){
+void deClassPropField::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
-	memset( &init, '\0', sizeof( init ) );
+	memset(&init, '\0', sizeof(init));
 	
 	init.clsPF = this;
 	init.clsVoid = engine->GetClassVoid();
@@ -339,43 +339,43 @@ void deClassPropField::CreateClassMembers( dsEngine *engine ){
 	init.clsWorld = pDS->GetClassWorld();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfSetPosition( init ) );
+	AddFunction(new nfSetPosition(init));
 	AddFunction(new nfGetParentWorld(init));
 	
-	AddFunction( new nfAddType( init ) );
-	AddFunction( new nfRemoveAllTypes( init ) );
-	AddFunction( new nfSetInstanceAt( init ) );
+	AddFunction(new nfAddType(init));
+	AddFunction(new nfRemoveAllTypes(init));
+	AddFunction(new nfSetInstanceAt(init));
 	
-	AddFunction( new nfGetListener( init ) );
-	AddFunction( new nfSetListener( init ) );
+	AddFunction(new nfGetListener(init));
+	AddFunction(new nfSetListener(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-dePropField *deClassPropField::GetPropField( dsRealObject *myself ) const{
-	if( ! myself ){
+dePropField *deClassPropField::GetPropField(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sPFNatDat* )p_GetNativeData( myself->GetBuffer() ) )->propfield;
+	return ((sPFNatDat*)p_GetNativeData(myself->GetBuffer()))->propfield;
 }
 
-void deClassPropField::PushPropField( dsRunTime *rt, dePropField *propfield ){
-	if( ! rt ) DSTHROW( dueInvalidParam );
+void deClassPropField::PushPropField(dsRunTime *rt, dePropField *propfield){
+	if(! rt) DSTHROW(dueInvalidParam);
 	
-	if( ! propfield ){
-		rt->PushObject( NULL, this );
+	if(! propfield){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sPFNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->propfield = propfield;
+	rt->CreateObjectNakedOnStack(this);
+	((sPFNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->propfield = propfield;
 	propfield->AddReference();
 }

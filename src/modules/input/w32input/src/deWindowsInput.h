@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deWindowsInput( deLoadableModule &loadableModule );
+	deWindowsInput(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
 	virtual ~deWindowsInput(); // (from deBaseModule)
@@ -108,31 +108,31 @@ public:
 	virtual int GetDeviceCount();
 	
 	/** Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	virtual deInputDevice *GetDeviceAt(int index);
 	
 	/** Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	virtual int IndexOfDeviceWithID(const char *id);
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	virtual int IndexOfButtonWithID(int device, const char *id);
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	virtual int IndexOfAxisWithID(int device, const char *id);
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	virtual int IndexOfFeedbackWithID(int device, const char *id);
 	
 	/** Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	virtual bool GetButtonPressed(int device, int button);
 	
 	/** Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	virtual float GetAxisValue(int device, int axis);
 	
 	/** Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	virtual float GetFeedbackValue(int device, int feedback);
 	
 	/** Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	virtual void SetFeedbackValue(int device, int feedback, float value);
 	
 	/**
 	 * Index of button best matching key code or -1 if not found.
@@ -145,7 +145,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode );
+	virtual int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode);
 	
 	/**
 	 * Index of button best matching character or -1 if not found.
@@ -164,7 +164,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character );
+	virtual int ButtonMatchingKeyChar(int device, int character);
 	
 	/**
 	 * Index of button best matching key code or -1 if not found.
@@ -172,8 +172,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
-		deInputEvent::eKeyLocation location );
+	virtual int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode,
+		deInputEvent::eKeyLocation location);
 	
 	/**
 	 * Index of button best matching character or -1 if not found.
@@ -181,8 +181,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character,
-		deInputEvent::eKeyLocation location );
+	virtual int ButtonMatchingKeyChar(int device, int character,
+		deInputEvent::eKeyLocation location);
 	/*@}*/
 	
 	
@@ -210,49 +210,49 @@ public:
 	virtual void AppActivationChanged();
 	
 	/** An event processed by the application event loop. */
-	virtual void EventLoop( const MSG &message );
+	virtual void EventLoop(const MSG &message);
 	
 	
 	
 	/** Add axis changed event. */
-	void AddAxisChanged( int device, int axis, float value, DWORD eventTime );
+	void AddAxisChanged(int device, int axis, float value, DWORD eventTime);
 	
 	/** Add button pressed. */
-	void AddButtonPressed( int device, int button, DWORD eventTime );
+	void AddButtonPressed(int device, int button, DWORD eventTime);
 	
 	/** Add button released. */
-	void AddButtonReleased( int device, int button, DWORD eventTime );
+	void AddButtonReleased(int device, int button, DWORD eventTime);
 	
 	/** Add mouse wheel changed event. */
-	void AddMouseWheelChanged( int device, int axis, int x, int y, int state, DWORD eventTime );
+	void AddMouseWheelChanged(int device, int axis, int x, int y, int state, DWORD eventTime);
 
 	/** Add devices attached/detached event. */
-	void AddDevicesAttachedDetached( DWORD eventTime );
+	void AddDevicesAttachedDetached(DWORD eventTime);
 	/*@}*/
 	
 	
 	
 private:
 	void pCenterPointer();
-	void pQueryMousePosition( bool sendEvents );
+	void pQueryMousePosition(bool sendEvents);
 	
-	int pModifiersFromEventState( DWORD wParam ) const;
-	timeval pConvertEventTime( DWORD eventTime ) const;
+	int pModifiersFromEventState(DWORD wParam) const;
+	timeval pConvertEventTime(DWORD eventTime) const;
 	
-	void pAddKeyPress( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, int state, DWORD eventTime );
+	void pAddKeyPress(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, int state, DWORD eventTime);
 	
-	void pAddKeyRelease( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, int state, DWORD eventTime );
+	void pAddKeyRelease(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, int state, DWORD eventTime);
 	
-	void pAddMousePress( int device, int button, int state, DWORD eventTime );
-	void pAddMouseRelease( int device, int button, int state, DWORD eventTime );
-	void pAddMouseMove( int device, int state, int x, int y, DWORD eventTime );
+	void pAddMousePress(int device, int button, int state, DWORD eventTime);
+	void pAddMouseRelease(int device, int button, int state, DWORD eventTime);
+	void pAddMouseMove(int device, int state, int x, int y, DWORD eventTime);
 	
 	void pUpdateAutoRepeat();
-	void pSetAutoRepeatEnabled( bool enabled );
+	void pSetAutoRepeatEnabled(bool enabled);
 	
-	WPARAM pMapLeftRightKeys( WPARAM virtKey, LPARAM lParam ) const;
+	WPARAM pMapLeftRightKeys(WPARAM virtKey, LPARAM lParam) const;
 };
 
 #endif

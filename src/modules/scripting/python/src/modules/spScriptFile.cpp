@@ -71,11 +71,11 @@ struct sModuleData{
 // Constructor, destructor
 ////////////////////////////
 
-spScriptFile::spScriptFile( ScriptingPython &sp, const char *fullname, const char *path ) :
-pSP( sp )
+spScriptFile::spScriptFile(ScriptingPython &sp, const char *fullname, const char *path) :
+pSP(sp)
 {
-	if( ! fullname || ! path ){
-		DETHROW( deeInvalidParam );
+	if(! fullname || ! path){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFullModuleName = fullname;
@@ -84,12 +84,12 @@ pSP( sp )
 	pPyModuleDefinition = NULL;
 	pPyModule = NULL;
 	
-	const decStringList parts = pFullModuleName.Split( '.' );
-	pModuleName = parts.GetAt( parts.GetCount() - 1 );
+	const decStringList parts = pFullModuleName.Split('.');
+	pModuleName = parts.GetAt(parts.GetCount() - 1);
 }
 
 spScriptFile::~spScriptFile(){
-	if( pPyModuleDefinition ){
+	if(pPyModuleDefinition){
 		delete pPyModuleDefinition;
 		pPyModuleDefinition = NULL;
 	}
@@ -102,18 +102,18 @@ spScriptFile::~spScriptFile(){
 
 
 
-spScriptFile *spScriptFile::GetOwnerClass( PyObject *object ){
-	if( ! object ){
-		DETHROW( deeNullPointer );
+spScriptFile *spScriptFile::GetOwnerClass(PyObject *object){
+	if(! object){
+		DETHROW(deeNullPointer);
 	}
 	
-	return ( ( sModuleData* )PyModule_GetState( object ) )->ownerClass;
+	return ((sModuleData*)PyModule_GetState(object))->ownerClass;
 }
 
 
 
 void spScriptFile::PythonCreate(){
-	pSP.LogInfoFormat( "Script-File %s PythonCreate", pFullModuleName.GetString() );
+	pSP.LogInfoFormat("Script-File %s PythonCreate", pFullModuleName.GetString());
 	
 	pCreateModuleDefinition();
 	pCreateModule();
@@ -121,10 +121,10 @@ void spScriptFile::PythonCreate(){
 }
 
 void spScriptFile::PythonCleanUp(){
-	pSP.LogInfoFormat( "Script-File %s PythonCleanUp", pFullModuleName.GetString() );
+	pSP.LogInfoFormat("Script-File %s PythonCleanUp", pFullModuleName.GetString());
 	
-	if( pPyModule ){
-		Py_DECREF( pPyModule );
+	if(pPyModule){
+		Py_DECREF(pPyModule);
 		pPyModule = NULL;
 	}
 }
@@ -137,17 +137,17 @@ void spScriptFile::PythonCleanUp(){
 void spScriptFile::pCreateModuleDefinition(){
 	decString fullModuleName;
 	
-	if( pPyModuleDefinition ){
+	if(pPyModuleDefinition){
 		delete pPyModuleDefinition;
 		pPyModuleDefinition = NULL;
 	}
 	
 	pPyModuleDefinition = new PyModuleDef;
-	memcpy( pPyModuleDefinition, &vModuleDefinitionInitializer, sizeof( PyMethodDef ) );
+	memcpy(pPyModuleDefinition, &vModuleDefinitionInitializer, sizeof(PyMethodDef));
 	
 	pPyModuleDefinition->m_name = pFullModuleName.GetString();
 	pPyModuleDefinition->m_doc = "Script file module";
-	pPyModuleDefinition->m_size = sizeof( sModuleData );
+	pPyModuleDefinition->m_size = sizeof(sModuleData);
 	pPyModuleDefinition->m_methods = NULL;
 	pPyModuleDefinition->m_reload = NULL;
 	pPyModuleDefinition->m_traverse = NULL;
@@ -156,25 +156,25 @@ void spScriptFile::pCreateModuleDefinition(){
 }
 
 void spScriptFile::pCreateModule(){
-	if( pPyModule ){
-		Py_DECREF( pPyModule );
+	if(pPyModule){
+		Py_DECREF(pPyModule);
 		pPyModule = NULL;
 	}
 	
-	pSP.LogInfoFormat( "Script-File %s create module", pFullModuleName.GetString() );
+	pSP.LogInfoFormat("Script-File %s create module", pFullModuleName.GetString());
 	
-	pPyModule = PyModule_Create( pPyModuleDefinition );
-	if( ! pPyModule ){
-		DETHROW( deeInvalidAction );
+	pPyModule = PyModule_Create(pPyModuleDefinition);
+	if(! pPyModule){
+		DETHROW(deeInvalidAction);
 	}
 	
-	( ( sModuleData* )PyModule_GetState( pPyModule ) )->ownerClass = this;
+	((sModuleData*)PyModule_GetState(pPyModule))->ownerClass = this;
 	
-	PyDict_SetItemString( PyImport_GetModuleDict(), pModuleName.GetString(), pPyModule );
+	PyDict_SetItemString(PyImport_GetModuleDict(), pModuleName.GetString(), pPyModule);
 	
 	decString TEST;
-	TEST.Format( "m=sys.modules['%s']\nfor x in dir(m):\n\tprint( (x,m.__dict__[x]) )\n", pModuleName.GetString() );
-	PyRun_SimpleString( TEST.GetString() );
+	TEST.Format("m=sys.modules['%s']\nfor x in dir(m):\n\tprint((x,m.__dict__[x]))\n", pModuleName.GetString());
+	PyRun_SimpleString(TEST.GetString());
 }
 
 void spScriptFile::pLoadFile(){
@@ -187,34 +187,34 @@ void spScriptFile::pLoadFile(){
 	int size;
 	
 	// determine the look up path. this one is tested against the possible virtual file systems
-	pSP.GetTypeModuleLoader()->ParseImportPath( NULL, pFullModuleName.GetString(), lookupPath );
+	pSP.GetTypeModuleLoader()->ParseImportPath(NULL, pFullModuleName.GetString(), lookupPath);
 	
 	try{
 		// try to load the script file from the matching virtual file system
-		vfsPath.SetFromUnix( pSP.GetScriptPath() );
-		vfsPath.Add( lookupPath );
+		vfsPath.SetFromUnix(pSP.GetScriptPath());
+		vfsPath.Add(lookupPath);
 		
-		if( vfsGame.ExistsFile( vfsPath ) ){
-			pSP.LogInfoFormat( "Loading '%s' in game scripts", vfsPath.GetPathUnix().GetString() );
-			reader = vfsGame.OpenFileForReading( vfsPath );
+		if(vfsGame.ExistsFile(vfsPath)){
+			pSP.LogInfoFormat("Loading '%s' in game scripts", vfsPath.GetPathUnix().GetString());
+			reader = vfsGame.OpenFileForReading(vfsPath);
 			
 		}else{
-			vfsPath.SetFromUnix( "/shared" );
-			vfsPath.Add( lookupPath );
-			pSP.LogInfoFormat( "Looking up '%s' in engine scripts", vfsPath.GetPathUnix().GetString() );
-			reader = vfsShared.OpenFileForReading( vfsPath );
+			vfsPath.SetFromUnix("/shared");
+			vfsPath.Add(lookupPath);
+			pSP.LogInfoFormat("Looking up '%s' in engine scripts", vfsPath.GetPathUnix().GetString());
+			reader = vfsShared.OpenFileForReading(vfsPath);
 		}
 		
 		size = reader->GetLength();
-		reader->SetPosition( 0 );
+		reader->SetPosition(0);
 		
-		content.Set( ' ', size );
-		reader->Read( (char*)content.GetString(), size );
+		content.Set(' ', size);
+		reader->Read((char*)content.GetString(), size);
 		
 		reader->FreeReference();
 		
-	}catch( const deException &e ){
-		if( reader ){
+	}catch(const deException &e){
+		if(reader){
 			reader->FreeReference();
 		}
 		throw;
@@ -226,8 +226,8 @@ void spScriptFile::pLoadFile(){
 	// and local dictionary. the global dictionary is used for the lookup while the compiled
 	// content is added to the local dictionary. hence to get the namespace working as expected
 	// both global and local dictionary has to point to the prepared module dictionary
-	PyObject * const moduleDict = PyModule_GetDict( pPyModule ); // borrowed reference
-	PyDict_SetItemString( moduleDict, "__builtins__", PyEval_GetBuiltins() );
+	PyObject * const moduleDict = PyModule_GetDict(pPyModule); // borrowed reference
+	PyDict_SetItemString(moduleDict, "__builtins__", PyEval_GetBuiltins());
 	
 	// set module parameters
 	PyObject *pyoString;
@@ -237,9 +237,9 @@ void spScriptFile::pLoadFile(){
 	//PyDict_SetItemString( moduleDict, "__path__", Py_None );
 	//Py_DECREF( pyoString );
 	
-	pyoString = PyUnicode_FromFormat( "<%s>", vfsPath.GetPathUnix().GetString() );
-	PyDict_SetItemString( moduleDict, "__file__", pyoString );
-	Py_DECREF( pyoString );
+	pyoString = PyUnicode_FromFormat("<%s>", vfsPath.GetPathUnix().GetString());
+	PyDict_SetItemString(moduleDict, "__file__", pyoString);
+	Py_DECREF(pyoString);
 	
 	//pyoString = PyUnicode_FromString( "" );
 	//PyDict_SetItemString( moduleDict, "__package__", pyoString );
@@ -247,8 +247,8 @@ void spScriptFile::pLoadFile(){
 	
 	//PyDict_SetItemString( moduleDict, "__loader__", myself );
 	
-	if( ! PyRun_StringFlags( content.GetString(), Py_file_input, moduleDict, moduleDict, NULL ) ){
-		DETHROW( deeInvalidAction );
+	if(! PyRun_StringFlags(content.GetString(), Py_file_input, moduleDict, moduleDict, NULL)){
+		DETHROW(deeInvalidAction);
 	}
 }
 

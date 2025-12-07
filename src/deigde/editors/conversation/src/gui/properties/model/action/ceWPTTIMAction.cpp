@@ -44,7 +44,7 @@
 // Static parameters
 //////////////////////
 
-const ceConversationAction::eActionTypes ceWPTTIMAction::ListAddMenuActions[ 19 ] = {
+const ceConversationAction::eActionTypes ceWPTTIMAction::ListAddMenuActions[19] = {
 	ceConversationAction::eatActorAdd,
 	ceConversationAction::eatActorCommand,
 	ceConversationAction::eatActorRemove,
@@ -73,13 +73,13 @@ const int ceWPTTIMAction::ListAddMenuActionsCount = 19;
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAction::ceWPTTIMAction( ceWindowMain &windowMain, eTypes type,
-ceConversation &conversation, ceConversationAction *action ) :
-ceWPTTreeItemModel( windowMain, conversation, type ),
-pAction( action )
+ceWPTTIMAction::ceWPTTIMAction(ceWindowMain &windowMain, eTypes type,
+ceConversation &conversation, ceConversationAction *action) :
+ceWPTTreeItemModel(windowMain, conversation, type),
+pAction(action)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -91,26 +91,26 @@ ceWPTTIMAction::~ceWPTTIMAction(){
 // Management
 ///////////////
 
-ceWPTTIMAction *ceWPTTIMAction::DeepFindAction( ceConversationAction *action ){
-	if( pAction == action ){
+ceWPTTIMAction *ceWPTTIMAction::DeepFindAction(ceConversationAction *action){
+	if(pAction == action){
 		return this;
 		
 	}else{
-		return ceWPTTreeItemModel::DeepFindAction( action );
+		return ceWPTTreeItemModel::DeepFindAction(action);
 	}
 }
 
-void ceWPTTIMAction::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMAction::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(! GetTreeItem()){
 		return;
 	}
 	
 	ceWPTTreeItemModel * const parent = GetParent();
-	if( parent ){
-		parent->ContextMenuAction( contextMenu, GetAction() );
+	if(parent){
+		parent->ContextMenuAction(contextMenu, GetAction());
 		
-	}else if( GetTree() ){
-		GetTree()->ContextMenuAction( contextMenu, GetAction() );
+	}else if(GetTree()){
+		GetTree()->ContextMenuAction(contextMenu, GetAction());
 	}
 }
 
@@ -129,13 +129,13 @@ void ceWPTTIMAction::BuildPlaybackFromHere() const{
 	
 	cePlaybackActionStack &stack = GetConversation().GetPlayback()->GetMainActionStack();
 	cePlaybackActionStackEntry &stackTop = stack.GetTop();
-	if( ! stackTop.GetParentList() ){
-		DETHROW( deeInvalidParam );
+	if(! stackTop.GetParentList()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int actionIndex = stackTop.GetParentList()->IndexOf( pAction );
-	if( actionIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	const int actionIndex = stackTop.GetParentList()->IndexOf(pAction);
+	if(actionIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
-	stackTop.SetNextIndex( actionIndex );
+	stackTop.SetNextIndex(actionIndex);
 }

@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveProperty::meUObjectRemoveProperty( meObject *object, const char *key, const char *value ){
-	if( ! object || ! key || ! value ){
-		DETHROW( deeInvalidParam );
+meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *key, const char *value){
+	if(! object || ! key || ! value){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(! object->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pObject = NULL;
 	
-	SetShortInfo( "Remove object property" );
+	SetShortInfo("Remove object property");
 	
 	pKey = key;
 	pValue = value;
@@ -69,11 +69,11 @@ meUObjectRemoveProperty::~meUObjectRemoveProperty(){
 ///////////////
 
 void meUObjectRemoveProperty::Undo(){
-	pObject->SetProperty( pKey.GetString(), pValue.GetString() );
+	pObject->SetProperty(pKey.GetString(), pValue.GetString());
 }
 
 void meUObjectRemoveProperty::Redo(){
-	pObject->RemoveProperty( pKey.GetString() );
+	pObject->RemoveProperty(pKey.GetString());
 }
 
 
@@ -82,7 +82,7 @@ void meUObjectRemoveProperty::Redo(){
 //////////////////////
 
 void meUObjectRemoveProperty::pCleanUp(){
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }

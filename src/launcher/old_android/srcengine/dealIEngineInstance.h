@@ -68,7 +68,7 @@ public:
 	 * \brief Start engine.
 	 * \returns \em true if successful or \em false if an exception happened.
 	 */
-	virtual bool Start( const char *logfile, const char *cacheAppID ) = 0;
+	virtual bool Start(const char *logfile, const char *cacheAppID) = 0;
 	
 	/**
 	 * \brief Stop engine.
@@ -77,44 +77,44 @@ public:
 	virtual bool Stop() = 0;
 	
 	/** \brief Process input event. */
-	virtual void ProcessInputEvent( const AInputEvent &event ) = 0;
+	virtual void ProcessInputEvent(const AInputEvent &event) = 0;
 	
 	/** \brief Frame update. */
-	virtual bool FrameUpdate( bool &keepRunning ) = 0;
+	virtual bool FrameUpdate(bool &keepRunning) = 0;
 	
 	
 	
 	/** \brief Get module status. */
-	virtual bool GetModuleStatus( const char *moduleName,
-		const char *moduleVersion, int &status ) = 0;
+	virtual bool GetModuleStatus(const char *moduleName,
+		const char *moduleVersion, int &status) = 0;
 	
 	/** \brief Number of module parameters. */
-	virtual bool GetModuleParameterCount( const char *moduleName,
-		const char *moduleVersion, int &parameterCount ) = 0;
+	virtual bool GetModuleParameterCount(const char *moduleName,
+		const char *moduleVersion, int &parameterCount) = 0;
 	
 	/** \brief Module parameter information. */
-	virtual bool GetModuleParameterData( const char *moduleName, const char *moduleVersion,
+	virtual bool GetModuleParameterData(const char *moduleName, const char *moduleVersion,
 		int parameter, const char *&parameterName, const char *&parameterDescription,
-		const char *&parameterValue ) = 0;
+		const char *&parameterValue) = 0;
 	
 	/** \brief Set module parameter value. */
-	virtual bool SetModuleParameterValue( const char *moduleName, const char *moduleVersion,
-		const char *parameter, const char *value ) = 0;
+	virtual bool SetModuleParameterValue(const char *moduleName, const char *moduleVersion,
+		const char *parameter, const char *value) = 0;
 	
 	/** \brief Engine property. */
-	virtual bool GetProperty( int property, const char *&value ) = 0;
+	virtual bool GetProperty(int property, const char *&value) = 0;
 	
 	/** \brief Activate module. */
-	virtual bool ActivateModule( const char *moduleName, const char *moduleVersion ) = 0;
+	virtual bool ActivateModule(const char *moduleName, const char *moduleVersion) = 0;
 	
 	/** \brief Enable or disable module. */
-	virtual bool EnableModule( const char *moduleName, const char *moduleVersion, bool enable ) = 0;
+	virtual bool EnableModule(const char *moduleName, const char *moduleVersion, bool enable) = 0;
 	
 	/** \brief Set command line arguments. */
-	virtual bool SetCmdLineArgs( const char *arguments ) const = 0;
+	virtual bool SetCmdLineArgs(const char *arguments) const = 0;
 	
 	/** \brief Set data directory. */
-	virtual bool SetDataDirectory( const char *directory ) = 0;
+	virtual bool SetDataDirectory(const char *directory) = 0;
 	
 	
 	
@@ -130,12 +130,12 @@ public:
 	 * \param[in] fileOffset Offset in bytes where the content begins. Required for asset files.
 	 * \param[in] fileLength Length of content in bytes. Required for asset files.
 	 */
-	virtual bool OpenDelga( int fileDescriptor, long fileOffset, long fileLength ) = 0;
+	virtual bool OpenDelga(int fileDescriptor, long fileOffset, long fileLength) = 0;
 	
 	
 	
 	/** \brief Add disk directory to virtual file system. */
-	virtual bool VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ) = 0;
+	virtual bool VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory, bool readOnly) = 0;
 	
 	/** \brief Add virtual file system container for module shared data. */
 	virtual bool VFSAddScriptSharedDataDir() = 0;
@@ -146,24 +146,24 @@ public:
 	 * \param[in] vfsRoot Path to show content at in virtual file system.
 	 * \param[in] vfsBase Base path relative to zip archive to show in virtual file system.
 	 */
-	virtual bool VFSAddDelga( const char *vfsRoot, const char *vfsBase ) = 0;
+	virtual bool VFSAddDelga(const char *vfsRoot, const char *vfsBase) = 0;
 	
 	/** \brief Add redirect directory to virtual file system. */
-	virtual bool VFSAddRedirect( const char *root, const char *redirect ) = 0;
+	virtual bool VFSAddRedirect(const char *root, const char *redirect) = 0;
 	
 	/**
 	 * \brief Make modules add stage specific containers to virtual file system.
 	 * \version 1.23
 	 */
-	virtual void ModulesAddVFSContainers( const char *stage ) = 0;
+	virtual void ModulesAddVFSContainers(const char *stage) = 0;
 	
 	
 	
 	/** \brief Create render window. */
-	virtual bool CreateRenderWindow( int width, int height, bool fullScreen, const char *windowTitle ) = 0;
+	virtual bool CreateRenderWindow(int width, int height, bool fullScreen, const char *windowTitle) = 0;
 	
 	/** \brief Start game. */
-	virtual bool StartGame( const char *scriptDirectory, const char *gameObject ) = 0;
+	virtual bool StartGame(const char *scriptDirectory, const char *gameObject) = 0;
 	
 	/** \brief Stop game. */
 	virtual bool StopGame() = 0;

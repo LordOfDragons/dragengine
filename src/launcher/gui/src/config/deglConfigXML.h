@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create configuration xml read/save. */
-	deglConfigXML( deLogger *logger, const char *loggerSource );
+	deglConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** Clean up configuration xml read/save. */
 	virtual ~deglConfigXML();
@@ -56,20 +56,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, deglConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, deglConfiguration &config);
 	
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const deglConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const deglConfiguration &config);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const deglConfiguration &config );
-	void pWriteWindow( decXmlWriter &writer, const deglConfigWindow &window, const char *tagName );
+	void pWriteConfig(decXmlWriter &writer, const deglConfiguration &config);
+	void pWriteWindow(decXmlWriter &writer, const deglConfigWindow &window, const char *tagName);
 	
-	void pReadConfig( const decXmlElementTag &root, deglConfiguration &config );
-	void pReadWindow( const decXmlElementTag &root, deglConfigWindow &window );
+	void pReadConfig(const decXmlElementTag &root, deglConfiguration &config);
+	void pReadWindow(const decXmlElementTag &root, deglConfigWindow &window);
 };
 
 #endif

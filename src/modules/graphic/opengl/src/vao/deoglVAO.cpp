@@ -44,28 +44,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglVAO::deoglVAO( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pVAO( 0 ),
-pIndexSize( 0 ),
-pIndexGLType( GL_NONE ),
-pRTSVAO( NULL )
+deoglVAO::deoglVAO(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pVAO(0),
+pIndexSize(0),
+pIndexGLType(GL_NONE),
+pRTSVAO(NULL)
 {
-	OGL_CHECK( renderThread, pglGenVertexArrays( 1, &pVAO ) );
-	if( ! pVAO ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAO));
+	if(! pVAO){
+		DETHROW(deeOutOfMemory);
 	}
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
 deoglVAO::~deoglVAO(){
-	if( pRTSVAO ){
+	if(pRTSVAO){
 		pRTSVAO->ReturnToPool();
 	}
 	
-	pRenderThread.GetDelayedOperations().DeleteOpenGLVertexArray( pVAO );
-	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	pRenderThread.GetDelayedOperations().DeleteOpenGLVertexArray(pVAO);
+	pRenderThread.GetUniqueKey().Return(pUniqueKey);
 }
 
 
@@ -73,10 +73,10 @@ deoglVAO::~deoglVAO(){
 // Management
 ///////////////
 
-void deoglVAO::SetIndexType( deoglVBOLayout::eIndexTypes indexType ){
+void deoglVAO::SetIndexType(deoglVBOLayout::eIndexTypes indexType){
 	pIndexType = indexType;
 	
-	switch( indexType ){
+	switch(indexType){
 	case deoglVBOLayout::eitUnsignedInt:
 		pIndexSize = 4;
 		pIndexGLType = GL_UNSIGNED_INT;
@@ -105,10 +105,10 @@ void deoglVAO::SetIndexType( deoglVBOLayout::eIndexTypes indexType ){
 
 
 void deoglVAO::EnsureRTSVAO(){
-	if( pRTSVAO ){
+	if(pRTSVAO){
 		return;
 	}
 	
 	pRTSVAO = pRenderThread.GetRenderTaskSharedPool().GetVAO();
-	pRTSVAO->SetVAO( this );
+	pRTSVAO->SetVAO(this);
 }

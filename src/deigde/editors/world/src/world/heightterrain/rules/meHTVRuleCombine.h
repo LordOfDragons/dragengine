@@ -69,7 +69,7 @@ public:
 	meHTVRuleCombine();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleCombine( const meHTVRuleCombine &rule );
+	meHTVRuleCombine(const meHTVRuleCombine &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleCombine();
@@ -78,22 +78,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the x value to use if there is no x input. */
-	inline float GetX() const{ return pX; }
+	inline float GetX() const{return pX;}
 	/** Sets the x value to use if there is no x input. */
-	void SetX( float x );
+	void SetX(float x);
 	/** Retrieves the y value to use if there is no y input. */
-	inline float GetY() const{ return pY; }
+	inline float GetY() const{return pY;}
 	/** Sets the y value to use if there is no y input. */
-	void SetY( float y );
+	void SetY(float y);
 	/** Retrieves the z value to use if there is no z input. */
-	inline float GetZ() const{ return pZ; }
+	inline float GetZ() const{return pZ;}
 	/** Sets the z value to use if there is no z input. */
-	void SetZ( float z );
+	void SetZ(float z);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

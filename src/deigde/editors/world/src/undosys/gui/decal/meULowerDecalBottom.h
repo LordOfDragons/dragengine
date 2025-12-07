@@ -51,7 +51,7 @@ public:
 	typedef deTObjectReference<meULowerDecalBottom> Ref;
 	
 	// constructor, destructor
-	meULowerDecalBottom( meWorld *world, meDecal *decal );
+	meULowerDecalBottom(meWorld *world, meDecal *decal);
 	virtual ~meULowerDecalBottom();
 	
 	// undo and redo operations

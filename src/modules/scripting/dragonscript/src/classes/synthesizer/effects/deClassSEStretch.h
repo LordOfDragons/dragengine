@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSEStretch( deScriptingDragonScript &ds );
+	deClassSEStretch(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSEStretch();
@@ -75,21 +75,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Effect or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerEffectStretch *GetEffect( dsRealObject *myself ) const;
+	deSynthesizerEffectStretch *GetEffect(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizerSource *source );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizerSource *source);
 	
 	/** \brief Pushes a effect. */
-	void PushEffect( dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect );
+	void PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect);
 	
-	inline dsClass *GetClassSEStretchTarget() const{ return pClsSEStretchTarget; }
+	inline dsClass *GetClassSEStretchTarget() const{return pClsSEStretchTarget;}
 	/*@}*/
 	
 	
@@ -107,21 +107,21 @@ private:
 		dsClass *clsSEStretchTarget;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetMinTime );
-	DEF_NATFUNC( nfSetMaxTime );
-	DEF_NATFUNC( nfSetMinPitch );
-	DEF_NATFUNC( nfSetMaxPitch );
+	DEF_NATFUNC(nfSetMinTime);
+	DEF_NATFUNC(nfSetMaxTime);
+	DEF_NATFUNC(nfSetMinPitch);
+	DEF_NATFUNC(nfSetMaxPitch);
 #undef DEF_NATFUNC
 };
 

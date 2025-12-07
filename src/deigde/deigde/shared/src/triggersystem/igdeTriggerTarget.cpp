@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTriggerTarget::igdeTriggerTarget( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+igdeTriggerTarget::igdeTriggerTarget(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -58,16 +58,16 @@ igdeTriggerTarget::~igdeTriggerTarget(){
 // Management
 ///////////////
 
-void igdeTriggerTarget::SetFired( bool fired ){
+void igdeTriggerTarget::SetFired(bool fired){
 	pFired = fired;
 }
 
-void igdeTriggerTarget::SetHasFired( bool hasFired ){
+void igdeTriggerTarget::SetHasFired(bool hasFired){
 	pHasFired = hasFired;
 }
 
 void igdeTriggerTarget::Fire(){
-	if( ! pFired ){
+	if(! pFired){
 		pFired = true;
 		pHasFired = true;
 		NotifyListeners();
@@ -75,14 +75,14 @@ void igdeTriggerTarget::Fire(){
 }
 
 void igdeTriggerTarget::Reset(){
-	if( pFired ){
+	if(pFired){
 		pFired = false;
 		NotifyListeners();
 	}
 }
 
 void igdeTriggerTarget::FullReset(){
-	if( pHasFired || pFired ){
+	if(pHasFired || pFired){
 		pHasFired = false;
 		pFired = false;
 		NotifyListeners();
@@ -91,23 +91,23 @@ void igdeTriggerTarget::FullReset(){
 
 
 
-void igdeTriggerTarget::AddListener( igdeTriggerListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerTarget::AddListener(igdeTriggerListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pListeners.AddIfAbsent( listener );
+	pListeners.AddIfAbsent(listener);
 }
 
-void igdeTriggerTarget::RemoveListener( igdeTriggerListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void igdeTriggerTarget::RemoveListener(igdeTriggerListener *listener){
+	pListeners.RemoveIfPresent(listener);
 }
 
 void igdeTriggerTarget::NotifyListeners(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeTriggerListener* )pListeners.GetAt( i ) )->TriggerTargetChanged( this );
+	for(i=0; i<count; i++){
+		((igdeTriggerListener*)pListeners.GetAt(i))->TriggerTargetChanged(this);
 	}
 }

@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	seWPNode( seWindowProperties &windowProperties );
+	seWPNode(seWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -114,13 +114,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Window properties. */
-	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline seWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline seSkin *GetSkin() const{return pSkin;}
 	
 	/** Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** Skin path changed. */
 	void OnSkinPathChanged();
@@ -163,7 +163,7 @@ public:
 	
 private:
 	/** Update outline for tree item. */
-	void UpdateOutline( igdeTreeItem *item, sePropertyNode *node, const decString &prefix );
+	void UpdateOutline(igdeTreeItem *item, sePropertyNode *node, const decString &prefix);
 };
 
 #endif

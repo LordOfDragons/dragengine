@@ -46,11 +46,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategoriesObjectClass::gdeWPSTIMCategoriesObjectClass( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etCategoriesObjectClass )
+gdeWPSTIMCategoriesObjectClass::gdeWPSTIMCategoriesObjectClass(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etCategoriesObjectClass)
 {
-	SetText( "Object Classes" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText("Object Classes");
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMCategoriesObjectClass::~gdeWPSTIMCategoriesObjectClass(){
@@ -62,22 +62,22 @@ gdeWPSTIMCategoriesObjectClass::~gdeWPSTIMCategoriesObjectClass(){
 ///////////////
 
 gdeWPSTIMCategoryObjectClass *gdeWPSTIMCategoriesObjectClass::GetChildWith(
-gdeCategory* category, bool deep ) const{
-	gdeWPSTIMCategoryObjectClass *child = ( gdeWPSTIMCategoryObjectClass* )GetFirstChild();
+gdeCategory* category, bool deep) const{
+	gdeWPSTIMCategoryObjectClass *child = (gdeWPSTIMCategoryObjectClass*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetCategory() == category ){
+	while(child){
+		if(child->GetCategory() == category){
 			return child;
 		}
 		
-		if( deep ){
-			gdeWPSTIMCategoryObjectClass * const deepChild = child->GetChildWith( category, true );
-			if( deepChild ){
+		if(deep){
+			gdeWPSTIMCategoryObjectClass * const deepChild = child->GetChildWith(category, true);
+			if(deepChild){
 				return deepChild;
 			}
 		}
 		
-		child = ( gdeWPSTIMCategoryObjectClass* )child->GetNext();
+		child = (gdeWPSTIMCategoryObjectClass*)child->GetNext();
 	}
 	
 	return NULL;
@@ -92,27 +92,27 @@ void gdeWPSTIMCategoriesObjectClass::CategoriesChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeCategory * const category = list.GetAt( i );
-		gdeWPSTIMCategoryObjectClass * const modelCategory = GetChildWith( category, false );
+	for(i=0; i<count; i++){
+		gdeCategory * const category = list.GetAt(i);
+		gdeWPSTIMCategoryObjectClass * const modelCategory = GetChildWith(category, false);
 		
-		if( modelCategory ){
+		if(modelCategory){
 			modelCategory->CategoriesChanged();
 			
 		}else{
-			item.TakeOver( new gdeWPSTIMCategoryObjectClass( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+			item.TakeOver(new gdeWPSTIMCategoryObjectClass(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMCategoryObjectClass * const modelCategory = ( gdeWPSTIMCategoryObjectClass* )child;
+	while(child){
+		gdeWPSTIMCategoryObjectClass * const modelCategory = (gdeWPSTIMCategoryObjectClass*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelCategory->GetCategory() ) ){
-			RemoveModel( modelCategory );
+		if(! list.Has(modelCategory->GetCategory())){
+			RemoveModel(modelCategory);
 		}
 	}
 	
@@ -128,40 +128,40 @@ void gdeWPSTIMCategoriesObjectClass::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMCategoryObjectClass( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMCategoryObjectClass(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMCategoriesObjectClass::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMCategoriesObjectClass::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionCategoryObjectClassAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionCategoryObjectClassAdd());
 }
 
-void gdeWPSTIMCategoriesObjectClass::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMCategoriesObjectClass::SelectBestMatching(const char *string){
+	if(! string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	gdeGameDefinition &gameDefinition = GetGameDefinition();
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeCategory * const category = ( ( gdeWPSTIMCategoryObjectClass* )child )->GetCategory();
+	while(child){
+		gdeCategory * const category = ((gdeWPSTIMCategoryObjectClass*)child)->GetCategory();
 		child = child->GetNext();
 		
-		if( category->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(category->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		gameDefinition.SetActiveCategory( category );
-		gameDefinition.SetSelectedObjectType( gdeGameDefinition::eotCategoryObjectClass );
+		gameDefinition.SetActiveCategory(category);
+		gameDefinition.SetSelectedObjectType(gdeGameDefinition::eotCategoryObjectClass);
 		return;
 	}
 }

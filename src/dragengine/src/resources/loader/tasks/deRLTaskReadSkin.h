@@ -45,8 +45,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadSkin( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deSkin *skin );
+	deRLTaskReadSkin(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deSkin *skin);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadSkin();

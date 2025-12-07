@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPViewListener( reWPView &panel );
+	reWPViewListener(reWPView &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPViewListener();
@@ -55,31 +55,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief The root bone changed. */
-	virtual void RootBoneChanged( reRig *rig );
+	virtual void RootBoneChanged(reRig *rig);
 	
 	/** \brief The resource changed. */
-	virtual void ResourceChanged( reRig *rig );
+	virtual void ResourceChanged(reRig *rig);
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged( reRig *rig );
+	virtual void SkyChanged(reRig *rig);
 	
 	/** \brief The environment object changed. */
-	virtual void EnvObjectChanged( reRig *rig );
+	virtual void EnvObjectChanged(reRig *rig);
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( reRig *rig );
+	virtual void ViewChanged(reRig *rig);
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( reRig *rig );
+	virtual void CameraChanged(reRig *rig);
 	
 	/** \brief The camera view changed. */
-	virtual void CameraViewChanged( reRig *rig );
+	virtual void CameraViewChanged(reRig *rig);
 	
 	/** \brief Bone count changed. */
-	virtual void BoneCountChanged( reRig *rig );
+	virtual void BoneCountChanged(reRig *rig);
 	
 	/** \brief A bone changed. */
-	virtual void BoneChanged( reRig *rig, reRigBone *bone );
+	virtual void BoneChanged(reRig *rig, reRigBone *bone);
 	/*@}*/
 };
 

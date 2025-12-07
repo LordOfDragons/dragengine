@@ -45,7 +45,7 @@ public:
 	/** \brief \brief Creates a new string list. */
 	decUnicodeStringList();
 	/** \brief Creates a new string list as a copy of another string list. */
-	decUnicodeStringList( const decUnicodeStringList &list );
+	decUnicodeStringList(const decUnicodeStringList &list);
 	/** \brief Cleans up the string list. */
 	~decUnicodeStringList();
 	/*@}*/
@@ -53,23 +53,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the number of strings. */
-	inline int GetCount() const{ return pStringCount; }
+	inline int GetCount() const{return pStringCount;}
 	/** \brief Retrieves the string at the given index. */
-	const decUnicodeString &GetAt( int index ) const;
+	const decUnicodeString &GetAt(int index) const;
 	/** \brief Sets the string at the given index. */
-	void SetAt( int index, const decUnicodeString &string );
+	void SetAt(int index, const decUnicodeString &string);
 	/** \brief Retrieves the index of the first occurance of a string or -1 if not found. */
-	int IndexOf( const decUnicodeString &string ) const;
+	int IndexOf(const decUnicodeString &string) const;
 	/** \brief Determines if the given string is found one or more times in the list. */
-	bool Has( const decUnicodeString &string ) const;
+	bool Has(const decUnicodeString &string) const;
 	/** \brief Adds a string. */
-	void Add( const decUnicodeString &string );
+	void Add(const decUnicodeString &string);
 	/** \brief Inserts a string. */
-	void InsertAt( const decUnicodeString &string, int index );
+	void InsertAt(const decUnicodeString &string, int index);
 	/** \brief Moves a string to a new position. */
-	void Move( int from, int to );
+	void Move(int from, int to);
 	/** \brief Removes the string from with the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	/** \brief Removes all strings. */
 	void RemoveAll();
 	/** \brief Sorts strings in ascending order. */
@@ -81,26 +81,26 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Retrieves the string at the given index. */
-	const decUnicodeString &operator[]( int index ) const;
+	const decUnicodeString &operator[](int index) const;
 	/** \brief Set this list to the content of another list. */
-	decUnicodeStringList &operator=( const decUnicodeStringList &list );
+	decUnicodeStringList &operator=(const decUnicodeStringList &list);
 	/** \brief Determines if this list is equal to another list. */
-	bool operator==( const decUnicodeStringList &list );
+	bool operator==(const decUnicodeStringList &list);
 	/** \brief Determines if this list is not equal to another list. */
-	bool operator!=( const decUnicodeStringList &list );
+	bool operator!=(const decUnicodeStringList &list);
 	/** \brief Retrieves a new list containing the concatenation of this list and another one. */
-	decUnicodeStringList operator+( const decUnicodeStringList &list ) const;
+	decUnicodeStringList operator+(const decUnicodeStringList &list) const;
 	/** \brief Appends another list to this list. */
-	decUnicodeStringList &operator+=( const decUnicodeStringList &list );
+	decUnicodeStringList &operator+=(const decUnicodeStringList &list);
 	/** \brief Retrieves a new list containing this list with the given string added to it. */
-	decUnicodeStringList operator+( const decUnicodeString &string ) const;
+	decUnicodeStringList operator+(const decUnicodeString &string) const;
 	/** \brief Appends a string to this list. */
-	decUnicodeStringList &operator+=( const decUnicodeString &string );
+	decUnicodeStringList &operator+=(const decUnicodeString &string);
 	/*@}*/
 	
 private:
-	void pSortAscending( int left, int right );
-	void pSortDescending( int left, int right );
+	void pSortAscending(int left, int right);
+	void pSortDescending(int left, int right);
 };
 
 #endif

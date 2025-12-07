@@ -83,7 +83,7 @@ public:
 	/** @name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume(decDCollisionVolume *volume);
-	virtual double VolumeMoveHitsVolume( decDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
+	virtual double VolumeMoveHitsVolume(decDCollisionVolume *volume, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** @name Second Stage Dispatch */
@@ -92,34 +92,34 @@ public:
 	virtual bool CylinderHitsVolume(decDCollisionCylinder *cylinder);
 	virtual bool CapsuleHitsVolume(decDCollisionCapsule *capsule);
 	virtual bool BoxHitsVolume(decDCollisionBox *box);
-	virtual bool TriangleHitsVolume( decDCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( decDCollisionFrustum *frustum );
-	virtual double SphereMoveHitsVolume( decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
-	virtual double CylinderMoveHitsVolume( decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal );
-	virtual double CapsuleMoveHitsVolume( decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal );
-	virtual double BoxMoveHitsVolume( decDCollisionBox *box, const decDVector &displacement, decDVector *normal );
-	virtual double TriangleMoveHitsVolume( decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal );
-	virtual double FrustumMoveHitsVolume( decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal );
-	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
+	virtual bool TriangleHitsVolume(decDCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(decDCollisionFrustum *frustum);
+	virtual double SphereMoveHitsVolume(decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
+	virtual double CylinderMoveHitsVolume(decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
+	virtual double CapsuleMoveHitsVolume(decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
+	virtual double BoxMoveHitsVolume(decDCollisionBox *box, const decDVector &displacement, decDVector *normal);
+	virtual double TriangleMoveHitsVolume(decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal);
+	virtual double FrustumMoveHitsVolume(decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal);
+	virtual double PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** @name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( decDCollisionSphere *sphere );
-	virtual void GetEnclosingBox( decDCollisionBox *box );
+	virtual void GetEnclosingSphere(decDCollisionSphere *sphere);
+	virtual void GetEnclosingBox(decDCollisionBox *box);
 	/*@}*/
 	
 	/** @name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decDVector &point );
+	virtual bool IsPointInside(const decDVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decDVector ClosestPointTo( const decDVector &point );
+	virtual decDVector ClosestPointTo(const decDVector &point);
 	/*@}*/
 	
 	/** @name Visiting */
 	/*{*/
-	virtual void Visit( decDCollisionVolumeVisitor *visitor );
+	virtual void Visit(decDCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** @name Collision Routines */
@@ -142,59 +142,59 @@ public:
 	 * Determines if the given triangle hits this frustum.
 	 * @warning Not implemented yet and always returns false.
 	 */
-	bool TriangleHitsFrustum( decDCollisionTriangle *triangle );
+	bool TriangleHitsFrustum(decDCollisionTriangle *triangle);
 	/**
 	 * Determines if the given frustum hits this frustum.
 	 * @warning Not implemented yet and always returns false.
 	 */
-	bool FrustumHitsFrustum( decDCollisionFrustum *frustum );
+	bool FrustumHitsFrustum(decDCollisionFrustum *frustum);
 	
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double SphereMoveHitsFrustum( decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
+	double SphereMoveHitsFrustum(decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given cylinder to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double CylinderMoveHitsFrustum( decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal );
+	double CylinderMoveHitsFrustum(decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given capsule to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double CapsuleMoveHitsFrustum( decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal );
+	double CapsuleMoveHitsFrustum(decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given box to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double BoxMoveHitsFrustum( decDCollisionBox *box, const decDVector &displacement, decDVector *normal );
+	double BoxMoveHitsFrustum(decDCollisionBox *box, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given triangle to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double TriangleMoveHitsFrustum( decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal );
+	double TriangleMoveHitsFrustum(decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given frustum to move until colliding with this frustum.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double FrustumMoveHitsFrustum( decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal );
+	double FrustumMoveHitsFrustum(decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** @name Collision Routines */
 	/*@{*/
-	inline decDVector GetLeftNormal() const{ return pNormalLeft; }
-	inline decDVector GetRightNormal() const{ return pNormalRight; }
-	inline decDVector GetTopNormal() const{ return pNormalTop; }
-	inline decDVector GetBottomNormal() const{ return pNormalBottom; }
-	inline decDVector GetNearNormal() const{ return pNormalNear; }
-	inline decDVector GetFarNormal() const{ return pNormalFar; }
-	inline double GetLeftDistance() const{ return pDistLeft; }
-	inline double GetRightDistance() const{ return pDistRight; }
-	inline double GetTopDistance() const{ return pDistTop; }
-	inline double GetBottomDistance() const{ return pDistBottom; }
-	inline double GetNearDistance() const{ return pDistNear; }
-	inline double GetFarDistance() const{ return pDistFar; }
+	inline decDVector GetLeftNormal() const{return pNormalLeft;}
+	inline decDVector GetRightNormal() const{return pNormalRight;}
+	inline decDVector GetTopNormal() const{return pNormalTop;}
+	inline decDVector GetBottomNormal() const{return pNormalBottom;}
+	inline decDVector GetNearNormal() const{return pNormalNear;}
+	inline decDVector GetFarNormal() const{return pNormalFar;}
+	inline double GetLeftDistance() const{return pDistLeft;}
+	inline double GetRightDistance() const{return pDistRight;}
+	inline double GetTopDistance() const{return pDistTop;}
+	inline double GetBottomDistance() const{return pDistBottom;}
+	inline double GetNearDistance() const{return pDistNear;}
+	inline double GetFarDistance() const{return pDistFar;}
 	void SetLeftPlane(const decDVector &normal, double dist);
 	void SetRightPlane(const decDVector &normal, double dist);
 	void SetTopPlane(const decDVector &normal, double dist);

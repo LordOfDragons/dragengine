@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProfileSetRequiredExtensions::projUProfileSetRequiredExtensions(
-projProfile *profile, const decStringSet &newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const decStringSet &newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set required extensions" );
+	SetShortInfo("Profile set required extensions");
 	
 	pOldValue = profile->GetRequiredExtensions();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetRequiredExtensions::~projUProfileSetRequiredExtensions(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProfileSetRequiredExtensions::~projUProfileSetRequiredExtensions(){
 ///////////////
 
 void projUProfileSetRequiredExtensions::Undo(){
-	pProfile->SetRequiredExtensions( pOldValue );
+	pProfile->SetRequiredExtensions(pOldValue);
 }
 
 void projUProfileSetRequiredExtensions::Redo(){
-	pProfile->SetRequiredExtensions( pNewValue );
+	pProfile->SetRequiredExtensions(pNewValue);
 }

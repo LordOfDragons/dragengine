@@ -49,28 +49,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeLoadTemplate::igdeLoadTemplate( deLogger *logger ) :
-igdeBaseXML( logger, "IGDEProjectTemplate" ){
+igdeLoadTemplate::igdeLoadTemplate(deLogger *logger) :
+igdeBaseXML(logger, "IGDEProjectTemplate"){
 }
 
 
 // Management
 ///////////////
 
-void igdeLoadTemplate::Load( decBaseFileReader &reader, igdeTemplate &atemplate ){
+void igdeLoadTemplate::Load(decBaseFileReader &reader, igdeTemplate &atemplate){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "projectTemplate" ){
-		DETHROW( deeInvalidParam );
+	if(! root || root->GetName() != "projectTemplate"){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadTemplate( *root, atemplate );
+	pReadTemplate(*root, atemplate);
 }
 
 
@@ -78,169 +78,169 @@ void igdeLoadTemplate::Load( decBaseFileReader &reader, igdeTemplate &atemplate 
 // Private Functions
 //////////////////////
 
-void igdeLoadTemplate::pReadTemplate( const decXmlElementTag &root, igdeTemplate &atemplate ){
+void igdeLoadTemplate::pReadTemplate(const decXmlElementTag &root, igdeTemplate &atemplate){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "name" ){
-			atemplate.SetName( GetCDataString( *tag ) );
+		if(tag->GetName() == "name"){
+			atemplate.SetName(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "description" ){
-			atemplate.SetDescription( ReadMultilineString( *tag ) );
+		}else if(tag->GetName() == "description"){
+			atemplate.SetDescription(ReadMultilineString(*tag));
 			
-		}else if( tag->GetName() == "scriptModule" ){
-			atemplate.SetScriptModule( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "scriptModule"){
+			atemplate.SetScriptModule(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "baseGameDefinition" ){
-			atemplate.GetBaseGameDefinitions().Add( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "baseGameDefinition"){
+			atemplate.GetBaseGameDefinitions().Add(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "file" ){
+		}else if(tag->GetName() == "file"){
 			igdeTemplateFile *file = NULL;
 			
 			try{
 				file = new igdeTemplateFile;
-				pReadFile( *tag, *file );
-				atemplate.GetFiles().Add( file );
+				pReadFile(*tag, *file);
+				atemplate.GetFiles().Add(file);
 				file->FreeReference();
 				
-			}catch( const deException & ){
-				if( file ){
+			}catch(const deException &){
+				if(file){
 					file->FreeReference();
 				}
 				throw;
 			}
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
-void igdeLoadTemplate::pReadFile( const decXmlElementTag &root, igdeTemplateFile &file ){
+void igdeLoadTemplate::pReadFile(const decXmlElementTag &root, igdeTemplateFile &file){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "path" ){
-			file.SetPath( GetCDataString( *tag ) );
+		if(tag->GetName() == "path"){
+			file.SetPath(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "pathRename" ){
-			file.SetPathRename( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "pathRename"){
+			file.SetPathRename(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "pattern" ){
-			file.SetPattern( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "pattern"){
+			file.SetPattern(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "directory" ){
-			const decString directory( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "directory"){
+			const decString directory(GetCDataString(*tag));
 			
-			if( directory == "data" ){
-				file.SetDirectory( igdeTemplateFile::edData );
+			if(directory == "data"){
+				file.SetDirectory(igdeTemplateFile::edData);
 				
-			}else if( directory == "project" ){
-				file.SetDirectory( igdeTemplateFile::edProject );
+			}else if(directory == "project"){
+				file.SetDirectory(igdeTemplateFile::edProject);
 				
 			}else{
-				LogWarnUnknownValue( *tag, directory );
+				LogWarnUnknownValue(*tag, directory);
 			}
 			
-		}else if( tag->GetName() == "replace" ){
+		}else if(tag->GetName() == "replace"){
 			igdeTemplateReplace *replace = NULL;
 			
 			try{
 				replace = new igdeTemplateReplace;
-				pReadReplace( *tag, *replace );
-				file.GetReplacements().Add( replace );
+				pReadReplace(*tag, *replace);
+				file.GetReplacements().Add(replace);
 				replace->FreeReference();
 				
-			}catch( const deException & ){
-				if( replace ){
+			}catch(const deException &){
+				if(replace){
 					replace->FreeReference();
 				}
 				throw;
 			}
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
-void igdeLoadTemplate::pReadReplace( const decXmlElementTag &root, igdeTemplateReplace &replace ){
+void igdeLoadTemplate::pReadReplace(const decXmlElementTag &root, igdeTemplateReplace &replace){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "token" ){
-			replace.SetToken( GetCDataString( *tag ) );
+		if(tag->GetName() == "token"){
+			replace.SetToken(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "value" ){
-			const decString value( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "value"){
+			const decString value(GetCDataString(*tag));
 			
-			if( value == "projectPath" ){
-				replace.SetValue( igdeTemplateReplace::evProjectPath );
+			if(value == "projectPath"){
+				replace.SetValue(igdeTemplateReplace::evProjectPath);
 				
-			}else if( value == "projectPathDirectory" ){
-				replace.SetValue( igdeTemplateReplace::evProjectPathDirectory );
+			}else if(value == "projectPathDirectory"){
+				replace.SetValue(igdeTemplateReplace::evProjectPathDirectory);
 				
-			}else if( value == "dataPath" ){
-				replace.SetValue( igdeTemplateReplace::evDataPath );
+			}else if(value == "dataPath"){
+				replace.SetValue(igdeTemplateReplace::evDataPath);
 				
-			}else if( value == "dataDirectory" ){
-				replace.SetValue( igdeTemplateReplace::evDataDirectory );
+			}else if(value == "dataDirectory"){
+				replace.SetValue(igdeTemplateReplace::evDataDirectory);
 				
-			}else if( value == "projectName" ){
-				replace.SetValue( igdeTemplateReplace::evProjectName );
+			}else if(value == "projectName"){
+				replace.SetValue(igdeTemplateReplace::evProjectName);
 				
-			}else if( value == "projectDescription" ){
-				replace.SetValue( igdeTemplateReplace::evProjectDescription );
+			}else if(value == "projectDescription"){
+				replace.SetValue(igdeTemplateReplace::evProjectDescription);
 				
-			}else if( value == "gameId" ){
-				replace.SetValue( igdeTemplateReplace::evGameId );
+			}else if(value == "gameId"){
+				replace.SetValue(igdeTemplateReplace::evGameId);
 				
-			}else if( value == "gameAliasId" ){
-				replace.SetValue( igdeTemplateReplace::evGameAliasId );
+			}else if(value == "gameAliasId"){
+				replace.SetValue(igdeTemplateReplace::evGameAliasId);
 				
 			}else{
-				LogWarnUnknownValue( *tag, value );
+				LogWarnUnknownValue(*tag, value);
 			}
 			
-		}else if( tag->GetName() == "format" ){
-			const decString format( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "format"){
+			const decString format(GetCDataString(*tag));
 			
-			if( format == "text" ){
-				replace.SetFormat( igdeTemplateReplace::efText );
+			if(format == "text"){
+				replace.SetFormat(igdeTemplateReplace::efText);
 				
-			}else if( format == "stringC" ){
-				replace.SetFormat( igdeTemplateReplace::efStringC );
+			}else if(format == "stringC"){
+				replace.SetFormat(igdeTemplateReplace::efStringC);
 				
-			}else if( format == "xml" ){
-				replace.SetFormat( igdeTemplateReplace::efXml );
+			}else if(format == "xml"){
+				replace.SetFormat(igdeTemplateReplace::efXml);
 				
-			}else if( format == "xmlMultiline" ){
-				replace.SetFormat( igdeTemplateReplace::efXmlMultiline );
+			}else if(format == "xmlMultiline"){
+				replace.SetFormat(igdeTemplateReplace::efXmlMultiline);
 				
 			}else{
-				LogWarnUnknownValue( *tag, format );
+				LogWarnUnknownValue(*tag, format);
 			}
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

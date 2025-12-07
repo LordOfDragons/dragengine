@@ -46,11 +46,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMParticleEmitters::gdeWPSTIMParticleEmitters( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etParticleEmitters )
+gdeWPSTIMParticleEmitters::gdeWPSTIMParticleEmitters(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etParticleEmitters)
 {
-	SetText( "Particle Emitters" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText("Particle Emitters");
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMParticleEmitters::~gdeWPSTIMParticleEmitters(){
@@ -62,14 +62,14 @@ gdeWPSTIMParticleEmitters::~gdeWPSTIMParticleEmitters(){
 ///////////////
 
 gdeWPSTIMParticleEmitter *gdeWPSTIMParticleEmitters::GetChildWith(
-gdeParticleEmitter *particleEmitter ) const{
-	gdeWPSTIMParticleEmitter *child = ( gdeWPSTIMParticleEmitter* )GetFirstChild();
+gdeParticleEmitter *particleEmitter) const{
+	gdeWPSTIMParticleEmitter *child = (gdeWPSTIMParticleEmitter*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetParticleEmitter() == particleEmitter ){
+	while(child){
+		if(child->GetParticleEmitter() == particleEmitter){
 			return child;
 		}
-		child = ( gdeWPSTIMParticleEmitter* )child->GetNext();
+		child = (gdeWPSTIMParticleEmitter*)child->GetNext();
 	}
 	
 	return NULL;
@@ -82,24 +82,24 @@ void gdeWPSTIMParticleEmitters::StructureChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeParticleEmitter * const particleEmitter = list.GetAt( i );
-		gdeWPSTIMParticleEmitter * const modelParticleEmitter = GetChildWith( particleEmitter );
+	for(i=0; i<count; i++){
+		gdeParticleEmitter * const particleEmitter = list.GetAt(i);
+		gdeWPSTIMParticleEmitter * const modelParticleEmitter = GetChildWith(particleEmitter);
 		
-		if( ! modelParticleEmitter ){
-			item.TakeOver( new gdeWPSTIMParticleEmitter( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+		if(! modelParticleEmitter){
+			item.TakeOver(new gdeWPSTIMParticleEmitter(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMParticleEmitter * const modelParticleEmitter = ( gdeWPSTIMParticleEmitter* )child;
+	while(child){
+		gdeWPSTIMParticleEmitter * const modelParticleEmitter = (gdeWPSTIMParticleEmitter*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelParticleEmitter->GetParticleEmitter() ) ){
-			RemoveModel( modelParticleEmitter );
+		if(! list.Has(modelParticleEmitter->GetParticleEmitter())){
+			RemoveModel(modelParticleEmitter);
 		}
 	}
 	
@@ -115,39 +115,39 @@ void gdeWPSTIMParticleEmitters::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMParticleEmitter( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMParticleEmitter(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMParticleEmitters::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMParticleEmitters::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionParticleEmitterAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionParticleEmitterAdd());
 }
 
-void gdeWPSTIMParticleEmitters::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMParticleEmitters::SelectBestMatching(const char *string){
+	if(! string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeParticleEmitter * const particleEmitter = ( ( gdeWPSTIMParticleEmitter* )child )->GetParticleEmitter();
+	while(child){
+		gdeParticleEmitter * const particleEmitter = ((gdeWPSTIMParticleEmitter*)child)->GetParticleEmitter();
 		child = child->GetNext();
 		
-		if( particleEmitter->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(particleEmitter->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		GetGameDefinition().SetActiveParticleEmitter( particleEmitter );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotParticleEmitter );
+		GetGameDefinition().SetActiveParticleEmitter(particleEmitter);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotParticleEmitter);
 		return;
 	}
 }

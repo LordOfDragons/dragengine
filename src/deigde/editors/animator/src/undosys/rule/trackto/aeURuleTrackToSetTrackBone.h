@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTrackToSetTrackBone( aeRuleTrackTo *rule, const char *newName );
+	aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, const char *newName);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetTrackBone();

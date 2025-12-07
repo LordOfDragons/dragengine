@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectColorMatrix( deGraphicOpenGl &ogl, const deEffectColorMatrix &effect );
+	deoglEffectColorMatrix(deGraphicOpenGl &ogl, const deEffectColorMatrix &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffectColorMatrix();
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Effect color matrix engine resource. */
-	inline const deEffectColorMatrix &GetEffectColorMatrix() const{ return pEffectColorMatrix; }
+	inline const deEffectColorMatrix &GetEffectColorMatrix() const{return pEffectColorMatrix;}
 	
 	
 	

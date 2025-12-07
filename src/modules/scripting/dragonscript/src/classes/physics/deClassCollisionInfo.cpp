@@ -53,11 +53,11 @@ struct sCINatDat{
 /////////////////////
 
 // public func new()
-deClassCollisionInfo::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsCI,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid ){
+deClassCollisionInfo::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCI,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid){
 }
-void deClassCollisionInfo::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sCINatDat *nd = ( sCINatDat* )p_GetNativeData( myself );
+void deClassCollisionInfo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sCINatDat *nd = (sCINatDat*)p_GetNativeData(myself);
 	// reset all
 	nd->info = NULL;
 	// create info
@@ -65,17 +65,17 @@ void deClassCollisionInfo::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 }
 
 // public func destructor()
-deClassCollisionInfo::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsCI,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassCollisionInfo::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsCI,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassCollisionInfo::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassCollisionInfo::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCINatDat *nd = ( sCINatDat* )p_GetNativeData( myself );
+	sCINatDat *nd = (sCINatDat*)p_GetNativeData(myself);
 	
-	if( nd->info ){
+	if(nd->info){
 		nd->info->FreeReference();
 		nd->info = NULL;
 	}
@@ -84,328 +84,328 @@ void deClassCollisionInfo::nfDestructor::RunFunction( dsRunTime *rt, dsValue *my
 
 
 // public func int getOwnerBone()
-deClassCollisionInfo::nfGetOwnerBone::nfGetOwnerBone( const sInitData &init ) : dsFunction( init.clsCI,
-"getOwnerBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfGetOwnerBone::nfGetOwnerBone(const sInitData &init) : dsFunction(init.clsCI,
+"getOwnerBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassCollisionInfo::nfGetOwnerBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	rt->PushInt( info.GetOwnerBone() );
+void deClassCollisionInfo::nfGetOwnerBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	rt->PushInt(info.GetOwnerBone());
 }
 
 // public func int getOwnerShape()
-deClassCollisionInfo::nfGetOwnerShape::nfGetOwnerShape( const sInitData &init ) : dsFunction( init.clsCI,
-"getOwnerShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfGetOwnerShape::nfGetOwnerShape(const sInitData &init) : dsFunction(init.clsCI,
+"getOwnerShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassCollisionInfo::nfGetOwnerShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	rt->PushInt( info.GetOwnerShape() );
+void deClassCollisionInfo::nfGetOwnerShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	rt->PushInt(info.GetOwnerShape());
 }
 
 // public func int getOwnerFace()
-deClassCollisionInfo::nfGetOwnerFace::nfGetOwnerFace( const sInitData &init ) : dsFunction( init.clsCI,
-"getOwnerFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfGetOwnerFace::nfGetOwnerFace(const sInitData &init) : dsFunction(init.clsCI,
+"getOwnerFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassCollisionInfo::nfGetOwnerFace::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	rt->PushInt( info.GetOwnerFace() );
+void deClassCollisionInfo::nfGetOwnerFace::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	rt->PushInt(info.GetOwnerFace());
 }
 
 
 
 // public func Collider getCollider()
-deClassCollisionInfo::nfGetCollider::nfGetCollider( const sInitData &init ) : dsFunction( init.clsCI,
-"getCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol ){
+deClassCollisionInfo::nfGetCollider::nfGetCollider(const sInitData &init) : dsFunction(init.clsCI,
+"getCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
-void deClassCollisionInfo::nfGetCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	deClassCollisionInfo *clsCI = ( deClassCollisionInfo* )GetOwnerClass();
-	if( info->IsCollider() ){
-		clsCI->GetClassCollider()->PushCollider( rt, info->GetCollider() );
+void deClassCollisionInfo::nfGetCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
+	deClassCollisionInfo *clsCI = (deClassCollisionInfo*)GetOwnerClass();
+	if(info->IsCollider()){
+		clsCI->GetClassCollider()->PushCollider(rt, info->GetCollider());
 	}else{
-		rt->PushObject( NULL, clsCI->GetClassCollider() );
+		rt->PushObject(NULL, clsCI->GetClassCollider());
 	}
 }
 
 // public func int getBone()
-deClassCollisionInfo::nfGetBone::nfGetBone( const sInitData &init ) : dsFunction( init.clsCI,
-"getBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfGetBone::nfGetBone(const sInitData &init) : dsFunction(init.clsCI,
+"getBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassCollisionInfo::nfGetBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfGetBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	if( info->IsCollider() ){
-		rt->PushInt( info->GetBone() );
+	if(info->IsCollider()){
+		rt->PushInt(info->GetBone());
 	}else{
-		rt->PushInt( -1 );
+		rt->PushInt(-1);
 	}
 }
 
 // public func int getShape()
-deClassCollisionInfo::nfGetShape::nfGetShape( const sInitData &init ) : dsFunction( init.clsCI,
-"getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfGetShape::nfGetShape(const sInitData &init) : dsFunction(init.clsCI,
+"getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassCollisionInfo::nfGetShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
+void deClassCollisionInfo::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
 	
-	if( info.IsCollider() ){
-		rt->PushInt( info.GetShape() );
+	if(info.IsCollider()){
+		rt->PushInt(info.GetShape());
 		
 	}else{
-		rt->PushInt( -1 );
+		rt->PushInt(-1);
 	}
 }
 
 // public func int getFace()
-deClassCollisionInfo::nfGetFace::nfGetFace( const sInitData &init ) : dsFunction( init.clsCI,
-"getFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfGetFace::nfGetFace(const sInitData &init) : dsFunction(init.clsCI,
+"getFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassCollisionInfo::nfGetFace::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfGetFace::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	if( info->IsCollider() ){
-		rt->PushInt( info->GetFace() );
+	if(info->IsCollider()){
+		rt->PushInt(info->GetFace());
 	}else{
-		rt->PushInt( -1 );
+		rt->PushInt(-1);
 	}
 }
 
 // public func bool isCollider()
-deClassCollisionInfo::nfIsCollider::nfIsCollider( const sInitData &init ) : dsFunction( init.clsCI,
-"isCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassCollisionInfo::nfIsCollider::nfIsCollider(const sInitData &init) : dsFunction(init.clsCI,
+"isCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassCollisionInfo::nfIsCollider::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfIsCollider::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushBool( info->IsCollider() );
+	rt->PushBool(info->IsCollider());
 }
 
 // public func bool hasCollision()
-deClassCollisionInfo::nfHasCollision::nfHasCollision( const sInitData &init ) : dsFunction( init.clsCI,
-"hasCollision", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassCollisionInfo::nfHasCollision::nfHasCollision(const sInitData &init) : dsFunction(init.clsCI,
+"hasCollision", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassCollisionInfo::nfHasCollision::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfHasCollision::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushBool( info->HasCollision() );
+	rt->PushBool(info->HasCollision());
 }
 
 // public func bool hasBone()
-deClassCollisionInfo::nfHasBone::nfHasBone( const sInitData &init ) : dsFunction( init.clsCI,
-"hasBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassCollisionInfo::nfHasBone::nfHasBone(const sInitData &init) : dsFunction(init.clsCI,
+"hasBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassCollisionInfo::nfHasBone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfHasBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushBool( info->GetBone() != -1 );
+	rt->PushBool(info->GetBone() != -1);
 }
 
 // public func bool hasShape()
-deClassCollisionInfo::nfHasShape::nfHasShape( const sInitData &init ) : dsFunction( init.clsCI,
-"hasShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassCollisionInfo::nfHasShape::nfHasShape(const sInitData &init) : dsFunction(init.clsCI,
+"hasShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassCollisionInfo::nfHasShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
+void deClassCollisionInfo::nfHasShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
 	
-	rt->PushBool( info.GetShape() != -1 );
+	rt->PushBool(info.GetShape() != -1);
 }
 
 // public func bool hasFace()
-deClassCollisionInfo::nfHasFace::nfHasFace( const sInitData &init ) : dsFunction( init.clsCI,
-"hasFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassCollisionInfo::nfHasFace::nfHasFace(const sInitData &init) : dsFunction(init.clsCI,
+"hasFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassCollisionInfo::nfHasFace::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfHasFace::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushBool( info->GetFace() != -1 );
+	rt->PushBool(info->GetFace() != -1);
 }
 
 
 
 // public func float getParticleLifetime()
-deClassCollisionInfo::nfGetParticleLifetime::nfGetParticleLifetime( const sInitData &init ) : dsFunction( init.clsCI,
-"getParticleLifetime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassCollisionInfo::nfGetParticleLifetime::nfGetParticleLifetime(const sInitData &init) : dsFunction(init.clsCI,
+"getParticleLifetime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassCollisionInfo::nfGetParticleLifetime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
+void deClassCollisionInfo::nfGetParticleLifetime::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
 	
-	rt->PushFloat( info.GetParticleLifetime() );
+	rt->PushFloat(info.GetParticleLifetime());
 }
 
 // public func float getParticleMass()
-deClassCollisionInfo::nfGetParticleMass::nfGetParticleMass( const sInitData &init ) : dsFunction( init.clsCI,
-"getParticleMass", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassCollisionInfo::nfGetParticleMass::nfGetParticleMass(const sInitData &init) : dsFunction(init.clsCI,
+"getParticleMass", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassCollisionInfo::nfGetParticleMass::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
+void deClassCollisionInfo::nfGetParticleMass::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
 	
-	rt->PushFloat( info.GetParticleMass() );
+	rt->PushFloat(info.GetParticleMass());
 }
 
 // public func DVector getParticlePosition()
-deClassCollisionInfo::nfGetParticlePosition::nfGetParticlePosition( const sInitData &init ) : dsFunction( init.clsCI,
-"getParticlePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+deClassCollisionInfo::nfGetParticlePosition::nfGetParticlePosition(const sInitData &init) : dsFunction(init.clsCI,
+"getParticlePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
-void deClassCollisionInfo::nfGetParticlePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	deScriptingDragonScript &ds = *( ( deClassCollisionInfo* )GetOwnerClass() )->GetScriptModule();
+void deClassCollisionInfo::nfGetParticlePosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	deScriptingDragonScript &ds = *((deClassCollisionInfo*)GetOwnerClass())->GetScriptModule();
 	
-	ds.GetClassDVector()->PushDVector( rt, info.GetParticlePosition() );
+	ds.GetClassDVector()->PushDVector(rt, info.GetParticlePosition());
 }
 
 // public func void setParticlePosition( DVector position )
-deClassCollisionInfo::nfSetParticlePosition::nfSetParticlePosition( const sInitData &init ) : dsFunction( init.clsCI,
-"setParticlePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsDVec ); // position
+deClassCollisionInfo::nfSetParticlePosition::nfSetParticlePosition(const sInitData &init) : dsFunction(init.clsCI,
+"setParticlePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsDVec); // position
 }
-void deClassCollisionInfo::nfSetParticlePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	deScriptingDragonScript &ds = *( ( deClassCollisionInfo* )GetOwnerClass() )->GetScriptModule();
+void deClassCollisionInfo::nfSetParticlePosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	deScriptingDragonScript &ds = *((deClassCollisionInfo*)GetOwnerClass())->GetScriptModule();
 	
-	info.SetParticlePosition( ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() ) );
+	info.SetParticlePosition(ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func Vector getParticleVelocity()
-deClassCollisionInfo::nfGetParticleVelocity::nfGetParticleVelocity( const sInitData &init ) : dsFunction( init.clsCI,
-"getParticleVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassCollisionInfo::nfGetParticleVelocity::nfGetParticleVelocity(const sInitData &init) : dsFunction(init.clsCI,
+"getParticleVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassCollisionInfo::nfGetParticleVelocity::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	deScriptingDragonScript &ds = *( ( deClassCollisionInfo* )GetOwnerClass() )->GetScriptModule();
+void deClassCollisionInfo::nfGetParticleVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	deScriptingDragonScript &ds = *((deClassCollisionInfo*)GetOwnerClass())->GetScriptModule();
 	
-	ds.GetClassVector()->PushVector( rt, info.GetParticleVelocity() );
+	ds.GetClassVector()->PushVector(rt, info.GetParticleVelocity());
 }
 
 // public func void setParticleVelocity( Vector velocity )
-deClassCollisionInfo::nfSetParticleVelocity::nfSetParticleVelocity( const sInitData &init ) : dsFunction( init.clsCI,
-"setParticleVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // velocity
+deClassCollisionInfo::nfSetParticleVelocity::nfSetParticleVelocity(const sInitData &init) : dsFunction(init.clsCI,
+"setParticleVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // velocity
 }
-void deClassCollisionInfo::nfSetParticleVelocity::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	deScriptingDragonScript &ds = *( ( deClassCollisionInfo* )GetOwnerClass() )->GetScriptModule();
+void deClassCollisionInfo::nfSetParticleVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	deScriptingDragonScript &ds = *((deClassCollisionInfo*)GetOwnerClass())->GetScriptModule();
 	
-	info.SetParticleVelocity( ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() ) );
+	info.SetParticleVelocity(ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func ParticleCollisionResponse getParticleResponse()
-deClassCollisionInfo::nfGetParticleResponse::nfGetParticleResponse( const sInitData &init ) :
-dsFunction( init.clsCI, "getParticleResponse", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsParticleCollisionResponse ){
+deClassCollisionInfo::nfGetParticleResponse::nfGetParticleResponse(const sInitData &init) :
+dsFunction(init.clsCI, "getParticleResponse", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsParticleCollisionResponse){
 }
-void deClassCollisionInfo::nfGetParticleResponse::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	rt->PushValue( ( ( deClassCollisionInfo* )GetOwnerClass() )->GetClassParticleCollisionResponse()
-		->GetVariable( info.GetParticleResponse() )->GetStaticValue() );
+void deClassCollisionInfo::nfGetParticleResponse::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	rt->PushValue(((deClassCollisionInfo*)GetOwnerClass())->GetClassParticleCollisionResponse()
+		->GetVariable(info.GetParticleResponse())->GetStaticValue());
 }
 
 // public func void setParticleResponse( ParticleCollisionResponse response )
-deClassCollisionInfo::nfSetParticleResponse::nfSetParticleResponse( const sInitData &init ) :
-dsFunction( init.clsCI, "setParticleResponse", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsParticleCollisionResponse ); // response
+deClassCollisionInfo::nfSetParticleResponse::nfSetParticleResponse(const sInitData &init) :
+dsFunction(init.clsCI, "setParticleResponse", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsParticleCollisionResponse); // response
 }
-void deClassCollisionInfo::nfSetParticleResponse::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassCollisionInfo::nfSetParticleResponse::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(! rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deCollisionInfo &info = *( ( ( sCINatDat* )p_GetNativeData( myself ) )->info );
-	info.SetParticleResponse( ( deParticleEmitterType::eCollisionResponses )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deCollisionInfo &info = *(((sCINatDat*)p_GetNativeData(myself))->info);
+	info.SetParticleResponse((deParticleEmitterType::eCollisionResponses)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
 
 
 // public func float getDistance()
-deClassCollisionInfo::nfGetDistance::nfGetDistance( const sInitData &init ) : dsFunction( init.clsCI,
-"getDistance", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassCollisionInfo::nfGetDistance::nfGetDistance(const sInitData &init) : dsFunction(init.clsCI,
+"getDistance", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassCollisionInfo::nfGetDistance::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfGetDistance::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushFloat( info->GetDistance() );
+	rt->PushFloat(info->GetDistance());
 }
 
 // public func Vector getNormal()
-deClassCollisionInfo::nfGetNormal::nfGetNormal( const sInitData &init ) : dsFunction( init.clsCI,
-"getNormal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassCollisionInfo::nfGetNormal::nfGetNormal(const sInitData &init) : dsFunction(init.clsCI,
+"getNormal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassCollisionInfo::nfGetNormal::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	deScriptingDragonScript &ds = *( ( ( deClassCollisionInfo* )GetOwnerClass() )->GetScriptModule() );
-	ds.GetClassVector()->PushVector( rt, info->GetNormal() );
+void deClassCollisionInfo::nfGetNormal::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
+	deScriptingDragonScript &ds = *(((deClassCollisionInfo*)GetOwnerClass())->GetScriptModule());
+	ds.GetClassVector()->PushVector(rt, info->GetNormal());
 }
 
 // public func DVector getPosition()
-deClassCollisionInfo::nfGetPosition::nfGetPosition( const sInitData &init ) : dsFunction( init.clsCI,
-"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+deClassCollisionInfo::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunction(init.clsCI,
+"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
-void deClassCollisionInfo::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	deScriptingDragonScript &ds = *( ( ( deClassCollisionInfo* )GetOwnerClass() )->GetScriptModule() );
-	ds.GetClassDVector()->PushDVector( rt, info->GetPosition() );
+void deClassCollisionInfo::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
+	deScriptingDragonScript &ds = *(((deClassCollisionInfo*)GetOwnerClass())->GetScriptModule());
+	ds.GetClassDVector()->PushDVector(rt, info->GetPosition());
 }
 
 // public func float getImpulse()
-deClassCollisionInfo::nfGetImpulse::nfGetImpulse( const sInitData &init ) : dsFunction( init.clsCI,
-"getImpulse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassCollisionInfo::nfGetImpulse::nfGetImpulse(const sInitData &init) : dsFunction(init.clsCI,
+"getImpulse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassCollisionInfo::nfGetImpulse::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfGetImpulse::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushFloat( info->GetImpulse() );
+	rt->PushFloat(info->GetImpulse());
 }
 
 
 
 // public func float getStopTesting()
-deClassCollisionInfo::nfGetStopTesting::nfGetStopTesting( const sInitData &init ) : dsFunction( init.clsCI,
-"getStopTesting", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassCollisionInfo::nfGetStopTesting::nfGetStopTesting(const sInitData &init) : dsFunction(init.clsCI,
+"getStopTesting", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassCollisionInfo::nfGetStopTesting::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
+void deClassCollisionInfo::nfGetStopTesting::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
 	
-	rt->PushBool( info->GetStopTesting() );
+	rt->PushBool(info->GetStopTesting());
 }
 
 // public func void setStopTesting( bool stopTesting )
-deClassCollisionInfo::nfSetStopTesting::nfSetStopTesting( const sInitData &init ) : dsFunction( init.clsCI,
-"setStopTesting", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // stopTesting
+deClassCollisionInfo::nfSetStopTesting::nfSetStopTesting(const sInitData &init) : dsFunction(init.clsCI,
+"setStopTesting", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // stopTesting
 }
-void deClassCollisionInfo::nfSetStopTesting::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	info->SetStopTesting( rt->GetValue( 0 )->GetBool() );
+void deClassCollisionInfo::nfSetStopTesting::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
+	info->SetStopTesting(rt->GetValue(0)->GetBool());
 }
 
 
 
 // public func bool equals( Object other )
-deClassCollisionInfo::nfEquals::nfEquals( const sInitData &init ) : dsFunction( init.clsCI,
-"equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // other
+deClassCollisionInfo::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsCI,
+"equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // other
 }
-void deClassCollisionInfo::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	deClassCollisionInfo *clsCI = ( deClassCollisionInfo* )GetOwnerClass();
-	dsValue *objOther = rt->GetValue( 0 );
-	if( ! p_IsObjOfType( objOther, clsCI ) ){
-		rt->PushBool( false );
+void deClassCollisionInfo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
+	deClassCollisionInfo *clsCI = (deClassCollisionInfo*)GetOwnerClass();
+	dsValue *objOther = rt->GetValue(0);
+	if(! p_IsObjOfType(objOther, clsCI)){
+		rt->PushBool(false);
 	}else{
-		deCollisionInfo *otherResponse = ( ( sCINatDat* )p_GetNativeData( objOther ) )->info;
-		rt->PushBool( info == otherResponse );
+		deCollisionInfo *otherResponse = ((sCINatDat*)p_GetNativeData(objOther))->info;
+		rt->PushBool(info == otherResponse);
 	}
 }
 
 // public int hashCode()
-deClassCollisionInfo::nfHashCode::nfHashCode( const sInitData &init ) : dsFunction( init.clsCI,
-"hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCollisionInfo::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(init.clsCI,
+"hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassCollisionInfo::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCollisionInfo *info = ( ( sCINatDat* )p_GetNativeData( myself ) )->info;
-	rt->PushInt( ( int )( intptr_t )info );
+void deClassCollisionInfo::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCollisionInfo *info = ((sCINatDat*)p_GetNativeData(myself))->info;
+	rt->PushInt((int)(intptr_t)info);
 }
 
 
@@ -414,25 +414,25 @@ void deClassCollisionInfo::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myse
 ///////////////////////////////
 
 // constructor
-deClassCollisionInfo::deClassCollisionInfo( deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
-dsClass( "CollisionInfo", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassCollisionInfo::deClassCollisionInfo(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("CollisionInfo", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	// set parser info
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	// do the rest
-	p_SetNativeDataSize( sizeof( sCINatDat ) );
+	p_SetNativeDataSize(sizeof(sCINatDat));
 }
 deClassCollisionInfo::~deClassCollisionInfo(){
 }
 
 // management
-void deClassCollisionInfo::CreateClassMembers( dsEngine *engine ){
+void deClassCollisionInfo::CreateClassMembers(dsEngine *engine){
 	pClsCol = pScrMgr->GetClassCollider();
-	pClsParticleCollisionResponse = engine->GetClass( "Dragengine.Scenery.ParticleCollisionResponse" );
+	pClsParticleCollisionResponse = engine->GetClass("Dragengine.Scenery.ParticleCollisionResponse");
 	
 	sInitData init;
 	init.clsCI = this;
@@ -449,65 +449,65 @@ void deClassCollisionInfo::CreateClassMembers( dsEngine *engine ){
 	init.clsParticleCollisionResponse = pClsParticleCollisionResponse;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetOwnerBone( init ) );
-	AddFunction( new nfGetOwnerShape( init ) );
-	AddFunction( new nfGetOwnerFace( init ) );
+	AddFunction(new nfGetOwnerBone(init));
+	AddFunction(new nfGetOwnerShape(init));
+	AddFunction(new nfGetOwnerFace(init));
 	
-	AddFunction( new nfGetCollider( init ) );
-	AddFunction( new nfGetBone( init ) );
-	AddFunction( new nfGetShape( init ) );
-	AddFunction( new nfGetFace( init ) );
-	AddFunction( new nfIsCollider( init ) );
-	AddFunction( new nfHasCollision( init ) );
-	AddFunction( new nfHasBone( init ) );
-	AddFunction( new nfHasShape( init ) );
-	AddFunction( new nfHasFace( init ) );
+	AddFunction(new nfGetCollider(init));
+	AddFunction(new nfGetBone(init));
+	AddFunction(new nfGetShape(init));
+	AddFunction(new nfGetFace(init));
+	AddFunction(new nfIsCollider(init));
+	AddFunction(new nfHasCollision(init));
+	AddFunction(new nfHasBone(init));
+	AddFunction(new nfHasShape(init));
+	AddFunction(new nfHasFace(init));
 	
-	AddFunction( new nfGetParticleLifetime( init ) );
-	AddFunction( new nfGetParticleMass( init ) );
-	AddFunction( new nfGetParticlePosition( init ) );
-	AddFunction( new nfSetParticlePosition( init ) );
-	AddFunction( new nfGetParticleVelocity( init ) );
-	AddFunction( new nfSetParticleVelocity( init ) );
-	AddFunction( new nfGetParticleResponse( init ) );
-	AddFunction( new nfSetParticleResponse( init ) );
+	AddFunction(new nfGetParticleLifetime(init));
+	AddFunction(new nfGetParticleMass(init));
+	AddFunction(new nfGetParticlePosition(init));
+	AddFunction(new nfSetParticlePosition(init));
+	AddFunction(new nfGetParticleVelocity(init));
+	AddFunction(new nfSetParticleVelocity(init));
+	AddFunction(new nfGetParticleResponse(init));
+	AddFunction(new nfSetParticleResponse(init));
 	
-	AddFunction( new nfGetDistance( init ) );
-	AddFunction( new nfGetNormal( init ) );
-	AddFunction( new nfGetPosition( init ) );
-	AddFunction( new nfGetImpulse( init ) );
+	AddFunction(new nfGetDistance(init));
+	AddFunction(new nfGetNormal(init));
+	AddFunction(new nfGetPosition(init));
+	AddFunction(new nfGetImpulse(init));
 	
-	AddFunction( new nfGetStopTesting( init ) );
-	AddFunction( new nfSetStopTesting( init ) );
+	AddFunction(new nfGetStopTesting(init));
+	AddFunction(new nfSetStopTesting(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deCollisionInfo *deClassCollisionInfo::GetInfo( dsRealObject *myself ) const{
-	if( ! myself ){
+deCollisionInfo *deClassCollisionInfo::GetInfo(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sCINatDat* )p_GetNativeData( myself->GetBuffer() ) )->info;
+	return ((sCINatDat*)p_GetNativeData(myself->GetBuffer()))->info;
 }
 
-void deClassCollisionInfo::PushInfo( dsRunTime *rt, deCollisionInfo *info ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassCollisionInfo::PushInfo(dsRunTime *rt, deCollisionInfo *info){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! info ){
-		rt->PushObject( NULL, this );
+	if(! info){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sCINatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->info = info;
+	rt->CreateObjectNakedOnStack(this);
+	((sCINatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->info = info;
 	info->AddReference();
 }

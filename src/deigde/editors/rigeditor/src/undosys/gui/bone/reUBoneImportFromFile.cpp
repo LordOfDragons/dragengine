@@ -48,9 +48,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneImportFromFile::reUBoneImportFromFile( reRig *rig, reRig *importedRig ){
-	if( ! rig || ! importedRig ){
-		DETHROW( deeInvalidParam );
+reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
+	if(! rig || ! importedRig){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const reSelectionBones &selection = *rig->GetSelectionBones();
@@ -70,20 +70,20 @@ reUBoneImportFromFile::reUBoneImportFromFile( reRig *rig, reRig *importedRig ){
 	pImportShapes = true;
 	pImportConstraints = true;
 	
-	SetShortInfo( "Import Bones" );
+	SetShortInfo("Import Bones");
 	
 	try{
-		if( boneCount > 0 ){
+		if(boneCount > 0){
 			// create bones array
-			pBones = new sBone[ boneCount ];
+			pBones = new sBone[boneCount];
 			
 			// store bones if found in the imported rig
-			for( b=0; b<boneCount; b++ ){
-				bone = selection.GetBoneAt( b );
-				importBone = importedRig->GetBoneNamed( bone->GetName().GetString() );
+			for(b=0; b<boneCount; b++){
+				bone = selection.GetBoneAt(b);
+				importBone = importedRig->GetBoneNamed(bone->GetName().GetString());
 				
-				if( importBone ){
-					sBone &ubone = pBones[ pBoneCount ];
+				if(importBone){
+					sBone &ubone = pBones[pBoneCount];
 					
 					// clear the state before increasing the bone count
 					ubone.bone = NULL;
@@ -105,22 +105,22 @@ reUBoneImportFromFile::reUBoneImportFromFile( reRig *rig, reRig *importedRig ){
 					ubone.oldIKLimitsLower = bone->GetIKLimitsLower();
 					ubone.oldIKLimitsUpper = bone->GetIKLimitsUpper();
 					ubone.oldIKResistance = bone->GetIKResistance();
-					ubone.oldIKLocked[ 0 ] = bone->GetIKLockedX();
-					ubone.oldIKLocked[ 1 ] = bone->GetIKLockedY();
-					ubone.oldIKLocked[ 2 ] = bone->GetIKLockedZ();
+					ubone.oldIKLocked[0] = bone->GetIKLockedX();
+					ubone.oldIKLocked[1] = bone->GetIKLockedY();
+					ubone.oldIKLocked[2] = bone->GetIKLockedZ();
 					
 					ubone.oldShapes = new reRigShapeList;
 					
 					shapeCount = bone->GetShapeCount();
-					for( s=0; s<shapeCount; s++ ){
-						ubone.oldShapes->AddShape( bone->GetShapeAt( s ) );
+					for(s=0; s<shapeCount; s++){
+						ubone.oldShapes->AddShape(bone->GetShapeAt(s));
 					}
 					
 					ubone.oldConstraints = new reRigConstraintList;
 					
 					constraintCount = bone->GetConstraintCount();
-					for( c=0; c<constraintCount; c++ ){
-						ubone.oldConstraints->AddConstraint( bone->GetConstraintAt( c ) );
+					for(c=0; c<constraintCount; c++){
+						ubone.oldConstraints->AddConstraint(bone->GetConstraintAt(c));
 					}
 					
 					ubone.importBone = importBone;
@@ -129,7 +129,7 @@ reUBoneImportFromFile::reUBoneImportFromFile( reRig *rig, reRig *importedRig ){
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -147,19 +147,19 @@ reUBoneImportFromFile::~reUBoneImportFromFile(){
 // Undo and Redo operations
 /////////////////////////////
 
-void reUBoneImportFromFile::SetScale( float scale ){
+void reUBoneImportFromFile::SetScale(float scale){
 	pScale = scale;
 }
 
-void reUBoneImportFromFile::SetImportBoneProperties( bool import ){
+void reUBoneImportFromFile::SetImportBoneProperties(bool import){
 	pImportBoneProperties = import;
 }
 
-void reUBoneImportFromFile::SetImportShapes( bool import ){
+void reUBoneImportFromFile::SetImportShapes(bool import){
 	pImportShapes = import;
 }
 
-void reUBoneImportFromFile::SetImportConstraints( bool import ){
+void reUBoneImportFromFile::SetImportConstraints(bool import){
 	pImportConstraints = import;
 }
 
@@ -171,37 +171,37 @@ void reUBoneImportFromFile::Undo(){
 	reRigBone *bone;
 	int b;
 	
-	for( b=0; b<pBoneCount; b++ ){
-		sBone &ubone = pBones[ b ];
+	for(b=0; b<pBoneCount; b++){
+		sBone &ubone = pBones[b];
 		bone = ubone.bone;
 		
-		if( pImportBoneProperties ){
-			bone->SetCentralMassPoint( ubone.oldCMP );
-			bone->SetMass( ubone.oldMass );
-			bone->SetDynamic( ubone.oldDynamic );
-			bone->SetIKLimitsLower( ubone.oldIKLimitsLower );
-			bone->SetIKLimitsUpper( ubone.oldIKLimitsUpper );
-			bone->SetIKResistance( ubone.oldIKResistance );
-			bone->SetIKLockedX( ubone.oldIKLocked[ 0 ] );
-			bone->SetIKLockedY( ubone.oldIKLocked[ 1 ] );
-			bone->SetIKLockedZ( ubone.oldIKLocked[ 2 ] );
+		if(pImportBoneProperties){
+			bone->SetCentralMassPoint(ubone.oldCMP);
+			bone->SetMass(ubone.oldMass);
+			bone->SetDynamic(ubone.oldDynamic);
+			bone->SetIKLimitsLower(ubone.oldIKLimitsLower);
+			bone->SetIKLimitsUpper(ubone.oldIKLimitsUpper);
+			bone->SetIKResistance(ubone.oldIKResistance);
+			bone->SetIKLockedX(ubone.oldIKLocked[0]);
+			bone->SetIKLockedY(ubone.oldIKLocked[1]);
+			bone->SetIKLockedZ(ubone.oldIKLocked[2]);
 		}
 		
-		if( pImportShapes ){
+		if(pImportShapes){
 			bone->RemoveAllShapes();
 			const reRigShapeList &oldShapes = *ubone.oldShapes;
 			shapeCount = oldShapes.GetShapeCount();
-			for( s=0; s<shapeCount; s++ ){
-				bone->AddShape( oldShapes.GetShapeAt( s ) );
+			for(s=0; s<shapeCount; s++){
+				bone->AddShape(oldShapes.GetShapeAt(s));
 			}
 		}
 		
-		if( pImportConstraints ){
+		if(pImportConstraints){
 			bone->RemoveAllConstraints();
 			const reRigConstraintList &oldConstraints = *ubone.oldConstraints;
 			constraintCount = oldConstraints.GetConstraintCount();
-			for( c=0; c<constraintCount; c++ ){
-				bone->AddConstraint( oldConstraints.GetConstraintAt( c ) );
+			for(c=0; c<constraintCount; c++){
+				bone->AddConstraint(oldConstraints.GetConstraintAt(c));
 			}
 		}
 	}
@@ -217,58 +217,58 @@ void reUBoneImportFromFile::Redo(){
 	int b;
 	
 	try{
-		for( b=0; b<pBoneCount; b++ ){
-			sBone &ubone = pBones[ b ];
+		for(b=0; b<pBoneCount; b++){
+			sBone &ubone = pBones[b];
 			importBone = ubone.importBone;
 			bone = ubone.bone;
 			
-			if( pImportBoneProperties ){
-				bone->SetCentralMassPoint( importBone->GetCentralMassPoint() * pScale );
-				bone->SetMass( importBone->GetMass() );
-				bone->SetDynamic( importBone->GetDynamic() );
-				bone->SetIKLimitsLower( importBone->GetIKLimitsLower() );
-				bone->SetIKLimitsUpper( importBone->GetIKLimitsUpper() );
-				bone->SetIKResistance( importBone->GetIKResistance() );
-				bone->SetIKLockedX( importBone->GetIKLockedX() );
-				bone->SetIKLockedY( importBone->GetIKLockedY() );
-				bone->SetIKLockedZ( importBone->GetIKLockedZ() );
+			if(pImportBoneProperties){
+				bone->SetCentralMassPoint(importBone->GetCentralMassPoint() * pScale);
+				bone->SetMass(importBone->GetMass());
+				bone->SetDynamic(importBone->GetDynamic());
+				bone->SetIKLimitsLower(importBone->GetIKLimitsLower());
+				bone->SetIKLimitsUpper(importBone->GetIKLimitsUpper());
+				bone->SetIKResistance(importBone->GetIKResistance());
+				bone->SetIKLockedX(importBone->GetIKLockedX());
+				bone->SetIKLockedY(importBone->GetIKLockedY());
+				bone->SetIKLockedZ(importBone->GetIKLockedZ());
 			}
 			
-			if( pImportShapes ){
+			if(pImportShapes){
 				bone->RemoveAllShapes();
 				shapeCount = importBone->GetShapeCount();
-				for( s=0; s<shapeCount; s++ ){
-					shape = importBone->GetShapeAt( s )->Duplicate();
-					shape->Scale( pScale );
-					bone->AddShape( shape );
+				for(s=0; s<shapeCount; s++){
+					shape = importBone->GetShapeAt(s)->Duplicate();
+					shape->Scale(pScale);
+					bone->AddShape(shape);
 					shape->FreeReference();
 					shape = NULL;
 				}
 			}
 			
-			if( pImportConstraints ){
+			if(pImportConstraints){
 				bone->RemoveAllConstraints();
 				constraintCount = importBone->GetConstraintCount();
-				for( c=0; c<constraintCount; c++ ){
-					constraint = importBone->GetConstraintAt( c )->Duplicate();
-					constraint->Scale( pScale );
+				for(c=0; c<constraintCount; c++){
+					constraint = importBone->GetConstraintAt(c)->Duplicate();
+					constraint->Scale(pScale);
 					
-					if( constraint->GetConstraintBone() ){
-						constraint->SetConstraintBone( pRig->GetBoneNamed( constraint->GetConstraintBone()->GetName().GetString() ) );
+					if(constraint->GetConstraintBone()){
+						constraint->SetConstraintBone(pRig->GetBoneNamed(constraint->GetConstraintBone()->GetName().GetString()));
 					}
 					
-					bone->AddConstraint( constraint );
+					bone->AddConstraint(constraint);
 					constraint->FreeReference();
 					constraint = NULL;
 				}
 			}
 		}
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			shape->FreeReference();
 		}
-		if( constraint ){
+		if(constraint){
 			constraint->FreeReference();
 		}
 		throw;
@@ -281,21 +281,21 @@ void reUBoneImportFromFile::Redo(){
 //////////////////////
 
 void reUBoneImportFromFile::pCleanUp(){
-	if( pBones ){
-		while( pBoneCount > 0 ){
+	if(pBones){
+		while(pBoneCount > 0){
 			pBoneCount--;
-			sBone &ubone = pBones[ pBoneCount ];
+			sBone &ubone = pBones[pBoneCount];
 			
-			if( ubone.oldConstraints ){
+			if(ubone.oldConstraints){
 				delete ubone.oldConstraints;
 			}
-			if( ubone.oldShapes ){
+			if(ubone.oldShapes){
 				delete ubone.oldShapes;
 			}
-			if( ubone.importBone ){
+			if(ubone.importBone){
 				ubone.importBone->FreeReference();
 			}
-			if( ubone.bone ){
+			if(ubone.bone){
 				ubone.bone->FreeReference();
 			}
 		}
@@ -303,7 +303,7 @@ void reUBoneImportFromFile::pCleanUp(){
 		delete [] pBones;
 	}
 	
-	if( pRig ){
+	if(pRig){
 		pRig->FreeReference();
 	}
 }

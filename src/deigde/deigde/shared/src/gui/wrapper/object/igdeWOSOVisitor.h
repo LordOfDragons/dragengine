@@ -60,34 +60,34 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit sub object. */
-	virtual void VisitSubObject( igdeWOSubObject &subObject );
+	virtual void VisitSubObject(igdeWOSubObject &subObject);
 	
 	/** \brief Visit billboard. */
-	virtual void VisitBillboard( igdeWOSOBillboard &billboard );
+	virtual void VisitBillboard(igdeWOSOBillboard &billboard);
 	
 	/** \brief Visit light. */
-	virtual void VisitLight( igdeWOSOLight &light );
+	virtual void VisitLight(igdeWOSOLight &light);
 	
 	/** \brief Visit speaker. */
-	virtual void VisitSpeaker( igdeWOSOSpeaker &speaker );
+	virtual void VisitSpeaker(igdeWOSOSpeaker &speaker);
 	
 	/** \brief Visit particle emitter. */
-	virtual void VisitParticleEmitter( igdeWOSOParticleEmitter &particleEmitter );
+	virtual void VisitParticleEmitter(igdeWOSOParticleEmitter &particleEmitter);
 	
 	/** \brief Visit particle emitter. */
-	virtual void VisitForceField( igdeWOSOForceField &forceField );
+	virtual void VisitForceField(igdeWOSOForceField &forceField);
 	
 	/** \brief Visit environment map probe. */
-	virtual void VisitEnvMapProbe( igdeWOSOEnvMapProbe &envMapProbe );
+	virtual void VisitEnvMapProbe(igdeWOSOEnvMapProbe &envMapProbe);
 	
 	/** \brief Visit navigation space. */
-	virtual void VisitNavigationSpace( igdeWOSONavigationSpace &navigationSpace );
+	virtual void VisitNavigationSpace(igdeWOSONavigationSpace &navigationSpace);
 	
 	/** \brief Visit navigation blocker. */
-	virtual void VisitNavigationBlocker( igdeWOSONavigationBlocker &navigationBlocker );
+	virtual void VisitNavigationBlocker(igdeWOSONavigationBlocker &navigationBlocker);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( igdeWOSOComponent &component );
+	virtual void VisitComponent(igdeWOSOComponent &component);
 	
 	/** \brief Visit world. */
 	virtual void VisitWorld(igdeWOSOWorld &world);

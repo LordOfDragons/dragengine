@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCaptureCanvasList::deoglCaptureCanvasList( deGraphicOpenGl &ogl ) :
-pOgl( ogl ),
-pCaptureCanvas( false ),
-pDirty( false ){
+deoglCaptureCanvasList::deoglCaptureCanvasList(deGraphicOpenGl &ogl) :
+pOgl(ogl),
+pCaptureCanvas(false),
+pDirty(false){
 }
 
 deoglCaptureCanvasList::~deoglCaptureCanvasList(){
@@ -56,17 +56,17 @@ int deoglCaptureCanvasList::GetCount() const{
 	return pCaptureCanvas.GetCount();
 }
 
-deoglCaptureCanvas *deoglCaptureCanvasList::GetAt( int index ) const{
-	return ( deoglCaptureCanvas* )pCaptureCanvas.GetAt( index );
+deoglCaptureCanvas *deoglCaptureCanvasList::GetAt(int index) const{
+	return (deoglCaptureCanvas*)pCaptureCanvas.GetAt(index);
 }
 
-void deoglCaptureCanvasList::Add( deoglCaptureCanvas *captureCanvas ){
-	pCaptureCanvas.Add( captureCanvas );
+void deoglCaptureCanvasList::Add(deoglCaptureCanvas *captureCanvas){
+	pCaptureCanvas.Add(captureCanvas);
 	pDirty = true;
 }
 
-void deoglCaptureCanvasList::Remove( deoglCaptureCanvas *captureCanvas ){
-	pCaptureCanvas.Remove( captureCanvas );
+void deoglCaptureCanvasList::Remove(deoglCaptureCanvas *captureCanvas){
+	pCaptureCanvas.Remove(captureCanvas);
 	pDirty = true;
 }
 
@@ -82,18 +82,18 @@ void deoglCaptureCanvasList::SyncToRender(){
 	int i;
 	
 	// sync to render
-	for( i=0; i<count; i++ ){
-		( ( deoglCaptureCanvas* )pCaptureCanvas.GetAt( i ) )->SyncToRender();
+	for(i=0; i<count; i++){
+		((deoglCaptureCanvas*)pCaptureCanvas.GetAt(i))->SyncToRender();
 	}
 	
 	// if dirty synchronize list of capture canvas with render thread. this happens only a few times
-	if( pDirty ){
+	if(pDirty){
 		decObjectOrderedSet &list = pOgl.GetRenderThread().GetRCaptureCanvasList();
 		
 		list.RemoveAll();
 		
-		for( i=0; i<count; i++ ){
-			list.Add( ( ( deoglCaptureCanvas* )pCaptureCanvas.GetAt( i ) )->GetRCaptureCanvas() );
+		for(i=0; i<count; i++){
+			list.Add(((deoglCaptureCanvas*)pCaptureCanvas.GetAt(i))->GetRCaptureCanvas());
 		}
 		
 		pDirty = false;

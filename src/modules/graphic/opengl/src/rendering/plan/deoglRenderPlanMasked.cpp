@@ -40,16 +40,16 @@
 ////////////////////////////
 
 deoglRenderPlanMasked::deoglRenderPlanMasked() :
-pPlan( NULL ),
-pComponent( NULL ),
-pComponentTexture( 0 ),
-pUseClipPlane( false ),
-pClipNormal( 0.0f, 1.0f, 0.0f ),
-pClipDistance( 0.0f ),
-pClipNormalStereo( 0.0f, 1.0f, 0.0f ),
-pClipDistanceStereo( 0.0f ),
-pStencilMask( 0 ),
-pParentStencilMask( 0 ){
+pPlan(NULL),
+pComponent(NULL),
+pComponentTexture(0),
+pUseClipPlane(false),
+pClipNormal(0.0f, 1.0f, 0.0f),
+pClipDistance(0.0f),
+pClipNormalStereo(0.0f, 1.0f, 0.0f),
+pClipDistanceStereo(0.0f),
+pStencilMask(0),
+pParentStencilMask(0){
 }
 
 deoglRenderPlanMasked::~deoglRenderPlanMasked(){
@@ -60,12 +60,12 @@ deoglRenderPlanMasked::~deoglRenderPlanMasked(){
 // Management
 ///////////////
 
-void deoglRenderPlanMasked::SetPlan( deoglRenderPlan *plan ){
-	if( plan == pPlan ){
+void deoglRenderPlanMasked::SetPlan(deoglRenderPlan *plan){
+	if(plan == pPlan){
 		return;
 	}
 	
-	if( pPlan ){
+	if(pPlan){
 		// important or strange segfaults can happen. for example lights are stored as
 		// pointers without refcounting. if this clean up is missing the light can be
 		// destroyed while the plan is not used. then the next time the plan is used
@@ -80,44 +80,44 @@ void deoglRenderPlanMasked::SetPlan( deoglRenderPlan *plan ){
 	pComponentTexture = 0;
 	
 	pUseClipPlane = false;
-	pClipNormal.Set( 0.0f, 1.0f, 0.0f );
+	pClipNormal.Set(0.0f, 1.0f, 0.0f);
 	pClipDistance = 0.0f;
-	pClipNormalStereo.Set( 0.0f, 1.0f, 0.0f );
+	pClipNormalStereo.Set(0.0f, 1.0f, 0.0f);
 	pClipDistanceStereo = 0.0f;
 	
 	pStencilMask = 0;
 	pParentStencilMask = 0;
 }
 
-void deoglRenderPlanMasked::SetComponent( deoglRComponent *component, int texture ){
+void deoglRenderPlanMasked::SetComponent(deoglRComponent *component, int texture){
 	pComponent = component;
 	pComponentTexture = texture;
 }
 
-void deoglRenderPlanMasked::SetUseClipPlane( bool useClipPlane ){
+void deoglRenderPlanMasked::SetUseClipPlane(bool useClipPlane){
 	pUseClipPlane = useClipPlane;
 }
 
-void deoglRenderPlanMasked::SetClipNormal( const decVector &normal ){
+void deoglRenderPlanMasked::SetClipNormal(const decVector &normal){
 	pClipNormal = normal;
 }
 
-void deoglRenderPlanMasked::SetClipDistance( float distance ){
+void deoglRenderPlanMasked::SetClipDistance(float distance){
 	pClipDistance = distance;
 }
 
-void deoglRenderPlanMasked::SetClipNormalStereo( const decVector &normal ){
+void deoglRenderPlanMasked::SetClipNormalStereo(const decVector &normal){
 	pClipNormalStereo = normal;
 }
 
-void deoglRenderPlanMasked::SetClipDistanceStereo( float distance ){
+void deoglRenderPlanMasked::SetClipDistanceStereo(float distance){
 	pClipDistanceStereo = distance;
 }
 
-void deoglRenderPlanMasked::SetStencilMask( int mask ){
+void deoglRenderPlanMasked::SetStencilMask(int mask){
 	pStencilMask = mask;
 }
 
-void deoglRenderPlanMasked::SetParentStencilMask( int mask ){
+void deoglRenderPlanMasked::SetParentStencilMask(int mask){
 	pParentStencilMask = mask;
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rig constraint dof. */
-	reRigConstraintDof( reRigConstraint &constraint, deColliderConstraint::eDegreesOfFreedom dofIndex );
+	reRigConstraintDof(reRigConstraint &constraint, deColliderConstraint::eDegreesOfFreedom dofIndex);
 	
 	/** Clean up rig constraint dof. */
 	~reRigConstraintDof();
@@ -61,52 +61,52 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent rig constraint. */
-	inline reRigConstraint &GetRigConstraint() const{ return pRigConstraint; }
+	inline reRigConstraint &GetRigConstraint() const{return pRigConstraint;}
 	
 	/** Dof index. */
-	inline deColliderConstraint::eDegreesOfFreedom GetDofIndex() const{ return pDofIndex; }
+	inline deColliderConstraint::eDegreesOfFreedom GetDofIndex() const{return pDofIndex;}
 	
 	/** Equality threshold to use for lower and upper limit. */
 	float GetThresholdLimits() const;
 	
 	/** Lower limit. */
-	inline float GetLowerLimit() const{ return pLowerLimit; }
+	inline float GetLowerLimit() const{return pLowerLimit;}
 	
 	/** Set lower limit. */
-	void SetLowerLimit( float lowerLimit );
+	void SetLowerLimit(float lowerLimit);
 	
 	/** Upper limit. */
-	inline float GetUpperLimit() const{ return pUpperLimit; }
+	inline float GetUpperLimit() const{return pUpperLimit;}
 	
 	/** Set upper limit. */
-	void SetUpperLimit( float upperLimit );
+	void SetUpperLimit(float upperLimit);
 	
 	/** Static friction coefficient. */
-	inline float GetStaticFriction() const{ return pStaticFriction; }
+	inline float GetStaticFriction() const{return pStaticFriction;}
 	
 	/** Set static friction coefficient. */
-	void SetStaticFriction( float friction );
+	void SetStaticFriction(float friction);
 	
 	/** Kinematic friction coefficient. */
-	inline float GetKinematicFriction() const{ return pKinematicFriction; }
+	inline float GetKinematicFriction() const{return pKinematicFriction;}
 	
 	/** Set kinematic friction coefficient. */
-	void SetKinematicFriction( float friction );
+	void SetKinematicFriction(float friction);
 	
 	/** Spring stiffness. */
-	inline float GetSpringStiffness() const{ return pSpringStiffness; }
+	inline float GetSpringStiffness() const{return pSpringStiffness;}
 	
 	/** Set spring stiffness. */
-	void SetSpringStiffness( float stiffness );
+	void SetSpringStiffness(float stiffness);
 	
 	/** Update engine constraint dof. */
-	void UpdateEngineDof( deColliderConstraintDof &engDof ) const;
+	void UpdateEngineDof(deColliderConstraintDof &engDof) const;
 	
 	/** Set from engine constraint dof. */
-	void SetFromEngineDof( const deColliderConstraintDof &engDof );
+	void SetFromEngineDof(const deColliderConstraintDof &engDof);
 	
 	/** Set parameters from another degree of freedom. */
-	void SetParametersFrom( const reRigConstraintDof &dof );
+	void SetParametersFrom(const reRigConstraintDof &dof);
 	
 	/** Notify all that the constraint dof changed. */
 	void NotifyAllConstraintDofChanged();

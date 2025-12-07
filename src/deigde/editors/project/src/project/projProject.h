@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project. */
-	projProject( igdeEnvironment *environment );
+	projProject(igdeEnvironment *environment);
 	
 	/** \brief Clean up project. */
 	virtual ~projProject();
@@ -74,31 +74,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script directory. */
-	inline const decString &GetScriptDirectory() const{ return pScriptDirectory; }
+	inline const decString &GetScriptDirectory() const{return pScriptDirectory;}
 	
 	/** \brief Set script directory. */
-	void SetScriptDirectory( const char *directory );
+	void SetScriptDirectory(const char *directory);
 	
 	/** \brief Game object. */
-	inline const decString &GetGameObject() const{ return pGameObject; }
+	inline const decString &GetGameObject() const{return pGameObject;}
 	
 	/** \brief Set game object. */
-	void SetGameObject( const char *gameObject );
+	void SetGameObject(const char *gameObject);
 	
 	/** \brief Config path. */
-	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	inline const decString &GetPathConfig() const{return pPathConfig;}
 	
 	/** \brief Set config path. */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	
 	/** \brief Capture path. */
-	inline const decString &GetPathCapture() const{ return pPathCapture; }
+	inline const decString &GetPathCapture() const{return pPathCapture;}
 	
 	/** \brief Set capture path. */
-	void SetPathCapture( const char *path );
+	void SetPathCapture(const char *path);
 	
 	/** \brief Remote server. */
-	inline const projRemoteServer::Ref &GetRemoteServer() const{ return pRemoteServer; }
+	inline const projRemoteServer::Ref &GetRemoteServer() const{return pRemoteServer;}
 	/*@}*/
 	
 	
@@ -106,13 +106,13 @@ public:
 	/** \name Profiles */
 	/*@{*/
 	/** \brief Profiles. */
-	const projProfileList &GetProfiles() const{ return pProfiles; }
+	const projProfileList &GetProfiles() const{return pProfiles;}
 	
 	/** \brief Add profile. */
-	void AddProfile( projProfile *profile );
+	void AddProfile(projProfile *profile);
 	
 	/** \brief Remove profile. */
-	void RemoveProfile( projProfile *profile );
+	void RemoveProfile(projProfile *profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAllProfiles();
@@ -120,10 +120,10 @@ public:
 	
 	
 	/** \brief Active profile. */
-	inline projProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline projProfile *GetActiveProfile() const{return pActiveProfile;}
 	
 	/** \brief Set active profile. */
-	void SetActiveProfile( projProfile *profile );
+	void SetActiveProfile(projProfile *profile);
 	
 	
 	
@@ -131,10 +131,10 @@ public:
 	void NotifyProfileStructureChanged();
 	
 	/** \brief Notify listeners profile changed. */
-	void NotifyProfileChanged( projProfile *profile );
+	void NotifyProfileChanged(projProfile *profile);
 	
 	/** \brief Notify listeners profile name changed. */
-	void NotifyProfileNameChanged( projProfile *profile );
+	void NotifyProfileNameChanged(projProfile *profile);
 	
 	/** \brief Notify listeners active profile changed. */
 	void NotifyActiveProfileChanged();
@@ -148,10 +148,10 @@ public:
 	/** \name Test-runner */
 	/*@{*/
 	/** \brief Active launch profile. */
-	inline const decString &GetActiveLaunchProfile() const{ return pActiveLaunchProfile; }
+	inline const decString &GetActiveLaunchProfile() const{return pActiveLaunchProfile;}
 	
 	/** \brief Set active launch profile. */
-	void SetActiveLaunchProfile( const char *profile );
+	void SetActiveLaunchProfile(const char *profile);
 	
 	
 	
@@ -164,10 +164,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** \brief Add listener. */
-	void AddListener( projProjectListener *listener );
+	void AddListener(projProjectListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( projProjectListener *listener );
+	void RemoveListener(projProjectListener *listener);
 	
 	
 	

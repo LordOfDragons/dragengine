@@ -37,14 +37,14 @@
 // Class deoxrDebug
 ////////////////////
 
-deoxrDebug::deoxrDebug( deoxrInstance &instance ) :
-pInstance( instance ),
-pEnabled( false ),
-pMessenger( XR_NULL_HANDLE ){
+deoxrDebug::deoxrDebug(deoxrInstance &instance) :
+pInstance(instance),
+pEnabled(false),
+pMessenger(XR_NULL_HANDLE){
 }
 
 deoxrDebug::~deoxrDebug(){
-	SetEnabled( false );
+	SetEnabled(false);
 }
 
 
@@ -52,18 +52,18 @@ deoxrDebug::~deoxrDebug(){
 // Management
 ///////////////
 
-void deoxrDebug::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void deoxrDebug::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
-	if( pEnabled ){
+	if(pEnabled){
 		pUnregisterReportCallback();
 		pEnabled = false;
 	}
 	
-	if( enabled ){
-		if( ! pInstance.SupportsExtension( deoxrInstance::extEXTDebugUtils ) ){
+	if(enabled){
+		if(! pInstance.SupportsExtension(deoxrInstance::extEXTDebugUtils)){
 			return;
 		}
 		
@@ -78,12 +78,12 @@ void deoxrDebug::SetEnabled( bool enabled ){
 //////////////////////
 
 void deoxrDebug::pRegisterReportCallback(){
-	if( ! pInstance.xrCreateDebugUtilsMessengerEXT || ! pInstance.xrDestroyDebugUtilsMessengerEXT ){
+	if(! pInstance.xrCreateDebugUtilsMessengerEXT || ! pInstance.xrDestroyDebugUtilsMessengerEXT){
 		return;
 	}
 	
 	XrDebugUtilsMessengerCreateInfoEXT info;
-	memset( &info, 0, sizeof( info ) );
+	memset(&info, 0, sizeof(info));
 	
 	info.type = XR_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	info.messageSeverities = XR_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
@@ -91,34 +91,34 @@ void deoxrDebug::pRegisterReportCallback(){
 	info.messageTypes = XR_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
 		| XR_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
 		| XR_DEBUG_UTILS_MESSAGE_TYPE_CONFORMANCE_BIT_EXT;
-	info.userCallback = ( PFN_xrDebugUtilsMessengerCallbackEXT )DebugMessageCallback;
+	info.userCallback = (PFN_xrDebugUtilsMessengerCallbackEXT)DebugMessageCallback;
 	info.userData = this;
 	
-	OXR_CHECK( pInstance.xrCreateDebugUtilsMessengerEXT( pInstance.GetInstance(), &info, &pMessenger ) );
+	OXR_CHECK(pInstance.xrCreateDebugUtilsMessengerEXT(pInstance.GetInstance(), &info, &pMessenger));
 	
-	pInstance.GetOxr().LogInfo( "Debug: Message Callback Registered" );
+	pInstance.GetOxr().LogInfo("Debug: Message Callback Registered");
 }
 
 void deoxrDebug::pUnregisterReportCallback(){
-	if( ! pMessenger ){
+	if(! pMessenger){
 		return;
 	}
 	
-	if( pInstance.xrDestroyDebugUtilsMessengerEXT ){
-		pInstance.xrDestroyDebugUtilsMessengerEXT( pMessenger );
+	if(pInstance.xrDestroyDebugUtilsMessengerEXT){
+		pInstance.xrDestroyDebugUtilsMessengerEXT(pMessenger);
 	}
 	
 	pMessenger = XR_NULL_HANDLE;
-	pInstance.GetOxr().LogInfo( "Debug: Message Callback Unregistered" );
+	pInstance.GetOxr().LogInfo("Debug: Message Callback Unregistered");
 }
 
-void deoxrDebug::DebugMessage( const char *function, const char *messageId, const char *message ){
-	pInstance.GetOxr().LogInfoFormat( "Debug: %s: %s - %s", function, messageId, message );
+void deoxrDebug::DebugMessage(const char *function, const char *messageId, const char *message){
+	pInstance.GetOxr().LogInfoFormat("Debug: %s: %s - %s", function, messageId, message);
 }
 
-XrBool32 deoxrDebug::DebugMessageCallback( XrDebugUtilsMessageSeverityFlagsEXT,
-XrDebugUtilsMessageTypeFlagsEXT, const XrDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData ){
-	( ( deoxrDebug* )userData )->DebugMessage( callbackData->functionName,
-		callbackData->messageId, callbackData->message );
+XrBool32 deoxrDebug::DebugMessageCallback(XrDebugUtilsMessageSeverityFlagsEXT,
+XrDebugUtilsMessageTypeFlagsEXT, const XrDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData){
+	((deoxrDebug*)userData)->DebugMessage(callbackData->functionName,
+		callbackData->messageId, callbackData->message);
 	return XR_FALSE;
 }

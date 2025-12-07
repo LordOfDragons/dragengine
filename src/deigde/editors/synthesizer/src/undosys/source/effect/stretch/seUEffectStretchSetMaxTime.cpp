@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUEffectStretchSetMaxTime::seUEffectStretchSetMaxTime( seEffectStretch *effect, float newTime ) :
-pSource( NULL )
+seUEffectStretchSetMaxTime::seUEffectStretchSetMaxTime(seEffectStretch *effect, float newTime) :
+pSource(NULL)
 {
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+	if(! effect){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Effect stretch set maximum time" );
+	SetShortInfo("Effect stretch set maximum time");
 	
 	pOldTime = effect->GetMaxTime();
 	pNewTime = newTime;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUEffectStretchSetMaxTime::~seUEffectStretchSetMaxTime(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUEffectStretchSetMaxTime::~seUEffectStretchSetMaxTime(){
 ///////////////
 
 void seUEffectStretchSetMaxTime::Undo(){
-	pSource->SetMaxTime( pOldTime );
+	pSource->SetMaxTime(pOldTime);
 }
 
 void seUEffectStretchSetMaxTime::Redo(){
-	pSource->SetMaxTime( pNewTime );
+	pSource->SetMaxTime(pNewTime);
 }

@@ -65,7 +65,7 @@ private:
 	decVector pIKLimitsLower;
 	decVector pIKLimitsUpper;
 	decVector pIKResistance;
-	bool pIKLocked[ 3 ];
+	bool pIKLocked[3];
 	
 	deRigConstraint **pConstraints;
 	int pConstraintCount;
@@ -80,7 +80,7 @@ public:
 	 * \brief Create named rig bone.
 	 * \throws deeInvalidParam \em name is empty string.
 	 */
-	deRigBone( const char *name );
+	deRigBone(const char *name);
 	
 	/** \brief Clean up rig bone. */
 	~deRigBone();
@@ -91,55 +91,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bone name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Index of the parent bone or -1 if top level bone. */
-	inline int GetParent() const{ return pParent; }
+	inline int GetParent() const{return pParent;}
 	
 	/**
 	 * \brief Set index of the parent bone or -1 if top level bone.
 	 * \throws deeInvalidParam \em bone is less than -1.
 	 */
-	void SetParent( int bone );
+	void SetParent(int bone);
 	
 	/** \brief Position relative to parent bone or rig. */
-	inline decVector GetPosition() const{ return pPos; }
+	inline decVector GetPosition() const{return pPos;}
 	
 	/** \brief Set position relative to parent bone or rig. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation relative to parent bone or rig. */
-	inline decVector GetRotation() const{ return pRot; }
+	inline decVector GetRotation() const{return pRot;}
 	
 	/** \brief Set rotation relative to parent bone or rig. */
-	void SetRotation( const decVector &rotation );
+	void SetRotation(const decVector &rotation);
 	
 	/** \brief Central mass point position. */
-	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
+	inline const decVector &GetCentralMassPoint() const{return pCMP;}
 	
 	/** \brief Set central mass point position. */
-	void SetCentralMassPoint( const decVector &cmp );
+	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Matrix transforming from local bone space to model space in reference pose. */
-	inline decMatrix GetMatrix() const{ return pMatrix; }
+	inline decMatrix GetMatrix() const{return pMatrix;}
 	
 	/** \brief Matrix transforming from model space to local bone space in reference pose. */
-	inline decMatrix GetInverseMatrix() const{ return pInvMatrix; }
+	inline decMatrix GetInverseMatrix() const{return pInvMatrix;}
 	
 	/** \brief Set matrix transforming from local bone space to model space in reference pose. */
-	void SetMatrices( const decMatrix &matrix );
+	void SetMatrices(const decMatrix &matrix);
 	
 	/** \brief Bone is dynamic. */
-	inline bool GetDynamic() const{ return pDynamic; }
+	inline bool GetDynamic() const{return pDynamic;}
 	
 	/** \brief Set if bone is dynamic. */
-	void SetDynamic( bool dynamic );
+	void SetDynamic(bool dynamic);
 	
 	/** \brief Mass in kg. */
-	inline float GetMass() const{ return pMass; }
+	inline float GetMass() const{return pMass;}
 	
 	/** \brief Set mass in kg clamped to 0 or larger. */
-	void SetMass( float mass );
+	void SetMass(float mass);
 	/*@}*/
 	
 	
@@ -147,37 +147,37 @@ public:
 	/** \name Inverse Kinematics */
 	/*@{*/
 	/** \brief Lower ik limits. */
-	inline const decVector &GetIKLimitsLower() const{ return pIKLimitsLower; }
+	inline const decVector &GetIKLimitsLower() const{return pIKLimitsLower;}
 	
 	/** \brief Upper ik limits. */
-	inline const decVector &GetIKLimitsUpper() const{ return pIKLimitsUpper; }
+	inline const decVector &GetIKLimitsUpper() const{return pIKLimitsUpper;}
 	
 	/** \brief Set ik limits. */
-	void SetIKLimits( const decVector &lower, const decVector &upper );
+	void SetIKLimits(const decVector &lower, const decVector &upper);
 	
 	/** \brief IK resistance. */
-	inline const decVector &GetIKResistance() const{ return pIKResistance; }
+	inline const decVector &GetIKResistance() const{return pIKResistance;}
 	
 	/** \brief Set ik resistance. */
-	void SetIKResistance( const decVector &resistance );
+	void SetIKResistance(const decVector &resistance);
 	
 	/** \brief X rotation is locked under IK. */
-	inline bool GetIKLockedX() const{ return pIKLocked[ 0 ]; }
+	inline bool GetIKLockedX() const{return pIKLocked[0];}
 	
 	/** \brief Set if X rotation is locked under IK. */
-	void SetIKLockedX( bool locked );
+	void SetIKLockedX(bool locked);
 	
 	/** \brief Y rotation is locked under IK. */
-	inline bool GetIKLockedY() const{ return pIKLocked[ 1 ]; }
+	inline bool GetIKLockedY() const{return pIKLocked[1];}
 	
 	/** \brief Set if y rotation is locked under IK. */
-	void SetIKLockedY( bool locked );
+	void SetIKLockedY(bool locked);
 	
 	/** \brief Z rotation is locked under IK. */
-	inline bool GetIKLockedZ() const{ return pIKLocked[ 2 ]; }
+	inline bool GetIKLockedZ() const{return pIKLocked[2];}
 	
 	/** \brief Set z rotation is locked under IK. */
-	void SetIKLockedZ( bool locked );
+	void SetIKLockedZ(bool locked);
 	/*@}*/
 	
 	
@@ -185,23 +185,23 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShapeList &GetShapes() const{return pShapes;}
 	
 	/**
 	 * \brief Set shapes.
 	 * 
 	 * Resets shape properties to empty strings for all shapes.
 	 */
-	void SetShapes( const decShapeList &shapes );
+	void SetShapes(const decShapeList &shapes);
 	
 	/** \brief Shape properties. */
-	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }
+	inline const decStringList &GetShapeProperties() const{return pShapeProperties;}
 	
 	/**
 	 * \brief Set shape properties.
 	 * \throws deeInvalidParam Number of strings in \em properties does not match GetShapes().GetCount().
 	 */
-	void SetShapeProperties( const decStringList &properties );
+	void SetShapeProperties(const decStringList &properties);
 	/*@}*/
 	
 	
@@ -209,22 +209,22 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** \brief Number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	inline int GetConstraintCount() const{return pConstraintCount;}
 	
 	/**
 	 * \brief Constraint at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetConstraintCount().
 	 */
-	deRigConstraint &GetConstraintAt( int index ) const;
+	deRigConstraint &GetConstraintAt(int index) const;
 	
 	/** \brief Add constraint. */
-	void AddConstraint( deRigConstraint *constraint );
+	void AddConstraint(deRigConstraint *constraint);
 	/*@}*/
 	
 	
 	
 private:
-	bool pHasConstraint( deRigConstraint *constraint ) const;
+	bool pHasConstraint(deRigConstraint *constraint) const;
 };
 
 #endif

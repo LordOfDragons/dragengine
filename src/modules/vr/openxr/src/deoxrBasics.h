@@ -65,7 +65,7 @@
 #include <openxr/openxr.h>
 #include <openxr/openxr_platform.h>
 
-void deoxrDebugCheckCommand( XrResult result, const char *file, int line );
-#define OXR_CHECK(cmd) deoxrDebugCheckCommand( cmd, __FILE__, __LINE__ )
+void deoxrDebugCheckCommand(XrResult result, const char *file, int line);
+#define OXR_CHECK(cmd) deoxrDebugCheckCommand(cmd, __FILE__, __LINE__)
 
 #endif

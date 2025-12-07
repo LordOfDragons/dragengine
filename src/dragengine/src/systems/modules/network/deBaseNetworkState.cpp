@@ -43,11 +43,11 @@ deBaseNetworkState::~deBaseNetworkState(){
 // Notifications
 //////////////////
 
-void deBaseNetworkState::ValueAdded( int, deNetworkValue* ){
+void deBaseNetworkState::ValueAdded(int, deNetworkValue*){
 }
 
-void deBaseNetworkState::ValueChanged( int, deNetworkValue* ){
+void deBaseNetworkState::ValueChanged(int, deNetworkValue*){
 }
 
-void deBaseNetworkState::PrecisionChanged( int, deNetworkValue* ){
+void deBaseNetworkState::PrecisionChanged(int, deNetworkValue*){
 }

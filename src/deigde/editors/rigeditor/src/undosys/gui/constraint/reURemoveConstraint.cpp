@@ -42,42 +42,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURemoveConstraint::reURemoveConstraint( reRigConstraintList &list ){
+reURemoveConstraint::reURemoveConstraint(reRigConstraintList &list){
 	int constraintCount = list.GetConstraintCount();
 	reRigConstraint *constraint;
 	reRigBone *bone;
 	
-	if( constraintCount == 0 ) DETHROW( deeInvalidParam );
+	if(constraintCount == 0) DETHROW(deeInvalidParam);
 	
-	pRig = list.GetConstraintAt( 0 )->GetRig();
-	if( ! pRig ) DETHROW( deeInvalidParam );
+	pRig = list.GetConstraintAt(0)->GetRig();
+	if(! pRig) DETHROW(deeInvalidParam);
 	pRig->AddReference();
 	
 	pEntries = NULL;
 	pEntryCount = 0;
 	
 	try{
-		pEntries = new sEntry[ constraintCount ];
-		if( ! pEntries ) DETHROW( deeOutOfMemory );
+		pEntries = new sEntry[constraintCount];
+		if(! pEntries) DETHROW(deeOutOfMemory);
 		
-		while( pEntryCount < constraintCount ){
-			constraint = list.GetConstraintAt( pEntryCount );
+		while(pEntryCount < constraintCount){
+			constraint = list.GetConstraintAt(pEntryCount);
 			bone = constraint->GetRigBone();
 			
-			if( constraint->GetRig() != pRig ) DETHROW( deeInvalidParam );
+			if(constraint->GetRig() != pRig) DETHROW(deeInvalidParam);
 			
-			pEntries[ pEntryCount ].constraint = constraint;
+			pEntries[pEntryCount].constraint = constraint;
 			constraint->AddReference();
 			
-			pEntries[ pEntryCount ].bone = bone;
-			if( bone ) bone->AddReference();
+			pEntries[pEntryCount].bone = bone;
+			if(bone) bone->AddReference();
 			
 			pEntryCount++;
 		}
 		
-		SetShortInfo( "Remove Constraints" );
+		SetShortInfo("Remove Constraints");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -98,15 +98,15 @@ void reURemoveConstraint::Undo(){
 	
 	selection->RemoveAllConstraints();
 	
-	for( e=0; e<pEntryCount; e++ ){
-		if( pEntries[ e ].bone ){
-			pEntries[ e ].bone->AddConstraint( pEntries[ e ].constraint );
+	for(e=0; e<pEntryCount; e++){
+		if(pEntries[e].bone){
+			pEntries[e].bone->AddConstraint(pEntries[e].constraint);
 			
 		}else{
-			pRig->AddConstraint( pEntries[ e ].constraint );
+			pRig->AddConstraint(pEntries[e].constraint);
 		}
 		
-		selection->AddConstraint( pEntries[ e ].constraint );
+		selection->AddConstraint(pEntries[e].constraint);
 	}
 	
 }
@@ -115,16 +115,16 @@ void reURemoveConstraint::Redo(){
 	reSelectionConstraints *selection = pRig->GetSelectionConstraints();
 	int e;
 	
-	for( e=0; e<pEntryCount; e++ ){
-		if( pEntries[ e ].constraint->GetSelected() ){
-			selection->RemoveConstraint( pEntries[ e ].constraint );
+	for(e=0; e<pEntryCount; e++){
+		if(pEntries[e].constraint->GetSelected()){
+			selection->RemoveConstraint(pEntries[e].constraint);
 		}
 		
-		if( pEntries[ e ].bone ){
-			pEntries[ e ].bone->RemoveConstraint( pEntries[ e ].constraint );
+		if(pEntries[e].bone){
+			pEntries[e].bone->RemoveConstraint(pEntries[e].constraint);
 			
 		}else{
-			pRig->RemoveConstraint( pEntries[ e ].constraint );
+			pRig->RemoveConstraint(pEntries[e].constraint);
 		}
 	}
 }
@@ -135,20 +135,20 @@ void reURemoveConstraint::Redo(){
 //////////////////////
 
 void reURemoveConstraint::pCleanUp(){
-	if( pEntries ){
-		while( pEntryCount > 0 ){
+	if(pEntries){
+		while(pEntryCount > 0){
 			pEntryCount--;
 			
-			if( pEntries[ pEntryCount ].bone ){
-				pEntries[ pEntryCount ].bone->FreeReference();
+			if(pEntries[pEntryCount].bone){
+				pEntries[pEntryCount].bone->FreeReference();
 			}
-			pEntries[ pEntryCount ].constraint->FreeReference();
+			pEntries[pEntryCount].constraint->FreeReference();
 		}
 		
 		delete [] pEntries;
 	}
 	
-	if( pRig ){
+	if(pRig){
 		pRig->FreeReference();
 	}
 }

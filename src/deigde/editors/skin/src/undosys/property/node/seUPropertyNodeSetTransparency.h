@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetTransparency( sePropertyNode *node, float newValue );
+	seUPropertyNodeSetTransparency(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new value. */
-	void SetNewValue( float value );
+	void SetNewValue(float value);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

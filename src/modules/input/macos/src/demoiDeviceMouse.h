@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	demoiDeviceMouse( deMacOSInput &module );
+	demoiDeviceMouse(deMacOSInput &module);
 	
 protected:
 	/** \brief Clean up device. */

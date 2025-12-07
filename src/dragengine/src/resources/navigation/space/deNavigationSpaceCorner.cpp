@@ -49,10 +49,10 @@ deNavigationSpaceCorner::~deNavigationSpaceCorner(){
 // Management
 ///////////////
 
-void deNavigationSpaceCorner::SetVertex( unsigned short vertex ){
+void deNavigationSpaceCorner::SetVertex(unsigned short vertex){
 	pVertex = vertex;
 }
 
-void deNavigationSpaceCorner::SetType( unsigned short type ){
+void deNavigationSpaceCorner::SetType(unsigned short type){
 	pType = type;
 }

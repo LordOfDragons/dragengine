@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	saeWPUndoHistoryListener( saeWPUndoHistory &panel );
+	saeWPUndoHistoryListener(saeWPUndoHistory &panel);
 	
 	/** Clean up listener. */
 	virtual ~saeWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Undo changed. */
-	virtual void UndoChanged( saeSAnimation *sanimation );
+	virtual void UndoChanged(saeSAnimation *sanimation);
 	/*@}*/
 };
 

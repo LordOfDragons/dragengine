@@ -59,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive resource. */
-	deArchive( deArchiveManager *manager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deArchive(deArchiveManager *manager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -84,10 +84,10 @@ public:
 	/** \name Peers */
 	/*@{*/
 	/** \brief Container peer. */
-	deBaseArchiveContainer *GetPeerContainer() const{ return pPeerContainer; }
+	deBaseArchiveContainer *GetPeerContainer() const{return pPeerContainer;}
 	
 	/** \brief Set peer container. */
-	void SetPeerContainer( deBaseArchiveContainer *peer );
+	void SetPeerContainer(deBaseArchiveContainer *peer);
 	/*@}*/
 };
 

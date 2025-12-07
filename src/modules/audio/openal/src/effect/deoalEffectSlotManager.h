@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal sources manager. */
-	deoalEffectSlotManager( deoalAudioThread &audioThread );
+	deoalEffectSlotManager(deoalAudioThread &audioThread);
 	
 	/** Clean up openal sources manager. */
 	~deoalEffectSlotManager();
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/**
 	 * Bind effect slot. Returns first unbound effect slot. If not existing a new effect slot
@@ -66,13 +66,13 @@ public:
 	 * lowest importance is rebound unless the owner importance is lower. It is thus possible
 	 * the caller gets no effect slot.
 	 */
-	deoalEffectSlot *Bind( void *owner, float importance );
+	deoalEffectSlot *Bind(void *owner, float importance);
 	
 	/** Unbind effect slot. */
-	void Unbind( deoalEffectSlot *slot );
+	void Unbind(deoalEffectSlot *slot);
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	

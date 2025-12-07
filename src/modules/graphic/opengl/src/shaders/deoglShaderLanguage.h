@@ -94,12 +94,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	inline const decString &GetGLSLVersion() const{ return pGLSLVersion; }
-	inline const decStringList &GetGLSLExtensions() const{ return pGLSLExtensions; }
-	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
+	inline const decString &GetGLSLVersion() const{return pGLSLVersion;}
+	inline const decStringList &GetGLSLExtensions() const{return pGLSLExtensions;}
+	inline int GetGLSLVersionNumber() const{return pGLSLVersionNumber;}
 	
-	inline bool HasCompileThreads() const{ return pCompilerThreadCount > 0; }
+	inline bool HasCompileThreads() const{return pCompilerThreadCount > 0;}
 	
 	/** Compile shader. */
 	void CompileShader(deoglShaderProgram &program);

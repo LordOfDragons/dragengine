@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTPaintMask( int drawMode, meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture,
-		const decPoint &grid, const decPoint &size, unsigned char *oldValues );
+	meUHTPaintMask(int drawMode, meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture,
+		const decPoint &grid, const decPoint &size, unsigned char *oldValues);
 	/** \brief Clean up object. */
 	virtual ~meUHTPaintMask();
 	/*@}*/
@@ -78,7 +78,7 @@ public:
 private:
 	void pCleanUp();
 	void pSaveValues();
-	void pRestoreValues( unsigned char *values );
+	void pRestoreValues(unsigned char *values);
 };
 
 // end of include only once

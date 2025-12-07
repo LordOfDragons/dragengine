@@ -38,9 +38,9 @@
 
 // Events
 ///////////
-FXDEFMAP( decrbPanelConsole ) decrbPanelConsoleMap[] = {
-	FXMAPFUNC( SEL_COMMAND, decrbPanelConsole::ID_CBMODULE, decrbPanelConsole::onCBModuleChanged ),
-	FXMAPFUNC( SEL_COMMAND, decrbPanelConsole::ID_EDITCOMMAND, decrbPanelConsole::onEditSendCommand ),
+FXDEFMAP(decrbPanelConsole) decrbPanelConsoleMap[] = {
+	FXMAPFUNC(SEL_COMMAND, decrbPanelConsole::ID_CBMODULE, decrbPanelConsole::onCBModuleChanged),
+	FXMAPFUNC(SEL_COMMAND, decrbPanelConsole::ID_EDITCOMMAND, decrbPanelConsole::onEditSendCommand),
 };
 
 
@@ -48,8 +48,8 @@ FXDEFMAP( decrbPanelConsole ) decrbPanelConsoleMap[] = {
 // Sorting
 ////////////
 
-static FXint fSortClasses( const FXListItem *item1, const FXListItem *item2 ){
-	return strcmp( item1->getText().text(), item2->getText().text() );
+static FXint fSortClasses(const FXListItem *item1, const FXListItem *item2){
+	return strcmp(item1->getText().text(), item2->getText().text());
 }
 
 
@@ -57,16 +57,16 @@ static FXint fSortClasses( const FXListItem *item1, const FXListItem *item2 ){
 // Class decrbPanelConsole
 ////////////////////////////
 	
-FXIMPLEMENT( decrbPanelConsole, FXVerticalFrame, decrbPanelConsoleMap, ARRAYNUMBER( decrbPanelConsoleMap ) )
+FXIMPLEMENT(decrbPanelConsole, FXVerticalFrame, decrbPanelConsoleMap, ARRAYNUMBER(decrbPanelConsoleMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-decrbPanelConsole::decrbPanelConsole(){ }
+decrbPanelConsole::decrbPanelConsole(){}
 
-decrbPanelConsole::decrbPanelConsole( decrbWindowMain *windowMain, FXComposite *container ) :
-FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5 ){
-	if( ! windowMain ) DETHROW( deeInvalidParam );
+decrbPanelConsole::decrbPanelConsole(decrbWindowMain *windowMain, FXComposite *container) :
+FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 5, 5, 5, 5){
+	if(! windowMain) DETHROW(deeInvalidParam);
 	int padding = 3;
 	int spacing = 3;
 	
@@ -75,40 +75,40 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	pLog = NULL;
 	
 	// create console line buffer
-	pLog = new decUnicodeLineBuffer( 200 );
-	if( ! pLog ) DETHROW( deeOutOfMemory );
+	pLog = new decUnicodeLineBuffer(200);
+	if(! pLog) DETHROW(deeOutOfMemory);
 	
 	// module selection
-	FXHorizontalFrame *frameLine = new FXHorizontalFrame( this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Module:" );
-	pCBModule = new FXComboBox( frameLine, 10, this, ID_CBMODULE, FRAME_SUNKEN | LAYOUT_FILL_X );
-	pCBModule->setEditable( false );
-	pCBModule->setNumVisible( 10 );
-	pCBModule->setSortFunc( fSortClasses );
+	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Module:");
+	pCBModule = new FXComboBox(frameLine, 10, this, ID_CBMODULE, FRAME_SUNKEN | LAYOUT_FILL_X);
+	pCBModule->setEditable(false);
+	pCBModule->setNumVisible(10);
+	pCBModule->setSortFunc(fSortClasses);
 	
 	// console
-	FXGroupBox *groupBox = new FXGroupBox( this, "Console:",
+	FXGroupBox *groupBox = new FXGroupBox(this, "Console:",
 		GROUPBOX_TITLE_LEFT | FRAME_RIDGE | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0,
-		padding, padding, padding, padding );
-	FXVerticalFrame *frameBox = new FXVerticalFrame( groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
+		padding, padding, padding, padding);
+	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
 	
-	pEditLog = new FXText( frameBox, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
-		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	pEditLog = new FXText(frameBox, NULL, 0, FRAME_SUNKEN | TEXT_READONLY
+		| TEXT_WORDWRAP | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	frameLine = new FXHorizontalFrame( frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing );
-	new FXLabel( frameLine, "Command:" );
-	pEditCommand = new FXTextField( frameLine, 10, this, ID_EDITCOMMAND, FRAME_SUNKEN
-		| TEXTFIELD_ENTER_ONLY | LAYOUT_FILL_X );
+	frameLine = new FXHorizontalFrame(frameBox, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, spacing, spacing);
+	new FXLabel(frameLine, "Command:");
+	pEditCommand = new FXTextField(frameLine, 10, this, ID_EDITCOMMAND, FRAME_SUNKEN
+		| TEXTFIELD_ENTER_ONLY | LAYOUT_FILL_X);
 	
 	// load the modules list
 	UpdateModulesList();
 }
 
 decrbPanelConsole::~decrbPanelConsole(){
-	if( pLog ) delete pLog;
+	if(pLog) delete pLog;
 }
 
 
@@ -122,27 +122,27 @@ void decrbPanelConsole::UpdateModulesList(){
 	int i, count = modSys->GetModuleCount();
 	deLoadableModule *loadableModule;
 	
-	for( i=0; i<count; i++ ){
-		loadableModule = modSys->GetModuleAt( i );
-		if( pCBModule->findItem( loadableModule->GetName().GetString() ) == -1 ){
-			pCBModule->appendItem( loadableModule->GetName().GetString() );
+	for(i=0; i<count; i++){
+		loadableModule = modSys->GetModuleAt(i);
+		if(pCBModule->findItem(loadableModule->GetName().GetString()) == -1){
+			pCBModule->appendItem(loadableModule->GetName().GetString());
 		}
 	}
 	pCBModule->sortItems();
 }
 
-void decrbPanelConsole::AddToConsole( decUnicodeString &text ){
-	pLog->AddMultipleLines( text );
+void decrbPanelConsole::AddToConsole(decUnicodeString &text){
+	pLog->AddMultipleLines(text);
 	
 	decUnicodeString output;
-	pLog->FillLinesInto( output );
-	pEditLog->setText( output.ToUTF8().GetString() );
-	pEditLog->makePositionVisible( pEditLog->getLength() );
+	pLog->FillLinesInto(output);
+	pEditLog->setText(output.ToUTF8().GetString());
+	pEditLog->makePositionVisible(pEditLog->getLength());
 }
 
 void decrbPanelConsole::ClearConsole(){
 	pLog->Clear();
-	pEditLog->setText( "" );
+	pEditLog->setText("");
 }
 
 
@@ -150,13 +150,13 @@ void decrbPanelConsole::ClearConsole(){
 // Events
 ///////////
 
-long decrbPanelConsole::onCBModuleChanged( FXObject*, FXSelector, void* ){
+long decrbPanelConsole::onCBModuleChanged(FXObject*, FXSelector, void*){
 	pEditCommand->setFocus();
 	
 	return 1;
 }
 
-long decrbPanelConsole::onEditSendCommand( FXObject*, FXSelector, void* ){
+long decrbPanelConsole::onEditSendCommand(FXObject*, FXSelector, void*){
 	int selection = pCBModule->getCurrentItem();
 	deLoadableModule *loadableModule;
 	decUnicodeString command, answer;
@@ -164,52 +164,52 @@ long decrbPanelConsole::onEditSendCommand( FXObject*, FXSelector, void* ){
 	deBaseModule *module;
 	
 	// if this is a special command do it
-	if( strcmp( pEditCommand->getText().text(), "/clear" ) == 0 ){
+	if(strcmp(pEditCommand->getText().text(), "/clear") == 0){
 		ClearConsole();
 		return 1;
 	}
 	
 	// determine which module to send the command to
-	if( selection == -1 ){
-		answer.SetFromUTF8( "\nNo module selected to send the command to." );
-		AddToConsole( answer );
+	if(selection == -1){
+		answer.SetFromUTF8("\nNo module selected to send the command to.");
+		AddToConsole(answer);
 		return 1;
 	}
 	
 	loadableModule = pWndMain->GetEngine()->GetModuleSystem()->
-		GetModuleNamed( pCBModule->getItemText( selection ).text() );
+		GetModuleNamed(pCBModule->getItemText(selection).text());
 	module = loadableModule->GetModule();
 	
-	if( ! module ){
-		answer.SetFromUTF8( "\nSelected module is not loaded yet." );
-		AddToConsole( answer );
+	if(! module){
+		answer.SetFromUTF8("\nSelected module is not loaded yet.");
+		AddToConsole(answer);
 		return 1;
 	}
 	
 	// get the command and build an argument list from it
-	command.SetFromUTF8( pEditCommand->getText().text() );
-	argList.ParseCommand( command );
+	command.SetFromUTF8(pEditCommand->getText().text());
+	argList.ParseCommand(command);
 	
-	if( argList.GetArgumentCount() > 0 ){
+	if(argList.GetArgumentCount() > 0){
 		// add commend to send
-		answer.SetFromUTF8( loadableModule->GetName() );
-		answer.AppendFromUTF8( " > " );
+		answer.SetFromUTF8(loadableModule->GetName());
+		answer.AppendFromUTF8(" > ");
 		answer += command;
-		AddToConsole( answer );
+		AddToConsole(answer);
 		
 		// send command to the selected module
 		try{
-			answer.SetFromUTF8( "" );
-			module->SendCommand( argList, answer );
+			answer.SetFromUTF8("");
+			module->SendCommand(argList, answer);
 			
-		}catch( const deException &e ){
-			answer.SetFromUTF8( e.FormatOutput().Join( "\n" ) );
+		}catch(const deException &e){
+			answer.SetFromUTF8(e.FormatOutput().Join("\n"));
 		}
-		if( answer.GetLength() > 0 && answer.GetAt( answer.GetLength() - 1 ) != '\n' ){
-			answer.AppendFromUTF8( "\n" );
+		if(answer.GetLength() > 0 && answer.GetAt(answer.GetLength() - 1) != '\n'){
+			answer.AppendFromUTF8("\n");
 		}
 		
-		AddToConsole( answer );
+		AddToConsole(answer);
 	}
 	
 	return 1;

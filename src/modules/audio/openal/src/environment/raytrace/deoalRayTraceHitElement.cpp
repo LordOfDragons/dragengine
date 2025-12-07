@@ -39,19 +39,19 @@
 /////////////////////////////////
 
 deoalRayTraceHitElement::deoalRayTraceHitElement() :
-pDistance( 1.0f ),
-pForwardFacing( true ),
-pComponent( NULL ),
-pComponentFace( -1 ){
+pDistance(1.0f),
+pForwardFacing(true),
+pComponent(NULL),
+pComponentFace(-1){
 }
 
-deoalRayTraceHitElement::deoalRayTraceHitElement( const deoalRayTraceHitElement &element ) :
-pDistance( element.pDistance ),
-pPoint( element.pPoint ),
-pNormal( element.pNormal ),
-pForwardFacing( element.pForwardFacing ),
-pComponent( element.pComponent ),
-pComponentFace( element.pComponentFace ){
+deoalRayTraceHitElement::deoalRayTraceHitElement(const deoalRayTraceHitElement &element) :
+pDistance(element.pDistance),
+pPoint(element.pPoint),
+pNormal(element.pNormal),
+pForwardFacing(element.pForwardFacing),
+pComponent(element.pComponent),
+pComponentFace(element.pComponentFace){
 }
 
 
@@ -68,10 +68,10 @@ void deoalRayTraceHitElement::SetEmpty(){
 	pComponentFace = -1;
 }
 
-void deoalRayTraceHitElement::SetComponentFace( float distance, const decDVector &point,
-const decDVector &normal, deoalAComponent *component, int face, bool frontFacing ){
-	if( ! component || face < 0 ){
-		DETHROW( deeInvalidParam );
+void deoalRayTraceHitElement::SetComponentFace(float distance, const decDVector &point,
+const decDVector &normal, deoalAComponent *component, int face, bool frontFacing){
+	if(! component || face < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDistance = distance;
@@ -84,7 +84,7 @@ const decDVector &normal, deoalAComponent *component, int face, bool frontFacing
 
 
 
-deoalRayTraceHitElement &deoalRayTraceHitElement::operator=( const deoalRayTraceHitElement &element ){
+deoalRayTraceHitElement &deoalRayTraceHitElement::operator=(const deoalRayTraceHitElement &element){
 	pDistance = element.pDistance;
 	pPoint = element.pPoint;
 	pNormal = element.pNormal;

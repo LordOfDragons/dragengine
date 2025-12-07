@@ -38,13 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeOCInherit::gdeOCInherit( const char *name ) :
-pName( name ){
+gdeOCInherit::gdeOCInherit(const char *name) :
+pName(name){
 }
 
-gdeOCInherit::gdeOCInherit( const gdeOCInherit &inherit ) :
-pName( inherit.pName ),
-pPropertyPrefix( inherit.pPropertyPrefix ){
+gdeOCInherit::gdeOCInherit(const gdeOCInherit &inherit) :
+pName(inherit.pName),
+pPropertyPrefix(inherit.pPropertyPrefix){
 }
 
 gdeOCInherit::~gdeOCInherit(){
@@ -55,11 +55,11 @@ gdeOCInherit::~gdeOCInherit(){
 // Management
 ///////////////
 
-void gdeOCInherit::SetName( const char *name ){
+void gdeOCInherit::SetName(const char *name){
 	pName = name;
 }
 
-void gdeOCInherit::SetPropertyPrefix( const char *prefix ){
+void gdeOCInherit::SetPropertyPrefix(const char *prefix){
 	pPropertyPrefix = prefix;
 }
 

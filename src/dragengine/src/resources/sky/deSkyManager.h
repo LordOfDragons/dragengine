@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene sky resource manager linked to the given engine. */
-	deSkyManager( deEngine *engine );
+	deSkyManager(deEngine *engine);
 	
 	/** \brief Clean up scene sky resource manager and reports leaking resources. */
 	~deSkyManager();
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

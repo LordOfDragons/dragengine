@@ -39,19 +39,19 @@
 /////////////////////////////////
 
 deoalSoundRay::deoalSoundRay() :
-pFirstSegment( 0 ),
-pSegmentCount( 0 ),
-pFirstTransmittedRay( 0 ),
-pTransmittedRayCount( 0 ),
-pOutside( false ){
+pFirstSegment(0),
+pSegmentCount(0),
+pFirstTransmittedRay(0),
+pTransmittedRayCount(0),
+pOutside(false){
 }
 
-deoalSoundRay::deoalSoundRay( const deoalSoundRay &ray ) :
-pFirstSegment( ray.pFirstSegment ),
-pSegmentCount( ray.pSegmentCount ),
-pFirstTransmittedRay( ray.pFirstTransmittedRay ),
-pTransmittedRayCount( ray.pTransmittedRayCount ),
-pOutside( ray.pOutside ){
+deoalSoundRay::deoalSoundRay(const deoalSoundRay &ray) :
+pFirstSegment(ray.pFirstSegment),
+pSegmentCount(ray.pSegmentCount),
+pFirstTransmittedRay(ray.pFirstTransmittedRay),
+pTransmittedRayCount(ray.pTransmittedRayCount),
+pOutside(ray.pOutside){
 }
 
 
@@ -59,11 +59,11 @@ pOutside( ray.pOutside ){
 // Manegement
 /////////////
 
-void deoalSoundRay::SetFirstSegment( int index ){
+void deoalSoundRay::SetFirstSegment(int index){
 	pFirstSegment = index;
 }
 
-void deoalSoundRay::SetSegmentCount( int count ){
+void deoalSoundRay::SetSegmentCount(int count){
 	pSegmentCount = count;
 }
 
@@ -71,11 +71,11 @@ void deoalSoundRay::IncSegmentCount(){
 	pSegmentCount++;
 }
 
-void deoalSoundRay::SetFirstTransmittedRay( int index ){
+void deoalSoundRay::SetFirstTransmittedRay(int index){
 	pFirstTransmittedRay = index;
 }
 
-void deoalSoundRay::SetTransmittedRayCount( int count ){
+void deoalSoundRay::SetTransmittedRayCount(int count){
 	pTransmittedRayCount = count;
 }
 
@@ -83,13 +83,13 @@ void deoalSoundRay::IncTransmittedRayCount(){
 	pTransmittedRayCount++;
 }
 
-void deoalSoundRay::SetOutside( bool outside ){
+void deoalSoundRay::SetOutside(bool outside){
 	pOutside = outside;
 }
 
 
 
-deoalSoundRay &deoalSoundRay::operator=( const deoalSoundRay &ray ){
+deoalSoundRay &deoalSoundRay::operator=(const deoalSoundRay &ray){
 	pFirstSegment = ray.pFirstSegment;
 	pSegmentCount = ray.pSegmentCount;
 	pFirstTransmittedRay = ray.pFirstTransmittedRay;

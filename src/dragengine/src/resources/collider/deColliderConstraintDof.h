@@ -86,7 +86,7 @@ public:
 	deColliderConstraintDof();
 	
 	/** \brief Create new collider constraint degree of freedom as a copy of another constraint degree of freedom. */
-	deColliderConstraintDof( const deColliderConstraintDof &dof );
+	deColliderConstraintDof(const deColliderConstraintDof &dof);
 	
 	/** \brief Clean up collider constraint degree of freedom. */
 	~deColliderConstraintDof();
@@ -97,43 +97,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Lower limit. */
-	inline float GetLowerLimit() const{ return pLowerLimit; }
+	inline float GetLowerLimit() const{return pLowerLimit;}
 	
 	/** \brief Set lower limit. */
-	void SetLowerLimit( float lowerLimit );
+	void SetLowerLimit(float lowerLimit);
 	
 	/** \brief Upper limit. */
-	inline float GetUpperLimit() const{ return pUpperLimit; }
+	inline float GetUpperLimit() const{return pUpperLimit;}
 	
 	/** \brief Set upper limit. */
-	void SetUpperLimit( float upperLimit );
+	void SetUpperLimit(float upperLimit);
 	
 	/** \brief Set limits to locked. Both the upper and lower limit are set to the same value. */
-	void SetLocked( float value );
+	void SetLocked(float value);
 	
 	/** \brief Set limits to limited. Ensures the upper value is not less than the lower value. */
-	void SetLimited( float lower, float upper );
+	void SetLimited(float lower, float upper);
 	
 	/** \brief Set limits to free. Sets lower to 1 and upper to 0. */
 	void SetFree();
 	
 	/** \brief Static friction force. */
-	inline float GetStaticFriction() const{ return pStaticFriction; }
+	inline float GetStaticFriction() const{return pStaticFriction;}
 	
 	/** \brief Set static friction force. */
-	void SetStaticFriction( float friction );
+	void SetStaticFriction(float friction);
 	
 	/** \brief Kinematic friction factor. */
-	inline float GetKinematicFriction() const{ return pKinematicFriction; }
+	inline float GetKinematicFriction() const{return pKinematicFriction;}
 	
 	/** \brief Set kinematic friction factor. */
-	void SetKinematicFriction( float friction );
+	void SetKinematicFriction(float friction);
 	
 	/** \brief Spring stiffness. */
-	inline float GetSpringStiffness() const{ return pSpringStiffness; }
+	inline float GetSpringStiffness() const{return pSpringStiffness;}
 	
 	/** \brief Set spring stiffness. */
-	void SetSpringStiffness( float stiffness );
+	void SetSpringStiffness(float stiffness);
 	/*@}*/
 	
 	
@@ -141,7 +141,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set degree of freedom from another degree of freedom. */
-	deColliderConstraintDof &operator=( const deColliderConstraintDof &dof );
+	deColliderConstraintDof &operator=(const deColliderConstraintDof &dof);
 	/*@}*/
 };
 

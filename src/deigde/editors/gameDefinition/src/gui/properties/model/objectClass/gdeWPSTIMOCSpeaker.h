@@ -42,8 +42,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSpeaker( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, int index );
+	gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCSpeaker *speaker, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{ return pSpeaker; }
+	inline gdeOCSpeaker *GetOCSpeaker() const{return pSpeaker;}
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
@@ -73,7 +73,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

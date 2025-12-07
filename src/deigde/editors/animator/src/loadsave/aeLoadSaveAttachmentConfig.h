@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load/save. */
-	aeLoadSaveAttachmentConfig( deLogger *logger, const char *loggerSource );
+	aeLoadSaveAttachmentConfig(deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	
@@ -61,24 +61,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** Load attachment configuration from file. */
-	void LoadAttachmentConfig( aeAnimator &animator, decBaseFileReader &reader );
+	void LoadAttachmentConfig(aeAnimator &animator, decBaseFileReader &reader);
 	
 	/** Save attachment configuration to file. */
-	void SaveAttachmentConfig( const aeAnimator &animator, decBaseFileWriter &writer );
+	void SaveAttachmentConfig(const aeAnimator &animator, decBaseFileWriter &writer);
 	/*@}*/
 	
 private:
-	void pWriteConfiguration( decXmlWriter &writer, const aeAnimator &animator );
-	void pWriteAttachment( decXmlWriter &writer, const aeAttachment &attachment );
+	void pWriteConfiguration(decXmlWriter &writer, const aeAnimator &animator);
+	void pWriteAttachment(decXmlWriter &writer, const aeAttachment &attachment);
 	
-	void pReadConfiguration( const decXmlElementTag &root, aeAnimator &animator );
-	void pReadAttachment( const decXmlElementTag &root, aeAnimator &animator );
+	void pReadConfiguration(const decXmlElementTag &root, aeAnimator &animator);
+	void pReadAttachment(const decXmlElementTag &root, aeAnimator &animator);
 };
 
 #endif

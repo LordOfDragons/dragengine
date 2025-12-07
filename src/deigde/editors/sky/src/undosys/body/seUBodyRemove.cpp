@@ -40,25 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyRemove::seUBodyRemove( seBody *body ) :
-pLayer( NULL ),
-pBody( NULL ),
-pIndex( 0 )
+seUBodyRemove::seUBodyRemove(seBody *body) :
+pLayer(NULL),
+pBody(NULL),
+pIndex(0)
 {
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+	if(! body){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seLayer * const layer = body->GetLayer();
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove Body" );
+	SetShortInfo("Remove Body");
 	
-	pIndex = layer->GetBodies().IndexOf( body );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = layer->GetBodies().IndexOf(body);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLayer = layer;
@@ -69,10 +69,10 @@ pIndex( 0 )
 }
 
 seUBodyRemove::~seUBodyRemove(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -83,9 +83,9 @@ seUBodyRemove::~seUBodyRemove(){
 ///////////////
 
 void seUBodyRemove::Undo(){
-	pLayer->InsertBodyAt( pBody, pIndex );
+	pLayer->InsertBodyAt(pBody, pIndex);
 }
 
 void seUBodyRemove::Redo(){
-	pLayer->RemoveBody( pBody );
+	pLayer->RemoveBody(pBody);
 }

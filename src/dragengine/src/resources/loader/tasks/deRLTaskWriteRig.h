@@ -43,8 +43,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskWriteRig( deEngine &engine, deResourceLoader &resourceLoader,
-		deRig *rig, deVirtualFileSystem *vfs, const char *path );
+	deRLTaskWriteRig(deEngine &engine, deResourceLoader &resourceLoader,
+		deRig *rig, deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskWriteRig();

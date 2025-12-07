@@ -43,8 +43,8 @@
 seControllerTargetList::seControllerTargetList(){
 }
 
-seControllerTargetList::seControllerTargetList( const seControllerTargetList &copy ) :
-pTargets( copy.pTargets ){
+seControllerTargetList::seControllerTargetList(const seControllerTargetList &copy) :
+pTargets(copy.pTargets){
 }
 
 seControllerTargetList::~seControllerTargetList(){
@@ -59,38 +59,38 @@ int seControllerTargetList::GetCount() const{
 	return pTargets.GetCount();
 }
 
-seControllerTarget *seControllerTargetList::GetAt( int index ) const{
-	return ( seControllerTarget* )pTargets.GetAt( index );
+seControllerTarget *seControllerTargetList::GetAt(int index) const{
+	return (seControllerTarget*)pTargets.GetAt(index);
 }
 
-int seControllerTargetList::IndexOf( seControllerTarget *target ) const{
-	return pTargets.IndexOf( target );
+int seControllerTargetList::IndexOf(seControllerTarget *target) const{
+	return pTargets.IndexOf(target);
 }
 
-bool seControllerTargetList::Has( seControllerTarget *target ) const{
-	return pTargets.Has( target );
+bool seControllerTargetList::Has(seControllerTarget *target) const{
+	return pTargets.Has(target);
 }
 
-void seControllerTargetList::Add( seControllerTarget *target ){
-	if( ! target || Has( target ) ){
-		DETHROW( deeInvalidParam );
+void seControllerTargetList::Add(seControllerTarget *target){
+	if(! target || Has(target)){
+		DETHROW(deeInvalidParam);
 	}
-	pTargets.Add( target );
+	pTargets.Add(target);
 }
 
-void seControllerTargetList::Insert( seControllerTarget *target, int index ){
-	if( ! target || Has( target ) ){
-		DETHROW( deeInvalidParam );
+void seControllerTargetList::Insert(seControllerTarget *target, int index){
+	if(! target || Has(target)){
+		DETHROW(deeInvalidParam);
 	}
-	pTargets.Insert( target, index );
+	pTargets.Insert(target, index);
 }
 
-void seControllerTargetList::Move( seControllerTarget *target, int index ){
-	pTargets.Move( target, index );
+void seControllerTargetList::Move(seControllerTarget *target, int index){
+	pTargets.Move(target, index);
 }
 
-void seControllerTargetList::Remove( seControllerTarget *target ){
-	pTargets.RemoveFrom( pTargets.IndexOf( target ) );
+void seControllerTargetList::Remove(seControllerTarget *target){
+	pTargets.RemoveFrom(pTargets.IndexOf(target));
 }
 
 void seControllerTargetList::RemoveAll(){
@@ -102,7 +102,7 @@ void seControllerTargetList::RemoveAll(){
 // Operators
 //////////////
 
-seControllerTargetList &seControllerTargetList::operator=( const seControllerTargetList &list ){
+seControllerTargetList &seControllerTargetList::operator=(const seControllerTargetList &list){
 	pTargets = list.pTargets;
 	return *this;
 }

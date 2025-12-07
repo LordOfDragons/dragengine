@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassLayerMask( deScriptingDragonScript *ds );
+	deClassLayerMask(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassLayerMask();
 	/*@}*/
@@ -51,15 +51,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	
 	/** \brief Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the layer stored in the given real object. */
-	const decLayerMask &GetLayerMask( dsRealObject *myself ) const;
+	const decLayerMask &GetLayerMask(dsRealObject *myself) const;
 	/** \brief Pushes the given layermask onto the stack. */
-	void PushLayerMask( dsRunTime *rt, const decLayerMask &layerMask );
+	void PushLayerMask(dsRunTime *rt, const decLayerMask &layerMask);
 	/*@}*/
 	
 private:
@@ -67,46 +67,46 @@ private:
 		dsClass *clsLyM, *clsVoid, *clsInt, *clsStr, *clsObj, *clsBool;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfNewWith );
-	DEF_NATFUNC( nfNewWith2 );
-	DEF_NATFUNC( nfNewWith3 );
-	DEF_NATFUNC( nfNewWith4 );
-	DEF_NATFUNC( nfNewAll );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfNewWith);
+	DEF_NATFUNC(nfNewWith2);
+	DEF_NATFUNC(nfNewWith3);
+	DEF_NATFUNC(nfNewWith4);
+	DEF_NATFUNC(nfNewAll);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfClearMask );
-	DEF_NATFUNC( nfSetBit );
-	DEF_NATFUNC( nfClearBit );
-	DEF_NATFUNC( nfIsBitSet );
-	DEF_NATFUNC( nfIsBitCleared );
-	DEF_NATFUNC( nfIsEmpty );
+	DEF_NATFUNC(nfClearMask);
+	DEF_NATFUNC(nfSetBit);
+	DEF_NATFUNC(nfClearBit);
+	DEF_NATFUNC(nfIsBitSet);
+	DEF_NATFUNC(nfIsBitCleared);
+	DEF_NATFUNC(nfIsEmpty);
 	
-	DEF_NATFUNC( nfToBitString );
-	DEF_NATFUNC( nfSetFromBitString );
-	DEF_NATFUNC( nfToHexString );
-	DEF_NATFUNC( nfSetFromHexString );
+	DEF_NATFUNC(nfToBitString);
+	DEF_NATFUNC(nfSetFromBitString);
+	DEF_NATFUNC(nfToHexString);
+	DEF_NATFUNC(nfSetFromHexString);
 	
-	DEF_NATFUNC( nfMatches );
-	DEF_NATFUNC( nfMatchesNot );
+	DEF_NATFUNC(nfMatches);
+	DEF_NATFUNC(nfMatchesNot);
 	
-	DEF_NATFUNC( nfOpInverse );
-	DEF_NATFUNC( nfOpAnd );
-	DEF_NATFUNC( nfOpOr );
-	DEF_NATFUNC( nfOpXor );
-	DEF_NATFUNC( nfOpAndAssign );
-	DEF_NATFUNC( nfOpOrAssign );
-	DEF_NATFUNC( nfOpXorAssign );
+	DEF_NATFUNC(nfOpInverse);
+	DEF_NATFUNC(nfOpAnd);
+	DEF_NATFUNC(nfOpOr);
+	DEF_NATFUNC(nfOpXor);
+	DEF_NATFUNC(nfOpAndAssign);
+	DEF_NATFUNC(nfOpOrAssign);
+	DEF_NATFUNC(nfOpXorAssign);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
 #undef DEF_NATFUNC
 };
 

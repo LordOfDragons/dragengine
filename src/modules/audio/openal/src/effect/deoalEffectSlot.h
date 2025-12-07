@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal effect slot. */
-	deoalEffectSlot( deoalAudioThread &audioThread );
+	deoalEffectSlot(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up openal effect slot. */
@@ -75,59 +75,59 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/** Slot. */
-	inline ALuint GetSlot() const{ return pSlot; }
+	inline ALuint GetSlot() const{return pSlot;}
 	
 	/** Effect. */
-	inline ALuint GetEffect() const{ return pEffect; }
+	inline ALuint GetEffect() const{return pEffect;}
 	
 	
 	
 	/** Owner or nullptr if not bound. */
-	inline void *GetOwner() const{ return pOwner; }
+	inline void *GetOwner() const{return pOwner;}
 	
 	/** Assign owner and clear effect. */
-	void AssignOwner( void *owner, float importance );
+	void AssignOwner(void *owner, float importance);
 	
 	/** Clear owner and clear effect. */
 	void ClearOwner();
 	
 	/** Importance. */
-	inline float GetImportance() const{ return pImportance; }
+	inline float GetImportance() const{return pImportance;}
 	
 	/** Set importance. */
-	void SetImportance( float importance );
+	void SetImportance(float importance);
 	
 	
 	
 	/** Set effect type. */
-	void SetEffectType( ALenum type );
+	void SetEffectType(ALenum type);
 	
 	
 	
 	/** Update effect slot with effect parameters if changed and reset keep-alive. */
-	void UpdateSlot( float timeout );
+	void UpdateSlot(float timeout);
 	
 	
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
 	/** Bound. */
-	inline bool IsBound() const{ return pOwner != nullptr; }
+	inline bool IsBound() const{return pOwner != nullptr;}
 	
 	/** Not bound. */
-	inline bool IsUnbound() const{ return pOwner == nullptr; }
+	inline bool IsUnbound() const{return pOwner == nullptr;}
 	
 	/** Is kept alive. */
-	inline bool IsKeptAlive() const{ return IsUnbound() && pEffectType != AL_EFFECT_NULL; }
+	inline bool IsKeptAlive() const{return IsUnbound() && pEffectType != AL_EFFECT_NULL;}
 	
 	/** Elapsed keep-alive time. */
-	inline float GetElapsedKeepAliveTime() const{ return pKeepAliveElapsed; }
+	inline float GetElapsedKeepAliveTime() const{return pKeepAliveElapsed;}
 	/*@}*/
 	
 	

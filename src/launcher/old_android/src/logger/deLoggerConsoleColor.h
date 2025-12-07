@@ -102,19 +102,19 @@ public:
 	eTextAttributes GetInfoAttribute();
 	
 	/** \brief Set info text attribute. */
-	void SetInfoAttribute( eTextAttributes attribute );
+	void SetInfoAttribute(eTextAttributes attribute);
 	
 	/** \brief Info text foreground color. */
 	eTextColors GetInfoColorForeground();
 	
 	/** \brief Set info text foreground color. */
-	void SetInfoColorForeground( eTextColors color );
+	void SetInfoColorForeground(eTextColors color);
 	
 	/** \brief Info text background color. */
 	eTextColors GetInfoColorBackground();
 	
 	/** \brief Set info text background color. */
-	void SetInfoColorBackground( eTextColors color );
+	void SetInfoColorBackground(eTextColors color);
 	
 	
 	
@@ -122,19 +122,19 @@ public:
 	eTextAttributes GetWarnAttribute();
 	
 	/** \brief Set warn text attribute. */
-	void SetWarnAttribute( eTextAttributes attribute );
+	void SetWarnAttribute(eTextAttributes attribute);
 	
 	/** \brief Warn text foreground color. */
 	eTextColors GetWarnColorForeground();
 	
 	/** \brief Set warn text foreground color. */
-	void SetWarnColorForeground( eTextColors color );
+	void SetWarnColorForeground(eTextColors color);
 	
 	/** \brief Warn text background color. */
 	eTextColors GetWarnColorBackground();
 	
 	/** \brief Set warn text background color. */
-	void SetWarnColorBackground( eTextColors color );
+	void SetWarnColorBackground(eTextColors color);
 	
 	
 	
@@ -142,30 +142,30 @@ public:
 	eTextAttributes GetErrorAttribute();
 	
 	/** \brief Set error text attribute. */
-	void SetErrorAttribute( eTextAttributes attribute );
+	void SetErrorAttribute(eTextAttributes attribute);
 	
 	/** \brief Error text foreground color. */
 	eTextColors GetErrorColorForeground();
 	
 	/** \brief Set error text foreground color. */
-	void SetErrorColorForeground( eTextColors color );
+	void SetErrorColorForeground(eTextColors color);
 	
 	/** \brief Error text background color. */
 	eTextColors GetErrorColorBackground();
 	
 	/** \brief Set error text background color. */
-	void SetErrorColorBackground( eTextColors color );
+	void SetErrorColorBackground(eTextColors color);
 	
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 	
 	
@@ -175,11 +175,11 @@ protected:
 	 * \brief Print message to console using color codes.
 	 * \note This call is not thread safe.
 	 */
-	void pPrintMessage( const char *source, const char *message,
+	void pPrintMessage(const char *source, const char *message,
 		eTextAttributes attribute, eTextColors colorForeground,
-		eTextColors colorBackground, char lineEnd ) const;
+		eTextColors colorBackground, char lineEnd) const;
 	
-	inline deMutex &GetMutex(){ return pMutex; }
+	inline deMutex &GetMutex(){return pMutex;}
 };
 
 #endif

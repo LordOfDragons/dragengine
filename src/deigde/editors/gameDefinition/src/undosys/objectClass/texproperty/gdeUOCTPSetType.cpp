@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetType::gdeUOCTPSetType( gdeObjectClass *objectClass,
-gdeProperty *property, gdeProperty::ePropertyTypes newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetType::gdeUOCTPSetType(gdeObjectClass *objectClass,
+gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set type" );
+	SetShortInfo("Object class texture property set type");
 	
 	pOldValue = property->GetType();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUOCTPSetType::~gdeUOCTPSetType(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUOCTPSetType::~gdeUOCTPSetType(){
 ///////////////
 
 void gdeUOCTPSetType::Undo(){
-	pProperty->SetType( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetType(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetType::Redo(){
-	pProperty->SetType( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetType(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

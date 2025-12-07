@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */
-	deoalAVideoPlayer( deoalAudioThread &audioThread );
+	deoalAVideoPlayer(deoalAudioThread &audioThread);
 	
 protected:
 	/** \brief Clean up microphone. */
@@ -82,65 +82,65 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/**
 	 * \brief Video changed.
 	 * \warning Called during synchronization time by main thread.
 	 */
-	void SetVideo( deVideo *video );
+	void SetVideo(deVideo *video);
 	
 	/** \brief Play state. */
-	inline deVideoPlayer::ePlayState GetPlayState() const{ return pPlayState; }
+	inline deVideoPlayer::ePlayState GetPlayState() const{return pPlayState;}
 	
 	/** \brief Set play state. */
-	void SetPlayState( deVideoPlayer::ePlayState playState );
+	void SetPlayState(deVideoPlayer::ePlayState playState);
 	
 	/** \brief Play speed. */
-	inline float GetPlaySpeed() const{ return pPlaySpeed; }
+	inline float GetPlaySpeed() const{return pPlaySpeed;}
 	
 	/** \brief Set to play speed. */
-	void SetPlaySpeed( float playSpeed );
+	void SetPlaySpeed(float playSpeed);
 	
 	/** \brief Play looped. */
-	inline bool GetLooping() const{ return pLooping; }
+	inline bool GetLooping() const{return pLooping;}
 	
 	/** \brief Set to play looped. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** \brief Play from position. */
-	inline float GetPlayFrom() const{ return pPlayFrom; }
+	inline float GetPlayFrom() const{return pPlayFrom;}
 	
 	/** \brief Play to position. */
-	inline float GetPlayTo() const{ return pPlayTo; }
+	inline float GetPlayTo() const{return pPlayTo;}
 	
 	/** \brief Set play range. */
-	void SetPlayRange( float from, float to );
+	void SetPlayRange(float from, float to);
 	
 	/** \brief Play position. */
-	inline float GetPlayPosition() const{ return pPlayPosition; }
+	inline float GetPlayPosition() const{return pPlayPosition;}
 	
 	/** \brief Set play position. */
-	void SetPlayPosition( float position, bool seeking );
+	void SetPlayPosition(float position, bool seeking);
 	
 	
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{ return pBytesPerSample; }
+	inline int GetBytesPerSample() const{return pBytesPerSample;}
 	
 	/** \brief Channel count. */
-	inline int GetChannelCount() const{ return pChannelCount; }
+	inline int GetChannelCount() const{return pChannelCount;}
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{ return pSampleRate; }
+	inline int GetSampleRate() const{return pSampleRate;}
 	
 	/** \brief Sample count. */
-	inline int GetSampleCount() const{ return pSampleCount; }
+	inline int GetSampleCount() const{return pSampleCount;}
 	
 	
 	
 	/** \brief Update tracker. */
-	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
+	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
 	
 	
 	
@@ -154,7 +154,7 @@ public:
 	 * \throws EInvalidParam \em bufferSize does not match format.
 	 * \throws EInvalidParam \em buffer is NULL.
 	 */
-	void ReadSamples( void *buffer, int bufferSize, int offset, int samples );
+	void ReadSamples(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	

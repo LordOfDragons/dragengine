@@ -93,8 +93,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig. */
-	deRig( deRigManager *resourceManager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deRig(deRigManager *resourceManager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -112,16 +112,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Central mass point position. */
-	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
+	inline const decVector &GetCentralMassPoint() const{return pCMP;}
 	
 	/** \brief Set central mass point position. */
-	void SetCentralMassPoint( const decVector &cmp );
+	void SetCentralMassPoint(const decVector &cmp);
 	
 	/** \brief Use component model for collision instead of shapes if present. */
-	inline bool GetModelCollision() const{ return pModelCollision; }
+	inline bool GetModelCollision() const{return pModelCollision;}
 	
 	/** \brief Set if component model is used for collision instead of shapes if present. */
-	void SetModelCollision( bool modelCollision );
+	void SetModelCollision(bool modelCollision);
 	
 	
 	
@@ -137,37 +137,37 @@ public:
 	/** \name Bones */
 	/*@{*/
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{return pBoneCount;}
 	
 	/**
 	 * \brief Bone at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetBoneCount().
 	 */
-	deRigBone &GetBoneAt( int index ) const;
+	deRigBone &GetBoneAt(int index) const;
 	
 	/** \brief Index of named bone or -1 if absent. */
-	int IndexOfBoneNamed( const char *name ) const;
+	int IndexOfBoneNamed(const char *name) const;
 	
 	/** \brief Named bone is present. */
-	bool HasBoneNamed( const char *name ) const;
+	bool HasBoneNamed(const char *name) const;
 	
 	/**
 	 * \brief Add bone.
 	 * \throws deeInvalidParam Named bone is present.
 	 */
-	void AddBone( deRigBone *bone );
+	void AddBone(deRigBone *bone);
 	
 	/** \brief Remove all bones. */
 	void RemoveAllBones();
 	
 	/** \brief Index of physics root bone or -1 if not set. */
-	inline int GetRootBone() const{ return pRootBone; }
+	inline int GetRootBone() const{return pRootBone;}
 	
 	/**
 	 * \brief Set physics root bone or -1 if not set.
 	 * \throws deeOutOfBoundary \em index is less than -1 or greater than or equal to GetBoneCount().
 	 */
-	void SetRootBone( int rootBone );
+	void SetRootBone(int rootBone);
 	/*@}*/
 	
 	
@@ -175,23 +175,23 @@ public:
 	/** \name Shapes */
 	/*@{*/
 	/** \brief Shapes. */
-	inline const decShapeList &GetShapes() const{ return pShapes; }
+	inline const decShapeList &GetShapes() const{return pShapes;}
 	
 	/**
 	 * \brief Set shapes.
 	 * 
 	 * Resets shape properties to empty strings for all shapes.
 	 */
-	void SetShapes( const decShapeList &shapes );
+	void SetShapes(const decShapeList &shapes);
 	
 	/** \brief Shape properties. */
-	inline const decStringList &GetShapeProperties() const{ return pShapeProperties; }
+	inline const decStringList &GetShapeProperties() const{return pShapeProperties;}
 	
 	/**
 	 * \brief Set shape properties.
 	 * \throws deeInvalidParam Number of strings in \em properties does not match GetShapes().GetCount().
 	 */
-	void SetShapeProperties( const decStringList &properties );
+	void SetShapeProperties(const decStringList &properties);
 	/*@}*/
 	
 	
@@ -199,10 +199,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Physics system peer or NULL if not set. */
-	inline deBasePhysicsRig *GetPeerPhysics() const{ return pPeerPhysics; }
+	inline deBasePhysicsRig *GetPeerPhysics() const{return pPeerPhysics;}
 	
 	/** \brief Set physics system peer or NULL if not set. */
-	void SetPeerPhysics( deBasePhysicsRig *peer );
+	void SetPeerPhysics(deBasePhysicsRig *peer);
 	/*@}*/
 };
 

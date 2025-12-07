@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceKeyboard( deBeOSInput &module );
+	debiDeviceKeyboard(deBeOSInput &module);
 	
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Get button best matching a character. */
-	int ButtonMatchingKeyChar( int keyChar ) const;
+	int ButtonMatchingKeyChar(int keyChar) const;
 	/*@}*/
 };
 

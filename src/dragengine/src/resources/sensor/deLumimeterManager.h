@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new lumimeter resource manager linked to the given engine. */
-	deLumimeterManager( deEngine *engine );
+	deLumimeterManager(deEngine *engine);
 	
 	/** \brief Clean up lumimeter resource manager and reports leaking resources. */
 	~deLumimeterManager();
@@ -84,7 +84,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

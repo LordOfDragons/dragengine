@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feViewFontImageListener( feViewFontImage &panel );
+	feViewFontImageListener(feViewFontImage &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~feViewFontImageListener();
@@ -53,22 +53,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font parameters changed. */
-	virtual void FontChanged( feFont *font );
+	virtual void FontChanged(feFont *font);
 	
 	/** \brief An image changed. */
-    virtual void ImageChanged( feFont *font, feFontImage *image );
+    virtual void ImageChanged(feFont *font, feFontImage *image);
 	
 	/** \brief Glyphs have been added or removed. */
-	virtual void GlyphStructureChanged ( feFont *font );
+	virtual void GlyphStructureChanged (feFont *font);
 	
 	/** \brief A glyph changed. */
-	virtual void GlyphChanged( feFont *font, feFontGlyph *glyph );
+	virtual void GlyphChanged(feFont *font, feFontGlyph *glyph);
 	
 	/** \brief Glyph selection changed. */
-	virtual void GlyphSelectionChanged( feFont *font );
+	virtual void GlyphSelectionChanged(feFont *font);
 	
 	/** \brief Active glyph changed. */
-	virtual void ActiveGlyphChanged( feFont *font );
+	virtual void ActiveGlyphChanged(feFont *font);
 	/*@}*/
 };
 

@@ -60,12 +60,12 @@
 ////////////////////////////
 
 deoglTexUnitConfig::deoglTexUnitConfig() :
-pTexture( NULL ),
-pCubeMap( NULL ),
-pArrayTexture( NULL ),
-pTBO( 0 ),
-pSpecial( estNone ),
-pSampler( NULL ){
+pTexture(NULL),
+pCubeMap(NULL),
+pArrayTexture(NULL),
+pTBO(0),
+pSpecial(estNone),
+pSampler(NULL){
 }
 
 deoglTexUnitConfig::~deoglTexUnitConfig(){
@@ -76,34 +76,34 @@ deoglTexUnitConfig::~deoglTexUnitConfig(){
 // Management
 ///////////////
 
-void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) const{
+void deoglTexUnitConfig::Apply(deoglRenderThread &renderThread, int stage) const{
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
-	if( pTexture ){
-		tsmgr.EnableTexture( stage, *pTexture, *pSampler );
+	if(pTexture){
+		tsmgr.EnableTexture(stage, *pTexture, *pSampler);
 		
-	}else if( pCubeMap ){
-		tsmgr.EnableCubeMap( stage, *pCubeMap, *pSampler );
+	}else if(pCubeMap){
+		tsmgr.EnableCubeMap(stage, *pCubeMap, *pSampler);
 		
-	}else if( pArrayTexture ){
-		tsmgr.EnableArrayTexture( stage, *pArrayTexture, *pSampler );
+	}else if(pArrayTexture){
+		tsmgr.EnableArrayTexture(stage, *pArrayTexture, *pSampler);
 		
-	}else if( pTBO ){
-		tsmgr.EnableTBO( stage, pTBO, *renderThread.GetShader().GetTexSamplerConfig(
-			deoglRTShader::etscClampNearest ) );
+	}else if(pTBO){
+		tsmgr.EnableTBO(stage, pTBO, *renderThread.GetShader().GetTexSamplerConfig(
+			deoglRTShader::etscClampNearest));
 		
 	}else{
-		switch( pSpecial ){
+		switch(pSpecial){
 		case deoglTexUnitConfig::estPrevDepth:
-			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(), *pSampler );
+			tsmgr.EnableArrayTexture(stage, *renderThread.GetDeferredRendering().GetDepthTexture2(), *pSampler);
 			break;
 			
 		case deoglTexUnitConfig::estPrevColor:
-			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(), *pSampler );
+			tsmgr.EnableArrayTexture(stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(), *pSampler);
 			break;
 			
 		case estXRayDepth:
-			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTextureXRay(), *pSampler );
+			tsmgr.EnableArrayTexture(stage, *renderThread.GetDeferredRendering().GetDepthTextureXRay(), *pSampler);
 			break;
 			
 		case deoglTexUnitConfig::estDirectEnvMapActive:{
@@ -111,41 +111,41 @@ void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) con
 			const bool useEqui = renderReflection.GetUseEquiEnvMap();
 			deoglEnvironmentMap * const envmap = renderReflection.GetDirectEnvMapActive();
 			
-			if( envmap ){
-				if( useEqui ){
-					tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
+			if(envmap){
+				if(useEqui){
+					tsmgr.EnableTexture(stage, *envmap->GetEquiEnvMap(), *pSampler);
 					
 				}else{
 					// DEBUGGING
-					if( ! envmap->GetEnvironmentMap() ){
-						printf( "BUG! envmap->GetEnvironmentMap() is NULL\n" );
-						printf( "  world: %p\n", envmap->GetWorld() );
-						printf( "  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
-						printf( "  skyonly: %d\n", envmap->GetSkyOnly() );
-						printf( "  dirty: %d\n", envmap->GetDirty() );
-						printf( "  ready: %d\n", envmap->GetReady() );
-						printf( "  plan usage count: %d\n", envmap->GetPlanUsageCount() );
-						printf( "  destroy if unused: %d\n", envmap->GetDestroyIfUnused() );
-						printf( "  component list count: %d\n", envmap->GetComponentList().GetCount() );
-						printf( "  particle emitter instance list count: %d\n", envmap->GetParticleEmitterInstanceList().GetCount() );
-						printf( "  render plan list count: %d\n", envmap->GetRenderPlanList().GetCount() );
-						printf( "  marked: %d\n", envmap->GetMarked() );
-						printf( "  slot index: %d\n", envmap->GetSlotIndex() );
-						printf( "  refcount: %d\n", envmap->GetRefCount() );
-						tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(), *pSampler );
+					if(! envmap->GetEnvironmentMap()){
+						printf("BUG! envmap->GetEnvironmentMap() is NULL\n");
+						printf("  world: %p\n", envmap->GetWorld());
+						printf("  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z);
+						printf("  skyonly: %d\n", envmap->GetSkyOnly());
+						printf("  dirty: %d\n", envmap->GetDirty());
+						printf("  ready: %d\n", envmap->GetReady());
+						printf("  plan usage count: %d\n", envmap->GetPlanUsageCount());
+						printf("  destroy if unused: %d\n", envmap->GetDestroyIfUnused());
+						printf("  component list count: %d\n", envmap->GetComponentList().GetCount());
+						printf("  particle emitter instance list count: %d\n", envmap->GetParticleEmitterInstanceList().GetCount());
+						printf("  render plan list count: %d\n", envmap->GetRenderPlanList().GetCount());
+						printf("  marked: %d\n", envmap->GetMarked());
+						printf("  slot index: %d\n", envmap->GetSlotIndex());
+						printf("  refcount: %d\n", envmap->GetRefCount());
+						tsmgr.EnableCubeMap(stage, *renderThread.GetDefaultTextures().GetEnvMap(), *pSampler);
 						return;
 					}
 					// DEBUGGING
-					tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
+					tsmgr.EnableCubeMap(stage, *envmap->GetEnvironmentMap(), *pSampler);
 				}
 				
 			}else{
-				if( useEqui ){
-					tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
+				if(useEqui){
+					tsmgr.EnableTexture(stage, *renderThread.GetDefaultTextures().GetColor(),
 						*pSampler );
 					
 				}else{
-					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
+					tsmgr.EnableCubeMap(stage, *renderThread.GetDefaultTextures().GetEnvMap(),
 						*pSampler );
 				}
 			}
@@ -156,25 +156,25 @@ void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) con
 			const bool useEqui = renderReflection.GetUseEquiEnvMap();
 			deoglEnvironmentMap *envmap = renderReflection.GetDirectEnvMapFading();
 			
-			if( ! envmap ){
+			if(! envmap){
 				envmap = renderReflection.GetDirectEnvMapActive();
 			}
 			
-			if( envmap ){
-				if( useEqui ){
-					tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
+			if(envmap){
+				if(useEqui){
+					tsmgr.EnableTexture(stage, *envmap->GetEquiEnvMap(), *pSampler);
 					
 				}else{
-					tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
+					tsmgr.EnableCubeMap(stage, *envmap->GetEnvironmentMap(), *pSampler);
 				}
 				
 			}else{
-				if( useEqui ){
-					tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
+				if(useEqui){
+					tsmgr.EnableTexture(stage, *renderThread.GetDefaultTextures().GetColor(),
 						*pSampler );
 					
 				}else{
-					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
+					tsmgr.EnableCubeMap(stage, *renderThread.GetDefaultTextures().GetEnvMap(),
 						*pSampler );
 				}
 			}
@@ -188,7 +188,7 @@ void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) con
 
 
 
-void deoglTexUnitConfig::SetSampler( deoglTexSamplerConfig *sampler ){
+void deoglTexUnitConfig::SetSampler(deoglTexSamplerConfig *sampler){
 	pSampler = sampler;
 }
 
@@ -213,67 +213,67 @@ void deoglTexUnitConfig::Disable(){
 	pSampler = NULL;
 }
 
-void deoglTexUnitConfig::EnableTexture( deoglTexture *texture, deoglTexSamplerConfig *sampler ){
+void deoglTexUnitConfig::EnableTexture(deoglTexture *texture, deoglTexSamplerConfig *sampler){
 	Disable();
 	pTexture = texture;
 	pSampler = sampler;
 }
 
-void deoglTexUnitConfig::EnableTextureFromChannel( deoglRenderThread &renderThread,
+void deoglTexUnitConfig::EnableTextureFromChannel(deoglRenderThread &renderThread,
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
-const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture ){
+const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture){
 	deoglTexture *useTexture = defaultTexture;
 	deoglTexSamplerConfig *useSampler = nullptr;
 	bool found = false;
 	
 	// determine texture to use
-	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
+	const deoglSkinChannel * const schan = skinTexture.GetChannelAt(skinChannel);
 	
-	if( schan ){
+	if(schan){
 		// try renderable
 		const int skinRenderable = schan->GetRenderable();
 		deoglTexture *renderableTexture = nullptr;
 		
-		if( dynamicSkin && skinState ){
-			if( skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount() ){
-				const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt( skinRenderable );
+		if(dynamicSkin && skinState){
+			if(skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount()){
+				const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt(skinRenderable);
 				const int hostIndex = skinStateRenderable.GetHostRenderable();
 				
-				if( hostIndex != -1 && dynamicSkin ){
-					renderableTexture = dynamicSkin->GetRenderableAt( hostIndex )->GetRenderTexture();
+				if(hostIndex != -1 && dynamicSkin){
+					renderableTexture = dynamicSkin->GetRenderableAt(hostIndex)->GetRenderTexture();
 				}
 			}
 		}
 		
-		if( renderableTexture ){
+		if(renderableTexture){
 			useTexture = renderableTexture;
 			found = true;
 		}
 		
 		// try video player
-		if( ! found ){
+		if(! found){
 			const int skinVideoPlayer = schan->GetVideoPlayer();
 			deoglRVideoPlayer *videoPlayer = nullptr;
 			
-			if( skinVideoPlayer != -1 && skinState && skinVideoPlayer < skinState->GetVideoPlayerCount() ){
-				videoPlayer = skinState->GetVideoPlayerAt( skinVideoPlayer );
+			if(skinVideoPlayer != -1 && skinState && skinVideoPlayer < skinState->GetVideoPlayerCount()){
+				videoPlayer = skinState->GetVideoPlayerAt(skinVideoPlayer);
 			}
 			
-			if( videoPlayer ){
+			if(videoPlayer){
 				useTexture = videoPlayer->GetTexture();
 				found = true;
 			}
 		}
 		
 		// try dynamic constructed
-		if( ! found ){
+		if(! found){
 			const int dynamicConstructed = schan->GetDynamicConstructed();
 			
-			if( dynamicConstructed != -1 && skinState
-			&& dynamicConstructed < skinState->GetConstructedPropertyCount() ){
+			if(dynamicConstructed != -1 && skinState
+			&& dynamicConstructed < skinState->GetConstructedPropertyCount()){
 				const deoglRenderTarget::Ref &renderTarget =
-					skinState->GetConstructedPropertyAt( dynamicConstructed ).GetRenderTarget();
-				if( renderTarget ){
+					skinState->GetConstructedPropertyAt(dynamicConstructed).GetRenderTarget();
+				if(renderTarget){
 					useTexture = renderTarget->GetTexture();
 				}
 				found = true;
@@ -281,17 +281,17 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 		// otherwise use channel texture
-		if( ! found ){
+		if(! found){
 			deoglTexture *texture = schan->GetTexture();
 			
-			if( schan->GetImage() ){
+			if(schan->GetImage()){
 				texture = schan->GetImage()->GetTexture();
 				
-			}else if( schan->GetCombinedTexture() ){
+			}else if(schan->GetCombinedTexture()){
 				texture = schan->GetCombinedTexture()->GetTexture();
 			}
 			
-			if( texture ){
+			if(texture){
 				useTexture = texture;
 			}
 		}
@@ -300,7 +300,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 	// determine if texture coordinates have to be clamped
 	bool clampTexCoord = skinTexture.GetTexCoordClamp();
 	
-	if( skinChannel == deoglSkinChannel::ectColorOmnidirEquirect ){
+	if(skinChannel == deoglSkinChannel::ectColorOmnidirEquirect){
 		// this is important here. if not clamped opengl adds thin artifact lines across the
 		// 0-degrees angle from top to bottom as well as causing poles to be distorted and
 		// flipped upside down (top pole is down). no idea what driver problem causes this
@@ -309,167 +309,167 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 	}
 	
 	// determine sampler to use
-	if( useTexture && useTexture->GetMipMapped() ){
-		if( clampTexCoord ){
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap );
+	if(useTexture && useTexture->GetMipMapped()){
+		if(clampTexCoord){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
 			
 		}else{
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscRepeatLinearMipMap );
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMap);
 		}
 		
 	}else{
-		if( clampTexCoord ){
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear );
+		if(clampTexCoord){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
 			
 		}else{
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscRepeatLinear );
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinear);
 		}
 	}
 	
 	// enable texture using the found parameters if existing otherwise disable unit
-	if( useTexture ){
-		EnableTexture( useTexture, useSampler );
+	if(useTexture){
+		EnableTexture(useTexture, useSampler);
 		
 	}else{
 		Disable();
 	}
 }
 
-void deoglTexUnitConfig::EnableCubeMap( deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler ){
+void deoglTexUnitConfig::EnableCubeMap(deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler){
 	Disable();
 	pCubeMap = cubemap;
 	pSampler = sampler;
 }
 
-void deoglTexUnitConfig::EnableCubeMapFromChannel( deoglRenderThread &renderThread,
+void deoglTexUnitConfig::EnableCubeMapFromChannel(deoglRenderThread &renderThread,
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
-const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap ){
+const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap){
 	deoglCubeMap *useCubemap = defaultCubemap;
 	deoglTexSamplerConfig *useSampler = NULL;
 	bool found = false;
 	
 	// determine texture to use
-	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
+	const deoglSkinChannel * const schan = skinTexture.GetChannelAt(skinChannel);
 	
-	if( schan ){
+	if(schan){
 		// try renderable
 		const int skinRenderable = schan->GetRenderable();
 		deoglCubeMap *renderableCubemap = NULL;
 		
-		if( dynamicSkin && skinState ){
-			if( skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount() ){
-				const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt( skinRenderable );
+		if(dynamicSkin && skinState){
+			if(skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount()){
+				const deoglSkinStateRenderable &skinStateRenderable = *skinState->GetRenderableAt(skinRenderable);
 				const int hostIndex = skinStateRenderable.GetHostRenderable();
 				
-				if( hostIndex != -1 && dynamicSkin ){
-					renderableCubemap = dynamicSkin->GetRenderableAt( hostIndex )->GetRenderCubeMap();
+				if(hostIndex != -1 && dynamicSkin){
+					renderableCubemap = dynamicSkin->GetRenderableAt(hostIndex)->GetRenderCubeMap();
 				}
 			}
 		}
 		
-		if( renderableCubemap ){
+		if(renderableCubemap){
 			useCubemap = renderableCubemap;
 			found = true;
 		}
 		
 		// otherwise us channel texture
-		if( ! found ){
+		if(! found){
 			deoglCubeMap *cubemap = schan->GetCubeMap();
 			
-			if( schan->GetImage() ){
+			if(schan->GetImage()){
 				cubemap = schan->GetImage()->GetCubeMap();
 			}
 			
-			if( cubemap ){
+			if(cubemap){
 				useCubemap = cubemap;
 			}
 		}
 	}
 	
 	// determine filtering to use
-	if( useCubemap && useCubemap->GetMipMapped() ){
-		useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap );
+	if(useCubemap && useCubemap->GetMipMapped()){
+		useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
 		
 	}else{
-		useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear );
+		useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
 	}
 	
 	// enable cube map using the found parameters if existing otherwise disable unit
-	if( useCubemap ){
-		EnableCubeMap( useCubemap, useSampler );
+	if(useCubemap){
+		EnableCubeMap(useCubemap, useSampler);
 		
 	}else{
 		Disable();
 	}
 }
 
-void deoglTexUnitConfig::EnableArrayTexture( deoglArrayTexture *texture, deoglTexSamplerConfig *sampler ){
+void deoglTexUnitConfig::EnableArrayTexture(deoglArrayTexture *texture, deoglTexSamplerConfig *sampler){
 	Disable();
 	pArrayTexture = texture;
 	pSampler = sampler;
 }
 
-void deoglTexUnitConfig::EnableArrayTextureFromChannel( deoglRenderThread &renderThread,
+void deoglTexUnitConfig::EnableArrayTextureFromChannel(deoglRenderThread &renderThread,
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
-const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture ){
+const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture){
 	deoglArrayTexture *useTexture = defaultTexture;
 	deoglTexSamplerConfig *useSampler = NULL;
 	
 	// determine texture to use
-	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
+	const deoglSkinChannel * const schan = skinTexture.GetChannelAt(skinChannel);
 	
-	if( schan ){
+	if(schan){
 		deoglArrayTexture *texture = schan->GetArrayTexture();
 		
-		if( schan->GetImage() ){
+		if(schan->GetImage()){
 			texture = schan->GetImage()->GetArrayTexture();
 			
-		}else if( schan->GetCombinedTexture() ){
+		}else if(schan->GetCombinedTexture()){
 			//texture = schan->GetCombinedTexture()->GetTexture();
 			// not supported for the time being
 		}
 		
-		if( texture ){
+		if(texture){
 			useTexture = texture;
 		}
 	}
 	
 	// determine sampler to use
-	if( useTexture && useTexture->GetMipMapped() ){
-		if( skinTexture.GetTexCoordClamp() ){
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap );
+	if(useTexture && useTexture->GetMipMapped()){
+		if(skinTexture.GetTexCoordClamp()){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinearMipMap);
 			
 		}else{
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscRepeatLinearMipMap );
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinearMipMap);
 		}
 		
 	}else{
-		if( skinTexture.GetTexCoordClamp() ){
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear );
+		if(skinTexture.GetTexCoordClamp()){
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampLinear);
 			
 		}else{
-			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscRepeatLinear );
+			useSampler = renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscRepeatLinear);
 		}
 	}
 	
 	// enable texture using the found parameters if existing otherwise disable unit
-	if( useTexture ){
-		EnableArrayTexture( useTexture, useSampler );
+	if(useTexture){
+		EnableArrayTexture(useTexture, useSampler);
 		
 	}else{
 		Disable();
 	}
 }
 
-void deoglTexUnitConfig::EnableTBO( GLuint tbo ){
+void deoglTexUnitConfig::EnableTBO(GLuint tbo){
 	Disable();
 	pTBO = tbo;
 	pSampler = NULL;
 }
 
-void deoglTexUnitConfig::EnableSpecial( int special, deoglTexSamplerConfig *sampler ){
-	if( special < estNone || special >= EST_BASE_GLNAME ){
-		DETHROW( deeInvalidParam );
+void deoglTexUnitConfig::EnableSpecial(int special, deoglTexSamplerConfig *sampler){
+	if(special < estNone || special >= EST_BASE_GLNAME){
+		DETHROW(deeInvalidParam);
 	}
 	
 	Disable();
@@ -479,7 +479,7 @@ void deoglTexUnitConfig::EnableSpecial( int special, deoglTexSamplerConfig *samp
 
 
 
-bool deoglTexUnitConfig::Equals( const deoglTexUnitConfig &tuc ) const{
+bool deoglTexUnitConfig::Equals(const deoglTexUnitConfig &tuc) const{
 	return pTexture == tuc.pTexture
 		&& pCubeMap == tuc.pCubeMap
 		&& pArrayTexture == tuc.pArrayTexture
@@ -488,7 +488,7 @@ bool deoglTexUnitConfig::Equals( const deoglTexUnitConfig &tuc ) const{
 		&& pSampler == tuc.pSampler;
 }
 
-void deoglTexUnitConfig::SetFrom( const deoglTexUnitConfig &tuc ){
+void deoglTexUnitConfig::SetFrom(const deoglTexUnitConfig &tuc){
 	pTexture = tuc.pTexture;
 	pCubeMap = tuc.pCubeMap;
 	pArrayTexture = tuc.pArrayTexture;

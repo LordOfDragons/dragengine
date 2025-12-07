@@ -57,22 +57,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of patterns. */
-	inline int GetPatternCount() const{ return pPatternCount; }
+	inline int GetPatternCount() const{return pPatternCount;}
 	
 	/** \brief Pattern at the given position. */
-	const char *GetPatternAt( int index ) const;
+	const char *GetPatternAt(int index) const;
 	
 	/** \brief Index of the pattern or -1 if not found. */
-	int IndexOfPattern( const char *pattern ) const;
+	int IndexOfPattern(const char *pattern) const;
 	
 	/** \brief Determines if a pattern exists. */
-	bool HasPattern( const char *pattern ) const;
+	bool HasPattern(const char *pattern) const;
 	
 	/** \brief Adds a pattern. */
-	void AddPattern( const char *pattern );
+	void AddPattern(const char *pattern);
 	
 	/** \brief Removes a pattern. */
-	void RemovePattern( const char *pattern );
+	void RemovePattern(const char *pattern);
 	
 	/** \brief Removes all pattern. */
 	void RemoveAllPatterns();
@@ -81,10 +81,10 @@ public:
 	void SortPatternByLength();
 	
 	/** \brief Given path matches a pattern. */
-	bool PathMatches( const char *path ) const;
+	bool PathMatches(const char *path) const;
 	
 	/** \brief Index of the pattern matching the given path or -1 if none matches. */
-	int IndexOfPatternMatchingPath( const char *path ) const;
+	int IndexOfPatternMatchingPath(const char *path) const;
 	/*@}*/
 };
 

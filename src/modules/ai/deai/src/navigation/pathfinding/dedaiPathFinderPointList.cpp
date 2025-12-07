@@ -44,7 +44,7 @@ dedaiPathFinderPointList::dedaiPathFinderPointList(){
 }
 
 dedaiPathFinderPointList::~dedaiPathFinderPointList(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -55,71 +55,71 @@ dedaiPathFinderPointList::~dedaiPathFinderPointList(){
 ///////////////
 
 const decVector &dedaiPathFinderPointList::GetFirst() const{
-	if( pPointCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pPointCount == 0){
+		DETHROW(deeInvalidParam);
 	}
-	return pPoints[ 0 ];
+	return pPoints[0];
 }
 
-const decVector &dedaiPathFinderPointList::GetAt( int index ) const{
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeInvalidParam );
+const decVector &dedaiPathFinderPointList::GetAt(int index) const{
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pPoints[ index ];
+	return pPoints[index];
 }
 
-void dedaiPathFinderPointList::Add( const decVector &point ){
-	if( pPointCount == pPointSize ){
+void dedaiPathFinderPointList::Add(const decVector &point){
+	if(pPointCount == pPointSize){
 		const int newSize = pPointCount + 10;
-		decVector *newArray = new decVector[ newSize ];
-		if( pPoints ){
-			memcpy( newArray, pPoints, sizeof( decVector ) * pPointCount );
+		decVector *newArray = new decVector[newSize];
+		if(pPoints){
+			memcpy(newArray, pPoints, sizeof(decVector) * pPointCount);
 			delete [] pPoints;
 		}
 		pPoints = newArray;
 		pPointSize = newSize;
 	}
 	
-	pPoints[ pPointCount++ ] = point;
+	pPoints[pPointCount++] = point;
 }
 
 void dedaiPathFinderPointList::RemoveFirst(){
-	if( pPointCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pPointCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=1; i<pPointCount; i++ ){
-		pPoints[ i - 1 ] = pPoints[ i ];
+	for(i=1; i<pPointCount; i++){
+		pPoints[i - 1] = pPoints[i];
 	}
 	pPointCount--;
 }
 
-void dedaiPathFinderPointList::RemoveFirst( int count ){
-	if( count > 0 ){
-		if( count > pPointCount ){
-			DETHROW( deeInvalidParam );
+void dedaiPathFinderPointList::RemoveFirst(int count){
+	if(count > 0){
+		if(count > pPointCount){
+			DETHROW(deeInvalidParam);
 		}
 		
 		int i;
 		
-		for( i=count; i<pPointCount; i++ ){
-			pPoints[ i - count ] = pPoints[ i ];
+		for(i=count; i<pPointCount; i++){
+			pPoints[i - count] = pPoints[i];
 		}
 		pPointCount -= count;
 	}
 }
 
-void dedaiPathFinderPointList::RemoveFrom( int index ){
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeInvalidParam );
+void dedaiPathFinderPointList::RemoveFrom(int index){
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=index+1; i<pPointCount; i++ ){
-		pPoints[ i - 1 ] = pPoints[ i ];
+	for(i=index+1; i<pPointCount; i++){
+		pPoints[i - 1] = pPoints[i];
 	}
 	pPointCount--;
 }
@@ -130,10 +130,10 @@ void dedaiPathFinderPointList::RemoveAll(){
 
 
 
-void dedaiPathFinderPointList::Transform( const decMatrix &matrix ){
+void dedaiPathFinderPointList::Transform(const decMatrix &matrix){
 	int i;
 	
-	for( i=0; i<pPointCount; i++ ){
-		pPoints[ i ] = matrix * pPoints[ i ];
+	for(i=0; i<pPointCount; i++){
+		pPoints[i] = matrix * pPoints[i];
 	}
 }

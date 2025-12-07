@@ -40,42 +40,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected( const meObjectList &list, const char *key, const char *value ){
+meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObjectList &list, const char *key, const char *value){
 	meUndoDataObjectProperty *undoData = NULL;
 	const int count = list.GetCount();
 	meObject *object;
 	int i;
 	
-	if( ! key || ! value || count < 1 ){
-		DETHROW( deeInvalidParam );
+	if(! key || ! value || count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		SetShortInfo( "Copy object property to selected" );
+		SetShortInfo("Copy object property to selected");
 		pKey = key;
 		pValue = value;
 		
-		for( i=0; i<count; i++ ){
-			object = list.GetAt( i );
-			if( ! object->GetWorld() ){
-				DETHROW( deeInvalidParam );
+		for(i=0; i<count; i++){
+			object = list.GetAt(i);
+			if(! object->GetWorld()){
+				DETHROW(deeInvalidParam);
 			}
 			
 			const decStringDictionary &properties= object->GetProperties();
 			
-			undoData = new meUndoDataObjectProperty( object );
-			undoData->SetPropertyExists( properties.Has( key ) );
-			if( undoData->GetPropertyExists() ){
-				undoData->SetOldValue( properties.GetAt( key ) );
+			undoData = new meUndoDataObjectProperty(object);
+			undoData->SetPropertyExists(properties.Has(key));
+			if(undoData->GetPropertyExists()){
+				undoData->SetOldValue(properties.GetAt(key));
 			}
 			
-			pList.Add( undoData );
+			pList.Add(undoData);
 			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( undoData ){
+	}catch(const deException &){
+		if(undoData){
 			undoData->FreeReference();
 		}
 		pCleanUp();
@@ -92,7 +92,7 @@ meUObjectPropertyCopyToSelected::~meUObjectPropertyCopyToSelected(){
 // Management
 ///////////////
 
-void meUObjectPropertyCopyToSelected::SetValue( const char *value ){
+void meUObjectPropertyCopyToSelected::SetValue(const char *value){
 	pValue = value;
 }
 
@@ -102,14 +102,14 @@ void meUObjectPropertyCopyToSelected::Undo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObjectProperty &undoData = *( ( meUndoDataObjectProperty* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
 		
-		if( undoData.GetPropertyExists() ){
-			undoData.GetObject()->SetProperty( pKey.GetString(), undoData.GetOldValue().GetString() );
+		if(undoData.GetPropertyExists()){
+			undoData.GetObject()->SetProperty(pKey.GetString(), undoData.GetOldValue().GetString());
 			
 		}else{
-			undoData.GetObject()->RemoveProperty( pKey.GetString() );
+			undoData.GetObject()->RemoveProperty(pKey.GetString());
 		}
 	}
 }
@@ -118,10 +118,10 @@ void meUObjectPropertyCopyToSelected::Redo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObjectProperty &undoData = *( ( meUndoDataObjectProperty* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObjectProperty &undoData = *((meUndoDataObjectProperty*)pList.GetAt(i));
 		
-		undoData.GetObject()->SetProperty( pKey.GetString(), pValue.GetString() );
+		undoData.GetObject()->SetProperty(pKey.GetString(), pValue.GetString());
 	}
 }
 

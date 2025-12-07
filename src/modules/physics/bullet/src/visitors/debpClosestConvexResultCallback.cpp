@@ -54,15 +54,15 @@
 /////////////////
 
 debpClosestConvexResultCallback::debpClosestConvexResultCallback() :
-ClosestConvexResultCallback( btVector3( BT_ZERO, BT_ZERO, BT_ZERO ), btVector3( BT_ZERO, BT_ZERO, BT_ZERO ) ),
-pCollider( NULL ),
-pColliderVolume( NULL ),
-pColliderComponent( NULL ),
-pHitHTSector( NULL ),
-pHitCollider( NULL ),
-pHitBone( -1 ),
-pHitShape( -1 ),
-pHitFace( -1 ){
+ClosestConvexResultCallback(btVector3(BT_ZERO, BT_ZERO, BT_ZERO), btVector3(BT_ZERO, BT_ZERO, BT_ZERO)),
+pCollider(NULL),
+pColliderVolume(NULL),
+pColliderComponent(NULL),
+pHitHTSector(NULL),
+pHitCollider(NULL),
+pHitBone(-1),
+pHitShape(-1),
+pHitFace(-1){
 }
 
 
@@ -70,9 +70,9 @@ pHitFace( -1 ){
 // Management
 ///////////////
 
-void debpClosestConvexResultCallback::SetTestCollider( debpCollider *bpCollider ){
-	if( ! bpCollider ){
-		DETHROW( deeInvalidParam );
+void debpClosestConvexResultCallback::SetTestCollider(debpCollider *bpCollider){
+	if(! bpCollider){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// clear the last collider
@@ -81,45 +81,45 @@ void debpClosestConvexResultCallback::SetTestCollider( debpCollider *bpCollider 
 	pColliderComponent = NULL;
 	
 	// determine the type of the new collider and initalize the working parameters
-	if( bpCollider->IsVolume() ){
+	if(bpCollider->IsVolume()){
 		pCollider = bpCollider;
-		pColliderVolume = ( debpColliderVolume* )bpCollider;
+		pColliderVolume = (debpColliderVolume*)bpCollider;
 		pMoveDirection = pColliderVolume->GetPredictedDisplacement();
 		pRotation = pColliderVolume->GetPredictedRotation();
 		
 		const decDVector &position = pColliderVolume->GetPosition();
 		
-		m_convexFromWorld.setX( ( btScalar )position.x );
-		m_convexFromWorld.setY( ( btScalar )position.y );
-		m_convexFromWorld.setZ( ( btScalar )position.z );
+		m_convexFromWorld.setX((btScalar)position.x);
+		m_convexFromWorld.setY((btScalar)position.y);
+		m_convexFromWorld.setZ((btScalar)position.z);
 		
-		m_convexToWorld.setX( ( btScalar )( position.x + pMoveDirection.x ) );
-		m_convexToWorld.setY( ( btScalar )( position.y + pMoveDirection.y ) );
-		m_convexToWorld.setZ( ( btScalar )( position.z + pMoveDirection.z ) );
+		m_convexToWorld.setX((btScalar)(position.x + pMoveDirection.x));
+		m_convexToWorld.setY((btScalar)(position.y + pMoveDirection.y));
+		m_convexToWorld.setZ((btScalar)(position.z + pMoveDirection.z));
 		
-	}else if( bpCollider->IsComponent() ){
+	}else if(bpCollider->IsComponent()){
 		pCollider = bpCollider;
-		pColliderComponent = ( debpColliderComponent* )bpCollider;
+		pColliderComponent = (debpColliderComponent*)bpCollider;
 		pMoveDirection = pColliderComponent->GetPredictedDisplacement();
 		
 		const decDVector &position = pColliderComponent->GetPosition();
 		
-		m_convexFromWorld.setX( ( btScalar )position.x );
-		m_convexFromWorld.setY( ( btScalar )position.y );
-		m_convexFromWorld.setZ( ( btScalar )position.z );
+		m_convexFromWorld.setX((btScalar)position.x);
+		m_convexFromWorld.setY((btScalar)position.y);
+		m_convexFromWorld.setZ((btScalar)position.z);
 		
-		m_convexToWorld.setX( ( btScalar )( position.x + pMoveDirection.x ) );
-		m_convexToWorld.setY( ( btScalar )( position.y + pMoveDirection.y ) );
-		m_convexToWorld.setZ( ( btScalar )( position.z + pMoveDirection.z ) );
+		m_convexToWorld.setX((btScalar)(position.x + pMoveDirection.x));
+		m_convexToWorld.setY((btScalar)(position.y + pMoveDirection.y));
+		m_convexToWorld.setZ((btScalar)(position.z + pMoveDirection.z));
 	}
 	
 	// reset local collisions flag
-	m_closestHitFraction = ( btScalar )1.0;
+	m_closestHitFraction = (btScalar)1.0;
 }
 
-void debpClosestConvexResultCallback::SetTestCollider( debpCollider *bpCollider, const decDVector &displacement ){
-	if( ! bpCollider ){
-		DETHROW( deeInvalidParam );
+void debpClosestConvexResultCallback::SetTestCollider(debpCollider *bpCollider, const decDVector &displacement){
+	if(! bpCollider){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// clear the last collider
@@ -131,37 +131,37 @@ void debpClosestConvexResultCallback::SetTestCollider( debpCollider *bpCollider,
 	pMoveDirection = displacement;
 	
 	// determine the type of the new collider and initalize the working parameters
-	if( bpCollider->IsVolume() ){
+	if(bpCollider->IsVolume()){
 		pCollider = bpCollider;
-		pColliderVolume = ( debpColliderVolume* )bpCollider;
+		pColliderVolume = (debpColliderVolume*)bpCollider;
 		
 		const decDVector &position = pColliderVolume->GetPosition();
 		
-		m_convexFromWorld.setX( ( btScalar )position.x );
-		m_convexFromWorld.setY( ( btScalar )position.y );
-		m_convexFromWorld.setZ( ( btScalar )position.z );
+		m_convexFromWorld.setX((btScalar)position.x);
+		m_convexFromWorld.setY((btScalar)position.y);
+		m_convexFromWorld.setZ((btScalar)position.z);
 		
-		m_convexToWorld.setX( ( btScalar )( position.x + displacement.x ) );
-		m_convexToWorld.setY( ( btScalar )( position.y + displacement.y ) );
-		m_convexToWorld.setZ( ( btScalar )( position.z + displacement.z ) );
+		m_convexToWorld.setX((btScalar)(position.x + displacement.x));
+		m_convexToWorld.setY((btScalar)(position.y + displacement.y));
+		m_convexToWorld.setZ((btScalar)(position.z + displacement.z));
 		
-	}else if( bpCollider->IsComponent() ){
+	}else if(bpCollider->IsComponent()){
 		pCollider = bpCollider;
-		pColliderComponent = ( debpColliderComponent* )bpCollider;
+		pColliderComponent = (debpColliderComponent*)bpCollider;
 		
 		const decDVector &position = pColliderComponent->GetPosition();
 		
-		m_convexFromWorld.setX( ( btScalar )position.x );
-		m_convexFromWorld.setY( ( btScalar )position.y );
-		m_convexFromWorld.setZ( ( btScalar )position.z );
+		m_convexFromWorld.setX((btScalar)position.x);
+		m_convexFromWorld.setY((btScalar)position.y);
+		m_convexFromWorld.setZ((btScalar)position.z);
 		
-		m_convexToWorld.setX( ( btScalar )( position.x + displacement.x ) );
-		m_convexToWorld.setY( ( btScalar )( position.y + displacement.y ) );
-		m_convexToWorld.setZ( ( btScalar )( position.z + displacement.z ) );
+		m_convexToWorld.setX((btScalar)(position.x + displacement.x));
+		m_convexToWorld.setY((btScalar)(position.y + displacement.y));
+		m_convexToWorld.setZ((btScalar)(position.z + displacement.z));
 	}
 	
 	// reset local collisions flag
-	m_closestHitFraction = ( btScalar )1.0;
+	m_closestHitFraction = (btScalar)1.0;
 }
 
 
@@ -187,23 +187,23 @@ bool debpClosestConvexResultCallback::RotationZero() const{
 void debpClosestConvexResultCallback::Reset(){
 	pHitHTSector = NULL;
 	pHitCollider = NULL;
-	m_closestHitFraction = ( btScalar )1.0;
+	m_closestHitFraction = (btScalar)1.0;
 	pHitBone = -1;
 	pHitShape = -1;
 	pHitFace = -1;
 }
 
-void debpClosestConvexResultCallback::GetResult( deCollisionInfo &collisionInfo ) const{
-	if( hasHit() ){
-		if( pHitHTSector ){
-			collisionInfo.SetHTSector( pHitHTSector->GetHeightTerrain()->GetHeightTerrain(), pHitHTSector->GetSector() );
+void debpClosestConvexResultCallback::GetResult(deCollisionInfo &collisionInfo) const{
+	if(hasHit()){
+		if(pHitHTSector){
+			collisionInfo.SetHTSector(pHitHTSector->GetHeightTerrain()->GetHeightTerrain(), pHitHTSector->GetSector());
 			
 		}else{
-			collisionInfo.SetCollider( pHitCollider, pHitBone, pHitShape, pHitFace );
+			collisionInfo.SetCollider(pHitCollider, pHitBone, pHitShape, pHitFace);
 		}
 		
-		collisionInfo.SetDistance( ( float )m_closestHitFraction );
-		collisionInfo.SetNormal( decVector( m_hitNormalWorld.x(), m_hitNormalWorld.y(), m_hitNormalWorld.z() ) );
+		collisionInfo.SetDistance((float)m_closestHitFraction);
+		collisionInfo.SetNormal(decVector(m_hitNormalWorld.x(), m_hitNormalWorld.y(), m_hitNormalWorld.z()));
 		
 	}else{
 		collisionInfo.Clear();
@@ -215,37 +215,37 @@ void debpClosestConvexResultCallback::GetResult( deCollisionInfo &collisionInfo 
 // Bullet
 ///////////
 
-bool debpClosestConvexResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const{
+bool debpClosestConvexResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if( ! ConvexResultCallback::needsCollision( proxy0 ) ){
+	if(! ConvexResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
 	// determine the collision partner using the custom pointer
-	const btCollisionObject &collisionObject = *( ( btCollisionObject* )proxy0->m_clientObject );
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )collisionObject.getUserPointer() );
+	const btCollisionObject &collisionObject = *((btCollisionObject*)proxy0->m_clientObject);
+	const debpCollisionObject &colObj = *((debpCollisionObject*)collisionObject.getUserPointer());
 	deCollider * const engOrgCollider = &pCollider->GetCollider();
 	
 	// test against a collider
-	if( colObj.IsOwnerCollider() ){
+	if(colObj.IsOwnerCollider()){
 		debpCollider * const collider = colObj.GetOwnerCollider();
 		
 		// no self collision. this happens because for testing a collision a separate
 		// collision shape so individual shapes can be tested and transforms respected
-		if( collider == pCollider ){
+		if(collider == pCollider){
 			return false;
 		}
 		
 		// ask if a collision between those two colliders is possible
 		deCollider * const engCollider = &collider->GetCollider();
 		
-		if( pCollider->CollidesNot( *collider ) ){
+		if(pCollider->CollidesNot(*collider)){
 			return false;
 		}
 		
 		// check if a collision between the two colliders is possible according to the moving collider listener
-		if( engOrgCollider->GetPeerScripting()
-		&& ! engOrgCollider->GetPeerScripting()->CanHitCollider( engOrgCollider, engCollider ) ){
+		if(engOrgCollider->GetPeerScripting()
+		&& ! engOrgCollider->GetPeerScripting()->CanHitCollider(engOrgCollider, engCollider)){
 			return false;
 		}
 // 		if( pColliderComponent ) printf( "collider %s needsCollision %s\n",
@@ -260,23 +260,23 @@ bool debpClosestConvexResultCallback::needsCollision( btBroadphaseProxy *proxy0 
 		return true;
 		
 	// test against a height terrain sector
-	}else if( colObj.GetOwnerHTSector() ){
-		return engOrgCollider->GetCollisionFilter().Collides( colObj.GetOwnerHTSector()->
-			GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter() );
+	}else if(colObj.GetOwnerHTSector()){
+		return engOrgCollider->GetCollisionFilter().Collides(colObj.GetOwnerHTSector()->
+			GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter());
 	}
 	
 	// all other combinations score no collision
 	return false;
 }
 
-btScalar debpClosestConvexResultCallback::addSingleResult( btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace ){
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )convexResult.m_hitCollisionObject->getUserPointer() );
+btScalar debpClosestConvexResultCallback::addSingleResult(btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace){
+	const debpCollisionObject &colObj = *((debpCollisionObject*)convexResult.m_hitCollisionObject->getUserPointer());
 	
-	if( colObj.IsOwnerCollider() ){
+	if(colObj.IsOwnerCollider()){
 		pHitHTSector = NULL;
 		pHitCollider = &colObj.GetOwnerCollider()->GetCollider();
 		pHitBone = colObj.GetOwnerBone();
-		pHitShape = ( int )( intptr_t )convexResult.m_hitCollisionShape->getUserPointer() - 1;
+		pHitShape = (int)(intptr_t)convexResult.m_hitCollisionShape->getUserPointer() - 1;
 		pHitFace = -1;
 // 		if( pColliderComponent ) printf( "collider %s addSingleResult (%g,%g,%g) %s\n",
 // 			( pColliderComponent->GetColliderComponent()->GetComponent() &&
@@ -290,13 +290,13 @@ btScalar debpClosestConvexResultCallback::addSingleResult( btCollisionWorld::Loc
 // 			colObj.GetOwnerCollider()->CastToComponent()->GetColliderComponent()->GetComponent()->GetRig() ) ?
 // 			colObj.GetOwnerCollider()->CastToComponent()->GetColliderComponent()->GetComponent()->GetRig()->GetFilename() : "-" );
 		
-	}else if( colObj.IsOwnerHTSector() ){
+	}else if(colObj.IsOwnerHTSector()){
 		pHitHTSector = colObj.GetOwnerHTSector();
 		pHitCollider = NULL;
 		pHitBone = -1;
 		pHitShape = -1;
 		
-		if( convexResult.m_localShapeInfo ){
+		if(convexResult.m_localShapeInfo){
 			//pHitFace = convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index
 			pHitFace = -1;
 			
@@ -305,5 +305,5 @@ btScalar debpClosestConvexResultCallback::addSingleResult( btCollisionWorld::Loc
 		}
 	}
 	
-	return ClosestConvexResultCallback::addSingleResult( convexResult, normalInWorldSpace );
+	return ClosestConvexResultCallback::addSingleResult(convexResult, normalInWorldSpace);
 }

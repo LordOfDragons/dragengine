@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldSetProperties( meWorld *world, const decStringDictionary &newValues );
+	meUWorldSetProperties(meWorld *world, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo object. */

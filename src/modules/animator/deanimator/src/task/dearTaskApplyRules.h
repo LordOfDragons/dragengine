@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	dearTaskApplyRules( dearAnimatorInstance &instance );
+	dearTaskApplyRules(dearAnimatorInstance &instance);
 	
 	/** Clean up task. */
 	virtual ~dearTaskApplyRules();
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator instance owning this task. */
-	inline dearAnimatorInstance &GetInstance() const{ return pInstance; }
+	inline dearAnimatorInstance &GetInstance() const{return pInstance;}
 	
 	/** Instance dropped task. */
 	void Drop();

@@ -43,8 +43,8 @@ private:
 		sDictEntry *next;
 		
 		sDictEntry();
-		sDictEntry( const sDictEntry &entry );
-		sDictEntry( unsigned int nhash, const char *nkey, void *nvalue );
+		sDictEntry(const sDictEntry &entry);
+		sDictEntry(unsigned int nhash, const char *nkey, void *nvalue);
 		~sDictEntry();
 	};
 	
@@ -62,10 +62,10 @@ public:
 	 * \brief Create a new dictionary with initial bucket count.
 	 * \throws deeInvalidParam \em bucketCount is less than 1.
 	 */
-	decPointerDictionary( int bucketCount );
+	decPointerDictionary(int bucketCount);
 	
 	/** \brief Create copy of a dictionary. */
-	decPointerDictionary( const decPointerDictionary &dict );
+	decPointerDictionary(const decPointerDictionary &dict);
 	
 	/** \brief Clean up dictionary. */
 	~decPointerDictionary();
@@ -74,20 +74,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of entries in the dictionary. */
-	inline int GetCount() const{ return pEntryCount; }
+	inline int GetCount() const{return pEntryCount;}
 	
 	/**
 	 * \brief Determine if a key is located in the dictionary.
 	 * \throws deeInvalidParam \em key is \em NULL.
 	 */
-	bool Has( const char *key ) const;
+	bool Has(const char *key) const;
 	
 	/**
 	 * \brief Object for key.
 	 * \throws deeInvalidParam \em key is \em NULL.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	void *GetAt( const char *key ) const;
+	void *GetAt(const char *key) const;
 	
 	/**
 	 * \brief Object by key
@@ -95,26 +95,26 @@ public:
 	 * \retval true Object of \em key stored in \em value.
 	 * \retval false \em key is not present in the dictionary.
 	 */
-	bool GetAt( const char *key, void **value ) const;
+	bool GetAt(const char *key, void **value) const;
 	
 	/**
 	 * \brief Set key to object.
 	 * \throws deeInvalidParam \em key is \em NULL.
 	 */
-	void SetAt( const char *key, void *value );
+	void SetAt(const char *key, void *value);
 	
 	/**
 	 * \brief Remove a key.
 	 * \throws deeInvalidParam \em key is \em NULL.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	void Remove( const char *key );
+	void Remove(const char *key);
 	
 	/**
 	 * \brief Remove a key if present in the dictionary.
 	 * \throws deeInvalidParam \em key is \em NULL.
 	 */
-	void RemoveIfPresent( const char *key );
+	void RemoveIfPresent(const char *key);
 	
 	/** \brief Remove all keys from the dictionary. */
 	void RemoveAll();
@@ -126,7 +126,7 @@ public:
 	decPointerList GetValues() const;
 	
 	/** \brief Determine if dictionary is equal to another dictionary. */
-	bool Equals( const decPointerDictionary &dict ) const;
+	bool Equals(const decPointerDictionary &dict) const;
 	
 	/** \brief Check load of the dictionary changing bucket count if required. */
 	void CheckLoad();
@@ -135,23 +135,23 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if dictionary is equal to another dictionary. */
-	bool operator==( const decPointerDictionary &dict ) const;
+	bool operator==(const decPointerDictionary &dict) const;
 	
 	/** \brief New dictionary containing keys of this dictionary and the keys of another applied ontop of it. */
-	decPointerDictionary operator+( const decPointerDictionary &dict ) const;
+	decPointerDictionary operator+(const decPointerDictionary &dict) const;
 	
 	/**
 	 * \brief Object for key.
 	 * \throws deeInvalidParam \em key is \em NULL.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	void *operator[]( const char *key ) const;
+	void *operator[](const char *key) const;
 	
 	/** \brief Copy dictionary to this dictionary. */
-	decPointerDictionary &operator=( const decPointerDictionary &dict );
+	decPointerDictionary &operator=(const decPointerDictionary &dict);
 	
 	/** \brief Set all keys from dictionary to this dictionary. */
-	decPointerDictionary &operator+=( const decPointerDictionary &dict );
+	decPointerDictionary &operator+=(const decPointerDictionary &dict);
 	/*@}*/
 };
 

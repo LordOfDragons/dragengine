@@ -46,15 +46,15 @@
 #include "../logger/deLogger.h"
 
 deErrorTrace::deErrorTrace() :
-pError( "Unknown" ),
-pPoints( nullptr ),
-pPointCount( 0 ),
-pPointSize( 0 ){
+pError("Unknown"),
+pPoints(nullptr),
+pPointCount(0),
+pPointSize(0){
 }
 
 deErrorTrace::~deErrorTrace(){
 	RemoveAllPoints();
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -64,7 +64,7 @@ deErrorTrace::~deErrorTrace(){
 // Management
 ///////////////
 
-void deErrorTrace::SetError( const char *error ){
+void deErrorTrace::SetError(const char *error){
 	pError = error;
 }
 
@@ -78,32 +78,32 @@ void deErrorTrace::Clear(){
 // Trace Point Management
 ///////////////////////////
 
-deErrorTracePoint *deErrorTrace::GetPoint( int index ) const{
-	if( index < 0 || index >= pPointCount ) DETHROW( deeInvalidParam );
-	return pPoints[ index ];
+deErrorTracePoint *deErrorTrace::GetPoint(int index) const{
+	if(index < 0 || index >= pPointCount) DETHROW(deeInvalidParam);
+	return pPoints[index];
 }
 
-void deErrorTrace::AddPoint( deErrorTracePoint *point ){
-	if( ! point ) DETHROW( deeInvalidParam );
-	if( pPointCount == pPointSize ){
+void deErrorTrace::AddPoint(deErrorTracePoint *point){
+	if(! point) DETHROW(deeInvalidParam);
+	if(pPointCount == pPointSize){
 		int i, newSize = pPointSize * 3 / 2 + 1;
-		deErrorTracePoint **newArray = new deErrorTracePoint*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pPoints ){
-			for( i=0; i<pPointCount; i++ ) newArray[ i ] = pPoints[ i ];
+		deErrorTracePoint **newArray = new deErrorTracePoint*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pPoints){
+			for(i=0; i<pPointCount; i++) newArray[i] = pPoints[i];
 			delete [] pPoints;
 		}
 		pPoints = newArray;
 		pPointSize = newSize;
 	}
-	pPoints[ pPointCount ] = point;
+	pPoints[pPointCount] = point;
 	pPointCount++;
 }
 
 void deErrorTrace::RemoveAllPoints(){
 	int i;
-	for( i=0; i<pPointCount; i++ ){
-		if( pPoints[ i ] ) delete pPoints[ i ];
+	for(i=0; i<pPointCount; i++){
+		if(pPoints[i]) delete pPoints[i];
 	}
 	pPointCount = 0;
 }
@@ -113,46 +113,46 @@ void deErrorTrace::RemoveAllPoints(){
 // Convenience Functions
 //////////////////////////
 
-deErrorTracePoint *deErrorTrace::AddAndSetIfEmpty( const char *error, deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine ){
-	if( ! error || ! sourceFunc || sourceLine < 0 ) DETHROW( deeInvalidParam );
-	if( pPointCount > 0 ) return NULL;
+deErrorTracePoint *deErrorTrace::AddAndSetIfEmpty(const char *error, deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine){
+	if(! error || ! sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
+	if(pPointCount > 0) return NULL;
 	pError = error;
-	return AddPoint( sourceModule, sourceFunc, sourceLine );
+	return AddPoint(sourceModule, sourceFunc, sourceLine);
 }
 
-deErrorTracePoint *deErrorTrace::AddPoint( deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine ){
-	if( ! sourceFunc || sourceLine < 0 ) DETHROW( deeInvalidParam );
+deErrorTracePoint *deErrorTrace::AddPoint(deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine){
+	if(! sourceFunc || sourceLine < 0) DETHROW(deeInvalidParam);
 	deErrorTracePoint *newPoint = NULL;
 	try{
-		newPoint = new deErrorTracePoint( sourceModule, sourceFunc, sourceLine );
-		if( ! newPoint ) DETHROW( deeOutOfMemory );
-		AddPoint( newPoint );
-	}catch( const deException & ){
-		if( newPoint ) delete newPoint;
+		newPoint = new deErrorTracePoint(sourceModule, sourceFunc, sourceLine);
+		if(! newPoint) DETHROW(deeOutOfMemory);
+		AddPoint(newPoint);
+	}catch(const deException &){
+		if(newPoint) delete newPoint;
 		throw;
 	}
 	return newPoint;
 }
 
-void deErrorTrace::PrintTrace( deLogger &logger ){
+void deErrorTrace::PrintTrace(deLogger &logger){
 	const char *loggingName = "ErrorTrace";
 	int i, j;
 	
-	logger.LogErrorFormat( loggingName, "Error %s.", pError.GetString() );
-	for( i=0; i<pPointCount; i++ ){
-		if( pPoints[ i ]->GetSourceModule() ){
-			logger.LogErrorFormat( loggingName, "%i) %s %s at %i.", i + 1,
-				pPoints[ i ]->GetSourceModule()->GetName().GetString(),
-				pPoints[ i ]->GetSourceFunction().GetString(), pPoints[ i ]->GetSourceLine() );
+	logger.LogErrorFormat(loggingName, "Error %s.", pError.GetString());
+	for(i=0; i<pPointCount; i++){
+		if(pPoints[i]->GetSourceModule()){
+			logger.LogErrorFormat(loggingName, "%i) %s %s at %i.", i + 1,
+				pPoints[i]->GetSourceModule()->GetName().GetString(),
+				pPoints[i]->GetSourceFunction().GetString(), pPoints[i]->GetSourceLine());
 		}else{
 			//moduleType = "Drag[en]gine";
-			logger.LogErrorFormat( loggingName, "%i) Game Engine %s at %i.", i + 1,
-				pPoints[ i ]->GetSourceFunction().GetString(), pPoints[ i ]->GetSourceLine() );
+			logger.LogErrorFormat(loggingName, "%i) Game Engine %s at %i.", i + 1,
+				pPoints[i]->GetSourceFunction().GetString(), pPoints[i]->GetSourceLine());
 		}
-		for( j=0; j<pPoints[ i ]->GetValueCount(); j++ ){
-			logger.LogErrorFormat( loggingName, "  - %s = '%s'.",
-				pPoints[ i ]->GetValue( j )->GetName().GetString(),
-				pPoints[ i ]->GetValue( j )->GetValue().GetString() );
+		for(j=0; j<pPoints[i]->GetValueCount(); j++){
+			logger.LogErrorFormat(loggingName, "  - %s = '%s'.",
+				pPoints[i]->GetValue(j)->GetName().GetString(),
+				pPoints[i]->GetValue(j)->GetValue().GetString());
 		}
 	}
 }

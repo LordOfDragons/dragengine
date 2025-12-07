@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new color matrix effect. */
-	deEffectColorMatrix( deEffectManager *manager );
+	deEffectColorMatrix(deEffectManager *manager);
 	
 protected:
 	/**
@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Color matrix. */
-	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
+	inline const decColorMatrix &GetColorMatrix() const{return pColorMatrix;}
 	
 	/** \brief Set color matrix. */
-	void SetColorMatrix( const decColorMatrix &colorMatrix );
+	void SetColorMatrix(const decColorMatrix &colorMatrix);
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	virtual void Visit(deEffectVisitor &visitor);
 	/*@}*/
 };
 

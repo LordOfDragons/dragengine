@@ -37,8 +37,8 @@ private:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPropertyValuesFromSubObjects( gdeObjectClass *objectClass,
-		const decStringDictionary &newValues );
+	gdeUOCPropertyValuesFromSubObjects(gdeObjectClass *objectClass,
+		const decStringDictionary &newValues);
 	
 	
 	
@@ -54,7 +54,7 @@ public:
 	 * 
 	 * Returns \em NULL if nothing changed.
 	 */
-	static gdeUOCPropertyValuesFromSubObjects *Create( gdeObjectClass *objectClass );
+	static gdeUOCPropertyValuesFromSubObjects *Create(gdeObjectClass *objectClass);
 	/*@}*/
 };
 

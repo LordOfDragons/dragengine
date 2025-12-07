@@ -50,8 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dispatcher. */
-	debpCollisionDispatcher( debpSharedCollisionFiltering &collisionFiltering,
-		btCollisionConfiguration *collisionConfiguration );
+	debpCollisionDispatcher(debpSharedCollisionFiltering &collisionFiltering,
+		btCollisionConfiguration *collisionConfiguration);
 	
 	/** \brief Clean up dispatcher. */
 	virtual ~debpCollisionDispatcher();

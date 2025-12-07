@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPACameraShot( ceWPTopic &parentPanel );
+	ceWPACameraShot(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */

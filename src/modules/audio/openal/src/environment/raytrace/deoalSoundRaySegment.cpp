@@ -39,33 +39,33 @@
 /////////////////////////////////
 
 deoalSoundRaySegment::deoalSoundRaySegment() :
-pDirection( 0.0f, 0.0f, 1.0f ),
-pLength( 0.0f ),
-pDistance( 0.0f ),
-pGainLow( 0.0f ),
-pGainMedium( 0.0f ),
-pGainHigh( 0.0f ),
-pAbsorptionSumLow( 0.0f ),
-pAbsorptionSumMedium( 0.0f ),
-pAbsorptionSumHigh( 0.0f ),
-pBounceCount( 0 ),
-pTransmittedCount( 0 ){
+pDirection(0.0f, 0.0f, 1.0f),
+pLength(0.0f),
+pDistance(0.0f),
+pGainLow(0.0f),
+pGainMedium(0.0f),
+pGainHigh(0.0f),
+pAbsorptionSumLow(0.0f),
+pAbsorptionSumMedium(0.0f),
+pAbsorptionSumHigh(0.0f),
+pBounceCount(0),
+pTransmittedCount(0){
 }
 
-deoalSoundRaySegment::deoalSoundRaySegment( const deoalSoundRaySegment &segment ) :
-pPosition( segment.pPosition ),
-pDirection( segment.pDirection ),
-pNormal( segment.pNormal ),
-pLength( segment.pLength ),
-pDistance( segment.pDistance ),
-pGainLow( segment.pGainLow ),
-pGainMedium( segment.pGainMedium ),
-pGainHigh( segment.pGainHigh ),
-pAbsorptionSumLow( segment.pAbsorptionSumLow ),
-pAbsorptionSumMedium( segment.pAbsorptionSumMedium ),
-pAbsorptionSumHigh( segment.pAbsorptionSumHigh ),
-pBounceCount( segment.pBounceCount ),
-pTransmittedCount( segment.pTransmittedCount ){
+deoalSoundRaySegment::deoalSoundRaySegment(const deoalSoundRaySegment &segment) :
+pPosition(segment.pPosition),
+pDirection(segment.pDirection),
+pNormal(segment.pNormal),
+pLength(segment.pLength),
+pDistance(segment.pDistance),
+pGainLow(segment.pGainLow),
+pGainMedium(segment.pGainMedium),
+pGainHigh(segment.pGainHigh),
+pAbsorptionSumLow(segment.pAbsorptionSumLow),
+pAbsorptionSumMedium(segment.pAbsorptionSumMedium),
+pAbsorptionSumHigh(segment.pAbsorptionSumHigh),
+pBounceCount(segment.pBounceCount),
+pTransmittedCount(segment.pTransmittedCount){
 }
 
 
@@ -73,61 +73,61 @@ pTransmittedCount( segment.pTransmittedCount ){
 // Manegement
 /////////////
 
-void deoalSoundRaySegment::SetPosition( const decVector &position ){
+void deoalSoundRaySegment::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deoalSoundRaySegment::SetDirection( const decVector &direction ){
+void deoalSoundRaySegment::SetDirection(const decVector &direction){
 	pDirection = direction;
 }
 
-void deoalSoundRaySegment::SetNormal( const decVector &normal ){
+void deoalSoundRaySegment::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-void deoalSoundRaySegment::SetLength( float length ){
+void deoalSoundRaySegment::SetLength(float length){
 	pLength = length;
 }
 
-void deoalSoundRaySegment::SetDistance( float distance ){
+void deoalSoundRaySegment::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void deoalSoundRaySegment::SetGainLow( float gain ){
+void deoalSoundRaySegment::SetGainLow(float gain){
 	pGainLow = gain;
 }
 
-void deoalSoundRaySegment::SetGainMedium( float gain ){
+void deoalSoundRaySegment::SetGainMedium(float gain){
 	pGainMedium = gain;
 }
 
-void deoalSoundRaySegment::SetGainHigh( float gain ){
+void deoalSoundRaySegment::SetGainHigh(float gain){
 	pGainHigh = gain;
 }
 
-void deoalSoundRaySegment::SetAbsorptionSumLow( float absorption ){
+void deoalSoundRaySegment::SetAbsorptionSumLow(float absorption){
 	   pAbsorptionSumLow = absorption;
 }
 
-void deoalSoundRaySegment::SetAbsorptionSumMedium( float absorption ){
+void deoalSoundRaySegment::SetAbsorptionSumMedium(float absorption){
 	   pAbsorptionSumMedium = absorption;
 }
 
-void deoalSoundRaySegment::SetAbsorptionSumHigh( float absorption ){
+void deoalSoundRaySegment::SetAbsorptionSumHigh(float absorption){
 	   pAbsorptionSumHigh = absorption;
 }
 
-void deoalSoundRaySegment::SetBounceCount( int count ){
+void deoalSoundRaySegment::SetBounceCount(int count){
 	pBounceCount = count;
 }
 
-void deoalSoundRaySegment::SetTransmittedCount( int count ){
+void deoalSoundRaySegment::SetTransmittedCount(int count){
 	pTransmittedCount = count;
 }
 
 
 
-deoalSoundRaySegment &deoalSoundRaySegment::operator=( const deoalSoundRaySegment &segment ){
+deoalSoundRaySegment &deoalSoundRaySegment::operator=(const deoalSoundRaySegment &segment){
 	pPosition = segment.pPosition;
 	pDirection = segment.pDirection;
 	pNormal = segment.pNormal;

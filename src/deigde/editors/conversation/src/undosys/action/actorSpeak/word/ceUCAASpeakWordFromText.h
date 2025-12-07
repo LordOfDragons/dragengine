@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakWordFromText( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakWordFromText();
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set words list from text using 0.1 as length for each letter in the word. */
-	void SetWordsFromText( const decUnicodeString &text, float letterDuration );
+	void SetWordsFromText(const decUnicodeString &text, float letterDuration);
 	
 	/** \brief Undo. */
 	virtual void Undo();

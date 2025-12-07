@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUToggleSourceSoundLooping::seUToggleSourceSoundLooping( seSourceSound *source ) :
-pSource( NULL )
+seUToggleSourceSoundLooping::seUToggleSourceSoundLooping(seSourceSound *source) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Toggle sound source looping" );
+	SetShortInfo("Toggle sound source looping");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUToggleSourceSoundLooping::~seUToggleSourceSoundLooping(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void seUToggleSourceSoundLooping::Undo(){
 }
 
 void seUToggleSourceSoundLooping::Redo(){
-	pSource->SetLooping( ! pSource->GetLooping() );
+	pSource->SetLooping(! pSource->GetLooping());
 }

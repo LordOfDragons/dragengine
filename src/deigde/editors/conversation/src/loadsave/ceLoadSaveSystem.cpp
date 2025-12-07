@@ -61,37 +61,37 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceLoadSaveSystem::ceLoadSaveSystem( ceWindowMain &windowMain ) :
-pWindowMain( windowMain ),
+ceLoadSaveSystem::ceLoadSaveSystem(ceWindowMain &windowMain) :
+pWindowMain(windowMain),
 
-pLSConversation( NULL ),
-pLSCTS( NULL ),
-pLSCTA( NULL ),
-	pLSCTGS( NULL )
+pLSConversation(NULL),
+pLSCTS(NULL),
+pLSCTA(NULL),
+	pLSCTGS(NULL)
 {
 	deLogger *const logger = windowMain.GetEnvironment().GetLogger();
 	const decString &loggingName = windowMain.GetEditorModule().GetLoggingName();
 	
-	pLSConversation = new ceLoadSaveConversation( this, logger, loggingName );
-	pLSCTS = new ceLoadSaveCTS( this, logger, loggingName );
-	pLSCTA = new ceLoadSaveCTA( *this, logger, loggingName );
-	pLSCTGS = new ceLoadSaveCTGS( *this, logger, loggingName );
+	pLSConversation = new ceLoadSaveConversation(this, logger, loggingName);
+	pLSCTS = new ceLoadSaveCTS(this, logger, loggingName);
+	pLSCTA = new ceLoadSaveCTA(*this, logger, loggingName);
+	pLSCTGS = new ceLoadSaveCTGS(*this, logger, loggingName);
 	
 	UpdateLSLangPacks();
 	pBuildFilePattern();
 }
 
 ceLoadSaveSystem::~ceLoadSaveSystem(){
-	if( pLSCTGS ){
+	if(pLSCTGS){
 		delete pLSCTGS;
 	}
-	if( pLSCTA ){
+	if(pLSCTA){
 		delete pLSCTA;
 	}
-	if( pLSCTS ){
+	if(pLSCTS){
 		delete pLSCTS;
 	}
-	if( pLSConversation ){
+	if(pLSConversation){
 		delete pLSConversation;
 	}
 }
@@ -101,17 +101,17 @@ ceLoadSaveSystem::~ceLoadSaveSystem(){
 // Management
 ///////////////
 
-ceConversation *ceLoadSaveSystem::LoadConversation( const char *filename ){
+ceConversation *ceLoadSaveSystem::LoadConversation(const char *filename){
 	ceConversation *conversation = nullptr;
 	
 	try{
-		conversation = new ceConversation( &pWindowMain.GetEnvironment() );
+		conversation = new ceConversation(&pWindowMain.GetEnvironment());
 		pLSConversation->LoadConversation(*conversation, decBaseFileReader::Ref::New(
 			pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-				decPath::CreatePathUnix(filename))), filename );
+				decPath::CreatePathUnix(filename))), filename);
 		
-	}catch( const deException & ){
-		if( conversation ){
+	}catch(const deException &){
+		if(conversation){
 			conversation->FreeReference();
 		}
 		throw;
@@ -120,7 +120,7 @@ ceConversation *ceLoadSaveSystem::LoadConversation( const char *filename ){
 	return conversation;
 }
 
-void ceLoadSaveSystem::SaveConversation( ceConversation *conversation, const char *filename ){
+void ceLoadSaveSystem::SaveConversation(ceConversation *conversation, const char *filename){
 	pLSConversation->SaveConversation(*conversation, decBaseFileWriter::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));
@@ -128,13 +128,13 @@ void ceLoadSaveSystem::SaveConversation( ceConversation *conversation, const cha
 
 
 
-void ceLoadSaveSystem::LoadCTS( const char *filename, ceConversation &conversation ){
+void ceLoadSaveSystem::LoadCTS(const char *filename, ceConversation &conversation){
 	pLSCTS->LoadCTS(conversation, decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix(filename))));
 }
 
-void ceLoadSaveSystem::SaveCTS( const char *filename, ceConversation &conversation ){
+void ceLoadSaveSystem::SaveCTS(const char *filename, ceConversation &conversation){
 	pLSCTS->SaveCTS(conversation, decBaseFileWriter::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));
@@ -142,13 +142,13 @@ void ceLoadSaveSystem::SaveCTS( const char *filename, ceConversation &conversati
 
 
 
-void ceLoadSaveSystem::LoadCTA( const char *filename, ceConversationActor &actor ){
+void ceLoadSaveSystem::LoadCTA(const char *filename, ceConversationActor &actor){
 	pLSCTA->LoadCTA(actor, decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix(filename))));
 }
 
-void ceLoadSaveSystem::SaveCTA( const char *filename, ceConversationActor &actor ){
+void ceLoadSaveSystem::SaveCTA(const char *filename, ceConversationActor &actor){
 	pLSCTA->SaveCTA(actor, decBaseFileWriter::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));
@@ -156,13 +156,13 @@ void ceLoadSaveSystem::SaveCTA( const char *filename, ceConversationActor &actor
 
 
 
-void ceLoadSaveSystem::LoadCTGS( const char *filename, ceConversation &conversation ){
+void ceLoadSaveSystem::LoadCTGS(const char *filename, ceConversation &conversation){
 	pLSCTGS->LoadCTGS(conversation, decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix(filename))));
 }
 
-void ceLoadSaveSystem::SaveCTGS( const char *filename, const ceConversation &conversation ){
+void ceLoadSaveSystem::SaveCTGS(const char *filename, const ceConversation &conversation){
 	pLSCTGS->SaveCTGS(conversation, decBaseFileWriter::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));
@@ -174,25 +174,25 @@ int ceLoadSaveSystem::GetLSLangPackCount() const{
 	return pLSLangPacks.GetCount();
 }
 
-ceLoadSaveLangPack *ceLoadSaveSystem::GetLSLangPackAt( int index ) const{
-	return ( ceLoadSaveLangPack* )pLSLangPacks.GetAt( index );
+ceLoadSaveLangPack *ceLoadSaveSystem::GetLSLangPackAt(int index) const{
+	return (ceLoadSaveLangPack*)pLSLangPacks.GetAt(index);
 }
 
-int ceLoadSaveSystem::IndexOfLSLangPack( ceLoadSaveLangPack *lsLangPack ) const{
-	return pLSLangPacks.IndexOf( lsLangPack );
+int ceLoadSaveSystem::IndexOfLSLangPack(ceLoadSaveLangPack *lsLangPack) const{
+	return pLSLangPacks.IndexOf(lsLangPack);
 }
 
-bool ceLoadSaveSystem::HasLSLangPack( ceLoadSaveLangPack *lsLangPack ) const{
-	return pLSLangPacks.Has( lsLangPack );
+bool ceLoadSaveSystem::HasLSLangPack(ceLoadSaveLangPack *lsLangPack) const{
+	return pLSLangPacks.Has(lsLangPack);
 }
 
-int ceLoadSaveSystem::IndexOfLSLangPackMatching( const char *filename ){
-	const decString testFilename( filename );
+int ceLoadSaveSystem::IndexOfLSLangPackMatching(const char *filename){
+	const decString testFilename(filename);
 	const int count = pLSLangPacks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( testFilename.MatchesPattern( ( ( ceLoadSaveLangPack* )pLSLangPacks.GetAt( i ) )->GetPattern() ) ){
+	for(i=0; i<count; i++){
+		if(testFilename.MatchesPattern(((ceLoadSaveLangPack*)pLSLangPacks.GetAt(i))->GetPattern())){
 			return i;
 		}
 	}
@@ -200,13 +200,13 @@ int ceLoadSaveSystem::IndexOfLSLangPackMatching( const char *filename ){
 	return -1;
 }
 
-void ceLoadSaveSystem::AddLSLangPack( ceLoadSaveLangPack *lsLangPack ){
-	DEASSERT_FALSE( pLSLangPacks.Has( lsLangPack ) )
-	pLSLangPacks.Add( lsLangPack );
+void ceLoadSaveSystem::AddLSLangPack(ceLoadSaveLangPack *lsLangPack){
+	DEASSERT_FALSE(pLSLangPacks.Has(lsLangPack))
+	pLSLangPacks.Add(lsLangPack);
 }
 
-void ceLoadSaveSystem::RemoveLSLangPack( ceLoadSaveLangPack *lsLangPack ){
-	pLSLangPacks.Remove( lsLangPack );
+void ceLoadSaveSystem::RemoveLSLangPack(ceLoadSaveLangPack *lsLangPack){
+	pLSLangPacks.Remove(lsLangPack);
 }
 
 void ceLoadSaveSystem::RemoveAllLSLangPacks(){
@@ -221,36 +221,36 @@ void ceLoadSaveSystem::UpdateLSLangPacks(){
 	
 	pLSLangPacks.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		const deLoadableModule &lmodule = *modsys.GetModuleAt( i );
+	for(i=0; i<count; i++){
+		const deLoadableModule &lmodule = *modsys.GetModuleAt(i);
 		
-		if( lmodule.GetType() == deModuleSystem::emtLanguagePack && lmodule.IsLoaded() ){
-			pLSLangPacks.Add( ceLoadSaveLangPack::Ref::New( new ceLoadSaveLangPack(
+		if(lmodule.GetType() == deModuleSystem::emtLanguagePack && lmodule.IsLoaded()){
+			pLSLangPacks.Add(ceLoadSaveLangPack::Ref::New(new ceLoadSaveLangPack(
 				*( ( deBaseLanguagePackModule* )lmodule.GetModule() ) ) ) );
 		}
 	}
 }
 
-ceLangPack::Ref ceLoadSaveSystem::LoadLangPack( const char *filename ){
-	const int lsIndex = IndexOfLSLangPackMatching( filename );
-	DEASSERT_TRUE( lsIndex != -1 )
+ceLangPack::Ref ceLoadSaveSystem::LoadLangPack(const char *filename){
+	const int lsIndex = IndexOfLSLangPackMatching(filename);
+	DEASSERT_TRUE(lsIndex != -1)
 	
-	const ceLangPack::Ref langpack( ceLangPack::Ref::NewWith(filename) );
-	GetLSLangPackAt( lsIndex )->LoadLangPack( langpack, decBaseFileReader::Ref::New(
+	const ceLangPack::Ref langpack(ceLangPack::Ref::NewWith(filename));
+	GetLSLangPackAt(lsIndex)->LoadLangPack(langpack, decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-			decPath::CreatePathUnix( filename ) ) ) );
+			decPath::CreatePathUnix(filename))));
 	return langpack;
 }
 
-void ceLoadSaveSystem::SaveLangPack( ceLangPack &langpack ){
-	const int lsIndex = IndexOfLSLangPackMatching( langpack.GetPath() );
-	DEASSERT_TRUE( lsIndex != -1 )
+void ceLoadSaveSystem::SaveLangPack(ceLangPack &langpack){
+	const int lsIndex = IndexOfLSLangPackMatching(langpack.GetPath());
+	DEASSERT_TRUE(lsIndex != -1)
 	
-	GetLSLangPackAt( lsIndex )->SaveLangPack( langpack, decBaseFileWriter::Ref::New(
+	GetLSLangPackAt(lsIndex)->SaveLangPack(langpack, decBaseFileWriter::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix( langpack.GetPath() ) ) ) );
+			decPath::CreatePathUnix(langpack.GetPath()))));
 	
-	langpack.SetChanged( false );
+	langpack.SetChanged(false);
 }
 
 
@@ -264,25 +264,25 @@ void ceLoadSaveSystem::pBuildFilePattern(){
 	int i;
 	
 	try{
-		pattern.Format( "*%s", pLSConversation->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSConversation->GetName(),
-			pattern, pLSConversation->GetPattern() );
-		pFPConversation.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSConversation->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSConversation->GetName(),
+			pattern, pLSConversation->GetPattern());
+		pFPConversation.AddFilePattern(filePattern);
 		filePattern = nullptr;
 		
-		pattern.Format( "*%s", pLSCTS->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSCTS->GetName(), pattern, pLSCTS->GetPattern() );
-		pFPCTS.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSCTS->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSCTS->GetName(), pattern, pLSCTS->GetPattern());
+		pFPCTS.AddFilePattern(filePattern);
 		filePattern = nullptr;
 		
-		pattern.Format( "*%s", pLSCTA->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSCTA->GetName(), pattern, pLSCTA->GetPattern() );
-		pFPCTA.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSCTA->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSCTA->GetName(), pattern, pLSCTA->GetPattern());
+		pFPCTA.AddFilePattern(filePattern);
 		filePattern = nullptr;
 		
-		pattern.Format( "*%s", pLSCTGS->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSCTGS->GetName(), pattern, pLSCTGS->GetPattern() );
-		pFPCTGS.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSCTGS->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSCTGS->GetName(), pattern, pLSCTGS->GetPattern());
+		pFPCTGS.AddFilePattern(filePattern);
 		filePattern = nullptr;
 		
 		// language pack
@@ -290,16 +290,16 @@ void ceLoadSaveSystem::pBuildFilePattern(){
 		
 		pFPListLangPack.RemoveAllFilePatterns();
 		
-		for( i=0; i<lslpCount; i++ ){
-			const ceLoadSaveLangPack &lslp = *GetLSLangPackAt( i );
-			pattern.Format( "*%s", lslp.GetPattern().GetString() );
-			filePattern = new igdeFilePattern( lslp.GetName(), pattern, lslp.GetPattern() );
-			pFPListLangPack.AddFilePattern( filePattern );
+		for(i=0; i<lslpCount; i++){
+			const ceLoadSaveLangPack &lslp = *GetLSLangPackAt(i);
+			pattern.Format("*%s", lslp.GetPattern().GetString());
+			filePattern = new igdeFilePattern(lslp.GetName(), pattern, lslp.GetPattern());
+			pFPListLangPack.AddFilePattern(filePattern);
 			filePattern = nullptr;
 		}
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

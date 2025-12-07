@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetName( seLayer *layer, const char *newName );
+	seULayerSetName(seLayer *layer, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

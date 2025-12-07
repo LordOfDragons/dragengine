@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUFontToggleColorFont::feUFontToggleColorFont( feFont *font ) :
-pFont( font )
+feUFontToggleColorFont::feUFontToggleColorFont(feFont *font) :
+pFont(font)
 {
-	SetShortInfo( "Font toggle color font" );
+	SetShortInfo("Font toggle color font");
 }
 
 feUFontToggleColorFont::~feUFontToggleColorFont(){
@@ -53,7 +53,7 @@ feUFontToggleColorFont::~feUFontToggleColorFont(){
 ///////////////
 
 void feUFontToggleColorFont::Undo(){
-	pFont->SetColorFont( ! pFont->GetColorFont() );
+	pFont->SetColorFont(! pFont->GetColorFont());
 }
 
 void feUFontToggleColorFont::Redo(){

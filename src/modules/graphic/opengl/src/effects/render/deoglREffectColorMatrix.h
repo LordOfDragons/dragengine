@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffectColorMatrix( deoglRenderThread &renderThread );
+	deoglREffectColorMatrix(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
 	virtual ~deoglREffectColorMatrix();
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Color matrix. */
-	inline const decColorMatrix &GetColorMatrix() const{ return pColorMatrix; }
+	inline const decColorMatrix &GetColorMatrix() const{return pColorMatrix;}
 	
 	/** Set color matrix. */
-	void SetColorMatrix( const decColorMatrix &colorMatrix );
+	void SetColorMatrix(const decColorMatrix &colorMatrix);
 	
 	
 	
@@ -68,7 +68,7 @@ public:
 	const deoglPipeline *GetPipelineStereo();
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan );
+	virtual void Render(deoglRenderPlan &plan);
 };
 
 #endif

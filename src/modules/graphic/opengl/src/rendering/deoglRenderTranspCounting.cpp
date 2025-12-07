@@ -89,8 +89,8 @@ static decTimer dtimer;
 #define DEBUG_RESET_TIMER \
 	dtimer.Reset();
 #define DEBUG_PRINT_TIMER(what) \
-	renderThread.GetLogger().LogInfoFormat( "World %s = %iys", what, \
-		( int )( dtimer.GetElapsedTime() * 1000000.0 ) );\
+	renderThread.GetLogger().LogInfoFormat("World %s = %iys", what, \
+		(int)(dtimer.GetElapsedTime() * 1000000.0));\
 	dtimer.Reset();
 #else
 #define DEBUG_RESET_TIMER
@@ -105,11 +105,11 @@ static decTimer dtimer;
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTranspCounting::deoglRenderTranspCounting( deoglRenderThread &renderThread ) :
-deoglRenderBase( renderThread ),
-pOccQuery( NULL ),
-pHasCount( false ),
-pCount( 0 )
+deoglRenderTranspCounting::deoglRenderTranspCounting(deoglRenderThread &renderThread) :
+deoglRenderBase(renderThread),
+pOccQuery(NULL),
+pHasCount(false),
+pCount(0)
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
@@ -117,15 +117,15 @@ pCount( 0 )
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	renderThread.GetShader().SetCommonDefines( commonDefines );
+	renderThread.GetShader().SetCommonDefines(commonDefines);
 	
 	
 	// count max count
 	pipconf.Reset();
 	
 	defines = commonDefines;
-	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
-	defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
+	sources = shaderManager.GetSourcesNamed("DefRen Transparency Max Count");
+	defines.SetDefines("NO_POSTRANSFORM", "NO_TCTRANSFORM");
 	pAsyncGetPipeline(pPipelineTraCountMaxCount, pipconf, sources, defines);
 	
 	// count max count stereo
@@ -133,16 +133,16 @@ pCount( 0 )
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if( ! renderFSQuadStereoVSLayer ){
-		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
+	if(! renderFSQuadStereoVSLayer){
+		sources = shaderManager.GetSourcesNamed("DefRen Transparency Max Count Stereo");
 	}
 	pAsyncGetPipeline(pPipelineTraCountMaxCountStereo, pipconf, sources, defines);
 	
 	
 	// count get count
 	defines = commonDefines;
-	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
-	defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
+	sources = shaderManager.GetSourcesNamed("DefRen Transparency Get Count");
+	defines.SetDefines("NO_POSTRANSFORM", "NO_TEXCOORD");
 	pAsyncGetPipeline(pPipelineTraCountGetCount, pipconf, sources, defines);
 	
 	// count get count stereo
@@ -150,13 +150,13 @@ pCount( 0 )
 	if(renderFSQuadStereoVSLayer){
 		defines.SetDefines("VS_RENDER_LAYER");
 	}
-	if( ! renderFSQuadStereoVSLayer ){
-		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
+	if(! renderFSQuadStereoVSLayer){
+		sources = shaderManager.GetSourcesNamed("DefRen Transparency Get Count Stereo");
 	}
 	pAsyncGetPipeline(pPipelineTraCountGetCountStereo, pipconf, sources, defines);
 	
 	
-	pOccQuery = new deoglOcclusionQuery( renderThread );
+	pOccQuery = new deoglOcclusionQuery(renderThread);
 }
 
 deoglRenderTranspCounting::~deoglRenderTranspCounting(){
@@ -171,12 +171,12 @@ deoglRenderTranspCounting::~deoglRenderTranspCounting(){
 #define DO_QUICK_DEBUG 1
 
 #ifdef DO_QUICK_DEBUG
-#define QUICK_DEBUG_START( lower, upper ) \
-	if( renderThread.GetConfiguration().GetQuickDebug() > upper \
-	|| renderThread.GetConfiguration().GetQuickDebug() < lower ){
-#define QUICK_DEBUG_END }
+#define QUICK_DEBUG_START(lower, upper) \
+	if(renderThread.GetConfiguration().GetQuickDebug() > upper \
+	|| renderThread.GetConfiguration().GetQuickDebug() < lower){
+#define QUICK_DEBUG_END}
 #else
-#define QUICK_DEBUG_START( lower, upper )
+#define QUICK_DEBUG_START(lower, upper)
 #define QUICK_DEBUG_END
 #endif
 
@@ -203,10 +203,10 @@ deoglRenderTranspCounting::~deoglRenderTranspCounting(){
 
 
 
-void deoglRenderTranspCounting::CountTransparency( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+void deoglRenderTranspCounting::CountTransparency(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
 DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglDebugTraceGroup debugTrace( renderThread, "TranspCounting.CountTransparency" );
+	const deoglDebugTraceGroup debugTrace(renderThread, "TranspCounting.CountTransparency");
 	deoglRenderGeometry &rengeom = renderThread.GetRenderers().GetGeometry();
 	deoglRenderWorld &renworld = renderThread.GetRenderers().GetWorld();
 	deoglAddToRenderTask &addToRenderTask = *renworld.GetAddToRenderTask();
@@ -228,16 +228,16 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// attach the first counter texture to store the count of layers per pixel
 	pPipelineClearBuffers->Activate();
-	defren.ActivateFBODiffuse( true );
-	SetViewport( plan );
+	defren.ActivateFBODiffuse(true);
+	SetViewport(plan);
 	
 	// clear the counter texture to 0
-	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
+	const GLfloat clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearColor[0]));
 	
 	// render transparent scene elements
 	deoglSkinTexturePipelines::eTypes pipelineType;
-	if( mask && mask->GetUseClipPlane() ){
+	if(mask && mask->GetUseClipPlane()){
 		pipelineType = deoglSkinTexturePipelines::etCounterClipPlane;
 		
 	}else{
@@ -245,54 +245,54 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	}
 	
 	int pipelineModifier = 0;
-	if( plan.GetFlipCulling() ){
+	if(plan.GetFlipCulling()){
 		pipelineModifier |= deoglSkinTexturePipelines::emFlipCullFace;
 	}
-	if( plan.GetRenderStereo() ){
+	if(plan.GetRenderStereo()){
 		pipelineModifier |= deoglSkinTexturePipelines::emStereo;
 	}
 	
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+	renderTask.SetRenderParamBlock(renworld.GetRenderPB());
+	renderTask.SetRenderVSStereo(plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer());
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetSolid( false );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	addToRenderTask.SetSkinPipelineType( pipelineType );
-	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
+	addToRenderTask.SetSolid(false);
+	addToRenderTask.SetNoNotReflected(plan.GetNoReflections());
+	addToRenderTask.SetSkinPipelineType(pipelineType);
+	addToRenderTask.SetSkinPipelineModifier(pipelineModifier);
 	
-	addToRenderTask.AddComponents( collideList );
-	addToRenderTask.AddBillboards( collideList );
+	addToRenderTask.AddComponents(collideList);
+	addToRenderTask.AddBillboards(collideList);
 	
-	if( renderThread.GetChoices().GetRealTransparentParticles() ){
-		addToRenderTask.AddParticles( collideList );
+	if(renderThread.GetChoices().GetRealTransparentParticles()){
+		addToRenderTask.AddParticles(collideList);
 	}
 	
 	// render
 	renderTask.PrepareForRender();
-	rengeom.RenderTask( renderTask );
+	rengeom.RenderTask(renderTask);
 	
 	
 	// outline
 	renderTask.Clear();
-	renderTask.SetRenderParamBlock( renworld.GetRenderPB() );
-	renderTask.SetRenderVSStereo( plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer() );
+	renderTask.SetRenderParamBlock(renworld.GetRenderPB());
+	renderTask.SetRenderVSStereo(plan.GetRenderStereo() && renderThread.GetChoices().GetRenderStereoVSLayer());
 	
 	addToRenderTask.Reset();
-	addToRenderTask.SetOutline( true );
-	addToRenderTask.SetFilterDecal( true );
-	addToRenderTask.SetDecal( false );
-	addToRenderTask.SetSolid( false );
-	addToRenderTask.SetNoNotReflected( plan.GetNoReflections() );
-	addToRenderTask.SetSkinPipelineType( pipelineType );
-	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
+	addToRenderTask.SetOutline(true);
+	addToRenderTask.SetFilterDecal(true);
+	addToRenderTask.SetDecal(false);
+	addToRenderTask.SetSolid(false);
+	addToRenderTask.SetNoNotReflected(plan.GetNoReflections());
+	addToRenderTask.SetSkinPipelineType(pipelineType);
+	addToRenderTask.SetSkinPipelineModifier(pipelineModifier);
 	
-	addToRenderTask.AddComponents( collideList );
+	addToRenderTask.AddComponents(collideList);
 	
-	if( renderTask.GetPipelineCount() > 0 ){
+	if(renderTask.GetPipelineCount() > 0){
 		renderTask.PrepareForRender();
-		rengeom.RenderTask( renderTask );
+		rengeom.RenderTask(renderTask);
 	}
 	
 	
@@ -301,7 +301,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	pipeline.Activate();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
-	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK(renderThread, pglBindVertexArray(defren.GetVAOFullScreenQuad()->GetVAO()));
 	
 	useTexture1 = true;
 	curWidth = realWidth;
@@ -309,58 +309,58 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	deoglShaderCompiled &shader = pipeline.GetShader();
 	
-	while( curWidth > 1 || curHeight > 1 ){
+	while(curWidth > 1 || curHeight > 1){
 		// reduce in x direction
-		if( curWidth > 1 ){
-			nextSize = ( curWidth - 1 ) / 8 + 1;
+		if(curWidth > 1){
+			nextSize = (curWidth - 1) / 8 + 1;
 			
-			if( useTexture1 ){
-				defren.ActivateFBOReflectivity( false );
-				tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+			if(useTexture1){
+				defren.ActivateFBOReflectivity(false);
+				tsmgr.EnableArrayTexture(0, *defren.GetTextureDiffuse(), GetSamplerClampNearest());
 				
 			}else{
-				defren.ActivateFBODiffuse( false );
-				tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+				defren.ActivateFBODiffuse(false);
+				tsmgr.EnableArrayTexture(0, *defren.GetTextureReflectivity(), GetSamplerClampNearest());
 			}
-			SetViewport( nextSize, curHeight );
+			SetViewport(nextSize, curHeight);
 			
-			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearColor[0]));
 			
-			shader.SetParameterInt( sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1 );
-			shader.SetParameterInt( sptcmcOffsets1, 1, 0, 2, 0 );
-			shader.SetParameterInt( sptcmcOffsets2, 3, 0, 4, 0 );
-			shader.SetParameterInt( sptcmcOffsets3, 5, 0, 6, 0 );
-			shader.SetParameterInt( sptcmcOffsets4, 7, 0, 8, 1 );
+			shader.SetParameterInt(sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1);
+			shader.SetParameterInt(sptcmcOffsets1, 1, 0, 2, 0);
+			shader.SetParameterInt(sptcmcOffsets2, 3, 0, 4, 0);
+			shader.SetParameterInt(sptcmcOffsets3, 5, 0, 6, 0);
+			shader.SetParameterInt(sptcmcOffsets4, 7, 0, 8, 1);
 			
-			RenderFullScreenQuad( plan );
+			RenderFullScreenQuad(plan);
 			
 			useTexture1 = ! useTexture1;
 			curWidth = nextSize;
 		}
 		
 		// reduce in y direction
-		if( curHeight > 1 ){
-			nextSize = ( curHeight - 1 ) / 8 + 1;
+		if(curHeight > 1){
+			nextSize = (curHeight - 1) / 8 + 1;
 			
-			if( useTexture1 ){
-				defren.ActivateFBOReflectivity( false );
-				tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+			if(useTexture1){
+				defren.ActivateFBOReflectivity(false);
+				tsmgr.EnableArrayTexture(0, *defren.GetTextureDiffuse(), GetSamplerClampNearest());
 				
 			}else{
-				defren.ActivateFBODiffuse( false );
-				tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+				defren.ActivateFBODiffuse(false);
+				tsmgr.EnableArrayTexture(0, *defren.GetTextureReflectivity(), GetSamplerClampNearest());
 			}
-			SetViewport( curWidth, nextSize );
+			SetViewport(curWidth, nextSize);
 			
-			OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
+			OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearColor[0]));
 			
-			shader.SetParameterInt( sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1 );
-			shader.SetParameterInt( sptcmcOffsets1, 0, 1, 0, 2 );
-			shader.SetParameterInt( sptcmcOffsets2, 0, 3, 0, 4 );
-			shader.SetParameterInt( sptcmcOffsets3, 0, 5, 0, 6 );
-			shader.SetParameterInt( sptcmcOffsets4, 0, 7, 1, 8 );
+			shader.SetParameterInt(sptcmcClampTC, 0, 0, curWidth - 1, curHeight - 1);
+			shader.SetParameterInt(sptcmcOffsets1, 0, 1, 0, 2);
+			shader.SetParameterInt(sptcmcOffsets2, 0, 3, 0, 4);
+			shader.SetParameterInt(sptcmcOffsets3, 0, 5, 0, 6);
+			shader.SetParameterInt(sptcmcOffsets4, 0, 7, 1, 8);
 			
-			RenderFullScreenQuad( plan );
+			RenderFullScreenQuad(plan);
 			
 			useTexture1 = ! useTexture1;
 			curHeight = nextSize;
@@ -373,46 +373,46 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	#ifdef WITH_OPENGLES
 		// OpenGL ES does not support counting queries only any samples passed type queries.
 		// we are forced to do a slower glReadPixels on the last set frame buffer attachment
-		GLbyte queryResult[ 4 ];
-		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		OGL_CHECK( renderThread, glReadPixels( 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, ( GLvoid* )&queryResult ) );
+		GLbyte queryResult[4];
+		OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+		OGL_CHECK(renderThread, glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)&queryResult));
 		
-		plan.SetTransparencyLayerCount( queryResult[ 0 ] );
+		plan.SetTransparencyLayerCount(queryResult[0]);
 		
 	#else
-		if( useTexture1 ){
-			defren.ActivateFBOReflectivity( false );
-			tsmgr.EnableArrayTexture( 0, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
+		if(useTexture1){
+			defren.ActivateFBOReflectivity(false);
+			tsmgr.EnableArrayTexture(0, *defren.GetTextureDiffuse(), GetSamplerClampNearest());
 			
 		}else{
-			defren.ActivateFBODiffuse( false );
-			tsmgr.EnableArrayTexture( 0, *defren.GetTextureReflectivity(), GetSamplerClampNearest() );
+			defren.ActivateFBODiffuse(false);
+			tsmgr.EnableArrayTexture(0, *defren.GetTextureReflectivity(), GetSamplerClampNearest());
 		}
-		SetViewport( 100, 1 );
+		SetViewport(100, 1);
 		
-		( plan.GetRenderStereo() ? pPipelineTraCountGetCountStereo : pPipelineTraCountGetCount )->Activate();
+		(plan.GetRenderStereo() ? pPipelineTraCountGetCountStereo : pPipelineTraCountGetCount)->Activate();
 		
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 		
-		const GLfloat clearColor2[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		OGL_CHECK( renderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor2[ 0 ] ) );
+		const GLfloat clearColor2[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		OGL_CHECK(renderThread, pglClearBufferfv(GL_COLOR, 0, &clearColor2[0]));
 		
-		pOccQuery->BeginQuery( deoglOcclusionQuery::eqtCount );
-		RenderFullScreenQuad( plan );
+		pOccQuery->BeginQuery(deoglOcclusionQuery::eqtCount);
+		RenderFullScreenQuad(plan);
 		pOccQuery->EndQuery();
 		
-		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+		OGL_CHECK(renderThread, pglBindVertexArray(0));
 	#endif
 	
 	// invalidate buffer. it is not needed anymore
-	renderThread.GetFramebuffer().GetActive()->InvalidateColor( 0 );
+	renderThread.GetFramebuffer().GetActive()->InvalidateColor(0);
 DBG_EXIT("deoglRenderTranspCounting::CountTransparency")
 }
 
 
 
 int deoglRenderTranspCounting::GetCount(){
-	if( ! pHasCount ){
+	if(! pHasCount){
 		pCount = pOccQuery->GetResult();
 		pHasCount = true;
 	}
@@ -426,7 +426,7 @@ int deoglRenderTranspCounting::GetCount(){
 //////////////////////
 
 void deoglRenderTranspCounting::pCleanUp(){
-	if( pOccQuery ){
+	if(pOccQuery){
 		delete pOccQuery;
 	}
 }

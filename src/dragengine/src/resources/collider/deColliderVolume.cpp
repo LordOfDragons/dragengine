@@ -41,8 +41,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deColliderVolume::deColliderVolume( deColliderManager *manager ) :
-deCollider( manager ){
+deColliderVolume::deColliderVolume(deColliderManager *manager) :
+deCollider(manager){
 }
 
 deColliderVolume::~deColliderVolume(){
@@ -53,7 +53,7 @@ deColliderVolume::~deColliderVolume(){
 // Shapes
 ///////////
 
-void deColliderVolume::SetShapes( const decShapeList &shapes ){
+void deColliderVolume::SetShapes(const decShapeList &shapes){
 	pShapes = shapes;
 	pNotifyCollisionVolumeChanged();
 }
@@ -63,6 +63,6 @@ void deColliderVolume::SetShapes( const decShapeList &shapes ){
 // Visiting
 /////////////
 
-void deColliderVolume::Visit( deColliderVisitor &visitor ){
-	visitor.VisitVolume( *this );
+void deColliderVolume::Visit(deColliderVisitor &visitor){
+	visitor.VisitVolume(*this);
 }

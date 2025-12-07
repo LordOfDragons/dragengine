@@ -54,11 +54,11 @@ private:
 	igdeEditVector::Ref pEditRotation;
 	igdeEditVector::Ref pEditOffset;
 	
-	igdeTextField::Ref pEditDofLower[ 6 ];
-	igdeTextField::Ref pEditDofUpper[ 6 ];
-	igdeTextField::Ref pEditDofStaFric[ 6 ];
-	igdeTextField::Ref pEditDofKinFric[ 6 ];
-	igdeTextField::Ref pEditDofSprStiff[ 6 ];
+	igdeTextField::Ref pEditDofLower[6];
+	igdeTextField::Ref pEditDofUpper[6];
+	igdeTextField::Ref pEditDofStaFric[6];
+	igdeTextField::Ref pEditDofKinFric[6];
+	igdeTextField::Ref pEditDofSprStiff[6];
 	
 	igdeCheckBox::Ref pChkShowJointError;
 	
@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPConstraint( reWindowProperties &windowProperties );
+	reWPConstraint(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -91,16 +91,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Constraint. */
-	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
+	inline reRigConstraint *GetConstraint() const{return pConstraint;}
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Set constraint. */
-	void SetConstraint( reRigConstraint *constraint );
+	void SetConstraint(reRigConstraint *constraint);
 	
 	/** \brief Update bone lists. */
 	void UpdateBoneLists();

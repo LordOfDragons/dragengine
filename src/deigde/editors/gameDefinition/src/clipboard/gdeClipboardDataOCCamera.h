@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCCamera( gdeOCCamera *camera );
+	gdeClipboardDataOCCamera(gdeOCCamera *camera);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera. */
-	gdeOCCamera *GetCamera() const{ return pCamera; }
+	gdeOCCamera *GetCamera() const{return pCamera;}
 	/*@}*/
 };
 

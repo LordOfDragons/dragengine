@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create constructed property view. */
-	seViewConstructed( seWindowMain &windowMain );
+	seViewConstructed(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up constructed property view. */
@@ -78,15 +78,15 @@ public:
 	seSkin *GetSkin() const;
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Constructed view. */
-	inline seViewConstructedView &GetViewNode() const{ return *pViewNode; }
+	inline seViewConstructedView &GetViewNode() const{return *pViewNode;}
 	
 	
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	void ResetView();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Widget size changed. */
 	virtual void OnResize();

@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create ambient caster. */
-	deoglSCAmbient( deoglRenderThread &renderThread );
+	deoglSCAmbient(deoglRenderThread &renderThread);
 	
 	/** Clean up ambient caster. */
 	~deoglSCAmbient();
@@ -84,22 +84,22 @@ public:
 	/*@{*/
 	
 	/** Static map if present or \em NULL otherwise. */
-	inline deoglTexture *GetStaticMap() const{ return pStaticMap; }
+	inline deoglTexture *GetStaticMap() const{return pStaticMap;}
 	
 	/** Request static map with size if absent. */
-	deoglTexture *ObtainStaticMapWithSize( int size, bool useFloat );
+	deoglTexture *ObtainStaticMapWithSize(int size, bool useFloat);
 	
 	/** Static cube map if present or \em NULL otherwise. */
-	inline deoglCubeMap *GetStaticCubeMap() const{ return pStaticCubeMap; }
+	inline deoglCubeMap *GetStaticCubeMap() const{return pStaticCubeMap;}
 	
 	/** Request static cube map with size if absent. */
-	deoglCubeMap *ObtainStaticCubeMapWithSize( int size, bool useFloat );
+	deoglCubeMap *ObtainStaticCubeMapWithSize(int size, bool useFloat);
 	
 	/** Drop static maps if present. */
 	void DropStatic();
 	
 	/** Number of frames elapsed since the last time static map has been used. */
-	inline int GetLastUseStatic() const{ return pLastUseStatic; }
+	inline int GetLastUseStatic() const{return pLastUseStatic;}
 	
 	/** Increment last use static map counter by one. */
 	void IncrementLastUseStatic();
@@ -111,22 +111,22 @@ public:
 	
 	
 	/** Dynamic map if present or \em NULL otherwise. */
-	inline deoglTexture *GetDynamicMap() const{ return pDynamicMap; }
+	inline deoglTexture *GetDynamicMap() const{return pDynamicMap;}
 	
 	/** Obtain dynamic map with size if absent. */
-	deoglTexture *ObtainDynamicMapWithSize( int size, bool useFloat );
+	deoglTexture *ObtainDynamicMapWithSize(int size, bool useFloat);
 	
 	/** Dynamic shadow cube map if present or \em NULL otherwise. */
-	inline deoglCubeMap *GetDynamicCubeMap() const{ return pDynamicCubeMap; }
+	inline deoglCubeMap *GetDynamicCubeMap() const{return pDynamicCubeMap;}
 	
 	/** Obtain dynamic shadow cube map with size if absent. */
-	deoglCubeMap *ObtainDynamicCubeMapWithSize( int size, bool useFloat );
+	deoglCubeMap *ObtainDynamicCubeMapWithSize(int size, bool useFloat);
 	
 	/** Drop dynamic map if present. */
 	void DropDynamic();
 	
 	/** Number of frames elapsed since the last time dynamic shadow map has been used. */
-	inline int GetLastUseDynamic() const{ return pLastUseDynamic; }
+	inline int GetLastUseDynamic() const{return pLastUseDynamic;}
 	
 	/** Increment last use dynamic shadow map counter by one. */
 	void IncrementLastUseDynamic();
@@ -135,24 +135,24 @@ public:
 	void ResetLastUseDynamic();
 	
 	/** Dynamic shadow map is dirty. */
-	inline bool GetDirtyDynamic() const{ return pDirtyDynamic; }
+	inline bool GetDirtyDynamic() const{return pDirtyDynamic;}
 	
 	/** Set dynamic shadow map dirty. */
-	void SetDirtyDynamic( bool dirty );
+	void SetDirtyDynamic(bool dirty);
 	
 	
 	
 	/** Temporary map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthTexture *GetTemporaryMap() const{ return pTemporaryMap; }
+	inline deoglRenderableDepthTexture *GetTemporaryMap() const{return pTemporaryMap;}
 	
 	/** Obtain temporary map with size if absent. */
-	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize( int size, bool useFloat );
+	deoglRenderableDepthTexture *ObtainTemporaryMapWithSize(int size, bool useFloat);
 	
 	/** Temporary shadow cube map if present or \em NULL otherwise. */
-	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{ return pTemporaryCubeMap; }
+	inline deoglRenderableDepthCubeMap *GetTemporaryCubeMap() const{return pTemporaryCubeMap;}
 	
 	/** Obtain temporary shadow cube map with size if absent. */
-	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize( int size, bool useFloat );
+	deoglRenderableDepthCubeMap *ObtainTemporaryCubeMapWithSize(int size, bool useFloat);
 	
 	/** Drop temporary map if present. */
 	void DropTemporary();
@@ -161,22 +161,22 @@ public:
 	
 	
 	/** Last frame static size or 0. */
-	inline int GetLastSizeStatic() const{ return pLastSizeStatic; }
+	inline int GetLastSizeStatic() const{return pLastSizeStatic;}
 	
 	/** Next frame static size or 0. */
-	inline int GetNextSizeStatic() const{ return pNextSizeStatic; }
+	inline int GetNextSizeStatic() const{return pNextSizeStatic;}
 	
 	/** Set next frame static size to largest value. */
-	void SetLargestNextSizeStatic( int size );
+	void SetLargestNextSizeStatic(int size);
 	
 	/** Last frame dynamic size or 0. */
-	inline int GetLastSizeDynamic() const{ return pLastSizeDynamic; }
+	inline int GetLastSizeDynamic() const{return pLastSizeDynamic;}
 	
 	/** Next frame dynamic size or 0. */
-	inline int GetNextSizeDynamic() const{ return pNextSizeDynamic; }
+	inline int GetNextSizeDynamic() const{return pNextSizeDynamic;}
 	
 	/** Set next frame dynamic size to largest value. */
-	void SetLargestNextSizeDynamic( int size );
+	void SetLargestNextSizeDynamic(int size);
 	
 	
 	

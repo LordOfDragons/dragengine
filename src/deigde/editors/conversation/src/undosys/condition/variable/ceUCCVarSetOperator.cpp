@@ -41,10 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCVarSetOperator::ceUCCVarSetOperator( ceConversationTopic *topic,
+ceUCCVarSetOperator::ceUCCVarSetOperator(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionVariable *condition,
-ceCConditionVariable::eOperators newOperator ){
-	if( ! topic || ! action || ! condition ) DETHROW( deeInvalidParam );
+ceCConditionVariable::eOperators newOperator){
+	if(! topic || ! action || ! condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
@@ -52,7 +52,7 @@ ceCConditionVariable::eOperators newOperator ){
 	pOldOperator = condition->GetOperator();
 	pNewOperator = newOperator;
 	
-	SetShortInfo( "Condition Variable: Set Operator" );
+	SetShortInfo("Condition Variable: Set Operator");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -65,13 +65,13 @@ ceCConditionVariable::eOperators newOperator ){
 }
 
 ceUCCVarSetOperator::~ceUCCVarSetOperator(){
-	if( pCondition ){
+	if(pCondition){
 		pCondition->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -82,11 +82,11 @@ ceUCCVarSetOperator::~ceUCCVarSetOperator(){
 ///////////////
 
 void ceUCCVarSetOperator::Undo(){
-	pCondition->SetOperator( pOldOperator );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetOperator(pOldOperator);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCVarSetOperator::Redo(){
-	pCondition->SetOperator( pNewOperator );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetOperator(pNewOperator);
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetRotation::seUPropertyNodeSetRotation( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode *node, float newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set rotation" );
+	SetShortInfo("Node set rotation");
 	
 	pOldValue = node->GetRotation();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
 ///////////////
 
 void seUPropertyNodeSetRotation::Undo(){
-	pNode->SetRotation( pOldValue );
+	pNode->SetRotation(pOldValue);
 }
 
 void seUPropertyNodeSetRotation::Redo(){
-	pNode->SetRotation( pNewValue );
+	pNode->SetRotation(pNewValue);
 }

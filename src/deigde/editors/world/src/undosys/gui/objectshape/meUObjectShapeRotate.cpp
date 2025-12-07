@@ -42,16 +42,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeRotate::meUObjectShapeRotate( meObject *object, const char *property,
-const meObjectShapeList &list ){
-	if( list.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+meUObjectShapeRotate::meUObjectShapeRotate(meObject *object, const char *property,
+const meObjectShapeList &list){
+	if(list.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! object || ! property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(! object->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const meObjectShapeList &shapeList = object->GetWorld()->GetObjectShapes();
@@ -60,16 +60,16 @@ const meObjectShapeList &list ){
 	
 	pObject = NULL;
 	
-	SetShortInfo( "Rotate object shapes" );
-	SetLongInfo( "Rotate object shapes" );
+	SetShortInfo("Rotate object shapes");
+	SetLongInfo("Rotate object shapes");
 	
-	pPropertyExists = object->GetProperties().Has( property );
-	if( pPropertyExists ){
-		pOldValue = object->GetProperties().GetAt( property );
+	pPropertyExists = object->GetProperties().Has(property);
+	if(pPropertyExists){
+		pOldValue = object->GetProperties().GetAt(property);
 	}
 	
-	for( i=0; i<count; i++ ){
-		pList.Add( shapeList.IndexOf( list.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		pList.Add(shapeList.IndexOf(list.GetAt(i)));
 	}
 	
 	pProperty = property;
@@ -78,7 +78,7 @@ const meObjectShapeList &list ){
 }
 
 meUObjectShapeRotate::~meUObjectShapeRotate(){
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }
@@ -91,11 +91,11 @@ meUObjectShapeRotate::~meUObjectShapeRotate(){
 void meUObjectShapeRotate::Undo(){
 	meWorld &world = *pObject->GetWorld();
 	
-	if( pPropertyExists ){
-		pObject->SetProperty( pProperty.GetString(), pOldValue.GetString() );
+	if(pPropertyExists){
+		pObject->SetProperty(pProperty.GetString(), pOldValue.GetString());
 		
 	}else{
-		pObject->RemoveProperty( pProperty.GetString() );
+		pObject->RemoveProperty(pProperty.GetString());
 	}
 	
 	world.NotifyObjectShapeSelectionChanged();
@@ -114,37 +114,37 @@ void meUObjectShapeRotate::Redo(){
 	decString newValue;
 	int i;
 	
-	matrixParent = decDMatrix::CreateRT( decDVector( pObject->GetRotation() * DEG2RAD ), pObject->GetPosition() );
+	matrixParent = decDMatrix::CreateRT(decDVector(pObject->GetRotation() * DEG2RAD), pObject->GetPosition());
 	matrixParentInverse = matrixParent.Invert();
 	
-	codec.DecodeShapeList( pOldValue.GetString(), shapeList );
+	codec.DecodeShapeList(pOldValue.GetString(), shapeList);
 	
-	for( i=0; i<count; i++ ){
-		decShape &shape = *shapeList.GetAt( pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		decShape &shape = *shapeList.GetAt(pList.GetAt(i));
 		
-		matrixShape = decDMatrix::CreateWorld( decDVector( shape.GetPosition() ), shape.GetOrientation() ) * matrixParent;
+		matrixShape = decDMatrix::CreateWorld(decDVector(shape.GetPosition()), shape.GetOrientation()) * matrixParent;
 		shapePosition = matrixShape.GetPosition();
 		shapeRotation = matrixShape.GetEulerAngles();
 		
 		position = shapePosition;
 		rotation = shapeRotation / DEG2RAD;
-		TransformElement( position, rotation );
+		TransformElement(position, rotation);
 		
-		if( modifyOrientation ){
+		if(modifyOrientation){
 			shapeRotation = rotation * DEG2RAD;
 		}
-		if( modifyPosition ){
+		if(modifyPosition){
 			shapePosition = position;
 		}
 		
-		matrixShape = decDMatrix::CreateRT( shapeRotation, shapePosition ) * matrixParentInverse;
-		shape.SetPosition( matrixShape.GetPosition().ToVector() );
-		shape.SetOrientation( matrixShape.ToQuaternion() );
+		matrixShape = decDMatrix::CreateRT(shapeRotation, shapePosition) * matrixParentInverse;
+		shape.SetPosition(matrixShape.GetPosition().ToVector());
+		shape.SetOrientation(matrixShape.ToQuaternion());
 	}
 	
-	codec.EncodeShapeList( shapeList, newValue );
+	codec.EncodeShapeList(shapeList, newValue);
 	
-	pObject->SetProperty( pProperty.GetString(), newValue.GetString() );
+	pObject->SetProperty(pProperty.GetString(), newValue.GetString());
 	
 	world.NotifyObjectShapeSelectionChanged();
 }

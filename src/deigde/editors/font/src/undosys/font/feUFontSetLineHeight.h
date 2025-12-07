@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontSetLineHeight( feFont *font, int newLineHeight );
+	feUFontSetLineHeight(feFont *font, int newLineHeight);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -102,7 +102,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPView( reWindowProperties &windowProperties );
+	reWPView(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -115,13 +115,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline reWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline reWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Update resources. */
 	void UpdateResources();

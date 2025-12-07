@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglParameterFloat::deoglParameterFloat( deGraphicOpenGl &oal ) : deoglParameter( oal ){
-	SetType( eptNumeric );
+deoglParameterFloat::deoglParameterFloat(deGraphicOpenGl &oal) : deoglParameter(oal){
+	SetType(eptNumeric);
 }
 
 
@@ -50,17 +50,17 @@ deoglParameterFloat::deoglParameterFloat( deGraphicOpenGl &oal ) : deoglParamete
 decString deoglParameterFloat::GetParameterValue(){
 	decString value;
 	
-	value.Format( "%f", GetParameterFloat() );
+	value.Format("%f", GetParameterFloat());
 	
 	int len = value.GetLength();
-	while( len > 1 ){
+	while(len > 1){
 		len--;
-		if( value[ len ] == '.' ){
-			value[ len ] = 0;
+		if(value[len] == '.'){
+			value[len] = 0;
 			break;
 			
-		}else if( value[ len ] == '0' ){
-			value[ len ] = 0;
+		}else if(value[len] == '0'){
+			value[len] = 0;
 			
 		}else{
 			break;
@@ -70,6 +70,6 @@ decString deoglParameterFloat::GetParameterValue(){
 	return value;
 }
 
-void deoglParameterFloat::SetParameterValue( const char *value ){
-	SetParameterFloat( decString( value ).ToFloat() );
+void deoglParameterFloat::SetParameterValue(const char *value){
+	SetParameterFloat(decString(value).ToFloat());
 }

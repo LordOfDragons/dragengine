@@ -36,13 +36,13 @@
 // igdeNullInputModule::cModule
 ///////////////////////////////
 
-igdeNullInputModule::cModule::cModule( deModuleSystem *system ) : deInternalModule( system ){
-	SetName( "NullInput" );
-	SetType( deModuleSystem::emtInput );
-	SetDescription( "Null Input Module" );
-	SetAuthor( "Plüss Roland" );
-	SetVersion( "1.0" );
-	SetDirectoryName( "NullInput" );
+igdeNullInputModule::cModule::cModule(deModuleSystem *system) : deInternalModule(system){
+	SetName("NullInput");
+	SetType(deModuleSystem::emtInput);
+	SetDescription("Null Input Module");
+	SetAuthor("Plüss Roland");
+	SetVersion("1.0");
+	SetDirectoryName("NullInput");
 	SetDefaultLoggingName();
 }
 
@@ -50,8 +50,8 @@ igdeNullInputModule::cModule::~cModule(){
 }
 
 void igdeNullInputModule::cModule::CreateModule(){
-	SetModule( new igdeNullInputModule( *this ) );
-	if( ! GetModule() ) SetErrorCode( eecCreateModuleFailed );
+	SetModule(new igdeNullInputModule(*this));
+	if(! GetModule()) SetErrorCode(eecCreateModuleFailed);
 }
 
 
@@ -62,11 +62,11 @@ void igdeNullInputModule::cModule::CreateModule(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeNullInputModule::igdeNullInputModule( deLoadableModule &loadableModule ) :
-deBaseInputModule( loadableModule ){
+igdeNullInputModule::igdeNullInputModule(deLoadableModule &loadableModule) :
+deBaseInputModule(loadableModule){
 }
 
-igdeNullInputModule::~igdeNullInputModule( ){
+igdeNullInputModule::~igdeNullInputModule(){
 }
 
 
@@ -90,48 +90,48 @@ int igdeNullInputModule::GetDeviceCount(){
 	return 0;
 }
 
-deInputDevice *igdeNullInputModule::GetDeviceAt( int index ){
-	DETHROW( deeInvalidParam );
+deInputDevice *igdeNullInputModule::GetDeviceAt(int index){
+	DETHROW(deeInvalidParam);
 }
 
-int igdeNullInputModule::IndexOfDeviceWithID( const char *id ){
+int igdeNullInputModule::IndexOfDeviceWithID(const char *id){
 	return -1;
 }
 
-int igdeNullInputModule::IndexOfButtonWithID( int device, const char *id ){
+int igdeNullInputModule::IndexOfButtonWithID(int device, const char *id){
 	return -1;
 }
 
-int igdeNullInputModule::IndexOfAxisWithID( int device, const char *id ){
+int igdeNullInputModule::IndexOfAxisWithID(int device, const char *id){
 	return -1;
 }
 
-int igdeNullInputModule::IndexOfFeedbackWithID( int device, const char *id ){
+int igdeNullInputModule::IndexOfFeedbackWithID(int device, const char *id){
 	return -1;
 }
 
-bool igdeNullInputModule::GetButtonPressed( int device, int button ){
-	DETHROW( deeInvalidParam );
+bool igdeNullInputModule::GetButtonPressed(int device, int button){
+	DETHROW(deeInvalidParam);
 }
 
-float igdeNullInputModule::GetAxisValue( int device, int axis ){
-	DETHROW( deeInvalidParam );
+float igdeNullInputModule::GetAxisValue(int device, int axis){
+	DETHROW(deeInvalidParam);
 }
 
-float igdeNullInputModule::GetFeedbackValue( int device, int feedback ){
-	DETHROW( deeInvalidParam );
+float igdeNullInputModule::GetFeedbackValue(int device, int feedback){
+	DETHROW(deeInvalidParam);
 }
 
-void igdeNullInputModule::SetFeedbackValue( int device, int feedback, float value ){
-	DETHROW( deeInvalidParam );
+void igdeNullInputModule::SetFeedbackValue(int device, int feedback, float value){
+	DETHROW(deeInvalidParam);
 }
 
-int igdeNullInputModule::ButtonMatchingKeyChar( int device, int character ){
-	DETHROW( deeInvalidParam );
+int igdeNullInputModule::ButtonMatchingKeyChar(int device, int character){
+	DETHROW(deeInvalidParam);
 }
 
-int igdeNullInputModule::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ){
-	DETHROW( deeInvalidParam );
+int igdeNullInputModule::ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode){
+	DETHROW(deeInvalidParam);
 }
 
 
@@ -142,7 +142,7 @@ int igdeNullInputModule::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCo
 void igdeNullInputModule::ProcessEvents(){
 }
 
-bool igdeNullInputModule::GetEvent( deInputEvent *event ){
+bool igdeNullInputModule::GetEvent(deInputEvent *event){
 	return false;
 }
 

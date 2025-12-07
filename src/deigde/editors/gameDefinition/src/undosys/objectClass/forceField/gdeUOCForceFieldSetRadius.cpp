@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetRadius::gdeUOCForceFieldSetRadius( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, float newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetRadius::gdeUOCForceFieldSetRadius(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, float newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set radius" );
+	SetShortInfo("Force field set radius");
 	
 	pOldValue = forceField->GetRadius();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetRadius::~gdeUOCForceFieldSetRadius(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetRadius::~gdeUOCForceFieldSetRadius(){
 ///////////////
 
 void gdeUOCForceFieldSetRadius::Undo(){
-	pForceField->SetRadius( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetRadius(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetRadius::Redo(){
-	pForceField->SetRadius( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetRadius(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

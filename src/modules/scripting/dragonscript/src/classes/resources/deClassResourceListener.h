@@ -44,21 +44,21 @@ private:
 	
 public:
 	// constructor
-	deClassResourceListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassResourceListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassResourceListener();
 	
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers( dsEngine *engine );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	void CreateClassMembers(dsEngine *engine);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
 	
 	/** \brief Function index of finishedLoading(). */
-	inline int GetFuncIndexFinishedLoading() const{ return pFuncIndexFinishedLoading; }
+	inline int GetFuncIndexFinishedLoading() const{return pFuncIndexFinishedLoading;}
 	
 	/** \brief Function index of failedLoading(). */
-	inline int GetFuncIndexFailedLoading() const{ return pFuncIndexFailedLoading; }
+	inline int GetFuncIndexFailedLoading() const{return pFuncIndexFailedLoading;}
 	
-	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
+	inline dsClass *GetClassResourceLoaderType() const{return pClsResourceLoaderType;}
 	
 private:
 	int pFuncIndexFinishedLoading;
@@ -69,14 +69,14 @@ private:
 		dsClass *clsResourceLoaderType;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfFinishedLoading );
-	DEF_NATFUNC( nfFailedLoading );
+	DEF_NATFUNC(nfFinishedLoading);
+	DEF_NATFUNC(nfFailedLoading);
 #undef DEF_NATFUNC
 };
 

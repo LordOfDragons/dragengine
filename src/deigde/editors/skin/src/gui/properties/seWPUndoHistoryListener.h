@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPUndoHistoryListener( seWPUndoHistory &panel );
+	seWPUndoHistoryListener(seWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( seSkin *skin );
+	virtual void UndoChanged(seSkin *skin);
 	/*@}*/
 };
 

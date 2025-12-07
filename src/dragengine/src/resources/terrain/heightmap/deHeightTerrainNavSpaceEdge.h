@@ -55,28 +55,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief First navpoint. */
-	inline unsigned int GetPoint1() const{ return pPoint1; }
+	inline unsigned int GetPoint1() const{return pPoint1;}
 	
 	/** \brief Set first navpoint. */
-	void SetPoint1( unsigned int navpoint );
+	void SetPoint1(unsigned int navpoint);
 	
 	/** \brief Second navpoint. */
-	inline unsigned int GetPoint2() const{ return pPoint2; }
+	inline unsigned int GetPoint2() const{return pPoint2;}
 	
 	/** \brief Set second navpoint. */
-	void SetPoint2( unsigned int navpoint );
+	void SetPoint2(unsigned int navpoint);
 	
 	/** \brief Type to use for edge to travel from first to second navpoint. */
-	inline unsigned short GetType1() const{ return pType1; }
+	inline unsigned short GetType1() const{return pType1;}
 	
 	/** \brief Set type to use for edge to travel from first to second navpoint. */
-	void SetType1( unsigned short type );
+	void SetType1(unsigned short type);
 	
 	/** \brief Type to use for edge to travel from second to first navpoint. */
-	inline unsigned short GetType2() const{ return pType2; }
+	inline unsigned short GetType2() const{return pType2;}
 	
 	/** \brief Set type to use for edge to travel from second to first navpoint. */
-	void SetType2( unsigned short type );
+	void SetType2(unsigned short type);
 	/*@}*/
 };
 

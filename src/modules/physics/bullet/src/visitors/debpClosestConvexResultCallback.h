@@ -71,9 +71,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sets the collider to test. */
-	void SetTestCollider( debpCollider *bpCollider );
+	void SetTestCollider(debpCollider *bpCollider);
 	/** \brief Sets the collider to test. */
-	void SetTestCollider( debpCollider *bpCollider, const decDVector &displacement );
+	void SetTestCollider(debpCollider *bpCollider, const decDVector &displacement);
 	
 	/** \brief Determine if the move direction is not zero. */
 	bool MoveDirIsNotZero() const;
@@ -88,25 +88,25 @@ public:
 	bool RotationZero() const;
 	
 	/** \brief Retrieves the move direction. */
-	inline const decDVector &GetMoveDirection() const{ return pMoveDirection; }
+	inline const decDVector &GetMoveDirection() const{return pMoveDirection;}
 	/** \brief Determines if a collision has been found for the current test collider. */
-	inline bool HasLocalCollision() const{ return hasHit(); }
+	inline bool HasLocalCollision() const{return hasHit();}
 	/** \brief Retrieves the hit distance. */
-	inline float GetHitDistance() const{ return ( float )m_closestHitFraction; }
+	inline float GetHitDistance() const{return (float)m_closestHitFraction;}
 	
 	/** \brief Reset the visitor. */
 	void Reset();
 	
 	/** \brief Updates a collision info object with the found results. */
-	void GetResult( deCollisionInfo &collisionInfo ) const;
+	void GetResult(deCollisionInfo &collisionInfo) const;
 	/*@}*/
 	
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Determines if a collision is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	/** \brief Adds a result. This fills in the parameters for later delivery to the collision info. */
-	virtual btScalar addSingleResult( btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace );
+	virtual btScalar addSingleResult(btCollisionWorld::LocalConvexResult &convexResult, bool normalInWorldSpace);
 	/*@}*/
 };
 

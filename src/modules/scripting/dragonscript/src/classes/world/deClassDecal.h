@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassDecal( deScriptingDragonScript &ds );
+	deClassDecal(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassDecal();
@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Decal from object. */
-	deDecal *GetDecal( dsRealObject *myself ) const;
+	deDecal *GetDecal(dsRealObject *myself) const;
 	
 	/** \brief Pushe decal. */
-	void PushDecal( dsRunTime *rt, deDecal *decal );
+	void PushDecal(dsRunTime *rt, deDecal *decal);
 	/*@}*/
 	
 	
@@ -89,37 +89,37 @@ private:
 		dsClass *clsComponent;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetSize );
-	DEF_NATFUNC( nfSetSize );
-	DEF_NATFUNC( nfGetTransform );
-	DEF_NATFUNC( nfSetTransform );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetSize);
+	DEF_NATFUNC(nfSetSize);
+	DEF_NATFUNC(nfGetTransform);
+	DEF_NATFUNC(nfSetTransform);
 	
-	DEF_NATFUNC( nfGetSkin );
-	DEF_NATFUNC( nfSetSkin );
-	DEF_NATFUNC( nfGetTexture );
-	DEF_NATFUNC( nfSetTexture );
-	DEF_NATFUNC( nfGetDynamicSkin );
-	DEF_NATFUNC( nfSetDynamicSkin );
+	DEF_NATFUNC(nfGetSkin);
+	DEF_NATFUNC(nfSetSkin);
+	DEF_NATFUNC(nfGetTexture);
+	DEF_NATFUNC(nfSetTexture);
+	DEF_NATFUNC(nfGetDynamicSkin);
+	DEF_NATFUNC(nfSetDynamicSkin);
 	
-	DEF_NATFUNC( nfGetVisible );
-	DEF_NATFUNC( nfSetVisible );
+	DEF_NATFUNC(nfGetVisible);
+	DEF_NATFUNC(nfSetVisible);
 	
-	DEF_NATFUNC( nfGetParentComponent );
+	DEF_NATFUNC(nfGetParentComponent);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

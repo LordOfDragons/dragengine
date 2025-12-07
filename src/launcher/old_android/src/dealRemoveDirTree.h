@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create remove directory tree. */
-	dealRemoveDirTree( deLogger &logger );
+	dealRemoveDirTree(deLogger &logger);
 	
 	/** \brief Clean up remove directory tree. */
 	~dealRemoveDirTree();
@@ -55,11 +55,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Remove directory tree. */
-	void Remove( const char *path );
+	void Remove(const char *path);
 	/*@}*/
 	
 private:
-	void pRemove( deVirtualFileSystem &vfs, const decPath &deletePath );
+	void pRemove(deVirtualFileSystem &vfs, const decPath &deletePath);
 };
 
 #endif

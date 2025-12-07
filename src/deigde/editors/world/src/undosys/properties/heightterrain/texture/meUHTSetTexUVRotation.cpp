@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVRotation::meUHTSetTexUVRotation( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation ){
-	if( ! world || ! sector || ! texture ) DETHROW( deeInvalidParam );
+meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation){
+	if(! world || ! sector || ! texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -51,7 +51,7 @@ meUHTSetTexUVRotation::meUHTSetTexUVRotation( meWorld *world, meHeightTerrainSec
 	pOldRotation = texture->GetProjectionRotation();
 	pNewRotation = newRotation;
 	
-	SetShortInfo( "Set Height Terrain Texture UV Rotation" );
+	SetShortInfo("Set Height Terrain Texture UV Rotation");
 	
 	world->AddReference();
 	
@@ -60,8 +60,8 @@ meUHTSetTexUVRotation::meUHTSetTexUVRotation( meWorld *world, meHeightTerrainSec
 }
 
 meUHTSetTexUVRotation::~meUHTSetTexUVRotation(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -71,9 +71,9 @@ meUHTSetTexUVRotation::~meUHTSetTexUVRotation(){
 
 
 void meUHTSetTexUVRotation::Undo(){
-	pTexture->SetProjectionRotation( pOldRotation );
+	pTexture->SetProjectionRotation(pOldRotation);
 }
 
 void meUHTSetTexUVRotation::Redo(){
-	pTexture->SetProjectionRotation( pNewRotation );
+	pTexture->SetProjectionRotation(pNewRotation);
 }

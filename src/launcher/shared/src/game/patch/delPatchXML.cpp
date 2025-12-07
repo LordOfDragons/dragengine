@@ -47,8 +47,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delPatchXML::delPatchXML( deLogger *logger, const char *loggerSource ) :
-delBaseXML( logger, loggerSource ){
+delPatchXML::delPatchXML(deLogger *logger, const char *loggerSource) :
+delBaseXML(logger, loggerSource){
 }
 
 delPatchXML::~delPatchXML(){
@@ -59,19 +59,19 @@ delPatchXML::~delPatchXML(){
 // Management
 ///////////////
 
-void delPatchXML::ReadFromFile( decBaseFileReader &reader, delPatch &patch ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+void delPatchXML::ReadFromFile(decBaseFileReader &reader, delPatch &patch){
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "depatch" ){
-		DETHROW_INFO( deeInvalidParam, "missing root tag 'depatch'" );
+	if(! root || root->GetName() != "depatch"){
+		DETHROW_INFO(deeInvalidParam, "missing root tag 'depatch'");
 	}
 	
-	pReadPatch( *root, patch );
+	pReadPatch(*root, patch);
 }
 
 
@@ -79,58 +79,58 @@ void delPatchXML::ReadFromFile( decBaseFileReader &reader, delPatch &patch ){
 // Private Functions
 //////////////////////
 
-void delPatchXML::pReadPatch( const decXmlElementTag &root, delPatch &patch ){
+void delPatchXML::pReadPatch(const decXmlElementTag &root, delPatch &patch){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "identifier" ){
-			patch.SetIdentifier( decUuid( GetCDataString( *tag ), false ) );
+		if(tagName == "identifier"){
+			patch.SetIdentifier(decUuid(GetCDataString(*tag), false));
 			
-		}else if( tagName == "name" ){
-			patch.SetName( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+		}else if(tagName == "name"){
+			patch.SetName(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			
-		}else if( tagName == "description" ){
-			patch.SetDescription( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+		}else if(tagName == "description"){
+			patch.SetDescription(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			
-		}else if( tagName == "creator" ){
-			patch.SetCreator( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+		}else if(tagName == "creator"){
+			patch.SetCreator(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			
-		}else if( tagName == "homepage" ){
-			patch.SetHomepage( GetCDataString( *tag ) );
+		}else if(tagName == "homepage"){
+			patch.SetHomepage(GetCDataString(*tag));
 			
-		}else if( tagName == "patchDir" ){
-			patch.SetPatchDirectory( GetCDataString( *tag ) );
+		}else if(tagName == "patchDir"){
+			patch.SetPatchDirectory(GetCDataString(*tag));
 			
-		}else if( tagName == "dataDir" ){
-			patch.SetDataDirectory( GetCDataString( *tag ) );
+		}else if(tagName == "dataDir"){
+			patch.SetDataDirectory(GetCDataString(*tag));
 			
-		}else if( tagName == "gameId" ){
-			patch.SetGameID( decUuid( GetCDataString( *tag ), false ) );
+		}else if(tagName == "gameId"){
+			patch.SetGameID(decUuid(GetCDataString(*tag), false));
 			
-		}else if( tagName == "requiredPatch" ){
-			patch.GetRequiredPatches().Add( decUuid( GetCDataString( *tag ), false ) );
+		}else if(tagName == "requiredPatch"){
+			patch.GetRequiredPatches().Add(decUuid(GetCDataString(*tag), false));
 			
-		}else if( tagName == "hiddenPath" ){
-			patch.GetHiddenPath().Add( GetCDataString( *tag ) );
+		}else if(tagName == "hiddenPath"){
+			patch.GetHiddenPath().Add(GetCDataString(*tag));
 			
 		}else{
-			ErrorUnknownTag( root, *tag );
+			ErrorUnknownTag(root, *tag);
 		}
 	}
 	
-	if( ! patch.GetIdentifier() ){
-		ErrorMissingTag( root, "identifier" );
-		DETHROW_INFO( deeInvalidParam, "missing tag");
+	if(! patch.GetIdentifier()){
+		ErrorMissingTag(root, "identifier");
+		DETHROW_INFO(deeInvalidParam, "missing tag");
 	}
-	if( ! patch.GetGameID() ){
-		ErrorMissingTag( root, "gameId" );
-		DETHROW_INFO( deeInvalidParam, "missing tag" );
+	if(! patch.GetGameID()){
+		ErrorMissingTag(root, "gameId");
+		DETHROW_INFO(deeInvalidParam, "missing tag");
 	}
 }

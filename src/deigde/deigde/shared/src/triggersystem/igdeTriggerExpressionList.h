@@ -58,25 +58,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Expression at the given position. */
-	igdeTriggerExpression *GetAt( int position ) const;
+	igdeTriggerExpression *GetAt(int position) const;
 	
 	/** \brief Index of the given expression or -1 if not found. */
-	int IndexOf( igdeTriggerExpression *expression ) const;
+	int IndexOf(igdeTriggerExpression *expression) const;
 	
 	/** \brief Determines if the given expression exists. */
-	bool Has( igdeTriggerExpression *expression ) const;
+	bool Has(igdeTriggerExpression *expression) const;
 	
 	/** \brief Adds an expression throwing an exception if already existing. */
-	void Add( igdeTriggerExpression *expression );
+	void Add(igdeTriggerExpression *expression);
 	
 	/** \brief Adds an expression if not existing already. */
-	void AddIfAbsent( igdeTriggerExpression *expression );
+	void AddIfAbsent(igdeTriggerExpression *expression);
 	
 	/** \brief Removes an expression throwing an exception if not existing. */
-	void Remove( igdeTriggerExpression *expression );
+	void Remove(igdeTriggerExpression *expression);
 	
 	/** \brief Removes an expression if existing. */
-	void RemoveIfPresent( igdeTriggerExpression *expression );
+	void RemoveIfPresent(igdeTriggerExpression *expression);
 	
 	/** \brief Removes all expressions. */
 	void RemoveAll();

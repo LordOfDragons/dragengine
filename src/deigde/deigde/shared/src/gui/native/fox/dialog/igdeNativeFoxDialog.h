@@ -37,7 +37,7 @@ class igdeWidget;
  * FOX Native dialog.
  */
 class igdeNativeFoxDialog : public FXDialogBox{
-	FXDECLARE( igdeNativeFoxDialog )
+	FXDECLARE(igdeNativeFoxDialog)
 	
 protected:
 	igdeNativeFoxDialog();
@@ -54,13 +54,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxDialog( igdeDialog &owner, FXWindow *parent, const igdeGuiTheme &guitheme );
+	igdeNativeFoxDialog(igdeDialog &owner, FXWindow *parent, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxDialog();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxDialog* CreateNativeWidget( igdeDialog &owner, igdeWidget *ownerOwner );
+	static igdeNativeFoxDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -80,25 +80,25 @@ public:
 	virtual void UpdateSize();
 	virtual void ShowDialog();
 	
-	virtual void CloseDialog( bool accepted );
+	virtual void CloseDialog(bool accepted);
 	
-	static int DialogFlags( const igdeDialog &owner );
+	static int DialogFlags(const igdeDialog &owner);
 	
-	static int DialogPadLeft( const igdeGuiTheme &guitheme );
-	static int DialogPadRight( const igdeGuiTheme &guitheme );
-	static int DialogPadTop( const igdeGuiTheme &guitheme );
-	static int DialogPadBottom( const igdeGuiTheme &guitheme );
-	static int DialogPadContent( const igdeGuiTheme &guitheme );
-	static int DialogPadButtons( const igdeGuiTheme &guitheme );
+	static int DialogPadLeft(const igdeGuiTheme &guitheme);
+	static int DialogPadRight(const igdeGuiTheme &guitheme);
+	static int DialogPadTop(const igdeGuiTheme &guitheme);
+	static int DialogPadBottom(const igdeGuiTheme &guitheme);
+	static int DialogPadContent(const igdeGuiTheme &guitheme);
+	static int DialogPadButtons(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onClose( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
-	long onFrameUpdate( FXObject*, FXSelector, void* );
+	long onClose(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
+	long onFrameUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

@@ -52,17 +52,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditorNavSpaceEdit::meViewEditorNavSpaceEdit( meView3D &view ) :
-meViewEditorNavigation( view ),
-pCLSelect( NULL ),
-pSelectDistance( 500.0f )
+meViewEditorNavSpaceEdit::meViewEditorNavSpaceEdit(meView3D &view) :
+meViewEditorNavigation(view),
+pCLSelect(NULL),
+pSelectDistance(500.0f)
 {
-	pColVol.TakeOver( view.GetEngine()->GetColliderManager()->CreateColliderVolume() );
+	pColVol.TakeOver(view.GetEngine()->GetColliderManager()->CreateColliderVolume());
 	
 	try{
-		pCLSelect = new meCLSelect( *view.GetWorld() );
+		pCLSelect = new meCLSelect(*view.GetWorld());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -85,77 +85,77 @@ meViewEditorNavSpaceEdit::~meViewEditorNavSpaceEdit(){
 void meViewEditorNavSpaceEdit::OnResize(){
 }
 
-void meViewEditorNavSpaceEdit::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonPress( x, y, shift, control );
+void meViewEditorNavSpaceEdit::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
-	if( ! GetDragLeftMouseButton() || ! pCLSelect ){
+	if(! GetDragLeftMouseButton() || ! pCLSelect){
 		return;
 	}
 	
-	pCLSelect->SetSingleSelect( ! shift );
-	pCLSelect->SetRectSelect( false );
+	pCLSelect->SetSingleSelect(! shift);
+	pCLSelect->SetRectSelect(false);
 	
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmAI ); // for individual navigation spaces
-	collisionFilter.SetBit( meWorld::eclmHeightTerrains ); // for height terrain navigation spaces
+	collisionFilter.SetBit(meWorld::eclmAI); // for individual navigation spaces
+	collisionFilter.SetBit(meWorld::eclmHeightTerrains); // for height terrain navigation spaces
 	
-	pCLSelect->SetCanSelectAll( false );
-	pCLSelect->SetCanSelectHTNavPoints( true );
+	pCLSelect->SetCanSelectAll(false);
+	pCLSelect->SetCanSelectHTNavPoints(true);
 	
-	pCLSelect->SetCanHitAll( false );
-	pCLSelect->SetCanHitHTNavPoints( true );
+	pCLSelect->SetCanHitAll(false);
+	pCLSelect->SetCanHitHTNavPoints(true);
 	
 	pCLSelect->Reset();
-	const decDVector rayPosition( GetMatrixView().GetPosition() );
-	const decVector rayDirection( GetActiveCamera().GetDirectionFor( GetViewWidth(), GetViewHeight(), x, y ) * pSelectDistance );
-	pCLSelect->SetRay( rayPosition, rayDirection );
-	RayTestCollision( pCLSelect, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
+	const decDVector rayPosition(GetMatrixView().GetPosition());
+	const decVector rayDirection(GetActiveCamera().GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y) * pSelectDistance);
+	pCLSelect->SetRay(rayPosition, rayDirection);
+	RayTestCollision(pCLSelect, rayPosition, rayDirection, decCollisionFilter(collisionCategory, collisionFilter));
 	pCLSelect->RunAction();
 }
 
-void meViewEditorNavSpaceEdit::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonRelease( x, y, shift, control );
+void meViewEditorNavSpaceEdit::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonRelease(x, y, shift, control);
 	
-	if( pCLSelect ){
+	if(pCLSelect){
 		pCLSelect->Reset();
 	}
 	
 	// DEBUG
 	/*
 	const meHeightTerrainSector * const sector = GetWorld().GetHeightTerrain()->GetActiveSector();
-	if( sector ){
+	if(sector){
 		const decIntList &selNavPoints = sector->GetSelectedNavPoints();
 		const int count = selNavPoints.GetCount();
 		decString text;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			const int navPoint = selNavPoints.GetAt( i );
-			const decPoint pos( navPoint % sector->GetImageDimension(), navPoint / sector->GetImageDimension() );
-			if( i > 0 ){
-				text.Append( ", " );
+		for(i=0; i<count; i++){
+			const int navPoint = selNavPoints.GetAt(i);
+			const decPoint pos(navPoint % sector->GetImageDimension(), navPoint / sector->GetImageDimension());
+			if(i > 0){
+				text.Append(", ");
 			}
-			text.AppendFormat( "%i (%i,%i)", navPoint, pos.x, pos.y );
+			text.AppendFormat("%i (%i,%i)", navPoint, pos.x, pos.y);
 		}
 		
-		printf( "SelNavPoints: %s\n", text.GetString() );
+		printf("SelNavPoints: %s\n", text.GetString());
 	}
 	*/
 	// DEBUG
 }
 
-void meViewEditorNavSpaceEdit::OnMouseMove( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnMouseMove( x, y, shift, control );
+void meViewEditorNavSpaceEdit::OnMouseMove(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if( ! GetDragLeftMouseButton() || ! pCLSelect ){
+	if(! GetDragLeftMouseButton() || ! pCLSelect){
 		return;
 	}
 }
 
-void meViewEditorNavSpaceEdit::OnMouseWheel( int steps, bool shift, bool control ){
+void meViewEditorNavSpaceEdit::OnMouseWheel(int steps, bool shift, bool control){
 }
 
 
@@ -164,7 +164,7 @@ void meViewEditorNavSpaceEdit::OnMouseWheel( int steps, bool shift, bool control
 //////////////////////
 
 void meViewEditorNavSpaceEdit::pCleanUp(){
-	if( pCLSelect ){
+	if(pCLSelect){
 		delete pCLSelect;
 	}
 }

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetTransMin::aeURuleBTransSetTransMin( aeRuleBoneTransformator *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetTransMin::aeURuleBTransSetTransMin(aeRuleBoneTransformator *rule, const decVector &newMin){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeURuleBTransSetTransMin::aeURuleBTransSetTransMin( aeRuleBoneTransformator *rul
 		pOldMin = rule->GetMinimumTranslation();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Bone transformator Set minimum translation" );
+		SetShortInfo("Bone transformator Set minimum translation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeURuleBTransSetTransMin::~aeURuleBTransSetTransMin(){
 ///////////////
 
 void aeURuleBTransSetTransMin::Undo(){
-	pRule->SetMinimumTranslation( pOldMin );
+	pRule->SetMinimumTranslation(pOldMin);
 }
 
 void aeURuleBTransSetTransMin::Redo(){
-	pRule->SetMinimumTranslation( pNewMin );
+	pRule->SetMinimumTranslation(pNewMin);
 }
 
 
@@ -84,7 +84,7 @@ void aeURuleBTransSetTransMin::Redo(){
 //////////////////////
 
 void aeURuleBTransSetTransMin::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

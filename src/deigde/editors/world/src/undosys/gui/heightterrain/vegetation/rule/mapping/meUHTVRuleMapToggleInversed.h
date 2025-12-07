@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMapToggleInversed( meHTVegetationLayer *vlayer, meHTVRuleMapping *rule );
+	meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMapToggleInversed();
 	/*@}*/

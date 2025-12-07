@@ -67,10 +67,10 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
-	cComboClass( meWVNodePropCount &node ) : pNode( node ){ }
+	cComboClass(meWVNodePropCount &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( comboBox->GetText() == pNode.GetRulePropCount()->GetPropClass() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(comboBox->GetText() == pNode.GetRulePropCount()->GetPropClass()){
 			return;
 		}
 		
@@ -85,11 +85,11 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
-	cActionMenuClass( meWVNodePropCount &node ) : igdeActionContextMenu( "",
-		node.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Class menu" ),
-		pNode( node ){ }
+	cActionMenuClass(meWVNodePropCount &node) : igdeActionContextMenu("",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Class menu"),
+		pNode(node){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		// TODO
 	}
 };
@@ -99,11 +99,11 @@ protected:
 	meWVNodePropCount &pNode;
 	
 public:
-	cTextSearchRadius( meWVNodePropCount &node ) : pNode( node ){ }
+	cTextSearchRadius(meWVNodePropCount &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRulePropCount()->GetSearchRadius() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRulePropCount()->GetSearchRadius()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -123,17 +123,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodePropCount::meWVNodePropCount( meWindowVegetation &windowVegetation, meHTVRulePropCount *rule ) :
-meWVNode( windowVegetation, rule ),
-pRulePC( rule )
+meWVNodePropCount::meWVNodePropCount(meWindowVegetation &windowVegetation, meHTVRulePropCount *rule) :
+meWVNode(windowVegetation, rule),
+pRulePC(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Prop Count" );
+	SetTitle("Prop Count");
 	
-	pActionMenuClass.TakeOver( new cActionMenuClass( *this ) );
+	pActionMenuClass.TakeOver(new cActionMenuClass(*this));
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -141,17 +141,17 @@ pRulePC( rule )
 		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst( pFraParameters, "Class:", "Select class name of prop to search for.", formLine );
-	helper.ComboBoxFilter( formLine, true, "Select class name of prop to search for.",
-		pCBPropClass, new cComboClass( *this ) );
-	helper.Button( formLine, pBtnPropClass, pActionMenuClass );
-	pActionMenuClass->SetWidget( pBtnPropClass );
+	helper.FormLineStretchFirst(pFraParameters, "Class:", "Select class name of prop to search for.", formLine);
+	helper.ComboBoxFilter(formLine, true, "Select class name of prop to search for.",
+		pCBPropClass, new cComboClass(*this));
+	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
+	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat( pFraParameters, "Radius:", "Set search radius in meters.",
-		pEditSearchRadius, new cTextSearchRadius( *this ) );
+	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
+		pEditSearchRadius, new cTextSearchRadius(*this));
 }
 
 meWVNodePropCount::~meWVNodePropCount(){
@@ -165,12 +165,12 @@ meWVNodePropCount::~meWVNodePropCount(){
 void meWVNodePropCount::Update(){
 	meWVNode::Update();
 	
-	pCBPropClass->SetText( pRulePC->GetPropClass() );
-	pEditSearchRadius->SetFloat( pRulePC->GetSearchRadius() );
+	pCBPropClass->SetText(pRulePC->GetPropClass());
+	pEditSearchRadius->SetFloat(pRulePC->GetSearchRadius());
 }
 
 void meWVNodePropCount::UpdateClassLists(){
-	const decString selection( pCBPropClass->GetText() );
+	const decString selection(pCBPropClass->GetText());
 	
 	pCBPropClass->RemoveAllItems();
 	
@@ -178,15 +178,15 @@ void meWVNodePropCount::UpdateClassLists(){
 	const int count = classes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClass &objectClass = *classes.GetAt( i );
-		if( objectClass.GetCanInstantiate() ){
-			pCBPropClass->AddItem( objectClass.GetName() );
+	for(i=0; i<count; i++){
+		const igdeGDClass &objectClass = *classes.GetAt(i);
+		if(objectClass.GetCanInstantiate()){
+			pCBPropClass->AddItem(objectClass.GetName());
 		}
 	}
 	
 	pCBPropClass->SortItems();
 	pCBPropClass->StoreFilterItems();
 	
-	pCBPropClass->SetText( selection );
+	pCBPropClass->SetText(selection);
 }

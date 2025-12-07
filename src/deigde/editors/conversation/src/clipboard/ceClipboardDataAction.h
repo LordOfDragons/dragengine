@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataAction( const ceConversationActionList &actions );
+	ceClipboardDataAction(const ceConversationActionList &actions);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the action. */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationActionList &GetActions() const{return pActions;}
 	/*@}*/
 };
 

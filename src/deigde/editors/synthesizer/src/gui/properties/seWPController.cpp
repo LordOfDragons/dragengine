@@ -78,21 +78,21 @@ protected:
 	seWPController &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPController &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPController &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seController * const controller = pPanel.GetController();
-		if( ! controller ){
+		if(! controller){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, controller ) ));
-		if( undo ){
-			controller->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, controller)));
+		if(undo){
+			controller->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seController *controller ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seController *controller) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -100,23 +100,23 @@ protected:
 	seWPController &pPanel;
 	
 public:
-	cBaseAction( seWPController &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPController &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seController * const controller = pPanel.GetController();
-		if( ! controller ){
+		if(! controller){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( controller ) ));
-		if( undo ){
-			controller->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(controller)));
+		if(undo){
+			controller->GetSynthesizer()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seController *controller ) = 0;
+	virtual igdeUndo *OnAction(seController *controller) = 0;
 };
 
 
@@ -125,79 +125,79 @@ class cListControllers : public igdeListBoxListener{
 	seWPController &pPanel;
 	
 public:
-	cListControllers( seWPController &panel ) : pPanel( panel ){ }
+	cListControllers(seWPController &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ){
+	virtual void OnSelectionChanged(igdeListBox *listBox){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if( ! synthesizer ){
+		if(! synthesizer){
 			return;
 		}
 		
-		synthesizer->SetActiveController( listBox->GetSelectedItem()
-			? ( seController* )listBox->GetSelectedItem()->GetData() : NULL );
+		synthesizer->SetActiveController(listBox->GetSelectedItem()
+			? (seController*)listBox->GetSelectedItem()->GetData() : NULL);
 		pPanel.UpdateController();
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
 		
-		helper.MenuCommand( menu, windowMain.GetActionControllerAdd() );
-		helper.MenuCommand( menu, windowMain.GetActionControllerRemove() );
-		helper.MenuCommand( menu, windowMain.GetActionControllerUp() );
-		helper.MenuCommand( menu, windowMain.GetActionControllerDown() );
+		helper.MenuCommand(menu, windowMain.GetActionControllerAdd());
+		helper.MenuCommand(menu, windowMain.GetActionControllerRemove());
+		helper.MenuCommand(menu, windowMain.GetActionControllerUp());
+		helper.MenuCommand(menu, windowMain.GetActionControllerDown());
 	}
 };
 
 class cTextName : public cBaseTextFieldListener{
 public:
-	cTextName( seWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextName(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seController *controller ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seController *controller){
 		const decString &text = textField->GetText();
-		if( text == controller->GetName() ){
+		if(text == controller->GetName()){
 			return NULL;
 		}
 		
-		if( pPanel.GetSynthesizer()->GetControllers().HasNamed( text ) ){
-			igdeCommonDialogs::Error( &pPanel, "Invalid Value", "Duplicate controller name" );
-			textField->SetText( controller->GetName() );
+		if(pPanel.GetSynthesizer()->GetControllers().HasNamed(text)){
+			igdeCommonDialogs::Error(&pPanel, "Invalid Value", "Duplicate controller name");
+			textField->SetText(controller->GetName());
 			return NULL;
 		}
 		
-		return new seUControllerSetName( controller, text );
+		return new seUControllerSetName(controller, text);
 	}
 };
 
 class cTextMinimumValue : public cBaseTextFieldListener{
 public:
-	cTextMinimumValue( seWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMinimumValue(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seController *controller ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seController *controller){
 		const float value = textField->GetFloat();
-		return fabsf( value - controller->GetMinimumValue() ) > FLOAT_SAFE_EPSILON
-			? new seUControllerSetMinimumValue( controller, value ) : NULL;
+		return fabsf(value - controller->GetMinimumValue()) > FLOAT_SAFE_EPSILON
+			? new seUControllerSetMinimumValue(controller, value) : NULL;
 	}
 };
 
 class cTextMaximumValue : public cBaseTextFieldListener{
 public:
-	cTextMaximumValue( seWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextMaximumValue(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seController *controller ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seController *controller){
 		const float value = textField->GetFloat();
-		return fabsf( value - controller->GetMaximumValue() ) > FLOAT_SAFE_EPSILON
-			? new seUControllerSetMaximumValue( controller, value ) : NULL;
+		return fabsf(value - controller->GetMaximumValue()) > FLOAT_SAFE_EPSILON
+			? new seUControllerSetMaximumValue(controller, value) : NULL;
 	}
 };
 
 class cActionClamp : public cBaseAction{
 public:
-	cActionClamp( seWPController &panel ) : cBaseAction( panel, "Clamp value to range",
-		NULL, "Determines if the value of the controller is clamped to the given range" ){ }
+	cActionClamp(seWPController &panel) : cBaseAction(panel, "Clamp value to range",
+		NULL, "Determines if the value of the controller is clamped to the given range"){ }
 	
-	virtual igdeUndo *OnAction( seController *controller ){
-		return new seUControllerToggleClamp( controller );
+	virtual igdeUndo *OnAction(seController *controller){
+		return new seUControllerToggleClamp(controller);
 	}
 };
 
@@ -206,40 +206,40 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	igdeUndo::Ref pUndo;
 	
 public:
-	cEditCurve( seWPController &panel ) : pPanel( panel ){ }
+	cEditCurve(seWPController &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier ){
-		if( pUndo ){
-			( ( seUControllerSetCurve& )( igdeUndo& )pUndo ).SetNewValue( viewCurveBezier->GetCurve() );
+	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+		if(pUndo){
+			((seUControllerSetCurve&)(igdeUndo&)pUndo).SetNewValue(viewCurveBezier->GetCurve());
 			
-		}else if( ! pPanel.GetController() || pPanel.GetController()->GetCurve() == viewCurveBezier->GetCurve() ){
+		}else if(! pPanel.GetController() || pPanel.GetController()->GetCurve() == viewCurveBezier->GetCurve()){
 			return;
 			
 		}else{
-			pUndo.TakeOver( new seUControllerSetCurve( pPanel.GetController(), viewCurveBezier->GetCurve() ) );
+			pUndo.TakeOver(new seUControllerSetCurve(pPanel.GetController(), viewCurveBezier->GetCurve()));
 		}
 		
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( pUndo );
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(pUndo);
 		pUndo = NULL;
 	}
 	
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier ){
-		if( pUndo ){
-			( ( seUControllerSetCurve& )( igdeUndo& )pUndo ).SetNewValue( viewCurveBezier->GetCurve() );
+	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+		if(pUndo){
+			((seUControllerSetCurve&)(igdeUndo&)pUndo).SetNewValue(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
-		}else if( pPanel.GetController() && pPanel.GetController()->GetCurve() != viewCurveBezier->GetCurve() ){
-			pUndo.TakeOver( new seUControllerSetCurve( pPanel.GetController(), viewCurveBezier->GetCurve() ) );
+		}else if(pPanel.GetController() && pPanel.GetController()->GetCurve() != viewCurveBezier->GetCurve()){
+			pUndo.TakeOver(new seUControllerSetCurve(pPanel.GetController(), viewCurveBezier->GetCurve()));
 		}
 	}
 };
 
 class cTextCurveConstValue : public cBaseTextFieldListener{
 public:
-	cTextCurveConstValue( seWPController &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextCurveConstValue(seWPController &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seController *controller ){
-		controller->SetEditConstantValue( textField->GetFloat() );
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seController *controller){
+		controller->SetEditConstantValue(textField->GetFloat());
 		return NULL;
 	}
 };
@@ -248,13 +248,13 @@ class cActionSetCurve : public cBaseAction{
 	igdeViewCurveBezier::Ref pEditCurve;
 	
 public:
-	cActionSetCurve( seWPController &panel, igdeViewCurveBezier *editCurve,
-		const char *text, igdeIcon *icon, const char *description ) :
-		cBaseAction( panel, text, icon, description ), pEditCurve( editCurve ){ }
+	cActionSetCurve(seWPController &panel, igdeViewCurveBezier *editCurve,
+		const char *text, igdeIcon *icon, const char *description) :
+		cBaseAction(panel, text, icon, description), pEditCurve(editCurve){}
 	
-	virtual igdeUndo *OnAction( seController *controller ){
+	virtual igdeUndo *OnAction(seController *controller){
 		decCurveBezier curve;
-		CreateCurve( *controller, curve );
+		CreateCurve(*controller, curve);
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
 			seUControllerSetCurve::Ref::NewWith(controller, curve));
@@ -262,10 +262,10 @@ public:
 		return NULL;
 	}
 	
-	virtual void CreateCurve( const seController &controller, decCurveBezier &curve ) = 0;
+	virtual void CreateCurve(const seController &controller, decCurveBezier &curve) = 0;
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetController() );
+		SetEnabled(pPanel.GetController());
 	}
 };
 
@@ -273,94 +273,94 @@ class cActionCurveSetConstValue : public cActionSetCurve{
 	igdeTextField::Ref pEditConstValue;
 	
 public:
-	cActionCurveSetConstValue( seWPController &panel, igdeViewCurveBezier *editCurve, igdeTextField *editConstValue ) :
-		cActionSetCurve( panel, editCurve, "Const", NULL, "Set curve to constant value" ),
-	pEditConstValue( editConstValue ){ }
+	cActionCurveSetConstValue(seWPController &panel, igdeViewCurveBezier *editCurve, igdeTextField *editConstValue) :
+		cActionSetCurve(panel, editCurve, "Const", NULL, "Set curve to constant value"),
+	pEditConstValue(editConstValue){}
 	
-	virtual void CreateCurve( const seController &controller, decCurveBezier &curve ){
+	virtual void CreateCurve(const seController &controller, decCurveBezier &curve){
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
-		const float y = decMath::clamp( pEditConstValue->GetFloat(),
-			controller.GetMinimumValue(), controller.GetMaximumValue() );
+		const float y = decMath::clamp(pEditConstValue->GetFloat(),
+			controller.GetMinimumValue(), controller.GetMaximumValue());
 		
-		curve.AddPoint( decCurveBezierPoint( decVector2( xmax * 0.5f, y ),
-			decVector2( xmax * 0.25f, y ), decVector2( xmax * 1.5f, y ) ) );
-		curve.SetInterpolationMode( decCurveBezier::eimConstant );
+		curve.AddPoint(decCurveBezierPoint(decVector2(xmax * 0.5f, y),
+			decVector2(xmax * 0.25f, y), decVector2(xmax * 1.5f, y)));
+		curve.SetInterpolationMode(decCurveBezier::eimConstant);
 	}
 };
 
 class cActionCurveSetLinear : public cActionSetCurve{
 public:
-	cActionCurveSetLinear( seWPController &panel, igdeViewCurveBezier *editCurve ) :
-		cActionSetCurve( panel, editCurve, "Linear", NULL, "Set curve to linear curve from 0 to 1" ){ }
+	cActionCurveSetLinear(seWPController &panel, igdeViewCurveBezier *editCurve) :
+		cActionSetCurve(panel, editCurve, "Linear", NULL, "Set curve to linear curve from 0 to 1"){}
 	
-	virtual void CreateCurve( const seController &controller, decCurveBezier &curve ){
+	virtual void CreateCurve(const seController &controller, decCurveBezier &curve){
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
 		const float xstep = xmax / 3.0f;
-		const float ystep = ( ymax - ymin ) / 3.0f;
+		const float ystep = (ymax - ymin) / 3.0f;
 		
-		curve.AddPoint( decCurveBezierPoint( decVector2( 0.0f, ymin ),
-			decVector2( -xstep, ymin - ystep ), decVector2( xstep, ymin + ystep ) ) );
-		curve.AddPoint( decCurveBezierPoint( decVector2( xmax, ymax ),
-			decVector2( xmax - xstep, ymax - ystep ), decVector2( xmax + xstep, ymax + ystep ) ) );
-		curve.SetInterpolationMode( decCurveBezier::eimLinear );
+		curve.AddPoint(decCurveBezierPoint(decVector2(0.0f, ymin),
+			decVector2(-xstep, ymin - ystep), decVector2(xstep, ymin + ystep)));
+		curve.AddPoint(decCurveBezierPoint(decVector2(xmax, ymax),
+			decVector2(xmax - xstep, ymax - ystep), decVector2(xmax + xstep, ymax + ystep)));
+		curve.SetInterpolationMode(decCurveBezier::eimLinear);
 	}
 };
 
 class cActionCurveSetLinearInverse : public cActionSetCurve{
 public:
-	cActionCurveSetLinearInverse( seWPController &panel, igdeViewCurveBezier *editCurve ) :
-		cActionSetCurve( panel, editCurve, "Inverse", NULL, "Set curve to linear curve from 1 to 0" ){ }
+	cActionCurveSetLinearInverse(seWPController &panel, igdeViewCurveBezier *editCurve) :
+		cActionSetCurve(panel, editCurve, "Inverse", NULL, "Set curve to linear curve from 1 to 0"){}
 	
-	virtual void CreateCurve( const seController &controller, decCurveBezier &curve ){
+	virtual void CreateCurve(const seController &controller, decCurveBezier &curve){
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
 		const float xstep = xmax / 3.0f;
-		const float ystep = ( ymax - ymin ) / 3.0f;
+		const float ystep = (ymax - ymin) / 3.0f;
 		
-		curve.AddPoint( decCurveBezierPoint( decVector2( 0.0f, ymax ),
-			decVector2( -xstep, ymax + ystep ), decVector2( xstep, ymax - ystep ) ) );
-		curve.AddPoint( decCurveBezierPoint( decVector2( xmax, ymin ),
-			decVector2( xmax - xstep, ymin + ystep ), decVector2( xmax + xstep, ymin - ystep ) ) );
-		curve.SetInterpolationMode( decCurveBezier::eimLinear );
+		curve.AddPoint(decCurveBezierPoint(decVector2(0.0f, ymax),
+			decVector2(-xstep, ymax + ystep), decVector2(xstep, ymax - ystep)));
+		curve.AddPoint(decCurveBezierPoint(decVector2(xmax, ymin),
+			decVector2(xmax - xstep, ymin + ystep), decVector2(xmax + xstep, ymin - ystep)));
+		curve.SetInterpolationMode(decCurveBezier::eimLinear);
 	}
 };
 
 class cActionCurveSetBezier : public cActionSetCurve{
 public:
-	cActionCurveSetBezier( seWPController &panel, igdeViewCurveBezier *editCurve ) :
-		cActionSetCurve( panel, editCurve, "Bezier", NULL, "Set curve to bezier curve from 0 to 1" ){ }
+	cActionCurveSetBezier(seWPController &panel, igdeViewCurveBezier *editCurve) :
+		cActionSetCurve(panel, editCurve, "Bezier", NULL, "Set curve to bezier curve from 0 to 1"){}
 	
-	virtual void CreateCurve( const seController &controller, decCurveBezier &curve ){
+	virtual void CreateCurve(const seController &controller, decCurveBezier &curve){
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
 		const float xstep = xmax / 3.0f;
 		
-		curve.AddPoint( decCurveBezierPoint( decVector2( 0.0f, ymin ),
-			decVector2( -xstep, ymin ), decVector2( xstep, ymin ) ) );
-		curve.AddPoint( decCurveBezierPoint( decVector2( xmax, ymax ),
-			decVector2( xmax - xstep, ymax ), decVector2( xmax + xstep, ymax ) ) );
+		curve.AddPoint(decCurveBezierPoint(decVector2(0.0f, ymin),
+			decVector2(-xstep, ymin), decVector2(xstep, ymin)));
+		curve.AddPoint(decCurveBezierPoint(decVector2(xmax, ymax),
+			decVector2(xmax - xstep, ymax), decVector2(xmax + xstep, ymax)));
 	}
 };
 
 class cActionCurveSetBezierInverse : public cActionSetCurve{
 public:
-	cActionCurveSetBezierInverse( seWPController &panel, igdeViewCurveBezier *editCurve ) :
-		cActionSetCurve( panel, editCurve, "Inverse", NULL, "Set curve to bezier curve from 1 to 0" ){ }
+	cActionCurveSetBezierInverse(seWPController &panel, igdeViewCurveBezier *editCurve) :
+		cActionSetCurve(panel, editCurve, "Inverse", NULL, "Set curve to bezier curve from 1 to 0"){}
 	
-	virtual void CreateCurve( const seController &controller, decCurveBezier &curve ){
+	virtual void CreateCurve(const seController &controller, decCurveBezier &curve){
 		const float xmax = pPanel.GetSynthesizer()->GetPlayTime();
 		const float ymin = controller.GetMinimumValue();
 		const float ymax = controller.GetMaximumValue();
 		const float xstep = xmax / 3.0f;
 		
-		curve.AddPoint( decCurveBezierPoint( decVector2( 0.0f, ymax ),
-			decVector2( -xstep, ymax ), decVector2( xstep, ymax ) ) );
-		curve.AddPoint( decCurveBezierPoint( decVector2( xmax, ymin ),
-			decVector2( xmax - xstep, ymin ), decVector2( xmax + xstep, ymin ) ) );
+		curve.AddPoint(decCurveBezierPoint(decVector2(0.0f, ymax),
+			decVector2(-xstep, ymax), decVector2(xstep, ymax)));
+		curve.AddPoint(decCurveBezierPoint(decVector2(xmax, ymin),
+			decVector2(xmax - xstep, ymin), decVector2(xmax + xstep, ymin)));
 	}
 };
 
@@ -374,69 +374,69 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPController::seWPController( seViewSynthesizer &viewSynthesizer ) :
-igdeContainerScroll( viewSynthesizer.GetEnvironment(), false, true ),
-pViewSynthesizer( viewSynthesizer ),
-pListener( NULL ),
-pSynthesizer( NULL )
+seWPController::seWPController(seViewSynthesizer &viewSynthesizer) :
+igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
+pViewSynthesizer(viewSynthesizer),
+pListener(NULL),
+pSynthesizer(NULL)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPControllerListener( *this );
+	pListener = new seWPControllerListener(*this);
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	
-	helper.GroupBoxFlow( content, groupBox, "Controllers:" );
-	helper.ListBox( groupBox, 10, "Controllers", pListController, new cListControllers( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "Controllers:");
+	helper.ListBox(groupBox, 10, "Controllers", pListController, new cListControllers(*this));
 	pListController->SetDefaultSorter();
 	
 	
-	helper.GroupBoxStatic( content, groupBox, "Controller Settings:" );
-	helper.EditString( groupBox, "Name:", "Name of controller", pEditName, new cTextName( *this ) );
-	helper.EditFloat( groupBox, "Minimum Value:", "Minimum controller value",
-		pEditMin, new cTextMinimumValue( *this ) );
-	helper.EditFloat( groupBox, "Maximum Value:", "Maximum controller value",
-		pEditMax, new cTextMaximumValue( *this ) );
-	helper.CheckBox( groupBox, pChkClamp, new cActionClamp( *this ) );
+	helper.GroupBoxStatic(content, groupBox, "Controller Settings:");
+	helper.EditString(groupBox, "Name:", "Name of controller", pEditName, new cTextName(*this));
+	helper.EditFloat(groupBox, "Minimum Value:", "Minimum controller value",
+		pEditMin, new cTextMinimumValue(*this));
+	helper.EditFloat(groupBox, "Maximum Value:", "Maximum controller value",
+		pEditMax, new cTextMaximumValue(*this));
+	helper.CheckBox(groupBox, pChkClamp, new cActionClamp(*this));
 	
 	
-	helper.GroupBoxFlow( content, groupBox, "Controller Curve:" );
+	helper.GroupBoxFlow(content, groupBox, "Controller Curve:");
 	
-	helper.ViewCurveBezier( groupBox, pEditCurve, new cEditCurve( *this ) );
-	pEditCurve->SetDefaultSize( decPoint( 200, 250 ) );
+	helper.ViewCurveBezier(groupBox, pEditCurve, new cEditCurve(*this));
+	pEditCurve->SetDefaultSize(decPoint(200, 250));
 	pEditCurve->ClearCurve();
-	pEditCurve->SetClamp( true );
-	pEditCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
-	pEditCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
+	pEditCurve->SetClamp(true);
+	pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
+	pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX ) );
-	groupBox->AddChild( formLine );
-	helper.EditFloat( formLine, "Constant curve value", 6, 3,
-		pEditCurveSetConstValue, new cTextCurveConstValue( *this ) );
-	helper.Button( formLine, pBtnCurveSetConstant,
-		new cActionCurveSetConstValue( *this, pEditCurve, pEditCurveSetConstValue ), true );
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX));
+	groupBox->AddChild(formLine);
+	helper.EditFloat(formLine, "Constant curve value", 6, 3,
+		pEditCurveSetConstValue, new cTextCurveConstValue(*this));
+	helper.Button(formLine, pBtnCurveSetConstant,
+		new cActionCurveSetConstValue(*this, pEditCurve, pEditCurveSetConstValue), true);
 	
-	helper.Separator( formLine );
-	helper.Button( formLine, pBtnCurveSetLinear,
-		new cActionCurveSetLinear( *this, pEditCurve ), true );
-	helper.Button( formLine, pBtnCurveSetLinearInverse,
-		new cActionCurveSetLinearInverse( *this, pEditCurve ), true );
+	helper.Separator(formLine);
+	helper.Button(formLine, pBtnCurveSetLinear,
+		new cActionCurveSetLinear(*this, pEditCurve), true);
+	helper.Button(formLine, pBtnCurveSetLinearInverse,
+		new cActionCurveSetLinearInverse(*this, pEditCurve), true);
 	
-	helper.Separator( formLine );
-	helper.Button( formLine, pBtnCurveSetBezier,
-		new cActionCurveSetBezier( *this, pEditCurve ), true );
-	helper.Button( formLine, pBtnCurveSetBezierInverse,
-		new cActionCurveSetBezierInverse( *this, pEditCurve ), true );
+	helper.Separator(formLine);
+	helper.Button(formLine, pBtnCurveSetBezier,
+		new cActionCurveSetBezier(*this, pEditCurve), true);
+	helper.Button(formLine, pBtnCurveSetBezierInverse,
+		new cActionCurveSetBezierInverse(*this, pEditCurve), true);
 }
 
 seWPController::~seWPController(){
-	SetSynthesizer( NULL );
-	if( pListener ){
+	SetSynthesizer(NULL);
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -446,20 +446,20 @@ seWPController::~seWPController(){
 // Management
 ///////////////
 
-void seWPController::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seWPController::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->RemoveNotifier( pListener );
+	if(pSynthesizer){
+		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
-		synthesizer->AddNotifier( pListener );
+	if(synthesizer){
+		synthesizer->AddNotifier(pListener);
 		synthesizer->AddReference();
 	}
 	
@@ -471,7 +471,7 @@ seController *seWPController::GetController() const{
 }
 
 void seWPController::SelectActiveController(){
-	pListController->SetSelectionWithData( GetController() );
+	pListController->SetSelectionWithData(GetController());
 }
 
 
@@ -481,24 +481,24 @@ void seWPController::UpdateControllerList(){
 	
 	pListController->RemoveAllItems();
 	
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		const seControllerList &list = pSynthesizer->GetControllers();
 		const int count = list.GetCount();
 		decString text;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seController * const controller = list.GetAt( i );
-			text.Format( "%d: %s", i, controller->GetName().GetString() );
-			pListController->AddItem( text, NULL, controller );
+		for(i=0; i<count; i++){
+			seController * const controller = list.GetAt(i);
+			text.Format("%d: %s", i, controller->GetName().GetString());
+			pListController->AddItem(text, NULL, controller);
 		}
 		
 		pListController->SortItems();
 	}
 	
-	pListController->SetSelectionWithData( selection );
-	if( ! pListController->GetSelectedItem() && pListController->GetItemCount() > 0 ){
-		pListController->SetSelection( 0 );
+	pListController->SetSelectionWithData(selection);
+	if(! pListController->GetSelectedItem() && pListController->GetItemCount() > 0){
+		pListController->SetSelection(0);
 	}
 	
 	UpdateController();
@@ -507,31 +507,31 @@ void seWPController::UpdateControllerList(){
 void seWPController::UpdateController(){
 	const seController * const controller = GetController();
 	
-	if( controller ){
-		pEditName->SetText( controller->GetName() );
-		pChkClamp->SetChecked( controller->GetClamp() );
+	if(controller){
+		pEditName->SetText(controller->GetName());
+		pChkClamp->SetChecked(controller->GetClamp());
 		
-		pEditCurveSetConstValue->SetFloat( controller->GetEditConstantValue() );
+		pEditCurveSetConstValue->SetFloat(controller->GetEditConstantValue());
 		
 	}else{
 		pEditName->ClearText();
-		pChkClamp->SetChecked( false );
+		pChkClamp->SetChecked(false);
 		
 		pEditCurveSetConstValue->ClearText();
 	}
 	
 	const bool enabled = controller;
-	pEditName->SetEnabled( enabled );
-	pChkClamp->SetEnabled( enabled );
+	pEditName->SetEnabled(enabled);
+	pChkClamp->SetEnabled(enabled);
 	
-	pEditCurve->SetEnabled( enabled );
-	pEditCurveSetConstValue->SetEnabled( enabled );
-	pEditCurveSetConstValue->SetEnabled( enabled );
-	pBtnCurveSetConstant->SetEnabled( enabled );
-	pBtnCurveSetLinear->SetEnabled( enabled );
-	pBtnCurveSetLinearInverse->SetEnabled( enabled );
-	pBtnCurveSetBezier->SetEnabled( enabled );
-	pBtnCurveSetBezierInverse->SetEnabled( enabled );
+	pEditCurve->SetEnabled(enabled);
+	pEditCurveSetConstValue->SetEnabled(enabled);
+	pEditCurveSetConstValue->SetEnabled(enabled);
+	pBtnCurveSetConstant->SetEnabled(enabled);
+	pBtnCurveSetLinear->SetEnabled(enabled);
+	pBtnCurveSetLinearInverse->SetEnabled(enabled);
+	pBtnCurveSetBezier->SetEnabled(enabled);
+	pBtnCurveSetBezierInverse->SetEnabled(enabled);
 	
 	UpdateControllerRange();
 	UpdateControllerCurve();
@@ -540,27 +540,27 @@ void seWPController::UpdateController(){
 void seWPController::UpdateControllerRange(){
 	const seController * const controller = GetController();
 	
-	if( controller ){
-		pEditMin->SetFloat( controller->GetMinimumValue() );
-		pEditMax->SetFloat( controller->GetMaximumValue() );
+	if(controller){
+		pEditMin->SetFloat(controller->GetMinimumValue());
+		pEditMax->SetFloat(controller->GetMaximumValue());
 		
-		pEditCurve->SetClamp( true );
-		pEditCurve->SetClampMin( decVector2( 0.0f, controller->GetMinimumValue() ) );
-		pEditCurve->SetClampMax( decVector2( pSynthesizer->GetPlayTime(), controller->GetMaximumValue() ) );
+		pEditCurve->SetClamp(true);
+		pEditCurve->SetClampMin(decVector2(0.0f, controller->GetMinimumValue()));
+		pEditCurve->SetClampMax(decVector2(pSynthesizer->GetPlayTime(), controller->GetMaximumValue()));
 		
 	}else{
 		pEditMin->ClearText();
 		pEditMax->ClearText();
 		
-		pEditCurve->SetClamp( true );
-		pEditCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
-		pEditCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
+		pEditCurve->SetClamp(true);
+		pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
+		pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 		pEditCurve->ClearCurve();
 	}
 	
 	const bool enabled = controller;
-	pEditMin->SetEnabled( enabled );
-	pEditMax->SetEnabled( enabled );
+	pEditMin->SetEnabled(enabled);
+	pEditMax->SetEnabled(enabled);
 	
 	pEditCurve->ResetView();
 }
@@ -568,8 +568,8 @@ void seWPController::UpdateControllerRange(){
 void seWPController::UpdateControllerCurve(){
 	const seController * const controller = GetController();
 	
-	if( controller ){
-		pEditCurve->SetCurve( controller->GetCurve() );
+	if(controller){
+		pEditCurve->SetCurve(controller->GetCurve());
 		
 	}else{
 		pEditCurve->ClearCurve();

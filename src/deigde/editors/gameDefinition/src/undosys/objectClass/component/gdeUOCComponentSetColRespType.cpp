@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetColRespType::gdeUOCComponentSetColRespType( gdeObjectClass *objectClass,
-gdeOCComponent *component, deCollider::eResponseType newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetColRespType::gdeUOCComponentSetColRespType(gdeObjectClass *objectClass,
+gdeOCComponent *component, deCollider::eResponseType newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set collider response type" );
+	SetShortInfo("Component set collider response type");
 	
 	pOldValue = component->GetColliderResponseType();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetColRespType::~gdeUOCComponentSetColRespType(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetColRespType::~gdeUOCComponentSetColRespType(){
 ///////////////
 
 void gdeUOCComponentSetColRespType::Undo(){
-	pComponent->SetColliderResponseType( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetColliderResponseType(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetColRespType::Redo(){
-	pComponent->SetColliderResponseType( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetColliderResponseType(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

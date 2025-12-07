@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sieve. */
-	deoglPointSieve( int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ );
+	deoglPointSieve(int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ);
 	/** Cleans up the sieve. */
 	~deoglPointSieve();
 	/*@}*/
@@ -64,25 +64,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the sieve size in x direction. */
-	inline float GetSieveSizeX() const{ return pSieveSizeX; }
+	inline float GetSieveSizeX() const{return pSieveSizeX;}
 	/** Retrieves the sieve size in z direction. */
-	inline float GetSieveSizeZ() const{ return pSieveSizeZ; }
+	inline float GetSieveSizeZ() const{return pSieveSizeZ;}
 	
 	/** Retrieves the number of buckets in the x direction. */
-	inline int GetBucketCountX() const{ return pBucketCountX; }
+	inline int GetBucketCountX() const{return pBucketCountX;}
 	/** Retrieves the number of buckets in the z direction. */
-	inline int GetBucketCountZ() const{ return pBucketCountZ; }
+	inline int GetBucketCountZ() const{return pBucketCountZ;}
 	/** Retrieves the number of buckets. */
-	inline int GetBucketCount() const{ return pBucketCount; }
+	inline int GetBucketCount() const{return pBucketCount;}
 	/** Retrieves the bucket at the given index. */
-	deoglPointSieveBucket &GetBucketAt( int index ) const;
+	deoglPointSieveBucket &GetBucketAt(int index) const;
 	/** Retrieves the bucket at the given index. */
-	deoglPointSieveBucket &GetBucketWith( int x, int z ) const;
+	deoglPointSieveBucket &GetBucketWith(int x, int z) const;
 	/** Retrieves the bucket containing the given position. */
-	deoglPointSieveBucket &GetBucketContaining( float x, float z ) const;
+	deoglPointSieveBucket &GetBucketContaining(float x, float z) const;
 	
 	/** Drops a point into the sieve. */
-	void DropPoint( float x, float z, int index );
+	void DropPoint(float x, float z, int index);
 	
 	/** Clears the sieve. */
 	void Clear();

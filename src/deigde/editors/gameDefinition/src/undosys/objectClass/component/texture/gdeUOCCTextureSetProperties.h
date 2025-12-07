@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetProperties( gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, const decStringDictionary &newValue );
+	gdeUOCCTextureSetProperties(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, const decStringDictionary &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

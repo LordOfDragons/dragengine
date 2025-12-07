@@ -55,19 +55,19 @@ int sePropertyList::GetCount() const{
 	return pProperties.GetCount();
 }
 
-seProperty *sePropertyList::GetAt( int index ) const{
-	return ( seProperty* )pProperties.GetAt( index );
+seProperty *sePropertyList::GetAt(int index) const{
+	return (seProperty*)pProperties.GetAt(index);
 }
 
-seProperty *sePropertyList::GetNamed( const char *name ) const{
+seProperty *sePropertyList::GetNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	seProperty *property;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		property = ( seProperty* )pProperties.GetAt( p );
+	for(p=0; p<count; p++){
+		property = (seProperty*)pProperties.GetAt(p);
 		
-		if( property->GetName().Equals( name ) ){
+		if(property->GetName().Equals(name)){
 			return property;
 		}
 	}
@@ -75,16 +75,16 @@ seProperty *sePropertyList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int sePropertyList::IndexOf( seProperty *property ) const{
-	return pProperties.IndexOf( property );
+int sePropertyList::IndexOf(seProperty *property) const{
+	return pProperties.IndexOf(property);
 }
 
-int sePropertyList::IndexOfNamed( const char *name ) const{
+int sePropertyList::IndexOfNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( seProperty* )pProperties.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((seProperty*)pProperties.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int sePropertyList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool sePropertyList::Has( seProperty *property ) const{
-	return pProperties.Has( property );
+bool sePropertyList::Has(seProperty *property) const{
+	return pProperties.Has(property);
 }
 
-bool sePropertyList::HasNamed( const char *name ) const{
+bool sePropertyList::HasNamed(const char *name) const{
 	const int count = pProperties.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( seProperty* )pProperties.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((seProperty*)pProperties.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,24 +109,24 @@ bool sePropertyList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void sePropertyList::Add( seProperty *property ){
-	if( ! property || HasNamed( property->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void sePropertyList::Add(seProperty *property){
+	if(! property || HasNamed(property->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pProperties.Add( property );
+	pProperties.Add(property);
 }
 
-void sePropertyList::InsertAt( seProperty *property, int index ){
-	if( ! property || HasNamed( property->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void sePropertyList::InsertAt(seProperty *property, int index){
+	if(! property || HasNamed(property->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pProperties.Insert( property, index );
+	pProperties.Insert(property, index);
 }
 
-void sePropertyList::MoveTo( seProperty *property, int index ){
-	pProperties.Move( property, index );
+void sePropertyList::MoveTo(seProperty *property, int index){
+	pProperties.Move(property, index);
 }
 
-void sePropertyList::Remove( seProperty *property ){
-	pProperties.Remove( property );
+void sePropertyList::Remove(seProperty *property){
+	pProperties.Remove(property);
 }
 
 void sePropertyList::RemoveAll(){
@@ -135,7 +135,7 @@ void sePropertyList::RemoveAll(){
 
 
 
-sePropertyList &sePropertyList::operator=( const sePropertyList &list ){
+sePropertyList &sePropertyList::operator=(const sePropertyList &list){
 	pProperties = list.pProperties;
 	return *this;
 }

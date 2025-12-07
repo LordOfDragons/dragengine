@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save system. */
-	projLoadSaveSystem( projWindowMain &windowMain );
+	projLoadSaveSystem(projWindowMain &windowMain);
 	
 	/** \brief Clean up load/save system. */
 	~projLoadSaveSystem();
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Delga file pattern list. */
-	inline const igdeFilePatternList &GetDelgaFilePatterns() const{ return pFPDelga; }
+	inline const igdeFilePatternList &GetDelgaFilePatterns() const{return pFPDelga;}
 	/*@}*/
 	
 	

@@ -43,8 +43,8 @@
 gdeOCSpeakerList::gdeOCSpeakerList(){
 }
 
-gdeOCSpeakerList::gdeOCSpeakerList( const gdeOCSpeakerList &list ) :
-pSpeakers( list.pSpeakers ){
+gdeOCSpeakerList::gdeOCSpeakerList(const gdeOCSpeakerList &list) :
+pSpeakers(list.pSpeakers){
 }
 
 gdeOCSpeakerList::~gdeOCSpeakerList(){
@@ -59,27 +59,27 @@ int gdeOCSpeakerList::GetCount() const{
 	return pSpeakers.GetCount();
 }
 
-gdeOCSpeaker *gdeOCSpeakerList::GetAt( int index ) const{
-	return ( gdeOCSpeaker* )pSpeakers.GetAt( index );
+gdeOCSpeaker *gdeOCSpeakerList::GetAt(int index) const{
+	return (gdeOCSpeaker*)pSpeakers.GetAt(index);
 }
 
-int gdeOCSpeakerList::IndexOf( gdeOCSpeaker *speaker ) const{
-	return pSpeakers.IndexOf( speaker );
+int gdeOCSpeakerList::IndexOf(gdeOCSpeaker *speaker) const{
+	return pSpeakers.IndexOf(speaker);
 }
 
-bool gdeOCSpeakerList::Has( gdeOCSpeaker *speaker ) const{
-	return pSpeakers.Has( speaker );
+bool gdeOCSpeakerList::Has(gdeOCSpeaker *speaker) const{
+	return pSpeakers.Has(speaker);
 }
 
-void gdeOCSpeakerList::Add( gdeOCSpeaker *speaker ){
-	if( ! speaker || Has( speaker ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCSpeakerList::Add(gdeOCSpeaker *speaker){
+	if(! speaker || Has(speaker)){
+		DETHROW(deeInvalidParam);
 	}
-	pSpeakers.Add( speaker );
+	pSpeakers.Add(speaker);
 }
 
-void gdeOCSpeakerList::Remove( gdeOCSpeaker *speaker ){
-	pSpeakers.Remove( speaker );
+void gdeOCSpeakerList::Remove(gdeOCSpeaker *speaker){
+	pSpeakers.Remove(speaker);
 }
 
 void gdeOCSpeakerList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCSpeakerList::RemoveAll(){
 
 
 
-gdeOCSpeakerList &gdeOCSpeakerList::operator=( const gdeOCSpeakerList &list ){
+gdeOCSpeakerList &gdeOCSpeakerList::operator=(const gdeOCSpeakerList &list){
 	pSpeakers = list.pSpeakers;
 	return *this;
 }

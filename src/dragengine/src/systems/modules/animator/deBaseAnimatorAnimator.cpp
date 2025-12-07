@@ -55,7 +55,7 @@ void deBaseAnimatorAnimator::BonesChanged(){
 void deBaseAnimatorAnimator::VertexPositionSetsChanged(){
 }
 
-void deBaseAnimatorAnimator::ControllerChanged( int, deAnimatorController* ){
+void deBaseAnimatorAnimator::ControllerChanged(int, deAnimatorController*){
 }
 
 void deBaseAnimatorAnimator::ControllerCountChanged(){

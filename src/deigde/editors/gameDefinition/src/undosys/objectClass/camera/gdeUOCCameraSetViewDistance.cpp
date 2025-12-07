@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetViewDistance::gdeUOCCameraSetViewDistance( gdeObjectClass *objectClass,
-gdeOCCamera *camera, float newValue ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCCameraSetViewDistance::gdeUOCCameraSetViewDistance(gdeObjectClass *objectClass,
+gdeOCCamera *camera, float newValue) :
+pObjectClass(NULL),
+pCamera(NULL)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Camera set view distance" );
+	SetShortInfo("Camera set view distance");
 	
 	pOldValue = camera->GetViewDistance();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pCamera( NULL )
 }
 
 gdeUOCCameraSetViewDistance::~gdeUOCCameraSetViewDistance(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCCameraSetViewDistance::~gdeUOCCameraSetViewDistance(){
 ///////////////
 
 void gdeUOCCameraSetViewDistance::Undo(){
-	pCamera->SetViewDistance( pOldValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetViewDistance(pOldValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }
 
 void gdeUOCCameraSetViewDistance::Redo(){
-	pCamera->SetViewDistance( pNewValue );
-	pObjectClass->NotifyCameraChanged( pCamera );
+	pCamera->SetViewDistance(pNewValue);
+	pObjectClass->NotifyCameraChanged(pCamera);
 }

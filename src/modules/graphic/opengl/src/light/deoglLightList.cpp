@@ -42,8 +42,8 @@
 deoglLightList::deoglLightList(){
 }
 
-deoglLightList::deoglLightList( const deoglLightList &copy ) :
-pLights( copy.pLights ){
+deoglLightList::deoglLightList(const deoglLightList &copy) :
+pLights(copy.pLights){
 }
 
 deoglLightList::~deoglLightList(){
@@ -58,31 +58,31 @@ int deoglLightList::GetCount() const{
 	return pLights.GetCount();
 }
 
-deoglRLight *deoglLightList::GetAt( int index ) const{
-	return ( deoglRLight* )pLights.GetAt( index );
+deoglRLight *deoglLightList::GetAt(int index) const{
+	return (deoglRLight*)pLights.GetAt(index);
 }
 
-bool deoglLightList::Has( deoglRLight *light ) const{
-	return pLights.Has( light );
+bool deoglLightList::Has(deoglRLight *light) const{
+	return pLights.Has(light);
 }
 
-void deoglLightList::Add( deoglRLight *light ){
-	pLights.Add( light );
+void deoglLightList::Add(deoglRLight *light){
+	pLights.Add(light);
 }
 
-bool deoglLightList::AddIfMissing( deoglRLight *light ){
+bool deoglLightList::AddIfMissing(deoglRLight *light){
 	const int count = pLights.GetCount();
-	pLights.AddIfAbsent( light );
+	pLights.AddIfAbsent(light);
 	return pLights.GetCount() > count;
 }
 
-void deoglLightList::Remove( deoglRLight *light ){
-	pLights.Remove( light );
+void deoglLightList::Remove(deoglRLight *light){
+	pLights.Remove(light);
 }
 
-bool deoglLightList::RemoveIfExisting( deoglRLight *light ){
+bool deoglLightList::RemoveIfExisting(deoglRLight *light){
 	const int count = pLights.GetCount();
-	pLights.RemoveIfPresent( light );
+	pLights.RemoveIfPresent(light);
 	return pLights.GetCount() < count;
 }
 

@@ -46,7 +46,7 @@ deoglOcclusionMeshList::deoglOcclusionMeshList(){
 }
 
 deoglOcclusionMeshList::~deoglOcclusionMeshList(){
-	if( pOcclusionMeshes ){
+	if(pOcclusionMeshes){
 		delete [] pOcclusionMeshes;
 	}
 }
@@ -56,23 +56,23 @@ deoglOcclusionMeshList::~deoglOcclusionMeshList(){
 // Management
 ///////////////
 
-deoglOcclusionMesh *deoglOcclusionMeshList::GetAt( int index ) const{
-	if( index < 0 || index >= pOcclusionMeshCount ){
-		DETHROW( deeInvalidParam );
+deoglOcclusionMesh *deoglOcclusionMeshList::GetAt(int index) const{
+	if(index < 0 || index >= pOcclusionMeshCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pOcclusionMeshes[ index ];
+	return pOcclusionMeshes[index];
 }
 
-int deoglOcclusionMeshList::IndexOfOcclusionMesh( deoglOcclusionMesh *occlusionMesh ) const{
-	if( ! occlusionMesh ){
-		DETHROW( deeInvalidParam );
+int deoglOcclusionMeshList::IndexOfOcclusionMesh(deoglOcclusionMesh *occlusionMesh) const{
+	if(! occlusionMesh){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int l;
 	
-	for( l=0; l<pOcclusionMeshCount; l++ ){
-		if( occlusionMesh == pOcclusionMeshes[ l ] ){
+	for(l=0; l<pOcclusionMeshCount; l++){
+		if(occlusionMesh == pOcclusionMeshes[l]){
 			return l;
 		}
 	}
@@ -80,15 +80,15 @@ int deoglOcclusionMeshList::IndexOfOcclusionMesh( deoglOcclusionMesh *occlusionM
 	return -1;
 }
 
-bool deoglOcclusionMeshList::Has( deoglOcclusionMesh *occlusionMesh ) const{
-	if( ! occlusionMesh ){
-		DETHROW( deeInvalidParam );
+bool deoglOcclusionMeshList::Has(deoglOcclusionMesh *occlusionMesh) const{
+	if(! occlusionMesh){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int l;
 	
-	for( l=0; l<pOcclusionMeshCount; l++ ){
-		if( occlusionMesh == pOcclusionMeshes[ l ] ){
+	for(l=0; l<pOcclusionMeshCount; l++){
+		if(occlusionMesh == pOcclusionMeshes[l]){
 			return true;
 		}
 	}
@@ -96,59 +96,59 @@ bool deoglOcclusionMeshList::Has( deoglOcclusionMesh *occlusionMesh ) const{
 	return false;
 }
 
-void deoglOcclusionMeshList::Add( deoglOcclusionMesh *occlusionMesh ){
-	if( Has( occlusionMesh ) ){
-		DETHROW( deeInvalidParam );
+void deoglOcclusionMeshList::Add(deoglOcclusionMesh *occlusionMesh){
+	if(Has(occlusionMesh)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pAddOcclusionMesh( occlusionMesh );
+	pAddOcclusionMesh(occlusionMesh);
 }
 
-bool deoglOcclusionMeshList::AddIfMissing( deoglOcclusionMesh *occlusionMesh ){
-	if( Has( occlusionMesh ) ){
+bool deoglOcclusionMeshList::AddIfMissing(deoglOcclusionMesh *occlusionMesh){
+	if(Has(occlusionMesh)){
 		return false;
 	}
 	
-	pAddOcclusionMesh( occlusionMesh );
+	pAddOcclusionMesh(occlusionMesh);
 	
 	return true;
 }
 
-void deoglOcclusionMeshList::Remove( deoglOcclusionMesh *occlusionMesh ){
-	const int index = IndexOfOcclusionMesh( occlusionMesh );
+void deoglOcclusionMeshList::Remove(deoglOcclusionMesh *occlusionMesh){
+	const int index = IndexOfOcclusionMesh(occlusionMesh);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pOcclusionMeshCount - 1 ){
-		pOcclusionMeshes[ index ] = pOcclusionMeshes[ pOcclusionMeshCount - 1 ];
+	if(index < pOcclusionMeshCount - 1){
+		pOcclusionMeshes[index] = pOcclusionMeshes[pOcclusionMeshCount - 1];
 	}
 	pOcclusionMeshCount--;
 }
 
-bool deoglOcclusionMeshList::RemoveIfExisting( deoglOcclusionMesh *occlusionMesh ){
-	const int index = IndexOfOcclusionMesh( occlusionMesh );
+bool deoglOcclusionMeshList::RemoveIfExisting(deoglOcclusionMesh *occlusionMesh){
+	const int index = IndexOfOcclusionMesh(occlusionMesh);
 	
-	if( index == -1 ){
+	if(index == -1){
 		return false;
 	}
 	
-	if( index < pOcclusionMeshCount - 1 ){
-		pOcclusionMeshes[ index ] = pOcclusionMeshes[ pOcclusionMeshCount - 1 ];
+	if(index < pOcclusionMeshCount - 1){
+		pOcclusionMeshes[index] = pOcclusionMeshes[pOcclusionMeshCount - 1];
 	}
 	pOcclusionMeshCount--;
 	
 	return true;
 }
 
-void deoglOcclusionMeshList::RemoveFrom( int index ){
-	if( index < 0 || index >= pOcclusionMeshCount ){
-		DETHROW( deeInvalidParam );
+void deoglOcclusionMeshList::RemoveFrom(int index){
+	if(index < 0 || index >= pOcclusionMeshCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pOcclusionMeshCount - 1 ){
-		pOcclusionMeshes[ index ] = pOcclusionMeshes[ pOcclusionMeshCount - 1 ];
+	if(index < pOcclusionMeshCount - 1){
+		pOcclusionMeshes[index] = pOcclusionMeshes[pOcclusionMeshCount - 1];
 	}
 	pOcclusionMeshCount--;
 }
@@ -162,13 +162,13 @@ void deoglOcclusionMeshList::RemoveAll(){
 // Private Functions
 //////////////////////
 
-void deoglOcclusionMeshList::pAddOcclusionMesh( deoglOcclusionMesh *occlusionMesh ){
-	if( pOcclusionMeshCount == pOcclusionMeshSize ){
+void deoglOcclusionMeshList::pAddOcclusionMesh(deoglOcclusionMesh *occlusionMesh){
+	if(pOcclusionMeshCount == pOcclusionMeshSize){
 		const int newSize = pOcclusionMeshCount + 10; // * 3 / 2 + 1;
-		deoglOcclusionMesh ** const newArray = new deoglOcclusionMesh*[ newSize ];
+		deoglOcclusionMesh ** const newArray = new deoglOcclusionMesh*[newSize];
 		
-		if( pOcclusionMeshes ){
-			memcpy( newArray, pOcclusionMeshes, sizeof( deoglOcclusionMesh* ) * pOcclusionMeshSize );
+		if(pOcclusionMeshes){
+			memcpy(newArray, pOcclusionMeshes, sizeof(deoglOcclusionMesh*) * pOcclusionMeshSize);
 			delete [] pOcclusionMeshes;
 		}
 		
@@ -176,5 +176,5 @@ void deoglOcclusionMeshList::pAddOcclusionMesh( deoglOcclusionMesh *occlusionMes
 		pOcclusionMeshSize = newSize;
 	}
 	
-	pOcclusionMeshes[ pOcclusionMeshCount++ ] = occlusionMesh;
+	pOcclusionMeshes[pOcclusionMeshCount++] = occlusionMesh;
 }

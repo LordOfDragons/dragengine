@@ -46,8 +46,8 @@ deBasePhysicsHeightTerrain::~deBasePhysicsHeightTerrain(){
 void deBasePhysicsHeightTerrain::ParametersChanged(){
 }
 
-void deBasePhysicsHeightTerrain::HeightChanged( const decPoint &, const decPoint &,
-const decPoint &, const decPoint & ){
+void deBasePhysicsHeightTerrain::HeightChanged(const decPoint &, const decPoint &,
+const decPoint &, const decPoint &){
 }
 
 
@@ -57,27 +57,27 @@ void deBasePhysicsHeightTerrain::CollisionFilterChanged(){
 
 
 
-void deBasePhysicsHeightTerrain::SectorAdded( deHeightTerrainSector* ){
+void deBasePhysicsHeightTerrain::SectorAdded(deHeightTerrainSector*){
 }
 
-void deBasePhysicsHeightTerrain::SectorRemoved( int ){
+void deBasePhysicsHeightTerrain::SectorRemoved(int){
 }
 
 void deBasePhysicsHeightTerrain::AllSectorsRemoved(){
 }
 
-void deBasePhysicsHeightTerrain::SectorChanged( int ){
+void deBasePhysicsHeightTerrain::SectorChanged(int){
 }
 
 
 
-void deBasePhysicsHeightTerrain::DecalAdded( int, deDecal* ){
+void deBasePhysicsHeightTerrain::DecalAdded(int, deDecal*){
 }
 
-void deBasePhysicsHeightTerrain::DecalRemoved( int, deDecal* ){
+void deBasePhysicsHeightTerrain::DecalRemoved(int, deDecal*){
 }
 
-void deBasePhysicsHeightTerrain::AllDecalsRemoved( int ){
+void deBasePhysicsHeightTerrain::AllDecalsRemoved(int){
 }
 
 
@@ -85,8 +85,8 @@ void deBasePhysicsHeightTerrain::AllDecalsRemoved( int ){
 // Collision Detection
 ////////////////////////
 
-void deBasePhysicsHeightTerrain::FindDecalsAt( const decDVector &, deDecalList & ){
+void deBasePhysicsHeightTerrain::FindDecalsAt(const decDVector &, deDecalList &){
 }
 
-void deBasePhysicsHeightTerrain::FindDecalsTouching( const decShape &, deDecalList & ){
+void deBasePhysicsHeightTerrain::FindDecalsTouching(const decShape &, deDecalList &){
 }

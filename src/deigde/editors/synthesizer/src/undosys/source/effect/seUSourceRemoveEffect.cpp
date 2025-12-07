@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceRemoveEffect::seUSourceRemoveEffect( seSource *source, seEffect *effect ) :
-pEffect( NULL ),
-pSource( NULL )
+seUSourceRemoveEffect::seUSourceRemoveEffect(seSource *source, seEffect *effect) :
+pEffect(NULL),
+pSource(NULL)
 {
-	if( ! effect || ! source ){
-		DETHROW( deeInvalidParam );
+	if(! effect || ! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndex = source->GetEffects().IndexOf( effect );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = source->GetEffects().IndexOf(effect);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSource = source;
@@ -70,11 +70,11 @@ seUSourceRemoveEffect::~seUSourceRemoveEffect(){
 ///////////////
 
 void seUSourceRemoveEffect::Undo(){
-	pSource->InsertEffectAt( pEffect, pIndex );
+	pSource->InsertEffectAt(pEffect, pIndex);
 }
 
 void seUSourceRemoveEffect::Redo(){
-	pSource->RemoveEffect( pEffect );
+	pSource->RemoveEffect(pEffect);
 }
 
 
@@ -83,10 +83,10 @@ void seUSourceRemoveEffect::Redo(){
 //////////////////////
 
 void seUSourceRemoveEffect::pCleanUp(){
-	if( pEffect ){
+	if(pEffect){
 		pEffect->FreeReference();
 	}
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

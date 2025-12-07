@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlPI::decXmlPI( const char *target ) :
-pTarget( target ){
+decXmlPI::decXmlPI(const char *target) :
+pTarget(target){
 }
 
 decXmlPI::~decXmlPI(){
@@ -51,18 +51,18 @@ decXmlPI::~decXmlPI(){
 // Management
 ///////////////
 
-void decXmlPI::SetTarget( const char *target ){
+void decXmlPI::SetTarget(const char *target){
 	pTarget = target;
 }
 
-void decXmlPI::SetCommand( const char *command ){
+void decXmlPI::SetCommand(const char *command){
 	pCommand = command;
 }
 
 
 
-void decXmlPI::Visit( decXmlVisitor &visitor ){
-	visitor.VisitPI( *this );
+void decXmlPI::Visit(decXmlVisitor &visitor){
+	visitor.VisitPI(*this);
 }
 
 bool decXmlPI::CanCastToPI() const{

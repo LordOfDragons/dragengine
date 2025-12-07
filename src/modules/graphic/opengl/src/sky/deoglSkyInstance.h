@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new sky. */
-	deoglSkyInstance( deGraphicOpenGl &ogl, const deSkyInstance &instance );
+	deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &instance);
 	
 	/** Cleans up the sky. */
 	virtual ~deoglSkyInstance();
@@ -72,32 +72,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Sky instance. */
-	inline const deSkyInstance &GetInstance() const{ return pInstance; }
+	inline const deSkyInstance &GetInstance() const{return pInstance;}
 	
 	
 	
 	/** Render instance. */
-	inline deoglRSkyInstance *GetRInstance() const{ return pRInstance; }
+	inline deoglRSkyInstance *GetRInstance() const{return pRInstance;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	/** Update sky instance. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	/*@}*/
 	
 	
@@ -111,7 +111,7 @@ public:
 	virtual void OrderChanged();
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	
 	/** Layer mask changed. */
 	virtual void LayerMaskChanged();

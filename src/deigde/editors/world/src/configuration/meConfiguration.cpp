@@ -58,9 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meConfiguration::meConfiguration( meWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false )
+meConfiguration::meConfiguration(meWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false)
 {
 	pReset();
 }
@@ -74,9 +74,9 @@ meConfiguration::~meConfiguration(){
 // Management
 ///////////////
 
-void meConfiguration::SetMoveStep( float step ){
-	step = decMath::max( step, 1e-5f );
-	if( fabsf( step - pMoveStep ) < FLOAT_SAFE_EPSILON ){
+void meConfiguration::SetMoveStep(float step){
+	step = decMath::max(step, 1e-5f);
+	if(fabsf(step - pMoveStep) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -84,8 +84,8 @@ void meConfiguration::SetMoveStep( float step ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetMoveSnap( bool snap ){
-	if( snap == pMoveSnap ){
+void meConfiguration::SetMoveSnap(bool snap){
+	if(snap == pMoveSnap){
 		return;
 	}
 	
@@ -93,9 +93,9 @@ void meConfiguration::SetMoveSnap( bool snap ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetRotateStep( float step ){
-	step = decMath::max( step, 1e-5f );
-	if( fabsf( step - pRotStep ) < FLOAT_SAFE_EPSILON ){
+void meConfiguration::SetRotateStep(float step){
+	step = decMath::max(step, 1e-5f);
+	if(fabsf(step - pRotStep) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -103,8 +103,8 @@ void meConfiguration::SetRotateStep( float step ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetRotateSnap( bool snap ){
-	if( snap == pRotSnap ){
+void meConfiguration::SetRotateSnap(bool snap){
+	if(snap == pRotSnap){
 		return;
 	}
 	
@@ -112,9 +112,9 @@ void meConfiguration::SetRotateSnap( bool snap ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetScaleStep( float step ){
-	step = decMath::max( step, 1e-5f );
-	if( fabsf( step - pScaleStep ) < FLOAT_SAFE_EPSILON ){
+void meConfiguration::SetScaleStep(float step){
+	step = decMath::max(step, 1e-5f);
+	if(fabsf(step - pScaleStep) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -122,8 +122,8 @@ void meConfiguration::SetScaleStep( float step ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetScaleSnap( bool snap ){
-	if( snap == pScaleSnap ){
+void meConfiguration::SetScaleSnap(bool snap){
+	if(snap == pScaleSnap){
 		return;
 	}
 	
@@ -131,8 +131,8 @@ void meConfiguration::SetScaleSnap( bool snap ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetAutoUpdate( bool autoUpdate ){
-	if( autoUpdate == pAutoUpdate ){
+void meConfiguration::SetAutoUpdate(bool autoUpdate){
+	if(autoUpdate == pAutoUpdate){
 		return;
 	}
 	
@@ -140,9 +140,9 @@ void meConfiguration::SetAutoUpdate( bool autoUpdate ){
 	SaveConfiguration();
 }
 
-void meConfiguration::SetSensitivity( float sensitivity ){
-	sensitivity = decMath::max( sensitivity, 0.001f );
-	if( fabsf( sensitivity - pSensitivity ) < FLOAT_SAFE_EPSILON ){
+void meConfiguration::SetSensitivity(float sensitivity){
+	sensitivity = decMath::max(sensitivity, 0.001f);
+	if(fabsf(sensitivity - pSensitivity) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -152,8 +152,8 @@ void meConfiguration::SetSensitivity( float sensitivity ){
 
 
 
-void meConfiguration::SetEnableGI( bool enable ){
-	if( enable == pEnableGI ){
+void meConfiguration::SetEnableGI(bool enable){
+	if(enable == pEnableGI){
 		return;
 	}
 	
@@ -163,8 +163,8 @@ void meConfiguration::SetEnableGI( bool enable ){
 	pWindowMain.ConfigEnableGIChanged();
 }
 
-void meConfiguration::SetEnableAuralization( bool enable ){
-	if( enable == pEnableAuralization ){
+void meConfiguration::SetEnableAuralization(bool enable){
+	if(enable == pEnableAuralization){
 		return;
 	}
 	
@@ -176,29 +176,29 @@ void meConfiguration::SetEnableAuralization( bool enable ){
 
 
 
-deInputEvent::eKeyCodes meConfiguration::GetHotKeyAt( int hotkey ) const{
-	if( hotkey < 0 || hotkey >= EHK_COUNT ){
-		DETHROW( deeInvalidParam );
+deInputEvent::eKeyCodes meConfiguration::GetHotKeyAt(int hotkey) const{
+	if(hotkey < 0 || hotkey >= EHK_COUNT){
+		DETHROW(deeInvalidParam);
 	}
-	return pHotKeys[ hotkey ];
+	return pHotKeys[hotkey];
 }
 
-void meConfiguration::SetHotKeyAt( int hotkey, deInputEvent::eKeyCodes key ){
-	if( hotkey < 0 || hotkey >= EHK_COUNT ){
-		DETHROW( deeInvalidParam );
+void meConfiguration::SetHotKeyAt(int hotkey, deInputEvent::eKeyCodes key){
+	if(hotkey < 0 || hotkey >= EHK_COUNT){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( key == pHotKeys[ hotkey ] ){
+	if(key == pHotKeys[hotkey]){
 		return;
 	}
 	
-	pHotKeys[ hotkey ] = key;
+	pHotKeys[hotkey] = key;
 	SaveConfiguration();
 }
 
 
 
-void meConfiguration::SetPreventSaving( bool preventSaving ){
+void meConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -210,8 +210,8 @@ void meConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/worldEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/worldEditor.xml"));
+		if(! vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
@@ -220,31 +220,31 @@ void meConfiguration::LoadConfiguration(){
 			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void meConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/worldEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/worldEditor.xml"));
+	if(! vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		meConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		meConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
@@ -272,16 +272,16 @@ void meConfiguration::pReset(){
 	pEnableGI = false;
 	pEnableAuralization = false;
 	
-	pHotKeys[ ehkSelectWorkMode ] = deInputEvent::ekcW;
-	pHotKeys[ ehkSelectElementMode ] = deInputEvent::ekcE;
+	pHotKeys[ehkSelectWorkMode] = deInputEvent::ekcW;
+	pHotKeys[ehkSelectElementMode] = deInputEvent::ekcE;
 	
-	pHotKeys[ ehkWorldMove ] = deInputEvent::ekcG;
-	pHotKeys[ ehkWorldRotate ] = deInputEvent::ekcR;
-	pHotKeys[ ehkWorldScale ] = deInputEvent::ekcS;
+	pHotKeys[ehkWorldMove] = deInputEvent::ekcG;
+	pHotKeys[ehkWorldRotate] = deInputEvent::ekcR;
+	pHotKeys[ehkWorldScale] = deInputEvent::ekcS;
 	
-	pHotKeys[ ehkEditLockX ] = deInputEvent::ekcX;
-	pHotKeys[ ehkEditLockY ] = deInputEvent::ekcY;
-	pHotKeys[ ehkEditLockZ ] = deInputEvent::ekcZ;
-	pHotKeys[ ehkEditLocalCFrame ] = deInputEvent::ekcL;
-	pHotKeys[ ehkEditSnapToSnapPoints ] = deInputEvent::ekcP;
+	pHotKeys[ehkEditLockX] = deInputEvent::ekcX;
+	pHotKeys[ehkEditLockY] = deInputEvent::ekcY;
+	pHotKeys[ehkEditLockZ] = deInputEvent::ekcZ;
+	pHotKeys[ehkEditLocalCFrame] = deInputEvent::ekcL;
+	pHotKeys[ehkEditSnapToSnapPoints] = deInputEvent::ekcP;
 }

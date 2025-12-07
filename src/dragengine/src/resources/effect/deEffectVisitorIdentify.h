@@ -70,22 +70,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Effect type. */
-	inline eEffects GetType() const{ return pType; }
+	inline eEffects GetType() const{return pType;}
 	
 	/** \brief Determines if this is an unknown effect. */
-	inline bool IsUnknown() const{ return pType == eetUnknown; }
+	inline bool IsUnknown() const{return pType == eetUnknown;}
 	
 	/** \brief Determines if this is a filter kernel effect. */
-	inline bool IsFilterKernel() const{ return pType == eetFilterKernel; }
+	inline bool IsFilterKernel() const{return pType == eetFilterKernel;}
 	
 	/** \brief Determines if this is a overlay image effect. */
-	inline bool IsOverlayImage() const{ return pType == eetOverlayImage; }
+	inline bool IsOverlayImage() const{return pType == eetOverlayImage;}
 	
 	/** \brief Determines if this is a color matrix effect. */
-	inline bool IsColorMatrix() const{ return pType == eetColorMatrix; }
+	inline bool IsColorMatrix() const{return pType == eetColorMatrix;}
 	
 	/** \brief Determines if this is a pixel matrix effect. */
-	inline bool IsDistortImage() const{ return pType == eetDistortImage; }
+	inline bool IsDistortImage() const{return pType == eetDistortImage;}
 	
 	/** \brief Cast to a filter kernel effect. */
 	deEffectFilterKernel &CastToFilterKernel() const;
@@ -108,19 +108,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect( deEffect &effect );
+	virtual void VisitEffect(deEffect &effect);
 	
 	/** \brief Visit effect filter kernel. */
-	virtual void VisitFilterKernel( deEffectFilterKernel &effect );
+	virtual void VisitFilterKernel(deEffectFilterKernel &effect);
 	
 	/** \brief Visit overlay image effect. */
-	virtual void VisitOverlayImage( deEffectOverlayImage &effect );
+	virtual void VisitOverlayImage(deEffectOverlayImage &effect);
 	
 	/** \brief Visit color matrix effect. */
-	virtual void VisitColorMatrix( deEffectColorMatrix &effect );
+	virtual void VisitColorMatrix(deEffectColorMatrix &effect);
 	
 	/** \brief Visit pixel matrix effect. */
-	virtual void VisitDistortImage( deEffectDistortImage &effect );
+	virtual void VisitDistortImage(deEffectDistortImage &effect);
 	/*@}*/
 };
 

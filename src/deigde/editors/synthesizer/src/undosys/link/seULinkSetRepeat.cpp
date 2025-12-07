@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetRepeat::seULinkSetRepeat( seLink *link, int newRepeat ) :
-pLink( NULL )
+seULinkSetRepeat::seULinkSetRepeat(seLink *link, int newRepeat) :
+pLink(NULL)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Link set repeat" );
+	SetShortInfo("Link set repeat");
 	
 	pLink = link;
 	pLink->AddReference();
@@ -57,7 +57,7 @@ pLink( NULL )
 }
 
 seULinkSetRepeat::~seULinkSetRepeat(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ seULinkSetRepeat::~seULinkSetRepeat(){
 ///////////////
 
 void seULinkSetRepeat::Undo(){
-	pLink->SetRepeat( pOldRepeat );
+	pLink->SetRepeat(pOldRepeat);
 }
 
 void seULinkSetRepeat::Redo(){
-	pLink->SetRepeat( pNewRepeat );
+	pLink->SetRepeat(pNewRepeat);
 }

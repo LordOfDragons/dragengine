@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetSkin::seUBodySetSkin( seBody *body, const char *newSkin ) :
-pBody( NULL ),
-pNewSkin( newSkin )
+seUBodySetSkin::seUBodySetSkin(seBody *body, const char *newSkin) :
+pBody(NULL),
+pNewSkin(newSkin)
 {
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+	if(! body){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Body Skin" );
+	SetShortInfo("Set Body Skin");
 	
 	pOldSkin = body->GetSkinPath();
 	
@@ -56,7 +56,7 @@ pNewSkin( newSkin )
 }
 
 seUBodySetSkin::~seUBodySetSkin(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUBodySetSkin::~seUBodySetSkin(){
 ///////////////
 
 void seUBodySetSkin::Undo(){
-	pBody->SetSkinPath( pOldSkin );
+	pBody->SetSkinPath(pOldSkin);
 }
 
 void seUBodySetSkin::Redo(){
-	pBody->SetSkinPath( pNewSkin );
+	pBody->SetSkinPath(pNewSkin);
 }

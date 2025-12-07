@@ -46,7 +46,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassMath( deScriptingDragonScript *ds );
+	deClassMath(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	virtual ~deClassMath();
 	/*@}*/
@@ -54,9 +54,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 private:
@@ -64,36 +64,36 @@ private:
 		dsClass *clsMath, *clsVoid, *clsBool, *clsStr, *clsInt, *clsFlt, *clsObj;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfacos );
-	DEF_NATFUNC( nfasin );
-	DEF_NATFUNC( nfatan );
-	DEF_NATFUNC( nfatan2 );
-	DEF_NATFUNC( nfcos );
-	DEF_NATFUNC( nfcosh );
-	DEF_NATFUNC( nfsin );
-	DEF_NATFUNC( nfsinh );
-	DEF_NATFUNC( nftan );
-	DEF_NATFUNC( nftanh );
+	DEF_NATFUNC(nfacos);
+	DEF_NATFUNC(nfasin);
+	DEF_NATFUNC(nfatan);
+	DEF_NATFUNC(nfatan2);
+	DEF_NATFUNC(nfcos);
+	DEF_NATFUNC(nfcosh);
+	DEF_NATFUNC(nfsin);
+	DEF_NATFUNC(nfsinh);
+	DEF_NATFUNC(nftan);
+	DEF_NATFUNC(nftanh);
 	
-	DEF_NATFUNC( nfDegToRad );
-	DEF_NATFUNC( nfRadToDeg );
-	DEF_NATFUNC( nfLinearStep );
-	DEF_NATFUNC( nfLinearStep2 );
-	DEF_NATFUNC( nfSmoothStep );
-	DEF_NATFUNC( nfSmoothStep2 );
-	DEF_NATFUNC( nfNormalize );
-	DEF_NATFUNC( nfNormalize2 );
-	DEF_NATFUNC( nfMix );
-	DEF_NATFUNC( nfRandom );
-	DEF_NATFUNC( nfRandomInt );
-	DEF_NATFUNC( nfRandomFloat );
-	DEF_NATFUNC( nfProbability );
+	DEF_NATFUNC(nfDegToRad);
+	DEF_NATFUNC(nfRadToDeg);
+	DEF_NATFUNC(nfLinearStep);
+	DEF_NATFUNC(nfLinearStep2);
+	DEF_NATFUNC(nfSmoothStep);
+	DEF_NATFUNC(nfSmoothStep2);
+	DEF_NATFUNC(nfNormalize);
+	DEF_NATFUNC(nfNormalize2);
+	DEF_NATFUNC(nfMix);
+	DEF_NATFUNC(nfRandom);
+	DEF_NATFUNC(nfRandomInt);
+	DEF_NATFUNC(nfRandomFloat);
+	DEF_NATFUNC(nfProbability);
 #undef DEF_NATFUNC
 };
 

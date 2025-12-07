@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderLightSky( deoglRenderThread &renderThread );
+	deoglRenderLightSky(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderLightSky();
@@ -90,48 +90,48 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Occlusion mesh shader. */
-	inline const deoglPipeline *GetPipelineOccMesh() const{ return pPipelineOccMesh; }
+	inline const deoglPipeline *GetPipelineOccMesh() const{return pPipelineOccMesh;}
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render sky light ambient occlusion. */
-	void RenderAO( deoglRenderPlan &plan );
+	void RenderAO(deoglRenderPlan &plan);
 	
 	/** Render sky light. */
-	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderLight(deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render shadows maps. */
-	void RenderShadows( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderShadows(deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask);
 	
 	/** Render shadow map. */
-	void RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper );
+	void RenderShadowMap(deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper);
 	
 	/** Render GI shadows. */
-	void RenderGIShadows( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper );
+	void RenderGIShadows(deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper);
 	
 	/** Render GI shadow map. */
-	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglRenderTask &renderTask,
-		int shadowMapSize, bool clearBackFaceFragments );
+	void RenderGIShadowMap(deoglShadowMapper &shadowMapper, deoglRenderTask &renderTask,
+		int shadowMapSize, bool clearBackFaceFragments);
 	
-	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglComputeRenderTask &renderTask,
-		int shadowMapSize, bool clearBackFaceFragments );
+	void RenderGIShadowMap(deoglShadowMapper &shadowMapper, deoglComputeRenderTask &renderTask,
+		int shadowMapSize, bool clearBackFaceFragments);
 	
 	/** Update light shader parameter block. */
-	void UpdateLightParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlanSkyLight &plan );
+	void UpdateLightParamBlock(const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanSkyLight &plan);
 	
 	/** Updates instance shader parameter block. */
-	void UpdateInstanceParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount );
+	void UpdateInstanceParamBlock(const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount);
 	
 	
 	
 	/** Debug information solid lighting. */
-	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
+	inline deoglDebugInformation *GetDebugInfoSolid() const{return pDebugInfoSolid;}
 	
 	/** Debug information transparent lighting. */
-	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
+	inline deoglDebugInformation *GetDebugInfoTransparent() const{return pDebugInfoTransparent;}
 	
 	
 	

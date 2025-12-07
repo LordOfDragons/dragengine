@@ -52,54 +52,54 @@
 // Constructor, destructor
 ////////////////////////////
 
-seViewSynthesizer::seViewSynthesizer( seWindowMain &windowMain ) :
-igdeContainerBorder( windowMain.GetEnvironment(), 10 ),
-pWindowMain( windowMain ),
-pSynthesizer( NULL ),
-pWPController( NULL ),
-pWPLink( NULL ),
-pWPSource( NULL ),
-pWPSynthesizer( NULL )
+seViewSynthesizer::seViewSynthesizer(seWindowMain &windowMain) :
+igdeContainerBorder(windowMain.GetEnvironment(), 10),
+pWindowMain(windowMain),
+pSynthesizer(NULL),
+pWPController(NULL),
+pWPLink(NULL),
+pWPSource(NULL),
+pWPSynthesizer(NULL)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	// content
 	igdeContainerBox::Ref panels(igdeContainerBox::Ref::NewWith(env, igdeContainerBox::eaX, 10));
-	AddChild( panels, eaCenter );
+	AddChild(panels, eaCenter);
 	
-	pWPController = new seWPController( *this );
-	panels->AddChild( pWPController );
-	helper.Separator( panels, false );
+	pWPController = new seWPController(*this);
+	panels->AddChild(pWPController);
+	helper.Separator(panels, false);
 	
-	pWPLink = new seWPLink( *this );
-	panels->AddChild( pWPLink );
-	helper.Separator( panels, false );
+	pWPLink = new seWPLink(*this);
+	panels->AddChild(pWPLink);
+	helper.Separator(panels, false);
 	
-	pWPSource = new seWPSource( *this );
-	panels->AddChild( pWPSource );
-	helper.Separator( panels, false );
+	pWPSource = new seWPSource(*this);
+	panels->AddChild(pWPSource);
+	helper.Separator(panels, false);
 	
 	// right
-	pWPSynthesizer = new seWPSynthesizer( *this );
-	AddChild( pWPSynthesizer, eaRight );
+	pWPSynthesizer = new seWPSynthesizer(*this);
+	AddChild(pWPSynthesizer, eaRight);
 }
 
 seViewSynthesizer::~seViewSynthesizer(){
-	SetSynthesizer( NULL );
+	SetSynthesizer(NULL);
 	
-	if( pWPController ){
+	if(pWPController){
 		pWPController->FreeReference();
 	}
-	if( pWPLink ){
+	if(pWPLink){
 		pWPLink->FreeReference();
 	}
-	if( pWPSource ){
+	if(pWPSource){
 		pWPSource->FreeReference();
 	}
-	if( pWPSynthesizer ){
+	if(pWPSynthesizer){
 		pWPSynthesizer->FreeReference();
 	}
 }
@@ -109,25 +109,25 @@ seViewSynthesizer::~seViewSynthesizer(){
 // Management
 ///////////////
 
-void seViewSynthesizer::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->AddReference();
 	}
 	
-	pWPController->SetSynthesizer( synthesizer );
-	pWPLink->SetSynthesizer( synthesizer );
-	pWPSource->SetSynthesizer( synthesizer );
-	pWPSynthesizer->SetSynthesizer( synthesizer );
+	pWPController->SetSynthesizer(synthesizer);
+	pWPLink->SetSynthesizer(synthesizer);
+	pWPSource->SetSynthesizer(synthesizer);
+	pWPSynthesizer->SetSynthesizer(synthesizer);
 }
 
 void seViewSynthesizer::OnSynthesizerPathChanged(){
@@ -139,8 +139,8 @@ void seViewSynthesizer::OnSynthesizerPathChanged(){
 void seViewSynthesizer::ResetView(){
 }
 
-void seViewSynthesizer::OnFrameUpdate( float elapsed ){
-	if( pSynthesizer ){
-		pSynthesizer->Update( elapsed );
+void seViewSynthesizer::OnFrameUpdate(float elapsed){
+	if(pSynthesizer){
+		pSynthesizer->Update(elapsed);
 	}
 }

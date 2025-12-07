@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetEnableVertexPositionSet( aeRuleMirror *rule );
+	aeURuleMirrorSetEnableVertexPositionSet(aeRuleMirror *rule);
 	
 protected:
 	/** Clean up undo. */

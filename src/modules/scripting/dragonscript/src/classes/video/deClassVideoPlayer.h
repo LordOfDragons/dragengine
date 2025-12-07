@@ -46,7 +46,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassVideoPlayer( deScriptingDragonScript *ds );
+	deClassVideoPlayer(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	virtual ~deClassVideoPlayer();
 	/*@}*/
@@ -54,13 +54,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the video player or NULL if myself is NULL. */
-	deVideoPlayer *GetVideoPlayer( dsRealObject *myself ) const;
+	deVideoPlayer *GetVideoPlayer(dsRealObject *myself) const;
 	/** Pushes the video player on the stack. Video can be NULL to push a null object. */
-	void PushVideoPlayer( dsRunTime *rt, deVideoPlayer *videoPlayer );
+	void PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlayer);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/*@}*/
 	
 private:
@@ -68,38 +68,38 @@ private:
 		dsClass *clsVP, *clsVoid, *clsInt, *clsFlt, *clsBool, *clsVid, *clsObj;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetVideo );
-	DEF_NATFUNC( nfSetVideo );
+	DEF_NATFUNC(nfGetVideo);
+	DEF_NATFUNC(nfSetVideo);
 	
-	DEF_NATFUNC( nfGetLooping );
-	DEF_NATFUNC( nfSetLooping );
-	DEF_NATFUNC( nfGetPlayFrom );
-	DEF_NATFUNC( nfGetPlayTo );
-	DEF_NATFUNC( nfSetPlayRange );
-	DEF_NATFUNC( nfGetPlayPosition );
-	DEF_NATFUNC( nfSetPlayPosition );
-	DEF_NATFUNC( nfGetPlaySpeed );
-	DEF_NATFUNC( nfSetPlaySpeed );
+	DEF_NATFUNC(nfGetLooping);
+	DEF_NATFUNC(nfSetLooping);
+	DEF_NATFUNC(nfGetPlayFrom);
+	DEF_NATFUNC(nfGetPlayTo);
+	DEF_NATFUNC(nfSetPlayRange);
+	DEF_NATFUNC(nfGetPlayPosition);
+	DEF_NATFUNC(nfSetPlayPosition);
+	DEF_NATFUNC(nfGetPlaySpeed);
+	DEF_NATFUNC(nfSetPlaySpeed);
 	
-	DEF_NATFUNC( nfIsPlaying );
-	DEF_NATFUNC( nfIsPaused );
-	DEF_NATFUNC( nfIsStopped );
-	DEF_NATFUNC( nfPlay );
-	DEF_NATFUNC( nfPause );
-	DEF_NATFUNC( nfStop );
+	DEF_NATFUNC(nfIsPlaying);
+	DEF_NATFUNC(nfIsPaused);
+	DEF_NATFUNC(nfIsStopped);
+	DEF_NATFUNC(nfPlay);
+	DEF_NATFUNC(nfPause);
+	DEF_NATFUNC(nfStop);
 	
-	DEF_NATFUNC( nfUpdate );
+	DEF_NATFUNC(nfUpdate);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

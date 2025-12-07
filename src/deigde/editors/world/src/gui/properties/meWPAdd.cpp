@@ -67,20 +67,20 @@ class cActionClassAdd : public igdeAction{
 	igdeComboBoxFilter::Ref &pComboClass;
 	
 public:
-	cActionClassAdd( meWPAdd &panel, igdeComboBoxFilter::Ref &comboClass ) :
-	igdeAction( "Add", NULL, "Add class" ), pPanel( panel ), pComboClass( comboClass ){ }
+	cActionClassAdd(meWPAdd &panel, igdeComboBoxFilter::Ref &comboClass) :
+	igdeAction("Add", NULL, "Add class"), pPanel(panel), pComboClass(comboClass){}
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world || pComboClass->GetText().IsEmpty() ){
+		if(! world || pComboClass->GetText().IsEmpty()){
 			return;
 		}
 		
 		meWorldGuiParameters &guiparams = world->GetGuiParameters();
-		decStringSet set( guiparams.GetAddFilterObjectSet() );
-		set.Add( pComboClass->GetText() );
+		decStringSet set(guiparams.GetAddFilterObjectSet());
+		set.Add(pComboClass->GetText());
 		
-		guiparams.SetAddFilterObjectSet( set );
+		guiparams.SetAddFilterObjectSet(set);
 	}
 };
 
@@ -89,20 +89,20 @@ class cActionClassRemove : public igdeAction{
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClassRemove( meWPAdd &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Remove", NULL, "Remove selected class" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionClassRemove(meWPAdd &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Remove", NULL, "Remove selected class"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world || ! pListBox->GetSelectedItem() ){
+		if(! world || ! pListBox->GetSelectedItem()){
 			return;
 		}
 		
 		meWorldGuiParameters &guiparams = world->GetGuiParameters();
-		decStringSet set( guiparams.GetAddFilterObjectSet() );
-		set.Remove( pListBox->GetSelectedItem()->GetText() );
+		decStringSet set(guiparams.GetAddFilterObjectSet());
+		set.Remove(pListBox->GetSelectedItem()->GetText());
 		
-		guiparams.SetAddFilterObjectSet( set );
+		guiparams.SetAddFilterObjectSet(set);
 	}
 };
 
@@ -110,15 +110,15 @@ class cActionClassClear : public igdeAction{
 	meWPAdd &pPanel;
 	
 public:
-	cActionClassClear( meWPAdd &panel ) : igdeAction( "Clear", NULL, "Remove all classes" ),
-	pPanel( panel ){ }
+	cActionClassClear(meWPAdd &panel) : igdeAction("Clear", NULL, "Remove all classes"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(! world){
 			return;
 		}
-		world->GetGuiParameters().SetAddFilterObjectSet( decStringSet() );
+		world->GetGuiParameters().SetAddFilterObjectSet(decStringSet());
 	}
 };
 
@@ -127,8 +127,8 @@ class cActionFilterObjects : public igdeAction{
 	meWPAdd &pPanel;
 	
 public:
-	cActionFilterObjects( meWPAdd &panel ) : igdeAction( "Enable Object Filter",
-		NULL, "Determines if objects are filtered" ), pPanel( panel ){ }
+	cActionFilterObjects(meWPAdd &panel) : igdeAction("Enable Object Filter",
+		NULL, "Determines if objects are filtered"), pPanel(panel){ }
 	
 	virtual void OnAction(){
 	}
@@ -138,13 +138,13 @@ class cListObjectClasses : public igdeListBoxListener{
 	meWPAdd &pPanel;
 	
 public:
-	cListObjectClasses( meWPAdd &panel ) : pPanel( panel ){ }
+	cListObjectClasses(meWPAdd &panel) : pPanel(panel){}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pPanel.GetActionClassAdd() );
-		helper.MenuCommand( menu, pPanel.GetActionClassRemove() );
-		helper.MenuCommand( menu, pPanel.GetActionClassClear() );
+		helper.MenuCommand(menu, pPanel.GetActionClassAdd());
+		helper.MenuCommand(menu, pPanel.GetActionClassRemove());
+		helper.MenuCommand(menu, pPanel.GetActionClassClear());
 	}
 };
 
@@ -152,17 +152,17 @@ class cActionObjInclusive : public igdeAction{
 	meWPAdd &pPanel;
 	
 public:
-	cActionObjInclusive( meWPAdd &panel ) : igdeAction( "Accept if in list", NULL,
-		"Determines if objects are accepted or rejected if they are in the list." ),
-	pPanel( panel ){ }
+	cActionObjInclusive(meWPAdd &panel) : igdeAction("Accept if in list", NULL,
+		"Determines if objects are accepted or rejected if they are in the list."),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
-		if( ! world ){
+		if(! world){
 			return;
 		}
 		world->GetGuiParameters().SetAddFilterObjectInclusive(
-			! world->GetGuiParameters().GetAddFilterObjectInclusive() );
+			! world->GetGuiParameters().GetAddFilterObjectInclusive());
 	}
 };
 
@@ -194,42 +194,42 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWPAdd::meWPAdd( meWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pWorld( NULL )
+meWPAdd::meWPAdd(meWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pWorld(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPAddListener( *this );
+	pListener = new meWPAddListener(*this);
 	
-	pActionClassAdd.TakeOver( new cActionClassAdd( *this, pComboObjClass ) );
-	pActionClassRemove.TakeOver( new cActionClassRemove( *this, pListObjClasses ) );
-	pActionClassClear.TakeOver( new cActionClassClear( *this ) );
+	pActionClassAdd.TakeOver(new cActionClassAdd(*this, pComboObjClass));
+	pActionClassRemove.TakeOver(new cActionClassRemove(*this, pListObjClasses));
+	pActionClassClear.TakeOver(new cActionClassClear(*this));
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// object filter
 	/*
-	helper.GroupBoxFlow( content, groupBox, "Object Filter:" );
+	helper.GroupBoxFlow(content, groupBox, "Object Filter:");
 	
-	helper.CheckBoxOnly( groupBox, pChkFilterObjects, new cActionFilterObjects( *this ), true );
+	helper.CheckBoxOnly(groupBox, pChkFilterObjects, new cActionFilterObjects(*this), true);
 	
-	formLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
-	groupBox->AddChild( formLine );
-	helper.ComboBoxFilter( formLine, "Object filter", pComboObjClass, NULL );
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	groupBox->AddChild(formLine);
+	helper.ComboBoxFilter(formLine, "Object filter", pComboObjClass, NULL);
 	pComboObjClass->SetDefaultSorter();
-	helper.Button( formLine, pActionClassAdd );
+	helper.Button(formLine, pActionClassAdd);
 	
-	helper.ListBox( groupBox, 5, "List of object class filters", pListObjClasses,
-		new cListObjectClasses( *this ) );
+	helper.ListBox(groupBox, 5, "List of object class filters", pListObjClasses,
+		new cListObjectClasses(*this));
 	pListObjClasses->SetDefaultSorter();
 	
-	helper.CheckBoxOnly( groupBox, pChkObjInclusive, new cActionObjInclusive( *this ), true );
+	helper.CheckBoxOnly(groupBox, pChkObjInclusive, new cActionObjInclusive(*this), true);
 	*/
 	
 	// randomize
@@ -239,9 +239,9 @@ pWorld( NULL )
 }
 
 meWPAdd::~meWPAdd(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -251,20 +251,20 @@ meWPAdd::~meWPAdd(){
 // Management
 ///////////////
 
-void meWPAdd::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWPAdd::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
+	if(world){
+		world->AddNotifier(pListener);
 		world->AddReference();
 	}
 	
@@ -292,43 +292,43 @@ void meWPAdd::UpdateObjectFilter(){
 	
 	const meWorldGuiParameters &guiparams = pWorld->GetGuiParameters();
 	
-	pChkFilterObjects->SetChecked( true );
+	pChkFilterObjects->SetChecked(true);
 	
-	const decString selection( pListObjClasses->GetSelectedItem()
-		? pListObjClasses->GetSelectedItem()->GetText() : decString() );
+	const decString selection(pListObjClasses->GetSelectedItem()
+		? pListObjClasses->GetSelectedItem()->GetText() : decString());
 	const decStringSet &set = guiparams.GetAddFilterObjectSet();
 	const int count = set.GetCount();
 	int i;
 	
 	pListObjClasses->RemoveAllItems();
-	for( i=0; i<count; i++ ){
-		pListObjClasses->AddItem( set.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pListObjClasses->AddItem(set.GetAt(i));
 	}
 	pListObjClasses->SortItems();
 	
-	if( ! selection.IsEmpty() ){
-		pListObjClasses->SetSelection( pListObjClasses->IndexOfItem( selection ) );
+	if(! selection.IsEmpty()){
+		pListObjClasses->SetSelection(pListObjClasses->IndexOfItem(selection));
 	}
 	
-	pChkObjInclusive->SetChecked( guiparams.GetAddFilterObjectInclusive() );
+	pChkObjInclusive->SetChecked(guiparams.GetAddFilterObjectInclusive());
 	#endif
 }
 
 void meWPAdd::OnGameDefinitionChanged(){
 	#if 0
-	const decString selection( pComboObjClass->GetText() );
+	const decString selection(pComboObjClass->GetText());
 	
 	pComboObjClass->RemoveAllItems();
 	
-	if( pWorld ){
+	if(pWorld){
 		const igdeGDClassManager &classes = *GetGameDefinition()->GetClassManager();
 		const int count = classes.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			const igdeGDClass &objectClass = *classes.GetAt( i );
-			if( objectClass.GetCanInstantiate() ){
-				pComboObjClass->AddItem( objectClass.GetName() );
+		for(i=0; i<count; i++){
+			const igdeGDClass &objectClass = *classes.GetAt(i);
+			if(objectClass.GetCanInstantiate()){
+				pComboObjClass->AddItem(objectClass.GetName());
 			}
 		}
 		
@@ -336,6 +336,6 @@ void meWPAdd::OnGameDefinitionChanged(){
 		pComboObjClass->StoreFilterItems();
 	}
 	
-	pComboObjClass->SetText( selection );
+	pComboObjClass->SetText(selection);
 	#endif
 }

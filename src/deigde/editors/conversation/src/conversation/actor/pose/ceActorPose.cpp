@@ -59,33 +59,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceActorPose::ceActorPose( igdeEnvironment &environment, const char *name ) :
-pEnvironment( environment ),
-pEngAnimator( NULL ),
-pName( name ){
+ceActorPose::ceActorPose(igdeEnvironment &environment, const char *name) :
+pEnvironment(environment),
+pEngAnimator(NULL),
+pName(name){
 }
 
-ceActorPose::ceActorPose( const ceActorPose &pose ) :
-pEnvironment( pose.pEnvironment ),
-pEngAnimator( NULL ),
-pName( pose.pName ),
-pPathAnimator( pose.pPathAnimator ),
-pControllerNames( pose.pControllerNames )
+ceActorPose::ceActorPose(const ceActorPose &pose) :
+pEnvironment(pose.pEnvironment),
+pEngAnimator(NULL),
+pName(pose.pName),
+pPathAnimator(pose.pPathAnimator),
+pControllerNames(pose.pControllerNames)
 {
 	// clone gestures
 	const int gestureCount = pose.pGestures.GetCount();
 	int i;
 	
-	for( i=0; i<gestureCount; i++ ){
+	for(i=0; i<gestureCount; i++){
 		ceActorGesture *gesture = NULL;
 		
 		try{
-			gesture = new ceActorGesture( *pose.pGestures.GetAt( i ) );
-			pGestures.Add( gesture );
+			gesture = new ceActorGesture(*pose.pGestures.GetAt(i));
+			pGestures.Add(gesture);
 			gesture->FreeReference();
 			
-		}catch( const deException & ){
-			if( gesture ){
+		}catch(const deException &){
+			if(gesture){
 				gesture->FreeReference();
 			}
 			throw;
@@ -94,22 +94,22 @@ pControllerNames( pose.pControllerNames )
 	
 	// take over animator
 	pEngAnimator = pose.pEngAnimator;
-	if( pEngAnimator ){
+	if(pEngAnimator){
 		pEngAnimator->AddReference();
 	}
 	
 	// clone controllers
 	const int controllerCount = pose.pControllers.GetCount();
-	for( i=0; i<controllerCount; i++ ){
+	for(i=0; i<controllerCount; i++){
 		ceActorController *controller = NULL;
 		
 		try{
-			controller = new ceActorController( *pose.pControllers.GetAt( i ) );
-			pControllers.Add( controller );
+			controller = new ceActorController(*pose.pControllers.GetAt(i));
+			pControllers.Add(controller);
 			controller->FreeReference();
 			
-		}catch( const deException & ){
-			if( controller ){
+		}catch(const deException &){
+			if(controller){
 				controller->FreeReference();
 			}
 			throw;
@@ -118,8 +118,8 @@ pControllerNames( pose.pControllerNames )
 }
 
 ceActorPose::~ceActorPose(){
-	if( pEngAnimator ){
-		pEngAnimator->SetRig( NULL );
+	if(pEngAnimator){
+		pEngAnimator->SetRig(NULL);
 		pEngAnimator->FreeReference();
 	}
 }
@@ -129,12 +129,12 @@ ceActorPose::~ceActorPose(){
 // Management
 ///////////////
 
-void ceActorPose::SetName( const char *name ){
+void ceActorPose::SetName(const char *name){
 	pName = name;
 }
 
-void ceActorPose::SetPathAnimator( const char *path ){
-	if( pPathAnimator.Equals( path ) ){
+void ceActorPose::SetPathAnimator(const char *path){
+	if(pPathAnimator.Equals(path)){
 		return;
 	}
 	
@@ -150,7 +150,7 @@ void ceActorPose::SetPathAnimator( const char *path ){
 void ceActorPose::pLoadAnimator(){
 	pControllerNames.RemoveAll();
 	
-	if( pPathAnimator.IsEmpty() ){
+	if(pPathAnimator.IsEmpty()){
 		return;
 	}
 	
@@ -160,23 +160,23 @@ void ceActorPose::pLoadAnimator(){
 	deAnimator *animator = NULL;
 	
 	try{
-		reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading(
-			decPath::CreatePathUnix( pPathAnimator ) ) );
+		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(
+			decPath::CreatePathUnix(pPathAnimator)));
 		animator = engine.GetAnimatorManager()->CreateAnimator();
 		
-		igdeLoadAnimator( pEnvironment, pEnvironment.GetLogger(), LOGSOURCE ).
-			Load( pPathAnimator, *animator, reader );
+		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
+			Load(pPathAnimator, *animator, reader);
 		
-		if( pEngAnimator ){
+		if(pEngAnimator){
 			pEngAnimator->FreeReference();
 		}
 		pEngAnimator = animator;
 		
-	}catch( const deException &e ){
-		if( animator ){
+	}catch(const deException &e){
+		if(animator){
 			animator->FreeReference();
 		}
-		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development
 		return;
@@ -186,7 +186,7 @@ void ceActorPose::pLoadAnimator(){
 	const int count = animator->GetControllerCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pControllerNames.Add( animator->GetControllerAt( i )->GetName() );
+	for(i=0; i<count; i++){
+		pControllerNames.Add(animator->GetControllerAt(i)->GetName());
 	}
 }

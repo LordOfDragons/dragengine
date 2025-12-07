@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectOverlayImage( deGraphicOpenGl &ogl, const deEffectOverlayImage &effect );
+	deoglEffectOverlayImage(deGraphicOpenGl &ogl, const deEffectOverlayImage &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffectOverlayImage();
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Effect color matrix engine resource. */
-	inline const deEffectOverlayImage &GetEffectOverlayImage() const{ return pEffectOverlayImage; }
+	inline const deEffectOverlayImage &GetEffectOverlayImage() const{return pEffectOverlayImage;}
 	
 	
 	

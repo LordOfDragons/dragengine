@@ -44,22 +44,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRHeightTerrain::deoglRHeightTerrain( deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain ) :
-pRenderThread( renderThread ),
-pParentWorld( NULL ),
-pSectorResolution( heightTerrain.GetSectorResolution() ),
-pSectorSize( heightTerrain.GetSectorSize() ),
-pSectorsRequirePrepareForRender( true ),
-pListenerIndex( 0 )
+deoglRHeightTerrain::deoglRHeightTerrain(deoglRenderThread &renderThread, const deHeightTerrain &heightTerrain) :
+pRenderThread(renderThread),
+pParentWorld(NULL),
+pSectorResolution(heightTerrain.GetSectorResolution()),
+pSectorSize(heightTerrain.GetSectorSize()),
+pSectorsRequirePrepareForRender(true),
+pListenerIndex(0)
 {
-	LEAK_CHECK_CREATE( renderThread, HeightTerrain );
+	LEAK_CHECK_CREATE(renderThread, HeightTerrain);
 }
 
 deoglRHeightTerrain::~deoglRHeightTerrain(){
-	LEAK_CHECK_FREE( pRenderThread, HeightTerrain );
+	LEAK_CHECK_FREE(pRenderThread, HeightTerrain);
 	NotifyHeightTerrainDestroyed();
 	pListeners.RemoveAll();
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 }
 
 
@@ -67,38 +67,38 @@ deoglRHeightTerrain::~deoglRHeightTerrain(){
 // Management
 ///////////////
 
-void deoglRHeightTerrain::SetParentWorld( deoglRWorld *world ){
-	if( world == pParentWorld ){
+void deoglRHeightTerrain::SetParentWorld(deoglRWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	const int count = pSectors.GetCount();
 	int i;
 	
-	if( pParentWorld ){
-		for( i=0; i<count; i++ ){
-			( ( deoglRHTSector* )pSectors.GetAt( i ) )->RemoveFromWorldCompute();
+	if(pParentWorld){
+		for(i=0; i<count; i++){
+			((deoglRHTSector*)pSectors.GetAt(i))->RemoveFromWorldCompute();
 		}
 	}
 	
 	pParentWorld = world;
 	
-	if( world ){
+	if(world){
 		deoglWorldCompute &worldCompute = world->GetCompute();
-		for( i=0; i<count; i++ ){
-			( ( deoglRHTSector* )pSectors.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		for(i=0; i<count; i++){
+			((deoglRHTSector*)pSectors.GetAt(i))->AddToWorldCompute(worldCompute);
 		}
 	}
 }
 
 void deoglRHeightTerrain::PrepareForRender(){
-	if( pSectorsRequirePrepareForRender ){
+	if(pSectorsRequirePrepareForRender){
 		pSectorsRequirePrepareForRender = false;
 		
 		const int count = pSectors.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			( ( deoglRHTSector* )pSectors.GetAt( i ) )->PrepareForRender();
+		for(i=0; i<count; i++){
+			((deoglRHTSector*)pSectors.GetAt(i))->PrepareForRender();
 		}
 	}
 }
@@ -109,15 +109,15 @@ int deoglRHeightTerrain::GetSectorCount() const{
 	return pSectors.GetCount();
 }
 
-deoglRHTSector &deoglRHeightTerrain::GetSectorAt( int index ) const{
-	return *( ( deoglRHTSector* )pSectors.GetAt( index ) );
+deoglRHTSector &deoglRHeightTerrain::GetSectorAt(int index) const{
+	return *((deoglRHTSector*)pSectors.GetAt(index));
 }
 
-void deoglRHeightTerrain::AddSector( deoglRHTSector *htsector ){
-	htsector->SetIndex( pSectors.GetCount() );
-	pSectors.Add( htsector );
-	if( pParentWorld ){
-		htsector->AddToWorldCompute( pParentWorld->GetCompute() );
+void deoglRHeightTerrain::AddSector(deoglRHTSector *htsector){
+	htsector->SetIndex(pSectors.GetCount());
+	pSectors.Add(htsector);
+	if(pParentWorld){
+		htsector->AddToWorldCompute(pParentWorld->GetCompute());
 	}
 	
 	SectorRequirePrepareForRender();
@@ -125,11 +125,11 @@ void deoglRHeightTerrain::AddSector( deoglRHTSector *htsector ){
 }
 
 void deoglRHeightTerrain::RemoveAllSectors(){
-	if( pParentWorld ){
+	if(pParentWorld){
 		const int count = pSectors.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			( ( deoglRHTSector* )pSectors.GetAt( i ) )->RemoveFromWorldCompute();
+		for(i=0; i<count; i++){
+			((deoglRHTSector*)pSectors.GetAt(i))->RemoveFromWorldCompute();
 		}
 	}
 	
@@ -147,38 +147,38 @@ void deoglRHeightTerrain::SectorRequirePrepareForRender(){
 // Listeners
 //////////////
 
-void deoglRHeightTerrain::AddListener( deoglHeightTerrainListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void deoglRHeightTerrain::AddListener(deoglHeightTerrainListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void deoglRHeightTerrain::RemoveListener( deoglHeightTerrainListener *listener ){
-	const int index = pListeners.IndexOf( listener );
-	if( index == -1 ){
+void deoglRHeightTerrain::RemoveListener(deoglHeightTerrainListener *listener){
+	const int index = pListeners.IndexOf(listener);
+	if(index == -1){
 		return;
 	}
 	
-	pListeners.Remove( listener );
+	pListeners.Remove(listener);
 	
-	if( pListenerIndex >= index ){
+	if(pListenerIndex >= index){
 		pListenerIndex--;
 	}
 }
 
 void deoglRHeightTerrain::NotifyHeightTerrainDestroyed(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglHeightTerrainListener* )pListeners.GetAt( pListenerIndex ) )->HeightTerrainDestroyed( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglHeightTerrainListener*)pListeners.GetAt(pListenerIndex))->HeightTerrainDestroyed(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRHeightTerrain::NotifySectorsChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglHeightTerrainListener* )pListeners.GetAt( pListenerIndex ) )->SectorsChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglHeightTerrainListener*)pListeners.GetAt(pListenerIndex))->SectorsChanged(*this);
 		pListenerIndex++;
 	}
 }

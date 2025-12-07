@@ -56,28 +56,28 @@ public:
 	int GetParameterCount() const;
 	
 	/** \brief Parameter at index. */
-	dealGPMParameter *GetParameterAt( int index ) const;
+	dealGPMParameter *GetParameterAt(int index) const;
 	
 	/** \brief Parameter with name or \em NULL if not found. */
-	dealGPMParameter *GetParameterNamed( const char *name ) const;
+	dealGPMParameter *GetParameterNamed(const char *name) const;
 	
 	/** \brief Parameter exists. */
-	bool HasParameter( dealGPMParameter *parameter ) const;
+	bool HasParameter(dealGPMParameter *parameter) const;
 	
 	/** \brief Parameter with name exists. */
-	bool HasParameterNamed( const char *name ) const;
+	bool HasParameterNamed(const char *name) const;
 	
 	/** \brief Index of a parameter or -1 if not found. */
-	int IndexOfParameter( dealGPMParameter *parameter ) const;
+	int IndexOfParameter(dealGPMParameter *parameter) const;
 	
 	/** \brief Index of parameter with name or -1 if not found. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const;
 	
 	/** \brief Add parameter. */
-	void AddParameter( dealGPMParameter *parameter );
+	void AddParameter(dealGPMParameter *parameter);
 	
 	/** \brief Remove parameter. */
-	void RemoveParameter( dealGPMParameter *parameter );
+	void RemoveParameter(dealGPMParameter *parameter);
 	
 	/** \brief Remove all parameters. */
 	void RemoveAllParameters();

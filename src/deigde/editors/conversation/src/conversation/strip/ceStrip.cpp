@@ -44,9 +44,9 @@ ceStrip::ceStrip(){
 	pDuration = 1.0f;
 }
 
-ceStrip::ceStrip( const char *id, float duration, float pause ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+ceStrip::ceStrip(const char *id, float duration, float pause){
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pID = id;
@@ -54,7 +54,7 @@ ceStrip::ceStrip( const char *id, float duration, float pause ){
 	pDuration = duration;
 }
 
-ceStrip::ceStrip( const ceStrip& strip ){
+ceStrip::ceStrip(const ceStrip& strip){
 	pID = strip.GetID();
 	pPause = strip.GetPause();
 	pDuration = strip.GetDuration();
@@ -68,18 +68,18 @@ ceStrip::~ceStrip(){
 // Management
 ///////////////
 
-void ceStrip::SetID( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void ceStrip::SetID(const char *id){
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	pID = id;
 }
 
-void ceStrip::SetPause( float pause ){
+void ceStrip::SetPause(float pause){
 	pPause = pause;
 }
 
-void ceStrip::SetDuration( float duration ){
+void ceStrip::SetDuration(float duration){
 	pDuration = duration;
 }
 
@@ -88,19 +88,19 @@ void ceStrip::SetDuration( float duration ){
 // Operators
 //////////////
 
-ceStrip &ceStrip::operator=( const ceStrip &strip ){
+ceStrip &ceStrip::operator=(const ceStrip &strip){
 	pID = strip.GetID();
 	pPause = strip.GetPause();
 	pDuration = strip.GetDuration();
 	return *this;
 }
 
-bool ceStrip::operator==( const ceStrip &strip ) const{
-	return pID.Equals( strip.GetID() )
-		&& fabsf( pPause - strip.GetPause() ) < FLOAT_SAFE_EPSILON
-		&& fabsf( pDuration - strip.GetDuration() ) < FLOAT_SAFE_EPSILON;
+bool ceStrip::operator==(const ceStrip &strip) const{
+	return pID.Equals(strip.GetID())
+		&& fabsf(pPause - strip.GetPause()) < FLOAT_SAFE_EPSILON
+		&& fabsf(pDuration - strip.GetDuration()) < FLOAT_SAFE_EPSILON;
 }
 
-bool ceStrip::operator!=( const ceStrip &strip ) const{
-	return ! ( *this == strip );
+bool ceStrip::operator!=(const ceStrip &strip) const{
+	return ! (*this == strip);
 }

@@ -42,18 +42,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEffectColorMatrix::deoglEffectColorMatrix( deGraphicOpenGl &ogl,
-const deEffectColorMatrix &effect ) :
-deoglEffect( ogl, effect ),
+deoglEffectColorMatrix::deoglEffectColorMatrix(deGraphicOpenGl &ogl,
+const deEffectColorMatrix &effect) :
+deoglEffect(ogl, effect),
 
-pEffectColorMatrix( effect ),
+pEffectColorMatrix(effect),
 
-pREffectColorMatrix( NULL ),
+pREffectColorMatrix(NULL),
 
-pDirtyColorMatrix( true )
+pDirtyColorMatrix(true)
 {
-	pREffectColorMatrix = new deoglREffectColorMatrix( ogl.GetRenderThread() );
-	InitREffect( pREffectColorMatrix );
+	pREffectColorMatrix = new deoglREffectColorMatrix(ogl.GetRenderThread());
+	InitREffect(pREffectColorMatrix);
 }
 
 deoglEffectColorMatrix::~deoglEffectColorMatrix(){
@@ -67,8 +67,8 @@ deoglEffectColorMatrix::~deoglEffectColorMatrix(){
 void deoglEffectColorMatrix::SyncToRender(){
 	deoglEffect::SyncToRender();
 	
-	if( pDirtyColorMatrix ){
-		pREffectColorMatrix->SetColorMatrix( pEffectColorMatrix.GetColorMatrix() );
+	if(pDirtyColorMatrix){
+		pREffectColorMatrix->SetColorMatrix(pEffectColorMatrix.GetColorMatrix());
 		pDirtyColorMatrix = false;
 	}
 }

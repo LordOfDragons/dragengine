@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-cePlaybackVariable::cePlaybackVariable( const char *name, int value ){
-	if( ! name || strlen( name ) == 0 ){
-		DETHROW( deeInvalidParam );
+cePlaybackVariable::cePlaybackVariable(const char *name, int value){
+	if(! name || strlen(name) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -56,6 +56,6 @@ cePlaybackVariable::~cePlaybackVariable(){
 // Management
 ///////////////
 
-void cePlaybackVariable::SetValue( int value ){
+void cePlaybackVariable::SetValue(int value){
 	pValue = value;
 }

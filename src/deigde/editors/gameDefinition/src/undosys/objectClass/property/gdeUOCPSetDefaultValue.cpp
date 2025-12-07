@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetDefaultValue::gdeUOCPSetDefaultValue( gdeObjectClass *objectClass,
-	gdeProperty *property, const char *newValue, const char *oldValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetDefaultValue::gdeUOCPSetDefaultValue(gdeObjectClass *objectClass,
+	gdeProperty *property, const char *newValue, const char *oldValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set default value" );
+	SetShortInfo("Object class property set default value");
 	
 	pOldValue = oldValue;
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUOCPSetDefaultValue::~gdeUOCPSetDefaultValue(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCPSetDefaultValue::~gdeUOCPSetDefaultValue(){
 ///////////////
 
 void gdeUOCPSetDefaultValue::Undo(){
-	pProperty->SetDefaultValue( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetDefaultValue::Redo(){
-	pProperty->SetDefaultValue( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetDefaultValue(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

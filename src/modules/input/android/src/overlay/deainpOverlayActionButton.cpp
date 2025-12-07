@@ -53,48 +53,48 @@
 // Constructor, destructor
 ////////////////////////////
 
-deainpOverlayActionButton::deainpOverlayActionButton( deAndroidInput &androidInput ) :
-deainpOverlay( androidInput ),
+deainpOverlayActionButton::deainpOverlayActionButton(deAndroidInput &androidInput) :
+deainpOverlay(androidInput),
 
-pRadius( 64 ),
-pCenter( 64, 64 ),
+pRadius(64),
+pCenter(64, 64),
 
-pPressed( false ),
+pPressed(false),
 
-pCImage( NULL ),
-pCLabel( NULL ),
+pCImage(NULL),
+pCLabel(NULL),
 
-pDirtyLabelSize( true )
+pDirtyLabelSize(true)
 {
 	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
 	deImageManager &imageManager = *androidInput.GetGameEngine()->GetImageManager();
 	deImage *image = NULL;
 	
-	const decPoint size( pRadius * 2, pRadius * 2 );
+	const decPoint size(pRadius * 2, pRadius * 2);
 	
-	SetLayoutHorizontal( deainpLayout( decPoint(), size ) );
-	SetLayoutVertical( deainpLayout( decPoint(), size ) );
+	SetLayoutHorizontal(deainpLayout(decPoint(), size));
+	SetLayoutVertical(deainpLayout(decPoint(), size));
 	
 	try{
-		GetCanvas()->SetSize( size );
+		GetCanvas()->SetSize(size);
 		
 		pCImage = canvasManager.CreateCanvasImage();
-		pCImage->SetSize( size );
-		image = imageManager.LoadImage( &androidInput.GetVFS(),
-			"/share/images/actionbutton.png", "/" );
-		pCImage->SetImage( image );
+		pCImage->SetSize(size);
+		image = imageManager.LoadImage(&androidInput.GetVFS(),
+			"/share/images/actionbutton.png", "/");
+		pCImage->SetImage(image);
 		image->FreeReference();
 		image = NULL;
-		GetCanvas()->AddCanvas( pCImage );
+		GetCanvas()->AddCanvas(pCImage);
 		
 		pCLabel = canvasManager.CreateCanvasText();
-		pCLabel->SetSize( size );
-		pCLabel->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
-		pCLabel->SetFont( androidInput.GetDefaultFont() );
-		GetCanvas()->AddCanvas( pCLabel );
+		pCLabel->SetSize(size);
+		pCLabel->SetColor(decColor(1.0f, 1.0f, 1.0f));
+		pCLabel->SetFont(androidInput.GetDefaultFont());
+		GetCanvas()->AddCanvas(pCLabel);
 		
-	}catch( const deException & ){
-		if( image ){
+	}catch(const deException &){
+		if(image){
 			image->FreeReference();
 		}
 		pCleanUp();
@@ -111,15 +111,15 @@ deainpOverlayActionButton::~deainpOverlayActionButton(){
 // Management
 ///////////////
 
-void deainpOverlayActionButton::SetBinding( const deainpInputBinding &binding ){
+void deainpOverlayActionButton::SetBinding(const deainpInputBinding &binding){
 	pBinding = binding;
 }
 
 
 
-void deainpOverlayActionButton::SetRadius( int radius ){
-	radius = decMath::max( radius, 0 );
-	if( radius == pRadius ){
+void deainpOverlayActionButton::SetRadius(int radius){
+	radius = decMath::max(radius, 0);
+	if(radius == pRadius){
 		return;
 	}
 	
@@ -131,8 +131,8 @@ void deainpOverlayActionButton::SetRadius( int radius ){
 	// TODO
 }
 
-void deainpOverlayActionButton::SetCenter( const decPoint &center ){
-	if( center == pCenter ){
+void deainpOverlayActionButton::SetCenter(const decPoint &center){
+	if(center == pCenter){
 		return;
 	}
 	
@@ -147,8 +147,8 @@ const decString &deainpOverlayActionButton::GetText() const{
 	return pCLabel->GetText();
 }
 
-void deainpOverlayActionButton::SetText( const char *text ){
-	pCLabel->SetText( text );
+void deainpOverlayActionButton::SetText(const char *text){
+	pCLabel->SetText(text);
 	pDirtyLabelSize = true;
 }
 
@@ -156,65 +156,65 @@ const decColor &deainpOverlayActionButton::GetColor() const{
 	return pCLabel->GetColor();
 }
 
-void deainpOverlayActionButton::SetColor( const decColor &color ){
-	pCLabel->SetColor( color );
+void deainpOverlayActionButton::SetColor(const decColor &color){
+	pCLabel->SetColor(color);
 }
 
 deFont *deainpOverlayActionButton::GetFont() const{
 	return pCLabel->GetFont();
 }
 
-void deainpOverlayActionButton::SetFont( deFont *font ){
-	pCLabel->SetFont( font );
+void deainpOverlayActionButton::SetFont(deFont *font){
+	pCLabel->SetFont(font);
 	pDirtyLabelSize = true;
 }
 
 
 
-void deainpOverlayActionButton::SetPressed( bool pressed ){
-	if( pressed == pPressed ){
+void deainpOverlayActionButton::SetPressed(bool pressed){
+	if(pressed == pPressed){
 		return;
 	}
 	
 	pPressed = pressed;
 	
-	pBinding.ChangeButtonState( GetAndroidInput(), pressed );
+	pBinding.ChangeButtonState(GetAndroidInput(), pressed);
 }
 
 
 
 void deainpOverlayActionButton::UpdateBindingIndices(){
-	pBinding.UpdateIndices( GetAndroidInput().GetDevices() );
+	pBinding.UpdateIndices(GetAndroidInput().GetDevices());
 }
 
 void deainpOverlayActionButton::UpdateContent(){
 	pUpdateLabelSize();
 }
 
-bool deainpOverlayActionButton::OnTouch( int pointerId, const decPoint &position ){
-	if( ( int )( ( position - pCenter ).Length() ) > pRadius ){
+bool deainpOverlayActionButton::OnTouch(int pointerId, const decPoint &position){
+	if((int)((position - pCenter).Length()) > pRadius){
 		return false;
 	}
 	
-	SetPointer( pointerId, position );
-	SetPressed( true );
+	SetPointer(pointerId, position);
+	SetPressed(true);
 	return true;
 }
 
-void deainpOverlayActionButton::OnMove( const decPoint &position ){
-	PointerMove( position );
+void deainpOverlayActionButton::OnMove(const decPoint &position){
+	PointerMove(position);
 	
 	// no. keep the button pressed while moving. otherwise it is annoying if the button
 	// releases and presses again because the finger moved a bit
 	/*
-	if( pPressed ){
-		SetPressed( ( int )( ( position - pCenter ).Length() ) <= pRadius );
+	if(pPressed){
+		SetPressed((int)((position - pCenter).Length()) <= pRadius);
 	}
 	*/
 }
 
 void deainpOverlayActionButton::OnRelease(){
-	SetPressed( false );
+	SetPressed(false);
 	deainpOverlay::OnRelease();
 }
 
@@ -224,50 +224,50 @@ void deainpOverlayActionButton::OnRelease(){
 //////////////////////
 
 void deainpOverlayActionButton::pCleanUp(){
-	if( pCLabel ){
+	if(pCLabel){
 		pCLabel->FreeReference();
 	}
-	if( pCImage ){
+	if(pCImage){
 		pCImage->FreeReference();
 	}
 }
 
 void deainpOverlayActionButton::pUpdateLabelSize(){
-	if( ! pDirtyLabelSize ){
+	if(! pDirtyLabelSize){
 		return;
 	}
 	
 	pDirtyLabelSize = false;
 	
 	deFont * const font = pCLabel->GetFont();
-	if( ! font ){
+	if(! font){
 		return;
 	}
 	
 	decUTF8Decoder decoder;
 	int width = 0;
 	
-	decoder.SetString( pCLabel->GetText() );
+	decoder.SetString(pCLabel->GetText());
 	
-	while( true ){
+	while(true){
 		const int character = decoder.DecodeNextCharacter();
-		if( character == -1 ){
+		if(character == -1){
 			break; // end of string
 		}
 		
-		width += font->GetGlyph( character ).GetAdvance();
+		width += font->GetGlyph(character).GetAdvance();
 	}
 	
 	const int lineHeight = font->GetLineHeight();
-	const float textRadius = decPoint( width, lineHeight ).Length();
-	if( textRadius < 1.0f ){
+	const float textRadius = decPoint(width, lineHeight).Length();
+	if(textRadius < 1.0f){
 		return;
 	}
 	
 	deAndroidInput &module = GetAndroidInput();
-	const float scaleFactor = ( float )( pRadius * 2 - 10 ) / textRadius;
-	pCLabel->SetFontSize( ( float )lineHeight * scaleFactor );
-	pCLabel->SetSize( decPoint( ( float )width * scaleFactor, pCLabel->GetFontSize() ) );
-	pCLabel->SetPosition( pCenter - pCLabel->GetSize() / 2 );
-	module.LogInfoFormat( "text size(%i,%i)", pCLabel->GetSize().x, pCLabel->GetSize().y );
+	const float scaleFactor = (float)(pRadius * 2 - 10) / textRadius;
+	pCLabel->SetFontSize((float)lineHeight * scaleFactor);
+	pCLabel->SetSize(decPoint((float)width * scaleFactor, pCLabel->GetFontSize()));
+	pCLabel->SetPosition(pCenter - pCLabel->GetSize() / 2);
+	module.LogInfoFormat("text size(%i,%i)", pCLabel->GetSize().x, pCLabel->GetSize().y);
 }

@@ -138,7 +138,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create session. */
-	deoxrSession( deoxrSystem &system );
+	deoxrSession(deoxrSystem &system);
 	
 protected:
 	/** Clean up space. */
@@ -151,19 +151,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** System. */
-	inline deoxrSystem &GetSystem() const{ return pSystem; }
+	inline deoxrSystem &GetSystem() const{return pSystem;}
 	
 	/** Graphic api. */
-	inline eGraphicApi GetGraphicApi() const{ return pGraphicApi; }
+	inline eGraphicApi GetGraphicApi() const{return pGraphicApi;}
 	
 	/** Session. */
-	inline XrSession GetSession() const{ return pSession; }
+	inline XrSession GetSession() const{return pSession;}
 	
 	/** Session is running. */
-	inline bool GetRunning() const{ return pRunning; }
+	inline bool GetRunning() const{return pRunning;}
 	
 	/** Predicted display time. */
-	inline XrTime GetPredictedDisplayTime() const{ return pPredictedDisplayTime; }
+	inline XrTime GetPredictedDisplayTime() const{return pPredictedDisplayTime;}
 	
 	/** Begin session. */
 	void Begin();
@@ -175,10 +175,10 @@ public:
 	void ForceEnd();
 	
 	/** Attached action set or nullptr. */
-	inline const deoxrActionSet::Ref &GetAttachedActionSet() const{ return pAttachedActionSet; }
+	inline const deoxrActionSet::Ref &GetAttachedActionSet() const{return pAttachedActionSet;}
 	
 	/** Attach action set. */
-	void AttachActionSet( deoxrActionSet *actionSet );
+	void AttachActionSet(deoxrActionSet *actionSet);
 	
 	/** Wait frame. */
 	void WaitFrame();
@@ -193,49 +193,49 @@ public:
 	void ForceEndFrame();
 	
 	/** Frame is running. */
-	inline bool GetFrameRunning() const{ return pFrameRunning; }
+	inline bool GetFrameRunning() const{return pFrameRunning;}
 	
 	/** Runtime request rendering. */
-	inline bool GetShouldRender() const{ return pShouldRender; }
+	inline bool GetShouldRender() const{return pShouldRender;}
 	
 	/** Sync actions. */
 	void SyncActions();
 	
 	/** Spaces. */
-	inline const deoxrSpace::Ref &GetMainSpace() const{ return pMainSpace; }
-	inline const deoxrSpace::Ref &GetSpaceStage() const{ return pSpaceStage; }
-	inline const deoxrSpace::Ref &GetSpaceView() const{ return pSpaceView; }
-	inline const deoxrSpace::Ref &GetSpaceLocal() const{ return pSpaceLocal; }
+	inline const deoxrSpace::Ref &GetMainSpace() const{return pMainSpace;}
+	inline const deoxrSpace::Ref &GetSpaceStage() const{return pSpaceStage;}
+	inline const deoxrSpace::Ref &GetSpaceView() const{return pSpaceView;}
+	inline const deoxrSpace::Ref &GetSpaceLocal() const{return pSpaceLocal;}
 
 	/** Left eye swapchain. */
-	inline const deoxrSwapchain::Ref &GetSwapchainLeftEye() const{ return pSwapchainLeftEye; }
+	inline const deoxrSwapchain::Ref &GetSwapchainLeftEye() const{return pSwapchainLeftEye;}
 	
 	/** Right eye swapchain. */
-	inline const deoxrSwapchain::Ref &GetSwapchainRightEye() const{ return pSwapchainRightEye; }
+	inline const deoxrSwapchain::Ref &GetSwapchainRightEye() const{return pSwapchainRightEye;}
 	
 	/** Depth left eye swapchain. */
-	inline const deoxrSwapchain::Ref &GetSwapchainDepthLeftEye() const{ return pSwapchainDepthLeftEye; }
+	inline const deoxrSwapchain::Ref &GetSwapchainDepthLeftEye() const{return pSwapchainDepthLeftEye;}
 	
 	/** Depth right eye swapchain. */
-	inline const deoxrSwapchain::Ref &GetSwapchainDepthRightEye() const{ return pSwapchainDepthRightEye; }
+	inline const deoxrSwapchain::Ref &GetSwapchainDepthRightEye() const{return pSwapchainDepthRightEye;}
 	
 	/** Left eye pose. */
-	inline const XrPosef &GetLeftEyePose() const{ return pLeftEyePose; }
+	inline const XrPosef &GetLeftEyePose() const{return pLeftEyePose;}
 	
 	/** Left eye fov. */
-	inline const XrFovf &GetLeftEyeFov() const{ return pLeftEyeFov; }
+	inline const XrFovf &GetLeftEyeFov() const{return pLeftEyeFov;}
 	
 	/** Right eye pose. */
-	inline const XrPosef &GetRightEyePose() const{ return pRightEyePose; }
+	inline const XrPosef &GetRightEyePose() const{return pRightEyePose;}
 	
 	/** Right eye fov. */
-	inline const XrFovf &GetRightEyeFov() const{ return pRightEyeFov; }
+	inline const XrFovf &GetRightEyeFov() const{return pRightEyeFov;}
 	
 	/** Left eye hidden mesh or null. */
-	inline deoxrHiddenMesh *GetLeftEyeHiddenMesh() const{ return pLeftEyeHiddenMesh; }
+	inline deoxrHiddenMesh *GetLeftEyeHiddenMesh() const{return pLeftEyeHiddenMesh;}
 	
 	/** Right eye hidden mesh or nullptr. */
-	inline deoxrHiddenMesh *GetRightEyeHiddenMesh() const{ return pRightEyeHiddenMesh; }
+	inline deoxrHiddenMesh *GetRightEyeHiddenMesh() const{return pRightEyeHiddenMesh;}
 	
 	/** Update left eye hidden mesh. */
 	void UpdateLeftEyeHiddenMesh();
@@ -244,25 +244,25 @@ public:
 	void UpdateRightEyeHiddenMesh();
 	
 	/** Head position in stage coordinate system. */
-	inline const decVector &GetHeadPosition() const{ return pHeadPosition; }
+	inline const decVector &GetHeadPosition() const{return pHeadPosition;}
 	
 	/** Head orientation in stage coordinate system. */
-	inline const decQuaternion &GetHeadOrientation() const{ return pHeadOrientation; }
+	inline const decQuaternion &GetHeadOrientation() const{return pHeadOrientation;}
 	
 	/** Head linear velocity in stage coordinate system. */
-	inline const decVector &GetHeadLinearVelocity() const{ return pHeadLinearVelocity; }
+	inline const decVector &GetHeadLinearVelocity() const{return pHeadLinearVelocity;}
 	
 	/** Head angular velocity in stage coordinate system. */
-	inline const decVector &GetHeadAngularVelocity() const{ return pHeadAngularVelocity; }
+	inline const decVector &GetHeadAngularVelocity() const{return pHeadAngularVelocity;}
 	
 	/** Left eye matrix relative to head. */
-	inline const decMatrix &GetLeftEyeMatrix() const{ return pLeftEyeMatrix; }
+	inline const decMatrix &GetLeftEyeMatrix() const{return pLeftEyeMatrix;}
 	
 	/** Right eye matrix relative to head. */
-	inline const decMatrix &GetRightEyeMatrix() const{ return pRightEyeMatrix; }
+	inline const decMatrix &GetRightEyeMatrix() const{return pRightEyeMatrix;}
 	
 	/** Origin pose relative to space where player is facing forward. */
-	inline const decMatrix &GetSpaceOriginPose() const{ return pSpaceOriginPose; }
+	inline const decMatrix &GetSpaceOriginPose() const{return pSpaceOriginPose;}
 	
 	/** Set origin pose relative to space where player is facing forward. */
 	void SetSpaceOriginPose(const decMatrix &pose);
@@ -274,19 +274,19 @@ public:
 	void RequestCenterSpaceOrigin();
 	
 	/** Graphic connection is OpenGL. */
-	inline bool GetIsGACOpenGL() const{ return pIsGACOpenGL; }
+	inline bool GetIsGACOpenGL() const{return pIsGACOpenGL;}
 	
 	/** Restore OpenGL current. */
 	void RestoreOpenGLCurrent();
 	
 	/** Count of swap chain formats. */
-	inline int GetSwapchainFormatCount() const{ return pSwapchainFormatCount; }
+	inline int GetSwapchainFormatCount() const{return pSwapchainFormatCount;}
 	
 	/** Swap chain formats in the the order of runtime preference. */
-	inline const int64_t *GetSwapchainFormats() const{ return pSwapchainFormats; }
+	inline const int64_t *GetSwapchainFormats() const{return pSwapchainFormats;}
 	
 	/** Swapchain format is supported. */
-	bool HasSwapchainFormat( eSwapchainFormats format ) const;
+	bool HasSwapchainFormat(eSwapchainFormats format) const;
 	
 	/** Swapchain format name or 'notFound'. */
 	const char *GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound = nullptr) const;

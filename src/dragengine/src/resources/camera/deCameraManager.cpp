@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deCameraManager::deCameraManager( deEngine *engine ) : deResourceManager( engine, ertCamera ){
-	SetLoggingName( "camera" );
+deCameraManager::deCameraManager(deEngine *engine) : deResourceManager(engine, ertCamera){
+	SetLoggingName("camera");
 }
 
 deCameraManager::~deCameraManager(){
@@ -57,7 +57,7 @@ int deCameraManager::GetCameraCount() const{
 }
 
 deCamera *deCameraManager::GetRootCamera() const{
-	return ( deCamera* )pCameras.GetRoot();
+	return (deCamera*)pCameras.GetRoot();
 }
 
 deCamera *deCameraManager::CreateCamera(){
@@ -65,13 +65,13 @@ deCamera *deCameraManager::CreateCamera(){
 	
 	// create and add camera
 	try{
-		camera = new deCamera( this );
-		if( ! camera ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadCamera( camera );
-		pCameras.Add( camera );
+		camera = new deCamera(this);
+		if(! camera) DETHROW(deeOutOfMemory);
+		GetGraphicSystem()->LoadCamera(camera);
+		pCameras.Add(camera);
 		
-	}catch( const deException & ){
-		if( camera ){
+	}catch(const deException &){
+		if(camera){
 			camera->FreeReference();
 		}
 		throw;
@@ -84,8 +84,8 @@ deCamera *deCameraManager::CreateCamera(){
 
 
 void deCameraManager::ReleaseLeakingResources(){
-	if( GetCameraCount() > 0 ){
-		LogWarnFormat( "%i leaking cameras", GetCameraCount() );
+	if(GetCameraCount() > 0){
+		LogWarnFormat("%i leaking cameras", GetCameraCount());
 		pCameras.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -96,26 +96,26 @@ void deCameraManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deCameraManager::SystemGraphicLoad(){
-	deCamera *camera = ( deCamera* )pCameras.GetRoot();
+	deCamera *camera = (deCamera*)pCameras.GetRoot();
 	
-	while( camera ){
-		if( ! camera->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadCamera( camera );
+	while(camera){
+		if(! camera->GetPeerGraphic()){
+			GetGraphicSystem()->LoadCamera(camera);
 		}
 		
-		camera = ( deCamera* )camera->GetLLManagerNext();
+		camera = (deCamera*)camera->GetLLManagerNext();
 	}
 }
 
 void deCameraManager::SystemGraphicUnload(){
-	deCamera *camera = ( deCamera* )pCameras.GetRoot();
+	deCamera *camera = (deCamera*)pCameras.GetRoot();
 	
-	while( camera ){
-		camera->SetPeerGraphic( NULL );
-		camera = ( deCamera* )camera->GetLLManagerNext();
+	while(camera){
+		camera->SetPeerGraphic(NULL);
+		camera = (deCamera*)camera->GetLLManagerNext();
 	}
 }
 
-void deCameraManager::RemoveResource( deResource *resource ){
-	pCameras.RemoveIfPresent( resource );
+void deCameraManager::RemoveResource(deResource *resource){
+	pCameras.RemoveIfPresent(resource);
 }

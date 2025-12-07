@@ -49,26 +49,26 @@ deOcclusionMeshBone::~deOcclusionMeshBone(){
 // Management
 //////////////
 
-void deOcclusionMeshBone::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void deOcclusionMeshBone::SetName(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
 }
 
-void deOcclusionMeshBone::SetParent( int bone ){
-	if( bone < -1 ){
-		DETHROW( deeInvalidParam );
+void deOcclusionMeshBone::SetParent(int bone){
+	if(bone < -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pParent = bone;
 }
 
-void deOcclusionMeshBone::SetPosition( const decVector &position ){
+void deOcclusionMeshBone::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deOcclusionMeshBone::SetOrientation( const decQuaternion &orientation ){
+void deOcclusionMeshBone::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }

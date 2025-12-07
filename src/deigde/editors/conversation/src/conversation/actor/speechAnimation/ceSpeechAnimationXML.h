@@ -46,19 +46,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader. */
-	ceSpeechAnimationXML( deLogger *logger, const char *loggerSource );
+	ceSpeechAnimationXML(deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Reads the speech animation from file. */
-	void ReadFromFile( const decString &pathSAnimation, decBaseFileReader &reader, ceSpeechAnimation &sanimation );
+	void ReadFromFile(const decString &pathSAnimation, decBaseFileReader &reader, ceSpeechAnimation &sanimation);
 	/*@}*/
 	
 private:
-	void pReadSAnimation( const decXmlElementTag &root, const char *basePath, ceSpeechAnimation &sanimation );
-	void pReadPhoneme( const decXmlElementTag &root, ceSpeechAnimation &sanimation );
-	void pReadWord( const decXmlElementTag &root, ceSpeechAnimation &sanimation );
+	void pReadSAnimation(const decXmlElementTag &root, const char *basePath, ceSpeechAnimation &sanimation);
+	void pReadPhoneme(const decXmlElementTag &root, ceSpeechAnimation &sanimation);
+	void pReadWord(const decXmlElementTag &root, ceSpeechAnimation &sanimation);
 };
 
 #endif

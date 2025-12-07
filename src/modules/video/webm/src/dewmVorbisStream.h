@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vorbis stream. */
-	dewmVorbisStream( dewmAudioTrackCallback &callback );
+	dewmVorbisStream(dewmAudioTrackCallback &callback);
 	
 	/** Clean up vorbis stream. */
 	~dewmVorbisStream();
@@ -72,25 +72,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Bytes per sample. */
-	inline int GetBytesPerSample() const{ return pBytesPerSample; }
+	inline int GetBytesPerSample() const{return pBytesPerSample;}
 	
 	/** Sample rate. */
-	inline int GetSampleRate() const{ return pSampleRate; }
+	inline int GetSampleRate() const{return pSampleRate;}
 	
 	/** Channel count. */
-	inline int GetChannelCount() const{ return pChannelCount; }
+	inline int GetChannelCount() const{return pChannelCount;}
 	
 	/** Buffer sample size. */
-	inline int GetBufferSampleSize() const{ return pBufferSampleSize; }
+	inline int GetBufferSampleSize() const{return pBufferSampleSize;}
 	
 	/** Open track. */
-	bool OpenTrack( const webm::TrackEntry &track );
+	bool OpenTrack(const webm::TrackEntry &track);
 	
 	/** Copy samples. */
 	void CopySamples();
 	
 	/** Load frame data. */
-	void LoadFrameData( std::uint64_t frameSize );
+	void LoadFrameData(std::uint64_t frameSize);
 	
 	/** Rewind. */
 	void Rewind();

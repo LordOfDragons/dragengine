@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader module manager. */
-	devkShaderModuleManager( devkDevice &device );
+	devkShaderModuleManager(devkDevice &device);
 	
 	/** Clean up shader modules manager. */
 	~devkShaderModuleManager();
@@ -61,22 +61,22 @@ public:
 	int GetCount() const;
 	
 	/** Shader module at index. Caller does not hold reference. */
-	devkShaderModule *GetAt( int index ) const;
+	devkShaderModule *GetAt(int index) const;
 	
 	/** Shader module with path or nullptr if absent. Caller does not hold reference. */
-	devkShaderModule *GetWithPath( const char *path ) const;
+	devkShaderModule *GetWithPath(const char *path) const;
 	
 	/** Shader module with path if present. */
-	bool HasWithPath( const char *path ) const;
+	bool HasWithPath(const char *path) const;
 	
 	/** Add shader module. */
-	void Add( devkShaderModule *module );
+	void Add(devkShaderModule *module);
 	
 	/** Remove all shader modules. */
 	void Clear();
 	
 	/** Scan shader modules in directory. */
-	void Load( const char *directory );
+	void Load(const char *directory);
 	/*@}*/
 };
 

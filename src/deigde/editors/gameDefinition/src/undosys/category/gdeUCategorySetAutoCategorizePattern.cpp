@@ -42,16 +42,16 @@
 
 gdeUCategorySetAutoCategorizePattern::gdeUCategorySetAutoCategorizePattern(
 	gdeGameDefinition *gameDefinition, gdeCategory *category, eCategoryType type,
-	const decStringSet &newValue ) :
-gdeUCategoryBase( gameDefinition, type ),
-pCategory( NULL ),
-pNewValue( newValue )
+	const decStringSet &newValue) :
+gdeUCategoryBase(gameDefinition, type),
+pCategory(NULL),
+pNewValue(newValue)
 {
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+	if(! category){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Category set auto categorize pattern" );
+	SetShortInfo("Category set auto categorize pattern");
 	
 	pOldValue = category->GetAutoCategorizePattern();
 	
@@ -60,7 +60,7 @@ pNewValue( newValue )
 }
 
 gdeUCategorySetAutoCategorizePattern::~gdeUCategorySetAutoCategorizePattern(){
-	if( pCategory ){
+	if(pCategory){
 		pCategory->FreeReference();
 	}
 }
@@ -71,11 +71,11 @@ gdeUCategorySetAutoCategorizePattern::~gdeUCategorySetAutoCategorizePattern(){
 ///////////////
 
 void gdeUCategorySetAutoCategorizePattern::Undo(){
-	pCategory->SetAutoCategorizePattern( pOldValue );
+	pCategory->SetAutoCategorizePattern(pOldValue);
 	Notify();
 }
 
 void gdeUCategorySetAutoCategorizePattern::Redo(){
-	pCategory->SetAutoCategorizePattern( pNewValue );
+	pCategory->SetAutoCategorizePattern(pNewValue);
 	Notify();
 }

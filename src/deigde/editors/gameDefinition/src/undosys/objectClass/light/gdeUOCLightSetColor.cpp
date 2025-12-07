@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetColor::gdeUOCLightSetColor( gdeObjectClass *objectClass,
-gdeOCLight *light, const decColor &newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetColor::gdeUOCLightSetColor(gdeObjectClass *objectClass,
+gdeOCLight *light, const decColor &newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set color" );
+	SetShortInfo("Light set color");
 	
 	pOldValue = light->GetColor();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetColor::~gdeUOCLightSetColor(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetColor::~gdeUOCLightSetColor(){
 ///////////////
 
 void gdeUOCLightSetColor::Undo(){
-	pLight->SetColor( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetColor(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetColor::Redo(){
-	pLight->SetColor( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetColor(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

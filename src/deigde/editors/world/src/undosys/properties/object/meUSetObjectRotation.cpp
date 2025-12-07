@@ -36,23 +36,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectRotation::meUSetObjectRotation( meObject *object, const decVector &newRotation ){
-	if( ! object ) DETHROW( deeInvalidParam );
+meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &newRotation){
+	if(! object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(! world) DETHROW(deeInvalidParam);
 	
 	pOldRotation = object->GetRotation();
 	pNewRotation = newRotation;
 	
-	SetShortInfo( "Set Object rotation" );
+	SetShortInfo("Set Object rotation");
 	
 	pObject = object;
 	object->AddReference();
 }
 
 meUSetObjectRotation::~meUSetObjectRotation(){
-	if( pObject ) pObject->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
 
 
@@ -63,15 +63,15 @@ meUSetObjectRotation::~meUSetObjectRotation(){
 void meUSetObjectRotation::Undo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetRotation( pOldRotation );
+	pObject->SetRotation(pOldRotation);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUSetObjectRotation::Redo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetRotation( pNewRotation );
+	pObject->SetRotation(pNewRotation);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }

@@ -42,7 +42,7 @@ deoglSkinShaderConfig::deoglSkinShaderConfig(){
 	Reset();
 }
 
-deoglSkinShaderConfig::deoglSkinShaderConfig( const deoglSkinShaderConfig &copy ){
+deoglSkinShaderConfig::deoglSkinShaderConfig(const deoglSkinShaderConfig &copy){
 	Reset();
 	*this = copy;
 }
@@ -153,195 +153,195 @@ void deoglSkinShaderConfig::Reset(){
 
 
 
-void deoglSkinShaderConfig::SetShaderMode( eShaderModes mode ){
+void deoglSkinShaderConfig::SetShaderMode(eShaderModes mode){
 	pShaderMode = mode;
 }
 
-void deoglSkinShaderConfig::SetGeometryMode( eGeometryModes mode ){
+void deoglSkinShaderConfig::SetGeometryMode(eGeometryModes mode){
 	pGeometryMode = mode;
 }
 
-void deoglSkinShaderConfig::SetDepthMode( eDepthModes mode ){
+void deoglSkinShaderConfig::SetDepthMode(eDepthModes mode){
 	pDepthMode = mode;
 }
 
-void deoglSkinShaderConfig::SetMaterialNormalModeDec( eMaterialNormalModes mode ){
+void deoglSkinShaderConfig::SetMaterialNormalModeDec(eMaterialNormalModes mode){
 	pMaterialNormalModeDec = mode;
 }
 
-void deoglSkinShaderConfig::SetMaterialNormalModeEnc( eMaterialNormalModes mode ){
+void deoglSkinShaderConfig::SetMaterialNormalModeEnc(eMaterialNormalModes mode){
 	pMaterialNormalModeEnc = mode;
 }
 
-void deoglSkinShaderConfig::SetParticleMode( eParticleModes mode ){
+void deoglSkinShaderConfig::SetParticleMode(eParticleModes mode){
 	pParticleMode = mode;
 }
 
-void deoglSkinShaderConfig::SetTessellationMode( eTessallationModes mode ){
+void deoglSkinShaderConfig::SetTessellationMode(eTessallationModes mode){
 	pTessellationMode = mode;
 }
 
-void deoglSkinShaderConfig::SetDepthTestMode( eDepthTestModes mode ){
+void deoglSkinShaderConfig::SetDepthTestMode(eDepthTestModes mode){
 	pDepthTestMode = mode;
 }
 
 
 
-void deoglSkinShaderConfig::SetDecodeInDepth( bool decodeInDepth ){
+void deoglSkinShaderConfig::SetDecodeInDepth(bool decodeInDepth){
 	pDecodeInDepth = decodeInDepth;
 }
 
-void deoglSkinShaderConfig::SetEncodeOutDepth( bool encodeOutDepth ){
+void deoglSkinShaderConfig::SetEncodeOutDepth(bool encodeOutDepth){
 	pEncodeOutDepth = encodeOutDepth;
 }
 
-void deoglSkinShaderConfig::SetInverseDepth( bool inverseDepth ){
+void deoglSkinShaderConfig::SetInverseDepth(bool inverseDepth){
 	pInverseDepth = inverseDepth;
 }
 
-void deoglSkinShaderConfig::SetMaskedSolidity( bool maskedSolidity ){
+void deoglSkinShaderConfig::SetMaskedSolidity(bool maskedSolidity){
 	pMaskedSolidity = maskedSolidity;
 }
 
-void deoglSkinShaderConfig::SetClipPlane( bool clipPlane ){
+void deoglSkinShaderConfig::SetClipPlane(bool clipPlane){
 	pClipPlane = clipPlane;
 }
 
-void deoglSkinShaderConfig::SetOutputConstant( bool outputConstant ){
+void deoglSkinShaderConfig::SetOutputConstant(bool outputConstant){
 	pOutputConstant = outputConstant;
 }
 
-void deoglSkinShaderConfig::SetOutputColor( bool outputColor ){
+void deoglSkinShaderConfig::SetOutputColor(bool outputColor){
 	pOutputColor = outputColor;
 }
 
-void deoglSkinShaderConfig::SetAmbientLightProbe( bool ambientLightProbe ){
+void deoglSkinShaderConfig::SetAmbientLightProbe(bool ambientLightProbe){
 	pAmbientLightProbe = ambientLightProbe;
 }
 
-void deoglSkinShaderConfig::SetSkinReflections( bool skinReflections ){
+void deoglSkinShaderConfig::SetSkinReflections(bool skinReflections){
 	pSkinReflections = skinReflections;
 }
 
-void deoglSkinShaderConfig::SetFadeOutRange( bool fadeOutRange ){
+void deoglSkinShaderConfig::SetFadeOutRange(bool fadeOutRange){
 	pFadeOutRange = fadeOutRange;
 }
 
-void deoglSkinShaderConfig::SetVariations( bool variations ){
+void deoglSkinShaderConfig::SetVariations(bool variations){
 	pVariations = variations;
 }
 
-void deoglSkinShaderConfig::SetUseNormalRoughnessCorrection( bool useNormalRoughnessCorrection ){
+void deoglSkinShaderConfig::SetUseNormalRoughnessCorrection(bool useNormalRoughnessCorrection){
 	pUseNormalRoughnessCorrection = useNormalRoughnessCorrection;
 }
 
-void deoglSkinShaderConfig::SetGSRenderCube( bool gsRenderCube ){
+void deoglSkinShaderConfig::SetGSRenderCube(bool gsRenderCube){
 	pGSRenderCube = gsRenderCube;
 }
 
-void deoglSkinShaderConfig::SetGSRenderCascaded( bool gsRenderCascaded ){
+void deoglSkinShaderConfig::SetGSRenderCascaded(bool gsRenderCascaded){
 	pGSRenderCascaded = gsRenderCascaded;
 }
 
-void deoglSkinShaderConfig::SetGSRenderStereo( bool gsRenderStereo ){
+void deoglSkinShaderConfig::SetGSRenderStereo(bool gsRenderStereo){
 	pGSRenderStereo = gsRenderStereo;
 }
 
-void deoglSkinShaderConfig::SetVSRenderStereo( bool vsRenderStereo ){
+void deoglSkinShaderConfig::SetVSRenderStereo(bool vsRenderStereo){
 	pVSRenderStereo = vsRenderStereo;
 }
 
-void deoglSkinShaderConfig::SetSharedSPB( bool sharedSPB ){
+void deoglSkinShaderConfig::SetSharedSPB(bool sharedSPB){
 	pSharedSPB = sharedSPB;
 }
 
-void deoglSkinShaderConfig::SetOutline( bool outline ){
+void deoglSkinShaderConfig::SetOutline(bool outline){
 	pOutline = outline;
 }
 
-void deoglSkinShaderConfig::SetOutlineThicknessScreen( bool enable ){
+void deoglSkinShaderConfig::SetOutlineThicknessScreen(bool enable){
 	pOutlineThicknessScreen = enable;
 }
 
-void deoglSkinShaderConfig::SetLuminanceOnly( bool luminanceOnly ){
+void deoglSkinShaderConfig::SetLuminanceOnly(bool luminanceOnly){
 	pLuminanceOnly = luminanceOnly;
 }
 
-void deoglSkinShaderConfig::SetGIMaterial( bool gimaterial ){
+void deoglSkinShaderConfig::SetGIMaterial(bool gimaterial){
 	pGIMaterial = gimaterial;
 }
 
-void deoglSkinShaderConfig::SetSkinClipPlane( bool skinClipPlane ){
+void deoglSkinShaderConfig::SetSkinClipPlane(bool skinClipPlane){
 	pSkinClipPlane = skinClipPlane;
 }
 
 
 
-void deoglSkinShaderConfig::SetDynamicColorTint( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicColorTint(bool dynamic){
 	pDynamicColorTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicColorGamma( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicColorGamma(bool dynamic){
 	pDynamicColorGamma = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicColorSolidityMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicColorSolidityMultiplier(bool dynamic){
 	pDynamicColorSolidityMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicAmbientOcclusionSolidityMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicAmbientOcclusionSolidityMultiplier(bool dynamic){
 	pDynamicAmbientOcclusionSolidityMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicTransparencyMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicTransparencyMultiplier(bool dynamic){
 	pDynamicTransparencyMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicSolidityRemap( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicSolidityRemap(bool dynamic){
 	pDynamicSolidityRemap = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicHeightRemap( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicHeightRemap(bool dynamic){
 	pDynamicHeightRemap = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicNormalStrength( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicNormalStrength(bool dynamic){
 	pDynamicNormalStrength = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicNormalSolidityMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicNormalSolidityMultiplier(bool dynamic){
 	pDynamicNormalSolidityMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRoughnessRemap( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRoughnessRemap(bool dynamic){
 	pDynamicRoughnessRemap = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRoughnessGamma( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRoughnessGamma(bool dynamic){
 	pDynamicRoughnessGamma = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRoughnessSolidityMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRoughnessSolidityMultiplier(bool dynamic){
 	pDynamicRoughnessSolidityMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicReflectivitySolidityMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicReflectivitySolidityMultiplier(bool dynamic){
 	pDynamicReflectivitySolidityMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicReflectivityMultiplier( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicReflectivityMultiplier(bool dynamic){
 	pDynamicReflectivityMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRefractionDistortStrength( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRefractionDistortStrength(bool dynamic){
 	pDynamicRefractionDistortStrength = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicEmissivityTint( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicEmissivityTint(bool dynamic){
 	pDynamicEmissivityTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicEmissivityIntensity( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicEmissivityIntensity(bool dynamic){
 	pDynamicEmissivityIntensity = dynamic;
 }
 
@@ -349,266 +349,266 @@ void deoglSkinShaderConfig::SetDynamicEnvRoomTint(bool dynamic){
 	pDynamicEnvRoomTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicEnvRoomSize( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicEnvRoomSize(bool dynamic){
 	pDynamicEnvRoomSize = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicEnvRoomOffset( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicEnvRoomOffset(bool dynamic){
 	pDynamicEnvRoomOffset = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicEnvRoomEmissivityTint( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicEnvRoomEmissivityTint(bool dynamic){
 	pDynamicEnvRoomEmissivityTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicEnvRoomEmissivityIntensity( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicEnvRoomEmissivityIntensity(bool dynamic){
 	pDynamicEnvRoomEmissivityIntensity = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicThickness( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicThickness(bool dynamic){
 	pDynamicThickness = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicAbsorption( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicAbsorption(bool dynamic){
 	pDynamicAbsorption = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicVariation( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicVariation(bool dynamic){
 	pDynamicVariation = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicOutlineColor( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicOutlineColor(bool dynamic){
 	pDynamicOutlineColor = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicOutlineColorTint( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicOutlineColorTint(bool dynamic){
 	pDynamicOutlineColorTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicOutlineThickness( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicOutlineThickness(bool dynamic){
 	pDynamicOutlineThickness = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicOutlineSolidity( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicOutlineSolidity(bool dynamic){
 	pDynamicOutlineSolidity = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicOutlineEmissivity( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicOutlineEmissivity(bool dynamic){
 	pDynamicOutlineEmissivity = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicOutlineEmissivityTint( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicOutlineEmissivityTint(bool dynamic){
 	pDynamicOutlineEmissivityTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRimEmissivityTint( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRimEmissivityTint(bool dynamic){
 	pDynamicRimEmissivityTint = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRimEmissivityIntensity( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRimEmissivityIntensity(bool dynamic){
 	pDynamicRimEmissivityIntensity = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRimAngle( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRimAngle(bool dynamic){
 	pDynamicRimAngle = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicRimExponent( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicRimExponent(bool dynamic){
 	pDynamicRimExponent = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicSkinClipPlane( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicSkinClipPlane(bool dynamic){
 	pDynamicSkinClipPlane = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicSkinClipPlaneBorder( bool dynamic ){
+void deoglSkinShaderConfig::SetDynamicSkinClipPlaneBorder(bool dynamic){
 	pDynamicSkinClipPlaneBorder = dynamic;
 }
 
 
 
-void deoglSkinShaderConfig::SetTextureColor( bool hasTexture ){
+void deoglSkinShaderConfig::SetTextureColor(bool hasTexture){
 	pTextureColor = hasTexture;
 }
 
-void deoglSkinShaderConfig::SetTextureColorTintMask( bool hasTexture ){
+void deoglSkinShaderConfig::SetTextureColorTintMask(bool hasTexture){
 	pTextureColorTintMask = hasTexture;
 }
 
-void deoglSkinShaderConfig::SetTextureTransparency( bool textureTransparency ){
+void deoglSkinShaderConfig::SetTextureTransparency(bool textureTransparency){
 	pTextureTransparency = textureTransparency;
 }
 
-void deoglSkinShaderConfig::SetTextureSolidity( bool textureSolidity ){
+void deoglSkinShaderConfig::SetTextureSolidity(bool textureSolidity){
 	pTextureSolidity = textureSolidity;
 }
 
-void deoglSkinShaderConfig::SetTextureNormal( bool textureNormal ){
+void deoglSkinShaderConfig::SetTextureNormal(bool textureNormal){
 	pTextureNormal = textureNormal;
 }
 
-void deoglSkinShaderConfig::SetTextureHeight( bool textureHeight ){
+void deoglSkinShaderConfig::SetTextureHeight(bool textureHeight){
 	pTextureHeight = textureHeight;
 }
 
-void deoglSkinShaderConfig::SetTextureReflectivity( bool textureReflectivity ){
+void deoglSkinShaderConfig::SetTextureReflectivity(bool textureReflectivity){
 	pTextureReflectivity = textureReflectivity;
 }
 
-void deoglSkinShaderConfig::SetTextureRoughness( bool textureRoughness ){
+void deoglSkinShaderConfig::SetTextureRoughness(bool textureRoughness){
 	pTextureRoughness = textureRoughness;
 }
 
-void deoglSkinShaderConfig::SetTextureEmissivity( bool textureEmissivity ){
+void deoglSkinShaderConfig::SetTextureEmissivity(bool textureEmissivity){
 	pTextureEmissivity = textureEmissivity;
 }
 
-void deoglSkinShaderConfig::SetTextureAO( bool textureAO ){
+void deoglSkinShaderConfig::SetTextureAO(bool textureAO){
 	pTextureAO = textureAO;
 }
 
-void deoglSkinShaderConfig::SetTextureEnvMap( bool textureEnvMap ){
+void deoglSkinShaderConfig::SetTextureEnvMap(bool textureEnvMap){
 	pTextureEnvMap = textureEnvMap;
 }
 
-void deoglSkinShaderConfig::SetTextureEnvMapEqui( bool textureEnvMapEqui ){
+void deoglSkinShaderConfig::SetTextureEnvMapEqui(bool textureEnvMapEqui){
 	pTextureEnvMapEqui = textureEnvMapEqui;
 }
 
-void deoglSkinShaderConfig::SetTextureAbsorption( bool textureAbsorption ){
+void deoglSkinShaderConfig::SetTextureAbsorption(bool textureAbsorption){
 	pTextureAbsorption = textureAbsorption;
 }
 
-void deoglSkinShaderConfig::SetTextureRenderColor( bool textureRenderColor ){
+void deoglSkinShaderConfig::SetTextureRenderColor(bool textureRenderColor){
 	pTextureRenderColor = textureRenderColor;
 }
 
-void deoglSkinShaderConfig::SetTextureRefractionDistort( bool textureRefractionDistort ){
+void deoglSkinShaderConfig::SetTextureRefractionDistort(bool textureRefractionDistort){
 	pTextureRefractionDistort = textureRefractionDistort;
 }
 
-void deoglSkinShaderConfig::SetTextureEnvRoom( bool textureEnvRoom ){
+void deoglSkinShaderConfig::SetTextureEnvRoom(bool textureEnvRoom){
 	pTextureEnvRoom = textureEnvRoom;
 }
 
-void deoglSkinShaderConfig::SetTextureEnvRoomMask( bool textureEnvRoomMask ){
+void deoglSkinShaderConfig::SetTextureEnvRoomMask(bool textureEnvRoomMask){
 	pTextureEnvRoomMask = textureEnvRoomMask;
 }
 
-void deoglSkinShaderConfig::SetTextureEnvRoomEmissivity( bool textureEnvRoomEmissivity ){
+void deoglSkinShaderConfig::SetTextureEnvRoomEmissivity(bool textureEnvRoomEmissivity){
 	pTextureEnvRoomEmissivity = textureEnvRoomEmissivity;
 }
 
-void deoglSkinShaderConfig::SetTextureRimEmissivity( bool useTexture ){
+void deoglSkinShaderConfig::SetTextureRimEmissivity(bool useTexture){
 	pTextureRimEmissivity = useTexture;
 }
 
-void deoglSkinShaderConfig::SetTextureNonPbrAlbedo( bool texture ){
+void deoglSkinShaderConfig::SetTextureNonPbrAlbedo(bool texture){
 	pTextureNonPbrAlbedo = texture;
 }
 
-void deoglSkinShaderConfig::SetTextureNonPbrMetalness( bool texture ){
+void deoglSkinShaderConfig::SetTextureNonPbrMetalness(bool texture){
 	pTextureNonPbrMetalness = texture;
 }
 
 
 
 void deoglSkinShaderConfig::UpdateKey(){
-	pKey1 = ( uint32_t )0;
-	pKey1 |= ( ( uint32_t )pShaderMode ) << 0; // 3 values, 2 bits
-	pKey1 |= ( ( uint32_t )pGeometryMode ) << 2; // 6 values, 3 bits
-	pKey1 |= ( ( uint32_t )pDepthMode ) << 5; // 3 values, 2 bits
-	pKey1 |= ( ( uint32_t )pMaterialNormalModeDec ) << 7; // 3 values, 2 bits
-	pKey1 |= ( ( uint32_t )pMaterialNormalModeEnc ) << 9; // 3 values, 2 bits
-	pKey1 |= ( ( uint32_t )pParticleMode ) << 11; // 3 values, 2 bits
-	pKey1 |= ( ( uint32_t )pTessellationMode ) << 13; // 2 values, 1 bits
-	pKey1 |= ( ( uint32_t )pDepthTestMode ) << 14; // 3 values, 2 bits
+	pKey1 = (uint32_t)0;
+	pKey1 |= ((uint32_t)pShaderMode) << 0; // 3 values, 2 bits
+	pKey1 |= ((uint32_t)pGeometryMode) << 2; // 6 values, 3 bits
+	pKey1 |= ((uint32_t)pDepthMode) << 5; // 3 values, 2 bits
+	pKey1 |= ((uint32_t)pMaterialNormalModeDec) << 7; // 3 values, 2 bits
+	pKey1 |= ((uint32_t)pMaterialNormalModeEnc) << 9; // 3 values, 2 bits
+	pKey1 |= ((uint32_t)pParticleMode) << 11; // 3 values, 2 bits
+	pKey1 |= ((uint32_t)pTessellationMode) << 13; // 2 values, 1 bits
+	pKey1 |= ((uint32_t)pDepthTestMode) << 14; // 3 values, 2 bits
 	
-	pKey2 = ( uint32_t )0;
-	if( pDecodeInDepth ) pKey2 |= ( uint32_t )1 << 0;
-	if( pInverseDepth ) pKey2 |= ( uint32_t )1 << 1;
-	if( pEncodeOutDepth ) pKey2 |= ( uint32_t )1 << 2;
-	if( pMaskedSolidity ) pKey2 |= ( uint32_t )1 << 3;
-	if( pClipPlane ) pKey2 |= ( uint32_t )1 << 4;
-	if( pOutputConstant ) pKey2 |= ( uint32_t )1 << 5;
-	if( pOutputColor ) pKey2 |= ( uint32_t )1 << 6;
-	if( pAmbientLightProbe ) pKey2 |= ( uint32_t )1 << 7;
-	if( pSkinReflections ) pKey2 |= ( uint32_t )1 << 8;
-	if( pFadeOutRange ) pKey2 |= ( uint32_t )1 << 9;
-	if( pVariations ) pKey2 |= ( uint32_t )1 << 10;
-	if( pUseNormalRoughnessCorrection ) pKey2 |= ( uint32_t )1 << 11;
-	if( pGSRenderCube ) pKey2 |= ( uint32_t )1 << 12;
-	if( pGSRenderCascaded ) pKey2 |= ( uint32_t )1 << 13;
-	if( pVSRenderStereo ) pKey2 |= ( uint32_t )1 << 14;
-	if( pGSRenderStereo ) pKey2 |= ( uint32_t )1 << 15;
-	if( pSharedSPB ) pKey2 |= ( uint32_t )1 << 16;
-	if( pOutline ) pKey2 |= ( uint32_t )1 << 17;
-	if( pOutlineThicknessScreen ) pKey2 |= ( uint32_t )1 << 18;
-	if( pLuminanceOnly ) pKey2 |= ( uint32_t )1 << 19;
-	if( pGIMaterial ) pKey2 |= ( uint32_t )1 << 20;
-	if( pSkinClipPlane ) pKey2 |= ( uint32_t )1 << 21;
+	pKey2 = (uint32_t)0;
+	if(pDecodeInDepth) pKey2 |= (uint32_t)1 << 0;
+	if(pInverseDepth) pKey2 |= (uint32_t)1 << 1;
+	if(pEncodeOutDepth) pKey2 |= (uint32_t)1 << 2;
+	if(pMaskedSolidity) pKey2 |= (uint32_t)1 << 3;
+	if(pClipPlane) pKey2 |= (uint32_t)1 << 4;
+	if(pOutputConstant) pKey2 |= (uint32_t)1 << 5;
+	if(pOutputColor) pKey2 |= (uint32_t)1 << 6;
+	if(pAmbientLightProbe) pKey2 |= (uint32_t)1 << 7;
+	if(pSkinReflections) pKey2 |= (uint32_t)1 << 8;
+	if(pFadeOutRange) pKey2 |= (uint32_t)1 << 9;
+	if(pVariations) pKey2 |= (uint32_t)1 << 10;
+	if(pUseNormalRoughnessCorrection) pKey2 |= (uint32_t)1 << 11;
+	if(pGSRenderCube) pKey2 |= (uint32_t)1 << 12;
+	if(pGSRenderCascaded) pKey2 |= (uint32_t)1 << 13;
+	if(pVSRenderStereo) pKey2 |= (uint32_t)1 << 14;
+	if(pGSRenderStereo) pKey2 |= (uint32_t)1 << 15;
+	if(pSharedSPB) pKey2 |= (uint32_t)1 << 16;
+	if(pOutline) pKey2 |= (uint32_t)1 << 17;
+	if(pOutlineThicknessScreen) pKey2 |= (uint32_t)1 << 18;
+	if(pLuminanceOnly) pKey2 |= (uint32_t)1 << 19;
+	if(pGIMaterial) pKey2 |= (uint32_t)1 << 20;
+	if(pSkinClipPlane) pKey2 |= (uint32_t)1 << 21;
 	
-	pKey3 = ( uint64_t )0;
-	if( pDynamicColorTint ) pKey3 |= ( uint64_t )1 << 0;
-	if( pDynamicColorGamma ) pKey3 |= ( uint64_t )1 << 1;
-	if( pDynamicColorSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 2;
-	if( pDynamicAmbientOcclusionSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 3;
-	if( pDynamicTransparencyMultiplier ) pKey3 |= ( uint64_t )1 << 4;
-	if( pDynamicSolidityRemap ) pKey3 |= ( uint64_t )1 << 5;
-	if( pDynamicHeightRemap ) pKey3 |= ( uint64_t )1 << 6;
-	if( pDynamicNormalStrength ) pKey3 |= ( uint64_t )1 << 7;
-	if( pDynamicNormalSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 8;
-	if( pDynamicRoughnessRemap ) pKey3 |= ( uint64_t )1 << 9;
-	if( pDynamicRoughnessGamma ) pKey3 |= ( uint64_t )1 << 10;
-	if( pDynamicRoughnessSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 11;
-	if( pDynamicReflectivitySolidityMultiplier ) pKey3 |= ( uint64_t )1 << 12;
-	if( pDynamicReflectivityMultiplier ) pKey3 |= ( uint64_t )1 << 13;
-	if( pDynamicRefractionDistortStrength ) pKey3 |= ( uint64_t )1 << 14;
-	if( pDynamicEmissivityTint ) pKey3 |= ( uint64_t )1 << 15;
-	if( pDynamicEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 16;
-	if( pDynamicEnvRoomTint ) pKey3 |= (uint64_t)1 << 17;
-	if( pDynamicEnvRoomSize ) pKey3 |= ( uint64_t )1 << 18;
-	if( pDynamicEnvRoomOffset ) pKey3 |= ( uint64_t )1 << 19;
-	if( pDynamicEnvRoomEmissivityTint ) pKey3 |= ( uint64_t )1 << 20;
-	if( pDynamicEnvRoomEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 21;
-	if( pDynamicThickness ) pKey3 |= ( uint64_t )1 << 22;
-	if( pDynamicAbsorption ) pKey3 |= ( uint64_t )1 << 23;
-	if( pDynamicVariation ) pKey3 |= ( uint64_t )1 << 24;
-	if( pDynamicOutlineColor ) pKey3 |= ( uint64_t )1 << 25;
-	if( pDynamicOutlineColorTint ) pKey3 |= ( uint64_t )1 << 26;
-	if( pDynamicOutlineThickness ) pKey3 |= ( uint64_t )1 << 27;
-	if( pDynamicOutlineSolidity ) pKey3 |= ( uint64_t )1 << 28;
-	if( pDynamicOutlineEmissivity ) pKey3 |= ( uint64_t )1 << 29;
-	if( pDynamicOutlineEmissivityTint ) pKey3 |= ( uint64_t )1 << 30;
-	if( pDynamicRimEmissivityTint ) pKey3 |= ( uint64_t )1 << 31;
-	if( pDynamicRimEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 32;
-	if( pDynamicRimAngle ) pKey3 |= ( uint64_t )1 << 33;
-	if( pDynamicRimExponent ) pKey3 |= ( uint64_t )1 << 34;
-	if( pDynamicSkinClipPlane ) pKey3 |= ( uint64_t )1 << 35;
-	if( pDynamicSkinClipPlaneBorder ) pKey3 |= ( uint64_t )1 << 36;
+	pKey3 = (uint64_t)0;
+	if(pDynamicColorTint) pKey3 |= (uint64_t)1 << 0;
+	if(pDynamicColorGamma) pKey3 |= (uint64_t)1 << 1;
+	if(pDynamicColorSolidityMultiplier) pKey3 |= (uint64_t)1 << 2;
+	if(pDynamicAmbientOcclusionSolidityMultiplier) pKey3 |= (uint64_t)1 << 3;
+	if(pDynamicTransparencyMultiplier) pKey3 |= (uint64_t)1 << 4;
+	if(pDynamicSolidityRemap) pKey3 |= (uint64_t)1 << 5;
+	if(pDynamicHeightRemap) pKey3 |= (uint64_t)1 << 6;
+	if(pDynamicNormalStrength) pKey3 |= (uint64_t)1 << 7;
+	if(pDynamicNormalSolidityMultiplier) pKey3 |= (uint64_t)1 << 8;
+	if(pDynamicRoughnessRemap) pKey3 |= (uint64_t)1 << 9;
+	if(pDynamicRoughnessGamma) pKey3 |= (uint64_t)1 << 10;
+	if(pDynamicRoughnessSolidityMultiplier) pKey3 |= (uint64_t)1 << 11;
+	if(pDynamicReflectivitySolidityMultiplier) pKey3 |= (uint64_t)1 << 12;
+	if(pDynamicReflectivityMultiplier) pKey3 |= (uint64_t)1 << 13;
+	if(pDynamicRefractionDistortStrength) pKey3 |= (uint64_t)1 << 14;
+	if(pDynamicEmissivityTint) pKey3 |= (uint64_t)1 << 15;
+	if(pDynamicEmissivityIntensity) pKey3 |= (uint64_t)1 << 16;
+	if(pDynamicEnvRoomTint) pKey3 |= (uint64_t)1 << 17;
+	if(pDynamicEnvRoomSize) pKey3 |= (uint64_t)1 << 18;
+	if(pDynamicEnvRoomOffset) pKey3 |= (uint64_t)1 << 19;
+	if(pDynamicEnvRoomEmissivityTint) pKey3 |= (uint64_t)1 << 20;
+	if(pDynamicEnvRoomEmissivityIntensity) pKey3 |= (uint64_t)1 << 21;
+	if(pDynamicThickness) pKey3 |= (uint64_t)1 << 22;
+	if(pDynamicAbsorption) pKey3 |= (uint64_t)1 << 23;
+	if(pDynamicVariation) pKey3 |= (uint64_t)1 << 24;
+	if(pDynamicOutlineColor) pKey3 |= (uint64_t)1 << 25;
+	if(pDynamicOutlineColorTint) pKey3 |= (uint64_t)1 << 26;
+	if(pDynamicOutlineThickness) pKey3 |= (uint64_t)1 << 27;
+	if(pDynamicOutlineSolidity) pKey3 |= (uint64_t)1 << 28;
+	if(pDynamicOutlineEmissivity) pKey3 |= (uint64_t)1 << 29;
+	if(pDynamicOutlineEmissivityTint) pKey3 |= (uint64_t)1 << 30;
+	if(pDynamicRimEmissivityTint) pKey3 |= (uint64_t)1 << 31;
+	if(pDynamicRimEmissivityIntensity) pKey3 |= (uint64_t)1 << 32;
+	if(pDynamicRimAngle) pKey3 |= (uint64_t)1 << 33;
+	if(pDynamicRimExponent) pKey3 |= (uint64_t)1 << 34;
+	if(pDynamicSkinClipPlane) pKey3 |= (uint64_t)1 << 35;
+	if(pDynamicSkinClipPlaneBorder) pKey3 |= (uint64_t)1 << 36;
 	
-	pKey4 = ( uint32_t )0;
-	if( pTextureColor ) pKey4 |= ( uint32_t )1 << 0;
-	if( pTextureColorTintMask ) pKey4 |= ( uint32_t )1 << 1;
-	if( pTextureTransparency ) pKey4 |= ( uint32_t )1 << 2;
-	if( pTextureSolidity ) pKey4 |= ( uint32_t )1 << 3;
-	if( pTextureNormal ) pKey4 |= ( uint32_t )1 << 4;
-	if( pTextureHeight ) pKey4 |= ( uint32_t )1 << 5;
-	if( pTextureReflectivity ) pKey4 |= ( uint32_t )1 << 6;
-	if( pTextureRoughness ) pKey4 |= ( uint32_t )1 << 7;
-	if( pTextureEmissivity ) pKey4 |= ( uint32_t )1 << 8;
-	if( pTextureAO ) pKey4 |= ( uint32_t )1 << 9;
-	if( pTextureEnvMap ) pKey4 |= ( uint32_t )1 << 10;
-	if( pTextureEnvMapEqui ) pKey4 |= ( uint32_t )1 << 11;
-	if( pTextureAbsorption ) pKey4 |= ( uint32_t )1 << 12;
-	if( pTextureRenderColor ) pKey4 |= ( uint32_t )1 << 13;
-	if( pTextureRefractionDistort ) pKey4 |= ( uint32_t )1 << 14;
-	if( pTextureEnvRoom ) pKey4 |= ( uint32_t )1 << 15;
-	if( pTextureEnvRoomMask ) pKey4 |= ( uint32_t )1 << 16;
-	if( pTextureEnvRoomEmissivity ) pKey4 |= ( uint32_t )1 << 17;
-	if( pTextureRimEmissivity ) pKey4 |= ( uint32_t )1 << 18;
-	if( pTextureNonPbrAlbedo ) pKey4 |= ( uint32_t )1 << 19;
-	if( pTextureNonPbrMetalness ) pKey4 |= ( uint32_t )1 << 20;
+	pKey4 = (uint32_t)0;
+	if(pTextureColor) pKey4 |= (uint32_t)1 << 0;
+	if(pTextureColorTintMask) pKey4 |= (uint32_t)1 << 1;
+	if(pTextureTransparency) pKey4 |= (uint32_t)1 << 2;
+	if(pTextureSolidity) pKey4 |= (uint32_t)1 << 3;
+	if(pTextureNormal) pKey4 |= (uint32_t)1 << 4;
+	if(pTextureHeight) pKey4 |= (uint32_t)1 << 5;
+	if(pTextureReflectivity) pKey4 |= (uint32_t)1 << 6;
+	if(pTextureRoughness) pKey4 |= (uint32_t)1 << 7;
+	if(pTextureEmissivity) pKey4 |= (uint32_t)1 << 8;
+	if(pTextureAO) pKey4 |= (uint32_t)1 << 9;
+	if(pTextureEnvMap) pKey4 |= (uint32_t)1 << 10;
+	if(pTextureEnvMapEqui) pKey4 |= (uint32_t)1 << 11;
+	if(pTextureAbsorption) pKey4 |= (uint32_t)1 << 12;
+	if(pTextureRenderColor) pKey4 |= (uint32_t)1 << 13;
+	if(pTextureRefractionDistort) pKey4 |= (uint32_t)1 << 14;
+	if(pTextureEnvRoom) pKey4 |= (uint32_t)1 << 15;
+	if(pTextureEnvRoomMask) pKey4 |= (uint32_t)1 << 16;
+	if(pTextureEnvRoomEmissivity) pKey4 |= (uint32_t)1 << 17;
+	if(pTextureRimEmissivity) pKey4 |= (uint32_t)1 << 18;
+	if(pTextureNonPbrAlbedo) pKey4 |= (uint32_t)1 << 19;
+	if(pTextureNonPbrMetalness) pKey4 |= (uint32_t)1 << 20;
 }
 
 
@@ -616,10 +616,10 @@ void deoglSkinShaderConfig::UpdateKey(){
 // Debug
 //////////
 
-void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
+void deoglSkinShaderConfig::DebugGetConfigString(decString &string) const{
 	string = "(";
 	
-	switch( pGeometryMode ){
+	switch(pGeometryMode){
 		case egmComponent: string = "component"; break;
 		case egmBillboard: string = "billboard"; break;
 		case egmDecal: string = "decal"; break;
@@ -630,299 +630,299 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 		default: string = "?";
 	}
 	
-	switch( pShaderMode ){
-		case esmGeometry: string.Append( " geometry" ); break;
-		case esmDepth: string.Append( " depth" ); break;
-		case esmEnvMap: string.Append( " envMap" ); break;
-		default: string.Append( " ?" );
+	switch(pShaderMode){
+		case esmGeometry: string.Append(" geometry"); break;
+		case esmDepth: string.Append(" depth"); break;
+		case esmEnvMap: string.Append(" envMap"); break;
+		default: string.Append(" ?");
 	}
 	
-	switch( pDepthMode ){
-		case edmProjection: string.Append( " projection" ); break;
-		case edmOrthogonal: string.Append( " orthogonal" ); break;
-		case edmDistance: string.Append( " distance" ); break;
-		default: string.Append( " ?" );
+	switch(pDepthMode){
+		case edmProjection: string.Append(" projection"); break;
+		case edmOrthogonal: string.Append(" orthogonal"); break;
+		case edmDistance: string.Append(" distance"); break;
+		default: string.Append(" ?");
 	}
 	
-	switch( pMaterialNormalModeDec ){
-		case emnmFloat: string.Append( " matnorFloat" ); break;
-		case emnmIntBasic: string.Append( " matnorIntBasic" ); break;
-		case emnmSpheremap: string.Append( " matnorSpheremap" ); break;
-		default: string.Append( " ?" );
+	switch(pMaterialNormalModeDec){
+		case emnmFloat: string.Append(" matnorFloat"); break;
+		case emnmIntBasic: string.Append(" matnorIntBasic"); break;
+		case emnmSpheremap: string.Append(" matnorSpheremap"); break;
+		default: string.Append(" ?");
 	}
 	
-	switch( pMaterialNormalModeEnc ){
-		case emnmFloat: string.Append( "/matnorFloat" ); break;
-		case emnmIntBasic: string.Append( "/matnorIntBasic" ); break;
-		case emnmSpheremap: string.Append( "/matnorSpheremap" ); break;
-		default: string.Append( " ?" );
+	switch(pMaterialNormalModeEnc){
+		case emnmFloat: string.Append("/matnorFloat"); break;
+		case emnmIntBasic: string.Append("/matnorIntBasic"); break;
+		case emnmSpheremap: string.Append("/matnorSpheremap"); break;
+		default: string.Append(" ?");
 	}
 	
-	switch( pParticleMode ){
-		case epmParticle: string.Append( " particle" ); break;
-		case epmRibbon: string.Append( " ribbon" ); break;
-		case epmBeam: string.Append( " beam" ); break;
-		default: string.Append( " ?" );
+	switch(pParticleMode){
+		case epmParticle: string.Append(" particle"); break;
+		case epmRibbon: string.Append(" ribbon"); break;
+		case epmBeam: string.Append(" beam"); break;
+		default: string.Append(" ?");
 	}
 	
-	switch( pTessellationMode ){
-		case etmNone: string.Append( " tessNone" ); break;
-		case etmLinear: string.Append( " tessLinear" ); break;
-		default: string.Append( " ?" );
+	switch(pTessellationMode){
+		case etmNone: string.Append(" tessNone"); break;
+		case etmLinear: string.Append(" tessLinear"); break;
+		default: string.Append(" ?");
 	}
 	
-	switch( pDepthTestMode ){
-		case edtmNone: string.Append( " depthNone" ); break;
-		case edtmSmaller: string.Append( " depthSmaller" ); break;
-		case edtmLarger: string.Append( " depthLarger" ); break;
-		default: string.Append( " ?" );
+	switch(pDepthTestMode){
+		case edtmNone: string.Append(" depthNone"); break;
+		case edtmSmaller: string.Append(" depthSmaller"); break;
+		case edtmLarger: string.Append(" depthLarger"); break;
+		default: string.Append(" ?");
 	}
 	
-	if( pDecodeInDepth ){
-		string.Append( " decodeInDepth" );
+	if(pDecodeInDepth){
+		string.Append(" decodeInDepth");
 	}
-	if( pEncodeOutDepth ){
-		string.Append( " encodeOutDepth" );
+	if(pEncodeOutDepth){
+		string.Append(" encodeOutDepth");
 	}
-	if( pInverseDepth ){
-		string.Append( " inverseDepth" );
+	if(pInverseDepth){
+		string.Append(" inverseDepth");
 	}
-	if( pMaskedSolidity ){
-		string.Append( " maskSol" );
+	if(pMaskedSolidity){
+		string.Append(" maskSol");
 	}
-	if( pClipPlane ){
-		string.Append( " clipPlane" );
+	if(pClipPlane){
+		string.Append(" clipPlane");
 	}
-	if( pOutputConstant ){
-		string.Append( " outputConstant" );
+	if(pOutputConstant){
+		string.Append(" outputConstant");
 	}
-	if( pOutputColor ){
-		string.Append( " outputColor" );
+	if(pOutputColor){
+		string.Append(" outputColor");
 	}
-	if( pAmbientLightProbe ){
-		string.Append( " ambientLightProbe" );
+	if(pAmbientLightProbe){
+		string.Append(" ambientLightProbe");
 	}
-	if( pSkinReflections ){
-		string.Append( " skinReflections" );
+	if(pSkinReflections){
+		string.Append(" skinReflections");
 	}
-	if( pFadeOutRange ){
-		string.Append( " fadeOutRange" );
+	if(pFadeOutRange){
+		string.Append(" fadeOutRange");
 	}
-	if( pVariations ){
-		string.Append( " variations" );
+	if(pVariations){
+		string.Append(" variations");
 	}
-	if( pUseNormalRoughnessCorrection ){
-		string.Append( " norRoughCorr" );
+	if(pUseNormalRoughnessCorrection){
+		string.Append(" norRoughCorr");
 	}
-	if( pGSRenderCube ){
-		string.Append( " gsRenderCube" );
+	if(pGSRenderCube){
+		string.Append(" gsRenderCube");
 	}
-	if( pGSRenderCascaded ){
-		string.Append( " gsRenderCascaded" );
+	if(pGSRenderCascaded){
+		string.Append(" gsRenderCascaded");
 	}
-	if( pGSRenderStereo ){
-		string.Append( " gsRenderStereo" );
+	if(pGSRenderStereo){
+		string.Append(" gsRenderStereo");
 	}
-	if( pVSRenderStereo ){
-		string.Append( " vsRenderStereo" );
+	if(pVSRenderStereo){
+		string.Append(" vsRenderStereo");
 	}
-	if( pSharedSPB ){
-		string.Append( " sharedSPB" );
+	if(pSharedSPB){
+		string.Append(" sharedSPB");
 	}
-	if( pOutline ){
-		string.Append( " outline" );
+	if(pOutline){
+		string.Append(" outline");
 	}
-	if( pOutlineThicknessScreen ){
-		string.Append( " outlineTS" );
+	if(pOutlineThicknessScreen){
+		string.Append(" outlineTS");
 	}
-	if( pLuminanceOnly ){
-		string.Append( " luminanceOnly" );
+	if(pLuminanceOnly){
+		string.Append(" luminanceOnly");
 	}
-	if( pGIMaterial ){
-		string.Append( " giMaterial" );
+	if(pGIMaterial){
+		string.Append(" giMaterial");
 	}
-	if( pSkinClipPlane ){
-		string.Append( " skinClpPl" );
+	if(pSkinClipPlane){
+		string.Append(" skinClpPl");
 	}
 	
-	if( pDynamicColorTint ){
-		string.Append( " dynClrTint" );
+	if(pDynamicColorTint){
+		string.Append(" dynClrTint");
 	}
-	if( pDynamicColorGamma ){
-		string.Append( " dynClrGamma" );
+	if(pDynamicColorGamma){
+		string.Append(" dynClrGamma");
 	}
-	if( pDynamicColorSolidityMultiplier ){
-		string.Append( " dynClrTraMul" );
+	if(pDynamicColorSolidityMultiplier){
+		string.Append(" dynClrTraMul");
 	}
-	if( pDynamicAmbientOcclusionSolidityMultiplier ){
-		string.Append( " dynAOTraMul" );
+	if(pDynamicAmbientOcclusionSolidityMultiplier){
+		string.Append(" dynAOTraMul");
 	}
-	if( pDynamicTransparencyMultiplier ){
-		string.Append( " dynTraMul" );
+	if(pDynamicTransparencyMultiplier){
+		string.Append(" dynTraMul");
 	}
-	if( pDynamicSolidityRemap ){
-		string.Append( " dynSolRemap" );
+	if(pDynamicSolidityRemap){
+		string.Append(" dynSolRemap");
 	}
-	if( pDynamicHeightRemap ){
-		string.Append( " dynHeiRemap" );
+	if(pDynamicHeightRemap){
+		string.Append(" dynHeiRemap");
 	}
-	if( pDynamicNormalStrength ){
-		string.Append( " dynNorStr" );
+	if(pDynamicNormalStrength){
+		string.Append(" dynNorStr");
 	}
-	if( pDynamicNormalSolidityMultiplier ){
-		string.Append( " dynNorTraMul" );
+	if(pDynamicNormalSolidityMultiplier){
+		string.Append(" dynNorTraMul");
 	}
-	if( pDynamicRoughnessRemap ){
-		string.Append( " dynRouRemap" );
+	if(pDynamicRoughnessRemap){
+		string.Append(" dynRouRemap");
 	}
-	if( pDynamicRoughnessGamma ){
-		string.Append( " dynRouGamma" );
+	if(pDynamicRoughnessGamma){
+		string.Append(" dynRouGamma");
 	}
-	if( pDynamicRoughnessSolidityMultiplier ){
-		string.Append( " dynRouTraMul" );
+	if(pDynamicRoughnessSolidityMultiplier){
+		string.Append(" dynRouTraMul");
 	}
-	if( pDynamicReflectivitySolidityMultiplier ){
-		string.Append( " dynReflSolMul" );
+	if(pDynamicReflectivitySolidityMultiplier){
+		string.Append(" dynReflSolMul");
 	}
-	if( pDynamicReflectivityMultiplier ){
-		string.Append( " dynReflMul" );
+	if(pDynamicReflectivityMultiplier){
+		string.Append(" dynReflMul");
 	}
-	if( pDynamicRefractionDistortStrength ){
-		string.Append( " dynRefrDisStr" );
+	if(pDynamicRefractionDistortStrength){
+		string.Append(" dynRefrDisStr");
 	}
-	if( pDynamicEmissivityTint ){
-		string.Append( " dynEmiTint" );
+	if(pDynamicEmissivityTint){
+		string.Append(" dynEmiTint");
 	}
-	if( pDynamicEmissivityIntensity ){
-		string.Append( " dynEmiInt" );
+	if(pDynamicEmissivityIntensity){
+		string.Append(" dynEmiInt");
 	}
 	if(pDynamicEnvRoomTint){
 		string.Append(" dynEnvRoomTint");
 	}
-	if( pDynamicEnvRoomSize ){
-		string.Append( " dynEnvRoomSize" );
+	if(pDynamicEnvRoomSize){
+		string.Append(" dynEnvRoomSize");
 	}
-	if( pDynamicEnvRoomOffset ){
-		string.Append( " dynEnvRoomOffset" );
+	if(pDynamicEnvRoomOffset){
+		string.Append(" dynEnvRoomOffset");
 	}
-	if( pDynamicEnvRoomEmissivityTint ){
-		string.Append( " dynEnvRoomEmiTint" );
+	if(pDynamicEnvRoomEmissivityTint){
+		string.Append(" dynEnvRoomEmiTint");
 	}
-	if( pDynamicEnvRoomEmissivityIntensity ){
-		string.Append( " dynEnvRoomEmiInt" );
+	if(pDynamicEnvRoomEmissivityIntensity){
+		string.Append(" dynEnvRoomEmiInt");
 	}
-	if( pDynamicThickness ){
-		string.Append( " dynThick" );
+	if(pDynamicThickness){
+		string.Append(" dynThick");
 	}
-	if( pDynamicAbsorption ){
-		string.Append( " dynAbsorb" );
+	if(pDynamicAbsorption){
+		string.Append(" dynAbsorb");
 	}
-	if( pDynamicVariation ){
-		string.Append( " dynVar" );
+	if(pDynamicVariation){
+		string.Append(" dynVar");
 	}
-	if( pDynamicOutlineColor ){
-		string.Append( " dynOutColor" );
+	if(pDynamicOutlineColor){
+		string.Append(" dynOutColor");
 	}
-	if( pDynamicOutlineColorTint ){
-		string.Append( " dynOutColorTint" );
+	if(pDynamicOutlineColorTint){
+		string.Append(" dynOutColorTint");
 	}
-	if( pDynamicOutlineThickness ){
-		string.Append( " dynOutThick" );
+	if(pDynamicOutlineThickness){
+		string.Append(" dynOutThick");
 	}
-	if( pDynamicOutlineSolidity ){
-		string.Append( " dynOutSol" );
+	if(pDynamicOutlineSolidity){
+		string.Append(" dynOutSol");
 	}
-	if( pDynamicOutlineEmissivity ){
-		string.Append( " dynOutEmis" );
+	if(pDynamicOutlineEmissivity){
+		string.Append(" dynOutEmis");
 	}
-	if( pDynamicOutlineEmissivityTint ){
-		string.Append( " dynOutEmisTint" );
+	if(pDynamicOutlineEmissivityTint){
+		string.Append(" dynOutEmisTint");
 	}
-	if( pDynamicRimEmissivityTint ){
-		string.Append( " dynRimEmisTint" );
+	if(pDynamicRimEmissivityTint){
+		string.Append(" dynRimEmisTint");
 	}
-	if( pDynamicRimEmissivityIntensity ){
-		string.Append( " dynRimEmisInt" );
+	if(pDynamicRimEmissivityIntensity){
+		string.Append(" dynRimEmisInt");
 	}
-	if( pDynamicRimAngle ){
-		string.Append( " dynRimAng" );
+	if(pDynamicRimAngle){
+		string.Append(" dynRimAng");
 	}
-	if( pDynamicRimExponent ){
-		string.Append( " dynRimExp" );
+	if(pDynamicRimExponent){
+		string.Append(" dynRimExp");
 	}
-	if( pDynamicSkinClipPlane ){
-		string.Append( " dynSkClpPl" );
+	if(pDynamicSkinClipPlane){
+		string.Append(" dynSkClpPl");
 	}
-	if( pDynamicSkinClipPlaneBorder ){
-		string.Append( " dynSkClpPlBrd" );
+	if(pDynamicSkinClipPlaneBorder){
+		string.Append(" dynSkClpPlBrd");
 	}
 	
-	if( pTextureColor ){
-		string.Append( " texCol" );
+	if(pTextureColor){
+		string.Append(" texCol");
 	}
-	if( pTextureColorTintMask ){
-		string.Append( " texColTintMask" );
+	if(pTextureColorTintMask){
+		string.Append(" texColTintMask");
 	}
-	if( pTextureTransparency ){
-		string.Append( " texTran" );
+	if(pTextureTransparency){
+		string.Append(" texTran");
 	}
-	if( pTextureSolidity ){
-		string.Append( " texSol" );
+	if(pTextureSolidity){
+		string.Append(" texSol");
 	}
-	if( pTextureNormal ){
-		string.Append( " texNor" );
+	if(pTextureNormal){
+		string.Append(" texNor");
 	}
-	if( pTextureHeight ){
-		string.Append( " texHei" );
+	if(pTextureHeight){
+		string.Append(" texHei");
 	}
-	if( pTextureReflectivity ){
-		string.Append( " texRefl" );
+	if(pTextureReflectivity){
+		string.Append(" texRefl");
 	}
-	if( pTextureRoughness ){
-		string.Append( " texRoug" );
+	if(pTextureRoughness){
+		string.Append(" texRoug");
 	}
-	if( pTextureEmissivity ){
-		string.Append( " texEmis" );
+	if(pTextureEmissivity){
+		string.Append(" texEmis");
 	}
-	if( pTextureAO ){
-		string.Append( " texAO" );
+	if(pTextureAO){
+		string.Append(" texAO");
 	}
-	if( pTextureEnvMap ){
-		string.Append( " texEnvMap" );
-		if( pTextureEnvMapEqui ){
-			string.Append( "Equi" );
+	if(pTextureEnvMap){
+		string.Append(" texEnvMap");
+		if(pTextureEnvMapEqui){
+			string.Append("Equi");
 		}
 	}
-	if( pTextureAbsorption ){
-		string.Append( " texAbsorb" );
+	if(pTextureAbsorption){
+		string.Append(" texAbsorb");
 	}
-	if( pTextureRenderColor ){
-		string.Append( " texRenCol" );
+	if(pTextureRenderColor){
+		string.Append(" texRenCol");
 	}
-	if( pTextureRefractionDistort ){
-		string.Append( " texRefrDist" );
+	if(pTextureRefractionDistort){
+		string.Append(" texRefrDist");
 	}
-	if( pTextureEnvRoom ){
-		string.Append( " texEnvRoom" );
+	if(pTextureEnvRoom){
+		string.Append(" texEnvRoom");
 	}
-	if( pTextureEnvRoomMask ){
-		string.Append( " texEnvRoomMask" );
+	if(pTextureEnvRoomMask){
+		string.Append(" texEnvRoomMask");
 	}
-	if( pTextureEnvRoomEmissivity ){
-		string.Append( " texEnvRoomEmi" );
+	if(pTextureEnvRoomEmissivity){
+		string.Append(" texEnvRoomEmi");
 	}
-	if( pTextureRimEmissivity ){
-		string.Append( " texRimEmis" );
-	}
-	
-	if( pTextureNonPbrAlbedo ){
-		string.Append( " texNPAlb" );
-	}
-	if( pTextureNonPbrMetalness ){
-		string.Append( " texNPMet" );
+	if(pTextureRimEmissivity){
+		string.Append(" texRimEmis");
 	}
 	
-	string.Append( ")" );
+	if(pTextureNonPbrAlbedo){
+		string.Append(" texNPAlb");
+	}
+	if(pTextureNonPbrMetalness){
+		string.Append(" texNPMet");
+	}
+	
+	string.Append(")");
 }
 
 
@@ -930,7 +930,7 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 // Operators
 //////////////
 
-deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderConfig &config ){
+deoglSkinShaderConfig &deoglSkinShaderConfig::operator=(const deoglSkinShaderConfig &config){
 	pShaderMode = config.pShaderMode;
 	pGeometryMode = config.pGeometryMode;
 	pDepthMode = config.pDepthMode;
@@ -1031,7 +1031,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	return *this;
 }
 
-bool deoglSkinShaderConfig::operator==( const deoglSkinShaderConfig &config ) const{
+bool deoglSkinShaderConfig::operator==(const deoglSkinShaderConfig &config) const{
 	return pKey1 == config.pKey1
 		&& pKey2 == config.pKey2
 		&& pKey3 == config.pKey3

@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpacePaste::gdeMAOCNavSpacePaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Space",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class navigation space" )
+gdeMAOCNavSpacePaste::gdeMAOCNavSpacePaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Navigation Space",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class navigation space")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Space",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCNavSpace::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCNavSpace::TYPE_NAME));
+	if(! clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCNavSpace &clipOCNavigationSpace =
-		( const gdeClipboardDataOCNavSpace & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCNavSpace &)(igdeClipboardData&)clip;
 	
 	const gdeOCNavigationSpace::Ref navSpace(gdeOCNavigationSpace::Ref::NewWith(*clipOCNavigationSpace.GetNavSpace()));
 	
-	igdeUndo * const undo = new gdeUOCAddNavSpace( &objectClass,
-		navSpace );
-	undo->SetShortInfo( "Paste object class navigation space" );
+	igdeUndo * const undo = new gdeUOCAddNavSpace(&objectClass,
+		navSpace);
+	undo->SetShortInfo("Paste object class navigation space");
 	return undo;
 }
 
 void gdeMAOCNavSpacePaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCNavSpace::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCNavSpace::TYPE_NAME));
 }

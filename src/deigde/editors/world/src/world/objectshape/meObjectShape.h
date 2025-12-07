@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new object shape. */
-	meObjectShape( igdeEnvironment *environment, const decShape &shape );
+	meObjectShape(igdeEnvironment *environment, const decShape &shape);
 	/** \brief Cleans up the object shape. */
 	virtual ~meObjectShape();
 	/*@}*/
@@ -90,33 +90,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment *GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Retrieves the engine collider. */
-	inline deColliderVolume *GetEngineCollider() const{ return pEngCollider; }
+	inline deColliderVolume *GetEngineCollider() const{return pEngCollider;}
 	
 	/** \brief Retrieves the world or NULL. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	/** \brief Sets the world or NULL. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	/** \brief Retrieves the parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline meObject *GetParentObject() const{return pParentObject;}
 	/** \brief Sets the parent object or NULL. */
-	void SetParentObject( meObject *parentObject );
+	void SetParentObject(meObject *parentObject);
 	
 	/** \brief Retrieves the shape. */
-	inline const decShape *GetShape() const{ return pShape; }
+	inline const decShape *GetShape() const{return pShape;}
 	/** \brief Sets the shape. Make sure it is of the matching shape type. */
-	void SetShape( const decShape &shape );
+	void SetShape(const decShape &shape);
 	
 	/** \brief Determines if the shape is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	/** \brief Sets if the shape is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	/** \brief Determines if the shape is active. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	/** \brief Sets if the shape is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Update collider and debug drawer shape, position, orientation and scaling. */
 	void UpdateShape();

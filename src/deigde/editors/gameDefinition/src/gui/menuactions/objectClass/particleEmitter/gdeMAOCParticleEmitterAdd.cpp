@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCParticleEmitterAdd::gdeMAOCParticleEmitterAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Particle Emitter...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class particle emitter" )
+gdeMAOCParticleEmitterAdd::gdeMAOCParticleEmitterAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Particle Emitter...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class particle emitter")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Particle Emitter...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCParticleEmitterAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddParticleEmitter(&objectClass, gdeOCParticleEmitter::Ref::NewWith());
 }
 
 void gdeMAOCParticleEmitterAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

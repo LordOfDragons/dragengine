@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPUndoHistory::gdeWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pListener( new gdeWPUndoHistoryListener( *this ) ),
-pGameDefinition( NULL ){
+gdeWPUndoHistory::gdeWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(new gdeWPUndoHistoryListener(*this)),
+pGameDefinition(NULL){
 }
 
 gdeWPUndoHistory::~gdeWPUndoHistory(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -60,24 +60,24 @@ gdeWPUndoHistory::~gdeWPUndoHistory(){
 // Management
 ///////////////
 
-void gdeWPUndoHistory::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 		
-		SetUndoSystem( gameDefinition->GetUndoSystem() );
+		SetUndoSystem(gameDefinition->GetUndoSystem());
 	}
 }

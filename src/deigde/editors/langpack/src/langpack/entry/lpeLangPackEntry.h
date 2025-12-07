@@ -59,7 +59,7 @@ public:
 	lpeLangPackEntry();
 	
 	/** Creates a new entry as a copy of another entry. */
-	lpeLangPackEntry( const lpeLangPackEntry &entry );
+	lpeLangPackEntry(const lpeLangPackEntry &entry);
 	
 protected:
 	/** Cleans up the entry. */
@@ -72,38 +72,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent language pack or NULL if there is none. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	inline lpeLangPack *GetLangPack() const{return pLangPack;}
 	
 	/** Sets the parent language pack or NULL if there is none. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	
 	
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Retrieves the textu. */
-	inline const decUnicodeString &GetText() const{ return pText; }
+	inline const decUnicodeString &GetText() const{return pText;}
 	
 	/** Sets the text. */
-	void SetText( const decUnicodeString &text );
+	void SetText(const decUnicodeString &text);
 	
 	
 	
 	/** Determines if the entry is the active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	
 	/** Sets if the entry is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Determines if the entry is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** Sets if the entry is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	

@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRLink::meHTVRLink( meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot ){
-	if( ! sourceRule || ! destinationRule ){
-		DETHROW( deeInvalidParam );
+meHTVRLink::meHTVRLink(meHTVRule *sourceRule, int sourceSlot, meHTVRule *destinationRule, int destinationSlot){
+	if(! sourceRule || ! destinationRule){
+		DETHROW(deeInvalidParam);
 	}
-	if( sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount() ){
-		DETHROW( deeInvalidParam );
+	if(sourceSlot < 0 || sourceSlot >= sourceRule->GetSlotCount()){
+		DETHROW(deeInvalidParam);
 	}
-	if( destinationSlot < 0 || destinationSlot >= destinationRule->GetSlotCount() ){
-		DETHROW( deeInvalidParam );
+	if(destinationSlot < 0 || destinationSlot >= destinationRule->GetSlotCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSrcRule = sourceRule;

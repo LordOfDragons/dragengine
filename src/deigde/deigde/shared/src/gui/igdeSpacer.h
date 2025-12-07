@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create spacer. */
-	igdeSpacer( igdeEnvironment &environment, const decPoint &size );
+	igdeSpacer(igdeEnvironment &environment, const decPoint &size);
 	
 	
 	
@@ -67,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Size. */
-	inline const decPoint &GetSize() const{ return pSize; }
+	inline const decPoint &GetSize() const{return pSize;}
 	
 	/** \brief Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	
 	

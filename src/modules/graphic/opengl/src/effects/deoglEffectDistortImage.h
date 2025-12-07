@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffectDistortImage( deGraphicOpenGl &ogl, const deEffectDistortImage &effect );
+	deoglEffectDistortImage(deGraphicOpenGl &ogl, const deEffectDistortImage &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffectDistortImage();
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Effect color matrix engine resource. */
-	inline const deEffectDistortImage &GetEffectDistortImage() const{ return pEffectDistortImage; }
+	inline const deEffectDistortImage &GetEffectDistortImage() const{return pEffectDistortImage;}
 	
 	
 	

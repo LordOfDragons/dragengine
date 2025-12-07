@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetPosition::ceUCTargetSetPosition( ceTarget *target, const decVector &newPosition ){
-	if( ! target ) DETHROW( deeInvalidParam );
+ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition){
+	if(! target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
 	
-	SetShortInfo( "Target Set Position" );
+	SetShortInfo("Target Set Position");
 	
 	pOldPosition = target->GetPosition();
 	pNewPosition = newPosition;
@@ -54,7 +54,7 @@ ceUCTargetSetPosition::ceUCTargetSetPosition( ceTarget *target, const decVector 
 }
 
 ceUCTargetSetPosition::~ceUCTargetSetPosition(){
-	if( pTarget ){
+	if(pTarget){
 		pTarget->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCTargetSetPosition::~ceUCTargetSetPosition(){
 ///////////////
 
 void ceUCTargetSetPosition::Undo(){
-	pTarget->SetPosition( pOldPosition );
+	pTarget->SetPosition(pOldPosition);
 }
 
 void ceUCTargetSetPosition::Redo(){
-	pTarget->SetPosition( pNewPosition );
+	pTarget->SetPosition(pNewPosition);
 }

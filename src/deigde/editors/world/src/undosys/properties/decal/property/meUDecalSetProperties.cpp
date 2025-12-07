@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSetProperties::meUDecalSetProperties( meDecal *decal, const decStringDictionary &newValues ) :
-pDecal( NULL ),
-pNewValues( newValues )
+meUDecalSetProperties::meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues) :
+pDecal(NULL),
+pNewValues(newValues)
 {
-	if( ! decal || ! decal->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(! decal || ! decal->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Change decal properties" );
+	SetShortInfo("Change decal properties");
 	
 	pDecal = NULL;
 	
@@ -58,7 +58,7 @@ pNewValues( newValues )
 }
 
 meUDecalSetProperties::~meUDecalSetProperties(){
-	if( pDecal ){
+	if(pDecal){
 		pDecal->FreeReference();
 	}
 }
@@ -69,9 +69,9 @@ meUDecalSetProperties::~meUDecalSetProperties(){
 ///////////////
 
 void meUDecalSetProperties::Undo(){
-	pDecal->SetProperties( pOldValues );
+	pDecal->SetProperties(pOldValues);
 }
 
 void meUDecalSetProperties::Redo(){
-	pDecal->SetProperties( pNewValues );
+	pDecal->SetProperties(pNewValues);
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create texture. */
-	deoglModelTexture( deoglRenderThread &renderThread );
+	deoglModelTexture(deoglRenderThread &renderThread);
 	
 	/** Clean up texture. */
 	~deoglModelTexture();
@@ -61,37 +61,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** First face index. */
-	inline int GetFirstFace() const{ return pFirstFace; }
+	inline int GetFirstFace() const{return pFirstFace;}
 	
 	/** Set first face index. */
-	void SetFirstFace( int faceIndex );
+	void SetFirstFace(int faceIndex);
 	
 	/** Face count. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	
 	/** Set face count. */
-	void SetFaceCount( int faceCount );
+	void SetFaceCount(int faceCount);
 	
 	/** Texture is double sided. */
-	inline bool GetDoubleSided() const{ return pDoubleSided; }
+	inline bool GetDoubleSided() const{return pDoubleSided;}
 	
 	/** Set texture is double sided. */
-	void SetDoubleSided( bool doubleSided );
+	void SetDoubleSided(bool doubleSided);
 	
 	/** Texture is rendered as decal. */
-	inline bool GetDecal() const{ return pDecal; }
+	inline bool GetDecal() const{return pDecal;}
 	
 	/** Set if texture is rendered as decal. */
-	void SetDecal( bool decal );
+	void SetDecal(bool decal);
 	
 	/** Decal offset. */
-	inline int GetDecalOffset() const{ return pDecalOffset; }
+	inline int GetDecalOffset() const{return pDecalOffset;}
 	
 	/** Set decal offset. */
-	void SetDecalOffset( int offset );
+	void SetDecalOffset(int offset);
 	
 	/** Render task instance groups. */
-	inline deoglSharedSPBRTIGroupList &GetRTIGroups(){ return pRTIGroups; }
+	inline deoglSharedSPBRTIGroupList &GetRTIGroups(){return pRTIGroups;}
 	/*@}*/
 };
 

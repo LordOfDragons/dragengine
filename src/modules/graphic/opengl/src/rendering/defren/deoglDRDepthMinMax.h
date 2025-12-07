@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create depth min-max. */
-	deoglDRDepthMinMax( deoglRenderThread &renderThread,
-		int width, int height, int layerCount, int maxLevelCount );
+	deoglDRDepthMinMax(deoglRenderThread &renderThread,
+		int width, int height, int layerCount, int maxLevelCount);
 	
 	/** Clean up depth min-max. */
 	~deoglDRDepthMinMax();
@@ -71,33 +71,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width of base level. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** Height of base level. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** Layer count. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/** Level count. */
-	inline int GetLevelCount() const{ return pLevelCount; }
+	inline int GetLevelCount() const{return pLevelCount;}
 	
 	/** Maximum level count. */
-	inline int GetMaxLevelCount() const{ return pMaxLevelCount; }
+	inline int GetMaxLevelCount() const{return pMaxLevelCount;}
 	
 	/** Retrieves the texture. */
-	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
+	inline deoglArrayTexture *GetTexture() const{return pTexture;}
 	/** Retrieves the fbo for a level. */
-	deoglFramebuffer *GetFBOAt( int level );
+	deoglFramebuffer *GetFBOAt(int level);
 	
 	/** Retrieves the min texture. */
-	inline deoglArrayTexture *GetTextureMin() const{ return pTextureMin; }
+	inline deoglArrayTexture *GetTextureMin() const{return pTextureMin;}
 	/** Retrieves the fbo for a level of the min texture. */
-	deoglFramebuffer *GetFBOMinAt( int level );
+	deoglFramebuffer *GetFBOMinAt(int level);
 	/** Retrieves the max texture. */
-	inline deoglArrayTexture *GetTextureMax() const{ return pTextureMax; }
+	inline deoglArrayTexture *GetTextureMax() const{return pTextureMax;}
 	/** Retrieves the fbo for a level of the max texture. */
-	deoglFramebuffer *GetFBOMaxAt( int level );
+	deoglFramebuffer *GetFBOMaxAt(int level);
 	/*@}*/
 	
 private:

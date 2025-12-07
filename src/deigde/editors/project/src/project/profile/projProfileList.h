@@ -47,7 +47,7 @@ public:
 	projProfileList();
 	
 	/** \brief Create copy of profile list. */
-	projProfileList( const projProfileList &copy );
+	projProfileList(const projProfileList &copy);
 	
 	/** \brief Clean up profile list. */
 	~projProfileList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Profile at position. */
-	projProfile *GetAt( int index ) const;
+	projProfile *GetAt(int index) const;
 	
 	/** \brief Named profile or \em NULL if absent. */
-	projProfile *GetNamed( const char *name ) const;
+	projProfile *GetNamed(const char *name) const;
 	
 	/** \brief Index of named profile or -1 if absent. */
-	int IndexOf( projProfile *profile ) const;
+	int IndexOf(projProfile *profile) const;
 	
 	/** \brief Index of named profile or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Profile is present. */
-	bool Has( projProfile *profile ) const;
+	bool Has(projProfile *profile) const;
 	
 	/** \brief Named profile is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add profile. */
-	void Add( projProfile *profile );
+	void Add(projProfile *profile);
 	
 	/** \brief Remove profile. */
-	void Remove( projProfile *profile );
+	void Remove(projProfile *profile);
 	
 	/** \brief Remove all profilees. */
 	void RemoveAll();
 	
 	/** \brief Set from another profile list. */
-	projProfileList &operator=( const projProfileList &list );
+	projProfileList &operator=(const projProfileList &list);
 	/*@}*/
 };
 

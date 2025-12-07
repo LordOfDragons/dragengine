@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug overlay manager. */
-	deoglDebugOverlay( deGraphicOpenGl &ogl );
+	deoglDebugOverlay(deGraphicOpenGl &ogl);
 	
 	/** Clean up debug overlay manager. */
 	~deoglDebugOverlay();
@@ -62,13 +62,13 @@ public:
 	 * 
 	 * Aligns the children canvas and synchronizes.
 	 */
-	void PrepareOverlay( deCanvasView &canvasView );
+	void PrepareOverlay(deCanvasView &canvasView);
 	/*@}*/
 	
 	
 	
 private:
-	void pSortViews( deCanvasView &canvasView );
+	void pSortViews(deCanvasView &canvasView);
 	void pAlignViews();
 };
 

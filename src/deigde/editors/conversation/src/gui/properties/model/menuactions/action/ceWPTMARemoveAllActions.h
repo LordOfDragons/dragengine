@@ -49,8 +49,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMARemoveAllActions( ceWindowMain &windowMain,
-		ceConversation &conversation );
+	ceWPTMARemoveAllActions(ceWindowMain &windowMain,
+		ceConversation &conversation);
 	/*@}*/
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

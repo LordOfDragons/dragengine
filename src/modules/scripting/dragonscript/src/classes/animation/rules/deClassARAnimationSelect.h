@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassARAnimationSelect( deScriptingDragonScript &ds );
+	deClassARAnimationSelect(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassARAnimationSelect();
@@ -71,21 +71,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRuleAnimationSelect *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleAnimationSelect *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationSelect *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationSelect *rule);
 	
-	inline dsClass *GetClassARAnimationSelectTarget() const{ return pClsARAnimationSelectTarget; }
+	inline dsClass *GetClassARAnimationSelectTarget() const{return pClsARAnimationSelectTarget;}
 	/*@}*/
 	
 private:
@@ -95,26 +95,26 @@ private:
 		dsClass *clsARAnimationSelectTarget;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfGetMoveCount );
-	DEF_NATFUNC( nfGetMoveAt );
-	DEF_NATFUNC( nfAddMove );
-	DEF_NATFUNC( nfRemoveAllMoves );
+	DEF_NATFUNC(nfGetMoveCount);
+	DEF_NATFUNC(nfGetMoveAt);
+	DEF_NATFUNC(nfAddMove);
+	DEF_NATFUNC(nfRemoveAllMoves);
 	
-	DEF_NATFUNC( nfSetEnablePosition );
-	DEF_NATFUNC( nfSetEnableOrientation );
-	DEF_NATFUNC( nfSetEnableSize );
-	DEF_NATFUNC( nfSetEnableVertexPositionSet );
+	DEF_NATFUNC(nfSetEnablePosition);
+	DEF_NATFUNC(nfSetEnableOrientation);
+	DEF_NATFUNC(nfSetEnableSize);
+	DEF_NATFUNC(nfSetEnableVertexPositionSet);
 #undef DEF_NATFUNC
 };
 

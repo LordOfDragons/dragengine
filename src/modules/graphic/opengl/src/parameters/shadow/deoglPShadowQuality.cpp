@@ -39,25 +39,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPShadowQuality::deoglPShadowQuality( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
-	SetName( "shadowQuality" );
-	SetDescription( "Quality of shadow maps. Higher quality uses higher shadow map size "
-		"to improve shadow quality. Lower quality uses lower shadow map size improving performance." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecBasic );
-	SetDisplayName( "Shadow Quality" );
+deoglPShadowQuality::deoglPShadowQuality(deGraphicOpenGl &ogl) : deoglParameter(ogl){
+	SetName("shadowQuality");
+	SetDescription("Quality of shadow maps. Higher quality uses higher shadow map size "
+		"to improve shadow quality. Lower quality uses lower shadow map size improving performance.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecBasic);
+	SetDisplayName("Shadow Quality");
 	
-	const deModuleParameter::SelectionEntry entries[ 6 ] = {
-		{ "off", "Off", "Disable shadow mapping. This can break games so use this option "
+	const deModuleParameter::SelectionEntry entries[6] = {
+		{"off", "Off", "Disable shadow mapping. This can break games so use this option "
 			"only if nothing else helps." },
-		{ "veryLow", "Very Low", "Very low quality. For weak GPU delivering best performance." },
-		{ "low", "Low", "Low quality. Prefer performance over quality." },
-		{ "medium", "Medium", "Medium quality. Balance between quality and performance. Recommended choice." },
-		{ "high", "High", "High quality. Prefer quality over performance." },
-		{ "veryHigh", "Very High", "Very high quality. For high-end GPU delivering best quality." }
+		{"veryLow", "Very Low", "Very low quality. For weak GPU delivering best performance."},
+		{"low", "Low", "Low quality. Prefer performance over quality."},
+		{"medium", "Medium", "Medium quality. Balance between quality and performance. Recommended choice."},
+		{"high", "High", "High quality. Prefer quality over performance."},
+		{"veryHigh", "Very High", "Very high quality. For high-end GPU delivering best quality."}
 	};
-	AddSelectionEntries( entries, 6 );
-	SetDefaultValue( "high" );
+	AddSelectionEntries(entries, 6);
+	SetDefaultValue("high");
 }
 
 deoglPShadowQuality::~deoglPShadowQuality(){
@@ -69,7 +69,7 @@ deoglPShadowQuality::~deoglPShadowQuality(){
 ////////////////////
 
 decString deoglPShadowQuality::GetParameterValue(){
-	switch( pOgl.GetConfiguration().GetShadowQuality() ){
+	switch(pOgl.GetConfiguration().GetShadowQuality()){
 	case deoglConfiguration::esqOff:
 		return "off";
 		
@@ -91,28 +91,28 @@ decString deoglPShadowQuality::GetParameterValue(){
 	}
 }
 
-void deoglPShadowQuality::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
+void deoglPShadowQuality::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
 	
-	if( checkValue == "off" ){
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqOff );
+	if(checkValue == "off"){
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqOff);
 		
-	}else if( checkValue == "verylow" ){
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqVeryLow );
+	}else if(checkValue == "verylow"){
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqVeryLow);
 		
-	}else if( checkValue == "low" ){
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqLow );
+	}else if(checkValue == "low"){
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqLow);
 		
-	}else if( checkValue == "medium" ){
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqMedium );
+	}else if(checkValue == "medium"){
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqMedium);
 		
-	}else if( checkValue == "high" ){
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqHigh );
+	}else if(checkValue == "high"){
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqHigh);
 		
-	}else if( checkValue == "veryhigh" ){
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqVeryHigh );
+	}else if(checkValue == "veryhigh"){
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqVeryHigh);
 		
 	}else{
-		pOgl.GetConfiguration().SetShadowQuality( deoglConfiguration::esqHigh );
+		pOgl.GetConfiguration().SetShadowQuality(deoglConfiguration::esqHigh);
 	}
 }

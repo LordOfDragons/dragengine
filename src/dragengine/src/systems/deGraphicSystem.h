@@ -122,7 +122,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new graphic system  linked to the given engine. */
-	deGraphicSystem( deEngine *engine );
+	deGraphicSystem(deEngine *engine);
 	
 	/** \brief Clean up graphic system. */
 	virtual ~deGraphicSystem();
@@ -133,41 +133,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Activated graphic module. */
-	inline deBaseGraphicModule *GetActiveModule() const{ return pActiveModule; }
+	inline deBaseGraphicModule *GetActiveModule() const{return pActiveModule;}
 	
 	/** \brief Render window. */
-	inline deRenderWindow *GetRenderWindow() const{ return pRenderWindow; }
+	inline deRenderWindow *GetRenderWindow() const{return pRenderWindow;}
 	
 	/** \brief Set render window. */
-	void SetRenderWindow( deRenderWindow *renderWindow );
+	void SetRenderWindow(deRenderWindow *renderWindow);
 	
 	/** \brief Creates and sets a new render window. */
-	void CreateAndSetRenderWindow( int width, int height, bool fullScreen,
-		const char *title, deImage *icon );
+	void CreateAndSetRenderWindow(int width, int height, bool fullScreen,
+		const char *title, deImage *icon);
 	
 	/** \brief Creates and sets a new hosted render window. */
 	#ifdef OS_ANDROID
-	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
-		const char *title, deImage *icon, void *hostWindow );
+	void CreateAndSetHostedRenderWindow(int width, int height, bool fullScreen,
+		const char *title, deImage *icon, void *hostWindow);
 	#elif defined OS_WEBWASM
 	void CreateAndSetHostedRenderWindow(int width, int height, bool fullScreen,
 		const char *title, deImage *icon, void *hostWindow);
 	#elif defined OS_BEOS
-	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
-		const char *title, deImage *icon, BWindow *hostWindow );
+	void CreateAndSetHostedRenderWindow(int width, int height, bool fullScreen,
+		const char *title, deImage *icon, BWindow *hostWindow);
 	#elif defined OS_UNIX_X11
-	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
-		const char *title, deImage *icon, Window hostWindow );
+	void CreateAndSetHostedRenderWindow(int width, int height, bool fullScreen,
+		const char *title, deImage *icon, Window hostWindow);
 	#elif defined OS_W32
-	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
-		const char *title, deImage *icon, HWND hostWindow );
+	void CreateAndSetHostedRenderWindow(int width, int height, bool fullScreen,
+		const char *title, deImage *icon, HWND hostWindow);
 	#endif
 	
 	/** \brief Input system overlay canvas or NULL if not used. */
-	inline deCanvasView *GetInputOverlayCanvas() const{ return pInputOverlayCanvas; }
+	inline deCanvasView *GetInputOverlayCanvas() const{return pInputOverlayCanvas;}
 	
 	/** \brief Set input system overlay canvas or NULL if not used. */
-	void SetInputOverlayCanvas( deCanvasView *view );
+	void SetInputOverlayCanvas(deCanvasView *view);
 	
 	/**
 	 * \brief Debug overlay canvas.
@@ -179,7 +179,7 @@ public:
 	 * individual debug data block. Helper classes can be found in the debug directory. They
 	 * provide ready made debug data blocks that can be filled with information easily.
 	 */
-	inline deCanvasView *GetDebugOverlayCanvas() const{ return pDebugOverlayCanvas; }
+	inline deCanvasView *GetDebugOverlayCanvas() const{return pDebugOverlayCanvas;}
 	
 	#ifdef OS_ANDROID
 	/** \brief Application window has been created. */
@@ -213,88 +213,88 @@ public:
 	
 	
 	/** \brief Create peer object for the given billboard using the active module and assigns it. */
-	void LoadBillboard( deBillboard *billboard );
+	void LoadBillboard(deBillboard *billboard);
 	
 	/** \brief Create peer object for the given canvas using the active module and assigns it. */
-	void LoadCanvas( deCanvas *canvas );
+	void LoadCanvas(deCanvas *canvas);
 	
 	/** \brief Create peer object for the given camera using the active module and assigns it. */
-	void LoadCamera( deCamera *camera );
+	void LoadCamera(deCamera *camera);
 	
 	/** \brief Create peer for capture canvas using active module and assigns it. */
-	void LoadCaptureCanvas( deCaptureCanvas *captureCanvas );
+	void LoadCaptureCanvas(deCaptureCanvas *captureCanvas);
 	
 	/** \brief Create peer object for the given component using the active module and assigns it. */
-	void LoadComponent( deComponent *comp );
+	void LoadComponent(deComponent *comp);
 	
 	/** \brief Create peer object for the given debug drawer using the active module and assigns it. */
-	void LoadDebugDrawer( deDebugDrawer *debugDrawer );
+	void LoadDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Create peer object for the given decal using the active module and assigns it. */
-	void LoadDecal( deDecal *decal );
+	void LoadDecal(deDecal *decal);
 	
 	/** \brief Create peer for the dynamic skin using the active module and assigns it. */
-	void LoadDynamicSkin( deDynamicSkin *dynamicSkin );
+	void LoadDynamicSkin(deDynamicSkin *dynamicSkin);
 	
 	/** \brief Create peer object for the given effect using the active module and assigns it. */
-	void LoadEffect( deEffect *effect );
+	void LoadEffect(deEffect *effect);
 	
 	/** \brief Create peer object for the given environment mapü probe using the active module and assigns it. */
-	void LoadEnvMapProbe( deEnvMapProbe *envMapProbe );
+	void LoadEnvMapProbe(deEnvMapProbe *envMapProbe);
 	
 	/** \brief Create peer object for the given font using the active module and assigns it. */
-	void LoadFont( deFont *font );
+	void LoadFont(deFont *font);
 	
 	/** \brief Create peer object for the given height terrain using the active module and assigns it. */
-	void LoadHeightTerrain( deHeightTerrain *heightTerrain );
+	void LoadHeightTerrain(deHeightTerrain *heightTerrain);
 	
 	/** \brief Create peer object for the given image using the active module and assigns it. */
-	void LoadImage( deImage *image );
+	void LoadImage(deImage *image);
 	
 	/** \brief Create peer object for the given light using the active module and assigns it. */
-	void LoadLight( deLight *light );
+	void LoadLight(deLight *light);
 	
 	/** \brief Create peer object for the given lumimeter using the active module and assigns it. */
-	void LoadLumimeter( deLumimeter *lumimeter );
+	void LoadLumimeter(deLumimeter *lumimeter);
 	
 	/** \brief Create peer object for the given model using the active module and assigns it. */
-	void LoadModel( deModel *model );
+	void LoadModel(deModel *model);
 	
 	/** \brief Create peer for the occlusion mesh using the active module and assigns it. */
-	void LoadOcclusionMesh( deOcclusionMesh *occmesh );
+	void LoadOcclusionMesh(deOcclusionMesh *occmesh);
 	
 	/** \brief Create peer for the particle emitter using the active module and assigns it. */
-	void LoadParticleEmitter( deParticleEmitter *emitter );
+	void LoadParticleEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Create peer for the particle emitter instance using the active module and assigns it. */
-	void LoadParticleEmitterInstance( deParticleEmitterInstance *instance );
+	void LoadParticleEmitterInstance(deParticleEmitterInstance *instance);
 	
 	/** \brief Create peer object for the given prop field using the active module and assigns it. */
-	void LoadPropField( dePropField *propField );
+	void LoadPropField(dePropField *propField);
 	
 	/** \brief Create peer object for the given render window using the active module and assigns it. */
-	void LoadRenderWindow( deRenderWindow *renderWindow );
+	void LoadRenderWindow(deRenderWindow *renderWindow);
 	
 	/** \brief Create peer object for the given skin using the active module and assigns it. */
-	void LoadSkin( deSkin *skin );
+	void LoadSkin(deSkin *skin);
 	
 	/** \brief Create and assign peer for sky using active module. */
-	void LoadSky( deSky *sky );
+	void LoadSky(deSky *sky);
 	
 	/** \brief Create and assign peer for sky instance using active module. */
-	void LoadSkyInstance( deSkyInstance *sky );
+	void LoadSkyInstance(deSkyInstance *sky);
 	
 	/** \brief Create peer for the smoke emitter using the active module and assigns it. */
-	void LoadSmokeEmitter( deSmokeEmitter *smokeEmitter );
+	void LoadSmokeEmitter(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief Create peer for the video using the active module and assigns it. */
-	void LoadVideo( deVideo *video );
+	void LoadVideo(deVideo *video);
 	
 	/** \brief Create peer for the video player using the active module and assigns it. */
-	void LoadVideoPlayer( deVideoPlayer *videoPlayer );
+	void LoadVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	/** \brief Create peer object for the given world using the active module and assigns it. */
-	void LoadWorld( deWorld *world );
+	void LoadWorld(deWorld *world);
 	/*@}*/
 	
 	
@@ -306,7 +306,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

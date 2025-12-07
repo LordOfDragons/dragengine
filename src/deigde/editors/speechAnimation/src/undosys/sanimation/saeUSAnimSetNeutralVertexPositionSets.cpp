@@ -36,13 +36,13 @@
 ////////////////////////////
 
 saeUSAnimSetNeutralVertexPositionSets::saeUSAnimSetNeutralVertexPositionSets(
-	saeSAnimation *sanimation, const decStringSet &sets ) :
-pSAnimation( nullptr ),
-pNewSets( sets )
+	saeSAnimation *sanimation, const decStringSet &sets) :
+pSAnimation(nullptr),
+pNewSets(sets)
 {
-	DEASSERT_NOTNULL( sanimation )
+	DEASSERT_NOTNULL(sanimation)
 	
-	SetShortInfo( "Set neutral vertex position sets" );
+	SetShortInfo("Set neutral vertex position sets");
 	
 	pOldSets = sanimation->GetNeutralVertexPositionSets();
 	
@@ -51,7 +51,7 @@ pNewSets( sets )
 }
 
 saeUSAnimSetNeutralVertexPositionSets::~saeUSAnimSetNeutralVertexPositionSets(){
-	if( pSAnimation ){
+	if(pSAnimation){
 		pSAnimation->FreeReference();
 	}
 }
@@ -62,9 +62,9 @@ saeUSAnimSetNeutralVertexPositionSets::~saeUSAnimSetNeutralVertexPositionSets(){
 ///////////////
 
 void saeUSAnimSetNeutralVertexPositionSets::Undo(){
-	pSAnimation->SetNeutralVertexPositionSets( pOldSets );
+	pSAnimation->SetNeutralVertexPositionSets(pOldSets);
 }
 
 void saeUSAnimSetNeutralVertexPositionSets::Redo(){
-	pSAnimation->SetNeutralVertexPositionSets( pNewSets );
+	pSAnimation->SetNeutralVertexPositionSets(pNewSets);
 }

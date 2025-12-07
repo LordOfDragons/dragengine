@@ -38,8 +38,8 @@
 ////////////////////////////
 
 deAnimationKeyframe::deAnimationKeyframe() :
-pTime( 0.0f ),
-pScale( 1.0f, 1.0f, 1.0f ){
+pTime(0.0f),
+pScale(1.0f, 1.0f, 1.0f){
 }
 
 deAnimationKeyframe::~deAnimationKeyframe(){
@@ -50,18 +50,18 @@ deAnimationKeyframe::~deAnimationKeyframe(){
 // management
 ///////////////
 
-void deAnimationKeyframe::SetTime( float time ){
-	pTime = decMath::max( time, 0.0f );
+void deAnimationKeyframe::SetTime(float time){
+	pTime = decMath::max(time, 0.0f);
 }
 
-void deAnimationKeyframe::SetPosition( const decVector &position ){
+void deAnimationKeyframe::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deAnimationKeyframe::SetRotation( const decVector &rotation ){
+void deAnimationKeyframe::SetRotation(const decVector &rotation){
 	pRotation = rotation;
 }
 
-void deAnimationKeyframe::SetScale( const decVector &scale ){
+void deAnimationKeyframe::SetScale(const decVector &scale){
 	pScale = scale;
 }

@@ -54,40 +54,40 @@ int meNavigationSpaceList::GetCount() const{
 	return pNavSpaces.GetCount();
 }
 
-meNavigationSpace *meNavigationSpaceList::GetAt( int position ) const{
-	return ( meNavigationSpace* )pNavSpaces.GetAt( position );
+meNavigationSpace *meNavigationSpaceList::GetAt(int position) const{
+	return (meNavigationSpace*)pNavSpaces.GetAt(position);
 }
 
-int meNavigationSpaceList::IndexOf( meNavigationSpace *navspaces ) const{
-	return pNavSpaces.IndexOf( navspaces );
+int meNavigationSpaceList::IndexOf(meNavigationSpace *navspaces) const{
+	return pNavSpaces.IndexOf(navspaces);
 }
 
-bool meNavigationSpaceList::Has( meNavigationSpace *navspaces ){
-	return pNavSpaces.Has( navspaces );
+bool meNavigationSpaceList::Has(meNavigationSpace *navspaces){
+	return pNavSpaces.Has(navspaces);
 }
 
-void meNavigationSpaceList::Add( meNavigationSpace *navspaces ){
-	if( ! navspaces ) DETHROW( deeInvalidParam );
+void meNavigationSpaceList::Add(meNavigationSpace *navspaces){
+	if(! navspaces) DETHROW(deeInvalidParam);
 	
-	pNavSpaces.Add( navspaces );
+	pNavSpaces.Add(navspaces);
 }
 
-void meNavigationSpaceList::AddIfAbsent( meNavigationSpace *navspaces ){
-	if( ! navspaces ) DETHROW( deeInvalidParam );
+void meNavigationSpaceList::AddIfAbsent(meNavigationSpace *navspaces){
+	if(! navspaces) DETHROW(deeInvalidParam);
 	
-	pNavSpaces.AddIfAbsent( navspaces );
+	pNavSpaces.AddIfAbsent(navspaces);
 }
 
-void meNavigationSpaceList::Remove( meNavigationSpace *navspaces ){
-	if( ! navspaces ) DETHROW( deeInvalidParam );
+void meNavigationSpaceList::Remove(meNavigationSpace *navspaces){
+	if(! navspaces) DETHROW(deeInvalidParam);
 	
-	pNavSpaces.Remove( navspaces );
+	pNavSpaces.Remove(navspaces);
 }
 
-void meNavigationSpaceList::RemoveIfPresent( meNavigationSpace *navspaces ){
-	if( ! navspaces ) DETHROW( deeInvalidParam );
+void meNavigationSpaceList::RemoveIfPresent(meNavigationSpace *navspaces){
+	if(! navspaces) DETHROW(deeInvalidParam);
 	
-	pNavSpaces.RemoveIfPresent( navspaces );
+	pNavSpaces.RemoveIfPresent(navspaces);
 }
 
 void meNavigationSpaceList::RemoveAll(){

@@ -49,6 +49,6 @@ deNetworkValue::~deNetworkValue(){
 // Visiting
 /////////////
 
-void deNetworkValue::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitValue( this );
+void deNetworkValue::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitValue(this);
 }

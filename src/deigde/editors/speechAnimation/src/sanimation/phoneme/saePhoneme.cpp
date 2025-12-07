@@ -41,27 +41,27 @@
 ////////////////////////////
 
 saePhoneme::saePhoneme() :
-pSAnimation( nullptr ),
-pEngController( -1 ),
-pIPA( 0 ),
-pMoveName( "viseme" ),
-pLength( 0.2f ),
-pActive( false ){
+pSAnimation(nullptr),
+pEngController(-1),
+pIPA(0),
+pMoveName("viseme"),
+pLength(0.2f),
+pActive(false){
 }
 
-saePhoneme::saePhoneme( int ipa ) :
-pSAnimation( nullptr ),
-pEngController( -1 ),
-pIPA( ipa ),
-pMoveName( "viseme" ),
-pLength( 0.2f ),
-pActive( false )
+saePhoneme::saePhoneme(int ipa) :
+pSAnimation(nullptr),
+pEngController(-1),
+pIPA(ipa),
+pMoveName("viseme"),
+pLength(0.2f),
+pActive(false)
 {
-	DEASSERT_TRUE( ipa >= 0 )
+	DEASSERT_TRUE(ipa >= 0)
 }
 
 saePhoneme::~saePhoneme(){
-	SetSAnimation( nullptr );
+	SetSAnimation(nullptr);
 }
 
 
@@ -69,74 +69,74 @@ saePhoneme::~saePhoneme(){
 // Management
 ///////////////
 
-void saePhoneme::SetSAnimation( saeSAnimation *sanimation ){
+void saePhoneme::SetSAnimation(saeSAnimation *sanimation){
 	pSAnimation = sanimation;
 }
 
-void saePhoneme::SetEngineController( int controller ){
+void saePhoneme::SetEngineController(int controller){
 	pEngController = controller;
 }
 
-void saePhoneme::SetIPA( int ipa ){
-	if( ipa == pIPA ){
+void saePhoneme::SetIPA(int ipa){
+	if(ipa == pIPA){
 		return;
 	}
 	
 	pIPA = ipa;
 	
-	if( pSAnimation ){
-		pSAnimation->NotifyPhonemeChanged( this );
+	if(pSAnimation){
+		pSAnimation->NotifyPhonemeChanged(this);
 	}
 }
 
-void saePhoneme::SetLength( float length ){
-	if( fabsf( length - pLength ) < FLOAT_SAFE_EPSILON ){
+void saePhoneme::SetLength(float length){
+	if(fabsf(length - pLength) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pLength = length;
 	
-	if( pSAnimation ){
-		pSAnimation->NotifyPhonemeChanged( this );
+	if(pSAnimation){
+		pSAnimation->NotifyPhonemeChanged(this);
 	}
 }
 
-void saePhoneme::SetSampleText( const char *sampleText ){
-	if( pSampleText == sampleText ){
+void saePhoneme::SetSampleText(const char *sampleText){
+	if(pSampleText == sampleText){
 		return;
 	}
 	
 	pSampleText = sampleText;
 	
-	if( pSAnimation ){
-		pSAnimation->NotifyPhonemeChanged( this );
+	if(pSAnimation){
+		pSAnimation->NotifyPhonemeChanged(this);
 	}
 }
 
-void saePhoneme::SetMoveName( const char *name ){
-	if( pMoveName == name ){
+void saePhoneme::SetMoveName(const char *name){
+	if(pMoveName == name){
 		return;
 	}
 	
 	pMoveName = name;
 	
-	if( pSAnimation ){
-		pSAnimation->NotifyPhonemeChanged( this );
+	if(pSAnimation){
+		pSAnimation->NotifyPhonemeChanged(this);
 	}
 }
 
-void saePhoneme::SetVertexPositionSet( const char *name ){
-	if( pVertexPositionSet == name ){
+void saePhoneme::SetVertexPositionSet(const char *name){
+	if(pVertexPositionSet == name){
 		return;
 	}
 	
 	pVertexPositionSet = name;
 	
-	if( pSAnimation ){
-		pSAnimation->NotifyPhonemeChanged( this );
+	if(pSAnimation){
+		pSAnimation->NotifyPhonemeChanged(this);
 	}
 }
 
-void saePhoneme::SetActive( bool active ){
+void saePhoneme::SetActive(bool active){
 	pActive = active;
 }

@@ -43,5 +43,5 @@ igdeEditPoint3Listener::~igdeEditPoint3Listener(){
 // Events
 ///////////
 
-void igdeEditPoint3Listener::OnPoint3Changed( igdeEditPoint3 *editPoint3 ){
+void igdeEditPoint3Listener::OnPoint3Changed(igdeEditPoint3 *editPoint3){
 }

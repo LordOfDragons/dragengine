@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeRemove::peeUTypeRemove( peeType *type ){
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+peeUTypeRemove::peeUTypeRemove(peeType *type){
+	if(! type){
+		DETHROW(deeInvalidParam);
 	}
 	
 	peeEmitter *emitter = type->GetEmitter();
-	if( ! emitter ){
-		DETHROW( deeInvalidParam );
+	if(! emitter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEmitter = NULL;
 	pType = NULL;
 	
-	SetShortInfo( "Remove Type" );
+	SetShortInfo("Remove Type");
 	
-	pIndex = emitter->GetTypeList().IndexOf( type );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = emitter->GetTypeList().IndexOf(type);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEmitter = emitter;
@@ -68,10 +68,10 @@ peeUTypeRemove::peeUTypeRemove( peeType *type ){
 }
 
 peeUTypeRemove::~peeUTypeRemove(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
-	if( pEmitter ){
+	if(pEmitter){
 		pEmitter->FreeReference();
 	}
 }
@@ -82,9 +82,9 @@ peeUTypeRemove::~peeUTypeRemove(){
 ///////////////
 
 void peeUTypeRemove::Undo(){
-	pEmitter->InsertTypeAt( pType, pIndex );
+	pEmitter->InsertTypeAt(pType, pIndex);
 }
 
 void peeUTypeRemove::Redo(){
-	pEmitter->RemoveType( pType );
+	pEmitter->RemoveType(pType);
 }

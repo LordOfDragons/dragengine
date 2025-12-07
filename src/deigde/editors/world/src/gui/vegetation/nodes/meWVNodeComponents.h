@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeComponents( meWindowVegetation &windowVegetation, meHTVRuleComponents *rule );
+	meWVNodeComponents(meWindowVegetation &windowVegetation, meHTVRuleComponents *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleComponents *GetRuleComponents() const{ return pRuleComponents; }
+	inline meHTVRuleComponents *GetRuleComponents() const{return pRuleComponents;}
 	
 	/** \brief Update node. */
 	virtual void Update();

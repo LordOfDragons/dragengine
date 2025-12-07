@@ -85,7 +85,7 @@ public:
 	};
 	
 private:
-	decQuadtree *pNodes[ 4 ];
+	decQuadtree *pNodes[4];
 	decVector2 pCenter;
 	decVector2 pHalfSize;
 	decQuadtree *pParent;
@@ -94,7 +94,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic quadtree object. */
-	decQuadtree( const decVector2 &center, const decVector2 &halfSize );
+	decQuadtree(const decVector2 &center, const decVector2 &halfSize);
 	/** Cleans up the generic quadtree object. */
 	virtual ~decQuadtree();
 	/*@}*/
@@ -102,82 +102,82 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent of the quadtree or NULL if a root quadtree. */
-	inline decQuadtree *GetParent() const{ return pParent; }
+	inline decQuadtree *GetParent() const{return pParent;}
 	/** Sets the parent of the quadtree or NULL if a root quadtree. */
-	void SetParent( decQuadtree *parent );
+	void SetParent(decQuadtree *parent);
 	/** Retrieves the center of the quadtree. */
-	inline const decVector2 &GetCenter() const{ return pCenter; }
+	inline const decVector2 &GetCenter() const{return pCenter;}
 	/** Retrieves the half size of the quadtree. */
-	inline const decVector2 &GetHalfSize() const{ return pHalfSize; }
+	inline const decVector2 &GetHalfSize() const{return pHalfSize;}
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there
 	 * exists no such node yet. You can use either an index from 0
 	 * to 3 inclusive or use one of the the eQuadrants constants.
 	 */
-	decQuadtree *GetNodeAt( int quadrant ) const;
+	decQuadtree *GetNodeAt(int quadrant) const;
 	/**
 	 * Sets one of the eight child nodes. You can use either an index from 0
 	 * to 3 inclusive or use one of the the eQuadrant constants. Node can be
 	 * NULL to remove the child node.
 	 */
-	void SetNodeAt( int quadrant, decQuadtree *quadtree );
+	void SetNodeAt(int quadrant, decQuadtree *quadtree);
 	/**
 	 * Looks for the child node in which the given box lies. If the child node
 	 * does not yet exist it is created. If found the node is returned. If
 	 * no node could be found NULL is returned.
 	 */
-	decQuadtree *GetNodeAtBox( const decVector2 &boxCenter, const decVector2 &boxHalfSize );
+	decQuadtree *GetNodeAtBox(const decVector2 &boxCenter, const decVector2 &boxHalfSize);
 	/**
 	 * Looks for the child node in which the given point lies. If the child node
 	 * does not yet exist it is created. If found the node is returned. If
 	 * no node could be found NULL is returned.
 	 */
-	decQuadtree *GetNodeAtPoint( const decVector2 &point );
+	decQuadtree *GetNodeAtPoint(const decVector2 &point);
 	/**
 	 * Looks for the child node in which the box lies. If found the node
 	 * is returned. If no node could be found NULL or the node does not exist
 	 * yet NULL is returned.
 	 */
-	decQuadtree *FindNodeAtBox( const decVector2 &boxCenter, const decVector2 &boxHalfSize ) const;
+	decQuadtree *FindNodeAtBox(const decVector2 &boxCenter, const decVector2 &boxHalfSize) const;
 	/**
 	 * Looks for the quadrant in which the element lies. Returns eqNotFound
 	 * if no quadrant fully contains the element.
 	 */
-	int FindQuadrantAtBox( const decVector2 &boxCenter, const decVector2 &boxHalfSize ) const;
+	int FindQuadrantAtBox(const decVector2 &boxCenter, const decVector2 &boxHalfSize) const;
 	/** Determines if the box is located completely in this node. */
-	bool ContainsBox( const decVector2 &boxCenter, const decVector2 &boxHalfSize ) const;
+	bool ContainsBox(const decVector2 &boxCenter, const decVector2 &boxHalfSize) const;
 	/**
 	 * Looks for the child node in which the point lies. If found the node
 	 * is returned. If no node could be found NULL or the node does not exist
 	 * yet NULL is returned.
 	 */
-	decQuadtree *FindNodeAtPoint( const decVector2 &point ) const;
+	decQuadtree *FindNodeAtPoint(const decVector2 &point) const;
 	/** Looks for the quadrant in which the point lies. */
-	int FindQuadrantAtPoint( const decVector2 &point ) const;
+	int FindQuadrantAtPoint(const decVector2 &point) const;
 	/** Determines if the point is located in this node. */
-	bool ContainsPoint( const decVector2 &point ) const;
+	bool ContainsPoint(const decVector2 &point) const;
 	
 	/** Searches for the Node containing a given box. */
-	decQuadtree *SearchTreeForBox( const decVector2 &boxCenter, const decVector2 &boxHalfSize ) const;
+	decQuadtree *SearchTreeForBox(const decVector2 &boxCenter, const decVector2 &boxHalfSize) const;
 	/** Searches for the Node where the given point lies in. */
-	decQuadtree *SearchTreeForPoint( const decVector2 &point ) const;
+	decQuadtree *SearchTreeForPoint(const decVector2 &point) const;
 	/** Visits all nodes. */
-	void VisitNodes( decQuadtreeVisitor *visitor );
+	void VisitNodes(decQuadtreeVisitor *visitor);
 	/** Visits all nodes which collide with the given collision volume. */
-	void VisitNodesColliding( decQuadtreeVisitor *visitor, decCollisionVolume *volume );
+	void VisitNodesColliding(decQuadtreeVisitor *visitor, decCollisionVolume *volume);
 	/**
 	 * Clears the quadtree. If clearNodes is set to true all elements are cleared and
 	 * nodes are reset to NULL. Otherwise only all elements are removed but the
 	 * nodes stay intact.
 	 */
-	void ClearTree( bool clearNodes );
+	void ClearTree(bool clearNodes);
 	
 	/**
 	 * Creates new quadtree for the specified quadrant. Implement this function
 	 * to create a new quadtree of your own type. Do not set the parent of
 	 * quadtree. The caller is responsible for this action if applicable.
 	 */
-	virtual decQuadtree *CreateQuadtree( int quadrant ) const = 0;
+	virtual decQuadtree *CreateQuadtree(int quadrant) const = 0;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent() = 0;
 	/*@}*/

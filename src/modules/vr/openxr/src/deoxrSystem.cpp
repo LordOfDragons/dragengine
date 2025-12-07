@@ -37,18 +37,18 @@
 // class deoxrSystem
 //////////////////////
 
-deoxrSystem::deoxrSystem( deoxrInstance &instance ) :
-pInstance( instance ),
-pSystemId( XR_NULL_SYSTEM_ID ),
-pSystem( esUnknown ),
-pMaxLayerCount( 0 ),
-pSupportsOrientationTracking( false ),
-pSupportsPositionTracking( false ),
-pSupportsHandTracking( false ),
-pSupportsEyeGazeTracking( false ),
-pSupportsFaceEyeTracking( false ),
-pSupportsFaceLipTracking( false ),
-pSupportsPassthrough( false ),
+deoxrSystem::deoxrSystem(deoxrInstance &instance) :
+pInstance(instance),
+pSystemId(XR_NULL_SYSTEM_ID),
+pSystem(esUnknown),
+pMaxLayerCount(0),
+pSupportsOrientationTracking(false),
+pSupportsPositionTracking(false),
+pSupportsHandTracking(false),
+pSupportsEyeGazeTracking(false),
+pSupportsFaceEyeTracking(false),
+pSupportsFaceLipTracking(false),
+pSupportsPassthrough(false),
 pSupportsXDevSpace(false),
 pSupportsEnvBlendModeAlphaBlend(false)
 {
@@ -57,34 +57,34 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		XrSystemGetInfo getInfo{XR_TYPE_SYSTEM_GET_INFO};
 		getInfo.formFactor = XR_FORM_FACTOR_HEAD_MOUNTED_DISPLAY;
 		
-		OXR_CHECK( instance.xrGetSystem( instance.GetInstance(), &getInfo, &pSystemId ) );
+		OXR_CHECK(instance.xrGetSystem(instance.GetInstance(), &getInfo, &pSystemId));
 		
 		// get system properties
 		XrSystemProperties sysProps{XR_TYPE_SYSTEM_PROPERTIES};
 		void **next = &sysProps.next;
 		
 		XrSystemHandTrackingPropertiesEXT sysHandTrackProps{XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT};
-		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
+		if(instance.SupportsExtension(deoxrInstance::extEXTHandTracking)){
 			*next = &sysHandTrackProps;
 			next = &sysHandTrackProps.next;
 		}
 		
 		XrSystemEyeGazeInteractionPropertiesEXT sysEyeGazeProps{XR_TYPE_SYSTEM_EYE_GAZE_INTERACTION_PROPERTIES_EXT};
-		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+		if(instance.SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
 			*next = &sysEyeGazeProps;
 			next = &sysEyeGazeProps.next;
 		}
 		
 		XrSystemFacialTrackingPropertiesHTC sysFaceTrackProps{XR_TYPE_SYSTEM_FACIAL_TRACKING_PROPERTIES_HTC};
-		if( instance.SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
+		if(instance.SupportsExtension(deoxrInstance::extHTCFacialTracking)){
 			*next = &sysFaceTrackProps;
 			next = &sysFaceTrackProps.next;
 		}
 		
 		XrSystemPassthroughPropertiesFB sysPassThroughProps{XR_TYPE_SYSTEM_PASSTHROUGH_PROPERTIES_FB};
-		if( instance.SupportsExtension( deoxrInstance::extFBPassthrough ) ){
+		if(instance.SupportsExtension(deoxrInstance::extFBPassthrough)){
 			*next = &sysPassThroughProps;
-			next = ( void** )&sysPassThroughProps.next;
+			next = (void**)&sysPassThroughProps.next;
 		}
 		
 		XrSystemXDevSpacePropertiesMNDX sysXDevSpaceProps{XR_TYPE_SYSTEM_XDEV_SPACE_PROPERTIES_MNDX};
@@ -93,7 +93,7 @@ pSupportsEnvBlendModeAlphaBlend(false)
 			next = (void**)&sysXDevSpaceProps.next;
 		}
 		
-		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
+		OXR_CHECK(instance.xrGetSystemProperties(instance.GetInstance(), pSystemId, &sysProps));
 		deVROpenXR &oxr = instance.GetOxr();
 		
 		pSystemName = sysProps.systemName;
@@ -103,22 +103,22 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		pSupportsOrientationTracking = sysProps.trackingProperties.orientationTracking;
 		pSupportsPositionTracking = sysProps.trackingProperties.positionTracking;
 		
-		if( pSystemName.FindString( "SteamVR" ) != -1 ){
+		if(pSystemName.FindString("SteamVR") != -1){
 			pSystem = esSteamVR;
 			
 		}else{
 			pSystem = esUnknown;
 		}
 		
-		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
+		if(instance.SupportsExtension(deoxrInstance::extEXTHandTracking)){
 			pSupportsHandTracking = sysHandTrackProps.supportsHandTracking;
 		}
 		
-		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
+		if(instance.SupportsExtension(deoxrInstance::extEXTEyeGazeInteraction)){
 			pSupportsEyeGazeTracking = sysEyeGazeProps.supportsEyeGazeInteraction;
 		}
 		
-		if( instance.SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
+		if(instance.SupportsExtension(deoxrInstance::extHTCFacialTracking)){
 			pSupportsFaceEyeTracking = sysFaceTrackProps.supportEyeFacialTracking;
 			pSupportsFaceLipTracking = sysFaceTrackProps.supportLipFacialTracking;
 		}
@@ -157,124 +157,124 @@ pSupportsEnvBlendModeAlphaBlend(false)
 			}
 		}
 		
-		oxr.LogInfoFormat( "System name: %s", pSystemName.GetString() );
-		oxr.LogInfoFormat( "Maximum render image size: %d x %d", pMaxRenderImageSize.x, pMaxRenderImageSize.y );
-		oxr.LogInfoFormat( "Maximum layer count: %d", pMaxLayerCount);
-		oxr.LogInfoFormat( "Supports orientation tracking: %s", pSupportsOrientationTracking ? "yes" : "no" );
-		oxr.LogInfoFormat( "Supports position tracking: %s", pSupportsPositionTracking ? "yes" : "no" );
-		oxr.LogInfoFormat( "Supports hand tracking: %s", pSupportsHandTracking ? "yes" : "no" );
-		oxr.LogInfoFormat( "Supports eye gaze tracking: %s", pSupportsEyeGazeTracking ? "yes" : "no" );
-		oxr.LogInfoFormat( "Supports face eye tracking: %s", pSupportsFaceEyeTracking ? "yes" : "no" );
-		oxr.LogInfoFormat( "Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no" );
+		oxr.LogInfoFormat("System name: %s", pSystemName.GetString());
+		oxr.LogInfoFormat("Maximum render image size: %d x %d", pMaxRenderImageSize.x, pMaxRenderImageSize.y);
+		oxr.LogInfoFormat("Maximum layer count: %d", pMaxLayerCount);
+		oxr.LogInfoFormat("Supports orientation tracking: %s", pSupportsOrientationTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports position tracking: %s", pSupportsPositionTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports hand tracking: %s", pSupportsHandTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports eye gaze tracking: %s", pSupportsEyeGazeTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports face eye tracking: %s", pSupportsFaceEyeTracking ? "yes" : "no");
+		oxr.LogInfoFormat("Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no");
 		oxr.LogInfoFormat("Supports environment blend mode alpha blend: %s", pSupportsEnvBlendModeAlphaBlend ? "yes" : "no");
-		oxr.LogInfoFormat( "Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no" );
+		oxr.LogInfoFormat("Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no");
 		oxr.LogInfoFormat("Supports XDev space: %s", pSupportsXDevSpace ? "yes" : "no");
 		
 		// required features check
-		if( oxr.GetRequestFeatureEyeGazeTracking() == deBaseVRModule::efslRequired && ! pSupportsEyeGazeTracking ){
-			DETHROW_INFO( deeInvalidParam, "Requires eye gaze tracking but required extension is absent" );
+		if(oxr.GetRequestFeatureEyeGazeTracking() == deBaseVRModule::efslRequired && ! pSupportsEyeGazeTracking){
+			DETHROW_INFO(deeInvalidParam, "Requires eye gaze tracking but required extension is absent");
 		}
 		
-		if( oxr.GetRequestFeatureFacialTracking() == deBaseVRModule::efslRequired ){
-			if( ! pSupportsFaceEyeTracking && ! pSupportsFaceLipTracking ){
-				DETHROW_INFO( deeInvalidParam, "Requires facial tracking but required extensions are absent" );
+		if(oxr.GetRequestFeatureFacialTracking() == deBaseVRModule::efslRequired){
+			if(! pSupportsFaceEyeTracking && ! pSupportsFaceLipTracking){
+				DETHROW_INFO(deeInvalidParam, "Requires facial tracking but required extensions are absent");
 			}
 		}
 		
 		// get view configuration properties
 		uint32_t viewConfigCount;
-		OXR_CHECK( instance.xrEnumerateViewConfigurations( instance.GetInstance(),
-			pSystemId, 0, &viewConfigCount, nullptr ) );
-		oxr.LogInfoFormat( "View configurations: %d", viewConfigCount );
+		OXR_CHECK(instance.xrEnumerateViewConfigurations(instance.GetInstance(),
+			pSystemId, 0, &viewConfigCount, nullptr));
+		oxr.LogInfoFormat("View configurations: %d", viewConfigCount);
 		
 		XrViewConfigurationProperties viewConfProp;
 		bool viewConfFound = false;
 		
 		XrViewConfigurationType *viewConfigs = nullptr;
-		if( viewConfigCount > 0 ){
-			viewConfigs = new XrViewConfigurationType[ viewConfigCount ];
+		if(viewConfigCount > 0){
+			viewConfigs = new XrViewConfigurationType[viewConfigCount];
 			try{
-				OXR_CHECK( instance.xrEnumerateViewConfigurations( instance.GetInstance(),
-					pSystemId, viewConfigCount, &viewConfigCount, viewConfigs ) );
+				OXR_CHECK(instance.xrEnumerateViewConfigurations(instance.GetInstance(),
+					pSystemId, viewConfigCount, &viewConfigCount, viewConfigs));
 				
 				XrViewConfigurationProperties props;
-				memset( &props, 0, sizeof( props ) );
+				memset(&props, 0, sizeof(props));
 				props.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
 				
-				for( i=0; i<viewConfigCount; i++ ){
-					OXR_CHECK( instance.xrGetViewConfigurationProperties(
-						instance.GetInstance(), pSystemId, viewConfigs[ i ], &props ) );
+				for(i=0; i<viewConfigCount; i++){
+					OXR_CHECK(instance.xrGetViewConfigurationProperties(
+						instance.GetInstance(), pSystemId, viewConfigs[i], &props));
 					
-					switch( viewConfigs[ i ] ){
+					switch(viewConfigs[i]){
 					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO:
-						instance.GetOxr().LogInfoFormat( "- %d: Primary Stereo", i );
+						instance.GetOxr().LogInfoFormat("- %d: Primary Stereo", i);
 						
-						if( ! viewConfFound ){
-							memcpy( &viewConfProp, &props, sizeof( viewConfFound ) );
+						if(! viewConfFound){
+							memcpy(&viewConfProp, &props, sizeof(viewConfFound));
 							viewConfFound = true;
 						}
 						break;
 						
 					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_MONO:
-						instance.GetOxr().LogInfoFormat( "- %d: Primary Mono", i );
+						instance.GetOxr().LogInfoFormat("- %d: Primary Mono", i);
 						break;
 						
 					case XR_VIEW_CONFIGURATION_TYPE_PRIMARY_QUAD_VARJO:
-						instance.GetOxr().LogInfoFormat( "- %d: Primary Quad Varjo", i );
+						instance.GetOxr().LogInfoFormat("- %d: Primary Quad Varjo", i);
 						break;
 						
 					case XR_VIEW_CONFIGURATION_TYPE_SECONDARY_MONO_FIRST_PERSON_OBSERVER_MSFT:
-						instance.GetOxr().LogInfoFormat( "- %d: Secondary Mono FP Observer", i );
+						instance.GetOxr().LogInfoFormat("- %d: Secondary Mono FP Observer", i);
 						break;
 						
 					default:
-						instance.GetOxr().LogInfoFormat( "- %d: Unknown type 0x%x", i, viewConfigs[ i ] );
+						instance.GetOxr().LogInfoFormat("- %d: Unknown type 0x%x", i, viewConfigs[i]);
 					}
 				}
 				
 				delete [] viewConfigs;
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				delete [] viewConfigs;
 				throw;
 			}
 		}
 		
-		if( ! viewConfFound ){
-			DETHROW_INFO( deeInvalidAction, "required view configuration not found" );
+		if(! viewConfFound){
+			DETHROW_INFO(deeInvalidAction, "required view configuration not found");
 		}
 		
 		(void) viewConfProp.fovMutable;
 		
 		// enumerate view configuration views
-		XrViewConfigurationView viewConfViews[ 2 ];
-		memset( &viewConfViews, 0, sizeof( viewConfViews ) );
-		viewConfViews[ 0 ].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
-		viewConfViews[ 1 ].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
+		XrViewConfigurationView viewConfViews[2];
+		memset(&viewConfViews, 0, sizeof(viewConfViews));
+		viewConfViews[0].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
+		viewConfViews[1].type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
 		
 		uint32_t viewCount;
 		
-		OXR_CHECK( instance.xrEnumerateViewConfigurationViews( instance.GetInstance(),
-			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 2, &viewCount, viewConfViews ) );
+		OXR_CHECK(instance.xrEnumerateViewConfigurationViews(instance.GetInstance(),
+			pSystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 2, &viewCount, viewConfViews));
 		
-		pLeftEyeViewSize.x = viewConfViews[ 0 ].recommendedImageRectWidth;
-		pLeftEyeViewSize.y = viewConfViews[ 0 ].recommendedImageRectHeight;
-		pLeftEyeViewMaxSize.x = viewConfViews[ 0 ].maxImageRectWidth;
-		pLeftEyeViewMaxSize.y = viewConfViews[ 0 ].maxImageRectHeight;
+		pLeftEyeViewSize.x = viewConfViews[0].recommendedImageRectWidth;
+		pLeftEyeViewSize.y = viewConfViews[0].recommendedImageRectHeight;
+		pLeftEyeViewMaxSize.x = viewConfViews[0].maxImageRectWidth;
+		pLeftEyeViewMaxSize.y = viewConfViews[0].maxImageRectHeight;
 		
-		pRightEyeViewSize.x = viewConfViews[ 1 ].recommendedImageRectWidth;
-		pRightEyeViewSize.y = viewConfViews[ 1 ].recommendedImageRectHeight;
-		pRightEyeViewMaxSize.x = viewConfViews[ 1 ].maxImageRectWidth;
-		pRightEyeViewMaxSize.y = viewConfViews[ 1 ].maxImageRectHeight;
+		pRightEyeViewSize.x = viewConfViews[1].recommendedImageRectWidth;
+		pRightEyeViewSize.y = viewConfViews[1].recommendedImageRectHeight;
+		pRightEyeViewMaxSize.x = viewConfViews[1].maxImageRectWidth;
+		pRightEyeViewMaxSize.y = viewConfViews[1].maxImageRectHeight;
 		
 		// use the largest view size as render size to request from the graphic module
-		pRenderSize = pLeftEyeViewSize.Largest( pRightEyeViewSize );
+		pRenderSize = pLeftEyeViewSize.Largest(pRightEyeViewSize);
 		
-		if( pRenderSize == decPoint() ){
-			DETHROW_INFO( deeInvalidParam, "openxr runtime requested 0-size view" );
+		if(pRenderSize == decPoint()){
+			DETHROW_INFO(deeInvalidParam, "openxr runtime requested 0-size view");
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}

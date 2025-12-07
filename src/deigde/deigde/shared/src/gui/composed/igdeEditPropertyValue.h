@@ -109,7 +109,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeEditPropertyValue( igdeUIHelper &helper );
+	igdeEditPropertyValue(igdeUIHelper &helper);
 	
 	
 	
@@ -124,13 +124,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value. */
-	inline const decString &GetValue() const{ return pValue; }
+	inline const decString &GetValue() const{return pValue;}
 	
 	/** \brief Game definition property. */
-	inline const igdeGDProperty *GetGDProperty() const{ return pGDProperty; }
+	inline const igdeGDProperty *GetGDProperty() const{return pGDProperty;}
 	
 	/** \brief Set value. */
-	void SetValue( const char *value, const igdeGDProperty *gdProperty );
+	void SetValue(const char *value, const igdeGDProperty *gdProperty);
 	
 	/** \brief Clear value. */
 	void ClearValue();
@@ -138,10 +138,10 @@ public:
 	
 	
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -149,42 +149,42 @@ public:
 	
 	
 	/** \brief Codec. */
-	inline igdeCodecPropertyString &GetCodec(){ return pCodec; }
-	inline const igdeCodecPropertyString &GetCodec() const{ return pCodec; }
+	inline igdeCodecPropertyString &GetCodec(){return pCodec;}
+	inline const igdeCodecPropertyString &GetCodec() const{return pCodec;}
 	
 	/** \brief Trigger expression parser. */
-	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){ return pTriggerExpressionParser; }
-	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{ return pTriggerExpressionParser; }
+	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){return pTriggerExpressionParser;}
+	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{return pTriggerExpressionParser;}
 	
 	/** \brief Identifiers. */
-	inline const decStringSet &GetIdentifiers() const{ return pIdentifiers; }
+	inline const decStringSet &GetIdentifiers() const{return pIdentifiers;}
 	
 	/** \brief Set identifiers. */
-	void SetIdentifiers( const decStringSet &identifiers );
+	void SetIdentifiers(const decStringSet &identifiers);
 	
 	/** \brief Trigger targets. */
-	inline igdeTriggerTargetList *GetTriggerTargets() const{ return pTriggerTargets; }
+	inline igdeTriggerTargetList *GetTriggerTargets() const{return pTriggerTargets;}
 	
 	/** \brief Set trigger targets. */
-	void SetTriggerTargets( igdeTriggerTargetList *triggerTargets );
+	void SetTriggerTargets(igdeTriggerTargetList *triggerTargets);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEditRawValue() const{ return pActionEditRawValue; }
-	inline igdeAction *GetActionBooleanValue() const{ return pActionBooleanValue; }
-	inline igdeAction *GetActionEditList() const{ return pActionEditList; }
-	inline igdeAction *GetActionEditTriggerExpression() const{ return pActionEditTriggerExpression; }
-	inline igdeAction *GetActionEditShape() const{ return pActionEditShape; }
-	inline igdeAction *GetActionEditShapeList() const{ return pActionEditShapeList; }
+	inline igdeAction *GetActionEditRawValue() const{return pActionEditRawValue;}
+	inline igdeAction *GetActionBooleanValue() const{return pActionBooleanValue;}
+	inline igdeAction *GetActionEditList() const{return pActionEditList;}
+	inline igdeAction *GetActionEditTriggerExpression() const{return pActionEditTriggerExpression;}
+	inline igdeAction *GetActionEditShape() const{return pActionEditShape;}
+	inline igdeAction *GetActionEditShapeList() const{return pActionEditShapeList;}
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditPropertyValueListener *listener );
+	void AddListener(igdeEditPropertyValueListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditPropertyValueListener *listener );
+	void RemoveListener(igdeEditPropertyValueListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	virtual void NotifyPropertyValueChanged();
@@ -202,13 +202,13 @@ public:
 	 * 
 	 * Called by internal widgets only to update the value. Do not call yourself.
 	 */
-	void EditWidgetValueChanged( bool changing );
+	void EditWidgetValueChanged(bool changing);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper );
+	void pCreateContent(igdeUIHelper &helper);
 	void pUpdateEditWidgets();
 // 	void pMinifyFloat( decString &value ) const;
 };

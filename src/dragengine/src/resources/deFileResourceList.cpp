@@ -49,19 +49,19 @@ deFileResourceList::~deFileResourceList(){
 // Management
 ///////////////
 
-deResource *deFileResourceList::GetWithFilename( deVirtualFileSystem *vfs, const char *filename ) const{
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deResource *deFileResourceList::GetWithFilename(deVirtualFileSystem *vfs, const char *filename) const{
+	if(! vfs || ! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deFileResource *resource = ( deFileResource* )GetRoot();
-	while( resource ){
-		if( ! resource->GetOutdated()
+	deFileResource *resource = (deFileResource*)GetRoot();
+	while(resource){
+		if(! resource->GetOutdated()
 		&& resource->GetVirtualFileSystem() == vfs
-		&& resource->GetFilename() == filename ){
+		&& resource->GetFilename() == filename){
 			return resource;
 		}
-		resource = ( deFileResource* )resource->GetLLManagerNext();
+		resource = (deFileResource*)resource->GetLLManagerNext();
 	}
 	
 	return NULL;

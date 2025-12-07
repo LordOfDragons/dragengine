@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create base xml read/save. */
-	delBaseXML( deLogger *logger, const char *loggerSource );
+	delBaseXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up base xml read/save. */
 	virtual ~delBaseXML();
@@ -59,55 +59,55 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline deLogger *GetLogger() const{return pLogger;}
 	
 	/** \brief Logger source. */
-	inline const decString &GetLoggerSource() const{ return pLoggerSource; }
+	inline const decString &GetLoggerSource() const{return pLoggerSource;}
 	
 	/** \brief Named attribute is present. */
-	bool HasAttribute( const decXmlElementTag &tag, const char *name ) const;
+	bool HasAttribute(const decXmlElementTag &tag, const char *name) const;
 	
 	/**
 	 * \brief Named attribute value.
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	const decString &GetAttributeString( const decXmlElementTag &tag, const char *name ) const;
+	const decString &GetAttributeString(const decXmlElementTag &tag, const char *name) const;
 	
 	/**
 	 * \brief Named attribute value.
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	int GetAttributeInt( const decXmlElementTag &tag, const char *name ) const;
+	int GetAttributeInt(const decXmlElementTag &tag, const char *name) const;
 	
 	/**
 	 * \brief Named attribute value.
 	 * \throws EInvalidParam Named attribute is absent.
 	 */
-	float GetAttributeFloat( const decXmlElementTag &tag, const char *name ) const;
+	float GetAttributeFloat(const decXmlElementTag &tag, const char *name) const;
 	
 	/** \brief First CDATA value or 0 if absent. */
-	int GetCDataInt( const decXmlElementTag &tag ) const;
+	int GetCDataInt(const decXmlElementTag &tag) const;
 	
 	/** \brief First CDATA value or 0 if absent. */
-	float GetCDataFloat( const decXmlElementTag &tag ) const;
+	float GetCDataFloat(const decXmlElementTag &tag) const;
 	
 	/** \brief First CDATA value or empty string if absent. */
-	const decString &GetCDataString( const decXmlElementTag &tag ) const;
+	const decString &GetCDataString(const decXmlElementTag &tag) const;
 	
 	/**
 	 * \brief First CDATA value.
 	 * \throws EInvalidParam CDATA absent.
 	 */
-	bool GetCDataBool( const decXmlElementTag &tag ) const;
+	bool GetCDataBool(const decXmlElementTag &tag) const;
 	
 	/** \brief Log error unknown tag. */
-	void ErrorUnknownTag( const decXmlElementTag &root, const decXmlElementTag &tag );
+	void ErrorUnknownTag(const decXmlElementTag &root, const decXmlElementTag &tag);
 	
 	/** \brief Log error unknown value. */
-	void ErrorUnknownValue( const decXmlElementTag &tag, const char *value );
+	void ErrorUnknownValue(const decXmlElementTag &tag, const char *value);
 	
 	/** \brief Log error missing tag. */
-	void ErrorMissingTag( const decXmlElementTag &root, const char *tagName );
+	void ErrorMissingTag(const decXmlElementTag &root, const char *tagName);
 	/*@}*/
 };
 

@@ -54,20 +54,20 @@ int deoglDebugInformationList::GetCount() const{
 	return pChildren.GetCount();
 }
 
-deoglDebugInformation *deoglDebugInformationList::GetAt( int index ) const{
-	return ( deoglDebugInformation* )pChildren.GetAt( index );
+deoglDebugInformation *deoglDebugInformationList::GetAt(int index) const{
+	return (deoglDebugInformation*)pChildren.GetAt(index);
 }
 
-void deoglDebugInformationList::Add( deoglDebugInformation *child ){
-	pChildren.Add( child );
+void deoglDebugInformationList::Add(deoglDebugInformation *child){
+	pChildren.Add(child);
 }
 
-void deoglDebugInformationList::Remove( deoglDebugInformation *child ){
-	pChildren.Remove( child );
+void deoglDebugInformationList::Remove(deoglDebugInformation *child){
+	pChildren.Remove(child);
 }
 
-void deoglDebugInformationList::RemoveIfPresent( deoglDebugInformation *child ){
-	pChildren.RemoveIfPresent( child );
+void deoglDebugInformationList::RemoveIfPresent(deoglDebugInformation *child){
+	pChildren.RemoveIfPresent(child);
 }
 
 void deoglDebugInformationList::RemoveAll(){

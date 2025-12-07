@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state rendered. */
-	deoglSkinRenderedTexture( deoglSkinRendered &skinRendered, deoglRSkin &skin,
-		int texture, int modelTexture );
+	deoglSkinRenderedTexture(deoglSkinRendered &skinRendered, deoglRSkin &skin,
+		int texture, int modelTexture);
 	
 	/** Clean up skin state rendered. */
 	~deoglSkinRenderedTexture();
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Skin rendered. */
-	inline deoglSkinRendered &GetSkinRendered() const{ return pSkinRendered; }
+	inline deoglSkinRendered &GetSkinRendered() const{return pSkinRendered;}
 	
 	/** Add render plans. */
-	void AddRenderPlans( deoglRenderPlan &plan );
+	void AddRenderPlans(deoglRenderPlan &plan);
 	
 	/** Drop objects containing delayed deletion support. */
 	void DropDelayedDeletionObjects();
@@ -85,14 +85,14 @@ private:
 		decDMatrix mirrorFreeMatrix;
 	};
 	
-	void pMirrorAddRenderPlans( deoglRenderPlan &plan );
+	void pMirrorAddRenderPlans(deoglRenderPlan &plan);
 	
-	void pPlaneFromTexture( sMirrorMatrix &mirrorMatrix ) const;
+	void pPlaneFromTexture(sMirrorMatrix &mirrorMatrix) const;
 	
-	void pFrustumFromTexture( int width, int height, double projX, double projY, double near,
-		double far, const decDMatrix &matrixInvCamera, const decMatrix &matrixMVP ) const;
+	void pFrustumFromTexture(int width, int height, double projX, double projY, double near,
+		double far, const decDMatrix &matrixInvCamera, const decMatrix &matrixMVP) const;
 	
-	void pMirrorMatrix( const decDMatrix &invCamMatrix, sMirrorMatrix &mirrorMatrix );
+	void pMirrorMatrix(const decDMatrix &invCamMatrix, sMirrorMatrix &mirrorMatrix);
 };
 
 #endif

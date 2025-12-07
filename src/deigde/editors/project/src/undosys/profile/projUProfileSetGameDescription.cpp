@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProfileSetGameDescription::projUProfileSetGameDescription(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set game description" );
+	SetShortInfo("Profile set game description");
 	
 	pOldValue = profile->GetGameDescription();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetGameDescription::~projUProfileSetGameDescription(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProfileSetGameDescription::~projUProfileSetGameDescription(){
 ///////////////
 
 void projUProfileSetGameDescription::Undo(){
-	pProfile->SetGameDescription( pOldValue );
+	pProfile->SetGameDescription(pOldValue);
 }
 
 void projUProfileSetGameDescription::Redo(){
-	pProfile->SetGameDescription( pNewValue );
+	pProfile->SetGameDescription(pNewValue);
 }

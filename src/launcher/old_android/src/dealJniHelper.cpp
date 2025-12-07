@@ -32,44 +32,44 @@
 ///////////////////////////
 
 jniGlobalJObject::jniGlobalJObject() :
-pEnv( NULL ),
-pObject( NULL ){
+pEnv(NULL),
+pObject(NULL){
 }
 
-jniGlobalJObject::jniGlobalJObject( JNIEnv *env, jobject object ) :
-pEnv( env ),
-pObject( NULL )
+jniGlobalJObject::jniGlobalJObject(JNIEnv *env, jobject object) :
+pEnv(env),
+pObject(NULL)
 {
-	if( object ){
-		pObject = env->NewGlobalRef( object );
+	if(object){
+		pObject = env->NewGlobalRef(object);
 	}
 }
 
 jniGlobalJObject::~jniGlobalJObject(){
-	if( pObject ){
-		pEnv->DeleteGlobalRef( pObject );
+	if(pObject){
+		pEnv->DeleteGlobalRef(pObject);
 	}
 }
 
-jniGlobalJObject &jniGlobalJObject::operator=( const jniGlobalJObject &object ){
-	Set( object.pEnv, object.pObject );
+jniGlobalJObject &jniGlobalJObject::operator=(const jniGlobalJObject &object){
+	Set(object.pEnv, object.pObject);
 	return *this;
 }
 
-void jniGlobalJObject::Set( JNIEnv *env, jobject object ){
-	if( pObject ){
-		pEnv->DeleteGlobalRef( pObject );
+void jniGlobalJObject::Set(JNIEnv *env, jobject object){
+	if(pObject){
+		pEnv->DeleteGlobalRef(pObject);
 		pEnv = NULL;
 		pObject = NULL;
 	}
-	if( object ){
+	if(object){
 		pEnv = env;
-		pObject = env->NewGlobalRef( object );
+		pObject = env->NewGlobalRef(object);
 	}
 }
 
 void jniGlobalJObject::Clear(){
-	Set( NULL, NULL );
+	Set(NULL, NULL);
 }
 
 
@@ -78,44 +78,44 @@ void jniGlobalJObject::Clear(){
 //////////////////////////
 
 jniGlobalJClass::jniGlobalJClass() :
-pEnv( NULL ),
-pClass( NULL ){
+pEnv(NULL),
+pClass(NULL){
 }
 
-jniGlobalJClass::jniGlobalJClass( JNIEnv *env, jclass clazz ) :
-pEnv( env ),
-pClass( NULL )
+jniGlobalJClass::jniGlobalJClass(JNIEnv *env, jclass clazz) :
+pEnv(env),
+pClass(NULL)
 {
-	if( clazz ){
-		pClass = ( jclass )env->NewGlobalRef( clazz );
+	if(clazz){
+		pClass = (jclass)env->NewGlobalRef(clazz);
 	}
 }
 
 jniGlobalJClass::~jniGlobalJClass(){
-	if( pClass ){
-		pEnv->DeleteGlobalRef( pClass );
+	if(pClass){
+		pEnv->DeleteGlobalRef(pClass);
 	}
 }
 
-jniGlobalJClass &jniGlobalJClass::operator=( const jniGlobalJClass &clazz ){
-	Set( clazz.pEnv, clazz.pClass );
+jniGlobalJClass &jniGlobalJClass::operator=(const jniGlobalJClass &clazz){
+	Set(clazz.pEnv, clazz.pClass);
 	return *this;
 }
 
-void jniGlobalJClass::Set( JNIEnv *env, jclass clazz ){
-	if( pClass ){
-		pEnv->DeleteGlobalRef( pClass );
+void jniGlobalJClass::Set(JNIEnv *env, jclass clazz){
+	if(pClass){
+		pEnv->DeleteGlobalRef(pClass);
 		pEnv = NULL;
 		pClass = NULL;
 	}
-	if( clazz ){
+	if(clazz){
 		pEnv = env;
-		pClass = ( jclass )env->NewGlobalRef( clazz );
+		pClass = (jclass)env->NewGlobalRef(clazz);
 	}
 }
 
 void jniGlobalJClass::Clear(){
-	Set( NULL, NULL );
+	Set(NULL, NULL);
 }
 
 
@@ -124,61 +124,61 @@ void jniGlobalJClass::Clear(){
 ///////////////////////////
 
 jniGlobalJString::jniGlobalJString() :
-pEnv( NULL ),
-pString( NULL ){
+pEnv(NULL),
+pString(NULL){
 }
 
-jniGlobalJString::jniGlobalJString( JNIEnv *env, jstring string ) :
-pEnv( env ),
-pString( NULL )
+jniGlobalJString::jniGlobalJString(JNIEnv *env, jstring string) :
+pEnv(env),
+pString(NULL)
 {
-	if( string ){
-		pString = ( jstring )env->NewGlobalRef( string );
+	if(string){
+		pString = (jstring)env->NewGlobalRef(string);
 	}
 }
 
-jniGlobalJString::jniGlobalJString( JNIEnv *env, const char *string ) :
-pEnv( env ),
-pString( NULL )
+jniGlobalJString::jniGlobalJString(JNIEnv *env, const char *string) :
+pEnv(env),
+pString(NULL)
 {
-	pString = ( jstring )env->NewGlobalRef( env->NewStringUTF( string ) );
+	pString = (jstring)env->NewGlobalRef(env->NewStringUTF(string));
 }
 
 jniGlobalJString::~jniGlobalJString(){
-	if( pString ){
-		pEnv->DeleteGlobalRef( pString );
+	if(pString){
+		pEnv->DeleteGlobalRef(pString);
 	}
 }
 
 jniGlobalJString::operator decString(){
 	decString string;
 	
-	if( pString ){
-		const char * const strString = pEnv->GetStringUTFChars( pString, 0 );
+	if(pString){
+		const char * const strString = pEnv->GetStringUTFChars(pString, 0);
 		string = strString;
-		pEnv->ReleaseStringUTFChars( pString, strString );
+		pEnv->ReleaseStringUTFChars(pString, strString);
 	}
 	
 	return string;
 }
 
-jniGlobalJString &jniGlobalJString::operator=( const jniGlobalJString &string ){
-	Set( string.pEnv, string.pString );
+jniGlobalJString &jniGlobalJString::operator=(const jniGlobalJString &string){
+	Set(string.pEnv, string.pString);
 	return *this;
 }
 
-void jniGlobalJString::Set( JNIEnv *env, jstring string ){
-	if( pString ){
-		pEnv->DeleteGlobalRef( pString );
+void jniGlobalJString::Set(JNIEnv *env, jstring string){
+	if(pString){
+		pEnv->DeleteGlobalRef(pString);
 		pEnv = NULL;
 		pString = NULL;
 	}
-	if( string ){
+	if(string){
 		pEnv = env;
-		pString = ( jstring )env->NewGlobalRef( string );
+		pString = (jstring)env->NewGlobalRef(string);
 	}
 }
 
 void jniGlobalJString::Clear(){
-	Set( NULL, NULL );
+	Set(NULL, NULL);
 }

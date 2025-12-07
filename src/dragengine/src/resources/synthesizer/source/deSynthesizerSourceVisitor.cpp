@@ -55,25 +55,25 @@ deSynthesizerSourceVisitor::~deSynthesizerSourceVisitor(){
 // Visiting
 /////////////
 
-void deSynthesizerSourceVisitor::VisitSource( deSynthesizerSource &source ){
+void deSynthesizerSourceVisitor::VisitSource(deSynthesizerSource &source){
 }
 
-void deSynthesizerSourceVisitor::VisitSound( deSynthesizerSourceSound &source ){
-	VisitSource( source );
+void deSynthesizerSourceVisitor::VisitSound(deSynthesizerSourceSound &source){
+	VisitSource(source);
 }
 
-void deSynthesizerSourceVisitor::VisitWave( deSynthesizerSourceWave &source ){
-	VisitSource( source );
+void deSynthesizerSourceVisitor::VisitWave(deSynthesizerSourceWave &source){
+	VisitSource(source);
 }
 
-void deSynthesizerSourceVisitor::VisitChain( deSynthesizerSourceChain &source ){
-	VisitSource( source );
+void deSynthesizerSourceVisitor::VisitChain(deSynthesizerSourceChain &source){
+	VisitSource(source);
 }
 
-void deSynthesizerSourceVisitor::VisitSynthesizer( deSynthesizerSourceSynthesizer &source ){
-	VisitSource( source );
+void deSynthesizerSourceVisitor::VisitSynthesizer(deSynthesizerSourceSynthesizer &source){
+	VisitSource(source);
 }
 
-void deSynthesizerSourceVisitor::VisitGroup( deSynthesizerSourceGroup &source ){
-	VisitSource( source );
+void deSynthesizerSourceVisitor::VisitGroup(deSynthesizerSourceGroup &source){
+	VisitSource(source);
 }

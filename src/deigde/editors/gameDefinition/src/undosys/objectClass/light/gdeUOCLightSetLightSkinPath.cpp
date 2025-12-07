@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetLightSkinPath::gdeUOCLightSetLightSkinPath( gdeObjectClass *objectClass,
-gdeOCLight *light, const char *newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetLightSkinPath::gdeUOCLightSetLightSkinPath(gdeObjectClass *objectClass,
+gdeOCLight *light, const char *newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set light skin path" );
+	SetShortInfo("Light set light skin path");
 	
 	pOldValue = light->GetLightSkinPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetLightSkinPath::~gdeUOCLightSetLightSkinPath(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetLightSkinPath::~gdeUOCLightSetLightSkinPath(){
 ///////////////
 
 void gdeUOCLightSetLightSkinPath::Undo(){
-	pLight->SetLightSkinPath( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetLightSkinPath(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetLightSkinPath::Redo(){
-	pLight->SetLightSkinPath( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetLightSkinPath(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

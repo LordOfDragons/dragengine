@@ -131,7 +131,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render window. */
-	deRenderWindow( deRenderWindowManager *manager );
+	deRenderWindow(deRenderWindowManager *manager);
 	
 protected:
 	/**
@@ -150,22 +150,22 @@ public:
 	/*@{*/
 	/** \brief Hosting render window or NULL if not set. */
 	#ifdef OS_ANDROID
-	inline void *GetHostWindow() const{ return pHostWindow; }
+	inline void *GetHostWindow() const{return pHostWindow;}
 	
 	#elif defined OS_WEBWASM
-	inline void *GetHostWindow() const{ return pHostWindow; }
+	inline void *GetHostWindow() const{return pHostWindow;}
 	
 	#elif defined OS_BEOS
-	inline BWindow *GetHostWindow() const{ return pHostWindow; }
+	inline BWindow *GetHostWindow() const{return pHostWindow;}
 	
 	#elif defined OS_W32
-	inline HWND GetHostWindow() const{ return pHostWindow; }
+	inline HWND GetHostWindow() const{return pHostWindow;}
 	
 	#elif defined OS_MACOS
-	inline NSWindow *GetHostWindow() const{ return pHostWindow; }
+	inline NSWindow *GetHostWindow() const{return pHostWindow;}
 	
 	#elif defined OS_UNIX_X11
-	inline Window GetHostWindow() const{ return pHostWindow; }
+	inline Window GetHostWindow() const{return pHostWindow;}
 	#endif
 	
 	/**
@@ -195,22 +195,22 @@ public:
 	
 	/** \brief Render window. */
 	#ifdef OS_ANDROID
-	inline void *GetWindow() const{ return pWindow; }
+	inline void *GetWindow() const{return pWindow;}
 	
 	#elif defined OS_WEBWASM
-	inline void *GetWindow() const{ return pWindow; }
+	inline void *GetWindow() const{return pWindow;}
 	
 	#elif defined OS_W32
-	inline HWND GetWindow() const{ return pWindow; }
+	inline HWND GetWindow() const{return pWindow;}
 	
 	#elif defined OS_BEOS
-	inline BWindow *GetWindow() const{ return pWindow; }
+	inline BWindow *GetWindow() const{return pWindow;}
 	
 	#elif defined OS_MACOS
-	inline NSWindow *GetWindow() const{ return pWindow; }
+	inline NSWindow *GetWindow() const{return pWindow;}
 	
 	#elif defined OS_UNIX_X11
-	inline Window GetWindow() const{ return pWindow; }
+	inline Window GetWindow() const{return pWindow;}
 	#endif
 	
 	/**
@@ -238,10 +238,10 @@ public:
 	#endif
 	
 	/** \brief X position in pixels. */
-	inline int GetX() const{ return pX; }
+	inline int GetX() const{return pX;}
 	
 	/** \brief Y position in pixels. */
-	inline int GetY() const{ return pY; }
+	inline int GetY() const{return pY;}
 	
 	/**
 	 * \brief Set position in pixels.
@@ -249,35 +249,35 @@ public:
 	void SetPosition(int x, int y);
 	
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/**
 	 * \brief Set size in pixels.
 	 * \throws deeInvalidParam \em width is less than 1.
 	 * \throws deeInvalidParam \em height is less than 1.
 	 */
-	void SetSize( int width, int height );
+	void SetSize(int width, int height);
 	
 	/** \brief Window is full screen. */
-	inline bool GetFullScreen() const{ return pFullScreen; }
+	inline bool GetFullScreen() const{return pFullScreen;}
 	
 	/** \brief Set if the window is full screen. */
-	void SetFullScreen( bool fullscreen );
+	void SetFullScreen(bool fullscreen);
 	
 	/** \brief Window scale factor multiplied by 100 (monitor/DPI scaling). */
-	inline int GetScaleFactor() const{ return pScaleFactor; }
+	inline int GetScaleFactor() const{return pScaleFactor;}
 	
 	/** \brief Set window scale factor multiplied by 100 (monitor/DPI scaling). */
 	void SetScaleFactor(int scaleFactor);
 	
 	/** \brief Script is notified about the window changing size. */
-	inline bool GetNotifyScriptOnResize() const{ return pNotifyScriptOnResize; }
+	inline bool GetNotifyScriptOnResize() const{return pNotifyScriptOnResize;}
 	
 	/** \brief Set if the script is notified about the window chaning size. */
-	void SetNotifyScriptOnResize( bool notify );
+	void SetNotifyScriptOnResize(bool notify);
 	
 	/**
 	 * \brief Painting enabled.
@@ -287,7 +287,7 @@ public:
 	 * Module. Disabling painting avoids the Graphic Module wasting time rendering
 	 * render window content if it is not visible.
 	 */
-	inline bool GetPaint() const{ return pPaint; }
+	inline bool GetPaint() const{return pPaint;}
 	
 	/**
 	 * \brief Set if painting is enabled.
@@ -297,26 +297,26 @@ public:
 	 * Module. Disabling painting avoids the Graphic Module wasting time rendering
 	 * render window content if it is not visible.
 	 */
-	void SetPaint( bool paint );
+	void SetPaint(bool paint);
 	
 	/** \brief Render window title. */
-	inline const decString &GetTitle() const{ return pTitle; }
+	inline const decString &GetTitle() const{return pTitle;}
 	
 	/** \brief Set render window title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Icon. */
-	inline deImage *GetIcon() const{ return pIcon; }
+	inline deImage *GetIcon() const{return pIcon;}
 	
 	/** \brief Set icon. */
-	void SetIcon( deImage *icon );
+	void SetIcon(deImage *icon);
 	
 	/**
 	 * \brief Canvas defining the content to render.
 	 * 
 	 * The canvas view is automatically resized to fill the entire window.
 	 */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
 	/*@}*/
 	
 	
@@ -324,10 +324,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer or NULL if not set. */
-	inline deBaseGraphicRenderWindow *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicRenderWindow *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer or NULL if not set. */
-	void SetPeerGraphic( deBaseGraphicRenderWindow *peer );
+	void SetPeerGraphic(deBaseGraphicRenderWindow *peer);
 	/*@}*/
 	
 };

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleRemoveBone::aeUSetRuleRemoveBone( aeRule* rule, const char* pattern ){
-	if( ! rule || ! pattern ){
-		DETHROW( deeInvalidParam );
+aeUSetRuleRemoveBone::aeUSetRuleRemoveBone(aeRule* rule, const char* pattern){
+	if(! rule || ! pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,19 +50,19 @@ aeUSetRuleRemoveBone::aeUSetRuleRemoveBone( aeRule* rule, const char* pattern ){
 	const int boneCount = ruleBoneList.GetCount();
 	int i;
 	
-	for( i=0; i<boneCount; i++ ){
-		const decString &bone = ruleBoneList.GetAt( i );
+	for(i=0; i<boneCount; i++){
+		const decString &bone = ruleBoneList.GetAt(i);
 		
-		if( bone.MatchesPattern( pattern ) ){
-			pBones.Add( bone );
+		if(bone.MatchesPattern(pattern)){
+			pBones.Add(bone);
 		}
 	}
 	
-	if( pBones.GetCount() == 1 ){
-		SetShortInfo( "Remove bone from rule" );
+	if(pBones.GetCount() == 1){
+		SetShortInfo("Remove bone from rule");
 		
 	}else{
-		SetShortInfo( "Remove bones from rule" );
+		SetShortInfo("Remove bones from rule");
 	}
 	
 	pRule = rule;
@@ -70,7 +70,7 @@ aeUSetRuleRemoveBone::aeUSetRuleRemoveBone( aeRule* rule, const char* pattern ){
 }
 
 aeUSetRuleRemoveBone::~aeUSetRuleRemoveBone(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -88,8 +88,8 @@ void aeUSetRuleRemoveBone::Undo(){
 	const int count = pBones.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->AddBone( pBones.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->AddBone(pBones.GetAt(i));
 	}
 }
 
@@ -97,7 +97,7 @@ void aeUSetRuleRemoveBone::Redo(){
 	const int count = pBones.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->RemoveBone( pBones.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->RemoveBone(pBones.GetAt(i));
 	}
 }

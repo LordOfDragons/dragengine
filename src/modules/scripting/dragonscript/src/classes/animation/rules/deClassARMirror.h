@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create script class. */
-	deClassARMirror( deScriptingDragonScript &ds );
+	deClassARMirror(deScriptingDragonScript &ds);
 	
 	/** Clean up script class. */
 	virtual ~deClassARMirror();
@@ -72,23 +72,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Rule or nullptr if deleted or myself is nullptr. */
-	deAnimatorRuleMirror *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleMirror *GetRule(dsRealObject *myself) const;
 	
 	/** Assigns animator or nullptr. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule);
 	
-	inline dsClass *GetClassARMirrorTarget() const{ return pClsARMirrorTarget; }
-	inline dsClass *GetClassARMirrorMirrorAxis() const{ return pClsARMirrorMirrorAxis; }
-	inline dsClass *GetClassARMirrorMatchNameType() const{ return pClsARMirrorMatchNameType; }
+	inline dsClass *GetClassARMirrorTarget() const{return pClsARMirrorTarget;}
+	inline dsClass *GetClassARMirrorMirrorAxis() const{return pClsARMirrorMirrorAxis;}
+	inline dsClass *GetClassARMirrorMatchNameType() const{return pClsARMirrorMatchNameType;}
 	/*@}*/
 	
 private:
@@ -110,25 +110,25 @@ private:
 		dsClass *clsARMirrorTarget;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetMirrorMirrorAxis );
-	DEF_NATFUNC( nfSetMirrorBone );
-	DEF_NATFUNC( nfAddMatchName );
+	DEF_NATFUNC(nfSetMirrorMirrorAxis);
+	DEF_NATFUNC(nfSetMirrorBone);
+	DEF_NATFUNC(nfAddMatchName);
 	
-	DEF_NATFUNC( nfSetEnablePosition );
-	DEF_NATFUNC( nfSetEnableOrientation );
-	DEF_NATFUNC( nfSetEnableSize );
-	DEF_NATFUNC( nfSetEnableVertexPositionSet );
+	DEF_NATFUNC(nfSetEnablePosition);
+	DEF_NATFUNC(nfSetEnableOrientation);
+	DEF_NATFUNC(nfSetEnableSize);
+	DEF_NATFUNC(nfSetEnableVertexPositionSet);
 #undef DEF_NATFUNC
 };
 

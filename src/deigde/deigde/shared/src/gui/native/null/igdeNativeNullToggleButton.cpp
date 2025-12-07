@@ -38,7 +38,7 @@ igdeNativeNullToggleButton::igdeNativeNullToggleButton(){
 igdeNativeNullToggleButton::~igdeNativeNullToggleButton(){
 }
 
-igdeNativeNullToggleButton *igdeNativeNullToggleButton::CreateNativeWidget( igdeToggleButton& ){
+igdeNativeNullToggleButton *igdeNativeNullToggleButton::CreateNativeWidget(igdeToggleButton&){
 	return new igdeNativeNullToggleButton;
 }
 

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	seUControllerToggleClamp( seController *controller );
+	seUControllerToggleClamp(seController *controller);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -104,7 +104,7 @@ private:
 	deSkinPropertyNode *pMask;
 	eCombineModes pCombineMode;
 	
-	int pMapped[ MappedCount ];
+	int pMapped[MappedCount];
 	
 	
 	
@@ -123,82 +123,82 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position in pixels relative to top-left-front corner. */
-	inline const decPoint3 &GetPosition() const{ return pPosition; }
+	inline const decPoint3 &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position in pixels relative to top-left-front corner. */
-	void SetPosition( const decPoint3 &position );
+	void SetPosition(const decPoint3 &position);
 	
 	/** \brief Size in pixels. */
-	inline const decPoint3 &GetSize() const{ return pSize; }
+	inline const decPoint3 &GetSize() const{return pSize;}
 	
 	/** \brief Set size in pixels. */
-	void SetSize( const decPoint3 &size );
+	void SetSize(const decPoint3 &size);
 	
 	/** \brief Counter clock-wise rotation in radians. */
-	inline float GetRotation() const{ return pRotation; }
+	inline float GetRotation() const{return pRotation;}
 	
 	/** \brief Set counter clock-wise rotation in radians. */
-	void SetRotation( float rotation );
+	void SetRotation(float rotation);
 	
 	/** \brief Shearing in percentage along other axis. */
-	inline float GetShear() const{ return pShear; }
+	inline float GetShear() const{return pShear;}
 	
 	/** \brief Set shearing in percentage along other axis. */
-	void SetShear( float shear );
+	void SetShear(float shear);
 	
 	
 	
 	/** \brief Brightness. */
-	inline float GetBrightness() const{ return pBrightness; }
+	inline float GetBrightness() const{return pBrightness;}
 	
 	/** \brief Set brightness. */
-	void SetBrightness( float brightness );
+	void SetBrightness(float brightness);
 	
 	/** \brief Contrast. */
-	inline float GetContrast() const{ return pContrast; }
+	inline float GetContrast() const{return pContrast;}
 	
 	/** \brief Set contrast. */
-	void SetContrast( float contrast );
+	void SetContrast(float contrast);
 	
 	/** \brief Gamma. */
-	inline float GetGamma() const{ return pGamma; }
+	inline float GetGamma() const{return pGamma;}
 	
 	/** \brief Set gamma. */
-	void SetGamma( float gamma );
+	void SetGamma(float gamma);
 	
 	/** \brief Colorize. */
-	inline const decColor &GetColorize() const{ return pColorize; }
+	inline const decColor &GetColorize() const{return pColorize;}
 	
 	/** \brief Set colorize. */
-	void SetColorize( const decColor &color );
+	void SetColorize(const decColor &color);
 	
 	
 	
 	/** \brief Transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** \brief Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** \brief Mask node or NULL if not masked. */
-	inline deSkinPropertyNode *GetMask() const{ return pMask; }
+	inline deSkinPropertyNode *GetMask() const{return pMask;}
 	
 	/** \brief Set mask node or NULL if not masked. */
-	void SetMask( deSkinPropertyNode *mask );
+	void SetMask(deSkinPropertyNode *mask);
 	
 	/** \brief Combine mode. */
-	inline eCombineModes GetCombineMode() const{ return pCombineMode; }
+	inline eCombineModes GetCombineMode() const{return pCombineMode;}
 	
 	/** \brief Set combien mode. */
-	void SetCombineMode( eCombineModes mode );
+	void SetCombineMode(eCombineModes mode);
 	
 	
 	
 	/** \brief Index of mapped value or -1 to use static value. */
-	int GetMappedFor( eMapped mapped ) const;
+	int GetMappedFor(eMapped mapped) const;
 	
 	/** \brief Set index of mapped value or -1 to use static value. */
-	void SetMappedFor( eMapped mapped, int index );
+	void SetMappedFor(eMapped mapped, int index);
 	/*@}*/
 	
 	
@@ -206,7 +206,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit( deSkinPropertyNodeVisitor &visitor );
+	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
 	/*@}*/
 };
 

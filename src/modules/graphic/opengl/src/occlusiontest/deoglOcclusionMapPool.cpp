@@ -35,14 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionMapPool::deoglOcclusionMapPool( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglOcclusionMapPool::deoglOcclusionMapPool(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglOcclusionMapPool::~deoglOcclusionMapPool(){
 	int count = pOcclusionMaps.GetCount();
-	while( count > 0 ){
-		delete ( deoglOcclusionMap* )pOcclusionMaps.GetAt( --count );
+	while(count > 0){
+		delete (deoglOcclusionMap*)pOcclusionMaps.GetAt(--count);
 	}
 }
 
@@ -51,31 +51,31 @@ deoglOcclusionMapPool::~deoglOcclusionMapPool(){
 // Management
 ///////////////
 
-deoglOcclusionMap *deoglOcclusionMapPool::Get( int width, int height, int layerCount ){
-	if( width < 1 || height < 1 || layerCount < 1 ){
-		DETHROW( deeInvalidParam );
+deoglOcclusionMap *deoglOcclusionMapPool::Get(int width, int height, int layerCount){
+	if(width < 1 || height < 1 || layerCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pOcclusionMaps.GetCount();
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deoglOcclusionMap * const occlusionMap = ( deoglOcclusionMap* )pOcclusionMaps.GetAt( i );
-		if( occlusionMap->GetWidth() == width
+	for(i=count-1; i>=0; i--){
+		deoglOcclusionMap * const occlusionMap = (deoglOcclusionMap*)pOcclusionMaps.GetAt(i);
+		if(occlusionMap->GetWidth() == width
 		&& occlusionMap->GetHeight() == height
-		&& occlusionMap->GetLayerCount() == layerCount ){
-			pOcclusionMaps.RemoveFrom( i );
+		&& occlusionMap->GetLayerCount() == layerCount){
+			pOcclusionMaps.RemoveFrom(i);
 			return occlusionMap;
 		}
 	}
 	
-	return new deoglOcclusionMap( pRenderThread, width, height, layerCount );
+	return new deoglOcclusionMap(pRenderThread, width, height, layerCount);
 }
 
-void deoglOcclusionMapPool::Return( deoglOcclusionMap *occlusionMap ){
-	if( ! occlusionMap ){
-		DETHROW( deeInvalidParam );
+void deoglOcclusionMapPool::Return(deoglOcclusionMap *occlusionMap){
+	if(! occlusionMap){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pOcclusionMaps.Add( occlusionMap );
+	pOcclusionMaps.Add(occlusionMap);
 }

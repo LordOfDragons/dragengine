@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassInputEvent( deScriptingDragonScript &ds );
+	deClassInputEvent(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassInputEvent();
@@ -59,19 +59,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief InputEvent or \em NULL if myself is \em NULL. */
-	const deInputEvent &GetInputEvent( dsRealObject *myself ) const;
+	const deInputEvent &GetInputEvent(dsRealObject *myself) const;
 	
 	/** \brief Push input event which can be \em NULL. */
-	void PushInputEvent( dsRunTime *rt, const deInputEvent &event );
+	void PushInputEvent(dsRunTime *rt, const deInputEvent &event);
 	
-	inline dsClass *GetClassInputEventType() const{ return pClsInputEventType; }
-	inline dsClass *GetClassInputEventSource() const{ return pClsInputEventSource; }
+	inline dsClass *GetClassInputEventType() const{return pClsInputEventType;}
+	inline dsClass *GetClassInputEventSource() const{return pClsInputEventSource;}
 	/*@}*/
 	
 	
@@ -90,27 +90,27 @@ private:
 		dsClass *clsInputEventSource;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfGetDevice );
-	DEF_NATFUNC( nfGetCode );
-	DEF_NATFUNC( nfGetState );
-	DEF_NATFUNC( nfGetKeyCode );
-	DEF_NATFUNC( nfGetKeyChar );
-	DEF_NATFUNC( nfGetX );
-	DEF_NATFUNC( nfGetY );
-	DEF_NATFUNC( nfGetValue );
-	DEF_NATFUNC( nfGetTime );
-	DEF_NATFUNC( nfGetSource );
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfGetDevice);
+	DEF_NATFUNC(nfGetCode);
+	DEF_NATFUNC(nfGetState);
+	DEF_NATFUNC(nfGetKeyCode);
+	DEF_NATFUNC(nfGetKeyChar);
+	DEF_NATFUNC(nfGetX);
+	DEF_NATFUNC(nfGetY);
+	DEF_NATFUNC(nfGetValue);
+	DEF_NATFUNC(nfGetTime);
+	DEF_NATFUNC(nfGetSource);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

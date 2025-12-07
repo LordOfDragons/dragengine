@@ -57,28 +57,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Parameter at index. */
-	delGPMParameter *GetAt( int index ) const;
+	delGPMParameter *GetAt(int index) const;
 	
 	/** \brief Named parameter or nullptr if absent. */
-	delGPMParameter *GetNamed( const char *name ) const;
+	delGPMParameter *GetNamed(const char *name) const;
 	
 	/** \brief Parameter is present. */
-	bool Has( delGPMParameter *parameter ) const;
+	bool Has(delGPMParameter *parameter) const;
 	
 	/** \brief Named parameter is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Index of parameter or -1 if absent. */
-	int IndexOf( delGPMParameter *parameter ) const;
+	int IndexOf(delGPMParameter *parameter) const;
 	
 	/** \brief Index of named parameter or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Add parameter. */
-	void Add( delGPMParameter *parameter );
+	void Add(delGPMParameter *parameter);
 	
 	/** \brief Remove parameter. */
-	void Remove( delGPMParameter *parameter );
+	void Remove(delGPMParameter *parameter);
 	
 	/** \brief Remove all parameters. */
 	void RemoveAll();

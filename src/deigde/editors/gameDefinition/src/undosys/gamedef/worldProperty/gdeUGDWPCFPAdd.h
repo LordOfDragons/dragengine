@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPCFPAdd( gdeGameDefinition *gamedef, gdeProperty *property, gdeFilePattern *filePattern );
+	gdeUGDWPCFPAdd(gdeGameDefinition *gamedef, gdeProperty *property, gdeFilePattern *filePattern);
 	
 protected:
 	/** \brief Clean up undo action. */

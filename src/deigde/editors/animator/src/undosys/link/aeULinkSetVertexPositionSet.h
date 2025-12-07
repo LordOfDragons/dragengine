@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetVertexPositionSet( aeLink *link, const char *newValue );
+	aeULinkSetVertexPositionSet(aeLink *link, const char *newValue);
 	
 protected:
 	/** Clean up undo. */

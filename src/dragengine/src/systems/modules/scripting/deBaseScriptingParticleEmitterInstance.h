@@ -56,7 +56,7 @@ public:
 	 * 
 	 * Update \em collisionInfo with the particle response to use.
 	 */
-	virtual void CollisionResponse( deCollisionInfo *collisionInfo );
+	virtual void CollisionResponse(deCollisionInfo *collisionInfo);
 	/*@}*/
 };
 

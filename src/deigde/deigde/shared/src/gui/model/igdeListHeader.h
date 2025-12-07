@@ -56,12 +56,12 @@ public:
 	/** \title Constructors and Destructors */
 	/*@{*/
 	/** \brief Create list header. */
-	igdeListHeader( const char *title, int size );
+	igdeListHeader(const char *title, int size);
 	
-	igdeListHeader( const char *title, igdeIcon *icon, int size );
+	igdeListHeader(const char *title, igdeIcon *icon, int size);
 	
 	/** \brief Create copy of list header. */
-	igdeListHeader( const igdeListHeader &header );
+	igdeListHeader(const igdeListHeader &header);
 	
 	
 	
@@ -81,27 +81,27 @@ public:
 	/** \title Management */
 	/*@{*/
 	/** \brief Title. */
-	inline const decString &GetTitle() const{ return pTitle; }
+	inline const decString &GetTitle() const{return pTitle;}
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	inline igdeIcon *GetIcon() const{return pIcon;}
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Size in pixels. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{return pSize;}
 	
 	/** \brief Set size in pixels. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	
 	
 	/** \brief Set from another header. */
-	virtual igdeListHeader &operator=( const igdeListHeader &header );
+	virtual igdeListHeader &operator=(const igdeListHeader &header);
 	/*@}*/
 };
 

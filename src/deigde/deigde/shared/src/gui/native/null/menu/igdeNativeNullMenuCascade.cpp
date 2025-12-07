@@ -39,45 +39,45 @@ igdeNativeNullMenuCascade::igdeNativeNullMenuCascade(){
 igdeNativeNullMenuCascade::~igdeNativeNullMenuCascade(){
 }
 
-void *igdeNativeNullMenuCascade::CreateNativeWidget( igdeMenuCascade& ){
+void *igdeNativeNullMenuCascade::CreateNativeWidget(igdeMenuCascade&){
 	return new igdeNativeNullMenuCascade;
 }
 
-void igdeNativeNullMenuCascade::PostCreateNativeWidget( igdeMenuCascade&, void* ){
+void igdeNativeNullMenuCascade::PostCreateNativeWidget(igdeMenuCascade&, void*){
 }
 
-void igdeNativeNullMenuCascade::DestroyNativeWidget( igdeMenuCascade&, void *native ){
-	delete ( igdeNativeNullMenuCascade* )native;
+void igdeNativeNullMenuCascade::DestroyNativeWidget(igdeMenuCascade&, void *native){
+	delete (igdeNativeNullMenuCascade*)native;
 }
 
-void *igdeNativeNullMenuCascade::GetNativeContainer( const igdeMenuCascade&, void *native ){
+void *igdeNativeNullMenuCascade::GetNativeContainer(const igdeMenuCascade&, void *native){
 	return native;
 }
 
-void igdeNativeNullMenuCascade::UpdateTitle( const igdeMenuCascade&, void* ){
+void igdeNativeNullMenuCascade::UpdateTitle(const igdeMenuCascade&, void*){
 }
 
-void igdeNativeNullMenuCascade::UpdateDescription( const igdeMenuCascade &, void* ){
+void igdeNativeNullMenuCascade::UpdateDescription(const igdeMenuCascade &, void*){
 }
 
-void igdeNativeNullMenuCascade::UpdateIcon( const igdeMenuCascade &, void* ){
+void igdeNativeNullMenuCascade::UpdateIcon(const igdeMenuCascade &, void*){
 }
 
-void igdeNativeNullMenuCascade::UpdateEnabled( const igdeMenuCascade&, void* ){
+void igdeNativeNullMenuCascade::UpdateEnabled(const igdeMenuCascade&, void*){
 }
 
-void *igdeNativeNullMenuCascade::CreateNativePopup( igdeMenuCascade&, igdeWidget& ){
+void *igdeNativeNullMenuCascade::CreateNativePopup(igdeMenuCascade&, igdeWidget&){
 	return new igdeNativeNullMenuCascade;
 }
 
-void igdeNativeNullMenuCascade::PostCreateNativePopup( igdeMenuCascade&, void* ){
+void igdeNativeNullMenuCascade::PostCreateNativePopup(igdeMenuCascade&, void*){
 }
 
-void igdeNativeNullMenuCascade::ShowPopupWindow( igdeMenuCascade&, igdeWidget&, const decPoint & ){
+void igdeNativeNullMenuCascade::ShowPopupWindow(igdeMenuCascade&, igdeWidget&, const decPoint &){
 }
 
-void igdeNativeNullMenuCascade::DestroyNativePopup( igdeMenuCascade&, void *native ){
-	delete ( igdeNativeNullMenuCascade* )native;
+void igdeNativeNullMenuCascade::DestroyNativePopup(igdeMenuCascade&, void *native){
+	delete (igdeNativeNullMenuCascade*)native;
 }
 
 #endif

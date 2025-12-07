@@ -133,7 +133,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	seWindowMain( seIGDEModule &module );
+	seWindowMain(seIGDEModule &module);
 	
 protected:
 	/** \brief Clean up window. */
@@ -154,24 +154,24 @@ public:
 	
 	
 	/** \brief Configuration. */
-	inline seConfiguration &GetConfiguration(){ return pConfiguration; }
-	inline const seConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline seConfiguration &GetConfiguration(){return pConfiguration;}
+	inline const seConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){return pClipboard;}
+	inline const igdeClipboard &GetClipboard() const{return pClipboard;}
 	
 	/** \brief Load save system. */
-	inline seLoadSaveSystem &GetLoadSaveSystem(){ return pLoadSaveSystem; }
-	inline const seLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
+	inline seLoadSaveSystem &GetLoadSaveSystem(){return pLoadSaveSystem;}
+	inline const seLoadSaveSystem &GetLoadSaveSystem() const{return pLoadSaveSystem;}
 	
 	
 	
 	/** \brief Synthesizer. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline seSynthesizer *GetSynthesizer() const{return pSynthesizer;}
 	
 	/** \brief Set synthesizer. */
-	void SetSynthesizer( seSynthesizer *synthesizer );
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	
@@ -179,44 +179,44 @@ public:
 	void CreateSynthesizer();
 	
 	/** \brief Save synthesizer. */
-	void SaveSynthesizer( const char *filename );
+	void SaveSynthesizer(const char *filename);
 	
 	
 	
 	/** \brief Create a new source of a given type using the matching undo action. */
-	void CreateSource( const decString &name, deSynthesizerSourceVisitorIdentify::eSourceTypes type,
-		bool insert, bool group );
+	void CreateSource(const decString &name, deSynthesizerSourceVisitorIdentify::eSourceTypes type,
+		bool insert, bool group);
 	
 	/** \brief Create a new effect of a given type using the matching undo action. */
-	void CreateEffect( deSynthesizerEffectVisitorIdentify::eEffectTypes type, bool insert );
+	void CreateEffect(deSynthesizerEffectVisitorIdentify::eEffectTypes type, bool insert);
 	
 	
 	
 	/** \brief Set visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	
 	/** \brief Set progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	
 	/** \brief Set progress text. */
-	void SetProgressText( const char *text );
+	void SetProgressText(const char *text);
 	
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconSourceSound() const{ return pIconSourceSound; }
-	inline igdeIcon *GetIconSourceWave() const{ return pIconSourceWave; }
-	inline igdeIcon *GetIconSourceChain() const{ return pIconSourceChain; }
-	inline igdeIcon *GetIconSourceGroup() const{ return pIconSourceGroup; }
-	inline igdeIcon *GetIconSourceSynthesizer() const{ return pIconSourceSynthesizer; }
-	igdeIcon *GetSourceIcon( deSynthesizerSourceVisitorIdentify::eSourceTypes type ) const;
+	inline igdeIcon *GetIconSourceSound() const{return pIconSourceSound;}
+	inline igdeIcon *GetIconSourceWave() const{return pIconSourceWave;}
+	inline igdeIcon *GetIconSourceChain() const{return pIconSourceChain;}
+	inline igdeIcon *GetIconSourceGroup() const{return pIconSourceGroup;}
+	inline igdeIcon *GetIconSourceSynthesizer() const{return pIconSourceSynthesizer;}
+	igdeIcon *GetSourceIcon(deSynthesizerSourceVisitorIdentify::eSourceTypes type) const;
 	
-	inline igdeIcon *GetIconEffectStretch() const{ return pIconEffectStretch; }
-	igdeIcon *GetEffectIcon( deSynthesizerEffectVisitorIdentify::eEffectTypes type ) const;
+	inline igdeIcon *GetIconEffectStretch() const{return pIconEffectStretch;}
+	igdeIcon *GetEffectIcon(deSynthesizerEffectVisitorIdentify::eEffectTypes type) const;
 	
-	inline igdeIcon *GetIconPlay() const{ return pIconPlay; }
-	inline igdeIcon *GetIconPause() const{ return pIconPause; }
-	inline igdeIcon *GetIconStop() const{ return pIconStop; }
+	inline igdeIcon *GetIconPlay() const{return pIconPlay;}
+	inline igdeIcon *GetIconPause() const{return pIconPause;}
+	inline igdeIcon *GetIconStop() const{return pIconStop;}
 	
 	
 	
@@ -239,7 +239,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -250,12 +250,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -265,7 +265,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -285,40 +285,40 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline igdeAction *GetActionControllerAdd() const{return pActionControllerAdd;}
+	inline igdeAction *GetActionControllerRemove() const{return pActionControllerRemove;}
+	inline igdeAction *GetActionControllerUp() const{return pActionControllerUp;}
+	inline igdeAction *GetActionControllerDown() const{return pActionControllerDown;}
 	
-	inline igdeAction *GetActionSourceAddSound() const{ return pActionSourceAddSound; }
-	inline igdeAction *GetActionSourceAddWave() const{ return pActionSourceAddWave; }
-	inline igdeAction *GetActionSourceAddChain() const{ return pActionSourceAddChain; }
-	inline igdeAction *GetActionSourceAddGroup() const{ return pActionSourceAddGroup; }
-	inline igdeAction *GetActionSourceAddSynthesizer() const{ return pActionSourceAddSynthesizer; }
+	inline igdeAction *GetActionSourceAddSound() const{return pActionSourceAddSound;}
+	inline igdeAction *GetActionSourceAddWave() const{return pActionSourceAddWave;}
+	inline igdeAction *GetActionSourceAddChain() const{return pActionSourceAddChain;}
+	inline igdeAction *GetActionSourceAddGroup() const{return pActionSourceAddGroup;}
+	inline igdeAction *GetActionSourceAddSynthesizer() const{return pActionSourceAddSynthesizer;}
 	
-	inline igdeAction *GetActionSourceGroupAddSound() const{ return pActionSourceGroupAddSound; }
-	inline igdeAction *GetActionSourceGroupAddWave() const{ return pActionSourceGroupAddWave; }
-	inline igdeAction *GetActionSourceGroupAddChain() const{ return pActionSourceGroupAddChain; }
-	inline igdeAction *GetActionSourceGroupAddGroup() const{ return pActionSourceGroupAddGroup; }
-	inline igdeAction *GetActionSourceGroupAddSynthesizer() const{ return pActionSourceGroupAddSynthesizer; }
+	inline igdeAction *GetActionSourceGroupAddSound() const{return pActionSourceGroupAddSound;}
+	inline igdeAction *GetActionSourceGroupAddWave() const{return pActionSourceGroupAddWave;}
+	inline igdeAction *GetActionSourceGroupAddChain() const{return pActionSourceGroupAddChain;}
+	inline igdeAction *GetActionSourceGroupAddGroup() const{return pActionSourceGroupAddGroup;}
+	inline igdeAction *GetActionSourceGroupAddSynthesizer() const{return pActionSourceGroupAddSynthesizer;}
 	
-	inline igdeAction *GetActionSourceInsertSound() const{ return pActionSourceInsertSound; }
-	inline igdeAction *GetActionSourceInsertWave() const{ return pActionSourceInsertWave; }
-	inline igdeAction *GetActionSourceInsertChain() const{ return pActionSourceInsertChain; }
-	inline igdeAction *GetActionSourceInsertGroup() const{ return pActionSourceInsertGroup; }
-	inline igdeAction *GetActionSourceInsertSynthesizer() const{ return pActionSourceInsertSynthesizer; }
+	inline igdeAction *GetActionSourceInsertSound() const{return pActionSourceInsertSound;}
+	inline igdeAction *GetActionSourceInsertWave() const{return pActionSourceInsertWave;}
+	inline igdeAction *GetActionSourceInsertChain() const{return pActionSourceInsertChain;}
+	inline igdeAction *GetActionSourceInsertGroup() const{return pActionSourceInsertGroup;}
+	inline igdeAction *GetActionSourceInsertSynthesizer() const{return pActionSourceInsertSynthesizer;}
 	
-	inline igdeAction *GetActionSourceRemove() const{ return pActionSourceRemove; }
-	inline igdeAction *GetActionSourceUp() const{ return pActionSourceUp; }
-	inline igdeAction *GetActionSourceDown() const{ return pActionSourceDown; }
+	inline igdeAction *GetActionSourceRemove() const{return pActionSourceRemove;}
+	inline igdeAction *GetActionSourceUp() const{return pActionSourceUp;}
+	inline igdeAction *GetActionSourceDown() const{return pActionSourceDown;}
 	
-	inline igdeAction *GetActionEffectAddStretch() const{ return pActionEffectAddStretch; }
+	inline igdeAction *GetActionEffectAddStretch() const{return pActionEffectAddStretch;}
 	
-	inline igdeAction *GetActionEffectInsertStretch() const{ return pActionEffectInsertStretch; }
+	inline igdeAction *GetActionEffectInsertStretch() const{return pActionEffectInsertStretch;}
 	
-	inline igdeAction *GetActionEffectRemove() const{ return pActionEffectRemove; }
-	inline igdeAction *GetActionEffectUp() const{ return pActionEffectUp; }
-	inline igdeAction *GetActionEffectDown() const{ return pActionEffectDown; }
+	inline igdeAction *GetActionEffectRemove() const{return pActionEffectRemove;}
+	inline igdeAction *GetActionEffectUp() const{return pActionEffectUp;}
+	inline igdeAction *GetActionEffectDown() const{return pActionEffectDown;}
 	/*@}*/
 	
 	
@@ -329,11 +329,11 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuSynthesizer( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuController( igdeMenuCascade &menu );
-	void pCreateMenuSource( igdeMenuCascade &menu );
-	void pCreateMenuEffect( igdeMenuCascade &menu );
+	void pCreateMenuSynthesizer(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuController(igdeMenuCascade &menu);
+	void pCreateMenuSource(igdeMenuCascade &menu);
+	void pCreateMenuEffect(igdeMenuCascade &menu);
 };
 
 #endif

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	gdeUOCTextureSetColorTint( gdeObjectClass *objectClass,
-		gdeOCComponentTexture *texture, const decColor &newValue );
+	gdeUOCTextureSetColorTint(gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture, const decColor &newValue);
 	
 protected:
 	/** Clean up undo action. */

@@ -55,19 +55,19 @@ int ceSAWordList::GetCount() const{
 	return pWords.GetCount();
 }
 
-ceSAWord *ceSAWordList::GetAt( int index ) const{
-	return ( ceSAWord* )pWords.GetAt( index );
+ceSAWord *ceSAWordList::GetAt(int index) const{
+	return (ceSAWord*)pWords.GetAt(index);
 }
 
-ceSAWord *ceSAWordList::GetNamed( const char *name ) const{
+ceSAWord *ceSAWordList::GetNamed(const char *name) const{
 	const int count = pWords.GetCount();
 	ceSAWord *word;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		word = ( ceSAWord* )pWords.GetAt( p );
+	for(p=0; p<count; p++){
+		word = (ceSAWord*)pWords.GetAt(p);
 		
-		if( word->GetName().Equals( name ) ){
+		if(word->GetName().Equals(name)){
 			return word;
 		}
 	}
@@ -75,16 +75,16 @@ ceSAWord *ceSAWordList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int ceSAWordList::IndexOf( ceSAWord *word ) const{
-	return pWords.IndexOf( word );
+int ceSAWordList::IndexOf(ceSAWord *word) const{
+	return pWords.IndexOf(word);
 }
 
-int ceSAWordList::IndexOfNamed( const char *name ) const{
+int ceSAWordList::IndexOfNamed(const char *name) const{
 	const int count = pWords.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( ceSAWord* )pWords.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((ceSAWord*)pWords.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int ceSAWordList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool ceSAWordList::Has( ceSAWord *word ) const{
-	return pWords.Has( word );
+bool ceSAWordList::Has(ceSAWord *word) const{
+	return pWords.Has(word);
 }
 
-bool ceSAWordList::HasNamed( const char *name ) const{
+bool ceSAWordList::HasNamed(const char *name) const{
 	const int count = pWords.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( ceSAWord* )pWords.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((ceSAWord*)pWords.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceSAWordList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void ceSAWordList::Add( ceSAWord *word ){
-	if( ! word || HasNamed( word->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void ceSAWordList::Add(ceSAWord *word){
+	if(! word || HasNamed(word->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pWords.Add( word );
+	pWords.Add(word);
 }
 
-void ceSAWordList::Remove( ceSAWord *word ){
-	pWords.Remove( word );
+void ceSAWordList::Remove(ceSAWord *word){
+	pWords.Remove(word);
 }
 
 void ceSAWordList::RemoveAll(){
@@ -125,7 +125,7 @@ void ceSAWordList::RemoveAll(){
 
 
 
-ceSAWordList &ceSAWordList::operator=( const ceSAWordList &list ){
+ceSAWordList &ceSAWordList::operator=(const ceSAWordList &list){
 	pWords = list.pWords;
 	return *this;
 }

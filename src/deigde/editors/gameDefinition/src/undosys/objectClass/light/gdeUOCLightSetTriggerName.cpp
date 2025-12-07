@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetTriggerName::gdeUOCLightSetTriggerName( gdeObjectClass *objectClass,
-gdeOCLight *light, gdeOCLight::eTriggers trigger, const char *newValue ) :
-pObjectClass( NULL ),
-pLight( NULL ),
-pTrigger( trigger )
+gdeUOCLightSetTriggerName::gdeUOCLightSetTriggerName(gdeObjectClass *objectClass,
+gdeOCLight *light, gdeOCLight::eTriggers trigger, const char *newValue) :
+pObjectClass(NULL),
+pLight(NULL),
+pTrigger(trigger)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set trigger name" );
+	SetShortInfo("Light set trigger name");
 	
-	pOldValue = light->GetTriggerName( trigger );
+	pOldValue = light->GetTriggerName(trigger);
 	pNewValue = newValue;
 	
 	pLight = light;
@@ -62,10 +62,10 @@ pTrigger( trigger )
 }
 
 gdeUOCLightSetTriggerName::~gdeUOCLightSetTriggerName(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetTriggerName::~gdeUOCLightSetTriggerName(){
 ///////////////
 
 void gdeUOCLightSetTriggerName::Undo(){
-	pLight->SetTriggerName( pTrigger, pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetTriggerName(pTrigger, pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetTriggerName::Redo(){
-	pLight->SetTriggerName( pTrigger, pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetTriggerName(pTrigger, pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

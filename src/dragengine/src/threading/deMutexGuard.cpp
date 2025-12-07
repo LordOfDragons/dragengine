@@ -34,22 +34,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMutexGuard::deMutexGuard( deMutex &mutex ) :
-pMutex( mutex ),
-pLocked( false )
+deMutexGuard::deMutexGuard(deMutex &mutex) :
+pMutex(mutex),
+pLocked(false)
 {
 	Lock();
 }
 
-deMutexGuard::deMutexGuard( const deMutexGuard &guard ) :
-pMutex( guard.pMutex ),
-pLocked( false )
+deMutexGuard::deMutexGuard(const deMutexGuard &guard) :
+pMutex(guard.pMutex),
+pLocked(false)
 {
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 deMutexGuard::~deMutexGuard(){
-	if( pLocked ){
+	if(pLocked){
 		Unlock();
 	}
 }
@@ -60,8 +60,8 @@ deMutexGuard::~deMutexGuard(){
 ///////////////
 
 void deMutexGuard::Lock(){
-	if( pLocked ){
-		DETHROW( deeInvalidAction );
+	if(pLocked){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pMutex.Lock();
@@ -69,8 +69,8 @@ void deMutexGuard::Lock(){
 }
 
 bool deMutexGuard::TryLock(){
-	if( pLocked ){
-		DETHROW( deeInvalidAction );
+	if(pLocked){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pLocked = pMutex.TryLock();
@@ -78,8 +78,8 @@ bool deMutexGuard::TryLock(){
 }
 
 void deMutexGuard::Unlock(){
-	if( ! pLocked ){
-		DETHROW( deeInvalidAction );
+	if(! pLocked){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pMutex.Unlock();

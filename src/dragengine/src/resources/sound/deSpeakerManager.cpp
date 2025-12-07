@@ -47,8 +47,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSpeakerManager::deSpeakerManager( deEngine *engine ) : deResourceManager( engine, ertSpeaker ){
-	SetLoggingName( "speaker" );
+deSpeakerManager::deSpeakerManager(deEngine *engine) : deResourceManager(engine, ertSpeaker){
+	SetLoggingName("speaker");
 }
 
 deSpeakerManager::~deSpeakerManager(){
@@ -65,23 +65,23 @@ int deSpeakerManager::GetSpeakerCount() const{
 }
 
 deSpeaker *deSpeakerManager::GetRootSpeaker() const{
-	return ( deSpeaker* )pSpeakers.GetRoot();
+	return (deSpeaker*)pSpeakers.GetRoot();
 }
 
 deSpeaker *deSpeakerManager::CreateSpeaker(){
 	deSpeaker *speaker = NULL;
 	
 	try{
-		speaker = new deSpeaker( this );
-		if( ! speaker ) DETHROW( deeOutOfMemory );
+		speaker = new deSpeaker(this);
+		if(! speaker) DETHROW(deeOutOfMemory);
 		
-		GetAudioSystem()->LoadSpeaker( speaker );
-		GetScriptingSystem()->LoadSpeaker( speaker );
+		GetAudioSystem()->LoadSpeaker(speaker);
+		GetScriptingSystem()->LoadSpeaker(speaker);
 		
-		pSpeakers.Add( speaker );
+		pSpeakers.Add(speaker);
 		
-	}catch( const deException & ){
-		if( speaker ){
+	}catch(const deException &){
+		if(speaker){
 			speaker->FreeReference();
 		}
 		throw;
@@ -95,8 +95,8 @@ deSpeaker *deSpeakerManager::CreateSpeaker(){
 void deSpeakerManager::ReleaseLeakingResources(){
 	int count = GetSpeakerCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking speakers", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking speakers", count);
 		pSpeakers.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -107,50 +107,50 @@ void deSpeakerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSpeakerManager::SystemAudioLoad(){
-	deSpeaker *speaker = ( deSpeaker* )pSpeakers.GetRoot();
+	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while( speaker ){
-		if( ! speaker->GetPeerAudio() ){
-			audSys.LoadSpeaker( speaker );
+	while(speaker){
+		if(! speaker->GetPeerAudio()){
+			audSys.LoadSpeaker(speaker);
 		}
 		
-		speaker = ( deSpeaker* )speaker->GetLLManagerNext();
+		speaker = (deSpeaker*)speaker->GetLLManagerNext();
 	}
 }
 
 void deSpeakerManager::SystemAudioUnload(){
-	deSpeaker *speaker = ( deSpeaker* )pSpeakers.GetRoot();
+	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	
-	while( speaker ){
-		speaker->SetPeerAudio( NULL );
-		speaker = ( deSpeaker* )speaker->GetLLManagerNext();
+	while(speaker){
+		speaker->SetPeerAudio(NULL);
+		speaker = (deSpeaker*)speaker->GetLLManagerNext();
 	}
 }
 
 void deSpeakerManager::SystemScriptingLoad(){
-	deSpeaker *speaker = ( deSpeaker* )pSpeakers.GetRoot();
+	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
 	
-	while( speaker ){
-		if( ! speaker->GetPeerScripting() ){
-			scriptingSystem.LoadSpeaker( speaker );
+	while(speaker){
+		if(! speaker->GetPeerScripting()){
+			scriptingSystem.LoadSpeaker(speaker);
 		}
-		speaker = ( deSpeaker* )speaker->GetLLManagerNext();
+		speaker = (deSpeaker*)speaker->GetLLManagerNext();
 	}
 }
 
 void deSpeakerManager::SystemScriptingUnload(){
-	deSpeaker *speaker = ( deSpeaker* )pSpeakers.GetRoot();
+	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
 	
-	while( speaker ){
-		speaker->SetPeerScripting( NULL );
-		speaker = ( deSpeaker* )speaker->GetLLManagerNext();
+	while(speaker){
+		speaker->SetPeerScripting(NULL);
+		speaker = (deSpeaker*)speaker->GetLLManagerNext();
 	}
 }
 
 
 
-void deSpeakerManager::RemoveResource( deResource *resource ){
-	pSpeakers.RemoveIfPresent( resource );
+void deSpeakerManager::RemoveResource(deResource *resource){
+	pSpeakers.RemoveIfPresent(resource);
 }

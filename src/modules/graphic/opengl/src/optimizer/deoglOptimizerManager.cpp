@@ -55,72 +55,72 @@ deoglOptimizerManager::~deoglOptimizerManager(){
 // Optimizer Management
 /////////////////////////
 
-deoglOptimizer *deoglOptimizerManager::GetOptimizerAt( int index ) const{
-	if( index < 0 || index >= pOptimizerCount ) DETHROW( deeInvalidParam );
-	return pOptimizers[ index ];
+deoglOptimizer *deoglOptimizerManager::GetOptimizerAt(int index) const{
+	if(index < 0 || index >= pOptimizerCount) DETHROW(deeInvalidParam);
+	return pOptimizers[index];
 }
 
-bool deoglOptimizerManager::HasOptimizer( deoglOptimizer *optimizer ) const{
-	if( ! optimizer ) DETHROW( deeInvalidParam );
+bool deoglOptimizerManager::HasOptimizer(deoglOptimizer *optimizer) const{
+	if(! optimizer) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pOptimizerCount; i++ ){
-		if( optimizer == pOptimizers[ i ] ) return true;
+	for(i=0; i<pOptimizerCount; i++){
+		if(optimizer == pOptimizers[i]) return true;
 	}
 	
 	return false;
 }
 
-int deoglOptimizerManager::IndexOfOptimizer( deoglOptimizer *optimizer ) const{
-	if( ! optimizer ) DETHROW( deeInvalidParam );
+int deoglOptimizerManager::IndexOfOptimizer(deoglOptimizer *optimizer) const{
+	if(! optimizer) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pOptimizerCount; i++ ){
-		if( optimizer == pOptimizers[ i ] ) return i;
+	for(i=0; i<pOptimizerCount; i++){
+		if(optimizer == pOptimizers[i]) return i;
 	}
 	
 	return -1;
 }
 
-void deoglOptimizerManager::AddOptimizer( deoglOptimizer *optimizer ){
-	if( HasOptimizer( optimizer ) ) DETHROW( deeInvalidParam );
+void deoglOptimizerManager::AddOptimizer(deoglOptimizer *optimizer){
+	if(HasOptimizer(optimizer)) DETHROW(deeInvalidParam);
 	
-	if( pOptimizerCount == pOptimizerSize ){
+	if(pOptimizerCount == pOptimizerSize){
 		int newSize = pOptimizerSize * 3 / 2 + 1;
-		deoglOptimizer **newArray = new deoglOptimizer*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pOptimizers ){
-			memcpy( newArray, pOptimizers, sizeof( deoglOptimizer* ) * pOptimizerSize );
+		deoglOptimizer **newArray = new deoglOptimizer*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pOptimizers){
+			memcpy(newArray, pOptimizers, sizeof(deoglOptimizer*) * pOptimizerSize);
 			delete [] pOptimizers;
 		}
 		pOptimizers = newArray;
 		pOptimizerSize = newSize;
 	}
 	
-	pOptimizers[ pOptimizerCount ] = optimizer;
+	pOptimizers[pOptimizerCount] = optimizer;
 	pOptimizerCount++;
 	
 	optimizer->ResetRemainingTime();
 }
 
-void deoglOptimizerManager::RemoveOptimizer( deoglOptimizer *optimizer ){
-	int i, index = IndexOfOptimizer( optimizer );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void deoglOptimizerManager::RemoveOptimizer(deoglOptimizer *optimizer){
+	int i, index = IndexOfOptimizer(optimizer);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pOptimizerCount; i++ ){
-		pOptimizers[ i - 1 ] = pOptimizers[ i ];
+	for(i=index+1; i<pOptimizerCount; i++){
+		pOptimizers[i - 1] = pOptimizers[i];
 	}
 	pOptimizerCount--;
 	
-	if( pNextOptimizer > index ) pNextOptimizer--;
+	if(pNextOptimizer > index) pNextOptimizer--;
 	
 	delete optimizer;
 }
 
 void deoglOptimizerManager::RemoveAllOptimizers(){
-	while( pOptimizerCount > 0 ){
+	while(pOptimizerCount > 0){
 		pOptimizerCount--;
-		delete pOptimizers[ pOptimizerCount ];
+		delete pOptimizers[pOptimizerCount];
 	}
 }
 
@@ -129,40 +129,40 @@ void deoglOptimizerManager::RemoveAllOptimizers(){
 // Management
 ///////////////
 
-void deoglOptimizerManager::Run( int timeSlice ){
+void deoglOptimizerManager::Run(int timeSlice){
 	int i, grantedTime, runOptimizers = 0;
 	decTimer timer;
 	
 	// run optmizers until the time runs out
-	while( timeSlice > 0 && runOptimizers < pOptimizerCount ){
+	while(timeSlice > 0 && runOptimizers < pOptimizerCount){
 		// run the next optimizer
-		deoglOptimizer &optimizer = *pOptimizers[ pNextOptimizer ];
+		deoglOptimizer &optimizer = *pOptimizers[pNextOptimizer];
 		grantedTime = optimizer.GetRemainingTime();
-		if( grantedTime > timeSlice ){
+		if(grantedTime > timeSlice){
 			grantedTime = timeSlice;
 		}
 		
-		if( optimizer.Run( grantedTime ) ){
-			optimizer.DecreaseRemainingTime( grantedTime );
-			if( optimizer.GetRemainingTime() <= 0 ){
+		if(optimizer.Run(grantedTime)){
+			optimizer.DecreaseRemainingTime(grantedTime);
+			if(optimizer.GetRemainingTime() <= 0){
 				optimizer.ResetRemainingTime();
 				pNextOptimizer++;
 				runOptimizers++;
 			}
 			
 		}else{
-			delete pOptimizers[ pNextOptimizer ];
+			delete pOptimizers[pNextOptimizer];
 			
-			for( i=pNextOptimizer+1; i<pOptimizerCount; i++ ){
-				pOptimizers[ i - 1 ] = pOptimizers[ i ];
+			for(i=pNextOptimizer+1; i<pOptimizerCount; i++){
+				pOptimizers[i - 1] = pOptimizers[i];
 			}
 			pOptimizerCount--;
 		}
 		
-		if( pNextOptimizer == pOptimizerCount ) pNextOptimizer = 0;
+		if(pNextOptimizer == pOptimizerCount) pNextOptimizer = 0;
 		
 		// adjust the remaining time
-		timeSlice -= ( int )( timer.GetElapsedTime() * 1000000 );
+		timeSlice -= (int)(timer.GetElapsedTime() * 1000000);
 	}
 }
 
@@ -174,5 +174,5 @@ void deoglOptimizerManager::Run( int timeSlice ){
 
 void deoglOptimizerManager::pCleanUp(){
 	RemoveAllOptimizers();
-	if( pOptimizers ) delete [] pOptimizers;
+	if(pOptimizers) delete [] pOptimizers;
 }

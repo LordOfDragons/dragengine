@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSSkin( gdeWindowProperties &windowMain );
+	gdeWPSSkin(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -78,10 +78,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
@@ -94,7 +94,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void UpdateCategoryList(const gdeCategoryList &list, const char *prefix);
 	
 	
 	

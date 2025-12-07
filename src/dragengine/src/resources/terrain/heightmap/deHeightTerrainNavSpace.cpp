@@ -40,26 +40,26 @@
 ////////////////////////////
 
 deHeightTerrainNavSpace::deHeightTerrainNavSpace() :
-pType( deNavigationSpace::estMesh ),
-pLayer( 0 ),
-pSnapDistance( 0.001f ),
-pSnapAngle( DEG2RAD * 180.0f ),
-pCorners( NULL ),
-pCornerCount( 0 ),
-pEdges( NULL ),
-pEdgeCount( 0 ),
-pFaces( NULL ),
-pFaceCount( 0 ){
+pType(deNavigationSpace::estMesh),
+pLayer(0),
+pSnapDistance(0.001f),
+pSnapAngle(DEG2RAD * 180.0f),
+pCorners(NULL),
+pCornerCount(0),
+pEdges(NULL),
+pEdgeCount(0),
+pFaces(NULL),
+pFaceCount(0){
 }
 
 deHeightTerrainNavSpace::~deHeightTerrainNavSpace(){
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
-	if( pEdges ){
+	if(pEdges){
 		delete [] pEdges;
 	}
-	if( pCorners ){
+	if(pCorners){
 		delete [] pCorners;
 	}
 }
@@ -69,25 +69,25 @@ deHeightTerrainNavSpace::~deHeightTerrainNavSpace(){
 // Management
 ///////////////
 
-void deHeightTerrainNavSpace::SetType( deNavigationSpace::eSpaceTypes type ){
-	if( type < deNavigationSpace::estGrid || type > deNavigationSpace::estVolume ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainNavSpace::SetType(deNavigationSpace::eSpaceTypes type){
+	if(type < deNavigationSpace::estGrid || type > deNavigationSpace::estVolume){
+		DETHROW(deeInvalidParam);
 	}
 	pType = type;
 }
 
-void deHeightTerrainNavSpace::SetLayer( int layer ){
+void deHeightTerrainNavSpace::SetLayer(int layer){
 	pLayer = layer;
 }
 
 
 
-void deHeightTerrainNavSpace::SetSnapDistance( float distance ){
-	pSnapDistance = decMath::max( distance, 0.0f );
+void deHeightTerrainNavSpace::SetSnapDistance(float distance){
+	pSnapDistance = decMath::max(distance, 0.0f);
 }
 
-void deHeightTerrainNavSpace::SetSnapAngle( float angle ){
-	pSnapAngle = decMath::max( angle, 0.0f );
+void deHeightTerrainNavSpace::SetSnapAngle(float angle){
+	pSnapAngle = decMath::max(angle, 0.0f);
 }
 
 
@@ -95,39 +95,39 @@ void deHeightTerrainNavSpace::SetSnapAngle( float angle ){
 // Corners
 ////////////
 
-void deHeightTerrainNavSpace::SetCornerCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainNavSpace::SetCornerCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pCornerCount ){
+	if(count == pCornerCount){
 		return;
 	}
 	
-	if( pCorners ){
+	if(pCorners){
 		delete [] pCorners;
 	}
 	pCorners = NULL;
 	pCornerCount = 0;
 	
-	if( count > 0 ){
-		pCorners = new unsigned int[ count ];
+	if(count > 0){
+		pCorners = new unsigned int[count];
 		pCornerCount = count;
 	}
 }
 
-unsigned int deHeightTerrainNavSpace::GetCornerAt( int index ) const{
-	if( index < 0 || index >= pCornerCount ){
-		DETHROW( deeInvalidParam );
+unsigned int deHeightTerrainNavSpace::GetCornerAt(int index) const{
+	if(index < 0 || index >= pCornerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pCorners[ index ];
+	return pCorners[index];
 }
 
-void deHeightTerrainNavSpace::SetCornerAt( int index, unsigned int corner ){
-	if( index < 0 || index >= pCornerCount ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainNavSpace::SetCornerAt(int index, unsigned int corner){
+	if(index < 0 || index >= pCornerCount){
+		DETHROW(deeInvalidParam);
 	}
-	pCorners[ index ] = corner;
+	pCorners[index] = corner;
 }
 
 
@@ -135,32 +135,32 @@ void deHeightTerrainNavSpace::SetCornerAt( int index, unsigned int corner ){
 // Edges
 //////////
 
-void deHeightTerrainNavSpace::SetEdgeCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainNavSpace::SetEdgeCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pEdgeCount ){
+	if(count == pEdgeCount){
 		return;
 	}
 	
-	if( pEdges ){
+	if(pEdges){
 		delete [] pEdges;
 	}
 	pEdges = NULL;
 	pEdgeCount = 0;
 	
-	if( count > 0 ){
-		pEdges = new deHeightTerrainNavSpaceEdge[ count ];
+	if(count > 0){
+		pEdges = new deHeightTerrainNavSpaceEdge[count];
 		pEdgeCount = count;
 	}
 }
 
-deHeightTerrainNavSpaceEdge &deHeightTerrainNavSpace::GetEdgeAt( int index ) const{
-	if( index < 0 || index >= pEdgeCount ){
-		DETHROW( deeInvalidParam );
+deHeightTerrainNavSpaceEdge &deHeightTerrainNavSpace::GetEdgeAt(int index) const{
+	if(index < 0 || index >= pEdgeCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pEdges[ index ];
+	return pEdges[index];
 }
 
 
@@ -168,30 +168,30 @@ deHeightTerrainNavSpaceEdge &deHeightTerrainNavSpace::GetEdgeAt( int index ) con
 // Faces
 //////////
 
-void deHeightTerrainNavSpace::SetFaceCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainNavSpace::SetFaceCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pFaceCount ){
+	if(count == pFaceCount){
 		return;
 	}
 	
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
 	pFaces = NULL;
 	pFaceCount = 0;
 	
-	if( count > 0 ){
-		pFaces = new deNavigationSpaceFace[ count ];
+	if(count > 0){
+		pFaces = new deNavigationSpaceFace[count];
 		pFaceCount = count;
 	}
 }
 
-deNavigationSpaceFace &deHeightTerrainNavSpace::GetFaceAt( int index ) const{
-	if( index < 0 || index >= pFaceCount ){
-		DETHROW( deeInvalidParam );
+deNavigationSpaceFace &deHeightTerrainNavSpace::GetFaceAt(int index) const{
+	if(index < 0 || index >= pFaceCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pFaces[ index ];
+	return pFaces[index];
 }

@@ -130,7 +130,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create environment probe. */
-	deoalEnvProbe( deoalAudioThread &audioThread );
+	deoalEnvProbe(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up environment probe. */
 	~deoalEnvProbe();
@@ -141,146 +141,146 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Probe position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Probe range. */
-	inline float GetRange() const{ return pRange; }
+	inline float GetRange() const{return pRange;}
 	
 	/** \brief Set probe range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Attenuation reference distance. */
-	inline float GetAttenuationRefDist() const{ return pAttenuationRefDist; }
+	inline float GetAttenuationRefDist() const{return pAttenuationRefDist;}
 	
 	/** \brief Attenuation rolloff. */
-	inline float GetAttenuationRolloff() const{ return pAttenuationRolloff; }
+	inline float GetAttenuationRolloff() const{return pAttenuationRolloff;}
 	
 	/** \brief Attenuation distance offset. */
-	inline float GetAttenuationDistanceOffset() const{ return pAttenuationDistanceOffset; }
+	inline float GetAttenuationDistanceOffset() const{return pAttenuationDistanceOffset;}
 	
 	/** \brief Set attenuation parameters. */
-	void SetAttenuation( float refDist, float rolloff, float distanceOffset );
+	void SetAttenuation(float refDist, float rolloff, float distanceOffset);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Ray tracing configuration to use. */
-	inline const deoalATRayTracing::sConfigSoundTracing *GetRTConfig() const{ return pRTConfig; }
+	inline const deoalATRayTracing::sConfigSoundTracing *GetRTConfig() const{return pRTConfig;}
 	
 	/** \brief Set ray tracing configuration to use. */
-	void SetRTConfig( const deoalATRayTracing::sConfigSoundTracing *config );
+	void SetRTConfig(const deoalATRayTracing::sConfigSoundTracing *config);
 	
 	
 	
 	/** \brief Minimum extend of box around all hit points. */
-	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** \brief Maximum extend of box around all hit points. */
-	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	/** \brief Set extends. */
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** \brief Traced sound ray list. */
-	inline deoalSoundRayList &GetSoundRayList(){ return pSoundRayList; }
-	inline const deoalSoundRayList &GetSoundRayList() const{ return pSoundRayList; }
+	inline deoalSoundRayList &GetSoundRayList(){return pSoundRayList;}
+	inline const deoalSoundRayList &GetSoundRayList() const{return pSoundRayList;}
 	
 	/** \brief First reflection sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRIList(){ return pSRIList; }
-	inline const deoalSoundRayInteractionList &GetSRIList() const{ return pSRIList; }
+	inline deoalSoundRayInteractionList &GetSRIList(){return pSRIList;}
+	inline const deoalSoundRayInteractionList &GetSRIList() const{return pSRIList;}
 	
 	/** \brief Number of rays used to calculate probe. */
-	inline int GetRayCount() const{ return pRayCount; }
+	inline int GetRayCount() const{return pRayCount;}
 	
 	/** \brief Set number of rays used to calculate probe. */
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	
 	/** \brief Ray beam opening angle used for calculating probe. */
-	inline float GetRayOpeningAngle() const{ return pRayOpeningAngle; }
+	inline float GetRayOpeningAngle() const{return pRayOpeningAngle;}
 	
 	/** \brief Set ray beam opening angle used for calculating probe. */
-	void SetRayOpeningAngle( float angle );
+	void SetRayOpeningAngle(float angle);
 	
 	
 	
 	/** \brief Reverberation time in seconds for medium frequencies. */
-	inline float GetReverberationTimeMedium() const{ return pReverberationTimeMedium; }
+	inline float GetReverberationTimeMedium() const{return pReverberationTimeMedium;}
 	
 	/** \brief Reverberation time in seconds for low frequencies. */
-	inline float GetReverberationTimeLow() const{ return pReverberationTimeLow; }
+	inline float GetReverberationTimeLow() const{return pReverberationTimeLow;}
 	
 	/** \brief Reverberation time in seconds for high frequencies. */
-	inline float GetReverberationTimeHigh() const{ return pReverberationTimeHigh; }
+	inline float GetReverberationTimeHigh() const{return pReverberationTimeHigh;}
 	
 	/** \brief Set reverberation. */
-	void SetReverberationTime( float timeLow, float timeMedium, float timeHigh );
+	void SetReverberationTime(float timeLow, float timeMedium, float timeHigh);
 	
 	/** \brief Echo delay. */
-	inline float GetEchoDelay() const{ return pEchoDelay; }
+	inline float GetEchoDelay() const{return pEchoDelay;}
 	
 	/** \brief Set echo. */
-	void SetEcho( float delay );
+	void SetEcho(float delay);
 	
 	
 	
 	/** \brief Room center. */
-	inline const decDVector &GetRoomCenter() const{ return pRoomCenter; }
+	inline const decDVector &GetRoomCenter() const{return pRoomCenter;}
 	
 	/** \brief Set room center. */
-	void SetRoomCenter( const decDVector &center );
+	void SetRoomCenter(const decDVector &center);
 	
 	/** \brief Room volume. */
-	inline float GetRoomVolume() const{ return pRoomVolume; }
+	inline float GetRoomVolume() const{return pRoomVolume;}
 	
 	/** \brief Room surface. */
-	inline float GetRoomSurface() const{ return pRoomSurface; }
+	inline float GetRoomSurface() const{return pRoomSurface;}
 	
 	/** \brief Room sabine for low frequencies. */
-	inline float GetRoomSabineLow() const{ return pRoomSabineLow; }
+	inline float GetRoomSabineLow() const{return pRoomSabineLow;}
 	
 	/** \brief Room sabine for medium frequencies. */
-	inline float GetRoomSabineMedium() const{ return pRoomSabineMedium; }
+	inline float GetRoomSabineMedium() const{return pRoomSabineMedium;}
 	
 	/** \brief Room sabine for high frequencies. */
-	inline float GetRoomSabineHigh() const{ return pRoomSabineHigh; }
+	inline float GetRoomSabineHigh() const{return pRoomSabineHigh;}
 	
 	/** \brief Set room indirect sound parameters. */
-	void SetRoom( float volume, float surface, float sabineLow, float sabineMedium, float sabineHigh );
+	void SetRoom(float volume, float surface, float sabineLow, float sabineMedium, float sabineHigh);
 	
 	/** \brief Average absorption for low frequencies. */
-	inline float GetAvgAbsorptionLow() const{ return pAvgAbsorptionLow; }
+	inline float GetAvgAbsorptionLow() const{return pAvgAbsorptionLow;}
 	
 	/** \brief Average absorption for medium frequencies. */
-	inline float GetAvgAbsorptionMedium() const{ return pAvgAbsorptionMedium; }
+	inline float GetAvgAbsorptionMedium() const{return pAvgAbsorptionMedium;}
 	
 	/** \brief Average absorption for high frequencies. */
-	inline float GetAvgAbsorptionHigh() const{ return pAvgAbsorptionHigh; }
+	inline float GetAvgAbsorptionHigh() const{return pAvgAbsorptionHigh;}
 	
 	/** \brief Set average absorption. */
-	void SetAvgAbsorption( float low, float medium, float high );
+	void SetAvgAbsorption(float low, float medium, float high);
 	
 	/** \brief Mean free path. */
-	inline float GetMeanFreePath() const{ return pMeanFreePath; }
+	inline float GetMeanFreePath() const{return pMeanFreePath;}
 	
 	/** \brief Set mean free path. */
-	void SetMeanFreePath( float meanFreePath );
+	void SetMeanFreePath(float meanFreePath);
 	
 	/** \brief Time in seconds separating first from late reflections. */
-	inline float GetSepTimeFirstLateRefl() const{ return pSepTimeFirstLateRefl; }
+	inline float GetSepTimeFirstLateRefl() const{return pSepTimeFirstLateRefl;}
 	
 	/** \brief Set time in seconds separating first from late reflections. */
-	void SetSepTimeFirstLateRefl( float time );
+	void SetSepTimeFirstLateRefl(float time);
 	
 	
 	
 	/** \brief Calculate gain for distance using attenuation. */
-	float AttenuatedGain( float distance ) const;
+	float AttenuatedGain(float distance) const;
 	
 	
 	
@@ -290,7 +290,7 @@ public:
 	 * Probe data has been calculate using EstimateRoomParameters(). No sound ray list is
 	 * present. To get a full tracing calling TraceSoundRays() is required.
 	 */
-	inline bool GetEstimated() const{ return pEstimated; }
+	inline bool GetEstimated() const{return pEstimated;}
 	
 	/** \brief Invalidate. */
 	void Invalidate();
@@ -308,7 +308,7 @@ public:
 	 * 
 	 * \warning This method is for use by deoalEnvProbeList only.
 	 */
-	void EstimateRoomParameters( deoalAWorld &world, const deoalRayTraceConfig &probeConfig );
+	void EstimateRoomParameters(deoalAWorld &world, const deoalRayTraceConfig &probeConfig);
 	
 	/**
 	 * \brief Calculate probe data using tracing sound rays.
@@ -320,8 +320,8 @@ public:
 	 * 
 	 * \warning This method is for use by deoalEnvProbeList only.
 	 */
-	void TraceSoundRays( deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-		const deoalRayTraceConfig &probeConfig );
+	void TraceSoundRays(deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+		const deoalRayTraceConfig &probeConfig);
 	
 	/**
 	 * \brief Calculate listener parameters.
@@ -331,27 +331,27 @@ public:
 	 * 
 	 * \throws deInvalidParam Probe has been only estimated. No sound ray list present.
 	 */
-	void CalcListener( deoalEnvProbeListener &listener, deoalAWorld &world,
-		const decDVector &position, deoalAMicrophone *microphone );
+	void CalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
+		const decDVector &position, deoalAMicrophone *microphone);
 	
-	void CalcListener( deoalEnvProbeListener &listener, deoalAWorld &world,
-		const decDVector &position, deoalASoundLevelMeter *soundLevelMeter );
+	void CalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
+		const decDVector &position, deoalASoundLevelMeter *soundLevelMeter);
 	
 	
 	
 	/** \brief Last used. */
-	inline unsigned int GetLastUsed() const{ return pLastUsed; }
+	inline unsigned int GetLastUsed() const{return pLastUsed;}
 	
 	/** \brief Set last used. */
-	void SetLastUsed( unsigned int lastUsed );
+	void SetLastUsed(unsigned int lastUsed);
 	
 	
 	
 	/** \brief World octree node or NULL. */
-	inline deoalWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
+	inline deoalWorldOctree *GetOctreeNode() const{return pOctreeNode;}
 	
 	/** \brief Set world octree node or NULL. */
-	void SetOctreeNode( deoalWorldOctree *node );
+	void SetOctreeNode(deoalWorldOctree *node);
 	/*@}*/
 	
 	
@@ -361,9 +361,9 @@ private:
 	void pRemoveAllLevels();
 	void pRemoveAllListeners();
 	
-	void pCalcListener( deoalEnvProbeListener &listener, deoalAWorld &world,
+	void pCalcListener(deoalEnvProbeListener &listener, deoalAWorld &world,
 		const decDVector &position, deoalAMicrophone *microphone,
-		deoalASoundLevelMeter *soundLevelMeter );
+		deoalASoundLevelMeter *soundLevelMeter);
 };
 
 #endif

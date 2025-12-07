@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetPathHI( meWorld *world, meHeightTerrainSector *sector, const char *newPath );
+	meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */

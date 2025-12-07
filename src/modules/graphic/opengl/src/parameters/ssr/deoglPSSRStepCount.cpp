@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRStepCount::deoglPSSRStepCount( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
-	SetName( "ssrStepCount" );
-	SetDescription( "Count of steps used in SSR calculation. "
-		" Influences the overall SSR quality versus render performance." );
-	SetType( deModuleParameter::eptSelection );
-	SetDisplayName( "SSR Step Count" );
-	SetCategory( ecBasic );
+deoglPSSRStepCount::deoglPSSRStepCount(deGraphicOpenGl &ogl) : deoglParameter(ogl){
+	SetName("ssrStepCount");
+	SetDescription("Count of steps used in SSR calculation. "
+		" Influences the overall SSR quality versus render performance.");
+	SetType(deModuleParameter::eptSelection);
+	SetDisplayName("SSR Step Count");
+	SetCategory(ecBasic);
 	
-	const deModuleParameter::SelectionEntry entries[ 5 ] = {
-		{ "veryLow", "Very Low", "Very low step count." },
-		{ "low", "Low", "Low step count." },
-		{ "medium", "Medium", "Medium step count." },
-		{ "high", "High", "High step count." },
-		{ "veryHigh", "Very High", "Very high step count." }
+	const deModuleParameter::SelectionEntry entries[5] = {
+		{"veryLow", "Very Low", "Very low step count."},
+		{"low", "Low", "Low step count."},
+		{"medium", "Medium", "Medium step count."},
+		{"high", "High", "High step count."},
+		{"veryHigh", "Very High", "Very high step count."}
 	};
-	AddSelectionEntries( entries, 5 );
+	AddSelectionEntries(entries, 5);
 	
-	SetDefaultValue( "low" );
+	SetDefaultValue("low");
 }
 
 deoglPSSRStepCount::~deoglPSSRStepCount(){
@@ -71,16 +71,16 @@ deoglPSSRStepCount::~deoglPSSRStepCount(){
 decString deoglPSSRStepCount::GetParameterValue(){
 	const int count = pOgl.GetConfiguration().GetSSRStepCount();
 	
-	if( count <= 10 ){
+	if(count <= 10){
 		return "veryLow";
 		
-	}else if( count <= 20 ){
+	}else if(count <= 20){
 		return "low";
 		
-	}else if( count <= 40 ){
+	}else if(count <= 40){
 		return "medium";
 		
-	}else if( count <= 80 ){
+	}else if(count <= 80){
 		return "high";
 		
 	}else{
@@ -88,25 +88,25 @@ decString deoglPSSRStepCount::GetParameterValue(){
 	}
 }
 
-void deoglPSSRStepCount::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
+void deoglPSSRStepCount::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
 	
-	if( checkValue == "verylow" ){
-		pOgl.GetConfiguration().SetSSRStepCount( 10 );
+	if(checkValue == "verylow"){
+		pOgl.GetConfiguration().SetSSRStepCount(10);
 		
-	}else if( checkValue == "low" ){
-		pOgl.GetConfiguration().SetSSRStepCount( 20 );
+	}else if(checkValue == "low"){
+		pOgl.GetConfiguration().SetSSRStepCount(20);
 		
-	}else if( checkValue == "medium" ){
-		pOgl.GetConfiguration().SetSSRStepCount( 40 );
+	}else if(checkValue == "medium"){
+		pOgl.GetConfiguration().SetSSRStepCount(40);
 		
-	}else if( checkValue == "high" ){
-		pOgl.GetConfiguration().SetSSRStepCount( 80 );
+	}else if(checkValue == "high"){
+		pOgl.GetConfiguration().SetSSRStepCount(80);
 		
-	}else if( checkValue == "veryhigh" ){
-		pOgl.GetConfiguration().SetSSRStepCount( 160 );
+	}else if(checkValue == "veryhigh"){
+		pOgl.GetConfiguration().SetSSRStepCount(160);
 		
 	}else{
-		pOgl.GetConfiguration().SetSSRStepCount( 40 );
+		pOgl.GetConfiguration().SetSSRStepCount(40);
 	}
 }

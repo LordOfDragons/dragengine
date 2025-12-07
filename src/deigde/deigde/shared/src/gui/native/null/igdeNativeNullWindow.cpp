@@ -34,13 +34,13 @@
 ////////////////////////////
 
 igdeNativeNullWindow::igdeNativeNullWindow() :
-pIsClosed( false ){
+pIsClosed(false){
 }
 
 igdeNativeNullWindow::~igdeNativeNullWindow(){
 }
 
-igdeNativeNullWindow *igdeNativeNullWindow::CreateNativeWidget( igdeWindow& ){
+igdeNativeNullWindow *igdeNativeNullWindow::CreateNativeWidget(igdeWindow&){
 	return new igdeNativeNullWindow;
 }
 
@@ -76,7 +76,7 @@ void igdeNativeNullWindow::RaiseAndActivate(){
 void igdeNativeNullWindow::OnFrameUpdate(){
 }
 
-void igdeNativeNullWindow::SetIsClosed( bool isClosed ){
+void igdeNativeNullWindow::SetIsClosed(bool isClosed){
 	pIsClosed = isClosed;
 }
 

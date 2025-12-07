@@ -57,19 +57,19 @@ public:
 	int GetCount() const;
 	
 	/** \brief File format at index. */
-	delFileFormat *GetAt( int index ) const;
+	delFileFormat *GetAt(int index) const;
 	
 	/** \brief File format is present. */
-	bool Has( delFileFormat *format ) const;
+	bool Has(delFileFormat *format) const;
 	
 	/** \brief Index of file format or -1 if absent. */
-	int IndexOf( delFileFormat *format ) const;
+	int IndexOf(delFileFormat *format) const;
 	
 	/** \brief Add file format. */
-	void Add( delFileFormat *format );
+	void Add(delFileFormat *format);
 	
 	/** \brief Remove file format. */
-	void Remove( delFileFormat *format );
+	void Remove(delFileFormat *format);
 	
 	/** \brief Remove all file formats. */
 	void RemoveAll();

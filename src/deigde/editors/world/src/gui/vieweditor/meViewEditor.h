@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditor( meView3D &view );
+	meViewEditor(meView3D &view);
 	
 	/** \brief Clean up view editor. */
 	virtual ~meViewEditor();
@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent view. */
-	inline meView3D &GetView() const{ return pView; }
+	inline meView3D &GetView() const{return pView;}
 	
 	/** \brief Width of the view. */
 	int GetViewWidth() const;
@@ -111,43 +111,43 @@ public:
 	
 	
 	/** \brief View matrix. */
-	inline const decDMatrix &GetMatrixView() const{ return pMatrixView; }
+	inline const decDMatrix &GetMatrixView() const{return pMatrixView;}
 	
 	/** \brief Local view matrix. */
-	inline const decDMatrix &GetMatrixViewLocal() const{ return pMatrixViewLocal; }
+	inline const decDMatrix &GetMatrixViewLocal() const{return pMatrixViewLocal;}
 	
 	/** \brief Inverse local view matrix. */
-	inline const decDMatrix &GetMatrixViewLocalInverse() const{ return pMatrixViewLocalInverse; }
+	inline const decDMatrix &GetMatrixViewLocalInverse() const{return pMatrixViewLocalInverse;}
 	
 	
 	
 	/** \brief Drag origin point. */
-	inline const decPoint &GetDragOrigin() const{ return pDragOrgin; }
+	inline const decPoint &GetDragOrigin() const{return pDragOrgin;}
 	
 	/** \brief Current drag point. */
-	inline const decPoint &GetDragCurrent() const{ return pDragCurrent; }
+	inline const decPoint &GetDragCurrent() const{return pDragCurrent;}
 	
 	/** \brief Drag distance since the last mouse movement. */
-	inline const decPoint &GetDragDistanceLast() const{ return pDragDistanceLast; }
+	inline const decPoint &GetDragDistanceLast() const{return pDragDistanceLast;}
 	
 	/** \brief Drag distance since the start of the dragging. */
-	inline const decPoint &GetDragDistanceStart() const{ return pDragDistanceStart; }
+	inline const decPoint &GetDragDistanceStart() const{return pDragDistanceStart;}
 	
 	
 	
 	/** \brief Shift key has been pressed at the start of dragging. */
-	inline bool GetShiftStart() const{ return pShiftStart; }
+	inline bool GetShiftStart() const{return pShiftStart;}
 	
 	/** \brief Shift key has been pressed at the start of dragging. */
-	inline bool GetControlStart() const{ return pControlStart; }
+	inline bool GetControlStart() const{return pControlStart;}
 	
 	
 	
 	/** \brief Left mouse button started the dragging. */
-	inline bool GetDragLeftMouseButton() const{ return pDragLMB; }
+	inline bool GetDragLeftMouseButton() const{return pDragLMB;}
 	
 	/** \brief Right mouse button started the dragging. */
-	inline bool GetDragRightMouseButton() const{ return pDragRMB; }
+	inline bool GetDragRightMouseButton() const{return pDragRMB;}
 	
 	
 	
@@ -158,24 +158,24 @@ public:
 	 * \brief Check for axis locking in response to a key press event.
 	 * \returns true if the key has been handled.
 	 */
-	bool CheckAxisLocking( deInputEvent::eKeyCodes key );
+	bool CheckAxisLocking(deInputEvent::eKeyCodes key);
 	
 	/** \brief Log exception. */
-	void LogException( const deException &exception ) const;
+	void LogException(const deException &exception) const;
 	
 	
 	
 	/** \brief List of selected objects including all objects attached to them. */
-	void GetSelectedObjectsWithAttached( meObjectList &list );
+	void GetSelectedObjectsWithAttached(meObjectList &list);
 	
 	
 	
 	/** \brief Test for collision with scene elements using a ray originating from (x,y) running along the view axis. */
-	void RayTestCollision( deBaseScriptingCollider *listener, const decDVector &rayPosition,
-		const decVector &rayDirection, const decCollisionFilter &collisionFilter );
+	void RayTestCollision(deBaseScriptingCollider *listener, const decDVector &rayPosition,
+		const decVector &rayDirection, const decCollisionFilter &collisionFilter);
 	
 	/** \brief Test for collision with scene elements using a collider . */
-	void ColliderTestCollision( deBaseScriptingCollider *listener, deCollider *collider );
+	void ColliderTestCollision(deBaseScriptingCollider *listener, deCollider *collider);
 	
 	
 	
@@ -194,7 +194,7 @@ public:
 	
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	/*@}*/
 	
 	
@@ -205,31 +205,31 @@ public:
 	virtual void OnResize();
 	
 	/** \brief A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );
+	virtual bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control);
 	
 	/** \brief A key on the keyboard has been released. Return true if handled. */
-	virtual bool OnKeyRelease( deInputEvent::eKeyCodes key, bool shift, bool control );
+	virtual bool OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, bool control);
 	
 	/** \brief The left mouse button has been pressed. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonPress(int x, int y, bool shift, bool control);
 	
 	/** \brief The left mouse button has been released. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control);
 	
 	/** \brief The right mouse button has been pressed. */
-	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnRightMouseButtonPress(int x, int y, bool shift, bool control);
 	
 	/** \brief The right mouse button has been released. */
-	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnRightMouseButtonRelease(int x, int y, bool shift, bool control);
 	
 	/** \brief The mouse has been moved. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	virtual void OnMouseMove(int x, int y, bool shift, bool control);
 	
 	/**
 	 * \brief The mouse wheel has been used. Steps contains the number of steps
 	 *        up (positive) or down (negative)
 	 */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	virtual void OnMouseWheel(int steps, bool shift, bool control);
 	
 	/** \brief The mouse entered view. */
 	virtual void OnMouseEnter();

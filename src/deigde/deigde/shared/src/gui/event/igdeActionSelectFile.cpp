@@ -41,22 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionSelectFile::igdeActionSelectFile( igdeEnvironment &environment,
-	igdeEnvironment::eFilePatternListTypes resourceType, igdeTextField &textField, bool useGameVFS ) :
-igdeAction( "...", NULL, "Select file" ),
-pEnvironment( environment ),
-pFilePatterns( *pEnvironment.GetOpenFilePatternList( resourceType ) ),
-pUseGameVFS( useGameVFS ),
-pTextField( textField ){
+igdeActionSelectFile::igdeActionSelectFile(igdeEnvironment &environment,
+	igdeEnvironment::eFilePatternListTypes resourceType, igdeTextField &textField, bool useGameVFS) :
+igdeAction("...", NULL, "Select file"),
+pEnvironment(environment),
+pFilePatterns(*pEnvironment.GetOpenFilePatternList(resourceType)),
+pUseGameVFS(useGameVFS),
+pTextField(textField){
 }
 
-igdeActionSelectFile::igdeActionSelectFile( igdeEnvironment &environment,
-const igdeFilePatternList &filePatterns, igdeTextField &textField, bool useGameVFS ) :
-igdeAction( "...", NULL, "Select file" ),
-pEnvironment( environment ),
-pFilePatterns( filePatterns ),
-pUseGameVFS( useGameVFS ),
-pTextField( textField ){
+igdeActionSelectFile::igdeActionSelectFile(igdeEnvironment &environment,
+const igdeFilePatternList &filePatterns, igdeTextField &textField, bool useGameVFS) :
+igdeAction("...", NULL, "Select file"),
+pEnvironment(environment),
+pFilePatterns(filePatterns),
+pUseGameVFS(useGameVFS),
+pTextField(textField){
 }
 
 igdeActionSelectFile::~igdeActionSelectFile(){
@@ -69,42 +69,42 @@ igdeActionSelectFile::~igdeActionSelectFile(){
 
 void igdeActionSelectFile::OnAction(){
 	igdeContainer * const parent = pTextField.GetParent();
-	if( ! parent ){
+	if(! parent){
 		return;
 	}
 	
-	decString path( pTextField.GetText() );
-	PrepareFile( path );
-	if( path.IsEmpty() ){
+	decString path(pTextField.GetText());
+	PrepareFile(path);
+	if(path.IsEmpty()){
 		path = DefaultPath();
 	}
 	
-	const decString oldPath( path );
+	const decString oldPath(path);
 	
-	if( pUseGameVFS ){
-		if( ! igdeCommonDialogs::GetFileOpen( &pTextField, GetText(),
+	if(pUseGameVFS){
+		if(! igdeCommonDialogs::GetFileOpen(&pTextField, GetText(),
 		*pEnvironment.GetFileSystemGame(), pFilePatterns, path ) ){
 			return;
 		}
 		
 	}else{
-		if( ! igdeCommonDialogs::GetFileOpen( &pTextField, GetText(), pFilePatterns, path ) ){
+		if(! igdeCommonDialogs::GetFileOpen(&pTextField, GetText(), pFilePatterns, path)){
 			return;
 		}
 	}
 	
-	if( path == oldPath || ! AcceptFile( path ) ){
+	if(path == oldPath || ! AcceptFile(path)){
 		return;
 	}
 	
-	pTextField.SetText( path );
+	pTextField.SetText(path);
 	pTextField.NotifyTextChanged();
 }
 
-void igdeActionSelectFile::PrepareFile( decString& ){
+void igdeActionSelectFile::PrepareFile(decString&){
 }
 
-bool igdeActionSelectFile::AcceptFile( decString& ){
+bool igdeActionSelectFile::AcceptFile(decString&){
 	return true;
 }
 

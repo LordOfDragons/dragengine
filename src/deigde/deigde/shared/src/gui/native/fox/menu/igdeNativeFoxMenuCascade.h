@@ -39,40 +39,40 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	static void* CreateNativeWidget( igdeMenuCascade &owner );
+	static void* CreateNativeWidget(igdeMenuCascade &owner);
 	
 	/** \brief Post create native widget. */
-	static void PostCreateNativeWidget( igdeMenuCascade &owner, void *native );
+	static void PostCreateNativeWidget(igdeMenuCascade &owner, void *native);
 	
 	/** \brief Destroy native widget. */
-	static void DestroyNativeWidget( igdeMenuCascade &owner, void *native );
+	static void DestroyNativeWidget(igdeMenuCascade &owner, void *native);
 	
 	/** \brief Container native widget. */
-	static void *GetNativeContainer( const igdeMenuCascade &owner, void *native );
+	static void *GetNativeContainer(const igdeMenuCascade &owner, void *native);
 	
 	/** \brief Update title. */
-	static void UpdateTitle( const igdeMenuCascade &owner, void *native );
+	static void UpdateTitle(const igdeMenuCascade &owner, void *native);
 	
 	/** \brief Update description. */
-	static void UpdateDescription( const igdeMenuCascade &owner, void *native );
+	static void UpdateDescription(const igdeMenuCascade &owner, void *native);
 	
 	/** \brief Update icon. */
-	static void UpdateIcon( const igdeMenuCascade &owner, void *native );
+	static void UpdateIcon(const igdeMenuCascade &owner, void *native);
 	
 	/** \brief Update enabled. */
-	static void UpdateEnabled( const igdeMenuCascade &owner, void *native );
+	static void UpdateEnabled(const igdeMenuCascade &owner, void *native);
 	
 	/** \brief Create native popup widget. */
-	static void *CreateNativePopup( igdeMenuCascade &owner, igdeWidget &widgetOwner );
+	static void *CreateNativePopup(igdeMenuCascade &owner, igdeWidget &widgetOwner);
 	
 	/** \brief Create native popup widget. */
-	static void PostCreateNativePopup( igdeMenuCascade &owner, void *native );
+	static void PostCreateNativePopup(igdeMenuCascade &owner, void *native);
 	
 	/** \brief Show popup window with menu. */
-	static void ShowPopupWindow( igdeMenuCascade &owner, igdeWidget &widgetOwner, const decPoint &position );
+	static void ShowPopupWindow(igdeMenuCascade &owner, igdeWidget &widgetOwner, const decPoint &position);
 	
 	/** \brief Destroy native popup widget. */
-	static void DestroyNativePopup( igdeMenuCascade &owner, void *native );
+	static void DestroyNativePopup(igdeMenuCascade &owner, void *native);
 	/*@}*/
 };
 

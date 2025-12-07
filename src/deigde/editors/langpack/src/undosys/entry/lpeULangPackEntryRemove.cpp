@@ -40,28 +40,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntryRemove::lpeULangPackEntryRemove( lpeLangPack *langpack,
-	const lpeLangPackEntryList &list, lpeLangPack *refLangpack ) :
-pLangPack( langpack ),
-pList( list )
+lpeULangPackEntryRemove::lpeULangPackEntryRemove(lpeLangPack *langpack,
+	const lpeLangPackEntryList &list, lpeLangPack *refLangpack) :
+pLangPack(langpack),
+pList(list)
 {
 	const int count = list.GetCount();
-	DEASSERT_NOTNULL( langpack )
-	DEASSERT_TRUE( count > 0 )
+	DEASSERT_NOTNULL(langpack)
+	DEASSERT_TRUE(count > 0)
 	
-	if( refLangpack ){
+	if(refLangpack){
 		const lpeLangPackEntryList &refEntries = refLangpack->GetEntryList();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			lpeLangPackEntry * const refEntry = refEntries.GetNamed( list.GetAt( i )->GetName() );
-			if( refEntry ){
-				pListRef.Add( refEntry );
+		for(i=0; i<count; i++){
+			lpeLangPackEntry * const refEntry = refEntries.GetNamed(list.GetAt(i)->GetName());
+			if(refEntry){
+				pListRef.Add(refEntry);
 			}
 		}
 	}
 	
-	SetShortInfo( count == 1 ? "Remove entry" : "Remove entries" );
+	SetShortInfo(count == 1 ? "Remove entry" : "Remove entries");
 }
 
 lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
@@ -79,10 +79,10 @@ void lpeULangPackEntryRemove::Undo(){
 	
 	lpes.Reset();
 	
-	for( i=0; i<count; i++ ){
-		lpeLangPackEntry * const entry = pList.GetAt( i );
-		pLangPack->AddEntry( entry );
-		lpes.Add( entry );
+	for(i=0; i<count; i++){
+		lpeLangPackEntry * const entry = pList.GetAt(i);
+		pLangPack->AddEntry(entry);
+		lpes.Add(entry);
 	}
 	
 	lpes.ActivateNext();
@@ -96,19 +96,19 @@ void lpeULangPackEntryRemove::Redo(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		lpeLangPackEntry * const entry = pList.GetAt( i );
+	for(i=0; i<count; i++){
+		lpeLangPackEntry * const entry = pList.GetAt(i);
 		
-		lpes.Remove( entry );
-		pLangPack->RemoveEntry( entry );
+		lpes.Remove(entry);
+		pLangPack->RemoveEntry(entry);
 	}
 	
 	const int refCount = pListRef.GetCount();
-	if( refCount > 0 ){
-		for( i=0; i<refCount; i++ ){
-			lpes.Add( pListRef.GetAt( i ) );
+	if(refCount > 0){
+		for(i=0; i<refCount; i++){
+			lpes.Add(pListRef.GetAt(i));
 		}
-		lpes.SetActive( pListRef.GetAt( 0 ) );
+		lpes.SetActive(pListRef.GetAt(0));
 	}
 	
 	pLangPack->NotifyEntrySelectionChanged();

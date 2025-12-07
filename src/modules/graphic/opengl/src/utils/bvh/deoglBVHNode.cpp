@@ -48,16 +48,16 @@ deoglBVHNode::~deoglBVHNode(){
 // Management
 ///////////////
 
-void deoglBVHNode::SetExtends( const decVector &minExtend, const decVector &maxExtend ){
+void deoglBVHNode::SetExtends(const decVector &minExtend, const decVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
-void deoglBVHNode::SetFirstIndex( int index ){
+void deoglBVHNode::SetFirstIndex(int index){
 	pFirstIndex = index;
 }
 
-void deoglBVHNode::SetPrimitiveCount( int count ){
+void deoglBVHNode::SetPrimitiveCount(int count){
 	pPrimitiveCount = count;
 }
 

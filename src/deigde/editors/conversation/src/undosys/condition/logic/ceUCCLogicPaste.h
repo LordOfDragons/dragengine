@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicPaste( ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic,
-		const ceConversationConditionList &conditions );
+	ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic,
+		const ceConversationConditionList &conditions);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicPaste();
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of conditions. */
-	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
+	inline const ceConversationConditionList &GetConditions() const{return pConditions;}
 	
 	/** \brief Undo. */
 	virtual void Undo();

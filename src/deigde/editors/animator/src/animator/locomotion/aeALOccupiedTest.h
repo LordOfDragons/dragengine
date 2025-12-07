@@ -56,7 +56,7 @@ public:
 	/** Resets the ground checker. */
 	void Reset();
 	/** Determines if a collision has occurred. */
-	inline bool HasCollision() const{ return pHasCollision; }
+	inline bool HasCollision() const{return pHasCollision;}
 	/*@}*/
 	
 	/** \name Notifications */
@@ -66,7 +66,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
 	 * then the script is asked to determine if the two collider can hit each
@@ -76,7 +76,7 @@ public:
 	 * @param collider Collider to test.
 	 * @return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/*@}*/
 };
 

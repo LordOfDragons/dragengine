@@ -41,14 +41,14 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetLayout::dealWidgetLayout( dealDisplay &display ) :
-dealWidget( display ),
-pDirtyLayout( true ){
+dealWidgetLayout::dealWidgetLayout(dealDisplay &display) :
+dealWidget(display),
+pDirtyLayout(true){
 }
 
-dealWidgetLayout::dealWidgetLayout( dealDisplay &display, const decPoint &position, const decPoint &size ) :
-dealWidget( display, position, size ),
-pDirtyLayout( true ){
+dealWidgetLayout::dealWidgetLayout(dealDisplay &display, const decPoint &position, const decPoint &size) :
+dealWidget(display, position, size),
+pDirtyLayout(true){
 }
 
 dealWidgetLayout::~dealWidgetLayout(){
@@ -63,45 +63,45 @@ int dealWidgetLayout::GetWidgetCount() const{
 	return pWidgets.GetCount();
 }
 
-dealWidget *dealWidgetLayout::GetWidgetAt( int index ) const{
-	return ( dealWidget* )pWidgets.GetAt( index );
+dealWidget *dealWidgetLayout::GetWidgetAt(int index) const{
+	return (dealWidget*)pWidgets.GetAt(index);
 }
 
-void dealWidgetLayout::AddWidget( dealWidget *widget ){
-	if( ! widget ){
-		DETHROW( deeInvalidParam );
+void dealWidgetLayout::AddWidget(dealWidget *widget){
+	if(! widget){
+		DETHROW(deeInvalidParam);
 	}
-	if( widget->GetParent() ){
-		DETHROW( deeInvalidParam );
+	if(widget->GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pWidgets.Add( widget );
-	widget->SetParent( this );
+	pWidgets.Add(widget);
+	widget->SetParent(this);
 	
 	DirtyLayout();
 }
 
-void dealWidgetLayout::RemoveWidget( dealWidget *widget ){
-	if( ! pWidgets.Has( widget ) ){
-		DETHROW( deeInvalidParam );
+void dealWidgetLayout::RemoveWidget(dealWidget *widget){
+	if(! pWidgets.Has(widget)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	widget->SetParent( NULL );
-	pWidgets.Remove( widget );
+	widget->SetParent(NULL);
+	pWidgets.Remove(widget);
 	
 	DirtyLayout();
 }
 
 void dealWidgetLayout::RemoveAllWidgets(){
-	if( pWidgets.GetCount() == 0 ){
+	if(pWidgets.GetCount() == 0){
 		return;
 	}
 	
 	const int count = pWidgets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( dealWidget* )pWidgets.GetAt( i ) )->SetParent( NULL );
+	for(i=0; i<count; i++){
+		((dealWidget*)pWidgets.GetAt(i))->SetParent(NULL);
 	}
 	
 	pWidgets.RemoveAll();
@@ -111,7 +111,7 @@ void dealWidgetLayout::RemoveAllWidgets(){
 
 
 decPoint dealWidgetLayout::GetDialogPosition() const{
-	if( GetParent() ){
+	if(GetParent()){
 		return dealWidget::GetDialogPosition();
 		
 	}else{
@@ -119,29 +119,29 @@ decPoint dealWidgetLayout::GetDialogPosition() const{
 	}
 }
 
-dealWidget *dealWidgetLayout::WidgetAtPosition( const decPoint &point ) const{
-	if( ! IsPointInside( point ) ){
+dealWidget *dealWidgetLayout::WidgetAtPosition(const decPoint &point) const{
+	if(! IsPointInside(point)){
 		return NULL;
 	}
 	
 	const int count = pWidgets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dealWidget *widget = ( dealWidget* )pWidgets.GetAt( i );
-		widget = widget->WidgetAtPosition( point - widget->GetPosition() );
-		if( widget ){
+	for(i=0; i<count; i++){
+		dealWidget *widget = (dealWidget*)pWidgets.GetAt(i);
+		widget = widget->WidgetAtPosition(point - widget->GetPosition());
+		if(widget){
 			return widget;
 		}
 	}
 	
-	return ( dealWidget* )this;
+	return (dealWidget*)this;
 }
 
 
 
 void dealWidgetLayout::DirtyLayout(){
-	if( pDirtyLayout ){
+	if(pDirtyLayout){
 		return;
 	}
 	
@@ -150,7 +150,7 @@ void dealWidgetLayout::DirtyLayout(){
 }
 
 void dealWidgetLayout::Layout(){
-	if( ! pDirtyLayout ){
+	if(! pDirtyLayout){
 		return;
 	}
 	
@@ -163,9 +163,9 @@ void dealWidgetLayout::LayoutWidgets(){
 
 
 
-void dealWidgetLayout::RenderContent( const sRenderContext &context ){
+void dealWidgetLayout::RenderContent(const sRenderContext &context){
 	const int count = pWidgets.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
@@ -176,35 +176,35 @@ void dealWidgetLayout::RenderContent( const sRenderContext &context ){
 	childContext.clipBaseScreenY = context.clipBaseScreenY;
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		dealWidget &child = *( ( dealWidget* )pWidgets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		dealWidget &child = *((dealWidget*)pWidgets.GetAt(i));
 		
-		if( ! child.GetVisible() ){
+		if(! child.GetVisible()){
 			continue;
 		}
 		
 		const decPoint &childPosition = child.GetPosition();
 		const decPoint &childSize = child.GetSize();
 		
-		if( ! ( childSize > decPoint() ) ){
+		if(! (childSize > decPoint())){
 			continue;
 		}
 		
 		childContext.screenPosition = context.screenPosition + childPosition;
-		childContext.viewFrom = childContext.screenPosition.Largest( context.viewFrom );
-		childContext.viewTo = ( childContext.screenPosition + childSize ).Smallest( context.viewTo );
+		childContext.viewFrom = childContext.screenPosition.Largest(context.viewFrom);
+		childContext.viewTo = (childContext.screenPosition + childSize).Smallest(context.viewTo);
 		
-		if( ! ( ( childContext.viewTo - childContext.viewFrom ) > decPoint() ) ){
+		if(! ((childContext.viewTo - childContext.viewFrom) > decPoint())){
 			continue;
 		}
 		
-		if( ! ( childContext.viewFrom <= context.viewTo && childContext.viewTo >= context.viewFrom ) ){
+		if(! (childContext.viewFrom <= context.viewTo && childContext.viewTo >= context.viewFrom)){
 			continue;
 		}
 		
-		childContext.transform = decTexMatrix::CreateTranslation( childPosition ) * context.transform;
+		childContext.transform = decTexMatrix::CreateTranslation(childPosition) * context.transform;
 		
-		child.Render( childContext );
+		child.Render(childContext);
 	}
 }
 

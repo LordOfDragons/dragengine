@@ -48,28 +48,28 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decZFileReader::decZFileReader( decBaseFileReader *reader ) :
-pReader( NULL ),
-pFilePosition( 0 ),
-pFileLength( 0 ),
+decZFileReader::decZFileReader(decBaseFileReader *reader) :
+pReader(NULL),
+pFilePosition(0),
+pFileLength(0),
 
-pZStream( NULL ),
+pZStream(NULL),
 
-pBufferIn( NULL ),
-pBufferInSize( 0 ),
-pBufferInPosition( 0 ),
+pBufferIn(NULL),
+pBufferInSize(0),
+pBufferInPosition(0),
 
-pContent( NULL ),
-pContentSize( 0 ),
-pContentCapacity( 0 ),
-pContentPosition( 0 )
+pContent(NULL),
+pContentSize(0),
+pContentCapacity(0),
+pContentPosition(0)
 {
-	if( ! reader ){
-		DETHROW( deeInvalidParam );
+	if(! reader){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int options = reader->ReadByte();
-	( void )options;
+	(void)options;
 	
 	pBufferIn = NULL;
 	pBufferInPosition = 0;
@@ -83,19 +83,19 @@ pContentPosition( 0 )
 	zstream->zalloc = NULL;
 	zstream->zfree = NULL;
 	zstream->opaque = NULL;
-	if( inflateInit( zstream ) != Z_OK ){
+	if(inflateInit(zstream) != Z_OK){
 		delete zstream;
-		DETHROW( deeOutOfMemory );
+		DETHROW(deeOutOfMemory);
 	}
 	
-	pBufferIn = new Bytef[ BUFFER_SIZE ];
+	pBufferIn = new Bytef[BUFFER_SIZE];
 	pBufferInSize = BUFFER_SIZE;
-	pContent = malloc( BUFFER_SIZE );
+	pContent = malloc(BUFFER_SIZE);
 	pContentCapacity = BUFFER_SIZE;
 	
-	zstream->next_in = ( Bytef* )pBufferIn;
+	zstream->next_in = (Bytef*)pBufferIn;
 	zstream->avail_in = 0;
-	zstream->next_out = ( Bytef* )pContent;
+	zstream->next_out = (Bytef*)pContent;
 	zstream->avail_out = pContentCapacity;
 	pZStream = zstream;
 	
@@ -106,19 +106,19 @@ pContentPosition( 0 )
 }
 
 decZFileReader::~decZFileReader(){
-	if( pZStream ){
-		inflateEnd( ( z_stream* )pZStream );
-		delete ( z_stream* )pZStream;
+	if(pZStream){
+		inflateEnd((z_stream*)pZStream);
+		delete (z_stream*)pZStream;
 	}
 	
-	if( pReader ){
+	if(pReader){
 		pReader->FreeReference();
 	}
-	if( pContent ){
-		free( pContent );
+	if(pContent){
+		free(pContent);
 	}
-	if( pBufferIn ){
-		delete [] ( Bytef* )pBufferIn;
+	if(pBufferIn){
+		delete [] (Bytef*)pBufferIn;
 	}
 }
 
@@ -149,17 +149,17 @@ int decZFileReader::GetPosition(){
 	return pContentPosition;
 }
 
-void decZFileReader::SetPosition( int position ){
-	pSetContentPosition( position );
+void decZFileReader::SetPosition(int position){
+	pSetContentPosition(position);
 }
 
-void decZFileReader::MovePosition( int offset ){
-	pSetContentPosition( pContentPosition + offset );
+void decZFileReader::MovePosition(int offset){
+	pSetContentPosition(pContentPosition + offset);
 }
 
-void decZFileReader::SetPositionEnd( int position ){
+void decZFileReader::SetPositionEnd(int position){
 	pDecompressAll();
-	pSetContentPosition( pContentSize - position );
+	pSetContentPosition(pContentSize - position);
 }
 
 
@@ -167,95 +167,95 @@ void decZFileReader::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void decZFileReader::Read( void *buffer, int size ){
-	if( ! buffer || size < 0 ){
-		DETHROW( deeInvalidParam );
+void decZFileReader::Read(void *buffer, int size){
+	if(! buffer || size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size > 0 ){
+	if(size > 0){
 		const int contentPosition = pContentPosition;
-		pSetContentPosition( pContentPosition + size ); // make sure the content is present
+		pSetContentPosition(pContentPosition + size); // make sure the content is present
 		
-		if( contentPosition + size > pContentSize ){
-			DETHROW( deeInvalidParam );
+		if(contentPosition + size > pContentSize){
+			DETHROW(deeInvalidParam);
 		}
 		
-		memcpy( buffer, ( Bytef* )pContent + contentPosition, size );
+		memcpy(buffer, (Bytef*)pContent + contentPosition, size);
 	}
 }
 
 
 
-void decZFileReader::pSetContentPosition( int position ){
-	if( position < 0 ){
+void decZFileReader::pSetContentPosition(int position){
+	if(position < 0){
 		pContentPosition = 0;
 		return;
 	}
 	
-	z_stream * const zstream = ( z_stream* )pZStream;
+	z_stream * const zstream = (z_stream*)pZStream;
 	
-	while( position > pContentSize ){
-		if( zstream->avail_in == 0 ){
+	while(position > pContentSize){
+		if(zstream->avail_in == 0){
 			int readSize = pBufferInSize;
 			
-			if( pFilePosition + readSize > pFileLength ){
+			if(pFilePosition + readSize > pFileLength){
 				readSize = pFileLength - pFilePosition;
 			}
 			
-			if( readSize > 0 ){
-				pReader->Read( ( Bytef* )pBufferIn, readSize );
+			if(readSize > 0){
+				pReader->Read((Bytef*)pBufferIn, readSize);
 				pFilePosition += readSize;
 			}
 			
-			zstream->next_in = ( Bytef* )pBufferIn;
+			zstream->next_in = (Bytef*)pBufferIn;
 			zstream->avail_in = readSize;
 		}
 		
-		const int result = inflate( zstream, Z_NO_FLUSH );
+		const int result = inflate(zstream, Z_NO_FLUSH);
 		
-		if( result == Z_OK ){
-			pContentSize = pContentCapacity - ( int )zstream->avail_out;
+		if(result == Z_OK){
+			pContentSize = pContentCapacity - (int)zstream->avail_out;
 			
-			if( zstream->avail_out == 0 ){
-				int newCapacity = pContentCapacity + ( pContentCapacity >> 1 ); // + 50%
-				if( newCapacity - pContentCapacity < BUFFER_SIZE ){
+			if(zstream->avail_out == 0){
+				int newCapacity = pContentCapacity + (pContentCapacity >> 1); // + 50%
+				if(newCapacity - pContentCapacity < BUFFER_SIZE){
 					newCapacity = pContentCapacity + BUFFER_SIZE;
 				}
 				
-				void * const content = realloc( pContent, newCapacity );
-				if( ! content ){
-					DETHROW( deeOutOfMemory );
+				void * const content = realloc(pContent, newCapacity);
+				if(! content){
+					DETHROW(deeOutOfMemory);
 				}
 				pContent = content;
 				pContentCapacity = newCapacity;
 				
-				zstream->next_out = ( Bytef* )pContent + pContentSize;
+				zstream->next_out = (Bytef*)pContent + pContentSize;
 				zstream->avail_out = newCapacity - pContentSize;
 			}
 			
-		}else if( result == Z_STREAM_END ){
-			const int newCapacity = pContentCapacity - ( int )zstream->avail_out;
+		}else if(result == Z_STREAM_END){
+			const int newCapacity = pContentCapacity - (int)zstream->avail_out;
 			
-			void * const content = realloc( pContent, newCapacity ); // reduce to used size
-			if( ! content ){
-				DETHROW( deeOutOfMemory );
+			void * const content = realloc(pContent, newCapacity); // reduce to used size
+			if(! content){
+				DETHROW(deeOutOfMemory);
 			}
 			
 			pContent = content;
 			pContentSize = newCapacity;
 			pContentCapacity = newCapacity;
 			
-			zstream->next_out = ( Bytef* )pContent + pContentSize;
+			zstream->next_out = (Bytef*)pContent + pContentSize;
 			zstream->avail_out = 0;
 			
 			break;
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	if( position < pContentSize ){
+	if(position < pContentSize){
 		pContentPosition = position;
 		
 	}else{
@@ -264,5 +264,5 @@ void decZFileReader::pSetContentPosition( int position ){
 }
 
 void decZFileReader::pDecompressAll(){
-	pSetContentPosition( INT_MAX );
+	pSetContentPosition(INT_MAX);
 }

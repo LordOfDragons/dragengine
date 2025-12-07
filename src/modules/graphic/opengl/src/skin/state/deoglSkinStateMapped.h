@@ -63,37 +63,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mapped value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** Set mapped value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** Skin mapped. */
-	const deoglSkinMapped *GetMapped() const{ return pMapped; }
+	const deoglSkinMapped *GetMapped() const{return pMapped;}
 	
 	/** Set skin mapped. */
-	void SetMapped( const deoglSkinMapped *mapped );
+	void SetMapped(const deoglSkinMapped *mapped);
 	
 	/** Component for bone calculate or nullptr. */
-	inline const deoglRComponent *GetComponent() const{ return pComponent; }
+	inline const deoglRComponent *GetComponent() const{return pComponent;}
 	
 	/** Set component for bone calculate or nullptr. */
-	void SetComponent( const deoglRComponent *component );
+	void SetComponent(const deoglRComponent *component);
 	
 	/** Bone index or -1 if not found. */
-	inline int GetBone() const{ return pBone; }
+	inline int GetBone() const{return pBone;}
 	
 	/** Bone input value. */
-	inline float GetBoneInputValue() const{ return pBoneInputValue; }
+	inline float GetBoneInputValue() const{return pBoneInputValue;}
 	
 	/** Map bone. */
-	void MapBone( const deComponent &component );
+	void MapBone(const deComponent &component);
 	
 	/** Update bone. */
-	void UpdateBone( const deComponent &component );
+	void UpdateBone(const deComponent &component);
 	
 	/** Update. */
-	void Update( deoglSkinState &skinState );
+	void Update(deoglSkinState &skinState);
 	/*@}*/
 };
 

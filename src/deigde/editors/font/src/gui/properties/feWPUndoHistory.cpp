@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWPUndoHistory::feWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pFont( NULL ),
-pListener( new feWPUndoHistoryListener( *this ) ){
+feWPUndoHistory::feWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pFont(NULL),
+pListener(new feWPUndoHistoryListener(*this)){
 }
 
 feWPUndoHistory::~feWPUndoHistory(){
-	SetFont( NULL );
+	SetFont(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -59,24 +59,24 @@ feWPUndoHistory::~feWPUndoHistory(){
 // Management
 ///////////////
 
-void feWPUndoHistory::SetFont( feFont *font ){
-	if( font == pFont ){
+void feWPUndoHistory::SetFont(feFont *font){
+	if(font == pFont){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pFont ){
-		pFont->RemoveNotifier( pListener );
+	if(pFont){
+		pFont->RemoveNotifier(pListener);
 		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
-	if( font ){
-		font->AddNotifier( pListener );
+	if(font){
+		font->AddNotifier(pListener);
 		font->AddReference();
 		
-		SetUndoSystem( font->GetUndoSystem() );
+		SetUndoSystem(font->GetUndoSystem());
 	}
 }

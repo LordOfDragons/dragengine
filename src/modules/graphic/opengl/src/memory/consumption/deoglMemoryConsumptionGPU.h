@@ -44,14 +44,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create memory consumption. */
-	deoglMemoryConsumptionGPU( const char *name );
+	deoglMemoryConsumptionGPU(const char *name);
 	
 	/** Create memory consumption updating also group memory consumption. */
-	deoglMemoryConsumptionGPU( const char *name, deoglMemoryConsumptionGPU &group );
+	deoglMemoryConsumptionGPU(const char *name, deoglMemoryConsumptionGPU &group);
 	
 	/** Create memory consumption updating also group memory consumption. */
-	deoglMemoryConsumptionGPU( const char *name, deoglMemoryConsumptionGPU &group,
-		deoglMemoryConsumptionGPU &group2 );
+	deoglMemoryConsumptionGPU(const char *name, deoglMemoryConsumptionGPU &group,
+		deoglMemoryConsumptionGPU &group2);
 	
 	/** Clean up vbo memory consumption. */
 	~deoglMemoryConsumptionGPU();
@@ -62,12 +62,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	
 	
 	/** Count. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{return pCount;}
 	
 	/** Increment count by 1. */
 	void IncrementCount();
@@ -78,31 +78,31 @@ public:
 	
 	
 	/** Consumption in bytes. */
-	inline unsigned long long GetConsumption() const{ return pConsumption; }
+	inline unsigned long long GetConsumption() const{return pConsumption;}
 	
 	/** Consumption in KB. */
-	inline unsigned long long GetConsumptionKB() const{ return pConsumption / 1024ull; }
+	inline unsigned long long GetConsumptionKB() const{return pConsumption / 1024ull;}
 	
 	/** Consumption in MB. */
-	inline unsigned int GetConsumptionMB() const{ return ( unsigned int )( pConsumption / 1024000ull ); }
+	inline unsigned int GetConsumptionMB() const{return (unsigned int)(pConsumption / 1024000ull);}
 	
 	/** Consumption in GB. */
-	inline unsigned int GetConsumptionGB() const{ return ( unsigned int )( pConsumption / 1024000000ull ); }
+	inline unsigned int GetConsumptionGB() const{return (unsigned int)(pConsumption / 1024000000ull);}
 	
 	/** Consumption in KB as double. */
-	inline double GetConsumptionKBDouble() const{ return ( double )pConsumption / 1024e0; }
+	inline double GetConsumptionKBDouble() const{return (double)pConsumption / 1024e0;}
 	
 	/** Consumption in MB as double. */
-	inline double GetConsumptionMBDouble() const{ return ( double )pConsumption / 1024e3; }
+	inline double GetConsumptionMBDouble() const{return (double)pConsumption / 1024e3;}
 	
 	/** Consumption in GB as double. */
-	inline double GetConsumptionGBDouble() const{ return ( double )pConsumption / 1024e6; }
+	inline double GetConsumptionGBDouble() const{return (double)pConsumption / 1024e6;}
 	
 	/** Increment consumption. */
-	void IncrementConsumption( unsigned long long bytes );
+	void IncrementConsumption(unsigned long long bytes);
 	
 	/** Decrement consumption. */
-	void DecrementConsumption( unsigned long long bytes );
+	void DecrementConsumption(unsigned long long bytes);
 	/*@}*/
 };
 

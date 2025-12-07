@@ -39,10 +39,10 @@ private:
 	
 public:
 	/** Convert tag options. */
-	static deServiceObject::Ref ModTagOptions( const Modio::ModTagOptions &tagOptions );
+	static deServiceObject::Ref ModTagOptions(const Modio::ModTagOptions &tagOptions);
 	
 	/** Convert tag info. */
-	static deServiceObject::Ref ModTagInfo( const Modio::ModTagInfo &info );
+	static deServiceObject::Ref ModTagInfo(const Modio::ModTagInfo &info);
 	
 	/*@}*/
 };

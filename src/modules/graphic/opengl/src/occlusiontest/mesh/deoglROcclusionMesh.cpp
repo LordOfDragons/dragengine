@@ -55,15 +55,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglROcclusionMesh::deoglROcclusionMesh( deoglRenderThread &renderThread,
-const deOcclusionMesh &occlusionmesh ) :
-pRenderThread( renderThread ),
-pFilename( occlusionmesh.GetFilename() ),
-pSharedSPBListUBO( NULL ),
-pRTIGroupsSingle( deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread) ),
-pRTIGroupsDouble( deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread) ),
-pBVH( NULL ),
-pRayTraceField( NULL )
+deoglROcclusionMesh::deoglROcclusionMesh(deoglRenderThread &renderThread,
+const deOcclusionMesh &occlusionmesh) :
+pRenderThread(renderThread),
+pFilename(occlusionmesh.GetFilename()),
+pSharedSPBListUBO(NULL),
+pRTIGroupsSingle(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)),
+pRTIGroupsDouble(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)),
+pBVH(NULL),
+pRayTraceField(NULL)
 {
 	pVBOBlock = NULL;
 	
@@ -80,17 +80,17 @@ pRayTraceField( NULL )
 	pDoubleSidedFaceCount = 0;
 	
 	try{
-		pBuildArrays( occlusionmesh );
+		pBuildArrays(occlusionmesh);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
-	LEAK_CHECK_CREATE( renderThread, OcclusionMesh );
+	LEAK_CHECK_CREATE(renderThread, OcclusionMesh);
 }
 
 deoglROcclusionMesh::~deoglROcclusionMesh(){
-	LEAK_CHECK_FREE( pRenderThread, OcclusionMesh );
+	LEAK_CHECK_FREE(pRenderThread, OcclusionMesh);
 	pCleanUp();
 }
 
@@ -100,29 +100,29 @@ deoglROcclusionMesh::~deoglROcclusionMesh(){
 ///////////////
 
 void deoglROcclusionMesh::PrepareVBOBlock(){
-	if( pVBOBlock || pVertexCount == 0 ){
+	if(pVBOBlock || pVertexCount == 0){
 		return;
 	}
 	
 	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject().
-		GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticOcclusionMesh );
+		GetSharedVBOListForType(deoglRTBufferObject::esvbolStaticOcclusionMesh);
 	
-	if( pVertexCount > svbolist.GetMaxPointCount() ){
-		pRenderThread.GetLogger().LogInfoFormat( "OcclusionMesh(%s): Too many points (%i) "
+	if(pVertexCount > svbolist.GetMaxPointCount()){
+		pRenderThread.GetLogger().LogInfoFormat("OcclusionMesh(%s): Too many points (%i) "
 			"to fit into shared VBOs. Using over-sized VBO (performance not optimal).",
-			pFilename.GetString(), pVertexCount );
+			pFilename.GetString(), pVertexCount);
 	}
 	
-	pVBOBlock = svbolist.AddData( pVertexCount, pCornerCount );
+	pVBOBlock = svbolist.AddData(pVertexCount, pCornerCount);
 	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
 	
 	pWriteVBOData();
 }
 
 deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){
-	if( ! pSharedSPBListUBO ){
-		pSharedSPBListUBO = new deoglSharedSPBListUBO( pRenderThread,
-			pRenderThread.GetBufferObject().GetLayoutOccMeshInstanceUBO() );
+	if(! pSharedSPBListUBO){
+		pSharedSPBListUBO = new deoglSharedSPBListUBO(pRenderThread,
+			pRenderThread.GetBufferObject().GetLayoutOccMeshInstanceUBO());
 	}
 	return *pSharedSPBListUBO;
 }
@@ -130,27 +130,27 @@ deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){
 
 
 void deoglROcclusionMesh::PrepareBVH(){
-	if( pBVH ){
+	if(pBVH){
 		return;
 	}
 	
 	deoglBVH::sBuildPrimitive *primitives = NULL;
 	const int faceCount = pSingleSidedFaceCount + pDoubleSidedFaceCount;
 	
-	if( faceCount > 0 ){
-		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+	if(faceCount > 0){
+		primitives = new deoglBVH::sBuildPrimitive[faceCount];
 		unsigned short *corners = pCorners;
 		int i;
 		
-		for( i=0; i<faceCount; i++ ){
-			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
-			const sVertex &v1 = pVertices[ *(corners++) ];
-			const sVertex &v2 = pVertices[ *(corners++) ];
-			const sVertex &v3 = pVertices[ *(corners++) ];
+		for(i=0; i<faceCount; i++){
+			deoglBVH::sBuildPrimitive &primitive = primitives[i];
+			const sVertex &v1 = pVertices[*(corners++)];
+			const sVertex &v2 = pVertices[*(corners++)];
+			const sVertex &v3 = pVertices[*(corners++)];
 			
-			primitive.minExtend = v1.position.Smallest( v2.position ).Smallest( v3.position );
-			primitive.maxExtend = v1.position.Largest( v2.position ).Largest( v3.position );
-			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+			primitive.minExtend = v1.position.Smallest(v2.position).Smallest(v3.position);
+			primitive.maxExtend = v1.position.Largest(v2.position).Largest(v3.position);
+			primitive.center = (primitive.minExtend + primitive.maxExtend) * 0.5f;
 		}
 	}
 	
@@ -160,20 +160,20 @@ void deoglROcclusionMesh::PrepareBVH(){
 		// worse performance and below 6 more worse performance. using 6 max depth now
 		// since this seems to be the best overall choice
 		pBVH = new deoglBVH;
-		pBVH->Build( primitives, faceCount, 6 );
+		pBVH->Build(primitives, faceCount, 6);
 		
-	}catch( const deException & ){
-		if( pBVH ){
+	}catch(const deException &){
+		if(pBVH){
 			delete pBVH;
 			pBVH = NULL;
 		}
-		if( primitives ){
+		if(primitives){
 			delete [] primitives;
 		}
 		throw;
 	}
 	
-	if( primitives ){
+	if(primitives){
 		delete [] primitives;
 	}
 	
@@ -236,25 +236,25 @@ void deoglROcclusionMesh::PrepareRayTraceField(){
 //////////////////////
 
 void deoglROcclusionMesh::pCleanUp(){
-	if( pBVH ){
+	if(pBVH){
 		delete pBVH;
 	}
-	if( pCorners ){
+	if(pCorners){
 		delete [] pCorners;
 	}
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
-	if( pWeightsCounts ){
+	if(pWeightsCounts){
 		delete [] pWeightsCounts;
 	}
-	if( pWeightsEntries ){
+	if(pWeightsEntries){
 		delete [] pWeightsEntries;
 	}
-	if( pSharedSPBListUBO ){
+	if(pSharedSPBListUBO){
 		delete pSharedSPBListUBO;
 	}
-	if( pVBOBlock ){
+	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
 		pVBOBlock->FreeReference();
 	}
@@ -262,7 +262,7 @@ void deoglROcclusionMesh::pCleanUp(){
 
 
 
-void deoglROcclusionMesh::pBuildArrays( const deOcclusionMesh &occlusionMesh ){
+void deoglROcclusionMesh::pBuildArrays(const deOcclusionMesh &occlusionMesh){
 	const int meshWeightGroupCount = occlusionMesh.GetWeightGroupCount();
 	const int meshWeightCount = occlusionMesh.GetWeightCount();
 	const int meshVertexCount = occlusionMesh.GetVertexCount();
@@ -277,18 +277,18 @@ void deoglROcclusionMesh::pBuildArrays( const deOcclusionMesh &occlusionMesh ){
 	
 	// calculate the number of weight sets
 	pWeightsCount = 0;
-	for( wg=0; wg<meshWeightGroupCount; wg++ ){
-		pWeightsCount += meshWeightGroups[ wg ];
+	for(wg=0; wg<meshWeightGroupCount; wg++){
+		pWeightsCount += meshWeightGroups[wg];
 	}
 	
 	// create weights counts array
-	if( pWeightsCount > 0 ){
-		pWeightsCounts = new int[ pWeightsCount ];
+	if(pWeightsCount > 0){
+		pWeightsCounts = new int[pWeightsCount];
 		ws = 0;
 		
-		for( wg=0; wg<meshWeightGroupCount; wg++ ){
-			for( i=0; i<meshWeightGroups[ wg ]; i++ ){
-				pWeightsCounts[ ws++ ] = wg + 1;
+		for(wg=0; wg<meshWeightGroupCount; wg++){
+			for(i=0; i<meshWeightGroups[wg]; i++){
+				pWeightsCounts[ws++] = wg + 1;
 			}
 		}
 	}
@@ -296,39 +296,39 @@ void deoglROcclusionMesh::pBuildArrays( const deOcclusionMesh &occlusionMesh ){
 	// create weights entries array and fill in the weights counts
 	pWeightsEntryCount = meshWeightCount;
 	
-	if( meshWeightCount > 0 ){
-		pWeightsEntries = new sWeight[ meshWeightCount ];
+	if(meshWeightCount > 0){
+		pWeightsEntries = new sWeight[meshWeightCount];
 		
-		for( ws=0; ws<meshWeightCount; ws++ ){
-			pWeightsEntries[ ws ].bone = meshWeights[ ws ].GetBone();
-			pWeightsEntries[ ws ].weight = meshWeights[ ws ].GetWeight();
+		for(ws=0; ws<meshWeightCount; ws++){
+			pWeightsEntries[ws].bone = meshWeights[ws].GetBone();
+			pWeightsEntries[ws].weight = meshWeights[ws].GetWeight();
 		}
 	}
 	
 	// create vertices array
-	if( meshVertexCount > 0 ){
-		pVertices = new sVertex[ meshVertexCount ];
+	if(meshVertexCount > 0){
+		pVertices = new sVertex[meshVertexCount];
 		pVertexCount = meshVertexCount;
 		
-		for( i=0; i<meshVertexCount; i++ ){
-			pVertices[ i ].position = meshVertices[ i ].GetPosition();
-			pVertices[ i ].weight = meshVertices[ i ].GetWeightSet();
+		for(i=0; i<meshVertexCount; i++){
+			pVertices[i].position = meshVertices[i].GetPosition();
+			pVertices[i].weight = meshVertices[i].GetWeightSet();
 		}
 	}
 	
 	// determine the total number of corners required
 	pCornerCount = 0;
 	
-	for( i=0; i<meshFaceCount; i++ ){
-		const int faceCornerCount = ( int )meshFaces[ i ];
+	for(i=0; i<meshFaceCount; i++){
+		const int faceCornerCount = (int)meshFaces[i];
 		
-		if( faceCornerCount > 2 ){
-			pCornerCount += ( faceCornerCount - 2 ) * 3;
+		if(faceCornerCount > 2){
+			pCornerCount += (faceCornerCount - 2) * 3;
 		}
 	}
 	
-	if( pCornerCount > 0 ){
-		pCorners = new unsigned short[ pCornerCount ];
+	if(pCornerCount > 0){
+		pCorners = new unsigned short[pCornerCount];
 	}
 	
 	// add faces
@@ -337,24 +337,24 @@ void deoglROcclusionMesh::pBuildArrays( const deOcclusionMesh &occlusionMesh ){
 	meshCornerIndex = 0;
 	cornerIndex = 0;
 	
-	for( i=0; i<meshFaceCount; i++ ){
-		const int faceCornerCount = ( int )meshFaces[ i ];
+	for(i=0; i<meshFaceCount; i++){
+		const int faceCornerCount = (int)meshFaces[i];
 		
-		if( faceCornerCount > 2 ){
-			const unsigned short firstFaceCorner = meshCorners[ meshCornerIndex++ ];
-			unsigned short thirdFaceCorner = meshCorners[ meshCornerIndex++ ];
+		if(faceCornerCount > 2){
+			const unsigned short firstFaceCorner = meshCorners[meshCornerIndex++];
+			unsigned short thirdFaceCorner = meshCorners[meshCornerIndex++];
 			unsigned short secondFaceCorner;
 			
-			for( j=2; j<faceCornerCount; j++ ){
+			for(j=2; j<faceCornerCount; j++){
 				secondFaceCorner = thirdFaceCorner;
-				thirdFaceCorner = ( int )meshCorners[ meshCornerIndex++ ];
+				thirdFaceCorner = (int)meshCorners[meshCornerIndex++];
 				
-				pCorners[ cornerIndex++ ] = thirdFaceCorner;
-				pCorners[ cornerIndex++ ] = secondFaceCorner;
-				pCorners[ cornerIndex++ ] = firstFaceCorner;
+				pCorners[cornerIndex++] = thirdFaceCorner;
+				pCorners[cornerIndex++] = secondFaceCorner;
+				pCorners[cornerIndex++] = firstFaceCorner;
 			}
 			
-			if( i < meshSingleFaceCount ){
+			if(i < meshSingleFaceCount){
 				pSingleSidedFaceCount += faceCornerCount - 2;
 				
 			}else{
@@ -368,8 +368,8 @@ void deoglROcclusionMesh::pBuildArrays( const deOcclusionMesh &occlusionMesh ){
 }
 
 void deoglROcclusionMesh::pWriteVBOData(){
-	if( ! pVBOBlock ){
-		DETHROW( deeInvalidParam );
+	if(! pVBOBlock){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deoglVBOLayout &layout = pVBOBlock->GetVBO()->GetParentList()->GetLayout();
@@ -380,38 +380,38 @@ void deoglROcclusionMesh::pWriteVBOData(){
 	int i;
 	
 	// write positions
-	const deoglVBOAttribute &attrPos = layout.GetAttributeAt( 0 );
+	const deoglVBOAttribute &attrPos = layout.GetAttributeAt(0);
 	ptrData = data + attrPos.GetOffset();
 	
-	for( i=0; i<pVertexCount; i++ ){
-		const decVector &position = pVertices[ i ].position;
+	for(i=0; i<pVertexCount; i++){
+		const decVector &position = pVertices[i].position;
 		
-		ptrFloat = ( GLfloat* )ptrData;
-		ptrFloat[ 0 ] = ( GLfloat )position.x;
-		ptrFloat[ 1 ] = ( GLfloat )position.y;
-		ptrFloat[ 2 ] = ( GLfloat )position.z;
+		ptrFloat = (GLfloat*)ptrData;
+		ptrFloat[0] = (GLfloat)position.x;
+		ptrFloat[1] = (GLfloat)position.y;
+		ptrFloat[2] = (GLfloat)position.z;
 		ptrData += stride;
 	}
 	
 	// write indices
-	if( pVBOBlock->GetIndexCount() > 0 ){
-		switch( layout.GetIndexType() ){
+	if(pVBOBlock->GetIndexCount() > 0){
+		switch(layout.GetIndexType()){
 		case deoglVBOLayout::eitUnsignedInt:{
-			GLuint * const indexData = ( GLuint* )pVBOBlock->GetIndexData();
-			for( i=0; i<pCornerCount; i++ ){
-				indexData[ i ] = ( GLuint)pCorners[ i ];
+			GLuint * const indexData = (GLuint*)pVBOBlock->GetIndexData();
+			for(i=0; i<pCornerCount; i++){
+				indexData[i] = (GLuint)pCorners[i];
 			}
 			}break;
 			
 		case deoglVBOLayout::eitUnsignedShort:{
-			GLushort * const indexData = ( GLushort* )pVBOBlock->GetIndexData();
-			for( i=0; i<pCornerCount; i++ ){
-				indexData[ i ] = ( GLushort )pCorners[ i ];
+			GLushort * const indexData = (GLushort*)pVBOBlock->GetIndexData();
+			for(i=0; i<pCornerCount; i++){
+				indexData[i] = (GLushort)pCorners[i];
 			}
 			}break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 }

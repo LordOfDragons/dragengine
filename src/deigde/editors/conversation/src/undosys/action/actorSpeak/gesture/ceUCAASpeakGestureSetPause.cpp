@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureSetPause::ceUCAASpeakGestureSetPause( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *gesture, float newPause )
-: ceUCAASpeakStripSetPause( topic, actorSpeak, gesture, newPause ){
-	SetShortInfo( "Gesture Set Pause" );
+ceUCAASpeakGestureSetPause::ceUCAASpeakGestureSetPause(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *gesture, float newPause)
+: ceUCAASpeakStripSetPause(topic, actorSpeak, gesture, newPause){
+	SetShortInfo("Gesture Set Pause");
 }
 
 ceUCAASpeakGestureSetPause::~ceUCAASpeakGestureSetPause(){

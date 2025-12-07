@@ -39,14 +39,14 @@
 ////////////////////////////
 
 delLoggerHistoryEntry::delLoggerHistoryEntry() :
-pType( emtInfo ){
+pType(emtInfo){
 }
 
-delLoggerHistoryEntry::delLoggerHistoryEntry( const delLoggerHistoryEntry &entry ) :
-pTimeStamp( entry.pTimeStamp ),
-pType( entry.pType ),
-pSource( entry.pSource ),
-pMessage( entry.pMessage ){
+delLoggerHistoryEntry::delLoggerHistoryEntry(const delLoggerHistoryEntry &entry) :
+pTimeStamp(entry.pTimeStamp),
+pType(entry.pType),
+pSource(entry.pSource),
+pMessage(entry.pMessage){
 }
 
 delLoggerHistoryEntry::~delLoggerHistoryEntry(){
@@ -57,19 +57,19 @@ delLoggerHistoryEntry::~delLoggerHistoryEntry(){
 // Management
 ///////////////
 
-void delLoggerHistoryEntry::SetTimeStamp( const decDateTime &timestamp ){
+void delLoggerHistoryEntry::SetTimeStamp(const decDateTime &timestamp){
 	pTimeStamp = timestamp;
 }
 
-void delLoggerHistoryEntry::SetType( eMessageTypes type ){
+void delLoggerHistoryEntry::SetType(eMessageTypes type){
 	pType = type;
 }
 
-void delLoggerHistoryEntry::SetSource( const decString &source ){
+void delLoggerHistoryEntry::SetSource(const decString &source){
 	pSource = source;
 }
 
-void delLoggerHistoryEntry::SetMessage( const decString &message ){
+void delLoggerHistoryEntry::SetMessage(const decString &message){
 	pMessage = message;
 }
 
@@ -84,15 +84,15 @@ void delLoggerHistoryEntry::CleanUpMessage(){
 	int len = pMessage.GetLength();
 	int found;
 	
-	for( found=len; found>0; found-- ){
-		const int character = pMessage.GetAt( found - 1 );
-		if( ! isspace( character ) && character != '\n' && character != '\r' ){
+	for(found=len; found>0; found--){
+		const int character = pMessage.GetAt(found - 1);
+		if(! isspace(character) && character != '\n' && character != '\r'){
 			break;
 		}
 	}
 	
-	if( found < len ){
-		pMessage.SetAt( found, '\0' );
+	if(found < len){
+		pMessage.SetAt(found, '\0');
 	}
 }
 
@@ -101,7 +101,7 @@ void delLoggerHistoryEntry::CleanUpMessage(){
 // Operators
 //////////////
 
-delLoggerHistoryEntry &delLoggerHistoryEntry::operator=( const delLoggerHistoryEntry &entry ){
+delLoggerHistoryEntry &delLoggerHistoryEntry::operator=(const delLoggerHistoryEntry &entry){
 	pTimeStamp = entry.pTimeStamp;
 	pType = entry.pType;
 	pSource = entry.pSource;

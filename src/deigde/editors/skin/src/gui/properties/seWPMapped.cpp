@@ -86,65 +86,65 @@ protected:
 	seWPMapped &pPanel;
 	
 public:
-	cBaseActionSkin( seWPMapped &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ), pPanel( panel ){ }
+	cBaseActionSkin(seWPMapped &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description), pPanel(panel){}
 	
 	virtual void OnAction() override{
 		seSkin * const skin = pPanel.GetSkin();
-		if( ! skin ){
+		if(! skin){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( skin ) ));
-		if( undo ){
-			skin->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(skin)));
+		if(undo){
+			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seSkin *skin ) = 0;
+	virtual igdeUndo *OnAction(seSkin *skin) = 0;
 	
 	virtual void Update() override{
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			Update( *skin );
+		if(skin){
+			Update(*skin);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const seSkin & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const seSkin &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
 class cBaseActionMapped : public cBaseActionSkin{
 public:
-	cBaseActionMapped( seWPMapped &panel, const char *text, igdeIcon *icon, const char *description ) :
-	cBaseActionSkin( panel, text, icon, description ){ }
+	cBaseActionMapped(seWPMapped &panel, const char *text, igdeIcon *icon, const char *description) :
+	cBaseActionSkin(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction( seSkin *skin ) override{
+	virtual igdeUndo *OnAction(seSkin *skin) override{
 		seMapped * const mapped = pPanel.GetMapped();
-		return mapped ? OnActionMapped( skin, mapped ) : nullptr;
+		return mapped ? OnActionMapped(skin, mapped) : nullptr;
 	}
 	
-	virtual igdeUndo *OnActionMapped( seSkin *skin, seMapped *mapped ) = 0;
+	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) = 0;
 	
-	virtual void Update( const seSkin &skin ) override{
+	virtual void Update(const seSkin &skin) override{
 		seMapped * const mapped = pPanel.GetMapped();
-		if( mapped ){
-			UpdateMapped( skin, *mapped );
+		if(mapped){
+			UpdateMapped(skin, *mapped);
 			
 		}else{
-			cBaseActionSkin::Update( skin );
+			cBaseActionSkin::Update(skin);
 		}
 	}
 	
-	virtual void UpdateMapped( const seSkin &, const seMapped & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void UpdateMapped(const seSkin &, const seMapped &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -153,60 +153,60 @@ protected:
 	seWPMapped &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPMapped &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ) override{
+	virtual void OnTextChanged(igdeTextField *textField) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if( ! skin || ! mapped ){
+		if(! skin || ! mapped){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, skin, mapped ) ));
-		if( undo ){
-			skin->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, skin, mapped)));
+		if(undo){
+			skin->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin *skin, seMapped *mapped ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin *skin, seMapped *mapped) = 0;
 };
 
 
 class cActionCopy : public cBaseActionMapped{
 public:
-	cActionCopy( seWPMapped &panel ) : cBaseActionMapped ( panel, "Copy Mapped",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy mapped" ){}
+	cActionCopy(seWPMapped &panel) : cBaseActionMapped (panel, "Copy Mapped",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy mapped"){}
 	
-	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
 		igdeClipboardData::Ref data;
 		seMappedList list;
-		list.Add( mapped );
-		data.TakeOver( new seClipboardDataMapped( list ) );
+		list.Add(mapped);
+		data.TakeOver(new seClipboardDataMapped(list));
 		
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( data );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(data);
 		return nullptr;
 	}
 };
 
 class cActionCut : public cBaseActionMapped{
 public:
-	cActionCut( seWPMapped &panel ) : cBaseActionMapped ( panel, "Cut Mapped",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut mapped" ){}
+	cActionCut(seWPMapped &panel) : cBaseActionMapped (panel, "Cut Mapped",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut mapped"){}
 	
-	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
 		igdeClipboardData::Ref data;
 		seMappedList list;
-		list.Add( mapped );
-		data.TakeOver( new seClipboardDataMapped( list ) );
+		list.Add(mapped);
+		data.TakeOver(new seClipboardDataMapped(list));
 		
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( data );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(data);
 		
-		seUMappedRemove * const undo = new seUMappedRemove( mapped );
+		seUMappedRemove * const undo = new seUMappedRemove(mapped);
 		
-		if( undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat( &pPanel,
+		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(&pPanel,
 		igdeCommonDialogs::ebsYesNo, "Cut Mapped", "Mapped is used by %d dependencies. "
-		"Cutting mapped will also unset it from all dependencies.", undo->GetDependencyCount() )
-		== igdeCommonDialogs::ebNo ){
+		"Cutting mapped will also unset it from all dependencies.", undo->GetDependencyCount())
+		== igdeCommonDialogs::ebNo){
 			undo->FreeReference();
 			return nullptr;
 		}
@@ -217,78 +217,78 @@ public:
 
 class cActionPaste : public cBaseActionSkin{
 public:
-	cActionPaste( seWPMapped &panel ) : cBaseActionSkin( panel, "Paste Mapped",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste mapped" ){}
+	cActionPaste(seWPMapped &panel) : cBaseActionSkin(panel, "Paste Mapped",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste), "Paste mapped"){}
 	
-	virtual igdeUndo *OnAction( seSkin *skin ) override{
-		const seClipboardDataMapped * const data = ( seClipboardDataMapped* )
+	virtual igdeUndo *OnAction(seSkin *skin) override{
+		const seClipboardDataMapped * const data = (seClipboardDataMapped*)
 			pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
-			GetWithTypeName( seClipboardDataMapped::TYPE_NAME );
-		return data ? new seUMappedPaste( skin, *data ) : nullptr;
+			GetWithTypeName(seClipboardDataMapped::TYPE_NAME);
+		return data ? new seUMappedPaste(skin, *data) : nullptr;
 	}
 	
-	virtual void Update( const seSkin & ) override{
-		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
-			HasWithTypeName( seClipboardDataMapped::TYPE_NAME ) );
+	virtual void Update(const seSkin &) override{
+		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard().
+			HasWithTypeName(seClipboardDataMapped::TYPE_NAME));
 	}
 };
 
 class cActionDuplicate : public cBaseActionMapped{
 public:
-	cActionDuplicate( seWPMapped &panel ) : cBaseActionMapped( panel, "Duplicate Mapped",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiDuplicate ), "Duplicate mapped" ){}
+	cActionDuplicate(seWPMapped &panel) : cBaseActionMapped(panel, "Duplicate Mapped",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiDuplicate), "Duplicate mapped"){}
 	
-	virtual igdeUndo *OnActionMapped( seSkin *skin, seMapped *mapped ) override{
-		return new seUMappedDuplicate( skin, *mapped );
+	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) override{
+		return new seUMappedDuplicate(skin, *mapped);
 	}
 };
 
 class cListMapped : public igdeListBoxListener{
 	seWPMapped &pPanel;
 public:
-	cListMapped( seWPMapped &panel ) : pPanel( panel ){ }
+	cListMapped(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnSelectionChanged( igdeListBox *listBox ) override{
+	virtual void OnSelectionChanged(igdeListBox *listBox) override{
 		seSkin * const skin = pPanel.GetSkin();
-		if( skin ){
-			skin->SetActiveMapped( listBox->GetSelectedItem()
-				? ( seMapped* )listBox->GetSelectedItem()->GetData() : nullptr );
+		if(skin){
+			skin->SetActiveMapped(listBox->GetSelectedItem()
+				? (seMapped*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ) override{
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu) override{
 		seWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
 		igdeEnvironment &env = menu.GetEnvironment();
 		igdeUIHelper &helper = env.GetUIHelper();
 		
-		helper.MenuCommand( menu, windowMain.GetActionMappedAdd() );
-		helper.MenuCommand( menu, windowMain.GetActionMappedRemove() );
+		helper.MenuCommand(menu, windowMain.GetActionMappedAdd());
+		helper.MenuCommand(menu, windowMain.GetActionMappedRemove());
 		
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionCopy( pPanel ), true );
-		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPaste( pPanel ), true );
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, new cActionCopy(pPanel), true);
+		helper.MenuCommand(menu, new cActionCut(pPanel), true);
+		helper.MenuCommand(menu, new cActionPaste(pPanel), true);
 		
-		helper.MenuSeparator( menu );
-		helper.MenuCommand( menu, new cActionDuplicate( pPanel ), true );
+		helper.MenuSeparator(menu);
+		helper.MenuCommand(menu, new cActionDuplicate(pPanel), true);
 	}
 };
 
 class cTextName : public igdeTextFieldListener{
 	seWPMapped &pPanel;
 public:
-	cTextName( seWPMapped &panel ) : pPanel( panel ){ }
+	cTextName(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ) override{
+	virtual void OnTextChanged(igdeTextField *textField) override{
 		seMapped * const mapped = pPanel.GetMapped();
 		const decString &value = textField->GetText();
-		if( ! mapped || mapped->GetName() == value ){
+		if(! mapped || mapped->GetName() == value){
 			return;
 		}
 		
-		if( pPanel.GetSkin()->GetMappedList().HasNamed( value ) ){
-			igdeCommonDialogs::Error( &pPanel, "Set Mapped Name", "Mapped name exists already" );
-			textField->SetText( mapped->GetName() );
+		if(pPanel.GetSkin()->GetMappedList().HasNamed(value)){
+			igdeCommonDialogs::Error(&pPanel, "Set Mapped Name", "Mapped name exists already");
+			textField->SetText(mapped->GetName());
 			return;
 		}
 		
@@ -299,18 +299,18 @@ public:
 class cComboInputType : public igdeComboBoxListener{
 	seWPMapped &pPanel;
 public:
-	cComboInputType( seWPMapped &panel ) : pPanel( panel ){ }
+	cComboInputType(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ) override{
+	virtual void OnTextChanged(igdeComboBox *comboBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if( ! skin || ! mapped || ! comboBox->GetSelectedItem() ){
+		if(! skin || ! mapped || ! comboBox->GetSelectedItem()){
 			return;
 		}
 		
-		const deSkinMapped::eInputTypes type = ( deSkinMapped::eInputTypes )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( type == mapped->GetInputType() ){
+		const deSkinMapped::eInputTypes type = (deSkinMapped::eInputTypes)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(type == mapped->GetInputType()){
 			return;
 		}
 		
@@ -323,143 +323,143 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	seUMappedSetCurve::Ref pUndo;
 	
 public:
-	cEditCurve( seWPMapped &panel ) : pPanel( panel ){ }
+	cEditCurve(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier ) override{
+	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if( ! skin || ! mapped ){
+		if(! skin || ! mapped){
 			return;
 		}
 		
-		if( pUndo ){
-			pUndo->SetCurve( viewCurveBezier->GetCurve() );
+		if(pUndo){
+			pUndo->SetCurve(viewCurveBezier->GetCurve());
 			
 		}else{
-			if( mapped->GetCurve() == viewCurveBezier->GetCurve() ){
+			if(mapped->GetCurve() == viewCurveBezier->GetCurve()){
 				return;
 			}
-			pUndo.TakeOver( new seUMappedSetCurve( mapped, viewCurveBezier->GetCurve() ) );
+			pUndo.TakeOver(new seUMappedSetCurve(mapped, viewCurveBezier->GetCurve()));
 		}
 		
-		skin->GetUndoSystem()->Add( pUndo );
+		skin->GetUndoSystem()->Add(pUndo);
 		pUndo = nullptr;
 	}
 	
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier ) override{
+	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if( ! skin || ! mapped ){
+		if(! skin || ! mapped){
 			return;
 		}
 		
-		if( pUndo ){
-			pUndo->SetCurve( viewCurveBezier->GetCurve() );
+		if(pUndo){
+			pUndo->SetCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
 		}else{
-			if( mapped->GetCurve() == viewCurveBezier->GetCurve() ){
+			if(mapped->GetCurve() == viewCurveBezier->GetCurve()){
 				return;
 			}
-			pUndo.TakeOver( new seUMappedSetCurve( mapped, viewCurveBezier->GetCurve() ) );
+			pUndo.TakeOver(new seUMappedSetCurve(mapped, viewCurveBezier->GetCurve()));
 		}
 	}
 };
 
 class cTextInputLower : public cBaseTextFieldListener{
 public:
-	cTextInputLower( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextInputLower(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
-		return fabsf( value - mapped->GetInputLower() ) > FLOAT_SAFE_EPSILON
-			? new seUMappedSetInputLower( mapped, value ) : nullptr;
+		return fabsf(value - mapped->GetInputLower()) > FLOAT_SAFE_EPSILON
+			? new seUMappedSetInputLower(mapped, value) : nullptr;
 	}
 };
 
 class cTextInputUpper : public cBaseTextFieldListener{
 public:
-	cTextInputUpper( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextInputUpper(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
-		return fabsf( value - mapped->GetInputUpper() ) > FLOAT_SAFE_EPSILON
-			? new seUMappedSetInputUpper( mapped, value ) : nullptr;
+		return fabsf(value - mapped->GetInputUpper()) > FLOAT_SAFE_EPSILON
+			? new seUMappedSetInputUpper(mapped, value) : nullptr;
 	}
 };
 
 class cActionInputClamped : public cBaseActionMapped {
 public:
-	cActionInputClamped( seWPMapped &panel ) : cBaseActionMapped ( panel,
-		"Input Clamped:", nullptr, "Input value is clamperd to input range instead od wrapping around" ){ }
+	cActionInputClamped(seWPMapped &panel) : cBaseActionMapped (panel,
+		"Input Clamped:", nullptr, "Input value is clamperd to input range instead od wrapping around"){}
 	
-	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
-		return new seUMappedToggleInputClamped( mapped );
+	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped) override{
+		return new seUMappedToggleInputClamped(mapped);
 	}
 	
-	virtual void UpdateMapped( const seSkin &skin, const seMapped &mapped ) override{
-		cBaseActionMapped::UpdateMapped( skin, mapped );
-		SetSelected( mapped.GetInputClamped() );
+	virtual void UpdateMapped(const seSkin &skin, const seMapped &mapped) override{
+		cBaseActionMapped::UpdateMapped(skin, mapped);
+		SetSelected(mapped.GetInputClamped());
 	}
 };
 
 class cTextOutputLower : public cBaseTextFieldListener{
 public:
-	cTextOutputLower( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextOutputLower(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
-		return fabsf( value - mapped->GetOutputLower() ) > FLOAT_SAFE_EPSILON
-			? new seUMappedSetOutputLower( mapped, value ) : nullptr;
+		return fabsf(value - mapped->GetOutputLower()) > FLOAT_SAFE_EPSILON
+			? new seUMappedSetOutputLower(mapped, value) : nullptr;
 	}
 };
 
 class cTextOutputUpper : public cBaseTextFieldListener{
 public:
-	cTextOutputUpper( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextOutputUpper(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const float value = textField.GetFloat();
-		return fabsf( value - mapped->GetOutputUpper() ) > FLOAT_SAFE_EPSILON
-			? new seUMappedSetOutputUpper( mapped, value ) : nullptr;
+		return fabsf(value - mapped->GetOutputUpper()) > FLOAT_SAFE_EPSILON
+			? new seUMappedSetOutputUpper(mapped, value) : nullptr;
 	}
 };
 
 class cTextBone : public cBaseTextFieldListener{
 public:
-	cTextBone( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextBone(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const decString &bone = textField.GetText();
-		return bone != mapped->GetBone() ? new seUMappedSetBone( mapped, bone ) : nullptr;
+		return bone != mapped->GetBone() ? new seUMappedSetBone(mapped, bone) : nullptr;
 	}
 };
 
 class cTextRenderable : public cBaseTextFieldListener{
 public:
-	cTextRenderable( seWPMapped &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextRenderable(seWPMapped &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seMapped *mapped ) override{
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin*, seMapped *mapped) override{
 		const decString &renderable = textField.GetText();
-		return renderable != mapped->GetRenderable() ? new seUMappedSetRenderable( mapped, renderable ) : nullptr;
+		return renderable != mapped->GetRenderable() ? new seUMappedSetRenderable(mapped, renderable) : nullptr;
 	}
 };
 
 class cComboRenderableComponent : public igdeComboBoxListener{
 	seWPMapped &pPanel;
 public:
-	cComboRenderableComponent( seWPMapped &panel ) : pPanel( panel ){ }
+	cComboRenderableComponent(seWPMapped &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ) override{
+	virtual void OnTextChanged(igdeComboBox *comboBox) override{
 		seSkin * const skin = pPanel.GetSkin();
 		seMapped * const mapped = pPanel.GetMapped();
-		if( ! skin || ! mapped || ! comboBox->GetSelectedItem() ){
+		if(! skin || ! mapped || ! comboBox->GetSelectedItem()){
 			return;
 		}
 		
-		const deSkinMapped::eRenderableComponent component = ( deSkinMapped::eRenderableComponent )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( component == mapped->GetRenderableComponent() ){
+		const deSkinMapped::eRenderableComponent component = (deSkinMapped::eRenderableComponent)
+			(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(component == mapped->GetRenderableComponent()){
 			return;
 		}
 		
@@ -477,77 +477,77 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPMapped::seWPMapped( seWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( seWPMappedListener::Ref::NewWith(*this) ),
-pSkin( nullptr )
+seWPMapped::seWPMapped(seWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(seWPMappedListener::Ref::NewWith(*this)),
+pSkin(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	
-	helper.GroupBoxFlow( content, groupBox, "Mapped:" );
-	helper.ListBox( groupBox, 8, "Mapped", pListMapped, new cListMapped( *this ) );
+	helper.GroupBoxFlow(content, groupBox, "Mapped:");
+	helper.ListBox(groupBox, 8, "Mapped", pListMapped, new cListMapped(*this));
 	pListMapped->SetDefaultSorter();
 	
-	form.TakeOver( new igdeContainerForm( env ) );
-	groupBox->AddChild( form );
-	helper.EditString( form, "Name:", "Name of mapped", pEditName, new cTextName( *this ) );
+	form.TakeOver(new igdeContainerForm(env));
+	groupBox->AddChild(form);
+	helper.EditString(form, "Name:", "Name of mapped", pEditName, new cTextName(*this));
 	
 	
-	helper.ComboBox( form, "Input Type:", "Type of input to use for curve",
-		pCBInputType, new cComboInputType( *this ) );
+	helper.ComboBox(form, "Input Type:", "Type of input to use for curve",
+		pCBInputType, new cComboInputType(*this));
 	
-	pCBInputType->AddItem( "Time", nullptr, ( void* )( intptr_t )deSkinMapped::eitTime );
-	pCBInputType->AddItem( "BonePositionX", nullptr, ( void* )( intptr_t )deSkinMapped::eitBonePositionX );
-	pCBInputType->AddItem( "BonePositionY", nullptr, ( void* )( intptr_t )deSkinMapped::eitBonePositionY );
-	pCBInputType->AddItem( "BonePositionZ", nullptr, ( void* )( intptr_t )deSkinMapped::eitBonePositionZ );
-	pCBInputType->AddItem( "BoneRotationX", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneRotationX );
-	pCBInputType->AddItem( "BoneRotationY", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneRotationY );
-	pCBInputType->AddItem( "BoneRotationZ", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneRotationZ );
-	pCBInputType->AddItem( "BoneScaleX", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneScaleX );
-	pCBInputType->AddItem( "BoneScaleY", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneScaleY );
-	pCBInputType->AddItem( "BoneScaleZ", nullptr, ( void* )( intptr_t )deSkinMapped::eitBoneScaleZ );
-	pCBInputType->AddItem( "Renderable", nullptr, ( void* )( intptr_t )deSkinMapped::eitRenderable );
+	pCBInputType->AddItem("Time", nullptr, (void*)(intptr_t)deSkinMapped::eitTime);
+	pCBInputType->AddItem("BonePositionX", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionX);
+	pCBInputType->AddItem("BonePositionY", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionY);
+	pCBInputType->AddItem("BonePositionZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBonePositionZ);
+	pCBInputType->AddItem("BoneRotationX", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationX);
+	pCBInputType->AddItem("BoneRotationY", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationY);
+	pCBInputType->AddItem("BoneRotationZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneRotationZ);
+	pCBInputType->AddItem("BoneScaleX", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleX);
+	pCBInputType->AddItem("BoneScaleY", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleY);
+	pCBInputType->AddItem("BoneScaleZ", nullptr, (void*)(intptr_t)deSkinMapped::eitBoneScaleZ);
+	pCBInputType->AddItem("Renderable", nullptr, (void*)(intptr_t)deSkinMapped::eitRenderable);
 	
-	helper.EditFloat( form, "Input Lower:", "Lower input range", pEditInputLower, new cTextInputLower( *this ) );
-	helper.EditFloat( form, "Input Upper:", "Upper input range", pEditInputUpper, new cTextInputUpper( *this ) );
-	helper.CheckBox( form, pChkInputClamped, new cActionInputClamped( *this ), true );
+	helper.EditFloat(form, "Input Lower:", "Lower input range", pEditInputLower, new cTextInputLower(*this));
+	helper.EditFloat(form, "Input Upper:", "Upper input range", pEditInputUpper, new cTextInputUpper(*this));
+	helper.CheckBox(form, pChkInputClamped, new cActionInputClamped(*this), true);
 	
-	helper.EditFloat( form, "Output Lower:", "Lower output range. 0 Y-curve value maps to lower value."
-		" Values outside range are extrapolated", pEditOutputLower, new cTextOutputLower( *this ) );
-	helper.EditFloat( form, "Output Upper:", "Upper output range. 1 Y-curve value maps to upper value."
-		" Values outside range are extrapolated", pEditOutputUpper, new cTextOutputUpper( *this ) );
+	helper.EditFloat(form, "Output Lower:", "Lower output range. 0 Y-curve value maps to lower value."
+		" Values outside range are extrapolated", pEditOutputLower, new cTextOutputLower(*this));
+	helper.EditFloat(form, "Output Upper:", "Upper output range. 1 Y-curve value maps to upper value."
+		" Values outside range are extrapolated", pEditOutputUpper, new cTextOutputUpper(*this));
 	
-	helper.EditString( form, "Bone:", "Name of the bone to use if bone related input type is used",
-		pEditBone, new cTextBone( *this ) );
+	helper.EditString(form, "Bone:", "Name of the bone to use if bone related input type is used",
+		pEditBone, new cTextBone(*this));
 	
-	helper.EditString( form, "Renderable:", "Name of the renderable to use if renderable input type is used",
-		pEditRenderable, new cTextRenderable( *this ) );
+	helper.EditString(form, "Renderable:", "Name of the renderable to use if renderable input type is used",
+		pEditRenderable, new cTextRenderable(*this));
 	
-	helper.ComboBox( form, "Renderable Component:",
+	helper.ComboBox(form, "Renderable Component:",
 		"Color component to use if renderable is used and is of color type",
-		pCBRenderableComponent, new cComboRenderableComponent( *this ) );
-	pCBRenderableComponent->AddItem( "Red", nullptr, ( void* )( intptr_t )deSkinMapped::ercRed );
-	pCBRenderableComponent->AddItem( "Green", nullptr, ( void* )( intptr_t )deSkinMapped::ercGreen );
-	pCBRenderableComponent->AddItem( "Blue", nullptr, ( void* )( intptr_t )deSkinMapped::ercBlue );
-	pCBRenderableComponent->AddItem( "Alpha", nullptr, ( void* )( intptr_t )deSkinMapped::ercAlpha );
+		pCBRenderableComponent, new cComboRenderableComponent(*this));
+	pCBRenderableComponent->AddItem("Red", nullptr, (void*)(intptr_t)deSkinMapped::ercRed);
+	pCBRenderableComponent->AddItem("Green", nullptr, (void*)(intptr_t)deSkinMapped::ercGreen);
+	pCBRenderableComponent->AddItem("Blue", nullptr, (void*)(intptr_t)deSkinMapped::ercBlue);
+	pCBRenderableComponent->AddItem("Alpha", nullptr, (void*)(intptr_t)deSkinMapped::ercAlpha);
 	
-	helper.ViewCurveBezier( groupBox, pEditCurve, new cEditCurve( *this ) );
-	pEditCurve->SetDefaultSize( decPoint( 200, 250 ) );
+	helper.ViewCurveBezier(groupBox, pEditCurve, new cEditCurve(*this));
+	pEditCurve->SetDefaultSize(decPoint(200, 250));
 	pEditCurve->ClearCurve();
-	pEditCurve->SetClamp( true );
-	pEditCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
-	pEditCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
+	pEditCurve->SetClamp(true);
+	pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
+	pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 }
 
 seWPMapped::~seWPMapped(){
-	SetSkin( nullptr );
+	SetSkin(nullptr);
 }
 
 
@@ -555,19 +555,19 @@ seWPMapped::~seWPMapped(){
 // Management
 ///////////////
 
-void seWPMapped::SetSkin( seSkin *skin ){
-	if( skin == pSkin ){
+void seWPMapped::SetSkin(seSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	if( pSkin ){
-		pSkin->RemoveListener( pListener );
+	if(pSkin){
+		pSkin->RemoveListener(pListener);
 	}
 	
 	pSkin = skin;
 	
-	if( skin ){
-		skin->AddListener( pListener );
+	if(skin){
+		skin->AddListener(pListener);
 	}
 	
 	UpdateMappedList();
@@ -585,70 +585,70 @@ void seWPMapped::UpdateMappedList(){
 	
 	pListMapped->RemoveAllItems();
 	
-	if( pSkin ){
+	if(pSkin){
 		const seMappedList &list = pSkin->GetMappedList();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			seMapped * const mapped = list.GetAt( i );
-			pListMapped->AddItem( mapped->GetName(), nullptr, mapped );
+		for(i=0; i<count; i++){
+			seMapped * const mapped = list.GetAt(i);
+			pListMapped->AddItem(mapped->GetName(), nullptr, mapped);
 		}
 		
 		pListMapped->SortItems();
 	}
 	
-	pListMapped->SetSelectionWithData( selection );
+	pListMapped->SetSelectionWithData(selection);
 	UpdateMapped();
 }
 
 void seWPMapped::SelectActiveMapped(){
-	pListMapped->SetSelectionWithData( GetMapped() );
+	pListMapped->SetSelectionWithData(GetMapped());
 }
 
 void seWPMapped::UpdateMapped(){
 	const seMapped * const mapped = GetMapped();
 	
-	if( mapped ){
-		pEditName->SetText( mapped->GetName() );
-		pEditCurve->SetCurve( mapped->GetCurve() );
-		pCBInputType->SetSelectionWithData( ( void* )( intptr_t )mapped->GetInputType() );
-		pEditInputLower->SetFloat( mapped->GetInputLower() );
-		pEditInputUpper->SetFloat( mapped->GetInputUpper() );
-		pEditOutputLower->SetFloat( mapped->GetOutputLower() );
-		pEditOutputUpper->SetFloat( mapped->GetOutputUpper() );
-		pEditBone->SetText( mapped->GetBone() );
-		pEditRenderable->SetText( mapped->GetRenderable() );
-		pCBRenderableComponent->SetSelectionWithData( ( void* )( intptr_t )mapped->GetRenderableComponent() );
+	if(mapped){
+		pEditName->SetText(mapped->GetName());
+		pEditCurve->SetCurve(mapped->GetCurve());
+		pCBInputType->SetSelectionWithData((void*)(intptr_t)mapped->GetInputType());
+		pEditInputLower->SetFloat(mapped->GetInputLower());
+		pEditInputUpper->SetFloat(mapped->GetInputUpper());
+		pEditOutputLower->SetFloat(mapped->GetOutputLower());
+		pEditOutputUpper->SetFloat(mapped->GetOutputUpper());
+		pEditBone->SetText(mapped->GetBone());
+		pEditRenderable->SetText(mapped->GetRenderable());
+		pCBRenderableComponent->SetSelectionWithData((void*)(intptr_t)mapped->GetRenderableComponent());
 		
 	}else{
 		pEditName->ClearText();
 		pEditCurve->ClearCurve();
-		pCBInputType->SetSelectionWithData( ( void* )( intptr_t )deSkinMapped::eitTime );
+		pCBInputType->SetSelectionWithData((void*)(intptr_t)deSkinMapped::eitTime);
 		pEditInputLower->ClearText();
 		pEditInputUpper->ClearText();
 		pEditOutputLower->ClearText();
 		pEditOutputUpper->ClearText();
 		pEditBone->ClearText();
 		pEditRenderable->ClearText();
-		pCBRenderableComponent->SetSelectionWithData( ( void* )( intptr_t )deSkinMapped::ercRed );
+		pCBRenderableComponent->SetSelectionWithData((void*)(intptr_t)deSkinMapped::ercRed);
 	}
 	
 	const bool enabled = mapped;
 	
-	pEditName->SetEnabled( enabled );
+	pEditName->SetEnabled(enabled);
 	
 	pChkInputClamped->GetAction()->Update();
 	
-	pEditCurve->SetEnabled( enabled );
-	pCBInputType->SetEnabled( enabled );
-	pEditInputLower->SetEnabled( enabled );
-	pEditInputUpper->SetEnabled( enabled );
-	pEditOutputLower->SetEnabled( enabled );
-	pEditOutputUpper->SetEnabled( enabled );
-	pEditBone->SetEnabled( enabled );
-	pEditRenderable->SetEnabled( enabled );
-	pCBRenderableComponent->SetEnabled( enabled );
+	pEditCurve->SetEnabled(enabled);
+	pCBInputType->SetEnabled(enabled);
+	pEditInputLower->SetEnabled(enabled);
+	pEditInputUpper->SetEnabled(enabled);
+	pEditOutputLower->SetEnabled(enabled);
+	pEditOutputUpper->SetEnabled(enabled);
+	pEditBone->SetEnabled(enabled);
+	pEditRenderable->SetEnabled(enabled);
+	pCBRenderableComponent->SetEnabled(enabled);
 }
 
 void seWPMapped::FitViewToCurve(){

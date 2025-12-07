@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new manager. */
-	deOcclusionMeshManager( deEngine *engine );
+	deOcclusionMeshManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
 	virtual ~deOcclusionMeshManager();
@@ -62,29 +62,29 @@ public:
 	deOcclusionMesh *GetRootOcclusionMesh() const;
 	
 	/** \brief Occlusion mesh with the given filename or NULL if not loaded yet. */
-	deOcclusionMesh *GetOcclusionMeshWith( const char *filename ) const;
+	deOcclusionMesh *GetOcclusionMeshWith(const char *filename) const;
 	
 	/** \brief Occlusion mesh with the given filename or NULL if not loaded yet. */
-	deOcclusionMesh *GetOcclusionMeshWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deOcclusionMesh *GetOcclusionMeshWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Creates an occlusion mesh using a builder. */
-	deOcclusionMesh *CreateOcclusionMesh( const char *filename, deOcclusionMeshBuilder &builder );
+	deOcclusionMesh *CreateOcclusionMesh(const char *filename, deOcclusionMeshBuilder &builder);
 	
 	/** \brief Creates an occlusion mesh using a builder. */
-	deOcclusionMesh *CreateOcclusionMesh( deVirtualFileSystem *vfs, const char *filename,
-		deOcclusionMeshBuilder &builder );
+	deOcclusionMesh *CreateOcclusionMesh(deVirtualFileSystem *vfs, const char *filename,
+		deOcclusionMeshBuilder &builder);
 	
 	/** \brief Loads an occlusion mesh from the given file relative to the given base path. */
-	deOcclusionMesh *LoadOcclusionMesh( const char *filename, const char *basePath );
+	deOcclusionMesh *LoadOcclusionMesh(const char *filename, const char *basePath);
 	
 	/** \brief Loads an occlusion mesh from the given file relative to the given base path. */
-	deOcclusionMesh *LoadOcclusionMesh( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deOcclusionMesh *LoadOcclusionMesh(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * Adds a loaded and fully prepared occlusion mesh. This method is to be used only by
 	 * the resource loader to add an occlusion mesh that has been loaded asynchronously.
 	 */
-	void AddLoadedOcclusionMesh( deOcclusionMesh *occmesh );
+	void AddLoadedOcclusionMesh(deOcclusionMesh *occmesh);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();
@@ -109,7 +109,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

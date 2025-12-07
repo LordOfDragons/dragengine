@@ -72,7 +72,7 @@ public:
 	 * User finished modifying curve. Called if values are changed manually or user
 	 * used mouse interaction to manipulate curve and finished the interaction.
 	 */
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier );
+	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier);
 	
 	/**
 	 * \brief ViewCurveBezier curve is changing.
@@ -81,14 +81,14 @@ public:
 	 * This event is send each time the curve changed while the user is actively
 	 * modifying using mouse interaction. Once finished OnCurveChanged() is called.
 	 */
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier );
+	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier);
 	
 	/**
 	 * \brief ViewCurveBezier selected point changed.
 	 * 
 	 * User selected curve point.
 	 */
-	virtual void OnSelectedPointChanged( igdeViewCurveBezier *viewCurveBezier );
+	virtual void OnSelectedPointChanged(igdeViewCurveBezier *viewCurveBezier);
 	
 	/**
 	 * \brief Create context menu.
@@ -97,7 +97,7 @@ public:
 	 * to add entries to the context menu without affecting others. If entries are already
 	 * present the listener should also add a separator first.
 	 */
-	virtual void AddContextMenuEntries( igdeViewCurveBezier *viewCurveBezier, igdeMenuCascade &menu );
+	virtual void AddContextMenuEntries(igdeViewCurveBezier *viewCurveBezier, igdeMenuCascade &menu);
 	/*@}*/
 };
 

@@ -52,30 +52,30 @@ public:
 	/** Retrieves the number of properties. */
 	int GetCount() const;
 	/** Retrieves the property at the given position. */
-	seProperty *GetAt( int index ) const;
+	seProperty *GetAt(int index) const;
 	/** Retrieves the property with the given name or NULL if not found. */
-	seProperty *GetNamed( const char *name ) const;
+	seProperty *GetNamed(const char *name) const;
 	/** Retrieves the index of the given property or -1 if not found. */
-	int IndexOf( seProperty *property ) const;
+	int IndexOf(seProperty *property) const;
 	/** Retrieves the index of the property with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a property exists. */
-	bool Has( seProperty *property ) const;
+	bool Has(seProperty *property) const;
 	/** Determines if a property with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a property. */
-	void Add( seProperty *property );
+	void Add(seProperty *property);
 	/** Inserts a new property. */
-	void InsertAt( seProperty *property, int index );
+	void InsertAt(seProperty *property, int index);
 	/** Moves a property to a new position. */
-	void MoveTo( seProperty *property, int index );
+	void MoveTo(seProperty *property, int index);
 	/** Removes a property. */
-	void Remove( seProperty *property );
+	void Remove(seProperty *property);
 	/** Removes all properties. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	sePropertyList &operator=( const sePropertyList &list );
+	sePropertyList &operator=(const sePropertyList &list);
 	/*@}*/
 };
 

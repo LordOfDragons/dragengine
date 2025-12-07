@@ -52,7 +52,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxProperty::fbxProperty( eType type ) : pType( type ){
+fbxProperty::fbxProperty(eType type) : pType(type){
 }
 
 fbxProperty::~fbxProperty(){
@@ -64,171 +64,171 @@ fbxProperty::~fbxProperty(){
 ///////////////
 
 fbxPropertyBool &fbxProperty::CastBool(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyShort &fbxProperty::CastShort(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyInteger &fbxProperty::CastInteger(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyLong &fbxProperty::CastLong(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyFloat &fbxProperty::CastFloat(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyDouble &fbxProperty::CastDouble(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyArrayBool &fbxProperty::CastArrayBool(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyArrayInteger &fbxProperty::CastArrayInteger(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyArrayLong &fbxProperty::CastArrayLong(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyArrayFloat &fbxProperty::CastArrayFloat(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyArrayDouble &fbxProperty::CastArrayDouble(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyString &fbxProperty::CastString(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 fbxPropertyBinary &fbxProperty::CastBinary(){
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 
 
 bool fbxProperty::GetValueAsBool() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 int fbxProperty::GetValueAsInt() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 int64_t fbxProperty::GetValueAsLong() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 float fbxProperty::GetValueAsFloat() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 double fbxProperty::GetValueAsDouble() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
 
 
 int fbxProperty::GetValueCount() const{
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
-bool fbxProperty::GetValueAtAsBool( int ) const{
-	DETHROW( deeInvalidAction );
+bool fbxProperty::GetValueAtAsBool(int) const{
+	DETHROW(deeInvalidAction);
 }
 
-int fbxProperty::GetValueAtAsInt( int ) const{
-	DETHROW( deeInvalidAction );
+int fbxProperty::GetValueAtAsInt(int) const{
+	DETHROW(deeInvalidAction);
 }
 
-int64_t fbxProperty::GetValueAtAsLong( int ) const{
-	DETHROW( deeInvalidAction );
+int64_t fbxProperty::GetValueAtAsLong(int) const{
+	DETHROW(deeInvalidAction);
 }
 
-float fbxProperty::GetValueAtAsFloat( int ) const{
-	DETHROW( deeInvalidAction );
+float fbxProperty::GetValueAtAsFloat(int) const{
+	DETHROW(deeInvalidAction);
 }
 
-double fbxProperty::GetValueAtAsDouble( int ) const{
-	DETHROW( deeInvalidAction );
-}
-
-
-
-decVector2 fbxProperty::GetValueAtAsVector2( int index ) const{
-	DETHROW( deeInvalidAction );
-}
-
-decVector fbxProperty::GetValueAtAsVector( int index ) const{
-	DETHROW( deeInvalidAction );
-}
-
-decMatrix fbxProperty::GetValueAtAsMatrix( int index ) const{
-	DETHROW( deeInvalidAction );
+double fbxProperty::GetValueAtAsDouble(int) const{
+	DETHROW(deeInvalidAction);
 }
 
 
 
-fbxProperty *fbxProperty::Read( decBaseFileReader &reader ){
+decVector2 fbxProperty::GetValueAtAsVector2(int index) const{
+	DETHROW(deeInvalidAction);
+}
+
+decVector fbxProperty::GetValueAtAsVector(int index) const{
+	DETHROW(deeInvalidAction);
+}
+
+decMatrix fbxProperty::GetValueAtAsMatrix(int index) const{
+	DETHROW(deeInvalidAction);
+}
+
+
+
+fbxProperty *fbxProperty::Read(decBaseFileReader &reader){
 	const char typeCode = reader.ReadChar();
 	
-	switch( typeCode ){
+	switch(typeCode){
 	case 'C':
-		return new fbxPropertyBool( reader );
+		return new fbxPropertyBool(reader);
 		
 	case 'Y':
-		return new fbxPropertyShort( reader );
+		return new fbxPropertyShort(reader);
 		
 	case 'I':
-		return new fbxPropertyInteger( reader );
+		return new fbxPropertyInteger(reader);
 		
 	case 'L':
-		return new fbxPropertyLong( reader );
+		return new fbxPropertyLong(reader);
 		
 	case 'F':
-		return new fbxPropertyFloat( reader );
+		return new fbxPropertyFloat(reader);
 		
 	case 'D':
-		return new fbxPropertyDouble( reader );
+		return new fbxPropertyDouble(reader);
 		
 	case 'b':
-		return new fbxPropertyArrayBool( reader );
+		return new fbxPropertyArrayBool(reader);
 		
 	case 'i':
-		return new fbxPropertyArrayInteger( reader );
+		return new fbxPropertyArrayInteger(reader);
 		
 	case 'l':
-		return new fbxPropertyArrayLong( reader );
+		return new fbxPropertyArrayLong(reader);
 		
 	case 'f':
-		return new fbxPropertyArrayFloat( reader );
+		return new fbxPropertyArrayFloat(reader);
 		
 	case 'd':
-		return new fbxPropertyArrayDouble( reader );
+		return new fbxPropertyArrayDouble(reader);
 		
 	case 'S':
-		return new fbxPropertyString( reader );
+		return new fbxPropertyString(reader);
 		
 	case 'R':
-		return new fbxPropertyBinary( reader );
+		return new fbxPropertyBinary(reader);
 		
 	default:
-		DETHROW_INFO( deeInvalidFileFormat, "unknown property type code" );
+		DETHROW_INFO(deeInvalidFileFormat, "unknown property type code");
 	}
 }
 
 const char *fbxProperty::DebugTypeName() const{
-	switch( pType ){
+	switch(pType){
 	case etBoolean:
 		return "bool";
 		
@@ -278,24 +278,24 @@ const char *fbxProperty::DebugTypeName() const{
 // Protected Functions
 ////////////////////////
 
-void fbxProperty::pGetValueReader( decBaseFileReader &reader, decBaseFileReader::Ref& valueReader ){
+void fbxProperty::pGetValueReader(decBaseFileReader &reader, decBaseFileReader::Ref& valueReader){
 	const int encoding = reader.ReadUInt();
 	const int compressedLength = reader.ReadUInt();
 	
-	switch( encoding ){
+	switch(encoding){
 	case 0: // plain
 		valueReader = &reader;
 		break;
 		
 	case 1: // z-lib encoded
 		(void)compressedLength;
-		valueReader.TakeOver( new decZFileReader( &reader, true, compressedLength ) );
+		valueReader.TakeOver(new decZFileReader(&reader, true, compressedLength));
 		break;
 		
 	default:{
-		decString message( "unknown encoding: " );
-		message.AppendValue( encoding );
-		DETHROW_INFO( deeInvalidFileFormat, message );
+		decString message("unknown encoding: ");
+		message.AppendValue(encoding);
+		DETHROW_INFO(deeInvalidFileFormat, message);
 		}
 	}
 }

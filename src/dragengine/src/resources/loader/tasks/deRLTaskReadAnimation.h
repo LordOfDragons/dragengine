@@ -43,8 +43,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadAnimation( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deAnimation *animation );
+	deRLTaskReadAnimation(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deAnimation *animation);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadAnimation();

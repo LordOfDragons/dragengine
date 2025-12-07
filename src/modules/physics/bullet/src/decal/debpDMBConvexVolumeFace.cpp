@@ -48,6 +48,6 @@ debpDMBConvexVolumeFace::~debpDMBConvexVolumeFace(){
 // Management
 ///////////////
 
-void debpDMBConvexVolumeFace::SetDecalFace( bool decalFace ){
+void debpDMBConvexVolumeFace::SetDecalFace(bool decalFace){
 	pDecalFace = decalFace;
 }

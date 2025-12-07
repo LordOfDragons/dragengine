@@ -42,10 +42,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create disk directory with mapping disk path to root path. */
-	deVFSDiskDirectory( const decPath &diskPath );
+	deVFSDiskDirectory(const decPath &diskPath);
 	
 	/** \brief Create disk directory mapping disk path to root path. */
-	deVFSDiskDirectory( const decPath &rootPath, const decPath &diskPath );
+	deVFSDiskDirectory(const decPath &rootPath, const decPath &diskPath);
 	
 protected:
 	/**
@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Disk path to map to the virtual file system. */
-	inline const decPath &GetDiskPath(){ return pDiskPath; }
+	inline const decPath &GetDiskPath(){return pDiskPath;}
 	
 	/** \brief Disk path is read only. */
-	inline bool GetReadOnly() const{ return pReadOnly; }
+	inline bool GetReadOnly() const{return pReadOnly;}
 	
 	/** \brief Set if disk path is read only. */
-	void SetReadOnly( bool readOnly );
+	void SetReadOnly(bool readOnly);
 	
 	
 	
@@ -78,7 +78,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	virtual bool ExistsFile(const decPath &path);
 	
 	/**
 	 * \brief File can be read.
@@ -87,7 +87,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	virtual bool CanReadFile(const decPath &path);
 	
 	/**
 	 * \brief File can be written.
@@ -99,14 +99,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	virtual bool CanWriteFile(const decPath &path);
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	virtual bool CanDeleteFile(const decPath &path);
 	
 	/**
 	 * \brief Open file for reading.
@@ -115,7 +115,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
 	
 	/**
 	 * \brief Open file for writing.
@@ -126,49 +126,49 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	virtual void DeleteFile(const decPath &path);
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path );
+	virtual void TouchFile(const decPath &path);
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 * 
 	 * All found files and directories are added to the file listing.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	virtual eFileTypes GetFileType(const decPath &path);
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	virtual uint64_t GetFileSize(const decPath &path);
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
 	/*@}*/
 	
 private:
-	void pEnsureDirectoryExists( const decPath &path );
+	void pEnsureDirectoryExists(const decPath &path);
 };
 
 #endif

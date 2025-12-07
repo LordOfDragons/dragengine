@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Project. */
-	inline projProject &GetProject() const{ return pProject; }
+	inline projProject &GetProject() const{return pProject;}
 	
 	/** \brief Create client for connection. */
 	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;

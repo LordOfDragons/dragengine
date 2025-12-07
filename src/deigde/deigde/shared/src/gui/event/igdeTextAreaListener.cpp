@@ -43,8 +43,8 @@ igdeTextAreaListener::~igdeTextAreaListener(){
 // Events
 ///////////
 
-void igdeTextAreaListener::OnTextChanged( igdeTextArea *textArea ){
+void igdeTextAreaListener::OnTextChanged(igdeTextArea *textArea){
 }
 
-void igdeTextAreaListener::OnTextChanging( igdeTextArea *textArea ){
+void igdeTextAreaListener::OnTextChanging(igdeTextArea *textArea){
 }

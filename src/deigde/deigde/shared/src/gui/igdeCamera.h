@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create camera. */
-	igdeCamera( deEngine *engine );
+	igdeCamera(deEngine *engine);
 	
 	/** \brief Clean up camera object. */
 	virtual ~igdeCamera();
@@ -96,104 +96,104 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Eengine camera. */
-	inline deCamera *GetEngineCamera() const{ return pEngCamera; }
+	inline deCamera *GetEngineCamera() const{return pEngCamera;}
 	
 	/** \brief World the camera is attached to. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline deWorld *GetEngineWorld() const{return pEngWorld;}
 	
 	/** \brief Attach camera to world. */
-	void SetEngineWorld( deWorld *world );
+	void SetEngineWorld(deWorld *world);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation of the camera. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation of the camera. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Field of view in radians. */
-	inline float GetFov() const{ return pFov; }
+	inline float GetFov() const{return pFov;}
 	
 	/** \brief Set field of view in radians. */
-	void SetFov( float fov );
+	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
-	inline float GetFovRatio() const{ return pFovRatio; }
+	inline float GetFovRatio() const{return pFovRatio;}
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
-	void SetFovRatio( float ratio );
+	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
-	inline float GetImageDistance() const{ return pImageDistance; }
+	inline float GetImageDistance() const{return pImageDistance;}
 	
 	/** \brief Set distance to the image plane. */
-	void SetImageDistance( float distance );
+	void SetImageDistance(float distance);
 	
 	/** \brief View distance. */
-	inline float GetViewDistance() const{ return pViewDistance; }
+	inline float GetViewDistance() const{return pViewDistance;}
 	
 	/** \brief Set view distance. */
-	void SetViewDistance( float viewDistance );
+	void SetViewDistance(float viewDistance);
 	
 	
 	
 	/** \brief Enable high definition range rendering (HDRR) if supported. */
-	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
+	inline bool GetEnableHDRR() const{return pEnableHDRR;}
 	
 	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
-	void SetEnableHDRR( bool enable );
+	void SetEnableHDRR(bool enable);
 	
 	/** \brief Exposure. */
-	inline float GetExposure() const{ return pExposure; }
+	inline float GetExposure() const{return pExposure;}
 	
 	/** \brief Set exposure. */
-	void SetExposure( float exposure );
+	void SetExposure(float exposure);
 	
 	/** \brief Lowest intensity the eye can adapt to. */
-	inline float GetLowestIntensity() const{ return pLowestIntensity; }
+	inline float GetLowestIntensity() const{return pLowestIntensity;}
 	
 	/** \brief Set lowest intensity the eye can adapt to. */
-	void SetLowestIntensity( float lowestIntensity );
+	void SetLowestIntensity(float lowestIntensity);
 	
 	/** \brief Highest intensity the eye can adapt to. */
-	inline float GetHighestIntensity() const{ return pHighestIntensity; }
+	inline float GetHighestIntensity() const{return pHighestIntensity;}
 	
 	/** \brief Set highest intensity the eye can adapt to. */
-	void SetHighestIntensity( float highestIntensity );
+	void SetHighestIntensity(float highestIntensity);
 	
 	/** \brief Adaption time of the eye in seconds. */
-	inline float GetAdaptionTime() const{ return pAdaptionTime; }
+	inline float GetAdaptionTime() const{return pAdaptionTime;}
 	
 	/** \brief Set adaption time of the eye in seconds. */
-	void SetAdaptionTime( float adaptionTime );
+	void SetAdaptionTime(float adaptionTime);
 	
 	/** \brief Distance of camera to the center point along the view direction. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{return pDistance;}
 	
 	/** \brief Set distance of camera to the center point along the view direction. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	
 	
 	/** \brief Enable global illumination (GI) if supported. */
-	inline bool GetEnableGI() const{ return pEnableGI; }
+	inline bool GetEnableGI() const{return pEnableGI;}
 	
 	/** \brief Set to enable global illumination (GI) if supported. */
-	void SetEnableGI( bool enable );
+	void SetEnableGI(bool enable);
 	
 	
 	
@@ -201,61 +201,61 @@ public:
 	 * \brief White intensity multiplier.
 	 * \version 1.21
 	 */
-	inline float GetWhiteIntensity() const{ return pWhiteIntensity; }
+	inline float GetWhiteIntensity() const{return pWhiteIntensity;}
 	
 	/**
 	 * \brief Set white intensity multiplier.
 	 * \version 1.21
 	 */
-	void SetWhiteIntensity( float intensity );
+	void SetWhiteIntensity(float intensity);
 	
 	/**
 	 * \brief Bloom intensity multiplier.
 	 * \version 1.21
 	 */
-	inline float GetBloomIntensity() const{ return pBloomIntensity; }
+	inline float GetBloomIntensity() const{return pBloomIntensity;}
 	
 	/**
 	 * \brief Set bloom intensity multiplier.
 	 * \version 1.21
 	 */
-	void SetBloomIntensity( float intensity );
+	void SetBloomIntensity(float intensity);
 	
 	/**
 	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	inline float GetBloomStrength() const{ return pBloomStrength; }
+	inline float GetBloomStrength() const{return pBloomStrength;}
 	
 	/**
 	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	void SetBloomStrength( float strength );
+	void SetBloomStrength(float strength);
 	
 	/**
 	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	inline float GetBloomBlend() const{ return pBloomBlend; }
+	inline float GetBloomBlend() const{return pBloomBlend;}
 	
 	/**
 	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
 	 * \version 1.21
 	 */
-	void SetBloomBlend( float blend );
+	void SetBloomBlend(float blend);
 	
 	/**
 	 * \brief Bloom size as percentage of screen width.
 	 * \version 1.21
 	 */
-	inline float GetBloomSize() const{ return pBloomSize; }
+	inline float GetBloomSize() const{return pBloomSize;}
 	
 	/**
 	 * \brief Bloom size as percentage of screen width.
 	 * \version 1.21
 	 */
-	void SetBloomSize( float size );
+	void SetBloomSize(float size);
 	
 	
 	
@@ -263,32 +263,32 @@ public:
 	 * \brief Custom tone mapping curve or empty curve to disable.
 	 * \version 1.21
 	 */
-	inline const decCurveBezier &GetToneMapCurve() const{ return pToneMapCurve; }
+	inline const decCurveBezier &GetToneMapCurve() const{return pToneMapCurve;}
 	
 	/**
 	 * \brief Set custom tone mapping curve or empty curve to disable.
 	 * \version 1.21
 	 * \note If enabled make sure to set the matching white intensity as it defaults to 4.
 	 */
-	void SetToneMapCurve( const decCurveBezier &curve );
+	void SetToneMapCurve(const decCurveBezier &curve);
 	
 	
 	
 	/** \brief View matrix. */
-	inline const decDMatrix &GetViewMatrix() const{ return pViewMatrix; }
+	inline const decDMatrix &GetViewMatrix() const{return pViewMatrix;}
 	
 	/**
 	 * \brief Direction of ray shot from camera position through point on image plane.
 	 * 
 	 * The width and height are the size of the screen.
 	 */
-	decVector GetDirectionFor( int width, int height, int x, int y ) const;
+	decVector GetDirectionFor(int width, int height, int x, int y) const;
 	
 	/**
 	 * \brief Set default parameters.
 	 * \version 1.21
 	 */
-	void SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime );
+	void SetDefaultParameters(float lowestIntensity, float highestIntensity, float adaptionTime);
 	
 	
 	

@@ -54,36 +54,36 @@ deoglShapeManager::~deoglShapeManager(){
 // Management
 ///////////////
 
-deoglShape *deoglShapeManager::GetShapeAt( int index ) const{
-	if( index < 0 || index >= pShapeCount ){
-		DETHROW( deeInvalidParam );
+deoglShape *deoglShapeManager::GetShapeAt(int index) const{
+	if(index < 0 || index >= pShapeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pShapes[ index ];
+	return pShapes[index];
 }
 
-void deoglShapeManager::AddShape( deoglShape *shape ){
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+void deoglShapeManager::AddShape(deoglShape *shape){
+	if(! shape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pShapeCount == pShapeSize ){
+	if(pShapeCount == pShapeSize){
 		int i, newSize = pShapeSize * 3 / 2 + 1;
-		deoglShape **newArray = new deoglShape*[ newSize ];
-		if( pShapes ){
-			for( i=0; i<pShapeSize; i++ ) newArray[ i ] = pShapes[ i ];
+		deoglShape **newArray = new deoglShape*[newSize];
+		if(pShapes){
+			for(i=0; i<pShapeSize; i++) newArray[i] = pShapes[i];
 			delete [] pShapes;
 		}
 		pShapes = newArray;
 		pShapeSize = newSize;
 	}
-	pShapes[ pShapeCount ] = shape;
+	pShapes[pShapeCount] = shape;
 	pShapeCount++;
 }
 
 void deoglShapeManager::RemoveAllShapes(){
-	while( pShapeCount > 0 ){
-		delete pShapes[ pShapeCount - 1 ];
+	while(pShapeCount > 0){
+		delete pShapes[pShapeCount - 1];
 		pShapeCount--;
 	}
 }
@@ -95,7 +95,7 @@ void deoglShapeManager::RemoveAllShapes(){
 
 void deoglShapeManager::pCleanUp(){
 	RemoveAllShapes();
-	if( pShapes ){
+	if(pShapes){
 		delete [] pShapes;
 	}
 }

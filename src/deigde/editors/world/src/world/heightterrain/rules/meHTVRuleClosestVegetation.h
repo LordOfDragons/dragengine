@@ -73,7 +73,7 @@ public:
 	meHTVRuleClosestVegetation();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleClosestVegetation( const meHTVRuleClosestVegetation &rule );
+	meHTVRuleClosestVegetation(const meHTVRuleClosestVegetation &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleClosestVegetation();
@@ -82,23 +82,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the vegetation type to search for. */
-	inline const decString &GetVegetationType() const{ return pVegetationType; }
+	inline const decString &GetVegetationType() const{return pVegetationType;}
 	/** Sets the vegetation type to search for. */
-	void SetVegetationType( const char *vegetationType );
+	void SetVegetationType(const char *vegetationType);
 	/** Retrieves the search radius. */
-	inline float GetSearchRadius() const{ return pSearchRadius; }
+	inline float GetSearchRadius() const{return pSearchRadius;}
 	/** Sets the search radius. */
-	void SetSearchRadius( float searchRadius );
+	void SetSearchRadius(float searchRadius);
 	
 	/** Update the result if required. */
-	void UpdateResult( meHTVEvaluationEnvironment &evalEnv );
+	void UpdateResult(meHTVEvaluationEnvironment &evalEnv);
 	
 	/** Resets the rule state. */
 	virtual void Reset();
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix( gdeObjectClass *objectClass, const char *newValue ) :
-pObjectClass( NULL )
+gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix(gdeObjectClass *objectClass, const char *newValue) :
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set default inherit property prefix" );
+	SetShortInfo("Object class set default inherit property prefix");
 	
 	pOldValue = objectClass->GetDefaultInheritPropertyPrefix();
 	pNewValue = newValue;
@@ -56,7 +56,7 @@ pObjectClass( NULL )
 }
 
 gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
 ///////////////
 
 void gdeUOCSetDefaultInheritPropertyPrefix::Undo(){
-	pObjectClass->SetDefaultInheritPropertyPrefix( pOldValue );
+	pObjectClass->SetDefaultInheritPropertyPrefix(pOldValue);
 }
 
 void gdeUOCSetDefaultInheritPropertyPrefix::Redo(){
-	pObjectClass->SetDefaultInheritPropertyPrefix( pNewValue );
+	pObjectClass->SetDefaultInheritPropertyPrefix(pNewValue);
 }

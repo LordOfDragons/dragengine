@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set audio model path" );
+	SetShortInfo("Component set audio model path");
 	
 	pOldValue = component->GetAudioModelPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetAudioModelPath::~gdeUOCComponentSetAudioModelPath(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetAudioModelPath::~gdeUOCComponentSetAudioModelPath(){
 ///////////////
 
 void gdeUOCComponentSetAudioModelPath::Undo(){
-	pComponent->SetAudioModelPath( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAudioModelPath(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetAudioModelPath::Redo(){
-	pComponent->SetAudioModelPath( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAudioModelPath(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

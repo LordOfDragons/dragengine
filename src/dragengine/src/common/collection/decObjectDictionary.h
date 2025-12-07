@@ -43,10 +43,10 @@ private:
 		sDictEntry *next;
 		
 		sDictEntry();
-		sDictEntry( const sDictEntry &entry );
-		sDictEntry( unsigned int nhash, const char *nkey, deObject *nvalue );
+		sDictEntry(const sDictEntry &entry);
+		sDictEntry(unsigned int nhash, const char *nkey, deObject *nvalue);
 		~sDictEntry();
-		void SetValue( deObject *nvalue );
+		void SetValue(deObject *nvalue);
 	};
 	
 	sDictEntry **pBuckets;
@@ -65,10 +65,10 @@ public:
 	 * \brief Create a new dictionary with initial bucket count.
 	 * \throws deeInvalidParam \em bucketCount is less than 1.
 	 */
-	decObjectDictionary( int bucketCount );
+	decObjectDictionary(int bucketCount);
 	
 	/** \brief Create copy of a dictionary. */
-	decObjectDictionary( const decObjectDictionary &dict );
+	decObjectDictionary(const decObjectDictionary &dict);
 	
 	/** \brief Clean up the dictionary. */
 	~decObjectDictionary();
@@ -79,20 +79,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of entries in the dictionary. */
-	inline int GetCount() const{ return pEntryCount; }
+	inline int GetCount() const{return pEntryCount;}
 	
 	/**
 	 * \brief Determine if a key is located in the dictionary.
 	 * \throws deeInvalidParam \em key is NULL.
 	 */
-	bool Has( const char *key ) const;
+	bool Has(const char *key) const;
 	
 	/**
 	 * \brief Object for key.
 	 * \throws deeInvalidParam \em key is NULL.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	deObject *GetAt( const char *key ) const;
+	deObject *GetAt(const char *key) const;
 	
 	/**
 	 * \brief Object by key
@@ -101,7 +101,7 @@ public:
 	 * \retval true Object of \em key stored in \em object.
 	 * \retval false \em key is not present in the dictionary.
 	 */
-	bool GetAt( const char *key, deObject **object ) const;
+	bool GetAt(const char *key, deObject **object) const;
 	
 	/**
 	 * \brief Set key to object.
@@ -109,20 +109,20 @@ public:
 	 * \throws deeInvalidParam \em value is NULL.
 	 * \throws deeInvalidParam \em value is an empty string.
 	 */
-	void SetAt( const char *key, deObject *value );
+	void SetAt(const char *key, deObject *value);
 	
 	/**
 	 * \brief Remove a key.
 	 * \throws deeInvalidParam \em key is NULL.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	void Remove( const char *key );
+	void Remove(const char *key);
 	
 	/**
 	 * \brief Remove a key if present in the dictionary.
 	 * \throws deeInvalidParam \em key is NULL.
 	 */
-	void RemoveIfPresent( const char *key );
+	void RemoveIfPresent(const char *key);
 	
 	/** \brief Remove all keys from the dictionary. */
 	void RemoveAll();
@@ -134,7 +134,7 @@ public:
 	decObjectList GetValues() const;
 	
 	/** \brief Determine if dictionary is equal to another dictionary. */
-	bool Equals( const decObjectDictionary &dict ) const;
+	bool Equals(const decObjectDictionary &dict) const;
 	
 	/** \brief Check load of the dictionary changing bucket count if required. */
 	void CheckLoad();
@@ -145,23 +145,23 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if dictionary is equal to another dictionary. */
-	bool operator==( const decObjectDictionary &dict ) const;
+	bool operator==(const decObjectDictionary &dict) const;
 	
 	/** \brief New dictionary containing keys of this dictionary and the keys of another applied ontop of it. */
-	decObjectDictionary operator+( const decObjectDictionary &dict ) const;
+	decObjectDictionary operator+(const decObjectDictionary &dict) const;
 	
 	/**
 	 * \brief Object for key.
 	 * \throws deeInvalidParam \em key is NULL.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
-	deObject *operator[]( const char *key ) const;
+	deObject *operator[](const char *key) const;
 	
 	/** \brief Copy dictionary to this dictionary. */
-	decObjectDictionary &operator=( const decObjectDictionary &dict );
+	decObjectDictionary &operator=(const decObjectDictionary &dict);
 	
 	/** \brief Set all keys from dictionary to this dictionary. */
-	decObjectDictionary &operator+=( const decObjectDictionary &dict );
+	decObjectDictionary &operator+=(const decObjectDictionary &dict);
 	/*@}*/
 };
 

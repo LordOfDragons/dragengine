@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUSkySetName::gdeUSkySetName(
-gdeSky *sky, const char *newValue ) :
-pSky( NULL )
+gdeSky *sky, const char *newValue) :
+pSky(NULL)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(! sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky set name" );
+	SetShortInfo("Sky set name");
 	
 	pOldValue = sky->GetName();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pSky( NULL )
 }
 
 gdeUSkySetName::~gdeUSkySetName(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUSkySetName::~gdeUSkySetName(){
 ///////////////
 
 void gdeUSkySetName::Undo(){
-	pSky->SetName( pOldValue );
+	pSky->SetName(pOldValue);
 }
 
 void gdeUSkySetName::Redo(){
-	pSky->SetName( pNewValue );
+	pSky->SetName(pNewValue);
 }

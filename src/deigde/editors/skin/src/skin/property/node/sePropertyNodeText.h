@@ -65,10 +65,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeText( deEngine &engine );
+	sePropertyNodeText(deEngine &engine);
 	
 	/** \brief Create copy of node. */
-	sePropertyNodeText( const sePropertyNodeText &node );
+	sePropertyNodeText(const sePropertyNodeText &node);
 	
 	/** \brief Clean up node. */
 	virtual ~sePropertyNodeText();
@@ -79,25 +79,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font path or empty string if not set. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Set font path or empty path if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Font or nullptr. */
-	inline const deFont::Ref &GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{return pFont;}
 	
 	/** \brief Font size or nullptr. */
-	inline const deFontSize::Ref &GetFontSize() const{ return pFontSize; }
+	inline const deFontSize::Ref &GetFontSize() const{return pFontSize;}
 	
 	/** \brief Text size in canvas units. */
-	inline float GetTextSize() const{ return pTextSize; }
+	inline float GetTextSize() const{return pTextSize;}
 	
 	/**
 	 * \brief Set text size in canvas units.
 	 * \details Size is clamped to 0 or larger.
 	 */
-	void SetTextSize( float size );
+	void SetTextSize(float size);
 	
 	/** \brief Update font. */
 	void UpdateFont();
@@ -106,16 +106,16 @@ public:
 	void UpdateFontSize();
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	
 	

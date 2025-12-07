@@ -49,7 +49,7 @@ struct sSortEntry{
 ////////////////////////////
 
 meHeightTerrainNavSpaceFace::meHeightTerrainNavSpaceFace() :
-pType( NULL ){
+pType(NULL){
 }
 
 meHeightTerrainNavSpaceFace::~meHeightTerrainNavSpaceFace(){
@@ -60,15 +60,15 @@ meHeightTerrainNavSpaceFace::~meHeightTerrainNavSpaceFace(){
 // Management
 ///////////////
 
-void meHeightTerrainNavSpaceFace::SetType( meHeightTerrainNavSpaceType *type ){
+void meHeightTerrainNavSpaceFace::SetType(meHeightTerrainNavSpaceType *type){
 	pType = type;
 }
 
 
 
-void meHeightTerrainNavSpaceFace::OrderClockwise( int pointsPerRow ){
+void meHeightTerrainNavSpaceFace::OrderClockwise(int pointsPerRow){
 	const int count = pNavPoints.GetCount();
-	if( count < 2 ){
+	if(count < 2){
 		return;
 	}
 	
@@ -78,55 +78,55 @@ void meHeightTerrainNavSpaceFace::OrderClockwise( int pointsPerRow ){
 	// the grid y axis which is pointing down if looked down from above. atan2 angles
 	// then rotate counter-clockwise. thus to get clockwise ordering the angles have
 	// to be sorted descending.
-	sSortEntry * const entries = new sSortEntry[ count ];
+	sSortEntry * const entries = new sSortEntry[count];
 	decVector2 center;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		sSortEntry &entry = entries[ i ];
-		entry.navpoint = pNavPoints.GetAt( i );
-		center.x += ( float )( entry.navpoint % pointsPerRow );
-		center.y += ( float )( entry.navpoint / pointsPerRow );
+	for(i=0; i<count; i++){
+		sSortEntry &entry = entries[i];
+		entry.navpoint = pNavPoints.GetAt(i);
+		center.x += (float)(entry.navpoint % pointsPerRow);
+		center.y += (float)(entry.navpoint / pointsPerRow);
 	}
-	center /= ( float )count;
+	center /= (float)count;
 	
-	for( i=0; i<count; i++ ){
-		sSortEntry &entry = entries[ i ];
+	for(i=0; i<count; i++){
+		sSortEntry &entry = entries[i];
 		entry.angle = atan2f(
-			( float )( entry.navpoint % pointsPerRow ) - center.x,
-			( float )( entry.navpoint / pointsPerRow ) - center.y );
+			(float)(entry.navpoint % pointsPerRow) - center.x,
+			(float)(entry.navpoint / pointsPerRow) - center.y);
 	}
 	
-	for( i=1; i<count; i++ ){
-		if( entries[ i - 1 ].angle >= entries[ i ].angle ){
+	for(i=1; i<count; i++){
+		if(entries[i - 1].angle >= entries[i].angle){
 			continue;
 		}
 		
-		const sSortEntry exchange( entries[ i - 1 ] );
-		entries[ i - 1 ] = entries[ i ];
-		entries[ i ] = exchange;
-		if( i > 1 ){
+		const sSortEntry exchange(entries[i - 1]);
+		entries[i - 1] = entries[i];
+		entries[i] = exchange;
+		if(i > 1){
 			i -= 2;
 		}
 	}
 	
-	for( i=0; i<count; i++ ){
-		pNavPoints.SetAt( i, entries[ i ].navpoint );
+	for(i=0; i<count; i++){
+		pNavPoints.SetAt(i, entries[i].navpoint);
 	}
 	
 	delete [] entries;
 }
 
-bool meHeightTerrainNavSpaceFace::NavPointsMatch( const decIntList &navpoints ) const{
-	if( navpoints.GetCount() != pNavPoints.GetCount() ){
+bool meHeightTerrainNavSpaceFace::NavPointsMatch(const decIntList &navpoints) const{
+	if(navpoints.GetCount() != pNavPoints.GetCount()){
 		return false;
 	}
 	
 	const int count = navpoints.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ! pNavPoints.Has( navpoints.GetAt( i ) ) ){
+	for(i=0; i<count; i++){
+		if(! pNavPoints.Has(navpoints.GetAt(i))){
 			return false;
 		}
 	}
@@ -134,35 +134,35 @@ bool meHeightTerrainNavSpaceFace::NavPointsMatch( const decIntList &navpoints ) 
 	return true;
 }
 
-bool meHeightTerrainNavSpaceFace::HasNavPoint( int navpoint ) const{
-	return pNavPoints.Has( navpoint );
+bool meHeightTerrainNavSpaceFace::HasNavPoint(int navpoint) const{
+	return pNavPoints.Has(navpoint);
 }
 
-bool meHeightTerrainNavSpaceFace::HasNavEdge( int navpoint1, int navpoint2 ) const{
-	if( pNavPoints.GetCount() < 2 ){
+bool meHeightTerrainNavSpaceFace::HasNavEdge(int navpoint1, int navpoint2) const{
+	if(pNavPoints.GetCount() < 2){
 		return false;
 	}
 	
-	const int index = pNavPoints.IndexOf( navpoint1 );
-	if( index == -1 ){
+	const int index = pNavPoints.IndexOf(navpoint1);
+	if(index == -1){
 		return false;
 	}
 	
 	const int count = pNavPoints.GetCount();
-	return pNavPoints.GetAt( ( index + 1 ) % count ) == navpoint2
-		|| pNavPoints.GetAt( ( index - 1 + count ) % count ) == navpoint2;
+	return pNavPoints.GetAt((index + 1) % count) == navpoint2
+		|| pNavPoints.GetAt((index - 1 + count) % count) == navpoint2;
 }
 
-bool meHeightTerrainNavSpaceFace::HasAllNavPointsIn( const decIntList &navpoints ) const{
-	if( pNavPoints.GetCount() > navpoints.GetCount() ){
+bool meHeightTerrainNavSpaceFace::HasAllNavPointsIn(const decIntList &navpoints) const{
+	if(pNavPoints.GetCount() > navpoints.GetCount()){
 		return false;
 	}
 	
 	const int count = pNavPoints.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ! navpoints.Has( pNavPoints.GetAt( i ) ) ){
+	for(i=0; i<count; i++){
+		if(! navpoints.Has(pNavPoints.GetAt(i))){
 			return false;
 		}
 	}

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetBoneName::gdeUOCBillboardSetBoneName( gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const char *newValue ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCBillboardSetBoneName::gdeUOCBillboardSetBoneName(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const char *newValue) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard set bone name" );
+	SetShortInfo("Billboard set bone name");
 	
 	pOldValue = billboard->GetBoneName();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardSetBoneName::~gdeUOCBillboardSetBoneName(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCBillboardSetBoneName::~gdeUOCBillboardSetBoneName(){
 ///////////////
 
 void gdeUOCBillboardSetBoneName::Undo(){
-	pBillboard->SetBoneName( pOldValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetBoneName(pOldValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardSetBoneName::Redo(){
-	pBillboard->SetBoneName( pNewValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetBoneName(pNewValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }

@@ -37,9 +37,9 @@
 
 // constructor, destructor
 dePngImageInfo::dePngImageInfo(const char *aFilename) :
-filename( aFilename ),
-readStruct( nullptr ),
-infoStruct( nullptr ){
+filename(aFilename),
+readStruct(nullptr),
+infoStruct(nullptr){
 }
 dePngImageInfo::~dePngImageInfo(){
 	if(readStruct){

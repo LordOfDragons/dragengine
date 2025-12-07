@@ -41,9 +41,9 @@
 /////////////////////////////////
 
 delGameRunParams::delGameRunParams() :
-pWidth( 0 ),
-pHeight( 0 ),
-pFullScreen( false ){
+pWidth(0),
+pHeight(0),
+pFullScreen(false){
 }
 
 delGameRunParams::delGameRunParams(const delGameRunParams &params) :
@@ -63,92 +63,92 @@ delGameRunParams::~delGameRunParams(){
 // Management
 ///////////////
 
-void delGameRunParams::SetGameProfile( delGameProfile *profile ){
+void delGameRunParams::SetGameProfile(delGameProfile *profile){
 	pGameProfile = profile;
 }
 
-void delGameRunParams::SetRunArguments( const char *arguments ){
+void delGameRunParams::SetRunArguments(const char *arguments){
 	pRunArguments = arguments;
 }
 
-void delGameRunParams::SetWidth( int width ){
-	if( width < 1 ){
-		DETHROW_INFO( deeInvalidParam, "width < 1" );
+void delGameRunParams::SetWidth(int width){
+	if(width < 1){
+		DETHROW_INFO(deeInvalidParam, "width < 1");
 	}
 	pWidth = width;
 }
 
-void delGameRunParams::SetHeight( int height ){
-	if( height < 1 ){
-		DETHROW_INFO( deeInvalidParam, "height < 1" );
+void delGameRunParams::SetHeight(int height){
+	if(height < 1){
+		DETHROW_INFO(deeInvalidParam, "height < 1");
 	}
 	pHeight = height;
 }
 
-void delGameRunParams::SetFullScreen( bool fullScreen ){
+void delGameRunParams::SetFullScreen(bool fullScreen){
 	pFullScreen = fullScreen;
 }
 
-bool delGameRunParams::FindPatches( const delGame &game, bool useLatestPatch,
-const decUuid &useCustomPatch, decString &error ){
+bool delGameRunParams::FindPatches(const delGame &game, bool useLatestPatch,
+const decUuid &useCustomPatch, decString &error){
 	pPatches.RemoveAll();
 	
 	// use latest patch
-	if( useLatestPatch ){
+	if(useLatestPatch){
 		delPatchList collected;
-		game.FindPatches( collected );
-		game.SortPatches( pPatches, collected );
+		game.FindPatches(collected);
+		game.SortPatches(pPatches, collected);
 		return true;
 	}
 	
 	// use no patch at all
-	if( ! useCustomPatch ){
+	if(! useCustomPatch){
 		return true;
 	}
 	
 	// use custom patch
 	delPatchList patches, collected;
-	game.FindPatches( collected );
-	game.SortPatches( patches, collected );
+	game.FindPatches(collected);
+	game.SortPatches(patches, collected);
 	
-	delPatch *usePatch = patches.GetWithID( useCustomPatch );
-	if( ! usePatch ){
-		error.Format( "No patch found with identifier '%s'",
-			useCustomPatch.ToHexString( false ).GetString() );
+	delPatch *usePatch = patches.GetWithID(useCustomPatch);
+	if(! usePatch){
+		error.Format("No patch found with identifier '%s'",
+			useCustomPatch.ToHexString(false).GetString());
 		return false;
 	}
 	
 	collected.RemoveAll();
-	collected.Add( usePatch );
+	collected.Add(usePatch);
 	
 	int i;
-	while( usePatch && usePatch->GetRequiredPatches().GetCount() > 0 ){
+	while(usePatch && usePatch->GetRequiredPatches().GetCount() > 0){
 		const delPatch &verifyPatch = *usePatch;
 		
-		for( i=0; i<verifyPatch.GetRequiredPatches().GetCount(); i++ ){
-			delPatch * const findPatch = patches.GetWithID( verifyPatch.GetRequiredPatches().GetAt( i ) );
-			if( findPatch ){
-				collected.Add( findPatch );
+		for(i=0; i<verifyPatch.GetRequiredPatches().GetCount(); i++){
+			delPatch * const findPatch = patches.GetWithID(verifyPatch.GetRequiredPatches().GetAt(i));
+			if(findPatch){
+				collected.Add(findPatch);
 				usePatch = findPatch;
 				break;
 			}
 		}
 		
-		if( i == verifyPatch.GetRequiredPatches().GetCount() ){
+		if(i == verifyPatch.GetRequiredPatches().GetCount()){
 			decStringList names;
 			decString name;
-			for( i=0; i<verifyPatch.GetRequiredPatches().GetCount(); i++ ){
-				name.Format( "'%s'", verifyPatch.GetRequiredPatches().GetAt( i ).ToHexString( false ).GetString() );
-				names.Add( name );
+			for(i=0; i<verifyPatch.GetRequiredPatches().GetCount(); i++){
+				name.Format("'%s'", verifyPatch.GetRequiredPatches().GetAt(i).ToHexString(false).GetString());
+				names.Add(name);
 			}
-			name = names.Join( ", " );
+			name = names.Join(", ");
 			
-			error.Format( "Required patches not found for patch with identifier '%s'."
-				" Requires one of: %s", verifyPatch.GetIdentifier().ToHexString( false ).GetString(), name.GetString() );
+			error.Format("Required patches not found for patch with identifier '%s'."
+				" Requires one of: %s", verifyPatch.GetIdentifier().ToHexString(false).GetString(), name.GetString());
 			return false;
 		}
 	}
 	
-	game.SortPatches( pPatches, collected );
+	game.SortPatches(pPatches, collected);
 	return true;
 }

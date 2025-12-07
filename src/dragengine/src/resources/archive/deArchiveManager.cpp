@@ -51,13 +51,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deArchiveManager::deArchiveManager( deEngine *engine ) :
-deFileResourceManager( engine, ertArchive ),
-pContainerRoot( NULL ),
-pContainerTail( NULL ),
-pContainerCount( 0 )
+deArchiveManager::deArchiveManager(deEngine *engine) :
+deFileResourceManager(engine, ertArchive),
+pContainerRoot(NULL),
+pContainerTail(NULL),
+pContainerCount(0)
 {
-	SetLoggingName( "archive" );
+	SetLoggingName("archive");
 }
 
 deArchiveManager::~deArchiveManager(){
@@ -74,17 +74,17 @@ int deArchiveManager::GetArchiveCount() const{
 }
 
 deArchive *deArchiveManager::GetRootArchive() const{
-	return ( deArchive* )pArchives.GetRoot();
+	return (deArchive*)pArchives.GetRoot();
 }
 
-deArchive *deArchiveManager::OpenArchive( const char *filename, const char *basePath ){
-	return OpenArchive( GetEngine()->GetVirtualFileSystem(), filename, basePath );
+deArchive *deArchiveManager::OpenArchive(const char *filename, const char *basePath){
+	return OpenArchive(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deArchive *deArchiveManager::OpenArchive( deVirtualFileSystem *vfs, const char *filename,
-const char *basePath ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deArchive *deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
+const char *basePath){
+	if(! vfs || ! filename){
+		DETHROW(deeInvalidParam);
 	}
 	decBaseFileReader *fileReader = NULL;
 	deBaseArchiveContainer *peer = NULL;
@@ -93,51 +93,51 @@ const char *basePath ){
 	decPath path;
 	
 	try{
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(! FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		findArchive = ( deArchive* )pArchives.GetWithFilename( vfs, path.GetPathUnix() );
+		findArchive = (deArchive*)pArchives.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findArchive && findArchive->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Archive '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findArchive && findArchive->GetModificationTime() != modificationTime){
+			LogInfoFormat("Archive '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findArchive->MarkOutdated();
 			findArchive = NULL;
 		}
 		
-		if( findArchive ){
+		if(findArchive){
 			findArchive->AddReference();
 			archive = findArchive;
 			
 		}else{
-			deBaseArchiveModule * const module = ( deBaseArchiveModule* )GetModuleSystem()->
-				GetModuleAbleToLoad( deModuleSystem::emtArchive, path.GetPathUnix() );
+			deBaseArchiveModule * const module = (deBaseArchiveModule*)GetModuleSystem()->
+				GetModuleAbleToLoad(deModuleSystem::emtArchive, path.GetPathUnix());
 			
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix() );
+			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
 			
-			peer = module->CreateContainer( fileReader );
+			peer = module->CreateContainer(fileReader);
 			fileReader->FreeReference();
 			fileReader = NULL;
 			
-			archive = new deArchive( this, vfs, path.GetPathUnix(), modificationTime );
-			archive->SetPeerContainer( peer );
+			archive = new deArchive(this, vfs, path.GetPathUnix(), modificationTime);
+			archive->SetPeerContainer(peer);
 			peer = NULL;
 			
-			pArchives.Add( archive );
+			pArchives.Add(archive);
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Open archive '%s' (base path '%s') failed", filename,
-			basePath ? basePath : "" );
-		if( archive ){
+	}catch(const deException &){
+		LogErrorFormat("Open archive '%s' (base path '%s') failed", filename,
+			basePath ? basePath : "");
+		if(archive){
 			archive->FreeReference();
 		}
-		if( peer ){
+		if(peer){
 			delete peer;
 		}
-		if( fileReader ){
+		if(fileReader){
 			fileReader->FreeReference();
 		}
 		throw;
@@ -146,17 +146,17 @@ const char *basePath ){
 	return archive;
 }
 
-deArchiveContainer *deArchiveManager::CreateContainer( const decPath &rootPath,
-deArchive *archive, const decPath &archivePath ){
-	if( ! archive ){
-		DETHROW( deeInvalidParam );
+deArchiveContainer *deArchiveManager::CreateContainer(const decPath &rootPath,
+deArchive *archive, const decPath &archivePath){
+	if(! archive){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deArchiveContainer *container = new deArchiveContainer( rootPath, archive, archivePath );
+	deArchiveContainer *container = new deArchiveContainer(rootPath, archive, archivePath);
 	
-	if( pContainerTail ){
-		pContainerTail->SetLLManagerNext( container );
-		container->SetLLManagerPrev( pContainerTail );
+	if(pContainerTail){
+		pContainerTail->SetLLManagerNext(container);
+		container->SetLLManagerPrev(pContainerTail);
 		pContainerTail = container;
 		
 	}else{ // it can never happen that root is non-NULL if tail is NULL
@@ -173,12 +173,12 @@ deArchive *archive, const decPath &archivePath ){
 
 void deArchiveManager::ReleaseLeakingResources(){
 	// containers
-	if( pContainerCount > 0 ){
-		LogWarnFormat( "%i leaking archive containers", pContainerCount );
+	if(pContainerCount > 0){
+		LogWarnFormat("%i leaking archive containers", pContainerCount);
 		
-		while( pContainerRoot ){
-			LogWarnFormat( "- %s", pContainerRoot->GetArchive()->GetFilename().IsEmpty()
-				? "<temporary>" : pContainerRoot->GetArchive()->GetFilename().GetString() );
+		while(pContainerRoot){
+			LogWarnFormat("- %s", pContainerRoot->GetArchive()->GetFilename().IsEmpty()
+				? "<temporary>" : pContainerRoot->GetArchive()->GetFilename().GetString());
 			pContainerRoot->MarkLeaking();
 			pContainerRoot= pContainerRoot->GetLLManagerNext();
 		}
@@ -190,16 +190,16 @@ void deArchiveManager::ReleaseLeakingResources(){
 	// archives
 	const int count = GetArchiveCount();
 	
-	if( count > 0 ){
-		deArchive *archive = ( deArchive* )pArchives.GetRoot();
+	if(count > 0){
+		deArchive *archive = (deArchive*)pArchives.GetRoot();
 		
-		LogWarnFormat( "%i leaking archives", count );
+		LogWarnFormat("%i leaking archives", count);
 		
-		while( archive ){
-			LogWarnFormat( "- %s", archive->GetFilename().IsEmpty()
-				? "<temporary>" : archive->GetFilename().GetString() );
-			archive->SetPeerContainer( NULL );  // prevent crash
-			archive = ( deArchive* )archive->GetLLManagerNext();
+		while(archive){
+			LogWarnFormat("- %s", archive->GetFilename().IsEmpty()
+				? "<temporary>" : archive->GetFilename().GetString());
+			archive->SetPeerContainer(NULL);  // prevent crash
+			archive = (deArchive*)archive->GetLLManagerNext();
 		}
 		
 		pArchives.RemoveAll(); // we do not delete them to avoid crashes. better leak than crash
@@ -211,62 +211,62 @@ void deArchiveManager::ReleaseLeakingResources(){
 // Systems Support
 ////////////////////
 
-void deArchiveManager::RemoveResource( deResource *resource ){
-	pArchives.RemoveIfPresent( resource );
+void deArchiveManager::RemoveResource(deResource *resource){
+	pArchives.RemoveIfPresent(resource);
 }
 
-void deArchiveManager::RemoveContainer( deArchiveContainer *container ){
-	if( ! container ){
-		DETHROW( deeInvalidParam );
+void deArchiveManager::RemoveContainer(deArchiveContainer *container){
+	if(! container){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( container != pContainerRoot && ! container->GetLLManagerNext()
-	&& ! container->GetLLManagerPrev() ){
+	if(container != pContainerRoot && ! container->GetLLManagerNext()
+	&& ! container->GetLLManagerPrev()){
 		return;
 	}
 	
-	if( pContainerCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(pContainerCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( container == pContainerTail ){
-		if( container->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
+	if(container == pContainerTail){
+		if(container->GetLLManagerNext()){
+			DETHROW(deeInvalidParam);
 		}
 		
 		pContainerTail = pContainerTail->GetLLManagerPrev();
-		if( pContainerTail ){
-			pContainerTail->SetLLManagerNext( NULL );
+		if(pContainerTail){
+			pContainerTail->SetLLManagerNext(NULL);
 		}
 		
 	}else{
-		if( ! container->GetLLManagerNext() ){
-			DETHROW( deeInvalidParam );
+		if(! container->GetLLManagerNext()){
+			DETHROW(deeInvalidParam);
 		}
 		
-		container->GetLLManagerNext()->SetLLManagerPrev( container->GetLLManagerPrev() );
+		container->GetLLManagerNext()->SetLLManagerPrev(container->GetLLManagerPrev());
 	}
 	
-	if( container == pContainerRoot ){
-		if( container->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
+	if(container == pContainerRoot){
+		if(container->GetLLManagerPrev()){
+			DETHROW(deeInvalidParam);
 		}
 		
 		pContainerRoot = pContainerRoot->GetLLManagerNext();
-		if( pContainerRoot ){
-			pContainerRoot->SetLLManagerPrev( NULL );
+		if(pContainerRoot){
+			pContainerRoot->SetLLManagerPrev(NULL);
 		}
 		
 	}else{
-		if( ! container->GetLLManagerPrev() ){
-			DETHROW( deeInvalidParam );
+		if(! container->GetLLManagerPrev()){
+			DETHROW(deeInvalidParam);
 		}
 		
-		container->GetLLManagerPrev()->SetLLManagerNext( container->GetLLManagerNext() );
+		container->GetLLManagerPrev()->SetLLManagerNext(container->GetLLManagerNext());
 	}
 	
-	container->SetLLManagerNext( NULL );
-	container->SetLLManagerPrev( NULL );
+	container->SetLLManagerNext(NULL);
+	container->SetLLManagerPrev(NULL);
 	pContainerCount--;
 	
 	container->MarkLeaking();

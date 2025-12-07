@@ -52,9 +52,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseElseCutAction( ceWindowMain &windowMain,
+	ceWPTMAIfElseElseCutAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-		ceConversationAction *action );
+		ceConversationAction *action);
 	/*@}*/
 	
 	
@@ -62,13 +62,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
+	inline ceConversationTopic &GetTopic() const{return *pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
+	inline ceCAIfElse *GetIfElse() const{return pIfElse;}
 	
 	
 	

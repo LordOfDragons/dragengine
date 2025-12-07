@@ -51,16 +51,16 @@ debpDMBConvexVolumeList::~debpDMBConvexVolumeList(){
 // Subclassing
 ////////////////
 
-decConvexVolumeFace *debpDMBConvexVolumeList::CreateVolumeFace( decConvexVolumeFace *face ){
+decConvexVolumeFace *debpDMBConvexVolumeList::CreateVolumeFace(decConvexVolumeFace *face){
 	debpDMBConvexVolumeFace *newFace = NULL;
 	
 	newFace = new debpDMBConvexVolumeFace;
-	if( ! newFace ) DETHROW( deeOutOfMemory );
+	if(! newFace) DETHROW(deeOutOfMemory);
 	
-	if( face ){
-		debpDMBConvexVolumeFace *dmbFace = ( debpDMBConvexVolumeFace* )face;
+	if(face){
+		debpDMBConvexVolumeFace *dmbFace = (debpDMBConvexVolumeFace*)face;
 		
-		newFace->SetDecalFace( dmbFace->GetDecalFace() );
+		newFace->SetDecalFace(dmbFace->GetDecalFace());
 	}
 	
 	return newFace;

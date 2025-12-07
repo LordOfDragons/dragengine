@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleResultSetProb::meUHTVRuleResultSetProb( meHTVegetationLayer *vlayer, meHTVRuleResult *rule, float nprob ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleResultSetProb::meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, float nprob){
+	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Vegetation Layer Rule Result Set Probability" );
-	SetMemoryConsumption( sizeof( meUHTVRuleResultSetProb ) );
+	SetShortInfo("Vegetation Layer Rule Result Set Probability");
+	SetMemoryConsumption(sizeof(meUHTVRuleResultSetProb));
 	
 	pOldProb = rule->GetProbability();
 	pNewProb = nprob;
@@ -59,8 +59,8 @@ meUHTVRuleResultSetProb::meUHTVRuleResultSetProb( meHTVegetationLayer *vlayer, m
 }
 
 meUHTVRuleResultSetProb::~meUHTVRuleResultSetProb(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +69,11 @@ meUHTVRuleResultSetProb::~meUHTVRuleResultSetProb(){
 ///////////////
 
 void meUHTVRuleResultSetProb::Undo(){
-	pRule->SetProbability( pOldProb );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetProbability(pOldProb);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleResultSetProb::Redo(){
-	pRule->SetProbability( pNewProb );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetProbability(pNewProb);
+	pVLayer->NotifyRuleChanged(pRule);
 }

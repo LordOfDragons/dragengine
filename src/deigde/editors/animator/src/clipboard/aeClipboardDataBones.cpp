@@ -36,9 +36,9 @@ const char * const aeClipboardDataBones::TYPE_NAME = "bones";
 // Constructor, destructor
 ////////////////////////////
 
-aeClipboardDataBones::aeClipboardDataBones( const decStringSet &bones ) :
-igdeClipboardData( TYPE_NAME ),
-pBones( bones ){
+aeClipboardDataBones::aeClipboardDataBones(const decStringSet &bones) :
+igdeClipboardData(TYPE_NAME),
+pBones(bones){
 }
 
 aeClipboardDataBones::~aeClipboardDataBones(){

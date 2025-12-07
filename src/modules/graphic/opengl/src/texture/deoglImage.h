@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image. */
-	deoglImage( deGraphicOpenGl &ogl, deImage &image );
+	deoglImage(deGraphicOpenGl &ogl, deImage &image);
 	
 	/** Clean up image. */
 	virtual ~deoglImage();
@@ -88,10 +88,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image resource. */
-	inline const deImage &GetImage() const{ return pImage; }
+	inline const deImage &GetImage() const{return pImage;}
 	
 	/** Render image or nullptr if not created. */
-	inline const deoglRImage::Ref &GetRImage() const{ return pRImage; }
+	inline const deoglRImage::Ref &GetRImage() const{return pRImage;}
 	
 	/**
 	 * Update render thread counterpart if required.
@@ -103,8 +103,8 @@ public:
 	void MarkTextureDirty();
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decPointerSet &GetNotifyCanvas(){return pNotifyCanvas;}
+	inline const decPointerSet &GetNotifyCanvas() const{return pNotifyCanvas;}
 	
 	
 	
@@ -130,7 +130,7 @@ public:
 	/**
 	 * Pixel buffer present only if CreatePixelBuffer() has been called.
 	 * */
-	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }
+	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{return pPixelBuffer;}
 	/*@}*/
 	
 	
@@ -153,7 +153,7 @@ public:
 	
 private:
 	deoglPixelBuffer::Ref pCreatePixelBuffer();
-	void pCreatePixelBufferSafe( deoglPixelBuffer::Ref &pixelBuffer );
+	void pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer);
 	void pRequiresSync();
 };
 

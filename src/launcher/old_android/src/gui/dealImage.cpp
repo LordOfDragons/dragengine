@@ -44,17 +44,17 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealImage::dealImage( dealDisplay &display, const char *filename  ) :
-pDisplay( display ),
+dealImage::dealImage(dealDisplay &display, const char *filename) :
+pDisplay(display),
 
-pTexture( 0 ),
-pWidth( 0 ),
-pHeight( 0 )
+pTexture(0),
+pWidth(0),
+pHeight(0)
 {
 	try{
-		pLoadImage( filename );
+		pLoadImage(filename);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -75,65 +75,65 @@ dealImage::~dealImage(){
 //////////////////////
 
 void dealImage::pCleanUp(){
-	if( pTexture != 0 ){
-		glDeleteTextures( 1, &pTexture );
+	if(pTexture != 0){
+		glDeleteTextures(1, &pTexture);
 	}
 }
 
-void dealImage::pLoadImage( const char *filename ){
+void dealImage::pLoadImage(const char *filename){
 	decMemoryFile *memoryFileImage = NULL;
 	decMemoryFileReader *tgaImageRader = NULL;
 	decTgaImage *tgaImage = NULL;
 	
 	try{
-		memoryFileImage = new decMemoryFile( filename );
-		pDisplay.GetLauncher().LoadAsset( filename, *memoryFileImage );
+		memoryFileImage = new decMemoryFile(filename);
+		pDisplay.GetLauncher().LoadAsset(filename, *memoryFileImage);
 		
-		tgaImageRader = new decMemoryFileReader( memoryFileImage );
+		tgaImageRader = new decMemoryFileReader(memoryFileImage);
 		
-		tgaImage = new decTgaImage( *tgaImageRader );
-		pCreateTexture( *tgaImage );
+		tgaImage = new decTgaImage(*tgaImageRader);
+		pCreateTexture(*tgaImage);
 		
 		delete tgaImage;
 		tgaImageRader->FreeReference();
 		memoryFileImage->FreeReference();
 		
-	}catch( const deException & ){
-		if( tgaImage ){
+	}catch(const deException &){
+		if(tgaImage){
 			delete tgaImage;
 		}
-		if( tgaImageRader ){
+		if(tgaImageRader){
 			tgaImageRader->FreeReference();
 		}
-		if( memoryFileImage ){
+		if(memoryFileImage){
 			memoryFileImage->FreeReference();
 		}
 		throw;
 	}
 }
 
-void dealImage::pCreateTexture( decTgaImage &tgaImage ){
-	if( pTexture != 0 ){
-		DETHROW( deeInvalidParam );
+void dealImage::pCreateTexture(decTgaImage &tgaImage){
+	if(pTexture != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	glGenTextures( 1, &pTexture );
-	if( pTexture == 0 ){
-		DETHROW( deeInvalidAction );
+	glGenTextures(1, &pTexture);
+	if(pTexture == 0){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pWidth = tgaImage.GetWidth();
 	pHeight = tgaImage.GetHeight();
 	
-	glActiveTexture( GL_TEXTURE0 );
-	glBindTexture( GL_TEXTURE_2D, pTexture );
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, pTexture);
 	
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, pWidth, pHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, tgaImage.GetPixels() );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pWidth, pHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, tgaImage.GetPixels());
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	
-	glBindTexture( GL_TEXTURE_2D, 0 );
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

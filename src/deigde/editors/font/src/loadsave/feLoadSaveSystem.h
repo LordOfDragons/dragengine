@@ -54,7 +54,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new load/save system. */
-	feLoadSaveSystem( feWindowMain *wndMain );
+	feLoadSaveSystem(feWindowMain *wndMain);
 	/** Cleans up the load/save system. */
 	~feLoadSaveSystem();
 	/*@}*/
@@ -62,31 +62,31 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline feWindowMain *GetWindowMain() const{ return pWndMain; }
+	inline feWindowMain *GetWindowMain() const{return pWndMain;}
 	
 	/** Retrieves the number of load save fonts. */
-	inline int GetLSFontCount() const{ return pLSFontCount; }
+	inline int GetLSFontCount() const{return pLSFontCount;}
 	/** Retrieves the load save font at the given index. */
-	feLoadSaveFont *GetLSFontAt( int index ) const;
+	feLoadSaveFont *GetLSFontAt(int index) const;
 	/** Retrieves the index of the load save font. */
-	int IndexOfLSFont( feLoadSaveFont *lsFont ) const;
+	int IndexOfLSFont(feLoadSaveFont *lsFont) const;
 	/** Determines if the save font exists. */
-	bool HasLSFont( feLoadSaveFont *lsFont ) const;
+	bool HasLSFont(feLoadSaveFont *lsFont) const;
 	/** Retrieves the index of the load save font matching the given filename. */
-	int IndexOfLSFontMatching( const char *filename );
+	int IndexOfLSFontMatching(const char *filename);
 	/** Adds a load save font. */
-	void AddLSFont( feLoadSaveFont *lsFont );
+	void AddLSFont(feLoadSaveFont *lsFont);
 	/** Removes a load save font. */
-	void RemoveLSFont( feLoadSaveFont *lsFont );
+	void RemoveLSFont(feLoadSaveFont *lsFont);
 	/** Removes all load save fonts. */
 	void RemoveAllLSFonts();
 	/** Updates the load save font list from the engine. */
 	void UpdateLSFonts();
 	
 	/** Loads the font from file if possible. */
-	feFont *LoadFont( const char *filename, igdeGameDefinition *gameDefinition );
+	feFont *LoadFont(const char *filename, igdeGameDefinition *gameDefinition);
 	/** Saves the font to file if possible. */
-	void SaveFont( feFont *font, const char *filename );
+	void SaveFont(feFont *font, const char *filename);
 	/*@}*/
 	
 private:

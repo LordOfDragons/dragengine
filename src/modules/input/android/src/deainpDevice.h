@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	deainpDevice( deAndroidInput &module, eSources source );
+	deainpDevice(deAndroidInput &module, eSources source);
 	
 protected:
 	/** \brief Clean up device. */
@@ -95,115 +95,115 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief X-System input module. */
-	inline deAndroidInput &GetModule() const{ return pModule; }
+	inline deAndroidInput &GetModule() const{return pModule;}
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Source. */
-	inline eSources GetSource() const{ return pSource; }
+	inline eSources GetSource() const{return pSource;}
 	
 	
 	
 	/** \brief Device type. */
-	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
+	inline deInputDevice::eDeviceTypes GetType() const{return pType;}
 	
 	/** \brief Set device type. */
-	void SetType( deInputDevice::eDeviceTypes type );
+	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
 	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
+	inline int GetButtonCount() const{return pButtonCount;}
 	
 	/** \brief Set number of buttons. */
-	void SetButtonCount( int count );
+	void SetButtonCount(int count);
 	
 	/** \brief Button at index. */
-	deainpDeviceButton &GetButtonAt( int index ) const;
+	deainpDeviceButton &GetButtonAt(int index) const;
 	
 	/** \brief Button with identifier or \em NULL if absent. */
-	deainpDeviceButton *GetButtonWithID( const char *id ) const;
+	deainpDeviceButton *GetButtonWithID(const char *id) const;
 	
 	/** \brief Button with android code or \em NULL if absent. */
-	deainpDeviceButton *GetButtonWithAICode( int code ) const;
+	deainpDeviceButton *GetButtonWithAICode(int code) const;
 	
 	/** \brief Index of button with identifier or -1 if absent. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	
 	/** \brief Index of button with key code or -1 if absent. */
-	int IndexOfButtonWithKeyCode( deInputEvent::eKeyCodes code ) const;
+	int IndexOfButtonWithKeyCode(deInputEvent::eKeyCodes code) const;
 	
 	/** \brief Index of button with android code or -1 if absent. */
-	int IndexOfButtonWithAICode( int code ) const;
+	int IndexOfButtonWithAICode(int code) const;
 	
 	
 	
 	/** \brief Number of axiss. */
-	inline int GetAxisCount() const{ return pAxisCount; }
+	inline int GetAxisCount() const{return pAxisCount;}
 	
 	/** \brief Set number of axiss. */
-	void SetAxisCount( int count );
+	void SetAxisCount(int count);
 	
 	/** \brief Axis at index. */
-	deainpDeviceAxis &GetAxisAt( int index ) const;
+	deainpDeviceAxis &GetAxisAt(int index) const;
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
-	deainpDeviceAxis *GetAxisWithID( const char *id ) const;
+	deainpDeviceAxis *GetAxisWithID(const char *id) const;
 	
 	/** \brief Axis with android code or \em NULL if absent. */
-	deainpDeviceAxis *GetAxisWithAICode( int code ) const;
+	deainpDeviceAxis *GetAxisWithAICode(int code) const;
 	
 	/** \brief Index of axis with identifier or -1 if absent. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	
 	/** \brief Index of axis with android code or -1 if absent. */
-	int IndexOfAxisWithAICode( int code ) const;
+	int IndexOfAxisWithAICode(int code) const;
 	
 	
 	
 	/** \brief Number of feedbacks. */
-	inline int GetFeedbackCount() const{ return pFeedbackCount; }
+	inline int GetFeedbackCount() const{return pFeedbackCount;}
 	
 	/** \brief Set number of feedbacks. */
-	void SetFeedbackCount( int count );
+	void SetFeedbackCount(int count);
 	
 	/** \brief Feedback at index. */
-	deainpDeviceFeedback &GetFeedbackAt( int index ) const;
+	deainpDeviceFeedback &GetFeedbackAt(int index) const;
 	
 	/** \brief Feedback with identifier or \em NULL if absent. */
-	deainpDeviceFeedback *GetFeedbackWithID( const char *id ) const;
+	deainpDeviceFeedback *GetFeedbackWithID(const char *id) const;
 	
 	/** \brief Index of feedback with identifier or -1 if absent. */
-	int IndexOfFeedbackWithID( const char *id ) const;
+	int IndexOfFeedbackWithID(const char *id) const;
 	
 	
 	
 	/** \brief One or more axes values are dirty. */
-	inline bool GetDirtyAxesValues() const{ return pDirtyAxesValues; }
+	inline bool GetDirtyAxesValues() const{return pDirtyAxesValues;}
 	
 	/** \brief Set if one or more axes values are dirty. */
-	void SetDirtyAxesValues( bool dirty );
+	void SetDirtyAxesValues(bool dirty);
 	
 	
 	
 	/** \brief Update engine input device information. */
-	void GetInfo( deInputDevice &info ) const;
+	void GetInfo(deInputDevice &info) const;
 	
 	/** \brief Update device state. */
 	virtual void Update();

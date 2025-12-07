@@ -47,12 +47,12 @@
 decDCollisionTriangle::decDCollisionTriangle(){
 }
 
-decDCollisionTriangle::decDCollisionTriangle( const decDVector &corner1, const decDVector &corner2, const decDVector &corner3 ){
-	SetCorners( corner1, corner2, corner3 );
+decDCollisionTriangle::decDCollisionTriangle(const decDVector &corner1, const decDVector &corner2, const decDVector &corner3){
+	SetCorners(corner1, corner2, corner3);
 }
 
-decDCollisionTriangle::decDCollisionTriangle( const decDVector &corner1, const decDVector &corner2, const decDVector &corner3, const decDVector &normal ){
-	SetCorners( corner1, corner2, corner3, normal );
+decDCollisionTriangle::decDCollisionTriangle(const decDVector &corner1, const decDVector &corner2, const decDVector &corner3, const decDVector &normal){
+	SetCorners(corner1, corner2, corner3, normal);
 }
 
 decDCollisionTriangle::~decDCollisionTriangle(){
@@ -63,12 +63,12 @@ decDCollisionTriangle::~decDCollisionTriangle(){
 // double dispatching calls
 /////////////////////////////
 
-bool decDCollisionTriangle::VolumeHitsVolume( decDCollisionVolume *volume ){
-	return volume->TriangleHitsVolume( this );
+bool decDCollisionTriangle::VolumeHitsVolume(decDCollisionVolume *volume){
+	return volume->TriangleHitsVolume(this);
 }
 
-double decDCollisionTriangle::VolumeMoveHitsVolume( decDCollisionVolume *volume, const decDVector &displacement, decDVector *normal ){
-	return volume->TriangleMoveHitsVolume( this, displacement, normal );
+double decDCollisionTriangle::VolumeMoveHitsVolume(decDCollisionVolume *volume, const decDVector &displacement, decDVector *normal){
+	return volume->TriangleMoveHitsVolume(this, displacement, normal);
 }
 
 
@@ -76,71 +76,71 @@ double decDCollisionTriangle::VolumeMoveHitsVolume( decDCollisionVolume *volume,
 // first stage calls
 //////////////////////
 
-bool decDCollisionTriangle::SphereHitsVolume( decDCollisionSphere *sphere ){
-	return SphereHitsTriangle( sphere );
+bool decDCollisionTriangle::SphereHitsVolume(decDCollisionSphere *sphere){
+	return SphereHitsTriangle(sphere);
 }
 
-bool decDCollisionTriangle::CylinderHitsVolume( decDCollisionCylinder *cylinder ){
-	return CylinderHitsTriangle( cylinder );
+bool decDCollisionTriangle::CylinderHitsVolume(decDCollisionCylinder *cylinder){
+	return CylinderHitsTriangle(cylinder);
 }
 
-bool decDCollisionTriangle::CapsuleHitsVolume( decDCollisionCapsule *capsule ){
-	return CapsuleHitsTriangle( capsule );
+bool decDCollisionTriangle::CapsuleHitsVolume(decDCollisionCapsule *capsule){
+	return CapsuleHitsTriangle(capsule);
 }
 
-bool decDCollisionTriangle::BoxHitsVolume( decDCollisionBox *box ){
-	return BoxHitsTriangle( box );
+bool decDCollisionTriangle::BoxHitsVolume(decDCollisionBox *box){
+	return BoxHitsTriangle(box);
 }
 
-bool decDCollisionTriangle::TriangleHitsVolume( decDCollisionTriangle *triangle ){
-	return TriangleHitsTriangle( triangle );
+bool decDCollisionTriangle::TriangleHitsVolume(decDCollisionTriangle *triangle){
+	return TriangleHitsTriangle(triangle);
 }
 
-bool decDCollisionTriangle::FrustumHitsVolume( decDCollisionFrustum *frustum ){
-	return frustum->TriangleHitsFrustum( this );
+bool decDCollisionTriangle::FrustumHitsVolume(decDCollisionFrustum *frustum){
+	return frustum->TriangleHitsFrustum(this);
 }
 
 
 
-double decDCollisionTriangle::SphereMoveHitsVolume( decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
-	return SphereMoveHitsTriangle( sphere, displacement, normal );
+double decDCollisionTriangle::SphereMoveHitsVolume(decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
+	return SphereMoveHitsTriangle(sphere, displacement, normal);
 }
 
-double decDCollisionTriangle::CylinderMoveHitsVolume( decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
-	return CylinderMoveHitsTriangle( cylinder, displacement, normal );
+double decDCollisionTriangle::CylinderMoveHitsVolume(decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
+	return CylinderMoveHitsTriangle(cylinder, displacement, normal);
 }
 
-double decDCollisionTriangle::CapsuleMoveHitsVolume( decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
-	return CapsuleMoveHitsTriangle( capsule, displacement, normal );
+double decDCollisionTriangle::CapsuleMoveHitsVolume(decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
+	return CapsuleMoveHitsTriangle(capsule, displacement, normal);
 }
 
-double decDCollisionTriangle::BoxMoveHitsVolume( decDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
-	return BoxMoveHitsTriangle( box, displacement, normal );
+double decDCollisionTriangle::BoxMoveHitsVolume(decDCollisionBox *box, const decDVector &displacement, decDVector *normal){
+	return BoxMoveHitsTriangle(box, displacement, normal);
 }
 
-double decDCollisionTriangle::TriangleMoveHitsVolume( decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal ){
-	return TriangleMoveHitsTriangle( triangle, displacement, normal );
+double decDCollisionTriangle::TriangleMoveHitsVolume(decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal){
+	return TriangleMoveHitsTriangle(triangle, displacement, normal);
 }
 
-double decDCollisionTriangle::FrustumMoveHitsVolume( decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal ){
-	double distance = frustum->TriangleMoveHitsFrustum( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double decDCollisionTriangle::FrustumMoveHitsVolume(decDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal){
+	double distance = frustum->TriangleMoveHitsFrustum(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double decDCollisionTriangle::PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal ){
+double decDCollisionTriangle::PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal){
 	decDVector hitPoint;
 	double dot = displacement * pNormal, lambda;
-	if( dot < -0.00001 || dot > 0.00001 ){
-		lambda = ( ( pCorners[ 0 ] - point ) * pNormal ) / dot;
-		if( lambda < 0 || lambda > 1 ){
+	if(dot < -0.00001 || dot > 0.00001){
+		lambda = ((pCorners[0] - point) * pNormal) / dot;
+		if(lambda < 0 || lambda > 1){
 			return 1;
 		}else{
 			hitPoint = point + displacement * lambda;
-			if( decDCollisionDetection::PointInTriangle( pCorners[ 0 ], pCorners[ 1 ],
-			pCorners[ 2 ], hitPoint ) ){
-				if( normal ){
-					normal->Set( point - hitPoint );
+			if(decDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1],
+			pCorners[2], hitPoint)){
+				if(normal){
+					normal->Set(point - hitPoint);
 					normal->Normalize();
 				}
 				return lambda;
@@ -157,55 +157,55 @@ double decDCollisionTriangle::PointMoveHitsVolume( const decDVector &point, cons
 // Enclosing Volumes
 //////////////////////
 
-void decDCollisionTriangle::GetEnclosingSphere( decDCollisionSphere *sphere ){
-	if( ! sphere ) DETHROW( deeInvalidParam );
-	decDVector center = ( pCorners[ 0 ] + pCorners[ 1 ] + pCorners[ 2 ] ) / 3.0;
-	decDVector distVector = pCorners[ 0 ] - center;
+void decDCollisionTriangle::GetEnclosingSphere(decDCollisionSphere *sphere){
+	if(! sphere) DETHROW(deeInvalidParam);
+	decDVector center = (pCorners[0] + pCorners[1] + pCorners[2]) / 3.0;
+	decDVector distVector = pCorners[0] - center;
 	double radiusSquared = distVector * distVector;
-	distVector = pCorners[ 1 ] - center;
+	distVector = pCorners[1] - center;
 	double distSquared = distVector * distVector;
-	if( distSquared > radiusSquared ) radiusSquared = distSquared;
-	distVector = pCorners[ 2 ] - center;
+	if(distSquared > radiusSquared) radiusSquared = distSquared;
+	distVector = pCorners[2] - center;
 	distSquared = distVector * distVector;
-	if( distSquared > radiusSquared ) radiusSquared = distSquared;
-	sphere->SetAll( center, sqrt( radiusSquared ) );
+	if(distSquared > radiusSquared) radiusSquared = distSquared;
+	sphere->SetAll(center, sqrt(radiusSquared));
 }
 
-void decDCollisionTriangle::GetEnclosingBox( decDCollisionBox *box ){
-	if( ! box ) DETHROW( deeInvalidParam );
-	decDVector minExtend = pCorners[ 0 ];
+void decDCollisionTriangle::GetEnclosingBox(decDCollisionBox *box){
+	if(! box) DETHROW(deeInvalidParam);
+	decDVector minExtend = pCorners[0];
 	decDVector maxExtend = minExtend;
-	if( pCorners[ 1 ].x < minExtend.x ){
-		minExtend.x = pCorners[ 1 ].x;
-	}else if( pCorners[ 1 ].x > maxExtend.x ){
-		maxExtend.x = pCorners[ 1 ].x;
+	if(pCorners[1].x < minExtend.x){
+		minExtend.x = pCorners[1].x;
+	}else if(pCorners[1].x > maxExtend.x){
+		maxExtend.x = pCorners[1].x;
 	}
-	if( pCorners[ 1 ].y < minExtend.y ){
-		minExtend.y = pCorners[ 1 ].y;
-	}else if( pCorners[ 1 ].y > maxExtend.y ){
-		maxExtend.y = pCorners[ 1 ].y;
+	if(pCorners[1].y < minExtend.y){
+		minExtend.y = pCorners[1].y;
+	}else if(pCorners[1].y > maxExtend.y){
+		maxExtend.y = pCorners[1].y;
 	}
-	if( pCorners[ 1 ].z < minExtend.z ){
-		minExtend.z = pCorners[ 1 ].z;
-	}else if( pCorners[ 1 ].z > maxExtend.z ){
-		maxExtend.z = pCorners[ 1 ].z;
+	if(pCorners[1].z < minExtend.z){
+		minExtend.z = pCorners[1].z;
+	}else if(pCorners[1].z > maxExtend.z){
+		maxExtend.z = pCorners[1].z;
 	}
-	if( pCorners[ 2 ].x < minExtend.x ){
-		minExtend.x = pCorners[ 2 ].x;
-	}else if( pCorners[ 2 ].x > maxExtend.x ){
-		maxExtend.x = pCorners[ 2 ].x;
+	if(pCorners[2].x < minExtend.x){
+		minExtend.x = pCorners[2].x;
+	}else if(pCorners[2].x > maxExtend.x){
+		maxExtend.x = pCorners[2].x;
 	}
-	if( pCorners[ 2 ].y < minExtend.y ){
-		minExtend.y = pCorners[ 2 ].y;
-	}else if( pCorners[ 2 ].y > maxExtend.y ){
-		maxExtend.y = pCorners[ 2 ].y;
+	if(pCorners[2].y < minExtend.y){
+		minExtend.y = pCorners[2].y;
+	}else if(pCorners[2].y > maxExtend.y){
+		maxExtend.y = pCorners[2].y;
 	}
-	if( pCorners[ 2 ].z < minExtend.z ){
-		minExtend.z = pCorners[ 2 ].z;
-	}else if( pCorners[ 2 ].z > maxExtend.z ){
-		maxExtend.z = pCorners[ 2 ].z;
+	if(pCorners[2].z < minExtend.z){
+		minExtend.z = pCorners[2].z;
+	}else if(pCorners[2].z > maxExtend.z){
+		maxExtend.z = pCorners[2].z;
 	}
-	box->SetFromExtends( minExtend, maxExtend );
+	box->SetFromExtends(minExtend, maxExtend);
 }
 
 
@@ -213,16 +213,16 @@ void decDCollisionTriangle::GetEnclosingBox( decDCollisionBox *box ){
 // Miscelanous Functions
 //////////////////////////
 
-bool decDCollisionTriangle::IsPointInside( const decDVector &point ){
+bool decDCollisionTriangle::IsPointInside(const decDVector &point){
 	return false; // triangles are infinitesimally thin
 }
 
-decDVector decDCollisionTriangle::ClosestPointTo( const decDVector &point ){
-	decDVector hitPoint = point - pNormal * ( point * pNormal - pDist );
-	if( decDCollisionDetection::PointInTriangle( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], hitPoint ) ){
+decDVector decDCollisionTriangle::ClosestPointTo(const decDVector &point){
+	decDVector hitPoint = point - pNormal * (point * pNormal - pDist);
+	if(decDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
 		return hitPoint;
 	}else{
-		return decDCollisionDetection::ClosestPointOnTriangleEdge( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], hitPoint );
+		return decDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 }
 
@@ -231,9 +231,9 @@ decDVector decDCollisionTriangle::ClosestPointTo( const decDVector &point ){
 // Visiting
 /////////////
 
-void decDCollisionTriangle::Visit( decDCollisionVolumeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
-	visitor->VisitTriangle( this );
+void decDCollisionTriangle::Visit(decDCollisionVolumeVisitor *visitor){
+	if(! visitor) DETHROW(deeInvalidParam);
+	visitor->VisitTriangle(this);
 }
 
 
@@ -241,7 +241,7 @@ void decDCollisionTriangle::Visit( decDCollisionVolumeVisitor *visitor ){
 // collision routines
 ///////////////////////
 
-bool decDCollisionTriangle::SphereHitsTriangle( decDCollisionSphere *sphere ){
+bool decDCollisionTriangle::SphereHitsTriangle(decDCollisionSphere *sphere){
 	const decDVector &sc = sphere->GetCenter();
 	double lambda, squareRadius = sphere->GetSquareRadius();
 	decDVector hitPoint;
@@ -250,8 +250,8 @@ bool decDCollisionTriangle::SphereHitsTriangle( decDCollisionSphere *sphere ){
 	hitPoint = sc + pNormal * lambda;
 	// if the point is not inside the triangle calculate the point on the
 	// triangle closest to the hitpoint
-	if( ! decDCollisionDetection::PointInTriangle( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], hitPoint ) ){
-		hitPoint = decDCollisionDetection::ClosestPointOnTriangleEdge( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], hitPoint );
+	if(! decDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+		hitPoint = decDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	// we need to compare the distance of the hitpoint to the sphere center
 	hitPoint -= sc;
@@ -259,97 +259,97 @@ bool decDCollisionTriangle::SphereHitsTriangle( decDCollisionSphere *sphere ){
 	return hitPoint * hitPoint <= squareRadius;
 }
 
-bool decDCollisionTriangle::CylinderHitsTriangle( decDCollisionCylinder *cylinder ){
+bool decDCollisionTriangle::CylinderHitsTriangle(decDCollisionCylinder *cylinder){
 	return false;
 }
 
-bool decDCollisionTriangle::CapsuleHitsTriangle( decDCollisionCapsule *capsule ){
+bool decDCollisionTriangle::CapsuleHitsTriangle(decDCollisionCapsule *capsule){
 	return false;
 }
 
-bool decDCollisionTriangle::BoxHitsTriangle( decDCollisionBox *box ){
+bool decDCollisionTriangle::BoxHitsTriangle(decDCollisionBox *box){
 	const decDVector &bc = box->GetCenter();
 	const decDVector &bhs = box->GetHalfSize();
-	decDVector normal, corners[ 3 ];
-	double projBox, projTri[ 3 ];
+	decDVector normal, corners[3];
+	double projBox, projTri[3];
 	int i, id1, id2;
 	
 	// adjust corners if required
-	corners[ 0 ] = pCorners[ 0 ] - bc;
-	corners[ 1 ] = pCorners[ 1 ] - bc;
-	corners[ 2 ] = pCorners[ 2 ] - bc;
+	corners[0] = pCorners[0] - bc;
+	corners[1] = pCorners[1] - bc;
+	corners[2] = pCorners[2] - bc;
 	
 	// test normal of triangle as separation-axis
-	if( fabs( corners[ 0 ] * pNormal ) > box->ProjectExtends( pNormal ) ) return false;
+	if(fabs(corners[0] * pNormal) > box->ProjectExtends(pNormal)) return false;
 	
 	// test box axes as separation-axis
 	const decDVector &bax = box->GetAxisX();
-	if( corners[ 0 ] * bax > bhs.x && corners[ 1 ] * bax > bhs.x && corners[ 2 ] * bax > bhs.x ) return false;
-	if( corners[ 0 ] * bax < -bhs.x && corners[ 1 ] * bax < -bhs.x && corners[ 2 ] * bax < -bhs.x ) return false;
+	if(corners[0] * bax > bhs.x && corners[1] * bax > bhs.x && corners[2] * bax > bhs.x) return false;
+	if(corners[0] * bax < -bhs.x && corners[1] * bax < -bhs.x && corners[2] * bax < -bhs.x) return false;
 	
 	const decDVector &bay = box->GetAxisY();
-	if( corners[ 0 ] * bay > bhs.y && corners[ 1 ] * bay > bhs.y && corners[ 2 ] * bay > bhs.y ) return false;
-	if( corners[ 0 ] * bay < -bhs.y && corners[ 1 ] * bay < -bhs.y && corners[ 2 ] * bay < -bhs.y ) return false;
+	if(corners[0] * bay > bhs.y && corners[1] * bay > bhs.y && corners[2] * bay > bhs.y) return false;
+	if(corners[0] * bay < -bhs.y && corners[1] * bay < -bhs.y && corners[2] * bay < -bhs.y) return false;
 	
 	const decDVector &baz = box->GetAxisZ();
-	if( corners[ 0 ] * baz > bhs.z && corners[ 1 ] * baz > bhs.z && corners[ 2 ] * baz > bhs.z ) return false;
-	if( corners[ 0 ] * baz < -bhs.z && corners[ 1 ] * baz < -bhs.z && corners[ 2 ] * baz < -bhs.z ) return false;
+	if(corners[0] * baz > bhs.z && corners[1] * baz > bhs.z && corners[2] * baz > bhs.z) return false;
+	if(corners[0] * baz < -bhs.z && corners[1] * baz < -bhs.z && corners[2] * baz < -bhs.z) return false;
 	
 	// test triangle axes as separation-axis
-	for( i=0; i<3; i++ ){
-		projBox = box->ProjectExtends( pEdges[ i ] );
+	for(i=0; i<3; i++){
+		projBox = box->ProjectExtends(pEdges[i]);
 		
 		// get projecton of corner points.
-		projTri[ 0 ] = corners[ 0 ] * pEdges[ i ];
-		projTri[ 1 ] = corners[ 1 ] * pEdges[ i ];
-		projTri[ 2 ] = corners[ 2 ] * pEdges[ i ];
+		projTri[0] = corners[0] * pEdges[i];
+		projTri[1] = corners[1] * pEdges[i];
+		projTri[2] = corners[2] * pEdges[i];
 		
 		// test if projection of box and triangle do overlap
-		if( projTri[ 0 ] > projBox && projTri[ 1 ] > projBox && projTri[ 2 ] > projBox ) return false;
-		if( -projTri[ 0 ] > projBox && -projTri[ 1 ] > projBox && -projTri[ 2 ] > projBox ) return false;
+		if(projTri[0] > projBox && projTri[1] > projBox && projTri[2] > projBox) return false;
+		if(-projTri[0] > projBox && -projTri[1] > projBox && -projTri[2] > projBox) return false;
 	}
 	
 	// test triangle edges crossed with box axes as separation-axis
-	for( i=0; i<3; i++ ){
-		id1 = ( i + 1 ) % 3;
-		id2 = ( i + 2 ) % 3;
+	for(i=0; i<3; i++){
+		id1 = (i + 1) % 3;
+		id2 = (i + 2) % 3;
 		
 		// cross axes[ i ] with box x-axis
-		normal = pEdges[ i ] % bax;
-		projBox = box->ProjectExtends( normal );
-		projTri[ 0 ] = corners[ id1 ] * normal;
-		projTri[ 1 ] = corners[ id2 ] * normal;
-		if( projTri[ 0 ] > projBox && projTri[ 1 ] > projBox ) return false;
-		if( -projTri[ 0 ] > projBox && -projTri[ 1 ] > projBox ) return false;
+		normal = pEdges[i] % bax;
+		projBox = box->ProjectExtends(normal);
+		projTri[0] = corners[id1] * normal;
+		projTri[1] = corners[id2] * normal;
+		if(projTri[0] > projBox && projTri[1] > projBox) return false;
+		if(-projTri[0] > projBox && -projTri[1] > projBox) return false;
 		
 		// cross axes[ i ] with box y-axis
-		normal = pEdges[ i ] % bay;
-		projBox = box->ProjectExtends( normal );
-		projTri[ 0 ] = corners[ id1 ] * normal;
-		projTri[ 1 ] = corners[ id2 ] * normal;
-		if( projTri[ 0 ] > projBox && projTri[ 1 ] > projBox ) return false;
-		if( -projTri[ 0 ] > projBox && -projTri[ 1 ] > projBox ) return false;
+		normal = pEdges[i] % bay;
+		projBox = box->ProjectExtends(normal);
+		projTri[0] = corners[id1] * normal;
+		projTri[1] = corners[id2] * normal;
+		if(projTri[0] > projBox && projTri[1] > projBox) return false;
+		if(-projTri[0] > projBox && -projTri[1] > projBox) return false;
 		
 		// cross axes[ i ] with box z-axis
-		normal = pEdges[ i ] % baz;
-		projBox = box->ProjectExtends( normal );
-		projTri[ 0 ] = corners[ id1 ] * normal;
-		projTri[ 1 ] = corners[ id2 ] * normal;
-		if( projTri[ 0 ] > projBox && projTri[ 1 ] > projBox ) return false;
-		if( -projTri[ 0 ] > projBox && -projTri[ 1 ] > projBox ) return false;
+		normal = pEdges[i] % baz;
+		projBox = box->ProjectExtends(normal);
+		projTri[0] = corners[id1] * normal;
+		projTri[1] = corners[id2] * normal;
+		if(projTri[0] > projBox && projTri[1] > projBox) return false;
+		if(-projTri[0] > projBox && -projTri[1] > projBox) return false;
 	}
 	
 	// we do collide
 	return true;
 }
 
-bool decDCollisionTriangle::TriangleHitsTriangle( decDCollisionTriangle *triangle ){
+bool decDCollisionTriangle::TriangleHitsTriangle(decDCollisionTriangle *triangle){
 	return false;
 }
 
 
 
-double decDCollisionTriangle::SphereMoveHitsTriangle( decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
+double decDCollisionTriangle::SphereMoveHitsTriangle(decDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
 	const decDVector &sc = sphere->GetCenter();
 	double sr2 = sphere->GetSquareRadius();
 	double sr = sphere->GetRadius();
@@ -363,35 +363,35 @@ double decDCollisionTriangle::SphereMoveHitsTriangle( decDCollisionSphere *spher
 	// onto the triangle plane using the displacement vector.
 	lambda = sc * pNormal - pDist;
 	
-	if( fabs( lambda ) - sr > 0.0001 ){
+	if(fabs(lambda) - sr > 0.0001){
 		dot = pNormal * displacement;
 		
-		if( lambda > 0 ){
-			if( dot > -0.0001 ) return 1;
+		if(lambda > 0){
+			if(dot > -0.0001) return 1;
 			hitPoint = sc - pNormal * sr;
 			
 		}else{
-			if( dot < 0.0001 ) return 1;
+			if(dot < 0.0001) return 1;
 			hitPoint = sc + pNormal * sr;
 		}
 		
-		hitPoint -= displacement * ( ( pNormal * hitPoint - pDist ) / dot );
+		hitPoint -= displacement * ((pNormal * hitPoint - pDist) / dot);
 		
 	}else{
 		hitPoint = sc - pNormal * lambda;
 	}
 	
 	// if the point is not inside the triangle calculate the point on the triangle closest to the hitpoint
-	if( ! decDCollisionDetection::PointInTriangle( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], hitPoint ) ){
-		hitPoint = decDCollisionDetection::ClosestPointOnTriangleEdge( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], hitPoint );
+	if(! decDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], hitPoint)){
+		hitPoint = decDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0], pCorners[1], pCorners[2], hitPoint);
 	}
 	
 	// go on depending if the point is inside the sphere or not
 	hpt = hitPoint - sc;
-	if( normal ){
-		normal->Set( -hpt );
+	if(normal){
+		normal->Set(-hpt);
 		lambda = normal->Length();
-		if( lambda < 1e-5f ){
+		if(lambda < 1e-5f){
 			*normal = pNormal;
 			
 		}else{
@@ -399,20 +399,20 @@ double decDCollisionTriangle::SphereMoveHitsTriangle( decDCollisionSphere *spher
 		}
 	}
 	
-	if( hpt * hpt > sr2 ){
+	if(hpt * hpt > sr2){
 		// project hitpoint by inverse direction back to sphere and check for collision
 		double a = displacement * displacement;
 		double b = hpt * displacement; // left out -
-		double disc = b * b - a * ( hpt * hpt - sr2 );
+		double disc = b * b - a * (hpt * hpt - sr2);
 		
-		if( disc < 0 ){
+		if(disc < 0){
 			lambda = 1;
 			
 		}else{
-			lambda = ( b - sqrt( disc ) ) / a; // payed respect to left out -
+			lambda = (b - sqrt(disc)) / a; // payed respect to left out -
 		}
 		
-		if( lambda < 0 || lambda > 1 ) lambda = 1;
+		if(lambda < 0 || lambda > 1) lambda = 1;
 		
 		return lambda;
 		
@@ -421,11 +421,11 @@ double decDCollisionTriangle::SphereMoveHitsTriangle( decDCollisionSphere *spher
 	}
 }
 
-double decDCollisionTriangle::CylinderMoveHitsTriangle( decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
+double decDCollisionTriangle::CylinderMoveHitsTriangle(decDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
-double decDCollisionTriangle::CapsuleMoveHitsTriangle( decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
+double decDCollisionTriangle::CapsuleMoveHitsTriangle(decDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
@@ -434,11 +434,11 @@ double decDCollisionTriangle::CapsuleMoveHitsTriangle( decDCollisionCapsule *cap
 // to detect a collision with the ground where there is none. further investigation
 // is require. for the time beeing the sphere test is used as this one is rather
 // robust and producing no wrong hits so far.
-double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
+double decDCollisionTriangle::BoxMoveHitsTriangle(decDCollisionBox *box, const decDVector &displacement, decDVector *normal){
 	const decDVector &bhs = box->GetHalfSize();
 	const decDVector &bc = box->GetCenter();
 	double testDist, dispDist;
-	decDVector tnormal, corners[ 3 ];
+	decDVector tnormal, corners[3];
 	double projBox;
 	decDVector bestNormal;
 	double bestDist = 0.0;
@@ -446,33 +446,33 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	int i, id1, id2;
 	double dot1, dot2, dot3, len;
 	// init
-	corners[ 0 ] = pCorners[ 0 ] - bc;
-	corners[ 1 ] = pCorners[ 1 ] - bc;
-	corners[ 2 ] = pCorners[ 2 ] - bc;
+	corners[0] = pCorners[0] - bc;
+	corners[1] = pCorners[1] - bc;
+	corners[2] = pCorners[2] - bc;
 	
 	// test normal of triangle as separation-axis
-	testDist = pNormal * corners[ 0 ];
-	if( testDist > 0.0 ){
-		testDist -= box->ProjectExtends( pNormal );
-		if( testDist > 0.0 ){
+	testDist = pNormal * corners[0];
+	if(testDist > 0.0){
+		testDist -= box->ProjectExtends(pNormal);
+		if(testDist > 0.0){
 			dispDist = displacement * pNormal;
-			if( dispDist <= testDist ) return 1.0;
+			if(dispDist <= testDist) return 1.0;
 			testDist /= dispDist;
-			if( testDist > bestDist ){
+			if(testDist > bestDist){
 				bestDist = testDist;
-				if( normal ) bestNormal.Set( -pNormal );
+				if(normal) bestNormal.Set(-pNormal);
 				hitAtStart = false;
 			}
 		}
 	}else{
-		testDist = -( testDist + box->ProjectExtends( pNormal ) );
-		if( testDist > 0.0 ){
-			dispDist = -( displacement * pNormal );
-			if( dispDist <= testDist ) return 1.0;
+		testDist = -(testDist + box->ProjectExtends(pNormal));
+		if(testDist > 0.0){
+			dispDist = -(displacement * pNormal);
+			if(dispDist <= testDist) return 1.0;
 			testDist /= dispDist;
-			if( testDist > bestDist ){
+			if(testDist > bestDist){
 				bestDist = testDist;
-				if( normal ) bestNormal.Set( pNormal );
+				if(normal) bestNormal.Set(pNormal);
 				hitAtStart = false;
 			}
 		}
@@ -482,39 +482,39 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 
 	// x axis
 	const decDVector &bax = box->GetAxisX();
-	dot1 = corners[ 0 ] * bax;
-	if( dot1 > 0.0 ){
-		dot2 = corners[ 1 ] * bax - bhs.x;
-		dot3 = corners[ 2 ] * bax - bhs.x;
-		if( dot2 > 0.0 && dot3 > 0.0 ){
+	dot1 = corners[0] * bax;
+	if(dot1 > 0.0){
+		dot2 = corners[1] * bax - bhs.x;
+		dot3 = corners[2] * bax - bhs.x;
+		if(dot2 > 0.0 && dot3 > 0.0){
 			testDist = dot1 - bhs.x;
-			if( dot2 < testDist ) testDist = dot2;
-			if( dot3 < testDist ) testDist = dot3;
-			if( testDist > 0.0 ){
+			if(dot2 < testDist) testDist = dot2;
+			if(dot3 < testDist) testDist = dot3;
+			if(testDist > 0.0){
 				dispDist = displacement * bax;
-				if( dispDist <= testDist ) return 1.0;
+				if(dispDist <= testDist) return 1.0;
 				testDist /= dispDist;
-				if( testDist > bestDist ){
+				if(testDist > bestDist){
 					bestDist = testDist;
-					if( normal ) bestNormal = -bax;
+					if(normal) bestNormal = -bax;
 					hitAtStart = false;
 				}
 			}
 		}
 	}else{
-		dot2 = -( corners[ 1 ] * bax + bhs.x );
-		dot3 = -( corners[ 2 ] * bax + bhs.x );
-		if( dot2 > 0.0 && dot3 > 0.0 ){
-			testDist = -( dot1 + bhs.x );
-			if( dot2 < testDist ) testDist = dot2;
-			if( dot3 < testDist ) testDist = dot3;
-			if( testDist > 0.0 ){
-				dispDist = -( displacement * bax );
-				if( dispDist <= testDist ) return 1.0;
+		dot2 = -(corners[1] * bax + bhs.x);
+		dot3 = -(corners[2] * bax + bhs.x);
+		if(dot2 > 0.0 && dot3 > 0.0){
+			testDist = -(dot1 + bhs.x);
+			if(dot2 < testDist) testDist = dot2;
+			if(dot3 < testDist) testDist = dot3;
+			if(testDist > 0.0){
+				dispDist = -(displacement * bax);
+				if(dispDist <= testDist) return 1.0;
 				testDist /= dispDist;
-				if( testDist > bestDist ){
+				if(testDist > bestDist){
 					bestDist = testDist;
-					if( normal ) bestNormal = bax;
+					if(normal) bestNormal = bax;
 					hitAtStart = false;
 				}
 			}
@@ -523,39 +523,39 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	
 	// y axis
 	const decDVector &bay = box->GetAxisY();
-	dot1 = corners[ 0 ] * bay;
-	if( dot1 > 0.0 ){
-		dot2 = corners[ 1 ] * bay - bhs.y;
-		dot3 = corners[ 2 ] * bay - bhs.y;
-		if( dot2 > 0.0 && dot3 > 0.0 ){
+	dot1 = corners[0] * bay;
+	if(dot1 > 0.0){
+		dot2 = corners[1] * bay - bhs.y;
+		dot3 = corners[2] * bay - bhs.y;
+		if(dot2 > 0.0 && dot3 > 0.0){
 			testDist = dot1 - bhs.y;
-			if( dot2 < testDist ) testDist = dot2;
-			if( dot3 < testDist ) testDist = dot3;
-			if( testDist > 0.0 ){
+			if(dot2 < testDist) testDist = dot2;
+			if(dot3 < testDist) testDist = dot3;
+			if(testDist > 0.0){
 				dispDist = displacement * bay;
-				if( dispDist <= testDist ) return 1.0;
+				if(dispDist <= testDist) return 1.0;
 				testDist /= dispDist;
-				if( testDist > bestDist ){
+				if(testDist > bestDist){
 					bestDist = testDist;
-					if( normal ) bestNormal = -bay;
+					if(normal) bestNormal = -bay;
 					hitAtStart = false;
 				}
 			}
 		}
 	}else{
-		dot2 = -( corners[ 1 ] * bay + bhs.y );
-		dot3 = -( corners[ 2 ] * bay + bhs.y );
-		if( dot2 > 0.0 && dot3 > 0.0 ){
-			testDist = -( dot1 + bhs.y );
-			if( dot2 < testDist ) testDist = dot2;
-			if( dot3 < testDist ) testDist = dot3;
-			if( testDist > 0.0 ){
-				dispDist = -( displacement * bay );
-				if( dispDist <= testDist ) return 1.0;
+		dot2 = -(corners[1] * bay + bhs.y);
+		dot3 = -(corners[2] * bay + bhs.y);
+		if(dot2 > 0.0 && dot3 > 0.0){
+			testDist = -(dot1 + bhs.y);
+			if(dot2 < testDist) testDist = dot2;
+			if(dot3 < testDist) testDist = dot3;
+			if(testDist > 0.0){
+				dispDist = -(displacement * bay);
+				if(dispDist <= testDist) return 1.0;
 				testDist /= dispDist;
-				if( testDist > bestDist ){
+				if(testDist > bestDist){
 					bestDist = testDist;
-					if( normal ) bestNormal = bay;
+					if(normal) bestNormal = bay;
 					hitAtStart = false;
 				}
 			}
@@ -564,39 +564,39 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	
 	// z axis
 	const decDVector &baz = box->GetAxisZ();
-	dot1 = corners[ 0 ] * baz;
-	if( dot1 > 0.0 ){
-		dot2 = corners[ 1 ] * baz - bhs.z;
-		dot3 = corners[ 2 ] * baz - bhs.z;
-		if( dot2 > 0.0 && dot3 > 0.0 ){
+	dot1 = corners[0] * baz;
+	if(dot1 > 0.0){
+		dot2 = corners[1] * baz - bhs.z;
+		dot3 = corners[2] * baz - bhs.z;
+		if(dot2 > 0.0 && dot3 > 0.0){
 			testDist = dot1 - bhs.z;
-			if( dot2 < testDist ) testDist = dot2;
-			if( dot3 < testDist ) testDist = dot3;
-			if( testDist > 0.0 ){
+			if(dot2 < testDist) testDist = dot2;
+			if(dot3 < testDist) testDist = dot3;
+			if(testDist > 0.0){
 				dispDist = displacement * baz;
-				if( dispDist <= testDist ) return 1.0;
+				if(dispDist <= testDist) return 1.0;
 				testDist /= dispDist;
-				if( testDist > bestDist ){
+				if(testDist > bestDist){
 					bestDist = testDist;
-					if( normal ) bestNormal = -baz;
+					if(normal) bestNormal = -baz;
 					hitAtStart = false;
 				}
 			}
 		}
 	}else{
-		dot2 = -( corners[ 1 ] * baz + bhs.z );
-		dot3 = -( corners[ 2 ] * baz + bhs.z );
-		if( dot2 > 0.0 && dot3 > 0.0 ){
-			testDist = -( dot1 + bhs.z );
-			if( dot2 < testDist ) testDist = dot2;
-			if( dot3 < testDist ) testDist = dot3;
-			if( testDist > 0.0 ){
-				dispDist = -( displacement * baz );
-				if( dispDist <= testDist ) return 1.0;
+		dot2 = -(corners[1] * baz + bhs.z);
+		dot3 = -(corners[2] * baz + bhs.z);
+		if(dot2 > 0.0 && dot3 > 0.0){
+			testDist = -(dot1 + bhs.z);
+			if(dot2 < testDist) testDist = dot2;
+			if(dot3 < testDist) testDist = dot3;
+			if(testDist > 0.0){
+				dispDist = -(displacement * baz);
+				if(dispDist <= testDist) return 1.0;
 				testDist /= dispDist;
-				if( testDist > bestDist ){
+				if(testDist > bestDist){
 					bestDist = testDist;
-					if( normal ) bestNormal = baz;
+					if(normal) bestNormal = baz;
 					hitAtStart = false;
 				}
 			}
@@ -604,45 +604,45 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	}
 	
 	// test triangle axes as separation-axis
-	for( i=0; i<3; i++ ){
-		tnormal = pEdges[ i ];
+	for(i=0; i<3; i++){
+		tnormal = pEdges[i];
 		len = tnormal.Length();
-		if( len > 1e-4 ){
+		if(len > 1e-4){
 			tnormal /= len;
-			projBox = box->ProjectExtends( tnormal );
-			dot1 = corners[ 0 ] * tnormal;
-			if( dot1 > 0.0 ){
-				dot2 = corners[ 1 ] * tnormal - projBox;
-				dot3 = corners[ 2 ] * tnormal - projBox;
-				if( dot2 > 0.0 && dot3 > 0.0 ){
+			projBox = box->ProjectExtends(tnormal);
+			dot1 = corners[0] * tnormal;
+			if(dot1 > 0.0){
+				dot2 = corners[1] * tnormal - projBox;
+				dot3 = corners[2] * tnormal - projBox;
+				if(dot2 > 0.0 && dot3 > 0.0){
 					testDist = dot1 - projBox;
-					if( dot2 < testDist ) testDist = dot2;
-					if( dot3 < testDist ) testDist = dot3;
-					if( testDist > 0.0 ){
+					if(dot2 < testDist) testDist = dot2;
+					if(dot3 < testDist) testDist = dot3;
+					if(testDist > 0.0){
 						dispDist = displacement * tnormal;
-						if( dispDist <= testDist ) return 1.0;
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = -tnormal;
+							if(normal) bestNormal = -tnormal;
 							hitAtStart = false;
 						}
 					}
 				}
 			}else{
-				dot2 = -( corners[ 1 ] * tnormal + projBox );
-				dot3 = -( corners[ 2 ] * tnormal + projBox );
-				if( dot2 > 0.0 && dot3 > 0.0 ){
-					testDist = -( dot1 + projBox );
-					if( dot2 < testDist ) testDist = dot2;
-					if( dot3 < testDist ) testDist = dot3;
-					if( testDist > 0.0 ){
-						dispDist = -( displacement * tnormal );
-						if( dispDist <= testDist ) return 1.0;
+				dot2 = -(corners[1] * tnormal + projBox);
+				dot3 = -(corners[2] * tnormal + projBox);
+				if(dot2 > 0.0 && dot3 > 0.0){
+					testDist = -(dot1 + projBox);
+					if(dot2 < testDist) testDist = dot2;
+					if(dot3 < testDist) testDist = dot3;
+					if(testDist > 0.0){
+						dispDist = -(displacement * tnormal);
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = tnormal;
+							if(normal) bestNormal = tnormal;
 							hitAtStart = false;
 						}
 					}
@@ -652,45 +652,45 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	}
 	
 	// test triangle edges crossed with box axes as separation-axis
-	for( i=0; i<3; i++ ){
-		id1 = ( i + 1 ) % 3;
-		id2 = ( i + 2 ) % 3;
+	for(i=0; i<3; i++){
+		id1 = (i + 1) % 3;
+		id2 = (i + 2) % 3;
 		
 		// cross axes[ i ] with box x-axis
-		tnormal = pEdges[ i ] % bax;
+		tnormal = pEdges[i] % bax;
 		len = tnormal.Length();
-		if( len > 1e-4 ){
+		if(len > 1e-4){
 			tnormal /= len;
-			projBox = fabs( tnormal * bay ) * bhs.y + fabs( tnormal * baz ) * bhs.z;
-			dot1 = corners[ id1 ] * tnormal;
-			if( dot1 > 0.0 ){
-				dot2 = corners[ id2 ] * tnormal - projBox;
-				if( dot2 > 0.0 ){
+			projBox = fabs(tnormal * bay) * bhs.y + fabs(tnormal * baz) * bhs.z;
+			dot1 = corners[id1] * tnormal;
+			if(dot1 > 0.0){
+				dot2 = corners[id2] * tnormal - projBox;
+				if(dot2 > 0.0){
 					testDist = dot1 - projBox;
-					if( dot2 < testDist ) testDist = dot2;
-					if( testDist > 0.0 ){
+					if(dot2 < testDist) testDist = dot2;
+					if(testDist > 0.0){
 						dispDist = displacement * tnormal;
-						if( dispDist <= testDist ) return 1.0;
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = -tnormal;
+							if(normal) bestNormal = -tnormal;
 							hitAtStart = false;
 						}
 					}
 				}
 			}else{
-				dot2 = -( corners[ id2 ] * tnormal + projBox );
-				if( dot2 > 0.0 ){
-					testDist = -( dot1 + projBox );
-					if( dot2 < testDist ) testDist = dot2;
-					if( testDist > 0.0 ){
-						dispDist = -( displacement * tnormal );
-						if( dispDist <= testDist ) return 1.0;
+				dot2 = -(corners[id2] * tnormal + projBox);
+				if(dot2 > 0.0){
+					testDist = -(dot1 + projBox);
+					if(dot2 < testDist) testDist = dot2;
+					if(testDist > 0.0){
+						dispDist = -(displacement * tnormal);
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = tnormal;
+							if(normal) bestNormal = tnormal;
 							hitAtStart = false;
 						}
 					}
@@ -699,40 +699,40 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 		}
 
 		// cross axes[ i ] with box y-axis
-		tnormal = pEdges[ i ] % bay;
+		tnormal = pEdges[i] % bay;
 		len = tnormal.Length();
-		if( len > 1e-4 ){
+		if(len > 1e-4){
 			tnormal /= len;
-			projBox = fabs( tnormal * bax ) * bhs.x + fabs( tnormal * baz ) * bhs.z;
-			dot1 = corners[ id1 ] * tnormal;
-			if( dot1 > 0.0 ){
-				dot2 = corners[ id2 ] * tnormal - projBox;
-				if( dot2 > 0.0 ){
+			projBox = fabs(tnormal * bax) * bhs.x + fabs(tnormal * baz) * bhs.z;
+			dot1 = corners[id1] * tnormal;
+			if(dot1 > 0.0){
+				dot2 = corners[id2] * tnormal - projBox;
+				if(dot2 > 0.0){
 					testDist = dot1 - projBox;
-					if( dot2 < testDist ) testDist = dot2;
-					if( testDist > 0.0 ){
+					if(dot2 < testDist) testDist = dot2;
+					if(testDist > 0.0){
 						dispDist = displacement * tnormal;
-						if( dispDist <= testDist ) return 1.0;
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = -tnormal;
+							if(normal) bestNormal = -tnormal;
 							hitAtStart = false;
 						}
 					}
 				}
 			}else{
-				dot2 = -( corners[ id2 ] * tnormal + projBox );
-				if( dot2 > 0.0 ){
-					testDist = -( dot1 + projBox );
-					if( dot2 < testDist ) testDist = dot2;
-					if( testDist > 0.0 ){
-						dispDist = -( displacement * tnormal );
-						if( dispDist <= testDist ) return 1.0;
+				dot2 = -(corners[id2] * tnormal + projBox);
+				if(dot2 > 0.0){
+					testDist = -(dot1 + projBox);
+					if(dot2 < testDist) testDist = dot2;
+					if(testDist > 0.0){
+						dispDist = -(displacement * tnormal);
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = tnormal;
+							if(normal) bestNormal = tnormal;
 							hitAtStart = false;
 						}
 					}
@@ -741,40 +741,40 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 		}
 
 		// cross axes[ i ] with box z-axis
-		tnormal = pEdges[ i ] % baz;
+		tnormal = pEdges[i] % baz;
 		len = tnormal.Length();
-		if( len > 1e-4 ){
+		if(len > 1e-4){
 			tnormal /= len;
-			projBox = fabs( tnormal * bax ) * bhs.x + fabs( tnormal * bay ) * bhs.y;
-			dot1 = corners[ id1 ] * tnormal;
-			if( dot1 > 0.0 ){
-				dot2 = corners[ id2 ] * tnormal - projBox;
-				if( dot2 > 0.0 ){
+			projBox = fabs(tnormal * bax) * bhs.x + fabs(tnormal * bay) * bhs.y;
+			dot1 = corners[id1] * tnormal;
+			if(dot1 > 0.0){
+				dot2 = corners[id2] * tnormal - projBox;
+				if(dot2 > 0.0){
 					testDist = dot1 - projBox;
-					if( dot2 < testDist ) testDist = dot2;
-					if( testDist > 0.0 ){
+					if(dot2 < testDist) testDist = dot2;
+					if(testDist > 0.0){
 						dispDist = displacement * tnormal;
-						if( dispDist <= testDist ) return 1.0;
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = -tnormal;
+							if(normal) bestNormal = -tnormal;
 							hitAtStart = false;
 						}
 					}
 				}
 			}else{
-				dot2 = -( corners[ id2 ] * tnormal + projBox );
-				if( dot2 > 0.0 ){
-					testDist = -( dot1 + projBox );
-					if( dot2 < testDist ) testDist = dot2;
-					if( testDist > 0.0 ){
-						dispDist = -( displacement * tnormal );
-						if( dispDist <= testDist ) return 1.0;
+				dot2 = -(corners[id2] * tnormal + projBox);
+				if(dot2 > 0.0){
+					testDist = -(dot1 + projBox);
+					if(dot2 < testDist) testDist = dot2;
+					if(testDist > 0.0){
+						dispDist = -(displacement * tnormal);
+						if(dispDist <= testDist) return 1.0;
 						testDist /= dispDist;
-						if( testDist > bestDist ){
+						if(testDist > bestDist){
 							bestDist = testDist;
-							if( normal ) bestNormal = tnormal;
+							if(normal) bestNormal = tnormal;
 							hitAtStart = false;
 						}
 					}
@@ -784,51 +784,51 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	}
 	
 	// set normal if required
-	if( normal ){
+	if(normal){
 		// if there is a collision at point 0 try to calculate a reasonable normal
-		if( hitAtStart ){
-			decDVector projPoint = bc - pNormal * ( bc * pNormal - pDist );
-			if( decDCollisionDetection::PointInTriangle( pCorners[ 0 ], pCorners[ 1 ], pCorners[ 2 ], projPoint ) ){
-				normal->Set( pNormal );
+		if(hitAtStart){
+			decDVector projPoint = bc - pNormal * (bc * pNormal - pDist);
+			if(decDCollisionDetection::PointInTriangle(pCorners[0], pCorners[1], pCorners[2], projPoint)){
+				normal->Set(pNormal);
 			}else{
-				projPoint = decDCollisionDetection::ClosestPointOnTriangleEdge( pCorners[ 0 ],
-					pCorners[ 1 ], pCorners[ 2 ], projPoint ) - bc;
-				double fx = fabs( projPoint.x );
-				double fy = fabs( projPoint.y );
-				double fz = fabs( projPoint.z );
-				if( fx > fy ){
-					if( fx > fz ){
-						if( projPoint.x > 0.0 ){
-							normal->Set( -1.0, 0.0, 0.0 );
+				projPoint = decDCollisionDetection::ClosestPointOnTriangleEdge(pCorners[0],
+					pCorners[1], pCorners[2], projPoint) - bc;
+				double fx = fabs(projPoint.x);
+				double fy = fabs(projPoint.y);
+				double fz = fabs(projPoint.z);
+				if(fx > fy){
+					if(fx > fz){
+						if(projPoint.x > 0.0){
+							normal->Set(-1.0, 0.0, 0.0);
 						}else{
-							normal->Set( 1.0, 0.0, 0.0 );
+							normal->Set(1.0, 0.0, 0.0);
 						}
 					}else{
-						if( projPoint.z > 0.0 ){
-							normal->Set( 0.0, 0.0, -1.0 );
+						if(projPoint.z > 0.0){
+							normal->Set(0.0, 0.0, -1.0);
 						}else{
-							normal->Set( 0.0, 0.0, 1.0 );
+							normal->Set(0.0, 0.0, 1.0);
 						}
 					}
 				}else{
-					if( fy > fz ){
-						if( projPoint.y > 0.0 ){
-							normal->Set( 0.0, -1.0, 0.0 );
+					if(fy > fz){
+						if(projPoint.y > 0.0){
+							normal->Set(0.0, -1.0, 0.0);
 						}else{
-							normal->Set( 0.0, 1.0, 0.0 );
+							normal->Set(0.0, 1.0, 0.0);
 						}
 					}else{
-						if( projPoint.z > 0.0 ){
-							normal->Set( 0.0, 0.0, -1.0 );
+						if(projPoint.z > 0.0){
+							normal->Set(0.0, 0.0, -1.0);
 						}else{
-							normal->Set( 0.0, 0.0, 1.0 );
+							normal->Set(0.0, 0.0, 1.0);
 						}
 					}
 				}
 			}
 		// set found normal but normalize first
 		}else{
-			normal->Set( bestNormal );
+			normal->Set(bestNormal);
 			normal->Normalize();
 		}
 	}
@@ -836,7 +836,7 @@ double decDCollisionTriangle::BoxMoveHitsTriangle( decDCollisionBox *box, const 
 	return bestDist;
 }
 
-double decDCollisionTriangle::TriangleMoveHitsTriangle( decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal ){
+double decDCollisionTriangle::TriangleMoveHitsTriangle(decDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
@@ -845,19 +845,19 @@ double decDCollisionTriangle::TriangleMoveHitsTriangle( decDCollisionTriangle *t
 // management
 ///////////////
 
-void decDCollisionTriangle::SetCorners( const decDVector &corner1, const decDVector &corner2, const decDVector &corner3 ){
-	decDVector newNormal = ( corner2 - corner1 ) % ( corner3 - corner2 );
+void decDCollisionTriangle::SetCorners(const decDVector &corner1, const decDVector &corner2, const decDVector &corner3){
+	decDVector newNormal = (corner2 - corner1) % (corner3 - corner2);
 	newNormal.Normalize();
-	SetCorners( corner1, corner2, corner3, newNormal );
+	SetCorners(corner1, corner2, corner3, newNormal);
 }
 
-void decDCollisionTriangle::SetCorners( const decDVector &corner1, const decDVector &corner2, const decDVector &corner3, const decDVector &normal ){
-	pCorners[ 0 ] = corner1;
-	pCorners[ 1 ] = corner2;
-	pCorners[ 2 ] = corner3;
-	pEdges[ 0 ] = corner2 - corner1;
-	pEdges[ 1 ] = corner3 - corner2;
-	pEdges[ 2 ] = corner1 - corner3;
+void decDCollisionTriangle::SetCorners(const decDVector &corner1, const decDVector &corner2, const decDVector &corner3, const decDVector &normal){
+	pCorners[0] = corner1;
+	pCorners[1] = corner2;
+	pCorners[2] = corner3;
+	pEdges[0] = corner2 - corner1;
+	pEdges[1] = corner3 - corner2;
+	pEdges[2] = corner1 - corner3;
 	pNormal = normal;
 	pDist = corner1 * pNormal;
 }

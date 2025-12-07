@@ -67,17 +67,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** Family. */
-	inline uint32_t GetFamily() const{ return pFamily; }
+	inline uint32_t GetFamily() const{return pFamily;}
 	
 	/** Index. */
-	inline uint32_t GetIndex() const{ return pIndex; }
+	inline uint32_t GetIndex() const{return pIndex;}
 	
 	/** Queue. */
-	inline VkQueue GetQueue() const{ return pQueue; }
-	inline operator VkQueue() const{ return pQueue; }
+	inline VkQueue GetQueue() const{return pQueue;}
+	inline operator VkQueue() const{return pQueue;}
 	
 	/** Create command pool compatible with this queue and all queues of the same family. */
 	deTObjectReference<devkCommandPool> CreateCommandPool();

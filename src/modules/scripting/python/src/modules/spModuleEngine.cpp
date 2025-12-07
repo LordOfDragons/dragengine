@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-spModuleEngine::spModuleEngine( ScriptingPython &sp ) : spBaseModule( sp, "Engine" ){
-	SetDocumentation( "Drag[en]gine Game Engine" );
-	SetParent( sp.GetNamespaceDragengine() );
+spModuleEngine::spModuleEngine(ScriptingPython &sp) : spBaseModule(sp, "Engine"){
+	SetDocumentation("Drag[en]gine Game Engine");
+	SetParent(sp.GetNamespaceDragengine());
 	
-	AddMethod( "quit", ( PyCFunction )cfQuit, METH_NOARGS, "Quits the game." );
+	AddMethod("quit", (PyCFunction)cfQuit, METH_NOARGS, "Quits the game.");
 }
 
 spModuleEngine::~spModuleEngine(){
@@ -60,9 +60,9 @@ spModuleEngine::~spModuleEngine(){
 // Functions
 //////////////
 
-PyObject *spModuleEngine::cfQuit( PyObject *myself ){
-	GetOwnerClass( myself )->GetSP().GetGameEngine()->Quit();
+PyObject *spModuleEngine::cfQuit(PyObject *myself){
+	GetOwnerClass(myself)->GetSP().GetGameEngine()->Quit();
 	
-	Py_INCREF( Py_None );
+	Py_INCREF(Py_None);
 	return Py_None;
 }

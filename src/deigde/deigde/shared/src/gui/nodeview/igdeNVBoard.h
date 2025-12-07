@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeNVBoard( igdeEnvironment &environment );
+	igdeNVBoard(igdeEnvironment &environment);
 	
 	
 	
@@ -86,16 +86,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{ return pBgColor; }
+	inline const decColor &GetBgColor() const{return pBgColor;}
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	
 	/** \brief Button is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -103,10 +103,10 @@ public:
 	decPoint GetSize() const;
 	
 	/** \brief Offset of board content relative to board center. */
-	inline const decPoint &GetOffset() const{ return pOffset; }
+	inline const decPoint &GetOffset() const{return pOffset;}
 	
 	/** \brief Set offset of board content relative to board center. */
-	void SetOffset( const decPoint &offset );
+	void SetOffset(const decPoint &offset);
 	
 	/** \brief Clear board. */
 	void Clear();
@@ -117,25 +117,25 @@ public:
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
-	igdeNVNode *GetNodeAt( int index ) const;
+	igdeNVNode *GetNodeAt(int index) const;
 	
 	/** \brief Has node. */
-	bool HasNode( igdeNVNode *node ) const;
+	bool HasNode(igdeNVNode *node) const;
 	
 	/** \brief Add node. */
-	void AddNode( igdeNVNode *node );
+	void AddNode(igdeNVNode *node);
 	
 	/** \brief Remove node. */
-	void RemoveNode( igdeNVNode *node );
+	void RemoveNode(igdeNVNode *node);
 	
 	/** \brief Remove all nodes. */
 	void RemoveAllNodes();
 	
 	/** \brief Active node. or NULL */
-	inline igdeNVNode *GetActiveNode() const{ return ( igdeNVNode* )( deObject* )pActiveNode; }
+	inline igdeNVNode *GetActiveNode() const{return (igdeNVNode*)(deObject*)pActiveNode;}
 	
 	/** \brief Set active node or NULL. */
-	void SetActiveNode( igdeNVNode *node );
+	void SetActiveNode(igdeNVNode *node);
 	
 	
 	
@@ -143,51 +143,51 @@ public:
 	int GetLinkCount() const;
 	
 	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt( int index ) const;
+	igdeNVLink *GetLinkAt(int index) const;
 	
 	/** \brief Link between source and target or NULL if not linked. */
-	igdeNVLink *GetLinkBetween( igdeNVSlot *source, igdeNVSlot *target ) const;
+	igdeNVLink *GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
 	
 	/** \brief Has link. */
-	bool HasLink( igdeNVLink *link ) const;
+	bool HasLink(igdeNVLink *link) const;
 	
 	/** \brief Has link between source and target. */
-	bool HasLinkBetween( igdeNVSlot *source, igdeNVSlot *target ) const;
+	bool HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
 	
 	/** \brief Can link. */
-	bool CanLink( igdeNVSlot *source, igdeNVSlot *target );
+	bool CanLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Add link. */
-	igdeNVLink *AddLink( igdeNVSlot *source, igdeNVSlot *target );
+	igdeNVLink *AddLink(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Remove link. */
-	void RemoveLink( igdeNVLink *link );
+	void RemoveLink(igdeNVLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
 	
 	/** \brief Remove all links with sockets belonging to node. */
-	void RemoveAllNodeLinks( igdeNVNode *node );
+	void RemoveAllNodeLinks(igdeNVNode *node);
 	
 	/** \brief Link closest to position inside range in board coordinate system or NULL. */
-	igdeNVLink *ClosestLinkNear( const decPoint &position, float range = 6.0f ) const;
+	igdeNVLink *ClosestLinkNear(const decPoint &position, float range = 6.0f) const;
 	
 	/** \brief Show context menu at position. */
-	void ShowContextMenu( const decPoint &position );
+	void ShowContextMenu(const decPoint &position);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeNVBoardListener *listener );
+	void AddListener(igdeNVBoardListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeNVBoardListener *listener );
+	void RemoveListener(igdeNVBoardListener *listener);
 	
 	/** \brief Notify link added. */
-	void NotifyLinkAdded( igdeNVLink *link );
+	void NotifyLinkAdded(igdeNVLink *link);
 	
 	/** \brief Notify link removed. */
-	void NotifyLinkRemoved( igdeNVSlot *source, igdeNVSlot *target );
+	void NotifyLinkRemoved(igdeNVSlot *source, igdeNVSlot *target);
 	
 	/** \brief Notify all links removed. */
 	void NotifyAllLinksRemoved();

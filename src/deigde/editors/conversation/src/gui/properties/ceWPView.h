@@ -140,7 +140,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	ceWPView( ceWindowProperties &windowProperties );
+	ceWPView(ceWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -153,13 +153,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline ceWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline ceConversation *GetConversation() const{return pConversation;}
 	
 	/** Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Update view. */
 	void UpdateView();
@@ -210,7 +210,7 @@ public:
 	void UpdateActorGestures();
 	
 	/** Select actor pose gesture. */
-	void SelectActorPoseGesture( ceActorGesture *gesture );
+	void SelectActorPoseGesture(ceActorGesture *gesture);
 	
 	/** Update actor gesture. */
 	void UpdateActorGesture();
@@ -222,7 +222,7 @@ public:
 	void UpdateActorController();
 	
 	/** Select active actor pose. */
-	void SelectActorPoseController( ceActorController *controller );
+	void SelectActorPoseController(ceActorController *controller);
 	
 	/** Update actor commands list. */
 	void UpdateActorCommands();

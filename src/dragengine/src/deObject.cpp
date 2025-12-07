@@ -37,7 +37,7 @@
 ////////////////////////////
 
 deObject::deObject() :
-pRefCount( 1 ){
+pRefCount(1){
 }
 
 deObject::~deObject(){
@@ -54,12 +54,12 @@ void deObject::AddReference(){
 
 void deObject::FreeReference(){
 	pRefCount--;
-	if( pRefCount > 0 ){
+	if(pRefCount > 0){
 		return;
 	}
 	
-	if( pRefCount < 0 ){
-		deeInvalidParam( __FILE__, __LINE__ ).PrintError();
+	if(pRefCount < 0){
+		deeInvalidParam(__FILE__, __LINE__).PrintError();
 		return;
 	}
 	

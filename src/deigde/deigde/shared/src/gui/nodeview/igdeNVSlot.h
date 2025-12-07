@@ -66,10 +66,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create checkbox. */
-	igdeNVSlot( igdeEnvironment &environment, const char *text, bool isInput );
+	igdeNVSlot(igdeEnvironment &environment, const char *text, bool isInput);
 	
 	/** \brief Create checkbox. */
-	igdeNVSlot( igdeEnvironment &environment, const char *text, const char *description, bool isInput );
+	igdeNVSlot(igdeEnvironment &environment, const char *text, const char *description, bool isInput);
 	
 	
 	
@@ -89,40 +89,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Button is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Slot is an input slot (left side) or output slot (right side). */
-	inline bool GetIsInput() const{ return pIsInput; }
+	inline bool GetIsInput() const{return pIsInput;}
 	
 	/** \brief Color indicating slot type. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set color indicating slot type. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Owner node or NULL. */
-	inline igdeNVNode *GetOwnerNode() const{ return pOwnerNode; }
+	inline igdeNVNode *GetOwnerNode() const{return pOwnerNode;}
 	
 	/**
 	 * \brief Set owner node or NULL.
 	 * \warning For use by \em igdeNVNode only!
 	 */
-	void SetOwnerNode( igdeNVNode *node );
+	void SetOwnerNode(igdeNVNode *node);
 	
 	
 	
@@ -130,22 +130,22 @@ public:
 	int GetLinkCount() const;
 	
 	/** \brief Link at index. */
-	igdeNVLink *GetLinkAt( int index ) const;
+	igdeNVLink *GetLinkAt(int index) const;
 	
 	/** \brief Has link. */
-	bool HasLink( igdeNVLink *link ) const;
+	bool HasLink(igdeNVLink *link) const;
 	
 	/**
 	 * \brief Add link.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
-	void AddLink( igdeNVLink *link );
+	void AddLink(igdeNVLink *link);
 	
 	/**
 	 * \brief Remove link.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
-	void RemoveLink( igdeNVLink *link );
+	void RemoveLink(igdeNVLink *link);
 	
 	/**
 	 * \brief Remove all links.

@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device button. */
-	debiDeviceButton( deBeOSInput &module );
+	debiDeviceButton(deBeOSInput &module);
 	
 protected:
 	/** \brief Clean up device button. */
@@ -79,76 +79,76 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Input module. */
-	inline deBeOSInput &GetModule() const{ return pModule; }
+	inline deBeOSInput &GetModule() const{return pModule;}
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Button is pressed. */
-	inline bool GetPressed() const{ return pPressed; }
+	inline bool GetPressed() const{return pPressed;}
 	
 	/** \brief Set if button is presssed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
 	
 	
 	/** \brief Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline deImage *GetDisplayImage() const{return pDisplayImage;}
 	
 	/** \brief Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
 	
 	/** \brief Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** \brief Set display image and icons. */
-	void SetDisplayImages( const debiDeviceButton &button );
+	void SetDisplayImages(const debiDeviceButton &button);
 	
 	/** \brief Display text. */
-	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	inline const decString &GetDisplayText() const{return pDisplayText;}
 	
 	/** \brief Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
 	/** \brief BeOS input code. */
-	inline int GetBICode() const{ return pBICode; }
+	inline int GetBICode() const{return pBICode;}
 	
 	/** \brief Set BeOS input code. */
-	void SetBICode( int code );
+	void SetBICode(int code);
 	
 	/** \brief Representative BeOS key character. */
-	inline int GetBIChar() const{ return pBIChar; }
+	inline int GetBIChar() const{return pBIChar;}
 	
 	/** \brief Set representative BeOS input character. */
-	void SetBIChar( int character );
+	void SetBIChar(int character);
 	
 	/** \brief Input event key code if this is a key. */
-	inline deInputEvent::eKeyCodes GetKeyCode() const{ return pKeyCode; }
+	inline deInputEvent::eKeyCodes GetKeyCode() const{return pKeyCode;}
 	
 	/** \brief Set input event key code if this is a key. */
-	void SetKeyCode( deInputEvent::eKeyCodes &keyCode );
+	void SetKeyCode(deInputEvent::eKeyCodes &keyCode);
 	
 	/** \brief Match priority. */
-	inline int GetMatchPriority() const{ return pMatchPriority; }
+	inline int GetMatchPriority() const{return pMatchPriority;}
 	
 	/** \brief Set match priority. */
-	void SetMatchPriority( int priority );
+	void SetMatchPriority(int priority);
 	
 	
 	
 	/** \brief Update engine input device information button. */
-	void GetInfo( deInputDeviceButton &info ) const;
+	void GetInfo(deInputDeviceButton &info) const;
 	/*@}*/
 };
 

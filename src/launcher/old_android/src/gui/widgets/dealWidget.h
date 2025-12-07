@@ -81,10 +81,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidget( dealDisplay &display );
+	dealWidget(dealDisplay &display);
 	
 	/** \brief Create widget. */
-	dealWidget( dealDisplay &display, const decPoint &position, const decPoint &size );
+	dealWidget(dealDisplay &display, const decPoint &position, const decPoint &size);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidget();
@@ -95,20 +95,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{ return pDisplay; }
+	inline dealDisplay &GetDisplay() const{return pDisplay;}
 	
 	
 	
 	/** \brief Set widget from gui theme. */
-	virtual void SetFromGuiTheme( const dealGuiTheme &guitheme );
+	virtual void SetFromGuiTheme(const dealGuiTheme &guitheme);
 	
 	
 	
 	/** \brief Parent widget or \em NULL if not set. */
-	inline dealWidgetLayout *GetParent() const{ return pParent; }
+	inline dealWidgetLayout *GetParent() const{return pParent;}
 	
 	/** \brief Set parent widget or \em NULL if not set. */
-	void SetParent( dealWidgetLayout *parent );
+	void SetParent(dealWidgetLayout *parent);
 	
 	/** \brief Dirty parent layout. */
 	void DirtyParentLayout();
@@ -116,33 +116,33 @@ public:
 	
 	
 	/** \brief Position. */
-	inline const decPoint &GetPosition() const{ return pPosition; }
+	inline const decPoint &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Size. */
-	inline const decPoint &GetSize() const{ return pSize; }
+	inline const decPoint &GetSize() const{return pSize;}
 	
 	/** \brief Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	/** \brief Background color. */
-	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
+	inline const decColor &GetBackgroundColor() const{return pBackgroundColor;}
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	
 	
 	/** \brief Explicit minimum size if set. */
-	inline const decPoint &GetExplicitMinimumSize() const{ return pExplicitMinSize; }
+	inline const decPoint &GetExplicitMinimumSize() const{return pExplicitMinSize;}
 	
 	/** \brief Explicit minimum size is set. */
-	inline bool GetHasExplicitMinimumSize() const{ return pHasExplicitMinSize; }
+	inline bool GetHasExplicitMinimumSize() const{return pHasExplicitMinSize;}
 	
 	/** \brief Set explicit minimum size. */
-	void SetExplicitMinimumSize( const decPoint &size );
+	void SetExplicitMinimumSize(const decPoint &size);
 	
 	/** \brief Clear explicit minimum size. */
 	void ClearExplicitMinimumSize();
@@ -153,37 +153,37 @@ public:
 	
 	
 	/** \brief Left padding. */
-	inline int GetPaddingLeft() const{ return pPaddingLeft; }
+	inline int GetPaddingLeft() const{return pPaddingLeft;}
 	
 	/** \brief Set left padding. */
-	void SetPaddingLeft( int padding );
+	void SetPaddingLeft(int padding);
 	
 	/** \brief Top padding. */
-	inline int GetPaddingTop() const{ return pPaddingTop; }
+	inline int GetPaddingTop() const{return pPaddingTop;}
 	
 	/** \brief Set top padding. */
-	void SetPaddingTop( int padding );
+	void SetPaddingTop(int padding);
 	
 	/** \brief Right padding. */
-	inline int GetPaddingRight() const{ return pPaddingRight; }
+	inline int GetPaddingRight() const{return pPaddingRight;}
 	
 	/** \brief Set right padding. */
-	void SetPaddingRight( int padding );
+	void SetPaddingRight(int padding);
 	
 	/** \brief Bottom padding. */
-	inline int GetPaddingBottom() const{ return pPaddingBottom; }
+	inline int GetPaddingBottom() const{return pPaddingBottom;}
 	
 	/** \brief Set bottom padding. */
-	void SetPaddingBottom( int padding );
+	void SetPaddingBottom(int padding);
 	
 	/** \brief Set padding. */
-	void SetPadding( int horizontal, int vertical );
+	void SetPadding(int horizontal, int vertical);
 	
 	/** \brief Set padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Set padding. */
-	void SetPaddingLeft( int left, int top, int right, int bottom );
+	void SetPaddingLeft(int left, int top, int right, int bottom);
 	
 	/** \brief Size of content area which is widget size minus padding. */
 	decPoint GetContentArea() const;
@@ -191,16 +191,16 @@ public:
 	
 	
 	/** \brief Widget is visible. */
-	inline bool GetVisible() const{ return pVisible; }
+	inline bool GetVisible() const{return pVisible;}
 	
 	/** \brief Set if widget is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Widget and all parent widgets are enabled. */
 	bool GetFullEnabled() const;
@@ -214,10 +214,10 @@ public:
 	decPoint GetScreenPosition() const;
 	
 	/** \brief Position is inside widget. */
-	bool IsPointInside( const decPoint &point ) const;
+	bool IsPointInside(const decPoint &point) const;
 	
 	/** \brief Widget containing position or \em null if not found. */
-	virtual dealWidget *WidgetAtPosition( const decPoint &point ) const;
+	virtual dealWidget *WidgetAtPosition(const decPoint &point) const;
 	
 	
 	
@@ -230,13 +230,13 @@ public:
 	
 	
 	/** \brief Render. */
-	virtual void Render( const sRenderContext &context );
+	virtual void Render(const sRenderContext &context);
 	
 	/** \brief Render background. */
-	virtual void RenderBackground( const sRenderContext &context );
+	virtual void RenderBackground(const sRenderContext &context);
 	
 	/** \brief Render content. */
-	virtual void RenderContent( const sRenderContext &context );
+	virtual void RenderContent(const sRenderContext &context);
 	
 	
 	
@@ -264,94 +264,94 @@ public:
 	 * \brief Key has been pressed down.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyPress( int keycode );
+	virtual void OnKeyPress(int keycode);
 	
 	/**
 	 * \brief Key has been released.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyRelease( int keycode );
+	virtual void OnKeyRelease(int keycode);
 	
 	/**
 	 * \brief Mouse button press / finger press.
 	* \param[in] buttons Buttons pressed while pressing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMousePress( int buttons, const decPoint &position );
+	virtual void OnMousePress(int buttons, const decPoint &position);
 	
 	/**
 	 * \brief Mouse button release / finger release.
 	 * \param[in] buttons Buttons pressed while releasing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMouseRelease( int buttons, const decPoint &position );
+	virtual void OnMouseRelease(int buttons, const decPoint &position);
 	
 	/**
 	 * \brief Mouse/finger moved while pressing display.
 	 * \param[in] buttons Buttons pressed while moving. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMouseMove( int buttons, const decPoint &position );
+	virtual void OnMouseMove(int buttons, const decPoint &position);
 	
 	
 	
 	/** \brief Set transformation shader parameter. */
-	void ShaderSetTransform( const sRenderContext &context,
-		dealShader &shader, int x1, int y1, int x2, int y2 ) const;
+	void ShaderSetTransform(const sRenderContext &context,
+		dealShader &shader, int x1, int y1, int x2, int y2) const;
 	
 	/** \brief Set transformation shader parameter. */
-	void ShaderSetTransform( const sRenderContext &context,
-		dealShader &shader, const decPoint &position, const decPoint &size ) const;
+	void ShaderSetTransform(const sRenderContext &context,
+		dealShader &shader, const decPoint &position, const decPoint &size) const;
 	
 	/** \brief Set texture coordinates transform to default. */
-	void ShaderSetTCTransform( dealShader &shader );
+	void ShaderSetTCTransform(dealShader &shader);
 	
 	/** \brief Set texture coordinates transform. */
-	void ShaderSetTCTransform( dealShader &shader, const decTexMatrix &matrix );
+	void ShaderSetTCTransform(dealShader &shader, const decTexMatrix &matrix);
 	
 	/** \brief Set texture coordinates transform. */
-	void ShaderSetTCTransform( dealShader &shader, const decTexMatrix2 &matrix );
+	void ShaderSetTCTransform(dealShader &shader, const decTexMatrix2 &matrix);
 	
 	/** \brief Set texture coordinates transform. */
-	void ShaderSetTCTransform( dealShader &shader, float u1, float v1, float u2, float v2 );
+	void ShaderSetTCTransform(dealShader &shader, float u1, float v1, float u2, float v2);
 	
 	/** \brief Set texture coordinates transform. */
-	void ShaderSetTCTransform( dealShader &shader, const decVector2 &position, const decVector2 &size );
+	void ShaderSetTCTransform(dealShader &shader, const decVector2 &position, const decVector2 &size);
 	
 	/** \brief Set color matrix shader parameter. */
-	void ShaderSetColorMatrix( dealShader &shader, const decColor &color ) const;
+	void ShaderSetColorMatrix(dealShader &shader, const decColor &color) const;
 	
 	/** \brief Set color matrix shader parameter. */
-	void ShaderSetColorMatrixDisabled( dealShader &shader, const decColor &color ) const;
+	void ShaderSetColorMatrixDisabled(dealShader &shader, const decColor &color) const;
 	
 	/** \brief Set color matrix shader parameter. */
-	void ShaderSetColorMatrix( dealShader &shader, const decColorMatrix &matrix ) const;
+	void ShaderSetColorMatrix(dealShader &shader, const decColorMatrix &matrix) const;
 	
 	/** \brief Set gamma shader parameter. */
-	void ShaderSetGamma( dealShader &shader, float gamma ) const;
+	void ShaderSetGamma(dealShader &shader, float gamma) const;
 	
 	/** \brief Set clip rect shader parameter. */
-	void ShaderSetClipRect( const sRenderContext &context, dealShader &shader ) const;
+	void ShaderSetClipRect(const sRenderContext &context, dealShader &shader) const;
 	
 	/** \brief Set clip rect shader parameter. */
-	void ShaderSetClipRect( const sRenderContext &context, dealShader &shader,
-		int x1, int y1, int x2, int y2 ) const;
+	void ShaderSetClipRect(const sRenderContext &context, dealShader &shader,
+		int x1, int y1, int x2, int y2) const;
 	
 	/** \brief Set clip rect shader parameter. */
-	void ShaderSetClipRect( const sRenderContext &context, dealShader &shader,
-		const decPoint &position, const decPoint &size ) const;
+	void ShaderSetClipRect(const sRenderContext &context, dealShader &shader,
+		const decPoint &position, const decPoint &size) const;
 	
 	/** \brief Set texture coordinate clamp shader parameter to default. */
-	void ShaderSetTCClamp( dealShader &shader ) const;
+	void ShaderSetTCClamp(dealShader &shader) const;
 	
 	/** \brief Set texture coordinate clamp shader parameter. */
-	void ShaderSetTCClamp( dealShader &shader, float u1, float v1, float u2, float v2 ) const;
+	void ShaderSetTCClamp(dealShader &shader, float u1, float v1, float u2, float v2) const;
 	
 	/** \brief Set texture coordinate clamp shader parameter. */
-	void ShaderSetTCClamp( dealShader &shader, const decVector2 &position, const decVector2 &size ) const;
+	void ShaderSetTCClamp(dealShader &shader, const decVector2 &position, const decVector2 &size) const;
 	
 	/** \brief Bind texture. */
-	void BindTexture( int stage, const dealImage &image, bool linearFiltering = true, bool repeatWrap = false );
+	void BindTexture(int stage, const dealImage &image, bool linearFiltering = true, bool repeatWrap = false);
 	
 	/** \brief Unbind texture. */
-	void UnbindTexture( int stage );
+	void UnbindTexture(int stage);
 	
 	/** \brief Draw point. */
 	void DrawPoint();

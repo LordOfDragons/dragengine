@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleTrackToSetTrackBone::aeURuleTrackToSetTrackBone( aeRuleTrackTo *rule, const char *newName ){
-	if( ! rule || ! newName ){
-		DETHROW( deeInvalidParam );
+aeURuleTrackToSetTrackBone::aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, const char *newName){
+	if(! rule || ! newName){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	pOldName = rule->GetTrackBone();
 	pNewName = newName;
 	
-	SetShortInfo( "TrackTo Set Track Bone" );
+	SetShortInfo("TrackTo Set Track Bone");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleTrackToSetTrackBone::~aeURuleTrackToSetTrackBone(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ aeURuleTrackToSetTrackBone::~aeURuleTrackToSetTrackBone(){
 ///////////////
 
 void aeURuleTrackToSetTrackBone::Undo(){
-	pRule->SetTrackBone( pOldName.GetString() );
+	pRule->SetTrackBone(pOldName.GetString());
 }
 
 void aeURuleTrackToSetTrackBone::Redo(){
-	pRule->SetTrackBone( pNewName.GetString() );
+	pRule->SetTrackBone(pNewName.GetString());
 }

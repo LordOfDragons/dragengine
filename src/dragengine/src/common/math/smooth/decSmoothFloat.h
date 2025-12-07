@@ -56,7 +56,7 @@ public:
 	decSmoothFloat();
 	
 	/** \brief Create copy of a smooth float. */
-	decSmoothFloat( const decSmoothFloat &copy );
+	decSmoothFloat(const decSmoothFloat &copy);
 	
 	/** \brief Clean up smooth float. */
 	~decSmoothFloat();
@@ -67,34 +67,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** \brief Set current value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Goal value. */
-	inline float GetGoal() const{ return pGoal; }
+	inline float GetGoal() const{return pGoal;}
 	
 	/** \brief Set goal value. */
-	void SetGoal( float goal );
+	void SetGoal(float goal);
 	
 	/** \brief Adjustment time in seconds. */
-	inline float GetAdjustTime() const{ return pAdjustTime; }
+	inline float GetAdjustTime() const{return pAdjustTime;}
 	
 	/** \brief Adjustment time in seconds. Clamped to 0 or larger. */
-	void SetAdjustTime( float adjustTime );
+	void SetAdjustTime(float adjustTime);
 	
 	/** \brief Adjustment range in units. */
-	inline float GetAdjustRange() const{ return pAdjustRange; }
+	inline float GetAdjustRange() const{return pAdjustRange;}
 	
 	/** \brief Set adjustment range in units. Clamped to 0 or larger. */
-	void SetAdjustRange( float limit );
+	void SetAdjustRange(float limit);
 	
 	/** \brief Change speed of the value in units per second. */
-	inline float GetChangeSpeed() const{ return pChangeSpeed; }
+	inline float GetChangeSpeed() const{return pChangeSpeed;}
 	
 	/** \brief Set change speed of the value in units per second. */
-	void SetChangeSpeed( float changeSpeed );
+	void SetChangeSpeed(float changeSpeed);
 	
 	
 	
@@ -107,7 +107,7 @@ public:
 	 * Goal is not modified.
 	 * \param[in] elapsed Elapsed time in seconds. If less than 0.001s update is skipped.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	
@@ -119,17 +119,17 @@ public:
 	 * 
 	 * Two smooth floats are equal if their value difference is less than \em FLOAT_SAFE_EPSILON.
 	 */
-	bool operator==( const decSmoothFloat &other ) const;
+	bool operator==(const decSmoothFloat &other) const;
 	
 	/**
 	 * \brief Determine if two smooth float are not equal.
 	 * 
 	 * Two smooth floats are not equal if their value difference is larger than or equal to \em FLOAT_SAFE_EPSILON.
 	 */
-	bool operator!=( const decSmoothFloat &other ) const;
+	bool operator!=(const decSmoothFloat &other) const;
 	
 	/** \brief Copy another smooth float to this smooth float. */
-	decSmoothFloat &operator=( const decSmoothFloat &other );
+	decSmoothFloat &operator=(const decSmoothFloat &other);
 	/*@}*/
 	
 	

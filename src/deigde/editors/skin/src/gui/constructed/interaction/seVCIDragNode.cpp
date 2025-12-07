@@ -53,9 +53,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seVCIDragNode::seVCIDragNode( seViewConstructedView &view ) :
-pView( view ),
-pDragAction( edaNone )
+seVCIDragNode::seVCIDragNode(seViewConstructedView &view) :
+pView(view),
+pDragAction(edaNone)
 {
 }
 
@@ -68,12 +68,12 @@ seVCIDragNode::~seVCIDragNode(){
 ///////////////
 
 bool seVCIDragNode::OnDragBegin(){
-	if( ! pView.GetSkin() || pDragAction != edaNone || GetDragState() != edsLeft ){
+	if(! pView.GetSkin() || pDragAction != edaNone || GetDragState() != edsLeft){
 		return false;
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if( ! property ){
+	if(! property){
 		return 0;
 	}
 	
@@ -82,100 +82,100 @@ bool seVCIDragNode::OnDragBegin(){
 	// check if a marker is clicked
 	const decPoint &position = GetDragOrigin();
 	
-	if( pView.GetCanvasMarkerBorder()->GetVisible() ){
-		if( pInsideMarker( *pView.GetCanvasMarkerResizeTopLeft(), position ) ){
+	if(pView.GetCanvasMarkerBorder()->GetVisible()){
+		if(pInsideMarker(*pView.GetCanvasMarkerResizeTopLeft(), position)){
 			pDragAction = edaResizeTopLeft;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeTopRight(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeTopRight(), position)){
 			pDragAction = edaResizeTopRight;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeBottomLeft(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeBottomLeft(), position)){
 			pDragAction = edaResizeBottomLeft;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeBottomRight(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeBottomRight(), position)){
 			pDragAction = edaResizeBottomRight;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeTop(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeTop(), position)){
 			pDragAction = edaResizeTop;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeBottom(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeBottom(), position)){
 			pDragAction = edaResizeBottom;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeLeft(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeLeft(), position)){
 			pDragAction = edaResizeLeft;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerResizeRight(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerResizeRight(), position)){
 			pDragAction = edaResizeRight;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerRotateTopLeft(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerRotateTopLeft(), position)){
 			pDragAction = edaRotateTopLeft;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerRotateTopRight(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerRotateTopRight(), position)){
 			pDragAction = edaRotateTopRight;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerRotateBottomLeft(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerRotateBottomLeft(), position)){
 			pDragAction = edaRotateBottomLeft;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerRotateBottomRight(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerRotateBottomRight(), position)){
 			pDragAction = edaRotateBottomRight;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerShearTop(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerShearTop(), position)){
 			pDragAction = edaShearTop;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerShearBottom(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerShearBottom(), position)){
 			pDragAction = edaShearBottom;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerShearLeft(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerShearLeft(), position)){
 			pDragAction = edaShearLeft;
 			return true;
 			
-		}else if( pInsideMarker( *pView.GetCanvasMarkerShearRight(), position ) ){
+		}else if(pInsideMarker(*pView.GetCanvasMarkerShearRight(), position)){
 			pDragAction = edaShearRight;
 			return true;
 		}
 	}
 	
 	// activate node
-	sePropertyNode * const node = pView.NodeAtPosition( ( decVector2(
-		position - pView.GetCanvasContent()->GetPosition() ) / pView.GetZoomScale() ).Round() );
+	sePropertyNode * const node = pView.NodeAtPosition((decVector2(
+		position - pView.GetCanvasContent()->GetPosition()) / pView.GetZoomScale()).Round());
 	
-	if( GetShiftOrigin() ){
-		if( node ){
-			if( node->GetSelected() ){
-				property->GetNodeSelection().Remove( node );
+	if(GetShiftOrigin()){
+		if(node){
+			if(node->GetSelected()){
+				property->GetNodeSelection().Remove(node);
 				
 			}else{
-				property->GetNodeSelection().Add( node );
-				property->GetNodeSelection().SetActive( node );
+				property->GetNodeSelection().Add(node);
+				property->GetNodeSelection().SetActive(node);
 			}
 		}
 		
 	}else{
-		if( node && ! node->GetSelected() ){
+		if(node && ! node->GetSelected()){
 			property->GetNodeSelection().RemoveAll();
-			property->GetNodeSelection().Add( node );
+			property->GetNodeSelection().Add(node);
 			
-		}else if( ! node ){
+		}else if(! node){
 			property->GetNodeSelection().RemoveAll();
 		}
 	}
 	
-	if( pView.GetActiveNode() ){
-		pDragMatrix = ( pView.GetActiveNode()->GetParent()->CreateScreenTransformMatrix()
+	if(pView.GetActiveNode()){
+		pDragMatrix = (pView.GetActiveNode()->GetParent()->CreateScreenTransformMatrix()
 			* pView.GetZoomScaleMatrix() ).Invert().ToTexMatrix2().GetRotationMatrix();
 		pDragAction = edaMoveNode;
 		return true;
@@ -185,7 +185,7 @@ bool seVCIDragNode::OnDragBegin(){
 }
 
 void seVCIDragNode::OnDragUpdate(){
-	switch( pDragAction ){
+	switch(pDragAction){
 	case edaMoveNode:
 		pMove();
 		break;
@@ -220,7 +220,7 @@ void seVCIDragNode::OnDragUpdate(){
 	}
 }
 
-void seVCIDragNode::OnDragFinish( bool ){
+void seVCIDragNode::OnDragFinish(bool){
 	pUndo = NULL;
 	pDragAction = edaNone;
 }
@@ -230,47 +230,47 @@ void seVCIDragNode::OnDragFinish( bool ){
 // Protected Functions
 ////////////////////////
 
-bool seVCIDragNode::pInsideMarker( const deCanvas &canvas, const decPoint &position ) const{
+bool seVCIDragNode::pInsideMarker(const deCanvas &canvas, const decPoint &position) const{
 	return position >= canvas.GetPosition() && position <= canvas.GetPosition() + canvas.GetSize();
 }
 
 void seVCIDragNode::pMove(){
-	const decPoint diff( GetDragDistance() );
+	const decPoint diff(GetDragDistance());
 	
-	if( pUndo ){
+	if(pUndo){
 		pUndo->Undo();
 		
 	}else{
-		if( diff.Absolute() < decPoint( 3, 3 ) ){
+		if(diff.Absolute() < decPoint(3, 3)){
 			return; // drag limit
 		}
 		
 		seProperty * const property = pView.GetActiveProperty();
-		if( ! property ){
+		if(! property){
 			return;
 		}
 		
-		pUndo.TakeOver( new seUPropertyNodesDrag( property->GetNodeSelection().GetSelected() ) );
-		pView.GetSkin()->GetUndoSystem()->Add( pUndo, false );
+		pUndo.TakeOver(new seUPropertyNodesDrag(property->GetNodeSelection().GetSelected()));
+		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
-	( ( seUPropertyNodesDrag& )( igdeUndo& )pUndo ).SetDistance( decPoint( pDragMatrix * decVector2( diff ) ) );
+	((seUPropertyNodesDrag&)(igdeUndo&)pUndo).SetDistance(decPoint(pDragMatrix * decVector2(diff)));
 	pUndo->Redo();
 }
 
 void seVCIDragNode::pRotate(){
-	const decPoint diff( GetDragDistance() );
+	const decPoint diff(GetDragDistance());
 	
-	if( pUndo ){
+	if(pUndo){
 		pUndo->Undo();
 		
 	}else{
-		if( diff.Absolute() < decPoint( 3, 3 ) ){
+		if(diff.Absolute() < decPoint(3, 3)){
 			return; // drag limit
 		}
 		
 		seProperty * const property = pView.GetActiveProperty();
-		if( ! property ){
+		if(! property){
 			return;
 		}
 		
@@ -278,50 +278,50 @@ void seVCIDragNode::pRotate(){
 		decTexMatrix2 matrix;
 		decVector2 size;
 		
-		if( selection.GetSelected().GetCount() > 1 ){
+		if(selection.GetSelected().GetCount() > 1){
 			decVector2 minBounds, maxBounds;
-			pView.GetSelectionBoundary( selection.GetSelected(), minBounds, maxBounds );
+			pView.GetSelectionBoundary(selection.GetSelected(), minBounds, maxBounds);
 			
-			matrix.SetTranslation( minBounds );
+			matrix.SetTranslation(minBounds);
 			size = maxBounds - minBounds;
 			
 		}else{
 			const sePropertyNode &node = *selection.GetActive();
 			matrix = node.CreateScreenTransformMatrix();
-			size = decPoint( node.GetSize().x, node.GetSize().y ).Absolute();
+			size = decPoint(node.GetSize().x, node.GetSize().y).Absolute();
 		}
 		
 		// TODO add a new marker to place the pivot manually
-		const decVector2 origin( decVector2( GetDragOrigin()
-			- pView.GetCanvasContentBackground()->GetPosition() ) / pView.GetZoomScale() );
-		const decVector2 pivot( matrix * ( size * 0.5f ) );
+		const decVector2 origin(decVector2(GetDragOrigin()
+			- pView.GetCanvasContentBackground()->GetPosition()) / pView.GetZoomScale());
+		const decVector2 pivot(matrix * (size * 0.5f));
 		
-		pUndo.TakeOver( new seUPropertyNodesRotate( selection.GetSelected(), pivot, origin ) );
-		pView.GetSkin()->GetUndoSystem()->Add( pUndo, false );
+		pUndo.TakeOver(new seUPropertyNodesRotate(selection.GetSelected(), pivot, origin));
+		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
-	const decVector2 target( decVector2( GetDragPosition()
-		- pView.GetCanvasContentBackground()->GetPosition() ) / pView.GetZoomScale() );
+	const decVector2 target(decVector2(GetDragPosition()
+		- pView.GetCanvasContentBackground()->GetPosition()) / pView.GetZoomScale());
 	
-	( ( seUPropertyNodesRotate& )( igdeUndo& )pUndo ).SetTarget( target );
+	((seUPropertyNodesRotate&)(igdeUndo&)pUndo).SetTarget(target);
 	pUndo->Redo();
 }
 
 void seVCIDragNode::pResize(){
-	const decPoint diff( GetDragDistance() );
+	const decPoint diff(GetDragDistance());
 	decVector2 axis;
 	
-	if( pUndo ){
+	if(pUndo){
 		pUndo->Undo();
 		
 	}else{
-		if( diff.Absolute() < decPoint( 3, 3 ) ){
+		if(diff.Absolute() < decPoint(3, 3)){
 			return; // drag limit
 		}
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if( ! property ){
+	if(! property){
 		return;
 	}
 	
@@ -329,44 +329,44 @@ void seVCIDragNode::pResize(){
 	decTexMatrix2 matrix;
 	decVector2 absSize;
 	
-	if( selection.GetSelected().GetCount() > 1 ){
+	if(selection.GetSelected().GetCount() > 1){
 		decVector2 minBounds, maxBounds;
-		pView.GetSelectionBoundary( selection.GetSelected(), minBounds, maxBounds );
+		pView.GetSelectionBoundary(selection.GetSelected(), minBounds, maxBounds);
 		
-		matrix.SetTranslation( minBounds );
+		matrix.SetTranslation(minBounds);
 		absSize = maxBounds - minBounds;
 		
 	}else{
 		const sePropertyNode &node = *selection.GetActive();
 		matrix = node.CreateScreenTransformMatrix();
 		
-		const decPoint size( node.GetSize().x, node.GetSize().y );
+		const decPoint size(node.GetSize().x, node.GetSize().y);
 		absSize = size.Absolute();
 		
-		if( size.x < 0 || size.y < 0 ){
-			const decVector2 offset( absSize * 0.5f );
-			matrix = decTexMatrix2::CreateTranslation( -offset )
+		if(size.x < 0 || size.y < 0){
+			const decVector2 offset(absSize * 0.5f);
+			matrix = decTexMatrix2::CreateTranslation(-offset)
 				* decTexMatrix2::CreateScale( size.x < 0 ? -1.0f : 1.0f, size.y < 0 ? -1.0f : 1.0f )
 				* decTexMatrix2::CreateTranslation( offset )
 				* matrix;
 		}
 	}
 	
-	const decVector2 origin( decVector2( GetDragOrigin()
-		- pView.GetCanvasContentBackground()->GetPosition() ) / pView.GetZoomScale() );
+	const decVector2 origin(decVector2(GetDragOrigin()
+		- pView.GetCanvasContentBackground()->GetPosition()) / pView.GetZoomScale());
 	decVector2 pivot;
 	
-	switch( pDragAction ){
+	switch(pDragAction){
 	case edaResizeTopLeft:
 		pivot = matrix * absSize;
 		break;
 		
 	case edaResizeTopRight:
-		pivot = matrix * decVector2( 0.0f, absSize.y );
+		pivot = matrix * decVector2(0.0f, absSize.y);
 		break;
 		
 	case edaResizeBottomLeft:
-		pivot = matrix * decVector2( absSize.x, 0.0f );
+		pivot = matrix * decVector2(absSize.x, 0.0f);
 		break;
 		
 	case edaResizeBottomRight:
@@ -374,31 +374,31 @@ void seVCIDragNode::pResize(){
 		break;
 		
 	case edaResizeTop:
-		pivot = matrix * decVector2( absSize.x * 0.5f, absSize.y );
+		pivot = matrix * decVector2(absSize.x * 0.5f, absSize.y);
 		break;
 		
 	case edaResizeBottom:
-		pivot = matrix * decVector2( absSize.x * 0.5f, 0.0f );
+		pivot = matrix * decVector2(absSize.x * 0.5f, 0.0f);
 		break;
 		
 	case edaResizeLeft:
-		pivot = matrix * decVector2( absSize.x, absSize.y * 0.5f );
+		pivot = matrix * decVector2(absSize.x, absSize.y * 0.5f);
 		break;
 		
 	case edaResizeRight:
-		pivot = matrix * decVector2( 0.0f, absSize.y * 0.5f );
+		pivot = matrix * decVector2(0.0f, absSize.y * 0.5f);
 		break;
 		
 	default:
 		break;
 	}
 	
-	switch( pDragAction ){
+	switch(pDragAction){
 	case edaResizeTop:
 	case edaResizeBottom:
 		axis = matrix.GetAxisY();
-		if( axis.Length() < 0.5f ){
-			axis.Set( 0.0f, 1.0f );
+		if(axis.Length() < 0.5f){
+			axis.Set(0.0f, 1.0f);
 			
 		}else{
 			axis.Normalize();
@@ -408,8 +408,8 @@ void seVCIDragNode::pResize(){
 	case edaResizeLeft:
 	case edaResizeRight:
 		axis = matrix.GetAxisX();
-		if( axis.Length() < 0.5f ){
-			axis.Set( 1.0f, 0.0f );
+		if(axis.Length() < 0.5f){
+			axis.Set(1.0f, 0.0f);
 			
 		}else{
 			axis.Normalize();
@@ -420,45 +420,45 @@ void seVCIDragNode::pResize(){
 		break;
 	}
 	
-	if( ! pUndo ){
-		pUndo.TakeOver( new seUPropertyNodesResize( selection.GetSelected(),
-			pivot, origin, matrix.GetRotation(), matrix.GetShearing() ) );
-		pView.GetSkin()->GetUndoSystem()->Add( pUndo, false );
+	if(! pUndo){
+		pUndo.TakeOver(new seUPropertyNodesResize(selection.GetSelected(),
+			pivot, origin, matrix.GetRotation(), matrix.GetShearing()));
+		pView.GetSkin()->GetUndoSystem()->Add(pUndo, false);
 	}
 	
-	decVector2 distance( decVector2( diff ) / pView.GetZoomScale() );
+	decVector2 distance(decVector2(diff) / pView.GetZoomScale());
 	
-	switch( pDragAction ){
+	switch(pDragAction){
 	case edaResizeTop:
 	case edaResizeBottom:
 	case edaResizeLeft:
 	case edaResizeRight:
-		distance = axis * ( axis * distance );
+		distance = axis * (axis * distance);
 		break;
 		
 	default:
 		break;
 	}
 	
-	( ( seUPropertyNodesResize& )( igdeUndo& )pUndo ).SetDistance( distance );
+	((seUPropertyNodesResize&)(igdeUndo&)pUndo).SetDistance(distance);
 	pUndo->Redo();
 }
 
 void seVCIDragNode::pShear(){
-	const decPoint diff( GetDragDistance() );
+	const decPoint diff(GetDragDistance());
 	decVector2 axis;
 	
-	if( pUndo ){
+	if(pUndo){
 		pUndo->Undo();
 		
 	}else{
-		if( diff.Absolute() < decPoint( 3, 3 ) ){
+		if(diff.Absolute() < decPoint(3, 3)){
 			return; // drag limit
 		}
 	}
 	
 	seProperty * const property = pView.GetActiveProperty();
-	if( ! property ){
+	if(! property){
 		return;
 	}
 	
@@ -466,60 +466,60 @@ void seVCIDragNode::pShear(){
 	decTexMatrix2 matrix;
 	decVector2 absSize;
 	
-	if( selection.GetSelected().GetCount() > 1 ){
+	if(selection.GetSelected().GetCount() > 1){
 		decVector2 minBounds, maxBounds;
-		pView.GetSelectionBoundary( selection.GetSelected(), minBounds, maxBounds );
+		pView.GetSelectionBoundary(selection.GetSelected(), minBounds, maxBounds);
 		
-		matrix.SetTranslation( minBounds );
+		matrix.SetTranslation(minBounds);
 		absSize = maxBounds - minBounds;
 		
 	}else{
 		const sePropertyNode &node = *selection.GetActive();
 		
 		matrix = node.CreateScreenTransformMatrix();
-		const decPoint size( node.GetSize().x, node.GetSize().y );
+		const decPoint size(node.GetSize().x, node.GetSize().y);
 		absSize = size.Absolute();
 		
-		if( size.x < 0 || size.y < 0 ){
-			const decVector2 offset( absSize * 0.5f );
-			matrix = decTexMatrix2::CreateTranslation( -offset )
+		if(size.x < 0 || size.y < 0){
+			const decVector2 offset(absSize * 0.5f);
+			matrix = decTexMatrix2::CreateTranslation(-offset)
 				* decTexMatrix2::CreateScale( size.x < 0 ? -1.0f : 1.0f, size.y < 0 ? -1.0f : 1.0f )
 				* decTexMatrix2::CreateTranslation( offset )
 				* matrix;
 		}
 	}
 	
-	const decVector2 origin( decVector2( GetDragOrigin()
-		- pView.GetCanvasContentBackground()->GetPosition() ) / pView.GetZoomScale() );
+	const decVector2 origin(decVector2(GetDragOrigin()
+		- pView.GetCanvasContentBackground()->GetPosition()) / pView.GetZoomScale());
 	decVector2 pivot;
 	
-	switch( pDragAction ){
+	switch(pDragAction){
 	case edaShearTop:
-		pivot = matrix * decVector2( absSize.x * 0.5f, absSize.y );
+		pivot = matrix * decVector2(absSize.x * 0.5f, absSize.y);
 		break;
 		
 	case edaShearBottom:
-		pivot = matrix * decVector2( absSize.x * 0.5f, 0.0f );
+		pivot = matrix * decVector2(absSize.x * 0.5f, 0.0f);
 		break;
 		
 	case edaShearLeft:
-		pivot = matrix * decVector2( absSize.x, absSize.y * 0.5f );
+		pivot = matrix * decVector2(absSize.x, absSize.y * 0.5f);
 		break;
 		
 	case edaShearRight:
-		pivot = matrix * decVector2( 0.0f, absSize.y * 0.5f );
+		pivot = matrix * decVector2(0.0f, absSize.y * 0.5f);
 		break;
 		
 	default:
 		break;
 	}
 	
-	switch( pDragAction ){
+	switch(pDragAction){
 	case edaShearTop:
 	case edaShearBottom:
 		axis = matrix.GetAxisX();
-		if( axis.Length() < 0.5f ){
-			axis.Set( 1.0f, 0.0f );
+		if(axis.Length() < 0.5f){
+			axis.Set(1.0f, 0.0f);
 			
 		}else{
 			axis.Normalize();
@@ -529,8 +529,8 @@ void seVCIDragNode::pShear(){
 	case edaShearLeft:
 	case edaShearRight:
 		axis = matrix.GetAxisY();
-		if( axis.Length() < 0.5f ){
-			axis.Set( 0.0f, 1.0f );
+		if(axis.Length() < 0.5f){
+			axis.Set(0.0f, 1.0f);
 			
 		}else{
 			axis.Normalize();
@@ -541,13 +541,13 @@ void seVCIDragNode::pShear(){
 		break;
 	}
 	
-	if( ! pUndo ){
-		pUndo.TakeOver( new seUPropertyNodesShear( selection.GetSelected(),
-				pivot, origin, matrix.GetRotation(), matrix.GetShearing() ) );
-		pView.GetSkin()->GetUndoSystem()->Add( pUndo );
+	if(! pUndo){
+		pUndo.TakeOver(new seUPropertyNodesShear(selection.GetSelected(),
+				pivot, origin, matrix.GetRotation(), matrix.GetShearing()));
+		pView.GetSkin()->GetUndoSystem()->Add(pUndo);
 	}
 	
-	( ( seUPropertyNodesShear& )( igdeUndo& )pUndo ).SetDistance(
-		axis * ( axis * decVector2( diff ) / pView.GetZoomScale() ) );
+	((seUPropertyNodesShear&)(igdeUndo&)pUndo).SetDistance(
+		axis * (axis * decVector2(diff) / pView.GetZoomScale()));
 	pUndo->Redo();
 }

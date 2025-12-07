@@ -88,7 +88,7 @@ public:
 	 * \brief Create task.
 	 * \param[in] owner Module owning the task or NULL if global.
 	 */
-	deParallelTask( deBaseModule *owner );
+	deParallelTask(deBaseModule *owner);
 	
 protected:
 	/** \brief Clean up task. */
@@ -101,7 +101,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module owning the task or NULL if global. */
-	inline deBaseModule *GetOwner() const{ return pOwner; }
+	inline deBaseModule *GetOwner() const{return pOwner;}
 	
 	/**
 	 * \brief Mark task finished after Run() method leaves.
@@ -111,17 +111,17 @@ public:
 	 * \retval true Task is marked finished after Run() method exits.
 	 * \retval false Task is marked finished after Finished() method exits.
 	 */
-	inline bool GetMarkFinishedAfterRun() const{ return pMarkFinishedAfterRun; }
+	inline bool GetMarkFinishedAfterRun() const{return pMarkFinishedAfterRun;}
 	
 	/**
 	 * \brief Set if task is marked finished after Run() method leaves.
 	 * \param finishAfterRun If true task is marked finished after Run() method exits.
 	 * If false Task is marked finished after Finished() method exits.
 	 */
-	void SetMarkFinishedAfterRun( bool markFinishedAfterRun );
+	void SetMarkFinishedAfterRun(bool markFinishedAfterRun);
 	
 	/** \brief Task has empty run implementation. */
-	inline bool GetEmptyRun() const{ return pEmptyRun; }
+	inline bool GetEmptyRun() const{return pEmptyRun;}
 	
 	/**
 	 * \brief Set if task has empty run implementation.
@@ -129,16 +129,16 @@ public:
 	 * This is an optimization. If the run implementation is empty the task will be finished
 	 * without running the empty run method using a free thread.
 	 */
-	void SetEmptyRun( bool emptyRun );
+	void SetEmptyRun(bool emptyRun);
 	
 	/** \brief Task has lower priority than other tasks. */
-	inline bool GetLowPriority() const{ return pLowPriority; }
+	inline bool GetLowPriority() const{return pLowPriority;}
 	
 	/** \brief Set if task has lower priority than other tasks. */
-	void SetLowPriority( bool lowPriority );
+	void SetLowPriority(bool lowPriority);
 	
 	/** \brief Task has been cancelled. */
-	inline bool IsCancelled() const{ return pCancel; }
+	inline bool IsCancelled() const{return pCancel;}
 	
 	/**
 	 * \brief Cancel task.
@@ -149,7 +149,7 @@ public:
 	void Cancel();
 	
 	/** \brief Task is finished. */
-	inline bool GetFinished() const{ return pFinished; }
+	inline bool GetFinished() const{return pFinished;}
 	
 	/**
 	 * \brief Set task finished.
@@ -162,10 +162,10 @@ public:
 	int GetDependsOnCount() const;
 	
 	/** \brief Depend on task at index. */
-	deParallelTask *GetDependsOnAt( int index ) const;
+	deParallelTask *GetDependsOnAt(int index) const;
 	
 	/** \brief Task depends on another task. */
-	bool DoesDependOn( deParallelTask *task ) const;
+	bool DoesDependOn(deParallelTask *task) const;
 	
 	/**
 	 * \brief Add task this task depends on.
@@ -173,7 +173,7 @@ public:
 	 * \throws deeInvalidParam \em task is this task.
 	 * \throws deeInvalidParam \em task has been already added.
 	 */
-	void AddDependsOn( deParallelTask *task );
+	void AddDependsOn(deParallelTask *task);
 	
 	/**
 	 * \brief Remove task this task depends on.
@@ -181,7 +181,7 @@ public:
 	 * \throws deeInvalidParam \em task is this task.
 	 * \throws deeInvalidParam \em task has not been added.
 	 */
-	void RemoveDependsOn( deParallelTask *task );
+	void RemoveDependsOn(deParallelTask *task);
 	
 	/** \brief Remove all tasks this task depends on. */
 	void RemoveAllDependsOn();
@@ -191,8 +191,8 @@ public:
 	 * 
 	 * Used by deParallelProcessing only.
 	 */
-	inline decThreadSafeObjectOrderedSet &GetDependedOnBy(){ return pDependedOnBy; }
-	inline const decThreadSafeObjectOrderedSet &GetDependedOnBy() const{ return pDependedOnBy; }
+	inline decThreadSafeObjectOrderedSet &GetDependedOnBy(){return pDependedOnBy;}
+	inline const decThreadSafeObjectOrderedSet &GetDependedOnBy() const{return pDependedOnBy;}
 	
 	/**
 	 * \brief Remove from all tasks depending on this task.

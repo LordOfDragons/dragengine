@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger target. */
-	igdeTriggerTarget( const char *name );
+	igdeTriggerTarget(const char *name);
 	
 	
 	
@@ -69,19 +69,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Determines if the target is currently fired or not. */
-	inline bool GetFired() const{ return pFired; }
+	inline bool GetFired() const{return pFired;}
 	
 	/** \brief Sets if the target is currently fired or not. */
-	void SetFired( bool fired );
+	void SetFired(bool fired);
 	
 	/** \brief Determines if the target has ever fired. */
-	inline bool GetHasFired() const{ return pHasFired; }
+	inline bool GetHasFired() const{return pHasFired;}
 	
 	/** \brief Sets if the target has ever fired. */
-	void SetHasFired( bool hasFired );
+	void SetHasFired(bool hasFired);
 	
 	/** \brief Fire the trigger action. */
 	void Fire();
@@ -93,10 +93,10 @@ public:
 	void FullReset();
 	
 	/** \brief Adds a listener. */
-	void AddListener( igdeTriggerListener *listener );
+	void AddListener(igdeTriggerListener *listener);
 	
 	/** \brief Removes a listener if existing. */
-	void RemoveListener( igdeTriggerListener *listener );
+	void RemoveListener(igdeTriggerListener *listener);
 	
 	/** \brief Notify all listeners. */
 	void NotifyListeners();

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddInherit( gdeObjectClass *objectClass, gdeOCInherit *inherit );
+	gdeUOCAddInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit);
 	
 protected:
 	/** \brief Clean up undo action. */

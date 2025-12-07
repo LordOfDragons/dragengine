@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveAllInherits( gdeObjectClass *objectClass );
+	gdeUOCRemoveAllInherits(gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */

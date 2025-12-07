@@ -39,49 +39,49 @@
 // class devkImage
 ////////////////////
 
-devkImage::devkImage( devkDevice &device, const devkImageConfiguration &configuration ) :
-pDevice( device ),
-pConfiguration( configuration ),
-pImage( VK_NULL_HANDLE ),
-pImageSize( 0 ),
-pMemory( VK_NULL_HANDLE ),
-pBufferHost( VK_NULL_HANDLE ),
-pBufferHostMemory( VK_NULL_HANDLE )
+devkImage::devkImage(devkDevice &device, const devkImageConfiguration &configuration) :
+pDevice(device),
+pConfiguration(configuration),
+pImage(VK_NULL_HANDLE),
+pImageSize(0),
+pMemory(VK_NULL_HANDLE),
+pBufferHost(VK_NULL_HANDLE),
+pBufferHostMemory(VK_NULL_HANDLE)
 {
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
+		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan();)
 		
 		VkImageCreateInfo imageInfo{VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
 		imageInfo.flags = configuration.GetFlags();
 		imageInfo.imageType = configuration.GetType();
 		imageInfo.format = configuration.GetFormat();
-		imageInfo.extent.width = ( uint32_t )configuration.GetSize().x;
-		imageInfo.extent.height = ( uint32_t )configuration.GetSize().y;
-		imageInfo.extent.depth = ( uint32_t )configuration.GetSize().z;
-		imageInfo.mipLevels = ( uint32_t )configuration.GetMipMapCount();
-		imageInfo.arrayLayers = ( uint32_t )configuration.GetLayerCount();
+		imageInfo.extent.width = (uint32_t)configuration.GetSize().x;
+		imageInfo.extent.height = (uint32_t)configuration.GetSize().y;
+		imageInfo.extent.depth = (uint32_t)configuration.GetSize().z;
+		imageInfo.mipLevels = (uint32_t)configuration.GetMipMapCount();
+		imageInfo.arrayLayers = (uint32_t)configuration.GetLayerCount();
 		imageInfo.samples = configuration.GetSamples();
 		imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
 		imageInfo.usage = configuration.GetUsage();
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		
-		VK_CHECK( vulkan, device.vkCreateImage( device.GetDevice(), &imageInfo, VK_NULL_HANDLE, &pImage ) );
+		VK_CHECK(vulkan, device.vkCreateImage(device.GetDevice(), &imageInfo, VK_NULL_HANDLE, &pImage));
 		
 		// create the memory backing up the image
 		VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 		
 		VkMemoryRequirements memoryRequirements;
-		pDevice.vkGetImageMemoryRequirements( device.GetDevice(), pImage, &memoryRequirements );
-		pImageSize = ( uint32_t )memoryRequirements.size;
+		pDevice.vkGetImageMemoryRequirements(device.GetDevice(), pImage, &memoryRequirements);
+		pImageSize = (uint32_t)memoryRequirements.size;
 		allocInfo.allocationSize = memoryRequirements.size;
 		allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType(
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, memoryRequirements );
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, memoryRequirements);
 		
-		VK_CHECK( vulkan, pDevice.vkAllocateMemory( device.GetDevice(), &allocInfo, VK_NULL_HANDLE, &pMemory ) );
-		VK_CHECK( vulkan, pDevice.vkBindImageMemory( device.GetDevice(), pImage, pMemory, 0 ) );
+		VK_CHECK(vulkan, pDevice.vkAllocateMemory(device.GetDevice(), &allocInfo, VK_NULL_HANDLE, &pMemory));
+		VK_CHECK(vulkan, pDevice.vkBindImageMemory(device.GetDevice(), pImage, pMemory, 0));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -96,51 +96,51 @@ devkImage::~devkImage(){
 // Management
 ///////////////
 
-void devkImage::SetData( const void *data ){
-	SetData( data, 0, pImageSize );
+void devkImage::SetData(const void *data){
+	SetData(data, 0, pImageSize);
 }
 
-void devkImage::SetData( const void *data, uint32_t offset, uint32_t size ){
-	if( offset < 0 ){
-		DETHROW_INFO( deeInvalidParam, "offset < 0" );
+void devkImage::SetData(const void *data, uint32_t offset, uint32_t size){
+	if(offset < 0){
+		DETHROW_INFO(deeInvalidParam, "offset < 0");
 	}
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
+	if(size < 0){
+		DETHROW_INFO(deeInvalidParam, "size < 0");
 	}
-	if( size == 0 ){
+	if(size == 0){
 		return;
 	}
-	if( offset + size > pImageSize ){
-		DETHROW_INFO( deeInvalidParam, "offset + size > imageSize" );
+	if(offset + size > pImageSize){
+		DETHROW_INFO(deeInvalidParam, "offset + size > imageSize");
 	}
-	if( ! data ){
-		DETHROW_INFO( deeNullPointer, "data" );
+	if(! data){
+		DETHROW_INFO(deeNullPointer, "data");
 	}
 	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	VkDevice const device = pDevice.GetDevice();
 	const bool whole = offset == 0 && size == pImageSize;
 	void *mapped = nullptr;
 	
-	if( ! pBufferHostMemory ){
-		pCreateBuffer( VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, size );
+	if(! pBufferHostMemory){
+		pCreateBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, size);
 	}
 	
-	if( whole ){
-		VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
+	if(whole){
+		VK_CHECK(vulkan, pDevice.vkMapMemory(device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped));
 		
 	}else{
-		VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, offset, size, 0, &mapped ) );
+		VK_CHECK(vulkan, pDevice.vkMapMemory(device, pBufferHostMemory, offset, size, 0, &mapped));
 	}
-	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
+	const devkGuardUnmapBuffer guardUnmapBuffer(pDevice, pBufferHostMemory);
 	
-	memcpy( mapped, data, size );
+	memcpy(mapped, data, size);
 	
 	VkMappedMemoryRange mappedRange{VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE};
 	mappedRange.memory = pBufferHostMemory;
 	
-	if( whole ){
+	if(whole){
 		mappedRange.offset = 0;
 		mappedRange.size = VK_WHOLE_SIZE;
 		
@@ -149,7 +149,7 @@ void devkImage::SetData( const void *data, uint32_t offset, uint32_t size ){
 		mappedRange.size = size;
 	}
 	
-	pDevice.vkFlushMappedMemoryRanges( device, 1, &mappedRange );
+	pDevice.vkFlushMappedMemoryRanges(device, 1, &mappedRange);
 }
 
 void devkImage::TransferToDevice(devkCommandBuffer &commandBuffer){
@@ -277,44 +277,44 @@ void devkImage::GenerateMipMaps(devkCommandBuffer &commandBuffer){
 		0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
 }
 
-void devkImage::GetData( void *data ){
-	GetData( data, 0, pImageSize );
+void devkImage::GetData(void *data){
+	GetData(data, 0, pImageSize);
 }
 
-void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
-	if( offset < 0 ){
-		DETHROW_INFO( deeInvalidParam, "offset < 0" );
+void devkImage::GetData(void *data, uint32_t offset, uint32_t size){
+	if(offset < 0){
+		DETHROW_INFO(deeInvalidParam, "offset < 0");
 	}
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
+	if(size < 0){
+		DETHROW_INFO(deeInvalidParam, "size < 0");
 	}
-	if( size == 0 ){
+	if(size == 0){
 		return;
 	}
-	if( offset + size > pImageSize ){
-		DETHROW_INFO( deeInvalidParam, "offset + size > imageSize" );
+	if(offset + size > pImageSize){
+		DETHROW_INFO(deeInvalidParam, "offset + size > imageSize");
 	}
-	if( ! data ){
-		DETHROW_INFO( deeNullPointer, "data" );
+	if(! data){
+		DETHROW_INFO(deeNullPointer, "data");
 	}
-	if( ! pBufferHost || ! pBufferHostMemory ){
-		DETHROW_INFO( deeNullPointer, "bufferHost" );
+	if(! pBufferHost || ! pBufferHostMemory){
+		DETHROW_INFO(deeNullPointer, "bufferHost");
 	}
 	
 	Wait();
 	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	const bool whole = offset == 0 && size == pImageSize;
 	VkDevice const device = pDevice.GetDevice();
 	
 	void *mapped = nullptr;
-	VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
-	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
+	VK_CHECK(vulkan, pDevice.vkMapMemory(device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped));
+	const devkGuardUnmapBuffer guardUnmapBuffer(pDevice, pBufferHostMemory);
 	
 	VkMappedMemoryRange mappedRange{VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE};
 	mappedRange.memory = pBufferHostMemory;
 	
-	if( whole ){
+	if(whole){
 		mappedRange.offset = 0;
 		mappedRange.size = VK_WHOLE_SIZE;
 		
@@ -323,9 +323,9 @@ void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
 		mappedRange.size = size;
 	}
 	
-	VK_CHECK( vulkan, pDevice.vkInvalidateMappedMemoryRanges( device, 1, &mappedRange ) );
+	VK_CHECK(vulkan, pDevice.vkInvalidateMappedMemoryRanges(device, 1, &mappedRange));
 	
-	memcpy( data, mapped, size );
+	memcpy(data, mapped, size);
 }
 
 void devkImage::Wait(){
@@ -361,9 +361,9 @@ void devkImage::DropTransferResources(){
 void devkImage::EnsureHostBuffer(){
 	Wait();
 	
-	if( ! pBufferHostMemory ){
-		pCreateBuffer( VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, pImageSize );
+	if(! pBufferHostMemory){
+		pCreateBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, pImageSize);
 	}
 }
 
@@ -467,24 +467,24 @@ void devkImage::pCleanUp(){
 	
 	Wait();
 	
-	if( pImage ){
-		pDevice.vkDestroyImage( device, pImage, VK_NULL_HANDLE );
+	if(pImage){
+		pDevice.vkDestroyImage(device, pImage, VK_NULL_HANDLE);
 	}
-	if( pMemory ){
-		pDevice.vkFreeMemory( device, pMemory, VK_NULL_HANDLE );
+	if(pMemory){
+		pDevice.vkFreeMemory(device, pMemory, VK_NULL_HANDLE);
 	}
 	
-	if( pBufferHost ){
-		pDevice.vkDestroyBuffer( device, pBufferHost, VK_NULL_HANDLE );
+	if(pBufferHost){
+		pDevice.vkDestroyBuffer(device, pBufferHost, VK_NULL_HANDLE);
 	}
-	if( pBufferHostMemory ){
-		pDevice.vkFreeMemory( device, pBufferHostMemory, VK_NULL_HANDLE );
+	if(pBufferHostMemory){
+		pDevice.vkFreeMemory(device, pBufferHostMemory, VK_NULL_HANDLE);
 	}
 }
 
-void devkImage::pCreateBuffer( VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
-VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size ){
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+void devkImage::pCreateBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
+VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size){
+	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	VkDevice const device = pDevice.GetDevice();
 	
 	// create buffer handle
@@ -492,16 +492,16 @@ VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	bufferInfo.usage = usage;
 	bufferInfo.size = size;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	VK_CHECK( vulkan, pDevice.vkCreateBuffer( device, &bufferInfo, VK_NULL_HANDLE, buffer ) );
+	VK_CHECK(vulkan, pDevice.vkCreateBuffer(device, &bufferInfo, VK_NULL_HANDLE, buffer));
 	
 	// create the memory backing up the buffer handle
 	VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 	
 	VkMemoryRequirements memoryRequirements;
-	pDevice.vkGetBufferMemoryRequirements( device, *buffer, &memoryRequirements );
+	pDevice.vkGetBufferMemoryRequirements(device, *buffer, &memoryRequirements);
 	allocInfo.allocationSize = memoryRequirements.size;
-	allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType( memoryProperty, memoryRequirements );
+	allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType(memoryProperty, memoryRequirements);
 	
-	VK_CHECK( vulkan, pDevice.vkAllocateMemory( device, &allocInfo, VK_NULL_HANDLE, memory ) );
-	VK_CHECK( vulkan, pDevice.vkBindBufferMemory( device, *buffer, *memory, 0 ) );
+	VK_CHECK(vulkan, pDevice.vkAllocateMemory(device, &allocInfo, VK_NULL_HANDLE, memory));
+	VK_CHECK(vulkan, pDevice.vkBindBufferMemory(device, *buffer, *memory, 0));
 }

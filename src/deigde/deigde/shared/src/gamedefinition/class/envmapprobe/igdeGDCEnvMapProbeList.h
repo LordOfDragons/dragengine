@@ -47,7 +47,7 @@ public:
 	igdeGDCEnvMapProbeList();
 	
 	/** \brief Create copy of a game definition environment map probe list. */
-	igdeGDCEnvMapProbeList( const igdeGDCEnvMapProbeList &list );
+	igdeGDCEnvMapProbeList(const igdeGDCEnvMapProbeList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCEnvMapProbeList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Environment map probe by index. */
-	igdeGDCEnvMapProbe *GetAt( int index ) const;
+	igdeGDCEnvMapProbe *GetAt(int index) const;
 	
 	/** \brief Index of an environment map probe or -1 if not found. */
-	int IndexOf( igdeGDCEnvMapProbe *probe ) const;
+	int IndexOf(igdeGDCEnvMapProbe *probe) const;
 	
 	/** \brief Determines if an environment map probe exists. */
-	bool Has( igdeGDCEnvMapProbe *probe ) const;
+	bool Has(igdeGDCEnvMapProbe *probe) const;
 	
 	/** \brief Adds an environment map probe. */
-	void Add( igdeGDCEnvMapProbe *probe );
+	void Add(igdeGDCEnvMapProbe *probe);
 	
 	/** \brief Inserts a new environment map probe. */
-	void InsertAt( igdeGDCEnvMapProbe *probe, int index );
+	void InsertAt(igdeGDCEnvMapProbe *probe, int index);
 	
 	/** \brief Moves an environment map probe to a new position. */
-	void MoveTo( igdeGDCEnvMapProbe *probe, int index );
+	void MoveTo(igdeGDCEnvMapProbe *probe, int index);
 	
 	/** \brief Removes an environment map probe. */
-	void Remove( igdeGDCEnvMapProbe *probe );
+	void Remove(igdeGDCEnvMapProbe *probe);
 	
 	/** \brief Removes all environment map probes. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCEnvMapProbeList &list );
+	void SetToDeepCopyFrom(const igdeGDCEnvMapProbeList &list);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list from another list. */
-	igdeGDCEnvMapProbeList &operator=( const igdeGDCEnvMapProbeList &list );
+	igdeGDCEnvMapProbeList &operator=(const igdeGDCEnvMapProbeList &list);
 	/*@}*/
 };
 

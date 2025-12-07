@@ -44,14 +44,14 @@
 ////////////////////////////
 
 deoalSkinTexture::deoalSkinTexture() :
-pNoSound( false ),
-pAbsorption( 0.12f ),
-pAbsorptionLower( 0.35f ),
-pAbsorptionUpper( 1.75f ),
-pTransmission( 0.4f ),
-pTransmissionLower( 2.8f ),
-pTransmissionUpper( 0.28f ),
-pAffectsSound( true ){
+pNoSound(false),
+pAbsorption(0.12f),
+pAbsorptionLower(0.35f),
+pAbsorptionUpper(1.75f),
+pTransmission(0.4f),
+pTransmissionLower(2.8f),
+pTransmissionUpper(0.28f),
+pAffectsSound(true){
 }
 
 deoalSkinTexture::~deoalSkinTexture(){
@@ -62,62 +62,62 @@ deoalSkinTexture::~deoalSkinTexture(){
 // Management
 ///////////////
 
-void deoalSkinTexture::ProcessProperties( const deSkinTexture &texture ){
+void deoalSkinTexture::ProcessProperties(const deSkinTexture &texture){
 	const int count = texture.GetPropertyCount();
 	deSkinPropertyVisitorIdentify identify;
 	int i;
 	
 	pName = texture.GetName();
 	
-	for( i=0; i<count; i++ ){
-		deSkinProperty &property = *texture.GetPropertyAt( i );
+	for(i=0; i<count; i++){
+		deSkinProperty &property = *texture.GetPropertyAt(i);
 		
-		if( property.GetType() == "sound.none" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
+		if(property.GetType() == "sound.none"){
+			property.Visit(identify);
+			if(identify.IsValue()){
 				pNoSound = identify.CastToValue().GetValue() > 0.5f;
 			}
 			
-		}else if( property.GetType() == "sound.absorption" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
-				pAbsorption = decMath::clamp( identify.CastToValue().GetValue(), 0.0f, 1.0f );
+		}else if(property.GetType() == "sound.absorption"){
+			property.Visit(identify);
+			if(identify.IsValue()){
+				pAbsorption = decMath::clamp(identify.CastToValue().GetValue(), 0.0f, 1.0f);
 			}
 			
-		}else if( property.GetType() == "sound.absorption.lower" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
-				pAbsorptionLower = decMath::max( identify.CastToValue().GetValue(), 0.0f );
+		}else if(property.GetType() == "sound.absorption.lower"){
+			property.Visit(identify);
+			if(identify.IsValue()){
+				pAbsorptionLower = decMath::max(identify.CastToValue().GetValue(), 0.0f);
 			}
 			
-		}else if( property.GetType() == "sound.absorption.upper" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
-				pAbsorptionUpper = decMath::max( identify.CastToValue().GetValue(), 0.0f );
+		}else if(property.GetType() == "sound.absorption.upper"){
+			property.Visit(identify);
+			if(identify.IsValue()){
+				pAbsorptionUpper = decMath::max(identify.CastToValue().GetValue(), 0.0f);
 			}
 			
-		}else if( property.GetType() == "sound.transmission" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
-				pTransmission = decMath::max( identify.CastToValue().GetValue(), 0.0f );
+		}else if(property.GetType() == "sound.transmission"){
+			property.Visit(identify);
+			if(identify.IsValue()){
+				pTransmission = decMath::max(identify.CastToValue().GetValue(), 0.0f);
 			}
 			
-		}else if( property.GetType() == "sound.transmission.lower" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
-				pTransmissionLower = decMath::max( identify.CastToValue().GetValue(), 0.0f );
+		}else if(property.GetType() == "sound.transmission.lower"){
+			property.Visit(identify);
+			if(identify.IsValue()){
+				pTransmissionLower = decMath::max(identify.CastToValue().GetValue(), 0.0f);
 			}
 			
-		}else if( property.GetType() == "sound.transmission.upper" ){
-			property.Visit( identify );
-			if( identify.IsValue() ){
-				pTransmissionUpper = decMath::max( identify.CastToValue().GetValue(), 0.0f );
+		}else if(property.GetType() == "sound.transmission.upper"){
+			property.Visit(identify);
+			if(identify.IsValue()){
+				pTransmissionUpper = decMath::max(identify.CastToValue().GetValue(), 0.0f);
 			}
 		}
 	}
 	
-	pAffectsSound = ! pNoSound && ( pAbsorption > FLOAT_SAFE_EPSILON
-		|| pTransmission < 10.0f - FLOAT_SAFE_EPSILON );
+	pAffectsSound = ! pNoSound && (pAbsorption > FLOAT_SAFE_EPSILON
+		|| pTransmission < 10.0f - FLOAT_SAFE_EPSILON);
 	// the threshold 10 for transmission is arbitrary. if the value is rather large chances
 	// are the artist desired to have no transmission loss. the definition just speaks of
 	// a large value in this case. reasonable values are though only in the range up to

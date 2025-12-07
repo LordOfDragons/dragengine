@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create VR eye. */
-	deoglVREye( deoglVR &vr, deBaseVRModule::eEye eye );
+	deoglVREye(deoglVR &vr, deBaseVRModule::eEye eye);
 	
 	/** Clean up VR eye. */
 	~deoglVREye();
@@ -95,63 +95,63 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** VR. */
-	inline deoglVR &GetVR() const{ return pVR; }
+	inline deoglVR &GetVR() const{return pVR;}
 	
 	/** Target size. */
-	inline const decPoint &GetTargetSize() const{ return pTargetSize; }
+	inline const decPoint &GetTargetSize() const{return pTargetSize;}
 	
 	/** Projection. */
-	inline double GetProjectionLeft() const{ return pProjectionLeft; }
-	inline double GetProjectionRight() const{ return pProjectionRight; }
-	inline double GetProjectionTop() const{ return pProjectionTop; }
-	inline double GetProjectionBottom() const{ return pProjectionBottom; }
+	inline double GetProjectionLeft() const{return pProjectionLeft;}
+	inline double GetProjectionRight() const{return pProjectionRight;}
+	inline double GetProjectionTop() const{return pProjectionTop;}
+	inline double GetProjectionBottom() const{return pProjectionBottom;}
 	
 	/** Matrix transforming from view space to eye space. */
-	inline const decMatrix &GetMatrixViewToEye() const{ return pMatrixViewToEye; }
+	inline const decMatrix &GetMatrixViewToEye() const{return pMatrixViewToEye;}
 	
 	/** Hidden area mesh or nullptr. */
-	inline deoglRModel *GetHiddenMesh() const{ return pHiddenRMesh; }
+	inline deoglRModel *GetHiddenMesh() const{return pHiddenRMesh;}
 	
 	/** Render target. */
-	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
+	inline deoglRenderTarget *GetRenderTarget() const{return pRenderTarget;}
 	
 	/** Texture coordinates to use to render from render target to canvas. */
-	inline const decVector2 &GetCanvasTCFrom() const{ return pCanvasTCFrom; }
-	inline const decVector2 &GetCanvasTCTo() const{ return pCanvasTCTo; }
+	inline const decVector2 &GetCanvasTCFrom() const{return pCanvasTCFrom;}
+	inline const decVector2 &GetCanvasTCTo() const{return pCanvasTCTo;}
 	
 	/** Use gamma correction. */
-	inline bool GetUseGammaCorrection() const{ return pUseGammaCorrection; }
+	inline bool GetUseGammaCorrection() const{return pUseGammaCorrection;}
 	
 	/**
 	 * Create projection matrix matching depth usage mode. Depending on the inverse depth
 	 * mode used the projection matrix is either infinite or non-infinite.
 	 */
-	decDMatrix CreateProjectionDMatrix( float znear, float zfar ) const;
+	decDMatrix CreateProjectionDMatrix(float znear, float zfar) const;
 	
 	/**
 	 * Create frustum matrix. This is the same as CreateProjectionDMatrix but always
 	 * creates a non-infinite projection matrix.
 	 */
-	decDMatrix CreateFrustumDMatrix( float znear, float zfar ) const;
+	decDMatrix CreateFrustumDMatrix(float znear, float zfar) const;
 	
 	/** Begin frame. */
-	void BeginFrame( deBaseVRModule &vrmodule );
+	void BeginFrame(deBaseVRModule &vrmodule);
 	
 	/** Render if required. */
 	void Render();
 	
 	/** Submit if required. */
-	void Submit( deBaseVRModule &vrmodule );
+	void Submit(deBaseVRModule &vrmodule);
 	/*@}*/
 	
 	
 	
 private:
-	void pGetParameters( deBaseVRModule &vrmodule );
-	void pLogParameters( deoglRenderThread &renderThread );
-	void pUpdateEyeViews( deBaseVRModule &vrmodule );
+	void pGetParameters(deBaseVRModule &vrmodule);
+	void pLogParameters(deoglRenderThread &renderThread);
+	void pUpdateEyeViews(deBaseVRModule &vrmodule);
 	void pDestroyEyeViews();
-	void pRender( deoglRenderThread &renderThread );
+	void pRender(deoglRenderThread &renderThread);
 	const char *LogPrefix() const;
 };
 

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetHintLightImportance( gdeObjectClass *objectClass, gdeOCLight *light, int newValue );
+	gdeUOCLightSetHintLightImportance(gdeObjectClass *objectClass, gdeOCLight *light, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

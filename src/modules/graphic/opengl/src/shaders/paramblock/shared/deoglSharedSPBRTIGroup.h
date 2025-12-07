@@ -61,8 +61,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared SPB render task instance group. */
-	deoglSharedSPBRTIGroup( deoglSharedSPBRTIGroupList *parent,
-		deoglSharedSPB &sharedSPB, int textureCount );
+	deoglSharedSPBRTIGroup(deoglSharedSPBRTIGroupList *parent,
+		deoglSharedSPB &sharedSPB, int textureCount);
 	
 protected:
 	/** Clean up shared SPB render task instance group. */
@@ -75,19 +75,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent list. */
-	inline deoglSharedSPBRTIGroupList &GetParent() const{ return pParent; }
+	inline deoglSharedSPBRTIGroupList &GetParent() const{return pParent;}
 	
 	/** Shared SPB. */
-	inline deoglSharedSPB &GetSharedSPB() const{ return pSharedSPB; }
+	inline deoglSharedSPB &GetSharedSPB() const{return pSharedSPB;}
 	
 	/** Render task shared instance. */
-	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{return pRTSInstance;}
 	
 	/** Count of following textures covered by the group. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** Unique key for use with dictionaries. */
-	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	inline unsigned int GetUniqueKey() const{return pUniqueKey;}
 	/*@}*/
 };
 

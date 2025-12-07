@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCEnvMapProbe( gdeOCEnvMapProbe *envMapProbe );
+	gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief EnvMapProbe. */
-	gdeOCEnvMapProbe *GetEnvMapProbe() const{ return pEnvMapProbe; }
+	gdeOCEnvMapProbe *GetEnvMapProbe() const{return pEnvMapProbe;}
 	/*@}*/
 };
 

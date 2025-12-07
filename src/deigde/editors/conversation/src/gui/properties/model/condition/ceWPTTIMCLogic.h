@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCLogic( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionLogic *condition );
+	ceWPTTIMCLogic(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionLogic *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -52,20 +52,20 @@ public:
 	/*@{*/
 	/** \brief Condition. */
 	inline ceCConditionLogic *GetConditionLogic() const{
-		return ( ceCConditionLogic* )GetCondition();
+		return (ceCConditionLogic*)GetCondition();
 	}
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText( ceCConditionLogic::eOperators anOperator );
+	static const char *GetOperatorText(ceCConditionLogic::eOperators anOperator);
 	
 	/** \brief Update condition. */
 	virtual void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	virtual void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition);
 	
 	/** \brief Expanded state changed. */
 	virtual void OnExpandedChanged();

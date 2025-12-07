@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetController( seLink *link, seController *newController );
+	seULinkSetController(seLink *link, seController *newController);
 	
 protected:
 	/** \brief Clean up undo action. */

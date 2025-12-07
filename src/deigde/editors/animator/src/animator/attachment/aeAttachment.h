@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create attachment. */
-	aeAttachment( igdeEnvironment *environment, const char *name = "Attachment" );
+	aeAttachment(igdeEnvironment *environment, const char *name = "Attachment");
 	
 	/** Clean up attachment. */
 	virtual ~aeAttachment();
@@ -84,35 +84,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline aeAnimator *GetAnimator() const{return pAnimator;}
 	
 	/** Set parent animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Attach type. */
-	inline eAttachTypes GetAttachType() const{ return pAttachType; }
+	inline eAttachTypes GetAttachType() const{return pAttachType;}
 	
 	/** Set attached type. */
-	void SetAttachType( eAttachTypes type );
+	void SetAttachType(eAttachTypes type);
 	
 	/** Name of the bone to attach to. */
-	inline const decString &GetBoneName() const{ return pBoneName; }
+	inline const decString &GetBoneName() const{return pBoneName;}
 	
 	/** Set name of the bone to attach to. */
-	void SetBoneName( const char *name );
+	void SetBoneName(const char *name);
 	
 	
 	
 	/** Update attachment. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Reset attachment physics state. */
 	void ResetPhysics();
@@ -126,7 +126,7 @@ public:
 	
 	
 	/** Object wrapper. */
-	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pObjectWrapper; }
+	inline const igdeWObject::Ref &GetObjectWrapper() const{return pObjectWrapper;}
 	/*@}*/
 	
 private:

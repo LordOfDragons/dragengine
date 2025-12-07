@@ -58,17 +58,17 @@ public:
 	 * \brief Set up solving.
 	 * \details Modified to add friction constraints for constraint friction.
 	 */
-	virtual btScalar solveGroupCacheFriendlySetup( btCollisionObject **bodies, int numBodies,
+	virtual btScalar solveGroupCacheFriendlySetup(btCollisionObject **bodies, int numBodies,
 		btPersistentManifold **manifoldPtr, int numManifolds, btTypedConstraint **constraints,
-		int numConstraints, const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer );
+		int numConstraints, const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer);
 	
 	/**
 	 * \brief Solve single interation step.
 	 * \details Modified to update constraint friction after contact friction.
 	 */
-	virtual btScalar solveSingleIteration( int iteration, btCollisionObject **bodies, int numBodies,
+	virtual btScalar solveSingleIteration(int iteration, btCollisionObject **bodies, int numBodies,
 		btPersistentManifold **manifoldPtr, int numManifolds, btTypedConstraint **constraints,
-		int numConstraints, const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer );
+		int numConstraints, const btContactSolverInfo &infoGlobal, btIDebugDraw *debugDrawer);
 	
 	/**
 	 * \brief Finish solving.
@@ -76,8 +76,8 @@ public:
 	 * \note If warmstarting is used the base class functionatliy has to be modified.
 	 *       Warmstarting is though not used.
 	 */
-	virtual btScalar solveGroupCacheFriendlyFinish( btCollisionObject **bodies, int numBodies,
-		const btContactSolverInfo &infoGlobal );
+	virtual btScalar solveGroupCacheFriendlyFinish(btCollisionObject **bodies, int numBodies,
+		const btContactSolverInfo &infoGlobal);
 	/*@}*/
 };
 

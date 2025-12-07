@@ -59,66 +59,66 @@ deNetworkValueVisitorIdentify::~deNetworkValueVisitorIdentify(){
 ///////////////
 
 deNetworkValueInteger *deNetworkValueVisitorIdentify::CastToInteger() const{
-	if( pType != envtInteger ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtInteger){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueInteger* )pValue;
+	return (deNetworkValueInteger*)pValue;
 }
 
 deNetworkValueFloat *deNetworkValueVisitorIdentify::CastToFloat() const{
-	if( pType != envtFloat ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtFloat){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueFloat* )pValue;
+	return (deNetworkValueFloat*)pValue;
 }
 
 deNetworkValueString *deNetworkValueVisitorIdentify::CastToString() const{
-	if( pType != envtString ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtString){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueString* )pValue;
+	return (deNetworkValueString*)pValue;
 }
 
 deNetworkValueData *deNetworkValueVisitorIdentify::CastToData() const{
-	if( pType != envtData ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtData){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueData* )pValue;
+	return (deNetworkValueData*)pValue;
 }
 
 deNetworkValuePoint2 *deNetworkValueVisitorIdentify::CastToPoint2() const{
-	if( pType != envtPoint2 ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtPoint2){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValuePoint2* )pValue;
+	return (deNetworkValuePoint2*)pValue;
 }
 
 deNetworkValuePoint3 *deNetworkValueVisitorIdentify::CastToPoint3() const{
-	if( pType != envtPoint3 ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtPoint3){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValuePoint3* )pValue;
+	return (deNetworkValuePoint3*)pValue;
 }
 
 deNetworkValueVector2 *deNetworkValueVisitorIdentify::CastToVector2() const{
-	if( pType != envtVector2 ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtVector2){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueVector2* )pValue;
+	return (deNetworkValueVector2*)pValue;
 }
 
 deNetworkValueVector3 *deNetworkValueVisitorIdentify::CastToVector3() const{
-	if( pType != envtVector3 ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtVector3){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueVector3* )pValue;
+	return (deNetworkValueVector3*)pValue;
 }
 
 deNetworkValueQuaternion *deNetworkValueVisitorIdentify::CastToQuaternion() const{
-	if( pType != envtQuaternion ){
-		DETHROW( deeInvalidParam );
+	if(pType != envtQuaternion){
+		DETHROW(deeInvalidParam);
 	}
-	return ( deNetworkValueQuaternion* )pValue;
+	return (deNetworkValueQuaternion*)pValue;
 }
 
 void deNetworkValueVisitorIdentify::Reset(){
@@ -131,52 +131,52 @@ void deNetworkValueVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deNetworkValueVisitorIdentify::VisitValue( deNetworkValue *value ){
+void deNetworkValueVisitorIdentify::VisitValue(deNetworkValue *value){
 	pValue = value;
 	pType = envtUnknown;
 }
 
-void deNetworkValueVisitorIdentify::VisitInteger( deNetworkValueInteger *value ){
+void deNetworkValueVisitorIdentify::VisitInteger(deNetworkValueInteger *value){
 	pValue = value;
 	pType = envtInteger;
 }
 
-void deNetworkValueVisitorIdentify::VisitFloat( deNetworkValueFloat *value ){
+void deNetworkValueVisitorIdentify::VisitFloat(deNetworkValueFloat *value){
 	pValue = value;
 	pType = envtFloat;
 }
 
-void deNetworkValueVisitorIdentify::VisitString( deNetworkValueString *value ){
+void deNetworkValueVisitorIdentify::VisitString(deNetworkValueString *value){
 	pValue = value;
 	pType = envtString;
 }
 
-void deNetworkValueVisitorIdentify::VisitData( deNetworkValueData *value ){
+void deNetworkValueVisitorIdentify::VisitData(deNetworkValueData *value){
 	pValue = value;
 	pType = envtData;
 }
 
-void deNetworkValueVisitorIdentify::VisitPoint2( deNetworkValuePoint2 *value ){
+void deNetworkValueVisitorIdentify::VisitPoint2(deNetworkValuePoint2 *value){
 	pValue = value;
 	pType = envtPoint2;
 }
 
-void deNetworkValueVisitorIdentify::VisitPoint3( deNetworkValuePoint3 *value ){
+void deNetworkValueVisitorIdentify::VisitPoint3(deNetworkValuePoint3 *value){
 	pValue = value;
 	pType = envtPoint3;
 }
 
-void deNetworkValueVisitorIdentify::VisitVector2( deNetworkValueVector2 *value ){
+void deNetworkValueVisitorIdentify::VisitVector2(deNetworkValueVector2 *value){
 	pValue = value;
 	pType = envtVector2;
 }
 
-void deNetworkValueVisitorIdentify::VisitVector3( deNetworkValueVector3 *value ){
+void deNetworkValueVisitorIdentify::VisitVector3(deNetworkValueVector3 *value){
 	pValue = value;
 	pType = envtVector3;
 }
 
-void deNetworkValueVisitorIdentify::VisitQuaternion( deNetworkValueQuaternion *value ){
+void deNetworkValueVisitorIdentify::VisitQuaternion(deNetworkValueQuaternion *value){
 	pValue = value;
 	pType = envtQuaternion;
 }

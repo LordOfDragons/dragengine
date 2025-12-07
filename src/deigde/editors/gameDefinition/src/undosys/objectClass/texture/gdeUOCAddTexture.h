@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	gdeUOCAddTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture );
+	gdeUOCAddTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture);
 	
 protected:
 	/** Clean up undo action. */

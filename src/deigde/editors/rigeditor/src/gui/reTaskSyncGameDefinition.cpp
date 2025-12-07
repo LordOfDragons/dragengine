@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-reTaskSyncGameDefinition::reTaskSyncGameDefinition( reWindowMain &windowMain ) :
-pWindowMain( windowMain )
+reTaskSyncGameDefinition::reTaskSyncGameDefinition(reWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Rig Editor: Synchronize Game Definition" );
+	SetMessage("Rig Editor: Synchronize Game Definition");
 }
 
 reTaskSyncGameDefinition::~reTaskSyncGameDefinition(){
@@ -60,7 +60,7 @@ reTaskSyncGameDefinition::~reTaskSyncGameDefinition(){
 ///////////////
 
 bool reTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetRig() ){
+	if(! pWindowMain.GetRig()){
 		return false;
 	}
 	

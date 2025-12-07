@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSkyInstance( deScriptingDragonScript &ds );
+	deClassSkyInstance(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSkyInstance();
@@ -56,16 +56,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Instance or \em NULL if myself is \em NULL. */
-	deSkyInstance *GetInstance( dsRealObject *myself ) const;
+	deSkyInstance *GetInstance(dsRealObject *myself) const;
 	
 	/** \brief Push instance which can be \em NULL. */
-	void PushInstance( dsRunTime *rt, deSkyInstance *instance );
+	void PushInstance(dsRunTime *rt, deSkyInstance *instance);
 	/*@}*/
 	
 	
@@ -86,30 +86,30 @@ private:
 		dsClass *clsLayerMask;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSky );
-	DEF_NATFUNC( nfSetSky );
-	DEF_NATFUNC( nfGetOrder );
-	DEF_NATFUNC( nfSetOrder );
-	DEF_NATFUNC( nfGetLayerMask );
-	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC(nfGetSky);
+	DEF_NATFUNC(nfSetSky);
+	DEF_NATFUNC(nfGetOrder);
+	DEF_NATFUNC(nfSetOrder);
+	DEF_NATFUNC(nfGetLayerMask);
+	DEF_NATFUNC(nfSetLayerMask);
 	DEF_NATFUNC(nfGetPassthroughTransparency);
 	DEF_NATFUNC(nfSetPassthroughTransparency);
 	
-	DEF_NATFUNC( nfGetControllerCount );
-	DEF_NATFUNC( nfGetControllerAt );
-	DEF_NATFUNC( nfGetControllerNamed );
-	DEF_NATFUNC( nfIndexOfControllerNamed );
+	DEF_NATFUNC(nfGetControllerCount);
+	DEF_NATFUNC(nfGetControllerAt);
+	DEF_NATFUNC(nfGetControllerNamed);
+	DEF_NATFUNC(nfIndexOfControllerNamed);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

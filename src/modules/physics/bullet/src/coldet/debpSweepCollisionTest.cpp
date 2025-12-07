@@ -60,12 +60,12 @@
 // Class debpSweepCollisionTest::cShape
 /////////////////////////////////////////
 
-debpSweepCollisionTest::cShape::cShape( btConvexShape *shape, const btTransform &transform )
-: pShape( shape ), pTransform( transform ){
+debpSweepCollisionTest::cShape::cShape(btConvexShape *shape, const btTransform &transform)
+: pShape(shape), pTransform(transform){
 }
 
 debpSweepCollisionTest::cShape::~cShape(){
-	if( pShape ){
+	if(pShape){
 		delete pShape;
 	}
 }
@@ -78,8 +78,8 @@ debpSweepCollisionTest::cShape::~cShape(){
 // Constructor, destructor
 ////////////////////////////
 
-debpSweepCollisionTest::debpSweepCollisionTest( debpCollisionDetection &coldet ) :
-pColDet( coldet ){
+debpSweepCollisionTest::debpSweepCollisionTest(debpCollisionDetection &coldet) :
+pColDet(coldet){
 }
 
 debpSweepCollisionTest::~debpSweepCollisionTest(){
@@ -91,19 +91,19 @@ debpSweepCollisionTest::~debpSweepCollisionTest(){
 // Management
 ///////////////
 
-void debpSweepCollisionTest::AddShape( decShape &shape, const decVector &scale ){
+void debpSweepCollisionTest::AddShape(decShape &shape, const decVector &scale){
 	pScale = scale;
-	shape.Visit( *this );
+	shape.Visit(*this);
 }
 
-void debpSweepCollisionTest::AddShapes( const decShapeList &list, const decVector &scale ){
+void debpSweepCollisionTest::AddShapes(const decShapeList &list, const decVector &scale){
 	const int count = list.GetCount();
 	int i;
 	
 	pScale = scale;
 	
-	for( i=0; i<count; i++ ){
-		list.GetAt( i )->Visit( *this );
+	for(i=0; i<count; i++){
+		list.GetAt(i)->Visit(*this);
 	}
 }
 
@@ -111,34 +111,34 @@ void debpSweepCollisionTest::RemoveAllShapes(){
 	const int count = pShapeList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( cShape* )pShapeList.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (cShape*)pShapeList.GetAt(i);
 	}
 	pShapeList.RemoveAll();
 }
 
 
 
-void debpSweepCollisionTest::SweepTest( debpCollisionWorld &world, const btTransform &from,
-const btTransform &to, debpCollisionWorld::ConvexResultCallback &resultCallback ){
+void debpSweepCollisionTest::SweepTest(debpCollisionWorld &world, const btTransform &from,
+const btTransform &to, debpCollisionWorld::ConvexResultCallback &resultCallback){
 	const int count = pShapeList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const cShape &shape = *( ( cShape* )pShapeList.GetAt( i ) );
-		const btTransform rfrom( from * shape.GetTransform() );
-		const btTransform rto( to * shape.GetTransform() );
-		world.safeConvexSweepTest( shape.GetShape(), rfrom, rto, resultCallback ); //, 0.001 );
+	for(i=0; i<count; i++){
+		const cShape &shape = *((cShape*)pShapeList.GetAt(i));
+		const btTransform rfrom(from * shape.GetTransform());
+		const btTransform rto(to * shape.GetTransform());
+		world.safeConvexSweepTest(shape.GetShape(), rfrom, rto, resultCallback); //, 0.001);
 	}
 }
 
-void debpSweepCollisionTest::SweepTest( debpGhostObject &ghostObject, const btTransform &from,
-const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
-	if( ! ghostObject.GetGhostObject() ){
+void debpSweepCollisionTest::SweepTest(debpGhostObject &ghostObject, const btTransform &from,
+const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
+	if(! ghostObject.GetGhostObject()){
 		return;
 	}
-	if( ! ghostObject.GetDynamicsWorld() ){
-		DETHROW( deeInvalidParam ); // tried to do collision detection on ghost object not in a world
+	if(! ghostObject.GetDynamicsWorld()){
+		DETHROW(deeInvalidParam); // tried to do collision detection on ghost object not in a world
 	}
 	
 	// TODO here we only need to lock the ghost object not the entire world. for the
@@ -152,79 +152,79 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 		const int colobjCount = colobjs.size();
 		int i, j;
 		
-		for( i=0; i<count; i++ ){
-			const cShape &shape = *( ( cShape* )pShapeList.GetAt( i ) );
-			const btTransform rfrom( from * shape.GetTransform() );
-			const btTransform rto( to * shape.GetTransform() );
+		for(i=0; i<count; i++){
+			const cShape &shape = *((cShape*)pShapeList.GetAt(i));
+			const btTransform rfrom(from * shape.GetTransform());
+			const btTransform rto(to * shape.GetTransform());
 			
 			btVector3 castShapeAabbMin;
 			btVector3 castShapeAabbMax;
 			btVector3 linVel, angVel;
-			btTransformUtil::calculateVelocity( rfrom, rto, 1.0, linVel, angVel );
-			const btTransform R( rfrom.getBasis() );
+			btTransformUtil::calculateVelocity(rfrom, rto, 1.0, linVel, angVel);
+			const btTransform R(rfrom.getBasis());
 			
-			shape.GetShape()->calculateTemporalAabb( R, linVel, angVel, 1.0, castShapeAabbMin, castShapeAabbMax );
+			shape.GetShape()->calculateTemporalAabb(R, linVel, angVel, 1.0, castShapeAabbMin, castShapeAabbMax);
 			
-			for( j=0; j<colobjCount; j++ ){
-				btCollisionObject * const colobj = colobjs.at( j );
-				if( ! resultCallback.needsCollision( colobj->getBroadphaseHandle() ) ){
+			for(j=0; j<colobjCount; j++){
+				btCollisionObject * const colobj = colobjs.at(j);
+				if(! resultCallback.needsCollision(colobj->getBroadphaseHandle())){
 					continue;
 				}
 				
 				btVector3 collisionObjectAabbMin;
 				btVector3 collisionObjectAabbMax;
-				colobj->getCollisionShape()->getAabb( colobj->getWorldTransform(), collisionObjectAabbMin, collisionObjectAabbMax );
-				AabbExpand( collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax );
-				btScalar hitLambda = ( btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
+				colobj->getCollisionShape()->getAabb(colobj->getWorldTransform(), collisionObjectAabbMin, collisionObjectAabbMax);
+				AabbExpand(collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax);
+				btScalar hitLambda = (btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
 				btVector3 hitNormal;
 				
-				if( ! btRayAabb( rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal ) ){
+				if(! btRayAabb(rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)){
 					continue;
 				}
 				
-				world.objectQuerySingle( shape.GetShape(), rfrom, rto, colobj, colobj->getCollisionShape(),
-					colobj->getWorldTransform(), resultCallback, ( btScalar )0.0 );
+				world.objectQuerySingle(shape.GetShape(), rfrom, rto, colobj, colobj->getCollisionShape(),
+					colobj->getWorldTransform(), resultCallback, (btScalar)0.0);
 			}
 		}
 		
 		world.GetDelayedOperation().Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		world.GetDelayedOperation().Unlock();
 		throw;
 	}
 }
 
-void debpSweepCollisionTest::SweepTest( debpCollider &collider, const btTransform &from,
-const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
+void debpSweepCollisionTest::SweepTest(debpCollider &collider, const btTransform &from,
+const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback){
 	const int count = pShapeList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const cShape &shape = *( ( cShape* )pShapeList.GetAt( i ) );
-		const btTransform rfrom( from * shape.GetTransform() );
-		const btTransform rto( to * shape.GetTransform() );
+	for(i=0; i<count; i++){
+		const cShape &shape = *((cShape*)pShapeList.GetAt(i));
+		const btTransform rfrom(from * shape.GetTransform());
+		const btTransform rto(to * shape.GetTransform());
 		
 		btVector3 castShapeAabbMin;
 		btVector3 castShapeAabbMax;
 		btVector3 linVel, angVel;
-		btTransformUtil::calculateVelocity( rfrom, rto, 1.0, linVel, angVel );
-		const btTransform R( rfrom.getBasis() );
+		btTransformUtil::calculateVelocity(rfrom, rto, 1.0, linVel, angVel);
+		const btTransform R(rfrom.getBasis());
 		
-		shape.GetShape()->calculateTemporalAabb( R, linVel, angVel, 1.0, castShapeAabbMin, castShapeAabbMax );
+		shape.GetShape()->calculateTemporalAabb(R, linVel, angVel, 1.0, castShapeAabbMin, castShapeAabbMax);
 		
 		const btConvexShape &castShape = *shape.GetShape();
 		
-		if( collider.IsVolume() ){
+		if(collider.IsVolume()){
 			btCollisionObject * const co = ((debpColliderVolume&)collider).GetStaticCollisionTest();
 			if(co){
 				SweepTest(*co, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
 			}
 			
-		}else if( collider.IsComponent() ){
-			debpColliderComponent &colliderComponent = ( debpColliderComponent& )collider;
+		}else if(collider.IsComponent()){
+			debpColliderComponent &colliderComponent = (debpColliderComponent&)collider;
 			
-			switch( colliderComponent.GetTestMode() ){
+			switch(colliderComponent.GetTestMode()){
 			case debpColliderComponent::etmRigShape:{
 				btCollisionObject * const co = colliderComponent.GetStaticCollisionTest();
 				if(co){
@@ -233,11 +233,11 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 				}break;
 				
 			case debpColliderComponent::etmBoneShape:
-				if( colliderComponent.GetBones() ){
+				if(colliderComponent.GetBones()){
 					const debpColliderBones &bones = *colliderComponent.GetBones();
 					const int boneCount = bones.GetBonePhysicsCount();
 					int j;
-					for( j=0; j<boneCount; j++ ){
+					for(j=0; j<boneCount; j++){
 						btCollisionObject * const co = bones.GetBonePhysicsAt(j).GetStaticCollisionTestPrepare();
 						if(co){
 							SweepTest(*co, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
@@ -262,52 +262,52 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 // Visiting
 /////////////
 
-void debpSweepCollisionTest::VisitShape( decShape& ){
+void debpSweepCollisionTest::VisitShape(decShape&){
 }
 
-void debpSweepCollisionTest::VisitShapeSphere( decShapeSphere &sphere ){
+void debpSweepCollisionTest::VisitShapeSphere(decShapeSphere &sphere){
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
-	const decVector position( sphere.GetPosition().Multiply( pScale ) );
-	const float scaleRadius = ( pScale.x + pScale.y + pScale.z ) / 3.0f;
+	const decVector position(sphere.GetPosition().Multiply(pScale));
+	const float scaleRadius = (pScale.x + pScale.y + pScale.z) / 3.0f;
 	const float radius = sphere.GetRadius() * scaleRadius;
 	btSphereShape *sphereShape = NULL;
 	btTransform transform;
 	cShape *shape = NULL;
 	
 	// determine if the sphere is an ellipsoid. we can't handle this for the time being
-	const bool isEllipsoid = ! axisScaling.IsEqualTo( decVector2( 1.0f, 1.0f ) );
+	const bool isEllipsoid = ! axisScaling.IsEqualTo(decVector2(1.0f, 1.0f));
 	
-	if( isEllipsoid ){
+	if(isEllipsoid){
 		return;
 	}
 	
 	// create the shape
 	try{
-		sphereShape = new btSphereShape( radius );
+		sphereShape = new btSphereShape(radius);
 		
-		transform.setOrigin( btVector3( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z ) );
-		transform.setRotation( btQuaternion( ( btScalar )0.0, ( btScalar )0.0, ( btScalar )0.0, ( btScalar )1.0 ) );
+		transform.setOrigin(btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z));
+		transform.setRotation(btQuaternion((btScalar)0.0, (btScalar)0.0, (btScalar)0.0, (btScalar)1.0));
 		
-		shape = new cShape( sphereShape, transform );
+		shape = new cShape(sphereShape, transform);
 		
-		pShapeList.Add( shape );
+		pShapeList.Add(shape);
 		
-	}catch( const deException & ){
-		if( sphereShape ){
+	}catch(const deException &){
+		if(sphereShape){
 			delete sphereShape;
 		}
-		if( shape ){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 }
 
-void debpSweepCollisionTest::VisitShapeBox( decShapeBox &box ){
+void debpSweepCollisionTest::VisitShapeBox(decShapeBox &box){
 	const decQuaternion &orientation = box.GetOrientation();
-	const decVector halfExtends( box.GetHalfExtends().Multiply( pScale ) );
+	const decVector halfExtends(box.GetHalfExtends().Multiply(pScale));
 	const decVector2 &tapering = box.GetTapering();
-	const decVector position( box.GetPosition().Multiply( pScale ) );
+	const decVector position(box.GetPosition().Multiply(pScale));
 	float smallestHalfExtends;
 	btConvexHullShape *hullShape = NULL;
 	btConvexShape *shapeToAdd = NULL;
@@ -318,77 +318,77 @@ void debpSweepCollisionTest::VisitShapeBox( decShapeBox &box ){
 	cShape *shape = NULL;
 	
 	// determine if the box is tapered
-	const bool isTapered = ! tapering.IsEqualTo( decVector2( 1.0f, 1.0f ) );
+	const bool isTapered = ! tapering.IsEqualTo(decVector2(1.0f, 1.0f));
 	
 	// determine the smallest half extends
 	smallestHalfExtends = halfExtends.x;
-	if( halfExtends.y < smallestHalfExtends ){
+	if(halfExtends.y < smallestHalfExtends){
 		smallestHalfExtends = halfExtends.y;
 	}
-	if( halfExtends.z < smallestHalfExtends ){
+	if(halfExtends.z < smallestHalfExtends){
 		smallestHalfExtends = halfExtends.z;
 	}
 	
-	if( isTapered ){
+	if(isTapered){
 		taperedHalfExtendX = halfExtends.x * tapering.x;
-		if( taperedHalfExtendX < smallestHalfExtends ){
+		if(taperedHalfExtendX < smallestHalfExtends){
 			smallestHalfExtends = taperedHalfExtendX;
 		}
 		
 		taperedHalfExtendZ = halfExtends.z * tapering.y;
-		if( taperedHalfExtendZ < smallestHalfExtends ){
+		if(taperedHalfExtendZ < smallestHalfExtends){
 			smallestHalfExtends = taperedHalfExtendZ;
 		}
 	}
 	
 	// create the shape
 	try{
-		if( isTapered ){
+		if(isTapered){
 			hullShape = new btConvexHullShape;
 			
-			hullShape->addPoint( btVector3( ( btScalar )taperedHalfExtendX, ( btScalar )halfExtends.y, ( btScalar )taperedHalfExtendZ ) );
-			hullShape->addPoint( btVector3( ( btScalar )-taperedHalfExtendX, ( btScalar )halfExtends.y, ( btScalar )taperedHalfExtendZ ) );
-			hullShape->addPoint( btVector3( ( btScalar )-taperedHalfExtendX, ( btScalar )halfExtends.y, ( btScalar )-taperedHalfExtendZ ) );
-			hullShape->addPoint( btVector3( ( btScalar )taperedHalfExtendX, ( btScalar )halfExtends.y, ( btScalar )-taperedHalfExtendZ ) );
+			hullShape->addPoint(btVector3((btScalar)taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)taperedHalfExtendZ));
+			hullShape->addPoint(btVector3((btScalar)-taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)taperedHalfExtendZ));
+			hullShape->addPoint(btVector3((btScalar)-taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)-taperedHalfExtendZ));
+			hullShape->addPoint(btVector3((btScalar)taperedHalfExtendX, (btScalar)halfExtends.y, (btScalar)-taperedHalfExtendZ));
 			
-			hullShape->addPoint( btVector3( ( btScalar )halfExtends.x, ( btScalar )-halfExtends.y, ( btScalar )halfExtends.z ) );
-			hullShape->addPoint( btVector3( ( btScalar )-halfExtends.x, ( btScalar )-halfExtends.y, ( btScalar )halfExtends.z ) );
-			hullShape->addPoint( btVector3( ( btScalar )-halfExtends.x, ( btScalar )-halfExtends.y, ( btScalar )-halfExtends.z ) );
-			hullShape->addPoint( btVector3( ( btScalar )halfExtends.x, ( btScalar )-halfExtends.y, ( btScalar )-halfExtends.z ) );
+			hullShape->addPoint(btVector3((btScalar)halfExtends.x, (btScalar)-halfExtends.y, (btScalar)halfExtends.z));
+			hullShape->addPoint(btVector3((btScalar)-halfExtends.x, (btScalar)-halfExtends.y, (btScalar)halfExtends.z));
+			hullShape->addPoint(btVector3((btScalar)-halfExtends.x, (btScalar)-halfExtends.y, (btScalar)-halfExtends.z));
+			hullShape->addPoint(btVector3((btScalar)halfExtends.x, (btScalar)-halfExtends.y, (btScalar)-halfExtends.z));
 			
 			shapeToAdd = hullShape;
 			
 		}else{
-			boxShape = new btBoxShape( btVector3( ( btScalar )halfExtends.x, ( btScalar )halfExtends.y, ( btScalar )halfExtends.z ) );
+			boxShape = new btBoxShape(btVector3((btScalar)halfExtends.x, (btScalar)halfExtends.y, (btScalar)halfExtends.z));
 			shapeToAdd = boxShape;
 		}
 		
-		transform.setOrigin( btVector3( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z ) );
-		transform.setRotation( btQuaternion( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w ) );
+		transform.setOrigin(btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z));
+		transform.setRotation(btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,
+			(btScalar)orientation.z, (btScalar)orientation.w));
 		
-		shape = new cShape( shapeToAdd, transform );
+		shape = new cShape(shapeToAdd, transform);
 		
-		pShapeList.Add( shape );
+		pShapeList.Add(shape);
 		
-	}catch( const deException & ){
-		if( hullShape ){
+	}catch(const deException &){
+		if(hullShape){
 			delete hullShape;
 		}
-		if( boxShape ){
+		if(boxShape){
 			delete boxShape;
 		}
-		if( shape ){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 }
 
-void debpSweepCollisionTest::VisitShapeCylinder( decShapeCylinder &cylinder ){
+void debpSweepCollisionTest::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const decQuaternion &orientation = cylinder.GetOrientation();
-	const decVector position( cylinder.GetPosition().Multiply( pScale ) );
-	const float scaleRadius = ( pScale.x + pScale.z ) / 2.0f;
+	const decVector position(cylinder.GetPosition().Multiply(pScale));
+	const float scaleRadius = (pScale.x + pScale.z) / 2.0f;
 	const float halfHeight = cylinder.GetHalfHeight() * pScale.y;
 	const float topRadius = cylinder.GetTopRadius() * scaleRadius;
 	//float bottomRadius = cylinder.GetBottomRadius() * scaleRadius;
@@ -396,33 +396,33 @@ void debpSweepCollisionTest::VisitShapeCylinder( decShapeCylinder &cylinder ){
 	btTransform transform;
 	cShape *shape = NULL;
 	
-	const btVector3 bthe(  topRadius, halfHeight, topRadius );
+	const btVector3 bthe(topRadius, halfHeight, topRadius);
 	
 	try{
-		cylinderShape = new btCylinderShape( bthe );
+		cylinderShape = new btCylinderShape(bthe);
 		
-		transform.setOrigin( btVector3( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z ) );
-		transform.setRotation( btQuaternion( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w ) );
+		transform.setOrigin(btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z));
+		transform.setRotation(btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,
+			(btScalar)orientation.z, (btScalar)orientation.w));
 		
-		shape = new cShape( cylinderShape, transform );
-		pShapeList.Add( shape );
+		shape = new cShape(cylinderShape, transform);
+		pShapeList.Add(shape);
 		
-	}catch( const deException & ){
-		if( cylinderShape ){
+	}catch(const deException &){
+		if(cylinderShape){
 			delete cylinderShape;
 		}
-		if( shape ){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 }
 
-void debpSweepCollisionTest::VisitShapeCapsule( decShapeCapsule &capsule ){
+void debpSweepCollisionTest::VisitShapeCapsule(decShapeCapsule &capsule){
 	const decQuaternion &orientation = capsule.GetOrientation();
-	const decVector position( capsule.GetPosition().Multiply( pScale ) );
-	const float scaleRadius = ( pScale.x + pScale.z ) / 2.0f;
+	const decVector position(capsule.GetPosition().Multiply(pScale));
+	const float scaleRadius = (pScale.x + pScale.z) / 2.0f;
 	const float halfHeight = capsule.GetHalfHeight() * pScale.y;
 	const float topRadius = capsule.GetTopRadius() * scaleRadius;
 	const float bottomRadius = capsule.GetBottomRadius() * scaleRadius;
@@ -430,42 +430,42 @@ void debpSweepCollisionTest::VisitShapeCapsule( decShapeCapsule &capsule ){
 	//const decVector2 &bottomAxisScaling = capsule->GetBottomAxisScaling();
 	btMultiSphereShape *capsuleShape = NULL;
 	btTransform transform;
-	btVector3 positions[ 2 ];
-	btScalar radi[ 2 ];
+	btVector3 positions[2];
+	btScalar radi[2];
 	cShape *shape = NULL;
 	
-	positions[ 0 ].setValue( 0.0f, halfHeight, 0.0f );
-	positions[ 1 ].setValue( 0.0f, -halfHeight, 0.0f );
-	radi[ 0 ] = topRadius;
-	radi[ 1 ] = bottomRadius;
+	positions[0].setValue(0.0f, halfHeight, 0.0f);
+	positions[1].setValue(0.0f, -halfHeight, 0.0f);
+	radi[0] = topRadius;
+	radi[1] = bottomRadius;
 	
 	try{
-		capsuleShape = new btMultiSphereShape( ( const btVector3 * )&positions[ 0 ], ( const btScalar * )&radi[ 0 ], 2 );
-		if( ! capsuleShape ){
-			DETHROW( deeOutOfMemory );
+		capsuleShape = new btMultiSphereShape((const btVector3 *)&positions[0], (const btScalar *)&radi[0], 2);
+		if(! capsuleShape){
+			DETHROW(deeOutOfMemory);
 		}
 		
-		transform.setOrigin( btVector3( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z ) );
-		transform.setRotation( btQuaternion( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w ) );
+		transform.setOrigin(btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z));
+		transform.setRotation(btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,
+			(btScalar)orientation.z, (btScalar)orientation.w));
 		
-		shape = new cShape( capsuleShape, transform );
-		pShapeList.Add( shape );
+		shape = new cShape(capsuleShape, transform);
+		pShapeList.Add(shape);
 		
-	}catch( const deException & ){
-		if( capsuleShape ){
+	}catch(const deException &){
+		if(capsuleShape){
 			delete capsuleShape;
 		}
-		if( shape ){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 }
 
-void debpSweepCollisionTest::VisitShapeHull( decShapeHull &hull ){
+void debpSweepCollisionTest::VisitShapeHull(decShapeHull &hull){
 	// not supported
-	VisitShape( hull );
+	VisitShape(hull);
 }
 
 
@@ -476,26 +476,26 @@ void debpSweepCollisionTest::VisitShapeHull( decShapeHull &hull ){
 void debpSweepCollisionTest::SweepTest(btCollisionObject &collisionObject,
 const btVector3 &castShapeAabbMin, const btVector3 &castShapeAabbMax,
 const btTransform &rfrom, const btTransform &rto, const btConvexShape &castShape,
-debpCollisionWorld::ConvexResultCallback &resultCallback ){
+debpCollisionWorld::ConvexResultCallback &resultCallback){
 	btCollisionShape * const staticCollisionShape = collisionObject.getCollisionShape();
-	if( ! staticCollisionShape ){
+	if(! staticCollisionShape){
 		return;
 	}
 	
 	btVector3 collisionObjectAabbMin;
 	btVector3 collisionObjectAabbMax;
-	staticCollisionShape->getAabb( collisionObject.getWorldTransform(), collisionObjectAabbMin, collisionObjectAabbMax );
-	AabbExpand( collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax );
+	staticCollisionShape->getAabb(collisionObject.getWorldTransform(), collisionObjectAabbMin, collisionObjectAabbMax);
+	AabbExpand(collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax);
 	
-	btScalar hitLambda = ( btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
+	btScalar hitLambda = (btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
 	btVector3 hitNormal;
-	if( ! btRayAabb( rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal ) ){
+	if(! btRayAabb(rfrom.getOrigin(), rto.getOrigin(), collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)){
 		return;
 	}
 	
-	const btCollisionObjectWrapper castWrap( 0, staticCollisionShape, &collisionObject, collisionObject.getWorldTransform(), -1, -1 );
+	const btCollisionObjectWrapper castWrap(0, staticCollisionShape, &collisionObject, collisionObject.getWorldTransform(), -1, -1);
 	// TODO last parameter is allowPenetration. code shows it is used to reject collision like this:
 	//      if normal * r >= -allowPenetration then no-collision
 	//      maybe this can help to deal with touching collisions at 0-distance causing troubles
-	pColDet.GetBulletShapeCollision().ShapeCast( &castShape, rfrom, rto, &castWrap, resultCallback, ( btScalar )0.0 );
+	pColDet.GetBulletShapeCollision().ShapeCast(&castShape, rfrom, rto, &castWrap, resultCallback, (btScalar)0.0);
 }

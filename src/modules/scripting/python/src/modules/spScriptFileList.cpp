@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-spScriptFileList::spScriptFileList( ScriptingPython *sp ){
-	if( ! sp ){
-		DETHROW( deeInvalidParam );
+spScriptFileList::spScriptFileList(ScriptingPython *sp){
+	if(! sp){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSP = sp;
@@ -61,19 +61,19 @@ int spScriptFileList::GetCount() const{
 	return pFiles.GetCount();
 }
 
-spScriptFile *spScriptFileList::GetAt( int index ) const{
-	return ( spScriptFile* )pFiles.GetAt( index );
+spScriptFile *spScriptFileList::GetAt(int index) const{
+	return (spScriptFile*)pFiles.GetAt(index);
 }
 
-spScriptFile *spScriptFileList::GetWithFullName( const char *fullname ) const{
+spScriptFile *spScriptFileList::GetWithFullName(const char *fullname) const{
 	const int count = pFiles.GetCount();
 	spScriptFile *file;
 	int i;
 	
-	for( i =0; i <count; i++ ){
-		file = ( spScriptFile* )pFiles.GetAt( i );
+	for(i =0; i <count; i++){
+		file = (spScriptFile*)pFiles.GetAt(i);
 		
-		if( file->GetFullModuleName().Equals( fullname ) ){
+		if(file->GetFullModuleName().Equals(fullname)){
 			return file;
 		}
 	}
@@ -81,16 +81,16 @@ spScriptFile *spScriptFileList::GetWithFullName( const char *fullname ) const{
 	return NULL;
 }
 
-int spScriptFileList::IndexOf( spScriptFile *file ) const{
-	return pFiles.IndexOf( file );
+int spScriptFileList::IndexOf(spScriptFile *file) const{
+	return pFiles.IndexOf(file);
 }
 
-int spScriptFileList::IndexOfWithFullName( const char *fullname ) const{
+int spScriptFileList::IndexOfWithFullName(const char *fullname) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i =0; i <count; i++ ){
-		if( ( ( spScriptFile* )pFiles.GetAt( i ) )->GetFullModuleName().Equals( fullname ) ){
+	for(i =0; i <count; i++){
+		if(((spScriptFile*)pFiles.GetAt(i))->GetFullModuleName().Equals(fullname)){
 			return i;
 		}
 	}
@@ -98,16 +98,16 @@ int spScriptFileList::IndexOfWithFullName( const char *fullname ) const{
 	return -1;
 }
 
-bool spScriptFileList::Has( spScriptFile *file ) const{
-	return pFiles.Has( file );
+bool spScriptFileList::Has(spScriptFile *file) const{
+	return pFiles.Has(file);
 }
 
-bool spScriptFileList::HasWithFullName( const char *fullname ) const{
+bool spScriptFileList::HasWithFullName(const char *fullname) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i =0; i <count; i++ ){
-		if( ( ( spScriptFile* )pFiles.GetAt( i ) )->GetFullModuleName().Equals( fullname ) ){
+	for(i =0; i <count; i++){
+		if(((spScriptFile*)pFiles.GetAt(i))->GetFullModuleName().Equals(fullname)){
 			return true;
 		}
 	}
@@ -115,16 +115,16 @@ bool spScriptFileList::HasWithFullName( const char *fullname ) const{
 	return false;
 }
 
-void spScriptFileList::Add( spScriptFile *entry ){
-	if( ! entry || HasWithFullName( entry->GetFullModuleName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void spScriptFileList::Add(spScriptFile *entry){
+	if(! entry || HasWithFullName(entry->GetFullModuleName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pFiles.Add( entry );
+	pFiles.Add(entry);
 }
 
-void spScriptFileList::Remove( spScriptFile *entry ){
-	pFiles.Remove( entry );
+void spScriptFileList::Remove(spScriptFile *entry){
+	pFiles.Remove(entry);
 }
 
 void spScriptFileList::RemoveAll(){
@@ -137,7 +137,7 @@ void spScriptFileList::PythonCleanUpAll(){
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i =0; i <count; i++ ){
-		( ( spScriptFile* )pFiles.GetAt( i ) )->PythonCleanUp();
+	for(i =0; i <count; i++){
+		((spScriptFile*)pFiles.GetAt(i))->PythonCleanUp();
 	}
 }

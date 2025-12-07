@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeSetColorize::seUPropertyNodeSetColorize(
-sePropertyNode *node, const decColor &newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNode *node, const decColor &newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set colorize" );
+	SetShortInfo("Node set colorize");
 	
 	pOldValue = node->GetColorize();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetColorize::~seUPropertyNodeSetColorize(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeSetColorize::~seUPropertyNodeSetColorize(){
 ///////////////
 
 void seUPropertyNodeSetColorize::Undo(){
-	pNode->SetColorize( pOldValue );
+	pNode->SetColorize(pOldValue);
 }
 
 void seUPropertyNodeSetColorize::Redo(){
-	pNode->SetColorize( pNewValue );
+	pNode->SetColorize(pNewValue);
 }

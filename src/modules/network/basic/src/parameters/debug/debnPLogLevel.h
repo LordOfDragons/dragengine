@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates parameter. */
-	debnPLogLevel( deNetworkBasic &network );
+	debnPLogLevel(deNetworkBasic &network);
 	
 	/** Cleans up parameter. */
 	virtual ~debnPLogLevel();
@@ -50,7 +50,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

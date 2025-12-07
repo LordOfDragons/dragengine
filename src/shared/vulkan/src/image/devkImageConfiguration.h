@@ -63,49 +63,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline VkImageType GetType() const{ return pType; }
+	inline VkImageType GetType() const{return pType;}
 	
 	/** Set type. */
 	void SetType(VkImageType type);
 	
 	/** Size. */
-	inline const decPoint3 &GetSize() const{ return pSize; }
+	inline const decPoint3 &GetSize() const{return pSize;}
 	
 	/** Set size. */
 	void SetSize(const decPoint3 &size);
 	
 	/** Format. */
-	inline VkFormat GetFormat() const{ return pFormat; }
+	inline VkFormat GetFormat() const{return pFormat;}
 	
 	/** Set format. */
 	void SetFormat(VkFormat format);
 	
 	/** Layer count. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/** Set layer count. */
 	void SetLayerCount(int count);
 	
 	/** Mip map count. */
-	inline int GetMipMapCount() const{ return pMipMapCount; }
+	inline int GetMipMapCount() const{return pMipMapCount;}
 	
 	/** set mip map count. */
 	void SetMipMapCount(int count);
 	
 	/** Flags. */
-	inline VkImageCreateFlags GetFlags() const{ return pFlags; }
+	inline VkImageCreateFlags GetFlags() const{return pFlags;}
 	
 	/** Set flags. */
 	void SetFlags(VkImageCreateFlags flags);
 	
 	/** Samples. */
-	inline VkSampleCountFlagBits GetSamples() const{ return pSamples; }
+	inline VkSampleCountFlagBits GetSamples() const{return pSamples;}
 	
 	/** Set samples. */
 	void SetSamples(VkSampleCountFlagBits samples);
 	
 	/** Usage. */
-	inline VkImageUsageFlags GetUsage() const{ return pUsage; }
+	inline VkImageUsageFlags GetUsage() const{return pUsage;}
 	
 	/** Set usage. */
 	void SetUsage(VkImageUsageFlags usage);

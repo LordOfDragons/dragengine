@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleBones( aeRule *rule, const decStringSet &newValue );
+	aeUSetRuleBones(aeRule *rule, const decStringSet &newValue);
 	
 protected:
 	/** Clean up undo. */

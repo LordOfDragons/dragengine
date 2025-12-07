@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSnapPoint::gdeUOCAddSnapPoint( gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint ) :
-pObjectClass( NULL ),
-pSnapPoint( NULL )
+gdeUOCAddSnapPoint::gdeUOCAddSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
+pObjectClass(NULL),
+pSnapPoint(NULL)
 {
-	if( ! objectClass || ! snapPoint ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! snapPoint){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add snap point" );
+	SetShortInfo("Add snap point");
 	
 	pSnapPoint = snapPoint;
 	snapPoint->AddReference();
@@ -59,10 +59,10 @@ pSnapPoint( NULL )
 }
 
 gdeUOCAddSnapPoint::~gdeUOCAddSnapPoint(){
-	if( pSnapPoint ){
+	if(pSnapPoint){
 		pSnapPoint->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddSnapPoint::~gdeUOCAddSnapPoint(){
 
 void gdeUOCAddSnapPoint::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCSnapPoint() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCSnapPoint()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSnapPoint( NULL );
+		gameDefinition->SetActiveOCSnapPoint(NULL);
 	}
 	
-	pObjectClass->GetSnapPoints().Remove( pSnapPoint );
+	pObjectClass->GetSnapPoints().Remove(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
 }
 
 void gdeUOCAddSnapPoint::Redo(){
-	pObjectClass->GetSnapPoints().Add( pSnapPoint );
+	pObjectClass->GetSnapPoints().Add(pSnapPoint);
 	pObjectClass->NotifySnapPointsChanged();
 }

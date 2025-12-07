@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueInteger( eValueFormats format, int64_t value );
+	deNetworkValueInteger(eValueFormats format, int64_t value);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValueInteger();
@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{ return pFormat; }
+	inline eValueFormats GetFormat() const{return pFormat;}
 	
 	/** \brief Value. */
-	inline int64_t GetInt() const{ return pValue; }
+	inline int64_t GetInt() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetInt( int64_t value );
+	void SetInt(int64_t value);
 	/*@}*/
 	
 	
@@ -76,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

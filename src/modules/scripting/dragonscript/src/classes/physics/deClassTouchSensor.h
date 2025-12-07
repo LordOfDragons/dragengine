@@ -56,20 +56,20 @@ private:
 	
 public:
 	// constructor
-	deClassTouchSensor( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassTouchSensor(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassTouchSensor();
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	deTouchSensor *GetTouchSensor( dsRealObject *myself ) const;
-	void PushTouchSensor( dsRunTime *rt, deTouchSensor *touchSensor );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	void CreateClassMembers(dsEngine *engine);
+	deTouchSensor *GetTouchSensor(dsRealObject *myself) const;
+	void PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
 	
-	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{ return pClsTSL; }
-	inline deClassVector *GetClassVector() const{ return pClsVec; }
-	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
-	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
-	inline deClassQuaternion *GetClassQuaternion() const{ return pClsQuat; }
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{return pClsTSL;}
+	inline deClassVector *GetClassVector() const{return pClsVec;}
+	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
+	inline deClassCollider *GetClassCollider() const{return pClsCol;}
+	inline deClassQuaternion *GetClassQuaternion() const{return pClsQuat;}
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	
 private:
 	struct sInitData{
@@ -78,56 +78,56 @@ private:
 		dsClass *clsColLis, *clsShapeList;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
 	
-	DEF_NATFUNC( nfGetCollisionFilter );
-	DEF_NATFUNC( nfSetCollisionFilter );
-	DEF_NATFUNC( nfGetTrackEnterLeave );
-	DEF_NATFUNC( nfSetTrackEnterLeave );
-	DEF_NATFUNC( nfGetEnabled );
-	DEF_NATFUNC( nfSetEnabled );
-	DEF_NATFUNC( nfGetShape );
-	DEF_NATFUNC( nfSetShape );
+	DEF_NATFUNC(nfGetCollisionFilter);
+	DEF_NATFUNC(nfSetCollisionFilter);
+	DEF_NATFUNC(nfGetTrackEnterLeave);
+	DEF_NATFUNC(nfSetTrackEnterLeave);
+	DEF_NATFUNC(nfGetEnabled);
+	DEF_NATFUNC(nfSetEnabled);
+	DEF_NATFUNC(nfGetShape);
+	DEF_NATFUNC(nfSetShape);
 	
-	DEF_NATFUNC( nfIsEmpty );
-	DEF_NATFUNC( nfGetColliderCount );
-	DEF_NATFUNC( nfGetColliderAt );
+	DEF_NATFUNC(nfIsEmpty);
+	DEF_NATFUNC(nfGetColliderCount);
+	DEF_NATFUNC(nfGetColliderAt);
 	
-	DEF_NATFUNC( nfGetIgnoreColliderCount );
-	DEF_NATFUNC( nfGetIgnoreColliderAt );
-	DEF_NATFUNC( nfHasIgnoreCollider );
-	DEF_NATFUNC( nfAddIgnoreCollider );
-	DEF_NATFUNC( nfRemoveIgnoreCollider );
-	DEF_NATFUNC( nfRemoveAllIgnoreColliders );
+	DEF_NATFUNC(nfGetIgnoreColliderCount);
+	DEF_NATFUNC(nfGetIgnoreColliderAt);
+	DEF_NATFUNC(nfHasIgnoreCollider);
+	DEF_NATFUNC(nfAddIgnoreCollider);
+	DEF_NATFUNC(nfRemoveIgnoreCollider);
+	DEF_NATFUNC(nfRemoveAllIgnoreColliders);
 	
-	DEF_NATFUNC( nfPointInside );
-	DEF_NATFUNC( nfAllHits );
-	DEF_NATFUNC( nfRayHits );
-	DEF_NATFUNC( nfRayHitsClosest );
-	DEF_NATFUNC( nfColliderHits );
-	DEF_NATFUNC( nfColliderMoveHits );
-	DEF_NATFUNC( nfColliderMoveHitsClosest );
-	DEF_NATFUNC( nfColliderRotateHits );
-	DEF_NATFUNC( nfColliderRotateHitsClosest );
-	DEF_NATFUNC( nfColliderMoveRotateHits );
-	DEF_NATFUNC( nfColliderMoveRotateHitsClosest );
+	DEF_NATFUNC(nfPointInside);
+	DEF_NATFUNC(nfAllHits);
+	DEF_NATFUNC(nfRayHits);
+	DEF_NATFUNC(nfRayHitsClosest);
+	DEF_NATFUNC(nfColliderHits);
+	DEF_NATFUNC(nfColliderMoveHits);
+	DEF_NATFUNC(nfColliderMoveHitsClosest);
+	DEF_NATFUNC(nfColliderRotateHits);
+	DEF_NATFUNC(nfColliderRotateHitsClosest);
+	DEF_NATFUNC(nfColliderMoveRotateHits);
+	DEF_NATFUNC(nfColliderMoveRotateHitsClosest);
 	
-	DEF_NATFUNC( nfGetListener );
-	DEF_NATFUNC( nfSetListener );
+	DEF_NATFUNC(nfGetListener);
+	DEF_NATFUNC(nfSetListener);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

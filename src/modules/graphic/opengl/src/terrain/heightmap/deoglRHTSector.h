@@ -67,8 +67,8 @@ private:
 	bool pDirtyMaskTextures;
 	bool pTexturesRequirePrepareForRender;
 	
-	deoglTexture *pMasks[ OGLHTS_MAX_MASK_TEXTURES ];
-	deoglPixelBuffer::Ref pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
+	deoglTexture *pMasks[OGLHTS_MAX_MASK_TEXTURES];
+	deoglPixelBuffer::Ref pPixBufMasks[OGLHTS_MAX_MASK_TEXTURES];
 	
 	float *pHeights;
 	float pMinHeight;
@@ -94,7 +94,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain sector. */
-	deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
+	deoglRHTSector(deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector);
 	
 protected:
 	/** Clean up height terrain sector. */
@@ -107,33 +107,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
-	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
+	inline deoglRHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
 	
 	/** Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Sector coordinates. */
-	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
+	inline const decPoint &GetCoordinates() const{return pCoordinates;}
 	
 	/** Base height. */
-	inline float GetBaseHeight() const{ return pBaseHeight; }
+	inline float GetBaseHeight() const{return pBaseHeight;}
 	
 	/** Scaling. */
-	inline float GetScaling() const{ return pScaling; }
+	inline float GetScaling() const{return pScaling;}
 	
 	/** Calculate world matrix. */
 	decDMatrix CalcWorldMatrix() const;
-	decDMatrix CalcWorldMatrix( const decDVector &referencePosition ) const;
+	decDMatrix CalcWorldMatrix(const decDVector &referencePosition) const;
 	
 	/** Calculate world position. */
 	decDVector CalcWorldPosition() const;
-	decDVector CalcWorldPosition( const decDVector &referencePosition ) const;
+	decDVector CalcWorldPosition(const decDVector &referencePosition) const;
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();
@@ -147,19 +147,19 @@ public:
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** Texture at index. */
-	deoglHTSTexture &GetTextureAt( int index ) const;
+	deoglHTSTexture &GetTextureAt(int index) const;
 	
 	/** Terrain height map mask textures. */
-	inline deoglTexture **GetMaskTextures(){ return pMasks; }
+	inline deoglTexture **GetMaskTextures(){return pMasks;}
 	
 	/** Sector is valid. */
-	inline bool GetValid() const{ return pValid; }
+	inline bool GetValid() const{return pValid;}
 	
 	/** Textures are valid. */
-	inline bool GetValidTextures() const{ return pValidTextures; }
+	inline bool GetValidTextures() const{return pValidTextures;}
 	
 	/** Texture requires prepare for render. */
 	void TextureRequirePrepareForRender();
@@ -167,31 +167,31 @@ public:
 	
 	
 	/** Heights. */
-	inline float *GetHeights() const{ return pHeights; }
+	inline float *GetHeights() const{return pHeights;}
 	
 	/** Minimum height. */
-	inline float GetMinHeight() const{ return pMinHeight; }
+	inline float GetMinHeight() const{return pMinHeight;}
 	
 	/** Maximum height. */
-	inline float GetMaxHeight() const{ return pMaxHeight; }
+	inline float GetMaxHeight() const{return pMaxHeight;}
 	
 	/** Height changed. */
-	void HeightChanged( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
+	void HeightChanged(const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to);
 	
 	/** Sector changed. */
-	void SectorChanged( const deHeightTerrainSector &sector );
+	void SectorChanged(const deHeightTerrainSector &sector);
 	
 	
 	
 	/** Number of clusters. */
-	inline int GetClusterCount() const{ return pClusterCount; }
+	inline int GetClusterCount() const{return pClusterCount;}
 	
 	/** Cluster at location. */
-	deoglHTSCluster &GetClusterAt( int x, int z ) const;
-	deoglHTSCluster &GetClusterAt( const decPoint &coordinate ) const;
+	deoglHTSCluster &GetClusterAt(int x, int z) const;
+	deoglHTSCluster &GetClusterAt(const decPoint &coordinate) const;
 	
 	/** List of clusters. */
-	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
+	inline deoglHTSCluster *GetClusters() const{return pClusters;}
 	
 	/** Clusters update world compute element textures. */
 	void ClustersUpdateWorldComputeElementTextures();
@@ -202,17 +202,17 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateArrays( const deHeightTerrainSector &sector );
-	void pCreateHeightMap( const deHeightTerrainSector &sector );
+	void pCreateArrays(const deHeightTerrainSector &sector);
+	void pCreateHeightMap(const deHeightTerrainSector &sector);
 	
-	void pSetTextureCount( int count );
+	void pSetTextureCount(int count);
 	
 	void pDropMaskPixelBuffers();
 	
-	void pSyncSector( const deHeightTerrainSector &sector );
-	void pSyncTextures( const deHeightTerrainSector &sector );
-	void pSyncMaskTextures( const deHeightTerrainSector &sector );
-	void pSyncHeightMap( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
+	void pSyncSector(const deHeightTerrainSector &sector);
+	void pSyncTextures(const deHeightTerrainSector &sector);
+	void pSyncMaskTextures(const deHeightTerrainSector &sector);
+	void pSyncHeightMap(const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to);
 	
 	void pUpdateMaskTextures();
 	void pCreateVBODataPoints1();

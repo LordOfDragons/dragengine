@@ -40,42 +40,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedFromImage::seUPropertyConstructedFromImage( seProperty *property ) :
-pProperty( NULL ),
-pOldContent( NULL ),
-pNewContent( NULL )
+seUPropertyConstructedFromImage::seUPropertyConstructedFromImage(seProperty *property) :
+pProperty(NULL),
+pOldContent(NULL),
+pNewContent(NULL)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(! property){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deImage * const image = property->GetEngineImage();
-	if( ! image ){
-		DETHROW( deeInvalidParam );
+	if(! image){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldBitCount = property->GetNodeBitCount();
 	pNewBitCount = image->GetBitCount();
 	
-	const decPoint3 size( image->GetWidth(), image->GetHeight(), image->GetDepth() );
+	const decPoint3 size(image->GetWidth(), image->GetHeight(), image->GetDepth());
 	
-	SetShortInfo( "Property constructed from image" );
+	SetShortInfo("Property constructed from image");
 	
 	sePropertyNodeImage *nodeImage = NULL;
 	
 	try{
-		nodeImage = new sePropertyNodeImage( *property->GetEngine() );
-		nodeImage->SetSize( size );
-		nodeImage->SetPath( property->GetImagePath() );
+		nodeImage = new sePropertyNodeImage(*property->GetEngine());
+		nodeImage->SetSize(size);
+		nodeImage->SetPath(property->GetImagePath());
 		
-		pNewContent = new sePropertyNodeGroup( *property->GetEngine() );
-		pNewContent->SetSize( size );
-		pNewContent->AddNode( nodeImage );
+		pNewContent = new sePropertyNodeGroup(*property->GetEngine());
+		pNewContent->SetSize(size);
+		pNewContent->AddNode(nodeImage);
 		nodeImage->FreeReference();
 		nodeImage = NULL;
 		
-	}catch( const deException & ){
-		if( nodeImage ){
+	}catch(const deException &){
+		if(nodeImage){
 			nodeImage->FreeReference();
 		}
 		pCleanUp();
@@ -99,13 +99,13 @@ seUPropertyConstructedFromImage::~seUPropertyConstructedFromImage(){
 ///////////////
 
 void seUPropertyConstructedFromImage::Undo(){
-	pProperty->SetNodeGroup( pOldContent );
-	pProperty->SetNodeBitCount( pOldBitCount );
+	pProperty->SetNodeGroup(pOldContent);
+	pProperty->SetNodeBitCount(pOldBitCount);
 }
 
 void seUPropertyConstructedFromImage::Redo(){
-	pProperty->SetNodeGroup( pNewContent );
-	pProperty->SetNodeBitCount( pNewBitCount );
+	pProperty->SetNodeGroup(pNewContent);
+	pProperty->SetNodeBitCount(pNewBitCount);
 }
 
 
@@ -114,13 +114,13 @@ void seUPropertyConstructedFromImage::Redo(){
 //////////////////////
 
 void seUPropertyConstructedFromImage::pCleanUp(){
-	if( pNewContent ){
+	if(pNewContent){
 		pNewContent->FreeReference();
 	}
-	if( pOldContent ){
+	if(pOldContent){
 		pOldContent->FreeReference();
 	}
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }

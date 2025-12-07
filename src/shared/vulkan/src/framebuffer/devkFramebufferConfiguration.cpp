@@ -34,23 +34,23 @@
 //////////////////////////////////////
 
 devkFramebufferConfiguration::devkFramebufferConfiguration() :
-pAttachmentCount( 0 ),
-pAttachments( nullptr ),
-pSize( 1, 1 ),
-pLayerCount( 1 ){
+pAttachmentCount(0),
+pAttachments(nullptr),
+pSize(1, 1),
+pLayerCount(1){
 }
 
-devkFramebufferConfiguration::devkFramebufferConfiguration( const devkFramebufferConfiguration &configuration ) :
-pAttachmentCount( 0 ),
-pAttachments( nullptr ),
-pSize( 1, 1 ),
-pLayerCount( 1 )
+devkFramebufferConfiguration::devkFramebufferConfiguration(const devkFramebufferConfiguration &configuration) :
+pAttachmentCount(0),
+pAttachments(nullptr),
+pSize(1, 1),
+pLayerCount(1)
 {
 	*this = configuration;
 }
 
 devkFramebufferConfiguration::~devkFramebufferConfiguration(){
-	if( pAttachments ){
+	if(pAttachments){
 		delete [] pAttachments;
 	}
 }
@@ -60,58 +60,58 @@ devkFramebufferConfiguration::~devkFramebufferConfiguration(){
 // Management
 ///////////////
 
-void devkFramebufferConfiguration::SetAttachmentCount( int count ){
-	if( count < 0 ){
-		DETHROW_INFO( deeInvalidParam, "count < 0" );
+void devkFramebufferConfiguration::SetAttachmentCount(int count){
+	if(count < 0){
+		DETHROW_INFO(deeInvalidParam, "count < 0");
 	}
 	
-	if( pAttachments ){
+	if(pAttachments){
 		delete [] pAttachments;
 		pAttachments = nullptr;
 		pAttachmentCount = 0;
 	}
 	
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pAttachments = new devkImageView::Ref[ count ];
+	pAttachments = new devkImageView::Ref[count];
 	pAttachmentCount = count;
 }
 
-devkImageView *devkFramebufferConfiguration::GetAttachmentAt( int index ) const{
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
+devkImageView *devkFramebufferConfiguration::GetAttachmentAt(int index) const{
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
 	}
-	if( index >= pAttachmentCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= attachmentCount" );
-	}
-	
-	return pAttachments[ index ];
-}
-
-void devkFramebufferConfiguration::SetAttachmentAt( int index, devkImageView *attachment ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pAttachmentCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= attachmentCount" );
+	if(index >= pAttachmentCount){
+		DETHROW_INFO(deeInvalidParam, "index >= attachmentCount");
 	}
 	
-	pAttachments[ index ] = attachment;
+	return pAttachments[index];
 }
 
-void devkFramebufferConfiguration::SetSize( const decPoint &size ){
-	if( ! ( size >= decPoint( 1, 1 ) ) ){
-		DETHROW_INFO( deeInvalidParam, "!(size >= (1,1))" );
+void devkFramebufferConfiguration::SetAttachmentAt(int index, devkImageView *attachment){
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
+	}
+	if(index >= pAttachmentCount){
+		DETHROW_INFO(deeInvalidParam, "index >= attachmentCount");
+	}
+	
+	pAttachments[index] = attachment;
+}
+
+void devkFramebufferConfiguration::SetSize(const decPoint &size){
+	if(! (size >= decPoint(1, 1))){
+		DETHROW_INFO(deeInvalidParam, "!(size >= (1,1))");
 	}
 	
 	pSize = size;
 }
 
-void devkFramebufferConfiguration::SetLayerCount( int count ){
-	if( count < 1 ){
-		DETHROW_INFO( deeInvalidParam, "count < " );
+void devkFramebufferConfiguration::SetLayerCount(int count){
+	if(count < 1){
+		DETHROW_INFO(deeInvalidParam, "count < ");
 	}
 	
 	pLayerCount = count;
@@ -122,16 +122,16 @@ void devkFramebufferConfiguration::SetLayerCount( int count ){
 // Operators
 //////////////
 
-bool devkFramebufferConfiguration::operator==( const devkFramebufferConfiguration &configuration ) const{
-	if( pAttachmentCount != configuration.pAttachmentCount
+bool devkFramebufferConfiguration::operator==(const devkFramebufferConfiguration &configuration) const{
+	if(pAttachmentCount != configuration.pAttachmentCount
 	|| pSize != configuration.pSize
-	|| pLayerCount != configuration.pLayerCount ){
+	|| pLayerCount != configuration.pLayerCount){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<pAttachmentCount; i++ ){
-		if( pAttachments[ i ] != configuration.pAttachments[ i ] ){
+	for(i=0; i<pAttachmentCount; i++){
+		if(pAttachments[i] != configuration.pAttachments[i]){
 			return false;
 		}
 	}
@@ -139,11 +139,11 @@ bool devkFramebufferConfiguration::operator==( const devkFramebufferConfiguratio
 	return true;
 }
 
-devkFramebufferConfiguration &devkFramebufferConfiguration::operator=( const devkFramebufferConfiguration &configuration ){
-	SetAttachmentCount( configuration.pAttachmentCount );
+devkFramebufferConfiguration &devkFramebufferConfiguration::operator=(const devkFramebufferConfiguration &configuration){
+	SetAttachmentCount(configuration.pAttachmentCount);
 	int i;
-	for( i=0; i<pAttachmentCount; i++ ){
-		pAttachments[ i ] = configuration.pAttachments[ i ];
+	for(i=0; i<pAttachmentCount; i++){
+		pAttachments[i] = configuration.pAttachments[i];
 	}
 	
 	pSize = configuration.pSize;

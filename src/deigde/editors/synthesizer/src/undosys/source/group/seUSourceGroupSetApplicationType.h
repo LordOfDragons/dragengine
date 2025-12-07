@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceGroupSetApplicationType( seSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType );
+	seUSourceGroupSetApplicationType(seSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType);
 	
 protected:
 	/** \brief Clean up undo action. */

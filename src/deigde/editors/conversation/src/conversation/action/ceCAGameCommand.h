@@ -53,7 +53,7 @@ public:
 	/** \brief Creates a new conversation action. */
 	ceCAGameCommand();
 	/** \brief Creates a new conversation action. */
-	ceCAGameCommand( const ceCAGameCommand &action );
+	ceCAGameCommand(const ceCAGameCommand &action);
 	/** \brief Cleans up the conversation action. */
 	virtual ~ceCAGameCommand();
 	/*@}*/
@@ -61,9 +61,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the command string. */
-	inline const decString &GetCommand() const{ return pCommand; }
+	inline const decString &GetCommand() const{return pCommand;}
 	/** \brief Sets the command string. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	
 	/** \brief Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

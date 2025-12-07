@@ -81,42 +81,42 @@ void debnVisitorValueCreate::Reset(){
 // Visiting
 /////////////
 
-void debnVisitorValueCreate::VisitValue( deNetworkValue* ){
-	DETHROW( deeInvalidParam );
+void debnVisitorValueCreate::VisitValue(deNetworkValue*){
+	DETHROW(deeInvalidParam);
 }
 
-void debnVisitorValueCreate::VisitInteger( deNetworkValueInteger *value ){
-	pValue = new debnValueInteger( *value );
+void debnVisitorValueCreate::VisitInteger(deNetworkValueInteger *value){
+	pValue = new debnValueInteger(*value);
 }
 
-void debnVisitorValueCreate::VisitFloat( deNetworkValueFloat *value ){
-	pValue = new debnValueFloat( *value );
+void debnVisitorValueCreate::VisitFloat(deNetworkValueFloat *value){
+	pValue = new debnValueFloat(*value);
 }
 
-void debnVisitorValueCreate::VisitString( deNetworkValueString *value ){
-	pValue = new debnValueString( *value );
+void debnVisitorValueCreate::VisitString(deNetworkValueString *value){
+	pValue = new debnValueString(*value);
 }
 
-void debnVisitorValueCreate::VisitData( deNetworkValueData *value ){
-	pValue = new debnValueData( *value );
+void debnVisitorValueCreate::VisitData(deNetworkValueData *value){
+	pValue = new debnValueData(*value);
 }
 
-void debnVisitorValueCreate::VisitPoint2( deNetworkValuePoint2 *value ){
-	pValue = new debnValuePoint2( *value );
+void debnVisitorValueCreate::VisitPoint2(deNetworkValuePoint2 *value){
+	pValue = new debnValuePoint2(*value);
 }
 
-void debnVisitorValueCreate::VisitPoint3( deNetworkValuePoint3 *value ){
-	pValue = new debnValuePoint3( *value );
+void debnVisitorValueCreate::VisitPoint3(deNetworkValuePoint3 *value){
+	pValue = new debnValuePoint3(*value);
 }
 
-void debnVisitorValueCreate::VisitVector2( deNetworkValueVector2 *value ){
-	pValue = new debnValueVector2( *value );
+void debnVisitorValueCreate::VisitVector2(deNetworkValueVector2 *value){
+	pValue = new debnValueVector2(*value);
 }
 
-void debnVisitorValueCreate::VisitVector3( deNetworkValueVector3 *value ){
-	pValue = new debnValueVector3( *value );
+void debnVisitorValueCreate::VisitVector3(deNetworkValueVector3 *value){
+	pValue = new debnValueVector3(*value);
 }
 
-void debnVisitorValueCreate::VisitQuaternion( deNetworkValueQuaternion *value ){
-	pValue = new debnValueQuaternion( *value );
+void debnVisitorValueCreate::VisitQuaternion(deNetworkValueQuaternion *value){
+	pValue = new debnValueQuaternion(*value);
 }

@@ -52,12 +52,12 @@
 /////////////////////////////////
 
 projTRProfile::projTRProfile() :
-pReplaceRunArgs( false ),
-pWidth( 800 ),
-pHeight( 600 ),
-pFullScreen( false ),
+pReplaceRunArgs(false),
+pWidth(800),
+pHeight(600),
+pFullScreen(false),
 
-pValid( false ){
+pValid(false){
 }
 
 projTRProfile::~projTRProfile(){
@@ -68,97 +68,97 @@ projTRProfile::~projTRProfile(){
 // Management
 ///////////////
 
-void projTRProfile::SetName( const char *name ){
+void projTRProfile::SetName(const char *name){
 	pName = name;
 }
 
-void projTRProfile::SetModuleGraphic( const char *moduleName ){
+void projTRProfile::SetModuleGraphic(const char *moduleName){
 	pModuleGraphic = moduleName;
 }
 
-void projTRProfile::SetModuleInput( const char *moduleName ){
+void projTRProfile::SetModuleInput(const char *moduleName){
 	pModuleInput = moduleName;
 }
 
-void projTRProfile::SetModulePhysics( const char *moduleName ){
+void projTRProfile::SetModulePhysics(const char *moduleName){
 	pModulePhysics = moduleName;
 }
 
-void projTRProfile::SetModuleAnimator( const char *moduleName ){
+void projTRProfile::SetModuleAnimator(const char *moduleName){
 	pModuleAnimator = moduleName;
 }
 
-void projTRProfile::SetModuleAI( const char *moduleName ){
+void projTRProfile::SetModuleAI(const char *moduleName){
 	pModuleAI = moduleName;
 }
 
-void projTRProfile::SetModuleCrashRecovery( const char *moduleName ){
+void projTRProfile::SetModuleCrashRecovery(const char *moduleName){
 	pModuleCrashRecovery = moduleName;
 }
 
-void projTRProfile::SetModuleAudio( const char *moduleName ){
+void projTRProfile::SetModuleAudio(const char *moduleName){
 	pModuleAudio = moduleName;
 }
 
-void projTRProfile::SetModuleSynthesizer( const char *moduleName ){
+void projTRProfile::SetModuleSynthesizer(const char *moduleName){
 	pModuleSynthesizer = moduleName;
 }
 
-void projTRProfile::SetModuleNetwork( const char *moduleName ){
+void projTRProfile::SetModuleNetwork(const char *moduleName){
 	pModuleNetwork = moduleName;
 }
 
-void projTRProfile::SetModuleVR( const char *moduleName ){
+void projTRProfile::SetModuleVR(const char *moduleName){
 	pModuleVR = moduleName;
 }
 
 
 
-void projTRProfile::SetRunArguments( const char *arguments ){
+void projTRProfile::SetRunArguments(const char *arguments){
 	pRunArgs = arguments;
 }
 
-void projTRProfile::SetReplaceRunArguments( bool replaceRunArguments ){
+void projTRProfile::SetReplaceRunArguments(bool replaceRunArguments){
 	pReplaceRunArgs = replaceRunArguments;
 }
 
-void projTRProfile::SetWidth( int width ){
-	if( width < 1 ){
-		DETHROW( deeInvalidParam );
+void projTRProfile::SetWidth(int width){
+	if(width < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pWidth = width;
 }
 
-void projTRProfile::SetHeight( int height ){
-	if( height < 1 ){
-		DETHROW( deeInvalidParam );
+void projTRProfile::SetHeight(int height){
+	if(height < 1){
+		DETHROW(deeInvalidParam);
 	}
 	pHeight = height;
 }
 
-void projTRProfile::SetFullScreen( bool fullScreen ){
+void projTRProfile::SetFullScreen(bool fullScreen){
 	pFullScreen = fullScreen;
 }
 
 
 
-void projTRProfile::Verify( deEngine &engine ){
+void projTRProfile::Verify(deEngine &engine){
 	pValid = true;
-	pValid &= VerifyModule( engine, pModuleGraphic, deModuleSystem::emtGraphic );
-	pValid &= VerifyModule( engine, pModuleInput, deModuleSystem::emtInput );
-	pValid &= VerifyModule( engine, pModulePhysics, deModuleSystem::emtPhysics );
-	pValid &= VerifyModule( engine, pModuleAnimator, deModuleSystem::emtAnimator );
-	pValid &= VerifyModule( engine, pModuleAI, deModuleSystem::emtAI );
-	pValid &= VerifyModule( engine, pModuleCrashRecovery, deModuleSystem::emtCrashRecovery );
-	pValid &= VerifyModule( engine, pModuleAudio, deModuleSystem::emtAudio );
-	pValid &= VerifyModule( engine, pModuleSynthesizer, deModuleSystem::emtSynthesizer );
-	pValid &= VerifyModule( engine, pModuleNetwork, deModuleSystem::emtNetwork );
-	pValid &= VerifyModule( engine, pModuleVR, deModuleSystem::emtVR );
+	pValid &= VerifyModule(engine, pModuleGraphic, deModuleSystem::emtGraphic);
+	pValid &= VerifyModule(engine, pModuleInput, deModuleSystem::emtInput);
+	pValid &= VerifyModule(engine, pModulePhysics, deModuleSystem::emtPhysics);
+	pValid &= VerifyModule(engine, pModuleAnimator, deModuleSystem::emtAnimator);
+	pValid &= VerifyModule(engine, pModuleAI, deModuleSystem::emtAI);
+	pValid &= VerifyModule(engine, pModuleCrashRecovery, deModuleSystem::emtCrashRecovery);
+	pValid &= VerifyModule(engine, pModuleAudio, deModuleSystem::emtAudio);
+	pValid &= VerifyModule(engine, pModuleSynthesizer, deModuleSystem::emtSynthesizer);
+	pValid &= VerifyModule(engine, pModuleNetwork, deModuleSystem::emtNetwork);
+	pValid &= VerifyModule(engine, pModuleVR, deModuleSystem::emtVR);
 }
 
-bool projTRProfile::VerifyModule( deEngine &engine, const char *moduleName,
-deModuleSystem::eModuleTypes requiredType ) const{
-	deLoadableModule * const module = engine.GetModuleSystem()->GetModuleNamed( moduleName );
+bool projTRProfile::VerifyModule(deEngine &engine, const char *moduleName,
+deModuleSystem::eModuleTypes requiredType) const{
+	deLoadableModule * const module = engine.GetModuleSystem()->GetModuleNamed(moduleName);
 	return module
 		&& module->GetType() == requiredType
 		&& module->IsLoaded()

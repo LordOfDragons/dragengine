@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxVFSListItem::igdeNativeFoxVFSListItem( const decPath &path, const FXString &text, FXIcon *bi, FXIcon *mi ) :
-FXIconItem( text, bi, mi ),
-pPath( path ),
-pFileType( deVFSContainer::eftRegularFile ),
-pFileSize( 0 ),
-pFileModificationTime( 0 ){
+igdeNativeFoxVFSListItem::igdeNativeFoxVFSListItem(const decPath &path, const FXString &text, FXIcon *bi, FXIcon *mi) :
+FXIconItem(text, bi, mi),
+pPath(path),
+pFileType(deVFSContainer::eftRegularFile),
+pFileSize(0),
+pFileModificationTime(0){
 }
 
 igdeNativeFoxVFSListItem::~igdeNativeFoxVFSListItem(){
@@ -54,19 +54,19 @@ igdeNativeFoxVFSListItem::~igdeNativeFoxVFSListItem(){
 // Management
 ///////////////
 
-void igdeNativeFoxVFSListItem::SetFileName( const char *filename ){
+void igdeNativeFoxVFSListItem::SetFileName(const char *filename){
 	pFileName = filename;
 }
 
-void igdeNativeFoxVFSListItem::SetFileType( deVFSContainer::eFileTypes fileType ){
+void igdeNativeFoxVFSListItem::SetFileType(deVFSContainer::eFileTypes fileType){
 	pFileType = fileType;
 }
 
-void igdeNativeFoxVFSListItem::SetFileSize( int fileSize ){
+void igdeNativeFoxVFSListItem::SetFileSize(int fileSize){
 	pFileSize = fileSize;
 }
 
-void igdeNativeFoxVFSListItem::SetFileModificationTime( TIME_SYSTEM time ){
+void igdeNativeFoxVFSListItem::SetFileModificationTime(TIME_SYSTEM time){
 	pFileModificationTime = time;
 }
 
@@ -76,64 +76,64 @@ bool igdeNativeFoxVFSListItem::IsDirectory() const{
 
 
 
-void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
+void igdeNativeFoxVFSListItem::UpdateText(const char* pattern){
 	FXString text, format;
 	
-	while( *pattern ){
-		if( ! text.empty() ){
-			text.append( "\t" );
+	while(*pattern){
+		if(! text.empty()){
+			text.append("\t");
 		}
 		
-		if( *pattern == 'n' ){
-			text.append( pFileName );
+		if(*pattern == 'n'){
+			text.append(pFileName);
 			
-		}else if( *pattern == 's' ){
-			if( IsDirectory() ){
-				text.append( "-" );
+		}else if(*pattern == 's'){
+			if(IsDirectory()){
+				text.append("-");
 				
 			}else{
-				if( pFileSize < 1024 ){
-					format.format( "%i B", pFileSize );
-					text.append( format );
+				if(pFileSize < 1024){
+					format.format("%i B", pFileSize);
+					text.append(format);
 					
-				}else if( pFileSize < 1024000 ){
-					format.format( "%0.1f KiB", ( double )pFileSize / 1024.0 );
-					text.append( format );
+				}else if(pFileSize < 1024000){
+					format.format("%0.1f KiB", (double)pFileSize / 1024.0);
+					text.append(format);
 					
-				}else if( pFileSize < 1024000000 ){
-					format.format( "%0.1f MiB", ( double )pFileSize / 1024000.0 );
-					text.append( format );
+				}else if(pFileSize < 1024000000){
+					format.format("%0.1f MiB", (double)pFileSize / 1024000.0);
+					text.append(format);
 					
 				}else{
-					format.format( "%0.1f GiB", ( double )pFileSize / 1024000000.0 );
-					text.append( format );
+					format.format("%0.1f GiB", (double)pFileSize / 1024000000.0);
+					text.append(format);
 				}
 			}
 			
-		}else if( *pattern == 'm' ){
-			if( IsDirectory() ){
-				text.append( "-" );
+		}else if(*pattern == 'm'){
+			if(IsDirectory()){
+				text.append("-");
 				
 			}else{
-				const decDateTime datetime( pFileModificationTime );
-				format.format( "%02i:%02i %02i.%02i.%04i", datetime.GetHour(), datetime.GetMinute(),
-					datetime.GetDay() + 1, datetime.GetMonth() + 1, datetime.GetYear() );
-				text.append( format );
+				const decDateTime datetime(pFileModificationTime);
+				format.format("%02i:%02i %02i.%02i.%04i", datetime.GetHour(), datetime.GetMinute(),
+					datetime.GetDay() + 1, datetime.GetMonth() + 1, datetime.GetYear());
+				text.append(format);
 			}
 			
-		}else if( *pattern == 't' ){
-			if( IsDirectory() ){
-				text.append( "Directory" );
+		}else if(*pattern == 't'){
+			if(IsDirectory()){
+				text.append("Directory");
 				
 			}else{
-				text.append( "File" );
+				text.append("File");
 			}
 		}
 		
 		pattern++;
 	}
 	
-	setText( text );
+	setText(text);
 }
 
 
@@ -149,22 +149,22 @@ void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
 #endif
 */
 
-static FXint foxStringCompare( const FXString &s1, const FXString &s2 ){
-	return strcmp( s1.text(), s2.text() );
+static FXint foxStringCompare(const FXString &s1, const FXString &s2){
+	return strcmp(s1.text(), s2.text());
 }
 #define FOX_STRING_COMPARE foxStringCompare
 
-FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
-	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
+FXint igdeNativeFoxVFSListItem::fSortNameAsc(const FXIconItem *item1, const FXIconItem *item2){
+	const igdeNativeFoxVFSListItem &file1 = *((igdeNativeFoxVFSListItem*)item1);
+	const igdeNativeFoxVFSListItem &file2 = *((igdeNativeFoxVFSListItem*)item2);
 	const bool isDir1 = file1.IsDirectory();
 	const bool isDir2 = file2.IsDirectory();
 	
-	if( isDir1 == isDir2 ){
-		return FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
+	if(isDir1 == isDir2){
+		return FOX_STRING_COMPARE(file1.GetFileName(), file2.GetFileName());
 		
 	}else{
-		if( isDir1 && ! isDir2 ){
+		if(isDir1 && ! isDir2){
 			return -1;
 			
 		}else{
@@ -173,17 +173,17 @@ FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXI
 	}
 }
 
-FXint igdeNativeFoxVFSListItem::fSortNameDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
-	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
+FXint igdeNativeFoxVFSListItem::fSortNameDesc(const FXIconItem *item1, const FXIconItem *item2){
+	const igdeNativeFoxVFSListItem &file1 = *((igdeNativeFoxVFSListItem*)item1);
+	const igdeNativeFoxVFSListItem &file2 = *((igdeNativeFoxVFSListItem*)item2);
 	const bool isDir1 = file1.IsDirectory();
 	const bool isDir2 = file2.IsDirectory();
 	
-	if( isDir1 == isDir2 ){
-		return FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
+	if(isDir1 == isDir2){
+		return FOX_STRING_COMPARE(file2.GetFileName(), file1.GetFileName());
 		
 	}else{
-		if( isDir1 && ! isDir2 ){
+		if(isDir1 && ! isDir2){
 			return -1;
 			
 		}else{
@@ -192,21 +192,21 @@ FXint igdeNativeFoxVFSListItem::fSortNameDesc( const FXIconItem *item1, const FX
 	}
 }
 
-FXint igdeNativeFoxVFSListItem::fSortSizeAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
-	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
+FXint igdeNativeFoxVFSListItem::fSortSizeAsc(const FXIconItem *item1, const FXIconItem *item2){
+	const igdeNativeFoxVFSListItem &file1 = *((igdeNativeFoxVFSListItem*)item1);
+	const igdeNativeFoxVFSListItem &file2 = *((igdeNativeFoxVFSListItem*)item2);
 	const bool isDir1 = file1.IsDirectory();
 	const bool isDir2 = file2.IsDirectory();
 	
-	if( isDir1 == isDir2 ){
-		FXint result = ( FXint )( file1.GetFileSize() - file2.GetFileSize() );
-		if( result == 0 ){ // same size, sort by name instead
-			result = FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
+	if(isDir1 == isDir2){
+		FXint result = (FXint)(file1.GetFileSize() - file2.GetFileSize());
+		if(result == 0){ // same size, sort by name instead
+			result = FOX_STRING_COMPARE(file1.GetFileName(), file2.GetFileName());
 		}
 		return result;
 		
 	}else{
-		if( isDir1 && ! isDir2 ){
+		if(isDir1 && ! isDir2){
 			return -1;
 			
 		}else{
@@ -215,21 +215,21 @@ FXint igdeNativeFoxVFSListItem::fSortSizeAsc( const FXIconItem *item1, const FXI
 	}
 }
 
-FXint igdeNativeFoxVFSListItem::fSortSizeDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
-	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
+FXint igdeNativeFoxVFSListItem::fSortSizeDesc(const FXIconItem *item1, const FXIconItem *item2){
+	const igdeNativeFoxVFSListItem &file1 = *((igdeNativeFoxVFSListItem*)item1);
+	const igdeNativeFoxVFSListItem &file2 = *((igdeNativeFoxVFSListItem*)item2);
 	const bool isDir1 = file1.IsDirectory();
 	const bool isDir2 = file2.IsDirectory();
 	
-	if( isDir1 == isDir2 ){
-		FXint result = ( FXint )( file2.GetFileSize() - file1.GetFileSize() );
-		if( result == 0 ){ // same size, sort by name instead
-			result = FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
+	if(isDir1 == isDir2){
+		FXint result = (FXint)(file2.GetFileSize() - file1.GetFileSize());
+		if(result == 0){ // same size, sort by name instead
+			result = FOX_STRING_COMPARE(file2.GetFileName(), file1.GetFileName());
 		}
 		return result;
 		
 	}else{
-		if( isDir1 && ! isDir2 ){
+		if(isDir1 && ! isDir2){
 			return -1;
 			
 		}else{
@@ -238,21 +238,21 @@ FXint igdeNativeFoxVFSListItem::fSortSizeDesc( const FXIconItem *item1, const FX
 	}
 }
 
-FXint igdeNativeFoxVFSListItem::fSortModTimeAsc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
-	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
+FXint igdeNativeFoxVFSListItem::fSortModTimeAsc(const FXIconItem *item1, const FXIconItem *item2){
+	const igdeNativeFoxVFSListItem &file1 = *((igdeNativeFoxVFSListItem*)item1);
+	const igdeNativeFoxVFSListItem &file2 = *((igdeNativeFoxVFSListItem*)item2);
 	const bool isDir1 = file1.IsDirectory();
 	const bool isDir2 = file2.IsDirectory();
 	
-	if( isDir1 == isDir2 ){
-		FXint result = ( FXint )( file2.GetFileModificationTime() - file1.GetFileModificationTime() );
-		if( result == 0 ){ // same size, sort by name instead
-			result = FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
+	if(isDir1 == isDir2){
+		FXint result = (FXint)(file2.GetFileModificationTime() - file1.GetFileModificationTime());
+		if(result == 0){ // same size, sort by name instead
+			result = FOX_STRING_COMPARE(file1.GetFileName(), file2.GetFileName());
 		}
 		return result;
 		
 	}else{
-		if( isDir1 && ! isDir2 ){
+		if(isDir1 && ! isDir2){
 			return -1;
 			
 		}else{
@@ -261,21 +261,21 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeAsc( const FXIconItem *item1, const 
 	}
 }
 
-FXint igdeNativeFoxVFSListItem::fSortModTimeDesc( const FXIconItem *item1, const FXIconItem *item2 ){
-	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
-	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
+FXint igdeNativeFoxVFSListItem::fSortModTimeDesc(const FXIconItem *item1, const FXIconItem *item2){
+	const igdeNativeFoxVFSListItem &file1 = *((igdeNativeFoxVFSListItem*)item1);
+	const igdeNativeFoxVFSListItem &file2 = *((igdeNativeFoxVFSListItem*)item2);
 	const bool isDir1 = file1.IsDirectory();
 	const bool isDir2 = file2.IsDirectory();
 	
-	if( isDir1 == isDir2 ){
-		FXint result = ( FXint )( file1.GetFileModificationTime() - file2.GetFileModificationTime() );
-		if( result == 0 ){ // same size, sort by name instead
-			result = FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
+	if(isDir1 == isDir2){
+		FXint result = (FXint)(file1.GetFileModificationTime() - file2.GetFileModificationTime());
+		if(result == 0){ // same size, sort by name instead
+			result = FOX_STRING_COMPARE(file2.GetFileName(), file1.GetFileName());
 		}
 		return result;
 		
 	}else{
-		if( isDir1 && ! isDir2 ){
+		if(isDir1 && ! isDir2){
 			return -1;
 			
 		}else{

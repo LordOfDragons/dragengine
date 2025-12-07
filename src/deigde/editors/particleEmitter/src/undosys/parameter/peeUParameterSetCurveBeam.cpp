@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetCurveBeam::peeUParameterSetCurveBeam( peeType *type,
-	peeParameter *parameter, const decCurveBezier &newCurve ) :
-peeUParameterSetCurve( type, parameter, newCurve )
+peeUParameterSetCurveBeam::peeUParameterSetCurveBeam(peeType *type,
+	peeParameter *parameter, const decCurveBezier &newCurve) :
+peeUParameterSetCurve(type, parameter, newCurve)
 {
-	SetShortInfo( "Set Parameter Beam Curve" );
+	SetShortInfo("Set Parameter Beam Curve");
 	pOldCurve = parameter->GetCurveBeam();
 }
 
@@ -57,9 +57,9 @@ peeUParameterSetCurveBeam::~peeUParameterSetCurveBeam(){
 ///////////////
 
 void peeUParameterSetCurveBeam::Undo(){
-	pParameter->SetCurveBeam( pOldCurve );
+	pParameter->SetCurveBeam(pOldCurve);
 }
 
 void peeUParameterSetCurveBeam::Redo(){
-	pParameter->SetCurveBeam( pNewCurve );
+	pParameter->SetCurveBeam(pNewCurve);
 }

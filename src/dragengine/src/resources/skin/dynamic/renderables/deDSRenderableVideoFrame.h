@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableVideoFrame( const char *name );
+	deDSRenderableVideoFrame(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderableVideoFrame();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline deVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** \brief Set video player or NULL if not set. */
-	void SetVideoPlayer( deVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deVideoPlayer *videoPlayer);
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

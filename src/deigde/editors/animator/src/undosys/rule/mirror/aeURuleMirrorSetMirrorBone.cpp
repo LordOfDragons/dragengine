@@ -33,17 +33,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetMirrorBone::aeURuleMirrorSetMirrorBone( aeRuleMirror *rule, const char *newValue ) :
-pRule( rule ),
-pNewValue( newValue )
+aeURuleMirrorSetMirrorBone::aeURuleMirrorSetMirrorBone(aeRuleMirror *rule, const char *newValue) :
+pRule(rule),
+pNewValue(newValue)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = rule->GetMirrorBone();
 	
-	SetShortInfo( "Set mirror rule mirror bone" );
+	SetShortInfo("Set mirror rule mirror bone");
 }
 
 aeURuleMirrorSetMirrorBone::~aeURuleMirrorSetMirrorBone(){
@@ -55,9 +55,9 @@ aeURuleMirrorSetMirrorBone::~aeURuleMirrorSetMirrorBone(){
 ///////////////
 
 void aeURuleMirrorSetMirrorBone::Undo(){
-	pRule->SetMirrorBone( pOldValue );
+	pRule->SetMirrorBone(pOldValue);
 }
 
 void aeURuleMirrorSetMirrorBone::Redo(){
-	pRule->SetMirrorBone( pNewValue );
+	pRule->SetMirrorBone(pNewValue);
 }

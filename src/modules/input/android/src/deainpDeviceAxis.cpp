@@ -40,19 +40,19 @@
 ////////////////////////////
 
 deainpDeviceAxis::deainpDeviceAxis() :
-pIndex( -1 ),
-pType( deInputDeviceAxis::eatGeneric ),
-pMinimum( -100 ),
-pMaximum( 100 ),
-pFuzz( 0 ),
-pFlat( 0 ),
-pAbsolute( true ),
-pWheelOtherAxis( false ),
+pIndex(-1),
+pType(deInputDeviceAxis::eatGeneric),
+pMinimum(-100),
+pMaximum(100),
+pFuzz(0),
+pFlat(0),
+pAbsolute(true),
+pWheelOtherAxis(false),
 
-pValue( 0.0f ),
-pChangedValue( 0.0f ),
+pValue(0.0f),
+pChangedValue(0.0f),
 
-pAICode( -1 ){
+pAICode(-1){
 }
 
 deainpDeviceAxis::~deainpDeviceAxis(){
@@ -63,86 +63,86 @@ deainpDeviceAxis::~deainpDeviceAxis(){
 // Management
 ///////////////
 
-void deainpDeviceAxis::SetIndex( int index ){
+void deainpDeviceAxis::SetIndex(int index){
 	pIndex = index;
 }
 
-void deainpDeviceAxis::SetID( const char *id ){
+void deainpDeviceAxis::SetID(const char *id){
 	pID = id;
 }
 
-void deainpDeviceAxis::SetName( const char *name ){
+void deainpDeviceAxis::SetName(const char *name){
 	pName = name;
 }
 
-void deainpDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
+void deainpDeviceAxis::SetType(deInputDeviceAxis::eAxisTypes type){
 	pType = type;
 }
 
 
-void deainpDeviceAxis::SetMinimum( int minimum ){
+void deainpDeviceAxis::SetMinimum(int minimum){
 	pMinimum = minimum;
 }
 
-void deainpDeviceAxis::SetMaximum( int maximum ){
+void deainpDeviceAxis::SetMaximum(int maximum){
 	pMaximum = maximum;
 }
 
-void deainpDeviceAxis::SetFuzz( int fuzz ){
+void deainpDeviceAxis::SetFuzz(int fuzz){
 	pFuzz = fuzz;
 }
 
-void deainpDeviceAxis::SetFlat( int flat ){
+void deainpDeviceAxis::SetFlat(int flat){
 	pFlat = flat;
 }
 
-void deainpDeviceAxis::SetAbsolute( bool absolute ){
+void deainpDeviceAxis::SetAbsolute(bool absolute){
 	pAbsolute = absolute;
 }
 
-void deainpDeviceAxis::SetWheelOtherAxis( bool otherAxis ){
+void deainpDeviceAxis::SetWheelOtherAxis(bool otherAxis){
 	pWheelOtherAxis = otherAxis;
 }
 
 
 
-void deainpDeviceAxis::SetValue( float value ){
-	if( pAbsolute ){
-		value = decMath::clamp( value, -1.0f, 1.0f );
+void deainpDeviceAxis::SetValue(float value){
+	if(pAbsolute){
+		value = decMath::clamp(value, -1.0f, 1.0f);
 	}
 	pValue = value;
 }
 
 
 
-void deainpDeviceAxis::SetAICode( int code ){
+void deainpDeviceAxis::SetAICode(int code){
 	pAICode = code;
 }
 
 
 
-void deainpDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+void deainpDeviceAxis::GetInfo(deInputDeviceAxis &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 }
 
-void deainpDeviceAxis::SendEvents( deainpDevice &device ){
-	if( pAbsolute ){
-		if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
+void deainpDeviceAxis::SendEvents(deainpDevice &device){
+	if(pAbsolute){
+		if(fabsf(pChangedValue - pValue) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		pValue = pChangedValue;
-		device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
+		device.GetModule().AddAxisChanged(device.GetIndex(), pIndex, pValue, pLastEventTime);
 		
 	}else{
-		if( fabsf( pChangedValue ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(pChangedValue) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		pValue = pChangedValue;
 		pChangedValue = 0.0f;
-		device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
+		device.GetModule().AddAxisChanged(device.GetIndex(), pIndex, pValue, pLastEventTime);
 	}
 }

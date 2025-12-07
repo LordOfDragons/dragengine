@@ -55,44 +55,44 @@ int ceStripList::GetCount() const{
 	return pList.GetCount();
 }
 
-ceStrip *ceStripList::GetAt( int index ) const{
-	return ( ceStrip* )pList.GetAt( index );
+ceStrip *ceStripList::GetAt(int index) const{
+	return (ceStrip*)pList.GetAt(index);
 }
 
-int ceStripList::IndexOf( ceStrip *entry ) const{
-	return pList.IndexOf( entry );
+int ceStripList::IndexOf(ceStrip *entry) const{
+	return pList.IndexOf(entry);
 }
 
-bool ceStripList::Has( ceStrip *entry ) const{
-	return pList.Has( entry );
+bool ceStripList::Has(ceStrip *entry) const{
+	return pList.Has(entry);
 }
 
-void ceStripList::Add( ceStrip *entry ){
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
+void ceStripList::Add(ceStrip *entry){
+	if(! entry){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Add( entry );
+	pList.Add(entry);
 }
 
-void ceStripList::InsertAt( ceStrip *entry, int index ){
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
+void ceStripList::InsertAt(ceStrip *entry, int index){
+	if(! entry){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Insert( entry, index );
+	pList.Insert(entry, index);
 }
 
-void ceStripList::MoveTo( ceStrip *entry, int index ){
-	if( ! entry ){
-		DETHROW( deeInvalidParam );
+void ceStripList::MoveTo(ceStrip *entry, int index){
+	if(! entry){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Move( entry, index );
+	pList.Move(entry, index);
 }
 
-void ceStripList::Remove( ceStrip *entry ){
-	pList.Remove( entry );
+void ceStripList::Remove(ceStrip *entry){
+	pList.Remove(entry);
 }
 
 void ceStripList::RemoveAll(){
@@ -101,21 +101,21 @@ void ceStripList::RemoveAll(){
 
 
 
-void ceStripList::AddCopyFrom( const ceStripList &list ){
+void ceStripList::AddCopyFrom(const ceStripList &list){
 	const int count = list.GetCount();
 	ceStrip *entry = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			entry = new ceStrip( *list.GetAt( i ) );
-			pList.Add( entry );
+		for(i=0; i<count; i++){
+			entry = new ceStrip(*list.GetAt(i));
+			pList.Add(entry);
 			entry->FreeReference();
 			entry = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( entry ){
+	}catch(const deException &){
+		if(entry){
 			entry->FreeReference();
 		}
 		throw;
@@ -124,7 +124,7 @@ void ceStripList::AddCopyFrom( const ceStripList &list ){
 
 
 
-ceStripList &ceStripList::operator=( const ceStripList &list ){
+ceStripList &ceStripList::operator=(const ceStripList &list){
 	pList = list.pList;
 	return *this;
 }

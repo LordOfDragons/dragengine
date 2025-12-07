@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedFromImage( seProperty *property );
+	seUPropertyConstructedFromImage(seProperty *property);
 	
 protected:
 	/** \brief Clean up undo. */

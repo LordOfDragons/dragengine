@@ -33,14 +33,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetEnableSize::aeURuleMirrorSetEnableSize( aeRuleMirror *rule ) :
-pRule( rule )
+aeURuleMirrorSetEnableSize::aeURuleMirrorSetEnableSize(aeRuleMirror *rule) :
+pRule(rule)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Toggle mirror rule enable size" );
+	SetShortInfo("Toggle mirror rule enable size");
 }
 
 aeURuleMirrorSetEnableSize::~aeURuleMirrorSetEnableSize(){
@@ -52,9 +52,9 @@ aeURuleMirrorSetEnableSize::~aeURuleMirrorSetEnableSize(){
 ///////////////
 
 void aeURuleMirrorSetEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(! pRule->GetEnableSize());
 }
 
 void aeURuleMirrorSetEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(! pRule->GetEnableSize());
 }

@@ -71,44 +71,44 @@ public:
 	/** Retrieves the number of objects. */
 	int GetCount() const;
 	/** Retrieves the object at the given position. */
-	meObject *GetAt( int position ) const;
+	meObject *GetAt(int position) const;
 	/** Retrieves the index of the given object or -1 if not found. */
-	int IndexOf( meObject *object ) const;
+	int IndexOf(meObject *object) const;
 	/** Determines if the given object exists. */
-	bool Has( meObject *object ) const;
+	bool Has(meObject *object) const;
 	/** Adds an object throwing an exception if already existing. */
-	void Add( meObject *object );
+	void Add(meObject *object);
 	/** Adds an object if not existing already. */
-	void AddIfAbsent( meObject *object );
+	void AddIfAbsent(meObject *object);
 	/** Removes an object throwing an exception if not existing. */
-	void Remove( meObject *object );
+	void Remove(meObject *object);
 	/** Removes an object if existing. */
-	void RemoveIfPresent( meObject *object );
+	void RemoveIfPresent(meObject *object);
 	/** Removes all objects. */
 	void RemoveAll();
 	
 	void Visit(Visitor &visitor, int from, int to = -1, int step = 1) const;
 	
-	inline void Visit(Visitor &visitor) const{ Visit(visitor, 0, pObjects.GetCount()); }
+	inline void Visit(Visitor &visitor) const{Visit(visitor, 0, pObjects.GetCount());}
 	
 	meObject *Find(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
 	
-	inline meObject *Find(Evaluator &evaluator) const{ return Find(evaluator, 0, pObjects.GetCount()); }
+	inline meObject *Find(Evaluator &evaluator) const{return Find(evaluator, 0, pObjects.GetCount());}
 	
 	meObjectList Collect(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
 	
-	inline meObjectList Collect(Evaluator &evaluator) const{ return Collect(evaluator, 0, pObjects.GetCount()); }
+	inline meObjectList Collect(Evaluator &evaluator) const{return Collect(evaluator, 0, pObjects.GetCount());}
 	
 	void RemoveIf(Evaluator &evaluator, int from, int to = -1, int step = 1);
 	
-	inline void RemoveIf(Evaluator &evaluator){ RemoveIf(evaluator, 0, pObjects.GetCount()); }
+	inline void RemoveIf(Evaluator &evaluator){RemoveIf(evaluator, 0, pObjects.GetCount());}
 	
 	void Sort(Comparator &comparator);
 	
 	meObjectList GetSorted(Comparator &comparator) const;
 	
 	/** Sets the list to the contain the same objects as another list. */
-	meObjectList &operator=( const meObjectList &list );
+	meObjectList &operator=(const meObjectList &list);
 	/*@}*/
 };
 

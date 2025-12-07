@@ -53,16 +53,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-declRunGame::declRunGame( declLauncher &launcher ) :
-pLauncher( launcher ),
-pUseConsole( false ),
-pLogAllToConsole( false ),
-pModuleParameters( NULL ),
-pHasPatchIdentifier( false ){
+declRunGame::declRunGame(declLauncher &launcher) :
+pLauncher(launcher),
+pUseConsole(false),
+pLogAllToConsole(false),
+pModuleParameters(NULL),
+pHasPatchIdentifier(false){
 }
 
 declRunGame::~declRunGame(){
-	if( pModuleParameters ){
+	if(pModuleParameters){
 		delete pModuleParameters;
 	}
 }
@@ -73,27 +73,27 @@ declRunGame::~declRunGame(){
 ///////////////
 
 void declRunGame::PrintSyntax(){
-	printf( "Drag[en]gine Console Launcher.\n" );
-	printf( "Written by Plüss Roland ( roland@rptd.ch ).\n" );
-	printf( "Released under the GPL ( http://www.gnu.org/licenses/gpl.html ), 2011.\n" );
-	printf( "\n" );
-	printf( "Runs a game.\n" );
-	printf( "\n" );
-	printf( "Syntax:\n" );
-	printf( "delauncherconsole run [ <options> ] { <game> | -f <game.delga> | --file <game.delga>> } [ <game-options> ]\n" );
-	printf( "   <options> can be one or more of the following:\n" );
-	printf( "      -c, --console           Use console and no graphic system.\n" );
-	printf( "      -p, --profile <name>    Use named game profile instead of the default one.\n" );
-	printf( "      -d, --debug             Display all debug information in the console not just the log file.\n" );
-	printf( "      -P, --patch <id|alias>  Use patch with identifier instead of latest. Use empty string to run unpatched.\n" );
-	printf( "      --mparam module:param=value     Set module parameter before running the game.\n" );
-	printf( "   <game>                Identifier of the game to run.\n" );
-	printf( "   -f <game.delga>       DELGA file to run.\n" );
-	printf( "   --file <game.delga>   DELGA file to run.\n" );
-	printf( "   \n" );
-	printf( "   <game-options> are optional parameters specific to the game to load.\n" );
-	printf( "   see the game documentation for a list of all available parameters.\n" );
-	printf( "\n" );
+	printf("Drag[en]gine Console Launcher.\n");
+	printf("Written by Plüss Roland (roland@rptd.ch).\n");
+	printf("Released under the GPL (http://www.gnu.org/licenses/gpl.html), 2011.\n");
+	printf("\n");
+	printf("Runs a game.\n");
+	printf("\n");
+	printf("Syntax:\n");
+	printf("delauncherconsole run [<options>] {<game> | -f <game.delga> | --file <game.delga>>} [<game-options>]\n");
+	printf("   <options> can be one or more of the following:\n");
+	printf("      -c, --console           Use console and no graphic system.\n");
+	printf("      -p, --profile <name>    Use named game profile instead of the default one.\n");
+	printf("      -d, --debug             Display all debug information in the console not just the log file.\n");
+	printf("      -P, --patch <id|alias>  Use patch with identifier instead of latest. Use empty string to run unpatched.\n");
+	printf("      --mparam module:param=value     Set module parameter before running the game.\n");
+	printf("   <game>                Identifier of the game to run.\n");
+	printf("   -f <game.delga>       DELGA file to run.\n");
+	printf("   --file <game.delga>   DELGA file to run.\n");
+	printf("   \n");
+	printf("   <game-options> are optional parameters specific to the game to load.\n");
+	printf("   see the game documentation for a list of all available parameters.\n");
+	printf("\n");
 }
 
 bool declRunGame::ParseArguments(){
@@ -106,143 +106,143 @@ bool declRunGame::ParseArguments(){
 	int argumentIndex = 1;
 	
 	// first check for options. they all start with a dash.
-	while( argumentIndex < argumentCount ){
-		argument = argumentList.GetArgumentAt( argumentIndex );
+	while(argumentIndex < argumentCount){
+		argument = argumentList.GetArgumentAt(argumentIndex);
 		utf8Argument = argument->ToUTF8();
 		
-		if( utf8Argument == "--console" ){
+		if(utf8Argument == "--console"){
 			pUseConsole = true;
 			
-		}else if( utf8Argument == "--profile" ){
+		}else if(utf8Argument == "--profile"){
 			argumentIndex++;
 			
-			if( argumentCount - argumentIndex > 0 ){
-				pProfileName = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+			if(argumentCount - argumentIndex > 0){
+				pProfileName = argumentList.GetArgumentAt(argumentIndex)->ToUTF8();
 				
 			}else{
-				logger.LogError( LOGSOURCE, "Missing profile name after --profile" );
+				logger.LogError(LOGSOURCE, "Missing profile name after --profile");
 				return false;
 			}
 			
-		}else if( utf8Argument == "--mparam" ){
+		}else if(utf8Argument == "--mparam"){
 			argumentIndex++;
 			
-			if( argumentCount - argumentIndex > 0 ){
-				utf8Value = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+			if(argumentCount - argumentIndex > 0){
+				utf8Value = argumentList.GetArgumentAt(argumentIndex)->ToUTF8();
 				
-				if( ! ParseModuleParameter( utf8Value ) ){
+				if(! ParseModuleParameter(utf8Value)){
 					return false;
 				}
 				
 			}else{
-				logger.LogError( LOGSOURCE, "Missing value after --mparam" );
+				logger.LogError(LOGSOURCE, "Missing value after --mparam");
 				return false;
 			}
 			
-		}else if( utf8Argument == "--debug" ){
+		}else if(utf8Argument == "--debug"){
 			pLogAllToConsole = true;
 			
-		}else if( utf8Argument == "--file" ){
+		}else if(utf8Argument == "--file"){
 			argumentIndex++;
 			
-			if( argumentCount - argumentIndex > 0 ){
-				pGameDefFile = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+			if(argumentCount - argumentIndex > 0){
+				pGameDefFile = argumentList.GetArgumentAt(argumentIndex)->ToUTF8();
 				argumentIndex++;
 				break;
 				
 			}else{
-				logger.LogError( LOGSOURCE, "Missing game definition filename after --file" );
+				logger.LogError(LOGSOURCE, "Missing game definition filename after --file");
 				return false;
 			}
 			
-		}else if( utf8Argument == "--patch" ){
+		}else if(utf8Argument == "--patch"){
 			argumentIndex++;
 			
-			if( argumentCount - argumentIndex > 0 ){
-				pPatchIdentifier.SetFromHexString( argumentList.GetArgumentAt( argumentIndex )->ToUTF8(), false );
+			if(argumentCount - argumentIndex > 0){
+				pPatchIdentifier.SetFromHexString(argumentList.GetArgumentAt(argumentIndex)->ToUTF8(), false);
 				pHasPatchIdentifier = true;
 				
 			}else{
-				logger.LogError( LOGSOURCE, "Missing patch identifier after --patch" );
+				logger.LogError(LOGSOURCE, "Missing patch identifier after --patch");
 				return false;
 			}
 			
-		}else if( utf8Argument[ 0 ] == '-' ){
+		}else if(utf8Argument[0] == '-'){
 			optionLen = utf8Argument.GetLength();
 			
-			for( o=1; o<optionLen; o++ ){
-				option = utf8Argument[ o ];
+			for(o=1; o<optionLen; o++){
+				option = utf8Argument[o];
 				
-				if( option == 'c' ){
+				if(option == 'c'){
 					pUseConsole = true;
 					
-				}else if( option == 'p' ){
-					if( o == optionLen - 1 ){
+				}else if(option == 'p'){
+					if(o == optionLen - 1){
 						argumentIndex++;
 						
-						if( argumentCount - argumentIndex > 0 ){
-							pProfileName = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+						if(argumentCount - argumentIndex > 0){
+							pProfileName = argumentList.GetArgumentAt(argumentIndex)->ToUTF8();
 							
 						}else{
-							logger.LogError( LOGSOURCE, "Missing profile name after -p" );
+							logger.LogError(LOGSOURCE, "Missing profile name after -p");
 							return false;
 						}
 						
 					}else{
-						logger.LogErrorFormat( LOGSOURCE, "Invalid option '%s' (p not last character)",
-							utf8Argument.GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "Invalid option '%s' (p not last character)",
+							utf8Argument.GetString());
 						return false;
 					}
 					
-				}else if( option == 'd' ){
+				}else if(option == 'd'){
 					pLogAllToConsole = true;
 					
-				}else if( option == 'f' ){
-					if( o == optionLen - 1 ){
+				}else if(option == 'f'){
+					if(o == optionLen - 1){
 						argumentIndex++;
 						
-						if( argumentCount - argumentIndex > 0 ){
-							pGameDefFile = argumentList.GetArgumentAt( argumentIndex )->ToUTF8();
+						if(argumentCount - argumentIndex > 0){
+							pGameDefFile = argumentList.GetArgumentAt(argumentIndex)->ToUTF8();
 							argumentIndex++;
 							break;
 							
 						}else{
-							logger.LogError( LOGSOURCE, "Missing game definition filename after -f" );
+							logger.LogError(LOGSOURCE, "Missing game definition filename after -f");
 							return false;
 						}
 						
 					}else{
-						logger.LogErrorFormat( LOGSOURCE, "Invalid option '%s' (f not last character)",
-							utf8Argument.GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "Invalid option '%s' (f not last character)",
+							utf8Argument.GetString());
 						return false;
 					}
 					
-				}else if( option == 'P' ){
-					if( o == optionLen - 1 ){
+				}else if(option == 'P'){
+					if(o == optionLen - 1){
 						argumentIndex++;
 						
-						if( argumentCount - argumentIndex > 0 ){
-							pPatchIdentifier.SetFromHexString( argumentList.GetArgumentAt( argumentIndex )->ToUTF8(), false );
+						if(argumentCount - argumentIndex > 0){
+							pPatchIdentifier.SetFromHexString(argumentList.GetArgumentAt(argumentIndex)->ToUTF8(), false);
 							pHasPatchIdentifier = true;
 							
 						}else{
-							logger.LogError( LOGSOURCE, "Missing patch identifier after -P" );
+							logger.LogError(LOGSOURCE, "Missing patch identifier after -P");
 							return false;
 						}
 						
 					}else{
-						logger.LogErrorFormat( LOGSOURCE, "Invalid option '%s' (p not last character)",
-							utf8Argument.GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "Invalid option '%s' (p not last character)",
+							utf8Argument.GetString());
 						return false;
 					}
 					
 				}else{
-					logger.LogErrorFormat( LOGSOURCE, "Unknown option -%c", ( char )option );
+					logger.LogErrorFormat(LOGSOURCE, "Unknown option -%c", (char)option);
 					return false;
 				}
 			}
 			
-			if( o < optionLen ){
+			if(o < optionLen){
 				break;
 			}
 			
@@ -254,33 +254,33 @@ bool declRunGame::ParseArguments(){
 	}
 	
 	// the next argument has to be the game identifier if a game definition file has not been specified
-	if( pGameDefFile.IsEmpty() ){
-		if( argumentIndex == argumentCount ){
-			logger.LogError( LOGSOURCE, "No game specified" );
+	if(pGameDefFile.IsEmpty()){
+		if(argumentIndex == argumentCount){
+			logger.LogError(LOGSOURCE, "No game specified");
 			return false;
 		}
 		
-		pGameIdentifier = argumentList.GetArgumentAt( argumentIndex++ )->ToUTF8();
+		pGameIdentifier = argumentList.GetArgumentAt(argumentIndex++)->ToUTF8();
 	}
 	
 	// the rest are arguments for the game
-	while( argumentIndex < argumentCount ){
-		pGameArgs.AddArgument( *argumentList.GetArgumentAt( argumentIndex ) );
+	while(argumentIndex < argumentCount){
+		pGameArgs.AddArgument(*argumentList.GetArgumentAt(argumentIndex));
 		argumentIndex++;
 	}
 	
 	// if console mode is requested modify the engine instance factory
-	if( pUseConsole ){
+	if(pUseConsole){
 		const delEngineInstanceDirect::Factory::Ref factory(
-			delEngineInstanceDirect::Factory::Ref::NewWith() );
-		factory->SetUseConsole( true );
-		pLauncher.SetEngineInstanceFactory( factory );
+			delEngineInstanceDirect::Factory::Ref::NewWith());
+		factory->SetUseConsole(true);
+		pLauncher.SetEngineInstanceFactory(factory);
 	}
 	
 	return true;
 }
 
-bool declRunGame::ParseModuleParameter( const decString &value ){
+bool declRunGame::ParseModuleParameter(const decString &value){
 	deLogger &logger = *pLauncher.GetLogger();
 	const int length = value.GetLength();
 	decString moduleName, parameterName, parameterValue;
@@ -288,53 +288,53 @@ bool declRunGame::ParseModuleParameter( const decString &value ){
 	int separator1, separator2;
 	delGPModule *module;
 	
-	for( separator1=0; separator1<length; separator1++){
-		if( value[ separator1 ] == ':' ){
+	for(separator1=0; separator1<length; separator1++){
+		if(value[separator1] == ':'){
 			break;
 			
 		}else{
-			moduleName.AppendCharacter( value[ separator1 ] );
+			moduleName.AppendCharacter(value[separator1]);
 		}
 	}
 	
-	for( separator2=separator1+1; separator2<length; separator2++ ){
-		if( value[ separator2 ] == '=' ){
+	for(separator2=separator1+1; separator2<length; separator2++){
+		if(value[separator2] == '='){
 			break;
 			
 		}else{
-			parameterName.AppendCharacter( value[ separator2 ] );
+			parameterName.AppendCharacter(value[separator2]);
 		}
 	}
 	
-	if( separator1 == length || separator2 == length || moduleName.IsEmpty() || parameterName.IsEmpty() ){
-		logger.LogErrorFormat( LOGSOURCE, "Invalid module parameter value '%s'. "
-			"Has to be of the format module:parameter=value", value.GetString() );
+	if(separator1 == length || separator2 == length || moduleName.IsEmpty() || parameterName.IsEmpty()){
+		logger.LogErrorFormat(LOGSOURCE, "Invalid module parameter value '%s'. "
+			"Has to be of the format module:parameter=value", value.GetString());
 		return false;
 	}
 	
-	parameterValue = value.GetMiddle( separator2 + 1 );
+	parameterValue = value.GetMiddle(separator2 + 1);
 	
-	if( ! pModuleParameters ){
+	if(! pModuleParameters){
 		pModuleParameters = new delGPModuleList;
 	}
 	
-	module = pModuleParameters->GetNamed( moduleName );
-	if( ! module ){
+	module = pModuleParameters->GetNamed(moduleName);
+	if(! module){
 		module = new delGPModule;
-		module->SetName( moduleName );
-		pModuleParameters->Add( module );
+		module->SetName(moduleName);
+		pModuleParameters->Add(module);
 	}
 	
 	delGPMParameterList &parameterList = module->GetParameters();
 	
-	parameter = parameterList.GetNamed( parameterName );
-	if( ! parameter ){
+	parameter = parameterList.GetNamed(parameterName);
+	if(! parameter){
 		parameter = new delGPMParameter;
-		parameter->SetName( parameterName );
-		parameterList.Add( parameter );
+		parameter->SetName(parameterName);
+		parameterList.Add(parameter);
 	}
 	
-	parameter->SetValue( parameterValue );
+	parameter->SetValue(parameterValue);
 	
 	return true;
 }
@@ -344,21 +344,21 @@ bool declRunGame::LocateGame(){
 	deLogger &logger = *pLauncher.GetLogger();
 	
 	// locate the game to run
-	if( pGameDefFile.IsEmpty() ){
+	if(pGameDefFile.IsEmpty()){
 		try{
-			pGame = gameManager.GetGames().GetWithID( decUuid( pGameIdentifier, false ) );
-		}catch( const deException &){
+			pGame = gameManager.GetGames().GetWithID(decUuid(pGameIdentifier, false));
+		}catch(const deException &){
 			// ignore. could be identifier
 		}
 		
-		if( ! pGame ){
-			const delGameList matching( gameManager.GetGames().GetWithAlias( pGameIdentifier ) );
-			if( matching.GetCount() == 1 ){
-				pGame = matching.GetAt( 0 );
+		if(! pGame){
+			const delGameList matching(gameManager.GetGames().GetWithAlias(pGameIdentifier));
+			if(matching.GetCount() == 1){
+				pGame = matching.GetAt(0);
 				
-			}else if( matching.GetCount() > 1 ){
-				logger.LogErrorFormat( LOGSOURCE, "Multiple games found with same alias identifier '%s'",
-					pGameIdentifier.GetString() );
+			}else if(matching.GetCount() > 1){
+				logger.LogErrorFormat(LOGSOURCE, "Multiple games found with same alias identifier '%s'",
+					pGameIdentifier.GetString());
 				return false;
 			}
 		}
@@ -371,35 +371,35 @@ bool declRunGame::LocateGame(){
 		delGameList list;
 		
 		{
-		const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
 			pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
-				pLauncher, pLauncher.GetEngine().GetLogFile() ) ) );
+				pLauncher, pLauncher.GetEngine().GetLogFile())));
 		
 		instance->StartEngine();
 		instance->LoadModules();
 		
-		gameManager.LoadGameFromDisk( instance, pGameDefFile, list );
+		gameManager.LoadGameFromDisk(instance, pGameDefFile, list);
 		}
 		
-		if( list.GetCount() == 0 ){
-			logger.LogInfo( LOGSOURCE, "No valid game definition found." );
+		if(list.GetCount() == 0){
+			logger.LogInfo(LOGSOURCE, "No valid game definition found.");
 			return false;
 		}
 		
-		pGame = list.GetAt( 0 ); // TODO support multiple games using a choice for for example
+		pGame = list.GetAt(0); // TODO support multiple games using a choice for for example
 		
 		// load configuration if the game is not installed. this allows to keep the parameter
 		// changes alive done by the player inside the game
-		if( ! gameManager.GetGames().HasWithID( pGame->GetIdentifier() ) ){
+		if(! gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
 			pGame->LoadConfig();
 		}
 		
 		pGame->VerifyRequirements();
 	}
 	
-	if( ! pGame ){
-		logger.LogErrorFormat( LOGSOURCE, "No game found with identifier '%s'",
-			pGameIdentifier.GetString() );
+	if(! pGame){
+		logger.LogErrorFormat(LOGSOURCE, "No game found with identifier '%s'",
+			pGameIdentifier.GetString());
 		return false;
 	}
 	
@@ -413,47 +413,47 @@ bool declRunGame::LocateProfile(){
 	// locate the profile to run
 	delGameProfile *profile = nullptr;
 	
-	if( pProfileName.IsEmpty() ){
+	if(pProfileName.IsEmpty()){
 		profile = pGame->GetProfileToUse();
 		
 	}else{
-		profile = gameManager.GetProfiles().GetNamed( pProfileName );
-		if( ! profile ){
-			logger.LogErrorFormat( LOGSOURCE, "No profile found with name '%s'", pProfileName.GetString() );
+		profile = gameManager.GetProfiles().GetNamed(pProfileName);
+		if(! profile){
+			logger.LogErrorFormat(LOGSOURCE, "No profile found with name '%s'", pProfileName.GetString());
 			return false;
 		}
 	}
 	
-	if( ! profile->GetValid() ){
-		PrintProfileProblems( *profile );
+	if(! profile->GetValid()){
+		PrintProfileProblems(*profile);
 		return false;
 	}
 	
 	// determine patch to use
-	if( ! pHasPatchIdentifier ){
-		if( pGame->GetUseCustomPatch() ){
+	if(! pHasPatchIdentifier){
+		if(pGame->GetUseCustomPatch()){
 			pHasPatchIdentifier = true;
 			pPatchIdentifier = pGame->GetUseCustomPatch();
 			
-		}else if( ! pGame->GetUseLatestPatch() ){
+		}else if(! pGame->GetUseLatestPatch()){
 			pHasPatchIdentifier = true;
 			pPatchIdentifier.Clear();
 		}
 	}
 	
 	// udpate the run parameters
-	pRunParams.SetGameProfile( profile );
+	pRunParams.SetGameProfile(profile);
 	
 	decString error;
-	if( ! pRunParams.FindPatches( pGame, pGame->GetUseLatestPatch(), pPatchIdentifier, error ) ){
-		logger.LogError( LOGSOURCE, error.GetString() );
+	if(! pRunParams.FindPatches(pGame, pGame->GetUseLatestPatch(), pPatchIdentifier, error)){
+		logger.LogError(LOGSOURCE, error.GetString());
 		return false;
 	}
 	
 	UpdateRunArguments();
-	pRunParams.SetWidth( profile->GetWidth() );
-	pRunParams.SetHeight( profile->GetHeight() );
-	pRunParams.SetFullScreen( profile->GetFullScreen() );
+	pRunParams.SetWidth(profile->GetWidth());
+	pRunParams.SetHeight(profile->GetHeight());
+	pRunParams.SetFullScreen(profile->GetFullScreen());
 	
 	const decPoint windowSize(pGame->GetDisplayScaledWindowSize());
 	if(windowSize != decPoint()){
@@ -470,48 +470,48 @@ void declRunGame::UpdateRunArguments(){
 	const delGameProfile &profile = *pRunParams.GetGameProfile();
 	decString arguments;
 	
-	if( profile.GetReplaceRunArguments() ){
+	if(profile.GetReplaceRunArguments()){
 		arguments = profile.GetRunArguments();
 		
 	}else{
 		arguments = pGame->GetRunArguments();
-		if( ! arguments.IsEmpty() ){
-			arguments.Append( " " );
+		if(! arguments.IsEmpty()){
+			arguments.Append(" ");
 		}
-		arguments.Append( profile.GetRunArguments() );
+		arguments.Append(profile.GetRunArguments());
 	}
 	
 	const int count = pGameArgs.GetArgumentCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( ! arguments.IsEmpty() ){
-			arguments.Append( " " );
+	for(i=0; i<count; i++){
+		if(! arguments.IsEmpty()){
+			arguments.Append(" ");
 		}
-		arguments.Append( pGameArgs.GetArgumentAt( i )->ToUTF8() );
+		arguments.Append(pGameArgs.GetArgumentAt(i)->ToUTF8());
 	}
 	
-	pRunParams.SetRunArguments( arguments );
+	pRunParams.SetRunArguments(arguments);
 }
 
 void declRunGame::ApplyCustomModuleParameters(){
-	if( ! pModuleParameters ){
+	if(! pModuleParameters){
 		return;
 	}
 	
 	// ensure custom profile exists and is initialized with profile used to run the game
 	delGameProfile::Ref profile = pGame->GetCustomProfile();
 	
-	if( ! profile ){
-		profile.TakeOver( pLauncher.CreateGameProfile() );
+	if(! profile){
+		profile.TakeOver(pLauncher.CreateGameProfile());
 		*profile = *pRunParams.GetGameProfile(); // copy content not pointer
-		pGame->SetCustomProfile( profile );
+		pGame->SetCustomProfile(profile);
 	}
 	
 	// update custom profile
-	profile->GetModules().Update( *pModuleParameters );
+	profile->GetModules().Update(*pModuleParameters);
 	
 	// use custom profile
-	pRunParams.SetGameProfile( profile );
+	pRunParams.SetGameProfile(profile);
 }
 
 void declRunGame::PrintGameProblems(){
@@ -520,63 +520,63 @@ void declRunGame::PrintGameProblems(){
 	deLogger &logger = *pLauncher.GetLogger();
 	int i;
 	
-	logger.LogErrorFormat( LOGSOURCE, "Game '%s'(%s) has the following problems:",
-		pGame->GetAliasIdentifier().GetString(), pGame->GetIdentifier().ToHexString( false ).GetString() );
+	logger.LogErrorFormat(LOGSOURCE, "Game '%s'(%s) has the following problems:",
+		pGame->GetAliasIdentifier().GetString(), pGame->GetIdentifier().ToHexString(false).GetString());
 	
-	for( i=0; i<fileFormatCount; i++ ){
-		const delFileFormat &fileFormat = *fileFormatList.GetAt( i );
+	for(i=0; i<fileFormatCount; i++){
+		const delFileFormat &fileFormat = *fileFormatList.GetAt(i);
 		
-		if( ! fileFormat.GetSupported() ){
-			if( deModuleSystem::IsSingleType( fileFormat.GetType() ) ){
-				logger.LogErrorFormat( LOGSOURCE, "- File Format '%s' defines single type %s",
+		if(! fileFormat.GetSupported()){
+			if(deModuleSystem::IsSingleType(fileFormat.GetType())){
+				logger.LogErrorFormat(LOGSOURCE, "- File Format '%s' defines single type %s",
 					fileFormat.GetPattern().GetString(),
-					deModuleSystem::GetTypeDirectory( fileFormat.GetType() ) );
+					deModuleSystem::GetTypeDirectory(fileFormat.GetType()));
 				
 			}else{
-				logger.LogErrorFormat( LOGSOURCE,
+				logger.LogErrorFormat(LOGSOURCE,
 					"- File Format '%s' is not supported by any loaded modules",
-					fileFormat.GetPattern().GetString() );
+					fileFormat.GetPattern().GetString());
 			}
 		}
 	}
 	
-	if( ! pGame->GetScriptModuleFound() ){
-		PrintModuleProblem( pGame->GetScriptModule(), deModuleSystem::emtScript );
+	if(! pGame->GetScriptModuleFound()){
+		PrintModuleProblem(pGame->GetScriptModule(), deModuleSystem::emtScript);
 	}
 }
 
-void declRunGame::PrintProfileProblems( const delGameProfile &profile ){
-	pLauncher.GetLogger()->LogErrorFormat( LOGSOURCE,
-		"Profile '%s' has the following problems:", profile.GetName().GetString() );
+void declRunGame::PrintProfileProblems(const delGameProfile &profile){
+	pLauncher.GetLogger()->LogErrorFormat(LOGSOURCE,
+		"Profile '%s' has the following problems:", profile.GetName().GetString());
 	
-	PrintModuleProblem( profile.GetModuleGraphic(), deModuleSystem::emtGraphic );
-	PrintModuleProblem( profile.GetModuleInput(), deModuleSystem::emtInput );
-	PrintModuleProblem( profile.GetModulePhysics(), deModuleSystem::emtPhysics );
-	PrintModuleProblem( profile.GetModuleAnimator(), deModuleSystem::emtAnimator );
-	PrintModuleProblem( profile.GetModuleAI(), deModuleSystem::emtAI );
-	PrintModuleProblem( profile.GetModuleCrashRecovery(), deModuleSystem::emtCrashRecovery );
-	PrintModuleProblem( profile.GetModuleAudio(), deModuleSystem::emtAudio );
-	PrintModuleProblem( profile.GetModuleSynthesizer(), deModuleSystem::emtSynthesizer );
-	PrintModuleProblem( profile.GetModuleNetwork(), deModuleSystem::emtNetwork );
-	PrintModuleProblem( profile.GetModuleVR(), deModuleSystem::emtVR );
+	PrintModuleProblem(profile.GetModuleGraphic(), deModuleSystem::emtGraphic);
+	PrintModuleProblem(profile.GetModuleInput(), deModuleSystem::emtInput);
+	PrintModuleProblem(profile.GetModulePhysics(), deModuleSystem::emtPhysics);
+	PrintModuleProblem(profile.GetModuleAnimator(), deModuleSystem::emtAnimator);
+	PrintModuleProblem(profile.GetModuleAI(), deModuleSystem::emtAI);
+	PrintModuleProblem(profile.GetModuleCrashRecovery(), deModuleSystem::emtCrashRecovery);
+	PrintModuleProblem(profile.GetModuleAudio(), deModuleSystem::emtAudio);
+	PrintModuleProblem(profile.GetModuleSynthesizer(), deModuleSystem::emtSynthesizer);
+	PrintModuleProblem(profile.GetModuleNetwork(), deModuleSystem::emtNetwork);
+	PrintModuleProblem(profile.GetModuleVR(), deModuleSystem::emtVR);
 }
 
-void declRunGame::PrintModuleProblem( const char *moduleName, deModuleSystem::eModuleTypes moduleType ){
-	delEngineModule * const module = pLauncher.GetEngine().GetModules().GetNamed( moduleName );
+void declRunGame::PrintModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType){
+	delEngineModule * const module = pLauncher.GetEngine().GetModules().GetNamed(moduleName);
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	if( ! module ){
-		logger.LogErrorFormat( LOGSOURCE, "- %s module '%s' does not exist",
-			deModuleSystem::GetTypeDirectory( moduleType ), moduleName );
+	if(! module){
+		logger.LogErrorFormat(LOGSOURCE, "- %s module '%s' does not exist",
+			deModuleSystem::GetTypeDirectory(moduleType), moduleName);
 		
-	}else if( module->GetType() != moduleType ){
-		logger.LogErrorFormat( LOGSOURCE, "- Module '%s' is not a %s module",
-			moduleName, deModuleSystem::GetTypeDirectory( moduleType ) );
+	}else if(module->GetType() != moduleType){
+		logger.LogErrorFormat(LOGSOURCE, "- Module '%s' is not a %s module",
+			moduleName, deModuleSystem::GetTypeDirectory(moduleType));
 		
-	}else if( module->GetStatus() != delEngineModule::emsReady ){
+	}else if(module->GetStatus() != delEngineModule::emsReady){
 		const char *reason;
 		
-		switch( module->GetErrorCode() ){
+		switch(module->GetErrorCode()){
 		case deLoadableModule::eecCreateModuleFailed:
 			reason = "Creating module failed";
 			break;
@@ -613,46 +613,46 @@ void declRunGame::PrintModuleProblem( const char *moduleName, deModuleSystem::eM
 			reason = "Unknown problem";
 		}
 		
-		logger.LogErrorFormat( LOGSOURCE, "- %s module '%s' is not working (%s)",
-			deModuleSystem::GetTypeDirectory( moduleType ), moduleName, reason );
+		logger.LogErrorFormat(LOGSOURCE, "- %s module '%s' is not working (%s)",
+			deModuleSystem::GetTypeDirectory(moduleType), moduleName, reason);
 	}
 }
 
 void declRunGame::Run(){
-	if( ! ParseArguments() ){
+	if(! ParseArguments()){
 		return;
 	}
 	
 	pLauncher.Prepare();
 	
-	if( ! LocateGame() ){
+	if(! LocateGame()){
 		return;
 	}
 	
-	if( ! pGame->GetCanRun() ){
+	if(! pGame->GetCanRun()){
 		PrintGameProblems();
 		return;
 	}
 	
-	if( ! LocateProfile() ){
+	if(! LocateProfile()){
 		return;
 	}
 	
 	// start the game
 	deLogger &logger = *pLauncher.GetLogger();
-	logger.LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'",
-		pGame->GetIdentifier().ToHexString( false ).GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Starting game '%s' using profile '%s'",
-		pGame->GetTitle().ToUTF8().GetString(), pRunParams.GetGameProfile()->GetName().GetString() );
+	logger.LogInfoFormat(LOGSOURCE, "Cache application ID = '%s'",
+		pGame->GetIdentifier().ToHexString(false).GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Starting game '%s' using profile '%s'",
+		pGame->GetTitle().ToUTF8().GetString(), pRunParams.GetGameProfile()->GetName().GetString());
 	
 	deLogger *engineLogger = pLauncher.GetEngineLogger();
-	if( pLogAllToConsole ){
+	if(pLogAllToConsole){
 		engineLogger = pLauncher.GetEngineLoggerDebug();
 	}
 	
 	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::NewWith(engineLogger) );
-	factory->SetUseConsole( pUseConsole );
+		delEngineInstanceDirect::Factory::Ref::NewWith(engineLogger));
+	factory->SetUseConsole(pUseConsole);
 	
 	// run game. blocks until finished since we use a direct engine instance. this method
 	// does all the heavy lifting including storing game configuration if changed
@@ -662,11 +662,11 @@ void declRunGame::Run(){
 	try{
 #endif
 	
-	pGame->StartGame( pRunParams, factory );
+	pGame->StartGame(pRunParams, factory);
 	
 #ifdef OS_BEOS
 		pLauncher.runningGame = nullptr;
-	}catch( const deException & ){
+	}catch(const deException &){
 		pLauncher.runningGame = nullptr;
 		throw;
 	}

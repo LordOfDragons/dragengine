@@ -37,8 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeNullMainWindow::igdeNativeNullMainWindow( igdeMainWindow &owner ) :
-pOwner( owner )
+igdeNativeNullMainWindow::igdeNativeNullMainWindow(igdeMainWindow &owner) :
+pOwner(owner)
 {
 	owner.GetEngineController().InitEngine();
 	owner.StartEngine();
@@ -46,11 +46,11 @@ pOwner( owner )
 
 igdeNativeNullMainWindow::~igdeNativeNullMainWindow(){
 	pOwner.GetEngineController().UnparentMainRenderWindow();
-	( ( igdeNativeNullApplication* )igdeApplication::app().GetNativeApplication() )->Quit();
+	((igdeNativeNullApplication*)igdeApplication::app().GetNativeApplication())->Quit();
 }
 
-igdeNativeNullMainWindow *igdeNativeNullMainWindow::CreateNativeWidget( igdeMainWindow &owner ){
-	return new igdeNativeNullMainWindow( owner );
+igdeNativeNullMainWindow *igdeNativeNullMainWindow::CreateNativeWidget(igdeMainWindow &owner){
+	return new igdeNativeNullMainWindow(owner);
 }
 
 void igdeNativeNullMainWindow::PostCreateNativeWidget(){
@@ -65,26 +65,26 @@ void igdeNativeNullMainWindow::DestroyNativeWidget(){
 // Management
 ///////////////
 
-decColor igdeNativeNullMainWindow::GetSystemColor( igdeEnvironment::eSystemColors color ) const{
-	switch( color ){
+decColor igdeNativeNullMainWindow::GetSystemColor(igdeEnvironment::eSystemColors color) const{
+	switch(color){
 	case igdeEnvironment::escWindowForeground:
 	case igdeEnvironment::escWidgetForeground:
 	case igdeEnvironment::escWidgetSelectedBackground:
-		return decColor( 0.0f, 0.0f, 0.0f );
+		return decColor(0.0f, 0.0f, 0.0f);
 		
 	case igdeEnvironment::escWidgetBackground:
-		return decColor( 0.65f, 0.65f, 0.65f );
+		return decColor(0.65f, 0.65f, 0.65f);
 		
 	case igdeEnvironment::escWidgetHighlight:
-		return decColor( 0.9f, 0.9f, 0.9f );
+		return decColor(0.9f, 0.9f, 0.9f);
 		
 	case igdeEnvironment::escWidgetShadow:
-		return decColor( 0.2f, 0.2f, 0.2f );
+		return decColor(0.2f, 0.2f, 0.2f);
 		
 	case igdeEnvironment::escWindowBackground:
 	case igdeEnvironment::escWidgetSelectedForeground:
 	default:
-		return decColor( 1.0f, 1.0f, 1.0f );
+		return decColor(1.0f, 1.0f, 1.0f);
 	}
 }
 
@@ -109,7 +109,7 @@ void igdeNativeNullMainWindow::UpdateSize(){
 void igdeNativeNullMainWindow::SetWindowState(){
 }
 
-void igdeNativeNullMainWindow::GetAppFontConfig( igdeFont::sConfiguration &config ){
+void igdeNativeNullMainWindow::GetAppFontConfig(igdeFont::sConfiguration &config){
 	config.name = "Courier";
 	config.size = 12.0;
 	config.bold = false;

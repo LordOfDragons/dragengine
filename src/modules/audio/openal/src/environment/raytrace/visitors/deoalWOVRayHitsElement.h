@@ -87,26 +87,26 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Result or NULL if not set. */
-	inline deoalRayTraceResult *GetResult() const{ return pResult; }
+	inline deoalRayTraceResult *GetResult() const{return pResult;}
 	
 	/** \brief Set result or NULL if not set. */
-	void SetResult( deoalRayTraceResult *result );
+	void SetResult(deoalRayTraceResult *result);
 	
 	/** \brief Component result. */
-	inline deoalRayTraceResult &GetComponentResult(){ return pComponentResult; }
-	inline const deoalRayTraceResult &GetComponentResult() const{ return pComponentResult; }
+	inline deoalRayTraceResult &GetComponentResult(){return pComponentResult;}
+	inline const deoalRayTraceResult &GetComponentResult() const{return pComponentResult;}
 	
 	
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	virtual void VisitComponent(deoalAComponent *component);
 	/*@}*/
 	
 	
 	
 protected:
-	decVector pClampToBox( const decVector &minExtend, const decVector &maxExtend,
-		const decVector &rayOrigin, const decVector &rayDirection );
+	decVector pClampToBox(const decVector &minExtend, const decVector &maxExtend,
+		const decVector &rayOrigin, const decVector &rayDirection);
 };
 
 #endif

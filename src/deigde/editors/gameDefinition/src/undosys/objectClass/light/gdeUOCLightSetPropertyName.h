@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetPropertyName( gdeObjectClass *objectClass, gdeOCLight *light,
-		gdeOCLight::eProperties property, const char *newValue );
+	gdeUOCLightSetPropertyName(gdeObjectClass *objectClass, gdeOCLight *light,
+		gdeOCLight::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

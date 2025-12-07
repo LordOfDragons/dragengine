@@ -53,17 +53,17 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
+	inline int GetShapeCount() const{return pShapeCount;}
 	/** Retrieves the shape at the given index. */
-	reRigShape *GetShapeAt( int index ) const;
+	reRigShape *GetShapeAt(int index) const;
 	/** Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape( reRigShape *shape ) const;
+	int IndexOfShape(reRigShape *shape) const;
 	/** Determines if the shape exists. */
-	bool HasShape( reRigShape *shape ) const;
+	bool HasShape(reRigShape *shape) const;
 	/** Adds a new shape. */
-	void AddShape( reRigShape *shape );
+	void AddShape(reRigShape *shape);
 	/** Removes the given shape. */
-	void RemoveShape( reRigShape *shape );
+	void RemoveShape(reRigShape *shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/

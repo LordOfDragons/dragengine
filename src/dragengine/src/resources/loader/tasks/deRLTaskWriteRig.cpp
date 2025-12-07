@@ -47,17 +47,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskWriteRig::deRLTaskWriteRig( deEngine &engine,
+deRLTaskWriteRig::deRLTaskWriteRig(deEngine &engine,
 deResourceLoader &resourceLoader, deRig *rig,
-deVirtualFileSystem *vfs, const char *path ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertRig ),
-pRig( rig ),
-pSucceeded( false )
+deVirtualFileSystem *vfs, const char *path) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertRig),
+pRig(rig),
+pSucceeded(false)
 {
-	if( ! rig ){
-		DETHROW( deeInvalidParam );
+	if(! rig){
+		DETHROW(deeInvalidParam);
 	}
-	SetType( etWrite );
+	SetType(etWrite);
 }
 
 deRLTaskWriteRig::~deRLTaskWriteRig(){
@@ -70,14 +70,14 @@ deRLTaskWriteRig::~deRLTaskWriteRig(){
 
 void deRLTaskWriteRig::Run(){
 	LogRunEnter();
-	deBaseRigModule * const module = ( deBaseRigModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtRig, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseRigModule * const module = (deBaseRigModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtRig, GetPath());
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decPath path;
-	path.SetFromUnix( GetPath() );
+	path.SetFromUnix(GetPath());
 	
 	module->SaveRig(decBaseFileWriter::Ref::New(GetVFS()->OpenFileForWriting(path)), pRig);
 	
@@ -87,16 +87,16 @@ void deRLTaskWriteRig::Run(){
 
 void deRLTaskWriteRig::Finished(){
 	LogFinishedEnter();
-	if( pSucceeded ){
-		SetResource( pRig );
-		SetState( esSucceeded );
+	if(pSucceeded){
+		SetResource(pRig);
+		SetState(esSucceeded);
 		
 	}else{
 		pRig = NULL;
-		SetState( esFailed );
+		SetState(esFailed);
 	}
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	fbxRigModule( deLoadableModule &loadableModule );
+	fbxRigModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~fbxRigModule();
@@ -53,18 +53,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Load rig. */
-	virtual void LoadRig( decBaseFileReader &reader, deRig &rig );
+	virtual void LoadRig(decBaseFileReader &reader, deRig &rig);
 	
 	/** \brief Save rig. */
-	virtual void SaveRig( decBaseFileWriter &writer, const deRig &rig );
+	virtual void SaveRig(decBaseFileWriter &writer, const deRig &rig);
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadRig( deRig &rig, fbxScene &scene );
+	void pLoadRig(deRig &rig, fbxScene &scene);
 	
-	void pLoadRigBone( deRig &rig, const fbxScene &scene, const fbxRigBone &bone );
+	void pLoadRigBone(deRig &rig, const fbxScene &scene, const fbxRigBone &bone);
 };
 
 #endif

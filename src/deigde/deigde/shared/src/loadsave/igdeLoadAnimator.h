@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load object. */
-	igdeLoadAnimator( igdeEnvironment &environment, deLogger *logger, const char *loggerSource );
+	igdeLoadAnimator(igdeEnvironment &environment, deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up load object. */
 	~igdeLoadAnimator();
@@ -66,51 +66,51 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name to display in a file dialog. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name to display in a file dialog. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief File pattern to display in a file dialog. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** \brief Set file pattern to display in a file dialog. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief Default file extension. */
-	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
+	inline const decString &GetDefaultExtension() const{return pDefaultExtension;}
 	
 	/** \brief Set default file extension. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	
 	
 	/** \brief Load animator using a file reader. */
-	void Load( const decString &pathAnimator, deAnimator &animator, decBaseFileReader &reader );
+	void Load(const decString &pathAnimator, deAnimator &animator, decBaseFileReader &reader);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadAnimator( const decXmlElementTag &root, const char *basePath, deAnimator &animator );
-	void pReadController( const decXmlElementTag &root, deAnimator &animator );
-	void pReadLink( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRule( const decXmlElementTag &root, const char *basePath, deAnimator &animator );
-	deAnimatorRule *pReadRuleAnimation( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleAnimationDifference( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleAnimationSelect( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleBoneTransformator( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleStateManipulator( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleStateSnapshot( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleInverseKinematic( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleForeignState( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleGroup( const decXmlElementTag &root, const char *basePath, deAnimator &animator );
-	deAnimatorRule *pReadRuleSubAnimator( const decXmlElementTag &root, const char *basePath, deAnimator &animator );
-	deAnimatorRule *pReadRuleLimit( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleTrackTo( const decXmlElementTag &root, deAnimator &animator );
-	deAnimatorRule *pReadRuleMirror( const decXmlElementTag &root, deAnimator &animator );
-	bool pReadRuleCommon( const decXmlElementTag &root, deAnimator &animator, deAnimatorRule &rule );
-	void pReadControllerTarget( const decXmlElementTag &root, deAnimator &animator, deAnimatorControllerTarget &target );
+	void pReadAnimator(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	void pReadController(const decXmlElementTag &root, deAnimator &animator);
+	void pReadLink(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRule(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	deAnimatorRule *pReadRuleAnimation(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleAnimationDifference(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleAnimationSelect(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleBoneTransformator(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleStateManipulator(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleStateSnapshot(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleInverseKinematic(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleForeignState(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleGroup(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	deAnimatorRule *pReadRuleSubAnimator(const decXmlElementTag &root, const char *basePath, deAnimator &animator);
+	deAnimatorRule *pReadRuleLimit(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleTrackTo(const decXmlElementTag &root, deAnimator &animator);
+	deAnimatorRule *pReadRuleMirror(const decXmlElementTag &root, deAnimator &animator);
+	bool pReadRuleCommon(const decXmlElementTag &root, deAnimator &animator, deAnimatorRule &rule);
+	void pReadControllerTarget(const decXmlElementTag &root, deAnimator &animator, deAnimatorControllerTarget &target);
 };
 
 #endif

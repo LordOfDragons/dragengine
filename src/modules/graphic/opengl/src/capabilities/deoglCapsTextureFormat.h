@@ -54,9 +54,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create capabilities texture format. */
-	deoglCapsTextureFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
+	deoglCapsTextureFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
-		bool isCompressed, const char *name );
+		bool isCompressed, const char *name);
 	
 	/** Clean up capabilities texture format. */
 	~deoglCapsTextureFormat();
@@ -67,34 +67,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Format. */
-	inline GLint GetFormat() const{ return pFormat; }
+	inline GLint GetFormat() const{return pFormat;}
 	
 	/** Pixel format. */
-	inline GLenum GetPixelFormat() const{ return pPixelFormat; }
+	inline GLenum GetPixelFormat() const{return pPixelFormat;}
 	
 	/** Pixel type. */
-	inline GLenum GetPixelType() const{ return pPixelType; }
+	inline GLenum GetPixelType() const{return pPixelType;}
 	
 	/** Bits per pixel. */
-	inline int GetBitsPerPixel() const{ return pBitsPerPixel; }
+	inline int GetBitsPerPixel() const{return pBitsPerPixel;}
 	
 	/** Format is a depth/stencil format. */
-	inline bool GetIsDepth() const{ return pIsDepth; }
+	inline bool GetIsDepth() const{return pIsDepth;}
 	
 	/** Format is a float depth/stencil format. */
-	inline bool GetIsDepthFloat() const{ return pIsDepthFloat; }
+	inline bool GetIsDepthFloat() const{return pIsDepthFloat;}
 	
 	/** Format is a stencil format. */
-	inline bool GetIsStencil() const{ return pIsStencil; }
+	inline bool GetIsStencil() const{return pIsStencil;}
 	
 	/** Format is a compressed format. */
-	inline bool GetIsCompressed() const{ return pIsCompressed; }
+	inline bool GetIsCompressed() const{return pIsCompressed;}
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Print format to buffer. */
-	void WriteToString( decUnicodeString &buffer ) const;
+	void WriteToString(decUnicodeString &buffer) const;
 	/*@}*/
 };
 

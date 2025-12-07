@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataDecal::meUndoDataDecal( meDecal *decal ){
-	if( ! decal ) DETHROW( deeInvalidParam );
+meUndoDataDecal::meUndoDataDecal(meDecal *decal){
+	if(! decal) DETHROW(deeInvalidParam);
 	
 	pOldPosition = decal->GetPosition();
 	pOldOrientation = decal->GetRotation();
@@ -48,8 +48,8 @@ meUndoDataDecal::meUndoDataDecal( meDecal *decal ){
 	pParentObject = decal->GetParentObject();
 	
 	pIndex = -1;
-	if( pParentObject ){
-		pIndex = pParentObject->IndexOfDecal( decal );
+	if(pParentObject){
+		pIndex = pParentObject->IndexOfDecal(decal);
 	}
 	//if( pIndex == -1 ) DETHROW( deeInvalidParam );
 	
@@ -58,7 +58,7 @@ meUndoDataDecal::meUndoDataDecal( meDecal *decal ){
 }
 
 meUndoDataDecal::~meUndoDataDecal(){
-	if( pDecal ) pDecal->FreeReference();
+	if(pDecal) pDecal->FreeReference();
 }
 
 

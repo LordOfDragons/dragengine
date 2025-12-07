@@ -42,38 +42,38 @@
 ////////////////////////////
 
 gdeSky::gdeSky() :
-pGameDefinition( NULL ){
+pGameDefinition(NULL){
 }
 
-gdeSky::gdeSky( const char *path, const char *name ) :
-pGameDefinition( NULL ),
-pPath( path ),
-pName( name ){
+gdeSky::gdeSky(const char *path, const char *name) :
+pGameDefinition(NULL),
+pPath(path),
+pName(name){
 }
 
-gdeSky::gdeSky( const gdeSky &sky ) :
-pGameDefinition( NULL ),
+gdeSky::gdeSky(const gdeSky &sky) :
+pGameDefinition(NULL),
 
-pPath( sky.pPath ),
-pName( sky.pName ),
-pDescription( sky.pDescription ),
-pCategory( sky.pCategory ),
-pTags( sky.pTags )
+pPath(sky.pPath),
+pName(sky.pName),
+pDescription(sky.pDescription),
+pCategory(sky.pCategory),
+pTags(sky.pTags)
 {
 	const int controllerCount = sky.pControllers.GetCount();
 	gdeSkyController *controller = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<controllerCount; i++ ){
-			controller = new gdeSkyController( *sky.pControllers.GetAt( i ) );
-			pControllers.Add( controller );
+		for(i=0; i<controllerCount; i++){
+			controller = new gdeSkyController(*sky.pControllers.GetAt(i));
+			pControllers.Add(controller);
 			controller->FreeReference();
 			controller = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( controller ){
+	}catch(const deException &){
+		if(controller){
 			controller->FreeReference();
 		}
 		throw;
@@ -81,7 +81,7 @@ pTags( sky.pTags )
 }
 
 gdeSky::~gdeSky(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 }
 
 
@@ -89,69 +89,69 @@ gdeSky::~gdeSky(){
 // Management
 ///////////////
 
-void gdeSky::SetGameDefinition( gdeGameDefinition *gamedef ){
+void gdeSky::SetGameDefinition(gdeGameDefinition *gamedef){
 	pGameDefinition = gamedef;
 }
 
 
 
-void gdeSky::SetPath( const char *path ){
-	if( pPath == path ){
+void gdeSky::SetPath(const char *path){
+	if(pPath == path){
 		return;
 	}
 	
 	pPath = path;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyChanged(this);
 	}
 }
 
-void gdeSky::SetName( const char *name ){
-	if( pName == name ){
+void gdeSky::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyNameChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyNameChanged(this);
 	}
 }
 
-void gdeSky::SetDescription( const char *description ){
-	if( pDescription == description ){
+void gdeSky::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
 	pDescription = description;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyChanged(this);
 	}
 }
 
-void gdeSky::SetCategory( const char *category ){
-	if( pCategory == category ){
+void gdeSky::SetCategory(const char *category){
+	if(pCategory == category){
 		return;
 	}
 	
 	pCategory = category;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyChanged(this);
 	}
 }
 
-void gdeSky::SetTags( const decStringSet &tags ){
-	if( pTags == tags ){
+void gdeSky::SetTags(const decStringSet &tags){
+	if(pTags == tags){
 		return;
 	}
 	
 	pTags = tags;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyChanged(this);
 	}
 }
 
@@ -160,22 +160,22 @@ void gdeSky::SetTags( const decStringSet &tags ){
 // Controllers
 ////////////////
 
-void gdeSky::AddController( gdeSkyController *controller ){
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+void gdeSky::AddController(gdeSkyController *controller){
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyControllerStructureChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyControllerStructureChanged(this);
 	}
 }
 
-void gdeSky::RemoveController( gdeSkyController *controller ){
-	pControllers.Remove( controller );
+void gdeSky::RemoveController(gdeSkyController *controller){
+	pControllers.Remove(controller);
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyControllerStructureChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyControllerStructureChanged(this);
 	}
 }
 
@@ -183,8 +183,8 @@ void gdeSky::RemoveAllControllers(){
 	pControllers.RemoveAll();
 }
 
-void gdeSky::NotifyControllerChanged( gdeSkyController *controller ){
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkyControllerChanged( this, controller );
+void gdeSky::NotifyControllerChanged(gdeSkyController *controller){
+	if(pGameDefinition){
+		pGameDefinition->NotifySkyControllerChanged(this, controller);
 	}
 }

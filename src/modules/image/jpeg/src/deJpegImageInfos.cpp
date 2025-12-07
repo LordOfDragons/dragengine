@@ -39,30 +39,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deJpegImageInfo::deJpegImageInfo( deJpegModule *module, const char *filename ) :
-pModule( module ),
+deJpegImageInfo::deJpegImageInfo(deJpegModule *module, const char *filename) :
+pModule(module),
 
-pFilename( filename ),
-pFileSize( 0 ),
-pFilePosition( 0 ),
+pFilename(filename),
+pFileSize(0),
+pFilePosition(0),
 
-pDataBuffer( NULL ),
-pDataBufferPosition( 0 ),
-pReader( NULL )
+pDataBuffer(NULL),
+pDataBufferPosition(0),
+pReader(NULL)
 {
-	if( ! module || ! filename ){
-		DETHROW( deeInvalidParam );
+	if(! module || ! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	memset( &pErrorMgr, '\0', sizeof( pErrorMgr ) );
-	memset( &pSourceMgr, '\0', sizeof( pSourceMgr ) );
-	memset( &pDecompress, '\0', sizeof( pDecompress ) );
+	memset(&pErrorMgr, '\0', sizeof(pErrorMgr));
+	memset(&pSourceMgr, '\0', sizeof(pSourceMgr));
+	memset(&pDecompress, '\0', sizeof(pDecompress));
 	pDecompress.client_data = this;
 	pDecompress.err = &pErrorMgr;
 }
 
 deJpegImageInfo::~deJpegImageInfo(){
-	if( pDataBuffer ){
+	if(pDataBuffer){
 		delete [] pDataBuffer;
 	}
 }
@@ -77,9 +77,9 @@ deJpegImageInfo::~deJpegImageInfo(){
 // Data Buffer
 ////////////////
 
-void deJpegImageInfo::InitRead( decBaseFileReader *reader ){
-	if( ! reader ){
-		DETHROW( deeInvalidParam );
+void deJpegImageInfo::InitRead(decBaseFileReader *reader){
+	if(! reader){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pReader = reader;
@@ -87,8 +87,8 @@ void deJpegImageInfo::InitRead( decBaseFileReader *reader ){
 	pFileSize = reader->GetLength();
 	pFilePosition = 0;
 	
-	if( ! pDataBuffer ){
-		pDataBuffer = new JOCTET[ 1024 ];
+	if(! pDataBuffer){
+		pDataBuffer = new JOCTET[1024];
 	}
 	pDataBufferPosition = 0;
 	
@@ -97,26 +97,26 @@ void deJpegImageInfo::InitRead( decBaseFileReader *reader ){
 }
 
 void deJpegImageInfo::ReadNext(){
-	if( ! pReader || ! pDataBuffer ){
-		DETHROW( deeInvalidParam );
+	if(! pReader || ! pDataBuffer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int bytes = decMath::min( pFileSize - pFilePosition, 1024 );
+	const int bytes = decMath::min(pFileSize - pFilePosition, 1024);
 	
-	if( bytes > 0 ){
-		pReader->Read( pDataBuffer, bytes );
+	if(bytes > 0){
+		pReader->Read(pDataBuffer, bytes);
 		pFilePosition += bytes;
 	}
 	
 	pDataBufferPosition = 0;
 	
 	pSourceMgr.next_input_byte = pDataBuffer;
-	pSourceMgr.bytes_in_buffer = ( size_t )bytes;
+	pSourceMgr.bytes_in_buffer = (size_t)bytes;
 }
 
-void deJpegImageInfo::SkipNext( int bytes ){
-	if( ! pReader || ! pDataBuffer ){
-		DETHROW( deeInvalidParam );
+void deJpegImageInfo::SkipNext(int bytes){
+	if(! pReader || ! pDataBuffer){
+		DETHROW(deeInvalidParam);
 	}
 	
 // 	printf( "Skip bytes=%i dbp=%i\n", bytes, pDataBufferPosition );
@@ -124,21 +124,21 @@ void deJpegImageInfo::SkipNext( int bytes ){
 	/*
 	pDataBufferPosition += bytes;
 	
-	if( pDataBufferPosition > 1024 ){
-		pReader->MovePosition( pDataBufferPosition - 1024 );
+	if(pDataBufferPosition > 1024){
+		pReader->MovePosition(pDataBufferPosition - 1024);
 		pDataBufferPosition = 1024;
 	}
 	
 	pSourceMgr.next_input_byte = pDataBuffer + pDataBufferPosition;
-	pSourceMgr.bytes_in_buffer = ( size_t )( 1024 - pDataBufferPosition );
+	pSourceMgr.bytes_in_buffer = (size_t)(1024 - pDataBufferPosition);
 	*/
 	
-	if( bytes <= 0 ){
+	if(bytes <= 0){
 		return;
 	}
 	
-	while( bytes > ( int )pSourceMgr.bytes_in_buffer ){
-		bytes -= ( int )pSourceMgr.bytes_in_buffer;
+	while(bytes > (int)pSourceMgr.bytes_in_buffer){
+		bytes -= (int)pSourceMgr.bytes_in_buffer;
 		ReadNext();
 	}
 	pSourceMgr.next_input_byte += bytes;
@@ -146,7 +146,7 @@ void deJpegImageInfo::SkipNext( int bytes ){
 }
 
 void deJpegImageInfo::CloseReader(){
-	if( pDataBuffer ){
+	if(pDataBuffer){
 		delete [] pDataBuffer;
 		pDataBuffer = NULL;
 	}
@@ -159,11 +159,11 @@ void deJpegImageInfo::CloseReader(){
 //////////////////
 
 int deJpegImageInfo::GetWidth(){
-	return ( int )pDecompress.image_width;
+	return (int)pDecompress.image_width;
 }
 
 int deJpegImageInfo::GetHeight(){
-	return ( int )pDecompress.image_height;
+	return (int)pDecompress.image_height;
 }
 
 int deJpegImageInfo::GetDepth(){
@@ -171,7 +171,7 @@ int deJpegImageInfo::GetDepth(){
 }
 
 int deJpegImageInfo::GetComponentCount(){
-	return ( int )pDecompress.num_components;
+	return (int)pDecompress.num_components;
 }
 
 int deJpegImageInfo::GetBitCount(){

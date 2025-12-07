@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglOcclusionMesh( deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh );
+	deoglOcclusionMesh(deGraphicOpenGl &ogl, const deOcclusionMesh &occlusionMesh);
 	
 	/** Clean up peer. */
 	virtual ~deoglOcclusionMesh();
@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
 	
 	/** Occlusion mesh. */
-	inline const deOcclusionMesh &GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deOcclusionMesh &GetOcclusionMesh() const{return pOcclusionMesh;}
 	
 	/** Render occlusion mesh. */
-	inline deoglROcclusionMesh *GetROcclusionMesh() const{ return pROcclusionMesh; }
+	inline deoglROcclusionMesh *GetROcclusionMesh() const{return pROcclusionMesh;}
 	/*@}*/
 	
 private:

@@ -40,51 +40,51 @@
 ////////////////////////////
 
 ceCAWait::ceCAWait() :
-ceConversationAction( eatWait ),
-pCondition( NULL ),
-pInterval( 0.0f ),
-pTIMExpanded( true ),
-pTIMConditionExpanded( true ),
-pTIMActionsExpanded( true ){
+ceConversationAction(eatWait),
+pCondition(NULL),
+pInterval(0.0f),
+pTIMExpanded(true),
+pTIMConditionExpanded(true),
+pTIMActionsExpanded(true){
 }
 
-ceCAWait::ceCAWait( const ceCAWait &action ) :
-ceConversationAction( action ),
-pCondition( NULL ),
-pInterval( action.GetInterval() ),
-pTIMExpanded( action.pTIMExpanded ),
-pTIMConditionExpanded( action.pTIMConditionExpanded ),
-pTIMActionsExpanded( action.pTIMActionsExpanded )
+ceCAWait::ceCAWait(const ceCAWait &action) :
+ceConversationAction(action),
+pCondition(NULL),
+pInterval(action.GetInterval()),
+pTIMExpanded(action.pTIMExpanded),
+pTIMConditionExpanded(action.pTIMConditionExpanded),
+pTIMActionsExpanded(action.pTIMActionsExpanded)
 {
 	const ceConversationActionList &actions = action.GetActions();
 	ceConversationAction *newAction = NULL;
 	int i, count;
 	
 	try{
-		if( action.GetCondition() ){
+		if(action.GetCondition()){
 			pCondition = action.GetCondition()->CreateCopy();
 		}
 		
 		count = actions.GetCount();
-		for( i=0; i<count; i++ ){
-			newAction = actions.GetAt( i )->CreateCopy();
-			pActions.Add( newAction );
+		for(i=0; i<count; i++){
+			newAction = actions.GetAt(i)->CreateCopy();
+			pActions.Add(newAction);
 			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newAction ){
+	}catch(const deException &){
+		if(newAction){
 			newAction->FreeReference();
 		}
-		SetCondition( NULL );
+		SetCondition(NULL);
 		pActions.RemoveAll();
 		throw;
 	}
 }
 
 ceCAWait::~ceCAWait(){
-	SetCondition( NULL );
+	SetCondition(NULL);
 	pActions.RemoveAll();
 }
 
@@ -93,22 +93,22 @@ ceCAWait::~ceCAWait(){
 // Management
 ///////////////
 
-void ceCAWait::SetCondition( ceConversationCondition *condition ){
-	if( condition != pCondition ){
-		if( pCondition ){
+void ceCAWait::SetCondition(ceConversationCondition *condition){
+	if(condition != pCondition){
+		if(pCondition){
 			pCondition->FreeReference();
 		}
 		
 		pCondition = condition;
 		
-		if( condition ){
+		if(condition){
 			condition->AddReference();
 		}
 	}
 }
 
-void ceCAWait::SetInterval( float interval ){
-	if( interval < 0.0f ){
+void ceCAWait::SetInterval(float interval){
+	if(interval < 0.0f){
 		pInterval = 0.0f;
 		
 	}else{
@@ -119,7 +119,7 @@ void ceCAWait::SetInterval( float interval ){
 
 
 ceConversationAction *ceCAWait::CreateCopy() const{
-	return new ceCAWait( *this );
+	return new ceCAWait(*this);
 }
 
 
@@ -127,14 +127,14 @@ ceConversationAction *ceCAWait::CreateCopy() const{
 // UI
 ///////
 
-void ceCAWait::SetTIMExpanded( bool expanded ){
+void ceCAWait::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }
 
-void ceCAWait::SetTIMConditionExpanded( bool expanded ){
+void ceCAWait::SetTIMConditionExpanded(bool expanded){
 	pTIMConditionExpanded = expanded;
 }
 
-void ceCAWait::SetTIMActionsExpanded( bool expanded ){
+void ceCAWait::SetTIMActionsExpanded(bool expanded){
 	pTIMActionsExpanded = expanded;
 }

@@ -58,10 +58,10 @@
 ///////////////////
 
 igdeGDPCObjectClass::cAsyncFinished::cAsyncFinished() :
-asyncLoadFinished( false ){
+asyncLoadFinished(false){
 }
 
-void igdeGDPCObjectClass::cAsyncFinished::LoadFinished( igdeWObject&, bool ){
+void igdeGDPCObjectClass::cAsyncFinished::LoadFinished(igdeWObject&, bool){
 	asyncLoadFinished = true;
 }
 
@@ -73,20 +73,20 @@ void igdeGDPCObjectClass::cAsyncFinished::LoadFinished( igdeWObject&, bool ){
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDPCObjectClass::igdeGDPCObjectClass( igdeEnvironment &environment,
-igdeGDClass *gdclass, const decPoint &size ) :
-igdeGDPreviewCreator( environment, size ),
-pGDClass( gdclass ),
-pObject( NULL ),
-pSky( NULL )
+igdeGDPCObjectClass::igdeGDPCObjectClass(igdeEnvironment &environment,
+igdeGDClass *gdclass, const decPoint &size) :
+igdeGDPreviewCreator(environment, size),
+pGDClass(gdclass),
+pObject(NULL),
+pSky(NULL)
 {
-	if( ! gdclass ){
-		DETHROW( deeInvalidParam );
+	if(! gdclass){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 igdeGDPCObjectClass::~igdeGDPCObjectClass(){
-	if( pSky ){
+	if(pSky){
 		delete pSky;
 	}
 }
@@ -97,7 +97,7 @@ igdeGDPCObjectClass::~igdeGDPCObjectClass(){
 ///////////////
 
 decString igdeGDPCObjectClass::DebugPrefix(){
-	return decString( "GDPCObjectClass(" ) + ( pGDClass ? pGDClass->GetName() : decString( "?" ) ) + ")";
+	return decString("GDPCObjectClass(") + (pGDClass ? pGDClass->GetName() : decString("?")) + ")";
 }
 
 void igdeGDPCObjectClass::PrepareCanvasForRender(){
@@ -105,43 +105,43 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
 	// create world
-	pWorld.TakeOver( engine.GetWorldManager()->CreateWorld() );
-	pWorld->SetGravity( decVector( 0.0f, -9.81f, 0.0f ) );
+	pWorld.TakeOver(engine.GetWorldManager()->CreateWorld());
+	pWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 	
 	// create camera
-	pCamera.TakeOver( engine.GetCameraManager()->CreateCamera() );
-	pCamera->SetFov( 45.0f * DEG2RAD );
-	pCamera->SetFovRatio( 1.0f );
-	pCamera->SetImageDistance( 0.01f );
-	pCamera->SetViewDistance( 500.0f );
-	pCamera->SetExposure( 1.0f );
-	pCamera->SetAdaptionTime( 0.0f );
-	pWorld->AddCamera( pCamera );
+	pCamera.TakeOver(engine.GetCameraManager()->CreateCamera());
+	pCamera->SetFov(45.0f * DEG2RAD);
+	pCamera->SetFovRatio(1.0f);
+	pCamera->SetImageDistance(0.01f);
+	pCamera->SetViewDistance(500.0f);
+	pCamera->SetExposure(1.0f);
+	pCamera->SetAdaptionTime(0.0f);
+	pWorld->AddCamera(pCamera);
 	
 	// create light
 	
 	// create sky
-	pSky = new igdeWSky( environment );
-	pSky->SetWorld( pWorld );
+	pSky = new igdeWSky(environment);
+	pSky->SetWorld(pWorld);
 	pSky->SetGDDefaultSky();
 	
 	// adjust camera parameters to fit the sky lighting
-	pCamera->SetLowestIntensity( pSky->GetMaxLightIntensity() );
-	pCamera->SetHighestIntensity( pSky->GetMaxLightIntensity() );
+	pCamera->SetLowestIntensity(pSky->GetMaxLightIntensity());
+	pCamera->SetHighestIntensity(pSky->GetMaxLightIntensity());
 	
 	// create the object class wrapper
 	pObject.TakeOver(new igdeWObject(environment));
-	pObject->SetWorld( pWorld );
-	pObject->SetAsyncLoadFinished( &pAsyncFinished );
-	DebugLog( "set gdclass" );
-	pObject->SetGDClass( pGDClass );
+	pObject->SetWorld(pWorld);
+	pObject->SetAsyncLoadFinished(&pAsyncFinished);
+	DebugLog("set gdclass");
+	pObject->SetGDClass(pGDClass);
 	
 	// create render world canvas
 	deCanvasView &container = *GetCanvas();
-	pCanvasRenderWorld.TakeOver( engine.GetCanvasManager()->CreateCanvasRenderWorld() );
-	pCanvasRenderWorld->SetCamera( pCamera );
-	pCanvasRenderWorld->SetSize( container.GetSize() );
-	container.AddCanvas( pCanvasRenderWorld );
+	pCanvasRenderWorld.TakeOver(engine.GetCanvasManager()->CreateCanvasRenderWorld());
+	pCanvasRenderWorld->SetCamera(pCamera);
+	pCanvasRenderWorld->SetSize(container.GetSize());
+	container.AddCanvas(pCanvasRenderWorld);
 }
 
 bool igdeGDPCObjectClass::IsCanvasReadyForRender(){
@@ -149,28 +149,28 @@ bool igdeGDPCObjectClass::IsCanvasReadyForRender(){
 		return false;
 	}
 	
-	DebugLog( "finished asynchronous loading" );
+	DebugLog("finished asynchronous loading");
 	
 	// update once
 	const float initialUpdate = 0.1f;
 	
-	pObject->Update( initialUpdate );
+	pObject->Update(initialUpdate);
 	
-	pWorld->ProcessPhysics( initialUpdate );
-	pWorld->Update( initialUpdate );
+	pWorld->ProcessPhysics(initialUpdate);
+	pWorld->Update(initialUpdate);
 	
 	// center on object
 	decVector minExtend, maxExtend;
 	
-	if( pObject->GetHasBoxExtends() ){
+	if(pObject->GetHasBoxExtends()){
 		minExtend = pObject->GetBoxMinExtend();
 		maxExtend = pObject->GetBoxMaxExtend();
 		
 	}else{
 		// TODO visit wrapper object sub-objects to find component and billboard boundaries
 		//      if they are not scaling
-		minExtend.Set( -0.5f, -0.5f, -0.5f );
-		maxExtend.Set( 0.5f, 0.5f, 0.5f );
+		minExtend.Set(-0.5f, -0.5f, -0.5f);
+		maxExtend.Set(0.5f, 0.5f, 0.5f);
 	}
 	
 	// TODO calculation of best distance to object can be improved by doing the following
@@ -182,30 +182,30 @@ bool igdeGDPCObjectClass::IsCanvasReadyForRender(){
 	// this way the camera distance starts at the closest vertex which results in the
 	// largest appearance of the model in the image possible
 	
-	const decDVector center( ( minExtend + maxExtend ) * 0.5f );
-	const decDVector size( maxExtend - minExtend );
-	const double largestHalfSize = decMath::max( decMath::max( size.x, size.y ), 0.001 ) * 0.5;
+	const decDVector center((minExtend + maxExtend) * 0.5f);
+	const decDVector size(maxExtend - minExtend);
+	const double largestHalfSize = decMath::max(decMath::max(size.x, size.y), 0.001) * 0.5;
 	
-	const decDVector viewRotation( 10.0, 10.0, 0.0 );
-	const decDVector viewOffset( 0.0, 0.0, size.z * 0.5
-		+ sin( fabs( viewRotation.x ) * DEG2RAD ) * largestHalfSize
-		+ sin( fabs( viewRotation.y ) * DEG2RAD ) * largestHalfSize
-		+ largestHalfSize * 1.05 / tan( ( double )pCamera->GetFov() * 0.5 ) );
+	const decDVector viewRotation(10.0, 10.0, 0.0);
+	const decDVector viewOffset(0.0, 0.0, size.z * 0.5
+		+ sin(fabs(viewRotation.x) * DEG2RAD) * largestHalfSize
+		+ sin(fabs(viewRotation.y) * DEG2RAD) * largestHalfSize
+		+ largestHalfSize * 1.05 / tan((double)pCamera->GetFov() * 0.5));
 	
 	const decDMatrix matrix(
-		decDMatrix::CreateRotationY( DEG2RAD * 180.0 )
+		decDMatrix::CreateRotationY(DEG2RAD * 180.0)
 		* decDMatrix::CreateTranslation( viewOffset )
 		* decDMatrix::CreateRotation( viewRotation * DEG2RAD )
 		* decDMatrix::CreateTranslation( center ) );
 	
-	pCamera->SetPosition( matrix.GetPosition() );
-	pCamera->SetOrientation( matrix.ToQuaternion() );
+	pCamera->SetPosition(matrix.GetPosition());
+	pCamera->SetOrientation(matrix.ToQuaternion());
 	return true;
 }
 
-void igdeGDPCObjectClass::UpdateCanvasForRender( float elapsed ){
-	pObject->Update( elapsed );
+void igdeGDPCObjectClass::UpdateCanvasForRender(float elapsed){
+	pObject->Update(elapsed);
 	
-	pWorld->ProcessPhysics( elapsed );
-	pWorld->Update( elapsed );
+	pWorld->ProcessPhysics(elapsed);
+	pWorld->Update(elapsed);
 }

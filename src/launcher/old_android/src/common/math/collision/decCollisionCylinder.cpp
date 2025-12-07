@@ -52,20 +52,20 @@ decCollisionCylinder::decCollisionCylinder(){
 	ClearOrientation();
 }
 
-decCollisionCylinder::decCollisionCylinder( const decVector &center, float halfHeight, float topRadius, float bottomRadius ){
-	SetPosition( center );
-	SetHalfHeight( halfHeight );
-	SetTopRadius( topRadius );
-	SetBottomRadius( bottomRadius );
+decCollisionCylinder::decCollisionCylinder(const decVector &center, float halfHeight, float topRadius, float bottomRadius){
+	SetPosition(center);
+	SetHalfHeight(halfHeight);
+	SetTopRadius(topRadius);
+	SetBottomRadius(bottomRadius);
 	ClearOrientation();
 }
 
-decCollisionCylinder::decCollisionCylinder( const decVector &center, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation ){
-	SetPosition( center );
-	SetHalfHeight( halfHeight );
-	SetTopRadius( topRadius );
-	SetBottomRadius( bottomRadius );
-	SetOrientation( orientation );
+decCollisionCylinder::decCollisionCylinder(const decVector &center, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation){
+	SetPosition(center);
+	SetHalfHeight(halfHeight);
+	SetTopRadius(topRadius);
+	SetBottomRadius(bottomRadius);
+	SetOrientation(orientation);
 }
 
 decCollisionCylinder::~decCollisionCylinder(){
@@ -76,12 +76,12 @@ decCollisionCylinder::~decCollisionCylinder(){
 // float dispatching calls
 /////////////////////////////
 
-bool decCollisionCylinder::VolumeHitsVolume( decCollisionVolume *volume ){
-	return volume->CylinderHitsVolume( this );
+bool decCollisionCylinder::VolumeHitsVolume(decCollisionVolume *volume){
+	return volume->CylinderHitsVolume(this);
 }
 
-float decCollisionCylinder::VolumeMoveHitsVolume( decCollisionVolume *volume, const decVector &displacement, decVector *normal ){
-	return volume->CylinderMoveHitsVolume( this, displacement, normal );
+float decCollisionCylinder::VolumeMoveHitsVolume(decCollisionVolume *volume, const decVector &displacement, decVector *normal){
+	return volume->CylinderMoveHitsVolume(this, displacement, normal);
 }
 
 
@@ -89,63 +89,63 @@ float decCollisionCylinder::VolumeMoveHitsVolume( decCollisionVolume *volume, co
 // first stage calls
 //////////////////////
 
-bool decCollisionCylinder::SphereHitsVolume( decCollisionSphere *sphere ){
-	return SphereHitsCylinder( sphere );
+bool decCollisionCylinder::SphereHitsVolume(decCollisionSphere *sphere){
+	return SphereHitsCylinder(sphere);
 }
 
-bool decCollisionCylinder::CylinderHitsVolume( decCollisionCylinder *Cylinder ){
-	return CylinderHitsCylinder( Cylinder );
+bool decCollisionCylinder::CylinderHitsVolume(decCollisionCylinder *Cylinder){
+	return CylinderHitsCylinder(Cylinder);
 }
 
-bool decCollisionCylinder::CapsuleHitsVolume( decCollisionCapsule *capsule ){
-	return capsule->CylinderHitsCapsule( this );
+bool decCollisionCylinder::CapsuleHitsVolume(decCollisionCapsule *capsule){
+	return capsule->CylinderHitsCapsule(this);
 }
 
-bool decCollisionCylinder::BoxHitsVolume( decCollisionBox *box ){
-	return box->CylinderHitsBox( this );
+bool decCollisionCylinder::BoxHitsVolume(decCollisionBox *box){
+	return box->CylinderHitsBox(this);
 }
 
-bool decCollisionCylinder::TriangleHitsVolume( decCollisionTriangle *triangle ){
-	return triangle->CylinderHitsTriangle( this );
+bool decCollisionCylinder::TriangleHitsVolume(decCollisionTriangle *triangle){
+	return triangle->CylinderHitsTriangle(this);
 }
 
-bool decCollisionCylinder::FrustumHitsVolume( decCollisionFrustum *frustum ){
-	return frustum->CylinderHitsFrustum( this );
+bool decCollisionCylinder::FrustumHitsVolume(decCollisionFrustum *frustum){
+	return frustum->CylinderHitsFrustum(this);
 }
 
 
 
-float decCollisionCylinder::SphereMoveHitsVolume( decCollisionSphere *sphere, const decVector &displacement, decVector *normal ){
-	return SphereMoveHitsCylinder( sphere, displacement, normal );
+float decCollisionCylinder::SphereMoveHitsVolume(decCollisionSphere *sphere, const decVector &displacement, decVector *normal){
+	return SphereMoveHitsCylinder(sphere, displacement, normal);
 }
 
-float decCollisionCylinder::CylinderMoveHitsVolume( decCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal ){
-	return CylinderMoveHitsCylinder( Cylinder, displacement, normal );
+float decCollisionCylinder::CylinderMoveHitsVolume(decCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal){
+	return CylinderMoveHitsCylinder(Cylinder, displacement, normal);
 }
 
-float decCollisionCylinder::CapsuleMoveHitsVolume( decCollisionCapsule *capsule, const decVector &displacement, decVector *normal ){
-	return capsule->CylinderMoveHitsCapsule( this, displacement, normal );
+float decCollisionCylinder::CapsuleMoveHitsVolume(decCollisionCapsule *capsule, const decVector &displacement, decVector *normal){
+	return capsule->CylinderMoveHitsCapsule(this, displacement, normal);
 }
 
-float decCollisionCylinder::BoxMoveHitsVolume( decCollisionBox *box, const decVector &displacement, decVector *normal ){
-	float distance = box->CylinderMoveHitsBox( this, -displacement, normal );
-	if( normal ) normal->Negate();
+float decCollisionCylinder::BoxMoveHitsVolume(decCollisionBox *box, const decVector &displacement, decVector *normal){
+	float distance = box->CylinderMoveHitsBox(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-float decCollisionCylinder::TriangleMoveHitsVolume( decCollisionTriangle *triangle, const decVector &displacement, decVector *normal ){
-	float distance = triangle->CylinderMoveHitsTriangle( this, -displacement, normal );
-	if( normal ) normal->Negate();
+float decCollisionCylinder::TriangleMoveHitsVolume(decCollisionTriangle *triangle, const decVector &displacement, decVector *normal){
+	float distance = triangle->CylinderMoveHitsTriangle(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-float decCollisionCylinder::FrustumMoveHitsVolume( decCollisionFrustum *frustum, const decVector &displacement, decVector *normal ){
-	float distance = frustum->CylinderMoveHitsFrustum( this, -displacement, normal );
-	if( normal ) normal->Negate();
+float decCollisionCylinder::FrustumMoveHitsVolume(decCollisionFrustum *frustum, const decVector &displacement, decVector *normal){
+	float distance = frustum->CylinderMoveHitsFrustum(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-float decCollisionCylinder::PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal ){
+float decCollisionCylinder::PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal){
 	// TODO
 	return 1.0f;
 }
@@ -155,33 +155,33 @@ float decCollisionCylinder::PointMoveHitsVolume( const decVector &point, const d
 // Enclosing Volumes
 //////////////////////
 
-void decCollisionCylinder::GetEnclosingSphere( decCollisionSphere *sphere ){
-	if( ! sphere ) DETHROW( deeInvalidParam );
+void decCollisionCylinder::GetEnclosingSphere(decCollisionSphere *sphere){
+	if(! sphere) DETHROW(deeInvalidParam);
 	
 	// the sphere is not fully optial. the real sphere is slightly smaller and has a
 	// different center along the y-axis. the difference is though rather small.
-	if( pTopRadius > pBottomRadius ){
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius ) );
+	if(pTopRadius > pBottomRadius){
+		sphere->SetAll(pPosition, sqrt(pHalfHeight * pHalfHeight + pTopRadius * pTopRadius));
 		
 	}else{
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius ) );
+		sphere->SetAll(pPosition, sqrt(pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius));
 	}
 }
 
-void decCollisionCylinder::GetEnclosingBox( decCollisionBox *box ){
-	if( ! box ) DETHROW( deeInvalidParam );
+void decCollisionCylinder::GetEnclosingBox(decCollisionBox *box){
+	if(! box) DETHROW(deeInvalidParam);
 	float size;
 	
 	// TODO: better approximation
-	if( pTopRadius > pBottomRadius ){
-		size = sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius );
+	if(pTopRadius > pBottomRadius){
+		size = sqrt(pHalfHeight * pHalfHeight + pTopRadius * pTopRadius);
 		
 	}else{
-		size = sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius );
+		size = sqrt(pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius);
 	}
 	
-	box->SetCenter( pPosition );
-	box->SetHalfSize( decVector( size, size, size ) );
+	box->SetCenter(pPosition);
+	box->SetHalfSize(decVector(size, size, size));
 	box->ClearOrientation();
 }
 
@@ -190,53 +190,53 @@ void decCollisionCylinder::GetEnclosingBox( decCollisionBox *box ){
 // Miscelanous Functions
 //////////////////////////
 
-bool decCollisionCylinder::IsPointInside( const decVector &point ){
-	const decVector localPoint = WorldToLocal( point );
+bool decCollisionCylinder::IsPointInside(const decVector &point){
+	const decVector localPoint = WorldToLocal(point);
 	
-	if( localPoint.y < -pHalfHeight || localPoint.y > pHalfHeight ){
+	if(localPoint.y < -pHalfHeight || localPoint.y > pHalfHeight){
 		return false;
 	}
 	
 	double radius = pTopRadius;
 	
-	if( pHalfHeight > 1e-5f ){
-		radius = pBottomRadius + ( pTopRadius - pBottomRadius ) * ( localPoint.y * 0.5f / pHalfHeight + 0.5f );
+	if(pHalfHeight > 1e-5f){
+		radius = pBottomRadius + (pTopRadius - pBottomRadius) * (localPoint.y * 0.5f / pHalfHeight + 0.5f);
 	}
 	
-	return sqrtf( localPoint.x * localPoint.x + localPoint.z * localPoint.z ) <= radius;
+	return sqrtf(localPoint.x * localPoint.x + localPoint.z * localPoint.z) <= radius;
 }
 
-decVector decCollisionCylinder::ClosestPointTo( const decVector &point ){
+decVector decCollisionCylinder::ClosestPointTo(const decVector &point){
 	// TODO: implement
 	return point;
 }
 
-decVector decCollisionCylinder::NormalAtPoint( const decVector &point ){
+decVector decCollisionCylinder::NormalAtPoint(const decVector &point){
 	// TODO: implement
-	return decVector( 1.0f, 0.0f, 0.0f );
+	return decVector(1.0f, 0.0f, 0.0f);
 }
 
-bool decCollisionCylinder::RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance ){
-	if( pOriented ){
-		if( pTapered ){
-			return decCollisionDetection::RayHitsTaperedCylinder( WorldToLocal( rayOrigin ),
-				NormalWorldToLocal( rayDirection ), decVector(), pHalfHeight, pTopRadius,
-				pBottomRadius, hitDistance );
+bool decCollisionCylinder::RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance){
+	if(pOriented){
+		if(pTapered){
+			return decCollisionDetection::RayHitsTaperedCylinder(WorldToLocal(rayOrigin),
+				NormalWorldToLocal(rayDirection), decVector(), pHalfHeight, pTopRadius,
+				pBottomRadius, hitDistance);
 			
 		}else{
-			return decCollisionDetection::RayHitsCylinder( WorldToLocal( rayOrigin ),
-				NormalWorldToLocal( rayDirection ), decVector(), pHalfHeight, pTopRadius,
-				hitDistance );
+			return decCollisionDetection::RayHitsCylinder(WorldToLocal(rayOrigin),
+				NormalWorldToLocal(rayDirection), decVector(), pHalfHeight, pTopRadius,
+				hitDistance);
 		}
 		
 	}else{
-		if( pTapered ){
-			return decCollisionDetection::RayHitsTaperedCylinder( rayOrigin, rayDirection, pPosition,
-				pHalfHeight, pTopRadius, pBottomRadius, hitDistance );
+		if(pTapered){
+			return decCollisionDetection::RayHitsTaperedCylinder(rayOrigin, rayDirection, pPosition,
+				pHalfHeight, pTopRadius, pBottomRadius, hitDistance);
 			
 		}else{
-			return decCollisionDetection::RayHitsCylinder( rayOrigin, rayDirection, pPosition,
-				pHalfHeight, pTopRadius, hitDistance );
+			return decCollisionDetection::RayHitsCylinder(rayOrigin, rayDirection, pPosition,
+				pHalfHeight, pTopRadius, hitDistance);
 		}
 	}
 }
@@ -246,9 +246,9 @@ bool decCollisionCylinder::RayHitsVolume( const decVector &rayOrigin, const decV
 // Visiting
 /////////////
 
-void decCollisionCylinder::Visit( decCollisionVolumeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
-	visitor->VisitCylinder( this );
+void decCollisionCylinder::Visit(decCollisionVolumeVisitor *visitor){
+	if(! visitor) DETHROW(deeInvalidParam);
+	visitor->VisitCylinder(this);
 }
 
 
@@ -256,21 +256,21 @@ void decCollisionCylinder::Visit( decCollisionVolumeVisitor *visitor ){
 // collision routines
 ///////////////////////
 
-bool decCollisionCylinder::SphereHitsCylinder( decCollisionSphere *sphere ){
+bool decCollisionCylinder::SphereHitsCylinder(decCollisionSphere *sphere){
 	return false;
 }
 
-bool decCollisionCylinder::CylinderHitsCylinder( decCollisionCylinder *Cylinder ){
+bool decCollisionCylinder::CylinderHitsCylinder(decCollisionCylinder *Cylinder){
 	return false;
 }
 
 
 
-float decCollisionCylinder::SphereMoveHitsCylinder( decCollisionSphere *sphere, const decVector &displacement, decVector *normal ){
+float decCollisionCylinder::SphereMoveHitsCylinder(decCollisionSphere *sphere, const decVector &displacement, decVector *normal){
 	return 1;
 }
 
-float decCollisionCylinder::CylinderMoveHitsCylinder( decCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal ){
+float decCollisionCylinder::CylinderMoveHitsCylinder(decCollisionCylinder *Cylinder, const decVector &displacement, decVector *normal){
 	return 1;
 }
 
@@ -279,33 +279,33 @@ float decCollisionCylinder::CylinderMoveHitsCylinder( decCollisionCylinder *Cyli
 // Management
 ///////////////
 
-void decCollisionCylinder::SetPosition( const decVector &position ){
+void decCollisionCylinder::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void decCollisionCylinder::SetOrientation( const decQuaternion &orientation ){
-	decMatrix matrix = decMatrix::CreateFromQuaternion( orientation );
+void decCollisionCylinder::SetOrientation(const decQuaternion &orientation){
+	decMatrix matrix = decMatrix::CreateFromQuaternion(orientation);
 	
 	pOrientation = orientation;
 	
-	pAxisX.Set( matrix.TransformRight() );
-	pAxisY.Set( matrix.TransformUp() );
-	pAxisZ.Set( matrix.TransformView() );
+	pAxisX.Set(matrix.TransformRight());
+	pAxisY.Set(matrix.TransformUp());
+	pAxisZ.Set(matrix.TransformView());
 	
-	pOriented = ! pOrientation.IsEqualTo( decQuaternion() );
+	pOriented = ! pOrientation.IsEqualTo(decQuaternion());
 }
 
 void decCollisionCylinder::ClearOrientation(){
 	pOrientation = decQuaternion();
 	
-	pAxisX.Set( 1.0f, 0.0f, 0.0f );
-	pAxisY.Set( 0.0f, 1.0f, 0.0f );
-	pAxisZ.Set( 0.0f, 0.0f, 1.0f );
+	pAxisX.Set(1.0f, 0.0f, 0.0f);
+	pAxisY.Set(0.0f, 1.0f, 0.0f);
+	pAxisZ.Set(0.0f, 0.0f, 1.0f);
 	pOriented = false;
 }
 
-void decCollisionCylinder::SetHalfHeight( float halfHeight ){
-	if( halfHeight < 1e-6f ){
+void decCollisionCylinder::SetHalfHeight(float halfHeight){
+	if(halfHeight < 1e-6f){
 		pHalfHeight = 0.0f;
 		
 	}else{
@@ -313,30 +313,30 @@ void decCollisionCylinder::SetHalfHeight( float halfHeight ){
 	}
 }
 
-void decCollisionCylinder::SetTopRadius( float topRadius ){
-	if( topRadius < 1e-6f ){
+void decCollisionCylinder::SetTopRadius(float topRadius){
+	if(topRadius < 1e-6f){
 		pTopRadius = 0.0f;
 		
 	}else{
 		pTopRadius = topRadius;
 	}
 	
-	pTapered = ( fabs( pTopRadius - pBottomRadius ) > 1e-6f );
+	pTapered = (fabs(pTopRadius - pBottomRadius) > 1e-6f);
 }
 
-void decCollisionCylinder::SetBottomRadius( float bottomRadius ){
-	if( bottomRadius < 1e-6f ){
+void decCollisionCylinder::SetBottomRadius(float bottomRadius){
+	if(bottomRadius < 1e-6f){
 		pBottomRadius = 0.0f;
 		
 	}else{
 		pBottomRadius = bottomRadius;
 	}
 	
-	pTapered = ( fabs( pTopRadius - pBottomRadius ) > 1e-6f );
+	pTapered = (fabs(pTopRadius - pBottomRadius) > 1e-6f);
 }
 
-void decCollisionCylinder::SetRadius( float radius ){
-	if( radius < 1e-6f ){
+void decCollisionCylinder::SetRadius(float radius){
+	if(radius < 1e-6f){
 		pTopRadius = 0.0f;
 		pBottomRadius = 0.0f;
 		
@@ -350,19 +350,19 @@ void decCollisionCylinder::SetRadius( float radius ){
 
 
 
-decVector decCollisionCylinder::WorldToLocal( const decVector &point ) const{
+decVector decCollisionCylinder::WorldToLocal(const decVector &point) const{
 	decVector tp = point - pPosition;
-	return decVector( pAxisX * tp, pAxisY * tp, pAxisZ * tp );
+	return decVector(pAxisX * tp, pAxisY * tp, pAxisZ * tp);
 }
 
-decVector decCollisionCylinder::LocalToWorld( const decVector &point ) const{
+decVector decCollisionCylinder::LocalToWorld(const decVector &point) const{
 	return pPosition + pAxisX * point.x + pAxisY * point.y + pAxisZ * point.z;
 }
 
-decVector decCollisionCylinder::NormalWorldToLocal( const decVector &normal ) const{
-	return decVector( pAxisX * normal, pAxisY * normal, pAxisZ * normal );
+decVector decCollisionCylinder::NormalWorldToLocal(const decVector &normal) const{
+	return decVector(pAxisX * normal, pAxisY * normal, pAxisZ * normal);
 }
 
-decVector decCollisionCylinder::NormalLocalToWorld( const decVector &normal ) const{
+decVector decCollisionCylinder::NormalLocalToWorld(const decVector &normal) const{
 	return pAxisX * normal.x + pAxisY * normal.y + pAxisZ * normal.z;
 }

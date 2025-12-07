@@ -38,8 +38,8 @@
 // constructor, destructor
 ////////////////////////////
 
-debpSkin::debpSkin( deSkin *skin ){
-	if( ! skin ) DETHROW( deeInvalidParam );
+debpSkin::debpSkin(deSkin *skin){
+	if(! skin) DETHROW(deeInvalidParam);
 	pSkin = skin;
 }
 

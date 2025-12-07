@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseSoundModule( deLoadableModule &loadableModule );
+	deBaseSoundModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseSoundModule();
@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read sound information from file. */
-	virtual void InitLoadSound( decBaseFileReader &reader, deBaseSoundInfo &info ) = 0;
+	virtual void InitLoadSound(decBaseFileReader &reader, deBaseSoundInfo &info) = 0;
 	
 	/**
 	 * \brief Save sound.
@@ -61,10 +61,10 @@ public:
 	 * You can be sure that the file provided has been rewinded prior to this
 	 * function call.
 	 */
-	virtual void SaveSound( decBaseFileWriter &writer, const deSound &sound ) = 0;
+	virtual void SaveSound(decBaseFileWriter &writer, const deSound &sound) = 0;
 	
 	/** \brief Create sound decoder peer. */
-	virtual deBaseSoundDecoder *CreateDecoder( decBaseFileReader *reader ) = 0;
+	virtual deBaseSoundDecoder *CreateDecoder(decBaseFileReader *reader) = 0;
 	/*@}*/
 };
 

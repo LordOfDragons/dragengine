@@ -52,13 +52,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewiDevice::dewiDevice( deWindowsInput &module, eSources source ) :
-pModule( module ),
-pIndex( -1 ),
-pSource( source ),
-pType( deInputDevice::edtMouse ),
+dewiDevice::dewiDevice(deWindowsInput &module, eSources source) :
+pModule(module),
+pIndex(-1),
+pSource(source),
+pType(deInputDevice::edtMouse),
 
-pDirtyAxesValues( false ){
+pDirtyAxesValues(false){
 }
 
 dewiDevice::~dewiDevice(){
@@ -69,27 +69,27 @@ dewiDevice::~dewiDevice(){
 // Management
 ///////////////
 
-void dewiDevice::SetIndex( int index ){
+void dewiDevice::SetIndex(int index){
 	pIndex = index;
 }
 
-void dewiDevice::SetType( deInputDevice::eDeviceTypes type ){
+void dewiDevice::SetType(deInputDevice::eDeviceTypes type){
 	pType = type;
 }
 
-void dewiDevice::SetID( const char *id ){
+void dewiDevice::SetID(const char *id){
 	pID = id;
 }
 
-void dewiDevice::SetName( const char *name ){
+void dewiDevice::SetName(const char *name){
 	pName = name;
 }
 
-void dewiDevice::SetDisplayImages( const char *name ){
+void dewiDevice::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(! name){
 		return;
 	}
 	
@@ -98,21 +98,21 @@ void dewiDevice::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/device";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	deImage::Ref icon;
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+		pDisplayIcons.Add((deImage*)icon);
 	}
 }
 
-void dewiDevice::SetDisplayText( const char *text ){
+void dewiDevice::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
@@ -122,23 +122,23 @@ int dewiDevice::GetButtonCount() const{
 	return pButtons.GetCount();
 }
 
-void dewiDevice::AddButton( dewiDeviceButton *button ){
-	if( ! button ){
-		DETHROW( deeNullPointer );
+void dewiDevice::AddButton(dewiDeviceButton *button){
+	if(! button){
+		DETHROW(deeNullPointer);
 	}
-	pButtons.Add( button );
+	pButtons.Add(button);
 }
 
-dewiDeviceButton *dewiDevice::GetButtonAt( int index ) const{
-	return ( dewiDeviceButton* )pButtons.GetAt( index );
+dewiDeviceButton *dewiDevice::GetButtonAt(int index) const{
+	return (dewiDeviceButton*)pButtons.GetAt(index);
 }
 
-dewiDeviceButton *dewiDevice::GetButtonWithID( const char *id ) const{
+dewiDeviceButton *dewiDevice::GetButtonWithID(const char *id) const{
 	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceButton * const button = ( dewiDeviceButton* )pButtons.GetAt( i );
-		if( button->GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDeviceButton * const button = (dewiDeviceButton*)pButtons.GetAt(i);
+		if(button->GetID() == id){
 			return button;
 		}
 	}
@@ -146,12 +146,12 @@ dewiDeviceButton *dewiDevice::GetButtonWithID( const char *id ) const{
 	return NULL;
 }
 
-dewiDeviceButton *dewiDevice::GetButtonWithWICode( int code ) const{
+dewiDeviceButton *dewiDevice::GetButtonWithWICode(int code) const{
 	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceButton * const button = ( dewiDeviceButton* )pButtons.GetAt( i );
-		if( button->GetWICode() == code ){
+	for(i=0; i<count; i++){
+		dewiDeviceButton * const button = (dewiDeviceButton*)pButtons.GetAt(i);
+		if(button->GetWICode() == code){
 			return button;
 		}
 	}
@@ -159,12 +159,12 @@ dewiDeviceButton *dewiDevice::GetButtonWithWICode( int code ) const{
 	return NULL;
 }
 
-int dewiDevice::IndexOfButtonWithID( const char *id ) const{
+int dewiDevice::IndexOfButtonWithID(const char *id) const{
 	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceButton &button = *( ( dewiDeviceButton* )pButtons.GetAt( i ) );
-		if( button.GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDeviceButton &button = *((dewiDeviceButton*)pButtons.GetAt(i));
+		if(button.GetID() == id){
 			return i;
 		}
 	}
@@ -172,12 +172,12 @@ int dewiDevice::IndexOfButtonWithID( const char *id ) const{
 	return -1;
 }
 
-int dewiDevice::IndexOfButtonWithWICode( int code ) const{
+int dewiDevice::IndexOfButtonWithWICode(int code) const{
 	const int count = pButtons.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceButton &button = *( ( dewiDeviceButton* )pButtons.GetAt( i ) );
-		if( button.GetWICode() == code ){
+	for(i=0; i<count; i++){
+		dewiDeviceButton &button = *((dewiDeviceButton*)pButtons.GetAt(i));
+		if(button.GetWICode() == code){
 			return i;
 		}
 	}
@@ -191,23 +191,23 @@ int dewiDevice::GetAxisCount() const{
 	return pAxes.GetCount();
 }
 
-void dewiDevice::AddAxis( dewiDeviceAxis *axis ){
-	if( ! axis ){
-		DETHROW( deeNullPointer );
+void dewiDevice::AddAxis(dewiDeviceAxis *axis){
+	if(! axis){
+		DETHROW(deeNullPointer);
 	}
-	pAxes.Add( axis );
+	pAxes.Add(axis);
 }
 
-dewiDeviceAxis *dewiDevice::GetAxisAt( int index ) const{
-	return ( dewiDeviceAxis* )pAxes.GetAt( index );
+dewiDeviceAxis *dewiDevice::GetAxisAt(int index) const{
+	return (dewiDeviceAxis*)pAxes.GetAt(index);
 }
 
-dewiDeviceAxis *dewiDevice::GetAxisWithID( const char *id ) const{
+dewiDeviceAxis *dewiDevice::GetAxisWithID(const char *id) const{
 	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceAxis * const axis = ( dewiDeviceAxis* )pAxes.GetAt( i );
-		if( axis->GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDeviceAxis * const axis = (dewiDeviceAxis*)pAxes.GetAt(i);
+		if(axis->GetID() == id){
 			return axis;
 		}
 	}
@@ -215,12 +215,12 @@ dewiDeviceAxis *dewiDevice::GetAxisWithID( const char *id ) const{
 	return NULL;
 }
 
-dewiDeviceAxis *dewiDevice::GetAxisWithWICode( int code ) const{
+dewiDeviceAxis *dewiDevice::GetAxisWithWICode(int code) const{
 	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceAxis * const axis = ( dewiDeviceAxis* )pAxes.GetAt( i );
-		if( axis->GetWICode() == code ){
+	for(i=0; i<count; i++){
+		dewiDeviceAxis * const axis = (dewiDeviceAxis*)pAxes.GetAt(i);
+		if(axis->GetWICode() == code){
 			return axis;
 		}
 	}
@@ -228,12 +228,12 @@ dewiDeviceAxis *dewiDevice::GetAxisWithWICode( int code ) const{
 	return NULL;
 }
 
-int dewiDevice::IndexOfAxisWithID( const char *id ) const{
+int dewiDevice::IndexOfAxisWithID(const char *id) const{
 	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceAxis &axis = *( ( dewiDeviceAxis* )pAxes.GetAt( i ) );
-		if( axis.GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDeviceAxis &axis = *((dewiDeviceAxis*)pAxes.GetAt(i));
+		if(axis.GetID() == id){
 			return i;
 		}
 	}
@@ -241,12 +241,12 @@ int dewiDevice::IndexOfAxisWithID( const char *id ) const{
 	return -1;
 }
 
-int dewiDevice::IndexOfAxisWithWICode( int code ) const{
+int dewiDevice::IndexOfAxisWithWICode(int code) const{
 	const int count = pAxes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceAxis &axis = *( ( dewiDeviceAxis* )pAxes.GetAt( i ) );
-		if( axis.GetWICode() == code ){
+	for(i=0; i<count; i++){
+		dewiDeviceAxis &axis = *((dewiDeviceAxis*)pAxes.GetAt(i));
+		if(axis.GetWICode() == code){
 			return i;
 		}
 	}
@@ -260,23 +260,23 @@ int dewiDevice::GetFeedbackCount() const{
 	return pFeedbacks.GetCount();
 }
 
-void dewiDevice::AddFeedback( dewiDeviceFeedback *feedback ){
-	if( ! feedback ){
-		DETHROW( deeNullPointer );
+void dewiDevice::AddFeedback(dewiDeviceFeedback *feedback){
+	if(! feedback){
+		DETHROW(deeNullPointer);
 	}
-	pFeedbacks.Add( feedback );
+	pFeedbacks.Add(feedback);
 }
 
-dewiDeviceFeedback *dewiDevice::GetFeedbackAt( int index ) const{
-	return ( dewiDeviceFeedback* )pFeedbacks.GetAt( index );
+dewiDeviceFeedback *dewiDevice::GetFeedbackAt(int index) const{
+	return (dewiDeviceFeedback*)pFeedbacks.GetAt(index);
 }
 
-dewiDeviceFeedback *dewiDevice::GetFeedbackWithID( const char *id ) const{
+dewiDeviceFeedback *dewiDevice::GetFeedbackWithID(const char *id) const{
 	const int count = pFeedbacks.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceFeedback * const feedback = ( dewiDeviceFeedback* )pFeedbacks.GetAt( i );
-		if( feedback->GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDeviceFeedback * const feedback = (dewiDeviceFeedback*)pFeedbacks.GetAt(i);
+		if(feedback->GetID() == id){
 			return feedback;
 		}
 	}
@@ -284,12 +284,12 @@ dewiDeviceFeedback *dewiDevice::GetFeedbackWithID( const char *id ) const{
 	return NULL;
 }
 
-int dewiDevice::IndexOfFeedbackWithID( const char *id ) const{
+int dewiDevice::IndexOfFeedbackWithID(const char *id) const{
 	const int count = pFeedbacks.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		dewiDeviceFeedback * const feedback = ( dewiDeviceFeedback* )pFeedbacks.GetAt( i );
-		if( feedback->GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDeviceFeedback * const feedback = (dewiDeviceFeedback*)pFeedbacks.GetAt(i);
+		if(feedback->GetID() == id){
 			return i;
 		}
 	}
@@ -299,43 +299,43 @@ int dewiDevice::IndexOfFeedbackWithID( const char *id ) const{
 
 
 
-void dewiDevice::SetDirtyAxesValues( bool dirty ){
+void dewiDevice::SetDirtyAxesValues(bool dirty){
 	pDirtyAxesValues = dirty;
 }
 
 
 
-void dewiDevice::GetInfo( deInputDevice &info ) const{
+void dewiDevice::GetInfo(deInputDevice &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	info.SetDisplayImage(pDisplayImage);
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 	
-	info.SetDisplayModel( NULL );
-	info.SetDisplaySkin( NULL );
+	info.SetDisplayModel(NULL);
+	info.SetDisplaySkin(NULL);
 	
 	const int buttonCount = pButtons.GetCount();
-	info.SetButtonCount( buttonCount );
-	for( i=0; i<buttonCount; i++ ){
-		( ( dewiDeviceButton* )pButtons.GetAt( i ) )->GetInfo( info.GetButtonAt( i ) );
+	info.SetButtonCount(buttonCount);
+	for(i=0; i<buttonCount; i++){
+		((dewiDeviceButton*)pButtons.GetAt(i))->GetInfo(info.GetButtonAt(i));
 	}
 	
 	const int axisCount = pAxes.GetCount();
-	info.SetAxisCount( axisCount );
-	for( i=0; i<axisCount; i++ ){
-		( ( dewiDeviceAxis* )pAxes.GetAt( i ) )->GetInfo( info.GetAxisAt( i ) );
+	info.SetAxisCount(axisCount);
+	for(i=0; i<axisCount; i++){
+		((dewiDeviceAxis*)pAxes.GetAt(i))->GetInfo(info.GetAxisAt(i));
 	}
 	
 	const int feedbackCount = pFeedbacks.GetCount();
-	info.SetFeedbackCount( feedbackCount );
-	for( i=0; i<feedbackCount; i++ ){
-		( ( dewiDeviceFeedback* )pFeedbacks.GetAt( i ) )->GetInfo( info.GetFeedbackAt( i ) );
+	info.SetFeedbackCount(feedbackCount);
+	for(i=0; i<feedbackCount; i++){
+		((dewiDeviceFeedback*)pFeedbacks.GetAt(i))->GetInfo(info.GetFeedbackAt(i));
 	}
 }
 
@@ -343,7 +343,7 @@ void dewiDevice::Update(){
 }
 
 void dewiDevice::SendDirtyAxisEvents(){
-	if( ! pDirtyAxesValues ){
+	if(! pDirtyAxesValues){
 		return;
 	}
 	
@@ -351,7 +351,7 @@ void dewiDevice::SendDirtyAxisEvents(){
 	
 	const int axisCount = pAxes.GetCount();
 	int i;
-	for( i=0; i<axisCount; i++ ){
-		( ( dewiDeviceAxis* )pAxes.GetAt( i ) )->SendEvents( *this );
+	for(i=0; i<axisCount; i++){
+		((dewiDeviceAxis*)pAxes.GetAt(i))->SendEvents(*this);
 	}
 }

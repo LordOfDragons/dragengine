@@ -63,7 +63,7 @@ public:
 	decCurveBezier3D();
 	
 	/** \brief Create copy of bezier curve. */
-	decCurveBezier3D( const decCurveBezier3D &copy );
+	decCurveBezier3D(const decCurveBezier3D &copy);
 	
 	/** \brief Clean up bezier curve. */
 	~decCurveBezier3D();
@@ -74,44 +74,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{return pPointCount;}
 	
 	/**
 	 * \brief Point at position.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	decCurveBezier3DPoint &GetPointAt( int position );
-	const decCurveBezier3DPoint &GetPointAt( int position ) const;
+	decCurveBezier3DPoint &GetPointAt(int position);
+	const decCurveBezier3DPoint &GetPointAt(int position) const;
 	
 	/** \brief Add point. */
-	void AddPoint( const decCurveBezier3DPoint &point );
+	void AddPoint(const decCurveBezier3DPoint &point);
 	
 	/**
 	 * \brief Insert point.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount().
 	 */
-	void InsertPoint( int position, const decCurveBezier3DPoint &point );
+	void InsertPoint(int position, const decCurveBezier3DPoint &point);
 	
 	/**
 	 * \brief Remove point from the given position.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	void RemovePointFrom( int position );
+	void RemovePointFrom(int position);
 	
 	/** \brief Remove all points. */
 	void RemoveAllPoints();
 	
 	/** \brief Interpolation mode. */
-	inline eInterpolationModes GetInterpolationMode() const{ return pInterpolationMode; }
+	inline eInterpolationModes GetInterpolationMode() const{return pInterpolationMode;}
 	
 	/**
 	 * \brief Set interpolation mode.
 	 * \throws deeInvalidParam \em mode is not a member of decCurveBezier3D::eInterpolationModes.
 	 */
-	void SetInterpolationMode( eInterpolationModes mode );
+	void SetInterpolationMode(eInterpolationModes mode);
 	/*@}*/
 	
 	
@@ -123,14 +123,14 @@ public:
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount()-1.
 	 */
-	decCurveBezier3DPoint &operator[]( int position );
-	const decCurveBezier3DPoint &operator[]( int position ) const;
+	decCurveBezier3DPoint &operator[](int position);
+	const decCurveBezier3DPoint &operator[](int position) const;
 	
 	/** \brief Copy another curve to this curve. */
-	decCurveBezier3D &operator=( const decCurveBezier3D &curve );
+	decCurveBezier3D &operator=(const decCurveBezier3D &curve);
 	
 	/** \brief Curve is equal to another curve. */
-	bool operator==( const decCurveBezier3D &curve ) const;
+	bool operator==(const decCurveBezier3D &curve) const;
 	/*@}*/
 };
 

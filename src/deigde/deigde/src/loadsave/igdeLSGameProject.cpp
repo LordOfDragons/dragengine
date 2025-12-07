@@ -57,9 +57,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeLSGameProject::igdeLSGameProject( igdeLoadSaveSystem *lssys ){
-	if( ! lssys ){
-		DETHROW( deeInvalidParam );
+igdeLSGameProject::igdeLSGameProject(igdeLoadSaveSystem *lssys){
+	if(! lssys){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLoadSaveSystem = lssys;
@@ -77,25 +77,25 @@ igdeLSGameProject::~igdeLSGameProject(){
 // Management
 ///////////////
 
-void igdeLSGameProject::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void igdeLSGameProject::SetName(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
 }
 
-void igdeLSGameProject::SetPattern( const char *pattern ){
-	if( ! pattern ){
-		DETHROW( deeInvalidParam );
+void igdeLSGameProject::SetPattern(const char *pattern){
+	if(! pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPattern = pattern;
 }
 
-void igdeLSGameProject::SetDefaultExtension( const char *extension ){
-	if( ! extension ){
-		DETHROW( deeInvalidParam );
+void igdeLSGameProject::SetDefaultExtension(const char *extension){
+	if(! extension){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDefaultExtension = extension;
@@ -106,9 +106,9 @@ void igdeLSGameProject::SetDefaultExtension( const char *extension ){
 // Loading and saving
 ///////////////////////
 
-void igdeLSGameProject::Load( const char *filename, igdeGameProject *project, decBaseFileReader *file ){
-	if( ! project || ! file ){
-		DETHROW( deeInvalidParam );
+void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, decBaseFileReader *file){
+	if(! project || ! file){
+		DETHROW(deeInvalidParam);
 	}
 	
 	igdeWindowMain &windowMain = *pLoadSaveSystem->GetWindowMain();
@@ -116,10 +116,10 @@ void igdeLSGameProject::Load( const char *filename, igdeGameProject *project, de
 	deLogger * const logger = windowMain.GetLogger();
 	
 	// load game project file
-	igdeXMLGameProject xmlGameProject( logger );
+	igdeXMLGameProject xmlGameProject(logger);
 	
-	xmlGameProject.Load( *file, *project );
-	project->SetFilePath( filename );
+	xmlGameProject.Load(*file, *project);
+	project->SetFilePath(filename);
 	
 	// locate base game definitions
 	const igdeGameDefinitionList &sharedGameDefs = windowMain.GetSharedGameDefinitions();
@@ -127,15 +127,15 @@ void igdeLSGameProject::Load( const char *filename, igdeGameProject *project, de
 	const int baseGameDefCount = baseGameDefs.GetCount();
 	int i;
 	
-	for( i=0; i<baseGameDefCount; i++ ){
-		const decString &id = baseGameDefs.GetAt( i );
-		igdeGameDefinition * const baseGameDef = sharedGameDefs.GetWithID( id );
-		if( baseGameDef ){
-			project->GetBaseGameDefinitionList().Add( baseGameDef );
+	for(i=0; i<baseGameDefCount; i++){
+		const decString &id = baseGameDefs.GetAt(i);
+		igdeGameDefinition * const baseGameDef = sharedGameDefs.GetWithID(id);
+		if(baseGameDef){
+			project->GetBaseGameDefinitionList().Add(baseGameDef);
 			
 		}else{
-			logger->LogWarnFormat( LOGSOURCE, "Can not find base game definition '%s', skipped",
-				id.GetString() );
+			logger->LogWarnFormat(LOGSOURCE, "Can not find base game definition '%s', skipped",
+				id.GetString());
 		}
 	}
 	
@@ -145,16 +145,16 @@ void igdeLSGameProject::Load( const char *filename, igdeGameProject *project, de
 	decPath path;
 	
 	try{
-		path.SetFromNative( project->GetDirectoryPath() );
-		path.AddUnixPath( project->GetPathProjectGameDefinition() );
-		gameDefReader = new decDiskFileReader( path.GetPathNative() );
+		path.SetFromNative(project->GetDirectoryPath());
+		path.AddUnixPath(project->GetPathProjectGameDefinition());
+		gameDefReader = new decDiskFileReader(path.GetPathNative());
 		
-		gameDef = new igdeGameDefinition( environment );
-		gameDef->SetFilename( path.GetPathNative() );
+		gameDef = new igdeGameDefinition(environment);
+		gameDef->SetFilename(path.GetPathNative());
 		
-		igdeXMLGameDefinition( environment, logger ).Load( *gameDefReader, *gameDef );
+		igdeXMLGameDefinition(environment, logger).Load(*gameDefReader, *gameDef);
 		
-		project->SetProjectGameDefinition( gameDef );
+		project->SetProjectGameDefinition(gameDef);
 		
 		gameDefReader->FreeReference();
 		gameDefReader = NULL;
@@ -162,23 +162,23 @@ void igdeLSGameProject::Load( const char *filename, igdeGameProject *project, de
 		gameDef->FreeReference();
 		gameDef = NULL;
 		
-	}catch( const deException & ){
-		if( gameDefReader ){
+	}catch(const deException &){
+		if(gameDefReader){
 			gameDefReader->FreeReference();
 		}
-		if( gameDef ){
+		if(gameDef){
 			gameDef->FreeReference();
 		}
 		throw;
 	}
 }
 
-void igdeLSGameProject::Save( igdeGameProject *project, decBaseFileWriter *file ){
-	if( ! project || ! file ){
-		DETHROW( deeInvalidParam );
+void igdeLSGameProject::Save(igdeGameProject *project, decBaseFileWriter *file){
+	if(! project || ! file){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeXMLGameProject xmlGameProject( pLoadSaveSystem->GetWindowMain()->GetLogger() );
+	igdeXMLGameProject xmlGameProject(pLoadSaveSystem->GetWindowMain()->GetLogger());
 	
-	xmlGameProject.Save( *file, *project );
+	xmlGameProject.Save(*file, *project);
 }

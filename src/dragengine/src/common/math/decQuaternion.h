@@ -49,10 +49,10 @@ public:
 	decQuaternion();
 	
 	/** \brief Create new quaternion with the given values. */
-	decQuaternion( float nx, float ny, float nz, float nw );
+	decQuaternion(float nx, float ny, float nz, float nw);
 	
 	/** \brief Create new quaternion with the values of another quaternion. */
-	decQuaternion( const decQuaternion &q );
+	decQuaternion(const decQuaternion &q);
 	/*@}*/
 	
 	
@@ -60,22 +60,22 @@ public:
 	/** \name Quaternion Creation */
 	/*@{*/
 	/** \brief Create new quaternion from euler angles. */
-	static decQuaternion CreateFromEuler( float rx, float ry, float rz );
+	static decQuaternion CreateFromEuler(float rx, float ry, float rz);
 	
 	/** \brief Create new quaternion from euler angles. */
-	static decQuaternion CreateFromEuler( const decVector &angles );
+	static decQuaternion CreateFromEuler(const decVector &angles);
 	
 	/** \brief Create new quaternion from an euler angle around the x axis. */
-	static decQuaternion CreateFromEulerX( float angle );
+	static decQuaternion CreateFromEulerX(float angle);
 	
 	/** \brief Create new quaternion from an euler angle around the y axis. */
-	static decQuaternion CreateFromEulerY( float angle );
+	static decQuaternion CreateFromEulerY(float angle);
 	
 	/** \brief Create new quaternion from an euler angle around the z axis. */
-	static decQuaternion CreateFromEulerZ( float angle );
+	static decQuaternion CreateFromEulerZ(float angle);
 	
 	/** \brief Create from axis and rotation angle around axis. */
-	static decQuaternion CreateFromAxis( const decVector &axis, float angle );
+	static decQuaternion CreateFromAxis(const decVector &axis, float angle);
 	/*@}*/
 	
 	
@@ -110,7 +110,7 @@ public:
 	const decQuaternion Absolute() const;
 	
 	/** \brief Dot-product. */
-	float Dot( const decQuaternion &q ) const;
+	float Dot(const decQuaternion &q) const;
 	
 	/** \brief Angle in radians between two quaternions. */
 	float AngleBetween(const decQuaternion &q) const;
@@ -122,10 +122,10 @@ public:
 	const decVector GetEulerAngles() const;
 	
 	/** \brief Calculates the slerp of this quaternion with another given an interpolation factor. */
-	decQuaternion Slerp( const decQuaternion &other, float factor ) const;
+	decQuaternion Slerp(const decQuaternion &other, float factor) const;
 	
 	/** \brief Two quaternions are equal component wise with respect to a threshold. */
-	bool IsEqualTo( const decQuaternion &q, float threshold = QUATERNION_THRESHOLD ) const;
+	bool IsEqualTo(const decQuaternion &q, float threshold = QUATERNION_THRESHOLD) const;
 	
 	/**
 	 * \brief Two quaternions represent the same rotation with respect to a threshold.
@@ -133,34 +133,34 @@ public:
 	 * Same as \code{.cpp}a.IsEqualTo(b) || a.IsEqualTo(-b)\endcode. In particular
 	 * quaternions of the same rotation are not required to be equal.
 	 */
-	bool SameRotation( const decQuaternion &q, float threshold = QUATERNION_THRESHOLD ) const;
+	bool SameRotation(const decQuaternion &q, float threshold = QUATERNION_THRESHOLD) const;
 	
 	/** \brief Sets all components to 0 and w to 1. */
 	void SetZero();
 	
 	/** \brief Set components to the given values. */
-	void Set( float nx, float ny, float nz, float nw );
+	void Set(float nx, float ny, float nz, float nw);
 	
 	/** \brief Set quaternion from another one. */
-	void Set( const decQuaternion &q );
+	void Set(const decQuaternion &q);
 	
 	/** \brief Set from euler angles. */
-	void SetFromEuler( float rx, float ry, float rz );
+	void SetFromEuler(float rx, float ry, float rz);
 	
 	/** \brief Set from euler angles. */
-	void SetFromEuler( const decVector &angles );
+	void SetFromEuler(const decVector &angles);
 	
 	/** \brief Set from an euler angle around the x axis. */
-	void SetFromEulerX( float angle );
+	void SetFromEulerX(float angle);
 	
 	/** \brief Set from an euler angle around the y axis. */
-	void SetFromEulerY( float angle );
+	void SetFromEulerY(float angle);
 	
 	/** \brief Set from an euler angle around the z axis. */
-	void SetFromEulerZ( float angle );
+	void SetFromEulerZ(float angle);
 	
 	/** \brief Set from axis and rotation angle around axis. */
-	void SetFromAxis( const decVector &axis, float angle );
+	void SetFromAxis(const decVector &axis, float angle);
 	/*@}*/
 	
 	
@@ -171,54 +171,54 @@ public:
 	decQuaternion operator-() const;
 	
 	/** \brief Set components of this quaternion to the values of another one. */
-	decQuaternion &operator=( const decQuaternion &q );
+	decQuaternion &operator=(const decQuaternion &q);
 	
 	/** \brief Adds the components of another quaternion to this one. */
-	decQuaternion &operator+=( const decQuaternion &q );
+	decQuaternion &operator+=(const decQuaternion &q);
 	
 	/** \brief Subtracts the components of another quaternion from this quaternion. */
-	decQuaternion &operator-=( const decQuaternion &q );
+	decQuaternion &operator-=(const decQuaternion &q);
 	
 	/** \brief Multiplies the components of this quaternion with a value k. */
-	decQuaternion &operator*=( float k );
+	decQuaternion &operator*=(float k);
 	
 	/** \brief Multiply this quaternion with another quaternion. */
-	decQuaternion &operator*=( const decQuaternion &q );
+	decQuaternion &operator*=(const decQuaternion &q);
 	
 	/** \brief Divides components by a value k. If the value k is 0 an exception is thrown. */
-	decQuaternion &operator/=( float k );
+	decQuaternion &operator/=(float k);
 	
 	/** \brief Quaternion with the sum of this quaternion with another one. */
-	decQuaternion operator+( const decQuaternion &q ) const;
+	decQuaternion operator+(const decQuaternion &q) const;
 	
 	/** \brief Quaternion with the difference of this quaternion to another one. */
-	decQuaternion operator-( const decQuaternion &q ) const;
+	decQuaternion operator-(const decQuaternion &q) const;
 	
 	/** \brief Quaternion scaled by k. */
-	decQuaternion operator*( float k ) const;
+	decQuaternion operator*(float k) const;
 	
 	/** \brief Quaternion multiplied by another quaternion. */
-	decQuaternion operator*( const decQuaternion &q ) const;
+	decQuaternion operator*(const decQuaternion &q) const;
 	
 	/** \brief Quaternion divided by k. If k is 0 an exception is thrown. */
-	decQuaternion operator/( float k ) const;
+	decQuaternion operator/(float k) const;
 	
 	/** \brief Rotate a vector by this quaternion. */
-	decVector operator*( const decVector &v ) const;
+	decVector operator*(const decVector &v) const;
 	
 	/** \brief Rotate a vector by this quaternion. */
-	decDVector operator*( const decDVector &v ) const;
+	decDVector operator*(const decDVector &v) const;
 	
 	/** \brief All components are less then the components of another one. */
-	bool operator<( const decQuaternion &q ) const;
+	bool operator<(const decQuaternion &q) const;
 	
 	/** \brief All components are greater then the components of another one. */
-	bool operator>( const decQuaternion &q ) const;
+	bool operator>(const decQuaternion &q) const;
 	
 	/** \brief All components are less then or equal to the components of another one. */
-	bool operator<=( const decQuaternion &q ) const;
+	bool operator<=(const decQuaternion &q) const;
 	
 	/** \brief All components are greater then or equal to the components of another one. */
-	bool operator>=( const decQuaternion &q ) const;
+	bool operator>=(const decQuaternion &q) const;
 	/*@}*/
 };

@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOComponent( igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix );
+	igdeWOSOComponent(igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	~igdeWOSOComponent() override;
@@ -88,25 +88,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{return pComponent;}
 	
 	/** \brief Component interaction. */
-	inline const deComponent::Ref &GetComponentInteraction() const{ return pComponentInteraction; }
+	inline const deComponent::Ref &GetComponentInteraction() const{return pComponentInteraction;}
 	
 	/** \brief Collider. */
-	inline const deColliderComponent::Ref &GetCollider() const{ return pCollider; }
+	inline const deColliderComponent::Ref &GetCollider() const{return pCollider;}
 	
 	/** \brief Interaction collider. */
-	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
+	inline const deColliderComponent::Ref &GetColliderInteraction() const{return pColliderInteraction;}
 	
 	/** \brief Animator. */
-	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }
+	inline deAnimatorInstance *GetAnimator() const{return pAnimator;}
 	
 	/** \brief Playback controller index. */
-	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }
+	inline int GetPlaybackControllerIndex() const{return pPlaybackControllerIndex;}
 	
 	/** \brief Ignore component while casting shadows by lights present in the same object. */
-	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
+	inline bool GetLightShadowIgnore() const{return pLightShadowIgnore;}
 	
 	/** \brief Update parameters. */
 	void UpdateParameters() override;
@@ -130,7 +130,7 @@ public:
 	void UpdateColliderResponseType() override;
 	
 	/** \brief Frame update. */
-	void Update( float elapsed ) override;
+	void Update(float elapsed) override;
 	
 	/** \brief Reset physics. */
 	void ResetPhysics() override;
@@ -145,10 +145,10 @@ public:
 	void OutlineSkinChanged() override;
 	
 	/** \brief Visit. */
-	void Visit( igdeWOSOVisitor &visitor ) override;
+	void Visit(igdeWOSOVisitor &visitor) override;
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	
 	/**
 	 * \brief Sub object is visible.

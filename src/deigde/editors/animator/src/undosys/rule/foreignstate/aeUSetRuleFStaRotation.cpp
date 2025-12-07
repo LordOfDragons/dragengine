@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaRotation::aeUSetRuleFStaRotation( aeRuleForeignState *rule, float newScale ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleFStaRotation::aeUSetRuleFStaRotation(aeRuleForeignState *rule, float newScale){
+	if(! rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -51,9 +51,9 @@ aeUSetRuleFStaRotation::aeUSetRuleFStaRotation( aeRuleForeignState *rule, float 
 		pOldScale = rule->GetScaleOrientation();
 		pNewScale = newScale;
 		
-		SetShortInfo( "Set foreign state rule rotation scale" );
+		SetShortInfo("Set foreign state rule rotation scale");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +69,11 @@ aeUSetRuleFStaRotation::~aeUSetRuleFStaRotation(){
 ///////////////
 
 void aeUSetRuleFStaRotation::Undo(){
-	pRule->SetScaleOrientation( pOldScale );
+	pRule->SetScaleOrientation(pOldScale);
 }
 
 void aeUSetRuleFStaRotation::Redo(){
-	pRule->SetScaleOrientation( pNewScale );
+	pRule->SetScaleOrientation(pNewScale);
 }
 
 
@@ -82,5 +82,5 @@ void aeUSetRuleFStaRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaRotation::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

@@ -48,7 +48,7 @@ public:
 	ceCConditionActorInConversation();
 	
 	/** \brief Create copy of conversation condition. */
-	ceCConditionActorInConversation( const ceCConditionActorInConversation &condition );
+	ceCConditionActorInConversation(const ceCConditionActorInConversation &condition);
 	
 	/** \brief Clean up conversation condition. */
 	virtual ~ceCConditionActorInConversation();
@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actor id. */
-	inline const decString &GetActor() const{ return pActor; }
+	inline const decString &GetActor() const{return pActor;}
 	
 	/** \brief Set actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	
 	/** \brief Negate condition. */
-	inline bool GetNegate() const{ return pNegate; }
+	inline bool GetNegate() const{return pNegate;}
 	
 	/** \brief Set if condition is negated. */
-	void SetNegate( bool negate );
+	void SetNegate(bool negate);
 	
 	/** \brief Create copy of condition. */
     virtual ceConversationCondition *CreateCopy() const;

@@ -73,56 +73,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent sky or \em NULL. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline seSky *GetSky() const{return pSky;}
 	
 	/** \brief Set parent sky or \em NULL. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{ return pController; }
+	inline seController *GetController() const{return pController;}
 	
 	/** \brief Set controller or \em NULL. */
-	void SetController( seController *controller );
+	void SetController(seController *controller);
 	
 	/** \brief Curve. */
-	inline decCurveBezier &GetCurve(){ return pCurve; }
-	inline const decCurveBezier &GetCurve() const{ return pCurve; }
+	inline decCurveBezier &GetCurve(){return pCurve;}
+	inline const decCurveBezier &GetCurve() const{return pCurve;}
 	
 	/** \brief Notify curve changed. */
 	void NotifyCurveChanged();
 	
 	/** \brief Repeat count of input value. */
-	inline int GetRepeat() const{ return pRepeat; }
+	inline int GetRepeat() const{return pRepeat;}
 	
 	/**
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	
 	/** \brief Link is active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	
 	/** \brief Set if link is active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Link is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** \brief Set if link is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	/*@}*/
 };
 

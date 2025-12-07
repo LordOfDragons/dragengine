@@ -52,21 +52,21 @@ public:
 	/** Retrieves the number of parameters. */
 	int GetParameterCount() const;
 	/** Retrieves the parameter at the given position. */
-	dealEMParameter *GetParameterAt( int index ) const;
+	dealEMParameter *GetParameterAt(int index) const;
 	/** Retrieves the parameter with the given name or NULL if not found. */
-	dealEMParameter *GetParameterNamed( const char *name ) const;
+	dealEMParameter *GetParameterNamed(const char *name) const;
 	/** Determines if a parameter exists. */
-	bool HasParameter( dealEMParameter *parameter ) const;
+	bool HasParameter(dealEMParameter *parameter) const;
 	/** Determines if a parameter with the given name exists. */
-	bool HasParameterNamed( const char *name ) const;
+	bool HasParameterNamed(const char *name) const;
 	/** Retrieves the index of a parameter or -1 if not found. */
-	int IndexOfParameter( dealEMParameter *parameter ) const;
+	int IndexOfParameter(dealEMParameter *parameter) const;
 	/** Retrieves the index of a parameter with the given name or -1 if not found. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const;
 	/** Adds a parameter. */
-	void AddParameter( dealEMParameter *parameter );
+	void AddParameter(dealEMParameter *parameter);
 	/** Removes a parameter. */
-	void RemoveParameter( dealEMParameter *parameter );
+	void RemoveParameter(dealEMParameter *parameter);
 	/** Removes all parameters. */
 	void RemoveAllParameters();
 	/*@}*/

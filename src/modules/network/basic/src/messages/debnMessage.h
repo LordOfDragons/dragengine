@@ -59,46 +59,46 @@ public:
 	debnMessage();
 	
 	/** Creates a new message object. */
-	debnMessage( deNetworkMessage *message );
+	debnMessage(deNetworkMessage *message);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the network package. */
-	inline deNetworkMessage *GetMessage() const{ return pMessage; }
+	inline deNetworkMessage *GetMessage() const{return pMessage;}
 	
 	/** Retrieves the number. */
-	inline int GetNumber() const{ return pNumber; }
+	inline int GetNumber() const{return pNumber;}
 	
 	/** Sets the number. */
-	void SetNumber( int number );
+	void SetNumber(int number);
 	
 	/** Retrieves the message state. */
-	inline eMessageStates GetState() const{ return pState; }
+	inline eMessageStates GetState() const{return pState;}
 	
 	/** Sets the message state. */
-	void SetState( eMessageStates state );
+	void SetState(eMessageStates state);
 	
 	/** Retrieves the message type. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	
 	/** Sets the message type. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	/** Resend elapsed time. */
-	inline float GetResendElapsed() const{ return pResendElapsed; }
+	inline float GetResendElapsed() const{return pResendElapsed;}
 	
 	/** Set resend elapsed time. */
-	void SetResendElapsed( float elapsed );
+	void SetResendElapsed(float elapsed);
 	
 	/** Timeout elapsed time. */
-	inline float GetTimeoutElapsed() const{ return pTimeoutElapsed; }
+	inline float GetTimeoutElapsed() const{return pTimeoutElapsed;}
 	
 	/** Set timeout elapsed time. */
-	void SetTimeoutElapsed( float elapsed );
+	void SetTimeoutElapsed(float elapsed);
 	
 	/** Increment elapsed times. */
-	void IncrementElapsed( float elapsed );
+	void IncrementElapsed(float elapsed);
 	
 	/** Reset elapsed times. */
 	void ResetElapsed();

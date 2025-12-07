@@ -45,19 +45,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkyLayerGICascade::deoglSkyLayerGICascade( deoglRSkyInstanceLayer &layer, const deoglGICascade &cascade ) :
-pLayer( layer ),
-pGICascade( cascade ),
-pPosition( cascade.GetPosition() ),
-pPositionThreshold( 5.0 ),
-pShadowCaster( NULL ),
-pDirtyStaticShadow( true )
+deoglSkyLayerGICascade::deoglSkyLayerGICascade(deoglRSkyInstanceLayer &layer, const deoglGICascade &cascade) :
+pLayer(layer),
+pGICascade(cascade),
+pPosition(cascade.GetPosition()),
+pPositionThreshold(5.0),
+pShadowCaster(NULL),
+pDirtyStaticShadow(true)
 {
 	try{
-		pTracker.SetThresholdOrientation( deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION * 5.0f );
-		pShadowCaster = new deoglShadowCaster( layer.GetInstance().GetRenderThread() );
+		pTracker.SetThresholdOrientation(deoglSkyLayerTracker::THRESHOLD_ONE_DEGREE_ORIENTATION * 5.0f);
+		pShadowCaster = new deoglShadowCaster(layer.GetInstance().GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -73,20 +73,20 @@ deoglSkyLayerGICascade::~deoglSkyLayerGICascade(){
 ///////////////
 
 void deoglSkyLayerGICascade::Update(){
-	if( ( pGICascade.GetPosition() - pPosition ).Length() >= pPositionThreshold ){
+	if((pGICascade.GetPosition() - pPosition).Length() >= pPositionThreshold){
 		pPosition = pGICascade.GetPosition();
 		pDirtyStaticShadow = true;
 	}
 	
-	pDirtyStaticShadow |= pTracker.UpdateOrientation( pLayer.GetMatrix().ToQuaternion() );
-	pDirtyStaticShadow |= pTracker.UpdateLightOrientation( pLayer.GetLightOrientation() );
+	pDirtyStaticShadow |= pTracker.UpdateOrientation(pLayer.GetMatrix().ToQuaternion());
+	pDirtyStaticShadow |= pTracker.UpdateLightOrientation(pLayer.GetLightOrientation());
 }
 
 void deoglSkyLayerGICascade::ClearDirtyStaticShadow(){
 	pDirtyStaticShadow = false;
 }
 
-void deoglSkyLayerGICascade::NotifyUpdateStaticComponent( deoglRComponent* ){
+void deoglSkyLayerGICascade::NotifyUpdateStaticComponent(deoglRComponent*){
 	// TODO if the component is too small do not mark dirty
 	
 	// we could do things complicated here to dirty static shadow maps only in the most
@@ -101,7 +101,7 @@ void deoglSkyLayerGICascade::NotifyUpdateStaticComponent( deoglRComponent* ){
 //////////////////////
 
 void deoglSkyLayerGICascade::pCleanUp(){
-	if( pShadowCaster ){
+	if(pShadowCaster){
 		delete pShadowCaster;
 	}
 }

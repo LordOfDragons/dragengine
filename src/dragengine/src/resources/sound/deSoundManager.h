@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound resource manager. */
-	deSoundManager( deEngine *engine );
+	deSoundManager(deEngine *engine);
 	
 	/** \brief Clean up sound resource manager and report leaks. */
 	virtual ~deSoundManager();
@@ -68,34 +68,34 @@ public:
 	deSound *GetRootSound() const;
 	
 	/** \brief Sound with the given filename or NULL if not loaded yet. */
-	deSound *GetSoundWith( const char *filename ) const;
+	deSound *GetSoundWith(const char *filename) const;
 	
 	/** \brief Sound with the given filename or NULL if not loaded yet. */
-	deSound *GetSoundWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deSound *GetSoundWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Load sound from the given file relative to the given base path. */
-	deSound *LoadSound( const char *filename, const char *basePath, bool asynchron );
+	deSound *LoadSound(const char *filename, const char *basePath, bool asynchron);
 	
 	/** \brief Load sound from the given file relative to the given base path. */
-	deSound *LoadSound( deVirtualFileSystem *vfs, const char *filename,
-		const char *basePath, bool asynchron );
+	deSound *LoadSound(deVirtualFileSystem *vfs, const char *filename,
+		const char *basePath, bool asynchron);
 	
 	/** \brief Save sound to the given file. */
-	void SaveSound( deSound *sound, const char *filename );
+	void SaveSound(deSound *sound, const char *filename);
 	
 	/** \brief Save sound to the given file. */
-	void SaveSound( deVirtualFileSystem *vfs, deSound *sound, const char *filename );
+	void SaveSound(deVirtualFileSystem *vfs, deSound *sound, const char *filename);
 	
 	/**
 	 * \brief Add loaded sound.
 	 * \warning This method is to be used only by the resource loader!
 	 */
-	void AddLoadedSound( deSound *sound );
+	void AddLoadedSound(deSound *sound);
 	
 	
 	
 	/** \brief Create sound decoder. */
-	deSoundDecoder *CreateDecoder( deSound *sound );
+	deSoundDecoder *CreateDecoder(deSound *sound);
 	
 	
 	
@@ -125,8 +125,8 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
-	void RemoveDecoder( deSoundDecoder *decoder );
+	virtual void RemoveResource(deResource *resource);
+	void RemoveDecoder(deSoundDecoder *decoder);
 	/*@}*/
 };
 

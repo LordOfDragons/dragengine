@@ -62,39 +62,39 @@ debpGhostObject::~debpGhostObject(){
 // bullet objects
 ///////////////////
 
-void debpGhostObject::SetDynamicsWorld( debpCollisionWorld *dynWorld ){
-	if( pDynWorld != dynWorld ){
+void debpGhostObject::SetDynamicsWorld(debpCollisionWorld *dynWorld){
+	if(pDynWorld != dynWorld){
 		pFreeGhostObject();
 		
 		pDynWorld = dynWorld;
 		
-		if( pEnabled ){
+		if(pEnabled){
 			pCreateGhostObject();
 		}
 	}
 }
 
-void debpGhostObject::SetShape( debpBulletShape *shape ){
-	if( shape == pShape ){
+void debpGhostObject::SetShape(debpBulletShape *shape){
+	if(shape == pShape){
 		return;
 	}
 	
-	if( shape ){
-		if( pGhostObject ){
-			pGhostObject->setCollisionShape( shape->GetShape() );
+	if(shape){
+		if(pGhostObject){
+			pGhostObject->setCollisionShape(shape->GetShape());
 		}
 		
 	}else{
 		pFreeGhostObject();
 	}
 	
-	if( pShape ){
+	if(pShape){
 		pShape->FreeReference();
 	}
 	
 	pShape = shape;
 	
-	if( shape ){
+	if(shape){
 		shape->AddReference();
 	}
 	
@@ -103,41 +103,41 @@ void debpGhostObject::SetShape( debpBulletShape *shape ){
 
 
 
-void debpGhostObject::SetPosition( const decDVector &position ){
-	if( ! pPosition.IsEqualTo( position ) ){
+void debpGhostObject::SetPosition(const decDVector &position){
+	if(! pPosition.IsEqualTo(position)){
 		pPosition = position;
 		pUpdateTransform();
 		pDirtyMatrix = true;
-		SetDirtyAABB( true );
+		SetDirtyAABB(true);
 	}
 }
 
-void debpGhostObject::SetOrientation( const decQuaternion &orientation ){
-	if( ! pOrientation.IsEqualTo( orientation ) ){
+void debpGhostObject::SetOrientation(const decQuaternion &orientation){
+	if(! pOrientation.IsEqualTo(orientation)){
 		pOrientation = orientation;
 		pUpdateTransform();
 		pDirtyMatrix = true;
-		SetDirtyAABB( true );
+		SetDirtyAABB(true);
 	}
 }
 
 
 
-void debpGhostObject::SetEnabled( bool enabled ){
-	if( pEnabled != enabled ){
+void debpGhostObject::SetEnabled(bool enabled){
+	if(pEnabled != enabled){
 		pFreeGhostObject();
 		
 		pEnabled = enabled;
 		
-		if( enabled ){
+		if(enabled){
 			pCreateGhostObject();
 		}
 	}
 }
 
 const decDMatrix &debpGhostObject::GetMatrix(){
-	if( pDirtyMatrix ){
-		pMatrix.SetWorld( pPosition, pOrientation );
+	if(pDirtyMatrix){
+		pMatrix.SetWorld(pPosition, pOrientation);
 		pDirtyMatrix = false;
 	}
 	
@@ -147,8 +147,8 @@ const decDMatrix &debpGhostObject::GetMatrix(){
 
 
 void debpGhostObject::UpdateAABB(){
-	if( pGhostObject ){
-		pDynWorld->updateSingleAabb( pGhostObject );
+	if(pGhostObject){
+		pDynWorld->updateSingleAabb(pGhostObject);
 	}
 }
 
@@ -160,44 +160,44 @@ void debpGhostObject::UpdateAABB(){
 void debpGhostObject::pCleanUp(){
 	pFreeGhostObject();
 	
-	if( pShape ){
+	if(pShape){
 		pShape->FreeReference();
 	}
 }
 
 void debpGhostObject::pCreateGhostObject(){
-	if( ! pGhostObject && pEnabled && pDynWorld && pShape ){
-		SetDirtyAABB( true );
+	if(! pGhostObject && pEnabled && pDynWorld && pShape){
+		SetDirtyAABB(true);
 		
 		pGhostObject = new btGhostObject;
-		pGhostObject->setUserPointer( ( debpCollisionObject* )this );
-		pGhostObject->setCollisionFlags( btCollisionObject::CF_NO_CONTACT_RESPONSE );
-		pGhostObject->setCollisionShape( pShape->GetShape() );
-		pGhostObject->forceActivationState( 0 ); // ensure the ghost object is in deactivated state
+		pGhostObject->setUserPointer((debpCollisionObject*)this);
+		pGhostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+		pGhostObject->setCollisionShape(pShape->GetShape());
+		pGhostObject->forceActivationState(0); // ensure the ghost object is in deactivated state
 		
 		pUpdateTransform();
 		
 		// add collision object to dynamics world or add it to the delayed operation if the world is locked
-		if( pDynWorld->GetDelayedOperation().IsLocked() ){
-			pDynWorld->GetDelayedOperation().AddCollisionObject( pGhostObject );
+		if(pDynWorld->GetDelayedOperation().IsLocked()){
+			pDynWorld->GetDelayedOperation().AddCollisionObject(pGhostObject);
 			
 		}else{
 			// add ghost object to the world. btDiscreteDynamicsWorld overloads addCollisionObject with different
 			// default filter parameters in contrary to the base class version which breaks physics. set here
 			// explicitly the values used in the base version to get a consistent behavior
-			pDynWorld->addCollisionObject( pGhostObject, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::AllFilter );
+			pDynWorld->addCollisionObject(pGhostObject, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::AllFilter);
 		}
 	}
 }
 
 void debpGhostObject::pFreeGhostObject(){
-	if( pGhostObject ){
+	if(pGhostObject){
 		// destroy the collision object or add it to the delayed operation if the world is locked
-		if( pDynWorld->GetDelayedOperation().IsLocked() ){
-			pDynWorld->GetDelayedOperation().RemoveCollisionObject( pGhostObject );
+		if(pDynWorld->GetDelayedOperation().IsLocked()){
+			pDynWorld->GetDelayedOperation().RemoveCollisionObject(pGhostObject);
 			
 		}else{
-			pDynWorld->removeCollisionObject( pGhostObject );
+			pDynWorld->removeCollisionObject(pGhostObject);
 			delete pGhostObject;
 		}
 		
@@ -206,9 +206,9 @@ void debpGhostObject::pFreeGhostObject(){
 }
 
 void debpGhostObject::pUpdateTransform(){
-	if( pGhostObject ){
-		pGhostObject->setWorldTransform( btTransform(
-			btQuaternion( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y, ( btScalar )pOrientation.z, ( btScalar )pOrientation.w ),
-			btVector3( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z ) ) );
+	if(pGhostObject){
+		pGhostObject->setWorldTransform(btTransform(
+			btQuaternion((btScalar)pOrientation.x, (btScalar)pOrientation.y, (btScalar)pOrientation.z, (btScalar)pOrientation.w),
+			btVector3((btScalar)pPosition.x, (btScalar)pPosition.y, (btScalar)pPosition.z)));
 	}
 }

@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPMicrosoftXboxController::deoxrDPMicrosoftXboxController( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance,
-	deoxrPath( instance, "/interaction_profiles/microsoft/xbox_controller" ),
-	"Microsoft XBox Controller" )
+deoxrDPMicrosoftXboxController::deoxrDPMicrosoftXboxController(deoxrInstance &instance) :
+deoxrDeviceProfile(instance,
+	deoxrPath(instance, "/interaction_profiles/microsoft/xbox_controller"),
+	"Microsoft XBox Controller")
 {
 }
 
@@ -85,36 +85,36 @@ void deoxrDPMicrosoftXboxController::SuggestBindings(){
 	
 	/*
 	const int bindingCount = 5 * 2;
-	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
+	deoxrInstance::sSuggestBinding bindings[bindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const decString basePathList[2] = {"/user/hand/left", "/user/hand/right"};
 	int i;
 	
-	for( i=0; i<2; i++ ){
-		const decString &basePath = basePathList[ i ];
+	for(i=0; i<2; i++){
+		const decString &basePath = basePathList[i];
 		
-		pAdd( b, deVROpenXR::eiaPose, basePath + "/input/aim/pose" );
+		pAdd(b, deVROpenXR::eiaPose, basePath + "/input/aim/pose");
 		
-		pAdd( b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/click" );
+		pAdd(b, deVROpenXR::eiaGripSqueeze, basePath + "/input/squeeze/click");
 		
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value" );
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value" );
+		pAdd(b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/value");
+		pAdd(b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/trigger/value");
 		
-		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click" );
+		pAdd(b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/menu/click");
 		
-		pAdd( b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick" );
-		pAdd( b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click" );
+		pAdd(b, deVROpenXR::eiaJoystickAnalog, basePath + "/input/thumbstick");
+		pAdd(b, deVROpenXR::eiaJoystickPress, basePath + "/input/thumbstick/click");
 		
-		pAdd( b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad" );
-		pAdd( b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click" );
-		pAdd( b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch" );
+		pAdd(b, deVROpenXR::eiaTrackpadAnalog, basePath + "/input/trackpad");
+		pAdd(b, deVROpenXR::eiaTrackpadPress, basePath + "/input/trackpad/click");
+		pAdd(b, deVROpenXR::eiaTrackpadTouch, basePath + "/input/trackpad/touch");
 		
-		pAdd( b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic" );
+		pAdd(b, deVROpenXR::eiaGripHaptic, basePath + "/output/haptic");
 	}
 	
 	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
+	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 	*/
 }

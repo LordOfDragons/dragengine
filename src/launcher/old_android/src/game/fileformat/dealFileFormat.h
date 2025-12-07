@@ -60,22 +60,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File type. */
-	inline dealEngineModule::eModuleTypes GetType() const{ return pType; }
+	inline dealEngineModule::eModuleTypes GetType() const{return pType;}
 	
 	/** \brief Set type. */
-	void SetType( dealEngineModule::eModuleTypes type );
+	void SetType(dealEngineModule::eModuleTypes type);
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** \brief Set pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** \brief File format is supported. */
-	inline bool GetSupported() const{ return pSupported; }
+	inline bool GetSupported() const{return pSupported;}
 	
 	/** \brief Set if file format is supported. */
-	void SetSupported( bool supported );
+	void SetSupported(bool supported);
 	/*@}*/
 };
 

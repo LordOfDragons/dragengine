@@ -49,67 +49,67 @@
 // Inlines
 ////////////
 
-inline bool SATMoveHitTest( double speed, double min1, double max1, double min2, double max2, double &first, double &last ){
+inline bool SATMoveHitTest(double speed, double min1, double max1, double min2, double max2, double &first, double &last){
 	double t;
 	
-	if( max2 < min1 ){ // smaller side
-		if( speed <= 0.0 ){
+	if(max2 < min1){ // smaller side
+		if(speed <= 0.0){
 			return false;
 		}
 		
-		t = ( min1 - max2 ) / speed;
-		if( t > 1.0 ){
+		t = (min1 - max2) / speed;
+		if(t > 1.0){
 			return false;
 		}
-		if( t > first ){
+		if(t > first){
 			first = t;
 		}
 		
-		t = ( max1 - min2 ) / speed;
-		if( t < last ){
-			if( first > t ){
+		t = (max1 - min2) / speed;
+		if(t < last){
+			if(first > t){
 				return false;
 			}
 			last = t;
 		}
 		
-	}else if( max1 < min2 ){ // larger side
-		if( speed >= 0.0 ){
+	}else if(max1 < min2){ // larger side
+		if(speed >= 0.0){
 			return false;
 		}
 		
-		t = ( max1 - min2 ) / speed;
-		if( t > 1.0 ){
+		t = (max1 - min2) / speed;
+		if(t > 1.0){
 			return false;
 		}
-		if( t > first ){
+		if(t > first){
 			first = t;
 		}
 		
-		t = ( min1 - max2 ) / speed;
-		if( t < last ){
-			if( first > t ){
+		t = (min1 - max2) / speed;
+		if(t < last){
+			if(first > t){
 				return false;
 			}
 			last = t;
 		}
 		
 	}else{ // overlapping
-		if( speed > 0.0 ){
-			t = ( max1 - min2 ) / speed;
+		if(speed > 0.0){
+			t = (max1 - min2) / speed;
 			
-			if( t < last ){
-				if( first > t ){
+			if(t < last){
+				if(first > t){
 					return false;
 				}
 				last = t;
 			}
 			
-		}else if( speed < 0.0 ){
-			t = ( min1 - max2 ) / speed;
+		}else if(speed < 0.0){
+			t = (min1 - max2) / speed;
 			
-			if( t < last ){
-				if( first > t ){
+			if(t < last){
+				if(first > t){
 					return false;
 				}
 				last = t;
@@ -129,23 +129,23 @@ inline bool SATMoveHitTest( double speed, double min1, double max1, double min2,
 //////////////////////////////
 
 debpDCollisionBox::debpDCollisionBox(){
-	pHalfSize.Set( 1.0, 1.0, 1.0 );
+	pHalfSize.Set(1.0, 1.0, 1.0);
 	ClearOrientation();
 }
 
-debpDCollisionBox::debpDCollisionBox( const decDVector &center, const decDVector &halfSize ) :
-pCenter( center ),
-pHalfSize( halfSize )
+debpDCollisionBox::debpDCollisionBox(const decDVector &center, const decDVector &halfSize) :
+pCenter(center),
+pHalfSize(halfSize)
 {
 	ClearOrientation();
 }
 
-debpDCollisionBox::debpDCollisionBox( const decDVector &center, const decDVector &halfSize,
-const decQuaternion &orientation ) :
-pCenter( center ),
-pHalfSize( halfSize )
+debpDCollisionBox::debpDCollisionBox(const decDVector &center, const decDVector &halfSize,
+const decQuaternion &orientation) :
+pCenter(center),
+pHalfSize(halfSize)
 {
-	SetOrientation( orientation );
+	SetOrientation(orientation);
 }
 
 debpDCollisionBox::~debpDCollisionBox(){
@@ -156,12 +156,12 @@ debpDCollisionBox::~debpDCollisionBox(){
 // double dispatching calls
 /////////////////////////////
 
-bool debpDCollisionBox::VolumeHitsVolume( debpDCollisionVolume *volume ){
-	return volume->BoxHitsVolume( this );
+bool debpDCollisionBox::VolumeHitsVolume(debpDCollisionVolume *volume){
+	return volume->BoxHitsVolume(this);
 }
 
-double debpDCollisionBox::VolumeMoveHitsVolume( debpDCollisionVolume *volume, const decDVector &displacement, decDVector *normal ){
-	return volume->BoxMoveHitsVolume( this, displacement, normal );
+double debpDCollisionBox::VolumeMoveHitsVolume(debpDCollisionVolume *volume, const decDVector &displacement, decDVector *normal){
+	return volume->BoxMoveHitsVolume(this, displacement, normal);
 }
 
 
@@ -169,69 +169,69 @@ double debpDCollisionBox::VolumeMoveHitsVolume( debpDCollisionVolume *volume, co
 // first stage calls
 //////////////////////
 
-bool debpDCollisionBox::SphereHitsVolume( debpDCollisionSphere *sphere ){
-	return SphereHitsBox( sphere );
+bool debpDCollisionBox::SphereHitsVolume(debpDCollisionSphere *sphere){
+	return SphereHitsBox(sphere);
 }
 
-bool debpDCollisionBox::CylinderHitsVolume( debpDCollisionCylinder *cylinder ){
-	return CylinderHitsBox( cylinder );
+bool debpDCollisionBox::CylinderHitsVolume(debpDCollisionCylinder *cylinder){
+	return CylinderHitsBox(cylinder);
 }
 
-bool debpDCollisionBox::CapsuleHitsVolume( debpDCollisionCapsule *capsule ){
-	return CapsuleHitsBox( capsule );
+bool debpDCollisionBox::CapsuleHitsVolume(debpDCollisionCapsule *capsule){
+	return CapsuleHitsBox(capsule);
 }
 
-bool debpDCollisionBox::BoxHitsVolume( debpDCollisionBox *box ){
-	return BoxHitsBox( box );
+bool debpDCollisionBox::BoxHitsVolume(debpDCollisionBox *box){
+	return BoxHitsBox(box);
 }
 
-bool debpDCollisionBox::TriangleHitsVolume( debpDCollisionTriangle *triangle ){
-	return triangle->BoxHitsTriangle( this );
+bool debpDCollisionBox::TriangleHitsVolume(debpDCollisionTriangle *triangle){
+	return triangle->BoxHitsTriangle(this);
 }
 
-bool debpDCollisionBox::FrustumHitsVolume( debpDCollisionFrustum *frustum ){
-	return frustum->BoxHitsFrustum( this );
+bool debpDCollisionBox::FrustumHitsVolume(debpDCollisionFrustum *frustum){
+	return frustum->BoxHitsFrustum(this);
 }
 
 
 
-double debpDCollisionBox::SphereMoveHitsVolume( debpDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
-	return SphereMoveHitsBox( sphere, displacement, normal );
+double debpDCollisionBox::SphereMoveHitsVolume(debpDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
+	return SphereMoveHitsBox(sphere, displacement, normal);
 }
 
-double debpDCollisionBox::CylinderMoveHitsVolume( debpDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
-	return CylinderMoveHitsBox( cylinder, displacement, normal );
+double debpDCollisionBox::CylinderMoveHitsVolume(debpDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
+	return CylinderMoveHitsBox(cylinder, displacement, normal);
 }
 
-double debpDCollisionBox::CapsuleMoveHitsVolume( debpDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
-	return CapsuleMoveHitsBox( capsule, displacement, normal );
+double debpDCollisionBox::CapsuleMoveHitsVolume(debpDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
+	return CapsuleMoveHitsBox(capsule, displacement, normal);
 }
 
-double debpDCollisionBox::BoxMoveHitsVolume( debpDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
-	return BoxMoveHitsBox( box, displacement, normal );
+double debpDCollisionBox::BoxMoveHitsVolume(debpDCollisionBox *box, const decDVector &displacement, decDVector *normal){
+	return BoxMoveHitsBox(box, displacement, normal);
 }
 
-double debpDCollisionBox::TriangleMoveHitsVolume( debpDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal ){
-	double distance = triangle->BoxMoveHitsTriangle( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double debpDCollisionBox::TriangleMoveHitsVolume(debpDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal){
+	double distance = triangle->BoxMoveHitsTriangle(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double debpDCollisionBox::FrustumMoveHitsVolume( debpDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal ){
-	double distance = frustum->BoxMoveHitsFrustum( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double debpDCollisionBox::FrustumMoveHitsVolume(debpDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal){
+	double distance = frustum->BoxMoveHitsFrustum(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double debpDCollisionBox::PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal ){
+double debpDCollisionBox::PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal){
 	double lambda, hp, factor;
 	double px, py, pz;
 	double fpx, fpy, fpz;
 	double dx, dy, dz;
 	// transform values if required
-	if( pOriented ){
-		decDVector transformedPoint = WorldToLocal( point );
-		decDVector transformedDisplacement = NormalWorldToLocal( displacement );
+	if(pOriented){
+		decDVector transformedPoint = WorldToLocal(point);
+		decDVector transformedDisplacement = NormalWorldToLocal(displacement);
 		px = transformedPoint.x;
 		py = transformedPoint.y;
 		pz = transformedPoint.z;
@@ -247,37 +247,37 @@ double debpDCollisionBox::PointMoveHitsVolume( const decDVector &point, const de
 		dz = displacement.z;
 	}
 	// test if inside
-	fpx = fabs( px );
-	fpy = fabs( py );
-	fpz = fabs( pz );
-	if( fpx <= pHalfSize.x && fpy <= pHalfSize.y && fpz <= pHalfSize.z ){
-		if( normal ){
-			if( fpx > fpy ){
-				if( fpx > fpz ){
-					if( px > 0.0 ){
-						normal->Set( 1.0, 0.0, 0.0 );
+	fpx = fabs(px);
+	fpy = fabs(py);
+	fpz = fabs(pz);
+	if(fpx <= pHalfSize.x && fpy <= pHalfSize.y && fpz <= pHalfSize.z){
+		if(normal){
+			if(fpx > fpy){
+				if(fpx > fpz){
+					if(px > 0.0){
+						normal->Set(1.0, 0.0, 0.0);
 					}else{
-						normal->Set( -1.0, 0.0, 0.0 );
+						normal->Set(-1.0, 0.0, 0.0);
 					}
 				}else{
-					if( pz > 0.0 ){
-						normal->Set( 0.0, 0.0, 1.0 );
+					if(pz > 0.0){
+						normal->Set(0.0, 0.0, 1.0);
 					}else{
-						normal->Set( 0.0, 0.0, -1.0 );
+						normal->Set(0.0, 0.0, -1.0);
 					}
 				}
 			}else{
-				if( fpy > fpz ){
-					if( py > 0.0 ){
-						normal->Set( 0.0, 1.0, 0.0 );
+				if(fpy > fpz){
+					if(py > 0.0){
+						normal->Set(0.0, 1.0, 0.0);
 					}else{
-						normal->Set( 0.0, -1.0, 0.0 );
+						normal->Set(0.0, -1.0, 0.0);
 					}
 				}else{
-					if( pz > 0.0 ){
-						normal->Set( 0.0, 0.0, 1.0 );
+					if(pz > 0.0){
+						normal->Set(0.0, 0.0, 1.0);
 					}else{
-						normal->Set( 0.0, 0.0, -1.0 );
+						normal->Set(0.0, 0.0, -1.0);
 					}
 				}
 			}
@@ -285,84 +285,84 @@ double debpDCollisionBox::PointMoveHitsVolume( const decDVector &point, const de
 		return 0.0;
 	}
 	// test x-axis
-	if( dx < -1e-10 || dx > 1e-10 ){
+	if(dx < -1e-10 || dx > 1e-10){
 		factor = 1.0 / dx;
 		// bf = pHalfSize.x, normal = ( 1, 0, 0 )
-		lambda = ( pHalfSize.x - px ) * factor;
-		if( lambda >= 0.0 && lambda < 1.0 ){
+		lambda = (pHalfSize.x - px) * factor;
+		if(lambda >= 0.0 && lambda < 1.0){
 			hp = py + dy * lambda;
-			if( hp >= -pHalfSize.y && hp <= pHalfSize.y ){
+			if(hp >= -pHalfSize.y && hp <= pHalfSize.y){
 				hp = pz + dz * lambda;
-				if( hp >= -pHalfSize.z && hp <= pHalfSize.z ){
-					if( normal ) normal->Set( pAxisX );
+				if(hp >= -pHalfSize.z && hp <= pHalfSize.z){
+					if(normal) normal->Set(pAxisX);
 					return lambda;
 				}
 			}
 		}
 		// bf = -pHalfSize.x, normal = ( -1, 0, 0 )
-		lambda = -( pHalfSize.x + px ) * factor;
-		if( lambda >= 0.0 && lambda < 1.0 ){
+		lambda = -(pHalfSize.x + px) * factor;
+		if(lambda >= 0.0 && lambda < 1.0){
 			hp = py + dy * lambda;
-			if( hp >= -pHalfSize.y && hp <= pHalfSize.y ){
+			if(hp >= -pHalfSize.y && hp <= pHalfSize.y){
 				hp = pz + dz * lambda;
-				if( hp >= -pHalfSize.z && hp <= pHalfSize.z ){
-					if( normal ) normal->Set( -pAxisX );
+				if(hp >= -pHalfSize.z && hp <= pHalfSize.z){
+					if(normal) normal->Set(-pAxisX);
 					return lambda;
 				}
 			}
 		}
 	}
 	// test y-axis
-	if( dy < -1e-10 || dy > 1e-10 ){
+	if(dy < -1e-10 || dy > 1e-10){
 		factor = 1.0 / dy;
 		// bf = pHalfSize.y, normal = ( 1, 0, 0 )
-		lambda = ( pHalfSize.y - py ) * factor;
-		if( lambda >= 0.0 && lambda < 1.0 ){
+		lambda = (pHalfSize.y - py) * factor;
+		if(lambda >= 0.0 && lambda < 1.0){
 			hp = px + dx * lambda;
-			if( hp >= -pHalfSize.x && hp <= pHalfSize.x ){
+			if(hp >= -pHalfSize.x && hp <= pHalfSize.x){
 				hp = pz + dz * lambda;
-				if( hp >= -pHalfSize.z && hp <= pHalfSize.z ){
-					if( normal ) normal->Set( pAxisY );
+				if(hp >= -pHalfSize.z && hp <= pHalfSize.z){
+					if(normal) normal->Set(pAxisY);
 					return lambda;
 				}
 			}
 		}
 		// bf = -pHalfSize.y, normal = ( -1, 0, 0 )
-		lambda = -( pHalfSize.y + py ) * factor;
-		if( lambda >= 0.0 && lambda < 1.0 ){
+		lambda = -(pHalfSize.y + py) * factor;
+		if(lambda >= 0.0 && lambda < 1.0){
 			hp = px + dx * lambda;
-			if( hp >= -pHalfSize.x && hp <= pHalfSize.x ){
+			if(hp >= -pHalfSize.x && hp <= pHalfSize.x){
 				hp = pz + dz * lambda;
-				if( hp >= -pHalfSize.z && hp <= pHalfSize.z ){
-					if( normal ) normal->Set( -pAxisY );
+				if(hp >= -pHalfSize.z && hp <= pHalfSize.z){
+					if(normal) normal->Set(-pAxisY);
 					return lambda;
 				}
 			}
 		}
 	}
 	// test z-axis
-	if( dz < -1e-10 || dz > 1e-10 ){
+	if(dz < -1e-10 || dz > 1e-10){
 		factor = 1.0 / dz;
 		// bf = pHalfSize.z, normal = ( 1, 0, 0 )
-		lambda = ( pHalfSize.z - pz ) * factor;
-		if( lambda >= 0.0 && lambda < 1.0 ){
+		lambda = (pHalfSize.z - pz) * factor;
+		if(lambda >= 0.0 && lambda < 1.0){
 			hp = px + dx * lambda;
-			if( hp >= -pHalfSize.x && hp <= pHalfSize.x ){
+			if(hp >= -pHalfSize.x && hp <= pHalfSize.x){
 				hp = py + dy * lambda;
-				if( hp >= -pHalfSize.y && hp <= pHalfSize.y ){
-					if( normal ) normal->Set( pAxisZ );
+				if(hp >= -pHalfSize.y && hp <= pHalfSize.y){
+					if(normal) normal->Set(pAxisZ);
 					return lambda;
 				}
 			}
 		}
 		// bf = pCenter.z - pHalfSize.z, normal = ( -1, 0, 0 )
-		lambda = -( pHalfSize.z + pz ) * factor;
-		if( lambda >= 0.0 && lambda < 1.0 ){
+		lambda = -(pHalfSize.z + pz) * factor;
+		if(lambda >= 0.0 && lambda < 1.0){
 			hp = px + dx * lambda;
-			if( hp >= -pHalfSize.x && hp <= pHalfSize.x ){
+			if(hp >= -pHalfSize.x && hp <= pHalfSize.x){
 				hp = py + dy * lambda;
-				if( hp >= -pHalfSize.y && hp <= pHalfSize.y ){
-					if( normal ) normal->Set( -pAxisZ );
+				if(hp >= -pHalfSize.y && hp <= pHalfSize.y){
+					if(normal) normal->Set(-pAxisZ);
 					return lambda;
 				}
 			}
@@ -374,70 +374,70 @@ double debpDCollisionBox::PointMoveHitsVolume( const decDVector &point, const de
 // TODO: returning distance travelled, not simply if hit or not
 	double lambda, hp, bf, factor;
 	// test x-axis
-	if( displacement.x < -0.00001 || displacement.x > 0.00001 ){
+	if(displacement.x < -0.00001 || displacement.x > 0.00001){
 		factor = 1.0 / displacement.x;
 		// bf = pCenter.x + pHalfSize.x, normal = ( 1, 0, 0 )
-		lambda = ( pCenter.x + pHalfSize.x - point.x ) * factor;
-		if( lambda >= 0 ){
+		lambda = (pCenter.x + pHalfSize.x - point.x) * factor;
+		if(lambda >= 0){
 			hp = pCenter.y + displacement.y * lambda;
-			if( hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y ){
+			if(hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y){
 				hp = pCenter.z + displacement.z * lambda;
-				if( hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z ){
+				if(hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z){
 					return 0.0;
 				}
 			}
 		}
 		// bf = pCenter.x - pHalfSize.x, normal = ( -1, 0, 0 )
-		lambda = ( pCenter.x - pHalfSize.x - pCenter.x ) * factor;
-		if( lambda >= 0 ){
+		lambda = (pCenter.x - pHalfSize.x - pCenter.x) * factor;
+		if(lambda >= 0){
 			hp = pCenter.y + displacement.y * lambda;
-			if( hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y ){
+			if(hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y){
 				hp = pCenter.z + displacement.z * lambda;
-				if( hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z ) return 0.0;
+				if(hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z) return 0.0;
 			}
 		}
 	}
 	// test y-axis
-	if( displacement.y < -0.00001 || displacement.y > 0.00001 ){
+	if(displacement.y < -0.00001 || displacement.y > 0.00001){
 		factor = 1.0 / displacement.y;
 		// bf = pCenter.y + pHalfSize.y, normal = ( 1, 0, 0 )
-		lambda = ( pCenter.y + pHalfSize.y - pCenter.y ) * factor;
-		if( lambda >= 0 ){
+		lambda = (pCenter.y + pHalfSize.y - pCenter.y) * factor;
+		if(lambda >= 0){
 			hp = pCenter.x + displacement.x * lambda;
-			if( hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x ){
+			if(hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x){
 				hp = pCenter.z + displacement.z * lambda;
-				if( hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z ) return 0.0;
+				if(hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z) return 0.0;
 			}
 		}
 		// bf = pCenter.y - pHalfSize.y, normal = ( -1, 0, 0 )
-		lambda = ( pCenter.y - pHalfSize.y - pCenter.y ) * factor;
-		if( lambda >= 0 ){
+		lambda = (pCenter.y - pHalfSize.y - pCenter.y) * factor;
+		if(lambda >= 0){
 			hp = pCenter.x + displacement.x * lambda;
-			if( hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x ){
+			if(hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x){
 				hp = pCenter.z + displacement.z * lambda;
-				if( hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z ) return 0.0;
+				if(hp >= pCenter.z - pHalfSize.z && hp <= pCenter.z + pHalfSize.z) return 0.0;
 			}
 		}
 	}
 	// test z-axis
-	if( displacement.z < -0.00001 || displacement.z > 0.00001 ){
+	if(displacement.z < -0.00001 || displacement.z > 0.00001){
 		factor = 1.0 / displacement.z;
 		// bf = pCenter.z + pHalfSize.z, normal = ( 1, 0, 0 )
-		lambda = ( pCenter.z + pHalfSize.z - pCenter.z ) * factor;
-		if( lambda >= 0 ){
+		lambda = (pCenter.z + pHalfSize.z - pCenter.z) * factor;
+		if(lambda >= 0){
 			hp = pCenter.x + displacement.x * lambda;
-			if( hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x ){
+			if(hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x){
 				hp = pCenter.y + displacement.y * lambda;
-				if( hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y ) return 0.0;
+				if(hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y) return 0.0;
 			}
 		}
 		// bf = pCenter.z - pHalfSize.z, normal = ( -1, 0, 0 )
-		lambda = ( pCenter.z - pHalfSize.z - pCenter.z ) * factor;
-		if( lambda >= 0 ){
+		lambda = (pCenter.z - pHalfSize.z - pCenter.z) * factor;
+		if(lambda >= 0){
 			hp = pCenter.x + displacement.x * lambda;
-			if( hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x ){
+			if(hp >= pCenter.x - pHalfSize.x && hp <= pCenter.x + pHalfSize.x){
 				hp = pCenter.y + displacement.y * lambda;
-				if( hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y ) return 0.0;
+				if(hp >= pCenter.y - pHalfSize.y && hp <= pCenter.y + pHalfSize.y) return 0.0;
 			}
 		}
 	}
@@ -452,31 +452,31 @@ double debpDCollisionBox::PointMoveHitsVolume( const decDVector &point, const de
 // collision routines
 ///////////////////////
 
-bool debpDCollisionBox::SphereHitsBox( debpDCollisionSphere *sphere ){
+bool debpDCollisionBox::SphereHitsBox(debpDCollisionSphere *sphere){
 	double temp, dist = 0.0;
 	double sx, sy, sz;
 	// transform values if required
-	if( pOriented ){
-		decDVector transformedSphere = WorldToLocal( sphere->GetCenter() );
-		sx = fabs( transformedSphere.x );
-		sy = fabs( transformedSphere.y );
-		sz = fabs( transformedSphere.z );
+	if(pOriented){
+		decDVector transformedSphere = WorldToLocal(sphere->GetCenter());
+		sx = fabs(transformedSphere.x);
+		sy = fabs(transformedSphere.y);
+		sz = fabs(transformedSphere.z);
 	}else{
 		const decDVector &sphereCenter = sphere->GetCenter();
-		sx = fabs( sphereCenter.x - pCenter.x );
-		sy = fabs( sphereCenter.y - pCenter.y );
-		sz = fabs( sphereCenter.z - pCenter.z );
+		sx = fabs(sphereCenter.x - pCenter.x);
+		sy = fabs(sphereCenter.y - pCenter.y);
+		sz = fabs(sphereCenter.z - pCenter.z);
 	}
 	// determine square distance of sphere center to box outline
-	if( sx > pHalfSize.x ){
+	if(sx > pHalfSize.x){
 		temp = sx - pHalfSize.x;
 		dist += temp * temp;
 	}
-	if( sy > pHalfSize.y ){
+	if(sy > pHalfSize.y){
 		temp = sy - pHalfSize.y;
 		dist += temp * temp;
 	}
-	if( sz > pHalfSize.z ){
+	if(sz > pHalfSize.z){
 		temp = sz - pHalfSize.z;
 		dist += temp * temp;
 	}
@@ -522,11 +522,11 @@ bool debpDCollisionBox::SphereHitsBox( debpDCollisionSphere *sphere ){
 	*/
 }
 
-bool debpDCollisionBox::CylinderHitsBox( debpDCollisionCylinder *cylinder ){
+bool debpDCollisionBox::CylinderHitsBox(debpDCollisionCylinder *cylinder){
 	return false;
 }
 
-bool debpDCollisionBox::CapsuleHitsBox( debpDCollisionCapsule *capsule ){
+bool debpDCollisionBox::CapsuleHitsBox(debpDCollisionCapsule *capsule){
 	/*
 	double radius = capsule->GetRadius();
 	decDVector bmin = pCenter - pHalfSize;
@@ -535,93 +535,93 @@ bool debpDCollisionBox::CapsuleHitsBox( debpDCollisionCapsule *capsule ){
 	double lambda, factor;
 	decDVector cs, ce;
 	// transform if required
-	if( pOriented ){
-		cs = WorldToLocal( capsule->GetStartPoint() );
-		ce = WorldToLocal( capsule->GetEndPoint() );
+	if(pOriented){
+		cs = WorldToLocal(capsule->GetStartPoint());
+		ce = WorldToLocal(capsule->GetEndPoint());
 	}else{
 		cs = capsule->GetStartPoint();
 		ce = capsule->GetEndPoint();
 	}
 	// test if one of the segment entpoints is inside the aabb
-	if( cs.x >= bmin.x && cs.x <= bmax.x &&
+	if(cs.x >= bmin.x && cs.x <= bmax.x &&
 		cs.y >= bmin.y && cs.y <= bmax.y &&
-		cs.z >= bmin.z && cs.z <= bmax.z ) return true;
-	if( ce.x >= bmin.x && ce.x <= bmax.x &&
+		cs.z >= bmin.z && cs.z <= bmax.z) return true;
+	if(ce.x >= bmin.x && ce.x <= bmax.x &&
 		ce.y >= bmin.y && ce.y <= bmax.y &&
-		ce.z >= bmin.z && ce.z <= bmax.z ) return true;
+		ce.z >= bmin.z && ce.z <= bmax.z) return true;
 	// test extended faces
 	cdiff = ce - cs;
-	if( cdiff.x > 0.00001 || cdiff.x < -0.00001 ){
+	if(cdiff.x > 0.00001 || cdiff.x < -0.00001){
 		factor = 1.0 / cdiff.x;
-		lambda = ( bmin.x - radius - cs.x ) * factor;
-		if( lambda >= 0 && lambda <= 1 ){
+		lambda = (bmin.x - radius - cs.x) * factor;
+		if(lambda >= 0 && lambda <= 1){
 			hp = cs + cdiff * lambda;
-			if( hp.y >= bmin.y && hp.y <= bmax.y && hp.z >= bmin.z && hp.z <= bmax.z ) return true;
+			if(hp.y >= bmin.y && hp.y <= bmax.y && hp.z >= bmin.z && hp.z <= bmax.z) return true;
 		}
-		lambda = ( bmax.x + radius - cs.x ) * factor;
-		if( lambda >= 0 && lambda <= 1 ){
+		lambda = (bmax.x + radius - cs.x) * factor;
+		if(lambda >= 0 && lambda <= 1){
 			hp = cs + cdiff * lambda;
-			if( hp.y >= bmin.y && hp.y <= bmax.y && hp.z >= bmin.z && hp.z <= bmax.z ) return true;
+			if(hp.y >= bmin.y && hp.y <= bmax.y && hp.z >= bmin.z && hp.z <= bmax.z) return true;
 		}
 	}
-	if( cdiff.y > 0.00001 || cdiff.y < -0.00001 ){
+	if(cdiff.y > 0.00001 || cdiff.y < -0.00001){
 		factor = 1.0 / cdiff.y;
-		lambda = ( bmin.y - radius - cs.y ) * factor;
-		if( lambda >= 0 && lambda <= 1 ){
+		lambda = (bmin.y - radius - cs.y) * factor;
+		if(lambda >= 0 && lambda <= 1){
 			hp = cs + cdiff * lambda;
-			if( hp.x >= bmin.x && hp.x <= bmax.x && hp.z >= bmin.z && hp.z <= bmax.z ) return true;
+			if(hp.x >= bmin.x && hp.x <= bmax.x && hp.z >= bmin.z && hp.z <= bmax.z) return true;
 		}
-		lambda = ( bmax.y + radius - cs.y ) * factor;
-		if( lambda >= 0 && lambda <= 1 ){
+		lambda = (bmax.y + radius - cs.y) * factor;
+		if(lambda >= 0 && lambda <= 1){
 			hp = cs + cdiff * lambda;
-			if( hp.x >= bmin.x && hp.x <= bmax.x && hp.z >= bmin.z && hp.z <= bmax.z ) return true;
+			if(hp.x >= bmin.x && hp.x <= bmax.x && hp.z >= bmin.z && hp.z <= bmax.z) return true;
 		}
 	}
-	if( cdiff.z > 0.00001 || cdiff.z < -0.00001 ){
+	if(cdiff.z > 0.00001 || cdiff.z < -0.00001){
 		factor = 1.0 / cdiff.z;
-		lambda = ( bmin.z - radius - cs.z ) * factor;
-		if( lambda >= 0 && lambda <= 1 ){
+		lambda = (bmin.z - radius - cs.z) * factor;
+		if(lambda >= 0 && lambda <= 1){
 			hp = cs + cdiff * lambda;
-			if( hp.x >= bmin.x && hp.x <= bmax.x && hp.y >= bmin.y && hp.y <= bmax.y ) return true;
+			if(hp.x >= bmin.x && hp.x <= bmax.x && hp.y >= bmin.y && hp.y <= bmax.y) return true;
 		}
-		lambda = ( bmax.z + radius - cs.z ) * factor;
-		if( lambda >= 0 && lambda <= 1 ){
+		lambda = (bmax.z + radius - cs.z) * factor;
+		if(lambda >= 0 && lambda <= 1){
 			hp = cs + cdiff * lambda;
-			if( hp.x >= bmin.x && hp.x <= bmax.x && hp.y >= bmin.y && hp.y <= bmax.y ) return true;
+			if(hp.x >= bmin.x && hp.x <= bmax.x && hp.y >= bmin.y && hp.y <= bmax.y) return true;
 		}
 	}
 	// fat edges tests
-	corners[ 0 ] = decDVector( bmin.x, bmax.y, bmin.z );
-	corners[ 1 ] = decDVector( bmax.x, bmax.y, bmin.z );
-	corners[ 2 ] = decDVector( bmax.x, bmin.y, bmin.z );
-	corners[ 3 ] = decDVector( bmin.x, bmin.y, bmin.z );
-	corners[ 4 ] = decDVector( bmin.x, bmax.y, bmax.z );
-	corners[ 5 ] = decDVector( bmax.x, bmax.y, bmax.z );
-	corners[ 6 ] = decDVector( bmax.x, bmin.y, bmax.z );
-	corners[ 7 ] = decDVector( bmin.x, bmin.y, bmax.z );
+	corners[0] = decDVector(bmin.x, bmax.y, bmin.z);
+	corners[1] = decDVector(bmax.x, bmax.y, bmin.z);
+	corners[2] = decDVector(bmax.x, bmin.y, bmin.z);
+	corners[3] = decDVector(bmin.x, bmin.y, bmin.z);
+	corners[4] = decDVector(bmin.x, bmax.y, bmax.z);
+	corners[5] = decDVector(bmax.x, bmax.y, bmax.z);
+	corners[6] = decDVector(bmax.x, bmin.y, bmax.z);
+	corners[7] = decDVector(bmin.x, bmin.y, bmax.z);
 	// front 4 edges
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 0 ], corners[ 1 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 1 ], corners[ 2 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 2 ], corners[ 3 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 3 ], corners[ 0 ] ) <= radius ) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[0], corners[1]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[1], corners[2]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[2], corners[3]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[3], corners[0]) <= radius) return true;
 	// back 4 edges
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 4 ], corners[ 5 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 5 ], corners[ 6 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 6 ], corners[ 7 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 7 ], corners[ 4 ] ) <= radius ) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[4], corners[5]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[5], corners[6]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[6], corners[7]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[7], corners[4]) <= radius) return true;
 	// connection 4 edges
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 0 ], corners[ 4 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 1 ], corners[ 5 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 2 ], corners[ 6 ] ) <= radius ) return true;
-	if( debpDCollisionDetection::SegmentSegmentDistance( cs, ce, corners[ 3 ], corners[ 7 ] ) <= radius ) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[0], corners[4]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[1], corners[5]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[2], corners[6]) <= radius) return true;
+	if(debpDCollisionDetection::SegmentSegmentDistance(cs, ce, corners[3], corners[7]) <= radius) return true;
 	// it has to miss
 	*/
 	return false;
 }
 
-bool debpDCollisionBox::BoxHitsBox( debpDCollisionBox *box ){
+bool debpDCollisionBox::BoxHitsBox(debpDCollisionBox *box){
 	// if one of the boxes is not axis aligned we have to use the heavier algorithm
-	if( pOriented || box->GetOriented() ){
+	if(pOriented || box->GetOriented()){
 		const decDVector centerDiff = box->GetCenter() - pCenter;
 		const decDVector &bax = box->GetAxisX();
 		const decDVector &bay = box->GetAxisY();
@@ -629,34 +629,34 @@ bool debpDCollisionBox::BoxHitsBox( debpDCollisionBox *box ){
 		const decDVector &bhs = box->GetHalfSize();
 		decDVector axis;
 		// axes of box 1
-		if( fabs( pAxisX * centerDiff ) - box->ProjectExtends( pAxisX ) > pHalfSize.x ) return false;
-		if( fabs( pAxisY * centerDiff ) - box->ProjectExtends( pAxisY ) > pHalfSize.y ) return false;
-		if( fabs( pAxisZ * centerDiff ) - box->ProjectExtends( pAxisZ ) > pHalfSize.z ) return false;
+		if(fabs(pAxisX * centerDiff) - box->ProjectExtends(pAxisX) > pHalfSize.x) return false;
+		if(fabs(pAxisY * centerDiff) - box->ProjectExtends(pAxisY) > pHalfSize.y) return false;
+		if(fabs(pAxisZ * centerDiff) - box->ProjectExtends(pAxisZ) > pHalfSize.z) return false;
 		// axes of box 2
-		if( fabs( bax * centerDiff ) - bhs.x > ProjectExtends( bax ) ) return false;
-		if( fabs( bay * centerDiff ) - bhs.y > ProjectExtends( bay ) ) return false;
-		if( fabs( baz * centerDiff ) - bhs.z > ProjectExtends( baz ) ) return false;
+		if(fabs(bax * centerDiff) - bhs.x > ProjectExtends(bax)) return false;
+		if(fabs(bay * centerDiff) - bhs.y > ProjectExtends(bay)) return false;
+		if(fabs(baz * centerDiff) - bhs.z > ProjectExtends(baz)) return false;
 		// axis x of box 1 cross axes of box 2
 		axis = pAxisX % bax;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		axis = pAxisX % bay;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		axis = pAxisX % baz;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		// axis y of box 1 cross axes of box 2
 		axis = pAxisY % bax;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		axis = pAxisY % bay;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		axis = pAxisY % baz;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		// axis z of box 1 cross axes of box 2
 		axis = pAxisZ % bax;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		axis = pAxisZ % bay;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		axis = pAxisZ % baz;
-		if( fabs( axis * centerDiff ) - box->ProjectExtends( axis ) > ProjectExtends( axis ) ) return false;
+		if(fabs(axis * centerDiff) - box->ProjectExtends(axis) > ProjectExtends(axis)) return false;
 		// we do intersect
 		return true;
 	
@@ -664,23 +664,23 @@ bool debpDCollisionBox::BoxHitsBox( debpDCollisionBox *box ){
 	}else{
 		const decDVector &hs = box->GetHalfSize();
 		decDVector dist = box->GetCenter() - pCenter;
-		return fabs( dist.x ) <= ( pHalfSize.x + hs.x ) &&
-			fabs( dist.y ) <= ( pHalfSize.y + hs.y ) &&
-			fabs( dist.z ) <= ( pHalfSize.z + hs.z );
+		return fabs(dist.x) <= (pHalfSize.x + hs.x) &&
+			fabs(dist.y) <= (pHalfSize.y + hs.y) &&
+			fabs(dist.z) <= (pHalfSize.z + hs.z);
 	}
 }
 
 
 
-double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
+double debpDCollisionBox::SphereMoveHitsBox(debpDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
 	const double r = sphere->GetRadius();
 	const double rsquared = r * r;
 	decDVector so, d;
 	
 	// transform if required
-	if( pOriented ){
-		so = WorldToLocal( sphere->GetCenter() );
-		d = NormalWorldToLocal( displacement );
+	if(pOriented){
+		so = WorldToLocal(sphere->GetCenter());
+		d = NormalWorldToLocal(displacement);
 		
 	}else{
 		so = sphere->GetCenter() - pCenter;
@@ -688,19 +688,19 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	}
 	
 	// test if the sphere is inside the box
-	if( ( so - pAxisAlignedCPTo( so ) ).LengthSquared() <= rsquared ){
+	if((so - pAxisAlignedCPTo(so)).LengthSquared() <= rsquared){
 		// the center of the sphere is inside the box. this is a stupid situation
 		// as determining a plane normal for this case is difficult to do. what we
 		// do here to solve this situation is to determine the coordinate axis in
 		// which direction the sphere penetrates the box the least. this normal is
 		// more coherent with the normal of a sphere hitting the box at this location
-		if( normal ){
-			const double dx = pHalfSize.x - fabs( so.x ) + r; // halfSize - ( sphereCenter - sphereRadius )
-			const double dy = pHalfSize.y - fabs( so.y ) + r;
-			const double dz = pHalfSize.z - fabs( so.z ) + r;
+		if(normal){
+			const double dx = pHalfSize.x - fabs(so.x) + r; // halfSize - (sphereCenter - sphereRadius)
+			const double dy = pHalfSize.y - fabs(so.y) + r;
+			const double dz = pHalfSize.z - fabs(so.z) + r;
 			
-			if( dx < dy ){
-				if( dx < dz ){ // x smallest penetration
+			if(dx < dy){
+				if(dx < dz){ // x smallest penetration
 					*normal = so.x > 0.0 ? pAxisX : -pAxisX;
 					
 				}else{ // z smallest penetration
@@ -708,7 +708,7 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 				}
 				
 			}else{
-				if( dy < dz ){ // y smallest penetration
+				if(dy < dz){ // y smallest penetration
 					*normal = so.y > 0.0 ? pAxisY : -pAxisY;
 					
 				}else{ // z smallest penentration
@@ -721,17 +721,17 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	}
 	
 	// flip all axes to positive so the number of tests can be reduced
-	decDVector st( so );
+	decDVector st(so);
 	
-	if( st.x < 0.0 ){
+	if(st.x < 0.0){
 		st.x = -st.x;
 		d.x = -d.x;
 	}
-	if( st.y < 0.0 ){
+	if(st.y < 0.0){
 		st.y = -st.y;
 		d.y = -d.y;
 	}
-	if( st.z < 0.0 ){
+	if(st.z < 0.0){
 		st.z = -st.z;
 		d.z = -d.z;
 	}
@@ -742,19 +742,19 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	// during the contact another face, edge or corner yields a closer hit distance
 	
 	// test x axis
-	if( st.x > pHalfSize.x + r ){
-		if( d.x >= -1e-9 ){
+	if(st.x > pHalfSize.x + r){
+		if(d.x >= -1e-9){
 			return NO_COLLISION;
 		}
-		const double lambda = ( pHalfSize.x - st.x + r ) / d.x;
-		if( lambda > 1.0 ){
+		const double lambda = (pHalfSize.x - st.x + r) / d.x;
+		if(lambda > 1.0){
 			return NO_COLLISION;
 		}
 		double hpsc = st.y + d.y * lambda; // hit point sphere center
-		if( hpsc >= -pHalfSize.y && hpsc <= pHalfSize.y ){
+		if(hpsc >= -pHalfSize.y && hpsc <= pHalfSize.y){
 			hpsc = st.z + d.z * lambda;
-			if( hpsc >= -pHalfSize.z && hpsc <= pHalfSize.z ){
-				if( normal ){
+			if(hpsc >= -pHalfSize.z && hpsc <= pHalfSize.z){
+				if(normal){
 					*normal = so.x > 0.0 ? pAxisX : -pAxisX;
 				}
 				return lambda;
@@ -763,19 +763,19 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	}
 	
 	// test y axis
-	if( st.y > pHalfSize.y + r ){
-		if( d.y >= -1e-9 ){
+	if(st.y > pHalfSize.y + r){
+		if(d.y >= -1e-9){
 			return NO_COLLISION;
 		}
-		const double lambda = ( pHalfSize.y - st.y + r ) / d.y;
-		if( lambda > 1.0 ){
+		const double lambda = (pHalfSize.y - st.y + r) / d.y;
+		if(lambda > 1.0){
 			return NO_COLLISION;
 		}
 		double hpsc = st.x + d.x * lambda; // hit point sphere center
-		if( hpsc >= -pHalfSize.x && hpsc <= pHalfSize.x ){
+		if(hpsc >= -pHalfSize.x && hpsc <= pHalfSize.x){
 			hpsc = st.z + d.z * lambda;
-			if( hpsc >= -pHalfSize.z && hpsc <= pHalfSize.z ){
-				if( normal ){
+			if(hpsc >= -pHalfSize.z && hpsc <= pHalfSize.z){
+				if(normal){
 					*normal = so.y > 0.0 ? pAxisY : -pAxisY;
 				}
 				return lambda;
@@ -784,19 +784,19 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	}
 	
 	// test z axis
-	if( st.z > pHalfSize.z + r ){
-		if( d.z >= -1e-9 ){
+	if(st.z > pHalfSize.z + r){
+		if(d.z >= -1e-9){
 			return NO_COLLISION;
 		}
-		const double lambda = ( pHalfSize.z - st.z + r ) / d.z;
-		if( lambda > 1.0 ){
+		const double lambda = (pHalfSize.z - st.z + r) / d.z;
+		if(lambda > 1.0){
 			return NO_COLLISION;
 		}
 		double hpsc = st.x + d.x * lambda; // hit point sphere center
-		if( hpsc >= -pHalfSize.x && hpsc <= pHalfSize.x ){
+		if(hpsc >= -pHalfSize.x && hpsc <= pHalfSize.x){
 			hpsc = st.y + d.y * lambda;
-			if( hpsc >= -pHalfSize.y && hpsc <= pHalfSize.y ){
-				if( normal ){
+			if(hpsc >= -pHalfSize.y && hpsc <= pHalfSize.y){
+				if(normal){
 					*normal = so.z > 0.0 ? pAxisZ : -pAxisZ;
 				}
 				return lambda;
@@ -844,34 +844,34 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	
 	// test x edge
 	double denom = d.y * d.y + d.z * d.z;
-	if( denom != 0.0 ){
+	if(denom != 0.0){
 		denom = 1.0 / denom;
 		const double c1a = pHalfSize.y - st.y;
 		const double c1b = pHalfSize.z - st.z;
-		const double p = -2.0 * ( c1a * d.y + c1b * d.z ) * denom;
-		const double q = ( c1a * c1a + c1b * c1b - rsquared ) * denom;
+		const double p = -2.0 * (c1a * d.y + c1b * d.z) * denom;
+		const double q = (c1a * c1a + c1b * c1b - rsquared) * denom;
 		denom = p * p * 0.25 - q;
-		if( denom >= 0.0 ){
+		if(denom >= 0.0){
 			double lambda = -0.5 * p;
-			if( denom > 0.0 ){
-				denom = sqrt( denom );
+			if(denom > 0.0){
+				denom = sqrt(denom);
 				lambda -= denom;
-				if( lambda < 0.0 ){
+				if(lambda < 0.0){
 					lambda += denom * 2.0;
 				}
 			}
-			if( lambda >= 0.0 && lambda < 1.0 ){
+			if(lambda >= 0.0 && lambda < 1.0){
 				double hpsc = st.x + d.x * lambda; // hit point sphere center
-				if( hpsc >= -pHalfSize.x && hpsc <= pHalfSize.x ){
+				if(hpsc >= -pHalfSize.x && hpsc <= pHalfSize.x){
 					hpsc = st.y + d.y * lambda;
-					if( hpsc >= pHalfSize.y ){
+					if(hpsc >= pHalfSize.y){
 						hpsc = st.z + d.z * lambda;
-						if( hpsc >= pHalfSize.z ){
-							const decDVector sn( so + d * lambda );
-							n = sn - pAxisAlignedCPTo( sn );
+						if(hpsc >= pHalfSize.z){
+							const decDVector sn(so + d * lambda);
+							n = sn - pAxisAlignedCPTo(sn);
 							const double len = n.Length();
-							if( len > DOUBLE_EPSILON ){
-								if( normal ){
+							if(len > DOUBLE_EPSILON){
+								if(normal){
 									n /= len;
 									*normal = pOriented ? NormalLocalToWorld( n ) : n;
 								}
@@ -886,34 +886,34 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	
 	// test y edge
 	denom = d.x * d.x + d.z * d.z;
-	if( denom != 0.0 ){
+	if(denom != 0.0){
 		denom = 1.0 / denom;
 		const double c1a = pHalfSize.x - st.x;
 		const double c1b = pHalfSize.z - st.z;
-		const double p = -2.0 * ( c1a * d.x + c1b * d.z ) * denom;
-		const double q = ( c1a * c1a + c1b * c1b - rsquared ) * denom;
+		const double p = -2.0 * (c1a * d.x + c1b * d.z) * denom;
+		const double q = (c1a * c1a + c1b * c1b - rsquared) * denom;
 		denom = p * p * 0.25 - q;
-		if( denom >= 0.0 ){
+		if(denom >= 0.0){
 			double lambda = -0.5 * p;
-			if( denom > 0.0 ){
-				denom = sqrt( denom );
+			if(denom > 0.0){
+				denom = sqrt(denom);
 				lambda -= denom;
-				if( lambda < 0.0 ){
+				if(lambda < 0.0){
 					lambda += denom * 2.0;
 				}
 			}
-			if( lambda >= 0.0 && lambda < 1.0 ){
+			if(lambda >= 0.0 && lambda < 1.0){
 				double hpsc = st.y + d.y * lambda; // hit point sphere center
-				if( hpsc >= -pHalfSize.y && hpsc <= pHalfSize.y ){
+				if(hpsc >= -pHalfSize.y && hpsc <= pHalfSize.y){
 					hpsc = st.x + d.x * lambda;
-					if( hpsc >= pHalfSize.x ){
+					if(hpsc >= pHalfSize.x){
 						hpsc = st.z + d.z * lambda;
-						if( hpsc >= pHalfSize.z ){
-							const decDVector sn( so + d * lambda );
-							n = sn - pAxisAlignedCPTo( sn );
+						if(hpsc >= pHalfSize.z){
+							const decDVector sn(so + d * lambda);
+							n = sn - pAxisAlignedCPTo(sn);
 							const double len = n.Length();
-							if( len > DOUBLE_EPSILON ){
-								if( normal ){
+							if(len > DOUBLE_EPSILON){
+								if(normal){
 									n /= len;
 									*normal = pOriented ? NormalLocalToWorld( n ) : n;
 								}
@@ -928,34 +928,34 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	
 	// test z edge
 	denom = d.x * d.x + d.y * d.y;
-	if( denom != 0.0 ){
+	if(denom != 0.0){
 		denom = 1.0 / denom;
 		const double c1a = pHalfSize.x - st.x;
 		const double c1b = pHalfSize.y - st.y;
-		const double p = -2.0 * ( c1a * d.x + c1b * d.y ) * denom;
-		const double q = ( c1a * c1a + c1b * c1b - rsquared ) * denom;
+		const double p = -2.0 * (c1a * d.x + c1b * d.y) * denom;
+		const double q = (c1a * c1a + c1b * c1b - rsquared) * denom;
 		denom = p * p * 0.25 - q;
-		if( denom >= 0.0 ){
+		if(denom >= 0.0){
 			double lambda = -0.5 * p;
-			if( denom > 0.0 ){
-				denom = sqrt( denom );
+			if(denom > 0.0){
+				denom = sqrt(denom);
 				lambda -= denom;
-				if( lambda < 0.0 ){
+				if(lambda < 0.0){
 					lambda += denom * 2.0;
 				}
 			}
-			if( lambda >= 0.0 && lambda < 1.0 ){
+			if(lambda >= 0.0 && lambda < 1.0){
 				double hpsc = st.z + d.z * lambda; // hit point sphere center
-				if( hpsc >= -pHalfSize.z && hpsc <= pHalfSize.z ){
+				if(hpsc >= -pHalfSize.z && hpsc <= pHalfSize.z){
 					hpsc = st.x + d.x * lambda;
-					if( hpsc >= pHalfSize.x ){
+					if(hpsc >= pHalfSize.x){
 						hpsc = st.y + d.y * lambda;
-						if( hpsc >= pHalfSize.y ){
-							const decDVector sn( so + d * lambda );
-							n = sn - pAxisAlignedCPTo( sn );
+						if(hpsc >= pHalfSize.y){
+							const decDVector sn(so + d * lambda);
+							n = sn - pAxisAlignedCPTo(sn);
 							const double len = n.Length();
-							if( len > DOUBLE_EPSILON ){
-								if( normal ){
+							if(len > DOUBLE_EPSILON){
+								if(normal){
 									n /= len;
 									*normal = pOriented ? NormalLocalToWorld( n ) : n;
 								}
@@ -969,29 +969,29 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	}
 	
 	// test corner
-	const decDVector a( st - pHalfSize );
+	const decDVector a(st - pHalfSize);
 	denom = d * d;
-	if( denom != 0.0 ){
+	if(denom != 0.0){
 		denom = 1.0 / denom;
-		const double p = ( a * d ) * 2.0 * denom;
-		const double q = ( a * a - rsquared ) * denom;
+		const double p = (a * d) * 2.0 * denom;
+		const double q = (a * a - rsquared) * denom;
 		denom = p * p * 0.25 - q;
-		if( denom >= 0.0 ){
+		if(denom >= 0.0){
 			double lambda = -0.5 * p;
-			if( denom > 0.0 ){
-				denom = sqrt( denom );
+			if(denom > 0.0){
+				denom = sqrt(denom);
 				lambda -= denom;
-				if( lambda < 0.0 ){
+				if(lambda < 0.0){
 					lambda += denom * 2.0;
 				}
 			}
 			
-			if( lambda >= 0.0f && lambda < 1.0f ){
-				const decDVector sn( so + d * lambda );
-				n = sn - pAxisAlignedCPTo( sn );
+			if(lambda >= 0.0f && lambda < 1.0f){
+				const decDVector sn(so + d * lambda);
+				n = sn - pAxisAlignedCPTo(sn);
 				const double len = n.Length();
-				if( len > DOUBLE_EPSILON ){
-					if( normal ){
+				if(len > DOUBLE_EPSILON){
+					if(normal){
 						n /= len;
 						*normal = pOriented ? NormalLocalToWorld( n ) : n;
 					}
@@ -1005,23 +1005,23 @@ double debpDCollisionBox::SphereMoveHitsBox( debpDCollisionSphere *sphere, const
 	return NO_COLLISION;
 }
 
-double debpDCollisionBox::CylinderMoveHitsBox( debpDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
+double debpDCollisionBox::CylinderMoveHitsBox(debpDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
-double debpDCollisionBox::CapsuleMoveHitsBox( debpDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
+double debpDCollisionBox::CapsuleMoveHitsBox(debpDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
-double debpDCollisionBox::BoxMoveHitsBox( debpDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
+double debpDCollisionBox::BoxMoveHitsBox(debpDCollisionBox *box, const decDVector &displacement, decDVector *normal){
 	double curDist, dispDist;
 	double bestDist = 0.0;
 	decDVector bestNormal;
 	double normalValue;
 	
 	// if one of the boxes is not axis aligned we have to use the heavier algorithm
-	if( pOriented || box->GetOriented() ){
-		const decDVector centerDiff( box->GetCenter() - pCenter );
+	if(pOriented || box->GetOriented()){
+		const decDVector centerDiff(box->GetCenter() - pCenter);
 		const decDVector &bax = box->GetAxisX();
 		const decDVector &bay = box->GetAxisY();
 		const decDVector &baz = box->GetAxisZ();
@@ -1030,285 +1030,285 @@ double debpDCollisionBox::BoxMoveHitsBox( debpDCollisionBox *box, const decDVect
 		
 		// axes of box 1
 		curDist = centerDiff * pAxisX;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( pAxisX ) + pHalfSize.x;
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * pAxisX ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(pAxisX) + pHalfSize.x;
+		if(curDist > 0.0){
+			dispDist = -((displacement * pAxisX) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( pAxisX * normalValue );
+				if(normal) bestNormal.Set(pAxisX * normalValue);
 			}
 		}
 		
 		curDist = centerDiff * pAxisY;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( pAxisY ) + pHalfSize.y;
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * pAxisY ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(pAxisY) + pHalfSize.y;
+		if(curDist > 0.0){
+			dispDist = -((displacement * pAxisY) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( pAxisY * normalValue );
+				if(normal) bestNormal.Set(pAxisY * normalValue);
 			}
 		}
 		
 		curDist = centerDiff * pAxisZ;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( pAxisZ ) + pHalfSize.z;
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * pAxisZ ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(pAxisZ) + pHalfSize.z;
+		if(curDist > 0.0){
+			dispDist = -((displacement * pAxisZ) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( pAxisZ * normalValue );
+				if(normal) bestNormal.Set(pAxisZ * normalValue);
 			}
 		}
 		
 		// axes of box 2
 		curDist = bax * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= bhs.x + ProjectExtends( bax );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * bax ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= bhs.x + ProjectExtends(bax);
+		if(curDist > 0.0){
+			dispDist = -((displacement * bax) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( bax * normalValue );
+				if(normal) bestNormal.Set(bax * normalValue);
 			}
 		}
 		
 		curDist = bay * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= bhs.y + ProjectExtends( bay );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * bay ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= bhs.y + ProjectExtends(bay);
+		if(curDist > 0.0){
+			dispDist = -((displacement * bay) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( bay * normalValue );
+				if(normal) bestNormal.Set(bay * normalValue);
 			}
 		}
 		
 		curDist = baz * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= bhs.z + ProjectExtends( baz );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * baz ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= bhs.z + ProjectExtends(baz);
+		if(curDist > 0.0){
+			dispDist = -((displacement * baz) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( baz * normalValue );
+				if(normal) bestNormal.Set(baz * normalValue);
 			}
 		}
 		
 		// axis x of box 1 cross axes of box 2
 		axis = pAxisX % bax;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		axis = pAxisX % bay;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		axis = pAxisX % baz;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		// axis y of box 1 cross axes of box 2
 		axis = pAxisY % bax;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		axis = pAxisY % bay;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		axis = pAxisY % baz;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		// axis z of box 1 cross axes of box 2
 		axis = pAxisZ % bax;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		axis = pAxisZ % bay;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 		
 		axis = pAxisZ % baz;
 		curDist = axis * centerDiff;
-		if( curDist > 0.0 ){
+		if(curDist > 0.0){
 			normalValue = 1.0;
 		}else{
 			curDist = -curDist;
 			normalValue = -1.0;
 		}
-		curDist -= box->ProjectExtends( axis ) + ProjectExtends( axis );
-		if( curDist > 0.0 ){
-			dispDist = -( ( displacement * axis ) * normalValue );
-			if( dispDist <= curDist ) return 1.0;
+		curDist -= box->ProjectExtends(axis) + ProjectExtends(axis);
+		if(curDist > 0.0){
+			dispDist = -((displacement * axis) * normalValue);
+			if(dispDist <= curDist) return 1.0;
 			curDist /= dispDist;
-			if( curDist > bestDist ){
+			if(curDist > bestDist){
 				bestDist = curDist;
-				if( normal ) bestNormal.Set( axis * normalValue );
+				if(normal) bestNormal.Set(axis * normalValue);
 			}
 		}
 	
@@ -1317,22 +1317,22 @@ double debpDCollisionBox::BoxMoveHitsBox( debpDCollisionBox *box, const decDVect
 		// flip problem space into positive x,y,z
 		decDVector cdiff = box->GetCenter() - pCenter;
 		decDVector disp = displacement;
-		bool flip[ 3 ] = { false, false, false };
+		bool flip[3] = {false, false, false};
 		
-		if( cdiff.x < 0.0 ){
+		if(cdiff.x < 0.0){
 			cdiff.x = -cdiff.x;
 			disp.x = -disp.x;
-			flip[ 0 ] = true;
+			flip[0] = true;
 		}
-		if( cdiff.y < 0.0 ){
+		if(cdiff.y < 0.0){
 			cdiff.y = -cdiff.y;
 			disp.y = -disp.y;
-			flip[ 1 ] = true;
+			flip[1] = true;
 		}
-		if( cdiff.z < 0.0 ){
+		if(cdiff.z < 0.0){
 			cdiff.z = -cdiff.z;
 			disp.z = -disp.z;
-			flip[ 2 ] = true;
+			flip[2] = true;
 		}
 		
 		// calculate parameters
@@ -1345,66 +1345,66 @@ double debpDCollisionBox::BoxMoveHitsBox( debpDCollisionBox *box, const decDVect
 		
 		// if in contact check if we are moving away. in this case consider no collision.
 		// this is less error prone allowing for objects to free themselves better
-		if( gapx <= 0.0 && gapy <= 0.0 && gapz <= 0.0 ){
+		if(gapx <= 0.0 && gapy <= 0.0 && gapz <= 0.0){
 			// if in contact check if we are moving away. in this case consider no collision.
 			// this is less error prone allowing for objects to free themselves better
 			
 			// if in contact at 0 distance use the normal separating the objects the fastest
-			if( normal ){
+			if(normal){
 				// gap is negative while penetrating so checking for the smallest
 				// penetration means checking for the largest gap
-				if( gapx > gapy && gapx > gapz ){
-					normal->Set( flip[ 0 ] ? -1.0 : 1.0, 0.0, 0.0 );
+				if(gapx > gapy && gapx > gapz){
+					normal->Set(flip[0] ? -1.0 : 1.0, 0.0, 0.0);
 					
-				}else if( gapy > gapz ){
-					normal->Set( 0.0, flip[ 1 ] ? -1.0 : 1.0, 0.0 );
+				}else if(gapy > gapz){
+					normal->Set(0.0, flip[1] ? -1.0 : 1.0, 0.0);
 					
 				}else{
-					normal->Set( 0.0, 0.0, flip[ 2 ] ? -1.0 : 1.0 );
+					normal->Set(0.0, 0.0, flip[2] ? -1.0 : 1.0);
 				}
 			}
 			return 0.0;
 		}
 		
 		// quick exit test. if either axis is a separation axis no collision can happen
-		if( gapx > 0.0 && gapx + disp.x >= 0.0 ){
+		if(gapx > 0.0 && gapx + disp.x >= 0.0){
 			return 1.0;
 		}
-		if( gapy > 0.0 && gapy + disp.y >= 0.0 ){
+		if(gapy > 0.0 && gapy + disp.y >= 0.0){
 			return 1.0;
 		}
-		if( gapz > 0.0 && gapz + disp.z >= 0.0 ){
+		if(gapz > 0.0 && gapz + disp.z >= 0.0){
 			return 1.0;
 		}
 		
 		// check if x axis face of box is hit
-		if( gapx > 0.0 ){
+		if(gapx > 0.0){
 			curDist = gapx / -disp.x;
-			if( fabs( cdiff.y + disp.y * curDist ) <= cexty && fabs( cdiff.z + disp.z * curDist ) <= cextz ){
-				if( normal ){
-					normal->Set( flip[ 0 ] ? -1.0 : 1.0, 0.0, 0.0 );
+			if(fabs(cdiff.y + disp.y * curDist) <= cexty && fabs(cdiff.z + disp.z * curDist) <= cextz){
+				if(normal){
+					normal->Set(flip[0] ? -1.0 : 1.0, 0.0, 0.0);
 				}
 				return curDist;
 			}
 		}
 		
 		// check if y axis face of box is hit
-		if( gapy > 0.0 ){
+		if(gapy > 0.0){
 			curDist = gapy / -disp.y;
-			if( fabs( cdiff.x + disp.x * curDist ) <= cextx && fabs( cdiff.z + disp.z * curDist ) <= cextz ){
-				if( normal ){
-					normal->Set( 0.0, flip[ 0 ] ? -1.0 : 1.0, 0.0 );
+			if(fabs(cdiff.x + disp.x * curDist) <= cextx && fabs(cdiff.z + disp.z * curDist) <= cextz){
+				if(normal){
+					normal->Set(0.0, flip[0] ? -1.0 : 1.0, 0.0);
 				}
 				return curDist;
 			}
 		}
 		
 		// check if z axis face of box is hit
-		if( gapz > 0.0 ){
+		if(gapz > 0.0){
 			curDist = gapz / -disp.z;
-			if( fabs( cdiff.x + disp.x * curDist ) <= cextx && fabs( cdiff.y + disp.y * curDist ) <= cexty ){
-				if( normal ){
-					normal->Set( 0.0, 0.0, flip[ 0 ] ? -1.0 : 1.0 );
+			if(fabs(cdiff.x + disp.x * curDist) <= cextx && fabs(cdiff.y + disp.y * curDist) <= cexty){
+				if(normal){
+					normal->Set(0.0, 0.0, flip[0] ? -1.0 : 1.0);
 				}
 				return curDist;
 			}
@@ -1415,7 +1415,7 @@ double debpDCollisionBox::BoxMoveHitsBox( debpDCollisionBox *box, const decDVect
 	}
 	
 	// otherwise return the found result
-	if( normal ) normal->Set( bestNormal );
+	if(normal) normal->Set(bestNormal);
 	return bestDist;
 }
 
@@ -1424,32 +1424,31 @@ double debpDCollisionBox::BoxMoveHitsBox( debpDCollisionBox *box, const decDVect
 // Enclosing Volumes
 //////////////////////
 
-void debpDCollisionBox::GetEnclosingSphere( debpDCollisionSphere *sphere ){
-	if( ! sphere ) DETHROW( deeInvalidParam );
-	sphere->SetAll( pCenter, pHalfSize.Length() );
+void debpDCollisionBox::GetEnclosingSphere(debpDCollisionSphere *sphere){
+	if(! sphere) DETHROW(deeInvalidParam);
+	sphere->SetAll(pCenter, pHalfSize.Length());
 }
 
-void debpDCollisionBox::GetEnclosingBox( debpDCollisionBox *box ){
-	if( ! box ){
-		DETHROW( deeInvalidParam );
+void debpDCollisionBox::GetEnclosingBox(debpDCollisionBox *box){
+	if(! box){
+		DETHROW(deeInvalidParam);
 	}
 	
-	box->SetCenter( pCenter );
+	box->SetCenter(pCenter);
 	
-	if( pOriented ){
+	if(pOriented){
 		/*
-		box->SetHalfSize( decDVector( ProjectExtends( decDVector( 1.0, 0.0, 0.0 ) ),
-			ProjectExtends( decDVector( 0.0, 1.0, 0.0 ) ),
-			ProjectExtends( decDVector( 0.0, 0.0, 1.0 ) ) ) );
+		box->SetHalfSize(decDVector(ProjectExtends(decDVector(1.0, 0.0, 0.0)),
+			ProjectExtends(decDVector(0.0, 1.0, 0.0)),
+			ProjectExtends(decDVector(0.0, 0.0, 1.0))));
 		*/
-		box->SetHalfSize( decDVector( 
-			fabs( pAxisX.x ) * pHalfSize.x + fabs( pAxisY.x ) * pHalfSize.y + fabs( pAxisZ.x ) * pHalfSize.z,
-			fabs( pAxisX.y ) * pHalfSize.x + fabs( pAxisY.y ) * pHalfSize.y + fabs( pAxisZ.y ) * pHalfSize.z,
-			fabs( pAxisX.z ) * pHalfSize.x + fabs( pAxisY.z ) * pHalfSize.y + fabs( pAxisZ.z ) * pHalfSize.z
-		) );
+		box->SetHalfSize(decDVector(			fabs(pAxisX.x) * pHalfSize.x + fabs(pAxisY.x) * pHalfSize.y + fabs(pAxisZ.x) * pHalfSize.z,
+			fabs(pAxisX.y) * pHalfSize.x + fabs(pAxisY.y) * pHalfSize.y + fabs(pAxisZ.y) * pHalfSize.z,
+			fabs(pAxisX.z) * pHalfSize.x + fabs(pAxisY.z) * pHalfSize.y + fabs(pAxisZ.z) * pHalfSize.z
+));
 		
 	}else{
-		box->SetHalfSize( pHalfSize );
+		box->SetHalfSize(pHalfSize);
 	}
 	
 	box->ClearOrientation();
@@ -1460,35 +1459,35 @@ void debpDCollisionBox::GetEnclosingBox( debpDCollisionBox *box ){
 // Miscelanous Functions
 //////////////////////////
 
-decDVector debpDCollisionBox::ClosestPointTo( const decDVector &point ){
-	if( pOriented ){
-		return LocalToWorld( pAxisAlignedCPTo( WorldToLocal( point ) ) );
+decDVector debpDCollisionBox::ClosestPointTo(const decDVector &point){
+	if(pOriented){
+		return LocalToWorld(pAxisAlignedCPTo(WorldToLocal(point)));
 	}else{
-		return pCenter + pAxisAlignedCPTo( point - pCenter );
+		return pCenter + pAxisAlignedCPTo(point - pCenter);
 	}
 }
 
-bool debpDCollisionBox::IsPointInside( const decDVector &point ){
-	const decDVector localPoint = WorldToLocal( point );
+bool debpDCollisionBox::IsPointInside(const decDVector &point){
+	const decDVector localPoint = WorldToLocal(point);
 	
 	return localPoint >= -pHalfSize && localPoint <= pHalfSize;
 }
 
-decDVector debpDCollisionBox::NormalAtPoint( const decDVector &point ){
-	decDVector localPoint = WorldToLocal( point );
-	bool sideXPos = ( localPoint.x - pHalfSize.x >= -1e-6 );
-	bool sideXNeg = ( localPoint.x + pHalfSize.x <= 1e-6 );
-	bool sideYPos = ( localPoint.y - pHalfSize.y >= -1e-6 );
-	bool sideYNeg = ( localPoint.y + pHalfSize.y <= 1e-6 );
-	bool sideZPos = ( localPoint.z - pHalfSize.z >= -1e-6 );
-	bool sideZNeg = ( localPoint.z + pHalfSize.z <= 1e-6 );
-	bool sideX = ( sideXPos || sideXNeg );
-	bool sideY = ( sideYPos || sideYNeg );
-	bool sideZ = ( sideZPos || sideZNeg );
+decDVector debpDCollisionBox::NormalAtPoint(const decDVector &point){
+	decDVector localPoint = WorldToLocal(point);
+	bool sideXPos = (localPoint.x - pHalfSize.x >= -1e-6);
+	bool sideXNeg = (localPoint.x + pHalfSize.x <= 1e-6);
+	bool sideYPos = (localPoint.y - pHalfSize.y >= -1e-6);
+	bool sideYNeg = (localPoint.y + pHalfSize.y <= 1e-6);
+	bool sideZPos = (localPoint.z - pHalfSize.z >= -1e-6);
+	bool sideZNeg = (localPoint.z + pHalfSize.z <= 1e-6);
+	bool sideX = (sideXPos || sideXNeg);
+	bool sideY = (sideYPos || sideYNeg);
+	bool sideZ = (sideZPos || sideZNeg);
 	
 	// normal along x axis
-	if( sideX && ! sideY && ! sideZ ){
-		if( sideXPos ){
+	if(sideX && ! sideY && ! sideZ){
+		if(sideXPos){
 			return pAxisX;
 			
 		}else{
@@ -1497,8 +1496,8 @@ decDVector debpDCollisionBox::NormalAtPoint( const decDVector &point ){
 	}
 	
 	// normal along y axis
-	if( sideY && ! sideX && ! sideZ ){
-		if( sideYPos ){
+	if(sideY && ! sideX && ! sideZ){
+		if(sideYPos){
 			return pAxisY;
 			
 		}else{
@@ -1507,8 +1506,8 @@ decDVector debpDCollisionBox::NormalAtPoint( const decDVector &point ){
 	}
 	
 	// normal along z axis
-	if( sideZ && ! sideX && ! sideY ){
-		if( sideZPos ){
+	if(sideZ && ! sideX && ! sideY){
+		if(sideZPos){
 			return pAxisZ;
 			
 		}else{
@@ -1517,21 +1516,21 @@ decDVector debpDCollisionBox::NormalAtPoint( const decDVector &point ){
 	}
 	
 	// normal inside
-	if( ! sideX && ! sideY && ! sideZ ){
-		double fx = fabs( localPoint.x );
-		double fy = fabs( localPoint.y );
-		double fz = fabs( localPoint.z );
+	if(! sideX && ! sideY && ! sideZ){
+		double fx = fabs(localPoint.x);
+		double fy = fabs(localPoint.y);
+		double fz = fabs(localPoint.z);
 		
-		if( fx > fy && fx > fz){
-			if( localPoint.x > 0.0 ){
+		if(fx > fy && fx > fz){
+			if(localPoint.x > 0.0){
 				return pAxisX;
 				
 			}else{
 				return -pAxisX;
 			}
 			
-		}else if( fy > fx && fy > fz ){
-			if( localPoint.y > 0.0 ){
+		}else if(fy > fx && fy > fz){
+			if(localPoint.y > 0.0){
 				return pAxisY;
 				
 			}else{
@@ -1539,7 +1538,7 @@ decDVector debpDCollisionBox::NormalAtPoint( const decDVector &point ){
 			}
 			
 		}else{
-			if( localPoint.z > 0.0 ){
+			if(localPoint.z > 0.0){
 				return pAxisZ;
 				
 			}else{
@@ -1549,47 +1548,47 @@ decDVector debpDCollisionBox::NormalAtPoint( const decDVector &point ){
 	}
 	
 	// normal along an edge or corner
-	decDVector normal = localPoint - pAxisAlignedCPTo( localPoint );
+	decDVector normal = localPoint - pAxisAlignedCPTo(localPoint);
 	double length = normal.Length();
 	
-	if( length < 1e-6 ){
+	if(length < 1e-6){
 		normal.SetZero();
 		
-		if( sideXPos ){
+		if(sideXPos){
 			normal += pAxisX;
 			
-		}else if( sideXNeg ){
+		}else if(sideXNeg){
 			normal -= pAxisX;
 		}
 		
-		if( sideYPos ){
+		if(sideYPos){
 			normal += pAxisY;
 			
-		}else if( sideYNeg ){
+		}else if(sideYNeg){
 			normal -= pAxisY;
 		}
 		
-		if( sideZPos ){
+		if(sideZPos){
 			normal += pAxisZ;
 			
-		}else if( sideZNeg ){
+		}else if(sideZNeg){
 			normal -= pAxisZ;
 		}
 		normal.Normalize();
 		return normal;
 		
 	}else{
-		return NormalLocalToWorld( normal / length );
+		return NormalLocalToWorld(normal / length);
 	}
 }
 
-bool debpDCollisionBox::RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance ){
-	if( pOriented ){
-		return debpDCollisionDetection::RayHitsBox( WorldToLocal( rayOrigin ), NormalWorldToLocal( rayDirection ),
-			decDVector(), pHalfSize, hitDistance );
+bool debpDCollisionBox::RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance){
+	if(pOriented){
+		return debpDCollisionDetection::RayHitsBox(WorldToLocal(rayOrigin), NormalWorldToLocal(rayDirection),
+			decDVector(), pHalfSize, hitDistance);
 		
 	}else{
-		return debpDCollisionDetection::RayHitsBox( rayOrigin, rayDirection, pCenter, pHalfSize, hitDistance );
+		return debpDCollisionDetection::RayHitsBox(rayOrigin, rayDirection, pCenter, pHalfSize, hitDistance);
 	}
 }
 
@@ -1598,9 +1597,9 @@ bool debpDCollisionBox::RayHitsVolume( const decDVector &rayOrigin, const decDVe
 // Visiting
 /////////////
 
-void debpDCollisionBox::Visit( debpDCollisionVolumeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
-	visitor->VisitBox( this );
+void debpDCollisionBox::Visit(debpDCollisionVolumeVisitor *visitor){
+	if(! visitor) DETHROW(deeInvalidParam);
+	visitor->VisitBox(this);
 }
 
 
@@ -1608,38 +1607,38 @@ void debpDCollisionBox::Visit( debpDCollisionVolumeVisitor *visitor ){
 // management
 ///////////////
 
-void debpDCollisionBox::SetCenter( const decDVector &center ){
+void debpDCollisionBox::SetCenter(const decDVector &center){
 	pCenter = center;
 }
 
-void debpDCollisionBox::SetHalfSize( const decDVector &halfSize ){
-	pHalfSize = decDVector().Largest( halfSize );
+void debpDCollisionBox::SetHalfSize(const decDVector &halfSize){
+	pHalfSize = decDVector().Largest(halfSize);
 }
 
-void debpDCollisionBox::SetOrientation( const decQuaternion &orientation ){
-	const decDMatrix matrix = decDMatrix::CreateFromQuaternion( orientation );
+void debpDCollisionBox::SetOrientation(const decQuaternion &orientation){
+	const decDMatrix matrix = decDMatrix::CreateFromQuaternion(orientation);
 	pOrientation = orientation;
-	pAxisX.Set( matrix.TransformRight() );
-	pAxisY.Set( matrix.TransformUp() );
-	pAxisZ.Set( matrix.TransformView() );
+	pAxisX.Set(matrix.TransformRight());
+	pAxisY.Set(matrix.TransformUp());
+	pAxisZ.Set(matrix.TransformView());
 	pOriented = true;
 }
 
 void debpDCollisionBox::ClearOrientation(){
 	pOrientation.SetZero();
-	pAxisX.Set( 1.0, 0.0, 0.0 );
-	pAxisY.Set( 0.0, 1.0, 0.0 );
-	pAxisZ.Set( 0.0, 0.0, 1.0 );
+	pAxisX.Set(1.0, 0.0, 0.0);
+	pAxisY.Set(0.0, 1.0, 0.0);
+	pAxisZ.Set(0.0, 0.0, 1.0);
 	pOriented = false;
 }
 
-void debpDCollisionBox::SetFromExtends( const decDVector &minExtend, const decDVector &maxExtend ){
-	pHalfSize = decDVector().Largest( ( maxExtend - minExtend ) * 0.5 );
+void debpDCollisionBox::SetFromExtends(const decDVector &minExtend, const decDVector &maxExtend){
+	pHalfSize = decDVector().Largest((maxExtend - minExtend) * 0.5);
 	pCenter = minExtend + pHalfSize;
 	ClearOrientation();
 }
 
-void debpDCollisionBox::MoveBy( const decDVector &offset ){
+void debpDCollisionBox::MoveBy(const decDVector &offset){
 	pCenter += offset;
 }
 
@@ -1648,23 +1647,23 @@ void debpDCollisionBox::MoveBy( const decDVector &offset ){
 // private functions
 //////////////////////
 
-decDVector debpDCollisionBox::WorldToLocal( const decDVector &point ) const{
+decDVector debpDCollisionBox::WorldToLocal(const decDVector &point) const{
 	decDVector tp = point - pCenter;
-	return decDVector( pAxisX * tp, pAxisY * tp, pAxisZ * tp );
+	return decDVector(pAxisX * tp, pAxisY * tp, pAxisZ * tp);
 }
 
-decDVector debpDCollisionBox::LocalToWorld( const decDVector &point ) const{
+decDVector debpDCollisionBox::LocalToWorld(const decDVector &point) const{
 	return pCenter + pAxisX * point.x + pAxisY * point.y + pAxisZ * point.z;
 }
 
-decDVector debpDCollisionBox::NormalWorldToLocal( const decDVector &normal ) const{
-	return decDVector( pAxisX * normal, pAxisY * normal, pAxisZ * normal );
+decDVector debpDCollisionBox::NormalWorldToLocal(const decDVector &normal) const{
+	return decDVector(pAxisX * normal, pAxisY * normal, pAxisZ * normal);
 }
 
-decDVector debpDCollisionBox::NormalLocalToWorld( const decDVector &normal ) const{
+decDVector debpDCollisionBox::NormalLocalToWorld(const decDVector &normal) const{
 	return pAxisX * normal.x + pAxisY * normal.y + pAxisZ * normal.z;
 }
 
-decDVector debpDCollisionBox::pAxisAlignedCPTo( const decDVector &point ){
-	return point.Clamped( -pHalfSize, pHalfSize );
+decDVector debpDCollisionBox::pAxisAlignedCPTo(const decDVector &point){
+	return point.Clamped(-pHalfSize, pHalfSize);
 }

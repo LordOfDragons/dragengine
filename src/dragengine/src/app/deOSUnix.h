@@ -102,7 +102,7 @@ public:
 	 * to false if you want to clear the event queue after a lengthy operation to
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule );
+	virtual void ProcessEventLoop(bool sendToInputModule);
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
@@ -130,7 +130,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	virtual decPoint GetDisplayCurrentResolution(int display);
 	
 	/**
 	 * \brief Current refresh rate of display.
@@ -138,7 +138,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display );
+	virtual int GetDisplayCurrentRefreshRate(int display);
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -146,7 +146,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
 	 *                         GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display );
+	virtual int GetDisplayResolutionCount(int display);
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -157,7 +157,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution );
+	virtual decPoint GetDisplayResolution(int display, int resolution);
 	
 	/**
 	 * \brief Current global scaling factor for display.
@@ -168,7 +168,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display );
+	virtual int GetDisplayCurrentScaleFactor(int display);
 	/*@}*/
 	
 	
@@ -187,10 +187,10 @@ public:
 	/** \name Unix related */
 	/*@{*/
 	/** \brief Display used during creation. */
-	inline Display *GetDisplay() const{ return pDisplay; }
+	inline Display *GetDisplay() const{return pDisplay;}
 	
 	/** \brief Screen used during creation. */
-	inline int GetScreen() const{ return pScreen; }
+	inline int GetScreen() const{return pScreen;}
 	
 	/**
 	 * \brief Current game window.
@@ -199,7 +199,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline Window GetWindow() const{ return pCurWindow; }
+	inline Window GetWindow() const{return pCurWindow;}
 	
 	/**
 	 * \brief Set current game window.
@@ -211,24 +211,24 @@ public:
 	 * window as otherwise input modules relying on message or event queues
 	 * will not get them.
 	 */
-	void SetWindow( Window wnd );
+	void SetWindow(Window wnd);
 	
 	/**
 	 * \brief Window event mask.
 	 * 
 	 * Set by the input module to receive the events it is interested in.
 	 */
-	inline long GetEventMask() const{ return pEventMask; }
+	inline long GetEventMask() const{return pEventMask;}
 	
 	/**
 	 * \brief Set event mask to set for all windows.
 	 * 
 	 * The input module sets this value to receive the required events.
 	 */
-	void SetEventMask( long mask );
+	void SetEventMask(long mask);
 	
 	/** \brief Hosting main window or 0 if not set. */
-	inline Window GetHostingMainWindow() const{ return pHostingMainWindow; }
+	inline Window GetHostingMainWindow() const{return pHostingMainWindow;}
 	
 	/**
 	 * \brief Set hosting main window or 0 if not set.
@@ -238,10 +238,10 @@ public:
 	 * window of the hosting application that can be used to obtain visuals
 	 * from. It is not necessary the one rendered into later on.
 	 */
-	void SetHostingMainWindow( Window window );
+	void SetHostingMainWindow(Window window);
 	
 	/** \brief Hosting render window or 0 if not set. */
-	inline Window GetHostingRenderWindow() const{ return pHostingRenderWindow; }
+	inline Window GetHostingRenderWindow() const{return pHostingRenderWindow;}
 	
 	/**
 	 * \brief Set hosting render window or 0 if not set.
@@ -251,7 +251,7 @@ public:
 	 * window on which the graphic module has to render from now on. This window
 	 * can be the same as the hosting main window but can also be different from it.
 	 */
-	void SetHostingRenderWindow( Window window );
+	void SetHostingRenderWindow(Window window);
 	
 	/** \brief Determine if a hosting main window is set. */
 	bool HasHostingMainWindow() const;

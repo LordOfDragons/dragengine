@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceChainMaxSpeed( seSourceChain *source, float newSpeed );
+	seUSetSourceChainMaxSpeed(seSourceChain *source, float newSpeed);
 	
 protected:
 	/** \brief Clean up undo action. */

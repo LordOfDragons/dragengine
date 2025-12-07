@@ -56,19 +56,19 @@ public:
 	int GetFormatCount() const;
 	
 	/** \brief File format at the given position. */
-	dealFileFormat *GetFormatAt( int index ) const;
+	dealFileFormat *GetFormatAt(int index) const;
 	
 	/** \brief File format exists. */
-	bool HasFormat( dealFileFormat *format ) const;
+	bool HasFormat(dealFileFormat *format) const;
 	
 	/** \brief Index of a file format or -1 if not found. */
-	int IndexOfFormat( dealFileFormat *format ) const;
+	int IndexOfFormat(dealFileFormat *format) const;
 	
 	/** \brief Add file format. */
-	void AddFormat( dealFileFormat *format );
+	void AddFormat(dealFileFormat *format);
 	
 	/** \brief Remove file format. */
-	void RemoveFormat( dealFileFormat *format );
+	void RemoveFormat(dealFileFormat *format);
 	
 	/** \brief Remove all file formats. */
 	void RemoveAllFormats();

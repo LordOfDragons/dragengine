@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCAASpeakGestureClear( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak );
+	ceUCAASpeakGestureClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCAASpeakGestureClear();

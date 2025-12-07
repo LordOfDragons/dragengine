@@ -49,7 +49,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic quadtree object. */
-	decDefaultQuadtree( const decVector2 &center, const decVector2 &halfSize );
+	decDefaultQuadtree(const decVector2 &center, const decVector2 &halfSize);
 	/** Cleans up the generic quadtree object. */
 	virtual ~decDefaultQuadtree();
 	/*@}*/
@@ -61,7 +61,7 @@ public:
 	 * to create a new quadtree of your own type. Do not set the parent of
 	 * quadtree. The caller is responsible for this action if applicable.
 	 */
-	virtual decQuadtree *CreateQuadtree( int quadrant ) const;
+	virtual decQuadtree *CreateQuadtree(int quadrant) const;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent();
 	/**
@@ -69,21 +69,21 @@ public:
 	 * which hosts the specified box. Returns the node where the element
 	 * has been placed into.
 	 */
-	decDefaultQuadtree *InsertIntoTree( void *element, const decVector2 &boxCenter, const decVector2 &boxHalfSize, int maxDepth = DECDO_MAX_DEPTH );
+	decDefaultQuadtree *InsertIntoTree(void *element, const decVector2 &boxCenter, const decVector2 &boxHalfSize, int maxDepth = DECDO_MAX_DEPTH);
 	/*@}*/
 	
 	/** @name Elements */
 	/*@{*/
 	/** Retrieves the number of elements. */
-	inline int GetElementCount() const{ return pElementCount; }
+	inline int GetElementCount() const{return pElementCount;}
 	/** Retrieves the element at the given index. */
-	void *GetElementAt( int index ) const;
+	void *GetElementAt(int index) const;
 	/** Retrieves the index of the given element or -1 if not found. */
-	int IndexOfElement( void *element ) const;
+	int IndexOfElement(void *element) const;
 	/** Adds a element. */
-	void AddElement( void *element );
+	void AddElement(void *element);
 	/** Removes a element. */
-	void RemoveElement( void *element );
+	void RemoveElement(void *element);
 	/** Removes all elements. */
 	void RemoveAllElements();
 	/*@}*/

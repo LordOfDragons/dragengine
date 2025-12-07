@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataProperty( gdeProperty *objectClass );
+	gdeClipboardDataProperty(gdeProperty *objectClass);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property. */
-	gdeProperty *GetProperty() const{ return pProperty; }
+	gdeProperty *GetProperty() const{return pProperty;}
 	/*@}*/
 };
 

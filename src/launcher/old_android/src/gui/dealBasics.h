@@ -9,8 +9,8 @@
 
 #ifdef EGL_CHECKCOMMANDS
 	class dealLauncher;
-	void dbgCheckEglError( dealLauncher &launcher, const char *file, int line );
-	void dbgCheckOglError( dealLauncher &launcher, const char *file, int line );
+	void dbgCheckEglError(dealLauncher &launcher, const char *file, int line);
+	void dbgCheckOglError(dealLauncher &launcher, const char *file, int line);
 	#define EGL_CHECK(launcher,cmd)    glGetError(); cmd; dbgCheckEglError(launcher, __FILE__, __LINE__)
 	#define EGLB_CHECK(launcher,cmd)   if((cmd) == EGL_FALSE) dbgCheckEglError(launcher, __FILE__, __LINE__)
 	#define OGL_CHECK(launcher, cmd)   glGetError(); cmd; dbgCheckOglError(launcher, __FILE__, __LINE__)

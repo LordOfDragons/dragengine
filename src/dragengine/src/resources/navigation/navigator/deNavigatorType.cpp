@@ -50,14 +50,14 @@ deNavigatorType::~deNavigatorType(){
 // Management
 ///////////////
 
-void deNavigatorType::SetType( int type ){
+void deNavigatorType::SetType(int type){
 	pType = type;
 }
 
-void deNavigatorType::SetFixCost( float cost ){
+void deNavigatorType::SetFixCost(float cost){
 	pFixCost = cost;
 }
 
-void deNavigatorType::SetCostPerMeter( float costPerMeter ){
+void deNavigatorType::SetCostPerMeter(float costPerMeter){
 	pCostPerMeter = costPerMeter;
 }

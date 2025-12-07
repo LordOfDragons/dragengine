@@ -45,8 +45,8 @@ deoalSharedBufferList::~deoalSharedBufferList(){
 	const int count = pBuffers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoalSharedBuffer* )pBuffers.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoalSharedBuffer*)pBuffers.GetAt(i);
 	}
 	pBuffers.RemoveAll();
 }
@@ -56,22 +56,22 @@ deoalSharedBufferList::~deoalSharedBufferList(){
 // Management
 ///////////////
 
-deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pBuffers.GetCount();
 	deoalSharedBuffer *buffer = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		buffer = ( deoalSharedBuffer* )pBuffers.GetAt( i );
-		if( ! buffer->GetInUse() ){
-			if( size > buffer->GetSize() ){
-				buffer->SetSize( size );
+	for(i=0; i<count; i++){
+		buffer = (deoalSharedBuffer*)pBuffers.GetAt(i);
+		if(! buffer->GetInUse()){
+			if(size > buffer->GetSize()){
+				buffer->SetSize(size);
 			}
-			buffer->SetInUse( true );
+			buffer->SetInUse(true);
 			return buffer;
 		}
 	}
@@ -79,23 +79,23 @@ deoalSharedBuffer *deoalSharedBufferList::ClaimBuffer( int size ){
 	buffer = NULL;
 	try{
 		buffer = new deoalSharedBuffer;
-		buffer->SetSize( size );
-		buffer->SetInUse( true );
-		pBuffers.Add( buffer );
+		buffer->SetSize(size);
+		buffer->SetInUse(true);
+		pBuffers.Add(buffer);
 		return buffer;
 		
-	}catch( const deException & ){
-		if( buffer ){
+	}catch(const deException &){
+		if(buffer){
 			delete buffer;
 		}
 		throw;
 	}
 }
 
-void deoalSharedBufferList::ReleaseBuffer( deoalSharedBuffer *buffer ){
-	if( ! buffer ){
-		DETHROW( deeInvalidParam );
+void deoalSharedBufferList::ReleaseBuffer(deoalSharedBuffer *buffer){
+	if(! buffer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	buffer->SetInUse( false );
+	buffer->SetInUse(false);
 }

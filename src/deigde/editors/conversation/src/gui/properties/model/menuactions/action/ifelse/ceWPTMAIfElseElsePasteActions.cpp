@@ -42,29 +42,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseElsePasteActions::ceWPTMAIfElseElsePasteActions( ceWindowMain &windowMain,
+ceWPTMAIfElseElsePasteActions::ceWPTMAIfElseElsePasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, int index ) :
-ceWPTMAPasteActions( windowMain, conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIndex( index )
+ceCAIfElse &ifElse, int index) :
+ceWPTMAPasteActions(windowMain, conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIndex(index)
 {
-	if( index < 0 || index > ifElse.GetElseActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > ifElse.GetElseActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
-ceWPTMAIfElseElsePasteActions::ceWPTMAIfElseElsePasteActions( ceWindowMain &windowMain,
+ceWPTMAIfElseElsePasteActions::ceWPTMAIfElseElsePasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, int index, const char *text ) :
-ceWPTMAPasteActions( windowMain, conversation, text ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIndex( index )
+ceCAIfElse &ifElse, int index, const char *text) :
+ceWPTMAPasteActions(windowMain, conversation, text),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIndex(index)
 {
-	if( index < 0 || index > ifElse.GetElseActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > ifElse.GetElseActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -73,6 +73,6 @@ pIndex( index )
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAIfElseElsePasteActions::CreateUndo( const ceConversationActionList &actions ){
-	return new ceUCAIfElsePaste( pTopic, pIfElse, NULL, actions, pIndex );
+ceUCActionPaste *ceWPTMAIfElseElsePasteActions::CreateUndo(const ceConversationActionList &actions){
+	return new ceUCAIfElsePaste(pTopic, pIfElse, NULL, actions, pIndex);
 }

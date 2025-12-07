@@ -43,33 +43,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewiDeviceAxis::dewiDeviceAxis( deWindowsInput &module ) :
-pModule( module ),
-pIndex( -1 ),
-pType( deInputDeviceAxis::eatGeneric ),
-pMinimum( -100 ),
-pMaximum( 100 ),
-pDeadZoneLower( 0 ),
-pDeadZoneUpper( 0 ),
-pFuzz( 0 ),
-pFlat( 0 ),
-pAbsolute( true ),
-pWheelOtherAxis( false ),
-pWheelChange( 0 ),
+dewiDeviceAxis::dewiDeviceAxis(deWindowsInput &module) :
+pModule(module),
+pIndex(-1),
+pType(deInputDeviceAxis::eatGeneric),
+pMinimum(-100),
+pMaximum(100),
+pDeadZoneLower(0),
+pDeadZoneUpper(0),
+pFuzz(0),
+pFlat(0),
+pAbsolute(true),
+pWheelOtherAxis(false),
+pWheelChange(0),
 
-pValue( 0.0f ),
-pChangedValue( 0.0f ),
+pValue(0.0f),
+pChangedValue(0.0f),
 
-pWICode( -1 ),
-pWinRTReadingIndexAxis( -1 ),
-pWinRTInverseAxis( false ),
-pWinRTReadingIndexSwitch( -1 ),
-pWinRTReadingDirectionSwitch( 0 ),
+pWICode(-1),
+pWinRTReadingIndexAxis(-1),
+pWinRTInverseAxis(false),
+pWinRTReadingIndexSwitch(-1),
+pWinRTReadingDirectionSwitch(0),
 pWinRTReadingButtonPositive(-1),
 pWinRTReadingButtonNegative(-1),
 pWinRTButtonPositivePressed(false),
 pWinRTButtonNegativePressed(false),
-pIsBatteryLevel( false ){
+pIsBatteryLevel(false){
 }
 
 dewiDeviceAxis::~dewiDeviceAxis(){
@@ -80,29 +80,29 @@ dewiDeviceAxis::~dewiDeviceAxis(){
 // Management
 ///////////////
 
-void dewiDeviceAxis::SetIndex( int index ){
+void dewiDeviceAxis::SetIndex(int index){
 	pIndex = index;
 }
 
-void dewiDeviceAxis::SetID( const char *id ){
+void dewiDeviceAxis::SetID(const char *id){
 	pID = id;
 }
 
-void dewiDeviceAxis::SetName( const char *name ){
+void dewiDeviceAxis::SetName(const char *name){
 	pName = name;
 }
 
-void dewiDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
+void dewiDeviceAxis::SetType(deInputDeviceAxis::eAxisTypes type){
 	pType = type;
 }
 
 
 
-void dewiDeviceAxis::SetDisplayImages( const char *name ){
+void dewiDeviceAxis::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(! name){
 		return;
 	}
 	
@@ -111,60 +111,60 @@ void dewiDeviceAxis::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/axis";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	deImage::Ref icon;
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+		pDisplayIcons.Add((deImage*)icon);
 	}
 }
 
-void dewiDeviceAxis::SetDisplayText( const char *text ){
+void dewiDeviceAxis::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void dewiDeviceAxis::SetMinimum( int minimum ){
+void dewiDeviceAxis::SetMinimum(int minimum){
 	pMinimum = minimum;
 	pUpdateDeadZone();
 }
 
-void dewiDeviceAxis::SetMaximum( int maximum ){
+void dewiDeviceAxis::SetMaximum(int maximum){
 	pMaximum = maximum;
 	pUpdateDeadZone();
 }
 
-void dewiDeviceAxis::SetFuzz( int fuzz ){
+void dewiDeviceAxis::SetFuzz(int fuzz){
 	pFuzz = fuzz;
 }
 
-void dewiDeviceAxis::SetFlat( int flat ){
+void dewiDeviceAxis::SetFlat(int flat){
 	pFlat = flat;
 	pUpdateDeadZone();
 }
 
-void dewiDeviceAxis::SetAbsolute( bool absolute ){
+void dewiDeviceAxis::SetAbsolute(bool absolute){
 	pAbsolute = absolute;
 }
 
-void dewiDeviceAxis::SetWheelOtherAxis( bool otherAxis ){
+void dewiDeviceAxis::SetWheelOtherAxis(bool otherAxis){
 	pWheelOtherAxis = otherAxis;
 }
 
-void dewiDeviceAxis::SetWheelChange( int change, int modifiers, DWORD eventTime ){
+void dewiDeviceAxis::SetWheelChange(int change, int modifiers, DWORD eventTime){
 	pWheelChange = change;
 	pLastModifiers = modifiers;
 	pLastEventTime = eventTime;
 }
 
-void dewiDeviceAxis::IncrementWheelChange( int amount, int modifiers, DWORD eventTime ){
+void dewiDeviceAxis::IncrementWheelChange(int amount, int modifiers, DWORD eventTime){
 	pWheelChange += amount;
 	pLastModifiers = modifiers;
 	pLastEventTime = eventTime;
@@ -172,32 +172,32 @@ void dewiDeviceAxis::IncrementWheelChange( int amount, int modifiers, DWORD even
 
 
 
-void dewiDeviceAxis::SetValue( float value ){
-	if( pAbsolute ){
-		value = decMath::clamp( value, -1.0f, 1.0f );
+void dewiDeviceAxis::SetValue(float value){
+	if(pAbsolute){
+		value = decMath::clamp(value, -1.0f, 1.0f);
 	}
 	pValue = value;
 }
 
 
 
-void dewiDeviceAxis::SetWICode( int code ){
+void dewiDeviceAxis::SetWICode(int code){
 	pWICode = code;
 }
 
-void dewiDeviceAxis::SetWinRTReadingIndexAxis( int index ){
+void dewiDeviceAxis::SetWinRTReadingIndexAxis(int index){
 	pWinRTReadingIndexAxis = index;
 }
 
-void dewiDeviceAxis::SetWinRTInverseAxis( bool winRTInverseAxis ){
+void dewiDeviceAxis::SetWinRTInverseAxis(bool winRTInverseAxis){
 	pWinRTInverseAxis = winRTInverseAxis;
 }
 
-void dewiDeviceAxis::SetWinRTReadingIndexSwitch( int index ){
+void dewiDeviceAxis::SetWinRTReadingIndexSwitch(int index){
 	pWinRTReadingIndexSwitch = index;
 }
 
-void dewiDeviceAxis::SetWinRTReadingDirectionSwitch( int direction ){
+void dewiDeviceAxis::SetWinRTReadingDirectionSwitch(int direction){
 	pWinRTReadingDirectionSwitch = direction;
 }
 
@@ -209,74 +209,74 @@ void dewiDeviceAxis::SetWinRTReadingButtonNegative(int index){
 	pWinRTReadingButtonNegative = index;
 }
 
-void dewiDeviceAxis::SetIsBatteryLevel( bool isBatteryLevel ){
+void dewiDeviceAxis::SetIsBatteryLevel(bool isBatteryLevel){
 	pIsBatteryLevel = isBatteryLevel;
 }
 
 
-void dewiDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
+void dewiDeviceAxis::GetInfo(deInputDeviceAxis &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	
-	info.SetDisplayImage( pDisplayImage );
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	info.SetDisplayImage(pDisplayImage);
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }
 
-void dewiDeviceAxis::SendEvents( dewiDevice &device ){
-	if( pAbsolute ){
-		if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
+void dewiDeviceAxis::SendEvents(dewiDevice &device){
+	if(pAbsolute){
+		if(fabsf(pChangedValue - pValue) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		pValue = pChangedValue;
-		device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
+		device.GetModule().AddAxisChanged(device.GetIndex(), pIndex, pValue, pLastEventTime);
 		
-	}else if( pType == deInputDeviceAxis::eatMouseWheel ){
-		if( abs( pWheelChange ) < WHEEL_DELTA ){
+	}else if(pType == deInputDeviceAxis::eatMouseWheel){
+		if(abs(pWheelChange) < WHEEL_DELTA){
 			return;
 		}
 		
 		const int change = pWheelChange / WHEEL_DELTA;
 		pWheelChange = pWheelChange % WHEEL_DELTA;
 		
-		if( pWheelOtherAxis ){
-			device.GetModule().AddMouseWheelChanged( device.GetIndex(), pIndex,
-				change, 0, pLastModifiers, pLastEventTime );
+		if(pWheelOtherAxis){
+			device.GetModule().AddMouseWheelChanged(device.GetIndex(), pIndex,
+				change, 0, pLastModifiers, pLastEventTime);
 			
 		}else{
-			device.GetModule().AddMouseWheelChanged( device.GetIndex(), pIndex,
-				0, change, pLastModifiers, pLastEventTime );
+			device.GetModule().AddMouseWheelChanged(device.GetIndex(), pIndex,
+				0, change, pLastModifiers, pLastEventTime);
 		}
 		
 	}else{
-		if( fabsf( pChangedValue ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(pChangedValue) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
 		pValue = pChangedValue;
 		pChangedValue = 0.0f;
-		device.GetModule().AddAxisChanged( device.GetIndex(), pIndex, pValue, pLastEventTime );
+		device.GetModule().AddAxisChanged(device.GetIndex(), pIndex, pValue, pLastEventTime);
 	}
 }
 
-void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
+void dewiDeviceAxis::WinRTReading(dewiDeviceWinRTController &device){
 	// get reading depending on axis type
 	int reading;
 	
-	if( pWinRTReadingIndexAxis != -1 ){
-		double realReading = device.GetReadingAxis( pWinRTReadingIndexAxis );
+	if(pWinRTReadingIndexAxis != -1){
+		double realReading = device.GetReadingAxis(pWinRTReadingIndexAxis);
 		
-		if( pWinRTInverseAxis ){
+		if(pWinRTInverseAxis){
 			realReading = 1.0 - realReading;
 		}
 
-		reading = ( int )decMath::linearStep( realReading, 0.0, 1.0, ( double )pMinimum, ( double )pMaximum );
+		reading = (int)decMath::linearStep(realReading, 0.0, 1.0, (double)pMinimum, (double)pMaximum);
 
 	}
 	else if (pWinRTReadingIndexSwitch != -1) {
@@ -368,46 +368,46 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 
 		const wrdp::BatteryReport &report = device.GetBatteryReport();
 		if(report){
-			if( report.RemainingCapacityInMilliwattHours() && report.FullChargeCapacityInMilliwattHours() ){
-				const float percentage = ( float )report.RemainingCapacityInMilliwattHours().GetInt32()
-					/ ( float )report.FullChargeCapacityInMilliwattHours().GetInt32();
-				reading = ( int )( percentage * ( float )pMaximum );
+			if(report.RemainingCapacityInMilliwattHours() && report.FullChargeCapacityInMilliwattHours()){
+				const float percentage = (float)report.RemainingCapacityInMilliwattHours().GetInt32()
+					/ (float)report.FullChargeCapacityInMilliwattHours().GetInt32();
+				reading = (int)(percentage * (float)pMaximum);
 			}
 		}
 
 	}else{
-		reading = ( pMinimum + pMaximum ) / 2;
+		reading = (pMinimum + pMaximum) / 2;
 	}
 
 	// convert reading to value
 	float value;
 
-	if( reading < pDeadZoneLower ){
-		value = decMath::linearStep( ( float )reading,
-			( float )pMinimum, ( float )pDeadZoneLower, -1.0f, 0.0f );
+	if(reading < pDeadZoneLower){
+		value = decMath::linearStep((float)reading,
+			(float)pMinimum, (float)pDeadZoneLower, -1.0f, 0.0f);
 
-	}else if( reading > pDeadZoneUpper ){
-		value = decMath::linearStep( ( float )reading,
-			( float )pDeadZoneUpper, ( float )pMaximum, 0.0f, 1.0f );
+	}else if(reading > pDeadZoneUpper){
+		value = decMath::linearStep((float)reading,
+			(float)pDeadZoneUpper, (float)pMaximum, 0.0f, 1.0f);
 
 	}else{
 		value = 0.0f;
 	}
 
 	// update
-	if( pAbsolute ){
+	if(pAbsolute){
 		pChangedValue = value;
 
 	}else{
 		pChangedValue += value;
 	}
 
-	if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(pChangedValue - pValue) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 
 	pLastEventTime = device.GetReadingTime();
-	device.SetDirtyAxesValues( true );
+	device.SetDirtyAxesValues(true);
 }
 
 
@@ -416,7 +416,7 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 ////////////
 
 void dewiDeviceAxis::pUpdateDeadZone(){
-	const int center = ( pMinimum + pMaximum ) / 2;
-	pDeadZoneLower = decMath::max( center - pFlat, pMinimum );
-	pDeadZoneUpper = decMath::min( center + pFlat, pMaximum );
+	const int center = (pMinimum + pMaximum) / 2;
+	pDeadZoneLower = decMath::max(center - pFlat, pMinimum);
+	pDeadZoneUpper = decMath::min(center + pFlat, pMaximum);
 }

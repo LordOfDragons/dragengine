@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVScaling::meUHTSetTexUVScaling( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling ){
-	if( ! world || ! sector || ! texture ) DETHROW( deeInvalidParam );
+meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling){
+	if(! world || ! sector || ! texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -52,7 +52,7 @@ meUHTSetTexUVScaling::meUHTSetTexUVScaling( meWorld *world, meHeightTerrainSecto
 	pOldScaling.y = texture->GetProjectionScalingV();
 	pNewScaling = newScaling;
 	
-	SetShortInfo( "Set Height Terrain Texture UV Scaling" );
+	SetShortInfo("Set Height Terrain Texture UV Scaling");
 	
 	world->AddReference();
 	
@@ -61,8 +61,8 @@ meUHTSetTexUVScaling::meUHTSetTexUVScaling( meWorld *world, meHeightTerrainSecto
 }
 
 meUHTSetTexUVScaling::~meUHTSetTexUVScaling(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -72,11 +72,11 @@ meUHTSetTexUVScaling::~meUHTSetTexUVScaling(){
 
 
 void meUHTSetTexUVScaling::Undo(){
-	pTexture->SetProjectionScalingU( pOldScaling.x );
-	pTexture->SetProjectionScalingV( pOldScaling.y );
+	pTexture->SetProjectionScalingU(pOldScaling.x);
+	pTexture->SetProjectionScalingV(pOldScaling.y);
 }
 
 void meUHTSetTexUVScaling::Redo(){
-	pTexture->SetProjectionScalingU( pNewScaling.x );
-	pTexture->SetProjectionScalingV( pNewScaling.y );
+	pTexture->SetProjectionScalingU(pNewScaling.x);
+	pTexture->SetProjectionScalingV(pNewScaling.y);
 }

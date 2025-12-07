@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEStatus( igdeDialogEngine &windowEngine );
+	igdeDEStatus(igdeDialogEngine &windowEngine);
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	
 	
 private:
-	void pAddSystem( deBaseSystem *system );
+	void pAddSystem(deBaseSystem *system);
 };
 
 #endif

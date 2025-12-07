@@ -47,23 +47,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-feWindowProperties::feWindowProperties( feWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+feWindowProperties::feWindowProperties(feWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelFont.TakeOver( new feWPFont( *this ) );
-	AddChild( pPanelFont, "Font" );
+	pPanelFont.TakeOver(new feWPFont(*this));
+	AddChild(pPanelFont, "Font");
 	
-	pPanelGlyph.TakeOver( new feWPGlyph( *this ) );
-	AddChild( pPanelGlyph, "Glyph" );
+	pPanelGlyph.TakeOver(new feWPGlyph(*this));
+	AddChild(pPanelGlyph, "Glyph");
 	
-	pPanelUndoHistory.TakeOver( new feWPUndoHistory( env ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory.TakeOver(new feWPUndoHistory(env));
+	AddChild(pPanelUndoHistory, "Undo");
 	
-	SetActivePanel( 0 );
+	SetActivePanel(0);
 }
 
 feWindowProperties::~feWindowProperties(){
@@ -74,8 +74,8 @@ feWindowProperties::~feWindowProperties(){
 // Management
 ///////////////
 
-void feWindowProperties::SetFont( feFont *font ){
-	( ( feWPFont& )( igdeWidget& )pPanelFont ).SetFont( font );
-	( ( feWPGlyph& )( igdeWidget& )pPanelGlyph ).SetFont( font );
-	( ( feWPUndoHistory* )pPanelUndoHistory.operator->() )->SetFont( font );
+void feWindowProperties::SetFont(feFont *font){
+	((feWPFont&)(igdeWidget&)pPanelFont).SetFont(font);
+	((feWPGlyph&)(igdeWidget&)pPanelGlyph).SetFont(font);
+	((feWPUndoHistory*)pPanelUndoHistory.operator->())->SetFont(font);
 }

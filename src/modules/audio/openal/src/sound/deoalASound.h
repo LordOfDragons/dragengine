@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound peer. */
-	deoalASound( deoalAudioThread &audioThread, deSound &sound );
+	deoalASound(deoalAudioThread &audioThread, deSound &sound);
 	
 protected:
 	/** \brief Clean up sound peer. */
@@ -83,49 +83,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/** \brief Filename of resource. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{ return pBytesPerSample; }
+	inline int GetBytesPerSample() const{return pBytesPerSample;}
 	
 	/** \brief Sample count. */
-	inline int GetSampleCount() const{ return pSampleCount; }
+	inline int GetSampleCount() const{return pSampleCount;}
 	
 	/** \brief Channel count. */
-	inline int GetChannelCount() const{ return pChannelCount; }
+	inline int GetChannelCount() const{return pChannelCount;}
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{ return pSampleRate; }
+	inline int GetSampleRate() const{return pSampleRate;}
 	
 	/** \brief Play time. */
-	inline float GetPlayTime() const{ return pPlayTime; }
+	inline float GetPlayTime() const{return pPlayTime;}
 	
 	
 	
 	/** \brief Buffer or 0 if streaming. */
-	inline ALuint GetBuffer() const{ return pBuffer; }
+	inline ALuint GetBuffer() const{return pBuffer;}
 	
 	/** \brief Buffer format. */
-	inline ALenum GetFormat() const{ return pFormat; }
+	inline ALenum GetFormat() const{return pFormat;}
 	
 	
 	
 	/** \brief Stream data or \em NULL if not loaded. */
-	inline char *GetStreamData() const{ return pStreamData; }
+	inline char *GetStreamData() const{return pStreamData;}
 	
 	/** \brief Stream data size in bytes or 0 if not loaded. */
-	inline int GetStreamDataSize() const{ return pStreamDataSize; }
+	inline int GetStreamDataSize() const{return pStreamDataSize;}
 	
 	/** \brief Sound is too large requiring streaming. */
-	inline bool GetStreaming() const{ return pStreaming; }
+	inline bool GetStreaming() const{return pStreaming;}
 	
 	/** \bnrief Sound has been at least once. */
-	inline bool IsUsed() const{ return pIsUsed; }
+	inline bool IsUsed() const{return pIsUsed;}
 	
 	
 	
@@ -140,7 +140,7 @@ public:
 	 * 
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void PreloadSound( deSound &sound );
+	void PreloadSound(deSound &sound);
 	
 	/**
 	 * \brief Prepare sound buffer if required.
@@ -169,7 +169,7 @@ private:
 	void pDetermineStreaming();
 	void pDetermineFormat();
 	
-	void pLoadEntireSound( deSound &sound );
+	void pLoadEntireSound(deSound &sound);
 };
 
 #endif

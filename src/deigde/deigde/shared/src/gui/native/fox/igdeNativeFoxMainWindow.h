@@ -38,7 +38,7 @@ class igdeMainWindow;
  * \brief FOX toolkit native main window.
  */
 class igdeNativeFoxMainWindow : public FXMainWindow{
-	FXDECLARE( igdeNativeFoxMainWindow )
+	FXDECLARE(igdeNativeFoxMainWindow)
 protected:
 	igdeNativeFoxMainWindow();
 	
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeFoxMainWindow( igdeMainWindow &owner );
+	igdeNativeFoxMainWindow(igdeMainWindow &owner);
 	
 	/** \brief Clean up container. */
 	virtual ~igdeNativeFoxMainWindow();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMainWindow* CreateNativeWidget( igdeMainWindow &owner );
+	static igdeNativeFoxMainWindow* CreateNativeWidget(igdeMainWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -69,7 +69,7 @@ public:
 	virtual void destroy();
 	
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Update window state. */
 	void UpdateWindowState();
@@ -93,20 +93,20 @@ public:
 	void SetWindowState();
 	
 	/** \brief Get main app font config. */
-	static void GetAppFontConfig( igdeFont::sConfiguration &config );
+	static void GetAppFontConfig(igdeFont::sConfiguration &config);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onConfigure( FXObject*, FXSelector, void* );
-	long onMap( FXObject*, FXSelector, void* );
-	long onClose( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
-	long onMinimized( FXObject*, FXSelector, void* );
-	long onRestored( FXObject*, FXSelector, void* );
-	long onMaximized( FXObject*, FXSelector, void* );
+	long onConfigure(FXObject*, FXSelector, void*);
+	long onMap(FXObject*, FXSelector, void*);
+	long onClose(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
+	long onMinimized(FXObject*, FXSelector, void*);
+	long onRestored(FXObject*, FXSelector, void*);
+	long onMaximized(FXObject*, FXSelector, void*);
 	/*@}*/
 	
 private:

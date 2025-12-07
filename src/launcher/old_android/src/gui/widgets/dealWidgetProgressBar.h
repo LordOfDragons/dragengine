@@ -47,10 +47,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetProgressBar( dealDisplay &display );
+	dealWidgetProgressBar(dealDisplay &display);
 	
 	/** \brief Create widget. */
-	dealWidgetProgressBar( dealDisplay &display, int minProgress, int maxProgress );
+	dealWidgetProgressBar(dealDisplay &display, int minProgress, int maxProgress);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetProgressBar();
@@ -61,19 +61,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Minimum progress range. */
-	inline int GetMinProgress() const{ return pMinProgress; }
+	inline int GetMinProgress() const{return pMinProgress;}
 	
 	/** \brief Maximum progress range. */
-	inline int GetMaxProgress() const{ return pMaxProgress; }
+	inline int GetMaxProgress() const{return pMaxProgress;}
 	
 	/** \brief Set progress range. */
-	void SetRange( int minProgress, int maxProgress );
+	void SetRange(int minProgress, int maxProgress);
 	
 	/** \brief Progress. */
-	inline int GetProgress() const{ return pProgress; }
+	inline int GetProgress() const{return pProgress;}
 	
 	/** \brief Set progress. */
-	void SetProgress( int progress );
+	void SetProgress(int progress);
 	
 	/** \brief Progress as percentage from 0 to 1. */
 	float GetProgressPercentage() const;

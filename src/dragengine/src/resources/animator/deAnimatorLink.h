@@ -118,7 +118,7 @@ public:
 	deAnimatorLink();
 	
 	/** \brief Create copy of link. */
-	deAnimatorLink( const deAnimatorLink &copy );
+	deAnimatorLink(const deAnimatorLink &copy);
 	
 	/** \brief Clean up link. */
 	~deAnimatorLink();
@@ -129,115 +129,115 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Linked controller or -1 if not set. */
-	inline int GetController() const{ return pController; }
+	inline int GetController() const{return pController;}
 	
 	/** \brief Controller is set. */
-	inline bool HasController() const{ return pController != -1; }
+	inline bool HasController() const{return pController != -1;}
 	
 	/**
 	 * \brief Set linked controller or -1 to not set.
 	 * \throws deeInvalidParam \em controller is less than -1.
 	 */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Curve. */
-	inline const decCurveBezier &GetCurve() const{ return pCurve; }
+	inline const decCurveBezier &GetCurve() const{return pCurve;}
 	
 	/** \brief Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** \brief Repeat count of input value. */
-	inline int GetRepeat() const{ return pRepeat; }
+	inline int GetRepeat() const{return pRepeat;}
 	
 	/**
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	
 	/**
 	 * \brief Bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	inline const decString &GetBone() const{ return pBone; }
+	inline const decString &GetBone() const{return pBone;}
 	
 	/**
 	 * \brief Set bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	
 	/**
 	 * \brief Bone parameter to use as input.
 	 * \version 1.6
 	 */
-	inline eBoneParameter GetBoneParameter() const{ return pBoneParameter; }
+	inline eBoneParameter GetBoneParameter() const{return pBoneParameter;}
 	
 	/**
 	 * \brief Set bone parameter to use as input.
 	 * \version 1.6
 	 */
-	void SetBoneParameter( eBoneParameter parameter );
+	void SetBoneParameter(eBoneParameter parameter);
 	
 	/**
 	 * \brief Minimum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMinimumValue() const{ return pBoneMinValue; }
+	inline float GetBoneMinimumValue() const{return pBoneMinValue;}
 	
 	/**
 	 * \brief Maximum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMaximumValue() const{ return pBoneMaxValue; }
+	inline float GetBoneMaximumValue() const{return pBoneMaxValue;}
 	
 	/**
 	 * \brief Set bone value range.
 	 * \version 1.6
 	 */
-	void SetBoneValueRange( float minimum, float maximum );
+	void SetBoneValueRange(float minimum, float maximum);
 	
 	/**
 	 * \brief Vertex position set to use as input or empty string to not use.
 	 * \version 1.17
 	 */
-	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	inline const decString &GetVertexPositionSet() const{return pVertexPositionSet;}
 	
 	/**
 	 * \brief Set vertex position set to use as input or empty string to not use.
 	 * \version 1.17
 	 */
-	void SetVertexPositionSet( const char *vertexPositionSet );
+	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/**
 	 * \brief Minimum vertex position set value.
 	 * \version 1.17
 	 */
-	inline float GetVertexPositionSetMinimumValue() const{ return pVertexPositionSetMinValue; }
+	inline float GetVertexPositionSetMinimumValue() const{return pVertexPositionSetMinValue;}
 	
 	/**
 	 * \brief Maximum vertex position set value.
 	 * \version 1.17
 	 */
-	inline float GetVertexPositionSetMaximumValue() const{ return pVertexPositionSetMaxValue; }
+	inline float GetVertexPositionSetMaximumValue() const{return pVertexPositionSetMaxValue;}
 	
 	/**
 	 * \brief Set vertex position set range.
 	 * \version 1.17
 	 */
-	void SetVertexPositionSetValueRange( float minimum, float maximum );
+	void SetVertexPositionSetValueRange(float minimum, float maximum);
 	
 	/**
 	 * \brief Wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	inline bool GetWrapY() const{ return pWrapY; }
+	inline bool GetWrapY() const{return pWrapY;}
 	
 	/**
 	 * \brief Set to wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	void SetWrapY( bool wrap );
+	void SetWrapY(bool wrap);
 	/*@}*/
 	
 	
@@ -245,7 +245,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	deAnimatorLink &operator=( const deAnimatorLink &copy );
+	deAnimatorLink &operator=(const deAnimatorLink &copy);
 	/*@}*/
 };
 

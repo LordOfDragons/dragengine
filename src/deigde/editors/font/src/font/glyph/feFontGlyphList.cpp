@@ -55,17 +55,17 @@ int feFontGlyphList::GetGlyphCount() const{
 	return pGlyphs.GetCount();
 }
 
-feFontGlyph *feFontGlyphList::GetGlyphAt( int index ) const{
-	return ( feFontGlyph* )pGlyphs.GetAt( index );
+feFontGlyph *feFontGlyphList::GetGlyphAt(int index) const{
+	return (feFontGlyph*)pGlyphs.GetAt(index);
 }
 
-feFontGlyph *feFontGlyphList::GetGlyphWithCode( int code ) const{
+feFontGlyph *feFontGlyphList::GetGlyphWithCode(int code) const{
 	int g, count = pGlyphs.GetCount();
 	feFontGlyph *glyph;
 	
-	for( g=0; g<count; g++ ){
-		glyph = ( feFontGlyph* )pGlyphs.GetAt( g );
-		if( glyph->GetCode() == code ){
+	for(g=0; g<count; g++){
+		glyph = (feFontGlyph*)pGlyphs.GetAt(g);
+		if(glyph->GetCode() == code){
 			return glyph;
 		}
 	}
@@ -73,15 +73,15 @@ feFontGlyph *feFontGlyphList::GetGlyphWithCode( int code ) const{
 	return NULL;
 }
 
-int feFontGlyphList::IndexOfGlyph( feFontGlyph *glyph ) const{
-	return pGlyphs.IndexOf( glyph );
+int feFontGlyphList::IndexOfGlyph(feFontGlyph *glyph) const{
+	return pGlyphs.IndexOf(glyph);
 }
 
-int feFontGlyphList::IndexOfGlyphWithCode( int code ) const{
+int feFontGlyphList::IndexOfGlyphWithCode(int code) const{
 	int g, count = pGlyphs.GetCount();
 	
-	for( g=0; g<count; g++ ){
-		if( ( ( feFontGlyph* )pGlyphs.GetAt( g ) )->GetCode() == code ){
+	for(g=0; g<count; g++){
+		if(((feFontGlyph*)pGlyphs.GetAt(g))->GetCode() == code){
 			return g;
 		}
 	}
@@ -89,15 +89,15 @@ int feFontGlyphList::IndexOfGlyphWithCode( int code ) const{
 	return -1;
 }
 
-bool feFontGlyphList::HasGlyph( feFontGlyph *glyph ) const{
-	return pGlyphs.Has( glyph );
+bool feFontGlyphList::HasGlyph(feFontGlyph *glyph) const{
+	return pGlyphs.Has(glyph);
 }
 
-bool feFontGlyphList::HasGlyphWithCode( int code ) const{
+bool feFontGlyphList::HasGlyphWithCode(int code) const{
 	int g, count = pGlyphs.GetCount();
 	
-	for( g=0; g<count; g++ ){
-		if( ( ( feFontGlyph* )pGlyphs.GetAt( g ) )->GetCode() == code ){
+	for(g=0; g<count; g++){
+		if(((feFontGlyph*)pGlyphs.GetAt(g))->GetCode() == code){
 			return true;
 		}
 	}
@@ -105,20 +105,20 @@ bool feFontGlyphList::HasGlyphWithCode( int code ) const{
 	return false;
 }
 
-void feFontGlyphList::AddGlyph( feFontGlyph *glyph ){
-	if( ! glyph || HasGlyphWithCode( glyph->GetCode() ) ) DETHROW( deeInvalidParam );
+void feFontGlyphList::AddGlyph(feFontGlyph *glyph){
+	if(! glyph || HasGlyphWithCode(glyph->GetCode())) DETHROW(deeInvalidParam);
 	
-	pGlyphs.Add( glyph );
+	pGlyphs.Add(glyph);
 }
 
-void feFontGlyphList::RemoveGlyph( feFontGlyph *glyph ){
-	if( ! glyph ) DETHROW( deeInvalidParam );
+void feFontGlyphList::RemoveGlyph(feFontGlyph *glyph){
+	if(! glyph) DETHROW(deeInvalidParam);
 	
-	pGlyphs.Remove( glyph );
+	pGlyphs.Remove(glyph);
 }
 
-void feFontGlyphList::RemoveGlyphWithCode ( int code ) {
-	pGlyphs.RemoveIfPresent( GetGlyphWithCode( code ) );
+void feFontGlyphList::RemoveGlyphWithCode (int code) {
+	pGlyphs.RemoveIfPresent(GetGlyphWithCode(code));
 }
 
 void feFontGlyphList::RemoveAllGlyphs(){
@@ -127,7 +127,7 @@ void feFontGlyphList::RemoveAllGlyphs(){
 
 
 
-feFontGlyphList &feFontGlyphList::operator=( const feFontGlyphList &list ){
+feFontGlyphList &feFontGlyphList::operator=(const feFontGlyphList &list){
 	pGlyphs = list.pGlyphs;
 	return *this;
 }

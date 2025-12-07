@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightFindContent( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightFindContent(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTSkyLightFindContent();
@@ -65,10 +65,10 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Elapsed time. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/** Finished semaphore. */
-	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
+	inline deSemaphore &GetSemaphore(){return pSemaphore;}
 	/*@}*/
 };
 

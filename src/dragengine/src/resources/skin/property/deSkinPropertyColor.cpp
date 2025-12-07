@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyColor::deSkinPropertyColor( const char *type ) : deSkinProperty( type ){
+deSkinPropertyColor::deSkinPropertyColor(const char *type) : deSkinProperty(type){
 }
 
 deSkinPropertyColor::~deSkinPropertyColor(){
@@ -48,7 +48,7 @@ deSkinPropertyColor::~deSkinPropertyColor(){
 // Management
 ///////////////
 
-void deSkinPropertyColor::SetColor( const decColor &color ){
+void deSkinPropertyColor::SetColor(const decColor &color){
 	pColor = color;
 }
 
@@ -57,6 +57,6 @@ void deSkinPropertyColor::SetColor( const decColor &color ){
 // Visiting
 /////////////
 
-void deSkinPropertyColor::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitColor( *this );
+void deSkinPropertyColor::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitColor(*this);
 }

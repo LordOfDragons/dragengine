@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceToggleEnabled( seSource *source );
+	seUSourceToggleEnabled(seSource *source);
 	
 protected:
 	/** \brief Clean up undo action. */

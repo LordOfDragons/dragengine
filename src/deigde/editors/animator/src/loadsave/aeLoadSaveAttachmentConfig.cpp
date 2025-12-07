@@ -53,10 +53,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeLoadSaveAttachmentConfig::aeLoadSaveAttachmentConfig( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ),
-pName( "Attachment Configuration" ),
-pPattern( ".deac" ){
+aeLoadSaveAttachmentConfig::aeLoadSaveAttachmentConfig(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource),
+pName("Attachment Configuration"),
+pPattern(".deac"){
 }
 
 
@@ -64,28 +64,28 @@ pPattern( ".deac" ){
 // Loading and saving
 ///////////////////////
 
-void aeLoadSaveAttachmentConfig::LoadAttachmentConfig( aeAnimator &animator, decBaseFileReader &reader ){
+void aeLoadSaveAttachmentConfig::LoadAttachmentConfig(aeAnimator &animator, decBaseFileReader &reader){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "attachmentConfig" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "attachmentConfig") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfiguration( *root, animator );
+	pReadConfiguration(*root, animator);
 }
 
-void aeLoadSaveAttachmentConfig::SaveAttachmentConfig( const aeAnimator &animator, decBaseFileWriter &writer ){
-	decXmlWriter xmlWriter( &writer );
+void aeLoadSaveAttachmentConfig::SaveAttachmentConfig(const aeAnimator &animator, decBaseFileWriter &writer){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfiguration( xmlWriter, animator );
+	pWriteConfiguration(xmlWriter, animator);
 }
 
 
@@ -93,173 +93,173 @@ void aeLoadSaveAttachmentConfig::SaveAttachmentConfig( const aeAnimator &animato
 // Private Functions
 //////////////////////
 
-void aeLoadSaveAttachmentConfig::pWriteConfiguration( decXmlWriter &writer, const aeAnimator &animator ){
-	writer.WriteOpeningTag( "attachmentConfig", false, true );
+void aeLoadSaveAttachmentConfig::pWriteConfiguration(decXmlWriter &writer, const aeAnimator &animator){
+	writer.WriteOpeningTag("attachmentConfig", false, true);
 	
 	const int attachmentCount = animator.GetAttachmentCount();
 	int i;
 	
-	for( i=0; i<attachmentCount; i++ ){
-		pWriteAttachment( writer, *animator.GetAttachmentAt( i ) );
+	for(i=0; i<attachmentCount; i++){
+		pWriteAttachment(writer, *animator.GetAttachmentAt(i));
 	}
 	
-	writer.WriteClosingTag( "attachmentConfig", true );
+	writer.WriteClosingTag("attachmentConfig", true);
 }
 
-void aeLoadSaveAttachmentConfig::pWriteAttachment( decXmlWriter &writer, const aeAttachment &attachment ){
+void aeLoadSaveAttachmentConfig::pWriteAttachment(decXmlWriter &writer, const aeAttachment &attachment){
 	const igdeWObject &wpobject = attachment.GetObjectWrapper();
 	const decDVector &position = wpobject.GetPosition();
-	const decVector orientation( wpobject.GetOrientation().GetEulerAngles() / DEG2RAD );
+	const decVector orientation(wpobject.GetOrientation().GetEulerAngles() / DEG2RAD);
 	const decVector &scaling = wpobject.GetScaling();
 	
-	writer.WriteOpeningTag( "attachment" );
+	writer.WriteOpeningTag("attachment");
 	
-	writer.WriteDataTagString( "name", attachment.GetName() );
+	writer.WriteDataTagString("name", attachment.GetName());
 	
-	switch( attachment.GetAttachType() ){
+	switch(attachment.GetAttachType()){
 	case aeAttachment::eatNone:
-		writer.WriteDataTagString( "attachType", "none" );
+		writer.WriteDataTagString("attachType", "none");
 		break;
 		
 	case aeAttachment::eatBone:
-		writer.WriteDataTagString( "attachType", "bone" );
+		writer.WriteDataTagString("attachType", "bone");
 		break;
 		
 	case aeAttachment::eatRig:
-		writer.WriteDataTagString( "attachType", "rig" );
+		writer.WriteDataTagString("attachType", "rig");
 		break;
 	};
 	
-	writer.WriteDataTagString( "attachBone", attachment.GetBoneName() );
+	writer.WriteDataTagString("attachBone", attachment.GetBoneName());
 	
-	if( wpobject.GetGDClass() ){
-		writer.WriteDataTagString( "gdclass", wpobject.GetGDClass()->GetName() );
+	if(wpobject.GetGDClass()){
+		writer.WriteDataTagString("gdclass", wpobject.GetGDClass()->GetName());
 	}
 	
-	if( ! position.IsEqualTo( decDVector() ) ){
-		writer.WriteOpeningTagStart( "position" );
-		writer.WriteAttributeDouble( "x", position.x );
-		writer.WriteAttributeDouble( "y", position.y );
-		writer.WriteAttributeDouble( "z", position.z );
-		writer.WriteOpeningTagEnd( true );
+	if(! position.IsEqualTo(decDVector())){
+		writer.WriteOpeningTagStart("position");
+		writer.WriteAttributeDouble("x", position.x);
+		writer.WriteAttributeDouble("y", position.y);
+		writer.WriteAttributeDouble("z", position.z);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if( ! orientation.IsEqualTo( decVector() ) ){
-		writer.WriteOpeningTagStart( "orientation" );
-		writer.WriteAttributeFloat( "x", orientation.x );
-		writer.WriteAttributeFloat( "y", orientation.y );
-		writer.WriteAttributeFloat( "z", orientation.z );
-		writer.WriteOpeningTagEnd( true );
+	if(! orientation.IsEqualTo(decVector())){
+		writer.WriteOpeningTagStart("orientation");
+		writer.WriteAttributeFloat("x", orientation.x);
+		writer.WriteAttributeFloat("y", orientation.y);
+		writer.WriteAttributeFloat("z", orientation.z);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if( ! scaling.IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
-		writer.WriteOpeningTagStart( "scaling" );
-		writer.WriteAttributeFloat( "x", scaling.x );
-		writer.WriteAttributeFloat( "y", scaling.y );
-		writer.WriteAttributeFloat( "z", scaling.z );
-		writer.WriteOpeningTagEnd( true );
+	if(! scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+		writer.WriteOpeningTagStart("scaling");
+		writer.WriteAttributeFloat("x", scaling.x);
+		writer.WriteAttributeFloat("y", scaling.y);
+		writer.WriteAttributeFloat("z", scaling.z);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if( ! wpobject.GetVisible() ){
-		writer.WriteDataTagBool( "visible", false );
+	if(! wpobject.GetVisible()){
+		writer.WriteDataTagBool("visible", false);
 	}
 	
-	if( wpobject.GetDynamicCollider() ){
-		writer.WriteDataTagBool( "dynamicCollider", true );
+	if(wpobject.GetDynamicCollider()){
+		writer.WriteDataTagBool("dynamicCollider", true);
 	}
 	
-	writer.WriteClosingTag( "attachment" );
+	writer.WriteClosingTag("attachment");
 }
 
 
 
-void aeLoadSaveAttachmentConfig::pReadConfiguration( const decXmlElementTag &root, aeAnimator &animator ){
+void aeLoadSaveAttachmentConfig::pReadConfiguration(const decXmlElementTag &root, aeAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
 	animator.RemoveAllAttachments();
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "attachment" ) == 0 ){
-				pReadAttachment( *tag, animator );
+		if(tag){
+			if(strcmp(tag->GetName(), "attachment") == 0){
+				pReadAttachment(*tag, animator);
 				
 			}else{
-				LogWarnUnknownTag( root, *tag );
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
 	}
 }
 
-void aeLoadSaveAttachmentConfig::pReadAttachment( const decXmlElementTag &root, aeAnimator &animator ){
+void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, aeAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	aeAttachment *attachment = NULL;
 	int i;
 	
 	try{
-		attachment = new aeAttachment( animator.GetEnvironment() );
+		attachment = new aeAttachment(animator.GetEnvironment());
 		
-		for( i=0; i<elementCount; i++ ){
-			const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		for(i=0; i<elementCount; i++){
+			const decXmlElementTag * const tag = root.GetElementIfTag(i);
 			
-			if( tag ){
-				if( strcmp( tag->GetName(), "name" ) == 0 ){
-					attachment->SetName( GetCDataString( *tag ) );
+			if(tag){
+				if(strcmp(tag->GetName(), "name") == 0){
+					attachment->SetName(GetCDataString(*tag));
 					
-				}else if( strcmp( tag->GetName(), "attachType" ) == 0 ){
-					const decString typeName( GetCDataString( *tag ) );
+				}else if(strcmp(tag->GetName(), "attachType") == 0){
+					const decString typeName(GetCDataString(*tag));
 					
-					if( typeName == "none" ){
-						attachment->SetAttachType( aeAttachment::eatNone );
+					if(typeName == "none"){
+						attachment->SetAttachType(aeAttachment::eatNone);
 						
-					}else if( typeName == "bone" ){
-						attachment->SetAttachType( aeAttachment::eatBone );
+					}else if(typeName == "bone"){
+						attachment->SetAttachType(aeAttachment::eatBone);
 						
-					}else if( typeName == "rig" ){
-						attachment->SetAttachType( aeAttachment::eatRig );
+					}else if(typeName == "rig"){
+						attachment->SetAttachType(aeAttachment::eatRig);
 						
 					}else{
-						LogWarnUnknownValue( *tag, typeName );
+						LogWarnUnknownValue(*tag, typeName);
 					}
 					
-				}else if( strcmp( tag->GetName(), "attachBone" ) == 0 ){
-					attachment->SetBoneName( GetCDataString( *tag ) );
+				}else if(strcmp(tag->GetName(), "attachBone") == 0){
+					attachment->SetBoneName(GetCDataString(*tag));
 					
-				}else if( strcmp( tag->GetName(), "gdclass" ) == 0 ){
-					attachment->GetObjectWrapper()->SetGDClassName( GetCDataString( *tag ) );
+				}else if(strcmp(tag->GetName(), "gdclass") == 0){
+					attachment->GetObjectWrapper()->SetGDClassName(GetCDataString(*tag));
 					
-				}else if( strcmp( tag->GetName(), "position" ) == 0 ){
-					attachment->GetObjectWrapper()->SetPosition( decDVector( GetAttributeDouble( *tag, "x" ),
-						GetAttributeDouble( *tag, "y" ), GetAttributeDouble( *tag, "z" ) ) );
+				}else if(strcmp(tag->GetName(), "position") == 0){
+					attachment->GetObjectWrapper()->SetPosition(decDVector(GetAttributeDouble(*tag, "x"),
+						GetAttributeDouble(*tag, "y"), GetAttributeDouble(*tag, "z")));
 					
-				}else if( strcmp( tag->GetName(), "orientation" ) == 0 ){
-					attachment->GetObjectWrapper()->SetOrientation( decQuaternion::CreateFromEuler(
-						GetAttributeFloat( *tag, "x" ) * DEG2RAD, GetAttributeFloat( *tag, "y" ) * DEG2RAD,
-						GetAttributeFloat( *tag, "z" ) * DEG2RAD ) );
+				}else if(strcmp(tag->GetName(), "orientation") == 0){
+					attachment->GetObjectWrapper()->SetOrientation(decQuaternion::CreateFromEuler(
+						GetAttributeFloat(*tag, "x") * DEG2RAD, GetAttributeFloat(*tag, "y") * DEG2RAD,
+						GetAttributeFloat(*tag, "z") * DEG2RAD));
 					
-				}else if( strcmp( tag->GetName(), "scaling" ) == 0 ){
-					attachment->GetObjectWrapper()->SetScaling( decVector( GetAttributeFloat( *tag, "x" ),
-						GetAttributeFloat( *tag, "y" ), GetAttributeFloat( *tag, "z" ) ) );
+				}else if(strcmp(tag->GetName(), "scaling") == 0){
+					attachment->GetObjectWrapper()->SetScaling(decVector(GetAttributeFloat(*tag, "x"),
+						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
 					
-				}else if( strcmp( tag->GetName(), "visible" ) == 0 ){
-					attachment->GetObjectWrapper()->SetVisible( GetCDataBool( *tag ) );
+				}else if(strcmp(tag->GetName(), "visible") == 0){
+					attachment->GetObjectWrapper()->SetVisible(GetCDataBool(*tag));
 					
-				}else if( strcmp( tag->GetName(), "dynamicCollider" ) == 0 ){
-					attachment->GetObjectWrapper()->SetDynamicCollider( GetCDataBool( *tag ) );
+				}else if(strcmp(tag->GetName(), "dynamicCollider") == 0){
+					attachment->GetObjectWrapper()->SetDynamicCollider(GetCDataBool(*tag));
 					
 				}else{
-					LogWarnUnknownTag( root, *tag );
+					LogWarnUnknownTag(root, *tag);
 				}
 			}
 		}
 		
-		animator.AddAttachment( attachment );
+		animator.AddAttachment(attachment);
 		attachment->FreeReference();
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			attachment->FreeReference();
 		}
 		throw;

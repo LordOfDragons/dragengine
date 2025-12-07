@@ -50,8 +50,8 @@ igdeLoggerHistoryListener::~igdeLoggerHistoryListener(){
 // Management
 ///////////////
 
-void igdeLoggerHistoryListener::MessageAdded( igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry ){
+void igdeLoggerHistoryListener::MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry){
 }
 
-void igdeLoggerHistoryListener::HistoryCleared( igdeLoggerHistory *history ){
+void igdeLoggerHistoryListener::HistoryCleared(igdeLoggerHistory *history){
 }

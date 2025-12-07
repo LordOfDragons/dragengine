@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUMoveSourceUp( seSynthesizer *synthesizer, seSource *source );
+	seUMoveSourceUp(seSynthesizer *synthesizer, seSource *source);
 	
 protected:
 	/** \brief Clean up undo action. */

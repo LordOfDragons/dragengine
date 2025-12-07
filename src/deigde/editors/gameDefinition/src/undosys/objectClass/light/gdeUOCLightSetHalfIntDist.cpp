@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHalfIntDist::gdeUOCLightSetHalfIntDist( gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetHalfIntDist::gdeUOCLightSetHalfIntDist(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set half intensity distance" );
+	SetShortInfo("Light set half intensity distance");
 	
 	pOldValue = light->GetHalfIntensityDistance();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetHalfIntDist::~gdeUOCLightSetHalfIntDist(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetHalfIntDist::~gdeUOCLightSetHalfIntDist(){
 ///////////////
 
 void gdeUOCLightSetHalfIntDist::Undo(){
-	pLight->SetHalfIntensityDistance( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHalfIntensityDistance(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetHalfIntDist::Redo(){
-	pLight->SetHalfIntensityDistance( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetHalfIntensityDistance(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

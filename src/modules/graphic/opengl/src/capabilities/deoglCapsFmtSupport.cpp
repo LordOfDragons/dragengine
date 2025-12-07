@@ -58,18 +58,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCapsFmtSupport::deoglCapsFmtSupport( deoglCapabilities &capabilities ) :
-pCapabilities( capabilities )
+deoglCapsFmtSupport::deoglCapsFmtSupport(deoglCapabilities &capabilities) :
+pCapabilities(capabilities)
 {
 	int i;
 	
-	for( i=0; i<UseTextureFormatCount; i++ ){
-		pUseTex2DFormats[ i ] = NULL;
-		pUseTexCubeFormats[ i ] = NULL;
-		pUseArrTexFormats[ i ] = NULL;
-		pUseFBOTex2DFormats[ i ] = NULL;
-		pUseFBOTexCubeFormats[ i ] = NULL;
-		pUseFBOArrTexFormats[ i ] = NULL;
+	for(i=0; i<UseTextureFormatCount; i++){
+		pUseTex2DFormats[i] = NULL;
+		pUseTexCubeFormats[i] = NULL;
+		pUseArrTexFormats[i] = NULL;
+		pUseFBOTex2DFormats[i] = NULL;
+		pUseFBOTexCubeFormats[i] = NULL;
+		pUseFBOArrTexFormats[i] = NULL;
 	}
 }
 
@@ -79,51 +79,51 @@ pCapabilities( capabilities )
 ///////////////
 
 const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseTex2DFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pUseTex2DFormats[ type ];
+	return pUseTex2DFormats[type];
 }
 
 const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseTexCubeFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pUseTexCubeFormats[ type ];
+	return pUseTexCubeFormats[type];
 }
 
 const deoglCapsTextureFormat* deoglCapsFmtSupport::GetUseArrayTexFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pUseArrTexFormats[ type ];
+	return pUseArrTexFormats[type];
 }
 
 const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseFBOTex2DFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pUseFBOTex2DFormats[ type ];
+	return pUseFBOTex2DFormats[type];
 }
 
 const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseFBOTexCubeFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pUseFBOTexCubeFormats[ type ];
+	return pUseFBOTexCubeFormats[type];
 }
 
 const deoglCapsTextureFormat *deoglCapsFmtSupport::GetUseFBOArrayTexFormatFor(
-eUseTextureFormats type ) const{
-	if( type < 0 || type >= UseTextureFormatCount ){
-		DETHROW( deeInvalidParam );
+eUseTextureFormats type) const{
+	if(type < 0 || type >= UseTextureFormatCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pUseFBOArrTexFormats[ type ];
+	return pUseFBOArrTexFormats[type];
 }
 
 
@@ -171,10 +171,10 @@ const char *deoglCapsFmtSupport::GetTextureFormatName(eUseTextureFormats type) c
 
 
 
-void deoglCapsFmtSupport::DetectFormats( GLuint fbo ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+void deoglCapsFmtSupport::DetectFormats(GLuint fbo){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
-	OGL_CHECK( renderThread, pglBindFramebuffer( GL_FRAMEBUFFER, fbo ) );
+	OGL_CHECK(renderThread, pglBindFramebuffer(GL_FRAMEBUFFER, fbo));
 	
 	// test 2d-texture and cube-texture for texture mapping
 	pDetectTex2DFormats();
@@ -182,9 +182,9 @@ void deoglCapsFmtSupport::DetectFormats( GLuint fbo ){
 	pDetectArrayTexFormats();
 	
 	// test 2d-texture and cube-texture as color/depth/stencil targets
-	pDetectFBOTex2DFormats( fbo );
-	pDetectFBOTexCubeFormats( fbo );
-	pDetectFBOArrayTexFormats( fbo );
+	pDetectFBOTex2DFormats(fbo);
+	pDetectFBOTexCubeFormats(fbo);
+	pDetectFBOArrayTexFormats(fbo);
 	
 	#ifdef OS_ANDROID
 	/*
@@ -252,36 +252,36 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 	int f, p;
 	
 	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
+	for(f=0; f<ETTF_COUNT; f++){
 		pTestTex2DFormat(vTestTextureFormats[f].format, vTestTextureFormats[f].pixelFormat,
 			vTestTextureFormats[f].pixelType, vTestTextureFormats[f].bitsPerPixel,
 			vTestTextureFormats[f].flags, vTestTextureFormats[f].name);
 	}
 	
 	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseTex2DFormats[ vTestProgram[ p ].target ] ){
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(! pUseTex2DFormats[vTestProgram[p].target]){
 			pUseTex2DFormats[vTestProgram[p].target] = pFoundTex2DFormats.GetFormatWith(
 				vTestTextureFormats[vTestProgram[p].testFormat].format);
 		}
 	}
 	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseTex2DFormats[ vTestFallback[ p ].target ] ){
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(! pUseTex2DFormats[vTestFallback[p].target]){
 			pUseTex2DFormats[vTestFallback[p].target] =
 				pUseTex2DFormats[vTestFallback[p].fallbackTarget];
 		}
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth_Stencil, eutfDepth16 };
+	const int required[11] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth_Stencil, eutfDepth16};
 	
-	for( p=0; p<11; p++ ){
-		if( ! pUseTex2DFormats[ required[ p ] ] ){
+	for(p=0; p<11; p++){
+		if(! pUseTex2DFormats[required[p]]){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for 2D-Textures!",
-				vTextureFormatNames[ required[ p ] ] );
+				vTextureFormatNames[required[p]]);
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
@@ -290,7 +290,7 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 					pFoundTex2DFormats.GetFormatAt(i)->GetName().GetString());
 			}
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
@@ -299,36 +299,36 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 	int f, p;
 	
 	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
+	for(f=0; f<ETTF_COUNT; f++){
 		pTestTexCubeFormat(vTestTextureFormats[f].format, vTestTextureFormats[f].pixelFormat,
 			vTestTextureFormats[f].pixelType, vTestTextureFormats[f].bitsPerPixel,
 			vTestTextureFormats[f].flags, vTestTextureFormats[f].name);
 	}
 	
 	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseTexCubeFormats[ vTestProgram[ p ].target ] ){
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(! pUseTexCubeFormats[vTestProgram[p].target]){
 			pUseTexCubeFormats[vTestProgram[p].target] = pFoundTexCubeFormats.GetFormatWith(
 				vTestTextureFormats[vTestProgram[p].testFormat].format);
 		}
 	}
 	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseTexCubeFormats[ vTestFallback[ p ].target ] ){
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(! pUseTexCubeFormats[vTestFallback[p].target]){
 			pUseTexCubeFormats[vTestFallback[p].target] =
 				pUseTexCubeFormats[vTestFallback[p].fallbackTarget];
 		}
 	}
 	
 	// verify that all required formats are found
-	const int required[ 10 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth16 };
+	const int required[10] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth16};
 	
-	for( p=0; p<10; p++ ){
-		if( ! pUseTexCubeFormats[ required[ p ] ] ){
+	for(p=0; p<10; p++){
+		if(! pUseTexCubeFormats[required[p]]){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for Cube-Textures!",
-				vTextureFormatNames[ required[ p ] ] );
+				vTextureFormatNames[required[p]]);
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
@@ -337,7 +337,7 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 					pFoundTexCubeFormats.GetFormatAt(i)->GetName().GetString());
 			}
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
@@ -346,37 +346,37 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 	int f, p;
 	
 	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
+	for(f=0; f<ETTF_COUNT; f++){
 		pTestArrayTexFormat(vTestTextureFormats[f].format, vTestTextureFormats[f].pixelFormat,
 			vTestTextureFormats[f].pixelType, vTestTextureFormats[f].bitsPerPixel,
 			vTestTextureFormats[f].flags, vTestTextureFormats[f].name);
 	}
 	
 	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseArrTexFormats[ vTestProgram[ p ].target ] ){
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(! pUseArrTexFormats[vTestProgram[p].target]){
 			pUseArrTexFormats[vTestProgram[p].target] = pFoundArrTexFormats.GetFormatWith(
 				vTestTextureFormats[vTestProgram[p].testFormat].format);
 		}
 	}
 	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseArrTexFormats[ vTestFallback[ p ].target ] ){
-			pUseArrTexFormats[ vTestFallback[ p ].target ] =
-				pUseArrTexFormats[ vTestFallback[ p ].fallbackTarget ];
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(! pUseArrTexFormats[vTestFallback[p].target]){
+			pUseArrTexFormats[vTestFallback[p].target] =
+				pUseArrTexFormats[vTestFallback[p].fallbackTarget];
 		}
 	}
 	
 	// verify that all required formats are found
-	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+	const int required[15] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
 		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
-		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
+		eutfDepth, eutfDepth_Stencil, eutfDepth16};
 	
-	for( p=0; p<15; p++ ){
-		if( ! pUseArrTexFormats[ required[ p ] ] ){
+	for(p=0; p<15; p++){
+		if(! pUseArrTexFormats[required[p]]){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for 2D-Array-Textures!",
-				vTextureFormatNames[ required[ p ] ] );
+				vTextureFormatNames[required[p]]);
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
@@ -385,16 +385,16 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 					pFoundArrTexFormats.GetFormatAt(i)->GetName().GetString());
 			}
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
 
-void deoglCapsFmtSupport::pDetectFBOTex2DFormats( GLuint fbo ){
+void deoglCapsFmtSupport::pDetectFBOTex2DFormats(GLuint fbo){
 	int f, p;
 	
 	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
+	for(f=0; f<ETTF_COUNT; f++){
 		pTestFBOTex2DFormat(fbo, vTestTextureFormats[f].format,
 			vTestTextureFormats[f].pixelFormat, vTestTextureFormats[f].pixelType,
 			vTestTextureFormats[f].bitsPerPixel, vTestTextureFormats[f].flags,
@@ -402,29 +402,29 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats( GLuint fbo ){
 	}
 	
 	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseFBOTex2DFormats[ vTestProgram[ p ].target ] ){
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(! pUseFBOTex2DFormats[vTestProgram[p].target]){
 			pUseFBOTex2DFormats[vTestProgram[p].target] = pFoundFBOTex2DFormats.GetFormatWith(
 					vTestTextureFormats[vTestProgram[p].testFormat].format);
 		}
 	}
 	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseFBOTex2DFormats[ vTestFallback[ p ].target ] ){
-			pUseFBOTex2DFormats[ vTestFallback[ p ].target ] =
-				pUseFBOTex2DFormats[ vTestFallback[ p ].fallbackTarget ];
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(! pUseFBOTex2DFormats[vTestFallback[p].target]){
+			pUseFBOTex2DFormats[vTestFallback[p].target] =
+				pUseFBOTex2DFormats[vTestFallback[p].fallbackTarget];
 		}
 	}
 	
 	// verify that all required formats are found
-	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth_Stencil, eutfDepth16 };
+	const int required[11] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth_Stencil, eutfDepth16};
 	
-	for( p=0; p<11; p++ ){
-		if( ! pUseFBOTex2DFormats[ required[ p ] ] ){
+	for(p=0; p<11; p++){
+		if(! pUseFBOTex2DFormats[required[p]]){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO 2D-Textures!",
-				vTextureFormatNames[ required[ p ] ] );
+				vTextureFormatNames[required[p]]);
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
@@ -433,16 +433,16 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats( GLuint fbo ){
 					pFoundFBOTex2DFormats.GetFormatAt(i)->GetName().GetString());
 			}
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
 
-void deoglCapsFmtSupport::pDetectFBOTexCubeFormats( GLuint fbo ){
+void deoglCapsFmtSupport::pDetectFBOTexCubeFormats(GLuint fbo){
 	int f, p;
 	
 	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
+	for(f=0; f<ETTF_COUNT; f++){
 		pTestFBOTexCubeFormat(fbo, vTestTextureFormats[f].format,
 			vTestTextureFormats[f].pixelFormat, vTestTextureFormats[f].pixelType,
 			vTestTextureFormats[f].bitsPerPixel, vTestTextureFormats[f].flags,
@@ -450,29 +450,29 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats( GLuint fbo ){
 	}
 	
 	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseFBOTexCubeFormats[ vTestProgram[ p ].target ] ){
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(! pUseFBOTexCubeFormats[vTestProgram[p].target]){
 			pUseFBOTexCubeFormats[vTestProgram[p].target] = pFoundFBOTexCubeFormats.GetFormatWith(
 				vTestTextureFormats[vTestProgram[p].testFormat].format);
 		}
 	}
 	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseFBOTexCubeFormats[ vTestFallback[ p ].target ] ){
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(! pUseFBOTexCubeFormats[vTestFallback[p].target]){
 			pUseFBOTexCubeFormats[vTestFallback[p].target] =
 				pUseFBOTexCubeFormats[vTestFallback[p].fallbackTarget];
 		}
 	}
 	
 	// verify that all required formats are found
-	const int required[ 10 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth16 };
+	const int required[10] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth16};
 	
-	for( p=0; p<10; p++ ){
-		if( ! pUseFBOTexCubeFormats[ required[ p ] ] ){
+	for(p=0; p<10; p++){
+		if(! pUseFBOTexCubeFormats[required[p]]){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO Cube-Textures!",
-				vTextureFormatNames[ required[ p ] ] );
+				vTextureFormatNames[required[p]]);
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
@@ -481,16 +481,16 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats( GLuint fbo ){
 					pFoundFBOTexCubeFormats.GetFormatAt(i)->GetName().GetString());
 			}
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
 
-void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
+void deoglCapsFmtSupport::pDetectFBOArrayTexFormats(GLuint fbo){
 	int f, p;
 	
 	// test all formats
-	for( f=0; f<ETTF_COUNT; f++ ){
+	for(f=0; f<ETTF_COUNT; f++){
 		pTestFBOArrayTexFormat(fbo, vTestTextureFormats[f].format,
 			vTestTextureFormats[f].pixelFormat, vTestTextureFormats[f].pixelType,
 			vTestTextureFormats[f].bitsPerPixel, vTestTextureFormats[f].flags,
@@ -498,15 +498,15 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 	}
 	
 	// find a format to use for the list of possible types
-	for( p=0; p<TEST_PROGRAM_COUNT; p++ ){
-		if( ! pUseFBOArrTexFormats[ vTestProgram[ p ].target ] ){
+	for(p=0; p<TEST_PROGRAM_COUNT; p++){
+		if(! pUseFBOArrTexFormats[vTestProgram[p].target]){
 			pUseFBOArrTexFormats[vTestProgram[p].target] = pFoundFBOArrTexFormats.GetFormatWith(
 				vTestTextureFormats[vTestProgram[p].testFormat].format);
 		}
 	}
 	
-	for( p=0; p<TEST_FALLBACK_COUNT; p++ ){
-		if( ! pUseFBOArrTexFormats[ vTestFallback[ p ].target ] ){
+	for(p=0; p<TEST_FALLBACK_COUNT; p++){
+		if(! pUseFBOArrTexFormats[vTestFallback[p].target]){
 			pUseFBOArrTexFormats[vTestFallback[p].target] =
 				pUseFBOArrTexFormats[vTestFallback[p].fallbackTarget];
 		}
@@ -514,15 +514,15 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 	
 	// verify that all required formats are found
 	#ifndef OS_ANDROID
-	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+	const int required[15] = {eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
 		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
-		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
+		eutfDepth, eutfDepth_Stencil, eutfDepth16};
 	
-	for( p=0; p<15; p++ ){
-		if( ! pUseFBOArrTexFormats[ required[ p ] ] ){
+	for(p=0; p<15; p++){
+		if(! pUseFBOArrTexFormats[required[p]]){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO 2D-Array-Textures!",
-				vTextureFormatNames[ required[ p ] ] );
+				vTextureFormatNames[required[p]]);
 			
 			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
 			int i;
@@ -531,7 +531,7 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 					pFoundFBOArrTexFormats.GetFormatAt(i)->GetName().GetString());
 			}
 			
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	#endif
@@ -539,180 +539,180 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 
 
 
-bool deoglCapsFmtSupport::pTestTex2DFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, int flags, const char *name ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+bool deoglCapsFmtSupport::pTestTex2DFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
+int bitsPerPixel, int flags, const char *name){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
 	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
+	if(! ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
+	if(! ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
+	if(! ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
+	if(! ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
 	}
 	// ENDHACK
 	
 	GLuint texture = 0;
 	int errorCode;
 	
-	OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-	if( ! texture ) DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	if(! texture) DETHROW(deeOutOfMemory);
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D( GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
+	glTexImage2D(GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
 	errorCode = glGetError();
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, 0 ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, 0));
 	
-	OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
-	if( errorCode == GL_NO_ERROR ){
-		pFoundTex2DFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_STENCIL( flags ),
-			HAS_FLAG_COMPRESSED( flags ), name );
+	if(errorCode == GL_NO_ERROR){
+		pFoundTex2DFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
+			HAS_FLAG_COMPRESSED(flags), name);
 	}
 		
 	return errorCode == GL_NO_ERROR;
 }
 
-bool deoglCapsFmtSupport::pTestTexCubeFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, int flags, const char *name ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+bool deoglCapsFmtSupport::pTestTexCubeFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
+int bitsPerPixel, int flags, const char *name){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
 	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
+	if(! ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
+	if(! ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
+	if(! ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
+	if(! ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
 	}
 	// ENDHACK
 	
 	GLuint texture = 0;
 	int errorCode;
 	
-	OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-	if( ! texture ) DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	if(! texture) DETHROW(deeOutOfMemory);
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_CUBE_MAP, texture ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
 	errorCode = glGetError();
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_CUBE_MAP, 0 ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 	
-	OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
-	if( errorCode == GL_NO_ERROR ){
-		pFoundTexCubeFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_STENCIL( flags ),
-			HAS_FLAG_COMPRESSED( flags ), name );
+	if(errorCode == GL_NO_ERROR){
+		pFoundTexCubeFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
+			HAS_FLAG_COMPRESSED(flags), name);
 	}
 	
 	return errorCode == GL_NO_ERROR;
 }
 
-bool deoglCapsFmtSupport::pTestArrayTexFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, int flags, const char *name ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+bool deoglCapsFmtSupport::pTestArrayTexFormat(GLint format, GLenum pixelFormat, GLenum pixelType,
+int bitsPerPixel, int flags, const char *name){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
 	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
+	if(! ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
+	if(! ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
+	if(! ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
+	if(! ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
 	}
 	// ENDHACK
 	
 	GLuint texture = 0;
 	int errorCode;
 	
-	OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-	if( ! texture ) DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	if(! texture) DETHROW(deeOutOfMemory);
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, texture ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, NULL );
+	pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, NULL);
 	errorCode = glGetError();
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, 0 ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
 	
-	OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
-	if( errorCode == GL_NO_ERROR ){
-		pFoundArrTexFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-			HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ), HAS_FLAG_STENCIL( flags ),
-			HAS_FLAG_COMPRESSED( flags ), name );
+	if(errorCode == GL_NO_ERROR){
+		pFoundArrTexFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+			HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags), HAS_FLAG_STENCIL(flags),
+			HAS_FLAG_COMPRESSED(flags), name);
 	}
 	
 	return errorCode == GL_NO_ERROR;
 }
 
-bool deoglCapsFmtSupport::pTestFBOTex2DFormat( GLuint fbo, GLint format, GLenum pixelFormat, GLenum pixelType,
-int bitsPerPixel, int flags, const char *name, int what ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+bool deoglCapsFmtSupport::pTestFBOTex2DFormat(GLuint fbo, GLint format, GLenum pixelFormat, GLenum pixelType,
+int bitsPerPixel, int flags, const char *name, int what){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
 	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
+	if(! ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
+	if(! ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
+	if(! ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
+	if(! ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
 	}
 	// ENDHACK
 	
@@ -720,98 +720,98 @@ int bitsPerPixel, int flags, const char *name, int what ){
 	int errorCode;
 	
 //	renderThread.GetLogger().LogInfoFormat( "Capabilities: Testing FBO Tex2D %s", name );
-	OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-	if( ! texture ) DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	if(! texture) DETHROW(deeOutOfMemory);
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D( GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
+	glTexImage2D(GL_TEXTURE_2D, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
 	errorCode = glGetError();
 	
-	if( errorCode == GL_NO_ERROR ){
-		if( what == etwColor ){
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0 );
+	if(errorCode == GL_NO_ERROR){
+		if(what == etwColor){
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 			
-		}else if( what == etwDepth ){
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, 0 );
+		}else if(what == etwDepth){
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 			
-		}else if( what == etwStencil ){
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0 );
+		}else if(what == etwStencil){
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 			
 		}else{ // etwDepthStencil
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, 0 );
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
 			errorCode = glGetError();
-			if( errorCode == GL_NO_ERROR ){
-				pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0 );
+			if(errorCode == GL_NO_ERROR){
+				pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
 				errorCode = glGetError();
 			}
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 		}
 		
-		if( errorCode == GL_NO_ERROR ){
-			errorCode = pglCheckFramebufferStatus( GL_FRAMEBUFFER );
-			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
+		if(errorCode == GL_NO_ERROR){
+			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
+			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
 				errorCode = GL_NO_ERROR;
-				pFoundFBOTex2DFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
-					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+				pFoundFBOTex2DFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name);
 			}
 		}
 		
-		pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0 );
-		pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0 );
-		pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0 );
+		pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+		pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+		pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
 	}
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, 0 ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, 0));
 	
-	OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
 	return errorCode == GL_NO_ERROR;
 }
 
-bool deoglCapsFmtSupport::pTestFBOTexCubeFormat( GLuint fbo, GLint format, GLenum pixelFormat,
-GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+bool deoglCapsFmtSupport::pTestFBOTexCubeFormat(GLuint fbo, GLint format, GLenum pixelFormat,
+GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
 	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
+	if(! ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
+	if(! ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
+	if(! ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
+	if(! ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
 	}
 	// ENDHACK
 	
@@ -819,104 +819,104 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
 	int errorCode;
 	
 //	renderThread.GetLogger().LogInfoFormat( "Capabilities Testing FBO Tex2D %s", name );
-	OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-	if( ! texture ) DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	if(! texture) DETHROW(deeOutOfMemory);
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_CUBE_MAP, texture ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 	
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
-	glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL );
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
+	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, format, 8, 8, 0, pixelFormat, pixelType, NULL);
 	errorCode = glGetError();
 	
-	if( errorCode == GL_NO_ERROR ){
-		if( what == etwColor ){
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0 );
+	if(errorCode == GL_NO_ERROR){
+		if(what == etwColor){
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 			
-		}else if( what == etwDepth ){
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0 );
+		}else if(what == etwDepth){
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 			
-		}else if( what == etwStencil ){
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0 );
+		}else if(what == etwStencil){
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 			
 		}else{ // etwDepthStencil
-			pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0 );
+			pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0);
 			errorCode = glGetError();
-			if( errorCode == GL_NO_ERROR ){
-				pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0 );
+			if(errorCode == GL_NO_ERROR){
+				pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture, 0);
 				errorCode = glGetError();
 			}
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 		}
 		
-		if( errorCode == GL_NO_ERROR ){
-			errorCode = pglCheckFramebufferStatus( GL_FRAMEBUFFER );
-			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
+		if(errorCode == GL_NO_ERROR){
+			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
+			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
 				errorCode = GL_NO_ERROR;
-				pFoundFBOTexCubeFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
-					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+				pFoundFBOTexCubeFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name);
 			}
 		}
 		
-		pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 );
-		pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 );
-		pglFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0 );
+		pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0);
+		pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0);
+		pglFramebufferTexture2D(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0);
 	}
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_CUBE_MAP, 0 ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 	
-	OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+	OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	
 	return errorCode == GL_NO_ERROR;
 }
 
-bool deoglCapsFmtSupport::pTestFBOArrayTexFormat( GLuint fbo, GLint format, GLenum pixelFormat,
-GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
-	OGL_IF_CHECK( deoglRenderThread &renderThread = pCapabilities.GetRenderThread(); )
+bool deoglCapsFmtSupport::pTestFBOArrayTexFormat(GLuint fbo, GLint format, GLenum pixelFormat,
+GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what){
+	OGL_IF_CHECK(deoglRenderThread &renderThread = pCapabilities.GetRenderThread();)
 	
 	// HACK: Bug in Ati driver 8.54.3 ( these formats cause driver to crash if probed )
-	if( ! ENABLE_COMPRESS_LATC1 ){
-		if( format == GL_COMPRESSED_LUMINANCE_LATC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1 ) return false;
+	if(! ENABLE_COMPRESS_LATC1){
+		if(format == GL_COMPRESSED_LUMINANCE_LATC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_LATC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_LATC2 ){
-		if( format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2 ) return false;
+	if(! ENABLE_COMPRESS_LATC2){
+		if(format == GL_COMPRESSED_LUMINANCE_ALPHA_LATC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_LUMINANCE_ALPHA_LATC2) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC1 ){
-		if( format == GL_COMPRESSED_RED_RGTC1 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_RGTC1 ) return false;
+	if(! ENABLE_COMPRESS_RGTC1){
+		if(format == GL_COMPRESSED_RED_RGTC1) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_RGTC1) return false;
 	}
-	if( ! ENABLE_COMPRESS_RGTC2 ){
-		if( format == GL_COMPRESSED_RED_GREEN_RGTC2 ) return false;
-		if( format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2 ) return false;
+	if(! ENABLE_COMPRESS_RGTC2){
+		if(format == GL_COMPRESSED_RED_GREEN_RGTC2) return false;
+		if(format == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2) return false;
 	}
 	// ENDHACK
 	
@@ -924,77 +924,77 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
 	int errorCode;
 	
 //	renderThread.GetLogg().LogInfoFormat( "Capabilities: Testing FBO Tex2D %s", name );
-	OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-	if( ! texture ) DETHROW( deeOutOfMemory );
+	OGL_CHECK(renderThread, glGenTextures(1, &texture));
+	if(! texture) DETHROW(deeOutOfMemory);
 	
-	OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, texture ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ) );
-	OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE ) );
+	OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, texture));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	OGL_CHECK(renderThread, glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 	
-	pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, NULL );
+	pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, 8, 8, 4, 0, pixelFormat, pixelType, NULL);
 	errorCode = glGetError();
 	
-	if( errorCode == GL_NO_ERROR ){
-		if( what == etwColor ){
-			pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0, 0 );
+	if(errorCode == GL_NO_ERROR){
+		if(what == etwColor){
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 			
-		}else if( what == etwDepth ){
-			pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0, 0 );
+		}else if(what == etwDepth){
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 			
-		}else if( what == etwStencil ){
-			pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, texture, 0, 0 );
+		}else if(what == etwStencil){
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, texture, 0, 0);
 			errorCode = glGetError();
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 			
 		}else{ // etwDepthStencil
-			pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0, 0 );
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0, 0);
 			errorCode = glGetError();
-			if( errorCode == GL_NO_ERROR ){
-				pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, texture, 0, 0 );
+			if(errorCode == GL_NO_ERROR){
+				pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, texture, 0, 0);
 				errorCode = glGetError();
 			}
 			
-			const GLenum buffers[ 1 ] = { GL_NONE };
-			OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-			OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+			const GLenum buffers[1] = {GL_NONE};
+			OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+			OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 		}
 		
-		if( errorCode == GL_NO_ERROR ){
-			errorCode = pglCheckFramebufferStatus( GL_FRAMEBUFFER );
-			if( errorCode == GL_FRAMEBUFFER_COMPLETE ){
+		if(errorCode == GL_NO_ERROR){
+			errorCode = pglCheckFramebufferStatus(GL_FRAMEBUFFER);
+			if(errorCode == GL_FRAMEBUFFER_COMPLETE){
 				errorCode = GL_NO_ERROR;
-				pFoundFBOArrTexFormats.AddFormat( format, pixelFormat, pixelType, bitsPerPixel,
-					HAS_FLAG_DEPTH( flags ), HAS_FLAG_DEPTH_FLOAT( flags ),
-					HAS_FLAG_STENCIL( flags ), HAS_FLAG_COMPRESSED( flags ), name );
+				pFoundFBOArrTexFormats.AddFormat(format, pixelFormat, pixelType, bitsPerPixel,
+					HAS_FLAG_DEPTH(flags), HAS_FLAG_DEPTH_FLOAT(flags),
+					HAS_FLAG_STENCIL(flags), HAS_FLAG_COMPRESSED(flags), name);
 			}
 		}
 		
-		pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0, 0, 0 );
-		if( pCapabilities.ATLUnbind().GetResult() == 1 ){
+		pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0, 0, 0);
+		if(pCapabilities.ATLUnbind().GetResult() == 1){
 			//pglFramebufferTexture( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0 ); // GL_INVALID_OPERATION on nvidia
 			
 		}else{
-			pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0, 0 ); // GL_INVALID_OPERATION on ati
+			pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0, 0); // GL_INVALID_OPERATION on ati
 		}
-		pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, 0, 0, 0 );
+		pglFramebufferTextureLayer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, 0, 0, 0);
 		
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, 0 ) );
-		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+		OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 	}
 	
 	return errorCode == GL_NO_ERROR;

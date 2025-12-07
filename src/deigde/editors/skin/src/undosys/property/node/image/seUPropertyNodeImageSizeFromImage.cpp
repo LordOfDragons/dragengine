@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeImageSizeFromImage::seUPropertyNodeImageSizeFromImage( sePropertyNodeImage *node ) :
-seUPropertyNodeSetSize( node, GetSizeFromImage( node ) )
+seUPropertyNodeImageSizeFromImage::seUPropertyNodeImageSizeFromImage(sePropertyNodeImage *node) :
+seUPropertyNodeSetSize(node, GetSizeFromImage(node))
 {
-	SetShortInfo( "Node size from image size" );
+	SetShortInfo("Node size from image size");
 }
 
 
@@ -50,15 +50,15 @@ seUPropertyNodeSetSize( node, GetSizeFromImage( node ) )
 // Management
 ///////////////
 
-decPoint3 seUPropertyNodeImageSizeFromImage::GetSizeFromImage( const sePropertyNodeImage *node ){
-	if( ! node ){
-		DETHROW( deeInvalidParam );
+decPoint3 seUPropertyNodeImageSizeFromImage::GetSizeFromImage(const sePropertyNodeImage *node){
+	if(! node){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deImage * const image = node->GetImage();
-	if( ! image ){
-		DETHROW( deeInvalidParam );
+	if(! image){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return decPoint3( image->GetWidth(), image->GetHeight(), image->GetDepth() );
+	return decPoint3(image->GetWidth(), image->GetHeight(), image->GetDepth());
 }

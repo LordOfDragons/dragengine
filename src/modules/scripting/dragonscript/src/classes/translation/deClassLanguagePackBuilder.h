@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassLanguagePackBuilder( deScriptingDragonScript &ds );
+	deClassLanguagePackBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassLanguagePackBuilder();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 	
@@ -76,21 +76,21 @@ private:
 		dsClass *clsUnicodeString;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildLanguagePack );
-	DEF_NATFUNC( nfSetName );
-	DEF_NATFUNC( nfSetDescription );
-	DEF_NATFUNC( nfSetMissingText );
-	DEF_NATFUNC( nfSetEntryCount );
-	DEF_NATFUNC( nfSetEntryAt );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildLanguagePack);
+	DEF_NATFUNC(nfSetName);
+	DEF_NATFUNC(nfSetDescription);
+	DEF_NATFUNC(nfSetMissingText);
+	DEF_NATFUNC(nfSetEntryCount);
+	DEF_NATFUNC(nfSetEntryAt);
 #undef DEF_NATFUNC
 };
 

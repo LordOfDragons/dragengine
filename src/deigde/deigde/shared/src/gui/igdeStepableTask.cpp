@@ -40,9 +40,9 @@
 ////////////////////////////
 
 igdeStepableTask::igdeStepableTask() :
-pProgress( 0.0f ),
-pDirtyMessage( false ),
-pDirtyProgress( false ){
+pProgress(0.0f),
+pDirtyMessage(false),
+pDirtyProgress(false){
 }
 
 igdeStepableTask::~igdeStepableTask(){
@@ -53,20 +53,20 @@ igdeStepableTask::~igdeStepableTask(){
 // Management
 ///////////////
 
-void igdeStepableTask::SetMessage( const char *message ){
+void igdeStepableTask::SetMessage(const char *message){
 	pMessage = message;
 	pDirtyMessage = true;
 }
 
-void igdeStepableTask::SetProgress( float progress ){
+void igdeStepableTask::SetProgress(float progress){
 	pProgress = progress;
 	pDirtyProgress = true;
 }
 
-void igdeStepableTask::SetDirtyMessage( bool dirty ){
+void igdeStepableTask::SetDirtyMessage(bool dirty){
 	pDirtyMessage = dirty;
 }
 
-void igdeStepableTask::SetDirtyProgress( bool dirty ){
+void igdeStepableTask::SetDirtyProgress(bool dirty){
 	pDirtyProgress = dirty;
 }

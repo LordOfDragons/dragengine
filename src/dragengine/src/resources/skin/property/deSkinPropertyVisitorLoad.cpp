@@ -46,12 +46,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyVisitorLoad::deSkinPropertyVisitorLoad( deEngine &engine,
-deVirtualFileSystem *vfs, const char *basePath ) :
-pEngine( engine ),
-pVirtualFileSystem( vfs ),
-pBasePath( basePath ),
-pLoadNode( engine, vfs, basePath ){
+deSkinPropertyVisitorLoad::deSkinPropertyVisitorLoad(deEngine &engine,
+deVirtualFileSystem *vfs, const char *basePath) :
+pEngine(engine),
+pVirtualFileSystem(vfs),
+pBasePath(basePath),
+pLoadNode(engine, vfs, basePath){
 }
 
 deSkinPropertyVisitorLoad::~deSkinPropertyVisitorLoad(){
@@ -62,52 +62,52 @@ deSkinPropertyVisitorLoad::~deSkinPropertyVisitorLoad(){
 // Visiting
 /////////////
 
-void deSkinPropertyVisitorLoad::VisitImage( deSkinPropertyImage &property ){
-	if( property.GetImage() ){
+void deSkinPropertyVisitorLoad::VisitImage(deSkinPropertyImage &property){
+	if(property.GetImage()){
 		return;
 	}
 	
 	deImage::Ref image;
 	
-	if( ! property.GetPath().IsEmpty() ){
+	if(! property.GetPath().IsEmpty()){
 		try{
-			image.TakeOver( pEngine.GetImageManager()->LoadImage(
-				pVirtualFileSystem, property.GetPath(), pBasePath ) );
-			property.SetImage( image );
+			image.TakeOver(pEngine.GetImageManager()->LoadImage(
+				pVirtualFileSystem, property.GetPath(), pBasePath));
+			property.SetImage(image);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 	}
 	
 	// TODO missing image has to be handled by graphic module
-	if( ! property.GetImage() ){
+	if(! property.GetImage()){
 		try{
-			image.TakeOver( pEngine.GetImageManager()->LoadDefault() );
-			property.SetImage( image );
+			image.TakeOver(pEngine.GetImageManager()->LoadDefault());
+			property.SetImage(image);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 	}
 }
 
-void deSkinPropertyVisitorLoad::VisitVideo( deSkinPropertyVideo &property ){
-	if( property.GetVideo() ){
+void deSkinPropertyVisitorLoad::VisitVideo(deSkinPropertyVideo &property){
+	if(property.GetVideo()){
 		return;
 	}
 	
 	deVideo::Ref video;
 	
-	if( ! property.GetPath().IsEmpty() ){
+	if(! property.GetPath().IsEmpty()){
 		try{
-			video.TakeOver( pEngine.GetVideoManager()->LoadVideo(
-				pVirtualFileSystem, property.GetPath(), pBasePath, false ) );
-			property.SetVideo( video );
+			video.TakeOver(pEngine.GetVideoManager()->LoadVideo(
+				pVirtualFileSystem, property.GetPath(), pBasePath, false));
+			property.SetVideo(video);
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
 	}
 }
 
-void deSkinPropertyVisitorLoad::VisitConstructed( deSkinPropertyConstructed &property ){
-	property.GetContent().Visit( pLoadNode );
+void deSkinPropertyVisitorLoad::VisitConstructed(deSkinPropertyConstructed &property){
+	property.GetContent().Visit(pLoadNode);
 }

@@ -53,26 +53,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline float *GetBuffer() const{ return pBuffer; }
+	inline float *GetBuffer() const{return pBuffer;}
 	
 	/** \brief Number of floats in the buffer. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{return pSize;}
 	
 	/**
 	 * \brief Set buffer size.
 	 * \details Resizes buffer to fit new size.
 	 */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/** \brief Buffer is in use. */
-	inline bool GetInUse() const{ return pInUse; }
+	inline bool GetInUse() const{return pInUse;}
 	
 	/**
 	 * \brief Set if buffer is in use.
 	 * \details For use by desynSharedBufferList only. Use desynSharedBuffer::ReleaseBuffer
 	 *          to return the buffer to the list of available shared buffers.
 	 */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	/*@}*/
 };
 

@@ -73,7 +73,7 @@ private:
 	public:
 		cPrepareShader(deoglLightShaderManager &manager, const deoglLightShader::Ref &shader);
 		
-		inline const deoglLightShader::Ref &GetShader() const{ return pShader; }
+		inline const deoglLightShader::Ref &GetShader() const{return pShader;}
 		
 		void AddListener(cGetShaderListener *listener);
 		
@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglLightShaderManager( deoglRenderThread &renderThread );
+	deoglLightShaderManager(deoglRenderThread &renderThread);
 	/** Cleans up the shader manager object. */
 	~deoglLightShaderManager();
 	/*@}*/
@@ -103,13 +103,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Retrieves a unit source code path. */
-	const char *GetUnitSourceCodePath( int unitSourceCodePath ) const;
+	const char *GetUnitSourceCodePath(int unitSourceCodePath) const;
 	
 	/** Retrieves the shader with the given configuration creating it if not existing. */
-	deoglLightShader *GetShaderWith( deoglLightShaderConfig &configuration );
+	deoglLightShader *GetShaderWith(deoglLightShaderConfig &configuration);
 	
 	/** Asynchonous shader with configuration creating it if absent. */
 	void GetShaderWithAsync(deoglLightShaderConfig &configuration, cGetShaderListener *listener);

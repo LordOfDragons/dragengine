@@ -45,20 +45,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMATopicMoveAction::ceWPTMATopicMoveAction( ceWindowMain &windowMain,
+ceWPTMATopicMoveAction::ceWPTMATopicMoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceConversationAction *action, int index, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pAction( action ),
-pIndex( index )
+ceConversationAction *action, int index, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pConversation(&conversation),
+pTopic(&topic),
+pAction(action),
+pIndex(index)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled( index >= 0 && index < topic.GetActionList().GetCount() );
+	SetEnabled(index >= 0 && index < topic.GetActionList().GetCount());
 }
 
 
@@ -67,8 +67,8 @@ pIndex( index )
 ///////////////
 
 void ceWPTMATopicMoveAction::OnAction(){
-	if( pIndex < 0 || pIndex > pTopic->GetActionList().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(pIndex < 0 || pIndex > pTopic->GetActionList().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pConversation->GetUndoSystem()->Add(ceUCActionMove::Ref::NewWith(pTopic, pAction, pIndex));

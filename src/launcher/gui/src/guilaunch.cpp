@@ -45,12 +45,12 @@
 // Entry point
 ////////////////
 
-int main( int argc, char **argv ){
+int main(int argc, char **argv){
 #ifdef OS_UNIX
 	struct sigaction act;
-	memset( &act, '\0', sizeof( act ) );
+	memset(&act, '\0', sizeof(act));
 	act.sa_handler = SIG_IGN;
-	sigaction( SIGPIPE, &act, NULL );
+	sigaction(SIGPIPE, &act, NULL);
 #endif
 	
 #ifdef OS_W32
@@ -78,20 +78,20 @@ int main( int argc, char **argv ){
 		//         Using temporary strings causes segfaults!
 		
 		decUnicodeArgumentList parseArguments;
-		parseArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
+		parseArguments.ParseCommand(deOSWindows::WideToUnicode(GetCommandLineW()));
 		
 		foxArgCount = parseArguments.GetArgumentCount();
-		foxArgs = new char*[ foxArgCount + 1 ]; // workaround: fox seems to write past the buffer
+		foxArgs = new char*[foxArgCount + 1]; // workaround: fox seems to write past the buffer
 		
 		int i;
-		for( i=0; i<foxArgCount; i++ ){
-			const decString argument( parseArguments.GetArgumentAt( i )->ToUTF8() );
+		for(i=0; i<foxArgCount; i++){
+			const decString argument(parseArguments.GetArgumentAt(i)->ToUTF8());
 			const int size = argument.GetLength();
-			foxArgs[ i ] = new char[ size + 1 ];
+			foxArgs[i] = new char[size + 1];
 			#ifdef OS_W32_VS
-				strcpy_s( foxArgs[ i ], size + 1, argument.GetString() );
+				strcpy_s(foxArgs[i], size + 1, argument.GetString());
 			#else
-				strcpy( foxArgs[ i ], argument.GetString() );
+				strcpy(foxArgs[i], argument.GetString());
 			#endif
 		}
 		
@@ -99,26 +99,26 @@ int main( int argc, char **argv ){
 		argv = foxArgs;
 #endif
 		
-		FXApp app( "Drag[en]gine Launcher", "Drag[en]gine" );
-		app.init( argc, argv );
+		FXApp app("Drag[en]gine Launcher", "Drag[en]gine");
+		app.init(argc, argv);
 		
-		deglWindowMain * const windowMain = new deglWindowMain( &app, argc, argv );
+		deglWindowMain * const windowMain = new deglWindowMain(&app, argc, argv);
 		
 		app.create();
-		if( windowMain->RunCommandLineActions() ){
+		if(windowMain->RunCommandLineActions()){
 			app.run();
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		returnValue = -1;
 	}
 	
 #ifdef OS_W32
-	if( foxArgs ){
+	if(foxArgs){
 		int i;
-		for( i=0; i<foxArgCount; i++ ){
-			delete [] foxArgs[ i ];
+		for(i=0; i<foxArgCount; i++){
+			delete [] foxArgs[i];
 		}
 		delete [] foxArgs;
 	}
@@ -130,17 +130,17 @@ int main( int argc, char **argv ){
 
 // visual studio does not support main as entry point
 #ifdef OS_W32_VS
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
 	int nArgs;
-	LPWSTR * const szArglist = CommandLineToArgvW( GetCommandLineW(), &nArgs );
-	if( ! szArglist ){
-		wprintf( L"CommandLineToArgvW failed\n" );
+	LPWSTR * const szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+	if(! szArglist){
+		wprintf(L"CommandLineToArgvW failed\n");
 		return 0;
 	}
 	
-	const int result = main( nArgs, ( char** )szArglist );
+	const int result = main(nArgs, (char**)szArglist);
 
-	LocalFree( szArglist );
+	LocalFree(szArglist);
 
 	return result;
 }

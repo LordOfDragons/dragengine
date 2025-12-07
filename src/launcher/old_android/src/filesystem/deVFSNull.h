@@ -40,7 +40,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create null container with root path. */
-	deVFSNull( const decPath &rootPath );
+	deVFSNull(const decPath &rootPath);
 	
 protected:
 	/**
@@ -61,25 +61,25 @@ public:
 	 * \brief File exists.
 	 * \returns false.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	virtual bool ExistsFile(const decPath &path);
 	
 	/**
 	 * \brief File can be read from.
 	 * \returns false.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	virtual bool CanReadFile(const decPath &path);
 	
 	/**
 	 * \brief File can be written to.
 	 * \returns true.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	virtual bool CanWriteFile(const decPath &path);
 	
 	/**
 	 * \brief File can be deleted.
 	 * \returns true.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	virtual bool CanDeleteFile(const decPath &path);
 	
 	
 	
@@ -88,53 +88,53 @@ public:
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
 	
 	/**
 	 * \brief Open file for writing.
 	 * \returns Null writer.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Does nothing.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	virtual void DeleteFile(const decPath &path);
 	
 	/**
 	 * \brief Touch file setting the modification time to the current time.
 	 * 
 	 * Does nothing.
 	 */
-	virtual void TouchFile( const decPath &path );
+	virtual void TouchFile(const decPath &path);
 	
 	/**
 	 * \brief Search for all files and directories.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	virtual eFileTypes GetFileType(const decPath &path);
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	virtual uint64_t GetFileSize(const decPath &path);
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * Throws file not found exception.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
 	/*@}*/
 };
 

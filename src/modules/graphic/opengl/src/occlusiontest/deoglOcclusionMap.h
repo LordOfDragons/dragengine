@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create occlusion map. */
-	deoglOcclusionMap( deoglRenderThread &renderThread, int width, int height, int layerCount );
+	deoglOcclusionMap(deoglRenderThread &renderThread, int width, int height, int layerCount);
 	
 	/** Clean up occlusion map. */
 	~deoglOcclusionMap();
@@ -63,19 +63,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width of the base level. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** Height of the base level. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** Layer count. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/** Level count. */
-	inline int GetLevelCount() const{ return pLevelCount; }
+	inline int GetLevelCount() const{return pLevelCount;}
 	
 	/** Texture. */
-	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
+	inline deoglArrayTexture *GetTexture() const{return pTexture;}
 	
 	/** FBO for level. */
 	deoglFramebuffer *GetFBOAt(int level);

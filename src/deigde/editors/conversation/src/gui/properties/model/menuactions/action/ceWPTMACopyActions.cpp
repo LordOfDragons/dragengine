@@ -44,13 +44,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACopyActions::ceWPTMACopyActions( ceWindowMain &windowMain,
-const ceConversationActionList &actions ) :
-ceWPTMenuAction( windowMain, "Copy Actions",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ) ),
-pActions( &actions )
+ceWPTMACopyActions::ceWPTMACopyActions(ceWindowMain &windowMain,
+const ceConversationActionList &actions) :
+ceWPTMenuAction(windowMain, "Copy Actions",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
+pActions(&actions)
 {
-	SetEnabled( actions.GetCount() > 0 );
+	SetEnabled(actions.GetCount() > 0);
 }
 
 
@@ -59,7 +59,7 @@ pActions( &actions )
 ///////////////
 
 void ceWPTMACopyActions::OnAction(){
-	if( pActions->GetCount() == 0 ){
+	if(pActions->GetCount() == 0){
 		return;
 	}
 	

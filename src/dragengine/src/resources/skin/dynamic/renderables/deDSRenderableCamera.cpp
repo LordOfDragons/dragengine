@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderableCamera::deDSRenderableCamera( const char *name ) : deDSRenderable( name ){
+deDSRenderableCamera::deDSRenderableCamera(const char *name) : deDSRenderable(name){
 }
 
 deDSRenderableCamera::~deDSRenderableCamera(){
@@ -51,7 +51,7 @@ deDSRenderableCamera::~deDSRenderableCamera(){
 // Management
 ///////////////
 
-void deDSRenderableCamera::SetCamera( deCamera *camera ){
+void deDSRenderableCamera::SetCamera(deCamera *camera){
 	pCamera = camera;
 }
 
@@ -60,6 +60,6 @@ void deDSRenderableCamera::SetCamera( deCamera *camera ){
 // Visiting
 /////////////
 
-void deDSRenderableCamera::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitCamera( *this );
+void deDSRenderableCamera::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitCamera(*this);
 }

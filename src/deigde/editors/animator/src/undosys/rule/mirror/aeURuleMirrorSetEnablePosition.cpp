@@ -33,14 +33,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetEnablePosition::aeURuleMirrorSetEnablePosition( aeRuleMirror *rule ) :
-pRule( rule )
+aeURuleMirrorSetEnablePosition::aeURuleMirrorSetEnablePosition(aeRuleMirror *rule) :
+pRule(rule)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Toggle mirror rule enable position" );
+	SetShortInfo("Toggle mirror rule enable position");
 }
 
 aeURuleMirrorSetEnablePosition::~aeURuleMirrorSetEnablePosition(){
@@ -52,9 +52,9 @@ aeURuleMirrorSetEnablePosition::~aeURuleMirrorSetEnablePosition(){
 ///////////////
 
 void aeURuleMirrorSetEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(! pRule->GetEnablePosition());
 }
 
 void aeURuleMirrorSetEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(! pRule->GetEnablePosition());
 }

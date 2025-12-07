@@ -35,10 +35,10 @@
 // Constructor
 ////////////////
 
-dedsEngineException::dedsEngineException( const char *description, const char *file, int line ) :
-duException( "InvalidAction", description, description, file, line ),
-pStrDescription( description ),
-pStrFile( file ){
+dedsEngineException::dedsEngineException(const char *description, const char *file, int line) :
+duException("InvalidAction", description, description, file, line),
+pStrDescription(description),
+pStrFile(file){
 }
 
 dedsEngineException::~dedsEngineException(){
@@ -46,26 +46,26 @@ dedsEngineException::~dedsEngineException(){
 	delete [] pStrFile;
 }
 
-dedsEngineException dedsEngineException::Wrap( const deException &exception ){
+dedsEngineException dedsEngineException::Wrap(const deException &exception){
 	const decString &file = exception.GetFile();
 	const decString &description = exception.GetDescription();
 	// const decString description( exception.GetDescription() + ":\n" + exception.GetBacktrace().Join("\n") );
 	
 	const int lenDescription = description.GetLength();
-	char * const strDescription = new char[ lenDescription + 1 ];
+	char * const strDescription = new char[lenDescription + 1];
 	#ifdef OS_W32
-	strcpy_s( strDescription, lenDescription + 1, description );
+	strcpy_s(strDescription, lenDescription + 1, description);
 	#else
-	strcpy( strDescription, description );
+	strcpy(strDescription, description);
 	#endif
 	
 	const int lenFile = file.GetLength();
-	char * const strFile = new char[ lenFile + 1 ];
+	char * const strFile = new char[lenFile + 1];
 	#ifdef OS_W32
-	strcpy_s( strFile, lenFile + 1, file );
+	strcpy_s(strFile, lenFile + 1, file);
 	#else
-	strcpy( strFile, file );
+	strcpy(strFile, file);
 	#endif
 	
-	return dedsEngineException( strDescription, strFile, exception.GetLine() );
+	return dedsEngineException(strDescription, strFile, exception.GetLine());
 }

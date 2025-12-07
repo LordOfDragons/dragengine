@@ -71,10 +71,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create link. */
-	aeLink( const char *name = "Link" );
+	aeLink(const char *name = "Link");
 	
 	/** Create copy of link. */
-	aeLink( const aeLink &copy );
+	aeLink(const aeLink &copy);
 	
 	/** Clean up link. */
 	virtual ~aeLink();
@@ -85,124 +85,124 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**  Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline aeAnimator *GetAnimator() const{return pAnimator;}
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	
 	
 	/** Engine controller link or \em NULL if not managed. */
-	inline deAnimatorLink *GetEngineLink() const{ return pEngLink; }
+	inline deAnimatorLink *GetEngineLink() const{return pEngLink;}
 	
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
 	/** Controller or \em NULL. */
-	inline aeController *GetController() const{ return pController; }
+	inline aeController *GetController() const{return pController;}
 	
 	/** Set controller or \em NULL. */
-	void SetController( aeController *controller, bool notify = true );
+	void SetController(aeController *controller, bool notify = true);
 	
 	/** Repeat count of input value. */
-	inline int GetRepeat() const{ return pRepeat; }
+	inline int GetRepeat() const{return pRepeat;}
 	
 	/**
 	 * Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	
 	/** Curve. */
-	const decCurveBezier &GetCurve() const{ return pCurve; }
+	const decCurveBezier &GetCurve() const{return pCurve;}
 	
 	/** Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/**
 	 * Bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	inline const decString &GetBone() const{ return pBone; }
+	inline const decString &GetBone() const{return pBone;}
 	
 	/**
 	 * Set bone to use parameter of as input or empty string to not use.
 	 * \version 1.6
 	 */
-	void SetBone( const char *bone );
+	void SetBone(const char *bone);
 	
 	/**
 	 * Bone parameter to use as input.
 	 * \version 1.6
 	 */
-	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{ return pBoneParameter; }
+	inline deAnimatorLink::eBoneParameter GetBoneParameter() const{return pBoneParameter;}
 	
 	/**
 	 * Set bone parameter to use as input.
 	 * \version 1.6
 	 */
-	void SetBoneParameter( deAnimatorLink::eBoneParameter parameter );
+	void SetBoneParameter(deAnimatorLink::eBoneParameter parameter);
 	
 	/**
 	 * Minimum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMinimum() const{ return pBoneMinimum; }
+	inline float GetBoneMinimum() const{return pBoneMinimum;}
 	
 	/**
 	 * Set minimum bone parameter value
 	 * \version 1.6
 	 */
-	void SetBoneMinimum( float value );
+	void SetBoneMinimum(float value);
 	
 	/**
 	 * Maximum bone parameter value.
 	 * \version 1.6
 	 */
-	inline float GetBoneMaximum() const{ return pBoneMaximum; }
+	inline float GetBoneMaximum() const{return pBoneMaximum;}
 	
 	/**
 	 * Set maximum bone parameter value.
 	 * \version 1.6
 	 */
-	void SetBoneMaximum( float value );
+	void SetBoneMaximum(float value);
 	
 	/** Vertex position set to use as input or empty string to not use. */
-	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	inline const decString &GetVertexPositionSet() const{return pVertexPositionSet;}
 	
 	/** Set vertex position set to use as input or empty string to not use. */
-	void SetVertexPositionSet( const char *vertexPositionSet );
+	void SetVertexPositionSet(const char *vertexPositionSet);
 	
 	/** Minimum vertex position set parameter value. */
-	inline float GetVertexPositionSetMinimum() const{ return pVertexPositionSetMinimum; }
+	inline float GetVertexPositionSetMinimum() const{return pVertexPositionSetMinimum;}
 	
 	/** Set minimum vertex position set parameter value. */
-	void SetVertexPositionSetMinimum( float value );
+	void SetVertexPositionSetMinimum(float value);
 	
 	/** Maximum vertex position set parameter value. */
-	inline float GetVertexPositionSetMaximum() const{ return pVertexPositionSetMaximum; }
+	inline float GetVertexPositionSetMaximum() const{return pVertexPositionSetMaximum;}
 	
 	/** Set maximum vertex position set parameter value. */
-	void SetVertexPositionSetMaximum( float value );
+	void SetVertexPositionSetMaximum(float value);
 	
 	/**
 	 * Wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	inline bool GetWrapY() const{ return pWrapY; }
+	inline bool GetWrapY() const{return pWrapY;}
 	
 	/**
 	 * Set to wrap Y value instead of clamping.
 	 * \version 1.9
 	 */
-	void SetWrapY( bool wrap );
+	void SetWrapY(bool wrap);
 	
 	
 	
@@ -220,7 +220,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy link to this link. */
-	aeLink &operator=( const aeLink &copy );
+	aeLink &operator=(const aeLink &copy);
 	/*@}*/
 	
 	

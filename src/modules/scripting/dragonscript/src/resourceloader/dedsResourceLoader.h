@@ -51,7 +51,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new wrapper. */
-	dedsResourceLoader( deScriptingDragonScript *ds );
+	dedsResourceLoader(deScriptingDragonScript *ds);
 	/** Cleans up the wrapper. */
 	~dedsResourceLoader();
 	/*@}*/
@@ -59,25 +59,25 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of tasks. */
-	inline int GetTaskCount() const{ return pTaskCount; }
+	inline int GetTaskCount() const{return pTaskCount;}
 	
 	/** Determines if there are still some resources left to load. */
-	inline bool HasResourcesLeft() const{ return pTaskCount > 0; }
+	inline bool HasResourcesLeft() const{return pTaskCount > 0;}
 	/** Update. */
 	void OnFrameUpdate();
 	
 	/** Adds a request. */
-	void AddRequest( const char *filename, deResourceLoader::eResourceType resourceType,
-		dsRealObject *listener );
+	void AddRequest(const char *filename, deResourceLoader::eResourceType resourceType,
+		dsRealObject *listener);
 	/** Cancel a request. */
-	void CancelRequest( const char *filename, deResourceLoader::eResourceType resourceType,
-		dsRealObject *listener );
+	void CancelRequest(const char *filename, deResourceLoader::eResourceType resourceType,
+		dsRealObject *listener);
 	/** CancelAllRequests. */
 	void CancelAllRequests();
 	
 private:
-	int pIndexOfTaskWith( const char *filename, deResourceLoader::eResourceType resourceType ) const;
-	void pRemoveTaskFrom( int index );
+	int pIndexOfTaskWith(const char *filename, deResourceLoader::eResourceType resourceType) const;
+	void pRemoveTaskFrom(int index);
 };
 
 // end of include only once

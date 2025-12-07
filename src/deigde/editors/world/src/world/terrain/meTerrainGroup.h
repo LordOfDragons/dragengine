@@ -40,18 +40,18 @@ private:
 	int pObjectCount, pObjectSize;
 public:
 	// constructor, destructor
-	meTerrainGroup( const char *name );
+	meTerrainGroup(const char *name);
 	~meTerrainGroup();
 	// management
-	inline const decString &GetName() const{ return pName; }
-	void SetName( const char *name );
+	inline const decString &GetName() const{return pName;}
+	void SetName(const char *name);
 	// object management
-	inline int GetObjectCount() const{ return pObjectCount; }
-	meObject *GetObject( int index ) const;
-	int FindObject( meObject *object ) const;
-	bool HasObject( meObject *object ) const;
-	void AddObject( meObject *object );
-	void RemoveObject( meObject *object );
+	inline int GetObjectCount() const{return pObjectCount;}
+	meObject *GetObject(int index) const;
+	int FindObject(meObject *object) const;
+	bool HasObject(meObject *object) const;
+	void AddObject(meObject *object);
+	void RemoveObject(meObject *object);
 	void RemoveAllObjects();
 private:
 	void pCleanUp();

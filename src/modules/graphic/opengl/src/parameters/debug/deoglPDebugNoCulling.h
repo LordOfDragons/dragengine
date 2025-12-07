@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPDebugNoCulling( deGraphicOpenGl &ogl );
+	deoglPDebugNoCulling(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPDebugNoCulling();
 	/*@}*/
@@ -46,7 +46,7 @@ public:
 	/** Retrieves the current value. */
 	virtual bool GetParameterBool();
 	/** Sets the current value. */
-	virtual void SetParameterBool( bool value );
+	virtual void SetParameterBool(bool value);
 	/*@}*/
 };
 

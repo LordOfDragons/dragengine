@@ -45,19 +45,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorInstance::deAnimatorInstance( deAnimatorInstanceManager *manager ) :
-deResource( manager ),
+deAnimatorInstance::deAnimatorInstance(deAnimatorInstanceManager *manager) :
+deResource(manager),
 
-pBlendMode( deAnimatorRule::ebmBlend ),
-pBlendFactor( 1.0f ),
-pEnableRetargeting( true ),
-pProtectDynamicBones( false ),
+pBlendMode(deAnimatorRule::ebmBlend),
+pBlendFactor(1.0f),
+pEnableRetargeting(true),
+pProtectDynamicBones(false),
 
-pControllers( NULL ),
-pControllerCount( 0 ),
-pControllerSize( 0 ),
+pControllers(NULL),
+pControllerCount(0),
+pControllerSize(0),
 
-pPeerAnimator( NULL ){
+pPeerAnimator(NULL){
 }
 
 deAnimatorInstance::~deAnimatorInstance(){
@@ -69,48 +69,48 @@ deAnimatorInstance::~deAnimatorInstance(){
 // Management
 ///////////////
 
-void deAnimatorInstance::SetAnimator( deAnimator *animator, bool keepValues ){
-	if( pAnimator == animator ){
+void deAnimatorInstance::SetAnimator(deAnimator *animator, bool keepValues){
+	if(pAnimator == animator){
 		return;
 	}
 	
-	if( keepValues && pAnimator && animator && pControllerCount > 0 && animator->GetControllerCount() > 0 ){
+	if(keepValues && pAnimator && animator && pControllerCount > 0 && animator->GetControllerCount() > 0){
 		// NOTE the guard is required to keep the controller name alive during transfering.
 		//      we can not use pControllers names since they are destroyed during
 		//      pUpdateControllers(). instead controller names from guarded animator is used
-		const deAnimator::Ref guard( pAnimator );
+		const deAnimator::Ref guard(pAnimator);
 		const int count = pControllerCount;
 		struct sControllerValue{
 			const char *name;
 			float value;
 			decVector vector;
-		} * const transfer = new sControllerValue[ count ];
+		} * const transfer = new sControllerValue[count];
 		int i;
 		
 		try{
-			for( i=0; i<count; i++ ){
-				transfer[ i ].name = pAnimator->GetControllerAt( i )->GetName();
-				transfer[ i ].value = pControllers[ i ].GetCurrentValue();
-				transfer[ i ].vector = pControllers[ i ].GetVector();
+			for(i=0; i<count; i++){
+				transfer[i].name = pAnimator->GetControllerAt(i)->GetName();
+				transfer[i].value = pControllers[i].GetCurrentValue();
+				transfer[i].vector = pControllers[i].GetVector();
 			}
 			
 			pAnimator = animator;
 			pUpdateControllers();
 			
-			for( i=0; i<count; i++ ){
-				const int index = IndexOfControllerNamed( transfer[ i ].name );
-				if( index == -1 ){
+			for(i=0; i<count; i++){
+				const int index = IndexOfControllerNamed(transfer[i].name);
+				if(index == -1){
 					continue;
 				}
 				
-				pControllers[ index ].SetCurrentValue( transfer[ i ].value );
-				pControllers[ index ].SetVector( transfer[ i ].vector );
+				pControllers[index].SetCurrentValue(transfer[i].value);
+				pControllers[index].SetVector(transfer[i].vector);
 			}
 			
 			delete [] transfer;
 			
-		}catch( const deException & ){
-			if( transfer ){
+		}catch(const deException &){
+			if(transfer){
 				delete [] transfer;
 			}
 			throw;
@@ -121,148 +121,148 @@ void deAnimatorInstance::SetAnimator( deAnimator *animator, bool keepValues ){
 		pUpdateControllers();
 	}
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->AnimatorChanged();
 	}
 }
 
-void deAnimatorInstance::SetComponent( deComponent *component ){
-	if( pComponent == component ){
+void deAnimatorInstance::SetComponent(deComponent *component){
+	if(pComponent == component){
 		return;
 	}
 	
 	pComponent = component;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->ComponentChanged();
 	}
 }
 
-void deAnimatorInstance::SetAnimation( deAnimation *animation ){
-	if( pAnimation == animation ){
+void deAnimatorInstance::SetAnimation(deAnimation *animation){
+	if(pAnimation == animation){
 		return;
 	}
 	
 	pAnimation = animation;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->AnimationChanged();
 	}
 }
 
 
 
-void deAnimatorInstance::SetBlendMode( deAnimatorRule::eBlendModes mode ){
-	if( mode < deAnimatorRule::ebmBlend || mode > deAnimatorRule::ebmBlend ){
-		DETHROW( deeInvalidParam );
+void deAnimatorInstance::SetBlendMode(deAnimatorRule::eBlendModes mode){
+	if(mode < deAnimatorRule::ebmBlend || mode > deAnimatorRule::ebmBlend){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( mode == pBlendMode ){
+	if(mode == pBlendMode){
 		return;
 	}
 	
 	pBlendMode = mode;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->BlendFactorChanged();
 	}
 }
 
-void deAnimatorInstance::SetBlendFactor( float factor ){
-	factor = decMath::clamp( factor, 0.0f, 1.0f );
+void deAnimatorInstance::SetBlendFactor(float factor){
+	factor = decMath::clamp(factor, 0.0f, 1.0f);
 	
-	if( fabsf( factor - pBlendFactor ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(factor - pBlendFactor) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBlendFactor = factor;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->BlendFactorChanged();
 	}
 }
 
-void deAnimatorInstance::SetEnableRetargeting( bool enableRetargeting ){
-	if( enableRetargeting == pEnableRetargeting ){
+void deAnimatorInstance::SetEnableRetargeting(bool enableRetargeting){
+	if(enableRetargeting == pEnableRetargeting){
 		return;
 	}
 	
 	pEnableRetargeting = enableRetargeting;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->EnableRetargetingChanged();
 	}
 }
 
-void deAnimatorInstance::SetProtectDynamicBones( bool protectDynamicBones ){
-	if( protectDynamicBones == pProtectDynamicBones ){
+void deAnimatorInstance::SetProtectDynamicBones(bool protectDynamicBones){
+	if(protectDynamicBones == pProtectDynamicBones){
 		return;
 	}
 	
 	pProtectDynamicBones = protectDynamicBones;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		pPeerAnimator->ProtectDynamicBonesChanged();
 	}
 }
 
 
 
-deAnimatorController &deAnimatorInstance::GetControllerAt( int index ){
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+deAnimatorController &deAnimatorInstance::GetControllerAt(int index){
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
-const deAnimatorController &deAnimatorInstance::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+const deAnimatorController &deAnimatorInstance::GetControllerAt(int index) const{
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
-int deAnimatorInstance::IndexOfControllerNamed( const char *name ) const{
+int deAnimatorInstance::IndexOfControllerNamed(const char *name) const{
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ].GetName() == name ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i].GetName() == name){
 			return i;
 		}
 	}
 	return -1;
 }
 
-void deAnimatorInstance::NotifyControllerChangedAt( int index ){
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+void deAnimatorInstance::NotifyControllerChangedAt(int index){
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerAnimator ){
-		pPeerAnimator->ControllerChanged( index );
+	if(pPeerAnimator){
+		pPeerAnimator->ControllerChanged(index);
 	}
 }
 
 
 
-void deAnimatorInstance::Apply( bool direct ){
-	if( pPeerAnimator ){
-		pPeerAnimator->Apply( direct );
+void deAnimatorInstance::Apply(bool direct){
+	if(pPeerAnimator){
+		pPeerAnimator->Apply(direct);
 	}
 }
 
-void deAnimatorInstance::CaptureStateInto( int identifier ){
-	if( pPeerAnimator ){
-		pPeerAnimator->CaptureStateInto( identifier );
+void deAnimatorInstance::CaptureStateInto(int identifier){
+	if(pPeerAnimator){
+		pPeerAnimator->CaptureStateInto(identifier);
 	}
 }
 
-void deAnimatorInstance::StoreFrameInto( int identifier, const char *moveName, float moveTime ){
-	if( ! moveName ){
-		DETHROW( deeInvalidParam );
+void deAnimatorInstance::StoreFrameInto(int identifier, const char *moveName, float moveTime){
+	if(! moveName){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerAnimator ){
-		pPeerAnimator->StoreFrameInto( identifier, moveName, moveTime );
+	if(pPeerAnimator){
+		pPeerAnimator->StoreFrameInto(identifier, moveName, moveTime);
 	}
 }
 
@@ -271,12 +271,12 @@ void deAnimatorInstance::StoreFrameInto( int identifier, const char *moveName, f
 // System Peers
 /////////////////
 
-void deAnimatorInstance::SetPeerAnimator( deBaseAnimatorAnimatorInstance *peer ){
-	if( peer == pPeerAnimator ){
+void deAnimatorInstance::SetPeerAnimator(deBaseAnimatorAnimatorInstance *peer){
+	if(peer == pPeerAnimator){
 		return;
 	}
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		delete pPeerAnimator;
 	}
 	
@@ -289,26 +289,26 @@ void deAnimatorInstance::SetPeerAnimator( deBaseAnimatorAnimatorInstance *peer )
 /////////////////////
 
 void deAnimatorInstance::pCleanUp(){
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		delete pPeerAnimator;
 		pPeerAnimator = NULL;
 	}
 	
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 	}
 }
 
 void deAnimatorInstance::pUpdateControllers(){
-	if( ! pAnimator ){
+	if(! pAnimator){
 		pControllerCount = 0;
 		return;
 	}
 	
 	const int controllerCount = pAnimator->GetControllerCount();
 	
-	if( controllerCount > pControllerSize ){
-		deAnimatorController * const newArray = new deAnimatorController[ controllerCount ];
+	if(controllerCount > pControllerSize){
+		deAnimatorController * const newArray = new deAnimatorController[controllerCount];
 		
 		delete [] pControllers;
 		pControllers = newArray;
@@ -316,7 +316,7 @@ void deAnimatorInstance::pUpdateControllers(){
 		pControllerSize = controllerCount;
 	}
 	
-	for( pControllerCount=0; pControllerCount<controllerCount; pControllerCount++ ){
-		pControllers[ pControllerCount ] = *pAnimator->GetControllerAt( pControllerCount );
+	for(pControllerCount=0; pControllerCount<controllerCount; pControllerCount++){
+		pControllers[pControllerCount] = *pAnimator->GetControllerAt(pControllerCount);
 	}
 }

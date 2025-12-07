@@ -76,59 +76,59 @@ public:
 	void Clear();
 	
 	/** \brief Object or nullptr. */
-	inline const meObject::Ref &GetObject() const{ return pObject; }
+	inline const meObject::Ref &GetObject() const{return pObject;}
 	
 	/** \brief Set object or nullptr. */
 	void SetObject(meObject *object);
 	
 	/** \brief Object shape or nullptr. */
-	inline const meObjectShape::Ref &GetObjectShape() const{ return pObjectShape; }
+	inline const meObjectShape::Ref &GetObjectShape() const{return pObjectShape;}
 	
 	/** \brief Set object shape or nullptr. */
 	void SetObjectShape(meObjectShape *objectShape);
 	
 	/** \brief Decal or nullptr. */
-	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{return pDecal;}
 	
 	/** \brief Set decal or nullptr. */
 	void SetDecal(meDecal *decal);
 	
 	/** \brief Navigation space or nullptr. */
-	inline const meNavigationSpace::Ref &GetNavigationSpace() const{ return pNavSpace; }
+	inline const meNavigationSpace::Ref &GetNavigationSpace() const{return pNavSpace;}
 	
 	/** \brief Set navigation space or nullptr. */
 	void SetNavigationSpace(meNavigationSpace *navspace);
 	
 	/** \brief Height terrain navigation space point or -1. */
-	inline int GetHTNavSpacePoint() const{ return pHTNavSpacePoint; }
+	inline int GetHTNavSpacePoint() const{return pHTNavSpacePoint;}
 	
 	/** \brief Set height terrain navigation space point or -1. */
 	void SetHTNavSpacePoint(int point);
 	
 	/** \brief Height terrain sector or nullptr. */
-	inline const meHeightTerrainSector::Ref &GetHTSector() const{ return pHTSector; }
+	inline const meHeightTerrainSector::Ref &GetHTSector() const{return pHTSector;}
 	
 	/** \brief Set height terrain sector or nullptr. */
 	void SetHTSector(meHeightTerrainSector *sector);
 	
 	/** \brief Snap point or nullptr. */
-	inline const meObjectSnapPoint::Ref &GetSnapPoint() const{ return pSnapPoint; }
+	inline const meObjectSnapPoint::Ref &GetSnapPoint() const{return pSnapPoint;}
 	
 	/** \brief Set snap point or nullptr. */
 	void SetSnapPoint(meObjectSnapPoint *snapPoint);
 	
 	
 	/** \brief Distance. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{return pDistance;}
 	
 	/** \brief Set distance. */
 	void SetDistance(float distance);
 	
 	/** \brief Normal. */
-	inline const decVector &GetNormal() const{ return pNormal; }
+	inline const decVector &GetNormal() const{return pNormal;}
 	
 	/** \brief Set normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	
 	/** \brief Sort decals. */

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetBrightness( sePropertyNode *node, float newValue );
+	seUPropertyNodeSetBrightness(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

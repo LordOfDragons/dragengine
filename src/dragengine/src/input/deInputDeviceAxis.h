@@ -228,7 +228,7 @@ public:
 	deInputDeviceAxis();
 	
 	/** \brief Create copy of input device axis. */
-	deInputDeviceAxis( const deInputDeviceAxis &axis );
+	deInputDeviceAxis(const deInputDeviceAxis &axis);
 	
 	/** \brief Clean up input device axis. */
 	~deInputDeviceAxis();
@@ -246,10 +246,10 @@ public:
 	 * suitable to be combined with the device identifier to store them in config files as
 	 * key bindings.
 	 */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/**
 	 * \brief Display name.
@@ -257,42 +257,42 @@ public:
 	 * Dispaly name is human readable like for example 'Axis #1'. The name is unique but
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set Display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Axis type. */
-	inline eAxisTypes GetType() const{ return pType; }
+	inline eAxisTypes GetType() const{return pType;}
 	
 	/** \brief Axis type. */
-	void SetType( eAxisTypes type );
+	void SetType(eAxisTypes type);
 	
 	/**
 	 * \brief Identifier of component or empty string.
 	 * \version 1.6
 	 */
-	inline const decString &GetComponent() const{ return pComponent; }
+	inline const decString &GetComponent() const{return pComponent;}
 	
 	/**
 	 * \brief Set identifier of component or empty string.
 	 * \version 1.6
 	 */
-	void SetComponent( const char *component );
+	void SetComponent(const char *component);
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline deImage *GetDisplayImage() const{return pDisplayImage;}
 	
 	/**
 	 * \brief Set image to represent the axis in 2D user interfaces or NULL if not set.
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	void SetDisplayImage( deImage *image );
+	void SetDisplayImage(deImage *image);
 	
 	/** \brief Count of icons representing the axis in bindings. */
 	int GetDisplayIconCount() const;
@@ -302,20 +302,20 @@ public:
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	deImage *GetDisplayIconAt( int index ) const;
+	deImage *GetDisplayIconAt(int index) const;
 	
 	/**
 	 * \brief Add icon representing the axis in bindings.
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	void AddDisplayIcon( deImage *image );
+	void AddDisplayIcon(deImage *image);
 	
 	/** \brief Text to display centered across display image or icon. */
-	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	inline const decString &GetDisplayText() const{return pDisplayText;}
 	
 	/** \brief Set text to display centered across display image or icon. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	/*@}*/
 	
 	
@@ -323,7 +323,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy input device axis. */
-	deInputDeviceAxis &operator=( const deInputDeviceAxis &axis );
+	deInputDeviceAxis &operator=(const deInputDeviceAxis &axis);
 	/*@}*/
 };
 

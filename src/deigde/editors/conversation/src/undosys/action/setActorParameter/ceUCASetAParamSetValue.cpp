@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASetAParamSetValue::ceUCASetAParamSetValue( ceConversationTopic *topic, ceCASetActorParameter *action, int newValue ){
-	if( ! topic || ! action ) DETHROW( deeInvalidParam );
+ceUCASetAParamSetValue::ceUCASetAParamSetValue(ceConversationTopic *topic, ceCASetActorParameter *action, int newValue){
+	if(! topic || ! action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pOldValue = action->GetValue();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Action SetActorParameter Value" );
+	SetShortInfo("Action SetActorParameter Value");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCASetAParamSetValue::ceUCASetAParamSetValue( ceConversationTopic *topic, ceCA
 }
 
 ceUCASetAParamSetValue::~ceUCASetAParamSetValue(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCASetAParamSetValue::~ceUCASetAParamSetValue(){
 ///////////////
 
 void ceUCASetAParamSetValue::Undo(){
-	pAction->SetValue( pOldValue );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetValue(pOldValue);
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCASetAParamSetValue::Redo(){
-	pAction->SetValue( pNewValue );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetValue(pNewValue);
+	pTopic->NotifyActionChanged(pAction);
 }

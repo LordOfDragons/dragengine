@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetPosition( gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decVector &newValue );
+	gdeUOCForceFieldSetPosition(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

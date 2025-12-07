@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCParticleEmitterCopy::gdeMAOCParticleEmitterCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Particle Emitter",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class particle emitter" )
+gdeMAOCParticleEmitterCopy::gdeMAOCParticleEmitterCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Particle Emitter",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class particle emitter")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Particle Emitter",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCParticleEmitterCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter ){
+igdeUndo *gdeMAOCParticleEmitterCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCParticleEmitter){
 		return NULL;
 	}
 	
 	gdeOCParticleEmitter * const particleEmitter = gameDefinition.GetActiveOCParticleEmitter();
-	if( ! particleEmitter ){
+	if(! particleEmitter){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCParticleEmitterCopy::OnActionSubObject( gdeGameDefinition &game
 
 void gdeMAOCParticleEmitterCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter
-		&& gameDefinition->GetActiveOCParticleEmitter() != NULL );
+		&& gameDefinition->GetActiveOCParticleEmitter() != NULL);
 }

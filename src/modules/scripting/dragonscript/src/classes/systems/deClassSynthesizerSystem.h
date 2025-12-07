@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSynthesizerSystem( deScriptingDragonScript &ds );
+	deClassSynthesizerSystem(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	~deClassSynthesizerSystem();
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	/*@}*/
 	
 	
@@ -75,18 +75,18 @@ private:
 		dsClass *clsModPar;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfGetParameterCount );
-	DEF_NATFUNC( nfGetParameterInfo );
-	DEF_NATFUNC( nfGetParameterInfo2 );
-	DEF_NATFUNC( nfGetParameterValue );
-	DEF_NATFUNC( nfSetParameterValue );
-	DEF_NATFUNC( nfSendCommand );
+	DEF_NATFUNC(nfGetParameterCount);
+	DEF_NATFUNC(nfGetParameterInfo);
+	DEF_NATFUNC(nfGetParameterInfo2);
+	DEF_NATFUNC(nfGetParameterValue);
+	DEF_NATFUNC(nfSetParameterValue);
+	DEF_NATFUNC(nfSendCommand);
 #undef DEF_NATFUNC
 };
 

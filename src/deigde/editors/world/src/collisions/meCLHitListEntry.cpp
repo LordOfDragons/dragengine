@@ -98,7 +98,7 @@ void meCLHitListEntry::SetNormal(const decVector &normal){
 
 void meCLHitListEntry::SortDecals(){
 	// TODO
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 int meCLHitListEntry::CompareTo(const meCLHitListEntry &entry) const{

@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new parameter. */
-	peeParameter( peeType &type, deParticleEmitterType::eParameters index, float value, float spread );
+	peeParameter(peeType &type, deParticleEmitterType::eParameters index, float value, float spread);
 	/** \brief Clean up the parameter. */
 	~peeParameter();
 	/*@}*/
@@ -65,50 +65,50 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the type. */
-	inline peeType &GetType() const{ return pType; }
+	inline peeType &GetType() const{return pType;}
 	/** Retrieves the index. */
-	inline deParticleEmitterType::eParameters GetIndex() const{ return pIndex; }
+	inline deParticleEmitterType::eParameters GetIndex() const{return pIndex;}
 	
 	/** Retrieves the cast value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	/** Sets the cast value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/** Retrieves the cast value spread. */
-	inline float GetSpread() const{ return pSpread; }
+	inline float GetSpread() const{return pSpread;}
 	/** Sets the cast value spread. */
-	void SetSpread( float spread );
+	void SetSpread(float spread);
 	/** Retrieves the curve controller for the cast value. */
-	inline peeController *GetControllerValue() const{ return pControllerValue; }
+	inline peeController *GetControllerValue() const{return pControllerValue;}
 	/** Sets the curve controller for the cast value. */
-	void SetControllerValue( peeController *controller );
+	void SetControllerValue(peeController *controller);
 	/** Retrieves the curve controller for the cast value spread. */
-	inline peeController *GetControllerSpread() const{ return pControllerSpread; }
+	inline peeController *GetControllerSpread() const{return pControllerSpread;}
 	/** Sets the curve controller for the cast value spread. */
-	void SetControllerSpread( peeController *controller );
+	void SetControllerSpread(peeController *controller);
 	/** Retrieves the cast value curve. */
-	inline const decCurveBezier &GetCurveValue() const{ return pCurveValue; }
+	inline const decCurveBezier &GetCurveValue() const{return pCurveValue;}
 	/** Sets the cast value curve. */
-	void SetCurveValue( const decCurveBezier &curve );
+	void SetCurveValue(const decCurveBezier &curve);
 	/** Retrieves the cast value spread curve. */
-	inline const decCurveBezier &GetCurveSpread() const{ return pCurveSpread; }
+	inline const decCurveBezier &GetCurveSpread() const{return pCurveSpread;}
 	/** Sets the cast value spread curve. */
-	void SetCurveSpread( const decCurveBezier &curve );
+	void SetCurveSpread(const decCurveBezier &curve);
 	/** Retrieves the progress curve. */
-	inline const decCurveBezier &GetCurveProgress() const{ return pCurveProgress; }
+	inline const decCurveBezier &GetCurveProgress() const{return pCurveProgress;}
 	/** Sets the progress curve. */
-	void SetCurveProgress( const decCurveBezier &curve );
+	void SetCurveProgress(const decCurveBezier &curve);
 	/** Retrieves the beam curve. */
-	inline const decCurveBezier &GetCurveBeam() const{ return pCurveBeam; }
+	inline const decCurveBezier &GetCurveBeam() const{return pCurveBeam;}
 	/** Sets the beam curve. */
-	void SetCurveBeam( const decCurveBezier &curve );
+	void SetCurveBeam(const decCurveBezier &curve);
 	
 	/** Determines if this is the active parameter. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	/** Sets if this is the active parameter. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Update engine parameter. */
-	void UpdateEngineParameter( deParticleEmitterParameter &parameter );
+	void UpdateEngineParameter(deParticleEmitterParameter &parameter);
 	
 	/** Notifies the listeners that the parameter changed. */
 	void NotifyChanged();

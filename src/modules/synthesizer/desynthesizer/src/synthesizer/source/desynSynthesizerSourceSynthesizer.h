@@ -47,8 +47,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSourceSynthesizer( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceSynthesizer &source );
+	desynSynthesizerSourceSynthesizer(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceSynthesizer &source);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~desynSynthesizerSourceSynthesizer();
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Child synthesizer or \em NULL if not set. */
-	inline desynSynthesizer *GetChildSynthesizer() const{ return pChildSynthesizer; }
+	inline desynSynthesizer *GetChildSynthesizer() const{return pChildSynthesizer;}
 	
 	
 	
@@ -68,10 +68,10 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	virtual int StateDataSizeSource(int offset);
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	virtual void InitStateDataSource(char *stateData);
 	
 	/**
 	 * \brief Generate sound using source.
@@ -81,8 +81,8 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	virtual void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
@@ -91,15 +91,15 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	virtual void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateSources( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSourceSynthesizer &source );
+	void pCreateSources(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSourceSynthesizer &source);
 	void pClearSources();
 };
 

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeULinkPaste( aeAnimator *animator, const aeLinkList &linkList );
+	aeULinkPaste(aeAnimator *animator, const aeLinkList &linkList);
 	
 protected:
 	/** Clean up undo. */

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create targa image from data. */
-	decTgaImage( decBaseFileReader &reader );
+	decTgaImage(decBaseFileReader &reader);
 	
 	/** \brief Clean up targa image. */
 	~decTgaImage();
@@ -58,17 +58,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width of the image. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Height of the image. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** \brief Pointer to RGB aligned data. */
-	inline sPixel *GetPixels() const{ return pPixels; }
+	inline sPixel *GetPixels() const{return pPixels;}
 	/*@}*/
 	
 private:
-	void pReadTga( decBaseFileReader &reader );
+	void pReadTga(decBaseFileReader &reader);
 };
 
 #endif

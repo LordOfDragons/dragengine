@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkFramebuffer( devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration );
+	devkFramebuffer(devkRenderPass *renderPass, const devkFramebufferConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
@@ -65,13 +65,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render pass. */
-	inline devkRenderPass &GetRenderPass() const{ return pRenderPass; }
+	inline devkRenderPass &GetRenderPass() const{return pRenderPass;}
 	
 	/** Configuration. */
-	inline const devkFramebufferConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline const devkFramebufferConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** Framebuffer. */
-	inline VkFramebuffer GetFramebuffer() const{ return pFramebuffer; }
+	inline VkFramebuffer GetFramebuffer() const{return pFramebuffer;}
 	/*@}*/
 	
 	

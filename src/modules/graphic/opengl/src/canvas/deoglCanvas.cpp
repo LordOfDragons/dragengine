@@ -43,23 +43,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvas::deoglCanvas( deGraphicOpenGl &ogl, deCanvas &canvas ) :
-pOgl( ogl ),
-pCanvas( canvas ),
+deoglCanvas::deoglCanvas(deGraphicOpenGl &ogl, deCanvas &canvas) :
+pOgl(ogl),
+pCanvas(canvas),
 
-pRCanvas( NULL ),
-pDirtyGeometry( true ),
-pDirtyTransform( true ),
-pDirtyColorTransform( true ),
-pDirtyParameters( true ),
-pDirtyContent( true ),
-pDirtyParentPaint( false ),
-pDirtyMaskContent( false )
+pRCanvas(NULL),
+pDirtyGeometry(true),
+pDirtyTransform(true),
+pDirtyColorTransform(true),
+pDirtyParameters(true),
+pDirtyContent(true),
+pDirtyParentPaint(false),
+pDirtyMaskContent(false)
 {
 }
 
 deoglCanvas::~deoglCanvas(){
-	if( pRCanvas ){
+	if(pRCanvas){
 		pRCanvas->FreeReference();
 	}
 }
@@ -70,28 +70,28 @@ deoglCanvas::~deoglCanvas(){
 ///////////////
 
 void deoglCanvas::DropRCanvas(){
-	if( pRCanvas ){
+	if(pRCanvas){
 		pRCanvas->FreeReference();
 		pRCanvas = NULL;
 	}
 }
 
 void deoglCanvas::SetDirtyParentPaint(){
-	if( pDirtyParentPaint ){
+	if(pDirtyParentPaint){
 		return;
 	}
 	
 	pDirtyParentPaint = true;
 	
-	if( pCanvas.GetParentMask() ){
-		deoglCanvas * const canvas = ( deoglCanvas* )pCanvas.GetParentMask()->GetPeerGraphic();
-		if( canvas ){
+	if(pCanvas.GetParentMask()){
+		deoglCanvas * const canvas = (deoglCanvas*)pCanvas.GetParentMask()->GetPeerGraphic();
+		if(canvas){
 			canvas->SetDirtyMaskContent();
 		}
 	}
-	if( pCanvas.GetParentView() ){
-		deoglCanvasView * const canvas = ( deoglCanvasView* )pCanvas.GetParentView()->GetPeerGraphic();
-		if( canvas ){
+	if(pCanvas.GetParentView()){
+		deoglCanvasView * const canvas = (deoglCanvasView*)pCanvas.GetParentView()->GetPeerGraphic();
+		if(canvas){
 			canvas->SetDirtyPaint();
 		}
 	}
@@ -101,7 +101,7 @@ void deoglCanvas::SetDirtyMaskContent(){
 	pDirtyMaskContent = true;
 	SetDirtyParentPaint();
 	
-	if( pRCanvas ){
+	if(pRCanvas){
 		pRCanvas->DirtyMaskRenderTarget();
 	}
 }
@@ -109,10 +109,10 @@ void deoglCanvas::SetDirtyMaskContent(){
 
 
 void deoglCanvas::SyncToRender(){
-	if( ! pRCanvas ){
+	if(! pRCanvas){
 		pRCanvas = CreateRCanvas();
-		if( ! pRCanvas ){
-			DETHROW( deeInvalidParam );
+		if(! pRCanvas){
+			DETHROW(deeInvalidParam);
 		}
 		
 		pDirtyTransform = true;
@@ -121,46 +121,46 @@ void deoglCanvas::SyncToRender(){
 		pDirtyContent = true;
 	}
 	
-	if( pDirtyGeometry ){
+	if(pDirtyGeometry){
 		pDirtyTransform = true; // position is calculated into the transform
 		
-		pRCanvas->SetPosition( decVector2( pCanvas.GetPosition() ) );
-		pRCanvas->SetSize( decVector2( pCanvas.GetSize() ) );
+		pRCanvas->SetPosition(decVector2(pCanvas.GetPosition()));
+		pRCanvas->SetSize(decVector2(pCanvas.GetSize()));
 		pDirtyGeometry = false;
 	}
 	
-	if( pDirtyTransform ){
+	if(pDirtyTransform){
 		pDirtyTransform = false;
 		
-		pRCanvas->SetTransform( pCanvas.GetTransform()
+		pRCanvas->SetTransform(pCanvas.GetTransform()
 			* decTexMatrix2::CreateTranslation( decVector2( pCanvas.GetPosition() ) ) );
 	}
 	
-	if( pDirtyColorTransform ){
+	if(pDirtyColorTransform){
 		pDirtyColorTransform = false;
 		
-		pRCanvas->SetColorTransform( pCanvas.GetColorTransform() );
+		pRCanvas->SetColorTransform(pCanvas.GetColorTransform());
 	}
 	
-	if( pDirtyParameters ){
+	if(pDirtyParameters){
 		pDirtyParameters = false;
 		
-		pRCanvas->SetOrder( pCanvas.GetOrder() );
-		pRCanvas->SetTransparency( pCanvas.GetTransparency() );
-		pRCanvas->SetVisible( pCanvas.GetVisible() );
-		pRCanvas->SetBlendMode( pCanvas.GetBlendMode() );
+		pRCanvas->SetOrder(pCanvas.GetOrder());
+		pRCanvas->SetTransparency(pCanvas.GetTransparency());
+		pRCanvas->SetVisible(pCanvas.GetVisible());
+		pRCanvas->SetBlendMode(pCanvas.GetBlendMode());
 		
-		if( pCanvas.GetMask() ){
-			deoglCanvas &canvas = *( ( deoglCanvas* )pCanvas.GetMask()->GetPeerGraphic() );
+		if(pCanvas.GetMask()){
+			deoglCanvas &canvas = *((deoglCanvas*)pCanvas.GetMask()->GetPeerGraphic());
 			canvas.SyncToRender();
-			pRCanvas->SetMask( canvas.pRCanvas );
+			pRCanvas->SetMask(canvas.pRCanvas);
 			
 		}else{
-			pRCanvas->SetMask( nullptr );
+			pRCanvas->SetMask(nullptr);
 		}
 	}
 	
-	if( pDirtyContent ){
+	if(pDirtyContent){
 		pDirtyContent = false;
 		SyncContentToRender();
 	}
@@ -203,8 +203,8 @@ void deoglCanvas::VisibleChanged(){
 
 void deoglCanvas::OrderChanged(){
 	deCanvasView * const parentView = pCanvas.GetParentView();
-	if( parentView ){
-		( ( deoglCanvasView* )parentView->GetPeerGraphic() )->ChildOrderChanged();
+	if(parentView){
+		((deoglCanvasView*)parentView->GetPeerGraphic())->ChildOrderChanged();
 	}
 	
 	pDirtyParameters = true;

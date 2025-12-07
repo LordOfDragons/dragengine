@@ -425,7 +425,7 @@ void projRemoteClient::pBuildGameXml(decXmlWriter &writer, const projProfile &pr
 	if(iconPathCount > 0){
 		deImageManager &imageManager = *env.GetEngineController()->GetEngine()->GetImageManager();
 		int i;
-		for( i=0; i<iconPathCount; i++ ){
+		for(i=0; i<iconPathCount; i++){
 			const deImage::Ref icon(deImage::Ref::New(
 				imageManager.LoadImage(iconPathList.GetAt(i), "/")));
 			writer.WriteOpeningTagStart("icon");

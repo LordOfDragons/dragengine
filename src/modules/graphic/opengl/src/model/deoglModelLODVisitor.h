@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model octree visitor. */
-	deoglModelLODVisitor( deoglModelLOD &modelLOD );
+	deoglModelLODVisitor(deoglModelLOD &modelLOD);
 	/** Cleans up the model octree visitor. */
 	virtual ~deoglModelLODVisitor();
 	/*@}*/
@@ -59,20 +59,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the box minimum extend. */
-	inline const decVector &GetBoxMinExtend() const{ return pBoxMinExtend; }
+	inline const decVector &GetBoxMinExtend() const{return pBoxMinExtend;}
 	/** Retrieves the box maximum extend. */
-	inline const decVector &GetBoxMaxExtend() const{ return pBoxMaxExtend; }
+	inline const decVector &GetBoxMaxExtend() const{return pBoxMaxExtend;}
 	/** Sets the box extends. */
-	void SetBoxExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetBoxExtends(const decVector &minExtend, const decVector &maxExtend);
 	/** Retrieves the lod point. */
-	inline const decVector &GetLODPoint() const{ return pLODPoint; }
+	inline const decVector &GetLODPoint() const{return pLODPoint;}
 	/** Sets the lod point. */
-	void SetLODPoint( const decVector &lodPoint );
+	void SetLODPoint(const decVector &lodPoint);
 	
 	/** Retrieves the minimum lod distance. */
-	inline float GetMinLODDistance() const{ return pMinLODDistance; }
+	inline float GetMinLODDistance() const{return pMinLODDistance;}
 	/** Sets the minimum lod distance. */
-	void SetMinLODDistance( float distance );
+	void SetMinLODDistance(float distance);
 	/*@}*/
 	
 	/** \name Visiting */
@@ -81,7 +81,7 @@ public:
 	 * Visits an octree node. The default implementation is to visit all
 	 * world elements stored in the node.
 	 */
-	virtual void VisitNode( deoglOctree *node, int intersection );
+	virtual void VisitNode(deoglOctree *node, int intersection);
 	/*@}*/
 };
 

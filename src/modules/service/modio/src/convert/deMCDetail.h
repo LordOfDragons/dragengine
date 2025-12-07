@@ -39,17 +39,17 @@ private:
 	
 public:
 	/** Convert avatar. */
-	static deServiceObject::Ref Avatar( Modio::ModID modId, const Modio::Detail::Avatar &avatar );
-	static deServiceObject::Ref Avatar( Modio::UserID userId, const Modio::Detail::Avatar &avatar );
+	static deServiceObject::Ref Avatar(Modio::ModID modId, const Modio::Detail::Avatar &avatar);
+	static deServiceObject::Ref Avatar(Modio::UserID userId, const Modio::Detail::Avatar &avatar);
 	
 	/** Convert image. */
-	static deServiceObject::Ref Image( Modio::ModID modId, int index, const Modio::Detail::Image &image );
+	static deServiceObject::Ref Image(Modio::ModID modId, int index, const Modio::Detail::Image &image);
 	
 	/** Convert image list. */
-	static deServiceObject::Ref ImageList( Modio::ModID modId, const std::vector<Modio::Detail::Image> &list );
+	static deServiceObject::Ref ImageList(Modio::ModID modId, const std::vector<Modio::Detail::Image> &list);
 	
 	/** Convert logo. */
-	static deServiceObject::Ref Logo( Modio::ModID modId, const Modio::Detail::Logo &logo );
+	static deServiceObject::Ref Logo(Modio::ModID modId, const Modio::Detail::Logo &logo);
 	/*@}*/
 };
 

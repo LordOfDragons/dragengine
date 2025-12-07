@@ -40,15 +40,15 @@
 ////////////////////////////
 
 aeUControllerSetDefaultVector::aeUControllerSetDefaultVector(
-	aeController *controller, const decVector &newVector ) :
-pController( controller ),
-pNewVector( newVector )
+	aeController *controller, const decVector &newVector) :
+pController(controller),
+pNewVector(newVector)
 {
-	DEASSERT_NOTNULL( controller )
-	DEASSERT_NOTNULL( controller->GetAnimator() )
+	DEASSERT_NOTNULL(controller)
+	DEASSERT_NOTNULL(controller->GetAnimator())
 	
 	pOldVector = controller->GetDefaultVector();
-	SetShortInfo( "Set controller default vector" );
+	SetShortInfo("Set controller default vector");
 }
 
 aeUControllerSetDefaultVector::~aeUControllerSetDefaultVector(){
@@ -60,9 +60,9 @@ aeUControllerSetDefaultVector::~aeUControllerSetDefaultVector(){
 ///////////////
 
 void aeUControllerSetDefaultVector::Undo(){
-	pController->SetDefaultVector( pOldVector );
+	pController->SetDefaultVector(pOldVector);
 }
 
 void aeUControllerSetDefaultVector::Redo(){
-	pController->SetDefaultVector( pNewVector );
+	pController->SetDefaultVector(pNewVector);
 }

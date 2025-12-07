@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image information. */
-	deWebp3DImageInfo( const decString &filename );
+	deWebp3DImageInfo(const decString &filename);
 	
 	/** Clean up image information. */
 	virtual ~deWebp3DImageInfo();
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** Has alpha. */
-	inline bool GetHasAlpha() const{ return hasAlpha; }
+	inline bool GetHasAlpha() const{return hasAlpha;}
 	
 	/** Image width in pixels. */
 	virtual int GetWidth();

@@ -43,8 +43,8 @@
 // constructor, destructor
 ////////////////////////////
 
-deColliderManager::deColliderManager( deEngine *engine ) : deResourceManager( engine, ertCollider ){
-	SetLoggingName( "collider" );
+deColliderManager::deColliderManager(deEngine *engine) : deResourceManager(engine, ertCollider){
+	SetLoggingName("collider");
 }
 
 deColliderManager::~deColliderManager(){
@@ -61,20 +61,20 @@ int deColliderManager::GetColliderCount() const{
 }
 
 deCollider *deColliderManager::GetRootCollider() const{
-	return ( deCollider* )pColliders.GetRoot();
+	return (deCollider*)pColliders.GetRoot();
 }
 
 deColliderVolume *deColliderManager::CreateColliderVolume(){
 	deColliderVolume *collider = NULL;
 	// create and add collider
 	try{
-		collider = new deColliderVolume( this );
-		if( ! collider ) DETHROW( deeOutOfMemory );
-		GetPhysicsSystem()->LoadCollider( collider );
-		GetScriptingSystem()->LoadCollider( collider );
-		pColliders.Add( collider );
-	}catch( const deException & ){
-		if( collider ){
+		collider = new deColliderVolume(this);
+		if(! collider) DETHROW(deeOutOfMemory);
+		GetPhysicsSystem()->LoadCollider(collider);
+		GetScriptingSystem()->LoadCollider(collider);
+		pColliders.Add(collider);
+	}catch(const deException &){
+		if(collider){
 			collider->FreeReference();
 		}
 		throw;
@@ -87,13 +87,13 @@ deColliderRig *deColliderManager::CreateColliderRig(){
 	deColliderRig *collider = NULL;
 	// create and add collider
 	try{
-		collider = new deColliderRig( this );
-		if( ! collider ) DETHROW( deeOutOfMemory );
-		GetPhysicsSystem()->LoadCollider( collider );
-		GetScriptingSystem()->LoadCollider( collider );
-		pColliders.Add( collider );
-	}catch( const deException & ){
-		if( collider ){
+		collider = new deColliderRig(this);
+		if(! collider) DETHROW(deeOutOfMemory);
+		GetPhysicsSystem()->LoadCollider(collider);
+		GetScriptingSystem()->LoadCollider(collider);
+		pColliders.Add(collider);
+	}catch(const deException &){
+		if(collider){
 			collider->FreeReference();
 		}
 		throw;
@@ -106,13 +106,13 @@ deColliderComponent *deColliderManager::CreateColliderComponent(){
 	deColliderComponent *collider = NULL;
 	// create and add collider
 	try{
-		collider = new deColliderComponent( this );
-		if( ! collider ) DETHROW( deeOutOfMemory );
-		GetPhysicsSystem()->LoadCollider( collider );
-		GetScriptingSystem()->LoadCollider( collider );
-		pColliders.Add( collider );
-	}catch( const deException & ){
-		if( collider ){
+		collider = new deColliderComponent(this);
+		if(! collider) DETHROW(deeOutOfMemory);
+		GetPhysicsSystem()->LoadCollider(collider);
+		GetScriptingSystem()->LoadCollider(collider);
+		pColliders.Add(collider);
+	}catch(const deException &){
+		if(collider){
 			collider->FreeReference();
 		}
 		throw;
@@ -124,8 +124,8 @@ deColliderComponent *deColliderManager::CreateColliderComponent(){
 
 
 void deColliderManager::ReleaseLeakingResources(){
-	if( GetColliderCount() > 0 ){
-		LogWarnFormat( "%i leaking colliders", GetColliderCount() );
+	if(GetColliderCount() > 0){
+		LogWarnFormat("%i leaking colliders", GetColliderCount());
 		pColliders.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -136,47 +136,47 @@ void deColliderManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deColliderManager::SystemPhysicsLoad(){
-	deCollider *collider = ( deCollider* )pColliders.GetRoot();
+	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
-	while( collider ){
-		if( ! collider->GetPeerPhysics() ){
-			GetPhysicsSystem()->LoadCollider( collider );
+	while(collider){
+		if(! collider->GetPeerPhysics()){
+			GetPhysicsSystem()->LoadCollider(collider);
 		}
 		
-		collider = ( deCollider* )collider->GetLLManagerNext();
+		collider = (deCollider*)collider->GetLLManagerNext();
 	}
 }
 
 void deColliderManager::SystemPhysicsUnload(){
-	deCollider *collider = ( deCollider* )pColliders.GetRoot();
+	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
-	while( collider ){
-		collider->SetPeerPhysics( NULL );
-		collider = ( deCollider* )collider->GetLLManagerNext();
+	while(collider){
+		collider->SetPeerPhysics(NULL);
+		collider = (deCollider*)collider->GetLLManagerNext();
 	}
 }
 
 void deColliderManager::SystemScriptingLoad(){
-	deCollider *collider = ( deCollider* )pColliders.GetRoot();
+	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
-	while( collider ){
-		if( ! collider->GetPeerScripting() ){
-			GetScriptingSystem()->LoadCollider( collider );
+	while(collider){
+		if(! collider->GetPeerScripting()){
+			GetScriptingSystem()->LoadCollider(collider);
 		}
 		
-		collider = ( deCollider* )collider->GetLLManagerNext();
+		collider = (deCollider*)collider->GetLLManagerNext();
 	}
 }
 
 void deColliderManager::SystemScriptingUnload(){
-	deCollider *collider = ( deCollider* )pColliders.GetRoot();
+	deCollider *collider = (deCollider*)pColliders.GetRoot();
 	
-	while( collider ){
-		collider->SetPeerScripting( NULL );
-		collider = ( deCollider* )collider->GetLLManagerNext();
+	while(collider){
+		collider->SetPeerScripting(NULL);
+		collider = (deCollider*)collider->GetLLManagerNext();
 	}
 }
 
-void deColliderManager::RemoveResource( deResource *resource ){
-	pColliders.RemoveIfPresent( resource );
+void deColliderManager::RemoveResource(deResource *resource){
+	pColliders.RemoveIfPresent(resource);
 }

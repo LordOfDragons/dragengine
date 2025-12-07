@@ -36,15 +36,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeNullTimer::igdeNativeNullTimer( igdeTimer &owner ) :
-pOwner( owner ){
+igdeNativeNullTimer::igdeNativeNullTimer(igdeTimer &owner) :
+pOwner(owner){
 }
 
 igdeNativeNullTimer::~igdeNativeNullTimer(){
 }
 
-igdeNativeNullTimer *igdeNativeNullTimer::CreateNativeTimer( igdeTimer &owner ){
-	return new igdeNativeNullTimer( owner );
+igdeNativeNullTimer *igdeNativeNullTimer::CreateNativeTimer(igdeTimer &owner){
+	return new igdeNativeNullTimer(owner);
 }
 
 void igdeNativeNullTimer::DestroyNativeTimer(){

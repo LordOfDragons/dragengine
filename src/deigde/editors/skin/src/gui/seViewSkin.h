@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	seViewSkin( seWindowMain &windowMain );
+	seViewSkin(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
@@ -66,13 +66,13 @@ public:
 	void ResetView();
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline seSkin *GetSkin() const{return pSkin;}
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();

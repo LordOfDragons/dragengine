@@ -59,7 +59,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new temporary constraint. */
-	reTemporaryConstraint( reRig *rig, reRigBone *bone, const decDVector &position, const decQuaternion &orientation );
+	reTemporaryConstraint(reRig *rig, reRigBone *bone, const decDVector &position, const decQuaternion &orientation);
 	/** Cleans up the temporary constraint. */
 	~reTemporaryConstraint();
 	/*@}*/
@@ -67,32 +67,32 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the engine constraint. */
-	inline deColliderConstraint *GetEngineConstraint() const{ return pEngConstraint; }
+	inline deColliderConstraint *GetEngineConstraint() const{return pEngConstraint;}
 	
 	/** Retrieves the constraint position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	/** Sets the constraint position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	/** Retrieves the constraint orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	/** Sets the constraint orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	/** Retrieves the lower linear limits. */
-	inline const decVector &GetLinearLowerLimits() const{ return pLinearLowerLimits; }
+	inline const decVector &GetLinearLowerLimits() const{return pLinearLowerLimits;}
 	/** Sets the lower linear limits. */
-	void SetLinearLowerLimits( const decVector &lowerLimits );
+	void SetLinearLowerLimits(const decVector &lowerLimits);
 	/** Retrieves the upper linear limits. */
-	inline const decVector &GetLinearUpperLimits() const{ return pLinearUpperLimits; }
+	inline const decVector &GetLinearUpperLimits() const{return pLinearUpperLimits;}
 	/** Sets the upper linear limits. */
-	void SetLinearUpperLimits( const decVector &upperLimits );
+	void SetLinearUpperLimits(const decVector &upperLimits);
 	/** Retrieves the lower angular limits. */
-	inline const decVector &GetAngularLowerLimits() const{ return pAngularLowerLimits; }
+	inline const decVector &GetAngularLowerLimits() const{return pAngularLowerLimits;}
 	/** Sets the lower angular limits. */
-	void SetAngularLowerLimits( const decVector &lowerLimits );
+	void SetAngularLowerLimits(const decVector &lowerLimits);
 	/** Retrieves the upper angular limits. */
-	inline const decVector &GetAngularUpperLimits() const{ return pAngularUpperLimits; }
+	inline const decVector &GetAngularUpperLimits() const{return pAngularUpperLimits;}
 	/** Sets the upper angular limits. */
-	void SetAngularUpperLimits( const decVector &upperLimits );
+	void SetAngularUpperLimits(const decVector &upperLimits);
 	/*@}*/
 	
 private:

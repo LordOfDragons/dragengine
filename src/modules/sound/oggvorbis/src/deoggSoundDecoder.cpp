@@ -37,41 +37,41 @@
 // Callbacks
 //////////////
 
-static size_t fOggDecodeRead( void *ptr, size_t size, size_t nmemb, void *datasource ){
-	decBaseFileReader *reader = ( decBaseFileReader* )datasource;
+static size_t fOggDecodeRead(void *ptr, size_t size, size_t nmemb, void *datasource){
+	decBaseFileReader *reader = (decBaseFileReader*)datasource;
 	int position = reader->GetPosition();
-	int readSize = ( int )( size * nmemb );
+	int readSize = (int)(size * nmemb);
 	int remaining = reader->GetLength() - position;
 	
-	if( readSize > remaining ) readSize = remaining;
+	if(readSize > remaining) readSize = remaining;
 	
-	reader->Read( ptr, readSize );
+	reader->Read(ptr, readSize);
 	
 	return readSize;
 }
 
-static int fOggDecodeSeek( void *datasource, ogg_int64_t offset, int whence ){
-	decBaseFileReader *reader = ( decBaseFileReader* )datasource;
+static int fOggDecodeSeek(void *datasource, ogg_int64_t offset, int whence){
+	decBaseFileReader *reader = (decBaseFileReader*)datasource;
 	
-	if( whence == SEEK_SET ){
-		reader->SetPosition( ( int )offset );
+	if(whence == SEEK_SET){
+		reader->SetPosition((int)offset);
 		
-	}else if( whence == SEEK_CUR ){
-		reader->MovePosition( ( int )offset );
+	}else if(whence == SEEK_CUR){
+		reader->MovePosition((int)offset);
 		
-	}else if( whence == SEEK_END ){
-		reader->SetPositionEnd( ( int )offset );
+	}else if(whence == SEEK_END){
+		reader->SetPositionEnd((int)offset);
 	}
 	
 	return 0;
 }
 
-static int fOggDecodeClose( void *datasource ){
+static int fOggDecodeClose(void *datasource){
 	return 0;
 }
 
-static long fOggDecodeTell( void *datasource ){
-	decBaseFileReader *reader = ( decBaseFileReader* )datasource;
+static long fOggDecodeTell(void *datasource){
+	decBaseFileReader *reader = (decBaseFileReader*)datasource;
 	
 	return reader->GetPosition();
 }
@@ -84,8 +84,8 @@ static long fOggDecodeTell( void *datasource ){
 // Constructor, destructor
 ////////////////////////////
 
-deoggSoundDecoder::deoggSoundDecoder( deSoundOGG *module, decBaseFileReader *file ) :
-deBaseSoundDecoder( file ){
+deoggSoundDecoder::deoggSoundDecoder(deSoundOGG *module, decBaseFileReader *file) :
+deBaseSoundDecoder(file){
 	ov_callbacks callbacks;
 	vorbis_info *fileInfos;
 	bool isOpen = false;
@@ -101,28 +101,28 @@ deBaseSoundDecoder( file ){
 		callbacks.tell_func = fOggDecodeTell;
 		
 		// open the file
-		if( ov_open_callbacks( file, &pOggFile, NULL, 0, callbacks ) < 0 ){
-			module->LogError( "Invalid OGG file." );
-			DETHROW( deeInvalidParam );
+		if(ov_open_callbacks(file, &pOggFile, NULL, 0, callbacks) < 0){
+			module->LogError("Invalid OGG file.");
+			DETHROW(deeInvalidParam);
 		}
 		isOpen = true;
 		
 		// fetch the file properties
-		fileInfos = ov_info( &pOggFile, -1 );
-		if( ! fileInfos ){
-			module->LogError( "Could not get infos from OGG file." );
-			DETHROW( deeInvalidParam );
+		fileInfos = ov_info(&pOggFile, -1);
+		if(! fileInfos){
+			module->LogError("Could not get infos from OGG file.");
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( fileInfos->channels < 1 ){
-			module->LogErrorFormat( "Invalid channel count %i.", fileInfos->channels );
-			DETHROW( deeInvalidParam );
+		if(fileInfos->channels < 1){
+			module->LogErrorFormat("Invalid channel count %i.", fileInfos->channels);
+			DETHROW(deeInvalidParam);
 		}
 		
-		sampleCount = ( int )ov_pcm_total( &pOggFile, -1 );
-		if( sampleCount == OV_EINVAL ){
-			module->LogError( "Could not determine the number of samples in the sound file." );
-			DETHROW( deeInvalidParam );
+		sampleCount = (int)ov_pcm_total(&pOggFile, -1);
+		if(sampleCount == OV_EINVAL){
+			module->LogError("Could not determine the number of samples in the sound file.");
+			DETHROW(deeInvalidParam);
 		}
 		
 		// store information
@@ -131,21 +131,21 @@ deBaseSoundDecoder( file ){
 		pChannelCount = fileInfos->channels;
 		pSampleCount = sampleCount;
 		
-		if( pBytesPerSample == 1 ){
+		if(pBytesPerSample == 1){
 			pSigned = 0;
 		}else{
 			pSigned = 1;
 		}
 		
-	}catch( const deException &e ){
-		if( isOpen ) ov_clear( &pOggFile );
+	}catch(const deException &e){
+		if(isOpen) ov_clear(&pOggFile);
 		e.PrintError();
 		throw;
 	}
 }
 
 deoggSoundDecoder::~deoggSoundDecoder(){
-	ov_clear( &pOggFile );
+	ov_clear(&pOggFile);
 }
 
 
@@ -154,26 +154,26 @@ deoggSoundDecoder::~deoggSoundDecoder(){
 ///////////////
 
 int deoggSoundDecoder::GetPosition(){
-	return ( int )ov_pcm_tell( &pOggFile );
+	return (int)ov_pcm_tell(&pOggFile);
 }
 
-void deoggSoundDecoder::SetPosition( int position ){
-	if( pSampleCount == 0 ){
+void deoggSoundDecoder::SetPosition(int position){
+	if(pSampleCount == 0){
 		return;
 	}
-	ov_pcm_seek( &pOggFile, decMath::clamp( position, 0, pSampleCount ) );
+	ov_pcm_seek(&pOggFile, decMath::clamp(position, 0, pSampleCount));
 }
 
-int deoggSoundDecoder::ReadSamples( void *buffer, int size ){
-	if( ! buffer || size < 0 ){
-		DETHROW( deeInvalidParam );
+int deoggSoundDecoder::ReadSamples(void *buffer, int size){
+	if(! buffer || size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size == 0 ){
+	if(size == 0){
 		return 0;
 	}
 	
-	char *samples = ( char* )buffer;
+	char *samples = (char*)buffer;
 	int totalReadBytes = 0;
 	
 	// read the file
@@ -187,13 +187,13 @@ int deoggSoundDecoder::ReadSamples( void *buffer, int size ){
 	      16-bit samples. Typical value is 2.
 	sgned: Signed or unsigned data. 0 for unsigned, 1 for signed. Typically 1.
 	*/
-	while( size > 0 ){
-		const long readBytes = ov_read( &pOggFile, samples, size, 0, pBytesPerSample, pSigned, &pSection );
-		if( readBytes == 0 ){
+	while(size > 0){
+		const long readBytes = ov_read(&pOggFile, samples, size, 0, pBytesPerSample, pSigned, &pSection);
+		if(readBytes == 0){
 			size = 0;
 			
 		// ( readBytes < 0 ) => error in stream, can be ignored safely ( really? )
-		}else if( readBytes > 0 ){
+		}else if(readBytes > 0){
 			samples += readBytes;
 			size -= readBytes;
 			totalReadBytes += readBytes;

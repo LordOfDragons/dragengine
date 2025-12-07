@@ -38,7 +38,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWTestLayout( dealDisplay &display );
+	dealWTestLayout(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWTestLayout();
@@ -49,10 +49,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Add layout lines one for each layout type. */
-	void AddLayoutLinesX( int top, dealWidgetLayoutFlow::eLayoutTypes layoutY );
+	void AddLayoutLinesX(int top, dealWidgetLayoutFlow::eLayoutTypes layoutY);
 	
 	/** \brief Add layout lines one for each layout type. */
-	void AddLayoutLinesY( int left, int top, dealWidgetLayoutFlow::eLayoutTypes layoutX );
+	void AddLayoutLinesY(int left, int top, dealWidgetLayoutFlow::eLayoutTypes layoutX);
 	
 	/** \brief Create layout with differently colored test widgets inside one for each layout type. */
 	dealWidgetLayoutFlow *CreateLayoutLineX();

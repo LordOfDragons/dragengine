@@ -40,24 +40,24 @@
 ////////////////////////////
 
 seUSourceGroupSetApplicationType::seUSourceGroupSetApplicationType(
-seSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType ) :
-pSource( NULL )
+seSourceGroup *source, deSynthesizerSourceGroup::eApplicationTypes newType) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldType = source->GetApplicationType();
 	pNewType = newType;
 	
-	SetShortInfo( "Group source set application type" );
+	SetShortInfo("Group source set application type");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceGroupSetApplicationType::~seUSourceGroupSetApplicationType(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ seUSourceGroupSetApplicationType::~seUSourceGroupSetApplicationType(){
 ///////////////
 
 void seUSourceGroupSetApplicationType::Undo(){
-	pSource->SetApplicationType( pOldType );
+	pSource->SetApplicationType(pOldType);
 }
 
 void seUSourceGroupSetApplicationType::Redo(){
-	pSource->SetApplicationType( pNewType );
+	pSource->SetApplicationType(pNewType);
 }

@@ -35,9 +35,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleRemoveVertexPositionSet::aeUSetRuleRemoveVertexPositionSet( aeRule* rule, const char* pattern ){
-	DEASSERT_NOTNULL( rule )
-	DEASSERT_NOTNULL( pattern )
+aeUSetRuleRemoveVertexPositionSet::aeUSetRuleRemoveVertexPositionSet(aeRule* rule, const char* pattern){
+	DEASSERT_NOTNULL(rule)
+	DEASSERT_NOTNULL(pattern)
 	
 	pRule = nullptr;
 	
@@ -45,19 +45,19 @@ aeUSetRuleRemoveVertexPositionSet::aeUSetRuleRemoveVertexPositionSet( aeRule* ru
 	const int setCount = sets.GetCount();
 	int i;
 	
-	for( i=0; i<setCount; i++ ){
-		const decString &set = sets.GetAt( i );
+	for(i=0; i<setCount; i++){
+		const decString &set = sets.GetAt(i);
 		
-		if( set.MatchesPattern( pattern ) ){
-			pVertexPositionSets.Add( set );
+		if(set.MatchesPattern(pattern)){
+			pVertexPositionSets.Add(set);
 		}
 	}
 	
-	if( pVertexPositionSets.GetCount() == 1 ){
-		SetShortInfo( "Remove vertex position set from rule" );
+	if(pVertexPositionSets.GetCount() == 1){
+		SetShortInfo("Remove vertex position set from rule");
 		
 	}else{
-		SetShortInfo( "Remove vertex position sets from rule" );
+		SetShortInfo("Remove vertex position sets from rule");
 	}
 	
 	pRule = rule;
@@ -65,7 +65,7 @@ aeUSetRuleRemoveVertexPositionSet::aeUSetRuleRemoveVertexPositionSet( aeRule* ru
 }
 
 aeUSetRuleRemoveVertexPositionSet::~aeUSetRuleRemoveVertexPositionSet(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -83,8 +83,8 @@ void aeUSetRuleRemoveVertexPositionSet::Undo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->AddVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->AddVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }
 
@@ -92,7 +92,7 @@ void aeUSetRuleRemoveVertexPositionSet::Redo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pRule->RemoveVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->RemoveVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }

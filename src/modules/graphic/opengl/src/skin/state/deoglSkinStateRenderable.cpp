@@ -48,18 +48,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinStateRenderable::deoglSkinStateRenderable( deoglSkinState &skinState, int index ) :
-pSkinState( skinState ),
-pIndex( index ),
-pHostRenderable( -1 ),
-pPlan( NULL ),
-pTexture( NULL ){
+deoglSkinStateRenderable::deoglSkinStateRenderable(deoglSkinState &skinState, int index) :
+pSkinState(skinState),
+pIndex(index),
+pHostRenderable(-1),
+pPlan(NULL),
+pTexture(NULL){
 }
 
 deoglSkinStateRenderable::~deoglSkinStateRenderable(){
 	Clear();
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -69,53 +69,53 @@ deoglSkinStateRenderable::~deoglSkinStateRenderable(){
 // Management
 ///////////////
 
-void deoglSkinStateRenderable::SetHostRenderable( int hostRenderable ){
+void deoglSkinStateRenderable::SetHostRenderable(int hostRenderable){
 	pHostRenderable = hostRenderable;
 }
 
-void deoglSkinStateRenderable::SetPlan( deoglRenderPlan *plan ){
-	if( plan == pPlan ){
+void deoglSkinStateRenderable::SetPlan(deoglRenderPlan *plan){
+	if(plan == pPlan){
 		return;
 	}
 	
-	if( pPlan ){
-		pPlan->SetWorld( NULL );
+	if(pPlan){
+		pPlan->SetWorld(NULL);
 		delete pPlan;
 		pPlan = NULL;
 	}
 	pPlan = plan;
 }
 
-void deoglSkinStateRenderable::SetTexture( deoglTexture* texture ) {
-	if( texture == pTexture ){
+void deoglSkinStateRenderable::SetTexture(deoglTexture* texture) {
+	if(texture == pTexture){
 		return;
 	}
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 	pTexture = texture;
 }
 
 void deoglSkinStateRenderable::Clear(){
-	SetPlan( NULL );
+	SetPlan(NULL);
 }
 
 
 
-void deoglSkinStateRenderable::AddRenderPlans( deoglRenderPlan &plan ){
-	if( pHostRenderable == -1 ){
+void deoglSkinStateRenderable::AddRenderPlans(deoglRenderPlan &plan){
+	if(pHostRenderable == -1){
 		return;
 	}
 	
 	deoglRDynamicSkin * const dynamicSkin = pSkinState.GetOwnerDynamicSkin();
 	deoglRSkin * const skin = pSkinState.GetOwnerSkin();
-	if( ! skin || ! dynamicSkin ){
+	if(! skin || ! dynamicSkin){
 		return;
 	}
 	
-	deoglRenderPlan * const renderablePlan = dynamicSkin->GetRenderableAt( pHostRenderable )->GetRenderPlan();
-	if( ! renderablePlan ){
+	deoglRenderPlan * const renderablePlan = dynamicSkin->GetRenderableAt(pHostRenderable)->GetRenderPlan();
+	if(! renderablePlan){
 		return;
 	}
 	
@@ -127,21 +127,21 @@ void deoglSkinStateRenderable::AddRenderPlans( deoglRenderPlan &plan ){
 	const int textureCount = skin->GetTextureCount();
 	int t, c;
 	
-	for( t=0; t<textureCount; t++ ){
-		const deoglSkinTexture &texture = skin->GetTextureAt( t );
+	for(t=0; t<textureCount; t++){
+		const deoglSkinTexture &texture = skin->GetTextureAt(t);
 		
-		for( c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++ ){
-			deoglSkinChannel * const channel = texture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )c );
-			if( channel && channel->GetRenderable() == pIndex ){
+		for(c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++){
+			deoglSkinChannel * const channel = texture.GetChannelAt((deoglSkinChannel::eChannelTypes)c);
+			if(channel && channel->GetRenderable() == pIndex){
 				break;
 			}
 		}
 		
-		if( c < deoglSkinChannel::CHANNEL_COUNT ){
-			deoglRenderPlanMasked * const maskedPlan = plan.AddMaskedPlanFor( renderablePlan );
+		if(c < deoglSkinChannel::CHANNEL_COUNT){
+			deoglRenderPlanMasked * const maskedPlan = plan.AddMaskedPlanFor(renderablePlan);
 			
-			if( pSkinState.GetOwnerComponent() ){
-				maskedPlan->SetComponent( pSkinState.GetOwnerComponent(), pSkinState.GetOwnerComponentTexture() );
+			if(pSkinState.GetOwnerComponent()){
+				maskedPlan->SetComponent(pSkinState.GetOwnerComponent(), pSkinState.GetOwnerComponentTexture());
 			}
 		}
 	}

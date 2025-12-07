@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModEnableSize( aeRuleStateManipulator *rule );
+	aeUSetRuleSModEnableSize(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnableSize();

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModEnablePos( aeRuleStateManipulator *rule );
+	aeUSetRuleSModEnablePos(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnablePos();

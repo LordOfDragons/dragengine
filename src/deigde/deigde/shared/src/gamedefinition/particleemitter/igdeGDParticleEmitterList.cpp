@@ -54,23 +54,23 @@ int igdeGDParticleEmitterList::GetCount() const{
 	return pEmitters.GetCount();
 }
 
-igdeGDParticleEmitter *igdeGDParticleEmitterList::GetAt( int index ) const{
-	return ( igdeGDParticleEmitter* )pEmitters.GetAt( index );
+igdeGDParticleEmitter *igdeGDParticleEmitterList::GetAt(int index) const{
+	return (igdeGDParticleEmitter*)pEmitters.GetAt(index);
 }
 
-igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithPath( const char *path ) const{
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithPath(const char *path) const{
+	if(! path){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pEmitters.GetCount();
 	igdeGDParticleEmitter *emitter;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		emitter = ( igdeGDParticleEmitter* )pEmitters.GetAt( i );
+	for(i=0; i<count; i++){
+		emitter = (igdeGDParticleEmitter*)pEmitters.GetAt(i);
 		
-		if( emitter->GetPath().Equals( path ) ){
+		if(emitter->GetPath().Equals(path)){
 			return emitter;
 		}
 	}
@@ -78,19 +78,19 @@ igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithPath( const char *path 
 	return NULL;
 }
 
-igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithName( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithName(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pEmitters.GetCount();
 	igdeGDParticleEmitter *emitter;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		emitter = ( igdeGDParticleEmitter* )pEmitters.GetAt( i );
+	for(i=0; i<count; i++){
+		emitter = (igdeGDParticleEmitter*)pEmitters.GetAt(i);
 		
-		if( emitter->GetName().Equals( name ) ){
+		if(emitter->GetName().Equals(name)){
 			return emitter;
 		}
 	}
@@ -98,20 +98,20 @@ igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithName( const char *name 
 	return NULL;
 }
 
-int igdeGDParticleEmitterList::IndexOf( igdeGDParticleEmitter *emitter ) const{
-	return pEmitters.IndexOf( emitter );
+int igdeGDParticleEmitterList::IndexOf(igdeGDParticleEmitter *emitter) const{
+	return pEmitters.IndexOf(emitter);
 }
 
-int igdeGDParticleEmitterList::IndexOfWithPath( const char *path ) const{
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+int igdeGDParticleEmitterList::IndexOfWithPath(const char *path) const{
+	if(! path){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeGDParticleEmitter* )pEmitters.GetAt( i ) )->GetPath().Equals( path ) ){
+	for(i=0; i<count; i++){
+		if(((igdeGDParticleEmitter*)pEmitters.GetAt(i))->GetPath().Equals(path)){
 			return i;
 		}
 	}
@@ -119,16 +119,16 @@ int igdeGDParticleEmitterList::IndexOfWithPath( const char *path ) const{
 	return -1;
 }
 
-int igdeGDParticleEmitterList::IndexOfWithName( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int igdeGDParticleEmitterList::IndexOfWithName(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeGDParticleEmitter* )pEmitters.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((igdeGDParticleEmitter*)pEmitters.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -136,18 +136,18 @@ int igdeGDParticleEmitterList::IndexOfWithName( const char *name ) const{
 	return -1;
 }
 
-int igdeGDParticleEmitterList::IndexOfWithPathOrName( const char *path, const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int igdeGDParticleEmitterList::IndexOfWithPathOrName(const char *path, const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDParticleEmitter &emitter = *( ( igdeGDParticleEmitter* )pEmitters.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const igdeGDParticleEmitter &emitter = *((igdeGDParticleEmitter*)pEmitters.GetAt(i));
 		
-		if( emitter.GetPath().Equals( path ) || emitter.GetName().Equals( name ) ){
+		if(emitter.GetPath().Equals(path) || emitter.GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -155,44 +155,44 @@ int igdeGDParticleEmitterList::IndexOfWithPathOrName( const char *path, const ch
 	return -1;
 }
 
-bool igdeGDParticleEmitterList::Has( igdeGDParticleEmitter *emitter ) const{
-	return pEmitters.Has( emitter );
+bool igdeGDParticleEmitterList::Has(igdeGDParticleEmitter *emitter) const{
+	return pEmitters.Has(emitter);
 }
 
-bool igdeGDParticleEmitterList::HasWithPath( const char *path ) const{
-	return IndexOfWithPath( path ) != -1;
+bool igdeGDParticleEmitterList::HasWithPath(const char *path) const{
+	return IndexOfWithPath(path) != -1;
 }
 
-bool igdeGDParticleEmitterList::HasWithName( const char *name ) const{
-	return IndexOfWithName( name ) != -1;
+bool igdeGDParticleEmitterList::HasWithName(const char *name) const{
+	return IndexOfWithName(name) != -1;
 }
 
-bool igdeGDParticleEmitterList::HasWithPathOrName( const char *path, const char *name ) const{
-	return IndexOfWithPathOrName( path, name ) != -1;
+bool igdeGDParticleEmitterList::HasWithPathOrName(const char *path, const char *name) const{
+	return IndexOfWithPathOrName(path, name) != -1;
 }
 
-void igdeGDParticleEmitterList::Add( igdeGDParticleEmitter *emitter ){
-	if( ! emitter || HasWithPathOrName( emitter->GetPath().GetString(), emitter->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void igdeGDParticleEmitterList::Add(igdeGDParticleEmitter *emitter){
+	if(! emitter || HasWithPathOrName(emitter->GetPath().GetString(), emitter->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitters.Add( emitter );
+	pEmitters.Add(emitter);
 }
 
-void igdeGDParticleEmitterList::InsertAt( igdeGDParticleEmitter *emitter, int index ){
-	if( ! emitter ){
-		DETHROW( deeInvalidParam );
+void igdeGDParticleEmitterList::InsertAt(igdeGDParticleEmitter *emitter, int index){
+	if(! emitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pEmitters.Insert( emitter, index );
+	pEmitters.Insert(emitter, index);
 }
 
-void igdeGDParticleEmitterList::MoveTo( igdeGDParticleEmitter *emitter, int index ){
-	pEmitters.Move( emitter, index );
+void igdeGDParticleEmitterList::MoveTo(igdeGDParticleEmitter *emitter, int index){
+	pEmitters.Move(emitter, index);
 }
 
-void igdeGDParticleEmitterList::Remove( igdeGDParticleEmitter *emitter ){
-	pEmitters.Remove( emitter );
+void igdeGDParticleEmitterList::Remove(igdeGDParticleEmitter *emitter){
+	pEmitters.Remove(emitter);
 }
 
 void igdeGDParticleEmitterList::RemoveAll(){
@@ -201,7 +201,7 @@ void igdeGDParticleEmitterList::RemoveAll(){
 
 
 
-igdeGDParticleEmitterList &igdeGDParticleEmitterList::operator=( const igdeGDParticleEmitterList &list ){
+igdeGDParticleEmitterList &igdeGDParticleEmitterList::operator=(const igdeGDParticleEmitterList &list){
 	pEmitters = list.pEmitters;
 	return *this;
 }

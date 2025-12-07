@@ -50,13 +50,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create image view. */
-	devkImageView( devkImage *image );
+	devkImageView(devkImage *image);
 	
 	/** Create image view. */
-	devkImageView( devkImage *image, int layer );
+	devkImageView(devkImage *image, int layer);
 	
 	/** Create image view. */
-	devkImageView( devkImage *image, int layer, int level );
+	devkImageView(devkImage *image, int layer, int level);
 	
 protected:
 	/** Clean up pipeline. */
@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline devkImage *GetImage() const{ return pImage; }
+	inline devkImage *GetImage() const{return pImage;}
 	
 	/** Image view. */
-	inline VkImageView GetImageView() const{ return pImageView; }
+	inline VkImageView GetImageView() const{return pImageView;}
 	/*@}*/
 	
 	

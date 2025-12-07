@@ -39,10 +39,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasText::deCanvasText( deCanvasManager *manager ) :
-deCanvas( manager ),
+deCanvasText::deCanvasText(deCanvasManager *manager) :
+deCanvas(manager),
 
-pFontSize( 10.0f ){
+pFontSize(10.0f){
 }
 
 deCanvasText::~deCanvasText(){
@@ -53,8 +53,8 @@ deCanvasText::~deCanvasText(){
 // Management
 ///////////////
 
-void deCanvasText::SetFont( deFont *font ){
-	if( font == pFont ){
+void deCanvasText::SetFont(deFont *font){
+	if(font == pFont){
 		return;
 	}
 	
@@ -63,12 +63,12 @@ void deCanvasText::SetFont( deFont *font ){
 	NotifyContentChanged();
 }
 
-void deCanvasText::SetFontSize( float size ){
-	if( size < 0.0f ){
+void deCanvasText::SetFontSize(float size){
+	if(size < 0.0f){
 		size = 0.0f;
 	}
 	
-	if( fabsf( size - pFontSize ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(size - pFontSize) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -76,12 +76,12 @@ void deCanvasText::SetFontSize( float size ){
 	NotifyContentChanged();
 }
 
-void deCanvasText::SetText( const char *text ){
-	if( ! text ){
-		DETHROW( deeInvalidParam );
+void deCanvasText::SetText(const char *text){
+	if(! text){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pText == text ){
+	if(pText == text){
 		return;
 	}
 	
@@ -89,8 +89,8 @@ void deCanvasText::SetText( const char *text ){
 	NotifyContentChanged();
 }
 
-void deCanvasText::SetColor( const decColor &color ){
-	if( pColor.IsEqualTo( color ) ){
+void deCanvasText::SetColor(const decColor &color){
+	if(pColor.IsEqualTo(color)){
 		return;
 	}
 	
@@ -103,6 +103,6 @@ void deCanvasText::SetColor( const decColor &color ){
 // Visiting
 /////////////
 
-void deCanvasText::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitText( *this );
+void deCanvasText::Visit(deCanvasVisitor &visitor){
+	visitor.VisitText(*this);
 }

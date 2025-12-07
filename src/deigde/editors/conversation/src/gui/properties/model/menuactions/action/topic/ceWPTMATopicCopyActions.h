@@ -43,8 +43,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMATopicCopyActions( ceWindowMain &windowMain,
-		ceConversationTopic &topic );
+	ceWPTMATopicCopyActions(ceWindowMain &windowMain,
+		ceConversationTopic &topic);
 	/*@}*/
 };
 

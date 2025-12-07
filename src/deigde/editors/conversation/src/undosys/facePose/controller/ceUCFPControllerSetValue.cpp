@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFPControllerSetValue::ceUCFPControllerSetValue( ceFacePose *facePose, ceControllerValue *controller, float newValue ){
-	if( ! facePose || ! controller ){
-		DETHROW( deeInvalidParam );
+ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose *facePose, ceControllerValue *controller, float newValue){
+	if(! facePose || ! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFacePose = NULL;
@@ -51,7 +51,7 @@ ceUCFPControllerSetValue::ceUCFPControllerSetValue( ceFacePose *facePose, ceCont
 	pOldValue = controller->GetValue();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Set Face Pose Controller Value" );
+	SetShortInfo("Set Face Pose Controller Value");
 	
 	pFacePose = facePose;
 	facePose->AddReference();
@@ -61,10 +61,10 @@ ceUCFPControllerSetValue::ceUCFPControllerSetValue( ceFacePose *facePose, ceCont
 }
 
 ceUCFPControllerSetValue::~ceUCFPControllerSetValue(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pFacePose ){
+	if(pFacePose){
 		pFacePose->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ ceUCFPControllerSetValue::~ceUCFPControllerSetValue(){
 ///////////////
 
 void ceUCFPControllerSetValue::Undo(){
-	pController->SetValue( pOldValue );
+	pController->SetValue(pOldValue);
 	pFacePose->NotifyControllersChanged();
 }
 
 void ceUCFPControllerSetValue::Redo(){
-	pController->SetValue( pNewValue );
+	pController->SetValue(pNewValue);
 	pFacePose->NotifyControllersChanged();
 }

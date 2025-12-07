@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetRigPath::gdeUOCComponentSetRigPath( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetRigPath::gdeUOCComponentSetRigPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set rig path" );
+	SetShortInfo("Component set rig path");
 	
 	pOldValue = component->GetRigPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetRigPath::~gdeUOCComponentSetRigPath(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetRigPath::~gdeUOCComponentSetRigPath(){
 ///////////////
 
 void gdeUOCComponentSetRigPath::Undo(){
-	pComponent->SetRigPath( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetRigPath(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetRigPath::Redo(){
-	pComponent->SetRigPath( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetRigPath(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

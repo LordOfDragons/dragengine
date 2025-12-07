@@ -49,20 +49,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of selected navigation spacess. */
-	inline const meNavigationSpaceList &GetSelected() const{ return pSelection; }
+	inline const meNavigationSpaceList &GetSelected() const{return pSelection;}
 	/** Adds a navigation spaces to the selection if not included already. */
-	void Add( meNavigationSpace *navspaces );
+	void Add(meNavigationSpace *navspaces);
 	/** Removes a navigation spaces from the selection if included. */
-	void Remove( meNavigationSpace *navspaces );
+	void Remove(meNavigationSpace *navspaces);
 	/** Removes all navigation spacess from the selection. */
 	void RemoveAll();
 	
 	/** Retrieves the active navigation spaces or NULL if there is none. */
-	inline meNavigationSpace *GetActive() const{ return pActive; }
+	inline meNavigationSpace *GetActive() const{return pActive;}
 	/** Determines if there is an active navigation spaces. */
 	bool HasActive() const;
 	/** Sets the active navigation spaces or NULL if there is none. */
-	void SetActive( meNavigationSpace *navspaces );
+	void SetActive(meNavigationSpace *navspaces);
 	/** Activate the first navigation spaces in the selection. */
 	void ActivateNext();
 	

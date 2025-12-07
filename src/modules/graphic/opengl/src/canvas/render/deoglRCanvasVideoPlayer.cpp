@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRCanvasVideoPlayer::deoglRCanvasVideoPlayer( deoglRenderThread &renderThread ) :
-deoglRCanvas( renderThread ),
-pVideoPlayer( NULL ),
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ){
-	LEAK_CHECK_CREATE( renderThread, CanvasVideoPlayer );
+deoglRCanvasVideoPlayer::deoglRCanvasVideoPlayer(deoglRenderThread &renderThread) :
+deoglRCanvas(renderThread),
+pVideoPlayer(NULL),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f){
+	LEAK_CHECK_CREATE(renderThread, CanvasVideoPlayer);
 }
 
 deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
-	LEAK_CHECK_FREE( GetRenderThread(), CanvasVideoPlayer );
-	SetVideoPlayer( NULL );
+	LEAK_CHECK_FREE(GetRenderThread(), CanvasVideoPlayer);
+	SetVideoPlayer(NULL);
 }
 
 
@@ -61,50 +61,50 @@ deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
 // Management
 ///////////////
 
-void deoglRCanvasVideoPlayer::SetVideoPlayer( deoglRVideoPlayer *videoPlayer ){
-	if( videoPlayer == pVideoPlayer ){
+void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
+	if(videoPlayer == pVideoPlayer){
 		return;
 	}
 	
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->FreeReference();
 	}
 	pVideoPlayer = videoPlayer;
-	if( videoPlayer ){
+	if(videoPlayer){
 		videoPlayer->AddReference();
 	}
 }
 
-void deoglRCanvasVideoPlayer::SetTCTransform( const decTexMatrix2 &transform ){
+void deoglRCanvasVideoPlayer::SetTCTransform(const decTexMatrix2 &transform){
 	pTCTransform = transform;
 }
 
-void deoglRCanvasVideoPlayer::SetTCClampMinimum( const decVector2 &clamp ){
+void deoglRCanvasVideoPlayer::SetTCClampMinimum(const decVector2 &clamp){
 	pTCClampMin = clamp;
 }
 
-void deoglRCanvasVideoPlayer::SetTCClampMaximum( const decVector2 &clamp ){
+void deoglRCanvasVideoPlayer::SetTCClampMaximum(const decVector2 &clamp){
 	pTCClampMax = clamp;
 }
 
 
 
-void deoglRCanvasVideoPlayer::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
-	if( ! pVideoPlayer ){
+void deoglRCanvasVideoPlayer::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+	if(! pVideoPlayer){
 		return;
 	}
 	
-	deoglRCanvas::PrepareForRender( renderPlanMask );
+	deoglRCanvas::PrepareForRender(renderPlanMask);
 	pVideoPlayer->UpdateTexture();
 }
 
-void deoglRCanvasVideoPlayer::Render( const deoglRenderCanvasContext &context ){
-	if( ! pVideoPlayer ){
+void deoglRCanvasVideoPlayer::Render(const deoglRenderCanvasContext &context){
+	if(! pVideoPlayer){
 		return;
 	}
 	
-	deoglRenderCanvasContext videoPlayerContext( context, *this );
-	videoPlayerContext.SetTCClampMinimum( pTCClampMin );
-	videoPlayerContext.SetTCClampMaximum( pTCClampMax );
-	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasVideoPlayer( videoPlayerContext, *this );
+	deoglRenderCanvasContext videoPlayerContext(context, *this);
+	videoPlayerContext.SetTCClampMinimum(pTCClampMin);
+	videoPlayerContext.SetTCClampMaximum(pTCClampMax);
+	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasVideoPlayer(videoPlayerContext, *this);
 }

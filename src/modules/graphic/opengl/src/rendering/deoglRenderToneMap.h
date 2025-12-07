@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderToneMap( deoglRenderThread &renderThread );
+	deoglRenderToneMap(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
 	virtual ~deoglRenderToneMap();
 	/*@}*/
@@ -81,20 +81,20 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Prepare luminance texture from solid color and depth texture. */
-	void LuminancePrepare( deoglRenderPlan &plan );
+	void LuminancePrepare(deoglRenderPlan &plan);
 	
 	/** Tone maps the render. */
-	void ToneMap( deoglRenderPlan &plan );
+	void ToneMap(deoglRenderPlan &plan);
 	
 	/** Calculates the scene key. */
-	void CalculateSceneKey( deoglRenderPlan &plan );
+	void CalculateSceneKey(deoglRenderPlan &plan);
 	/** Renders the bloom pass. */
-	void RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth, int &bloomHeight );
+	void RenderBloomPass(deoglRenderPlan &plan, int &bloomWidth, int &bloomHeight);
 	/** Renders the tone mapping pass. */
-	void RenderToneMappingPass( deoglRenderPlan &plan, int bloomWidth, int bloomHeight );
+	void RenderToneMappingPass(deoglRenderPlan &plan, int bloomWidth, int bloomHeight);
 	
 	/** LDR render the screen. */
-	void RenderLDR( deoglRenderPlan &plan );
+	void RenderLDR(deoglRenderPlan &plan);
 	/*@}*/
 	
 private:

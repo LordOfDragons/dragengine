@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCConditionGameCommand::ceCConditionGameCommand() : ceConversationCondition( ectGameCommand ){
+ceCConditionGameCommand::ceCConditionGameCommand() : ceConversationCondition(ectGameCommand){
 	pNegate = false;
 }
 
-ceCConditionGameCommand::ceCConditionGameCommand( const ceCConditionGameCommand &condition )
-: ceConversationCondition( condition ){
+ceCConditionGameCommand::ceCConditionGameCommand(const ceCConditionGameCommand &condition)
+: ceConversationCondition(condition){
 	pCommand = condition.GetCommand();
 	pNegate = condition.GetNegate();
 }
@@ -56,20 +56,20 @@ ceCConditionGameCommand::~ceCConditionGameCommand(){
 // Management
 ///////////////
 
-void ceCConditionGameCommand::SetCommand( const char *command ){
-	if( ! command ){
-		DETHROW( deeInvalidParam );
+void ceCConditionGameCommand::SetCommand(const char *command){
+	if(! command){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCommand = command;
 }
 
-void ceCConditionGameCommand::SetNegate( bool negate ){
+void ceCConditionGameCommand::SetNegate(bool negate){
 	pNegate = negate;
 }
 
 
 
 ceConversationCondition *ceCConditionGameCommand::CreateCopy() const{
-	return new ceCConditionGameCommand( *this );
+	return new ceCConditionGameCommand(*this);
 }

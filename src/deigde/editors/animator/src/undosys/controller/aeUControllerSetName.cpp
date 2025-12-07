@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerSetName::aeUControllerSetName( aeController *controller, const char *newValue ) :
-pController( controller ),
-pNewValue( newValue )
+aeUControllerSetName::aeUControllerSetName(aeController *controller, const char *newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller || ! controller->GetAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(! controller || ! controller->GetAnimator()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = controller->GetName();
-	SetShortInfo( "Set controller name" );
+	SetShortInfo("Set controller name");
 }
 
 aeUControllerSetName::~aeUControllerSetName(){
@@ -61,9 +61,9 @@ aeUControllerSetName::~aeUControllerSetName(){
 ///////////////
 
 void aeUControllerSetName::Undo(){
-	( ( aeController& )( deObject& )pController ).SetName( pOldValue );
+	((aeController&)(deObject&)pController).SetName(pOldValue);
 }
 
 void aeUControllerSetName::Redo(){
-	( ( aeController& )( deObject& )pController ).SetName( pNewValue );
+	((aeController&)(deObject&)pController).SetName(pNewValue);
 }

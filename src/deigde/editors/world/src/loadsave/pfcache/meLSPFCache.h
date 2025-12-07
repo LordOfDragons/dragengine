@@ -58,14 +58,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Retrieves the pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** Load prop field cache from file. */
-	void LoadFromFile( meHeightTerrainSector &sector, decBaseFileReader &file );
+	void LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader &file);
 	/** Save prop field cache from file. */
-	void SaveToFile( meHeightTerrainSector &sector, decBaseFileWriter &file );
+	void SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &file);
 	/*@}*/
 };
 

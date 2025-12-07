@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	stClassVector2( ScriptingSmalltalk &st );
+	stClassVector2(ScriptingSmalltalk &st);
 	
 	/** \brief Clean up class. */
 	virtual ~stClassVector2();
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline ScriptingSmalltalk &GetST() const{ return pST; }
+	inline ScriptingSmalltalk &GetST() const{return pST;}
 	
 	
 	
@@ -64,10 +64,10 @@ public:
 	void SetUpLinks();
 	
 	/** \brief Vector2 from object. */
-	const decVector2 &OOPToVector2( OOP object ) const;
+	const decVector2 &OOPToVector2(OOP object) const;
 	
 	/** \brief Push vector2. */
-	OOP Vector2ToOOP( const decVector2 &vector );
+	OOP Vector2ToOOP(const decVector2 &vector);
 	/*@}*/
 	
 	
@@ -75,26 +75,26 @@ public:
 	/** \name cCall Methods */
 	/*@{*/
 	/** \brief Create zero vector2 object. */
-	static OOP ccNew( OOP self );
+	static OOP ccNew(OOP self);
 	
 	/** \brief Create vector2 object. */
-	static OOP ccNewXY( OOP self, double x, double y );
+	static OOP ccNewXY(OOP self, double x, double y);
 	
 	
 	
 	/** \brief X component. */
-	static double ccX( OOP self );
+	static double ccX(OOP self);
 	
 	/** \brief Y component. */
-	static double ccY( OOP self );
+	static double ccY(OOP self);
 	
 	
 	
 	/** \brief Hash code. */
-	static int ccHash( OOP self );
+	static int ccHash(OOP self);
 	
 	/** \brief String representation. */
-	static OOP ccAsString( OOP self );
+	static OOP ccAsString(OOP self);
 	/*@}*/
 };
 

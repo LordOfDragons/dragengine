@@ -51,11 +51,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierClamp( igdeEnvironment &environment );
+	igdeDialogCurveBezierClamp(igdeEnvironment &environment);
 	
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierClamp( igdeEnvironment &environment, bool clamp,
-		const decVector2 &minimum, const decVector2 &maximum );
+	igdeDialogCurveBezierClamp(igdeEnvironment &environment, bool clamp,
+		const decVector2 &minimum, const decVector2 &maximum);
 	
 	
 	
@@ -73,25 +73,25 @@ public:
 	bool GetClamp() const;
 	
 	/** \brief Set clamp. */
-	void SetClamp( bool clamp );
+	void SetClamp(bool clamp);
 	
 	/** \brief Minimum clamp. */
 	decVector2 GetClampMin() const;
 	
 	/** \brief Set minimum clamp. */
-	void SetClampMin( const decVector2 &minimum );
+	void SetClampMin(const decVector2 &minimum);
 	
 	/** \brief Maximum clamp. */
 	decVector2 GetClampMax() const;
 	
 	/** \brief Set maximum clamp. */
-	void SetClampMax( const decVector2 &maximum );
+	void SetClampMax(const decVector2 &maximum);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeEnvironment &environment );
+	void pCreateContent(igdeEnvironment &environment);
 };
 
 #endif

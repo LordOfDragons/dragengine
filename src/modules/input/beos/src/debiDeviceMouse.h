@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceMouse( deBeOSInput &module );
+	debiDeviceMouse(deBeOSInput &module);
 	
 	
 	

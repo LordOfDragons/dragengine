@@ -69,13 +69,13 @@ class cTextCommand : public igdeTextFieldListener {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cTextCommand( ceWPCGameCommand &panel ) : pPanel( panel ){ }
+	cTextCommand(ceWPCGameCommand &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || textField->GetText() == condition->GetCommand() ){
+		if(! topic || ! action || ! condition || textField->GetText() == condition->GetCommand()){
 			return;
 		}
 		
@@ -88,23 +88,23 @@ class cActionEditCommand : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cActionEditCommand( ceWPCGameCommand &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Edit command in larger dialog" ), pPanel( panel ){ }
+	cActionEditCommand(ceWPCGameCommand &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
+		"Edit command in larger dialog"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(! topic || ! action || ! condition){
 			return;
 		}
 		
-		decString text( condition->GetCommand() );
-		if( ! igdeCommonDialogs::GetMultilineString(
+		decString text(condition->GetCommand());
+		if(! igdeCommonDialogs::GetMultilineString(
 			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
-			"Edit Command", "Command:", text )
-		|| text == condition->GetCommand() ){
+			"Edit Command", "Command:", text)
+		|| text == condition->GetCommand()){
 			return;
 		}
 		
@@ -117,14 +117,14 @@ class cActionNegate : public igdeAction {
 	ceWPCGameCommand &pPanel;
 	
 public:
-	cActionNegate( ceWPCGameCommand &panel ) : igdeAction( "Negate", NULL,
-		"True if the result of the command is negated" ), pPanel( panel ){ }
+	cActionNegate(ceWPCGameCommand &panel) : igdeAction("Negate", NULL,
+		"True if the result of the command is negated"), pPanel(panel){ }
 	
 	virtual void OnAction(){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionGameCommand * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition ){
+		if(! topic || ! action || ! condition){
 			return;
 		}
 		
@@ -142,15 +142,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCGameCommand::ceWPCGameCommand( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCGameCommand::ceWPCGameCommand(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
-	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );
-	helper.Button( formLine, pBtnCommand, new cActionEditCommand( *this ), true );
+	helper.FormLineStretchFirst(*this, "Command:", "Command to send", formLine);
+	helper.EditString(formLine, "Command to send", pEditCommand, new cTextCommand(*this));
+	helper.Button(formLine, pBtnCommand, new cActionEditCommand(*this), true);
 	
-	helper.CheckBox( formLine, pChkNegate, new cActionNegate( *this ), true );
+	helper.CheckBox(formLine, pChkNegate, new cActionNegate(*this), true);
 }
 
 ceWPCGameCommand::~ceWPCGameCommand(){
@@ -164,8 +164,8 @@ ceWPCGameCommand::~ceWPCGameCommand(){
 ceCConditionGameCommand *ceWPCGameCommand::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectGameCommand ){
-		return ( ceCConditionGameCommand* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectGameCommand){
+		return (ceCConditionGameCommand*)condition;
 		
 	}else{
 		return NULL;
@@ -175,12 +175,12 @@ ceCConditionGameCommand *ceWPCGameCommand::GetCondition() const{
 void ceWPCGameCommand::UpdateCondition(){
 	const ceCConditionGameCommand * const condition = GetCondition();
 	
-	if( condition ){
-		pEditCommand->SetText( condition->GetCommand() );
-		pChkNegate->SetChecked( condition->GetNegate() );
+	if(condition){
+		pEditCommand->SetText(condition->GetCommand());
+		pChkNegate->SetChecked(condition->GetNegate());
 		
 	}else{
 		pEditCommand->ClearText();
-		pChkNegate->SetChecked( false );
+		pChkNegate->SetChecked(false);
 	}
 }

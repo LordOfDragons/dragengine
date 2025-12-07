@@ -53,29 +53,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of billboards. */
-	inline int GetCount() const{ return pBillboardCount; }
+	inline int GetCount() const{return pBillboardCount;}
 	/** Retrieves the index of the billboard or -1 if not in the list. */
-	int IndexOf( deoglRBillboard *billboard ) const;
+	int IndexOf(deoglRBillboard *billboard) const;
 	/** Determines if the billboard exists. */
-	bool Has( deoglRBillboard *billboard ) const;
+	bool Has(deoglRBillboard *billboard) const;
 	/** Retrieves the billboard at the given index. */
-	deoglRBillboard *GetAt( int index ) const;
+	deoglRBillboard *GetAt(int index) const;
 	/** Adds a billboard. */
-	void Add( deoglRBillboard *billboard );
+	void Add(deoglRBillboard *billboard);
 	/** Adds a billboard if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglRBillboard *billboard );
+	bool AddIfMissing(deoglRBillboard *billboard);
 	/** Removes billboard. */
-	void Remove( deoglRBillboard *billboard );
+	void Remove(deoglRBillboard *billboard);
 	/** Removes billboard if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglRBillboard *billboard );
+	bool RemoveIfExisting(deoglRBillboard *billboard);
 	/** Removes billboard from the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	/** Removes all billboards. */
 	void RemoveAll();
 	/*@}*/
 	
 private:
-	void pAddBillboard( deoglRBillboard *billboard );
+	void pAddBillboard(deoglRBillboard *billboard);
 };
 
 #endif

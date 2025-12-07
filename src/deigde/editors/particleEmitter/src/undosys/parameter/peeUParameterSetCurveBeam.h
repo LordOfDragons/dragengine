@@ -37,8 +37,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUParameterSetCurveBeam( peeType *type, peeParameter *parameter,
-		const decCurveBezier &newCurve );
+	peeUParameterSetCurveBeam(peeType *type, peeParameter *parameter,
+		const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up the undo action. */

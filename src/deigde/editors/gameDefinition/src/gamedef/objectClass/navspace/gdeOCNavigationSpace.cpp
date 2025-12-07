@@ -39,29 +39,29 @@
 ////////////////////////////
 
 gdeOCNavigationSpace::gdeOCNavigationSpace() :
-pLayer( 0 ),
-pSnapDistance( 0.001f ),
-pSnapAngle( 180.0 ),
-pType( deNavigationSpace::estMesh ),
-pBlockingPriority( 0 ){
+pLayer(0),
+pSnapDistance(0.001f),
+pSnapAngle(180.0),
+pType(deNavigationSpace::estMesh),
+pBlockingPriority(0){
 }
 
-gdeOCNavigationSpace::gdeOCNavigationSpace( const gdeOCNavigationSpace &space ) :
-pPath( space.pPath ),
-pPosition( space.pPosition ),
-pRotation( space.pRotation ),
-pBoneName( space.pBoneName ),
-pLayer( space.pLayer ),
-pSnapDistance( space. pSnapDistance ),
-pSnapAngle( space.pSnapAngle ),
-pType( space.pType ),
-pBlockingPriority( space.pBlockingPriority ),
-pBlockerShapeList( space.pBlockerShapeList )
+gdeOCNavigationSpace::gdeOCNavigationSpace(const gdeOCNavigationSpace &space) :
+pPath(space.pPath),
+pPosition(space.pPosition),
+pRotation(space.pRotation),
+pBoneName(space.pBoneName),
+pLayer(space.pLayer),
+pSnapDistance(space. pSnapDistance),
+pSnapAngle(space.pSnapAngle),
+pType(space.pType),
+pBlockingPriority(space.pBlockingPriority),
+pBlockerShapeList(space.pBlockerShapeList)
 {
 	int i;
 	
-	for( i=0; i<=epAttachRotation; i++ ){
-		pPropertyNames[ i ] = space.pPropertyNames[ i ];
+	for(i=0; i<=epAttachRotation; i++){
+		pPropertyNames[i] = space.pPropertyNames[i];
 	}
 }
 
@@ -73,64 +73,64 @@ gdeOCNavigationSpace::~gdeOCNavigationSpace(){
 // Management
 ///////////////
 
-void gdeOCNavigationSpace::SetPath( const char *path ){
+void gdeOCNavigationSpace::SetPath(const char *path){
 	pPath = path;
 }
 
-void gdeOCNavigationSpace::SetPosition( const decVector &position ){
+void gdeOCNavigationSpace::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void gdeOCNavigationSpace::SetRotation( const decVector &orientation ){
+void gdeOCNavigationSpace::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
-void gdeOCNavigationSpace::SetBoneName( const char *boneName ){
+void gdeOCNavigationSpace::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
 
 
-void gdeOCNavigationSpace::SetLayer( int layer ){
+void gdeOCNavigationSpace::SetLayer(int layer){
 	pLayer = layer;
 }
 
-void gdeOCNavigationSpace::SetType( deNavigationSpace::eSpaceTypes type ){
+void gdeOCNavigationSpace::SetType(deNavigationSpace::eSpaceTypes type){
 	pType = type;
 }
 
-void gdeOCNavigationSpace::SetBlockingPriority( int priority ){
+void gdeOCNavigationSpace::SetBlockingPriority(int priority){
 	pBlockingPriority = priority;
 }
 
 
 
-void gdeOCNavigationSpace::SetSnapDistance( float distance ){
-	pSnapDistance = decMath::max( distance, 0.001f );
+void gdeOCNavigationSpace::SetSnapDistance(float distance){
+	pSnapDistance = decMath::max(distance, 0.001f);
 }
 
-void gdeOCNavigationSpace::SetSnapAngle( float angle ){
-	pSnapAngle = decMath::max( angle, 0.0f );
+void gdeOCNavigationSpace::SetSnapAngle(float angle){
+	pSnapAngle = decMath::max(angle, 0.0f);
 }
 
 
 
-bool gdeOCNavigationSpace::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool gdeOCNavigationSpace::IsPropertySet(eProperties property) const{
+	return ! pPropertyNames[property].IsEmpty();
 }
 
-const decString &gdeOCNavigationSpace::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &gdeOCNavigationSpace::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void gdeOCNavigationSpace::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void gdeOCNavigationSpace::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool gdeOCNavigationSpace::HasPropertyWithName( const char *name ) const{
+bool gdeOCNavigationSpace::HasPropertyWithName(const char *name) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epAttachRotation; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}

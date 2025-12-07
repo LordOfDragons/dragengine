@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetLightIntensity::seULayerSetLightIntensity( seLayer *layer, float newIntensity ) :
-pLayer( NULL ),
-pNewIntensity( newIntensity )
+seULayerSetLightIntensity::seULayerSetLightIntensity(seLayer *layer, float newIntensity) :
+pLayer(NULL),
+pNewIntensity(newIntensity)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Light Intensity" );
+	SetShortInfo("Set Layer Light Intensity");
 	
 	pOldIntensity = layer->GetLightIntensity();
 	
@@ -56,7 +56,7 @@ pNewIntensity( newIntensity )
 }
 
 seULayerSetLightIntensity::~seULayerSetLightIntensity(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetLightIntensity::~seULayerSetLightIntensity(){
 ///////////////
 
 void seULayerSetLightIntensity::Undo(){
-	pLayer->SetLightIntensity( pOldIntensity );
+	pLayer->SetLightIntensity(pOldIntensity);
 }
 
 void seULayerSetLightIntensity::Redo(){
-	pLayer->SetLightIntensity( pNewIntensity );
+	pLayer->SetLightIntensity(pNewIntensity);
 }

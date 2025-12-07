@@ -38,14 +38,14 @@
 ////////////////////////////
 
 deNetworkMessage::deNetworkMessage() :
-pBuffer( NULL ),
-pBufferSize( 0 ),
-pDataLength( 0 ),
-pTimeStamp( decDateTime::GetSystemTime() ){
+pBuffer(NULL),
+pBufferSize(0),
+pDataLength(0),
+pTimeStamp(decDateTime::GetSystemTime()){
 }
 
 deNetworkMessage::~deNetworkMessage(){
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 }
@@ -55,19 +55,19 @@ deNetworkMessage::~deNetworkMessage(){
 // Management
 ///////////////
 
-void deNetworkMessage::SetDataLength( int dataLength ){
-	if( dataLength < 0 ){
-		DETHROW( deeInvalidParam );
+void deNetworkMessage::SetDataLength(int dataLength){
+	if(dataLength < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( dataLength == pDataLength ){
+	if(dataLength == pDataLength){
 		return;
 	}
 	
-	if( dataLength > pBufferSize ){
-		uint8_t * const newBuffer = new uint8_t[ dataLength ];
-		if( pBuffer ){
-			memcpy( newBuffer, pBuffer, pBufferSize );
+	if(dataLength > pBufferSize){
+		uint8_t * const newBuffer = new uint8_t[dataLength];
+		if(pBuffer){
+			memcpy(newBuffer, pBuffer, pBufferSize);
 			delete [] pBuffer;
 		}
 		pBuffer = newBuffer;
@@ -81,6 +81,6 @@ void deNetworkMessage::Clear(){
 	pDataLength = 0;
 }
 
-void deNetworkMessage::SetTimeStamp( TIME_SYSTEM timeStamp ){
+void deNetworkMessage::SetTimeStamp(TIME_SYSTEM timeStamp){
 	pTimeStamp = timeStamp;
 }

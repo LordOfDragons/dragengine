@@ -54,21 +54,21 @@ int delEMParameterList::GetCount() const{
 	return pParameters.GetCount();
 }
 
-delEMParameter *delEMParameterList::GetAt( int index ) const{
-	return ( delEMParameter* )pParameters.GetAt( index );
+delEMParameter *delEMParameterList::GetAt(int index) const{
+	return (delEMParameter*)pParameters.GetAt(index);
 }
 
-delEMParameter *delEMParameterList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+delEMParameter *delEMParameterList::GetNamed(const char *name) const{
+	if(! name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delEMParameter * const parameter = ( delEMParameter* )pParameters.GetAt( i );
-		if( parameter->GetInfo().GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		delEMParameter * const parameter = (delEMParameter*)pParameters.GetAt(i);
+		if(parameter->GetInfo().GetName().Equals(name)){
 			return parameter;
 		}
 	}
@@ -76,28 +76,28 @@ delEMParameter *delEMParameterList::GetNamed( const char *name ) const{
 	return nullptr;
 }
 
-bool delEMParameterList::Has( delEMParameter *parameter ) const{
-	return pParameters.Has( parameter );
+bool delEMParameterList::Has(delEMParameter *parameter) const{
+	return pParameters.Has(parameter);
 }
 
-bool delEMParameterList::HasNamed( const char *name ) const{
-	return GetNamed ( name );
+bool delEMParameterList::HasNamed(const char *name) const{
+	return GetNamed (name);
 }
 
-int delEMParameterList::IndexOf( delEMParameter *parameter ) const{
-	return pParameters.IndexOf( parameter );
+int delEMParameterList::IndexOf(delEMParameter *parameter) const{
+	return pParameters.IndexOf(parameter);
 }
 
-int delEMParameterList::IndexOfNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+int delEMParameterList::IndexOfNamed(const char *name) const{
+	if(! name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( delEMParameter* )pParameters.GetAt( i ) )->GetInfo().GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((delEMParameter*)pParameters.GetAt(i))->GetInfo().GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -105,24 +105,24 @@ int delEMParameterList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-void delEMParameterList::Add( delEMParameter *parameter ){
-	if( ! parameter ){
-		DETHROW_INFO( deeNullPointer, "parameter" );
+void delEMParameterList::Add(delEMParameter *parameter){
+	if(! parameter){
+		DETHROW_INFO(deeNullPointer, "parameter");
 	}
-	if( HasNamed ( parameter->GetInfo().GetName() ) ){
-		DETHROW_INFO( deeInvalidParam, "named parameter is present" );
+	if(HasNamed (parameter->GetInfo().GetName())){
+		DETHROW_INFO(deeInvalidParam, "named parameter is present");
 	}
 	
-	pParameters.Add( parameter );
+	pParameters.Add(parameter);
 }
 
-void delEMParameterList::Remove( delEMParameter *parameter ){
-	const int index = IndexOf ( parameter );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "parameter is absent" );
+void delEMParameterList::Remove(delEMParameter *parameter){
+	const int index = IndexOf (parameter);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "parameter is absent");
 	}
 	
-	pParameters.RemoveFrom( index );
+	pParameters.RemoveFrom(index);
 }
 
 void delEMParameterList::RemoveAll(){

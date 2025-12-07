@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeTextSetPath( sePropertyNodeText *node, const char *newValue );
+	seUPropertyNodeTextSetPath(sePropertyNodeText *node, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo. */

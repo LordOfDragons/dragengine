@@ -37,9 +37,9 @@
 ////////////////////////////
 
 debpDecalMeshBuilderFace::debpDecalMeshBuilderFace(){
-	pPoints[ 0 ] = 0;
-	pPoints[ 1 ] = 0;
-	pPoints[ 2 ] = 0;
+	pPoints[0] = 0;
+	pPoints[1] = 0;
+	pPoints[2] = 0;
 	pFaceIndex = -1;
 }
 
@@ -51,18 +51,18 @@ debpDecalMeshBuilderFace::~debpDecalMeshBuilderFace(){
 // Management
 ///////////////
 
-void debpDecalMeshBuilderFace::SetPoint1( int point ){
-	pPoints[ 0 ] = point;
+void debpDecalMeshBuilderFace::SetPoint1(int point){
+	pPoints[0] = point;
 }
 
-void debpDecalMeshBuilderFace::SetPoint2( int point ){
-	pPoints[ 1 ] = point;
+void debpDecalMeshBuilderFace::SetPoint2(int point){
+	pPoints[1] = point;
 }
 
-void debpDecalMeshBuilderFace::SetPoint3( int point ){
-	pPoints[ 2 ] = point;
+void debpDecalMeshBuilderFace::SetPoint3(int point){
+	pPoints[2] = point;
 }
 
-void debpDecalMeshBuilderFace::SetFaceIndex( int faceIndex ){
+void debpDecalMeshBuilderFace::SetFaceIndex(int faceIndex){
 	pFaceIndex = faceIndex;
 }

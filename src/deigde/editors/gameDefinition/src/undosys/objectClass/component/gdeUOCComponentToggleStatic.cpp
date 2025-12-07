@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCComponentToggleStatic::gdeUOCComponentToggleStatic(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle static" );
+	SetShortInfo("Component toggle static");
 	
 	pComponent = component;
 	component->AddReference();
@@ -59,10 +59,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentToggleStatic::~gdeUOCComponentToggleStatic(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCComponentToggleStatic::~gdeUOCComponentToggleStatic(){
 ///////////////
 
 void gdeUOCComponentToggleStatic::Undo(){
-	pComponent->SetStatic( ! pComponent->GetStatic() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetStatic(! pComponent->GetStatic());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleStatic::Redo(){

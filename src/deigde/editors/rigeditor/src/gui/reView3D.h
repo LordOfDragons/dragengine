@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create 3d view. */
-	reView3D( reWindowMain &windowMain );
+	reView3D(reWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up 3d view. */
@@ -77,19 +77,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline reWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Reset view. */
 	void ResetView();
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();

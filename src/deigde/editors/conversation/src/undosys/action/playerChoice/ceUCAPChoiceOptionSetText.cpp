@@ -41,10 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-	ceCAPlayerChoiceOption *option, const decUnicodeString &newText ){
-	if( ! topic || ! playerChoice || ! option ){
-		DETHROW( deeInvalidParam );
+ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+	ceCAPlayerChoiceOption *option, const decUnicodeString &newText){
+	if(! topic || ! playerChoice || ! option){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -53,7 +53,7 @@ ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText( ceConversationTopic *topic
 	pOldText = option->GetText();
 	pNewText = newText;
 	
-	SetShortInfo( "Player Choice Option Text" );
+	SetShortInfo("Player Choice Option Text");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -66,13 +66,13 @@ ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText( ceConversationTopic *topic
 }
 
 ceUCAPChoiceOptionSetText::~ceUCAPChoiceOptionSetText(){
-	if( pOption ){
+	if(pOption){
 		pOption->FreeReference();
 	}
-	if( pPlayerChoice ){
+	if(pPlayerChoice){
 		pPlayerChoice->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -83,11 +83,11 @@ ceUCAPChoiceOptionSetText::~ceUCAPChoiceOptionSetText(){
 ///////////////
 
 void ceUCAPChoiceOptionSetText::Undo(){
-	pOption->SetText( pOldText );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pOption->SetText(pOldText);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }
 
 void ceUCAPChoiceOptionSetText::Redo(){
-	pOption->SetText( pNewText );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pOption->SetText(pNewText);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

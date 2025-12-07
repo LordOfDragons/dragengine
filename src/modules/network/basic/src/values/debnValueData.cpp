@@ -43,22 +43,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnValueData::debnValueData( deNetworkValueData &valueData ) :
-pValueData( valueData ),
-pLastValue( NULL ),
-pLastValueLen( 0 )
+debnValueData::debnValueData(deNetworkValueData &valueData) :
+pValueData(valueData),
+pLastValue(NULL),
+pLastValueLen(0)
 {
-	SetDataType( evtData );
+	SetDataType(evtData);
 	
-	if( valueData.GetLength() > 0 ){
-		pLastValue = new uint8_t[ valueData.GetLength() ];
-		memcpy( pLastValue, valueData.GetData(), valueData.GetLength() );
+	if(valueData.GetLength() > 0){
+		pLastValue = new uint8_t[valueData.GetLength()];
+		memcpy(pLastValue, valueData.GetData(), valueData.GetLength());
 		pLastValueLen = valueData.GetLength();
 	}
 }
 
 debnValueData::~debnValueData(){
-	if( pLastValue ){
+	if(pLastValue){
 		delete [] pLastValue;
 	}
 }
@@ -69,12 +69,12 @@ debnValueData::~debnValueData(){
 ///////////////
 
 bool debnValueData::LastValueEqualsNetworkValue() const{
-	if( pLastValueLen != pValueData.GetLength() ){
+	if(pLastValueLen != pValueData.GetLength()){
 		return false;
 	}
 	
-	if( pLastValue ){
-		return pValueData.GetData() && memcmp( pLastValue, pValueData.GetData(), pLastValueLen ) == 0;
+	if(pLastValue){
+		return pValueData.GetData() && memcmp(pLastValue, pValueData.GetData(), pLastValueLen) == 0;
 		
 	}else{
 		return ! pValueData.GetData();
@@ -82,21 +82,21 @@ bool debnValueData::LastValueEqualsNetworkValue() const{
 }
 
 void debnValueData::SetLastValueFromNetworkValue(){
-	if( pValueData.GetLength() > pLastValueLen ){
-		if( pLastValue ){
+	if(pValueData.GetLength() > pLastValueLen){
+		if(pLastValue){
 			delete [] pLastValue;
 			pLastValue = NULL;
 			pLastValueLen = 0;
 		}
-		pLastValue = new uint8_t[ pValueData.GetLength() ];
+		pLastValue = new uint8_t[pValueData.GetLength()];
 	}
 	
 	pLastValueLen = pValueData.GetLength();
-	memcpy( pLastValue, pValueData.GetData(), pLastValueLen );
+	memcpy(pLastValue, pValueData.GetData(), pLastValueLen);
 }
 
-bool debnValueData::UpdateValue( bool force ){
-	if( ! force && LastValueEqualsNetworkValue() ){
+bool debnValueData::UpdateValue(bool force){
+	if(! force && LastValueEqualsNetworkValue()){
 		return false;
 	}
 	
@@ -104,13 +104,13 @@ bool debnValueData::UpdateValue( bool force ){
 	return true;
 }
 
-void debnValueData::ReadValue( decBaseFileReader &reader ){
-	pValueData.SetLength( reader.ReadUShort() );
-	reader.Read( pValueData.GetData(), pValueData.GetLength() );
+void debnValueData::ReadValue(decBaseFileReader &reader){
+	pValueData.SetLength(reader.ReadUShort());
+	reader.Read(pValueData.GetData(), pValueData.GetLength());
 	SetLastValueFromNetworkValue();
 }
 
-void debnValueData::WriteValue( decBaseFileWriter &writer ){
-	writer.WriteUShort( ( uint16_t )pValueData.GetLength() );
-	writer.Write( pValueData.GetData(), pValueData.GetLength() );
+void debnValueData::WriteValue(decBaseFileWriter &writer){
+	writer.WriteUShort((uint16_t)pValueData.GetLength());
+	writer.Write(pValueData.GetData(), pValueData.GetLength());
 }

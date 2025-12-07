@@ -36,7 +36,7 @@
  */
 class DE_DLL_EXPORT decUuid{
 private:
-	uint8_t pValues[ 16 ];
+	uint8_t pValues[16];
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	decUuid();
 	
 	/** \brief Create uuid from integer value. */
-	decUuid( const uint8_t values[ 16 ] );
+	decUuid(const uint8_t values[16]);
 	
 	/**
 	 * \brief Create uuid from hex string.
@@ -57,10 +57,10 @@ public:
 	 * separated by dashes. The form is "4-2-2-2-6" which indicates the number of hex
 	 * encoded bytes in each packet.
 	 */
-	decUuid( const char *string, bool condensed );
+	decUuid(const char *string, bool condensed);
 	
 	/** \brief Create copy of uuid. */
-	decUuid( const decUuid &id );
+	decUuid(const decUuid &id);
 	
 	/** \brief Clean up uuid. */
 	~decUuid();
@@ -74,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value at index. */
-	uint8_t GetValueAt( int index ) const;
+	uint8_t GetValueAt(int index) const;
 	
 	/** \brief Set value at index. */
-	void SetValueAt( int index, uint8_t value );
+	void SetValueAt(int index, uint8_t value);
 	
 	/**
 	 * \brief Convert to hex encoded string.
@@ -86,7 +86,7 @@ public:
 	 * without dashes in between. If \em condensed is false the value is written in the
 	 * form "4-2-2-2-6" which indicates the number of hex encoded bytes in each packet.
 	 */
-	decString ToHexString( bool condensed ) const;
+	decString ToHexString(bool condensed) const;
 	
 	/**
 	 * \brief Set from hex encoded string.
@@ -96,7 +96,7 @@ public:
 	 * separated by dashes. The form is "4-2-2-2-6" which indicates the number of hex
 	 * encoded bytes in each packet.
 	 */
-	void SetFromHexString( const char *string, bool condensed );
+	void SetFromHexString(const char *string, bool condensed);
 	
 	/** Set to empty. */
 	void Clear();
@@ -107,13 +107,13 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	bool operator=( const decUuid &id );
+	bool operator=(const decUuid &id);
 	
 	/** \brief UUIDs are equal. */
-	bool operator==( const decUuid &id ) const;
+	bool operator==(const decUuid &id) const;
 	
 	/** \brief UUIDs are not equal. */
-	bool operator!=( const decUuid &id ) const;
+	bool operator!=(const decUuid &id) const;
 	
 	/** \brief UUID is 0. */
 	bool operator!() const;

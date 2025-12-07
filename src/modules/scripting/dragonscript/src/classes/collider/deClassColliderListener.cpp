@@ -44,29 +44,29 @@
 /////////////////////
 
 // public func void collisionResponse( Collider owner, CollisionInfo info, float elapsed )
-deClassColliderListener::nfCollisionResponse::nfCollisionResponse( const sInitData &init ) :
-dsFunction( init.clsCLL, "collisionResponse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // owner
-	p_AddParameter( init.clsCI ); // info
+deClassColliderListener::nfCollisionResponse::nfCollisionResponse(const sInitData &init) :
+dsFunction(init.clsCLL, "collisionResponse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // owner
+	p_AddParameter(init.clsCI); // info
 }
-void deClassColliderListener::nfCollisionResponse::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassColliderListener::nfCollisionResponse::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 // public func bool canHitCollider( Collider owner, Collider collider )
-deClassColliderListener::nfCanHitCollider::nfCanHitCollider( const sInitData &init ) :
-dsFunction( init.clsCLL, "canHitCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsCol ); // owner
-	p_AddParameter( init.clsCol ); // collider
+deClassColliderListener::nfCanHitCollider::nfCanHitCollider(const sInitData &init) :
+dsFunction(init.clsCLL, "canHitCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsCol); // owner
+	p_AddParameter(init.clsCol); // collider
 }
-void deClassColliderListener::nfCanHitCollider::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassColliderListener::nfCanHitCollider::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 // public func void colliderChanged( Collider owner )
-deClassColliderListener::nfColliderChanged::nfColliderChanged( const sInitData &init ) :
-dsFunction( init.clsCLL, "colliderChanged", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // owner
+deClassColliderListener::nfColliderChanged::nfColliderChanged(const sInitData &init) :
+dsFunction(init.clsCLL, "colliderChanged", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // owner
 }
-void deClassColliderListener::nfColliderChanged::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassColliderListener::nfColliderChanged::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 
@@ -75,22 +75,22 @@ void deClassColliderListener::nfColliderChanged::RunFunction( dsRunTime *RT, dsV
 //////////////////////////////////
 
 // constructor
-deClassColliderListener::deClassColliderListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
-dsClass( "ColliderListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassColliderListener::deClassColliderListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("ColliderListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	// set parser info
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent(DENS_SCENERY);
 	// do the rest
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 deClassColliderListener::~deClassColliderListener(){
 }
 
 // management
-void deClassColliderListener::CreateClassMembers( dsEngine *engine ){
+void deClassColliderListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -104,17 +104,17 @@ void deClassColliderListener::CreateClassMembers( dsEngine *engine ){
 	init.clsComp = pScrMgr->GetClassComponent();
 	
 	// add functions
-	AddFunction( new nfCollisionResponse( init ) ); // function 0
-	AddFunction( new nfCanHitCollider( init ) ); // function 1
-	AddFunction( new nfColliderChanged( init ) ); // function 2
+	AddFunction(new nfCollisionResponse(init)); // function 0
+	AddFunction(new nfCanHitCollider(init)); // function 1
+	AddFunction(new nfColliderChanged(init)); // function 2
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function indices for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexCollisionResponse = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexCanHitCollider = funcList.GetIndexOf( GetFunction( 1 ) );
-	pFuncIndexColliderChanged = funcList.GetIndexOf( GetFunction( 2 ) );
+	pFuncIndexCollisionResponse = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexCanHitCollider = funcList.GetIndexOf(GetFunction(1));
+	pFuncIndexColliderChanged = funcList.GetIndexOf(GetFunction(2));
 }
 

@@ -35,7 +35,7 @@ class deglDialogProfileList;
  * Profile List Dialog List Item Parameter.
  */
 class deglDPLListItemParam : public FXListItem{
-	FXDECLARE( deglDPLListItemParam )
+	FXDECLARE(deglDPLListItemParam)
 protected:
 	deglDPLListItemParam();
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list item. */
-	deglDPLListItemParam( const FXString &text, const char *parameterName, FXFont *font );
+	deglDPLListItemParam(const FXString &text, const char *parameterName, FXFont *font);
 	
 	/** Clean up list item. */
 	virtual ~deglDPLListItemParam();
@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parameter name. */
-	inline const FXString &GetParameterName() const{ return pParameterName; }
+	inline const FXString &GetParameterName() const{return pParameterName;}
 	
 	/** Set font. */
-	void SetFont( FXFont *font );
+	void SetFont(FXFont *font);
 	
 	/** Draw item. */
-	virtual void draw( const FXList *list, FXDC &dc, FXint x, FXint y, FXint w, FXint h ) const;
+	virtual void draw(const FXList *list, FXDC &dc, FXint x, FXint y, FXint w, FXint h) const;
 	/*@}*/
 };
 

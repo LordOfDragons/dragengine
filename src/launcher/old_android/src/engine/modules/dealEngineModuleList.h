@@ -53,31 +53,31 @@ public:
 	/** \brief Retrieve the number of modules. */
 	int GetModuleCount() const;
 	/** \brief Retrieve the module at the given position. */
-	dealEngineModule *GetModuleAt( int index ) const;
+	dealEngineModule *GetModuleAt(int index) const;
 	/** \brief Retrieve the highest version module with the given name or NULL if not found. */
-	dealEngineModule *GetModuleNamed( const char *name ) const;
+	dealEngineModule *GetModuleNamed(const char *name) const;
 	/** \brief Retrieve the module with the given name and version or NULL if not found. */
-	dealEngineModule *GetModuleNamed( const char *name, const char *version ) const;
+	dealEngineModule *GetModuleNamed(const char *name, const char *version) const;
 	/** \brief Retrieve list of all versions of a named module in arbitrary order. */
-	void GetModulesNamed( decObjectList &list, const char *name ) const;
+	void GetModulesNamed(decObjectList &list, const char *name) const;
 	/** \brief Retrieve list of all module names. */
-	void GetModulesNames( decStringList &list ) const;
+	void GetModulesNames(decStringList &list) const;
 	/** \brief Determines if a module exists. */
-	bool HasModule( dealEngineModule *module ) const;
+	bool HasModule(dealEngineModule *module) const;
 	/** \brief Determines if a module with the given name exists. */
-	bool HasModuleNamed( const char *name ) const;
+	bool HasModuleNamed(const char *name) const;
 	/** \brief Determines if a module with the given name and version exists. */
-	bool HasModuleNamed( const char *name, const char *version ) const;
+	bool HasModuleNamed(const char *name, const char *version) const;
 	/** \brief Retrieve the index of a module or -1 if not found. */
-	int IndexOfModule( dealEngineModule *module ) const;
+	int IndexOfModule(dealEngineModule *module) const;
 	/** \brief Retrieve the index of the higtest version module with the given name or -1 if not found. */
-	int IndexOfModuleNamed( const char *name ) const;
+	int IndexOfModuleNamed(const char *name) const;
 	/** \brief Retrieve the index of the module with the given name and version or -1 if not found. */
-	int IndexOfModuleNamed( const char *name, const char *version ) const;
+	int IndexOfModuleNamed(const char *name, const char *version) const;
 	/** \brief Adds a module. */
-	void AddModule( dealEngineModule *module );
+	void AddModule(dealEngineModule *module);
 	/** \brief Removes a module. */
-	void RemoveModule( dealEngineModule *module );
+	void RemoveModule(dealEngineModule *module);
 	/** \brief Removes all modules. */
 	void RemoveAllModules();
 	/*@}*/

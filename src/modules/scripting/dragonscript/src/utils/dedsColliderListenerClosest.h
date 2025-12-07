@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new CLASS. */
-	dedsColliderListenerClosest( deScriptingDragonScript &ds );
+	dedsColliderListenerClosest(deScriptingDragonScript &ds);
 	/** Cleans up the CLASS. */
 	virtual ~dedsColliderListenerClosest();
 	/*@}*/
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sets the wrapped listener. */
-	void SetListener( dsRealObject *object );
+	void SetListener(dsRealObject *object);
 	/** Reset. */
 	void Reset();
 	/**
@@ -85,7 +85,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
 	 * then the script is asked to determine if the two collider can hit each
@@ -95,7 +95,7 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/*@}*/
 	
 private:

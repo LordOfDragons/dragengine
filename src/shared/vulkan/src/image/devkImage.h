@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkImage( devkDevice &device, const devkImageConfiguration &configuration );
+	devkImage(devkDevice &device, const devkImageConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
@@ -76,24 +76,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** Configuration. */
-	inline const devkImageConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline const devkImageConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** Image. */
-	inline VkImage GetImage() const{ return pImage; }
+	inline VkImage GetImage() const{return pImage;}
 	
 	/** Host buffer or VK_NULL_HANDLE. */
-	inline VkBuffer GetBufferHost() const{ return pBufferHost; }
+	inline VkBuffer GetBufferHost() const{return pBufferHost;}
 	
 	
 	
 	/** Copy data to host memory. */
-	void SetData( const void *data );
+	void SetData(const void *data);
 	
 	/** Copy data to host memory. */
-	void SetData( const void *data, uint32_t offset, uint32_t size );
+	void SetData(const void *data, uint32_t offset, uint32_t size);
 	
 	/** Transfer data from host memory to device memory. */
 	void TransferToDevice(devkCommandBuffer &commandBuffer);
@@ -105,10 +105,10 @@ public:
 	void GenerateMipMaps(devkCommandBuffer &commandBuffer);
 	
 	/** Copy data from host memory. */
-	void GetData( void *data );
+	void GetData(void *data);
 	
 	/** Copy data from host memory. */
-	void GetData( void *data, uint32_t offset, uint32_t size );
+	void GetData(void *data, uint32_t offset, uint32_t size);
 	
 	/** If command is active wait for command to be signaled. */
 	void Wait();
@@ -156,8 +156,8 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateBuffer( VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
-		VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size );
+	void pCreateBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
+		VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size);
 };
 
 #endif

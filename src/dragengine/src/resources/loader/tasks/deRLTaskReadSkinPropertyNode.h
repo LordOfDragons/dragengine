@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deRLTaskReadSkinPropertyNode( deResourceLoader &resourceLoader, deRLTaskReadSkinInternal &task,
-		deEngine &engine, deVirtualFileSystem *vfs, const char *basePath );
+	deRLTaskReadSkinPropertyNode(deResourceLoader &resourceLoader, deRLTaskReadSkinInternal &task,
+		deEngine &engine, deVirtualFileSystem *vfs, const char *basePath);
 	
 	/** \brief Clean up visitor. */
 	virtual ~deRLTaskReadSkinPropertyNode();
@@ -69,16 +69,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit node. */
-	virtual void VisitNode( deSkinPropertyNode &node );
+	virtual void VisitNode(deSkinPropertyNode &node);
 	
 	/** \brief Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
 	
 	/** \brief Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	virtual void VisitImage(deSkinPropertyNodeImage &node);
 	
 	/** \brief Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	virtual void VisitText(deSkinPropertyNodeText &node);
 	/*@}*/
 };
 

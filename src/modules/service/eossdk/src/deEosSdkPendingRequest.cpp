@@ -31,8 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEosSdkPendingRequest::deEosSdkPendingRequest( const deServiceObject::Ref &ndata ) :
-data( ndata ? ndata : deServiceObject::Ref::NewWith() ){
+deEosSdkPendingRequest::deEosSdkPendingRequest(const deServiceObject::Ref &ndata) :
+data(ndata ? ndata : deServiceObject::Ref::NewWith()){
 }
 
 deEosSdkPendingRequest::~deEosSdkPendingRequest(){

@@ -62,49 +62,49 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit animator rule. */
-	virtual void VisitRule( deAnimatorRule &rule );
+	virtual void VisitRule(deAnimatorRule &rule);
 	
 	/** \brief Visit animation rule. */
-	virtual void VisitAnimation( deAnimatorRuleAnimation &rule );
+	virtual void VisitAnimation(deAnimatorRuleAnimation &rule);
 	
 	/** \brief Visit animation difference rule. */
-	virtual void VisitAnimationDifference( deAnimatorRuleAnimationDifference &rule );
+	virtual void VisitAnimationDifference(deAnimatorRuleAnimationDifference &rule);
 	
 	/** \brief Visit animation select rule. */
-	virtual void VisitAnimationSelect( deAnimatorRuleAnimationSelect &rule );
+	virtual void VisitAnimationSelect(deAnimatorRuleAnimationSelect &rule);
 	
 	/** \brief Visit bone rotator animator rule. */
-	virtual void VisitBoneTransformator( deAnimatorRuleBoneTransformator &rule );
+	virtual void VisitBoneTransformator(deAnimatorRuleBoneTransformator &rule);
 	
 	/** \brief Visit inverse kinematic animator rule. */
-	virtual void VisitInverseKinematic( deAnimatorRuleInverseKinematic &rule );
+	virtual void VisitInverseKinematic(deAnimatorRuleInverseKinematic &rule);
 	
 	/** \brief Visit state manipulator rule. */
-	virtual void VisitStateManipulator( deAnimatorRuleStateManipulator &rule );
+	virtual void VisitStateManipulator(deAnimatorRuleStateManipulator &rule);
 	
 	/** \brief Visit state snapshot rule. */
-	virtual void VisitStateSnapshot( deAnimatorRuleStateSnapshot &rule );
+	virtual void VisitStateSnapshot(deAnimatorRuleStateSnapshot &rule);
 	
 	/** \brief Visit foreign state rule. */
-	virtual void VisitForeignState( deAnimatorRuleForeignState &rule );
+	virtual void VisitForeignState(deAnimatorRuleForeignState &rule);
 	
 	/** \brief Visit group rule. */
-	virtual void VisitGroup( deAnimatorRuleGroup &rule );
+	virtual void VisitGroup(deAnimatorRuleGroup &rule);
 	
 	/** \brief Visit sub animator rule. */
-	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
+	virtual void VisitSubAnimator(deAnimatorRuleSubAnimator &rule);
 	
 	/** \brief Visit track to rule. */
-	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
+	virtual void VisitTrackTo(deAnimatorRuleTrackTo &rule);
 	
 	/** \brief Visit limit rule. */
-	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	virtual void VisitLimit(deAnimatorRuleLimit &rule);
 	
 	/**
 	 * \brief Visit mirror rule.
 	 * \version 1.9
 	 */
-	virtual void VisitMirror( deAnimatorRuleMirror &rule );
+	virtual void VisitMirror(deAnimatorRuleMirror &rule);
 	/*@}*/
 };
 

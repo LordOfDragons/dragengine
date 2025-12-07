@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDSRenderableCanvas::deDSRenderableCanvas( const char *name ) :
-deDSRenderable( name ),
-pComponentCount( 3 ),
-pBitCount( 8 ){
+deDSRenderableCanvas::deDSRenderableCanvas(const char *name) :
+deDSRenderable(name),
+pComponentCount(3),
+pBitCount(8){
 }
 
 deDSRenderableCanvas::~deDSRenderableCanvas(){
@@ -53,21 +53,21 @@ deDSRenderableCanvas::~deDSRenderableCanvas(){
 // Management
 ///////////////
 
-void deDSRenderableCanvas::SetComponentCount( int componentCount ){
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+void deDSRenderableCanvas::SetComponentCount(int componentCount){
+	if(componentCount < 1 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	pComponentCount = componentCount;
 }
 
-void deDSRenderableCanvas::SetBitCount( int bitCount ){
-	if( bitCount != 8 && bitCount != 16 && bitCount != 32 ){
-		DETHROW( deeInvalidParam );
+void deDSRenderableCanvas::SetBitCount(int bitCount){
+	if(bitCount != 8 && bitCount != 16 && bitCount != 32){
+		DETHROW(deeInvalidParam);
 	}
 	pBitCount = bitCount;
 }
 
-void deDSRenderableCanvas::SetCanvas( deCanvasView *canvas ){
+void deDSRenderableCanvas::SetCanvas(deCanvasView *canvas){
 	pCanvas = canvas;
 }
 
@@ -76,6 +76,6 @@ void deDSRenderableCanvas::SetCanvas( deCanvasView *canvas ){
 // Visiting
 /////////////
 
-void deDSRenderableCanvas::Visit( deDSRenderableVisitor &visitor ){
-	visitor.VisitCanvas( *this );
+void deDSRenderableCanvas::Visit(deDSRenderableVisitor &visitor){
+	visitor.VisitCanvas(*this);
 }

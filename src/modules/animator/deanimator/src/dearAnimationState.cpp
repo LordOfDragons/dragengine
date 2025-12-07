@@ -36,7 +36,7 @@
 /////////////////////////////////
 
 dearAnimationState::dearAnimationState(){
-	pSize.Set( 1.0f, 1.0f, 1.0f );
+	pSize.Set(1.0f, 1.0f, 1.0f);
 }
 
 dearAnimationState::~dearAnimationState(){
@@ -47,20 +47,20 @@ dearAnimationState::~dearAnimationState(){
 // Management
 ///////////////
 
-void dearAnimationState::SetPosition( const decVector &position ){
+void dearAnimationState::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void dearAnimationState::SetOrientation( const decQuaternion &orientation ){
+void dearAnimationState::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void dearAnimationState::SetSize( const decVector &size ){
+void dearAnimationState::SetSize(const decVector &size){
 	pSize = size;
 }
 
 void dearAnimationState::Reset(){
 	pPosition.SetZero();
 	pOrientation.SetZero();
-	pSize.Set( 1.0f, 1.0f, 1.0f );
+	pSize.Set(1.0f, 1.0f, 1.0f);
 }

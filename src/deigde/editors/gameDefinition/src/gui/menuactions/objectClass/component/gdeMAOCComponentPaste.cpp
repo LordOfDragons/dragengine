@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCComponentPaste::gdeMAOCComponentPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Component",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class component" )
+gdeMAOCComponentPaste::gdeMAOCComponentPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Component",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class component")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Component",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCComponentPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCComponent::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCComponentPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
+	if(! clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCComponent &clipOCComponent =
-		( const gdeClipboardDataOCComponent & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCComponent &)(igdeClipboardData&)clip;
 	
 	const gdeOCComponent::Ref component(gdeOCComponent::Ref::NewWith(*clipOCComponent.GetComponent()));
 	
-	igdeUndo * const undo = new gdeUOCAddComponent( &objectClass,
-		component );
-	undo->SetShortInfo( "Paste object class component" );
+	igdeUndo * const undo = new gdeUOCAddComponent(&objectClass,
+		component);
+	undo->SetShortInfo("Paste object class component");
 	return undo;
 }
 
 void gdeMAOCComponentPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCComponent::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCComponent::TYPE_NAME));
 }

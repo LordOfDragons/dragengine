@@ -74,81 +74,81 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalASpeaker::deoalASpeaker( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pBackLink( NULL ),
+deoalASpeaker::deoalASpeaker(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pBackLink(NULL),
 
-pParentWorld( NULL ),
-pParentMicrophone( NULL ),
-pOctreeNode( NULL ),
-pSound( NULL ),
-pSynthesizer( NULL ),
-pVideoPlayer( NULL ),
-pSourceUpdateTracker( 0 ),
-pSpeakerType( deSpeaker::estPoint ),
-pPositionless( true ),
-pStreaming( false ),
-pEnabled( false ),
-pFlag( false ),
-pNeedsInitialDecode( false ),
+pParentWorld(NULL),
+pParentMicrophone(NULL),
+pOctreeNode(NULL),
+pSound(NULL),
+pSynthesizer(NULL),
+pVideoPlayer(NULL),
+pSourceUpdateTracker(0),
+pSpeakerType(deSpeaker::estPoint),
+pPositionless(true),
+pStreaming(false),
+pEnabled(false),
+pFlag(false),
+pNeedsInitialDecode(false),
 
-pDirtyGeometry( true ),
-pDirtyGain( true ),
-pDirtyLooping( true ),
-pDirtyAttenuation( true ),
-pDirtyPlaySpeed( true ),
-pDirtyPlayState( true ),
-pDirtyPlayPosition( true ),
+pDirtyGeometry(true),
+pDirtyGain(true),
+pDirtyLooping(true),
+pDirtyAttenuation(true),
+pDirtyPlaySpeed(true),
+pDirtyPlayState(true),
+pDirtyPlayPosition(true),
 
-pPlayState( deSpeaker::epsStopped ),
-pLooping( false ),
-pMuted( false ),
-pRestart( true ),
+pPlayState(deSpeaker::epsStopped),
+pLooping(false),
+pMuted(false),
+pRestart(true),
 
-pSource( NULL ),
-pBufferSampleCount( 1 ),
-pBufferSize( 1 ),
-pBufferSampleSize( 1 ),
-pBufferData( NULL ),
-pBufferDataCapacity( 0 ),
-pQueueSampleOffset( 0 ),
+pSource(NULL),
+pBufferSampleCount(1),
+pBufferSize(1),
+pBufferSampleSize(1),
+pBufferData(NULL),
+pBufferDataCapacity(0),
+pQueueSampleOffset(0),
 
-pSampleRate( 44100 ),
-pPlayPosition( 0 ),
-pPlayFrom( 0 ),
-pPlayTo( 0 ),
-pPlayRange( 0 ),
-pPlaySpeed( 1.0f ),
-pSpeakerPlayFrom( 0 ),
-pSpeakerPlayTo( 0 ),
+pSampleRate(44100),
+pPlayPosition(0),
+pPlayFrom(0),
+pPlayTo(0),
+pPlayRange(0),
+pPlaySpeed(1.0f),
+pSpeakerPlayFrom(0),
+pSpeakerPlayTo(0),
 
-pPlayFinished( false ),
+pPlayFinished(false),
 
-pRange( 1.0f ),
-pRangeSquared( 1.0f ),
-pVolume( 1.0f ),
-pAttenuationRefDist( 1.0f ),
-pAttenuationRolloff( 1.0f ),
-pAttenuationDistanceOffset( 0.0f ),
+pRange(1.0f),
+pRangeSquared(1.0f),
+pVolume(1.0f),
+pAttenuationRefDist(1.0f),
+pAttenuationRolloff(1.0f),
+pAttenuationDistanceOffset(0.0f),
 
-pFinalGain( 0.0f ),
-pAttenuatedGain( 0.0f ),
+pFinalGain(0.0f),
+pAttenuatedGain(0.0f),
 
-pEnvironment( nullptr ),
-pSharedEffectSlotDistance( 0.0f ),
-pSharedEffectSlot( nullptr ),
-pDelayedDropSharedEffectSlot( false ),
+pEnvironment(nullptr),
+pSharedEffectSlotDistance(0.0f),
+pSharedEffectSlot(nullptr),
+pDelayedDropSharedEffectSlot(false),
 
-pMicrophoneMarkedRemove( false ),
-pWorldMarkedRemove( false ),
-pLLWorldPrev( nullptr ),
-pLLWorldNext( nullptr )
+pMicrophoneMarkedRemove(false),
+pWorldMarkedRemove(false),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr)
 {
-	LEAK_CHECK_CREATE( audioThread, Speaker );
+	LEAK_CHECK_CREATE(audioThread, Speaker);
 }
 
 deoalASpeaker::~deoalASpeaker(){
-	LEAK_CHECK_FREE( pAudioThread, Speaker );
+	LEAK_CHECK_FREE(pAudioThread, Speaker);
 	
 	pCleanUp();
 }
@@ -158,31 +158,31 @@ deoalASpeaker::~deoalASpeaker(){
 // Management
 ///////////////
 
-void deoalASpeaker::SetBackLink( deoalSpeaker *speaker ){
+void deoalASpeaker::SetBackLink(deoalSpeaker *speaker){
 	pBackLink = speaker;
 }
 
 
 
-void deoalASpeaker::SetSource( deoalASound *sound, deoalASynthesizerInstance *synthesizer,
-deoalAVideoPlayer *videoPlayer ){
+void deoalASpeaker::SetSource(deoalASound *sound, deoalASynthesizerInstance *synthesizer,
+deoalAVideoPlayer *videoPlayer){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( pSound == sound && pSynthesizer == synthesizer && pVideoPlayer == videoPlayer ){
+	if(pSound == sound && pSynthesizer == synthesizer && pVideoPlayer == videoPlayer){
 		return;
 	}
 	// drop old source and decoder if present
 	pSoundDecoder = NULL;
 	
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->FreeReference();
 		pVideoPlayer = NULL;
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 		pSynthesizer = NULL;
 	}
-	if( pSound ){
+	if(pSound){
 		pSound->FreeReference();
 		pSound = NULL;
 	}
@@ -193,17 +193,17 @@ deoalAVideoPlayer *videoPlayer ){
 	
 	// store new source
 	pSound = sound;
-	if( sound ){
+	if(sound){
 		sound->AddReference();
 	}
 	
 	pSynthesizer = synthesizer;
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->AddReference();
 	}
 	
 	pVideoPlayer = videoPlayer;
-	if( videoPlayer ){
+	if(videoPlayer){
 		videoPlayer->AddReference();
 	}
 	
@@ -211,7 +211,7 @@ deoalAVideoPlayer *videoPlayer ){
 	pUpdatePlayRange();
 }
 
-void deoalASpeaker::SetSoundDecoder( deSoundDecoder *decoder ){
+void deoalASpeaker::SetSoundDecoder(deSoundDecoder *decoder){
 	// WARNING Called during synchronization time from main thread.
 	
 	pSoundDecoder = decoder;
@@ -220,24 +220,24 @@ void deoalASpeaker::SetSoundDecoder( deSoundDecoder *decoder ){
 
 
 
-void deoalASpeaker::SetSpeakerType( deSpeaker::eSpeakerType type ){
+void deoalASpeaker::SetSpeakerType(deSpeaker::eSpeakerType type){
 	pSpeakerType = type;
 }
 
-void deoalASpeaker::SetGeometry( const decDVector &position, const decQuaternion &orientation ){
+void deoalASpeaker::SetGeometry(const decDVector &position, const decQuaternion &orientation){
 	pPosition = position;
 	pOrientation = orientation;
 	
-	if( pEnvironment ){
-		pEnvironment->SetPosition( position );
+	if(pEnvironment){
+		pEnvironment->SetPosition(position);
 	}
 	
 	const int count = pSoundLevelMeters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker * const speaker =
-			( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->GetSpeakerWith( this );
-		if( speaker ){
+			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
+		if(speaker){
 			speaker->SpeakerPositionChanged();
 		}
 	}
@@ -245,25 +245,25 @@ void deoalASpeaker::SetGeometry( const decDVector &position, const decQuaternion
 	pDirtyGeometry = true;
 }
 
-void deoalASpeaker::SetVelocity( const decVector &velocity ){
+void deoalASpeaker::SetVelocity(const decVector &velocity){
 	pVelocity = velocity;
 	
 	pDirtyGeometry = true;
 }
 
-void deoalASpeaker::SetLayerMask( const decLayerMask &layerMask ){
+void deoalASpeaker::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 	
-	if( pEnvironment ){
-		pEnvironment->SetLayerMask( layerMask );
+	if(pEnvironment){
+		pEnvironment->SetLayerMask(layerMask);
 	}
 	
 	const int count = pSoundLevelMeters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker * const speaker =
-			( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->GetSpeakerWith( this );
-		if( speaker ){
+			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
+		if(speaker){
 			speaker->SpeakerLayerMaskChanged();
 		}
 	}
@@ -271,10 +271,10 @@ void deoalASpeaker::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
-void deoalASpeaker::SetPlayState( deSpeaker::ePlayStates playState ){
+void deoalASpeaker::SetPlayState(deSpeaker::ePlayStates playState){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( playState == pPlayState ){
+	if(playState == pPlayState){
 		return;
 	}
 	
@@ -282,8 +282,8 @@ void deoalASpeaker::SetPlayState( deSpeaker::ePlayStates playState ){
 	pDirtyPlayState = true;
 }
 
-void deoalASpeaker::SetLooping( bool looping ){
-	if( looping == pLooping ){
+void deoalASpeaker::SetLooping(bool looping){
+	if(looping == pLooping){
 		return;
 	}
 	
@@ -291,8 +291,8 @@ void deoalASpeaker::SetLooping( bool looping ){
 	pDirtyLooping = true;
 }
 
-void deoalASpeaker::SetMuted( bool muted ){
-	if( muted == pMuted ){
+void deoalASpeaker::SetMuted(bool muted){
+	if(muted == pMuted){
 		return;
 	}
 	
@@ -300,7 +300,7 @@ void deoalASpeaker::SetMuted( bool muted ){
 	pDirtyGain = true;
 }
 
-void deoalASpeaker::SetSpeakerPlayRange( int from, int to ){
+void deoalASpeaker::SetSpeakerPlayRange(int from, int to){
 	pSpeakerPlayFrom = from;
 	pSpeakerPlayTo = to;
 	
@@ -314,14 +314,14 @@ void deoalASpeaker::SetSpeakerPlayRange( int from, int to ){
 
 
 void deoalASpeaker::PrepareProcessAudio(){
-	if( pDirtyPlayState ){
+	if(pDirtyPlayState){
 		pDirtyPlayState = false;
 		pDoPlayState();
 	}
 	
 	pCheckStillSourceOwner();
-	if( ! pSource ){
-		if( pPlayState == deSpeaker::epsPlaying ){
+	if(! pSource){
+		if(pPlayState == deSpeaker::epsPlaying){
 			// there are two ways to handle this.
 			// 
 			// the first way is the precise way by advancing the sample offset. this is accurate
@@ -333,10 +333,10 @@ void deoalASpeaker::PrepareProcessAudio(){
 			// this prevents players from dropping into running sound but is also simpler.
 			// 
 			// right now the first solution is used unless it is shown to be a problem
-			pPlayPosition += ( int )( ( float )pSampleRate * pAudioThread.GetElapsed() );
-			if( pPlayPosition >= pPlayTo ){
-				if( pLooping ){
-					pPlayPosition = decMath::normalize( pPlayPosition, pPlayFrom, pPlayTo );
+			pPlayPosition += (int)((float)pSampleRate * pAudioThread.GetElapsed());
+			if(pPlayPosition >= pPlayTo){
+				if(pLooping){
+					pPlayPosition = decMath::normalize(pPlayPosition, pPlayFrom, pPlayTo);
 					
 				}else{
 					pPlayPosition = pPlayTo;
@@ -347,14 +347,14 @@ void deoalASpeaker::PrepareProcessAudio(){
 		return;
 	}
 	
-	if( pPlayFinished ){
+	if(pPlayFinished){
 		return; // will be reset by pStartPlaySource
 	}
 	
-	if( pDirtyPlayPosition ){
+	if(pDirtyPlayPosition){
 		pDirtyPlayPosition = false;
-		if( ! pStreaming ){
-			OAL_CHECK( pAudioThread, alSourcei( pSource->GetSource(), AL_SAMPLE_OFFSET, pPlayPosition ) );
+		if(! pStreaming){
+			OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(), AL_SAMPLE_OFFSET, pPlayPosition));
 		}
 	}
 	
@@ -362,12 +362,12 @@ void deoalASpeaker::PrepareProcessAudio(){
 	bool underrun = false;
 	pPlayFinished = false;
 	
-	if( pPlayState == deSpeaker::epsPlaying && ! pNeedsInitialDecode ){
+	if(pPlayState == deSpeaker::epsPlaying && ! pNeedsInitialDecode){
 		ALint state;
-		OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_SOURCE_STATE, &state ) );
+		OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_SOURCE_STATE, &state));
 		
-		if( pLooping ){
-			if( state == AL_STOPPED ){
+		if(pLooping){
+			if(state == AL_STOPPED){
 // 				pAudioThread.GetLogger().LogWarnFormat( "Buffer Underrun: sound=%p synthesizer=%p videoplayer=%p",
 // 					pSound, pSynthesizer, pVideoPlayer );
 				underrun = true;
@@ -379,7 +379,7 @@ void deoalASpeaker::PrepareProcessAudio(){
 			//      without this initial decode the no sound buffers are yet present and this
 			//      check here would incorrectly consider the sound having finished playing
 			ALint queueOffset;
-			OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset ) );
+			OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset));
 			pPlayPosition = pQueueSampleOffset + queueOffset;
 			
 			// if the playback stopped AL_SAMPLE_OFFSET will return 0 which is a problem because
@@ -388,16 +388,16 @@ void deoalASpeaker::PrepareProcessAudio(){
 			// to contain pBufferSampleCount. this is not fully correct since the last buffer can
 			// be smaller if it is really the last buffer in the source to play. by clamping to
 			// the maximum play range this problem can be solved
-			if( state == AL_STOPPED ){
+			if(state == AL_STOPPED){
 				ALint numProcessed;
-				OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_BUFFERS_PROCESSED, &numProcessed ) );
-				pPlayPosition = decMath::min( pPlayPosition + pBufferSampleCount * numProcessed, pPlayTo );
+				OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numProcessed));
+				pPlayPosition = decMath::min(pPlayPosition + pBufferSampleCount * numProcessed, pPlayTo);
 			}
 			
-			if( state == AL_STOPPED || pPlayPosition >= pPlayTo ){
+			if(state == AL_STOPPED || pPlayPosition >= pPlayTo){
 				// we have to be careful about not getting tricked by buffer underrun condition.
 				// openal makes it difficult for us to properly detect this
-				if( state == AL_STOPPED && pPlayPosition < pPlayTo && pStreaming ){
+				if(state == AL_STOPPED && pPlayPosition < pPlayTo && pStreaming){
 // 					pAudioThread.GetLogger().LogWarnFormat( "Buffer Underrun: sound=%p synthesizer=%p videoplayer=%p",
 // 						pSound, pSynthesizer, pVideoPlayer );
 					underrun = true;
@@ -413,95 +413,95 @@ void deoalASpeaker::PrepareProcessAudio(){
 	}
 	
 	// update if playing
-	if( pPlayState == deSpeaker::epsPlaying ){
-		if( pDirtyGeometry ){
+	if(pPlayState == deSpeaker::epsPlaying){
+		if(pDirtyGeometry){
 			pDirtyGeometry = false;
 			
-			if( pPositionless ){
-				OAL_CHECK( pAudioThread, alSourcei( pSource->GetSource(),
-					AL_SOURCE_RELATIVE, AL_TRUE ) );
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(),
-					AL_POSITION, 0.0f, 0.0f, 0.0f ) );
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(),
-					AL_VELOCITY, 0.0f, 0.0f, 0.0f ) );
+			if(pPositionless){
+				OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(),
+					AL_SOURCE_RELATIVE, AL_TRUE));
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(),
+					AL_POSITION, 0.0f, 0.0f, 0.0f));
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(),
+					AL_VELOCITY, 0.0f, 0.0f, 0.0f));
 				
 			}else{
-				OAL_CHECK( pAudioThread, alSourcei( pSource->GetSource(),
-					AL_SOURCE_RELATIVE, AL_FALSE ) );
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(), AL_POSITION,
-					( float )pPosition.x, ( float )pPosition.y, ( float )-pPosition.z ) );
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(), AL_VELOCITY,
-					pVelocity.x, pVelocity.y, -pVelocity.z ) );
+				OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(),
+					AL_SOURCE_RELATIVE, AL_FALSE));
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(), AL_POSITION,
+					(float)pPosition.x, (float)pPosition.y, (float)-pPosition.z));
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(), AL_VELOCITY,
+					pVelocity.x, pVelocity.y, -pVelocity.z));
 			}
 			
-			if( pPositionless ){
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(),
-					AL_DIRECTION, 0.0f, 0.0f, 0.0f ) );
+			if(pPositionless){
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(),
+					AL_DIRECTION, 0.0f, 0.0f, 0.0f));
 				
-			}else if( pSpeakerType == deSpeaker::estPoint ){
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(),
-					AL_DIRECTION, 0.0f, 0.0f, 0.0f ) );
+			}else if(pSpeakerType == deSpeaker::estPoint){
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(),
+					AL_DIRECTION, 0.0f, 0.0f, 0.0f));
 				
 			}else{
-				const decVector view( decMatrix::CreateFromQuaternion( pOrientation ).TransformView() );
-				OAL_CHECK( pAudioThread, alSource3f( pSource->GetSource(),
-					AL_DIRECTION, view.x, view.y, -view.z ) );
+				const decVector view(decMatrix::CreateFromQuaternion(pOrientation).TransformView());
+				OAL_CHECK(pAudioThread, alSource3f(pSource->GetSource(),
+					AL_DIRECTION, view.x, view.y, -view.z));
 			}
 		}
 		
-		if( pDirtyAttenuation ){
+		if(pDirtyAttenuation){
 			pDirtyAttenuation = false;
 			
-			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(),
-				AL_REFERENCE_DISTANCE, pAttenuationRefDist ) );
+			OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(),
+				AL_REFERENCE_DISTANCE, pAttenuationRefDist));
 			
-			if( pUseCustomGain() ){
-				OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_ROLLOFF_FACTOR, 0.0f ) );
+			if(pUseCustomGain()){
+				OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_ROLLOFF_FACTOR, 0.0f));
 				
 			}else{
-				OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(),
-					AL_ROLLOFF_FACTOR, pAttenuationRolloff ) );
+				OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(),
+					AL_ROLLOFF_FACTOR, pAttenuationRolloff));
 			}
 		}
 		
-		if( pDirtyGain ){
+		if(pDirtyGain){
 			pDirtyGain = false;
-			if( pPositionless ){
+			if(pPositionless){
 				pAttenuatedGain = 1.0f;
 			}
-			pFinalGain = pAttenuatedGain * GetFullVolume() * ( pMuted ? 0.0f : 1.0f );
-			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pFinalGain ) );
+			pFinalGain = pAttenuatedGain * GetFullVolume() * (pMuted ? 0.0f : 1.0f);
+			OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, pFinalGain));
 		}
 		
-		if( pDirtyLooping ){
+		if(pDirtyLooping){
 			pDirtyLooping = false;
 			
-			OAL_CHECK( pAudioThread, alSourcei( pSource->GetSource(), AL_LOOPING,
-				pLooping && ! pStreaming ? AL_TRUE : AL_FALSE ) );
+			OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(), AL_LOOPING,
+				pLooping && ! pStreaming ? AL_TRUE : AL_FALSE));
 		}
 		
-		if( pDirtyPlaySpeed ){
+		if(pDirtyPlaySpeed){
 			pDirtyPlaySpeed = false;
 			
-			OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_PITCH, pPlaySpeed ) );
+			OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_PITCH, pPlaySpeed));
 		}
 	}
 	
 	// update sources
-	if( pVideoPlayer ){
-		pVideoPlayerNext( underrun );
+	if(pVideoPlayer){
+		pVideoPlayerNext(underrun);
 		
-	}else if( pSynthesizer ){
-		pSynthNext( underrun );
+	}else if(pSynthesizer){
+		pSynthNext(underrun);
 		
-	}else if( pSoundDecoder ){
-		if( pNeedsInitialDecode ){
+	}else if(pSoundDecoder){
+		if(pNeedsInitialDecode){
 			pNeedsInitialDecode = false;
 			pDecodeInitial();
 			pSource->Play(); // required since previous play with empty buffers stops immediatly
 			
 		}else{
-			pDecodeNext( underrun );
+			pDecodeNext(underrun);
 		}
 	}
 }
@@ -511,12 +511,12 @@ void deoalASpeaker::ProcessDeactivate(){
 }
 
 void deoalASpeaker::UpdateEffects(){
-	if( ! pSource ){
+	if(! pSource){
 		return;
 	}
 	
 	// update environment
-	if( pEnvironment && pAudioThread.GetExtensions().GetHasEFX() && pAudioThread.GetConfiguration().GetEnableEFX()){
+	if(pEnvironment && pAudioThread.GetExtensions().GetHasEFX() && pAudioThread.GetConfiguration().GetEnableEFX()){
 		pEnvironment->Update();
 	}
 	
@@ -544,7 +544,7 @@ void deoalASpeaker::ResetStreaming(){
 }
 
 void deoalASpeaker::PrepareQuickDispose(){
-	if( pEnvironment ){
+	if(pEnvironment){
 		pEnvironment->PrepareQuickDispose();
 		delete pEnvironment;
 		pEnvironment = nullptr;
@@ -556,10 +556,10 @@ void deoalASpeaker::PrepareQuickDispose(){
 }
 
 
-void deoalASpeaker::SetEnabled( bool enabled ){
+void deoalASpeaker::SetEnabled(bool enabled){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( enabled == pEnabled ){
+	if(enabled == pEnabled){
 		return;
 	}
 	
@@ -570,16 +570,16 @@ void deoalASpeaker::SetEnabled( bool enabled ){
 	UpdateOctreeNode();
 }
 
-void deoalASpeaker::SetPositionless( bool positionless ){
+void deoalASpeaker::SetPositionless(bool positionless){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( positionless == pPositionless ){
+	if(positionless == pPositionless){
 		return;
 	}
 	
 	pPositionless = positionless;
 	
-	if( pEnabled ){
+	if(pEnabled){
 		pDirtyGeometry = true;
 		pDirtyGain = true;
 	}
@@ -588,7 +588,7 @@ void deoalASpeaker::SetPositionless( bool positionless ){
 	pEnsureEnvironment();
 }
 
-void deoalASpeaker::SetFlag( bool flag ){
+void deoalASpeaker::SetFlag(bool flag){
 	pFlag = flag;
 }
 
@@ -632,7 +632,7 @@ void deoalASpeaker::SetParentMicrophone(deoalAMicrophone *microphone){
 	pRestart = true;
 }
 
-void deoalASpeaker::SetOctreeNode( deoalWorldOctree *node ){
+void deoalASpeaker::SetOctreeNode(deoalWorldOctree *node){
 	pOctreeNode = node;
 }
 
@@ -645,18 +645,18 @@ void deoalASpeaker::UpdateOctreeNode(){
 	
 // 	pAudioThread.GetLogger().LogInfoFormat( "UpdateOctreeNode: %p %p %d %p %d", this, pParentWorld, pEnabled, pSource, GetPlaying() );
 // 	if( pParentWorld && pEnabled && pSource && ! pPositionless && ! pMuted && GetPlaying() ){
-	if( pParentWorld && ! pPositionless && ! pMuted && GetPlaying() ){
-		pParentWorld->GetOctree()->InsertSpeakerIntoTree( this, 8 );
+	if(pParentWorld && ! pPositionless && ! pMuted && GetPlaying()){
+		pParentWorld->GetOctree()->InsertSpeakerIntoTree(this, 8);
 		
-	}else if( pOctreeNode ){
-		pOctreeNode->RemoveSpeaker( this );
+	}else if(pOctreeNode){
+		pOctreeNode->RemoveSpeaker(this);
 	}
 }
 
 
 
-void deoalASpeaker::SetPlaySpeed( float speed ){
-	if( fabsf( speed - pPlaySpeed ) <= FLOAT_SAFE_EPSILON ){
+void deoalASpeaker::SetPlaySpeed(float speed){
+	if(fabsf(speed - pPlaySpeed) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -664,27 +664,27 @@ void deoalASpeaker::SetPlaySpeed( float speed ){
 	pDirtyPlaySpeed = true;
 }
 
-void deoalASpeaker::SetRange( float range ){
+void deoalASpeaker::SetRange(float range){
 	pRange = range;
 	pRangeSquared = range * range;
 	
-	if( pEnvironment ){
-		pEnvironment->SetRange( range );
+	if(pEnvironment){
+		pEnvironment->SetRange(range);
 	}
 	
 	const int count = pSoundLevelMeters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker * const speaker =
-			( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->GetSpeakerWith( this );
-		if( speaker ){
+			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
+		if(speaker){
 			speaker->SpeakerRangeChanged();
 		}
 	}
 }
 
-void deoalASpeaker::SetVolume( float volume ){
-	if( fabsf( volume - pVolume ) <= FLOAT_SAFE_EPSILON ){
+void deoalASpeaker::SetVolume(float volume){
+	if(fabsf(volume - pVolume) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -692,8 +692,8 @@ void deoalASpeaker::SetVolume( float volume ){
 	pDirtyGain = true;
 }
 
-void deoalASpeaker::SetAttenuationRolloff( float rolloff ){
-	if( fabsf( rolloff - pAttenuationRolloff ) <= FLOAT_SAFE_EPSILON ){
+void deoalASpeaker::SetAttenuationRolloff(float rolloff){
+	if(fabsf(rolloff - pAttenuationRolloff) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -701,8 +701,8 @@ void deoalASpeaker::SetAttenuationRolloff( float rolloff ){
 	pUpdateAttenuation();
 }
 
-void deoalASpeaker::SetAttenuationDistanceOffset( float distanceOffset ){
-	if( fabsf( distanceOffset - pAttenuationDistanceOffset ) <= FLOAT_SAFE_EPSILON ){
+void deoalASpeaker::SetAttenuationDistanceOffset(float distanceOffset){
+	if(fabsf(distanceOffset - pAttenuationDistanceOffset) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -710,21 +710,21 @@ void deoalASpeaker::SetAttenuationDistanceOffset( float distanceOffset ){
 	pUpdateAttenuation();
 }
 
-float deoalASpeaker::AttenuatedGain( float distance ) const{
+float deoalASpeaker::AttenuatedGain(float distance) const{
 	// OpenAL Inverse Distance Clamped Attenuation Model:
 	// distance = max( distance, AL_REFERENCE_DISTANCE );
 	// distance = min( distance, AL_MAX_DISTANCE );
 	// gain = AL_REFERENCE_DISTANCE / (AL_REFERENCE_DISTANCE
 	//        + AL_ROLLOFF_FACTOR * ( distance - AL_REFERENCE_DISTANCE ) );
-	return pAttenuationRefDist / ( pAttenuationRefDist + pAttenuationRolloff
+	return pAttenuationRefDist / (pAttenuationRefDist + pAttenuationRolloff
 		* ( decMath::max( distance + pAttenuationDistanceOffset - pAttenuationRefDist, 0.0f ) ) );
 }
 
 float deoalASpeaker::GetFullVolume() const{
-	if( pParentMicrophone ){
+	if(pParentMicrophone){
 		return pVolume * pParentMicrophone->GetSpeakerGain();
 		
-	}else if( pParentWorld ){
+	}else if(pParentWorld){
 		return pVolume * pParentWorld->GetSpeakerGain();
 		
 	}else{
@@ -732,40 +732,40 @@ float deoalASpeaker::GetFullVolume() const{
 	}
 }
 
-void deoalASpeaker::SetSharedEffectSlotDistance( float distance ){
+void deoalASpeaker::SetSharedEffectSlotDistance(float distance){
 	pSharedEffectSlotDistance = distance;
 }
 
-void deoalASpeaker::SetSharedEffectSlot( deoalSharedEffectSlot *effectSlot ){
+void deoalASpeaker::SetSharedEffectSlot(deoalSharedEffectSlot *effectSlot){
 	pSharedEffectSlot = effectSlot;
 }
 
 void deoalASpeaker::DropSharedEffectSlot(){
 	pDelayedDropSharedEffectSlot = false;
 	
-	if( ! pSharedEffectSlot ){
+	if(! pSharedEffectSlot){
 		return;
 	}
 	
-	if( pSource ){
-		OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
-			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL ) );
+	if(pSource){
+		OAL_CHECK(pAudioThread, alSource3i(pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+			AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL));
 	}
-	pSharedEffectSlot->RemoveSpeaker( this );
+	pSharedEffectSlot->RemoveSpeaker(this);
 	pSharedEffectSlot = nullptr;
 }
 
 bool deoalASpeaker::AffectsActiveMicrophone() const{
 	const deoalAMicrophone * const microphone = pAudioThread.GetActiveMicrophone();
-	if( ! microphone ){
+	if(! microphone){
 		return false;
 	}
-	if( microphone == pParentMicrophone ){
+	if(microphone == pParentMicrophone){
 		return true;
 	}
 	return pParentWorld && microphone->GetParentWorld() == pParentWorld
-		&& ( pPosition - microphone->GetPosition() ).LengthSquared() <= pRangeSquared
-		&& pLayerMask.Matches( microphone->GetLayerMask() );
+		&& (pPosition - microphone->GetPosition()).LengthSquared() <= pRangeSquared
+		&& pLayerMask.Matches(microphone->GetLayerMask());
 }
 
 
@@ -773,19 +773,19 @@ bool deoalASpeaker::AffectsActiveMicrophone() const{
 // Render world usage
 ///////////////////////
 
-void deoalASpeaker::SetMicrophoneMarkedRemove( bool marked ){
+void deoalASpeaker::SetMicrophoneMarkedRemove(bool marked){
 	pMicrophoneMarkedRemove = marked;
 }
 
-void deoalASpeaker::SetWorldMarkedRemove( bool marked ){
+void deoalASpeaker::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoalASpeaker::SetLLWorldPrev( deoalASpeaker *speaker ){
+void deoalASpeaker::SetLLWorldPrev(deoalASpeaker *speaker){
 	pLLWorldPrev = speaker;
 }
 
-void deoalASpeaker::SetLLWorldNext( deoalASpeaker *speaker ){
+void deoalASpeaker::SetLLWorldNext(deoalASpeaker *speaker){
 	pLLWorldNext = speaker;
 }
 
@@ -799,74 +799,74 @@ public:
 	deoalSource *source;
 	
 	deoalASpeakerDeletion() :
-	source( 0 ){
+	source(0){
 	}
 	
 	virtual ~deoalASpeakerDeletion(){
 	}
 	
-	virtual void DeleteObjects( deoalAudioThread &audioThread ){
-		if( source && source->GetOwner() == this ){
-			audioThread.GetSourceManager().UnbindSource( source );
+	virtual void DeleteObjects(deoalAudioThread &audioThread){
+		if(source && source->GetOwner() == this){
+			audioThread.GetSourceManager().UnbindSource(source);
 		}
 	}
 };
 
 void deoalASpeaker::pCleanUp(){
-	if( pSharedEffectSlot ){ // do not use DropSharedEffectSlot here (potentially main thread)
-		pSharedEffectSlot->RemoveSpeaker( this );
+	if(pSharedEffectSlot){ // do not use DropSharedEffectSlot here (potentially main thread)
+		pSharedEffectSlot->RemoveSpeaker(this);
 		pSharedEffectSlot = nullptr;
 	}
 	
 	pSoundDecoder = nullptr;
-	if( pBufferData ){
+	if(pBufferData){
 		delete [] pBufferData;
 		pBufferData = nullptr;
 	}
-	if( pEnvironment ){
+	if(pEnvironment){
 		delete pEnvironment;
 		pEnvironment = nullptr;
 	}
-	if( pSound ){
+	if(pSound){
 		pSound->FreeReference();
 		pSound = nullptr;
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 		pSynthesizer = nullptr;
 	}
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->FreeReference();
 		pVideoPlayer = nullptr;
 	}
 	
 	// delayed deletion
 	pCheckStillSourceOwner();
-	if( pSource ){
+	if(pSource){
 		deoalASpeakerDeletion *delayedDeletion = nullptr;
 		
 		try{
 			delayedDeletion = new deoalASpeakerDeletion;
 			delayedDeletion->source = pSource;
-			pAudioThread.GetDelayed().AddDeletion( delayedDeletion );
+			pAudioThread.GetDelayed().AddDeletion(delayedDeletion);
 			
-		}catch( const deException &e ){
-			if( delayedDeletion ){
+		}catch(const deException &e){
+			if(delayedDeletion){
 				delete delayedDeletion;
 			}
-			pAudioThread.GetLogger().LogException( e );
+			pAudioThread.GetLogger().LogException(e);
 			throw;
 		}
 		
-		pSource->SetOwner( delayedDeletion );
+		pSource->SetOwner(delayedDeletion);
 	}
 }
 
 
 
 void deoalASpeaker::pDecodeInitial(){
-	if( ! pSoundDecoder || ! pSound ){
-		DETHROW( deeInvalidParam );
+	if(! pSoundDecoder || ! pSound){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deoalDecodeBuffer &buffer = pAudioThread.GetDecodeBuffer();
@@ -876,90 +876,90 @@ void deoalASpeaker::pDecodeInitial(){
 	
 	pQueueSampleOffset = pPlayPosition = pPlayFrom;
 	
-	pSoundDecoder->SetPosition( pQueueSampleOffset );
+	pSoundDecoder->SetPosition(pQueueSampleOffset);
 	
-	for( i=0; i<pSource->GetBufferCount(); i++ ){
-		if( pLooping ){
-			buffer.DecodeLooping( pSoundDecoder, pBufferSize );
+	for(i=0; i<pSource->GetBufferCount(); i++){
+		if(pLooping){
+			buffer.DecodeLooping(pSoundDecoder, pBufferSize);
 			
 		}else{
-			if( buffer.Decode( pSoundDecoder, pBufferSize ) == 0 ){
+			if(buffer.Decode(pSoundDecoder, pBufferSize) == 0){
 				break;
 			}
 		}
 		
-		const ALuint albuffer = pSource->GetBufferAt( i );
-		OAL_CHECK( pAudioThread, alBufferData( albuffer, format,
-			( const ALvoid * )buffer.GetBuffer(), pBufferSize, sampleRate ) );
-		OAL_CHECK( pAudioThread, alSourceQueueBuffers( pSource->GetSource(), 1, &albuffer ) );
+		const ALuint albuffer = pSource->GetBufferAt(i);
+		OAL_CHECK(pAudioThread, alBufferData(albuffer, format,
+			(const ALvoid *)buffer.GetBuffer(), pBufferSize, sampleRate));
+		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), 1, &albuffer));
 	}
 }
 
-void deoalASpeaker::pDecodeNext( bool underrun ){
-	if( ! pSoundDecoder || ! pSound ){
-		DETHROW( deeInvalidParam );
+void deoalASpeaker::pDecodeNext(bool underrun){
+	if(! pSoundDecoder || ! pSound){
+		DETHROW(deeInvalidParam);
 	}
 	
 	ALint queueOffset;
-	OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset ) );
-	if( pLooping ){
-		pPlayPosition = decMath::normalize( pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo );
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset));
+	if(pLooping){
+		pPlayPosition = decMath::normalize(pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo);
 		
 	}else{
-		pPlayPosition = decMath::clamp( pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo );
+		pPlayPosition = decMath::clamp(pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo);
 	}
 	
 	ALint numFinished;
-	OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished ) );
-	if( numFinished == 0 && ! underrun ){
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished));
+	if(numFinished == 0 && ! underrun){
 		return;
 	}
 	
 	deoalDecodeBuffer &buffer = pAudioThread.GetDecodeBuffer();
 	bool restartPlaying = underrun;
-	ALuint buffers[ 10 ];
+	ALuint buffers[10];
 	int i;
 	
-	OAL_CHECK( pAudioThread, alSourceUnqueueBuffers( pSource->GetSource(), numFinished, &buffers[ 0 ] ) );
+	OAL_CHECK(pAudioThread, alSourceUnqueueBuffers(pSource->GetSource(), numFinished, &buffers[0]));
 	
 	pQueueSampleOffset += pBufferSampleCount * numFinished;
 	
-	if( numFinished == pSource->GetBufferCount() && pLooping ){
+	if(numFinished == pSource->GetBufferCount() && pLooping){
 		restartPlaying = true;
 	}
 	
-	for( i=0; i<numFinished; i++ ){
-		if( pLooping ){
-			buffer.DecodeLooping( pSoundDecoder, pBufferSize );
+	for(i=0; i<numFinished; i++){
+		if(pLooping){
+			buffer.DecodeLooping(pSoundDecoder, pBufferSize);
 			
 		}else{
-			if( buffer.Decode( pSoundDecoder, pBufferSize ) == 0 ){
+			if(buffer.Decode(pSoundDecoder, pBufferSize) == 0){
 				numFinished = i;
 				break;
 			}
 		}
 		
-		OAL_CHECK( pAudioThread, alBufferData( buffers[ i ], pSound->GetFormat(),
-			( const ALvoid * )buffer.GetBuffer(), pBufferSize, pSound->GetSampleRate() ) );
+		OAL_CHECK(pAudioThread, alBufferData(buffers[i], pSound->GetFormat(),
+			(const ALvoid *)buffer.GetBuffer(), pBufferSize, pSound->GetSampleRate()));
 	}
 	
-	if( numFinished > 0 ){
-		OAL_CHECK( pAudioThread, alSourceQueueBuffers( pSource->GetSource(), numFinished, &buffers[ 0 ] ) );
+	if(numFinished > 0){
+		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), numFinished, &buffers[0]));
 		
 	}else{
 		return;
 	}
 	
 	// if we ran out of buffers we have to restart playing or playback stops
-	if( restartPlaying ){
+	if(restartPlaying){
 		pPlayFinished = false;
 		pSource->Play();
 	}
 }
 
 void deoalASpeaker::pSynthInit(){
-	if( ! pSynthesizer ){
-		DETHROW( deeInvalidAction );
+	if(! pSynthesizer){
+		DETHROW(deeInvalidAction);
 	}
 	
 	ALuint albuffer;
@@ -972,28 +972,28 @@ void deoalASpeaker::pSynthInit(){
 	
 	pSynthesizer->Reset();
 	
-	if( pBufferSize > pBufferDataCapacity ){
-		if( pBufferData ){
+	if(pBufferSize > pBufferDataCapacity){
+		if(pBufferData){
 			delete [] pBufferData;
 			pBufferData = NULL;
 		}
 		
-		pBufferData = new char[ pBufferSize ];
+		pBufferData = new char[pBufferSize];
 		pBufferDataCapacity = pBufferSize;
 	}
 	
-	for( i=0; i<bufferCount; i++ ){
+	for(i=0; i<bufferCount; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
 		int bufferSize = pBufferSize;
 		
-		if( pBufferSampleCount > remainingSampleCount ){
-			pSynthesizer->GenerateSound( pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount );
+		if(pBufferSampleCount > remainingSampleCount){
+			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * remainingSampleCount,
+				samplesFrom, remainingSampleCount);
 			
-			if( pLooping ){
+			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pSynthesizer->GenerateSound( pBufferData + pBufferSampleSize * remainingSampleCount,
-					pBufferSampleSize * samplesFrom, 0, samplesFrom );
+				pSynthesizer->GenerateSound(pBufferData + pBufferSampleSize * remainingSampleCount,
+					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
 				bufferSize = pBufferSampleSize * remainingSampleCount;
@@ -1001,78 +1001,78 @@ void deoalASpeaker::pSynthInit(){
 			}
 			
 		}else{
-			pSynthesizer->GenerateSound( pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount );
+			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * pBufferSampleCount,
+				samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
-		albuffer = pSource->GetBufferAt( i );
-		OAL_CHECK( pAudioThread, alBufferData( albuffer, pBufferFormat, ( const ALvoid * )pBufferData, bufferSize, pSampleRate ) );
+		albuffer = pSource->GetBufferAt(i);
+		OAL_CHECK(pAudioThread, alBufferData(albuffer, pBufferFormat, (const ALvoid *)pBufferData, bufferSize, pSampleRate));
 		//pAudioThread.LoIgnfoFormat( "pSynthInit: queue buffer (source=%u buffer=%u format=%x sampleRate=%i size=%i)",
 		//	pSource->GetSource(), albuffer, pBufferFormat, pSampleRate, bufferSize );
-		OAL_CHECK( pAudioThread, alSourceQueueBuffers( pSource->GetSource(), 1, &albuffer ) );
+		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), 1, &albuffer));
 	}
 }
 
 //#include <dragengine/logger/deLoggerConsole.h>
-void deoalASpeaker::pSynthNext( bool underrun ){
+void deoalASpeaker::pSynthNext(bool underrun){
 	ALint queueOffset;
-	OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset ) );
-	if( pLooping ){
-		pPlayPosition = decMath::normalize( pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo );
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset));
+	if(pLooping){
+		pPlayPosition = decMath::normalize(pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo);
 		
 	}else{
-		pPlayPosition = decMath::clamp( pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo );
+		pPlayPosition = decMath::clamp(pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo);
 	}
 // 	pAudioThread.GetLogger().LogInfoFormat( "SynthNext: pos=%i(%.3g)", pPlayPosition, (float)pPlayPosition / (float)pSampleRate );
 	
 	ALint numFinished = 0;
-	OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished ) );
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished));
 //	deLoggerConsole().GetLogger().LogInfoFormat("Dragengine", "speaker %p: num finished %i", this, numFinished);
-	if( numFinished == 0 && ! underrun ){
+	if(numFinished == 0 && ! underrun){
 		return;
 	}
 	
 	bool restartPlaying = underrun;
-	ALuint buffers[ 10 ];
+	ALuint buffers[10];
 	int i;
 	
-	if( numFinished == pSource->GetBufferCount() && pLooping ){
+	if(numFinished == pSource->GetBufferCount() && pLooping){
 		restartPlaying = true;
 	}
 	
-	OAL_CHECK( pAudioThread, alSourceUnqueueBuffers( pSource->GetSource(), numFinished, &buffers[ 0 ] ) );
+	OAL_CHECK(pAudioThread, alSourceUnqueueBuffers(pSource->GetSource(), numFinished, &buffers[0]));
 	
 	pQueueSampleOffset += pBufferSampleCount * numFinished;
 	
 	int samplesFrom;
 	
-	if( pLooping ){
-		samplesFrom = decMath::normalize( pQueueSampleOffset
-			+ ( pSource->GetBufferCount() - numFinished ) * pBufferSampleCount, pPlayFrom, pPlayTo );
+	if(pLooping){
+		samplesFrom = decMath::normalize(pQueueSampleOffset
+			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayFrom, pPlayTo);
 		
 	}else{
-		samplesFrom = decMath::min( pQueueSampleOffset
-			+ ( pSource->GetBufferCount() - numFinished ) * pBufferSampleCount, pPlayTo );
+		samplesFrom = decMath::min(pQueueSampleOffset
+			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayTo);
 	}
 	
-	for( i=0; i<numFinished; i++ ){
+	for(i=0; i<numFinished; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
-		if( remainingSampleCount == 0 && ! pLooping ){
+		if(remainingSampleCount == 0 && ! pLooping){
 			numFinished = i;
 			break;
 		}
 		
 		int bufferSize = pBufferSize;
 		
-		if( pBufferSampleCount > remainingSampleCount ){
-			pSynthesizer->GenerateSound( pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount );
+		if(pBufferSampleCount > remainingSampleCount){
+			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * remainingSampleCount,
+				samplesFrom, remainingSampleCount);
 			
-			if( pLooping ){
+			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pSynthesizer->GenerateSound( pBufferData + pBufferSampleSize * remainingSampleCount,
-					pBufferSampleSize * samplesFrom, 0, samplesFrom );
+				pSynthesizer->GenerateSound(pBufferData + pBufferSampleSize * remainingSampleCount,
+					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
 				bufferSize = pBufferSampleSize * remainingSampleCount;
@@ -1080,73 +1080,73 @@ void deoalASpeaker::pSynthNext( bool underrun ){
 			}
 			
 		}else{
-			pSynthesizer->GenerateSound( pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount );
+			pSynthesizer->GenerateSound(pBufferData, pBufferSampleSize * pBufferSampleCount,
+				samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
 		//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: queue buffer (source=%u buffer=%u format=%x sampleRate=%i)",
 		//	pSource->GetSource(), buffers[ i ], pBufferFormat, pSampleRate );
-		OAL_CHECK( pAudioThread, alBufferData( buffers[ i ], pBufferFormat,
-			( const ALvoid * )pBufferData, bufferSize, pSampleRate ) );
+		OAL_CHECK(pAudioThread, alBufferData(buffers[i], pBufferFormat,
+			(const ALvoid *)pBufferData, bufferSize, pSampleRate));
 	}
 	
 	//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: queue %i buffers (format=%x sampleRate=%i)", numFinished, pBufferFormat, pSampleRate );
-	if( numFinished > 0 ){
+	if(numFinished > 0){
 //	deLoggerConsole().GetLogger().LogInfoFormat("Dragengine", "speaker %p: queued %i", this, numFinished);
-		OAL_CHECK( pAudioThread, alSourceQueueBuffers( pSource->GetSource(), numFinished, buffers ) );
+		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), numFinished, buffers));
 		
 	}else{
 		return;
 	}
 	
 	// if we ran out of buffers we have to restart plpaying or playback stops
-	if( restartPlaying ){
+	if(restartPlaying){
 		pPlayFinished = false;
 		pSource->Play();
 	}
 }
 
 void deoalASpeaker::pVideoPlayerInit(){
-	if( ! pVideoPlayer ){
-		DETHROW( deeInvalidAction );
+	if(! pVideoPlayer){
+		DETHROW(deeInvalidAction);
 	}
 	
 	ALuint albuffer;
 	int i;
 	
 	pQueueSampleOffset = pPlayPosition =
-		( int )( pVideoPlayer->GetPlayPosition() * pVideoPlayer->GetSampleRate() );
+		(int)(pVideoPlayer->GetPlayPosition() * pVideoPlayer->GetSampleRate());
 	
 	int bufferCount = pSource->GetBufferCount();
 	int samplesFrom = pQueueSampleOffset;
 	
-	if( pBufferSize > pBufferDataCapacity ){
-		if( pBufferData ){
+	if(pBufferSize > pBufferDataCapacity){
+		if(pBufferData){
 			delete [] pBufferData;
 			pBufferData = NULL;
 		}
 		
-		pBufferData = new char[ pBufferSize ];
+		pBufferData = new char[pBufferSize];
 		pBufferDataCapacity = pBufferSize;
 	}
 	
-	for( i=0; i<bufferCount; i++ ){
+	for(i=0; i<bufferCount; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
-		if( remainingSampleCount < 1 ){
+		if(remainingSampleCount < 1){
 			break;
 		}
 		
 		int bufferSize = pBufferSize;
 		
-		if( remainingSampleCount < pBufferSampleCount ){
-			pVideoPlayer->ReadSamples( pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount );
+		if(remainingSampleCount < pBufferSampleCount){
+			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * remainingSampleCount,
+				samplesFrom, remainingSampleCount);
 			
-			if( pLooping ){
+			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pVideoPlayer->ReadSamples( pBufferData + pBufferSampleSize * remainingSampleCount,
-					pBufferSampleSize * samplesFrom, 0, samplesFrom );
+				pVideoPlayer->ReadSamples(pBufferData + pBufferSampleSize * remainingSampleCount,
+					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
 				bufferSize = pBufferSampleSize * remainingSampleCount;
@@ -1154,77 +1154,77 @@ void deoalASpeaker::pVideoPlayerInit(){
 			}
 			
 		}else{
-			pVideoPlayer->ReadSamples( pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount );
+			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * pBufferSampleCount,
+				samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
-		albuffer = pSource->GetBufferAt( i );
-		OAL_CHECK( pAudioThread, alBufferData( albuffer, pBufferFormat, ( const ALvoid * )pBufferData, bufferSize, pSampleRate ) );
+		albuffer = pSource->GetBufferAt(i);
+		OAL_CHECK(pAudioThread, alBufferData(albuffer, pBufferFormat, (const ALvoid *)pBufferData, bufferSize, pSampleRate));
 		//pAudioThread.LoIgnfoFormat( "pSynthInit: queue buffer (source=%u buffer=%u format=%x sampleRate=%i size=%i)",
 		//	pSource->GetSource(), albuffer, pBufferFormat, pSampleRate, bufferSize );
-		OAL_CHECK( pAudioThread, alSourceQueueBuffers( pSource->GetSource(), 1, &albuffer ) );
+		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), 1, &albuffer));
 	}
 }
 
-void deoalASpeaker::pVideoPlayerNext( bool underrun ){
+void deoalASpeaker::pVideoPlayerNext(bool underrun){
 	ALint queueOffset;
-	OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset ) );
-	if( pLooping ){
-		pPlayPosition = decMath::normalize( pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo );
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_SAMPLE_OFFSET, &queueOffset));
+	if(pLooping){
+		pPlayPosition = decMath::normalize(pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo);
 		
 	}else{
-		pPlayPosition = decMath::clamp( pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo );
+		pPlayPosition = decMath::clamp(pQueueSampleOffset + queueOffset, pPlayFrom, pPlayTo);
 	}
 	//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: pos=%i(%.3g)", pPlayPosition, (float)pPlayPosition / (float)pSampleRate );
 	
 	ALint numFinished = 0;
-	OAL_CHECK( pAudioThread, alGetSourcei( pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished ) );
+	OAL_CHECK(pAudioThread, alGetSourcei(pSource->GetSource(), AL_BUFFERS_PROCESSED, &numFinished));
 	//pAudioThread.GetLogger().LogInfoFormat("speaker %p: num finished %i", this, numFinished);
-	if( numFinished == 0 && ! underrun ){
+	if(numFinished == 0 && ! underrun){
 		return;
 	}
 	
 	bool restartPlaying = underrun;
-	ALuint buffers[ 10 ];
+	ALuint buffers[10];
 	int i;
 	
-	if( numFinished == pSource->GetBufferCount() ){
+	if(numFinished == pSource->GetBufferCount()){
 		restartPlaying = true;
 	}
 	
-	OAL_CHECK( pAudioThread, alSourceUnqueueBuffers( pSource->GetSource(), numFinished, &buffers[ 0 ] ) );
+	OAL_CHECK(pAudioThread, alSourceUnqueueBuffers(pSource->GetSource(), numFinished, &buffers[0]));
 	
 	pQueueSampleOffset += pBufferSampleCount * numFinished;
 	
 	int samplesFrom;
 	
-	if( pLooping ){
-		samplesFrom = decMath::normalize( pQueueSampleOffset
-			+ ( pSource->GetBufferCount() - numFinished ) * pBufferSampleCount, pPlayFrom, pPlayTo );
+	if(pLooping){
+		samplesFrom = decMath::normalize(pQueueSampleOffset
+			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayFrom, pPlayTo);
 		
 	}else{
-		samplesFrom = decMath::min( pQueueSampleOffset
-			+ ( pSource->GetBufferCount() - numFinished ) * pBufferSampleCount, pPlayTo );
+		samplesFrom = decMath::min(pQueueSampleOffset
+			+ (pSource->GetBufferCount() - numFinished) * pBufferSampleCount, pPlayTo);
 	}
 	
-	for( i=0; i<numFinished; i++ ){
+	for(i=0; i<numFinished; i++){
 		const int remainingSampleCount = pPlayTo - samplesFrom;
-		if( remainingSampleCount == 0 && ! pLooping ){
+		if(remainingSampleCount == 0 && ! pLooping){
 			numFinished = i;
 			break;
 		}
 		
 		int bufferSize = pBufferSize;
 		
-		if( pBufferSampleCount > remainingSampleCount ){
-			pVideoPlayer->ReadSamples( pBufferData, pBufferSampleSize * remainingSampleCount,
-				samplesFrom, remainingSampleCount );
+		if(pBufferSampleCount > remainingSampleCount){
+			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * remainingSampleCount,
+				samplesFrom, remainingSampleCount);
 			
-			if( pLooping ){
+			if(pLooping){
 				samplesFrom = pBufferSampleCount - remainingSampleCount;
-				pVideoPlayer->ReadSamples( pBufferData + pBufferSampleSize * remainingSampleCount,
-					pBufferSampleSize * samplesFrom, 0, samplesFrom );
+				pVideoPlayer->ReadSamples(pBufferData + pBufferSampleSize * remainingSampleCount,
+					pBufferSampleSize * samplesFrom, 0, samplesFrom);
 				
 			}else{
 				bufferSize = pBufferSampleSize * remainingSampleCount;
@@ -1232,28 +1232,28 @@ void deoalASpeaker::pVideoPlayerNext( bool underrun ){
 			}
 			
 		}else{
-			pVideoPlayer->ReadSamples( pBufferData, pBufferSampleSize * pBufferSampleCount,
-				samplesFrom, pBufferSampleCount );
+			pVideoPlayer->ReadSamples(pBufferData, pBufferSampleSize * pBufferSampleCount,
+				samplesFrom, pBufferSampleCount);
 			samplesFrom += pBufferSampleCount;
 		}
 		
 // 		pAudioThread.GetLogger().LogInfoFormat( "pVideoPlayerNext: queue buffer (source=%u buffer=%u format=%x sampleRate=%i)",
 // 			pSource->GetSource(), buffers[ i ], pBufferFormat, pSampleRate );
-		OAL_CHECK( pAudioThread, alBufferData( buffers[ i ], pBufferFormat,
-			( const ALvoid * )pBufferData, bufferSize, pSampleRate ) );
+		OAL_CHECK(pAudioThread, alBufferData(buffers[i], pBufferFormat,
+			(const ALvoid *)pBufferData, bufferSize, pSampleRate));
 	}
 	
 	//pAudioThread.GetLogger().LogInfoFormat( "SynthNext: queue %i buffers (format=%x sampleRate=%i)", numFinished, pBufferFormat, pSampleRate );
-	if( numFinished > 0 ){
+	if(numFinished > 0){
 //	deLoggerConsole().GetLogger().LogInfoFormat("Dragengine", "speaker %p: queued %i", this, numFinished);
-		OAL_CHECK( pAudioThread, alSourceQueueBuffers( pSource->GetSource(), numFinished, buffers ) );
+		OAL_CHECK(pAudioThread, alSourceQueueBuffers(pSource->GetSource(), numFinished, buffers));
 		
 	}else{
 		return;
 	}
 	
 	// if we ran out of buffers we have to restart playing or playback stops
-	if( restartPlaying ){
+	if(restartPlaying){
 		pPlayFinished = false;
 		pSource->Play();
 	}
@@ -1262,15 +1262,15 @@ void deoalASpeaker::pVideoPlayerNext( bool underrun ){
 void deoalASpeaker::pUpdatePlayRange(){
 	// get sample rate and play time in samples from the source in use
 	int sampleCount = 0;
-	if( pSound ){
+	if(pSound){
 		pSampleRate = pSound->GetSampleRate();
 		sampleCount = pSound->GetSampleCount();
 		
-	}else if( pSynthesizer ){
+	}else if(pSynthesizer){
 		pSampleRate = pSynthesizer->GetSampleRate();
 		sampleCount = pSynthesizer->GetSampleCount();
 		
-	}else if( pVideoPlayer ){
+	}else if(pVideoPlayer){
 		pSampleRate = pVideoPlayer->GetSampleRate();
 		sampleCount = pVideoPlayer->GetSampleCount();
 		
@@ -1279,9 +1279,9 @@ void deoalASpeaker::pUpdatePlayRange(){
 	}
 	
 	// calculate from and to play position in samples clamped to valid values
-	pPlayFrom = decMath::clamp( pSpeakerPlayFrom, 0, sampleCount );
-	pPlayTo = decMath::clamp( pSpeakerPlayTo, pPlayFrom, sampleCount );
-	pPlayRange = decMath::max( pPlayTo - pPlayFrom, 0 );
+	pPlayFrom = decMath::clamp(pSpeakerPlayFrom, 0, sampleCount);
+	pPlayTo = decMath::clamp(pSpeakerPlayTo, pPlayFrom, sampleCount);
+	pPlayRange = decMath::max(pPlayTo - pPlayFrom, 0);
 // 	pAudioThread.GetLogger().LogInfoFormat( "UpdatePlayPosition sampleRate=%i from=%i to=%i | %d %d %p",
 // 		pSampleRate, pPlayFrom, pPlayTo, pSpeakerPlayFrom, pSpeakerPlayTo, (deSynthesizerInstance*)pSynthesizer );
 }
@@ -1343,26 +1343,26 @@ void deoalASpeaker::pUpdateAttenuation(){
 	
 	/*
 	const float halfVolumeDistance = pSpeaker.GetHalfVolumeDistance();
-	const float range = decMath::max( pSpeaker.GetRange(), 0.01f ); // too small makes no sense only problems
+	const float range = decMath::max(pSpeaker.GetRange(), 0.01f); // too small makes no sense only problems
 	
-	pAttenuationRefDist = 1.0f; //decMath::max( range * fullVolumeArea, 0.001f ); // don't go lower to avoid accuracy problems
+	pAttenuationRefDist = 1.0f; //decMath::max(range * fullVolumeArea, 0.001f); // don't go lower to avoid accuracy problems
 	//pAttenuationRolloff = decMath::max( pAttenuationRefDist / ( range * halfVolumeDistance - pAttenuationRefDist ), 0.0f );
-	pAttenuationRolloff = pAttenuationRefDist / ( decMath::max( range - pAttenuationRefDist, 0.001f ) * halfVolumeDistance );
+	pAttenuationRolloff = pAttenuationRefDist / (decMath::max(range - pAttenuationRefDist, 0.001f) * halfVolumeDistance);
 	*/
 	
 	pAttenuationRefDist = 1.0f;
 	
-	if( pEnvironment ){
-		pEnvironment->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
-		pEnvironment->SetLayerMask( pLayerMask );
+	if(pEnvironment){
+		pEnvironment->SetAttenuation(pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset);
+		pEnvironment->SetLayerMask(pLayerMask);
 	}
 	
 	const int count = pSoundLevelMeters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		deoalASoundLevelMeterSpeaker * const speaker =
-			( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->GetSpeakerWith( this );
-		if( speaker ){
+			((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->GetSpeakerWith(this);
+		if(speaker){
 			speaker->SpeakerAttenuationChanged();
 			speaker->SpeakerLayerMaskChanged();
 		}
@@ -1374,13 +1374,13 @@ void deoalASpeaker::pUpdateAttenuation(){
 
 
 void deoalASpeaker::pDoPlayState(){
-	if( pRestart ){
+	if(pRestart){
 		pStopPlaySource();
 		pRestart = false;
 	}
 	
-	if( pEnabled && ( pSound || pSynthesizer || pVideoPlayer ) && pPlayRange > 0 ){
-		switch( pPlayState ){
+	if(pEnabled && (pSound || pSynthesizer || pVideoPlayer) && pPlayRange > 0){
+		switch(pPlayState){
 		case deSpeaker::epsPlaying:
 			pStartPlaySource();
 			return;
@@ -1402,14 +1402,14 @@ void deoalASpeaker::pDoPlayState(){
 void deoalASpeaker::pStartPlaySource(){
 	pCheckStillSourceOwner();
 	
-	if( ! pSource ){
-		pSource = pAudioThread.GetSourceManager().BindSource( this );
+	if(! pSource){
+		pSource = pAudioThread.GetSourceManager().BindSource(this);
 		pUpdateSourceImportance();
 		
 		// parameters not defined by the source
-		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_PITCH, 1.0f ) );
-		const ALfloat parameters[ 3 ] = { 0.0f, 0.0f, 0.0f };
-		OAL_CHECK( pAudioThread, alSourcefv( pSource->GetSource(), AL_DIRECTION, &parameters[ 0 ] ) );
+		OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_PITCH, 1.0f));
+		const ALfloat parameters[3] = {0.0f, 0.0f, 0.0f};
+		OAL_CHECK(pAudioThread, alSourcefv(pSource->GetSource(), AL_DIRECTION, &parameters[0]));
 		
 		// init play range. required by pInitSoundSource to be done first
 		pUpdatePlayRange();
@@ -1431,12 +1431,12 @@ void deoalASpeaker::pStartPlaySource(){
 
 void deoalASpeaker::pStopPlaySource(){
 	pCheckStillSourceOwner();
-	if( ! pSource ){
+	if(! pSource){
 		return;
 	}
 	
 	DropSharedEffectSlot();
-	pAudioThread.GetSourceManager().UnbindSource( pSource );
+	pAudioThread.GetSourceManager().UnbindSource(pSource);
 	pSource = nullptr;
 	pQueueSampleOffset = 0;
 }
@@ -1444,7 +1444,7 @@ void deoalASpeaker::pStopPlaySource(){
 
 
 void deoalASpeaker::pCheckStillSourceOwner(){
-	if( ! pSource || pSource->GetOwner() == this ){
+	if(! pSource || pSource->GetOwner() == this){
 		return;
 	}
 	
@@ -1454,24 +1454,24 @@ void deoalASpeaker::pCheckStillSourceOwner(){
 void deoalASpeaker::pUpdateSourceImportance(){
 	float importance = 0.0f;
 	
-	if( pSound || pSynthesizer || pVideoPlayer ){
+	if(pSound || pSynthesizer || pVideoPlayer){
 		importance = 0.0f;
 		
 	}else{
-		pSource->SetImportance( -1000.0f );
+		pSource->SetImportance(-1000.0f);
 		return;
 	}
 	
-	importance += decMath::clamp( pFinalGain, 0.0f, 1.0f );
+	importance += decMath::clamp(pFinalGain, 0.0f, 1.0f);
 	
-	pSource->SetImportance( importance );
+	pSource->SetImportance(importance);
 }
 
 void deoalASpeaker::pUpdateAttenuatedGain(){
-	if( pMuted || ! pAudioThread.GetActiveMicrophone() ){
+	if(pMuted || ! pAudioThread.GetActiveMicrophone()){
 		pAttenuatedGain = 0.0f;
 		pFinalGain = 0.0f;
-		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, 0.0f ) );
+		OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, 0.0f));
 		return;
 	}
 	
@@ -1486,42 +1486,42 @@ void deoalASpeaker::pUpdateAttenuatedGain(){
 	// this leaves sounds near the source at the openal calculated volume while fading it
 	// out properly to 0 at the range
 	const decDVector &microphonePos = pAudioThread.GetActiveMicrophone()->GetPosition();
-	const float distance = ( float )( microphonePos - pPosition ).Length();
+	const float distance = (float)(microphonePos - pPosition).Length();
 	
 	// distance attenuation. include distance offset if present
-	pAttenuatedGain *= AttenuatedGain( distance );
+	pAttenuatedGain *= AttenuatedGain(distance);
 	
 	// we use squared multiplier drop here to affect the gain more towards the range and
 	// less along the large part of the distance. this prevents the sound from getting
 	// more silent in general than it should be while still yielding the pulling to 0
-	float gainMultiplier = decMath::linearStep( distance, pAttenuationRefDist, pRange );
+	float gainMultiplier = decMath::linearStep(distance, pAttenuationRefDist, pRange);
 	gainMultiplier = 1.0f - gainMultiplier * gainMultiplier;
 	pAttenuatedGain *= gainMultiplier;
 	
 	// apply environmental effects. sound transmission and muffling will be applied
 	// using filtering to ensure reverb effect uses the right source gain
 	/*
-	if( pEnvironment && ( ! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ) ){
-		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
+	if(pEnvironment && (! pAudioThread.GetExtensions().GetHasEFX()
+	|| ! pAudioThread.GetConfiguration().GetEnableEFX())){
+		OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, pAttenuatedGain));
 		
 	}else{
-		OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pAttenuatedGain ) );
+		OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, pAttenuatedGain));
 	}
 	*/
 	
 	pFinalGain = pAttenuatedGain * GetFullVolume();
-	OAL_CHECK( pAudioThread, alSourcef( pSource->GetSource(), AL_GAIN, pFinalGain ) );
+	OAL_CHECK(pAudioThread, alSourcef(pSource->GetSource(), AL_GAIN, pFinalGain));
 }
 
 
 
 void deoalASpeaker::pInitSoundSource(){
-	if( pSound ){
+	if(pSound){
 		pSound->PrepareBuffers();
 		
-		if( pSound->GetStreaming() ){
-			pSource->SetBufferCount( 5 );
+		if(pSound->GetStreaming()){
+			pSource->SetBufferCount(5);
 			
 			pBufferSampleCount = pSound->GetSampleRate() / 5; // 200ms slices
 			pBufferSampleSize = pSound->GetBytesPerSample() * pSound->GetChannelCount();
@@ -1532,15 +1532,15 @@ void deoalASpeaker::pInitSoundSource(){
 			pNeedsInitialDecode = true;
 			
 		}else{
-			pSource->SetBufferCount( 0 );
+			pSource->SetBufferCount(0);
 			
-			OAL_CHECK( pAudioThread, alSourcei( pSource->GetSource(), AL_BUFFER, pSound->GetBuffer() ) );
+			OAL_CHECK(pAudioThread, alSourcei(pSource->GetSource(), AL_BUFFER, pSound->GetBuffer()));
 			pStreaming = false;
 			pNeedsInitialDecode = false;
 		}
 		
-	}else if( pSynthesizer ){
-		if( pSynthesizer->GetUpdateTracker() != pSourceUpdateTracker ){
+	}else if(pSynthesizer){
+		if(pSynthesizer->GetUpdateTracker() != pSourceUpdateTracker){
 			pSourceUpdateTracker = pSynthesizer->GetUpdateTracker();
 			
 			pDirtyPlayPosition = true;
@@ -1550,12 +1550,12 @@ void deoalASpeaker::pInitSoundSource(){
 		pSampleRate = pSynthesizer->GetSampleRate();
 		
 		// clamp to supported values
-		const int channelCount = decMath::clamp( pSynthesizer->GetChannelCount(), 1, 2 );
-		const int bytesPerSample = decMath::clamp( pSynthesizer->GetBytesPerSample(), 1, 2 );
+		const int channelCount = decMath::clamp(pSynthesizer->GetChannelCount(), 1, 2);
+		const int bytesPerSample = decMath::clamp(pSynthesizer->GetBytesPerSample(), 1, 2);
 		
 		// determine format to use
-		if( bytesPerSample == 1 ){
-			if( channelCount == 1 ){
+		if(bytesPerSample == 1){
+			if(channelCount == 1){
 				pBufferFormat = AL_FORMAT_MONO8;
 				
 			}else{ // pChannelCount == 2
@@ -1563,7 +1563,7 @@ void deoalASpeaker::pInitSoundSource(){
 			}
 			
 		}else{ // pBytesPerSample == 2
-			if( channelCount == 1 ){
+			if(channelCount == 1){
 				pBufferFormat = AL_FORMAT_MONO16;
 				
 			}else{ // pChannelCount == 2
@@ -1572,7 +1572,7 @@ void deoalASpeaker::pInitSoundSource(){
 		}
 		
 		// determine streaming parameters
-		pSource->SetBufferCount( 2 ); // 100 ms buffered
+		pSource->SetBufferCount(2); // 100 ms buffered
 		//pSource->SetBufferCount( 3 ); // 150 ms buffered
 		
 		pBufferSampleCount = pSampleRate / 20; // 50 ms slices
@@ -1582,8 +1582,8 @@ void deoalASpeaker::pInitSoundSource(){
 		pSynthInit();
 		pStreaming = true;
 		
-	}else if( pVideoPlayer ){
-		if( pVideoPlayer->GetUpdateTracker() != pSourceUpdateTracker ){
+	}else if(pVideoPlayer){
+		if(pVideoPlayer->GetUpdateTracker() != pSourceUpdateTracker){
 			pSourceUpdateTracker = pVideoPlayer->GetUpdateTracker();
 			
 			pDirtyPlayPosition = true;
@@ -1593,8 +1593,8 @@ void deoalASpeaker::pInitSoundSource(){
 		pSampleRate = pVideoPlayer->GetSampleRate();
 		
 		// determine format to use
-		if( pVideoPlayer->GetBytesPerSample() == 1 ){
-			if( pVideoPlayer->GetChannelCount() == 1 ){
+		if(pVideoPlayer->GetBytesPerSample() == 1){
+			if(pVideoPlayer->GetChannelCount() == 1){
 				pBufferFormat = AL_FORMAT_MONO8;
 				
 			}else{ // pChannelCount == 2
@@ -1602,7 +1602,7 @@ void deoalASpeaker::pInitSoundSource(){
 			}
 			
 		}else{ // pBytesPerSample == 2
-			if( pVideoPlayer->GetChannelCount() == 1 ){
+			if(pVideoPlayer->GetChannelCount() == 1){
 				pBufferFormat = AL_FORMAT_MONO16;
 				
 			}else{ // pChannelCount == 2
@@ -1615,7 +1615,7 @@ void deoalASpeaker::pInitSoundSource(){
 		// for regular videos 1s buffering with 5 buffers is good. if the play speed can
 		// change then this might have to be adjusted to something closer to the synthesizer
 		// values above (100ms buffering with 2 buffers)
-		pSource->SetBufferCount( 5 );
+		pSource->SetBufferCount(5);
 		pBufferSampleCount = pSampleRate / 5; // 200 ms slices
 		pBufferSampleSize = pVideoPlayer->GetBytesPerSample() * pVideoPlayer->GetChannelCount();
 		pBufferSize = pBufferSampleCount * pBufferSampleSize;
@@ -1628,17 +1628,17 @@ void deoalASpeaker::pInitSoundSource(){
 void deoalASpeaker::pEnsureEnvironment(){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( pParentWorld && ! pPositionless ){
-		if( ! pEnvironment ){
-			pEnvironment = new deoalEnvironment( pAudioThread );
-			pEnvironment->SetWorld( pParentWorld );
-			pEnvironment->SetPosition( pPosition );
-			pEnvironment->SetRange( pRange );
-			pEnvironment->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
-			pEnvironment->SetLayerMask( pLayerMask );
+	if(pParentWorld && ! pPositionless){
+		if(! pEnvironment){
+			pEnvironment = new deoalEnvironment(pAudioThread);
+			pEnvironment->SetWorld(pParentWorld);
+			pEnvironment->SetPosition(pPosition);
+			pEnvironment->SetRange(pRange);
+			pEnvironment->SetAttenuation(pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset);
+			pEnvironment->SetLayerMask(pLayerMask);
 		}
 		
-	}else if( pEnvironment ){
+	}else if(pEnvironment){
 		pDelayedDropSharedEffectSlot = true; // no DropSharedEffectSlot since main thread
 		
 		delete pEnvironment;
@@ -1647,8 +1647,8 @@ void deoalASpeaker::pEnsureEnvironment(){
 }
 
 void deoalASpeaker::pUpdateEnvironmentEffect(){
-	if( ! pEnvironment || ! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ){
+	if(! pEnvironment || ! pAudioThread.GetExtensions().GetHasEFX()
+	|| ! pAudioThread.GetConfiguration().GetEnableEFX()){
 		return;
 	}
 	
@@ -1691,10 +1691,10 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// band pass (or sound transmission) is relative to the source gain. it does not matter if
 	// this is at the virtual or real position and thus this value can be used directly
 	const ALuint filter = pSource->GetFilter();
-	OAL_CHECK( pAudioThread, palFilteri( filter, AL_FILTER_TYPE, AL_FILTER_BANDPASS ) );
-	OAL_CHECK( pAudioThread, palFilterf( filter, AL_BANDPASS_GAIN, pEnvironment->GetBandPassGain() ) );
-	OAL_CHECK( pAudioThread, palFilterf( filter, AL_BANDPASS_GAINLF, pEnvironment->GetBandPassGainLF() ) );
-	OAL_CHECK( pAudioThread, palFilterf( filter, AL_BANDPASS_GAINHF, pEnvironment->GetBandPassGainHF() ) );
+	OAL_CHECK(pAudioThread, palFilteri(filter, AL_FILTER_TYPE, AL_FILTER_BANDPASS));
+	OAL_CHECK(pAudioThread, palFilterf(filter, AL_BANDPASS_GAIN, pEnvironment->GetBandPassGain()));
+	OAL_CHECK(pAudioThread, palFilterf(filter, AL_BANDPASS_GAINLF, pEnvironment->GetBandPassGainLF()));
+	OAL_CHECK(pAudioThread, palFilterf(filter, AL_BANDPASS_GAINHF, pEnvironment->GetBandPassGainHF()));
 	
 	pSource->AssignFilter();
 	
@@ -1703,50 +1703,50 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 // 			AttenuatedGain(0.0f), pVolume * AttenuatedGain(0.0f), pEnvironment->GetBandPassGain(), pVolume,
 // 			pEnvironment->GetReverbGain(), pEnvironment->GetReverbGain() * pVolume);
 	
-	if( pEnvironment->GetReverbGain() < 0.01f ){ //0.001f
+	if(pEnvironment->GetReverbGain() < 0.01f){ //0.001f
 		pSource->DropEffectSlot();
 		DropSharedEffectSlot();
 		return;
 	}
 	
-	if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+	if(pAudioThread.GetConfiguration().GetUseSharedEffectSlots()){
 		pUpdateEnvironmentEffectShared();
 		return;
 	}
 	
-	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max( pAttenuatedGain, 0.001f );
+	const float reverbGain = pEnvironment->GetReverbGain() / decMath::max(pAttenuatedGain, 0.001f);
 	
 	deoalEffectSlot * const effectSlot = pSource->GetEffectSlot();
-	if( ! effectSlot ){
+	if(! effectSlot){
 		return;
 	}
 	
 	const ALuint effect = effectSlot->GetEffect();
-	effectSlot->SetEffectType( AL_EFFECT_EAXREVERB );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAIN, 1.0f ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_GAINLF, pEnvironment->GetReverbGainLF() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_TIME, pEnvironment->GetReverbDecayTime() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_HFRATIO, pEnvironment->GetReverbDecayHFRatio() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_DECAY_LFRATIO, pEnvironment->GetReverbDecayLFRatio() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_GAIN, decMath::min(
-		reverbGain * pEnvironment->GetReverbReflectionGain(), AL_EAXREVERB_MAX_REFLECTIONS_GAIN ) ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_REFLECTIONS_DELAY, pEnvironment->GetReverbReflectionDelay() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_GAIN, decMath::min(
-		reverbGain * pEnvironment->GetReverbLateReverbGain(), AL_EAXREVERB_MAX_LATE_REVERB_GAIN ) ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_LATE_REVERB_DELAY, pEnvironment->GetReverbLateReverbDelay() ) );
-	OAL_CHECK( pAudioThread, palEffectf( effect, AL_EAXREVERB_ECHO_TIME, pEnvironment->GetReverbEchoTime() ) );
+	effectSlot->SetEffectType(AL_EFFECT_EAXREVERB);
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_GAIN, 1.0f));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_GAINHF, pEnvironment->GetReverbGainHF()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_GAINLF, pEnvironment->GetReverbGainLF()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_DECAY_TIME, pEnvironment->GetReverbDecayTime()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_DECAY_HFRATIO, pEnvironment->GetReverbDecayHFRatio()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_DECAY_LFRATIO, pEnvironment->GetReverbDecayLFRatio()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_REFLECTIONS_GAIN, decMath::min(
+		reverbGain * pEnvironment->GetReverbReflectionGain(), AL_EAXREVERB_MAX_REFLECTIONS_GAIN)));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_REFLECTIONS_DELAY, pEnvironment->GetReverbReflectionDelay()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_LATE_REVERB_GAIN, decMath::min(
+		reverbGain * pEnvironment->GetReverbLateReverbGain(), AL_EAXREVERB_MAX_LATE_REVERB_GAIN)));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_LATE_REVERB_DELAY, pEnvironment->GetReverbLateReverbDelay()));
+	OAL_CHECK(pAudioThread, palEffectf(effect, AL_EAXREVERB_ECHO_TIME, pEnvironment->GetReverbEchoTime()));
 	
-	ALfloat alvector[ 3 ];
-	alvector[ 0 ] = ( ALfloat )pEnvironment->GetReverbReflectionPan().x;
-	alvector[ 1 ] = ( ALfloat )pEnvironment->GetReverbReflectionPan().y;
-	alvector[ 2 ] = ( ALfloat )pEnvironment->GetReverbReflectionPan().z;
-	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_REFLECTIONS_PAN, &alvector[ 0 ] ) );
+	ALfloat alvector[3];
+	alvector[0] = (ALfloat)pEnvironment->GetReverbReflectionPan().x;
+	alvector[1] = (ALfloat)pEnvironment->GetReverbReflectionPan().y;
+	alvector[2] = (ALfloat)pEnvironment->GetReverbReflectionPan().z;
+	OAL_CHECK(pAudioThread, palEffectfv(effect, AL_EAXREVERB_REFLECTIONS_PAN, &alvector[0]));
 	
-	alvector[ 0 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().x;
-	alvector[ 1 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().y;
-	alvector[ 2 ] = ( ALfloat )pEnvironment->GetReverbLateReverbPan().z;
-	OAL_CHECK( pAudioThread, palEffectfv( effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[ 0 ] ) );
+	alvector[0] = (ALfloat)pEnvironment->GetReverbLateReverbPan().x;
+	alvector[1] = (ALfloat)pEnvironment->GetReverbLateReverbPan().y;
+	alvector[2] = (ALfloat)pEnvironment->GetReverbLateReverbPan().z;
+	OAL_CHECK(pAudioThread, palEffectfv(effect, AL_EAXREVERB_LATE_REVERB_PAN, &alvector[0]));
 	
 	// OpenAL performance note:
 	// 
@@ -1777,7 +1777,7 @@ void deoalASpeaker::pUpdateEnvironmentEffect(){
 	// 	pEnvironment->GetReverbReflectionDelay(), pEnvironment->GetReverbLateReverbDelay(),
 	// 	pEnvironment->GetReverbEchoTime());
 	
-	effectSlot->UpdateSlot( 0.0f /*pEnvironment->GetEffectKeepAliveTimeout()*/ );
+	effectSlot->UpdateSlot(0.0f /*pEnvironment->GetEffectKeepAliveTimeout()*/);
 	
 	// this one here is difficult to understand and handle. the documentation is lacking in this
 	// regard so look at an anwser found online:
@@ -1800,60 +1800,60 @@ void deoalASpeaker::pUpdateEnvironmentEffectShared(){
 	// sem.AddSpeaker( this );
 	
 	float bestDistance = 0.0f;
-	deoalSharedEffectSlot * const bestSlot = sem.BestMatchingSlot( *pEnvironment, bestDistance );
+	deoalSharedEffectSlot * const bestSlot = sem.BestMatchingSlot(*pEnvironment, bestDistance);
 	deoalSharedEffectSlot * const emptySlot = sem.FirstEmptySlot();
 	
-	if( pDelayedDropSharedEffectSlot ){
+	if(pDelayedDropSharedEffectSlot){
 		DropSharedEffectSlot();
 	}
 	
-	if( pSharedEffectSlot ){
+	if(pSharedEffectSlot){
 		const deoalASpeaker * const refSpeaker = pSharedEffectSlot->GetReferenceSpeaker();
-		if( refSpeaker ){
+		if(refSpeaker){
 			const deoalEnvironment * const refEnv = refSpeaker->GetEnvironment();
-			if( refEnv && refEnv->Distance( *pEnvironment, false )
-			>= config.GetSwitchSharedEnvironmentThreshold() ){
-				if( emptySlot ){
+			if(refEnv && refEnv->Distance(*pEnvironment, false)
+			>= config.GetSwitchSharedEnvironmentThreshold()){
+				if(emptySlot){
 					DropSharedEffectSlot();
 					
-				}else if( bestSlot && bestSlot != pSharedEffectSlot
-				&& bestDistance <= config.GetShareEnvironmentThreshold() ){
+				}else if(bestSlot && bestSlot != pSharedEffectSlot
+				&& bestDistance <= config.GetShareEnvironmentThreshold()){
 					DropSharedEffectSlot();
 				}
 			}
 		}
 	}
 	
-	if( pSharedEffectSlot ){
-		if( pSharedEffectSlot->GetReferenceSpeaker() == this ){
+	if(pSharedEffectSlot){
+		if(pSharedEffectSlot->GetReferenceSpeaker() == this){
 			pSharedEffectSlot->UpdateEffectSlot();
 			/*
 		}else{
 			const decDVector &micpos = pAudioThread.GetActiveMicrophone()->GetPosition();
 			
-			if( ( pSharedEffectSlot->GetSpeakerAt( 0 )->GetPosition() - micpos ).Length()
-			- ( pPosition - micpos ).Length() > 2.0 ){
-				pSharedEffectSlot->MoveSpeakerFront( this );
+			if((pSharedEffectSlot->GetSpeakerAt(0)->GetPosition() - micpos).Length()
+			- (pPosition - micpos).Length() > 2.0){
+				pSharedEffectSlot->MoveSpeakerFront(this);
 			}
 			*/
 		}
 		return;
 	}
 	
-	if( bestSlot && bestDistance <= config.GetShareEnvironmentThreshold() ){
+	if(bestSlot && bestDistance <= config.GetShareEnvironmentThreshold()){
 		pSharedEffectSlot = bestSlot;
 		
-	}else if( emptySlot ){
+	}else if(emptySlot){
 		pSharedEffectSlot = emptySlot;
 		
 	}else{
 		pSharedEffectSlot = bestSlot;
 	}
 	
-	if( pSharedEffectSlot ){
-		pSharedEffectSlot->AddSpeaker( this );
-		OAL_CHECK( pAudioThread, alSource3i( pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
-			pSharedEffectSlot->GetEffectSlot()->GetSlot(), 0, AL_FILTER_NULL ) );
+	if(pSharedEffectSlot){
+		pSharedEffectSlot->AddSpeaker(this);
+		OAL_CHECK(pAudioThread, alSource3i(pSource->GetSource(), AL_AUXILIARY_SEND_FILTER,
+			pSharedEffectSlot->GetEffectSlot()->GetSlot(), 0, AL_FILTER_NULL));
 	}
 }
 
@@ -1863,8 +1863,8 @@ void deoalASpeaker::pRemoveFromSoundLevelMeters(){
 	const int count = pSoundLevelMeters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->RemoveSpeakerIfPresent( this );
+	for(i=0; i<count; i++){
+		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->RemoveSpeakerIfPresent(this);
 	}
 	pSoundLevelMeters.RemoveAll();
 }
@@ -1873,8 +1873,8 @@ void deoalASpeaker::pDropEnvProbeOctreeNodeAllSLMs(){
 	const int count = pSoundLevelMeters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoalASoundLevelMeter* )pSoundLevelMeters.GetAt( i ) )->SpeakerDropEnvProbeOctreeNode( this );
+	for(i=0; i<count; i++){
+		((deoalASoundLevelMeter*)pSoundLevelMeters.GetAt(i))->SpeakerDropEnvProbeOctreeNode(this);
 	}
 }
 
@@ -1883,9 +1883,9 @@ bool deoalASpeaker::pUseCustomGain() const{
 }
 
 float deoalASpeaker::pCustomGainMultiplier() const{
-	if( pUseCustomGain() ){
+	if(pUseCustomGain()){
 		const decDVector &microphonePos = pAudioThread.GetActiveMicrophone()->GetPosition();
-		return AttenuatedGain( ( float )( microphonePos - pPosition ).Length() );
+		return AttenuatedGain((float)(microphonePos - pPosition).Length());
 	}
 	return 1.0f;
 }

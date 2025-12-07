@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitSetCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition );
+	ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitSetCondition();

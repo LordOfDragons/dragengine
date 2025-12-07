@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceSynthSetPathSynthesizer( seSourceSynthesizer *source, const char *newPath );
+	seUSourceSynthSetPathSynthesizer(seSourceSynthesizer *source, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWindowMainListener::aeWindowMainListener( aeWindowMain &windowMain ) :
-pWindowMain( windowMain ){
+aeWindowMainListener::aeWindowMainListener(aeWindowMain &windowMain) :
+pWindowMain(windowMain){
 }
 
 aeWindowMainListener::~aeWindowMainListener(){
@@ -53,54 +53,54 @@ aeWindowMainListener::~aeWindowMainListener(){
 // Notifications
 //////////////////
 
-void aeWindowMainListener::StateChanged( aeAnimator* ){
+void aeWindowMainListener::StateChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::UndoChanged( aeAnimator* ){
+void aeWindowMainListener::UndoChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::AnimatorChanged( aeAnimator* ){
+void aeWindowMainListener::AnimatorChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::ViewChanged( aeAnimator* ){
+void aeWindowMainListener::ViewChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::ModelChanged( aeAnimator* ){
+void aeWindowMainListener::ModelChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::AnimationChanged( aeAnimator* ){
-	pWindowMain.UpdateAllActions();
-}
-
-
-
-void aeWindowMainListener::ControllerChanged( aeAnimator*, aeController* ){
-	pWindowMain.UpdateAllActions();
-}
-
-void aeWindowMainListener::ControllerStructureChanged( aeAnimator* ){
+void aeWindowMainListener::AnimationChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
 
 
-void aeWindowMainListener::ActiveRuleChanged( aeAnimator*, aeRule* ){
+void aeWindowMainListener::ControllerChanged(aeAnimator*, aeController*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::RuleChanged( aeAnimator*, aeRule* ){
+void aeWindowMainListener::ControllerStructureChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::RuleNameChanged( aeAnimator*, aeRule* ){
+
+
+void aeWindowMainListener::ActiveRuleChanged(aeAnimator*, aeRule*){
 	pWindowMain.UpdateAllActions();
 }
 
-void aeWindowMainListener::RuleStructureChanged( aeAnimator* ){
+void aeWindowMainListener::RuleChanged(aeAnimator*, aeRule*){
+	pWindowMain.UpdateAllActions();
+}
+
+void aeWindowMainListener::RuleNameChanged(aeAnimator*, aeRule*){
+	pWindowMain.UpdateAllActions();
+}
+
+void aeWindowMainListener::RuleStructureChanged(aeAnimator*){
 	pWindowMain.UpdateAllActions();
 }

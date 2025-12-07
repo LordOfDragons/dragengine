@@ -57,7 +57,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionSelectDirectory( igdeEnvironment &environment, igdeTextField &textField, bool useGameVFS = true );
+	igdeActionSelectDirectory(igdeEnvironment &environment, igdeTextField &textField, bool useGameVFS = true);
 	
 	
 	
@@ -77,13 +77,13 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Use game virtual file system or native file system. */
-	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
+	inline bool GetUseGameVFS() const{return pUseGameVFS;}
 	
 	/** \brief Text field. */
-	inline igdeTextField &GetTextField() const{ return pTextField; }
+	inline igdeTextField &GetTextField() const{return pTextField;}
 	
 	
 	
@@ -104,7 +104,7 @@ public:
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the stored value.
 	 */
-	virtual bool AcceptDirectory( decString &directory );
+	virtual bool AcceptDirectory(decString &directory);
 	
 	/**
 	 * \brief Default directory if text is empty.

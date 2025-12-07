@@ -58,8 +58,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavSpace( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCNavigationSpace *occomponent );
+	gdeVAONavSpace(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationSpace *occomponent);
 	
 protected:
 	/**
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pOCNavSpace; }
+	inline gdeOCNavigationSpace *GetOCNavSpace() const{return pOCNavSpace;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

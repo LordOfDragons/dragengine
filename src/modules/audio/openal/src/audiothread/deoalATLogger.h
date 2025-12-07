@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread logger. */
-	deoalATLogger( deoalAudioThread &audioThread );
+	deoalATLogger(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread renderers. */
 	~deoalATLogger();
@@ -67,46 +67,46 @@ public:
 	
 	
 	/** \brief Outputs an information message on the console. */
-	void LogInfo( const char *message );
+	void LogInfo(const char *message);
 	
 	/** \brief Outputs a formated information message on the console. */
-	void LogInfoFormat( const char *message, ... )
+	void LogInfoFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** \brief Outputs a formated information message on the console. */
-	void LogInfoFormatUsing( const char *message, va_list args );
+	void LogInfoFormatUsing(const char *message, va_list args);
 	
 	/** \brief Outputs a warning message on the console. */
-	void LogWarn( const char *message );
+	void LogWarn(const char *message);
 	
 	/** \brief Outputs a formated warning message on the console. */
-	void LogWarnFormat( const char *message, ... )
+	void LogWarnFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** \brief Outputs a formated warning message on the console. */
-	void LogWarnFormatUsing( const char *message, va_list args );
+	void LogWarnFormatUsing(const char *message, va_list args);
 	
 	/** \brief Outputs an error message on the console. */
-	void LogError( const char *message );
+	void LogError(const char *message);
 	
 	/** \brief Outputs a formated error message on the console. */
-	void LogErrorFormat( const char *message, ... )
+	void LogErrorFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** \brief Outputs a formated error message on the console. */
-	void LogErrorFormatUsing( const char *message, va_list args );
+	void LogErrorFormatUsing(const char *message, va_list args);
 	
 	/** \brief Outputs an exception as error message on the console. */
-	void LogException( const deException &exception );
+	void LogException(const deException &exception);
 	/*@}*/
 };
 

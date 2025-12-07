@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetVertexPositionSetMax( aeRuleLimit *rule, float newMax );
+	aeURuleLimitSetVertexPositionSetMax(aeRuleLimit *rule, float newMax);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleLimitSetVertexPositionSetMax();

@@ -84,10 +84,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deResourceLoader::deResourceLoader( deEngine &engine ) :
-pEngine( engine ),
-pLoadAsynchron( true ),
-pOutputDebugMessages( false ){
+deResourceLoader::deResourceLoader(deEngine &engine) :
+pEngine(engine),
+pLoadAsynchron(true),
+pOutputDebugMessages(false){
 }
 
 deResourceLoader::~deResourceLoader(){
@@ -99,16 +99,16 @@ deResourceLoader::~deResourceLoader(){
 // Management
 ///////////////
 
-void deResourceLoader::SetOutputDebugMessages( bool outputDebugMessages ){
+void deResourceLoader::SetOutputDebugMessages(bool outputDebugMessages){
 	pOutputDebugMessages = outputDebugMessages;
 }
 
-deResourceLoaderTask *deResourceLoader::AddLoadRequest( deVirtualFileSystem *vfs,
-const char *path, eResourceType resourceType ){
+deResourceLoaderTask *deResourceLoader::AddLoadRequest(deVirtualFileSystem *vfs,
+const char *path, eResourceType resourceType){
 	// if a tasks exists already use this one. tasks stick around only as long as
 	// the script module has not collected them
-	deResourceLoaderTask *task = pGetTaskWith( vfs, path, resourceType );
-	if( task ){
+	deResourceLoaderTask *task = pGetTaskWith(vfs, path, resourceType);
+	if(task){
 		return task;
 	}
 	
@@ -117,179 +117,179 @@ const char *path, eResourceType resourceType ){
 	
 	try{
 		// create task
-		switch( resourceType ){
+		switch(resourceType){
 		case ertAnimation:{
-			deAnimation *animation = pEngine.GetAnimationManager()->GetAnimationWith( vfs, path );
-			if( ! animation && ! pLoadAsynchron ){
-				animation = pEngine.GetAnimationManager()->LoadAnimation( vfs, path, "/" );
+			deAnimation *animation = pEngine.GetAnimationManager()->GetAnimationWith(vfs, path);
+			if(! animation && ! pLoadAsynchron){
+				animation = pEngine.GetAnimationManager()->LoadAnimation(vfs, path, "/");
 				freeResource = animation;
 			}
-			task = new deRLTaskReadAnimation( pEngine, *this, vfs, path, animation );
+			task = new deRLTaskReadAnimation(pEngine, *this, vfs, path, animation);
 			}break;
 			
 		case ertFont:{
-			deFont *font = pEngine.GetFontManager()->GetFontWith( vfs, path );
-			if( ! font && ! pLoadAsynchron ){
-				font = pEngine.GetFontManager()->LoadFont( vfs, path, "/" );
+			deFont *font = pEngine.GetFontManager()->GetFontWith(vfs, path);
+			if(! font && ! pLoadAsynchron){
+				font = pEngine.GetFontManager()->LoadFont(vfs, path, "/");
 				freeResource = font;
 			}
-			task = new deRLTaskReadFont( pEngine, *this, vfs, path, font );
+			task = new deRLTaskReadFont(pEngine, *this, vfs, path, font);
 			}break;
 			
 		case ertImage:{
-			deImage *image = pEngine.GetImageManager()->GetImageWith( vfs, path );
-			if( ! image && ! pLoadAsynchron ){
-				image = pEngine.GetImageManager()->LoadImage( vfs, path, "/" );
+			deImage *image = pEngine.GetImageManager()->GetImageWith(vfs, path);
+			if(! image && ! pLoadAsynchron){
+				image = pEngine.GetImageManager()->LoadImage(vfs, path, "/");
 				freeResource = image;
 			}
-			task = new deRLTaskReadImage( pEngine, *this, vfs, path, image );
+			task = new deRLTaskReadImage(pEngine, *this, vfs, path, image);
 			}break;
 			
 		case ertModel:{
-			deModel *model = pEngine.GetModelManager()->GetModelWith( vfs, path );
-			if( ! model && ! pLoadAsynchron ){
-				model = pEngine.GetModelManager()->LoadModel( vfs, path, "/" );
+			deModel *model = pEngine.GetModelManager()->GetModelWith(vfs, path);
+			if(! model && ! pLoadAsynchron){
+				model = pEngine.GetModelManager()->LoadModel(vfs, path, "/");
 				freeResource = model;
 			}
-			task = new deRLTaskReadModel( pEngine, *this, vfs, path, model );
+			task = new deRLTaskReadModel(pEngine, *this, vfs, path, model);
 			}break;
 			
 		case ertOcclusionMesh:{
 			deOcclusionMesh *occlusionMesh = pEngine.GetOcclusionMeshManager()
-				->GetOcclusionMeshWith( vfs, path );
-			if( ! occlusionMesh && ! pLoadAsynchron ){
+				->GetOcclusionMeshWith(vfs, path);
+			if(! occlusionMesh && ! pLoadAsynchron){
 				occlusionMesh = pEngine.GetOcclusionMeshManager()->LoadOcclusionMesh(
-					vfs, path, "/" );
+					vfs, path, "/");
 				freeResource = occlusionMesh;
 			}
-			task = new deRLTaskReadOcclusionMesh( pEngine, *this, vfs, path, occlusionMesh );
+			task = new deRLTaskReadOcclusionMesh(pEngine, *this, vfs, path, occlusionMesh);
 			}break;
 			
 		case ertRig:{
-			deRig *rig = pEngine.GetRigManager()->GetRigWith( vfs, path );
-			if( ! rig && ! pLoadAsynchron ){
-				rig = pEngine.GetRigManager()->LoadRig( vfs, path, "/" );
+			deRig *rig = pEngine.GetRigManager()->GetRigWith(vfs, path);
+			if(! rig && ! pLoadAsynchron){
+				rig = pEngine.GetRigManager()->LoadRig(vfs, path, "/");
 				freeResource = rig;
 			}
-			task = new deRLTaskReadRig( pEngine, *this, vfs, path, rig );
+			task = new deRLTaskReadRig(pEngine, *this, vfs, path, rig);
 			}break;
 			
 		case ertSkin:{
-			deSkin *skin = pEngine.GetSkinManager()->GetSkinWith( vfs, path );
-			if( ! skin && ! pLoadAsynchron ){
-				skin = pEngine.GetSkinManager()->LoadSkin( vfs, path, "/" );
+			deSkin *skin = pEngine.GetSkinManager()->GetSkinWith(vfs, path);
+			if(! skin && ! pLoadAsynchron){
+				skin = pEngine.GetSkinManager()->LoadSkin(vfs, path, "/");
 				freeResource = skin;
 			}
-			task = new deRLTaskReadSkin( pEngine, *this, vfs, path, skin );
+			task = new deRLTaskReadSkin(pEngine, *this, vfs, path, skin);
 			}break;
 			
 		case ertSound:{
-			deSound *sound = pEngine.GetSoundManager()->GetSoundWith( vfs, path );
-			if( ! sound && ! pLoadAsynchron ){
-				sound = pEngine.GetSoundManager()->LoadSound( path, "/", false );
+			deSound *sound = pEngine.GetSoundManager()->GetSoundWith(vfs, path);
+			if(! sound && ! pLoadAsynchron){
+				sound = pEngine.GetSoundManager()->LoadSound(path, "/", false);
 				freeResource = sound;
 			}
-			task = new deRLTaskReadSound( pEngine, *this, vfs, path, sound );
+			task = new deRLTaskReadSound(pEngine, *this, vfs, path, sound);
 			}break;
 			
 		case ertLanguagePack:{
 			deLanguagePack *langPack = pEngine.GetLanguagePackManager()->
-				GetLanguagePackWith( vfs, path );
-			if( ! langPack && ! pLoadAsynchron ){
-				langPack = pEngine.GetLanguagePackManager()->LoadLanguagePack( vfs, path, "/" );
+				GetLanguagePackWith(vfs, path);
+			if(! langPack && ! pLoadAsynchron){
+				langPack = pEngine.GetLanguagePackManager()->LoadLanguagePack(vfs, path, "/");
 				freeResource = langPack;
 			}
-			task = new deRLTaskReadLanguagePack( pEngine, *this, vfs, path, langPack );
+			task = new deRLTaskReadLanguagePack(pEngine, *this, vfs, path, langPack);
 			}break;
 			
 		case ertVideo:{
-			deVideo *video = pEngine.GetVideoManager()->GetVideoWith( vfs, path );
-			if( ! video && ! pLoadAsynchron ){
-				video = pEngine.GetVideoManager()->LoadVideo( path, "/", false );
+			deVideo *video = pEngine.GetVideoManager()->GetVideoWith(vfs, path);
+			if(! video && ! pLoadAsynchron){
+				video = pEngine.GetVideoManager()->LoadVideo(path, "/", false);
 				freeResource = video;
 			}
-			task = new deRLTaskReadVideo( pEngine, *this, vfs, path, video );
+			task = new deRLTaskReadVideo(pEngine, *this, vfs, path, video);
 			}break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
-	}catch( const deException &e ){
-		if( freeResource ){
+	}catch(const deException &e){
+		if(freeResource){
 			freeResource->FreeReference();
 		}
-		pEngine.GetLogger()->LogException( LOGSOURCE, e );
+		pEngine.GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}
 	
-	if( freeResource ){
+	if(freeResource){
 		freeResource->FreeReference(); // direct loading adds a reference
 	}
 	
 	// add task to the appropriate list
-	if( task->GetState() == deResourceLoaderTask::esPending ){
-		if( pOutputDebugMessages ){
-			const decString debugName( task->GetDebugName() );
-			pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Add Pending Task(%s)[%s]",
-				debugName.GetString(), path );
+	if(task->GetState() == deResourceLoaderTask::esPending){
+		if(pOutputDebugMessages){
+			const decString debugName(task->GetDebugName());
+			pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Add Pending Task(%s)[%s]",
+				debugName.GetString(), path);
 		}
-		pPendingTasks.Add( task );
-		pEngine.GetParallelProcessing().AddTask( task );
+		pPendingTasks.Add(task);
+		pEngine.GetParallelProcessing().AddTask(task);
 		
 	}else{
-		if( pOutputDebugMessages ){
-			const decString debugName( task->GetDebugName() );
-			pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Add Finished Task(%s)[%s]",
-				debugName.GetString(), path );
+		if(pOutputDebugMessages){
+			const decString debugName(task->GetDebugName());
+			pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Add Finished Task(%s)[%s]",
+				debugName.GetString(), path);
 		}
-		pFinishedTasks.Add( task );
+		pFinishedTasks.Add(task);
 	}
 	
 	task->FreeReference();
 	return task;
 }
 
-deResourceLoaderTask *deResourceLoader::AddSaveRequest( deVirtualFileSystem *vfs,
-const char *path, deFileResource *resource ){
+deResourceLoaderTask *deResourceLoader::AddSaveRequest(deVirtualFileSystem *vfs,
+const char *path, deFileResource *resource){
 	// TODO
 	// note. if resource is finished mark created task finished
 	return NULL;
 }
 
-bool deResourceLoader::NextFinishedRequest( deResourceLoaderInfo &info ){
+bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
 	deResourceLoaderTask *task = NULL;
 	
-	while( true ){
-		if( pFinishedTasks.GetCount() > 0 ){
-			task = ( deResourceLoaderTask * )pFinishedTasks.GetAt( 0 );
+	while(true){
+		if(pFinishedTasks.GetCount() > 0){
+			task = (deResourceLoaderTask *)pFinishedTasks.GetAt(0);
 			task->AddReference();
-			pFinishedTasks.Remove( task );
+			pFinishedTasks.Remove(task);
 		}
 		
-		if( task ){
+		if(task){
 			// taskX->GetType() = deResourceLoaderTaskX::{etRead, etWrite}
-			info.SetPath( task->GetPath() );
-			info.SetResourceType( task->GetResourceType() );
+			info.SetPath(task->GetPath());
+			info.SetResourceType(task->GetResourceType());
 			
-			switch( task->GetState() ){
+			switch(task->GetState()){
 			case deResourceLoaderTask::esSucceeded:
 				// NOTE if task is purely internal counting finished files becomes
 				//      a problem since the counter is off. should be anyways not
 				//      done using counters since this is in general a problem
 				//      (etRead)
-				info.SetResource( task->GetResource() );
+				info.SetResource(task->GetResource());
 				break;
 				
 			case deResourceLoaderTask::esFailed:
-				info.SetResource( NULL );
+				info.SetResource(NULL);
 				break;
 				
 			default:{
-				const decString debugName( task->GetDebugName() );
-				pEngine.GetLogger()->LogInfoFormat( LOGSOURCE, "Finished Task has invalid state (%s)[%s][%d]",
-					debugName.GetString(), task->GetPath().GetString(), task->GetState() );
-				DETHROW( deeInvalidParam );
+				const decString debugName(task->GetDebugName());
+				pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Finished Task has invalid state (%s)[%s][%d]",
+					debugName.GetString(), task->GetPath().GetString(), task->GetState());
+				DETHROW(deeInvalidParam);
 				}
 			}
 			
@@ -306,30 +306,30 @@ bool deResourceLoader::NextFinishedRequest( deResourceLoaderInfo &info ){
 
 
 void deResourceLoader::RemoveAllTasks(){
-	if( pOutputDebugMessages ){
-		pEngine.GetLogger()->LogInfo( LOGSOURCE, "Stop tasks in progress and clear all tasks" );
+	if(pOutputDebugMessages){
+		pEngine.GetLogger()->LogInfo(LOGSOURCE, "Stop tasks in progress and clear all tasks");
 	}
 	
 	int i, count = pPendingTasks.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deResourceLoaderTask* )pPendingTasks.GetAt( i ) )->Cancel();
+	for(i=0; i<count; i++){
+		((deResourceLoaderTask*)pPendingTasks.GetAt(i))->Cancel();
 	}
 	
 	count = pFinishedTasks.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deResourceLoaderTask* )pFinishedTasks.GetAt( i ) )->Cancel();
+	for(i=0; i<count; i++){
+		((deResourceLoaderTask*)pFinishedTasks.GetAt(i))->Cancel();
 	}
 	
 	const bool resumeParallel = ! pEngine.GetParallelProcessing().GetPaused();
 	
-	if( resumeParallel ){
+	if(resumeParallel){
 		pEngine.GetParallelProcessing().Pause();
 	}
 	
 	pPendingTasks.RemoveAll();
 	pFinishedTasks.RemoveAll();
 	
-	if( resumeParallel ){
+	if(resumeParallel){
 		pEngine.GetParallelProcessing().Resume();
 	}
 }
@@ -339,12 +339,12 @@ void deResourceLoader::RemoveAllTasks(){
 // Internal use only
 //////////////////////
 
-void deResourceLoader::FinishTask( deResourceLoaderTask *task ){
-	if( ! task ){
-		DETHROW( deeInvalidParam );
+void deResourceLoader::FinishTask(deResourceLoaderTask *task){
+	if(! task){
+		DETHROW(deeInvalidParam);
 	}
-	pFinishedTasks.AddIfAbsent( task );
-	pPendingTasks.RemoveIfPresent( task );
+	pFinishedTasks.AddIfAbsent(task);
+	pPendingTasks.RemoveIfPresent(task);
 }
 
 
@@ -356,18 +356,18 @@ void deResourceLoader::pCleanUp(){
 	RemoveAllTasks();
 }
 
-bool deResourceLoader::pHasTaskWith( deVirtualFileSystem *vfs,
-const char *path, eResourceType resourceType ) const{
+bool deResourceLoader::pHasTaskWith(deVirtualFileSystem *vfs,
+const char *path, eResourceType resourceType) const{
 	int i, count = pPendingTasks.GetCount();
-	for( i=0; i<count; i++ ){
-		if( ( ( deResourceLoaderTask* )pPendingTasks.GetAt( i ) )->Matches( vfs, path, resourceType ) ){
+	for(i=0; i<count; i++){
+		if(((deResourceLoaderTask*)pPendingTasks.GetAt(i))->Matches(vfs, path, resourceType)){
 			return true;
 		}
 	}
 	
 	count = pFinishedTasks.GetCount();
-	for( i=0; i<count; i++ ){
-		if( ( ( deResourceLoaderTask* )pFinishedTasks.GetAt( i ) )->Matches( vfs, path, resourceType ) ){
+	for(i=0; i<count; i++){
+		if(((deResourceLoaderTask*)pFinishedTasks.GetAt(i))->Matches(vfs, path, resourceType)){
 			return true;
 		}
 	}
@@ -375,20 +375,20 @@ const char *path, eResourceType resourceType ) const{
 	return false;
 }
 
-deResourceLoaderTask *deResourceLoader::pGetTaskWith( deVirtualFileSystem *vfs,
-const char *path, eResourceType resourceType ) const{
+deResourceLoaderTask *deResourceLoader::pGetTaskWith(deVirtualFileSystem *vfs,
+const char *path, eResourceType resourceType) const{
 	int i, count = pPendingTasks.GetCount();
-	for( i=0; i<count; i++ ){
-		deResourceLoaderTask * const task = ( deResourceLoaderTask* )pPendingTasks.GetAt( i );
-		if( task->Matches( vfs, path, resourceType ) ){
+	for(i=0; i<count; i++){
+		deResourceLoaderTask * const task = (deResourceLoaderTask*)pPendingTasks.GetAt(i);
+		if(task->Matches(vfs, path, resourceType)){
 			return task;
 		}
 	}
 	
 	count = pFinishedTasks.GetCount();
-	for( i=0; i<count; i++ ){
-		deResourceLoaderTask * const task = ( deResourceLoaderTask* )pFinishedTasks.GetAt( i );
-		if( task->Matches( vfs, path, resourceType ) ){
+	for(i=0; i<count; i++){
+		deResourceLoaderTask * const task = (deResourceLoaderTask*)pFinishedTasks.GetAt(i);
+		if(task->Matches(vfs, path, resourceType)){
 			return task;
 		}
 	}

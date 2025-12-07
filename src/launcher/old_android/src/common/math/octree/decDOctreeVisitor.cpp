@@ -47,5 +47,5 @@ decDOctreeVisitor::~decDOctreeVisitor(){
 // Visiting
 /////////////
 
-void decDOctreeVisitor::VisitNode( decDOctree *node, int intersection ){
+void decDOctreeVisitor::VisitNode(decDOctree *node, int intersection){
 }

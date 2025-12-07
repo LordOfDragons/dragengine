@@ -51,7 +51,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meUObjectAddTexture( meObject *object, meObjectTexture *texture );
+	meUObjectAddTexture(meObject *object, meObjectTexture *texture);
 	
 protected:
 	virtual ~meUObjectAddTexture();

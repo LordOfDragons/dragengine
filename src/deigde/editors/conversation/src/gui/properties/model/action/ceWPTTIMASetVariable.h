@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMASetVariable( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCASetVariable *action );
+	ceWPTTIMASetVariable(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCASetVariable *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,10 +51,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCASetVariable *GetActionSetVariable() const{ return ( ceCASetVariable* )GetAction(); }
+	inline ceCASetVariable *GetActionSetVariable() const{return (ceCASetVariable*)GetAction();}
 	
 	/** \brief Text representation for operator. */
-	static const char *GetOperatorText( ceCASetVariable::eOperators anOperator );
+	static const char *GetOperatorText(ceCASetVariable::eOperators anOperator);
 	
 	/** \brief Update action. */
 	virtual void Update();

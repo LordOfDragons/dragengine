@@ -74,7 +74,7 @@ public:
 	meHTVRuleClosestProp();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleClosestProp( const meHTVRuleClosestProp &rule );
+	meHTVRuleClosestProp(const meHTVRuleClosestProp &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleClosestProp();
@@ -83,23 +83,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the class name of the prop to search for. */
-	inline const decString &GetPropClass() const{ return pPropClass; }
+	inline const decString &GetPropClass() const{return pPropClass;}
 	/** Sets the class name of the prop to search for. */
-	void SetPropClass( const char *propClass );
+	void SetPropClass(const char *propClass);
 	/** Retrieves the search radius. */
-	inline float GetSearchRadius() const{ return pSearchRadius; }
+	inline float GetSearchRadius() const{return pSearchRadius;}
 	/** Sets the search radius. */
-	void SetSearchRadius( float searchRadius );
+	void SetSearchRadius(float searchRadius);
 	
 	/** Update the result if required. */
-	void UpdateResult( meHTVEvaluationEnvironment &evalEnv );
+	void UpdateResult(meHTVEvaluationEnvironment &evalEnv);
 	
 	/** Resets the rule state. */
 	virtual void Reset();
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

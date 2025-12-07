@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration xml read/save. */
-	saeConfigurationXML( deLogger *logger, const char *loggerSource );
+	saeConfigurationXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the configuration xml read/save. */
 	virtual ~saeConfigurationXML();
 	/*@}*/
@@ -53,15 +53,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, saeConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, saeConfiguration &config);
 	/** Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const saeConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const saeConfiguration &config);
 	/*@}*/
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const saeConfiguration &config );
+	void pWriteConfig(decXmlWriter &writer, const saeConfiguration &config);
 	
-	void pReadConfig( const decXmlElementTag &root, saeConfiguration &config );
+	void pReadConfig(const decXmlElementTag &root, saeConfiguration &config);
 };
 
 #endif

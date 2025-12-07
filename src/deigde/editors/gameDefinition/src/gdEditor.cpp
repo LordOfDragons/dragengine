@@ -34,7 +34,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *GameDefEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *GameDefEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
@@ -44,11 +44,11 @@ MOD_ENTRY_POINT_ATTR igdeEditorModule *GameDefEditorCreateModule( igdeEnvironmen
 // Entry point
 ////////////////
 
-igdeEditorModule *GameDefEditorCreateModule( igdeEnvironment *environment ){
+igdeEditorModule *GameDefEditorCreateModule(igdeEnvironment *environment){
 	try{
-		return new gdeIGDEModule( *environment );
+		return new gdeIGDEModule(*environment);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 }

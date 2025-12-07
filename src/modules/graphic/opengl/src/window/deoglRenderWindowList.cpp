@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderWindowList::deoglRenderWindowList( deGraphicOpenGl &ogl ) :
-pOgl( ogl ),
-pDirty( false ){
+deoglRenderWindowList::deoglRenderWindowList(deGraphicOpenGl &ogl) :
+pOgl(ogl),
+pDirty(false){
 }
 
 deoglRenderWindowList::~deoglRenderWindowList(){
@@ -55,17 +55,17 @@ int deoglRenderWindowList::GetCount() const{
 	return pWindows.GetCount();
 }
 
-deoglRenderWindow *deoglRenderWindowList::GetAt( int index ) const{
-	return ( deoglRenderWindow* )pWindows.GetAt( index );
+deoglRenderWindow *deoglRenderWindowList::GetAt(int index) const{
+	return (deoglRenderWindow*)pWindows.GetAt(index);
 }
 
-void deoglRenderWindowList::Add( deoglRenderWindow *window ){
-	pWindows.Add( window );
+void deoglRenderWindowList::Add(deoglRenderWindow *window){
+	pWindows.Add(window);
 	pDirty = true;
 }
 
-void deoglRenderWindowList::Remove( deoglRenderWindow *window ){
-	pWindows.Remove( window );
+void deoglRenderWindowList::Remove(deoglRenderWindow *window){
+	pWindows.Remove(window);
 	pDirty = true;
 }
 
@@ -81,20 +81,20 @@ void deoglRenderWindowList::SyncToRender(){
 	int i;
 	
 	// if dirty synchronize list of windows with render thread. this happens only a few times
-	if( pDirty ){
+	if(pDirty){
 		decObjectOrderedSet &list = pOgl.GetRenderThread().GetRRenderWindowList();
 		
 		list.RemoveAll();
 		
-		for( i=0; i<count; i++ ){
-			list.Add( ( ( deoglRenderWindow* )pWindows.GetAt( i ) )->GetRRenderWindow() );
+		for(i=0; i<count; i++){
+			list.Add(((deoglRenderWindow*)pWindows.GetAt(i))->GetRRenderWindow());
 		}
 		
 		pDirty = false;
 	}
 	
 	// sync to render all windows if required
-	for( i=0; i<count; i++ ){
-		( ( deoglRenderWindow* )pWindows.GetAt( i ) )->SyncToRender();
+	for(i=0; i<count; i++){
+		((deoglRenderWindow*)pWindows.GetAt(i))->SyncToRender();
 	}
 }

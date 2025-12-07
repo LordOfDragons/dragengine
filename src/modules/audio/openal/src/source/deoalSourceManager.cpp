@@ -51,11 +51,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSourceManager::deoalSourceManager( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pCountBound( 0 ),
-pCountUnbound( 0 ),
-pEstimatedMaxBound( 10000 ) // just some large number
+deoalSourceManager::deoalSourceManager(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pCountBound(0),
+pCountUnbound(0),
+pEstimatedMaxBound(10000) // just some large number
 {
 }
 
@@ -63,8 +63,8 @@ deoalSourceManager::~deoalSourceManager(){
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoalSource* )pSources.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoalSource*)pSources.GetAt(i);
 	}
 	pSources.RemoveAll();
 }
@@ -78,24 +78,24 @@ int deoalSourceManager::GetSourceCount() const{
 	return pSources.GetCount();
 }
 
-deoalSource *deoalSourceManager::GetSourceAt( int index ) const{
-	return ( deoalSource* )pSources.GetAt( index );
+deoalSource *deoalSourceManager::GetSourceAt(int index) const{
+	return (deoalSource*)pSources.GetAt(index);
 }
 
 
 
-deoalSource *deoalSourceManager::BindSource( void *owner ){
-	if( ! owner ){
-		DETHROW( deeInvalidParam );
+deoalSource *deoalSourceManager::BindSource(void *owner){
+	if(! owner){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// use next free unbound source
 	deoalSource *source = pNextUnboundSource();
-	if( source ){
-		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+	if(source){
+		DEBUG(pAudioThread.GetLogger().LogInfoFormat(
 			"Bind previously unbound source %i to %p (%i,%i,%i)",
-			pSources.IndexOf( source ), owner, pSources.GetCount(), pCountBound, pCountUnbound ) );
-		source->SetOwner( owner );
+			pSources.IndexOf(source), owner, pSources.GetCount(), pCountBound, pCountUnbound));
+		source->SetOwner(owner);
 		pCountBound++;
 		pCountUnbound--;
 		return source;
@@ -103,11 +103,11 @@ deoalSource *deoalSourceManager::BindSource( void *owner ){
 	
 	// create a new source if possible
 	source = pCreateNewSource();
-	if( source ){
-		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
-			"Created new source %i bound to %p (%i,%i,%i)", pSources.IndexOf( source ),
-			owner, pSources.GetCount(), pCountBound, pCountUnbound ) );
-		source->SetOwner( owner );
+	if(source){
+		DEBUG(pAudioThread.GetLogger().LogInfoFormat(
+			"Created new source %i bound to %p (%i,%i,%i)", pSources.IndexOf(source),
+			owner, pSources.GetCount(), pCountBound, pCountUnbound));
+		source->SetOwner(owner);
 		pCountBound++;
 		pCountUnbound--;
 		return source;
@@ -115,28 +115,28 @@ deoalSource *deoalSourceManager::BindSource( void *owner ){
 	
 	// if no more sources can be created rebind the source with the smallest importance
 	source = pBestRebindableSource();
-	if( source ){
-		DEBUG( pAudioThread.GetLogger().LogInfoFormat(
+	if(source){
+		DEBUG(pAudioThread.GetLogger().LogInfoFormat(
 			"Rebind previously bound source %i from %p to %p (%i,%i,%i)",
-			pSources.IndexOf( source ), source->GetOwner(), owner,
-			pSources.GetCount(), pCountBound, pCountUnbound ) );
+			pSources.IndexOf(source), source->GetOwner(), owner,
+			pSources.GetCount(), pCountBound, pCountUnbound));
 		source->Reset();
-		source->SetOwner( owner );
+		source->SetOwner(owner);
 		return source;
 	}
 	
 	// this should never happen. if we end up here the hardware is broken
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }
 
-void deoalSourceManager::UnbindSource( deoalSource *source ){
-	if( ! source || ! source->GetOwner() ){
-		DETHROW( deeInvalidParam );
+void deoalSourceManager::UnbindSource(deoalSource *source){
+	if(! source || ! source->GetOwner()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	DEBUG( pAudioThread.GetLogger().LogInfoFormat(
-		"Unbind source %i from %p (%i,%i,%i)", pSources.IndexOf( source ),
-		source->GetOwner(), pSources.GetCount(), pCountBound, pCountUnbound ) );
+	DEBUG(pAudioThread.GetLogger().LogInfoFormat(
+		"Unbind source %i from %p (%i,%i,%i)", pSources.IndexOf(source),
+		source->GetOwner(), pSources.GetCount(), pCountBound, pCountUnbound));
 	
 	source->Reset();
 	
@@ -146,13 +146,13 @@ void deoalSourceManager::UnbindSource( deoalSource *source ){
 
 
 
-void deoalSourceManager::DebugOutput( decUnicodeString& ){
+void deoalSourceManager::DebugOutput(decUnicodeString&){
 }
 
 void deoalSourceManager::PrintStatusLine(){
 	pAudioThread.GetLogger().LogInfoFormat(
 		"SourceManager: %i sources, %i bound, %i unbound",
-		pSources.GetCount(), pCountBound, pCountUnbound );
+		pSources.GetCount(), pCountBound, pCountUnbound);
 }
 
 
@@ -165,9 +165,9 @@ deoalSource *deoalSourceManager::pNextUnboundSource() const{
 	deoalSource *source;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		source = ( deoalSource* )pSources.GetAt( i );
-		if( ! source->GetOwner() ){
+	for(i=0; i<count; i++){
+		source = (deoalSource*)pSources.GetAt(i);
+		if(! source->GetOwner()){
 			return source;
 		}
 	}
@@ -181,12 +181,12 @@ deoalSource *deoalSourceManager::pBestRebindableSource() const{
 	deoalSource *source;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		source = ( deoalSource* )pSources.GetAt( i );
-		if( ! source->GetOwner() ){
+	for(i=0; i<count; i++){
+		source = (deoalSource*)pSources.GetAt(i);
+		if(! source->GetOwner()){
 			continue;
 		}
-		if( ! bestSource || source->GetImportance() < bestSource->GetImportance() ){
+		if(! bestSource || source->GetImportance() < bestSource->GetImportance()){
 			bestSource = source;
 		}
 	}
@@ -197,7 +197,7 @@ deoalSource *deoalSourceManager::pBestRebindableSource() const{
 deoalSource *deoalSourceManager::pCreateNewSource(){
 	// check if we are over our estimated maximum of active sources. this is only an estimate
 	// and we might go higher but this is the first number where we ran into a problem
-	if( pSources.GetCount() >= pEstimatedMaxBound ){
+	if(pSources.GetCount() >= pEstimatedMaxBound){
 		return NULL;
 	}
 	
@@ -205,18 +205,18 @@ deoalSource *deoalSourceManager::pCreateNewSource(){
 	deoalSource *source = NULL;
 	
 	try{
-		source = new deoalSource( pAudioThread );
-		pSources.Add( source );
+		source = new deoalSource(pAudioThread);
+		pSources.Add(source);
 		pCountUnbound++;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		// failure usually means an AL_OUT_OF_MEMORY or similar has been thrown. this is the
 		// case if the underlaying hardware can not create any more source. in this case
 		// return NULL to rebind an existing source as fallback
 		pAudioThread.GetLogger().LogWarnFormat(
 			"SourceManager: Can not create any more sources (%i sources right now)",
-			pSources.GetCount() );
-		if( source ){
+			pSources.GetCount());
+		if(source){
 			delete source;
 			source = NULL;
 		}

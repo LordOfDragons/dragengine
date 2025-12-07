@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureRemove::seUTextureRemove( seTexture *texture ){
-	if( ! texture ) DETHROW( deeInvalidParam );
+seUTextureRemove::seUTextureRemove(seTexture *texture){
+	if(! texture) DETHROW(deeInvalidParam);
 	
 	seSkin *skin = texture->GetSkin();
-	if( ! skin ) DETHROW( deeInvalidParam );
+	if(! skin) DETHROW(deeInvalidParam);
 	
 	pTexture = NULL;
 	pSkin = NULL;
 	
-	SetShortInfo( "Remove Texture" );
+	SetShortInfo("Remove Texture");
 	
 	pTexture = texture;
 	texture->AddReference();
@@ -59,8 +59,8 @@ seUTextureRemove::seUTextureRemove( seTexture *texture ){
 }
 
 seUTextureRemove::~seUTextureRemove(){
-	if( pSkin ) pSkin->FreeReference();
-	if( pTexture ) pTexture->FreeReference();
+	if(pSkin) pSkin->FreeReference();
+	if(pTexture) pTexture->FreeReference();
 }
 
 
@@ -69,9 +69,9 @@ seUTextureRemove::~seUTextureRemove(){
 ///////////////
 
 void seUTextureRemove::Undo(){
-	pSkin->AddTexture( pTexture );
+	pSkin->AddTexture(pTexture);
 }
 
 void seUTextureRemove::Redo(){
-	pSkin->RemoveTexture( pTexture );
+	pSkin->RemoveTexture(pTexture);
 }

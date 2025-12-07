@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin texture pipeline. */
-	deoglSTPipelinesHeightMap2( const deoglSkinTexture &texture );
+	deoglSTPipelinesHeightMap2(const deoglSkinTexture &texture);
 	
 protected:
 	/** Clean up skin texture pipeline. */
@@ -56,7 +56,7 @@ public:
 	
 	
 protected:
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	virtual void pPipelineConfigGeometry(deoglPipelineConfiguration &config);
 };
 
 #endif

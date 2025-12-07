@@ -112,25 +112,25 @@ static const int vColorTableBackground[] = {
 ////////////////////////////
 
 deLoggerConsoleColor::deLoggerConsoleColor() :
-pInfoAttribute( etaDefault ),
-pInfoColorForeground( etcDefault ), //( etcWhite ),
-pInfoColorBackground( etcDefault ), //( etcBlack ),
+pInfoAttribute(etaDefault),
+pInfoColorForeground(etcDefault), //(etcWhite),
+pInfoColorBackground(etcDefault), //(etcBlack),
 
-pWarnAttribute( etaBright ),
-pWarnColorForeground( etcYellow ),
-pWarnColorBackground( etcBlack ),
+pWarnAttribute(etaBright),
+pWarnColorForeground(etcYellow),
+pWarnColorBackground(etcBlack),
 
-pErrorAttribute( etaBright ),
-pErrorColorForeground( etcRed ),
-pErrorColorBackground( etcBlack )
+pErrorAttribute(etaBright),
+pErrorColorForeground(etcRed),
+pErrorColorBackground(etcBlack)
 {
 #ifdef OS_W32
 	// set output mode to handle virtual terminal sequences
-	HANDLE hOut = GetStdHandle( STD_OUTPUT_HANDLE );
-	if( hOut != INVALID_HANDLE_VALUE ){
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if(hOut != INVALID_HANDLE_VALUE){
 		DWORD dwMode = 0;
-		if( GetConsoleMode( hOut, &dwMode ) ){
-			SetConsoleMode( hOut, dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING );
+		if(GetConsoleMode(hOut, &dwMode)){
+			SetConsoleMode(hOut, dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 		}
 	}
 #endif
@@ -145,147 +145,147 @@ deLoggerConsoleColor::~deLoggerConsoleColor(){
 ///////////////
 
 deLoggerConsoleColor::eTextAttributes deLoggerConsoleColor::GetInfoAttribute(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pInfoAttribute;
 }
 
-void deLoggerConsoleColor::SetInfoAttribute( eTextAttributes attribute ){
-	if( attribute < etaDefault || attribute > etaBlink ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetInfoAttribute(eTextAttributes attribute){
+	if(attribute < etaDefault || attribute > etaBlink){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pInfoAttribute = attribute;
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetInfoColorForeground(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pInfoColorForeground;
 }
 
-void deLoggerConsoleColor::SetInfoColorForeground( eTextColors color ){
-	if( color < etcDefault || color > etcWhite ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetInfoColorForeground(eTextColors color){
+	if(color < etcDefault || color > etcWhite){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pInfoColorForeground = color;
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetInfoColorBackground(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pInfoColorBackground;
 }
 
-void deLoggerConsoleColor::SetInfoColorBackground( eTextColors color ){
-	if( color < etcDefault || color > etcWhite ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetInfoColorBackground(eTextColors color){
+	if(color < etcDefault || color > etcWhite){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pInfoColorBackground = color;
 }
 
 
 
 deLoggerConsoleColor::eTextAttributes deLoggerConsoleColor::GetWarnAttribute(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pWarnAttribute;
 }
 
-void deLoggerConsoleColor::SetWarnAttribute( eTextAttributes attribute ){
-	if( attribute < etaDefault || attribute > etaBlink ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetWarnAttribute(eTextAttributes attribute){
+	if(attribute < etaDefault || attribute > etaBlink){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pWarnAttribute = attribute;
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetWarnColorForeground(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pWarnColorForeground;
 }
 
-void deLoggerConsoleColor::SetWarnColorForeground( eTextColors color ){
-	if( color < etcDefault || color > etcWhite ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetWarnColorForeground(eTextColors color){
+	if(color < etcDefault || color > etcWhite){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pWarnColorForeground = color;
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetWarnColorBackground(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pWarnColorBackground;
 }
 
-void deLoggerConsoleColor::SetWarnColorBackground( eTextColors color ){
-	if( color < etcDefault || color > etcWhite ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetWarnColorBackground(eTextColors color){
+	if(color < etcDefault || color > etcWhite){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pWarnColorBackground = color;
 }
 
 
 
 deLoggerConsoleColor::eTextAttributes deLoggerConsoleColor::GetErrorAttribute(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pErrorAttribute;
 }
 
-void deLoggerConsoleColor::SetErrorAttribute( eTextAttributes attribute ){
-	if( attribute < etaDefault || attribute > etaBlink ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetErrorAttribute(eTextAttributes attribute){
+	if(attribute < etaDefault || attribute > etaBlink){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pErrorAttribute = attribute;
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetErrorColorForeground(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pErrorColorForeground;
 }
 
-void deLoggerConsoleColor::SetErrorColorForeground( eTextColors color ){
-	if( color < etcDefault || color > etcWhite ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetErrorColorForeground(eTextColors color){
+	if(color < etcDefault || color > etcWhite){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pErrorColorForeground = color;
 }
 
 deLoggerConsoleColor::eTextColors deLoggerConsoleColor::GetErrorColorBackground(){
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	return pErrorColorBackground;
 }
 
-void deLoggerConsoleColor::SetErrorColorBackground( eTextColors color ){
-	if( color < etcDefault || color > etcWhite ){
-		DETHROW( deeInvalidParam );
+void deLoggerConsoleColor::SetErrorColorBackground(eTextColors color){
+	if(color < etcDefault || color > etcWhite){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deMutexGuard lock( pMutex );
+	const deMutexGuard lock(pMutex);
 	pErrorColorBackground = color;
 }
 
 
 
-void deLoggerConsoleColor::LogInfo( const char *source, const char *message ){
-	LogMessage( source, message, pInfoAttribute, pInfoColorForeground, pInfoColorBackground );
+void deLoggerConsoleColor::LogInfo(const char *source, const char *message){
+	LogMessage(source, message, pInfoAttribute, pInfoColorForeground, pInfoColorBackground);
 }
 
-void deLoggerConsoleColor::LogWarn( const char *source, const char *message ){
-	LogMessage( source, message, pWarnAttribute, pWarnColorForeground, pWarnColorBackground );
+void deLoggerConsoleColor::LogWarn(const char *source, const char *message){
+	LogMessage(source, message, pWarnAttribute, pWarnColorForeground, pWarnColorBackground);
 }
 
-void deLoggerConsoleColor::LogError( const char *source, const char *message ){
-	LogMessage( source, message, pErrorAttribute, pErrorColorForeground, pErrorColorBackground );
+void deLoggerConsoleColor::LogError(const char *source, const char *message){
+	LogMessage(source, message, pErrorAttribute, pErrorColorForeground, pErrorColorBackground);
 }
 
 
@@ -293,34 +293,34 @@ void deLoggerConsoleColor::LogError( const char *source, const char *message ){
 // Protected Functions
 ////////////////////////
 
-void deLoggerConsoleColor::pPrintMessage( const char *source, const char *message,
+void deLoggerConsoleColor::pPrintMessage(const char *source, const char *message,
 eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground,
-char lineEnd ) const {
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+char lineEnd) const {
+	if(! source || ! message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const decDateTime timestamp;
 	
 	//if( attribute == etaDefault && colorForeground == etcWhite && colorBackground == etcBlack ){
-	if( attribute == etaDefault && colorForeground == etcDefault && colorBackground == etcDefault ){
-		printf( "[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%c", source,
+	if(attribute == etaDefault && colorForeground == etcDefault && colorBackground == etcDefault){
+		printf("[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%c", source,
 			timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
-			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd );
+			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd);
 		
 	}else{
-		printf( "\033[%d;%d;%dm[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s\33[0;0;0m%c", attribute,
-			vColorTableForeground[ colorForeground ], vColorTableBackground[ colorBackground ],
+		printf("\033[%d;%d;%dm[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s\33[0;0;0m%c", attribute,
+			vColorTableForeground[colorForeground], vColorTableBackground[colorBackground],
 			source, timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
-			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd );
+			timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), message, lineEnd);
 	}
 }
 
-void deLoggerConsoleColor::LogMessage( const char *source, const char *message,
-eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground ){
-	const int len = ( int )strlen( message );
-	const deMutexGuard lock( pMutex );
+void deLoggerConsoleColor::LogMessage(const char *source, const char *message,
+eTextAttributes attribute, eTextColors colorForeground, eTextColors colorBackground){
+	const int len = (int)strlen(message);
+	const deMutexGuard lock(pMutex);
 	
-	pPrintMessage( source, message, attribute, colorForeground, colorBackground,
-		( len == 0 || message[ len - 1 ] != '\n' ) ? '\n' : 0 );
+	pPrintMessage(source, message, attribute, colorForeground, colorBackground,
+		(len == 0 || message[len - 1] != '\n') ? '\n' : 0);
 }

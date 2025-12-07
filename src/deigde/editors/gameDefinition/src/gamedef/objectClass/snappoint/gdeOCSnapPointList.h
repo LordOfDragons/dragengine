@@ -47,7 +47,7 @@ public:
 	gdeOCSnapPointList();
 	
 	/** \brief Create copy of object class snap point list. */
-	gdeOCSnapPointList( const gdeOCSnapPointList &list );
+	gdeOCSnapPointList(const gdeOCSnapPointList &list);
 	
 	/** \brief Clean up object class snap point list. */
 	~gdeOCSnapPointList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class snapPoint at position. */
-	gdeOCSnapPoint *GetAt( int index ) const;
+	gdeOCSnapPoint *GetAt(int index) const;
 	
 	/** \brief Index of named object class snap point or -1 if absent. */
-	int IndexOf( gdeOCSnapPoint *snapPoint ) const;
+	int IndexOf(gdeOCSnapPoint *snapPoint) const;
 	
 	/** \brief Object class snap point is present. */
-	bool Has( gdeOCSnapPoint *snapPoint ) const;
+	bool Has(gdeOCSnapPoint *snapPoint) const;
 	
 	/** \brief Add object class snap point. */
-	void Add( gdeOCSnapPoint *snapPoint );
+	void Add(gdeOCSnapPoint *snapPoint);
 	
 	/** \brief Remove object class snap point. */
-	void Remove( gdeOCSnapPoint *snapPoint );
+	void Remove(gdeOCSnapPoint *snapPoint);
 	
 	/** \brief Remove all object class snap points. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class snap point list. */
-	gdeOCSnapPointList &operator=( const gdeOCSnapPointList &list );
+	gdeOCSnapPointList &operator=(const gdeOCSnapPointList &list);
 	/*@}*/
 };
 

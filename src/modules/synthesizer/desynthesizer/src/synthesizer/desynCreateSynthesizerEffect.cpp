@@ -40,12 +40,12 @@
 ////////////////////////////
 
 desynCreateSynthesizerEffect::desynCreateSynthesizerEffect(
-const desynSynthesizer &synthesizer, int firstLink, desynSynthesizerSource &source ) :
-pSynthesizer( synthesizer ),
-pSource( source ),
-pFirstLink( firstLink ),
-pEffect( NULL ),
-pPreviousEffect( NULL ){
+const desynSynthesizer &synthesizer, int firstLink, desynSynthesizerSource &source) :
+pSynthesizer(synthesizer),
+pSource(source),
+pFirstLink(firstLink),
+pEffect(NULL),
+pPreviousEffect(NULL){
 }
 
 desynCreateSynthesizerEffect::~desynCreateSynthesizerEffect(){
@@ -67,12 +67,12 @@ void desynCreateSynthesizerEffect::Reset(){
 // Visiting
 /////////////
 
-void desynCreateSynthesizerEffect::VisitEffect( deSynthesizerEffect &effect ){
+void desynCreateSynthesizerEffect::VisitEffect(deSynthesizerEffect &effect){
 	pEffect = NULL;
 }
 
-void desynCreateSynthesizerEffect::VisitStretch( deSynthesizerEffectStretch &effect ){
-	pEffect = new desynSynthesizerEffectStretch( pSynthesizer, pFirstLink, pSource, effect );
-	pEffect->SetPreviousEffect( pPreviousEffect );
+void desynCreateSynthesizerEffect::VisitStretch(deSynthesizerEffectStretch &effect){
+	pEffect = new desynSynthesizerEffectStretch(pSynthesizer, pFirstLink, pSource, effect);
+	pEffect->SetPreviousEffect(pPreviousEffect);
 	pPreviousEffect = pEffect;
 }

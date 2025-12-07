@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPLinkListener::seWPLinkListener( seWPLink &panel ) :
-pPanel( panel ){
+seWPLinkListener::seWPLinkListener(seWPLink &panel) :
+pPanel(panel){
 }
 
 seWPLinkListener::~seWPLinkListener(){
@@ -51,16 +51,16 @@ seWPLinkListener::~seWPLinkListener(){
 // Notifications
 //////////////////
 
-void seWPLinkListener::ControllerNameChanged( seSynthesizer *synthesizer, seController* ){
-	if( pPanel.GetSynthesizer() != synthesizer ){
+void seWPLinkListener::ControllerNameChanged(seSynthesizer *synthesizer, seController*){
+	if(pPanel.GetSynthesizer() != synthesizer){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void seWPLinkListener::ControllerStructureChanged( seSynthesizer *synthesizer ){
-	if( pPanel.GetSynthesizer() != synthesizer ){
+void seWPLinkListener::ControllerStructureChanged(seSynthesizer *synthesizer){
+	if(pPanel.GetSynthesizer() != synthesizer){
 		return;
 	}
 	
@@ -70,32 +70,32 @@ void seWPLinkListener::ControllerStructureChanged( seSynthesizer *synthesizer ){
 
 
 
-void seWPLinkListener::ActiveLinkChanged( seSynthesizer *synthesizer, seLink* ){
-	if( pPanel.GetSynthesizer() != synthesizer ){
+void seWPLinkListener::ActiveLinkChanged(seSynthesizer *synthesizer, seLink*){
+	if(pPanel.GetSynthesizer() != synthesizer){
 		return;
 	}
 	
 	pPanel.SelectActiveLink();
 }
 
-void seWPLinkListener::LinkChanged( seSynthesizer*, seLink *link ){
-	if( pPanel.GetLink() != link ){
+void seWPLinkListener::LinkChanged(seSynthesizer*, seLink *link){
+	if(pPanel.GetLink() != link){
 		return;
 	}
 	
 	pPanel.UpdateLink();
 }
 
-void seWPLinkListener::LinkNameChanged( seSynthesizer*, seLink *link ){
-	if( pPanel.GetLink() != link ){
+void seWPLinkListener::LinkNameChanged(seSynthesizer*, seLink *link){
+	if(pPanel.GetLink() != link){
 		return;
 	}
 	
 	pPanel.UpdateLinkList();
 }
 
-void seWPLinkListener::LinkStructureChanged( seSynthesizer *synthesizer ){
-	if( pPanel.GetSynthesizer() != synthesizer ){
+void seWPLinkListener::LinkStructureChanged(seSynthesizer *synthesizer){
+	if(pPanel.GetSynthesizer() != synthesizer){
 		return;
 	}
 	

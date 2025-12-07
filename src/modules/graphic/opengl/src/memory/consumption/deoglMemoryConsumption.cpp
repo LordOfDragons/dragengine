@@ -39,14 +39,14 @@
 ////////////////////////////
 
 deoglMemoryConsumption::deoglMemoryConsumption() :
-texture2D( "Texture2D" ),
-texture3D( "Texture3D" ),
-textureArray( "ArrayTexture" ),
-textureCube( "CubeMap" ),
-texture2DRenderable( "Renderable Texture2D" ),
-texture3DRenderable( "Renderable Texture3D" ),
-textureArrayRenderable( "Renderable ArrayTexture" ),
-textureCubeRenderable( "Renderable CubeMap" ){
+texture2D("Texture2D"),
+texture3D("Texture3D"),
+textureArray("ArrayTexture"),
+textureCube("CubeMap"),
+texture2DRenderable("Renderable Texture2D"),
+texture3DRenderable("Renderable Texture3D"),
+textureArrayRenderable("Renderable ArrayTexture"),
+textureCubeRenderable("Renderable CubeMap"){
 }
 
 deoglMemoryConsumption::~deoglMemoryConsumption(){

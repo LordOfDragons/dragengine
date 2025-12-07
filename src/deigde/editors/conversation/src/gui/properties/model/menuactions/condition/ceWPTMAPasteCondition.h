@@ -51,12 +51,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPasteCondition( ceWindowMain &windowMain,
-		ceConversation &conversation );
+	ceWPTMAPasteCondition(ceWindowMain &windowMain,
+		ceConversation &conversation);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAPasteCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, const char *text );
+	ceWPTMAPasteCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, const char *text);
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	
 	
@@ -72,7 +72,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
 	/*@}*/
 };
 

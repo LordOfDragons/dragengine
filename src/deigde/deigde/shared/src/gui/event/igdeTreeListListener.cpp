@@ -43,17 +43,17 @@ igdeTreeListListener::~igdeTreeListListener(){
 // Events
 ///////////
 
-void igdeTreeListListener::OnSelectionChanged( igdeTreeList* ){
+void igdeTreeListListener::OnSelectionChanged(igdeTreeList*){
 }
 
-void igdeTreeListListener::OnItemExpanded( igdeTreeList*, igdeTreeItem* ){
+void igdeTreeListListener::OnItemExpanded(igdeTreeList*, igdeTreeItem*){
 }
 
-void igdeTreeListListener::OnItemCollapsed( igdeTreeList*, igdeTreeItem* ){
+void igdeTreeListListener::OnItemCollapsed(igdeTreeList*, igdeTreeItem*){
 }
 
-void igdeTreeListListener::OnDoubleClickItem( igdeTreeList*, igdeTreeItem* ){
+void igdeTreeListListener::OnDoubleClickItem(igdeTreeList*, igdeTreeItem*){
 }
 
-void igdeTreeListListener::AddContextMenuEntries( igdeTreeList*, igdeMenuCascade& ){
+void igdeTreeListListener::AddContextMenuEntries(igdeTreeList*, igdeMenuCascade&){
 }

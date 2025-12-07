@@ -53,10 +53,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWOSubObject::igdeWOSubObject( igdeWObject &wrapper, const decString &prefix ) :
-pWrapper( wrapper ),
-pPrefix( prefix ),
-pHasBoxExtends( false ){
+igdeWOSubObject::igdeWOSubObject(igdeWObject &wrapper, const decString &prefix) :
+pWrapper(wrapper),
+pPrefix(prefix),
+pHasBoxExtends(false){
 }
 
 igdeWOSubObject::~igdeWOSubObject(){
@@ -67,9 +67,9 @@ igdeWOSubObject::~igdeWOSubObject(){
 // Management
 ///////////////
 
-void igdeWOSubObject::SetBoxExtends( const decVector &boxMinExtends, const decVector &boxMaxExtends ){
-	if( pHasBoxExtends && pBoxMinExtends.IsEqualTo( boxMinExtends )
-	&& pBoxMaxExtends.IsEqualTo( boxMaxExtends ) ){
+void igdeWOSubObject::SetBoxExtends(const decVector &boxMinExtends, const decVector &boxMaxExtends){
+	if(pHasBoxExtends && pBoxMinExtends.IsEqualTo(boxMinExtends)
+	&& pBoxMaxExtends.IsEqualTo(boxMaxExtends)){
 		return;
 	}
 	
@@ -80,7 +80,7 @@ void igdeWOSubObject::SetBoxExtends( const decVector &boxMinExtends, const decVe
 }
 
 void igdeWOSubObject::ClearBoxExtends(){
-	if( ! pHasBoxExtends ){
+	if(! pHasBoxExtends){
 		return;
 	}
 	
@@ -163,135 +163,135 @@ deEngine &igdeWOSubObject::GetEngine() const{
 	return *GetEnvironment().GetEngineController()->GetEngine();
 }
 
-bool igdeWOSubObject::GetPropertyValue( const decString &name, decString &value ) const{
-	if( name.IsEmpty() ){
+bool igdeWOSubObject::GetPropertyValue(const decString &name, decString &value) const{
+	if(name.IsEmpty()){
 		return false;
 	}
 	
-	const decString propertyName( pPrefix + name );
+	const decString propertyName(pPrefix + name);
 	
 	const decString *propertyValue;
-	if( pWrapper.GetProperties().GetAt( propertyName, &propertyValue ) ){
+	if(pWrapper.GetProperties().GetAt(propertyName, &propertyValue)){
 		value = *propertyValue;
 		return true;
 	}
 	
-	if( pWrapper.GetGDClass() && pWrapper.GetGDClass()->GetDefaultPropertyValue( propertyName, value ) ){
+	if(pWrapper.GetGDClass() && pWrapper.GetGDClass()->GetDefaultPropertyValue(propertyName, value)){
 		return true;
 	}
 	
 	return false;
 }
 
-decString igdeWOSubObject::GetStringProperty( const decString &name, const decString &defaultValue ) const{
+decString igdeWOSubObject::GetStringProperty(const decString &name, const decString &defaultValue) const{
 	decString value;
-	return GetPropertyValue( name, value ) ? value : defaultValue;
+	return GetPropertyValue(name, value) ? value : defaultValue;
 }
 
-decVector igdeWOSubObject::GetVectorProperty( const decString &name, const decVector &defaultValue ) const{
+decVector igdeWOSubObject::GetVectorProperty(const decString &name, const decVector &defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		try{
 			igdeCodecPropertyString codec;
 			decVector vector;
-			codec.DecodeVector( value, vector );
+			codec.DecodeVector(value, vector);
 			return vector;
 			
-		}catch( const deException & ){
-			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString() );
+		}catch(const deException &){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat("DEIGDE",
+				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString());
 		}
 	}
 	return defaultValue;
 }
 
-decVector2 igdeWOSubObject::GetVector2Property( const decString &name, const decVector2 &defaultValue ) const{
+decVector2 igdeWOSubObject::GetVector2Property(const decString &name, const decVector2 &defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		try{
 			igdeCodecPropertyString codec;
 			decVector2 vector;
-			codec.DecodeVector2( value, vector );
+			codec.DecodeVector2(value, vector);
 			return vector;
 			
-		}catch( const deException & ){
-			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-				"Invalid vector2 property '%s' value '%s'", name.GetString(), value.GetString() );
+		}catch(const deException &){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat("DEIGDE",
+				"Invalid vector2 property '%s' value '%s'", name.GetString(), value.GetString());
 		}
 	}
 	return defaultValue;
 }
 
-decQuaternion igdeWOSubObject::GetRotationProperty( const decString &name, const decQuaternion &defaultValue ) const{
+decQuaternion igdeWOSubObject::GetRotationProperty(const decString &name, const decQuaternion &defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		try{
 			igdeCodecPropertyString codec;
 			decVector vector;
-			codec.DecodeVector( value, vector );
-			return decQuaternion::CreateFromEuler( vector * DEG2RAD );
+			codec.DecodeVector(value, vector);
+			return decQuaternion::CreateFromEuler(vector * DEG2RAD);
 			
-		}catch( const deException & ){
-			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString() );
+		}catch(const deException &){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat("DEIGDE",
+				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString());
 		}
 	}
 	return defaultValue;
 }
 
-decColor igdeWOSubObject::GetColor3Property( const decString &name, const decColor &defaultValue ) const{
+decColor igdeWOSubObject::GetColor3Property(const decString &name, const decColor &defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		try{
 			igdeCodecPropertyString codec;
 			decColor color;
-			codec.DecodeColor3( value, color );
+			codec.DecodeColor3(value, color);
 			return color;
 			
-		}catch( const deException & ){
-			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-				"Invalid color3 property '%s' value '%s'", name.GetString(), value.GetString() );
+		}catch(const deException &){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat("DEIGDE",
+				"Invalid color3 property '%s' value '%s'", name.GetString(), value.GetString());
 		}
 	}
 	return defaultValue;
 }
 
-decColor igdeWOSubObject::GetColor4Property( const decString &name, const decColor &defaultValue ) const{
+decColor igdeWOSubObject::GetColor4Property(const decString &name, const decColor &defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		try{
 			igdeCodecPropertyString codec;
 			decColor color;
-			codec.DecodeColor4( value, color );
+			codec.DecodeColor4(value, color);
 			return color;
 			
-		}catch( const deException & ){
-			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-				"Invalid color4 property '%s' value '%s'", name.GetString(), value.GetString() );
+		}catch(const deException &){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat("DEIGDE",
+				"Invalid color4 property '%s' value '%s'", name.GetString(), value.GetString());
 		}
 	}
 	return defaultValue;
 }
 
-bool igdeWOSubObject::GetBoolProperty( const decString &name, bool defaultValue ) const{
+bool igdeWOSubObject::GetBoolProperty(const decString &name, bool defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		return value.ToInt() != 0;
 	}
 	return defaultValue;
 }
 
-float igdeWOSubObject::GetFloatProperty( const decString &name, float defaultValue ) const{
+float igdeWOSubObject::GetFloatProperty(const decString &name, float defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		return value.ToFloat();
 	}
 	return defaultValue;
 }
 
-int igdeWOSubObject::GetIntProperty( const decString &name, int defaultValue ) const{
+int igdeWOSubObject::GetIntProperty(const decString &name, int defaultValue) const{
 	decString value;
-	if( GetPropertyValue( name, value ) ){
+	if(GetPropertyValue(name, value)){
 		return value.ToInt();
 	}
 	return defaultValue;
@@ -299,31 +299,31 @@ int igdeWOSubObject::GetIntProperty( const decString &name, int defaultValue ) c
 
 
 
-void igdeWOSubObject::pInitTrigger( igdeTriggerExpression::Ref &trigger, const decString &propertyName ){
-	if( trigger ){
+void igdeWOSubObject::pInitTrigger(igdeTriggerExpression::Ref &trigger, const decString &propertyName){
+	if(trigger){
 		trigger->UnlinkTriggerTargets();
 		trigger = NULL;
 	}
 	
 	decString value;
-	if( pWrapper.GetTriggerTable() && GetPropertyValue( propertyName, value ) && ! value.IsEmpty() ){
+	if(pWrapper.GetTriggerTable() && GetPropertyValue(propertyName, value) && ! value.IsEmpty()){
 		try{
 			const igdeTriggerExpressionParser parser;
 			trigger = parser.StringToExpression(value);
 			
-		}catch( const deException & ){
-			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-				"Invalid trigger expression '%s'", value.GetString() );
+		}catch(const deException &){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat("DEIGDE",
+				"Invalid trigger expression '%s'", value.GetString());
 		}
 		
-		if( trigger ){
-			trigger->LinkTriggerTargets( *pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener() );
+		if(trigger){
+			trigger->LinkTriggerTargets(*pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener());
 		}
 	}
 }
 
-void igdeWOSubObject::pClearTrigger( igdeTriggerExpression::Ref &trigger ){
-	if( trigger ){
+void igdeWOSubObject::pClearTrigger(igdeTriggerExpression::Ref &trigger){
+	if(trigger){
 		trigger->UnlinkTriggerTargets();
 		trigger = NULL;
 	}
@@ -336,30 +336,30 @@ deColliderComponent *igdeWOSubObject::GetAttachableColliderComponent() const{
 	return pWrapper.GetColliderComponent();
 }
 
-decDMatrix igdeWOSubObject::GetBoneMatrix( const decString &name ) const{
-	if( ! pWrapper.GetComponent() ){
+decDMatrix igdeWOSubObject::GetBoneMatrix(const decString &name) const{
+	if(! pWrapper.GetComponent()){
 		return decDMatrix();
 	}
 	const deComponent &component = *pWrapper.GetComponent();
 	
-	if( ! component.GetRig() ){
+	if(! component.GetRig()){
 		return decDMatrix();
 	}
 	
-	const int index = component.GetRig()->IndexOfBoneNamed( name );
-	if( index == -1 ){
+	const int index = component.GetRig()->IndexOfBoneNamed(name);
+	if(index == -1){
 		return decDMatrix();
 	}
 	
-	return decDMatrix( component.GetBoneAt( index ).GetMatrix() );
+	return decDMatrix(component.GetBoneAt(index).GetMatrix());
 }
 
-decLayerMask igdeWOSubObject::LayerMaskFromInt( int mask ) const{
+decLayerMask igdeWOSubObject::LayerMaskFromInt(int mask) const{
 	decLayerMask layerMask;
 	int i;
-	for( i=0; i<32; i++ ){
-		if( mask & ( 1 << i ) ){
-			layerMask.SetBit( i );
+	for(i=0; i<32; i++){
+		if(mask & (1 << i)){
+			layerMask.SetBit(i);
 		}
 	}
 	return layerMask;

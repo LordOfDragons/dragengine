@@ -55,19 +55,19 @@ int ceConversationFileList::GetCount() const{
 	return pFiles.GetCount();
 }
 
-ceConversationFile *ceConversationFileList::GetAt( int index ) const{
-	return ( ceConversationFile* )pFiles.GetAt( index );
+ceConversationFile *ceConversationFileList::GetAt(int index) const{
+	return (ceConversationFile*)pFiles.GetAt(index);
 }
 
-ceConversationFile *ceConversationFileList::GetWithID( const char *id ) const{
+ceConversationFile *ceConversationFileList::GetWithID(const char *id) const{
 	const int count = pFiles.GetCount();
 	ceConversationFile *file;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		file = ( ceConversationFile* )pFiles.GetAt( i );
+	for(i=0; i<count; i++){
+		file = (ceConversationFile*)pFiles.GetAt(i);
 		
-		if( file->GetID().Equals( id ) ){
+		if(file->GetID().Equals(id)){
 			return file;
 		}
 	}
@@ -75,16 +75,16 @@ ceConversationFile *ceConversationFileList::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-int ceConversationFileList::IndexOf( ceConversationFile *file ) const{
-	return pFiles.IndexOf( file );
+int ceConversationFileList::IndexOf(ceConversationFile *file) const{
+	return pFiles.IndexOf(file);
 }
 
-int ceConversationFileList::IndexOfWithID( const char *id ) const{
+int ceConversationFileList::IndexOfWithID(const char *id) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceConversationFile* )pFiles.GetAt( i ) )->GetID().Equals( id ) ){
+	for(i=0; i<count; i++){
+		if(((ceConversationFile*)pFiles.GetAt(i))->GetID().Equals(id)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceConversationFileList::IndexOfWithID( const char *id ) const{
 	return -1;
 }
 
-bool ceConversationFileList::Has( ceConversationFile *file ) const{
-	return pFiles.Has( file );
+bool ceConversationFileList::Has(ceConversationFile *file) const{
+	return pFiles.Has(file);
 }
 
-bool ceConversationFileList::HasWithID( const char *id ) const{
+bool ceConversationFileList::HasWithID(const char *id) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceConversationFile* )pFiles.GetAt( i ) )->GetID().Equals( id ) ){
+	for(i=0; i<count; i++){
+		if(((ceConversationFile*)pFiles.GetAt(i))->GetID().Equals(id)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceConversationFileList::HasWithID( const char *id ) const{
 	return false;
 }
 
-void ceConversationFileList::Add( ceConversationFile *file ){
-	if( ! file || HasWithID( file->GetID().GetString() ) ) DETHROW( deeInvalidParam );
+void ceConversationFileList::Add(ceConversationFile *file){
+	if(! file || HasWithID(file->GetID().GetString())) DETHROW(deeInvalidParam);
 	
-	pFiles.Add( file );
+	pFiles.Add(file);
 }
 
-void ceConversationFileList::Remove( ceConversationFile *file ){
-	pFiles.Remove( file );
+void ceConversationFileList::Remove(ceConversationFile *file){
+	pFiles.Remove(file);
 }
 
 void ceConversationFileList::RemoveAll(){
@@ -125,12 +125,12 @@ void ceConversationFileList::RemoveAll(){
 
 
 
-ceConversationFileList &ceConversationFileList::operator=( const ceConversationFileList &list ){
+ceConversationFileList &ceConversationFileList::operator=(const ceConversationFileList &list){
 	pFiles = list.pFiles;
 	return *this;
 }
 
-ceConversationFileList &ceConversationFileList::operator+=( const ceConversationFileList &list ){
+ceConversationFileList &ceConversationFileList::operator+=(const ceConversationFileList &list){
 	pFiles += list.pFiles;
 	return *this;
 }

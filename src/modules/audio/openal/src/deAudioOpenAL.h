@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create openal audio module. */
-	deAudioOpenAL( deLoadableModule &loadableModule );
+	deAudioOpenAL(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up openal audio module. */
 	virtual ~deAudioOpenAL();
@@ -73,12 +73,12 @@ public:
 	bool HasAudioThread() const;
 	
 	/** \brief Audio thread. */
-	inline deoalAudioThread &GetAudioThread() const{ return *pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return *pAudioThread;}
 	
 	
 	
 	/** \brief Active microphone. */
-	inline deoalMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
+	inline deoalMicrophone *GetActiveMicrophone() const{return pActiveMicrophone;}
 	
 	/** \brief Active world. */
 	deoalWorld *GetActiveWorld() const;
@@ -92,7 +92,7 @@ public:
 	 * The active microphone is passed as parameter and can be NULL if no microphone
 	 * is active yet.
 	 */
-	virtual bool Init( deMicrophone *activeMic );
+	virtual bool Init(deMicrophone *activeMic);
 	
 	/**
 	 * \brief Called to cleanup the module.
@@ -109,7 +109,7 @@ public:
 	 * 
 	 * Can be NULL to unset the active microphone.
 	 */
-	virtual void SetActiveMicrophone( deMicrophone *microphone );
+	virtual void SetActiveMicrophone(deMicrophone *microphone);
 	
 	/**
 	 * \brief Frame-per-second rate averaged over the last couple of frames.
@@ -122,7 +122,7 @@ public:
 	
 	
 	/** \brief Configuration. */
-	inline deoalConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline deoalConfiguration &GetConfiguration() const{return *pConfiguration;}
 	/*@}*/
 	
 	
@@ -130,40 +130,40 @@ public:
 	/** \name Audio Management */
 	/*@{*/
 	/** \brief Create world peer. */
-	virtual deBaseAudioWorld *CreateWorld( deWorld *world );
+	virtual deBaseAudioWorld *CreateWorld(deWorld *world);
 	
 	/** \brief Create sound peer. */
-	virtual deBaseAudioSound *CreateSound( deSound *sound );
+	virtual deBaseAudioSound *CreateSound(deSound *sound);
 	
 	/** \brief Create speaker peer. */
-	virtual deBaseAudioSpeaker *CreateSpeaker( deSpeaker *speaker );
+	virtual deBaseAudioSpeaker *CreateSpeaker(deSpeaker *speaker);
 	
 	/** \brief Create microphone peer. */
-	virtual deBaseAudioMicrophone *CreateMicrophone( deMicrophone *microphone );
+	virtual deBaseAudioMicrophone *CreateMicrophone(deMicrophone *microphone);
 	
 	/** \brief Create component peer. */
-	virtual deBaseAudioComponent *CreateComponent( deComponent *component );
+	virtual deBaseAudioComponent *CreateComponent(deComponent *component);
 	
 	/** \brief Create model peer. */
-	virtual deBaseAudioModel *CreateModel( deModel *model );
+	virtual deBaseAudioModel *CreateModel(deModel *model);
 	
 	/** \brief Create skin peer. */
-	virtual deBaseAudioSkin *CreateSkin( deSkin *skin );
+	virtual deBaseAudioSkin *CreateSkin(deSkin *skin);
 	
 	/** \brief Create decal peer. */
-	virtual deBaseAudioDecal *CreateDecal( deDecal *decal );
+	virtual deBaseAudioDecal *CreateDecal(deDecal *decal);
 	
 	/** \brief Create deSoundLevelMeter eer. */
-	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter);
 	
 	/** \brief Create deVideoPlayer peer. */
-	virtual deBaseAudioVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer );
+	virtual deBaseAudioVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	/** \brief Create deSynthesizerInstance peer. */
-	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance( deSynthesizerInstance *instance );
+	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance);
 	
 	/** \brief Create deHeightTerrain peer. */
-	virtual deBaseAudioHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain );
+	virtual deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain);
 	/*@}*/
 	
 	
@@ -186,16 +186,16 @@ public:
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
 	
 	/** \brief Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual int IndexOfParameterNamed(const char *name) const;
 	
 	/** \brief Value of named parameter. */
-	virtual decString GetParameterValue( const char *name ) const;
+	virtual decString GetParameterValue(const char *name) const;
 	
 	/** \brief Set value of named parameter. */
-	virtual void SetParameterValue( const char *name, const char *value );
+	virtual void SetParameterValue(const char *name, const char *value);
 	/*@}*/
 	
 	
@@ -203,10 +203,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Send command to module. */
-	virtual void SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** \brief Developer mode or \em NULL. */
-	inline deoalDevMode *GetDevMode() const{ return pDevMode; }
+	inline deoalDevMode *GetDevMode() const{return pDevMode;}
 	/*@}*/
 };
 

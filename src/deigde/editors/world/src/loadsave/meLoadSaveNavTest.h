@@ -54,28 +54,28 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new loader. */
-	meLoadSaveNavTest( meLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource );
+	meLoadSaveNavTest(meLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** \brief Retrieves the pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** \brief Loads the navigation test from file. */
-	void LoadNavTest( meWorld &world, decBaseFileReader &reader );
+	void LoadNavTest(meWorld &world, decBaseFileReader &reader);
 	/** \brief Saves the navigation test to file. */
-	void SaveNavTest( const meWorld &world, decBaseFileWriter &writer );
+	void SaveNavTest(const meWorld &world, decBaseFileWriter &writer);
 	/*@}*/
 	
 private:
-	void pWriteNavTest( decXmlWriter &writer, const meWorld &world );
-	void pWriteNavTestType( decXmlWriter &writer, const mePathFindTestType &type );
+	void pWriteNavTest(decXmlWriter &writer, const meWorld &world);
+	void pWriteNavTestType(decXmlWriter &writer, const mePathFindTestType &type);
 	
-	void pReadNavTest( const decXmlElementTag &root, meWorld &world );
-	void pReadNavTestType( const decXmlElementTag &root, meWorld &world );
+	void pReadNavTest(const decXmlElementTag &root, meWorld &world);
+	void pReadNavTestType(const decXmlElementTag &root, meWorld &world);
 };
 
 #endif

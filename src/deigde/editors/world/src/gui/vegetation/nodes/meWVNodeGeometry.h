@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeGeometry( meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule );
+	meWVNodeGeometry(meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleGeometry *GetRuleGeometry() const{ return pRuleGeometry; }
+	inline meHTVRuleGeometry *GetRuleGeometry() const{return pRuleGeometry;}
 	
 	/** \brief Update node. */
 	virtual void Update();

@@ -76,44 +76,44 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decDVector &GetRayOrigin() const{ return pRayOrigin; }
+	inline const decDVector &GetRayOrigin() const{return pRayOrigin;}
 	
 	/** \brief Ray direction. */
-	inline const decDVector &GetRayDirection() const{ return pRayDirection; }
+	inline const decDVector &GetRayDirection() const{return pRayDirection;}
 	
 	/** \brief Ray direction has X axis component not equal to 0. */
-	inline bool GetCheckAxisX() const{ return pCheckAxisX; }
+	inline bool GetCheckAxisX() const{return pCheckAxisX;}
 	
 	/** \brief Ray direction has Y axis component not equal to 0. */
-	inline bool GetCheckAxisY() const{ return pCheckAxisY; }
+	inline bool GetCheckAxisY() const{return pCheckAxisY;}
 	
 	/** \brief Ray direction has Z axis component not equal to 0. */
-	inline bool GetCheckAxisZ() const{ return pCheckAxisZ; }
+	inline bool GetCheckAxisZ() const{return pCheckAxisZ;}
 	
 	/**
 	 * \brief Inverted ray direction.
 	 * 
 	 * Returns vector 1/rayDirection for all components.
 	 */
-	inline const decDVector &GetInvRayDirection() const{ return pInvRayDirection; }
+	inline const decDVector &GetInvRayDirection() const{return pInvRayDirection;}
 	
 	/** \brief Ray length. */
-	inline double GetRayLength() const{ return pRayLength; }
+	inline double GetRayLength() const{return pRayLength;}
 	
 	/** \brief Ray box minimum extend. */
-	inline const decDVector &GetRayBoxMin() const{ return pRayBoxMin; }
+	inline const decDVector &GetRayBoxMin() const{return pRayBoxMin;}
 	
 	/** \brief Ray box maximum extend. */
-	inline const decDVector &GetRayBoxMax() const{ return pRayBoxMax; }
+	inline const decDVector &GetRayBoxMax() const{return pRayBoxMax;}
 	
 	/** \brief Set test ray. */
-	void SetRay( const decDVector &origin, const decDVector &direction );
+	void SetRay(const decDVector &origin, const decDVector &direction);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -127,16 +127,16 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalWorldOctree &node );
+	virtual void VisitNode(deoalWorldOctree &node);
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	virtual void VisitNode(deoalDOctree *node, int intersection);
 	/*@}*/
 	
 	
 	
 protected:
-	bool pRayHitsBox( const decDVector &center, const decDVector &halfExtends );
+	bool pRayHitsBox(const decDVector &center, const decDVector &halfExtends);
 };
 
 #endif

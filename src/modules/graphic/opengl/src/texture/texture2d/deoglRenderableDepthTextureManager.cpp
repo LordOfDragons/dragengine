@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableDepthTextureManager::deoglRenderableDepthTextureManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pTextures( NULL ),
-pTextureCount( 0 ),
-pTextureSize( 0 ){
+deoglRenderableDepthTextureManager::deoglRenderableDepthTextureManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pTextures(NULL),
+pTextureCount(0),
+pTextureSize(0){
 }
 
 deoglRenderableDepthTextureManager::~deoglRenderableDepthTextureManager(){
-	if( pTextures ){
-		while( pTextureCount > 0 ){
+	if(pTextures){
+		while(pTextureCount > 0){
 			pTextureCount--;
-			delete pTextures[ pTextureCount ];
+			delete pTextures[pTextureCount];
 		}
 		delete [] pTextures;
 	}
@@ -62,44 +62,44 @@ deoglRenderableDepthTextureManager::~deoglRenderableDepthTextureManager(){
 // Management
 ///////////////
 
-const deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ) DETHROW( deeInvalidParam );
+const deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextureAt(int index) const{
+	if(index < 0 || index >= pTextureCount) DETHROW(deeInvalidParam);
 	
-	return pTextures[ index ];
+	return pTextures[index];
 }
 
 deoglRenderableDepthTexture *deoglRenderableDepthTextureManager::GetTextureWith(
-int width, int height, bool withStencil, bool useFloat ){
+int width, int height, bool withStencil, bool useFloat){
 	deoglRenderableDepthTexture *texture = NULL;
 	int i;
 	
 	// find the texture with the matching format
-	for( i=0; i<pTextureCount; i++ ){
-		if( ! pTextures[ i ]->GetInUse() && pTextures[ i ]->Matches( width, height, withStencil, useFloat ) ){
-			texture = pTextures[ i ];
+	for(i=0; i<pTextureCount; i++){
+		if(! pTextures[i]->GetInUse() && pTextures[i]->Matches(width, height, withStencil, useFloat)){
+			texture = pTextures[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if( ! texture ){
-		if( pTextureCount == pTextureSize ){
+	if(! texture){
+		if(pTextureCount == pTextureSize){
 			int newSize = pTextureSize * 3 / 2 + 1;
-			deoglRenderableDepthTexture **newArray = new deoglRenderableDepthTexture*[ newSize ];
-			if( pTextures ){
-				memcpy( newArray, pTextures, sizeof( deoglRenderableDepthTexture* ) * pTextureSize );
+			deoglRenderableDepthTexture **newArray = new deoglRenderableDepthTexture*[newSize];
+			if(pTextures){
+				memcpy(newArray, pTextures, sizeof(deoglRenderableDepthTexture*) * pTextureSize);
 				delete [] pTextures;
 			}
 			pTextures = newArray;
 			pTextureSize = newSize;
 		}
 		
-		texture = new deoglRenderableDepthTexture( pRenderThread, width, height, withStencil, useFloat );
-		pTextures[ pTextureCount ] = texture;
+		texture = new deoglRenderableDepthTexture(pRenderThread, width, height, withStencil, useFloat);
+		pTextures[pTextureCount] = texture;
 		pTextureCount++;
 	}
 	
 	// mark the texture in use and return it
-	texture->SetInUse( true );
+	texture->SetInUse(true);
 	return texture;
 }

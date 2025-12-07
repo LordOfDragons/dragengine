@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared icon. */
-	deglSharedIcon( FXIcon *icon );
+	deglSharedIcon(FXIcon *icon);
 	
 protected:
 	/** Clean up shared icon. */
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Icon. */
-	inline FXIcon *GetIcon() const{ return pIcon; }
+	inline FXIcon *GetIcon() const{return pIcon;}
 	/*@}*/
 };
 

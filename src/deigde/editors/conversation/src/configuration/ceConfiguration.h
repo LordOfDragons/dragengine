@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	ceConfiguration( ceWindowMain &windowMain );
+	ceConfiguration(ceWindowMain &windowMain);
 	
 	/** \brief Clean up configuration. */
 	~ceConfiguration();
@@ -53,15 +53,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline ceWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{ return pPreventSaving; }
+	inline bool GetPreventSaving() const{return pPreventSaving;}
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/**
 	 * \brief Load configuration.

@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOSpeaker( igdeWObject &wrapper, const igdeGDCSpeaker &gdSpeaker, const decString &prefix );
+	igdeWOSOSpeaker(igdeWObject &wrapper, const igdeGDCSpeaker &gdSpeaker, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOSpeaker();
@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker resource. */
-	inline deSpeaker *GetSpeaker() const{ return pSpeaker; }
+	inline deSpeaker *GetSpeaker() const{return pSpeaker;}
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -93,10 +93,10 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading();
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	virtual void Visit(igdeWOSOVisitor &visitor);
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	

@@ -60,7 +60,7 @@ public:
 	meHTVRuleCurve();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleCurve( const meHTVRuleCurve &rule );
+	meHTVRuleCurve(const meHTVRuleCurve &rule);
 	
 protected:
 	/** \brief Clean up rule. */
@@ -73,16 +73,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Curve. */
-	inline const decCurveBezier &GetCurve() const{ return pCurve; }
+	inline const decCurveBezier &GetCurve() const{return pCurve;}
 	
 	/** \brief Set curve. */
-	void SetCurve( const decCurveBezier &curve );
+	void SetCurve(const decCurveBezier &curve);
 	
 	/** \brief Value of output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Vector of output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

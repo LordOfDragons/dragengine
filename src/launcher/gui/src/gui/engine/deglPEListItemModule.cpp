@@ -37,20 +37,20 @@
 // Class deglPEListItemModule
 ///////////////////////////////
 
-FXIMPLEMENT( deglPEListItemModule, FXIconItem, nullptr, 0 )
+FXIMPLEMENT(deglPEListItemModule, FXIconItem, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-deglPEListItemModule::deglPEListItemModule(){ }
+deglPEListItemModule::deglPEListItemModule(){}
 
-deglPEListItemModule::deglPEListItemModule( deglPanelEngine *panelEngine, delEngineModule *module ) :
-FXIconItem( "", nullptr, nullptr, nullptr ),
-pPanelEngine( panelEngine ),
-pModule( module )
+deglPEListItemModule::deglPEListItemModule(deglPanelEngine *panelEngine, delEngineModule *module) :
+FXIconItem("", nullptr, nullptr, nullptr),
+pPanelEngine(panelEngine),
+pModule(module)
 {
-	if( ! panelEngine || ! module ){
-		DETHROW( deeInvalidParam );
+	if(! panelEngine || ! module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const delEngineModule::eModuleStatus status = module->GetStatus();
@@ -60,7 +60,7 @@ pModule( module )
 	const decString &moduleName = module->GetName();
 	const decString &moduleVersion = module->GetVersion();
 	
-	switch( status ){
+	switch(status){
 	case delEngineModule::emsReady:
 		pStatusString = "Ready";
 		break;
@@ -74,7 +74,7 @@ pModule( module )
 		break;
 	}
 	
-	switch( type ){
+	switch(type){
 	case deModuleSystem::emtGraphic:
 		pTypeString = "Graphic";
 		break;
@@ -171,9 +171,9 @@ pModule( module )
 		pTypeString = "Unknown";
 	}
 	
-	text.format( "%s\t%s\t%s\t%s", moduleName.GetString(), pTypeString.GetString(),
-		moduleVersion.GetString(), pStatusString.GetString() );
-	setText( text );
+	text.format("%s\t%s\t%s\t%s", moduleName.GetString(), pTypeString.GetString(),
+		moduleVersion.GetString(), pStatusString.GetString());
+	setText(text);
 }
 
 deglPEListItemModule::~deglPEListItemModule(){

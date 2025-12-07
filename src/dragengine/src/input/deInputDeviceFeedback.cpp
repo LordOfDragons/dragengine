@@ -35,16 +35,16 @@
 ////////////////////////////////
 
 deInputDeviceFeedback::deInputDeviceFeedback() :
-pType( eftGeneric ){
+pType(eftGeneric){
 }
 
-deInputDeviceFeedback::deInputDeviceFeedback( const deInputDeviceFeedback &feedback ) :
-pID( feedback.pID ),
-pName( feedback.pName ),
-pType( feedback.pType ),
-pDisplayImage( feedback.pDisplayImage ),
-pDisplayIcons( feedback.pDisplayIcons ),
-pDisplayText( feedback.pDisplayText ){
+deInputDeviceFeedback::deInputDeviceFeedback(const deInputDeviceFeedback &feedback) :
+pID(feedback.pID),
+pName(feedback.pName),
+pType(feedback.pType),
+pDisplayImage(feedback.pDisplayImage),
+pDisplayIcons(feedback.pDisplayIcons),
+pDisplayText(feedback.pDisplayText){
 }
 
 deInputDeviceFeedback::~deInputDeviceFeedback(){
@@ -55,23 +55,23 @@ deInputDeviceFeedback::~deInputDeviceFeedback(){
 // Device information
 ///////////////////////
 
-void deInputDeviceFeedback::SetID( const char *id ){
+void deInputDeviceFeedback::SetID(const char *id){
 	pID = id;
 }
 
-void deInputDeviceFeedback::SetName( const char *name ){
+void deInputDeviceFeedback::SetName(const char *name){
 	pName = name;
 }
 
-void deInputDeviceFeedback::SetType( eFeedbackTypes type ){
+void deInputDeviceFeedback::SetType(eFeedbackTypes type){
 	pType = type;
 }
 
-void deInputDeviceFeedback::SetComponent( const char *component ){
+void deInputDeviceFeedback::SetComponent(const char *component){
 	pComponent = component;
 }
 
-void deInputDeviceFeedback::SetDisplayImage( deImage *image ){
+void deInputDeviceFeedback::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
@@ -79,18 +79,18 @@ int deInputDeviceFeedback::GetDisplayIconCount() const{
 	return pDisplayIcons.GetCount();
 }
 
-deImage *deInputDeviceFeedback::GetDisplayIconAt( int index ) const{
-	return ( deImage* )pDisplayIcons.GetAt( index );
+deImage *deInputDeviceFeedback::GetDisplayIconAt(int index) const{
+	return (deImage*)pDisplayIcons.GetAt(index);
 }
 
-void deInputDeviceFeedback::AddDisplayIcon( deImage *image ){
-	if( ! image ){
-		DETHROW( deeNullPointer );
+void deInputDeviceFeedback::AddDisplayIcon(deImage *image){
+	if(! image){
+		DETHROW(deeNullPointer);
 	}
-	pDisplayIcons.Add( image );
+	pDisplayIcons.Add(image);
 }
 
-void deInputDeviceFeedback::SetDisplayText( const char *text ){
+void deInputDeviceFeedback::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
@@ -99,7 +99,7 @@ void deInputDeviceFeedback::SetDisplayText( const char *text ){
 // Operators
 //////////////
 
-deInputDeviceFeedback &deInputDeviceFeedback::operator=( const deInputDeviceFeedback &feedback ){
+deInputDeviceFeedback &deInputDeviceFeedback::operator=(const deInputDeviceFeedback &feedback){
 	pID = feedback.pID;
 	pName = feedback.pName;
 	pType = feedback.pType;

@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerLink( const deSynthesizerLink &link );
+	desynSynthesizerLink(const deSynthesizerLink &link);
 	
 	/** \brief Create synthesizer source. */
-	desynSynthesizerLink( const deSynthesizerLink &link, const decIntList &controllerMapping );
+	desynSynthesizerLink(const deSynthesizerLink &link, const decIntList &controllerMapping);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~desynSynthesizerLink();
@@ -62,19 +62,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller or -1 if not set. */
-	inline int GetController() const{ return pController; }
+	inline int GetController() const{return pController;}
 	
 	/** \brief Controller is set. */
-	inline bool HasController() const{ return pController != -1; }
+	inline bool HasController() const{return pController != -1;}
 	
 	/** \brief Repeat count of input value. */
-	inline int GetRepeat() const{ return pRepeat; }
+	inline int GetRepeat() const{return pRepeat;}
 	
 	/** \brief Value curve. */
-	inline const desynSynthesizerCurve &GetCurve() const{ return pCurve; }
+	inline const desynSynthesizerCurve &GetCurve() const{return pCurve;}
 	
 	/** \brief Value of link. */
-	float GetValue( const desynSynthesizerInstance &instance, int sample, float defaultValue ) const;
+	float GetValue(const desynSynthesizerInstance &instance, int sample, float defaultValue) const;
 	/*@}*/
 };
 

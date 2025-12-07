@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speech animation. */
-	ceSpeechAnimation( deEngine *engine );
+	ceSpeechAnimation(deEngine *engine);
 	
 	/** Clean up speech animation. */
 	~ceSpeechAnimation();
@@ -83,49 +83,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** Animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
 	
 	/** Animator instance. */
-	inline deAnimatorInstance *GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
+	inline deAnimatorInstance *GetEngineAnimatorInstance() const{return pEngAnimatorInstance;}
 	
 	/** Neutral move name. */
-	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
+	inline const decString &GetNeutralMoveName() const{return pNeutralMoveName;}
 	
 	/** Set neutral move name. */
-	void SetNeutralMoveName( const char *name );
+	void SetNeutralMoveName(const char *name);
 	
 	/** Neutral vertex position sets. */
-	inline decStringSet &GetNeutralVertexPositionSets(){ return pNeutralVertexPositionSets; }
-	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
+	inline decStringSet &GetNeutralVertexPositionSets(){return pNeutralVertexPositionSets;}
+	inline const decStringSet &GetNeutralVertexPositionSets() const{return pNeutralVertexPositionSets;}
 	
 	/** Phoneme list. */
-	inline ceSAPhonemeList &GetPhonemeList(){ return pPhonemeList; }
-	inline const ceSAPhonemeList &GetPhonemeList() const{ return pPhonemeList; }
+	inline ceSAPhonemeList &GetPhonemeList(){return pPhonemeList;}
+	inline const ceSAPhonemeList &GetPhonemeList() const{return pPhonemeList;}
 	
 	/** Word list. */
-	inline ceSAWordList &GetWordList(){ return pWordList; }
-	inline const ceSAWordList &GetWordList() const{ return pWordList; }
+	inline ceSAWordList &GetWordList(){return pWordList;}
+	inline const ceSAWordList &GetWordList() const{return pWordList;}
 	
 	/** Remove all speak phonemes. */
 	void RemoveAllSpeakPhonemes();
 	
 	/** Add speak phoneme. */
-	void AddSpeakPhoneme( int phoneme, float length );
+	void AddSpeakPhoneme(int phoneme, float length);
 	
 	/** Length of speaking. */
-	inline float GetSpeakLength() const{ return pSpeakLength; }
+	inline float GetSpeakLength() const{return pSpeakLength;}
 	
 	/** Text is still spoken. */
-	inline bool GetSpeaking() const{ return pSpeaking; }
+	inline bool GetSpeaking() const{return pSpeaking;}
 	
 	/** Create animator. */
 	void CreateAnimator();
 	
 	/** Update speech animation. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Clear speech animation. */
 	void Clear();

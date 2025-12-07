@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalMove( meWorld *world );
+	meUDecalMove(meWorld *world);
 	/** \brief Clean up undo. */
 	virtual ~meUDecalMove();
 	/*@}*/

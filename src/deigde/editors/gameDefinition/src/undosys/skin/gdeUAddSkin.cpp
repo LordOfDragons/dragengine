@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddSkin::gdeUAddSkin( gdeGameDefinition *gameDefinition, gdeSkin *skin ) :
-pGameDefinition( NULL ),
-pSkin( NULL )
+gdeUAddSkin::gdeUAddSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin) :
+pGameDefinition(NULL),
+pSkin(NULL)
 {
-	if( ! gameDefinition || ! skin ){
-		DETHROW( deeInvalidParam );
+	if(! gameDefinition || ! skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add skin" );
+	SetShortInfo("Add skin");
 	
 	pSkin = skin;
 	skin->AddReference();
@@ -58,10 +58,10 @@ pSkin( NULL )
 }
 
 gdeUAddSkin::~gdeUAddSkin(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -72,9 +72,9 @@ gdeUAddSkin::~gdeUAddSkin(){
 ///////////////
 
 void gdeUAddSkin::Undo(){
-	pGameDefinition->RemoveSkin( pSkin );
+	pGameDefinition->RemoveSkin(pSkin);
 }
 
 void gdeUAddSkin::Redo(){
-	pGameDefinition->AddSkin( pSkin );
+	pGameDefinition->AddSkin(pSkin);
 }

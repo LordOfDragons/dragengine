@@ -89,7 +89,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new environment map probe. */
-	deEnvMapProbe( deEnvMapProbeManager *manager );
+	deEnvMapProbe(deEnvMapProbeManager *manager);
 	
 protected:
 	/**
@@ -107,66 +107,66 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scaling. */
-	inline const decVector &GetScaling() const{ return pScaling; }
+	inline const decVector &GetScaling() const{return pScaling;}
 	
 	/** \brief Set scaling. */
-	void SetScaling( const decVector &scaling );
+	void SetScaling(const decVector &scaling);
 	
 	/** \brief Influence shape list. */
-	inline decShapeList &GetShapeListInfluence(){ return pShapeListInfluence; }
-	inline const decShapeList &GetShapeListInfluence() const{ return pShapeListInfluence; }
+	inline decShapeList &GetShapeListInfluence(){return pShapeListInfluence;}
+	inline const decShapeList &GetShapeListInfluence() const{return pShapeListInfluence;}
 	
 	/** \brief Notifies the peers that the influence shape list changed. */
 	void NotifyShapeListInfluenceChanged();
 	
 	/** \brief Reflection shape or NULL if the environment map is global. */
-	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
+	inline decShape *GetShapeReflection() const{return pShapeReflection;}
 	
 	/** \brief Set reflection shape or NULL if the environment map is global. */
-	void SetShapeReflection( decShape *shape );
+	void SetShapeReflection(decShape *shape);
 	
 	/** \brief Reflection mask shape list. */
-	inline decShapeList &GetShapeListReflectionMask(){ return pShapeListReflectionMask; }
-	inline const decShapeList &GetShapeListReflectionMask() const{ return pShapeListReflectionMask; }
+	inline decShapeList &GetShapeListReflectionMask(){return pShapeListReflectionMask;}
+	inline const decShapeList &GetShapeListReflectionMask() const{return pShapeListReflectionMask;}
 	
 	/** \brief Notifies the peers that the reflection shape changed. */
 	void NotifyShapeReflectionChanged();
 	
 	/** \brief Influence border size. */
-	inline float GetInfluenceBorderSize() const{ return pInfluenceBorderSize; }
+	inline float GetInfluenceBorderSize() const{return pInfluenceBorderSize;}
 	
 	/** \brief Set influence border size. */
-	void SetInfluenceBorderSize( float borderSize );
+	void SetInfluenceBorderSize(float borderSize);
 	
 	/** \brief Influence priority. */
-	inline int GetInfluencePriority() const{ return pInfluencePriority; }
+	inline int GetInfluencePriority() const{return pInfluencePriority;}
 	
 	/** \brief Set influence priority. */
-	void SetInfluencePriority( int priority );
+	void SetInfluencePriority(int priority);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Explicit environment map image to use or NULL to auto-generate. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline deImage *GetImage() const{return pImage;}
 	
 	/** \brief Set explicit environment map image to use or NULL to auto-generate. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 	
 	
@@ -174,10 +174,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphics system peer. */
-	inline deBaseGraphicEnvMapProbe *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicEnvMapProbe *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphics system peer. */
-	void SetPeerGraphic( deBaseGraphicEnvMapProbe *peer );
+	void SetPeerGraphic(deBaseGraphicEnvMapProbe *peer);
 	/*@}*/
 	
 	
@@ -185,22 +185,22 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous environment map probe in the parent world linked list. */
-	inline deEnvMapProbe *GetLLWorldPrev() const{ return pLLWorldPrev; }
+	inline deEnvMapProbe *GetLLWorldPrev() const{return pLLWorldPrev;}
 	
 	/** \brief Set next environment map probe in the parent world linked list. */
-	void SetLLWorldPrev( deEnvMapProbe *instance );
+	void SetLLWorldPrev(deEnvMapProbe *instance);
 	
 	/** \brief Next environment map probe in the parent world linked list. */
-	inline deEnvMapProbe *GetLLWorldNext() const{ return pLLWorldNext; }
+	inline deEnvMapProbe *GetLLWorldNext() const{return pLLWorldNext;}
 	
 	/** \brief Set next environment map probe in the parent world linked list. */
-	void SetLLWorldNext( deEnvMapProbe *instance );
+	void SetLLWorldNext(deEnvMapProbe *instance);
 	/*@}*/
 };
 

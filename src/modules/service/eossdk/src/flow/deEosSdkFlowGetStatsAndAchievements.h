@@ -41,8 +41,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create flow. */
-	deEosSdkFlowGetStatsAndAchievements( deEosSdkServiceEos &service, const decUniqueID &id,
-		const deServiceObject &request );
+	deEosSdkFlowGetStatsAndAchievements(deEosSdkServiceEos &service, const decUniqueID &id,
+		const deServiceObject &request);
 	
 	/** Clean up flow. */
 	~deEosSdkFlowGetStatsAndAchievements() override;
@@ -55,10 +55,10 @@ public:
 	void QueryStats();
 	void QueryPlayerAchievements();
 	
-	void OnQueryStatsCompleted( const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data );
+	void OnQueryStatsCompleted(const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data);
 	
 	void OnQueryPlayerAchievementsCompleted(
-		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data );
+		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data);
 	
 	void CheckFinished();
 	/*@}*/

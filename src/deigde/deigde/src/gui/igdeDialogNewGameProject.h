@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogNewGameProject( igdeWindowMain &windowMain );
+	igdeDialogNewGameProject(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created game project or NULL if cancelled. */
-	inline igdeGameProject *GetNewProject() const{ return pNewProject; }
+	inline igdeGameProject *GetNewProject() const{return pNewProject;}
 	
 	void OnProjectDirChanged();
 	void OnProjectGameDefPathChanged();

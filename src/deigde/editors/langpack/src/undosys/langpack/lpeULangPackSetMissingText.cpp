@@ -40,16 +40,16 @@
 ////////////////////////////
 
 lpeULangPackSetMissingText::lpeULangPackSetMissingText(
-	lpeLangPack *langpack, const decUnicodeString &newMissingText ) :
-pLangPack( NULL ),
-pNewMissingText( newMissingText )
+	lpeLangPack *langpack, const decUnicodeString &newMissingText) :
+pLangPack(NULL),
+pNewMissingText(newMissingText)
 {
-	if( ! langpack ){
-		DETHROW( deeInvalidParam );
+	if(! langpack){
+		DETHROW(deeInvalidParam);
 	}
 	
 	
-	SetShortInfo( "LangPack set missing text" );
+	SetShortInfo("LangPack set missing text");
 	
 	pOldMissingText = langpack->GetMissingText();
 	
@@ -58,7 +58,7 @@ pNewMissingText( newMissingText )
 }
 
 lpeULangPackSetMissingText::~lpeULangPackSetMissingText(){
-	if( pLangPack ){
+	if(pLangPack){
 		pLangPack->FreeReference();
 	}
 }
@@ -69,9 +69,9 @@ lpeULangPackSetMissingText::~lpeULangPackSetMissingText(){
 ///////////////
 
 void lpeULangPackSetMissingText::Undo(){
-	pLangPack->SetMissingText( pOldMissingText );
+	pLangPack->SetMissingText(pOldMissingText);
 }
 
 void lpeULangPackSetMissingText::Redo(){
-	pLangPack->SetMissingText( pNewMissingText );
+	pLangPack->SetMissingText(pNewMissingText);
 }

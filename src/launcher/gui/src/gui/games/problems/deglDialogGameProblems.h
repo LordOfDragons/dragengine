@@ -42,7 +42,7 @@ class deglDGPPanelFileFormats;
  * support to solve the problems.
  */
 class deglDialogGameProblems : public FXDialogBox{
-	FXDECLARE( deglDialogGameProblems )
+	FXDECLARE(deglDialogGameProblems)
 protected:
 	deglDialogGameProblems();
 	
@@ -84,8 +84,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDialogGameProblems( deglWindowMain *windowMain,
-		delGame *game, delGameProfile *profile, FXWindow *owner );
+	deglDialogGameProblems(deglWindowMain *windowMain,
+		delGame *game, delGameProfile *profile, FXWindow *owner);
 	
 	/** Clean up dialog. */
 	virtual ~deglDialogGameProblems();
@@ -96,31 +96,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
+	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
 	
 	/** Game. */
-	inline delGame *GetGame() const{ return pGame; }
+	inline delGame *GetGame() const{return pGame;}
 	
 	/** Original game profile. */
-	inline delGameProfile *GetOriginalProfile() const{ return pProfileOrg; }
+	inline delGameProfile *GetOriginalProfile() const{return pProfileOrg;}
 	
 	/** Working game profile. */
-	inline delGameProfile *GetWorkingProfile() const{ return pProfileWork; }
+	inline delGameProfile *GetWorkingProfile() const{return pProfileWork;}
 	
 	/** Game is working. */
-	inline bool GetStatusWorking() const{ return pStatusWorking; }
+	inline bool GetStatusWorking() const{return pStatusWorking;}
 	
 	/** Background color for valid elements. */
-	inline FXColor GetBackColorValid() const{ return pClrValidBack; }
+	inline FXColor GetBackColorValid() const{return pClrValidBack;}
 	
 	/** Background color for problem elements. */
-	inline FXColor GetBackColorProblem() const{ return pClrProblemBack; }
+	inline FXColor GetBackColorProblem() const{return pClrProblemBack;}
 	
 	/** Text color for valid elements. */
-	inline FXColor GetTextColorValid() const{ return pClrValidText; }
+	inline FXColor GetTextColorValid() const{return pClrValidText;}
 	
 	/** Text color for problem elements. */
-	inline FXColor GetTextColorProblem() const{ return pClrProblemText; }
+	inline FXColor GetTextColorProblem() const{return pClrProblemText;}
 	
 	/** Update modules. */
 	void UpdateSystemModuleLists();

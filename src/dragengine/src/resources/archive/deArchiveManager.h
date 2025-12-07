@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive resource manager. */
-	deArchiveManager( deEngine *engine );
+	deArchiveManager(deEngine *engine);
 	
 	/** \brief Clean up archive resource manager and report leaking resources. */
 	virtual ~deArchiveManager();
@@ -66,20 +66,20 @@ public:
 	deArchive *GetRootArchive() const;
 	
 	/** \brief Archive with filename or NULL if not loaded yet. */
-	deArchive *GetArchiveWith( const char *filename ) const;
+	deArchive *GetArchiveWith(const char *filename) const;
 	
 	/** \brief Archive with filename or NULL if not loaded yet. */
-	deArchive *GetArchiveWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deArchive *GetArchiveWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive( const char *filename, const char *basePath );
+	deArchive *OpenArchive(const char *filename, const char *basePath);
 	
 	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deArchive *OpenArchive(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Create archive container. */
-	deArchiveContainer *CreateContainer( const decPath &rootPath,
-		deArchive *archive, const decPath &archivePath );
+	deArchiveContainer *CreateContainer(const decPath &rootPath,
+		deArchive *archive, const decPath &archivePath);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();
@@ -98,8 +98,8 @@ public:
 	 * \warning For internal use only. Never call on your own!
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
-	void RemoveContainer( deArchiveContainer *container );
+	virtual void RemoveResource(deResource *resource);
+	void RemoveContainer(deArchiveContainer *container);
 	/*@}*/
 };
 

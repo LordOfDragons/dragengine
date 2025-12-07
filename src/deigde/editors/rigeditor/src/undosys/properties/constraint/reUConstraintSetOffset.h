@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetOffset( reRigConstraint *constraint, const decVector &newOffset );
+	reUConstraintSetOffset(reRigConstraint *constraint, const decVector &newOffset);
 	
 protected:
 	/** \brief Clean up the undo. */

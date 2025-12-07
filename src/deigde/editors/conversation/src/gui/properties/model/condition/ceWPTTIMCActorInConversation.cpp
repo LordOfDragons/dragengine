@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCActorInConversation::ceWPTTIMCActorInConversation( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionActorInConversation *condition ) :
-ceWPTTIMCondition( windowMain, etConditionActorInConversation, conversation, action, condition )
+ceWPTTIMCActorInConversation::ceWPTTIMCActorInConversation(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionActorInConversation *condition) :
+ceWPTTIMCondition(windowMain, etConditionActorInConversation, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionActorInConversation() );
+	SetIcon(windowMain.GetIconConditionActorInConversation());
 	Update();
 }
 
@@ -61,12 +61,12 @@ void ceWPTTIMCActorInConversation::Update(){
 	const ceCConditionActorInConversation &condition = *GetConditionActorInConversation();
 	decString text;
 	
-	if( condition.GetNegate() ){
-		text.Format( "Actor not in Conversation: '%s'", condition.GetActor().GetString() );
+	if(condition.GetNegate()){
+		text.Format("Actor not in Conversation: '%s'", condition.GetActor().GetString());
 		
 	}else{
-		text.Format( "Actor in Conversation: '%s'", condition.GetActor().GetString() );
+		text.Format("Actor in Conversation: '%s'", condition.GetActor().GetString());
 	}
 	
-	SetText( text );
+	SetText(text);
 }

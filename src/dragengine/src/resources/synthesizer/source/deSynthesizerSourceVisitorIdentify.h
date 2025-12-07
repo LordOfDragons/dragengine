@@ -65,25 +65,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source type. */
-	inline eSourceTypes GetType() const{ return pType; }
+	inline eSourceTypes GetType() const{return pType;}
 	
 	/** \brief Source is unknown. */
-	inline bool IsUnknown() const{ return pType == estUnknown; }
+	inline bool IsUnknown() const{return pType == estUnknown;}
 	
 	/** \brief Source is a sound source. */
-	inline bool IsSound() const{ return pType == estSound; }
+	inline bool IsSound() const{return pType == estSound;}
 	
 	/** \brief Source is a wave generator source. */
-	inline bool IsWave() const{ return pType == estWave; }
+	inline bool IsWave() const{return pType == estWave;}
 	
 	/** \brief Source is a chain source. */
-	inline bool IsChain() const{ return pType == estChain; }
+	inline bool IsChain() const{return pType == estChain;}
 	
 	/** \brief Source is a synthesizer source. */
-	inline bool IsSynthesizer() const{ return pType == estSynthesizer; }
+	inline bool IsSynthesizer() const{return pType == estSynthesizer;}
 	
 	/** \brief Source is a group source. */
-	inline bool IsGroup() const{ return pType == estGroup; }
+	inline bool IsGroup() const{return pType == estGroup;}
 	
 	/**
 	 * \brief Cast to sound source.
@@ -124,22 +124,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void VisitSource( deSynthesizerSource &source );
+	virtual void VisitSource(deSynthesizerSource &source);
 	
 	/** \brief Visit sound source. */
-	virtual void VisitSound( deSynthesizerSourceSound &source );
+	virtual void VisitSound(deSynthesizerSourceSound &source);
 	
 	/** \brief Visit wave generator source. */
-	virtual void VisitWave( deSynthesizerSourceWave &source );
+	virtual void VisitWave(deSynthesizerSourceWave &source);
 	
 	/** \brief Visit chain source. */
-	virtual void VisitChain( deSynthesizerSourceChain &source );
+	virtual void VisitChain(deSynthesizerSourceChain &source);
 	
 	/** \brief Visit synthesizer source. */
-	virtual void VisitSynthesizer( deSynthesizerSourceSynthesizer &source );
+	virtual void VisitSynthesizer(deSynthesizerSourceSynthesizer &source);
 	
 	/** \brief Visit group source. */
-	virtual void VisitGroup( deSynthesizerSourceGroup &source );
+	virtual void VisitGroup(deSynthesizerSourceGroup &source);
 	/*@}*/
 };
 

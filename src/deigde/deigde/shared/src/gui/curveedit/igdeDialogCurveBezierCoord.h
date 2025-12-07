@@ -53,10 +53,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierCoord( igdeEnvironment &environment );
+	igdeDialogCurveBezierCoord(igdeEnvironment &environment);
 	
 	/** \brief Create dialog. */
-	igdeDialogCurveBezierCoord( igdeEnvironment &environment, const decCurveBezierPoint &point );
+	igdeDialogCurveBezierCoord(igdeEnvironment &environment, const decCurveBezierPoint &point);
 	
 	
 	
@@ -71,16 +71,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point. */
-	inline const decCurveBezierPoint &GetPoint() const{ return pPoint; }
+	inline const decCurveBezierPoint &GetPoint() const{return pPoint;}
 	
 	/** \brief Set point. */
-	void SetPoint( const decCurveBezierPoint &point );
+	void SetPoint(const decCurveBezierPoint &point);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateContent( igdeEnvironment &environment );
+	void pCreateContent(igdeEnvironment &environment);
 };
 
 #endif

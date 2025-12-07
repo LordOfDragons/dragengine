@@ -52,20 +52,20 @@ public:
 	/** \brief Retrieves the number of props. */
 	int GetCount() const;
 	/** \brief Retrieves the prop at the given position. */
-	ceProp *GetAt( int index ) const;
+	ceProp *GetAt(int index) const;
 	/** \brief Retrieves the index of the given prop or -1 if not found. */
-	int IndexOf( ceProp *prop ) const;
+	int IndexOf(ceProp *prop) const;
 	/** \brief Determines if a prop exists. */
-	bool Has( ceProp *prop ) const;
+	bool Has(ceProp *prop) const;
 	/** \brief Adds a prop. */
-	void Add( ceProp *prop );
+	void Add(ceProp *prop);
 	/** \brief Removes a prop. */
-	void Remove( ceProp *prop );
+	void Remove(ceProp *prop);
 	/** \brief Removes all props. */
 	void RemoveAll();
 	
 	/** \brief Sets the list from another list. */
-	cePropList &operator=( const cePropList &list );
+	cePropList &operator=(const cePropList &list);
 	/*@}*/
 };
 

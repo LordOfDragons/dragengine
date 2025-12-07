@@ -39,7 +39,7 @@ igdeNativeNullGroupBox::igdeNativeNullGroupBox(){
 igdeNativeNullGroupBox::~igdeNativeNullGroupBox(){
 }
 
-igdeNativeNullGroupBox *igdeNativeNullGroupBox::CreateNativeWidget( igdeGroupBox& ){
+igdeNativeNullGroupBox *igdeNativeNullGroupBox::CreateNativeWidget(igdeGroupBox&){
 	return new igdeNativeNullGroupBox;
 }
 

@@ -44,9 +44,9 @@
 ////////////////////////////
 
 deoglCapCheckFramebufferTextureSingle::deoglCapCheckFramebufferTextureSingle(
-deoglCapabilities &capabilities ) :
-pCapabilities( capabilities ),
-pWorking( true ){
+deoglCapabilities &capabilities) :
+pCapabilities(capabilities),
+pWorking(true){
 }
 
 
@@ -54,7 +54,7 @@ pWorking( true ){
 // Management
 ///////////////
 
-void deoglCapCheckFramebufferTextureSingle::Check( GLuint fbo ){
+void deoglCapCheckFramebufferTextureSingle::Check(GLuint fbo){
 	// Summary:
 	//    Checks if glFramebufferTexture accepts single textures like 2D texture in addition
 	//    to cube-maps and array-textures.
@@ -75,7 +75,7 @@ void deoglCapCheckFramebufferTextureSingle::Check( GLuint fbo ){
 	//    A 2D texture is attached using glFramebufferTexture. If GL_INVALID_OPERATION is
 	//    thrown then the driver is broken
 	
-	if( ! pglFramebufferTexture ){
+	if(! pglFramebufferTexture){
 		return;
 	}
 	
@@ -83,51 +83,51 @@ void deoglCapCheckFramebufferTextureSingle::Check( GLuint fbo ){
 	
 	const deoglCapsTextureFormat &texformat = pCapabilities.GetFormats()
 		.RequireUseFBOArrayTexFormatFor(deoglCapsFmtSupport::eutfDepth);
-	GLfloat pixels[ 1 ] = { 0.0f };
+	GLfloat pixels[1] = {0.0f};
 	GLuint texture = 0;
 	
 	try{
 		// generate test array texture
-		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-		if( ! texture ){
-			DETHROW( deeOutOfMemory );
+		OGL_CHECK(renderThread, glGenTextures(1, &texture));
+		if(! texture){
+			DETHROW(deeOutOfMemory);
 		}
 		
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
-		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ) );
-		OGL_CHECK( renderThread, glTexImage2D( GL_TEXTURE_2D, 0,
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, texture));
+		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		OGL_CHECK(renderThread, glTexImage2D(GL_TEXTURE_2D, 0,
 			texformat.GetFormat(), 1, 1, 0, texformat.GetPixelFormat(),
-			texformat.GetPixelType(), ( GLvoid* )&pixels ) );
-		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 4 ) );
+			texformat.GetPixelType(), (GLvoid*)&pixels));
+		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
 		
 		// bind test texture to fbo
 		oglClearError();
-		pglFramebufferTexture( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0 );
+		pglFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
 		
-		if( glGetError() == GL_NO_ERROR ){
+		if(glGetError() == GL_NO_ERROR){
 			// unbind texture
-			OGL_CHECK( renderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, 0, 0 ) );
+			OGL_CHECK(renderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, 0, 0));
 			
 		}else{
 			pWorking = false;
 		}
 		
 		// clean up
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, 0 ) );
-		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D, 0));
+		OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 		
-	}catch( const deException & ){
-		if( texture ){
-			glDeleteTextures( 1, &texture );
+	}catch(const deException &){
+		if(texture){
+			glDeleteTextures(1, &texture);
 		}
 		throw;
 	}
 	
-	if( pWorking ){
-		renderThread.GetLogger().LogInfo( "Capabilities: Framebuffer texture single: Working" );
+	if(pWorking){
+		renderThread.GetLogger().LogInfo("Capabilities: Framebuffer texture single: Working");
 		
 	}else{
-		renderThread.GetLogger().LogWarn( "Capabilities: Framebuffer texture single: Driver Bug!" );
+		renderThread.GetLogger().LogWarn("Capabilities: Framebuffer texture single: Driver Bug!");
 	}
 }

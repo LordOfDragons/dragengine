@@ -45,19 +45,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *TheoraCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *TheoraCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deVideoTheora( *loadableModule );
+		module = new deVideoTheora(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -72,8 +72,8 @@ deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deVideoTheora::deVideoTheora( deLoadableModule &loadableModule ) :
-deBaseVideoModule( loadableModule ){
+deVideoTheora::deVideoTheora(deLoadableModule &loadableModule) :
+deBaseVideoModule(loadableModule){
 }
 
 deVideoTheora::~deVideoTheora(){
@@ -84,49 +84,49 @@ deVideoTheora::~deVideoTheora(){
 // Management
 ///////////////
 
-void deVideoTheora::InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &info ){
-	dethOggReader oggReader( *this, reader );
+void deVideoTheora::InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &info){
+	dethOggReader oggReader(*this, reader);
 	dethInfos oggInfo;
 	
-	oggReader.ReadStreamHeaders( oggInfo );
-	if( ! oggInfo.GetHeaderFinished() ){
-		DETHROW_INFO( deeReadFile, reader.GetFilename() );
+	oggReader.ReadStreamHeaders(oggInfo);
+	if(! oggInfo.GetHeaderFinished()){
+		DETHROW_INFO(deeReadFile, reader.GetFilename());
 	}
 	
-	info.SetWidth( oggInfo.GetWidth() );
-	info.SetHeight( oggInfo.GetHeight() );
-	info.SetComponentCount( oggInfo.GetComponentCount() );
-	info.SetFrameCount( oggInfo.GetFrameCount() );
-	info.SetFrameRate( oggInfo.GetFrameRate() );
-	info.SetColorConversionMatrix( oggInfo.GetColorConversionMatrix() );
+	info.SetWidth(oggInfo.GetWidth());
+	info.SetHeight(oggInfo.GetHeight());
+	info.SetComponentCount(oggInfo.GetComponentCount());
+	info.SetFrameCount(oggInfo.GetFrameCount());
+	info.SetFrameRate(oggInfo.GetFrameRate());
+	info.SetColorConversionMatrix(oggInfo.GetColorConversionMatrix());
 	
-	reader.SetPosition( 0 );
-	dethVideoAudioDecoder audioDecoder( *this, reader );
-	info.SetBytesPerSample( audioDecoder.GetBytesPerSample() );
-	info.SetSampleRate( audioDecoder.GetSampleRate() );
-	info.SetSampleCount( audioDecoder.GetSampleCount() );
-	info.SetChannelCount( audioDecoder.GetChannelCount() );
+	reader.SetPosition(0);
+	dethVideoAudioDecoder audioDecoder(*this, reader);
+	info.SetBytesPerSample(audioDecoder.GetBytesPerSample());
+	info.SetSampleRate(audioDecoder.GetSampleRate());
+	info.SetSampleCount(audioDecoder.GetSampleCount());
+	info.SetChannelCount(audioDecoder.GetChannelCount());
 	
 	/*
-	LogInfoFormat( "InitLoadVideo(%s): size=%dx%d format=%d frames=%d frameRate=%g"
+	LogInfoFormat("InitLoadVideo(%s): size=%dx%d format=%d frames=%d frameRate=%g"
 		" bps=%d channels=%d sampleRate=%d samples=%d", reader.GetFilename(),
 		oggInfo.GetWidth(), oggInfo.GetHeight(), oggInfo.GetPixelFormat(), oggInfo.GetFrameCount(),
 		oggInfo.GetFrameRate(), audioDecoder.GetBytesPerSample(), audioDecoder.GetChannelCount(),
-		audioDecoder.GetSampleRate(), audioDecoder.GetSampleCount() );
+		audioDecoder.GetSampleRate(), audioDecoder.GetSampleCount());
 	*/
 }
 
-void deVideoTheora::SaveVideo( decBaseFileWriter &reader, const deVideo &video ){
+void deVideoTheora::SaveVideo(decBaseFileWriter &reader, const deVideo &video){
 	// not supported yet
 }
 
-deBaseVideoDecoder *deVideoTheora::CreateDecoder( decBaseFileReader *reader ){
-	return new dethVideoDecoder( *this, reader );
+deBaseVideoDecoder *deVideoTheora::CreateDecoder(decBaseFileReader *reader){
+	return new dethVideoDecoder(*this, reader);
 }
 
-deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder( decBaseFileReader *reader ){
-	dethVideoAudioDecoder * const decoder = new dethVideoAudioDecoder( *this, *reader );
-	if( decoder->GetSampleCount() > 0 ){
+deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder(decBaseFileReader *reader){
+	dethVideoAudioDecoder * const decoder = new dethVideoAudioDecoder(*this, *reader);
+	if(decoder->GetSampleCount() > 0){
 		return decoder;
 		
 	}else{

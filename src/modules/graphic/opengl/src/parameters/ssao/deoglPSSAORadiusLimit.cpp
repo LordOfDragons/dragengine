@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSAORadiusLimit::deoglPSSAORadiusLimit( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "ssaoRadiusLimit" );
-	SetDescription( "Sets the screen space radius limit for screen space ambient occlusion."
+deoglPSSAORadiusLimit::deoglPSSAORadiusLimit(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("ssaoRadiusLimit");
+	SetDescription("Sets the screen space radius limit for screen space ambient occlusion."
 		" Screen space ambient occlusion is a distance based algorithm sampling in a certain"
 		" radius around geometry. The projection of the sampling radius as defined by"
 		" ssaoRadius onto the screen depends on the distance to the camera. With decreasing"
 		" distance the screen space radius quickly grows resulting in a sub-optimal size."
 		" This parameter limits the radius for close geometry to a percentage of the screen"
 		" size to avoid problems. The default value of 0.5 (50% of the screen size) provides"
-		" a reasonable limit. This is an advanced parameter and should be left at the default." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSAO Radius Limit" );
-	SetDefaultValue( "0.5" );
+		" a reasonable limit. This is an advanced parameter and should be left at the default.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSAO Radius Limit");
+	SetDefaultValue("0.5");
 }
 
 deoglPSSAORadiusLimit::~deoglPSSAORadiusLimit(){
@@ -67,6 +67,6 @@ float deoglPSSAORadiusLimit::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSAORadiusLimit();
 }
 
-void deoglPSSAORadiusLimit::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSAORadiusLimit( value );
+void deoglPSSAORadiusLimit::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSAORadiusLimit(value);
 }

@@ -46,9 +46,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsParticleEmitter::dedsParticleEmitter( deScriptingDragonScript *ds, deParticleEmitterInstance *emitter ){
-	if( ! ds || ! emitter ){
-		DSTHROW( dueInvalidParam );
+dedsParticleEmitter::dedsParticleEmitter(deScriptingDragonScript *ds, deParticleEmitterInstance *emitter){
+	if(! ds || ! emitter){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	dsRunTime *rt = ds->GetScriptEngine()->GetMainRunTime();
@@ -56,11 +56,11 @@ dedsParticleEmitter::dedsParticleEmitter( deScriptingDragonScript *ds, deParticl
 	pDS = ds;
 	pEmitter = emitter;
 	pHasCB = false;
-	pValCB = rt->CreateValue( ds->GetClassParticleEmitterInstanceListener() );
+	pValCB = rt->CreateValue(ds->GetClassParticleEmitterInstanceListener());
 }
 
 dedsParticleEmitter::~dedsParticleEmitter(){
-	if( ! pValCB ){
+	if(! pValCB){
 		return;
 	}
 	
@@ -68,11 +68,11 @@ dedsParticleEmitter::~dedsParticleEmitter(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( pEmitter && pEmitter->GetRefCount() > 0 ){
-		pDS->AddValueDeleteLater( pValCB );
+	if(pEmitter && pEmitter->GetRefCount() > 0){
+		pDS->AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = NULL;
@@ -88,17 +88,17 @@ dsRealObject *dedsParticleEmitter::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsParticleEmitter::SetCallback( dsRealObject *object ){
-	if( pValCB ){
+void dedsParticleEmitter::SetCallback(dsRealObject *object){
+	if(pValCB){
 		dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
 		
-		if( object ){
-			rt.SetObject( pValCB, object );
-			rt.CastValueTo( pValCB, pValCB, pDS->GetClassParticleEmitterInstanceListener() );
+		if(object){
+			rt.SetObject(pValCB, object);
+			rt.CastValueTo(pValCB, pValCB, pDS->GetClassParticleEmitterInstanceListener());
 			pHasCB = true;
 			
 		}else{
-			rt.SetNull( pValCB, pDS->GetClassParticleEmitterInstanceListener() );
+			rt.SetNull(pValCB, pDS->GetClassParticleEmitterInstanceListener());
 			pHasCB = false;
 		}
 	}
@@ -110,7 +110,7 @@ void dedsParticleEmitter::SetCallback( dsRealObject *object ){
 //////////////////
 
 void dedsParticleEmitter::LastParticleDied(){
-	if( ! pHasCB ){
+	if(! pHasCB){
 		return;
 	}
 	
@@ -120,17 +120,17 @@ void dedsParticleEmitter::LastParticleDied(){
 	
 	// lastParticleDied( ParticleEmitter emitter )
 	try{
-		clsPEI.PushInstance( rt, pEmitter );
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsPEI.PushInstance(rt, pEmitter);
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-void dedsParticleEmitter::CollisionResponse( deCollisionInfo *collisionInfo ){
-	if( pHasCB ){
+void dedsParticleEmitter::CollisionResponse(deCollisionInfo *collisionInfo){
+	if(pHasCB){
 		const int funcIndex = pDS->GetClassParticleEmitterInstanceListener()->GetFuncIndexCollisionResponse();
 		dsRunTime * const rt = pDS->GetScriptEngine()->GetMainRunTime();
 		deClassParticleEmitterInstance &clsPEI = *pDS->GetClassParticleEmitterInstance();
@@ -138,11 +138,11 @@ void dedsParticleEmitter::CollisionResponse( deCollisionInfo *collisionInfo ){
 		
 		// void collisionResponse( ParticleEmitterInstance instance, CollisionInfo collisionInfo )
 		try{
-			clsCI.PushInfo( rt, collisionInfo ); // CollisionInfo collisionInfo
-			clsPEI.PushInstance( rt, pEmitter ); // ParticleEmitterInstance instance
-			rt->RunFunctionFast( pValCB, funcIndex );
+			clsCI.PushInfo(rt, collisionInfo); // CollisionInfo collisionInfo
+			clsPEI.PushInstance(rt, pEmitter); // ParticleEmitterInstance instance
+			rt->RunFunctionFast(pValCB, funcIndex);
 			
-		}catch( const duException &e ){
+		}catch(const duException &e){
 			rt->PrintExceptionTrace();
 			e.PrintError();
 		}

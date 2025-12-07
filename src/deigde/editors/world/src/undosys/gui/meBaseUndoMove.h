@@ -61,22 +61,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Distance to move. */
-	inline const decDVector &GetDistance() const{ return pDistance; }
+	inline const decDVector &GetDistance() const{return pDistance;}
 	
 	/** \brief Set distance to move. */
-	void SetDistance( const decDVector &distance );
+	void SetDistance(const decDVector &distance);
 	
 	/** \brief Orientation modification enabled. */
-	inline bool GetModifyOrientation() const{ return pModifyOrientation; }
+	inline bool GetModifyOrientation() const{return pModifyOrientation;}
 	
 	/** \brief Set if orientation modification is enabled. */
-	void SetModifyOrientation( bool modify );
+	void SetModifyOrientation(bool modify);
 	
 	/** \brief Transformation matrix used only if orientation is modified. */
-	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decDMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** \brief Set transformation matrix used only if orientation is modified. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * 
 	 * Position and orientation are modified in place.
 	 */
-	void TransformElement( decDVector &position, decDVector &rotation );
+	void TransformElement(decDVector &position, decDVector &rotation);
 	
 	/** \brief Progressive redo. */
 	virtual void ProgressiveRedo();

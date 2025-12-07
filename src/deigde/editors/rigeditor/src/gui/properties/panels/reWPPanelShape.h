@@ -45,15 +45,15 @@ protected:
 	class cEditPosition : public igdeEditVectorListener{
 		reWPPanelShape &pPanel;
 	public:
-		cEditPosition( reWPPanelShape &panel );
-		virtual void OnVectorChanged( igdeEditVector *editVector );
+		cEditPosition(reWPPanelShape &panel);
+		virtual void OnVectorChanged(igdeEditVector *editVector);
 	};
 	
 	class cEditRotation : public igdeEditVectorListener{
 		reWPPanelShape &pPanel;
 	public:
-		cEditRotation( reWPPanelShape &panel );
-		virtual void OnVectorChanged( igdeEditVector *editVector );
+		cEditRotation(reWPPanelShape &panel);
+		virtual void OnVectorChanged(igdeEditVector *editVector);
 	};
 	
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShape( reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType );
+	reWPPanelShape(reWPShape &wpShape, reRigShape::eShapeTypes requiredShapeType);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -88,19 +88,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent window. */
-	inline reWPShape &GetWPShares() const{ return pWPShape; }
+	inline reWPShape &GetWPShares() const{return pWPShape;}
 	
 	/** \brief Required shape type. */
-	inline reRigShape::eShapeTypes GetRequiredShapeType() const{ return pRequiredShapeType; }
+	inline reRigShape::eShapeTypes GetRequiredShapeType() const{return pRequiredShapeType;}
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	
 	/** \brief Shape. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline reRigShape *GetShape() const{return pShape;}
 	
 	/** \brief Set shape. */
-	void SetShape( reRig *rig, reRigShape *shape );
+	void SetShape(reRig *rig, reRigShape *shape);
 	
 	
 	

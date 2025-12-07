@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration. */
-	desynConfiguration( deDESynthesizer &module );
+	desynConfiguration(deDESynthesizer &module);
 	
 	/** \brief Clean up configuration. */
 	~desynConfiguration();
@@ -60,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer size threshold to stream sound samples. */
-	inline int GetStreamBufSizeThreshold() const{ return pStreamBufSizeThreshold; }
+	inline int GetStreamBufSizeThreshold() const{return pStreamBufSizeThreshold;}
 	
 	/** \brief Set buffer size threshold to stream sound samples. */
-	void SetStreamBufSizeThreshold( int threshold );
+	void SetStreamBufSizeThreshold(int threshold);
 	
 	
 	
@@ -77,15 +77,15 @@ public:
 	
 private:
 	void pCleanUp();
-	void pLoadConfig( decBaseFileReader *file );
-	decXmlElementTag *pGetTagAt( const decXmlElementTag &tag, int index );
-	decXmlAttValue *pFindAttribute( const decXmlElementTag &tag, const char *name );
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name );
-	int pGetAttributeInt( const decXmlElementTag &tag, const char *name );
-	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name );
-	const char *pGetCData( const decXmlElementTag &tag, const char *defaultValue );
-	bool pGetCDataBool( const decXmlElementTag &tag, bool defaultValue );
-	int pGetCDataInt( const decXmlElementTag &tag, int defaultValue );
+	void pLoadConfig(decBaseFileReader *file);
+	decXmlElementTag *pGetTagAt(const decXmlElementTag &tag, int index);
+	decXmlAttValue *pFindAttribute(const decXmlElementTag &tag, const char *name);
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name);
+	int pGetAttributeInt(const decXmlElementTag &tag, const char *name);
+	float pGetAttributeFloat(const decXmlElementTag &tag, const char *name);
+	const char *pGetCData(const decXmlElementTag &tag, const char *defaultValue);
+	bool pGetCDataBool(const decXmlElementTag &tag, bool defaultValue);
+	int pGetCDataInt(const decXmlElementTag &tag, int defaultValue);
 };
 
 #endif

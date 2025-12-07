@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet rig peer. */
-	debpRig( dePhysicsBullet &bullet, const deRig &rig );
+	debpRig(dePhysicsBullet &bullet, const deRig &rig);
 	
 	/** \brief Clean up rig peer. */
 	virtual ~debpRig();
@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet module. */
-	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
+	inline dePhysicsBullet &GetBullet() const{return pBullet;}
 	
 	/** \brief Engine rig. */
-	inline const deRig &GetRig() const{ return pRig; }
+	inline const deRig &GetRig() const{return pRig;}
 	
 	/** \brief Rig mass. */
-	inline float GetMass() const{ return pMass; }
+	inline float GetMass() const{return pMass;}
 	
 	/** \brief Inverse rig mass. */
-	inline float GetInverseMass() const{ return pInvMass; }
+	inline float GetInverseMass() const{return pInvMass;}
 	
 	
 	

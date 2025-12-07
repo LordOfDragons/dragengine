@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetOffset::reUConstraintSetOffset( reRigConstraint *constraint, const decVector &newOffset ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetOffset::reUConstraintSetOffset(reRigConstraint *constraint, const decVector &newOffset){
+	if(! constraint || ! constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,13 +50,13 @@ reUConstraintSetOffset::reUConstraintSetOffset( reRigConstraint *constraint, con
 	pOldOffset = constraint->GetOffset();
 	pNewOffset = newOffset;
 	
-	SetShortInfo( "Constraint set offset" );
+	SetShortInfo("Constraint set offset");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintSetOffset::~reUConstraintSetOffset(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ reUConstraintSetOffset::~reUConstraintSetOffset(){
 ///////////////
 
 void reUConstraintSetOffset::Undo(){
-	pConstraint->SetOffset( pOldOffset );
+	pConstraint->SetOffset(pOldOffset);
 }
 
 void reUConstraintSetOffset::Redo(){
-	pConstraint->SetOffset( pNewOffset );
+	pConstraint->SetOffset(pNewOffset);
 }

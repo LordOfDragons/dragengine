@@ -42,16 +42,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitRemoveAll::ceUCAWaitRemoveAll( ceConversationTopic *topic, ceCAWait *wait ){
-	if( ! topic || ! wait ){
-		DETHROW( deeInvalidParam );
+ceUCAWaitRemoveAll::ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wait){
+	if(! topic || ! wait){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pWait = NULL;
 	pActionList = wait->GetActions();
 	
-	SetShortInfo( "Action Wait Remove All Actions" );
+	SetShortInfo("Action Wait Remove All Actions");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -61,10 +61,10 @@ ceUCAWaitRemoveAll::ceUCAWaitRemoveAll( ceConversationTopic *topic, ceCAWait *wa
 }
 
 ceUCAWaitRemoveAll::~ceUCAWaitRemoveAll(){
-	if( pWait ){
+	if(pWait){
 		pWait->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -76,16 +76,16 @@ ceUCAWaitRemoveAll::~ceUCAWaitRemoveAll(){
 
 void ceUCAWaitRemoveAll::Undo(){
 	pWait->GetActions() = pActionList;
-	pTopic->NotifyActionStructureChanged( pWait );
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
+	if(pActionList.GetCount() > 0){
+		pTopic->SetActive(pActionList.GetAt(0), NULL);
 	}
 }
 
 void ceUCAWaitRemoveAll::Redo(){
 	pWait->GetActions().RemoveAll();
-	pTopic->NotifyActionStructureChanged( pWait );
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( pWait, NULL );
+	pTopic->SetActive(pWait, NULL);
 }

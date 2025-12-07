@@ -46,27 +46,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCNavBlocker::gdeWPSTIMOCNavBlocker( gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCNavigationBlocker *navBlocker, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassNavigationBlocker, objectClass, index ),
-pNavBlocker( NULL )
+gdeWPSTIMOCNavBlocker::gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree,
+	gdeObjectClass *objectClass, gdeOCNavigationBlocker *navBlocker, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassNavigationBlocker, objectClass, index),
+pNavBlocker(NULL)
 {
-	if( ! navBlocker ){
-		DETHROW( deeInvalidParam );
+	if(! navBlocker){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Navigation Blocker #%d", index + 1 );
-	SetText( text );
+	text.Format("Navigation Blocker #%d", index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pNavBlocker = navBlocker;
 	navBlocker->AddReference();
 }
 
 gdeWPSTIMOCNavBlocker::~gdeWPSTIMOCNavBlocker(){
-	if( pNavBlocker ){
+	if(pNavBlocker){
 		pNavBlocker->FreeReference();
 	}
 }
@@ -77,8 +77,8 @@ gdeWPSTIMOCNavBlocker::~gdeWPSTIMOCNavBlocker(){
 ///////////////
 
 void gdeWPSTIMOCNavBlocker::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
@@ -93,20 +93,20 @@ void gdeWPSTIMOCNavBlocker::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCNavBlocker::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCNavigationBlocker( pNavBlocker );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCNavigationBlocker );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCNavigationBlocker(pNavBlocker);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCNavigationBlocker);
 }
 
-void gdeWPSTIMOCNavBlocker::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCNavBlocker::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavBlockerAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavBlockerRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavBlockerAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavBlockerRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavBlockerCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavBlockerCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCNavBlockerPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavBlockerCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavBlockerCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCNavBlockerPaste());
 }

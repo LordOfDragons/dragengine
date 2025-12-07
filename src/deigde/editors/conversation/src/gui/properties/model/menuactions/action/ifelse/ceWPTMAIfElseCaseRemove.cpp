@@ -50,18 +50,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseRemove::ceWPTMAIfElseCaseRemove( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseRemove::ceWPTMAIfElseCaseRemove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase *ifCase ) :
-ceWPTMenuAction( windowMain, "Remove If-Case",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( ifCase )
+ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
+ceWPTMenuAction(windowMain, "Remove If-Case",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(ifCase)
 {
-	if( ! ifCase ){
-		DETHROW( deeInvalidParam );
+	if(! ifCase){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -75,13 +75,13 @@ void ceWPTMAIfElseCaseRemove::OnAction(){
 		pTopic, pIfElse, pIfCase));
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(! wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAIfElse * const modelIfElse = ( ceWPTTIMAIfElse* )model.DeepFindAction( pIfElse );
-	if( ! modelIfElse ){
+	ceWPTTIMAIfElse * const modelIfElse = (ceWPTTIMAIfElse*)model.DeepFindAction(pIfElse);
+	if(! modelIfElse){
 		return;
 	}
 	

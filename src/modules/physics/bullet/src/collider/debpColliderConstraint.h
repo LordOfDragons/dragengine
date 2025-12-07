@@ -92,7 +92,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create collider constraint. */
-	debpColliderConstraint( dePhysicsBullet &bullet, deColliderConstraint &constraint );
+	debpColliderConstraint(dePhysicsBullet &bullet, deColliderConstraint &constraint);
 	
 	/** Clean up collider constraint. */
 	~debpColliderConstraint();
@@ -103,64 +103,64 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine constraint. */
-	inline deColliderConstraint &GetConstraint() const{ return pConstraint; }
+	inline deColliderConstraint &GetConstraint() const{return pConstraint;}
 	
 	/** Rig bone constraint index or -1 if not set. */
-	inline int GetRigBoneConstraintIndex() const{ return pRigBoneConstraintIndex; }
+	inline int GetRigBoneConstraintIndex() const{return pRigBoneConstraintIndex;}
 	
 	/** Set rig bone constraint index or -1 if not set. */
-	void SetRigBoneConstraintIndex( int index );
+	void SetRigBoneConstraintIndex(int index);
 	
 	/** Dynamics world. */
-	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
+	inline debpCollisionWorld *GetDynamicsWorld() const{return pDynWorld;}
 	
 	/** Set dynamics world. */
-	void SetDynamicsWorld( debpCollisionWorld *dynWorld );
+	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	
 	/** Bullet constraint or nullptr. */
-	inline btTypedConstraint *GetBpConstraint() const{ return pBpConstraint; }
+	inline btTypedConstraint *GetBpConstraint() const{return pBpConstraint;}
 	
 	/** First physics body or nullptr. */
-	inline debpPhysicsBody *GetFirstBody() const{ return pPhyBody1; }
+	inline debpPhysicsBody *GetFirstBody() const{return pPhyBody1;}
 	
 	/** Set first physics body or nullptr. */
-	void SetFirstBody( debpPhysicsBody *body );
+	void SetFirstBody(debpPhysicsBody *body);
 	
 	/** Second physics body or nullptr. */
-	inline debpPhysicsBody *GetSecondBody() const{ return pPhyBody2; }
+	inline debpPhysicsBody *GetSecondBody() const{return pPhyBody2;}
 	
 	/** Set second physics body or nullptr. */
-	void SetSecondBody( debpPhysicsBody *body );
+	void SetSecondBody(debpPhysicsBody *body);
 	
 	/** Offset for first physics body. */
-	inline const decVector &GetFirstOffset() const{ return pOffset1; }
+	inline const decVector &GetFirstOffset() const{return pOffset1;}
 	
 	/** Set offset for first physics body. */
-	void SetFirstOffset( const decVector &offset );
+	void SetFirstOffset(const decVector &offset);
 	
 	/** Offset for second physics body. */
-	inline const decVector &GetSecondOffset() const{ return pOffset2; }
+	inline const decVector &GetSecondOffset() const{return pOffset2;}
 	
 	/** Set offset for second physics body. */
-	void SetSecondOffset( const decVector &offset );
+	void SetSecondOffset(const decVector &offset);
 	
 	/** Type of constraint. */
-	inline eConstraintType GetConstraintType() const{ return pConstraintType; }
+	inline eConstraintType GetConstraintType() const{return pConstraintType;}
 	
 	/** Constraint can be broken. */
 	bool IsBreakable() const;
 	
 	/** Constraint is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** Set if constraint is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** Constraint has broken due to physics simulation. */
-	inline bool GetHasBroken() const{ return pHasBroken; }
+	inline bool GetHasBroken() const{return pHasBroken;}
 	
 	/** Set if constraint has broken due to physics simulation. */
-	void SetHasBroken( bool hasBroken );
+	void SetHasBroken(bool hasBroken);
 	
 	/**
 	 * Prepare constraint for next detection step.
@@ -185,10 +185,10 @@ public:
 	void ConstraintChanged();
 	
 	/** Notify rigid body has been created. */
-	void RigidBodyCreated( debpPhysicsBody *body );
+	void RigidBodyCreated(debpPhysicsBody *body);
 	
 	/** Notify rigid body is about to be destroyed. */
-	void RigidBodyDestroy( debpPhysicsBody *body );
+	void RigidBodyDestroy(debpPhysicsBody *body);
 	
 	/**
 	 * Notify physics body is about to be destroyed.
@@ -196,7 +196,7 @@ public:
 	 * This should never happen if we unregistered ourself correctly. If this does
 	 * happen we have to invalidate the given body without unregistering ourself first.
 	 */
-	void PhysicsBodyDestroy( debpPhysicsBody *body );
+	void PhysicsBodyDestroy(debpPhysicsBody *body);
 	/*@}*/
 	
 	
@@ -204,10 +204,10 @@ public:
 	/** \name Internal use only */
 	/*@{*/
 	/** Calculate motor velocity for angular joint friction. */
-	decVector AngularJointFrictionVelocity( float timeStep ) const;
+	decVector AngularJointFrictionVelocity(float timeStep) const;
 	
 	/** Calculate motor velocity for linear joint friction. */
-	decVector LinearJointFrictionVelocity( float timeStep ) const;
+	decVector LinearJointFrictionVelocity(float timeStep) const;
 	/*@}*/
 	
 	

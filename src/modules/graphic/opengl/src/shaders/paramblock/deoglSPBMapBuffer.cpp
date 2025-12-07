@@ -37,29 +37,29 @@
 ////////////////////////////
 
 
-deoglSPBMapBuffer::deoglSPBMapBuffer( deoglShaderParameterBlock &block ) :
-pBlock( block ),
-pElement( 0 ),
-pCount( block.GetElementCount() ),
-pMapped( false )
+deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block) :
+pBlock(block),
+pElement(0),
+pCount(block.GetElementCount()),
+pMapped(false)
 {
 	Map();
 }
 
-deoglSPBMapBuffer::deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element ) :
-pBlock( block ),
-pElement( element ),
-pCount( 1 ),
-pMapped( false )
+deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block, int element) :
+pBlock(block),
+pElement(element),
+pCount(1),
+pMapped(false)
 {
 	Map();
 }
 
-deoglSPBMapBuffer::deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element, int count ) :
-pBlock( block ),
-pElement( element ),
-pCount( count ),
-pMapped( false )
+deoglSPBMapBuffer::deoglSPBMapBuffer(deoglShaderParameterBlock &block, int element, int count) :
+pBlock(block),
+pElement(element),
+pCount(count),
+pMapped(false)
 {
 	Map();
 }
@@ -74,16 +74,16 @@ deoglSPBMapBuffer::~deoglSPBMapBuffer(){
 ///////////////
 
 void deoglSPBMapBuffer::Map(){
-	if( pMapped ){
+	if(pMapped){
 		return;
 	}
 	
-	pBlock.MapBuffer( pElement, pCount );
+	pBlock.MapBuffer(pElement, pCount);
 	pMapped = true;
 }
 
 void deoglSPBMapBuffer::Unmap(){
-	if( ! pMapped ){
+	if(! pMapped){
 		return;
 	}
 	

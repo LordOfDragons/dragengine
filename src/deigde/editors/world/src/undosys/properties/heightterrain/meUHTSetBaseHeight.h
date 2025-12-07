@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetBaseHeight( meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight );
+	meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight);
 	
 protected:
 	/** \brief Clean up object. */

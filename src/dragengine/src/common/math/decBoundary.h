@@ -54,7 +54,7 @@ public:
 	}
 	
 	/** \brief Create new boundary object with the given values. */
-	inline decBoundary( int nx1, int ny1, int nx2, int ny2 ){
+	inline decBoundary(int nx1, int ny1, int nx2, int ny2){
 		x1 = nx1;
 		y1 = ny1;
 		x2 = nx2;
@@ -62,7 +62,7 @@ public:
 	}
 	
 	/** \brief Create new boundary object with the values of another boundary object. */
-	inline decBoundary( const decBoundary &b ){
+	inline decBoundary(const decBoundary &b){
 		x1 = b.x1;
 		y1 = b.y1;
 		x2 = b.x2;
@@ -86,16 +86,16 @@ public:
 	void OrientateLine();
 	
 	/** \brief Returns the point formed by adding the given point to the top left corner point. */
-	inline decPoint MapPoint( const decPoint &pt ) const{ return decPoint( x1 + pt.x, y1 + pt.y ); }
+	inline decPoint MapPoint(const decPoint &pt) const{return decPoint(x1 + pt.x, y1 + pt.y);}
 	
 	/** \brief Top left boundary. */
-	inline decPoint GetTopLeft() const{ return decPoint(x1, y1); }
+	inline decPoint GetTopLeft() const{return decPoint(x1, y1);}
 	
 	/** \brief Top left boundary. */
-	inline decPoint GetBottomRight() const{ return decPoint(x2, y2); }
+	inline decPoint GetBottomRight() const{return decPoint(x2, y2);}
 	
 	/** \brief Boundary size. */
-	inline decPoint GetSize() const{ return decPoint(x1 + x2, y1 + y2); }
+	inline decPoint GetSize() const{return decPoint(x1 + x2, y1 + y2);}
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set components of this boundary object to the values of another one. */
-	decBoundary &operator=( const decBoundary &b );
+	decBoundary &operator=(const decBoundary &b);
 	
 	/** \brief Boundaries are equal. */
 	bool operator==(const decBoundary &b) const;

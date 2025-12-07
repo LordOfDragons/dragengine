@@ -102,11 +102,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rule. */
-	meHTVRule( int type, int slotCount );
+	meHTVRule(int type, int slotCount);
 	
 protected:
 	/** \brief Create copy of rule. */
-	meHTVRule( const meHTVRule &rule );
+	meHTVRule(const meHTVRule &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRule();
@@ -118,41 +118,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the type. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	/** Retrieves the position. */
-	inline const decVector2 &GetPosition() const{ return pPosition; }
+	inline const decVector2 &GetPosition() const{return pPosition;}
 	/** Sets the position. */
-	void SetPosition( const decVector2 &position );
+	void SetPosition(const decVector2 &position);
 	/** Determines if parameters are shown. */
-	inline bool GetShowParameters() const{ return pShowParameters; }
+	inline bool GetShowParameters() const{return pShowParameters;}
 	/** Sets if parameters are shown. */
-	void SetShowParameters( bool showParameters );
+	void SetShowParameters(bool showParameters);
 	
 	/** \brief Count of slots. */
-	inline int GetSlotCount() const{ return pSlotCount; }
+	inline int GetSlotCount() const{return pSlotCount;}
 	
 	/** \brief Slot at index. */
-	meHTVRSlot &GetSlotAt( int slot ) const;
+	meHTVRSlot &GetSlotAt(int slot) const;
 	
 	/**
 	 * Determines if this rule depends directly or indirectly on another rule.
 	 * A rule depends on another rule if the given node can be reached while
 	 * moving along the input slot links.
 	 */
-	bool DependsOn( meHTVRule *rule ) const;
+	bool DependsOn(meHTVRule *rule) const;
 	
 	/** Resets the rule state. */
 	virtual void Reset();
 	/** Evaluate rule. */
-	virtual void Evaluate( meHTVEvaluationEnvironment &evalEnv );
+	virtual void Evaluate(meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const = 0;

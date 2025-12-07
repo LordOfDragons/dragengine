@@ -55,50 +55,50 @@ public:
 	/**
 	 * Creates a new collision box with the given parameters.
 	 */
-	deoglDCollisionBox( const decDVector &center, const decDVector &halfSize );
+	deoglDCollisionBox(const decDVector &center, const decDVector &halfSize);
 	/**
 	 * Creates a new collision box with the given parameters.
 	 */
-	deoglDCollisionBox( const decDVector &center, const decDVector &halfSize, const decQuaternion &orientation );
+	deoglDCollisionBox(const decDVector &center, const decDVector &halfSize, const decQuaternion &orientation);
 	/** Cleans up the collision box. */
 	virtual ~deoglDCollisionBox();
 	/*@}*/
 	
 	/** \name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( deoglDCollisionVolume *volume );
-	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
+	virtual bool VolumeHitsVolume(deoglDCollisionVolume *volume);
+	virtual double VolumeMoveHitsVolume(deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( deoglDCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( deoglDCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( deoglDCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( deoglDCollisionBox *box );
-	virtual bool TriangleHitsVolume( deoglDCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( deoglDCollisionFrustum *frustum );
-	virtual double SphereMoveHitsVolume( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
-	virtual double CylinderMoveHitsVolume( deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal );
-	virtual double CapsuleMoveHitsVolume( deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal );
-	virtual double BoxMoveHitsVolume( deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal );
-	virtual double TriangleMoveHitsVolume( deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal );
-	virtual double FrustumMoveHitsVolume( deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal );
-	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
+	virtual bool SphereHitsVolume(deoglDCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(deoglDCollisionCylinder *cylinder);
+	virtual bool CapsuleHitsVolume(deoglDCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(deoglDCollisionBox *box);
+	virtual bool TriangleHitsVolume(deoglDCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(deoglDCollisionFrustum *frustum);
+	virtual double SphereMoveHitsVolume(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
+	virtual double CylinderMoveHitsVolume(deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
+	virtual double CapsuleMoveHitsVolume(deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
+	virtual double BoxMoveHitsVolume(deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal);
+	virtual double TriangleMoveHitsVolume(deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal);
+	virtual double FrustumMoveHitsVolume(deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal);
+	virtual double PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** \name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( deoglDCollisionSphere *sphere );
-	virtual void GetEnclosingBox( deoglDCollisionBox *box );
+	virtual void GetEnclosingSphere(deoglDCollisionSphere *sphere);
+	virtual void GetEnclosingBox(deoglDCollisionBox *box);
 	/*@}*/
 	
 	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decDVector &point );
+	virtual bool IsPointInside(const decDVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decDVector ClosestPointTo( const decDVector &point );
+	virtual decDVector ClosestPointTo(const decDVector &point);
 	
 	/**
 	 * Retrieves the surface normal through the given point. The point is either right on the
@@ -108,7 +108,7 @@ public:
 	 * @param point Point to determine the normal for.
 	 * @return Surface normal at given point.
 	 */
-	virtual decDVector NormalAtPoint( const decDVector &point );
+	virtual decDVector NormalAtPoint(const decDVector &point);
 	/**
 	 * Determines if a ray hits the volume.
 	 * @param rayOrigin Origin of the ray.
@@ -117,74 +117,74 @@ public:
 	 * to the collision point.
 	 * @return True if the ray hits the volume.
 	 */
-	virtual bool RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance );
+	virtual bool RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance);
 	/*@}*/
 	
 	/** \name Visiting */
 	/*{*/
-	virtual void Visit( deoglDCollisionVolumeVisitor *visitor );
+	virtual void Visit(deoglDCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this box. */
-	bool SphereHitsBox( deoglDCollisionSphere *sphere );
+	bool SphereHitsBox(deoglDCollisionSphere *sphere);
 	/**
 	 * Determines if the given cylinder hits this box.
 	 * @warning Not implemented yet and returns always false.
 	 */
-	bool CylinderHitsBox( deoglDCollisionCylinder *cylinder );
+	bool CylinderHitsBox(deoglDCollisionCylinder *cylinder);
 	/** Determines if the given capsule hits this box. */
-	bool CapsuleHitsBox( deoglDCollisionCapsule *capsule );
+	bool CapsuleHitsBox(deoglDCollisionCapsule *capsule);
 	/** Determines if the given box hits this box. */
-	bool BoxHitsBox( deoglDCollisionBox *box );
+	bool BoxHitsBox(deoglDCollisionBox *box);
 	
 	/**
 	 * Determines the distance of the given sphere to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double SphereMoveHitsBox( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal );
+	double SphereMoveHitsBox(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given cylinder to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double CylinderMoveHitsBox( deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal );
+	double CylinderMoveHitsBox(deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given capsule to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double CapsuleMoveHitsBox( deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal );
+	double CapsuleMoveHitsBox(deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal);
 	/**
 	 * Determines the distance of the given box to move until colliding with this box.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	double BoxMoveHitsBox( deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal );
+	double BoxMoveHitsBox(deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal);
 	/*@}*/
 	
 	/** \name Parameters */
 	/*@{*/
 	/** Retrieves the center. */
-	inline const decDVector &GetCenter() const{ return pCenter; }
+	inline const decDVector &GetCenter() const{return pCenter;}
 	/** Retrieves the half sizes. */
-	inline const decDVector &GetHalfSize() const{ return pHalfSize; }
+	inline const decDVector &GetHalfSize() const{return pHalfSize;}
 	/** Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	/** Determines if this box is axis aligned. */
-	inline bool GetAxisAligned() const{ return ! pOriented; }
+	inline bool GetAxisAligned() const{return ! pOriented;}
 	/** Determines if this box is oriented. */
-	inline bool GetOriented() const{ return pOriented; }
+	inline bool GetOriented() const{return pOriented;}
 	/** Retrieves the x axis. */
-	inline const decDVector &GetAxisX() const{ return pAxisX; }
+	inline const decDVector &GetAxisX() const{return pAxisX;}
 	/** Retrieves the y axis. */
-	inline const decDVector &GetAxisY() const{ return pAxisY; }
+	inline const decDVector &GetAxisY() const{return pAxisY;}
 	/** Retrieves the z axis. */
-	inline const decDVector &GetAxisZ() const{ return pAxisZ; }
+	inline const decDVector &GetAxisZ() const{return pAxisZ;}
 	/** Sets the center. */
-	void SetCenter( const decDVector &center );
+	void SetCenter(const decDVector &center);
 	/** Sets the half sizes. All components have to be at least 0. */
-	void SetHalfSize( const decDVector &halfSize );
+	void SetHalfSize(const decDVector &halfSize);
 	/** Sets the orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	/** Clears the rotation and turns the box into an axis aligned box. */
 	void ClearOrientation();
 	/**
@@ -192,21 +192,21 @@ public:
 	 * define the minimal and maximal values on the approriate axis
 	 * the box has to spawn. The resulting box is axis aligned.
 	 */
-	void SetFromExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetFromExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	/** Moves the center of the box by the given offset. */
-	void MoveBy( const decDVector &offset );
+	void MoveBy(const decDVector &offset);
 	/** Projects the extends of the box to the given axis. */
-	inline double ProjectExtends( const decDVector &axis ) const{
-		return fabs( axis * pAxisX ) * pHalfSize.x + fabs( axis * pAxisY ) * pHalfSize.y + fabs( axis * pAxisZ ) * pHalfSize.z;
+	inline double ProjectExtends(const decDVector &axis) const{
+		return fabs(axis * pAxisX) * pHalfSize.x + fabs(axis * pAxisY) * pHalfSize.y + fabs(axis * pAxisZ) * pHalfSize.z;
 	}
 	/*@}*/
 
-	decDVector WorldToLocal( const decDVector &point ) const;
-	decDVector LocalToWorld( const decDVector &point ) const;
-	decDVector NormalWorldToLocal( const decDVector &normal ) const;
-	decDVector NormalLocalToWorld( const decDVector &normal ) const;
+	decDVector WorldToLocal(const decDVector &point) const;
+	decDVector LocalToWorld(const decDVector &point) const;
+	decDVector NormalWorldToLocal(const decDVector &normal) const;
+	decDVector NormalLocalToWorld(const decDVector &normal) const;
 private:
-	decDVector pAxisAlignedCPTo( const decDVector &point );
+	decDVector pAxisAlignedCPTo(const decDVector &point);
 };
 
 

@@ -47,7 +47,7 @@ public:
 	seLinkList();
 	
 	/** \brief Create copy of link list. */
-	seLinkList( const seLinkList &copy );
+	seLinkList(const seLinkList &copy);
 	
 	/** \brief Clean up link list. */
 	~seLinkList();
@@ -64,32 +64,32 @@ public:
 	 * \brief Link at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	seLink *GetAt( int index ) const;
+	seLink *GetAt(int index) const;
 	
 	/**
 	 * \brief Index of link or -1 if not present in the list.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
-	int IndexOf( seLink *link ) const;
+	int IndexOf(seLink *link) const;
 	
 	/**
 	 * \brief Determine if a link is present in the list.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
-	bool Has( seLink *link ) const;
+	bool Has(seLink *link) const;
 	
 	/**
 	 * \brief Add link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 */
-	void Add( seLink *link );
+	void Add(seLink *link);
 	
 	/**
 	 * \brief Insert link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( seLink *link, int index );
+	void Insert(seLink *link, int index);
 	
 	/**
 	 * \brief Move link.
@@ -97,14 +97,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( seLink *link, int index );
+	void Move(seLink *link, int index);
 	
 	/**
 	 * \brief Remove link.
 	 * \throws deeInvalidParam \em link is \em NULL.
 	 * \throws deeInvalidParam \em link is not present in the list.
 	 */
-	void Remove( seLink *link );
+	void Remove(seLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAll();
@@ -113,10 +113,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link list to this link list. */
-	seLinkList &operator=( const seLinkList &list );
+	seLinkList &operator=(const seLinkList &list);
 	
 	/** \brief Add links from link list if not present in this link list. */
-	seLinkList &operator+=( const seLinkList &list );
+	seLinkList &operator+=(const seLinkList &list);
 	/*@}*/
 };
 

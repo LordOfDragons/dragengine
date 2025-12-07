@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin builder. */
-	seSkinBuilder( const seSkin &skin );
+	seSkinBuilder(const seSkin &skin);
 	
 	/** Clean up skin builder. */
 	virtual ~seSkinBuilder();
@@ -60,20 +60,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Build skin into the provided skin object. */
-    virtual void BuildSkin( deSkin *engSkin );
+    virtual void BuildSkin(deSkin *engSkin);
 	
 	/** Create skin property node group. */
-	void CreateNodeGroup( deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup );
+	void CreateNodeGroup(deSkinPropertyNodeGroup &engNodeGroup, const sePropertyNodeGroup &nodeGroup);
 	
 	/** Create skin property node. */
-	deSkinPropertyNode *CreateNode( const sePropertyNode &node );
+	deSkinPropertyNode *CreateNode(const sePropertyNode &node);
 	/*@}*/
 	
 	
 	
 protected:
-	void pAddMapped( deSkin &engSkin );
-	void pAddTextures( deSkin &engSkin );
+	void pAddMapped(deSkin &engSkin);
+	void pAddTextures(deSkin &engSkin);
 };
 
 #endif

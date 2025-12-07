@@ -83,7 +83,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create openal filter. */
-	deoalFilter( deoalAudioThread &audioThread );
+	deoalFilter(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up openal filter. */
 	~deoalFilter();
@@ -94,18 +94,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/** \brief Filter. */
-	inline ALuint GetFilter() const{ return pFilter; }
+	inline ALuint GetFilter() const{return pFilter;}
 	
 	
 	
 	/** \brief Set filter type. */
-	void SetType( eFilterType type );
+	void SetType(eFilterType type);
 	
 	/** \brief Set gain. */
-	void SetGain( float gain );
+	void SetGain(float gain);
 	
 	/**
 	 * \brief Set low frequency gain relative to gain.
@@ -114,7 +114,7 @@ public:
 	 * value of 0.5 and \em gainLow a value of 0.2 then the effective volume of
 	 * low frequencies is 0.1 .
 	 */
-	void SetGainLF( float gain );
+	void SetGainLF(float gain);
 	
 	/**
 	 * \brief Set high frequency gain relative to gain.
@@ -123,12 +123,12 @@ public:
 	 * value of 0.5 and \em gainHigh a value of 0.2 then the effective volume of
 	 * high frequencies is 0.1 .
 	 */
-	void SetGainHF( float gain );
+	void SetGainHF(float gain);
 	
 	/**
 	 * \brief Set gain values.
 	 */
-	void SetGains( float gain, float gainLF, float gainHF );
+	void SetGains(float gain, float gainLF, float gainHF);
 	/*@}*/
 };
 

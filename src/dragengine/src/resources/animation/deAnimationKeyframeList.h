@@ -57,20 +57,20 @@ public:
 	/** \name Keyframe Management */
 	/*@{*/
 	/** \brief Count of keyframes. */
-	inline int GetKeyframeCount() const{ return pKeyframeCount; }
+	inline int GetKeyframeCount() const{return pKeyframeCount;}
 	
 	/** \brief Keyframe at the given index. */
-	deAnimationKeyframe *GetKeyframe( int index ) const;
+	deAnimationKeyframe *GetKeyframe(int index) const;
 	
 	/** \brief Adds a new keyframe */
-	void AddKeyframe( deAnimationKeyframe *keyframe );
+	void AddKeyframe(deAnimationKeyframe *keyframe);
 	
 	/**
 	 * \brief Index of the keyframe the biggest time right before or exactly at the given time.
 	 * 
 	 * This function is depracted and will be removed soon.
 	 */
-	int GetLeadingKeyframe( int startkf, float time ) const;
+	int GetLeadingKeyframe(int startkf, float time) const;
 	/*@}*/
 };
 

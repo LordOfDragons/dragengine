@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deSkinPropertyVisitorLoad( deEngine &engine, deVirtualFileSystem *vfs, const char *basePath );
+	deSkinPropertyVisitorLoad(deEngine &engine, deVirtualFileSystem *vfs, const char *basePath);
 	
 	/** \brief Clean up visitor. */
 	virtual ~deSkinPropertyVisitorLoad();
@@ -65,13 +65,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit image property. */
-	virtual void VisitImage( deSkinPropertyImage &property );
+	virtual void VisitImage(deSkinPropertyImage &property);
 	
 	/** \brief Visit video property. */
-	virtual void VisitVideo( deSkinPropertyVideo &property );
+	virtual void VisitVideo(deSkinPropertyVideo &property);
 	
 	/** \brief Visit constructed property. */
-	virtual void VisitConstructed( deSkinPropertyConstructed &property );
+	virtual void VisitConstructed(deSkinPropertyConstructed &property);
 	/*@}*/
 };
 

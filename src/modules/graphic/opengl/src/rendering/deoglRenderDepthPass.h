@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderDepthPass( deoglRenderThread &renderThread );
+	deoglRenderDepthPass(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderDepthPass();
@@ -67,7 +67,7 @@ public:
 	 * - count transparency
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidDepthPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderSolidDepthPass(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray);
 	
 	
 	
@@ -78,8 +78,8 @@ public:
 	 * - render geometry
 	 * Invalidates no attachments.
 	 */
-	void RenderDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
-		bool solid, bool maskedOnly, bool reverseDepthTest, bool xray );
+	void RenderDepth(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask,
+		bool solid, bool maskedOnly, bool reverseDepthTest, bool xray);
 	
 	
 	
@@ -89,7 +89,7 @@ public:
 	 * Using FBO Def-Ren Depth-MipMap. Renders from one mip map level to the next one.
 	 * Clears each level. Invalidates no buffers.
 	 */
-	void DownsampleDepth( deoglRenderPlan &plan );
+	void DownsampleDepth(deoglRenderPlan &plan);
 	
 	/**
 	 * Render occlusion query pass.
@@ -97,7 +97,7 @@ public:
 	 * Using FBO Def-Ren Depth set by RenderSolidGeometryPass. No clearing.
 	 * Invalidates no attachments.
 	 */
-	void RenderOcclusionQueryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderOcclusionQueryPass(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	/*@}*/
 };
 

@@ -40,58 +40,58 @@
 ////////////////////////////
 
 gdeOCComponent::gdeOCComponent() :
-pDoNotScale( false ),
-pStatic( true ),
-pRenderEnvMap( true ),
-pAffectsAudio( true ),
-pPartialHide( false ),
-pAttachTarget( true ),
-pLightShadowIgnore( false ),
-pColliderResponseType( deCollider::ertStatic ),
-pActiveTexture( NULL ){
+pDoNotScale(false),
+pStatic(true),
+pRenderEnvMap(true),
+pAffectsAudio(true),
+pPartialHide(false),
+pAttachTarget(true),
+pLightShadowIgnore(false),
+pColliderResponseType(deCollider::ertStatic),
+pActiveTexture(NULL){
 }
 
-gdeOCComponent::gdeOCComponent( const gdeOCComponent &component ) :
-pModelPath( component.pModelPath ),
-pSkinPath( component.pSkinPath ),
-pRigPath( component.pRigPath ),
-pAnimatorPath( component.pAnimatorPath ),
-pOccMeshPath( component.pOccMeshPath ),
-pAudioModelPath( component.pAudioModelPath ),
-pPlaybackController( component.pPlaybackController ),
-pAnimationPath( component.pAnimationPath ),
-pMove( component.pMove ),
-pDoNotScale( component.pDoNotScale ),
-pStatic( component.pStatic ),
-pRenderEnvMap( component.pRenderEnvMap ),
-pAffectsAudio( component.pAffectsAudio ),
-pPartialHide( component.pPartialHide ),
-pAttachTarget( component.pAttachTarget ),
-pLightShadowIgnore( component.pLightShadowIgnore ),
-pColliderResponseType( component.pColliderResponseType ),
-pPosition( component.pPosition ),
-pRotation( component.pRotation ),
-pBoneName( component.pBoneName ),
-pActiveTexture( NULL )
+gdeOCComponent::gdeOCComponent(const gdeOCComponent &component) :
+pModelPath(component.pModelPath),
+pSkinPath(component.pSkinPath),
+pRigPath(component.pRigPath),
+pAnimatorPath(component.pAnimatorPath),
+pOccMeshPath(component.pOccMeshPath),
+pAudioModelPath(component.pAudioModelPath),
+pPlaybackController(component.pPlaybackController),
+pAnimationPath(component.pAnimationPath),
+pMove(component.pMove),
+pDoNotScale(component.pDoNotScale),
+pStatic(component.pStatic),
+pRenderEnvMap(component.pRenderEnvMap),
+pAffectsAudio(component.pAffectsAudio),
+pPartialHide(component.pPartialHide),
+pAttachTarget(component.pAttachTarget),
+pLightShadowIgnore(component.pLightShadowIgnore),
+pColliderResponseType(component.pColliderResponseType),
+pPosition(component.pPosition),
+pRotation(component.pRotation),
+pBoneName(component.pBoneName),
+pActiveTexture(NULL)
 {
 	const int textureCount = component.pTextures.GetCount();
 	gdeOCComponentTexture *texture = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<textureCount; i++ ){
-			texture = new gdeOCComponentTexture( *component.pTextures.GetAt( i ) );
-			pTextures.Add( texture );
+		for(i=0; i<textureCount; i++){
+			texture = new gdeOCComponentTexture(*component.pTextures.GetAt(i));
+			pTextures.Add(texture);
 			texture->FreeReference();
 			texture = NULL;
 		}
 		
-		for( i=0; i<=epMove; i++ ){
-			pPropertyNames[ i ] = component.pPropertyNames[ i ];
+		for(i=0; i<=epMove; i++){
+			pPropertyNames[i] = component.pPropertyNames[i];
 		}
 		
-	}catch( const deException & ){
-		if( texture ){
+	}catch(const deException &){
+		if(texture){
 			texture->FreeReference();
 		}
 		throw;
@@ -99,7 +99,7 @@ pActiveTexture( NULL )
 }
 
 gdeOCComponent::~gdeOCComponent(){
-	if( pActiveTexture ){
+	if(pActiveTexture){
 		pActiveTexture->FreeReference();
 	}
 }
@@ -109,104 +109,104 @@ gdeOCComponent::~gdeOCComponent(){
 // Management
 ///////////////
 
-void gdeOCComponent::SetModelPath( const char *path ){
+void gdeOCComponent::SetModelPath(const char *path){
 	pModelPath = path;
 }
 
-void gdeOCComponent::SetSkinPath( const char *path ){
+void gdeOCComponent::SetSkinPath(const char *path){
 	pSkinPath = path;
 }
 
-void gdeOCComponent::SetRigPath( const char *path ){
+void gdeOCComponent::SetRigPath(const char *path){
 	pRigPath = path;
 }
 
-void gdeOCComponent::SetAnimatorPath( const char *path ){
+void gdeOCComponent::SetAnimatorPath(const char *path){
 	pAnimatorPath = path;
 }
 
-void gdeOCComponent::SetAnimationPath( const char *path ){
+void gdeOCComponent::SetAnimationPath(const char *path){
 	pAnimationPath = path;
 }
 
-void gdeOCComponent::SetMove( const char *move ){
+void gdeOCComponent::SetMove(const char *move){
 	pMove = move;
 }
 
-void gdeOCComponent::SetOcclusionMeshPath( const char *path ){
+void gdeOCComponent::SetOcclusionMeshPath(const char *path){
 	pOccMeshPath = path;
 }
 
-void gdeOCComponent::SetAudioModelPath( const char *path ){
+void gdeOCComponent::SetAudioModelPath(const char *path){
 	pAudioModelPath = path;
 }
 
-void gdeOCComponent::SetPlaybackController( const char *controller ){
+void gdeOCComponent::SetPlaybackController(const char *controller){
 	pPlaybackController = controller;
 }
 
-void gdeOCComponent::SetDoNotScale( bool doNotScale ){
+void gdeOCComponent::SetDoNotScale(bool doNotScale){
 	pDoNotScale = doNotScale;
 }
 
-void gdeOCComponent::SetStatic( bool bStatic ){
+void gdeOCComponent::SetStatic(bool bStatic){
 	pStatic = bStatic;
 }
 
-void gdeOCComponent::SetPartialHide( bool partiallyHidden ){
+void gdeOCComponent::SetPartialHide(bool partiallyHidden){
 	pPartialHide = partiallyHidden;
 }
 
-void gdeOCComponent::SetAttachTarget( bool attachTarget ){
+void gdeOCComponent::SetAttachTarget(bool attachTarget){
 	pAttachTarget = attachTarget;
 }
 
-void gdeOCComponent::SetColliderResponseType( deCollider::eResponseType responseType ){
+void gdeOCComponent::SetColliderResponseType(deCollider::eResponseType responseType){
 	pColliderResponseType = responseType;
 }
 
-void gdeOCComponent::SetRenderEnvMap( bool renderEnvMap ){
+void gdeOCComponent::SetRenderEnvMap(bool renderEnvMap){
 	pRenderEnvMap = renderEnvMap;
 }
 
-void gdeOCComponent::SetAffectsAudio( bool affectsAudio ){
+void gdeOCComponent::SetAffectsAudio(bool affectsAudio){
 	pAffectsAudio = affectsAudio;
 }
 
-void gdeOCComponent::SetLightShadowIgnore( bool lightShadowIgnore ){
+void gdeOCComponent::SetLightShadowIgnore(bool lightShadowIgnore){
 	pLightShadowIgnore = lightShadowIgnore;
 }
 
-void gdeOCComponent::SetPosition( const decVector &position ){
+void gdeOCComponent::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void gdeOCComponent::SetRotation( const decVector &orientation ){
+void gdeOCComponent::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
-void gdeOCComponent::SetBoneName( const char *boneName ){
+void gdeOCComponent::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
 
 
-bool gdeOCComponent::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool gdeOCComponent::IsPropertySet(eProperties property) const{
+	return ! pPropertyNames[property].IsEmpty();
 }
 
-const decString &gdeOCComponent::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &gdeOCComponent::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void gdeOCComponent::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void gdeOCComponent::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool gdeOCComponent::HasPropertyWithName( const char *name ) const{
+bool gdeOCComponent::HasPropertyWithName(const char *name) const{
 	int i;
-	for( i=0; i<=epMove; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epMove; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}
@@ -216,18 +216,18 @@ bool gdeOCComponent::HasPropertyWithName( const char *name ) const{
 
 
 
-void gdeOCComponent::SetActiveTexture( gdeOCComponentTexture *texture ){
-	if( texture == pActiveTexture ){
+void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture *texture){
+	if(texture == pActiveTexture){
 		return;
 	}
 	
-	if( pActiveTexture ){
+	if(pActiveTexture){
 		pActiveTexture->FreeReference();
 	}
 	
 	pActiveTexture = texture;
 	
-	if( texture ){
+	if(texture){
 		texture->AddReference();
 	}
 }

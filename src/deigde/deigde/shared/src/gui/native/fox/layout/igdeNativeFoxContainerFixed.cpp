@@ -34,8 +34,8 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxContainerFixed ) igdeNativeFoxContainerFixedMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerFixed::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxContainerFixed) igdeNativeFoxContainerFixedMap[] = {
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerFixed::onChildLayoutFlags)
 };
 
 
@@ -43,40 +43,40 @@ FXDEFMAP( igdeNativeFoxContainerFixed ) igdeNativeFoxContainerFixedMap[] = {
 // Class igdeNativeFoxContainerFixed
 //////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxContainerFixed, FXPacker,
-	igdeNativeFoxContainerFixedMap, ARRAYNUMBER( igdeNativeFoxContainerFixedMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerFixed, FXPacker,
+	igdeNativeFoxContainerFixedMap, ARRAYNUMBER(igdeNativeFoxContainerFixedMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed(){ }
+igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed(){}
 
-igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed( igdeContainerFixed &powner,
-	FXComposite *pparent, int layoutFlags ) :
-FXPacker( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &powner ){
+igdeNativeFoxContainerFixed::igdeNativeFoxContainerFixed(igdeContainerFixed &powner,
+	FXComposite *pparent, int layoutFlags) :
+FXPacker(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0),
+pOwner(&powner){
 }
 
 igdeNativeFoxContainerFixed::~igdeNativeFoxContainerFixed(){
 }
 
-igdeNativeFoxContainerFixed *igdeNativeFoxContainerFixed::CreateNativeWidget( igdeContainerFixed &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxContainerFixed *igdeNativeFoxContainerFixed::CreateNativeWidget(igdeContainerFixed &powner){
+	if(! powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(! pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxContainerFixed( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxContainerFixed(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxContainerFixed::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -90,8 +90,8 @@ void igdeNativeFoxContainerFixed::DestroyNativeWidget(){
 // Events
 ///////////
 
-long igdeNativeFoxContainerFixed::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerFixed::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = 0;
 	clflags.canResizeHorizontal = true;
 	clflags.canResizeVertical = true;

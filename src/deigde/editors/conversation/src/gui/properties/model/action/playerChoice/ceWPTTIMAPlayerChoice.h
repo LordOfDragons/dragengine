@@ -45,8 +45,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoice( ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAPlayerChoice *action );
+	ceWPTTIMAPlayerChoice(ceWindowMain &windowMain,
+		ceConversation &conversation, ceCAPlayerChoice *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -59,13 +59,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAPlayerChoice *GetActionPlayerChoice() const{ return ( ceCAPlayerChoice* )GetAction(); }
+	inline ceCAPlayerChoice *GetActionPlayerChoice() const{return (ceCAPlayerChoice*)GetAction();}
 	
 	/** \brief Model with option or \em NULL. */
-	ceWPTTIMAPlayerChoiceOption *GetOptionChild( ceCAPlayerChoiceOption *option ) const;
+	ceWPTTIMAPlayerChoiceOption *GetOptionChild(ceCAPlayerChoiceOption *option) const;
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{ return pActions; }
+	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{return pActions;}
 	
 	/** \brief Update action. */
 	virtual void Update();
@@ -77,7 +77,7 @@ public:
 	virtual void OnExpandedChanged();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	

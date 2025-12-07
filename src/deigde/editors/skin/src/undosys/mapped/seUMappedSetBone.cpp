@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetBone::seUMappedSetBone( seMapped *mapped, const char *newBone ) :
-pMapped( mapped ),
-pOldBone( mapped ? mapped->GetBone().GetString() : "" ),
-pNewBone( newBone )
+seUMappedSetBone::seUMappedSetBone(seMapped *mapped, const char *newBone) :
+pMapped(mapped),
+pOldBone(mapped ? mapped->GetBone().GetString() : ""),
+pNewBone(newBone)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Bone" );
+	SetShortInfo("Set Mapped Bone");
 }
 
 seUMappedSetBone::~seUMappedSetBone(){
@@ -53,9 +53,9 @@ seUMappedSetBone::~seUMappedSetBone(){
 ///////////////
 
 void seUMappedSetBone::Undo(){
-	pMapped->SetBone( pOldBone );
+	pMapped->SetBone(pOldBone);
 }
 
 void seUMappedSetBone::Redo(){
-	pMapped->SetBone( pNewBone );
+	pMapped->SetBone(pNewBone);
 }

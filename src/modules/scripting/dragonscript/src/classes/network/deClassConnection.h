@@ -51,19 +51,19 @@ private:
 	
 public:
 	// constructor
-	deClassConnection( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassConnection(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassConnection();
 	
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	deConnection *GetConnection( dsRealObject *myself ) const;
-	void PushConnection( dsRunTime *rt, deConnection *connection );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
+	void CreateClassMembers(dsEngine *engine);
+	deConnection *GetConnection(dsRealObject *myself) const;
+	void PushConnection(dsRunTime *rt, deConnection *connection);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
 	
-	inline deClassNetworkState *GetClassNetworkState() const{ return pClsNS; }
-	inline deClassNetworkMessage *GetClassNetworkMessage() const{ return pClsNM; }
-	inline deClassConnectionListener *GetClassConnectionListener() const{ return pClsConL; }
+	inline deClassNetworkState *GetClassNetworkState() const{return pClsNS;}
+	inline deClassNetworkMessage *GetClassNetworkMessage() const{return pClsNM;}
+	inline deClassConnectionListener *GetClassConnectionListener() const{return pClsConL;}
 	
 private:
 	struct sInitData{
@@ -71,29 +71,29 @@ private:
 		dsClass *clsNS, *clsNM, *clsConL;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetLocalAddress );
-	DEF_NATFUNC( nfGetRemoteAddress );
-	DEF_NATFUNC( nfGetConnected );
+	DEF_NATFUNC(nfGetLocalAddress);
+	DEF_NATFUNC(nfGetRemoteAddress);
+	DEF_NATFUNC(nfGetConnected);
 	
-	DEF_NATFUNC( nfConnectTo );
-	DEF_NATFUNC( nfDisconnect );
-	DEF_NATFUNC( nfSendMessage );
-	DEF_NATFUNC( nfSendReliableMessage );
-	DEF_NATFUNC( nfLinkState );
+	DEF_NATFUNC(nfConnectTo);
+	DEF_NATFUNC(nfDisconnect);
+	DEF_NATFUNC(nfSendMessage);
+	DEF_NATFUNC(nfSendReliableMessage);
+	DEF_NATFUNC(nfLinkState);
 	
-	DEF_NATFUNC( nfGetConnectionListener );
-	DEF_NATFUNC( nfSetConnectionListener );
+	DEF_NATFUNC(nfGetConnectionListener);
+	DEF_NATFUNC(nfSetConnectionListener);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

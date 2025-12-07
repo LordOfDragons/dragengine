@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml configuration read/write. */
-	seConfigurationXML( deLogger *logger, const char *loggerSource );
+	seConfigurationXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up xml configuration read/write. */
 	virtual ~seConfigurationXML();
@@ -57,18 +57,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read configuration from xml file. */
-	void ReadFromFile( decBaseFileReader &reader, seConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, seConfiguration &config);
 	
 	/** \brief Write configuration to xml file. */
-	void WriteToFile( decBaseFileWriter &writer, const seConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const seConfiguration &config);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const seConfiguration &config );
+	void pWriteConfig(decXmlWriter &writer, const seConfiguration &config);
 	
-	void pReadConfig( const decXmlElementTag &root, seConfiguration &config );
+	void pReadConfig(const decXmlElementTag &root, seConfiguration &config);
 };
 
 #endif

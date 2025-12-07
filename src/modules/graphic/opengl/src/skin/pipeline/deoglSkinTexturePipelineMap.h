@@ -55,33 +55,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Map pipeline. */
-	int Map( deoglSkinTexturePipelinesList::ePipelineTypes list,
+	int Map(deoglSkinTexturePipelinesList::ePipelineTypes list,
 		deoglSkinTexturePipelines::eTypes type,
-		deoglSkinTexturePipelines::eModifiers modifier ); 
+		deoglSkinTexturePipelines::eModifiers modifier); 
 	/*@}*/
 	
 	
 	
 private:
-	int pMap[ deoglSkinTexturePipelinesList::PipelineTypesCount ]
-		[ deoglSkinTexturePipelines::TypeCount ]
-		[ deoglSkinTexturePipelines::ModifiersPerType ];
+	int pMap[deoglSkinTexturePipelinesList::PipelineTypesCount]
+		[deoglSkinTexturePipelines::TypeCount]
+		[deoglSkinTexturePipelines::ModifiersPerType];
 	
-	sEntry pMapInv[ 749 ];
+	sEntry pMapInv[749];
 	
 	void pInitMap();
 	
-	void pInitGeometry( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitGeometryDepthTest( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitMask( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitGIMaterial( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitAllDepth( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitAllCounter( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitAllShadow( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
-	void pInitAllGeometryDepthCounterShadow( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list );
+	void pInitGeometry(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitGeometryDepthTest(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitMask(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitGIMaterial(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitAllDepth(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitAllCounter(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitAllShadow(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
+	void pInitAllGeometryDepthCounterShadow(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list);
 	
-	void pSetModified( int &index, deoglSkinTexturePipelinesList::ePipelineTypes list,
-		deoglSkinTexturePipelines::eTypes type, int modifierMask );
+	void pSetModified(int &index, deoglSkinTexturePipelinesList::ePipelineTypes list,
+		deoglSkinTexturePipelines::eTypes type, int modifierMask);
 };
 
 #endif

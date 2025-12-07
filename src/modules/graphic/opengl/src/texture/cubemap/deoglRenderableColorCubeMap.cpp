@@ -41,30 +41,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableColorCubeMap::deoglRenderableColorCubeMap( deoglRenderThread &renderThread,
-int size, int componentCount, bool isFloat ) :
-pSize( size ),
-pComponentCount( componentCount ),
-pIsFloat( isFloat ),
-pInUse( false ),
-pCubeMap( NULL ),
-pMemoryUsageGPU( 0 )
+deoglRenderableColorCubeMap::deoglRenderableColorCubeMap(deoglRenderThread &renderThread,
+int size, int componentCount, bool isFloat) :
+pSize(size),
+pComponentCount(componentCount),
+pIsFloat(isFloat),
+pInUse(false),
+pCubeMap(NULL),
+pMemoryUsageGPU(0)
 {
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+	if(componentCount < 1 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pCubeMap = new deoglCubeMap( renderThread );
-		pCubeMap->SetSize( size );
-		pCubeMap->SetFBOFormat( componentCount, isFloat );
+		pCubeMap = new deoglCubeMap(renderThread);
+		pCubeMap->SetSize(size);
+		pCubeMap->SetFBOFormat(componentCount, isFloat);
 		pCubeMap->CreateCubeMap();
 		UpdateMemoryUsage();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -81,21 +81,21 @@ deoglRenderableColorCubeMap::~deoglRenderableColorCubeMap(){
 // Management
 ///////////////
 
-bool deoglRenderableColorCubeMap::Matches( int size, int componentCount, bool isFloat ) const{
-	return ( size == pSize ) && ( componentCount == pComponentCount ) && ( isFloat == pIsFloat );
+bool deoglRenderableColorCubeMap::Matches(int size, int componentCount, bool isFloat) const{
+	return (size == pSize) && (componentCount == pComponentCount) && (isFloat == pIsFloat);
 }
 
-void deoglRenderableColorCubeMap::SetInUse( bool inUse ){
+void deoglRenderableColorCubeMap::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
 void deoglRenderableColorCubeMap::UpdateMemoryUsage(){
 	//const int oldMemoryGPU = pMemoryUsageGPU;
 	
-	if( pCubeMap ){
+	if(pCubeMap){
 		pMemoryUsageGPU = pSize * pSize * 6 * pComponentCount;
 		
-		if( pIsFloat ){
+		if(pIsFloat){
 			pMemoryUsageGPU *= 2;
 		}
 		
@@ -112,7 +112,7 @@ void deoglRenderableColorCubeMap::UpdateMemoryUsage(){
 //////////////////////
 
 void deoglRenderableColorCubeMap::pCleanUp(){
-	if( pCubeMap ){
+	if(pCubeMap){
 		delete pCubeMap;
 	}
 }

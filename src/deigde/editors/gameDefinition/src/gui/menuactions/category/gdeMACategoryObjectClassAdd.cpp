@@ -43,10 +43,10 @@
 // Constructor
 ////////////////
 
-gdeMACategoryObjectClassAdd::gdeMACategoryObjectClassAdd( gdeWindowMain &windowMain ) :
-gdeMACategoryAdd( windowMain, "Add Object Class Category...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class category" )
+gdeMACategoryObjectClassAdd::gdeMACategoryObjectClassAdd(gdeWindowMain &windowMain) :
+gdeMACategoryAdd(windowMain, "Add Object Class Category...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class category")
 {
 }
 
@@ -55,7 +55,7 @@ gdeMACategoryAdd( windowMain, "Add Object Class Category...",
 // Management
 ///////////////
 
-igdeUndo *gdeMACategoryObjectClassAdd::OnAction( gdeGameDefinition &gameDefinition ){
-	return AddCategory( gameDefinition, NULL,
-		gameDefinition.GetCategoriesObjectClass(), gdeUCategoryBase::ectObjectClass );
+igdeUndo *gdeMACategoryObjectClassAdd::OnAction(gdeGameDefinition &gameDefinition){
+	return AddCategory(gameDefinition, NULL,
+		gameDefinition.GetCategoriesObjectClass(), gdeUCategoryBase::ectObjectClass);
 }

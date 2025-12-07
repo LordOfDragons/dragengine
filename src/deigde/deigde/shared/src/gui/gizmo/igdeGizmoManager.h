@@ -90,8 +90,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void Hover( igdeGizmo *gizmo, const decDVector &rayOrigin, const decDVector &rayDirection,
-		double distance, int bone, int shape, int modifiers );
+	void Hover(igdeGizmo *gizmo, const decDVector &rayOrigin, const decDVector &rayDirection,
+		double distance, int bone, int shape, int modifiers);
 	
 	/**
 	 * \brief Clear hover gizmo
@@ -101,10 +101,10 @@ public:
 	void ClearHover();
 	
 	/** \brief Hover gizmo or nullptr. */
-	inline const igdeGizmo::Ref &GetHoverGizmo() const{ return pHoverGizmo; }
+	inline const igdeGizmo::Ref &GetHoverGizmo() const{return pHoverGizmo;}
 	
 	/** \brief Hover gizmo is present. */
-	inline bool HasHoverGizmo() const{ return pHoverGizmo; }
+	inline bool HasHoverGizmo() const{return pHoverGizmo;}
 	
 	
 	
@@ -124,15 +124,15 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	bool StartEditing( igdeGizmo *gizmo, const decDVector &rayOrigin,
+	bool StartEditing(igdeGizmo *gizmo, const decDVector &rayOrigin,
 		const decDVector &rayDirection, const decDMatrix &viewMatrix,
-		double distance, int bone, int shape, int modifiers );
+		double distance, int bone, int shape, int modifiers);
 	
 	/** \brief Editing gizmo or nullptr. */
-	inline const igdeGizmo::Ref &GetEditingGizmo() const{ return pEditingGizmo; }
+	inline const igdeGizmo::Ref &GetEditingGizmo() const{return pEditingGizmo;}
 	
 	/** \brief Editing gizmo is present. */
-	inline bool HasEditingGizmo() const{ return pEditingGizmo; }
+	inline bool HasEditingGizmo() const{return pEditingGizmo;}
 	
 	/**
 	 * \brief Update editing.
@@ -146,8 +146,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void UpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, int modifiers );
+	void UpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, int modifiers);
 	
 	/**
 	 * \brief User wheeled mouse while editing.
@@ -158,8 +158,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void MouseWheeledEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, const decPoint &change, int modifiers );
+	void MouseWheeledEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, const decPoint &change, int modifiers);
 	
 	/**
 	 * \brief Frame update.
@@ -168,14 +168,14 @@ public:
 	 * 
 	 * \param[in] elapsed Elapsed time.
 	 */
-	void OnFrameUpdate( float elapsed );
+	void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Stop editing gizmo if one is editing right now.
 	 * 
 	 * \param[in] cancel Cancel editing if possible.
 	 */
-	void StopEditing( bool cancel );
+	void StopEditing(bool cancel);
 	
 	
 	
@@ -190,8 +190,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of press. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void OnButtonPress( const igdeViewRenderWindow &view, const igdeCamera &camera,
-		int button, const decPoint &position, int modifiers );
+	void OnButtonPress(const igdeViewRenderWindow &view, const igdeCamera &camera,
+		int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User released mouse button.
@@ -204,8 +204,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void OnButtonRelease( const igdeViewRenderWindow &view, const igdeCamera &camera,
-		int button, const decPoint &position, int modifiers );
+	void OnButtonRelease(const igdeViewRenderWindow &view, const igdeCamera &camera,
+		int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User moved mouse.
@@ -216,8 +216,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void OnMouseMoved( const igdeViewRenderWindow &view, const igdeCamera &camera,
-		const decPoint &position, int modifiers );
+	void OnMouseMoved(const igdeViewRenderWindow &view, const igdeCamera &camera,
+		const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User wheeled mouse.
@@ -229,8 +229,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void OnMouseWheeled( const igdeViewRenderWindow &view, const igdeCamera &camera,
-		const decPoint &position, const decPoint &change, int modifiers );
+	void OnMouseWheeled(const igdeViewRenderWindow &view, const igdeCamera &camera,
+		const decPoint &position, const decPoint &change, int modifiers);
 	
 	/**
 	 * \brief User pressed down key while view is focused.
@@ -238,7 +238,7 @@ public:
 	 * \param[in] keyCode Engine key code or deInputEvent::ekcUndefined if not mapped.
 	 * \param[in] key Native OS key.
 	 */
-	void OnKeyPress( deInputEvent::eKeyCodes keyCode, int key );
+	void OnKeyPress(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/**
 	 * \brief User released down key while view is focused.
@@ -246,27 +246,27 @@ public:
 	 * \param[in] keyCode Engine key code or deInputEvent::ekcUndefined if not mapped.
 	 * \param[in] key Native OS key.
 	 */
-	void OnKeyRelease( deInputEvent::eKeyCodes keyCode, int key );
+	void OnKeyRelease(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/** \brief Length of ray to use for simplified mouse event handling ray casting. */
-	inline float GetRayLength() const{ return pRayLength; }
+	inline float GetRayLength() const{return pRayLength;}
 	
 	/**
 	 * \brief Set length of ray to use for simplified mouse event handling.
 	 * 
 	 * Default length is 1km.
 	 */
-	void SetRayLength( float length );
+	void SetRayLength(float length);
 	
 	/** \brief Collision filter to use for simplified mouse event handling ray casting. */
-	inline const decCollisionFilter &GetRayCollisionFilter() const{ return pRayCollisionFilter; }
+	inline const decCollisionFilter &GetRayCollisionFilter() const{return pRayCollisionFilter;}
 	
 	/**
 	 * \brief Set collision filter to use for simplified mouse event handling ray casting.
 	 * 
 	 * Default collision filter is empty.
 	 */
-	void SetRayCollisionFilter( const decCollisionFilter &collisionFilter );
+	void SetRayCollisionFilter(const decCollisionFilter &collisionFilter);
 	
 	/**
 	 * \brief Get igdeGizmo from collider user pointer or nullptr if not a igdeGizmo.
@@ -276,7 +276,7 @@ public:
 	 * 
 	 * \param[in] userPointer Collider user pointer. This is never nullptr.
 	 */
-	virtual igdeGizmo *GizmoFromColliderUserPointer( void *userPointer );
+	virtual igdeGizmo *GizmoFromColliderUserPointer(void *userPointer);
 	/*@}*/
 };
 

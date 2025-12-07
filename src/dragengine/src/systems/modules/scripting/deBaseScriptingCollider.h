@@ -59,7 +59,7 @@ public:
 	 * by the scripting module with the response to the collision. In
 	 * all other cases the info object should not be modified.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	
 	/**
 	 * \brief Determines if a collider can be hit.
@@ -69,7 +69,7 @@ public:
 	 * between the ray and a collider or two colliders true has to be
 	 * returned otherwise false.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	
 	/**
 	 * \brief The properties of the collider changed.
@@ -77,13 +77,13 @@ public:
 	 * This is called by the physics module after the collision detection.
 	 * This can possibly be called multiple times during collision detection.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	
 	/** \brief A collider constraint has broken. */
-	virtual void ColliderConstraintBroke( deCollider *owner, int index, deColliderConstraint *constraint );
+	virtual void ColliderConstraintBroke(deCollider *owner, int index, deColliderConstraint *constraint);
 	
 	/** \brief A collider rig constraint has broken. */
-	virtual void RigConstraintBroke( deCollider *owner, int bone, int index, deRigConstraint *constraint );
+	virtual void RigConstraintBroke(deCollider *owner, int bone, int index, deRigConstraint *constraint);
 	/*@}*/
 };
 

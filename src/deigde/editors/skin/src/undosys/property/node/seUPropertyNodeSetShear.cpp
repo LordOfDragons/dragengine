@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetShear::seUPropertyNodeSetShear( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetShear::seUPropertyNodeSetShear(sePropertyNode *node, float newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set shear" );
+	SetShortInfo("Node set shear");
 	
 	pOldValue = node->GetShearing();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetShear::~seUPropertyNodeSetShear(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUPropertyNodeSetShear::~seUPropertyNodeSetShear(){
 ///////////////
 
 void seUPropertyNodeSetShear::Undo(){
-	pNode->SetShearing( pOldValue );
+	pNode->SetShearing(pOldValue);
 }
 
 void seUPropertyNodeSetShear::Redo(){
-	pNode->SetShearing( pNewValue );
+	pNode->SetShearing(pNewValue);
 }

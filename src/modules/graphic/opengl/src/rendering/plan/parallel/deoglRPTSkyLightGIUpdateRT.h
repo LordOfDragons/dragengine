@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightGIUpdateRT( deoglRenderPlanSkyLight &plan );
+	deoglRPTSkyLightGIUpdateRT(deoglRenderPlanSkyLight &plan);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTSkyLightGIUpdateRT();
@@ -66,10 +66,10 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Information for updating render task. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/** Finished semaphore. */
-	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
+	inline deSemaphore &GetSemaphore(){return pSemaphore;}
 	/*@}*/
 	
 	
@@ -77,7 +77,7 @@ public:
 private:
 	void pUpdateStaticRT();
 	void pUpdateDynamicRT();
-	bool pIsComponentStatic( const deoglRComponent &component ) const;
+	bool pIsComponentStatic(const deoglRComponent &component) const;
 };
 
 #endif

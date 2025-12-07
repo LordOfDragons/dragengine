@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	igdeDialogEngine( igdeMainWindow &mainWindow );
+	igdeDialogEngine(igdeMainWindow &mainWindow);
 	
 	
 	
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline igdeMainWindow &GetMainWindow() const{ return pMainWindow; }
+	inline igdeMainWindow &GetMainWindow() const{return pMainWindow;}
 	/*@}*/
 };
 

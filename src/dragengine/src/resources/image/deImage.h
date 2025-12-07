@@ -174,9 +174,9 @@ public:
 	 * \param[in] components Number of components (1 to 4 inclusive).
 	 * \param[in] bitCount Bit Count of each component (8, 16 or 32).
 	 */
-	deImage( deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	deImage(deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime, int width, int height, int depth,
-		int componentCount, int bitCount );
+		int componentCount, int bitCount);
 	
 	/**
 	 * \brief Create image object from XPM image.
@@ -185,15 +185,15 @@ public:
 	 * \param[in] filename Filename of the image.
 	 * \param[in] image Image data.
 	 */
-	deImage( deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime, decXpmImage *image );
+	deImage(deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime, decXpmImage *image);
 	
 	/**
 	 * \brief Create image for internal loading.
 	 * \warning This is a special internal constructor. Never ever call this on your own!
 	 */
-	deImage( deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deImage(deImageManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -211,19 +211,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** \brief Depth in pixels. */
-	inline int GetDepth() const{ return pDepth; }
+	inline int GetDepth() const{return pDepth;}
 	
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** \brief Bit count of each component. */
-	inline int GetBitCount() const{ return pBitCount; }
+	inline int GetBitCount() const{return pBitCount;}
 	
 	
 	
@@ -321,7 +321,7 @@ public:
 	 * 
 	 * \warning This is a dangerous function. Use it only if you know what you are doing.
 	 */
-	inline void *GetData() const{ return pData; }
+	inline void *GetData() const{return pData;}
 	
 	/** \brief Notify peers image data changed. */
 	void NotifyImageDataChanged();
@@ -333,7 +333,7 @@ public:
 	 * 
 	 * For debug use.
 	 */
-	inline int GetRetainImageDataCount() const{ return pRetainImageData; }
+	inline int GetRetainImageDataCount() const{return pRetainImageData;}
 	
 	/**
 	 * \brief Retain image data.
@@ -371,10 +371,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicImage *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicImage *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicImage *peer );
+	void SetPeerGraphic(deBaseGraphicImage *peer);
 	/*@}*/
 	
 	
@@ -385,7 +385,7 @@ public:
 	 * \brief Finalize construction for internal loading.
 	 * \warning This is a special internal constructor. Never ever call this on your own!
 	 */
-	void FinalizeConstruction( int width, int height, int depth, int componentCount, int bitCount );
+	void FinalizeConstruction(int width, int height, int depth, int componentCount, int bitCount);
 	
 	/**
 	 * \brief Retain image data for peers requiring it.

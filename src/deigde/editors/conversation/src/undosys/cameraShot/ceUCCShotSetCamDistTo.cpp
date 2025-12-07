@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo( ceCameraShot *cameraShot, float newDist ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float newDist){
+	if(! cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set End Camera Distance" );
+	SetShortInfo("Camera Shot Set End Camera Distance");
 	
 	pOldDist = cameraShot->GetCameraDistanceTo();
 	pNewDist = newDist;
@@ -54,7 +54,7 @@ ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo( ceCameraShot *cameraShot, float ne
 }
 
 ceUCCShotSetCamDistTo::~ceUCCShotSetCamDistTo(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCCShotSetCamDistTo::~ceUCCShotSetCamDistTo(){
 ///////////////
 
 void ceUCCShotSetCamDistTo::Undo(){
-	pCameraShot->SetCameraDistanceTo( pOldDist );
+	pCameraShot->SetCameraDistanceTo(pOldDist);
 }
 
 void ceUCCShotSetCamDistTo::Redo(){
-	pCameraShot->SetCameraDistanceTo( pNewDist );
+	pCameraShot->SetCameraDistanceTo(pNewDist);
 }

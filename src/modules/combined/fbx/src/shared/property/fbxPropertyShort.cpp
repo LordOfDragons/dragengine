@@ -44,13 +44,13 @@
 ////////////////////////////
 
 fbxPropertyShort::fbxPropertyShort() :
-fbxProperty( etShort ),
-pValue( 0 ){
+fbxProperty(etShort),
+pValue(0){
 }
 
-fbxPropertyShort::fbxPropertyShort( decBaseFileReader &reader ) :
-fbxProperty( etShort ),
-pValue( reader.ReadShort() ){
+fbxPropertyShort::fbxPropertyShort(decBaseFileReader &reader) :
+fbxProperty(etShort),
+pValue(reader.ReadShort()){
 }
 
 fbxPropertyShort::~fbxPropertyShort(){
@@ -61,7 +61,7 @@ fbxPropertyShort::~fbxPropertyShort(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyShort::SetValue( int value ){
+void fbxPropertyShort::SetValue(int value){
 	pValue = value;
 }
 
@@ -82,7 +82,7 @@ int64_t fbxPropertyShort::GetValueAsLong() const{
 }
 
 float fbxPropertyShort::GetValueAsFloat() const{
-	return ( float )pValue;
+	return (float)pValue;
 }
 
 double fbxPropertyShort::GetValueAsDouble() const{
@@ -91,9 +91,9 @@ double fbxPropertyShort::GetValueAsDouble() const{
 
 
 
-void fbxPropertyShort::Save(decBaseFileWriter &writer ){
+void fbxPropertyShort::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyShort::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty Short: %d", prefix.GetString(), pValue );
+void fbxPropertyShort::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty Short: %d", prefix.GetString(), pValue);
 }

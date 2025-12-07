@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create run game thread. */
-	delEngineProcessRunGame( delEngineProcess &process );
+	delEngineProcessRunGame(delEngineProcess &process);
 	
 	/** \brief Cleas up run game thread. */
 	virtual ~delEngineProcessRunGame();

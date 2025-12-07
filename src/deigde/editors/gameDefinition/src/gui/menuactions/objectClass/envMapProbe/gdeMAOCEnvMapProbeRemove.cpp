@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbeRemove::gdeMAOCEnvMapProbeRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Environment Map Probe",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class environment map probe" )
+gdeMAOCEnvMapProbeRemove::gdeMAOCEnvMapProbeRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Environment Map Probe",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class environment map probe")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Environment Map Probe",
 ///////////////
 
 igdeUndo *gdeMAOCEnvMapProbeRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCEnvMapProbe){
 		return NULL;
 	}
 	
 	gdeOCEnvMapProbe * const envMapProbe = gameDefinition.GetActiveOCEnvMapProbe();
-	if( ! envMapProbe ){
+	if(! envMapProbe){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveEnvMapProbe( &objectClass, envMapProbe );
+	return new gdeUOCRemoveEnvMapProbe(&objectClass, envMapProbe);
 }
 
 void gdeMAOCEnvMapProbeRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL );
+		&& gameDefinition->GetActiveOCEnvMapProbe() != NULL);
 }

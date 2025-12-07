@@ -42,15 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderableCamera::deoglRDSRenderableCamera( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( etCamera, dynamicSkin ),
-pCamera( NULL )
+deoglRDSRenderableCamera::deoglRDSRenderableCamera(deoglRDynamicSkin &dynamicSkin) :
+deoglRDSRenderable(etCamera, dynamicSkin),
+pCamera(NULL)
 {
-	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableCamera );
+	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableCamera);
 }
 
 deoglRDSRenderableCamera::~deoglRDSRenderableCamera(){
-	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableCamera );
+	LEAK_CHECK_FREE(GetDynamicSkin().GetRenderThread(), DSRenderableCamera);
 	pCleanUp();
 }
 
@@ -59,25 +59,25 @@ deoglRDSRenderableCamera::~deoglRDSRenderableCamera(){
 // Management
 ///////////////
 
-void deoglRDSRenderableCamera::SetCamera( deoglRCamera *camera ){
-	if( camera == pCamera ){
+void deoglRDSRenderableCamera::SetCamera(deoglRCamera *camera){
+	if(camera == pCamera){
 		return;
 	}
 	
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
 	
 	pCamera = camera;
 	
-	if( camera ){
+	if(camera){
 		camera->AddReference();
 	}
 }
 
-void deoglRDSRenderableCamera::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
-	if( pCamera ){
-		pCamera->GetPlan().PrepareRender( renderPlanMask );
+void deoglRDSRenderableCamera::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+	if(pCamera){
+		pCamera->GetPlan().PrepareRender(renderPlanMask);
 	}
 }
 
@@ -91,5 +91,5 @@ deoglRenderPlan *deoglRDSRenderableCamera::GetRenderPlan() const{
 //////////////////////
 
 void deoglRDSRenderableCamera::pCleanUp(){
-	SetCamera( NULL );
+	SetCamera(NULL);
 }

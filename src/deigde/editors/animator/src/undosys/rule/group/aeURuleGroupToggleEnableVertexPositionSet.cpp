@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupToggleEnableVertexPositionSet::aeURuleGroupToggleEnableVertexPositionSet( aeRuleGroup *rule ){
-	DEASSERT_NOTNULL( rule )
+aeURuleGroupToggleEnableVertexPositionSet::aeURuleGroupToggleEnableVertexPositionSet(aeRuleGroup *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -44,9 +44,9 @@ aeURuleGroupToggleEnableVertexPositionSet::aeURuleGroupToggleEnableVertexPositio
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule group toggle enable vertex position set" );
+		SetShortInfo("Rule group toggle enable vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -62,11 +62,11 @@ aeURuleGroupToggleEnableVertexPositionSet::~aeURuleGroupToggleEnableVertexPositi
 ///////////////
 
 void aeURuleGroupToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleGroupToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 
@@ -75,7 +75,7 @@ void aeURuleGroupToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnableVertexPositionSet::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

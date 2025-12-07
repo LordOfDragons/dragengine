@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSnapUseLast( aeRuleStateSnapshot *rule );
+	aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSnapUseLast();

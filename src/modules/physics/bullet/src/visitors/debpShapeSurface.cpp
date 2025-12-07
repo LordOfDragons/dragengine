@@ -47,8 +47,8 @@
 ////////////////////////////
 
 debpShapeSurface::debpShapeSurface() :
-pUseDirection( false ),
-pSurface( 0.0f ){
+pUseDirection(false),
+pSurface(0.0f){
 }
 
 debpShapeSurface::~debpShapeSurface(){
@@ -59,7 +59,7 @@ debpShapeSurface::~debpShapeSurface(){
 // Management
 ///////////////
 
-void debpShapeSurface::SetDirection( const decVector &direction ){
+void debpShapeSurface::SetDirection(const decVector &direction){
 	pDirection = direction;
 	pUseDirection = direction.IsZero();
 }
@@ -73,37 +73,37 @@ void debpShapeSurface::Reset(){
 // Visiting
 /////////////
 
-void debpShapeSurface::VisitShape( decShape &shape ){
+void debpShapeSurface::VisitShape(decShape &shape){
 }
 
-void debpShapeSurface::VisitShapeSphere( decShapeSphere &sphere ){
+void debpShapeSurface::VisitShapeSphere(decShapeSphere &sphere){
 	pSurface += 4.0f * PI * sphere.GetRadius() * sphere.GetRadius();
 }
 
-void debpShapeSurface::VisitShapeBox( decShapeBox &box ){
-	pSurface += ( box.GetHalfExtends().x * box.GetHalfExtends().y
+void debpShapeSurface::VisitShapeBox(decShapeBox &box){
+	pSurface += (box.GetHalfExtends().x * box.GetHalfExtends().y
 		+ box.GetHalfExtends().x * box.GetHalfExtends().z
-		+ box.GetHalfExtends().y * box.GetHalfExtends().z ) * 2.0f;
+		+ box.GetHalfExtends().y * box.GetHalfExtends().z) * 2.0f;
 }
 
-void debpShapeSurface::VisitShapeCylinder( decShapeCylinder &cylinder ){
-	pSurface += 2.0f * PI * cylinder.GetTopRadius() * ( cylinder.GetHalfHeight() * 2.0f + cylinder.GetTopRadius() );
+void debpShapeSurface::VisitShapeCylinder(decShapeCylinder &cylinder){
+	pSurface += 2.0f * PI * cylinder.GetTopRadius() * (cylinder.GetHalfHeight() * 2.0f + cylinder.GetTopRadius());
 	// TODO tapered support
 }
 
-void debpShapeSurface::VisitShapeCapsule( decShapeCapsule &capsule ){
+void debpShapeSurface::VisitShapeCapsule(decShapeCapsule &capsule){
 	// surface += surfaceCylinderMantle + surfaceHalfSphere * 2
 	// 
 	// thus
 	// surface += surfaceCylinderMantle + surfaceSphere
-	pSurface += 4.0f * PI * capsule.GetTopRadius() * ( capsule.GetHalfHeight() + capsule.GetTopRadius() );
+	pSurface += 4.0f * PI * capsule.GetTopRadius() * (capsule.GetHalfHeight() + capsule.GetTopRadius());
 }
 
-void debpShapeSurface::VisitShapeHull( decShapeHull &hull ) {
+void debpShapeSurface::VisitShapeHull(decShapeHull &hull) {
 	// TODO calculate volume
 	// use for the time being the surface of a sphere containing all points
 	const int count = hull.GetPointCount();
-	if( count == 0 ){
+	if(count == 0){
 		pSurface = 0.0f;
 		return;
 	}
@@ -111,14 +111,14 @@ void debpShapeSurface::VisitShapeHull( decShapeHull &hull ) {
 	decVector center;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		center += hull.GetPointAt( i );
+	for(i=0; i<count; i++){
+		center += hull.GetPointAt(i);
 	}
-	center /= ( float )count;
+	center /= (float)count;
 	
 	float radiusSquared = 0.0f;
-	for( i=0; i<count; i++ ){
-		radiusSquared = decMath::max( radiusSquared, ( hull.GetPointAt( i ) - center ).LengthSquared() );
+	for(i=0; i<count; i++){
+		radiusSquared = decMath::max(radiusSquared, (hull.GetPointAt(i) - center).LengthSquared());
 	}
 	
 	pSurface += 4.0f * PI * radiusSquared;

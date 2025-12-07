@@ -56,31 +56,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Case at index. */
-	ceCAIfElseCase *GetAt( int index ) const;
+	ceCAIfElseCase *GetAt(int index) const;
 	
 	/** \brief Index of case or -1 if not found. */
-	int IndexOf( ceCAIfElseCase *ifcase ) const;
+	int IndexOf(ceCAIfElseCase *ifcase) const;
 	
 	/** \brief Case is present. */
-	bool Has( ceCAIfElseCase *ifcase ) const;
+	bool Has(ceCAIfElseCase *ifcase) const;
 	
 	/** \brief Add case. */
-	void Add( ceCAIfElseCase *ifcase );
+	void Add(ceCAIfElseCase *ifcase);
 	
 	/** \brief Insert case. */
-	void InsertAt( ceCAIfElseCase *ifcase, int index );
+	void InsertAt(ceCAIfElseCase *ifcase, int index);
 	
 	/** \brief Move case to new position. */
-	void MoveTo( ceCAIfElseCase *ifcase, int index );
+	void MoveTo(ceCAIfElseCase *ifcase, int index);
 	
 	/** \brief Remove case. */
-	void Remove( ceCAIfElseCase *ifcase );
+	void Remove(ceCAIfElseCase *ifcase);
 	
 	/** \brief Remove all cases. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	ceCAIfElseCaseList &operator=( const ceCAIfElseCaseList &list );
+	ceCAIfElseCaseList &operator=(const ceCAIfElseCaseList &list);
 	/*@}*/
 };
 

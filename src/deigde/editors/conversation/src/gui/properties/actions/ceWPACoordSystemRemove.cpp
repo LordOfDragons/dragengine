@@ -67,12 +67,12 @@ class cComboCoordSystemID : public igdeComboBoxListener {
 	ceWPACoordSystemRemove &pPanel;
 	
 public:
-	cComboCoordSystemID( ceWPACoordSystemRemove &panel ) : pPanel( panel ){ }
+	cComboCoordSystemID(ceWPACoordSystemRemove &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCACoordSystemRemove * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetCoordSystemID() ){
+		if(! topic || ! action  || comboBox->GetText() == action->GetCoordSystemID()){
 			return;
 		}
 		
@@ -91,13 +91,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPACoordSystemRemove::ceWPACoordSystemRemove( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPACoordSystemRemove::ceWPACoordSystemRemove(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Coord System:", true, "ID of the coordinate system to remove from conversation",
-		pCBCoordSystemID, new cComboCoordSystemID( *this ) );
+	helper.ComboBox(*this, "Coord System:", true, "ID of the coordinate system to remove from conversation",
+		pCBCoordSystemID, new cComboCoordSystemID(*this));
 	pCBCoordSystemID->SetDefaultSorter();
 }
 
@@ -112,8 +112,8 @@ ceWPACoordSystemRemove::~ceWPACoordSystemRemove(){
 ceCACoordSystemRemove *ceWPACoordSystemRemove::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatCoordSystemRemove ){
-		return ( ceCACoordSystemRemove* )action;
+	if(action && action->GetType() == ceConversationAction::eatCoordSystemRemove){
+		return (ceCACoordSystemRemove*)action;
 		
 	}else{
 		return NULL;
@@ -125,8 +125,8 @@ void ceWPACoordSystemRemove::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBCoordSystemID->SetText( action->GetCoordSystemID() );
+	if(action){
+		pCBCoordSystemID->SetText(action->GetCoordSystemID());
 		
 	}else{
 		pCBCoordSystemID->ClearText();
@@ -136,5 +136,5 @@ void ceWPACoordSystemRemove::UpdateAction(){
 
 
 void ceWPACoordSystemRemove::UpdateConvoCoordSysIDLists(){
-	UpdateComboBoxWithConvoCoordSysIDList( pCBCoordSystemID );
+	UpdateComboBoxWithConvoCoordSysIDList(pCBCoordSystemID);
 }

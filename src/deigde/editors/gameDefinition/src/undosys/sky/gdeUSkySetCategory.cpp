@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUSkySetCategory::gdeUSkySetCategory(
-gdeSky *sky, const char *newValue ) :
-pSky( NULL )
+gdeSky *sky, const char *newValue) :
+pSky(NULL)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(! sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky set category" );
+	SetShortInfo("Sky set category");
 	
 	pOldValue = sky->GetCategory();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pSky( NULL )
 }
 
 gdeUSkySetCategory::~gdeUSkySetCategory(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUSkySetCategory::~gdeUSkySetCategory(){
 ///////////////
 
 void gdeUSkySetCategory::Undo(){
-	pSky->SetCategory( pOldValue );
+	pSky->SetCategory(pOldValue);
 }
 
 void gdeUSkySetCategory::Redo(){
-	pSky->SetCategory( pNewValue );
+	pSky->SetCategory(pNewValue);
 }

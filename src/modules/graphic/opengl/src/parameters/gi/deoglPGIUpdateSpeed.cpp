@@ -40,25 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPGIUpdateSpeed::deoglPGIUpdateSpeed( deGraphicOpenGl &ogl ) : deoglParameter( ogl ){
-	SetName( "giUpdateSpeed" );
-	SetDescription( "Global Illumination Update Speed. Higher update speed converges lighting "
+deoglPGIUpdateSpeed::deoglPGIUpdateSpeed(deGraphicOpenGl &ogl) : deoglParameter(ogl){
+	SetName("giUpdateSpeed");
+	SetDescription("Global Illumination Update Speed. Higher update speed converges lighting "
 		"faster decreasing reaction time to changes in light conditions. Lower update speed "
-		"converges lighting slower improving performance." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecBasic );
-	SetDisplayName( "GI Update Speed" );
+		"converges lighting slower improving performance.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecBasic);
+	SetDisplayName("GI Update Speed");
 	
-	const deModuleParameter::SelectionEntry entries[ 6 ] = {
-		{ "veryLow", "Very Low", "Very low update speed. For weak GPU delivering best performance." },
-		{ "low", "Low", "Low update speed. Prefer performance over faster convergence." },
-		{ "medium", "Medium", "Medium update speed. Balance between convergence speed "
-			"and performance. Recommended choice." },
-		{ "high", "High", "High update speed. Prefer faster convergence over performance." },
-		{ "veryHigh", "Very High", "Very high update speed. For high-end GPU delivering fastest convergence." }
+	const deModuleParameter::SelectionEntry entries[6] = {
+		{"veryLow", "Very Low", "Very low update speed. For weak GPU delivering best performance."},
+		{"low", "Low", "Low update speed. Prefer performance over faster convergence."},
+		{"medium", "Medium", "Medium update speed. Balance between convergence speed "
+			"and performance. Recommended choice."},
+		{"high", "High", "High update speed. Prefer faster convergence over performance."},
+		{"veryHigh", "Very High", "Very high update speed. For high-end GPU delivering fastest convergence."}
 	};
-	AddSelectionEntries( entries, 6 );
-	SetDefaultValue( "medium" );
+	AddSelectionEntries(entries, 6);
+	SetDefaultValue("medium");
 }
 
 deoglPGIUpdateSpeed::~deoglPGIUpdateSpeed(){
@@ -70,7 +70,7 @@ deoglPGIUpdateSpeed::~deoglPGIUpdateSpeed(){
 ////////////////////
 
 decString deoglPGIUpdateSpeed::GetParameterValue(){
-	switch( pOgl.GetConfiguration().GetGIUpdateSpeed() ){
+	switch(pOgl.GetConfiguration().GetGIUpdateSpeed()){
 	case deoglConfiguration::egiusVeryLow:
 		return "veryLow";
 		
@@ -91,25 +91,25 @@ decString deoglPGIUpdateSpeed::GetParameterValue(){
 	}
 }
 
-void deoglPGIUpdateSpeed::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
+void deoglPGIUpdateSpeed::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
 	
-	if( checkValue == "verylow" ){
-		pOgl.GetConfiguration().SetGIUpdateSpeed( deoglConfiguration::egiusVeryLow );
+	if(checkValue == "verylow"){
+		pOgl.GetConfiguration().SetGIUpdateSpeed(deoglConfiguration::egiusVeryLow);
 		
-	}else if( checkValue == "low" ){
-		pOgl.GetConfiguration().SetGIUpdateSpeed( deoglConfiguration::egiusLow );
+	}else if(checkValue == "low"){
+		pOgl.GetConfiguration().SetGIUpdateSpeed(deoglConfiguration::egiusLow);
 		
-	}else if( checkValue == "medium" ){
-		pOgl.GetConfiguration().SetGIUpdateSpeed( deoglConfiguration::egiusMedium );
+	}else if(checkValue == "medium"){
+		pOgl.GetConfiguration().SetGIUpdateSpeed(deoglConfiguration::egiusMedium);
 		
-	}else if( checkValue == "high" ){
-		pOgl.GetConfiguration().SetGIUpdateSpeed( deoglConfiguration::egiusHigh );
+	}else if(checkValue == "high"){
+		pOgl.GetConfiguration().SetGIUpdateSpeed(deoglConfiguration::egiusHigh);
 		
-	}else if( checkValue == "veryhigh" ){
-		pOgl.GetConfiguration().SetGIUpdateSpeed( deoglConfiguration::egiusVeryHigh );
+	}else if(checkValue == "veryhigh"){
+		pOgl.GetConfiguration().SetGIUpdateSpeed(deoglConfiguration::egiusVeryHigh);
 		
 	}else{
-		pOgl.GetConfiguration().SetGIUpdateSpeed( deoglConfiguration::egiusMedium );
+		pOgl.GetConfiguration().SetGIUpdateSpeed(deoglConfiguration::egiusMedium);
 	}
 }

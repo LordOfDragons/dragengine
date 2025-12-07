@@ -36,7 +36,7 @@ igdeNativeNullIconListBox::igdeNativeNullIconListBox(){
 igdeNativeNullIconListBox::~igdeNativeNullIconListBox(){
 }
 
-igdeNativeNullIconListBox *igdeNativeNullIconListBox::CreateNativeWidget( igdeIconListBox& ){
+igdeNativeNullIconListBox *igdeNativeNullIconListBox::CreateNativeWidget(igdeIconListBox&){
 	return new igdeNativeNullIconListBox;
 }
 
@@ -58,16 +58,16 @@ void igdeNativeNullIconListBox::BuildHeader(){
 void igdeNativeNullIconListBox::BuildList(){
 }
 
-void igdeNativeNullIconListBox::InsertItem( int, igdeListItem & ){
+void igdeNativeNullIconListBox::InsertItem(int, igdeListItem &){
 }
 
-void igdeNativeNullIconListBox::UpdateItem( int ){
+void igdeNativeNullIconListBox::UpdateItem(int){
 }
 
-void igdeNativeNullIconListBox::MoveItem( int, int ){
+void igdeNativeNullIconListBox::MoveItem(int, int){
 }
 
-void igdeNativeNullIconListBox::RemoveItem( int ){
+void igdeNativeNullIconListBox::RemoveItem(int){
 }
 
 void igdeNativeNullIconListBox::UpdateSelection(){
@@ -91,7 +91,7 @@ void igdeNativeNullIconListBox::UpdateMinimumSize(){
 void igdeNativeNullIconListBox::Focus(){
 }
 
-void igdeNativeNullIconListBox::MakeItemVisible( int ){
+void igdeNativeNullIconListBox::MakeItemVisible(int){
 }
 
 void igdeNativeNullIconListBox::RemoveAllItems(){

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkRemoveUnused( aeAnimator *animator );
+	aeULinkRemoveUnused(aeAnimator *animator);
 	
 protected:
 	/** Clean up undo. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Has links. */
-	inline bool HasLinks() const{ return pLinks.GetCount() > 0; }
+	inline bool HasLinks() const{return pLinks.GetCount() > 0;}
 	
 	/** Undo action. */
 	virtual void Undo();

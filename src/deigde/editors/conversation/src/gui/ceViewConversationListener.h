@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceViewConversationListener( ceViewConversation &view );
+	ceViewConversationListener(ceViewConversation &view);
 	
 	/** \brief Clean up listener. */
 	virtual ~ceViewConversationListener();
@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief View properties changed. */
-	virtual void ViewChanged( ceConversation *conversation );
+	virtual void ViewChanged(ceConversation *conversation);
 	/*@}*/
 };
 

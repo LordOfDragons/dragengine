@@ -42,20 +42,20 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
 
-deBaseModule *DELGACreateModule( deLoadableModule *loadableModule ){
+deBaseModule *DELGACreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deArchiveDelga( *loadableModule );
+		module = new deArchiveDelga(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -70,8 +70,8 @@ deBaseModule *DELGACreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deArchiveDelga::deArchiveDelga( deLoadableModule &loadableModule ) :
-deBaseArchiveModule( loadableModule ){
+deArchiveDelga::deArchiveDelga(deLoadableModule &loadableModule) :
+deBaseArchiveModule(loadableModule){
 }
 
 deArchiveDelga::~deArchiveDelga(){
@@ -82,9 +82,9 @@ deArchiveDelga::~deArchiveDelga(){
 // Management
 ///////////////
 
-deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *reader ){
-	DEASSERT_NOTNULL( reader )
-	return new deadContainer( *this, *reader );
+deBaseArchiveContainer *deArchiveDelga::CreateContainer(decBaseFileReader *reader){
+	DEASSERT_NOTNULL(reader)
+	return new deadContainer(*this, *reader);
 }
 
 #ifdef WITH_INTERNAL_MODULE

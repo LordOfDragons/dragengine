@@ -52,14 +52,14 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	seViewSky &pView;
 	
 public:
-	cCameraInteraction( seViewSky &view ) : pView( view ){
-		SetEnabledAll( false );
-		SetEnableRotate( true );
+	cCameraInteraction(seViewSky &view) : pView(view){
+		SetEnabledAll(false);
+		SetEnableRotate(true);
 	}
 	
 public:
 	virtual void OnCameraChanged(){
-		if( pView.GetSky() ){
+		if(pView.GetSky()){
 			pView.GetSky()->NotifyCameraChanged();
 		}
 	}
@@ -74,18 +74,18 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seViewSky::seViewSky( seWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pSky( NULL )
+seViewSky::seViewSky(seWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
+pSky(NULL)
 {
-	pCameraInteraction.TakeOver( new cCameraInteraction( *this ) );
+	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	
-	AddListener( pCameraInteraction );
+	AddListener(pCameraInteraction);
 }
 
 seViewSky::~seViewSky(){
-	SetSky( NULL );
+	SetSky(NULL);
 }
 
 
@@ -96,41 +96,41 @@ seViewSky::~seViewSky(){
 void seViewSky::ResetView(){
 }
 
-void seViewSky::SetSky( seSky *sky ){
-	if( sky == pSky ){
+void seViewSky::SetSky(seSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
-	pCameraInteraction->SetCamera( NULL );
-	SetRenderWorld( NULL );
+	pCameraInteraction->SetCamera(NULL);
+	SetRenderWorld(NULL);
 	
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
-	if( sky ){
+	if(sky){
 		sky->AddReference();
-		SetRenderWorld( sky->GetCamera()->GetEngineCamera() );
-		pCameraInteraction->SetCamera( sky->GetCamera() );
+		SetRenderWorld(sky->GetCamera()->GetEngineCamera());
+		pCameraInteraction->SetCamera(sky->GetCamera());
 	}
 }
 
 
 
-void seViewSky::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void seViewSky::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pSky ){
-		pSky->Update( elapsed );
+	if(pSky){
+		pSky->Update(elapsed);
 	}
 }
 
 void seViewSky::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( pSky ){
-		SetRenderWorld( pSky->GetCamera()->GetEngineCamera() );
+	if(pSky){
+		SetRenderWorld(pSky->GetCamera()->GetEngineCamera());
 	}
 }

@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component lod. */
-	deoglComponentLOD( deoglComponent &component, int lodIndex );
+	deoglComponentLOD(deoglComponent &component, int lodIndex);
 	
 	/** Clean up component lod. */
 	~deoglComponentLOD();
@@ -54,13 +54,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent component. */
-	inline deoglComponent &GetComponent() const{ return pComponent; }
+	inline deoglComponent &GetComponent() const{return pComponent;}
 	
 	/** LOD index. */
-	inline int GetLODIndex() const{ return pLODIndex; }
+	inline int GetLODIndex() const{return pLODIndex;}
 	
 	/** Render component lod. */
-	inline deoglRComponentLOD *GetRLOD() const{ return pRLOD; }
+	inline deoglRComponentLOD *GetRLOD() const{return pRLOD;}
 	/*@}*/
 	
 private:

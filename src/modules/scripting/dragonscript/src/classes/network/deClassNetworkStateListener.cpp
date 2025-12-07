@@ -41,11 +41,11 @@
 /////////////////////
 
 // public func void stateValueChanged( int index )
-deClassNetworkStateListener::nfStateValueChanged::nfStateValueChanged( const sInitData &init ) :
-dsFunction( init.clsNSL, "stateValueChanged", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // index
+deClassNetworkStateListener::nfStateValueChanged::nfStateValueChanged(const sInitData &init) :
+dsFunction(init.clsNSL, "stateValueChanged", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // index
 }
-void deClassNetworkStateListener::nfStateValueChanged::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassNetworkStateListener::nfStateValueChanged::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 
@@ -54,25 +54,25 @@ void deClassNetworkStateListener::nfStateValueChanged::RunFunction( dsRunTime *r
 //////////////////////////////////////
 
 // constructor
-deClassNetworkStateListener::deClassNetworkStateListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
-dsClass( "NetworkStateListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassNetworkStateListener::deClassNetworkStateListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("NetworkStateListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
 	// set parser info
-	GetParserInfo()->SetParent( DENS_NETWORKING );
+	GetParserInfo()->SetParent(DENS_NETWORKING);
 	
 	// do the rest
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 deClassNetworkStateListener::~deClassNetworkStateListener(){
 }
 
 // management
-void deClassNetworkStateListener::CreateClassMembers( dsEngine *engine ){
+void deClassNetworkStateListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -81,7 +81,7 @@ void deClassNetworkStateListener::CreateClassMembers( dsEngine *engine ){
 	init.clsInt = engine->GetClassInt();
 	
 	// add functions
-	AddFunction( new nfStateValueChanged( init ) );
+	AddFunction(new nfStateValueChanged(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();

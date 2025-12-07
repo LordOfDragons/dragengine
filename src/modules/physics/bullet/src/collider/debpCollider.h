@@ -110,18 +110,18 @@ private:
 	
 public:
 	// constructor, destructor
-	debpCollider( dePhysicsBullet *bullet, deCollider &collider, int type );
+	debpCollider(dePhysicsBullet *bullet, deCollider &collider, int type);
 	~debpCollider();
 	
 	// physics management
 	/** Retrieves the type. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	/** Determines if this is a collider volume. */
-	inline bool IsVolume() const{ return pType == ectVolume; }
+	inline bool IsVolume() const{return pType == ectVolume;}
 	/** Determines if this is a collider component. */
-	inline bool IsComponent() const{ return pType == ectComponent; }
+	inline bool IsComponent() const{return pType == ectComponent;}
 	/** Determines if this is a collider rigged. */
-	inline bool IsRigged() const{ return pType == ectRig; }
+	inline bool IsRigged() const{return pType == ectRig;}
 	/** Cast to collider volume. Throws an exception if this is not a collider volume. */
 	debpColliderVolume *CastToVolume() const;
 	/** Cast to collider component. Throws an exception if this is not a collider component. */
@@ -130,16 +130,16 @@ public:
 	debpColliderRig *CastToRigged() const;
 	
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
+	inline dePhysicsBullet *GetBullet() const{return pBullet;}
 	
-	inline deCollider &GetCollider() const{ return pCollider; }
-	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
-	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
-	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
-	inline int GetIndex() const{ return pIndex; }
+	inline deCollider &GetCollider() const{return pCollider;}
+	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
+	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
+	inline debpWorld *GetParentWorld() const{return pParentWorld;}
+	inline int GetIndex() const{return pIndex;}
 	
 	/** Requires update. */
-	inline bool GetRequiresUpdate() const{ return pRequiresUpdate; }
+	inline bool GetRequiresUpdate() const{return pRequiresUpdate;}
 	
 	/** Requires update. */
 	void RequiresUpdate();
@@ -147,27 +147,27 @@ public:
 	/** Clear requires update. */
 	void ClearRequiresUpdate();
 	
-	inline bool GetIsMoving() const{ return pIsMoving; }
-	void SetIsMoving( bool isMoving );
+	inline bool GetIsMoving() const{return pIsMoving;}
+	void SetIsMoving(bool isMoving);
 	const decDMatrix &GetMatrix();
 	const decDMatrix &GetInverseMatrix();
 	const decDMatrix &GetMatrixNormal();
-	void SetIndex( int index );
-	virtual void SetParentWorld( debpWorld *parentWorld );
+	void SetIndex(int index);
+	virtual void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Parent world changed. */
 	void ParentWorldChanged();
 	
-	void SetAddToOctree( bool doAdd );
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetAddToOctree(bool doAdd);
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	void MarkMatrixDirty();
 	void MarkDirtyOctree();
 	
 	/** Two collider can collide. */
-	bool Collides( const debpCollider &collider ) const;
+	bool Collides(const debpCollider &collider) const;
 	
 	/** Two collider can not collide. */
-	bool CollidesNot( const debpCollider &collider ) const;
+	bool CollidesNot(const debpCollider &collider) const;
 	
 	/** Create physics body if not existing already. */
 	virtual void CreateBody();
@@ -182,10 +182,10 @@ public:
 	/** Prepare for a simulation step. */
 	virtual void PrepareForStep();
 	/** Detect collision for a custom collision step. */
-	virtual void DetectCustomCollision( float elapsed );
+	virtual void DetectCustomCollision(float elapsed);
 	
 	/** Prepares the collision detection. */
-	virtual void PrepareDetection( float elapsed );
+	virtual void PrepareDetection(float elapsed);
 	/** Finished the collision detection updating the collider and send notifications. */
 	virtual void FinishDetection();
 	
@@ -196,17 +196,17 @@ public:
 	debpCollisionWorld *GetDynamicsWorld() const;
 	
 	/** Retrieves the marked flag. */
-	inline bool GetMarked() const{ return pMarked; }
+	inline bool GetMarked() const{return pMarked;}
 	/** Sets the marked flag. */
-	inline void SetMarked( bool marked ){ pMarked = marked; }
+	inline void SetMarked(bool marked){pMarked = marked;}
 	
-	inline bool GetTouchSensorMarked() const{ return pTouchSensorMarked; }
-	inline void SetTouchSensorMarked( bool marked ){ pTouchSensorMarked = marked; }
+	inline bool GetTouchSensorMarked() const{return pTouchSensorMarked;}
+	inline void SetTouchSensorMarked(bool marked){pTouchSensorMarked = marked;}
 	
 	/** Determines if this collider has to be simulated using kinematics. */
-	inline bool GetUseKinematicSimulation() const{ return pUseKinematicSim; }
+	inline bool GetUseKinematicSimulation() const{return pUseKinematicSim;}
 	/** Sets if this collider has to be simulated using kinematics. */
-	void SetUseKinematicSimulation( bool useKinematicSimulation );
+	void SetUseKinematicSimulation(bool useKinematicSimulation);
 	
 	/** Updates the octree position. */
 	virtual void UpdateOctreePosition();
@@ -214,13 +214,13 @@ public:
 	/** Updates shapes with the current matirx. */
 	virtual void UpdateShapes();
 	/** Updates shapes using a transformation matrix. */
-	virtual void UpdateShapesWithMatrix( const decDMatrix &transformation );
+	virtual void UpdateShapesWithMatrix(const decDMatrix &transformation);
 	/** Retrieves the minimum extend of the shapes. */
-	inline const decDVector &GetShapeMinimumExtend() const{ return pShapeMinExtend; }
+	inline const decDVector &GetShapeMinimumExtend() const{return pShapeMinExtend;}
 	/** Retrieves the maximum extend of the shapes. */
-	inline const decDVector &GetShapeMaximumExtend() const{ return pShapeMaxExtend; }
+	inline const decDVector &GetShapeMaximumExtend() const{return pShapeMaxExtend;}
 	/** Sets the extends of the shapes. */
-	void SetShapeExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetShapeExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/**
 	 * Prepare constraints for next detection step.
@@ -243,16 +243,16 @@ public:
 	void UnregisterColDetPrepare();
 	
 	/** Prepare collision detection index or -1 if not registered. */
-	inline int GetColDetPrepareIndex() const{ return pColDetPrepareIndex; }
+	inline int GetColDetPrepareIndex() const{return pColDetPrepareIndex;}
 	
 	/** Set prepare collision detection index or -1 if not registered. */
-	void SetColDetPrepareIndex( int index );
+	void SetColDetPrepareIndex(int index);
 	
 	/** Automatically re-registered for collision detection prepare. */
-	inline bool GetAutoColDetPrepare() const{ return pAutoColDetPrepare; }
+	inline bool GetAutoColDetPrepare() const{return pAutoColDetPrepare;}
 	
 	/** Set automatically re-registered for collision detection prepare. */
-	void SetAutoColDetPrepare( bool autoColDetPrepare );
+	void SetAutoColDetPrepare(bool autoColDetPrepare);
 	
 	/** Calculate auto collision detection re-register value. */
 	virtual bool CalcAutoColDetPrepare();
@@ -266,16 +266,16 @@ public:
 	void UnregisterColDetFinish();
 	
 	/** Finish collision detection index or -1 if not registered. */
-	inline int GetColDetFinishIndex() const{ return pColDetFinishIndex; }
+	inline int GetColDetFinishIndex() const{return pColDetFinishIndex;}
 	
 	/** Set finish collision detection index or -1 if not registered. */
-	void SetColDetFinishIndex( int index );
+	void SetColDetFinishIndex(int index);
 	
 	/** Automatically re-registered for collision detection finish. */
-	inline bool GetAutoColDetFinish() const{ return pAutoColDetFinish; }
+	inline bool GetAutoColDetFinish() const{return pAutoColDetFinish;}
 	
 	/** Set automatically re-registered for collision detection finish. */
-	void SetAutoColDetFinish( bool autoColDetFinish );
+	void SetAutoColDetFinish(bool autoColDetFinish);
 	
 	/** Calculate auto collision detection re-register value. */
 	virtual bool CalcAutoColDetFinish();
@@ -289,10 +289,10 @@ public:
 	void UnregisterPPCProcessing();
 	
 	/** Post physics collision processing index or -1 if not registered. */
-	inline int GetPPCProcessingIndex() const{ return pPPCTColliderIndex; }
+	inline int GetPPCProcessingIndex() const{return pPPCTColliderIndex;}
 	
 	/** Set post physics collision processing index or -1 if not registered. */
-	void SetPPCProcessingIndex( int index );
+	void SetPPCProcessingIndex(int index);
 	
 	
 	
@@ -303,10 +303,10 @@ public:
 	void UnregisterUpdateOctree();
 	
 	/** Update octree processing index or -1 if not registered. */
-	inline int GetUpdateOctreeIndex() const{ return pUpdateOctreeIndex; }
+	inline int GetUpdateOctreeIndex() const{return pUpdateOctreeIndex;}
 	
 	/** Set update octree processing index or -1 if not registered. */
-	void SetUpdateOctreeIndex( int index );
+	void SetUpdateOctreeIndex(int index);
 	
 	/** Prepare for static collsion test. Returns true if ready or false if not usable. */
 	virtual bool PrepareStaticCollisionTest() = 0;
@@ -317,17 +317,17 @@ public:
 	/** @name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	inline int GetAttachmentCount() const{return pAttachmentCount;}
 	/** Retrieves an attachment. */
-	debpColliderAttachment *GetAttachmentAt( int index ) const;
+	debpColliderAttachment *GetAttachmentAt(int index) const;
 	
 	/** Retrieves the list of colliders this collider is attached to. */
-	inline decPointerSet &GetAttachedToList(){ return pAttachedToList; }
-	inline const decPointerSet &GetAttachedToList() const{ return pAttachedToList; }
+	inline decPointerSet &GetAttachedToList(){return pAttachedToList;}
+	inline const decPointerSet &GetAttachedToList() const{return pAttachedToList;}
 	
 	/** List of touch sensors tracking this collider. */
-	inline decPointerSet &GetTrackingTouchSensors(){ return pTrackingTouchSensors; }
-	inline const decPointerSet &GetTrackingTouchSensors() const{ return pTrackingTouchSensors; }
+	inline decPointerSet &GetTrackingTouchSensors(){return pTrackingTouchSensors;}
+	inline const decPointerSet &GetTrackingTouchSensors() const{return pTrackingTouchSensors;}
 	/*@}*/
 	
 	
@@ -335,9 +335,9 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** Retrieves the number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	inline int GetConstraintCount() const{return pConstraintCount;}
 	/** Retrieves the constraint at the given index. */
-	debpColliderConstraint *GetConstraintAt( int index ) const;
+	debpColliderConstraint *GetConstraintAt(int index) const;
 	/*@}*/
 	
 	
@@ -348,7 +348,7 @@ public:
 	int GetCollisionTestCount() const;
 	
 	/** Post physics collision test at index. */
-	debpColliderCollisionTest *GetCollisionTestAt( int index ) const;
+	debpColliderCollisionTest *GetCollisionTestAt(int index) const;
 	/*@}*/
 	
 	
@@ -356,10 +356,10 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline deDebugDrawer *GetDebugDrawer() const{return pDebugDrawer;}
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
-	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
+	inline deDebugDrawerShape *GetDDSShape() const{return pDDSShape;}
 	
 	/** Update debug drawer if developer mode is enabled. */
 	virtual void UpdateDebugDrawer();
@@ -413,36 +413,36 @@ public:
 	virtual void ForceFieldChanged();
 	
 	/** Attachment added. */
-	virtual void AttachmentAdded( int index, deColliderAttachment *attachment );
+	virtual void AttachmentAdded(int index, deColliderAttachment *attachment);
 	/** Attachment changed. */
-	virtual void AttachmentChanged( int index, deColliderAttachment *attachment );
+	virtual void AttachmentChanged(int index, deColliderAttachment *attachment);
 	/** Attachment removed. */
-	virtual void AttachmentRemoved( int index, deColliderAttachment *attachment );
+	virtual void AttachmentRemoved(int index, deColliderAttachment *attachment);
 	/** All attachments removed. */
 	virtual void AllAttachmentsRemoved();
 	
 	/** Constraint added. */
-	virtual void ConstraintAdded( int index, deColliderConstraint *attachment );
+	virtual void ConstraintAdded(int index, deColliderConstraint *attachment);
 	/** Constraint changed. */
-	virtual void ConstraintChanged( int index, deColliderConstraint *attachment );
+	virtual void ConstraintChanged(int index, deColliderConstraint *attachment);
 	/** Constraint removed. */
-	virtual void ConstraintRemoved( int index, deColliderConstraint *attachment );
+	virtual void ConstraintRemoved(int index, deColliderConstraint *attachment);
 	/** All attachments removed. */
 	virtual void AllConstraintsRemoved();
 	
 	
 	
 	/** Post physics collision test added. */
-	virtual void CollisionTestAdded( int index );
+	virtual void CollisionTestAdded(int index);
 	
 	/** Post physics collision test changed. */
-	virtual void CollisionTestChanged( int index );
+	virtual void CollisionTestChanged(int index);
 	
 	/** Post physics collision test enabled changed. */
-	virtual void CollisionTestEnabledChanged( int index );
+	virtual void CollisionTestEnabledChanged(int index);
 	
 	/** Post physics collision test removed. */
-	virtual void CollisionTestRemoved( int index );
+	virtual void CollisionTestRemoved(int index);
 	
 	/** All post physics collision tests removed. */
 	virtual void AllCollisionTestsRemoved();
@@ -451,7 +451,7 @@ public:
 	
 	
 protected:
-	inline bool GetIsPrepared() const{ return pIsPrepared; }
+	inline bool GetIsPrepared() const{return pIsPrepared;}
 	
 private:
 	void pCleanUp();

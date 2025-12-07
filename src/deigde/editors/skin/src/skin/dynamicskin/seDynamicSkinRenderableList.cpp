@@ -55,19 +55,19 @@ int seDynamicSkinRenderableList::GetCount() const{
 	return pRenderables.GetCount();
 }
 
-seDynamicSkinRenderable *seDynamicSkinRenderableList::GetAt( int index ) const{
-	return ( seDynamicSkinRenderable* )pRenderables.GetAt( index );
+seDynamicSkinRenderable *seDynamicSkinRenderableList::GetAt(int index) const{
+	return (seDynamicSkinRenderable*)pRenderables.GetAt(index);
 }
 
-seDynamicSkinRenderable *seDynamicSkinRenderableList::GetNamed( const char *name ) const{
+seDynamicSkinRenderable *seDynamicSkinRenderableList::GetNamed(const char *name) const{
 	const int count = pRenderables.GetCount();
 	seDynamicSkinRenderable *renderable;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		renderable = ( seDynamicSkinRenderable* )pRenderables.GetAt( p );
+	for(p=0; p<count; p++){
+		renderable = (seDynamicSkinRenderable*)pRenderables.GetAt(p);
 		
-		if( renderable->GetName().Equals( name ) ){
+		if(renderable->GetName().Equals(name)){
 			return renderable;
 		}
 	}
@@ -75,16 +75,16 @@ seDynamicSkinRenderable *seDynamicSkinRenderableList::GetNamed( const char *name
 	return NULL;
 }
 
-int seDynamicSkinRenderableList::IndexOf( seDynamicSkinRenderable *renderable ) const{
-	return pRenderables.IndexOf( renderable );
+int seDynamicSkinRenderableList::IndexOf(seDynamicSkinRenderable *renderable) const{
+	return pRenderables.IndexOf(renderable);
 }
 
-int seDynamicSkinRenderableList::IndexOfNamed( const char *name ) const{
+int seDynamicSkinRenderableList::IndexOfNamed(const char *name) const{
 	const int count = pRenderables.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( seDynamicSkinRenderable* )pRenderables.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((seDynamicSkinRenderable*)pRenderables.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int seDynamicSkinRenderableList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool seDynamicSkinRenderableList::Has( seDynamicSkinRenderable *renderable ) const{
-	return pRenderables.Has( renderable );
+bool seDynamicSkinRenderableList::Has(seDynamicSkinRenderable *renderable) const{
+	return pRenderables.Has(renderable);
 }
 
-bool seDynamicSkinRenderableList::HasNamed( const char *name ) const{
+bool seDynamicSkinRenderableList::HasNamed(const char *name) const{
 	const int count = pRenderables.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( seDynamicSkinRenderable* )pRenderables.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((seDynamicSkinRenderable*)pRenderables.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,28 +109,28 @@ bool seDynamicSkinRenderableList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void seDynamicSkinRenderableList::Add( seDynamicSkinRenderable *renderable ){
-	if( ! renderable || HasNamed( renderable->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void seDynamicSkinRenderableList::Add(seDynamicSkinRenderable *renderable){
+	if(! renderable || HasNamed(renderable->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRenderables.Add( renderable );
+	pRenderables.Add(renderable);
 }
 
-void seDynamicSkinRenderableList::InsertAt( seDynamicSkinRenderable *renderable, int index ){
-	if( ! renderable || HasNamed( renderable->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void seDynamicSkinRenderableList::InsertAt(seDynamicSkinRenderable *renderable, int index){
+	if(! renderable || HasNamed(renderable->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pRenderables.Insert( renderable, index );
+	pRenderables.Insert(renderable, index);
 }
 
-void seDynamicSkinRenderableList::MoveTo( seDynamicSkinRenderable *renderable, int index ){
-	pRenderables.Move( renderable, index );
+void seDynamicSkinRenderableList::MoveTo(seDynamicSkinRenderable *renderable, int index){
+	pRenderables.Move(renderable, index);
 }
 
-void seDynamicSkinRenderableList::Remove( seDynamicSkinRenderable *renderable ){
-	pRenderables.Remove( renderable );
+void seDynamicSkinRenderableList::Remove(seDynamicSkinRenderable *renderable){
+	pRenderables.Remove(renderable);
 }
 
 void seDynamicSkinRenderableList::RemoveAll(){
@@ -139,7 +139,7 @@ void seDynamicSkinRenderableList::RemoveAll(){
 
 
 
-seDynamicSkinRenderableList &seDynamicSkinRenderableList::operator=( const seDynamicSkinRenderableList &list ){
+seDynamicSkinRenderableList &seDynamicSkinRenderableList::operator=(const seDynamicSkinRenderableList &list){
 	pRenderables = list.pRenderables;
 	return *this;
 }

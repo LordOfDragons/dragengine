@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRig( fbxScene &scene, fbxNode *nodePose );
+	fbxRig(fbxScene &scene, fbxNode *nodePose);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -77,10 +77,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Scene. */
-	inline fbxScene &GetScene() const{ return pScene; }
+	inline fbxScene &GetScene() const{return pScene;}
 	
 	/** \brief Pose node. */
-	inline fbxNode &GetNodePose() const{ return pNodePose; }
+	inline fbxNode &GetNodePose() const{return pNodePose;}
 	
 	
 	
@@ -88,32 +88,32 @@ public:
 	int GetBoneCount() const;
 	
 	/** \brief Bone at index. */
-	fbxRigBone *GetBoneAt( int index ) const;
+	fbxRigBone *GetBoneAt(int index) const;
 	
 	/** \brief Named bone or NULL if absent. */
-	fbxRigBone *GetBoneNamed( const char *name ) const;
+	fbxRigBone *GetBoneNamed(const char *name) const;
 	
 	/** \brief Bone with model ID or NULL if absent. */
-	fbxRigBone *GetBoneWithModelID( int64_t id ) const;
+	fbxRigBone *GetBoneWithModelID(int64_t id) const;
 	
 	
 	
 	/** \brief Matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** \brief Inverse matrix. */
-	inline const decMatrix &GetMatrixInverse() const{ return pMatrix; }
+	inline const decMatrix &GetMatrixInverse() const{return pMatrix;}
 	
 	
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pAddRootBone( fbxScene &scene, fbxNode &nodeRoot );
+	void pAddRootBone(fbxScene &scene, fbxNode &nodeRoot);
 };
 
 #endif

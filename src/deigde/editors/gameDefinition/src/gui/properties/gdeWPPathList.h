@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPPathList( igdeUIHelper &helper, int rows, const char *description );
+	gdeWPPathList(igdeUIHelper &helper, int rows, const char *description);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -74,16 +74,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path list to edit. */
-	inline const decStringList *GetPathList() const{ return pPathList; }
+	inline const decStringList *GetPathList() const{return pPathList;}
 	
 	/** \brief Set path list to edit. */
-	void SetPathList( const decStringList *pathList );
+	void SetPathList(const decStringList *pathList);
 	
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -94,32 +94,32 @@ public:
 	void UpdateList();
 	
 	/** \brief Select path. */
-	void SelectPath( const decString &path );
+	void SelectPath(const decString &path);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAppend() const{ return pActionAppend; }
-	inline igdeAction *GetActionInsert() const{ return pActionInsert; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline igdeAction *GetActionAppend() const{return pActionAppend;}
+	inline igdeAction *GetActionInsert() const{return pActionInsert;}
+	inline igdeAction *GetActionRemove() const{return pActionRemove;}
+	inline igdeAction *GetActionClear() const{return pActionClear;}
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringList &paths ) = 0;
+	virtual igdeUndo *UndoSet(const decStringList &paths) = 0;
 	/*@}*/
 	
 	
 	
 protected:
 	/** \brief Edit path. */
-	inline igdeEditPath *GetEditPath() const{ return pEditPath; }
+	inline igdeEditPath *GetEditPath() const{return pEditPath;}
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline igdeListBox *GetListBox() const{return pListBox;}
 };
 
 #endif

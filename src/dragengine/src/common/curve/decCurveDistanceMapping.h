@@ -54,7 +54,7 @@ public:
 	decCurveDistanceMapping();
 	
 	/** \brief Create curve distance mapping. */
-	decCurveDistanceMapping( const decCurveDistanceMapping &mapping );
+	decCurveDistanceMapping(const decCurveDistanceMapping &mapping);
 	
 	/** \brief Clean up curve distance mapping. */
 	~decCurveDistanceMapping();
@@ -65,13 +65,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resolution in meters used for sampling. */
-	inline float GetResolution() const{ return pResolution; }
+	inline float GetResolution() const{return pResolution;}
 	
 	/** \brief Length of sampled curve in meters. */
-	inline float GetLength() const{ return pLength; }
+	inline float GetLength() const{return pLength;}
 	
 	/** \brief Get evaluation parameter for distance. */
-	void Map( float distance, int &segment, float &blend ) const;
+	void Map(float distance, int &segment, float &blend) const;
 	
 	/** \brief Clear mapping. */
 	void Clear();
@@ -82,7 +82,7 @@ public:
 	 * Previous mapping parameters are overwritten. The method chooses resolution
 	 * and segment sample count by examining the curve before sampling it.
 	 */
-	void Init( const decCurveBezier3D &curve );
+	void Init(const decCurveBezier3D &curve);
 	
 	/**
 	 * \brief Initialize mapping using a 3d bezier curve.
@@ -106,17 +106,17 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em segmentSamples is less than 0.
 	 */
-	void Init( const decCurveBezier3D &curve, float resolution, int segmentSamples );
+	void Init(const decCurveBezier3D &curve, float resolution, int segmentSamples);
 	
 	
 	
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another mapping to this mapping. */
-	decCurveDistanceMapping &operator=( const decCurveDistanceMapping &mapping );
+	decCurveDistanceMapping &operator=(const decCurveDistanceMapping &mapping);
 	
 	/** \brief Mapping is equal to another mapping. */
-	bool operator==( const decCurveDistanceMapping &mapping ) const;
+	bool operator==(const decCurveDistanceMapping &mapping) const;
 	/*@}*/
 	/*@}*/
 };

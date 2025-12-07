@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeSphere::debpShapeSphere( decShapeSphere *shape ) : debpShape( estSphere, shape ){
+debpShapeSphere::debpShapeSphere(decShapeSphere *shape) : debpShape(estSphere, shape){
 	pSSphere = shape;
-	SetCollisionVolume( &pCSphere );
+	SetCollisionVolume(&pCSphere);
 }
 
 debpShapeSphere::~debpShapeSphere(){
@@ -52,17 +52,17 @@ debpShapeSphere::~debpShapeSphere(){
 // Management
 ///////////////
 
-void debpShapeSphere::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
-	pCSphere.SetCenter( transformation * pSSphere->GetPosition() );
+void debpShapeSphere::UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale){
+	pCSphere.SetCenter(transformation * pSSphere->GetPosition());
 // 	pCSphere.SetRadius( pSSphere->GetRadius() * UniformScale( transformation ) );
 	
-	float scaleRadius = ( float )( ( scale.x + scale.y + scale.z ) / 3.0 );
-	pCSphere.SetRadius( pSSphere->GetRadius() * scaleRadius );
+	float scaleRadius = (float)((scale.x + scale.y + scale.z) / 3.0);
+	pCSphere.SetRadius(pSSphere->GetRadius() * scaleRadius);
 }
 
-void debpShapeSphere::PrintDebug( dePhysicsBullet &module ){
+void debpShapeSphere::PrintDebug(dePhysicsBullet &module){
 	const decDVector &c = pCSphere.GetCenter();
 	double r = pCSphere.GetRadius();
 	
-	module.LogInfoFormat( "sphere: c=(%.4g,%.4g,%.4g) r=%.4g", c.x, c.y, c.z, r );
+	module.LogInfoFormat("sphere: c=(%.4g,%.4g,%.4g) r=%.4g", c.x, c.y, c.z, r);
 }

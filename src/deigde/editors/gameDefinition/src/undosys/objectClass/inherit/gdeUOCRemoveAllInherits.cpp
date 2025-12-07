@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveAllInherits::gdeUOCRemoveAllInherits( gdeObjectClass *objectClass ) :
-pObjectClass( NULL )
+gdeUOCRemoveAllInherits::gdeUOCRemoveAllInherits(gdeObjectClass *objectClass) :
+pObjectClass(NULL)
 {
-	if( ! objectClass || objectClass->GetInherits().GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || objectClass->GetInherits().GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove all inherits" );
+	SetShortInfo("Remove all inherits");
 	
 	pInherits = objectClass->GetInherits();
 	
@@ -56,7 +56,7 @@ pObjectClass( NULL )
 }
 
 gdeUOCRemoveAllInherits::~gdeUOCRemoveAllInherits(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -69,8 +69,8 @@ gdeUOCRemoveAllInherits::~gdeUOCRemoveAllInherits(){
 void gdeUOCRemoveAllInherits::Undo(){
 	const int count = pInherits.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pObjectClass->GetInherits().Add( pInherits.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pObjectClass->GetInherits().Add(pInherits.GetAt(i));
 	}
 	pObjectClass->NotifyInheritsChanged();
 }

@@ -47,7 +47,7 @@ public:
 	igdeGDCCTextureList();
 	
 	/** \brief Create copy of a game definition class component texture list. */
-	igdeGDCCTextureList( const igdeGDCCTextureList &list );
+	igdeGDCCTextureList(const igdeGDCCTextureList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCCTextureList();
@@ -61,43 +61,43 @@ public:
 	int GetCount() const;
 	
 	/** \brief Texture by index. */
-	igdeGDCCTexture *GetAt( int index ) const;
+	igdeGDCCTexture *GetAt(int index) const;
 	
 	/** \brief Texture by name or NULL if not found. */
-	igdeGDCCTexture *GetNamed( const char *name ) const;
+	igdeGDCCTexture *GetNamed(const char *name) const;
 	
 	/** \brief Index of an texture or -1 if not found. */
-	int IndexOf( igdeGDCCTexture *texture ) const;
+	int IndexOf(igdeGDCCTexture *texture) const;
 	
 	/** \brief Index of a named texture or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Determines if an texture exists. */
-	bool Has( igdeGDCCTexture *texture ) const;
+	bool Has(igdeGDCCTexture *texture) const;
 	
 	/** \brief Determines if an named texture exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Adds an texture. */
-	void Add( igdeGDCCTexture *texture );
+	void Add(igdeGDCCTexture *texture);
 	
 	/** \brief Inserts a new texture. */
-	void InsertAt( igdeGDCCTexture *texture, int index );
+	void InsertAt(igdeGDCCTexture *texture, int index);
 	
 	/** \brief Moves an texture to a new position. */
-	void MoveTo( igdeGDCCTexture *texture, int index );
+	void MoveTo(igdeGDCCTexture *texture, int index);
 	
 	/** \brief Removes an texture. */
-	void Remove( igdeGDCCTexture *texture );
+	void Remove(igdeGDCCTexture *texture);
 	
 	/** \brief Removes all textures. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCCTextureList &list );
+	void SetToDeepCopyFrom(const igdeGDCCTextureList &list);
 	
 	/** \brief Set list from another list. */
-	igdeGDCCTextureList &operator=( const igdeGDCCTextureList &list );
+	igdeGDCCTextureList &operator=(const igdeGDCCTextureList &list);
 	/*@}*/
 };
 

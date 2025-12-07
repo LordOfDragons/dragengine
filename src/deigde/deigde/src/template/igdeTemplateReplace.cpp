@@ -40,14 +40,14 @@
 ////////////////////////////
 
 igdeTemplateReplace::igdeTemplateReplace() :
-pValue( evProjectPath ),
-pFormat( efText ){
+pValue(evProjectPath),
+pFormat(efText){
 }
 
-igdeTemplateReplace::igdeTemplateReplace( const igdeTemplateReplace &file ) :
-pToken( file.pToken ),
-pValue( file.pValue ),
-pFormat( file.pFormat ){
+igdeTemplateReplace::igdeTemplateReplace(const igdeTemplateReplace &file) :
+pToken(file.pToken),
+pValue(file.pValue),
+pFormat(file.pFormat){
 }
 
 igdeTemplateReplace::~igdeTemplateReplace(){
@@ -58,14 +58,14 @@ igdeTemplateReplace::~igdeTemplateReplace(){
 // Management
 ///////////////
 
-void igdeTemplateReplace::SetToken( const char *token ){
+void igdeTemplateReplace::SetToken(const char *token){
 	pToken = token;
 }
 
-void igdeTemplateReplace::SetValue( eValues value ){
+void igdeTemplateReplace::SetValue(eValues value){
 	pValue = value;
 }
 
-void igdeTemplateReplace::SetFormat( eFormats format ){
+void igdeTemplateReplace::SetFormat(eFormats format){
 	pFormat = format;
 }

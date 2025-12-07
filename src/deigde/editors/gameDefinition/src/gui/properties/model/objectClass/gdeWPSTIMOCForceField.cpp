@@ -47,27 +47,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCForceField::gdeWPSTIMOCForceField( gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCForceField *forceField, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassForceField, objectClass, index ),
-pForceField( NULL )
+gdeWPSTIMOCForceField::gdeWPSTIMOCForceField(gdeWPSTreeModel &tree,
+	gdeObjectClass *objectClass, gdeOCForceField *forceField, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassForceField, objectClass, index),
+pForceField(NULL)
 {
-	if( ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Force Field #%d", index + 1 );
-	SetText( text );
+	text.Format("Force Field #%d", index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pForceField = forceField;
 	forceField->AddReference();
 }
 
 gdeWPSTIMOCForceField::~gdeWPSTIMOCForceField(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
 }
@@ -78,8 +78,8 @@ gdeWPSTIMOCForceField::~gdeWPSTIMOCForceField(){
 ///////////////
 
 void gdeWPSTIMOCForceField::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
@@ -94,20 +94,20 @@ void gdeWPSTIMOCForceField::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCForceField::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCForceField( pForceField );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCForceField );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCForceField(pForceField);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCForceField);
 }
 
-void gdeWPSTIMOCForceField::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCForceField::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCForceFieldAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCForceFieldRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCForceFieldAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCForceFieldRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCForceFieldCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCForceFieldCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCForceFieldPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCForceFieldCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCForceFieldCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCForceFieldPaste());
 }

@@ -71,7 +71,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bullet shape. */
-	debpHeightTerrainShape( debpHTSector *sector );
+	debpHeightTerrainShape(debpHTSector *sector);
 	/** Cleans up the bullet shape. */
 	virtual ~debpHeightTerrainShape();
 	/*@}*/
@@ -81,46 +81,46 @@ public:
 	/**
 	 * getAabb returns the axis aligned bounding box in the coordinate frame of the given transform t.
 	 */
-	virtual void getAabb( const btTransform &trans, btVector3 &aabbMin, btVector3 &aabbMax ) const;
+	virtual void getAabb(const btTransform &trans, btVector3 &aabbMin, btVector3 &aabbMax) const;
 	
 	/**
 	 * \brief Process all triangles for ray casting.
 	 * \details This call is more intelligent version of processAllTriangles able to
 	 *          optimize which groups of triangles are tested.
 	 */
-	virtual void processRaycastAllTriangles( btTriangleRaycastCallback *callback,
-	const btVector3 &raySource, const btVector3 &rayTarget );
+	virtual void processRaycastAllTriangles(btTriangleRaycastCallback *callback,
+	const btVector3 &raySource, const btVector3 &rayTarget);
 	
 	/**
 	 * \brief Process all triangles for convex shape casting.
 	 * \details This call is more intelligent version of processAllTriangles able to
 	 *          optimize which groups of triangles are tested.
 	 */
-	virtual void processConvexcastAllTriangles( btTriangleConvexcastCallback *callback,
+	virtual void processConvexcastAllTriangles(btTriangleConvexcastCallback *callback,
 	const btVector3 &boxSource, const btVector3 &boxTarget,
-	const btVector3 &boxMin, const btVector3 &boxMax );
+	const btVector3 &boxMin, const btVector3 &boxMax);
 	
 	/** \brief Processes all triangles which. */
-	virtual void processAllTriangles( btTriangleCallback *callback, const btVector3 &aabbMin, const btVector3 &aabbMax ) const;
+	virtual void processAllTriangles(btTriangleCallback *callback, const btVector3 &aabbMin, const btVector3 &aabbMax) const;
 	
 	/** \brief Process all triangles inside a box area. */
-	void ProcessAllTrianglesIn( btTriangleCallback &callback, int fromX, int toX, int fromZ, int toZ ) const;
+	void ProcessAllTrianglesIn(btTriangleCallback &callback, int fromX, int toX, int fromZ, int toZ) const;
 	
 	/** \brief Calculates the local inertia. */
-	virtual void calculateLocalInertia( btScalar mass, btVector3 &inertia ) const;
+	virtual void calculateLocalInertia(btScalar mass, btVector3 &inertia) const;
 	/** \brief Sets the local scaling. Empty since the scaling is always 1. */
-	virtual void setLocalScaling( const btVector3 &scaling );
+	virtual void setLocalScaling(const btVector3 &scaling);
 	/** \brief Retrieves the local scaling. Always 1. */
 	virtual const btVector3 &getLocalScaling() const;
 	/** \brief Retrieves the debugging name. */
 	virtual const char *getName() const;
 	
 	/** \brief Calculate the point indices for a box. */
-	void CalculateBoxPointIndices( const btVector3 &boxMin, const btVector3 boxMax,
-	int &pointMinX, int &pointMaxX, int &pointMinZ, int &pointMaxZ ) const;
+	void CalculateBoxPointIndices(const btVector3 &boxMin, const btVector3 boxMax,
+	int &pointMinX, int &pointMaxX, int &pointMinZ, int &pointMaxZ) const;
 	/** \brief Calculate the cluster indices for a box. */
-	void CalculateBoxClusterIndices( const btVector3 &boxMin, const btVector3 boxMax,
-	int &clusterMinX, int &clusterMaxX, int &clusterMinZ, int &clusterMaxZ ) const;
+	void CalculateBoxClusterIndices(const btVector3 &boxMin, const btVector3 boxMax,
+	int &clusterMinX, int &clusterMaxX, int &clusterMinZ, int &clusterMaxZ) const;
 	/*@}*/
 };
 

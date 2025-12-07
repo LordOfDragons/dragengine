@@ -68,35 +68,35 @@ public:
 	virtual bool IsEmpty() const;
 	
 	/** \brief Element at index. */
-	virtual decXmlElement *GetElementAt( int index ) const;
+	virtual decXmlElement *GetElementAt(int index) const;
 	
 	/** \brief Add element. */
-	virtual void AddElement( decXmlElement *element );
+	virtual void AddElement(decXmlElement *element);
 	
 	/** \brief Add element. */
 	virtual void InsertElement(decXmlElement *element, int beforeIndex);
 	
 	/** \brief Remove element. */
-	virtual void RemoveElement( decXmlElement *element );
+	virtual void RemoveElement(decXmlElement *element);
 	
 	/** \brief Remove all elements. */
 	virtual void RemoveAllElements();
 	
 	/** \brief Index of element or -1 if absent. */
-	virtual int IndexOfElement( decXmlElement *element );
+	virtual int IndexOfElement(decXmlElement *element);
 	
 	/** \brief Element is present. */
-	virtual bool HasElement( decXmlElement *element );
+	virtual bool HasElement(decXmlElement *element);
 	
 	/** \brief Visit all elements. */
-	virtual void VisitElements( decXmlVisitor &visitor );
+	virtual void VisitElements(decXmlVisitor &visitor);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void Visit( decXmlVisitor &visitor );
+	virtual void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	

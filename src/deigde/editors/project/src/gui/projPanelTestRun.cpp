@@ -72,48 +72,48 @@ namespace {
 class cActionStart : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionStart( projPanelTestRun &panel ) : igdeAction( "Start",
-		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile" ),
-	pPanel( panel ){ }
+	cActionStart(projPanelTestRun &panel) : igdeAction("Start",
+		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.Start();
 	}
 	
 	virtual void Update(){
-		SetEnabled( ! pPanel.IsRunning() && pPanel.GetSelectedProfile() );
+		SetEnabled(! pPanel.IsRunning() && pPanel.GetSelectedProfile());
 	}
 };
 
 class cActionStop : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionStop( projPanelTestRun &panel ) : igdeAction( "Stop",
-		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project" ),
-	pPanel( panel ){ }
+	cActionStop(projPanelTestRun &panel) : igdeAction("Stop",
+		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.Quit();
 	}
 	
 	virtual void Update(){
-		SetEnabled( pPanel.IsRunning() );
+		SetEnabled(pPanel.IsRunning());
 	}
 };
 
 class cActionKill : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionKill( projPanelTestRun &panel ) : igdeAction( "Kill",
-		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project" ),
-	pPanel( panel ){ }
+	cActionKill(projPanelTestRun &panel) : igdeAction("Kill",
+		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.Quit();
 	}
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetTestRunner()->IsRunning() );
+		SetEnabled(pPanel.GetTestRunner()->IsRunning());
 	}
 };
 
@@ -121,16 +121,16 @@ public:
 class cComboProfile : public igdeComboBoxListener{
 	projPanelTestRun &pPanel;
 public:
-	cComboProfile( projPanelTestRun &panel ) : pPanel( panel ){ }
+	cComboProfile(projPanelTestRun &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		
-		if( selection ){
-			pPanel.SelectProfile( ( projProfile* )selection->GetData() );
+		if(selection){
+			pPanel.SelectProfile((projProfile*)selection->GetData());
 			
 		}else{
-			pPanel.SelectProfile( NULL );
+			pPanel.SelectProfile(NULL);
 		}
 		
 		pPanel.UpdateWidgetEnabled();
@@ -140,9 +140,9 @@ public:
 class cComboLaunchProfile : public igdeComboBoxListener{
 	projPanelTestRun &pPanel;
 public:
-	cComboLaunchProfile( projPanelTestRun &panel ) : pPanel( panel ){ }
+	cComboLaunchProfile(projPanelTestRun &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		projProject * const project = pPanel.GetProject();
 		if(!project || pPanel.preventUpdateLaunchProfile){
 			return;
@@ -154,7 +154,7 @@ public:
 			return;
 		}
 		
-		const projTRProfile * const profile = ( const projTRProfile* )selection->GetData();
+		const projTRProfile * const profile = (const projTRProfile*)selection->GetData();
 		if(!profile){
 			project->SetActiveLaunchProfile("");
 			return;
@@ -168,7 +168,7 @@ public:
 class cEditRemoteAddress : public igdeTextFieldListener{
 	projPanelTestRun &pPanel;
 public:
-	cEditRemoteAddress(projPanelTestRun &panel) : pPanel(panel){ }
+	cEditRemoteAddress(projPanelTestRun &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField) override{
 		pPanel.GetWindowMain().GetConfiguration().SetRemoteAddress(textField->GetText());
@@ -180,8 +180,8 @@ class cActionRemoteStartListen : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
 	cActionRemoteStartListen(projPanelTestRun &panel) : igdeAction("Start Listen",
-		nullptr, "Start listening for remote client connections" ),
-	pPanel(panel){ }
+		nullptr, "Start listening for remote client connections"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.RemoteStartListen();
@@ -197,8 +197,8 @@ class cActionRemoteStopListen : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
 	cActionRemoteStopListen(projPanelTestRun &panel) : igdeAction("Stop Listen",
-		nullptr, "Stop listening for remote client connections" ),
-	pPanel(panel){ }
+		nullptr, "Stop listening for remote client connections"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.RemoteStopListen();
@@ -215,8 +215,8 @@ class cActionRemoteSynchronizeAll : public igdeAction{
 public:
 	cActionRemoteSynchronizeAll(projPanelTestRun &panel) : igdeAction("Synchronize All",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
-		"Synchronize all remote clients" ),
-	pPanel(panel){ }
+		"Synchronize all remote clients"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.RemoteSynchronizeAll();
@@ -241,59 +241,59 @@ const char *projPanelTestRun::styleError = "error";
 // Constructor, destructor
 ////////////////////////////
 
-projPanelTestRun::projPanelTestRun( projWindowMain &windowMain ) :
+projPanelTestRun::projPanelTestRun(projWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
 	igdeApplication::app().DisplayScaled(250)),
 
 preventUpdateLaunchProfile(false),
 
-pWindowMain( windowMain ),
+pWindowMain(windowMain),
 
-pProject( NULL ),
-pListener( NULL ),
+pProject(NULL),
+pListener(NULL),
 
-pTestRunner( NULL ),
-pIsRunning( false ),
-pMaxLines( 500 )
+pTestRunner(NULL),
+pIsRunning(false),
+pMaxLines(500)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelTestRunListener( *this );
+	pListener = new projPanelTestRunListener(*this);
 	
 	
 	// create actions
-	pActionStart.TakeOver( new cActionStart( *this ) );
-	pActionQuit.TakeOver( new cActionStop( *this ) );
-	pActionKill.TakeOver( new cActionKill( *this ) );
+	pActionStart.TakeOver(new cActionStart(*this));
+	pActionQuit.TakeOver(new cActionStop(*this));
+	pActionKill.TakeOver(new cActionKill(*this));
 	
 	
 	
 	// side panel
 	igdeContainerScroll::Ref scroll;
 	igdeContainer::Ref sidePanel;
-	helper.SidePanel( scroll, sidePanel, false, 5 );
-	sidePanel->SetWidgetGuiThemeName( "" );
-	AddChild( scroll, eaSide );
+	helper.SidePanel(scroll, sidePanel, false, 5);
+	sidePanel->SetWidgetGuiThemeName("");
+	AddChild(scroll, eaSide);
 	
 	
 	igdeContainer::Ref groupBox(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
-	helper.Label( groupBox, "Profile:" );
-	helper.ComboBox( groupBox, "Distribution profile to run.",
-		pCBProfile, new cComboProfile( *this ) );
+	helper.Label(groupBox, "Profile:");
+	helper.ComboBox(groupBox, "Distribution profile to run.",
+		pCBProfile, new cComboProfile(*this));
 	pCBProfile->SetDefaultSorter();
-	sidePanel->AddChild( groupBox );
+	sidePanel->AddChild(groupBox);
 	
-	groupBox.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	helper.Label( groupBox, "Launch Profile:" );
-	helper.ComboBox( groupBox, "Launcher profile to use for testing.",
-		pCBLaunchProfile, new cComboLaunchProfile( *this ) );
+	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	helper.Label(groupBox, "Launch Profile:");
+	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
+		pCBLaunchProfile, new cComboLaunchProfile(*this));
 	pCBLaunchProfile->SetDefaultSorter();
-	sidePanel->AddChild( groupBox );
+	sidePanel->AddChild(groupBox);
 	
-	helper.Button( sidePanel, pBtnStart, pActionStart );
-	helper.Button( sidePanel, pBtnQuit, pActionQuit );
-	helper.Button( sidePanel, pBtnKill, pActionKill );
+	helper.Button(sidePanel, pBtnStart, pActionStart);
+	helper.Button(sidePanel, pBtnQuit, pActionQuit);
+	helper.Button(sidePanel, pBtnKill, pActionKill);
 	
 	
 	// remote launching
@@ -310,11 +310,11 @@ pMaxLines( 500 )
 	
 	
 	// logs / debug
-	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Logs / Debug:" );
-	helper.Button( groupBox, windowMain.GetActionShowLogs() );
-	helper.Button( groupBox, windowMain.GetActionShowConfig() );
-	helper.Button( groupBox, windowMain.GetActionShowOverlay() );
-	helper.Button( groupBox, windowMain.GetActionShowCapture() );
+	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Logs / Debug:");
+	helper.Button(groupBox, windowMain.GetActionShowLogs());
+	helper.Button(groupBox, windowMain.GetActionShowConfig());
+	helper.Button(groupBox, windowMain.GetActionShowOverlay());
+	helper.Button(groupBox, windowMain.GetActionShowCapture());
 	
 	
 	// content
@@ -322,18 +322,18 @@ pMaxLines( 500 )
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver( new igdeTextArea( env, 60, 10, false ) );
+	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
 	
 	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
-	style->SetColor( decColor( 0.0f, 0.0f, 0.0f ) );
-	style->SetBgColor( decColor( 1.0f, 0.815f, 0.0f ) );
-	pEditLogs->AddStyle( style );
+	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
+	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
+	pEditLogs->AddStyle(style);
 	
-	style.TakeOver( new igdeTextStyle( styleError ) );
-	style->SetColor( decColor( 1.0f, 1.0f, 0.5f ) );
-	style->SetBgColor( decColor( 0.75f, 0.0f, 0.0f ) );
+	style.TakeOver(new igdeTextStyle(styleError));
+	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
+	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );
-	pEditLogs->AddStyle( style );
+	pEditLogs->AddStyle(style);
 	
 	pTabContent->AddChild(pEditLogs, "Logs");
 	
@@ -341,13 +341,13 @@ pMaxLines( 500 )
 	// update
 	LoadConfig();
 	
-	pTestRunner = new projTestRunner( windowMain );
+	pTestRunner = new projTestRunner(windowMain);
 }
 
 projPanelTestRun::~projPanelTestRun(){
-	SetProject( NULL );
+	SetProject(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -357,7 +357,7 @@ projPanelTestRun::~projPanelTestRun(){
 // Management
 ///////////////
 
-void projPanelTestRun::SetProject( projProject *project ){
+void projPanelTestRun::SetProject(projProject *project){
 	if(project == pProject){
 		return;
 	}
@@ -403,44 +403,44 @@ bool projPanelTestRun::IsRunning(){
 }
 
 void projPanelTestRun::Start(){
-	if( pIsRunning || ! pProject ){
+	if(pIsRunning || ! pProject){
 		return;
 	}
 	
 	projProfile * const profile = GetSelectedProfile();
-	if( ! profile ){
+	if(! profile){
 		return;
 	}
 	
-	if( pProject->GetChanged() ){
+	if(pProject->GetChanged()){
 		pWindowMain.SaveProject();
 	}
 	
-	if( ! GetEnvironment().RequestSaveDocuments( "Start Test-Running",
-	"Unsaved changes are present. To start Test-Running it is recommended to save them" ) ){
+	if(! GetEnvironment().RequestSaveDocuments("Start Test-Running",
+	"Unsaved changes are present. To start Test-Running it is recommended to save them")){
 		return;
 	}
 	
 	projTRProfile *launchProfile = NULL;
-	if( ! pProject->GetActiveLaunchProfile().IsEmpty() ){
+	if(! pProject->GetActiveLaunchProfile().IsEmpty()){
 		launchProfile = pTestRunner->GetLauncherProfiles().GetNamed(
-			pProject->GetActiveLaunchProfile() );
+			pProject->GetActiveLaunchProfile());
 	}
 	
 	try{
-		pTestRunner->Start( profile, launchProfile );
+		pTestRunner->Start(profile, launchProfile);
 		pIsRunning = true;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		try{
 			pTestRunner->Kill();
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 		}
-		UpdateLogs( false );
+		UpdateLogs(false);
 		pIsRunning = false;
 		
-		igdeCommonDialogs::Exception( &pWindowMain, e );
+		igdeCommonDialogs::Exception(&pWindowMain, e);
 	}
 	
 	pEditLogs->ClearText();
@@ -448,7 +448,7 @@ void projPanelTestRun::Start(){
 }
 
 void projPanelTestRun::Quit(){
-	if( ! pIsRunning ){
+	if(! pIsRunning){
 		return;
 	}
 	
@@ -456,15 +456,15 @@ void projPanelTestRun::Quit(){
 		pTestRunner->SendQuit();
 		pIsRunning = false;
 		
-	}catch( const deException &e ){
-		igdeCommonDialogs::Exception( &pWindowMain, e );
+	}catch(const deException &e){
+		igdeCommonDialogs::Exception(&pWindowMain, e);
 	}
 	
 	UpdateWidgetEnabled();
 }
 
 void projPanelTestRun::Kill(){
-	if( ! pTestRunner->IsRunning() ){
+	if(! pTestRunner->IsRunning()){
 		return;
 	}
 	
@@ -473,22 +473,22 @@ void projPanelTestRun::Kill(){
 	try{
 		pTestRunner->Kill();
 		
-	}catch( const deException &e ){
-		igdeCommonDialogs::Exception( &pWindowMain, e );
+	}catch(const deException &e){
+		igdeCommonDialogs::Exception(&pWindowMain, e);
 	}
 	
-	UpdateLogs( false );
+	UpdateLogs(false);
 	UpdateWidgetEnabled();
 }
 
-void projPanelTestRun::Update( float elapsed ){
+void projPanelTestRun::Update(float elapsed){
 	pProcessPendingAddRemoteClient();
 	pProcessPendingRemoveRemoteClient();
 	
 	CheckRunning();
 	
-	if( pTestRunner->IsRunning() ){
-		UpdateLogs( false );
+	if(pTestRunner->IsRunning()){
+		UpdateLogs(false);
 	}
 	
 	UpdateRemoteClients(elapsed);
@@ -499,28 +499,28 @@ void projPanelTestRun::LoadConfig(){
 	pEditRemoteAddress->SetText(config.GetRemoteAddress());
 }
 
-void projPanelTestRun::UpdateLogs( bool lastLogs ){
-	decString logs( lastLogs ? pGetLastLogsMaxLines() : pTestRunner->ReadNextLogData() );
-	if( logs.IsEmpty() ){
+void projPanelTestRun::UpdateLogs(bool lastLogs){
+	decString logs(lastLogs ? pGetLastLogsMaxLines() : pTestRunner->ReadNextLogData());
+	if(logs.IsEmpty()){
 		return;
 	}
 	
-	if( logs.GetAt( 0 ) == '\n' ){
-		logs = logs.GetMiddle( 1 );
+	if(logs.GetAt(0) == '\n'){
+		logs = logs.GetMiddle(1);
 	}
-	if( logs.IsEmpty() ){
+	if(logs.IsEmpty()){
 		return;
 	}
 	
-	if( logs.GetAt( -1 ) != '\n' ){
-		logs.AppendCharacter( '\n' );
+	if(logs.GetAt(-1) != '\n'){
+		logs.AppendCharacter('\n');
 	}
 	
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
 	
 	// append text
 	const int startPosition = pEditLogs->GetText().GetLength();
-	pEditLogs->AppendText( logs );
+	pEditLogs->AppendText(logs);
 	
 	// style text
 	const int logEnd = logs.GetLength();
@@ -530,20 +530,20 @@ void projPanelTestRun::UpdateLogs( bool lastLogs ){
 	int styleBegin = 0;
 	int mode = 0;
 	
-	while( logPosition < logEnd ){
-		switch( mode ){
+	while(logPosition < logEnd){
+		switch(mode){
 		case 0: // begin of line
-			if( logPtr[ logPosition ] == '\n' ){
+			if(logPtr[logPosition] == '\n'){
 				break; // skip empty line
 			}
 			
-			if( strncmp( logPtr + logPosition, "II ", 3 ) == 0 ){
+			if(strncmp(logPtr + logPosition, "II ", 3) == 0){
 				style = NULL;
 				
-			}else if( strncmp( logPtr + logPosition, "WW ", 3 ) == 0 ){
+			}else if(strncmp(logPtr + logPosition, "WW ", 3) == 0){
 				style = styleWarning;
 				
-			}else if( strncmp( logPtr + logPosition, "EE ", 3 ) == 0 ){
+			}else if(strncmp(logPtr + logPosition, "EE ", 3) == 0){
 				style = styleError;
 				
 			}else{
@@ -555,10 +555,10 @@ void projPanelTestRun::UpdateLogs( bool lastLogs ){
 			break;
 			
 		case 1: // find end of line
-			if( logPtr[ logPosition ] == '\n' || logPtr[ logPosition + 1 ] == 0 ){
-				if( style ){
-					pEditLogs->SetTextSegment( startPosition + styleBegin,
-						startPosition + logPosition, style, NULL );
+			if(logPtr[logPosition] == '\n' || logPtr[logPosition + 1] == 0){
+				if(style){
+					pEditLogs->SetTextSegment(startPosition + styleBegin,
+						startPosition + logPosition, style, NULL);
 				}
 				mode = 0;
 			}
@@ -570,8 +570,8 @@ void projPanelTestRun::UpdateLogs( bool lastLogs ){
 	
 	pRemoveOldLines();
 	
-	if( atBottom ){
-		pEditLogs->SetBottomLine( pEditLogs->GetLineCount() - 1 );
+	if(atBottom){
+		pEditLogs->SetBottomLine(pEditLogs->GetLineCount() - 1);
 	}
 }
 
@@ -588,7 +588,7 @@ void projPanelTestRun::CheckRunning(){
 		try{
 			pTestRunner->Stop();
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pTestRunner->Kill();
 		}
 		
@@ -614,33 +614,33 @@ void projPanelTestRun::UpdateWidgetEnabled(){
 void projPanelTestRun::UpdateProfiles(){
 	pCBProfile->RemoveAllItems();
 	
-	if( pProject ){
+	if(pProject){
 		const projProfileList &list = pProject->GetProfiles();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			projProfile * const profile = list.GetAt( i );
-			pCBProfile->AddItem( profile->GetName(), NULL, profile );
+		for(i=0; i<count; i++){
+			projProfile * const profile = list.GetAt(i);
+			pCBProfile->AddItem(profile->GetName(), NULL, profile);
 		}
 		
 		pCBProfile->SortItems();
 	}
 	
-	SelectProfile( ( projProfile* )( deObject* )pSelectedProfile );
+	SelectProfile((projProfile*)(deObject*)pSelectedProfile);
 	
-	if( ! pSelectedProfile && pCBProfile->GetItemCount() > 0 ){
-		SelectProfile( ( projProfile* )pCBProfile->GetItemAt( 0 )->GetData() );
+	if(! pSelectedProfile && pCBProfile->GetItemCount() > 0){
+		SelectProfile((projProfile*)pCBProfile->GetItemAt(0)->GetData());
 	}
 }
 
 projProfile *projPanelTestRun::GetSelectedProfile() const{
-	return ( projProfile* )( deObject* )pSelectedProfile;
+	return (projProfile*)(deObject*)pSelectedProfile;
 }
 
-void projPanelTestRun::SelectProfile( projProfile *profile ){
+void projPanelTestRun::SelectProfile(projProfile *profile){
 	pSelectedProfile = profile;
-	pCBProfile->SetSelectionWithData( profile );
+	pCBProfile->SetSelectionWithData(profile);
 }
 
 
@@ -660,8 +660,8 @@ void projPanelTestRun::SelectLauncherProfile(){
 
 void projPanelTestRun::MoveToBottomLine(){
 	const int lastLine = pEditLogs->GetLineCount() - 1;
-	if( lastLine > 0 ){
-		pEditLogs->SetBottomLine( lastLine );
+	if(lastLine > 0){
+		pEditLogs->SetBottomLine(lastLine);
 	}
 }
 
@@ -770,17 +770,17 @@ void projPanelTestRun::pUpdateLaunchProfiles(){
 
 void projPanelTestRun::pRemoveOldLines(){
 	const char * const logs = pEditLogs->GetText();
-	const int length = ( int )strlen( logs );
+	const int length = (int)strlen(logs);
 	int count = pMaxLines;
 	int i;
 	
-	for( i=length-1; i>=0; i-- ){
-		if( logs[ i ] != '\n' ){
+	for(i=length-1; i>=0; i--){
+		if(logs[i] != '\n'){
 			continue;
 		}
 		
 		count--;
-		if( count > 0 ){
+		if(count > 0){
 			continue;
 		}
 		
@@ -788,15 +788,15 @@ void projPanelTestRun::pRemoveOldLines(){
 		break;
 	}
 	
-	if( i <= 0 ){
+	if(i <= 0){
 		return;
 	}
 	
-	if( i == length ){
+	if(i == length){
 		pEditLogs->ClearText();
 		
 	}else{
-		pEditLogs->DeleteText( 0, i );
+		pEditLogs->DeleteText(0, i);
 	}
 }
 
@@ -808,26 +808,26 @@ decString projPanelTestRun::pGetLastLogsMaxLines() const{
 	// but a lot faster
 	
 	/*
-	const decStringList lines( pTestRunner->GetLastLogContent().Split( '\n' ) );
+	const decStringList lines(pTestRunner->GetLastLogContent().Split('\n'));
 	const int count = lines.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return decString();
 	}
 	
-	return lines.Splice( decMath::max( count - 1 - pMaxLines, 0 ) ).Join( "\n" );
+	return lines.Splice(decMath::max(count - 1 - pMaxLines, 0)).Join("\n");
 	*/
 	
-	const decString logContent( pTestRunner->GetLastLogContent() );
+	const decString logContent(pTestRunner->GetLastLogContent());
 	int i, index = logContent.GetLength();
-	for( i=0; i<pMaxLines; i++ ){
-		const int nextIndex = logContent.FindReverse( '\n', 0, index );
-		if( nextIndex == -1 ){
+	for(i=0; i<pMaxLines; i++){
+		const int nextIndex = logContent.FindReverse('\n', 0, index);
+		if(nextIndex == -1){
 			return logContent;
 		}
 		index = nextIndex;
 	}
 	
-	return logContent.GetMiddle( index + 1 );
+	return logContent.GetMiddle(index + 1);
 }
 
 void projPanelTestRun::pProcessPendingAddRemoteClient(){

@@ -52,11 +52,11 @@ This can be tracked by the network module and send along the state change to tel
 remote side how to alter the value if no additional state change is send in the near future.
 
 Using this feature the "Link update" message would have to be changed like this:
-   [ 9 ] [ link_count:uint8 ] [ link ]{ 1..link_count }
+   [9] [link_count:uint8] [link]{1..link_count}
    link:
-      [ link_id:uint16 ] [ value_count:uint8 ] [ value ]{ 1..value_count }
+      [link_id:uint16] [value_count:uint8] [value]{1..value_count}
    value:
-      [ value_index:uint16 ] [ value_data:* ] [ predictLinear:* ] [ predictAccelerated:* ]
+      [value_index:uint16] [value_data:*] [predictLinear:*] [predictAccelerated:*]
 
 Where predictLinear and predictAccelerated value is of the same format as value_data.
 
@@ -111,17 +111,17 @@ enum eLongLinkStateFlags{
 };
 
 enum eValueTypes{
-	evtSInt8, // integer: signed char ( 8-bit )
-	evtUInt8, // integer: unsigned char ( 8-bit )
-	evtSInt16, // integer: signed short ( 16-bit )
-	evtUInt16, // integer: unsigned short ( 16-bit )
-	evtSInt32, // integer: signed long ( 32-bit )
-	evtUInt32, // integer: unsigned long ( 32-bit )
-	evtSInt64, // integer: signed long ( 64-bit )
-	evtUInt64, // integer: unsigned long ( 64-bit )
-	evtFloat16, // float: half float ( 16-bit )
-	evtFloat32, // float: float ( 32-bit )
-	evtFloat64, // float: float ( 32-bit )
+	evtSInt8, // integer: signed char (8-bit)
+	evtUInt8, // integer: unsigned char (8-bit)
+	evtSInt16, // integer: signed short (16-bit)
+	evtUInt16, // integer: unsigned short (16-bit)
+	evtSInt32, // integer: signed long (32-bit)
+	evtUInt32, // integer: unsigned long (32-bit)
+	evtSInt64, // integer: signed long (64-bit)
+	evtUInt64, // integer: unsigned long (64-bit)
+	evtFloat16, // float: half float (16-bit)
+	evtFloat32, // float: float (32-bit)
+	evtFloat64, // float: float (32-bit)
 	evtString, // string zero terminated
 	evtData, // data: length unsigned 8-bit
 	evtPoint2S8, // point2: signed 8-bit per component
@@ -193,7 +193,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new basic network module. */
-	deNetworkBasic( deLoadableModule &loadableModule );
+	deNetworkBasic(deLoadableModule &loadableModule);
 	/** Cleans up the basic network module. */
 	virtual ~deNetworkBasic();
 	/*@}*/
@@ -216,51 +216,51 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Configuration. */
-	inline debnConfiguration &GetConfiguration(){ return pConfiguration; }
-	inline const debnConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline debnConfiguration &GetConfiguration(){return pConfiguration;}
+	inline const debnConfiguration &GetConfiguration() const{return pConfiguration;}
 	
-	inline deNetworkMessage *GetSharedSendDatagram() const{ return pSharedSendDatagram; }
-	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{ return pSharedSendDatagramWriter; }
+	inline deNetworkMessage *GetSharedSendDatagram() const{return pSharedSendDatagram;}
+	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{return pSharedSendDatagramWriter;}
 	
 	/** Register a connection. */
-	void RegisterConnection( debnConnection *connection );
+	void RegisterConnection(debnConnection *connection);
 	/** Unregister a connection if existing. */
-	void UnregisterConnection( debnConnection *connection );
+	void UnregisterConnection(debnConnection *connection);
 	/** Register a server. */
-	void RegisterServer( debnServer *server );
+	void RegisterServer(debnServer *server);
 	/** Unregister a server if existing. */
-	void UnregisterServer( debnServer *server );
+	void UnregisterServer(debnServer *server);
 	/** Register a socket. */
-	void RegisterSocket( debnSocket *bnSocket );
+	void RegisterSocket(debnSocket *bnSocket);
 	/** Unregister a socket if existing. */
-	void UnregisterSocket( debnSocket *bnSocket );
+	void UnregisterSocket(debnSocket *bnSocket);
 	
 	/** \brief Find public addresses. */
-	void FindPublicAddresses( decStringList &list );
+	void FindPublicAddresses(decStringList &list);
 	
 	/** \brief Close all connections using socket. */
-	void CloseConnections( debnSocket *bnSocket );
+	void CloseConnections(debnSocket *bnSocket);
 	
 	
 	
 	virtual int GetParameterCount() const;
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
-	virtual int IndexOfParameterNamed( const char *name ) const;
-	virtual decString GetParameterValue( const char *name ) const;
-	virtual void SetParameterValue( const char *name, const char *value );
+	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
+	virtual int IndexOfParameterNamed(const char *name) const;
+	virtual decString GetParameterValue(const char *name) const;
+	virtual void SetParameterValue(const char *name, const char *value);
 	
-	virtual deBaseNetworkWorld *CreateWorld( deWorld *world );
-	virtual deBaseNetworkServer *CreateServer( deServer *server );
-	virtual deBaseNetworkConnection *CreateConnection( deConnection *connection );
-	virtual deBaseNetworkState *CreateState( deNetworkState *state );
+	virtual deBaseNetworkWorld *CreateWorld(deWorld *world);
+	virtual deBaseNetworkServer *CreateServer(deServer *server);
+	virtual deBaseNetworkConnection *CreateConnection(deConnection *connection);
+	virtual deBaseNetworkState *CreateState(deNetworkState *state);
 	/*@}*/
 	
 private:
-	debnConnection *pFindConnection( const debnSocket *bnSocket, const debnAddress &address ) const;
-	debnServer *pFindServer( const debnSocket *bnSocket ) const;
+	debnConnection *pFindConnection(const debnSocket *bnSocket, const debnAddress &address) const;
+	debnServer *pFindServer(const debnSocket *bnSocket) const;
 	
 	void pReceiveDatagrams();
-	void pProcessConnections( float elapsedTime );
+	void pProcessConnections(float elapsedTime);
 };
 
 // end of include only once

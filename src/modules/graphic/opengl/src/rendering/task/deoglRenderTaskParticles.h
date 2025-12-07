@@ -57,27 +57,27 @@ public:
 	void Clear();
 	
 	/** Retrieves the render parameter shader parameter block or NULL to use none. */
-	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
+	inline deoglSPBlockUBO *GetRenderParamBlock() const{return pRenderParamBlock;}
 	/** Sets the render parameter shader parameter block or NULL to use none. */
-	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
+	void SetRenderParamBlock(deoglSPBlockUBO *paramBlock);
 	
 	/** Use vertex shader stereo rendering. */
-	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
+	inline bool GetRenderVSStereo() const{return pRenderVSStereo;}
 	
 	/** Set use vertex shader stereo rendering. */
-	void SetRenderVSStereo( bool renderVSStereo );
+	void SetRenderVSStereo(bool renderVSStereo);
 	
 	/** Retrieves the number of steps. */
-	inline int GetStepCount() const{ return pStepCount; }
+	inline int GetStepCount() const{return pStepCount;}
 	/** Retrieves the step at the given position. */
-	deoglRenderTaskParticlesStep *GetStepAt( int index ) const;
+	deoglRenderTaskParticlesStep *GetStepAt(int index) const;
 	/** Adds an empty step. */
 	deoglRenderTaskParticlesStep *AddStep();
 	/** Removes all steps. */
 	void RemoveAllSteps();
 	
 	/** Debug print. */
-	void DebugPrint( deoglRTLogger &rtlogger );
+	void DebugPrint(deoglRTLogger &rtlogger);
 	/*@}*/
 };
 

@@ -62,7 +62,7 @@
 	#include <dragengine/common/utils/decTimer.h>
 	static decTimer timer;
 	#define DEBUG_RESET_TIMERS				timer.Reset();
-	#define DEBUG_PRINT_TIMER(what)			pWorld.GetBullet().LogInfoFormat( "World Timer: %s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER(what)			pWorld.GetBullet().LogInfoFormat("World Timer: %s = %iys", what, (int)(timer.GetElapsedTime() * 1000000.0))
 	#ifdef DO_TIMING_2
 		int timerWorldUpdateAabbs = 0;
 		int timerWorldUpdateAabbsCount = 0;
@@ -93,14 +93,14 @@ private:
 	
 public:
 	/** \brief Create a new callback. */
-	HitContactCallback( debpCollisionWorld &world, btCollisionObject *collisionObject,
-	btCollisionWorld::ContactResultCallback &resultCallback ) :
-	pCollisionObject( collisionObject ),
-	pResultCallback( resultCallback ),
-	pColDet( world.GetWorld().GetBullet().GetCollisionDetection() ),
-	pObj0Wrapper( NULL, collisionObject->getCollisionShape(), collisionObject, collisionObject->getWorldTransform(), -1, -1 )
+	HitContactCallback(debpCollisionWorld &world, btCollisionObject *collisionObject,
+	btCollisionWorld::ContactResultCallback &resultCallback) :
+	pCollisionObject(collisionObject),
+	pResultCallback(resultCallback),
+	pColDet(world.GetWorld().GetBullet().GetCollisionDetection()),
+	pObj0Wrapper(NULL, collisionObject->getCollisionShape(), collisionObject, collisionObject->getWorldTransform(), -1, -1)
 	{
-		const debpCollisionObject &colobj = *( ( debpCollisionObject* )collisionObject->getUserPointer() );
+		const debpCollisionObject &colobj = *((debpCollisionObject*)collisionObject->getUserPointer());
 		pCollider = colobj.GetOwnerCollider();
 	}
 	
@@ -114,53 +114,53 @@ public:
 	 *          calculation is avoided once a hit is found. Since this is not possible with bullet as
 	 *          it is right now the dragengine collision routines are used for the time being.
 	 */
-	virtual bool process( const btBroadphaseProxy *proxy ){
-		btCollisionObject * const bpColObj = ( btCollisionObject* )proxy->m_clientObject;
-		if( bpColObj == pCollisionObject ){
+	virtual bool process(const btBroadphaseProxy *proxy){
+		btCollisionObject * const bpColObj = (btCollisionObject*)proxy->m_clientObject;
+		if(bpColObj == pCollisionObject){
 			return true;
 		}
 		
 		// only perform raycast if filterMask matches
-		if( pResultCallback.needsCollision( bpColObj->getBroadphaseHandle() ) ){
-			const debpCollisionObject &colobj = *( ( debpCollisionObject* )bpColObj->getUserPointer() );
+		if(pResultCallback.needsCollision(bpColObj->getBroadphaseHandle())){
+			const debpCollisionObject &colobj = *((debpCollisionObject*)bpColObj->getUserPointer());
 			
-			if( pCollider ){
+			if(pCollider){
 				pCollider->UpdateShapes();
 			}
 			
 			// test against collider
-			if( colobj.IsOwnerCollider() ){
+			if(colobj.IsOwnerCollider()){
 				debpCollider * const collider = colobj.GetOwnerCollider();
 				
 				/*
-				if( collider->IsVolume() ){
+				if(collider->IsVolume()){
 					const debpColliderVolume &colvol = *collider->CastToVolume();
-					printf( "processCollision volume collider %p(%f,%f,%f)\n", &colvol, colvol.GetPosition().x,
-						colvol.GetPosition().y, colvol.GetPosition().z );
-				}else if( collider->IsComponent() ){
+					printf("processCollision volume collider %p(%f,%f,%f)\n", &colvol, colvol.GetPosition().x,
+						colvol.GetPosition().y, colvol.GetPosition().z);
+				}else if(collider->IsComponent()){
 					const debpColliderComponent &colcomp = *collider->CastToComponent();
-					printf( "processCollision component collider %p(%f,%f,%f) mode=%i rigshapes=%i\n", &colcomp,
+					printf("processCollision component collider %p(%f,%f,%f) mode=%i rigshapes=%i\n", &colcomp,
 						colcomp.GetPosition().x, colcomp.GetPosition().y, colcomp.GetPosition().z,
-						colcomp.GetTestMode(), colcomp.GetRigShapes().GetShapeCount() );
+						colcomp.GetTestMode(), colcomp.GetRigShapes().GetShapeCount());
 				}else{
-					printf( "processCollision rigged collider %p\n", collider->CastToRigged() );
+					printf("processCollision rigged collider %p\n", collider->CastToRigged());
 				}
 				*/
 				
-				if( pColDet.ColliderHitsCollider( pCollider, collider, pResult ) ){
-					const btCollisionObjectWrapper obj1Wrap( NULL, bpColObj->getCollisionShape(), bpColObj, bpColObj->getWorldTransform(), -1, -1 );
+				if(pColDet.ColliderHitsCollider(pCollider, collider, pResult)){
+					const btCollisionObjectWrapper obj1Wrap(NULL, bpColObj->getCollisionShape(), bpColObj, bpColObj->getWorldTransform(), -1, -1);
 					//printf( "collision found: calling addSingleResult %p->%p\n", pObj0Wrapper.getCollisionObject()->getUserPointer(), obj1Wrap.getCollisionObject()->getUserPointer() );
-					return pResultCallback.addSingleResult( vDummyManifoldPoint, &pObj0Wrapper, 0, -1, &obj1Wrap, 0, pResult.face ) > ( btScalar )0.5;
+					return pResultCallback.addSingleResult(vDummyManifoldPoint, &pObj0Wrapper, 0, -1, &obj1Wrap, 0, pResult.face) > (btScalar)0.5;
 				}
 				
 			// test against height terrain
-			}else if( colobj.IsOwnerHTSector() ){
+			}else if(colobj.IsOwnerHTSector()){
 				//printf( "processCollision height terrain sector\n" );
 				
-				if( pColDet.ColliderHitsHeightTerrain( pCollider, colobj.GetOwnerHTSector(), pResult ) ){
-					const btCollisionObjectWrapper obj1Wrap( NULL, bpColObj->getCollisionShape(), bpColObj, bpColObj->getWorldTransform(), -1, -1 );
+				if(pColDet.ColliderHitsHeightTerrain(pCollider, colobj.GetOwnerHTSector(), pResult)){
+					const btCollisionObjectWrapper obj1Wrap(NULL, bpColObj->getCollisionShape(), bpColObj, bpColObj->getWorldTransform(), -1, -1);
 					//printf( "collision found: calling addSingleResult\n" );
-					return pResultCallback.addSingleResult( vDummyManifoldPoint, &pObj0Wrapper, 0, -1, &obj1Wrap, 0, pResult.face ) > ( btScalar )0.5;
+					return pResultCallback.addSingleResult(vDummyManifoldPoint, &pObj0Wrapper, 0, -1, &obj1Wrap, 0, pResult.face) > (btScalar)0.5;
 				}
 			}
 		}
@@ -178,20 +178,20 @@ struct LocalInfoAdder2 : public btCollisionWorld::RayResultCallback{
 	RayResultCallback *pUserCallback;
 	int pI;
 	
-	LocalInfoAdder2( int i, RayResultCallback *user ) : pUserCallback( user ), pI( i ){ 
+	LocalInfoAdder2(int i, RayResultCallback *user) : pUserCallback(user), pI(i){
 		m_closestHitFraction = pUserCallback->m_closestHitFraction;
 	}
 	
-	virtual btScalar addSingleResult( btCollisionWorld::LocalRayResult &r, bool b ){
+	virtual btScalar addSingleResult(btCollisionWorld::LocalRayResult &r, bool b){
 		btCollisionWorld::LocalShapeInfo shapeInfo;
 		
 		shapeInfo.m_shapePart = -1;
 		shapeInfo.m_triangleIndex = pI;
-		if( ! r.m_localShapeInfo ){
+		if(! r.m_localShapeInfo){
 			r.m_localShapeInfo = &shapeInfo;
 		}
 		
-		const btScalar result = pUserCallback->addSingleResult( r, b );
+		const btScalar result = pUserCallback->addSingleResult(r, b);
 		m_closestHitFraction = pUserCallback->m_closestHitFraction;
 		
 		return result;
@@ -216,43 +216,43 @@ struct SingleSweepCallback : public btBroadphaseRayCallback{
 	//const btVector3 &m_castAabbMin;
 	//const btVector3 &m_castAabbMax;
 	
-	SingleSweepCallback( const btConvexShape *castShape, const btTransform &convexFromTrans,
+	SingleSweepCallback(const btConvexShape *castShape, const btTransform &convexFromTrans,
 	const btTransform &convexToTrans, debpCollisionWorld &world,
 	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration /*,
-	const btVector3 &castAabbMin, const btVector3 &castAabbMax*/ ) :
-	m_convexFromTrans( convexFromTrans ),
-	m_convexToTrans( convexToTrans ),
-	m_world( world ),
-	m_resultCallback( resultCallback ),
-	m_allowedCcdPenetration( allowedPenetration ),
-	m_castShape( castShape ){
+	const btVector3 &castAabbMin, const btVector3 &castAabbMax*/) :
+	m_convexFromTrans(convexFromTrans),
+	m_convexToTrans(convexToTrans),
+	m_world(world),
+	m_resultCallback(resultCallback),
+	m_allowedCcdPenetration(allowedPenetration),
+	m_castShape(castShape){
 	//m_castAabbMin( castAabbMin ),
 	//m_castAabbMax( castAabbMax ){
-		const btVector3 unnormalizedRayDir( m_convexToTrans.getOrigin() - m_convexFromTrans.getOrigin() );
-		const btVector3 rayDir( unnormalizedRayDir.normalized() );
+		const btVector3 unnormalizedRayDir(m_convexToTrans.getOrigin() - m_convexFromTrans.getOrigin());
+		const btVector3 rayDir(unnormalizedRayDir.normalized());
 		///what about division by zero? --> just set rayDirection[i] to INF/BT_LARGE_FLOAT
-		m_rayDirectionInverse[ 0 ] = ( ( rayDir[ 0 ] == ( btScalar )0.0 ) ? ( btScalar )BT_LARGE_FLOAT : ( ( btScalar )1.0 / rayDir[ 0 ] ) );
-		m_rayDirectionInverse[ 1 ] = ( ( rayDir[ 1 ] == ( btScalar )0.0 ) ? ( btScalar )BT_LARGE_FLOAT : ( ( btScalar )1.0 / rayDir[ 1 ] ) );
-		m_rayDirectionInverse[ 2 ] = ( ( rayDir[ 2 ] == ( btScalar )0.0 ) ? ( btScalar )BT_LARGE_FLOAT : ( ( btScalar )1.0 / rayDir[ 2 ] ) );
-		m_signs[ 0 ] = m_rayDirectionInverse[ 0 ] < ( btScalar )0.0;
-		m_signs[ 1 ] = m_rayDirectionInverse[ 1 ] < ( btScalar )0.0;
-		m_signs[ 2 ] = m_rayDirectionInverse[ 2 ] < ( btScalar )0.0;
-		m_lambda_max = rayDir.dot( unnormalizedRayDir );
+		m_rayDirectionInverse[0] = ((rayDir[0] == (btScalar)0.0) ? (btScalar)BT_LARGE_FLOAT : ((btScalar)1.0 / rayDir[0]));
+		m_rayDirectionInverse[1] = ((rayDir[1] == (btScalar)0.0) ? (btScalar)BT_LARGE_FLOAT : ((btScalar)1.0 / rayDir[1]));
+		m_rayDirectionInverse[2] = ((rayDir[2] == (btScalar)0.0) ? (btScalar)BT_LARGE_FLOAT : ((btScalar)1.0 / rayDir[2]));
+		m_signs[0] = m_rayDirectionInverse[0] < (btScalar)0.0;
+		m_signs[1] = m_rayDirectionInverse[1] < (btScalar)0.0;
+		m_signs[2] = m_rayDirectionInverse[2] < (btScalar)0.0;
+		m_lambda_max = rayDir.dot(unnormalizedRayDir);
 	}
 	
-	virtual bool process( const btBroadphaseProxy *proxy ){
+	virtual bool process(const btBroadphaseProxy *proxy){
 		///terminate further convex sweep tests, once the closestHitFraction reached zero
-		if( m_resultCallback.m_closestHitFraction == ( btScalar )0.0 ){
+		if(m_resultCallback.m_closestHitFraction == (btScalar)0.0){
 			return false;
 		}
 		
-		btCollisionObject * const collisionObject = ( btCollisionObject* )proxy->m_clientObject;
+		btCollisionObject * const collisionObject = (btCollisionObject*)proxy->m_clientObject;
 		
 		//only perform raycast if filterMask matches
-		if( m_resultCallback.needsCollision( collisionObject->getBroadphaseHandle() ) ){
-			m_world.objectQuerySingle( m_castShape, m_convexFromTrans, m_convexToTrans,
+		if(m_resultCallback.needsCollision(collisionObject->getBroadphaseHandle())){
+			m_world.objectQuerySingle(m_castShape, m_convexFromTrans, m_convexToTrans,
 				collisionObject, collisionObject->getCollisionShape(), collisionObject->getWorldTransform(),
-				m_resultCallback, m_allowedCcdPenetration );
+				m_resultCallback, m_allowedCcdPenetration);
 		}
 		
 		return true;
@@ -265,14 +265,14 @@ struct SingleSweepCallback : public btBroadphaseRayCallback{
 //////////////
 
 #if 0
-static void cbPreTick( btDynamicsWorld *world, btScalar timeStep ){
+static void cbPreTick(btDynamicsWorld *world, btScalar timeStep){
 	// see http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Simulation_Tick_Callbacks
 	// for how to apply forces
-	( ( debpCollisionWorld* )world )->TickPreCollision( timeStep );
+	((debpCollisionWorld*)world)->TickPreCollision(timeStep);
 }
 
-static void cbPostTick( btDynamicsWorld *world, btScalar timeStep ){
-	( ( debpCollisionWorld* )world )->TickPostCollision( timeStep );
+static void cbPostTick(btDynamicsWorld *world, btScalar timeStep){
+	((debpCollisionWorld*)world)->TickPostCollision(timeStep);
 }
 #endif
 
@@ -285,16 +285,16 @@ static void cbPostTick( btDynamicsWorld *world, btScalar timeStep ){
 ////////////////////////////
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
-debpCollisionWorld::debpCollisionWorld( debpWorld &world, btDispatcher *dispatcher,
+debpCollisionWorld::debpCollisionWorld(debpWorld &world, btDispatcher *dispatcher,
 btBroadphaseInterface *pairCache, debpConstraintSolver *constraintSolver,
-btCollisionConfiguration *collisionConfiguration, btSoftBodySolver *softBodySolver ) :
-btSoftRigidDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
-pWorld( world ),
-pDelayedOperation( NULL )
+btCollisionConfiguration *collisionConfiguration, btSoftBodySolver *softBodySolver) :
+btSoftRigidDynamicsWorld(dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver),
+pWorld(world),
+pDelayedOperation(NULL)
 {
 	btContactSolverInfo &solverInfo = getSolverInfo();
 	
-	pDelayedOperation = new debpDelayedOperation( *this );
+	pDelayedOperation = new debpDelayedOperation(*this);
 	
 	solverInfo.m_timeStep = world.GetSimulationTimeStep();
 	
@@ -342,8 +342,8 @@ pDelayedOperation( NULL )
 	
 	// set tick callbacks if required
 #if 0
-	setInternalTickCallback( cbPreTick, this, true );
-	setInternalTickCallback( cbPostTick, this, false );
+	setInternalTickCallback(cbPreTick, this, true);
+	setInternalTickCallback(cbPostTick, this, false);
 #endif
 	
 	// DEBUG TEST
@@ -373,28 +373,28 @@ pDelayedOperation( NULL )
 	{
 		struct sResult: btManifoldResult{
 			bool hasContact;
-			sResult( const btCollisionObjectWrapper *obj0Wrap, const btCollisionObjectWrapper *obj1Wrap ) :
-			btManifoldResult( obj0Wrap, obj1Wrap ), hasContact( false ){ }
-			virtual void addContactPoint( const btVector3 &normalOnBInWorld, const btVector3 &pointInWorld, btScalar depth ){ hasContact = true; }
+			sResult(const btCollisionObjectWrapper *obj0Wrap, const btCollisionObjectWrapper *obj1Wrap) :
+			btManifoldResult(obj0Wrap, obj1Wrap), hasContact(false){}
+			virtual void addContactPoint(const btVector3 &normalOnBInWorld, const btVector3 &pointInWorld, btScalar depth){hasContact = true;}
 		};
 		
 		struct sDispatcher : btCollisionDispatcher{
-			sDispatcher( btCollisionConfiguration *collisionConfiguration ) : btCollisionDispatcher( collisionConfiguration ){ }
-			virtual bool needsCollision( const btCollisionObject *body0, const btCollisionObject *body1 ){ return true; }
-			virtual bool needsResponse( const btCollisionObject *body0, const btCollisionObject *body1 ){ return true; }
+			sDispatcher(btCollisionConfiguration *collisionConfiguration) : btCollisionDispatcher(collisionConfiguration){}
+			virtual bool needsCollision(const btCollisionObject *body0, const btCollisionObject *body1){return true;}
+			virtual bool needsResponse(const btCollisionObject *body0, const btCollisionObject *body1){return true;}
 		};
 		
-		btCollisionObjectWrapper obA( 0, &cp1, &coA, tA, -1, -1 );
-		btCollisionObjectWrapper obB( 0, &cp2, &coB, tB, -1, -1 );
+		btCollisionObjectWrapper obA(0, &cp1, &coA, tA, -1, -1);
+		btCollisionObjectWrapper obB(0, &cp2, &coB, tB, -1, -1);
 		btSoftBodyRigidBodyCollisionConfiguration cconfig;
-		sDispatcher dispatcher( &cconfig );
+		sDispatcher dispatcher(&cconfig);
 		
-		btCollisionAlgorithm * const algorithm = dispatcher.findAlgorithm( &obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS );
-		sResult r( &obA, &obB );
+		btCollisionAlgorithm * const algorithm = dispatcher.findAlgorithm(&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
+		sResult r(&obA, &obB);
 		
-		algorithm->processCollision( &obA, &obB, getDispatchInfo(), &r );
+		algorithm->processCollision(&obA, &obB, getDispatchInfo(), &r);
 		algorithm->~btCollisionAlgorithm();
-		dispatcher.freeCollisionAlgorithm( algorithm );
+		dispatcher.freeCollisionAlgorithm(algorithm);
 		result = r.hasContact;
 	}
 	
@@ -404,7 +404,7 @@ pDelayedOperation( NULL )
 }
 
 debpCollisionWorld::~debpCollisionWorld(){
-	if( pDelayedOperation ){
+	if(pDelayedOperation){
 		delete pDelayedOperation;
 	}
 }
@@ -419,8 +419,8 @@ void debpCollisionWorld::MarkAllAABBValid(){
 	const int count = list.size();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( debpCollisionObject* )list.at( i )->getUserPointer() )->SetDirtyAABB( false );
+	for(i=0; i<count; i++){
+		((debpCollisionObject*)list.at(i)->getUserPointer())->SetDirtyAABB(false);
 	}
 }
 
@@ -429,12 +429,12 @@ void debpCollisionWorld::UpdateDirtyAABBs(){
 	const int count = list.size();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		btCollisionObject * const btColObj = list.at( i );
-		debpCollisionObject &colObj = *( ( debpCollisionObject* )btColObj->getUserPointer() );
-		if( colObj.GetDirtyAABB() ){
-			colObj.SetDirtyAABB( false );
-			updateSingleAabb( btColObj );
+	for(i=0; i<count; i++){
+		btCollisionObject * const btColObj = list.at(i);
+		debpCollisionObject &colObj = *((debpCollisionObject*)btColObj->getUserPointer());
+		if(colObj.GetDirtyAABB()){
+			colObj.SetDirtyAABB(false);
+			updateSingleAabb(btColObj);
 		}
 	}
 }
@@ -443,73 +443,73 @@ void debpCollisionWorld::UpdateDirtyAABBs(){
 void debpCollisionWorld::updateAabbs(){
 	timer.Reset();
 	btCollisionWorld::updateAabbs();
-	timerWorldUpdateAabbs += ( int )( timer.GetElapsedTime() * 1e6f );
+	timerWorldUpdateAabbs += (int)(timer.GetElapsedTime() * 1e6f);
 	timerWorldUpdateAabbsCount++;
 }
 #endif
 
 
 
-void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
+void debpCollisionWorld::CheckDynamicCollisions(btScalar timeStep){
 	debpDebugInformation *debugInfo = NULL;
-	if( pWorld.GetBullet().GetDebug().GetEnabled() ){
+	if(pWorld.GetBullet().GetDebug().GetEnabled()){
 		debugInfo = pWorld.GetBullet().GetDebug().GetDIWorldCheckDynamicCollisions();
 		pPerfTimer.Reset();
 	}
 	
-	const btScalar velocityThreshold = ( btScalar )pWorld.GetDynamicCollisionVelocityThreshold();
+	const btScalar velocityThreshold = (btScalar)pWorld.GetDynamicCollisionVelocityThreshold();
 	deCollisionInfo * const colinfo = pWorld.GetCollisionInfo();
 	btDispatcher &dispatcher = *getDispatcher();
 	const int countManifolds = dispatcher.getNumManifolds();
 	int i, j;
 	
-	for( i=0; i<countManifolds; i++ ){
-		const btPersistentManifold &manifold = *dispatcher.getManifoldByIndexInternal( i );
+	for(i=0; i<countManifolds; i++){
+		const btPersistentManifold &manifold = *dispatcher.getManifoldByIndexInternal(i);
 		const btCollisionObject &body0 = *manifold.getBody0();
 		const btCollisionObject &body1 = *manifold.getBody1();
 		
 		// ghost objects to not trigger a dynamic collision
-		if( body0.getInternalType() == btCollisionObject::CO_GHOST_OBJECT
-		&&  body1.getInternalType() == btCollisionObject::CO_GHOST_OBJECT ){
+		if(body0.getInternalType() == btCollisionObject::CO_GHOST_OBJECT
+		&&  body1.getInternalType() == btCollisionObject::CO_GHOST_OBJECT){
 			continue;
 		}
 		
 		// only if ony body is dynamic. pure kinematic/static collisions are handled elsewhere
-		if( body0.isStaticOrKinematicObject() && body1.isStaticOrKinematicObject() ){
+		if(body0.isStaticOrKinematicObject() && body1.isStaticOrKinematicObject()){
 			continue;
 		}
 		
 		// find the colliders involved in the collision
-		const debpCollisionObject &colObj0 = *( ( debpCollisionObject* )body0.getUserPointer() );
-		const debpCollisionObject &colObj1 = *( ( debpCollisionObject* )body1.getUserPointer() );
+		const debpCollisionObject &colObj0 = *((debpCollisionObject*)body0.getUserPointer());
+		const debpCollisionObject &colObj1 = *((debpCollisionObject*)body1.getUserPointer());
 		debpCollider *collider0 = NULL;
 		debpCollider *collider1 = NULL;
 		
-		if( colObj0.IsOwnerCollider() ){
+		if(colObj0.IsOwnerCollider()){
 			collider0 = colObj0.GetOwnerCollider();
 		}
-		if( colObj1.IsOwnerCollider() ){
+		if(colObj1.IsOwnerCollider()){
 			collider1 = colObj1.GetOwnerCollider();
 		}
 		
-		if( ! collider0 && ! collider1 ){
+		if(! collider0 && ! collider1){
 			continue; // no colliders
 		}
 		
 		// check points for a collision
 		const int countContacts = manifold.getNumContacts();
-		if( countContacts == 0 ){
+		if(countContacts == 0){
 			continue;
 		}
 		
 		float impulse = 0.0f;
-		btVector3 position( ( btScalar )0, ( btScalar )0, ( btScalar )0 );
-		btVector3 normal( ( btScalar )0, ( btScalar )0, ( btScalar )0 );
+		btVector3 position((btScalar)0, (btScalar)0, (btScalar)0);
+		btVector3 normal((btScalar)0, (btScalar)0, (btScalar)0);
 		int shape0 = -1;
 		int shape1 = -1;
 		
-		for( j=0; j<countContacts; j++ ){
-			const btManifoldPoint &pt = manifold.getContactPoint( j );
+		for(j=0; j<countContacts; j++){
+			const btManifoldPoint &pt = manifold.getContactPoint(j);
 			
 // 			pWorld.GetBullet().LogInfoFormat( "AppliedImpulse(%f: %i/%i: %p,%p): impulse=%f distance=%f lifetime=%i",
 // 				timeStep, j, countContacts, collider0, collider1, pt.getAppliedImpulse(), pt.getDistance(), pt.getLifeTime() );
@@ -519,7 +519,7 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			// points. even if the impulse would be larger later on this would be more like pushing
 			// harder against an object. this though does not qualify as a collision a game might
 			// be interested in
-			if( pt.getLifeTime() == 1 && pt.getAppliedImpulse() > impulse ){
+			if(pt.getLifeTime() == 1 && pt.getAppliedImpulse() > impulse){
 				impulse = pt.getAppliedImpulse();
 				position = pt.getPositionWorldOnB();
 				normal = pt.m_normalWorldOnB;
@@ -537,21 +537,21 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 		// colliders at rest ontop of each other have up to this amount of impulse always applied
 		// to stay ontop of each other. an impact has to surpass this amount by at least the same
 		// amount or better somewhat more
-		if( impulse == 0.0f ){
+		if(impulse == 0.0f){
 			continue;
 		}
 		
 		// this condition is fine since the init value is constant and adding any number of
 		// points is going to deviate from it. inequal test is faster than larger than test
 		float impulseThreshold = 0.0f;
-		if( collider0 ){
+		if(collider0){
 			impulseThreshold = velocityThreshold * collider0->GetCollider().GetMass();
 		}
-		if( collider1 ){
-			impulseThreshold = decMath::max( impulseThreshold, velocityThreshold * collider1->GetCollider().GetMass() );
+		if(collider1){
+			impulseThreshold = decMath::max(impulseThreshold, velocityThreshold * collider1->GetCollider().GetMass());
 		}
 		
-		if( impulse <= impulseThreshold ){
+		if(impulse <= impulseThreshold){
 			continue;
 		}
 		
@@ -561,119 +561,119 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 // 		continue;
 		
 		// these parameters are not cleared and stay the same for both collision response calls
-		colinfo->SetDistance( 0.0f ); // not supported on dynamic hits
-		colinfo->SetNormal( decVector( ( float )normal.getX(), ( float )normal.getY(), ( float )normal.getZ() ) );
-		colinfo->SetPosition( decVector( ( float )position.getX(), ( float )position.getY(), ( float )position.getZ() ) );
-		colinfo->SetImpulse( impulse );
+		colinfo->SetDistance(0.0f); // not supported on dynamic hits
+		colinfo->SetNormal(decVector((float)normal.getX(), (float)normal.getY(), (float)normal.getZ()));
+		colinfo->SetPosition(decVector((float)position.getX(), (float)position.getY(), (float)position.getZ()));
+		colinfo->SetImpulse(impulse);
 		
 		// call collision response on first collider
-		if( collider0 ){
+		if(collider0){
 			deCollider &collider = collider0->GetCollider();
 			
-			if( colObj1.IsOwnerCollider() ){
-				colinfo->SetCollider( &colObj1.GetOwnerCollider()->GetCollider(), colObj1.GetOwnerBone(), -1, -1 );
+			if(colObj1.IsOwnerCollider()){
+				colinfo->SetCollider(&colObj1.GetOwnerCollider()->GetCollider(), colObj1.GetOwnerBone(), -1, -1);
 				
-			}else if( colObj1.IsOwnerHTSector() ){
+			}else if(colObj1.IsOwnerHTSector()){
 				const debpHTSector &htsector = *colObj1.GetOwnerHTSector();
-				colinfo->SetHTSector( htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector() );
+				colinfo->SetHTSector(htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector());
 			}
 			
-			colinfo->SetOwnerBone( colObj0.GetOwnerBone() );
-			colinfo->SetOwnerShape( shape0 );
+			colinfo->SetOwnerBone(colObj0.GetOwnerBone());
+			colinfo->SetOwnerShape(shape0);
 			
-			const deCollider::Ref guard( &collider ); // script can potentially remove collider
-			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
+			const deCollider::Ref guard(&collider); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse(&collider, colinfo);
 		}
 		
 		// call collision response on second collider if dynamic and not removed by the first collider
 		// WARNING the collision objects can potentially change if colliders are removed while in use.
 		//         colObj0 and colObj1 have potentially changed and have to be re-acquired. see
 		//         debpDelayedOperation::RemoveCollisionObject for the reason why
-		const debpCollisionObject &colObj1Safe = *( ( debpCollisionObject* )body1.getUserPointer() );
-		if( colObj1Safe.IsOwnerCollider() ){
-			const debpCollisionObject &colObj0Safe = *( ( debpCollisionObject* )body0.getUserPointer() );
+		const debpCollisionObject &colObj1Safe = *((debpCollisionObject*)body1.getUserPointer());
+		if(colObj1Safe.IsOwnerCollider()){
+			const debpCollisionObject &colObj0Safe = *((debpCollisionObject*)body0.getUserPointer());
 			deCollider &collider = colObj1Safe.GetOwnerCollider()->GetCollider();
 			
-			if( colObj0Safe.IsOwnerCollider() ){
-				colinfo->SetCollider( &colObj0Safe.GetOwnerCollider()->GetCollider(), colObj0Safe.GetOwnerBone(), -1, -1 );
+			if(colObj0Safe.IsOwnerCollider()){
+				colinfo->SetCollider(&colObj0Safe.GetOwnerCollider()->GetCollider(), colObj0Safe.GetOwnerBone(), -1, -1);
 				
-			}else if( colObj0Safe.IsOwnerHTSector() ){
+			}else if(colObj0Safe.IsOwnerHTSector()){
 				const debpHTSector &htsector = *colObj0Safe.GetOwnerHTSector();
-				colinfo->SetHTSector( htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector() );
+				colinfo->SetHTSector(htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector());
 			}
 			
-			colinfo->SetOwnerBone( colObj1Safe.GetOwnerBone() );
-			colinfo->SetOwnerShape( shape1 );
+			colinfo->SetOwnerBone(colObj1Safe.GetOwnerBone());
+			colinfo->SetOwnerShape(shape1);
 			
-			const deCollider::Ref guard( &collider ); // script can potentially remove collider
-			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
+			const deCollider::Ref guard(&collider); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse(&collider, colinfo);
 		}
 		
-		if( debugInfo ){
-			debugInfo->IncrementCounter( 1 );
+		if(debugInfo){
+			debugInfo->IncrementCounter(1);
 		}
 	}
 	
-	if( debugInfo ){
-		debugInfo->IncrementElapsedTime( pPerfTimer.GetElapsedTime() );
+	if(debugInfo){
+		debugInfo->IncrementElapsedTime(pPerfTimer.GetElapsedTime());
 	}
 }
 
 
 
-void debpCollisionWorld::safeRayTest( const btVector3 &rayFromWorld, const btVector3 &rayToWorld,
-btCollisionWorld::RayResultCallback &resultCallback ) const{
+void debpCollisionWorld::safeRayTest(const btVector3 &rayFromWorld, const btVector3 &rayToWorld,
+btCollisionWorld::RayResultCallback &resultCallback) const{
 	pDelayedOperation->Lock();
 	
 	try{
-		rayTest( rayFromWorld, rayToWorld, resultCallback );
+		rayTest(rayFromWorld, rayToWorld, resultCallback);
 		pDelayedOperation->Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pDelayedOperation->Unlock();
 		throw;
 	}
 }
 
-void debpCollisionWorld::safeConvexSweepTest( const btConvexShape *castShape,
+void debpCollisionWorld::safeConvexSweepTest(const btConvexShape *castShape,
 const btTransform &from, const btTransform &to,
 btCollisionWorld::ConvexResultCallback &resultCallback,
-btScalar allowedCcdPenetration ){
+btScalar allowedCcdPenetration){
 	pDelayedOperation->Lock();
 	
 	try{
-		convexSweepTest( castShape, from, to, resultCallback, allowedCcdPenetration );
+		convexSweepTest(castShape, from, to, resultCallback, allowedCcdPenetration);
 		pDelayedOperation->Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pDelayedOperation->Unlock();
 		throw;
 	}
 }
 
-void debpCollisionWorld::safeContactTest( btCollisionObject *colObj,
-btCollisionWorld::ContactResultCallback &resultCallback ){
+void debpCollisionWorld::safeContactTest(btCollisionObject *colObj,
+btCollisionWorld::ContactResultCallback &resultCallback){
 	pDelayedOperation->Lock();
 	
 	try{
-		contactTest( colObj, resultCallback );
+		contactTest(colObj, resultCallback);
 		pDelayedOperation->Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pDelayedOperation->Unlock();
 		throw;
 	}
 }
 
-void debpCollisionWorld::safeContactPairTest( btCollisionObject *colObjA,
-btCollisionObject *colObjB, ContactResultCallback& resultCallback ){
+void debpCollisionWorld::safeContactPairTest(btCollisionObject *colObjA,
+btCollisionObject *colObjB, ContactResultCallback& resultCallback){
 	pDelayedOperation->Lock();
 	
 	try{
-		contactPairTest( colObjA, colObjB, resultCallback );
+		contactPairTest(colObjA, colObjB, resultCallback);
 		pDelayedOperation->Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pDelayedOperation->Unlock();
 		throw;
 	}
@@ -686,14 +686,14 @@ struct sContactResultBoolean : btManifoldResult{
 	// btVector3 hackPointInWorld;
 	// btScalar hackDepth;
 	
-	sContactResultBoolean( const btCollisionObjectWrapper *obj0Wrap,
-		const btCollisionObjectWrapper *obj1Wrap ) :
-	btManifoldResult( obj0Wrap, obj1Wrap ),
-	hasContact( false ){
+	sContactResultBoolean(const btCollisionObjectWrapper *obj0Wrap,
+		const btCollisionObjectWrapper *obj1Wrap) :
+	btManifoldResult(obj0Wrap, obj1Wrap),
+	hasContact(false){
 	}
 	
-	virtual void addContactPoint( const btVector3 &normalOnBInWorld,
-	const btVector3 &pointInWorld, btScalar depth ){
+	virtual void addContactPoint(const btVector3 &normalOnBInWorld,
+	const btVector3 &pointInWorld, btScalar depth){
 		hasContact = true;
 			// hackPointInWorld = pointInWorld;
 			// hackDepth = depth;
@@ -704,15 +704,15 @@ struct sContactResultBoolean : btManifoldResult{
 struct sContactResultBoolean2 : btCollisionWorld::ContactResultCallback {
 	bool hasContact;
 	
-	sContactResultBoolean2() : hasContact( false ){
+	sContactResultBoolean2() : hasContact(false){
 	}
 	
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const{
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const{
 		return true;
 	}
 	
-	virtual btScalar addSingleResult( btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
-	int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1 ){
+	virtual btScalar addSingleResult(btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
+	int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1){
 		hasContact = true;
 		return 0;
 	}
@@ -720,14 +720,14 @@ struct sContactResultBoolean2 : btCollisionWorld::ContactResultCallback {
 */
 
 bool debpCollisionWorld::safeContactPairTest(
-btCollisionObject *colObjA, btCollisionObject *colObjB ){
+btCollisionObject *colObjA, btCollisionObject *colObjB){
 	// this version is a modification of btCollisionWorld::contactPairTest removing the
 	// contact point handling as much as possible to make it faster
 	
 	pDelayedOperation->Lock();
 	
 	/*
-	const bool doDebug = colObjB->getWorldTransform().getOrigin().distance( btVector3(-8.65451,4.01,15.5307)) < 0.5;
+	const bool doDebug = colObjB->getWorldTransform().getOrigin().distance(btVector3(-8.65451,4.01,15.5307)) < 0.5;
 	if(doDebug){
 	const btVector3 &p1 = colObjA->getWorldTransform().getOrigin();
 	const btVector3 &p2 = colObjB->getWorldTransform().getOrigin();
@@ -746,19 +746,19 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 				const btQuaternion &qA = colObjA->getWorldTransform().getRotation();
 				const btQuaternion &qB = colObjB->getWorldTransform().getRotation();
 				
-				printf( "const btTransform tA(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
-					qA.getX(), qA.getY(), qA.getZ(), qA.getW(), p1.getX(), p1.getY(), p1.getZ() );
-				printf( "const btTransform tB(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
-					qB.getX(), qB.getY(), qB.getZ(), qB.getW(), p2.getX(), p2.getY(), p2.getZ() );
+				printf("const btTransform tA(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
+					qA.getX(), qA.getY(), qA.getZ(), qA.getW(), p1.getX(), p1.getY(), p1.getZ());
+				printf("const btTransform tB(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
+					qB.getX(), qB.getY(), qB.getZ(), qB.getW(), p2.getX(), p2.getY(), p2.getZ());
 				
 				const btBoxShape &b1 = (btBoxShape&)cpAcs;
 				const btBoxShape &b2 = (btBoxShape&)cpBcs;
 				
-				const btVector3 he1( b1.getHalfExtentsWithoutMargin() );
-				const btVector3 he2( b2.getHalfExtentsWithoutMargin() );
+				const btVector3 he1(b1.getHalfExtentsWithoutMargin());
+				const btVector3 he2(b2.getHalfExtentsWithoutMargin());
 				
-				printf( "const btVector3 he1(%f,%f,%f);\n", he1.getX(), he1.getY(), he1.getZ() );
-				printf( "const btVector3 he2(%f,%f,%f);\n", he2.getX(), he2.getY(), he2.getZ() );
+				printf("const btVector3 he1(%f,%f,%f);\n", he1.getX(), he1.getY(), he1.getZ());
+				printf("const btVector3 he2(%f,%f,%f);\n", he2.getX(), he2.getY(), he2.getZ());
 				
 				const btTransform &t1 = cpA.getChildTransform(0);
 				const btTransform &t2 = cpB.getChildTransform(0);
@@ -767,14 +767,14 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 				const btVector3 &pT1 = t1.getOrigin();
 				const btVector3 &pT2 = t2.getOrigin();
 				
-				printf( "const btTransform tBA(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
-					qT1.getX(), qT1.getY(), qT1.getZ(), qT1.getW(), pT1.getX(), pT1.getY(), pT1.getZ() );
-				printf( "const btTransform tBB(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
-					qT2.getX(), qT2.getY(), qT2.getZ(), qT2.getW(), pT2.getX(), pT2.getY(), pT2.getZ() );
+				printf("const btTransform tBA(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
+					qT1.getX(), qT1.getY(), qT1.getZ(), qT1.getW(), pT1.getX(), pT1.getY(), pT1.getZ());
+				printf("const btTransform tBB(btQuaternion(%f,%f,%f,%f), btVector3(%f,%f,%f));\n",
+					qT2.getX(), qT2.getY(), qT2.getZ(), qT2.getW(), pT2.getX(), pT2.getY(), pT2.getZ());
 				
 				const bool nc = getDispatcher()->needsCollision(colObjA, colObjB);
 				(void)nc;
-				printf( "needsCollision %d\n", nc );
+				printf("needsCollision %d\n", nc);
 			}
 		}
 	}
@@ -783,32 +783,32 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 	
 	/*
 	struct sDispatcher : btCollisionDispatcher{
-		sDispatcher( btCollisionConfiguration *collisionConfiguration ) : btCollisionDispatcher( collisionConfiguration ){ }
-		virtual bool needsCollision( const btCollisionObject *body0, const btCollisionObject *body1 ){ return true; }
-		virtual bool needsResponse( const btCollisionObject *body0, const btCollisionObject *body1 ){ return true; }
+		sDispatcher(btCollisionConfiguration *collisionConfiguration) : btCollisionDispatcher(collisionConfiguration){}
+		virtual bool needsCollision(const btCollisionObject *body0, const btCollisionObject *body1){return true;}
+		virtual bool needsResponse(const btCollisionObject *body0, const btCollisionObject *body1){return true;}
 	};
 	btSoftBodyRigidBodyCollisionConfiguration cconfig;
-	sDispatcher dispatcher( &cconfig );
+	sDispatcher dispatcher(&cconfig);
 	*/
 	
 	try{
-		btCollisionObjectWrapper obA( 0, colObjA->getCollisionShape(),
-			colObjA, colObjA->getWorldTransform(), -1, -1 );
-		btCollisionObjectWrapper obB( 0, colObjB->getCollisionShape(),
-			colObjB, colObjB->getWorldTransform(), -1, -1 );
+		btCollisionObjectWrapper obA(0, colObjA->getCollisionShape(),
+			colObjA, colObjA->getWorldTransform(), -1, -1);
+		btCollisionObjectWrapper obB(0, colObjB->getCollisionShape(),
+			colObjB, colObjB->getWorldTransform(), -1, -1);
 		
 		btCollisionAlgorithm * const algorithm = getDispatcher()->findAlgorithm(
-			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS );
+			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS);
 		
-		if( ! algorithm ){
+		if(! algorithm){
 			return false;
 		}
 		
-		sContactResultBoolean result( &obA, &obB );
+		sContactResultBoolean result(&obA, &obB);
 		
-		algorithm->processCollision( &obA, &obB, getDispatchInfo(), &result );
+		algorithm->processCollision(&obA, &obB, getDispatchInfo(), &result);
 		algorithm->~btCollisionAlgorithm();
-		getDispatcher()->freeCollisionAlgorithm( algorithm );
+		getDispatcher()->freeCollisionAlgorithm(algorithm);
 		
 		pDelayedOperation->Unlock();
 		
@@ -816,7 +816,7 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 			// 	result.hackPointInWorld.x(), result.hackPointInWorld.y(), result.hackPointInWorld.z(), result.hackDepth);
 		return result.hasContact;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pDelayedOperation->Unlock();
 		throw;
 	}
@@ -824,25 +824,25 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 
 
 
-void debpCollisionWorld::convexSweepTest( const btConvexShape* castShape, const btTransform& from,
+void debpCollisionWorld::convexSweepTest(const btConvexShape* castShape, const btTransform& from,
 const btTransform& to, btCollisionWorld::ConvexResultCallback& resultCallback,
-btScalar allowedCcdPenetration ){
+btScalar allowedCcdPenetration){
 	btVector3 castShapeAabbMin;
 	btVector3 castShapeAabbMax;
 	
 	// Compute AABB that encompasses angular movement. this needs optimization
 	btVector3 linVel, angVel;
-	btTransformUtil::calculateVelocity( from, to, 1.0f, linVel, angVel );
-	const btVector3 zeroLinVel( ( btScalar )0.0, ( btScalar )0.0, ( btScalar )0.0 );
-	const btTransform R( from.getBasis() ); // origin=(0,0,0), rotation=from.rotation
-	castShape->calculateTemporalAabb( R, zeroLinVel, angVel, 1.0f, castShapeAabbMin, castShapeAabbMax );
+	btTransformUtil::calculateVelocity(from, to, 1.0f, linVel, angVel);
+	const btVector3 zeroLinVel((btScalar)0.0, (btScalar)0.0, (btScalar)0.0);
+	const btTransform R(from.getBasis()); // origin=(0,0,0), rotation=from.rotation
+	castShape->calculateTemporalAabb(R, zeroLinVel, angVel, 1.0f, castShapeAabbMin, castShapeAabbMax);
 	
 	// sweep test
-	SingleSweepCallback convexCB( castShape, from, to, *this, resultCallback,
-		allowedCcdPenetration /*, castShapeAabbMin, castShapeAabbMax*/ );
+	SingleSweepCallback convexCB(castShape, from, to, *this, resultCallback,
+		allowedCcdPenetration /*, castShapeAabbMin, castShapeAabbMax*/);
 	
-	btBroadphaseInterface &broadphase = *( ( btBroadphaseInterface* )getBroadphase() );
-	broadphase.rayTest( from.getOrigin(), to.getOrigin(), convexCB, castShapeAabbMin, castShapeAabbMax );
+	btBroadphaseInterface &broadphase = *((btBroadphaseInterface*)getBroadphase());
+	broadphase.rayTest(from.getOrigin(), to.getOrigin(), convexCB, castShapeAabbMin, castShapeAabbMax);
 }
 
 
@@ -851,22 +851,22 @@ btScalar allowedCcdPenetration ){
 int timerObjectQuerySingle = 0; int timerObjectQuerySingleCount = 0; extern int timerShapeCastConvexCount;
 #endif
 
-void debpCollisionWorld::objectQuerySingle( const btConvexShape *castShape, const btTransform &convexFromTrans,
+void debpCollisionWorld::objectQuerySingle(const btConvexShape *castShape, const btTransform &convexFromTrans,
 const btTransform &convexToTrans, btCollisionObject *collisionObject, const btCollisionShape *collisionShape,
 const btTransform &colObjWorldTransform, btCollisionWorld::ConvexResultCallback &resultCallback,
-btScalar allowedPenetration ){
+btScalar allowedPenetration){
 #ifdef DO_TIMING_2
 	//const int oldtimerShapeCastConvexCount = timerShapeCastConvexCount;
 	decTimer timer;
 	timer.Reset();
 #endif
 	
-	const btCollisionObjectWrapper castWrap( 0, collisionShape, collisionObject, colObjWorldTransform, -1, -1 );
+	const btCollisionObjectWrapper castWrap(0, collisionShape, collisionObject, colObjWorldTransform, -1, -1);
 	pWorld.GetBullet().GetCollisionDetection().GetBulletShapeCollision().ShapeCast(
-		castShape, convexFromTrans, convexToTrans, &castWrap, resultCallback, allowedPenetration );
+		castShape, convexFromTrans, convexToTrans, &castWrap, resultCallback, allowedPenetration);
 	
 #ifdef DO_TIMING_2
-	timerObjectQuerySingle += ( int )( timer.GetElapsedTime() * 1e6f ); timerObjectQuerySingleCount++;
+	timerObjectQuerySingle += (int)(timer.GetElapsedTime() * 1e6f); timerObjectQuerySingleCount++;
 	//pWorld.GetBullet().LogInfoFormat( "objectQuerySingle caused %i shapeCastConvex calls", timerShapeCastConvexCount - oldtimerShapeCastConvexCount );
 #endif
 }
@@ -883,15 +883,15 @@ struct SingleSweepCallback : public btBroadphaseRayCallback{
 	btScalar pAllowedCcdPenetration;
 	const btConvexShape *pCastShape;
 	
-	SingleSweepCallback( const btConvexShape *castShape, const btTransform &convexFromTrans,
+	SingleSweepCallback(const btConvexShape *castShape, const btTransform &convexFromTrans,
 	const btTransform &convexToTrans, const btCollisionWorld *world,
-	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration ) :
-	pConvexFromTrans( convexFromTrans ),
-	pConvexToTrans( convexToTrans ),
-	pWorld( world ),
-	pResultCallback( resultCallback ),
-	pAllowedCcdPenetration( allowedPenetration ),
-	pCastShape( castShape ){
+	btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetration) :
+	pConvexFromTrans(convexFromTrans),
+	pConvexToTrans(convexToTrans),
+	pWorld(world),
+	pResultCallback(resultCallback),
+	pAllowedCcdPenetration(allowedPenetration),
+	pCastShape(castShape){
 		const btVector3 unnormalizedRayDir = pConvexToTrans.getOrigin() - pConvexFromTrans.getOrigin();
 		const btVector3 rayDir = unnormalizedRayDir.normalized();
 		///what about division by zero? --> just set rayDirection[i] to INF/BT_LARGE_FLOAT
@@ -905,19 +905,19 @@ struct SingleSweepCallback : public btBroadphaseRayCallback{
 		m_lambda_max = rayDir.dot(unnormalizedRayDir);
 	}
 	
-	virtual bool process( const btBroadphaseProxy *proxy ){
+	virtual bool process(const btBroadphaseProxy *proxy){
 		///terminate further convex sweep tests, once the closestHitFraction reached zero
-		if( pResultCallback.m_closestHitFraction == btScalar(0.f) ){
+		if(pResultCallback.m_closestHitFraction == btScalar(0.f)){
 			return false;
 		}
 		
-		btCollisionObject * const collisionObject = ( btCollisionObject* )proxy->m_clientObject;
+		btCollisionObject * const collisionObject = (btCollisionObject*)proxy->m_clientObject;
 		
 		//only perform raycast if filterMask matches
-		if( pResultCallback.needsCollision(collisionObject->getBroadphaseHandle() ) ){
-			pWorld->objectQuerySingle( pCastShape, pConvexFromTrans,pConvexToTrans, collisionObject,
+		if(pResultCallback.needsCollision(collisionObject->getBroadphaseHandle())){
+			pWorld->objectQuerySingle(pCastShape, pConvexFromTrans,pConvexToTrans, collisionObject,
 				collisionObject->getCollisionShape(), collisionObject->getWorldTransform(),
-				pResultCallback, pAllowedCcdPenetration );
+				pResultCallback, pAllowedCcdPenetration);
 		}
 		
 		return true;
@@ -928,54 +928,54 @@ struct SingleSweepCallback : public btBroadphaseRayCallback{
 
 
 #if 0
-void debpCollisionWorld::convexSweepTest( const btConvexShape *castShape, const btTransform &from,
+void debpCollisionWorld::convexSweepTest(const btConvexShape *castShape, const btTransform &from,
 const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback,
-btScalar allowedCcdPenetration ) const{
+btScalar allowedCcdPenetration) const{
 	btVector3 castShapeAabbMin;
 	btVector3 castShapeAabbMax;
 	
 	btVector3 linVel, angVel;
-	btTransformUtil::calculateVelocity( from, to, 1.0f, linVel, angVel );
-printf( "linVel(%f,%f,%f) angVel(%f,%f,%f)\n", linVel.x(), linVel.y(), linVel.z(), angVel.x()/DEG2RAD, angVel.y()/DEG2RAD, angVel.z()/DEG2RAD);
+	btTransformUtil::calculateVelocity(from, to, 1.0f, linVel, angVel);
+printf("linVel(%f,%f,%f) angVel(%f,%f,%f)\n", linVel.x(), linVel.y(), linVel.z(), angVel.x()/DEG2RAD, angVel.y()/DEG2RAD, angVel.z()/DEG2RAD);
 	//btTransform rottransform;
 	//rottransform.setIdentity();
 	//rottransform.setRotation( from.getRotation() );
-	castShape->calculateTemporalAabb( from/*rottransform*/, linVel, angVel, 1.0f, castShapeAabbMin, castShapeAabbMax );
-printf( "aabb (%f,%f,%f) (%f,%f,%f)\n", castShapeAabbMin.x(), castShapeAabbMin.y(), castShapeAabbMin.z(),
-	castShapeAabbMax.x(), castShapeAabbMax.y(), castShapeAabbMax.z() );
+	castShape->calculateTemporalAabb(from/*rottransform*/, linVel, angVel, 1.0f, castShapeAabbMin, castShapeAabbMax);
+printf("aabb (%f,%f,%f) (%f,%f,%f)\n", castShapeAabbMin.x(), castShapeAabbMin.y(), castShapeAabbMin.z(),
+	castShapeAabbMax.x(), castShapeAabbMax.y(), castShapeAabbMax.z());
 	
-	SingleSweepCallback convexCB( castShape, from, to, this, resultCallback, allowedCcdPenetration );
+	SingleSweepCallback convexCB(castShape, from, to, this, resultCallback, allowedCcdPenetration);
 	
-	m_broadphasePairCache->rayTest( from.getOrigin(), to.getOrigin(), convexCB, castShapeAabbMin, castShapeAabbMax );
+	m_broadphasePairCache->rayTest(from.getOrigin(), to.getOrigin(), convexCB, castShapeAabbMin, castShapeAabbMax);
 }
 #endif
 
-void debpCollisionWorld::contactTest( btCollisionObject *colObj, btCollisionWorld::ContactResultCallback &resultCallback ){
+void debpCollisionWorld::contactTest(btCollisionObject *colObj, btCollisionWorld::ContactResultCallback &resultCallback){
 #define USE_BULLET_COLLISION 1
 	
 	#ifdef USE_BULLET_COLLISION
 		// if this is enabled a hit is reported for every shape in colObj. the used
 		// resultCallback has to deal with this problem. debpContactResultCallback
 		// for example ignores multiple contact point beyond the first by default
-		btCollisionWorld::contactTest( colObj, resultCallback );
+		btCollisionWorld::contactTest(colObj, resultCallback);
 		
 	#else
 		// if this is enabled we get one hit not one for each shape. this is what we want. but
 		// this solution fails to detect collisions with cylinders since the dragengine collision
 		// tests do not contain code for this case yet
 		btVector3 aabbMin, aabbMax;
-		colObj->getCollisionShape()->getAabb( colObj->getWorldTransform(), aabbMin, aabbMax );
+		colObj->getCollisionShape()->getAabb(colObj->getWorldTransform(), aabbMin, aabbMax);
 		
-		HitContactCallback contactCB( *this, colObj, resultCallback );
+		HitContactCallback contactCB(*this, colObj, resultCallback);
 		
-		getBroadphase()->aabbTest( aabbMin, aabbMax, contactCB );
+		getBroadphase()->aabbTest(aabbMin, aabbMax, contactCB);
 	#endif
 }
 
 
 
-void debpCollisionWorld::solveConstraints( btContactSolverInfo &solverInfo ){
-	btSoftRigidDynamicsWorld::solveConstraints( solverInfo );
+void debpCollisionWorld::solveConstraints(btContactSolverInfo &solverInfo){
+	btSoftRigidDynamicsWorld::solveConstraints(solverInfo);
 }
 
 
@@ -992,22 +992,22 @@ int debpCollisionWorld::GetNumNonStaticRigidBodies() const{
 // Protected functions
 ////////////////////////
 
-void debpCollisionWorld::internalSingleStepSimulation( btScalar timeStep ){
+void debpCollisionWorld::internalSingleStepSimulation(btScalar timeStep){
 	pDelayedOperation->Lock();
 	
 	try{
-		btSoftRigidDynamicsWorld::internalSingleStepSimulation( timeStep );
+		btSoftRigidDynamicsWorld::internalSingleStepSimulation(timeStep);
 		
 		// NOTE For btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation the pre and post tick
 		//      callback are called right at the start and end of the function. For btSoftRigidDynamicsWorld
 		//      though some additional code is wrapped around outside these callback calls. This
 		//      includes handling soft collisions. Might lead to problems in the future. Proper
 		//      callbacks would be set with setInternalTickCallback.
-		CheckDynamicCollisions( timeStep );
+		CheckDynamicCollisions(timeStep);
 		
 		pDelayedOperation->Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pDelayedOperation->Unlock();
 		throw;
 	}

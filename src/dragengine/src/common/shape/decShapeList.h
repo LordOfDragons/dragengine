@@ -51,7 +51,7 @@ public:
 	decShapeList();
 	
 	/** \brief Create copy of shape list. */
-	decShapeList( const decShapeList &copy );
+	decShapeList(const decShapeList &copy);
 	
 	/** \brief Clean up shape list. */
 	~decShapeList();
@@ -62,43 +62,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of shapes. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{return pCount;}
 	
 	/**
 	 * \brief Shape at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetCount().
 	 */
-	decShape *GetAt( int index ) const;
+	decShape *GetAt(int index) const;
 	
 	/** \brief Index of shape or -1 if absent. */
-	int IndexOf( decShape *shape ) const;
+	int IndexOf(decShape *shape) const;
 	
 	/** \brief Shape is present. */
-	bool Has( decShape *shape ) const;
+	bool Has(decShape *shape) const;
 	
 	/**
 	 * \brief Set shape at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetCount().
 	 */
-	void SetAt( int index, decShape *shape );
+	void SetAt(int index, decShape *shape);
 	
 	/**
 	 * \brief Add shape.
 	 * \throws deeInvalidParam Shape is present.
 	 */
-	void Add( decShape *shape );
+	void Add(decShape *shape);
 	
 	/**
 	 * \brief Remove shape.
 	 * \throws deeInvalidParam Shape is absent.
 	 */
-	void Remove( decShape *shape );
+	void Remove(decShape *shape);
 	
 	/**
 	 * \brief Remove shape from index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetCount().
 	 */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** \brief Remove all shapes. */
 	void RemoveAll();
@@ -106,7 +106,7 @@ public:
 	
 	
 	/** \brief Visit shapes. */
-	void Visit( decShapeVisitor &visitor );
+	void Visit(decShapeVisitor &visitor);
 	/*@}*/
 	
 	
@@ -114,7 +114,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list to copy of another list. */
-	decShapeList &operator=( const decShapeList &list );
+	decShapeList &operator=(const decShapeList &list);
 	/*@}*/
 	
 	

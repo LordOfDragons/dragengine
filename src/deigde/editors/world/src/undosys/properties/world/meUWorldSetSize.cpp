@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetSize::meUWorldSetSize( meWorld *world, const decDVector &newValue ) :
-pWorld( NULL ),
-pNewValue( newValue )
+meUWorldSetSize::meUWorldSetSize(meWorld *world, const decDVector &newValue) :
+pWorld(NULL),
+pNewValue(newValue)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set world size" );
+	SetShortInfo("Set world size");
 	
 	pOldValue = world->GetSize();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 meUWorldSetSize::~meUWorldSetSize(){
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ meUWorldSetSize::~meUWorldSetSize(){
 ///////////////
 
 void meUWorldSetSize::Undo(){
-	pWorld->SetSize( pOldValue );
+	pWorld->SetSize(pOldValue);
 }
 
 void meUWorldSetSize::Redo(){
-	pWorld->SetSize( pNewValue );
+	pWorld->SetSize(pNewValue);
 }

@@ -33,51 +33,51 @@
 // Subclass Constructors
 //////////////////////////
 
-deeInvalidParam::deeInvalidParam( const char *file, int line, const char *description ) :
-deException( "InvalidParam", description ? description : "Invalid Parameter specified", file, line ){
+deeInvalidParam::deeInvalidParam(const char *file, int line, const char *description) :
+deException("InvalidParam", description ? description : "Invalid Parameter specified", file, line){
 }
 
-deeOutOfMemory::deeOutOfMemory( const char *file, int line ) :
-deException( "OutOfMemory", "There is not enough Memory left", file, line ){
+deeOutOfMemory::deeOutOfMemory(const char *file, int line) :
+deException("OutOfMemory", "There is not enough Memory left", file, line){
 }
 
-deeOutOfBoundary::deeOutOfBoundary( const char *file, int line ) :
-deException( "OutOfBoundary", "Index is outside allowed boundaries", file, line ){
+deeOutOfBoundary::deeOutOfBoundary(const char *file, int line) :
+deException("OutOfBoundary", "Index is outside allowed boundaries", file, line){
 }
 
-deeStackEmpty::deeStackEmpty( const char *file, int line ) :
-deException( "StackEmpty", "Stack is empty", file, line ){
+deeStackEmpty::deeStackEmpty(const char *file, int line) :
+deException("StackEmpty", "Stack is empty", file, line){
 }
 
-deeStackOverflow::deeStackOverflow( const char *file, int line ) :
-deException( "StackOverflow", "Stack Overflow", file, line ){
+deeStackOverflow::deeStackOverflow(const char *file, int line) :
+deException("StackOverflow", "Stack Overflow", file, line){
 }
 
-deeDivisionByZero::deeDivisionByZero( const char *file, int line ) :
-deException( "DivisionByZero", "Division By Zero", file, line ){
+deeDivisionByZero::deeDivisionByZero(const char *file, int line) :
+deException("DivisionByZero", "Division By Zero", file, line){
 }
 
-deeNullPointer::deeNullPointer( const char *file, int line, const char *description ) :
-deException( "NullPointer", description ? description : "Null Pointer", file, line ){
+deeNullPointer::deeNullPointer(const char *file, int line, const char *description) :
+deException("NullPointer", description ? description : "Null Pointer", file, line){
 }
 
-deeInvalidAction::deeInvalidAction( const char *file, int line, const char *description ) :
-deException( "InvalidAction", description ? description : "Invalid Action (internal error)", file, line ){
+deeInvalidAction::deeInvalidAction(const char *file, int line, const char *description) :
+deException("InvalidAction", description ? description : "Invalid Action (internal error)", file, line){
 }
 
-deeInvalidFormat::deeInvalidFormat( const char *file, int line, const char *description ) :
-deException( "InvalidFormat", description ? description : "Invalid Format", file, line ){
+deeInvalidFormat::deeInvalidFormat(const char *file, int line, const char *description) :
+deException("InvalidFormat", description ? description : "Invalid Format", file, line){
 }
 
 
 
-deeFileNotFound::deeFileNotFound( const char *file, int line, const char *path ) :
-deException( "FileNotFound", pCreateText( path ), file, line ){
+deeFileNotFound::deeFileNotFound(const char *file, int line, const char *path) :
+deException("FileNotFound", pCreateText(path), file, line){
 }
 
-decString deeFileNotFound::pCreateText( const char *path ){
-	decString text( "File does not exist" );
-	if( path ){
+decString deeFileNotFound::pCreateText(const char *path){
+	decString text("File does not exist");
+	if(path){
 		text += ": ";
 		text += path;
 	}
@@ -86,13 +86,13 @@ decString deeFileNotFound::pCreateText( const char *path ){
 
 
 
-deeFileExists::deeFileExists( const char *file, int line, const char *path ) :
-deException( "FileExists", pCreateText( path ), file, line ){
+deeFileExists::deeFileExists(const char *file, int line, const char *path) :
+deException("FileExists", pCreateText(path), file, line){
 }
 
-decString deeFileExists::pCreateText( const char *path ){
-	decString text( "File does exist already" );
-	if( path ){
+decString deeFileExists::pCreateText(const char *path){
+	decString text("File does exist already");
+	if(path){
 		text += ": ";
 		text += path;
 	}
@@ -101,13 +101,13 @@ decString deeFileExists::pCreateText( const char *path ){
 
 
 
-deeOpenFile::deeOpenFile( const char *file, int line, const char *path ) :
-deException( "OpenFileFailed", pCreateText( path ), file, line ){
+deeOpenFile::deeOpenFile(const char *file, int line, const char *path) :
+deException("OpenFileFailed", pCreateText(path), file, line){
 }
 
-decString deeOpenFile::pCreateText( const char *path ){
-	decString text( "Open File failed" );
-	if( path ){
+decString deeOpenFile::pCreateText(const char *path){
+	decString text("Open File failed");
+	if(path){
 		text += ": ";
 		text += path;
 	}
@@ -116,13 +116,13 @@ decString deeOpenFile::pCreateText( const char *path ){
 
 
 
-deeReadFile::deeReadFile( const char *file, int line, const char *path ) :
-deException( "ReadFileFailed", pCreateText( path ), file, line ){
+deeReadFile::deeReadFile(const char *file, int line, const char *path) :
+deException("ReadFileFailed", pCreateText(path), file, line){
 }
 
-decString deeReadFile::pCreateText( const char *path ){
-	decString text( "Can not read from file" );
-	if( path ){
+decString deeReadFile::pCreateText(const char *path){
+	decString text("Can not read from file");
+	if(path){
 		text += ": ";
 		text += path;
 	}
@@ -131,13 +131,13 @@ decString deeReadFile::pCreateText( const char *path ){
 
 
 
-deeWriteFile::deeWriteFile( const char *file, int line, const char *path ) :
-deException( "WriteFileFailed", pCreateText( path ), file, line ){
+deeWriteFile::deeWriteFile(const char *file, int line, const char *path) :
+deException("WriteFileFailed", pCreateText(path), file, line){
 }
 
-decString deeWriteFile::pCreateText( const char *path ){
-	decString text( "Can not write to file" );
-	if( path ){
+decString deeWriteFile::pCreateText(const char *path){
+	decString text("Can not write to file");
+	if(path){
 		text += ": ";
 		text += path;
 	}
@@ -146,13 +146,13 @@ decString deeWriteFile::pCreateText( const char *path ){
 
 
 
-deeInvalidFileFormat::deeInvalidFileFormat( const char *file, int line, const char *path ) :
-deException( "InvalidFileFormat", pCreateText( path ), file, line ){
+deeInvalidFileFormat::deeInvalidFileFormat(const char *file, int line, const char *path) :
+deException("InvalidFileFormat", pCreateText(path), file, line){
 }
 
-decString deeInvalidFileFormat::pCreateText( const char *path ){
-	decString text( "Invalid File Format" );
-	if( path ){
+decString deeInvalidFileFormat::pCreateText(const char *path){
+	decString text("Invalid File Format");
+	if(path){
 		text += ": ";
 		text += path;
 	}
@@ -161,30 +161,30 @@ decString deeInvalidFileFormat::pCreateText( const char *path ){
 
 
 
-deeDirectoryNotFound::deeDirectoryNotFound( const char *file, int line ) :
-deException( "DirectoryNotFound", "Directory does not exist", file, line ){
+deeDirectoryNotFound::deeDirectoryNotFound(const char *file, int line) :
+deException("DirectoryNotFound", "Directory does not exist", file, line){
 }
 
-deeDirectoryRead::deeDirectoryRead( const char *file, int line ) :
-deException( "DirectoryReadFailed", "Directory read error", file, line ){
+deeDirectoryRead::deeDirectoryRead(const char *file, int line) :
+deException("DirectoryReadFailed", "Directory read error", file, line){
 }
 
-deeInvalidSyntax::deeInvalidSyntax( const char *file, int line ) :
-deException( "InvalidSyntax", "Invalid Script Syntax", file, line ){
+deeInvalidSyntax::deeInvalidSyntax(const char *file, int line) :
+deException("InvalidSyntax", "Invalid Script Syntax", file, line){
 }
 
-deeScriptError::deeScriptError( const char *file, int line ) :
-deException( "ScriptError", "Error in Script System", file, line ){
+deeScriptError::deeScriptError(const char *file, int line) :
+deException("ScriptError", "Error in Script System", file, line){
 }
 
-deeNoModuleFound::deeNoModuleFound( const char *file, int line ) :
-deException( "NoModuleFound", "No Working Module could be found", file, line ){
+deeNoModuleFound::deeNoModuleFound(const char *file, int line) :
+deException("NoModuleFound", "No Working Module could be found", file, line){
 }
 
-deeTestFailed::deeTestFailed( const char *file, int line, const char *description ) :
-deException( "TestCaseFailed", description ? description : "Test Case failed", file, line ){
+deeTestFailed::deeTestFailed(const char *file, int line, const char *description) :
+deException("TestCaseFailed", description ? description : "Test Case failed", file, line){
 }
 
-deeAssertion::deeAssertion( const char *file, int line, const char *description ) :
-deException( "AssertionException", description ? description : "Assertion exception has occurred", file, line ){
+deeAssertion::deeAssertion(const char *file, int line, const char *description) :
+deException("AssertionException", description ? description : "Assertion exception has occurred", file, line){
 }

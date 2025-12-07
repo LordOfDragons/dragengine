@@ -70,7 +70,7 @@ public:
 	 * 
 	 * User entered text and accepted it.
 	 */
-	virtual void OnTextChanged( igdeTextArea *textArea );
+	virtual void OnTextChanged(igdeTextArea *textArea);
 	
 	/**
 	 * \brief TextArea text is changing.
@@ -78,7 +78,7 @@ public:
 	 * User is entering text but has not yet accepted the input. This event is send each
 	 * time the user changes the text. Once accepted OnTextChanged() is called.
 	 */
-	virtual void OnTextChanging( igdeTextArea *textArea );
+	virtual void OnTextChanging(igdeTextArea *textArea);
 	/*@}*/
 };
 

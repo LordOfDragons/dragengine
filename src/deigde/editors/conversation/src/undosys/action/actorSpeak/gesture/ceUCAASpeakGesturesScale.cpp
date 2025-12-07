@@ -36,9 +36,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGesturesScale::ceUCAASpeakGesturesScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak )
-: ceUCAASpeakStripsScale( topic, actorSpeak ){
-	SetShortInfo( "Scale gestures" );
+ceUCAASpeakGesturesScale::ceUCAASpeakGesturesScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
+: ceUCAASpeakStripsScale(topic, actorSpeak){
+	SetShortInfo("Scale gestures");
 }
 
 ceUCAASpeakGesturesScale::~ceUCAASpeakGesturesScale(){

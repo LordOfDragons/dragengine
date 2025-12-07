@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsPasteCondition::ceWPTMAWaitActionsPasteCondition( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait ) :
-ceWPTMAPasteCondition( windowMain, conversation ),
-pTopic( &topic ),
-pWait( &wait ){
+ceWPTMAWaitActionsPasteCondition::ceWPTMAWaitActionsPasteCondition(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait) :
+ceWPTMAPasteCondition(windowMain, conversation),
+pTopic(&topic),
+pWait(&wait){
 }
 
 
@@ -52,10 +52,10 @@ pWait( &wait ){
 ///////////////
 
 igdeUndo *ceWPTMAWaitActionsPasteCondition::CreateUndo(
-const ceConversationConditionList &conditions ){
-	if( conditions.GetCount() != 1 ){
+const ceConversationConditionList &conditions){
+	if(conditions.GetCount() != 1){
 		//DETHROW( deeInvalidParam );
 	}
 	
-	return new ceUCAWaitPasteCondition( pTopic, pWait, conditions.GetAt( 0 ) );
+	return new ceUCAWaitPasteCondition(pTopic, pWait, conditions.GetAt(0));
 }

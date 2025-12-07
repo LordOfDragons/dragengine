@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetID::gdeUGDSetID( gdeGameDefinition *gameDefinition, const char *newValue ) :
-pGameDefinition( NULL )
+gdeUGDSetID::gdeUGDSetID(gdeGameDefinition *gameDefinition, const char *newValue) :
+pGameDefinition(NULL)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(! gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition set identifier" );
+	SetShortInfo("Game definition set identifier");
 	
 	pOldValue = gameDefinition->GetID();
 	pNewValue = newValue;
@@ -56,7 +56,7 @@ pGameDefinition( NULL )
 }
 
 gdeUGDSetID::~gdeUGDSetID(){
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ gdeUGDSetID::~gdeUGDSetID(){
 ///////////////
 
 void gdeUGDSetID::Undo(){
-	pGameDefinition->SetID( pOldValue );
+	pGameDefinition->SetID(pOldValue);
 }
 
 void gdeUGDSetID::Redo(){
-	pGameDefinition->SetID( pNewValue );
+	pGameDefinition->SetID(pNewValue);
 }

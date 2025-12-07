@@ -211,7 +211,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination BVH. */
-	deoglGIBVH( deoglRenderThread &renderThread );
+	deoglGIBVH(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination BVH. */
 	~deoglGIBVH();
@@ -222,21 +222,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Index of bvh component root node or -1 if there are no components. */
-	inline int GetIndexRootNode() const{ return pIndexRootNode; }
+	inline int GetIndexRootNode() const{return pIndexRootNode;}
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** Set position. If changed marks BVH dirty. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	
 	
 	/** BVH is dirty. */
-	inline bool GetDirty() const{ return pDirty; }
+	inline bool GetDirty() const{return pDirty;}
 	
 	/** Mark BVH dirty. */
 	void MarkDirty();
@@ -245,31 +245,31 @@ public:
 	void Clear();
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances );
+	void AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances);
 	
 	/** Add components. */
-	void AddComponents( deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic );
+	void AddComponents(deoglRenderPlan &plan, const deoglGIInstances &instances, bool dynamic);
 	
 	/** Add component. */
-	void AddComponent( deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance );
+	void AddComponent(deoglRenderPlan &plan, const decMatrix &matrix, deoglGIInstance &instance);
 	
 	/** Build BVH. */
 	void BuildBVH();
 	
 	/** Debug print BVH. */
-	void DebugPrint( const decDVector &position );
+	void DebugPrint(const decDVector &position);
 	
 	
 	
 	/** TBO for instance data. */
-	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
+	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{return pTBOInstance;}
 	
 	/** TBO for instance matrices. */
-	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
+	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{return pTBOMatrix;}
 	
 	/** Render materials render task. */
-	inline deoglRenderTask &GetRenderTaskMaterial(){ return pRenderTaskMaterial; }
-	inline const deoglRenderTask &GetRenderTaskMaterial() const{ return pRenderTaskMaterial; }
+	inline deoglRenderTask &GetRenderTaskMaterial(){return pRenderTaskMaterial;}
+	inline const deoglRenderTask &GetRenderTaskMaterial() const{return pRenderTaskMaterial;}
 	/*@}*/
 	
 	
@@ -277,18 +277,18 @@ public:
 private:
 	void pCleanUp();
 	void pDropBlockBVH();
-	sComponent &pAddComponent( const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix );
+	sComponent &pAddComponent(const deoglGIInstance &instance, int indexMaterial, const decMatrix &matrix);
 	
-	void pAddMaterial( deoglGIInstance &instance, int index,
-		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc );
+	void pAddMaterial(deoglGIInstance &instance, int index,
+		const deoglRComponentTexture &texture, deoglTexUnitsConfig *tuc);
 	
-	void pAddMaterial( deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
+	void pAddMaterial(deoglGIInstance &instance, int index, const deoglSkinTexture &skinTexture,
 		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
-		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix );
+		deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix);
 	
 // 	void pUpdateLocalBVHNodeExtends( const deoglGIBVHLocal &localBVH, const oglVector *positions,
 // 		const deoglBVHNode &node, deoglBVHNode &target );
-	void pEnsureRecalcNodeSize( int size );
+	void pEnsureRecalcNodeSize(int size);
 };
 
 #endif

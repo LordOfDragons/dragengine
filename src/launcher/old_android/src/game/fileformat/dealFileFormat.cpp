@@ -39,8 +39,8 @@
 /////////////////////////////////
 
 dealFileFormat::dealFileFormat() :
-pType( dealEngineModule::emtUnknown ),
-pSupported( false ){
+pType(dealEngineModule::emtUnknown),
+pSupported(false){
 }
 
 dealFileFormat::~dealFileFormat(){
@@ -51,17 +51,17 @@ dealFileFormat::~dealFileFormat(){
 // Management
 ///////////////
 
-void dealFileFormat::SetType( dealEngineModule::eModuleTypes type ){
+void dealFileFormat::SetType(dealEngineModule::eModuleTypes type){
 	pType = type;
 }
 
-void dealFileFormat::SetPattern( const char *pattern ){
-	if( ! pattern ){
-		DETHROW( deeInvalidParam );
+void dealFileFormat::SetPattern(const char *pattern){
+	if(! pattern){
+		DETHROW(deeInvalidParam);
 	}
 	pPattern = pattern;
 }
 
-void dealFileFormat::SetSupported( bool supported ){
+void dealFileFormat::SetSupported(bool supported){
 	pSupported = supported;
 }

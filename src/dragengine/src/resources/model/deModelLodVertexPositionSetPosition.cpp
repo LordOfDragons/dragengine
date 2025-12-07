@@ -37,7 +37,7 @@
 ////////////////////////////
 
 deModelLodVertexPositionSetPosition::deModelLodVertexPositionSetPosition() :
-pVertex( 0 ){
+pVertex(0){
 }
 
 deModelLodVertexPositionSetPosition::~deModelLodVertexPositionSetPosition(){
@@ -48,12 +48,12 @@ deModelLodVertexPositionSetPosition::~deModelLodVertexPositionSetPosition(){
 // Management
 ///////////////
 
-void deModelLodVertexPositionSetPosition::SetVertex( int vertex ){
-	DEASSERT_TRUE( vertex >= 0 )
+void deModelLodVertexPositionSetPosition::SetVertex(int vertex){
+	DEASSERT_TRUE(vertex >= 0)
 	
 	pVertex = vertex;
 }
 
-void deModelLodVertexPositionSetPosition::SetPosition( const decVector& position ){
+void deModelLodVertexPositionSetPosition::SetPosition(const decVector& position){
 	pPosition = position;
 }

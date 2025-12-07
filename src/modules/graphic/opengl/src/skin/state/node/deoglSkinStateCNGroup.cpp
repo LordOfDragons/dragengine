@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinStateCNGroup::deoglSkinStateCNGroup( deSkinPropertyNodeGroup &node ) :
-deoglSkinStateConstructedNode( node, etGroup )
+deoglSkinStateCNGroup::deoglSkinStateCNGroup(deSkinPropertyNodeGroup &node) :
+deoglSkinStateConstructedNode(node, etGroup)
 {
 	const int count = node.GetNodeCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pNodes.Add( CreateNode( *node.GetNodeAt( i ) ) );
+	for(i=0; i<count; i++){
+		pNodes.Add(CreateNode(*node.GetNodeAt(i)));
 	}
 }
 
-deoglSkinStateCNGroup::deoglSkinStateCNGroup( const deoglSkinStateCNGroup &node ) :
-deoglSkinStateConstructedNode( node )
+deoglSkinStateCNGroup::deoglSkinStateCNGroup(const deoglSkinStateCNGroup &node) :
+deoglSkinStateConstructedNode(node)
 {
 	const int count = node.pNodes.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pNodes.Add( ( ( deoglSkinStateConstructedNode* )node.pNodes.GetAt( i ) )->Copy() );
+	for(i=0; i<count; i++){
+		pNodes.Add(((deoglSkinStateConstructedNode*)node.pNodes.GetAt(i))->Copy());
 	}
 }
 
@@ -71,57 +71,57 @@ int deoglSkinStateCNGroup::GetNodeCount() const{
 	return pNodes.GetCount();
 }
 
-deoglSkinStateConstructedNode *deoglSkinStateCNGroup::GetNodeAt( int index ) const{
-	return ( deoglSkinStateConstructedNode* )pNodes.GetAt( index );
+deoglSkinStateConstructedNode *deoglSkinStateCNGroup::GetNodeAt(int index) const{
+	return (deoglSkinStateConstructedNode*)pNodes.GetAt(index);
 }
 
 
 
-void deoglSkinStateCNGroup::Update( deoglSkinState &state ){
+void deoglSkinStateCNGroup::Update(deoglSkinState &state){
 	const int count = pNodes.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	deoglSkinStateConstructedNode::Update( state );
+	deoglSkinStateConstructedNode::Update(state);
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSkinStateConstructedNode* )pNodes.GetAt( i ) )->Update( state );
+	for(i=0; i<count; i++){
+		((deoglSkinStateConstructedNode*)pNodes.GetAt(i))->Update(state);
 	}
 }
 
-void deoglSkinStateCNGroup::PrepareForRender( deoglSkinState &state ){
+void deoglSkinStateCNGroup::PrepareForRender(deoglSkinState &state){
 	const int count = pNodes.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	deoglSkinStateConstructedNode::PrepareForRender( state );
+	deoglSkinStateConstructedNode::PrepareForRender(state);
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSkinStateConstructedNode* )pNodes.GetAt( i ) )->PrepareForRender( state );
+	for(i=0; i<count; i++){
+		((deoglSkinStateConstructedNode*)pNodes.GetAt(i))->PrepareForRender(state);
 	}
 }
 
-void deoglSkinStateCNGroup::Render( deoglSkinState &state, const deoglRenderCanvasContext &context ){
+void deoglSkinStateCNGroup::Render(deoglSkinState &state, const deoglRenderCanvasContext &context){
 	const int count = pNodes.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	const deoglRenderCanvasContext childContext( context, *this );
-	if( childContext.IsZeroClip() ){
+	const deoglRenderCanvasContext childContext(context, *this);
+	if(childContext.IsZeroClip()){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSkinStateConstructedNode* )pNodes.GetAt( i ) )->Render( state, childContext );
+	for(i=0; i<count; i++){
+		((deoglSkinStateConstructedNode*)pNodes.GetAt(i))->Render(state, childContext);
 	}
 }
 
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNGroup::Copy() const{
-	return deoglSkinStateConstructedNode::Ref::New( new deoglSkinStateCNGroup( *this ) );
+	return deoglSkinStateConstructedNode::Ref::New(new deoglSkinStateCNGroup(*this));
 }

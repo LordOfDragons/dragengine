@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPEffectListener( seWPEffect &panel );
+	seWPEffectListener(seWPEffect &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPEffectListener();
@@ -55,32 +55,32 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( seSynthesizer *synthesizer );
+	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void LinkNameChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link count or order changed. */
-	virtual void LinkStructureChanged( seSynthesizer *synthesizer );
+	virtual void LinkStructureChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active source changed. */
-	virtual void ActiveSourceChanged( seSynthesizer *synthesizer, seSource *rule );
+	virtual void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *rule);
 	
 	/** \brief Active effect changed. */
-	virtual void ActiveEffectChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void ActiveEffectChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Effect changed. */
-	virtual void EffectChanged( seSynthesizer *synthesizer, seSource *source, seEffect *effect );
+	virtual void EffectChanged(seSynthesizer *synthesizer, seSource *source, seEffect *effect);
 	
 	/** \brief Effect count or order changed. */
-	virtual void EffectStructureChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void EffectStructureChanged(seSynthesizer *synthesizer, seSource *source);
 	/*@}*/
 };
 

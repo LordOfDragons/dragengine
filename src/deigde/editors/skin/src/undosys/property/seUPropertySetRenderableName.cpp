@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetRenderableName::seUPropertySetRenderableName( seProperty *property, const char *newName ){
-	if( ! property || ! newName ) DETHROW( deeInvalidParam );
+seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property, const char *newName){
+	if(! property || ! newName) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	
-	SetShortInfo( "Property Set Renderable" );
+	SetShortInfo("Property Set Renderable");
 	
 	pOldName = property->GetRenderableName();
 	pNewName = newName;
@@ -53,7 +53,7 @@ seUPropertySetRenderableName::seUPropertySetRenderableName( seProperty *property
 }
 
 seUPropertySetRenderableName::~seUPropertySetRenderableName(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seUPropertySetRenderableName::~seUPropertySetRenderableName(){
 ///////////////
 
 void seUPropertySetRenderableName::Undo(){
-	pProperty->SetRenderableName( pOldName.GetString() );
+	pProperty->SetRenderableName(pOldName.GetString());
 }
 
 void seUPropertySetRenderableName::Redo(){
-	pProperty->SetRenderableName( pNewName.GetString() );
+	pProperty->SetRenderableName(pNewName.GetString());
 }

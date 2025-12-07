@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new thread. */
-	deoglVideoDecodeThread( deVideoDecoder *decoder, deVideo *video );
+	deoglVideoDecodeThread(deVideoDecoder *decoder, deVideo *video);
 	
 	/** Clean up thread. */
 	virtual ~deoglVideoDecodeThread();
@@ -79,7 +79,7 @@ public:
 	 * up in an unhealthy state while guaranteeing the last set frame is always decoded and
 	 * ready to be retrieved. Intermediate results are discarded.
 	 */
-	void StartDecode( int frame );
+	void StartDecode(int frame);
 	
 	/**
 	 * Pixel buffer to upload to the texture. Waits for the decoding to finish.
@@ -92,7 +92,7 @@ public:
 	 * in which case a new one is created the next time. Allows swaping pixel buffers with
 	 * the render video player.
 	 */
-	void SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffer );
+	void SetTexturePixelBuffer(deoglPixelBuffer *pixelBuffer);
 	
 	/**
 	 * Wait for decoding to finish and clear decode parameters.

@@ -64,7 +64,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	debpCDVMoveHitModelFace( debpCollisionDetection *coldet );
+	debpCDVMoveHitModelFace(debpCollisionDetection *coldet);
 	/** Cleans up the visitor. */
 	virtual ~debpCDVMoveHitModelFace();
 	/*@}*/
@@ -74,22 +74,22 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Sets the component to test. */
-	void SetComponent( debpComponent *component );
+	void SetComponent(debpComponent *component);
 	/** Set the shape to test with. */
-	void SetTestShape( debpShape *shape, const decDVector &direction );
+	void SetTestShape(debpShape *shape, const decDVector &direction);
 	/** Sets the collider to test with. */
-	void SetTestCollider( debpCollider *collider, const decDVector &direction );
+	void SetTestCollider(debpCollider *collider, const decDVector &direction);
 	
 	/** Retrieves the result. */
-	inline debpCollisionResult &GetResult(){ return pResultFinal; }
+	inline debpCollisionResult &GetResult(){return pResultFinal;}
 	/** Determines if a collision has been found. */
-	inline bool HasCollision() const{ return pHasCollision; }
+	inline bool HasCollision() const{return pHasCollision;}
 	/*@}*/
 	
 	/** @name Visiting */
 	/*@{*/
 	/** Visit a node. */
-	virtual void VisitNode( debpDOctree *node, int intersection );
+	virtual void VisitNode(debpDOctree *node, int intersection);
 	/*@}*/
 };
 

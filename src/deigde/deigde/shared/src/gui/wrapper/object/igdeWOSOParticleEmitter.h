@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOParticleEmitter( igdeWObject &wrapper, const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix );
+	igdeWOSOParticleEmitter(igdeWObject &wrapper, const igdeGDCParticleEmitter &gdParticleEmitter, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOParticleEmitter();
@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter resource. */
-	inline deParticleEmitterInstance *GetParticleEmitter() const{ return pParticleEmitter; }
+	inline deParticleEmitterInstance *GetParticleEmitter() const{return pParticleEmitter;}
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -97,10 +97,10 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading();
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	virtual void Visit(igdeWOSOVisitor &visitor);
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	

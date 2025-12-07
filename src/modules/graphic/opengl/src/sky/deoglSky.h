@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky. */
-	deoglSky( deGraphicOpenGl &ogl, const deSky &sky );
+	deoglSky(deGraphicOpenGl &ogl, const deSky &sky);
 	
 	/** Clean up sky. */
 	virtual ~deoglSky();
@@ -65,19 +65,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Sky. */
-	inline const deSky &GetSky() const{ return pSky; }
+	inline const deSky &GetSky() const{return pSky;}
 	
 	/** Render sky. */
-	inline deoglRSky *GetRSky() const{ return pRSky; }
+	inline deoglRSky *GetRSky() const{return pRSky;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	/** Update tracker state. */
-	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
+	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
 	/*@}*/
 	
 	

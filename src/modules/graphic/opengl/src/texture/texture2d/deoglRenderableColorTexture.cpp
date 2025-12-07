@@ -41,30 +41,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableColorTexture::deoglRenderableColorTexture( deoglRenderThread &renderThread,
-int width, int height, int componentCount, bool isFloat ) :
-pWidth( width ),
-pHeight( height ),
-pComponentCount( componentCount ),
-pIsFloat( isFloat ),
-pInUse( false ),
-pTexture( NULL ),
-pMemoryUsageGPU( 0 )
+deoglRenderableColorTexture::deoglRenderableColorTexture(deoglRenderThread &renderThread,
+int width, int height, int componentCount, bool isFloat) :
+pWidth(width),
+pHeight(height),
+pComponentCount(componentCount),
+pIsFloat(isFloat),
+pInUse(false),
+pTexture(NULL),
+pMemoryUsageGPU(0)
 {
-	if( width < 1 || height < 1 ){
-		DETHROW( deeInvalidParam );
+	if(width < 1 || height < 1){
+		DETHROW(deeInvalidParam);
 	}
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+	if(componentCount < 1 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pTexture = new deoglTexture( renderThread );
-		pTexture->SetSize( width, height );
-		pTexture->SetFBOFormat( componentCount, isFloat );
+		pTexture = new deoglTexture(renderThread);
+		pTexture->SetSize(width, height);
+		pTexture->SetFBOFormat(componentCount, isFloat);
 		pTexture->CreateTexture();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -83,19 +83,19 @@ deoglRenderableColorTexture::~deoglRenderableColorTexture(){
 // Management
 ///////////////
 
-bool deoglRenderableColorTexture::Matches( int width, int height, int componentCount, bool isFloat ) const{
-	return ( width == pWidth ) && ( height == pHeight ) && ( componentCount == pComponentCount ) && ( isFloat == pIsFloat );
+bool deoglRenderableColorTexture::Matches(int width, int height, int componentCount, bool isFloat) const{
+	return (width == pWidth) && (height == pHeight) && (componentCount == pComponentCount) && (isFloat == pIsFloat);
 }
 
-void deoglRenderableColorTexture::SetInUse( bool inUse ){
+void deoglRenderableColorTexture::SetInUse(bool inUse){
 	pInUse = inUse;
 }
 
 
 
 void deoglRenderableColorTexture::UpdateMemoryUsage(){
-	if( pTexture ){
-		pMemoryUsageGPU = ( int )pTexture->GetMemoryConsumption().Total();
+	if(pTexture){
+		pMemoryUsageGPU = (int)pTexture->GetMemoryConsumption().Total();
 		
 	}else{
 		pMemoryUsageGPU = 0;
@@ -108,7 +108,7 @@ void deoglRenderableColorTexture::UpdateMemoryUsage(){
 //////////////////////
 
 void deoglRenderableColorTexture::pCleanUp(){
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }

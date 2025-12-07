@@ -45,18 +45,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVideoPlayer::deVideoPlayer( deVideoPlayerManager *manager ) :
-deResource( manager ),
+deVideoPlayer::deVideoPlayer(deVideoPlayerManager *manager) :
+deResource(manager),
 
-pPlayState( epsStopped ),
-pLooping( false ),
-pPlayFrom( 0.0f ),
-pPlayTo( 0.0f ),
-pPlaySpeed( 1.0f ),
-pPlayPosition( 0.0f ),
+pPlayState(epsStopped),
+pLooping(false),
+pPlayFrom(0.0f),
+pPlayTo(0.0f),
+pPlaySpeed(1.0f),
+pPlayPosition(0.0f),
 
-pPeerGraphic( NULL ),
-pPeerAudio( NULL ){
+pPeerGraphic(NULL),
+pPeerAudio(NULL){
 }
 
 deVideoPlayer::~deVideoPlayer(){
@@ -68,8 +68,8 @@ deVideoPlayer::~deVideoPlayer(){
 // Management
 ///////////////
 
-void deVideoPlayer::SetVideo( deVideo *video ){
-	if( video == pVideo ){
+void deVideoPlayer::SetVideo(deVideo *video){
+	if(video == pVideo){
 		return;
 	}
 	
@@ -77,7 +77,7 @@ void deVideoPlayer::SetVideo( deVideo *video ){
 	
 	pPlayFrom = 0.0f;
 	
-	if( video ){
+	if(video){
 		pPlayTo = video->GetPlayTime();
 		
 	}else{
@@ -86,123 +86,123 @@ void deVideoPlayer::SetVideo( deVideo *video ){
 	
 	pPlayPosition = pPlayFrom;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SourceChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SourceChanged();
 	}
 }
 
 
 
-void deVideoPlayer::SetLooping( bool looping ){
-	if( looping == pLooping ){
+void deVideoPlayer::SetLooping(bool looping){
+	if(looping == pLooping){
 		return;
 	}
 	
 	pLooping = looping;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->LoopingChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->LoopingChanged();
 	}
 }
 
-void deVideoPlayer::SetPlayRange( float playFrom, float playTo ){
-	playFrom = decMath::max( playFrom, 0.0f );
-	playTo = decMath::min( playTo, playFrom );
+void deVideoPlayer::SetPlayRange(float playFrom, float playTo){
+	playFrom = decMath::max(playFrom, 0.0f);
+	playTo = decMath::min(playTo, playFrom);
 	
-	if( fabsf( playFrom - pPlayFrom ) <= FLOAT_SAFE_EPSILON && fabsf( playTo - pPlayTo ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(playFrom - pPlayFrom) <= FLOAT_SAFE_EPSILON && fabsf(playTo - pPlayTo) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pPlayFrom = playFrom;
 	pPlayTo = playTo;
 	
-	if( pPlayPosition < pPlayFrom ){
+	if(pPlayPosition < pPlayFrom){
 		pPlayPosition = pPlayFrom;
 	}
-	if( pPlayPosition > pPlayTo ){
+	if(pPlayPosition > pPlayTo){
 		pPlayPosition = pPlayTo;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->PlayRangeChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlayRangeChanged();
 	}
 }
 
-void deVideoPlayer::SetPlaySpeed( float playSpeed ){
-	playSpeed = decMath::max( playSpeed, 0.0f );
+void deVideoPlayer::SetPlaySpeed(float playSpeed){
+	playSpeed = decMath::max(playSpeed, 0.0f);
 	
-	if( fabsf( playSpeed - pPlaySpeed ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(playSpeed - pPlaySpeed) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pPlaySpeed = playSpeed;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->PlaySpeedChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlaySpeedChanged();
 	}
 }
 
-void deVideoPlayer::SetPlayPosition( float position ){
-	pSetPlayPosition( position, true );
+void deVideoPlayer::SetPlayPosition(float position){
+	pSetPlayPosition(position, true);
 }
 
 
 
-void deVideoPlayer::SetPlayState( ePlayState playState ){
-	if( playState == pPlayState ){
+void deVideoPlayer::SetPlayState(ePlayState playState){
+	if(playState == pPlayState){
 		return;
 	}
 	
 	pPlayState = playState;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->PlayStateChanged();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlayStateChanged();
 	}
 }
 
 void deVideoPlayer::Play(){
-	SetPlayState( epsPlaying );
+	SetPlayState(epsPlaying);
 }
 
 void deVideoPlayer::Stop(){
-	SetPlayState( epsStopped );
+	SetPlayState(epsStopped);
 }
 
 void deVideoPlayer::Pause(){
-	SetPlayState( epsPaused );
+	SetPlayState(epsPaused);
 }
 
 
 
-void deVideoPlayer::Update( float elapsed ){
-	if( pPlayState != epsPlaying ){
+void deVideoPlayer::Update(float elapsed){
+	if(pPlayState != epsPlaying){
 		return;
 	}
 	
 	const float position = pPlayPosition + elapsed * pPlaySpeed;
 	
-	if( pLooping ){
-		pSetPlayPosition( decMath::normalize( position, pPlayFrom, pPlayTo ), false );
+	if(pLooping){
+		pSetPlayPosition(decMath::normalize(position, pPlayFrom, pPlayTo), false);
 		
 	}else{
-		pSetPlayPosition( position, false );
+		pSetPlayPosition(position, false);
 		
-		if( position >= pPlayTo ){
+		if(position >= pPlayTo){
 			Stop();
 		}
 	}
@@ -213,23 +213,23 @@ void deVideoPlayer::Update( float elapsed ){
 // System Peers
 /////////////////
 
-void deVideoPlayer::SetPeerGraphic( deBaseGraphicVideoPlayer *peer ){
-	if( peer == pPeerGraphic ){
+void deVideoPlayer::SetPeerGraphic(deBaseGraphicVideoPlayer *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
 }
 
-void deVideoPlayer::SetPeerAudio( deBaseAudioVideoPlayer *peer ){
-	if( peer == pPeerAudio ){
+void deVideoPlayer::SetPeerAudio(deBaseAudioVideoPlayer *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	pPeerAudio = peer;
@@ -241,28 +241,28 @@ void deVideoPlayer::SetPeerAudio( deBaseAudioVideoPlayer *peer ){
 //////////////////////
 
 void deVideoPlayer::pCleanUp(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 		pPeerAudio = NULL;
 	}
 }
 
-void deVideoPlayer::pSetPlayPosition( float position, bool seeking ){
-	position = decMath::clamp( position, pPlayFrom, pPlayTo );
-	if( fabsf( position - pPlayPosition ) <= FLOAT_SAFE_EPSILON ){
+void deVideoPlayer::pSetPlayPosition(float position, bool seeking){
+	position = decMath::clamp(position, pPlayFrom, pPlayTo);
+	if(fabsf(position - pPlayPosition) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pPlayPosition = position;
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->PlayPositionChanged( seeking );
+	if(pPeerGraphic){
+		pPeerGraphic->PlayPositionChanged(seeking);
 	}
-	if( pPeerAudio ){
-		pPeerAudio->PlayPositionChanged( seeking );
+	if(pPeerAudio){
+		pPeerAudio->PlayPositionChanged(seeking);
 	}
 }

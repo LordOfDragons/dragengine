@@ -37,13 +37,13 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglSPTree::deoglSPTree( const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount ){
+deoglSPTree::deoglSPTree(const decVector &minExtend, const decVector &maxExtend, const decPoint3 &nodeCount){
 	decVector size = maxExtend - minExtend;
 	int i;
 	
-	pNodeSize.x = size.x / ( float )nodeCount.x;
-	pNodeSize.y = size.y / ( float )nodeCount.y;
-	pNodeSize.z = size.z / ( float )nodeCount.z;
+	pNodeSize.x = size.x / (float)nodeCount.x;
+	pNodeSize.y = size.y / (float)nodeCount.y;
+	pNodeSize.z = size.z / (float)nodeCount.z;
 	
 	pNodeCount = nodeCount;
 	
@@ -54,14 +54,14 @@ deoglSPTree::deoglSPTree( const decVector &minExtend, const decVector &maxExtend
 	pTotalNodeCount = nodeCount.x * nodeCount.y * nodeCount.z;
 	pStride = nodeCount.x * nodeCount.y;
 	
-	pNodes = new deoglSPTreeNode*[ pTotalNodeCount ];
-	if( ! pNodes ) DETHROW( deeOutOfMemory );
-	for( i=0; i<pTotalNodeCount; i++ ) pNodes[ i ] = NULL;
+	pNodes = new deoglSPTreeNode*[pTotalNodeCount];
+	if(! pNodes) DETHROW(deeOutOfMemory);
+	for(i=0; i<pTotalNodeCount; i++) pNodes[i] = NULL;
 }
 
 deoglSPTree::~deoglSPTree(){
 	ClearAllNodes();
-	if( pNodes ) delete [] pNodes;
+	if(pNodes) delete [] pNodes;
 }
 
 
@@ -69,21 +69,21 @@ deoglSPTree::~deoglSPTree(){
 // Management
 ///////////////
 
-bool deoglSPTree::IsIndexValid( const decPoint3 &index ) const{
-	if( index.x < 0 || index.x >= pNodeCount.x ) return false;
-	if( index.y < 0 || index.y >= pNodeCount.y ) return false;
-	if( index.z < 0 || index.z >= pNodeCount.z ) return false;
+bool deoglSPTree::IsIndexValid(const decPoint3 &index) const{
+	if(index.x < 0 || index.x >= pNodeCount.x) return false;
+	if(index.y < 0 || index.y >= pNodeCount.y) return false;
+	if(index.z < 0 || index.z >= pNodeCount.z) return false;
 	
 	return true;
 }
 
-void deoglSPTree::IndexOfNodeAt( decPoint3 &index, const decVector &position ) const{
-	index.x = ( int )( ( position.x - pMinExtend.x ) / pNodeSize.x );
-	if( index.x >= 0 && index.x < pNodeCount.x ){
-		index.y = ( int )( ( position.y - pMinExtend.y ) / pNodeSize.y );
-		if( index.y >= 0 && index.y < pNodeCount.y ){
-			index.z = ( int )( ( position.z - pMinExtend.z ) / pNodeSize.z );
-			if( index.z >= 0 && index.z < pNodeCount.z ){
+void deoglSPTree::IndexOfNodeAt(decPoint3 &index, const decVector &position) const{
+	index.x = (int)((position.x - pMinExtend.x) / pNodeSize.x);
+	if(index.x >= 0 && index.x < pNodeCount.x){
+		index.y = (int)((position.y - pMinExtend.y) / pNodeSize.y);
+		if(index.y >= 0 && index.y < pNodeCount.y){
+			index.z = (int)((position.z - pMinExtend.z) / pNodeSize.z);
+			if(index.z >= 0 && index.z < pNodeCount.z){
 				return;
 			}
 		}
@@ -94,30 +94,30 @@ void deoglSPTree::IndexOfNodeAt( decPoint3 &index, const decVector &position ) c
 	index.z = -1;
 }
 
-deoglSPTreeNode *deoglSPTree::GetNodeAt( const decPoint3 &index ) const{
-	if( ! IsIndexValid( index ) ) DETHROW( deeInvalidParam );
+deoglSPTreeNode *deoglSPTree::GetNodeAt(const decPoint3 &index) const{
+	if(! IsIndexValid(index)) DETHROW(deeInvalidParam);
 	
-	return pNodes[ pStride * index.z + pNodeCount.x * index.y + index.x ];
+	return pNodes[pStride * index.z + pNodeCount.x * index.y + index.x];
 }
 
-void deoglSPTree::SetNodeAt( const decPoint3 &index, deoglSPTreeNode *node ){
-	if( ! IsIndexValid( index ) ) DETHROW( deeInvalidParam );
+void deoglSPTree::SetNodeAt(const decPoint3 &index, deoglSPTreeNode *node){
+	if(! IsIndexValid(index)) DETHROW(deeInvalidParam);
 	int realIndex = pStride * index.z + pNodeCount.x * index.y + index.x;
 	
-	if( pNodes[ realIndex ] ){
-		delete pNodes[ realIndex ];
+	if(pNodes[realIndex]){
+		delete pNodes[realIndex];
 	}
 	
-	pNodes[ realIndex ] = node;
+	pNodes[realIndex] = node;
 }
 
 void deoglSPTree::ClearAllNodes(){
 	int i, count = pNodeCount.x * pNodeCount.y * pNodeCount.z;
 	
-	for( i=0; i<count; i++ ){
-		if( pNodes[ i ] ){
-			delete pNodes[ i ];
-			pNodes[ i ] = NULL;
+	for(i=0; i<count; i++){
+		if(pNodes[i]){
+			delete pNodes[i];
+			pNodes[i] = NULL;
 		}
 	}
 }

@@ -73,35 +73,35 @@ pVFSAssetLibraries(deVirtualFileSystem::Ref::NewWith())
 }
 
 deModuleSystem::~deModuleSystem(){
-	if( pModules.GetCount() == 0 ){
+	if(pModules.GetCount() == 0){
 		return;
 	}
 	
 	deLogger &logger = *pEngine->GetLogger();
 	
-	while( pModules.GetCount() > 0 ){
-		deLoadableModule * const module = ( deLoadableModule* )pModules.GetAt( pModules.GetCount() - 1 );
-		const decString moduleVersion( module->GetVersion() );
-		const decString moduleName( module->GetName() );
+	while(pModules.GetCount() > 0){
+		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(pModules.GetCount() - 1);
+		const decString moduleVersion(module->GetVersion());
+		const decString moduleName(module->GetName());
 		
-		if( module->IsLocked() ){
-			logger.LogWarnFormat( LOGSOURCE, "Module %s %s has not been unlocked properly",
-				moduleName.GetString(), moduleVersion.GetString() );
+		if(module->IsLocked()){
+			logger.LogWarnFormat(LOGSOURCE, "Module %s %s has not been unlocked properly",
+				moduleName.GetString(), moduleVersion.GetString());
 		}
-		if( module->GetRefCount() > 1 ){
-			logger.LogWarnFormat( LOGSOURCE, "Module %s %s has reference count greater than 1",
-				moduleName.GetString(), moduleVersion.GetString() );
+		if(module->GetRefCount() > 1){
+			logger.LogWarnFormat(LOGSOURCE, "Module %s %s has reference count greater than 1",
+				moduleName.GetString(), moduleVersion.GetString());
 		}
-		logger.LogInfoFormat( LOGSOURCE, "Release module %s %s",
-			moduleName.GetString(), moduleVersion.GetString() );
+		logger.LogInfoFormat(LOGSOURCE, "Release module %s %s",
+			moduleName.GetString(), moduleVersion.GetString());
 		
 		try{
-			pModules.RemoveFrom( pModules.GetCount() - 1 );
+			pModules.RemoveFrom(pModules.GetCount() - 1);
 			
-		}catch( const deException &e ){
-			logger.LogErrorFormat( LOGSOURCE, "Releasing module %s %s failed with exception:",
-				moduleName.GetString(), moduleVersion.GetString() );
-			logger.LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			logger.LogErrorFormat(LOGSOURCE, "Releasing module %s %s failed with exception:",
+				moduleName.GetString(), moduleVersion.GetString());
+			logger.LogException(LOGSOURCE, e);
 		}
 	}
 	
@@ -119,98 +119,98 @@ void deModuleSystem::DetectModules(){
 	pVFSAssetLibraries->RemoveAllContainers();
 	
 	decPath searchPath;
-	searchPath.SetFromNative( pEngine->GetOS()->GetPathEngine() );
-	searchPath.AddUnixPath( DEGS_MODULES_PATH );
+	searchPath.SetFromNative(pEngine->GetOS()->GetPathEngine());
+	searchPath.AddUnixPath(DEGS_MODULES_PATH);
 	
 	deLogger &logger = *pEngine->GetLogger();
 	
 	try{
-		logger.LogInfoFormat( LOGSOURCE, "Add internal priority modules" );
+		logger.LogInfoFormat(LOGSOURCE, "Add internal priority modules");
 		pAddInternalModulesPriority(searchPath);
 		
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Archive modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "archive", emtArchive );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Archive modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "archive", emtArchive);
 		
 		
 		pInitAssetLibrary();
 		
 		
-		logger.LogInfoFormat( LOGSOURCE, "Add internal modules" );
+		logger.LogInfoFormat(LOGSOURCE, "Add internal modules");
 		pAddInternalModules(searchPath);
 		
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Crash Recovery modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "crashrecovery", emtCrashRecovery );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Crash Recovery modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "crashrecovery", emtCrashRecovery);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Graphic modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "graphic", emtGraphic );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Graphic modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "graphic", emtGraphic);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Input modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "input", emtInput );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Input modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "input", emtInput);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Physics modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "physics", emtPhysics );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Physics modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "physics", emtPhysics);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Audio modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "audio", emtAudio );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Audio modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "audio", emtAudio);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Network modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "network", emtNetwork );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Network modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "network", emtNetwork);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Scripting modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "scripting", emtScript );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Scripting modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "scripting", emtScript);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Animator modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "animator", emtAnimator );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Animator modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "animator", emtAnimator);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading AI modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "ai", emtAI );
+		logger.LogInfoFormat(LOGSOURCE, "Loading AI modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "ai", emtAI);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Synthesizer modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "synthesizer", emtSynthesizer );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Synthesizer modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "synthesizer", emtSynthesizer);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading VR modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "vr", emtVR );
+		logger.LogInfoFormat(LOGSOURCE, "Loading VR modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "vr", emtVR);
 		
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Animation modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "animation", emtAnimation );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Animation modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "animation", emtAnimation);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Font modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "font", emtFont );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Font modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "font", emtFont);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Image modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "image", emtImage );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Image modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "image", emtImage);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Model modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "model", emtModel );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Model modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "model", emtModel);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Rig modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "rig", emtRig );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Rig modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "rig", emtRig);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Skin modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "skin", emtSkin );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Skin modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "skin", emtSkin);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Language Pack modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "langpack", emtLanguagePack );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Language Pack modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "langpack", emtLanguagePack);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Sound modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "sound", emtSound );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Sound modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "sound", emtSound);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Video modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "video", emtVideo );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Video modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "video", emtVideo);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Occlusion Mesh modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "occlusionmesh", emtOcclusionMesh );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Occlusion Mesh modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "occlusionmesh", emtOcclusionMesh);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Service modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "service", emtService );
+		logger.LogInfoFormat(LOGSOURCE, "Loading Service modules");
+		pDetectModulesIn(searchPath.GetPathNative(), "service", emtService);
 		
-		logger.LogInfoFormat( LOGSOURCE, "Finished loading modules" );
+		logger.LogInfoFormat(LOGSOURCE, "Finished loading modules");
 		
-	}catch( const deException &e ){
-		logger.LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		logger.LogException(LOGSOURCE, e);
 	}
 }
 
@@ -219,12 +219,12 @@ void deModuleSystem::DetectModules(){
 // Module management
 //////////////////////
 
-int deModuleSystem::GetModuleCountFor( eModuleTypes type ) const{
+int deModuleSystem::GetModuleCountFor(eModuleTypes type) const{
 	int count = 0;
 	int i;
 	
-	for( i=0; i<pModules.GetCount(); i++ ){
-		if( ( ( deLoadableModule* )pModules.GetAt( i ) )->GetType() == type ){
+	for(i=0; i<pModules.GetCount(); i++){
+		if(((deLoadableModule*)pModules.GetAt(i))->GetType() == type){
 			count++;
 		}
 	}
@@ -232,13 +232,13 @@ int deModuleSystem::GetModuleCountFor( eModuleTypes type ) const{
 	return count;
 }
 
-int deModuleSystem::GetLoadedModuleCountFor( eModuleTypes type ) const{
+int deModuleSystem::GetLoadedModuleCountFor(eModuleTypes type) const{
 	int count = 0;
 	int i;
 	
-	for( i=0; i<pModules.GetCount(); i++ ){
-		deLoadableModule &module = *( ( deLoadableModule* )pModules.GetAt( i ) );
-		if( module.GetType() == type && module.IsLoaded() && module.GetEnabled() ){
+	for(i=0; i<pModules.GetCount(); i++){
+		deLoadableModule &module = *((deLoadableModule*)pModules.GetAt(i));
+		if(module.GetType() == type && module.IsLoaded() && module.GetEnabled()){
 			count++;
 		}
 	}
@@ -250,25 +250,25 @@ int deModuleSystem::GetModuleCount() const{
 	return pModules.GetCount();
 }
 
-deLoadableModule *deModuleSystem::GetModuleAt( int index ) const{
-	return ( deLoadableModule* )pModules.GetAt( index );
+deLoadableModule *deModuleSystem::GetModuleAt(int index) const{
+	return (deLoadableModule*)pModules.GetAt(index);
 }
 
-deLoadableModule *deModuleSystem::GetModuleNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+deLoadableModule *deModuleSystem::GetModuleNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deLoadableModule *latestModule = NULL;
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deLoadableModule * const module = ( deLoadableModule* )pModules.GetAt( i );
-		if( module->GetName() != name || ! module->GetEnabled() ){
+	for(i=0; i<count; i++){
+		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
+		if(module->GetName() != name || ! module->GetEnabled()){
 			continue;
 		}
-		if( latestModule && CompareVersion( module->GetVersion(), latestModule->GetVersion() ) <= 0 ){
+		if(latestModule && CompareVersion(module->GetVersion(), latestModule->GetVersion()) <= 0){
 			continue;
 		}
 		
@@ -278,17 +278,17 @@ deLoadableModule *deModuleSystem::GetModuleNamed( const char *name ) const{
 	return latestModule;
 }
 
-deLoadableModule *deModuleSystem::GetModuleNamed( const char *name, const char *version ) const{
-	if( ! name || ! version ){
-		DETHROW( deeInvalidParam );
+deLoadableModule *deModuleSystem::GetModuleNamed(const char *name, const char *version) const{
+	if(! name || ! version){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deLoadableModule * const module = ( deLoadableModule* )pModules.GetAt( i );
-		if( module->GetName() == name && module->GetVersion() == version ){
+	for(i=0; i<count; i++){
+		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
+		if(module->GetName() == name && module->GetVersion() == version){
 			return module;
 		}
 	}
@@ -296,22 +296,22 @@ deLoadableModule *deModuleSystem::GetModuleNamed( const char *name, const char *
 	return NULL;
 }
 
-deLoadableModule *deModuleSystem::GetModuleNamedAtLeast( const char *name, const char *version ) const{
-	if( ! name || ! version ){
-		DETHROW( deeInvalidParam );
+deLoadableModule *deModuleSystem::GetModuleNamedAtLeast(const char *name, const char *version) const{
+	if(! name || ! version){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deLoadableModule *latestModule = NULL;
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deLoadableModule * const module = ( deLoadableModule* )pModules.GetAt( i );
-		if( module->GetName() != name || ! module->GetEnabled()
-		|| CompareVersion( module->GetVersion(), version ) < 0 ){
+	for(i=0; i<count; i++){
+		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
+		if(module->GetName() != name || ! module->GetEnabled()
+		|| CompareVersion(module->GetVersion(), version) < 0){
 			continue;
 		}
-		if( latestModule && CompareVersion( module->GetVersion(), latestModule->GetVersion() ) <= 0 ){
+		if(latestModule && CompareVersion(module->GetVersion(), latestModule->GetVersion()) <= 0){
 			continue;
 		}
 		
@@ -321,15 +321,15 @@ deLoadableModule *deModuleSystem::GetModuleNamedAtLeast( const char *name, const
 	return latestModule;
 }
 
-deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor( eModuleTypes type ) const{
+deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor(eModuleTypes type) const{
 	deLoadableModule *useModule = NULL;
 	int i;
 	
-	for( i=0; i<pModules.GetCount(); i++ ){
-		deLoadableModule * const module = ( deLoadableModule* )pModules.GetAt( i );
-		if( module->GetType() == type && module->IsLoaded() && module->GetEnabled() ){
+	for(i=0; i<pModules.GetCount(); i++){
+		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
+		if(module->GetType() == type && module->IsLoaded() && module->GetEnabled()){
 			useModule = module;
-			if( ! module->GetIsFallback() ){
+			if(! module->GetIsFallback()){
 				break;
 			}
 		}
@@ -338,62 +338,62 @@ deLoadableModule *deModuleSystem::GetFirstLoadedModuleFor( eModuleTypes type ) c
 	return useModule;
 }
 
-void deModuleSystem::AddModule( deLoadableModule *module ){
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+void deModuleSystem::AddModule(deLoadableModule *module){
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
-	if( GetModuleNamed( module->GetName(), module->GetVersion() ) ){
-		DETHROW( deeInvalidParam );
+	if(GetModuleNamed(module->GetName(), module->GetVersion())){
+		DETHROW(deeInvalidParam);
 	}
-	if( module->GetSystem() != this ){
-		DETHROW( deeInvalidParam );
+	if(module->GetSystem() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pModules.Add( module );
+	pModules.Add(module);
 }
 
-deLoadableModule *deModuleSystem::FindMatching( eModuleTypes type, const char *filename ) const{
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+deLoadableModule *deModuleSystem::FindMatching(eModuleTypes type, const char *filename) const{
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deLoadableModule *latestModule = NULL;
 	int i, j;
 	
-	for( i=0; i<pModules.GetCount(); i++ ){
-		deLoadableModule * const module = ( deLoadableModule* )pModules.GetAt( i );
-		if( module->GetType() != type ){
+	for(i=0; i<pModules.GetCount(); i++){
+		deLoadableModule * const module = (deLoadableModule*)pModules.GetAt(i);
+		if(module->GetType() != type){
 			continue;
 		}
 		
 		const decStringList &patternList = module->GetPatternList();
 		const int patternCount = patternList.GetCount();
 		
-		for( j=0; j<patternCount; j++ ){
-			if( ! module->GetEnabled() ){
+		for(j=0; j<patternCount; j++){
+			if(! module->GetEnabled()){
 				continue;
 			}
-			if( ! MatchesPattern( filename, patternList.GetAt( j ) ) ){
+			if(! MatchesPattern(filename, patternList.GetAt(j))){
 				continue;
 			}
 			
 			// no latest module found. use this module
-			if( ! latestModule ){
+			if(! latestModule){
 				latestModule = module;
 				
 			// latest module has been found and this module is fallback. skip module
-			}else if( module->GetIsFallback() ){
+			}else if(module->GetIsFallback()){
 				
 			// latest module has same name as this module
-			}else if( module->GetName() == latestModule->GetName() ){
+			}else if(module->GetName() == latestModule->GetName()){
 				// use this module if it has higher version than the latest module
-				if( CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+				if(CompareVersion(module->GetVersion(), latestModule->GetVersion()) > 0){
 					latestModule = module;
 				}
 				
 			// latest module has different name than this module. use this module if
 			// it has higher priority than the latest module or latest module is fallback
-			}else if( module->GetPriority() > latestModule->GetPriority() || latestModule->GetIsFallback() ){
+			}else if(module->GetPriority() > latestModule->GetPriority() || latestModule->GetIsFallback()){
 				latestModule = module;
 			}
 		}
@@ -402,43 +402,43 @@ deLoadableModule *deModuleSystem::FindMatching( eModuleTypes type, const char *f
 	return latestModule;
 }
 
-deBaseModule *deModuleSystem::GetModuleAbleToLoad( eModuleTypes type, const char *filename ) const{
-	deLoadableModule * const module = FindMatching( type, filename );
+deBaseModule *deModuleSystem::GetModuleAbleToLoad(eModuleTypes type, const char *filename) const{
+	deLoadableModule * const module = FindMatching(type, filename);
 	
-	if( ! module ){
-		GetEngine()->GetLogger()->LogErrorFormat( LOGSOURCE, "No %s module found able to handle file '%s'",
-			GetTypeDirectory( type ), filename );
-		DETHROW( deeInvalidParam );
+	if(! module){
+		GetEngine()->GetLogger()->LogErrorFormat(LOGSOURCE, "No %s module found able to handle file '%s'",
+			GetTypeDirectory(type), filename);
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! module->IsLoaded() ){
-		GetEngine()->GetLogger()->LogErrorFormat( LOGSOURCE, "Module %s would be able to handle file '%s' but is not loaded",
-			module->GetName().GetString(), filename );
-		DETHROW( deeInvalidParam );
+	if(! module->IsLoaded()){
+		GetEngine()->GetLogger()->LogErrorFormat(LOGSOURCE, "Module %s would be able to handle file '%s' but is not loaded",
+			module->GetName().GetString(), filename);
+		DETHROW(deeInvalidParam);
 	}
 	
 	return module->GetModule();
 }
 
-void deModuleSystem::ServicesAddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
-	DEASSERT_NOTNULL( stage )
+void deModuleSystem::ServicesAddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
+	DEASSERT_NOTNULL(stage)
 	
 	decStringList names;
 	int i;
 	
-	for( i=0; i<pModules.GetCount(); i++ ){
-		const deLoadableModule &module = *( ( deLoadableModule* )pModules.GetAt( i ) );
-		if( module.GetType() == deModuleSystem::eModuleTypes::emtService && ! names.Has( module.GetName() ) ){
-			names.Add( module.GetName() );
+	for(i=0; i<pModules.GetCount(); i++){
+		const deLoadableModule &module = *((deLoadableModule*)pModules.GetAt(i));
+		if(module.GetType() == deModuleSystem::eModuleTypes::emtService && ! names.Has(module.GetName())){
+			names.Add(module.GetName());
 		}
 	}
 	
 	const int count = names.GetCount();
-	for( i=0; i<count; i++ ){
-		const deLoadableModule * const module = GetModuleNamed( names.GetAt( i ) );
-		if( module && module->GetType() == deModuleSystem::eModuleTypes::emtService
-		&& module->IsLoaded() && module->GetEnabled() ){
-			( ( deBaseServiceModule* )module->GetModule() )->AddVFSContainers( vfs, stage );
+	for(i=0; i<count; i++){
+		const deLoadableModule * const module = GetModuleNamed(names.GetAt(i));
+		if(module && module->GetType() == deModuleSystem::eModuleTypes::emtService
+		&& module->IsLoaded() && module->GetEnabled()){
+			((deBaseServiceModule*)module->GetModule())->AddVFSContainers(vfs, stage);
 		}
 	}
 }
@@ -450,36 +450,36 @@ void deModuleSystem::ServicesAddVFSContainers( deVirtualFileSystem &vfs, const c
 
 int deModuleSystem::CompareVersion(const char *version1, const char *version2)
 {
-    if( ! version1 || ! version2 ){
-		DETHROW( deeInvalidParam );
+    if(! version1 || ! version2){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len1 = ( int )strlen( version1 );
-	const int len2 = ( int )strlen( version2 );
+	const int len1 = (int)strlen(version1);
+	const int len2 = (int)strlen(version2);
 	int last1, last2;
 	int pos1 = 0;
 	int pos2 = 0;
 	
-	while( pos1 < len1 && pos2 < len2 ){
+	while(pos1 < len1 && pos2 < len2){
 		// find next version parts
 		last1 = pos1;
-		while( pos1 < len1 && version1[ pos1 ] != '.' ){
+		while(pos1 < len1 && version1[pos1] != '.'){
 			pos1++;
 		}
 		
 		last2 = pos2;
-		while( pos2 < len2 && version2[ pos2 ] != '.' ){
+		while(pos2 < len2 && version2[pos2] != '.'){
 			pos2++;
 		}
 		
 		// check if they differ. a missing version part is assumed to be 0
-		const long part1 = strtol( version1 + last1, NULL, 10 );
-		const long part2 = strtol( version2 + last2, NULL, 10 );
+		const long part1 = strtol(version1 + last1, NULL, 10);
+		const long part2 = strtol(version2 + last2, NULL, 10);
 		
-		if( part1 < part2 ){
+		if(part1 < part2){
 			return -1;
 		}
-		if( part1 > part2 ){
+		if(part1 > part2){
 			return 1;
 		}
 		
@@ -491,9 +491,9 @@ int deModuleSystem::CompareVersion(const char *version1, const char *version2)
 	return 0;
 }
 
-bool deModuleSystem::MatchesPattern( const char *filename, const char *pattern ) const{
-	if( ! filename || ! pattern ){
-		DETHROW( deeInvalidParam );
+bool deModuleSystem::MatchesPattern(const char *filename, const char *pattern) const{
+	if(! filename || ! pattern){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const char *deli, *fileExt;
@@ -505,21 +505,21 @@ bool deModuleSystem::MatchesPattern( const char *filename, const char *pattern )
 	int dotCount = 0;
 	
 	fileExt = pattern;
-	while( *fileExt ){
-		if( *fileExt == '.' ){
+	while(*fileExt){
+		if(*fileExt == '.'){
 			dotCount++;
 		}
 		fileExt++;
 	}
-	if( dotCount < 0 ){
+	if(dotCount < 0){
 		dotCount = 1;
 	}
 	
-	fileExt = filename + ( strlen( filename ) - 1 );
-	while( fileExt != filename ){
-		if( *fileExt == '.' ){
+	fileExt = filename + (strlen(filename) - 1);
+	while(fileExt != filename){
+		if(*fileExt == '.'){
 			dotCount--;
-			if( dotCount == 0 ){
+			if(dotCount == 0){
 				break;
 			}
 		}
@@ -527,22 +527,22 @@ bool deModuleSystem::MatchesPattern( const char *filename, const char *pattern )
 	}
 	
 	// check with patterns
-	while( *pattern ){
-		while( *pattern && *pattern != '.' ){
+	while(*pattern){
+		while(*pattern && *pattern != '.'){
 			pattern++;
 		}
-		if( ! *pattern ) break;
+		if(! *pattern) break;
 		
 		deli = pattern;
-		while( *deli && ! isspace( *deli ) ){
+		while(*deli && ! isspace(*deli)){
 			deli++;
 		}
 		
-		if( StrEqual( fileExt, pattern, ( int )( deli - pattern ) ) ){
+		if(StrEqual(fileExt, pattern, (int)(deli - pattern))){
 			return true;
 		}
 		
-		if( *deli ){
+		if(*deli){
 			pattern = deli + 1;
 			
 		}else{
@@ -555,80 +555,80 @@ bool deModuleSystem::MatchesPattern( const char *filename, const char *pattern )
 
 bool deModuleSystem::StrEqual(const char *str1, const char *str2, int length) const{
 	for(int i=0; i<length; i++){
-		if( tolower(str1[i]) != tolower(str2[i]) ) return false;
-		if( !str1[i] || !str2[i] ) return false;
+		if(tolower(str1[i]) != tolower(str2[i])) return false;
+		if(!str1[i] || !str2[i]) return false;
 	}
 	return str1[length] == '\0';
 }
 
-deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString( const char *typeString ){
-	if( strcmp( typeString, "Graphic" ) == 0 ){
+deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString(const char *typeString){
+	if(strcmp(typeString, "Graphic") == 0){
 		return emtGraphic;
 		
-	}else if( strcmp( typeString, "Audio" ) == 0 ){
+	}else if(strcmp(typeString, "Audio") == 0){
 		return emtAudio;
 		
-	}else if( strcmp( typeString, "Input" ) == 0 ){
+	}else if(strcmp(typeString, "Input") == 0){
 		return emtInput;
 		
-	}else if( strcmp( typeString, "Network" ) == 0 ){
+	}else if(strcmp(typeString, "Network") == 0){
 		return emtNetwork;
 		
-	}else if( strcmp( typeString, "Physics" ) == 0 ){
+	}else if(strcmp(typeString, "Physics") == 0){
 		return emtPhysics;
 		
-	}else if( strcmp( typeString, "Image" ) == 0 ){
+	}else if(strcmp(typeString, "Image") == 0){
 		return emtImage;
 		
-	}else if( strcmp( typeString, "Video" ) == 0 ){
+	}else if(strcmp(typeString, "Video") == 0){
 		return emtVideo;
 		
-	}else if( strcmp( typeString, "Script" ) == 0 ){
+	}else if(strcmp(typeString, "Script") == 0){
 		return emtScript;
 		
-	}else if( strcmp( typeString, "Model" ) == 0 ){
+	}else if(strcmp(typeString, "Model") == 0){
 		return emtModel;
 		
-	}else if( strcmp( typeString, "Rig" ) == 0 ){
+	}else if(strcmp(typeString, "Rig") == 0){
 		return emtRig;
 		
-	}else if( strcmp( typeString, "Skin" ) == 0 ){
+	}else if(strcmp(typeString, "Skin") == 0){
 		return emtSkin;
 		
-	}else if( strcmp( typeString, "Animation" ) == 0 ){
+	}else if(strcmp(typeString, "Animation") == 0){
 		return emtAnimation;
 		
-	}else if( strcmp( typeString, "Font" ) == 0 ){
+	}else if(strcmp(typeString, "Font") == 0){
 		return emtFont;
 		
-	}else if( strcmp( typeString, "CrashRecovery" ) == 0 ){
+	}else if(strcmp(typeString, "CrashRecovery") == 0){
 		return emtCrashRecovery;
 		
-	}else if( strcmp( typeString, "LanguagePack" ) == 0 ){
+	}else if(strcmp(typeString, "LanguagePack") == 0){
 		return emtLanguagePack;
 		
-	}else if( strcmp( typeString, "Animator" ) == 0 ){
+	}else if(strcmp(typeString, "Animator") == 0){
 		return emtAnimator;
 		
-	}else if( strcmp( typeString, "Sound" ) == 0 ){
+	}else if(strcmp(typeString, "Sound") == 0){
 		return emtSound;
 		
-	}else if( strcmp( typeString, "AI" ) == 0 ){
+	}else if(strcmp(typeString, "AI") == 0){
 		return emtAI;
 		
-	}else if( strcmp( typeString, "OcclusionMesh" ) == 0 ){
+	}else if(strcmp(typeString, "OcclusionMesh") == 0){
 		return emtOcclusionMesh;
 		
-	}else if( strcmp( typeString, "Synthesizer" ) == 0 ){
+	}else if(strcmp(typeString, "Synthesizer") == 0){
 		return emtSynthesizer;
 		
-	}else if( strcmp( typeString, "Archive" ) == 0 ){
+	}else if(strcmp(typeString, "Archive") == 0){
 		return emtArchive;
 		
-	}else if( strcmp( typeString, "VR" ) == 0 ){
+	}else if(strcmp(typeString, "VR") == 0){
 		return emtVR;
 		
-	}else if( strcmp( typeString, "Service" ) == 0 ){
+	}else if(strcmp(typeString, "Service") == 0){
 		return emtService;
 		
 	}else{
@@ -636,8 +636,8 @@ deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString( const char *type
 	}
 }
 
-const char *deModuleSystem::GetTypeDirectory( eModuleTypes type ){
-	switch( type ){
+const char *deModuleSystem::GetTypeDirectory(eModuleTypes type){
+	switch(type){
 	case emtGraphic:
 		return "graphic";
 		
@@ -708,12 +708,12 @@ const char *deModuleSystem::GetTypeDirectory( eModuleTypes type ){
 		return "service";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-bool deModuleSystem::IsSingleType( eModuleTypes type ){
-	switch( type ){
+bool deModuleSystem::IsSingleType(eModuleTypes type){
+	switch(type){
 	case emtAI:
 	case emtAnimator:
 	case emtAudio:
@@ -816,109 +816,109 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 		// find directories
 		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
-		searchPath.SetFromNative( basePath );
-		searchPath.AddUnixPath( directory );
+		searchPath.SetFromNative(basePath);
+		searchPath.AddUnixPath(directory);
 		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
 		
 		deCollectDirectorySearchVisitor collect;
-		vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collect );
+		vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
 		
 		const dePathList &pathList = collect.GetDirectories();
-		for( i=0; i<pathList.GetCount(); i++ ){
+		for(i=0; i<pathList.GetCount(); i++){
 			// search for version directories
 			deCollectDirectorySearchVisitor collect2;
-			vfs->SearchFiles( pathList.GetAt( i ), collect2 );
+			vfs->SearchFiles(pathList.GetAt(i), collect2);
 			
 			const dePathList &pathListVersion = collect2.GetDirectories();
-			for( j=0; j<pathListVersion.GetCount(); j++ ){
+			for(j=0; j<pathListVersion.GetCount(); j++){
 				// create path for module definition file
-				modulePath.SetFrom( pathListVersion.GetAt( j ) );
-				modulePath.AddUnixPath( "module.xml" );
+				modulePath.SetFrom(pathListVersion.GetAt(j));
+				modulePath.AddUnixPath("module.xml");
 				
 				// test if module file exists and is a regular file
-				if( ! vfs->ExistsFile( modulePath )
-				|| vfs->GetFileType( modulePath ) != deVFSContainer::eftRegularFile ){
+				if(! vfs->ExistsFile(modulePath)
+				|| vfs->GetFileType(modulePath) != deVFSContainer::eftRegularFile){
 					continue;
 				}
 				
-				decPath logPathModule( pathList.GetAt( i ) );
-				logPathModule.SetPrefix( "" );
+				decPath logPathModule(pathList.GetAt(i));
+				logPathModule.SetPrefix("");
 				
-				logger.LogInfoFormat( LOGSOURCE, "- loading module %s %s",
+				logger.LogInfoFormat(LOGSOURCE, "- loading module %s %s",
 					logPathModule.GetPathUnix().GetString(),
-					pathListVersion.GetAt( j ).GetLastComponent().GetString() );
+					pathListVersion.GetAt(j).GetLastComponent().GetString());
 				
 				// create native path for module definition file
-				modulePath = searchPath + pathListVersion.GetAt( j );
-				modulePath.AddUnixPath( "module.xml" );
+				modulePath = searchPath + pathListVersion.GetAt(j);
+				modulePath.AddUnixPath("module.xml");
 				
 				// try loading module. use an own try-catch to continue loading other modules in case this one fails badly
 				try{
-					module = new deLibraryModule( this, modulePath.GetPathNative() );
+					module = new deLibraryModule(this, modulePath.GetPathNative());
 					
 					// load module
 					module->LoadModule();
 					
-					switch( module->GetErrorCode() ){
+					switch(module->GetErrorCode()){
 					case deLoadableModule::eecSuccess:
 						break;
 						
 					case deLibraryModule::eecLibFileNotFound:
-						logger.LogErrorFormat( LOGSOURCE, "File %s not found", module->GetLibFileName().GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "File %s not found", module->GetLibFileName().GetString());
 						break;
 						
 					case deLibraryModule::eecLibFileNotRegularFile:
-						logger.LogErrorFormat( LOGSOURCE, "File %s is not a regular file", module->GetLibFileName().GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "File %s is not a regular file", module->GetLibFileName().GetString());
 						break;
 						
 					case deLibraryModule::eecLibFileSizeMismatch:
-						logger.LogErrorFormat( LOGSOURCE, "File size check for %s failed", module->GetLibFileName().GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "File size check for %s failed", module->GetLibFileName().GetString());
 						break;
 						
 					case deLibraryModule::eecLibFileCheckSumMismatch:
-						logger.LogErrorFormat( LOGSOURCE, "File checksum check for %s failed", module->GetLibFileName().GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "File checksum check for %s failed", module->GetLibFileName().GetString());
 						break;
 						
 					case deLibraryModule::eecLibFileOpenFailed:
-						logger.LogErrorFormat( LOGSOURCE, "Library %s could not be opened", module->GetLibFileName().GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "Library %s could not be opened", module->GetLibFileName().GetString());
 						break;
 						
 					case deLibraryModule::eecLibFileEntryPointNotFound:
-						logger.LogErrorFormat( LOGSOURCE, "Library %s entry point %s not found",
-							module->GetLibFileName().GetString(), module->GetLibFileEntryPoint().GetString() );
+						logger.LogErrorFormat(LOGSOURCE, "Library %s entry point %s not found",
+							module->GetLibFileName().GetString(), module->GetLibFileEntryPoint().GetString());
 						break;
 						
 					case deLibraryModule::eecLibFileCreateModuleFailed:
 					default:
-						logger.LogError( LOGSOURCE, "Creating module failed" );
+						logger.LogError(LOGSOURCE, "Creating module failed");
 					}
 					
 					// verify that the module type matches
-					if( module->GetType() != type ){
-						logger.LogWarnFormat( LOGSOURCE, "Module %s %s has wrong type. Place the module in the correct directory",
-							module->GetName().GetString(), module->GetVersion().GetString() );
+					if(module->GetType() != type){
+						logger.LogWarnFormat(LOGSOURCE, "Module %s %s has wrong type. Place the module in the correct directory",
+							module->GetName().GetString(), module->GetVersion().GetString());
 					}
 					
 					// add module and free filename
-					AddModule( module );
+					AddModule(module);
 					module->FreeReference();
 					module = NULL;
 					
-				}catch( const deException &e ){
-					if( module ){
+				}catch(const deException &e){
+					if(module){
 						module->FreeReference();
 						module = NULL;
 					}
-					logger.LogException( LOGSOURCE, e );
+					logger.LogException(LOGSOURCE, e);
 				}
 			}
 		}
 		
-	}catch( const deException &e ){
-		if( module ){
+	}catch(const deException &e){
+		if(module){
 			module->FreeReference();
 		}
-		logger.LogException( LOGSOURCE, e );
+		logger.LogException(LOGSOURCE, e);
 	}
 }
 

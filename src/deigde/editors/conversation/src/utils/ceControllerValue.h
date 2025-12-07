@@ -47,8 +47,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller value. */
-	ceControllerValue( int controller, float value );
-	ceControllerValue( const char *controller, float value );
+	ceControllerValue(int controller, float value);
+	ceControllerValue(const char *controller, float value);
 	
 	/** Cleans up the controller value. */
 	virtual ~ceControllerValue();
@@ -57,22 +57,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Controller. */
-	inline int GetControllerIndex() const{ return pControllerIndex; }
+	inline int GetControllerIndex() const{return pControllerIndex;}
 	
 	/** Set controller. */
-	void SetControllerIndex( int controller );
+	void SetControllerIndex(int controller);
 	
 	/** Controller. */
-	inline const decString &GetController() const{ return pController; }
+	inline const decString &GetController() const{return pController;}
 	
 	/** Set controller. */
-	void SetController( const char *controller );
+	void SetController(const char *controller);
 	
 	/** Value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 };
 

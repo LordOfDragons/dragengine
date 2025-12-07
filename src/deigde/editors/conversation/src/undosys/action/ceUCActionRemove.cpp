@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionRemove::ceUCActionRemove( ceConversationTopic *topic, ceConversationAction *action ){
-	if( ! topic || ! action ) DETHROW( deeInvalidParam );
+ceUCActionRemove::ceUCActionRemove(ceConversationTopic *topic, ceConversationAction *action){
+	if(! topic || ! action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
-	pIndex = topic->GetActionList().IndexOf( action );
-	if( pIndex == -1 ) DETHROW( deeInvalidParam );
+	pIndex = topic->GetActionList().IndexOf(action);
+	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Remove Action" );
+	SetShortInfo("Remove Action");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCActionRemove::ceUCActionRemove( ceConversationTopic *topic, ceConversationAc
 }
 
 ceUCActionRemove::~ceUCActionRemove(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,20 +73,20 @@ ceUCActionRemove::~ceUCActionRemove(){
 ///////////////
 
 void ceUCActionRemove::Undo(){
-	pTopic->GetActionList().InsertAt( pAction, pIndex );
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->GetActionList().InsertAt(pAction, pIndex);
+	pTopic->NotifyActionStructureChanged(NULL);
 	
-	pTopic->SetActive( pAction, NULL );
+	pTopic->SetActive(pAction, NULL);
 }
 
 void ceUCActionRemove::Redo(){
 	ceConversationAction * const activateAction =
-		ceUActionHelpers::ActivateActionAfterRemove( pTopic->GetActionList(), pAction );
+		ceUActionHelpers::ActivateActionAfterRemove(pTopic->GetActionList(), pAction);
 	
-	pTopic->GetActionList().Remove( pAction );
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->GetActionList().Remove(pAction);
+	pTopic->NotifyActionStructureChanged(NULL);
 	
-	if( activateAction ){
-		pTopic->SetActive( activateAction, NULL );
+	if(activateAction){
+		pTopic->SetActive(activateAction, NULL);
 	}
 }

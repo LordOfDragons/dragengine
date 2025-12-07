@@ -56,28 +56,28 @@ deoglModelLODTexCoordSet::~deoglModelLODTexCoordSet(){
 // Management
 ///////////////
 
-void deoglModelLODTexCoordSet::SetTextureCoordinateCount( int count, bool copyContent ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglModelLODTexCoordSet::SetTextureCoordinateCount(int count, bool copyContent){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decVector2 *texCoords = NULL;
 	
-	if( count > 0 ){
-		texCoords = new decVector2[ count ];
+	if(count > 0){
+		texCoords = new decVector2[count];
 		
-		if( copyContent && pTexCoords ){
+		if(copyContent && pTexCoords){
 			int copyCount = count;
 			
-			if( copyCount > pTexCoordCount ){
+			if(copyCount > pTexCoordCount){
 				copyCount = pTexCoordCount;
 			}
 			
-			memcpy( texCoords, pTexCoords, sizeof( decVector2 ) * copyCount );
+			memcpy(texCoords, pTexCoords, sizeof(decVector2) * copyCount);
 		}
 	}
 	
-	if( pTexCoords ){
+	if(pTexCoords){
 		delete [] pTexCoords;
 	}
 	
@@ -85,23 +85,23 @@ void deoglModelLODTexCoordSet::SetTextureCoordinateCount( int count, bool copyCo
 	pTexCoordCount = count;
 }
 
-void deoglModelLODTexCoordSet::SetTangentCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglModelLODTexCoordSet::SetTangentCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decVector *tangents = NULL;
 	bool *negateTangent = NULL;
 	
-	if( count > 0 ){
-		tangents = new decVector[ count ];
-		negateTangent = new bool[ count ];
+	if(count > 0){
+		tangents = new decVector[count];
+		negateTangent = new bool[count];
 	}
 	
-	if( pTangents ){
+	if(pTangents){
 		delete [] pTangents;
 	}
-	if( pNegateTangents ){
+	if(pNegateTangents){
 		delete [] pNegateTangents;
 	}
 	
@@ -117,13 +117,13 @@ void deoglModelLODTexCoordSet::SetTangentCount( int count ){
 //////////////////////
 
 void deoglModelLODTexCoordSet::pCleanUp(){
-	if( pNegateTangents ){
+	if(pNegateTangents){
 		delete [] pNegateTangents;
 	}
-	if( pTangents ){
+	if(pTangents){
 		delete [] pTangents;
 	}
-	if( pTexCoords ){
+	if(pTexCoords){
 		delete [] pTexCoords;
 	}
 }

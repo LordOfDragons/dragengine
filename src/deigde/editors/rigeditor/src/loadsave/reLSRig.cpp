@@ -60,11 +60,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reLSRig::reLSRig( deBaseRigModule *module ) :
-pModule( module )
+reLSRig::reLSRig(deBaseRigModule *module) :
+pModule(module)
 {
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
@@ -73,12 +73,12 @@ pModule( module )
 	int i;
 	
 	pName = loadableModule.GetName();
-	for( i=0; i<patternCount; i++ ){
-		if( i > 0 ){
-			pPattern.AppendCharacter( ',' );
+	for(i=0; i<patternCount; i++){
+		if(i > 0){
+			pPattern.AppendCharacter(',');
 		}
-		pPattern.AppendCharacter( '*' );
-		pPattern.Append( patternList.GetAt( i ) );
+		pPattern.AppendCharacter('*');
+		pPattern.Append(patternList.GetAt(i));
 	}
 }
 
@@ -90,11 +90,11 @@ reLSRig::~reLSRig(){
 // Management
 ///////////////
 
-void reLSRig::SetName( const char *name ){
+void reLSRig::SetName(const char *name){
 	pName = name;
 }
 
-void reLSRig::SetPattern( const char *pattern ){
+void reLSRig::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
@@ -107,13 +107,13 @@ class cDirtyHackRigBuilder : public deRigBuilder{
 public:
 	cDirtyHackRigBuilder(){}
 	virtual ~cDirtyHackRigBuilder(){}
-	virtual void BuildRig( deRig *rig ){}
+	virtual void BuildRig(deRig *rig){}
 };
 
-void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
-	if( ! rig || ! file ) DETHROW( deeInvalidParam );
+void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
+	if(! rig || ! file) DETHROW(deeInvalidParam);
 	deEngine *engine = pModule->GetGameEngine();
-	reCreateRigShape createRigShape( engine );
+	reCreateRigShape createRigShape(engine);
 	reRigConstraint *constraint = NULL;
 	reRigBone *rigBone = NULL;
 	int c, constraintCount;
@@ -128,83 +128,83 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 	try{
 		// try to load the rig. we do not load it fully since we are only interested
 		// in retrieving the content of the file. don't try this at home kids :D
-		engRig = engine->GetRigManager()->CreateRig( "<load-rig-1>", builder );
+		engRig = engine->GetRigManager()->CreateRig("<load-rig-1>", builder);
 		
-		pModule->LoadRig( *file, *engRig );
+		pModule->LoadRig(*file, *engRig);
 		
 		// now it's time to copy the information over
 		boneCount = engRig->GetBoneCount();
-		for( b=0; b<boneCount; b++ ){
-			deRigBone &engRigBone = engRig->GetBoneAt( b );
+		for(b=0; b<boneCount; b++){
+			deRigBone &engRigBone = engRig->GetBoneAt(b);
 			
 			// create a new rig bone to take over the values
-			rigBone = new reRigBone( engine );
+			rigBone = new reRigBone(engine);
 			
 			// copy over the values
-			rigBone->SetName( engRigBone.GetName() );
-			rigBone->SetPosition( engRigBone.GetPosition() );
-			rigBone->SetOrientation( engRigBone.GetRotation() * RAD2DEG );
-			rigBone->SetCentralMassPoint( engRigBone.GetCentralMassPoint() );
-			rigBone->SetDynamic( engRigBone.GetDynamic() );
-			rigBone->SetMass( engRigBone.GetMass() );
-			rigBone->SetIKLimitsLower( engRigBone.GetIKLimitsLower() * RAD2DEG );
-			rigBone->SetIKLimitsUpper( engRigBone.GetIKLimitsUpper() * RAD2DEG );
-			rigBone->SetIKResistance( engRigBone.GetIKResistance() );
-			rigBone->SetIKLockedX( engRigBone.GetIKLockedX() );
-			rigBone->SetIKLockedY( engRigBone.GetIKLockedY() );
-			rigBone->SetIKLockedZ( engRigBone.GetIKLockedZ() );
+			rigBone->SetName(engRigBone.GetName());
+			rigBone->SetPosition(engRigBone.GetPosition());
+			rigBone->SetOrientation(engRigBone.GetRotation() * RAD2DEG);
+			rigBone->SetCentralMassPoint(engRigBone.GetCentralMassPoint());
+			rigBone->SetDynamic(engRigBone.GetDynamic());
+			rigBone->SetMass(engRigBone.GetMass());
+			rigBone->SetIKLimitsLower(engRigBone.GetIKLimitsLower() * RAD2DEG);
+			rigBone->SetIKLimitsUpper(engRigBone.GetIKLimitsUpper() * RAD2DEG);
+			rigBone->SetIKResistance(engRigBone.GetIKResistance());
+			rigBone->SetIKLockedX(engRigBone.GetIKLockedX());
+			rigBone->SetIKLockedY(engRigBone.GetIKLockedY());
+			rigBone->SetIKLockedZ(engRigBone.GetIKLockedZ());
 			
 			// create shapes
 			shapeCount = engRigBone.GetShapes().GetCount();
-			for( s=0; s<shapeCount; s++ ){
-				engRigBone.GetShapes().GetAt( s )->Visit( createRigShape );
-				if( createRigShape.GetRigShape() ){
+			for(s=0; s<shapeCount; s++){
+				engRigBone.GetShapes().GetAt(s)->Visit(createRigShape);
+				if(createRigShape.GetRigShape()){
 					reRigShape * const rigShape = createRigShape.GetRigShape();
-					rigShape->SetProperty( engRigBone.GetShapeProperties().GetAt( s ) );
-					rigBone->AddShape( rigShape );
+					rigShape->SetProperty(engRigBone.GetShapeProperties().GetAt(s));
+					rigBone->AddShape(rigShape);
 				}
 			}
 			
 			// add the bone
-			rig->AddBone( rigBone );
+			rig->AddBone(rigBone);
 			rigBone->FreeReference(); // since we hold a reference to it
 			rigBone = NULL;
 		}
 		
 		// we can create constraints only after we created all bones since we require
 		// linking between bones which can be out of the natural order
-		for( b=0; b<boneCount; b++ ){
-			deRigBone &engRigBone = engRig->GetBoneAt( b );
+		for(b=0; b<boneCount; b++){
+			deRigBone &engRigBone = engRig->GetBoneAt(b);
 			constraintCount = engRigBone.GetConstraintCount();
 			
-			for( c=0; c<constraintCount; c++ ){
-				deRigConstraint &engConstraint = engRigBone.GetConstraintAt( c );
+			for(c=0; c<constraintCount; c++){
+				deRigConstraint &engConstraint = engRigBone.GetConstraintAt(c);
 				
-				constraint = new reRigConstraint( engine );
+				constraint = new reRigConstraint(engine);
 				
-				constraint->SetPosition( engConstraint.GetReferencePosition() );
-				constraint->SetOrientation( decMatrix::CreateFromQuaternion( engConstraint.GetReferenceOrientation() ).GetEulerAngles() * RAD2DEG );
-				constraint->SetOffset( engConstraint.GetBoneOffset() );
+				constraint->SetPosition(engConstraint.GetReferencePosition());
+				constraint->SetOrientation(decMatrix::CreateFromQuaternion(engConstraint.GetReferenceOrientation()).GetEulerAngles() * RAD2DEG);
+				constraint->SetOffset(engConstraint.GetBoneOffset());
 				
-				constraint->GetDofLinearX().SetFromEngineDof( engConstraint.GetDofLinearX() );
-				constraint->GetDofLinearY().SetFromEngineDof( engConstraint.GetDofLinearY() );
-				constraint->GetDofLinearZ().SetFromEngineDof( engConstraint.GetDofLinearZ() );
-				constraint->GetDofAngularX().SetFromEngineDof( engConstraint.GetDofAngularX() );
-				constraint->GetDofAngularY().SetFromEngineDof( engConstraint.GetDofAngularY() );
-				constraint->GetDofAngularZ().SetFromEngineDof( engConstraint.GetDofAngularZ() );
+				constraint->GetDofLinearX().SetFromEngineDof(engConstraint.GetDofLinearX());
+				constraint->GetDofLinearY().SetFromEngineDof(engConstraint.GetDofLinearY());
+				constraint->GetDofLinearZ().SetFromEngineDof(engConstraint.GetDofLinearZ());
+				constraint->GetDofAngularX().SetFromEngineDof(engConstraint.GetDofAngularX());
+				constraint->GetDofAngularY().SetFromEngineDof(engConstraint.GetDofAngularY());
+				constraint->GetDofAngularZ().SetFromEngineDof(engConstraint.GetDofAngularZ());
 				
-				constraint->SetLinearDamping( engConstraint.GetLinearDamping() );
-				constraint->SetAngularDamping( engConstraint.GetAngularDamping() );
-				constraint->SetSpringDamping( engConstraint.GetSpringDamping() );
+				constraint->SetLinearDamping(engConstraint.GetLinearDamping());
+				constraint->SetAngularDamping(engConstraint.GetAngularDamping());
+				constraint->SetSpringDamping(engConstraint.GetSpringDamping());
 				
-				constraint->SetIsRope( engConstraint.GetIsRope() );
-				constraint->SetBreakingThreshold( engConstraint.GetBreakingThreshold() );
+				constraint->SetIsRope(engConstraint.GetIsRope());
+				constraint->SetBreakingThreshold(engConstraint.GetBreakingThreshold());
 				
-				if( engConstraint.GetParentBone() != -1 ){
-					constraint->SetConstraintBone( rig->GetBoneAt( engConstraint.GetParentBone() ) );
+				if(engConstraint.GetParentBone() != -1){
+					constraint->SetConstraintBone(rig->GetBoneAt(engConstraint.GetParentBone()));
 				}
 				
-				rig->GetBoneAt( b )->AddConstraint( constraint );
+				rig->GetBoneAt(b)->AddConstraint(constraint);
 				constraint->FreeReference(); // since we hold a reference to it
 				constraint = NULL;
 			}
@@ -212,50 +212,50 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 		
 		// create shapes
 		shapeCount = engRig->GetShapes().GetCount();
-		for( s=0; s<shapeCount; s++ ){
-			engRig->GetShapes().GetAt( s )->Visit( createRigShape );
-			if( createRigShape.GetRigShape() ){
+		for(s=0; s<shapeCount; s++){
+			engRig->GetShapes().GetAt(s)->Visit(createRigShape);
+			if(createRigShape.GetRigShape()){
 				reRigShape * const rigShape = createRigShape.GetRigShape();
-				rigShape->SetProperty( engRig->GetShapeProperties().GetAt( s ) );
-				rig->AddShape( rigShape );
+				rigShape->SetProperty(engRig->GetShapeProperties().GetAt(s));
+				rig->AddShape(rigShape);
 			}
 		}
 		
 		// parent linking has to be resolved now. the rigBone variable is not used anymore
 		// since it is protected with the try-catch and would backfire on us if used.
-		for( b=0; b<boneCount; b++ ){
-			index = engRig->GetBoneAt( b ).GetParent();
-			if( index != -1 ){
-				if( index < 0 || index >= boneCount ){
-					DETHROW( deeInvalidParam );
+		for(b=0; b<boneCount; b++){
+			index = engRig->GetBoneAt(b).GetParent();
+			if(index != -1){
+				if(index < 0 || index >= boneCount){
+					DETHROW(deeInvalidParam);
 				}
 				
-				rig->GetBoneAt( b )->SetParentBone( rig->GetBoneAt( index ) );
+				rig->GetBoneAt(b)->SetParentBone(rig->GetBoneAt(index));
 			}
 		}
 		
 		// store away the physics parameters of the rig
-		if( engRig->GetRootBone() != -1 ){
-			rig->SetRootBone( rig->GetBoneAt( engRig->GetRootBone() ) );
+		if(engRig->GetRootBone() != -1){
+			rig->SetRootBone(rig->GetBoneAt(engRig->GetRootBone()));
 			
 		}else{
-			rig->SetRootBone( NULL );
+			rig->SetRootBone(NULL);
 		}
 		
 		// time to release the rig resource
 		engRig->FreeReference();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		//e.PrintError();
-		if( constraint ) constraint->FreeReference();
-		if( rigBone ) rigBone->FreeReference();
-		if( engRig ) engRig->FreeReference();
+		if(constraint) constraint->FreeReference();
+		if(rigBone) rigBone->FreeReference();
+		if(engRig) engRig->FreeReference();
 		throw;
 	}
 }
 
-void reLSRig::SaveRig( reRig *rig, decBaseFileWriter *file ){
-	if( ! rig || ! file ) DETHROW( deeInvalidParam );
+void reLSRig::SaveRig(reRig *rig, decBaseFileWriter *file){
+	if(! rig || ! file) DETHROW(deeInvalidParam);
 	
 	// this is now another little hack. usually we would have to build a temporary
 	// rig to save but the rig is already existing if nothing is wrong. we rebuild
@@ -263,7 +263,7 @@ void reLSRig::SaveRig( reRig *rig, decBaseFileWriter *file ){
 	rig->Rebuild();
 	
 	// if nothing went wrong we have now a rig to save
-	if( ! rig->GetEngineRig() ) DETHROW( deeInvalidParam );
+	if(! rig->GetEngineRig()) DETHROW(deeInvalidParam);
 	
-	pModule->SaveRig( *file, *rig->GetEngineRig() );
+	pModule->SaveRig(*file, *rig->GetEngineRig());
 }

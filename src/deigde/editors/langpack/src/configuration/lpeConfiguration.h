@@ -42,7 +42,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new configuration. */
-	lpeConfiguration( lpeWindowMain &windowMain );
+	lpeConfiguration(lpeWindowMain &windowMain);
 	/** Cleans up the configuration. */
 	~lpeConfiguration();
 	/*@}*/
@@ -50,15 +50,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline lpeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline lpeWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{ return pPreventSaving; }
+	inline bool GetPreventSaving() const{return pPreventSaving;}
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/**
 	 * Load the configuration. Tries to locate the configuration file in

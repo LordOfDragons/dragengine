@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveBillboard::gdeUOCRemoveBillboard( gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCRemoveBillboard::gdeUOCRemoveBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! objectClass->GetBillboards().Has( billboard ) ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass->GetBillboards().Has(billboard)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove billboard" );
+	SetShortInfo("Remove billboard");
 	
 	pBillboard = billboard;
 	billboard->AddReference();
@@ -63,10 +63,10 @@ pBillboard( NULL )
 }
 
 gdeUOCRemoveBillboard::~gdeUOCRemoveBillboard(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -77,19 +77,19 @@ gdeUOCRemoveBillboard::~gdeUOCRemoveBillboard(){
 ///////////////
 
 void gdeUOCRemoveBillboard::Undo(){
-	pObjectClass->GetBillboards().Add( pBillboard );
+	pObjectClass->GetBillboards().Add(pBillboard);
 	pObjectClass->NotifyBillboardsChanged();
 }
 
 void gdeUOCRemoveBillboard::Redo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCBillboard() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCBillboard()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCBillboard( NULL );
+		gameDefinition->SetActiveOCBillboard(NULL);
 	}
 	
-	pObjectClass->GetBillboards().Remove( pBillboard );
+	pObjectClass->GetBillboards().Remove(pBillboard);
 	pObjectClass->NotifyBillboardsChanged();
 }

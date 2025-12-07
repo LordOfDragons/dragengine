@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render window. */
-	igdeViewRenderWindow( igdeEnvironment &environment );
+	igdeViewRenderWindow(igdeEnvironment &environment);
 	
 	
 	
@@ -85,13 +85,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Render window or NULL if absent. */
-	inline deRenderWindow *GetRenderWindow() const{ return pRenderWindow; }
+	inline deRenderWindow *GetRenderWindow() const{return pRenderWindow;}
 	
 	/** \brief Rendering is enabled. */
-	inline bool GetEnableRendering() const{ return pEnableRendering; }
+	inline bool GetEnableRendering() const{return pEnableRendering;}
 	
 	/** \brief Set if rendering is enabled. */
-	void SetEnableRendering( bool enable );
+	void SetEnableRendering(bool enable);
 	
 	/** \brief Rendering is possible. */
 	virtual bool GetCanRender() const;
@@ -113,7 +113,7 @@ public:
 	virtual void OnBeforeEngineStop();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	
 	
@@ -122,19 +122,19 @@ public:
 	 * 
 	 * Convenience call to not deal with deCanvasRenderWorld.
 	 */
-	void SetRenderWorld( deCamera *camera );
+	void SetRenderWorld(deCamera *camera);
 	
 	/**
 	 * \brief Add canvas.
 	 * \details Convenience call to not deal with deRenderWindow, deRenderTarget and deCanvasView.
 	 */
-	void AddCanvas( deCanvas *canvas );
+	void AddCanvas(deCanvas *canvas);
 	
 	/**
 	 * \brief Remove canvas.
 	 * \details Convenience call to not deal with deRenderWindow, deRenderTarget and deCanvasView.
 	 */
-	void RemoveCanvas( deCanvas *canvas );
+	void RemoveCanvas(deCanvas *canvas);
 	
 	/** \brief Render window canvas. */
 	deCanvasView *GetRenderWindowCanvas() const;
@@ -163,31 +163,31 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeMouseKeyListener *listener );
+	void AddListener(igdeMouseKeyListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeMouseKeyListener *listener );
+	void RemoveListener(igdeMouseKeyListener *listener);
 	
 	/** \brief Notify listeners user pressed down key while view is focused. */
-	virtual void NotifyKeyPress( deInputEvent::eKeyCodes keyCode, int key );
+	virtual void NotifyKeyPress(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/** \brief Notify listeners user released down key while view is focused. */
-	virtual void NotifyKeyRelease( deInputEvent::eKeyCodes keyCode, int key );
+	virtual void NotifyKeyRelease(deInputEvent::eKeyCodes keyCode, int key);
 	
 	/** \brief Notify listener user pressed down mouse button. */
-	virtual void NotifyButtonPress( int button, const decPoint &position, int modifiers );
+	virtual void NotifyButtonPress(int button, const decPoint &position, int modifiers);
 	
 	/** \brief Notify listeners user released down mouse button. */
-	virtual void NotifyButtonRelease( int button, const decPoint &position, int modifiers );
+	virtual void NotifyButtonRelease(int button, const decPoint &position, int modifiers);
 	
 	/** \brief Notify listener user double clicked mouse button. */
-	virtual void NotifyDoubleClicked( int button, const decPoint &position, int modifiers );
+	virtual void NotifyDoubleClicked(int button, const decPoint &position, int modifiers);
 	
 	/** \brief Notify listeners user moved mouse. */
-	virtual void NotifyMouseMoved( const decPoint &position, int modifiers );
+	virtual void NotifyMouseMoved(const decPoint &position, int modifiers);
 	
 	/** \brief Notify listeners user wheeled mouse. */
-	virtual void NotifyMouseWheeled( const decPoint &position, const decPoint &change, int modifiers );
+	virtual void NotifyMouseWheeled(const decPoint &position, const decPoint &change, int modifiers);
 	
 	/** \brief Notify listeners mouse entered widget. */
 	virtual void NotifyMouseEnter();

@@ -56,12 +56,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dealConfiguration::dealConfiguration( dealLauncher &launcher ) :
-pLauncher( launcher ),
-pClrValidBack( 0 ), //( 87.0f / 255.0f, 217.0f / 255.0f, 87.0f / 255.0f ),
-pClrValidText( 0 ), //( 0.0f, 0.0f, 0.0f ),
-pClrProblemBack( 0 ), //( 1.0f, 0.5f, 0.5f ),
-pClrProblemText( 0 ){ //( 0.0f, 0.0f, 0.0f ){
+dealConfiguration::dealConfiguration(dealLauncher &launcher) :
+pLauncher(launcher),
+pClrValidBack(0), //(87.0f / 255.0f, 217.0f / 255.0f, 87.0f / 255.0f),
+pClrValidText(0), //(0.0f, 0.0f, 0.0f),
+pClrProblemBack(0), //(1.0f, 0.5f, 0.5f),
+pClrProblemText(0){//(0.0f, 0.0f, 0.0f){
 }
 
 dealConfiguration::~dealConfiguration(){
@@ -72,19 +72,19 @@ dealConfiguration::~dealConfiguration(){
 // Management
 ///////////////
 
-void dealConfiguration::SetPathConfigSystem( const char *path ){
+void dealConfiguration::SetPathConfigSystem(const char *path){
 	pPathConfigSystem = path;
 }
 
-void dealConfiguration::SetPathConfigUser( const char *path ){
+void dealConfiguration::SetPathConfigUser(const char *path){
 	pPathConfigUser = path;
 }
 
-void dealConfiguration::SetPathShares( const char *path ){
+void dealConfiguration::SetPathShares(const char *path){
 	pPathShares = path;
 }
 
-void dealConfiguration::SetPathLogs( const char *path ){
+void dealConfiguration::SetPathLogs(const char *path){
 	pPathLogs = path;
 }
 
@@ -104,7 +104,7 @@ void dealConfiguration::LocatePath(){
 	
 	// the shares directory is located is located in the game engine internal storage
 	pPathShares = pLauncher.GetInternalPath();
-	pPathShares.AppendFormat( "/%s/share", ANDROID_JNIDIR );
+	pPathShares.AppendFormat("/%s/share", ANDROID_JNIDIR);
 	
 	// the logs directory is located on the external storage so it can be retrieved
 	pPathLogs = pPathConfigUser + "/logs";
@@ -123,22 +123,22 @@ void dealConfiguration::InitVirtualFileSystem(){
 		// separate locations as we want to read the config files one
 		// by one and mapping both containers to the same path would
 		// shadow the system config files.
-		if( ! pPathConfigSystem.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/system" );
-			pathDiskDir.SetFromNative( pPathConfigSystem.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( true );
-			vfs.AddContainer( diskDir );
+		if(! pPathConfigSystem.IsEmpty()){
+			pathRootDir.SetFromUnix("/config/system");
+			pathDiskDir.SetFromNative(pPathConfigSystem.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(true);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
-		if( ! pPathConfigUser.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/user" );
-			pathDiskDir.SetFromNative( pPathConfigUser.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(! pPathConfigUser.IsEmpty()){
+			pathRootDir.SetFromUnix("/config/user");
+			pathDiskDir.SetFromNative(pPathConfigUser.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
@@ -148,29 +148,29 @@ void dealConfiguration::InitVirtualFileSystem(){
 		// on top of it though if required later on. the shares container
 		// is set to read-write as the launcher has to potentiall install
 		// new games or uninstall them.
-		if( ! pPathShares.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/data" );
-			pathDiskDir.SetFromNative( pPathShares.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(! pPathShares.IsEmpty()){
+			pathRootDir.SetFromUnix("/data");
+			pathDiskDir.SetFromNative(pPathShares.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 		// add the logs directory. this is read-write
-		if( ! pPathLogs.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/logs" );
-			pathDiskDir.SetFromNative( pPathLogs.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
+		if(! pPathLogs.IsEmpty()){
+			pathRootDir.SetFromUnix("/logs");
+			pathDiskDir.SetFromNative(pPathLogs.GetString());
+			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir->SetReadOnly(false);
+			vfs.AddContainer(diskDir);
 			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( diskDir ){
+	}catch(const deException &){
+		if(diskDir){
 			diskDir->FreeReference();
 		}
 		throw;
@@ -180,102 +180,102 @@ void dealConfiguration::InitVirtualFileSystem(){
 void dealConfiguration::LogImportantValues(){
 	deLogger &logger = pLauncher.GetLogger();
 	
-	logger.LogInfoFormat( LOGSOURCE, "Android internal path = %s", pLauncher.GetInternalPath() );
-	logger.LogInfoFormat( LOGSOURCE, "Android external path = %s", pLauncher.GetExternalPath() );
+	logger.LogInfoFormat(LOGSOURCE, "Android internal path = %s", pLauncher.GetInternalPath());
+	logger.LogInfoFormat(LOGSOURCE, "Android external path = %s", pLauncher.GetExternalPath());
 	
-	logger.LogInfoFormat( LOGSOURCE, "System config path = '%s'", pPathConfigSystem.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "User config path = '%s'", pPathConfigUser.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Shares path = '%s'", pPathShares.GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Logs path = '%s'", pPathLogs.GetString() );
+	logger.LogInfoFormat(LOGSOURCE, "System config path = '%s'", pPathConfigSystem.GetString());
+	logger.LogInfoFormat(LOGSOURCE, "User config path = '%s'", pPathConfigUser.GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Shares path = '%s'", pPathShares.GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Logs path = '%s'", pPathLogs.GetString());
 }
 
 
 
 void dealConfiguration::LoadConfiguration(){
-	dealConfigXML configXML( &pLauncher.GetLogger(), LOGSOURCE );
+	dealConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileReader *reader = NULL;
 	decPath pathFile;
 	
 	// read the system wide config file if existing
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_SYSTEM );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_SYSTEM);
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			 logger.LogInfo( LOGSOURCE, "Reading system configuration file" );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			 logger.LogInfo(LOGSOURCE, "Reading system configuration file");
 			try{
-				reader = vfs.OpenFileForReading( pathFile );
-				configXML.ReadFromFile( *reader, *this );
+				reader = vfs.OpenFileForReading(pathFile);
+				configXML.ReadFromFile(*reader, *this);
 				reader->FreeReference();
 				
-			}catch( const deException & ){
-				if( reader ){
+			}catch(const deException &){
+				if(reader){
 					reader->FreeReference();
 				}
 				throw;
 			}
 			
 		}else{
-			logger.LogError( LOGSOURCE, "System configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogError(LOGSOURCE, "System configuration file is not a regular file");
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "System configuration file not found, skipped" );
+		logger.LogInfo(LOGSOURCE, "System configuration file not found, skipped");
 	}
 	
 	// read the user config file if existing
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfo( LOGSOURCE, "Reading user configuration file" );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfo(LOGSOURCE, "Reading user configuration file");
 			reader = NULL;
 			
 			try{
-				reader = vfs.OpenFileForReading( pathFile );
-				configXML.ReadFromFile( *reader, *this );
+				reader = vfs.OpenFileForReading(pathFile);
+				configXML.ReadFromFile(*reader, *this);
 				reader->FreeReference();
 				
-			}catch( const deException & ){
-				if( reader ){
+			}catch(const deException &){
+				if(reader){
 					reader->FreeReference();
 				}
 				throw;
 			}
 			
 		}else{
-			logger.LogError( LOGSOURCE, "User configuration file is not a regular file" );
-			DETHROW( deeInvalidParam );
+			logger.LogError(LOGSOURCE, "User configuration file is not a regular file");
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		logger.LogInfo( LOGSOURCE, "User configuration file not found, will be created upon exiting" );
+		logger.LogInfo(LOGSOURCE, "User configuration file not found, will be created upon exiting");
 	}
 }
 
 void dealConfiguration::SaveConfiguration(){
-	dealConfigXML configXML( &pLauncher.GetLogger(), LOGSOURCE );
+	dealConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileWriter *writer = NULL;
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( FILE_LAUNCHER_CONFIG_USER );
-	if( vfs.CanWriteFile( pathFile ) ){
-		logger.LogInfo( LOGSOURCE, "Writing user configuration file" );
+	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
+	if(vfs.CanWriteFile(pathFile)){
+		logger.LogInfo(LOGSOURCE, "Writing user configuration file");
 		
 		try{
-			writer = vfs.OpenFileForWriting( pathFile );
-			configXML.WriteToFile( *writer, *this );
+			writer = vfs.OpenFileForWriting(pathFile);
+			configXML.WriteToFile(*writer, *this);
 			writer->FreeReference();
 			
-		}catch( const deException & ){
-			if( writer ){
+		}catch(const deException &){
+			if(writer){
 				writer->FreeReference();
 			}
-			logger.LogError( LOGSOURCE, "Failed to write user configuration file (file permission problem)" );
+			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"
 			// "Make sure you have write permission for the file and parent directory.\n"
@@ -283,7 +283,7 @@ void dealConfiguration::SaveConfiguration(){
 		}
 		
 	}else{
-		logger.LogError( LOGSOURCE, "Failed to write user configuration file (file writing problem)" );
+		logger.LogError(LOGSOURCE, "Failed to write user configuration file (file writing problem)");
 		// DIALOG BOX
 		// "User configuration can not be written!\n"
 		// "Make sure you have write permission for the file and parent directory.\n"

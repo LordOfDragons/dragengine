@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetType( gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePropertyTypes newValue );
+	gdeUGDDPSetType(gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePropertyTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

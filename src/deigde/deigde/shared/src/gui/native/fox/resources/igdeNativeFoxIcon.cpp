@@ -45,9 +45,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
-	if( image.GetBitCount() != 8 ){
-		DETHROW( deeInvalidParam );
+void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
+	if(image.GetBitCount() != 8){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int hheight = image.GetHeight();
@@ -58,12 +58,12 @@ void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
 	try{
 		// we have to create the pixel buffer the image is going to take ownership of.
 		// we have to use fox allocation routines for this to work correctly
-		if( ! FXCALLOC( &nativeImageData, FXColor, wwidth * hheight ) ){
-			DETHROW( deeOutOfMemory );
+		if(! FXCALLOC(&nativeImageData, FXColor, wwidth * hheight)){
+			DETHROW(deeOutOfMemory);
 		}
 		
 		// copy pixel data from image to the allocated fox pixel buffer
-		CopyPixelData( image, nativeImageData );
+		CopyPixelData(image, nativeImageData);
 		
 		// create icon. using pixelData=NULL the constructor creates the pixel data.
 		// see the table in the comment below for the possible combinations of
@@ -71,8 +71,8 @@ void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
 		// 
 		// using IMAGE_SHMI and IMAGE_SHMP is only recommended for large images.
 		// this call produces mostly small images so no need for this
-		nativeIcon = new FXIcon( FXApp::instance(), nativeImageData,
-			FXRGB( 255, 255, 0 ), IMAGE_OWNED | IMAGE_KEEP, wwidth, hheight );
+		nativeIcon = new FXIcon(FXApp::instance(), nativeImageData,
+			FXRGB(255, 255, 0), IMAGE_OWNED | IMAGE_KEEP, wwidth, hheight);
 		
 		// up to this point only the pixel data exists. calling create() creates the server
 		// side data actually used for rendering later on. because IMAGE_KEEP is not used
@@ -100,12 +100,12 @@ void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
 		// and IMAGE_KEEP=false. then we can call render again after changing the content
 		nativeIcon->create();
 		
-	}catch( const deException & ){
-		if( nativeIcon ){
+	}catch(const deException &){
+		if(nativeIcon){
 			delete nativeIcon;
 		}
-		if( nativeImageData ){
-			FXFREE( &nativeImageData );
+		if(nativeImageData){
+			FXFREE(&nativeImageData);
 		}
 		throw;
 	}
@@ -113,7 +113,7 @@ void *igdeNativeFoxIcon::CreateNativeIcon( deImage &image ){
 	return nativeIcon;
 }
 
-void *igdeNativeFoxIcon::CreateNativeIconPNG( decBaseFileReader &reader ){
+void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 	FXPNGIcon *nativeIcon = NULL;
 	char *imageData = NULL;
 	FXMemoryStream stream;
@@ -121,23 +121,23 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG( decBaseFileReader &reader ){
 	
 	try{
 		imageSize = reader.GetLength();
-		if( imageSize == 0 ){
-			DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+		if(imageSize == 0){
+			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
 		
-		imageData = new char[ imageSize ];
-		reader.Read( imageData, imageSize );
+		imageData = new char[imageSize];
+		reader.Read(imageData, imageSize);
 		
-		nativeIcon = new FXPNGIcon( FXApp::instance(), 0, FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP );
+		nativeIcon = new FXPNGIcon(FXApp::instance(), 0, FXRGB(192,192,192), IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
 		#ifdef FOX_OLD_MEMORY_STREAM
-		if( ! stream.open( FX::FXStreamLoad, ( FXuval )imageSize, ( FXuchar* )imageData ) ){
+		if(! stream.open(FX::FXStreamLoad, (FXuval)imageSize, (FXuchar*)imageData)){
 		#else
-		if( ! stream.open( FX::FXStreamLoad, ( FXuchar* )imageData, ( FXuval )imageSize, false ) ){
+		if(! stream.open(FX::FXStreamLoad, (FXuchar*)imageData, (FXuval)imageSize, false)){
 		#endif
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
-		if( ! nativeIcon->loadPixels( stream ) ){
-			DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+		if(! nativeIcon->loadPixels(stream)){
+			DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 		}
 		
 		delete [] imageData;
@@ -145,11 +145,11 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG( decBaseFileReader &reader ){
 		
 		nativeIcon->create();
 		
-	}catch( const deException & ){
-		if( nativeIcon ){
+	}catch(const deException &){
+		if(nativeIcon){
 			delete nativeIcon;
 		}
-		if( imageData ){
+		if(imageData){
 			delete [] imageData;
 		}
 		throw;
@@ -158,23 +158,23 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG( decBaseFileReader &reader ){
 	return nativeIcon;
 }
 
-void *igdeNativeFoxIcon::DuplicateNativeIcon( void *native ){
-	const FXIcon * const sourceIcon = ( FXIcon* )native;
+void *igdeNativeFoxIcon::DuplicateNativeIcon(void *native){
+	const FXIcon * const sourceIcon = (FXIcon*)native;
 	const int hheight = sourceIcon->getHeight();
 	const int wwidth = sourceIcon->getWidth();
 	const int pixelCount = wwidth * hheight;
 	
 	FXColor *imageData = NULL;
-	if( ! FXCALLOC( &imageData, FXColor, pixelCount ) ){
-		DETHROW( deeOutOfMemory );
+	if(! FXCALLOC(&imageData, FXColor, pixelCount)){
+		DETHROW(deeOutOfMemory);
 	}
-	memcpy( imageData, sourceIcon->getData(), sizeof( FXColor ) * pixelCount );
+	memcpy(imageData, sourceIcon->getData(), sizeof(FXColor) * pixelCount);
 	
-	return new FXIcon( FXApp::instance(), imageData, 0, IMAGE_OWNED | IMAGE_KEEP, wwidth, hheight );
+	return new FXIcon(FXApp::instance(), imageData, 0, IMAGE_OWNED | IMAGE_KEEP, wwidth, hheight);
 }
 
-void igdeNativeFoxIcon::DestroyNativeIcon( void *native ){
-	delete ( FXIcon* )native;
+void igdeNativeFoxIcon::DestroyNativeIcon(void *native){
+	delete (FXIcon*)native;
 }
 
 
@@ -182,66 +182,66 @@ void igdeNativeFoxIcon::DestroyNativeIcon( void *native ){
 // Management
 ///////////////
 
-decPoint igdeNativeFoxIcon::GetSize( void *native ){
-	const FXIcon &iicon = *( ( FXIcon* )native );
-	return decPoint( iicon.getWidth(), iicon.getHeight() );
+decPoint igdeNativeFoxIcon::GetSize(void *native){
+	const FXIcon &iicon = *((FXIcon*)native);
+	return decPoint(iicon.getWidth(), iicon.getHeight());
 }
 
-void igdeNativeFoxIcon::Scale( const decPoint &size, void *native ){
-	FXIcon &iicon = *( ( FXIcon* )native );
-	const decPoint iconSize( iicon.getWidth(), iicon.getHeight() );
-	if( ! ( iconSize == size ) ){
-		iicon.scale( size.x, size.y, 1 );
+void igdeNativeFoxIcon::Scale(const decPoint &size, void *native){
+	FXIcon &iicon = *((FXIcon*)native);
+	const decPoint iconSize(iicon.getWidth(), iicon.getHeight());
+	if(! (iconSize == size)){
+		iicon.scale(size.x, size.y, 1);
 	}
 }
 
-void igdeNativeFoxIcon::UpdatePixels( void *native, deImage &image ){
-	FXIcon &iicon = *( ( FXIcon* )native );
-	const decPoint iconSize( iicon.getWidth(), iicon.getHeight() );
+void igdeNativeFoxIcon::UpdatePixels(void *native, deImage &image){
+	FXIcon &iicon = *((FXIcon*)native);
+	const decPoint iconSize(iicon.getWidth(), iicon.getHeight());
 	
-	if( image.GetWidth() != iconSize.x || image.GetHeight() != iconSize.y || image.GetBitCount() != 8 ){
-		DETHROW( deeInvalidParam );
+	if(image.GetWidth() != iconSize.x || image.GetHeight() != iconSize.y || image.GetBitCount() != 8){
+		DETHROW(deeInvalidParam);
 	}
 	
-	CopyPixelData( image, iicon.getData() ); // getData() is valid because of IMAGE_KEEP
+	CopyPixelData(image, iicon.getData()); // getData() is valid because of IMAGE_KEEP
 	
 	iicon.render();
 }
 
 
 
-void igdeNativeFoxIcon::CopyPixelData( deImage &image, FXColor *foxData ){
+void igdeNativeFoxIcon::CopyPixelData(deImage &image, FXColor *foxData){
 	const int hheight = image.GetHeight();
 	const int wwidth = image.GetWidth();
 	const int pixelCount = wwidth * hheight;
 	int i;
 	
-	if( image.GetComponentCount() == 1 ){
+	if(image.GetComponentCount() == 1){
 		image.RetainImageData();
 		const sGrayscale8 * const dataIn = image.GetDataGrayscale8();
-		for( i=0; i<pixelCount; i++ ){
-			foxData[ i ] = FXRGBA( dataIn[ i ].value, dataIn[ i ].value, dataIn[ i ].value, 255 );
+		for(i=0; i<pixelCount; i++){
+			foxData[i] = FXRGBA(dataIn[i].value, dataIn[i].value, dataIn[i].value, 255);
 		}
 		image.ReleaseImageData();
 		
-	}else if( image.GetComponentCount() == 3 ){
+	}else if(image.GetComponentCount() == 3){
 		image.RetainImageData();
 		const sRGB8 * const dataIn = image.GetDataRGB8();
-		for( i=0; i<pixelCount; i++ ){
-			foxData[ i ] = FXRGBA( dataIn[ i ].red, dataIn[ i ].green, dataIn[ i ].blue, 255 );
+		for(i=0; i<pixelCount; i++){
+			foxData[i] = FXRGBA(dataIn[i].red, dataIn[i].green, dataIn[i].blue, 255);
 		}
 		image.ReleaseImageData();
 		
-	}else if( image.GetComponentCount() == 4 ){
+	}else if(image.GetComponentCount() == 4){
 		image.RetainImageData();
 		const sRGBA8 * const dataIn = image.GetDataRGBA8();
-		for( i=0; i<pixelCount; i++ ){
-			foxData[ i ] = FXRGBA( dataIn[ i ].red, dataIn[ i ].green, dataIn[ i ].blue, dataIn[ i ].alpha );
+		for(i=0; i<pixelCount; i++){
+			foxData[i] = FXRGBA(dataIn[i].red, dataIn[i].green, dataIn[i].blue, dataIn[i].alpha);
 		}
 		image.ReleaseImageData();
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 

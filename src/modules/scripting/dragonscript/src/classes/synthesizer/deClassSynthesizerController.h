@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassSynthesizerController( deScriptingDragonScript &ds );
+	deClassSynthesizerController(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassSynthesizerController();
@@ -58,20 +58,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Get parameters from object. */
-	void GetController( dsRealObject *myself, deSynthesizer *&synthesizer,
-		deSynthesizerInstance *&instance, int &index ) const;
+	void GetController(dsRealObject *myself, deSynthesizer *&synthesizer,
+		deSynthesizerInstance *&instance, int &index) const;
 	
 	/** \brief Push controller. */
-	void PushController( dsRunTime *rt, deSynthesizer *synthesizer, int index );
+	void PushController(dsRunTime *rt, deSynthesizer *synthesizer, int index);
 	
 	/** \brief Push controller. */
-	void PushController( dsRunTime *rt, deSynthesizerInstance *instance, int index );
+	void PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index);
 	/*@}*/
 	
 	
@@ -92,33 +92,33 @@ private:
 		dsClass *clsSynthesizerInst;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSynthesizer );
-	DEF_NATFUNC( nfGetSynthesizerInstance );
-	DEF_NATFUNC( nfGetControllerIndex );
+	DEF_NATFUNC(nfGetSynthesizer);
+	DEF_NATFUNC(nfGetSynthesizerInstance);
+	DEF_NATFUNC(nfGetControllerIndex);
 	
-	DEF_NATFUNC( nfGetName );
-	DEF_NATFUNC( nfSetName );
-	DEF_NATFUNC( nfGetLower );
-	DEF_NATFUNC( nfGetUpper );
-	DEF_NATFUNC( nfSetRange );
-	DEF_NATFUNC( nfGetCurve );
-	DEF_NATFUNC( nfSetCurve );
-	DEF_NATFUNC( nfSetCurveConstant );
-	DEF_NATFUNC( nfSetCurveTime );
-	DEF_NATFUNC( nfGetClamp );
-	DEF_NATFUNC( nfSetClamp );
-	DEF_NATFUNC( nfSetCurveFrom );
-	DEF_NATFUNC( nfSetAllFrom );
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfSetName);
+	DEF_NATFUNC(nfGetLower);
+	DEF_NATFUNC(nfGetUpper);
+	DEF_NATFUNC(nfSetRange);
+	DEF_NATFUNC(nfGetCurve);
+	DEF_NATFUNC(nfSetCurve);
+	DEF_NATFUNC(nfSetCurveConstant);
+	DEF_NATFUNC(nfSetCurveTime);
+	DEF_NATFUNC(nfGetClamp);
+	DEF_NATFUNC(nfSetClamp);
+	DEF_NATFUNC(nfSetCurveFrom);
+	DEF_NATFUNC(nfSetAllFrom);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

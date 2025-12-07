@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureSetDuration::ceUCAASpeakGestureSetDuration( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *gesture, float newDuration )
-: ceUCAASpeakStripSetDuration( topic, actorSpeak, gesture, newDuration ){
-	SetShortInfo( "Gesture Set Duration" );
+ceUCAASpeakGestureSetDuration::ceUCAASpeakGestureSetDuration(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *gesture, float newDuration)
+: ceUCAASpeakStripSetDuration(topic, actorSpeak, gesture, newDuration){
+	SetShortInfo("Gesture Set Duration");
 }
 
 ceUCAASpeakGestureSetDuration::~ceUCAASpeakGestureSetDuration(){

@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Framebuffer or nullptr if layered. */
-	inline const deoglFramebuffer::Ref &GetFBO() const{ return pFBO; }
+	inline const deoglFramebuffer::Ref &GetFBO() const{return pFBO;}
 	
 	/** Face framebuffer or nullptr if not layered. */
 	deoglFramebuffer *GetFaceFBO(int face) const;

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetButton( dealDisplay &display, dealImage *image = NULL, const char *label = "" );
+	dealWidgetButton(dealDisplay &display, dealImage *image = NULL, const char *label = "");
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetButton();
@@ -66,45 +66,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set widget from gui theme. */
-	virtual void SetFromGuiTheme( const dealGuiTheme &guitheme );
+	virtual void SetFromGuiTheme(const dealGuiTheme &guitheme);
 	
 	
 	
 	/** \brief Background color normal state. */
-	inline const decColor &GetBgColorNormal() const{ return pBgColorNormal; }
+	inline const decColor &GetBgColorNormal() const{return pBgColorNormal;}
 	
 	/** \brief Set background color normal state. */
-	void SetBgColorNormal( const decColor &color );
+	void SetBgColorNormal(const decColor &color);
 	
 	/** \brief Text color normal. */
-	inline const decColor &GetTextColorNormal() const{ return pTextColorNormal; }
+	inline const decColor &GetTextColorNormal() const{return pTextColorNormal;}
 	
 	/** \brief Set text color normal. */
-	void SetTextColorNormal( const decColor &color );
+	void SetTextColorNormal(const decColor &color);
 	
 	/** \brief Background image colorize normal state. */
 	const decColor &GetBgImageColorizeNormal() const;
 	
 	/** \brief Set background image colorize normal state. */
-	void SetBgImageColorizeNormal( const decColor &color );
+	void SetBgImageColorizeNormal(const decColor &color);
 	
 	/** \brief Background color pressed state. */
-	inline const decColor &GetBgColorPressed() const{ return pBgColorPressed; }
+	inline const decColor &GetBgColorPressed() const{return pBgColorPressed;}
 	
 	/** \brief Set background color pressed state. */
-	void SetBgColorPressed( const decColor &color );
+	void SetBgColorPressed(const decColor &color);
 	
 	/** \brief Text color pressed. */
-	inline const decColor &GetTextColorPressed() const{ return pTextColorPressed; }
+	inline const decColor &GetTextColorPressed() const{return pTextColorPressed;}
 	
 	/** \brief Set text color pressed. */
-	void SetTextColorPressed( const decColor &color );
+	void SetTextColorPressed(const decColor &color);
 	
 	/** \brief Background image colorize pressed state. */
 	const decColor &GetBgImageColorizePressed() const;
 	
 	/** \brief Set background image colorize pressed state. */
-	void SetBgImageColorizePressed( const decColor &color );
+	void SetBgImageColorizePressed(const decColor &color);
 	
 	
 	
@@ -112,32 +112,32 @@ public:
 	const decString &GetLabel() const;
 	
 	/** \brief Set label or empty string to not displayed. */
-	void SetLabel( const char *label );
+	void SetLabel(const char *label);
 	
 	/** \brief Image or \em NULL if not set. */
 	dealImage *GetImage() const;
 	
 	/** \brief Set image or \em NULL if not set. */
-	void SetImage( dealImage *image );
+	void SetImage(dealImage *image);
 	
 	/** \brief Bordered background image widget for normal state. */
-	inline dealWidgetBorderImage &GetBgImageNormal() const{ return *pBgImageNormal; }
+	inline dealWidgetBorderImage &GetBgImageNormal() const{return *pBgImageNormal;}
 	
 	/** \brief Bordered background image widget for pressed state. */
-	inline dealWidgetBorderImage &GetBgImagePressed() const{ return *pBgImagePressed; }
+	inline dealWidgetBorderImage &GetBgImagePressed() const{return *pBgImagePressed;}
 	
 	
 	
 	/** \brief Button is pressed. */
-	inline bool GetPressed() const{ return pPressed; }
+	inline bool GetPressed() const{return pPressed;}
 	
 	/** \brief Set if button is pressed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
 	
 	
 	/** \brief Render background. */
-	virtual void RenderBackground( const sRenderContext &context );
+	virtual void RenderBackground(const sRenderContext &context);
 	
 	
 	
@@ -159,31 +159,31 @@ public:
 	 * \brief Key has been pressed down.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyPress( int keycode );
+	virtual void OnKeyPress(int keycode);
 	
 	/**
 	 * \brief Key has been released.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyRelease( int keycode );
+	virtual void OnKeyRelease(int keycode);
 	
 	/**
 	 * \brief Mouse button press / finger press.
 	* \param[in] buttons Buttons pressed while pressing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMousePress( int buttons, const decPoint &position );
+	virtual void OnMousePress(int buttons, const decPoint &position);
 	
 	/**
 	 * \brief Mouse button release / finger release.
 	 * \param[in] buttons Buttons pressed while releasing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMouseRelease( int buttons, const decPoint &position );
+	virtual void OnMouseRelease(int buttons, const decPoint &position);
 	
 	/**
 	 * \brief Mouse/finger moved while pressing display.
 	 * \param[in] buttons Buttons pressed while moving. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMouseMove( int buttons, const decPoint &position );
+	virtual void OnMouseMove(int buttons, const decPoint &position);
 	/*@}*/
 	
 	

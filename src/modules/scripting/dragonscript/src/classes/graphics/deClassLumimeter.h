@@ -53,21 +53,21 @@ private:
 	
 public:
 	// constructor
-	deClassLumimeter( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassLumimeter(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	virtual ~deClassLumimeter();
 	
 	// internal functions
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
-	deLumimeter *GetLumimeter( dsRealObject *myself ) const;
-	void PushLumimeter( dsRunTime *rt, deLumimeter *lumimeter );
+	deLumimeter *GetLumimeter(dsRealObject *myself) const;
+	void PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter);
 	
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
 	
-	inline deClassColor *GetClassColor() const{ return pClsClr; }
-	inline deClassVector *GetClassVector() const{ return pClsVec; }
-	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	inline deClassColor *GetClassColor() const{return pClsClr;}
+	inline deClassVector *GetClassVector() const{return pClsVec;}
+	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
 
 private:
 	struct sInitData{
@@ -76,31 +76,31 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetDirection );
-	DEF_NATFUNC( nfSetDirection );
-	DEF_NATFUNC( nfGetConeInnerAngle );
-	DEF_NATFUNC( nfSetConeInnerAngle );
-	DEF_NATFUNC( nfGetConeOuterAngle );
-	DEF_NATFUNC( nfSetConeOuterAngle );
-	DEF_NATFUNC( nfGetConeExponent );
-	DEF_NATFUNC( nfSetConeExponent );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetDirection);
+	DEF_NATFUNC(nfSetDirection);
+	DEF_NATFUNC(nfGetConeInnerAngle);
+	DEF_NATFUNC(nfSetConeInnerAngle);
+	DEF_NATFUNC(nfGetConeOuterAngle);
+	DEF_NATFUNC(nfSetConeOuterAngle);
+	DEF_NATFUNC(nfGetConeExponent);
+	DEF_NATFUNC(nfSetConeExponent);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfMeasureLuminance );
-	DEF_NATFUNC( nfMeasureColor );
+	DEF_NATFUNC(nfMeasureLuminance);
+	DEF_NATFUNC(nfMeasureColor);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

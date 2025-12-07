@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create display. */
-	dealDisplay( dealLauncher &launcher );
+	dealDisplay(dealLauncher &launcher);
 	
 	/** \brief Clean up display. */
 	~dealDisplay();
@@ -92,13 +92,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline dealLauncher &GetLauncher() const{ return pLauncher; }
+	inline dealLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** \brief Screen width. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Screen height. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** \brief Display is ready. */
 	bool Ready() const;
@@ -117,19 +117,19 @@ public:
 	
 	
 	/** \brief Content widget. */
-	inline dealWidgetLayout *GetContent() const{ return pContent; }
+	inline dealWidgetLayout *GetContent() const{return pContent;}
 	
 	/** \brief Dialog or \em NULL if there are none. */
-	inline dealDialog *GetDialog() const{ return pDialog; }
+	inline dealDialog *GetDialog() const{return pDialog;}
 	
 	/** \brief Set dialog or \em NULL to show none. */
-	void SetDialog( dealDialog *dialog );
+	void SetDialog(dealDialog *dialog);
 	
 	/** \brief Capture widget or \em NULL if not set. */
-	inline dealWidget *GetCaptureWidget() const{ return pCaptureWidget; }
+	inline dealWidget *GetCaptureWidget() const{return pCaptureWidget;}
 	
 	/** \brief Set capture widget or \em NULL if not set. */
-	void SetCaptureWidget( dealWidget *widget );
+	void SetCaptureWidget(dealWidget *widget);
 	
 	
 	
@@ -145,19 +145,19 @@ public:
 	
 	
 	/** \brief Default gui theme. */
-	inline dealGuiTheme *GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
+	inline dealGuiTheme *GetDefaultGuiTheme() const{return pDefaultGuiTheme;}
 	
 	/** \brief Default font. */
-	inline dealFont *GetDefaultFont() const{ return pFontDefault; }
+	inline dealFont *GetDefaultFont() const{return pFontDefault;}
 	
 	/** \brief Default font size. */
-	inline int GetDefaultFontSize() const{ return pFontSizeDefault; }
+	inline int GetDefaultFontSize() const{return pFontSizeDefault;}
 	
 	/** \brief Shape shader. */
-	inline dealShader *GetShapeShader() const{ return pShaderShape; }
+	inline dealShader *GetShapeShader() const{return pShaderShape;}
 	
 	/** \brief Textured shape shader. */
-	inline dealShader *GetTexturedShapeShader() const{ return pShaderShapeTex; }
+	inline dealShader *GetTexturedShapeShader() const{return pShaderShapeTex;}
 	/*@}*/
 	
 private:

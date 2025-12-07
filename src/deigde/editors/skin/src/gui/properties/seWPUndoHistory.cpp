@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPUndoHistory::seWPUndoHistory( igdeEnvironment &environment ) :
-igdeWPUndoHistory( environment ),
-pListener( new seWPUndoHistoryListener( *this ) ),
-pSkin( NULL ){
+seWPUndoHistory::seWPUndoHistory(igdeEnvironment &environment) :
+igdeWPUndoHistory(environment),
+pListener(new seWPUndoHistoryListener(*this)),
+pSkin(NULL){
 }
 
 seWPUndoHistory::~seWPUndoHistory(){
-	SetSkin( NULL );
+	SetSkin(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -60,24 +60,24 @@ seWPUndoHistory::~seWPUndoHistory(){
 // Management
 ///////////////
 
-void seWPUndoHistory::SetSkin( seSkin *skin ){
-	if( skin == pSkin ){
+void seWPUndoHistory::SetSkin(seSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	SetUndoSystem( NULL );
+	SetUndoSystem(NULL);
 	
-	if( pSkin ){
-		pSkin->RemoveListener( pListener );
+	if(pSkin){
+		pSkin->RemoveListener(pListener);
 		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
-	if( skin ){
-		skin->AddListener( pListener );
+	if(skin){
+		skin->AddListener(pListener);
 		skin->AddReference();
 		
-		SetUndoSystem( skin->GetUndoSystem() );
+		SetUndoSystem(skin->GetUndoSystem());
 	}
 }

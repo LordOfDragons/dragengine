@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerFixed( igdeEnvironment &environment );
+	igdeContainerFixed(igdeEnvironment &environment);
 	
 	
 	

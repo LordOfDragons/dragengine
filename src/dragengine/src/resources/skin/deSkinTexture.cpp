@@ -37,18 +37,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinTexture::deSkinTexture( const char *name ) :
-pName( name ),
-pProperties( nullptr ),
-pPropertyCount( 0 ),
-pPropertySize( 0 ){
+deSkinTexture::deSkinTexture(const char *name) :
+pName(name),
+pProperties(nullptr),
+pPropertyCount(0),
+pPropertySize(0){
 }
 
 deSkinTexture::~deSkinTexture(){
-	if( pProperties ){
-		while( pPropertyCount > 0 ){
+	if(pProperties){
+		while(pPropertyCount > 0){
 			pPropertyCount--;
-			delete pProperties[ pPropertyCount ];
+			delete pProperties[pPropertyCount];
 		}
 		delete [] pProperties;
 	}
@@ -59,30 +59,30 @@ deSkinTexture::~deSkinTexture(){
 // Properties
 ///////////////
 
-deSkinProperty *deSkinTexture::GetPropertyAt( int index ) const{
-	if( index < 0 || index >= pPropertyCount ) DETHROW( deeOutOfBoundary );
+deSkinProperty *deSkinTexture::GetPropertyAt(int index) const{
+	if(index < 0 || index >= pPropertyCount) DETHROW(deeOutOfBoundary);
 	
-	return pProperties[ index ];
+	return pProperties[index];
 }
 
-deSkinProperty *deSkinTexture::GetPropertyWithType( const char *type ) const{
+deSkinProperty *deSkinTexture::GetPropertyWithType(const char *type) const{
 	int i;
 	
-	for( i=0; i<pPropertyCount; i++ ){
-		if( pProperties[ i ]->GetType().Equals( type ) ){
-			return pProperties[ i ];
+	for(i=0; i<pPropertyCount; i++){
+		if(pProperties[i]->GetType().Equals(type)){
+			return pProperties[i];
 		}
 	}
 	
 	return NULL;
 }
 
-int deSkinTexture::IndexOfProperty( deSkinProperty *property ) const{
-	if( ! property ) DETHROW( deeInvalidParam );
+int deSkinTexture::IndexOfProperty(deSkinProperty *property) const{
+	if(! property) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pPropertyCount; i++ ){
-		if( property == pProperties[ i ] ){
+	for(i=0; i<pPropertyCount; i++){
+		if(property == pProperties[i]){
 			return i;
 		}
 	}
@@ -90,12 +90,12 @@ int deSkinTexture::IndexOfProperty( deSkinProperty *property ) const{
 	return -1;
 }
 
-bool deSkinTexture::HasProperty( deSkinProperty *property ) const{
-	if( ! property ) DETHROW( deeInvalidParam );
+bool deSkinTexture::HasProperty(deSkinProperty *property) const{
+	if(! property) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pPropertyCount; i++ ){
-		if( property == pProperties[ i ] ){
+	for(i=0; i<pPropertyCount; i++){
+		if(property == pProperties[i]){
 			return true;
 		}
 	}
@@ -103,11 +103,11 @@ bool deSkinTexture::HasProperty( deSkinProperty *property ) const{
 	return false;
 }
 
-bool deSkinTexture::HasPropertyWithType( const char *type ) const{
+bool deSkinTexture::HasPropertyWithType(const char *type) const{
 	int i;
 	
-	for( i=0; i<pPropertyCount; i++ ){
-		if( pProperties[ i ]->GetType().Equals( type ) ){
+	for(i=0; i<pPropertyCount; i++){
+		if(pProperties[i]->GetType().Equals(type)){
 			return true;
 		}
 	}
@@ -115,18 +115,18 @@ bool deSkinTexture::HasPropertyWithType( const char *type ) const{
 	return false;
 }
 
-void deSkinTexture::AddProperty( deSkinProperty *property ){
-	if( ! property || HasPropertyWithType( property->GetType().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void deSkinTexture::AddProperty(deSkinProperty *property){
+	if(! property || HasPropertyWithType(property->GetType().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPropertyCount == pPropertySize ){
+	if(pPropertyCount == pPropertySize){
 		int newSize = pPropertySize * 3 / 2 + 1;
-		deSkinProperty **newArray = new deSkinProperty*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deSkinProperty **newArray = new deSkinProperty*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
 		
-		if( pProperties ){
-			memcpy( newArray, pProperties, sizeof( deSkinProperty* ) * pPropertySize );
+		if(pProperties){
+			memcpy(newArray, pProperties, sizeof(deSkinProperty*) * pPropertySize);
 			delete [] pProperties;
 		}
 		
@@ -134,6 +134,6 @@ void deSkinTexture::AddProperty( deSkinProperty *property ){
 		pPropertySize = newSize;
 	}
 	
-	pProperties[ pPropertyCount ] = property;
+	pProperties[pPropertyCount] = property;
 	pPropertyCount++;
 }

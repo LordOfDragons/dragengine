@@ -57,11 +57,11 @@ struct sSmDblNatDat{
 /////////////////////////////
 
 // public func new()
-deClassSmoothDouble::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsSmDouble,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSmoothDouble::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSmDouble,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSmoothDouble::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sSmDblNatDat &nd = *( ( sSmDblNatDat* )p_GetNativeData( myself ) );
+void deClassSmoothDouble::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sSmDblNatDat &nd = *((sSmDblNatDat*)p_GetNativeData(myself));
 	
 	nd.smoothDouble = NULL;
 	
@@ -69,33 +69,33 @@ void deClassSmoothDouble::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 }
 
 // public func new( SmoothDouble smoothDouble )
-deClassSmoothDouble::nfNewCopy::nfNewCopy( const sInitData &init ) : dsFunction( init.clsSmDouble,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsSmDouble ); // smoothDouble
+deClassSmoothDouble::nfNewCopy::nfNewCopy(const sInitData &init) : dsFunction(init.clsSmDouble,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsSmDouble); // smoothDouble
 }
-void deClassSmoothDouble::nfNewCopy::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sSmDblNatDat &nd = *( ( sSmDblNatDat* )p_GetNativeData( myself ) );
-	deClassSmoothDouble &clsSmoothDouble = *( ( deClassSmoothDouble* )GetOwnerClass() );
+void deClassSmoothDouble::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
+	sSmDblNatDat &nd = *((sSmDblNatDat*)p_GetNativeData(myself));
+	deClassSmoothDouble &clsSmoothDouble = *((deClassSmoothDouble*)GetOwnerClass());
 	
 	nd.smoothDouble = NULL;
 	
-	const decSmoothDouble &copy = clsSmoothDouble.GetSmoothDouble( rt->GetValue( 0 )->GetRealObject() );
-	nd.smoothDouble = new decSmoothDouble( copy );
+	const decSmoothDouble &copy = clsSmoothDouble.GetSmoothDouble(rt->GetValue(0)->GetRealObject());
+	nd.smoothDouble = new decSmoothDouble(copy);
 }
 
 
 // public func destructor()
-deClassSmoothDouble::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsSmDouble,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSmoothDouble::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsSmDouble,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSmoothDouble::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSmoothDouble::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSmDblNatDat &nd = *( ( sSmDblNatDat* )p_GetNativeData( myself ) );
+	sSmDblNatDat &nd = *((sSmDblNatDat*)p_GetNativeData(myself));
 	
-	if( nd.smoothDouble ){
+	if(nd.smoothDouble){
 		delete nd.smoothDouble;
 		nd.smoothDouble = NULL;
 	}
@@ -107,131 +107,131 @@ void deClassSmoothDouble::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mys
 //////////////
 
 // public func float getValue()
-deClassSmoothDouble::nfGetValue::nfGetValue( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"getValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothDouble::nfGetValue::nfGetValue(const sInitData &init) : dsFunction(init.clsSmDouble,
+"getValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothDouble::nfGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	rt->PushFloat( ( float )smoothDouble.GetValue() );
+	rt->PushFloat((float)smoothDouble.GetValue());
 }
 
 // public func void setValue( float value )
-deClassSmoothDouble::nfSetValue::nfSetValue( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"setValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothDouble::nfSetValue::nfSetValue(const sInitData &init) : dsFunction(init.clsSmDouble,
+"setValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothDouble::nfSetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	smoothDouble.SetValue( ( double )rt->GetValue( 0 )->GetFloat() );
+	smoothDouble.SetValue((double)rt->GetValue(0)->GetFloat());
 }
 
 // public func float getGoal()
-deClassSmoothDouble::nfGetGoal::nfGetGoal( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"getGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothDouble::nfGetGoal::nfGetGoal(const sInitData &init) : dsFunction(init.clsSmDouble,
+"getGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothDouble::nfGetGoal::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfGetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	rt->PushFloat( ( float )smoothDouble.GetGoal() );
+	rt->PushFloat((float)smoothDouble.GetGoal());
 }
 
 // public func void setGoal( float goal )
-deClassSmoothDouble::nfSetGoal::nfSetGoal( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"setGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothDouble::nfSetGoal::nfSetGoal(const sInitData &init) : dsFunction(init.clsSmDouble,
+"setGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothDouble::nfSetGoal::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfSetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	smoothDouble.SetGoal( ( double )rt->GetValue( 0 )->GetFloat() );
+	smoothDouble.SetGoal((double)rt->GetValue(0)->GetFloat());
 }
 
 // public func float getAdjustTime()
-deClassSmoothDouble::nfGetAdjustTime::nfGetAdjustTime( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"getAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothDouble::nfGetAdjustTime::nfGetAdjustTime(const sInitData &init) : dsFunction(init.clsSmDouble,
+"getAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothDouble::nfGetAdjustTime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfGetAdjustTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	rt->PushFloat( ( float )smoothDouble.GetAdjustTime() );
+	rt->PushFloat((float)smoothDouble.GetAdjustTime());
 }
 
 // public void setAdjustTime( float adjustTime )
-deClassSmoothDouble::nfSetAdjustTime::nfSetAdjustTime( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"setAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothDouble::nfSetAdjustTime::nfSetAdjustTime(const sInitData &init) : dsFunction(init.clsSmDouble,
+"setAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothDouble::nfSetAdjustTime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfSetAdjustTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	smoothDouble.SetAdjustTime( ( double )rt->GetValue( 0 )->GetFloat() );
+	smoothDouble.SetAdjustTime((double)rt->GetValue(0)->GetFloat());
 }
 
 // public func float getAdjustRange()
-deClassSmoothDouble::nfGetAdjustRange::nfGetAdjustRange( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"getAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothDouble::nfGetAdjustRange::nfGetAdjustRange(const sInitData &init) : dsFunction(init.clsSmDouble,
+"getAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothDouble::nfGetAdjustRange::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfGetAdjustRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	rt->PushFloat( ( float )smoothDouble.GetAdjustRange() );
+	rt->PushFloat((float)smoothDouble.GetAdjustRange());
 }
 
 // public func void setAdjustRange( float limit )
-deClassSmoothDouble::nfSetAdjustRange::nfSetAdjustRange( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"setAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothDouble::nfSetAdjustRange::nfSetAdjustRange(const sInitData &init) : dsFunction(init.clsSmDouble,
+"setAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothDouble::nfSetAdjustRange::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfSetAdjustRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	smoothDouble.SetAdjustRange( ( double )rt->GetValue( 0 )->GetFloat() );
+	smoothDouble.SetAdjustRange((double)rt->GetValue(0)->GetFloat());
 }
 
 // public func float getChangeSpeed()
-deClassSmoothDouble::nfGetChangeSpeed::nfGetChangeSpeed( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"getChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothDouble::nfGetChangeSpeed::nfGetChangeSpeed(const sInitData &init) : dsFunction(init.clsSmDouble,
+"getChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothDouble::nfGetChangeSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfGetChangeSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	rt->PushFloat( ( float )smoothDouble.GetChangeSpeed() );
+	rt->PushFloat((float)smoothDouble.GetChangeSpeed());
 }
 
 // public func void setChangeSpeed( float changeSpeed )
-deClassSmoothDouble::nfSetChangeSpeed::nfSetChangeSpeed( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"setChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothDouble::nfSetChangeSpeed::nfSetChangeSpeed(const sInitData &init) : dsFunction(init.clsSmDouble,
+"setChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothDouble::nfSetChangeSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfSetChangeSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	smoothDouble.SetChangeSpeed( ( double )rt->GetValue( 0 )->GetFloat() );
+	smoothDouble.SetChangeSpeed((double)rt->GetValue(0)->GetFloat());
 }
 
 
 
 // public func void reset()
-deClassSmoothDouble::nfReset::nfReset( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSmoothDouble::nfReset::nfReset(const sInitData &init) : dsFunction(init.clsSmDouble,
+"reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSmoothDouble::nfReset::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
 	smoothDouble.Reset();
 }
 
 // public func void update( float elapsed )
-deClassSmoothDouble::nfUpdate::nfUpdate( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"update", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // elapsed
+deClassSmoothDouble::nfUpdate::nfUpdate(const sInitData &init) : dsFunction(init.clsSmDouble,
+"update", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // elapsed
 }
-void deClassSmoothDouble::nfUpdate::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfUpdate::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	
-	smoothDouble.Update( ( double )rt->GetValue( 0 )->GetFloat() );
+	smoothDouble.Update((double)rt->GetValue(0)->GetFloat());
 }
 
 
@@ -240,59 +240,59 @@ void deClassSmoothDouble::nfUpdate::RunFunction( dsRunTime *rt, dsValue *myself 
 //////////////////
 
 // static public func SmoothDouble readFromFile( FileReader reader )
-deClassSmoothDouble::nfReadFromFile::nfReadFromFile( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSmDouble ){
-	p_AddParameter( init.clsFileReader ); // reader
+deClassSmoothDouble::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunction(init.clsSmDouble,
+"readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSmDouble){
+	p_AddParameter(init.clsFileReader); // reader
 }
-void deClassSmoothDouble::nfReadFromFile::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassSmoothDouble &clsSmoothDouble = *( ( deClassSmoothDouble* )GetOwnerClass() );
+void deClassSmoothDouble::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassSmoothDouble &clsSmoothDouble = *((deClassSmoothDouble*)GetOwnerClass());
 	const deClassFileReader &clsFileReader = *clsSmoothDouble.GetDS().GetClassFileReader();
-	decBaseFileReader * const reader = clsFileReader.GetFileReader( rt->GetValue( 0 )->GetRealObject() );
+	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if( ! reader ){
-		DSTHROW( dueNullPointer );
+	if(! reader){
+		DSTHROW(dueNullPointer);
 	}
 	
 	decSmoothDouble smoothDouble;
 	const int version = reader->ReadByte();
 	
-	switch( version ){
+	switch(version){
 	case 0:
-		smoothDouble.SetValue( reader->ReadDouble() );
-		smoothDouble.SetGoal( reader->ReadDouble() );
-		smoothDouble.SetAdjustRange( reader->ReadDouble() );
-		smoothDouble.SetAdjustTime( reader->ReadDouble() );
-		smoothDouble.SetChangeSpeed( reader->ReadDouble() );
+		smoothDouble.SetValue(reader->ReadDouble());
+		smoothDouble.SetGoal(reader->ReadDouble());
+		smoothDouble.SetAdjustRange(reader->ReadDouble());
+		smoothDouble.SetAdjustTime(reader->ReadDouble());
+		smoothDouble.SetChangeSpeed(reader->ReadDouble());
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	clsSmoothDouble.PushSmoothDouble( rt, smoothDouble );
+	clsSmoothDouble.PushSmoothDouble(rt, smoothDouble);
 }
 
 // public func void writeToFile( FileWriter writer )
-deClassSmoothDouble::nfWriteToFile::nfWriteToFile( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFileWriter ); // writer
+deClassSmoothDouble::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(init.clsSmDouble,
+"writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFileWriter); // writer
 }
-void deClassSmoothDouble::nfWriteToFile::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
-	const deClassSmoothDouble &clsSmoothDouble = *( ( deClassSmoothDouble* )GetOwnerClass() );
+void deClassSmoothDouble::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
+	const deClassSmoothDouble &clsSmoothDouble = *((deClassSmoothDouble*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsSmoothDouble.GetDS().GetClassFileWriter();
-	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter( rt->GetValue( 0 )->GetRealObject() );
+	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if( ! writer ){
-		DSTHROW( dueNullPointer );
+	if(! writer){
+		DSTHROW(dueNullPointer);
 	}
 	
-	writer->WriteByte( 0 ); // version 0
-	writer->WriteDouble( smoothDouble.GetValue() );
-	writer->WriteDouble( smoothDouble.GetGoal() );
-	writer->WriteDouble( smoothDouble.GetAdjustRange() );
-	writer->WriteDouble( smoothDouble.GetAdjustTime() );
-	writer->WriteDouble( smoothDouble.GetChangeSpeed() );
+	writer->WriteByte(0); // version 0
+	writer->WriteDouble(smoothDouble.GetValue());
+	writer->WriteDouble(smoothDouble.GetGoal());
+	writer->WriteDouble(smoothDouble.GetAdjustRange());
+	writer->WriteDouble(smoothDouble.GetAdjustTime());
+	writer->WriteDouble(smoothDouble.GetChangeSpeed());
 }
 
 
@@ -301,35 +301,35 @@ void deClassSmoothDouble::nfWriteToFile::RunFunction( dsRunTime *rt, dsValue *my
 //////////////////////
 
 // public func bool equals( Object other )
-deClassSmoothDouble::nfEquals::nfEquals( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // other
+deClassSmoothDouble::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsSmDouble,
+"equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // other
 }
-void deClassSmoothDouble::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
-	deClassSmoothDouble * const clsSmoothDouble = ( deClassSmoothDouble* )GetOwnerClass();
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassSmoothDouble::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
+	deClassSmoothDouble * const clsSmoothDouble = (deClassSmoothDouble*)GetOwnerClass();
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsSmoothDouble ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsSmoothDouble)){
+		rt->PushBool(false);
 		
 	}else{
-		const decSmoothDouble &otherSmoothDouble = clsSmoothDouble->GetSmoothDouble( obj->GetRealObject() );
-		rt->PushBool( smoothDouble == otherSmoothDouble );
+		const decSmoothDouble &otherSmoothDouble = clsSmoothDouble->GetSmoothDouble(obj->GetRealObject());
+		rt->PushBool(smoothDouble == otherSmoothDouble);
 	}
 }
 
 // public func String toString()
-deClassSmoothDouble::nfToString::nfToString( const sInitData &init ) : dsFunction( init.clsSmDouble,
-"toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassSmoothDouble::nfToString::nfToString(const sInitData &init) : dsFunction(init.clsSmDouble,
+"toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassSmoothDouble::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothDouble &smoothDouble = *( ( sSmDblNatDat* )p_GetNativeData( myself ) )->smoothDouble;
+void deClassSmoothDouble::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothDouble &smoothDouble = *((sSmDblNatDat*)p_GetNativeData(myself))->smoothDouble;
 	decString str;
 	
-	str.Format( "%g", smoothDouble.GetValue() );
+	str.Format("%g", smoothDouble.GetValue());
 	
-	rt->PushString( str );
+	rt->PushString(str);
 }
 
 
@@ -340,13 +340,13 @@ void deClassSmoothDouble::nfToString::RunFunction( dsRunTime *rt, dsValue *mysel
 // Constructor, Destructor
 ////////////////////////////
 
-deClassSmoothDouble::deClassSmoothDouble( deScriptingDragonScript &ds ) :
-dsClass( "SmoothDouble", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+deClassSmoothDouble::deClassSmoothDouble(deScriptingDragonScript &ds) :
+dsClass("SmoothDouble", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSmDblNatDat ) );
+	p_SetNativeDataSize(sizeof(sSmDblNatDat));
 }
 
 deClassSmoothDouble::~deClassSmoothDouble(){
@@ -357,7 +357,7 @@ deClassSmoothDouble::~deClassSmoothDouble(){
 // Management
 ///////////////
 
-void deClassSmoothDouble::CreateClassMembers( dsEngine *engine ){
+void deClassSmoothDouble::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -372,53 +372,53 @@ void deClassSmoothDouble::CreateClassMembers( dsEngine *engine ){
 	init.clsFileWriter = pDS.GetClassFileWriter();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfNewCopy( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfNewCopy(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetValue( init ) );
-	AddFunction( new nfSetValue( init ) );
-	AddFunction( new nfGetGoal( init ) );
-	AddFunction( new nfSetGoal( init ) );
-	AddFunction( new nfGetAdjustTime( init ) );
-	AddFunction( new nfSetAdjustTime( init ) );
-	AddFunction( new nfGetAdjustRange( init ) );
-	AddFunction( new nfSetAdjustRange( init ) );
-	AddFunction( new nfGetChangeSpeed( init ) );
-	AddFunction( new nfSetChangeSpeed( init ) );
+	AddFunction(new nfGetValue(init));
+	AddFunction(new nfSetValue(init));
+	AddFunction(new nfGetGoal(init));
+	AddFunction(new nfSetGoal(init));
+	AddFunction(new nfGetAdjustTime(init));
+	AddFunction(new nfSetAdjustTime(init));
+	AddFunction(new nfGetAdjustRange(init));
+	AddFunction(new nfSetAdjustRange(init));
+	AddFunction(new nfGetChangeSpeed(init));
+	AddFunction(new nfSetChangeSpeed(init));
 	
-	AddFunction( new nfReset( init ) );
-	AddFunction( new nfUpdate( init ) );
+	AddFunction(new nfReset(init));
+	AddFunction(new nfUpdate(init));
 	
-	AddFunction( new nfReadFromFile( init ) );
-	AddFunction( new nfWriteToFile( init ) );
+	AddFunction(new nfReadFromFile(init));
+	AddFunction(new nfWriteToFile(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfToString( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfToString(init));
 }
 
-const decSmoothDouble &deClassSmoothDouble::GetSmoothDouble( dsRealObject *myself ) const{
-	if( ! myself ){
-		DSTHROW( dueNullPointer );
+const decSmoothDouble &deClassSmoothDouble::GetSmoothDouble(dsRealObject *myself) const{
+	if(! myself){
+		DSTHROW(dueNullPointer);
 	}
 	
-	return *( ( sSmDblNatDat* )p_GetNativeData( myself->GetBuffer() ) )->smoothDouble;
+	return *((sSmDblNatDat*)p_GetNativeData(myself->GetBuffer()))->smoothDouble;
 }
 
-void deClassSmoothDouble::PushSmoothDouble( dsRunTime *rt, const decSmoothDouble &smoothDouble ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassSmoothDouble::PushSmoothDouble(dsRunTime *rt, const decSmoothDouble &smoothDouble){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sSmDblNatDat &nd = *( ( sSmDblNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sSmDblNatDat &nd = *((sSmDblNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.smoothDouble = NULL;
 	
 	try{
-		nd.smoothDouble = new decSmoothDouble( smoothDouble );
+		nd.smoothDouble = new decSmoothDouble(smoothDouble);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

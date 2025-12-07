@@ -36,12 +36,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetVertexPositionSetMinimum::aeULinkSetVertexPositionSetMinimum( aeLink *link, float newValue ){
-	DEASSERT_NOTNULL( link )
+aeULinkSetVertexPositionSetMinimum::aeULinkSetVertexPositionSetMinimum(aeLink *link, float newValue){
+	DEASSERT_NOTNULL(link)
 	
 	pLink = nullptr;
 	
-	SetShortInfo( "Link set vertex position set minimum" );
+	SetShortInfo("Link set vertex position set minimum");
 	
 	pLink = link;
 	pLink->AddReference();
@@ -51,7 +51,7 @@ aeULinkSetVertexPositionSetMinimum::aeULinkSetVertexPositionSetMinimum( aeLink *
 }
 
 aeULinkSetVertexPositionSetMinimum::~aeULinkSetVertexPositionSetMinimum(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -62,9 +62,9 @@ aeULinkSetVertexPositionSetMinimum::~aeULinkSetVertexPositionSetMinimum(){
 ///////////////
 
 void aeULinkSetVertexPositionSetMinimum::Undo(){
-	pLink->SetVertexPositionSetMinimum( pOldValue );
+	pLink->SetVertexPositionSetMinimum(pOldValue);
 }
 
 void aeULinkSetVertexPositionSetMinimum::Redo(){
-	pLink->SetVertexPositionSetMinimum( pNewValue );
+	pLink->SetVertexPositionSetMinimum(pNewValue);
 }

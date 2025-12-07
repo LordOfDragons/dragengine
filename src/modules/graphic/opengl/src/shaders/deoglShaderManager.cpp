@@ -130,17 +130,17 @@ void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderProgram *pr
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderManager::deoglShaderManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pLanguage( nullptr ),
-pPathShaderSources( "/share/shaderSources" ),
-pPathShaders( "/share/shaders" )
+deoglShaderManager::deoglShaderManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pLanguage(nullptr),
+pPathShaderSources("/share/shaderSources"),
+pPathShaders("/share/shaders")
 {
-	pLanguage = new deoglShaderLanguage( renderThread );
+	pLanguage = new deoglShaderLanguage(renderThread);
 }
 
 deoglShaderManager::~deoglShaderManager(){
-	if( pLanguage ){
+	if(pLanguage){
 		delete pLanguage;
 	}
 }
@@ -160,47 +160,47 @@ void deoglShaderManager::ValidateCaches(){
 	// but running on the same machine with the same operating system and the same file system
 	// usually returns identical file listings. in the worst case the cache is invalidate when
 	// it could be kept valid
-	const decString validationString( pCacheValidationString.Join( "\n" ) );
+	const decString validationString(pCacheValidationString.Join("\n"));
 	
 	// if the validation string differs from the cached validation string drop all
 	// cached shaders
 	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
-	const decPath pathValidationString( decPath::CreatePathUnix( "/cache/global/shaderValidation" ) );
+	const decPath pathValidationString(decPath::CreatePathUnix("/cache/global/shaderValidation"));
 	
-	if( vfs.ExistsFile( pathValidationString ) ){
+	if(vfs.ExistsFile(pathValidationString)){
 		decString oldValidationString;
 		try{
-			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading( pathValidationString ) ) );
+			const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+					vfs.OpenFileForReading(pathValidationString)));
 			const int size = reader->GetLength();
-			oldValidationString.Set( ' ', size );
-			reader->Read( ( void* )oldValidationString.GetString(), size );
+			oldValidationString.Set(' ', size);
+			reader->Read((void*)oldValidationString.GetString(), size);
 			
-			if( validationString == oldValidationString ){
-				logger.LogInfo( "ShaderManager Cache: Validated" );
+			if(validationString == oldValidationString){
+				logger.LogInfo("ShaderManager Cache: Validated");
 				
 			}else{
-				logger.LogInfo( "ShaderManager Cache: Validation failed. Invalidate caches" );
+				logger.LogInfo("ShaderManager Cache: Validation failed. Invalidate caches");
 				cache.DeleteAll();
 			}
 			
-		}catch( const deException & ){
-			logger.LogInfo( "ShaderManager Cache: Validation file failed reading. Invalidate caches" );
+		}catch(const deException &){
+			logger.LogInfo("ShaderManager Cache: Validation file failed reading. Invalidate caches");
 			cache.DeleteAll();
 		}
 		
 	}else{
-		logger.LogInfo( "ShaderManager Cache: Validation file missing. Invalidate caches" );
+		logger.LogInfo("ShaderManager Cache: Validation file missing. Invalidate caches");
 		cache.DeleteAll();
 	}
 	
 	// write validation string
 	try{
-		decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathValidationString ) )
-			->WriteString( validationString );
+		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathValidationString))
+			->WriteString(validationString);
 		
-	}catch( const deException & ){
-		logger.LogInfo( "ShaderManager Cache: Writing validation failed" );
+	}catch(const deException &){
+		logger.LogInfo("ShaderManager Cache: Writing validation failed");
 	}
 }
 
@@ -255,24 +255,24 @@ int deoglShaderManager::GetSourcesCount() const{
 	return pSources.GetCount();
 }
 
-bool deoglShaderManager::HasSourcesNamed( const char *name ) const{
-	return pSources.Has( name );
+bool deoglShaderManager::HasSourcesNamed(const char *name) const{
+	return pSources.Has(name);
 }
 
-const deoglShaderSources *deoglShaderManager::GetSourcesNamed( const char *name ){
+const deoglShaderSources *deoglShaderManager::GetSourcesNamed(const char *name){
 	deObject *o;
-	return pSources.GetAt( name, &o ) ? ( const deoglShaderSources * )o : nullptr;
+	return pSources.GetAt(name, &o) ? (const deoglShaderSources *)o : nullptr;
 }
 
 void deoglShaderManager::LoadSources(){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	const int oldCount = pSources.GetCount();
 	
-	pLoadSourcesIn( "" );
+	pLoadSourcesIn("");
 	
-	if( ogl.GetConfiguration().GetDoLogInfo() ){
-		pRenderThread.GetLogger().LogInfoFormat( "Loaded %i shaders.",
-			pSources.GetCount() - oldCount );
+	if(ogl.GetConfiguration().GetDoLogInfo()){
+		pRenderThread.GetLogger().LogInfoFormat("Loaded %i shaders.",
+			pSources.GetCount() - oldCount);
 	}
 }
 
@@ -304,7 +304,7 @@ int deoglShaderManager::GetProgramCount(){
 	return pPrograms.GetCount();
 }
 
-const deoglShaderProgram *deoglShaderManager::GetProgramAt( int index ){
+const deoglShaderProgram *deoglShaderManager::GetProgramAt(int index){
 	const deMutexGuard guard(pMutexCompilePrograms);
 	return (deoglShaderProgram*)pPrograms.GetAt(index);
 }
@@ -726,7 +726,7 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 	}
 }
 
-void deoglShaderManager::pLoadSourcesIn( const char *directory ){
+void deoglShaderManager::pLoadSourcesIn(const char *directory){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	deLogger &logger = *ogl.GetGameEngine()->GetLogger();
 	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
@@ -736,48 +736,48 @@ void deoglShaderManager::pLoadSourcesIn( const char *directory ){
 	int i;
 	
 	// search for shaders in the current directory
-	basePath.SetFromUnix( pPathShaders.GetString() );
-	const int basePathLen = ( int )strlen( basePath.GetPathUnix() ) + 1;
+	basePath.SetFromUnix(pPathShaders.GetString());
+	const int basePathLen = (int)strlen(basePath.GetPathUnix()) + 1;
 	
 	try{
-		deCollectFileSearchVisitor collect( "*.shader.xml", true );
-		searchPath.SetFrom( basePath );
-		searchPath.AddUnixPath( directory );
-		vfs.SearchFiles( searchPath, collect );
+		deCollectFileSearchVisitor collect("*.shader.xml", true);
+		searchPath.SetFrom(basePath);
+		searchPath.AddUnixPath(directory);
+		vfs.SearchFiles(searchPath, collect);
 		
 		const dePathList &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
 		decString validationString;
 		
-		for( i=0; i<count; i++ ){
-			const decPath &path = pathList.GetAt( i );
-			filename = path.GetPathUnix().GetMiddle( basePathLen );
+		for(i=0; i<count; i++){
+			const decPath &path = pathList.GetAt(i);
+			filename = path.GetPathUnix().GetMiddle(basePathLen);
 			/*if( ogl.GetConfiguration()->GetDoLogDebug() ){
-				pRenderThread.GetLogger().LogInfoFormat( "Loading shader %s...", filename );
+				pRenderThread.GetLogger().LogInfoFormat("Loading shader %s...", filename);
 			}*/
 			
-			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading( path ) ) );
+			const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+					vfs.OpenFileForReading(path)));
 			
-			const deoglShaderSources::Ref sources( deoglShaderSources::Ref::New(
-				new deoglShaderSources( logger, reader ) ) );
+			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::New(
+				new deoglShaderSources(logger, reader)));
 			
-			if( pSources.Has( sources->GetName() ) ){
-				ogl.LogErrorFormat( "Shader file '%s' defines a shader named '%s' but"
+			if(pSources.Has(sources->GetName())){
+				ogl.LogErrorFormat("Shader file '%s' defines a shader named '%s' but"
 					" a shader with this name already exists!",
-					sources->GetFilename().GetString(), sources->GetName().GetString() );
-				DETHROW( deeInvalidParam );
+					sources->GetFilename().GetString(), sources->GetName().GetString());
+				DETHROW(deeInvalidParam);
 			}
 			
-			pSources.SetAt( sources->GetName(), sources );
+			pSources.SetAt(sources->GetName(), sources);
 			
-			validationString.Format( "%s: %" PRIu64, filename.GetString(),
-				( uint64_t )reader->GetModificationTime() );
-			pCacheValidationString.Add( validationString );
+			validationString.Format("%s: %" PRIu64, filename.GetString(),
+				(uint64_t)reader->GetModificationTime());
+			pCacheValidationString.Add(validationString);
 		}
 		
-	}catch( const deException & ){
-		pRenderThread.GetLogger().LogInfoFormat( "Loading shader %s failed!", filename.GetString() );
+	}catch(const deException &){
+		pRenderThread.GetLogger().LogInfoFormat("Loading shader %s failed!", filename.GetString());
 		throw;
 	}
 }

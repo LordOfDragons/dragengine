@@ -56,13 +56,13 @@ struct sSLMNatDat{
 //////////////////////////////
 
 // public func new( int type )
-deClassSoundLevelMeter::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSoundLevelMeter::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSoundLevelMeter::nfNew::RunFunction( dsRunTime*, dsValue *myself ){
-	sSLMNatDat &nd = *( ( sSLMNatDat* )p_GetNativeData( myself ) );
-	deSoundLevelMeterManager *tsMgr = ( ( deClassSoundLevelMeter* )GetOwnerClass() )
+void deClassSoundLevelMeter::nfNew::RunFunction(dsRunTime*, dsValue *myself){
+	sSLMNatDat &nd = *((sSLMNatDat*)p_GetNativeData(myself));
+	deSoundLevelMeterManager *tsMgr = ((deClassSoundLevelMeter*)GetOwnerClass())
 		->GetDS().GetGameEngine()->GetSoundLevelMeterManager();
 	
 	// clear ( important )
@@ -73,18 +73,18 @@ void deClassSoundLevelMeter::nfNew::RunFunction( dsRunTime*, dsValue *myself ){
 }
 
 // public func destructor()
-deClassSoundLevelMeter::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSoundLevelMeter::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSoundLevelMeter::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSoundLevelMeter::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSLMNatDat &nd = *( ( sSLMNatDat* )p_GetNativeData( myself ) );
+	sSLMNatDat &nd = *((sSLMNatDat*)p_GetNativeData(myself));
 	
-	if( nd.soundLevelMeter ){
+	if(nd.soundLevelMeter){
 		nd.soundLevelMeter->FreeReference();
 		nd.soundLevelMeter = NULL;
 	}
@@ -96,265 +96,265 @@ void deClassSoundLevelMeter::nfDestructor::RunFunction( dsRunTime*, dsValue *mys
 ///////////////
 
 // public func SoundLevelMeterType getType()
-deClassSoundLevelMeter::nfGetType::nfGetType( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterType ){
+deClassSoundLevelMeter::nfGetType::nfGetType(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterType){
 }
-void deClassSoundLevelMeter::nfGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	rt->PushValue( ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetClassSoundLevelMeterType()
-		->GetVariable( soundLevelMeter.GetType() )->GetStaticValue() );
+void deClassSoundLevelMeter::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	rt->PushValue(((deClassSoundLevelMeter*)GetOwnerClass())->GetClassSoundLevelMeterType()
+		->GetVariable(soundLevelMeter.GetType())->GetStaticValue());
 }
 
 // public func setType( SoundLevelMeterType type )
-deClassSoundLevelMeter::nfSetType::nfSetType( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsSoundLevelMeterType ); // type
+deClassSoundLevelMeter::nfSetType::nfSetType(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsSoundLevelMeterType); // type
 }
-void deClassSoundLevelMeter::nfSetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassSoundLevelMeter::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(! rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	soundLevelMeter.SetType( ( deSoundLevelMeter::eMeterTypes )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	soundLevelMeter.SetType((deSoundLevelMeter::eMeterTypes)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
 // public func DVector getPosition()
-deClassSoundLevelMeter::nfGetPosition::nfGetPosition( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getPosition", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector ){
+deClassSoundLevelMeter::nfGetPosition::nfGetPosition(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getPosition", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
 }
-void deClassSoundLevelMeter::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassDVector()->PushDVector( rt, soundLevelMeter.GetPosition() );
+	ds.GetClassDVector()->PushDVector(rt, soundLevelMeter.GetPosition());
 }
 
 // public func setPosition( DVector position )
-deClassSoundLevelMeter::nfSetPosition::nfSetPosition( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setPosition", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsDVector ); // position
+deClassSoundLevelMeter::nfSetPosition::nfSetPosition(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setPosition", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsDVector); // position
 }
-void deClassSoundLevelMeter::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	soundLevelMeter.SetPosition( ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() ) );
+	soundLevelMeter.SetPosition(ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func Quaternion getOrientation()
-deClassSoundLevelMeter::nfGetOrientation::nfGetOrientation( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getOrientation", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion ){
+deClassSoundLevelMeter::nfGetOrientation::nfGetOrientation(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getOrientation", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
-void deClassSoundLevelMeter::nfGetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassQuaternion()->PushQuaternion( rt, soundLevelMeter.GetOrientation() );
+	ds.GetClassQuaternion()->PushQuaternion(rt, soundLevelMeter.GetOrientation());
 }
 
 // public func setOrientation( Quaternion orientation )
-deClassSoundLevelMeter::nfSetOrientation::nfSetOrientation( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setOrientation", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsQuaternion ); // orientation
+deClassSoundLevelMeter::nfSetOrientation::nfSetOrientation(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setOrientation", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsQuaternion); // orientation
 }
-void deClassSoundLevelMeter::nfSetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	soundLevelMeter.SetOrientation( ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 0 )->GetRealObject() ) );
+	soundLevelMeter.SetOrientation(ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func float getConeAngle()
-deClassSoundLevelMeter::nfGetConeAngle::nfGetConeAngle( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getConeAngle", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassSoundLevelMeter::nfGetConeAngle::nfGetConeAngle(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getConeAngle", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSoundLevelMeter::nfGetConeAngle::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	rt->PushFloat( soundLevelMeter.GetConeAngle() / DEG2RAD );
+void deClassSoundLevelMeter::nfGetConeAngle::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	rt->PushFloat(soundLevelMeter.GetConeAngle() / DEG2RAD);
 }
 
 // public func setConeAngle( float angle )
-deClassSoundLevelMeter::nfSetConeAngle::nfSetConeAngle( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setConeAngle", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFloat ); // angle
+deClassSoundLevelMeter::nfSetConeAngle::nfSetConeAngle(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setConeAngle", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // angle
 }
-void deClassSoundLevelMeter::nfSetConeAngle::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	soundLevelMeter.SetConeAngle( rt->GetValue( 0 )->GetFloat() * DEG2RAD );
+void deClassSoundLevelMeter::nfSetConeAngle::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	soundLevelMeter.SetConeAngle(rt->GetValue(0)->GetFloat() * DEG2RAD);
 }
 
 // public func float getAudibleDistance()
-deClassSoundLevelMeter::nfGetAudibleDistance::nfGetAudibleDistance( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getAudibleDistance", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassSoundLevelMeter::nfGetAudibleDistance::nfGetAudibleDistance(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getAudibleDistance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSoundLevelMeter::nfGetAudibleDistance::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	rt->PushFloat( soundLevelMeter.GetAudibleDistance() );
+void deClassSoundLevelMeter::nfGetAudibleDistance::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	rt->PushFloat(soundLevelMeter.GetAudibleDistance());
 }
 
 // public func setAudibleDistance( float audibleDistance )
-deClassSoundLevelMeter::nfSetAudibleDistance::nfSetAudibleDistance( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setAudibleDistance", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFloat ); // audibleDistance
+deClassSoundLevelMeter::nfSetAudibleDistance::nfSetAudibleDistance(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setAudibleDistance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // audibleDistance
 }
-void deClassSoundLevelMeter::nfSetAudibleDistance::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	soundLevelMeter.SetAudibleDistance( rt->GetValue( 0 )->GetFloat() );
+void deClassSoundLevelMeter::nfSetAudibleDistance::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	soundLevelMeter.SetAudibleDistance(rt->GetValue(0)->GetFloat());
 }
 
 // public func LayerMask getLayerMask()
-deClassSoundLevelMeter::nfGetLayerMask::nfGetLayerMask( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getLayerMask", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask ){
+deClassSoundLevelMeter::nfGetLayerMask::nfGetLayerMask(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getLayerMask", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
-void deClassSoundLevelMeter::nfGetLayerMask::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassLayerMask()->PushLayerMask( rt, soundLevelMeter.GetLayerMask() );
+	ds.GetClassLayerMask()->PushLayerMask(rt, soundLevelMeter.GetLayerMask());
 }
 
 // public func void setLayerMask( LayerMask layerMask )
-deClassSoundLevelMeter::nfSetLayerMask::nfSetLayerMask( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setLayerMask", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsLayerMask ); // layerMask
+deClassSoundLevelMeter::nfSetLayerMask::nfSetLayerMask(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setLayerMask", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsLayerMask); // layerMask
 }
-void deClassSoundLevelMeter::nfSetLayerMask::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	soundLevelMeter.SetLayerMask( ds.GetClassLayerMask()->GetLayerMask( rt->GetValue( 0 )->GetRealObject() ) );
+	soundLevelMeter.SetLayerMask(ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func bool getEnabled()
-deClassSoundLevelMeter::nfGetEnabled::nfGetEnabled( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getEnabled", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassSoundLevelMeter::nfGetEnabled::nfGetEnabled(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getEnabled", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassSoundLevelMeter::nfGetEnabled::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
+void deClassSoundLevelMeter::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
 	
-	rt->PushBool( soundLevelMeter.GetEnabled() );
+	rt->PushBool(soundLevelMeter.GetEnabled());
 }
 
 // public func void setEnabled( bool enabled )
-deClassSoundLevelMeter::nfSetEnabled::nfSetEnabled( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setEnabled", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassSoundLevelMeter::nfSetEnabled::nfSetEnabled(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setEnabled", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassSoundLevelMeter::nfSetEnabled::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
+void deClassSoundLevelMeter::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
 	
-	soundLevelMeter.SetEnabled( rt->GetValue( 0 )->GetBool() );
+	soundLevelMeter.SetEnabled(rt->GetValue(0)->GetBool());
 }
 
 
 
 // public func int getAudibleSpeakerCount()
-deClassSoundLevelMeter::nfGetAudibleSpeakerCount::nfGetAudibleSpeakerCount( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getAudibleSpeakerCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassSoundLevelMeter::nfGetAudibleSpeakerCount::nfGetAudibleSpeakerCount(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getAudibleSpeakerCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassSoundLevelMeter::nfGetAudibleSpeakerCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
+void deClassSoundLevelMeter::nfGetAudibleSpeakerCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
 	
-	rt->PushInt( soundLevelMeter.GetAudibleSpeakerCount() );
+	rt->PushInt(soundLevelMeter.GetAudibleSpeakerCount());
 }
 
 // public func SoundLevelMeterSpeaker getAudibleSpeakerAt( int index )
-deClassSoundLevelMeter::nfGetAudibleSpeakerAt::nfGetAudibleSpeakerAt( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getAudibleSpeakerAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterSpeaker ){
-	p_AddParameter( init.clsInteger ); // index
+deClassSoundLevelMeter::nfGetAudibleSpeakerAt::nfGetAudibleSpeakerAt(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getAudibleSpeakerAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterSpeaker){
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassSoundLevelMeter::nfGetAudibleSpeakerAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
+void deClassSoundLevelMeter::nfGetAudibleSpeakerAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassSoundLevelMeterSpeaker()->PushSoundLevelMeterSpeaker( rt,
-		soundLevelMeter.GetAudibleSpeakerAt( rt->GetValue( 0 )->GetInt() ) );
+	ds.GetClassSoundLevelMeterSpeaker()->PushSoundLevelMeterSpeaker(rt,
+		soundLevelMeter.GetAudibleSpeakerAt(rt->GetValue(0)->GetInt()));
 }
 
 
 
 // public func SoundLevelMeterListener getListener()
-deClassSoundLevelMeter::nfGetListener::nfGetListener( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "getListener", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterListener ){
+deClassSoundLevelMeter::nfGetListener::nfGetListener(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "getListener", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterListener){
 }
-void deClassSoundLevelMeter::nfGetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	const deScriptingDragonScript &ds = ( ( deClassSoundLevelMeter* )GetOwnerClass() )->GetDS();
-	const dedsSoundLevelMeter * const peer = ( dedsSoundLevelMeter* )soundLevelMeter.GetPeerScripting();
+void deClassSoundLevelMeter::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	const dedsSoundLevelMeter * const peer = (dedsSoundLevelMeter*)soundLevelMeter.GetPeerScripting();
 	
-	if( peer ){
-		rt->PushObject( peer->GetCallback(), ds.GetClassSoundLevelMeterListener() );
+	if(peer){
+		rt->PushObject(peer->GetCallback(), ds.GetClassSoundLevelMeterListener());
 		
 	}else{
-		rt->PushObject( NULL, ds.GetClassSoundLevelMeterListener() );
+		rt->PushObject(NULL, ds.GetClassSoundLevelMeterListener());
 	}
 }
 
 // public func void setListener( SoundLevelMeterListener listener )
-deClassSoundLevelMeter::nfSetListener::nfSetListener( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "setListener", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsSoundLevelMeterListener ); // listener
+deClassSoundLevelMeter::nfSetListener::nfSetListener(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "setListener", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsSoundLevelMeterListener); // listener
 }
-void deClassSoundLevelMeter::nfSetListener::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter &soundLevelMeter = *( ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter );
-	dedsSoundLevelMeter * const peer = ( dedsSoundLevelMeter* )soundLevelMeter.GetPeerScripting();
-	if( peer ){
-		peer->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+void deClassSoundLevelMeter::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	dedsSoundLevelMeter * const peer = (dedsSoundLevelMeter*)soundLevelMeter.GetPeerScripting();
+	if(peer){
+		peer->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
 }
 
 
 
 // public func int hashCode()
-deClassSoundLevelMeter::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "hashCode", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassSoundLevelMeter::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "hashCode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
-void deClassSoundLevelMeter::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter * const soundLevelMeter = ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter;
+void deClassSoundLevelMeter::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter * const soundLevelMeter = ((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter;
 	
 	// hash code = memory location
-	rt->PushInt( ( int )( intptr_t )soundLevelMeter );
+	rt->PushInt((int)(intptr_t)soundLevelMeter);
 }
 
 // public func bool equals( Object obj )
-deClassSoundLevelMeter::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsSoundLevelMeter, "equals", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // obj
+deClassSoundLevelMeter::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsSoundLevelMeter, "equals", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // obj
 }
-void deClassSoundLevelMeter::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSoundLevelMeter * const soundLevelMeter = ( ( sSLMNatDat* )p_GetNativeData( myself ) )->soundLevelMeter;
-	deClassSoundLevelMeter * const clsSoundLevelMeter = ( deClassSoundLevelMeter* )GetOwnerClass();
+void deClassSoundLevelMeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSoundLevelMeter * const soundLevelMeter = ((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter;
+	deClassSoundLevelMeter * const clsSoundLevelMeter = (deClassSoundLevelMeter*)GetOwnerClass();
 	
-	dsValue * const object = rt->GetValue( 0 );
-	if( ! p_IsObjOfType( object, clsSoundLevelMeter ) ){
-		rt->PushBool( false );
+	dsValue * const object = rt->GetValue(0);
+	if(! p_IsObjOfType(object, clsSoundLevelMeter)){
+		rt->PushBool(false);
 		
 	}else{
-		rt->PushBool( soundLevelMeter == ( ( sSLMNatDat* )p_GetNativeData( object ) )->soundLevelMeter );
+		rt->PushBool(soundLevelMeter == ((sSLMNatDat*)p_GetNativeData(object))->soundLevelMeter);
 	}
 }
 
@@ -366,14 +366,14 @@ void deClassSoundLevelMeter::nfEquals::RunFunction( dsRunTime *rt, dsValue *myse
 // Constructor
 ////////////////
 
-deClassSoundLevelMeter::deClassSoundLevelMeter( deScriptingDragonScript &ds ) :
-dsClass( "SoundLevelMeter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassSoundLevelMeter::deClassSoundLevelMeter(deScriptingDragonScript &ds) :
+dsClass("SoundLevelMeter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSLMNatDat ) );
+	p_SetNativeDataSize(sizeof(sSLMNatDat));
 }
 
 deClassSoundLevelMeter::~deClassSoundLevelMeter(){
@@ -384,8 +384,8 @@ deClassSoundLevelMeter::~deClassSoundLevelMeter(){
 // Management
 ///////////////
 
-void deClassSoundLevelMeter::CreateClassMembers( dsEngine *engine ){
-	pClsSoundLevelMeterType = engine->GetClass( "Dragengine.Scenery.SoundLevelMeterType" );
+void deClassSoundLevelMeter::CreateClassMembers(dsEngine *engine){
+	pClsSoundLevelMeterType = engine->GetClass("Dragengine.Scenery.SoundLevelMeterType");
 	
 	sInitData init;
 	init.clsSoundLevelMeter = this;
@@ -403,57 +403,57 @@ void deClassSoundLevelMeter::CreateClassMembers( dsEngine *engine ){
 	init.clsSoundLevelMeterType = pClsSoundLevelMeterType;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetType( init ) );
-	AddFunction( new nfSetType( init ) );
-	AddFunction( new nfGetPosition( init ) );
-	AddFunction( new nfSetPosition( init ) );
-	AddFunction( new nfGetOrientation( init ) );
-	AddFunction( new nfSetOrientation( init ) );
-	AddFunction( new nfGetConeAngle( init ) );
-	AddFunction( new nfSetConeAngle( init ) );
-	AddFunction( new nfGetAudibleDistance( init ) );
-	AddFunction( new nfSetAudibleDistance( init ) );
-	AddFunction( new nfGetLayerMask( init ) );
-	AddFunction( new nfSetLayerMask( init ) );
-	AddFunction( new nfGetEnabled( init ) );
-	AddFunction( new nfSetEnabled( init ) );
+	AddFunction(new nfGetType(init));
+	AddFunction(new nfSetType(init));
+	AddFunction(new nfGetPosition(init));
+	AddFunction(new nfSetPosition(init));
+	AddFunction(new nfGetOrientation(init));
+	AddFunction(new nfSetOrientation(init));
+	AddFunction(new nfGetConeAngle(init));
+	AddFunction(new nfSetConeAngle(init));
+	AddFunction(new nfGetAudibleDistance(init));
+	AddFunction(new nfSetAudibleDistance(init));
+	AddFunction(new nfGetLayerMask(init));
+	AddFunction(new nfSetLayerMask(init));
+	AddFunction(new nfGetEnabled(init));
+	AddFunction(new nfSetEnabled(init));
 	
-	AddFunction( new nfGetAudibleSpeakerCount( init ) );
-	AddFunction( new nfGetAudibleSpeakerAt( init ) );
+	AddFunction(new nfGetAudibleSpeakerCount(init));
+	AddFunction(new nfGetAudibleSpeakerAt(init));
 	
-	AddFunction( new nfGetListener( init ) );
-	AddFunction( new nfSetListener( init ) );
+	AddFunction(new nfGetListener(init));
+	AddFunction(new nfSetListener(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter( dsRealObject *myself ) const{
-	if( ! myself ){
+deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
-	return ( ( sSLMNatDat* )p_GetNativeData( myself->GetBuffer() ) )->soundLevelMeter;
+	return ((sSLMNatDat*)p_GetNativeData(myself->GetBuffer()))->soundLevelMeter;
 }
 
-void deClassSoundLevelMeter::PushSoundLevelMeter( dsRunTime *rt, deSoundLevelMeter *soundLevelMeter ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! soundLevelMeter ){
-		rt->PushObject( NULL, this );
+	if(! soundLevelMeter){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
 	// create new value
-	rt->CreateObjectNakedOnStack( this );
-	( ( sSLMNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )
+	rt->CreateObjectNakedOnStack(this);
+	((sSLMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))
 		->soundLevelMeter = soundLevelMeter;
 	soundLevelMeter->AddReference();
 }

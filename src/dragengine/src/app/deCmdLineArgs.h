@@ -46,7 +46,7 @@ public:
 	deCmdLineArgs();
 	
 	/** \brief Create a copy of an argument list. */
-	deCmdLineArgs( const deCmdLineArgs &copy );
+	deCmdLineArgs(const deCmdLineArgs &copy);
 	
 	/** \brief Clean up the command line object. */
 	~deCmdLineArgs();
@@ -64,35 +64,35 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	const decString &GetArgument( int index ) const;
+	const decString &GetArgument(int index) const;
 	
 	/**
 	 * \brief Index of first matching argument or -1 if not found.
 	 * 
 	 * \throws deeInvalidParam \em argument is NULL.
 	 */
-	int IndexOfArgument( const char *argument ) const;
+	int IndexOfArgument(const char *argument) const;
 	
 	/**
 	 * \brief Determine if argument exists.
 	 * 
 	 * \throws deeInvalidParam \em argument is NULL.
 	 */
-	bool HasArgument( const char *argument ) const;
+	bool HasArgument(const char *argument) const;
 	
 	/**
 	 * \brief Add an argument.
 	 * 
 	 * \throws deeInvalidParam \em argument is NULL.
 	 */
-	void AddArgument( const char *argument );
+	void AddArgument(const char *argument);
 	
 	/**
 	 * \brief Remove an argument from index.
 	 * 
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void RemoveArgument( int index );
+	void RemoveArgument(int index);
 	
 	/** \brief Remove all arguments. */
 	void RemoveAllArguments();
@@ -105,7 +105,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em commandLine is NULL.
 	 */
-	void AddArgsSplit( const char *commandLine );
+	void AddArgsSplit(const char *commandLine);
 	/*@}*/
 	
 	
@@ -113,7 +113,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy an argument list to this argument list. */
-	deCmdLineArgs &operator=( const deCmdLineArgs &copy );
+	deCmdLineArgs &operator=(const deCmdLineArgs &copy);
 	/*@}*/
 };
 

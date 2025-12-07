@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupToggleEnableRotation::aeURuleGroupToggleEnableRotation( aeRuleGroup *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupToggleEnableRotation::aeURuleGroupToggleEnableRotation(aeRuleGroup *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleGroupToggleEnableRotation::aeURuleGroupToggleEnableRotation( aeRuleGroup 
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule group toggle enable rotation" );
+		SetShortInfo("Rule group toggle enable rotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleGroupToggleEnableRotation::~aeURuleGroupToggleEnableRotation(){
 ///////////////
 
 void aeURuleGroupToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
 }
 
 void aeURuleGroupToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleGroupToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnableRotation::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

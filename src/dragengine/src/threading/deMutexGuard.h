@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create mutex guard and lock mutex. */
-	deMutexGuard( deMutex &mutex );
+	deMutexGuard(deMutex &mutex);
 	
 	/** \brief Clean mutex guard unlocking mutex. */
 	~deMutexGuard();
@@ -56,7 +56,7 @@ public:
 	
 private:
 	// Protection against coding mistakes
-	deMutexGuard( const deMutexGuard &guard );
+	deMutexGuard(const deMutexGuard &guard);
 	
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Guard holds the lock. */
-	inline bool GetLocked() const{ return pLocked; }
+	inline bool GetLocked() const{return pLocked;}
 	
 	/** \brief Lock guarded mutex. */
 	void Lock();

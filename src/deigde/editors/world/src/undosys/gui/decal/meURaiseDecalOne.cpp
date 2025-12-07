@@ -36,22 +36,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURaiseDecalOne::meURaiseDecalOne( meWorld *world, meDecal *decal ){
-	if( ! world || ! decal ) DETHROW( deeInvalidParam );
+meURaiseDecalOne::meURaiseDecalOne(meWorld *world, meDecal *decal){
+	if(! world || ! decal) DETHROW(deeInvalidParam);
 	
-	if( ! decal->GetParentObject() ) DETHROW( deeInvalidParam );
+	if(! decal->GetParentObject()) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	
 	pDecal = decal;
 	decal->AddReference();
 	
-	SetShortInfo( "Raise decal one level." );
-	SetLongInfo( "" );
+	SetShortInfo("Raise decal one level.");
+	SetLongInfo("");
 }
 
 meURaiseDecalOne::~meURaiseDecalOne(){
-	if( pDecal ) pDecal->FreeReference();
+	if(pDecal) pDecal->FreeReference();
 }
 
 
@@ -63,14 +63,14 @@ void meURaiseDecalOne::Undo(){
 	meObject *object = pDecal->GetParentObject();
 	int index;
 	
-	if( object ){
-		index = object->IndexOfDecal( pDecal );
-		if( index > 0 ){
-			object->MoveDecalTo( pDecal, index - 1 );
+	if(object){
+		index = object->IndexOfDecal(pDecal);
+		if(index > 0){
+			object->MoveDecalTo(pDecal, index - 1);
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -78,13 +78,13 @@ void meURaiseDecalOne::Redo(){
 	meObject *object = pDecal->GetParentObject();
 	int index;
 	
-	if( object ){
-		index = object->IndexOfDecal( pDecal );
-		if( index < object->GetDecalCount() - 1 ){
-			object->MoveDecalTo( pDecal, index + 1 );
+	if(object){
+		index = object->IndexOfDecal(pDecal);
+		if(index < object->GetDecalCount() - 1){
+			object->MoveDecalTo(pDecal, index + 1);
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }

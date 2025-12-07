@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	meCLIdentify( meWorld &world );
+	meCLIdentify(meWorld &world);
 	
 	/** Clean up visitor. */
 	virtual ~meCLIdentify();
@@ -64,10 +64,10 @@ public:
 	void Reset();
 	
 	/** Identified object or nullptr. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline meObject *GetObject() const{return pObject;}
 	
 	/** Identified decal or nullptr. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline meDecal *GetDecal() const{return pDecal;}
 	
 	/** Has identified object. */
 	bool HasObject() const;
@@ -80,15 +80,15 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 	
 	
 	
 private:
-	meObject *pGetObjectForCollider( deCollider *collider ) const;
+	meObject *pGetObjectForCollider(deCollider *collider) const;
 };
 
 #endif

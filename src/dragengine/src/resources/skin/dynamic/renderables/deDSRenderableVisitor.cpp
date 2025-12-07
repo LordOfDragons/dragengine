@@ -55,29 +55,29 @@ deDSRenderableVisitor::~deDSRenderableVisitor(){
 // Visiting
 /////////////
 
-void deDSRenderableVisitor::VisitRenderable( deDSRenderable &renderable ){
+void deDSRenderableVisitor::VisitRenderable(deDSRenderable &renderable){
 }
 
-void deDSRenderableVisitor::VisitValue( deDSRenderableValue &renderable ){
-	VisitRenderable( renderable );
+void deDSRenderableVisitor::VisitValue(deDSRenderableValue &renderable){
+	VisitRenderable(renderable);
 }
 
-void deDSRenderableVisitor::VisitColor( deDSRenderableColor &renderable ){
-	VisitRenderable( renderable );
+void deDSRenderableVisitor::VisitColor(deDSRenderableColor &renderable){
+	VisitRenderable(renderable);
 }
 
-void deDSRenderableVisitor::VisitImage( deDSRenderableImage &renderable ){
-	VisitRenderable( renderable );
+void deDSRenderableVisitor::VisitImage(deDSRenderableImage &renderable){
+	VisitRenderable(renderable);
 }
 
-void deDSRenderableVisitor::VisitCanvas( deDSRenderableCanvas &renderable ){
-	VisitRenderable( renderable );
+void deDSRenderableVisitor::VisitCanvas(deDSRenderableCanvas &renderable){
+	VisitRenderable(renderable);
 }
 
-void deDSRenderableVisitor::VisitVideoFrame( deDSRenderableVideoFrame &renderable ){
-	VisitRenderable( renderable );
+void deDSRenderableVisitor::VisitVideoFrame(deDSRenderableVideoFrame &renderable){
+	VisitRenderable(renderable);
 }
 
-void deDSRenderableVisitor::VisitCamera( deDSRenderableCamera &renderable ){
-	VisitRenderable( renderable );
+void deDSRenderableVisitor::VisitCamera(deDSRenderableCamera &renderable){
+	VisitRenderable(renderable);
 }

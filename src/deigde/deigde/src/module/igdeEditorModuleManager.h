@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new editor module manager. */
-	igdeEditorModuleManager( igdeWindowMain &windowMain );
+	igdeEditorModuleManager(igdeWindowMain &windowMain);
 	
 	/** \brief Clean up editor module manager. */
 	~igdeEditorModuleManager();
@@ -64,16 +64,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline igdeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline igdeWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Module path. */
-	inline const decString &GetPathModules() const{ return pPathModules; }
+	inline const decString &GetPathModules() const{return pPathModules;}
 	
 	/** \brief Activate module or NULL if none is active. */
-	inline igdeEditorModuleDefinition *GetActiveModule() const{ return pActiveModule; }
+	inline igdeEditorModuleDefinition *GetActiveModule() const{return pActiveModule;}
 	
 	/** \brief Set active module. */
-	void SetActiveModule( igdeEditorModuleDefinition *module );
+	void SetActiveModule(igdeEditorModuleDefinition *module);
 	
 	/** \brief Activate first possible module. */
 	void ActivateMostRecentModule();
@@ -90,10 +90,10 @@ public:
 	int GetModuleCount() const;
 	
 	/** \brief Module at index. */
-	igdeEditorModuleDefinition *GetModuleAt( int index ) const;
+	igdeEditorModuleDefinition *GetModuleAt(int index) const;
 	
 	/** \brief Module with ID or NULL if not found. */
-	igdeEditorModuleDefinition *GetModuleWithID ( const char *id ) const;
+	igdeEditorModuleDefinition *GetModuleWithID (const char *id) const;
 	
 	/** \brief Remove all modules. */
 	void RemoveAllModules();
@@ -105,10 +105,10 @@ public:
 	void StopModules();
 	
 	/** \brief Recent module. */
-	igdeEditorModuleDefinition *GetRecentModuleAt( int index ) const;
+	igdeEditorModuleDefinition *GetRecentModuleAt(int index) const;
 	
 	/** \brief Change recent used position of module. */
-	void ChangeModuleRecentUsedPosition( igdeEditorModuleDefinition *module, int position );
+	void ChangeModuleRecentUsedPosition(igdeEditorModuleDefinition *module, int position);
 	
 	/** \brief Reset recently used position of modules. */
 	void ResetRecentUsedPosition();

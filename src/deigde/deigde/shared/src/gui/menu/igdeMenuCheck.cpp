@@ -46,19 +46,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMenuCheck::igdeMenuCheck( igdeEnvironment &environment ) :
-igdeMenuCommand( environment ),
-pChecked( false ){
+igdeMenuCheck::igdeMenuCheck(igdeEnvironment &environment) :
+igdeMenuCommand(environment),
+pChecked(false){
 }
 
-igdeMenuCheck::igdeMenuCheck( igdeEnvironment &environment, igdeAction *action ) :
-igdeMenuCommand( environment ),
-pChecked( false )
+igdeMenuCheck::igdeMenuCheck(igdeEnvironment &environment, igdeAction *action) :
+igdeMenuCommand(environment),
+pChecked(false)
 {
 	// WARNING we have to use SetAction not the base class constructor otherwise
 	//         OnParameterChanged is called before pSelected is constructed
 	//         and initialized causing wrong state to be stored
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeMenuCheck::~igdeMenuCheck(){
@@ -70,8 +70,8 @@ igdeMenuCheck::~igdeMenuCheck(){
 // Management
 ///////////////
 
-void igdeMenuCheck::SetChecked( bool checked ){
-	if( pChecked == checked ){
+void igdeMenuCheck::SetChecked(bool checked){
+	if(pChecked == checked){
 		return;
 	}
 	
@@ -81,37 +81,37 @@ void igdeMenuCheck::SetChecked( bool checked ){
 
 
 
-void igdeMenuCheck::OnParameterChanged( igdeAction *action ){
-	igdeMenuCommand::OnParameterChanged( action );
+void igdeMenuCheck::OnParameterChanged(igdeAction *action){
+	igdeMenuCommand::OnParameterChanged(action);
 	
-	SetChecked( action->GetSelected() );
+	SetChecked(action->GetSelected());
 }
 
 
 
 void igdeMenuCheck::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMenuCheck * const native = igdeNativeMenuCheck::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMenuCheck * const native = igdeNativeMenuCheck::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeMenuCheck::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeMenuCheck* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeMenuCheck*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeMenuCheck::OnCheckedChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuCheck* )GetNativeWidget() )->UpdateChecked();
+	if(GetNativeWidget()){
+		((igdeNativeMenuCheck*)GetNativeWidget())->UpdateChecked();
 	}
 }

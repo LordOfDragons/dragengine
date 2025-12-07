@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataNavSpace::meUndoDataNavSpace( meNavigationSpace *navspace ) :
-pNavSpace( NULL )
+meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace *navspace) :
+pNavSpace(NULL)
 {
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNavSpace = NULL;
@@ -56,7 +56,7 @@ pNavSpace( NULL )
 }
 
 meUndoDataNavSpace::~meUndoDataNavSpace(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
 }

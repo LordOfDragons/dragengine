@@ -58,19 +58,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create collider owner for object. */
-	meColliderOwner( meObject *object );
+	meColliderOwner(meObject *object);
 	
 	/** \brief Create collider owner for object shape. */
-	meColliderOwner( meObjectShape *shape );
+	meColliderOwner(meObjectShape *shape);
 	
 	/** \brief Create collider owner for object snap point. */
-	meColliderOwner( meObjectSnapPoint *snapPoint );
+	meColliderOwner(meObjectSnapPoint *snapPoint);
 	
 	/** \brief Create collider owner for decal. */
-	meColliderOwner( meDecal *decal );
+	meColliderOwner(meDecal *decal);
 	
 	/** \brief Create collider owner for navigation space. */
-	meColliderOwner( meNavigationSpace *navspace );
+	meColliderOwner(meNavigationSpace *navspace);
 	/*@}*/
 	
 	
@@ -78,25 +78,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner object class or \em NULL if not set. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline meObject *GetObject() const{return pObject;}
 	
 	/** \brief Object shape or \em NULL if not set. */
-	inline meObjectShape *GetShape() const{ return pShape; }
+	inline meObjectShape *GetShape() const{return pShape;}
 	
 	/** \brief Snap point or \em NULL if not set. */
-	inline meObjectSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
+	inline meObjectSnapPoint *GetSnapPoint() const{return pSnapPoint;}
 	
 	/** \brief Owner decal or \em NULL if not set. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline meDecal *GetDecal() const{return pDecal;}
 	
 	/** \brief Owner navigation space or \em NULL if not set. */
-	inline meNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
+	inline meNavigationSpace *GetNavigationSpace() const{return pNavigationSpace;}
 	
 	
 	
 	/** \brief Get collider owner for collider or \em NULL if not set. */
 	static const meColliderOwner *GetColliderOwner(
-		igdeEnvironment &environment, deCollider *collider );
+		igdeEnvironment &environment, deCollider *collider);
 	/*@}*/
 };
 

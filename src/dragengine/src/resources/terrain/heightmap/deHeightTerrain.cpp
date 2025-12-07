@@ -45,20 +45,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deHeightTerrain::deHeightTerrain( deHeightTerrainManager *manager,
-	float sectorSize, int sectorResolution ) :
-deResource( manager ),
-pSectorSize( sectorSize ),
-pSectorResolution( sectorResolution ),
-pBaseHeight( 0.0f ),
-pHeightScaling( 1.0f ),
-pPeerGraphic( NULL ),
-pPeerPhysics( NULL ),
-pPeerAudio( NULL ),
-pPeerAI( NULL )
+deHeightTerrain::deHeightTerrain(deHeightTerrainManager *manager,
+	float sectorSize, int sectorResolution) :
+deResource(manager),
+pSectorSize(sectorSize),
+pSectorResolution(sectorResolution),
+pBaseHeight(0.0f),
+pHeightScaling(1.0f),
+pPeerGraphic(NULL),
+pPeerPhysics(NULL),
+pPeerAudio(NULL),
+pPeerAI(NULL)
 {
-	if( sectorSize < 0.001f || sectorResolution < 2 ){
-		DETHROW( deeInvalidParam );
+	if(sectorSize < 0.001f || sectorResolution < 2){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -71,50 +71,50 @@ deHeightTerrain::~deHeightTerrain(){
 // Management
 ///////////////
 
-void deHeightTerrain::SetBaseHeight( float height ){
-	if( fabsf( height - pBaseHeight ) < FLOAT_SAFE_EPSILON ){
+void deHeightTerrain::SetBaseHeight(float height){
+	if(fabsf(height - pBaseHeight) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBaseHeight = height;
 }
 
-void deHeightTerrain::SetHeightScaling( float scaling ){
-	scaling = decMath::max( scaling, 0.0f );
-	if( fabsf( scaling - pHeightScaling ) < FLOAT_SAFE_EPSILON ){
+void deHeightTerrain::SetHeightScaling(float scaling){
+	scaling = decMath::max(scaling, 0.0f);
+	if(fabsf(scaling - pHeightScaling) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pHeightScaling = scaling;
 }
 
-void deHeightTerrain::SetCollisionFilter( const decCollisionFilter &collisionFilter ){
-	if( collisionFilter == pCollisionFilter ){
+void deHeightTerrain::SetCollisionFilter(const decCollisionFilter &collisionFilter){
+	if(collisionFilter == pCollisionFilter){
 		return;
 	}
 	
 	pCollisionFilter = collisionFilter;
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->CollisionFilterChanged();
 	}
 }
 
 
 
-void deHeightTerrain::NotifyHeightChanged( const decPoint &fromSector,
-const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates ){
-	if( pPeerGraphic ){
-		pPeerGraphic->HeightChanged( fromSector, fromCoordinates, toSector, toCoordinates );
+void deHeightTerrain::NotifyHeightChanged(const decPoint &fromSector,
+const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates){
+	if(pPeerGraphic){
+		pPeerGraphic->HeightChanged(fromSector, fromCoordinates, toSector, toCoordinates);
 	}
-	if( pPeerPhysics ){
-		pPeerPhysics->HeightChanged( fromSector, fromCoordinates, toSector, toCoordinates );
+	if(pPeerPhysics){
+		pPeerPhysics->HeightChanged(fromSector, fromCoordinates, toSector, toCoordinates);
 	}
-	if( pPeerAudio ){
-		pPeerAudio->HeightChanged( fromSector, fromCoordinates, toSector, toCoordinates );
+	if(pPeerAudio){
+		pPeerAudio->HeightChanged(fromSector, fromCoordinates, toSector, toCoordinates);
 	}
-	if( pPeerAI ){
-		pPeerAI->HeightChanged( fromSector, fromCoordinates, toSector, toCoordinates );
+	if(pPeerAI){
+		pPeerAI->HeightChanged(fromSector, fromCoordinates, toSector, toCoordinates);
 	}
 }
 
@@ -127,17 +127,17 @@ int deHeightTerrain::GetSectorCount() const{
 	return pSectors.GetCount();
 }
 
-deHeightTerrainSector *deHeightTerrain::GetSectorAt( int index ) const{
-	return ( deHeightTerrainSector* )pSectors.GetAt( index );
+deHeightTerrainSector *deHeightTerrain::GetSectorAt(int index) const{
+	return (deHeightTerrainSector*)pSectors.GetAt(index);
 }
 
-deHeightTerrainSector *deHeightTerrain::GetSectorWith( const decPoint &coordinates ) const{
+deHeightTerrainSector *deHeightTerrain::GetSectorWith(const decPoint &coordinates) const{
 	const int count = pSectors.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deHeightTerrainSector * const sector = ( deHeightTerrainSector* )pSectors.GetAt( i );
-		if( sector->GetSector() == coordinates ){
+	for(i=0; i<count; i++){
+		deHeightTerrainSector * const sector = (deHeightTerrainSector*)pSectors.GetAt(i);
+		if(sector->GetSector() == coordinates){
 			return sector;
 		}
 	}
@@ -145,61 +145,61 @@ deHeightTerrainSector *deHeightTerrain::GetSectorWith( const decPoint &coordinat
 	return NULL;
 }
 
-void deHeightTerrain::AddSector( deHeightTerrainSector *sector ){
-	if( ! sector || sector->GetParentHeightTerrain() ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrain::AddSector(deHeightTerrainSector *sector){
+	if(! sector || sector->GetParentHeightTerrain()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int index = pSectors.GetCount();
-	pSectors.Add( sector );
-	sector->SetParentHeightTerrain( this );
-	sector->SetIndex( index );
+	pSectors.Add(sector);
+	sector->SetParentHeightTerrain(this);
+	sector->SetIndex(index);
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->SectorAdded( sector );
+	if(pPeerGraphic){
+		pPeerGraphic->SectorAdded(sector);
 	}
-	if( pPeerPhysics ){
-		pPeerPhysics->SectorAdded( sector );
+	if(pPeerPhysics){
+		pPeerPhysics->SectorAdded(sector);
 	}
-	if( pPeerAudio ){
-		pPeerAudio->SectorAdded( sector );
+	if(pPeerAudio){
+		pPeerAudio->SectorAdded(sector);
 	}
-	if( pPeerAI ){
-		pPeerAI->SectorAdded( sector );
+	if(pPeerAI){
+		pPeerAI->SectorAdded(sector);
 	}
 }
 
-void deHeightTerrain::RemoveSector( deHeightTerrainSector *sector ){
-	if( ! sector || sector->GetParentHeightTerrain() != this ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrain::RemoveSector(deHeightTerrainSector *sector){
+	if(! sector || sector->GetParentHeightTerrain() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int index = sector->GetIndex();
-	sector->SetIndex( -1 );
-	sector->SetParentHeightTerrain( NULL );
-	pSectors.RemoveFrom( index );
+	sector->SetIndex(-1);
+	sector->SetParentHeightTerrain(NULL);
+	pSectors.RemoveFrom(index);
 	
 	const int count = pSectors.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deHeightTerrainSector* )pSectors.GetAt( i ) )->SetIndex( i );
+	for(i=0; i<count; i++){
+		((deHeightTerrainSector*)pSectors.GetAt(i))->SetIndex(i);
 	}
 	
 	try{
-		if( pPeerGraphic ){
-			pPeerGraphic->SectorRemoved( index );
+		if(pPeerGraphic){
+			pPeerGraphic->SectorRemoved(index);
 		}
-		if( pPeerPhysics ){
-			pPeerPhysics->SectorRemoved( index );
+		if(pPeerPhysics){
+			pPeerPhysics->SectorRemoved(index);
 		}
-		if( pPeerAudio ){
-			pPeerAudio->SectorRemoved( index );
+		if(pPeerAudio){
+			pPeerAudio->SectorRemoved(index);
 		}
-		if( pPeerAI ){
-			pPeerAI->SectorRemoved( index );
+		if(pPeerAI){
+			pPeerAI->SectorRemoved(index);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		delete sector;
 		throw;
 	}
@@ -208,42 +208,42 @@ void deHeightTerrain::RemoveSector( deHeightTerrainSector *sector ){
 }
 
 void deHeightTerrain::RemoveAllSectors(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->AllSectorsRemoved();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->AllSectorsRemoved();
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->AllSectorsRemoved();
 	}
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->AllSectorsRemoved();
 	}
 	
 	const int count = pSectors.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		deHeightTerrainSector * const sector = ( deHeightTerrainSector* )pSectors.GetAt( i );
-		sector->SetIndex( -1 );
-		sector->SetParentHeightTerrain( NULL );
+	for(i=0; i<count; i++){
+		deHeightTerrainSector * const sector = (deHeightTerrainSector*)pSectors.GetAt(i);
+		sector->SetIndex(-1);
+		sector->SetParentHeightTerrain(NULL);
 		delete sector;
 	}
 	pSectors.RemoveAll();
 }
 
-void deHeightTerrain::NotifySectorChanged( int sector ){
-	if( pPeerGraphic ){
-		pPeerGraphic->SectorChanged( sector );
+void deHeightTerrain::NotifySectorChanged(int sector){
+	if(pPeerGraphic){
+		pPeerGraphic->SectorChanged(sector);
 	}
-	if( pPeerPhysics ){
-		pPeerPhysics->SectorChanged( sector );
+	if(pPeerPhysics){
+		pPeerPhysics->SectorChanged(sector);
 	}
-	if( pPeerAudio ){
-		pPeerAudio->SectorChanged( sector );
+	if(pPeerAudio){
+		pPeerAudio->SectorChanged(sector);
 	}
-	if( pPeerAI ){
-		pPeerAI->SectorChanged( sector );
+	if(pPeerAI){
+		pPeerAI->SectorChanged(sector);
 	}
 }
 
@@ -252,15 +252,15 @@ void deHeightTerrain::NotifySectorChanged( int sector ){
 // Collision Detection
 ////////////////////////
 
-void deHeightTerrain::FindDecalsAt( const decDVector &point, deDecalList &list ){
-	if( pPeerPhysics ){
-		pPeerPhysics->FindDecalsAt( point, list );
+void deHeightTerrain::FindDecalsAt(const decDVector &point, deDecalList &list){
+	if(pPeerPhysics){
+		pPeerPhysics->FindDecalsAt(point, list);
 	}
 }
 
-void deHeightTerrain::FindDecalsTouching( const decShape &shape, deDecalList &list ){
-	if( pPeerPhysics ){
-		pPeerPhysics->FindDecalsTouching( shape, list );
+void deHeightTerrain::FindDecalsTouching(const decShape &shape, deDecalList &list){
+	if(pPeerPhysics){
+		pPeerPhysics->FindDecalsTouching(shape, list);
 	}
 }
 
@@ -269,45 +269,45 @@ void deHeightTerrain::FindDecalsTouching( const decShape &shape, deDecalList &li
 // System Peers
 /////////////////
 
-void deHeightTerrain::SetPeerGraphic( deBaseGraphicHeightTerrain *peer ){
-	if( peer == pPeerGraphic ){
+void deHeightTerrain::SetPeerGraphic(deBaseGraphicHeightTerrain *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
 }
 
-void deHeightTerrain::SetPeerPhysics( deBasePhysicsHeightTerrain *peer ){
-	if( peer == pPeerPhysics ){
+void deHeightTerrain::SetPeerPhysics(deBasePhysicsHeightTerrain *peer){
+	if(peer == pPeerPhysics){
 		return;
 	}
 	
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 	}
 	pPeerPhysics = peer;
 }
 
-void deHeightTerrain::SetPeerAudio( deBaseAudioHeightTerrain *peer ){
-	if( peer == pPeerAudio ){
+void deHeightTerrain::SetPeerAudio(deBaseAudioHeightTerrain *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	pPeerAudio = peer;
 }
 
-void deHeightTerrain::SetPeerAI( deBaseAIHeightTerrain *peer ){
-	if( peer == pPeerAI ){
+void deHeightTerrain::SetPeerAI(deBaseAIHeightTerrain *peer){
+	if(peer == pPeerAI){
 		return;
 	}
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		delete pPeerAI;
 	}
 	pPeerAI = peer;
@@ -319,19 +319,19 @@ void deHeightTerrain::SetPeerAI( deBaseAIHeightTerrain *peer ){
 //////////////////////
 
 void deHeightTerrain::pCleanUp(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		delete pPeerAI;
 		pPeerAI = NULL;
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 		pPeerAudio = NULL;
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = NULL;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}

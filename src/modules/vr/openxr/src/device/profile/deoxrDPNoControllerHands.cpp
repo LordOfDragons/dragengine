@@ -38,14 +38,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDPNoControllerHands::deoxrDPNoControllerHands( deoxrInstance &instance ) :
-deoxrDeviceProfile( instance, deoxrPath(), "No Controller Hands" )
+deoxrDPNoControllerHands::deoxrDPNoControllerHands(deoxrInstance &instance) :
+deoxrDeviceProfile(instance, deoxrPath(), "No Controller Hands")
 {
 }
 
 deoxrDPNoControllerHands::~deoxrDPNoControllerHands(){
-	pRemoveDevice( true );
-	pRemoveDevice( false );
+	pRemoveDevice(true);
+	pRemoveDevice(false);
 }
 
 
@@ -58,28 +58,28 @@ void deoxrDPNoControllerHands::CheckAttached(){
 	bool useHandsLeft = false;
 	bool useHandsRight = false;
 
-	if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking )
-	&& instance.GetOxr().GetSystem()->GetSupportsHandTracking() ){
+	if(instance.SupportsExtension(deoxrInstance::extEXTHandTracking)
+	&& instance.GetOxr().GetSystem()->GetSupportsHandTracking()){
 		// use hands if no device has been added covering hands
 		bool hasLeft = false, hasRight = false;
-		pHasHandDevices( pDeviceLeft, pDeviceRight, hasLeft, hasRight );
+		pHasHandDevices(pDeviceLeft, pDeviceRight, hasLeft, hasRight);
 
 		useHandsLeft = not hasLeft;
 		useHandsRight = not hasRight;
 	}
 	
-	if( useHandsLeft ){
-		pAddDevice( true );
+	if(useHandsLeft){
+		pAddDevice(true);
 		
 	}else{
-		pRemoveDevice( true );
+		pRemoveDevice(true);
 	}
 	
-	if( useHandsRight ){
-		pAddDevice( false );
+	if(useHandsRight){
+		pAddDevice(false);
 		
 	}else{
-		pRemoveDevice( false );
+		pRemoveDevice(false);
 	}
 }
 
@@ -87,16 +87,16 @@ void deoxrDPNoControllerHands::SuggestBindings(){
 }
 
 void deoxrDPNoControllerHands::ClearActions(){
-	pRemoveDevice( true );
-	pRemoveDevice( false );
+	pRemoveDevice(true);
+	pRemoveDevice(false);
 }
 
-void deoxrDPNoControllerHands::RemoveDevice( deInputDevice::eDeviceTypes type ){
-	if( type == deInputDevice::edtVRLeftHand && pDeviceLeft ){
-		pRemoveDevice( true );
+void deoxrDPNoControllerHands::RemoveDevice(deInputDevice::eDeviceTypes type){
+	if(type == deInputDevice::edtVRLeftHand && pDeviceLeft){
+		pRemoveDevice(true);
 	}
-	if( type == deInputDevice::edtVRRightHand && pDeviceRight ){
-		pRemoveDevice( false );
+	if(type == deInputDevice::edtVRRightHand && pDeviceRight){
+		pRemoveDevice(false);
 	}
 }
 
@@ -105,32 +105,32 @@ void deoxrDPNoControllerHands::RemoveDevice( deInputDevice::eDeviceTypes type ){
 // Private Functions
 //////////////////////
 
-void deoxrDPNoControllerHands::pAddDevice( bool left ){
+void deoxrDPNoControllerHands::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( device ){
+	if(device){
 		return;
 	}
 	
-	device.TakeOver( new deoxrDevice( GetInstance().GetOxr(), *this ) );
+	device.TakeOver(new deoxrDevice(GetInstance().GetOxr(), *this));
 	
 	decString id;
 	
-	if( left ){
-		device->SetType( deInputDevice::edtVRLeftHand );
-		device->SetName( "Left Hand" );
-		id.Format( "%snch_l", OXR_DEVID_PREFIX );
-		device->SetSubactionPath( GetInstance().GetPathHandLeft() );
-		device->SetMatrixWristToDevice( decMatrix::CreateTranslation( 0.03f, 0.06f, 0.14f ) );
+	if(left){
+		device->SetType(deInputDevice::edtVRLeftHand);
+		device->SetName("Left Hand");
+		id.Format("%snch_l", OXR_DEVID_PREFIX);
+		device->SetSubactionPath(GetInstance().GetPathHandLeft());
+		device->SetMatrixWristToDevice(decMatrix::CreateTranslation(0.03f, 0.06f, 0.14f));
 		
 	}else{
-		device->SetType( deInputDevice::edtVRRightHand );
-		device->SetName( "Right Hand" );
-		id.Format( "%snch_r", OXR_DEVID_PREFIX );
-		device->SetSubactionPath( GetInstance().GetPathHandRight() );
-		device->SetMatrixWristToDevice( decMatrix::CreateTranslation( -0.03f, 0.06f, 0.14f ) );
+		device->SetType(deInputDevice::edtVRRightHand);
+		device->SetName("Right Hand");
+		id.Format("%snch_r", OXR_DEVID_PREFIX);
+		device->SetSubactionPath(GetInstance().GetPathHandRight());
+		device->SetMatrixWristToDevice(decMatrix::CreateTranslation(-0.03f, 0.06f, 0.14f));
 	}
 	
-	device->SetID( id );
+	device->SetID(id);
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
 	pAddAxisTrigger(device, trigger);
@@ -138,16 +138,16 @@ void deoxrDPNoControllerHands::pAddDevice( bool left ){
 	
 	pAddHandTracker(device, left, true);
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	GetInstance().GetOxr().GetDevices().Add(device);
 }
 
-void deoxrDPNoControllerHands::pRemoveDevice( bool left ){
+void deoxrDPNoControllerHands::pRemoveDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
-	if( ! device ){
+	if(! device){
 		return;
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	oxr.GetDevices().Remove( device );
+	oxr.GetDevices().Remove(device);
 	device = nullptr;
 }

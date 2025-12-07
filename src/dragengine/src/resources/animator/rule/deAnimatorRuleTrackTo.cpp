@@ -54,37 +54,37 @@ deAnimatorRuleTrackTo::~deAnimatorRuleTrackTo(){
 // Management
 ///////////////
 
-void deAnimatorRuleTrackTo::SetTrackBone( const char *boneName ){
-	if( ! boneName ){
-		DETHROW( deeInvalidParam );
+void deAnimatorRuleTrackTo::SetTrackBone(const char *boneName){
+	if(! boneName){
+		DETHROW(deeInvalidParam);
 	}
 	pTrackBone = boneName;
 }
 
-void deAnimatorRuleTrackTo::SetTrackAxis( eTrackAxis axis ){
-	if( axis < etaPosX || axis > etaNegZ ){
-		DETHROW( deeInvalidParam );
+void deAnimatorRuleTrackTo::SetTrackAxis(eTrackAxis axis){
+	if(axis < etaPosX || axis > etaNegZ){
+		DETHROW(deeInvalidParam);
 	}
 	pTrackAxis = axis;
 }
 
-void deAnimatorRuleTrackTo::SetUpAxis( eTrackAxis axis ){
-	if( axis < etaPosX || axis > etaNegZ ){
-		DETHROW( deeInvalidParam );
+void deAnimatorRuleTrackTo::SetUpAxis(eTrackAxis axis){
+	if(axis < etaPosX || axis > etaNegZ){
+		DETHROW(deeInvalidParam);
 	}
 	pUpAxis = axis;
 }
 
-void deAnimatorRuleTrackTo::SetUpTarget( eUpTarget target ){
-	if( target < eutWorldX || target > eutController ){
-		DETHROW( deeInvalidParam );
+void deAnimatorRuleTrackTo::SetUpTarget(eUpTarget target){
+	if(target < eutWorldX || target > eutController){
+		DETHROW(deeInvalidParam);
 	}
 	pUpTarget = target;
 }
 
-void deAnimatorRuleTrackTo::SetLockedAxis( eLockedAxis axis ){
-	if( axis < elaNone || axis > elaZ ){
-		DETHROW( deeInvalidParam );
+void deAnimatorRuleTrackTo::SetLockedAxis(eLockedAxis axis){
+	if(axis < elaNone || axis > elaZ){
+		DETHROW(deeInvalidParam);
 	}
 	pLockedAxis = axis;
 }
@@ -94,6 +94,6 @@ void deAnimatorRuleTrackTo::SetLockedAxis( eLockedAxis axis ){
 // Visiting
 /////////////
 
-void deAnimatorRuleTrackTo::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitTrackTo( *this );
+void deAnimatorRuleTrackTo::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitTrackTo(*this);
 }

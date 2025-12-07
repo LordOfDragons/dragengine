@@ -229,7 +229,7 @@ void delLauncher::pLocatePath(){
 	decPath path;
 
 #ifdef OS_W32
-	TCHAR value[ 256 ];
+	TCHAR value[256];
 #else
 	const char *value;
 #endif
@@ -246,7 +246,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_SYS_CONFIG", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_SYS_CONFIG", &value[0], sizeof(value))){
 		pPathConfigSystem = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -306,7 +306,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_USER_CONFIG", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_USER_CONFIG", &value[0], sizeof(value))){
 		pPathConfigUser = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -331,7 +331,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_SHARES", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_SHARES", &value[0], sizeof(value))){
 		pPathShares = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -354,7 +354,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_GAMES", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_GAMES", &value[0], sizeof(value))){
 		pPathGames = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -378,7 +378,7 @@ void delLauncher::pLocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DELAUNCHER_LOGS", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DELAUNCHER_LOGS", &value[0], sizeof(value))){
 		pPathLogs = deOSWindows::WideToUtf8(value);
 	}
 #else

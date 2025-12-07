@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglEnvMapProbe( deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe );
+	deoglEnvMapProbe(deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe);
 	
 	/** Clean up peer. */
 	virtual ~deoglEnvMapProbe();
@@ -64,15 +64,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Environment map probe. */
-	inline const deEnvMapProbe &GetEnvMapProbe() const{ return pEnvMapProbe; }
+	inline const deEnvMapProbe &GetEnvMapProbe() const{return pEnvMapProbe;}
 	
 	
 	
 	/** Render environment map probe. */
-	inline deoglREnvMapProbe *GetREnvMapProbe() const{ return pREnvMapProbe; }
+	inline deoglREnvMapProbe *GetREnvMapProbe() const{return pREnvMapProbe;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

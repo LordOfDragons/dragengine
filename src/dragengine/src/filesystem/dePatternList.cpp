@@ -51,31 +51,31 @@ int dePatternList::GetPatternCount() const {
 	return pPatterns.GetCount();
 }
 
-const decString &dePatternList::GetPatternAt( int index ) const{
-	return pPatterns.GetAt( index );
+const decString &dePatternList::GetPatternAt(int index) const{
+	return pPatterns.GetAt(index);
 }
 
-int dePatternList::IndexOfPattern( const char *pattern ) const{
-	return pPatterns.IndexOf( pattern );
+int dePatternList::IndexOfPattern(const char *pattern) const{
+	return pPatterns.IndexOf(pattern);
 }
 
-bool dePatternList::HasPattern( const char *pattern ) const{
-	return pPatterns.Has( pattern );
+bool dePatternList::HasPattern(const char *pattern) const{
+	return pPatterns.Has(pattern);
 }
 
-void dePatternList::AddPattern( const char *pattern ){
-	if( pPatterns.Has( pattern ) ){
-		DETHROW( deeInvalidParam );
+void dePatternList::AddPattern(const char *pattern){
+	if(pPatterns.Has(pattern)){
+		DETHROW(deeInvalidParam);
 	}
-	pPatterns.Add( pattern );
+	pPatterns.Add(pattern);
 }
 
-void dePatternList::RemovePattern( const char *pattern ){
-	const int index = pPatterns.IndexOf( pattern );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void dePatternList::RemovePattern(const char *pattern){
+	const int index = pPatterns.IndexOf(pattern);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
-	pPatterns.RemoveFrom( index );
+	pPatterns.RemoveFrom(index);
 }
 
 void dePatternList::RemoveAllPatterns(){
@@ -88,14 +88,14 @@ void dePatternList::SortPatternByLength(){
 	const int count = pPatterns.GetCount();
 	int p = 1;
 	
-	while( p < count ){
-		const int length1 = pPatterns[ p - 1 ].GetLength();
-		const int length2 = pPatterns[ p ].GetLength();
+	while(p < count){
+		const int length1 = pPatterns[p - 1].GetLength();
+		const int length2 = pPatterns[p].GetLength();
 		
-		if( length2 > length1 ){
-			pPatterns.Move( p - 1, p );
+		if(length2 > length1){
+			pPatterns.Move(p - 1, p);
 			
-			if( p > 1 ){
+			if(p > 1){
 				p--;
 				continue;
 			}
@@ -105,20 +105,20 @@ void dePatternList::SortPatternByLength(){
 	}
 }
 
-bool dePatternList::PathMatches( const char *path ) const{
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+bool dePatternList::PathMatches(const char *path) const{
+	if(! path){
+		DETHROW(deeInvalidParam);
 	}
 
-	const int pathLength = ( int )strlen( path );
+	const int pathLength = (int)strlen(path);
 	const int count = pPatterns.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		const int patternLength = pPatterns[ p ].GetLength();
+	for(p=0; p<count; p++){
+		const int patternLength = pPatterns[p].GetLength();
 		
-		if( patternLength < pathLength ){
-			if( strcmp( path + ( pathLength - patternLength ), pPatterns[ p ].GetString() ) == 0 ){
+		if(patternLength < pathLength){
+			if(strcmp(path + (pathLength - patternLength), pPatterns[p].GetString()) == 0){
 				return true;
 			}
 		}
@@ -127,20 +127,20 @@ bool dePatternList::PathMatches( const char *path ) const{
 	return false;
 }
 
-int dePatternList::IndexOfPatternMatchingPath( const char *path ) const{
-	if( ! path ){
-		DETHROW( deeInvalidParam );
+int dePatternList::IndexOfPatternMatchingPath(const char *path) const{
+	if(! path){
+		DETHROW(deeInvalidParam);
 	}
 
-	const int pathLength = ( int )strlen( path );
+	const int pathLength = (int)strlen(path);
 	const int count = pPatterns.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		const int patternLength = pPatterns[ p ].GetLength();
+	for(p=0; p<count; p++){
+		const int patternLength = pPatterns[p].GetLength();
 		
-		if( patternLength < pathLength ){
-			if( strcmp( path + ( pathLength - patternLength ), pPatterns[ p ] ) == 0 ){
+		if(patternLength < pathLength){
+			if(strcmp(path + (pathLength - patternLength), pPatterns[p]) == 0){
 				return p;
 			}
 		}

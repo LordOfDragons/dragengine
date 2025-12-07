@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-dePropField::dePropField( dePropFieldManager *manager ) : deResource( manager ){
+dePropField::dePropField(dePropFieldManager *manager) : deResource(manager){
 	pTypes = NULL;
 	pTypeCount = 0;
 	pTypeSize = 0;
@@ -58,21 +58,21 @@ dePropField::dePropField( dePropFieldManager *manager ) : deResource( manager ){
 }
 
 dePropField::~dePropField(){
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 		pPeerScripting = NULL;
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = NULL;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
 	
 	RemoveAllTypes();
-	if( pTypes ) delete [] pTypes;
+	if(pTypes) delete [] pTypes;
 }
 
 
@@ -80,29 +80,29 @@ dePropField::~dePropField(){
 // Types
 //////////
 
-void dePropField::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void dePropField::SetPosition(const decDVector &position){
+	if(! position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pPeerGraphic ) pPeerGraphic->PositionChanged();
-		if( pPeerPhysics ) pPeerPhysics->PositionChanged();
+		if(pPeerGraphic) pPeerGraphic->PositionChanged();
+		if(pPeerPhysics) pPeerPhysics->PositionChanged();
 	}
 }
 
 
 
-dePropFieldType *dePropField::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ) DETHROW( deeOutOfBoundary );
+dePropFieldType *dePropField::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount) DETHROW(deeOutOfBoundary);
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
-int dePropField::IndexOfType( dePropFieldType *type ) const{
-	if( ! type ) DETHROW( deeInvalidParam );
+int dePropField::IndexOfType(dePropFieldType *type) const{
+	if(! type) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		if( type == pTypes[ i ] ){
+	for(i=0; i<pTypeCount; i++){
+		if(type == pTypes[i]){
 			return i;
 		}
 	}
@@ -110,88 +110,88 @@ int dePropField::IndexOfType( dePropFieldType *type ) const{
 	return -1;
 }
 
-void dePropField::AddType( dePropFieldType *type ){
-	if( ! type ) DETHROW( deeInvalidParam );
+void dePropField::AddType(dePropFieldType *type){
+	if(! type) DETHROW(deeInvalidParam);
 	
-	if( pTypeCount == pTypeSize ){
+	if(pTypeCount == pTypeSize){
 		int newSize = pTypeSize * 3 / 2 + 1;
-		dePropFieldType **newArray = new dePropFieldType*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pTypes ){
-			memcpy( newArray, pTypes, sizeof( dePropFieldType* ) * pTypeSize );
+		dePropFieldType **newArray = new dePropFieldType*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pTypes){
+			memcpy(newArray, pTypes, sizeof(dePropFieldType*) * pTypeSize);
 			delete [] pTypes;
 		}
 		pTypes = newArray;
 		pTypeSize = newSize;
 	}
 	
-	pTypes[ pTypeCount ] = type;
+	pTypes[pTypeCount] = type;
 	pTypeCount++;
 	
-	if( pPeerGraphic ) pPeerGraphic->TypeAdded( pTypeCount - 1, type );
-	if( pPeerPhysics ) pPeerPhysics->TypeAdded( pTypeCount - 1, type );
+	if(pPeerGraphic) pPeerGraphic->TypeAdded(pTypeCount - 1, type);
+	if(pPeerPhysics) pPeerPhysics->TypeAdded(pTypeCount - 1, type);
 }
 
-void dePropField::RemoveType( dePropFieldType *type ){
-	int i, index = IndexOfType( type );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void dePropField::RemoveType(dePropFieldType *type){
+	int i, index = IndexOfType(type);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pTypeCount; i++ ){
-		pTypes[ i - 1 ] = pTypes[ i ];
+	for(i=index+1; i<pTypeCount; i++){
+		pTypes[i - 1] = pTypes[i];
 	}
 	pTypeCount--;
 	
-	if( pPeerGraphic ) pPeerGraphic->TypeRemoved( index, type );
-	if( pPeerPhysics ) pPeerPhysics->TypeRemoved( index, type );
+	if(pPeerGraphic) pPeerGraphic->TypeRemoved(index, type);
+	if(pPeerPhysics) pPeerPhysics->TypeRemoved(index, type);
 	
 	delete type;
 }
 
 void dePropField::RemoveAllTypes(){
-	if( pPeerGraphic ) pPeerGraphic->AllTypesRemoved();
-	if( pPeerPhysics ) pPeerPhysics->AllTypesRemoved();
+	if(pPeerGraphic) pPeerGraphic->AllTypesRemoved();
+	if(pPeerPhysics) pPeerPhysics->AllTypesRemoved();
 	
-	while( pTypeCount > 0 ){
+	while(pTypeCount > 0){
 		pTypeCount--;
-		delete pTypes[ pTypeCount ];
+		delete pTypes[pTypeCount];
 	}
 }
 
 
 
-void dePropField::NotifyTypeChanged( int index ){
-	if( index < 0 || index >= pTypeCount ) DETHROW( deeOutOfBoundary );
+void dePropField::NotifyTypeChanged(int index){
+	if(index < 0 || index >= pTypeCount) DETHROW(deeOutOfBoundary);
 	
-	if( pPeerGraphic ) pPeerGraphic->TypeChanged( index, pTypes[ index ] );
-	if( pPeerPhysics ) pPeerPhysics->TypeChanged( index, pTypes[ index ] );
+	if(pPeerGraphic) pPeerGraphic->TypeChanged(index, pTypes[index]);
+	if(pPeerPhysics) pPeerPhysics->TypeChanged(index, pTypes[index]);
 }
 
-void dePropField::NotifyInstancesChanged( int type ){
-	if( type < 0 || type >= pTypeCount ) DETHROW( deeOutOfBoundary );
+void dePropField::NotifyInstancesChanged(int type){
+	if(type < 0 || type >= pTypeCount) DETHROW(deeOutOfBoundary);
 	
-	if( pPeerGraphic ) pPeerGraphic->InstancesChanged( type, pTypes[ type ] );
-	if( pPeerPhysics ) pPeerPhysics->InstancesChanged( type, pTypes[ type ] );
+	if(pPeerGraphic) pPeerGraphic->InstancesChanged(type, pTypes[type]);
+	if(pPeerPhysics) pPeerPhysics->InstancesChanged(type, pTypes[type]);
 }
 
-void dePropField::NotifyAssignmentsChanged( int type ){
-	if( type < 0 || type >= pTypeCount ) DETHROW( deeOutOfBoundary );
+void dePropField::NotifyAssignmentsChanged(int type){
+	if(type < 0 || type >= pTypeCount) DETHROW(deeOutOfBoundary);
 	
-	if( pPeerGraphic ) pPeerGraphic->AssignmentsChanged( type, pTypes[ type ] );
+	if(pPeerGraphic) pPeerGraphic->AssignmentsChanged(type, pTypes[type]);
 }
 
-void dePropField::NotifyBendStatesChanged( int type ){
-	if( type < 0 || type >= pTypeCount ) DETHROW( deeOutOfBoundary );
+void dePropField::NotifyBendStatesChanged(int type){
+	if(type < 0 || type >= pTypeCount) DETHROW(deeOutOfBoundary);
 	
-	if( pPeerGraphic ) pPeerGraphic->BendStatesChanged( type, pTypes[ type ] );
+	if(pPeerGraphic) pPeerGraphic->BendStatesChanged(type, pTypes[type]);
 }
 
 void dePropField::NotifyGroundChanged(){
-	if( pPeerGraphic ) pPeerGraphic->GroundChanged();
+	if(pPeerGraphic) pPeerGraphic->GroundChanged();
 }
 
-void dePropField::NotifyCreateInstances( float density ){
-	if( pPeerScripting ){
-		pPeerScripting->CreateInstances( density );
+void dePropField::NotifyCreateInstances(float density){
+	if(pPeerScripting){
+		pPeerScripting->CreateInstances(density);
 		
 	}else{
 		// usually we do nothing if peers do not exist. in this case though the performance of
@@ -201,14 +201,14 @@ void dePropField::NotifyCreateInstances( float density ){
 		// that no props are rendered at all which is not as bad as cringing to a crawl
 		int t;
 		
-		for( t=0; t<pTypeCount; t++ ){
-			pTypes[ t ]->SetInstanceCount( 0 );
+		for(t=0; t<pTypeCount; t++){
+			pTypes[t]->SetInstanceCount(0);
 		}
 	}
 }
 
-void dePropField::NotifyProjectInstances( const dePropFieldGround &ground, const decVector &direction ){
-	if( pPeerPhysics ) pPeerPhysics->ProjectInstances( ground, direction );
+void dePropField::NotifyProjectInstances(const dePropFieldGround &ground, const decVector &direction){
+	if(pPeerPhysics) pPeerPhysics->ProjectInstances(ground, direction);
 }
 
 
@@ -216,18 +216,18 @@ void dePropField::NotifyProjectInstances( const dePropFieldGround &ground, const
 // System Peers
 /////////////////
 
-void dePropField::SetPeerGraphic( deBaseGraphicPropField *peer ){
-	if( pPeerGraphic) delete pPeerGraphic;
+void dePropField::SetPeerGraphic(deBaseGraphicPropField *peer){
+	if(pPeerGraphic) delete pPeerGraphic;
 	pPeerGraphic = peer;
 }
 
-void dePropField::SetPeerPhysics( deBasePhysicsPropField *peer ){
-	if( pPeerPhysics ) delete pPeerPhysics;
+void dePropField::SetPeerPhysics(deBasePhysicsPropField *peer){
+	if(pPeerPhysics) delete pPeerPhysics;
 	pPeerPhysics = peer;
 }
 
-void dePropField::SetPeerScripting( deBaseScriptingPropField *peer ){
-	if( pPeerScripting ) delete pPeerScripting;
+void dePropField::SetPeerScripting(deBaseScriptingPropField *peer){
+	if(pPeerScripting) delete pPeerScripting;
 	pPeerScripting = peer;
 }
 
@@ -236,14 +236,14 @@ void dePropField::SetPeerScripting( deBaseScriptingPropField *peer ){
 // Linked List
 ////////////////
 
-void dePropField::SetParentWorld( deWorld *world ){
+void dePropField::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void dePropField::SetLLWorldPrev( dePropField *propField ){
+void dePropField::SetLLWorldPrev(dePropField *propField){
 	pLLWorldPrev = propField;
 }
 
-void dePropField::SetLLWorldNext( dePropField *propField ){
+void dePropField::SetLLWorldNext(dePropField *propField){
 	pLLWorldNext = propField;
 }

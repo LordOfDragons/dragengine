@@ -39,15 +39,15 @@
 ////////////////////////////
 
 deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep() :
-pInstances( nullptr ),
-pInstanceCount( 0 ),
-pInstanceSize( 0 )
+pInstances(nullptr),
+pInstanceCount(0),
+pInstanceSize(0)
 {
 	Reset();
 }
 
 deoglRenderTaskParticlesStep::~deoglRenderTaskParticlesStep(){
-	if( pInstances ){
+	if(pInstances){
 		delete [] pInstances;
 	}
 }
@@ -76,55 +76,55 @@ void deoglRenderTaskParticlesStep::Reset(){
 
 
 
-void deoglRenderTaskParticlesStep::SetPipeline( const deoglPipeline *pipeline ){
+void deoglRenderTaskParticlesStep::SetPipeline(const deoglPipeline *pipeline){
 	pPipeline = pipeline;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockTexture( const deoglShaderParameterBlock *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockTexture(const deoglShaderParameterBlock *block){
 	pParamBlockTexture = block;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockInstance( const deoglShaderParameterBlock *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockInstance(const deoglShaderParameterBlock *block){
 	pParamBlockInstance = block;
 }
 
-void deoglRenderTaskParticlesStep::SetTUC( const deoglTexUnitsConfig *tuc ){
+void deoglRenderTaskParticlesStep::SetTUC(const deoglTexUnitsConfig *tuc){
 	pTUC = tuc;
 }
 
 
 
-void deoglRenderTaskParticlesStep::SetVAO( const deoglVAO *vao ){
+void deoglRenderTaskParticlesStep::SetVAO(const deoglVAO *vao){
 	pVAO = vao;
 }
 
-void deoglRenderTaskParticlesStep::SetSkin( const deoglRSkin *skin ){
+void deoglRenderTaskParticlesStep::SetSkin(const deoglRSkin *skin){
 	pSkin = skin;
 }
 
-void deoglRenderTaskParticlesStep::SetDynamicSkin( const deoglRDynamicSkin *dynamicSkin ){
+void deoglRenderTaskParticlesStep::SetDynamicSkin(const deoglRDynamicSkin *dynamicSkin){
 	pDynamicSkin = dynamicSkin;
 }
 
-void deoglRenderTaskParticlesStep::SetTexture( int texture ){
+void deoglRenderTaskParticlesStep::SetTexture(int texture){
 	pTexture = texture;
 }
 
 
 
-void deoglRenderTaskParticlesStep::SetFirstIndex( int firstIndex ){
+void deoglRenderTaskParticlesStep::SetFirstIndex(int firstIndex){
 	pFirstIndex = firstIndex;
 }
 
-void deoglRenderTaskParticlesStep::SetIndexCount( int indexCount ){
+void deoglRenderTaskParticlesStep::SetIndexCount(int indexCount){
 	pIndexCount = indexCount;
 }
 
-void deoglRenderTaskParticlesStep::IncrementIndexCount( int amount ){
+void deoglRenderTaskParticlesStep::IncrementIndexCount(int amount){
 	pIndexCount += amount;
 }
 
-void deoglRenderTaskParticlesStep::SetPrimitiveType( GLenum primitiveType ){
+void deoglRenderTaskParticlesStep::SetPrimitiveType(GLenum primitiveType){
 	pPrimitiveType = primitiveType;
 }
 
@@ -133,19 +133,19 @@ void deoglRenderTaskParticlesStep::SetPrimitiveType( GLenum primitiveType ){
 // Instances
 //////////////
 
-deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::GetInstanceAt( int index ) const{
-	if( index < 0 || index >= pInstanceCount ) DETHROW( deeInvalidParam );
+deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::GetInstanceAt(int index) const{
+	if(index < 0 || index >= pInstanceCount) DETHROW(deeInvalidParam);
 	
-	return pInstances[ index ];
+	return pInstances[index];
 }
 
 deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::AddInstance(){
-	if( pInstanceCount == pInstanceSize ){
+	if(pInstanceCount == pInstanceSize){
 		int newSize = pInstanceSize + 10;
-		sInstance *newArray = new sInstance[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pInstances ){
-			memcpy( newArray, pInstances, sizeof( sInstance ) * pInstanceSize );
+		sInstance *newArray = new sInstance[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pInstances){
+			memcpy(newArray, pInstances, sizeof(sInstance) * pInstanceSize);
 			delete [] pInstances;
 		}
 		pInstances = newArray;
@@ -153,7 +153,7 @@ deoglRenderTaskParticlesStep::sInstance &deoglRenderTaskParticlesStep::AddInstan
 	}
 	
 	pInstanceCount++;
-	return pInstances[ pInstanceCount - 1 ];
+	return pInstances[pInstanceCount - 1];
 }
 
 void deoglRenderTaskParticlesStep::RemoveAllInstances(){

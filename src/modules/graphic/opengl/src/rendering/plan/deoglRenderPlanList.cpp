@@ -46,7 +46,7 @@ deoglRenderPlanList::deoglRenderPlanList(){
 }
 
 deoglRenderPlanList::~deoglRenderPlanList(){
-	if( pPlans ){
+	if(pPlans){
 		delete [] pPlans;
 	}
 }
@@ -56,23 +56,23 @@ deoglRenderPlanList::~deoglRenderPlanList(){
 // Management
 ///////////////
 
-deoglRenderPlan *deoglRenderPlanList::GetAt( int index ) const{
-	if( index < 0 || index >= pPlanCount ){
-		DETHROW( deeInvalidParam );
+deoglRenderPlan *deoglRenderPlanList::GetAt(int index) const{
+	if(index < 0 || index >= pPlanCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pPlans[ index ];
+	return pPlans[index];
 }
 
-int deoglRenderPlanList::IndexOf( deoglRenderPlan *plan ) const{
-	if( ! plan ){
-		DETHROW( deeInvalidParam );
+int deoglRenderPlanList::IndexOf(deoglRenderPlan *plan) const{
+	if(! plan){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pPlanCount; i++ ){
-		if( plan == pPlans[ i ] ){
+	for(i=0; i<pPlanCount; i++){
+		if(plan == pPlans[i]){
 			return i;
 		}
 	}
@@ -80,15 +80,15 @@ int deoglRenderPlanList::IndexOf( deoglRenderPlan *plan ) const{
 	return -1;
 }
 
-bool deoglRenderPlanList::Has( deoglRenderPlan *plan ) const{
-	if( ! plan ){
-		DETHROW( deeInvalidParam );
+bool deoglRenderPlanList::Has(deoglRenderPlan *plan) const{
+	if(! plan){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pPlanCount; i++ ){
-		if( plan == pPlans[ i ] ){
+	for(i=0; i<pPlanCount; i++){
+		if(plan == pPlans[i]){
 			return true;
 		}
 	}
@@ -96,59 +96,59 @@ bool deoglRenderPlanList::Has( deoglRenderPlan *plan ) const{
 	return false;
 }
 
-void deoglRenderPlanList::Add( deoglRenderPlan *plan ){
-	if( Has( plan ) ){
-		DETHROW( deeInvalidParam );
+void deoglRenderPlanList::Add(deoglRenderPlan *plan){
+	if(Has(plan)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pAdd( plan );
+	pAdd(plan);
 }
 
-bool deoglRenderPlanList::AddIfMissing( deoglRenderPlan *plan ){
-	if( Has( plan ) ){
+bool deoglRenderPlanList::AddIfMissing(deoglRenderPlan *plan){
+	if(Has(plan)){
 		return false;
 	}
 	
-	pAdd( plan );
+	pAdd(plan);
 	
 	return true;
 }
 
-void deoglRenderPlanList::Remove( deoglRenderPlan *plan ){
-	const int index = IndexOf( plan );
+void deoglRenderPlanList::Remove(deoglRenderPlan *plan){
+	const int index = IndexOf(plan);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pPlanCount - 1 ){
-		pPlans[ index ] = pPlans[ pPlanCount - 1 ];
+	if(index < pPlanCount - 1){
+		pPlans[index] = pPlans[pPlanCount - 1];
 	}
 	pPlanCount--;
 }
 
-bool deoglRenderPlanList::RemoveIfExisting( deoglRenderPlan *plan ){
-	const int index = IndexOf( plan );
+bool deoglRenderPlanList::RemoveIfExisting(deoglRenderPlan *plan){
+	const int index = IndexOf(plan);
 	
-	if( index == -1 ){
+	if(index == -1){
 		return false;
 	}
 	
-	if( index < pPlanCount - 1 ){
-		pPlans[ index ] = pPlans[ pPlanCount - 1 ];
+	if(index < pPlanCount - 1){
+		pPlans[index] = pPlans[pPlanCount - 1];
 	}
 	pPlanCount--;
 	
 	return true;
 }
 
-void deoglRenderPlanList::RemoveFrom( int index ){
-	if( index < 0 || index >= pPlanCount ){
-		DETHROW( deeInvalidParam );
+void deoglRenderPlanList::RemoveFrom(int index){
+	if(index < 0 || index >= pPlanCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pPlanCount - 1 ){
-		pPlans[ index ] = pPlans[ pPlanCount - 1 ];
+	if(index < pPlanCount - 1){
+		pPlans[index] = pPlans[pPlanCount - 1];
 	}
 	pPlanCount--;
 }
@@ -162,13 +162,13 @@ void deoglRenderPlanList::RemoveAll(){
 // Private Functions
 //////////////////////
 
-void deoglRenderPlanList::pAdd( deoglRenderPlan *plan ){
-	if( pPlanCount == pPlanSize ){
+void deoglRenderPlanList::pAdd(deoglRenderPlan *plan){
+	if(pPlanCount == pPlanSize){
 		const int newSize = pPlanCount + 10; // * 3 / 2 + 1;
-		deoglRenderPlan ** const newArray = new deoglRenderPlan*[ newSize ];
+		deoglRenderPlan ** const newArray = new deoglRenderPlan*[newSize];
 		
-		if( pPlans ){
-			memcpy( newArray, pPlans, sizeof( deoglRenderPlan* ) * pPlanSize );
+		if(pPlans){
+			memcpy(newArray, pPlans, sizeof(deoglRenderPlan*) * pPlanSize);
 			delete [] pPlans;
 		}
 		
@@ -176,5 +176,5 @@ void deoglRenderPlanList::pAdd( deoglRenderPlan *plan ){
 		pPlanSize = newSize;
 	}
 	
-	pPlans[ pPlanCount++ ] = plan;
+	pPlans[pPlanCount++] = plan;
 }

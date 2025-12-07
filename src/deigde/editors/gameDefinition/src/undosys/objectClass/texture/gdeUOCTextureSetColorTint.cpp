@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetColorTint::gdeUOCTextureSetColorTint( gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const decColor &newValue ) :
-pObjectClass( NULL ),
-pTexture( NULL )
+gdeUOCTextureSetColorTint::gdeUOCTextureSetColorTint(gdeObjectClass *objectClass,
+gdeOCComponentTexture* texture, const decColor &newValue) :
+pObjectClass(NULL),
+pTexture(NULL)
 {
-	if( ! objectClass || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Texture set color tint" );
+	SetShortInfo("Texture set color tint");
 	
 	pOldValue = texture->GetColorTint();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pTexture( NULL )
 }
 
 gdeUOCTextureSetColorTint::~gdeUOCTextureSetColorTint(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCTextureSetColorTint::~gdeUOCTextureSetColorTint(){
 ///////////////
 
 void gdeUOCTextureSetColorTint::Undo(){
-	pTexture->SetColorTint( pOldValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetColorTint(pOldValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }
 
 void gdeUOCTextureSetColorTint::Redo(){
-	pTexture->SetColorTint( pNewValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetColorTint(pNewValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin value renderable. */
-	deoglRDSRenderableColor( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableColor(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin value renderable. */
 	virtual ~deoglRDSRenderableColor();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set value. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/**
 	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
-	virtual decColor GetRenderColor( const decColor &defaultColor );
+	virtual decColor GetRenderColor(const decColor &defaultColor);
 	
 	/**
 	 * Get texture to use for rendering or \em NULL if not applicable.

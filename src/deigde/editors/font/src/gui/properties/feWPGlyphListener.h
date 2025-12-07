@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWPGlyphListener( feWPGlyph &panel );
+	feWPGlyphListener(feWPGlyph &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~feWPGlyphListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
     /** \brief Glyphs have been added or removed. */
-    virtual void GlyphStructureChanged ( feFont *font );
+    virtual void GlyphStructureChanged (feFont *font);
 	
 	/** \brief A glyph changed. */
-    virtual void GlyphChanged( feFont *font, feFontGlyph *glyph );
+    virtual void GlyphChanged(feFont *font, feFontGlyph *glyph);
 	
 	/** \brief Active glyph changed. */
-	virtual void ActiveGlyphChanged( feFont *font );
+	virtual void ActiveGlyphChanged(feFont *font);
 	/*@}*/
 };
 

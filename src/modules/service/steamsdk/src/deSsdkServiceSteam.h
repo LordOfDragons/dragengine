@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deSsdkServiceSteam( deSteamSdk &module, deService *service, const deServiceObject::Ref &data );
+	deSsdkServiceSteam(deSteamSdk &module, deService *service, const deServiceObject::Ref &data);
 	
 	/** Delete module. */
 	~deSsdkServiceSteam() override;
@@ -79,54 +79,54 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	void StartRequest( const decUniqueID &id, const deServiceObject &request ) override;
+	void StartRequest(const decUniqueID &id, const deServiceObject &request) override;
 	
 	/** Cancel service request if running. */
-	void CancelRequest( const decUniqueID &id ) override;
+	void CancelRequest(const decUniqueID &id) override;
 	
 	/** Run action returning result immediately. */
-	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	deServiceObject::Ref RunAction(const deServiceObject &action) override;
 	/*@}*/
 	
 	
 	
 	/** \name Request */
 	/*@{*/
-	deSsdkPendingRequest *GetPendingRequestWithId( const decUniqueID &id ) const;
-	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithId( const decUniqueID &id );
-	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction( const char *function );
-	deSsdkPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr );
+	deSsdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
+	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
+	deSsdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
+	deSsdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
+		const decString &function, const deServiceObject::Ref &data = nullptr);
 	
-	void RequestCurrentStats( const decUniqueID &id );
-	void GetStats( const decUniqueID &id, const deServiceObject& request );
-	void SetStats( const decUniqueID &id, const deServiceObject& request );
-	void ResetAllStats( const decUniqueID &id, const deServiceObject& request );
-	void RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject& request );
-	void LoadUserResource( const decUniqueID &id, const deServiceObject& request );
+	void RequestCurrentStats(const decUniqueID &id);
+	void GetStats(const decUniqueID &id, const deServiceObject& request);
+	void SetStats(const decUniqueID &id, const deServiceObject& request);
+	void ResetAllStats(const decUniqueID &id, const deServiceObject& request);
+	void RequestEncryptedAppTicket(const decUniqueID &id, const deServiceObject& request);
+	void LoadUserResource(const decUniqueID &id, const deServiceObject& request);
 	
 	deServiceObject::Ref GetUserFeatures();
 	deServiceObject::Ref GetUserInfo();
 	
-	void FailRequest( const decUniqueID &id, const deException &e );
-	void FailRequest( const deSsdkPendingRequest::Ref &request, const deException &e );
+	void FailRequest(const decUniqueID &id, const deException &e);
+	void FailRequest(const deSsdkPendingRequest::Ref &request, const deException &e);
 	/*@}*/
 	
 	
 	
 	/** \name Steam Callbacks */
 	/*@{*/
-	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsReceived, UserStatsReceived_t );
-	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsStored, UserStatsStored_t );
-	STEAM_CALLRESULT( deSsdkServiceSteam, OnEncryptedAppTicketResponse, EncryptedAppTicketResponse_t );
-	STEAM_CALLBACK( deSsdkServiceSteam, OnAvatarImageLoaded, AvatarImageLoaded_t );
+	STEAM_CALLBACK(deSsdkServiceSteam, OnUserStatsReceived, UserStatsReceived_t);
+	STEAM_CALLBACK(deSsdkServiceSteam, OnUserStatsStored, UserStatsStored_t);
+	STEAM_CALLRESULT(deSsdkServiceSteam, OnEncryptedAppTicketResponse, EncryptedAppTicketResponse_t);
+	STEAM_CALLBACK(deSsdkServiceSteam, OnAvatarImageLoaded, AvatarImageLoaded_t);
 	/*@}*/
 	
 	
 private:
-	void pSetResultFields( EResult result, deServiceObject &so ) const;
-	void pCreateImage( int handle, deServiceObject &so, const char *key );
-	int pLoadResource( const deSsdkResourceUrl &url );
+	void pSetResultFields(EResult result, deServiceObject &so) const;
+	void pCreateImage(int handle, deServiceObject &so, const char *key);
+	int pLoadResource(const deSsdkResourceUrl &url);
 };
 
 #endif

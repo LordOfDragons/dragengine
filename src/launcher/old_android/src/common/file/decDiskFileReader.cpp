@@ -38,9 +38,9 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decDiskFileReader::decDiskFileReader( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+decDiskFileReader::decDiskFileReader(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	struct stat st;
@@ -54,29 +54,29 @@ decDiskFileReader::decDiskFileReader( const char *filename ){
 		// for this reason the file is first stat-ed before opened. if the
 		// file does not exist this prevents a strange crash. for all other
 		// platforms this order of action is fine too
-		if( stat( filename, &st ) ){
-			DETHROW( deeFileNotFound );
+		if(stat(filename, &st)){
+			DETHROW(deeFileNotFound);
 		}
 		
-		pFile = fopen( filename, "rb" );
-		if( ! pFile ){
-			DETHROW( deeFileNotFound );
+		pFile = fopen(filename, "rb");
+		if(! pFile){
+			DETHROW(deeFileNotFound);
 		}
 		
-		pLength = ( int )st.st_size;
-		pModificationTime = ( TIME_SYSTEM )st.st_mtime;
+		pLength = (int)st.st_size;
+		pModificationTime = (TIME_SYSTEM)st.st_mtime;
 		
-	}catch( const deException & ){
-		if( pFile ){
-			fclose( pFile );
+	}catch(const deException &){
+		if(pFile){
+			fclose(pFile);
 		}
 		throw;
 	}
 }
 
 decDiskFileReader::~decDiskFileReader(){
-	if( pFile ){
-		fclose( pFile );
+	if(pFile){
+		fclose(pFile);
 	}
 }
 
@@ -103,24 +103,24 @@ TIME_SYSTEM decDiskFileReader::GetModificationTime(){
 ////////////
 
 int decDiskFileReader::GetPosition(){
-	return ( int )ftell( pFile );
+	return (int)ftell(pFile);
 }
 
-void decDiskFileReader::SetPosition( int position ){
-	if( fseek( pFile, position, SEEK_SET ) ){
-		DETHROW( deeReadFile );
+void decDiskFileReader::SetPosition(int position){
+	if(fseek(pFile, position, SEEK_SET)){
+		DETHROW(deeReadFile);
 	}
 }
 
-void decDiskFileReader::MovePosition( int offset ){
-	if( fseek( pFile, offset, SEEK_CUR ) ){
-		DETHROW( deeReadFile );
+void decDiskFileReader::MovePosition(int offset){
+	if(fseek(pFile, offset, SEEK_CUR)){
+		DETHROW(deeReadFile);
 	}
 }
 
-void decDiskFileReader::SetPositionEnd( int position ){
-	if( fseek( pFile, position, SEEK_END ) ){
-		DETHROW( deeReadFile );
+void decDiskFileReader::SetPositionEnd(int position){
+	if(fseek(pFile, position, SEEK_END)){
+		DETHROW(deeReadFile);
 	}
 }
 
@@ -129,17 +129,17 @@ void decDiskFileReader::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void decDiskFileReader::Read( void *buffer, int size ){
-	const int readBytes = ( int )fread( buffer, 1, size, pFile );
+void decDiskFileReader::Read(void *buffer, int size){
+	const int readBytes = (int)fread(buffer, 1, size, pFile);
 	
-	if( readBytes == size ){
+	if(readBytes == size){
 		return;
 	}
 	
-	const bool endOfFile = ( feof( pFile ) != 0 );
-	clearerr( pFile );  // required to support growing files
+	const bool endOfFile = (feof(pFile) != 0);
+	clearerr(pFile);  // required to support growing files
 	
-	if( ! endOfFile ){
-		DETHROW( deeReadFile );
+	if(! endOfFile){
+		DETHROW(deeReadFile);
 	}
 }

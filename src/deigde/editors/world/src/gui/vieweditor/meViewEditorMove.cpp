@@ -55,7 +55,7 @@
 // Definitions
 ////////////////
 
-#define ME_DRAG_MOVE	( 1.0 / 50.0 )
+#define ME_DRAG_MOVE	(1.0 / 50.0)
 
 
 
@@ -65,23 +65,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditorMove::meViewEditorMove( meView3D &view ) :
-meViewEditorNavigation( view ),
-pCLSnapPoint( NULL )
+meViewEditorMove::meViewEditorMove(meView3D &view) :
+meViewEditorNavigation(view),
+pCLSnapPoint(NULL)
 {
-	pCLCollider.TakeOver( view.GetEngine()->GetColliderManager()->CreateColliderVolume() );
+	pCLCollider.TakeOver(view.GetEngine()->GetColliderManager()->CreateColliderVolume());
 	
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmSnapPoint );
+	collisionFilter.SetBit(meWorld::eclmSnapPoint);
 	
-	pCLCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+	pCLCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 }
 
 meViewEditorMove::~meViewEditorMove(){
-	if( pCLSnapPoint ){
+	if(pCLSnapPoint){
 		delete pCLSnapPoint;
 	}
 }
@@ -96,109 +96,109 @@ meViewEditorMove::~meViewEditorMove(){
 // Callbacks
 //////////////
 
-bool meViewEditorMove::OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control ){
-	if( pUndoMove ){
-		return CheckAxisLocking( key );
+bool meViewEditorMove::OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control){
+	if(pUndoMove){
+		return CheckAxisLocking(key);
 		
 	}else{
-		return meViewEditorNavigation::OnKeyPress( key, shift, control );
+		return meViewEditorNavigation::OnKeyPress(key, shift, control);
 	}
 }
 
-void meViewEditorMove::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonPress( x, y, shift, control );
+void meViewEditorMove::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
 	const int elementMode = GetElementMode();
 	meWorld &world = GetWorld();
 	
-	if( pCLSnapPoint ){
+	if(pCLSnapPoint){
 		delete pCLSnapPoint;
 		pCLSnapPoint = NULL;
 	}
 	pUndoMove = NULL;
 	
-	if( elementMode == meWorldGuiParameters::eemObject ){
+	if(elementMode == meWorldGuiParameters::eemObject){
 		const meObjectSelection &selection = world.GetSelectionObject();
-		if( selection.GetSelected().GetCount() == 0 ){
+		if(selection.GetSelected().GetCount() == 0){
 			return;
 		}
 		
 		meObjectList list;
-		GetSelectedObjectsWithAttached( list );
-		pUndoMove.TakeOver( new meUMoveObject( &world, list ) );
+		GetSelectedObjectsWithAttached(list);
+		pUndoMove.TakeOver(new meUMoveObject(&world, list));
 		
 		// create snap point visitor
 		meObject * const refObject = selection.GetActive();
 		
-		pCLSnapPoint = new meCLSnapPoint( world, refObject );
+		pCLSnapPoint = new meCLSnapPoint(world, refObject);
 		const int count = list.GetCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			pCLSnapPoint->AddIgnoreObject( list.GetAt( i ) );
+		for(i=0; i<count; i++){
+			pCLSnapPoint->AddIgnoreObject(list.GetAt(i));
 		}
 		
 		decShapeList shapeList;
-		pCLSnapPoint->CalcBoundingBoxShape( shapeList );
-		( ( deColliderVolume& )( deCollider& )pCLCollider ).SetShapes( shapeList );
+		pCLSnapPoint->CalcBoundingBoxShape(shapeList);
+		((deColliderVolume&)(deCollider&)pCLCollider).SetShapes(shapeList);
 		
-	}else if( elementMode == meWorldGuiParameters::eemObjectShape ){
+	}else if(elementMode == meWorldGuiParameters::eemObjectShape){
 		const meObjectShapeSelection &selection = world.GetSelectionObjectShape();
 		meObject *activeObject = world.GetSelectionObject().GetActive();
 		decString activeProperty;
 		
-		if( activeObject ){
+		if(activeObject){
 			activeProperty = activeObject->GetActiveProperty();
 			
-			if( activeObject->IsPropertyShape( activeProperty.GetString() ) ){
-				if( world.GetObjectShapes().GetCount() != 1 ){
+			if(activeObject->IsPropertyShape(activeProperty.GetString())){
+				if(world.GetObjectShapes().GetCount() != 1){
 					activeProperty.Empty();
 				}
 				
-			}else if( ! activeObject->IsPropertyShapeList( activeProperty.GetString() )  ){
+			}else if(! activeObject->IsPropertyShapeList(activeProperty.GetString())){
 				activeProperty.Empty();
 			}
 			
-			if( selection.GetSelected().GetCount() == 0 ){
+			if(selection.GetSelected().GetCount() == 0){
 				activeProperty.Empty();
 			}
 		}
 		
-		if( ! activeProperty.IsEmpty() ){
-			pUndoMove.TakeOver( new meUObjectShapeMove( activeObject, activeProperty, selection.GetSelected() ) );
+		if(! activeProperty.IsEmpty()){
+			pUndoMove.TakeOver(new meUObjectShapeMove(activeObject, activeProperty, selection.GetSelected()));
 		}
 		
-	}else if( elementMode == meWorldGuiParameters::eemDecal ){
+	}else if(elementMode == meWorldGuiParameters::eemDecal){
 		const meDecalSelection &selection = world.GetSelectionDecal();
 		
-		if( selection.GetSelected().GetCount() > 0 ){
-			pUndoMove.TakeOver( new meUDecalMove( &world ) );
+		if(selection.GetSelected().GetCount() > 0){
+			pUndoMove.TakeOver(new meUDecalMove(&world));
 		}
 		
-	}else if( elementMode == meWorldGuiParameters::eemNavSpace ){
+	}else if(elementMode == meWorldGuiParameters::eemNavSpace){
 		// TODO
 	}
 }
 
-void meViewEditorMove::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
-	meViewEditor::OnLeftMouseButtonRelease( x, y, shift, control );
+void meViewEditorMove::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
+	meViewEditor::OnLeftMouseButtonRelease(x, y, shift, control);
 	
-	if( pUndoMove ){
-		if( ! ( ( meBaseUndoMove& )( igdeUndo& )pUndoMove ).GetDistance().IsZero() ){
-			GetWorld().GetUndoSystem()->Add( pUndoMove, false );
+	if(pUndoMove){
+		if(! ((meBaseUndoMove&)(igdeUndo&)pUndoMove).GetDistance().IsZero()){
+			GetWorld().GetUndoSystem()->Add(pUndoMove, false);
 		}
 		pUndoMove = NULL;
 	}
 	
-	if( pCLSnapPoint ){
+	if(pCLSnapPoint){
 		delete pCLSnapPoint;
 		pCLSnapPoint = NULL;
 	}
 }
 
-void meViewEditorMove::OnMouseMove( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnMouseMove( x, y, shift, control );
+void meViewEditorMove::OnMouseMove(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if( ! pUndoMove ){
+	if(! pUndoMove){
 		return;
 	}
 	
@@ -209,64 +209,64 @@ void meViewEditorMove::OnMouseMove( int x, int y, bool shift, bool control ){
 	const decDMatrix &matrixView = GetMatrixView();
 	decDVector vector;
 	
-	vector = matrixView.TransformRight() * ( ME_DRAG_MOVE * ( double )dragDist.x * ( double )sensitivity );
-	vector += matrixView.TransformUp() * ( ME_DRAG_MOVE * ( double )dragDist.y * ( double )sensitivity );
+	vector = matrixView.TransformRight() * (ME_DRAG_MOVE * (double)dragDist.x * (double)sensitivity);
+	vector += matrixView.TransformUp() * (ME_DRAG_MOVE * (double)dragDist.y * (double)sensitivity);
 	
-	if( guiparams.GetUseLocal() ){
+	if(guiparams.GetUseLocal()){
 		vector = GetMatrixViewLocalInverse() * vector;
 		
-		if( guiparams.GetLockAxisX() ){
+		if(guiparams.GetLockAxisX()){
 			vector.x = 0.0;
 		}
-		if( guiparams.GetLockAxisY() ){
+		if(guiparams.GetLockAxisY()){
 			vector.y = 0.0;
 		}
-		if( guiparams.GetLockAxisZ() ){
+		if(guiparams.GetLockAxisZ()){
 			vector.z = 0.0;
 		}
-		if( configuration.GetMoveSnap() != shift ){
-			vector.Snap( ( double )configuration.GetMoveStep() );
+		if(configuration.GetMoveSnap() != shift){
+			vector.Snap((double)configuration.GetMoveStep());
 		}
 		
 		vector = GetMatrixViewLocal() * vector;
 		
 	}else{
-		if( guiparams.GetLockAxisX() ){
+		if(guiparams.GetLockAxisX()){
 			vector.x = 0.0;
 		}
-		if( guiparams.GetLockAxisY() ){
+		if(guiparams.GetLockAxisY()){
 			vector.y = 0.0;
 		}
-		if( guiparams.GetLockAxisZ() ){
+		if(guiparams.GetLockAxisZ()){
 			vector.z = 0.0;
 		}
-		if( configuration.GetMoveSnap() != shift ){
-			vector.Snap( ( double )configuration.GetMoveStep() );
+		if(configuration.GetMoveSnap() != shift){
+			vector.Snap((double)configuration.GetMoveStep());
 		}
 	}
 	
-	meBaseUndoMove &undo = ( meBaseUndoMove& )( igdeUndo& )pUndoMove;
-	undo.SetModifyOrientation( false );
-	undo.SetDistance( vector );
+	meBaseUndoMove &undo = (meBaseUndoMove&)(igdeUndo&)pUndoMove;
+	undo.SetModifyOrientation(false);
+	undo.SetDistance(vector);
 	undo.ProgressiveRedo();
 	
 	// snapping
-	if( pCLSnapPoint && pCLSnapPoint->IsSnappingEnabled() ){
-		pCLCollider->SetPosition( pCLSnapPoint->GetObject()->GetPosition() );
-		pCLCollider->SetOrientation( decQuaternion::CreateFromEuler(
-			pCLSnapPoint->GetObject()->GetRotation() * DEG2RAD ) );
+	if(pCLSnapPoint && pCLSnapPoint->IsSnappingEnabled()){
+		pCLCollider->SetPosition(pCLSnapPoint->GetObject()->GetPosition());
+		pCLCollider->SetOrientation(decQuaternion::CreateFromEuler(
+			pCLSnapPoint->GetObject()->GetRotation() * DEG2RAD));
 		
 		pCLSnapPoint->Reset();
-		ColliderTestCollision( pCLSnapPoint, pCLCollider );
+		ColliderTestCollision(pCLSnapPoint, pCLCollider);
 		
-		if( pCLSnapPoint->GetTargetSnapPoint() ){
-			if( pCLSnapPoint->GetTargetSnapPoint()->GetSnapToRotation() ){
-				undo.SetModifyOrientation( true );
-				undo.SetMatrix( decDMatrix::CreateTranslation( vector )
+		if(pCLSnapPoint->GetTargetSnapPoint()){
+			if(pCLSnapPoint->GetTargetSnapPoint()->GetSnapToRotation()){
+				undo.SetModifyOrientation(true);
+				undo.SetMatrix(decDMatrix::CreateTranslation(vector)
 					* pCLSnapPoint->CalcCorrectionMatrix() );
 				
 			}else{
-				undo.SetDistance( vector + pCLSnapPoint->CalcCorrectionMatrix().GetPosition() );
+				undo.SetDistance(vector + pCLSnapPoint->CalcCorrectionMatrix().GetPosition());
 			}
 			
 			undo.ProgressiveRedo();

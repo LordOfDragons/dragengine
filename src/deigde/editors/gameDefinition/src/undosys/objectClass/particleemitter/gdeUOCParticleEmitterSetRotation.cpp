@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetRotation::gdeUOCParticleEmitterSetRotation( gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const decVector &newValue ) :
-pObjectClass( NULL ),
-pParticleEmitter( NULL )
+gdeUOCParticleEmitterSetRotation::gdeUOCParticleEmitterSetRotation(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const decVector &newValue) :
+pObjectClass(NULL),
+pParticleEmitter(NULL)
 {
-	if( ! objectClass || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set rotation" );
+	SetShortInfo("Particle emitter set rotation");
 	
 	pOldValue = particleEmitter->GetRotation();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pParticleEmitter( NULL )
 }
 
 gdeUOCParticleEmitterSetRotation::~gdeUOCParticleEmitterSetRotation(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCParticleEmitterSetRotation::~gdeUOCParticleEmitterSetRotation(){
 ///////////////
 
 void gdeUOCParticleEmitterSetRotation::Undo(){
-	pParticleEmitter->SetRotation( pOldValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetRotation(pOldValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }
 
 void gdeUOCParticleEmitterSetRotation::Redo(){
-	pParticleEmitter->SetRotation( pNewValue );
-	pObjectClass->NotifyParticleEmitterChanged( pParticleEmitter );
+	pParticleEmitter->SetRotation(pNewValue);
+	pObjectClass->NotifyParticleEmitterChanged(pParticleEmitter);
 }

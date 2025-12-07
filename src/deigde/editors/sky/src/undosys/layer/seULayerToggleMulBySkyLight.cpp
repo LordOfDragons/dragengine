@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerToggleMulBySkyLight::seULayerToggleMulBySkyLight( seLayer *layer ) :
-pLayer( NULL )
+seULayerToggleMulBySkyLight::seULayerToggleMulBySkyLight(seLayer *layer) :
+pLayer(NULL)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Toggle Layer Multiply By Sky Light" );
+	SetShortInfo("Toggle Layer Multiply By Sky Light");
 	
 	pLayer = layer;
 	layer->AddReference();
 }
 
 seULayerToggleMulBySkyLight::~seULayerToggleMulBySkyLight(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seULayerToggleMulBySkyLight::~seULayerToggleMulBySkyLight(){
 ///////////////
 
 void seULayerToggleMulBySkyLight::Undo(){
-	pLayer->SetMultiplyBySkyLight( ! pLayer->GetMuliplyBySkyLight() );
+	pLayer->SetMultiplyBySkyLight(! pLayer->GetMuliplyBySkyLight());
 }
 
 void seULayerToggleMulBySkyLight::Redo(){
-	pLayer->SetMultiplyBySkyLight( ! pLayer->GetMuliplyBySkyLight() );
+	pLayer->SetMultiplyBySkyLight(! pLayer->GetMuliplyBySkyLight());
 }

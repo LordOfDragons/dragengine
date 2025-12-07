@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create launcher. */
-	deglLauncher( deglWindowMain *windowMain, int argc, char **argv );
+	deglLauncher(deglWindowMain *windowMain, int argc, char **argv);
 	
 	/** Clean up launcher. */
 	virtual ~deglLauncher();
@@ -74,14 +74,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Command line arguments. */
-	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
+	inline const decUnicodeArgumentList &GetArguments() const{return pArguments;}
 	
 	/** Configuration. */
-	inline deglConfiguration &GetConfiguration(){ return pConfiguration; }
-	inline const deglConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline deglConfiguration &GetConfiguration(){return pConfiguration;}
+	inline const deglConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** \brief Install delga command line argument. */
-	inline const decString &GetCommandLineInstallDelga() const{ return pCmdLineInstallDelga; }
+	inline const decString &GetCommandLineInstallDelga() const{return pCmdLineInstallDelga;}
 	
 	/** Game has to be run due to command line arguments. */
 	bool HasCommandLineRunGame() const;
@@ -99,12 +99,12 @@ public:
 	void PulseChecking();
 	
 	/** Quit now requested from the command line. */
-	inline bool GetCmdLineQuitNow() const{ return pCmdLineQuitNow; }
+	inline bool GetCmdLineQuitNow() const{return pCmdLineQuitNow;}
 	
 	
 	
 	/** Create game icon instance. */
-	virtual delGameIcon *CreateGameIcon( int size, const char *path );
+	virtual delGameIcon *CreateGameIcon(int size, const char *path);
 	/*@}*/
 	
 	
@@ -113,7 +113,7 @@ private:
 	void pParseArguments();
 	bool pParseWindowsURIScheme();
 	void pInitLogger();
-	static decString pUrlDecode( const char *url );
+	static decString pUrlDecode(const char *url);
 };
 
 #endif

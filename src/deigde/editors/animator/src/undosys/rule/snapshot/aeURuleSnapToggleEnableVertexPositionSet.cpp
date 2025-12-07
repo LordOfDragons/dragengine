@@ -34,8 +34,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleSnapToggleEnableVertexPositionSet::aeURuleSnapToggleEnableVertexPositionSet( aeRuleStateSnapshot *rule ){
-	DEASSERT_NOTNULL( rule )
+aeURuleSnapToggleEnableVertexPositionSet::aeURuleSnapToggleEnableVertexPositionSet(aeRuleStateSnapshot *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -43,9 +43,9 @@ aeURuleSnapToggleEnableVertexPositionSet::aeURuleSnapToggleEnableVertexPositionS
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule state snapshot toggle enable vertex position set" );
+		SetShortInfo("Rule state snapshot toggle enable vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -61,11 +61,11 @@ aeURuleSnapToggleEnableVertexPositionSet::~aeURuleSnapToggleEnableVertexPosition
 ///////////////
 
 void aeURuleSnapToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleSnapToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 
@@ -74,7 +74,7 @@ void aeURuleSnapToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableVertexPositionSet::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

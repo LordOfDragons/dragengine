@@ -39,12 +39,12 @@
 ////////////////////////////
 
 deResourceLoaderInfo::deResourceLoaderInfo() :
-pResourceType( deResourceLoader::ertImage ),
-pResource( NULL ){
+pResourceType(deResourceLoader::ertImage),
+pResource(NULL){
 }
 
 deResourceLoaderInfo::~deResourceLoaderInfo(){
-	if( pResource ){
+	if(pResource){
 		pResource->FreeReference();
 	}
 }
@@ -54,26 +54,26 @@ deResourceLoaderInfo::~deResourceLoaderInfo(){
 // Management
 ///////////////
 
-void deResourceLoaderInfo::SetPath( const char *path ){
+void deResourceLoaderInfo::SetPath(const char *path){
 	pPath = path;
 }
 
-void deResourceLoaderInfo::SetResourceType( deResourceLoader::eResourceType resourceType ){
+void deResourceLoaderInfo::SetResourceType(deResourceLoader::eResourceType resourceType){
 	pResourceType = resourceType;
 }
 
-void deResourceLoaderInfo::SetResource( deFileResource *resource ){
-	if( resource == pResource ){
+void deResourceLoaderInfo::SetResource(deFileResource *resource){
+	if(resource == pResource){
 		return;
 	}
 	
-	if( pResource ){
+	if(pResource){
 		pResource->FreeReference();
 	}
 	
 	pResource = resource;
 	
-	if( resource ){
+	if(resource){
 		resource->AddReference();
 	}
 }

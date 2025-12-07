@@ -42,10 +42,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetLayout( dealDisplay &display );
+	dealWidgetLayout(dealDisplay &display);
 	
 	/** \brief Create widget. */
-	dealWidgetLayout( dealDisplay &display, const decPoint &position, const decPoint &size );
+	dealWidgetLayout(dealDisplay &display, const decPoint &position, const decPoint &size);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetLayout();
@@ -59,13 +59,13 @@ public:
 	int GetWidgetCount() const;
 	
 	/** \brief Widget at index. */
-	dealWidget *GetWidgetAt( int index ) const;
+	dealWidget *GetWidgetAt(int index) const;
 	
 	/** \brief Add widget. */
-	void AddWidget( dealWidget *widget );
+	void AddWidget(dealWidget *widget);
 	
 	/** \brief Remove widget. */
-	void RemoveWidget( dealWidget *widget );
+	void RemoveWidget(dealWidget *widget);
 	
 	/** \brief Remove all widgets. */
 	void RemoveAllWidgets();
@@ -76,12 +76,12 @@ public:
 	virtual decPoint GetDialogPosition() const;
 	
 	/** \brief Widget containing position or \em null if not found. */
-	virtual dealWidget *WidgetAtPosition( const decPoint &point ) const;
+	virtual dealWidget *WidgetAtPosition(const decPoint &point) const;
 	
 	
 	
 	/** \brief Layout is dirty. */
-	inline bool GetLayoutDirty() const{ return pDirtyLayout; }
+	inline bool GetLayoutDirty() const{return pDirtyLayout;}
 	
 	/** \brief Dirty layout. */
 	void DirtyLayout();
@@ -95,7 +95,7 @@ public:
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent( const sRenderContext &context );
+	virtual void RenderContent(const sRenderContext &context);
 	
 	
 	

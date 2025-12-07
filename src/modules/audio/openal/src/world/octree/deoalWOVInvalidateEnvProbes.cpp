@@ -42,18 +42,18 @@
 
 deoalWOVInvalidateEnvProbes::deoalWOVInvalidateEnvProbes()
 {
-	SetVisitAll( false );
-	SetVisitEnvProbes( true );
+	SetVisitAll(false);
+	SetVisitEnvProbes(true);
 }
 
-deoalWOVInvalidateEnvProbes::deoalWOVInvalidateEnvProbes( const decDVector &minExtend,
-	const decDVector &maxExtend, const decLayerMask &layerMask ) :
-pMinExtend( minExtend ),
-pMaxExtend( maxExtend ),
-pLayerMask( layerMask )
+deoalWOVInvalidateEnvProbes::deoalWOVInvalidateEnvProbes(const decDVector &minExtend,
+	const decDVector &maxExtend, const decLayerMask &layerMask) :
+pMinExtend(minExtend),
+pMaxExtend(maxExtend),
+pLayerMask(layerMask)
 {
-	SetVisitAll( false );
-	SetVisitEnvProbes( true );
+	SetVisitAll(false);
+	SetVisitEnvProbes(true);
 }
 
 deoalWOVInvalidateEnvProbes::~deoalWOVInvalidateEnvProbes(){
@@ -64,41 +64,41 @@ deoalWOVInvalidateEnvProbes::~deoalWOVInvalidateEnvProbes(){
 // Visiting
 /////////////
 
-void deoalWOVInvalidateEnvProbes::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void deoalWOVInvalidateEnvProbes::SetExtends(const decDVector &minExtend, const decDVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
-void deoalWOVInvalidateEnvProbes::SetLayerMask( const decLayerMask &layerMask ){
+void deoalWOVInvalidateEnvProbes::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
 
 
-void deoalWOVInvalidateEnvProbes::VisitNode( deoalDOctree *node, int ){
-	deoalWorldOctree &sonode = *( ( deoalWorldOctree* )node );
+void deoalWOVInvalidateEnvProbes::VisitNode(deoalDOctree *node, int){
+	deoalWorldOctree &sonode = *((deoalWorldOctree*)node);
 	int i, count = sonode.GetEnvProbeCount();
 	
 	// collect environment probes to remove
 	pRemoveEnvProbes.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		deoalEnvProbe &envProbe = *sonode.GetEnvProbeAt( i );
-		if( envProbe.GetLayerMask().MatchesNot( pLayerMask ) ){
+	for(i=0; i<count; i++){
+		deoalEnvProbe &envProbe = *sonode.GetEnvProbeAt(i);
+		if(envProbe.GetLayerMask().MatchesNot(pLayerMask)){
 			continue;
 		}
-		if( envProbe.GetMaxExtend() < pMinExtend || envProbe.GetMinExtend() > pMaxExtend ){
+		if(envProbe.GetMaxExtend() < pMinExtend || envProbe.GetMinExtend() > pMaxExtend){
 			continue;
 		}
-		pRemoveEnvProbes.Add( &envProbe );
+		pRemoveEnvProbes.Add(&envProbe);
 	}
 	
 	// remove collected environment probes
 	count = pRemoveEnvProbes.GetCount();
-	for( i=0; i<count; i++ ){
-		deoalEnvProbe * const envProbe = ( deoalEnvProbe* )pRemoveEnvProbes.GetAt( i );
-		sonode.RemoveEnvProbe( envProbe );
-		envProbe->SetOctreeNode( NULL );
+	for(i=0; i<count; i++){
+		deoalEnvProbe * const envProbe = (deoalEnvProbe*)pRemoveEnvProbes.GetAt(i);
+		sonode.RemoveEnvProbe(envProbe);
+		envProbe->SetOctreeNode(NULL);
 		envProbe->Invalidate();
 	}
 }

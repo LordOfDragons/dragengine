@@ -44,8 +44,8 @@
 // Definitions
 ////////////////
 
-#define ME_DRAG_MOVE	( 1.0f / 50.0f )
-#define ME_DRAG_TURN	( 1.0f / 5.0f )
+#define ME_DRAG_MOVE	(1.0f / 50.0f)
+#define ME_DRAG_TURN	(1.0f / 5.0f)
 
 
 
@@ -55,7 +55,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditorNavigation::meViewEditorNavigation( meView3D &view ) : meViewEditor( view ){
+meViewEditorNavigation::meViewEditorNavigation(meView3D &view) : meViewEditor(view){
 	pNavigating = false;
 }
 
@@ -72,8 +72,8 @@ meViewEditorNavigation::~meViewEditorNavigation(){
 // Callbacks
 //////////////
 
-void meViewEditorNavigation::OnRightMouseButtonPress( int x, int y, bool shift, bool control ){
-	meViewEditor::OnRightMouseButtonPress( x, y, shift, control );
+void meViewEditorNavigation::OnRightMouseButtonPress(int x, int y, bool shift, bool control){
+	meViewEditor::OnRightMouseButtonPress(x, y, shift, control);
 	
 	meWorld &world = GetWorld();
 	meCamera * const activeCamera = world.GetActiveCamera();
@@ -82,20 +82,20 @@ void meViewEditorNavigation::OnRightMouseButtonPress( int x, int y, bool shift, 
 	pUndoCameraRotate = NULL;
 	
 	// distance
-	if( shift && control ){
+	if(shift && control){
 		pOldDist = activeCamera->GetDistance();
 		pNavigating = true;
 		
-		if( activeCamera->HasHostObject() ){
-			pUndoCameraMove.TakeOver( new meUCameraMoveObject( activeCamera->GetHostObject() ) );
+		if(activeCamera->HasHostObject()){
+			pUndoCameraMove.TakeOver(new meUCameraMoveObject(activeCamera->GetHostObject()));
 		}
 		
 	// move
-	}else if( shift || control ){
+	}else if(shift || control){
 		pNavigating = true;
 		
-		if( activeCamera->HasHostObject() ){
-			pUndoCameraMove.TakeOver( new meUCameraMoveObject( activeCamera->GetHostObject() ) );
+		if(activeCamera->HasHostObject()){
+			pUndoCameraMove.TakeOver(new meUCameraMoveObject(activeCamera->GetHostObject()));
 		}
 		
 	// rotate
@@ -104,40 +104,40 @@ void meViewEditorNavigation::OnRightMouseButtonPress( int x, int y, bool shift, 
 		pOldOrientation.SetFromEuler(pOldRotation * DEG2RAD);
 		pNavigating = true;
 		
-		if( activeCamera->HasHostObject() ){
-			pUndoCameraRotate.TakeOver( new meUCameraRotateObject( activeCamera->GetHostObject() ) );
+		if(activeCamera->HasHostObject()){
+			pUndoCameraRotate.TakeOver(new meUCameraRotateObject(activeCamera->GetHostObject()));
 		}
 	}
 }
 
-void meViewEditorNavigation::OnRightMouseButtonRelease( int x, int y, bool shift, bool control ){
-	meViewEditor::OnRightMouseButtonRelease( x, y, shift, control );
+void meViewEditorNavigation::OnRightMouseButtonRelease(int x, int y, bool shift, bool control){
+	meViewEditor::OnRightMouseButtonRelease(x, y, shift, control);
 	
-	if( pUndoCameraMove ){
-		if( ( ( meUCameraMoveObject& )( igdeUndo& )pUndoCameraMove ).HasChanged() ){
-			GetWorld().GetUndoSystem()->Add( pUndoCameraMove, false );
+	if(pUndoCameraMove){
+		if(((meUCameraMoveObject&)(igdeUndo&)pUndoCameraMove).HasChanged()){
+			GetWorld().GetUndoSystem()->Add(pUndoCameraMove, false);
 		}
 		pUndoCameraMove = NULL;
 	}
 	
-	if( pUndoCameraRotate ){
-		if( ( ( meUCameraRotateObject& )( igdeUndo& )pUndoCameraRotate ).HasChanged() ){
-			GetWorld().GetUndoSystem()->Add( pUndoCameraRotate, false );
+	if(pUndoCameraRotate){
+		if(((meUCameraRotateObject&)(igdeUndo&)pUndoCameraRotate).HasChanged()){
+			GetWorld().GetUndoSystem()->Add(pUndoCameraRotate, false);
 		}
 		pUndoCameraRotate = NULL;
 	}
 	
-	if( pNavigating ){
+	if(pNavigating){
 		pNavigating = false;
 	}
 }
 
-void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control ){
-	meViewEditor::OnMouseMove( x, y, shift, control );
+void meViewEditorNavigation::OnMouseMove(int x, int y, bool shift, bool control){
+	meViewEditor::OnMouseMove(x, y, shift, control);
 	
 	meWorld &world = GetWorld();
 	
-	if( GetDragRightMouseButton() ){
+	if(GetDragRightMouseButton()){
 		const float sensitivity = GetConfiguration().GetSensitivity();
 		const decPoint &dragDistStart = GetDragDistanceStart();
 		const decPoint &dragDistLast = GetDragDistanceLast();
@@ -147,17 +147,17 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 		meCamera *camera;
 		
 		// distance
-		if( shiftStart && controlStart ){
-			const float newDistance = decMath::max( 0.0f,
-				pOldDist - ME_DRAG_MOVE * ( float )dragDistStart.y * sensitivity );
+		if(shiftStart && controlStart){
+			const float newDistance = decMath::max(0.0f,
+				pOldDist - ME_DRAG_MOVE * (float)dragDistStart.y * sensitivity);
 			
 			camera = world.GetFreeRoamingCamera();
-			camera->SetDistance( newDistance );
+			camera->SetDistance(newDistance);
 			
-			world.NotifyCameraChanged( camera );
+			world.NotifyCameraChanged(camera);
 			
 		// move left-right
-		}else if( shiftStart ){
+		}else if(shiftStart){
 			camera = world.GetActiveCamera();
 			
 			if(camera->HasHostObject()){
@@ -174,15 +174,15 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 				}
 				
 			}else{
-				camera->SetPosition( camera->GetPosition()
-					- matrixView.TransformRight() * ( ME_DRAG_MOVE * ( float )dragDistLast.x * sensitivity )
-					- matrixView.TransformUp() * ( ME_DRAG_MOVE * ( float )dragDistLast.y ) * sensitivity );
+				camera->SetPosition(camera->GetPosition()
+					- matrixView.TransformRight() * (ME_DRAG_MOVE * (float)dragDistLast.x * sensitivity)
+					- matrixView.TransformUp() * (ME_DRAG_MOVE * (float)dragDistLast.y) * sensitivity);
 			}
 			
-			world.NotifyCameraChanged( camera );
+			world.NotifyCameraChanged(camera);
 			
 		// move forward-backward
-		}else if( controlStart ){
+		}else if(controlStart){
 			camera = world.GetActiveCamera();
 			
 			if(camera->HasHostObject()){
@@ -198,17 +198,17 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 				}
 				
 			}else{
-				camera->SetPosition( camera->GetPosition()
-					+ matrixView.TransformView() * ( ME_DRAG_MOVE * ( float )dragDistLast.y * sensitivity ) );
+				camera->SetPosition(camera->GetPosition()
+					+ matrixView.TransformView() * (ME_DRAG_MOVE * (float)dragDistLast.y * sensitivity));
 			}
 			
-			world.NotifyCameraChanged( camera );
+			world.NotifyCameraChanged(camera);
 			
 		// rotate
 		}else{
 			camera = world.GetActiveCamera();
 			
-			if( camera->HasHostObject() ){
+			if(camera->HasHostObject()){
 				decQuaternion rotation;
 					
 				// which one of the next two lines to use depends on the use case.
@@ -238,7 +238,7 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 				rotation *= pOldOrientation;
 				*/
 				
-				if( pUndoCameraRotate ){
+				if(pUndoCameraRotate){
 					rotation = camera->GetInvHostMatrix().
 						QuickMultiply(decDMatrix::CreateWorld(camera->GetPosition(), rotation)).
 						ToQuaternion();
@@ -261,6 +261,6 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 	}
 }
 
-void meViewEditorNavigation::OnMouseWheel( int steps, bool shift, bool control ){
-	meViewEditor::OnMouseWheel( steps, shift, control );
+void meViewEditorNavigation::OnMouseWheel(int steps, bool shift, bool control){
+	meViewEditor::OnMouseWheel(steps, shift, control);
 }

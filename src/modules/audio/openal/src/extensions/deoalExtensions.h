@@ -54,8 +54,8 @@ private:
 	int pVersionMinor;
 	decStringList pStrListExtensions;
 	
-	bool pHasExtension[ EXT_COUNT ];
-	bool pDisableExtension[ EXT_COUNT ];
+	bool pHasExtension[EXT_COUNT];
+	bool pDisableExtension[EXT_COUNT];
 	
 	bool pHasRequiredFunctions;
 	bool pHasEFX;
@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create extensions. */
-	deoalExtensions( deoalAudioThread &audioThread );
+	deoalExtensions(deoalAudioThread &audioThread);
 	
 	/** Clean up extensions. */
 	~deoalExtensions();
@@ -95,40 +95,40 @@ public:
 	
 	
 	/** Major version. */
-	inline int GetVersionMajor() const{ return pVersionMajor; }
+	inline int GetVersionMajor() const{return pVersionMajor;}
 	
 	/** Minor version. */
-	inline int GetVersionMinor() const{ return pVersionMinor; }
+	inline int GetVersionMinor() const{return pVersionMinor;}
 	
 	/** List of extension strings supported by hardware. */
-	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
+	inline const decStringList &GetStringListExtensions() const{return pStrListExtensions;}
 	
 	
 	
 	/** Extensions is supported. */
-	bool GetHasExtension( eExtensions extension ) const;
+	bool GetHasExtension(eExtensions extension) const;
 	
 	/** Name of extension. */
-	const char *GetExtensionName( eExtensions extension ) const;
+	const char *GetExtensionName(eExtensions extension) const;
 	
 	/** Disable extension. */
-	void DisableExtension( eExtensions extension );
+	void DisableExtension(eExtensions extension);
 	
 	
 	
 	/** EFX major version. */
-	inline int GetEfxVersionMajor() const{ return pEfxVersionMajor; }
+	inline int GetEfxVersionMajor() const{return pEfxVersionMajor;}
 	
 	/** EFX minor version. */
-	inline int GetEfxVersionMinor() const{ return pEfxVersionMinor; }
+	inline int GetEfxVersionMinor() const{return pEfxVersionMinor;}
 	
 	
 	
 	/** EFX is supported. */
-	inline bool GetHasEFX() const{ return pHasEFX; }
+	inline bool GetHasEFX() const{return pHasEFX;}
 	
 	/** HRTF is supported. */
-	inline bool GetHasHRTF() const{ return pHasHRTF; }
+	inline bool GetHasHRTF() const{return pHasHRTF;}
 	/*@}*/
 	
 	
@@ -140,8 +140,8 @@ private:
 	void pFetchRequiredFunctions();
 	void pFetchOptionalFunctions();
 	
-	void pGetRequiredFunction( void **funcPointer, const char *funcName );
-	void pGetOptionalFunction( void **funcPointer, const char *funcName, int extensionIndex );
+	void pGetRequiredFunction(void **funcPointer, const char *funcName);
+	void pGetOptionalFunction(void **funcPointer, const char *funcName, int extensionIndex);
 	void pGetOptionalFunction(void **funcPointer, const char *funcName,
 		const char *funcName2, int extensionIndex);
 };

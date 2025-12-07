@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordSet::ceUCAASpeakWordSet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip ){
-	if( ! topic || ! actorSpeak || ! word || ! newStrip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip){
+	if(! topic || ! actorSpeak || ! word || ! newStrip){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -53,9 +53,9 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet( ceConversationTopic *topic, ceCAActorSpe
 	pOldStrip = NULL;
 	pNewStrip = NULL;
 	
-	SetShortInfo( "Set Word" );
+	SetShortInfo("Set Word");
 	
-	pOldStrip = new ceStrip( *word );
+	pOldStrip = new ceStrip(*word);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,19 +71,19 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet( ceConversationTopic *topic, ceCAActorSpe
 }
 
 ceUCAASpeakWordSet::~ceUCAASpeakWordSet(){
-	if( pNewStrip ){
+	if(pNewStrip){
 		pNewStrip->FreeReference();
 	}
-	if( pOldStrip ){
+	if(pOldStrip){
 		pOldStrip->FreeReference();
 	}
-	if( pWord ){
+	if(pWord){
 		pWord->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -95,10 +95,10 @@ ceUCAASpeakWordSet::~ceUCAASpeakWordSet(){
 
 void ceUCAASpeakWordSet::Undo(){
 	*pWord = *pOldStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakWordSet::Redo(){
 	*pWord = *pNewStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sets the animator locomotion. */
-	void SetAnimatorLocomotion( aeAnimatorLocomotion *locomotion );
+	void SetAnimatorLocomotion(aeAnimatorLocomotion *locomotion);
 	/*@}*/
 	
 	/** \name Notifications */
@@ -65,13 +65,13 @@ public:
 	 * Notify scripting module peer collider entered touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderEntered( deCollider *collider );
+	virtual void ColliderEntered(deCollider *collider);
 	
 	/**
 	 * Notify scripting module peer collider left touch sensor.
 	 * \param collider Collider entering the shape.
 	 */
-	virtual void ColliderLeft( deCollider *collider );
+	virtual void ColliderLeft(deCollider *collider);
 	/*@}*/
 };
 

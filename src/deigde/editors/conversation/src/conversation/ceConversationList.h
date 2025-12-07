@@ -47,7 +47,7 @@ public:
 	ceConversationList();
 	
 	/** \brief Create copy of list. */
-	ceConversationList( const ceConversationList &list );
+	ceConversationList(const ceConversationList &list);
 	
 	/** \brief Clean up list. */
 	~ceConversationList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Conversation at index. */
-	ceConversation *GetAt( int index ) const;
+	ceConversation *GetAt(int index) const;
 	
 	/** \brief Index of conversation or -1 if absent. */
-	int IndexOf( ceConversation *conversation ) const;
+	int IndexOf(ceConversation *conversation) const;
 	
 	/** \brief Conversation is present. */
-	bool Has( ceConversation *conversation ) const;
+	bool Has(ceConversation *conversation) const;
 	
 	/** \brief Add conversation. */
-	void Add( ceConversation *conversation );
+	void Add(ceConversation *conversation);
 	
 	/** \brief Remove conversation. */
-	void Remove( ceConversation *conversation );
+	void Remove(ceConversation *conversation);
 	
 	/** \brief Remove all conversations. */
 	void RemoveAll();
 	
 	/** \brief Set list. */
-	ceConversationList &operator=( const ceConversationList &list );
+	ceConversationList &operator=(const ceConversationList &list);
 	/*@}*/
 };
 

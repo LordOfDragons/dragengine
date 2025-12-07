@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parameter. */
-	inline const deModuleParameter &GetParameter() const{ return pParameter; }
+	inline const deModuleParameter &GetParameter() const{return pParameter;}
 	
 	/** Current value. */
 	virtual decString GetParameterValue() = 0;

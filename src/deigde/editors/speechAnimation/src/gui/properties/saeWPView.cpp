@@ -62,18 +62,18 @@ protected:
 	saeWPView &pPanel;
 	
 public:
-	cBaseAction( saeWPView &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	cBaseAction(saeWPView &panel, const char *text, const char *description) :
+	igdeAction(text, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
-		if( sanimation ){
-			OnAction( *sanimation );
+		if(sanimation){
+			OnAction(*sanimation);
 		}
 	}
 	
-	virtual void OnAction( saeSAnimation &sanimation ) = 0;
+	virtual void OnAction(saeSAnimation &sanimation) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -81,34 +81,34 @@ protected:
 	saeWPView &pPanel;
 	
 public:
-	cBaseEditPathListener( saeWPView &panel ) : pPanel( panel ){ }
+	cBaseEditPathListener(saeWPView &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+	virtual void OnEditPathChanged(igdeEditPath *editPath){
 		saeSAnimation * const sanimation = pPanel.GetSAnimation();
-		if( sanimation ){
-			OnChanged( editPath->GetPath(), *sanimation );
+		if(sanimation){
+			OnChanged(editPath->GetPath(), *sanimation);
 		}
 	}
 	
-	virtual void OnChanged( const decString &path, saeSAnimation &sanimation ) = 0;
+	virtual void OnChanged(const decString &path, saeSAnimation &sanimation) = 0;
 };
 
 
 
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged( saeWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionCameraChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction( saeSAnimation &sanimation ){
+	virtual void OnAction(saeSAnimation &sanimation){
 		sanimation.NotifyCameraChanged();
 	}
 };
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	cActionSkyChanged( saeWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionSkyChanged(saeWPView &panel) : cBaseAction(panel, "", ""){}
 	
-	virtual void OnAction( saeSAnimation &sanimation ){
+	virtual void OnAction(saeSAnimation &sanimation){
 		sanimation.NotifySkyChanged();
 	}
 };
@@ -117,28 +117,28 @@ public:
 
 class cEditDisplayModelPath : public cBaseEditPathListener{
 public:
-	cEditDisplayModelPath( saeWPView &panel ) : cBaseEditPathListener( panel ){ }
+	cEditDisplayModelPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged( const decString &path, saeSAnimation &sanimation ){
-		sanimation.SetDisplayModelPath( path );
+	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
+		sanimation.SetDisplayModelPath(path);
 	}
 };
 
 class cEditDisplaySkinPath : public cBaseEditPathListener{
 public:
-	cEditDisplaySkinPath( saeWPView &panel ) : cBaseEditPathListener( panel ){ }
+	cEditDisplaySkinPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged( const decString &path, saeSAnimation &sanimation ){
-		sanimation.SetDisplaySkinPath( path );
+	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
+		sanimation.SetDisplaySkinPath(path);
 	}
 };
 
 class cEditDisplayRigPath : public cBaseEditPathListener{
 public:
-	cEditDisplayRigPath( saeWPView &panel ) : cBaseEditPathListener( panel ){ }
+	cEditDisplayRigPath(saeWPView &panel) : cBaseEditPathListener(panel){}
 	
-	virtual void OnChanged( const decString &path, saeSAnimation &sanimation ){
-		sanimation.SetDisplayRigPath( path );
+	virtual void OnChanged(const decString &path, saeSAnimation &sanimation){
+		sanimation.SetDisplayRigPath(path);
 	}
 };
 
@@ -152,44 +152,44 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-saeWPView::saeWPView( saeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pSAnimation( NULL )
+saeWPView::saeWPView(saeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pSAnimation(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	igdeAction::Ref action;
 	
-	pListener = new saeWPViewListener( *this );
+	pListener = new saeWPViewListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// display
-	helper.GroupBox( content, groupBox, "Display:" );
+	helper.GroupBox(content, groupBox, "Display:");
 	
-	helper.EditPath( groupBox, "Model:", "Path to the model resource to use.",
-		igdeEnvironment::efpltModel, pEditDisplayModelPath, new cEditDisplayModelPath( *this ) );
-	helper.EditPath( groupBox, "Skin:", "Path to the skin resource to use.",
-		igdeEnvironment::efpltSkin, pEditDisplaySkinPath, new cEditDisplaySkinPath( *this ) );
-	helper.EditPath( groupBox, "Rig:", "Path to the sanimation resource to use.",
-		igdeEnvironment::efpltRig, pEditDisplayRigPath, new cEditDisplayRigPath( *this ) );
+	helper.EditPath(groupBox, "Model:", "Path to the model resource to use.",
+		igdeEnvironment::efpltModel, pEditDisplayModelPath, new cEditDisplayModelPath(*this));
+	helper.EditPath(groupBox, "Skin:", "Path to the skin resource to use.",
+		igdeEnvironment::efpltSkin, pEditDisplaySkinPath, new cEditDisplaySkinPath(*this));
+	helper.EditPath(groupBox, "Rig:", "Path to the sanimation resource to use.",
+		igdeEnvironment::efpltRig, pEditDisplayRigPath, new cEditDisplayRigPath(*this));
 	
 	// property panels
-	action.TakeOver( new cActionCameraChanged( *this ) );
-	helper.WPCamera( content, pWPCamera, action, "Camera:" );
+	action.TakeOver(new cActionCameraChanged(*this));
+	helper.WPCamera(content, pWPCamera, action, "Camera:");
 	
-	action.TakeOver( new cActionSkyChanged( *this ) );
-	helper.WPSky( content, pWPSky, action, "Sky:" );
+	action.TakeOver(new cActionSkyChanged(*this));
+	helper.WPSky(content, pWPSky, action, "Sky:");
 }
 
 saeWPView::~saeWPView(){
-	SetSAnimation( NULL );
+	SetSAnimation(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -199,16 +199,16 @@ saeWPView::~saeWPView(){
 // Management
 ///////////////
 
-void saeWPView::SetSAnimation( saeSAnimation *sanimation ){
-	if( sanimation == pSAnimation ){
+void saeWPView::SetSAnimation(saeSAnimation *sanimation){
+	if(sanimation == pSAnimation){
 		return;
 	}
 	
-	pWPSky->SetSky( NULL );
-	pWPCamera->SetCamera( NULL );
+	pWPSky->SetSky(NULL);
+	pWPCamera->SetCamera(NULL);
 	
-	if( pSAnimation ){
-		pSAnimation->RemoveListener( pListener );
+	if(pSAnimation){
+		pSAnimation->RemoveListener(pListener);
 		pSAnimation->FreeReference();
 	}
 	
@@ -216,19 +216,19 @@ void saeWPView::SetSAnimation( saeSAnimation *sanimation ){
 	
 	decString defaultPath;
 	
-	if( sanimation ){
-		sanimation->AddListener( pListener );
+	if(sanimation){
+		sanimation->AddListener(pListener);
 		sanimation->AddReference();
 		
-		pWPSky->SetSky( sanimation->GetSky() );
-		pWPCamera->SetCamera( sanimation->GetCamera() );
+		pWPSky->SetSky(sanimation->GetSky());
+		pWPCamera->SetCamera(sanimation->GetCamera());
 		
 		defaultPath = sanimation->GetDirectoryPath();
 	}
 	
-	pEditDisplayModelPath->SetDefaultPath( defaultPath );
-	pEditDisplaySkinPath->SetDefaultPath( defaultPath );
-	pEditDisplayModelPath->SetDefaultPath( defaultPath );
+	pEditDisplayModelPath->SetDefaultPath(defaultPath);
+	pEditDisplaySkinPath->SetDefaultPath(defaultPath);
+	pEditDisplayModelPath->SetDefaultPath(defaultPath);
 	
 	UpdateView();
 	UpdateSky();
@@ -236,10 +236,10 @@ void saeWPView::SetSAnimation( saeSAnimation *sanimation ){
 }
 
 void saeWPView::UpdateView(){
-	if( pSAnimation ){
-		pEditDisplayModelPath->SetPath( pSAnimation->GetDisplayModelPath() );
-		pEditDisplaySkinPath->SetPath( pSAnimation->GetDisplaySkinPath() );
-		pEditDisplayRigPath->SetPath( pSAnimation->GetDisplayRigPath() );
+	if(pSAnimation){
+		pEditDisplayModelPath->SetPath(pSAnimation->GetDisplayModelPath());
+		pEditDisplaySkinPath->SetPath(pSAnimation->GetDisplaySkinPath());
+		pEditDisplayRigPath->SetPath(pSAnimation->GetDisplayRigPath());
 		
 	}else{
 		pEditDisplayModelPath->ClearPath();
@@ -248,9 +248,9 @@ void saeWPView::UpdateView(){
 	}
 	
 	const bool enabled = pSAnimation != NULL;
-	pEditDisplayModelPath->SetEnabled( enabled );
-	pEditDisplaySkinPath->SetEnabled( enabled );
-	pEditDisplayRigPath->SetEnabled( enabled );
+	pEditDisplayModelPath->SetEnabled(enabled);
+	pEditDisplaySkinPath->SetEnabled(enabled);
+	pEditDisplayRigPath->SetEnabled(enabled);
 }
 
 void saeWPView::UpdateSky(){

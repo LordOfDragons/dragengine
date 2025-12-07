@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedToggleInputClamped( seMapped *mapped );
+	seUMappedToggleInputClamped(seMapped *mapped);
 	
 protected:
 	/** Clean up undo. */

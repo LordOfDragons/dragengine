@@ -53,7 +53,7 @@ public:
 	gdeOCCamera();
 	
 	/** \brief Create copy of camera. */
-	gdeOCCamera( const gdeOCCamera &camera );
+	gdeOCCamera(const gdeOCCamera &camera);
 	
 	/** \brief Clean up camera. */
 	virtual ~gdeOCCamera();
@@ -64,57 +64,57 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
-	inline const decVector &GetRotation() const{ return pRotation; }
+	inline const decVector &GetRotation() const{return pRotation;}
 	
 	/** \brief Set orientation. */
-	void SetRotation( const decVector &orientation );
+	void SetRotation(const decVector &orientation);
 	
 	/** \brief Vertical field  of view in radians for the entire view. */
-	inline float GetFov() const{ return pFov; }
+	inline float GetFov() const{return pFov;}
 	
 	/** \brief Set vertical field of view in radians of the entire view. */
-	void SetFov( float fov );
+	void SetFov(float fov);
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
-	inline float GetFovRatio() const{ return pFovRatio; }
+	inline float GetFovRatio() const{return pFovRatio;}
 	
 	/** \brief Set aspect ratio of the horizonral field of view to the vertical field of view. */
-	void SetFovRatio( float ratio );
+	void SetFovRatio(float ratio);
 	
 	/** \brief Distance to the image plane. */
-	inline float GetImageDistance() const{ return pImageDistance; }
+	inline float GetImageDistance() const{return pImageDistance;}
 	
 	/** \brief Set distance to the image plane. */
-	void SetImageDistance( float distance );
+	void SetImageDistance(float distance);
 	
 	/** \brief Viewing distance up to which scene geometry is rendered. */
-	inline float GetViewDistance() const{ return pViewDistance; }
+	inline float GetViewDistance() const{return pViewDistance;}
 	
 	/** \brief Set view distance up to which scene geometry is rendered. */
-	void SetViewDistance( float distance );
+	void SetViewDistance(float distance);
 	
 	
 	
 	/** \brief Name of the name property. */
-	inline const decString &GetPropName() const{ return pPropName; }
+	inline const decString &GetPropName() const{return pPropName;}
 	
 	/** \brief Set name of the name property. */
 	void SetPropName(const char *property);
 	
 	/** \brief Name of the position property. */
-	inline const decString &GetPropPosition() const{ return pPropPosition; }
+	inline const decString &GetPropPosition() const{return pPropPosition;}
 	
 	/** \brief Set name of the position property. */
 	void SetPropPosition(const char *property);
 	
 	/** \brief Name of the rotation property. */
-	inline const decString &GetPropRotation() const{ return pPropRotation; }
+	inline const decString &GetPropRotation() const{return pPropRotation;}
 	
 	/** \brief Set name of the rotation property. */
 	void SetPropRotation(const char *property);

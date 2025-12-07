@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMACoordSystemAdd( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCACoordSystemAdd *action );
+	ceWPTTIMACoordSystemAdd(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCACoordSystemAdd *action);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,7 +51,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCACoordSystemAdd *GetActionCoordSystemAdd() const{ return ( ceCACoordSystemAdd* )GetAction(); }
+	inline ceCACoordSystemAdd *GetActionCoordSystemAdd() const{return (ceCACoordSystemAdd*)GetAction();}
 	
 	/** \brief Update action. */
 	virtual void Update();

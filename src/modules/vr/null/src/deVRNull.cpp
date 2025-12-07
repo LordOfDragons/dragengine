@@ -37,7 +37,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *NullVRCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *NullVRCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -47,11 +47,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullVRCreateModule( deLoadableModule *loadabl
 // Entry Function
 ///////////////////
 
-deBaseModule *NullVRCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *NullVRCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deVRNull( *loadableModule );
+		return new deVRNull(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return nullptr;
 	}
 }
@@ -64,8 +64,8 @@ deBaseModule *NullVRCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deVRNull::deVRNull( deLoadableModule &loadableModule ) :
-deBaseVRModule( loadableModule ){
+deVRNull::deVRNull(deLoadableModule &loadableModule) :
+deBaseVRModule(loadableModule){
 }
 
 deVRNull::~deVRNull(){
@@ -93,7 +93,7 @@ bool deVRNull::RuntimeUsable(){
 }
 
 void deVRNull::StartRuntime(){
-	DETHROW_INFO( deeInvalidAction, "VR not supported" );
+	DETHROW_INFO(deeInvalidAction, "VR not supported");
 }
 
 void deVRNull::StopRuntime(){
@@ -103,7 +103,7 @@ bool deVRNull::IsRuntimeRunning(){
 	return false;
 }
 
-void deVRNull::SetCamera( deCamera* ){
+void deVRNull::SetCamera(deCamera*){
 }
 
 
@@ -115,60 +115,60 @@ int deVRNull::GetDeviceCount(){
 	return 0;
 }
 
-deInputDevice *deVRNull::GetDeviceAt( int ){
-	DETHROW( deeInvalidParam );
+deInputDevice *deVRNull::GetDeviceAt(int){
+	DETHROW(deeInvalidParam);
 }
 
-int deVRNull::IndexOfDeviceWithID( const char* ){
+int deVRNull::IndexOfDeviceWithID(const char*){
 	return -1;
 }
 
 
-int deVRNull::IndexOfButtonWithID( int, const char* ){
+int deVRNull::IndexOfButtonWithID(int, const char*){
 	return -1;
 }
 
-int deVRNull::IndexOfAxisWithID( int, const char* ){
+int deVRNull::IndexOfAxisWithID(int, const char*){
 	return -1;
 }
 
-int deVRNull::IndexOfFeedbackWithID( int, const char* ){
+int deVRNull::IndexOfFeedbackWithID(int, const char*){
 	return -1;
 }
 
-int deVRNull::IndexOfComponentWithID( int, const char* ){
+int deVRNull::IndexOfComponentWithID(int, const char*){
 	return -1;
 }
 
-bool deVRNull::GetButtonPressed( int, int ){
-	DETHROW( deeInvalidParam );
+bool deVRNull::GetButtonPressed(int, int){
+	DETHROW(deeInvalidParam);
 }
 
-bool deVRNull::GetButtonTouched( int, int ){
-	DETHROW( deeInvalidParam );
+bool deVRNull::GetButtonTouched(int, int){
+	DETHROW(deeInvalidParam);
 }
 
 bool deVRNull::GetButtonNear(int, int){
 	DETHROW(deeInvalidParam);
 }
 
-float deVRNull::GetAxisValue( int, int ){
-	DETHROW( deeInvalidParam );
+float deVRNull::GetAxisValue(int, int){
+	DETHROW(deeInvalidParam);
 }
 
-float deVRNull::GetFeedbackValue( int, int ){
-	DETHROW( deeInvalidParam );
+float deVRNull::GetFeedbackValue(int, int){
+	DETHROW(deeInvalidParam);
 }
 
-void deVRNull::SetFeedbackValue( int, int, float ){
+void deVRNull::SetFeedbackValue(int, int, float){
 }
 
-void deVRNull::GetDevicePose( int, deInputDevicePose &pose ){
-	DETHROW( deeInvalidParam );
+void deVRNull::GetDevicePose(int, deInputDevicePose &pose){
+	DETHROW(deeInvalidParam);
 }
 
-void deVRNull::GetDeviceBonePose( int, int, bool, deInputDevicePose &pose ){
-	DETHROW( deeInvalidParam );
+void deVRNull::GetDeviceBonePose(int, int, bool, deInputDevicePose &pose){
+	DETHROW(deeInvalidParam);
 }
 
 
@@ -180,22 +180,22 @@ void deVRNull::ProcessEvents(){
 }
 
 decPoint deVRNull::GetRenderSize(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deVRNull::GetProjectionParameters( eEye, float&, float&, float&, float& ){
-	DETHROW( deeInvalidParam );
+void deVRNull::GetProjectionParameters(eEye, float&, float&, float&, float&){
+	DETHROW(deeInvalidParam);
 }
 
-decMatrix deVRNull::GetMatrixViewEye( eEye ){
-	DETHROW( deeInvalidParam );
+decMatrix deVRNull::GetMatrixViewEye(eEye){
+	DETHROW(deeInvalidParam);
 }
 
-deModel *deVRNull::GetHiddenArea( eEye ){
+deModel *deVRNull::GetHiddenArea(eEye){
 	return nullptr;
 }
 
-deImage *deVRNull::GetDistortionMap( eEye ){
+deImage *deVRNull::GetDistortionMap(eEye){
 	return nullptr;
 }
 
@@ -205,7 +205,7 @@ void deVRNull::StartBeginFrame(){
 void deVRNull::WaitBeginFrameFinished(){
 }
 
-void deVRNull::SubmitOpenGLTexture2D( eEye, void*, const decVector2 &, const decVector2 &, bool ){
+void deVRNull::SubmitOpenGLTexture2D(eEye, void*, const decVector2 &, const decVector2 &, bool){
 }
 
 void deVRNull::EndFrame(){

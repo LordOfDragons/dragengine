@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new physics system linked to the given engine. */
-	dePhysicsSystem( deEngine *engine );
+	dePhysicsSystem(deEngine *engine);
 	
 	/** \brief Clean up physics system. */
 	~dePhysicsSystem();
@@ -70,49 +70,49 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deBasePhysicsModule *GetActiveModule() const{ return pActiveModule; }
+	inline deBasePhysicsModule *GetActiveModule() const{return pActiveModule;}
 	
 	/** \brief Create peer object for the given component using the active module and assigns it. */
-	void LoadComponent( deComponent *component );
+	void LoadComponent(deComponent *component);
 	
 	/** \brief Create peer object for the given model using the active module and assigns it. */
-	void LoadModel( deModel *model );
+	void LoadModel(deModel *model);
 	
 	/** \brief Create peer object for the given skin using the active module and assigns it. */
-	void LoadSkin( deSkin *skin );
+	void LoadSkin(deSkin *skin);
 	
 	/** \brief Create peer object for the given rig using the active module and assigns it. */
-	void LoadRig( deRig *rig );
+	void LoadRig(deRig *rig);
 	
 	/** \brief Create peer object for the given world using the active module and assigns it. */
-	void LoadWorld( deWorld *world );
+	void LoadWorld(deWorld *world);
 	
 	/** \brief Create peer object for the given collider using the active module and assigns it. */
-	void LoadCollider( deCollider *collider );
+	void LoadCollider(deCollider *collider);
 	
 	/** \brief Create peer object for the given decal using the active module and assigns it. */
-	void LoadDecal( deDecal *decal );
+	void LoadDecal(deDecal *decal);
 	
 	/** \brief Create peer object for the given touch sensor using the active module and assigns it. */
-	void LoadTouchSensor( deTouchSensor *touchSensor );
+	void LoadTouchSensor(deTouchSensor *touchSensor);
 	
 	/** \brief Create peer object for the given height terrain using the active module and assigns it. */
-	void LoadHeightTerrain( deHeightTerrain *heightTerrain );
+	void LoadHeightTerrain(deHeightTerrain *heightTerrain);
 	
 	/** \brief Create peer object for the given prop field using the active module and assigns it. */
-	void LoadPropField( dePropField *propField );
+	void LoadPropField(dePropField *propField);
 	
 	/** \brief Create peer object for the given force field using the active module and assigns it. */
-	void LoadForceField( deForceField *forceField );
+	void LoadForceField(deForceField *forceField);
 	
 	/** \brief Create peer for the particle emitter using the active module and assigns it. */
-	void LoadParticleEmitter( deParticleEmitter *emitter );
+	void LoadParticleEmitter(deParticleEmitter *emitter);
 	
 	/** \brief Create peer for the particle emitter instance using the active module and assigns it. */
-	void LoadParticleEmitterInstance( deParticleEmitterInstance *instance );
+	void LoadParticleEmitterInstance(deParticleEmitterInstance *instance);
 	
 	/** \brief Create peer for the smoke emitter using the active module and assigns it. */
-	void LoadSmokeEmitter( deSmokeEmitter *smokeEmitter );
+	void LoadSmokeEmitter(deSmokeEmitter *smokeEmitter);
 	/*@}*/
 	
 	
@@ -124,7 +124,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

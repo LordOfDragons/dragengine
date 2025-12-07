@@ -154,7 +154,7 @@ private:
 	bool pMulBySkyLight;
 	bool pMulBySkyColor;
 	
-	deSkyControllerTarget pTargets[ etAmbientIntensity + 1 ];
+	deSkyControllerTarget pTargets[etAmbientIntensity + 1];
 	
 	
 	
@@ -173,101 +173,101 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Relative offset of layer center. */
-	inline const decVector &GetOffset() const{ return pOffset; }
+	inline const decVector &GetOffset() const{return pOffset;}
 	
 	/** \brief Set relative offset of layer center. */
-	void SetOffset( const decVector &offset );
+	void SetOffset(const decVector &offset);
 	
 	/** \brief Orientation. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Tint color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set tint color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Intensity. */
-	inline float GetIntensity() const{ return pIntensity; }
+	inline float GetIntensity() const{return pIntensity;}
 	
 	/** \brief Set intensity. */
-	void SetIntensity( float intensity );
+	void SetIntensity(float intensity);
 	
 	/** \brief Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** \brief Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** \brief Skin or NULL to use background color only. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline deSkin *GetSkin() const{return pSkin;}
 	
 	/** \brief Set skin or NULL to use background color only. */
-	void SetSkin( deSkin *skin );
+	void SetSkin(deSkin *skin);
 	
 	
 	
 	/** \brief Light orientation. */
-	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
+	inline const decQuaternion &GetLightOrientation() const{return pLightOrientation;}
 	
 	/** \brief Set light orientation. */
-	void SetLightOrientation( const decQuaternion &orientation );
+	void SetLightOrientation(const decQuaternion &orientation);
 	
 	/** \brief Light color. */
-	inline const decColor &GetLightColor() const{ return pLightColor; }
+	inline const decColor &GetLightColor() const{return pLightColor;}
 	
 	/** \brief Set light color. */
-	void SetLightColor( const decColor &color );
+	void SetLightColor(const decColor &color);
 	
 	/** \brief Direct light intensity. */
-	inline float GetLightIntensity() const{ return pLightIntensity; }
+	inline float GetLightIntensity() const{return pLightIntensity;}
 	
 	/** \brief Set direct light intensity. */
-	void SetLightIntensity( float intensity );
+	void SetLightIntensity(float intensity);
 	
 	/** \brief Diffuse ambient light intensity. */
-	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
+	inline float GetAmbientIntensity() const{return pAmbientIntensity;}
 	
 	/** \brief Set diffuse ambient light intensity. */
-	void SetAmbientIntensity( float intensity );
+	void SetAmbientIntensity(float intensity);
 	
 	
 	
 	/** \brief Number of bodies. */
-	inline int GetBodyCount() const{ return pBodyCount; }
+	inline int GetBodyCount() const{return pBodyCount;}
 	
 	/**
 	 * \brief Set number of bodies.
 	 * 
 	 * Sets all bodies to default vaules.
 	 */
-	void SetBodyCount( int count );
+	void SetBodyCount(int count);
 	
 	/** \brief Body at index. */
-	deSkyLayerBody &GetBodyAt( int index ) const;
+	deSkyLayerBody &GetBodyAt(int index) const;
 	
 	
 	
 	/** \brief Controller target. */
-	const deSkyControllerTarget &GetTarget( eTargets target ) const;
-	deSkyControllerTarget &GetTarget( eTargets target );
+	const deSkyControllerTarget &GetTarget(eTargets target) const;
+	deSkyControllerTarget &GetTarget(eTargets target);
 	
 	
 	
 	/** \brief Layer intensity is multiplied by total sky light intensity. */
-	inline bool GetMuliplyBySkyLight() const{ return pMulBySkyLight; }
+	inline bool GetMuliplyBySkyLight() const{return pMulBySkyLight;}
 	
 	/** \brief Set if layer intensity is multiplied by total sky light intensity. */
-	void SetMultiplyBySkyLight( bool multiply );
+	void SetMultiplyBySkyLight(bool multiply);
 	
 	/** \brief Layer color is multiplied by total sky light color. */
-	inline bool GetMuliplyBySkyColor() const{ return pMulBySkyColor; }
+	inline bool GetMuliplyBySkyColor() const{return pMulBySkyColor;}
 	
 	/** \brief Set if layer color is multiplied by total sky light color. */
-	void SetMultiplyBySkyColor( bool multiply );
+	void SetMultiplyBySkyColor(bool multiply);
 	/*@}*/
 };
 

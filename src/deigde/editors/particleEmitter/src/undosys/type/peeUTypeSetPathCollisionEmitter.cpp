@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter( peeType *type, const char *newPath ){
-	if( ! type || ! newPath ){
-		DETHROW( deeInvalidParam );
+peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, const char *newPath){
+	if(! type || ! newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = NULL;
 	
-	SetShortInfo( "Set Type Path Collision Emitter" );
+	SetShortInfo("Set Type Path Collision Emitter");
 	
 	pOldPath = type->GetPathCollisionEmitter();
 	pNewPath = newPath;
@@ -56,7 +56,7 @@ peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter( peeType *type,
 }
 
 peeUTypeSetPathCollisionEmitter::~peeUTypeSetPathCollisionEmitter(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ peeUTypeSetPathCollisionEmitter::~peeUTypeSetPathCollisionEmitter(){
 ///////////////
 
 void peeUTypeSetPathCollisionEmitter::Undo(){
-	pType->SetPathCollisionEmitter( pOldPath.GetString() );
+	pType->SetPathCollisionEmitter(pOldPath.GetString());
 }
 
 void peeUTypeSetPathCollisionEmitter::Redo(){
-	pType->SetPathCollisionEmitter( pNewPath.GetString() );
+	pType->SetPathCollisionEmitter(pNewPath.GetString());
 }

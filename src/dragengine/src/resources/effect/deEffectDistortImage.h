@@ -48,7 +48,7 @@ public:
 	
 private:
 	deImage::Ref pImage;
-	decVector2 pTexCoords[ 4 ];
+	decVector2 pTexCoords[4];
 	float pStrengthU;
 	float pStrengthV;
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new effect distort image. */
-	deEffectDistortImage( deEffectManager *manager );
+	deEffectDistortImage(deEffectManager *manager);
 	
 protected:
 	/**
@@ -74,28 +74,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or null if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline deImage *GetImage() const{return pImage;}
 	
 	/** \brief Set image or null to remove it. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Texture coordinates of the given corner. */
-	const decVector2 &GetTextureCoordinatesFor( int corner ) const;
+	const decVector2 &GetTextureCoordinatesFor(int corner) const;
 	
 	/** \brief Set texture coordinates if the given corner. */
-	void SetTextureCoordinatesFor( int corner, const decVector2 &textureCoordinates );
+	void SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates);
 	
 	/** \brief Strength in u direction. */
-	inline float GetStrengthU() const{ return pStrengthU; }
+	inline float GetStrengthU() const{return pStrengthU;}
 	
 	/** \brief Set strength in u direction. */
-	void SetStrengthU( float strength );
+	void SetStrengthU(float strength);
 	
 	/** \brief Strength in v direction. */
-	inline float GetStrengthV() const{ return pStrengthV; }
+	inline float GetStrengthV() const{return pStrengthV;}
 	
 	/** \brief Set strength in v direction. */
-	void SetStrengthV( float strength );
+	void SetStrengthV(float strength);
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	virtual void Visit(deEffectVisitor &visitor);
 	/*@}*/
 };
 

@@ -49,13 +49,13 @@ public:
 	decVector4();
 	
 	/** \brief Create new vector with the given values. */
-	decVector4( float nx, float ny, float nz );
+	decVector4(float nx, float ny, float nz);
 	
 	/** \brief Create new vector with the given values. */
-	decVector4( float nx, float ny, float nz, float nw );
+	decVector4(float nx, float ny, float nz, float nw);
 	
 	/** \brief Create new vector with the values of another vector. */
-	decVector4( const decVector4 &v );
+	decVector4(const decVector4 &v);
 	/*@}*/
 	
 	
@@ -82,13 +82,13 @@ public:
 	void SetZero();
 	
 	/** \brief Set components to the given values. */
-	void Set( float nx, float ny, float nz, float nw );
+	void Set(float nx, float ny, float nz, float nw);
 	
 	/** \brief Mix vectors component wise. */
-	decVector4 Mix( const decVector4 &vector, float blendFactor ) const;
+	decVector4 Mix(const decVector4 &vector, float blendFactor) const;
 	
 	/** \brief Multiply component wise. */
-	decVector4 Multiply( const decVector4 &vector ) const;
+	decVector4 Multiply(const decVector4 &vector) const;
 	/*@}*/
 	
 	
@@ -99,48 +99,48 @@ public:
 	decVector4 operator-();
 	
 	/** \brief Set components of this vector to the values of another one. */
-	decVector4 &operator=( const decVector4 &v );
+	decVector4 &operator=(const decVector4 &v);
 	
 	/** \brief Adds the components of another vector to this one. */
-	decVector4 &operator+=( const decVector4 &v );
+	decVector4 &operator+=(const decVector4 &v);
 	
 	/** \brief Subtracts the components of another vector from this vector. */
-	decVector4 &operator-=( const decVector4 &v );
+	decVector4 &operator-=(const decVector4 &v);
 	
 	/** \brief Multiply components with a value k. */
-	decVector4 &operator*=( float k );
+	decVector4 &operator*=(float k);
 	
 	/** \brief Divice components by a value k. If the value k is 0 an exception is thrown. */
-	decVector4 &operator/=( float k );
+	decVector4 &operator/=(float k);
 	
 	/** \brief Vector with the sum of this vector with another one. */
-	decVector4 operator+( const decVector4 &v ) const;
+	decVector4 operator+(const decVector4 &v) const;
 	
 	/** \brief Vector with the difference of this vector to another one. */
-	decVector4 operator-( const decVector4 &v ) const;
+	decVector4 operator-(const decVector4 &v) const;
 	
 	/** \brief Vector with this vector scaled by k. */
-	decVector4 operator*( float k ) const;
+	decVector4 operator*(float k) const;
 	
 	/** \brief Calculates the dor product of this vector with another one. */
-	float operator*( const decVector4 &v ) const;
+	float operator*(const decVector4 &v) const;
 	
 	/** \brief Vector with this vector divided by k. If k is 0 an exception is thrown. */
-	decVector4 operator/( float k ) const;
+	decVector4 operator/(float k) const;
 	
 	/** \brief Vector with the cross producr of this vector with another one. */
-	decVector4 operator%( const decVector4 &v ) const;
+	decVector4 operator%(const decVector4 &v) const;
 	
 	/** \brief All components are less then the components of another one. */
-	bool operator<( const decVector4 &v ) const;
+	bool operator<(const decVector4 &v) const;
 	
 	/** \brief All components are greater then the components of another one. */
-	bool operator>( const decVector4 &v ) const;
+	bool operator>(const decVector4 &v) const;
 	
 	/** \brief All components are less then or equal to the components of another one. */
-	bool operator<=( const decVector4 &v ) const;
+	bool operator<=(const decVector4 &v) const;
 	
 	/** \brief All components are greater then or equal to the components of another one. */
-	bool operator>=( const decVector4 &v ) const;
+	bool operator>=(const decVector4 &v) const;
 	/*@}*/
 };

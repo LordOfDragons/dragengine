@@ -51,7 +51,7 @@ public:
 	 * Create new undo action.
 	 * \throws deeInvalidParam \em rule is \em NULL.
 	 */
-	aeURuleIKSetReachRange( aeRuleInverseKinematic *rule, float newValue );
+	aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, float newValue);
 	
 protected:
 	/** Clean up undo. */

@@ -33,18 +33,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR igdeEditorModule *ParticleEmitterEditorCreateModule( igdeEnvironment *environment );
+MOD_ENTRY_POINT_ATTR igdeEditorModule *ParticleEmitterEditorCreateModule(igdeEnvironment *environment);
 #ifdef  __cplusplus
 }
 #endif
 
 
 
-igdeEditorModule *ParticleEmitterEditorCreateModule( igdeEnvironment *environment ){
+igdeEditorModule *ParticleEmitterEditorCreateModule(igdeEnvironment *environment){
 	try{
-		return new peeIGDEModule( *environment );
+		return new peeIGDEModule(*environment);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 }

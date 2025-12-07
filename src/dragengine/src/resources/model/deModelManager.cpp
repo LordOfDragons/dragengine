@@ -50,10 +50,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModelManager::deModelManager( deEngine *engine ) :
-deFileResourceManager( engine, ertModel )
+deModelManager::deModelManager(deEngine *engine) :
+deFileResourceManager(engine, ertModel)
 {
-	SetLoggingName( "model" );
+	SetLoggingName("model");
 }
 
 deModelManager::~deModelManager(){
@@ -70,26 +70,26 @@ int deModelManager::GetModelCount() const{
 }
 
 deModel *deModelManager::GetRootModel() const{
-	return ( deModel* )pModels.GetRoot();
+	return (deModel*)pModels.GetRoot();
 }
 
-deModel *deModelManager::GetModelWith( const char *filename ) const{
-	return GetModelWith( GetEngine()->GetVirtualFileSystem(), filename );
+deModel *deModelManager::GetModelWith(const char *filename) const{
+	return GetModelWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
-deModel *deModelManager::GetModelWith( deVirtualFileSystem *vfs, const char *filename ) const{
-	deModel * const model = ( deModel* )pModels.GetWithFilename( vfs, filename );
+deModel *deModelManager::GetModelWith(deVirtualFileSystem *vfs, const char *filename) const{
+	deModel * const model = (deModel*)pModels.GetWithFilename(vfs, filename);
 	return model && ! model->GetOutdated() ? model : NULL;
 }
 
-deModel *deModelManager::CreateModel( const char *filename, deModelBuilder &builder ){
-	return CreateModel( GetEngine()->GetVirtualFileSystem(), filename, builder );
+deModel *deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
+	return CreateModel(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deModel *deModelManager::CreateModel( deVirtualFileSystem *vfs, const char *filename,
-deModelBuilder &builder ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deModel *deModelManager::CreateModel(deVirtualFileSystem *vfs, const char *filename,
+deModelBuilder &builder){
+	if(! vfs || ! filename){
+		DETHROW(deeInvalidParam);
 	}
 	deModel *model = NULL;
 	deModel *findModel;
@@ -97,51 +97,51 @@ deModelBuilder &builder ){
 	try{
 		// check if a model with this filename already exists. this check is only done if
 		// the filename is not empty in which case an unnamed model is created
-		if( filename[ 0 ] != '\0' ){
-			findModel = ( deModel* )pModels.GetWithFilename( vfs, filename );
-			if( findModel ){
+		if(filename[0] != '\0'){
+			findModel = (deModel*)pModels.GetWithFilename(vfs, filename);
+			if(findModel){
 				findModel->MarkOutdated();
 				findModel = NULL;
 			}
 		}
 		
 		// create model using the builder
-		model = new deModel( this, vfs, filename, decDateTime::GetSystemTime() );
-		builder.BuildModel( model );
+		model = new deModel(this, vfs, filename, decDateTime::GetSystemTime());
+		builder.BuildModel(model);
 		
 		// prepare and check model
-		if( ! model->Verify() ){
-			DETHROW( deeInvalidParam );
+		if(! model->Verify()){
+			DETHROW(deeInvalidParam);
 		}
 		model->Prepare();
 		
 		// load system peers
-		GetGraphicSystem()->LoadModel( model );
-		GetPhysicsSystem()->LoadModel( model );
-		GetAudioSystem()->LoadModel( model );
+		GetGraphicSystem()->LoadModel(model);
+		GetPhysicsSystem()->LoadModel(model);
+		GetAudioSystem()->LoadModel(model);
 		
 		// add model
-		pModels.Add( model );
+		pModels.Add(model);
 		
-	}catch( const deException &e ){
-		if( model ){
+	}catch(const deException &e){
+		if(model){
 			model->FreeReference();
 		}
-		LogErrorFormat( "Creating model '%s' failed", filename );
-		LogException( e );
+		LogErrorFormat("Creating model '%s' failed", filename);
+		LogException(e);
 		throw;
 	}
 	
 	return model;
 }
 
-deModel *deModelManager::LoadModel( const char *filename, const char *basePath ){
-	return LoadModel( GetEngine()->GetVirtualFileSystem(), filename, basePath );
+deModel *deModelManager::LoadModel(const char *filename, const char *basePath){
+	return LoadModel(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deModel *deModelManager::LoadModel( deVirtualFileSystem *vfs, const char *filename, const char *basePath ){
-	if( ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
+deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+	if(! vfs || ! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader *fileReader = NULL;
@@ -152,84 +152,84 @@ deModel *deModelManager::LoadModel( deVirtualFileSystem *vfs, const char *filena
 	
 	try{
 		// locate file
-		if( ! FindFileForReading( path, *vfs, filename, basePath ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(! FindFileForReading(path, *vfs, filename, basePath)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
-		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime( path );
+		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the model with this filename already exists
-		findModel = ( deModel* )pModels.GetWithFilename( vfs, path.GetPathUnix() );
+		findModel = (deModel*)pModels.GetWithFilename(vfs, path.GetPathUnix());
 		
-		if( findModel && findModel->GetModificationTime() != modificationTime ){
-			LogInfoFormat( "Model '%s' (base path '%s') changed on VFS: Outdating and Reloading",
-				filename, basePath ? basePath : "" );
+		if(findModel && findModel->GetModificationTime() != modificationTime){
+			LogInfoFormat("Model '%s' (base path '%s') changed on VFS: Outdating and Reloading",
+				filename, basePath ? basePath : "");
 			findModel->MarkOutdated();
 			findModel = NULL;
 		}
 		
-		if( findModel ){
+		if(findModel){
 			findModel->AddReference();
 			model = findModel;
 			
 		}else{
 			// find the module able to handle this model file
-			module = ( deBaseModelModule* )GetModuleSystem()->GetModuleAbleToLoad(
-				deModuleSystem::emtModel, path.GetPathUnix() );
+			module = (deBaseModelModule*)GetModuleSystem()->GetModuleAbleToLoad(
+				deModuleSystem::emtModel, path.GetPathUnix());
 			
 			// load the file with it
-			fileReader = OpenFileForReading( *vfs, path.GetPathUnix() );
-			model = new deModel( this, vfs, path.GetPathUnix(), modificationTime );
-			if( ! model ){
-				DETHROW( deeOutOfMemory );
+			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
+			model = new deModel(this, vfs, path.GetPathUnix(), modificationTime);
+			if(! model){
+				DETHROW(deeOutOfMemory);
 			}
 			
-			model->SetAsynchron( false );
-			module->LoadModel( *fileReader, *model );
+			model->SetAsynchron(false);
+			module->LoadModel(*fileReader, *model);
 			
 			fileReader->FreeReference();
 			fileReader = NULL;
 			
 			// prepare and check model
-			if( ! model->Verify() ){
-				DETHROW( deeInvalidParam );
+			if(! model->Verify()){
+				DETHROW(deeInvalidParam);
 			}
 			model->Prepare();
 			
 			// load system peers
-			GetGraphicSystem()->LoadModel( model );
-			GetPhysicsSystem()->LoadModel( model );
-			GetAudioSystem()->LoadModel( model );
+			GetGraphicSystem()->LoadModel(model);
+			GetPhysicsSystem()->LoadModel(model);
+			GetAudioSystem()->LoadModel(model);
 			
 			// add model
-			pModels.Add( model );
+			pModels.Add(model);
 			//LogInfoFormat( "Loading '%s' succeeded", path->GetPathUnix() );
 		}
 		
-	}catch( const deException &e ){
-		if( fileReader ){
+	}catch(const deException &e){
+		if(fileReader){
 			fileReader->FreeReference();
 		}
-		if( model ){
+		if(model){
 			model->FreeReference();
 		}
-		LogErrorFormat( "Loading model '%s' (base path '%s') failed", filename, basePath ? basePath : "" );
-		LogException( e );
+		LogErrorFormat("Loading model '%s' (base path '%s') failed", filename, basePath ? basePath : "");
+		LogException(e);
 		throw;
 	}
 	
-	if( model ){
-		model->SetAsynchron( false );
+	if(model){
+		model->SetAsynchron(false);
 	}
 	
 	return model;
 }
 
-void deModelManager::AddLoadedModel( deModel *model ){
-	if( ! model ){
-		DETHROW( deeInvalidParam );
+void deModelManager::AddLoadedModel(deModel *model){
+	if(! model){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pModels.Add( model );
+	pModels.Add(model);
 }
 
 
@@ -237,25 +237,25 @@ void deModelManager::AddLoadedModel( deModel *model ){
 void deModelManager::ReleaseLeakingResources(){
 	const int count = GetModelCount();
 	
-	if( count > 0 ){
-		deModel *model = ( deModel* )pModels.GetRoot();
+	if(count > 0){
+		deModel *model = (deModel*)pModels.GetRoot();
 		int unnamedModelCount = 0;
 		
-		LogWarnFormat( "%i leaking models", count );
+		LogWarnFormat("%i leaking models", count);
 		
-		while( model ){
-			if( model->GetFilename().IsEmpty() ){
+		while(model){
+			if(model->GetFilename().IsEmpty()){
 				unnamedModelCount++;
 				
 			}else{
-				LogWarnFormat( "- %s", model->GetFilename().GetString() );
+				LogWarnFormat("- %s", model->GetFilename().GetString());
 			}
 			
-			model = ( deModel* )model->GetLLManagerNext();
+			model = (deModel*)model->GetLLManagerNext();
 		}
 		
-		if( unnamedModelCount > 0 ){
-			LogWarnFormat( "%i unnamed models", unnamedModelCount );
+		if(unnamedModelCount > 0){
+			LogWarnFormat("%i unnamed models", unnamedModelCount);
 		}
 		
 		pModels.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
@@ -268,71 +268,71 @@ void deModelManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deModelManager::SystemGraphicLoad(){
-	deModel *model = ( deModel* )pModels.GetRoot();
+	deModel *model = (deModel*)pModels.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
-	while( model ){
-		if( ! model->GetPeerGraphic() ){
-			graSys.LoadModel( model );
+	while(model){
+		if(! model->GetPeerGraphic()){
+			graSys.LoadModel(model);
 		}
 		
-		model = ( deModel* )model->GetLLManagerNext();
+		model = (deModel*)model->GetLLManagerNext();
 	}
 }
 
 void deModelManager::SystemGraphicUnload(){
-	deModel *model = ( deModel* )pModels.GetRoot();
+	deModel *model = (deModel*)pModels.GetRoot();
 	
-	while( model ){
-		model->SetPeerGraphic( NULL );
-		model = ( deModel* )model->GetLLManagerNext();
+	while(model){
+		model->SetPeerGraphic(NULL);
+		model = (deModel*)model->GetLLManagerNext();
 	}
 }
 
 void deModelManager::SystemPhysicsLoad(){
-	deModel *model = ( deModel* )pModels.GetRoot();
+	deModel *model = (deModel*)pModels.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
-	while( model ){
-		if( ! model->GetPeerPhysics() ){
-			phySys.LoadModel( model );
+	while(model){
+		if(! model->GetPeerPhysics()){
+			phySys.LoadModel(model);
 		}
 		
-		model = ( deModel* )model->GetLLManagerNext();
+		model = (deModel*)model->GetLLManagerNext();
 	}
 }
 
 void deModelManager::SystemPhysicsUnload(){
-	deModel *model = ( deModel* )pModels.GetRoot();
+	deModel *model = (deModel*)pModels.GetRoot();
 	
-	while( model ){
-		model->SetPeerPhysics( NULL );
-		model = ( deModel* )model->GetLLManagerNext();
+	while(model){
+		model->SetPeerPhysics(NULL);
+		model = (deModel*)model->GetLLManagerNext();
 	}
 }
 
 void deModelManager::SystemAudioLoad(){
-	deModel *model = ( deModel* )pModels.GetRoot();
+	deModel *model = (deModel*)pModels.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
-	while( model ){
-		if( ! model->GetPeerAudio() ){
-			audSys.LoadModel( model );
+	while(model){
+		if(! model->GetPeerAudio()){
+			audSys.LoadModel(model);
 		}
 		
-		model = ( deModel* )model->GetLLManagerNext();
+		model = (deModel*)model->GetLLManagerNext();
 	}
 }
 
 void deModelManager::SystemAudioUnload(){
-	deModel *model = ( deModel* )pModels.GetRoot();
+	deModel *model = (deModel*)pModels.GetRoot();
 	
-	while( model ){
-		model->SetPeerAudio ( NULL );
-		model = ( deModel* )model->GetLLManagerNext();
+	while(model){
+		model->SetPeerAudio (NULL);
+		model = (deModel*)model->GetLLManagerNext();
 	}
 }
 
-void deModelManager::RemoveResource( deResource *resource ){
-	pModels.RemoveIfPresent( resource );
+void deModelManager::RemoveResource(deResource *resource){
+	pModels.RemoveIfPresent(resource);
 }

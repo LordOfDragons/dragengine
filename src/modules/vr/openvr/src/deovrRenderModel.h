@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load render model. */
-	deovrRenderModel( deVROpenVR &ovr, const char *name );
+	deovrRenderModel(deVROpenVR &ovr, const char *name);
 	
 protected:
 	/** Clean up render model. */
@@ -68,16 +68,16 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{ return pOvr; }
+	inline deVROpenVR &GetOvr() const{return pOvr;}
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline deModel *GetModel() const{return pModel;}
 	
 	/** Texture ID. */
-	inline vr::TextureID_t GetTextureID() const{ return pTextureID; }
+	inline vr::TextureID_t GetTextureID() const{return pTextureID;}
 	/*@}*/
 	
 	

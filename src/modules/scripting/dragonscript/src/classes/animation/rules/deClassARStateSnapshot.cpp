@@ -67,42 +67,42 @@ struct sARSnapNatDat{
 /////////////////////
 
 // public func new()
-deClassARStateSnapshot::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsARSnap,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassARStateSnapshot::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARSnap,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassARStateSnapshot::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
 	// clear ( important )
 	nd.animator = NULL;
 	nd.rule = NULL;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetOwnerClass()->GetBaseClass();
-	baseClass->CallBaseClassConstructor( rt, myself, baseClass->GetFirstConstructor(), 0 );
+	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
 	nd.rule = new deAnimatorRuleStateSnapshot;
-	baseClass->AssignRule( myself->GetRealObject(), nd.rule );
+	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
 // public func destructor()
-deClassARStateSnapshot::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsARSnap,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassARStateSnapshot::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsARSnap,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassARStateSnapshot::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassARStateSnapshot::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 		nd.animator = NULL;
 	}
 	
-	if( nd.rule ){
+	if(nd.rule){
 		nd.rule->FreeReference();
 		nd.rule = NULL;
 	}
@@ -112,61 +112,61 @@ void deClassARStateSnapshot::nfDestructor::RunFunction( dsRunTime *rt, dsValue *
 
 
 // public func void setEnablePosition( bool enabled )
-deClassARStateSnapshot::nfSetEnablePosition::nfSetEnablePosition( const sInitData &init ) : dsFunction( init.clsARSnap,
-"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateSnapshot::nfSetEnablePosition::nfSetEnablePosition(const sInitData &init) : dsFunction(init.clsARSnap,
+"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateSnapshot::nfSetEnablePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnablePosition( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableOrientation( bool enabled )
-deClassARStateSnapshot::nfSetEnableOrientation::nfSetEnableOrientation( const sInitData &init ) : dsFunction( init.clsARSnap,
-"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateSnapshot::nfSetEnableOrientation::nfSetEnableOrientation(const sInitData &init) : dsFunction(init.clsARSnap,
+"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateSnapshot::nfSetEnableOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableOrientation( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableSize( bool enabled )
-deClassARStateSnapshot::nfSetEnableSize::nfSetEnableSize( const sInitData &init ) : dsFunction( init.clsARSnap,
-"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateSnapshot::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : dsFunction(init.clsARSnap,
+"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateSnapshot::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableSize( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableVertexPositionSet( bool enabled )
-deClassARStateSnapshot::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsARSnap, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARStateSnapshot::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet(const sInitData &init) :
+dsFunction(init.clsARSnap, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARStateSnapshot::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -174,31 +174,31 @@ void deClassARStateSnapshot::nfSetEnableVertexPositionSet::RunFunction( dsRunTim
 
 
 // public func void setUseLastState( bool useLastState )
-deClassARStateSnapshot::nfSetUseLastState::nfSetUseLastState( const sInitData &init ) : dsFunction( init.clsARSnap,
-"setUseLastState", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // useLastState
+deClassARStateSnapshot::nfSetUseLastState::nfSetUseLastState(const sInitData &init) : dsFunction(init.clsARSnap,
+"setUseLastState", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // useLastState
 }
-void deClassARStateSnapshot::nfSetUseLastState::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfSetUseLastState::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetUseLastState( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetUseLastState(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setID( int identifier )
-deClassARStateSnapshot::nfSetID::nfSetID( const sInitData &init ) : dsFunction( init.clsARSnap,
-"setID", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // identifier
+deClassARStateSnapshot::nfSetID::nfSetID(const sInitData &init) : dsFunction(init.clsARSnap,
+"setID", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // identifier
 }
-void deClassARStateSnapshot::nfSetID::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
+void deClassARStateSnapshot::nfSetID::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetID( rt->GetValue( 0 )->GetInt() );
+	nd.rule->SetID(rt->GetValue(0)->GetInt());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -206,61 +206,61 @@ void deClassARStateSnapshot::nfSetID::RunFunction( dsRunTime *rt, dsValue *mysel
 
 
 // public func void targetAddLink( ARStateSnapshotTarget target, int link )
-deClassARStateSnapshot::nfTargetAddLink::nfTargetAddLink( const sInitData &init ) : dsFunction( init.clsARSnap,
-"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsARStateSnapshotTarget ); // target
-	p_AddParameter( init.clsInt ); // link
+deClassARStateSnapshot::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunction(init.clsARSnap,
+"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARStateSnapshotTarget); // target
+	p_AddParameter(init.clsInt); // link
 }
-void deClassARStateSnapshot::nfTargetAddLink::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassARStateSnapshot::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(! rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateSnapshot::eTargets target = ( deClassARStateSnapshot::eTargets )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
+	const deClassARStateSnapshot::eTargets target = (deClassARStateSnapshot::eTargets)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	const int link = rt->GetValue( 1 )->GetInt();
+	const int link = rt->GetValue(1)->GetInt();
 	
-	switch( target ){
+	switch(target){
 	case deClassARStateSnapshot::etBlendFactor:
-		nd.rule->GetTargetBlendFactor().AddLink( link );
+		nd.rule->GetTargetBlendFactor().AddLink(link);
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void targetRemoveAllLinks( ARStateSnapshotTarget target )
-deClassARStateSnapshot::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks( const sInitData &init ) : dsFunction( init.clsARSnap,
-"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsARStateSnapshotTarget ); // target
+deClassARStateSnapshot::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &init) : dsFunction(init.clsARSnap,
+"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARStateSnapshotTarget); // target
 }
-void deClassARStateSnapshot::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassARStateSnapshot::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(! rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself ) );
-	const deClassARStateSnapshot::eTargets target = ( deClassARStateSnapshot::eTargets )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself));
+	const deClassARStateSnapshot::eTargets target = (deClassARStateSnapshot::eTargets)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	switch( target ){
+	switch(target){
 	case deClassARStateSnapshot::etBlendFactor:
 		nd.rule->GetTargetBlendFactor().RemoveAllLinks();
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -273,13 +273,13 @@ void deClassARStateSnapshot::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt,
 // Constructor
 ////////////////
 
-deClassARStateSnapshot::deClassARStateSnapshot( deScriptingDragonScript &ds ) :
-dsClass( "ARStateSnapshot", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "AnimatorRule" );
+deClassARStateSnapshot::deClassARStateSnapshot(deScriptingDragonScript &ds) :
+dsClass("ARStateSnapshot", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("AnimatorRule");
 	
-	p_SetNativeDataSize( sizeof( sARSnapNatDat ) );
+	p_SetNativeDataSize(sizeof(sARSnapNatDat));
 }
 
 deClassARStateSnapshot::~deClassARStateSnapshot(){
@@ -290,8 +290,8 @@ deClassARStateSnapshot::~deClassARStateSnapshot(){
 // Management
 ///////////////
 
-void deClassARStateSnapshot::CreateClassMembers( dsEngine *engine ){
-	pClsARStateSnapshotTarget = engine->GetClass( "Dragengine.Scenery.ARStateSnapshotTarget" );
+void deClassARStateSnapshot::CreateClassMembers(dsEngine *engine){
+	pClsARStateSnapshotTarget = engine->GetClass("Dragengine.Scenery.ARStateSnapshotTarget");
 	
 	sInitData init;
 	init.clsARSnap = this;
@@ -309,88 +309,88 @@ void deClassARStateSnapshot::CreateClassMembers( dsEngine *engine ){
 	init.clsARStateSnapshotTarget = pClsARStateSnapshotTarget;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfSetEnablePosition( init ) );
-	AddFunction( new nfSetEnableOrientation( init ) );
-	AddFunction( new nfSetEnableSize( init ) );
-	AddFunction( new nfSetEnableVertexPositionSet( init ) );
+	AddFunction(new nfSetEnablePosition(init));
+	AddFunction(new nfSetEnableOrientation(init));
+	AddFunction(new nfSetEnableSize(init));
+	AddFunction(new nfSetEnableVertexPositionSet(init));
 	
-	AddFunction( new nfSetUseLastState( init ) );
-	AddFunction( new nfSetID( init ) );
+	AddFunction(new nfSetUseLastState(init));
+	AddFunction(new nfSetID(init));
 	
-	AddFunction( new nfTargetAddLink( init ) );
-	AddFunction( new nfTargetRemoveAllLinks( init ) );
+	AddFunction(new nfTargetAddLink(init));
+	AddFunction(new nfTargetRemoveAllLinks(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule( dsRealObject *myself ) const{
-	if( ! myself ){
+deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sARSnapNatDat* )p_GetNativeData( myself->GetBuffer() ) )->rule;
+	return ((sARSnapNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARStateSnapshot::AssignAnimator( dsRealObject *myself, deAnimator *animator ){
-	if( ! myself ){
-		DSTHROW( dueInvalidParam );
+void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+	if(! myself){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pDS.GetClassAnimatorRule()->AssignAnimator( myself, animator );
+	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( myself->GetBuffer() ) );
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(myself->GetBuffer()));
 	
-	if( animator == nd.animator ){
+	if(animator == nd.animator){
 		return;
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 	}
 	
 	nd.animator = animator;
 	
-	if( animator ){
+	if(animator){
 		animator->AddReference();
 	}
 }
 
-void deClassARStateSnapshot::PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! rule ){
-		rt->PushObject( NULL, this );
+	if(! rule){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetBaseClass();
-	rt->CreateObjectNakedOnStack( this );
-	sARSnapNatDat &nd = *( ( sARSnapNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	rt->CreateObjectNakedOnStack(this);
+	sARSnapNatDat &nd = *((sARSnapNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	
 	try{
-		baseClass->CallBaseClassConstructor( rt, rt->GetValue( 0 ), baseClass->GetFirstConstructor(), 0 );
+		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if( animator ){
+		if(animator){
 			animator->AddReference();
 		}
 		
 		nd.rule = rule;
 		rule->AddReference();
 		
-		baseClass->AssignRule( rt->GetValue( 0 )->GetRealObject(), rule );
-		baseClass->AssignAnimator( rt->GetValue( 0 )->GetRealObject(), animator );
+		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
+		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

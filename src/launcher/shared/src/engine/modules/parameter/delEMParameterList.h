@@ -58,28 +58,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Parameter at index. */
-	delEMParameter *GetAt( int index ) const;
+	delEMParameter *GetAt(int index) const;
 	
 	/** \brief Named parameter or nullptr if absent. */
-	delEMParameter *GetNamed( const char *name ) const;
+	delEMParameter *GetNamed(const char *name) const;
 	
 	/** \brief Parameter is present. */
-	bool Has( delEMParameter *parameter ) const;
+	bool Has(delEMParameter *parameter) const;
 	
 	/** \brief Named parameter is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Index of parameter or -1 if absent. */
-	int IndexOf( delEMParameter *parameter ) const;
+	int IndexOf(delEMParameter *parameter) const;
 	
 	/** \brief Index of named parameter or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Add parameter. */
-	void Add( delEMParameter *parameter );
+	void Add(delEMParameter *parameter);
 	
 	/** \brief Remove parameter. */
-	void Remove( delEMParameter *parameter );
+	void Remove(delEMParameter *parameter);
 	
 	/** \brief Remove all parameters. */
 	void RemoveAll();

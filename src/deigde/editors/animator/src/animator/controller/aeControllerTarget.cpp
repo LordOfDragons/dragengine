@@ -46,8 +46,8 @@
 aeControllerTarget::aeControllerTarget(){
 }
 
-aeControllerTarget::aeControllerTarget( const aeControllerTarget &copy ) :
-pLinks( copy.pLinks ){
+aeControllerTarget::aeControllerTarget(const aeControllerTarget &copy) :
+pLinks(copy.pLinks){
 }
 
 aeControllerTarget::~aeControllerTarget(){
@@ -63,27 +63,27 @@ int aeControllerTarget::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-aeLink *aeControllerTarget::GetLinkAt( int index ) const{
-	return ( aeLink* )pLinks.GetAt( index );
+aeLink *aeControllerTarget::GetLinkAt(int index) const{
+	return (aeLink*)pLinks.GetAt(index);
 }
 
-int aeControllerTarget::IndexOfLink( aeLink *link ) const{
-	return pLinks.IndexOf( link );
+int aeControllerTarget::IndexOfLink(aeLink *link) const{
+	return pLinks.IndexOf(link);
 }
 
-bool aeControllerTarget::HasLink( aeLink *link ) const{
-	return pLinks.Has( link );
+bool aeControllerTarget::HasLink(aeLink *link) const{
+	return pLinks.Has(link);
 }
 
-void aeControllerTarget::AddLink( aeLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+void aeControllerTarget::AddLink(aeLink *link){
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
-	pLinks.Add( link );
+	pLinks.Add(link);
 }
 
-void aeControllerTarget::RemoveLink( aeLink *link ){
-	pLinks.Remove( link );
+void aeControllerTarget::RemoveLink(aeLink *link){
+	pLinks.Remove(link);
 }
 
 void aeControllerTarget::RemoveAllLinks(){
@@ -92,26 +92,26 @@ void aeControllerTarget::RemoveAllLinks(){
 
 
 
-void aeControllerTarget::UpdateEngineTarget( aeAnimator *animator, deAnimatorControllerTarget &target ) const{
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+void aeControllerTarget::UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const{
+	if(! animator){
+		DETHROW(deeInvalidParam);
 	}
 	
 	target.RemoveAllLinks();
 	
 	deAnimator * const engAnimator = animator->GetEngineAnimator();
-	if( engAnimator ){
+	if(engAnimator){
 		const int linkCount = pLinks.GetCount();
 		int i;
 		
-		for( i=0; i<linkCount; i++ ){
-			deAnimatorLink * const engLink = ( ( aeLink* )pLinks.GetAt( i ) )->GetEngineLink();
+		for(i=0; i<linkCount; i++){
+			deAnimatorLink * const engLink = ((aeLink*)pLinks.GetAt(i))->GetEngineLink();
 			
-			if( engLink ){
-				const int indexLink = engAnimator->IndexOfLink( engLink );
+			if(engLink){
+				const int indexLink = engAnimator->IndexOfLink(engLink);
 				
-				if( indexLink != -1 ){
-					target.AddLink( indexLink );
+				if(indexLink != -1){
+					target.AddLink(indexLink);
 				}
 			}
 		}
@@ -120,7 +120,7 @@ void aeControllerTarget::UpdateEngineTarget( aeAnimator *animator, deAnimatorCon
 
 
 
-void aeControllerTarget::AddLinksToList( aeLinkList &list ){
+void aeControllerTarget::AddLinksToList(aeLinkList &list){
 	list += pLinks;
 }
 
@@ -129,7 +129,7 @@ void aeControllerTarget::AddLinksToList( aeLinkList &list ){
 // Operators
 //////////////
 
-aeControllerTarget &aeControllerTarget::operator=( const aeControllerTarget &copy ){
+aeControllerTarget &aeControllerTarget::operator=(const aeControllerTarget &copy){
 	pLinks = copy.pLinks;
 	return *this;
 }

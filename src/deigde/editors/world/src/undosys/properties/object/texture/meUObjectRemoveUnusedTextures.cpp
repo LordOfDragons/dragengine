@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures( meObject *object ){
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures(meObject *object){
+	if(! object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = object->GetTextureCount();
@@ -52,18 +52,18 @@ meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures( meObject *object )
 	int i;
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pObject = NULL;
 	
-	SetShortInfo( "Remove Unused Object Textures" );
+	SetShortInfo("Remove Unused Object Textures");
 	
-	object->GetModelTextureNameList( modelTextureNames );
-	for( i=0; i<count; i++ ){
-		if( ! modelTextureNames.Has( object->GetTextureAt( i )->GetName() ) ){
-			pTextureList.AddTexture( object->GetTextureAt( i ) );
+	object->GetModelTextureNameList(modelTextureNames);
+	for(i=0; i<count; i++){
+		if(! modelTextureNames.Has(object->GetTextureAt(i)->GetName())){
+			pTextureList.AddTexture(object->GetTextureAt(i));
 		}
 	}
 	
@@ -73,7 +73,7 @@ meUObjectRemoveUnusedTextures::meUObjectRemoveUnusedTextures( meObject *object )
 
 meUObjectRemoveUnusedTextures::~meUObjectRemoveUnusedTextures(){
 	pTextureList.RemoveAllTextures();
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }
@@ -87,8 +87,8 @@ void meUObjectRemoveUnusedTextures::Undo(){
 	const int count = pTextureList.GetTextureCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pObject->AddTexture( pTextureList.GetTextureAt( i ) );
+	for(i=0; i<count; i++){
+		pObject->AddTexture(pTextureList.GetTextureAt(i));
 	}
 }
 
@@ -96,7 +96,7 @@ void meUObjectRemoveUnusedTextures::Redo(){
 	const int count = pTextureList.GetTextureCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pObject->RemoveTexture( pTextureList.GetTextureAt( i ) );
+	for(i=0; i<count; i++){
+		pObject->RemoveTexture(pTextureList.GetTextureAt(i));
 	}
 }

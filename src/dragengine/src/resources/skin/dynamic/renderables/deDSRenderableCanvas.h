@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create renderable. */
-	deDSRenderableCanvas( const char *name );
+	deDSRenderableCanvas(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderableCanvas();
@@ -63,29 +63,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/**
 	 * \brief Set number of components.
 	 * \throws deeInvalidParam \em componentCount is less than 1.
 	 * \throws deeInvalidParam \em componentCount is greater than 4.
 	 */
-	void SetComponentCount( int componentCount );
+	void SetComponentCount(int componentCount);
 	
 	/** \brief Bit count of each component. */
-	inline int GetBitCount() const{ return pBitCount; }
+	inline int GetBitCount() const{return pBitCount;}
 	
 	/**
 	 * \brief Set bit count of each component.
 	 * \throws deeInvalidParam \em bitCount is not 8, 16 or 32.
 	 */
-	void SetBitCount( int bitCount );
+	void SetBitCount(int bitCount);
 	
 	/** \brief Canvas view or NULL if not set. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline deCanvasView *GetCanvas() const{return pCanvas;}
 	
 	/** \brief Set canvas view or NULL if not set. */
-	void SetCanvas( deCanvasView *canvas );
+	void SetCanvas(deCanvasView *canvas);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

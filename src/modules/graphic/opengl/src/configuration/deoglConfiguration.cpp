@@ -46,110 +46,110 @@
 ////////////////////////////
 
 deoglConfiguration::deoglConfiguration() :
-pDirty( false ),
+pDirty(false),
 
-pLogLevel( ellInfo ),
+pLogLevel(ellInfo),
 
-pMapFaceSplitThreshold( 5.0f ), // largest allowed face edge in meters
-pSkyBodyDensity( 1.0f ), // render 100% sky bodies
-pReducedLighting( false ),
-pDebugShowCB( false ),
-pDebugWireframe( false ),
-pDebugUVSplitter( true ),
-pDebugPrintSkyUpdate( false ),
-pShowLightCB( false ),
+pMapFaceSplitThreshold(5.0f), // largest allowed face edge in meters
+pSkyBodyDensity(1.0f), // render 100% sky bodies
+pReducedLighting(false),
+pDebugShowCB(false),
+pDebugWireframe(false),
+pDebugUVSplitter(true),
+pDebugPrintSkyUpdate(false),
+pShowLightCB(false),
 
-pShadowQuality( esqHigh ),
-pShadowMapOffsetScale( 1.1f ),
-pShadowMapOffsetBias( 4.0f ),
-pShadowCubePCFSize( 1.0f ),
-pOcclusionReduction( 1 ),
+pShadowQuality(esqHigh),
+pShadowMapOffsetScale(1.1f),
+pShadowMapOffsetBias(4.0f),
+pShadowCubePCFSize(1.0f),
+pOcclusionReduction(1),
 
-pDistShadowScale( 0.05f ), // old: 1
-pDistShadowBias( 0.01f ), // old: 0.001
+pDistShadowScale(0.05f), // old: 1
+pDistShadowBias(0.01f), // old: 0.001
 
-pTextOffsetU( 0.0f ),
-pTextOffsetV( 0.0f ),
-pUseDepthPass( true ),
-pLightCutOffIntensity( 0.01f ),
-pUseTextureCompression( true ),
-pTranspLayerLimit( 8 ),
+pTextOffsetU(0.0f),
+pTextOffsetV(0.0f),
+pUseDepthPass(true),
+pLightCutOffIntensity(0.01f),
+pUseTextureCompression(true),
+pTranspLayerLimit(8),
 
-pUseOneFBO( false ),
-pUseEncodeDepth( false ),
-pDisableStencil( false ),
+pUseOneFBO(false),
+pUseEncodeDepth(false),
+pDisableStencil(false),
 
-pDefRenSizeLimit( 0 ),
-pUseHDRR( true ),
-pHDRRMaxIntensity( 1.5f ),
-pHDRRSceneKey( 0.18f ),
-pRenderDownScale( 1 ),
-pUseInverseDepth( true ),
+pDefRenSizeLimit(0),
+pUseHDRR(true),
+pHDRRMaxIntensity(1.5f),
+pHDRRSceneKey(0.18f),
+pRenderDownScale(1),
+pUseInverseDepth(true),
 
-pGammaCorrection( 1.0f ),
-pContrast( 1.0f ),
-pBrightness( 0.0f ),
+pGammaCorrection(1.0f),
+pContrast(1.0f),
+pBrightness(0.0f),
 
-pDecalOffsetScale( -1.5f ), //-0.1f;
-pDecalOffsetBias( -8.0f ), //-1.0f;
+pDecalOffsetScale(-1.5f), //-0.1f;
+pDecalOffsetBias(-8.0f), //-1.0f;
 
-pLODMaxPixelError( 2 ),
+pLODMaxPixelError(2),
 
-pNormalRoughnessCorrectionStrength( 0.75f ), // 0.5f;
+pNormalRoughnessCorrectionStrength(0.75f), // 0.5f;
 
-pSSREnable( true ),
-pSSRStepCount( 20 ),
-pSSRMaxRayLength( 1.0f ),
-pSSRReduction( 1 ), //2
-pSSRCoverageEdgeSize( 0.1f ),
-pSSRCoveragePowerEdge( 1.0f ),
-pSSRCoveragePowerRayLength( 8.0f ),
-pSSRMethod( 1 ), // method 2 makes no sense anymore
+pSSREnable(true),
+pSSRStepCount(20),
+pSSRMaxRayLength(1.0f),
+pSSRReduction(1), //2
+pSSRCoverageEdgeSize(0.1f),
+pSSRCoveragePowerEdge(1.0f),
+pSSRCoveragePowerRayLength(8.0f),
+pSSRMethod(1), // method 2 makes no sense anymore
 
-pSSAOEnable( true ),
-pSSAOTapCount( 18 ), // 9-18
-pSSAOTurnCount( 7.0f ),
-pSSAOSelfOcclusionAngle( 10.0f ), // 10-30
-pSSAORadius( 0.5f ), // 0.5m
-pSSAORadiusLimit( 0.5f ), // 50% screen size
-pSSAOMipMapBase( 8.0f ), // 4-16 = 2^2 - 2^4
-pSSAOEdgeBlurThreshold( 5.0f ), // 2dm difference on 1m
+pSSAOEnable(true),
+pSSAOTapCount(18), // 9-18
+pSSAOTurnCount(7.0f),
+pSSAOSelfOcclusionAngle(10.0f), // 10-30
+pSSAORadius(0.5f), // 0.5m
+pSSAORadiusLimit(0.5f), // 50% screen size
+pSSAOMipMapBase(8.0f), // 4-16 = 2^2 - 2^4
+pSSAOEdgeBlurThreshold(5.0f), // 2dm difference on 1m
 
-pAOSelfShadowEnable( true ),
-pAOSelfShadowSmoothAngle( 10.0f ), //6.0f;
+pAOSelfShadowEnable(true),
+pAOSelfShadowSmoothAngle(10.0f), //6.0f;
 
-pSSSSSEnable( true ),
+pSSSSSEnable(true),
 
-pEnvMapEnable( true ),
-pEnvMapUseEqui( false ),
-pEnvMapSize( 256 ),
-pEnvMapMethod( eemmMultipleBoxProjection ),
+pEnvMapEnable(true),
+pEnvMapUseEqui(false),
+pEnvMapSize(256),
+pEnvMapMethod(eemmMultipleBoxProjection),
 
-pFrameRateLimit( 0 ), // 0 means use display refresh rate
-pAsyncRenderSkipSyncTimeRatio( 0.5 ),
+pFrameRateLimit(0), // 0 means use display refresh rate
+pAsyncRenderSkipSyncTimeRatio(0.5),
 
-pDebugContext( false ),
-pDebugNoMessages( false ),
-pAsyncRendering( true ),
-pEnableRetainImageOptimization( true ),
+pDebugContext(false),
+pDebugNoMessages(false),
+pAsyncRendering(true),
+pEnableRetainImageOptimization(true),
 
-pBugNo2ComponentFBOTex( false ),
+pBugNo2ComponentFBOTex(false),
 
-pDebugNoCulling ( false ),
+pDebugNoCulling (false),
 
-pDisableCubeMapLinearFiltering( false ),
+pDisableCubeMapLinearFiltering(false),
 
-pMaxSPBIndexCount( 10000 ),
+pMaxSPBIndexCount(10000),
 
-pGIQuality( egiqHigh ),
-pGIUpdateSpeed( egiusMedium ),
+pGIQuality(egiqHigh),
+pGIUpdateSpeed(egiusMedium),
 
-pVSyncMode( evsmAdaptive ),
+pVSyncMode(evsmAdaptive),
 
-pVRRenderScale( 1.0f ),
-pVRForceFrameRate( 0 ),
+pVRRenderScale(1.0f),
+pVRForceFrameRate(0),
 
-pRenderDocMode( false )
+pRenderDocMode(false)
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -209,11 +209,11 @@ pRenderDocMode( false )
 	// renderdoc
 	#if defined WITH_DEBUG && defined OS_UNIX
 	#if defined OS_BEOS or defined OS_ANDROID
-	const char * const envRenderDocDebug = getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	const char * const envRenderDocDebug = getenv("DE_OGL_RENDERDOC_DEBUG");
 	#else
-	const char * const envRenderDocDebug = secure_getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	const char * const envRenderDocDebug = secure_getenv("DE_OGL_RENDERDOC_DEBUG");
 	#endif
-	if( envRenderDocDebug && strcmp( envRenderDocDebug, "1" ) == 0 ){
+	if(envRenderDocDebug && strcmp(envRenderDocDebug, "1") == 0){
 		pDebugContext = true;
 		pDebugNoMessages = true;
 	}
@@ -221,18 +221,18 @@ pRenderDocMode( false )
 	
 	#ifdef OS_UNIX
 	#if defined OS_BEOS or defined OS_ANDROID
-	const char * const envRenderDocMode = getenv( "DE_OGL_RENDERDOC_MODE" );
+	const char * const envRenderDocMode = getenv("DE_OGL_RENDERDOC_MODE");
 	#else
-	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );
+	const char * const envRenderDocMode = secure_getenv("DE_OGL_RENDERDOC_MODE");
 	#endif
-	pRenderDocMode = envRenderDocMode && strcmp( envRenderDocMode, "1" ) == 0;
+	pRenderDocMode = envRenderDocMode && strcmp(envRenderDocMode, "1") == 0;
 	#endif
 	
 	#ifdef OS_W32
 	const int valueSize = 256;
 	char value[valueSize]{};
 	if(GetEnvironmentVariableA("DE_OGL_RENDERDOC_MODE", &value[0], valueSize) > 0){
-		pRenderDocMode = strcmp(value, "1" ) == 0;
+		pRenderDocMode = strcmp(value, "1") == 0;
 		if(pRenderDocMode){
 			pDebugContext = true;
 			pDebugNoMessages = false;
@@ -250,23 +250,23 @@ deoglConfiguration::~deoglConfiguration(){
 // Parmeters
 //////////////
 
-void deoglConfiguration::SetDirty( bool dirty ){
+void deoglConfiguration::SetDirty(bool dirty){
 	pDirty = dirty;
 }
 
 
 
-void deoglConfiguration::SetLogLevel( eLogLevels logLevel ){
-	if( logLevel == pLogLevel ){
+void deoglConfiguration::SetLogLevel(eLogLevels logLevel){
+	if(logLevel == pLogLevel){
 		return;
 	}
 	pLogLevel = logLevel;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSkyBodyDensity( float density ){
-	density = decMath::clamp( density, 0.0f, 1.0f );
-	if( fabsf( density - pSkyBodyDensity ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSkyBodyDensity(float density){
+	density = decMath::clamp(density, 0.0f, 1.0f);
+	if(fabsf(density - pSkyBodyDensity) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -274,57 +274,57 @@ void deoglConfiguration::SetSkyBodyDensity( float density ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetUseReducedLighting( bool reduced ){
-	if( reduced == pReducedLighting ){
+void deoglConfiguration::SetUseReducedLighting(bool reduced){
+	if(reduced == pReducedLighting){
 		return;
 	}
 	pReducedLighting = reduced;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDebugShowCB( bool show ){
-	if( show == pDebugShowCB ){
+void deoglConfiguration::SetDebugShowCB(bool show){
+	if(show == pDebugShowCB){
 		return;
 	}
 	pDebugShowCB = show;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDebugWireframe( bool wireframe ){
-	if( wireframe == pDebugWireframe ){
+void deoglConfiguration::SetDebugWireframe(bool wireframe){
+	if(wireframe == pDebugWireframe){
 		return;
 	}
 	pDebugWireframe = wireframe;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDebugUVSplitter( bool uvSplitter ){
-	if( uvSplitter == pDebugUVSplitter ){
+void deoglConfiguration::SetDebugUVSplitter(bool uvSplitter){
+	if(uvSplitter == pDebugUVSplitter){
 		return;
 	}
 	pDebugUVSplitter = uvSplitter;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDebugPrintSkyUpdate( bool enable ){
-	if( enable == pDebugPrintSkyUpdate ){
+void deoglConfiguration::SetDebugPrintSkyUpdate(bool enable){
+	if(enable == pDebugPrintSkyUpdate){
 		return;
 	}
 	pDebugPrintSkyUpdate = enable;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetShowLightCB( bool show ){
-	if( show == pShowLightCB ){
+void deoglConfiguration::SetShowLightCB(bool show){
+	if(show == pShowLightCB){
 		return;
 	}
 	pShowLightCB = show;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetMapFaceSplitThreshold( float threshold ){
-	threshold = decMath::max( threshold, 0.0f );
-	if( fabsf( threshold - pMapFaceSplitThreshold ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetMapFaceSplitThreshold(float threshold){
+	threshold = decMath::max(threshold, 0.0f);
+	if(fabsf(threshold - pMapFaceSplitThreshold) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pMapFaceSplitThreshold = threshold;
@@ -333,8 +333,8 @@ void deoglConfiguration::SetMapFaceSplitThreshold( float threshold ){
 
 
 
-void deoglConfiguration::SetShadowQuality( eShadowQuality quality ){
-	if( quality == pShadowQuality ){
+void deoglConfiguration::SetShadowQuality(eShadowQuality quality){
+	if(quality == pShadowQuality){
 		return;
 	}
 	
@@ -342,34 +342,34 @@ void deoglConfiguration::SetShadowQuality( eShadowQuality quality ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetShadowMapOffsetScale( float scale ){
-	if( fabsf( scale - pShadowMapOffsetScale ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetShadowMapOffsetScale(float scale){
+	if(fabsf(scale - pShadowMapOffsetScale) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pShadowMapOffsetScale = scale;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetShadowMapOffsetBias( float bias ){
-	if( fabsf( bias - pShadowMapOffsetBias ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetShadowMapOffsetBias(float bias){
+	if(fabsf(bias - pShadowMapOffsetBias) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pShadowMapOffsetBias = bias;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetShadowCubePCFSize( float pcfSize ){
-	pcfSize = decMath::max( pcfSize, 0.0f );
-	if( fabsf( pcfSize - pShadowCubePCFSize ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetShadowCubePCFSize(float pcfSize){
+	pcfSize = decMath::max(pcfSize, 0.0f);
+	if(fabsf(pcfSize - pShadowCubePCFSize) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pShadowCubePCFSize = pcfSize;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetOcclusionReduction( int reductionFactor ){
-	reductionFactor = decMath::max( reductionFactor, 1 );
-	if( reductionFactor == pOcclusionReduction ){
+void deoglConfiguration::SetOcclusionReduction(int reductionFactor){
+	reductionFactor = decMath::max(reductionFactor, 1);
+	if(reductionFactor == pOcclusionReduction){
 		return;
 	}
 	pOcclusionReduction = reductionFactor;
@@ -378,16 +378,16 @@ void deoglConfiguration::SetOcclusionReduction( int reductionFactor ){
 
 
 
-void deoglConfiguration::SetDistShadowScale( float scale ){
-	if( fabsf( scale - pDistShadowScale ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetDistShadowScale(float scale){
+	if(fabsf(scale - pDistShadowScale) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pDistShadowScale = scale;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDistShadowBias( float bias ){
-	if( fabsf( bias - pDistShadowBias ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetDistShadowBias(float bias){
+	if(fabsf(bias - pDistShadowBias) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pDistShadowBias = bias;
@@ -396,50 +396,50 @@ void deoglConfiguration::SetDistShadowBias( float bias ){
 
 
 
-void deoglConfiguration::SetTextOffsetU( float offset ){
-	if( fabsf( offset - pTextOffsetU ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetTextOffsetU(float offset){
+	if(fabsf(offset - pTextOffsetU) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pTextOffsetU = offset;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetTextOffsetV( float offset ){
-	if( fabsf( offset - pTextOffsetV ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetTextOffsetV(float offset){
+	if(fabsf(offset - pTextOffsetV) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pTextOffsetV = offset;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetUseDepthPass( bool useDepthPass ){
-	if( useDepthPass == pUseDepthPass ){
+void deoglConfiguration::SetUseDepthPass(bool useDepthPass){
+	if(useDepthPass == pUseDepthPass){
 		return;
 	}
 	pUseDepthPass = useDepthPass;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetLightCutOffIntensity( float cutOffIntensity ){
-	cutOffIntensity = decMath::clamp( cutOffIntensity, 1e-4f, 0.5f );
-	if( fabsf( cutOffIntensity - pLightCutOffIntensity ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetLightCutOffIntensity(float cutOffIntensity){
+	cutOffIntensity = decMath::clamp(cutOffIntensity, 1e-4f, 0.5f);
+	if(fabsf(cutOffIntensity - pLightCutOffIntensity) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pLightCutOffIntensity = cutOffIntensity;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetUseTextureCompression( bool useTextureCompression ){
-	if( useTextureCompression == pUseTextureCompression ){
+void deoglConfiguration::SetUseTextureCompression(bool useTextureCompression){
+	if(useTextureCompression == pUseTextureCompression){
 		return;
 	}
 	pUseTextureCompression = useTextureCompression;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetTranspLayerLimit( int limit ){
-	limit = decMath::clamp( limit, 1, 15 );
-	if( limit == pTranspLayerLimit ){
+void deoglConfiguration::SetTranspLayerLimit(int limit){
+	limit = decMath::clamp(limit, 1, 15);
+	if(limit == pTranspLayerLimit){
 		return;
 	}
 	
@@ -449,21 +449,21 @@ void deoglConfiguration::SetTranspLayerLimit( int limit ){
 
 
 
-void deoglConfiguration::SetUseOneFBO( bool useOneFBO ){
-	if( useOneFBO == pUseOneFBO ){
+void deoglConfiguration::SetUseOneFBO(bool useOneFBO){
+	if(useOneFBO == pUseOneFBO){
 		return;
 	}
 	pUseOneFBO = useOneFBO;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetUseEncodeDepth( bool useEncodeDepth ){
+void deoglConfiguration::SetUseEncodeDepth(bool useEncodeDepth){
 	//pUseEncodeDepth = useEncodeDepth;
 	//pDirty = true;
 }
 
-void deoglConfiguration::SetDisableStencil( bool disableStencil ){
-	if( disableStencil == pDisableStencil ){
+void deoglConfiguration::SetDisableStencil(bool disableStencil){
+	if(disableStencil == pDisableStencil){
 		return;
 	}
 	pDisableStencil = disableStencil;
@@ -472,52 +472,52 @@ void deoglConfiguration::SetDisableStencil( bool disableStencil ){
 
 
 
-void deoglConfiguration::SetDefRenSizeLimit( int size ){
-	size = decMath::max( size, 0 );
-	if( size == pDefRenSizeLimit ){
+void deoglConfiguration::SetDefRenSizeLimit(int size){
+	size = decMath::max(size, 0);
+	if(size == pDefRenSizeLimit){
 		return;
 	}
 	pDefRenSizeLimit = size;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetUseHDRR( bool useHDRR ){
-	if( useHDRR == pUseHDRR ){
+void deoglConfiguration::SetUseHDRR(bool useHDRR){
+	if(useHDRR == pUseHDRR){
 		return;
 	}
 	pUseHDRR = useHDRR;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetHDRRMaximumIntensity( float maximumIntensity ){
-	if( fabsf( maximumIntensity - pHDRRMaxIntensity ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetHDRRMaximumIntensity(float maximumIntensity){
+	if(fabsf(maximumIntensity - pHDRRMaxIntensity) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pHDRRMaxIntensity = maximumIntensity;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetHDRRSceneKey( float key ){
-	if( fabsf( key - pHDRRSceneKey ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetHDRRSceneKey(float key){
+	if(fabsf(key - pHDRRSceneKey) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pHDRRSceneKey = key;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetRenderDownScale( int downScale ){
-	if( downScale < 1 ){
+void deoglConfiguration::SetRenderDownScale(int downScale){
+	if(downScale < 1){
 		downScale = 1;
 	}
-	if( downScale == pRenderDownScale ){
+	if(downScale == pRenderDownScale){
 		return;
 	}
 	pRenderDownScale = downScale;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetUseInverseDepth( bool useInverseDepth ){
-	if( useInverseDepth == pUseInverseDepth ){
+void deoglConfiguration::SetUseInverseDepth(bool useInverseDepth){
+	if(useInverseDepth == pUseInverseDepth){
 		return;
 	}
 	pUseInverseDepth = useInverseDepth;
@@ -526,25 +526,25 @@ void deoglConfiguration::SetUseInverseDepth( bool useInverseDepth ){
 
 
 
-void deoglConfiguration::SetGammaCorrection( float gamma ){
-	gamma = decMath::max( gamma, 0.01f );
-	if( fabsf( gamma - pGammaCorrection ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetGammaCorrection(float gamma){
+	gamma = decMath::max(gamma, 0.01f);
+	if(fabsf(gamma - pGammaCorrection) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pGammaCorrection = gamma;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetContrast( float contrast ){
-	if( fabsf( contrast - pContrast ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetContrast(float contrast){
+	if(fabsf(contrast - pContrast) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pContrast = contrast;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetBrightness( float brightness ){
-	if( fabsf( brightness - pBrightness ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetBrightness(float brightness){
+	if(fabsf(brightness - pBrightness) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pBrightness = brightness;
@@ -553,16 +553,16 @@ void deoglConfiguration::SetBrightness( float brightness ){
 
 
 
-void deoglConfiguration::SetDecalOffsetScale( float scale ){
-	if( fabsf( scale - pDecalOffsetScale ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetDecalOffsetScale(float scale){
+	if(fabsf(scale - pDecalOffsetScale) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pDecalOffsetScale = scale;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDecalOffsetBias( float bias ){
-	if( fabsf( bias - pDecalOffsetBias ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetDecalOffsetBias(float bias){
+	if(fabsf(bias - pDecalOffsetBias) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pDecalOffsetBias = bias;
@@ -571,9 +571,9 @@ void deoglConfiguration::SetDecalOffsetBias( float bias ){
 
 
 
-void deoglConfiguration::SetLODMaxPixelError( int maxPixelError ){
-	maxPixelError = decMath::max( maxPixelError, 1 );
-	if( maxPixelError == pLODMaxPixelError ){
+void deoglConfiguration::SetLODMaxPixelError(int maxPixelError){
+	maxPixelError = decMath::max(maxPixelError, 1);
+	if(maxPixelError == pLODMaxPixelError){
 		return;
 	}
 	pLODMaxPixelError = maxPixelError;
@@ -582,9 +582,9 @@ void deoglConfiguration::SetLODMaxPixelError( int maxPixelError ){
 
 
 
-void deoglConfiguration::SetNormalRoughnessCorrectionStrength( float strength ){
-	strength = decMath::clamp( strength, 0.0f, 1.0f );
-	if( fabsf( strength - pNormalRoughnessCorrectionStrength ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetNormalRoughnessCorrectionStrength(float strength){
+	strength = decMath::clamp(strength, 0.0f, 1.0f);
+	if(fabsf(strength - pNormalRoughnessCorrectionStrength) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pNormalRoughnessCorrectionStrength = strength;
@@ -593,110 +593,110 @@ void deoglConfiguration::SetNormalRoughnessCorrectionStrength( float strength ){
 
 
 
-void deoglConfiguration::SetSSREnable( bool enable ){
-	if( enable == pSSREnable ){
+void deoglConfiguration::SetSSREnable(bool enable){
+	if(enable == pSSREnable){
 		return;
 	}
 	pSSREnable = enable;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRStepCount( int stepCount ){
-	stepCount = decMath::max( stepCount, 1 );
-	if( stepCount == pSSRStepCount ){
+void deoglConfiguration::SetSSRStepCount(int stepCount){
+	stepCount = decMath::max(stepCount, 1);
+	if(stepCount == pSSRStepCount){
 		return;
 	}
 	pSSRStepCount = stepCount;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRMaxRayLength( float maxRayLength ){
-	maxRayLength = decMath::clamp( maxRayLength, 0.01f, 1.0f );
-	if( fabsf( maxRayLength - pSSRMaxRayLength ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSRMaxRayLength(float maxRayLength){
+	maxRayLength = decMath::clamp(maxRayLength, 0.01f, 1.0f);
+	if(fabsf(maxRayLength - pSSRMaxRayLength) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSRMaxRayLength = maxRayLength;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRReduction( int reduction ){
-	reduction = decMath::max( reduction, 1 );
-	if( reduction == pSSRReduction ){
+void deoglConfiguration::SetSSRReduction(int reduction){
+	reduction = decMath::max(reduction, 1);
+	if(reduction == pSSRReduction){
 		return;
 	}
 	pSSRReduction = reduction;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRCoverageEdgeSize( float edgeSize ){
-	edgeSize = decMath::clamp( edgeSize, 0.01f, 1.0f );
-	if( fabsf( edgeSize - pSSRCoverageEdgeSize ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSRCoverageEdgeSize(float edgeSize){
+	edgeSize = decMath::clamp(edgeSize, 0.01f, 1.0f);
+	if(fabsf(edgeSize - pSSRCoverageEdgeSize) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSRCoverageEdgeSize = edgeSize;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRCoveragePowerEdge( float power ){
-	power = decMath::max( power, 1.0f );
-	if( fabsf( power - pSSRCoveragePowerEdge ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSRCoveragePowerEdge(float power){
+	power = decMath::max(power, 1.0f);
+	if(fabsf(power - pSSRCoveragePowerEdge) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSRCoveragePowerEdge = power;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRCoveragePowerRayLength( float power ){
-	power = decMath::max( power, 1.0f );
-	if( fabsf( power - pSSRCoveragePowerRayLength ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSRCoveragePowerRayLength(float power){
+	power = decMath::max(power, 1.0f);
+	if(fabsf(power - pSSRCoveragePowerRayLength) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSRCoveragePowerRayLength = power;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSRMethod( int method ){
-	if( method == pSSRMethod ){
+void deoglConfiguration::SetSSRMethod(int method){
+	if(method == pSSRMethod){
 		return;
 	}
 	pSSRMethod = method;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetEnvMapEnable( bool enable ){
-	if( enable == pEnvMapEnable ){
+void deoglConfiguration::SetEnvMapEnable(bool enable){
+	if(enable == pEnvMapEnable){
 		return;
 	}
 	pEnvMapEnable = enable;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetEnvMapUseEqui( bool useEqui ){
-	if( useEqui == pEnvMapUseEqui ){
+void deoglConfiguration::SetEnvMapUseEqui(bool useEqui){
+	if(useEqui == pEnvMapUseEqui){
 		return;
 	}
 	pEnvMapUseEqui = useEqui;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetEnvMapSize( int size ){
-	size = decMath::max( size, 32 );
-	if( size == pEnvMapSize ){
+void deoglConfiguration::SetEnvMapSize(int size){
+	size = decMath::max(size, 32);
+	if(size == pEnvMapSize){
 		return;
 	}
 	pEnvMapSize = size;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetEnvMapMethod( eEnvironmentMapMethods method ){
-	if( method < eemmSingle ){
+void deoglConfiguration::SetEnvMapMethod(eEnvironmentMapMethods method){
+	if(method < eemmSingle){
 		method = eemmSingle;
 		
-	}else if( method > eemmMultipleBoxProjection ){
+	}else if(method > eemmMultipleBoxProjection){
 		method = eemmMultipleBoxProjection;
 	}
 	
-	if( method == pEnvMapMethod ){
+	if(method == pEnvMapMethod){
 		return;
 	}
 	
@@ -706,71 +706,71 @@ void deoglConfiguration::SetEnvMapMethod( eEnvironmentMapMethods method ){
 
 
 
-void deoglConfiguration::SetSSAOEnable( bool enable ){
-	if( enable == pSSAOEnable ){
+void deoglConfiguration::SetSSAOEnable(bool enable){
+	if(enable == pSSAOEnable){
 		return;
 	}
 	pSSAOEnable = enable;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAOTapCount( int tapCount ){
-	tapCount = decMath::max( tapCount, 1 );
-	if( tapCount == pSSAOTapCount ){
+void deoglConfiguration::SetSSAOTapCount(int tapCount){
+	tapCount = decMath::max(tapCount, 1);
+	if(tapCount == pSSAOTapCount){
 		return;
 	}
 	pSSAOTapCount = tapCount;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAOTurnCount( float turnCount ){
-	turnCount = decMath::max( turnCount, 1.0f );
-	if( fabsf( turnCount - pSSAOTurnCount ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSAOTurnCount(float turnCount){
+	turnCount = decMath::max(turnCount, 1.0f);
+	if(fabsf(turnCount - pSSAOTurnCount) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSAOTurnCount = turnCount;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAOSelfOcclusionAngle( float angle ){
-	angle = decMath::clamp( angle, 0.0f, 90.0f );
-	if( fabsf( angle - pSSAOSelfOcclusionAngle ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSAOSelfOcclusionAngle(float angle){
+	angle = decMath::clamp(angle, 0.0f, 90.0f);
+	if(fabsf(angle - pSSAOSelfOcclusionAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSAOSelfOcclusionAngle = angle;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAORadius( float radius ){
-	radius = decMath::max( radius, 0.0f );
-	if( fabsf( radius - pSSAORadius ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSAORadius(float radius){
+	radius = decMath::max(radius, 0.0f);
+	if(fabsf(radius - pSSAORadius) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSAORadius = radius;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAORadiusLimit( float limit ){
-	limit = decMath::clamp( limit, 0.0f, 1.0f );
-	if( fabsf( limit - pSSAORadiusLimit ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSAORadiusLimit(float limit){
+	limit = decMath::clamp(limit, 0.0f, 1.0f);
+	if(fabsf(limit - pSSAORadiusLimit) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSAORadiusLimit = limit;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAOMipMapBase( float base ){
-	base = decMath::max( base, 0.0f );
-	if( fabsf( base - pSSAOMipMapBase ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSAOMipMapBase(float base){
+	base = decMath::max(base, 0.0f);
+	if(fabsf(base - pSSAOMipMapBase) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSAOMipMapBase = base;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetSSAOEdgeBlurThreshold( float threshold ){
-	threshold = decMath::max( threshold, 0.0f );
-	if( fabsf( threshold - pSSAOEdgeBlurThreshold ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetSSAOEdgeBlurThreshold(float threshold){
+	threshold = decMath::max(threshold, 0.0f);
+	if(fabsf(threshold - pSSAOEdgeBlurThreshold) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pSSAOEdgeBlurThreshold = threshold;
@@ -779,17 +779,17 @@ void deoglConfiguration::SetSSAOEdgeBlurThreshold( float threshold ){
 
 
 
-void deoglConfiguration::SetAOSelfShadowEnable( bool enable ){
-	if( enable == pAOSelfShadowEnable ){
+void deoglConfiguration::SetAOSelfShadowEnable(bool enable){
+	if(enable == pAOSelfShadowEnable){
 		return;
 	}
 	pAOSelfShadowEnable = enable;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetAOSelfShadowSmoothAngle( float angle ){
-	angle = decMath::clamp( angle, 0.1f, 90.0f );
-	if( fabsf( angle - pAOSelfShadowSmoothAngle ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetAOSelfShadowSmoothAngle(float angle){
+	angle = decMath::clamp(angle, 0.1f, 90.0f);
+	if(fabsf(angle - pAOSelfShadowSmoothAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pAOSelfShadowSmoothAngle = angle;
@@ -798,8 +798,8 @@ void deoglConfiguration::SetAOSelfShadowSmoothAngle( float angle ){
 
 
 
-void deoglConfiguration::SetSSSSSEnable( bool enable ){
-	if( enable == pSSSSSEnable ){
+void deoglConfiguration::SetSSSSSEnable(bool enable){
+	if(enable == pSSSSSEnable){
 		return;
 	}
 	pSSSSSEnable = enable;
@@ -808,21 +808,21 @@ void deoglConfiguration::SetSSSSSEnable( bool enable ){
 
 
 
-void deoglConfiguration::SetFrameRateLimit( int frameRateLimit ){
-	if( frameRateLimit == pFrameRateLimit ){
+void deoglConfiguration::SetFrameRateLimit(int frameRateLimit){
+	if(frameRateLimit == pFrameRateLimit){
 		return;
 	}
-	if( frameRateLimit < 0 ){
-		DETHROW( deeInvalidParam );
+	if(frameRateLimit < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFrameRateLimit = frameRateLimit;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetAsyncRenderSkipSyncTimeRatio( float ratio ){
-	ratio = decMath::clamp( ratio, 0.0f, 1.0f );
-	if( fabsf( ratio - pAsyncRenderSkipSyncTimeRatio ) < FLOAT_SAFE_EPSILON ){
+void deoglConfiguration::SetAsyncRenderSkipSyncTimeRatio(float ratio){
+	ratio = decMath::clamp(ratio, 0.0f, 1.0f);
+	if(fabsf(ratio - pAsyncRenderSkipSyncTimeRatio) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	pAsyncRenderSkipSyncTimeRatio = ratio;
@@ -831,32 +831,32 @@ void deoglConfiguration::SetAsyncRenderSkipSyncTimeRatio( float ratio ){
 
 
 
-void deoglConfiguration::SetDebugContext( bool debugContext ){
-	if( debugContext == pDebugContext ){
+void deoglConfiguration::SetDebugContext(bool debugContext){
+	if(debugContext == pDebugContext){
 		return;
 	}
 	pDebugContext = debugContext;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDebugNoMessages( bool debugNoMessages ){
-	if( debugNoMessages == pDebugNoMessages ){
+void deoglConfiguration::SetDebugNoMessages(bool debugNoMessages){
+	if(debugNoMessages == pDebugNoMessages){
 		return;
 	}
 	pDebugNoMessages = debugNoMessages;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetAsyncRendering( bool asyncRendering ){
-	if( asyncRendering == pAsyncRendering ){
+void deoglConfiguration::SetAsyncRendering(bool asyncRendering){
+	if(asyncRendering == pAsyncRendering){
 		return;
 	}
 	pAsyncRendering = asyncRendering;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetEnableRetainImageOptimization( bool enable ){
-	if( enable == pEnableRetainImageOptimization ){
+void deoglConfiguration::SetEnableRetainImageOptimization(bool enable){
+	if(enable == pEnableRetainImageOptimization){
 		return;
 	}
 	pEnableRetainImageOptimization = enable;
@@ -865,8 +865,8 @@ void deoglConfiguration::SetEnableRetainImageOptimization( bool enable ){
 
 
 
-void deoglConfiguration::SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex ){
-	if( bugNo2ComponentFBOTex == pBugNo2ComponentFBOTex ){
+void deoglConfiguration::SetBugNo2ComponentFBOTex(bool bugNo2ComponentFBOTex){
+	if(bugNo2ComponentFBOTex == pBugNo2ComponentFBOTex){
 		return;
 	}
 	pBugNo2ComponentFBOTex = bugNo2ComponentFBOTex;
@@ -875,27 +875,27 @@ void deoglConfiguration::SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex ){
 
 
 
-void deoglConfiguration::SetDebugNoCulling( bool noCulling ){
-	if( noCulling == pDebugNoCulling ){
+void deoglConfiguration::SetDebugNoCulling(bool noCulling){
+	if(noCulling == pDebugNoCulling){
 		return;
 	}
 	pDebugNoCulling = noCulling;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetDisableCubeMapLinearFiltering( bool disableCubeMapLinearFiltering ){
-	if( disableCubeMapLinearFiltering == pDisableCubeMapLinearFiltering ){
+void deoglConfiguration::SetDisableCubeMapLinearFiltering(bool disableCubeMapLinearFiltering){
+	if(disableCubeMapLinearFiltering == pDisableCubeMapLinearFiltering){
 		return;
 	}
 	pDisableCubeMapLinearFiltering = disableCubeMapLinearFiltering;
 	pDirty = true;
 }
 
-void deoglConfiguration::SetMaxSPBIndexCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deoglConfiguration::SetMaxSPBIndexCount(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
-	if( count == pMaxSPBIndexCount ){
+	if(count == pMaxSPBIndexCount){
 		return;
 	}
 	
@@ -903,8 +903,8 @@ void deoglConfiguration::SetMaxSPBIndexCount( int count ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetGIQuality( eGIQuality quality ){
-	if( quality == pGIQuality ){
+void deoglConfiguration::SetGIQuality(eGIQuality quality){
+	if(quality == pGIQuality){
 		return;
 	}
 	
@@ -912,8 +912,8 @@ void deoglConfiguration::SetGIQuality( eGIQuality quality ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
-	if( updateSpeed == pGIUpdateSpeed ){
+void deoglConfiguration::SetGIUpdateSpeed(eGIUpdateSpeed updateSpeed){
+	if(updateSpeed == pGIUpdateSpeed){
 		return;
 	}
 	
@@ -921,8 +921,8 @@ void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetVSyncMode( eVSyncMode mode ){
-	if( mode == pVSyncMode ){
+void deoglConfiguration::SetVSyncMode(eVSyncMode mode){
+	if(mode == pVSyncMode){
 		return;
 	}
 	
@@ -930,10 +930,10 @@ void deoglConfiguration::SetVSyncMode( eVSyncMode mode ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetVRRenderScale( float scale ){
-	scale = floorf( ( scale / 0.05f ) + 0.5f ) * 0.05f;
+void deoglConfiguration::SetVRRenderScale(float scale){
+	scale = floorf((scale / 0.05f) + 0.5f) * 0.05f;
 	
-	if( fabsf( scale - pVRRenderScale ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(scale - pVRRenderScale) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -941,8 +941,8 @@ void deoglConfiguration::SetVRRenderScale( float scale ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetVRForceFrameRate( int framerate ){
-	switch( framerate ){
+void deoglConfiguration::SetVRForceFrameRate(int framerate){
+	switch(framerate){
 	case 90:
 	case 45:
 	case 30:
@@ -953,7 +953,7 @@ void deoglConfiguration::SetVRForceFrameRate( int framerate ){
 		framerate = 0;
 	}
 	
-	if( framerate == pVRForceFrameRate ){
+	if(framerate == pVRForceFrameRate){
 		return;
 	}
 	

@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnablePosYMax::aeURuleLimitSetEnablePosYMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnablePosYMax::aeURuleLimitSetEnablePosYMax(aeRuleLimit *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Limit toggle enable maximum y position" );
+	SetShortInfo("Limit toggle enable maximum y position");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosYMax::~aeURuleLimitSetEnablePosYMax(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnablePosYMax::Undo(){
 }
 
 void aeURuleLimitSetEnablePosYMax::Redo(){
-	pRule->SetEnablePositionYMax( ! pRule->GetEnablePositionYMax() );
+	pRule->SetEnablePositionYMax(! pRule->GetEnablePositionYMax());
 }

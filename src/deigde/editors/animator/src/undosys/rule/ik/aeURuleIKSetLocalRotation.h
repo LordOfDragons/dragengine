@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetLocalRotation( aeRuleInverseKinematic *rule, const decVector &newRot );
+	aeURuleIKSetLocalRotation(aeRuleInverseKinematic *rule, const decVector &newRot);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleIKSetLocalRotation();

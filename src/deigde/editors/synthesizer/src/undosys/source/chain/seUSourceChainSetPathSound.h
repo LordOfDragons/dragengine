@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceChainSetPathSound( seSourceChain *source, int index, const char *newPath );
+	seUSourceChainSetPathSound(seSourceChain *source, int index, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo action. */

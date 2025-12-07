@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassNavigatorPath( deScriptingDragonScript &ds );
+	deClassNavigatorPath(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassNavigatorPath();
@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Navigator path or throws exception if myself is \em NULL. */
-	deNavigatorPath &GetNavigatorPath( dsRealObject *myself ) const;
+	deNavigatorPath &GetNavigatorPath(dsRealObject *myself) const;
 	
 	/** \brief Push navigator path. */
-	void PushNavigatorPath( dsRunTime *rt, const deNavigatorPath &path );
+	void PushNavigatorPath(dsRunTime *rt, const deNavigatorPath &path);
 	/*@}*/
 	
 	
@@ -89,36 +89,36 @@ private:
 		dsClass *clsDMatrix;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCount );
-	DEF_NATFUNC( nfGetAt );
-	DEF_NATFUNC( nfSetAt );
-	DEF_NATFUNC( nfAdd );
-	DEF_NATFUNC( nfAddPath );
-	DEF_NATFUNC( nfRemoveFrom );
-	DEF_NATFUNC( nfRemoveAll );
-	DEF_NATFUNC( nfTransform );
-	DEF_NATFUNC( nfTransformed );
-	DEF_NATFUNC( nfGetLength );
-	DEF_NATFUNC( nfGetLengthTo );
-	DEF_NATFUNC( nfGetLengthFrom );
-	DEF_NATFUNC( nfGetLengthBetween );
+	DEF_NATFUNC(nfGetCount);
+	DEF_NATFUNC(nfGetAt);
+	DEF_NATFUNC(nfSetAt);
+	DEF_NATFUNC(nfAdd);
+	DEF_NATFUNC(nfAddPath);
+	DEF_NATFUNC(nfRemoveFrom);
+	DEF_NATFUNC(nfRemoveAll);
+	DEF_NATFUNC(nfTransform);
+	DEF_NATFUNC(nfTransformed);
+	DEF_NATFUNC(nfGetLength);
+	DEF_NATFUNC(nfGetLengthTo);
+	DEF_NATFUNC(nfGetLengthFrom);
+	DEF_NATFUNC(nfGetLengthBetween);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfUpdateDebugDrawer );
+	DEF_NATFUNC(nfUpdateDebugDrawer);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

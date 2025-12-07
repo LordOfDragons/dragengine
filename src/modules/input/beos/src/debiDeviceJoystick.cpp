@@ -69,38 +69,38 @@ enum eHatStates{
 // Constructor, destructor
 ////////////////////////////
 
-debiDeviceJoystick::debiDeviceJoystick( deBeOSInput &module, const char *name ) :
-debiDevice( module ),
-pDevName( name ),
-pJoystick( NULL ),
-pStateAxisCount( 0 ),
-pStateAxis( NULL ),
-pStateHatCount( 0 ),
-pStateHat( NULL )
+debiDeviceJoystick::debiDeviceJoystick(deBeOSInput &module, const char *name) :
+debiDevice(module),
+pDevName(name),
+pJoystick(NULL),
+pStateAxisCount(0),
+pStateAxis(NULL),
+pStateHatCount(0),
+pStateHat(NULL)
 {
 	deObjectReference refObject;
 	decString string;
 	BString bname;
 	
-	const decString normName( debiDeviceManager::NormalizeID( name ) );
-	string.Format( "%s%d%s", BEINP_DEVID_PREFIX, debiDevice::esBJoystick, normName.GetString() );
- 	SetID( string );
-	SetType( deInputDevice::edtGamepad );
+	const decString normName(debiDeviceManager::NormalizeID(name));
+	string.Format("%s%d%s", BEINP_DEVID_PREFIX, debiDevice::esBJoystick, normName.GetString());
+ 	SetID(string);
+	SetType(deInputDevice::edtGamepad);
 	
 	try{
 		pJoystick = new BJoystick();
-		if( pJoystick->Open( name ) == B_ERROR ){
-			DETHROW( deeInvalidParam );
+		if(pJoystick->Open(name) == B_ERROR){
+			DETHROW(deeInvalidParam);
 		}
 		
-		if( pJoystick->GetControllerName( &bname ) != B_OK ){
-			DETHROW( deeInvalidParam );
+		if(pJoystick->GetControllerName(&bname) != B_OK){
+			DETHROW(deeInvalidParam);
 		}
-		if( bname.Length() == 0 ){
-			module.LogWarnFormat( "Bug! GetControllerName() returned empty string for device '%s'", name );
+		if(bname.Length() == 0){
+			module.LogWarnFormat("Bug! GetControllerName() returned empty string for device '%s'", name);
 			bname << "BJoy@" << name;
 		}
-		SetName( bname.String() );
+		SetName(bname.String());
 		
 		// add axes
 		const int countAxes = pJoystick->CountAxes();
@@ -108,30 +108,30 @@ pStateHat( NULL )
 		int indexAxis = 0;
 		
 		int i;
-		for( i=0; i<countAxes; i++ ){
-			refObject.TakeOver( new debiDeviceAxis( module ) );
-			AddAxis( refObject );
-			debiDeviceAxis &axis = ( debiDeviceAxis& )( deObject& )refObject;
+		for(i=0; i<countAxes; i++){
+			refObject.TakeOver(new debiDeviceAxis(module));
+			AddAxis(refObject);
+			debiDeviceAxis &axis = (debiDeviceAxis&)(deObject&)refObject;
 			
-			axis.SetIndex( indexAxis );
-			axis.SetAbsolute( true );
-			string.Format( "axis%d", i );
-			axis.SetID( string );
-			if( pJoystick->GetAxisNameAt( i, &bname ) != B_OK ){
-				DETHROW( deeInvalidParam );
+			axis.SetIndex(indexAxis);
+			axis.SetAbsolute(true);
+			string.Format("axis%d", i);
+			axis.SetID(string);
+			if(pJoystick->GetAxisNameAt(i, &bname) != B_OK){
+				DETHROW(deeInvalidParam);
 			}
-			axis.SetName( bname.String() );
-			axis.SetType( deInputDeviceAxis::eatStick );
-			axis.SetBICode( i );
+			axis.SetName(bname.String());
+			axis.SetType(deInputDeviceAxis::eatStick);
+			axis.SetBICode(i);
 			
-			string.Format( "%d", indexAxis + 1 );
-			axis.SetDisplayText( string );
+			string.Format("%d", indexAxis + 1);
+			axis.SetDisplayText(string);
 			
-			if( i == 0 ){
-				axis.SetDisplayImages( "touchpadX" );
+			if(i == 0){
+				axis.SetDisplayImages("touchpadX");
 				
-			}else if( i == 1 ){
-				axis.SetDisplayImages( "touchpadY" );
+			}else if(i == 1){
+				axis.SetDisplayImages("touchpadY");
 				
 			}else{
 				// "mouseZ"
@@ -139,79 +139,79 @@ pStateHat( NULL )
 			
 			indexAxis++;
 		}
-		if( countAxes > 0 ){
-			pStateAxis = new int16[ countAxes ];
+		if(countAxes > 0){
+			pStateAxis = new int16[countAxes];
 			pStateAxisCount = countAxes;
 		}
 		
-		for( i=0; i<countHats; i++ ){
-			refObject.TakeOver( new debiDeviceAxis( module ) );
-			AddAxis( refObject );
-			debiDeviceAxis &hatX = ( debiDeviceAxis& )( deObject& )refObject;
+		for(i=0; i<countHats; i++){
+			refObject.TakeOver(new debiDeviceAxis(module));
+			AddAxis(refObject);
+			debiDeviceAxis &hatX = (debiDeviceAxis&)(deObject&)refObject;
 			
-			refObject.TakeOver( new debiDeviceAxis( module ) );
-			AddAxis( refObject );
-			debiDeviceAxis &hatY = ( debiDeviceAxis& )( deObject& )refObject;
+			refObject.TakeOver(new debiDeviceAxis(module));
+			AddAxis(refObject);
+			debiDeviceAxis &hatY = (debiDeviceAxis&)(deObject&)refObject;
 			
-			if( pJoystick->GetHatNameAt( i, &bname ) != B_OK ){
-				DETHROW( deeInvalidParam );
+			if(pJoystick->GetHatNameAt(i, &bname) != B_OK){
+				DETHROW(deeInvalidParam);
 			}
 			
-			hatX.SetIndex( indexAxis );
-			hatX.SetAbsolute( true );
-			string.Format( "hat%dX", i );
-			hatX.SetID( string );
-			string.Format( "%s X", bname.String() );
-			hatX.SetName( string );
-			hatX.SetType( deInputDeviceAxis::eatHat );
-			hatX.SetBICode( i * 2 );
+			hatX.SetIndex(indexAxis);
+			hatX.SetAbsolute(true);
+			string.Format("hat%dX", i);
+			hatX.SetID(string);
+			string.Format("%s X", bname.String());
+			hatX.SetName(string);
+			hatX.SetType(deInputDeviceAxis::eatHat);
+			hatX.SetBICode(i * 2);
 			
-			string.Format( "%d", indexAxis + 1 );
-			hatX.SetDisplayText( string );
-			hatX.SetDisplayImages( "stickX" );
+			string.Format("%d", indexAxis + 1);
+			hatX.SetDisplayText(string);
+			hatX.SetDisplayImages("stickX");
 			indexAxis++;
 			
-			hatY.SetIndex( countAxes + i * 2 + 1 );
-			hatY.SetAbsolute( true );
-			string.Format( "hat%dY", i );
-			hatY.SetID( string );
-			string.Format( "%s Y", bname.String() );
-			hatY.SetName( string );
-			hatY.SetType( deInputDeviceAxis::eatHat );
-			hatY.SetBICode( i * 2 + 1 );
+			hatY.SetIndex(countAxes + i * 2 + 1);
+			hatY.SetAbsolute(true);
+			string.Format("hat%dY", i);
+			hatY.SetID(string);
+			string.Format("%s Y", bname.String());
+			hatY.SetName(string);
+			hatY.SetType(deInputDeviceAxis::eatHat);
+			hatY.SetBICode(i * 2 + 1);
 			
-			string.Format( "%d", indexAxis + 1 );
-			hatY.SetDisplayText( string );
-			hatY.SetDisplayImages( "stickX" );
+			string.Format("%d", indexAxis + 1);
+			hatY.SetDisplayText(string);
+			hatY.SetDisplayImages("stickX");
 			indexAxis++;
 		}
-		if( countHats > 0 ){
-			pStateHat = new uint8[ countHats ];
+		if(countHats > 0){
+			pStateHat = new uint8[countHats];
 			pStateHatCount = countHats;
 		}
 		
 		// add buttons
 		const int countButtons = pJoystick->CountButtons();
 		
-		for( i=0; i<countButtons; i++ ){
-			refObject.TakeOver( new debiDeviceButton( module ) );
-			AddButton( refObject );
-			debiDeviceButton &button = ( debiDeviceButton& )( deObject& )refObject;
+		for(i=0; i<countButtons; i++){
+			refObject.TakeOver(new debiDeviceButton(module));
+			AddButton(refObject);
+			debiDeviceButton &button = (debiDeviceButton&)(deObject&)refObject;
 			
-			string.Format( "button%d", i );
-			button.SetID( string );
-			if( pJoystick->GetButtonNameAt( i, &bname ) != B_OK ){
-				DETHROW( deeInvalidParam );
+			string.Format("button%d", i);
+			button.SetID(string);
+			if(pJoystick->GetButtonNameAt(i, &bname) != B_OK){
+				DETHROW(deeInvalidParam);
 			}
-			button.SetName( bname.String() );
-			button.SetBICode( i );
+			button.SetName(bname.String());
+			button.SetBICode(i);
 			
-			string.Format( "%d", i + 1 );
-			button.SetDisplayText( string );
-			button.SetDisplayImages( "button" );
+			string.Format("%d", i + 1);
+			button.SetDisplayText(string);
+			button.SetDisplayImages("button");
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
     }
@@ -231,22 +231,22 @@ void debiDeviceJoystick::Update(){
 	const int deviceIndex = GetIndex();
 	
 	timeval eventTime;
-	gettimeofday( &eventTime, NULL );
+	gettimeofday(&eventTime, NULL);
 	
 	// query all values
-	if( pJoystick->Update() != B_OK ){
-		DETHROW( deeInvalidParam );
+	if(pJoystick->Update() != B_OK){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const uint32 buttonValues = pJoystick->ButtonValues();
-	if( pStateAxisCount > 0 ){
-		if( pJoystick->GetAxisValues( pStateAxis ) != B_OK ){
-			DETHROW( deeInvalidParam );
+	if(pStateAxisCount > 0){
+		if(pJoystick->GetAxisValues(pStateAxis) != B_OK){
+			DETHROW(deeInvalidParam);
 		}
 	}
-	if( pStateHatCount > 0 ){
-		if( pJoystick->GetHatValues( pStateHat ) != B_OK ){
-			DETHROW( deeInvalidParam );
+	if(pStateHatCount > 0){
+		if(pJoystick->GetHatValues(pStateHat) != B_OK){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
@@ -254,18 +254,18 @@ void debiDeviceJoystick::Update(){
 	const int countAxis = GetAxisCount();
 	int i;
 	
-	for( i=0; i<countAxis; i++ ){
-		debiDeviceAxis &axis = *GetAxisAt( i );
+	for(i=0; i<countAxis; i++){
+		debiDeviceAxis &axis = *GetAxisAt(i);
 		float value = axis.GetValue();
 		
-		switch( axis.GetType() ){
+		switch(axis.GetType()){
 		case deInputDeviceAxis::eatStick:
-			value = ( float )pStateAxis[ axis.GetBICode() ] / 32767.0f;
+			value = (float)pStateAxis[axis.GetBICode()] / 32767.0f;
 			break;
 			
 		case deInputDeviceAxis::eatHat:
-			if( ( axis.GetBICode() % 2 ) == 0 ){ // X axis
-				switch( pStateHat[ axis.GetBICode() / 2 ] ){
+			if((axis.GetBICode() % 2) == 0){ // X axis
+				switch(pStateHat[axis.GetBICode() / 2]){
 				case ehsCenter:
 				case ehsUp:
 				case ehsDown:
@@ -289,7 +289,7 @@ void debiDeviceJoystick::Update(){
 				}
 				
 			}else{ // Y axis
-				switch( pStateHat[ axis.GetBICode() / 2 ] ){
+				switch(pStateHat[axis.GetBICode() / 2]){
 				case ehsCenter:
 				case ehsLeft:
 				case ehsRight:
@@ -318,30 +318,30 @@ void debiDeviceJoystick::Update(){
 			break;
 		}
 		
-		axis.ProcessNewValue( *this, value, eventTime );
+		axis.ProcessNewValue(*this, value, eventTime);
 	}
 	
 	// update buttons
 	const int countButtons = GetButtonCount();
 	
-	for( i=0; i<countButtons; i++ ){
-		debiDeviceButton &button = *GetButtonAt( i );
+	for(i=0; i<countButtons; i++){
+		debiDeviceButton &button = *GetButtonAt(i);
 		
-		if( ( buttonValues & ( 1 << button.GetBICode() ) ) == 0 ){
-			if( ! button.GetPressed() ){
+		if((buttonValues & (1 << button.GetBICode())) == 0){
+			if(! button.GetPressed()){
 				continue;
 			}
 			
-			button.SetPressed( false );
-			module.AddButtonReleased( deviceIndex, i, eventTime );
+			button.SetPressed(false);
+			module.AddButtonReleased(deviceIndex, i, eventTime);
 			
 		}else{
-			if( button.GetPressed() ){
+			if(button.GetPressed()){
 				continue;
 			}
 			
-			button.SetPressed( true );
-			module.AddButtonPressed( deviceIndex, i, eventTime );
+			button.SetPressed(true);
+			module.AddButtonPressed(deviceIndex, i, eventTime);
 		}
 	}
 	
@@ -355,14 +355,14 @@ void debiDeviceJoystick::Update(){
 //////////////////////
 
 void debiDeviceJoystick::pCleanUp(){
-	if( pStateAxis ){
+	if(pStateAxis){
 		delete [] pStateAxis;
 	}
-	if( pStateHat ){
+	if(pStateHat){
 		delete pStateHat;
 	}
 	
-	if( pJoystick ){
+	if(pJoystick){
 		pJoystick->Close();
 		delete pJoystick;
 	}

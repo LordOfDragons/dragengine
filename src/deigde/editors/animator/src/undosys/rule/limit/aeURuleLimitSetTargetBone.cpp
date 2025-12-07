@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone( aeRuleLimit *rule, const char *newBone ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone(aeRuleLimit *rule, const char *newBone){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -49,14 +49,14 @@ aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone( aeRuleLimit *rule, const c
 	pOldBone = rule->GetTargetBone().GetString();
 	pNewBone = newBone;
 	
-	SetShortInfo( "Limit set target bone" );
+	SetShortInfo("Limit set target bone");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleLimitSetTargetBone::~aeURuleLimitSetTargetBone(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ aeURuleLimitSetTargetBone::~aeURuleLimitSetTargetBone(){
 ///////////////
 
 void aeURuleLimitSetTargetBone::Undo(){
-	pRule->SetTargetBone( pOldBone.GetString() );
+	pRule->SetTargetBone(pOldBone.GetString());
 }
 
 void aeURuleLimitSetTargetBone::Redo(){
-	pRule->SetTargetBone( pNewBone.GetString() );
+	pRule->SetTargetBone(pNewBone.GetString());
 }

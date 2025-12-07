@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetTriggerName::gdeUOCForceFieldSetTriggerName( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger, const char *newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL ),
-pTrigger( trigger )
+gdeUOCForceFieldSetTriggerName::gdeUOCForceFieldSetTriggerName(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger, const char *newValue) :
+pObjectClass(NULL),
+pForceField(NULL),
+pTrigger(trigger)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set trigger name" );
+	SetShortInfo("Force field set trigger name");
 	
-	pOldValue = forceField->GetTriggerName( trigger );
+	pOldValue = forceField->GetTriggerName(trigger);
 	pNewValue = newValue;
 	
 	pForceField = forceField;
@@ -62,10 +62,10 @@ pTrigger( trigger )
 }
 
 gdeUOCForceFieldSetTriggerName::~gdeUOCForceFieldSetTriggerName(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetTriggerName::~gdeUOCForceFieldSetTriggerName(){
 ///////////////
 
 void gdeUOCForceFieldSetTriggerName::Undo(){
-	pForceField->SetTriggerName( pTrigger, pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetTriggerName(pTrigger, pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetTriggerName::Redo(){
-	pForceField->SetTriggerName( pTrigger, pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetTriggerName(pTrigger, pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

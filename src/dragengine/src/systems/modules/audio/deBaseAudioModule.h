@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseAudioModule( deLoadableModule &loadableModule );
+	deBaseAudioModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseAudioModule();
@@ -78,7 +78,7 @@ public:
 	 * \note To access the os of the engine use the GetOS function.
 	 * \returns true on success or false on failure.
 	 */
-	virtual bool Init( deMicrophone *activeMic ) = 0;
+	virtual bool Init(deMicrophone *activeMic) = 0;
 	
 	/**
 	 * \brief Clean up module.
@@ -91,7 +91,7 @@ public:
 	virtual void ProcessAudio() = 0;
 	
 	/** \brief Set active microphone or NULL. */
-	virtual void SetActiveMicrophone( deMicrophone *microphone ) = 0;
+	virtual void SetActiveMicrophone(deMicrophone *microphone) = 0;
 	
 	/**
 	 * \brief Frame-per-second rate averaged over the last couple of frames.
@@ -107,40 +107,40 @@ public:
 	/** \name Audio Management */
 	/*@{*/
 	/** \brief Creat peer for world. */
-	virtual deBaseAudioWorld *CreateWorld( deWorld *world ) = 0;
+	virtual deBaseAudioWorld *CreateWorld(deWorld *world) = 0;
 	
 	/** \brief Create peer for sound. */
-	virtual deBaseAudioSound *CreateSound( deSound *sound ) = 0;
+	virtual deBaseAudioSound *CreateSound(deSound *sound) = 0;
 	
 	/** \brief Create peer for speaker. */
-	virtual deBaseAudioSpeaker *CreateSpeaker( deSpeaker *speaker ) = 0;
+	virtual deBaseAudioSpeaker *CreateSpeaker(deSpeaker *speaker) = 0;
 	
 	/** \brief Create peer for microphone. */
-	virtual deBaseAudioMicrophone *CreateMicrophone( deMicrophone *microphone ) = 0;
+	virtual deBaseAudioMicrophone *CreateMicrophone(deMicrophone *microphone) = 0;
 	
 	/** \brief Create peer for component. */
-	virtual deBaseAudioComponent *CreateComponent( deComponent *component ) = 0;
+	virtual deBaseAudioComponent *CreateComponent(deComponent *component) = 0;
 	
 	/** \brief Create peer for skin. */
-	virtual deBaseAudioSkin *CreateSkin( deSkin *skin ) = 0;
+	virtual deBaseAudioSkin *CreateSkin(deSkin *skin) = 0;
 	
 	/** \brief Create peer for model. */
-	virtual deBaseAudioModel *CreateModel( deModel *model ) = 0;
+	virtual deBaseAudioModel *CreateModel(deModel *model) = 0;
 	
 	/** \brief Create peer for decal. */
-	virtual deBaseAudioDecal *CreateDecal( deDecal *decal ) = 0;
+	virtual deBaseAudioDecal *CreateDecal(deDecal *decal) = 0;
 	
 	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter ) = 0;
+	virtual deBaseAudioSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter) = 0;
 	
 	/** \brief Create deVideoPlayer peer. */
-	virtual deBaseAudioVideoPlayer *CreateVideoPlayer( deVideoPlayer *videoPlayer ) = 0;
+	virtual deBaseAudioVideoPlayer *CreateVideoPlayer(deVideoPlayer *videoPlayer) = 0;
 	
 	/** \brief Create deSynthesizerInstance peer. */
-	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance( deSynthesizerInstance *instance ) = 0;
+	virtual deBaseAudioSynthesizerInstance *CreateSynthesizerInstance(deSynthesizerInstance *instance) = 0;
 	
 	/** \brief Create deHeightTerrain peer. */
-	virtual deBaseAudioHeightTerrain *CreateHeightTerrain( deHeightTerrain &heightTerrain ) = 0;
+	virtual deBaseAudioHeightTerrain *CreateHeightTerrain(deHeightTerrain &heightTerrain) = 0;
 	/*@}*/
 };
 

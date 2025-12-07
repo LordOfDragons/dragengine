@@ -41,17 +41,17 @@
 ////////////////////////////
 
 deAnimatorRuleMirror::deAnimatorRuleMirror() :
-pMirrorAxis( emaX ),
-pMatchNames( nullptr ),
-pMatchNameCount( 0 ),
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true ){
+pMirrorAxis(emaX),
+pMatchNames(nullptr),
+pMatchNameCount(0),
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true){
 }
 
 deAnimatorRuleMirror::~deAnimatorRuleMirror(){
-	if( pMatchNames ){
+	if(pMatchNames){
 		delete [] pMatchNames;
 	}
 }
@@ -61,64 +61,64 @@ deAnimatorRuleMirror::~deAnimatorRuleMirror(){
 // Management
 ///////////////
 
-void deAnimatorRuleMirror::SetMirrorAxis( eMirrorAxis axis ){
+void deAnimatorRuleMirror::SetMirrorAxis(eMirrorAxis axis){
 	pMirrorAxis = axis;
 }
 
-void deAnimatorRuleMirror::SetMirrorBone( const char *boneName ){
+void deAnimatorRuleMirror::SetMirrorBone(const char *boneName){
 	pMirrorBone = boneName;
 }
 
-const deAnimatorRuleMirror::sMatchName &deAnimatorRuleMirror::GetMatchNameAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pMatchNameCount )
+const deAnimatorRuleMirror::sMatchName &deAnimatorRuleMirror::GetMatchNameAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pMatchNameCount)
 	
-	return pMatchNames[ index ];
+	return pMatchNames[index];
 }
 
-void deAnimatorRuleMirror::AddMatchName( const char *first, const char *second, eMatchNameType type ){
-	DEASSERT_NOTNULL( first )
-	DEASSERT_TRUE( strlen( first ) > 0 )
-	DEASSERT_NOTNULL( second )
-	DEASSERT_TRUE( strlen( second ) > 0 )
+void deAnimatorRuleMirror::AddMatchName(const char *first, const char *second, eMatchNameType type){
+	DEASSERT_NOTNULL(first)
+	DEASSERT_TRUE(strlen(first) > 0)
+	DEASSERT_NOTNULL(second)
+	DEASSERT_TRUE(strlen(second) > 0)
 	
-	sMatchName * const newArray = new sMatchName[ pMatchNameCount + 1 ];
-	if( pMatchNames ){
+	sMatchName * const newArray = new sMatchName[pMatchNameCount + 1];
+	if(pMatchNames){
 		int i;
-		for( i=0; i<pMatchNameCount; i++ ){
-			newArray[ i ] = pMatchNames[ i ];
+		for(i=0; i<pMatchNameCount; i++){
+			newArray[i] = pMatchNames[i];
 		}
 		delete [] pMatchNames;
 	}
 	
 	pMatchNames = newArray;
-	pMatchNames[ pMatchNameCount ].first = first;
-	pMatchNames[ pMatchNameCount ].second = second;
-	pMatchNames[ pMatchNameCount ].type = type;
+	pMatchNames[pMatchNameCount].first = first;
+	pMatchNames[pMatchNameCount].second = second;
+	pMatchNames[pMatchNameCount].type = type;
 	pMatchNameCount++;
 }
 
 void deAnimatorRuleMirror::RemoveAllMatchNames(){
-	if( pMatchNames ){
+	if(pMatchNames){
 		delete [] pMatchNames;
 	}
 	pMatchNames = nullptr;
 	pMatchNameCount = 0;
 }
 
-void deAnimatorRuleMirror::SetEnablePosition( bool enable ){
+void deAnimatorRuleMirror::SetEnablePosition(bool enable){
 	pEnablePosition = enable;
 }
 
-void deAnimatorRuleMirror::SetEnableOrientation( bool enable ){
+void deAnimatorRuleMirror::SetEnableOrientation(bool enable){
 	pEnableOrientation = enable;
 }
 
-void deAnimatorRuleMirror::SetEnableSize( bool enable ){
+void deAnimatorRuleMirror::SetEnableSize(bool enable){
 	pEnableSize = enable;
 }
 
-void deAnimatorRuleMirror::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleMirror::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
@@ -127,6 +127,6 @@ void deAnimatorRuleMirror::SetEnableVertexPositionSet( bool enabled ){
 // Visiting
 /////////////
 
-void deAnimatorRuleMirror::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitMirror( *this );
+void deAnimatorRuleMirror::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitMirror(*this);
 }

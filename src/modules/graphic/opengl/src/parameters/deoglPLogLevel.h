@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPLogLevel( deGraphicOpenGl &ogl );
+	deoglPLogLevel(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPLogLevel();
 	/*@}*/
@@ -47,7 +47,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

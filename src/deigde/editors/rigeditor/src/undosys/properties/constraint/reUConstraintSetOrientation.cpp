@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetOrientation::reUConstraintSetOrientation( reRigConstraint *constraint, const decVector &newOrientation ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetOrientation::reUConstraintSetOrientation(reRigConstraint *constraint, const decVector &newOrientation){
+	if(! constraint || ! constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,13 +50,13 @@ reUConstraintSetOrientation::reUConstraintSetOrientation( reRigConstraint *const
 	pOldOrientation = constraint->GetOrientation();
 	pNewOrientation = newOrientation;
 	
-	SetShortInfo( "Constraint set orientation" );
+	SetShortInfo("Constraint set orientation");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintSetOrientation::~reUConstraintSetOrientation(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ reUConstraintSetOrientation::~reUConstraintSetOrientation(){
 ///////////////
 
 void reUConstraintSetOrientation::Undo(){
-	pConstraint->SetOrientation( pOldOrientation );
+	pConstraint->SetOrientation(pOldOrientation);
 }
 
 void reUConstraintSetOrientation::Redo(){
-	pConstraint->SetOrientation( pNewOrientation );
+	pConstraint->SetOrientation(pNewOrientation);
 }

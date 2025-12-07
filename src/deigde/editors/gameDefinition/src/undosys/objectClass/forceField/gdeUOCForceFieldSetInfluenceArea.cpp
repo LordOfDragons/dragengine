@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetInfluenceArea::gdeUOCForceFieldSetInfluenceArea( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const decShapeList &newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetInfluenceArea::gdeUOCForceFieldSetInfluenceArea(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const decShapeList &newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set influence area" );
+	SetShortInfo("Force field set influence area");
 	
 	pOldValue = forceField->GetInfluenceArea();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetInfluenceArea::~gdeUOCForceFieldSetInfluenceArea(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetInfluenceArea::~gdeUOCForceFieldSetInfluenceArea(){
 ///////////////
 
 void gdeUOCForceFieldSetInfluenceArea::Undo(){
-	pForceField->SetInfluenceArea( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetInfluenceArea(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetInfluenceArea::Redo(){
-	pForceField->SetInfluenceArea( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetInfluenceArea(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

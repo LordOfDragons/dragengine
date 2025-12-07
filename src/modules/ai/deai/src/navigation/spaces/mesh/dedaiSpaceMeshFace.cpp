@@ -41,19 +41,19 @@
 /////////////////////////////////
 
 dedaiSpaceMeshFace::dedaiSpaceMeshFace() :
-pMesh( NULL ),
-pFirstCorner( 0 ),
-pCornerCount( 0 ),
-pIndex( 0 ),
-pTypeNumber( 0 ),
-pDistance( 0.0f ),
-pEnabled( true ),
+pMesh(NULL),
+pFirstCorner(0),
+pCornerCount(0),
+pIndex(0),
+pTypeNumber(0),
+pDistance(0.0f),
+pEnabled(true),
 
-pPathParent( NULL ),
-pPathCostF( 0.0f ),
-pPathCostG( 0.0f ),
-pPathCostH( 0.0f ),
-pPathType( epftFree ){
+pPathParent(NULL),
+pPathCostF(0.0f),
+pPathCostG(0.0f),
+pPathCostH(0.0f),
+pPathType(epftFree){
 }
 
 dedaiSpaceMeshFace::~dedaiSpaceMeshFace(){
@@ -64,38 +64,38 @@ dedaiSpaceMeshFace::~dedaiSpaceMeshFace(){
 // Management
 ///////////////
 
-void dedaiSpaceMeshFace::SetMesh( dedaiSpaceMesh *mesh ){
+void dedaiSpaceMeshFace::SetMesh(dedaiSpaceMesh *mesh){
 	pMesh = mesh;
 }
 
-void dedaiSpaceMeshFace::SetIndex( unsigned short index ){
+void dedaiSpaceMeshFace::SetIndex(unsigned short index){
 	pIndex = index;
 }
 
-void dedaiSpaceMeshFace::SetTypeNumber( unsigned short typeNumber ){
+void dedaiSpaceMeshFace::SetTypeNumber(unsigned short typeNumber){
 	pTypeNumber = typeNumber;
 }
 
 
 
-void dedaiSpaceMeshFace::SetFirstCorner( int first ){
+void dedaiSpaceMeshFace::SetFirstCorner(int first){
 	pFirstCorner = first;
 }
 
-void dedaiSpaceMeshFace::SetCornerCount( unsigned short count ){
+void dedaiSpaceMeshFace::SetCornerCount(unsigned short count){
 	pCornerCount = count;
 }
 
-int dedaiSpaceMeshFace::IndexOfCornerWithEdge( unsigned short edge ) const{
-	if( ! pMesh ){
-		DETHROW( deeInvalidParam );
+int dedaiSpaceMeshFace::IndexOfCornerWithEdge(unsigned short edge) const{
+	if(! pMesh){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const dedaiSpaceMeshCorner * const corners = pMesh->GetCorners();
 	int i;
 	
-	for( i=0; i<pCornerCount; i++ ){
-		if( corners[ pFirstCorner + i ].GetEdge() == edge ){
+	for(i=0; i<pCornerCount; i++){
+		if(corners[pFirstCorner + i].GetEdge() == edge){
 			return i;
 		}
 	}
@@ -103,16 +103,16 @@ int dedaiSpaceMeshFace::IndexOfCornerWithEdge( unsigned short edge ) const{
 	return -1;
 }
 
-int dedaiSpaceMeshFace::IndexOfCornerWithVertex( unsigned short vertex ) const{
-	if( ! pMesh ){
-		DETHROW( deeInvalidParam );
+int dedaiSpaceMeshFace::IndexOfCornerWithVertex(unsigned short vertex) const{
+	if(! pMesh){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const dedaiSpaceMeshCorner * const corners = pMesh->GetCorners();
 	int i;
 	
-	for( i=0; i<pCornerCount; i++ ){
-		if( corners[ pFirstCorner + i ].GetVertex() == vertex ){
+	for(i=0; i<pCornerCount; i++){
+		if(corners[pFirstCorner + i].GetVertex() == vertex){
 			return i;
 		}
 	}
@@ -122,52 +122,52 @@ int dedaiSpaceMeshFace::IndexOfCornerWithVertex( unsigned short vertex ) const{
 
 
 
-void dedaiSpaceMeshFace::SetCenter( const decVector &center ){
+void dedaiSpaceMeshFace::SetCenter(const decVector &center){
 	pCenter = center;
 }
 
-void dedaiSpaceMeshFace::SetNormal( const decVector &normal ){
+void dedaiSpaceMeshFace::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-void dedaiSpaceMeshFace::SetDistance( float distance ){
+void dedaiSpaceMeshFace::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void dedaiSpaceMeshFace::SetExtends( const decVector &minExtend, const decVector &maxExtend ){
+void dedaiSpaceMeshFace::SetExtends(const decVector &minExtend, const decVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
 
-void dedaiSpaceMeshFace::SetEntryPoint( const decVector &entryPoint ){
+void dedaiSpaceMeshFace::SetEntryPoint(const decVector &entryPoint){
 	pEntryPoint = entryPoint;
 }
 
 
 
-void dedaiSpaceMeshFace::SetEnabled( bool enabled ){
+void dedaiSpaceMeshFace::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
 
 
-void dedaiSpaceMeshFace::SetPathParent( dedaiSpaceMeshFace *face ){
+void dedaiSpaceMeshFace::SetPathParent(dedaiSpaceMeshFace *face){
 	pPathParent = face;
 }
 
-void dedaiSpaceMeshFace::SetPathCostF( float cost ){
+void dedaiSpaceMeshFace::SetPathCostF(float cost){
 	pPathCostF = cost;
 }
 
-void dedaiSpaceMeshFace::SetPathCostG( float cost ){
+void dedaiSpaceMeshFace::SetPathCostG(float cost){
 	pPathCostG = cost;
 }
 
-void dedaiSpaceMeshFace::SetPathCostH( float cost ){
+void dedaiSpaceMeshFace::SetPathCostH(float cost){
 	pPathCostH = cost;
 }
 
-void dedaiSpaceMeshFace::SetPathType( ePathFindingTypes type ){
+void dedaiSpaceMeshFace::SetPathType(ePathFindingTypes type){
 	pPathType = type;
 }
 

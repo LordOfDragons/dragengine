@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleSModEnableRot::aeUSetRuleSModEnableRot( aeRuleStateManipulator *rule ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeUSetRuleSModEnableRot::aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule){
+	if(! rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -48,9 +48,9 @@ aeUSetRuleSModEnableRot::aeUSetRuleSModEnableRot( aeRuleStateManipulator *rule )
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Set state manipulator rule enable position" );
+		SetShortInfo("Set state manipulator rule enable position");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleSModEnableRot::~aeUSetRuleSModEnableRot(){
 ///////////////
 
 void aeUSetRuleSModEnableRot::Undo(){
-	pRule->SetEnableRotation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableRotation(! pRule->GetEnableOrientation());
 }
 
 void aeUSetRuleSModEnableRot::Redo(){
-	pRule->SetEnableRotation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableRotation(! pRule->GetEnableOrientation());
 }
 
 
@@ -79,5 +79,5 @@ void aeUSetRuleSModEnableRot::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnableRot::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

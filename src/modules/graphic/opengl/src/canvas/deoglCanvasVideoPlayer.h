@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasVideoPlayer( deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas );
+	deoglCanvasVideoPlayer(deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas);
 	
 	/** Clean up peer. */
 	virtual ~deoglCanvasVideoPlayer();

@@ -54,16 +54,16 @@ public:
 	/** \name Weights Management */
 	/*@{*/
 	/** \brief Index of the bone. */
-	inline int GetBone() const{ return pBone; }
+	inline int GetBone() const{return pBone;}
 	
 	/** \brief Set index of the bone. */
-	void SetBone( int bone );
+	void SetBone(int bone);
 	
 	/** \brief Weight in the range from 0 to 1. */
-	inline float GetWeight() const{ return pWeight; }
+	inline float GetWeight() const{return pWeight;}
 	
 	/** \brief Set weight in the range from 0 to 1. */
-	void SetWeight( float weight );
+	void SetWeight(float weight);
 	/*@}*/
 };
 

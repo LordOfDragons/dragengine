@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader. */
-	devkLoader( deSharedVulkan &vulkan );
+	devkLoader(deSharedVulkan &vulkan);
 	
 	/** Clean up loader. */
 	~devkLoader();

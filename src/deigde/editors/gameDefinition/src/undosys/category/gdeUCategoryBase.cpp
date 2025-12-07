@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategoryBase::gdeUCategoryBase( gdeGameDefinition *gameDefinition, eCategoryType type ) :
-pGameDefinition( gameDefinition ),
-pType( type )
+gdeUCategoryBase::gdeUCategoryBase(gdeGameDefinition *gameDefinition, eCategoryType type) :
+pGameDefinition(gameDefinition),
+pType(type)
 {
-	if( ! gameDefinition ){
-		DETHROW( deeInvalidParam );
+	if(! gameDefinition){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -57,7 +57,7 @@ gdeUCategoryBase::~gdeUCategoryBase(){
 ///////////////
 
 void gdeUCategoryBase::Notify(){
-	switch( pType ){
+	switch(pType){
 	case ectObjectClass:
 		pGameDefinition->NotifyObjectClassCategoriesChanged();
 		break;

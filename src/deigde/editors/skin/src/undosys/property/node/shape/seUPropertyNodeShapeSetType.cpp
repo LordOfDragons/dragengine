@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetType::seUPropertyNodeShapeSetType(
-sePropertyNodeShape *node, deSkinPropertyNodeShape::eShapeTypes newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeShape *node, deSkinPropertyNodeShape::eShapeTypes newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node shape set type" );
+	SetShortInfo("Node shape set type");
 	
 	pOldValue = node->GetShapeType();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeShapeSetType::~seUPropertyNodeShapeSetType(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeShapeSetType::~seUPropertyNodeShapeSetType(){
 ///////////////
 
 void seUPropertyNodeShapeSetType::Undo(){
-	pNode->SetShapeType( pOldValue );
+	pNode->SetShapeType(pOldValue);
 }
 
 void seUPropertyNodeShapeSetType::Redo(){
-	pNode->SetShapeType( pNewValue );
+	pNode->SetShapeType(pNewValue);
 }

@@ -39,14 +39,14 @@
 ////////////////////////////
 
 
-deArchive::deArchive( deArchiveManager *manager, deVirtualFileSystem *vfs,
-	const char *filename, TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
-pPeerContainer( NULL ){
+deArchive::deArchive(deArchiveManager *manager, deVirtualFileSystem *vfs,
+	const char *filename, TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime),
+pPeerContainer(NULL){
 }
 
 deArchive::~deArchive(){
-	SetPeerContainer( NULL );
+	SetPeerContainer(NULL);
 }
 
 
@@ -59,12 +59,12 @@ deArchive::~deArchive(){
 // Peers
 //////////
 
-void deArchive::SetPeerContainer( deBaseArchiveContainer *peer ){
-	if( peer == pPeerContainer ){
+void deArchive::SetPeerContainer(deBaseArchiveContainer *peer){
+	if(peer == pPeerContainer){
 		return;
 	}
 	
-	if( pPeerContainer ){
+	if(pPeerContainer){
 		delete pPeerContainer;
 	}
 	pPeerContainer = peer;

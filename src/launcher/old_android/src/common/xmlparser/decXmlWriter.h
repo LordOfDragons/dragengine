@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml writer. */
-	decXmlWriter( decBaseFileWriter *file );
+	decXmlWriter(decBaseFileWriter *file);
 	
 	/** \brief Clean up xml writer. */
 	~decXmlWriter();
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Indent level. */
-	inline int GetIndent() const{ return pIndent; }
+	inline int GetIndent() const{return pIndent;}
 	
 	/** \brief Set indent level. */
-	void SetIndent( int indent );
+	void SetIndent(int indent);
 	
 	/** \brief Increase indent level by one. */
 	void IncreaseIndent();
@@ -74,7 +74,7 @@ public:
 	void WriteXMLDeclaration();
 	
 	/** \brief Write unicode string in UTF-8 encoding. */
-	void WriteUnicodeString( const decUnicodeString &string );
+	void WriteUnicodeString(const decUnicodeString &string);
 	
 	/**
 	 * \brief Write newline useful for structuring content.
@@ -84,11 +84,11 @@ public:
 	void WriteNewline();
 	
 	/** \brief Write Document Type Declaration. */
-	void WriteDocTypeDeclaration( const char *rootTag, const char *dtdSource );
+	void WriteDocTypeDeclaration(const char *rootTag, const char *dtdSource);
 	
 	/** \brief Write Document Type Declaration. */
-	void WriteDocTypeDeclaration( const decUnicodeString &rootTag,
-		const decUnicodeString &dtdSource );
+	void WriteDocTypeDeclaration(const decUnicodeString &rootTag,
+		const decUnicodeString &dtdSource);
 	
 	/**
 	 * \brief Write opening tag with no arguments.
@@ -97,49 +97,49 @@ public:
 	 * depending on the empty parameter. If newline is true a newline is written after
 	 * the tag. If empty is false and newline is true the indent is increased by one.
 	 */
-	void WriteOpeningTag( const char *name, bool empty = false,
-		bool indent = true, bool newline = true );
+	void WriteOpeningTag(const char *name, bool empty = false,
+		bool indent = true, bool newline = true);
 	
-	void WriteOpeningTag( const decUnicodeString &name, bool empty = false,
-		bool indent = true, bool newline = true );
+	void WriteOpeningTag(const decUnicodeString &name, bool empty = false,
+		bool indent = true, bool newline = true);
 	
 	/**
 	 * \brief Write start of an opening tag.
 	 * 
 	 * Writes first the current indent and then '\<NAME' without quotes.
 	 */
-	void WriteOpeningTagStart( const char *name, bool indent = true );
+	void WriteOpeningTagStart(const char *name, bool indent = true);
 	
-	void WriteOpeningTagStart( const decUnicodeString &name, bool indent = true );
+	void WriteOpeningTagStart(const decUnicodeString &name, bool indent = true);
 	
 	/**
 	 * \brief Write string argument.
 	 * 
 	 * Writes ' NAME="STRING"' without single quotes. The string value is properly escaped.
 	 */
-	void WriteAttributeString( const char *name, const char *string );
+	void WriteAttributeString(const char *name, const char *string);
 	
-	void WriteAttributeString( const char *name, const decString &string );
+	void WriteAttributeString(const char *name, const decString &string);
 	
-	void WriteAttributeString( const decUnicodeString &name, const decUnicodeString &string );
+	void WriteAttributeString(const decUnicodeString &name, const decUnicodeString &string);
 	
 	/**
 	 * \brief Write boolean argument.
 	 * 
 	 * Writes ' NAME="VALUE"' without single quotes.
 	 */
-	void WriteAttributeBool( const char *name, bool value );
+	void WriteAttributeBool(const char *name, bool value);
 	
-	void WriteAttributeBool( const decUnicodeString &name, bool value );
+	void WriteAttributeBool(const decUnicodeString &name, bool value);
 	
 	/**
 	 * \brief  Write integer argument.
 	 * 
 	 * Writes ' NAME="VALUE"' without single quotes.
 	 */
-	void WriteAttributeInt( const char *name, int value );
+	void WriteAttributeInt(const char *name, int value);
 	
-	void WriteAttributeInt( const decUnicodeString &name, int value );
+	void WriteAttributeInt(const decUnicodeString &name, int value);
 	
 	/**
 	 * \brief Write float argument.
@@ -147,9 +147,9 @@ public:
 	 * Writes ' NAME="VALUE"' without single quotes. The value is written similar to
 	 * the %g format flag from the printf family of functions.
 	 */
-	void WriteAttributeFloat( const char *name, float value );
+	void WriteAttributeFloat(const char *name, float value);
 	
-	void WriteAttributeFloat( const decUnicodeString &name, float value );
+	void WriteAttributeFloat(const decUnicodeString &name, float value);
 	
 	/**
 	 * \brief Write double argument.
@@ -157,9 +157,9 @@ public:
 	 * Writes ' NAME="VALUE"' without single quotes. The value is written similar to
 	 * the %g format flag from the printf family of functions.
 	 */
-	void WriteAttributeDouble( const char *name, double value );
+	void WriteAttributeDouble(const char *name, double value);
 	
-	void WriteAttributeDouble( const decUnicodeString &name, double value );
+	void WriteAttributeDouble(const decUnicodeString &name, double value);
 	
 	/**
 	 * \brief Write end of an opening tag.
@@ -169,26 +169,26 @@ public:
 	 * newline is written after the text. If newline is true and empty is false the
 	 * indent is increased by one.
 	 */
-	void WriteOpeningTagEnd( bool empty = false, bool newline = true );
+	void WriteOpeningTagEnd(bool empty = false, bool newline = true);
 	
 	/** \brief Write text with proper escaping. */
-	void WriteTextString( const char *text );
+	void WriteTextString(const char *text);
 	
-	void WriteTextString( const decString &text );
+	void WriteTextString(const decString &text);
 	
-	void WriteTextString( const decUnicodeString &text );
+	void WriteTextString(const decUnicodeString &text);
 	
 	/** \brief Write bool text. */
-	void WriteTextBool( bool value );
+	void WriteTextBool(bool value);
 	
 	/** \brief Write integer text. */
-	void WriteTextInt( int value );
+	void WriteTextInt(int value);
 	
 	/** \brief Write float text. */
-	void WriteTextFloat( float value );
+	void WriteTextFloat(float value);
 	
 	/** \brief Write double text. */
-	void WriteTextDouble( double value );
+	void WriteTextDouble(double value);
 	
 	/**
 	 * \brief Write closing tag.
@@ -197,16 +197,16 @@ public:
 	 * If newline is true a newline is written after the closing tag and the
 	 * indent decreased by one.
 	 */
-	void WriteClosingTag( const char *name, bool indent = true, bool newline = true );
+	void WriteClosingTag(const char *name, bool indent = true, bool newline = true);
 	
-	void WriteClosingTag( const decUnicodeString &name, bool indent = true, bool newline = true );
+	void WriteClosingTag(const decUnicodeString &name, bool indent = true, bool newline = true);
 	
 	/** \brief Write comment. */
-	void WriteComment( const char *comment, bool indent = true, bool newline = true );
+	void WriteComment(const char *comment, bool indent = true, bool newline = true);
 	
-	void WriteComment( const decString &comment, bool indent = true, bool newline = true );
+	void WriteComment(const decString &comment, bool indent = true, bool newline = true);
 	
-	void WriteComment( const decUnicodeString &comment, bool indent = true, bool newline = true );
+	void WriteComment(const decUnicodeString &comment, bool indent = true, bool newline = true);
 	
 	/**
 	 * \brief Write entire data text tag.
@@ -214,14 +214,14 @@ public:
 	 * A data tag composes of an opening tag with no parameters, a text and an ending tag
 	 * on the same line ( if the text is not multi line ).
 	 */
-	void WriteDataTagString( const char *tagName, const char *string,
-		bool indent = true, bool newline = true );
+	void WriteDataTagString(const char *tagName, const char *string,
+		bool indent = true, bool newline = true);
 	
-	void WriteDataTagString( const char *tagName, const decString &string,
-		bool indent = true, bool newline = true );
+	void WriteDataTagString(const char *tagName, const decString &string,
+		bool indent = true, bool newline = true);
 	
-	void WriteDataTagString( const decUnicodeString &tagName, const decUnicodeString &string,
-		bool indent = true, bool newline = true );
+	void WriteDataTagString(const decUnicodeString &tagName, const decUnicodeString &string,
+		bool indent = true, bool newline = true);
 	
 	/**
 	 * \brief Write entire boolean data tag.
@@ -229,11 +229,11 @@ public:
 	 * A data tag composes of an opening tag with no parameters, a text and an ending
 	 * tag on the same line ( if the text is not multi line ).
 	 */
-	void WriteDataTagBool( const char *tagName, bool value,
-		bool indent = true, bool newline = true );
+	void WriteDataTagBool(const char *tagName, bool value,
+		bool indent = true, bool newline = true);
 	
-	void WriteDataTagBool( const decUnicodeString &tagName,
-		bool value, bool indent = true, bool newline = true );
+	void WriteDataTagBool(const decUnicodeString &tagName,
+		bool value, bool indent = true, bool newline = true);
 	
 	/**
 	 * \brief Write entire integer data tag.
@@ -241,11 +241,11 @@ public:
 	 * A data tag composes of an opening tag with no parameters, a text and an ending
 	 * tag on the same line ( if the text is not multi line ).
 	 */
-	void WriteDataTagInt( const char *tagName, int value,
-		bool indent = true, bool newline = true );
+	void WriteDataTagInt(const char *tagName, int value,
+		bool indent = true, bool newline = true);
 	
-	void WriteDataTagInt( const decUnicodeString &tagName,
-		int value, bool indent = true, bool newline = true );
+	void WriteDataTagInt(const decUnicodeString &tagName,
+		int value, bool indent = true, bool newline = true);
 	
 	/**
 	 * \brief Write entire float data tag.
@@ -253,11 +253,11 @@ public:
 	 * A data tag composes of an opening tag with no parameters, a text and an ending
 	 * tag on the same line ( if the text is not multi line ).
 	 */
-	void WriteDataTagFloat( const char *tagName, float value,
-		bool indent = true, bool newline = true );
+	void WriteDataTagFloat(const char *tagName, float value,
+		bool indent = true, bool newline = true);
 	
-	void WriteDataTagFloat( const decUnicodeString &tagName,
-		float value, bool indent = true, bool newline = true );
+	void WriteDataTagFloat(const decUnicodeString &tagName,
+		float value, bool indent = true, bool newline = true);
 	
 	/**
 	 * \brief Write entire double data tag.
@@ -265,16 +265,16 @@ public:
 	 * A data tag composes of an opening tag with no parameters, a text and an ending
 	 * tag on the same line ( if the text is not multi line ).
 	 */
-	void WriteDataTagDouble( const char *tagName, double value,
-		bool indent = true, bool newline = true );
+	void WriteDataTagDouble(const char *tagName, double value,
+		bool indent = true, bool newline = true);
 	
-	void WriteDataTagDouble( const decUnicodeString &tagName,
-		double value, bool indent = true, bool newline = true );
+	void WriteDataTagDouble(const decUnicodeString &tagName,
+		double value, bool indent = true, bool newline = true);
 	
 	
 	
 	/** \brief Escape XML Text. */
-	static decString EscapeText( const char *text );
+	static decString EscapeText(const char *text);
 	/*@}*/
 };
 

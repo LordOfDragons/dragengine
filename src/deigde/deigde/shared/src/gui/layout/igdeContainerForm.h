@@ -69,8 +69,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerForm( igdeEnvironment &environment, eStretching stretching = esNone,
-		int columnSpacing = 15, int rowSpacing = 1 );
+	igdeContainerForm(igdeEnvironment &environment, eStretching stretching = esNone,
+		int columnSpacing = 15, int rowSpacing = 1);
 	
 	
 	
@@ -90,18 +90,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Stretching. */
-	inline eStretching GetStretching() const{ return pStretching; }
+	inline eStretching GetStretching() const{return pStretching;}
 	
 	/** \brief Spacing between columns in pixels. */
-	inline int GetColumnSpacing() const{ return pColumnSpacing; }
+	inline int GetColumnSpacing() const{return pColumnSpacing;}
 	
 	/** \brief Spacing between rows in pixels. */
-	inline int GetRowSpacing() const{ return pRowSpacing; }
+	inline int GetRowSpacing() const{return pRowSpacing;}
 	
 	
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	/*@}*/
 	
 	

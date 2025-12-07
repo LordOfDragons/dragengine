@@ -39,7 +39,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkies( gdeWPSTreeModel &tree );
+	gdeWPSTIMSkies(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -52,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Model with sky or \em NULL. */
-	gdeWPSTIMSky *GetChildWith( gdeSky *sky ) const;
+	gdeWPSTIMSky *GetChildWith(gdeSky *sky) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -63,10 +63,10 @@ public:
 	virtual void OnAddedToTree();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 };
 

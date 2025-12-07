@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlCDSect::decXmlCDSect( const char *data ) :
-decXmlCharacterData( data ){
+decXmlCDSect::decXmlCDSect(const char *data) :
+decXmlCharacterData(data){
 }
 
 decXmlCDSect::~decXmlCDSect(){
@@ -49,8 +49,8 @@ decXmlCDSect::~decXmlCDSect(){
 
 
 // Management
-void decXmlCDSect::Visit( decXmlVisitor &visitor ){
-	visitor.VisitCDSect( *this );
+void decXmlCDSect::Visit(decXmlVisitor &visitor){
+	visitor.VisitCDSect(*this);
 }
 
 bool decXmlCDSect::CanCastToCDSect() const{

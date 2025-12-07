@@ -100,28 +100,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Texture or \em NULL if not used. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	inline deoglTexture *GetTexture() const{return pTexture;}
 	
 	/** Cube map or \em NULL if not used. */
-	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
+	inline deoglCubeMap *GetCubeMap() const{return pCubeMap;}
 	
 	/** Array texture or \em NULL if not used. */
-	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
+	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
 	
 	/** Texture buffer object or 0 if not used. */
-	inline GLuint GetTBO() const{ return pTBO; }
+	inline GLuint GetTBO() const{return pTBO;}
 	
 	/** Special texture or eSpecialTextures::estNone if not used. */
-	inline int GetSpecial() const{ return pSpecial; }
+	inline int GetSpecial() const{return pSpecial;}
 	
 	/** Texture sampler configuration or \em NULL if not used. */
-	inline deoglTexSamplerConfig *GetSampler() const{ return pSampler; }
+	inline deoglTexSamplerConfig *GetSampler() const{return pSampler;}
 	
 	/** Apply texture unit configuration. */
-	void Apply( deoglRenderThread &renderThread, int stage ) const;
+	void Apply(deoglRenderThread &renderThread, int stage) const;
 	
 	/** Set texture sampler configuration or \em NULL if not used. */
-	void SetSampler( deoglTexSamplerConfig *sampler );
+	void SetSampler(deoglTexSamplerConfig *sampler);
 	
 	/** Unit is enabled. */
 	bool IsEnabled() const;
@@ -133,40 +133,40 @@ public:
 	void Disable();
 	
 	/** Enable texture. */
-	void EnableTexture( deoglTexture *texture, deoglTexSamplerConfig *sampler );
+	void EnableTexture(deoglTexture *texture, deoglTexSamplerConfig *sampler);
 	
 	/** Enabled texture from skin texture channel. */
-	void EnableTextureFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
+	void EnableTextureFromChannel(deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture );
+		const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture);
 	
 	/** Enable cube map. */
-	void EnableCubeMap( deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler );
+	void EnableCubeMap(deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler);
 	
 	/** Enables cube map from a skin texture channel. */
-	void EnableCubeMapFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
+	void EnableCubeMapFromChannel(deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap );
+		const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap);
 	
 	/** Enable array texture. */
-	void EnableArrayTexture( deoglArrayTexture *texture, deoglTexSamplerConfig *sampler );
+	void EnableArrayTexture(deoglArrayTexture *texture, deoglTexSamplerConfig *sampler);
 	
 	/** Enabled array texture from skin texture channel. */
-	void EnableArrayTextureFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
+	void EnableArrayTextureFromChannel(deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
-		const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture );
+		const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture);
 	
 	/** Enable texture buffer object. */
-	void EnableTBO( GLuint tbo );
+	void EnableTBO(GLuint tbo);
 	
 	/** Enable special texture. */
-	void EnableSpecial( int special, deoglTexSamplerConfig *sampler );
+	void EnableSpecial(int special, deoglTexSamplerConfig *sampler);
 	
 	/** Object equals another one. */
-	bool Equals( const deoglTexUnitConfig &tuc ) const;
+	bool Equals(const deoglTexUnitConfig &tuc) const;
 	
 	/** Set parameters from another texture unit configuration. */
-	void SetFrom( const deoglTexUnitConfig &tuc );
+	void SetFrom(const deoglTexUnitConfig &tuc);
 	/*@}*/
 };
 

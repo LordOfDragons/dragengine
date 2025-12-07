@@ -48,7 +48,7 @@ delEngineProcessMain::delEngineProcessMain(){
 }
 
 #ifdef OS_W32
-int delEngineProcessMain::RunMain( int argc, char **args ){
+int delEngineProcessMain::RunMain(int argc, char **args){
 	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	
 	HANDLE pipeIn = INVALID_HANDLE_VALUE;
@@ -65,11 +65,11 @@ int delEngineProcessMain::RunMain( int argc, char **args ){
 	
 //	printf( "GO!\n" );
 //	fflush( stdout );
-	pipeIn = GetStdHandle( STD_INPUT_HANDLE );
+	pipeIn = GetStdHandle(STD_INPUT_HANDLE);
 //	printf( "using in pipe %p\n", pipeIn );
 //	fflush( stdout );
 	
-	if( pipeIn == INVALID_HANDLE_VALUE ){
+	if(pipeIn == INVALID_HANDLE_VALUE){
 		return -1;
 	}
 	
@@ -77,74 +77,74 @@ int delEngineProcessMain::RunMain( int argc, char **args ){
 //		printf( "reading write pipe\n" );
 //		fflush( stdout );
 		// read out-pipe handle
-		if( ! ReadFile( pipeIn, &pipeOut, sizeof( pipeOut ), &bytesRead, NULL ) ){
-			DETHROW_INFO( deeInvalidParam, "failed reading out-pipe handle" );
+		if(! ReadFile(pipeIn, &pipeOut, sizeof(pipeOut), &bytesRead, NULL)){
+			DETHROW_INFO(deeInvalidParam, "failed reading out-pipe handle");
 		}
-		if( bytesRead < sizeof( pipeOut ) ){
-			DETHROW_INFO( deeInvalidParam, "reading out-pipe handle too short" );
+		if(bytesRead < sizeof(pipeOut)){
+			DETHROW_INFO(deeInvalidParam, "reading out-pipe handle too short");
 		}
 		
 		// read log filename
 //		printf( "reading log file length\n" );
 //		fflush( stdout );
-		if( ! ReadFile( pipeIn, &logfileLength, sizeof( logfileLength ), &bytesRead, NULL ) ){
-			DETHROW_INFO( deeInvalidParam, "failed reading log filename" );
+		if(! ReadFile(pipeIn, &logfileLength, sizeof(logfileLength), &bytesRead, NULL)){
+			DETHROW_INFO(deeInvalidParam, "failed reading log filename");
 		}
-		if( bytesRead < sizeof( logfileLength ) ){
-			DETHROW_INFO( deeInvalidParam, "reading log filename too short" );
+		if(bytesRead < sizeof(logfileLength)){
+			DETHROW_INFO(deeInvalidParam, "reading log filename too short");
 		}
 		
 //		printf( "reading log file name\n");
 //		fflush( stdout );
-		logfile.Set( ' ', logfileLength );
-		if( ! ReadFile( pipeIn, ( LPVOID )logfile.GetString(), ( int )logfileLength, &bytesRead, NULL ) ){
-			DETHROW_INFO( deeInvalidParam, "failed reading log filename" );
+		logfile.Set(' ', logfileLength);
+		if(! ReadFile(pipeIn, (LPVOID)logfile.GetString(), (int)logfileLength, &bytesRead, NULL)){
+			DETHROW_INFO(deeInvalidParam, "failed reading log filename");
 		}
-		if( bytesRead < ( DWORD )logfileLength ){
-			DETHROW_INFO( deeInvalidParam, "reading log filename too short" );
+		if(bytesRead < (DWORD)logfileLength){
+			DETHROW_INFO(deeInvalidParam, "reading log filename too short");
 		}
 		
 		uint8_t flags = 0;
-		if( ! ReadFile( pipeIn, &flags, 1, &bytesRead, NULL ) ){
-			DETHROW_INFO( deeInvalidParam, "failed reading flags" );
+		if(! ReadFile(pipeIn, &flags, 1, &bytesRead, NULL)){
+			DETHROW_INFO(deeInvalidParam, "failed reading flags");
 		}
-		if( bytesRead < 1 ){
-			DETHROW_INFO( deeInvalidParam, "reading flags too short" );
+		if(bytesRead < 1){
+			DETHROW_INFO(deeInvalidParam, "reading flags too short");
 		}
-		const bool useConsole = ( flags & 0x1 ) == 0x1;
+		const bool useConsole = (flags & 0x1) == 0x1;
 		
 		// send sync
 //		printf( "sending sync\n" );
 //		fflush( stdout );
-		if( ! WriteFile( pipeOut, &sync, 1, &bytesWritten, NULL ) ){
-			DETHROW_INFO( deeInvalidAction, "failed sending sync" );
+		if(! WriteFile(pipeOut, &sync, 1, &bytesWritten, NULL)){
+			DETHROW_INFO(deeInvalidAction, "failed sending sync");
 		}
-		if( bytesWritten < 1 ){
-			DETHROW_INFO( deeInvalidAction, "sending sync too short" );
+		if(bytesWritten < 1){
+			DETHROW_INFO(deeInvalidAction, "sending sync too short");
 		}
 		
 		// start process
 //		printf( "start process\n");
 //		fflush( stdout );
-		delEngineProcess process( pipeIn, pipeOut, logfile );
-		process.SetUseConsole( useConsole );
+		delEngineProcess process(pipeIn, pipeOut, logfile);
+		process.SetUseConsole(useConsole);
 		
 		process.Run();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 //		e.PrintError();
 //		printf( "GetLastError %x\n", ( unsigned int )GetLastError() );
-		if( pipeIn != INVALID_HANDLE_VALUE ){
-			CloseHandle( pipeIn );
+		if(pipeIn != INVALID_HANDLE_VALUE){
+			CloseHandle(pipeIn);
 		}
-		if( pipeOut != INVALID_HANDLE_VALUE ){
-			CloseHandle( pipeOut );
+		if(pipeOut != INVALID_HANDLE_VALUE){
+			CloseHandle(pipeOut);
 		}
 		return -1;
 	}
 	
-	CloseHandle( pipeIn );
-	CloseHandle( pipeOut );
+	CloseHandle(pipeIn);
+	CloseHandle(pipeOut);
 	return 0;
 }
 #endif

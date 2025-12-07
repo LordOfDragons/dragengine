@@ -451,7 +451,7 @@ FXIMPLEMENT(igdeNativeFoxFont, FXFont, nullptr, 0)
 ////////////////////////////
 
 
-igdeNativeFoxFont::igdeNativeFoxFont(){ }
+igdeNativeFoxFont::igdeNativeFoxFont(){}
 
 igdeNativeFoxFont::igdeNativeFoxFont(igdeFont &powner) :
 // WARNING the documentation in fox is inconsistent. for both FXFontDesc and the FXFont

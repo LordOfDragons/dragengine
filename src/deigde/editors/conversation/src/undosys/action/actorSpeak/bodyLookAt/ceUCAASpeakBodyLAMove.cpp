@@ -42,23 +42,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakBodyLAMove::ceUCAASpeakBodyLAMove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *bodyLookAt, int newIndex ){
-	if( ! topic || ! actorSpeak || ! bodyLookAt ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakBodyLAMove::ceUCAASpeakBodyLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *bodyLookAt, int newIndex){
+	if(! topic || ! actorSpeak || ! bodyLookAt){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pBodyLA = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = actorSpeak->GetBodyLookAtList().IndexOf( bodyLookAt );
+	pOldIndex = actorSpeak->GetBodyLookAtList().IndexOf(bodyLookAt);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= actorSpeak->GetBodyLookAtList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= actorSpeak->GetBodyLookAtList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move BodyLookAt" );
+	SetShortInfo("Move BodyLookAt");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -71,13 +71,13 @@ ceStrip *bodyLookAt, int newIndex ){
 }
 
 ceUCAASpeakBodyLAMove::~ceUCAASpeakBodyLAMove(){
-	if( pBodyLA ){
+	if(pBodyLA){
 		pBodyLA->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -88,11 +88,11 @@ ceUCAASpeakBodyLAMove::~ceUCAASpeakBodyLAMove(){
 ///////////////
 
 void ceUCAASpeakBodyLAMove::Undo(){
-	pActorSpeak->GetBodyLookAtList().MoveTo( pBodyLA, pOldIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetBodyLookAtList().MoveTo(pBodyLA, pOldIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakBodyLAMove::Redo(){
-	pActorSpeak->GetBodyLookAtList().MoveTo( pBodyLA, pNewIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetBodyLookAtList().MoveTo(pBodyLA, pNewIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

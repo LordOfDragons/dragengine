@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build model into the provided model object. */
-	virtual void BuildModel( deModel *model ) = 0;
+	virtual void BuildModel(deModel *model) = 0;
 	/*@}*/
 };
 

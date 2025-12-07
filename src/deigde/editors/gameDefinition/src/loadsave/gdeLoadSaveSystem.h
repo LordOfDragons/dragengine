@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load/save system. */
-	gdeLoadSaveSystem( gdeWindowMain &windowMain );
+	gdeLoadSaveSystem(gdeWindowMain &windowMain);
 	
 	/** \brief Clean up load/save system. */
 	~gdeLoadSaveSystem();
@@ -69,44 +69,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load save game definition. */
-	inline gdeLoadSaveGameDefinition &GetLSGameDefinition(){ return pLSGameDef; }
+	inline gdeLoadSaveGameDefinition &GetLSGameDefinition(){return pLSGameDef;}
 	
 	/** \brief Load game definition from file. */
-	gdeGameDefinition *LoadGameDefinition( const char *filename );
+	gdeGameDefinition *LoadGameDefinition(const char *filename);
 	
 	/** \brief Save game definition to file. */
-	void SaveGameDefinition( const gdeGameDefinition &gameDefinition, const char *filename );
+	void SaveGameDefinition(const gdeGameDefinition &gameDefinition, const char *filename);
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetGameDefFilePatterns() const{ return pFPGameDef; }
+	inline const igdeFilePatternList &GetGameDefFilePatterns() const{return pFPGameDef;}
 	
 	/** \brief FOX game definition file pattern list. */
-	inline const decString &GetFoxFPLGameDefinition() const{ return pFoxFPLGameDef; }
+	inline const decString &GetFoxFPLGameDefinition() const{return pFoxFPLGameDef;}
 	
 	
 	
 	/** \brief Load save xml element class. */
-	inline gdeLoadSaveXmlEClass &GetLSXmlEClass(){ return pLSXmlEClass; }
+	inline gdeLoadSaveXmlEClass &GetLSXmlEClass(){return pLSXmlEClass;}
 	
 	/** \brief Load xml element class from file. */
-	gdeObjectClass *LoadXmlEClass( const char *filename );
+	gdeObjectClass *LoadXmlEClass(const char *filename);
 	
 	/** \brief Save xml element class to file. */
-	void SaveXmlEClass( const gdeGameDefinition &gameDefinition,
-		const gdeObjectClass &objectClass, const char *filename );
+	void SaveXmlEClass(const gdeGameDefinition &gameDefinition,
+		const gdeObjectClass &objectClass, const char *filename);
 	
 	/** \brief XML element class file pattern list. */
-	inline const igdeFilePatternList &GetXmlEClassFilePatterns() const{ return pFPXmlEClass; }
+	inline const igdeFilePatternList &GetXmlEClassFilePatterns() const{return pFPXmlEClass;}
 	
 	/** \brief FOX XML element class file pattern list. */
-	inline const decString &GetFoxFPLXmlEClass() const{ return pFoxFPLXmlEClass; }
+	inline const decString &GetFoxFPLXmlEClass() const{return pFoxFPLXmlEClass;}
 	/*@}*/
 	
 	
 	
 private:
 	void pBuildFilePattern();
-	void pConvertToFOX( const igdeFilePatternList &fpl, decString &foxfpl );
+	void pConvertToFOX(const igdeFilePatternList &fpl, decString &foxfpl);
 };
 
 #endif

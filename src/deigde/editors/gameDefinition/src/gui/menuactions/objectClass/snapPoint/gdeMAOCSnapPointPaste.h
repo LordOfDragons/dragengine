@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMAOCSnapPointPaste( gdeWindowMain &windowMain );
+	gdeMAOCSnapPointPaste(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
@@ -44,7 +44,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass );
+	virtual igdeUndo *OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass);
 	
 	/** \brief Request update of action parameters if required. */
 	virtual void Update();

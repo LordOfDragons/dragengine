@@ -85,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new navigation space. */
-	meNavigationSpace( igdeEnvironment *environment );
+	meNavigationSpace(igdeEnvironment *environment);
 	/** \brief Cleans up the navigation space. */
 	virtual ~meNavigationSpace();
 	/*@}*/
@@ -95,40 +95,40 @@ public:
 	/** \brief Retrieves the game engine. */
 	deEngine *GetEngine() const;
 	/** \brief Retrieves the engine collider. */
-	inline deColliderComponent *GetEngineCollider() const{ return pEngCollider; }
+	inline deColliderComponent *GetEngineCollider() const{return pEngCollider;}
 	/** \brief Retrieves the engine navigation space. */
-	inline deNavigationSpace *GetEngineNavSpace() const{ return pEngNavSpace; }
+	inline deNavigationSpace *GetEngineNavSpace() const{return pEngNavSpace;}
 	
 	/** \brief Retrieves the world or NULL. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	/** \brief Sets the world or NULL. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Retrieves the position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	/** \brief Sets the position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	/** \brief Retrieves the orientation. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{return pOrientation;}
 	/** \brief Sets the orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	/** \brief Retrieves the filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	/** \brief Sets the filename. */
-	void SetFilename( const char *filename );
+	void SetFilename(const char *filename);
 	
 	/** \brief Retrieves the list of cost types used in the loaded navigation space. */
-	inline decIntList &GetUsedCostTypes(){ return pUsedCostTypes; }
-	inline const decIntList &GetUsedCostTypes() const{ return pUsedCostTypes; }
+	inline decIntList &GetUsedCostTypes(){return pUsedCostTypes;}
+	inline const decIntList &GetUsedCostTypes() const{return pUsedCostTypes;}
 	
 	/** \brief Determines if the navigation space is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	/** \brief Sets if the navigation space is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	/** \brief Determines if the navigation space is active. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	/** \brief Sets if the navigation space is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Load Navigation Space from the file with the stored filename. */
 	void LoadFromFile();

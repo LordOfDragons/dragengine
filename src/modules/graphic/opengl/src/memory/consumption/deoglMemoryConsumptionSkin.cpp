@@ -36,9 +36,9 @@
 ////////////////////////////
 
 deoglMemoryConsumptionSkin::deoglMemoryConsumptionSkin() :
-all( "Skin" ),
-allCompressed( "Skin Compressed", all ),
-allUncompressed( "Skin Uncompressed", all ){
+all("Skin"),
+allCompressed("Skin Compressed", all),
+allUncompressed("Skin Uncompressed", all){
 }
 
 deoglMemoryConsumptionSkin::~deoglMemoryConsumptionSkin(){

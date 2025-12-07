@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelinesRanged( const deoglRLight &light );
+	deoglLightPipelinesRanged(const deoglRLight &light);
 	
 protected:
 	/** Clean up light pipeline. */
@@ -54,20 +54,20 @@ protected:
 	
 	
 protected:
-	void pSetBaseNoShadow( deoglLightShaderConfig &shaconf );
-	void pSetBaseSolid1( deoglLightShaderConfig &shaconf );
-	void pSetBaseSolid1Transp1( deoglLightShaderConfig &shaconf );
-	void pSetBaseSolid2( deoglLightShaderConfig &shaconf );
-	void pSetBaseSolid2Transp1( deoglLightShaderConfig &shaconf );
-	void pSetBaseSolid2Transp2( deoglLightShaderConfig &shaconf );
-	void pSetBaseLumSolid1( deoglLightShaderConfig &shaconf );
-	void pSetBaseLumSolid2( deoglLightShaderConfig &shaconf );
-	void pSetBaseGIRayNoShadow( deoglLightShaderConfig &shaconf );
-	void pSetBaseGIRaySolid1( deoglLightShaderConfig &shaconf );
-	void pSetBaseGIRaySolid2( deoglLightShaderConfig &shaconf );
+	void pSetBaseNoShadow(deoglLightShaderConfig &shaconf);
+	void pSetBaseSolid1(deoglLightShaderConfig &shaconf);
+	void pSetBaseSolid1Transp1(deoglLightShaderConfig &shaconf);
+	void pSetBaseSolid2(deoglLightShaderConfig &shaconf);
+	void pSetBaseSolid2Transp1(deoglLightShaderConfig &shaconf);
+	void pSetBaseSolid2Transp2(deoglLightShaderConfig &shaconf);
+	void pSetBaseLumSolid1(deoglLightShaderConfig &shaconf);
+	void pSetBaseLumSolid2(deoglLightShaderConfig &shaconf);
+	void pSetBaseGIRayNoShadow(deoglLightShaderConfig &shaconf);
+	void pSetBaseGIRaySolid1(deoglLightShaderConfig &shaconf);
+	void pSetBaseGIRaySolid2(deoglLightShaderConfig &shaconf);
 	
-	void pSetGI( deoglLightShaderConfig &shaconf );
-	void pSetNonGI( deoglLightShaderConfig &shaconf );
+	void pSetGI(deoglLightShaderConfig &shaconf);
+	void pSetNonGI(deoglLightShaderConfig &shaconf);
 };
 
 #endif

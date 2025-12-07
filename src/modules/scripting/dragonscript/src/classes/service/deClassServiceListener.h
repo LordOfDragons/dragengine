@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassServiceListener( deScriptingDragonScript &ds );
+	deClassServiceListener(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassServiceListener();
@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index for requestResponse(). */
-	inline int GetFuncIndexRequestResponse() const{ return pFuncIndexRequestResponse; }
+	inline int GetFuncIndexRequestResponse() const{return pFuncIndexRequestResponse;}
 	
 	/** \brief Function index for requestFailed(). */
-	inline int GetFuncIndexRequestFailed() const{ return pFuncIndexRequestFailed; }
+	inline int GetFuncIndexRequestFailed() const{return pFuncIndexRequestFailed;}
 	
 	/** \brief Function index for eventReceived(). */
-	inline int GetFuncIndexEventReceived() const{ return pFuncIndexEventReceived; }
+	inline int GetFuncIndexEventReceived() const{return pFuncIndexEventReceived;}
 	/*@}*/
 	
 	
@@ -88,14 +88,14 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfRequestResponse );
-	DEF_NATFUNC( nfRequestFailed );
-	DEF_NATFUNC( nfEventReceived );
+	DEF_NATFUNC(nfRequestResponse);
+	DEF_NATFUNC(nfRequestFailed);
+	DEF_NATFUNC(nfEventReceived);
 #undef DEF_NATFUNC
 };
 

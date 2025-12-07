@@ -46,8 +46,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPHeightTerrainListener::meWPHeightTerrainListener( meWPHeightTerrain &panel ) :
-pPanel( panel ){
+meWPHeightTerrainListener::meWPHeightTerrainListener(meWPHeightTerrain &panel) :
+pPanel(panel){
 }
 
 meWPHeightTerrainListener::~meWPHeightTerrainListener(){
@@ -58,56 +58,56 @@ meWPHeightTerrainListener::~meWPHeightTerrainListener(){
 // Notifications
 //////////////////
 
-void meWPHeightTerrainListener::HeightPaintChanged( meWorld* ){
+void meWPHeightTerrainListener::HeightPaintChanged(meWorld*){
 	pPanel.UpdateHeightPaint();
 }
 
-void meWPHeightTerrainListener::MaskPaintChanged( meWorld* ){
+void meWPHeightTerrainListener::MaskPaintChanged(meWorld*){
 	pPanel.UpdateMaskPaint();
 }
 
-void meWPHeightTerrainListener::VisibilityPaintChanged( meWorld* ){
+void meWPHeightTerrainListener::VisibilityPaintChanged(meWorld*){
 	pPanel.UpdateVisibilityPaint();
 }
 
 
 
-void meWPHeightTerrainListener::ActiveSectorChanged( meWorld* ){
-	pPanel.SetTexture( NULL );
+void meWPHeightTerrainListener::ActiveSectorChanged(meWorld*){
+	pPanel.SetTexture(NULL);
 	
 	pPanel.UpdateSector();
 	
-	if( pPanel.GetSector() ){
-		pPanel.SetTexture( pPanel.GetSector()->GetActiveTexture() );
+	if(pPanel.GetSector()){
+		pPanel.SetTexture(pPanel.GetSector()->GetActiveTexture());
 	}
 }
 
 
 
-void meWPHeightTerrainListener::HTStateChanged( meWorld* ){
+void meWPHeightTerrainListener::HTStateChanged(meWorld*){
 	pPanel.UpdateHeightTerrain();
 }
 
-void meWPHeightTerrainListener::HTChanged( meWorld* ){
+void meWPHeightTerrainListener::HTChanged(meWorld*){
 	pPanel.UpdateHeightTerrain();
 }
 
-void meWPHeightTerrainListener::HTSChanged( meWorld*, meHeightTerrainSector *sector ){
-	if( sector != pPanel.GetSector() ){
+void meWPHeightTerrainListener::HTSChanged(meWorld*, meHeightTerrainSector *sector){
+	if(sector != pPanel.GetSector()){
 		return;
 	}
 	pPanel.UpdateSector();
 }
 
-void meWPHeightTerrainListener::HTSHeightChanged( meWorld*, meHeightTerrainSector *sector ){
-	if( sector != pPanel.GetSector() ){
+void meWPHeightTerrainListener::HTSHeightChanged(meWorld*, meHeightTerrainSector *sector){
+	if(sector != pPanel.GetSector()){
 		return;
 	}
 	pPanel.UpdateSector();
 }
 
-void meWPHeightTerrainListener::HTSVisibilityChanged( meWorld*, meHeightTerrainSector *sector ){
-	if( sector != pPanel.GetSector() ){
+void meWPHeightTerrainListener::HTSVisibilityChanged(meWorld*, meHeightTerrainSector *sector){
+	if(sector != pPanel.GetSector()){
 		return;
 	}
 	pPanel.UpdateSector();
@@ -115,81 +115,81 @@ void meWPHeightTerrainListener::HTSVisibilityChanged( meWorld*, meHeightTerrainS
 
 
 
-void meWPHeightTerrainListener::HTSTextureCountChanged( meWorld*, meHeightTerrainSector *sector ){
-	if( sector != pPanel.GetSector() ){
+void meWPHeightTerrainListener::HTSTextureCountChanged(meWorld*, meHeightTerrainSector *sector){
+	if(sector != pPanel.GetSector()){
 		return;
 	}
 	pPanel.UpdateTextureList();
 }
 
-void meWPHeightTerrainListener::HTSActiveTextureChanged( meWorld*, meHeightTerrainSector *sector ){
-	if( sector != pPanel.GetSector() ){
+void meWPHeightTerrainListener::HTSActiveTextureChanged(meWorld*, meHeightTerrainSector *sector){
+	if(sector != pPanel.GetSector()){
 		return;
 	}
-	pPanel.SetTexture( sector->GetActiveTexture() );
+	pPanel.SetTexture(sector->GetActiveTexture());
 }
 
-void meWPHeightTerrainListener::HTSTextureChanged( meWorld*, meHeightTerrainSector *sector,
-meHeightTerrainTexture *texture ){
-	if( sector != pPanel.GetSector() || texture != pPanel.GetTexture() ){
-		return;
-	}
-	pPanel.UpdateTexture();
-}
-
-void meWPHeightTerrainListener::HTSTextureMaskChanged( meWorld*, meHeightTerrainSector *sector,
-meHeightTerrainTexture *texture ){
-	if( sector != pPanel.GetSector() || texture != pPanel.GetTexture() ){
+void meWPHeightTerrainListener::HTSTextureChanged(meWorld*, meHeightTerrainSector *sector,
+meHeightTerrainTexture *texture){
+	if(sector != pPanel.GetSector() || texture != pPanel.GetTexture()){
 		return;
 	}
 	pPanel.UpdateTexture();
 }
 
+void meWPHeightTerrainListener::HTSTextureMaskChanged(meWorld*, meHeightTerrainSector *sector,
+meHeightTerrainTexture *texture){
+	if(sector != pPanel.GetSector() || texture != pPanel.GetTexture()){
+		return;
+	}
+	pPanel.UpdateTexture();
+}
 
 
-void meWPHeightTerrainListener::HTNavSpaceCountChanged( meWorld *world ){
-	if( world != pPanel.GetWorld() ){
+
+void meWPHeightTerrainListener::HTNavSpaceCountChanged(meWorld *world){
+	if(world != pPanel.GetWorld()){
 		return;
 	}
 	
 	pPanel.UpdateNavSpaceList();
 }
 
-void meWPHeightTerrainListener::HTActiveNavSpaceChanged( meWorld *world ) {
-	if( world != pPanel.GetWorld() ){
+void meWPHeightTerrainListener::HTActiveNavSpaceChanged(meWorld *world) {
+	if(world != pPanel.GetWorld()){
 		return;
 	}
 	
 	pPanel.SelectActiveNavSpace();
 }
 
-void meWPHeightTerrainListener::HTNavSpaceChanged( meWorld *world, meHeightTerrainNavSpace *navspace ){
-	if( world != pPanel.GetWorld() || ! navspace->GetActive() ){
+void meWPHeightTerrainListener::HTNavSpaceChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
+	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateNavSpace();
 }
 
-void meWPHeightTerrainListener::HTNavSpaceTypeCountChanged( meWorld *world, meHeightTerrainNavSpace *navspace ){
-	if( world != pPanel.GetWorld() || ! navspace->GetActive() ){
+void meWPHeightTerrainListener::HTNavSpaceTypeCountChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
+	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateNavSpaceTypeList();
 }
 
-void meWPHeightTerrainListener::HTNavSpaceActiveTypeChanged( meWorld *world, meHeightTerrainNavSpace *navspace ){
-	if( world != pPanel.GetWorld() || ! navspace->GetActive() ){
+void meWPHeightTerrainListener::HTNavSpaceActiveTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
+	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
 		return;
 	}
 	
 	pPanel.SelectActiveNavSpaceType();
 }
 
-void meWPHeightTerrainListener::HTNavSpaceTypeChanged( meWorld *world,
-meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type ){
-	if( world != pPanel.GetWorld() || ! navspace->GetActive() || navspace->GetActiveType() != type ){
+void meWPHeightTerrainListener::HTNavSpaceTypeChanged(meWorld *world,
+meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type){
+	if(world != pPanel.GetWorld() || ! navspace->GetActive() || navspace->GetActiveType() != type){
 		return;
 	}
 	
@@ -197,16 +197,16 @@ meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type ){
 	pPanel.UpdateNavSpaceTypeList();
 }
 
-void meWPHeightTerrainListener::HTNavSpaceFacesChanged( meWorld *world, meHeightTerrainNavSpace *navspace ){
-	if( world != pPanel.GetWorld() || ! navspace->GetActive() ){
+void meWPHeightTerrainListener::HTNavSpaceFacesChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
+	if(world != pPanel.GetWorld() || ! navspace->GetActive()){
 		return;
 	}
 	
 // 	pPanel.UpdateSelectedPoints();
 }
 
-void meWPHeightTerrainListener::HTNavSpaceSelectedPointsChanged( meWorld *world ){
-	if( world != pPanel.GetWorld() ){
+void meWPHeightTerrainListener::HTNavSpaceSelectedPointsChanged(meWorld *world){
+	if(world != pPanel.GetWorld()){
 		return;
 	}
 	
@@ -215,16 +215,16 @@ void meWPHeightTerrainListener::HTNavSpaceSelectedPointsChanged( meWorld *world 
 
 
 
-void meWPHeightTerrainListener::HTVLayerCountChanged( meWorld* ){
+void meWPHeightTerrainListener::HTVLayerCountChanged(meWorld*){
 	pPanel.UpdateVLayerList();
 }
 
-void meWPHeightTerrainListener::HTActiveVLayerChanged( meWorld *world ){
-	pPanel.SetVLayer( world->GetHeightTerrain()->GetActiveVLayer() );
+void meWPHeightTerrainListener::HTActiveVLayerChanged(meWorld *world){
+	pPanel.SetVLayer(world->GetHeightTerrain()->GetActiveVLayer());
 }
 
-void meWPHeightTerrainListener::HTVLayerChanged( meWorld*, meHTVegetationLayer *vlayer ){
-	if( vlayer != pPanel.GetVLayer() ){
+void meWPHeightTerrainListener::HTVLayerChanged(meWorld*, meHTVegetationLayer *vlayer){
+	if(vlayer != pPanel.GetVLayer()){
 		return;
 	}
 	pPanel.UpdateVLayer();
@@ -232,23 +232,23 @@ void meWPHeightTerrainListener::HTVLayerChanged( meWorld*, meHTVegetationLayer *
 
 
 
-void meWPHeightTerrainListener::HTVLVariationCountChanged( meWorld*, meHTVegetationLayer *vlayer ){
-	if( vlayer != pPanel.GetVLayer() ){
+void meWPHeightTerrainListener::HTVLVariationCountChanged(meWorld*, meHTVegetationLayer *vlayer){
+	if(vlayer != pPanel.GetVLayer()){
 		return;
 	}
 	pPanel.UpdateVVariationList();
 }
 
-void meWPHeightTerrainListener::HTVLActiveVariationChanged( meWorld*, meHTVegetationLayer *vlayer ){
-	if( vlayer != pPanel.GetVLayer() ){
+void meWPHeightTerrainListener::HTVLActiveVariationChanged(meWorld*, meHTVegetationLayer *vlayer){
+	if(vlayer != pPanel.GetVLayer()){
 		return;
 	}
-	pPanel.SetVVariation( vlayer->GetActiveVariation() );
+	pPanel.SetVVariation(vlayer->GetActiveVariation());
 }
 
-void meWPHeightTerrainListener::HTVLVariationChanged( meWorld*, meHTVegetationLayer *vlayer,
-meHTVVariation *variation ){
-	if( vlayer != pPanel.GetVLayer() || variation != pPanel.GetVVariation() ){
+void meWPHeightTerrainListener::HTVLVariationChanged(meWorld*, meHTVegetationLayer *vlayer,
+meHTVVariation *variation){
+	if(vlayer != pPanel.GetVLayer() || variation != pPanel.GetVVariation()){
 		return;
 	}
 	pPanel.UpdateVVariation();

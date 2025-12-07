@@ -36,35 +36,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorVertexPositionSets::aeURuleMirrorVertexPositionSets( aeRule *rule ) :
-pRule( nullptr )
+aeURuleMirrorVertexPositionSets::aeURuleMirrorVertexPositionSets(aeRule *rule) :
+pRule(nullptr)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
-	pPatterns.Add( ".l" );
-	pPatterns.Add( ".r" );
+	pPatterns.Add(".l");
+	pPatterns.Add(".r");
 	
-	pPatterns.Add( ".L" );
-	pPatterns.Add( ".R" );
+	pPatterns.Add(".L");
+	pPatterns.Add(".R");
 	
-	pPatterns.Add( " l" );
-	pPatterns.Add( " r" );
+	pPatterns.Add(" l");
+	pPatterns.Add(" r");
 	
-	pPatterns.Add( " L" );
-	pPatterns.Add( " R" );
+	pPatterns.Add(" L");
+	pPatterns.Add(" R");
 	
-	pPatterns.Add( ".left" );
-	pPatterns.Add( ".right" );
+	pPatterns.Add(".left");
+	pPatterns.Add(".right");
 	
-	pPatterns.Add( " left" );
-	pPatterns.Add( " right" );
+	pPatterns.Add(" left");
+	pPatterns.Add(" right");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleMirrorVertexPositionSets::~aeURuleMirrorVertexPositionSets(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -80,13 +80,13 @@ bool aeURuleMirrorVertexPositionSets::HasAnyEffect() const{
 	const int setCount = sets.GetCount();
 	int i, j;
 	
-	for( i=0; i<setCount; i++ ){
-		const decString &set = sets.GetAt( i );
+	for(i=0; i<setCount; i++){
+		const decString &set = sets.GetAt(i);
 		
-		for( j=0; j<patternCount; j++ ){
-			const decString &pattern = pPatterns.GetAt( j );
+		for(j=0; j<patternCount; j++){
+			const decString &pattern = pPatterns.GetAt(j);
 			
-			if( set.GetRight( pattern.GetLength() ) == pattern ){
+			if(set.GetRight(pattern.GetLength()) == pattern){
 				return true;
 			}
 		}
@@ -108,23 +108,23 @@ void aeURuleMirrorVertexPositionSets::Redo(){
 	decStringSet mirroredVertexPositionSets;
 	int i, j;
 	
-	for( i=0; i<setCount; i++ ){
-		const decString &set = sets.GetAt( i );
+	for(i=0; i<setCount; i++){
+		const decString &set = sets.GetAt(i);
 		
-		for( j=0; j<patternCount; j++ ){
-			const decString &pattern = pPatterns.GetAt( j );
+		for(j=0; j<patternCount; j++){
+			const decString &pattern = pPatterns.GetAt(j);
 			
-			if( set.GetRight( pattern.GetLength() ) == pattern ){
-				const decString &replace = pPatterns.GetAt( ( ( j % 2 ) == 0 ) ? j + 1 : j - 1 );
-				mirroredVertexPositionSets.Add( set.GetLeft( set.GetLength() - pattern.GetLength() ) + replace );
+			if(set.GetRight(pattern.GetLength()) == pattern){
+				const decString &replace = pPatterns.GetAt(((j % 2) == 0) ? j + 1 : j - 1);
+				mirroredVertexPositionSets.Add(set.GetLeft(set.GetLength() - pattern.GetLength()) + replace);
 				break;
 			}
 		}
 		
-		if( j == patternCount ){
-			mirroredVertexPositionSets.Add( set );
+		if(j == patternCount){
+			mirroredVertexPositionSets.Add(set);
 		}
 	}
 	
-	pRule->SetListVertexPositionSets( mirroredVertexPositionSets );
+	pRule->SetListVertexPositionSets(mirroredVertexPositionSets);
 }

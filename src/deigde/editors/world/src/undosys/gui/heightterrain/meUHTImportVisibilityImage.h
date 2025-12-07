@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTImportVisibilityImage( meWorld *world, meHeightTerrainSector *sector, deImage *image );
+	meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
 	virtual ~meUHTImportVisibilityImage();
 	/*@}*/
@@ -75,7 +75,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pDoIt( meBitArray *vis );
+	void pDoIt(meBitArray *vis);
 };
 
 // end of include only once

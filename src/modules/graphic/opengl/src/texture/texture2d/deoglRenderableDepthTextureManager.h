@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable texture manager. */
-	deoglRenderableDepthTextureManager( deoglRenderThread &renderThread );
+	deoglRenderableDepthTextureManager(deoglRenderThread &renderThread);
 	/** Cleans up the renderable texture manager. */
 	~deoglRenderableDepthTextureManager();
 	/*@}*/
@@ -61,12 +61,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of renderable textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	/** Retrieves the renderable texture for reading only at the given location. */
-	const deoglRenderableDepthTexture *GetTextureAt( int index ) const;
+	const deoglRenderableDepthTexture *GetTextureAt(int index) const;
 	
 	/** Retrieves the renderable texture for the given format. */
-	deoglRenderableDepthTexture *GetTextureWith( int width, int height, bool withStencil, bool useFloat );
+	deoglRenderableDepthTexture *GetTextureWith(int width, int height, bool withStencil, bool useFloat);
 	/*@}*/
 };
 

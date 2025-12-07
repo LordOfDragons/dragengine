@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animation move. */
-	dearAnimationMove( const deAnimationMove &move );
+	dearAnimationMove(const deAnimationMove &move);
 	
 protected:
 	/** Clean up the animation move. */
@@ -69,22 +69,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Play time in seconds. */
-	inline float GetPlaytime() const{ return pPlaytime; }
+	inline float GetPlaytime() const{return pPlaytime;}
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{ return pKeyframeListCount; }
+	inline int GetKeyframeListCount() const{return pKeyframeListCount;}
 	
 	/** Keyframe list at index. */
-	dearAnimationKeyframeList *GetKeyframeListAt( int index ) const;
+	dearAnimationKeyframeList *GetKeyframeListAt(int index) const;
 	
 	/** Count of keyframe lists. */
-	inline int GetKeyframeVPSListCount() const{ return pKeyframeVPSListCount; }
+	inline int GetKeyframeVPSListCount() const{return pKeyframeVPSListCount;}
 	
 	/** Keyframe list at index. */
-	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt( int index ) const;
+	dearAnimationKeyframeVPSList *GetKeyframeVPSListAt(int index) const;
 	/*@}*/
 	
 	
@@ -92,8 +92,8 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateKeyframeLists( const deAnimationMove &move );
-	void pCreateKeyframeVPSLists( const deAnimationMove &move );
+	void pCreateKeyframeLists(const deAnimationMove &move);
+	void pCreateKeyframeVPSLists(const deAnimationMove &move);
 };
 
 #endif

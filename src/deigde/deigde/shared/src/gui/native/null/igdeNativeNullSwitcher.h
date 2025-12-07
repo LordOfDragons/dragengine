@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullSwitcher();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSwitcher* CreateNativeWidget( igdeSwitcher &owner );
+	static igdeNativeNullSwitcher* CreateNativeWidget(igdeSwitcher &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

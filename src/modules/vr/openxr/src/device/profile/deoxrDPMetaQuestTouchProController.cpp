@@ -172,7 +172,7 @@ void deoxrDPMetaQuestTouchProController::pSuggestBindings(){
 	GetInstance().SuggestBindings(GetPath(), bindings, bindingCount);
 }
 
-void deoxrDPMetaQuestTouchProController::pAddDevice( bool left ){
+void deoxrDPMetaQuestTouchProController::pAddDevice(bool left){
 	deoxrDevice::Ref &device = left ? pDeviceLeft : pDeviceRight;
 	if(device){
 		return;

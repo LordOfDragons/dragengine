@@ -44,9 +44,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSynthesizerInstanceManager::deSynthesizerInstanceManager( deEngine *engine ) :
-deResourceManager( engine, ertSynthesizerInstance ){
-	SetLoggingName( "synthesizer instance" );
+deSynthesizerInstanceManager::deSynthesizerInstanceManager(deEngine *engine) :
+deResourceManager(engine, ertSynthesizerInstance){
+	SetLoggingName("synthesizer instance");
 }
 
 deSynthesizerInstanceManager::~deSynthesizerInstanceManager(){
@@ -63,22 +63,22 @@ int deSynthesizerInstanceManager::GetSynthesizerInstanceCount() const{
 }
 
 deSynthesizerInstance *deSynthesizerInstanceManager::GetRootSynthesizerInstance() const{
-	return ( deSynthesizerInstance* )pInstances.GetRoot();
+	return (deSynthesizerInstance*)pInstances.GetRoot();
 }
 
 deSynthesizerInstance *deSynthesizerInstanceManager::CreateSynthesizerInstance(){
 	deSynthesizerInstance *instance = NULL;
 	
 	try{
-		instance = new deSynthesizerInstance( this );
+		instance = new deSynthesizerInstance(this);
 		
-		GetSynthesizerSystem()->LoadSynthesizerInstance( instance );
-		GetAudioSystem()->LoadSynthesizerInstance( instance );
+		GetSynthesizerSystem()->LoadSynthesizerInstance(instance);
+		GetAudioSystem()->LoadSynthesizerInstance(instance);
 		
-		pInstances.Add( instance );
+		pInstances.Add(instance);
 		
-	}catch( const deException & ){
-		if( instance ){
+	}catch(const deException &){
+		if(instance){
 			instance->FreeReference();
 		}
 		
@@ -93,8 +93,8 @@ deSynthesizerInstance *deSynthesizerInstanceManager::CreateSynthesizerInstance()
 void deSynthesizerInstanceManager::ReleaseLeakingResources(){
 	const int count = GetSynthesizerInstanceCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking synthesizer instances", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking synthesizer instances", count);
 		pInstances.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -105,50 +105,50 @@ void deSynthesizerInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSynthesizerInstanceManager::SystemSynthesizerLoad(){
-	deSynthesizerInstance *instance = ( deSynthesizerInstance* )pInstances.GetRoot();
+	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
-	while( instance ){
-		if( ! instance->GetPeerSynthesizer() ){
-			synthSys.LoadSynthesizerInstance( instance );
+	while(instance){
+		if(! instance->GetPeerSynthesizer()){
+			synthSys.LoadSynthesizerInstance(instance);
 		}
 		
-		instance = ( deSynthesizerInstance* )instance->GetLLManagerNext();
+		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
 	}
 }
 
 void deSynthesizerInstanceManager::SystemSynthesizerUnload(){
-	deSynthesizerInstance *instance = ( deSynthesizerInstance* )pInstances.GetRoot();
+	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	
-	while( instance ){
-		instance->SetPeerSynthesizer( NULL );
-		instance = ( deSynthesizerInstance* )instance->GetLLManagerNext();
+	while(instance){
+		instance->SetPeerSynthesizer(NULL);
+		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
 	}
 }
 
 void deSynthesizerInstanceManager::SystemAudioLoad(){
-	deSynthesizerInstance *instance = ( deSynthesizerInstance* )pInstances.GetRoot();
+	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	deAudioSystem &system = *GetAudioSystem();
 	
-	while( instance ){
-		if( ! instance->GetPeerAudio() ){
-			system.LoadSynthesizerInstance( instance );
+	while(instance){
+		if(! instance->GetPeerAudio()){
+			system.LoadSynthesizerInstance(instance);
 		}
-		instance = ( deSynthesizerInstance* )instance->GetLLManagerNext();
+		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
 	}
 }
 
 void deSynthesizerInstanceManager::SystemAudioUnload(){
-	deSynthesizerInstance *instance = ( deSynthesizerInstance* )pInstances.GetRoot();
+	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	
-	while( instance ){
-		instance->SetPeerAudio( NULL );
-		instance = ( deSynthesizerInstance* )instance->GetLLManagerNext();
+	while(instance){
+		instance->SetPeerAudio(NULL);
+		instance = (deSynthesizerInstance*)instance->GetLLManagerNext();
 	}
 }
 
 
 
-void deSynthesizerInstanceManager::RemoveResource( deResource *resource ){
-	pInstances.RemoveIfPresent( resource );
+void deSynthesizerInstanceManager::RemoveResource(deResource *resource){
+	pInstances.RemoveIfPresent(resource);
 }

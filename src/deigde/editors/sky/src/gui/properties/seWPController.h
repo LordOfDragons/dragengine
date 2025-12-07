@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPController( seWindowProperties &windowProperties );
+	seWPController(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline seSky *GetSky() const{return pSky;}
 	
 	/** \brief Set sky. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Active controller or \em NULL. */
 	seController *GetController() const;
@@ -103,10 +103,10 @@ public:
 	void UpdateControllerValue();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline igdeAction *GetActionControllerAdd() const{return pActionControllerAdd;}
+	inline igdeAction *GetActionControllerRemove() const{return pActionControllerRemove;}
+	inline igdeAction *GetActionControllerUp() const{return pActionControllerUp;}
+	inline igdeAction *GetActionControllerDown() const{return pActionControllerDown;}
 	/*@}*/
 };
 

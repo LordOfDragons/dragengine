@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render render target. */
-	deoglRenderTarget( deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount );
+	deoglRenderTarget(deoglRenderThread &renderThread, const decPoint &size, int componentCount, int bitCount);
 	
 	/** Clean up render render target. */
 	virtual ~deoglRenderTarget();
@@ -70,24 +70,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Size. */
-	inline const decPoint &GetSize() const{ return pSize; }
+	inline const decPoint &GetSize() const{return pSize;}
 	
 	/** Aspect ratio. */
-	inline float GetAspectRatio() const{ return pAspectRatio; }
+	inline float GetAspectRatio() const{return pAspectRatio;}
 	
 	/** Bit count. */
-	inline int GetBitCount() const{ return pBitCount; }
+	inline int GetBitCount() const{return pBitCount;}
 	
 	/** Component count. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	
 	
 	/** Framebuffer or \em NULL if not existing. */
-	inline const deoglFramebuffer::Ref &GetFBO() const{ return pFBO; }
+	inline const deoglFramebuffer::Ref &GetFBO() const{return pFBO;}
 	
 	/** Prepare texture. */
 	void PrepareTexture();
@@ -101,14 +101,14 @@ public:
 	
 	
 	/** Texture is dirty. */
-	inline bool GetTextureDirty() const{ return pDirtyTexture; }
+	inline bool GetTextureDirty() const{return pDirtyTexture;}
 	
 	/** Set texture dirty. */
-	void SetTextureDirty( bool dirty );
+	void SetTextureDirty(bool dirty);
 	
 	// texture management
-	inline deoglTexture *GetTexture() const{ return pTexture; }
-	inline const decPoint &GetTextureSize() const{ return pTextureSize; }
+	inline deoglTexture *GetTexture() const{return pTexture;}
+	inline const decPoint &GetTextureSize() const{return pTextureSize;}
 	/*@}*/
 };
 

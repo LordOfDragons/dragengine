@@ -62,9 +62,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the style or NULL to use the parent node style. */
-	inline void *GetStyle() const{ return pStyle; }
+	inline void *GetStyle() const{return pStyle;}
 	/** Sets the style or NULL to use the parent node style. */
-	void SetStyle( void *style );
+	void SetStyle(void *style);
 	/*@}*/
 };
 

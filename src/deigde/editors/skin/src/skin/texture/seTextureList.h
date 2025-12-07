@@ -52,30 +52,30 @@ public:
 	/** Retrieves the number of textures. */
 	int GetCount() const;
 	/** Retrieves the texture at the given position. */
-	seTexture *GetAt( int index ) const;
+	seTexture *GetAt(int index) const;
 	/** Retrieves the texture with the given name or NULL if not found. */
-	seTexture *GetNamed( const char *name ) const;
+	seTexture *GetNamed(const char *name) const;
 	/** Retrieves the index of the given texture or -1 if not found. */
-	int IndexOf( seTexture *texture ) const;
+	int IndexOf(seTexture *texture) const;
 	/** Retrieves the index of the texture with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a texture exists. */
-	bool Has( seTexture *texture ) const;
+	bool Has(seTexture *texture) const;
 	/** Determines if a texture with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a texture. */
-	void Add( seTexture *texture );
+	void Add(seTexture *texture);
 	/** Inserts a new texture. */
-	void InsertAt( seTexture *texture, int index );
+	void InsertAt(seTexture *texture, int index);
 	/** Moves a texture to a new position. */
-	void MoveTo( seTexture *texture, int index );
+	void MoveTo(seTexture *texture, int index);
 	/** Removes a texture. */
-	void Remove( seTexture *texture );
+	void Remove(seTexture *texture);
 	/** Removes all textures. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	seTextureList &operator=( const seTextureList &list );
+	seTextureList &operator=(const seTextureList &list);
 	/*@}*/
 };
 

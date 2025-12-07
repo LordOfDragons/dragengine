@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMapping( meWindowVegetation &windowVegetation, meHTVRuleMapping *rule );
+	meWVNodeMapping(meWindowVegetation &windowVegetation, meHTVRuleMapping *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleMapping *GetRuleMapping() const{ return pRuleMapping; }
+	inline meHTVRuleMapping *GetRuleMapping() const{return pRuleMapping;}
 	
 	/** \brief Update node. */
 	virtual void Update();

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetBoneName::gdeUOCLightSetBoneName( gdeObjectClass *objectClass,
-gdeOCLight *light, const char *newValue ) :
-pObjectClass( NULL ),
-pLight( NULL )
+gdeUOCLightSetBoneName::gdeUOCLightSetBoneName(gdeObjectClass *objectClass,
+gdeOCLight *light, const char *newValue) :
+pObjectClass(NULL),
+pLight(NULL)
 {
-	if( ! objectClass || ! light ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Light set bone name" );
+	SetShortInfo("Light set bone name");
 	
 	pOldValue = light->GetBoneName();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pLight( NULL )
 }
 
 gdeUOCLightSetBoneName::~gdeUOCLightSetBoneName(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCLightSetBoneName::~gdeUOCLightSetBoneName(){
 ///////////////
 
 void gdeUOCLightSetBoneName::Undo(){
-	pLight->SetBoneName( pOldValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetBoneName(pOldValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }
 
 void gdeUOCLightSetBoneName::Redo(){
-	pLight->SetBoneName( pNewValue );
-	pObjectClass->NotifyLightChanged( pLight );
+	pLight->SetBoneName(pNewValue);
+	pObjectClass->NotifyLightChanged(pLight);
 }

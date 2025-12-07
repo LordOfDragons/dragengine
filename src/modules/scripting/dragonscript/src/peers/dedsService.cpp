@@ -43,21 +43,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsService::dedsService( deScriptingDragonScript &ds, deService *service ) :
-pDS( ds ),
-pService( service ),
-pValOwner( NULL ),
-pValCB( NULL ),
-pHasCB( false )
+dedsService::dedsService(deScriptingDragonScript &ds, deService *service) :
+pDS(ds),
+pService(service),
+pValOwner(NULL),
+pValCB(NULL),
+pHasCB(false)
 {
-	if( ! service ){
-		DSTHROW( dueInvalidParam );
+	if(! service){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	dsRunTime &rt = *ds.GetScriptEngine()->GetMainRunTime();
 	
 	pValOwner = rt.CreateValue();
-	pValCB = rt.CreateValue( pDS.GetClassServiceListener() );
+	pValCB = rt.CreateValue(pDS.GetClassServiceListener());
 }
 
 dedsService::~dedsService(){
@@ -65,27 +65,27 @@ dedsService::~dedsService(){
 	// the case we can end up re-entering this destructor due to the service resource
 	// being deleted due to links breaking while freeing the value. if this is the
 	// case delay the deletion until a safe time
-	if( pService && pService->GetRefCount() > 0 ){
-		if( pValCB ){
-			pDS.AddValueDeleteLater( pValCB );
+	if(pService && pService->GetRefCount() > 0){
+		if(pValCB){
+			pDS.AddValueDeleteLater(pValCB);
 			pValCB = NULL;
 			pHasCB = false;
 		}
 		
-		if( pValOwner ){
-			pDS.AddValueDeleteLater( pValOwner );
+		if(pValOwner){
+			pDS.AddValueDeleteLater(pValOwner);
 			pValOwner = NULL;
 		}
 		
 	}else{
-		if( pValCB ){
-			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		if(pValCB){
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 			pValCB = NULL;
 			pHasCB = false;
 		}
 		
-		if( pValOwner ){
-			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValOwner );
+		if(pValOwner){
+			pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValOwner);
 			pValOwner = NULL;
 		}
 	}
@@ -100,18 +100,18 @@ dsRealObject *dedsService::GetOwner() const{
 	return pValOwner->GetRealObject();
 }
 
-void dedsService::SetOwner( dsRealObject *object ){
-	if( ! pValOwner ){
+void dedsService::SetOwner(dsRealObject *object){
+	if(! pValOwner){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValOwner, object );
+	if(object){
+		rt.SetObject(pValOwner, object);
 		
 	}else{
-		rt.ClearValue( pValOwner );
+		rt.ClearValue(pValOwner);
 	}
 }
 
@@ -121,103 +121,103 @@ dsRealObject *dedsService::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsService::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsService::SetCallback(dsRealObject *object){
+	if(! pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
-		rt.CastValueTo( pValCB, pValCB, pDS.GetClassServiceListener() );
+	if(object){
+		rt.SetObject(pValCB, object);
+		rt.CastValueTo(pValCB, pValCB, pDS.GetClassServiceListener());
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS.GetClassServiceListener() );
+		rt.SetNull(pValCB, pDS.GetClassServiceListener());
 		pHasCB = false;
 	}
 }
 
 
 
-void dedsService::RequestResponse( const decUniqueID &id,
-const deServiceObject::Ref &response, bool finished ){
-	if( ! pHasCB ){
-		if( response ){
+void dedsService::RequestResponse(const decUniqueID &id,
+const deServiceObject::Ref &response, bool finished){
+	if(! pHasCB){
+		if(response){
 			response->FreeReference();
 		}
 		return;
 	}
 	
-	if( ! response ){
-		DSTHROW( dueInvalidParam );
+	if(! response){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	const int funcIndex = pDS.GetClassServiceListener()->GetFuncIndexRequestResponse();
 	dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 	
 	try{
-		rt->PushBool( finished ); // finished
-		pDS.GetClassServiceObject()->PushServiceObject( rt, response ); // response
-		pDS.GetClassUniqueID()->PushUniqueID( rt, id ); // id
-		pDS.GetClassService()->PushService( rt, pService ); // service
-		rt->RunFunctionFast( pValCB, funcIndex );
+		rt->PushBool(finished); // finished
+		pDS.GetClassServiceObject()->PushServiceObject(rt, response); // response
+		pDS.GetClassUniqueID()->PushUniqueID(rt, id); // id
+		pDS.GetClassService()->PushService(rt, pService); // service
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-void dedsService::RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error ){
-	if( ! pHasCB ){
-		if( error ){
+void dedsService::RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error){
+	if(! pHasCB){
+		if(error){
 			error->FreeReference();
 		}
 		return;
 	}
 	
-	if( ! error ){
-		DSTHROW( dueInvalidParam );
+	if(! error){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	const int funcIndex = pDS.GetClassServiceListener()->GetFuncIndexRequestFailed();
 	dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 	
 	try{
-		pDS.GetClassServiceObject()->PushServiceObject( rt, error ); // error
-		pDS.GetClassUniqueID()->PushUniqueID( rt, id ); // id
-		pDS.GetClassService()->PushService( rt, pService ); // service
-		rt->RunFunctionFast( pValCB, funcIndex );
+		pDS.GetClassServiceObject()->PushServiceObject(rt, error); // error
+		pDS.GetClassUniqueID()->PushUniqueID(rt, id); // id
+		pDS.GetClassService()->PushService(rt, pService); // service
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-void dedsService::EventReceived( const deServiceObject::Ref &event ){
-	if( ! pHasCB ){
-		if( event ){
+void dedsService::EventReceived(const deServiceObject::Ref &event){
+	if(! pHasCB){
+		if(event){
 			event->FreeReference();
 		}
 		return;
 	}
 	
-	if( ! event ){
-		DSTHROW( dueInvalidParam );
+	if(! event){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	const int funcIndex = pDS.GetClassServiceListener()->GetFuncIndexEventReceived();
 	dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 	
 	try{
-		pDS.GetClassServiceObject()->PushServiceObject( rt, event ); // event
-		pDS.GetClassService()->PushService( rt, pService ); // service
-		rt->RunFunctionFast( pValCB, funcIndex );
+		pDS.GetClassServiceObject()->PushServiceObject(rt, event); // event
+		pDS.GetClassService()->PushService(rt, pService); // service
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}

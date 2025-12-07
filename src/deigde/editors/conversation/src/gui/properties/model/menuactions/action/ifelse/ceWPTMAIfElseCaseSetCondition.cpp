@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseSetCondition::ceWPTMAIfElseCaseSetCondition( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseSetCondition::ceWPTMAIfElseCaseSetCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAIfElse &ifElse, ceCAIfElseCase &ifCase,
-ceConversationCondition::eConditionTypes conditionType ) :
-ceWPTMACreateCondition( windowMain, conversation, conditionType ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ){
+ceConversationCondition::eConditionTypes conditionType) :
+ceWPTMACreateCondition(windowMain, conversation, conditionType),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase){
 }
 
 
@@ -54,6 +54,6 @@ pIfCase( &ifCase ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseCaseSetCondition::CreateUndo( ceConversationCondition *condition ){
-	return new ceUCAIfElseCaseSetCondition( pTopic, pIfElse, pIfCase, condition );
+igdeUndo *ceWPTMAIfElseCaseSetCondition::CreateUndo(ceConversationCondition *condition){
+	return new ceUCAIfElseCaseSetCondition(pTopic, pIfElse, pIfCase, condition);
 }

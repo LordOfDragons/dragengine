@@ -42,17 +42,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleCurve::meHTVRuleCurve() : meHTVRule( ertCurve, 2 ){
+meHTVRuleCurve::meHTVRuleCurve() : meHTVRule(ertCurve, 2){
 	pCurve.SetDefaultLinear();
 	
-	GetSlotAt( eisValue ).SetIsInput( true );
+	GetSlotAt(eisValue).SetIsInput(true);
 	
-	GetSlotAt( eosValue ).SetIsInput( false );
+	GetSlotAt(eosValue).SetIsInput(false);
 }
 
-meHTVRuleCurve::meHTVRuleCurve( const meHTVRuleCurve &rule ) :
-meHTVRule( rule ),
-pCurve( rule.pCurve ){
+meHTVRuleCurve::meHTVRuleCurve(const meHTVRuleCurve &rule) :
+meHTVRule(rule),
+pCurve(rule.pCurve){
 }
 
 meHTVRuleCurve::~meHTVRuleCurve(){
@@ -63,33 +63,33 @@ meHTVRuleCurve::~meHTVRuleCurve(){
 // Management
 ///////////////
 
-void meHTVRuleCurve::SetCurve( const decCurveBezier &curve ){
+void meHTVRuleCurve::SetCurve(const decCurveBezier &curve){
 	pCurve = curve;
 }
 
 
 
-float meHTVRuleCurve::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != eosValue ){
-		DETHROW( deeInvalidParam );
+float meHTVRuleCurve::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != eosValue){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const meHTVRSlot &inputValue = GetSlotAt( eisValue );
+	const meHTVRSlot &inputValue = GetSlotAt(eisValue);
 	float value = 0.0f;
 	
-	if( inputValue.GetLinkCount() > 0 ){
-		meHTVRLink &link = *inputValue.GetLinkAt( 0 );
-		value = link.GetSourceRule()->GetOutputSlotValueAt( link.GetSourceSlot(), evalEnv );
+	if(inputValue.GetLinkCount() > 0){
+		meHTVRLink &link = *inputValue.GetLinkAt(0);
+		value = link.GetSourceRule()->GetOutputSlotValueAt(link.GetSourceSlot(), evalEnv);
 	}
 	
-	return decCurveBezierEvaluator( pCurve ).EvaluateAt( value );
+	return decCurveBezierEvaluator(pCurve).EvaluateAt(value);
 }
 
-decVector meHTVRuleCurve::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	const float value = GetOutputSlotValueAt( slot, evalEnv );
-	return decVector( value, value, value );
+decVector meHTVRuleCurve::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	const float value = GetOutputSlotValueAt(slot, evalEnv);
+	return decVector(value, value, value);
 }
 
 meHTVRule *meHTVRuleCurve::Copy() const{
-	return new meHTVRuleCurve( *this );
+	return new meHTVRuleCurve(*this);
 }

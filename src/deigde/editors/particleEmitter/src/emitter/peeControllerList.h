@@ -52,30 +52,30 @@ public:
 	/** Retrieves the number of controllers. */
 	int GetCount() const;
 	/** Retrieves the controller at the given position. */
-	peeController *GetAt( int index ) const;
+	peeController *GetAt(int index) const;
 	/** Retrieves the controller with the given name or NULL if not found. */
-	peeController *GetNamed( const char *name ) const;
+	peeController *GetNamed(const char *name) const;
 	/** Retrieves the index of the given controller or -1 if not found. */
-	int IndexOf( peeController *controller ) const;
+	int IndexOf(peeController *controller) const;
 	/** Retrieves the index of the controller with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a controller exists. */
-	bool Has( peeController *controller ) const;
+	bool Has(peeController *controller) const;
 	/** Determines if a controller with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Adds a controller. */
-	void Add( peeController *controller );
+	void Add(peeController *controller);
 	/** Inserts a new controller. */
-	void InsertAt( peeController *controller, int index );
+	void InsertAt(peeController *controller, int index);
 	/** Moves a controller to a new position. */
-	void MoveTo( peeController *controller, int index );
+	void MoveTo(peeController *controller, int index);
 	/** Removes a controller. */
-	void Remove( peeController *controller );
+	void Remove(peeController *controller);
 	/** Removes all controllers. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	peeControllerList &operator=( const peeControllerList &list );
+	peeControllerList &operator=(const peeControllerList &list);
 	/*@}*/
 };
 

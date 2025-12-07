@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object id map. */
-	fbxObjectMap( int expectedCount );
+	fbxObjectMap(int expectedCount);
 	
 	/** \brief Clean up object id map. */
 	~fbxObjectMap();
@@ -64,10 +64,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Add object. */
-	void Add( fbxNode *node );
+	void Add(fbxNode *node);
 	
 	/** \brief Object with ID or NULL if absent. */
-	fbxNode *GetAt( int64_t id ) const;
+	fbxNode *GetAt(int64_t id) const;
 	/*@}*/
 };
 

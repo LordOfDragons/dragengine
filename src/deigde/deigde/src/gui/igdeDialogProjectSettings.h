@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogProjectSettings( igdeWindowMain &windowMain );
+	igdeDialogProjectSettings(igdeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -103,7 +103,7 @@ public:
 	virtual bool Accept();
 	
 	/** \brief Base game definitions changed. */
-	inline bool GetBaseGameDefsChanged() const{ return pBaseGameDefsChanged; }
+	inline bool GetBaseGameDefsChanged() const{return pBaseGameDefsChanged;}
 	
 	/** \brief Selected shared game definition. */
 	igdeGameDefinition *GetSelectedSharedGameDef() const;

@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Background color. */
-	inline const decColor &GetColorBackground() const{ return pColorBackground; }
+	inline const decColor &GetColorBackground() const{return pColorBackground;}
 	
 	/** Set background color. */
-	void SetColorBackground( const decColor &color );
+	void SetColorBackground(const decColor &color);
 	
 	/** Text color. */
-	inline const decColor &GetColorText() const{ return pColorText; }
+	inline const decColor &GetColorText() const{return pColorText;}
 	
 	/** Set text color. */
-	void SetColorText( const decColor &color );
+	void SetColorText(const decColor &color);
 	/*@}*/
 };
 

@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProfileSetWindowSize::projUProfileSetWindowSize(
-projProfile *profile, const decPoint &newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const decPoint &newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set window size" );
+	SetShortInfo("Profile set window size");
 	
 	pOldValue = profile->GetWindowSize();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetWindowSize::~projUProfileSetWindowSize(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProfileSetWindowSize::~projUProfileSetWindowSize(){
 ///////////////
 
 void projUProfileSetWindowSize::Undo(){
-	pProfile->SetWindowSize( pOldValue );
+	pProfile->SetWindowSize(pOldValue);
 }
 
 void projUProfileSetWindowSize::Redo(){
-	pProfile->SetWindowSize( pNewValue );
+	pProfile->SetWindowSize(pNewValue);
 }

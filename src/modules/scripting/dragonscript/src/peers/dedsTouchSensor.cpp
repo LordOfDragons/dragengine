@@ -44,17 +44,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsTouchSensor::dedsTouchSensor( deScriptingDragonScript &ds, deTouchSensor *touchSensor ) :
-pDS( ds ),
-pTouchSensor( touchSensor ),
-pValCB( NULL ),
-pHasCB( false )
+dedsTouchSensor::dedsTouchSensor(deScriptingDragonScript &ds, deTouchSensor *touchSensor) :
+pDS(ds),
+pTouchSensor(touchSensor),
+pValCB(NULL),
+pHasCB(false)
 {
-	if( ! touchSensor ){
-		DSTHROW( dueInvalidParam );
+	if(! touchSensor){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue( ds.GetClassTouchSensorListener() );
+	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassTouchSensorListener());
 }
 
 dedsTouchSensor::~dedsTouchSensor(){
@@ -62,15 +62,15 @@ dedsTouchSensor::~dedsTouchSensor(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( ! pValCB ){
+	if(! pValCB){
 		return;
 	}
 	
-	if( pTouchSensor && pTouchSensor->GetRefCount() > 0 ){
-		pDS.AddValueDeleteLater( pValCB );
+	if(pTouchSensor && pTouchSensor->GetRefCount() > 0){
+		pDS.AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = NULL;
@@ -86,20 +86,20 @@ dsRealObject *dedsTouchSensor::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsTouchSensor::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsTouchSensor::SetCallback(dsRealObject *object){
+	if(! pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
-		rt.CastValueTo( pValCB, pValCB, pDS.GetClassTouchSensorListener() );
+	if(object){
+		rt.SetObject(pValCB, object);
+		rt.CastValueTo(pValCB, pValCB, pDS.GetClassTouchSensorListener());
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS.GetClassTouchSensorListener() );
+		rt.SetNull(pValCB, pDS.GetClassTouchSensorListener());
 		pHasCB = false;
 	}
 }
@@ -109,12 +109,12 @@ void dedsTouchSensor::SetCallback( dsRealObject *object ){
 // Notifications
 //////////////////
 
-void dedsTouchSensor::ColliderEntered( deCollider *collider ){
-	if( ! collider ){
-		DSTHROW( dueInvalidParam );
+void dedsTouchSensor::ColliderEntered(deCollider *collider){
+	if(! collider){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! pHasCB ){
+	if(! pHasCB){
 		return;
 	}
 	
@@ -124,21 +124,21 @@ void dedsTouchSensor::ColliderEntered( deCollider *collider ){
 	
 	// colliderEntered( collider )
 	try{
-		clsCol.PushCollider( rt, collider ); // collider
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsCol.PushCollider(rt, collider); // collider
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-void dedsTouchSensor::ColliderLeft( deCollider *collider ){
-	if( ! collider ){
-		DSTHROW( dueInvalidParam );
+void dedsTouchSensor::ColliderLeft(deCollider *collider){
+	if(! collider){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! pHasCB ){
+	if(! pHasCB){
 		return;
 	}
 	
@@ -148,10 +148,10 @@ void dedsTouchSensor::ColliderLeft( deCollider *collider ){
 	
 	// colliderLeft( collider )
 	try{
-		clsCol.PushCollider( rt, collider ); // collider
-		rt->RunFunctionFast( pValCB, funcIndex );
+		clsCol.PushCollider(rt, collider); // collider
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}

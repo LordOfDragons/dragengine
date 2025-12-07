@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetAutoFindPathSkins( gdeGameDefinition *gameDefinition, const decStringList &newValue );
+	gdeUGDSetAutoFindPathSkins(gdeGameDefinition *gameDefinition, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

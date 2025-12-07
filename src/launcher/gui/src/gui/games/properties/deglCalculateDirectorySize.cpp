@@ -44,14 +44,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglCalculateDirectorySize::deglCalculateDirectorySize( const char *directory ) :
-pDirectory( directory ),
-pVFS( deVirtualFileSystem::Ref::NewWith() ),
-pSize( 0 ),
-pAbort( false ),
-pFailed( false )
+deglCalculateDirectorySize::deglCalculateDirectorySize(const char *directory) :
+pDirectory(directory),
+pVFS(deVirtualFileSystem::Ref::NewWith()),
+pSize(0),
+pAbort(false),
+pFailed(false)
 {
-	if( ! directory[ 0 ] ){
+	if(! directory[0]){
 		return;
 	}
 	
@@ -68,22 +68,22 @@ deglCalculateDirectorySize::~deglCalculateDirectorySize(){
 ///////////////
 
 decString deglCalculateDirectorySize::GetDirectory(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	return pDirectory;
 }
 
 uint64_t deglCalculateDirectorySize::GetSize(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	return pSize;
 }
 
 bool deglCalculateDirectorySize::GetFailed(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	return pFailed;
 }
 
 decStringList deglCalculateDirectorySize::GetException(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	return pException;
 }
 
@@ -94,30 +94,30 @@ void deglCalculateDirectorySize::Abort(){
 
 
 void deglCalculateDirectorySize::Run(){
-	if( pAbort ){
-		const deMutexGuard guard( pMutex );
+	if(pAbort){
+		const deMutexGuard guard(pMutex);
 		pFailed = true;
 		return;
 	}
 	
-	const decPath path( decPath::CreatePathUnix( "/" ) );
-	if( ! pVFS->ExistsFile( path ) ){
+	const decPath path(decPath::CreatePathUnix("/"));
+	if(! pVFS->ExistsFile(path)){
 		return;
 	}
 	
 	try{
-		pScanDirectory( path );
+		pScanDirectory(path);
 		
-	}catch( const deException &e ){
-		const deMutexGuard guard( pMutex );
+	}catch(const deException &e){
+		const deMutexGuard guard(pMutex);
 		pSize = 0;
 		pFailed = true;
 		pException = e.FormatOutput();
 	}
 }
 
-void deglCalculateDirectorySize::IncrementSize( int size ){
-	const deMutexGuard guard( pMutex );
+void deglCalculateDirectorySize::IncrementSize(int size){
+	const deMutexGuard guard(pMutex);
 	pSize += size;
 }
 
@@ -126,8 +126,8 @@ void deglCalculateDirectorySize::IncrementSize( int size ){
 // Private Functions
 //////////////////////
 
-void deglCalculateDirectorySize::pSetSize( int size ){
-	const deMutexGuard guard( pMutex );
+void deglCalculateDirectorySize::pSetSize(int size){
+	const deMutexGuard guard(pMutex);
 	pSize = size;
 }
 
@@ -137,22 +137,22 @@ private:
 	bool &pAbort;
 	
 public:
-	deglCalculateDirectorySizeProcess( deglCalculateDirectorySize &owner, bool &abort ) :
-	pOwner( owner ), pAbort( abort ){
+	deglCalculateDirectorySizeProcess(deglCalculateDirectorySize &owner, bool &abort) :
+	pOwner(owner), pAbort(abort){
 	}
 	
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
-		pOwner.IncrementSize( ( int )vfs.GetFileSize( path ) );
+	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
+		pOwner.IncrementSize((int)vfs.GetFileSize(path));
 		return ! pAbort;
 	}
 	
-	virtual bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path ){
-		vfs.SearchFiles( path, *this );
+	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+		vfs.SearchFiles(path, *this);
 		return ! pAbort;
 	}
 };
 
-void deglCalculateDirectorySize::pScanDirectory( const decPath &directory ){
-	deglCalculateDirectorySizeProcess process( *this, pAbort );
-	pVFS->SearchFiles( directory, process );
+void deglCalculateDirectorySize::pScanDirectory(const decPath &directory){
+	deglCalculateDirectorySizeProcess process(*this, pAbort);
+	pVFS->SearchFiles(directory, process);
 }

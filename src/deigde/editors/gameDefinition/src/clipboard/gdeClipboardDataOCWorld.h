@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	const gdeOCWorld::Ref &GetWorld() const{ return pWorld; }
+	const gdeOCWorld::Ref &GetWorld() const{return pWorld;}
 	/*@}*/
 };
 

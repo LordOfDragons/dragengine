@@ -62,16 +62,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of arguments. */
-	inline int GetArgumentCount() const{ return pArgumentCount; }
+	inline int GetArgumentCount() const{return pArgumentCount;}
 	
 	/** \brief Argument at the given index. */
-	const decUnicodeString *GetArgumentAt( int index ) const;
+	const decUnicodeString *GetArgumentAt(int index) const;
 	
 	/** \brief Adds an argument to the end of the list. */
-	void AddArgument( const decUnicodeString &argument );
+	void AddArgument(const decUnicodeString &argument);
 	
 	/** \brief Given argument matches the provided utf8 string. */
-	bool MatchesArgumentAt( int index, const char *string ) const;
+	bool MatchesArgumentAt(int index, const char *string) const;
 	
 	/** \brief Removes all arguments. */
 	void RemoveAllArguments();
@@ -83,7 +83,7 @@ public:
 	 * considered one argument. This function is present for operating systems not
 	 * providing an entry point function which already splits up the arguments.
 	 */
-	void ParseCommand( const decUnicodeString &command );
+	void ParseCommand(const decUnicodeString &command);
 	/*@}*/
 };
 

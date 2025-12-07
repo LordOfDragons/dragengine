@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread frame counter tracker. */
-	deoglRTFrameCounterTracker( const deoglRenderThread &renderThread );
+	deoglRTFrameCounterTracker(const deoglRenderThread &renderThread);
 	
 	/** Clean up render thread frame counter tracker. */
 	~deoglRTFrameCounterTracker();
@@ -64,19 +64,19 @@ public:
 	/**
 	 * Frame counter.
 	 */
-	inline uint32_t GetFrameCounter() const{ return pFrameCounter; }
+	inline uint32_t GetFrameCounter() const{return pFrameCounter;}
 	
 	/**
 	 * Elapsed frames between the last two calls to Update(). Valid if Update has been called
 	 * at least two times. Otherwise returns 0.
 	 */
-	inline uint32_t GetElapsedFrames() const{ return pElapsedFrames; }
+	inline uint32_t GetElapsedFrames() const{return pElapsedFrames;}
 	
 	/**
 	 * At least one frame elapsed since between the last two calls to Update(). Valid if
 	 * Update() has been called at least two times. Otherwise returns 0.
 	 */
-	inline bool HasElapsedFrames() const{ return pElapsedFrames > 0; }
+	inline bool HasElapsedFrames() const{return pElapsedFrames > 0;}
 	/*@}*/
 };
 

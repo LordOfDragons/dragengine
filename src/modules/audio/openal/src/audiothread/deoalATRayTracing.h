@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread ray tracing. */
-	deoalATRayTracing( deoalAudioThread &audioThread );
+	deoalATRayTracing(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread renderers. */
 	~deoalATRayTracing();
@@ -78,19 +78,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Configuration for tracing sound rays. */
-	inline deoalRayTraceConfig *GetConfigTraceSoundRays() const{ return pConfigTraceSoundRays; }
+	inline deoalRayTraceConfig *GetConfigTraceSoundRays() const{return pConfigTraceSoundRays;}
 	
 	/** \brief Configuration for estimating rooms. */
-	inline deoalRayTraceConfig *GetConfigEstimateRoom() const{ return pConfigRoomEstimate; }
+	inline deoalRayTraceConfig *GetConfigEstimateRoom() const{return pConfigRoomEstimate;}
 	
 	/** \brief Configuration for tracing sound rays. */
-	inline deoalRayTraceConfig *GetConfigTraceSoundRaysSensor() const{ return pConfigTraceSoundRaysSensor; }
+	inline deoalRayTraceConfig *GetConfigTraceSoundRaysSensor() const{return pConfigTraceSoundRaysSensor;}
 	
 	/** \brief Sound tracing configuration for microphone usage. */
-	inline const sConfigSoundTracing &GetConfigSoundTracingMicrophone() const{ return pConfigSoundTracingMicrophone; }
+	inline const sConfigSoundTracing &GetConfigSoundTracingMicrophone() const{return pConfigSoundTracingMicrophone;}
 	
 	/** \brief Sound tracing configuration for metering usage. */
-	inline const sConfigSoundTracing &GetConfigSoundTracingMetering() const{ return pConfigSoundTracingMetering; }
+	inline const sConfigSoundTracing &GetConfigSoundTracingMetering() const{return pConfigSoundTracingMetering;}
 	
 	
 	

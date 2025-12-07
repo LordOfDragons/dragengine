@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create asset unpacker. */
-	dealAssetUnpacker( deLogger *logger );
+	dealAssetUnpacker(deLogger *logger);
 	
 	/** \brief Clean up asset unpacker. */
 	~dealAssetUnpacker();
@@ -98,25 +98,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Start unpacking. */
-	void StartUnpacking( AAssetManager *assetManager, const char *assetFilename,
-		const char *targetDirectory, const decStringList &filter );
+	void StartUnpacking(AAssetManager *assetManager, const char *assetFilename,
+		const char *targetDirectory, const decStringList &filter);
 	
 	/**
 	 * \brief Get unpack progress.
 	 * \param[out] unpacking \em true if still unpacking or \em false if finished.
 	 * \param[out] progress Unpack progress in the range from 0 and 1.
 	 */
-	void UnpackProgress( bool &unpacking, float &progress );
+	void UnpackProgress(bool &unpacking, float &progress);
 	
 	/** \brief Stop unpacking. */
 	void StopUnpacking();
 	/*@}*/
 	
 private:
-	static void *pThreadRunnerUnpack( void *parameter );
+	static void *pThreadRunnerUnpack(void *parameter);
 	void pUnpack();
-	void pCreateDirectory( const decString &filename );
-	decBaseFileWriter *pWriteFile( const decString &filename );
+	void pCreateDirectory(const decString &filename);
+	decBaseFileWriter *pWriteFile(const decString &filename);
 };
 
 #endif

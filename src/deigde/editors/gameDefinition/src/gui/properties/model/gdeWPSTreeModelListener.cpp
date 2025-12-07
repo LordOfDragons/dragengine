@@ -55,8 +55,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTreeModelListener::gdeWPSTreeModelListener( gdeWPSTreeModel &model ) :
-pModel( model ){
+gdeWPSTreeModelListener::gdeWPSTreeModelListener(gdeWPSTreeModel &model) :
+pModel(model){
 }
 
 gdeWPSTreeModelListener::~gdeWPSTreeModelListener(){
@@ -67,83 +67,83 @@ gdeWPSTreeModelListener::~gdeWPSTreeModelListener(){
 // Management
 ///////////////
 
-void gdeWPSTreeModelListener::ObjectClassCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::ObjectClassCategoriesChanged(gdeGameDefinition*){
 	pModel.GetCategories().GetObjectClass().CategoriesChanged();
 	pModel.GetObjectClasses().ValidateCategoryName();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::SkinCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::SkinCategoriesChanged(gdeGameDefinition*){
 	pModel.GetCategories().GetSkin().CategoriesChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::SkyCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::SkyCategoriesChanged(gdeGameDefinition*){
 	pModel.GetCategories().GetSky().CategoriesChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::ParticleEmitterCategoriesChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::ParticleEmitterCategoriesChanged(gdeGameDefinition*){
 	pModel.GetCategories().GetParticleEmitter().CategoriesChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::ActiveCategoryChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::ActiveCategoryChanged(gdeGameDefinition*){
 	pModel.SetCurrentItemFromGameDef();
 }
 
 
 
-void gdeWPSTreeModelListener::SelectedObjectChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::SelectedObjectChanged(gdeGameDefinition*){
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::ObjectClassStructureChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::ObjectClassStructureChanged(gdeGameDefinition*){
 	pModel.GetObjectClasses().StructureChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::ObjectClassChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::ObjectClassChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->Validate();
 	}
 }
 
-void gdeWPSTreeModelListener::ObjectClassNameChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::ObjectClassNameChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->NameChanged();
 	}
 	pModel.GetObjectClasses().ValidateObjectClassName();
 }
 
-void gdeWPSTreeModelListener::OCBillboardsChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCBillboardsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCComponentsChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCComponentsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCComponentChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCComponent *component ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( ! model ){
+void gdeWPSTreeModelListener::OCComponentChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCComponent *component){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(! model){
 		return;
 	}
 	
-	gdeWPSTIMOCComponent * const modelComponent = model->GetChildWith( component );
-	if( modelComponent ){
+	gdeWPSTIMOCComponent * const modelComponent = model->GetChildWith(component);
+	if(modelComponent){
 		modelComponent->Validate();
 	}
 	model->Validate();
@@ -157,82 +157,82 @@ void gdeWPSTreeModelListener::OCCamerasChanged(gdeGameDefinition*, gdeObjectClas
 	}
 }
 
-void gdeWPSTreeModelListener::OCEnvMapProbesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCEnvMapProbesChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCLightsChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCLightsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCNavigationBlockersChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCNavigationBlockersChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCNavigationSpacesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCNavigationSpacesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCParticleEmittersChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCParticleEmittersChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCForceFieldsChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCForceFieldsChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCSnapPointsChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCSnapPointsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::OCSnapPointNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint ){
-	gdeWPSTIMObjectClass * const modelObjectClass = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( ! modelObjectClass ){
+void gdeWPSTreeModelListener::OCSnapPointNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint){
+	gdeWPSTIMObjectClass * const modelObjectClass = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(! modelObjectClass){
 		return;
 	}
 	
-	gdeWPSTIMOCSnapPoint * const modelSnapPoint = modelObjectClass->GetChildWith( snappoint );
-	if( modelSnapPoint ){
+	gdeWPSTIMOCSnapPoint * const modelSnapPoint = modelObjectClass->GetChildWith(snappoint);
+	if(modelSnapPoint){
 		modelSnapPoint->UpdateName();
 	}
 }
 
-void gdeWPSTreeModelListener::OCSpeakersChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
-	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
-	if( model ){
+void gdeWPSTreeModelListener::OCSpeakersChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
 		model->SubObjectsChanged();
 		pModel.SetCurrentItemFromGameDef();
 	}
@@ -246,74 +246,74 @@ void gdeWPSTreeModelListener::OCWorldsChanged(gdeGameDefinition*, gdeObjectClass
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveObjectClassChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass ){
+void gdeWPSTreeModelListener::ActiveObjectClassChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCBillboardChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard ){
+void gdeWPSTreeModelListener::ActiveOCBillboardChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCCameraChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera ){
+void gdeWPSTreeModelListener::ActiveOCCameraChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCComponentChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent ){
+void gdeWPSTreeModelListener::ActiveOCComponentChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCComponent){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCEnvMapProbeChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe ){
+void gdeWPSTreeModelListener::ActiveOCEnvMapProbeChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCLightChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight ){
+void gdeWPSTreeModelListener::ActiveOCLightChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCNavigationBlockerChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker ){
+void gdeWPSTreeModelListener::ActiveOCNavigationBlockerChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCNavigationSpaceChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace ){
+void gdeWPSTreeModelListener::ActiveOCNavigationSpaceChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCParticleEmitterChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter ){
+void gdeWPSTreeModelListener::ActiveOCParticleEmitterChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCParticleEmitter){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCForceFieldChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField ){
+void gdeWPSTreeModelListener::ActiveOCForceFieldChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCSnapPointChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
+void gdeWPSTreeModelListener::ActiveOCSnapPointChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
+void gdeWPSTreeModelListener::ActiveOCSpeakerChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
@@ -326,62 +326,62 @@ void gdeWPSTreeModelListener::ActiveOCWorldChanged(gdeGameDefinition *gameDefini
 
 
 
-void gdeWPSTreeModelListener::ParticleEmitterStructureChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::ParticleEmitterStructureChanged(gdeGameDefinition*){
 	pModel.GetParticleEmitters().StructureChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::ParticleEmitterNameChanged( gdeGameDefinition*,
-gdeParticleEmitter *particleEmitter ){
+void gdeWPSTreeModelListener::ParticleEmitterNameChanged(gdeGameDefinition*,
+gdeParticleEmitter *particleEmitter){
 	gdeWPSTIMParticleEmitter * const model = pModel.GetParticleEmitters()
-		.GetChildWith( particleEmitter );
-	if( model ){
+		.GetChildWith(particleEmitter);
+	if(model){
 		model->NameChanged();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveParticleEmitterChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotParticleEmitter ){
+void gdeWPSTreeModelListener::ActiveParticleEmitterChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotParticleEmitter){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
 
 
-void gdeWPSTreeModelListener::SkinStructureChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::SkinStructureChanged(gdeGameDefinition*){
 	pModel.GetSkins().StructureChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::SkinNameChanged( gdeGameDefinition*, gdeSkin *skin ){
-	gdeWPSTIMSkin * const model = pModel.GetSkins().GetChildWith( skin );
-	if( model ){
+void gdeWPSTreeModelListener::SkinNameChanged(gdeGameDefinition*, gdeSkin *skin){
+	gdeWPSTIMSkin * const model = pModel.GetSkins().GetChildWith(skin);
+	if(model){
 		model->NameChanged();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveSkinChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSkin ){
+void gdeWPSTreeModelListener::ActiveSkinChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSkin){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }
 
 
 
-void gdeWPSTreeModelListener::SkyStructureChanged( gdeGameDefinition* ){
+void gdeWPSTreeModelListener::SkyStructureChanged(gdeGameDefinition*){
 	pModel.GetSkies().StructureChanged();
 	pModel.SetCurrentItemFromGameDef();
 }
 
-void gdeWPSTreeModelListener::SkyNameChanged( gdeGameDefinition*, gdeSky *sky ){
-	gdeWPSTIMSky * const model = pModel.GetSkies().GetChildWith( sky );
-	if( model ){
+void gdeWPSTreeModelListener::SkyNameChanged(gdeGameDefinition*, gdeSky *sky){
+	gdeWPSTIMSky * const model = pModel.GetSkies().GetChildWith(sky);
+	if(model){
 		model->NameChanged();
 	}
 }
 
-void gdeWPSTreeModelListener::ActiveSkyChanged( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSky ){
+void gdeWPSTreeModelListener::ActiveSkyChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotSky){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }

@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddNavSpace::meUAddNavSpace( meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace ) :
-pWorld( NULL ),
-pNavSpace( NULL )
+meUAddNavSpace::meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace) :
+pWorld(NULL),
+pNavSpace(NULL)
 {
-	if( ! world || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! world || ! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add Navigation Space" );
+	SetShortInfo("Add Navigation Space");
 	
 	pWorld = world;
 	world->AddReference();
@@ -68,12 +68,12 @@ meUAddNavSpace::~meUAddNavSpace(){
 void meUAddNavSpace::Undo(){
 	meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
 	
-	selection.Remove( pNavSpace );
-	if( pNavSpace->GetActive() ){
+	selection.Remove(pNavSpace);
+	if(pNavSpace->GetActive()){
 		selection.ActivateNext();
 	}
 	
-	pWorld->RemoveNavSpace( pNavSpace );
+	pWorld->RemoveNavSpace(pNavSpace);
 	
 	pWorld->NotifyNavSpaceCountChanged();
 	pWorld->NotifyNavSpaceSelectionChanged();
@@ -82,11 +82,11 @@ void meUAddNavSpace::Undo(){
 void meUAddNavSpace::Redo(){
 	meNavigationSpaceSelection &selection = pWorld->GetSelectionNavigationSpace();
 	
-	pWorld->AddNavSpace( pNavSpace );
+	pWorld->AddNavSpace(pNavSpace);
 	
 	selection.Reset();
-	selection.Add( pNavSpace );
-	selection.SetActive( pNavSpace );
+	selection.Add(pNavSpace);
+	selection.SetActive(pNavSpace);
 	
 	pWorld->NotifyNavSpaceCountChanged();
 	pWorld->NotifyNavSpaceSelectionChanged();
@@ -98,10 +98,10 @@ void meUAddNavSpace::Redo(){
 //////////////////////
 
 void meUAddNavSpace::pCleanUp(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }

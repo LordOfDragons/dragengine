@@ -49,16 +49,16 @@ int deoglComponentList::GetCount() const{
 	return pComponents.GetCount();
 }
 
-deoglRComponent *deoglComponentList::GetAt( int index ) const{
-	return ( deoglRComponent* )pComponents.GetAt( index );
+deoglRComponent *deoglComponentList::GetAt(int index) const{
+	return (deoglRComponent*)pComponents.GetAt(index);
 }
 
-void deoglComponentList::Add( deoglRComponent *component ){
-	pComponents.Add( component );
+void deoglComponentList::Add(deoglRComponent *component){
+	pComponents.Add(component);
 }
 
-void deoglComponentList::RemoveFrom( int index ){
-	pComponents.RemoveFrom( index );
+void deoglComponentList::RemoveFrom(int index){
+	pComponents.RemoveFrom(index);
 }
 
 void deoglComponentList::RemoveAll(){

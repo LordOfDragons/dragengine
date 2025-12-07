@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Effect type. */
-	inline eEffectTypes GetType() const{ return pType; }
+	inline eEffectTypes GetType() const{return pType;}
 	
 	/** \brief Effect is unknown. */
-	inline bool IsUnknown() const{ return pType == eetUnknown; }
+	inline bool IsUnknown() const{return pType == eetUnknown;}
 	
 	/** \brief Effect is a stretch effect. */
-	inline bool IsStretch() const{ return pType == eetStretch; }
+	inline bool IsStretch() const{return pType == eetStretch;}
 	
 	/**
 	 * \brief Cast to stretch effect.
@@ -84,10 +84,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect( deSynthesizerEffect &effect );
+	virtual void VisitEffect(deSynthesizerEffect &effect);
 	
 	/** \brief Visit stretch effect. */
-	virtual void VisitStretch( deSynthesizerEffectStretch &effect );
+	virtual void VisitStretch(deSynthesizerEffectStretch &effect);
 	/*@}*/
 };
 

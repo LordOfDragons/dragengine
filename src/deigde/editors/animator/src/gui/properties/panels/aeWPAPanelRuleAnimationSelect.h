@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleAnimationSelect( aeWPRule &wpRule );
+	aeWPAPanelRuleAnimationSelect(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

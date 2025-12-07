@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shared config xml read/save. */
-	delSharedConfigXML( deLogger *logger, const char *loggingSource );
+	delSharedConfigXML(deLogger *logger, const char *loggingSource);
 	
 	/** \brief Clean up shared config xml read/save. */
 	virtual ~delSharedConfigXML();
@@ -48,21 +48,21 @@ public:
 	
 	
 protected:
-	void WriteProfile( decXmlWriter &writer, const delGameProfile &profile, const char *tagName = "profile" );
-	void WriteProfileSystems( decXmlWriter &writer, const delGameProfile &profile );
-	void WriteProfileDisableModuleVersions( decXmlWriter &writer, const delGameProfile &profile );
-	void WriteProfileModules( decXmlWriter &writer, const delGameProfile &profile );
-	void WriteProfileModule( decXmlWriter &writer, const delGPModule &module );
-	void WriteProfileModuleParameters( decXmlWriter &writer, const delGPModule &module );
-	void WriteProfileWindow( decXmlWriter &writer, const delGameProfile &profile );
+	void WriteProfile(decXmlWriter &writer, const delGameProfile &profile, const char *tagName = "profile");
+	void WriteProfileSystems(decXmlWriter &writer, const delGameProfile &profile);
+	void WriteProfileDisableModuleVersions(decXmlWriter &writer, const delGameProfile &profile);
+	void WriteProfileModules(decXmlWriter &writer, const delGameProfile &profile);
+	void WriteProfileModule(decXmlWriter &writer, const delGPModule &module);
+	void WriteProfileModuleParameters(decXmlWriter &writer, const delGPModule &module);
+	void WriteProfileWindow(decXmlWriter &writer, const delGameProfile &profile);
 	
-	void ReadProfile( const decXmlElementTag &root, delGameProfile &profile );
-	void ReadProfileSystems( const decXmlElementTag &root, delGameProfile &profile );
-	void ReadProfileDisableModuleVersions( const decXmlElementTag &root, delGameProfile &profile );
-	void ReadProfileModules( const decXmlElementTag &root, delGameProfile &profile );
-	void ReadProfileModule( const decXmlElementTag &root, delGameProfile &profile );
-	void ReadProfileModuleParameters( const decXmlElementTag &root, delGPModule &module );
-	void ReadProfileWindow( const decXmlElementTag &root, delGameProfile &profile );
+	void ReadProfile(const decXmlElementTag &root, delGameProfile &profile);
+	void ReadProfileSystems(const decXmlElementTag &root, delGameProfile &profile);
+	void ReadProfileDisableModuleVersions(const decXmlElementTag &root, delGameProfile &profile);
+	void ReadProfileModules(const decXmlElementTag &root, delGameProfile &profile);
+	void ReadProfileModule(const decXmlElementTag &root, delGameProfile &profile);
+	void ReadProfileModuleParameters(const decXmlElementTag &root, delGPModule &module);
+	void ReadProfileWindow(const decXmlElementTag &root, delGameProfile &profile);
 };
 
 #endif

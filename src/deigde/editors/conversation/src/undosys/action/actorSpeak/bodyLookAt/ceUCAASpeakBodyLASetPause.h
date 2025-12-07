@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakBodyLASetPause( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, float newPause );
+	ceUCAASpeakBodyLASetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, float newPause);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakBodyLASetPause();
 	/*@}*/

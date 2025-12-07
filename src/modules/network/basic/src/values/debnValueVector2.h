@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value. */
-	debnValueVector2( deNetworkValueVector2 &valueVector2 );
+	debnValueVector2(deNetworkValueVector2 &valueVector2);
 	
 	/** \brief Clean up network value. */
 	virtual ~debnValueVector2();
@@ -63,13 +63,13 @@ public:
 	 * \brief Update value.
 	 * \returns true if value needs to by synchronized otherwise false if not changed enough.
 	 */
-	virtual bool UpdateValue( bool force );
+	virtual bool UpdateValue(bool force);
 	
 	/** \brief Read value from message. */
-	virtual void ReadValue( decBaseFileReader &reader );
+	virtual void ReadValue(decBaseFileReader &reader);
 	
 	/** \brief Write value to message. */
-	virtual void WriteValue( decBaseFileWriter &writer );
+	virtual void WriteValue(decBaseFileWriter &writer);
 	/*@}*/
 };
 

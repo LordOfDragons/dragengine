@@ -51,7 +51,7 @@ public:
 	deoglShaderPreprocessorSymbol();
 	
 	/** Create shader preprocessor symbol. */
-	deoglShaderPreprocessorSymbol( const char *name, const char *value );
+	deoglShaderPreprocessorSymbol(const char *name, const char *value);
 	
 	/** Clean up shader preprocessor. */
 	virtual ~deoglShaderPreprocessorSymbol();
@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Value. */
-	inline const decString &GetValue() const{ return pValue; }
+	inline const decString &GetValue() const{return pValue;}
 	/*@}*/
 };
 

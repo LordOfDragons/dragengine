@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSSChain( deScriptingDragonScript &ds );
+	deClassSSChain(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSSChain();
@@ -78,21 +78,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerSourceChain *GetSource( dsRealObject *myself ) const;
+	deSynthesizerSourceChain *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizer *synthesizer );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource( dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source );
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source);
 	
-	inline dsClass *GetClassSSChainTarget() const{ return pClsSSChainTarget; }
+	inline dsClass *GetClassSSChainTarget() const{return pClsSSChainTarget;}
 	/*@}*/
 	
 	
@@ -111,23 +111,23 @@ private:
 		dsClass *clsSSChainTarget;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfGetSoundCount );
-	DEF_NATFUNC( nfAddSound );
-	DEF_NATFUNC( nfRemoveAllSounds );
+	DEF_NATFUNC(nfGetSoundCount);
+	DEF_NATFUNC(nfAddSound);
+	DEF_NATFUNC(nfRemoveAllSounds);
 	
-	DEF_NATFUNC( nfSetMinSpeed );
-	DEF_NATFUNC( nfSetMaxSpeed );
+	DEF_NATFUNC(nfSetMinSpeed);
+	DEF_NATFUNC(nfSetMaxSpeed);
 #undef DEF_NATFUNC
 };
 

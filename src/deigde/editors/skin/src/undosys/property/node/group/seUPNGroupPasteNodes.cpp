@@ -40,34 +40,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupPasteNodes::seUPNGroupPasteNodes( sePropertyNodeGroup *group,
-int layer, const seClipboardDataPropertyNode &clipboardData ) :
-pGroup( NULL ),
-pLayer( layer )
+seUPNGroupPasteNodes::seUPNGroupPasteNodes(sePropertyNodeGroup *group,
+int layer, const seClipboardDataPropertyNode &clipboardData) :
+pGroup(NULL),
+pLayer(layer)
 {
-	if( ! group || ! group->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! group || ! group->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = clipboardData.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node group paste nodes" );
+	SetShortInfo("Node group paste nodes");
 	
 	sePropertyNode *pasteNode = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			pasteNode = clipboardData.GetAt( i ).Copy();
+		for(i=0; i<count; i++){
+			pasteNode = clipboardData.GetAt(i).Copy();
 			
-			decPoint3 position( pasteNode->GetPosition() );
+			decPoint3 position(pasteNode->GetPosition());
 			position.z = layer;
-			pasteNode->SetPosition( position );
+			pasteNode->SetPosition(position);
 			
-			pNodes.Add( pasteNode );
+			pNodes.Add(pasteNode);
 			pasteNode->FreeReference();
 			pasteNode = NULL;
 		}
@@ -75,8 +75,8 @@ pLayer( layer )
 		pGroup = group;
 		group->AddReference();
 		
-	}catch( const deException & ){
-		if( pasteNode ){
+	}catch(const deException &){
+		if(pasteNode){
 			pasteNode->FreeReference();
 		}
 		pNodes.RemoveAll();
@@ -85,7 +85,7 @@ pLayer( layer )
 }
 
 seUPNGroupPasteNodes::~seUPNGroupPasteNodes(){
-	if( pGroup ){
+	if(pGroup){
 		pGroup->FreeReference();
 	}
 }
@@ -100,12 +100,12 @@ void seUPNGroupPasteNodes::Undo(){
 	int i;
 	
 	seProperty * const property = pGroup->GetProperty();
-	if( property && property->GetActiveNodeGroup() == pGroup ){
+	if(property && property->GetActiveNodeGroup() == pGroup){
 		property->GetNodeSelection().RemoveAll();
 	}
 	
-	for( i=0; i<count; i++ ){
-		pGroup->RemoveNode( ( sePropertyNode* )pNodes.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pGroup->RemoveNode((sePropertyNode*)pNodes.GetAt(i));
 	}
 }
 
@@ -114,15 +114,15 @@ void seUPNGroupPasteNodes::Redo(){
 	int i;
 	
 	seProperty * const property = pGroup->GetProperty();
-	if( property && property->GetActiveNodeGroup() == pGroup ){
+	if(property && property->GetActiveNodeGroup() == pGroup){
 		property->GetNodeSelection().RemoveAll();
 	}
 	
-	for( i=0; i<count; i++ ){
-		pGroup->AddNode( ( sePropertyNode* )pNodes.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pGroup->AddNode((sePropertyNode*)pNodes.GetAt(i));
 	}
 	
-	if( property && property->GetActiveNodeGroup() == pGroup ){
-		property->GetNodeSelection().SetSelected( pNodes );
+	if(property && property->GetActiveNodeGroup() == pGroup){
+		property->GetNodeSelection().SetSelected(pNodes);
 	}
 }

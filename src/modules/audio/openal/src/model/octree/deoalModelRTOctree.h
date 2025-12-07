@@ -40,8 +40,8 @@ public:
 	struct sFace{
 		decVector normal;
 		decVector baseVertex;
-		decVector edgeNormal[ 3 ];
-		float edgeDistance[ 3 ];
+		decVector edgeNormal[3];
+		float edgeDistance[3];
 		int indexFace;
 		int indexTexture;
 	};
@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create octree. */
-	deoalModelRTOctree( deoalModelOctree &octree );
+	deoalModelRTOctree(deoalModelOctree &octree);
 	
 	/** \brief Clean up octree. */
 	~deoalModelRTOctree();
@@ -80,16 +80,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Faces. */
-	inline const sFace *GetFaces() const{ return pFaces; }
+	inline const sFace *GetFaces() const{return pFaces;}
 	
 	/** \brief Face count. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	
 	/** \brief Nodes. */
-	inline const sNode *GetNodes() const{ return pNodes; }
+	inline const sNode *GetNodes() const{return pNodes;}
 	
 	/** \brief Node count. */
-	inline int GetNodeCount() const{ return pNodeCount; }
+	inline int GetNodeCount() const{return pNodeCount;}
 	/*@}*/
 	
 	

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModEnableVertexPositionSet( aeRuleStateManipulator *rule );
+	aeUSetRuleSModEnableVertexPositionSet(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnableVertexPositionSet();

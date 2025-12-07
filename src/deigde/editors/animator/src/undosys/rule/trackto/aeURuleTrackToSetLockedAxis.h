@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTrackToSetLockedAxis( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis );
+	aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eLockedAxis newAxis);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetLockedAxis();

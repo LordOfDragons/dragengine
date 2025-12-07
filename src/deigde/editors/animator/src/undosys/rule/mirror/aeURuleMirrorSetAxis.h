@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleMirrorSetAxis( aeRuleMirror *rule, deAnimatorRuleMirror::eMirrorAxis newValue );
+	aeURuleMirrorSetAxis(aeRuleMirror *rule, deAnimatorRuleMirror::eMirrorAxis newValue);
 	
 protected:
 	/** Clean up undo. */

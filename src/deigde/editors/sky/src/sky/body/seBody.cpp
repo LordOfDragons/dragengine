@@ -47,19 +47,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-seBody::seBody( deEngine *engine ) :
-pEngine( engine ),
+seBody::seBody(deEngine *engine) :
+pEngine(engine),
 
-pLayer( NULL ),
+pLayer(NULL),
 
-pSize( 5.0f, 5.0f ),
-pColor( 1.0f, 1.0f, 1.0f ),
+pSize(5.0f, 5.0f),
+pColor(1.0f, 1.0f, 1.0f),
 
-pSelected( false ),
-pActive( false )
+pSelected(false),
+pActive(false)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(! engine){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -71,8 +71,8 @@ seBody::~seBody(){
 // Management
 ///////////////
 
-void seBody::SetLayer( seLayer *layer ){
-	if( layer == pLayer ){
+void seBody::SetLayer(seLayer *layer){
+	if(layer == pLayer){
 		return;
 	}
 	
@@ -80,8 +80,8 @@ void seBody::SetLayer( seLayer *layer ){
 	UpdateRelativeResources();
 }
 
-void seBody::SetOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void seBody::SetOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
@@ -89,8 +89,8 @@ void seBody::SetOrientation( const decVector &orientation ){
 	NotifyBodyChanged();
 }
 
-void seBody::SetSize( const decVector2 &size ){
-	if( size.IsEqualTo( pSize ) ){
+void seBody::SetSize(const decVector2 &size){
+	if(size.IsEqualTo(pSize)){
 		return;
 	}
 	
@@ -98,8 +98,8 @@ void seBody::SetSize( const decVector2 &size ){
 	NotifyBodyChanged();
 }
 
-void seBody::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void seBody::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
@@ -107,8 +107,8 @@ void seBody::SetColor( const decColor &color ){
 	NotifyBodyChanged();
 }
 
-void seBody::SetSkinPath( const char *skinPath ){
-	if( pPathSkin == skinPath ){
+void seBody::SetSkinPath(const char *skinPath){
+	if(pPathSkin == skinPath){
 		return;
 	}
 	
@@ -119,11 +119,11 @@ void seBody::SetSkinPath( const char *skinPath ){
 
 
 
-void seBody::SetSelected( bool selected ){
+void seBody::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seBody::SetActive( bool active ){
+void seBody::SetActive(bool active){
 	pActive = active;
 }
 
@@ -134,16 +134,16 @@ void seBody::UpdateRelativeResources(){
 
 
 void seBody::NotifyBodyChanged(){
-	if( ! pLayer ){
+	if(! pLayer){
 		return;
 	}
 	
 	seSky * const sky = pLayer->GetSky();
-	if( ! sky ){
+	if(! sky){
 		return;
 	}
 	
-	sky->NotifyBodyChanged( pLayer, this );
+	sky->NotifyBodyChanged(pLayer, this);
 }
 
 
@@ -152,23 +152,23 @@ void seBody::NotifyBodyChanged(){
 //////////////////////
 
 void seBody::pUpdateSkin(){
-	if( pPathSkin.IsEmpty() ){
+	if(pPathSkin.IsEmpty()){
 		pEngSkin = NULL;
 		return;
 	}
 	
 	deSkinManager &skinMgr = *pEngine->GetSkinManager();
 	const char *basePath = "/";
-	if( pLayer && pLayer->GetSky() ){
+	if(pLayer && pLayer->GetSky()){
 		basePath = pLayer->GetSky()->GetDirectoryPath();
 	}
 	
 	try{
-		pEngSkin.TakeOver( skinMgr.LoadSkin( pPathSkin, basePath ) );
+		pEngSkin.TakeOver(skinMgr.LoadSkin(pPathSkin, basePath));
 		
-	}catch( const deException & ){
-		if( pLayer && pLayer->GetSky() ){
-			pEngSkin = pLayer->GetSky()->GetEnvironment()->GetStockSkin( igdeEnvironment::essError );
+	}catch(const deException &){
+		if(pLayer && pLayer->GetSky()){
+			pEngSkin = pLayer->GetSky()->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
 		}
 	}
 }

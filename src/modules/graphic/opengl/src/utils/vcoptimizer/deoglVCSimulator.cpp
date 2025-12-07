@@ -45,11 +45,11 @@ deoglVCSimulator::deoglVCSimulator(){
 	pFaceCount = 0;
 	
 	pCacheSize = 32;
-	pCache = new int[ pCacheSize ];
+	pCache = new int[pCacheSize];
 }
 
 deoglVCSimulator::~deoglVCSimulator(){
-	if( pCache ){
+	if(pCache){
 		delete [] pCache;
 	}
 }
@@ -59,14 +59,14 @@ deoglVCSimulator::~deoglVCSimulator(){
 // Management
 ///////////////
 
-void deoglVCSimulator::SetCacheSize( int cacheSize ){
-	if( cacheSize < 4 ){
-		DETHROW( deeInvalidParam );
+void deoglVCSimulator::SetCacheSize(int cacheSize){
+	if(cacheSize < 4){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int *cache = new int[ cacheSize ];
+	int *cache = new int[cacheSize];
 	
-	if( pCache ){
+	if(pCache){
 		delete [] pCache;
 	}
 	
@@ -79,8 +79,8 @@ void deoglVCSimulator::SetCacheSize( int cacheSize ){
 void deoglVCSimulator::Reset(){
 	int i;
 	
-	for( i=0; i<pCacheSize; i++ ){
-		pCache[ i ] = -1;
+	for(i=0; i<pCacheSize; i++){
+		pCache[i] = -1;
 	}
 	
 	pCacheHitCount = 0;
@@ -88,43 +88,43 @@ void deoglVCSimulator::Reset(){
 	pFaceCount = 0;
 }
 
-void deoglVCSimulator::ProcessFace( int vertex1, int vertex2, int vertex3 ){
-	if( vertex1 < 0 || vertex2 < 0 || vertex3 < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglVCSimulator::ProcessFace(int vertex1, int vertex2, int vertex3){
+	if(vertex1 < 0 || vertex2 < 0 || vertex3 < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFaceCount++;
-	TestVertexAgainstCache( vertex1 );
-	TestVertexAgainstCache( vertex2 );
-	TestVertexAgainstCache( vertex3 );
+	TestVertexAgainstCache(vertex1);
+	TestVertexAgainstCache(vertex2);
+	TestVertexAgainstCache(vertex3);
 }
 
 
 
 float deoglVCSimulator::GetAvgCacheMissRatio() const{
-	if( pFaceCount == 0 ){
+	if(pFaceCount == 0){
 		return 0.0f;
 		
 	}else{
-		return ( float )pCacheMissCount / ( float )pFaceCount;
+		return (float)pCacheMissCount / (float)pFaceCount;
 	}
 }
 
 
 
-void deoglVCSimulator::TestVertexAgainstCache( int vertex ){
+void deoglVCSimulator::TestVertexAgainstCache(int vertex){
 	int i;
 	
-	for( i=0; i<pCacheSize; i++ ){
-		if( pCache[ i ] == vertex ){
+	for(i=0; i<pCacheSize; i++){
+		if(pCache[i] == vertex){
 			pCacheHitCount++;
 			return;
 		}
 	}
 	
 	pCacheMissCount++;
-	for( i=pCacheSize-1; i>0; i-- ){
-		pCache[ i ] = pCache[ i - 1 ];
+	for(i=pCacheSize-1; i>0; i--){
+		pCache[i] = pCache[i - 1];
 	}
-	pCache[ 0 ] = vertex;
+	pCache[0] = vertex;
 }

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableColor( const char *name );
+	deDSRenderableColor(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderableColor();
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Static color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set static color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	/*@}*/
 	
 	
@@ -70,7 +70,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

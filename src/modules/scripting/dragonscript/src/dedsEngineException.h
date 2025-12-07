@@ -33,11 +33,11 @@ class dedsEngineException : public duException{
 private:
 	const char * const pStrDescription;
 	const char * const pStrFile;
-	dedsEngineException( const char *description, const char *file, int line );
+	dedsEngineException(const char *description, const char *file, int line);
 	
 public:
 	~dedsEngineException() override;
-	static dedsEngineException Wrap( const deException &exception );
+	static dedsEngineException Wrap(const deException &exception);
 };
 
 /**
@@ -46,9 +46,9 @@ public:
  */
 #define DS_WITH_ENGEX(ds,...) try{\
 		__VA_ARGS__\
-	}catch( const deException &e ){\
-		ds.LogException( e );\
-		throw dedsEngineException::Wrap( e );\
+	}catch(const deException &e){\
+		ds.LogException(e);\
+		throw dedsEngineException::Wrap(e);\
 	}
 
 #endif

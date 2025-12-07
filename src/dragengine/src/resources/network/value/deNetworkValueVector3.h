@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueVector3( eValueFormats format, const decDVector &value );
+	deNetworkValueVector3(eValueFormats format, const decDVector &value);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValueVector3();
@@ -63,19 +63,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{ return pFormat; }
+	inline eValueFormats GetFormat() const{return pFormat;}
 	
 	/** \brief Value. */
-	inline const decDVector &GetVector() const{ return pValue; }
+	inline const decDVector &GetVector() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetVector( const decDVector &value );
+	void SetVector(const decDVector &value);
 	
 	/** \brief Precision. */
-	inline double GetPrecision() const{ return pPrecision; }
+	inline double GetPrecision() const{return pPrecision;}
 	
 	/** \brief Set precision. */
-	void SetPrecision( double precision );
+	void SetPrecision(double precision);
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

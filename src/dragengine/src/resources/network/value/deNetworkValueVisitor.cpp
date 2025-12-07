@@ -58,41 +58,41 @@ deNetworkValueVisitor::~deNetworkValueVisitor(){
 // Visiting
 /////////////
 
-void deNetworkValueVisitor::VisitValue( deNetworkValue *value ){
+void deNetworkValueVisitor::VisitValue(deNetworkValue *value){
 }
 
-void deNetworkValueVisitor::VisitInteger( deNetworkValueInteger *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitInteger(deNetworkValueInteger *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitFloat( deNetworkValueFloat *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitFloat(deNetworkValueFloat *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitString( deNetworkValueString *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitString(deNetworkValueString *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitData( deNetworkValueData *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitData(deNetworkValueData *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitPoint2( deNetworkValuePoint2 *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitPoint2(deNetworkValuePoint2 *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitPoint3( deNetworkValuePoint3 *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitPoint3(deNetworkValuePoint3 *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitVector2( deNetworkValueVector2 *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitVector2(deNetworkValueVector2 *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitVector3( deNetworkValueVector3 *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitVector3(deNetworkValueVector3 *value){
+	VisitValue(value);
 }
 
-void deNetworkValueVisitor::VisitQuaternion( deNetworkValueQuaternion *value ){
-	VisitValue( value );
+void deNetworkValueVisitor::VisitQuaternion(deNetworkValueQuaternion *value){
+	VisitValue(value);
 }

@@ -49,16 +49,16 @@ public:
 	decDVector4();
 	
 	/** \brief Create new vector with the given values. */
-	decDVector4( double nx, double ny, double nz );
+	decDVector4(double nx, double ny, double nz);
 	
 	/** \brief Create new vector with the given values. */
-	decDVector4( double nx, double ny, double nz, double nw );
+	decDVector4(double nx, double ny, double nz, double nw);
 	
 	/** \brief Create new vector with the values of another vector. */
-	decDVector4( const decDVector4 &v );
+	decDVector4(const decDVector4 &v);
 	
 	/** \brief Create new vector with the values of another vector. */
-	decDVector4( const decVector4 &v );
+	decDVector4(const decVector4 &v);
 	/*@}*/
 	
 	
@@ -81,16 +81,16 @@ public:
 	void SetZero();
 	
 	/** \brief Set components to the given values. */
-	void Set( double nx, double ny, double nz, double nw );
+	void Set(double nx, double ny, double nz, double nw);
 	
 	/** \brief Convert to a single precision vector with possible loss of precision. */
 	decVector4 ToVector4() const;
 	
 	/** \brief Mix vectors component wise. */
-	decDVector4 Mix( const decDVector4 &vector, double blendFactor ) const;
+	decDVector4 Mix(const decDVector4 &vector, double blendFactor) const;
 	
 	/** \brief Multiply component wise. */
-	decDVector4 Multiply( const decDVector4 &vector ) const;
+	decDVector4 Multiply(const decDVector4 &vector) const;
 	/*@}*/
 	
 	
@@ -101,48 +101,48 @@ public:
 	decDVector4 operator-();
 	
 	/** \brief Set components of this vector to the values of another one. */
-	decDVector4 &operator=( const decDVector4 &v );
+	decDVector4 &operator=(const decDVector4 &v);
 	
 	/** \brief Adds the components of another vector to this one. */
-	decDVector4 &operator+=( const decDVector4 &v );
+	decDVector4 &operator+=(const decDVector4 &v);
 	
 	/** \brief Subtracts the components of another vector from this vector. */
-	decDVector4 &operator-=( const decDVector4 &v );
+	decDVector4 &operator-=(const decDVector4 &v);
 	
 	/** \brief Multiplies the components of this vector with a value k. */
-	decDVector4 &operator*=( double k );
+	decDVector4 &operator*=(double k);
 	
 	/** \brief Divides the components of this vector by a value k. If the value k is 0 an exception is thrown. */
 	decDVector4 &operator/=(double k);
 	
 	/** \brief Vector with the sum of this vector with another one. */
-	decDVector4 operator+( const decDVector4 &v ) const;
+	decDVector4 operator+(const decDVector4 &v) const;
 	
 	/** \brief Vector with the difference of this vector to another one. */
-	decDVector4 operator-( const decDVector4 &v ) const;
+	decDVector4 operator-(const decDVector4 &v) const;
 	
 	/** \brief Vector with this vector scaled by k. */
-	decDVector4 operator*( double k ) const;
+	decDVector4 operator*(double k) const;
 	
 	/** \brief Calculates the dor product of this vector with another one. */
-	double operator*( const decDVector4 &v ) const;
+	double operator*(const decDVector4 &v) const;
 	
 	/** \brief Vector with this vector divided by k. If k is 0 an exception is thrown. */
-	decDVector4 operator/( double k ) const;
+	decDVector4 operator/(double k) const;
 	
 	/** \brief Vector with the cross producr of this vector with another one. */
-	decDVector4 operator%( const decDVector4 &v ) const;
+	decDVector4 operator%(const decDVector4 &v) const;
 	
 	/** \brief All components of this vector are less then the components of another one. */
-	bool operator<( const decDVector4 &v ) const;
+	bool operator<(const decDVector4 &v) const;
 	
 	/** \brief All components of this vector are greater then the components of another one. */
-	bool operator>( const decDVector4 &v ) const;
+	bool operator>(const decDVector4 &v) const;
 	
 	/** \brief All components of this vector are less then or equal to the components of another one. */
-	bool operator<=( const decDVector4 &v ) const;
+	bool operator<=(const decDVector4 &v) const;
 	
 	/** \brief All components of this vector are greater then or equal to the components of another one. */
-	bool operator>=( const decDVector4 &v ) const;
+	bool operator>=(const decDVector4 &v) const;
 	/*@}*/
 };

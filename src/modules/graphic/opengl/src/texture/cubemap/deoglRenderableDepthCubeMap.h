@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderable cubemap. */
-	deoglRenderableDepthCubeMap( deoglRenderThread &renderThread, int size, bool useFloat );
+	deoglRenderableDepthCubeMap(deoglRenderThread &renderThread, int size, bool useFloat);
 	/** Cleans up the renderable cubemap. */
 	~deoglRenderableDepthCubeMap();
 	/*@}*/
@@ -59,24 +59,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the size. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{return pSize;}
 	
 	/** Use float depth. */
-	inline bool GetUseFloat() const{ return pUseFloat; }
+	inline bool GetUseFloat() const{return pUseFloat;}
 	
 	/** Determines if the format matches the given format. */
-	bool Matches( int size, bool useFloat ) const;
+	bool Matches(int size, bool useFloat) const;
 	
 	/** Determines if the shadow map is in use. */
-	inline bool GetInUse() const{ return pInUse; }
+	inline bool GetInUse() const{return pInUse;}
 	/** Sets if the shadow map is in use. */
-	void SetInUse( bool inUse );
+	void SetInUse(bool inUse);
 	
 	/** Retrieves the cubemap. */
-	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
+	inline deoglCubeMap *GetCubeMap() const{return pCubeMap;}
 	
 	/** Retrieves the GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
+	inline int GetMemoryUsageGPU() const{return pMemoryUsageGPU;}
 	/** Updates the GPU memory consumption. */
 	void UpdateMemoryUsage();
 	/*@}*/

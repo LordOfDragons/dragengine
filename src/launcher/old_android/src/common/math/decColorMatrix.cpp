@@ -44,7 +44,7 @@ decColorMatrix::decColorMatrix(){
 	a41 = 0.0f; a42 = 0.0f; a43 = 0.0f; a44 = 1.0f; a45 = 0.0f; // alpha
 }
 
-decColorMatrix::decColorMatrix( const decColorMatrix &m ){
+decColorMatrix::decColorMatrix(const decColorMatrix &m){
 	a11 = m.a11; a12 = m.a12; a13 = m.a13; a14 = m.a14; a15 = m.a15;
 	a21 = m.a21; a22 = m.a22; a23 = m.a23; a24 = m.a24; a25 = m.a25;
 	a31 = m.a31; a32 = m.a32; a33 = m.a33; a34 = m.a34; a35 = m.a35;
@@ -60,94 +60,94 @@ decColorMatrix decColorMatrix::CreateIdentity(){
 	return decColorMatrix();
 }
 
-decColorMatrix decColorMatrix::CreateTranslation( float red, float green, float blue, float alpha ){
+decColorMatrix decColorMatrix::CreateTranslation(float red, float green, float blue, float alpha){
 	decColorMatrix m;
-	m.SetTranslation( red, green, blue, alpha );
+	m.SetTranslation(red, green, blue, alpha);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateTranslation( const decColor &color ){
+decColorMatrix decColorMatrix::CreateTranslation(const decColor &color){
 	decColorMatrix m;
-	m.SetTranslation( color );
+	m.SetTranslation(color);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateScaling( float sred, float sgreen, float sblue, float salpha ){
+decColorMatrix decColorMatrix::CreateScaling(float sred, float sgreen, float sblue, float salpha){
 	decColorMatrix m;
-	m.SetScaling( sred, sgreen, sblue, salpha );
+	m.SetScaling(sred, sgreen, sblue, salpha);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateScaling( const decColor &color ){
+decColorMatrix decColorMatrix::CreateScaling(const decColor &color){
 	decColorMatrix m;
-	m.SetScaling( color );
+	m.SetScaling(color);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateST( const decColor &scale, const decColor &translate ){
+decColorMatrix decColorMatrix::CreateST(const decColor &scale, const decColor &translate){
 	decColorMatrix m;
-	m.SetST( scale, translate );
+	m.SetST(scale, translate);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateFrom( const decColor &red, const decColor &green,
-const decColor &blue, const decColor &alpha, const decColor &white ){
+decColorMatrix decColorMatrix::CreateFrom(const decColor &red, const decColor &green,
+const decColor &blue, const decColor &alpha, const decColor &white){
 	decColorMatrix m;
-	m.SetFrom( red, green, blue, alpha, white );
+	m.SetFrom(red, green, blue, alpha, white);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateBrightness( float brightness ){
+decColorMatrix decColorMatrix::CreateBrightness(float brightness){
 	decColorMatrix m;
-	m.SetBrightness( brightness );
+	m.SetBrightness(brightness);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateBrightness( float red, float green, float blue ){
+decColorMatrix decColorMatrix::CreateBrightness(float red, float green, float blue){
 	decColorMatrix m;
-	m.SetBrightness( red, green, blue );
+	m.SetBrightness(red, green, blue);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateBrightness( const decColor &brightness ){
+decColorMatrix decColorMatrix::CreateBrightness(const decColor &brightness){
 	decColorMatrix m;
-	m.SetBrightness( brightness );
+	m.SetBrightness(brightness);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateContrast( float contrast ){
+decColorMatrix decColorMatrix::CreateContrast(float contrast){
 	decColorMatrix m;
-	m.SetContrast( contrast );
+	m.SetContrast(contrast);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateContrast( float red, float green, float blue ){
+decColorMatrix decColorMatrix::CreateContrast(float red, float green, float blue){
 	decColorMatrix m;
-	m.SetContrast( red, green, blue );
+	m.SetContrast(red, green, blue);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateContrast( const decColor &contrast ){
+decColorMatrix decColorMatrix::CreateContrast(const decColor &contrast){
 	decColorMatrix m;
-	m.SetContrast( contrast );
+	m.SetContrast(contrast);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateSaturation( float saturation ){
+decColorMatrix decColorMatrix::CreateSaturation(float saturation){
 	decColorMatrix m;
-	m.SetSaturation( saturation );
+	m.SetSaturation(saturation);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateSaturation( float red, float green, float blue ){
+decColorMatrix decColorMatrix::CreateSaturation(float red, float green, float blue){
 	decColorMatrix m;
-	m.SetSaturation( red, green, blue );
+	m.SetSaturation(red, green, blue);
 	return m;
 }
 
-decColorMatrix decColorMatrix::CreateSaturation( const decColor &saturation ){
+decColorMatrix decColorMatrix::CreateSaturation(const decColor &saturation){
 	decColorMatrix m;
-	m.SetSaturation( saturation );
+	m.SetSaturation(saturation);
 	return m;
 }
 
@@ -188,7 +188,7 @@ void decColorMatrix::SetIdentity(){
 	a45 = 0.0f;
 }
 
-void decColorMatrix::SetTranslation( float red, float green, float blue, float alpha ){
+void decColorMatrix::SetTranslation(float red, float green, float blue, float alpha){
 	a11 = 1.0f;
 	a12 = 0.0f;
 	a13 = 0.0f;
@@ -214,11 +214,11 @@ void decColorMatrix::SetTranslation( float red, float green, float blue, float a
 	a45 = alpha;
 }
 
-void decColorMatrix::SetTranslation( const decColor &color ){
-	SetTranslation( color.r, color.g, color.b, color.a );
+void decColorMatrix::SetTranslation(const decColor &color){
+	SetTranslation(color.r, color.g, color.b, color.a);
 }
 
-void decColorMatrix::SetScaling( float sred, float sgreen, float sblue, float salpha ){
+void decColorMatrix::SetScaling(float sred, float sgreen, float sblue, float salpha){
 	a11 = sred;
 	a12 = 0.0f;
 	a13 = 0.0f;
@@ -244,11 +244,11 @@ void decColorMatrix::SetScaling( float sred, float sgreen, float sblue, float sa
 	a45 = 0.0f;
 }
 
-void decColorMatrix::SetScaling( const decColor &color ){
-	SetScaling( color.r, color.g, color.b, color.a );
+void decColorMatrix::SetScaling(const decColor &color){
+	SetScaling(color.r, color.g, color.b, color.a);
 }
 
-void decColorMatrix::SetST( const decColor &scale, const decColor &translate ){
+void decColorMatrix::SetST(const decColor &scale, const decColor &translate){
 	a11 = scale.r;
 	a12 = 0.0f;
 	a13 = 0.0f;
@@ -274,8 +274,8 @@ void decColorMatrix::SetST( const decColor &scale, const decColor &translate ){
 	a45 = translate.a;
 }
 
-void decColorMatrix::SetFrom( const decColor &red, const decColor &green,
-const decColor &blue, const decColor &alpha, const decColor &white ){
+void decColorMatrix::SetFrom(const decColor &red, const decColor &green,
+const decColor &blue, const decColor &alpha, const decColor &white){
 	a11 = red.r;
 	a12 = green.r;
 	a13 = blue.r;
@@ -301,44 +301,44 @@ const decColor &blue, const decColor &alpha, const decColor &white ){
 	a45 = white.a;
 }
 
-void decColorMatrix::SetBrightness( float brightness ){
-	SetBrightness( brightness, brightness, brightness );
+void decColorMatrix::SetBrightness(float brightness){
+	SetBrightness(brightness, brightness, brightness);
 }
 
-void decColorMatrix::SetBrightness( float red, float green, float blue ){
-	SetTranslation( red, green, blue, 0.0f );
+void decColorMatrix::SetBrightness(float red, float green, float blue){
+	SetTranslation(red, green, blue, 0.0f);
 }
 
-void decColorMatrix::SetBrightness( const decColor &brightness ){
-	SetBrightness( brightness.r, brightness.g, brightness.b );
+void decColorMatrix::SetBrightness(const decColor &brightness){
+	SetBrightness(brightness.r, brightness.g, brightness.b);
 }
 
-void decColorMatrix::SetContrast( float contrast ){
-	SetContrast( contrast, contrast, contrast );
+void decColorMatrix::SetContrast(float contrast){
+	SetContrast(contrast, contrast, contrast);
 }
 
-void decColorMatrix::SetContrast( float red, float green, float blue ){
-	const decColor scale( red, green, blue, 1.0f );
-	const decColor translate( ( 1.0f - red ) * 0.5f, ( 1.0f - green ) * 0.5, ( 1.0f - blue ) * 0.5f, 0.0f );
-	SetST( scale, translate );
+void decColorMatrix::SetContrast(float red, float green, float blue){
+	const decColor scale(red, green, blue, 1.0f);
+	const decColor translate((1.0f - red) * 0.5f, (1.0f - green) * 0.5, (1.0f - blue) * 0.5f, 0.0f);
+	SetST(scale, translate);
 }
 
-void decColorMatrix::SetContrast( const decColor &contrast ){
-	SetContrast( contrast.r, contrast.g, contrast.b );
+void decColorMatrix::SetContrast(const decColor &contrast){
+	SetContrast(contrast.r, contrast.g, contrast.b);
 }
 
-void decColorMatrix::SetSaturation( float saturation ){
-	SetSaturation( saturation, saturation, saturation );
+void decColorMatrix::SetSaturation(float saturation){
+	SetSaturation(saturation, saturation, saturation);
 }
 
-void decColorMatrix::SetSaturation( float red, float green, float blue ){
+void decColorMatrix::SetSaturation(float red, float green, float blue){
 	const float lumRed = 0.3086f;
 	const float lumGreen = 0.6094f;
 	const float lumBlue = 0.0820f;
 	
-	const float sred = ( 1.0f - red ) * lumRed;
-	const float sgreen = ( 1.0f - green ) * lumGreen;
-	const float sblue = ( 1.0f - blue ) * lumBlue;
+	const float sred = (1.0f - red) * lumRed;
+	const float sgreen = (1.0f - green) * lumGreen;
+	const float sblue = (1.0f - blue) * lumBlue;
 	
 	a11 = sred + red;
 	a12 = sgreen;
@@ -365,8 +365,8 @@ void decColorMatrix::SetSaturation( float red, float green, float blue ){
 	a45 = 0.0f;
 }
 
-void decColorMatrix::SetSaturation( const decColor &saturation ){
-	SetSaturation( saturation.r, saturation.g, saturation.b );
+void decColorMatrix::SetSaturation(const decColor &saturation){
+	SetSaturation(saturation.r, saturation.g, saturation.b);
 }
 
 void decColorMatrix::SetColorInversion(){
@@ -380,7 +380,7 @@ void decColorMatrix::SetColorInversion(){
 
 float decColorMatrix::Determinant() const{
 	// TODO implement
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 	return 0.0f;
 	/*
 	return a14*a23*a32*a41 - a13*a24*a32*a41 - a14*a22*a33*a41 + a12*a24*a33*a41 +
@@ -394,7 +394,7 @@ float decColorMatrix::Determinant() const{
 
 decColorMatrix decColorMatrix::Invert() const{
 	// TODO implement
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 	return *this;
 	/*
 	decColorMatrix m;
@@ -419,116 +419,116 @@ decColorMatrix decColorMatrix::Invert() const{
 }
 
 decColor decColorMatrix::GetRedBase() const{
-	return decColor( a11, a21, a31, a41 );
+	return decColor(a11, a21, a31, a41);
 }
 
 decColor decColorMatrix::GetGreenBase() const{
-	return decColor( a12, a22, a32, a42 );
+	return decColor(a12, a22, a32, a42);
 }
 
 decColor decColorMatrix::GetBlueBase() const{
-	return decColor( a13, a23, a33, a43 );
+	return decColor(a13, a23, a33, a43);
 }
 
 decColor decColorMatrix::GetAlphaBase() const{
-	return decColor( a14, a24, a34, a44 );
+	return decColor(a14, a24, a34, a44);
 }
 
 decColor decColorMatrix::GetWhiteBase() const{
-	return decColor( a15, a25, a35, a45 );
+	return decColor(a15, a25, a35, a45);
 }
 
-void decColorMatrix::SetRedBase( const decColor &color ){
+void decColorMatrix::SetRedBase(const decColor &color){
 	a11 = color.r;
 	a21 = color.g;
 	a31 = color.b;
 	a41 = color.a;
 }
 
-void decColorMatrix::SetGreenBase( const decColor &color ){
+void decColorMatrix::SetGreenBase(const decColor &color){
 	a12 = color.r;
 	a22 = color.g;
 	a32 = color.b;
 	a42 = color.a;
 }
 
-void decColorMatrix::SetBlueBase( const decColor &color ){
+void decColorMatrix::SetBlueBase(const decColor &color){
 	a13 = color.r;
 	a23 = color.g;
 	a33 = color.b;
 	a43 = color.a;
 }
 
-void decColorMatrix::SetAlphaBase( const decColor &color ){
+void decColorMatrix::SetAlphaBase(const decColor &color){
 	a14 = color.r;
 	a24 = color.g;
 	a34 = color.b;
 	a44 = color.a;
 }
 
-void decColorMatrix::SetWhiteBase( const decColor &color ){
+void decColorMatrix::SetWhiteBase(const decColor &color){
 	a15 = color.r;
 	a25 = color.g;
 	a35 = color.b;
 	a45 = color.a;
 }
 
-bool decColorMatrix::IsEqualTo( const decColorMatrix &matrix, float threshold ) const{
-	return fabs( a11 - matrix.a11 ) < threshold
-		&& fabs( a12 - matrix.a12 ) < threshold
-		&& fabs( a13 - matrix.a13 ) < threshold
-		&& fabs( a14 - matrix.a14 ) < threshold
-		&& fabs( a15 - matrix.a15 ) < threshold
-		&& fabs( a21 - matrix.a21 ) < threshold
-		&& fabs( a22 - matrix.a22 ) < threshold
-		&& fabs( a23 - matrix.a23 ) < threshold
-		&& fabs( a24 - matrix.a24 ) < threshold
-		&& fabs( a25 - matrix.a25 ) < threshold
-		&& fabs( a31 - matrix.a31 ) < threshold
-		&& fabs( a32 - matrix.a32 ) < threshold
-		&& fabs( a33 - matrix.a33 ) < threshold
-		&& fabs( a34 - matrix.a34 ) < threshold
-		&& fabs( a35 - matrix.a35 ) < threshold
-		&& fabs( a41 - matrix.a41 ) < threshold
-		&& fabs( a42 - matrix.a42 ) < threshold
-		&& fabs( a43 - matrix.a43 ) < threshold
-		&& fabs( a44 - matrix.a44 ) < threshold
-		&& fabs( a45 - matrix.a45 ) < threshold ;
+bool decColorMatrix::IsEqualTo(const decColorMatrix &matrix, float threshold) const{
+	return fabs(a11 - matrix.a11) < threshold
+		&& fabs(a12 - matrix.a12) < threshold
+		&& fabs(a13 - matrix.a13) < threshold
+		&& fabs(a14 - matrix.a14) < threshold
+		&& fabs(a15 - matrix.a15) < threshold
+		&& fabs(a21 - matrix.a21) < threshold
+		&& fabs(a22 - matrix.a22) < threshold
+		&& fabs(a23 - matrix.a23) < threshold
+		&& fabs(a24 - matrix.a24) < threshold
+		&& fabs(a25 - matrix.a25) < threshold
+		&& fabs(a31 - matrix.a31) < threshold
+		&& fabs(a32 - matrix.a32) < threshold
+		&& fabs(a33 - matrix.a33) < threshold
+		&& fabs(a34 - matrix.a34) < threshold
+		&& fabs(a35 - matrix.a35) < threshold
+		&& fabs(a41 - matrix.a41) < threshold
+		&& fabs(a42 - matrix.a42) < threshold
+		&& fabs(a43 - matrix.a43) < threshold
+		&& fabs(a44 - matrix.a44) < threshold
+		&& fabs(a45 - matrix.a45) < threshold ;
 }
 
-decColor decColorMatrix::Transform( const decColor &color ) const{
+decColor decColorMatrix::Transform(const decColor &color) const{
 	return decColor(
 		a11 * color.r + a12 * color.g + a13 * color.b + a14 * color.a + a15,
 		a21 * color.r + a22 * color.g + a23 * color.b + a24 * color.a + a25,
 		a31 * color.r + a32 * color.g + a33 * color.b + a34 * color.a + a35,
 		a41 * color.r + a42 * color.g + a43 * color.b + a44 * color.a + a45
-	);
+);
 }
 
-decColor decColorMatrix::Transform( float red, float green, float blue ) const{
+decColor decColorMatrix::Transform(float red, float green, float blue) const{
 	return decColor(
 		a11 * red + a12 * green + a13 * blue + a14 + a15,
 		a21 * red + a22 * green + a23 * blue + a24 + a25,
 		a31 * red + a32 * green + a33 * blue + a34 + a35,
 		a41 * red + a42 * green + a43 * blue + a44 + a45
-	);
+);
 }
 
-decColor decColorMatrix::Transform( float red, float green, float blue, float alpha ) const{
+decColor decColorMatrix::Transform(float red, float green, float blue, float alpha) const{
 	return decColor(
 		a11 * red + a12 * green + a13 * blue + a14 * alpha + a15,
 		a21 * red + a22 * green + a23 * blue + a24 * alpha + a25,
 		a31 * red + a32 * green + a33 * blue + a34 * alpha + a35,
 		a41 * red + a42 * green + a43 * blue + a44 * alpha + a45
-	);
+);
 }
 
-decColor decColorMatrix::TransformColor( const decColor &color ) const{
+decColor decColorMatrix::TransformColor(const decColor &color) const{
 	return decColor(
 		a11 * color.r + a12 * color.g + a13 * color.b + a14 + a15,
 		a21 * color.r + a22 * color.g + a23 * color.b + a24 + a25,
 		a31 * color.r + a32 * color.g + a33 * color.b + a34 + a35
-	);
+);
 }
 
 
@@ -536,7 +536,7 @@ decColor decColorMatrix::TransformColor( const decColor &color ) const{
 // Operators
 //////////////
 
-decColorMatrix &decColorMatrix::operator=( const decColorMatrix &matrix ){
+decColorMatrix &decColorMatrix::operator=(const decColorMatrix &matrix){
 	a11 = matrix.a11;
 	a12 = matrix.a12;
 	a13 = matrix.a13;
@@ -564,7 +564,7 @@ decColorMatrix &decColorMatrix::operator=( const decColorMatrix &matrix ){
 	return *this;
 }
 
-decColorMatrix &decColorMatrix::operator+=( const decColorMatrix &matrix ){
+decColorMatrix &decColorMatrix::operator+=(const decColorMatrix &matrix){
 	a11 += matrix.a11;
 	a12 += matrix.a12;
 	a13 += matrix.a13;
@@ -592,7 +592,7 @@ decColorMatrix &decColorMatrix::operator+=( const decColorMatrix &matrix ){
 	return *this;
 }
 
-decColorMatrix &decColorMatrix::operator-=( const decColorMatrix &matrix ){
+decColorMatrix &decColorMatrix::operator-=(const decColorMatrix &matrix){
 	a11 -= matrix.a11;
 	a12 -= matrix.a12;
 	a13 -= matrix.a13;
@@ -620,7 +620,7 @@ decColorMatrix &decColorMatrix::operator-=( const decColorMatrix &matrix ){
 	return *this;
 }
 
-decColorMatrix &decColorMatrix::operator*=( float scalar ){
+decColorMatrix &decColorMatrix::operator*=(float scalar){
 	// red
 	a11 *= scalar;
 	a12 *= scalar;
@@ -653,15 +653,15 @@ decColorMatrix &decColorMatrix::operator*=( float scalar ){
 	return *this;
 }
 
-decColorMatrix &decColorMatrix::operator/=( float scalar ){
-	if( scalar == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decColorMatrix &decColorMatrix::operator/=(float scalar){
+	if(scalar == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
-	return *this *= ( 1.0f / scalar );
+	return *this *= (1.0f / scalar);
 }
 
-decColorMatrix &decColorMatrix::operator*=( const decColorMatrix &matrix ){
+decColorMatrix &decColorMatrix::operator*=(const decColorMatrix &matrix){
 	const float t11 = a11 * matrix.a11 + a21 * matrix.a12 + a31 * matrix.a13 + a41 * matrix.a14;
 	const float t12 = a12 * matrix.a11 + a22 * matrix.a12 + a32 * matrix.a13 + a42 * matrix.a14;
 	const float t13 = a13 * matrix.a11 + a23 * matrix.a12 + a33 * matrix.a13 + a43 * matrix.a14;
@@ -714,7 +714,7 @@ decColorMatrix &decColorMatrix::operator*=( const decColorMatrix &matrix ){
 	return *this;
 }
 
-decColorMatrix decColorMatrix::operator+( const decColorMatrix &matrix ) const{
+decColorMatrix decColorMatrix::operator+(const decColorMatrix &matrix) const{
 	decColorMatrix result;
 	
 	result.a11 = a11 + matrix.a11;
@@ -744,7 +744,7 @@ decColorMatrix decColorMatrix::operator+( const decColorMatrix &matrix ) const{
 	return result;
 }
 
-decColorMatrix decColorMatrix::operator-( const decColorMatrix &matrix ) const{
+decColorMatrix decColorMatrix::operator-(const decColorMatrix &matrix) const{
 	decColorMatrix result;
 	
 	result.a11 = a11 - matrix.a11;
@@ -774,7 +774,7 @@ decColorMatrix decColorMatrix::operator-( const decColorMatrix &matrix ) const{
 	return result;
 }
 
-decColorMatrix decColorMatrix::operator*( float scalar ) const{
+decColorMatrix decColorMatrix::operator*(float scalar) const{
 	decColorMatrix result;
 	
 	result.a11 = a11 * scalar;
@@ -804,15 +804,15 @@ decColorMatrix decColorMatrix::operator*( float scalar ) const{
 	return result;
 }
 
-decColorMatrix decColorMatrix::operator/( float scalar ) const{
-	if( scalar == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decColorMatrix decColorMatrix::operator/(float scalar) const{
+	if(scalar == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
-	return *this * ( 1.0f / scalar );
+	return *this * (1.0f / scalar);
 }
 
-decColorMatrix decColorMatrix::operator*( const decColorMatrix &matrix ) const{
+decColorMatrix decColorMatrix::operator*(const decColorMatrix &matrix) const{
 	decColorMatrix result;
 	
 	result.a11 = a11 * matrix.a11 + a21 * matrix.a12 + a31 * matrix.a13 + a41 * matrix.a14;
@@ -842,11 +842,11 @@ decColorMatrix decColorMatrix::operator*( const decColorMatrix &matrix ) const{
 	return result;
 }
 
-decColor decColorMatrix::operator*( const decColor &color ) const{
+decColor decColorMatrix::operator*(const decColor &color) const{
 	return decColor(
 		a11 * color.r + a12 * color.g + a13 * color.b + a14 * color.a + a15,
 		a21 * color.r + a22 * color.g + a23 * color.b + a24 * color.a + a25,
 		a31 * color.r + a32 * color.g + a33 * color.b + a34 * color.a + a35,
 		a41 * color.r + a42 * color.g + a43 * color.b + a44 * color.a + a45
-	);
+);
 }

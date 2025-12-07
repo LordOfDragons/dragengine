@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSnapPointSetSnapDistance( gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, float newValue );
+	gdeUOCSnapPointSetSnapDistance(gdeObjectClass *objectClass,
+		gdeOCSnapPoint *snapPoint, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSSky( gdeWindowProperties &windowMain );
+	gdeWPSSky(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
@@ -107,9 +107,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeActionContextMenu *GetActionControllerMenu() const{ return pActionControllerMenu; }
+	inline igdeAction *GetActionControllerAdd() const{return pActionControllerAdd;}
+	inline igdeAction *GetActionControllerRemove() const{return pActionControllerRemove;}
+	inline igdeActionContextMenu *GetActionControllerMenu() const{return pActionControllerMenu;}
 	
 	
 	
@@ -117,7 +117,7 @@ public:
 	void UpdateCategoryList();
 	
 	/** \brief Update category list. */
-	void UpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void UpdateCategoryList(const gdeCategoryList &list, const char *prefix);
 	
 	
 	

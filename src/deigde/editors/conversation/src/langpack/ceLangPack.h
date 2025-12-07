@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create language pack. */
-	ceLangPack( const char *path );
+	ceLangPack(const char *path);
 	
 protected:
 	/** Cleans up language pack. */
@@ -71,27 +71,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** Identifier. */
-	inline const decString &GetIdentifier() const{ return pIdentifier; }
-	void SetIdentifier( const char *identifier );
+	inline const decString &GetIdentifier() const{return pIdentifier;}
+	void SetIdentifier(const char *identifier);
 	
 	/** Name. */
-	inline const decUnicodeString &GetName() const{ return pName; }
-	void SetName( const decUnicodeString &name );
+	inline const decUnicodeString &GetName() const{return pName;}
+	void SetName(const decUnicodeString &name);
 	
 	/** Description. */
-	inline const decUnicodeString &GetDescription() const{ return pDescription; }
-	void SetDescription( const decUnicodeString &description );
+	inline const decUnicodeString &GetDescription() const{return pDescription;}
+	void SetDescription(const decUnicodeString &description);
 	
 	/** Missing text. */
-	inline const decUnicodeString &GetMissingText() const{ return pMissingText; }
-	void SetMissingText( const decUnicodeString &missingText );
+	inline const decUnicodeString &GetMissingText() const{return pMissingText;}
+	void SetMissingText(const decUnicodeString &missingText);
 	
 	/** Language pack changed and needs to be saved. */
-	inline bool GetChanged() const{ return pChanged; }
-	void SetChanged( bool changed );
+	inline bool GetChanged() const{return pChanged;}
+	void SetChanged(bool changed);
 	/*@}*/
 	
 	
@@ -102,22 +102,22 @@ public:
 	int GetEntryCount() const;
 	
 	/** Entry at index. */
-	ceLangPackEntry *GetEntryAt( int index ) const;
+	ceLangPackEntry *GetEntryAt(int index) const;
 	
 	/** Named entry or nullptr if absent. */
-	ceLangPackEntry *GetEntryNamed( const char *name ) const;
+	ceLangPackEntry *GetEntryNamed(const char *name) const;
 	
 	/** Add entry. */
-	void AddEntry( ceLangPackEntry *entry );
+	void AddEntry(ceLangPackEntry *entry);
 	
 	/** Remove entry. */
-	void RemoveEntry( ceLangPackEntry *entry );
+	void RemoveEntry(ceLangPackEntry *entry);
 	
 	/** Remove all entries. */
 	void RemoveAllEntries();
 	
 	/** Get sorted list of entry names. */
-	void GetEntryNames( decStringList &list ) const;
+	void GetEntryNames(decStringList &list) const;
 	/*@}*/
 };
 

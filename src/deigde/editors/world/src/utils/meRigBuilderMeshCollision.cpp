@@ -50,6 +50,6 @@ meRigBuilderMeshCollision::~meRigBuilderMeshCollision(){
 // Management
 ///////////////
 
-void meRigBuilderMeshCollision::BuildRig( deRig *rig ){
-	rig->SetModelCollision( true );
+void meRigBuilderMeshCollision::BuildRig(deRig *rig){
+	rig->SetModelCollision(true);
 }

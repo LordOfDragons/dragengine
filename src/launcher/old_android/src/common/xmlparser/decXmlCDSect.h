@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml cd section with the given data. */
-	decXmlCDSect( const char *data );
+	decXmlCDSect(const char *data);
 	
 protected:
 	/** \brief Clean up xml cd section. */
@@ -52,7 +52,7 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	/** \name Casting */

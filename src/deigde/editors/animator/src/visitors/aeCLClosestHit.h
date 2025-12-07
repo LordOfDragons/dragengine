@@ -67,46 +67,46 @@ public:
 	void Reset();
 	
 	/** Element has been hit. */
-	inline bool GetHasHit() const{ return pHasHit; }
+	inline bool GetHasHit() const{return pHasHit;}
 	
 	/** Hit distance. */
-	inline float GetHitDistance() const{ return pHitDistance; }
+	inline float GetHitDistance() const{return pHitDistance;}
 	
 	/** Hit normal. */
-	inline const decVector &GetHitNormal() const{ return pHitNormal; }
+	inline const decVector &GetHitNormal() const{return pHitNormal;}
 	
 	/** Hit collider or nullptr. */
-	inline deCollider *GetHitCollider() const{ return pHitCollider; }
+	inline deCollider *GetHitCollider() const{return pHitCollider;}
 	
 	/** Hit bone index or -1. */
-	inline int GetHitBone() const{ return pHitBone; }
+	inline int GetHitBone() const{return pHitBone;}
 	
 	/** Hit shape index or -1. */
-	inline int GetHitShape() const{ return pHitShape; }
+	inline int GetHitShape() const{return pHitShape;}
 	
 	
 	
 	/** Identify hit element. */
-	void IdentifyHitElement( igdeEnvironment &environment );
+	void IdentifyHitElement(igdeEnvironment &environment);
 	
 	/** Hit gizmo or nullptr. */
-	inline igdeGizmo *GetHitGizmo() const{ return pHitGizmo; }
+	inline igdeGizmo *GetHitGizmo() const{return pHitGizmo;}
 	/*@}*/
 	
 	
 	
 	/** \name Notifications */
 	/*@{*/
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info ) override;
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider ) override;
-	virtual void ColliderChanged( deCollider *owner ) override;
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info) override;
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider) override;
+	virtual void ColliderChanged(deCollider *owner) override;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	virtual void VisitGizmo( igdeGizmo *gizmo ) override;
+	virtual void VisitGizmo(igdeGizmo *gizmo) override;
 	/*@}*/
 };
 

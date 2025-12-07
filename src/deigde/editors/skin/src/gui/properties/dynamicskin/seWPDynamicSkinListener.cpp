@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPDynamicSkinListener::seWPDynamicSkinListener( seWPDynamicSkin &panel ) :
-pPanel( panel ){
+seWPDynamicSkinListener::seWPDynamicSkinListener(seWPDynamicSkin &panel) :
+pPanel(panel){
 }
 
 seWPDynamicSkinListener::~seWPDynamicSkinListener(){
@@ -53,17 +53,17 @@ seWPDynamicSkinListener::~seWPDynamicSkinListener(){
 // Management
 ///////////////
 
-void seWPDynamicSkinListener::DynamicSkinRenderableStructureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPDynamicSkinListener::DynamicSkinRenderableStructureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdateRenderableList();
 }
 
-void seWPDynamicSkinListener::DynamicSkinRenderableChanged( seSkin *skin,
-seDynamicSkinRenderable *renderable ){
-	if( skin != pPanel.GetSkin() || ! renderable->GetActive() ){
+void seWPDynamicSkinListener::DynamicSkinRenderableChanged(seSkin *skin,
+seDynamicSkinRenderable *renderable){
+	if(skin != pPanel.GetSkin() || ! renderable->GetActive()){
 		return;
 	}
 	
@@ -71,17 +71,17 @@ seDynamicSkinRenderable *renderable ){
 	pPanel.UpdateRenderable();
 }
 
-void seWPDynamicSkinListener::DynamicSkinRenderableNameChanged( seSkin *skin,
-seDynamicSkinRenderable *renderable ){
-	if( skin != pPanel.GetSkin() || ! renderable->GetActive() ){
+void seWPDynamicSkinListener::DynamicSkinRenderableNameChanged(seSkin *skin,
+seDynamicSkinRenderable *renderable){
+	if(skin != pPanel.GetSkin() || ! renderable->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateRenderableList();
 }
 
-void seWPDynamicSkinListener::DynamicSkinActiveRenderableChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPDynamicSkinListener::DynamicSkinActiveRenderableChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	

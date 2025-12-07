@@ -39,7 +39,7 @@ igdeNativeNullToolBarDock::igdeNativeNullToolBarDock(){
 igdeNativeNullToolBarDock::~igdeNativeNullToolBarDock(){
 }
 
-igdeNativeNullToolBarDock *igdeNativeNullToolBarDock::CreateNativeWidget( igdeToolBarDock& ){
+igdeNativeNullToolBarDock *igdeNativeNullToolBarDock::CreateNativeWidget(igdeToolBarDock&){
 	return new igdeNativeNullToolBarDock;
 }
 

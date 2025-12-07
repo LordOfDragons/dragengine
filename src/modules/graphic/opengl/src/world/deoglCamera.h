@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new opengl camera peer. */
-	deoglCamera( deGraphicOpenGl &ogl, const deCamera &camera );
+	deoglCamera(deGraphicOpenGl &ogl, const deCamera &camera);
 	
 	/** Clean up camera peer. */
 	virtual ~deoglCamera();
@@ -81,21 +81,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render camera. */
-	inline deoglRCamera *GetRCamera() const{ return pRCamera; }
+	inline deoglRCamera *GetRCamera() const{return pRCamera;}
 	
 	/** Camera. */
-	inline const deCamera &GetCamera() const{ return pCamera; }
+	inline const deCamera &GetCamera() const{return pCamera;}
 	
 	/** Parent world or \em NULL. */
-	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
 	/** Updates the camera. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -105,12 +105,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	inline decPointerSet &GetNotifyRenderables(){return pNotifyRenderables;}
+	inline const decPointerSet &GetNotifyRenderables() const{return pNotifyRenderables;}
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decPointerSet &GetNotifyCanvas(){return pNotifyCanvas;}
+	inline const decPointerSet &GetNotifyCanvas() const{return pNotifyCanvas;}
 	/*@}*/
 	
 	
@@ -138,10 +138,10 @@ public:
 	
 	
 	/** Effect has been added. */
-	virtual void EffectAdded( int index, deEffect *effect );
+	virtual void EffectAdded(int index, deEffect *effect);
 	
 	/** Effect has been removed. */
-	virtual void EffectRemoved( int index, deEffect *effect );
+	virtual void EffectRemoved(int index, deEffect *effect);
 	
 	/** All effects have been removed. */
 	virtual void AllEffectsRemoved();

@@ -59,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNImage( deSkinPropertyNodeImage &node );
+	deoglSkinStateCNImage(deSkinPropertyNodeImage &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNImage( const deoglSkinStateCNImage &node );
+	deoglSkinStateCNImage(const deoglSkinStateCNImage &node);
 	
 protected:
 	/** Clean up skin state mapped. */
@@ -75,19 +75,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
+	inline const deoglRImage::Ref &GetImage() const{return pImage;}
 	
 	/** Repeat. */
-	inline const decPoint &GetRepeat() const{ return pRepeat; }
+	inline const decPoint &GetRepeat() const{return pRepeat;}
 	
 	/** TC Transform. */
-	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
+	inline const decTexMatrix2 &GetTCTransform() const{return pTCTransform;}
 	
 	/** Texture coordinates clamp minimum. */
-	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
+	inline const decVector2 &GetTCClampMinimum() const{return pTCClampMin;}
 	
 	/** Texture coordinates clamp maximum. */
-	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
+	inline const decVector2 &GetTCClampMaximum() const{return pTCClampMax;}
 	
 	
 	
@@ -95,13 +95,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	virtual void Update(deoglSkinState &state) override;
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state ) override;
+	virtual void PrepareForRender(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	virtual void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;

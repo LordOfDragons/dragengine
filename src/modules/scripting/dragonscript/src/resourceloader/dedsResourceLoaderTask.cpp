@@ -69,23 +69,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsResourceLoaderTask::dedsResourceLoaderTask( deScriptingDragonScript *ds,
-const char *filename, deResourceLoader::eResourceType resourceType ) :
-pDS( ds ),
-pFilename( filename ),
-pResourceType( resourceType ),
-pListeners( NULL ),
-pListenerCount( 0 ),
-pListenerSize( 0 )
+dedsResourceLoaderTask::dedsResourceLoaderTask(deScriptingDragonScript *ds,
+const char *filename, deResourceLoader::eResourceType resourceType) :
+pDS(ds),
+pFilename(filename),
+pResourceType(resourceType),
+pListeners(NULL),
+pListenerCount(0),
+pListenerSize(0)
 {
-	if( ! ds ){
-		DETHROW( deeInvalidParam );
+	if(! ds){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 	pClearListeners();
-	if( pListeners ){
+	if(pListeners){
 		delete [] pListeners;
 	}
 }
@@ -95,110 +95,110 @@ dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 // Management
 ///////////////
 
-bool dedsResourceLoaderTask::Matches( const char *filename,
-deResourceLoader::eResourceType resourceType ) const{
+bool dedsResourceLoaderTask::Matches(const char *filename,
+deResourceLoader::eResourceType resourceType) const{
 	return resourceType == pResourceType && pFilename == filename;
 }
 
-void dedsResourceLoaderTask::AddListener( dsRealObject *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void dedsResourceLoaderTask::AddListener(dsRealObject *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
 	
-	if( pListenerCount == pListenerSize ){
+	if(pListenerCount == pListenerSize){
 		int newSize = pListenerSize * 3 / 2 + 1;
-		dsValue **newArray = new dsValue*[ newSize ];
-		if( pListeners ){
-			memcpy( newArray, pListeners, sizeof( dsValue* ) * pListenerSize );
+		dsValue **newArray = new dsValue*[newSize];
+		if(pListeners){
+			memcpy(newArray, pListeners, sizeof(dsValue*) * pListenerSize);
 			delete [] pListeners;
 		}
 		pListeners = newArray;
 		pListenerSize = newSize;
 	}
 	
-	pListeners[ pListenerCount ] = rt->CreateValue( pDS->GetClassResourceListener() );
-	rt->SetObject( pListeners[ pListenerCount ], listener );
-	rt->CastValueTo( pListeners[ pListenerCount ], pListeners[ pListenerCount ], pDS->GetClassResourceListener() );
+	pListeners[pListenerCount] = rt->CreateValue(pDS->GetClassResourceListener());
+	rt->SetObject(pListeners[pListenerCount], listener);
+	rt->CastValueTo(pListeners[pListenerCount], pListeners[pListenerCount], pDS->GetClassResourceListener());
 	pListenerCount++;
 }
 
-void dedsResourceLoaderTask::RemoveListener( dsRealObject *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void dedsResourceLoaderTask::RemoveListener(dsRealObject *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
 	int i, j;
 	
-	for( i=0; i<pListenerCount; i++ ){
-		if( listener == pListeners[ i ]->GetRealObject() ){
-			rt->FreeValue( pListeners[ i ] );
-			for( j=i+1; j<pListenerCount; j++ ){
-				pListeners[ i - 1 ] = pListeners[ i ];
+	for(i=0; i<pListenerCount; i++){
+		if(listener == pListeners[i]->GetRealObject()){
+			rt->FreeValue(pListeners[i]);
+			for(j=i+1; j<pListenerCount; j++){
+				pListeners[i - 1] = pListeners[i];
 			}
 			return;
 		}
 	}
 }
 
-void dedsResourceLoaderTask::NotifyLoadingFinished( deFileResource *resource ){
-	if( ! resource ){
-		DETHROW( deeInvalidParam );
+void dedsResourceLoaderTask::NotifyLoadingFinished(deFileResource *resource){
+	if(! resource){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int funcIndex = pDS->GetClassResourceListener()->GetFuncIndexFinishedLoading();
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
 	int i;
 	
-	for( i=0; i<pListenerCount; i++ ){
+	for(i=0; i<pListenerCount; i++){
 		// finishedLoading( filename, resourceType, resource )
-		switch( pResourceType ){
+		switch(pResourceType){
 		case deResourceLoader::ertAnimation:
-			pDS->GetClassAnimation()->PushAnimation( rt, ( deAnimation* )resource );
+			pDS->GetClassAnimation()->PushAnimation(rt, (deAnimation*)resource);
 			break;
 			
 		case deResourceLoader::ertFont:
-			pDS->GetClassFont()->PushFont( rt, ( deFont* )resource, 10 ); // problem, font has a size
+			pDS->GetClassFont()->PushFont(rt, (deFont*)resource, 10); // problem, font has a size
 			break;
 			
 		case deResourceLoader::ertImage:
-			pDS->GetClassImage()->PushImage( rt, ( deImage* )resource );
+			pDS->GetClassImage()->PushImage(rt, (deImage*)resource);
 			break;
 			
 		case deResourceLoader::ertModel:
-			pDS->GetClassModel()->PushModel( rt, ( deModel* )resource );
+			pDS->GetClassModel()->PushModel(rt, (deModel*)resource);
 			break;
 			
 		case deResourceLoader::ertRig:
-			pDS->GetClassRig()->PushRig( rt, ( deRig* )resource );
+			pDS->GetClassRig()->PushRig(rt, (deRig*)resource);
 			break;
 			
 		case deResourceLoader::ertSkin:
-			pDS->GetClassSkin()->PushSkin( rt, ( deSkin* )resource );
+			pDS->GetClassSkin()->PushSkin(rt, (deSkin*)resource);
 			break;
 			
 		case deResourceLoader::ertSound:
-			pDS->GetClassSound()->PushSound( rt, ( deSound* )resource );
+			pDS->GetClassSound()->PushSound(rt, (deSound*)resource);
 			break;
 			
 		case deResourceLoader::ertOcclusionMesh:
-			pDS->GetClassOcclusionMesh()->PushOcclusionMesh( rt, ( deOcclusionMesh* )resource );
+			pDS->GetClassOcclusionMesh()->PushOcclusionMesh(rt, (deOcclusionMesh*)resource);
 			break;
 			
 		case deResourceLoader::ertLanguagePack:
-			pDS->GetClassLanguagePack()->PushLanguagePack( rt, ( deLanguagePack* )resource );
+			pDS->GetClassLanguagePack()->PushLanguagePack(rt, (deLanguagePack*)resource);
 			break;
 			
 		case deResourceLoader::ertVideo:
-			pDS->GetClassVideo()->PushVideo( rt, ( deVideo* )resource );
+			pDS->GetClassVideo()->PushVideo(rt, (deVideo*)resource);
 			break;
 			
 		default:
-			DETHROW( deeInvalidParam ); // TODO do something more smart here
+			DETHROW(deeInvalidParam); // TODO do something more smart here
 		}
-		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
-		rt->PushString( pFilename );
-		rt->RunFunctionFast( pListeners[ i ], funcIndex );
+		rt->PushValue(pDS->GetClassResourceLoaderType()->GetVariable(pResourceType)->GetStaticValue());
+		rt->PushString(pFilename);
+		rt->RunFunctionFast(pListeners[i], funcIndex);
 	}
 	
 	pClearListeners();
@@ -209,11 +209,11 @@ void dedsResourceLoaderTask::NotifyLoadingFailed(){
 	dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
 	int i;
 	
-	for( i=0; i<pListenerCount; i++ ){
+	for(i=0; i<pListenerCount; i++){
 		// failedLoading( filename, resourceType )
-		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
-		rt->PushString( pFilename );
-		rt->RunFunctionFast( pListeners[ i ], funcIndex );
+		rt->PushValue(pDS->GetClassResourceLoaderType()->GetVariable(pResourceType)->GetStaticValue());
+		rt->PushString(pFilename);
+		rt->RunFunctionFast(pListeners[i], funcIndex);
 	}
 	
 	pClearListeners();
@@ -225,12 +225,12 @@ void dedsResourceLoaderTask::NotifyLoadingFailed(){
 //////////////////////
 
 void dedsResourceLoaderTask::pClearListeners(){
-	if( pListeners ){
+	if(pListeners){
 		dsRunTime *rt = pDS->GetScriptEngine()->GetMainRunTime();
 		
-		while( pListenerCount > 0 ){
+		while(pListenerCount > 0){
 			pListenerCount--;
-			rt->FreeValue( pListeners[ pListenerCount ] );
+			rt->FreeValue(pListeners[pListenerCount]);
 		}
 	}
 }

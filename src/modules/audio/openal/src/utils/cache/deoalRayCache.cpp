@@ -54,35 +54,35 @@ private:
 	
 	
 public:
-	deoalRayCacheFindRayVisitor( const decVector &origin, const decVector &direction,
-		float range, float spreadDot ) :
-	pOrigin( origin ),
-	pDirection( direction.Normalized() ),
-	pRangeSquared( range * range ),
-	pSpreadDot( spreadDot ),
-	pRangeExtend( range, range, range ),
-	pFoundRay( NULL ){
+	deoalRayCacheFindRayVisitor(const decVector &origin, const decVector &direction,
+		float range, float spreadDot) :
+	pOrigin(origin),
+	pDirection(direction.Normalized()),
+	pRangeSquared(range * range),
+	pSpreadDot(spreadDot),
+	pRangeExtend(range, range, range),
+	pFoundRay(NULL){
 	}
 	
 	virtual ~deoalRayCacheFindRayVisitor(){
 	}
 	
-	inline deoalRayCacheRay *FoundRay() const{ return pFoundRay; }
+	inline deoalRayCacheRay *FoundRay() const{return pFoundRay;}
 	
-	void Visit( deoalRayCacheOctree &node ){
-		if( ! ( ( pOrigin - node.GetCenter() ).Absolute() - pRangeExtend <= node.GetHalfSize() ) ){
+	void Visit(deoalRayCacheOctree &node){
+		if(! ((pOrigin - node.GetCenter()).Absolute() - pRangeExtend <= node.GetHalfSize())){
 			return;
 		}
 		
 		const int count = node.GetRayCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			deoalRayCacheRay * const ray = node.GetRayAt( i );
-			if( ( ray->GetOrigin() - pOrigin ).LengthSquared() > pRangeSquared ){
+		for(i=0; i<count; i++){
+			deoalRayCacheRay * const ray = node.GetRayAt(i);
+			if((ray->GetOrigin() - pOrigin).LengthSquared() > pRangeSquared){
 				continue;
 			}
 			
-			if( pDirection * ray->GetDirection() < pSpreadDot ){
+			if(pDirection * ray->GetDirection() < pSpreadDot){
 				continue;
 			}
 			
@@ -90,11 +90,11 @@ public:
 			return;
 		}
 		
-		for( i=0; i<8; i++ ){
-			deoalRayCacheOctree * const child = ( deoalRayCacheOctree* )node.GetNodeAt( i );
-			if( child ){
-				Visit( *child );
-				if( pFoundRay ){
+		for(i=0; i<8; i++){
+			deoalRayCacheOctree * const child = (deoalRayCacheOctree*)node.GetNodeAt(i);
+			if(child){
+				Visit(*child);
+				if(pFoundRay){
 					return;
 				}
 			}
@@ -118,35 +118,35 @@ private:
 	
 public:
 	deoalRayCacheStatsVisitor() :
-	pNodeCount( 0 ),
-	pMaxNodeRays( 0 ),
-	pLeafNodeCount( 0 ),
-	pAvgNodeRays( 0 ){
+	pNodeCount(0),
+	pMaxNodeRays(0),
+	pLeafNodeCount(0),
+	pAvgNodeRays(0){
 	}
 	
-	inline int GetNodeCount() const{ return pNodeCount; }
-	inline int GetMaxNodeRays() const{ return pMaxNodeRays; }
-	inline int GetLeafNodeCount() const{ return pLeafNodeCount; }
-	inline int GetAvgNodeRays() const{ return pAvgNodeRays; }
+	inline int GetNodeCount() const{return pNodeCount;}
+	inline int GetMaxNodeRays() const{return pMaxNodeRays;}
+	inline int GetLeafNodeCount() const{return pLeafNodeCount;}
+	inline int GetAvgNodeRays() const{return pAvgNodeRays;}
 	
-	void Visit( deoalRayCacheOctree &node ){
+	void Visit(deoalRayCacheOctree &node){
 		pNodeCount++;
 		const int count = node.GetRayCount();
-		if( count > pMaxNodeRays ){
+		if(count > pMaxNodeRays){
 			pMaxNodeRays = count;
 		}
 		pAvgNodeRays += count;
 		
 		bool hasChildNodes = false;
 		int i;
-		for( i=0; i<8; i++ ){
-			deoalRayCacheOctree * const child = ( deoalRayCacheOctree* )node.GetNodeAt( i );
-			if( child ){
+		for(i=0; i<8; i++){
+			deoalRayCacheOctree * const child = (deoalRayCacheOctree*)node.GetNodeAt(i);
+			if(child){
 				hasChildNodes = true;
-				Visit( *child );
+				Visit(*child);
 			}
 		}
-		if( ! hasChildNodes ){
+		if(! hasChildNodes){
 			pLeafNodeCount++;
 		}
 	}
@@ -160,24 +160,24 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-deoalRayCache::deoalRayCache( const decVector &minExtend, const decVector &maxExtend ) :
-pReadCount( 0 ),
-pRange( 0.1f ),
-pSpread( 0.5f ),
-pSpreadDot( cosf( DEG2RAD * pSpread ) ),
-pOctreeDepth( 4 ),
-pRootRay( NULL ),
-pTailRay( NULL ),
-pRayCount( 0 ),
-pOctree( NULL )
+deoalRayCache::deoalRayCache(const decVector &minExtend, const decVector &maxExtend) :
+pReadCount(0),
+pRange(0.1f),
+pSpread(0.5f),
+pSpreadDot(cosf(DEG2RAD * pSpread)),
+pOctreeDepth(4),
+pRootRay(NULL),
+pTailRay(NULL),
+pRayCount(0),
+pOctree(NULL)
 {
 	// NOTE
 	// how to define the spread? possible solution how much deviation distance at a certain
 	// distance. for example 0.1m difference on 10m is atan(0.1/10.0) ~ 0.57 degrees.
 	// using right now 0.5 degrees as spread
 	
-	pOctree = new deoalRayCacheOctree( ( minExtend + maxExtend ) * 0.5f,
-		( maxExtend - minExtend ) * 0.5f );
+	pOctree = new deoalRayCacheOctree((minExtend + maxExtend) * 0.5f,
+		(maxExtend - minExtend) * 0.5f);
 	
 /*
 // no ray cache
@@ -247,11 +247,11 @@ minExt=(13.000,-0.000,3.900) maxExt=(27.000,4.500,22.800) time=56.19ms
 }
 
 deoalRayCache::~deoalRayCache(){
-	if( pOctree ){
+	if(pOctree){
 		delete pOctree;
 	}
 	
-	while( pTailRay ){
+	while(pTailRay){
 		deoalRayCacheRay * const next = pTailRay;
 		pTailRay = pTailRay->GetLLPrev();
 		delete next;
@@ -263,14 +263,14 @@ deoalRayCache::~deoalRayCache(){
 // Management
 ///////////////
 
-deoalRayCacheRay *deoalRayCache::FindRay( const decVector &origin, const decVector &direction ){
+deoalRayCacheRay *deoalRayCache::FindRay(const decVector &origin, const decVector &direction){
 	pLockRead();
 	deoalRayCacheRay *ray = NULL;
 	
 	try{
-		ray = pFindRay( origin, direction );
+		ray = pFindRay(origin, direction);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pUnlockRead();
 		throw;
 	}
@@ -279,53 +279,53 @@ deoalRayCacheRay *deoalRayCache::FindRay( const decVector &origin, const decVect
 	return ray;
 }
 
-void deoalRayCache::CacheRay( const decVector &origin, const decVector &direction,
-float length, const deoalRayTraceHitElementList &elements ){
-	deMutexGuard lock( pMutexWrite );
-	pCacheRay( new deoalRayCacheRay( origin, direction.Normalized(), length, elements ) );
+void deoalRayCache::CacheRay(const decVector &origin, const decVector &direction,
+float length, const deoalRayTraceHitElementList &elements){
+	deMutexGuard lock(pMutexWrite);
+	pCacheRay(new deoalRayCacheRay(origin, direction.Normalized(), length, elements));
 }
 
-void deoalRayCache::CacheRay( const decVector &origin, const decVector &direction,
-float length, const deoalRayTraceResult &result ){
-	deMutexGuard lock( pMutexWrite );
-	pCacheRay( new deoalRayCacheRay( origin, direction.Normalized(), length, result ) );
+void deoalRayCache::CacheRay(const decVector &origin, const decVector &direction,
+float length, const deoalRayTraceResult &result){
+	deMutexGuard lock(pMutexWrite);
+	pCacheRay(new deoalRayCacheRay(origin, direction.Normalized(), length, result));
 }
 
-void deoalRayCache::CacheRay( const decVector &origin, const decVector &direction,
-float length, const deoalRayTraceResult &result, int elementCount ){
-	deMutexGuard lock( pMutexWrite );
-	pCacheRay( new deoalRayCacheRay( origin, direction.Normalized(), length, result, elementCount ) );
+void deoalRayCache::CacheRay(const decVector &origin, const decVector &direction,
+float length, const deoalRayTraceResult &result, int elementCount){
+	deMutexGuard lock(pMutexWrite);
+	pCacheRay(new deoalRayCacheRay(origin, direction.Normalized(), length, result, elementCount));
 }
 
 
 
-void deoalRayCache::DebugPrint( deoalAudioThread &audioThread, const char *source ){
+void deoalRayCache::DebugPrint(deoalAudioThread &audioThread, const char *source){
 	deoalATLogger &logger = audioThread.GetLogger();
 	
 	deoalRayCacheStatsVisitor stats;
-	stats.Visit( *pOctree );
+	stats.Visit(*pOctree);
 	
 	//logger.LogInfoFormat( "RayCache: %s (%d rays)", source, pRayCount );
-	logger.LogInfoFormat( "RayCache: %s (rays=%d, nodes=%d, leaves=%d maxRays=%d, avgRays=%d)",
+	logger.LogInfoFormat("RayCache: %s (rays=%d, nodes=%d, leaves=%d maxRays=%d, avgRays=%d)",
 		source, pRayCount, stats.GetNodeCount(), stats.GetLeafNodeCount(), stats.GetMaxNodeRays(),
-		stats.GetAvgNodeRays() / decMath::max( stats.GetLeafNodeCount(), 1 ) );
+		stats.GetAvgNodeRays() / decMath::max(stats.GetLeafNodeCount(), 1));
 	
 #if 0
 	deoalRayCacheRay *ray = pRootRay;
 	int index = 0;
 	
-	while( ray ){
+	while(ray){
 		const int count2 = ray->GetHitCount();
 		int j;
-		logger.LogInfoFormat( "- Ray %d: origin=(%.3f,%.3f,%.3f) direction=(%.3f,%.3f,%.3f) length=%.3f hits=%d",
+		logger.LogInfoFormat("- Ray %d: origin=(%.3f,%.3f,%.3f) direction=(%.3f,%.3f,%.3f) length=%.3f hits=%d",
 			index, ray->GetOrigin().x, ray->GetOrigin().y, ray->GetOrigin().z, ray->GetDirection().x,
-			ray->GetDirection().y, ray->GetDirection().z, ray->GetLength(), count2 );
-		for( j=0; j<count2; j++ ){
-			const deoalRayCacheRayHit &hit = ray->GetHitAt( j );
-			logger.LogInfoFormat( "  - Hit %d: position=(%.3f,%.3f,%.3f) normal=(%.3f,%.3f,%.3f)"
+			ray->GetDirection().y, ray->GetDirection().z, ray->GetLength(), count2);
+		for(j=0; j<count2; j++){
+			const deoalRayCacheRayHit &hit = ray->GetHitAt(j);
+			logger.LogInfoFormat("  - Hit %d: position=(%.3f,%.3f,%.3f) normal=(%.3f,%.3f,%.3f)"
 			" distance=%.3f face=%d forward=%d", j, hit.GetPoint().x, hit.GetPoint().y,
 			hit.GetPoint().z, hit.GetNormal().x, hit.GetNormal().y, hit.GetNormal().z,
-			hit.GetDistance(), hit.GetFaceIndex(), hit.GetForwardFacing() );
+			hit.GetDistance(), hit.GetFaceIndex(), hit.GetForwardFacing());
 		}
 		index++;
 		ray = ray->GetLLNext();
@@ -339,10 +339,10 @@ void deoalRayCache::DebugPrint( deoalAudioThread &audioThread, const char *sourc
 //////////////////////
 
 void deoalRayCache::pLockRead(){
-	deMutexGuard lock( pMutexRead );
+	deMutexGuard lock(pMutexRead);
 	pReadCount++;
 	
-	if( pReadCount == 1 ){
+	if(pReadCount == 1){
 		// first call read-using the deVirtualFileSystem. lock the mutex to prevent all
 		// calls modifying the deVirtualFileSystem to modify while in use
 		pMutexWrite.Lock();
@@ -350,48 +350,48 @@ void deoalRayCache::pLockRead(){
 }
 
 void deoalRayCache::pUnlockRead(){
-	deMutexGuard lock( pMutexRead );
+	deMutexGuard lock(pMutexRead);
 	pReadCount--;
 	
-	if( pReadCount == 0 ){
+	if(pReadCount == 0){
 		// last call read-using the deVirtualFileSystem. unlock the mutex allowing all
 		// calls modifying the deVirtualFileSystem to continue
 		pMutexWrite.Unlock();
 	}
 }
 
-deoalRayCacheRay *deoalRayCache::pFindRay( const decVector &origin, const decVector &direction ) const{
-	deoalRayCacheFindRayVisitor visitor( origin, direction, pRange, pSpreadDot );
-	visitor.Visit( *pOctree );
+deoalRayCacheRay *deoalRayCache::pFindRay(const decVector &origin, const decVector &direction) const{
+	deoalRayCacheFindRayVisitor visitor(origin, direction, pRange, pSpreadDot);
+	visitor.Visit(*pOctree);
 	return visitor.FoundRay();
 }
 
-void deoalRayCache::pCacheRay( deoalRayCacheRay *ray ){
+void deoalRayCache::pCacheRay(deoalRayCacheRay *ray){
 	// this method has to do multiple tasks to deal with potentially multiple callers trying
 	// to add/replace the same cached ray. we want to keep the longest ray even if another
 	// shorter ray happens to come by right after the longer one
-	deoalRayCacheRay * const cachedRay = pFindRay( ray->GetOrigin(), ray->GetDirection() );
+	deoalRayCacheRay * const cachedRay = pFindRay(ray->GetOrigin(), ray->GetDirection());
 	
-	if( cachedRay ){
+	if(cachedRay){
 		// if the cached ray is longer delete the new ray
-		if( cachedRay->GetLength() > ray->GetLength() ){
+		if(cachedRay->GetLength() > ray->GetLength()){
 			delete ray;
 			return;
 		}
 		
 		// remove node
-		cachedRay->GetOctreeNode()->RemoveRay( cachedRay );
+		cachedRay->GetOctreeNode()->RemoveRay(cachedRay);
 		
-		if( cachedRay->GetLLPrev() ){
-			cachedRay->GetLLPrev()->SetLLNext( cachedRay->GetLLNext() );
+		if(cachedRay->GetLLPrev()){
+			cachedRay->GetLLPrev()->SetLLNext(cachedRay->GetLLNext());
 		}
-		if( cachedRay->GetLLNext() ){
-			cachedRay->GetLLNext()->SetLLPrev( cachedRay->GetLLPrev() );
+		if(cachedRay->GetLLNext()){
+			cachedRay->GetLLNext()->SetLLPrev(cachedRay->GetLLPrev());
 		}
-		if( pRootRay == cachedRay ){
+		if(pRootRay == cachedRay){
 			pRootRay = cachedRay->GetLLNext();
 		}
-		if( pTailRay == cachedRay ){
+		if(pTailRay == cachedRay){
 			pTailRay = cachedRay->GetLLPrev();
 		}
 		pRayCount--;
@@ -400,19 +400,19 @@ void deoalRayCache::pCacheRay( deoalRayCacheRay *ray ){
 	
 	// insert into octree
 	try{
-		pOctree->InsertRayIntoTree( ray, pOctreeDepth );
+		pOctree->InsertRayIntoTree(ray, pOctreeDepth);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		delete ray;
 		throw;
 	}
 	
 	// add ray
-	if( pTailRay ){
-		pTailRay->SetLLNext( ray );
-		ray->SetLLPrev( pTailRay );
+	if(pTailRay){
+		pTailRay->SetLLNext(ray);
+		ray->SetLLPrev(pTailRay);
 		
-	}else if( ! pRootRay ){
+	}else if(! pRootRay){
 		pRootRay = ray;
 	}
 	pTailRay = ray;

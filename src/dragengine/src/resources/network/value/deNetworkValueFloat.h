@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueFloat( eValueFormats format, double value );
+	deNetworkValueFloat(eValueFormats format, double value);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValueFloat();
@@ -60,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{ return pFormat; }
+	inline eValueFormats GetFormat() const{return pFormat;}
 	
 	/** \brief Value. */
-	inline double GetFloat() const{ return pValue; }
+	inline double GetFloat() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetFloat( double value );
+	void SetFloat(double value);
 	
 	/** \brief Precision. */
-	inline double GetPrecision() const{ return pPrecision; }
+	inline double GetPrecision() const{return pPrecision;}
 	
 	/** \brief Set precision. */
-	void SetPrecision( double precision );
+	void SetPrecision(double precision);
 	/*@}*/
 	
 	
@@ -80,7 +80,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

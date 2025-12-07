@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglVideo( deGraphicOpenGl &ogl, deVideo &video );
+	deoglVideo(deGraphicOpenGl &ogl, deVideo &video);
 	
 	/** Clean up peer. */
 	virtual ~deoglVideo();
@@ -68,20 +68,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
 	
 	/** Video resource. */
-	inline deVideo &GetVideo() const{ return pVideo; }
+	inline deVideo &GetVideo() const{return pVideo;}
 	
 	/** Render video or \em NULL if not existing. */
-	inline deoglRVideo *GetRVideo() const{ return pRVideo; }
+	inline deoglRVideo *GetRVideo() const{return pRVideo;}
 	
 	
 	
 	/**
 	 * Video player has to use and update the cached frames.
 	 */
-	inline bool CacheFrames() const{ return pCacheFrames; }
+	inline bool CacheFrames() const{return pCacheFrames;}
 	
 	/**
 	 * All video frames are cached and ready to be used.
@@ -94,19 +94,19 @@ public:
 	bool AllFramesAreCached() const;
 	
 	/** Frame is cached and ready. */
-	bool IsFrameReady( int frame ) const;
+	bool IsFrameReady(int frame) const;
 	
 	/** Can cache frame. */
-	bool CanCacheFrame( int frame ) const;
+	bool CanCacheFrame(int frame) const;
 	
 	/**
 	 * Cache frame.
 	 * \returns Previously set pixel buffer or nullptr.
 	 */
-	deoglPixelBuffer::Ref CacheFrame( int frame, deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref CacheFrame(int frame, deoglPixelBuffer *pixelBuffer);
 	
 	/** Cache frame texture or \em NULL if not ready. */
-	deoglTexture *GetCachedFrameTexture( int frame ) const;
+	deoglTexture *GetCachedFrameTexture(int frame) const;
 	/*@}*/
 	
 	

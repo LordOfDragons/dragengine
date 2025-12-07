@@ -61,7 +61,7 @@
 // Definitions
 ////////////////
 
-typedef igdeEditorModule* ( *FUNC_CREATEMODULE )( igdeEnvironment *environment );
+typedef igdeEditorModule* (*FUNC_CREATEMODULE)(igdeEnvironment *environment);
 
 #define LOGSOURCE "IGDE"
 
@@ -74,23 +74,23 @@ typedef igdeEditorModule* ( *FUNC_CREATEMODULE )( igdeEnvironment *environment )
 ////////////////////////////
 
 igdeEditorModuleDefinition::igdeEditorModuleDefinition(
-igdeEditorModuleManager &moduleManager, const char *filePath ) :
-pModuleManager( moduleManager ),
-pFilePath( filePath ),
-pLibSize( 0 ),
-pLibHandle( NULL ),
-pCanLoad( false ),
-pErrorCode( eecSuccess ),
-pModule( NULL )
+igdeEditorModuleManager &moduleManager, const char *filePath) :
+pModuleManager(moduleManager),
+pFilePath(filePath),
+pLibSize(0),
+pLibHandle(NULL),
+pCanLoad(false),
+pErrorCode(eecSuccess),
+pModule(NULL)
 {
 	pLoadFile();
 	pVerify();
 	
-	pLoggingName.Format( "Editor %s", pName.GetString() );
+	pLoggingName.Format("Editor %s", pName.GetString());
 }
 
 igdeEditorModuleDefinition::~igdeEditorModuleDefinition(){
-	if( IsModuleRunning() ) UnloadModule();
+	if(IsModuleRunning()) UnloadModule();
 	pUnloadLibrary();
 }
 
@@ -99,7 +99,7 @@ igdeEditorModuleDefinition::~igdeEditorModuleDefinition(){
 // Management
 ///////////////
 
-void igdeEditorModuleDefinition::SetDirectoryName( const char *directoryName ){
+void igdeEditorModuleDefinition::SetDirectoryName(const char *directoryName){
 	pDirectoryName = directoryName;
 }
 
@@ -107,42 +107,42 @@ bool igdeEditorModuleDefinition::IsModuleRunning() const{
 	return pModule != NULL;
 }
 
-bool igdeEditorModuleDefinition::LoadModule( igdeEnvironment *environment ){
-	if( ! environment ){
-		DETHROW( deeInvalidParam );
+bool igdeEditorModuleDefinition::LoadModule(igdeEnvironment *environment){
+	if(! environment){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pModule || ! pCanLoad ){
+	if(pModule || ! pCanLoad){
 		return false;
 	}
 	
-	const decPath basePathEditorLib( decPath::CreatePathNative( pModuleManager.GetPathModules() ) );
+	const decPath basePathEditorLib(decPath::CreatePathNative(pModuleManager.GetPathModules()));
 	
 	try{
-		if( ! pLoadLibrary() ){
+		if(! pLoadLibrary()){
 			return false;
 		}
-		if( ! pCreateModule( environment ) ){
+		if(! pCreateModule(environment)){
 			return false;
 		}
 		
-		pModule->SetLoggingName( pLoggingName );
-		pModule->SetEditorDirectory( pDirectoryName );
+		pModule->SetLoggingName(pLoggingName);
+		pModule->SetEditorDirectory(pDirectoryName);
 		
-		decPath pathEditorLib( basePathEditorLib );
-		pathEditorLib.AddComponent( pDirectoryName );
-		pModule->SetEditorPathLib( pathEditorLib.GetPathNative() );
+		decPath pathEditorLib(basePathEditorLib);
+		pathEditorLib.AddComponent(pDirectoryName);
+		pModule->SetEditorPathLib(pathEditorLib.GetPathNative());
 		
 		pModule->Start();
 		
-		if( environment->GetEngineController()->GetRunning() ){
+		if(environment->GetEngineController()->GetRunning()){
 			pModule->OnBeforeEngineStart();
 			pModule->OnAfterEngineStart();
 		}
 		
-	}catch( const deException &e ){
-		pModuleManager.GetWindowMain().GetLogger()->LogException( LOGSOURCE, e );
-		if( pModule ){
+	}catch(const deException &e){
+		pModuleManager.GetWindowMain().GetLogger()->LogException(LOGSOURCE, e);
+		if(pModule){
 			delete pModule;
 			pModule = NULL;
 		}
@@ -154,7 +154,7 @@ bool igdeEditorModuleDefinition::LoadModule( igdeEnvironment *environment ){
 }
 
 void igdeEditorModuleDefinition::UnloadModule(){
-	if( ! pModule ){
+	if(! pModule){
 		return;
 	}
 	
@@ -172,21 +172,21 @@ void igdeEditorModuleDefinition::pLoadFile(){
 	pParseFile(decDiskFileReader::Ref::NewWith(pFilePath));
 }
 
-void igdeEditorModuleDefinition::pParseFile( decBaseFileReader& reader ){
+void igdeEditorModuleDefinition::pParseFile(decBaseFileReader& reader){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	int i, j;
 	
 	// set base path
 	decPath basePath;
-	basePath.SetFromNative( pFilePath );
+	basePath.SetFromNative(pFilePath);
 	basePath.RemoveLastComponent();
 	pID = basePath.GetLastComponent();
 	pDirectoryName = basePath.GetLastComponent();
 	
 	// parse xml file
-	decXmlParser parser( pModuleManager.GetWindowMain().GetLogger() );
-	parser.ParseXml( &reader, xmlDoc );
+	decXmlParser parser(pModuleManager.GetWindowMain().GetLogger());
+	parser.ParseXml(&reader, xmlDoc);
 	
 	// some cleanup visiting
 	xmlDoc->StripComments();
@@ -200,93 +200,93 @@ void igdeEditorModuleDefinition::pParseFile( decBaseFileReader& reader ){
 	
 	// parse xml tags
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "module" ){
-		DETHROW( deeInvalidParam );
+	if(! root || root->GetName() != "module"){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=0; i<root->GetElementCount(); i++ ){
-		decXmlElement * const element = root->GetElementAt( i );
-		if( ! element->CanCastToElementTag() ){
+	for(i=0; i<root->GetElementCount(); i++){
+		decXmlElement * const element = root->GetElementAt(i);
+		if(! element->CanCastToElementTag()){
 			continue;
 		}
 		
 		const decXmlElementTag &tag = *element->CastToElementTag();
 		
-		if( tag.GetName() == "name" ){
-			if( ! tag.GetFirstData() ){
-				DETHROW( deeInvalidParam );
+		if(tag.GetName() == "name"){
+			if(! tag.GetFirstData()){
+				DETHROW(deeInvalidParam);
 			}
 			pName = tag.GetFirstData()->GetData();
 			
-		}else if( tag.GetName() == "description" ){
-			if( ! tag.GetFirstData() ){
-				DETHROW( deeInvalidParam );
+		}else if(tag.GetName() == "description"){
+			if(! tag.GetFirstData()){
+				DETHROW(deeInvalidParam);
 			}
 			pDescription = tag.GetFirstData()->GetData();
 			
-		}else if( tag.GetName() == "author" ){
-			if( ! tag.GetFirstData() ){
-				DETHROW( deeInvalidParam );
+		}else if(tag.GetName() == "author"){
+			if(! tag.GetFirstData()){
+				DETHROW(deeInvalidParam);
 			}
 			pAuthor = tag.GetFirstData()->GetData();
 			
-		}else if( tag.GetName() == "version" ){
-			if( ! tag.GetFirstData() ){
-				DETHROW( deeInvalidParam );
+		}else if(tag.GetName() == "version"){
+			if(! tag.GetFirstData()){
+				DETHROW(deeInvalidParam);
 			}
 			pVersion = tag.GetFirstData()->GetData();
 			
-		}else if( tag.GetName() == "iconSmall" ){
-			if( ! tag.GetFirstData() ){
-				DETHROW( deeInvalidParam );
+		}else if(tag.GetName() == "iconSmall"){
+			if(! tag.GetFirstData()){
+				DETHROW(deeInvalidParam);
 			}
 			pIconSmall = tag.GetFirstData()->GetData();
 			
-		}else if( tag.GetName() == "iconLarge" ){
-			if( ! tag.GetFirstData() ){
-				DETHROW( deeInvalidParam );
+		}else if(tag.GetName() == "iconLarge"){
+			if(! tag.GetFirstData()){
+				DETHROW(deeInvalidParam);
 			}
 			pIconLarge = tag.GetFirstData()->GetData();
 			
-		}else if( tag.GetName() == "library" ){
-			for( j=0; j<tag.GetElementCount(); j++ ){
-				decXmlElement * const element2 = tag.GetElementAt( j );
-				if( ! element2->CanCastToElementTag() ){
+		}else if(tag.GetName() == "library"){
+			for(j=0; j<tag.GetElementCount(); j++){
+				decXmlElement * const element2 = tag.GetElementAt(j);
+				if(! element2->CanCastToElementTag()){
 					continue;
 				}
 				
 				const decXmlElementTag &tag2 = *element2->CastToElementTag();
 				
-				if( tag2.GetName() == "path" ){
-					if( ! tag2.GetFirstData() ){
-						DETHROW( deeInvalidParam );
+				if(tag2.GetName() == "path"){
+					if(! tag2.GetFirstData()){
+						DETHROW(deeInvalidParam);
 					}
 					const decString &libFilePath = tag2.GetFirstData()->GetData();
 					
-					if( decPath::IsNativePathAbsolute( libFilePath ) ){
+					if(decPath::IsNativePathAbsolute(libFilePath)){
 						pLibPath = libFilePath;
 						
 					}else{
-						decPath libPath( basePath );
-						libPath.AddNativePath( libFilePath );
+						decPath libPath(basePath);
+						libPath.AddNativePath(libFilePath);
 						pLibPath = libPath.GetPathNative();
 					}
 					
-				}else if( tag2.GetName() == "size" ){
-					if( ! tag2.GetFirstData() ){
-						DETHROW( deeInvalidParam );
+				}else if(tag2.GetName() == "size"){
+					if(! tag2.GetFirstData()){
+						DETHROW(deeInvalidParam);
 					}
 					pLibSize = tag2.GetFirstData()->GetData().ToInt();
 					
-				}else if( tag2.GetName() == "sha1" ){
-					if( ! tag2.GetFirstData() ){
-						DETHROW( deeInvalidParam );
+				}else if(tag2.GetName() == "sha1"){
+					if(! tag2.GetFirstData()){
+						DETHROW(deeInvalidParam);
 					}
 					pLibHash = tag2.GetFirstData()->GetData();
 					
-				}else if( tag2.GetName() == "entrypoint" ){
-					if( ! tag2.GetFirstData() ){
-						DETHROW( deeInvalidParam );
+				}else if(tag2.GetName() == "entrypoint"){
+					if(! tag2.GetFirstData()){
+						DETHROW(deeInvalidParam);
 					}
 					pEntryPoint = tag2.GetFirstData()->GetData();
 				}
@@ -298,30 +298,30 @@ void igdeEditorModuleDefinition::pParseFile( decBaseFileReader& reader ){
 bool igdeEditorModuleDefinition::pLoadLibrary(){
 	deLogger &logger = *pModuleManager.GetWindowMain().GetLogger();
 	
-#if defined( HAS_LIB_DL )
-	pLibHandle = dlopen( pLibPath.GetString(), RTLD_NOW );
-	if( ! pLibHandle ){
-		logger.LogErrorFormat( LOGSOURCE, "dlopen: %s.", dlerror() );
+#if defined(HAS_LIB_DL)
+	pLibHandle = dlopen(pLibPath.GetString(), RTLD_NOW);
+	if(! pLibHandle){
+		logger.LogErrorFormat(LOGSOURCE, "dlopen: %s.", dlerror());
 	}
-#elif defined( OS_W32 )
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( pLibPath, widePath, MAX_PATH );
-	pLibHandle = LoadLibrary( widePath );
-	if( ! pLibHandle ){
+#elif defined(OS_W32)
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide(pLibPath, widePath, MAX_PATH);
+	pLibHandle = LoadLibrary(widePath);
+	if(! pLibHandle){
 		int err = GetLastError();
 		LPVOID lpMsgBuf;
-		FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, err, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
-			( LPTSTR ) &lpMsgBuf, 0, NULL );
+		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf, 0, NULL);
 		
 		// Display the string.
-		logger.LogErrorFormat( LOGSOURCE, "LoadLibrary(%i): %s.", err, (char*)lpMsgBuf );
+		logger.LogErrorFormat(LOGSOURCE, "LoadLibrary(%i): %s.", err, (char*)lpMsgBuf);
 		
 		// Free the buffer.
-		LocalFree( lpMsgBuf );
+		LocalFree(lpMsgBuf);
 	}
 #endif
-	if( ! pLibHandle ){
+	if(! pLibHandle){
 		pErrorCode = eecLibFileOpenFailed;
 		return false;
 	}
@@ -329,23 +329,23 @@ bool igdeEditorModuleDefinition::pLoadLibrary(){
 	return true;
 }
 
-bool igdeEditorModuleDefinition::pCreateModule( igdeEnvironment *environment ){
+bool igdeEditorModuleDefinition::pCreateModule(igdeEnvironment *environment){
 	FUNC_CREATEMODULE funcCreateModule;
 	
 	// look for the entry point function
-#if defined( HAS_LIB_DL )
-	funcCreateModule = ( FUNC_CREATEMODULE )dlsym( pLibHandle, pEntryPoint.GetString() );
-#elif defined( OS_W32 )
-	funcCreateModule = ( FUNC_CREATEMODULE )GetProcAddress( pLibHandle, pEntryPoint.GetString() );
+#if defined(HAS_LIB_DL)
+	funcCreateModule = (FUNC_CREATEMODULE)dlsym(pLibHandle, pEntryPoint.GetString());
+#elif defined(OS_W32)
+	funcCreateModule = (FUNC_CREATEMODULE)GetProcAddress(pLibHandle, pEntryPoint.GetString());
 #endif
-	if( ! funcCreateModule ){
+	if(! funcCreateModule){
 		pErrorCode = eecLibFileEntryPointNotFound;
 		return false;
 	}
 	
 	// create module
-	pModule = funcCreateModule( environment );
-	if( ! pModule ){
+	pModule = funcCreateModule(environment);
+	if(! pModule){
 		pErrorCode = eecLibFileCreateModuleFailed;
 		return false;
 	}
@@ -355,11 +355,11 @@ bool igdeEditorModuleDefinition::pCreateModule( igdeEnvironment *environment ){
 }
 
 void igdeEditorModuleDefinition::pUnloadLibrary(){
-	if( pLibHandle ){
-#if defined( HAS_LIB_DL )
-		dlclose( pLibHandle );
-#elif defined( OS_W32 )
-		FreeLibrary( pLibHandle );
+	if(pLibHandle){
+#if defined(HAS_LIB_DL)
+		dlclose(pLibHandle);
+#elif defined(OS_W32)
+		FreeLibrary(pLibHandle);
 #endif
 	}
 }
@@ -368,14 +368,14 @@ void igdeEditorModuleDefinition::pVerify(){
 	struct stat fs;
 	
 	// get file attributes
-	if( stat( pLibPath, &fs ) != 0){ // not found
+	if(stat(pLibPath, &fs) != 0){ // not found
 		pErrorCode = eecLibFileNotFound;
 		pCanLoad = false;
 		return;
 	}
 	
 	// check that this is really a file
-	if( ! S_ISREG( fs.st_mode ) ){
+	if(! S_ISREG(fs.st_mode)){
 		pErrorCode = eecLibFileNotRegularFile;
 		pCanLoad = false;
 		return;
@@ -383,7 +383,7 @@ void igdeEditorModuleDefinition::pVerify(){
 	
 	// check that the file size matches the one specified
 #ifndef NO_ENGINE_MODULE_CHECKS
-	if( fs.st_size != pLibSize ){
+	if(fs.st_size != pLibSize){
 		pErrorCode = eecLibFileSizeMismatch;
 		pCanLoad = false;
 		return;

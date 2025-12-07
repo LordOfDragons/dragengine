@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deFileResource::deFileResource( deFileResourceManager *resourceManager,
-	deVirtualFileSystem *vfs, const char *filename, TIME_SYSTEM modificationTime ) : 
-deResource( resourceManager ),
-pVirtualFileSystem( NULL ),
-pFilename( filename ),
-pModificationTime( modificationTime ),
-pAsynchron( false ),
-pOutdated( false )
+deFileResource::deFileResource(deFileResourceManager *resourceManager,
+	deVirtualFileSystem *vfs, const char *filename, TIME_SYSTEM modificationTime) : 
+deResource(resourceManager),
+pVirtualFileSystem(NULL),
+pFilename(filename),
+pModificationTime(modificationTime),
+pAsynchron(false),
+pOutdated(false)
 {
-	if( vfs ){
+	if(vfs){
 		pVirtualFileSystem = vfs;
 		vfs->AddReference();
 	}
 }
 
 deFileResource::~deFileResource(){
-	if( pVirtualFileSystem ){
+	if(pVirtualFileSystem){
 		pVirtualFileSystem->FreeReference();
 	}
 }
@@ -65,11 +65,11 @@ deFileResource::~deFileResource(){
 // Management
 ///////////////
 
-void deFileResource::SetModificationTime( TIME_SYSTEM modificationTime ){
+void deFileResource::SetModificationTime(TIME_SYSTEM modificationTime){
 	pModificationTime = modificationTime;
 }
 
-void deFileResource::SetAsynchron( bool asynchron ){
+void deFileResource::SetAsynchron(bool asynchron){
 	pAsynchron = asynchron;
 }
 

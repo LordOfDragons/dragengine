@@ -56,20 +56,20 @@ igdeApplication *igdeApplication::pApp = NULL;
 ////////////////////////////
 
 igdeApplication::igdeApplication() :
-pNativeApplication( NULL )
+pNativeApplication(NULL)
 {
 	DEASSERT_NULL(pApp)
 	
 	pApp = this;
-	pNativeApplication = igdeNativeApplication::CreateNativeApplication( *this );
+	pNativeApplication = igdeNativeApplication::CreateNativeApplication(*this);
 }
 
 igdeApplication::~igdeApplication(){
-	if( pNativeApplication ){
+	if(pNativeApplication){
 		((igdeNativeApplication*)pNativeApplication)->DestroyNativeApplication();
 	}
 	
-	if( pApp == this ){
+	if(pApp == this){
 		pApp = NULL;
 	}
 }
@@ -80,15 +80,15 @@ igdeApplication::~igdeApplication(){
 ///////////////
 
 igdeMainWindow *igdeApplication::GetMainWindow() const{
-	return ( igdeMainWindow* )( igdeWidget* )pMainWindow;
+	return (igdeMainWindow*)(igdeWidget*)pMainWindow;
 }
 
 #ifdef OS_UNIX
-void igdeApplication::Run( int argCount, char **args ){
+void igdeApplication::Run(int argCount, char **args){
 	decUnicodeStringList arguments;
-	igdeNativeApplication::GetOSStartUpArguments( arguments, argCount, args );
+	igdeNativeApplication::GetOSStartUpArguments(arguments, argCount, args);
 	
-	pSharedRun( arguments );
+	pSharedRun(arguments);
 }
 
 #elif defined OS_W32
@@ -101,26 +101,26 @@ void igdeApplication::Run(){
 	// makes it hard to do this properly. Instead this class simply ignores the wWinMain
 	// provided command line value and fetches GetCommandLineW. ugly but it works
 	decUnicodeArgumentList windowsArguments;
-	windowsArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
+	windowsArguments.ParseCommand(deOSWindows::WideToUnicode(GetCommandLineW()));
 	
 	decUnicodeStringList arguments;
-	igdeNativeApplication::GetOSStartUpArguments( arguments, windowsArguments );
+	igdeNativeApplication::GetOSStartUpArguments(arguments, windowsArguments);
 	
-	pSharedRun( arguments );
+	pSharedRun(arguments);
 }
 
 #else
 #error "Unsupported OS"
 #endif
 
-decColor igdeApplication::GetSystemColor( igdeEnvironment::eSystemColors color ) const{
+decColor igdeApplication::GetSystemColor(igdeEnvironment::eSystemColors color) const{
 	DEASSERT_NOTNULL(pNativeApplication)
-	return ((igdeNativeApplication*)pNativeApplication)->GetSystemColor( color );
+	return ((igdeNativeApplication*)pNativeApplication)->GetSystemColor(color);
 }
 
-void igdeApplication::GetAppFontConfig( igdeFont::sConfiguration &config ){
+void igdeApplication::GetAppFontConfig(igdeFont::sConfiguration &config){
 	DEASSERT_NOTNULL(pNativeApplication)
-	((igdeNativeApplication*)pNativeApplication)->GetAppFontConfig( config );
+	((igdeNativeApplication*)pNativeApplication)->GetAppFontConfig(config);
 }
 
 igdeApplication &igdeApplication::app(){
@@ -128,9 +128,9 @@ igdeApplication &igdeApplication::app(){
 	return *pApp;
 }
 
-void igdeApplication::RunModalWhileShown( igdeWindow &window ){
+void igdeApplication::RunModalWhileShown(igdeWindow &window){
 	DEASSERT_NOTNULL(pNativeApplication)
-	((igdeNativeApplication*)pNativeApplication)->RunModalWhileShown( window );
+	((igdeNativeApplication*)pNativeApplication)->RunModalWhileShown(window);
 }
 
 
@@ -163,9 +163,9 @@ decVector2 igdeApplication::DisplayScaled(const decVector2 &point){
 // Protected Functions
 ////////////////////////
 
-void igdeApplication::SetMainWindow( igdeMainWindow *mainWindow, bool takeOver ){
-	if( takeOver ){
-		pMainWindow.TakeOver( mainWindow );
+void igdeApplication::SetMainWindow(igdeMainWindow *mainWindow, bool takeOver){
+	if(takeOver){
+		pMainWindow.TakeOver(mainWindow);
 		
 	}else{
 		pMainWindow = mainWindow;
@@ -180,24 +180,24 @@ void igdeApplication::CleanUp(){
 // Private Functions
 //////////////////////
 
-void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
+void igdeApplication::pSharedRun(decUnicodeStringList &arguments){
 	try{
-		((igdeNativeApplication*)pNativeApplication)->Initialize( arguments );
+		((igdeNativeApplication*)pNativeApplication)->Initialize(arguments);
 		
-		if( Initialize( arguments ) ){
+		if(Initialize(arguments)){
 			((igdeNativeApplication*)pNativeApplication)->Run();
 		}
 		
-	}catch( const deException &e ){
-		((igdeNativeApplication*)pNativeApplication)->ShowError( e );
+	}catch(const deException &e){
+		((igdeNativeApplication*)pNativeApplication)->ShowError(e);
 		
 		try{
 			CleanUp();
 			pMainWindow = NULL;
 			
-		}catch( const deException &e2 ){
+		}catch(const deException &e2){
 			e2.PrintError();
-			((igdeNativeApplication*)pNativeApplication)->ShowError( e2 );
+			((igdeNativeApplication*)pNativeApplication)->ShowError(e2);
 		}
 		
 		((igdeNativeApplication*)pNativeApplication)->Quit();

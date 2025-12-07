@@ -42,7 +42,7 @@
 igdeGDCSpeakerList::igdeGDCSpeakerList(){
 }
 
-igdeGDCSpeakerList::igdeGDCSpeakerList( const igdeGDCSpeakerList &list ){
+igdeGDCSpeakerList::igdeGDCSpeakerList(const igdeGDCSpeakerList &list){
 	pSpeakers = list.pSpeakers;
 }
 
@@ -58,40 +58,40 @@ int igdeGDCSpeakerList::GetCount() const{
 	return pSpeakers.GetCount();
 }
 
-igdeGDCSpeaker *igdeGDCSpeakerList::GetAt( int index ) const{
-	return ( igdeGDCSpeaker* )pSpeakers.GetAt( index );
+igdeGDCSpeaker *igdeGDCSpeakerList::GetAt(int index) const{
+	return (igdeGDCSpeaker*)pSpeakers.GetAt(index);
 }
 
-int igdeGDCSpeakerList::IndexOf( igdeGDCSpeaker *speaker ) const{
-	return pSpeakers.IndexOf( speaker );
+int igdeGDCSpeakerList::IndexOf(igdeGDCSpeaker *speaker) const{
+	return pSpeakers.IndexOf(speaker);
 }
 
-bool igdeGDCSpeakerList::Has( igdeGDCSpeaker *speaker ) const{
-	return pSpeakers.Has( speaker );
+bool igdeGDCSpeakerList::Has(igdeGDCSpeaker *speaker) const{
+	return pSpeakers.Has(speaker);
 }
 
-void igdeGDCSpeakerList::Add( igdeGDCSpeaker *speaker ){
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+void igdeGDCSpeakerList::Add(igdeGDCSpeaker *speaker){
+	if(! speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSpeakers.Add( speaker );
+	pSpeakers.Add(speaker);
 }
 
-void igdeGDCSpeakerList::InsertAt( igdeGDCSpeaker *speaker, int index ){
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+void igdeGDCSpeakerList::InsertAt(igdeGDCSpeaker *speaker, int index){
+	if(! speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSpeakers.Insert( speaker, index );
+	pSpeakers.Insert(speaker, index);
 }
 
-void igdeGDCSpeakerList::MoveTo( igdeGDCSpeaker *speaker, int index ){
-	pSpeakers.Move( speaker, index );
+void igdeGDCSpeakerList::MoveTo(igdeGDCSpeaker *speaker, int index){
+	pSpeakers.Move(speaker, index);
 }
 
-void igdeGDCSpeakerList::Remove( igdeGDCSpeaker *speaker ){
-	pSpeakers.Remove( speaker );
+void igdeGDCSpeakerList::Remove(igdeGDCSpeaker *speaker){
+	pSpeakers.Remove(speaker);
 }
 
 void igdeGDCSpeakerList::RemoveAll(){
@@ -100,22 +100,22 @@ void igdeGDCSpeakerList::RemoveAll(){
 
 
 
-void igdeGDCSpeakerList::SetToDeepCopyFrom( const igdeGDCSpeakerList &list ){
+void igdeGDCSpeakerList::SetToDeepCopyFrom(const igdeGDCSpeakerList &list){
 	const int count = list.GetCount();
 	igdeGDCSpeaker *speaker = NULL;
 	
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			speaker = new igdeGDCSpeaker( *list.GetAt( i ) );
-			Add( speaker );
+		for(i=0; i<count; i++){
+			speaker = new igdeGDCSpeaker(*list.GetAt(i));
+			Add(speaker);
 			speaker->FreeReference();
 			speaker = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( speaker ){
+	}catch(const deException &){
+		if(speaker){
 			speaker->FreeReference();
 		}
 		throw;
@@ -127,7 +127,7 @@ void igdeGDCSpeakerList::SetToDeepCopyFrom( const igdeGDCSpeakerList &list ){
 // Operators
 //////////////
 
-igdeGDCSpeakerList &igdeGDCSpeakerList::operator=( const igdeGDCSpeakerList &list ){
+igdeGDCSpeakerList &igdeGDCSpeakerList::operator=(const igdeGDCSpeakerList &list){
 	pSpeakers = list.pSpeakers;
 	return *this;
 }

@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerAdd::seUControllerAdd( seSky *sky, seController *controller ) :
-pSky( NULL ),
-pController( NULL )
+seUControllerAdd::seUControllerAdd(seSky *sky, seController *controller) :
+pSky(NULL),
+pController(NULL)
 {
-	if( ! sky || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! sky || ! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add Controller" );
+	SetShortInfo("Add Controller");
 	
 	pSky = sky;
 	sky->AddReference();
@@ -58,10 +58,10 @@ pController( NULL )
 }
 
 seUControllerAdd::~seUControllerAdd(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -72,10 +72,10 @@ seUControllerAdd::~seUControllerAdd(){
 ///////////////
 
 void seUControllerAdd::Undo(){
-	pSky->RemoveController( pController );
+	pSky->RemoveController(pController);
 }
 
 void seUControllerAdd::Redo(){
-	pSky->AddController( pController );
-	pSky->SetActiveController( pController );
+	pSky->AddController(pController);
+	pSky->SetActiveController(pController);
 }

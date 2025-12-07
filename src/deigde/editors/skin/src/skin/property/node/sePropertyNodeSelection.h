@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create selection. */
-	sePropertyNodeSelection( seProperty &property );
+	sePropertyNodeSelection(seProperty &property);
 	
 	/** \brief Clean up selection. */
 	~sePropertyNodeSelection();
@@ -57,30 +57,30 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of selected nodes. */
-	inline const sePropertyNodeList &GetSelected() const{ return pSelection; }
+	inline const sePropertyNodeList &GetSelected() const{return pSelection;}
 	
 	/** \brief Add node to selection if absent. */
-	void Add( sePropertyNode *node );
+	void Add(sePropertyNode *node);
 	
 	/** \brief Remove node from selection if present. */
-	void Remove( sePropertyNode *node );
+	void Remove(sePropertyNode *node);
 	
 	/** \brief Remove all nodes from selection. */
 	void RemoveAll();
 	
 	/** \brief Set list of selected nodes. */
-	void SetSelected( const sePropertyNodeList &list );
+	void SetSelected(const sePropertyNodeList &list);
 	
 	
 	
 	/** \brief Active node or \em NULL if absent. */
-	inline sePropertyNode *GetActive() const{ return pActive; }
+	inline sePropertyNode *GetActive() const{return pActive;}
 	
 	/** \brief Active node is present. */
 	bool HasActive() const;
 	
 	/** \brief Set active node or \em NULL if absent. */
-	void SetActive( sePropertyNode *navspaces );
+	void SetActive(sePropertyNode *navspaces);
 	
 	
 	

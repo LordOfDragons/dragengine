@@ -44,21 +44,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACopyCondition::ceWPTMACopyCondition( ceWindowMain &windowMain,
-ceConversationCondition *condition ) :
-ceWPTMenuAction( windowMain, "Copy Condition",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ) ),
-pCondition( condition )
+ceWPTMACopyCondition::ceWPTMACopyCondition(ceWindowMain &windowMain,
+ceConversationCondition *condition) :
+ceWPTMenuAction(windowMain, "Copy Condition",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
+pCondition(condition)
 {
-	SetEnabled( condition != NULL );
+	SetEnabled(condition != NULL);
 }
 
-ceWPTMACopyCondition::ceWPTMACopyCondition( ceWindowMain &windowMain,
-ceConversationCondition *condition, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pCondition( condition )
+ceWPTMACopyCondition::ceWPTMACopyCondition(ceWindowMain &windowMain,
+ceConversationCondition *condition, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pCondition(condition)
 {
-	SetEnabled( condition != NULL );
+	SetEnabled(condition != NULL);
 }
 
 
@@ -67,12 +67,12 @@ pCondition( condition )
 ///////////////
 
 void ceWPTMACopyCondition::OnAction(){
-	if( ! pCondition ){
+	if(! pCondition){
 		return;
 	}
 	
 	ceConversationConditionList conditions;
-	conditions.Add( pCondition );
+	conditions.Add(pCondition);
 	
 	GetWindowMain().GetClipboard().Set(ceClipboardDataCondition::Ref::NewWith(conditions));
 }

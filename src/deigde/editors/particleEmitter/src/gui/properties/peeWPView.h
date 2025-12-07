@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPView( peeWindowProperties &windowProperties );
+	peeWPView(peeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up the rig. */
@@ -77,10 +77,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline peeEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Update view. */
 	void UpdateView();

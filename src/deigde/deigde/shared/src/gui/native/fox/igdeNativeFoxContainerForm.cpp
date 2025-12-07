@@ -39,14 +39,14 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxContainerForm ) igdeNativeFoxContainerFormMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxContainerForm::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerForm::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxContainerForm) igdeNativeFoxContainerFormMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxContainerForm::onResize),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerForm::onChildLayoutFlags)
 };
 
 
-FXIMPLEMENT( igdeNativeFoxContainerForm, FXMatrix,
-	igdeNativeFoxContainerFormMap, ARRAYNUMBER( igdeNativeFoxContainerFormMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerForm, FXMatrix,
+	igdeNativeFoxContainerFormMap, ARRAYNUMBER(igdeNativeFoxContainerFormMap))
 
 
 
@@ -60,12 +60,12 @@ igdeNativeFoxContainerForm::igdeNativeFoxContainerForm(){
 }
 
 igdeNativeFoxContainerForm::igdeNativeFoxContainerForm(
-	igdeContainerForm &powner, FXComposite *pparent, int layoutFlags ) :
-FXMatrix( pparent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
-	powner.GetColumnSpacing(), powner.GetRowSpacing() ),
-pOwner( &powner )
+	igdeContainerForm &powner, FXComposite *pparent, int layoutFlags) :
+FXMatrix(pparent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
+	powner.GetColumnSpacing(), powner.GetRowSpacing()),
+pOwner(&powner)
 {
-	if( ! pOwner->GetVisible() ){
+	if(! pOwner->GetVisible()){
 		hide();
 	}
 }
@@ -73,22 +73,22 @@ pOwner( &powner )
 igdeNativeFoxContainerForm::~igdeNativeFoxContainerForm(){
 }
 
-igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget( igdeContainerForm &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget(igdeContainerForm &powner){
+	if(! powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(! pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxContainerForm( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxContainerForm(powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxContainerForm::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -103,15 +103,15 @@ void igdeNativeFoxContainerForm::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxContainerForm::ChildRemoved(){
-	if( pOwner->GetStretching() != igdeContainerForm::esLast ){
+	if(pOwner->GetStretching() != igdeContainerForm::esLast){
 		return;
 	}
 	
 	const int count = pOwner->GetChildCount();
-	const int index = count - ( count % 2 );
-	igdeUIFoxHelper::UpdateLayoutFlags( pOwner->GetChildAt( index ) );
-	if( index + 1 < count ){
-		igdeUIFoxHelper::UpdateLayoutFlags( pOwner->GetChildAt( index + 1 ) );
+	const int index = count - (count % 2);
+	igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildAt(index));
+	if(index + 1 < count){
+		igdeUIFoxHelper::UpdateLayoutFlags(pOwner->GetChildAt(index + 1));
 	}
 	
 	recalc();
@@ -122,17 +122,17 @@ void igdeNativeFoxContainerForm::ChildRemoved(){
 // Events
 ///////////
 
-long igdeNativeFoxContainerForm::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxContainerForm::onResize(FXObject*, FXSelector, void*){
 	pOwner->OnResize();
 	return 1;
 }
 
-long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerForm::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	
-	const int index = pOwner->IndexOfChild( clflags.widget );
-	if( index == -1 ){
+	const int index = pOwner->IndexOfChild(clflags.widget);
+	if(index == -1){
 		return 1;
 	}
 	
@@ -140,7 +140,7 @@ long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void
 	// column to stretch but keeps the left column at minimal size
 	clflags.canResizeHorizontal = true;
 	
-	if( index % 2 == 1 ){
+	if(index % 2 == 1){
 		clflags.flags |= LAYOUT_FILL_COLUMN;
 		clflags.canResizeHorizontal = false;
 	}
@@ -148,16 +148,16 @@ long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void
 	// stretch rows
 	clflags.canResizeVertical = true;
 	
-	switch( pOwner->GetStretching() ){
+	switch(pOwner->GetStretching()){
 	case igdeContainerForm::esFirst:
-		if( index / 2 == 0 ){
+		if(index / 2 == 0){
 			clflags.flags |= LAYOUT_FILL_ROW;
 			clflags.canResizeVertical = false;
 		}
 		break;
 		
 	case igdeContainerForm::esLast:
-		if( index / 2 == pOwner->GetChildCount() / 2 - 1 ){
+		if(index / 2 == pOwner->GetChildCount() / 2 - 1){
 			clflags.flags |= LAYOUT_FILL_ROW;
 			clflags.canResizeVertical = false;
 		}

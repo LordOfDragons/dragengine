@@ -50,7 +50,7 @@
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS	timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat( "Rule Bone Transformator = %iys", ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat("Rule Bone Transformator = %iys", (int)(timer.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER
@@ -60,34 +60,34 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleBoneTransformator::dearRuleBoneTransformator( dearAnimatorInstance &instance,
-const dearAnimator &animator, int firstLink, const deAnimatorRuleBoneTransformator &rule ) :
-dearRule( instance, animator, firstLink, rule ),
+dearRuleBoneTransformator::dearRuleBoneTransformator(dearAnimatorInstance &instance,
+const dearAnimator &animator, int firstLink, const deAnimatorRuleBoneTransformator &rule) :
+dearRule(instance, animator, firstLink, rule),
 
-pBoneTransformator( rule ),
+pBoneTransformator(rule),
 
 pTargetBone(-1),
 pInputBone(-1),
 
-pTargetTranslation( rule.GetTargetTranslation(), firstLink ),
-pTargetRotation( rule.GetTargetRotation(), firstLink ),
-pTargetScaling( rule.GetTargetScaling(), firstLink ),
+pTargetTranslation(rule.GetTargetTranslation(), firstLink),
+pTargetRotation(rule.GetTargetRotation(), firstLink),
+pTargetScaling(rule.GetTargetScaling(), firstLink),
 
-pCoordinateFrame( rule.GetCoordinateFrame() ),
-pEnablePosition( rule.GetEnablePosition() ),
-pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() ),
-pUseAxis( rule.GetUseAxis() ),
+pCoordinateFrame(rule.GetCoordinateFrame()),
+pEnablePosition(rule.GetEnablePosition()),
+pEnableOrientation(rule.GetEnableOrientation()),
+pEnableSize(rule.GetEnableSize()),
+pUseAxis(rule.GetUseAxis()),
 
-pMinTranslation( rule.GetMinimumTranslation() ),
-pMaxTranslation( rule.GetMaximumTranslation() ),
-pMinRotation( rule.GetMinimumRotation() ),
-pMaxRotation( rule.GetMaximumRotation() ),
-pMinScaling( rule.GetMinimumScaling() ),
-pMaxScaling( rule.GetMaximumScaling() ),
-pAxis( rule.GetAxis() ),
-pMinAngle( rule.GetMinimumAngle() ),
-pMaxAngle( rule.GetMaximumAngle() ),
+pMinTranslation(rule.GetMinimumTranslation()),
+pMaxTranslation(rule.GetMaximumTranslation()),
+pMinRotation(rule.GetMinimumRotation()),
+pMaxRotation(rule.GetMaximumRotation()),
+pMinScaling(rule.GetMinimumScaling()),
+pMaxScaling(rule.GetMaximumScaling()),
+pAxis(rule.GetAxis()),
+pMinAngle(rule.GetMinimumAngle()),
+pMaxAngle(rule.GetMaximumAngle()),
 pInputSource(rule.GetInputSource())
 {
 	RuleChanged();
@@ -101,14 +101,14 @@ dearRuleBoneTransformator::~dearRuleBoneTransformator(){
 // Management
 ///////////////
 
-void dearRuleBoneTransformator::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
+void dearRuleBoneTransformator::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
+	if(! GetEnabled()){
 		return;
 	}
 	
 	const float blendFactor = GetBlendFactor();
-	if( blendFactor < FLOAT_SAFE_EPSILON ){
+	if(blendFactor < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -206,36 +206,36 @@ DEBUG_RESET_TIMERS;
 		}break;
 	}
 	
-	if( pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfTargetBone && pTargetBone != -1 ){
-		dearBoneState &bstate = *stalist.GetStateAt( pTargetBone );
+	if(pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfTargetBone && pTargetBone != -1){
+		dearBoneState &bstate = *stalist.GetStateAt(pTargetBone);
 		bstate.UpdateMatrices();
-		transformMatrix = bstate.GetInverseGlobalMatrix().QuickMultiply( transformMatrix )
-			.QuickMultiply( bstate.GetGlobalMatrix() );
+		transformMatrix = bstate.GetInverseGlobalMatrix().QuickMultiply(transformMatrix)
+			.QuickMultiply(bstate.GetGlobalMatrix());
 	}
 	
 	// step through all bones and apply transformation
-	for( i=0; i<boneCount; i++ ){
-		const int animatorBone = GetBoneMappingFor( i );
-		if( animatorBone == -1 ){
+	for(i=0; i<boneCount; i++){
+		const int animatorBone = GetBoneMappingFor(i);
+		if(animatorBone == -1){
 			continue;
 		}
 		
-		dearBoneState &bstate = *stalist.GetStateAt( animatorBone );
+		dearBoneState &bstate = *stalist.GetStateAt(animatorBone);
 		bstate.UpdateMatrices();
 		
-		if( pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfBoneLocal ){
-			const decMatrix m( bstate.GetLocalMatrix().QuickMultiply( transformMatrix ) );
+		if(pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfBoneLocal){
+			const decMatrix m(bstate.GetLocalMatrix().QuickMultiply(transformMatrix));
 			
-			bstate.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			bstate.BlendWith(m.GetPosition(), m.ToQuaternion(), m.GetScale(),
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			
 		}else{
-			const decMatrix m( bstate.GetGlobalMatrix().QuickMultiply( transformMatrix )
-				.QuickMultiply( bstate.GetInverseGlobalMatrix() )
-				.QuickMultiply( bstate.GetLocalMatrix() ) );
+			const decMatrix m(bstate.GetGlobalMatrix().QuickMultiply(transformMatrix)
+				.QuickMultiply(bstate.GetInverseGlobalMatrix())
+				.QuickMultiply(bstate.GetLocalMatrix()));
 			
-			bstate.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			bstate.BlendWith(m.GetPosition(), m.ToQuaternion(), m.GetScale(),
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 		}
 	}
 DEBUG_PRINT_TIMER;

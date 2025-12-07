@@ -39,16 +39,16 @@
 ////////////////////////////
 
 seUPropertySetConstructedColor::seUPropertySetConstructedColor(
-seProperty *property, const decColor &newValue ) :
+seProperty *property, const decColor &newValue) :
 
-pProperty( NULL ),
-pNewValue( newValue )
+pProperty(NULL),
+pNewValue(newValue)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed set color" );
+	SetShortInfo("Property constructed set color");
 	
 	pOldValue = property->GetNodeColor();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 seUPropertySetConstructedColor::~seUPropertySetConstructedColor(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ seUPropertySetConstructedColor::~seUPropertySetConstructedColor(){
 ///////////////
 
 void seUPropertySetConstructedColor::Undo(){
-	pProperty->SetNodeColor( pOldValue );
+	pProperty->SetNodeColor(pOldValue);
 }
 
 void seUPropertySetConstructedColor::Redo(){
-	pProperty->SetNodeColor( pNewValue );
+	pProperty->SetNodeColor(pNewValue);
 }

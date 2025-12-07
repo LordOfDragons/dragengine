@@ -37,9 +37,9 @@
 deModioModConfig::deModioModConfig(){
 }
 
-deModioModConfig::deModioModConfig( decBaseFileReader &reader ){
+deModioModConfig::deModioModConfig(decBaseFileReader &reader){
 	const int version = reader.ReadByte();
-	switch( version ){
+	switch(version){
 	case 0:
 		id = reader.ReadString8();
 		path = reader.ReadString16();
@@ -47,7 +47,7 @@ deModioModConfig::deModioModConfig( decBaseFileReader &reader ){
 		break;
 		
 	default:
-		DETHROW_INFO( deeInvalidParam, "Unsupported version" );
+		DETHROW_INFO(deeInvalidParam, "Unsupported version");
 	}
 }
 
@@ -59,9 +59,9 @@ deModioModConfig::~deModioModConfig(){
 // Management
 ///////////////
 
-void deModioModConfig::WriteToFile( decBaseFileWriter &writer ){
-	writer.WriteByte( 0 );
-	writer.WriteString8( id );
-	writer.WriteString16( path );
-	writer.WriteString8( releaseVersion );
+void deModioModConfig::WriteToFile(decBaseFileWriter &writer){
+	writer.WriteByte(0);
+	writer.WriteString8(id);
+	writer.WriteString16(path);
+	writer.WriteString8(releaseVersion);
 }

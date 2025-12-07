@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCForceFieldToggleEnabled::gdeUOCForceFieldToggleEnabled(
-	gdeObjectClass *objectClass, gdeOCForceField *forceField ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+	gdeObjectClass *objectClass, gdeOCForceField *forceField) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field toggle enabled" );
+	SetShortInfo("Force field toggle enabled");
 	
 	pForceField = forceField;
 	forceField->AddReference();
@@ -59,10 +59,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
 ///////////////
 
 void gdeUOCForceFieldToggleEnabled::Undo(){
-	pForceField->SetEnabled( ! pForceField->GetEnabled() );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetEnabled(! pForceField->GetEnabled());
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldToggleEnabled::Redo(){

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightToggleCastShadows( gdeObjectClass *objectClass, gdeOCLight *light );
+	gdeUOCLightToggleCastShadows(gdeObjectClass *objectClass, gdeOCLight *light);
 	
 protected:
 	/** \brief Clean up undo action. */

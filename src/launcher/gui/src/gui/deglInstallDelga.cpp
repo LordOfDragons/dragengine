@@ -51,8 +51,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deglInstallDelga::deglInstallDelga( deglWindowMain &window ) :
-pWindow( window ){
+deglInstallDelga::deglInstallDelga(deglWindowMain &window) :
+pWindow(window){
 }
 
 deglInstallDelga::~deglInstallDelga(){
@@ -73,9 +73,9 @@ private:
 	const decString &pFilename;
 	
 public:
-	cTaskInstallDelga ( deglLauncher &launcher, FXProgressDialog *dialogProgress, const decString &filename ) :
-	pLauncher( launcher ), pMessageChannel( FXApp::instance() ), pDialogProgress( dialogProgress ),
-	pAbort( false ), pFinished( false ), pFilename( filename ){
+	cTaskInstallDelga (deglLauncher &launcher, FXProgressDialog *dialogProgress, const decString &filename) :
+	pLauncher(launcher), pMessageChannel(FXApp::instance()), pDialogProgress(dialogProgress),
+	pAbort(false), pFinished(false), pFilename(filename){
 	};
 	
 	~cTaskInstallDelga(){
@@ -85,106 +85,106 @@ public:
 		char *buffer = nullptr;
 		
 		try{
-			const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
-				new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
+			const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
 			
-			const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
-				new decDiskFileReader( pFilename ) ) );
+			const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(
+				new decDiskFileReader(pFilename)));
 			
-			decPath target( decPath::CreatePathUnix( "/" ) );
-			target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
+			decPath target(decPath::CreatePathUnix("/"));
+			target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
 			
-			decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New(
-				container->OpenFileForWriting( target ) ) );
+			decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(
+				container->OpenFileForWriting(target)));
 			
 			const int totalSize = reader->GetLength();
-			const double percentageFactor = 100.0 / ( double )totalSize;
-			buffer = new char[ 8192 ];
+			const double percentageFactor = 100.0 / (double)totalSize;
+			buffer = new char[8192];
 			FXuint progressPercentage = 0;
 			int bytesCopied = 0;
 			
-			while( bytesCopied < totalSize && ! pAbort ){
-				const FXuint percentage = ( FXuint )( percentageFactor * bytesCopied );
-				if( percentage != progressPercentage ){
+			while(bytesCopied < totalSize && ! pAbort){
+				const FXuint percentage = (FXuint)(percentageFactor * bytesCopied);
+				if(percentage != progressPercentage){
 					progressPercentage = percentage;
-					pMessageChannel.message( pDialogProgress,
-						FXSEL( SEL_COMMAND, FXProgressDialog::ID_SETINTVALUE ),
-						&progressPercentage, sizeof( progressPercentage ) );
+					pMessageChannel.message(pDialogProgress,
+						FXSEL(SEL_COMMAND, FXProgressDialog::ID_SETINTVALUE),
+						&progressPercentage, sizeof(progressPercentage));
 				}
 				
-				const int copyBytesCount = decMath::min( 8192, totalSize - bytesCopied );
-				reader->Read( buffer, copyBytesCount );
-				writer->Write( buffer, copyBytesCount );
+				const int copyBytesCount = decMath::min(8192, totalSize - bytesCopied);
+				reader->Read(buffer, copyBytesCount);
+				writer->Write(buffer, copyBytesCount);
 				
 				bytesCopied += copyBytesCount;
 			}
 			
-		}catch( const deException &e ){
-			pLauncher.GetLogger()->LogException( "InstallDelga", e );
+		}catch(const deException &e){
+			pLauncher.GetLogger()->LogException("InstallDelga", e);
 			
-			if( buffer ){
+			if(buffer){
 				delete [] buffer;
 			}
 			pDeleteTarget();
 			
-			pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_CANCEL ), nullptr );
+			pMessageChannel.message(pDialogProgress, FXSEL(SEL_COMMAND, FXProgressDialog::ID_CANCEL), nullptr);
 			pFinished = true;
 			return -1;
 		}
 		
-		if( pAbort ){
+		if(pAbort){
 			pDeleteTarget();
 			pFinished = true;
 			return -1;
 		}
 		
-		pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_ACCEPT ), nullptr );
+		pMessageChannel.message(pDialogProgress, FXSEL(SEL_COMMAND, FXProgressDialog::ID_ACCEPT), nullptr);
 		pFinished = true;
 		return 0;
 	}
 	
-	void WaitFinished( bool abort = false ){
-		if( pFinished ){
+	void WaitFinished(bool abort = false){
+		if(pFinished){
 			return;
 		}
 		
 		pAbort = abort;
-		while( ! pFinished ){
-			FXThread::sleep( 100000000 ); // 100ms
+		while(! pFinished){
+			FXThread::sleep(100000000); // 100ms
 		}
 	}
 	
 private:
 	void pDeleteTarget(){
 		try{
-			deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
-				new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
+			deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
 			
-			decPath target( decPath::CreatePathUnix( "/" ) );
-			target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
+			decPath target(decPath::CreatePathUnix("/"));
+			target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
 			
-			if( container->ExistsFile( target ) ){
-				container->DeleteFile( target );
+			if(container->ExistsFile(target)){
+				container->DeleteFile(target);
 			}
 			
-		}catch( const deException &e ){
+		}catch(const deException &e){
 			e.PrintError();
 		}
 	}
 };
 
-bool deglInstallDelga::Run( const char *forceFilename ){
+bool deglInstallDelga::Run(const char *forceFilename){
 	// ask for file to install or use forced filename
 	decString filename;
 	
-	if( forceFilename ){
+	if(forceFilename){
 		filename = forceFilename;
 		
 	}else{
-		FXFileDialog dialog( &pWindow, "Install DELGA" );
-		dialog.setPatternList( "DELGA (*.delga)\nAll Files (*)" );
-		dialog.setCurrentPattern( 0 );
-		if( ! dialog.execute( PLACEMENT_OWNER ) ){
+		FXFileDialog dialog(&pWindow, "Install DELGA");
+		dialog.setPatternList("DELGA (*.delga)\nAll Files (*)");
+		dialog.setCurrentPattern(0);
+		if(! dialog.execute(PLACEMENT_OWNER)){
 			return false;
 		}
 		
@@ -197,76 +197,76 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	delGameList games;
 	
 	try{
-		const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
 			launcher.GetEngineInstanceFactory().CreateEngineInstance(
-				launcher, launcher.GetEngine().GetLogFile() ) ) );
+				launcher, launcher.GetEngine().GetLogFile())));
 		instance->StartEngine();
 		instance->LoadModules();
 		
-		launcher.GetGameManager().LoadGameFromDisk( instance, filename, games );
-		launcher.GetPatchManager().LoadPatchFromDisk( instance, filename, patches );
+		launcher.GetGameManager().LoadGameFromDisk(instance, filename, games);
+		launcher.GetPatchManager().LoadPatchFromDisk(instance, filename, patches);
 		
-	}catch( const deException &e ){
-		pWindow.DisplayException( e );
+	}catch(const deException &e){
+		pWindow.DisplayException(e);
 		return false;
 	}
 	
 	// check if installed
 	const int gameCount = games.GetCount();
 	int i;
-	for( i=0; i<gameCount; i++ ){
-		if( launcher.GetGameManager().GetGames().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
-			FXMessageBox::information( &pWindow, MBOX_OK, "Install DELGA",
-				"Game '%s' is already installed", games.GetAt( i )->GetTitle().ToUTF8().GetString() );
+	for(i=0; i<gameCount; i++){
+		if(launcher.GetGameManager().GetGames().HasWithID(games.GetAt(i)->GetIdentifier())){
+			FXMessageBox::information(&pWindow, MBOX_OK, "Install DELGA",
+				"Game '%s' is already installed", games.GetAt(i)->GetTitle().ToUTF8().GetString());
 			return false;
 		}
 	}
 	
 	const int patchCount = patches.GetCount();
-	for( i=0; i<patchCount; i++ ){
-		if( launcher.GetPatchManager().GetPatches().HasWithID( patches.GetAt( i )->GetIdentifier() ) ){
-			FXMessageBox::information( &pWindow, MBOX_OK, "Install DELGA",
-				"Patch '%s' is already installed", patches.GetAt( i )->GetName().ToUTF8().GetString() );
+	for(i=0; i<patchCount; i++){
+		if(launcher.GetPatchManager().GetPatches().HasWithID(patches.GetAt(i)->GetIdentifier())){
+			FXMessageBox::information(&pWindow, MBOX_OK, "Install DELGA",
+				"Patch '%s' is already installed", patches.GetAt(i)->GetName().ToUTF8().GetString());
 			return false;
 		}
 	}
 	
 	// show what would be installed and ask to continue
-	decString text( "The following content will be installed:\n\n" );
-	for( i=0; i<games.GetCount(); i++ ){
-		const delGame &game = *games.GetAt( i );
-		text.AppendFormat( "- Game '%s'\n", game.GetTitle().ToUTF8().GetString() );
+	decString text("The following content will be installed:\n\n");
+	for(i=0; i<games.GetCount(); i++){
+		const delGame &game = *games.GetAt(i);
+		text.AppendFormat("- Game '%s'\n", game.GetTitle().ToUTF8().GetString());
 	}
-	for( i=0; i<patches.GetCount(); i++ ){
-		const delPatch &patch = *patches.GetAt( i );
-		const delGame *game = launcher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
-		if( ! game ){
-			game = games.GetWithID( patch.GetGameID() );
+	for(i=0; i<patches.GetCount(); i++){
+		const delPatch &patch = *patches.GetAt(i);
+		const delGame *game = launcher.GetGameManager().GetGames().GetWithID(patch.GetGameID());
+		if(! game){
+			game = games.GetWithID(patch.GetGameID());
 		}
-		text.AppendFormat( "- Patch '%s' for game '%s'\n",
+		text.AppendFormat("- Patch '%s' for game '%s'\n",
 			patch.GetName().ToUTF8().GetString(),
-			game ? game->GetTitle().ToUTF8().GetString() : "?" );
+			game ? game->GetTitle().ToUTF8().GetString() : "?");
 	}
 	
 	text += "\nDo you want to continue?";
-	if( FXMessageBox::question( &pWindow, MBOX_YES_NO, "Install DELGA", "%s", text.GetString() ) != MBOX_CLICKED_YES ){
+	if(FXMessageBox::question(&pWindow, MBOX_YES_NO, "Install DELGA", "%s", text.GetString()) != MBOX_CLICKED_YES){
 		return false;
 	}
 	
 	// install delga file
 	{
-	FXProgressDialog dialogProgress( &pWindow, "Install DELGA", "Installing", PROGRESSDIALOG_NORMAL );
-	dialogProgress.setTotal( 100 );
+	FXProgressDialog dialogProgress(&pWindow, "Install DELGA", "Installing", PROGRESSDIALOG_NORMAL);
+	dialogProgress.setTotal(100);
 	
-	cTaskInstallDelga task( launcher, &dialogProgress, filename );
-	FXWorker::execute( &task );
-	if( ! dialogProgress.execute( PLACEMENT_OWNER ) ){
-		task.WaitFinished( true );
+	cTaskInstallDelga task(launcher, &dialogProgress, filename);
+	FXWorker::execute(&task);
+	if(! dialogProgress.execute(PLACEMENT_OWNER)){
+		task.WaitFinished(true);
 		return false;
 	}
 	task.WaitFinished();
 	}
 	
-	FXMessageBox::information( &pWindow, MBOX_OK, "Install DELGA", "Installed successfully" );
+	FXMessageBox::information(&pWindow, MBOX_OK, "Install DELGA", "Installed successfully");
 	return true;
 }

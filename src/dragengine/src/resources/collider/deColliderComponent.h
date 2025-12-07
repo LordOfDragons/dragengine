@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component collider. */
-	deColliderComponent( deColliderManager *manager );
+	deColliderComponent(deColliderManager *manager);
 	
 protected:
 	/**
@@ -81,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component or NULL if not set. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline deComponent *GetComponent() const{return pComponent;}
 	
 	/**
 	 * \brief Set component or NULL if not set.
@@ -93,7 +93,7 @@ public:
 	 * module has to track this and call SetRig() whenever a rig change
 	 * in the component is detected.
 	 */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	
 	
@@ -111,7 +111,7 @@ public:
 	 * If the component is not set nothing is done at all. All linear and
 	 * angular velocities are set to zero.
 	 */
-	void CopyStateFromComponent( int bone );
+	void CopyStateFromComponent(int bone);
 	
 	/**
 	 * \brief Copy bone states to component bones if set.
@@ -125,7 +125,7 @@ public:
 	 * 
 	 * If the component is not set nothing is done at all.
 	 */
-	void CopyStateToComponent( int bone ) const;
+	void CopyStateToComponent(int bone) const;
 	
 	
 	
@@ -141,7 +141,7 @@ public:
 	 * \param[in] face Index of face. Typically comes from deCollisionInfo::GetFace().
 	 * \throws EInvalidParam Face index is outside allowed boundaries.
 	 */
-	void InitWeightAttachment( deColliderAttachment &attachment, int face );
+	void InitWeightAttachment(deColliderAttachment &attachment, int face);
 	/*@}*/
 	
 	
@@ -149,7 +149,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit collider. */
-	virtual void Visit( deColliderVisitor &visitor );
+	virtual void Visit(deColliderVisitor &visitor);
 	/*@}*/
 };
 

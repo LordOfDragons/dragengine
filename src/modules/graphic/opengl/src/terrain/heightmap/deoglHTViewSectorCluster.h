@@ -64,7 +64,7 @@ private:
 	
 	const decPoint pCoordinate;
 	int pLodLevel;
-	eBorderTargets pBorderTargets[ 4 ];
+	eBorderTargets pBorderTargets[4];
 	
 	decPointerList pRTSInstances;
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create cluster. */
-	deoglHTViewSectorCluster( deoglHTViewSector &sector, const decPoint &coordinate );
+	deoglHTViewSectorCluster(deoglHTViewSector &sector, const decPoint &coordinate);
 	
 	/** Clean up cluster. */
 	~deoglHTViewSectorCluster();
@@ -85,24 +85,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent sector. */
-	inline deoglHTViewSector &GetSector() const{ return pSector; }
+	inline deoglHTViewSector &GetSector() const{return pSector;}
 	
 	
 	
 	/** Coordinate. */
-	inline const decPoint &GetCoordinate() const{ return pCoordinate; }
+	inline const decPoint &GetCoordinate() const{return pCoordinate;}
 	
 	/** Lod level. */
-	inline int GetLodLevel() const{ return pLodLevel; }
+	inline int GetLodLevel() const{return pLodLevel;}
 	
 	/** Set lod level. */
-	void SetLodLevel( int lodLevel );
+	void SetLodLevel(int lodLevel);
 	
 	/** Border target. */
-	eBorderTargets GetBorderTarget( eBorders border ) const;
+	eBorderTargets GetBorderTarget(eBorders border) const;
 	
 	/** Set border target. */
-	void SetBorderTarget( eBorders border, eBorderTargets target );
+	void SetBorderTarget(eBorders border, eBorderTargets target);
 	
 	/** Reset. */
 	void Reset();
@@ -113,7 +113,7 @@ public:
 	 * Render task shared instance at index for texture. Index 0 is cluster.
 	 * Index 1 to 4 borders. Returns NULL if not present.
 	 */
-	deoglRenderTaskSharedInstance *GetRTSInstanceAt( int texture, int index ) const;
+	deoglRenderTaskSharedInstance *GetRTSInstanceAt(int texture, int index) const;
 	
 	/** Update render task shared instances. */
 	void UpdateRTSInstances();

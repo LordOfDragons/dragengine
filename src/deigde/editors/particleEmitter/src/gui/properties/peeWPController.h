@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPController( peeWindowProperties &windowProperties );
+	peeWPController(peeWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline peeEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Active controller or \em NULL. */
 	peeController *GetController() const;
@@ -103,10 +103,10 @@ public:
 	void UpdateControllerValue();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline igdeAction *GetActionControllerAdd() const{return pActionControllerAdd;}
+	inline igdeAction *GetActionControllerRemove() const{return pActionControllerRemove;}
+	inline igdeAction *GetActionControllerUp() const{return pActionControllerUp;}
+	inline igdeAction *GetActionControllerDown() const{return pActionControllerDown;}
 	/*@}*/
 };
 

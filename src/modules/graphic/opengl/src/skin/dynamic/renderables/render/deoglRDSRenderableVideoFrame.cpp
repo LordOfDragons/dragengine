@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderableVideoFrame::deoglRDSRenderableVideoFrame( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( etVideoFrame, dynamicSkin ),
-pVideoPlayer( NULL )
+deoglRDSRenderableVideoFrame::deoglRDSRenderableVideoFrame(deoglRDynamicSkin &dynamicSkin) :
+deoglRDSRenderable(etVideoFrame, dynamicSkin),
+pVideoPlayer(NULL)
 {
-	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableVideoFrame );
+	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableVideoFrame);
 }
 
 deoglRDSRenderableVideoFrame::~deoglRDSRenderableVideoFrame(){
-	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableVideoFrame );
+	LEAK_CHECK_FREE(GetDynamicSkin().GetRenderThread(), DSRenderableVideoFrame);
 	pCleanUp();
 }
 
@@ -58,30 +58,30 @@ deoglRDSRenderableVideoFrame::~deoglRDSRenderableVideoFrame(){
 // Management
 ///////////////
 
-void deoglRDSRenderableVideoFrame::SetVideoPlayer( deoglRVideoPlayer *videoPlayer ){
-	if( videoPlayer == pVideoPlayer ){
+void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
+	if(videoPlayer == pVideoPlayer){
 		return;
 	}
 	
-	if( pVideoPlayer ){
+	if(pVideoPlayer){
 		pVideoPlayer->FreeReference();
 	}
 	
 	pVideoPlayer = videoPlayer;
 	
-	if( videoPlayer ){
+	if(videoPlayer){
 		videoPlayer->AddReference();
 	}
 }
 
-void deoglRDSRenderableVideoFrame::PrepareForRender( const deoglRenderPlanMasked * ){
-	if( pVideoPlayer ){
+void deoglRDSRenderableVideoFrame::PrepareForRender(const deoglRenderPlanMasked *){
+	if(pVideoPlayer){
 		pVideoPlayer->UpdateTexture();
 	}
 }
 
 deoglTexture *deoglRDSRenderableVideoFrame::GetRenderTexture(){
-	if( ! pVideoPlayer ){
+	if(! pVideoPlayer){
 		return NULL;
 	}
 	return pVideoPlayer->GetTexture();
@@ -93,5 +93,5 @@ deoglTexture *deoglRDSRenderableVideoFrame::GetRenderTexture(){
 //////////////////////
 
 void deoglRDSRenderableVideoFrame::pCleanUp(){
-	SetVideoPlayer( NULL );
+	SetVideoPlayer(NULL);
 }

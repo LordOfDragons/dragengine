@@ -40,22 +40,22 @@
 decCurveBezier3DPoint::decCurveBezier3DPoint(){
 }
 
-decCurveBezier3DPoint::decCurveBezier3DPoint( const decVector &point ) :
-pPoint( point ),
-pHandle1( point ),
-pHandle2( point ){
+decCurveBezier3DPoint::decCurveBezier3DPoint(const decVector &point) :
+pPoint(point),
+pHandle1(point),
+pHandle2(point){
 }
 
-decCurveBezier3DPoint::decCurveBezier3DPoint( const decVector &point, const decVector &handle1, const decVector &handle2 ) :
-pPoint( point ),
-pHandle1( handle1 ),
-pHandle2( handle2 ){
+decCurveBezier3DPoint::decCurveBezier3DPoint(const decVector &point, const decVector &handle1, const decVector &handle2) :
+pPoint(point),
+pHandle1(handle1),
+pHandle2(handle2){
 }
 
-decCurveBezier3DPoint::decCurveBezier3DPoint( const decCurveBezier3DPoint &point ) :
-pPoint( point.pPoint ),
-pHandle1( point.pHandle1 ),
-pHandle2( point.pHandle2 ){
+decCurveBezier3DPoint::decCurveBezier3DPoint(const decCurveBezier3DPoint &point) :
+pPoint(point.pPoint),
+pHandle1(point.pHandle1),
+pHandle2(point.pHandle2){
 }
 
 
@@ -63,13 +63,13 @@ pHandle2( point.pHandle2 ){
 // Management
 ///////////////
 
-void decCurveBezier3DPoint::SetPoint( const decVector &point ){
+void decCurveBezier3DPoint::SetPoint(const decVector &point){
 	pPoint = point;
 	pHandle1 = point;
 	pHandle2 = point;
 }
 
-void decCurveBezier3DPoint::SetPoint( const decVector &point, const decVector &handle1, const decVector &handle2 ){
+void decCurveBezier3DPoint::SetPoint(const decVector &point, const decVector &handle1, const decVector &handle2){
 	pPoint = point;
 	pHandle1 = handle1;
 	pHandle2 = handle2;
@@ -80,14 +80,14 @@ void decCurveBezier3DPoint::SetPoint( const decVector &point, const decVector &h
 // Operators
 //////////////
 
-bool decCurveBezier3DPoint::operator==( const decCurveBezier3DPoint &point ) const{
-	return pPoint.IsEqualTo( point.pPoint )
-		&& pHandle1.IsEqualTo( point.pHandle1 )
-		&& pHandle2.IsEqualTo( point.pHandle2 );
+bool decCurveBezier3DPoint::operator==(const decCurveBezier3DPoint &point) const{
+	return pPoint.IsEqualTo(point.pPoint)
+		&& pHandle1.IsEqualTo(point.pHandle1)
+		&& pHandle2.IsEqualTo(point.pHandle2);
 }
 
-bool decCurveBezier3DPoint::operator!=( const decCurveBezier3DPoint &point ) const{
-	return ! pPoint.IsEqualTo( point.pPoint )
-		|| ! pHandle1.IsEqualTo( point.pHandle1 )
-		|| ! pHandle2.IsEqualTo( point.pHandle2 );
+bool decCurveBezier3DPoint::operator!=(const decCurveBezier3DPoint &point) const{
+	return ! pPoint.IsEqualTo(point.pPoint)
+		|| ! pHandle1.IsEqualTo(point.pHandle1)
+		|| ! pHandle2.IsEqualTo(point.pHandle2);
 }

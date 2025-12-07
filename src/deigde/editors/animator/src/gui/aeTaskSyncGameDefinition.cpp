@@ -46,10 +46,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeTaskSyncGameDefinition::aeTaskSyncGameDefinition( aeWindowMain &windowMain ) :
-pWindowMain( windowMain )
+aeTaskSyncGameDefinition::aeTaskSyncGameDefinition(aeWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Animator Editor: Synchronize Game Definition" );
+	SetMessage("Animator Editor: Synchronize Game Definition");
 }
 
 aeTaskSyncGameDefinition::~aeTaskSyncGameDefinition(){
@@ -61,7 +61,7 @@ aeTaskSyncGameDefinition::~aeTaskSyncGameDefinition(){
 ///////////////
 
 bool aeTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetAnimator() ){
+	if(! pWindowMain.GetAnimator()){
 		return false;
 	}
 	
@@ -73,8 +73,8 @@ bool aeTaskSyncGameDefinition::Step(){
 	const int attachmentCount = animator.GetAttachmentCount();
 	int i;
 	
-	for( i=0; i<attachmentCount; i++ ){
-		animator.GetAttachmentAt( i )->GetObjectWrapper()->OnGameDefinitionChanged();
+	for(i=0; i<attachmentCount; i++){
+		animator.GetAttachmentAt(i)->GetObjectWrapper()->OnGameDefinitionChanged();
 	}
 	
 	return false;

@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetOrientation::meUNavSpaceSetOrientation( meNavigationSpace *navspace, const decVector &newOrientation ){
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace, const decVector &newOrientation){
+	if(! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld *world = navspace->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNavSpace = NULL;
 	
-	SetShortInfo( "NavSpace Set Orientation" );
+	SetShortInfo("NavSpace Set Orientation");
 	
 	pOldOrientation = navspace->GetOrientation();
 	pNewOrientation = newOrientation;
@@ -63,7 +63,7 @@ meUNavSpaceSetOrientation::meUNavSpaceSetOrientation( meNavigationSpace *navspac
 }
 
 meUNavSpaceSetOrientation::~meUNavSpaceSetOrientation(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
 }
@@ -74,11 +74,11 @@ meUNavSpaceSetOrientation::~meUNavSpaceSetOrientation(){
 ///////////////
 
 void meUNavSpaceSetOrientation::Undo(){
-	pNavSpace->SetOrientation( pOldOrientation );
-	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemNavSpace );
+	pNavSpace->SetOrientation(pOldOrientation);
+	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemNavSpace);
 }
 
 void meUNavSpaceSetOrientation::Redo(){
-	pNavSpace->SetOrientation( pNewOrientation );
-	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemNavSpace );
+	pNavSpace->SetOrientation(pNewOrientation);
+	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemNavSpace);
 }

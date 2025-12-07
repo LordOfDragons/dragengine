@@ -40,21 +40,21 @@ deBaseScriptingCollider::~deBaseScriptingCollider(){
 // Notifications
 //////////////////
 
-void deBaseScriptingCollider::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void deBaseScriptingCollider::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 }
 
-bool deBaseScriptingCollider::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool deBaseScriptingCollider::CanHitCollider(deCollider *owner, deCollider *collider){
 	return false;
 }
 
-void deBaseScriptingCollider::ColliderChanged( deCollider *owner ){
+void deBaseScriptingCollider::ColliderChanged(deCollider *owner){
 }
 
 
 
 #include <stdio.h>
-void deBaseScriptingCollider::ColliderConstraintBroke( deCollider *owner, int index, deColliderConstraint *constraint ){
+void deBaseScriptingCollider::ColliderConstraintBroke(deCollider *owner, int index, deColliderConstraint *constraint){
 }
 
-void deBaseScriptingCollider::RigConstraintBroke( deCollider *owner, int bone, int index, deRigConstraint *constraint ){
+void deBaseScriptingCollider::RigConstraintBroke(deCollider *owner, int bone, int index, deRigConstraint *constraint){
 }

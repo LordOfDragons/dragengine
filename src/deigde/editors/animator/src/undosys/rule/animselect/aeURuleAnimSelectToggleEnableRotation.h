@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	aeURuleAnimSelectToggleEnableRotation( aeRuleAnimationSelect *rule );
+	aeURuleAnimSelectToggleEnableRotation(aeRuleAnimationSelect *rule);
 	
 protected:
 	/** Clean up undo. */

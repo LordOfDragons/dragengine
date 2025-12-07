@@ -47,19 +47,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionRemoveAction::ceWPTMAPChoiceOptionRemoveAction( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionRemoveAction::ceWPTMAPChoiceOptionRemoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, ceConversationAction *action ) :
-ceWPTMenuAction( windowMain, "Remove Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ),
-pAction( action )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, ceConversationAction *action) :
+ceWPTMenuAction(windowMain, "Remove Action",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option),
+pAction(action)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 }
 

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleInverseKinematic( aeWPRule &wpRule );
+	aeWPAPanelRuleInverseKinematic(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

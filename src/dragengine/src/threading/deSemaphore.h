@@ -70,7 +70,7 @@ public:
 	 * \brief Create semaphore with initial count.
 	 * \throws deeInvalidParam \em value is less than 0.
 	 */
-	deSemaphore( int count );
+	deSemaphore(int count);
 	
 	/** \brief Clean up semaphore. */
 	~deSemaphore();

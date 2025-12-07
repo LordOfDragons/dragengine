@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new type. */
-	deoglParticleEmitterInstanceType( deoglParticleEmitterInstance &instance, int index );
+	deoglParticleEmitterInstanceType(deoglParticleEmitterInstance &instance, int index);
 	
 	/** Clean up type. */
 	~deoglParticleEmitterInstanceType();
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent emitter instance. */
-	inline deoglParticleEmitterInstance &GetEmitterInstance(){ return pEmitterInstance; }
+	inline deoglParticleEmitterInstance &GetEmitterInstance(){return pEmitterInstance;}
 	
 	/** Render type. */
-	inline deoglRParticleEmitterInstanceType *GetRType() const{ return pRType; }
+	inline deoglRParticleEmitterInstanceType *GetRType() const{return pRType;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

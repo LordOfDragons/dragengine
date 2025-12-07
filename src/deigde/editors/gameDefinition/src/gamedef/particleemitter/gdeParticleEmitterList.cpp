@@ -43,8 +43,8 @@
 gdeParticleEmitterList::gdeParticleEmitterList(){
 }
 
-gdeParticleEmitterList::gdeParticleEmitterList( const gdeParticleEmitterList &list ) :
-pParticleEmitters( list.pParticleEmitters ){
+gdeParticleEmitterList::gdeParticleEmitterList(const gdeParticleEmitterList &list) :
+pParticleEmitters(list.pParticleEmitters){
 }
 
 gdeParticleEmitterList::~gdeParticleEmitterList(){
@@ -59,18 +59,18 @@ int gdeParticleEmitterList::GetCount() const{
 	return pParticleEmitters.GetCount();
 }
 
-gdeParticleEmitter *gdeParticleEmitterList::GetAt( int index ) const{
-	return ( gdeParticleEmitter* )pParticleEmitters.GetAt( index );
+gdeParticleEmitter *gdeParticleEmitterList::GetAt(int index) const{
+	return (gdeParticleEmitter*)pParticleEmitters.GetAt(index);
 }
 
-gdeParticleEmitter *gdeParticleEmitterList::GetWithPath( const char *path ) const{
+gdeParticleEmitter *gdeParticleEmitterList::GetWithPath(const char *path) const{
 	const int count = pParticleEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeParticleEmitter * const emitter = ( gdeParticleEmitter* )pParticleEmitters.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeParticleEmitter * const emitter = (gdeParticleEmitter*)pParticleEmitters.GetAt(i);
 		
-		if( emitter->GetPath() == path ){
+		if(emitter->GetPath() == path){
 			return emitter;
 		}
 	}
@@ -78,16 +78,16 @@ gdeParticleEmitter *gdeParticleEmitterList::GetWithPath( const char *path ) cons
 	return NULL;
 }
 
-int gdeParticleEmitterList::IndexOf( gdeParticleEmitter *emitter ) const{
-	return pParticleEmitters.IndexOf( emitter );
+int gdeParticleEmitterList::IndexOf(gdeParticleEmitter *emitter) const{
+	return pParticleEmitters.IndexOf(emitter);
 }
 
-int gdeParticleEmitterList::IndexOfWithPath( const char *path ) const{
+int gdeParticleEmitterList::IndexOfWithPath(const char *path) const{
 	const int count = pParticleEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeParticleEmitter* )pParticleEmitters.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((gdeParticleEmitter*)pParticleEmitters.GetAt(i))->GetPath() == path){
 			return i;
 		}
 	}
@@ -95,16 +95,16 @@ int gdeParticleEmitterList::IndexOfWithPath( const char *path ) const{
 	return -1;
 }
 
-bool gdeParticleEmitterList::Has( gdeParticleEmitter *emitter ) const{
-	return pParticleEmitters.Has( emitter );
+bool gdeParticleEmitterList::Has(gdeParticleEmitter *emitter) const{
+	return pParticleEmitters.Has(emitter);
 }
 
-bool gdeParticleEmitterList::HasWithPath( const char *path ) const{
+bool gdeParticleEmitterList::HasWithPath(const char *path) const{
 	const int count = pParticleEmitters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeParticleEmitter* )pParticleEmitters.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((gdeParticleEmitter*)pParticleEmitters.GetAt(i))->GetPath() == path){
 			return true;
 		}
 	}
@@ -112,16 +112,16 @@ bool gdeParticleEmitterList::HasWithPath( const char *path ) const{
 	return false;
 }
 
-void gdeParticleEmitterList::Add( gdeParticleEmitter *emitter ){
-	if( ! emitter || HasWithPath( emitter->GetPath() ) ){
-		DETHROW( deeInvalidParam );
+void gdeParticleEmitterList::Add(gdeParticleEmitter *emitter){
+	if(! emitter || HasWithPath(emitter->GetPath())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pParticleEmitters.Add( emitter );
+	pParticleEmitters.Add(emitter);
 }
 
-void gdeParticleEmitterList::Remove( gdeParticleEmitter *emitter ){
-	pParticleEmitters.Remove( emitter );
+void gdeParticleEmitterList::Remove(gdeParticleEmitter *emitter){
+	pParticleEmitters.Remove(emitter);
 }
 
 void gdeParticleEmitterList::RemoveAll(){
@@ -130,7 +130,7 @@ void gdeParticleEmitterList::RemoveAll(){
 
 
 
-gdeParticleEmitterList &gdeParticleEmitterList::operator=( const gdeParticleEmitterList &list ){
+gdeParticleEmitterList &gdeParticleEmitterList::operator=(const gdeParticleEmitterList &list){
 	pParticleEmitters = list.pParticleEmitters;
 	return *this;
 }

@@ -50,19 +50,19 @@ dealEMParameter::~dealEMParameter(){
 // Management
 ///////////////
 
-void dealEMParameter::SetIndex( int index ){
-	if( index < -1 ) DETHROW( deeInvalidParam );
+void dealEMParameter::SetIndex(int index){
+	if(index < -1) DETHROW(deeInvalidParam);
 	pIndex = index;
 }
 
-void dealEMParameter::SetName( const char *name ){
+void dealEMParameter::SetName(const char *name){
 	pName = name;
 }
 
-void dealEMParameter::SetDescription( const char *description ){
+void dealEMParameter::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void dealEMParameter::SetValue( const char *value ){
+void dealEMParameter::SetValue(const char *value){
 	pValue = value;
 }

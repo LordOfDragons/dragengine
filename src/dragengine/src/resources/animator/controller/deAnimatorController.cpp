@@ -41,11 +41,11 @@
 ////////////////////////////
 
 deAnimatorController::deAnimatorController() :
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pCurValue( 0.0f ),
-pClamp( true ),
-pFrozen( false ){
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pCurValue(0.0f),
+pClamp(true),
+pFrozen(false){
 }
 
 deAnimatorController::~deAnimatorController(){
@@ -56,16 +56,16 @@ deAnimatorController::~deAnimatorController(){
 // Management
 ///////////////
 
-void deAnimatorController::SetName( const char *name ){
+void deAnimatorController::SetName(const char *name){
 	pName = name;
 }
 
-void deAnimatorController::SetValueRange( float minValue, float maxValue ){
-	if( minValue > maxValue ){
+void deAnimatorController::SetValueRange(float minValue, float maxValue){
+	if(minValue > maxValue){
 		minValue = maxValue;
 	}
 	
-	if( pFrozen ){
+	if(pFrozen){
 		return;
 	}
 	
@@ -75,8 +75,8 @@ void deAnimatorController::SetValueRange( float minValue, float maxValue ){
 	pUpdateValue();
 }
 
-void deAnimatorController::SetCurrentValue( float value ){
-	if( pFrozen ){
+void deAnimatorController::SetCurrentValue(float value){
+	if(pFrozen){
 		return;
 	}
 	
@@ -85,8 +85,8 @@ void deAnimatorController::SetCurrentValue( float value ){
 	pUpdateValue();
 }
 
-void deAnimatorController::IncrementCurrentValue( float incrementBy ){
-	if( pFrozen ){
+void deAnimatorController::IncrementCurrentValue(float incrementBy){
+	if(pFrozen){
 		return;
 	}
 	
@@ -95,21 +95,21 @@ void deAnimatorController::IncrementCurrentValue( float incrementBy ){
 	pUpdateValue();
 }
 
-void deAnimatorController::SetFrozen( bool frozen ){
+void deAnimatorController::SetFrozen(bool frozen){
 	pFrozen = frozen;
 }
 
-void deAnimatorController::SetClamp( bool clamp ){
+void deAnimatorController::SetClamp(bool clamp){
 	pClamp = clamp;
 }
 
-void deAnimatorController::SetVector( const decVector &vector ){
+void deAnimatorController::SetVector(const decVector &vector){
 	pVector = vector;
 }
 
 
 
-deAnimatorController &deAnimatorController::operator=( const deAnimatorController &controller ){
+deAnimatorController &deAnimatorController::operator=(const deAnimatorController &controller){
 	pName = controller.pName;
 	pMinValue = controller.pMinValue;
 	pMaxValue = controller.pMaxValue;
@@ -129,18 +129,18 @@ void deAnimatorController::pUpdateValue(){
 	const float range = pMaxValue - pMinValue;
 	const bool hasRange = range > 1e-5f;
 	
-	if( pClamp ){
-		if( pCurValue < pMinValue ){
+	if(pClamp){
+		if(pCurValue < pMinValue){
 			pCurValue = pMinValue;
 			
-		}else if( pCurValue > pMaxValue ){
+		}else if(pCurValue > pMaxValue){
 			pCurValue = pMaxValue;
 		}
 		
 	}else{
-		if( hasRange ){
-			pCurValue = fmodf( pCurValue - pMinValue, range );
-			if( pCurValue < 0 ){
+		if(hasRange){
+			pCurValue = fmodf(pCurValue - pMinValue, range);
+			if(pCurValue < 0){
 				pCurValue += pMinValue + range;
 				
 			}else{

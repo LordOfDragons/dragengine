@@ -95,7 +95,7 @@ public:
 	 * \brief Create a new animator instance.
 	 * \throws deeInvalidParam manager is NULL.
 	 */
-	deAnimatorInstance( deAnimatorInstanceManager *manager );
+	deAnimatorInstance(deAnimatorInstanceManager *manager);
 	
 protected:
 	/**
@@ -113,7 +113,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Animator or NULL if none is set. */
-	inline deAnimator *GetAnimator() const{ return pAnimator; }
+	inline deAnimator *GetAnimator() const{return pAnimator;}
 	
 	/**
 	 * \brief Set animator or NULL to unset it.
@@ -121,67 +121,67 @@ public:
 	 * name in the old and new animator. Otherwise initializes all
 	 * controllers to the value of the new animator.
 	 */
-	void SetAnimator( deAnimator *animator, bool keepValues = false );
+	void SetAnimator(deAnimator *animator, bool keepValues = false);
 	
 	/** \brief Component or NULL if none is set. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline deComponent *GetComponent() const{return pComponent;}
 	
 	/** \brief Set component or NULL to unset it. */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	/** \brief Animation or NULL if none is set. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline deAnimation *GetAnimation() const{return pAnimation;}
 	
 	/** \brief Set animation or NULL to unset it. */
-	void SetAnimation( deAnimation *animation );
+	void SetAnimation(deAnimation *animation);
 	
 	
 	
 	/** \brief Blend mode. */
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
+	inline deAnimatorRule::eBlendModes GetBlendMode() const{return pBlendMode;}
 	
 	/**
 	 * \brief Set blend mode.
 	 * \throws deeInvalidParam \em mode is not a member of deAnimatorRule::eBlendModes.
 	 */
-	void SetBlendMode( deAnimatorRule::eBlendModes mode );
+	void SetBlendMode(deAnimatorRule::eBlendModes mode);
 	
 	/** \brief Blend factor in the range of 0 to 1. */
-	inline float GetBlendFactor() const{ return pBlendFactor; }
+	inline float GetBlendFactor() const{return pBlendFactor;}
 	
 	/** \brief Set blend factor in the range of 0 to 1. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	/** \brief Enable retargeting. */
-	inline bool GetEnableRetargeting() const{ return pEnableRetargeting; }
+	inline bool GetEnableRetargeting() const{return pEnableRetargeting;}
 	
 	/** \brief Set if retargeting is enabled. */
-	void SetEnableRetargeting( bool enableRetargeting );
+	void SetEnableRetargeting(bool enableRetargeting);
 	
 	/** \brief Protect dynamic bones from being animated. */
-	inline bool GetProtectDynamicBones() const{ return pProtectDynamicBones; }
+	inline bool GetProtectDynamicBones() const{return pProtectDynamicBones;}
 	
 	/** \brief Set if dynamic bones are protected from being animated. */
-	void SetProtectDynamicBones( bool protectDynamicBones );
+	void SetProtectDynamicBones(bool protectDynamicBones);
 	
 	
 	
 	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	inline int GetControllerCount() const{return pControllerCount;}
 	
 	/**
 	 * \brief Controller at index.
 	 * \throws deeInvalidParam \em index is less than 0.
 	 * \throws deeInvalidParam \em index is greater or equal than GetControllerCount().
 	 */
-	deAnimatorController &GetControllerAt( int index );
-	const deAnimatorController &GetControllerAt( int index ) const;
+	deAnimatorController &GetControllerAt(int index);
+	const deAnimatorController &GetControllerAt(int index) const;
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	/** \brief Notify peer controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	
 	
 	
@@ -195,12 +195,12 @@ public:
 	 * resources take care of waiting for the result to become ready
 	 * if required.
 	 */
-	void Apply( bool direct = false );
+	void Apply(bool direct = false);
 	
 	/**
 	 * \brief Capture current state into snapshot rules matching identifier
 	 */
-	void CaptureStateInto( int identifier );
+	void CaptureStateInto(int identifier);
 	
 	/**
 	 * \brief Store animation frame from animation into into rules matching identifier.
@@ -209,7 +209,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em moveName is NULL.
 	 */
-	void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	/*@}*/
 	
 	
@@ -217,10 +217,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Animator peer or NULL if not set. */
-	inline deBaseAnimatorAnimatorInstance *GetPeerAnimator() const{ return pPeerAnimator; }
+	inline deBaseAnimatorAnimatorInstance *GetPeerAnimator() const{return pPeerAnimator;}
 	
 	/** \brief Set animator peer or NULL if not set. */
-	void SetPeerAnimator( deBaseAnimatorAnimatorInstance *peer );
+	void SetPeerAnimator(deBaseAnimatorAnimatorInstance *peer);
 	/*@}*/
 	
 	

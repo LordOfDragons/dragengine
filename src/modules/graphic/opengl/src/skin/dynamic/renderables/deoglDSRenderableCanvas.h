@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableCanvas( deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable );
+	deoglDSRenderableCanvas(deoglDynamicSkin &dynamicSkin, const deDSRenderableCanvas &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableCanvas();
@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableCanvas &GetRenderableCanvas() const{ return pRenderableCanvas; }
+	inline const deDSRenderableCanvas &GetRenderableCanvas() const{return pRenderableCanvas;}
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

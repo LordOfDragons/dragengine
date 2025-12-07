@@ -39,24 +39,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceChainPathSoundRemove::seUSourceChainPathSoundRemove( seSourceChain *source, int index ) :
-pSource( NULL )
+seUSourceChainPathSoundRemove::seUSourceChainPathSoundRemove(seSourceChain *source, int index) :
+pSource(NULL)
 {
-	if( ! source || index < 0 || index >= source->GetPathSounds().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(! source || index < 0 || index >= source->GetPathSounds().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pIndex = index;
-	pPath = source->GetPathSounds().GetAt( index );
+	pPath = source->GetPathSounds().GetAt(index);
 	
-	SetShortInfo( "Chain source remove path sound" );
+	SetShortInfo("Chain source remove path sound");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceChainPathSoundRemove::~seUSourceChainPathSoundRemove(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSourceChainPathSoundRemove::~seUSourceChainPathSoundRemove(){
 ///////////////
 
 void seUSourceChainPathSoundRemove::Undo(){
-	pSource->InsertPathSound( pPath, pIndex );
+	pSource->InsertPathSound(pPath, pIndex);
 }
 
 void seUSourceChainPathSoundRemove::Redo(){
-	pSource->RemovePathSound( pIndex );
+	pSource->RemovePathSound(pIndex);
 }

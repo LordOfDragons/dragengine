@@ -32,232 +32,232 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWorldNotifier::meWorldNotifier(){ }
-meWorldNotifier::~meWorldNotifier(){ }
+meWorldNotifier::meWorldNotifier(){}
+meWorldNotifier::~meWorldNotifier(){}
 
 
 
 // Notifications
 //////////////////
 
-void meWorldNotifier::WorldParametersChanged( meWorld* ){
+void meWorldNotifier::WorldParametersChanged(meWorld*){
 }
 
-void meWorldNotifier::SkyChanged( meWorld* ){
+void meWorldNotifier::SkyChanged(meWorld*){
 }
 
-void meWorldNotifier::BgObjectChanged( meWorld* ){
+void meWorldNotifier::BgObjectChanged(meWorld*){
 }
 
 void meWorldNotifier::LimitBoxChanged(meWorld*){
 }
 
-void meWorldNotifier::ModeChanged( meWorld* ){
+void meWorldNotifier::ModeChanged(meWorld*){
 }
 
-void meWorldNotifier::StateChanged( meWorld* ){
+void meWorldNotifier::StateChanged(meWorld*){
 }
 
-void meWorldNotifier::UndoChanged( meWorld* ){
+void meWorldNotifier::UndoChanged(meWorld*){
 }
 
-void meWorldNotifier::LumimeterChanged( meWorld* ){
+void meWorldNotifier::LumimeterChanged(meWorld*){
 }
 
-void meWorldNotifier::PathFindTestChanged( meWorld* ){
+void meWorldNotifier::PathFindTestChanged(meWorld*){
 }
 
-void meWorldNotifier::MusicChanged( meWorld *world ){
+void meWorldNotifier::MusicChanged(meWorld *world){
 }
 
-void meWorldNotifier::LightingChanged( meWorld* ){
+void meWorldNotifier::LightingChanged(meWorld*){
 }
 
-void meWorldNotifier::EditingChanged( meWorld* ){
+void meWorldNotifier::EditingChanged(meWorld*){
 }
 
-void meWorldNotifier::HeightPaintChanged( meWorld* ){
+void meWorldNotifier::HeightPaintChanged(meWorld*){
 }
 
-void meWorldNotifier::MaskPaintChanged( meWorld* ){
+void meWorldNotifier::MaskPaintChanged(meWorld*){
 }
 
-void meWorldNotifier::VisibilityPaintChanged( meWorld* ){
+void meWorldNotifier::VisibilityPaintChanged(meWorld*){
 }
 
-void meWorldNotifier::TriggerTableChanged( meWorld* ){
+void meWorldNotifier::TriggerTableChanged(meWorld*){
 }
 
-void meWorldNotifier::ClassHideTagsChanged( meWorld* ){
-}
-
-
-
-void meWorldNotifier::PropertiesChanged( meWorld* ){
-}
-
-void meWorldNotifier::ActivePropertyChanged( meWorld* ){
+void meWorldNotifier::ClassHideTagsChanged(meWorld*){
 }
 
 
 
-void meWorldNotifier::HTStateChanged( meWorld* ){
+void meWorldNotifier::PropertiesChanged(meWorld*){
 }
 
-void meWorldNotifier::HTChanged( meWorld* ){
-}
-
-void meWorldNotifier::HTSChanged( meWorld*, meHeightTerrainSector* ){
-}
-
-void meWorldNotifier::HTSHeightChanged( meWorld *world, meHeightTerrainSector *sector ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSVisibilityChanged( meWorld *world, meHeightTerrainSector *sector ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSTextureCountChanged( meWorld *world, meHeightTerrainSector *sector ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSActiveTextureChanged( meWorld*, meHeightTerrainSector* ){
-}
-
-void meWorldNotifier::HTSTextureChanged( meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainTexture* ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSTextureMaskChanged( meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainTexture* ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSPropFieldCountChanged( meWorld *world, meHeightTerrainSector *sector ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSActivePropFieldChanged( meWorld*, meHeightTerrainSector* ){
-}
-
-void meWorldNotifier::HTSPropFieldChanged( meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainPropField* ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSPropFieldMaskChanged( meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainPropField* ){
-	HTSChanged( world, sector );
-}
-
-void meWorldNotifier::HTSPFTypeCountChanged( meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainPropField *propField ){
-	HTSPropFieldChanged( world, sector, propField );
-}
-
-void meWorldNotifier::HTSPFTypeChanged( meWorld *world, meHeightTerrainSector *sector,
-meHeightTerrainPropField *propField, meHeightTerrainPFType* ){
-	HTSPropFieldChanged( world, sector, propField );
+void meWorldNotifier::ActivePropertyChanged(meWorld*){
 }
 
 
 
-void meWorldNotifier::HTNavSpaceCountChanged( meWorld* ){
+void meWorldNotifier::HTStateChanged(meWorld*){
 }
 
-void meWorldNotifier::HTActiveNavSpaceChanged( meWorld* ){
+void meWorldNotifier::HTChanged(meWorld*){
 }
 
-void meWorldNotifier::HTNavSpaceChanged( meWorld*, meHeightTerrainNavSpace* ){
+void meWorldNotifier::HTSChanged(meWorld*, meHeightTerrainSector*){
 }
 
-void meWorldNotifier::HTNavSpaceTypeCountChanged( meWorld *world, meHeightTerrainNavSpace *navspace ){
-	HTNavSpaceChanged( world, navspace );
+void meWorldNotifier::HTSHeightChanged(meWorld *world, meHeightTerrainSector *sector){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTNavSpaceActiveTypeChanged( meWorld*, meHeightTerrainNavSpace* ){
+void meWorldNotifier::HTSVisibilityChanged(meWorld *world, meHeightTerrainSector *sector){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTNavSpaceTypeChanged( meWorld *world, meHeightTerrainNavSpace *navspace,
-meHeightTerrainNavSpaceType* ){
-	HTNavSpaceChanged( world, navspace );
+void meWorldNotifier::HTSTextureCountChanged(meWorld *world, meHeightTerrainSector *sector){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTNavSpaceFacesChanged( meWorld*, meHeightTerrainNavSpace* ){
+void meWorldNotifier::HTSActiveTextureChanged(meWorld*, meHeightTerrainSector*){
 }
 
-void meWorldNotifier::HTNavSpaceSelectedPointsChanged( meWorld* ){
+void meWorldNotifier::HTSTextureChanged(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainTexture*){
+	HTSChanged(world, sector);
 }
 
-
-
-void meWorldNotifier::HTVLayerCountChanged( meWorld *world ){
-	HTChanged( world );
+void meWorldNotifier::HTSTextureMaskChanged(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainTexture*){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTActiveVLayerChanged( meWorld* ){
+void meWorldNotifier::HTSPropFieldCountChanged(meWorld *world, meHeightTerrainSector *sector){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTVLayerChanged( meWorld *world, meHTVegetationLayer* ){
-	HTChanged( world );
+void meWorldNotifier::HTSActivePropFieldChanged(meWorld*, meHeightTerrainSector*){
 }
 
-void meWorldNotifier::HTVLVariationCountChanged( meWorld *world, meHTVegetationLayer *vlayer ){
-	HTVLayerChanged( world, vlayer );
+void meWorldNotifier::HTSPropFieldChanged(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainPropField*){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTVLActiveVariationChanged( meWorld*, meHTVegetationLayer* ){
+void meWorldNotifier::HTSPropFieldMaskChanged(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainPropField*){
+	HTSChanged(world, sector);
 }
 
-void meWorldNotifier::HTVLVariationChanged( meWorld *world, meHTVegetationLayer *vlayer, meHTVVariation* ){
-	HTVLayerChanged( world, vlayer );
+void meWorldNotifier::HTSPFTypeCountChanged(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainPropField *propField){
+	HTSPropFieldChanged(world, sector, propField);
 }
 
-void meWorldNotifier::HTVLRuleCountChanged( meWorld *world, meHTVegetationLayer *vlayer ){
-	HTVLayerChanged( world, vlayer );
-}
-
-void meWorldNotifier::HTVLActiveRuleChanged( meWorld*, meHTVegetationLayer* ){
-}
-
-void meWorldNotifier::HTVLRuleChanged( meWorld *world, meHTVegetationLayer *vlayer, meHTVRule* ){
-	HTVLayerChanged( world, vlayer );
-}
-
-void meWorldNotifier::HTVLRuleMoved( meWorld *world, meHTVegetationLayer *vlayer, meHTVRule *rule ){
-	HTVLRuleChanged( world, vlayer, rule );
-}
-
-void meWorldNotifier::HTVLLinkCountChanged( meWorld *world, meHTVegetationLayer *vlayer ){
-	HTVLayerChanged( world, vlayer );
+void meWorldNotifier::HTSPFTypeChanged(meWorld *world, meHeightTerrainSector *sector,
+meHeightTerrainPropField *propField, meHeightTerrainPFType*){
+	HTSPropFieldChanged(world, sector, propField);
 }
 
 
 
-void meWorldNotifier::ObjectSelectionChanged( meWorld* ){
+void meWorldNotifier::HTNavSpaceCountChanged(meWorld*){
 }
 
-void meWorldNotifier::ObjectChanged( meWorld*, meObject* ){
+void meWorldNotifier::HTActiveNavSpaceChanged(meWorld*){
 }
 
-void meWorldNotifier::ObjectClassChanged( meWorld *world, meObject *object ){
-	ObjectChanged( world, object );
+void meWorldNotifier::HTNavSpaceChanged(meWorld*, meHeightTerrainNavSpace*){
 }
 
-void meWorldNotifier::ObjectGeometryChanged( meWorld *world, meObject *object ){
-	ObjectChanged( world, object );
+void meWorldNotifier::HTNavSpaceTypeCountChanged(meWorld *world, meHeightTerrainNavSpace *navspace){
+	HTNavSpaceChanged(world, navspace);
 }
 
-void meWorldNotifier::ObjectPropertiesChanged( meWorld *world, meObject *object ){
-	ObjectChanged( world, object );
+void meWorldNotifier::HTNavSpaceActiveTypeChanged(meWorld*, meHeightTerrainNavSpace*){
 }
 
-void meWorldNotifier::ObjectActivePropertyChanged( meWorld*, meObject* ){
+void meWorldNotifier::HTNavSpaceTypeChanged(meWorld *world, meHeightTerrainNavSpace *navspace,
+meHeightTerrainNavSpaceType*){
+	HTNavSpaceChanged(world, navspace);
 }
 
-void meWorldNotifier::ObjectAdded( meWorld*, meObject* ){
+void meWorldNotifier::HTNavSpaceFacesChanged(meWorld*, meHeightTerrainNavSpace*){
+}
+
+void meWorldNotifier::HTNavSpaceSelectedPointsChanged(meWorld*){
+}
+
+
+
+void meWorldNotifier::HTVLayerCountChanged(meWorld *world){
+	HTChanged(world);
+}
+
+void meWorldNotifier::HTActiveVLayerChanged(meWorld*){
+}
+
+void meWorldNotifier::HTVLayerChanged(meWorld *world, meHTVegetationLayer*){
+	HTChanged(world);
+}
+
+void meWorldNotifier::HTVLVariationCountChanged(meWorld *world, meHTVegetationLayer *vlayer){
+	HTVLayerChanged(world, vlayer);
+}
+
+void meWorldNotifier::HTVLActiveVariationChanged(meWorld*, meHTVegetationLayer*){
+}
+
+void meWorldNotifier::HTVLVariationChanged(meWorld *world, meHTVegetationLayer *vlayer, meHTVVariation*){
+	HTVLayerChanged(world, vlayer);
+}
+
+void meWorldNotifier::HTVLRuleCountChanged(meWorld *world, meHTVegetationLayer *vlayer){
+	HTVLayerChanged(world, vlayer);
+}
+
+void meWorldNotifier::HTVLActiveRuleChanged(meWorld*, meHTVegetationLayer*){
+}
+
+void meWorldNotifier::HTVLRuleChanged(meWorld *world, meHTVegetationLayer *vlayer, meHTVRule*){
+	HTVLayerChanged(world, vlayer);
+}
+
+void meWorldNotifier::HTVLRuleMoved(meWorld *world, meHTVegetationLayer *vlayer, meHTVRule *rule){
+	HTVLRuleChanged(world, vlayer, rule);
+}
+
+void meWorldNotifier::HTVLLinkCountChanged(meWorld *world, meHTVegetationLayer *vlayer){
+	HTVLayerChanged(world, vlayer);
+}
+
+
+
+void meWorldNotifier::ObjectSelectionChanged(meWorld*){
+}
+
+void meWorldNotifier::ObjectChanged(meWorld*, meObject*){
+}
+
+void meWorldNotifier::ObjectClassChanged(meWorld *world, meObject *object){
+	ObjectChanged(world, object);
+}
+
+void meWorldNotifier::ObjectGeometryChanged(meWorld *world, meObject *object){
+	ObjectChanged(world, object);
+}
+
+void meWorldNotifier::ObjectPropertiesChanged(meWorld *world, meObject *object){
+	ObjectChanged(world, object);
+}
+
+void meWorldNotifier::ObjectActivePropertyChanged(meWorld*, meObject*){
+}
+
+void meWorldNotifier::ObjectAdded(meWorld*, meObject*){
 }
 
 void meWorldNotifier::ObjectAttachBehaviorsChanged(meWorld*, meObject*){
@@ -266,101 +266,101 @@ void meWorldNotifier::ObjectAttachBehaviorsChanged(meWorld*, meObject*){
 void meWorldNotifier::ObjectActiveAttachBehaviorChanged(meWorld*, meObject*){
 }
 
-void meWorldNotifier::ObjectRemoved( meWorld*, meObject* ){
+void meWorldNotifier::ObjectRemoved(meWorld*, meObject*){
 }
 
-void meWorldNotifier::ObjectTextureCountChanged( meWorld *world, meObject *object ){
-	ObjectChanged( world, object );
+void meWorldNotifier::ObjectTextureCountChanged(meWorld *world, meObject *object){
+	ObjectChanged(world, object);
 }
 
-void meWorldNotifier::ObjectActiveTextureChanged( meWorld*, meObject* ){
+void meWorldNotifier::ObjectActiveTextureChanged(meWorld*, meObject*){
 }
 
-void meWorldNotifier::ObjectTextureChanged( meWorld *world, meObject *object, meObjectTexture* ){
-	ObjectChanged( world, object );
+void meWorldNotifier::ObjectTextureChanged(meWorld *world, meObject *object, meObjectTexture*){
+	ObjectChanged(world, object);
 }
 
-void meWorldNotifier::ObjectTexturePropertiesChanged( meWorld *world, meObject *object,
-meObjectTexture *texture ){
-	ObjectTextureChanged( world, object, texture );
+void meWorldNotifier::ObjectTexturePropertiesChanged(meWorld *world, meObject *object,
+meObjectTexture *texture){
+	ObjectTextureChanged(world, object, texture);
 }
 
-void meWorldNotifier::ObjectTextureActivePropertyChanged( meWorld*, meObject*, meObjectTexture* ){
-}
-
-
-
-void meWorldNotifier::ObjectShapeListChanged( meWorld* ){
-}
-
-void meWorldNotifier::ObjectShapeSelectionChanged( meWorld* ){
+void meWorldNotifier::ObjectTextureActivePropertyChanged(meWorld*, meObject*, meObjectTexture*){
 }
 
 
 
-void meWorldNotifier::DecalSelectionChanged( meWorld* ){
+void meWorldNotifier::ObjectShapeListChanged(meWorld*){
 }
 
-void meWorldNotifier::DecalCountChanged( meWorld* ){
-}
-
-void meWorldNotifier::DecalChanged( meWorld*, meDecal* ){
-}
-
-void meWorldNotifier::DecalGeometryChanged( meWorld *world, meDecal *decal ){
-	DecalChanged( world, decal );
-}
-
-void meWorldNotifier::DecalPropertiesChanged( meWorld *world, meDecal *decal ){
-	DecalChanged( world, decal );
-}
-
-void meWorldNotifier::DecalActivePropertyChanged( meWorld*, meDecal* ){
+void meWorldNotifier::ObjectShapeSelectionChanged(meWorld*){
 }
 
 
 
-void meWorldNotifier::NavSpaceSelectionChanged( meWorld* ){
+void meWorldNotifier::DecalSelectionChanged(meWorld*){
 }
 
-void meWorldNotifier::NavSpaceCountChanged( meWorld* ){
+void meWorldNotifier::DecalCountChanged(meWorld*){
 }
 
-void meWorldNotifier::NavSpaceChanged( meWorld*, meNavigationSpace* ){
+void meWorldNotifier::DecalChanged(meWorld*, meDecal*){
 }
 
-void meWorldNotifier::NavSpaceGeometryChanged( meWorld *world, meNavigationSpace *navspace ){
-	NavSpaceChanged( world, navspace );
+void meWorldNotifier::DecalGeometryChanged(meWorld *world, meDecal *decal){
+	DecalChanged(world, decal);
 }
 
-void meWorldNotifier::NavSpaceUsedCostTypesChanged( meWorld*, meNavigationSpace* ){
+void meWorldNotifier::DecalPropertiesChanged(meWorld *world, meDecal *decal){
+	DecalChanged(world, decal);
 }
 
-
-
-void meWorldNotifier::PFSelectionChanged( meWorld* ){
-}
-
-void meWorldNotifier::PFCountChanged( meWorld* ){
-}
-
-void meWorldNotifier::PFChanged( meWorld*, mePropField* ){
-}
-
-void meWorldNotifier::PFTypeCountChanged( meWorld*, mePropField* ){
-}
-
-void meWorldNotifier::PFActiveTypeChanged( meWorld*, mePropField* ){
-}
-
-void meWorldNotifier::PFTypeChanged( meWorld *world, mePropField *field, mePropFieldType* ){
-	PFChanged( world, field );
+void meWorldNotifier::DecalActivePropertyChanged(meWorld*, meDecal*){
 }
 
 
 
-void meWorldNotifier::ActiveCameraChanged( meWorld* ){
+void meWorldNotifier::NavSpaceSelectionChanged(meWorld*){
 }
 
-void meWorldNotifier::CameraChanged( meWorld*, meCamera* ){
+void meWorldNotifier::NavSpaceCountChanged(meWorld*){
+}
+
+void meWorldNotifier::NavSpaceChanged(meWorld*, meNavigationSpace*){
+}
+
+void meWorldNotifier::NavSpaceGeometryChanged(meWorld *world, meNavigationSpace *navspace){
+	NavSpaceChanged(world, navspace);
+}
+
+void meWorldNotifier::NavSpaceUsedCostTypesChanged(meWorld*, meNavigationSpace*){
+}
+
+
+
+void meWorldNotifier::PFSelectionChanged(meWorld*){
+}
+
+void meWorldNotifier::PFCountChanged(meWorld*){
+}
+
+void meWorldNotifier::PFChanged(meWorld*, mePropField*){
+}
+
+void meWorldNotifier::PFTypeCountChanged(meWorld*, mePropField*){
+}
+
+void meWorldNotifier::PFActiveTypeChanged(meWorld*, mePropField*){
+}
+
+void meWorldNotifier::PFTypeChanged(meWorld *world, mePropField *field, mePropFieldType*){
+	PFChanged(world, field);
+}
+
+
+
+void meWorldNotifier::ActiveCameraChanged(meWorld*){
+}
+
+void meWorldNotifier::CameraChanged(meWorld*, meCamera*){
 }

@@ -41,9 +41,9 @@
 ////////////////////////////
 
 deSynthesizerSourceSound::deSynthesizerSourceSound() :
-pMinSpeed( 1.0f ),
-pMaxSpeed( 1.0f ),
-pLooping( false ){
+pMinSpeed(1.0f),
+pMaxSpeed(1.0f),
+pLooping(false){
 }
 
 deSynthesizerSourceSound::~deSynthesizerSourceSound(){
@@ -54,19 +54,19 @@ deSynthesizerSourceSound::~deSynthesizerSourceSound(){
 // Management
 ///////////////
 
-void deSynthesizerSourceSound::SetSound( deSound *sound ){
+void deSynthesizerSourceSound::SetSound(deSound *sound){
 	pSound = sound;
 }
 
-void deSynthesizerSourceSound::SetMinSpeed( float speed ){
+void deSynthesizerSourceSound::SetMinSpeed(float speed){
 	pMinSpeed = speed;
 }
 
-void deSynthesizerSourceSound::SetMaxSpeed( float speed ){
+void deSynthesizerSourceSound::SetMaxSpeed(float speed){
 	pMaxSpeed = speed;
 }
 
-void deSynthesizerSourceSound::SetLooping( bool looping ){
+void deSynthesizerSourceSound::SetLooping(bool looping){
 	pLooping = looping;
 }
 
@@ -75,6 +75,6 @@ void deSynthesizerSourceSound::SetLooping( bool looping ){
 // Visiting
 /////////////
 
-void deSynthesizerSourceSound::Visit( deSynthesizerSourceVisitor &visitor ){
-	visitor.VisitSound( *this );
+void deSynthesizerSourceSound::Visit(deSynthesizerSourceVisitor &visitor){
+	visitor.VisitSound(*this);
 }

@@ -36,15 +36,15 @@ igdeNativeNullContainerBox::igdeNativeNullContainerBox(){
 igdeNativeNullContainerBox::~igdeNativeNullContainerBox(){
 }
 
-void *igdeNativeNullContainerBox::CreateNativeWidget( igdeContainerBox& ){
+void *igdeNativeNullContainerBox::CreateNativeWidget(igdeContainerBox&){
 	return new igdeNativeNullContainerBox;
 }
 
-void igdeNativeNullContainerBox::PostCreateNativeWidget( igdeContainerBox&, void* ){
+void igdeNativeNullContainerBox::PostCreateNativeWidget(igdeContainerBox&, void*){
 }
 
-void igdeNativeNullContainerBox::DestroyNativeWidget( igdeContainerBox&, void *native ){
-	delete ( igdeNativeNullContainerBox* )native;
+void igdeNativeNullContainerBox::DestroyNativeWidget(igdeContainerBox&, void *native){
+	delete (igdeNativeNullContainerBox*)native;
 }
 
 #endif

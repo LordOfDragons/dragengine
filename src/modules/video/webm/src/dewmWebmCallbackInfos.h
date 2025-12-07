@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create callback. */
-	dewmWebmCallbackInfos( deVideoWebm &module, dewmInfos &infos );
+	dewmWebmCallbackInfos(deVideoWebm &module, dewmInfos &infos);
 	
 	/** Clean up callback. */
 	virtual ~dewmWebmCallbackInfos();
@@ -73,42 +73,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Start parsing segment. */
-	virtual webm::Status OnSegmentBegin( const webm::ElementMetadata &metadata, webm::Action *action );
+	virtual webm::Status OnSegmentBegin(const webm::ElementMetadata &metadata, webm::Action *action);
 	
 	/** End parsing segment. */
-	virtual webm::Status OnSegmentEnd( const webm::ElementMetadata &metadata );
+	virtual webm::Status OnSegmentEnd(const webm::ElementMetadata &metadata);
 	
 	/** Segment information. */
-	virtual webm::Status OnInfo( const webm::ElementMetadata &metadata, const webm::Info &info );
+	virtual webm::Status OnInfo(const webm::ElementMetadata &metadata, const webm::Info &info);
 	
 	/** Track entry. */
-	virtual webm::Status OnTrackEntry( const webm::ElementMetadata &metadata,
-		const webm::TrackEntry &track_entry );
+	virtual webm::Status OnTrackEntry(const webm::ElementMetadata &metadata,
+		const webm::TrackEntry &track_entry);
 	
 	/** Cluster begin. */
-	virtual webm::Status OnClusterBegin( const webm::ElementMetadata &metadata,
-		const webm::Cluster &cluster, webm::Action *action );
+	virtual webm::Status OnClusterBegin(const webm::ElementMetadata &metadata,
+		const webm::Cluster &cluster, webm::Action *action);
 	
 	/** Blocks. */
-	virtual webm::Status OnSimpleBlockBegin( const webm::ElementMetadata &metadata,
-		const webm::SimpleBlock &simple_block, webm::Action *action );
+	virtual webm::Status OnSimpleBlockBegin(const webm::ElementMetadata &metadata,
+		const webm::SimpleBlock &simple_block, webm::Action *action);
 	
-	virtual webm::Status OnBlockBegin( const webm::ElementMetadata &metadata,
-		const webm::Block &block, webm::Action *action );
+	virtual webm::Status OnBlockBegin(const webm::ElementMetadata &metadata,
+		const webm::Block &block, webm::Action *action);
 	
 	/** Frame. */
-	virtual webm::Status OnFrame( const webm::FrameMetadata &metadata, webm::Reader *reader,
-		std::uint64_t *bytes_remaining );
+	virtual webm::Status OnFrame(const webm::FrameMetadata &metadata, webm::Reader *reader,
+		std::uint64_t *bytes_remaining);
 	/*@}*/
 	
 	
 	
 protected:
-	webm::Status pOnTrackVideo( const webm::TrackEntry &track );
-	webm::Status pOnTrackAudio( const webm::TrackEntry &track );
-	void pProcessBlock( const webm::Block &block );
-	webm::Status pProcessFirstFrameVideo( webm::Reader &reader, std::uint64_t &bytes_remaining );
-	webm::Status pProcessFirstFrameAudio( webm::Reader &reader, std::uint64_t &bytes_remaining );
+	webm::Status pOnTrackVideo(const webm::TrackEntry &track);
+	webm::Status pOnTrackAudio(const webm::TrackEntry &track);
+	void pProcessBlock(const webm::Block &block);
+	webm::Status pProcessFirstFrameVideo(webm::Reader &reader, std::uint64_t &bytes_remaining);
+	webm::Status pProcessFirstFrameAudio(webm::Reader &reader, std::uint64_t &bytes_remaining);
 	
 	decColorMatrix3 pCreateColorConversionMatrix() const;
 };

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMinPosition( aeRuleStateManipulator *rule, const decVector &newMin );
+	aeUSetRuleSModMinPosition(aeRuleStateManipulator *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModMinPosition();

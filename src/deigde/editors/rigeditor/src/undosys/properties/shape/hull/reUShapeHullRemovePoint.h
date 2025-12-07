@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUShapeHullRemovePoint( reRigShapeHull *shape, int index );
+	reUShapeHullRemovePoint(reRigShapeHull *shape, int index);
 	
 protected:
 	/** \brief Clean up undo. */

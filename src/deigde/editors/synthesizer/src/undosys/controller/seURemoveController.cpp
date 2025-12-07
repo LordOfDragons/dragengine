@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seURemoveController::seURemoveController( seSynthesizer *synthesizer, seController *controller ) :
-pSynthesizer( NULL ),
-pController( NULL )
+seURemoveController::seURemoveController(seSynthesizer *synthesizer, seController *controller) :
+pSynthesizer(NULL),
+pController(NULL)
 {
-	if( ! synthesizer || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! synthesizer || ! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndex = synthesizer->GetControllers().IndexOf( controller );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = synthesizer->GetControllers().IndexOf(controller);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSynthesizer = synthesizer;
@@ -70,11 +70,11 @@ seURemoveController::~seURemoveController(){
 ///////////////
 
 void seURemoveController::Undo(){
-	pSynthesizer->InsertControllerAt( pController, pIndex );
+	pSynthesizer->InsertControllerAt(pController, pIndex);
 }
 
 void seURemoveController::Redo(){
-	pSynthesizer->RemoveController( pController );
+	pSynthesizer->RemoveController(pController);
 }
 
 
@@ -83,10 +83,10 @@ void seURemoveController::Redo(){
 //////////////////////
 
 void seURemoveController::pCleanUp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

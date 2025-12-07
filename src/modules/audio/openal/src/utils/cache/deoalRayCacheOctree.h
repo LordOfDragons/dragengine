@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create world octree. */
-	deoalRayCacheOctree( const decVector &center, const decVector &halfSize );
+	deoalRayCacheOctree(const decVector &center, const decVector &halfSize);
 	
 	/** \brief Clean up world octree. */
 	virtual ~deoalRayCacheOctree();
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create octree for octant. */
-	virtual deoalOctree *CreateOctree( int octant ) const;
+	virtual deoalOctree *CreateOctree(int octant) const;
 	
 	/** \brief Clear content of node. */
 	virtual void ClearNodeContent();
@@ -66,7 +66,7 @@ public:
 	void ClearRays();
 	
 	/** \brief Add ray into octree. */
-	void InsertRayIntoTree( deoalRayCacheRay *ray, int maxDepth );
+	void InsertRayIntoTree(deoalRayCacheRay *ray, int maxDepth);
 	/*@}*/
 	
 	
@@ -77,16 +77,16 @@ public:
 	int GetRayCount() const;
 	
 	/** \brief Ray at index. */
-	deoalRayCacheRay *GetRayAt( int index ) const;
+	deoalRayCacheRay *GetRayAt(int index) const;
 	
 	/** \brief Index of ray or -1 if absent. */
-	int IndexOfRay( deoalRayCacheRay *ray ) const;
+	int IndexOfRay(deoalRayCacheRay *ray) const;
 	
 	/** \brief Add ray. */
-	void AddRay( deoalRayCacheRay *ray );
+	void AddRay(deoalRayCacheRay *ray);
 	
 	/** \brief Remove ray. */
-	void RemoveRay( deoalRayCacheRay *ray );
+	void RemoveRay(deoalRayCacheRay *ray);
 	
 	/** \brief Remove all rays. */
 	void RemoveAllRays();
@@ -95,7 +95,7 @@ public:
 	
 	
 private:
-	deoalRayCacheOctree *pGetNodeFor( const decVector &position, int maxDepth );
+	deoalRayCacheOctree *pGetNodeFor(const decVector &position, int maxDepth);
 };
 
 #endif

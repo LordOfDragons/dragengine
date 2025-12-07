@@ -42,35 +42,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigator::deNavigator( deNavigatorManager *manager ) :
-deResource( manager ),
+deNavigator::deNavigator(deNavigatorManager *manager) :
+deResource(manager),
 
-pLayer( 0 ),
-pSpaceType( deNavigationSpace::estGrid ),
-pMaxOutsideDistance( 0.5f ),
+pLayer(0),
+pSpaceType(deNavigationSpace::estGrid),
+pMaxOutsideDistance(0.5f),
 
-pDefFixCost( 0.0f ),
-pDefCostPerMeter( 1.0f ),
-pBlockingCost( 1000.0f ),
+pDefFixCost(0.0f),
+pDefCostPerMeter(1.0f),
+pBlockingCost(1000.0f),
 
-pTypes( NULL ),
-pTypeCount( 0 ),
-pTypeSize( 0 ),
+pTypes(NULL),
+pTypeCount(0),
+pTypeSize(0),
 
-pPeerAI( NULL ),
+pPeerAI(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL){
 }
 
 deNavigator::~deNavigator(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		delete pPeerAI;
 		pPeerAI = NULL;
 	}
 	
-	if( pTypes ){
+	if(pTypes){
 		delete [] pTypes;
 	}
 }
@@ -80,100 +80,100 @@ deNavigator::~deNavigator(){
 // Management
 ///////////////
 
-void deNavigator::SetLayer( int layer ){
-	if( layer == pLayer ){
+void deNavigator::SetLayer(int layer){
+	if(layer == pLayer){
 		return;
 	}
 	
 	pLayer = layer;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->LayerChanged();
 	}
 }
 
-void deNavigator::SetSpaceType( deNavigationSpace::eSpaceTypes spaceType ){
-	if( spaceType < deNavigationSpace::estGrid || spaceType > deNavigationSpace::estVolume ){
-		DETHROW( deeInvalidParam );
+void deNavigator::SetSpaceType(deNavigationSpace::eSpaceTypes spaceType){
+	if(spaceType < deNavigationSpace::estGrid || spaceType > deNavigationSpace::estVolume){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( spaceType == pSpaceType ){
+	if(spaceType == pSpaceType){
 		return;
 	}
 	
 	pSpaceType = spaceType;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->SpaceTypeChanged();
 	}
 }
 
-void deNavigator::SetMaxOutsideDistance( float maxDistance ){
-	maxDistance = decMath::max( maxDistance, 0.0f );
+void deNavigator::SetMaxOutsideDistance(float maxDistance){
+	maxDistance = decMath::max(maxDistance, 0.0f);
 	
-	if( fabsf( maxDistance - pMaxOutsideDistance ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(maxDistance - pMaxOutsideDistance) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxOutsideDistance = maxDistance;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->ParametersChanged();
 	}
 }
 
 
 
-void deNavigator::SetDefaultFixCost( float cost ){
-	if( fabsf( cost - pDefFixCost ) < FLOAT_SAFE_EPSILON ){
+void deNavigator::SetDefaultFixCost(float cost){
+	if(fabsf(cost - pDefFixCost) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pDefFixCost = cost;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->CostsChanged();
 	}
 }
 
-void deNavigator::SetDefaultCostPerMeter( float costPerMeter ){
-	if( fabsf( costPerMeter - pDefCostPerMeter ) < FLOAT_SAFE_EPSILON ){
+void deNavigator::SetDefaultCostPerMeter(float costPerMeter){
+	if(fabsf(costPerMeter - pDefCostPerMeter) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pDefCostPerMeter = costPerMeter;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->CostsChanged();
 	}
 }
 
-void deNavigator::SetBlockingCost( float cost ){
-	if( fabsf( cost - pBlockingCost ) < FLOAT_SAFE_EPSILON ){
+void deNavigator::SetBlockingCost(float cost){
+	if(fabsf(cost - pBlockingCost) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pBlockingCost = cost;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->CostsChanged();
 	}
 }
 
 
 
-deNavigatorType *deNavigator::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+deNavigatorType *deNavigator::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	return pTypes + index;
 }
 
-deNavigatorType *deNavigator::GetTypeWith( int typeValue ) const{
+deNavigatorType *deNavigator::GetTypeWith(int typeValue) const{
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		if( pTypes[ i ].GetType() == typeValue ){
+	for(i=0; i<pTypeCount; i++){
+		if(pTypes[i].GetType() == typeValue){
 			return pTypes + i;
 		}
 	}
@@ -181,11 +181,11 @@ deNavigatorType *deNavigator::GetTypeWith( int typeValue ) const{
 	return NULL;
 }
 
-int deNavigator::IndexOfType( deNavigatorType *type ) const{
+int deNavigator::IndexOfType(deNavigatorType *type) const{
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		if( pTypes + i == type ){
+	for(i=0; i<pTypeCount; i++){
+		if(pTypes + i == type){
 			return i;
 		}
 	}
@@ -193,11 +193,11 @@ int deNavigator::IndexOfType( deNavigatorType *type ) const{
 	return -1;
 }
 
-int deNavigator::IndexOfTypeWith( int typeValue ) const{
+int deNavigator::IndexOfTypeWith(int typeValue) const{
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		if( pTypes[ i ].GetType() == typeValue ){
+	for(i=0; i<pTypeCount; i++){
+		if(pTypes[i].GetType() == typeValue){
 			return i;
 		}
 	}
@@ -205,11 +205,11 @@ int deNavigator::IndexOfTypeWith( int typeValue ) const{
 	return -1;
 }
 
-bool deNavigator::HasType( deNavigatorType *type ) const{
+bool deNavigator::HasType(deNavigatorType *type) const{
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		if( pTypes + i == type ){
+	for(i=0; i<pTypeCount; i++){
+		if(pTypes + i == type){
 			return true;
 		}
 	}
@@ -217,11 +217,11 @@ bool deNavigator::HasType( deNavigatorType *type ) const{
 	return false;
 }
 
-bool deNavigator::HasTypeWith( int typeValue ) const{
+bool deNavigator::HasTypeWith(int typeValue) const{
 	int i;
 	
-	for( i=0; i<pTypeCount; i++ ){
-		if( pTypes[ i ].GetType() == typeValue ){
+	for(i=0; i<pTypeCount; i++){
+		if(pTypes[i].GetType() == typeValue){
 			return true;
 		}
 	}
@@ -229,24 +229,24 @@ bool deNavigator::HasTypeWith( int typeValue ) const{
 	return false;
 }
 
-deNavigatorType *deNavigator::AddType( int type ){
-	deNavigatorType *rtype = GetTypeWith( type );
+deNavigatorType *deNavigator::AddType(int type){
+	deNavigatorType *rtype = GetTypeWith(type);
 	
-	if( ! rtype ){
-		if( pTypeCount == pTypeSize ){
+	if(! rtype){
+		if(pTypeCount == pTypeSize){
 			int newSize = pTypeCount + 1;
-			deNavigatorType *newArray = new deNavigatorType[ newSize ];
-			if( pTypes ){
-				memcpy( newArray, pTypes, sizeof( deNavigatorType ) * pTypeCount );
+			deNavigatorType *newArray = new deNavigatorType[newSize];
+			if(pTypes){
+				memcpy(newArray, pTypes, sizeof(deNavigatorType) * pTypeCount);
 				delete [] pTypes;
 			}
 			pTypes = newArray;
 			pTypeSize = newSize;
 		}
 		
-		pTypes[ pTypeCount ].SetType( type );
-		pTypes[ pTypeCount ].SetFixCost( 0.0f );
-		pTypes[ pTypeCount ].SetCostPerMeter( 1.0f );
+		pTypes[pTypeCount].SetType(type);
+		pTypes[pTypeCount].SetFixCost(0.0f);
+		pTypes[pTypeCount].SetCostPerMeter(1.0f);
 		rtype = pTypes + pTypeCount;
 		pTypeCount++;
 	}
@@ -254,30 +254,30 @@ deNavigatorType *deNavigator::AddType( int type ){
 	return rtype;
 }
 
-void deNavigator::RemoveType( deNavigatorType *type ){
-	const int index = IndexOfType( type );
+void deNavigator::RemoveType(deNavigatorType *type){
+	const int index = IndexOfType(type);
 	int i;
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=index+1; i<pTypeCount; i++ ){
-		pTypes[ i - 1 ] = pTypes[ i ];
+	for(i=index+1; i<pTypeCount; i++){
+		pTypes[i - 1] = pTypes[i];
 	}
 	pTypeCount--;
 }
 
-void deNavigator::RemoveTypeWith( int typeValue ){
-	const int index = IndexOfTypeWith( typeValue );
+void deNavigator::RemoveTypeWith(int typeValue){
+	const int index = IndexOfTypeWith(typeValue);
 	int i;
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=index+1; i<pTypeCount; i++ ){
-		pTypes[ i - 1 ] = pTypes[ i ];
+	for(i=index+1; i<pTypeCount; i++){
+		pTypes[i - 1] = pTypes[i];
 	}
 	pTypeCount--;
 }
@@ -287,16 +287,16 @@ void deNavigator::RemoveAllTypes(){
 }
 
 void deNavigator::NotifyTypesChanged(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->TypesChanged();
 	}
 }
 
 
 
-void deNavigator::FindPath( deNavigatorPath &path, const decDVector &start, const decDVector &goal ){
-	if( pPeerAI ){
-		pPeerAI->FindPath( path, start, goal );
+void deNavigator::FindPath(deNavigatorPath &path, const decDVector &start, const decDVector &goal){
+	if(pPeerAI){
+		pPeerAI->FindPath(path, start, goal);
 	}
 }
 
@@ -305,20 +305,20 @@ void deNavigator::FindPath( deNavigatorPath &path, const decDVector &start, cons
 // Testing
 ////////////
 
-bool deNavigator::NearestPoint( const decDVector &point, float radius,
-decDVector &nearestPoint, int &nearestType ) const{
-	if( ! pPeerAI ){
+bool deNavigator::NearestPoint(const decDVector &point, float radius,
+decDVector &nearestPoint, int &nearestType) const{
+	if(! pPeerAI){
 		return false;
 	}
-	return pPeerAI->NearestPoint( point, radius, nearestPoint, nearestType );
+	return pPeerAI->NearestPoint(point, radius, nearestPoint, nearestType);
 }
 
-bool deNavigator::LineCollide( const decDVector &origin, const decVector &direction,
-float &distance ) const{
-	if( ! pPeerAI ){
+bool deNavigator::LineCollide(const decDVector &origin, const decVector &direction,
+float &distance) const{
+	if(! pPeerAI){
 		return false;
 	}
-	return pPeerAI->LineCollide( origin, direction, distance );
+	return pPeerAI->LineCollide(origin, direction, distance);
 }
 
 
@@ -326,40 +326,40 @@ float &distance ) const{
 // Path Collision
 ///////////////////
 
-bool deNavigator::PathCollideRay( const deNavigatorPath &path, deCollider &collider,
-int &hitAfterPoint, float &hitDistance ) const{
-	if( ! pPeerAI ){
+bool deNavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
+int &hitAfterPoint, float &hitDistance) const{
+	if(! pPeerAI){
 		return false;
 	}
-	return pPeerAI->PathCollideRay( path, collider, hitAfterPoint, hitDistance );
+	return pPeerAI->PathCollideRay(path, collider, hitAfterPoint, hitDistance);
 }
 
-bool deNavigator::PathCollideRay( const deNavigatorPath &path, deCollider &collider,
+bool deNavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 const decDVector &startPosition, int nextPoint, float maxDistance, int &hitAfterPoint,
-float &hitDistance ) const{
-	if( ! pPeerAI ){
+float &hitDistance) const{
+	if(! pPeerAI){
 		return false;
 	}
-	return pPeerAI->PathCollideRay( path, collider, startPosition, nextPoint, maxDistance,
-		hitAfterPoint, hitDistance );
+	return pPeerAI->PathCollideRay(path, collider, startPosition, nextPoint, maxDistance,
+		hitAfterPoint, hitDistance);
 }
 
-bool deNavigator::PathCollideShape( const deNavigatorPath &path, deCollider &collider,
-deCollider &agent, int &hitAfterPoint, float &hitDistance ) const{
-	if( ! pPeerAI ){
+bool deNavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
+deCollider &agent, int &hitAfterPoint, float &hitDistance) const{
+	if(! pPeerAI){
 		return false;
 	}
-	return pPeerAI->PathCollideShape( path, collider, agent, hitAfterPoint, hitDistance );
+	return pPeerAI->PathCollideShape(path, collider, agent, hitAfterPoint, hitDistance);
 }
 
-bool deNavigator::PathCollideShape( const deNavigatorPath &path, deCollider &collider,
+bool deNavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 deCollider &agent, const decDVector &startPosition, int nextPoint, float maxDistance,
-int &hitAfterPoint, float &hitDistance ) const{
-	if( ! pPeerAI ){
+int &hitAfterPoint, float &hitDistance) const{
+	if(! pPeerAI){
 		return false;
 	}
-	return pPeerAI->PathCollideShape( path, collider, agent, startPosition, nextPoint,
-		maxDistance, hitAfterPoint, hitDistance );
+	return pPeerAI->PathCollideShape(path, collider, agent, startPosition, nextPoint,
+		maxDistance, hitAfterPoint, hitDistance);
 }
 
 
@@ -367,8 +367,8 @@ int &hitAfterPoint, float &hitDistance ) const{
 // System Peers
 /////////////////
 
-void deNavigator::SetPeerAI( deBaseAINavigator *peer ){
-	if( pPeerAI ){
+void deNavigator::SetPeerAI(deBaseAINavigator *peer){
+	if(pPeerAI){
 		delete pPeerAI;
 	}
 	pPeerAI = peer;
@@ -379,14 +379,14 @@ void deNavigator::SetPeerAI( deBaseAINavigator *peer ){
 // Linked List
 ////////////////
 
-void deNavigator::SetParentWorld( deWorld *world ){
+void deNavigator::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deNavigator::SetLLWorldPrev( deNavigator *navigator ){
+void deNavigator::SetLLWorldPrev(deNavigator *navigator){
 	pLLWorldPrev = navigator;
 }
 
-void deNavigator::SetLLWorldNext( deNavigator *navigator ){
+void deNavigator::SetLLWorldNext(deNavigator *navigator){
 	pLLWorldNext = navigator;
 }

@@ -47,7 +47,7 @@ public:
 	igdeGDCForceFieldList();
 	
 	/** \brief Create copy of a game definition class particle field list. */
-	igdeGDCForceFieldList( const igdeGDCForceFieldList &list );
+	igdeGDCForceFieldList(const igdeGDCForceFieldList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCForceFieldList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Emitter by index. */
-	igdeGDCForceField *GetAt( int index ) const;
+	igdeGDCForceField *GetAt(int index) const;
 	
 	/** \brief Index of an field or -1 if not found. */
-	int IndexOf( igdeGDCForceField *field ) const;
+	int IndexOf(igdeGDCForceField *field) const;
 	
 	/** \brief Determines if an field exists. */
-	bool Has( igdeGDCForceField *field ) const;
+	bool Has(igdeGDCForceField *field) const;
 	
 	/** \brief Adds an field. */
-	void Add( igdeGDCForceField *field );
+	void Add(igdeGDCForceField *field);
 	
 	/** \brief Inserts a new field. */
-	void InsertAt( igdeGDCForceField *field, int index );
+	void InsertAt(igdeGDCForceField *field, int index);
 	
 	/** \brief Moves an field to a new position. */
-	void MoveTo( igdeGDCForceField *field, int index );
+	void MoveTo(igdeGDCForceField *field, int index);
 	
 	/** \brief Removes an field. */
-	void Remove( igdeGDCForceField *field );
+	void Remove(igdeGDCForceField *field);
 	
 	/** \brief Removes all fields. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCForceFieldList &list );
+	void SetToDeepCopyFrom(const igdeGDCForceFieldList &list);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list from another list. */
-	igdeGDCForceFieldList &operator=( const igdeGDCForceFieldList &list );
+	igdeGDCForceFieldList &operator=(const igdeGDCForceFieldList &list);
 	/*@}*/
 };
 

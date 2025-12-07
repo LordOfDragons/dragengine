@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	sePropertyNodeGroup( deEngine &engine );
+	sePropertyNodeGroup(deEngine &engine);
 	
 	/** \brief Create copy of node. */
-	sePropertyNodeGroup( const sePropertyNodeGroup &node );
+	sePropertyNodeGroup(const sePropertyNodeGroup &node);
 	
 	/** \brief Clean up node. */
 	virtual ~sePropertyNodeGroup();
@@ -63,13 +63,13 @@ public:
 	virtual seProperty *GetProperty() const;
 	
 	/** \brief Set parent property or \em NULL. */
-	void SetProperty( seProperty *property );
+	void SetProperty(seProperty *property);
 	
 	/** \brief Node group is the active one. */
-	inline bool GetActiveGroup() const{ return pActiveGroup; }
+	inline bool GetActiveGroup() const{return pActiveGroup;}
 	
 	/** \brief Set if node group is the active one. */
-	void SetActiveGroup( bool active );
+	void SetActiveGroup(bool active);
 	
 	
 	
@@ -77,28 +77,28 @@ public:
 	int GetNodeCount() const;
 	
 	/** \brief Node at index. */
-	sePropertyNode *GetNodeAt( int index ) const;
+	sePropertyNode *GetNodeAt(int index) const;
 	
 	/** \brief Node is present. */
-	bool HasNode( sePropertyNode *node ) const;
+	bool HasNode(sePropertyNode *node) const;
 	
 	/** \brief Index of node or -1 if absent. */
-	int IndexOfNode( sePropertyNode *node ) const;
+	int IndexOfNode(sePropertyNode *node) const;
 	
 	/** \brief Add node. */
-	void AddNode( sePropertyNode *node );
+	void AddNode(sePropertyNode *node);
 	
 	/** \brief Insert node at index. */
-	void InsertNode( int index, sePropertyNode *node );
+	void InsertNode(int index, sePropertyNode *node);
 	
 	/** \brief Remove node. */
-	void RemoveNode( sePropertyNode *node );
+	void RemoveNode(sePropertyNode *node);
 	
 	/** \brief Remove all nodes. */
 	void RemoveAllNodes();
 	
 	/** \brief Move node to position. */
-	void MoveNode( sePropertyNode *node, int index );
+	void MoveNode(sePropertyNode *node, int index);
 	
 	
 	

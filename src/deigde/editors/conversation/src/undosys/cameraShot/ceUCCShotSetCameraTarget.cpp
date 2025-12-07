@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget( ceCameraShot *cameraShot, const char *newTarget ){
-	if( ! cameraShot || ! newTarget ){
-		DETHROW( deeInvalidParam );
+ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot *cameraShot, const char *newTarget){
+	if(! cameraShot || ! newTarget){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set Camera Target" );
+	SetShortInfo("Camera Shot Set Camera Target");
 	
 	pOldTarget = cameraShot->GetCameraTarget();
 	pNewTarget = newTarget;
@@ -56,7 +56,7 @@ ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget( ceCameraShot *cameraShot, co
 }
 
 ceUCCShotSetCameraTarget::~ceUCCShotSetCameraTarget(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ ceUCCShotSetCameraTarget::~ceUCCShotSetCameraTarget(){
 ///////////////
 
 void ceUCCShotSetCameraTarget::Undo(){
-	pCameraShot->SetCameraTarget( pOldTarget );
+	pCameraShot->SetCameraTarget(pOldTarget);
 }
 
 void ceUCCShotSetCameraTarget::Redo(){
-	pCameraShot->SetCameraTarget( pNewTarget );
+	pCameraShot->SetCameraTarget(pNewTarget);
 }

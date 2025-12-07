@@ -42,8 +42,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCCamera( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCCamera *camera, int index );
+	gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCCamera *camera, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Camera. */
-	inline gdeOCCamera *GetOCCamera() const{ return pCamera; }
+	inline gdeOCCamera *GetOCCamera() const{return pCamera;}
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
@@ -73,7 +73,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

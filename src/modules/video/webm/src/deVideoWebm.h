@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deVideoWebm( deLoadableModule &loadableModule );
+	deVideoWebm(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
 	virtual ~deVideoWebm();
@@ -47,24 +47,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Load video information from file. */
-	virtual void InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &info );
+	virtual void InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &info);
 	
 	/**
 	 * Save video.
 	 *
 	 * You can be sure that the file provided has been rewinded prior to this function call.
 	 */
-	virtual void SaveVideo( decBaseFileWriter &writer, const deVideo &video );
+	virtual void SaveVideo(decBaseFileWriter &writer, const deVideo &video);
 	
 	/** Create video decoder peer. */
-	virtual deBaseVideoDecoder *CreateDecoder( decBaseFileReader *reader );
+	virtual deBaseVideoDecoder *CreateDecoder(decBaseFileReader *reader);
 	
 	/**
 	 * Create video audio decoder peer.
 	 * 
 	 * If no video audio is present or module does not support audio null is returned..
 	 */
-	virtual deBaseVideoAudioDecoder *CreateAudioDecoder( decBaseFileReader *reader );
+	virtual deBaseVideoAudioDecoder *CreateAudioDecoder(decBaseFileReader *reader);
 	/*@}*/
 };
 

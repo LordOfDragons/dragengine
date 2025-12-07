@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglRenderWindowList( deGraphicOpenGl &ogl );
+	deoglRenderWindowList(deGraphicOpenGl &ogl);
 	
 	/** Clean up list. */
 	~deoglRenderWindowList();
@@ -59,13 +59,13 @@ public:
 	int GetCount() const;
 	
 	/** Window at index. */
-	deoglRenderWindow *GetAt( int index ) const;
+	deoglRenderWindow *GetAt(int index) const;
 	
 	/** Add window. */
-	void Add( deoglRenderWindow *window );
+	void Add(deoglRenderWindow *window);
 	
 	/** Remove window. */
-	void Remove( deoglRenderWindow *window );
+	void Remove(deoglRenderWindow *window);
 	
 	/** Removes all windows. */
 	void RemoveAll();

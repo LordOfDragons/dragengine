@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalATDelayed::deoalATDelayed( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
+deoalATDelayed::deoalATDelayed(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
 
-pHasFreeOperations( false ),
-pRootDeletion( NULL ),
-pTailDeletion( NULL ),
-pDeletionCount( 0 ){
+pHasFreeOperations(false),
+pRootDeletion(NULL),
+pTailDeletion(NULL),
+pDeletionCount(0){
 }
 
 deoalATDelayed::~deoalATDelayed(){
-	ProcessFreeOperations( true );
+	ProcessFreeOperations(true);
 }
 
 
@@ -59,25 +59,25 @@ deoalATDelayed::~deoalATDelayed(){
 // Management
 //////////////
 
-void deoalATDelayed::ProcessFreeOperations( bool deleteAll ){
-	deMutexGuard lock( pMutexFree );
+void deoalATDelayed::ProcessFreeOperations(bool deleteAll){
+	deMutexGuard lock(pMutexFree);
 	
-	if( pHasFreeOperations ){
+	if(pHasFreeOperations){
 		int countThreshold = 1000;
 		
-		while( pRootDeletion && ( deleteAll || countThreshold-- > 0 ) ){
+		while(pRootDeletion && (deleteAll || countThreshold-- > 0)){
 			deoalDelayedDeletion * const deletion = pRootDeletion;
 			pRootDeletion = pRootDeletion->GetLLNext();
-			if( pRootDeletion ){
-				pRootDeletion->SetLLPrev( NULL );
+			if(pRootDeletion){
+				pRootDeletion->SetLLPrev(NULL);
 			}
 			pDeletionCount--;
 			
-			deletion->DeleteObjects( pAudioThread );
+			deletion->DeleteObjects(pAudioThread);
 			delete deletion;
 		}
 		
-		if( pDeletionCount == 0 ){
+		if(pDeletionCount == 0){
 			pTailDeletion = NULL;
 		}
 		
@@ -85,16 +85,16 @@ void deoalATDelayed::ProcessFreeOperations( bool deleteAll ){
 	}
 }
 
-void deoalATDelayed::AddDeletion( deoalDelayedDeletion *deletion ){
-	if( ! deletion ){
-		DETHROW( deeInvalidParam );
+void deoalATDelayed::AddDeletion(deoalDelayedDeletion *deletion){
+	if(! deletion){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deMutexGuard lock( pMutexFree );
+	deMutexGuard lock(pMutexFree);
 	
-	if( pTailDeletion ){
-		pTailDeletion->SetLLNext( deletion );
-		deletion->SetLLPrev( pTailDeletion );
+	if(pTailDeletion){
+		pTailDeletion->SetLLNext(deletion);
+		deletion->SetLLPrev(pTailDeletion);
 		pTailDeletion = deletion;
 		
 	}else{

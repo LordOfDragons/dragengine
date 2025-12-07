@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create game iconn. */
-	deglGameIcon( int size, const char *path );
+	deglGameIcon(int size, const char *path);
 	
 protected:
 	/** Cleans up the game. */
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** FOX icon or nullptr if unable to load. */
-	inline deglSharedIcon *GetFoxIcon() const{ return pFoxIcon; }
+	inline deglSharedIcon *GetFoxIcon() const{return pFoxIcon;}
 	
 	/** FOX icon scaled to size or nullptr if unable to load. */
-	deglSharedIcon::Ref GetScaledFoxIcon( int size ) const;
+	deglSharedIcon::Ref GetScaledFoxIcon(int size) const;
 	/*@}*/
 	
 	

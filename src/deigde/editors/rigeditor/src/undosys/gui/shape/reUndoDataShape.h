@@ -49,7 +49,7 @@ public:
 	/**
 	 * \brief Create a new undo data object which holding a not owned pointer to the given object.
 	 */
-	reUndoDataShape( reRigShape *shape );
+	reUndoDataShape(reRigShape *shape);
 	
 	/** \brief Clean up the data object. */
 	~reUndoDataShape();
@@ -60,14 +60,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the shape. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline reRigShape *GetShape() const{return pShape;}
 	
 	/** Retrieves the position before the action took place. */
-	inline const decVector &GetOldPosition() const{ return pOldPosition; }
+	inline const decVector &GetOldPosition() const{return pOldPosition;}
 	/** Retrieves the orientation before the action took place. */
-	inline const decVector &GetOldOrientation() const{ return pOldOrientation; }
+	inline const decVector &GetOldOrientation() const{return pOldOrientation;}
 	/** Retrieves the size before the action took place. */
-	inline const decVector &GetOldSize() const{ return pOldSize; }
+	inline const decVector &GetOldSize() const{return pOldSize;}
 	/*@}*/
 };
 

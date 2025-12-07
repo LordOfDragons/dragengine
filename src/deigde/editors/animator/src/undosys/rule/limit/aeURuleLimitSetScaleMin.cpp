@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin( aeRuleLimit *rule, const decVector &newMin ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin(aeRuleLimit *rule, const decVector &newMin){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin( aeRuleLimit *rule, const decVe
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Limit Set minimum scaling" );
+		SetShortInfo("Limit Set minimum scaling");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeURuleLimitSetScaleMin::~aeURuleLimitSetScaleMin(){
 ///////////////
 
 void aeURuleLimitSetScaleMin::Undo(){
-	pRule->SetMinimumScaling( pOldMin );
+	pRule->SetMinimumScaling(pOldMin);
 }
 
 void aeURuleLimitSetScaleMin::Redo(){
-	pRule->SetMinimumScaling( pNewMin );
+	pRule->SetMinimumScaling(pNewMin);
 }
 
 
@@ -84,7 +84,7 @@ void aeURuleLimitSetScaleMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetScaleMin::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

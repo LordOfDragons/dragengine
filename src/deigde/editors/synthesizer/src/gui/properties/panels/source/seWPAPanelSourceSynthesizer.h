@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPAPanelSourceSynthesizer( seWPSource &wpSources );
+	seWPAPanelSourceSynthesizer(seWPSource &wpSources);
 	
 	/** \brief Clean up panel. */
 	virtual ~seWPAPanelSourceSynthesizer();
@@ -78,7 +78,7 @@ public:
 	virtual void UpdateConnection();
 	
 	/** \brief Prevent update for listener use only. */
-	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
+	inline bool GetPreventUpdate() const{return pPreventUpdate;}
 	/*@}*/
 };
 

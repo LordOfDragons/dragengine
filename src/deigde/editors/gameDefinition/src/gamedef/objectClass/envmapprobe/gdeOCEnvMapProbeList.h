@@ -47,7 +47,7 @@ public:
 	gdeOCEnvMapProbeList();
 	
 	/** \brief Create copy of object class environment map probe list. */
-	gdeOCEnvMapProbeList( const gdeOCEnvMapProbeList &list );
+	gdeOCEnvMapProbeList(const gdeOCEnvMapProbeList &list);
 	
 	/** \brief Clean up object class probe list. */
 	~gdeOCEnvMapProbeList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class environment map probe at position. */
-	gdeOCEnvMapProbe *GetAt( int index ) const;
+	gdeOCEnvMapProbe *GetAt(int index) const;
 	
 	/** \brief Index of named object class environment map probe or -1 if absent. */
-	int IndexOf( gdeOCEnvMapProbe *probe ) const;
+	int IndexOf(gdeOCEnvMapProbe *probe) const;
 	
 	/** \brief Object class environment map is present. */
-	bool Has( gdeOCEnvMapProbe *probe ) const;
+	bool Has(gdeOCEnvMapProbe *probe) const;
 	
 	/** \brief Add object class environment map probe. */
-	void Add( gdeOCEnvMapProbe *probe );
+	void Add(gdeOCEnvMapProbe *probe);
 	
 	/** \brief Remove object class environment map probe. */
-	void Remove( gdeOCEnvMapProbe *probe );
+	void Remove(gdeOCEnvMapProbe *probe);
 	
 	/** \brief Remove all object class environment map probes. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class environment map probe list. */
-	gdeOCEnvMapProbeList &operator=( const gdeOCEnvMapProbeList &list );
+	gdeOCEnvMapProbeList &operator=(const gdeOCEnvMapProbeList &list);
 	/*@}*/
 };
 

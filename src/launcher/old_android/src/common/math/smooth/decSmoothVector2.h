@@ -54,7 +54,7 @@ public:
 	decSmoothVector2();
 	
 	/** \brief Create copy of a smooth vector. */
-	decSmoothVector2( const decSmoothVector2 &copy );
+	decSmoothVector2(const decSmoothVector2 &copy);
 	
 	/** \brief Clean up smooth vector. */
 	~decSmoothVector2();
@@ -63,34 +63,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	inline const decVector2 &GetValue() const{ return pValue; }
+	inline const decVector2 &GetValue() const{return pValue;}
 	
 	/** \brief Set current value. */
-	void SetValue( const decVector2 &value );
+	void SetValue(const decVector2 &value);
 	
 	/** \brief Goal value. */
-	inline const decVector2 &GetGoal() const{ return pGoal; }
+	inline const decVector2 &GetGoal() const{return pGoal;}
 	
 	/** \brief Set goal value. */
-	void SetGoal( const decVector2 &goal );
+	void SetGoal(const decVector2 &goal);
 	
 	/** \brief Adjustment time in seconds. */
-	inline float GetAdjustTime() const{ return pAdjustTime; }
+	inline float GetAdjustTime() const{return pAdjustTime;}
 	
 	/** \brief Adjustment time in seconds. Clamped to 0 or larger. */
-	void SetAdjustTime( float adjustTime );
+	void SetAdjustTime(float adjustTime);
 	
 	/** \brief Adjustment range in units. */
-	inline float GetAdjustRange() const{ return pAdjustRange; }
+	inline float GetAdjustRange() const{return pAdjustRange;}
 	
 	/** \brief Set adjustment range in units. Clamped to 0 or larger. */
-	void SetAdjustRange( float range );
+	void SetAdjustRange(float range);
 	
 	/** \brief Change speed of the value in units per second. */
-	inline float GetChangeSpeed() const{ return pChangeSpeed; }
+	inline float GetChangeSpeed() const{return pChangeSpeed;}
 	
 	/** \brief Set change speed of the value in units per second. */
-	void SetChangeSpeed( float changeSpeed );
+	void SetChangeSpeed(float changeSpeed);
 	
 	
 	
@@ -102,7 +102,7 @@ public:
 	 * \details Goal is not modified.
 	 * \param[in] elapsed Elapsed time in seconds. If less than 0.001s update is skipped.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 	
 	/** \name Operators */
@@ -111,16 +111,16 @@ public:
 	 * \brief Determine if another smooth vector equals this smooth vector.
 	 * \details Two smooth vectors are equal if their value is equal.
 	 */
-	bool operator==( const decSmoothVector2 &other ) const;
+	bool operator==(const decSmoothVector2 &other) const;
 	
 	/**
 	 * \brief Determine if two smooth vector are not equal.
 	 * \details Two smooth vectors are not equal if their value is not equal.
 	 */
-	bool operator!=( const decSmoothVector2 &other ) const;
+	bool operator!=(const decSmoothVector2 &other) const;
 	
 	/** \brief Copy another smooth vector to this smooth vector. */
-	decSmoothVector2 &operator=( const decSmoothVector2 &other );
+	decSmoothVector2 &operator=(const decSmoothVector2 &other);
 	/*@}*/
 	
 private:

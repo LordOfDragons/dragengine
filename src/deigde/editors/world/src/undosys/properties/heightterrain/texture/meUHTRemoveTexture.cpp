@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTRemoveTexture::meUHTRemoveTexture( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture ){
-	if( ! world || ! sector || ! texture ) DETHROW( deeInvalidParam );
+meUHTRemoveTexture::meUHTRemoveTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
+	if(! world || ! sector || ! texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
 	
-	SetShortInfo( "Height Terrain Add Texture" );
+	SetShortInfo("Height Terrain Add Texture");
 	
 	world->AddReference();
 	
@@ -57,8 +57,8 @@ meUHTRemoveTexture::meUHTRemoveTexture( meWorld *world, meHeightTerrainSector *s
 }
 
 meUHTRemoveTexture::~meUHTRemoveTexture(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pWorld ) pWorld->FreeReference();
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -68,13 +68,13 @@ meUHTRemoveTexture::~meUHTRemoveTexture(){
 
 
 void meUHTRemoveTexture::Undo(){
-	pSector->AddTexture( pTexture );
+	pSector->AddTexture(pTexture);
 	
-	pWorld->NotifyHTSTextureCountChanged( pSector );
+	pWorld->NotifyHTSTextureCountChanged(pSector);
 }
 
 void meUHTRemoveTexture::Redo(){
-	pSector->RemoveTexture( pTexture );
+	pSector->RemoveTexture(pTexture);
 	
-	pWorld->NotifyHTSTextureCountChanged( pSector );
+	pWorld->NotifyHTSTextureCountChanged(pSector);
 }

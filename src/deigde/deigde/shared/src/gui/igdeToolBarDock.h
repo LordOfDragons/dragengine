@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeToolBarDock( igdeEnvironment &environment, eSide site );
+	igdeToolBarDock(igdeEnvironment &environment, eSide site);
 	
 	
 	
@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Side. */
-	inline eSide GetSide() const{ return pSide; }
+	inline eSide GetSide() const{return pSide;}
 	/*@}*/
 	
 	

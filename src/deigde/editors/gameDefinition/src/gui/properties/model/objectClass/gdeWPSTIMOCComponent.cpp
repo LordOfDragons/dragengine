@@ -47,25 +47,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCComponent::gdeWPSTIMOCComponent( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCComponent *component, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassComponent, objectClass, index ),
-pComponent( NULL )
+gdeWPSTIMOCComponent::gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCComponent *component, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassComponent, objectClass, index),
+pComponent(NULL)
 {
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+	if(! component){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Component #%d", index + 1 );
-	SetText( text );
+	text.Format("Component #%d", index + 1);
+	SetText(text);
 	
 	pComponent = component;
 	component->AddReference();
 }
 
 gdeWPSTIMOCComponent::~gdeWPSTIMOCComponent(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
 }
@@ -76,40 +76,40 @@ gdeWPSTIMOCComponent::~gdeWPSTIMOCComponent(){
 ///////////////
 
 void gdeWPSTIMOCComponent::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
 bool gdeWPSTIMOCComponent::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if( ! pComponent->GetModelPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetModelPath() ) ) ){
+	if(! pComponent->GetModelPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetModelPath()))){
 		return false;
 	}
-	if( ! pComponent->GetSkinPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetSkinPath() ) ) ){
+	if(! pComponent->GetSkinPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetSkinPath()))){
 		return false;
 	}
-	if( ! pComponent->GetRigPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetRigPath() ) ) ){
+	if(! pComponent->GetRigPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetRigPath()))){
 		return false;
 	}
-	if( ! pComponent->GetAnimatorPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetAnimatorPath() ) ) ){
+	if(! pComponent->GetAnimatorPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAnimatorPath()))){
 		return false;
 	}
-	if( ! pComponent->GetAnimationPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetAnimationPath() ) ) ){
+	if(! pComponent->GetAnimationPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAnimationPath()))){
 		return false;
 	}
-	if( ! pComponent->GetOcclusionMeshPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetOcclusionMeshPath() ) ) ){
+	if(! pComponent->GetOcclusionMeshPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetOcclusionMeshPath()))){
 		return false;
 	}
-	if( ! pComponent->GetAudioModelPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pComponent->GetAudioModelPath() ) ) ){
+	if(! pComponent->GetAudioModelPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pComponent->GetAudioModelPath()))){
 		return false;
 	}
 	
@@ -127,20 +127,20 @@ void gdeWPSTIMOCComponent::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCComponent::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCComponent( pComponent );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCComponent );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCComponent(pComponent);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCComponent);
 }
 
-void gdeWPSTIMOCComponent::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCComponent::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCComponentAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCComponentRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCComponentAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCComponentRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCComponentCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCComponentCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCComponentPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCComponentCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCComponentCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCComponentPaste());
 }

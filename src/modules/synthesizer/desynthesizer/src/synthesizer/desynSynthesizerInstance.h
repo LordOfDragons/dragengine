@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer instance peer. */
-	desynSynthesizerInstance( deDESynthesizer &module, deSynthesizerInstance &instance );
+	desynSynthesizerInstance(deDESynthesizer &module, deSynthesizerInstance &instance);
 	
 	/** \brief Clean up synthesizer instance peer. */
 	virtual ~desynSynthesizerInstance();
@@ -91,44 +91,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deDESynthesizer &GetModule() const{ return pModule; }
+	inline deDESynthesizer &GetModule() const{return pModule;}
 	
 	/** \brief SynthesizerInstance engine resource. */
-	inline deSynthesizerInstance &GetSynthesizerInstance() const{ return pSynthesizerInstance; }
+	inline deSynthesizerInstance &GetSynthesizerInstance() const{return pSynthesizerInstance;}
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline desynSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline desynSynthesizer *GetSynthesizer() const{return pSynthesizer;}
 	
 	
 	
 	/** \brief Controller at index. */
-	desynSynthesizerController &GetControllerAt( int index ) const;
+	desynSynthesizerController &GetControllerAt(int index) const;
 	
 	
 	
 	/** \brief Channel count. */
-	inline int GetChannelCount() const{ return pChannelCount; }
+	inline int GetChannelCount() const{return pChannelCount;}
 	
 	/** \brief Sample rate. */
-	inline int GetSampleRate() const{ return pSampleRate; }
+	inline int GetSampleRate() const{return pSampleRate;}
 	
 	/** \brief Bytes per sample. */
-	inline int GetBytesPerSample() const{ return pBytesPerSample; }
+	inline int GetBytesPerSample() const{return pBytesPerSample;}
 	
 	/** \brief Number of samples to create. */
-	inline int GetSampleCount() const{ return pSampleCount; }
+	inline int GetSampleCount() const{return pSampleCount;}
 	
 	/** \brief Synthesizer is silent. */
-	inline bool GetSilent() const{ return pSilent; }
+	inline bool GetSilent() const{return pSilent;}
 	
 	/** \brief Inverse sample rate. */
-	inline float GetInverseSampleRate() const{ return pInverseSampleRate; }
+	inline float GetInverseSampleRate() const{return pInverseSampleRate;}
 	
 	/** \brief Number of samples per streaming buffer. */
-	inline int GetBufferSampleCount() const{ return pBufferSampleCount; }
+	inline int GetBufferSampleCount() const{return pBufferSampleCount;}
 	
 	/** \brief Number of streaming buffers to use. */
-	inline int GetBufferCount() const{ return pBufferCount; }
+	inline int GetBufferCount() const{return pBufferCount;}
 	/*@}*/
 	
 	
@@ -139,7 +139,7 @@ public:
 	virtual void SynthesizerChanged();
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( int index );
+	virtual void ControllerChanged(int index);
 	
 	/** \brief Play time changed. */
 	virtual void PlayTimeChanged();
@@ -170,7 +170,7 @@ public:
 	 * \throws EInvalidParam \em buffer is NULL.
 	 * \throws EInvalidParam Assigned synthesizer object changed while in use.
 	 */
-	virtual void GenerateSound( void *buffer, int bufferSize, int offset, int samples );
+	virtual void GenerateSound(void *buffer, int bufferSize, int offset, int samples);
 	/*@}*/
 	
 	
@@ -184,10 +184,10 @@ private:
 	void pClearControllers();
 	void pCreateControllers();
 	
-	void pGenerateSilence( void *buffer, int samples );
-	void pGenerateSound( desynSharedBuffer *sharedBuffer, void *buffer, int samples );
+	void pGenerateSilence(void *buffer, int samples);
+	void pGenerateSound(desynSharedBuffer *sharedBuffer, void *buffer, int samples);
 	
-	void pUpdateControllerValues( int samples, int offset );
+	void pUpdateControllerValues(int samples, int offset);
 	
 	void pCreateStateData();
 	void pFreeStateData();

@@ -43,8 +43,8 @@
 gdeOCBillboardList::gdeOCBillboardList(){
 }
 
-gdeOCBillboardList::gdeOCBillboardList( const gdeOCBillboardList &list ) :
-pBillboards( list.pBillboards ){
+gdeOCBillboardList::gdeOCBillboardList(const gdeOCBillboardList &list) :
+pBillboards(list.pBillboards){
 }
 
 gdeOCBillboardList::~gdeOCBillboardList(){
@@ -59,27 +59,27 @@ int gdeOCBillboardList::GetCount() const{
 	return pBillboards.GetCount();
 }
 
-gdeOCBillboard *gdeOCBillboardList::GetAt( int index ) const{
-	return ( gdeOCBillboard* )pBillboards.GetAt( index );
+gdeOCBillboard *gdeOCBillboardList::GetAt(int index) const{
+	return (gdeOCBillboard*)pBillboards.GetAt(index);
 }
 
-int gdeOCBillboardList::IndexOf( gdeOCBillboard *billboard ) const{
-	return pBillboards.IndexOf( billboard );
+int gdeOCBillboardList::IndexOf(gdeOCBillboard *billboard) const{
+	return pBillboards.IndexOf(billboard);
 }
 
-bool gdeOCBillboardList::Has( gdeOCBillboard *billboard ) const{
-	return pBillboards.Has( billboard );
+bool gdeOCBillboardList::Has(gdeOCBillboard *billboard) const{
+	return pBillboards.Has(billboard);
 }
 
-void gdeOCBillboardList::Add( gdeOCBillboard *billboard ){
-	if( ! billboard || Has( billboard ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCBillboardList::Add(gdeOCBillboard *billboard){
+	if(! billboard || Has(billboard)){
+		DETHROW(deeInvalidParam);
 	}
-	pBillboards.Add( billboard );
+	pBillboards.Add(billboard);
 }
 
-void gdeOCBillboardList::Remove( gdeOCBillboard *billboard ){
-	pBillboards.Remove( billboard );
+void gdeOCBillboardList::Remove(gdeOCBillboard *billboard){
+	pBillboards.Remove(billboard);
 }
 
 void gdeOCBillboardList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCBillboardList::RemoveAll(){
 
 
 
-gdeOCBillboardList &gdeOCBillboardList::operator=( const gdeOCBillboardList &list ){
+gdeOCBillboardList &gdeOCBillboardList::operator=(const gdeOCBillboardList &list){
 	pBillboards = list.pBillboards;
 	return *this;
 }

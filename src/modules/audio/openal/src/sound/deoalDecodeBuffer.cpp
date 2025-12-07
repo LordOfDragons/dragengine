@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalDecodeBuffer::deoalDecodeBuffer( int size ) :
-pBuffer( NULL ),
-pSize( 0 )
+deoalDecodeBuffer::deoalDecodeBuffer(int size) :
+pBuffer(NULL),
+pSize(0)
 {
-	SetSize( size );
+	SetSize(size);
 }
 
 deoalDecodeBuffer::~deoalDecodeBuffer(){
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 }
@@ -57,61 +57,61 @@ deoalDecodeBuffer::~deoalDecodeBuffer(){
 // Management
 ///////////////
 
-void deoalDecodeBuffer::SetSize( int size ){
-	if( size < 1 ){
-		DETHROW( deeInvalidParam );
+void deoalDecodeBuffer::SetSize(int size){
+	if(size < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size == pSize ){
+	if(size == pSize){
 		return;
 	}
 	
-	char * const buffer = new char[ size ];
-	if( pBuffer ){
+	char * const buffer = new char[size];
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 	pBuffer = buffer;
 	pSize = size;
 }
 
-int deoalDecodeBuffer::Decode( deSoundDecoder &decoder, int size ){
-	if( size > pSize ){
-		SetSize( size );
+int deoalDecodeBuffer::Decode(deSoundDecoder &decoder, int size){
+	if(size > pSize){
+		SetSize(size);
 	}
 	
-	const int bytesRead = decoder.ReadSamples( pBuffer, size );
+	const int bytesRead = decoder.ReadSamples(pBuffer, size);
 	const int remaining = size - bytesRead;
-	if( remaining > 0 ){
-		memset( pBuffer + bytesRead, '\0', remaining );
+	if(remaining > 0){
+		memset(pBuffer + bytesRead, '\0', remaining);
 	}
 	
 	return bytesRead;
 }
 
-int deoalDecodeBuffer::DecodeLooping( deSoundDecoder &decoder, int size ){
+int deoalDecodeBuffer::DecodeLooping(deSoundDecoder &decoder, int size){
 	int totalBytesRead = 0;
 	int remaining = size;
 	int position = 0;
 	
-	if( size > pSize ){
-		SetSize( size );
+	if(size > pSize){
+		SetSize(size);
 	}
 	
-	while( true ){
-		const int bytesRead = decoder.ReadSamples( pBuffer + position, remaining );
+	while(true){
+		const int bytesRead = decoder.ReadSamples(pBuffer + position, remaining);
 		
 		// bytesRead == 0 means EOF.
 		
 		totalBytesRead += bytesRead;
 		
 		remaining -= bytesRead;
-		if( remaining == 0 ){
+		if(remaining == 0){
 			break;
 		}
 		
 		position += bytesRead;
 		
-		decoder.SetPosition( 0 ); // rewind
+		decoder.SetPosition(0); // rewind
 	}
 	
 	return totalBytesRead;

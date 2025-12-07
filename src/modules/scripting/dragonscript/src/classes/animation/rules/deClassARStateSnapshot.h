@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassARStateSnapshot( deScriptingDragonScript &ds );
+	deClassARStateSnapshot(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassARStateSnapshot();
@@ -69,21 +69,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRuleStateSnapshot *GetRule( dsRealObject *myself ) const;
+	deAnimatorRuleStateSnapshot *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule);
 	
-	inline dsClass *GetClassARStateSnapshotTarget() const{ return pClsARStateSnapshotTarget; }
+	inline dsClass *GetClassARStateSnapshotTarget() const{return pClsARStateSnapshotTarget;}
 	/*@}*/
 	
 private:
@@ -93,24 +93,24 @@ private:
 		dsClass *clsARStateSnapshotTarget;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetUseLastState );
-	DEF_NATFUNC( nfSetID );
+	DEF_NATFUNC(nfSetUseLastState);
+	DEF_NATFUNC(nfSetID);
 	
-	DEF_NATFUNC( nfSetEnablePosition );
-	DEF_NATFUNC( nfSetEnableOrientation );
-	DEF_NATFUNC( nfSetEnableSize );
-	DEF_NATFUNC( nfSetEnableVertexPositionSet );
+	DEF_NATFUNC(nfSetEnablePosition);
+	DEF_NATFUNC(nfSetEnableOrientation);
+	DEF_NATFUNC(nfSetEnableSize);
+	DEF_NATFUNC(nfSetEnableVertexPositionSet);
 #undef DEF_NATFUNC
 };
 

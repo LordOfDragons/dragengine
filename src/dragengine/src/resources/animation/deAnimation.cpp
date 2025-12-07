@@ -45,16 +45,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimation::deAnimation( deAnimationManager *manager, deVirtualFileSystem *vfs,
-	const char *filename, TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
-pBones( nullptr ),
-pBoneCount( 0 ),
-pBoneSize( 0 ),
-pMoves( nullptr ),
-pMoveCount( 0 ),
-pMoveSize( 0 ),
-pPeerAnimator( nullptr ){
+deAnimation::deAnimation(deAnimationManager *manager, deVirtualFileSystem *vfs,
+	const char *filename, TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime),
+pBones(nullptr),
+pBoneCount(0),
+pBoneSize(0),
+pMoves(nullptr),
+pMoveCount(0),
+pMoveSize(0),
+pPeerAnimator(nullptr){
 }
 
 deAnimation::~deAnimation(){
@@ -66,19 +66,19 @@ deAnimation::~deAnimation(){
 // Management
 ///////////////
 
-bool deAnimation::MatchesModel( deModel *model ) const{
-	DEASSERT_NOTNULL( model )
+bool deAnimation::MatchesModel(deModel *model) const{
+	DEASSERT_NOTNULL(model)
 	
 	int i;
-	for( i=0; i<pBoneCount; i++ ){
-		if( ! model->HasBoneNamed( pBones[ i ]->GetName() ) ){
+	for(i=0; i<pBoneCount; i++){
+		if(! model->HasBoneNamed(pBones[i]->GetName())){
 			return false;
 		}
 	}
 	
 	const int vpsCount = pVertexPositionSets.GetCount();
-	for( i=0; i<vpsCount; i++ ){
-		if( ! model->HasVertexPositionSetNamed( pVertexPositionSets.GetAt( i ) ) ){
+	for(i=0; i<vpsCount; i++){
+		if(! model->HasVertexPositionSetNamed(pVertexPositionSets.GetAt(i))){
 			return false;
 		}
 	}
@@ -91,18 +91,18 @@ bool deAnimation::MatchesModel( deModel *model ) const{
 // Bones
 //////////
 
-deAnimationBone *deAnimation::GetBone( int index ) const{
-	if( index < 0 || index >= pBoneCount ){
-		DETHROW( deeOutOfBoundary );
+deAnimationBone *deAnimation::GetBone(int index) const{
+	if(index < 0 || index >= pBoneCount){
+		DETHROW(deeOutOfBoundary);
 	}
-	return pBones[ index ];
+	return pBones[index];
 }
 
-int deAnimation::FindBone( const char *name ) const{
+int deAnimation::FindBone(const char *name) const{
 	int i;
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( strcmp( pBones[ i ]->GetName(), name ) == 0 ){
+	for(i=0; i<pBoneCount; i++){
+		if(strcmp(pBones[i]->GetName(), name) == 0){
 			return i;
 		}
 	}
@@ -110,23 +110,23 @@ int deAnimation::FindBone( const char *name ) const{
 	return -1;
 }
 
-void deAnimation::AddBone( deAnimationBone *bone ){
-	if( ! bone || FindBone( bone->GetName() ) != -1 ){
-		DETHROW( deeInvalidParam );
+void deAnimation::AddBone(deAnimationBone *bone){
+	if(! bone || FindBone(bone->GetName()) != -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pBoneCount == pBoneSize ){
+	if(pBoneCount == pBoneSize){
 		int i, newSize = pBoneCount * 3 / 2 + 1;
-		deAnimationBone **newArray = new deAnimationBone*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pBones ){
-			for( i=0; i<pBoneCount; i++ ) newArray[ i ] = pBones[ i ];
+		deAnimationBone **newArray = new deAnimationBone*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pBones){
+			for(i=0; i<pBoneCount; i++) newArray[i] = pBones[i];
 			delete [] pBones;
 		}
 		pBones = newArray;
 		pBoneSize = newSize;
 	}
-	pBones[ pBoneCount ] = bone;
+	pBones[pBoneCount] = bone;
 	pBoneCount++;
 }
 
@@ -135,22 +135,22 @@ void deAnimation::AddBone( deAnimationBone *bone ){
 // Moves
 //////////
 
-deAnimationMove *deAnimation::GetMove( int index ) const{
-	if( index < 0 || index >= pMoveCount ){
-		DETHROW( deeOutOfBoundary );
+deAnimationMove *deAnimation::GetMove(int index) const{
+	if(index < 0 || index >= pMoveCount){
+		DETHROW(deeOutOfBoundary);
 	}
-	return pMoves[ index ];
+	return pMoves[index];
 }
 
-int deAnimation::FindMove( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int deAnimation::FindMove(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pMoveCount; i++ ){
-		if( strcmp( pMoves[ i ]->GetName(), name ) == 0 ){
+	for(i=0; i<pMoveCount; i++){
+		if(strcmp(pMoves[i]->GetName(), name) == 0){
 			return i;
 		}
 	}
@@ -158,23 +158,23 @@ int deAnimation::FindMove( const char *name ) const{
 	return -1;
 }
 
-void deAnimation::AddMove( deAnimationMove *move ){
-	if( ! move || FindMove( move->GetName() ) != -1 ){
-		DETHROW( deeInvalidParam );
+void deAnimation::AddMove(deAnimationMove *move){
+	if(! move || FindMove(move->GetName()) != -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pMoveCount == pMoveSize ){
+	if(pMoveCount == pMoveSize){
 		int i, newSize = pMoveCount * 3 / 2 + 1;
-		deAnimationMove **newArray = new deAnimationMove*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pMoves ){
-			for( i=0; i<pMoveCount; i++ ) newArray[ i ] = pMoves[ i ];
+		deAnimationMove **newArray = new deAnimationMove*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pMoves){
+			for(i=0; i<pMoveCount; i++) newArray[i] = pMoves[i];
 			delete [] pMoves;
 		}
 		pMoves = newArray;
 		pMoveSize = newSize;
 	}
-	pMoves[ pMoveCount ] = move;
+	pMoves[pMoveCount] = move;
 	pMoveCount++;
 }
 
@@ -183,12 +183,12 @@ void deAnimation::AddMove( deAnimationMove *move ){
 // System Peers
 /////////////////
 
-void deAnimation::SetPeerAnimator( deBaseAnimatorAnimation *peer ){
-	if( peer == pPeerAnimator ){
+void deAnimation::SetPeerAnimator(deBaseAnimatorAnimation *peer){
+	if(peer == pPeerAnimator){
 		return;
 	}
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		delete pPeerAnimator;
 	}
 	pPeerAnimator = peer;
@@ -202,24 +202,24 @@ void deAnimation::SetPeerAnimator( deBaseAnimatorAnimation *peer ){
 void deAnimation::pCleanUp(){
 	int i;
 	
-	if( pPeerAnimator ){
+	if(pPeerAnimator){
 		delete pPeerAnimator;
 		pPeerAnimator = NULL;
 	}
 	
-	if( pMoves ){
-		for( i=0; i<pMoveCount; i++ ){
-			if( pMoves[ i ] ){
-				delete pMoves[ i ];
+	if(pMoves){
+		for(i=0; i<pMoveCount; i++){
+			if(pMoves[i]){
+				delete pMoves[i];
 			}
 		}
 		delete [] pMoves;
 	}
 	
-	if( pBones ){
-		for( i=0; i<pBoneCount; i++ ){
-			if( pBones[ i ] ){
-				delete pBones[ i ];
+	if(pBones){
+		for(i=0; i<pBoneCount; i++){
+			if(pBones[i]){
+				delete pBones[i];
 			}
 		}
 		delete [] pBones;

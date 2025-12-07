@@ -48,7 +48,7 @@ public:
 	dePathList();
 	
 	/** \brief Create path list. */
-	dePathList( const dePathList &list );
+	dePathList(const dePathList &list);
 	
 	/** \brief Clean up path list. */
 	~dePathList();
@@ -59,28 +59,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of path. */
-	inline int GetCount() const{ return pPathCount; }
+	inline int GetCount() const{return pPathCount;}
 	
 	/** \brief Path at index. */
-	const decPath &GetAt( int index ) const;
+	const decPath &GetAt(int index) const;
 	
 	/** \brief Index of the path or -1 if absent. */
-	int IndexOf( const decPath &path ) const;
+	int IndexOf(const decPath &path) const;
 	
 	/** \brief Path is present. */
-	bool Has( const decPath &path ) const;
+	bool Has(const decPath &path) const;
 	
 	/** \brief Add path. */
-	void Add( const decPath &path );
+	void Add(const decPath &path);
 	
 	/** \brief Add path if absent. */
-	void AddIfAbsent( const decPath &path );
+	void AddIfAbsent(const decPath &path);
 	
 	/** \brief Remove path. */
-	void Remove( const decPath &path );
+	void Remove(const decPath &path);
 	
 	/** \brief Remove path if present. */
-	void RemoveIfPresent( const decPath &path );
+	void RemoveIfPresent(const decPath &path);
 	
 	/** \brief Remove all path. */
 	void RemoveAll();
@@ -91,7 +91,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list. */
-	dePathList &operator=( const dePathList &list );
+	dePathList &operator=(const dePathList &list);
 	/*@}*/
 };
 

@@ -41,8 +41,8 @@
 deSynthesizerControllerTarget::deSynthesizerControllerTarget(){
 }
 
-deSynthesizerControllerTarget::deSynthesizerControllerTarget( const deSynthesizerControllerTarget &target ) :
-pLinks( target.pLinks ){
+deSynthesizerControllerTarget::deSynthesizerControllerTarget(const deSynthesizerControllerTarget &target) :
+pLinks(target.pLinks){
 }
 
 deSynthesizerControllerTarget::~deSynthesizerControllerTarget(){
@@ -57,25 +57,25 @@ int deSynthesizerControllerTarget::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-int deSynthesizerControllerTarget::GetLinkAt( int index ) const{
-	return pLinks.GetAt( index );
+int deSynthesizerControllerTarget::GetLinkAt(int index) const{
+	return pLinks.GetAt(index);
 }
 
-int deSynthesizerControllerTarget::IndexOfLink( int link ) const{
-	return pLinks.IndexOf( link );
+int deSynthesizerControllerTarget::IndexOfLink(int link) const{
+	return pLinks.IndexOf(link);
 }
 
-void deSynthesizerControllerTarget::AddLink( int link ){
-	pLinks.Add( link );
+void deSynthesizerControllerTarget::AddLink(int link){
+	pLinks.Add(link);
 }
 
-void deSynthesizerControllerTarget::RemoveLink( int link ){
-	const int index = pLinks.IndexOf( link );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerControllerTarget::RemoveLink(int link){
+	const int index = pLinks.IndexOf(link);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLinks.RemoveFrom( index );
+	pLinks.RemoveFrom(index);
 }
 
 void deSynthesizerControllerTarget::RemoveAllLinks(){

@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTargetAddLink::seUTargetAddLink( seLayer *layer, deSkyLayer::eTargets target, seLink *link ) :
-pLayer( NULL ),
-pTarget( target ),
-pLink( NULL )
+seUTargetAddLink::seUTargetAddLink(seLayer *layer, deSkyLayer::eTargets target, seLink *link) :
+pLayer(NULL),
+pTarget(target),
+pLink(NULL)
 {
-	if( ! layer || ! link ){
-		DETHROW( deeInvalidParam );
+	if(! layer || ! link){
+		DETHROW(deeInvalidParam);
 	}
-	if( layer->GetTarget( target ).GetLinks().Has( link ) ){
-		DETHROW( deeInvalidParam );
+	if(layer->GetTarget(target).GetLinks().Has(link)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Target Add Link" );
+	SetShortInfo("Target Add Link");
 	
 	pLayer = layer;
 	layer->AddReference();
@@ -63,10 +63,10 @@ pLink( NULL )
 }
 
 seUTargetAddLink::~seUTargetAddLink(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -77,11 +77,11 @@ seUTargetAddLink::~seUTargetAddLink(){
 ///////////////
 
 void seUTargetAddLink::Undo(){
-	pLayer->GetTarget( pTarget ).RemoveLink( pLink );
-	pLayer->NotifyTargetChanged( pTarget );
+	pLayer->GetTarget(pTarget).RemoveLink(pLink);
+	pLayer->NotifyTargetChanged(pTarget);
 }
 
 void seUTargetAddLink::Redo(){
-	pLayer->GetTarget( pTarget ).AddLink( pLink );
-	pLayer->NotifyTargetChanged( pTarget );
+	pLayer->GetTarget(pTarget).AddLink(pLink);
+	pLayer->NotifyTargetChanged(pTarget);
 }

@@ -47,7 +47,7 @@ decUnicodeArgumentList::decUnicodeArgumentList(){
 
 decUnicodeArgumentList::~decUnicodeArgumentList(){
 	RemoveAllArguments();
-	if( pArguments ) delete [] pArguments;
+	if(pArguments) delete [] pArguments;
 }
 
 
@@ -55,66 +55,66 @@ decUnicodeArgumentList::~decUnicodeArgumentList(){
 // management
 ///////////////
 
-const decUnicodeString *decUnicodeArgumentList::GetArgumentAt( int index ) const{
-	if( index < 0 || index >= pArgumentCount ) DETHROW( deeOutOfBoundary );
-	return ( const decUnicodeString * )pArguments[ index ];
+const decUnicodeString *decUnicodeArgumentList::GetArgumentAt(int index) const{
+	if(index < 0 || index >= pArgumentCount) DETHROW(deeOutOfBoundary);
+	return (const decUnicodeString *)pArguments[index];
 }
 
-bool decUnicodeArgumentList::MatchesArgumentAt( int index, const char *string ) const{
-	if( index < 0 || index >= pArgumentCount ) DETHROW( deeOutOfBoundary );
-	if( ! string ) DETHROW( deeInvalidParam );
+bool decUnicodeArgumentList::MatchesArgumentAt(int index, const char *string) const{
+	if(index < 0 || index >= pArgumentCount) DETHROW(deeOutOfBoundary);
+	if(! string) DETHROW(deeInvalidParam);
 	decUnicodeString ustring;
-	ustring.SetFromUTF8( string );
-	return pArguments[ index ]->Compare( ustring ) == 0;
+	ustring.SetFromUTF8(string);
+	return pArguments[index]->Compare(ustring) == 0;
 }
 
-void decUnicodeArgumentList::AddArgument( const decUnicodeString &argument ){
-	if( pArgumentCount == pArgumentSize ){
+void decUnicodeArgumentList::AddArgument(const decUnicodeString &argument){
+	if(pArgumentCount == pArgumentSize){
 		int i, newSize = pArgumentSize * 3 / 2 + 1;
-		decUnicodeString **newArray = new decUnicodeString*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pArguments ){
-			for( i=0; i<pArgumentSize; i++ ) newArray[ i ] = pArguments[ i ];
+		decUnicodeString **newArray = new decUnicodeString*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pArguments){
+			for(i=0; i<pArgumentSize; i++) newArray[i] = pArguments[i];
 			delete [] pArguments;
 		}
 		pArguments = newArray;
 		pArgumentSize = newSize;
 	}
-	pArguments[ pArgumentCount ] = new decUnicodeString( argument );
-	if( ! pArguments[ pArgumentCount ] ) DETHROW( deeOutOfMemory );
+	pArguments[pArgumentCount] = new decUnicodeString(argument);
+	if(! pArguments[pArgumentCount]) DETHROW(deeOutOfMemory);
 	pArgumentCount++;
 }
 
 void decUnicodeArgumentList::RemoveAllArguments(){
-	while( pArgumentCount > 0 ){
-		delete pArguments[ pArgumentCount - 1 ];
+	while(pArgumentCount > 0){
+		delete pArguments[pArgumentCount - 1];
 		pArgumentCount--;
 	}
 }
 
-void decUnicodeArgumentList::ParseCommand( const decUnicodeString &command ){
+void decUnicodeArgumentList::ParseCommand(const decUnicodeString &command){
 	int cur = 0, start = 0, next, len = command.GetLength();
 	decUnicodeString buffer;
-	while( start < len ){
+	while(start < len){
 		// skip spaces
-		while( start < len && isspace( command[ start ] ) ) start++;
-		if( start == len ) break;
+		while(start < len && isspace(command[start])) start++;
+		if(start == len) break;
 		// parse string
-		if( command[ start ] == '"' ){
+		if(command[start] == '"'){
 			start++;
 			cur = start;
-			while( cur < len && command[ cur ] != '"' ) cur++;
+			while(cur < len && command[cur] != '"') cur++;
 			next = cur + 1;
 		// parse non-string
 		}else{
 			cur = start;
-			while( cur < len && ! isspace( command[ cur ] ) ) cur++;
+			while(cur < len && ! isspace(command[cur])) cur++;
 			next = cur;
 		}
 		// add argument if not empty
-		if( cur - start > 0 ){
-			buffer = command.GetMiddle( start, cur );
-			AddArgument( buffer );
+		if(cur - start > 0){
+			buffer = command.GetMiddle(start, cur);
+			AddArgument(buffer);
 		}
 		// next round
 		start = next;

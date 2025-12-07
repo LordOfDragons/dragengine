@@ -38,15 +38,15 @@
 // igdeNullCrashRecoveryModule::cModule
 /////////////////////////////////////////
 
-igdeNullCrashRecoveryModule::cModule::cModule( deModuleSystem *system ) :
-deInternalModule( system )
+igdeNullCrashRecoveryModule::cModule::cModule(deModuleSystem *system) :
+deInternalModule(system)
 {
-	SetName( "NullCrashRecovery" );
-	SetType( deModuleSystem::emtCrashRecovery );
-	SetDescription( "Null CrashRecovery Module" );
-	SetAuthor( "Plüss Roland" );
-	SetVersion( "1.0" );
-	SetDirectoryName( "NullCrashRecovery" );
+	SetName("NullCrashRecovery");
+	SetType(deModuleSystem::emtCrashRecovery);
+	SetDescription("Null CrashRecovery Module");
+	SetAuthor("Plüss Roland");
+	SetVersion("1.0");
+	SetDirectoryName("NullCrashRecovery");
 	SetDefaultLoggingName();
 }
 
@@ -54,9 +54,9 @@ igdeNullCrashRecoveryModule::cModule::~cModule(){
 }
 
 void igdeNullCrashRecoveryModule::cModule::CreateModule(){
-	SetModule( new igdeNullCrashRecoveryModule( *this ) );
-	if( ! GetModule() ){
-		SetErrorCode( eecCreateModuleFailed );
+	SetModule(new igdeNullCrashRecoveryModule(*this));
+	if(! GetModule()){
+		SetErrorCode(eecCreateModuleFailed);
 	}
 }
 
@@ -68,11 +68,11 @@ void igdeNullCrashRecoveryModule::cModule::CreateModule(){
 // Constructor, destructor
 ////////////////////////////
 
-igdeNullCrashRecoveryModule::igdeNullCrashRecoveryModule( deLoadableModule &loadableModule ) :
-deBaseCrashRecoveryModule( loadableModule ){
+igdeNullCrashRecoveryModule::igdeNullCrashRecoveryModule(deLoadableModule &loadableModule) :
+deBaseCrashRecoveryModule(loadableModule){
 }
 
-igdeNullCrashRecoveryModule::~igdeNullCrashRecoveryModule( ){
+igdeNullCrashRecoveryModule::~igdeNullCrashRecoveryModule(){
 }
 
 

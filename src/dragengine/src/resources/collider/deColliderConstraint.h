@@ -107,7 +107,7 @@ private:
 	decVector pPosition2;
 	decQuaternion pOrientation2;
 	
-	deColliderConstraintDof pDof[ 6 ];
+	deColliderConstraintDof pDof[6];
 	
 	float pDampingLinear;
 	float pDampingAngular;
@@ -128,7 +128,7 @@ public:
 	deColliderConstraint();
 	
 	/** \brief Create new collider constraint as a copy of another constraint. */
-	deColliderConstraint( const deColliderConstraint &constraint );
+	deColliderConstraint(const deColliderConstraint &constraint);
 	
 	/** \brief Clean up collider constraint. */
 	virtual ~deColliderConstraint();
@@ -139,86 +139,86 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Target collider or NULL to constraint to the world. */
-	inline deCollider *GetTargetCollider() const{ return pTargetCollider; }
+	inline deCollider *GetTargetCollider() const{return pTargetCollider;}
 	
 	/** \brief Set target collider or NULL to constraint to the world. */
-	void SetTargetCollider( deCollider *collider );
+	void SetTargetCollider(deCollider *collider);
 	
 	/** \brief Name of the target bone. */
-	inline const decString &GetTargetBone() const{ return pTargetBone; }
+	inline const decString &GetTargetBone() const{return pTargetBone;}
 	
 	/** \brief Set name of the target bone. */
-	void SetTargetBone( const char *bone );
+	void SetTargetBone(const char *bone);
 	
 	/** \brief Position of the reference coordinate system. */
-	inline const decVector &GetPosition1() const{ return pPosition1; }
+	inline const decVector &GetPosition1() const{return pPosition1;}
 	
 	/** \brief Set position of the reference coordinate system. */
-	void SetPosition1( const decVector &position );
+	void SetPosition1(const decVector &position);
 	
 	/** \brief Orientation of the reference coordinate system. */
-	inline const decQuaternion &GetOrientation1() const{ return pOrientation1; }
+	inline const decQuaternion &GetOrientation1() const{return pOrientation1;}
 	
 	/** \brief Set orientation of the reference coordinate system. */
-	void SetOrientation1( const decQuaternion &orientation );
+	void SetOrientation1(const decQuaternion &orientation);
 	
 	/** \brief Position of the reference coordinate system. */
-	inline const decVector &GetPosition2() const{ return pPosition2; }
+	inline const decVector &GetPosition2() const{return pPosition2;}
 	
 	/** \brief Set position of the reference coordinate system. */
-	void SetPosition2( const decVector &position );
+	void SetPosition2(const decVector &position);
 	
 	/** \brief Orientation of the reference coordinate system. */
-	inline const decQuaternion &GetOrientation2() const{ return pOrientation2; }
+	inline const decQuaternion &GetOrientation2() const{return pOrientation2;}
 	
 	/** \brief Set orientation of the reference coordinate system. */
-	void SetOrientation2( const decQuaternion &orientation );
+	void SetOrientation2(const decQuaternion &orientation);
 	
 	/** \brief Retrieves a degree of freedom. */
-	deColliderConstraintDof &GetDof( eDegreesOfFreedom dof );
-	const deColliderConstraintDof &GetDof( eDegreesOfFreedom dof ) const;
+	deColliderConstraintDof &GetDof(eDegreesOfFreedom dof);
+	const deColliderConstraintDof &GetDof(eDegreesOfFreedom dof) const;
 	
 	/** \brief X-axis linear degree of freedom. */
-	inline deColliderConstraintDof &GetDofLinearX(){ return pDof[ edofLinearX ]; }
-	inline const deColliderConstraintDof &GetDofLinearX() const{ return pDof[ edofLinearX ]; }
+	inline deColliderConstraintDof &GetDofLinearX(){return pDof[edofLinearX];}
+	inline const deColliderConstraintDof &GetDofLinearX() const{return pDof[edofLinearX];}
 	
 	/** \brief Y-axis linear degree of freedom. */
-	inline deColliderConstraintDof &GetDofLinearY(){ return pDof[ edofLinearY ]; }
-	inline const deColliderConstraintDof &GetDofLinearY() const{ return pDof[ edofLinearY ]; }
+	inline deColliderConstraintDof &GetDofLinearY(){return pDof[edofLinearY];}
+	inline const deColliderConstraintDof &GetDofLinearY() const{return pDof[edofLinearY];}
 	
 	/** \brief Z-axis linear degree of freedom. */
-	inline deColliderConstraintDof &GetDofLinearZ(){ return pDof[ edofLinearZ ]; }
-	inline const deColliderConstraintDof &GetDofLinearZ() const{ return pDof[ edofLinearZ ]; }
+	inline deColliderConstraintDof &GetDofLinearZ(){return pDof[edofLinearZ];}
+	inline const deColliderConstraintDof &GetDofLinearZ() const{return pDof[edofLinearZ];}
 	
 	/** \brief X-axis angular degree of freedom. */
-	inline deColliderConstraintDof &GetDofAngularX(){ return pDof[ edofAngularX ]; }
-	inline const deColliderConstraintDof &GetDofAngularX() const{ return pDof[ edofAngularX ]; }
+	inline deColliderConstraintDof &GetDofAngularX(){return pDof[edofAngularX];}
+	inline const deColliderConstraintDof &GetDofAngularX() const{return pDof[edofAngularX];}
 	
 	/** \brief Y-axis angular degree of freedom. */
-	inline deColliderConstraintDof &GetDofAngularY(){ return pDof[ edofAngularY ]; }
-	inline const deColliderConstraintDof &GetDofAngularY() const{ return pDof[ edofAngularY ]; }
+	inline deColliderConstraintDof &GetDofAngularY(){return pDof[edofAngularY];}
+	inline const deColliderConstraintDof &GetDofAngularY() const{return pDof[edofAngularY];}
 	
 	/** \brief Z-axis angular degree of freedom. */
-	inline deColliderConstraintDof &GetDofAngularZ(){ return pDof[ edofAngularZ ]; }
-	inline const deColliderConstraintDof &GetDofAngularZ() const{ return pDof[ edofAngularZ ]; }
+	inline deColliderConstraintDof &GetDofAngularZ(){return pDof[edofAngularZ];}
+	inline const deColliderConstraintDof &GetDofAngularZ() const{return pDof[edofAngularZ];}
 	
 	/** \brief Linear damping. */
-	inline float GetLinearDamping() const{ return pDampingLinear; }
+	inline float GetLinearDamping() const{return pDampingLinear;}
 	
 	/** \brief Set linear damping. */
-	void SetLinearDamping( float damping );
+	void SetLinearDamping(float damping);
 	
 	/** \brief Angular damping. */
-	inline float GetAngularDamping() const{ return pDampingAngular; }
+	inline float GetAngularDamping() const{return pDampingAngular;}
 	
 	/** \brief Set angular damping. */
-	void SetAngularDamping( float damping );
+	void SetAngularDamping(float damping);
 	
 	/** \brief Spring damping. */
-	inline float GetSpringDamping() const{ return pDampingSpring; }
+	inline float GetSpringDamping() const{return pDampingSpring;}
 	
 	/** \brief Set spring damping. */
-	void SetSpringDamping( float damping );
+	void SetSpringDamping(float damping);
 	
 	/** \brief Locks all degrees of freedom. */
 	void LockAll();
@@ -229,10 +229,10 @@ public:
 	/**
 	 * \brief Set upper and lower limit for angular degree of freedom and locks all others (hinge joint).
 	 */
-	void SetToHingeJoint( eDegreesOfFreedom degreeOfFreedom, float lowerLimit, float upperLimit );
+	void SetToHingeJoint(eDegreesOfFreedom degreeOfFreedom, float lowerLimit, float upperLimit);
 	
 	/** \brief Set upper and lower limit for linear degree of freem and locks all others. */
-	void SetToPistonJoint( eDegreesOfFreedom degreeOfFreedom, float lowerLimit, float upperLimit );
+	void SetToPistonJoint(eDegreesOfFreedom degreeOfFreedom, float lowerLimit, float upperLimit);
 	
 	/**
 	 * \brief Set a one-dimensional linear spring with bending properties.
@@ -241,26 +241,26 @@ public:
 	 * and damping. All other linear degrees of freedom are set free to with the given
 	 * bending stiffness and damping. All angular degrees of freedom are locked.
 	 */
-	void SetSpringLinear1D( eDegreesOfFreedom degreeOfFreedom, float stiffness,
-		float damping, float bendStiffness );
+	void SetSpringLinear1D(eDegreesOfFreedom degreeOfFreedom, float stiffness,
+		float damping, float bendStiffness);
 	
 	/** \brief Determines if this constraint is a rope. */
-	inline bool GetIsRope() const{ return pIsRope; }
+	inline bool GetIsRope() const{return pIsRope;}
 	
 	/** \brief Sets if this constraint is a rope. */
-	void SetIsRope( bool isRope );
+	void SetIsRope(bool isRope);
 	
 	/** \brief Breaking impulse threshold or 0 if disabled. */
-	inline float GetBreakingThreshold() const{ return pBreakingThreshold; }
+	inline float GetBreakingThreshold() const{return pBreakingThreshold;}
 	
 	/** \brief Set breaking impulse threshold or 0 to disable. */
-	void SetBreakingThreshold( float impulseThreshold );
+	void SetBreakingThreshold(float impulseThreshold);
 	
 	/** \brief Bone index or -1 if constraint the entire collider. */
-	inline int GetBone() const{ return pBone; }
+	inline int GetBone() const{return pBone;}
 	
 	/** \brief Set bone index or -1 if constraint the entire collider. */
-	void SetBone( int bone );
+	void SetBone(int bone);
 	/*@}*/
 	
 	
@@ -268,7 +268,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set constraint with parameters from another constraint. */
-	deColliderConstraint &operator=( const deColliderConstraint &constraint );
+	deColliderConstraint &operator=(const deColliderConstraint &constraint);
 	/*@}*/
 };
 

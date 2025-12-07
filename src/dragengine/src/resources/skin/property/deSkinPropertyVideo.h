@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin property. */
-	deSkinPropertyVideo( const char *type );
+	deSkinPropertyVideo(const char *type);
 	
 	/** \brief Clean up skin property. */
 	virtual ~deSkinPropertyVideo();
@@ -63,22 +63,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Set video path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Video or NULL if not set. */
-	inline deVideo *GetVideo() const{ return pVideo; }
+	inline deVideo *GetVideo() const{return pVideo;}
 	
 	/** \brief Set video or NULL if not set. */
-	void SetVideo( deVideo *video );
+	void SetVideo(deVideo *video);
 	
 	/** \brief Playback time is shared across instances. */
-	inline bool GetSharedTime() const{ return pSharedTime; }
+	inline bool GetSharedTime() const{return pSharedTime;}
 	
 	/** \brief Set if playback time is shared across instances. */
-	void SetSharedTime( bool shareTime );
+	void SetSharedTime(bool shareTime);
 	/*@}*/
 	
 	
@@ -86,7 +86,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

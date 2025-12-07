@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTRoomEstimateFinish( deoalRTParallelEnvProbe &owner );
+	deoalRTPTRoomEstimateFinish(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
@@ -69,19 +69,19 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies( const decPointerList &tasks );
+	void AddDependencies(const decPointerList &tasks);
 	
 	/** \brief Set range. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set room parameters to update. */
-	void SetRoomParameters( deoalRTParallelEnvProbe::sRoomParameters *roomParameters );
+	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
 	/** \brief Estimate tasks (deoalRTPTRoomEstimateFinish*). */
-	inline decPointerList GetEstimateTasks(){ return pTasks; }
+	inline decPointerList GetEstimateTasks(){return pTasks;}
 	
 	
 	

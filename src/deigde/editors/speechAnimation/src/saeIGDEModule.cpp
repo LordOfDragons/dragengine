@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeIGDEModule::saeIGDEModule( igdeEnvironment *environment ) :
-igdeEditorModule( *environment ){
+saeIGDEModule::saeIGDEModule(igdeEnvironment *environment) :
+igdeEditorModule(*environment){
 }
 
 saeIGDEModule::~saeIGDEModule(){
@@ -51,7 +51,7 @@ saeIGDEModule::~saeIGDEModule(){
 ///////////////
 
 void saeIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new saeWindowMain( *this ) );
+	if(! GetEditorWindow()){
+		SetEditorWindow(new saeWindowMain(*this));
 	}
 }

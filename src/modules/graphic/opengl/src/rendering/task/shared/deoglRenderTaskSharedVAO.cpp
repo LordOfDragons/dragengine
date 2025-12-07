@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskSharedVAO::deoglRenderTaskSharedVAO( deoglRenderTaskSharedPool &pool, int index ) :
-pPool( pool ),
-pIndex( index ),
-pVAO( NULL ){
+deoglRenderTaskSharedVAO::deoglRenderTaskSharedVAO(deoglRenderTaskSharedPool &pool, int index) :
+pPool(pool),
+pIndex(index),
+pVAO(NULL){
 }
 
 deoglRenderTaskSharedVAO::~deoglRenderTaskSharedVAO(){
@@ -53,7 +53,7 @@ deoglRenderTaskSharedVAO::~deoglRenderTaskSharedVAO(){
 // Management
 ///////////////
 
-void deoglRenderTaskSharedVAO::SetVAO( deoglVAO *shader ){
+void deoglRenderTaskSharedVAO::SetVAO(deoglVAO *shader){
 	pVAO = shader;
 }
 
@@ -64,5 +64,5 @@ void deoglRenderTaskSharedVAO::Clear(){
 }
 
 void deoglRenderTaskSharedVAO::ReturnToPool(){
-	pPool.ReturnVAO( this );
+	pPool.ReturnVAO(this);
 }

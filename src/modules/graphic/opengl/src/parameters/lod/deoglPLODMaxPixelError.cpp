@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPLODMaxPixelError::deoglPLODMaxPixelError( deGraphicOpenGl &ogl ) : deoglParameterInt( ogl ){
-	SetName( "lodMaxPixelError" );
-	SetDescription( "Maximum allowed error in pixels for LOD calculation."
-		" Higher values chooses LOD geometry quicker improving performance but can increase popping." );
-	SetType( deModuleParameter::eptSelection );
-	SetCategory( ecAdvanced );
-	SetDisplayName( "LOD Max Pixel Error" );
+deoglPLODMaxPixelError::deoglPLODMaxPixelError(deGraphicOpenGl &ogl) : deoglParameterInt(ogl){
+	SetName("lodMaxPixelError");
+	SetDescription("Maximum allowed error in pixels for LOD calculation."
+		" Higher values chooses LOD geometry quicker improving performance but can increase popping.");
+	SetType(deModuleParameter::eptSelection);
+	SetCategory(ecAdvanced);
+	SetDisplayName("LOD Max Pixel Error");
 	
-	const deModuleParameter::SelectionEntry entries[ 6 ] = {
-		{ "1", "1 Pixel", "Allow 1 Pixel error" },
-		{ "2", "2 Pixel", "Allow 2 Pixel error" },
-		{ "4", "4 Pixel", "Allow 4 Pixel error" },
-		{ "8", "8 Pixel", "Allow 8 Pixel error" },
-		{ "16", "16 Pixel", "Allow 16 Pixel error" },
-		{ "32", "32 Pixel", "Allow 32 Pixel error" }
+	const deModuleParameter::SelectionEntry entries[6] = {
+		{"1", "1 Pixel", "Allow 1 Pixel error"},
+		{"2", "2 Pixel", "Allow 2 Pixel error"},
+		{"4", "4 Pixel", "Allow 4 Pixel error"},
+		{"8", "8 Pixel", "Allow 8 Pixel error"},
+		{"16", "16 Pixel", "Allow 16 Pixel error"},
+		{"32", "32 Pixel", "Allow 32 Pixel error"}
 	};
-	AddSelectionEntries( entries, 6 );
-	SetDefaultValue( "2" );
+	AddSelectionEntries(entries, 6);
+	SetDefaultValue("2");
 }
 
 deoglPLODMaxPixelError::~deoglPLODMaxPixelError(){
@@ -72,6 +72,6 @@ int deoglPLODMaxPixelError::GetParameterInt(){
 	return pOgl.GetConfiguration().GetLODMaxPixelError();
 }
 
-void deoglPLODMaxPixelError::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetLODMaxPixelError( value );
+void deoglPLODMaxPixelError::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetLODMaxPixelError(value);
 }

@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCAParamSetOperator( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorParameter *condition, ceCConditionActorParameter::eOperators newOperator );
+	ceUCCAParamSetOperator(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorParameter *condition, ceCConditionActorParameter::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCAParamSetOperator();

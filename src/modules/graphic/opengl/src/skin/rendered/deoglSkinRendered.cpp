@@ -49,28 +49,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinRendered::deoglSkinRendered( deoglRenderThread &renderThread, deoglRComponent &component ) :
-pRenderThread( renderThread ),
-pOwnerComponent( &component ),
-pOwnerBillboard( NULL ),
-pOwnerDecal( NULL ),
-pDirty( true ){
+deoglSkinRendered::deoglSkinRendered(deoglRenderThread &renderThread, deoglRComponent &component) :
+pRenderThread(renderThread),
+pOwnerComponent(&component),
+pOwnerBillboard(NULL),
+pOwnerDecal(NULL),
+pDirty(true){
 }
 
-deoglSkinRendered::deoglSkinRendered( deoglRenderThread &renderThread, deoglRBillboard &billboard ) :
-pRenderThread( renderThread ),
-pOwnerComponent( NULL ),
-pOwnerBillboard( &billboard ),
-pOwnerDecal( NULL ),
-pDirty( true ){
+deoglSkinRendered::deoglSkinRendered(deoglRenderThread &renderThread, deoglRBillboard &billboard) :
+pRenderThread(renderThread),
+pOwnerComponent(NULL),
+pOwnerBillboard(&billboard),
+pOwnerDecal(NULL),
+pDirty(true){
 }
 
-deoglSkinRendered::deoglSkinRendered( deoglRenderThread &renderThread, deoglRDecal &decal ) :
-pRenderThread( renderThread ),
-pOwnerComponent( NULL ),
-pOwnerBillboard( NULL ),
-pOwnerDecal( &decal ),
-pDirty( true ){
+deoglSkinRendered::deoglSkinRendered(deoglRenderThread &renderThread, deoglRDecal &decal) :
+pRenderThread(renderThread),
+pOwnerComponent(NULL),
+pOwnerBillboard(NULL),
+pOwnerDecal(&decal),
+pDirty(true){
 }
 
 deoglSkinRendered::~deoglSkinRendered(){
@@ -83,13 +83,13 @@ deoglSkinRendered::~deoglSkinRendered(){
 ///////////////
 
 deoglRSkin *deoglSkinRendered::GetOwnerSkin() const{
-	if( pOwnerComponent ){
+	if(pOwnerComponent){
 		return pOwnerComponent->GetSkin();
 		
-	}else if( pOwnerBillboard ){
+	}else if(pOwnerBillboard){
 		return pOwnerBillboard->GetSkin();
 		
-	}else if( pOwnerDecal ){
+	}else if(pOwnerDecal){
 		return pOwnerDecal->GetSkin();
 		
 	}else{
@@ -103,21 +103,21 @@ int deoglSkinRendered::GetTexturedCount() const{
 	return pTextures.GetCount();
 }
 
-deoglSkinRenderedTexture *deoglSkinRendered::GetTextureAt( int index ) const{
-	return ( deoglSkinRenderedTexture* )pTextures.GetAt( index );
+deoglSkinRenderedTexture *deoglSkinRendered::GetTextureAt(int index) const{
+	return (deoglSkinRenderedTexture*)pTextures.GetAt(index);
 }
 
-deoglSkinRenderedTexture *deoglSkinRendered::AddTexture( deoglRSkin &skin, int texture, int modelTexture ){
-	deoglSkinRenderedTexture * const srtexture = new deoglSkinRenderedTexture( *this, skin, texture, modelTexture );
-	pTextures.Add( srtexture );
+deoglSkinRenderedTexture *deoglSkinRendered::AddTexture(deoglRSkin &skin, int texture, int modelTexture){
+	deoglSkinRenderedTexture * const srtexture = new deoglSkinRenderedTexture(*this, skin, texture, modelTexture);
+	pTextures.Add(srtexture);
 	return srtexture;
 }
 
 void deoglSkinRendered::RemoveAllTextures(){
 	const int count = pTextures.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		delete ( deoglSkinRenderedTexture* )pTextures.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglSkinRenderedTexture*)pTextures.GetAt(i);
 	}
 	pTextures.RemoveAll();
 }
@@ -130,38 +130,38 @@ void deoglSkinRendered::SetDirty(){
 }
 
 void deoglSkinRendered::Prepare(){
-	if( ! pDirty ){
+	if(! pDirty){
 		return;
 	}
 	pDirty = false;
 	
 	// non-components are handled in a simple way
-	if( ! pOwnerComponent ){
+	if(! pOwnerComponent){
 		deoglRSkin * const skin = GetOwnerSkin();
-		if( ! skin || skin->GetTextureCount() == 0 ){
+		if(! skin || skin->GetTextureCount() == 0){
 			return;
 		}
 		
-		pAddTextureIfRequired( *skin, 0, 0 );
+		pAddTextureIfRequired(*skin, 0, 0);
 		return;
 	}
 	
 	// for components we need to examine the model textures individually
 	const int count = pOwnerComponent->GetTextureCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		const deoglRComponentTexture &rctexture = pOwnerComponent->GetTextureAt( i );
+	for(i=0; i<count; i++){
+		const deoglRComponentTexture &rctexture = pOwnerComponent->GetTextureAt(i);
 		deoglRSkin * const skin = rctexture.GetUseSkin();
 		const int skinTexture = rctexture.GetUseTextureNumber();
-		if( ! skin || skinTexture == -1 ){
+		if(! skin || skinTexture == -1){
 			continue;
 		}
 		
-		pAddTextureIfRequired( *skin, skinTexture, i );
+		pAddTextureIfRequired(*skin, skinTexture, i);
 	}
 }
 
-void deoglSkinRendered::AddRenderPlans( deoglRenderPlan &plan ){
+void deoglSkinRendered::AddRenderPlans(deoglRenderPlan &plan){
 	// TODO we have a re-entrant problem here. by doing nothing this situation will happen:
 	//      - main render plan calls AddRenderPlans
 	//      - texture adds a masked plan (lets say this is plan=A)
@@ -172,20 +172,20 @@ void deoglSkinRendered::AddRenderPlans( deoglRenderPlan &plan ){
 	//      
 	//      by using the plan level we can avoid this re-entrance but mirroring more than
 	//      once is not possible. multi-depth mirroring is tough problematic by itself.
-	if( plan.GetLevel() > 0 ){
+	if(plan.GetLevel() > 0){
 		return;
 	}
 	
 	Prepare();
 	
 	const int count = pTextures.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSkinRenderedTexture* )pTextures.GetAt( i ) )->AddRenderPlans( plan );
+	for(i=0; i<count; i++){
+		((deoglSkinRenderedTexture*)pTextures.GetAt(i))->AddRenderPlans(plan);
 	}
 }
 
@@ -194,8 +194,8 @@ void deoglSkinRendered::AddRenderPlans( deoglRenderPlan &plan ){
 void deoglSkinRendered::DropDelayedDeletionObjects(){
 	const int count = pTextures.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglSkinRenderedTexture* )pTextures.GetAt( i ) )->DropDelayedDeletionObjects();
+	for(i=0; i<count; i++){
+		((deoglSkinRenderedTexture*)pTextures.GetAt(i))->DropDelayedDeletionObjects();
 	}
 }
 
@@ -204,9 +204,9 @@ void deoglSkinRendered::DropDelayedDeletionObjects(){
 // Private Functions
 //////////////////////
 
-void deoglSkinRendered::pAddTextureIfRequired( deoglRSkin &skin, int texture, int modelTexture ){
-	const deoglSkinTexture &skinTexture = skin.GetTextureAt( texture );
-	if( skinTexture.GetMirror() ){
-		AddTexture( skin, texture, modelTexture );
+void deoglSkinRendered::pAddTextureIfRequired(deoglRSkin &skin, int texture, int modelTexture){
+	const deoglSkinTexture &skinTexture = skin.GetTextureAt(texture);
+	if(skinTexture.GetMirror()){
+		AddTexture(skin, texture, modelTexture);
 	}
 }

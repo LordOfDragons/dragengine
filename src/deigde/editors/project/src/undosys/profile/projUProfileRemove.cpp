@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileRemove::projUProfileRemove( projProject *project, projProfile *profile ) :
-pProject( NULL ),
-pProfile( NULL )
+projUProfileRemove::projUProfileRemove(projProject *project, projProfile *profile) :
+pProject(NULL),
+pProfile(NULL)
 {
-	if( ! project || ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! project || ! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! project->GetProfiles().Has( profile ) ){
-		DETHROW( deeInvalidParam );
+	if(! project->GetProfiles().Has(profile)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove profile" );
+	SetShortInfo("Remove profile");
 	
 	pProfile = profile;
 	profile->AddReference();
@@ -62,10 +62,10 @@ pProfile( NULL )
 }
 
 projUProfileRemove::~projUProfileRemove(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
-	if( pProject ){
+	if(pProject){
 		pProject->FreeReference();
 	}
 }
@@ -76,9 +76,9 @@ projUProfileRemove::~projUProfileRemove(){
 ///////////////
 
 void projUProfileRemove::Undo(){
-	pProject->AddProfile( pProfile );
+	pProject->AddProfile(pProfile);
 }
 
 void projUProfileRemove::Redo(){
-	pProject->RemoveProfile( pProfile );
+	pProject->RemoveProfile(pProfile);
 }

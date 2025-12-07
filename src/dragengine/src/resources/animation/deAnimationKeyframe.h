@@ -55,28 +55,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Time in seconds. */
-	inline float GetTime() const{ return pTime; }
+	inline float GetTime() const{return pTime;}
 	
 	/** \brief Set time in seconds. */
-	void SetTime( float time );
+	void SetTime(float time);
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	
 	/** \brief Rotation. */
-	inline const decVector &GetRotation() const{ return pRotation; }
+	inline const decVector &GetRotation() const{return pRotation;}
 	
 	/** \brief Set rotation. */
-	void SetRotation( const decVector &rotation );
+	void SetRotation(const decVector &rotation);
 	
 	/** \brief Scaling. */
-	inline const decVector &GetScale() const{ return pScale; }
+	inline const decVector &GetScale() const{return pScale;}
 	
 	/** \brief Set scaling. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	/*@}*/
 };
 

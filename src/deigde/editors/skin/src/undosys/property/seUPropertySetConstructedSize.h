@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertySetConstructedSize( seProperty *property, const decPoint3 &newValue );
+	seUPropertySetConstructedSize(seProperty *property, const decPoint3 &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

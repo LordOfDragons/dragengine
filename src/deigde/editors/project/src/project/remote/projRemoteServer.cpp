@@ -139,7 +139,7 @@ void projRemoteServer::pUpdateTaskProfileData(){
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		const igdeGameDefinition &gameDef = *list.GetAt(i);
 		if(gameDef.GetVFSPath().IsEmpty()){
 			continue;

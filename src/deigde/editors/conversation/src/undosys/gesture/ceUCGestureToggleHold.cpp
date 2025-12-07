@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureToggleHold::ceUCGestureToggleHold( ceGesture *gesture ) :
-pGesture( NULL )
+ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture *gesture) :
+pGesture(NULL)
 {
-	if( ! gesture ){
-		DETHROW( deeInvalidParam );
+	if(! gesture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Gesture toggle hold" );
+	SetShortInfo("Gesture toggle hold");
 	
 	pGesture = gesture;
 	gesture->AddReference();
 }
 
 ceUCGestureToggleHold::~ceUCGestureToggleHold(){
-	if( pGesture ){
+	if(pGesture){
 		pGesture->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ ceUCGestureToggleHold::~ceUCGestureToggleHold(){
 ///////////////
 
 void ceUCGestureToggleHold::Undo(){
-	pGesture->SetHold( ! pGesture->GetHold() );
+	pGesture->SetHold(! pGesture->GetHold());
 }
 
 void ceUCGestureToggleHold::Redo(){
-	pGesture->SetHold( ! pGesture->GetHold() );
+	pGesture->SetHold(! pGesture->GetHold());
 }

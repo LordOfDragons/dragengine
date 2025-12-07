@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWindowProperties( aeWindowMain &windowMain );
+	aeWindowProperties(aeWindowMain &windowMain);
 	
 protected:
 	/** Clean up window. */
@@ -73,10 +73,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline aeWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** Animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Animator path changed. */
 	void OnAnimatorPathChanged();

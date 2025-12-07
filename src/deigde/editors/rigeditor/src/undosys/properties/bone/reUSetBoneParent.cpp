@@ -35,22 +35,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneParent::reUSetBoneParent( reRigBone *bone, reRigBone *parent ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneParent::reUSetBoneParent(reRigBone *bone, reRigBone *parent){
+	if(! bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
 	
 	pOldParent = bone->GetParentBone();
-	if( pOldParent ) pOldParent->AddReference();
+	if(pOldParent) pOldParent->AddReference();
 	
 	pNewParent = parent;
-	if( pNewParent ) pNewParent->AddReference();
+	if(pNewParent) pNewParent->AddReference();
 	
 	try{
-		SetShortInfo( "Set Bone Parent" );
+		SetShortInfo("Set Bone Parent");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ reUSetBoneParent::~reUSetBoneParent(){
 ///////////////
 
 void reUSetBoneParent::Undo(){
-	pBone->SetParentBone( pOldParent );
+	pBone->SetParentBone(pOldParent);
 }
 
 void reUSetBoneParent::Redo(){
-	pBone->SetParentBone( pNewParent );
+	pBone->SetParentBone(pNewParent);
 }
 
 
@@ -79,8 +79,8 @@ void reUSetBoneParent::Redo(){
 //////////////////////
 
 void reUSetBoneParent::pCleanUp(){
-	if( pNewParent ) pNewParent->FreeReference();
-	if( pOldParent ) pOldParent->FreeReference();
+	if(pNewParent) pNewParent->FreeReference();
+	if(pOldParent) pOldParent->FreeReference();
 	
-	if( pBone ) pBone->FreeReference();
+	if(pBone) pBone->FreeReference();
 }

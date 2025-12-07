@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feIGDEModule::feIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+feIGDEModule::feIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 feIGDEModule::~feIGDEModule(){
@@ -51,7 +51,7 @@ feIGDEModule::~feIGDEModule(){
 ///////////////
 
 void feIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new feWindowMain( *this ) );
+	if(! GetEditorWindow()){
+		SetEditorWindow(new feWindowMain(*this));
 	}
 }

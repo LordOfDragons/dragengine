@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLASetDuration::ceUCAASpeakEyesLASetDuration( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, float newDuration )
-: ceUCAASpeakStripSetDuration( topic, actorSpeak, eyesLookAt, newDuration ){
-	SetShortInfo( "EyesLookAt Set Duration" );
+ceUCAASpeakEyesLASetDuration::ceUCAASpeakEyesLASetDuration(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, float newDuration)
+: ceUCAASpeakStripSetDuration(topic, actorSpeak, eyesLookAt, newDuration){
+	SetShortInfo("EyesLookAt Set Duration");
 }
 
 ceUCAASpeakEyesLASetDuration::~ceUCAASpeakEyesLASetDuration(){

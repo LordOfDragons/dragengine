@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAnimatorPath::gdeUOCComponentSetAnimatorPath( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetAnimatorPath::gdeUOCComponentSetAnimatorPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set animator path" );
+	SetShortInfo("Component set animator path");
 	
 	pOldValue = component->GetAnimatorPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetAnimatorPath::~gdeUOCComponentSetAnimatorPath(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetAnimatorPath::~gdeUOCComponentSetAnimatorPath(){
 ///////////////
 
 void gdeUOCComponentSetAnimatorPath::Undo(){
-	pComponent->SetAnimatorPath( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAnimatorPath(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetAnimatorPath::Redo(){
-	pComponent->SetAnimatorPath( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAnimatorPath(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

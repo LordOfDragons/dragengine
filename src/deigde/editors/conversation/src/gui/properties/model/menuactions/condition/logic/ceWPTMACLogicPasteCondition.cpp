@@ -39,13 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACLogicPasteCondition::ceWPTMACLogicPasteCondition( ceWindowMain &windowMain,
+ceWPTMACLogicPasteCondition::ceWPTMACLogicPasteCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceConversationAction &action, ceCConditionLogic &logic ) :
-ceWPTMAPasteCondition( windowMain, conversation, "Logic: Paste Condition" ),
-pTopic( &topic ),
-pAction( &action ),
-pLogic( &logic ){
+ceConversationAction &action, ceCConditionLogic &logic) :
+ceWPTMAPasteCondition(windowMain, conversation, "Logic: Paste Condition"),
+pTopic(&topic),
+pAction(&action),
+pLogic(&logic){
 }
 
 
@@ -53,6 +53,6 @@ pLogic( &logic ){
 // Management
 ///////////////
 
-igdeUndo *ceWPTMACLogicPasteCondition::CreateUndo( const ceConversationConditionList &conditions ){
-	return new ceUCCLogicPaste( pTopic, pAction, pLogic, conditions );
+igdeUndo *ceWPTMACLogicPasteCondition::CreateUndo(const ceConversationConditionList &conditions){
+	return new ceUCCLogicPaste(pTopic, pAction, pLogic, conditions);
 }

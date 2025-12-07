@@ -43,20 +43,20 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dedaiHeightTerrain::dedaiHeightTerrain( deDEAIModule &deai, const deHeightTerrain &heightTerrain ) :
-pDEAI( deai ),
-pHeightTerrain( heightTerrain ),
-pParentWorld( NULL )
+dedaiHeightTerrain::dedaiHeightTerrain(deDEAIModule &deai, const deHeightTerrain &heightTerrain) :
+pDEAI(deai),
+pHeightTerrain(heightTerrain),
+pParentWorld(NULL)
 {
 	const int sectorCount = heightTerrain.GetSectorCount();
 	int i;
 	
 	try{
-		for( i=0; i<sectorCount; i++ ){
-			SectorAdded( heightTerrain.GetSectorAt( i ) );
+		for(i=0; i<sectorCount; i++){
+			SectorAdded(heightTerrain.GetSectorAt(i));
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,8 +71,8 @@ dedaiHeightTerrain::~dedaiHeightTerrain(){
 // Management
 ///////////////
 
-void dedaiHeightTerrain::SetParentWorld( dedaiWorld *world ){
-	if( world == pParentWorld ){
+void dedaiHeightTerrain::SetParentWorld(dedaiWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
@@ -81,8 +81,8 @@ void dedaiHeightTerrain::SetParentWorld( dedaiWorld *world ){
 	const int sectorCount = pSectors.GetCount();
 	int i;
 	
-	for( i=0; i<sectorCount; i++ ){
-		( ( dedaiHeightTerrainSector* )pSectors.GetAt( i ) )->ParentWorldChanged();
+	for(i=0; i<sectorCount; i++){
+		((dedaiHeightTerrainSector*)pSectors.GetAt(i))->ParentWorldChanged();
 	}
 }
 
@@ -95,8 +95,8 @@ int dedaiHeightTerrain::GetSectorCount() const{
 	return pSectors.GetCount();
 }
 
-dedaiHeightTerrainSector *dedaiHeightTerrain::GetSectorAt( int index ) const{
-	return ( dedaiHeightTerrainSector* )pSectors.GetAt( index );
+dedaiHeightTerrainSector *dedaiHeightTerrain::GetSectorAt(int index) const{
+	return (dedaiHeightTerrainSector*)pSectors.GetAt(index);
 }
 
 
@@ -108,53 +108,53 @@ void dedaiHeightTerrain::ParametersChanged(){
 	const int sectorCount = pSectors.GetCount();
 	int i;
 	
-	for( i=0; i<sectorCount; i++){
-		( ( dedaiHeightTerrainSector* )pSectors.GetAt( i ) )->SectorChanged();
+	for(i=0; i<sectorCount; i++){
+		((dedaiHeightTerrainSector*)pSectors.GetAt(i))->SectorChanged();
 	}
 }
 
-void dedaiHeightTerrain::SectorAdded( deHeightTerrainSector *sector ){
+void dedaiHeightTerrain::SectorAdded(deHeightTerrainSector *sector){
 	pSectors.Add(dedaiHeightTerrainSector::Ref::NewWith(*this, *sector));
 }
 
-void dedaiHeightTerrain::SectorRemoved( int index ){
-	pSectors.RemoveFrom( index );
+void dedaiHeightTerrain::SectorRemoved(int index){
+	pSectors.RemoveFrom(index);
 }
 
 void dedaiHeightTerrain::AllSectorsRemoved(){
 	pSectors.RemoveAll();
 }
 
-void dedaiHeightTerrain::SectorChanged( int index ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( index ) )->SectorChanged();
+void dedaiHeightTerrain::SectorChanged(int index){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(index))->SectorChanged();
 }
 
-void dedaiHeightTerrain::HeightChanged( const decPoint &fromSector,
-const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates ){
+void dedaiHeightTerrain::HeightChanged(const decPoint &fromSector,
+const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoordinates){
 	const int imageDim = pHeightTerrain.GetSectorResolution();
 	const int sectorCount = pSectors.GetCount();
 	decPoint localFrom, localTo;
 	int i;
 	
-	for( i=0; i<sectorCount; i++ ){
-		dedaiHeightTerrainSector &sector = *( ( dedaiHeightTerrainSector* )pSectors.GetAt( i ) );
+	for(i=0; i<sectorCount; i++){
+		dedaiHeightTerrainSector &sector = *((dedaiHeightTerrainSector*)pSectors.GetAt(i));
 		const decPoint &scoord = sector.GetSector().GetSector();
 		
-		if( scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x
-		&& scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y ){
-			if( fromSector.x == toSector.x ){
+		if(scoord.x + 1 >= fromSector.x && scoord.x - 1 <= toSector.x
+		&& scoord.y + 1 >= fromSector.y && scoord.y - 1 <= toSector.y){
+			if(fromSector.x == toSector.x){
 				localFrom.x = fromCoordinates.x;
 				localTo.x = toCoordinates.x;
 				
 			}else{
-				if( scoord.x == toSector.x ){
+				if(scoord.x == toSector.x){
 					localFrom.x = toCoordinates.x;
 					
 				}else{
 					localFrom.x = 0;
 				}
 				
-				if( scoord.x == fromSector.x ){
+				if(scoord.x == fromSector.x){
 					localTo.x = fromCoordinates.x;
 					
 				}else{
@@ -162,19 +162,19 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 				}
 			}
 			
-			if( fromSector.y == toSector.y ){
+			if(fromSector.y == toSector.y){
 				localFrom.y = fromCoordinates.y;
 				localTo.y = toCoordinates.y;
 				
 			}else{
-				if( scoord.y == toSector.y ){
+				if(scoord.y == toSector.y){
 					localFrom.y = toCoordinates.y;
 					
 				}else{
 					localFrom.y = 0;
 				}
 				
-				if( scoord.y == fromSector.y ){
+				if(scoord.y == fromSector.y){
 					localTo.y = fromCoordinates.y;
 					
 				}else{
@@ -182,50 +182,50 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 				}
 			}
 			
-			if( localFrom.x > 0 ){
+			if(localFrom.x > 0){
 				localFrom.x--;
 			}
-			if( localFrom.y > 0 ){
+			if(localFrom.y > 0){
 				localFrom.y--;
 			}
-			if( localTo.x < imageDim ){
+			if(localTo.x < imageDim){
 				localTo.x++;
 			}
-			if( localTo.y < imageDim ){
+			if(localTo.y < imageDim){
 				localTo.y++;
 			}
 			
-			sector.HeightChanged( localFrom, localTo );
+			sector.HeightChanged(localFrom, localTo);
 		}
 	}
 }
 
-void dedaiHeightTerrain::NavSpaceAdded( int sector, deHeightTerrainNavSpace *navspace ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->NavSpaceAdded( navspace );
+void dedaiHeightTerrain::NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceAdded(navspace);
 }
 
-void dedaiHeightTerrain::NavSpaceRemoved( int sector, int index ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->NavSpaceRemoved( index );
+void dedaiHeightTerrain::NavSpaceRemoved(int sector, int index){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceRemoved(index);
 }
 
-void dedaiHeightTerrain::AllNavSpacesRemoved( int sector ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->AllNavSpacesRemoved();
+void dedaiHeightTerrain::AllNavSpacesRemoved(int sector){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->AllNavSpacesRemoved();
 }
 
-void dedaiHeightTerrain::NavSpaceLayerChanged( int sector, int index ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->NavSpaceLayerChanged( index );
+void dedaiHeightTerrain::NavSpaceLayerChanged(int sector, int index){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceLayerChanged(index);
 }
 
-void dedaiHeightTerrain::NavSpaceTypeChanged( int sector, int index ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->NavSpaceTypeChanged( index );
+void dedaiHeightTerrain::NavSpaceTypeChanged(int sector, int index){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceTypeChanged(index);
 }
 
-void dedaiHeightTerrain::NavSpaceSnappingChanged( int sector, int index ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->NavSpaceSnappingChanged( index );
+void dedaiHeightTerrain::NavSpaceSnappingChanged(int sector, int index){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceSnappingChanged(index);
 }
 
-void dedaiHeightTerrain::NavSpaceLayoutChanged( int sector, int index ){
-	( ( dedaiHeightTerrainSector* )pSectors.GetAt( sector ) )->NavSpaceLayoutChanged( index );
+void dedaiHeightTerrain::NavSpaceLayoutChanged(int sector, int index){
+	((dedaiHeightTerrainSector*)pSectors.GetAt(sector))->NavSpaceLayoutChanged(index);
 }
 
 
@@ -234,6 +234,6 @@ void dedaiHeightTerrain::NavSpaceLayoutChanged( int sector, int index ){
 //////////////////////
 
 void dedaiHeightTerrain::pCleanUp(){
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 	AllSectorsRemoved();
 }

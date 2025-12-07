@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUAddController::seUAddController( seSynthesizer *synthesizer, seController *controller ) :
-pSynthesizer( NULL ),
-pController( NULL )
+seUAddController::seUAddController(seSynthesizer *synthesizer, seController *controller) :
+pSynthesizer(NULL),
+pController(NULL)
 {
-	if( ! synthesizer || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! synthesizer || ! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSynthesizer = synthesizer;
@@ -66,12 +66,12 @@ seUAddController::~seUAddController(){
 ///////////////
 
 void seUAddController::Undo(){
-	pSynthesizer->RemoveController( pController );
+	pSynthesizer->RemoveController(pController);
 }
 
 void seUAddController::Redo(){
-	pSynthesizer->AddController( pController );
-	pSynthesizer->SetActiveController( pController );
+	pSynthesizer->AddController(pController);
+	pSynthesizer->SetActiveController(pController);
 }
 
 
@@ -80,10 +80,10 @@ void seUAddController::Redo(){
 //////////////////////
 
 void seUAddController::pCleanUp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

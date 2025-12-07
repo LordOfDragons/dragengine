@@ -39,11 +39,11 @@
 /////////////////////////////////
 
 dedaiSpaceMeshCorner::dedaiSpaceMeshCorner() :
-pVertex( 0 ),
-pEdge( 0 ),
-pTypeNumber( 0 ),
-pLink( -1 ),
-pEnabled( true ){
+pVertex(0),
+pEdge(0),
+pTypeNumber(0),
+pLink(-1),
+pEnabled(true){
 }
 
 dedaiSpaceMeshCorner::~dedaiSpaceMeshCorner(){
@@ -54,23 +54,23 @@ dedaiSpaceMeshCorner::~dedaiSpaceMeshCorner(){
 // Management
 ///////////////
 
-void dedaiSpaceMeshCorner::SetVertex( unsigned short vertex ){
+void dedaiSpaceMeshCorner::SetVertex(unsigned short vertex){
 	pVertex = vertex;
 }
 
-void dedaiSpaceMeshCorner::SetEdge( unsigned short edge ){
+void dedaiSpaceMeshCorner::SetEdge(unsigned short edge){
 	pEdge = edge;
 }
 
-void dedaiSpaceMeshCorner::SetTypeNumber( unsigned short type ){
+void dedaiSpaceMeshCorner::SetTypeNumber(unsigned short type){
 	pTypeNumber = type;
 }
 
-void dedaiSpaceMeshCorner::SetLink( short link ){
+void dedaiSpaceMeshCorner::SetLink(short link){
 	pLink = link;
 }
 
-void dedaiSpaceMeshCorner::SetEnabled( bool enabled ){
+void dedaiSpaceMeshCorner::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
@@ -79,7 +79,7 @@ void dedaiSpaceMeshCorner::SetEnabled( bool enabled ){
 // Operators
 //////////////
 
-dedaiSpaceMeshCorner &dedaiSpaceMeshCorner::operator=( const dedaiSpaceMeshCorner &corner ){
+dedaiSpaceMeshCorner &dedaiSpaceMeshCorner::operator=(const dedaiSpaceMeshCorner &corner){
 	pVertex = corner.pVertex;
 	pEdge = corner.pEdge;
 	pTypeNumber = corner.pTypeNumber;

@@ -63,16 +63,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seLoadSaveSystem::seLoadSaveSystem( seWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pLSSky( NULL )
+seLoadSaveSystem::seLoadSaveSystem(seWindowMain &windowMain) :
+pWindowMain(windowMain),
+pLSSky(NULL)
 {
-	pLSSky = new seLoadSaveSky( *this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE );
+	pLSSky = new seLoadSaveSky(*this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE);
 	pBuildFilePattern();
 }
 
 seLoadSaveSystem::~seLoadSaveSystem(){
-	if( pLSSky ){
+	if(pLSSky){
 		delete pLSSky;
 	}
 }
@@ -82,27 +82,27 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSky *seLoadSaveSystem::LoadSky( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+seSky *seLoadSaveSystem::LoadSky(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader::Ref fileReader;
 	seSky *sky = NULL;
 	decPath path;
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileReader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading( path ) );
-		sky = new seSky( &pWindowMain.GetEnvironment() );
-		sky->SetFilePath( filename );
-		pLSSky->LoadSky( *this, *sky, fileReader );
-		sky->SetChanged( false );
-		sky->SetSaved( true );
+		fileReader.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
+		sky = new seSky(&pWindowMain.GetEnvironment());
+		sky->SetFilePath(filename);
+		pLSSky->LoadSky(*this, *sky, fileReader);
+		sky->SetChanged(false);
+		sky->SetSaved(true);
 		
-	}catch( const deException & ){
-		if( sky ){
+	}catch(const deException &){
+		if(sky){
 			sky->FreeReference();
 		}
 		throw;
@@ -111,23 +111,23 @@ seSky *seLoadSaveSystem::LoadSky( const char *filename ){
 	return sky;
 }
 
-void seLoadSaveSystem::SaveSky( seSky *sky, const char *filename ){
-	if( ! sky || ! filename ){
-		DETHROW( deeInvalidParam );
+void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
+	if(! sky || ! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileWriter *fileWriter = NULL;
 	decPath path;
 	
-	path.SetFromUnix( filename );
+	path.SetFromUnix(filename);
 	
 	try{
-		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting( path );
-		pLSSky->SaveSky( *this, *sky, *fileWriter );
+		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
+		pLSSky->SaveSky(*this, *sky, *fileWriter);
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
@@ -145,14 +145,14 @@ void seLoadSaveSystem::pBuildFilePattern(){
 	decString pattern;
 	
 	try{
-		pattern.Format( "*%s", pLSSky->GetPattern().GetString() );
+		pattern.Format("*%s", pLSSky->GetPattern().GetString());
 		
-		filePattern = new igdeFilePattern( pLSSky->GetName(), pattern, pLSSky->GetPattern() );
+		filePattern = new igdeFilePattern(pLSSky->GetName(), pattern, pLSSky->GetPattern());
 			
-		pFPSky.AddFilePattern( filePattern );
+		pFPSky.AddFilePattern(filePattern);
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

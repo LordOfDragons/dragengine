@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread debugging. */
-	deoalATDebug( deoalAudioThread &audioThread );
+	deoalATDebug(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread renderers. */
 	~deoalATDebug();
@@ -67,19 +67,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Developer mode enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Log calculation of environment probe calculation. */
-	inline bool GetLogCalcEnvProbe() const{ return pLogCalcEnvProbe; }
+	inline bool GetLogCalcEnvProbe() const{return pLogCalcEnvProbe;}
 	
 	/** \brief Show speaker environment overlay information. */
-	inline bool GetShowSpeakerEnvInfo() const{ return pShowSpeakerEnvInfo; }
+	inline bool GetShowSpeakerEnvInfo() const{return pShowSpeakerEnvInfo;}
 	
 	/** \brief Show only speaker environment overlay information at position. */
-	inline bool GetShowSpeakerEnvInfoAt() const{ return pShowSpeakerEnvInfoAt; }
+	inline bool GetShowSpeakerEnvInfoAt() const{return pShowSpeakerEnvInfoAt;}
 	
 	/** \brief Show environment overlay information position. */
-	inline const decDVector &GetShowSpeakerEnvInfoAtPosition() const{ return pShowSpeakerEnvInfoAtPosition; }
+	inline const decDVector &GetShowSpeakerEnvInfoAtPosition() const{return pShowSpeakerEnvInfoAtPosition;}
 	
 	
 	

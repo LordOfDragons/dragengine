@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new manager. */
-	deDynamicSkinManager( deEngine *engine );
+	deDynamicSkinManager(deEngine *engine);
 	
 	/** \brief Clean up manager. */
 	virtual ~deDynamicSkinManager();
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

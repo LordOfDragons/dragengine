@@ -57,57 +57,57 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTRenderers::deoglRTRenderers( deoglRenderThread &renderThread ) :
-pCanvas( nullptr ),
-pConstructed( nullptr ),
-pCompute( nullptr ),
-pDebugDrawer( nullptr ),
-pDebug( nullptr ),
-pDepthPass( nullptr ),
-pDevMode( nullptr ),
-pGeometry( nullptr ),
-pGeometryPass( nullptr ),
-pLight( nullptr ),
-pOcclusion( nullptr ),
-pParticles( nullptr ),
-pReflection( nullptr ),
-pSky( nullptr ),
-pToneMap( nullptr ),
-pTransparencyCounter( nullptr ),
-pTransparentPasses( nullptr ),
-pVR( nullptr ),
-pWorld( nullptr )
+deoglRTRenderers::deoglRTRenderers(deoglRenderThread &renderThread) :
+pCanvas(nullptr),
+pConstructed(nullptr),
+pCompute(nullptr),
+pDebugDrawer(nullptr),
+pDebug(nullptr),
+pDepthPass(nullptr),
+pDevMode(nullptr),
+pGeometry(nullptr),
+pGeometryPass(nullptr),
+pLight(nullptr),
+pOcclusion(nullptr),
+pParticles(nullptr),
+pReflection(nullptr),
+pSky(nullptr),
+pToneMap(nullptr),
+pTransparencyCounter(nullptr),
+pTransparentPasses(nullptr),
+pVR(nullptr),
+pWorld(nullptr)
 {
 	try{
-		pCanvas = new deoglRenderCanvas( renderThread );
-		pConstructed = new deoglRenderConstructed( renderThread );
-		pCompute = new deoglRenderCompute( renderThread );
-		pWorld = new deoglRenderWorld( renderThread );
-		pDepthPass = new deoglRenderDepthPass( renderThread );
-		pTransparencyCounter = new deoglRenderTranspCounting( renderThread );
-		pSky = new deoglRenderSky( renderThread );
-		pGeometry = new deoglRenderGeometry( renderThread );
-		pGeometryPass = new deoglRenderGeometryPass( renderThread );
-		pTransparentPasses = new deoglRenderTransparentPasses( renderThread );
-		pParticles = new deoglRenderParticles( renderThread );
-		pOcclusion = new deoglRenderOcclusion( renderThread );
-		pVR = new deoglRenderVR( renderThread );
+		pCanvas = new deoglRenderCanvas(renderThread);
+		pConstructed = new deoglRenderConstructed(renderThread);
+		pCompute = new deoglRenderCompute(renderThread);
+		pWorld = new deoglRenderWorld(renderThread);
+		pDepthPass = new deoglRenderDepthPass(renderThread);
+		pTransparencyCounter = new deoglRenderTranspCounting(renderThread);
+		pSky = new deoglRenderSky(renderThread);
+		pGeometry = new deoglRenderGeometry(renderThread);
+		pGeometryPass = new deoglRenderGeometryPass(renderThread);
+		pTransparentPasses = new deoglRenderTransparentPasses(renderThread);
+		pParticles = new deoglRenderParticles(renderThread);
+		pOcclusion = new deoglRenderOcclusion(renderThread);
+		pVR = new deoglRenderVR(renderThread);
 		
-		pLight = new deoglRenderLight( renderThread, *this );
+		pLight = new deoglRenderLight(renderThread, *this);
 			// depends on pOcclusion to be initialized
 		
-		pDebug = new deoglRenderDebug( renderThread );
-		pDebugDrawer = new deoglRenderDebugDrawer( renderThread );
-		pDevMode = new deoglRenderDevMode( renderThread );
-		pReflection = new deoglRenderReflection( renderThread );
-		pToneMap = new deoglRenderToneMap( renderThread );
+		pDebug = new deoglRenderDebug(renderThread);
+		pDebugDrawer = new deoglRenderDebugDrawer(renderThread);
+		pDevMode = new deoglRenderDevMode(renderThread);
+		pReflection = new deoglRenderReflection(renderThread);
+		pToneMap = new deoglRenderToneMap(renderThread);
 		
 		pCanvas->AddTopLevelDebugInfo();
 		pConstructed->AddTopLevelDebugInfo();
 		pWorld->AddTopLevelDebugInfo();
 		pLight->AddTopLevelDebugInfo();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -149,61 +149,61 @@ void deoglRTRenderers::DevModeDebugInfoChanged(){
 //////////////////////
 
 void deoglRTRenderers::pCleanUp(){
-	if( pWorld ){
+	if(pWorld){
 		delete pWorld;
 	}
-	if( pVR ){
+	if(pVR){
 		delete pVR;
 	}
-	if( pTransparencyCounter ){
+	if(pTransparencyCounter){
 		delete pTransparencyCounter;
 	}
-	if( pTransparentPasses ){
+	if(pTransparentPasses){
 		delete pTransparentPasses;
 	}
-	if( pToneMap ){
+	if(pToneMap){
 		delete pToneMap;
 	}
-	if( pReflection ){
+	if(pReflection){
 		delete pReflection;
 	}
-	if( pDevMode ){
+	if(pDevMode){
 		delete pDevMode;
 	}
-	if( pDepthPass ){
+	if(pDepthPass){
 		delete pDepthPass;
 	}
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		delete pDebugDrawer;
 	}
-	if( pDebug ){
+	if(pDebug){
 		delete pDebug;
 	}
-	if( pLight ){
+	if(pLight){
 		delete pLight;
 	}
-	if( pOcclusion ){
+	if(pOcclusion){
 		delete pOcclusion;
 	}
-	if( pParticles ){
+	if(pParticles){
 		delete pParticles;
 	}
-	if( pGeometryPass ){
+	if(pGeometryPass){
 		delete pGeometryPass;
 	}
-	if( pGeometry ){
+	if(pGeometry){
 		delete pGeometry;
 	}
-	if( pSky ){
+	if(pSky){
 		delete pSky;
 	}
-	if( pCompute ){
+	if(pCompute){
 		delete pCompute;
 	}
-	if( pConstructed ){
+	if(pConstructed){
 		delete pConstructed;
 	}
-	if( pCanvas ){
+	if(pCanvas){
 		delete pCanvas;
 	}
 }

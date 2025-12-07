@@ -48,10 +48,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSpeakerCut::gdeMAOCSpeakerCut( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Cut Object Class Speaker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
-	"Cut object class speaker" )
+gdeMAOCSpeakerCut::gdeMAOCSpeakerCut(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Cut Object Class Speaker",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
+	"Cut object class speaker")
 {
 }
 
@@ -61,13 +61,13 @@ gdeBaseMAOCSubObject( windowMain, "Cut Object Class Speaker",
 ///////////////
 
 igdeUndo *gdeMAOCSpeakerCut::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCSpeaker){
 		return NULL;
 	}
 	
 	gdeOCSpeaker * const speaker = gameDefinition.GetActiveOCSpeaker();
-	if( ! speaker ){
+	if(! speaker){
 		return NULL;
 	}
 	
@@ -75,12 +75,12 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSpeaker::Ref::NewWith(clipOCSpeaker));
 	
-	return new gdeUOCRemoveSpeaker( &objectClass, speaker );
+	return new gdeUOCRemoveSpeaker(&objectClass, speaker);
 }
 
 void gdeMAOCSpeakerCut::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
-		&& gameDefinition->GetActiveOCSpeaker() != NULL );
+		&& gameDefinition->GetActiveOCSpeaker() != NULL);
 }

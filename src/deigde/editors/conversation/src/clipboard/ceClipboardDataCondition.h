@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new clipboard data. */
-	ceClipboardDataCondition( const ceConversationConditionList &conditions );
+	ceClipboardDataCondition(const ceConversationConditionList &conditions);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the condition. */
-	inline const ceConversationConditionList &GetConditions() const{ return pConditions; }
+	inline const ceConversationConditionList &GetConditions() const{return pConditions;}
 	/*@}*/
 };
 

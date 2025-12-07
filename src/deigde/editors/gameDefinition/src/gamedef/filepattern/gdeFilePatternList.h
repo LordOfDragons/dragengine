@@ -47,7 +47,7 @@ public:
 	gdeFilePatternList();
 	
 	/** \brief Create copy of file pattern list. */
-	gdeFilePatternList( const gdeFilePatternList &list );
+	gdeFilePatternList(const gdeFilePatternList &list);
 	
 	/** \brief Clean up file pattern list. */
 	~gdeFilePatternList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class at position. */
-	gdeFilePattern *GetAt( int index ) const;
+	gdeFilePattern *GetAt(int index) const;
 	
 	/** \brief Index of named file pattern or -1 if absent. */
-	int IndexOf( gdeFilePattern *pattern ) const;
+	int IndexOf(gdeFilePattern *pattern) const;
 	
 	/** \brief Object class is present. */
-	bool Has( gdeFilePattern *pattern ) const;
+	bool Has(gdeFilePattern *pattern) const;
 	
 	/** \brief Add file pattern. */
-	void Add( gdeFilePattern *pattern );
+	void Add(gdeFilePattern *pattern);
 	
 	/** \brief Remove file pattern. */
-	void Remove( gdeFilePattern *pattern );
+	void Remove(gdeFilePattern *pattern);
 	
 	/** \brief Remove all file patterns. */
 	void RemoveAll();
 	
 	/** \brief Set from another file pattern list. */
-	gdeFilePatternList &operator=( const gdeFilePatternList &list );
+	gdeFilePatternList &operator=(const gdeFilePatternList &list);
 	/*@}*/
 };
 

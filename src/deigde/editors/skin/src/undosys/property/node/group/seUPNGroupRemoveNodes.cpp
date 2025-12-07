@@ -39,32 +39,32 @@
 ////////////////////////////
 
 seUPNGroupRemoveNodes::seUPNGroupRemoveNodes(
-sePropertyNodeGroup *node, const sePropertyNodeList &children ) :
-pNode( NULL ),
-pChildren( NULL ),
-pCount( 0 )
+sePropertyNodeGroup *node, const sePropertyNodeList &children) :
+pNode(NULL),
+pChildren(NULL),
+pCount(0)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = children.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node group remove nodes" );
+	SetShortInfo("Node group remove nodes");
 	
 	try{
-		pChildren = new sNode[ count ];
+		pChildren = new sNode[count];
 		
-		for( pCount=0; pCount<count; pCount++ ){
-			pChildren[ pCount ].index = -1;
-			pChildren[ pCount ].node = children.GetAt( pCount );
-			pChildren[ pCount ].node->AddReference();
+		for(pCount=0; pCount<count; pCount++){
+			pChildren[pCount].index = -1;
+			pChildren[pCount].node = children.GetAt(pCount);
+			pChildren[pCount].node->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -84,17 +84,17 @@ seUPNGroupRemoveNodes::~seUPNGroupRemoveNodes(){
 
 void seUPNGroupRemoveNodes::Undo(){
 	int i;
-	for( i=pCount-1; i>=0; i-- ){
-		pNode->InsertNode( pChildren[ i ].index, pChildren[ i ].node );
-		pChildren[ i ].index = -1;
+	for(i=pCount-1; i>=0; i--){
+		pNode->InsertNode(pChildren[i].index, pChildren[i].node);
+		pChildren[i].index = -1;
 	}
 }
 
 void seUPNGroupRemoveNodes::Redo(){
 	int i;
-	for( i=0; i<pCount; i++ ){
-		pChildren[ i ].index = pNode->IndexOfNode( pChildren[ i ].node );
-		pNode->RemoveNode( pChildren[ i ].node );
+	for(i=0; i<pCount; i++){
+		pChildren[i].index = pNode->IndexOfNode(pChildren[i].node);
+		pNode->RemoveNode(pChildren[i].node);
 	}
 }
 
@@ -104,14 +104,14 @@ void seUPNGroupRemoveNodes::Redo(){
 //////////////////////
 
 void seUPNGroupRemoveNodes::pCleanUp(){
-	if( pChildren ){
+	if(pChildren){
 		int i;
-		for( i=0; i<pCount; i++ ){
-			pChildren[ i ].node->FreeReference();
+		for(i=0; i<pCount; i++){
+			pChildren[i].node->FreeReference();
 		}
 		delete [] pChildren;
 	}
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }

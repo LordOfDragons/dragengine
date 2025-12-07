@@ -40,30 +40,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordAddList::saeUWordAddList( saeSAnimation *sanimation, const saeWordList &words ) :
-pSAnimation( NULL ),
-pWords( words )
+saeUWordAddList::saeUWordAddList(saeSAnimation *sanimation, const saeWordList &words) :
+pSAnimation(NULL),
+pWords(words)
 {
-	if( ! sanimation || words.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(! sanimation || words.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = words.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( sanimation->GetWordList().Has( words.GetAt( i ) ) ){
-			DETHROW( deeInvalidParam );
+	for(i=0; i<count; i++){
+		if(sanimation->GetWordList().Has(words.GetAt(i))){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	SetShortInfo( "Add Word" );
+	SetShortInfo("Add Word");
 	
 	pSAnimation = sanimation;
 	sanimation->AddReference();
 }
 
 saeUWordAddList::~saeUWordAddList(){
-	if( pSAnimation ){
+	if(pSAnimation){
 		pSAnimation->FreeReference();
 	}
 }
@@ -76,16 +76,16 @@ saeUWordAddList::~saeUWordAddList(){
 void saeUWordAddList::Undo(){
 	const int count = pWords.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pSAnimation->RemoveWord( pWords.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pSAnimation->RemoveWord(pWords.GetAt(i));
 	}
 }
 
 void saeUWordAddList::Redo(){
 	const int count = pWords.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pSAnimation->AddWord( pWords.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pSAnimation->AddWord(pWords.GetAt(i));
 	}
-	pSAnimation->SetActiveWord( pWords.GetAt( count - 1 ) );
+	pSAnimation->SetActiveWord(pWords.GetAt(count - 1));
 }

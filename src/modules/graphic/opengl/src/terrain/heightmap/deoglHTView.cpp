@@ -41,11 +41,11 @@
 // Class deoglHTView::void deoglHTView
 ////////////////////////////////////////
 
-deoglHTView::HTListener::HTListener( deoglHTView &htview ) : pHTView( htview ){
+deoglHTView::HTListener::HTListener(deoglHTView &htview) : pHTView(htview){
 }
 
-void deoglHTView::HTListener::SectorsChanged( deoglRHeightTerrain &heightTerrain ){
-	pHTView.SectorsChanged( heightTerrain );
+void deoglHTView::HTListener::SectorsChanged(deoglRHeightTerrain &heightTerrain){
+	pHTView.SectorsChanged(heightTerrain);
 }
 
 
@@ -57,25 +57,25 @@ void deoglHTView::HTListener::SectorsChanged( deoglRHeightTerrain &heightTerrain
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTView::deoglHTView( deoglRHeightTerrain *heightTerrain ) :
-pHeightTerrain( heightTerrain ),
-pHTListener( deoglHeightTerrainListener::Ref::New( new HTListener( *this ) ) ),
-pSectors( nullptr ),
-pSectorCount( 0 ),
-pSectorSize( 0 ),
-pDirtySectors( true )
+deoglHTView::deoglHTView(deoglRHeightTerrain *heightTerrain) :
+pHeightTerrain(heightTerrain),
+pHTListener(deoglHeightTerrainListener::Ref::New(new HTListener(*this))),
+pSectors(nullptr),
+pSectorCount(0),
+pSectorSize(0),
+pDirtySectors(true)
 {
-	DEASSERT_NOTNULL( heightTerrain )
-	heightTerrain->AddListener( pHTListener );
+	DEASSERT_NOTNULL(heightTerrain)
+	heightTerrain->AddListener(pHTListener);
 }
 
 deoglHTView::~deoglHTView(){
 	RemoveAllSectors();
-	if( pSectors ){
+	if(pSectors){
 		delete [] pSectors;
 	}
 	
-	pHeightTerrain->RemoveListener( pHTListener );
+	pHeightTerrain->RemoveListener(pHTListener);
 }
 
 
@@ -83,35 +83,35 @@ deoglHTView::~deoglHTView(){
 // Management
 ///////////////
 
-deoglHTViewSector *deoglHTView::GetSectorAt( int index ) const{
-	if( index < 0 || index >= pSectorCount ){
-		DETHROW( deeInvalidParam );
+deoglHTViewSector *deoglHTView::GetSectorAt(int index) const{
+	if(index < 0 || index >= pSectorCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pSectors[ index ];
+	return pSectors[index];
 }
 
-void deoglHTView::AddSector( deoglHTViewSector *sector ){
-	DEASSERT_NOTNULL( sector )
+void deoglHTView::AddSector(deoglHTViewSector *sector){
+	DEASSERT_NOTNULL(sector)
 	
-	if( pSectorCount == pSectorSize ){
+	if(pSectorCount == pSectorSize){
 		const int newSize = pSectorSize * 3 / 2 + 1;
-		deoglHTViewSector ** const newArray = new deoglHTViewSector*[ newSize ];
-		if( pSectors ){
-			memcpy( newArray, pSectors, sizeof( deoglHTViewSector* ) * pSectorSize );
+		deoglHTViewSector ** const newArray = new deoglHTViewSector*[newSize];
+		if(pSectors){
+			memcpy(newArray, pSectors, sizeof(deoglHTViewSector*) * pSectorSize);
 			delete [] pSectors;
 		}
 		pSectors = newArray;
 		pSectorSize = newSize;
 	}
 	
-	pSectors[ pSectorCount++ ] = sector;
+	pSectors[pSectorCount++] = sector;
 }
 
 void deoglHTView::RemoveAllSectors(){
-	while( pSectorCount > 0 ){
+	while(pSectorCount > 0){
 		pSectorCount--;
-		delete pSectors[ pSectorCount ];
+		delete pSectors[pSectorCount];
 	}
 }
 
@@ -119,22 +119,22 @@ void deoglHTView::RemoveAllSectors(){
 
 void deoglHTView::ResetClusters(){
 	int i;
-	for( i=0; i<pSectorCount; i++ ){
-		pSectors[ i ]->ResetClusters();
+	for(i=0; i<pSectorCount; i++){
+		pSectors[i]->ResetClusters();
 	}
 }
 
-void deoglHTView::UpdateLODLevels( const decVector &camera ){
+void deoglHTView::UpdateLODLevels(const decVector &camera){
 	int i;
-	for( i=0; i<pSectorCount; i++ ){
-		pSectors[ i ]->UpdateLODLevels( camera );
+	for(i=0; i<pSectorCount; i++){
+		pSectors[i]->UpdateLODLevels(camera);
 	}
 }
 
 
 
 void deoglHTView::Prepare(){
-	if( pDirtySectors ){
+	if(pDirtySectors){
 		pDirtySectors = false;
 		pRebuildSectors();
 	}
@@ -145,8 +145,8 @@ void deoglHTView::PrepareForRendering(){
 
 void deoglHTView::UpdateAllRTSInstances(){
 	int i;
-	for( i=0; i<pSectorCount; i++ ){
-		pSectors[ i ]->UpdateAllRTSInstances();
+	for(i=0; i<pSectorCount; i++){
+		pSectors[i]->UpdateAllRTSInstances();
 	}
 }
 
@@ -163,14 +163,14 @@ void deoglHTView::pRebuildSectors(){
 	try{
 		RemoveAllSectors();
 		
-		for( i=0; i<count; i++ ){
-			sector = new deoglHTViewSector( *this, pHeightTerrain->GetSectorAt( i ) );
-			AddSector( sector );
+		for(i=0; i<count; i++){
+			sector = new deoglHTViewSector(*this, pHeightTerrain->GetSectorAt(i));
+			AddSector(sector);
 			sector = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( sector ){
+	}catch(const deException &){
+		if(sector){
 			delete sector;
 		}
 		throw;
@@ -179,6 +179,6 @@ void deoglHTView::pRebuildSectors(){
 
 
 
-void deoglHTView::SectorsChanged ( deoglRHeightTerrain &heightTerrain ){
+void deoglHTView::SectorsChanged (deoglRHeightTerrain &heightTerrain){
 	pDirtySectors = true;
 }

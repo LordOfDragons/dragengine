@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSONavigationSpace( igdeWObject &wrapper, const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix );
+	igdeWOSONavigationSpace(igdeWObject &wrapper, const igdeGDCNavigationSpace &gdNavigationSpace, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSONavigationSpace();
@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationSpace resource. */
-	inline deNavigationSpace *GetNavigationSpace() const{ return pNavigationSpace; }
+	inline deNavigationSpace *GetNavigationSpace() const{return pNavigationSpace;}
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -78,7 +78,7 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading();
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	virtual void Visit(igdeWOSOVisitor &visitor);
 	/*@}*/
 	
 	

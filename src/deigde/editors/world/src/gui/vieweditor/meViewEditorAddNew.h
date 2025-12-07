@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditorAddNew( meView3D &view );
+	meViewEditorAddNew(meView3D &view);
 	
 	/** \brief Clean up view editor. */
 	virtual ~meViewEditorAddNew();
@@ -98,7 +98,7 @@ private:
 		bool useSnapPoint = false;
 	};
 	
-	void pUpdateUndo( bool shift, bool control );
+	void pUpdateUndo(bool shift, bool control);
 	void pCreateClosestElementVisitor();
 	void pCastIntoWorld(sCastIntoWorldParams &params);
 };

@@ -40,36 +40,36 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodesRotate::seUPropertyNodesRotate( const sePropertyNodeList &nodes,
-const decVector2 &pivot, const decVector2 &origin ) :
-pNodes( NULL ),
-pCount( 0 ),
-pPivot( pivot ),
-pOrigin( origin )
+seUPropertyNodesRotate::seUPropertyNodesRotate(const sePropertyNodeList &nodes,
+const decVector2 &pivot, const decVector2 &origin) :
+pNodes(NULL),
+pCount(0),
+pPivot(pivot),
+pOrigin(origin)
 {
 	const int count = nodes.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Rotate nodes" );
+	SetShortInfo("Rotate nodes");
 	
 	try{
-		pNodes = new sNode[ count ];
+		pNodes = new sNode[count];
 		
-		for( pCount=0; pCount<count; pCount++ ){
-			sePropertyNode * const node = nodes.GetAt( pCount );
-			if( ! node->GetParent() ){
-				DETHROW( deeInvalidParam );
+		for(pCount=0; pCount<count; pCount++){
+			sePropertyNode * const node = nodes.GetAt(pCount);
+			if(! node->GetParent()){
+				DETHROW(deeInvalidParam);
 			}
 			
-			pNodes[ pCount ].node = node;
+			pNodes[pCount].node = node;
 			node->AddReference();
-			pNodes[ pCount ].position = node->GetPosition();
-			pNodes[ pCount ].rotation = node->GetRotation();
+			pNodes[pCount].position = node->GetPosition();
+			pNodes[pCount].rotation = node->GetRotation();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -84,36 +84,36 @@ seUPropertyNodesRotate::~seUPropertyNodesRotate(){
 // Management
 ///////////////
 
-void seUPropertyNodesRotate::SetTarget( const decVector2 &target ){
-	if( target.IsEqualTo( pTarget ) ){
+void seUPropertyNodesRotate::SetTarget(const decVector2 &target){
+	if(target.IsEqualTo(pTarget)){
 		return;
 	}
 	
 	pTarget = target;
 	
-	if( target.IsEqualTo( pOrigin, 0.5f ) ){
+	if(target.IsEqualTo(pOrigin, 0.5f)){
 		pTransform.SetIdentity();
 		return;
 	}
 	
-	const decVector2 piv2org( pOrigin - pPivot );
-	const float angleOrigin = atan2f( piv2org.y, piv2org.x );
+	const decVector2 piv2org(pOrigin - pPivot);
+	const float angleOrigin = atan2f(piv2org.y, piv2org.x);
 	
-	const decVector2 piv2tar( target - pPivot );
-	const float angleTarget = atan2f( piv2tar.y, piv2tar.x );
+	const decVector2 piv2tar(target - pPivot);
+	const float angleTarget = atan2f(piv2tar.y, piv2tar.x);
 	
 	/*if( GetNodeCount() == 1 ){
-		rotation = GetNodeAt( 0 ).rotation;
-		shearing = GetNodeAt( 0 ).shearing;
+		rotation = GetNodeAt(0).rotation;
+		shearing = GetNodeAt(0).shearing;
 		
 		SetTransform(
 			decTexMatrix2::CreateTranslation()
-			decTexMatrix2::CreateTranslation( -pPivot )
+			decTexMatrix2::CreateTranslation(-pPivot)
 			* decTexMatrix2::CreateScale( fscale )
 			* decTexMatrix2::CreateTranslation( pPivot ) );
 		
 	}else{*/
-		pTransform = decTexMatrix2::CreateTranslation( -pPivot )
+		pTransform = decTexMatrix2::CreateTranslation(-pPivot)
 			* decTexMatrix2::CreateRotation( angleTarget - angleOrigin )
 			* decTexMatrix2::CreateTranslation( pPivot );
 	//}
@@ -122,35 +122,35 @@ void seUPropertyNodesRotate::SetTarget( const decVector2 &target ){
 void seUPropertyNodesRotate::Undo(){
 	int i;
 	
-	for( i=0; i<pCount; i++ ){
-		sePropertyNode &node = *pNodes[ i ].node;
-		node.SetPosition( pNodes[ i ].position );
-		node.SetRotation( pNodes[ i ].rotation );
+	for(i=0; i<pCount; i++){
+		sePropertyNode &node = *pNodes[i].node;
+		node.SetPosition(pNodes[i].position);
+		node.SetRotation(pNodes[i].rotation);
 	}
 }
 
 void seUPropertyNodesRotate::Redo(){
-	if( pTransform.IsEqualTo( decTexMatrix2() ) ){
+	if(pTransform.IsEqualTo(decTexMatrix2())){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<pCount; i++ ){
-		sePropertyNode &node = *pNodes[ i ].node;
+	for(i=0; i<pCount; i++){
+		sePropertyNode &node = *pNodes[i].node;
 		
-		const decTexMatrix2 matrix( node.CreateScreenTransformMatrix() * pTransform
+		const decTexMatrix2 matrix(node.CreateScreenTransformMatrix() * pTransform
 			* node.GetParent()->CreateScreenTransformMatrix().Invert().ToTexMatrix2() );
 		
 		float rotation = matrix.GetRotation() / DEG2RAD;
-		if( node.GetSize().x < 0 ){
+		if(node.GetSize().x < 0){
 			// node size x is negative. flip result to get correct result
 			rotation += 180.0f;
 		}
 		
-		node.SetRotation( rotation );
+		node.SetRotation(rotation);
 		
-		const decPoint position( ( matrix.GetPosition() - node.CreateCanvasTransformMatrix().GetPosition() ).Round() );
-		node.SetPosition( decPoint3( position.x, position.y, pNodes[ i ].position.z ) );
+		const decPoint position((matrix.GetPosition() - node.CreateCanvasTransformMatrix().GetPosition()).Round());
+		node.SetPosition(decPoint3(position.x, position.y, pNodes[i].position.z));
 	}
 }
 
@@ -160,10 +160,10 @@ void seUPropertyNodesRotate::Redo(){
 //////////////////////
 
 void seUPropertyNodesRotate::pCleanUp(){
-	if( pNodes ){
+	if(pNodes){
 		int i;
-		for( i=0; i<pCount; i++ ){
-			pNodes[ i ].node->FreeReference();
+		for(i=0; i<pCount; i++){
+			pNodes[i].node->FreeReference();
 		}
 		delete [] pNodes;
 	}

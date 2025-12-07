@@ -48,32 +48,32 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetButton::dealWidgetButton( dealDisplay &display, dealImage *image, const char *label ) :
-dealWidgetLayoutFlow( display, false, 0, eltFill, eltBottomFill ),
+dealWidgetButton::dealWidgetButton(dealDisplay &display, dealImage *image, const char *label) :
+dealWidgetLayoutFlow(display, false, 0, eltFill, eltBottomFill),
 
-pBgColorNormal( 1.0f, 1.0f, 1.0f ),
-pTextColorNormal( 0.0f, 0.0f, 0.0f ),
-pBgColorPressed( 0.8f, 0.8f, 1.0f ),
-pTextColorPressed( 0.0f, 0.0f, 0.0f ),
+pBgColorNormal(1.0f, 1.0f, 1.0f),
+pTextColorNormal(0.0f, 0.0f, 0.0f),
+pBgColorPressed(0.8f, 0.8f, 1.0f),
+pTextColorPressed(0.0f, 0.0f, 0.0f),
 
-pLabel( NULL ),
-pImage( NULL ),
-pBgImageNormal( NULL ),
-pBgImagePressed( NULL ),
-pPressed( false )
+pLabel(NULL),
+pImage(NULL),
+pBgImageNormal(NULL),
+pBgImagePressed(NULL),
+pPressed(false)
 {
-	SetGap( display.GetDefaultFontSize() / 4 );
-	SetPadding( display.GetDefaultFontSize() / 2, display.GetDefaultFontSize() / 2 );
+	SetGap(display.GetDefaultFontSize() / 4);
+	SetPadding(display.GetDefaultFontSize() / 2, display.GetDefaultFontSize() / 2);
 	pBuildContent();
-	SetLabel( label );
-	SetImage( image );
+	SetLabel(label);
+	SetImage(image);
 }
 
 dealWidgetButton::~dealWidgetButton(){
-	if( pBgImageNormal ){
+	if(pBgImageNormal){
 		pBgImageNormal->FreeReference();
 	}
-	if( pBgImagePressed ){
+	if(pBgImagePressed){
 		pBgImagePressed->FreeReference();
 	}
 }
@@ -83,37 +83,37 @@ dealWidgetButton::~dealWidgetButton(){
 // Management
 ///////////////
 
-void dealWidgetButton::SetFromGuiTheme( const dealGuiTheme &guitheme ){
-	dealWidget::SetFromGuiTheme( guitheme );
+void dealWidgetButton::SetFromGuiTheme(const dealGuiTheme &guitheme){
+	dealWidget::SetFromGuiTheme(guitheme);
 	
-	SetBgColorNormal( guitheme.GetButtonBackgroundColor() );
-	SetTextColorNormal( guitheme.GetButtonTextColor() );
-	pBgImageNormal->SetImage( guitheme.GetButtonBackgroundImage() );
+	SetBgColorNormal(guitheme.GetButtonBackgroundColor());
+	SetTextColorNormal(guitheme.GetButtonTextColor());
+	pBgImageNormal->SetImage(guitheme.GetButtonBackgroundImage());
 	pBgImageNormal->SetBorders(
-		guitheme.GetButtonBackgroundImageBorder( 0 ),
-		guitheme.GetButtonBackgroundImageBorder( 1 ),
-		guitheme.GetButtonBackgroundImageBorder( 2 ),
-		guitheme.GetButtonBackgroundImageBorder( 3 ) );
-	pBgImageNormal->SetScaling( guitheme.GetButtonBackgroundImageScale() );
-	pBgImageNormal->SetColorize( guitheme.GetButtonBackgroundImageColorize() );
+		guitheme.GetButtonBackgroundImageBorder(0),
+		guitheme.GetButtonBackgroundImageBorder(1),
+		guitheme.GetButtonBackgroundImageBorder(2),
+		guitheme.GetButtonBackgroundImageBorder(3));
+	pBgImageNormal->SetScaling(guitheme.GetButtonBackgroundImageScale());
+	pBgImageNormal->SetColorize(guitheme.GetButtonBackgroundImageColorize());
 	
-	SetBgColorPressed( guitheme.GetButtonPressedBackgroundColor() );
-	SetTextColorPressed( guitheme.GetButtonPressedTextColor() );
+	SetBgColorPressed(guitheme.GetButtonPressedBackgroundColor());
+	SetTextColorPressed(guitheme.GetButtonPressedTextColor());
 	
-	pBgImagePressed->SetImage( guitheme.GetButtonPressedBackgroundImage() );
+	pBgImagePressed->SetImage(guitheme.GetButtonPressedBackgroundImage());
 	pBgImagePressed->SetBorders(
-		guitheme.GetButtonPressedBackgroundImageBorder( 0 ),
-		guitheme.GetButtonPressedBackgroundImageBorder( 1 ),
-		guitheme.GetButtonPressedBackgroundImageBorder( 2 ),
-		guitheme.GetButtonPressedBackgroundImageBorder( 3 ) );
-	pBgImagePressed->SetScaling( guitheme.GetButtonPressedBackgroundImageScale() );
-	pBgImagePressed->SetColorize( guitheme.GetButtonPressedBackgroundImageColorize() );
+		guitheme.GetButtonPressedBackgroundImageBorder(0),
+		guitheme.GetButtonPressedBackgroundImageBorder(1),
+		guitheme.GetButtonPressedBackgroundImageBorder(2),
+		guitheme.GetButtonPressedBackgroundImageBorder(3));
+	pBgImagePressed->SetScaling(guitheme.GetButtonPressedBackgroundImageScale());
+	pBgImagePressed->SetColorize(guitheme.GetButtonPressedBackgroundImageColorize());
 }
 
 
 
-void dealWidgetButton::SetBgColorNormal( const decColor &color ){
-	if( color.IsEqualTo( pBgColorNormal ) ){
+void dealWidgetButton::SetBgColorNormal(const decColor &color){
+	if(color.IsEqualTo(pBgColorNormal)){
 		return;
 	}
 	
@@ -121,8 +121,8 @@ void dealWidgetButton::SetBgColorNormal( const decColor &color ){
 	pUpdateContentPressedState();
 }
 
-void dealWidgetButton::SetTextColorNormal( const decColor &color ){
-	if( color.IsEqualTo( pTextColorNormal ) ){
+void dealWidgetButton::SetTextColorNormal(const decColor &color){
+	if(color.IsEqualTo(pTextColorNormal)){
 		return;
 	}
 	
@@ -134,12 +134,12 @@ const decColor &dealWidgetButton::GetBgImageColorizeNormal() const{
 	return pBgImageNormal->GetColorize();
 }
 
-void dealWidgetButton::SetBgImageColorizeNormal( const decColor &color ){
-	pBgImageNormal->SetColorize( color );
+void dealWidgetButton::SetBgImageColorizeNormal(const decColor &color){
+	pBgImageNormal->SetColorize(color);
 }
 
-void dealWidgetButton::SetBgColorPressed( const decColor &color ){
-	if( color.IsEqualTo( pBgColorPressed ) ){
+void dealWidgetButton::SetBgColorPressed(const decColor &color){
+	if(color.IsEqualTo(pBgColorPressed)){
 		return;
 	}
 	
@@ -147,8 +147,8 @@ void dealWidgetButton::SetBgColorPressed( const decColor &color ){
 	pUpdateContentPressedState();
 }
 
-void dealWidgetButton::SetTextColorPressed( const decColor &color ){
-	if( color.IsEqualTo( pTextColorPressed ) ){
+void dealWidgetButton::SetTextColorPressed(const decColor &color){
+	if(color.IsEqualTo(pTextColorPressed)){
 		return;
 	}
 	
@@ -160,8 +160,8 @@ const decColor &dealWidgetButton::GetBgImageColorizePressed() const{
 	return pBgImagePressed->GetColorize();
 }
 
-void dealWidgetButton::SetBgImageColorizePressed( const decColor &color ){
-	pBgImagePressed->SetColorize( color );
+void dealWidgetButton::SetBgImageColorizePressed(const decColor &color){
+	pBgImagePressed->SetColorize(color);
 }
 
 
@@ -170,32 +170,32 @@ const decString &dealWidgetButton::GetLabel() const{
 	return pLabel->GetText();
 }
 
-void dealWidgetButton::SetLabel( const char *label ){
-	if( pLabel->GetText() == label ){
+void dealWidgetButton::SetLabel(const char *label){
+	if(pLabel->GetText() == label){
 		return;
 	}
 	
-	pLabel->SetText( label );
-	pLabel->SetVisible( ! pLabel->GetText().IsEmpty() );
+	pLabel->SetText(label);
+	pLabel->SetVisible(! pLabel->GetText().IsEmpty());
 }
 
 dealImage *dealWidgetButton::GetImage() const{
 	return pImage->GetImage();
 }
 
-void dealWidgetButton::SetImage( dealImage *image ){
-	if( pImage->GetImage() == image ){
+void dealWidgetButton::SetImage(dealImage *image){
+	if(pImage->GetImage() == image){
 		return;
 	}
 	
-	pImage->SetImage( image );
-	pImage->SetVisible( image != NULL );
+	pImage->SetImage(image);
+	pImage->SetVisible(image != NULL);
 }
 
 
 
-void dealWidgetButton::SetPressed( bool pressed ){
-	if( pressed == pPressed ){
+void dealWidgetButton::SetPressed(bool pressed){
+	if(pressed == pPressed){
 		return;
 	}
 	
@@ -207,21 +207,21 @@ void dealWidgetButton::SetPressed( bool pressed ){
 
 
 
-void dealWidgetButton::RenderBackground( const sRenderContext &context ){
-	if( pPressed ){
-		if( pBgImagePressed->GetImage() ){
-			pBgImagePressed->Render( context );
+void dealWidgetButton::RenderBackground(const sRenderContext &context){
+	if(pPressed){
+		if(pBgImagePressed->GetImage()){
+			pBgImagePressed->Render(context);
 			
 		}else{
-			dealWidgetLayoutFlow::RenderBackground( context );
+			dealWidgetLayoutFlow::RenderBackground(context);
 		}
 		
 	}else{
-		if( pBgImageNormal->GetImage() ){
-			pBgImageNormal->Render( context );
+		if(pBgImageNormal->GetImage()){
+			pBgImageNormal->Render(context);
 			
 		}else{
-			dealWidgetLayoutFlow::RenderBackground( context );
+			dealWidgetLayoutFlow::RenderBackground(context);
 		}
 	}
 }
@@ -231,18 +231,18 @@ void dealWidgetButton::RenderBackground( const sRenderContext &context ){
 void dealWidgetButton::OnSizeChanged(){
 	dealWidgetLayoutFlow::OnSizeChanged();
 	
-	pBgImageNormal->SetSize( GetSize() );
-	pBgImagePressed->SetSize( GetSize() );
+	pBgImageNormal->SetSize(GetSize());
+	pBgImagePressed->SetSize(GetSize());
 }
 
 void dealWidgetButton::OnEnabledChanged(){
 	dealWidgetLayoutFlow::OnEnabledChanged();
 	
 	const bool enabled = GetEnabled();
-	pImage->SetEnabled( enabled );
-	pLabel->SetEnabled( enabled );
-	pBgImageNormal->SetEnabled( enabled );
-	pBgImagePressed->SetEnabled( enabled );
+	pImage->SetEnabled(enabled);
+	pLabel->SetEnabled(enabled);
+	pBgImageNormal->SetEnabled(enabled);
+	pBgImagePressed->SetEnabled(enabled);
 	
 	pUpdateContentPressedState();
 }
@@ -255,43 +255,43 @@ void dealWidgetButton::OnAction(){
 
 
 
-void dealWidgetButton::OnKeyPress( int keycode ){
+void dealWidgetButton::OnKeyPress(int keycode){
 }
 
-void dealWidgetButton::OnKeyRelease( int keycode ){
+void dealWidgetButton::OnKeyRelease(int keycode){
 }
 
-void dealWidgetButton::OnMousePress( int buttons, const decPoint &position ){
-	if( ! GetEnabled() ){
+void dealWidgetButton::OnMousePress(int buttons, const decPoint &position){
+	if(! GetEnabled()){
 		return;
 	}
 	
-	if( buttons != 0 ){
+	if(buttons != 0){
 		// buttons pressed while touching screen. protects also against multiple touching
 		return;
 	}
 	
 	CaptureInput();
-	SetPressed( true );
+	SetPressed(true);
 }
 
-void dealWidgetButton::OnMouseRelease( int buttons, const decPoint &position ){
-	if( buttons != 0 ){
+void dealWidgetButton::OnMouseRelease(int buttons, const decPoint &position){
+	if(buttons != 0){
 		// buttons pressed while touching screen. protects also against multiple touching
 		return;
 	}
 	
 	ReleaseCapture();
 	
-	if( GetEnabled() && IsPointInside( position ) ){
+	if(GetEnabled() && IsPointInside(position)){
 		OnAction();
 	}
 	
-	SetPressed( false );
+	SetPressed(false);
 }
 
-void dealWidgetButton::OnMouseMove( int buttons, const decPoint &position ){
-	SetPressed( IsPointInside( position ) );
+void dealWidgetButton::OnMouseMove(int buttons, const decPoint &position){
+	SetPressed(IsPointInside(position));
 }
 
 
@@ -303,35 +303,35 @@ void dealWidgetButton::pBuildContent(){
 	dealDisplay &display = GetDisplay();
 	
 	// background images
-	pBgImageNormal = new dealWidgetBorderImage( display );
-	pBgImagePressed = new dealWidgetBorderImage( display );
+	pBgImageNormal = new dealWidgetBorderImage(display);
+	pBgImagePressed = new dealWidgetBorderImage(display);
 	
 	// content
-	pImage = new dealWidgetImage( display );
-	pImage->SetVisible( false );
-	AddWidget( pImage );
+	pImage = new dealWidgetImage(display);
+	pImage->SetVisible(false);
+	AddWidget(pImage);
 	
-	pLabel = new dealWidgetLabel( display, "" );
-	pLabel->SetVisible( false );
-	AddWidget( pLabel );
+	pLabel = new dealWidgetLabel(display, "");
+	pLabel->SetVisible(false);
+	AddWidget(pLabel);
 	
 	// update pressed state
 	pUpdateContentPressedState();
 }
 
 void dealWidgetButton::pUpdateContentPressedState(){
-	if( GetEnabled() ){
-		if( pPressed ){
-			SetBackgroundColor( pBgColorPressed );
-			pLabel->SetColor( pTextColorPressed );
+	if(GetEnabled()){
+		if(pPressed){
+			SetBackgroundColor(pBgColorPressed);
+			pLabel->SetColor(pTextColorPressed);
 			
 		}else{
-			SetBackgroundColor( pBgColorNormal );
-			pLabel->SetColor( pTextColorNormal );
+			SetBackgroundColor(pBgColorNormal);
+			pLabel->SetColor(pTextColorNormal);
 		}
 		
 	}else{
-		SetBackgroundColor( pBgColorNormal );
-		pLabel->SetColor( pTextColorNormal );
+		SetBackgroundColor(pBgColorNormal);
+		pLabel->SetColor(pTextColorNormal);
 	}
 }

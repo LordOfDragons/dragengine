@@ -47,11 +47,11 @@ deoglParticleSorter::deoglParticleSorter(){
 }
 
 deoglParticleSorter::~deoglParticleSorter(){
-	if( pParticles ){
-		while( pParticleSize > 0 ){
+	if(pParticles){
+		while(pParticleSize > 0){
 			pParticleSize--;
-			if( pParticles[ pParticleSize ] ){
-				delete pParticles[ pParticleSize ];
+			if(pParticles[pParticleSize]){
+				delete pParticles[pParticleSize];
 			}
 		}
 		
@@ -64,22 +64,22 @@ deoglParticleSorter::~deoglParticleSorter(){
 // Management
 ///////////////
 
-const deoglParticleSorter::sParticle &deoglParticleSorter::GetParticleAt( int index ) const{
-	if( index < 0 || index >= pParticleCount ){
-		DETHROW( deeInvalidParam );
+const deoglParticleSorter::sParticle &deoglParticleSorter::GetParticleAt(int index) const{
+	if(index < 0 || index >= pParticleCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *pParticles[ index ];
+	return *pParticles[index];
 }
 
-void deoglParticleSorter::AddToRenderTask( deoglAddToRenderTaskParticles &renderTask ){
+void deoglParticleSorter::AddToRenderTask(deoglAddToRenderTaskParticles &renderTask){
 	deoglRParticleEmitterInstance *instance;
 	int p;
 	
-	for( p=0; p<pParticleCount; p++ ){
-		instance = pParticles[ p ]->instance;
+	for(p=0; p<pParticleCount; p++){
+		instance = pParticles[p]->instance;
 		
-		renderTask.AddParticle( *instance, instance->GetParticles() + pParticles[ p ]->particle );
+		renderTask.AddParticle(*instance, instance->GetParticles() + pParticles[p]->particle);
 	}
 }
 
@@ -87,31 +87,31 @@ void deoglParticleSorter::Clear(){
 	pParticleCount = 0;
 }
 
-void deoglParticleSorter::AddParticle( deoglRParticleEmitterInstance *instance, int particle, float distance ){
-	if( pParticleCount == pParticleSize ){
+void deoglParticleSorter::AddParticle(deoglRParticleEmitterInstance *instance, int particle, float distance){
+	if(pParticleCount == pParticleSize){
 		int newSize = pParticleSize + 10;
-		sParticle **newArray = new sParticle*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pParticles ){
-			memcpy( newArray, pParticles, sizeof( sParticle* ) * pParticleSize );
+		sParticle **newArray = new sParticle*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pParticles){
+			memcpy(newArray, pParticles, sizeof(sParticle*) * pParticleSize);
 			delete [] pParticles;
 		}
 		pParticles = newArray;
-		for( ; pParticleSize<newSize; pParticleSize++ ){
-			pParticles[ pParticleSize ] = new sParticle;
-			if( ! pParticles[ pParticleSize ] ) DETHROW( deeOutOfMemory );
+		for(; pParticleSize<newSize; pParticleSize++){
+			pParticles[pParticleSize] = new sParticle;
+			if(! pParticles[pParticleSize]) DETHROW(deeOutOfMemory);
 		}
 	}
 	
-	pParticles[ pParticleCount ]->instance = instance;
-	pParticles[ pParticleCount ]->particle = particle;
-	pParticles[ pParticleCount ]->distance = distance;
+	pParticles[pParticleCount]->instance = instance;
+	pParticles[pParticleCount]->particle = particle;
+	pParticles[pParticleCount]->distance = distance;
 	pParticleCount++;
 }
 
 void deoglParticleSorter::Sort(){
-	if( pParticleCount > 0 ){
-		pSortParticle( 0, pParticleCount - 1 );
+	if(pParticleCount > 0){
+		pSortParticle(0, pParticleCount - 1);
 	}
 }
 
@@ -120,34 +120,34 @@ void deoglParticleSorter::Sort(){
 // Private Functions
 //////////////////////
 
-void deoglParticleSorter::pSortParticle( int left, int right ){
-	sParticle *pivotParticle = pParticles[ left ];
+void deoglParticleSorter::pSortParticle(int left, int right){
+	sParticle *pivotParticle = pParticles[left];
 	float pivot = pivotParticle->distance;
 	int r_hold = right;
 	int l_hold = left;
 	
-	while( left < right ){
-		while( ( pParticles[ right ]->distance <= pivot ) && ( left < right ) ){
+	while(left < right){
+		while((pParticles[right]->distance <= pivot) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pParticles[ left ] = pParticles[ right ];
+		if(left != right){
+			pParticles[left] = pParticles[right];
 			left++;
 		}
-		while( ( pParticles[ left ]->distance >= pivot ) && ( left < right ) ){
+		while((pParticles[left]->distance >= pivot) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pParticles[ right ] = pParticles[ left ];
+		if(left != right){
+			pParticles[right] = pParticles[left];
 			right--;
 		}
 	}
 	
-	pParticles[ left ] = pivotParticle;
-	if( l_hold < left ){
-		pSortParticle( l_hold, left - 1 );
+	pParticles[left] = pivotParticle;
+	if(l_hold < left){
+		pSortParticle(l_hold, left - 1);
 	}
-	if( r_hold > left ){
-		pSortParticle( left + 1, r_hold );
+	if(r_hold > left){
+		pSortParticle(left + 1, r_hold);
 	}
 }

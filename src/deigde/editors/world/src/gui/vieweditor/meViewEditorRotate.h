@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new view editor. */
-	meViewEditorRotate( meView3D &view );
+	meViewEditorRotate(meView3D &view);
 	/** Cleans up the view editor. */
 	virtual ~meViewEditorRotate();
 	/*@}*/
@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Calculates the rotation axis for the current view. */
-	virtual void CalculateRotationAxis( decDVector &axis ) const;
+	virtual void CalculateRotationAxis(decDVector &axis) const;
 	/*@}*/
 	
 	/** \name Events */
 	/*@{*/
 	/** A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );
+	virtual bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control);
 	/** The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonPress(int x, int y, bool shift, bool control);
 	/** The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control);
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	virtual void OnMouseMove(int x, int y, bool shift, bool control);
 	/*@}*/
 };
 

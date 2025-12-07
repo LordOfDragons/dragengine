@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desynCreateSynthesizerSource( desynSynthesizer &synthesizer, int firstLink );
+	desynCreateSynthesizerSource(desynSynthesizer &synthesizer, int firstLink);
 	
 	/** \brief Clean up visitor. */
 	virtual ~desynCreateSynthesizerSource();
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created source or \em NULL if not present. */
-	inline desynSynthesizerSource *GetSource() const{ return pSource; }
+	inline desynSynthesizerSource *GetSource() const{return pSource;}
 	
 	/** \brief Reset. */
 	void Reset();
@@ -71,22 +71,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void VisitSource( deSynthesizerSource &source );
+	virtual void VisitSource(deSynthesizerSource &source);
 	
 	/** \brief Visit sound source. */
-	virtual void VisitSound( deSynthesizerSourceSound &source );
+	virtual void VisitSound(deSynthesizerSourceSound &source);
 	
 	/** \brief Visit wave generator source. */
-	virtual void VisitWave( deSynthesizerSourceWave &source );
+	virtual void VisitWave(deSynthesizerSourceWave &source);
 	
 	/** \brief Visit chain source. */
-	virtual void VisitChain( deSynthesizerSourceChain &source );
+	virtual void VisitChain(deSynthesizerSourceChain &source);
 	
 	/** \brief Visit synthesizer source. */
-	virtual void VisitSynthesizer( deSynthesizerSourceSynthesizer &source );
+	virtual void VisitSynthesizer(deSynthesizerSourceSynthesizer &source);
 	
 	/** \brief Visit group source. */
-	virtual void VisitGroup( deSynthesizerSourceGroup &source );
+	virtual void VisitGroup(deSynthesizerSourceGroup &source);
 	/*@}*/
 };
 

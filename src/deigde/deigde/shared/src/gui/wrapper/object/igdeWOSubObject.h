@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSubObject( igdeWObject &wrapper, const decString &prefix );
+	igdeWOSubObject(igdeWObject &wrapper, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSubObject();
@@ -75,22 +75,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Wrapper. */
-	inline igdeWObject &GetWrapper() const{ return pWrapper; }
+	inline igdeWObject &GetWrapper() const{return pWrapper;}
 	
 	/** \brief Property prefix. */
-	inline const decString &GetPrefix(){ return pPrefix; }
+	inline const decString &GetPrefix(){return pPrefix;}
 	
 	/** \brief Box minimum extends. */
-	inline const decVector GetBoxMinExtends() const{ return pBoxMinExtends; }
+	inline const decVector GetBoxMinExtends() const{return pBoxMinExtends;}
 	
 	/** \brief Box maximum extends. */
-	inline const decVector &GetBoxMaxExtends() const{ return pBoxMaxExtends; }
+	inline const decVector &GetBoxMaxExtends() const{return pBoxMaxExtends;}
 	
 	/** \brief Has box extends. */
-	inline bool HasBoxExtends() const{ return pHasBoxExtends; }
+	inline bool HasBoxExtends() const{return pHasBoxExtends;}
 	
 	/** \brief Set extends. */
-	void SetBoxExtends( const decVector &boxMinExtends, const decVector &boxMaxExtends );
+	void SetBoxExtends(const decVector &boxMinExtends, const decVector &boxMaxExtends);
 	
 	/** \brief Clear extends. */
 	void ClearBoxExtends();
@@ -126,7 +126,7 @@ public:
 	virtual void ColliderUserPointerChanged();
 	
 	/** \brief Frame update. */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/** \brief Reset physics. */
 	virtual void ResetPhysics();
@@ -144,7 +144,7 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading() = 0;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor ) = 0;
+	virtual void Visit(igdeWOSOVisitor &visitor) = 0;
 	
 	/**
 	 * \brief Sub object is visible.
@@ -177,23 +177,23 @@ protected:
 	deLogger &GetLogger() const;
 	deEngine &GetEngine() const;
 	
-	bool GetPropertyValue( const decString &name, decString &value ) const;
-	decString GetStringProperty( const decString &name, const decString &defaultValue ) const;
-	decVector GetVectorProperty( const decString &name, const decVector &defaultValue ) const;
-	decVector2 GetVector2Property( const decString &name, const decVector2 &defaultValue ) const;
-	decQuaternion GetRotationProperty( const decString &name, const decQuaternion &defaultValue ) const;
-	decColor GetColor3Property( const decString &name, const decColor &defaultValue ) const;
-	decColor GetColor4Property( const decString &name, const decColor &defaultValue ) const;
-	bool GetBoolProperty( const decString &name, bool defaultValue ) const;
-	float GetFloatProperty( const decString &name, float defaultValue ) const;
-	int GetIntProperty( const decString &name, int defaultValue ) const;
+	bool GetPropertyValue(const decString &name, decString &value) const;
+	decString GetStringProperty(const decString &name, const decString &defaultValue) const;
+	decVector GetVectorProperty(const decString &name, const decVector &defaultValue) const;
+	decVector2 GetVector2Property(const decString &name, const decVector2 &defaultValue) const;
+	decQuaternion GetRotationProperty(const decString &name, const decQuaternion &defaultValue) const;
+	decColor GetColor3Property(const decString &name, const decColor &defaultValue) const;
+	decColor GetColor4Property(const decString &name, const decColor &defaultValue) const;
+	bool GetBoolProperty(const decString &name, bool defaultValue) const;
+	float GetFloatProperty(const decString &name, float defaultValue) const;
+	int GetIntProperty(const decString &name, int defaultValue) const;
 	
-	void pInitTrigger( igdeTriggerExpression::Ref &trigger, const decString &propertyName );
-	void pClearTrigger( igdeTriggerExpression::Ref &trigger );
+	void pInitTrigger(igdeTriggerExpression::Ref &trigger, const decString &propertyName);
+	void pClearTrigger(igdeTriggerExpression::Ref &trigger);
 	
 	deColliderComponent *GetAttachableColliderComponent() const;
-	decDMatrix GetBoneMatrix( const decString &name ) const;
-	decLayerMask LayerMaskFromInt( int mask ) const;
+	decDMatrix GetBoneMatrix(const decString &name) const;
+	decLayerMask LayerMaskFromInt(int mask) const;
 };
 
 #endif

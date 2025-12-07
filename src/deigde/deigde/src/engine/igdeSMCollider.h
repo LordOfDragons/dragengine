@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Delegee or \em NULL. */
-	inline deBaseScriptingCollider *GetDelegee() const{ return pDelegee; }
+	inline deBaseScriptingCollider *GetDelegee() const{return pDelegee;}
 	
 	/** \brief Set delegee or \em NULL. */
-	void SetDelegee( deBaseScriptingCollider *delegee );
+	void SetDelegee(deBaseScriptingCollider *delegee);
 	
 	/** \brief User pointer. */
-	inline void *GetUserPointer() const{ return pUserPointer; }
+	inline void *GetUserPointer() const{return pUserPointer;}
 	
 	/** \brief Set user pointer. */
-	void SetUserPointer( void *userPointer );
+	void SetUserPointer(void *userPointer);
 	/*@}*/
 	
 	
@@ -78,7 +78,7 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	
 	/**
 	 * Determines if a collider can be hit. If this peer is used with a collider
@@ -89,14 +89,14 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 };
 

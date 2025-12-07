@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerRemove::gdeMAOCNavBlockerRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Navigation Blocker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class navigation blocker" )
+gdeMAOCNavBlockerRemove::gdeMAOCNavBlockerRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Navigation Blocker",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class navigation blocker")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Navigation Blocker",
 ///////////////
 
 igdeUndo *gdeMAOCNavBlockerRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker){
 		return NULL;
 	}
 	
 	gdeOCNavigationBlocker * const navBlocker = gameDefinition.GetActiveOCNavigationBlocker();
-	if( ! navBlocker ){
+	if(! navBlocker){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveNavBlocker( &objectClass, navBlocker );
+	return new gdeUOCRemoveNavBlocker(&objectClass, navBlocker);
 }
 
 void gdeMAOCNavBlockerRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL );
+		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL);
 }

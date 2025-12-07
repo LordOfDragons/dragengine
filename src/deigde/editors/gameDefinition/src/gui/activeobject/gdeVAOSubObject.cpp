@@ -52,11 +52,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOSubObject::gdeVAOSubObject( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix ) :
-pView( view ),
-pObjectClass( objectClass ),
-pPropertyPrefix( propertyPrefix ){
+gdeVAOSubObject::gdeVAOSubObject(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix) :
+pView(view),
+pObjectClass(objectClass),
+pPropertyPrefix(propertyPrefix){
 }
 
 gdeVAOSubObject::~gdeVAOSubObject(){
@@ -73,105 +73,105 @@ void gdeVAOSubObject::RebuildResources(){
 void gdeVAOSubObject::SelectedObjectChanged(){
 }
 
-void gdeVAOSubObject::GetExtends( decVector &minExtend, decVector &maxExtend ) const{
+void gdeVAOSubObject::GetExtends(decVector &minExtend, decVector &maxExtend) const{
 	minExtend.SetZero();
 	maxExtend.SetZero();
 }
 
-decString gdeVAOSubObject::PropertyString( const decString &name, const decString &defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	return value ? decString( value ) : defaultValue;
+decString gdeVAOSubObject::PropertyString(const decString &name, const decString &defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	return value ? decString(value) : defaultValue;
 }
 
-int gdeVAOSubObject::PropertyInt( const decString &name, int defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	return value ? decString( value ).ToInt() : defaultValue;
+int gdeVAOSubObject::PropertyInt(const decString &name, int defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	return value ? decString(value).ToInt() : defaultValue;
 }
 
-float gdeVAOSubObject::PropertyFloat( const decString &name, float defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	return value ? decString( value ).ToFloat() : defaultValue;
+float gdeVAOSubObject::PropertyFloat(const decString &name, float defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	return value ? decString(value).ToFloat() : defaultValue;
 }
 
-bool gdeVAOSubObject::PropertyBool( const decString &name, bool defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	return value ? strcmp( value, "0" ) != 0 : defaultValue;
+bool gdeVAOSubObject::PropertyBool(const decString &name, bool defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	return value ? strcmp(value, "0") != 0 : defaultValue;
 }
 
-decColor gdeVAOSubObject::PropertyColor( const decString &name, const decColor &defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	if( ! value ){
+decColor gdeVAOSubObject::PropertyColor(const decString &name, const decColor &defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	if(! value){
 		return defaultValue;
 	}
 	
-	const decStringList parts( decString( value ).Split( ' ' ) );
+	const decStringList parts(decString(value).Split(' '));
 	decColor color;
-	if( parts.GetCount() > 0 ){
-		color.r = parts.GetAt( 0 ).ToFloat();
+	if(parts.GetCount() > 0){
+		color.r = parts.GetAt(0).ToFloat();
 	}
-	if( parts.GetCount() > 1 ){
-		color.g = parts.GetAt( 1 ).ToFloat();
+	if(parts.GetCount() > 1){
+		color.g = parts.GetAt(1).ToFloat();
 	}
-	if( parts.GetCount() > 2 ){
-		color.b = parts.GetAt( 2 ).ToFloat();
+	if(parts.GetCount() > 2){
+		color.b = parts.GetAt(2).ToFloat();
 	}
-	if( parts.GetCount() > 3 ){
-		color.a = parts.GetAt( 3 ).ToFloat();
+	if(parts.GetCount() > 3){
+		color.a = parts.GetAt(3).ToFloat();
 	}
 	return color;
 }
 
-decVector gdeVAOSubObject::PropertyVector( const decString &name, const decVector &defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	if( ! value ){
+decVector gdeVAOSubObject::PropertyVector(const decString &name, const decVector &defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	if(! value){
 		return defaultValue;
 	}
 	
-	const decStringList parts( decString( value ).Split( ' ' ) );
+	const decStringList parts(decString(value).Split(' '));
 	decVector vector;
-	if( parts.GetCount() > 0 ){
-		vector.x = parts.GetAt( 0 ).ToFloat();
+	if(parts.GetCount() > 0){
+		vector.x = parts.GetAt(0).ToFloat();
 	}
-	if( parts.GetCount() > 1 ){
-		vector.y = parts.GetAt( 1 ).ToFloat();
+	if(parts.GetCount() > 1){
+		vector.y = parts.GetAt(1).ToFloat();
 	}
-	if( parts.GetCount() > 2 ){
-		vector.z = parts.GetAt( 2 ).ToFloat();
+	if(parts.GetCount() > 2){
+		vector.z = parts.GetAt(2).ToFloat();
 	}
 	return vector;
 }
 
-decVector2 gdeVAOSubObject::PropertyVector2( const decString &name, const decVector2 &defaultValue ) const{
-	const char * const value = pPropertyValue( name );
-	if( ! value ){
+decVector2 gdeVAOSubObject::PropertyVector2(const decString &name, const decVector2 &defaultValue) const{
+	const char * const value = pPropertyValue(name);
+	if(! value){
 		return defaultValue;
 	}
 	
-	const decStringList parts( decString( value ).Split( ' ' ) );
+	const decStringList parts(decString(value).Split(' '));
 	decVector2 vector;
-	if( parts.GetCount() > 0 ){
-		vector.x = parts.GetAt( 0 ).ToFloat();
+	if(parts.GetCount() > 0){
+		vector.x = parts.GetAt(0).ToFloat();
 	}
-	if( parts.GetCount() > 1 ){
-		vector.y = parts.GetAt( 1 ).ToFloat();
+	if(parts.GetCount() > 1){
+		vector.y = parts.GetAt(1).ToFloat();
 	}
 	return vector;
 }
 
-decQuaternion gdeVAOSubObject::PropertyQuaternion( const decString &name, const decVector &defaultValue ) const{
-	return decQuaternion::CreateFromEuler( PropertyVector( name, defaultValue ) * DEG2RAD );
+decQuaternion gdeVAOSubObject::PropertyQuaternion(const decString &name, const decVector &defaultValue) const{
+	return decQuaternion::CreateFromEuler(PropertyVector(name, defaultValue) * DEG2RAD);
 }
 
-void gdeVAOSubObject::PropertyShapeList( const decString &name, decShapeList &list, const decShapeList &defaultValue ) const{
+void gdeVAOSubObject::PropertyShapeList(const decString &name, decShapeList &list, const decShapeList &defaultValue) const{
 	list.RemoveAll();
-	const char * const value = pPropertyValue( name );
-	if( ! value ){
+	const char * const value = pPropertyValue(name);
+	if(! value){
 		list = defaultValue;
 		return;
 	}
 	
 	igdeCodecPropertyString codec;
-	codec.DecodeShapeList( value, list );
+	codec.DecodeShapeList(value, list);
 }
 
 
@@ -179,23 +179,23 @@ void gdeVAOSubObject::PropertyShapeList( const decString &name, decShapeList &li
 // Private functions
 //////////////////////
 
-const char *gdeVAOSubObject::pPropertyValue( const decString &name ) const{
-	if( name.IsEmpty() ){
+const char *gdeVAOSubObject::pPropertyValue(const decString &name) const{
+	if(name.IsEmpty()){
 		return NULL;
 	}
 	
 	const gdeObjectClass &objectClass = *pView.GetObjectClass();
-	const decString realName( pPropertyPrefix + name );
+	const decString realName(pPropertyPrefix + name);
 	
 	// find in property values
 	const decString *propertyValue = NULL;
-	if( objectClass.GetPropertyValues().GetAt( realName, &propertyValue ) ){
+	if(objectClass.GetPropertyValues().GetAt(realName, &propertyValue)){
 		return propertyValue->GetString();
 	}
 	
 	// find in properties
-	const gdeProperty * const property = objectClass.GetProperties().GetNamed( realName );
-	if( property ){
+	const gdeProperty * const property = objectClass.GetProperties().GetNamed(realName);
+	if(property){
 		return property->GetDefaultValue();
 	}
 	

@@ -58,73 +58,73 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( seSynthesizer *synthesizer );
+	virtual void StateChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( seSynthesizer *synthesizer );
+	virtual void UndoChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged( seSynthesizer *synthesizer );
+	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Playback properties changed. */
-	virtual void PlaybackChanged( seSynthesizer *synthesizer );
+	virtual void PlaybackChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ActiveControllerChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller range changed. */
-	virtual void ControllerRangeChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerRangeChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller curve changed. */
-	virtual void ControllerCurveChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerCurveChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( seSynthesizer *synthesizer );
+	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active link changed. */
-	virtual void ActiveLinkChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void ActiveLinkChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link changed. */
-	virtual void LinkChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void LinkChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void LinkNameChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link count or order changed. */
-	virtual void LinkStructureChanged( seSynthesizer *synthesizer );
+	virtual void LinkStructureChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active source changed. */
-	virtual void ActiveSourceChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void ActiveSourceChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Source changed. */
-	virtual void SourceChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void SourceChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Source name changed. */
-	virtual void SourceNameChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void SourceNameChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Source count or order changed. */
-	virtual void SourceStructureChanged( seSynthesizer *synthesizer );
+	virtual void SourceStructureChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Active effect changed. */
-	virtual void ActiveEffectChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void ActiveEffectChanged(seSynthesizer *synthesizer, seSource *source);
 	
 	/** \brief Effect changed. */
-	virtual void EffectChanged( seSynthesizer *synthesizer, seSource *source, seEffect *effect );
+	virtual void EffectChanged(seSynthesizer *synthesizer, seSource *source, seEffect *effect);
 	
 	/** \brief Effect count or order changed. */
-	virtual void EffectStructureChanged( seSynthesizer *synthesizer, seSource *source );
+	virtual void EffectStructureChanged(seSynthesizer *synthesizer, seSource *source);
 	/*@}*/
 };
 

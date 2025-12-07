@@ -55,16 +55,16 @@ public:
 	int GetParameterCount() const;
 	
 	/** Index of named parameter or -1 if absent. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const;
 	
 	/** Parameter at index. */
-	deModioParameter &GetParameterAt( int index ) const;
+	deModioParameter &GetParameterAt(int index) const;
 	
 	/** Named parameter. */
-	deModioParameter &GetParameterNamed( const char *name ) const;
+	deModioParameter &GetParameterNamed(const char *name) const;
 	
 	/** Add parameter. */
-	void AddParameter( deModioParameter *parameter );
+	void AddParameter(deModioParameter *parameter);
 	
 	/** Remove all parameters. */
 	void RemoveAllParameters();

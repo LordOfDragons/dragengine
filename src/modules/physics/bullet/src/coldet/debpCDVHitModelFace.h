@@ -62,7 +62,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new CLASS. */
-	debpCDVHitModelFace( debpCollisionDetection *coldet );
+	debpCDVHitModelFace(debpCollisionDetection *coldet);
 	/** Cleans up the CLASS. */
 	virtual ~debpCDVHitModelFace();
 	/*@}*/
@@ -72,22 +72,22 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Sets the component to test. */
-	void SetComponent( debpComponent *component );
+	void SetComponent(debpComponent *component);
 	/** Set the shape to test with. */
-	void SetTestShape( debpShape *shape );
+	void SetTestShape(debpShape *shape);
 	/** Sets the collider to test with. */
-	void SetTestCollider( debpCollider *collider );
+	void SetTestCollider(debpCollider *collider);
 	
 	/** Retrieves the result. */
-	inline debpCollisionResult &GetResult(){ return pResult; }
+	inline debpCollisionResult &GetResult(){return pResult;}
 	/** Determines if a collision has been found. */
-	inline bool HasCollision() const{ return pHasCollision; }
+	inline bool HasCollision() const{return pHasCollision;}
 	/*@}*/
 	
 	/** @name Visiting */
 	/*@{*/
 	/** Visit a node. */
-	virtual void VisitNode( debpDOctree *node, int intersection );
+	virtual void VisitNode(debpDOctree *node, int intersection);
 	/*@}*/
 };
 

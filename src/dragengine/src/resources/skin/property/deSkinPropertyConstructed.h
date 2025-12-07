@@ -52,7 +52,7 @@ public:
 	 * \param type Type of the skin property obtained from adding a property
 	 * name to the texture property map object held by the engine.
 	 */
-	deSkinPropertyConstructed( const char *type );
+	deSkinPropertyConstructed(const char *type);
 	
 	/** \brief Clean up constructed property. */
 	virtual ~deSkinPropertyConstructed();
@@ -63,39 +63,39 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Content. */
-	inline deSkinPropertyNodeGroup &GetContent() const{ return *pContent; }
+	inline deSkinPropertyNodeGroup &GetContent() const{return *pContent;}
 	
 	/** \brief Base color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set base color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Nodes are tiled along x axis. */
-	inline bool GetTileX() const{ return pTileX; }
+	inline bool GetTileX() const{return pTileX;}
 	
 	/** \brief Set if nodes are tiled along x axis. */
-	void SetTileX( bool tileX );
+	void SetTileX(bool tileX);
 	
 	/** \brief Nodes are tiled along y axis. */
-	inline bool GetTileY() const{ return pTileY; }
+	inline bool GetTileY() const{return pTileY;}
 	
 	/** \brief Set if nodes are tiled along y axis. */
-	void SetTileY( bool tileY );
+	void SetTileY(bool tileY);
 	
 	/**
 	 * \brief Bit count.
 	 * 
 	 * Can be 8, 16 or 32.
 	 */
-	inline int GetBitCount() const{ return pBitCount; }
+	inline int GetBitCount() const{return pBitCount;}
 	
 	/**
 	 * \brief Set bit count.
 	 * 
 	 * Allowed are 8, 16 or 32.
 	 */
-	void SetBitCount( int bitCount );
+	void SetBitCount(int bitCount);
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit property. */
-	virtual void Visit( deSkinPropertyVisitor &visitor );
+	virtual void Visit(deSkinPropertyVisitor &visitor);
 	/*@}*/
 };
 

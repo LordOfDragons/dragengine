@@ -49,5 +49,5 @@ igdeTriggerListener::~igdeTriggerListener(){
 // Management
 ///////////////
 
-void igdeTriggerListener::TriggerTargetChanged( igdeTriggerTarget *target ){
+void igdeTriggerListener::TriggerTargetChanged(igdeTriggerTarget *target){
 }

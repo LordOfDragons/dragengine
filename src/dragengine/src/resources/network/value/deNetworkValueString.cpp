@@ -41,8 +41,8 @@
 deNetworkValueString::deNetworkValueString(){
 }
 
-deNetworkValueString::deNetworkValueString( const char *value ) :
-pValue( value ){
+deNetworkValueString::deNetworkValueString(const char *value) :
+pValue(value){
 }
 
 deNetworkValueString::~deNetworkValueString(){
@@ -53,7 +53,7 @@ deNetworkValueString::~deNetworkValueString(){
 // Management
 ///////////////
 
-void deNetworkValueString::SetString( const char *value ){
+void deNetworkValueString::SetString(const char *value){
 	pValue = value;
 }
 
@@ -62,6 +62,6 @@ void deNetworkValueString::SetString( const char *value ){
 // Visiting
 /////////////
 
-void deNetworkValueString::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitString( this );
+void deNetworkValueString::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitString(this);
 }

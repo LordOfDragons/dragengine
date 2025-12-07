@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game manager. */
-	dealGameManager( dealLauncher &launcher );
+	dealGameManager(dealLauncher &launcher);
 	
 	/** \brief Clean up game manager. */
 	~dealGameManager();
@@ -63,8 +63,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game list. */
-	inline dealGameList &GetGameList(){ return pGameList; }
-	inline const dealGameList &GetGameList() const{ return pGameList; }
+	inline dealGameList &GetGameList(){return pGameList;}
+	inline const dealGameList &GetGameList() const{return pGameList;}
 	
 	/** \brief Load list of games from game directory. */
 	void LoadGameList();
@@ -79,20 +79,20 @@ public:
 	void ApplyProfileChanges();
 	
 	/** \brief Load game from a disk file. */
-	dealGame *LoadGameFromDisk( const char *path );
+	dealGame *LoadGameFromDisk(const char *path);
 	
 	/** \brief Profile list. */
-	inline dealGameProfileList &GetProfileList(){ return pProfileList; }
-	inline const dealGameProfileList &GetProfileList() const{ return pProfileList; }
+	inline dealGameProfileList &GetProfileList(){return pProfileList;}
+	inline const dealGameProfileList &GetProfileList() const{return pProfileList;}
 	
 	/** \brief Active profile or \em NULL if none is active. */
-	inline dealGameProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline dealGameProfile *GetActiveProfile() const{return pActiveProfile;}
 	
 	/** \brief Set active profile or \em NULL if none is active. */
-	void SetActiveProfile( dealGameProfile *profile );
+	void SetActiveProfile(dealGameProfile *profile);
 	
 	/** \brief Default profile. */
-	inline dealGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }
+	inline dealGameProfile *GetDefaultProfile() const{return pDefaultProfile;}
 	
 	/** \brief Load game configurations. */
 	void LoadGameConfigs();

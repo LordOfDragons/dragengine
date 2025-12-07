@@ -57,7 +57,7 @@ public:
 	 * Determines if the given object is accepted by the filter.
 	 * The default implementation accepts all objects.
 	 */
-	virtual bool AcceptObject( meObject *object ) const;
+	virtual bool AcceptObject(meObject *object) const;
 	/*@}*/
 };
 

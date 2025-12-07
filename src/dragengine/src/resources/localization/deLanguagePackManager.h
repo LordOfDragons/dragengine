@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create language pack resource manager. */
-	deLanguagePackManager( deEngine *engine );
+	deLanguagePackManager(deEngine *engine);
 	
 	/** \brief Clean up language pack resource manager and reports leaking resources. */
 	virtual ~deLanguagePackManager();
@@ -63,31 +63,31 @@ public:
 	deLanguagePack *GetRootLanguagePack() const;
 	
 	/** \brief Language pack with filename or NULL. */
-	deLanguagePack *GetLanguagePackWith( const char *filename ) const;
+	deLanguagePack *GetLanguagePackWith(const char *filename) const;
 	
 	/** \brief Language pack with filename or NULL. */
-	deLanguagePack *GetLanguagePackWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deLanguagePack *GetLanguagePackWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create language pack using builder. */
-	deLanguagePack *CreateLanguagePack( const char *filename, deLanguagePackBuilder &builder );
+	deLanguagePack *CreateLanguagePack(const char *filename, deLanguagePackBuilder &builder);
 	
 	/** \brief Create language pack using builder. */
-	deLanguagePack *CreateLanguagePack( deVirtualFileSystem *vfs,
-		const char *filename, deLanguagePackBuilder &builder );
+	deLanguagePack *CreateLanguagePack(deVirtualFileSystem *vfs,
+		const char *filename, deLanguagePackBuilder &builder);
 	
 	/** \brief Load language pack relative to base path. */
-	deLanguagePack *LoadLanguagePack( const char *filename, const char *basePath = "/" );
+	deLanguagePack *LoadLanguagePack(const char *filename, const char *basePath = "/");
 	
 	/** \brief Load language pack relative to base path. */
-	deLanguagePack *LoadLanguagePack( deVirtualFileSystem *vfs,
-		const char *filename, const char *basePath = "/" );
+	deLanguagePack *LoadLanguagePack(deVirtualFileSystem *vfs,
+		const char *filename, const char *basePath = "/");
 	
 	/**
 	 * \brief Add loaded and prepared language pack.
 	 * 
 	 * \warning To be used only by deResourceLoader.
 	 */
-	void AddLoadedLanguagePack( deLanguagePack *languagePack );
+	void AddLoadedLanguagePack(deLanguagePack *languagePack);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();
@@ -101,7 +101,7 @@ public:
 	 * \warning For use by resource objects only.
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
+	virtual void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUGDWPSetIdentifierGroup::gdeUGDWPSetIdentifierGroup(
-gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! gamedef || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set identifier group" );
+	SetShortInfo("Game definition property set identifier group");
 	
 	pOldValue = property->GetIdentifierGroup();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUGDWPSetIdentifierGroup::~gdeUGDWPSetIdentifierGroup(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUGDWPSetIdentifierGroup::~gdeUGDWPSetIdentifierGroup(){
 ///////////////
 
 void gdeUGDWPSetIdentifierGroup::Undo(){
-	pProperty->SetIdentifierGroup( pOldValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pOldValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }
 
 void gdeUGDWPSetIdentifierGroup::Redo(){
-	pProperty->SetIdentifierGroup( pNewValue );
-	pGameDefinition->NotifyWorldPropertyChanged( pProperty );
+	pProperty->SetIdentifierGroup(pNewValue);
+	pGameDefinition->NotifyWorldPropertyChanged(pProperty);
 }

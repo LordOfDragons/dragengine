@@ -42,28 +42,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIRayCache::deoglGIRayCache( deoglRenderThread &renderThread,
-	int raysPerProbe, int probeCount, int layerCount ) :
-pRenderThread( renderThread  ),
-pRaysPerProbe( raysPerProbe ),
-pProbesPerLine( 8 ),
-pProbeCount( probeCount ),
-pLayerCount( layerCount ),
-pRayMapScale( 1.0f, 1.0f ),
-pTexDistance( renderThread ),
-pTexNormal( renderThread ),
-pTexDiffuse( renderThread ),
-pTexReflectivity( renderThread ),
-pTexLight( renderThread )
+deoglGIRayCache::deoglGIRayCache(deoglRenderThread &renderThread,
+	int raysPerProbe, int probeCount, int layerCount) :
+pRenderThread(renderThread),
+pRaysPerProbe(raysPerProbe),
+pProbesPerLine(8),
+pProbeCount(probeCount),
+pLayerCount(layerCount),
+pRayMapScale(1.0f, 1.0f),
+pTexDistance(renderThread),
+pTexNormal(renderThread),
+pTexDiffuse(renderThread),
+pTexReflectivity(renderThread),
+pTexLight(renderThread)
 {
-	if( raysPerProbe < 16 || probeCount < 64 || layerCount < 1 ){
-		DETHROW( deeInvalidParam );
+	if(raysPerProbe < 16 || probeCount < 64 || layerCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
 		pCreateFBO();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -78,12 +78,12 @@ deoglGIRayCache::~deoglGIRayCache(){
 // Management
 ///////////////
 
-void deoglGIRayCache::SetRaysPerProbe( int raysPerProbe ){
-	if( raysPerProbe == pRaysPerProbe ){
+void deoglGIRayCache::SetRaysPerProbe(int raysPerProbe){
+	if(raysPerProbe == pRaysPerProbe){
 		return;
 	}
-	if( raysPerProbe < 16 ){
-		DETHROW( deeInvalidParam );
+	if(raysPerProbe < 16){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRaysPerProbe = raysPerProbe;
@@ -91,12 +91,12 @@ void deoglGIRayCache::SetRaysPerProbe( int raysPerProbe ){
 	pCreateFBO();
 }
 
-void deoglGIRayCache::SetProbeCount( int count ){
-	if( count == pProbeCount ){
+void deoglGIRayCache::SetProbeCount(int count){
+	if(count == pProbeCount){
 		return;
 	}
-	if( count < 64 ){
-		DETHROW( deeInvalidParam );
+	if(count < 64){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pProbeCount = count;
@@ -104,12 +104,12 @@ void deoglGIRayCache::SetProbeCount( int count ){
 	pCreateFBO();
 }
 
-void deoglGIRayCache::SetLayerCount( int count ){
-	if( count == pLayerCount ){
+void deoglGIRayCache::SetLayerCount(int count){
+	if(count == pLayerCount){
 		return;
 	}
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLayerCount = count;
@@ -140,8 +140,8 @@ void deoglGIRayCache::pCreateFBO(){
 	const int width = pProbesPerLine * pRaysPerProbe;
 	const int height = pProbeCount / pProbesPerLine;
 	
-	pRayMapScale.x = 1.0f / ( float )width;
-	pRayMapScale.y = 1.0f / ( float )height;
+	pRayMapScale.x = 1.0f / (float)width;
+	pRayMapScale.y = 1.0f / (float)height;
 	
 	// create/resize textures
 	#ifdef GI_USE_RAY_CACHE
@@ -157,28 +157,28 @@ void deoglGIRayCache::pCreateFBO(){
 		pTexDistance.SetSize(width, height, pLayerCount);
 		pTexDistance.CreateTexture();
 		
-		if( ! pTexNormal.GetTexture() ){
-			pTexNormal.SetFBOFormatSNorm( 4, 8 ); // image load/store supports only 1, 2 and 4 not 3
+		if(! pTexNormal.GetTexture()){
+			pTexNormal.SetFBOFormatSNorm(4, 8); // image load/store supports only 1, 2 and 4 not 3
 		}
-		pTexNormal.SetSize( width, height, pLayerCount );
+		pTexNormal.SetSize(width, height, pLayerCount);
 		pTexNormal.CreateTexture();
 		
-		if( ! pTexDiffuse.GetTexture() ){
-			pTexDiffuse.SetFBOFormat( 4, false ); // image load/store supports only 1, 2 and 4 not 3
+		if(! pTexDiffuse.GetTexture()){
+			pTexDiffuse.SetFBOFormat(4, false); // image load/store supports only 1, 2 and 4 not 3
 		}
-		pTexDiffuse.SetSize( width, height, pLayerCount );
+		pTexDiffuse.SetSize(width, height, pLayerCount);
 		pTexDiffuse.CreateTexture();
 		
-		if( ! pTexReflectivity.GetTexture() ){
-			pTexReflectivity.SetFBOFormat( 4, false );
+		if(! pTexReflectivity.GetTexture()){
+			pTexReflectivity.SetFBOFormat(4, false);
 		}
-		pTexReflectivity.SetSize( width, height, pLayerCount );
+		pTexReflectivity.SetSize(width, height, pLayerCount);
 		pTexReflectivity.CreateTexture();
 		
-		if( ! pTexLight.GetTexture() ){
-			pTexLight.SetFBOFormat( 4, true ); // image load/store supports only 1, 2 and 4 not 3
+		if(! pTexLight.GetTexture()){
+			pTexLight.SetFBOFormat(4, true); // image load/store supports only 1, 2 and 4 not 3
 		}
-		pTexLight.SetSize( width, height, pLayerCount );
+		pTexLight.SetSize(width, height, pLayerCount);
 		pTexLight.CreateTexture();
 	#endif
 	
@@ -201,18 +201,18 @@ void deoglGIRayCache::pCreateFBO(){
 		}
 		pTexDistance.SetPixels(pixbuf);
 		
-		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, pLayerCount ) );
-		pixbuf->SetToFloatColor( 0.0f, 0.0f, 1.0f, 0.0f );
-		pTexNormal.SetPixels( pixbuf );
+		pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfByte4, width, height, pLayerCount));
+		pixbuf->SetToFloatColor(0.0f, 0.0f, 1.0f, 0.0f);
+		pTexNormal.SetPixels(pixbuf);
 		
-		pixbuf->SetToFloatColor( 1.0f, 1.0f, 1.0f, 0.0f );
-		pTexDiffuse.SetPixels( pixbuf );
+		pixbuf->SetToFloatColor(1.0f, 1.0f, 1.0f, 0.0f);
+		pTexDiffuse.SetPixels(pixbuf);
 		
-		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 1.0f );
-		pTexReflectivity.SetPixels( pixbuf );
+		pixbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 1.0f);
+		pTexReflectivity.SetPixels(pixbuf);
 		
-		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, pLayerCount ) );
-		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
-		pTexLight.SetPixels( pixbuf );
+		pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, pLayerCount));
+		pixbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 0.0f);
+		pTexLight.SetPixels(pixbuf);
 	#endif
 }

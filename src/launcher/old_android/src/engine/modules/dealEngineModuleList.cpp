@@ -54,23 +54,23 @@ int dealEngineModuleList::GetModuleCount() const{
 	return pModules.GetCount();
 }
 
-dealEngineModule *dealEngineModuleList::GetModuleAt( int index ) const{
-	return ( dealEngineModule* )pModules.GetAt( index );
+dealEngineModule *dealEngineModuleList::GetModuleAt(int index) const{
+	return (dealEngineModule*)pModules.GetAt(index);
 }
 
-dealEngineModule *dealEngineModuleList::GetModuleNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+dealEngineModule *dealEngineModuleList::GetModuleNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
 	dealEngineModule *latestModule = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dealEngineModule * const module = ( dealEngineModule* )pModules.GetAt( i );
-		if( module->GetName() == name ){
-			if( ! latestModule || dealEngineModule::CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+	for(i=0; i<count; i++){
+		dealEngineModule * const module = (dealEngineModule*)pModules.GetAt(i);
+		if(module->GetName() == name){
+			if(! latestModule || dealEngineModule::CompareVersion(module->GetVersion(), latestModule->GetVersion()) > 0){
 				latestModule = module;
 			}
 		}
@@ -79,17 +79,17 @@ dealEngineModule *dealEngineModuleList::GetModuleNamed( const char *name ) const
 	return latestModule;
 }
 
-dealEngineModule *dealEngineModuleList::GetModuleNamed( const char *name, const char *version ) const{
-	if( ! name || ! version ){
-		DETHROW( deeInvalidParam );
+dealEngineModule *dealEngineModuleList::GetModuleNamed(const char *name, const char *version) const{
+	if(! name || ! version){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dealEngineModule * const module = ( dealEngineModule* )pModules.GetAt( i );
-		if( module->GetName() == name && module->GetVersion() == version ){
+	for(i=0; i<count; i++){
+		dealEngineModule * const module = (dealEngineModule*)pModules.GetAt(i);
+		if(module->GetName() == name && module->GetVersion() == version){
 			return module;
 		}
 	}
@@ -97,9 +97,9 @@ dealEngineModule *dealEngineModuleList::GetModuleNamed( const char *name, const 
 	return NULL;
 }
 
-void dealEngineModuleList::GetModulesNamed( decObjectList &list, const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void dealEngineModuleList::GetModulesNamed(decObjectList &list, const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
@@ -107,43 +107,43 @@ void dealEngineModuleList::GetModulesNamed( decObjectList &list, const char *nam
 	
 	list.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		dealEngineModule * const module = ( dealEngineModule* )pModules.GetAt( i );
-		if( module->GetName() == name ){
-			list.Add( module );
+	for(i=0; i<count; i++){
+		dealEngineModule * const module = (dealEngineModule*)pModules.GetAt(i);
+		if(module->GetName() == name){
+			list.Add(module);
 		}
 	}
 }
 
-void dealEngineModuleList::GetModulesNames( decStringList &list ) const{
+void dealEngineModuleList::GetModulesNames(decStringList &list) const{
 	const int count = pModules.GetCount();
 	int i;
 	
 	list.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		dealEngineModule * const module = ( dealEngineModule* )pModules.GetAt( i );
-		if( ! list.Has( module->GetName() ) ){
-			list.Add( module->GetName() );
+	for(i=0; i<count; i++){
+		dealEngineModule * const module = (dealEngineModule*)pModules.GetAt(i);
+		if(! list.Has(module->GetName())){
+			list.Add(module->GetName());
 		}
 	}
 }
 
-bool dealEngineModuleList::HasModule( dealEngineModule *module ) const{
-	return pModules.Has( module );
+bool dealEngineModuleList::HasModule(dealEngineModule *module) const{
+	return pModules.Has(module);
 }
 
-bool dealEngineModuleList::HasModuleNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+bool dealEngineModuleList::HasModuleNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const dealEngineModule &module = *( ( dealEngineModule* )pModules.GetAt( i ) );
-		if( module.GetName() == name ){
+	for(i=0; i<count; i++){
+		const dealEngineModule &module = *((dealEngineModule*)pModules.GetAt(i));
+		if(module.GetName() == name){
 			return true;
 		}
 	}
@@ -151,17 +151,17 @@ bool dealEngineModuleList::HasModuleNamed( const char *name ) const{
 	return false;
 }
 
-bool dealEngineModuleList::HasModuleNamed( const char *name, const char *version ) const{
-	if( ! name || ! version ){
-		DETHROW( deeInvalidParam );
+bool dealEngineModuleList::HasModuleNamed(const char *name, const char *version) const{
+	if(! name || ! version){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const dealEngineModule &module = *( ( dealEngineModule* )pModules.GetAt( i ) );
-		if( module.GetName() == name && module.GetVersion() == version ){
+	for(i=0; i<count; i++){
+		const dealEngineModule &module = *((dealEngineModule*)pModules.GetAt(i));
+		if(module.GetName() == name && module.GetVersion() == version){
 			return true;
 		}
 	}
@@ -169,13 +169,13 @@ bool dealEngineModuleList::HasModuleNamed( const char *name, const char *version
 	return false;
 }
 
-int dealEngineModuleList::IndexOfModule( dealEngineModule *module ) const{
-	return pModules.IndexOf( module );
+int dealEngineModuleList::IndexOfModule(dealEngineModule *module) const{
+	return pModules.IndexOf(module);
 }
 
-int dealEngineModuleList::IndexOfModuleNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int dealEngineModuleList::IndexOfModuleNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
@@ -183,10 +183,10 @@ int dealEngineModuleList::IndexOfModuleNamed( const char *name ) const{
 	int latestIndex = -1;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const dealEngineModule * const module = ( dealEngineModule* )pModules.GetAt( i );
-		if( module->GetName() == name ){
-			if( ! latestModule || dealEngineModule::CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+	for(i=0; i<count; i++){
+		const dealEngineModule * const module = (dealEngineModule*)pModules.GetAt(i);
+		if(module->GetName() == name){
+			if(! latestModule || dealEngineModule::CompareVersion(module->GetVersion(), latestModule->GetVersion()) > 0){
 				latestModule = module;
 				latestIndex = i;
 			}
@@ -196,17 +196,17 @@ int dealEngineModuleList::IndexOfModuleNamed( const char *name ) const{
 	return latestIndex;
 }
 
-int dealEngineModuleList::IndexOfModuleNamed( const char *name, const char *version ) const{
-	if( ! name || ! version ){
-		DETHROW( deeInvalidParam );
+int dealEngineModuleList::IndexOfModuleNamed(const char *name, const char *version) const{
+	if(! name || ! version){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pModules.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const dealEngineModule &module = *( ( dealEngineModule* )pModules.GetAt( i ) );
-		if( module.GetName() == name && module.GetVersion() == version ){
+	for(i=0; i<count; i++){
+		const dealEngineModule &module = *((dealEngineModule*)pModules.GetAt(i));
+		if(module.GetName() == name && module.GetVersion() == version){
 			return i;
 		}
 	}
@@ -214,19 +214,19 @@ int dealEngineModuleList::IndexOfModuleNamed( const char *name, const char *vers
 	return -1;
 }
 
-void dealEngineModuleList::AddModule( dealEngineModule *module ){
-	if( ! module || HasModuleNamed( module->GetName(), module->GetVersion() ) ){
-		DETHROW( deeInvalidParam );
+void dealEngineModuleList::AddModule(dealEngineModule *module){
+	if(! module || HasModuleNamed(module->GetName(), module->GetVersion())){
+		DETHROW(deeInvalidParam);
 	}
-	pModules.Add( module );
+	pModules.Add(module);
 }
 
-void dealEngineModuleList::RemoveModule( dealEngineModule *module ){
-	const int index = IndexOfModule( module );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void dealEngineModuleList::RemoveModule(dealEngineModule *module){
+	const int index = IndexOfModule(module);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
-	pModules.RemoveFrom( index );
+	pModules.RemoveFrom(index);
 }
 
 void dealEngineModuleList::RemoveAllModules(){

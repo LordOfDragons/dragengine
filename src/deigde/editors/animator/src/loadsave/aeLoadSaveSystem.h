@@ -49,28 +49,28 @@ private:
 	
 public:
 	// constructor, destructor
-	aeLoadSaveSystem( aeWindowMain *wndMain );
+	aeLoadSaveSystem(aeWindowMain *wndMain);
 	~aeLoadSaveSystem();
 	
 	// actor animators management
-	inline aeWindowMain *GetWindowMain() const{ return pWndMain; }
-	inline aeLSAnimator *GetLSAnimator() const{ return pLSAnimator; }
-	aeAnimator *LoadAnimator( const char *filename );
-	void SaveAnimator( aeAnimator *animator, const char *filename );
+	inline aeWindowMain *GetWindowMain() const{return pWndMain;}
+	inline aeLSAnimator *GetLSAnimator() const{return pLSAnimator;}
+	aeAnimator *LoadAnimator(const char *filename);
+	void SaveAnimator(aeAnimator *animator, const char *filename);
 	
 	
 	
 	/** Load save attachment configuration. */
-	inline aeLoadSaveAttachmentConfig *GetLSAttConfig(){ return pLSAttConfig; }
+	inline aeLoadSaveAttachmentConfig *GetLSAttConfig(){return pLSAttConfig;}
 	
 	/** Load attachment configuration from file. */
-	void LoadAttConfig( const char *filename, aeAnimator &animator );
+	void LoadAttConfig(const char *filename, aeAnimator &animator);
 	
 	/** Save attachment configuration to file. */
-	void SaveAttConfig( const char *filename, const aeAnimator &animator );
+	void SaveAttConfig(const char *filename, const aeAnimator &animator);
 	
 	/** Attachment configuration file pattern list. */
-	inline const igdeFilePatternList &GetAttConfigFilePatterns() const{ return pFPAttConfig; }
+	inline const igdeFilePatternList &GetAttConfigFilePatterns() const{return pFPAttConfig;}
 	
 private:
 	void pCleanUp();

@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUSkySetDescription::gdeUSkySetDescription(
-gdeSky *sky, const char *newValue ) :
-pSky( NULL )
+gdeSky *sky, const char *newValue) :
+pSky(NULL)
 {
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(! sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Sky set description" );
+	SetShortInfo("Sky set description");
 	
 	pOldValue = sky->GetDescription();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pSky( NULL )
 }
 
 gdeUSkySetDescription::~gdeUSkySetDescription(){
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUSkySetDescription::~gdeUSkySetDescription(){
 ///////////////
 
 void gdeUSkySetDescription::Undo(){
-	pSky->SetDescription( pOldValue );
+	pSky->SetDescription(pOldValue);
 }
 
 void gdeUSkySetDescription::Redo(){
-	pSky->SetDescription( pNewValue );
+	pSky->SetDescription(pNewValue);
 }

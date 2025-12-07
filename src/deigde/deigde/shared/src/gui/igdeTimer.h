@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeTimer( igdeEnvironment &environment );
+	igdeTimer(igdeEnvironment &environment);
 	
 	
 	
@@ -74,19 +74,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Timeout in milliseconds. */
-	inline int GetTimeout() const{ return pTimeout; }
+	inline int GetTimeout() const{return pTimeout;}
 	
 	/** \brief Timeout in seconds. */
-	inline double GetTimeoutSeconds() const{ return ( double )pTimeout * 1000.0; }
+	inline double GetTimeoutSeconds() const{return (double)pTimeout * 1000.0;}
 	
 	/** \brief Repeating. */
-	inline bool GetRepeating() const{ return pRepeating; }
+	inline bool GetRepeating() const{return pRepeating;}
 	
 	/** \brief Timer is running. */
-	inline bool GetRunning() const{ return pRunning; }
+	inline bool GetRunning() const{return pRunning;}
 	
 	
 	
@@ -95,14 +95,14 @@ public:
 	 * 
 	 * If timer is running it is restarted.
 	 */
-	void Start( int timeoutMS, bool repeating );
+	void Start(int timeoutMS, bool repeating);
 	
 	/**
 	 * \brief Start timer in seconds.
 	 * 
 	 * If timer is running it is restarted.
 	 */
-	void Start( double timeout, bool repeating );
+	void Start(double timeout, bool repeating);
 	
 	/** \brief Stop timer. */
 	void Stop();
@@ -124,14 +124,14 @@ public:
 	 * \brief Get native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void *GetNativeTimer() const{ return pNativeTimer; }
+	void *GetNativeTimer() const{return pNativeTimer;}
 	
 protected:
 	/**
 	 * \brief Set native widget pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void SetNativeTimer( void *nativeTimer );
+	void SetNativeTimer(void *nativeTimer);
 	/*@}*/
 };
 

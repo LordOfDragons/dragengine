@@ -42,26 +42,26 @@
 ////////////////////////////
 
 igdeWCoordSysArrows::igdeWCoordSysArrows(){
-	pScale.Set( 1.0f, 1.0f, 1.0f );
-	pColorAxisX.Set( 1.0f, 0.0f, 0.0f );
-	pColorAxisY.Set( 0.0f, 1.0f, 0.0f );
-	pColorAxisZ.Set( 0.0f, 0.0f, 1.0f );
+	pScale.Set(1.0f, 1.0f, 1.0f);
+	pColorAxisX.Set(1.0f, 0.0f, 0.0f);
+	pColorAxisY.Set(0.0f, 1.0f, 0.0f);
+	pColorAxisZ.Set(0.0f, 0.0f, 1.0f);
 	pArrowLength = 0.1f;
 	pArrowSize = 0.005f;
 	pVisible = true;
 	
-	pDDSAxisX.SetEdgeColor( pColorAxisX );
-	pDDSAxisX.SetEdgeColor( pColorAxisX );
-	pDDSAxisY.SetEdgeColor( pColorAxisY );
-	pDDSAxisY.SetEdgeColor( pColorAxisY );
-	pDDSAxisZ.SetEdgeColor( pColorAxisZ );
-	pDDSAxisZ.SetEdgeColor( pColorAxisZ );
+	pDDSAxisX.SetEdgeColor(pColorAxisX);
+	pDDSAxisX.SetEdgeColor(pColorAxisX);
+	pDDSAxisY.SetEdgeColor(pColorAxisY);
+	pDDSAxisY.SetEdgeColor(pColorAxisY);
+	pDDSAxisZ.SetEdgeColor(pColorAxisZ);
+	pDDSAxisZ.SetEdgeColor(pColorAxisZ);
 	
 	pRebuildArrows();
 }
 
 igdeWCoordSysArrows::~igdeWCoordSysArrows(){
-	SetParentDebugDrawer( NULL );
+	SetParentDebugDrawer(NULL);
 }
 
 
@@ -69,102 +69,102 @@ igdeWCoordSysArrows::~igdeWCoordSysArrows(){
 // Management
 ///////////////
 
-void igdeWCoordSysArrows::SetParentDebugDrawer( deDebugDrawer *debugDrawer ){
-	pDDSAxisX.SetParentDebugDrawer( debugDrawer );
-	pDDSAxisY.SetParentDebugDrawer( debugDrawer );
-	pDDSAxisZ.SetParentDebugDrawer( debugDrawer );
+void igdeWCoordSysArrows::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
+	pDDSAxisX.SetParentDebugDrawer(debugDrawer);
+	pDDSAxisY.SetParentDebugDrawer(debugDrawer);
+	pDDSAxisZ.SetParentDebugDrawer(debugDrawer);
 }
 
 
 
-void igdeWCoordSysArrows::SetPosition( const decVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void igdeWCoordSysArrows::SetPosition(const decVector &position){
+	if(! position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		pDDSAxisX.SetPosition( position );
-		pDDSAxisY.SetPosition( position );
-		pDDSAxisZ.SetPosition( position );
+		pDDSAxisX.SetPosition(position);
+		pDDSAxisY.SetPosition(position);
+		pDDSAxisZ.SetPosition(position);
 	}
 }
 
-void igdeWCoordSysArrows::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void igdeWCoordSysArrows::SetOrientation(const decQuaternion &orientation){
+	if(! orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		pDDSAxisX.SetOrientation( orientation );
-		pDDSAxisY.SetOrientation( orientation );
-		pDDSAxisZ.SetOrientation( orientation );
+		pDDSAxisX.SetOrientation(orientation);
+		pDDSAxisY.SetOrientation(orientation);
+		pDDSAxisZ.SetOrientation(orientation);
 	}
 }
 
-void igdeWCoordSysArrows::SetScale( const decVector &scale ){
-	if( ! scale.IsEqualTo( pScale ) ){
+void igdeWCoordSysArrows::SetScale(const decVector &scale){
+	if(! scale.IsEqualTo(pScale)){
 		pScale = scale;
 		
-		pDDSAxisX.SetScale( scale );
-		pDDSAxisY.SetScale( scale );
-		pDDSAxisZ.SetScale( scale );
+		pDDSAxisX.SetScale(scale);
+		pDDSAxisY.SetScale(scale);
+		pDDSAxisZ.SetScale(scale);
 	}
 }
 
 
 
-void igdeWCoordSysArrows::SetAxisXColor( const decColor &color ){
-	if( ! color.IsEqualTo( pColorAxisX ) ){
+void igdeWCoordSysArrows::SetAxisXColor(const decColor &color){
+	if(! color.IsEqualTo(pColorAxisX)){
 		pColorAxisX = color;
 		
-		pDDSAxisX.SetEdgeColor( pColorAxisX );
-		pDDSAxisX.SetEdgeColor( pColorAxisX );
+		pDDSAxisX.SetEdgeColor(pColorAxisX);
+		pDDSAxisX.SetEdgeColor(pColorAxisX);
 	}
 }
 
-void igdeWCoordSysArrows::SetAxisYColor( const decColor &color ){
-	if( ! color.IsEqualTo( pColorAxisY ) ){
+void igdeWCoordSysArrows::SetAxisYColor(const decColor &color){
+	if(! color.IsEqualTo(pColorAxisY)){
 		pColorAxisY = color;
 		
-		pDDSAxisY.SetEdgeColor( pColorAxisY );
-		pDDSAxisY.SetEdgeColor( pColorAxisY );
+		pDDSAxisY.SetEdgeColor(pColorAxisY);
+		pDDSAxisY.SetEdgeColor(pColorAxisY);
 	}
 }
 
-void igdeWCoordSysArrows::SetAxisZColor( const decColor &color ){
-	if( ! color.IsEqualTo( pColorAxisZ ) ){
+void igdeWCoordSysArrows::SetAxisZColor(const decColor &color){
+	if(! color.IsEqualTo(pColorAxisZ)){
 		pColorAxisZ = color;
 		
-		pDDSAxisZ.SetEdgeColor( pColorAxisZ );
-		pDDSAxisZ.SetEdgeColor( pColorAxisZ );
+		pDDSAxisZ.SetEdgeColor(pColorAxisZ);
+		pDDSAxisZ.SetEdgeColor(pColorAxisZ);
 	}
 }
 
-void igdeWCoordSysArrows::SetArrowLength( float length ){
-	if( length < 0.001f ){
+void igdeWCoordSysArrows::SetArrowLength(float length){
+	if(length < 0.001f){
 		length = 0.001f;
 	}
 	
-	if( fabsf( length - pArrowLength ) > 1e-5f ){
+	if(fabsf(length - pArrowLength) > 1e-5f){
 		pArrowLength = length;
 		pRebuildArrows();
 	}
 }
 
-void igdeWCoordSysArrows::SetArrowSize( float size ){
-	if( size < 0.001f ){
+void igdeWCoordSysArrows::SetArrowSize(float size){
+	if(size < 0.001f){
 		size = 0.001f;
 	}
 	
-	if( fabsf( size - pArrowSize ) > 1e-5f ){
+	if(fabsf(size - pArrowSize) > 1e-5f){
 		pArrowSize = size;
 		pRebuildArrows();
 	}
 }
 
-void igdeWCoordSysArrows::SetVisible( bool visible ){
-	if( visible != pVisible ){
+void igdeWCoordSysArrows::SetVisible(bool visible){
+	if(visible != pVisible){
 		pVisible = visible;
 		
-		pDDSAxisX.SetVisible( visible );
-		pDDSAxisY.SetVisible( visible );
-		pDDSAxisZ.SetVisible( visible );
+		pDDSAxisX.SetVisible(visible);
+		pDDSAxisY.SetVisible(visible);
+		pDDSAxisZ.SetVisible(visible);
 	}
 }
 
@@ -178,7 +178,7 @@ void igdeWCoordSysArrows::pRebuildArrows(){
 	const float tailSize = pArrowSize * 0.1f;
 	igdeShapeBuilder builder;
 	
-	builder.CreateArrow( pDDSAxisX, decVector(), decVector( pArrowLength, 0.0f, 0.0f ), pArrowSize, headLength, tailSize );
-	builder.CreateArrow( pDDSAxisY, decVector(), decVector( 0.0f, pArrowLength, 0.0f ), pArrowSize, headLength, tailSize );
-	builder.CreateArrow( pDDSAxisZ, decVector(), decVector( 0.0f, 0.0f, pArrowLength ), pArrowSize, headLength, tailSize );
+	builder.CreateArrow(pDDSAxisX, decVector(), decVector(pArrowLength, 0.0f, 0.0f), pArrowSize, headLength, tailSize);
+	builder.CreateArrow(pDDSAxisY, decVector(), decVector(0.0f, pArrowLength, 0.0f), pArrowSize, headLength, tailSize);
+	builder.CreateArrow(pDDSAxisZ, decVector(), decVector(0.0f, 0.0f, pArrowLength), pArrowSize, headLength, tailSize);
 }

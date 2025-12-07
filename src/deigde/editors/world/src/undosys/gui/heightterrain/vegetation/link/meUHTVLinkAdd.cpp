@@ -42,14 +42,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLinkAdd::meUHTVLinkAdd( meHTVegetationLayer *vlayer, meHTVRLink *link ){
-	if( ! vlayer || ! link ) DETHROW( deeInvalidParam );
+meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
+	if(! vlayer || ! link) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pLink = NULL;
 	
-	SetShortInfo( "Add Vegetation Layer Link" );
-	SetMemoryConsumption( sizeof( meUHTVLinkAdd ) );
+	SetShortInfo("Add Vegetation Layer Link");
+	SetMemoryConsumption(sizeof(meUHTVLinkAdd));
 	
 	pVLayer = vlayer;
 	vlayer->AddReference();
@@ -58,8 +58,8 @@ meUHTVLinkAdd::meUHTVLinkAdd( meHTVegetationLayer *vlayer, meHTVRLink *link ){
 }
 
 meUHTVLinkAdd::~meUHTVLinkAdd(){
-	if( pLink ) pLink->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pLink) pLink->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -73,10 +73,10 @@ void meUHTVLinkAdd::Undo(){
 	int slotSource = pLink->GetSourceSlot();
 	int slotDestination = pLink->GetDestinationSlot();
 	
-	ruleSource->GetSlotAt( slotSource ).RemoveLink( pLink );
-	ruleDestination->GetSlotAt( slotDestination ).RemoveLink( pLink );
+	ruleSource->GetSlotAt(slotSource).RemoveLink(pLink);
+	ruleDestination->GetSlotAt(slotDestination).RemoveLink(pLink);
 	
-	pVLayer->RemoveLink( pLink );
+	pVLayer->RemoveLink(pLink);
 }
 
 void meUHTVLinkAdd::Redo(){
@@ -85,8 +85,8 @@ void meUHTVLinkAdd::Redo(){
 	int slotSource = pLink->GetSourceSlot();
 	int slotDestination = pLink->GetDestinationSlot();
 	
-	ruleSource->GetSlotAt( slotSource ).AddLink( pLink );
-	ruleDestination->GetSlotAt( slotDestination ).AddLink( pLink );
+	ruleSource->GetSlotAt(slotSource).AddLink(pLink);
+	ruleDestination->GetSlotAt(slotDestination).AddLink(pLink);
 	
-	pVLayer->AddLink( pLink );
+	pVLayer->AddLink(pLink);
 }

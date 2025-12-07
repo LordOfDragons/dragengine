@@ -41,12 +41,12 @@
 ////////////////////////////
 
 deAnimatorRuleGroup::deAnimatorRuleGroup() :
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( true ),
-pEnableVertexPositionSet( true ),
-pUseCurrentState( false ),
-pApplicationType( deAnimatorRuleGroup::eatAll ){
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(true),
+pEnableVertexPositionSet(true),
+pUseCurrentState(false),
+pApplicationType(deAnimatorRuleGroup::eatAll){
 }
 
 deAnimatorRuleGroup::~deAnimatorRuleGroup(){
@@ -62,25 +62,25 @@ int deAnimatorRuleGroup::GetRuleCount() const{
 	return pRules.GetCount();
 }
 
-deAnimatorRule *deAnimatorRuleGroup::GetRuleAt( int index ) const{
-	return ( deAnimatorRule* )pRules.GetAt( index );
+deAnimatorRule *deAnimatorRuleGroup::GetRuleAt(int index) const{
+	return (deAnimatorRule*)pRules.GetAt(index);
 }
 
-int deAnimatorRuleGroup::IndexOfRule( deAnimatorRule *rule ) const{
-	return pRules.IndexOf( rule );
+int deAnimatorRuleGroup::IndexOfRule(deAnimatorRule *rule) const{
+	return pRules.IndexOf(rule);
 }
 
-bool deAnimatorRuleGroup::HasRule( deAnimatorRule *rule ) const{
-	return pRules.Has( rule );
+bool deAnimatorRuleGroup::HasRule(deAnimatorRule *rule) const{
+	return pRules.Has(rule);
 }
 
-void deAnimatorRuleGroup::AddRule( deAnimatorRule *rule ){
-	DEASSERT_NOTNULL( rule )
-	pRules.Add( rule );
+void deAnimatorRuleGroup::AddRule(deAnimatorRule *rule){
+	DEASSERT_NOTNULL(rule)
+	pRules.Add(rule);
 }
 
-void deAnimatorRuleGroup::RemoveRule( deAnimatorRule *rule ){
-	pRules.Remove( rule );
+void deAnimatorRuleGroup::RemoveRule(deAnimatorRule *rule){
+	pRules.Remove(rule);
 }
 
 void deAnimatorRuleGroup::RemoveAllRules(){
@@ -89,29 +89,29 @@ void deAnimatorRuleGroup::RemoveAllRules(){
 
 
 
-void deAnimatorRuleGroup::SetEnablePosition( bool enabled ){
+void deAnimatorRuleGroup::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleGroup::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleGroup::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleGroup::SetEnableSize( bool enabled ){
+void deAnimatorRuleGroup::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleGroup::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleGroup::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
 
 
-void deAnimatorRuleGroup::SetUseCurrentState( bool useCurrentState ){
+void deAnimatorRuleGroup::SetUseCurrentState(bool useCurrentState){
 	pUseCurrentState = useCurrentState;
 }
 
-void deAnimatorRuleGroup::SetApplicationType( deAnimatorRuleGroup::eApplicationTypes type ){
+void deAnimatorRuleGroup::SetApplicationType(deAnimatorRuleGroup::eApplicationTypes type){
 	pApplicationType = type;
 }
 
@@ -120,6 +120,6 @@ void deAnimatorRuleGroup::SetApplicationType( deAnimatorRuleGroup::eApplicationT
 // Visiting
 /////////////
 
-void deAnimatorRuleGroup::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitGroup( *this );
+void deAnimatorRuleGroup::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitGroup(*this);
 }

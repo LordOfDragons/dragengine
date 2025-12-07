@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWPSNavSpaceListener::meWPSNavSpaceListener( meWPSNavSpace &panel ) :
-pPanel( panel ){
+meWPSNavSpaceListener::meWPSNavSpaceListener(meWPSNavSpace &panel) :
+pPanel(panel){
 }
 
 meWPSNavSpaceListener::~meWPSNavSpaceListener(){
@@ -54,7 +54,7 @@ meWPSNavSpaceListener::~meWPSNavSpaceListener(){
 // Management
 ///////////////
 
-void meWPSNavSpaceListener::NavSpaceSelectionChanged( meWorld* ){
+void meWPSNavSpaceListener::NavSpaceSelectionChanged(meWorld*){
 	pPanel.UpdateSelection();
 	pPanel.UpdateEnabled();
 	pPanel.UpdateNavSpace();
@@ -62,8 +62,8 @@ void meWPSNavSpaceListener::NavSpaceSelectionChanged( meWorld* ){
 	pPanel.UpdateUsedCostTypes();
 }
 
-void meWPSNavSpaceListener::NavSpaceChanged( meWorld*, meNavigationSpace *navspace ){
-	if( ! navspace->GetActive() ){
+void meWPSNavSpaceListener::NavSpaceChanged(meWorld*, meNavigationSpace *navspace){
+	if(! navspace->GetActive()){
 		return;
 	}
 	
@@ -71,16 +71,16 @@ void meWPSNavSpaceListener::NavSpaceChanged( meWorld*, meNavigationSpace *navspa
 	pPanel.UpdateGeometry();
 }
 
-void meWPSNavSpaceListener::NavSpaceGeometryChanged( meWorld*, meNavigationSpace *navspace ){
-	if( ! navspace->GetActive() ){
+void meWPSNavSpaceListener::NavSpaceGeometryChanged(meWorld*, meNavigationSpace *navspace){
+	if(! navspace->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateGeometry();
 }
 
-void meWPSNavSpaceListener::NavSpaceUsedCostTypesChanged( meWorld*, meNavigationSpace *navspace ){
-	if( ! navspace->GetActive() ){
+void meWPSNavSpaceListener::NavSpaceUsedCostTypesChanged(meWorld*, meNavigationSpace *navspace){
+	if(! navspace->GetActive()){
 		return;
 	}
 	

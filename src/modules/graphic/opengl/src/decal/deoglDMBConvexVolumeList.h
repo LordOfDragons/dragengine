@@ -57,7 +57,7 @@ public:
 	 * create convex volume face of specialized subclasses. The default
 	 * implementation creates a convex volume face of type decConvexVolumeFace.
 	 */
-	virtual decConvexVolumeFace *CreateVolumeFace( decConvexVolumeFace *face );
+	virtual decConvexVolumeFace *CreateVolumeFace(decConvexVolumeFace *face);
 	/*@}*/
 };
 

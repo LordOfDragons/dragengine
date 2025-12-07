@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reader. */
-	deadArchiveFileReader( deadContextUnpack *context, const deadArchiveFile &file );
+	deadArchiveFileReader(deadContextUnpack *context, const deadArchiveFile &file);
 	
 	/** Clean up reader. */
 	virtual ~deadArchiveFileReader();
@@ -80,20 +80,20 @@ public:
 	virtual int GetPosition();
 	
 	/** Set file position for the next read action. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/** Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	virtual void MovePosition(int offset);
 	
 	/** Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	virtual void SetPositionEnd(int position);
 	
 	/**
 	 * Read \em size bytes into \em buffer and advances the file pointer.
 	 * \throws deeInvalidParam \em buffer is NULL.
 	 * \throws deeInvalidParam \em size is less than 1.
 	 */
-	virtual void Read( void *buffer, int size );
+	virtual void Read(void *buffer, int size);
 	
 	/** Duplicate file reader. */
 	virtual decBaseFileReader::Ref Duplicate();

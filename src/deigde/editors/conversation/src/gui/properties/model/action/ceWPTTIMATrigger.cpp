@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMATrigger::ceWPTTIMATrigger( ceWindowMain &windowMain,
-ceConversation &conversation, ceCATrigger *action ) :
-ceWPTTIMAction( windowMain, etActionTrigger, conversation, action )
+ceWPTTIMATrigger::ceWPTTIMATrigger(ceWindowMain &windowMain,
+ceConversation &conversation, ceCATrigger *action) :
+ceWPTTIMAction(windowMain, etActionTrigger, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionTrigger() );
+	SetIcon(windowMain.GetIconActionTrigger());
 	Update();
 }
 
@@ -57,8 +57,8 @@ ceWPTTIMATrigger::~ceWPTTIMATrigger(){
 // Management
 ///////////////
 
-const char *ceWPTTIMATrigger::GetActionText( ceCATrigger::eActions action ){
-	switch( action ){
+const char *ceWPTTIMATrigger::GetActionText(ceCATrigger::eActions action){
+	switch(action){
 	case ceCATrigger::eaFire:
 		return "fire";
 		
@@ -72,7 +72,7 @@ const char *ceWPTTIMATrigger::GetActionText( ceCATrigger::eActions action ){
 		return "full reset";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -80,9 +80,9 @@ void ceWPTTIMATrigger::Update(){
 	const ceCATrigger &action = *GetActionTrigger();
 	decString text;
 	
-	const char * const textAction = GetActionText( action.GetAction() );
+	const char * const textAction = GetActionText(action.GetAction());
 	
-	text.Format( "Trigger: %s '%s'", textAction, action.GetName().GetString() );
+	text.Format("Trigger: %s '%s'", textAction, action.GetName().GetString());
 	
-	SetText( text );
+	SetText(text);
 }

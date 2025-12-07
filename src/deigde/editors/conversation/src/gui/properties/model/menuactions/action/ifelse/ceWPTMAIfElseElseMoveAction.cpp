@@ -46,21 +46,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseElseMoveAction::ceWPTMAIfElseElseMoveAction( ceWindowMain &windowMain,
+ceWPTMAIfElseElseMoveAction::ceWPTMAIfElseElseMoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceConversationAction *action, int index, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pAction( action ),
-pIndex( index )
+ceCAIfElse &ifElse, ceConversationAction *action, int index, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pAction(action),
+pIndex(index)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled( index >= 0 && index < ifElse.GetElseActions().GetCount() );
+	SetEnabled(index >= 0 && index < ifElse.GetElseActions().GetCount());
 }
 
 
@@ -69,8 +69,8 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAIfElseElseMoveAction::OnAction(){
-	if( pIndex < 0 || pIndex > pIfElse->GetElseActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(pIndex < 0 || pIndex > pIfElse->GetElseActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pConversation->GetUndoSystem()->Add(ceUCAIfElseMove::Ref::NewWith(

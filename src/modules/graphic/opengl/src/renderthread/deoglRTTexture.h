@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTTexture( deoglRenderThread &renderThread );
+	deoglRTTexture(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTTexture();
@@ -74,34 +74,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Texture stage manager. */
-	inline deoglTextureStageManager &GetStages() const{ return *pTextureStageManager; }
+	inline deoglTextureStageManager &GetStages() const{return *pTextureStageManager;}
 	
 	/** Image stage manager. */
-	inline deoglImageStageManager &GetImageStages() const{ return *pImageStageManager; }
+	inline deoglImageStageManager &GetImageStages() const{return *pImageStageManager;}
 	
 	/** Combined texture list. */
-	inline deoglCombinedTextureList &GetCombinedTexture() const{ return *pCombinedTextureList; }
+	inline deoglCombinedTextureList &GetCombinedTexture() const{return *pCombinedTextureList;}
 	
 	/** Renderable color texture manager. */
-	inline deoglRenderableColorTextureManager &GetRenderableColorTexture() const{ return *pRenColorTexMgr; }
+	inline deoglRenderableColorTextureManager &GetRenderableColorTexture() const{return *pRenColorTexMgr;}
 	
 	/** Renderable depth texture manager. */
-	inline deoglRenderableDepthTextureManager &GetRenderableDepthTexture() const{ return *pRenDepthTexMgr; }
+	inline deoglRenderableDepthTextureManager &GetRenderableDepthTexture() const{return *pRenDepthTexMgr;}
 	
 	/** Renderable color cubemap manager. */
-	inline deoglRenderableColorCubeMapManager &GetRenderableColorCubeMap() const{ return *pRenColorCubeMgr; }
+	inline deoglRenderableColorCubeMapManager &GetRenderableColorCubeMap() const{return *pRenColorCubeMgr;}
 	
 	/** Renderable depth cubemap manager. */
-	inline deoglRenderableDepthCubeMapManager &GetRenderableDepthCubeMap() const{ return *pRenDepthCubeMgr; }
+	inline deoglRenderableDepthCubeMapManager &GetRenderableDepthCubeMap() const{return *pRenDepthCubeMgr;}
 	
 	/** Renderable color array texture manager. */
-	inline deoglRenderableColorArrayTextureManager &GetRenderableColorArrayTexture() const{ return *pRenColorArrTexMgr; }
+	inline deoglRenderableColorArrayTextureManager &GetRenderableColorArrayTexture() const{return *pRenColorArrTexMgr;}
 	
 	/** Renderable depth array texture manager. */
-	inline deoglRenderableDepthArrayTextureManager &GetRenderableDepthArrayTexture() const{ return *pRenDepthArrTexMgr; }
+	inline deoglRenderableDepthArrayTextureManager &GetRenderableDepthArrayTexture() const{return *pRenDepthArrTexMgr;}
 	
 	/** Occlusion map pool. */
-	inline deoglOcclusionMapPool &GetOcclusionMapPool() const{ return *pOcclusionMapPool; }
+	inline deoglOcclusionMapPool &GetOcclusionMapPool() const{return *pOcclusionMapPool;}
 	/*@}*/
 	
 private:

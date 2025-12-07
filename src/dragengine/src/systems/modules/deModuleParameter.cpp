@@ -38,38 +38,38 @@
 ////////////////////////////
 
 deModuleParameter::deModuleParameter() :
-pType( eptBoolean ),
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pValueStepSize( 0.1f ),
-pSelectionEntries( NULL ),
-pSelectionEntryCount( 0 ),
-pCategory( ecBasic ){
+pType(eptBoolean),
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pValueStepSize(0.1f),
+pSelectionEntries(NULL),
+pSelectionEntryCount(0),
+pCategory(ecBasic){
 }
 
-deModuleParameter::deModuleParameter( const deModuleParameter &parameter ) :
-pType( parameter.pType ),
-pName( parameter.pName ),
-pDescription( parameter.pDescription ),
-pMinValue( parameter.pMinValue ),
-pMaxValue( parameter.pMaxValue ),
-pValueStepSize( parameter.pValueStepSize ),
-pSelectionEntries( NULL ),
-pSelectionEntryCount( 0 ),
-pCategory( parameter.pCategory ),
-pDisplayName( parameter.pDisplayName ),
-pDefaultValue( parameter.pDefaultValue )
+deModuleParameter::deModuleParameter(const deModuleParameter &parameter) :
+pType(parameter.pType),
+pName(parameter.pName),
+pDescription(parameter.pDescription),
+pMinValue(parameter.pMinValue),
+pMaxValue(parameter.pMaxValue),
+pValueStepSize(parameter.pValueStepSize),
+pSelectionEntries(NULL),
+pSelectionEntryCount(0),
+pCategory(parameter.pCategory),
+pDisplayName(parameter.pDisplayName),
+pDefaultValue(parameter.pDefaultValue)
 {
-	if( parameter.pSelectionEntryCount > 0 ){
-		pSelectionEntries = new SelectionEntry[ parameter.pSelectionEntryCount ];
-		for( pSelectionEntryCount=0; pSelectionEntryCount<parameter.pSelectionEntryCount; pSelectionEntryCount++ ){
-			pSelectionEntries[ pSelectionEntryCount ] = parameter.pSelectionEntries[ pSelectionEntryCount ];
+	if(parameter.pSelectionEntryCount > 0){
+		pSelectionEntries = new SelectionEntry[parameter.pSelectionEntryCount];
+		for(pSelectionEntryCount=0; pSelectionEntryCount<parameter.pSelectionEntryCount; pSelectionEntryCount++){
+			pSelectionEntries[pSelectionEntryCount] = parameter.pSelectionEntries[pSelectionEntryCount];
 		}
 	}
 }
 
 deModuleParameter::~deModuleParameter(){
-	if( pSelectionEntries ){
+	if(pSelectionEntries){
 		delete [] pSelectionEntries;
 	}
 }
@@ -79,117 +79,117 @@ deModuleParameter::~deModuleParameter(){
 // Management
 ///////////////
 
-void deModuleParameter::SetType( eParameterTypes type ){
+void deModuleParameter::SetType(eParameterTypes type){
 	pType = type;
 }
 
-void deModuleParameter::SetName( const char *name ){
+void deModuleParameter::SetName(const char *name){
 	pName = name;
 }
 
-void deModuleParameter::SetDescription( const char *description ){
+void deModuleParameter::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void deModuleParameter::SetMinimumValue( float minValue ){
+void deModuleParameter::SetMinimumValue(float minValue){
 	pMinValue = minValue;
 }
 
-void deModuleParameter::SetMaximumValue( float maxValue ){
+void deModuleParameter::SetMaximumValue(float maxValue){
 	pMaxValue = maxValue;
 }
 
-void deModuleParameter::SetValueStepSize( float valueStepSize ){
+void deModuleParameter::SetValueStepSize(float valueStepSize){
 	pValueStepSize = valueStepSize;
 }
 
-const deModuleParameter::SelectionEntry &deModuleParameter::GetSelectionEntryAt( int index ) const{
-	if( index < 0 || index >= pSelectionEntryCount ){
-		DETHROW( deeInvalidParam );
+const deModuleParameter::SelectionEntry &deModuleParameter::GetSelectionEntryAt(int index) const{
+	if(index < 0 || index >= pSelectionEntryCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pSelectionEntries[ index ];
+	return pSelectionEntries[index];
 }
 
-int deModuleParameter::IndexOfSelectionEntryWithValue( const char *value ) const{
+int deModuleParameter::IndexOfSelectionEntryWithValue(const char *value) const{
 	int i;
-	for( i=0; i<pSelectionEntryCount; i++ ){
-		if( pSelectionEntries[ i ].value == value ){
+	for(i=0; i<pSelectionEntryCount; i++){
+		if(pSelectionEntries[i].value == value){
 			return i;
 		}
 	}
 	return -1;
 }
 
-void deModuleParameter::AddSelectionEntry( const deModuleParameter::SelectionEntry &entry ){
-	if( IndexOfSelectionEntryWithValue( entry.value ) != -1 ){
-		DETHROW( deeInvalidParam );
+void deModuleParameter::AddSelectionEntry(const deModuleParameter::SelectionEntry &entry){
+	if(IndexOfSelectionEntryWithValue(entry.value) != -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SelectionEntry * const newArray = new SelectionEntry[ pSelectionEntryCount + 1 ];
-	if( pSelectionEntries ){
+	SelectionEntry * const newArray = new SelectionEntry[pSelectionEntryCount + 1];
+	if(pSelectionEntries){
 		int i;
-		for( i=0; i<pSelectionEntryCount; i++ ){
-			newArray[ i ] = pSelectionEntries[ i ];
+		for(i=0; i<pSelectionEntryCount; i++){
+			newArray[i] = pSelectionEntries[i];
 		}
 		delete [] pSelectionEntries;
 	}
 	pSelectionEntries = newArray;
-	pSelectionEntries[ pSelectionEntryCount++ ] = entry;
+	pSelectionEntries[pSelectionEntryCount++] = entry;
 }
 
-void deModuleParameter::AddSelectionEntries( const deModuleParameter::SelectionEntry *entries, int entryCount ){
-	if( entryCount == 0 ){
+void deModuleParameter::AddSelectionEntries(const deModuleParameter::SelectionEntry *entries, int entryCount){
+	if(entryCount == 0){
 		return;
 	}
-	if( ! entries ){
-		DETHROW_INFO( deeNullPointer, "entries" );
+	if(! entries){
+		DETHROW_INFO(deeNullPointer, "entries");
 	}
-	if( entryCount < 1 ){
-		DETHROW_INFO( deeInvalidParam, "entryCount < 0" );
+	if(entryCount < 1){
+		DETHROW_INFO(deeInvalidParam, "entryCount < 0");
 	}
 	
 	int i, j;
-	for( i=0; i<entryCount; i++ ){
-		if( IndexOfSelectionEntryWithValue( entries[ i ].value ) != -1 ){
-			DETHROW_INFO( deeInvalidParam, "an entries value is present" );
+	for(i=0; i<entryCount; i++){
+		if(IndexOfSelectionEntryWithValue(entries[i].value) != -1){
+			DETHROW_INFO(deeInvalidParam, "an entries value is present");
 		}
-		for( j=i+1; j<entryCount; j++ ){
-			if( entries[ i ].value == entries[ j ].value ){
-				DETHROW_INFO( deeInvalidParam, "two entries values are equal" );
+		for(j=i+1; j<entryCount; j++){
+			if(entries[i].value == entries[j].value){
+				DETHROW_INFO(deeInvalidParam, "two entries values are equal");
 			}
 		}
 	}
 	
-	SelectionEntry * const newArray = new SelectionEntry[ pSelectionEntryCount + entryCount ];
-	if( pSelectionEntries ){
-		for( i=0; i<pSelectionEntryCount; i++ ){
-			newArray[ i ] = pSelectionEntries[ i ];
+	SelectionEntry * const newArray = new SelectionEntry[pSelectionEntryCount + entryCount];
+	if(pSelectionEntries){
+		for(i=0; i<pSelectionEntryCount; i++){
+			newArray[i] = pSelectionEntries[i];
 		}
 		delete [] pSelectionEntries;
 	}
 	pSelectionEntries = newArray;
-	for( i=0; i<entryCount; i++ ){
-		pSelectionEntries[ pSelectionEntryCount++ ] = entries[ i ];
+	for(i=0; i<entryCount; i++){
+		pSelectionEntries[pSelectionEntryCount++] = entries[i];
 	}
 }
 
 void deModuleParameter::RemoveAllSelectionEntries(){
-	if( pSelectionEntries ){
+	if(pSelectionEntries){
 		delete [] pSelectionEntries;
 	}
 	pSelectionEntries = NULL;
 	pSelectionEntryCount = 0;
 }
 
-void deModuleParameter::SetCategory( eCategory category ){
+void deModuleParameter::SetCategory(eCategory category){
 	pCategory = category;
 }
 
-void deModuleParameter::SetDisplayName( const char *displayName ){
+void deModuleParameter::SetDisplayName(const char *displayName){
 	pDisplayName = displayName;
 }
 
-void deModuleParameter::SetDefaultValue( const decString &defaultValue ){
+void deModuleParameter::SetDefaultValue(const decString &defaultValue){
 	pDefaultValue = defaultValue;
 }
 
@@ -211,7 +211,7 @@ void deModuleParameter::Reset(){
 // Operators
 //////////////
 
-deModuleParameter &deModuleParameter::operator=( const deModuleParameter &parameter ){
+deModuleParameter &deModuleParameter::operator=(const deModuleParameter &parameter){
 	pType = parameter.pType;
 	pName = parameter.pName;
 	pDescription = parameter.pDescription;
@@ -223,10 +223,10 @@ deModuleParameter &deModuleParameter::operator=( const deModuleParameter &parame
 	pDefaultValue = parameter.pDefaultValue;
 	
 	RemoveAllSelectionEntries();
-	if( parameter.pSelectionEntryCount > 0 ){
-		pSelectionEntries = new SelectionEntry[ parameter.pSelectionEntryCount ];
-		for( pSelectionEntryCount=0; pSelectionEntryCount<parameter.pSelectionEntryCount; pSelectionEntryCount++ ){
-			pSelectionEntries[ pSelectionEntryCount ] = parameter.pSelectionEntries[ pSelectionEntryCount ];
+	if(parameter.pSelectionEntryCount > 0){
+		pSelectionEntries = new SelectionEntry[parameter.pSelectionEntryCount];
+		for(pSelectionEntryCount=0; pSelectionEntryCount<parameter.pSelectionEntryCount; pSelectionEntryCount++){
+			pSelectionEntries[pSelectionEntryCount] = parameter.pSelectionEntries[pSelectionEntryCount];
 		}
 	}
 	

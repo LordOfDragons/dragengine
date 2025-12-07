@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBElement::deoglSharedSPBElement( deoglSharedSPB &spb, int index ) :
-pSPB( spb ),
-pIndex( index ){
+deoglSharedSPBElement::deoglSharedSPBElement(deoglSharedSPB &spb, int index) :
+pSPB(spb),
+pIndex(index){
 }
 
 deoglSharedSPBElement::~deoglSharedSPBElement(){
-	pSPB.RemoveElement( pIndex );
+	pSPB.RemoveElement(pIndex);
 }
 
 
@@ -55,6 +55,6 @@ deoglSharedSPBElement::~deoglSharedSPBElement(){
 ///////////////
 
 deoglShaderParameterBlock &deoglSharedSPBElement::MapBuffer() const{
-	pSPB.GetParameterBlock()->MapBuffer( pIndex );
+	pSPB.GetParameterBlock()->MapBuffer(pIndex);
 	return *pSPB.GetParameterBlock();
 }

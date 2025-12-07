@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	dermWriteShape( decXmlWriter &writer );
+	dermWriteShape(decXmlWriter &writer);
 	
 	/** \brief Clean up visitor. */
 	virtual ~dermWriteShape();
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set property for string. */
-	void SetProperty( const char *property );
+	void SetProperty(const char *property);
 	/*@}*/
 	
 	
@@ -67,22 +67,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	virtual void VisitShape(decShape &shape);
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	virtual void VisitShapeSphere(decShapeSphere &sphere);
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	virtual void VisitShapeBox(decShapeBox &box);
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	virtual void VisitShapeHull(decShapeHull &hull);
 	/*@}*/
 };
 

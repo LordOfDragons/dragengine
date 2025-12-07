@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAMusicSetName( ceConversationTopic *topic, ceCAMusic *music, const char *newName );
+	ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAMusicSetName();

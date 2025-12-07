@@ -65,7 +65,7 @@ private:
 	decColor pLineColor;
 	float pThickness;
 	
-	int pShapeMapped[ ShapeMappedCount ];
+	int pShapeMapped[ShapeMappedCount];
 	
 	
 	
@@ -84,36 +84,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline eShapeTypes GetShapeType() const{ return pShapeType; }
+	inline eShapeTypes GetShapeType() const{return pShapeType;}
 	
 	/** \brief Set shape type. */
-	void SetShapeType( eShapeTypes type );
+	void SetShapeType(eShapeTypes type);
 	
 	/** \brief Fill color. */
-	inline const decColor &GetFillColor() const{ return pFillColor; }
+	inline const decColor &GetFillColor() const{return pFillColor;}
 	
 	/** \brief Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** \brief Line color. */
-	inline const decColor &GetLineColor() const{ return pLineColor; }
+	inline const decColor &GetLineColor() const{return pLineColor;}
 	
 	/** \brief Set line color. */
-	void SetLineColor( const decColor &color );
+	void SetLineColor(const decColor &color);
 	
 	/** \brief Line thickness in pixels. */
-	inline float GetThickness() const{ return pThickness; }
+	inline float GetThickness() const{return pThickness;}
 	
 	/** \brief Set thicknss in pixels. */
-	void SetThickness( float thickness );
+	void SetThickness(float thickness);
 	
 	
 	
 	/** \brief Index of mapped value or -1 to use static value. */
-	int GetShapeMappedFor( eShapeMapped mapped ) const;
+	int GetShapeMappedFor(eShapeMapped mapped) const;
 	
 	/** \brief Set index of mapped value or -1 to use static value. */
-	void SetShapeMappedFor( eShapeMapped mapped, int index );
+	void SetShapeMappedFor(eShapeMapped mapped, int index);
 	/*@}*/
 	
 	
@@ -121,7 +121,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits node. */
-	virtual void Visit( deSkinPropertyNodeVisitor &visitor );
+	virtual void Visit(deSkinPropertyNodeVisitor &visitor);
 	/*@}*/
 };
 

@@ -44,17 +44,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderableColor::deoglRDSRenderableColor( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( etColor, dynamicSkin ),
-pTexture( NULL ),
-pDirty( true )
+deoglRDSRenderableColor::deoglRDSRenderableColor(deoglRDynamicSkin &dynamicSkin) :
+deoglRDSRenderable(etColor, dynamicSkin),
+pTexture(NULL),
+pDirty(true)
 {
-	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableColor );
+	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableColor);
 }
 
 deoglRDSRenderableColor::~deoglRDSRenderableColor(){
-	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableColor );
-	if( pTexture ){
+	LEAK_CHECK_FREE(GetDynamicSkin().GetRenderThread(), DSRenderableColor);
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -64,8 +64,8 @@ deoglRDSRenderableColor::~deoglRDSRenderableColor(){
 // Management
 ///////////////
 
-void deoglRDSRenderableColor::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void deoglRDSRenderableColor::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
@@ -73,24 +73,24 @@ void deoglRDSRenderableColor::SetColor( const decColor &color ){
 	pDirty = true;
 }
 
-void deoglRDSRenderableColor::PrepareForRender( const deoglRenderPlanMasked * ){
+void deoglRDSRenderableColor::PrepareForRender(const deoglRenderPlanMasked *){
 }
 
-decColor deoglRDSRenderableColor::GetRenderColor( const decColor & ){
+decColor deoglRDSRenderableColor::GetRenderColor(const decColor &){
 	return pColor;
 }
 
 deoglTexture *deoglRDSRenderableColor::GetRenderTexture(){
-	if( ! pTexture ){
-		pTexture = new deoglTexture( GetDynamicSkin().GetRenderThread() );
-		pTexture->SetSize( 1, 1 );
-		pTexture->SetMipMapped( false );
-		pTexture->SetMapingFormat( 4, false, false );
+	if(! pTexture){
+		pTexture = new deoglTexture(GetDynamicSkin().GetRenderThread());
+		pTexture->SetSize(1, 1);
+		pTexture->SetMipMapped(false);
+		pTexture->SetMapingFormat(4, false, false);
 		
 		pDirty = true;
 	}
 	
-	if( pDirty ){
+	if(pDirty){
 		const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::NewWith(
 			deoglPixelBuffer::epfByte4, 1, 1, 1));
 		pixelBuffer->SetToFloatColor(pColor.r, pColor.g, pColor.b, pColor.a);

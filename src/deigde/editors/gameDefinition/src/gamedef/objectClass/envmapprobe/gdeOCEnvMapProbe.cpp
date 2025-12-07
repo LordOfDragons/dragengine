@@ -40,34 +40,34 @@
 ////////////////////////////
 
 gdeOCEnvMapProbe::gdeOCEnvMapProbe() :
-pScaling( 1.0f, 1.0f, 1.0f ),
-pShapeReflection( NULL ),
-pInfluenceBorderSize( 0.1f ),
-pInfluencePriority( 0 ){
+pScaling(1.0f, 1.0f, 1.0f),
+pShapeReflection(NULL),
+pInfluenceBorderSize(0.1f),
+pInfluencePriority(0){
 }
 
-gdeOCEnvMapProbe::gdeOCEnvMapProbe( const gdeOCEnvMapProbe &probe ) :
-pPosition( probe.GetPosition() ),
-pRotation( probe.GetRotation() ),
-pScaling( probe.GetScaling() ),
-pShapeListInfluence( probe.GetShapeListInfluence() ),
-pShapeReflection( NULL ),
-pShapeListReflectionMask( probe.GetShapeListReflectionMask() ),
-pInfluenceBorderSize( probe.pInfluenceBorderSize ),
-pInfluencePriority( probe.pInfluencePriority )
+gdeOCEnvMapProbe::gdeOCEnvMapProbe(const gdeOCEnvMapProbe &probe) :
+pPosition(probe.GetPosition()),
+pRotation(probe.GetRotation()),
+pScaling(probe.GetScaling()),
+pShapeListInfluence(probe.GetShapeListInfluence()),
+pShapeReflection(NULL),
+pShapeListReflectionMask(probe.GetShapeListReflectionMask()),
+pInfluenceBorderSize(probe.pInfluenceBorderSize),
+pInfluencePriority(probe.pInfluencePriority)
 {
 	int i;
 	
 	try{
-		if( probe.GetShapeReflection() ){
+		if(probe.GetShapeReflection()){
 			pShapeReflection = probe.GetShapeReflection()->Copy();
 		}
 		
-		for( i=0; i<=epAttachRotation; i++ ){
-			pPropertyNames[ i ] = probe.pPropertyNames[ i ];
+		for(i=0; i<=epAttachRotation; i++){
+			pPropertyNames[i] = probe.pPropertyNames[i];
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -82,68 +82,68 @@ gdeOCEnvMapProbe::~gdeOCEnvMapProbe(){
 // Management
 ///////////////
 
-void gdeOCEnvMapProbe::SetPosition( const decVector &position ){
+void gdeOCEnvMapProbe::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void gdeOCEnvMapProbe::SetRotation( const decVector &orientation ){
+void gdeOCEnvMapProbe::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
-void gdeOCEnvMapProbe::SetScaling( const decVector &scaling ){
+void gdeOCEnvMapProbe::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
 
 
-void gdeOCEnvMapProbe::SetShapeReflection( decShape *shape ){
-	if( shape == pShapeReflection ){
+void gdeOCEnvMapProbe::SetShapeReflection(decShape *shape){
+	if(shape == pShapeReflection){
 		return;
 	}
 	
-	if( pShapeReflection ){
+	if(pShapeReflection){
 		delete pShapeReflection;
 	}
 	
 	pShapeReflection = shape;
 }
 
-void gdeOCEnvMapProbe::SetInfluenceBorderSize( float borderSize ){
-	pInfluenceBorderSize = decMath::max( borderSize, 0.0f );
+void gdeOCEnvMapProbe::SetInfluenceBorderSize(float borderSize){
+	pInfluenceBorderSize = decMath::max(borderSize, 0.0f);
 }
 
-void gdeOCEnvMapProbe::SetInfluencePriority( int priority ){
-	pInfluencePriority = decMath::max( priority, 0 );
+void gdeOCEnvMapProbe::SetInfluencePriority(int priority){
+	pInfluencePriority = decMath::max(priority, 0);
 }
 
 
 
-bool gdeOCEnvMapProbe::IsPropertySet( int property ) const{
-	if( property < 0 || property > epAttachRotation ){
-		DETHROW( deeInvalidParam );
+bool gdeOCEnvMapProbe::IsPropertySet(int property) const{
+	if(property < 0 || property > epAttachRotation){
+		DETHROW(deeInvalidParam);
 	}
-	return ! pPropertyNames[ property ].IsEmpty();
+	return ! pPropertyNames[property].IsEmpty();
 }
 
-const decString& gdeOCEnvMapProbe::GetPropertyName( int property ) const{
-	if( property < 0 || property > epAttachRotation ){
-		DETHROW( deeInvalidParam );
+const decString& gdeOCEnvMapProbe::GetPropertyName(int property) const{
+	if(property < 0 || property > epAttachRotation){
+		DETHROW(deeInvalidParam);
 	}
-	return pPropertyNames[ property ];
+	return pPropertyNames[property];
 }
 
-void gdeOCEnvMapProbe::SetPropertyName( int property, const char *name ){
-	if( property < 0 || property > epAttachRotation || ! name ){
-		DETHROW( deeInvalidParam );
+void gdeOCEnvMapProbe::SetPropertyName(int property, const char *name){
+	if(property < 0 || property > epAttachRotation || ! name){
+		DETHROW(deeInvalidParam);
 	}
-	pPropertyNames[ property ] = name;
+	pPropertyNames[property] = name;
 }
 
-bool gdeOCEnvMapProbe::HasPropertyWithName( const char *name ) const{
+bool gdeOCEnvMapProbe::HasPropertyWithName(const char *name) const{
 	int i;
 	
-	for( i=0; i<=epAttachRotation; i++ ){
-		if( pPropertyNames[ i ] == name ){
+	for(i=0; i<=epAttachRotation; i++){
+		if(pPropertyNames[i] == name){
 			return true;
 		}
 	}
@@ -157,7 +157,7 @@ bool gdeOCEnvMapProbe::HasPropertyWithName( const char *name ) const{
 //////////////////////
 
 void gdeOCEnvMapProbe::pCleanUp(){
-	if( pShapeReflection ){
+	if(pShapeReflection){
 		delete pShapeReflection;
 	}
 }

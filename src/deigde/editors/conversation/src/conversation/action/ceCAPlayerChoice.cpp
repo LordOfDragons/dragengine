@@ -40,15 +40,15 @@
 ////////////////////////////
 
 ceCAPlayerChoice::ceCAPlayerChoice() :
-ceConversationAction( eatPlayerChoice ),
-pTIMExpanded( true ),
-pTIMActionsExpanded( true ){
+ceConversationAction(eatPlayerChoice),
+pTIMExpanded(true),
+pTIMActionsExpanded(true){
 }
 
-ceCAPlayerChoice::ceCAPlayerChoice( const ceCAPlayerChoice &action ) :
-ceConversationAction( action ),
-pTIMExpanded( action.pTIMExpanded ),
-pTIMActionsExpanded( action.pTIMActionsExpanded )
+ceCAPlayerChoice::ceCAPlayerChoice(const ceCAPlayerChoice &action) :
+ceConversationAction(action),
+pTIMExpanded(action.pTIMExpanded),
+pTIMActionsExpanded(action.pTIMActionsExpanded)
 {
 	const ceCAPlayerChoiceOptionList &options = action.GetOptions();
 	const ceConversationActionList &actions = action.GetActions();
@@ -60,26 +60,26 @@ pTIMActionsExpanded( action.pTIMActionsExpanded )
 	
 	try{
 		count = options.GetCount();
-		for( i=0; i<count; i++ ){
-			newOption = new ceCAPlayerChoiceOption( *options.GetAt( i ) );
-			pOptions.Add( newOption );
+		for(i=0; i<count; i++){
+			newOption = new ceCAPlayerChoiceOption(*options.GetAt(i));
+			pOptions.Add(newOption);
 			newOption->FreeReference();
 			newOption = NULL;
 		}
 		
 		count = actions.GetCount();
-		for( i=0; i<count; i++ ){
-			newAction = actions.GetAt( i )->CreateCopy();
-			pActions.Add( newAction );
+		for(i=0; i<count; i++){
+			newAction = actions.GetAt(i)->CreateCopy();
+			pActions.Add(newAction);
 			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newAction ){
+	}catch(const deException &){
+		if(newAction){
 			newAction->FreeReference();
 		}
-		if( newOption ){
+		if(newOption){
 			newOption->FreeReference();
 		}
 		pActions.RemoveAll();
@@ -99,12 +99,12 @@ ceCAPlayerChoice::~ceCAPlayerChoice(){
 ///////////////
 
 ceConversationAction *ceCAPlayerChoice::CreateCopy() const{
-	return new ceCAPlayerChoice( *this );
+	return new ceCAPlayerChoice(*this);
 }
 
-void ceCAPlayerChoice::SetVariableName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void ceCAPlayerChoice::SetVariableName(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pVariableName = name;
@@ -115,10 +115,10 @@ void ceCAPlayerChoice::SetVariableName( const char *name ){
 // UI
 ///////
 
-void ceCAPlayerChoice::SetTIMExpanded( bool expanded ){
+void ceCAPlayerChoice::SetTIMExpanded(bool expanded){
 	pTIMExpanded = expanded;
 }
 
-void ceCAPlayerChoice::SetTIMActionsExpanded( bool expanded ){
+void ceCAPlayerChoice::SetTIMActionsExpanded(bool expanded){
 	pTIMActionsExpanded = expanded;
 }

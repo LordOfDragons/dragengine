@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAObjectClassCopy::gdeMAObjectClassCopy( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Copy Object Class",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class" )
+gdeMAObjectClassCopy::gdeMAObjectClassCopy(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Copy Object Class",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class")
 {
 }
 
@@ -58,14 +58,14 @@ gdeBaseAction( windowMain, "Copy Object Class",
 // Management
 ///////////////
 
-igdeUndo *gdeMAObjectClassCopy::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMAObjectClassCopy::OnAction(gdeGameDefinition &gameDefinition){
 	gdeObjectClass * const category = gameDefinition.GetActiveObjectClass();
-	if( ! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
+	if(! category || gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotObjectClass){
 		return NULL;
 	}
 	
 	gdeObjectClass * const objectClass = gameDefinition.GetActiveObjectClass();
-	if( ! objectClass ){
+	if(! objectClass){
 		return NULL;
 	}
 	
@@ -77,11 +77,11 @@ igdeUndo *gdeMAObjectClassCopy::OnAction( gdeGameDefinition &gameDefinition ){
 
 void gdeMAObjectClassCopy::Update(){
 	gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	if( ! gameDefinition ){
-		SetEnabled( false );
+	if(! gameDefinition){
+		SetEnabled(false);
 		return;
 	}
 	
-	SetEnabled( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
-		&& gameDefinition->GetActiveObjectClass() != NULL );
+	SetEnabled(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass 
+		&& gameDefinition->GetActiveObjectClass() != NULL);
 }

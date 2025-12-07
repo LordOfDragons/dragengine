@@ -54,31 +54,31 @@ deEffectVisitorIdentify::~deEffectVisitorIdentify(){
 ///////////////
 
 deEffectFilterKernel &deEffectVisitorIdentify::CastToFilterKernel() const{
-	if( pType != eetFilterKernel ){
-		DETHROW( deeInvalidParam );
+	if(pType != eetFilterKernel){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deEffectFilterKernel* )pEffect );
+	return *((deEffectFilterKernel*)pEffect);
 }
 
 deEffectOverlayImage &deEffectVisitorIdentify::CastToOverlayImage() const{
-	if( pType != eetOverlayImage ){
-		DETHROW( deeInvalidParam );
+	if(pType != eetOverlayImage){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deEffectOverlayImage* )pEffect );
+	return *((deEffectOverlayImage*)pEffect);
 }
 
 deEffectColorMatrix &deEffectVisitorIdentify::CastToColorMatrix() const{
-	if( pType != eetColorMatrix ){
-		DETHROW( deeInvalidParam );
+	if(pType != eetColorMatrix){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deEffectColorMatrix* )pEffect );
+	return *((deEffectColorMatrix*)pEffect);
 }
 
 deEffectDistortImage &deEffectVisitorIdentify::CastToDistortImage() const{
-	if( pType != eetDistortImage ){
-		DETHROW( deeInvalidParam );
+	if(pType != eetDistortImage){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deEffectDistortImage* )pEffect );
+	return *((deEffectDistortImage*)pEffect);
 }
 
 void deEffectVisitorIdentify::Reset(){
@@ -91,27 +91,27 @@ void deEffectVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deEffectVisitorIdentify::VisitEffect( deEffect &effect ){
+void deEffectVisitorIdentify::VisitEffect(deEffect &effect){
 	pEffect = &effect;
 	pType = eetUnknown;
 }
 
-void deEffectVisitorIdentify::VisitFilterKernel( deEffectFilterKernel &effect ){
+void deEffectVisitorIdentify::VisitFilterKernel(deEffectFilterKernel &effect){
 	pEffect = &effect;
 	pType = eetFilterKernel;
 }
 
-void deEffectVisitorIdentify::VisitOverlayImage( deEffectOverlayImage &effect ){
+void deEffectVisitorIdentify::VisitOverlayImage(deEffectOverlayImage &effect){
 	pEffect = &effect;
 	pType = eetOverlayImage;
 }
 
-void deEffectVisitorIdentify::VisitColorMatrix( deEffectColorMatrix &effect ){
+void deEffectVisitorIdentify::VisitColorMatrix(deEffectColorMatrix &effect){
 	pEffect = &effect;
 	pType = eetColorMatrix;
 }
 
-void deEffectVisitorIdentify::VisitDistortImage( deEffectDistortImage &effect ){
+void deEffectVisitorIdentify::VisitDistortImage(deEffectDistortImage &effect){
 	pEffect = &effect;
 	pType = eetDistortImage;
 }

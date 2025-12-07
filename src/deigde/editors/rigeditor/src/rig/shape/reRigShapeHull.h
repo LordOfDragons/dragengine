@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create rig hull shape. */
-	reRigShapeHull( deEngine *engine );
+	reRigShapeHull(deEngine *engine);
 	
 protected:
 	/** \brief Clean up rig shape shape. */
@@ -62,25 +62,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point arrays. */
-	inline decVector *GetPoints() const{ return pPoints; }
+	inline decVector *GetPoints() const{return pPoints;}
 	
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{return pPointCount;}
 	
 	/** \brief Point at index. */
-	const decVector &GetPointAt( int index ) const;
+	const decVector &GetPointAt(int index) const;
 	
 	/** \brief Add point. */
-	void AddPoint( const decVector &point );
+	void AddPoint(const decVector &point);
 	
 	/** \brief Add point. */
-	void InsertPoint( const decVector &point, int index );
+	void InsertPoint(const decVector &point, int index);
 	
 	/** \brief Set point at index. */
-	void SetPointAt( int index, const decVector &point );
+	void SetPointAt(int index, const decVector &point);
 	
 	/** \brief Remove point. */
-	void RemovePoint( int index );
+	void RemovePoint(int index);
 	
 	
 	
@@ -88,7 +88,7 @@ public:
 	virtual reRigShape *Duplicate() const;
 	
 	/** \brief Uniformly scale shape. */
-	virtual void Scale( float scale );
+	virtual void Scale(float scale);
 	
 	/** \brief Create shape. */
 	virtual decShape *CreateShape();

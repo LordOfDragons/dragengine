@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create input module. */
-	deAndroidInput( deLoadableModule &loadableModule );
+	deAndroidInput(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up input module. */
 	~deAndroidInput() override;
@@ -99,16 +99,16 @@ public:
 	decPoint GetScreenSize() const;
 	
 	/** \brief Overlay system. */
-	inline deainpOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
+	inline deainpOverlaySystem *GetOverlaySystem() const{return pOverlaySystem;}
 	
 	/** \brief Default font. */
-	inline deFont *GetDefaultFont() const{ return pFontDefault; }
+	inline deFont *GetDefaultFont() const{return pFontDefault;}
 	
 	/** \brief Elapsed time since the last event processing. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/** \brief Devices manager. */
-	inline deainpDeviceManager &GetDevices() const{ return *pDevices; }
+	inline deainpDeviceManager &GetDevices() const{return *pDevices;}
 	/*@}*/
 	
 	
@@ -119,31 +119,31 @@ public:
 	int GetDeviceCount() override;
 	
 	/** \brief Information for input device at index. */
-	deInputDevice *GetDeviceAt( int index ) override;
+	deInputDevice *GetDeviceAt(int index) override;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfDeviceWithID( const char *id ) override;
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	int IndexOfButtonWithID( int device, const char *id ) override;
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	int IndexOfAxisWithID( int device, const char *id ) override;
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	int IndexOfFeedbackWithID( int device, const char *id ) override;
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** \brief Button at index on device at index is pressed down. */
-	bool GetButtonPressed( int device, int button ) override;
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** \brief Value of axis at index on device at index. */
-	float GetAxisValue( int device, int axis ) override;
+	float GetAxisValue(int device, int axis) override;
 	
 	/** \brief Value of feedback at index on device at index. */
-	float GetFeedbackValue( int device, int feedback ) override;
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** \brief Set value of feedback at index on device at index. */
-	void SetFeedbackValue( int device, int feedback, float value ) override;
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -156,7 +156,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ) override;
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode) override;
 	
 	/**
 	 * \brief Index of button best matching character or -1 if not found.
@@ -175,7 +175,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	int ButtonMatchingKeyChar( int device, int character ) override;
+	int ButtonMatchingKeyChar(int device, int character) override;
 	/*@}*/
 	
 	
@@ -206,30 +206,30 @@ public:
 	timeval TimeValNow() const;
 	
 	/** \brief Add key press event to game input queue. */
-	void AddKeyPress( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, const timeval &eventTime );
+	void AddKeyPress(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, const timeval &eventTime);
 	
 	/** \brief Add key release event to game input queue. */
-	void AddKeyRelease( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, const timeval &eventTime );
+	void AddKeyRelease(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, const timeval &eventTime);
 	
 	/** \brief Add mouse press event to game input queue. */
-	void AddMousePress( int device, int button, int state, const timeval &eventTime );
+	void AddMousePress(int device, int button, int state, const timeval &eventTime);
 	
 	/** \brief Add mouse release event to game input queue. */
-	void AddMouseRelease( int device, int button, int state, const timeval &eventTime );
+	void AddMouseRelease(int device, int button, int state, const timeval &eventTime);
 	
 	/** \brief Add mouse move event to game input queue. */
 	void AddMouseMove(int device, int state, const decPoint &distance, const timeval &eventTime);
 	
 	/** \brief Add axis changed event. */
-	void AddAxisChanged( int device, int axis, float value, const timeval &eventTime );
+	void AddAxisChanged(int device, int axis, float value, const timeval &eventTime);
 	
 	/** \brief Add button pressed. */
-	void AddButtonPressed( int device, int button, const timeval &eventTime );
+	void AddButtonPressed(int device, int button, const timeval &eventTime);
 	
 	/** \brief Add button released. */
-	void AddButtonReleased( int device, int button, const timeval &eventTime );
+	void AddButtonReleased(int device, int button, const timeval &eventTime);
 	/*@}*/
 	
 	

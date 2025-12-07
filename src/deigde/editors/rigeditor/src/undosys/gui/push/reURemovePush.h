@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURemovePush( reRigPushList &list );
+	reURemovePush(reRigPushList &list);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -41,14 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEffectOverlayImage::deEffectOverlayImage( deEffectManager *manager ) :
-deEffect( manager ),
-pTransparency( 1.0f )
+deEffectOverlayImage::deEffectOverlayImage(deEffectManager *manager) :
+deEffect(manager),
+pTransparency(1.0f)
 {
-	pTexCoords[ 0 ].Set( 0.0f, 0.0f );
-	pTexCoords[ 1 ].Set( 1.0f, 0.0f );
-	pTexCoords[ 2 ].Set( 1.0f, 1.0f );
-	pTexCoords[ 3 ].Set( 0.0f, 1.0f );
+	pTexCoords[0].Set(0.0f, 0.0f);
+	pTexCoords[1].Set(1.0f, 0.0f);
+	pTexCoords[2].Set(1.0f, 1.0f);
+	pTexCoords[3].Set(0.0f, 1.0f);
 }
 
 deEffectOverlayImage::~deEffectOverlayImage(){
@@ -59,54 +59,54 @@ deEffectOverlayImage::~deEffectOverlayImage(){
 // Management
 ///////////////
 
-void deEffectOverlayImage::SetImage( deImage *image ){
-	if( image == pImage ){
+void deEffectOverlayImage::SetImage(deImage *image){
+	if(image == pImage){
 		return;
 	}
 	
 	pImage = image;
 	
 	deBaseGraphicEffect * const peer = GetPeerGraphic();
-	if( peer ){
+	if(peer){
 		peer->ImageChanged();
 	}
 }
 
-const decVector2 &deEffectOverlayImage::GetTextureCoordinatesFor( int corner ) const{
-	if( corner < 0 || corner > 3 ){
-		DETHROW( deeOutOfBoundary );
+const decVector2 &deEffectOverlayImage::GetTextureCoordinatesFor(int corner) const{
+	if(corner < 0 || corner > 3){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	return pTexCoords[ corner ];
+	return pTexCoords[corner];
 }
 
-void deEffectOverlayImage::SetTextureCoordinatesFor( int corner, const decVector2 &textureCoordinates ){
-	if( corner < 0 || corner > 3 ){
-		DETHROW( deeOutOfBoundary );
+void deEffectOverlayImage::SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates){
+	if(corner < 0 || corner > 3){
+		DETHROW(deeOutOfBoundary);
 	}
 	
-	if( textureCoordinates.IsEqualTo( pTexCoords[ corner ] ) ){
+	if(textureCoordinates.IsEqualTo(pTexCoords[corner])){
 		return;
 	}
 	
-	pTexCoords[ corner ] = textureCoordinates;
+	pTexCoords[corner] = textureCoordinates;
 	
 	deBaseGraphicEffect * const peer = GetPeerGraphic();
-	if( peer ){
+	if(peer){
 		peer->TextureCoordinatesChanged();
 	}
 }
 
-void deEffectOverlayImage::SetTransparency( float transparency ){
-	transparency = decMath::clamp( transparency, 0.0f, 1.0f );
-	if( fabsf( transparency - pTransparency ) < FLOAT_SAFE_EPSILON ){
+void deEffectOverlayImage::SetTransparency(float transparency){
+	transparency = decMath::clamp(transparency, 0.0f, 1.0f);
+	if(fabsf(transparency - pTransparency) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pTransparency = transparency;
 	
 	deBaseGraphicEffect * const peer = GetPeerGraphic();
-	if( peer ){
+	if(peer){
 		peer->TransparencyChanged();
 	}
 }
@@ -116,6 +116,6 @@ void deEffectOverlayImage::SetTransparency( float transparency ){
 // visiting
 /////////////
 
-void deEffectOverlayImage::Visit( deEffectVisitor &visitor ){
-	visitor.VisitOverlayImage( *this );
+void deEffectOverlayImage::Visit(deEffectVisitor &visitor){
+	visitor.VisitOverlayImage(*this);
 }

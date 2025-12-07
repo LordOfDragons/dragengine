@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create finish listen parallel task. */
-	deoalRTPTListenFinish( deoalRTParallelEnvProbe &owner );
+	deoalRTPTListenFinish(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up finish listen parallel task. */
@@ -72,19 +72,19 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies( const decPointerList &tasks );
+	void AddDependencies(const decPointerList &tasks);
 	
 	/** \brief Set probes. */
-	void SetProbes( const deoalEnvProbe *source, const deoalEnvProbe *listen );
+	void SetProbes(const deoalEnvProbe *source, const deoalEnvProbe *listen);
 	
 	/** \brief Set listen position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Set listener to update. */
-	void SetListener( deoalEnvProbeListener *listener );
+	void SetListener(deoalEnvProbeListener *listener);
 	
 	/** \brief Listen tasks (deoalRTPTListen*). */
-	inline decPointerList GetListenTasks(){ return pTasks; }
+	inline decPointerList GetListenTasks(){return pTasks;}
 	
 	
 	

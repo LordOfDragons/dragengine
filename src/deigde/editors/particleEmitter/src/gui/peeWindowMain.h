@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
-	peeWindowMain( igdeEditorModule &module );
+	peeWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up main window. */
@@ -98,16 +98,16 @@ public:
 	//inline igdeIcon* GetIconEmitterNew() const{ return pIconEmitterNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEmitterNew() const{ return pActionEmitterNew; }
-	inline igdeAction *GetActionEmitterOpen() const{ return pActionEmitterOpen; }
-	inline igdeAction *GetActionEmitterSave() const{ return pActionEmitterSave; }
-	inline igdeAction *GetActionEmitterSaveAs() const{ return pActionEmitterSaveAs; }
+	inline igdeAction *GetActionEmitterNew() const{return pActionEmitterNew;}
+	inline igdeAction *GetActionEmitterOpen() const{return pActionEmitterOpen;}
+	inline igdeAction *GetActionEmitterSave() const{return pActionEmitterSave;}
+	inline igdeAction *GetActionEmitterSaveAs() const{return pActionEmitterSaveAs;}
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
+	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
+	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
+	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
+	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
 	
 	/** \brief Ask user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -116,27 +116,27 @@ public:
 	void ResetViews();
 	
 	/** \brief Configuration. */
-	inline peeConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline peeConfiguration &GetConfiguration() const{return *pConfiguration;}
 	
 	/** \brief Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){return pClipboard;}
 	
 	/** \brief Load save system. */
-	inline peeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline peeLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
 	
 	
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline peeEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** \brief Set Emitter. */
-	void SetEmitter( peeEmitter *Emitter );
+	void SetEmitter(peeEmitter *Emitter);
 	
 	/** \brief Create Emitter. */
 	void CreateNewEmitter();
 	
 	/** \brief Save emitter under the given file. */
-	void SaveEmitter( const char *filename );
+	void SaveEmitter(const char *filename);
 	
 	
 	
@@ -159,7 +159,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -170,12 +170,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -185,7 +185,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -225,8 +225,8 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuEmitter( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
+	void pCreateMenuEmitter(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
 };
 
 #endif

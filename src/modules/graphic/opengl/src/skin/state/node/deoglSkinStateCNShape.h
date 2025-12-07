@@ -47,7 +47,7 @@ private:
 	decColor pLineColor;
 	float pThickness;
 	
-	int pShapeMapped[ deSkinPropertyNodeShape::ShapeMappedCount ];
+	int pShapeMapped[deSkinPropertyNodeShape::ShapeMappedCount];
 	
 	bool pIsThick;
 	
@@ -69,10 +69,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin state constructed node. */
-	deoglSkinStateCNShape( deSkinPropertyNodeShape &node );
+	deoglSkinStateCNShape(deSkinPropertyNodeShape &node);
 	
 	/** Create skin state constructed node. */
-	deoglSkinStateCNShape( const deoglSkinStateCNShape &node );
+	deoglSkinStateCNShape(const deoglSkinStateCNShape &node);
 	
 protected:
 	/** Clean up skin state mapped. */
@@ -85,19 +85,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shape type. */
-	inline deSkinPropertyNodeShape::eShapeTypes GetShapeType() const{ return pShapeType; }
+	inline deSkinPropertyNodeShape::eShapeTypes GetShapeType() const{return pShapeType;}
 	
 	/** Fill color. */
-	inline const decColor &GetFillColor() const{ return pFillColor; }
+	inline const decColor &GetFillColor() const{return pFillColor;}
 	
 	/** Line color. */
-	inline const decColor &GetLineColor() const{ return pLineColor; }
+	inline const decColor &GetLineColor() const{return pLineColor;}
 	
 	/** Thickness. */
-	inline float GetThickness() const{ return pThickness; }
+	inline float GetThickness() const{return pThickness;}
 	
 	/** Shape mapped for type. */
-	int GetShapeMappedFor( deSkinPropertyNodeShape::eShapeMapped type ) const;
+	int GetShapeMappedFor(deSkinPropertyNodeShape::eShapeMapped type) const;
 	
 	
 	
@@ -105,13 +105,13 @@ public:
 	 * Update.
 	 * \warning Called from main thread.
 	 */
-	virtual void Update( deoglSkinState &state ) override;
+	virtual void Update(deoglSkinState &state) override;
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( deoglSkinState &state ) override;
+	virtual void PrepareForRender(deoglSkinState &state) override;
 	
 	/** Render. */
-	virtual void Render( deoglSkinState &state, const deoglRenderCanvasContext &context ) override;
+	virtual void Render(deoglSkinState &state, const deoglRenderCanvasContext &context) override;
 	
 	/** Create copy. */
 	virtual deoglSkinStateConstructedNode::Ref Copy() const override;
@@ -121,39 +121,39 @@ public:
 	/** \name Points */
 	/*@{*/
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline deoglSharedVBOBlock *GetVBOBlock() const{return pVBOBlock;}
 	
 	
 	
 	/** Fill draw mode. */
-	inline GLenum GetDrawModeFill() const{ return pDrawModeFill; }
+	inline GLenum GetDrawModeFill() const{return pDrawModeFill;}
 	
 	/** VBO fill offset. */
-	inline int GetDrawOffsetFill() const{ return pDrawOffsetFill; }
+	inline int GetDrawOffsetFill() const{return pDrawOffsetFill;}
 	
 	/** VBO fill count. */
-	inline int GetDrawCountFill() const{ return pDrawCountFill; }
+	inline int GetDrawCountFill() const{return pDrawCountFill;}
 	
 	
 	
 	/** Line draw mode. */
-	inline GLenum GetDrawModeLine() const{ return pDrawModeLine; }
+	inline GLenum GetDrawModeLine() const{return pDrawModeLine;}
 	
 	/** VBO line offset. */
-	inline int GetDrawOffsetLine() const{ return pDrawOffsetLine; }
+	inline int GetDrawOffsetLine() const{return pDrawOffsetLine;}
 	
 	/** VBO line count. */
-	inline int GetDrawCountLine() const{ return pDrawCountLine; }
+	inline int GetDrawCountLine() const{return pDrawCountLine;}
 	/*@}*/
 	
 	
 	
 private:
 	int pRequiredPointCount();
-	void pPrepareVBOBlock( deoglSkinState &state );
-	void pWriteVBOData( deoglSkinState &state );
-	void pCalcArc( decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
-		float startAngle, float stopAngle, int stepCount );
+	void pPrepareVBOBlock(deoglSkinState &state);
+	void pWriteVBOData(deoglSkinState &state);
+	void pCalcArc(decVector2 *outPoints, const decVector2 &center, const decVector2 &size,
+		float startAngle, float stopAngle, int stepCount);
 };
 
 #endif

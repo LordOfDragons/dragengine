@@ -37,15 +37,15 @@ class deModelFace;
 class deoalModelFace{
 private:
 	int pIndex;
-	decVector pVertices[ 3 ];
-	int pWeightSets[ 3 ];
+	decVector pVertices[3];
+	int pWeightSets[3];
 	int pTexture;
 	decVector pMinExtend;
 	decVector pMaxExtend;
 	decVector pNormal;
-	decVector pEdgeNormal[ 3 ];
-	float pEdgeDistance[ 3 ];
-	float pEdgeDistanceSafe[ 3 ];
+	decVector pEdgeNormal[3];
+	float pEdgeDistance[3];
+	float pEdgeDistanceSafe[3];
 	
 	
 	
@@ -61,55 +61,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Texture. */
-	inline int GetTexture() const{ return pTexture; }
+	inline int GetTexture() const{return pTexture;}
 	
 	
 	
 	/** \brief First vertex. */
-	inline const decVector &GetVertex1() const{ return pVertices[ 0 ]; }
+	inline const decVector &GetVertex1() const{return pVertices[0];}
 	
 	/** \brief Set first vertex. */
-	void SetVertex1( const decVector &vector );
+	void SetVertex1(const decVector &vector);
 	
 	/** \brief Scond vertex. */
-	inline const decVector &GetVertex2() const{ return pVertices[ 1 ]; }
+	inline const decVector &GetVertex2() const{return pVertices[1];}
 	
 	/** \brief Set second vertex. */
-	void SetVertex2( const decVector &vector );
+	void SetVertex2(const decVector &vector);
 	
 	/** \brief Third vertex. */
-	inline const decVector &GetVertex3() const{ return pVertices[ 2 ]; }
+	inline const decVector &GetVertex3() const{return pVertices[2];}
 	
 	/** \brief Set third vertex. */
-	void SetVertex3( const decVector &vector );
+	void SetVertex3(const decVector &vector);
 	
 	/** \brief Vertex at index. */
-	const decVector &GetVertexAt( int index ) const;
+	const decVector &GetVertexAt(int index) const;
 	
 	
 	
 	/** \brief First weight set. */
-	inline int GetWeightSet1() const{ return pWeightSets[ 0 ]; }
+	inline int GetWeightSet1() const{return pWeightSets[0];}
 	
 	/** \brief Scond weight set. */
-	inline int GetWeightSet2() const{ return pWeightSets[ 1 ]; }
+	inline int GetWeightSet2() const{return pWeightSets[1];}
 	
 	/** \brief Third weight set. */
-	inline int GetWeightSet3() const{ return pWeightSets[ 2 ]; }
+	inline int GetWeightSet3() const{return pWeightSets[2];}
 	
 	/** \brief WeightSet at index. */
-	int GetWeightSetAt( int index ) const;
+	int GetWeightSetAt(int index) const;
 	
 	
 	
 	/** \brief Min extend. */
-	inline const decVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** \brief Max extend. */
-	inline const decVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	
 	
@@ -118,7 +118,7 @@ public:
 	 * 
 	 * Vertices are oriented clock-wise.
 	 */
-	inline const decVector &GetNormal() const{ return pNormal; }
+	inline const decVector &GetNormal() const{return pNormal;}
 	
 	
 	
@@ -127,28 +127,28 @@ public:
 	 * 
 	 * Edge normal points inside.
 	 */
-	inline const decVector &GetEdge1Normal() const{ return pEdgeNormal[ 0 ]; }
+	inline const decVector &GetEdge1Normal() const{return pEdgeNormal[0];}
 	
 	/**
 	 * \brief Edge 2 normal.
 	 * 
 	 * Edge normal points inside.
 	 */
-	inline const decVector &GetEdge2Normal() const{ return pEdgeNormal[ 1 ]; }
+	inline const decVector &GetEdge2Normal() const{return pEdgeNormal[1];}
 	
 	/**
 	 * \brief Edge 3 normal.
 	 * 
 	 * Edge normal points inside.
 	 */
-	inline const decVector &GetEdge3Normal() const{ return pEdgeNormal[ 2 ]; }
+	inline const decVector &GetEdge3Normal() const{return pEdgeNormal[2];}
 	
 	/**
 	 * \brief Edge normal at index matching vertex index.
 	 * 
 	 * Edge normal points inside.
 	 */
-	const decVector &GetEdgeNormalAt( int index ) const;
+	const decVector &GetEdgeNormalAt(int index) const;
 	
 	
 	
@@ -157,64 +157,64 @@ public:
 	 * 
 	 * Equals GetEdge1Normal() * GetVertex1().
 	 */
-	inline float GetEdge1Distance() const{ return pEdgeDistance[ 0 ]; }
+	inline float GetEdge1Distance() const{return pEdgeDistance[0];}
 	
 	/**
 	 * \brief Edge 2 distance.
 	 * 
 	 * Equals GetEdge2Normal() * GetVertex2().
 	 */
-	inline float GetEdge2Distance() const{ return pEdgeDistance[ 1 ]; }
+	inline float GetEdge2Distance() const{return pEdgeDistance[1];}
 	
 	/**
 	 * \brief Edge 3 distance.
 	 * 
 	 * Equals GetEdge3Normal() * GetVertex3().
 	 */
-	inline float GetEdge3Distance() const{ return pEdgeDistance[ 2 ]; }
+	inline float GetEdge3Distance() const{return pEdgeDistance[2];}
 	
 	/**
 	 * \brief Edge distance at index matching vertex index.
 	 * 
 	 * Equals GetEdgeNormalAt(index) * GetVertexAt(index).
 	 */
-	float GetEdgeDistanceAt( int index ) const;
+	float GetEdgeDistanceAt(int index) const;
 	
 	/**
 	 * \brief Edge 1 safe distance.
 	 * 
 	 * Equals GetEdge1Normal() * GetVertex1().
 	 */
-	inline float GetEdge1DistanceSafe() const{ return pEdgeDistanceSafe[ 0 ]; }
+	inline float GetEdge1DistanceSafe() const{return pEdgeDistanceSafe[0];}
 	
 	/**
 	 * \brief Edge 2 safe distance.
 	 * 
 	 * Equals GetEdge2Normal() * GetVertex2().
 	 */
-	inline float GetEdge2DistanceSafe() const{ return pEdgeDistanceSafe[ 1 ]; }
+	inline float GetEdge2DistanceSafe() const{return pEdgeDistanceSafe[1];}
 	
 	/**
 	 * \brief Edge 3 safe distance.
 	 * 
 	 * Equals GetEdge3Normal() * GetVertex3().
 	 */
-	inline float GetEdge3DistanceSafe() const{ return pEdgeDistanceSafe[ 2 ]; }
+	inline float GetEdge3DistanceSafe() const{return pEdgeDistanceSafe[2];}
 	
 	/**
 	 * \brief Edge safe distance at index matching vertex index.
 	 * 
 	 * Equals GetEdgeNormalAt(index) * GetVertexAt(index).
 	 */
-	float GetEdgeDistanceSafeAt( int index ) const;
+	float GetEdgeDistanceSafeAt(int index) const;
 	
 	
 	
 	/** \brief Init. */
-	void Init( const deModelLOD &lod, int index, const deModelFace &face );
+	void Init(const deModelLOD &lod, int index, const deModelFace &face);
 	
 	/** \brief Init. */
-	void InitFromStatic( const deoalModelFace &face );
+	void InitFromStatic(const deoalModelFace &face);
 	
 	/** \brief Update normal and edge information from vertices. */
 	void UpdateNormalAndEdges();

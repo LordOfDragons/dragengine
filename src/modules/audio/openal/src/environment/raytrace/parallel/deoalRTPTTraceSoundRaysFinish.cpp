@@ -56,16 +56,16 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRTPTTraceSoundRaysFinish::deoalRTPTTraceSoundRaysFinish( deoalRTParallelEnvProbe &owner ) :
-deParallelTask( &owner.GetAudioThread().GetOal() ),
-pOwner( owner ),
-pRange( 0.0f ),
-pProbeConfig( NULL ),
-pSoundRayList( NULL ),
-pRoomParameters( NULL )
+deoalRTPTTraceSoundRaysFinish::deoalRTPTTraceSoundRaysFinish(deoalRTParallelEnvProbe &owner) :
+deParallelTask(&owner.GetAudioThread().GetOal()),
+pOwner(owner),
+pRange(0.0f),
+pProbeConfig(NULL),
+pSoundRayList(NULL),
+pRoomParameters(NULL)
 {
-	SetMarkFinishedAfterRun( true );
-	SetLowPriority( true );
+	SetMarkFinishedAfterRun(true);
+	SetLowPriority(true);
 }
 
 deoalRTPTTraceSoundRaysFinish::~deoalRTPTTraceSoundRaysFinish(){
@@ -76,33 +76,33 @@ deoalRTPTTraceSoundRaysFinish::~deoalRTPTTraceSoundRaysFinish(){
 // Manegement
 ///////////////
 
-void deoalRTPTTraceSoundRaysFinish::AddDependencies( const decPointerList &tasks ){
+void deoalRTPTTraceSoundRaysFinish::AddDependencies(const decPointerList &tasks){
 	const int count = tasks.GetCount();
 	int i;
 	
 	pTasks.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		deParallelTask * const task = ( deParallelTask* )tasks.GetAt( i );
-		AddDependsOn( task );
-		pTasks.Add( task );
+	for(i=0; i<count; i++){
+		deParallelTask * const task = (deParallelTask*)tasks.GetAt(i);
+		AddDependsOn(task);
+		pTasks.Add(task);
 	}
 }
 
-void deoalRTPTTraceSoundRaysFinish::SetRange( float range ){
+void deoalRTPTTraceSoundRaysFinish::SetRange(float range){
 	pRange = range;
 }
 
-void deoalRTPTTraceSoundRaysFinish::SetProbeConfig( const deoalRayTraceConfig *probeConfig ){
+void deoalRTPTTraceSoundRaysFinish::SetProbeConfig(const deoalRayTraceConfig *probeConfig){
 	pProbeConfig = probeConfig;
 }
 
-void deoalRTPTTraceSoundRaysFinish::SetSoundRayList( deoalSoundRayList *soundRayList ){
+void deoalRTPTTraceSoundRaysFinish::SetSoundRayList(deoalSoundRayList *soundRayList){
 	pSoundRayList = soundRayList;
 }
 
 void deoalRTPTTraceSoundRaysFinish::SetRoomParameters(
-deoalRTParallelEnvProbe::sRoomParameters *roomParameters ){
+deoalRTParallelEnvProbe::sRoomParameters *roomParameters){
 	pRoomParameters = roomParameters;
 }
 
@@ -112,20 +112,20 @@ void deoalRTPTTraceSoundRaysFinish::Run(){
 	try{
 		pRun();
 		
-	}catch( ... ){
+	}catch(...){
 		Cancel();
-		pOwner.FinishTaskFinished( this );
+		pOwner.FinishTaskFinished(this);
 		throw;
 	}
 	
-	pOwner.FinishTaskFinished( this );
+	pOwner.FinishTaskFinished(this);
 }
 
 void deoalRTPTTraceSoundRaysFinish::Finished(){
-	if( IsCancelled() ){
-		pOwner.FinishTaskFinished( this );
+	if(IsCancelled()){
+		pOwner.FinishTaskFinished(this);
 	}
-	pOwner.Enable( this );
+	pOwner.Enable(this);
 }
 
 
@@ -167,11 +167,11 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	int soundRaySegmentCount = 0;
 	int soundRayCount = 0;
 	
-	for( i=0; i<taskCount; i++ ){
-		const deoalRTPTTraceSoundRays &task = *( ( deoalRTPTTraceSoundRays* )pTasks.GetAt( i ) );
+	for(i=0; i<taskCount; i++){
+		const deoalRTPTTraceSoundRays &task = *((deoalRTPTTraceSoundRays*)pTasks.GetAt(i));
 		
-		if( task.IsCancelled() ){
-			DETHROW( deeInvalidAction ); // task failed
+		if(task.IsCancelled()){
+			DETHROW(deeInvalidAction); // task failed
 		}
 		
 		const deoalSoundRayList &srl = task.GetSoundRayList();
@@ -181,18 +181,18 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	}
 	
 	pSoundRayList->RemoveAllRays();
-	pSoundRayList->ReserveSize( soundRayCount, soundRaySegmentCount, soundRayTransmittedRayCount );
+	pSoundRayList->ReserveSize(soundRayCount, soundRaySegmentCount, soundRayTransmittedRayCount);
 	
-	for( i=0; i<taskCount; i++ ){
-		const deoalRTPTTraceSoundRays &task = *( ( deoalRTPTTraceSoundRays* )pTasks.GetAt( i ) );
+	for(i=0; i<taskCount; i++){
+		const deoalRTPTTraceSoundRays &task = *((deoalRTPTTraceSoundRays*)pTasks.GetAt(i));
 		
-		if( i == 0 ){
+		if(i == 0){
 			pRoomParameters->minExtend = task.GetMinExtend();
 			pRoomParameters->maxExtend = task.GetMaxExtend();
 			
 		}else{
-			pRoomParameters->minExtend.SetSmallest( task.GetMinExtend() );
-			pRoomParameters->maxExtend.SetLargest( task.GetMaxExtend() );
+			pRoomParameters->minExtend.SetSmallest(task.GetMinExtend());
+			pRoomParameters->maxExtend.SetLargest(task.GetMaxExtend());
 		}
 		
 		*pSoundRayList += task.GetSoundRayList();
@@ -212,15 +212,15 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	}
 	
 	// calculate room parameters
-	if( pSoundRayList->GetSegmentCount() > 0 ){
-		pRoomParameters->meanFreePath /= ( float )pSoundRayList->GetSegmentCount();
+	if(pSoundRayList->GetSegmentCount() > 0){
+		pRoomParameters->meanFreePath /= (float)pSoundRayList->GetSegmentCount();
 	}
 	
 	pRoomParameters->echoDelay = pRoomParameters->meanFreePath * INV_SOUND_SPEED;
 	
-	if( firstHitCount < pProbeConfig->GetRayCount() ){
+	if(firstHitCount < pProbeConfig->GetRayCount()){
 		// rays hit nothing count as hitting with absorption=1 at distance=range
-		float factor = pRange * pRange * ( float )( pProbeConfig->GetRayCount() - firstHitCount );
+		float factor = pRange * pRange * (float)(pProbeConfig->GetRayCount() - firstHitCount);
 		pRoomParameters->roomVolume += factor * pRange;
 		
 		pRoomParameters->sabineMedium += factor; // absorption = 1 for all frequencies
@@ -233,7 +233,7 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 		absorptionCount += pProbeConfig->GetRayCount() - firstHitCount;
 	}
 	
-	const float invAbsorptionCount = 1.0f / ( float )absorptionCount;
+	const float invAbsorptionCount = 1.0f / (float)absorptionCount;
 	pRoomParameters->avgAbsorptionLow *= invAbsorptionCount;
 	pRoomParameters->avgAbsorptionMedium *= invAbsorptionCount;
 	pRoomParameters->avgAbsorptionHigh *= invAbsorptionCount;
@@ -242,15 +242,15 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	pRoomParameters->sabineLow *= pProbeConfig->GetRayUnitSurface();
 	pRoomParameters->sabineHigh *= pProbeConfig->GetRayUnitSurface();
 	
-	pRoomParameters->roomSurface = decMath::max( 0.01f,
-		pRoomParameters->roomSurface * pProbeConfig->GetRayUnitSurface() );
+	pRoomParameters->roomSurface = decMath::max(0.01f,
+		pRoomParameters->roomSurface * pProbeConfig->GetRayUnitSurface());
 	
 	pRoomParameters->roomAbsorptionLow = pRoomParameters->sabineLow / pRoomParameters->roomSurface;
 	pRoomParameters->roomAbsorptionMedium = pRoomParameters->sabineMedium / pRoomParameters->roomSurface;
 	pRoomParameters->roomAbsorptionHigh = pRoomParameters->sabineHigh / pRoomParameters->roomSurface;
 	
-	pRoomParameters->roomVolume = decMath::max( 0.01f,
-		pRoomParameters->roomVolume * pProbeConfig->GetRayUnitVolume() );
+	pRoomParameters->roomVolume = decMath::max(0.01f,
+		pRoomParameters->roomVolume * pProbeConfig->GetRayUnitVolume());
 // 	pRoomParameters->roomG = 10.0f * log10f( decMath::max( FLOAT_SAFE_EPSILON,
 // 		4.0f * ( 1.0f - pRoomParameters->roomAbsorptionMedium )
 // 			/ decMath::max( pRoomParameters->sabineMedium, 0.01f ) ) );
@@ -322,28 +322,28 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	pRoomParameters->reverberationTimeHigh = 0.0f;
 	
 	const float rtfactor = 13.8f * pRoomParameters->meanFreePath * -INV_SOUND_SPEED;
-	if( pRoomParameters->avgAbsorptionLow > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->avgAbsorptionLow > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeLow = rtfactor
-			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionLow, 0.99f ) );
+			/ logf(1.0f - decMath::min(pRoomParameters->avgAbsorptionLow, 0.99f));
 	}
-	if( pRoomParameters->avgAbsorptionMedium > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->avgAbsorptionMedium > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeMedium = rtfactor
-			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionMedium, 0.99f ) );
+			/ logf(1.0f - decMath::min(pRoomParameters->avgAbsorptionMedium, 0.99f));
 	}
-	if( pRoomParameters->avgAbsorptionHigh > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->avgAbsorptionHigh > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeHigh = rtfactor
-			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionHigh, 0.99f ) );
+			/ logf(1.0f - decMath::min(pRoomParameters->avgAbsorptionHigh, 0.99f));
 	}
 	
 	/*
 	const float factorRevTime = pRoomParameters->roomVolume * REVERB_TIME_FACTOR;
-	if( pRoomParameters->sabineLow > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->sabineLow > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeLow = factorRevTime / pRoomParameters->sabineLow;
 	}
-	if( pRoomParameters->sabineMedium > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->sabineMedium > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeMedium = factorRevTime / pRoomParameters->sabineMedium;
 	}
-	if( pRoomParameters->sabineHigh > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->sabineHigh > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeHigh = factorRevTime / pRoomParameters->sabineHigh;
 	}
 	*/

@@ -101,7 +101,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	seWPTexture( seWindowProperties &windowProperties );
+	seWPTexture(seWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -114,13 +114,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline seWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline seSkin *GetSkin() const{return pSkin;}
 	
 	/** Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** Skin path changed. */
 	void OnSkinPathChanged();

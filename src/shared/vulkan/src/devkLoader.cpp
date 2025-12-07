@@ -41,51 +41,51 @@
 // class devkLoader
 /////////////////////
 
-devkLoader::devkLoader( deSharedVulkan &vulkan ) :
-pVulkan( vulkan ),
+devkLoader::devkLoader(deSharedVulkan &vulkan) :
+pVulkan(vulkan),
 #ifdef OS_BEOS
-pLibHandle( 0 )
+pLibHandle(0)
 #else
-pLibHandle( NULL )
+pLibHandle(NULL)
 #endif
 {
 	try{
 		// load vulkan library
 		pLoadVulkan();
-		vulkan.GetModule().LogInfo( "Vulkan library loaded" );
+		vulkan.GetModule().LogInfo("Vulkan library loaded");
 		
 		// get function pointer query function
 		#ifdef OS_BEOS
-		if( get_image_symbol( pLibHandle, "vkGetInstanceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&pvkGetInstanceProcAddr ) != B_OK ){
+		if(get_image_symbol(pLibHandle, "vkGetInstanceProcAddr", B_SYMBOL_TYPE_TEXT, (void**)&pvkGetInstanceProcAddr) != B_OK){
 			pvkGetInstanceProcAddr = NULL;
 		}
-		if( get_image_symbol( pLibHandle, "vkGetDeviceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&pvkGetDeviceProcAddr ) != B_OK ){
+		if(get_image_symbol(pLibHandle, "vkGetDeviceProcAddr", B_SYMBOL_TYPE_TEXT, (void**)&pvkGetDeviceProcAddr) != B_OK){
 			pvkGetDeviceProcAddr = NULL;
 		}
 		#endif
 		
 		#ifdef HAS_LIB_DL
-		pvkGetInstanceProcAddr = ( PFN_vkGetInstanceProcAddr )dlsym( pLibHandle, "vkGetInstanceProcAddr" );
-		pvkGetDeviceProcAddr = ( PFN_vkGetDeviceProcAddr )dlsym( pLibHandle, "vkGetDeviceProcAddr" );
+		pvkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)dlsym(pLibHandle, "vkGetInstanceProcAddr");
+		pvkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)dlsym(pLibHandle, "vkGetDeviceProcAddr");
 		#endif
 		
 		#ifdef OS_W32
-		pvkGetInstanceProcAddr = ( PFN_vkGetInstanceProcAddr )GetProcAddress( pLibHandle, "vkGetInstanceProcAddr" );
-		pvkGetDeviceProcAddr = ( PFN_vkGetDeviceProcAddr )GetProcAddress( pLibHandle, "vkGetDeviceProcAddr" );
+		pvkGetInstanceProcAddr = (PFN_vkGetInstanceProcAddr)GetProcAddress(pLibHandle, "vkGetInstanceProcAddr");
+		pvkGetDeviceProcAddr = (PFN_vkGetDeviceProcAddr)GetProcAddress(pLibHandle, "vkGetDeviceProcAddr");
 		#endif
 		
-		if( ! pvkGetInstanceProcAddr ){
-			DETHROW_INFO( deeInvalidAction, "Function vkGetInstanceProcAddr not found" );
+		if(! pvkGetInstanceProcAddr){
+			DETHROW_INFO(deeInvalidAction, "Function vkGetInstanceProcAddr not found");
 		}
-		if( ! pvkGetDeviceProcAddr ){
-			DETHROW_INFO( deeInvalidAction, "Function vkGetDeviceProcAddr not found" );
+		if(! pvkGetDeviceProcAddr){
+			DETHROW_INFO(deeInvalidAction, "Function vkGetDeviceProcAddr not found");
 		}
 		
 		// load functions
 		pLoadFunctions();
-		vulkan.GetModule().LogInfo( "Vulkan functions loaded" );
+		vulkan.GetModule().LogInfo("Vulkan functions loaded");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -107,54 +107,54 @@ devkLoader::~devkLoader(){
 //////////////////////
 
 void devkLoader::pCleanUp(){
-	if( pLibHandle ){
+	if(pLibHandle){
 		#ifdef OS_BEOS
-		unload_add_on( pLibHandle );
+		unload_add_on(pLibHandle);
 		#endif
 		
 		#ifdef HAS_LIB_DL
-		dlclose( pLibHandle );
+		dlclose(pLibHandle);
 		#endif
 		
 		#ifdef OS_W32
-		FreeLibrary( pLibHandle );
+		FreeLibrary(pLibHandle);
 		#endif
 	}
 }
 
 void devkLoader::pLoadVulkan(){
 	#ifdef OS_BEOS
-	pLibHandle = load_add_on( "vulkan" );
+	pLibHandle = load_add_on("vulkan");
 	
-	if( pLibHandle < 0 ){
-		DETHROW_INFO( deeInvalidAction, "Load Vulkan image failed" );
+	if(pLibHandle < 0){
+		DETHROW_INFO(deeInvalidAction, "Load Vulkan image failed");
 	}
 	#endif
 	
 	#ifdef HAS_LIB_DL
-	pLibHandle = dlopen( "libvulkan.so.1", RTLD_NOW );
-	if( ! pLibHandle ){
-		pVulkan.GetModule().LogErrorFormat( "dlerror: %s.", dlerror() );
-		DETHROW_INFO( deeInvalidAction, "Load Vulkan library failed" );
+	pLibHandle = dlopen("libvulkan.so.1", RTLD_NOW);
+	if(! pLibHandle){
+		pVulkan.GetModule().LogErrorFormat("dlerror: %s.", dlerror());
+		DETHROW_INFO(deeInvalidAction, "Load Vulkan library failed");
 	}
 	#endif
 	
 	#ifdef OS_W32
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( "vulkan-1.dll", widePath, MAX_PATH );
-	pLibHandle = LoadLibrary( widePath );
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide("vulkan-1.dll", widePath, MAX_PATH);
+	pLibHandle = LoadLibrary(widePath);
 	
-	if( ! pLibHandle ){
+	if(! pLibHandle){
 		int err = GetLastError();
-		wchar_t messageBuffer[ 251 ];
-		FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, err, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
-			messageBuffer, 250, NULL );
+		wchar_t messageBuffer[251];
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			messageBuffer, 250, NULL);
 		
-		pVulkan.GetModule().LogErrorFormat( "LoadLibrary(err=%i): %s.",
-			err, deOSWindows::WideToUtf8( messageBuffer ).GetString() );
+		pVulkan.GetModule().LogErrorFormat("LoadLibrary(err=%i): %s.",
+			err, deOSWindows::WideToUtf8(messageBuffer).GetString());
 		
-		DETHROW_INFO( deeInvalidAction, "Load Vulkan DLL failed" );
+		DETHROW_INFO(deeInvalidAction, "Load Vulkan DLL failed");
 	}
 	#endif
 }

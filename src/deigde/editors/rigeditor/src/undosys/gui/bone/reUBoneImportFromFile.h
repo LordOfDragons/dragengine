@@ -71,7 +71,7 @@ private:
 		decVector oldIKLimitsLower;
 		decVector oldIKLimitsUpper;
 		decVector oldIKResistance;
-		bool oldIKLocked[ 3 ];
+		bool oldIKLocked[3];
 	};
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUBoneImportFromFile( reRig *rig, reRig *importedRig );
+	reUBoneImportFromFile(reRig *rig, reRig *importedRig);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -106,28 +106,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Scale factor. */
-	inline float GetScale() const{ return pScale; }
+	inline float GetScale() const{return pScale;}
 	
 	/** \brief Set scale factor. */
-	void SetScale( float scale );
+	void SetScale(float scale);
 	
 	/** \brief Bone properties are imported. */
-	inline bool GetImportBoneProperties() const{ return pImportBoneProperties; }
+	inline bool GetImportBoneProperties() const{return pImportBoneProperties;}
 	
 	/** \brief Set if bone properties are imported. */
-	void SetImportBoneProperties( bool import );
+	void SetImportBoneProperties(bool import);
 	
 	/** \brief Shapes are imported. */
-	inline bool GetImportShapes() const{ return pImportShapes; }
+	inline bool GetImportShapes() const{return pImportShapes;}
 	
 	/** \brief Set if shapes are imported. */
-	void SetImportShapes( bool import );
+	void SetImportShapes(bool import);
 	
 	/** \brief Constraints are imported. */
-	inline bool GetImportConstraints() const{ return pImportConstraints; }
+	inline bool GetImportConstraints() const{return pImportConstraints;}
 	
 	/** \brief Set if constraints are imported. */
-	void SetImportConstraints( bool import );
+	void SetImportConstraints(bool import);
 	
 	/** \brief Undo. */
 	virtual void Undo();

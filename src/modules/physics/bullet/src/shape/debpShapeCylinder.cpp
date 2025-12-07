@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeCylinder::debpShapeCylinder( decShapeCylinder *shape ) : debpShape( estCylinder, shape ){
+debpShapeCylinder::debpShapeCylinder(decShapeCylinder *shape) : debpShape(estCylinder, shape){
 	pSCylinder = shape;
 	
-	SetCollisionVolume( &pCCylinder );
+	SetCollisionVolume(&pCCylinder);
 }
 
 debpShapeCylinder::~debpShapeCylinder(){
@@ -53,22 +53,22 @@ debpShapeCylinder::~debpShapeCylinder(){
 // Management
 ///////////////
 
-void debpShapeCylinder::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
-	pCCylinder.SetPosition( transformation * pSCylinder->GetPosition() );
-	pCCylinder.SetOrientation( pSCylinder->GetOrientation() * transformation.ToQuaternion() );
+void debpShapeCylinder::UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale){
+	pCCylinder.SetPosition(transformation * pSCylinder->GetPosition());
+	pCCylinder.SetOrientation(pSCylinder->GetOrientation() * transformation.ToQuaternion());
 	
-	const float scaleRadius = ( float )( ( scale.x + scale.z ) * 0.5 );
-	pCCylinder.SetHalfHeight( pSCylinder->GetHalfHeight() * ( float )scale.y );
-	pCCylinder.SetTopRadius( pSCylinder->GetTopRadius() * scaleRadius );
-	pCCylinder.SetBottomRadius( pSCylinder->GetBottomRadius() * scaleRadius );
+	const float scaleRadius = (float)((scale.x + scale.z) * 0.5);
+	pCCylinder.SetHalfHeight(pSCylinder->GetHalfHeight() * (float)scale.y);
+	pCCylinder.SetTopRadius(pSCylinder->GetTopRadius() * scaleRadius);
+	pCCylinder.SetBottomRadius(pSCylinder->GetBottomRadius() * scaleRadius);
 }
 
-void debpShapeCylinder::PrintDebug( dePhysicsBullet &module ){
+void debpShapeCylinder::PrintDebug(dePhysicsBullet &module){
 	const decDVector &p = pCCylinder.GetPosition();
 	double h = pCCylinder.GetHalfHeight();
 	double t = pCCylinder.GetTopRadius();
 	double b = pCCylinder.GetBottomRadius();
 	const decQuaternion &o = pCCylinder.GetOrientation();
 	
-	module.LogInfoFormat( "cylinder: p=(%.4g,%.4g,%.4g) h=%.4g t=%.4g b=%.4g o=(%.4g,%.4g,%.4g,%.4g)", p.x, p.y, p.z, h, t, b, o.x, o.y, o.z, o.w );
+	module.LogInfoFormat("cylinder: p=(%.4g,%.4g,%.4g) h=%.4g t=%.4g b=%.4g o=(%.4g,%.4g,%.4g,%.4g)", p.x, p.y, p.z, h, t, b, o.x, o.y, o.z, o.w);
 }

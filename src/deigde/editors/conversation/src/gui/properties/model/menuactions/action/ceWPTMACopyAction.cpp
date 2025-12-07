@@ -44,22 +44,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACopyAction::ceWPTMACopyAction( ceWindowMain &windowMain,
-ceConversationAction *action ) :
-ceWPTMenuAction( windowMain, "Copy Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ) ),
-pAction( action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+ceWPTMACopyAction::ceWPTMACopyAction(ceWindowMain &windowMain,
+ceConversationAction *action) :
+ceWPTMenuAction(windowMain, "Copy Action",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy)),
+pAction(action){
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-ceWPTMACopyAction::ceWPTMACopyAction( ceWindowMain &windowMain,
-ceConversationAction *action, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pAction( action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+ceWPTMACopyAction::ceWPTMACopyAction(ceWindowMain &windowMain,
+ceConversationAction *action, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pAction(action){
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -70,7 +70,7 @@ pAction( action ){
 
 void ceWPTMACopyAction::OnAction(){
 	ceConversationActionList actions;
-	actions.Add( pAction );
+	actions.Add(pAction);
 	
 	GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::NewWith(actions));
 }

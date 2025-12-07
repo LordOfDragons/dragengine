@@ -36,9 +36,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLAScale::ceUCAASpeakEyesLAScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak )
-: ceUCAASpeakStripsScale( topic, actorSpeak ){
-	SetShortInfo( "Scale eyes look-at" );
+ceUCAASpeakEyesLAScale::ceUCAASpeakEyesLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
+: ceUCAASpeakStripsScale(topic, actorSpeak){
+	SetShortInfo("Scale eyes look-at");
 }
 
 ceUCAASpeakEyesLAScale::~ceUCAASpeakEyesLAScale(){

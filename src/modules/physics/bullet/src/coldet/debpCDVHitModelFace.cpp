@@ -51,8 +51,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpCDVHitModelFace::debpCDVHitModelFace( debpCollisionDetection *coldet ){
-	if( ! coldet ) DETHROW( deeInvalidParam );
+debpCDVHitModelFace::debpCDVHitModelFace(debpCollisionDetection *coldet){
+	if(! coldet) DETHROW(deeInvalidParam);
 	
 	pColDet = coldet;
 	
@@ -77,29 +77,29 @@ void debpCDVHitModelFace::Reset(){
 	pHasCollision = false;
 }
 
-void debpCDVHitModelFace::SetComponent( debpComponent *component ){
+void debpCDVHitModelFace::SetComponent(debpComponent *component){
 	pComponent = component;
 }
 
-void debpCDVHitModelFace::SetTestShape( debpShape *shape ){
+void debpCDVHitModelFace::SetTestShape(debpShape *shape){
 	pShape = shape;
 	
 	pColliderVolume = NULL;
 	pColliderComponent = NULL;
 }
 
-void debpCDVHitModelFace::SetTestCollider( debpCollider *collider ){
+void debpCDVHitModelFace::SetTestCollider(debpCollider *collider){
 	pShape = NULL;
 	
 	pColliderVolume = NULL;
 	pColliderComponent = NULL;
 	
-	if( collider ){
-		if( collider->IsVolume() ){
-			pColliderVolume = ( debpColliderVolume* )collider;
+	if(collider){
+		if(collider->IsVolume()){
+			pColliderVolume = (debpColliderVolume*)collider;
 			
 		}else{
-			pColliderComponent = ( debpColliderComponent* )collider;
+			pColliderComponent = (debpColliderComponent*)collider;
 		}
 	}
 }
@@ -109,16 +109,16 @@ void debpCDVHitModelFace::SetTestCollider( debpCollider *collider ){
 // Visiting
 /////////////
 
-void debpCDVHitModelFace::VisitNode( debpDOctree *node, int intersection ){
-	if( ! pHasCollision ){
-		const debpModelOctree &rnode = *( ( debpModelOctree* )node );
+void debpCDVHitModelFace::VisitNode(debpDOctree *node, int intersection){
+	if(! pHasCollision){
+		const debpModelOctree &rnode = *((debpModelOctree*)node);
 		int f, faceIndex, faceCount = rnode.GetFaceCount();
 		
-		if( pShape ){
-			for( f=0; f<faceCount; f++ ){
-				faceIndex = rnode.GetFaceAt( f );
+		if(pShape){
+			for(f=0; f<faceCount; f++){
+				faceIndex = rnode.GetFaceAt(f);
 				
-				if( pColDet->ShapeHitsModelFace( *pShape, *pComponent, faceIndex ) ){
+				if(pColDet->ShapeHitsModelFace(*pShape, *pComponent, faceIndex)){
 					pResult.shape1 = 0;
 					pResult.face = faceIndex;
 					pHasCollision = true;
@@ -126,17 +126,17 @@ void debpCDVHitModelFace::VisitNode( debpDOctree *node, int intersection ){
 				}
 			}
 			
-		}else if( pColliderVolume ){
+		}else if(pColliderVolume){
 			const debpShapeList &shapes = pColliderVolume->GetShapes();
 			int s, shapeCount = shapes.GetShapeCount();
 			
-			for( s=0; s<shapeCount; s++ ){
-				debpShape &shape = *shapes.GetShapeAt( s );
+			for(s=0; s<shapeCount; s++){
+				debpShape &shape = *shapes.GetShapeAt(s);
 				
-				for( f=0; f<faceCount; f++ ){
-					faceIndex = rnode.GetFaceAt( f );
+				for(f=0; f<faceCount; f++){
+					faceIndex = rnode.GetFaceAt(f);
 					
-					if( pColDet->ShapeHitsModelFace( shape, *pComponent, faceIndex ) ){
+					if(pColDet->ShapeHitsModelFace(shape, *pComponent, faceIndex)){
 						pResult.shape1 = s;
 						pResult.face = faceIndex;
 						pHasCollision = true;

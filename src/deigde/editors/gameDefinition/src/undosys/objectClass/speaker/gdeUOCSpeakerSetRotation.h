@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetRotation( gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, const decVector &newValue );
+	gdeUOCSpeakerSetRotation(gdeObjectClass *objectClass,
+		gdeOCSpeaker *speaker, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

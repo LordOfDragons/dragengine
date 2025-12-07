@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerToggleFrozen( seController *controller );
+	seUControllerToggleFrozen(seController *controller);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -79,7 +79,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpSmokeEmitter( dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter );
+	debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter);
 	/** Cleans up the peer. */
 	virtual ~debpSmokeEmitter();
 	/*@}*/
@@ -87,35 +87,35 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
+	inline dePhysicsBullet *GetBullet() const{return pBullet;}
 	/** Retrieves the force field. */
-	inline deSmokeEmitter *GetSmokeEmitter() const{ return pSmokeEmitter; }
+	inline deSmokeEmitter *GetSmokeEmitter() const{return pSmokeEmitter;}
 	
 	/** Retrieves the parent world. */
-	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
+	inline debpWorld *GetParentWorld() const{return pParentWorld;}
 	/** Sets the parent world. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the density points. */
-	inline debpSmokeDensityPoint *GetPoints() const{ return pPoints; }
+	inline debpSmokeDensityPoint *GetPoints() const{return pPoints;}
 	/** Retrieves the number of density points. */
-	inline int GetDensityPointCount() const{ return pPointCount; }
+	inline int GetDensityPointCount() const{return pPointCount;}
 	
 	/** Retrieves the emitter matrix. */
 	const decMatrix &GetEmitterMatrix();
 	
 	/** Prepare stepping. */
-	void PreparePoints( float elapsed );
+	void PreparePoints(float elapsed);
 	/** Steps the points. */
-	void StepPoints( float elapsed );
+	void StepPoints(float elapsed);
 	
 	/** Cast a point. */
 	void CastPoint();
 	/** Kill a point. */
-	void KillPoint( int index );
+	void KillPoint(int index);
 	
 	/** Applies forces caused by a force field. */
-	void ApplyForceField( debpForceField *forceField, float elapsed );
+	void ApplyForceField(debpForceField *forceField, float elapsed);
 	/*@}*/
 	
 	/** @name Notifications */

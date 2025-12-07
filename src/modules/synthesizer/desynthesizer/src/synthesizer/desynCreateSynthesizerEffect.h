@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desynCreateSynthesizerEffect( const desynSynthesizer &synthesizer,
-		int firstLink, desynSynthesizerSource &source );
+	desynCreateSynthesizerEffect(const desynSynthesizer &synthesizer,
+		int firstLink, desynSynthesizerSource &source);
 	
 	/** \brief Clean up visitor. */
 	virtual ~desynCreateSynthesizerEffect();
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created effect or \em NULL if not present. */
-	inline desynSynthesizerEffect *GetEffect() const{ return pEffect; }
+	inline desynSynthesizerEffect *GetEffect() const{return pEffect;}
 	
 	/** \brief Reset. */
 	void Reset();
@@ -75,10 +75,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void VisitEffect( deSynthesizerEffect &effect );
+	virtual void VisitEffect(deSynthesizerEffect &effect);
 	
 	/** \brief Visit stretch effect. */
-	virtual void VisitStretch( deSynthesizerEffectStretch &effect );
+	virtual void VisitStretch(deSynthesizerEffectStretch &effect);
 	/*@}*/
 };
 

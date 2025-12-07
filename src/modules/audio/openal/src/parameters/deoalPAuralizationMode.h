@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create parameter. */
-	deoalPAuralizationMode( deAudioOpenAL &oal );
+	deoalPAuralizationMode(deAudioOpenAL &oal);
 	
 	/** \brief Clean up parameter. */
 	virtual ~deoalPAuralizationMode();
@@ -50,7 +50,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** \brief Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

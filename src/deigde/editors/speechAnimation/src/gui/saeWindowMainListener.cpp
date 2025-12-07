@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeWindowMainListener::saeWindowMainListener( saeWindowMain &window ) :
-pWindow( window ){
+saeWindowMainListener::saeWindowMainListener(saeWindowMain &window) :
+pWindow(window){
 }
 
 saeWindowMainListener::~saeWindowMainListener(){
@@ -52,38 +52,38 @@ saeWindowMainListener::~saeWindowMainListener(){
 // Management
 ///////////////
 
-void saeWindowMainListener::StateChanged( saeSAnimation *sanimation ){
+void saeWindowMainListener::StateChanged(saeSAnimation *sanimation){
 	pWindow.UpdateAllActions();
 }
 
-void saeWindowMainListener::UndoChanged( saeSAnimation *sanimation ){
+void saeWindowMainListener::UndoChanged(saeSAnimation *sanimation){
 	pWindow.UpdateAllActions();
 }
 
-void saeWindowMainListener::ViewChanged( saeSAnimation *sanimation ){
+void saeWindowMainListener::ViewChanged(saeSAnimation *sanimation){
 	pWindow.UpdateAllActions();
 }
 
-void saeWindowMainListener::SAnimationChanged( saeSAnimation *sanimation ){
-	pWindow.UpdateAllActions();
-}
-
-
-
-void saeWindowMainListener::PhonemeStructureChanged( saeSAnimation *sanimation ){
-	pWindow.UpdateAllActions();
-}
-
-void saeWindowMainListener::ActivePhonemeChanged( saeSAnimation *sanimation ){
+void saeWindowMainListener::SAnimationChanged(saeSAnimation *sanimation){
 	pWindow.UpdateAllActions();
 }
 
 
 
-void saeWindowMainListener::WordStructureChanged( saeSAnimation *sanimation ){
+void saeWindowMainListener::PhonemeStructureChanged(saeSAnimation *sanimation){
 	pWindow.UpdateAllActions();
 }
 
-void saeWindowMainListener::ActiveWordChanged( saeSAnimation *sanimation ){
+void saeWindowMainListener::ActivePhonemeChanged(saeSAnimation *sanimation){
+	pWindow.UpdateAllActions();
+}
+
+
+
+void saeWindowMainListener::WordStructureChanged(saeSAnimation *sanimation){
+	pWindow.UpdateAllActions();
+}
+
+void saeWindowMainListener::ActiveWordChanged(saeSAnimation *sanimation){
 	pWindow.UpdateAllActions();
 }

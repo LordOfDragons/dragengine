@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font from XML file. */
-	dealFont( dealDisplay &display, const char *filename );
+	dealFont(dealDisplay &display, const char *filename);
 	
 	/** \brief Clean up font. */
 	virtual ~dealFont();
@@ -83,26 +83,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{ return pDisplay; }
+	inline dealDisplay &GetDisplay() const{return pDisplay;}
 	
 	/** \brief Image. */
-	inline dealImage *GetImage() const{ return pImage; }
+	inline dealImage *GetImage() const{return pImage;}
 	
 	/** \brief Line height. */
-	inline int GetLineHeight() const{ return pLineHeight; }
+	inline int GetLineHeight() const{return pLineHeight;}
 	
 	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{ return pGlyphCount; }
+	inline int GetGlyphCount() const{return pGlyphCount;}
 	
 	/** \brief Glyph for code. */
-	const sGlyph &GetGlyphFor( int code ) const;
+	const sGlyph &GetGlyphFor(int code) const;
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pLoadXML( const char *filename );
-	void pReadFont( const decXmlElementTag &root );
-	sGlyph &pGetGlyphForCreate( int code );
+	void pLoadXML(const char *filename);
+	void pReadFont(const decXmlElementTag &root);
+	sGlyph &pGetGlyphForCreate(int code);
 };
 
 #endif

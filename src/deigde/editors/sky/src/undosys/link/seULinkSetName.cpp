@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetName::seULinkSetName( seLink *link, const char *newName ) :
-pLink( NULL ),
-pNewName( newName )
+seULinkSetName::seULinkSetName(seLink *link, const char *newName) :
+pLink(NULL),
+pNewName(newName)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Link Name" );
+	SetShortInfo("Set Link Name");
 	
 	pOldName = link->GetName();
 	
@@ -56,7 +56,7 @@ pNewName( newName )
 }
 
 seULinkSetName::~seULinkSetName(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULinkSetName::~seULinkSetName(){
 ///////////////
 
 void seULinkSetName::Undo(){
-	pLink->SetName( pOldName );
+	pLink->SetName(pOldName);
 }
 
 void seULinkSetName::Redo(){
-	pLink->SetName( pNewName );
+	pLink->SetName(pNewName);
 }

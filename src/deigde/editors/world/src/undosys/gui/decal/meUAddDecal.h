@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUAddDecal( meWorld *world, meDecal *decal );
+	meUAddDecal(meWorld *world, meDecal *decal);
 	/** \brief Clean up undo. */
 	virtual ~meUAddDecal();
 	/*@}*/
@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the decal. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline meDecal *GetDecal() const{return pDecal;}
 	
 	/** \brief Undo. */
 	virtual void Undo();

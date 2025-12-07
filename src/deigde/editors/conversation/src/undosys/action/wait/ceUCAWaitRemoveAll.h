@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitRemoveAll( ceConversationTopic *topic, ceCAWait *wait );
+	ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wait);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitRemoveAll();

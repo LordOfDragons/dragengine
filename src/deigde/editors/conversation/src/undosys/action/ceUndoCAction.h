@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUndoCAction( ceConversationAction *action, ceConversationTopic *topic );
+	ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUndoCAction();
@@ -59,9 +59,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline ceConversationAction *GetAction() const{return pAction;}
 	/** \brief Retrieves the topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	/*@}*/
 };
 

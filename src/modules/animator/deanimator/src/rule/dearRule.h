@@ -67,8 +67,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRule( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRule &rule );
+	dearRule(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRule &rule);
 	
 	/** Clean up animator. */
 	virtual ~dearRule();
@@ -80,36 +80,36 @@ public:
 	deDEAnimator &GetModule() const;
 	
 	/** Animator. */
-	inline const dearAnimator &GetAnimator() const{ return pAnimator; }
+	inline const dearAnimator &GetAnimator() const{return pAnimator;}
 	
 	/** Animator instance. */
-	inline dearAnimatorInstance &GetInstance(){ return pInstance; } 
-	inline const dearAnimatorInstance &GetInstance() const{ return pInstance; } 
+	inline dearAnimatorInstance &GetInstance(){return pInstance;} 
+	inline const dearAnimatorInstance &GetInstance() const{return pInstance;} 
 	
 	/** Animator rule. */
-	inline const deAnimatorRule &GetRule() const{ return pRule; }
+	inline const deAnimatorRule &GetRule() const{return pRule;}
 	
 	
 	
 	/** All bones are used or a list of bones. */
-	inline bool GetUseAllBones() const{ return pUseAllBones; }
+	inline bool GetUseAllBones() const{return pUseAllBones;}
 	
 	/** Bone mapping count. */
 	int GetBoneMappingCount() const;
 	
 	/** Bone mapping for bone index. */
-	int GetBoneMappingFor( int boneIndex ) const;
+	int GetBoneMappingFor(int boneIndex) const;
 	
 	
 	
 	/** All vertex position sets are used or a list of vertex position sets. */
-	inline bool GetUseAllVPS() const{ return pUseAllVPS; }
+	inline bool GetUseAllVPS() const{return pUseAllVPS;}
 	
 	/** Vertex position set mapping count. */
 	int GetVPSMappingCount() const;
 	
 	/** Vertex position set mapping for vertex position set index. */
-	int GetVPSMappingFor( int vpsIndex ) const;
+	int GetVPSMappingFor(int vpsIndex) const;
 	
 	
 	
@@ -122,10 +122,10 @@ public:
 	
 	
 	/** Thread-safe rule blend mode. */
-	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
+	inline deAnimatorRule::eBlendModes GetBlendMode() const{return pBlendMode;}
 	
 	/** Thread-safe rule enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	
 	
@@ -133,13 +133,13 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	
 	/**
 	 * Check if a full rebuild of the animator instance is required.
@@ -147,10 +147,10 @@ public:
 	virtual bool RebuildInstance() const;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ) = 0;
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist) = 0;
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();

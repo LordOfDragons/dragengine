@@ -42,15 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceClear::ceUCAASpeakFaceClear( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ) :
-pTopic( NULL ),
-pActorSpeak( NULL )
+ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
+pTopic(NULL),
+pActorSpeak(NULL)
 {
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+	if(! topic || ! actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor speak clear face pose" );
+	SetShortInfo("Actor speak clear face pose");
 	
 	pOldFaces = actorSpeak->GetFacePoseList();
 	
@@ -62,10 +62,10 @@ pActorSpeak( NULL )
 }
 
 ceUCAASpeakFaceClear::~ceUCAASpeakFaceClear(){
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -77,10 +77,10 @@ ceUCAASpeakFaceClear::~ceUCAASpeakFaceClear(){
 
 void ceUCAASpeakFaceClear::Undo(){
 	pActorSpeak->GetFacePoseList() = pOldFaces;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakFaceClear::Redo(){
 	pActorSpeak->GetFacePoseList().RemoveAll();
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

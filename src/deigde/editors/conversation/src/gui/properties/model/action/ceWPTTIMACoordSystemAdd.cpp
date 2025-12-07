@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMACoordSystemAdd::ceWPTTIMACoordSystemAdd( ceWindowMain &windowMain,
-ceConversation &conversation, ceCACoordSystemAdd *action ) :
-ceWPTTIMAction( windowMain, etActionCoordSystemAdd, conversation, action )
+ceWPTTIMACoordSystemAdd::ceWPTTIMACoordSystemAdd(ceWindowMain &windowMain,
+ceConversation &conversation, ceCACoordSystemAdd *action) :
+ceWPTTIMAction(windowMain, etActionCoordSystemAdd, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionCoordSysAdd() );
+	SetIcon(windowMain.GetIconActionCoordSysAdd());
 	Update();
 }
 
@@ -61,6 +61,6 @@ void ceWPTTIMACoordSystemAdd::Update(){
 	const ceCACoordSystemAdd &action = *GetActionCoordSystemAdd();
 	decString text;
 	
-	text.Format( "Coord System Add (%s)", action.GetCoordSystemID().GetString() );
-	SetText( text );
+	text.Format("Coord System Add (%s)", action.GetCoordSystemID().GetString());
+	SetText(text);
 }

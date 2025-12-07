@@ -50,7 +50,7 @@
 
 #define THRESHOLD_ON_PLANE	0.0001f
 
-#define PLANE_SIDE(dist)	( ( ( dist ) > THRESHOLD_ON_PLANE ) ? 1 : ( ( ( dist ) < -THRESHOLD_ON_PLANE ) ? -1 : 0 ) )
+#define PLANE_SIDE(dist)	(((dist) > THRESHOLD_ON_PLANE) ? 1 : (((dist) < -THRESHOLD_ON_PLANE) ? -1 : 0))
 
 
 
@@ -66,7 +66,7 @@ decConvexFaceList::decConvexFaceList(){
 	pVertexSize = 0;
 }
 
-decConvexFaceList::decConvexFaceList( const decConvexFaceList &list ){
+decConvexFaceList::decConvexFaceList(const decConvexFaceList &list){
 	const int vertexCount = list.GetVertexCount();
 	const int faceCount = list.GetFaceCount();
 	decConvexFace *face = NULL;
@@ -77,19 +77,19 @@ decConvexFaceList::decConvexFaceList( const decConvexFaceList &list ){
 	pVertexSize = 0;
 	
 	try{
-		for( i=0; i<vertexCount; i++ ){
-			AddVertex( list.GetVertexAt( i ) );
+		for(i=0; i<vertexCount; i++){
+			AddVertex(list.GetVertexAt(i));
 		}
-		for( i=0; i<faceCount; i++ ){
-			face = CreateFace( list.GetFaceAt( i ) );
+		for(i=0; i<faceCount; i++){
+			face = CreateFace(list.GetFaceAt(i));
 			*face = *list.GetFaceAt( i ); // CreateFace does not create a copy just a new face
-			AddFace( face );
+			AddFace(face);
 			face = NULL;
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		RemoveAllFaces();
-		if( pVertices ){
+		if(pVertices){
 			delete [] pVertices;
 		}
 		throw;
@@ -98,7 +98,7 @@ decConvexFaceList::decConvexFaceList( const decConvexFaceList &list ){
 
 decConvexFaceList::~decConvexFaceList(){
 	RemoveAllFaces();
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 }
@@ -112,18 +112,18 @@ int decConvexFaceList::GetVertexCount() const{
 	return pVertexCount;
 }
 
-const decVector &decConvexFaceList::GetVertexAt( int index ) const{
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+const decVector &decConvexFaceList::GetVertexAt(int index) const{
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pVertices[ index ];
+	return pVertices[index];
 }
 
-bool decConvexFaceList::HasVertex( const decVector &vertex ) const{
+bool decConvexFaceList::HasVertex(const decVector &vertex) const{
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex.IsEqualTo( pVertices[ i ], THRESHOLD_EQUAL ) ){
+	for(i=0; i<pVertexCount; i++){
+		if(vertex.IsEqualTo(pVertices[i], THRESHOLD_EQUAL)){
 			return true;
 		}
 	}
@@ -131,11 +131,11 @@ bool decConvexFaceList::HasVertex( const decVector &vertex ) const{
 	return false;
 }
 
-int decConvexFaceList::IndexOfVertex( const decVector &vertex ) const{
+int decConvexFaceList::IndexOfVertex(const decVector &vertex) const{
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex.IsEqualTo( pVertices[ i ], THRESHOLD_EQUAL ) ){
+	for(i=0; i<pVertexCount; i++){
+		if(vertex.IsEqualTo(pVertices[i], THRESHOLD_EQUAL)){
 			return i;
 		}
 	}
@@ -143,17 +143,17 @@ int decConvexFaceList::IndexOfVertex( const decVector &vertex ) const{
 	return -1;
 }
 
-void decConvexFaceList::AddVertex( const decVector &vertex ){
+void decConvexFaceList::AddVertex(const decVector &vertex){
 // 	if( HasVertex( vertex ) ){
 // 		DETHROW( deeInvalidParam );
 // 	}
 	
-	if( pVertexCount == pVertexSize ){
+	if(pVertexCount == pVertexSize){
 		const int newSize = pVertexSize * 3 / 2 + 1;
-		decVector * const newArray = new decVector[ newSize ];
+		decVector * const newArray = new decVector[newSize];
 		
-		if( pVertices ){
-			memcpy( newArray, pVertices, sizeof( decVector ) * pVertexCount );
+		if(pVertices){
+			memcpy(newArray, pVertices, sizeof(decVector) * pVertexCount);
 			delete [] pVertices;
 		}
 		
@@ -161,19 +161,19 @@ void decConvexFaceList::AddVertex( const decVector &vertex ){
 		pVertexSize = newSize;
 	}
 	
-	pVertices[ pVertexCount ] = vertex;
+	pVertices[pVertexCount] = vertex;
 	pVertexCount++;
 }
 
-void decConvexFaceList::RemoveVertex( int index ){
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+void decConvexFaceList::RemoveVertex(int index){
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=index+1; i<pVertexCount; i++ ){
-		pVertices[ i - 1 ] = pVertices[ i ];
+	for(i=index+1; i<pVertexCount; i++){
+		pVertices[i - 1] = pVertices[i];
 	}
 	pVertexCount--;
 }
@@ -192,55 +192,55 @@ int decConvexFaceList::GetFaceCount() const{
 	return pFaces.GetCount();
 }
 
-decConvexFace *decConvexFaceList::GetFaceAt( int index ) const{
-	return ( decConvexFace* )pFaces.GetAt( index );
+decConvexFace *decConvexFaceList::GetFaceAt(int index) const{
+	return (decConvexFace*)pFaces.GetAt(index);
 }
 
-bool decConvexFaceList::HasFace( decConvexFace *face ) const{
-	return pFaces.Has( face );
+bool decConvexFaceList::HasFace(decConvexFace *face) const{
+	return pFaces.Has(face);
 }
 
-int decConvexFaceList::IndexOfFace( decConvexFace *face ) const{
-	return pFaces.IndexOf( face );
+int decConvexFaceList::IndexOfFace(decConvexFace *face) const{
+	return pFaces.IndexOf(face);
 }
 
-void decConvexFaceList::AddFace( decConvexFace *face ){
+void decConvexFaceList::AddFace(decConvexFace *face){
 	// no pFaces.Has(face) check. with larger number of faces this becomes very slow
-	if( ! face ){
-		DETHROW( deeInvalidParam );
+	if(! face){
+		DETHROW(deeInvalidParam);
 	}
-	pFaces.Add( face );
+	pFaces.Add(face);
 }
 
-void decConvexFaceList::RemoveFaceAt( int index ){
-	decConvexFace * const face = ( decConvexFace* )pFaces.GetAt( index );
-	pFaces.RemoveFrom( index );
+void decConvexFaceList::RemoveFaceAt(int index){
+	decConvexFace * const face = (decConvexFace*)pFaces.GetAt(index);
+	pFaces.RemoveFrom(index);
 	delete face;
 }
 
-void decConvexFaceList::RemoveFace( decConvexFace *face ){
-	ExtractFace( face );
+void decConvexFaceList::RemoveFace(decConvexFace *face){
+	ExtractFace(face);
 	delete face;
 }
 
-void decConvexFaceList::ExtractFaceAt( int index ){
-	pFaces.RemoveFrom( index );
+void decConvexFaceList::ExtractFaceAt(int index){
+	pFaces.RemoveFrom(index);
 }
 
-void decConvexFaceList::ExtractFace( decConvexFace *face ){
-	const int index = pFaces.IndexOf( face );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void decConvexFaceList::ExtractFace(decConvexFace *face){
+	const int index = pFaces.IndexOf(face);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
-	pFaces.RemoveFrom( index );
+	pFaces.RemoveFrom(index);
 }
 
 void decConvexFaceList::RemoveAllFaces(){
 	const int count = pFaces.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( decConvexFace* )pFaces.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (decConvexFace*)pFaces.GetAt(i);
 	}
 	pFaces.RemoveAll();
 }
@@ -250,19 +250,19 @@ void decConvexFaceList::RemoveAllFaces(){
 // Management
 ///////////////
 
-void decConvexFaceList::Move( const decVector &direction ){
+void decConvexFaceList::Move(const decVector &direction){
 	int i;
-	for( i=0; i<pVertexCount; i++ ){
-		pVertices[ i ] += direction;
+	for(i=0; i<pVertexCount; i++){
+		pVertices[i] += direction;
 	}
 }
 
-void decConvexFaceList::SplitByFace( const decConvexFaceList &splitterFaceList, int splitterFaceIndex ){
-	const decConvexFace &splitterFace = *splitterFaceList.GetFaceAt( splitterFaceIndex );
+void decConvexFaceList::SplitByFace(const decConvexFaceList &splitterFaceList, int splitterFaceIndex){
+	const decConvexFace &splitterFace = *splitterFaceList.GetFaceAt(splitterFaceIndex);
 	const int splitVertexCount = splitterFace.GetVertexCount();
 	
 	// if the splitter face does not have at least 3 vertices do not split at all
-	if( splitVertexCount < 3 ){
+	if(splitVertexCount < 3){
 		return;
 	}
 	
@@ -272,20 +272,20 @@ void decConvexFaceList::SplitByFace( const decConvexFaceList &splitterFaceList, 
 	// process each face in the list one by one. this is required since faces are allowed
 	// to be located in different planes. the face count is kept constant to avoid testing
 	// newly created faces again
-	for( i=0; i<faceCount; i++ ){
+	for(i=0; i<faceCount; i++){
 //		if( splitterFaceIndex > 2 ) continue;
-		const decConvexFace &testFace = *( ( decConvexFace* )pFaces.GetAt( i ) );
+		const decConvexFace &testFace = *((decConvexFace*)pFaces.GetAt(i));
 		
 		// if the face does not have at least 3 vertices do not split but remove it
-		if( testFace.GetVertexCount() < 3 ){
-			RemoveFaceAt( i );
+		if(testFace.GetVertexCount() < 3){
+			RemoveFaceAt(i);
 			i--;
 			faceCount--;
 			continue;
 		}
 		
 		const decVector &planeNormal = testFace.GetNormal();
-		const decVector &planePosition = pVertices[ testFace.GetVertexAt( 0 ) ];
+		const decVector &planePosition = pVertices[testFace.GetVertexAt(0)];
 		const float planeDist = planeNormal * planePosition;
 		
 		// determine the split edge. for this find the two edges piercing the face plane
@@ -296,9 +296,9 @@ void decConvexFaceList::SplitByFace( const decConvexFaceList &splitterFaceList, 
 		decVector edgeFrom;
 		decVector edgeTo;
 		
-		for( j=0; j<splitVertexCount; j++ ){
-			const decVector &edgeVertex1 = splitterFaceList.GetVertexAt( splitterFace.GetVertexAt( j ) );
-			const decVector &edgeVertex2 = splitterFaceList.GetVertexAt( splitterFace.GetVertexAt( ( j + 1 ) % splitVertexCount ) );
+		for(j=0; j<splitVertexCount; j++){
+			const decVector &edgeVertex1 = splitterFaceList.GetVertexAt(splitterFace.GetVertexAt(j));
+			const decVector &edgeVertex2 = splitterFaceList.GetVertexAt(splitterFace.GetVertexAt((j + 1) % splitVertexCount));
 			const decVector edgeDirection = edgeVertex2 - edgeVertex1;
 			
 			const float numer = planeNormal * edgeVertex1 - planeDist;
@@ -306,36 +306,36 @@ void decConvexFaceList::SplitByFace( const decConvexFaceList &splitterFaceList, 
 			
 			// if the edge is parallel to plane ignore it. the edges right before and after this
 			// edge are adding the edge start and end point already
-			if( fabsf( denom ) < THRESHOLD_ON_PLANE ){
+			if(fabsf(denom) < THRESHOLD_ON_PLANE){
 				continue;
 			}
 			
 			// if the hit point is on the edge the edge contributes a cut edge point
 			const float dist = -numer / denom;
-			if( dist >= 0.0f && dist <= 1.0f ){
+			if(dist >= 0.0f && dist <= 1.0f){
 				const decVector hitPoint = edgeVertex1 + edgeDirection * dist;
 				
-				if( ! hasEdgeFrom ){
+				if(! hasEdgeFrom){
 					edgeFrom = hitPoint;
 					hasEdgeFrom = true;
 					
-				}else if( ! hasEdgeTo ){
+				}else if(! hasEdgeTo){
 					edgeTo = hitPoint;
 					hasEdgeTo = true;
 					
 				}else{
-					printf( "more than 2 cut points found. ignoring the new cut point." );
+					printf("more than 2 cut points found. ignoring the new cut point.");
 				}
 			}
 		}
 		
 		// if there is a split edge split the plan
-		if( hasEdgeFrom && hasEdgeTo ){
-			pSplitFaceByEdge( i, edgeFrom, edgeTo );
+		if(hasEdgeFrom && hasEdgeTo){
+			pSplitFaceByEdge(i, edgeFrom, edgeTo);
 			
 			// if the face becomes degenerated or empty remove it
-			if( testFace.GetVertexCount() < 3 ){
-				RemoveFaceAt( i );
+			if(testFace.GetVertexCount() < 3){
+				RemoveFaceAt(i);
 				i--;
 				faceCount--;
 			}
@@ -343,69 +343,69 @@ void decConvexFaceList::SplitByFace( const decConvexFaceList &splitterFaceList, 
 	}
 }
 
-void decConvexFaceList::SplitByFaceList( const decConvexFaceList &splitterFaceList ){
+void decConvexFaceList::SplitByFaceList(const decConvexFaceList &splitterFaceList){
 	const int count = splitterFaceList.GetFaceCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		SplitByFace( splitterFaceList, i );
+	for(i=0; i<count; i++){
+		SplitByFace(splitterFaceList, i);
 	}
 }
 
-void decConvexFaceList::SplitByVolume( const decConvexVolume &volume ){
+void decConvexFaceList::SplitByVolume(const decConvexVolume &volume){
 	// convert the volume first into a convex face list
 	const int volumeVertexCount = volume.GetVertexCount();
 	const int volumeFaceCount = volume.GetFaceCount();
 	decConvexFaceList list;
 	int i, j;
 	
-	for( i=0; i<volumeVertexCount; i++ ){
-		list.AddVertex( volume.GetVertexAt( i ) );
+	for(i=0; i<volumeVertexCount; i++){
+		list.AddVertex(volume.GetVertexAt(i));
 	}
 	
 	decConvexFace *newFace = NULL;
 	try{
-		for( i=0; i<volumeFaceCount; i++ ){
-			const decConvexVolumeFace &volumeFace = *volume.GetFaceAt( i );
+		for(i=0; i<volumeFaceCount; i++){
+			const decConvexVolumeFace &volumeFace = *volume.GetFaceAt(i);
 			const int volumeFaceVertexCount = volumeFace.GetVertexCount();
 			
 			newFace = new decConvexFace;
-			newFace->SetNormal( volumeFace.GetNormal() );
-			for( j=0; j<volumeFaceVertexCount; j++ ){
-				newFace->AddVertex( volumeFace.GetVertexAt( j ) );
+			newFace->SetNormal(volumeFace.GetNormal());
+			for(j=0; j<volumeFaceVertexCount; j++){
+				newFace->AddVertex(volumeFace.GetVertexAt(j));
 			}
-			list.AddFace( newFace );
+			list.AddFace(newFace);
 			newFace = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newFace ){
+	}catch(const deException &){
+		if(newFace){
 			delete newFace;
 		}
 		throw;
 	}
 	
 	// split by the generated convex face list
-	SplitByFaceList( list );
+	SplitByFaceList(list);
 	
 	// remove all faces with centers located in the split volume
-	for( i=pFaces.GetCount()-1; i>=0; i-- ){
-		const decConvexFace &face = *( ( decConvexFace* )pFaces.GetAt( i ) );
-		const decVector faceCenter = face.CalculateCenter( *this );
+	for(i=pFaces.GetCount()-1; i>=0; i--){
+		const decConvexFace &face = *((decConvexFace*)pFaces.GetAt(i));
+		const decVector faceCenter = face.CalculateCenter(*this);
 		
-		for( j=0; j<volumeFaceCount; j++ ){
-			const decConvexVolumeFace &volumeFace = *volume.GetFaceAt( j );
+		for(j=0; j<volumeFaceCount; j++){
+			const decConvexVolumeFace &volumeFace = *volume.GetFaceAt(j);
 			const decVector &volumeFaceNormal = volumeFace.GetNormal();
-			const float volumeFaceDist = volumeFaceNormal * volume.GetVertexAt( volumeFace.GetVertexAt( 0 ) );
+			const float volumeFaceDist = volumeFaceNormal * volume.GetVertexAt(volumeFace.GetVertexAt(0));
 			const float faceDist = volumeFaceNormal * faceCenter;
 			
-			if( faceDist > volumeFaceDist ){
+			if(faceDist > volumeFaceDist){
 				break;
 			}
 		}
 		
-		if( j == volumeFaceCount ){
-			RemoveFaceAt( i );
+		if(j == volumeFaceCount){
+			RemoveFaceAt(i);
 		}
 	}
 }
@@ -415,11 +415,11 @@ void decConvexFaceList::SplitByVolume( const decConvexVolume &volume ){
 // Subclassing
 ////////////////
 
-decConvexFace *decConvexFaceList::CreateFace( decConvexFace *face ){
+decConvexFace *decConvexFaceList::CreateFace(decConvexFace *face){
 	decConvexFace *newFace = new decConvexFace;
 	
-	if( face ){
-		newFace->SetMarker( face->GetMarker() );
+	if(face){
+		newFace->SetMarker(face->GetMarker());
 	}
 	
 	return newFace;
@@ -437,23 +437,23 @@ decConvexFace *decConvexFaceList::CreateFace( decConvexFace *face ){
 #define DBG(c)
 #endif
 
-void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdgeFrom, const decVector &cutEdgeTo ){
-	DBG( printf( "\nsplit face %i by edge (%f,%f,%f)-(%f,%f,%f)\n", faceIndex, cutEdgeFrom.x,
-		cutEdgeFrom.y, cutEdgeFrom.z, cutEdgeTo.x, cutEdgeTo.y, cutEdgeTo.z ) );
+void decConvexFaceList::pSplitFaceByEdge(int faceIndex, const decVector &cutEdgeFrom, const decVector &cutEdgeTo){
+	DBG(printf("\nsplit face %i by edge (%f,%f,%f)-(%f,%f,%f)\n", faceIndex, cutEdgeFrom.x,
+		cutEdgeFrom.y, cutEdgeFrom.z, cutEdgeTo.x, cutEdgeTo.y, cutEdgeTo.z));
 	
 	// cut edges and determine at the same time if cut edge points are inside
-	decConvexFace &face = *( ( decConvexFace* )pFaces.GetAt( faceIndex ) );
+	decConvexFace &face = *((decConvexFace*)pFaces.GetAt(faceIndex));
 	const decVector cutEdgeDir = cutEdgeTo - cutEdgeFrom;
 	const decVector &faceNormal = face.GetNormal();
 	bool insideEdgeFrom = true;
 	bool insideEdgeTo = true;
 	bool hasSplitEdge = false;
 	int i;
-	DBG( printf( "faceNormal=(%f,%f,%f) cutEdgeDir=(%f,%f,%f)\n", faceNormal.x, faceNormal.y, faceNormal.z, cutEdgeDir.x, cutEdgeDir.y, cutEdgeDir.z ) );
+	DBG(printf("faceNormal=(%f,%f,%f) cutEdgeDir=(%f,%f,%f)\n", faceNormal.x, faceNormal.y, faceNormal.z, cutEdgeDir.x, cutEdgeDir.y, cutEdgeDir.z));
 	
-	for( i=0; i<face.GetVertexCount(); i++ ){
-		const decVector &v1 = pVertices[ face.GetVertexAt( i ) ];
-		const decVector &v2 = pVertices[ face.GetVertexAt( ( i + 1 ) % face.GetVertexCount() ) ];
+	for(i=0; i<face.GetVertexCount(); i++){
+		const decVector &v1 = pVertices[face.GetVertexAt(i)];
+		const decVector &v2 = pVertices[face.GetVertexAt((i + 1) % face.GetVertexCount())];
 		const decVector edge = v2 - v1;
 		const float edgeLen = edge.Length();
 		const decVector edgeNorm = edge / edgeLen;
@@ -463,18 +463,18 @@ void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdg
 		// test if the edge points are not inside
 		const float fromDist = planeNormal * cutEdgeFrom - planeDist;
 		const float toDist = planeNormal * cutEdgeTo - planeDist;
-		const int fromSide = PLANE_SIDE( fromDist );
-		const int toSide = PLANE_SIDE( toDist );
-		insideEdgeFrom &= ( fromDist > -THRESHOLD_ON_PLANE ); // touching counts as inside
-		insideEdgeTo &= ( toDist > -THRESHOLD_ON_PLANE ); // touching counts as inside
+		const int fromSide = PLANE_SIDE(fromDist);
+		const int toSide = PLANE_SIDE(toDist);
+		insideEdgeFrom &= (fromDist > -THRESHOLD_ON_PLANE); // touching counts as inside
+		insideEdgeTo &= (toDist > -THRESHOLD_ON_PLANE); // touching counts as inside
 		
 		// cut edge if intersected by the split edge. parallel does not cut since other edges do this
 		const float numer = fromDist;
 		const float denom = planeNormal * cutEdgeDir;
 		
-		if( fabsf( denom ) < THRESHOLD_ON_PLANE ){
+		if(fabsf(denom) < THRESHOLD_ON_PLANE){
 			// if the cut edge is located on the face edge do not even try to cut
-			if( fabsf( numer ) < THRESHOLD_ON_PLANE ){
+			if(fabsf(numer) < THRESHOLD_ON_PLANE){
 				return;
 			}
 			
@@ -483,41 +483,41 @@ void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdg
 		}
 		
 		const float dist = -numer / denom;
-		if( dist < 0.0f || dist > 1.0f ){
+		if(dist < 0.0f || dist > 1.0f){
 			continue;
 		}
 		
 		const decVector hitPoint = cutEdgeFrom + cutEdgeDir * dist;
-		const float hitDist = edgeNorm * ( hitPoint - v1 );
-		if( hitDist < THRESHOLD_EQUAL || hitDist > edgeLen - THRESHOLD_EQUAL ){
+		const float hitDist = edgeNorm * (hitPoint - v1);
+		if(hitDist < THRESHOLD_EQUAL || hitDist > edgeLen - THRESHOLD_EQUAL){
 			continue;
 		}
 		
-		DBG( printf( "split edge %i in face %i cut (%f,%f,%f)\n", i, faceIndex, hitPoint.x, hitPoint.y, hitPoint.z ) );
-		int cutIndex = IndexOfVertex( hitPoint );
+		DBG(printf("split edge %i in face %i cut (%f,%f,%f)\n", i, faceIndex, hitPoint.x, hitPoint.y, hitPoint.z));
+		int cutIndex = IndexOfVertex(hitPoint);
 		
-		if( cutIndex == -1 ){
+		if(cutIndex == -1){
 			cutIndex = pVertexCount;
-			AddVertex( hitPoint );
+			AddVertex(hitPoint);
 			
-		}else if( face.HasVertex( cutIndex ) ){
+		}else if(face.HasVertex(cutIndex)){
 			// the split vertex is already part of the face so this edge is not split
-			DBG( printf( "cut point exists already and is already part of the face -> drop it\n" ) );
+			DBG(printf("cut point exists already and is already part of the face -> drop it\n"));
 			continue;
 		}
 		
-		face.InsertVertex( i + 1, cutIndex );
+		face.InsertVertex(i + 1, cutIndex);
 		i++;
 		
 		// if the cut edge is touching the split point with one end it is possible the other end
 		// is outside the face and then no split has to be done
-		if( hitPoint.IsEqualTo( cutEdgeFrom, THRESHOLD_EQUAL ) ){
-			if( toSide < 1 ){
+		if(hitPoint.IsEqualTo(cutEdgeFrom, THRESHOLD_EQUAL)){
+			if(toSide < 1){
 				continue;
 			}
 			
-		}else if( hitPoint.IsEqualTo( cutEdgeTo, THRESHOLD_EQUAL ) ){
-			if( fromSide < 1 ){
+		}else if(hitPoint.IsEqualTo(cutEdgeTo, THRESHOLD_EQUAL)){
+			if(fromSide < 1){
 				continue;
 			}
 		}
@@ -525,36 +525,36 @@ void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdg
 		hasSplitEdge = true;
 	}
 	
-	DBG( printf( "inside test face %i from=%i to=%i\n", faceIndex, insideEdgeFrom?1:0, insideEdgeTo?1:0 ) );
+	DBG(printf("inside test face %i from=%i to=%i\n", faceIndex, insideEdgeFrom?1:0, insideEdgeTo?1:0));
 	
 	// add the inside edge vertices and keep track of their indices
 	int indexCutEdgeFrom = -1;
 	int indexCutEdgeTo = -1;
 	
-	if( insideEdgeFrom ){
-		indexCutEdgeFrom = IndexOfVertex( cutEdgeFrom );
+	if(insideEdgeFrom){
+		indexCutEdgeFrom = IndexOfVertex(cutEdgeFrom);
 		
-		if( indexCutEdgeFrom == -1 ){
+		if(indexCutEdgeFrom == -1){
 			indexCutEdgeFrom = pVertexCount;
-			AddVertex( cutEdgeFrom );
+			AddVertex(cutEdgeFrom);
 			
 		// if the index exist already in the face drop it to avoid invalid 0-length edge
-		}else if( face.HasVertex( indexCutEdgeFrom ) ){
-			DBG( printf( "curEdgeFrom exists already and is already part of the face -> drop it\n" ) );
+		}else if(face.HasVertex(indexCutEdgeFrom)){
+			DBG(printf("curEdgeFrom exists already and is already part of the face -> drop it\n"));
 			indexCutEdgeFrom = -1;
 		}
 	}
 	
-	if( insideEdgeTo ){
-		indexCutEdgeTo = IndexOfVertex( cutEdgeTo );
+	if(insideEdgeTo){
+		indexCutEdgeTo = IndexOfVertex(cutEdgeTo);
 		
-		if( indexCutEdgeTo == -1 ){
+		if(indexCutEdgeTo == -1){
 			indexCutEdgeTo = pVertexCount;
-			AddVertex( cutEdgeTo );
+			AddVertex(cutEdgeTo);
 			
 		// if the index exist already in the face drop it to avoid invalid 0-length edge
-		}else if( face.HasVertex( indexCutEdgeTo ) ){
-			DBG( printf( "curEdgeTo exists already and is already part of the face -> drop it\n" ) );
+		}else if(face.HasVertex(indexCutEdgeTo)){
+			DBG(printf("curEdgeTo exists already and is already part of the face -> drop it\n"));
 			indexCutEdgeTo = -1;
 		}
 	}
@@ -562,7 +562,7 @@ void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdg
 	// split up the face if at least one edge vertex is inside. it doesn't matter which
 	// edge vertex is used for the splitting as long as it is inside. the chosen vertex
 	// acts as pivot point and the edge as pivot axis. 
-	if( ! ( hasSplitEdge || ( insideEdgeFrom && insideEdgeTo ) ) ){
+	if(! (hasSplitEdge || (insideEdgeFrom && insideEdgeTo))){
 		return;
 	}
 	
@@ -579,108 +579,108 @@ void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdg
 	decConvexFace *newFaceBack = NULL;
 	decConvexFace *newFaceFiller = NULL;
 	
-	int lastVertex = face.GetVertexAt( face.GetVertexCount() - 1 );
-	int lastSide = PLANE_SIDE( refAxis * pVertices[ lastVertex ] - refDist );
-	DBG( for(i=0; i<face.GetVertexCount(); i++ ) printf( "state: face %i vertex %i(%i) (%f,%f,%f)\n", faceIndex, i, face.GetVertexAt(i),
-		pVertices[face.GetVertexAt(i)].x, pVertices[face.GetVertexAt(i)].y, pVertices[face.GetVertexAt(i)].z ); )
+	int lastVertex = face.GetVertexAt(face.GetVertexCount() - 1);
+	int lastSide = PLANE_SIDE(refAxis * pVertices[lastVertex] - refDist);
+	DBG(for(i=0; i<face.GetVertexCount(); i++) printf("state: face %i vertex %i(%i) (%f,%f,%f)\n", faceIndex, i, face.GetVertexAt(i),
+		pVertices[face.GetVertexAt(i)].x, pVertices[face.GetVertexAt(i)].y, pVertices[face.GetVertexAt(i)].z);)
 	
 	try{
-		for( i=0; i<face.GetVertexCount(); i++ ){
-			const int curVertex = face.GetVertexAt( i );
-			const int curSide = PLANE_SIDE( refAxis * pVertices[ curVertex ] - refDist );
-			DBG( printf( "corner=%i last=(%i,%i) cur=(%i,%i) indexCutEdgeFrom=%i indexCutEdgeTo=%i\n",
-				i, lastVertex, lastSide, curVertex, curSide, indexCutEdgeFrom, indexCutEdgeTo ) );
+		for(i=0; i<face.GetVertexCount(); i++){
+			const int curVertex = face.GetVertexAt(i);
+			const int curSide = PLANE_SIDE(refAxis * pVertices[curVertex] - refDist);
+			DBG(printf("corner=%i last=(%i,%i) cur=(%i,%i) indexCutEdgeFrom=%i indexCutEdgeTo=%i\n",
+				i, lastVertex, lastSide, curVertex, curSide, indexCutEdgeFrom, indexCutEdgeTo));
 			
 			// if the last vertex is < 0 and the cur vertex > 0 the cut edge has been cross at the
 			// cutEdgeTo closer end point.
-			if( lastSide < 0 && curSide > 0 ){
+			if(lastSide < 0 && curSide > 0){
 				// add filler face if the last vertex, cur vertex and cutEdgeTo are not co-linear.
 				// this is the case if insideEdgeTo is true
-				if( indexCutEdgeTo != -1 ){
-					DBG( printf( "add filler face at cutEdgeTo with vertices %i, %i and %i\n", indexCutEdgeTo, lastVertex, curVertex ) );
-					newFaceFiller = CreateFace( &face );
-					newFaceFiller->SetNormal( faceNormal );
-					newFaceFiller->SetMarker( face.GetMarker() );
-					newFaceFiller->AddVertex( indexCutEdgeTo );
-					newFaceFiller->AddVertex( lastVertex );
-					newFaceFiller->AddVertex( curVertex );
-					AddFace( newFaceFiller );
+				if(indexCutEdgeTo != -1){
+					DBG(printf("add filler face at cutEdgeTo with vertices %i, %i and %i\n", indexCutEdgeTo, lastVertex, curVertex));
+					newFaceFiller = CreateFace(&face);
+					newFaceFiller->SetNormal(faceNormal);
+					newFaceFiller->SetMarker(face.GetMarker());
+					newFaceFiller->AddVertex(indexCutEdgeTo);
+					newFaceFiller->AddVertex(lastVertex);
+					newFaceFiller->AddVertex(curVertex);
+					AddFace(newFaceFiller);
 					newFaceFiller = NULL;
 				}
 				
 				// if the end point has been added to the face list add it also to the front and back face
-				if( indexCutEdgeTo != -1 ){
+				if(indexCutEdgeTo != -1){
 					// add cutEdgeTo to the back face
-					if( ! newFaceBack ){
-						DBG( printf( "crossTo: create back face\n" ) );
-						newFaceBack = CreateFace( &face );
-						newFaceBack->SetNormal( faceNormal );
-						newFaceBack->SetMarker( face.GetMarker() );
+					if(! newFaceBack){
+						DBG(printf("crossTo: create back face\n"));
+						newFaceBack = CreateFace(&face);
+						newFaceBack->SetNormal(faceNormal);
+						newFaceBack->SetMarker(face.GetMarker());
 					}
-					DBG( printf( "crossTo: add indexCutEdgeTo %i to back face\n", indexCutEdgeTo ) );
-					newFaceBack->AddVertex( indexCutEdgeTo );
+					DBG(printf("crossTo: add indexCutEdgeTo %i to back face\n", indexCutEdgeTo));
+					newFaceBack->AddVertex(indexCutEdgeTo);
 					
 					// add cutEdgeTo to the front face
-					DBG( printf( "crossTo: insert indexCutEdgeTo %i into front face at %i\n", indexCutEdgeTo, i ) );
-					face.InsertVertex( i, indexCutEdgeTo );
+					DBG(printf("crossTo: insert indexCutEdgeTo %i into front face at %i\n", indexCutEdgeTo, i));
+					face.InsertVertex(i, indexCutEdgeTo);
 					i++;
 				}
 			}
 			
 			// if the last vertex is > 0 and the cur vertex < 0 the cut edge has been cross at the
 			// cutEdgeFrom closer end point.
-			if( lastSide > 0 && curSide < 0 ){
+			if(lastSide > 0 && curSide < 0){
 				// add filler face if the last vertex, cur vertex and cutEdgeFrom are not co-linear.
 				// this is the case if insideEdgeFrom is true
-				if( indexCutEdgeFrom != -1 ){
-					DBG( printf( "add filler face at cutEdgeFrom with vertices %i, %i and %i\n", indexCutEdgeFrom, lastVertex, curVertex ) );
-					newFaceFiller = CreateFace( &face );
-					newFaceFiller->SetNormal( faceNormal );
-					newFaceFiller->SetMarker( face.GetMarker() );
-					newFaceFiller->AddVertex( indexCutEdgeFrom );
-					newFaceFiller->AddVertex( lastVertex );
-					newFaceFiller->AddVertex( curVertex );
-					AddFace( newFaceFiller );
+				if(indexCutEdgeFrom != -1){
+					DBG(printf("add filler face at cutEdgeFrom with vertices %i, %i and %i\n", indexCutEdgeFrom, lastVertex, curVertex));
+					newFaceFiller = CreateFace(&face);
+					newFaceFiller->SetNormal(faceNormal);
+					newFaceFiller->SetMarker(face.GetMarker());
+					newFaceFiller->AddVertex(indexCutEdgeFrom);
+					newFaceFiller->AddVertex(lastVertex);
+					newFaceFiller->AddVertex(curVertex);
+					AddFace(newFaceFiller);
 					newFaceFiller = NULL;
 				}
 				
 				// if the from point has been added to the face list add it also to the front and back face
-				if( indexCutEdgeFrom != -1 ){
+				if(indexCutEdgeFrom != -1){
 					// add cutEdgeFrom to the back face
-					if( ! newFaceBack ){
-						DBG( printf( "crossFrom: create back face\n" ) );
-						newFaceBack = CreateFace( &face );
-						newFaceBack->SetNormal( faceNormal );
-						newFaceBack->SetMarker( face.GetMarker() );
+					if(! newFaceBack){
+						DBG(printf("crossFrom: create back face\n"));
+						newFaceBack = CreateFace(&face);
+						newFaceBack->SetNormal(faceNormal);
+						newFaceBack->SetMarker(face.GetMarker());
 					}
-					DBG( printf( "crossFrom: add indexCutEdgeFrom %i to back face\n", indexCutEdgeFrom ) );
-					newFaceBack->AddVertex( indexCutEdgeFrom );
+					DBG(printf("crossFrom: add indexCutEdgeFrom %i to back face\n", indexCutEdgeFrom));
+					newFaceBack->AddVertex(indexCutEdgeFrom);
 					
 					// add cutEdgeFrom to the back face
-					DBG( printf( "crossFrom: insert indexCutEdgeFrom %i into front face at %i\n", indexCutEdgeFrom, i ) );
-					face.InsertVertex( i, indexCutEdgeFrom );
+					DBG(printf("crossFrom: insert indexCutEdgeFrom %i into front face at %i\n", indexCutEdgeFrom, i));
+					face.InsertVertex(i, indexCutEdgeFrom);
 					i++;
 				}
 			}
 			
 			// if the side is <= 0 add the vertex to the back face. this has to come after the
 			// crossing checks above to keep the ordering correct
-			if( curSide <= 0 ){
-				if( ! newFaceBack ){
-					DBG( printf( "curSide<=0: create back face\n" ) );
-					newFaceBack = CreateFace( &face );
-					newFaceBack->SetNormal( faceNormal );
-					newFaceBack->SetMarker( face.GetMarker() );
+			if(curSide <= 0){
+				if(! newFaceBack){
+					DBG(printf("curSide<=0: create back face\n"));
+					newFaceBack = CreateFace(&face);
+					newFaceBack->SetNormal(faceNormal);
+					newFaceBack->SetMarker(face.GetMarker());
 				}
-				DBG( printf( "curSide<=0: add vertex %i to back face\n", curVertex ) );
-				newFaceBack->AddVertex( curVertex );
+				DBG(printf("curSide<=0: add vertex %i to back face\n", curVertex));
+				newFaceBack->AddVertex(curVertex);
 			}
 			
 			// if the side is strictly < 0 remove the vertex from the front face since
 			// it belongs now entirely to the back face
-			if( curSide < 0 ){
-				DBG( printf( "curSide<0: remove vertex %i from front face at %i\n", curVertex, i ) );
-				face.RemoveVertexFrom( i );
+			if(curSide < 0){
+				DBG(printf("curSide<0: remove vertex %i from front face at %i\n", curVertex, i));
+				face.RemoveVertexFrom(i);
 				i--;
 			}
 			
@@ -690,16 +690,16 @@ void decConvexFaceList::pSplitFaceByEdge( int faceIndex, const decVector &cutEdg
 		}
 		
 		// add the new faces if they have enough corners
-		if( newFaceBack && newFaceBack->GetVertexCount() > 2 ){
-			AddFace( newFaceBack );
+		if(newFaceBack && newFaceBack->GetVertexCount() > 2){
+			AddFace(newFaceBack);
 			newFaceBack = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newFaceFiller ){
+	}catch(const deException &){
+		if(newFaceFiller){
 			delete newFaceFiller;
 		}
-		if( newFaceBack ){
+		if(newFaceBack){
 			delete newFaceBack;
 		}
 		throw;

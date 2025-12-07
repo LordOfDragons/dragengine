@@ -49,16 +49,16 @@
 ////////////////////////////
 
 cePCBOption::cePCBOption() :
-pAction( NULL ),
-pActionOption( NULL ),
-pCanvasView( NULL ){
+pAction(NULL),
+pActionOption(NULL),
+pCanvasView(NULL){
 }
 
 cePCBOption::~cePCBOption(){
-	if( pCanvasView ){
+	if(pCanvasView){
 		pCanvasView->FreeReference();
 	}
-	SetActionOption( NULL, NULL );
+	SetActionOption(NULL, NULL);
 }
 
 
@@ -66,31 +66,31 @@ cePCBOption::~cePCBOption(){
 // Management
 ///////////////
 
-void cePCBOption::SetText( const decUnicodeString &text ){
+void cePCBOption::SetText(const decUnicodeString &text){
 	pText = text;
 }
 
-void cePCBOption::SetActionOption( ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option ){
-	if( action != pAction ){
-		if( pAction ){
+void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
+	if(action != pAction){
+		if(pAction){
 			pAction->FreeReference();
 		}
 		
 		pAction = action;
 		
-		if( action ){
+		if(action){
 			action->AddReference();
 		}
 	}
 	
-	if( option != pActionOption ){
-		if( pActionOption ){
+	if(option != pActionOption){
+		if(pActionOption){
 			pActionOption->FreeReference();
 		}
 		
 		pActionOption = option;
 		
-		if( option ){
+		if(option){
 			option->AddReference();
 		}
 	}
@@ -98,20 +98,20 @@ void cePCBOption::SetActionOption( ceCAPlayerChoice *action, ceCAPlayerChoiceOpt
 
 
 
-void cePCBOption::Layout( const cePlayerChoiceBox &pcbox, bool selected ){
+void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *pcbox.GetConversation().GetEngine()->GetCanvasManager();
-	if( ! pCanvasView ){
+	if(! pCanvasView){
 		pCanvasView = canvasManager.CreateCanvasView();
 	}
 	
 	// clear canvas
 	pCanvasView->RemoveAllCanvas();
-	pCanvasView->SetSize( decPoint( 10, 1 ) );
+	pCanvasView->SetSize(decPoint(10, 1));
 	
 	// get font. if not existing exit since we can not render anything this way
 	deFont * const font = pcbox.GetFont();
-	if( ! font ){
+	if(! font){
 		return;
 	}
 	
@@ -121,48 +121,48 @@ void cePCBOption::Layout( const cePlayerChoiceBox &pcbox, bool selected ){
 	deCanvasText *canvasText = NULL;
 	deCanvasPaint *canvasBackground = NULL;
 	
-	const decString text( pText.ToUTF8() );
+	const decString text(pText.ToUTF8());
 	
 	const int textHeight = pcbox.GetTextSize();
 	
-	pCanvasView->SetSize( decPoint( parentSize.x, textHeight ) );
+	pCanvasView->SetSize(decPoint(parentSize.x, textHeight));
 	
 	try{
 		canvasBackground = canvasManager.CreateCanvasPaint();
-		canvasBackground->SetShapeType( deCanvasPaint::estRectangle );
-		if( selected ){
-			canvasBackground->SetFillColor( pcbox.GetSelectedBackgroundColor() );
+		canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
+		if(selected){
+			canvasBackground->SetFillColor(pcbox.GetSelectedBackgroundColor());
 		}else{
-			canvasBackground->SetFillColor( pcbox.GetBackgroundColor() );
+			canvasBackground->SetFillColor(pcbox.GetBackgroundColor());
 		}
-		canvasBackground->SetLineColor( decColor( canvasBackground->GetFillColor(), 0.0f ) );
-		canvasBackground->SetThickness( 0.0f );
-		canvasBackground->SetOrder( 0.0f );
-		canvasBackground->SetSize( pCanvasView->GetSize() );
-		pCanvasView->AddCanvas( canvasBackground );
+		canvasBackground->SetLineColor(decColor(canvasBackground->GetFillColor(), 0.0f));
+		canvasBackground->SetThickness(0.0f);
+		canvasBackground->SetOrder(0.0f);
+		canvasBackground->SetSize(pCanvasView->GetSize());
+		pCanvasView->AddCanvas(canvasBackground);
 		canvasBackground->FreeReference();
 		canvasBackground = NULL;
 		
 		canvasText = canvasManager.CreateCanvasText();
-		if( selected ){
-			canvasText->SetColor( pcbox.GetSelectedTextColor() );
+		if(selected){
+			canvasText->SetColor(pcbox.GetSelectedTextColor());
 		}else{
-			canvasText->SetColor( pcbox.GetTextColor() );
+			canvasText->SetColor(pcbox.GetTextColor());
 		}
-		canvasText->SetFont( font );
-		canvasText->SetFontSize( ( float )textHeight );
-		canvasText->SetText( text );
-		canvasText->SetOrder( 0.0f );
-		canvasText->SetSize( pCanvasView->GetSize() );
-		pCanvasView->AddCanvas( canvasText );
+		canvasText->SetFont(font);
+		canvasText->SetFontSize((float)textHeight);
+		canvasText->SetText(text);
+		canvasText->SetOrder(0.0f);
+		canvasText->SetSize(pCanvasView->GetSize());
+		pCanvasView->AddCanvas(canvasText);
 		canvasText->FreeReference();
 		canvasText = NULL;
 		
-	}catch( const deException & ){
-		if( canvasText ){
+	}catch(const deException &){
+		if(canvasText){
 			canvasText->FreeReference();
 		}
-		if( canvasBackground ){
+		if(canvasBackground){
 			canvasBackground->FreeReference();
 		}
 		throw;

@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPSetMinValue( gdeObjectClass *objectClass, gdeProperty *property, float newValue );
+	gdeUOCPSetMinValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

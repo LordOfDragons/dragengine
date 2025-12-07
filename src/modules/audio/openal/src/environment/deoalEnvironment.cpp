@@ -82,49 +82,49 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalEnvironment::deoalEnvironment( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pWorld( NULL ),
-pRange( 1.0f ),
-pRangeSquared( 1.0f ),
-pAttenuationRefDist( 1.0f ),
-pAttenuationRolloff( 0.0f ),
-pAttenuationDistanceOffset( 0.0f ),
-pValid( false ),
-pGainLow( 1.0f ),
-pGainMedium( 1.0f ),
-pGainHigh( 1.0f ),
-pBandPassGain( 1.0f ),
-pBandPassGainLF( 1.0f ),
-pBandPassGainHF( 1.0f ),
-pReverbGain( 0.32f ),
-pReverbGainLF( 0.0f ),
-pReverbGainHF( 0.89f ),
-pReverbDecayTime( 1.49f ),
-pReverbDecayHFRatio( 0.83f ),
-pReverbDecayLFRatio( 1.0f ),
-pReverbReflectionGain( 0.05f ),
-pReverbReflectionDelay( 0.007f ),
-pReverbLateReverbGain( 1.26f ),
-pReverbLateReverbDelay( 0.011f ),
-pReverbEchoTime( 0.25f ),
-pResetListenerSmooth( true ),
-pEnvProbe( NULL ),
-pDebug( NULL )
+deoalEnvironment::deoalEnvironment(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pWorld(NULL),
+pRange(1.0f),
+pRangeSquared(1.0f),
+pAttenuationRefDist(1.0f),
+pAttenuationRolloff(0.0f),
+pAttenuationDistanceOffset(0.0f),
+pValid(false),
+pGainLow(1.0f),
+pGainMedium(1.0f),
+pGainHigh(1.0f),
+pBandPassGain(1.0f),
+pBandPassGainLF(1.0f),
+pBandPassGainHF(1.0f),
+pReverbGain(0.32f),
+pReverbGainLF(0.0f),
+pReverbGainHF(0.89f),
+pReverbDecayTime(1.49f),
+pReverbDecayHFRatio(0.83f),
+pReverbDecayLFRatio(1.0f),
+pReverbReflectionGain(0.05f),
+pReverbReflectionDelay(0.007f),
+pReverbLateReverbGain(1.26f),
+pReverbLateReverbDelay(0.011f),
+pReverbEchoTime(0.25f),
+pResetListenerSmooth(true),
+pEnvProbe(NULL),
+pDebug(NULL)
 {
 	#ifdef LISTENER_CENTRIC_RAY_CAST
-	pEnvProbe = new deoalEnvProbe( audioThread );
+	pEnvProbe = new deoalEnvProbe(audioThread);
 	#endif
 }
 
 deoalEnvironment::~deoalEnvironment(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
-	if( pDebug ){
+	if(pDebug){
 		delete pDebug;
 	}
 	
-	if( pEnvProbe ){
+	if(pEnvProbe){
 		delete pEnvProbe;
 	}
 }
@@ -134,78 +134,78 @@ deoalEnvironment::~deoalEnvironment(){
 // Manegement
 ///////////////
 
-void deoalEnvironment::SetWorld( deoalAWorld *world ){
-	if( world == pWorld ){
+void deoalEnvironment::SetWorld(deoalAWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pEnvProbe && pEnvProbe->GetOctreeNode() ){
-		pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+	if(pEnvProbe && pEnvProbe->GetOctreeNode()){
+		pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 	}
 	
 	pWorld = world;
 }
 
-void deoalEnvironment::SetPosition( const decDVector &position ){
+void deoalEnvironment::SetPosition(const decDVector &position){
 	pPosition = position;
 	
-	if( pEnvProbe ){
-		pEnvProbe->SetPosition( position );
+	if(pEnvProbe){
+		pEnvProbe->SetPosition(position);
 		
-		if( pEnvProbe->GetOctreeNode() ){
-			pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+		if(pEnvProbe->GetOctreeNode()){
+			pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 		}
 	}
 }
 
-void deoalEnvironment::SetRange( float range ){
-	pRange = decMath::max( range, 0.0f );
+void deoalEnvironment::SetRange(float range){
+	pRange = decMath::max(range, 0.0f);
 	pRangeSquared = pRange * pRange;
 	
-	if( pEnvProbe ){
-		pEnvProbe->SetRange( pRange );
+	if(pEnvProbe){
+		pEnvProbe->SetRange(pRange);
 		
-		if( pEnvProbe->GetOctreeNode() ){
-			pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+		if(pEnvProbe->GetOctreeNode()){
+			pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 		}
 	}
 }
 
-void deoalEnvironment::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
+void deoalEnvironment::SetAttenuation(float refDist, float rolloff, float distanceOffset){
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
 	pAttenuationDistanceOffset = distanceOffset;
 	
-	if( pEnvProbe ){
-		pEnvProbe->SetAttenuation( refDist, rolloff, distanceOffset );
+	if(pEnvProbe){
+		pEnvProbe->SetAttenuation(refDist, rolloff, distanceOffset);
 		
-		if( pEnvProbe->GetOctreeNode() ){
-			pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+		if(pEnvProbe->GetOctreeNode()){
+			pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 		}
 	}
 }
 
-void deoalEnvironment::SetLayerMask( const decLayerMask &layerMask ){
+void deoalEnvironment::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 	
-	if( pEnvProbe ){
-		pEnvProbe->SetLayerMask( layerMask );
+	if(pEnvProbe){
+		pEnvProbe->SetLayerMask(layerMask);
 		
-		if( pEnvProbe->GetOctreeNode() ){
-			pEnvProbe->GetOctreeNode()->RemoveEnvProbe( pEnvProbe );
+		if(pEnvProbe->GetOctreeNode()){
+			pEnvProbe->GetOctreeNode()->RemoveEnvProbe(pEnvProbe);
 		}
 	}
 }
 
 void deoalEnvironment::PrepareQuickDispose(){
-	if( pEnvProbe ){
-		pEnvProbe->SetOctreeNode( nullptr );
+	if(pEnvProbe){
+		pEnvProbe->SetOctreeNode(nullptr);
 	}
 }
 
 
 
-float deoalEnvironment::Distance( const deoalEnvironment &env, bool withPan ) const{
+float deoalEnvironment::Distance(const deoalEnvironment &env, bool withPan) const{
 	const float d1 = env.pCompareReverbGain - pCompareReverbGain;
 	const float d2 = env.pCompareReverbGainLF - pCompareReverbGainLF;
 	const float d3 = env.pCompareReverbGainHF - pCompareReverbGainHF;
@@ -221,12 +221,12 @@ float deoalEnvironment::Distance( const deoalEnvironment &env, bool withPan ) co
 	float distanceSquared = d1 * d1 + d2 * d2 + d3 * d3 + d4 * d4 + d5 * d5
 		+ d6 * d6 + d7 * d7 + d8 * d8 + d9 * d9 + d10 * d10 + d11 * d11;
 	
-	if( withPan ){
-		distanceSquared += ( env.pCompareReverbReflectionPan - pCompareReverbReflectionPan ).LengthSquared();
-		distanceSquared += ( env.pCompareReverbLateReverbPan - pCompareReverbLateReverbPan ).LengthSquared();
+	if(withPan){
+		distanceSquared += (env.pCompareReverbReflectionPan - pCompareReverbReflectionPan).LengthSquared();
+		distanceSquared += (env.pCompareReverbLateReverbPan - pCompareReverbLateReverbPan).LengthSquared();
 	}
 	
-	return sqrtf( distanceSquared );
+	return sqrtf(distanceSquared);
 }
 
 
@@ -234,27 +234,27 @@ float deoalEnvironment::Distance( const deoalEnvironment &env, bool withPan ) co
 void deoalEnvironment::Update(){
 	pSetSilent();
 	
-	if( ! pWorld || ! pAudioThread.GetActiveMicrophone() ){
+	if(! pWorld || ! pAudioThread.GetActiveMicrophone()){
 		return;
 	}
 	
 	// skip if not heard by the microphone
 	deoalAMicrophone &microphone = *pAudioThread.GetActiveMicrophone();
-	if( microphone.GetLayerMask().MatchesNot( pLayerMask ) ){
+	if(microphone.GetLayerMask().MatchesNot(pLayerMask)){
 		return;
 	}
 	
 	// skip if outside range to save processing time
 	const decQuaternion &micOrient = microphone.GetOrientation();
 	const decDVector &micPos = microphone.GetPosition();
-	const float distanceSquared = ( float )( ( micPos - pPosition ).LengthSquared() );
+	const float distanceSquared = (float)((micPos - pPosition).LengthSquared());
 	deoalConfiguration::eAuralizationModes auralizationMode = deoalConfiguration::eamDisabled;
 	
-	if( microphone.GetEnableAuralization() ){
+	if(microphone.GetEnableAuralization()){
 		auralizationMode = pAudioThread.GetConfiguration().GetAuralizationMode();
 	}
 	
-	if( distanceSquared > pRangeSquared ){
+	if(distanceSquared > pRangeSquared){
 		return;
 	}
 	
@@ -263,10 +263,10 @@ void deoalEnvironment::Update(){
 	pGainMedium = 1.0f;
 	pGainHigh = 1.0f;
 	
-	switch( auralizationMode ){
+	switch(auralizationMode){
 	case deoalConfiguration::eamDirectSound:
 	case deoalConfiguration::eamFull:
-		pDirectPath( microphone, micPos );
+		pDirectPath(microphone, micPos);
 		break;
 		
 	default:
@@ -288,9 +288,9 @@ void deoalEnvironment::Update(){
 	pReverbLateReverbPan.SetZero();
 	pReverbEchoTime = 0.25f;
 	
-	switch( auralizationMode ){
+	switch(auralizationMode){
 	case deoalConfiguration::eamFull:
-		pEnvReflection( microphone, micPos, micOrient );
+		pEnvReflection(microphone, micPos, micOrient);
 		break;
 		
 	default:
@@ -312,119 +312,119 @@ void deoalEnvironment::Update(){
 
 
 void deoalEnvironment::DebugPrint(){
-	if( ! pDebug ){
-		pDebug = new deoalEnvironmentDebug( *this );
+	if(! pDebug){
+		pDebug = new deoalEnvironmentDebug(*this);
 	}
 	pDebug->Print();
 }
 
-void deoalEnvironment::DebugUpdateInfo( deDebugBlockInfo &debugInfo ){
-	if( ! pDebug ){
-		pDebug = new deoalEnvironmentDebug( *this );
+void deoalEnvironment::DebugUpdateInfo(deDebugBlockInfo &debugInfo){
+	if(! pDebug){
+		pDebug = new deoalEnvironmentDebug(*this);
 	}
-	pDebug->UpdateInfo( debugInfo );
+	pDebug->UpdateInfo(debugInfo);
 }
 
-void deoalEnvironment::DebugUpdateDirect( deDebugDrawer &debugDrawer, const deoalAMicrophone &microphone ){
+void deoalEnvironment::DebugUpdateDirect(deDebugDrawer &debugDrawer, const deoalAMicrophone &microphone){
 	deoalRayTraceResult &rtresult = pAudioThread.GetRTResultDirect();
 	rtresult.Clear();
 	
 	deoalWOVRayHitsElement &visitor = pAudioThread.GetWOVRayHitsElement();
-	visitor.SetRay( pPosition, microphone.GetPosition() - pPosition );
-	visitor.SetResult( &rtresult );
-	visitor.SetLayerMask( microphone.GetLayerMask() );
+	visitor.SetRay(pPosition, microphone.GetPosition() - pPosition);
+	visitor.SetResult(&rtresult);
+	visitor.SetLayerMask(microphone.GetLayerMask());
 	
-	pWorld->GetOctree()->VisitNodesColliding( &visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax() );
+	pWorld->GetOctree()->VisitNodesColliding(&visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax());
 	
-	pAudioThread.GetLogger().LogInfoFormat( "DebugUpdateDirect: pos=(%f,%f,%f) mic=(%f,%f,%f)",
+	pAudioThread.GetLogger().LogInfoFormat("DebugUpdateDirect: pos=(%f,%f,%f) mic=(%f,%f,%f)",
 		pPosition.x, pPosition.y, pPosition.z, microphone.GetPosition().x,
-		microphone.GetPosition().y, microphone.GetPosition().z );
-	rtresult.DebugPrint( pAudioThread, "RT: " );
+		microphone.GetPosition().y, microphone.GetPosition().z);
+	rtresult.DebugPrint(pAudioThread, "RT: ");
 	
 	const int count = rtresult.GetElementCount();
-	decDVector lastPosition( pPosition );
+	decDVector lastPosition(pPosition);
 	deDebugDrawerShape *ddshape = NULL;
 	deDebugDrawerShapeFace *ddsface = NULL;
 	const float sphereRadius = 0.01f; //0.0025f;
 	
-	debugDrawer.SetPosition( pPosition );
-	debugDrawer.SetOrientation( decQuaternion() );
-	debugDrawer.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
-	debugDrawer.SetVisible( true );
-	debugDrawer.SetXRay( true );
+	debugDrawer.SetPosition(pPosition);
+	debugDrawer.SetOrientation(decQuaternion());
+	debugDrawer.SetScale(decVector(1.0f, 1.0f, 1.0f));
+	debugDrawer.SetVisible(true);
+	debugDrawer.SetXRay(true);
 	debugDrawer.RemoveAllShapes();
 	
 	int i, frontBackCounter = 0;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt( i );
+		for(i=0; i<count; i++){
+			const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt(i);
 			const int lastFrontBackCounter = frontBackCounter;
 			
-			if( hitElement.GetForwardFacing() ){
+			if(hitElement.GetForwardFacing()){
 				frontBackCounter++;
 				
-			}else if( frontBackCounter > 0 ){
+			}else if(frontBackCounter > 0){
 				frontBackCounter--;
 			}
 			
 			ddshape = new deDebugDrawerShape;
-			if( lastFrontBackCounter == 0 ){
-				ddshape->SetFillColor( decColor( 0.0f, 1.0f, 0.0f ) );
-				ddshape->SetEdgeColor( decColor( 0.0f, 1.0f, 0.0f ) );
+			if(lastFrontBackCounter == 0){
+				ddshape->SetFillColor(decColor(0.0f, 1.0f, 0.0f));
+				ddshape->SetEdgeColor(decColor(0.0f, 1.0f, 0.0f));
 			}else{
-				ddshape->SetFillColor( decColor( 1.0f, 0.0f, 0.0f ) );
-				ddshape->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f ) );
+				ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f));
+				ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f));
 			}
 			ddsface = new deDebugDrawerShapeFace;
-			ddsface->AddVertex( lastPosition - pPosition );
-			ddsface->AddVertex( hitElement.GetPoint() - pPosition );
-			ddsface->AddVertex( lastPosition - pPosition );
-			ddsface->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
-			ddshape->AddFace( ddsface );
+			ddsface->AddVertex(lastPosition - pPosition);
+			ddsface->AddVertex(hitElement.GetPoint() - pPosition);
+			ddsface->AddVertex(lastPosition - pPosition);
+			ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+			ddshape->AddFace(ddsface);
 			ddsface = NULL;
-			ddshape->GetShapeList().Add( new decShapeSphere( sphereRadius, lastPosition - pPosition ) );
-			debugDrawer.AddShape( ddshape );
+			ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, lastPosition - pPosition));
+			debugDrawer.AddShape(ddshape);
 			ddshape = NULL;
 			lastPosition = hitElement.GetPoint();
 		}
 		
 		ddshape = new deDebugDrawerShape;
-		if( frontBackCounter == 0 ){
-			ddshape->SetFillColor( decColor( 0.0f, 1.0f, 0.0f ) );
-			ddshape->SetEdgeColor( decColor( 0.0f, 1.0f, 0.0f ) );
+		if(frontBackCounter == 0){
+			ddshape->SetFillColor(decColor(0.0f, 1.0f, 0.0f));
+			ddshape->SetEdgeColor(decColor(0.0f, 1.0f, 0.0f));
 		}else{
-			ddshape->SetFillColor( decColor( 1.0f, 0.0f, 0.0f ) );
-			ddshape->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f ) );
+			ddshape->SetFillColor(decColor(1.0f, 0.0f, 0.0f));
+			ddshape->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f));
 		}
 		ddsface = new deDebugDrawerShapeFace;
-		ddsface->AddVertex( lastPosition - pPosition );
-		ddsface->AddVertex( microphone.GetPosition() - pPosition );
-		ddsface->AddVertex( lastPosition - pPosition );
-		ddsface->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
-		ddshape->AddFace( ddsface );
+		ddsface->AddVertex(lastPosition - pPosition);
+		ddsface->AddVertex(microphone.GetPosition() - pPosition);
+		ddsface->AddVertex(lastPosition - pPosition);
+		ddsface->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+		ddshape->AddFace(ddsface);
 		ddsface = NULL;
-		ddshape->GetShapeList().Add( new decShapeSphere( sphereRadius, lastPosition - pPosition ) );
-		ddshape->GetShapeList().Add( new decShapeSphere( sphereRadius, microphone.GetPosition() - pPosition ) );
-		debugDrawer.AddShape( ddshape );
+		ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, lastPosition - pPosition));
+		ddshape->GetShapeList().Add(new decShapeSphere(sphereRadius, microphone.GetPosition() - pPosition));
+		debugDrawer.AddShape(ddshape);
 		
-	}catch( const deException & ){
-		if( ddsface ){
+	}catch(const deException &){
+		if(ddsface){
 			delete ddsface;
 		}
-		if( ddshape ){
+		if(ddshape){
 			delete ddshape;
 		}
 		throw;
 	}
 }
 
-void deoalEnvironment::DebugSoundRays( deDebugDrawer &/*debugDrawer*/ ){
-	if( ! pWorld ){
+void deoalEnvironment::DebugSoundRays(deDebugDrawer &/*debugDrawer*/){
+	if(! pWorld){
 		return;
 	}
-	if( ! pDebug ){
-		pDebug = new deoalEnvironmentDebug( *this );
+	if(! pDebug){
+		pDebug = new deoalEnvironmentDebug(*this);
 	}
 	
 // 	const deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeTraceSoundRays( pPosition,
@@ -437,19 +437,19 @@ void deoalEnvironment::DebugSoundRays( deDebugDrawer &/*debugDrawer*/ ){
 // Private Functions
 //////////////////////
 
-void deoalEnvironment::pDirectPath( const deoalAMicrophone &microphone, const decDVector &micPos ){
+void deoalEnvironment::pDirectPath(const deoalAMicrophone &microphone, const decDVector &micPos){
 	deoalRayTraceResult &rtresult = pAudioThread.GetRTResultDirect();
 	rtresult.Clear();
 	
 	deoalWOVRayHitsElement &visitor = pAudioThread.GetWOVRayHitsElement();
-	visitor.SetRay( pPosition, micPos - pPosition );
-	visitor.SetResult( &rtresult );
-	visitor.SetLayerMask( microphone.GetLayerMask() );
+	visitor.SetRay(pPosition, micPos - pPosition);
+	visitor.SetResult(&rtresult);
+	visitor.SetLayerMask(microphone.GetLayerMask());
 	
 // 	pAudioThread.GetLogger().LogInfoFormat( "- VisitNodesColliding (%.3f,%.3f,%.3f) (%.3f,%.3f,%.3f)",
 // 		visitor.GetRayBoxMin().x, visitor.GetRayBoxMin().y, visitor.GetRayBoxMin().z,
 // 		visitor.GetRayBoxMax().x, visitor.GetRayBoxMax().y, visitor.GetRayBoxMax().z );
-	pWorld->GetOctree()->VisitNodesColliding( &visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax() );
+	pWorld->GetOctree()->VisitNodesColliding(&visitor, visitor.GetRayBoxMin(), visitor.GetRayBoxMax());
 	
 	// apply elements in the direct path. for this start with the first forward facing face.
 	// use the transmission parameters of this face. then find the next backwards facing face
@@ -467,39 +467,39 @@ void deoalEnvironment::pDirectPath( const deoalAMicrophone &microphone, const de
 	int frontBackCounter = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt( i );
+	for(i=0; i<count; i++){
+		const deoalRayTraceHitElement &hitElement = rtresult.GetElementAt(i);
 		const deoalRayTraceHitElement * const transmitFront = curTransElement;
 		
-		if( hitElement.GetForwardFacing() ){
+		if(hitElement.GetForwardFacing()){
 			frontBackCounter++;
 			curTransElement = &hitElement;
 			
-		}else if( frontBackCounter > 0 ){
+		}else if(frontBackCounter > 0){
 			frontBackCounter--;
-			if( frontBackCounter > 0 ){
+			if(frontBackCounter > 0){
 				continue;
 			}
 			curTransElement = NULL;
 		}
 		
-		if( ! transmitFront ){
+		if(! transmitFront){
 			continue;
 		}
 		
 		const float thickness = hitElement.GetDistance() - transmitFront->GetDistance();
 		
-		if( transmitFront->GetComponent() ){
+		if(transmitFront->GetComponent()){
 			deoalAComponent &component = *transmitFront->GetComponent();
-			const deoalModelFace &face = component.GetModel()->GetFaceAt( transmitFront->GetComponentFace() );
-			const deoalAComponentTexture &compTex = component.GetModelTextureAt( face.GetTexture() );
+			const deoalModelFace &face = component.GetModel()->GetFaceAt(transmitFront->GetComponentFace());
+			const deoalAComponentTexture &compTex = component.GetModelTextureAt(face.GetTexture());
 			
-			pGainLow *= decMath::linearStep( thickness, 0.0f, compTex.GetTransmissionLow(),
-				1.0f - compTex.GetAbsorptionLow(), 0.0f );
-			pGainMedium *= decMath::linearStep( thickness, 0.0f, compTex.GetTransmissionMedium(),
-				1.0f - compTex.GetAbsorptionMedium(), 0.0f );
-			pGainHigh *= decMath::linearStep( thickness, 0.0f, compTex.GetTransmissionHigh(),
-				1.0f - compTex.GetAbsorptionHigh(), 0.0f );
+			pGainLow *= decMath::linearStep(thickness, 0.0f, compTex.GetTransmissionLow(),
+				1.0f - compTex.GetAbsorptionLow(), 0.0f);
+			pGainMedium *= decMath::linearStep(thickness, 0.0f, compTex.GetTransmissionMedium(),
+				1.0f - compTex.GetAbsorptionMedium(), 0.0f);
+			pGainHigh *= decMath::linearStep(thickness, 0.0f, compTex.GetTransmissionHigh(),
+				1.0f - compTex.GetAbsorptionHigh(), 0.0f);
 			
 // 			pAudioThread.GetLogger().LogInfoFormat(
 // 				"source=(%.3f,%.3f,%.3f) thickness=%.3f trans(%.3f,%.3f,%.3f) gain=(%.3f,%.3f,%.3f)",
@@ -509,15 +509,15 @@ void deoalEnvironment::pDirectPath( const deoalAMicrophone &microphone, const de
 		}
 	}
 	
-	if( frontBackCounter > 0 ){
+	if(frontBackCounter > 0){
 		pSetSilent();
 		return;
 	}
 // 	rtresult.DebugPrint( pAudioThread, "- Direct" );
 }
 
-void deoalEnvironment::pEnvReflection( deoalAMicrophone &microphone,
-const decDVector &micPos, const decQuaternion &micOrient ){
+void deoalEnvironment::pEnvReflection(deoalAMicrophone &microphone,
+const decDVector &micPos, const decQuaternion &micOrient){
 	// NOTE
 	// for full processing a probe with TraceSoundRays() has to be obtained. This probe
 	// contains all the sound ray information required for CalcListener() to produce
@@ -543,7 +543,7 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	#else
 		deoalEnvProbe &probe = *pWorld->GetEnvProbeManager().GetProbeTraceSoundRays(
 			pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff,
-			pAttenuationDistanceOffset, microphone.GetLayerMask() );
+			pAttenuationDistanceOffset, microphone.GetLayerMask());
 	#endif
 	
 	// indirect path reverbe effect
@@ -601,42 +601,42 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	// - reverberationGainLow = GAIN * GAINLF * LATE_REVERB_GAIN
 	// - reverberationGainHigh = GAIN * GAINHF * LATE_REVERB_GAIN
 	
-	const decQuaternion invMicOrient( micOrient.Conjugate() );
+	const decQuaternion invMicOrient(micOrient.Conjugate());
 	
 	// update for listener position
 	deoalEnvProbeListener listener;
 	#ifdef LISTENER_CENTRIC_RAY_CAST
-	pEnvProbe->CalcListener( listener, *pWorld, micPos, &microphone );
+	pEnvProbe->CalcListener(listener, *pWorld, micPos, &microphone);
 	
-	if( ! pEnvProbe->GetOctreeNode() ){
-		pWorld->GetOctree()->InsertEnvProbeIntoTree( pEnvProbe, 8 );
+	if(! pEnvProbe->GetOctreeNode()){
+		pWorld->GetOctree()->InsertEnvProbeIntoTree(pEnvProbe, 8);
 	}
 	
 	#else
-	probe.CalcListener( listener, *pWorld, micPos, NULL );
+	probe.CalcListener(listener, *pWorld, micPos, NULL);
 	#endif
 	
-	if( pResetListenerSmooth ){
-		pListenerSmooth.Set( listener );
+	if(pResetListenerSmooth){
+		pListenerSmooth.Set(listener);
 		pResetListenerSmooth = false;
 		
 	}else{
-		pListenerSmooth.SetGoal( listener );
-		pListenerSmooth.Update( pAudioThread.GetElapsedFull() );
-		pListenerSmooth.AssignTo( listener );
+		pListenerSmooth.SetGoal(listener);
+		pListenerSmooth.Update(pAudioThread.GetElapsedFull());
+		pListenerSmooth.AssignTo(listener);
 	}
 	
 	const deoalConfiguration &config = pAudioThread.GetConfiguration();
 	
 	// master gain is set to the maximum gain of all frequencies (first and late) since
 	// individual gains are limited to the range from 0 to 1.
-	const float maxGainReflected = decMath::max( listener.GetReflectedLow(),
-		listener.GetReflectedMedium(), listener.GetReflectedHigh() );
-	const float maxGainLateReverb = decMath::max( listener.GetReverberationGainLow(),
-		listener.GetReverberationGainMedium(), listener.GetReverberationGainHigh() );
+	const float maxGainReflected = decMath::max(listener.GetReflectedLow(),
+		listener.GetReflectedMedium(), listener.GetReflectedHigh());
+	const float maxGainLateReverb = decMath::max(listener.GetReverberationGainLow(),
+		listener.GetReverberationGainMedium(), listener.GetReverberationGainHigh());
 	
-	pReverbGain = decMath::clamp( decMath::max( maxGainReflected, maxGainLateReverb ),
-		AL_EAXREVERB_MIN_GAIN, AL_EAXREVERB_MAX_GAIN );
+	pReverbGain = decMath::clamp(decMath::max(maxGainReflected, maxGainLateReverb),
+		AL_EAXREVERB_MIN_GAIN, AL_EAXREVERB_MAX_GAIN);
 	
 // 	pReverbGain = decMath::clamp( maxGainReflected, AL_EAXREVERB_MIN_GAIN, AL_EAXREVERB_MAX_GAIN );
 // 	pReverbGain = decMath::clamp( maxGainLateReverb, AL_EAXREVERB_MIN_GAIN, AL_EAXREVERB_MAX_GAIN );
@@ -649,16 +649,16 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	// gains to calculate the ratios would falsify the result. for this reason the maximum
 	// of both gains is used. this way 0 gains do not falsify the result
 	float invGain = 0.0f;
-	if( pReverbGain > FLOAT_SAFE_EPSILON ){
+	if(pReverbGain > FLOAT_SAFE_EPSILON){
 		invGain = 1.0f / pReverbGain;
 	}
 	
-	pReverbGainLF = decMath::clamp( invGain * decMath::max(
-		listener.GetReflectedLow(), listener.GetReverberationGainLow() ),
-			AL_EAXREVERB_MIN_GAINLF, AL_EAXREVERB_MAX_GAINLF );
-	pReverbGainHF = decMath::clamp( invGain * decMath::max(
-		listener.GetReflectedHigh(), listener.GetReverberationGainHigh() ),
-			AL_EAXREVERB_MIN_GAINHF, AL_EAXREVERB_MAX_GAINHF );
+	pReverbGainLF = decMath::clamp(invGain * decMath::max(
+		listener.GetReflectedLow(), listener.GetReverberationGainLow()),
+			AL_EAXREVERB_MIN_GAINLF, AL_EAXREVERB_MAX_GAINLF);
+	pReverbGainHF = decMath::clamp(invGain * decMath::max(
+		listener.GetReflectedHigh(), listener.GetReverberationGainHigh()),
+			AL_EAXREVERB_MIN_GAINHF, AL_EAXREVERB_MAX_GAINHF);
 	
 // 	pReverbGainLF = decMath::clamp( invGain * listener.GetReflectedLow(), AL_EAXREVERB_MIN_GAINLF, AL_EAXREVERB_MAX_GAINLF );
 // 	pReverbGainHF = decMath::clamp( invGain * listener.GetReflectedHigh(), AL_EAXREVERB_MIN_GAINHF, AL_EAXREVERB_MAX_GAINHF );
@@ -667,16 +667,16 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	
 	// decay time. use here the maximum value too. the range is up to 2 but better to keep
 	// it at maximum at 1 to be on the save side
-	pReverbDecayTime = decMath::clamp( decMath::max( listener.GetReverberationTimeLow(),
-		listener.GetReverberationTimeMedium(), listener.GetReverberationTimeHigh() ),
-		AL_EAXREVERB_MIN_DECAY_TIME, AL_EAXREVERB_MAX_DECAY_TIME );
+	pReverbDecayTime = decMath::clamp(decMath::max(listener.GetReverberationTimeLow(),
+		listener.GetReverberationTimeMedium(), listener.GetReverberationTimeHigh()),
+		AL_EAXREVERB_MIN_DECAY_TIME, AL_EAXREVERB_MAX_DECAY_TIME);
 	
-	if( pReverbDecayTime > FLOAT_SAFE_EPSILON ){
+	if(pReverbDecayTime > FLOAT_SAFE_EPSILON){
 		const float invDecayTime = 1.0f / pReverbDecayTime;
-		pReverbDecayHFRatio = decMath::clamp( listener.GetReverberationTimeHigh() * invDecayTime,
-			AL_EAXREVERB_MIN_DECAY_HFRATIO, AL_EAXREVERB_MAX_DECAY_HFRATIO );
-		pReverbDecayLFRatio = decMath::clamp( listener.GetReverberationTimeLow() * invDecayTime,
-			AL_EAXREVERB_MIN_DECAY_LFRATIO, AL_EAXREVERB_MAX_DECAY_LFRATIO );
+		pReverbDecayHFRatio = decMath::clamp(listener.GetReverberationTimeHigh() * invDecayTime,
+			AL_EAXREVERB_MIN_DECAY_HFRATIO, AL_EAXREVERB_MAX_DECAY_HFRATIO);
+		pReverbDecayLFRatio = decMath::clamp(listener.GetReverberationTimeLow() * invDecayTime,
+			AL_EAXREVERB_MIN_DECAY_LFRATIO, AL_EAXREVERB_MAX_DECAY_LFRATIO);
 		
 	}else{
 		pReverbDecayHFRatio = 1.0f;
@@ -684,11 +684,11 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	}
 	
 	// early (first order) reflections
-	pReverbReflectionGain = decMath::clamp( maxGainReflected * invGain
+	pReverbReflectionGain = decMath::clamp(maxGainReflected * invGain
 		* config.GetEAXReverbReflectionGainFactor(),
-		AL_EAXREVERB_MIN_REFLECTIONS_GAIN, AL_EAXREVERB_MAX_REFLECTIONS_GAIN );
-	pReverbReflectionDelay = decMath::clamp( listener.GetReflectionDelay(),
-		AL_EAXREVERB_MIN_REFLECTIONS_DELAY, AL_EAXREVERB_MAX_REFLECTIONS_DELAY );
+		AL_EAXREVERB_MIN_REFLECTIONS_GAIN, AL_EAXREVERB_MAX_REFLECTIONS_GAIN);
+	pReverbReflectionDelay = decMath::clamp(listener.GetReflectionDelay(),
+		AL_EAXREVERB_MIN_REFLECTIONS_DELAY, AL_EAXREVERB_MAX_REFLECTIONS_DELAY);
 	
 // 				pReverbReflectionGain = 0.0f;
 	
@@ -698,19 +698,19 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 	}*/
 	
 	// late (higher order) reflections
-	pReverbLateReverbGain = decMath::clamp( maxGainLateReverb * invGain
+	pReverbLateReverbGain = decMath::clamp(maxGainLateReverb * invGain
 		* config.GetEAXReverbLateReverbGainFactor(),
-		AL_EAXREVERB_MIN_LATE_REVERB_GAIN, AL_EAXREVERB_MAX_LATE_REVERB_GAIN );
-	pReverbLateReverbDelay = decMath::clamp( listener.GetReverberationDelay(),
-		AL_EAXREVERB_MIN_LATE_REVERB_DELAY, AL_EAXREVERB_MAX_LATE_REVERB_DELAY );
+		AL_EAXREVERB_MIN_LATE_REVERB_GAIN, AL_EAXREVERB_MAX_LATE_REVERB_GAIN);
+	pReverbLateReverbDelay = decMath::clamp(listener.GetReverberationDelay(),
+		AL_EAXREVERB_MIN_LATE_REVERB_DELAY, AL_EAXREVERB_MAX_LATE_REVERB_DELAY);
 	
 // 				pReverbLateReverbGain = 0.0f;
 	
 	// echo. perhaps use the echo-depth for echo-times below min-echo-time like echo-depth =
 	// decMath::linearStep(echoTime, 0, minEchoTime, 1, 0). in the example profiles a value
 	// larger than 0 is though only use for forest profile
-	pReverbEchoTime = decMath::clamp( listener.GetEchoDelay(),
-		AL_EAXREVERB_MIN_ECHO_TIME, AL_EAXREVERB_MAX_ECHO_TIME );
+	pReverbEchoTime = decMath::clamp(listener.GetEchoDelay(),
+		AL_EAXREVERB_MIN_ECHO_TIME, AL_EAXREVERB_MAX_ECHO_TIME);
 	
 	pReverbLateReverbPan = invMicOrient * listener.GetReverberationPan();
 	/*if( pReverbLateReverbPan.LengthSquared() > 1.0f ){
@@ -725,14 +725,14 @@ const decDVector &micPos, const decQuaternion &micOrient ){
 // 			listener.GetReflectedHigh(), listener.GetReverberationGainHigh() );
 // 	}
 	
-	if( pDebug ){
+	if(pDebug){
 		#ifdef LISTENER_CENTRIC_RAY_CAST
 		deoalEnvProbe * const envProbe = microphone.GetEnvProbe();
-		if( envProbe ){
-			pDebug->Prepare( *envProbe, listener );
+		if(envProbe){
+			pDebug->Prepare(*envProbe, listener);
 		}
 		#else
-		pDebug->Prepare( probe, listener );
+		pDebug->Prepare(probe, listener);
 		#endif
 	}
 }
@@ -755,9 +755,9 @@ void deoalEnvironment::pCalcEffectParameters(){
 	// direct path muffling effect. unfortunately the band-pass filter in OpenAL is bit of a joke.
 	// it is either a low-pass filter or a high-pass filter but no real band-pass filter. we need
 	// to set the gain to the highest attenuation then set the lower and upper gain relative to it
-	pBandPassGain = decMath::max( pGainLow, pGainMedium, pGainHigh );
+	pBandPassGain = decMath::max(pGainLow, pGainMedium, pGainHigh);
 	
-	if( pBandPassGain > 0.001f ){
+	if(pBandPassGain > 0.001f){
 		pBandPassGainLF = pGainLow / pBandPassGain;
 		pBandPassGainHF = pGainHigh / pBandPassGain;
 		
@@ -776,45 +776,45 @@ void deoalEnvironment::pCalcEffectKeepAliveTimeout(){
 	
 	pEffectKeepAliveTimeout = delay + pReverbDecayTime;
 	
-	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
-		delay + pReverbDecayTime * pReverbDecayHFRatio );
+	pEffectKeepAliveTimeout = decMath::max(pEffectKeepAliveTimeout,
+		delay + pReverbDecayTime * pReverbDecayHFRatio);
 	
-	pEffectKeepAliveTimeout = decMath::max( pEffectKeepAliveTimeout,
-		delay + pReverbDecayTime * pReverbDecayLFRatio );
+	pEffectKeepAliveTimeout = decMath::max(pEffectKeepAliveTimeout,
+		delay + pReverbDecayTime * pReverbDecayLFRatio);
 }
 
 void deoalEnvironment::pCalcCompareParameters(){
 	pCompareReverbGain = pReverbGain;
 	pCompareReverbGainLF = pReverbGainLF;
 	pCompareReverbGainHF = pReverbGainHF;
-	pCompareReverbDecayTime = decMath::linearStep( pReverbDecayTime,
-		AL_EAXREVERB_MIN_DECAY_TIME, AL_EAXREVERB_MAX_DECAY_TIME );
-	pCompareReverbDecayHFRatio = decMath::linearStep( pReverbDecayHFRatio,
-		AL_EAXREVERB_MIN_DECAY_HFRATIO, AL_EAXREVERB_MAX_DECAY_HFRATIO );
-	pCompareReverbDecayLFRatio = decMath::linearStep( pReverbDecayLFRatio,
-		AL_EAXREVERB_MIN_DECAY_LFRATIO, AL_EAXREVERB_MAX_DECAY_LFRATIO );
-	pCompareReverbReflectionGain = decMath::linearStep( pReverbReflectionGain,
-		AL_EAXREVERB_MIN_REFLECTIONS_GAIN, AL_EAXREVERB_MAX_REFLECTIONS_GAIN );
-	pCompareReverbReflectionDelay = decMath::linearStep( pReverbReflectionDelay,
-		AL_EAXREVERB_MIN_REFLECTIONS_DELAY, AL_EAXREVERB_MAX_REFLECTIONS_DELAY );
-	pCompareReverbReflectionPan = pCalcComparePan( pReverbReflectionPan );
-	pCompareReverbLateReverbGain = decMath::linearStep( pReverbLateReverbGain,
-		AL_EAXREVERB_MIN_LATE_REVERB_GAIN, AL_EAXREVERB_MAX_LATE_REVERB_GAIN );
-	pCompareReverbLateReverbDelay = decMath::linearStep( pReverbLateReverbDelay,
-		AL_EAXREVERB_MIN_LATE_REVERB_DELAY, AL_EAXREVERB_MAX_LATE_REVERB_DELAY );
-	pCompareReverbLateReverbPan = pCalcComparePan( pReverbLateReverbPan );
-	pCompareReverbEchoTime = decMath::linearStep( pReverbEchoTime,
-		AL_EAXREVERB_MIN_ECHO_TIME, AL_EAXREVERB_MAX_ECHO_TIME );
+	pCompareReverbDecayTime = decMath::linearStep(pReverbDecayTime,
+		AL_EAXREVERB_MIN_DECAY_TIME, AL_EAXREVERB_MAX_DECAY_TIME);
+	pCompareReverbDecayHFRatio = decMath::linearStep(pReverbDecayHFRatio,
+		AL_EAXREVERB_MIN_DECAY_HFRATIO, AL_EAXREVERB_MAX_DECAY_HFRATIO);
+	pCompareReverbDecayLFRatio = decMath::linearStep(pReverbDecayLFRatio,
+		AL_EAXREVERB_MIN_DECAY_LFRATIO, AL_EAXREVERB_MAX_DECAY_LFRATIO);
+	pCompareReverbReflectionGain = decMath::linearStep(pReverbReflectionGain,
+		AL_EAXREVERB_MIN_REFLECTIONS_GAIN, AL_EAXREVERB_MAX_REFLECTIONS_GAIN);
+	pCompareReverbReflectionDelay = decMath::linearStep(pReverbReflectionDelay,
+		AL_EAXREVERB_MIN_REFLECTIONS_DELAY, AL_EAXREVERB_MAX_REFLECTIONS_DELAY);
+	pCompareReverbReflectionPan = pCalcComparePan(pReverbReflectionPan);
+	pCompareReverbLateReverbGain = decMath::linearStep(pReverbLateReverbGain,
+		AL_EAXREVERB_MIN_LATE_REVERB_GAIN, AL_EAXREVERB_MAX_LATE_REVERB_GAIN);
+	pCompareReverbLateReverbDelay = decMath::linearStep(pReverbLateReverbDelay,
+		AL_EAXREVERB_MIN_LATE_REVERB_DELAY, AL_EAXREVERB_MAX_LATE_REVERB_DELAY);
+	pCompareReverbLateReverbPan = pCalcComparePan(pReverbLateReverbPan);
+	pCompareReverbEchoTime = decMath::linearStep(pReverbEchoTime,
+		AL_EAXREVERB_MIN_ECHO_TIME, AL_EAXREVERB_MAX_ECHO_TIME);
 }
 
-decVector deoalEnvironment::pCalcComparePan( const decVector &pan ) const{
+decVector deoalEnvironment::pCalcComparePan(const decVector &pan) const{
 	const float length = pan.Length();
-	if( length < 0.01f ){
+	if(length < 0.01f){
 		return decVector();
 	}
 	
-	const float azimuth = atan2f( -pan.x, pan.z );
-	const float elevation = atan2f( pan.y, sqrtf( pan.x * pan.x + pan.z * pan.z ) );
-	return decVector( decMath::linearStep( azimuth, -PI, PI ),
-		decMath::linearStep( elevation, -HALF_PI, HALF_PI ), length );
+	const float azimuth = atan2f(-pan.x, pan.z);
+	const float elevation = atan2f(pan.y, sqrtf(pan.x * pan.x + pan.z * pan.z));
+	return decVector(decMath::linearStep(azimuth, -PI, PI),
+		decMath::linearStep(elevation, -HALF_PI, HALF_PI), length);
 }

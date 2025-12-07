@@ -197,10 +197,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer. */
-	deoglPixelBuffer( ePixelFormats format, int width, int height, int depth );
+	deoglPixelBuffer(ePixelFormats format, int width, int height, int depth);
 	
 	/** Create copy of pixel buffer. */
-	deoglPixelBuffer( const deoglPixelBuffer &pixelBuffer );
+	deoglPixelBuffer(const deoglPixelBuffer &pixelBuffer);
 	
 protected:
 	/** Cleans up the opengl array texture. */
@@ -213,27 +213,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the width. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	/** Retrieves the height. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	/** Retrieves the depth. */
-	inline int GetDepth() const{ return pDepth; }
+	inline int GetDepth() const{return pDepth;}
 	/** Retrieves the pixel format. */
-	inline ePixelFormats GetFormat() const{ return pFormat; }
+	inline ePixelFormats GetFormat() const{return pFormat;}
 	
 	/** Retrieves the unit size in bytes which is the size of the matching pixel data struct. */
-	inline int GetUnitSize() const{ return pUnitSize; }
+	inline int GetUnitSize() const{return pUnitSize;}
 	/** Retrieves the stride of a unit line in bytes which can be a pixel line or a block line. */
-	inline int GetLineStride() const{ return pStrideLine; }
+	inline int GetLineStride() const{return pStrideLine;}
 	/** Retrieves the stride of a depth layer in bytes. */
-	inline int GetLayerStride() const{ return pStrideLayer; }
+	inline int GetLayerStride() const{return pStrideLayer;}
 	/** Retrieves the size of the image data in bytes. */
-	inline int GetImageSize() const{ return pImageSize; }
+	inline int GetImageSize() const{return pImageSize;}
 	/** Determines if the pixel buffer contains compressed data. */
-	inline bool GetCompressed() const{ return pCompressed; }
+	inline bool GetCompressed() const{return pCompressed;}
 	
 	/** Retrieves the bare data pointer. */
-	inline void *GetPointer() const{ return pPixels; }
+	inline void *GetPointer() const{return pPixels;}
 	/** Retrieves the sByte1 data pointer if the format is epfByte1 or otherwise throws an exception. */
 	sByte1 *GetPointerByte1() const;
 	/** Retrieves the sByte2 data pointer if the format is epfByte2 or otherwise throws an exception. */
@@ -264,18 +264,18 @@ public:
 	sDXT3 *GetPointerDXT3() const;
 	
 	/** Sets the pixel data to a uniform color. */
-	void SetToIntColor( int red, int green, int blue, int alpha );
+	void SetToIntColor(int red, int green, int blue, int alpha);
 	/** Sets the pixel data to a uniform color. */
-	void SetToUIntColor( unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha );
+	void SetToUIntColor(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha);
 	/** Sets the pixel data to a uniform color. */
-	void SetToFloatColor( float red, float green, float blue, float alpha );
+	void SetToFloatColor(float red, float green, float blue, float alpha);
 	/** Sets the pixel data to a uniform depth/stencil. */
 	void SetToDepthStencil(float depth, int stencil);
 	
 	/** Retrieves the opengl pixel format required to exchange data with an opengl texture. */
-	inline GLenum GetGLPixelFormat() const{ return pGLPixelFormat; }
+	inline GLenum GetGLPixelFormat() const{return pGLPixelFormat;}
 	/** Retrieves the opengl pixel type required to exchange data with an opengl texture. */
-	inline GLenum GetGLPixelType() const{ return pGLPixelType; }
+	inline GLenum GetGLPixelType() const{return pGLPixelType;}
 	/*@}*/
 };
 

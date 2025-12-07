@@ -67,41 +67,41 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the world to find the path in. */
-	inline dedaiWorld *GetWorld() const{ return pWorld; }
+	inline dedaiWorld *GetWorld() const{return pWorld;}
 	/** Sets the world to find the path in. */
-	void SetWorld( dedaiWorld *world );
+	void SetWorld(dedaiWorld *world);
 	/** Retrieves the navigator to get the type mappings from. */
-	inline dedaiNavigator *GetNavigator() const{ return pNavigator; }
+	inline dedaiNavigator *GetNavigator() const{return pNavigator;}
 	/** Sets the navigator to get the type mappings from. */
-	void SetNavigator( dedaiNavigator *navigator );
+	void SetNavigator(dedaiNavigator *navigator);
 	/** Retrieves the start point. */
-	inline const decDVector &GetStartPoint() const{ return pStartPoint; }
+	inline const decDVector &GetStartPoint() const{return pStartPoint;}
 	/** Sets the start point. */
-	void SetStartPoint( const decDVector &point );
+	void SetStartPoint(const decDVector &point);
 	/** Retrieves the end point. */
-	inline const decDVector &GetEndPoint() const{ return pEndPoint; }
+	inline const decDVector &GetEndPoint() const{return pEndPoint;}
 	/** Sets the end point. */
-	void SetEndPoint( const decDVector &point );
+	void SetEndPoint(const decDVector &point);
 	
 	/** Find path. */
 	void FindPath();
 	
 	/** Retrieves the open list. */
-	inline decPointerList &GetListOpen(){ return pListOpen; }
-	inline const decPointerList &GetListOpen() const{ return pListOpen; }
+	inline decPointerList &GetListOpen(){return pListOpen;}
+	inline const decPointerList &GetListOpen() const{return pListOpen;}
 	/** Retrieves the closed list. */
-	inline decPointerList &GetListClosed(){ return pListClosed; }
-	inline const decPointerList &GetListClosed() const{ return pListClosed; }
+	inline decPointerList &GetListClosed(){return pListClosed;}
+	inline const decPointerList &GetListClosed() const{return pListClosed;}
 	/** Retrieves the vertices path. */
-	inline decPointerList &GetPathVertices(){ return pPathVertices; }
-	inline const decPointerList &GetPathVertices() const{ return pPathVertices; }
+	inline decPointerList &GetPathVertices(){return pPathVertices;}
+	inline const decPointerList &GetPathVertices() const{return pPathVertices;}
 	
 	/** Retrieves the number of path points. */
-	inline int GetPathPointCount() const{ return pPathPointCount; }
+	inline int GetPathPointCount() const{return pPathPointCount;}
 	/** Retrieves the path points. */
-	const decDVector *GetPathPoints() const{ return pPathPoints; }
+	const decDVector *GetPathPoints() const{return pPathPoints;}
 	/** Adds a path point. */
-	void AddPathPoint( const decDVector &point );
+	void AddPathPoint(const decDVector &point);
 	/** Removes all path points. */
 	void RemoveAllPathPoints();
 	/*@}*/

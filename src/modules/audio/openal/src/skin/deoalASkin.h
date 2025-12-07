@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin peer. */
-	deoalASkin( deoalAudioThread &audioThread, const deSkin &skin );
+	deoalASkin(deoalAudioThread &audioThread, const deSkin &skin);
 	
 protected:
 	/** \brief Clean up skin peer. */
@@ -71,30 +71,30 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/** \brief Filename of resource. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	
 	
 	/** \brief Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** \brief Texture at index. */
-	const deoalSkinTexture &GetTextureAt( int index ) const;
+	const deoalSkinTexture &GetTextureAt(int index) const;
 	
 	
 	
 	/** \brief Material affects sound. */
-	inline bool GetAffectsSound() const{ return pAffectsSound; }
+	inline bool GetAffectsSound() const{return pAffectsSound;}
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pCreateTextures( const deSkin &skin );
+	void pCreateTextures(const deSkin &skin);
 };
 
 #endif

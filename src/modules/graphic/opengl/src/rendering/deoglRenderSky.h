@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderSky( deoglRenderThread &renderThread );
+	deoglRenderSky(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	~deoglRenderSky();
@@ -82,35 +82,35 @@ public:
 	 * - RenderSkySphere
 	 * Invalidates no attachments.
 	 */
-	void RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderSky(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Render sky. */
 	//void RenderSkyOld( deoglRenderPlan &plan );
 	
 	/** Render sky box layer. */
-	bool RenderSkyBox( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool first, bool renderIntoEnvMap );
+	bool RenderSkyBox(deoglRenderPlan &plan, deoglRSkyInstance &instance,
+		int layerIndex, bool first, bool renderIntoEnvMap);
 	
 	/** Render sky sphere layer. */
-	bool RenderSkySphere( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool first, bool renderIntoEnvMap );
+	bool RenderSkySphere(deoglRenderPlan &plan, deoglRSkyInstance &instance,
+		int layerIndex, bool first, bool renderIntoEnvMap);
 	
 	/** Render sky bodies layer. */
-	void RenderSkyLayerBodies( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool renderIntoEnvMap );
+	void RenderSkyLayerBodies(deoglRenderPlan &plan, deoglRSkyInstance &instance,
+		int layerIndex, bool renderIntoEnvMap);
 	
 	/** Render sky into an environment map. */
-	void RenderSkyIntoEnvMap( deoglRWorld &world, const decLayerMask &layerMask,
-		deoglEnvironmentMap &envmap );
+	void RenderSkyIntoEnvMap(deoglRWorld &world, const decLayerMask &layerMask,
+		deoglEnvironmentMap &envmap);
 	
 	/** Render empty sky into an environment map. */
-	void RenderEmptySkyIntoEnvMap( deoglRWorld &world, deoglEnvironmentMap &envmap );
+	void RenderEmptySkyIntoEnvMap(deoglRWorld &world, deoglEnvironmentMap &envmap);
 	
 	/** Get sky background color in linear space. */
-	decColor LinearBgColor( const deoglRSkyInstance &instance, bool first ) const;
+	decColor LinearBgColor(const deoglRSkyInstance &instance, bool first) const;
 	
 	/** Prepare render sky into env map parameter block. */
-	void PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan );
+	void PreparepRenderSkyIntoEnvMapParamBlock(const deoglRenderPlan &plan);
 	/*@}*/
 };
 

@@ -41,14 +41,14 @@
 ////////////////////////////
 
 gdeUOCSetPartialHideTags::gdeUOCSetPartialHideTags(
-gdeObjectClass *objectClass, const decStringSet &newValue ) :
-pObjectClass( NULL )
+gdeObjectClass *objectClass, const decStringSet &newValue) :
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set partial hide tags" );
+	SetShortInfo("Object class set partial hide tags");
 	
 	pOldValue = objectClass->GetPartialHideTags();
 	pNewValue = newValue;
@@ -58,7 +58,7 @@ pObjectClass( NULL )
 }
 
 gdeUOCSetPartialHideTags::~gdeUOCSetPartialHideTags(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -69,11 +69,11 @@ gdeUOCSetPartialHideTags::~gdeUOCSetPartialHideTags(){
 ///////////////
 
 void gdeUOCSetPartialHideTags::Undo(){
-	pObjectClass->SetPartialHideTags( pOldValue );
+	pObjectClass->SetPartialHideTags(pOldValue);
 	pObjectClass->GetGameDefinition()->UpdateUsedTagsObjectClass();
 }
 
 void gdeUOCSetPartialHideTags::Redo(){
-	pObjectClass->SetPartialHideTags( pNewValue );
+	pObjectClass->SetPartialHideTags(pNewValue);
 	pObjectClass->GetGameDefinition()->UpdateUsedTagsObjectClass();
 }

@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyAdd::seUBodyAdd( seLayer *layer, seBody *body ) :
-pLayer( NULL ),
-pBody( NULL )
+seUBodyAdd::seUBodyAdd(seLayer *layer, seBody *body) :
+pLayer(NULL),
+pBody(NULL)
 {
-	if( ! layer || ! body ){
-		DETHROW( deeInvalidParam );
+	if(! layer || ! body){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add Body" );
+	SetShortInfo("Add Body");
 	
 	pLayer = layer;
 	layer->AddReference();
@@ -58,10 +58,10 @@ pBody( NULL )
 }
 
 seUBodyAdd::~seUBodyAdd(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -72,10 +72,10 @@ seUBodyAdd::~seUBodyAdd(){
 ///////////////
 
 void seUBodyAdd::Undo(){
-	pLayer->RemoveBody( pBody );
+	pLayer->RemoveBody(pBody);
 }
 
 void seUBodyAdd::Redo(){
-	pLayer->AddBody( pBody );
-	pLayer->SetActiveBody( pBody );
+	pLayer->AddBody(pBody);
+	pLayer->SetActiveBody(pBody);
 }

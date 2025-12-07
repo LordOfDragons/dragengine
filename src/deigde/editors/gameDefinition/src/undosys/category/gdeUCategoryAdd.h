@@ -44,8 +44,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategoryAdd( gdeGameDefinition *gameDefintiion, gdeCategory *parent,
-		gdeCategory *category, eCategoryType type );
+	gdeUCategoryAdd(gdeGameDefinition *gameDefintiion, gdeCategory *parent,
+		gdeCategory *category, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */

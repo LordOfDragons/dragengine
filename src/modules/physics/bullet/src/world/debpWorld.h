@@ -119,7 +119,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world peer. */
-	debpWorld( dePhysicsBullet &bullet, deWorld &world );
+	debpWorld(dePhysicsBullet &bullet, deWorld &world);
 	
 	/** Clean up world peer. */
 	virtual ~debpWorld();
@@ -128,38 +128,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
+	inline dePhysicsBullet &GetBullet() const{return pBullet;}
 	
 	/** Engine world resource. */
-	inline deWorld &GetWorld() const{ return pWorld; }
+	inline deWorld &GetWorld() const{return pWorld;}
 	
 	/** Shared collision information. */
-	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
+	inline deCollisionInfo *GetCollisionInfo() const{return pColInfo;}
 	
 	/** Unstuck collider. */
-	inline debpUnstuckCollider *GetUnstuckCollider() const{ return pUnstuckCollider; }
+	inline debpUnstuckCollider *GetUnstuckCollider() const{return pUnstuckCollider;}
 	
 	
 	
 	/** Maximum sub steps for dynamic simulation. */
-	inline int GetSimulationMaxSubSteps() const{ return pSimMaxSubStep; }
+	inline int GetSimulationMaxSubSteps() const{return pSimMaxSubStep;}
 	
 	/** Fixed time step for dynamic simulation. */
-	inline float GetSimulationTimeStep() const{ return pSimTimeStep; }
+	inline float GetSimulationTimeStep() const{return pSimTimeStep;}
 	
 	
 	
 	/** Gravity. */
-	inline const decVector &GetGravity() const{ return pGravity; }
+	inline const decVector &GetGravity() const{return pGravity;}
 	
 	/**
 	 * Dynamic collision velocity threshold.
 	 * \see debpCollisionWorld::CheckDynamicCollisions.
 	 */
-	inline float GetDynamicCollisionVelocityThreshold() const{ return pDynCollisionVelocityThreshold; }
+	inline float GetDynamicCollisionVelocityThreshold() const{return pDynCollisionVelocityThreshold;}
 	
 	/** In progress of processing physics. */
-	inline bool GetProcessingPhysics() const{ return pProcessingPhysics; }
+	inline bool GetProcessingPhysics() const{return pProcessingPhysics;}
 	
 	
 	
@@ -178,47 +178,47 @@ public:
 	
 	
 	/** Add collider for prepare collision detection. */
-	void pColDetPrepareColliderAdd( debpCollider *collider );
+	void pColDetPrepareColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for prepare collision detection. */
-	void pColDetPrepareColliderRemove( debpCollider *collider );
+	void pColDetPrepareColliderRemove(debpCollider *collider);
 	
 	
 	
 	/** Add collider for finish collision detection. */
-	void pColDetFinishColliderAdd( debpCollider *collider );
+	void pColDetFinishColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for finish collision detection. */
-	void pColDetFinishColliderRemove( debpCollider *collider );
+	void pColDetFinishColliderRemove(debpCollider *collider);
 	
 	
 	
 	/** Add collider for post physics collision test processing. */
-	void pPPCTColliderAdd( debpCollider *collider );
+	void pPPCTColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for post physics collision test processing. */
-	void pPPCTColliderRemove( debpCollider *collider );
+	void pPPCTColliderRemove(debpCollider *collider);
 	
 	
 	
 	/** Add collider for update octree processing. */
-	void pUpdateOctreeColliderAdd( debpCollider *collider );
+	void pUpdateOctreeColliderAdd(debpCollider *collider);
 	
 	/** Remove collider for update octree processing. */
-	void pUpdateOctreeColliderRemove( debpCollider *collider );
+	void pUpdateOctreeColliderRemove(debpCollider *collider);
 	
 	
 	
 	/** Shared collision filteringNULL. */
-	inline debpSharedCollisionFiltering &GetSharedCollisionFiltering() const{ return *pSharedCollisionFiltering; }
+	inline debpSharedCollisionFiltering &GetSharedCollisionFiltering() const{return *pSharedCollisionFiltering;}
 	
 	
 	
 	/** Height terrain or \em NULL. */
-	inline debpHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline debpHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
 	
 	/** Dynamics world. */
-	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
+	inline debpCollisionWorld *GetDynamicsWorld() const{return pDynWorld;}
 	
 	
 	
@@ -226,14 +226,14 @@ public:
 	 * Update dynamic parts of scene.
 	 * \param elapsed Seconds elapsed since last update
 	 */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	/**
 	 * Process physics simulation using the physics module.
 	 * \details Apply collision detection on moving kinematic collider, physical simulation
 	 *          on dynamic colliders, particle and prop field simulations as well as moving
 	 *          colliders attached to other colliders.
 	 */
-	virtual void ProcessPhysics( float elapsed );
+	virtual void ProcessPhysics(float elapsed);
 	/*@}*/
 	
 	
@@ -249,44 +249,44 @@ public:
 	virtual void HeightTerrainChanged();
 	
 	/** Component has been added. */
-	virtual void ComponentAdded( deComponent *component );
+	virtual void ComponentAdded(deComponent *component);
 	/** Component has been removed. */
-	virtual void ComponentRemoved( deComponent *component );
+	virtual void ComponentRemoved(deComponent *component);
 	/** All components have been removed. */
 	virtual void AllComponentsRemoved();
 	
 	/** Collider has been added. */
-	virtual void ColliderAdded( deCollider *collider );
+	virtual void ColliderAdded(deCollider *collider);
 	/** Collider has been removed. */
-	virtual void ColliderRemoved( deCollider *collider );
+	virtual void ColliderRemoved(deCollider *collider);
 	/** All colliders have been removed. */
 	virtual void AllCollidersRemoved();
 	
 	/** Touch sensor has been added. */
-	virtual void TouchSensorAdded( deTouchSensor *touchSensor );
+	virtual void TouchSensorAdded(deTouchSensor *touchSensor);
 	/** Touch sensor has been removed. */
-	virtual void TouchSensorRemoved( deTouchSensor *touchSensor );
+	virtual void TouchSensorRemoved(deTouchSensor *touchSensor);
 	/** All touch sensors have been removed. */
 	virtual void AllTouchSensorsRemoved();
 	
 	/** Prop field has been added. */
-	virtual void PropFieldAdded( dePropField *propField );
+	virtual void PropFieldAdded(dePropField *propField);
 	/** Prop field has been removed. */
-	virtual void PropFieldRemoved( dePropField *propField );
+	virtual void PropFieldRemoved(dePropField *propField);
 	/** All prop fields have been removed. */
 	virtual void AllPropFieldsRemoved();
 	
 	/** Force field has been added. */
-	virtual void ForceFieldAdded( deForceField *forceField );
+	virtual void ForceFieldAdded(deForceField *forceField);
 	/** Force field has been removed. */
-	virtual void ForceFieldRemoved( deForceField *forceField );
+	virtual void ForceFieldRemoved(deForceField *forceField);
 	/** All force fields have been removed. */
 	virtual void AllForceFieldsRemoved();
 	
 	/** Prop field has been added. */
-	virtual void ParticleEmitterAdded( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterAdded(deParticleEmitterInstance *emitter);
 	/** Prop field has been removed. */
-	virtual void ParticleEmitterRemoved( deParticleEmitterInstance *emitter );
+	virtual void ParticleEmitterRemoved(deParticleEmitterInstance *emitter);
 	/** All prop fields have been removed. */
 	virtual void AllParticleEmittersRemoved();
 	/*@}*/
@@ -301,23 +301,23 @@ public:
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void PointHits( const decDVector &point, deBaseScriptingCollider *listener,
-	const decCollisionFilter &collisionFilter );
+	virtual void PointHits(const decDVector &point, deBaseScriptingCollider *listener,
+	const decCollisionFilter &collisionFilter);
 	
 	/**
 	 * Tests a ray for collision with the element in the world.
 	 * \details For each collision the collisionResponse function the given listener is called. To
 	 *          stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void RayHits( const decDVector &rayOrigin, const decVector &rayDirection,
-	deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter );
+	virtual void RayHits(const decDVector &rayOrigin, const decVector &rayDirection,
+	deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter);
 	
 	/**
 	 * Tests the collider for collision with world elements.
 	 * \details For each collision the collisionResponse function of the listener is called. To
 	 *          stop testing set StopTesting in the provided collision information object to true.
 	 */
-	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
+	virtual void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * Tests the moving collider for collision with world elements.
@@ -325,8 +325,8 @@ public:
 	 *          of the listener is called. To stop testing set StopTesting in the provided
 	 *          collision information object to true.
 	 */
-	virtual void ColliderMoveHits( deCollider *collider, const decVector &displacement,
-	deBaseScriptingCollider *listener );
+	virtual void ColliderMoveHits(deCollider *collider, const decVector &displacement,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * Tests the rotating collider for collision with world elements.
@@ -334,8 +334,8 @@ public:
 	 *          of the listener is called. To stop testing set StopTesting in the provided
 	 *          collision information object to true.
 	 */
-	virtual void ColliderRotateHits( deCollider *collider, const decVector &rotation,
-	deBaseScriptingCollider *listener );
+	virtual void ColliderRotateHits(deCollider *collider, const decVector &rotation,
+	deBaseScriptingCollider *listener);
 	
 	/**
 	 * Tests the moving and rotating collider for collision with world elements.
@@ -343,8 +343,8 @@ public:
 	 *          of the listener is called. To stop testing set StopTesting in the provided
 	 *          collision information object to true.
 	 */
-	virtual void ColliderMoveRotateHits( deCollider *collider, const decVector &displacement,
-	const decVector &rotation, deBaseScriptingCollider *listener );
+	virtual void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+	const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 	
 	
@@ -352,16 +352,16 @@ public:
 private:
 	void pCleanUp();
 	
-	void pProcessPhysics( float elapsed );
+	void pProcessPhysics(float elapsed);
 	
-	void pPrepareDetection( float elapsed );
+	void pPrepareDetection(float elapsed);
 	
 	void pPrepareForStep();
 // 	bool pStepPhysics();
-	void pStepForceFields( float elapsed );
+	void pStepForceFields(float elapsed);
 	
-	void pPrepareParticleEmitters( float elapsed );
-	void pStepParticleEmitters( float elapsed );
+	void pPrepareParticleEmitters(float elapsed);
+	void pStepParticleEmitters(float elapsed);
 	
 	void pUpdateFromBody();
 	void pFinishDetection();

@@ -54,22 +54,22 @@ int igdeTriggerTargetList::GetCount() const{
 	return pTargets.GetCount();
 }
 
-igdeTriggerTarget *igdeTriggerTargetList::GetAt( int position ) const{
-	return ( igdeTriggerTarget* )pTargets.GetAt( position );
+igdeTriggerTarget *igdeTriggerTargetList::GetAt(int position) const{
+	return (igdeTriggerTarget*)pTargets.GetAt(position);
 }
 
-igdeTriggerTarget *igdeTriggerTargetList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pTargets.GetCount();
 	igdeTriggerTarget *target;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		target = ( igdeTriggerTarget* )pTargets.GetAt( i );
-		if( target->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		target = (igdeTriggerTarget*)pTargets.GetAt(i);
+		if(target->GetName().Equals(name)){
 			return target;
 		}
 	}
@@ -77,36 +77,36 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing( const char *name ){
-	igdeTriggerTarget *target = GetNamed( name );
+igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name){
+	igdeTriggerTarget *target = GetNamed(name);
 	
-	if( ! target ){
-		target = new igdeTriggerTarget( name );
-		pTargets.Add( target );
+	if(! target){
+		target = new igdeTriggerTarget(name);
+		pTargets.Add(target);
 		target->FreeReference();
 	}
 	
 	return target;
 }
 
-int igdeTriggerTargetList::IndexOf( igdeTriggerTarget *target ) const{
-	return pTargets.IndexOf( target );
+int igdeTriggerTargetList::IndexOf(igdeTriggerTarget *target) const{
+	return pTargets.IndexOf(target);
 }
 
-bool igdeTriggerTargetList::Has( igdeTriggerTarget *target ) const{
-	return pTargets.Has( target );
+bool igdeTriggerTargetList::Has(igdeTriggerTarget *target) const{
+	return pTargets.Has(target);
 }
 
-bool igdeTriggerTargetList::HasNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+bool igdeTriggerTargetList::HasNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pTargets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeTriggerTarget* )pTargets.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((igdeTriggerTarget*)pTargets.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -114,20 +114,20 @@ bool igdeTriggerTargetList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void igdeTriggerTargetList::Add( igdeTriggerTarget *target ){
-	if( ! target || HasNamed( target->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerTargetList::Add(igdeTriggerTarget *target){
+	if(! target || HasNamed(target->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTargets.Add( target );
+	pTargets.Add(target);
 }
 
-void igdeTriggerTargetList::Remove( igdeTriggerTarget *target ){
-	if( ! target ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerTargetList::Remove(igdeTriggerTarget *target){
+	if(! target){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTargets.Remove( target );
+	pTargets.Remove(target);
 }
 
 void igdeTriggerTargetList::RemoveAll(){
@@ -138,10 +138,10 @@ void igdeTriggerTargetList::RemoveUnused(){
 	const int count = pTargets.GetCount();
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		igdeTriggerTarget * const target = ( igdeTriggerTarget* )pTargets.GetAt( i );
-		if( target->GetRefCount() == 1 ){
-			pTargets.Remove( target );
+	for(i=count-1; i>=0; i--){
+		igdeTriggerTarget * const target = (igdeTriggerTarget*)pTargets.GetAt(i);
+		if(target->GetRefCount() == 1){
+			pTargets.Remove(target);
 		}
 	}
 }

@@ -41,44 +41,44 @@
 ////////////////////////////
 
 projProfile::projProfile() :
-pProject( NULL ),
-pName( "Profile" ),
+pProject(NULL),
+pName("Profile"),
 
-pScriptDirectory( "/scripts" ),
-pGameObject( "MyGameApp" ),
-pPathConfig( "/config" ),
-pPathCapture( "/capture" ),
+pScriptDirectory("/scripts"),
+pGameObject("MyGameApp"),
+pPathConfig("/config"),
+pPathCapture("/capture"),
 
-pAliasIdentifier( "my_game_app" ),
+pAliasIdentifier("my_game_app"),
 
-pDelgaPath( "projribute/MyGameApp.delga" ){
+pDelgaPath("projribute/MyGameApp.delga"){
 }
 
-projProfile::projProfile( const projProfile &profile ) :
-pProject( NULL ),
-pName( profile.pName ),
-pDescription( profile.pDescription ),
+projProfile::projProfile(const projProfile &profile) :
+pProject(NULL),
+pName(profile.pName),
+pDescription(profile.pDescription),
 
-pScriptDirectory( profile.pScriptDirectory ),
-pGameObject( profile.pGameObject ),
-pPathConfig( profile.pPathConfig ),
-pPathCapture( profile.pPathCapture ),
+pScriptDirectory(profile.pScriptDirectory),
+pGameObject(profile.pGameObject),
+pPathConfig(profile.pPathConfig),
+pPathCapture(profile.pPathCapture),
 
-pIdentifier( profile.pIdentifier ),
-pAliasIdentifier( profile.pAliasIdentifier ),
-pTitle( profile.pTitle ),
-pGameDescription( profile.pGameDescription ),
-pCreator( profile.pCreator ),
-pWebsite( profile.pWebsite ),
-pWindowSize( profile.pWindowSize ),
-pIcons( profile.pIcons ),
+pIdentifier(profile.pIdentifier),
+pAliasIdentifier(profile.pAliasIdentifier),
+pTitle(profile.pTitle),
+pGameDescription(profile.pGameDescription),
+pCreator(profile.pCreator),
+pWebsite(profile.pWebsite),
+pWindowSize(profile.pWindowSize),
+pIcons(profile.pIcons),
 
-pExcludePatterns( profile.pExcludePatterns ),
-pRequiredExtensions( profile.pRequiredExtensions ),
+pExcludePatterns(profile.pExcludePatterns),
+pRequiredExtensions(profile.pRequiredExtensions),
 
-pDelgaPath( profile.pDelgaPath ),
+pDelgaPath(profile.pDelgaPath),
 
-pRunArguments( profile.pRunArguments ){
+pRunArguments(profile.pRunArguments){
 }
 
 projProfile::~projProfile(){
@@ -90,14 +90,14 @@ projProfile::~projProfile(){
 // Management
 ///////////////
 
-void projProfile::SetProject( projProject *project ){
+void projProfile::SetProject(projProject *project){
 	pProject = project;
 }
 
 
 
-void projProfile::SetName( const char *name ){
-	if( pName == name ){
+void projProfile::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
@@ -105,8 +105,8 @@ void projProfile::SetName( const char *name ){
 	NotifyNameChanged();
 }
 
-void projProfile::SetDescription( const char *description ){
-	if( pDescription == description ){
+void projProfile::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -116,8 +116,8 @@ void projProfile::SetDescription( const char *description ){
 
 
 
-void projProfile::SetScriptDirectory( const char *directory ){
-	if( pScriptDirectory == directory ){
+void projProfile::SetScriptDirectory(const char *directory){
+	if(pScriptDirectory == directory){
 		return;
 	}
 	
@@ -125,8 +125,8 @@ void projProfile::SetScriptDirectory( const char *directory ){
 	NotifyChanged();
 }
 
-void projProfile::SetGameObject( const char *gameObject ){
-	if( pGameObject == gameObject ){
+void projProfile::SetGameObject(const char *gameObject){
+	if(pGameObject == gameObject){
 		return;
 	}
 	
@@ -134,8 +134,8 @@ void projProfile::SetGameObject( const char *gameObject ){
 	NotifyChanged();
 }
 
-void projProfile::SetPathConfig( const char *path ){
-	if( pPathConfig == path ){
+void projProfile::SetPathConfig(const char *path){
+	if(pPathConfig == path){
 		return;
 	}
 	
@@ -143,8 +143,8 @@ void projProfile::SetPathConfig( const char *path ){
 	NotifyChanged();
 }
 
-void projProfile::SetPathCapture( const char *path ){
-	if( pPathCapture == path ){
+void projProfile::SetPathCapture(const char *path){
+	if(pPathCapture == path){
 		return;
 	}
 	
@@ -154,8 +154,8 @@ void projProfile::SetPathCapture( const char *path ){
 
 
 
-void projProfile::SetIdentifier( const decUuid &identifier ){
-	if( pIdentifier == identifier ){
+void projProfile::SetIdentifier(const decUuid &identifier){
+	if(pIdentifier == identifier){
 		return;
 	}
 	
@@ -163,8 +163,8 @@ void projProfile::SetIdentifier( const decUuid &identifier ){
 	NotifyChanged();
 }
 
-void projProfile::SetAliasIdentifier( const char *identifier ){
-	if( pAliasIdentifier == identifier ){
+void projProfile::SetAliasIdentifier(const char *identifier){
+	if(pAliasIdentifier == identifier){
 		return;
 	}
 	
@@ -172,8 +172,8 @@ void projProfile::SetAliasIdentifier( const char *identifier ){
 	NotifyChanged();
 }
 
-void projProfile::SetTitle( const char *title ){
-	if( pTitle == title ){
+void projProfile::SetTitle(const char *title){
+	if(pTitle == title){
 		return;
 	}
 	
@@ -181,8 +181,8 @@ void projProfile::SetTitle( const char *title ){
 	NotifyChanged();
 }
 
-void projProfile::SetGameDescription( const char *description ){
-	if( pGameDescription == description ){
+void projProfile::SetGameDescription(const char *description){
+	if(pGameDescription == description){
 		return;
 	}
 	
@@ -190,8 +190,8 @@ void projProfile::SetGameDescription( const char *description ){
 	NotifyChanged();
 }
 
-void projProfile::SetCreator( const char *creator ){
-	if( pCreator == creator ){
+void projProfile::SetCreator(const char *creator){
+	if(pCreator == creator){
 		return;
 	}
 	
@@ -199,8 +199,8 @@ void projProfile::SetCreator( const char *creator ){
 	NotifyChanged();
 }
 
-void projProfile::SetWebsite( const char *website ){
-	if( pWebsite == website ){
+void projProfile::SetWebsite(const char *website){
+	if(pWebsite == website){
 		return;
 	}
 	
@@ -208,8 +208,8 @@ void projProfile::SetWebsite( const char *website ){
 	NotifyChanged();
 }
 
-void projProfile::SetWindowSize( const decPoint &size ){
-	if( size == pWindowSize ){
+void projProfile::SetWindowSize(const decPoint &size){
+	if(size == pWindowSize){
 		return;
 	}
 	
@@ -217,8 +217,8 @@ void projProfile::SetWindowSize( const decPoint &size ){
 	NotifyChanged();
 }
 
-void projProfile::SetIcons( const decStringSet &icons ){
-	if( icons == pIcons ){
+void projProfile::SetIcons(const decStringSet &icons){
+	if(icons == pIcons){
 		return;
 	}
 	
@@ -228,8 +228,8 @@ void projProfile::SetIcons( const decStringSet &icons ){
 
 
 
-void projProfile::SetExcludePatterns( const decStringSet &patterns ){
-	if( patterns == pExcludePatterns ){
+void projProfile::SetExcludePatterns(const decStringSet &patterns){
+	if(patterns == pExcludePatterns){
 		return;
 	}
 	
@@ -237,8 +237,8 @@ void projProfile::SetExcludePatterns( const decStringSet &patterns ){
 	NotifyChanged();
 }
 
-void projProfile::SetRequiredExtensions( const decStringSet &extensions ){
-	if( extensions == pRequiredExtensions ){
+void projProfile::SetRequiredExtensions(const decStringSet &extensions){
+	if(extensions == pRequiredExtensions){
 		return;
 	}
 	
@@ -248,8 +248,8 @@ void projProfile::SetRequiredExtensions( const decStringSet &extensions ){
 
 
 
-void projProfile::SetDelgaPath( const char *path ){
-	if( pDelgaPath == path ){
+void projProfile::SetDelgaPath(const char *path){
+	if(pDelgaPath == path){
 		return;
 	}
 	
@@ -259,8 +259,8 @@ void projProfile::SetDelgaPath( const char *path ){
 
 
 
-void projProfile::SetRunArguments( const char *arguments ){
-	if( pRunArguments == arguments ){
+void projProfile::SetRunArguments(const char *arguments){
+	if(pRunArguments == arguments){
 		return;
 	}
 	
@@ -271,14 +271,14 @@ void projProfile::SetRunArguments( const char *arguments ){
 
 
 void projProfile::NotifyChanged(){
-	if( pProject ){
-		pProject->NotifyProfileChanged( this );
+	if(pProject){
+		pProject->NotifyProfileChanged(this);
 	}
 }
 
 void projProfile::NotifyNameChanged(){
-	if( pProject ){
-		pProject->NotifyProfileNameChanged( this );
+	if(pProject){
+		pProject->NotifyProfileNameChanged(this);
 	}
 }
 

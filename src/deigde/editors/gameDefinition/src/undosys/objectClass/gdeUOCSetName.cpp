@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetName::gdeUOCSetName( gdeObjectClass *objectClass, const char *newValue ) :
-pObjectClass( NULL )
+gdeUOCSetName::gdeUOCSetName(gdeObjectClass *objectClass, const char *newValue) :
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set name" );
+	SetShortInfo("Object class set name");
 	
 	pOldValue = objectClass->GetName();
 	pNewValue = newValue;
@@ -56,7 +56,7 @@ pObjectClass( NULL )
 }
 
 gdeUOCSetName::~gdeUOCSetName(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ gdeUOCSetName::~gdeUOCSetName(){
 ///////////////
 
 void gdeUOCSetName::Undo(){
-	pObjectClass->SetName( pOldValue );
+	pObjectClass->SetName(pOldValue);
 }
 
 void gdeUOCSetName::Redo(){
-	pObjectClass->SetName( pNewValue );
+	pObjectClass->SetName(pNewValue);
 }

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create timer query. */
-	deoglTimerQuery( deoglRenderThread &renderThread );
+	deoglTimerQuery(deoglRenderThread &renderThread);
 	
 	/** Clean up timer query. */
 	~deoglTimerQuery();
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Begin query. */
 	void BeginQuery();

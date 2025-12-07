@@ -55,30 +55,30 @@ meObjectShapeSelection::~meObjectShapeSelection(){
 // Management
 ///////////////
 
-void meObjectShapeSelection::Add( meObjectShape *objectShape ){
-	if( ! objectShape ){
-		DETHROW( deeInvalidParam );
+void meObjectShapeSelection::Add(meObjectShape *objectShape){
+	if(! objectShape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	objectShape->SetSelected( true );
-	pSelection.AddIfAbsent( objectShape );
+	objectShape->SetSelected(true);
+	pSelection.AddIfAbsent(objectShape);
 }
 
-void meObjectShapeSelection::Remove( meObjectShape *objectShape ){
-	if( ! objectShape ){
-		DETHROW( deeInvalidParam );
+void meObjectShapeSelection::Remove(meObjectShape *objectShape){
+	if(! objectShape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	objectShape->SetSelected( false );
-	pSelection.RemoveIfPresent( objectShape );
+	objectShape->SetSelected(false);
+	pSelection.RemoveIfPresent(objectShape);
 }
 
 void meObjectShapeSelection::RemoveAll(){
 	const int count = pSelection.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
+	for(i=0; i<count; i++){
+		pSelection.GetAt(i)->SetSelected(false);
 	}
 	
 	pSelection.RemoveAll();
@@ -90,17 +90,17 @@ bool meObjectShapeSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meObjectShapeSelection::SetActive( meObjectShape *objectShape ){
-	if( pActive ){
-		pActive->SetActive( false );
+void meObjectShapeSelection::SetActive(meObjectShape *objectShape){
+	if(pActive){
+		pActive->SetActive(false);
 		pActive->FreeReference();
 	}
 	
 	pActive = objectShape;
 	
-	if( objectShape ){
+	if(objectShape){
 		objectShape->AddReference();
-		objectShape->SetActive( true );
+		objectShape->SetActive(true);
 	}
 }
 
@@ -109,65 +109,65 @@ void meObjectShapeSelection::ActivateNext(){
 	meObjectShape *next = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
+	for(i=0; i<count; i++){
+		if(pActive != pSelection.GetAt(i)){
+			next = pSelection.GetAt(i);
 			break;
 		}
 	}
 	
-	SetActive( next );
+	SetActive(next);
 }
 
 void meObjectShapeSelection::Reset(){
 	RemoveAll();
-	SetActive( NULL );
+	SetActive(NULL);
 }
 
 
 
-void meObjectShapeSelection::Backup( const meObjectShapeList &shapeList, decIntList &indicesSelected, int &indexActive ){
+void meObjectShapeSelection::Backup(const meObjectShapeList &shapeList, decIntList &indicesSelected, int &indexActive){
 	const int count = pSelection.GetCount();
 	int i, index;
 	
 	indicesSelected.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		index = shapeList.IndexOf( pSelection.GetAt( i ) );
+	for(i=0; i<count; i++){
+		index = shapeList.IndexOf(pSelection.GetAt(i));
 		
-		if( index != -1 ){
-			indicesSelected.Add( index );
+		if(index != -1){
+			indicesSelected.Add(index);
 		}
 	}
 	
-	if( pActive ){
-		indexActive = shapeList.IndexOf( pActive );
+	if(pActive){
+		indexActive = shapeList.IndexOf(pActive);
 		
 	}else{
 		indexActive = -1;
 	}
 }
 
-void meObjectShapeSelection::Restore( const meObjectShapeList &shapeList, const decIntList &indicesSelected, int indexActive ){
+void meObjectShapeSelection::Restore(const meObjectShapeList &shapeList, const decIntList &indicesSelected, int indexActive){
 	const int count = indicesSelected.GetCount();
 	const int shapeCount = shapeList.GetCount();
 	int i, index;
 	
 	Reset();
 	
-	for( i=0; i<count; i++ ){
-		index = indicesSelected.GetAt( i );
+	for(i=0; i<count; i++){
+		index = indicesSelected.GetAt(i);
 		
-		if( index >= 0 && index < shapeCount ){
-			Add( shapeList.GetAt( index ) );
+		if(index >= 0 && index < shapeCount){
+			Add(shapeList.GetAt(index));
 		}
 	}
 	
-	if( indexActive >= 0 && indexActive < shapeCount ){
-		SetActive( shapeList.GetAt( indexActive ) );
+	if(indexActive >= 0 && indexActive < shapeCount){
+		SetActive(shapeList.GetAt(indexActive));
 	}
 	
-	if( ! pActive && pSelection.GetCount() > 0 ){
+	if(! pActive && pSelection.GetCount() > 0){
 		ActivateNext();
 	}
 }

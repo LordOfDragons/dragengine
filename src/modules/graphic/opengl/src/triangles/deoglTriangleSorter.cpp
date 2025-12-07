@@ -39,9 +39,9 @@
 ////////////////////////////
 
 deoglTriangleSorter::deoglTriangleSorter() :
-pTriangles( NULL ),
-pTriangleCount( 0 ),
-pTriangleSize( 0 ){
+pTriangles(NULL),
+pTriangleCount(0),
+pTriangleSize(0){
 }
 
 deoglTriangleSorter::~deoglTriangleSorter(){
@@ -53,46 +53,46 @@ deoglTriangleSorter::~deoglTriangleSorter(){
 // Management
 ///////////////
 
-const decVector &deoglTriangleSorter::GetTriangleVertex1( int triangle ) const{
-	if( triangle < 0 || triangle >= pTriangleCount ){
-		DETHROW( deeInvalidParam );
+const decVector &deoglTriangleSorter::GetTriangleVertex1(int triangle) const{
+	if(triangle < 0 || triangle >= pTriangleCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pTriangles[ triangle ]->vertex1;
+	return pTriangles[triangle]->vertex1;
 }
 
-const decVector &deoglTriangleSorter::GetTriangleVertex2( int triangle ) const{
-	if( triangle < 0 || triangle >= pTriangleCount ){
-		DETHROW( deeInvalidParam );
+const decVector &deoglTriangleSorter::GetTriangleVertex2(int triangle) const{
+	if(triangle < 0 || triangle >= pTriangleCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pTriangles[ triangle ]->vertex2;
+	return pTriangles[triangle]->vertex2;
 }
 
-const decVector &deoglTriangleSorter::GetTriangleVertex3( int triangle ) const{
-	if( triangle < 0 || triangle >= pTriangleCount ){
-		DETHROW( deeInvalidParam );
+const decVector &deoglTriangleSorter::GetTriangleVertex3(int triangle) const{
+	if(triangle < 0 || triangle >= pTriangleCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pTriangles[ triangle ]->vertex3;
+	return pTriangles[triangle]->vertex3;
 }
 
-void deoglTriangleSorter::AddTriangle( const decVector &vertex1,
-const decVector &vertex2, const decVector &vertex3 ){
-	if( pTriangleCount == pTriangleSize ){
+void deoglTriangleSorter::AddTriangle(const decVector &vertex1,
+const decVector &vertex2, const decVector &vertex3){
+	if(pTriangleCount == pTriangleSize){
 		const int newSize = pTriangleSize * 3 / 2 + 1;
 		
-		sTriangle ** const newArray = new sTriangle*[ newSize ];
-		if( pTriangles ){
-			memcpy( newArray, pTriangles, sizeof( sTriangle* ) * pTriangleSize );
+		sTriangle ** const newArray = new sTriangle*[newSize];
+		if(pTriangles){
+			memcpy(newArray, pTriangles, sizeof(sTriangle*) * pTriangleSize);
 			delete [] pTriangles;
 		}
 		
 		pTriangles = newArray;
 		
-		while( pTriangleSize < newSize ){
-			pTriangles[ pTriangleSize++ ] = new sTriangle;
+		while(pTriangleSize < newSize){
+			pTriangles[pTriangleSize++] = new sTriangle;
 		}
 	}
 	
-	sTriangle &triangle = *pTriangles[ pTriangleCount++ ];
+	sTriangle &triangle = *pTriangles[pTriangleCount++];
 	triangle.vertex1 = vertex1;
 	triangle.vertex2 = vertex2;
 	triangle.vertex3 = vertex3;
@@ -108,49 +108,49 @@ void deoglTriangleSorter::RemoveAllTriangles(){
 // Sorting
 ////////////
 
-void deoglTriangleSorter::SortLinear( const decVector &position, const decVector &view ){
+void deoglTriangleSorter::SortLinear(const decVector &position, const decVector &view){
 	// calculate distance to reference point using view direction as projection axis
 	const float factor = 1.0f / 3.0f;
 	int i;
 	
-	for( i=0; i<pTriangleCount; i++ ){
-		sTriangle &t = *pTriangles[ i ];
-		const decVector triangleCenter( ( t.vertex1 + t.vertex2 + t.vertex3 ) * factor );
-		const decVector triangleView( triangleCenter - position );
+	for(i=0; i<pTriangleCount; i++){
+		sTriangle &t = *pTriangles[i];
+		const decVector triangleCenter((t.vertex1 + t.vertex2 + t.vertex3) * factor);
+		const decVector triangleView(triangleCenter - position);
 		t.distance = triangleView * view;
 	}
 	
 	// sort by distance
-	if( pTriangleCount > 0 ){
-		pQuickSortDistance( 0, pTriangleCount - 1 );
+	if(pTriangleCount > 0){
+		pQuickSortDistance(0, pTriangleCount - 1);
 	}
 }
 
-void deoglTriangleSorter::SortRadial( const decVector &position ){
+void deoglTriangleSorter::SortRadial(const decVector &position){
 	// calculate distance to reference point. squared distance is enough so we do
 	// not have to calculate the square root.
 	const float factor = 1.0f / 3.0f;
 	int i;
 	
-	for( i=0; i<pTriangleCount; i++ ){
-		sTriangle &t = *pTriangles[ i ];
-		const decVector triangleCenter( ( t.vertex1 + t.vertex2 + t.vertex3 ) * factor );
-		const decVector direction( triangleCenter - position );
+	for(i=0; i<pTriangleCount; i++){
+		sTriangle &t = *pTriangles[i];
+		const decVector triangleCenter((t.vertex1 + t.vertex2 + t.vertex3) * factor);
+		const decVector direction(triangleCenter - position);
 		t.distance = direction * direction;
 	}
 	
 	// sort by distance
-	if( pTriangleCount > 0 ){
-		pQuickSortDistance( 0, pTriangleCount - 1 );
+	if(pTriangleCount > 0){
+		pQuickSortDistance(0, pTriangleCount - 1);
 	}
 	
 	// debug
 	/*
-	printf( "[TRIANGLESORTER] ( %i Triangles )\n", pTriangleCount );
-	for( i=0; i<pTriangleCount; i++ ){
-		printf( "%g, ", pTriangles[ i ]->distance );
+	printf("[TRIANGLESORTER] (%i Triangles)\n", pTriangleCount);
+	for(i=0; i<pTriangleCount; i++){
+		printf("%g, ", pTriangles[i]->distance);
 	}
-	printf( "\n\n" );
+	printf("\n\n");
 	*/
 }
 
@@ -160,43 +160,43 @@ void deoglTriangleSorter::SortRadial( const decVector &position ){
 //////////////////////
 
 void deoglTriangleSorter::pCleanUp(){
-	if( pTriangles ){
-		while( pTriangleSize > 0 ){
+	if(pTriangles){
+		while(pTriangleSize > 0){
 			pTriangleSize--;
-			delete pTriangles[ pTriangleSize ];
+			delete pTriangles[pTriangleSize];
 		}
 		delete [] pTriangles;
 	}
 }
 
-void deoglTriangleSorter::pQuickSortDistance( int left, int right ){
-	sTriangle * const pivotFace = pTriangles[ left ];
+void deoglTriangleSorter::pQuickSortDistance(int left, int right){
+	sTriangle * const pivotFace = pTriangles[left];
 	const float pivot = pivotFace->distance;
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( pTriangles[ right ]->distance >= pivot ) && ( left < right ) ){
+	while(left < right){
+		while((pTriangles[right]->distance >= pivot) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pTriangles[ left ] = pTriangles[ right ];
+		if(left != right){
+			pTriangles[left] = pTriangles[right];
 			left++;
 		}
-		while( ( pTriangles[ left ]->distance <= pivot ) && ( left < right ) ){
+		while((pTriangles[left]->distance <= pivot) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pTriangles[ right ] = pTriangles[ left ];
+		if(left != right){
+			pTriangles[right] = pTriangles[left];
 			right--;
 		}
 	}
 	
-	pTriangles[ left ] = pivotFace;
-	if( l_hold < left ){
-		pQuickSortDistance( l_hold, left - 1 );
+	pTriangles[left] = pivotFace;
+	if(l_hold < left){
+		pQuickSortDistance(l_hold, left - 1);
 	}
-	if( r_hold > left ){
-		pQuickSortDistance( left + 1, r_hold );
+	if(r_hold > left){
+		pQuickSortDistance(left + 1, r_hold);
 	}
 }

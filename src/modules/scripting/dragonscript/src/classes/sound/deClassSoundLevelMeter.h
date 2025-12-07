@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSoundLevelMeter( deScriptingDragonScript &ds );
+	deClassSoundLevelMeter(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSoundLevelMeter();
@@ -57,18 +57,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create script class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Sound level meter from real object or NULL if real object is NULL. */
-	deSoundLevelMeter *GetSoundLevelMeter( dsRealObject *myself ) const;
+	deSoundLevelMeter *GetSoundLevelMeter(dsRealObject *myself) const;
 	
 	/** \brief Push sound level meter or NULL onto the stack. */
-	void PushSoundLevelMeter( dsRunTime *rt, deSoundLevelMeter *soundLevelMeter );
+	void PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter);
 	
-	inline dsClass *GetClassSoundLevelMeterType() const{ return pClsSoundLevelMeterType; }
+	inline dsClass *GetClassSoundLevelMeterType() const{return pClsSoundLevelMeterType;}
 	/*@}*/
 	
 	
@@ -93,37 +93,37 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfSetType );
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetConeAngle );
-	DEF_NATFUNC( nfSetConeAngle );
-	DEF_NATFUNC( nfGetAudibleDistance );
-	DEF_NATFUNC( nfSetAudibleDistance );
-	DEF_NATFUNC( nfGetLayerMask );
-	DEF_NATFUNC( nfSetLayerMask );
-	DEF_NATFUNC( nfGetEnabled );
-	DEF_NATFUNC( nfSetEnabled );
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfSetType);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetConeAngle);
+	DEF_NATFUNC(nfSetConeAngle);
+	DEF_NATFUNC(nfGetAudibleDistance);
+	DEF_NATFUNC(nfSetAudibleDistance);
+	DEF_NATFUNC(nfGetLayerMask);
+	DEF_NATFUNC(nfSetLayerMask);
+	DEF_NATFUNC(nfGetEnabled);
+	DEF_NATFUNC(nfSetEnabled);
 	
-	DEF_NATFUNC( nfGetAudibleSpeakerCount );
-	DEF_NATFUNC( nfGetAudibleSpeakerAt );
+	DEF_NATFUNC(nfGetAudibleSpeakerCount);
+	DEF_NATFUNC(nfGetAudibleSpeakerAt);
 	
-	DEF_NATFUNC( nfGetListener );
-	DEF_NATFUNC( nfSetListener );
+	DEF_NATFUNC(nfGetListener);
+	DEF_NATFUNC(nfSetListener);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetVertexPositionSet( saePhoneme *phoneme, const char *newName );
+	saeUPhonemeSetVertexPositionSet(saePhoneme *phoneme, const char *newName);
 	
 protected:
 	/** Clean up undo. */

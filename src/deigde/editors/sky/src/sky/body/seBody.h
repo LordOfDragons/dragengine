@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky body. */
-	seBody( deEngine *engine );
+	seBody(deEngine *engine);
 	
 protected:
 	/** \brief Clean up sky body. */
@@ -77,52 +77,52 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Parent layer or \em NULL. */
-	inline seLayer *GetLayer() const{ return pLayer; }
+	inline seLayer *GetLayer() const{return pLayer;}
 	
 	/** \brief Set parent layer or \em NULL. */
-	void SetLayer( seLayer *layer );
+	void SetLayer(seLayer *layer);
 	
 	/** \brief Orientation. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Size. */
-	inline const decVector2 &GetSize() const{ return pSize; }
+	inline const decVector2 &GetSize() const{return pSize;}
 	
 	/** \brief Set size. */
-	void SetSize( const decVector2 &size );
+	void SetSize(const decVector2 &size);
 	
 	/** \brief Color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Skin path. */
-	inline const decString &GetSkinPath() const{ return pPathSkin; }
+	inline const decString &GetSkinPath() const{return pPathSkin;}
 	
 	/** \brief Set skin path. */
-	void SetSkinPath( const char *skinPath );
+	void SetSkinPath(const char *skinPath);
 	
 	/** \brief Engine skin or \em NULL. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline deSkin *GetEngineSkin() const{return pEngSkin;}
 	
 	/** \brief Body is the active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	
 	/** \brief Set if body is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Body is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** \brief Set if body is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** \brief Notify listeners body parameters changed. */
 	void NotifyBodyChanged();

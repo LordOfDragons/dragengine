@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	declActionDelga( declLauncher &launcher );
+	declActionDelga(declLauncher &launcher);
 	
 	/** \brief Clean up action. */
 	~declActionDelga();
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline declLauncher &GetLauncher() const{ return pLauncher; }
+	inline declLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** \brief Print syntax. */
 	void PrintSyntax();

@@ -84,11 +84,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meNavigationSpace::meNavigationSpace( igdeEnvironment *environment ) :
-pColliderOwner( this )
+meNavigationSpace::meNavigationSpace(igdeEnvironment *environment) :
+pColliderOwner(this)
 {
-	if( ! environment ){
-		DETHROW( deeInvalidParam );
+	if(! environment){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEnvironment = environment;
@@ -108,39 +108,39 @@ pColliderOwner( this )
 	
 	try{
 		meRigBuilderMeshCollision rigBuilder;
-		pEngRig = engine->GetRigManager()->CreateRig( "", rigBuilder );
+		pEngRig = engine->GetRigManager()->CreateRig("", rigBuilder);
 		
 		pEngCollider = engine->GetColliderManager()->CreateColliderComponent();
-		pEngCollider->SetEnabled( true );
-		pEngCollider->SetResponseType( deCollider::ertStatic );
-		pEngCollider->SetUseLocalGravity( true );
+		pEngCollider->SetEnabled(true);
+		pEngCollider->SetResponseType(deCollider::ertStatic);
+		pEngCollider->SetUseLocalGravity(true);
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmAI );
+		collisionCategory.SetBit(meWorld::eclmAI);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
+		collisionFilter.SetBit(meWorld::eclmEditing);
 		
-		pEngCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		pEngCollider->SetCollisionFilter(decCollisionFilter(collisionCategory, collisionFilter));
 		
-		environment->SetColliderUserPointer( pEngCollider, &pColliderOwner );
+		environment->SetColliderUserPointer(pEngCollider, &pColliderOwner);
 		
 		pEngNavSpace = engine->GetNavigationSpaceManager()->CreateNavigationSpace();
 		
 		// create debug drawer and shapes
 		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
+		pDebugDrawer->SetXRay(true);
 		
 		pDDSNavSpace = new igdeWDebugDrawerShape;
-		pDDSNavSpace->SetVisible( true );
-		pDDSNavSpace->SetParentDebugDrawer( pDebugDrawer );
+		pDDSNavSpace->SetVisible(true);
+		pDDSNavSpace->SetParentDebugDrawer(pDebugDrawer);
 		
 		pUpdateDDSColors();
 		pUpdateShapes();
 		
 		pObjectPlaceholder.TakeOver(new igdeWObject(*environment));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -161,27 +161,27 @@ deEngine *meNavigationSpace::GetEngine() const{
 
 
 
-void meNavigationSpace::SetWorld( meWorld *world ){
-	if( pWorld == world ){
+void meNavigationSpace::SetWorld(meWorld *world){
+	if(pWorld == world){
 		return;
 	}
 	
-	if( pWorld ){
+	if(pWorld){
 		deWorld &engWorld = *pWorld->GetEngineWorld();
-		engWorld.RemoveCollider( pEngCollider );
-		engWorld.RemoveNavigationSpace( pEngNavSpace );
-		engWorld.RemoveDebugDrawer( pDebugDrawer );
-		pObjectPlaceholder->SetWorld( NULL );
+		engWorld.RemoveCollider(pEngCollider);
+		engWorld.RemoveNavigationSpace(pEngNavSpace);
+		engWorld.RemoveDebugDrawer(pDebugDrawer);
+		pObjectPlaceholder->SetWorld(NULL);
 	}
 	
 	pWorld = world;
 	
-	if( world ){
+	if(world){
 		deWorld &engWorld = *world->GetEngineWorld();
-		engWorld.AddCollider( pEngCollider );
-		engWorld.AddNavigationSpace( pEngNavSpace );
-		engWorld.AddDebugDrawer( pDebugDrawer );
-		pObjectPlaceholder->SetWorld( &engWorld );
+		engWorld.AddCollider(pEngCollider);
+		engWorld.AddNavigationSpace(pEngNavSpace);
+		engWorld.AddDebugDrawer(pDebugDrawer);
+		pObjectPlaceholder->SetWorld(&engWorld);
 	}
 	
 	ShowStateChanged();
@@ -189,44 +189,44 @@ void meNavigationSpace::SetWorld( meWorld *world ){
 
 
 
-void meNavigationSpace::SetPosition( const decDVector &position ){
-	if( pPosition.IsEqualTo( position ) ){
+void meNavigationSpace::SetPosition(const decDVector &position){
+	if(pPosition.IsEqualTo(position)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	pEngNavSpace->SetPosition( position );
-	pEngCollider->SetPosition( position );
-	if( pEngColComponent ){
-		pEngColComponent->SetPosition( position );
+	pEngNavSpace->SetPosition(position);
+	pEngCollider->SetPosition(position);
+	if(pEngColComponent){
+		pEngColComponent->SetPosition(position);
 	}
-	pDebugDrawer->SetPosition( position );
+	pDebugDrawer->SetPosition(position);
 	
 	NotifyGeometryChanged();
 }
 
-void meNavigationSpace::SetOrientation( const decVector &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void meNavigationSpace::SetOrientation(const decVector &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
-	const decQuaternion realor = decQuaternion::CreateFromEuler( orientation * DEG2RAD );
+	const decQuaternion realor = decQuaternion::CreateFromEuler(orientation * DEG2RAD);
 	
 	pOrientation = orientation;
 	
-	pEngNavSpace->SetOrientation( realor );
-	pEngCollider->SetOrientation( realor );
-	if( pEngColComponent ){
-		pEngColComponent->SetOrientation( realor );
+	pEngNavSpace->SetOrientation(realor);
+	pEngCollider->SetOrientation(realor);
+	if(pEngColComponent){
+		pEngColComponent->SetOrientation(realor);
 	}
-	pDebugDrawer->SetOrientation( realor );
+	pDebugDrawer->SetOrientation(realor);
 	
 	NotifyGeometryChanged();
 }
 
-void meNavigationSpace::SetFilename( const char *filename ){
-	if( pFilename == filename ){
+void meNavigationSpace::SetFilename(const char *filename){
+	if(pFilename == filename){
 		return;
 	}
 	
@@ -238,8 +238,8 @@ void meNavigationSpace::SetFilename( const char *filename ){
 
 
 
-void meNavigationSpace::SetSelected( bool selected ){
-	if( selected == pSelected ){
+void meNavigationSpace::SetSelected(bool selected){
+	if(selected == pSelected){
 		return;
 	}
 	
@@ -247,8 +247,8 @@ void meNavigationSpace::SetSelected( bool selected ){
 	pUpdateDDSColors();
 }
 
-void meNavigationSpace::SetActive( bool active ){
-	if( active == pActive ){
+void meNavigationSpace::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
@@ -267,122 +267,122 @@ void meNavigationSpace::LoadFromFile(){
 	int faceCount = 0;
 	int wallCount = 0;
 	int roomCount = 0;
-	char signature[ 29 ];
+	char signature[29];
 	int version; //, flags;
 	decVector position;
 	decPath path;
 	int i;
 	
 	// clear the navigation space
-	pEngNavSpace->SetRoomCount( 0 );
-	pEngNavSpace->SetWallCount( 0 );
-	pEngNavSpace->SetFaceCount( 0 );
-	pEngNavSpace->SetCornerCount( 0 );
-	pEngNavSpace->SetEdgeCount( 0 );
-	pEngNavSpace->SetVertexCount( 0 );
-	pEngNavSpace->SetType( deNavigationSpace::estGrid );
+	pEngNavSpace->SetRoomCount(0);
+	pEngNavSpace->SetWallCount(0);
+	pEngNavSpace->SetFaceCount(0);
+	pEngNavSpace->SetCornerCount(0);
+	pEngNavSpace->SetEdgeCount(0);
+	pEngNavSpace->SetVertexCount(0);
+	pEngNavSpace->SetType(deNavigationSpace::estGrid);
 	
 	// load navigation space from file
-	if( ! pFilename.IsEmpty() ){
+	if(! pFilename.IsEmpty()){
 		deEngine &engine = *GetEngine();
 		
-		path.SetFromUnix( pFilename.GetString() );
+		path.SetFromUnix(pFilename.GetString());
 		
-		if( engine.GetVirtualFileSystem()->ExistsFile( path ) ){
+		if(engine.GetVirtualFileSystem()->ExistsFile(path)){
 			// load navigation space. if the load fails for some reason we stick to an empty space.
 			try{
-				fileReader = engine.GetVirtualFileSystem()->OpenFileForReading( path );
+				fileReader = engine.GetVirtualFileSystem()->OpenFileForReading(path);
 				
-				fileReader->Read( &signature, 29 );
-				if( strncmp( &signature[ 0 ], &signatureCheck[ 0 ], 29 ) != 0 ){
-					DETHROW_INFO( deeInvalidFileFormat, path.GetPathUnix() );
+				fileReader->Read(&signature, 29);
+				if(strncmp(&signature[0], &signatureCheck[0], 29) != 0){
+					DETHROW_INFO(deeInvalidFileFormat, path.GetPathUnix());
 				}
 				
-				version = ( int )fileReader->ReadUShort();
+				version = (int)fileReader->ReadUShort();
 				/*flags = ( int )*/fileReader->ReadUShort();
 				
-				if( version == 1 ){
+				if(version == 1){
 					// read counts
-					vertexCount = ( int )fileReader->ReadUShort();
-					edgeCount = ( int )fileReader->ReadUShort();
-					cornerCount = ( int )fileReader->ReadUShort();
-					faceCount = ( int )fileReader->ReadUShort();
-					wallCount = ( int )fileReader->ReadUShort();
-					roomCount = ( int )fileReader->ReadUShort();
+					vertexCount = (int)fileReader->ReadUShort();
+					edgeCount = (int)fileReader->ReadUShort();
+					cornerCount = (int)fileReader->ReadUShort();
+					faceCount = (int)fileReader->ReadUShort();
+					wallCount = (int)fileReader->ReadUShort();
+					roomCount = (int)fileReader->ReadUShort();
 					
-					pEngNavSpace->SetType( ( deNavigationSpace::eSpaceTypes )fileReader->ReadUShort() );
+					pEngNavSpace->SetType((deNavigationSpace::eSpaceTypes)fileReader->ReadUShort());
 					
-					pEngNavSpace->SetVertexCount( vertexCount );
-					pEngNavSpace->SetEdgeCount( edgeCount );
-					pEngNavSpace->SetCornerCount( cornerCount );
-					pEngNavSpace->SetFaceCount( faceCount );
-					pEngNavSpace->SetWallCount( wallCount );
-					pEngNavSpace->SetRoomCount( roomCount );
+					pEngNavSpace->SetVertexCount(vertexCount);
+					pEngNavSpace->SetEdgeCount(edgeCount);
+					pEngNavSpace->SetCornerCount(cornerCount);
+					pEngNavSpace->SetFaceCount(faceCount);
+					pEngNavSpace->SetWallCount(wallCount);
+					pEngNavSpace->SetRoomCount(roomCount);
 					
 					// read vertices
-					for( i=0; i<vertexCount; i++ ){
+					for(i=0; i<vertexCount; i++){
 						position.x = fileReader->ReadFloat();
 						position.y = fileReader->ReadFloat();
 						position.z = fileReader->ReadFloat();
-						pEngNavSpace->SetVertexAt( i, position );
+						pEngNavSpace->SetVertexAt(i, position);
 					}
 					
 					// read edges
-					for( i=0; i<edgeCount; i++ ){
-						deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt( i );
-						edge.SetVertex1( fileReader->ReadUShort() );
-						edge.SetVertex2( fileReader->ReadUShort() );
-						edge.SetType1( fileReader->ReadUShort() );
-						edge.SetType2( fileReader->ReadUShort() );
+					for(i=0; i<edgeCount; i++){
+						deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt(i);
+						edge.SetVertex1(fileReader->ReadUShort());
+						edge.SetVertex2(fileReader->ReadUShort());
+						edge.SetType1(fileReader->ReadUShort());
+						edge.SetType2(fileReader->ReadUShort());
 					}
 					
 					// read corners
-					for( i=0; i<cornerCount; i++ ){
-						deNavigationSpaceCorner &corner = pEngNavSpace->GetCornerAt( i );
-						corner.SetVertex( fileReader->ReadUShort() );
-						corner.SetType( fileReader->ReadUShort() );
+					for(i=0; i<cornerCount; i++){
+						deNavigationSpaceCorner &corner = pEngNavSpace->GetCornerAt(i);
+						corner.SetVertex(fileReader->ReadUShort());
+						corner.SetType(fileReader->ReadUShort());
 					}
 					
 					// read faces
-					for( i=0; i<faceCount; i++ ){
-						deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt( i );
-						face.SetCornerCount( fileReader->ReadUShort() );
-						face.SetType( fileReader->ReadUShort() );
+					for(i=0; i<faceCount; i++){
+						deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt(i);
+						face.SetCornerCount(fileReader->ReadUShort());
+						face.SetType(fileReader->ReadUShort());
 					}
 					
 					// read walls
-					for( i=0; i<wallCount; i++ ){
-						deNavigationSpaceWall &wall = pEngNavSpace->GetWallAt( i );
-						wall.SetFace( fileReader->ReadUShort() );
-						wall.SetType( fileReader->ReadUShort() );
+					for(i=0; i<wallCount; i++){
+						deNavigationSpaceWall &wall = pEngNavSpace->GetWallAt(i);
+						wall.SetFace(fileReader->ReadUShort());
+						wall.SetType(fileReader->ReadUShort());
 					}
 					
 					// read rooms
-					for( i=0; i<roomCount; i++ ){
-						deNavigationSpaceRoom &room = pEngNavSpace->GetRoomAt( i );
-						room.SetFrontWallCount( fileReader->ReadUShort() );
-						room.SetBackWallCount( fileReader->ReadUShort() );
-						room.SetType( fileReader->ReadUShort() );
+					for(i=0; i<roomCount; i++){
+						deNavigationSpaceRoom &room = pEngNavSpace->GetRoomAt(i);
+						room.SetFrontWallCount(fileReader->ReadUShort());
+						room.SetBackWallCount(fileReader->ReadUShort());
+						room.SetType(fileReader->ReadUShort());
 					}
 				}
 				
 				fileReader->FreeReference();
 				
-			}catch( const deException &e ){
-				if( fileReader ){
+			}catch(const deException &e){
+				if(fileReader){
 					fileReader->FreeReference();
 				}
 				
-				pEngNavSpace->SetRoomCount( 0 );
-				pEngNavSpace->SetWallCount( 0 );
-				pEngNavSpace->SetFaceCount( 0 );
-				pEngNavSpace->SetCornerCount( 0 );
-				pEngNavSpace->SetEdgeCount( 0 );
-				pEngNavSpace->SetVertexCount( 0 );
-				pEngNavSpace->SetType( deNavigationSpace::estGrid );
+				pEngNavSpace->SetRoomCount(0);
+				pEngNavSpace->SetWallCount(0);
+				pEngNavSpace->SetFaceCount(0);
+				pEngNavSpace->SetCornerCount(0);
+				pEngNavSpace->SetEdgeCount(0);
+				pEngNavSpace->SetVertexCount(0);
+				pEngNavSpace->SetType(deNavigationSpace::estGrid);
 				
-				if( pWorld ){
-					pWorld->GetLogger()->LogException( LOGSOURCE, e );
+				if(pWorld){
+					pWorld->GetLogger()->LogException(LOGSOURCE, e);
 				}
 			}
 		}
@@ -390,11 +390,11 @@ void meNavigationSpace::LoadFromFile(){
 	
 	// if the loading failed or the navigation space is empty show a placeholder box so the
 	// user can still interact with the navigation space
-	if( pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0 ){
-		pObjectPlaceholder->SetGDClass( NULL );
+	if(pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0){
+		pObjectPlaceholder->SetGDClass(NULL);
 		
 	}else{
-		pObjectPlaceholder->SetGDClassName( "IGDEPlaceholderBoxProblemNavSpace" );
+		pObjectPlaceholder->SetGDClassName("IGDEPlaceholderBoxProblemNavSpace");
 	}
 	
 	// in all cases notify the peers that the navigation space changed
@@ -407,8 +407,8 @@ void meNavigationSpace::LoadFromFile(){
 }
 
 void meNavigationSpace::SaveToFile(){
-	if( ! pWorld || pFilename.IsEmpty() || ! pEngNavSpace ){
-		DETHROW( deeInvalidParam );
+	if(! pWorld || pFilename.IsEmpty() || ! pEngNavSpace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deVirtualFileSystem &vfs = *GetEngine()->GetVirtualFileSystem();
@@ -417,69 +417,69 @@ void meNavigationSpace::SaveToFile(){
 	int i, count;
 	decPath path;
 	
-	path.SetFromUnix( pFilename.GetString() );
+	path.SetFromUnix(pFilename.GetString());
 	
 	try{
-		fileWriter = vfs.OpenFileForWriting( path );
+		fileWriter = vfs.OpenFileForWriting(path);
 		
-		fileWriter->Write( &signature, 29 );
-		fileWriter->WriteUShort( 1 ); // version
-		fileWriter->WriteUShort( 0 ); // flags
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetVertexCount() );
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetEdgeCount() );
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetCornerCount() );
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetFaceCount() );
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetWallCount() );
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetRoomCount() );
-		fileWriter->WriteUShort( ( unsigned short )pEngNavSpace->GetType() );
+		fileWriter->Write(&signature, 29);
+		fileWriter->WriteUShort(1); // version
+		fileWriter->WriteUShort(0); // flags
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetVertexCount());
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetEdgeCount());
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetCornerCount());
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetFaceCount());
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetWallCount());
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetRoomCount());
+		fileWriter->WriteUShort((unsigned short)pEngNavSpace->GetType());
 		
 		count = pEngNavSpace->GetVertexCount();
-		for( i=0; i<count; i++ ){
-			fileWriter->WriteVector( pEngNavSpace->GetVertexAt( i ) );
+		for(i=0; i<count; i++){
+			fileWriter->WriteVector(pEngNavSpace->GetVertexAt(i));
 		}
 		
 		count = pEngNavSpace->GetEdgeCount();
-		for( i=0; i<count; i++ ){
-			const deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt( i );
-			fileWriter->WriteUShort( edge.GetVertex1() );
-			fileWriter->WriteUShort( edge.GetVertex2() );
-			fileWriter->WriteUShort( ( unsigned short )edge.GetType1() );
-			fileWriter->WriteUShort( ( unsigned short )edge.GetType2() );
+		for(i=0; i<count; i++){
+			const deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt(i);
+			fileWriter->WriteUShort(edge.GetVertex1());
+			fileWriter->WriteUShort(edge.GetVertex2());
+			fileWriter->WriteUShort((unsigned short)edge.GetType1());
+			fileWriter->WriteUShort((unsigned short)edge.GetType2());
 		}
 		
 		count = pEngNavSpace->GetCornerCount();
-		for( i=0; i<count; i++ ){
-			const deNavigationSpaceCorner &corner = pEngNavSpace->GetCornerAt( i );
-			fileWriter->WriteUShort( corner.GetVertex() );
-			fileWriter->WriteUShort( corner.GetType() );
+		for(i=0; i<count; i++){
+			const deNavigationSpaceCorner &corner = pEngNavSpace->GetCornerAt(i);
+			fileWriter->WriteUShort(corner.GetVertex());
+			fileWriter->WriteUShort(corner.GetType());
 		}
 		
 		count = pEngNavSpace->GetFaceCount();
-		for( i=0; i<count; i++ ){
-			const deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt( i );
-			fileWriter->WriteUShort( face.GetCornerCount() );
-			fileWriter->WriteUShort( ( unsigned short )face.GetType() );
+		for(i=0; i<count; i++){
+			const deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt(i);
+			fileWriter->WriteUShort(face.GetCornerCount());
+			fileWriter->WriteUShort((unsigned short)face.GetType());
 		}
 		
 		count = pEngNavSpace->GetWallCount();
-		for( i=0; i<count; i++ ){
-			const deNavigationSpaceWall &wall = pEngNavSpace->GetWallAt( i );
-			fileWriter->WriteUShort( wall.GetFace() );
-			fileWriter->WriteUShort( wall.GetType() );
+		for(i=0; i<count; i++){
+			const deNavigationSpaceWall &wall = pEngNavSpace->GetWallAt(i);
+			fileWriter->WriteUShort(wall.GetFace());
+			fileWriter->WriteUShort(wall.GetType());
 		}
 		
 		count = pEngNavSpace->GetRoomCount();
-		for( i=0; i<count; i++ ){
-			const deNavigationSpaceRoom &room = pEngNavSpace->GetRoomAt( i );
-			fileWriter->WriteUShort( room.GetFrontWallCount() );
-			fileWriter->WriteUShort( room.GetBackWallCount() );
-			fileWriter->WriteUShort( ( unsigned short )room.GetType() );
+		for(i=0; i<count; i++){
+			const deNavigationSpaceRoom &room = pEngNavSpace->GetRoomAt(i);
+			fileWriter->WriteUShort(room.GetFrontWallCount());
+			fileWriter->WriteUShort(room.GetBackWallCount());
+			fileWriter->WriteUShort((unsigned short)room.GetType());
 		}
 		
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
@@ -489,32 +489,32 @@ void meNavigationSpace::SaveToFile(){
 
 
 void meNavigationSpace::NotifyChanged(){
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyNavSpaceChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyNavSpaceChanged(this);
 	}
 }
 
 void meNavigationSpace::NotifyGeometryChanged(){
-	if( pWorld ){
-		pWorld->SetChanged( true );
-		pWorld->NotifyNavSpaceGeometryChanged( this );
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyNavSpaceGeometryChanged(this);
 	}
 }
 
 
 
 void meNavigationSpace::ShowStateChanged(){
-	if( ! pWorld ){
+	if(! pWorld){
 		return;
 	}
 	
 	const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
 	const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
 	
-	pDDSNavSpace->SetVisible( ( elementMode == meWorldGuiParameters::eemNavSpace )
+	pDDSNavSpace->SetVisible((elementMode == meWorldGuiParameters::eemNavSpace)
 		|| guiParams.GetShowNavigationSpaces()
-		|| ( pActive && guiParams.GetShowNavigationSpacesSelected() ) );
+		|| (pActive && guiParams.GetShowNavigationSpacesSelected()));
 }
 
 
@@ -523,28 +523,28 @@ void meNavigationSpace::ShowStateChanged(){
 //////////////////////
 
 void meNavigationSpace::pCleanUp(){
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
 	pObjectPlaceholder = nullptr;
 	
-	if( pEngNavSpace ){
+	if(pEngNavSpace){
 		pEngNavSpace->FreeReference();
 	}
-	if( pEngCollider ){
-		pEnvironment->SetColliderUserPointer( pEngCollider, NULL );
+	if(pEngCollider){
+		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
 		pEngCollider->FreeReference();
 	}
-	if( pEngColComponent ){
+	if(pEngColComponent){
 		pEngColComponent->FreeReference();
 	}
-	if( pEngRig ){
+	if(pEngRig){
 		pEngRig->FreeReference();
 	}
 	
-	if( pDDSNavSpace ){
+	if(pDDSNavSpace){
 		delete pDDSNavSpace;
 	}
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
@@ -552,46 +552,46 @@ void meNavigationSpace::pCleanUp(){
 
 
 void meNavigationSpace::pUpdateShapes(){
-	pEngCollider->SetComponent( NULL );
-	if( pEngColComponent ){
+	pEngCollider->SetComponent(NULL);
+	if(pEngColComponent){
 		pEngColComponent->FreeReference();
 		pEngColComponent = NULL;
 	}
 	
-	if( pEngNavSpace ){
+	if(pEngNavSpace){
 		deEngine &engine = *GetEngine();
 		bool canBuild = false;
 		deModel *model = NULL;
 		deSkin *skin = NULL;
 		
-		if( pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0 ){
-			if( pEngNavSpace->GetType() == deNavigationSpace::estGrid ){
-				canBuild = ( pEngNavSpace->GetEdgeCount() > 0 );
+		if(pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0){
+			if(pEngNavSpace->GetType() == deNavigationSpace::estGrid){
+				canBuild = (pEngNavSpace->GetEdgeCount() > 0);
 				
-			}else if( pEngNavSpace->GetType() == deNavigationSpace::estMesh ){
-				canBuild = ( pEngNavSpace->GetFaceCount() > 0 );
+			}else if(pEngNavSpace->GetType() == deNavigationSpace::estMesh){
+				canBuild = (pEngNavSpace->GetFaceCount() > 0);
 			}
 		}
 		
 		try{
-			if( canBuild ){
-				meModelBuilderNavSpace builder( pEngNavSpace );
-				model = engine.GetModelManager()->CreateModel( "", builder );
+			if(canBuild){
+				meModelBuilderNavSpace builder(pEngNavSpace);
+				model = engine.GetModelManager()->CreateModel("", builder);
 				
 			}else{
-				meModelBuilderBox builder( 0.25f );
-				model = engine.GetModelManager()->CreateModel( "", builder );
+				meModelBuilderBox builder(0.25f);
+				model = engine.GetModelManager()->CreateModel("", builder);
 			}
 			
 			skin = engine.GetSkinManager()->LoadDefault();
-			pEngColComponent = engine.GetComponentManager()->CreateComponent( model, skin );
-			pEngColComponent->SetRig( pEngRig );
+			pEngColComponent = engine.GetComponentManager()->CreateComponent(model, skin);
+			pEngColComponent->SetRig(pEngRig);
 			
-		}catch( const deException & ){
-			if( skin ){
+		}catch(const deException &){
+			if(skin){
 				skin->FreeReference();
 			}
-			if( model ){
+			if(model){
 				model->FreeReference();
 			}
 			throw;
@@ -600,63 +600,63 @@ void meNavigationSpace::pUpdateShapes(){
 		model->FreeReference();
 		skin->FreeReference();
 		
-		pEngColComponent->SetPosition( pEngCollider->GetPosition() );
-		pEngColComponent->SetOrientation( pEngCollider->GetOrientation() );
+		pEngColComponent->SetPosition(pEngCollider->GetPosition());
+		pEngColComponent->SetOrientation(pEngCollider->GetOrientation());
 	}
 	
-	pEngCollider->SetComponent( pEngColComponent );
+	pEngCollider->SetComponent(pEngColComponent);
 }
 
 void meNavigationSpace::pUpdateDDSSpace(){
 	pDDSNavSpace->RemoveAllFaces();
 	
-	if( pEngNavSpace ){
-		if( pEngNavSpace->GetType() == deNavigationSpace::estGrid ){
+	if(pEngNavSpace){
+		if(pEngNavSpace->GetType() == deNavigationSpace::estGrid){
 			const int edgeCount = pEngNavSpace->GetEdgeCount();
 			deDebugDrawerShapeFace *ddsFace = NULL;
 			int e;
 			
 			try{
-				for( e=0; e<edgeCount; e++ ){
-					const deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt( e );
-					const decVector &vertex1 = pEngNavSpace->GetVertexAt( edge.GetVertex1() );
-					const decVector &vertex2 = pEngNavSpace->GetVertexAt( edge.GetVertex2() );
+				for(e=0; e<edgeCount; e++){
+					const deNavigationSpaceEdge &edge = pEngNavSpace->GetEdgeAt(e);
+					const decVector &vertex1 = pEngNavSpace->GetVertexAt(edge.GetVertex1());
+					const decVector &vertex2 = pEngNavSpace->GetVertexAt(edge.GetVertex2());
 					
 					ddsFace = new deDebugDrawerShapeFace;
-					ddsFace->AddVertex( vertex1 );
-					ddsFace->AddVertex( vertex2 );
-					ddsFace->AddVertex( vertex2 );
-					pDDSNavSpace->AddFace( ddsFace );
+					ddsFace->AddVertex(vertex1);
+					ddsFace->AddVertex(vertex2);
+					ddsFace->AddVertex(vertex2);
+					pDDSNavSpace->AddFace(ddsFace);
 				}
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				throw;
 			}
 			
-		}else if( pEngNavSpace->GetType() == deNavigationSpace::estMesh ){
+		}else if(pEngNavSpace->GetType() == deNavigationSpace::estMesh){
 			deNavigationSpaceCorner *corners = pEngNavSpace->GetCorners();
 			const int faceCount = pEngNavSpace->GetFaceCount();
 			deDebugDrawerShapeFace *ddsFace = NULL;
 			int f, c;
 			
 			try{
-				for( f=0; f<faceCount; f++ ){
-					const deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt( f );
+				for(f=0; f<faceCount; f++){
+					const deNavigationSpaceFace &face = pEngNavSpace->GetFaceAt(f);
 					const int cornerCount = face.GetCornerCount();
 					
-					if( cornerCount > 2 ){
+					if(cornerCount > 2){
 						ddsFace = new deDebugDrawerShapeFace;
-						for( c=0; c<cornerCount; c++ ){
-							ddsFace->AddVertex( pEngNavSpace->GetVertexAt( corners[ c ].GetVertex() ) );
+						for(c=0; c<cornerCount; c++){
+							ddsFace->AddVertex(pEngNavSpace->GetVertexAt(corners[c].GetVertex()));
 						}
-						ddsFace->SetNormal( ( ddsFace->GetVertexAt( 1 ) - ddsFace->GetVertexAt( 0 ) ) % ( ddsFace->GetVertexAt( 2 ) - ddsFace->GetVertexAt( 1 ) ) );
-						pDDSNavSpace->AddFace( ddsFace );
+						ddsFace->SetNormal((ddsFace->GetVertexAt(1) - ddsFace->GetVertexAt(0)) % (ddsFace->GetVertexAt(2) - ddsFace->GetVertexAt(1)));
+						pDDSNavSpace->AddFace(ddsFace);
 					}
 					
 					corners += cornerCount;
 				}
 				
-			}catch( const deException & ){
+			}catch(const deException &){
 				throw;
 			}
 		}
@@ -664,17 +664,17 @@ void meNavigationSpace::pUpdateDDSSpace(){
 }
 
 void meNavigationSpace::pUpdateDDSColors(){
-	if( pActive ){
-		pDDSNavSpace->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
-		pDDSNavSpace->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
+	if(pActive){
+		pDDSNavSpace->SetEdgeColor(decColor(1.0f, 0.5f, 0.0f, 1.0f));
+		pDDSNavSpace->SetFillColor(decColor(1.0f, 0.5f, 0.0f, 0.1f));
 		
-	}else if( pSelected ){
-		pDDSNavSpace->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-		pDDSNavSpace->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
+	}else if(pSelected){
+		pDDSNavSpace->SetEdgeColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
+		pDDSNavSpace->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
 		
 	}else{
-		pDDSNavSpace->SetEdgeColor( decColor( 0.0f, 0.25f, 1.0f, 1.0f ) );
-		pDDSNavSpace->SetFillColor( decColor( 0.0f, 0.25f, 1.0f, 0.1f ) );
+		pDDSNavSpace->SetEdgeColor(decColor(0.0f, 0.25f, 1.0f, 1.0f));
+		pDDSNavSpace->SetFillColor(decColor(0.0f, 0.25f, 1.0f, 0.1f));
 	}
 }
 
@@ -683,33 +683,33 @@ void meNavigationSpace::pUpdateDDSColors(){
 void meNavigationSpace::pUpdateUsedCostTypes(){
 	pUsedCostTypes.RemoveAll();
 	
-	if( pEngNavSpace ){
+	if(pEngNavSpace){
 		const int faceCount = pEngNavSpace->GetFaceCount();
 		const int edgeCount = pEngNavSpace->GetEdgeCount();
 		int i;
 		
-		for( i=0; i<faceCount; i++ ){
-			const int navtype = pEngNavSpace->GetFaceAt( i ).GetType();
+		for(i=0; i<faceCount; i++){
+			const int navtype = pEngNavSpace->GetFaceAt(i).GetType();
 			
-			if( ! pUsedCostTypes.Has( navtype ) ){
-				pUsedCostTypes.Add( navtype );
+			if(! pUsedCostTypes.Has(navtype)){
+				pUsedCostTypes.Add(navtype);
 			}
 		}
 		
-		for( i=0; i<edgeCount; i++ ){
-			const int navtype1 = pEngNavSpace->GetEdgeAt( i ).GetType1();
-			const int navtype2 = pEngNavSpace->GetEdgeAt( i ).GetType2();
+		for(i=0; i<edgeCount; i++){
+			const int navtype1 = pEngNavSpace->GetEdgeAt(i).GetType1();
+			const int navtype2 = pEngNavSpace->GetEdgeAt(i).GetType2();
 			
-			if( ! pUsedCostTypes.Has( navtype1 ) ){
-				pUsedCostTypes.Add( navtype1 );
+			if(! pUsedCostTypes.Has(navtype1)){
+				pUsedCostTypes.Add(navtype1);
 			}
-			if( ! pUsedCostTypes.Has( navtype2 ) ){
-				pUsedCostTypes.Add( navtype2 );
+			if(! pUsedCostTypes.Has(navtype2)){
+				pUsedCostTypes.Add(navtype2);
 			}
 		}
 	}
 	
-	if( pWorld ){
-		pWorld->NotifyNavSpaceUsedCostTypesChanged( this );
+	if(pWorld){
+		pWorld->NotifyNavSpaceUsedCostTypesChanged(this);
 	}
 }

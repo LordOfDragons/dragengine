@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleAnimDiffToggleEnableRotation::aeURuleAnimDiffToggleEnableRotation( aeRuleAnimationDifference *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleAnimDiffToggleEnableRotation::aeURuleAnimDiffToggleEnableRotation(aeRuleAnimationDifference *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleAnimDiffToggleEnableRotation::aeURuleAnimDiffToggleEnableRotation( aeRule
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule animation difference toggle enable rotation" );
+		SetShortInfo("Rule animation difference toggle enable rotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleAnimDiffToggleEnableRotation::~aeURuleAnimDiffToggleEnableRotation(){
 ///////////////
 
 void aeURuleAnimDiffToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
 }
 
 void aeURuleAnimDiffToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleAnimDiffToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnableRotation::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

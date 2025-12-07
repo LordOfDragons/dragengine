@@ -44,9 +44,9 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxToggleButton ) igdeNativeFoxToggleButtonMap[] = {
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxToggleButton::ID_SELF, igdeNativeFoxToggleButton::onCommand ),
-	FXMAPFUNC( SEL_UPDATE, igdeNativeFoxToggleButton::ID_SELF, igdeNativeFoxToggleButton::onUpdate )
+FXDEFMAP(igdeNativeFoxToggleButton) igdeNativeFoxToggleButtonMap[] = {
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxToggleButton::ID_SELF, igdeNativeFoxToggleButton::onCommand),
+	FXMAPFUNC(SEL_UPDATE, igdeNativeFoxToggleButton::ID_SELF, igdeNativeFoxToggleButton::onUpdate)
 };
 
 
@@ -54,57 +54,57 @@ FXDEFMAP( igdeNativeFoxToggleButton ) igdeNativeFoxToggleButtonMap[] = {
 // Class igdeNativeFoxToggleButton
 ////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxToggleButton, FXToggleButton, igdeNativeFoxToggleButtonMap, ARRAYNUMBER( igdeNativeFoxToggleButtonMap ) )
+FXIMPLEMENT(igdeNativeFoxToggleButton, FXToggleButton, igdeNativeFoxToggleButtonMap, ARRAYNUMBER(igdeNativeFoxToggleButtonMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxToggleButton::igdeNativeFoxToggleButton(){ }
+igdeNativeFoxToggleButton::igdeNativeFoxToggleButton(){}
 
-igdeNativeFoxToggleButton::igdeNativeFoxToggleButton( igdeToggleButton &powner, FXComposite *pparent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXToggleButton( pparent, ButtonText( powner ), ButtonText( powner ),
-	ButtonIconOn( powner ), ButtonIconOff( powner ), this, ID_SELF,
-	layoutFlags | ButtonFlags( powner ), 0, 0, 0, 0,
-	ButtonPadLeft( guitheme ), ButtonPadRight( guitheme ),
-	ButtonPadTop( guitheme ), ButtonPadBottom( guitheme ) ),
-pOwner( &powner ),
-pFont( ButtonFont( powner, guitheme ) ),
-pDeleted( NULL )
+igdeNativeFoxToggleButton::igdeNativeFoxToggleButton(igdeToggleButton &powner, FXComposite *pparent,
+int layoutFlags, const igdeGuiTheme &guitheme) :
+FXToggleButton(pparent, ButtonText(powner), ButtonText(powner),
+	ButtonIconOn(powner), ButtonIconOff(powner), this, ID_SELF,
+	layoutFlags | ButtonFlags(powner), 0, 0, 0, 0,
+	ButtonPadLeft(guitheme), ButtonPadRight(guitheme),
+	ButtonPadTop(guitheme), ButtonPadBottom(guitheme)),
+pOwner(&powner),
+pFont(ButtonFont(powner, guitheme)),
+pDeleted(NULL)
 {
-	setFont( (FXFont*)pFont->GetNativeFont() );
-	setState( powner.GetToggled() );
+	setFont((FXFont*)pFont->GetNativeFont());
+	setState(powner.GetToggled());
 	
-	if( ! powner.GetEnabled() ){
+	if(! powner.GetEnabled()){
 		disable();
 	}
-	setTipText( powner.GetDescription().GetString() );
-	setHelpText( powner.GetDescription().GetString() );
+	setTipText(powner.GetDescription().GetString());
+	setHelpText(powner.GetDescription().GetString());
 }
 
 igdeNativeFoxToggleButton::~igdeNativeFoxToggleButton(){
-	if( pDeleted ){
+	if(pDeleted){
 		*pDeleted = true;
 	}
 }
 
-igdeNativeFoxToggleButton *igdeNativeFoxToggleButton::CreateNativeWidget( igdeToggleButton &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxToggleButton *igdeNativeFoxToggleButton::CreateNativeWidget(igdeToggleButton &powner){
+	if(! powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* )powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*)powner.GetParent()->GetNativeContainer();
+	if(! pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxToggleButton( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ), *powner.GetGuiTheme() );
+	return new igdeNativeFoxToggleButton(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner), *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxToggleButton::PostCreateNativeWidget(){
-	FXComposite &ppparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( ppparent.id() ){
+	FXComposite &ppparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(ppparent.id()){
 		create();
 	}
 }
@@ -119,7 +119,7 @@ void igdeNativeFoxToggleButton::DestroyNativeWidget(){
 ///////////////
 
 FXbool igdeNativeFoxToggleButton::canFocus() const{
-	if( pOwner->GetStyle() == igdeToggleButton::ebsToolBar ){
+	if(pOwner->GetStyle() == igdeToggleButton::ebsToolBar){
 		return false;
 		
 	}else{
@@ -128,32 +128,32 @@ FXbool igdeNativeFoxToggleButton::canFocus() const{
 }
 
 void igdeNativeFoxToggleButton::UpdateStyle(){
-	setText( igdeNativeFoxToggleButton::ButtonText( *pOwner ) );
-	setIcon( igdeNativeFoxToggleButton::ButtonIconOn( *pOwner ) );
-	setAltText( igdeNativeFoxToggleButton::ButtonText( *pOwner ) );
-	setAltIcon( igdeNativeFoxToggleButton::ButtonIconOff( *pOwner ) );
-	setToggleStyle( igdeNativeFoxToggleButton::ButtonFlags( *pOwner ) );
+	setText(igdeNativeFoxToggleButton::ButtonText(*pOwner));
+	setIcon(igdeNativeFoxToggleButton::ButtonIconOn(*pOwner));
+	setAltText(igdeNativeFoxToggleButton::ButtonText(*pOwner));
+	setAltIcon(igdeNativeFoxToggleButton::ButtonIconOff(*pOwner));
+	setToggleStyle(igdeNativeFoxToggleButton::ButtonFlags(*pOwner));
 }
 
 void igdeNativeFoxToggleButton::UpdateText(){
-	setText( igdeNativeFoxToggleButton::ButtonText( *pOwner ) );
+	setText(igdeNativeFoxToggleButton::ButtonText(*pOwner));
 }
 
 void igdeNativeFoxToggleButton::UpdateDescription(){
 	const char * const description = pOwner->GetDescription();
-	setTipText( description );
-	setHelpText( description );
-	setAltTipText( description );
-	setAltHelpText( description );
+	setTipText(description);
+	setHelpText(description);
+	setAltTipText(description);
+	setAltHelpText(description);
 }
 
 void igdeNativeFoxToggleButton::UpdateIcons(){
-	setIcon( igdeNativeFoxToggleButton::ButtonIconOn( *pOwner ) );
-	setAltIcon( igdeNativeFoxToggleButton::ButtonIconOff( *pOwner ) );
+	setIcon(igdeNativeFoxToggleButton::ButtonIconOn(*pOwner));
+	setAltIcon(igdeNativeFoxToggleButton::ButtonIconOff(*pOwner));
 }
 
 void igdeNativeFoxToggleButton::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -162,13 +162,13 @@ void igdeNativeFoxToggleButton::UpdateEnabled(){
 }
 
 void igdeNativeFoxToggleButton::UpdateToggled(){
-	setState( pOwner->GetToggled() );
+	setState(pOwner->GetToggled());
 }
 
 
 
-const char *igdeNativeFoxToggleButton::ButtonText( const igdeToggleButton &powner ){
-	if( powner.GetStyle() == igdeToggleButton::ebsToolBar && powner.GetIcon() ){
+const char *igdeNativeFoxToggleButton::ButtonText(const igdeToggleButton &powner){
+	if(powner.GetStyle() == igdeToggleButton::ebsToolBar && powner.GetIcon()){
 		return "";
 		
 	}else{
@@ -176,18 +176,18 @@ const char *igdeNativeFoxToggleButton::ButtonText( const igdeToggleButton &powne
 	}
 }
 
-FXIcon *igdeNativeFoxToggleButton::ButtonIconOn( const igdeToggleButton &powner ){
-	return powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL;
+FXIcon *igdeNativeFoxToggleButton::ButtonIconOn(const igdeToggleButton &powner){
+	return powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL;
 }
 
-FXIcon *igdeNativeFoxToggleButton::ButtonIconOff( const igdeToggleButton &powner ){
-	return powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL;
+FXIcon *igdeNativeFoxToggleButton::ButtonIconOff(const igdeToggleButton &powner){
+	return powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL;
 }
 
-int igdeNativeFoxToggleButton::ButtonFlags( const igdeToggleButton &powner ){
+int igdeNativeFoxToggleButton::ButtonFlags(const igdeToggleButton &powner){
 	int fflags = TOGGLEBUTTON_KEEPSTATE;
 	
-	if( powner.GetStyle() == igdeToggleButton::ebsToolBar ){
+	if(powner.GetStyle() == igdeToggleButton::ebsToolBar){
 		fflags |= TOGGLEBUTTON_TOOLBAR | FRAME_RAISED;
 		
 	}else{
@@ -198,44 +198,44 @@ int igdeNativeFoxToggleButton::ButtonFlags( const igdeToggleButton &powner ){
 	return fflags;
 }
 
-igdeFont *igdeNativeFoxToggleButton::ButtonFont( const igdeToggleButton &powner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxToggleButton::ButtonFont(const igdeToggleButton &powner, const igdeGuiTheme &guitheme){
 	igdeFont::sConfiguration configuration;
-	powner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont(configuration);
 	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::buttonFontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::buttonFontSizeAbsolute, 0 );
+	if(guitheme.HasProperty(igdeGuiThemePropertyNames::buttonFontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::buttonFontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::buttonFontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::buttonFontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::buttonFontSize, 1.0f );
+			igdeGuiThemePropertyNames::buttonFontSize, 1.0f);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = ( float )guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSizeAbsolute)){
+		configuration.size = (float)guitheme.GetIntProperty(
+			igdeGuiThemePropertyNames::fontSizeAbsolute, 0);
 		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
+	}else if(guitheme.HasProperty(igdeGuiThemePropertyNames::fontSize)){
 		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
+			igdeGuiThemePropertyNames::fontSize, 1.0f);
 	}
 	
-	return powner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont(configuration);
 }
 
-int igdeNativeFoxToggleButton::ButtonPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingLeft, DEFAULT_PAD );
+int igdeNativeFoxToggleButton::ButtonPadLeft(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::buttonPaddingLeft, DEFAULT_PAD);
 }
 
-int igdeNativeFoxToggleButton::ButtonPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingRight, DEFAULT_PAD );
+int igdeNativeFoxToggleButton::ButtonPadRight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::buttonPaddingRight, DEFAULT_PAD);
 }
 
-int igdeNativeFoxToggleButton::ButtonPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingTop, DEFAULT_PAD );
+int igdeNativeFoxToggleButton::ButtonPadTop(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::buttonPaddingTop, DEFAULT_PAD);
 }
 
-int igdeNativeFoxToggleButton::ButtonPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingBottom, DEFAULT_PAD );
+int igdeNativeFoxToggleButton::ButtonPadBottom(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::buttonPaddingBottom, DEFAULT_PAD);
 }
 
 
@@ -243,8 +243,8 @@ int igdeNativeFoxToggleButton::ButtonPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxToggleButton::onCommand( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetEnabled() ){
+long igdeNativeFoxToggleButton::onCommand(FXObject*, FXSelector, void*){
+	if(! pOwner->GetEnabled()){
 		return 0;
 	}
 	
@@ -254,15 +254,15 @@ long igdeNativeFoxToggleButton::onCommand( FXObject*, FXSelector, void* ){
 	try{
 		pOwner->OnAction();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pDeleted = NULL;
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
+		pOwner->GetLogger()->LogException("IGDE", e);
+		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	
 	pDeleted = NULL;
-	if( deleted ){
+	if(deleted){
 		return 1;
 	}
 	
@@ -273,33 +273,33 @@ long igdeNativeFoxToggleButton::onCommand( FXObject*, FXSelector, void* ){
 	// - igdeAction with GetSelected()
 	// we have to ensure they are all in sync again
 	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
+	if(! action){
 		return 1;
 	}
 	
 	try{
 		action->Update();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
 	}
 	
-	pOwner->OnParameterChanged( action );
+	pOwner->OnParameterChanged(action);
 	
 	return 1;
 }
 
-long igdeNativeFoxToggleButton::onUpdate( FXObject*, FXSelector, void* ){
+long igdeNativeFoxToggleButton::onUpdate(FXObject*, FXSelector, void*){
 	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
+	if(! action){
 		return 0;
 	}
 	
 	try{
 		action->Update();
 		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
+	}catch(const deException &e){
+		pOwner->GetLogger()->LogException("IGDE", e);
 	}
 	
 	return 0;

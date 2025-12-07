@@ -43,8 +43,8 @@
 gdeOCParticleEmitterList::gdeOCParticleEmitterList(){
 }
 
-gdeOCParticleEmitterList::gdeOCParticleEmitterList( const gdeOCParticleEmitterList &list ) :
-pParticleEmitters( list.pParticleEmitters ){
+gdeOCParticleEmitterList::gdeOCParticleEmitterList(const gdeOCParticleEmitterList &list) :
+pParticleEmitters(list.pParticleEmitters){
 }
 
 gdeOCParticleEmitterList::~gdeOCParticleEmitterList(){
@@ -59,27 +59,27 @@ int gdeOCParticleEmitterList::GetCount() const{
 	return pParticleEmitters.GetCount();
 }
 
-gdeOCParticleEmitter *gdeOCParticleEmitterList::GetAt( int index ) const{
-	return ( gdeOCParticleEmitter* )pParticleEmitters.GetAt( index );
+gdeOCParticleEmitter *gdeOCParticleEmitterList::GetAt(int index) const{
+	return (gdeOCParticleEmitter*)pParticleEmitters.GetAt(index);
 }
 
-int gdeOCParticleEmitterList::IndexOf( gdeOCParticleEmitter *emitter ) const{
-	return pParticleEmitters.IndexOf( emitter );
+int gdeOCParticleEmitterList::IndexOf(gdeOCParticleEmitter *emitter) const{
+	return pParticleEmitters.IndexOf(emitter);
 }
 
-bool gdeOCParticleEmitterList::Has( gdeOCParticleEmitter *emitter ) const{
-	return pParticleEmitters.Has( emitter );
+bool gdeOCParticleEmitterList::Has(gdeOCParticleEmitter *emitter) const{
+	return pParticleEmitters.Has(emitter);
 }
 
-void gdeOCParticleEmitterList::Add( gdeOCParticleEmitter *emitter ){
-	if( ! emitter || Has( emitter ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCParticleEmitterList::Add(gdeOCParticleEmitter *emitter){
+	if(! emitter || Has(emitter)){
+		DETHROW(deeInvalidParam);
 	}
-	pParticleEmitters.Add( emitter );
+	pParticleEmitters.Add(emitter);
 }
 
-void gdeOCParticleEmitterList::Remove( gdeOCParticleEmitter *emitter ){
-	pParticleEmitters.Remove( emitter );
+void gdeOCParticleEmitterList::Remove(gdeOCParticleEmitter *emitter){
+	pParticleEmitters.Remove(emitter);
 }
 
 void gdeOCParticleEmitterList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCParticleEmitterList::RemoveAll(){
 
 
 
-gdeOCParticleEmitterList &gdeOCParticleEmitterList::operator=( const gdeOCParticleEmitterList &list ){
+gdeOCParticleEmitterList &gdeOCParticleEmitterList::operator=(const gdeOCParticleEmitterList &list){
 	pParticleEmitters = list.pParticleEmitters;
 	return *this;
 }

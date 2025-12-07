@@ -43,21 +43,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUPasteObject::meUPasteObject( meWorld *world, meClipboardDataObject *clip ){
-	if( ! world || ! clip ){
-		DETHROW( deeInvalidParam );
+meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
+	if(! world || ! clip){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = clip->GetObjectCount();
 	meObject *object = NULL;
 	int i;
 	
-	SetShortInfo( "Paste Objects" );
-	SetLongInfo( "" );
+	SetShortInfo("Paste Objects");
+	SetLongInfo("");
 	
 	pWorld = NULL;
 	
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
@@ -65,21 +65,21 @@ meUPasteObject::meUPasteObject( meWorld *world, meClipboardDataObject *clip ){
 	world->AddReference();
 	
 	try{
-		for( i=0; i<count; i++ ){
-			object = new meObject( world->GetEnvironment() );
-			object->SetID( world->NextObjectID() );
-			clip->GetObjectAt( i )->UpdateObject( *object );
-			pObjects.Add( object );
+		for(i=0; i<count; i++){
+			object = new meObject(world->GetEnvironment());
+			object->SetID(world->NextObjectID());
+			clip->GetObjectAt(i)->UpdateObject(*object);
+			pObjects.Add(object);
 			object->FreeReference();
 			object = NULL;
 		}
 		
-		for( i=0; i<count; i++ ){
-			pAttachedToIndexList.Add( clip->GetObjectAt( i )->GetAttachToIndex() );
+		for(i=0; i<count; i++){
+			pAttachedToIndexList.Add(clip->GetObjectAt(i)->GetAttachToIndex());
 		}
 		
-	}catch( const deException & ){
-		if( object ){
+	}catch(const deException &){
+		if(object){
 			object->FreeReference();
 		}
 		pCleanUp();
@@ -101,19 +101,19 @@ void meUPasteObject::Undo(){
 	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		meObject * const object = pObjects.GetAt( i );
+	for(i=0; i<count; i++){
+		meObject * const object = pObjects.GetAt(i);
 		
-		object->SetAttachedTo( NULL );
+		object->SetAttachedTo(NULL);
 		
-		selection.Remove( object );
-		if( object->GetActive() ){
+		selection.Remove(object);
+		if(object->GetActive()){
 			selection.ActivateNext();
 		}
 		
-		pWorld->RemoveObject( object );
+		pWorld->RemoveObject(object);
 		
-		pWorld->NotifyObjectRemoved( object );
+		pWorld->NotifyObjectRemoved(object);
 	}
 	
 	pWorld->NotifyObjectSelectionChanged();
@@ -126,24 +126,24 @@ void meUPasteObject::Redo(){
 	
 	selection.Reset();
 	
-	for( i=0; i<count; i++ ){
-		meObject * const object = pObjects.GetAt( i );
+	for(i=0; i<count; i++){
+		meObject * const object = pObjects.GetAt(i);
 		
-		pWorld->AddObject( object );
-		selection.Add( object );
+		pWorld->AddObject(object);
+		selection.Add(object);
 		
-		pWorld->NotifyObjectAdded( object );
+		pWorld->NotifyObjectAdded(object);
 	}
 	
-	for( i=0; i<count; i++ ){
-		meObject * const object = pObjects.GetAt( i );
+	for(i=0; i<count; i++){
+		meObject * const object = pObjects.GetAt(i);
 		
-		const int attachToIndex = pAttachedToIndexList.GetAt( i );
-		if( attachToIndex != -1 ){
-			object->SetAttachedTo( pObjects.GetAt( attachToIndex ) );
+		const int attachToIndex = pAttachedToIndexList.GetAt(i);
+		if(attachToIndex != -1){
+			object->SetAttachedTo(pObjects.GetAt(attachToIndex));
 			
-		}else if( ! object->GetAttachedToID().IsEmpty() ){
-			object->SetAttachedTo( pWorld->GetObjectWithID( object->GetAttachedToID() ) );
+		}else if(! object->GetAttachedToID().IsEmpty()){
+			object->SetAttachedTo(pWorld->GetObjectWithID(object->GetAttachedToID()));
 		}
 	}
 	
@@ -158,7 +158,7 @@ void meUPasteObject::Redo(){
 //////////////////////
 
 void meUPasteObject::pCleanUp(){
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }

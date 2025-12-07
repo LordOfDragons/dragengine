@@ -48,31 +48,31 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deException( const char *name, const char *description, const char *file, int line );
+	deException(const char *name, const char *description, const char *file, int line);
 	/*@}*/
 	
 	/** \name Accessors */
 	/*@{*/
 	/** \brief Unique name to identify the exception. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Description of the reason for the exception. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Name of the source file where the exception occurred. */
-	inline const decString &GetFile() const{ return pFile; }
+	inline const decString &GetFile() const{return pFile;}
 	
 	/** \brief Line number in file where the exception occurred. */
-	inline int GetLine() const{ return pLine; }
+	inline int GetLine() const{return pLine;}
 	
 	/** \brief Backtrace. */
-	inline const decStringList &GetBacktrace() const{ return pBacktrace; }
+	inline const decStringList &GetBacktrace() const{return pBacktrace;}
 	/*@}*/
 	
 	/** \name Tests */
 	/*@{*/
 	/** \brief Test if the exception has the given name. */
-	bool IsNamed( const char *name ) const;
+	bool IsNamed(const char *name) const;
 	/*@}*/
 	
 	/** \name Display Functions */

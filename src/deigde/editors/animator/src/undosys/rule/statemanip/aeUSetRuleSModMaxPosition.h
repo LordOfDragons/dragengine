@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMaxPosition( aeRuleStateManipulator *rule, const decVector &newMax );
+	aeUSetRuleSModMaxPosition(aeRuleStateManipulator *rule, const decVector &newMax);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModMaxPosition();

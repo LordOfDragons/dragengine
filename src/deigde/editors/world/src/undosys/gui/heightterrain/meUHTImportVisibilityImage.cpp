@@ -44,14 +44,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTImportVisibilityImage::meUHTImportVisibilityImage( meWorld *world, meHeightTerrainSector *sector, deImage *image ){
-	if( ! world || ! sector || ! image ) DETHROW( deeInvalidParam );
+meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image){
+	if(! world || ! sector || ! image) DETHROW(deeInvalidParam);
 	
-	if( image->GetComponentCount() != 1 ) DETHROW( deeInvalidParam );
+	if(image->GetComponentCount() != 1) DETHROW(deeInvalidParam);
 	
 	int resolution = sector->GetHeightTerrain()->GetSectorResolution();
 	
-	if( image->GetWidth() != resolution || image->GetHeight() != resolution ) DETHROW( deeInvalidParam );
+	if(image->GetWidth() != resolution || image->GetHeight() != resolution) DETHROW(deeInvalidParam);
 	
 	int x, y, pixelCount = resolution * resolution;
 	
@@ -61,50 +61,50 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage( meWorld *world, meHeight
 	pOldVis = NULL;
 	pNewVis = NULL;
 	
-	SetShortInfo( "Import Visibility Image" );
-	SetMemoryConsumption( sizeof( meUHTImportVisibilityImage ) + 2 * ( pixelCount / 8 + 1 ) );
+	SetShortInfo("Import Visibility Image");
+	SetMemoryConsumption(sizeof(meUHTImportVisibilityImage) + 2 * (pixelCount / 8 + 1));
 	
 	try{
 		// create arrays
-		pOldVis = new meBitArray( resolution, resolution );
-		if( ! pOldVis ) DETHROW( deeOutOfMemory );
+		pOldVis = new meBitArray(resolution, resolution);
+		if(! pOldVis) DETHROW(deeOutOfMemory);
 		
-		pNewVis = new meBitArray( resolution, resolution );
-		if( ! pNewVis ) DETHROW( deeOutOfMemory );
+		pNewVis = new meBitArray(resolution, resolution);
+		if(! pNewVis) DETHROW(deeOutOfMemory);
 		
 		// snapshot old heights
-		sector->GetVisibilityFaces()->CopyTo( *pOldVis );
+		sector->GetVisibilityFaces()->CopyTo(*pOldVis);
 		
 		// store new heights
-		if( image->GetBitCount() == 8 ){
+		if(image->GetBitCount() == 8){
 			sGrayscale8 *data = image->GetDataGrayscale8();
 			
-			for( y=0; y<resolution; y++ ){
-				for( x=0; x<resolution; x++ ){
-					pNewVis->SetValueAt( x, y, data[ y * resolution + x ].value > HT_8BIT_BASE );
+			for(y=0; y<resolution; y++){
+				for(x=0; x<resolution; x++){
+					pNewVis->SetValueAt(x, y, data[y * resolution + x].value > HT_8BIT_BASE);
 				}
 			}
 			
-		}else if( image->GetBitCount() == 16 ){
+		}else if(image->GetBitCount() == 16){
 			sGrayscale16 *data = image->GetDataGrayscale16();
 			
-			for( y=0; y<resolution; y++ ){
-				for( x=0; x<resolution; x++ ){
-					pNewVis->SetValueAt( x, y, data[ y * resolution + x ].value > HT_16BIT_BASE );
+			for(y=0; y<resolution; y++){
+				for(x=0; x<resolution; x++){
+					pNewVis->SetValueAt(x, y, data[y * resolution + x].value > HT_16BIT_BASE);
 				}
 			}
 			
 		}else{ // image->GetBitCount() == 32
 			sGrayscale32 *data = image->GetDataGrayscale32();
 			
-			for( y=0; y<resolution; y++ ){
-				for( x=0; x<resolution; x++ ){
-					pNewVis->SetValueAt( x, y, data[ y * resolution + x ].value > 0.0f );
+			for(y=0; y<resolution; y++){
+				for(x=0; x<resolution; x++){
+					pNewVis->SetValueAt(x, y, data[y * resolution + x].value > 0.0f);
 				}
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -123,11 +123,11 @@ meUHTImportVisibilityImage::~meUHTImportVisibilityImage(){
 ///////////////
 
 void meUHTImportVisibilityImage::Undo(){
-	pDoIt( pOldVis );
+	pDoIt(pOldVis);
 }
 
 void meUHTImportVisibilityImage::Redo(){
-	pDoIt( pNewVis );
+	pDoIt(pNewVis);
 }
 
 
@@ -136,20 +136,20 @@ void meUHTImportVisibilityImage::Redo(){
 //////////////////////
 
 void meUHTImportVisibilityImage::pCleanUp(){
-	if( pNewVis ) delete pNewVis;
-	if( pOldVis ) delete pOldVis;
+	if(pNewVis) delete pNewVis;
+	if(pOldVis) delete pOldVis;
 	
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
-void meUHTImportVisibilityImage::pDoIt( meBitArray *vis ){
-	vis->CopyTo( *pSector->GetVisibilityFaces() );
-	pSector->SetVisibilityChanged( true );
+void meUHTImportVisibilityImage::pDoIt(meBitArray *vis){
+	vis->CopyTo(*pSector->GetVisibilityFaces());
+	pSector->SetVisibilityChanged(true);
 	
-	if( pSector->GetEngineSector() ){
-		pSector->UpdateVisibilitySector( pSector->GetEngineSector() );
+	if(pSector->GetEngineSector()){
+		pSector->UpdateVisibilitySector(pSector->GetEngineSector());
 	}
 	pSector->RebuildEngineSector();
 	
-	pWorld->NotifyHTSVisibilityChanged( pSector );
+	pWorld->NotifyHTSVisibilityChanged(pSector);
 }

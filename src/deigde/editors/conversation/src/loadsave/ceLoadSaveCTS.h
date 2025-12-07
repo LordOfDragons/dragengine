@@ -57,30 +57,30 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader. */
-	ceLoadSaveCTS( ceLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource );
+	ceLoadSaveCTS(ceLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Retrieves the pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** Loads the conversation test setup from file. */
-	void LoadCTS( ceConversation &conversation, decBaseFileReader &reader );
+	void LoadCTS(ceConversation &conversation, decBaseFileReader &reader);
 	/** Saves the conversation test setup to file. */
-	void SaveCTS( const ceConversation &conversation, decBaseFileWriter &writer );
+	void SaveCTS(const ceConversation &conversation, decBaseFileWriter &writer);
 	/*@}*/
 	
 private:
-	void pWriteCTS( decXmlWriter &writer, const ceConversation &conversation );
-	void pWriteCoordSystem( decXmlWriter &writer, const ceCoordSystem &coordSystem );
-	void pWriteProp( decXmlWriter &writer, const ceProp &prop );
+	void pWriteCTS(decXmlWriter &writer, const ceConversation &conversation);
+	void pWriteCoordSystem(decXmlWriter &writer, const ceCoordSystem &coordSystem);
+	void pWriteProp(decXmlWriter &writer, const ceProp &prop);
 	
-	void pReadCTS( const decXmlElementTag &root, ceConversation &conversation );
-	void pReadCoordSystem( const decXmlElementTag &root, ceConversation &conversation );
-	void pReadProp( const decXmlElementTag &root, ceConversation &conversation );
+	void pReadCTS(const decXmlElementTag &root, ceConversation &conversation);
+	void pReadCoordSystem(const decXmlElementTag &root, ceConversation &conversation);
+	void pReadProp(const decXmlElementTag &root, ceConversation &conversation);
 };
 
 #endif

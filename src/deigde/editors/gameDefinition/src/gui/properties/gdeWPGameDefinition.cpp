@@ -114,21 +114,21 @@ protected:
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cBaseTextFieldListener( gdeWPGameDefinition &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(gdeWPGameDefinition &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if( ! gameDefinition || textField->GetText() == gameDefinition->GetID() ){
+		if(! gameDefinition || textField->GetText() == gameDefinition->GetID()){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, gameDefinition ) ));
-		if( undo ){
-			gameDefinition->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, gameDefinition)));
+		if(undo){
+			gameDefinition->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeGameDefinition *gameDefinition ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -136,40 +136,40 @@ protected:
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cBaseAction( gdeWPGameDefinition &panel, const char *text, igdeIcon *icon,
-		const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(gdeWPGameDefinition &panel, const char *text, igdeIcon *icon,
+		const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if( ! gameDefinition ){
+		if(! gameDefinition){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionGameDefinition( gameDefinition ) ));
-		if( undo ){
-			gameDefinition->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnActionGameDefinition(gameDefinition)));
+		if(undo){
+			gameDefinition->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionGameDefinition( gdeGameDefinition *gameDefinition ) = 0;
+	virtual igdeUndo *OnActionGameDefinition(gdeGameDefinition *gameDefinition) = 0;
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetGameDefinition() != NULL );
+		SetEnabled(pPanel.GetGameDefinition() != NULL);
 	}
 };
 
 
 class cEditId : public cBaseTextFieldListener {
 public:
-	cEditId( gdeWPGameDefinition &panel ) : cBaseTextFieldListener( panel ){ }
+	cEditId(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeGameDefinition *gameDefinition ){
-		if( textField.GetText() == gameDefinition->GetID() ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
+		if(textField.GetText() == gameDefinition->GetID()){
 			return NULL;
 		}
-		return new gdeUGDSetID( gameDefinition, textField.GetText() );
+		return new gdeUGDSetID(gameDefinition, textField.GetText());
 	}
 };
 
@@ -177,11 +177,11 @@ class cEditDescription : public igdeTextAreaListener {
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cEditDescription( gdeWPGameDefinition &panel ) : pPanel( panel ){ }
+	cEditDescription(gdeWPGameDefinition &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextArea *textArea ){
+	virtual void OnTextChanged(igdeTextArea *textArea){
 		gdeGameDefinition * const gameDefinition = pPanel.GetGameDefinition();
-		if( ! gameDefinition || textArea->GetText() == gameDefinition->GetDescription() ){
+		if(! gameDefinition || textArea->GetText() == gameDefinition->GetDescription()){
 			return;
 		}
 		
@@ -192,13 +192,13 @@ public:
 
 class cEditBasePath : public cBaseTextFieldListener {
 public:
-	cEditBasePath( gdeWPGameDefinition &panel ) : cBaseTextFieldListener( panel ){ }
+	cEditBasePath(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeGameDefinition *gameDefinition ){
-		if( textField.GetText() == gameDefinition->GetBasePath() ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
+		if(textField.GetText() == gameDefinition->GetBasePath()){
 			return NULL;
 		}
-		return new gdeUGDSetBasePath( gameDefinition, textField.GetText() );
+		return new gdeUGDSetBasePath(gameDefinition, textField.GetText());
 	}
 };
 
@@ -206,14 +206,14 @@ class cActionBasePath : public cBaseAction{
 	igdeTextField &pTextField;
 	
 public:
-	cActionBasePath( gdeWPGameDefinition &panel, igdeTextField &textField ) :
-	cBaseAction( panel, "...", NULL, "Base path to project data files" ),
-	pTextField( textField ){ }
+	cActionBasePath(gdeWPGameDefinition &panel, igdeTextField &textField) :
+	cBaseAction(panel, "...", NULL, "Base path to project data files"),
+	pTextField(textField){}
 	
-	virtual igdeUndo *OnActionGameDefinition( gdeGameDefinition *gameDefinition ){
-		decString basePath( gameDefinition->GetBasePath() );
-		if( igdeCommonDialogs::GetDirectory( pPanel.GetParentWindow(), "Select Project Data Directory", basePath ) ){
-			pTextField.SetText( basePath );
+	virtual igdeUndo *OnActionGameDefinition(gdeGameDefinition *gameDefinition){
+		decString basePath(gameDefinition->GetBasePath());
+		if(igdeCommonDialogs::GetDirectory(pPanel.GetParentWindow(), "Select Project Data Directory", basePath)){
+			pTextField.SetText(basePath);
 			pTextField.NotifyTextChanged();
 		}
 		return NULL;
@@ -222,25 +222,25 @@ public:
 
 class cEditVfsPath : public cBaseTextFieldListener {
 public:
-	cEditVfsPath( gdeWPGameDefinition &panel ) : cBaseTextFieldListener( panel ){ }
+	cEditVfsPath(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeGameDefinition *gameDefinition ){
-		if( textField.GetText() == gameDefinition->GetVFSPath() ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
+		if(textField.GetText() == gameDefinition->GetVFSPath()){
 			return NULL;
 		}
-		return new gdeUGDSetVFSPath( gameDefinition, textField.GetText() );
+		return new gdeUGDSetVFSPath(gameDefinition, textField.GetText());
 	}
 };
 
 class cEditScriptModule : public cBaseTextFieldListener {
 public:
-	cEditScriptModule( gdeWPGameDefinition &panel ) : cBaseTextFieldListener( panel ){ }
+	cEditScriptModule(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeGameDefinition *gameDefinition ){
-		if( textField.GetText() == gameDefinition->GetScriptModule() ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
+		if(textField.GetText() == gameDefinition->GetScriptModule()){
 			return NULL;
 		}
-		return new gdeUGDSetScriptModule( gameDefinition, textField.GetText() );
+		return new gdeUGDSetScriptModule(gameDefinition, textField.GetText());
 	}
 };
 
@@ -249,86 +249,86 @@ class cEditWorldProperties : public gdeWPPropertyList {
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cEditWorldProperties( gdeWPGameDefinition &panel ) :
-	gdeWPPropertyList( panel.GetEnvironment() ), pPanel( panel ){
-		SetClipboard( &panel.GetWindowProperties().GetWindowMain().GetClipboard() );
+	cEditWorldProperties(gdeWPGameDefinition &panel) :
+	gdeWPPropertyList(panel.GetEnvironment()), pPanel(panel){
+		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
-	virtual igdeUndo *UndoAdd( gdeProperty *property ){
-		return new gdeUGDWPropertyAdd( pPanel.GetGameDefinition(), property );
+	virtual igdeUndo *UndoAdd(gdeProperty *property){
+		return new gdeUGDWPropertyAdd(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoRemove( gdeProperty *property ){
-		return new gdeUGDWPropertyRemove( pPanel.GetGameDefinition(), property );
+	virtual igdeUndo *UndoRemove(gdeProperty *property){
+		return new gdeUGDWPropertyRemove(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoPaste( gdeProperty *property ){
-		gdeUGDWPropertyAdd * const undo = new gdeUGDWPropertyAdd( pPanel.GetGameDefinition(), property );
-		undo->SetShortInfo( "Paste property" );
+	virtual igdeUndo *UndoPaste(gdeProperty *property){
+		gdeUGDWPropertyAdd * const undo = new gdeUGDWPropertyAdd(pPanel.GetGameDefinition(), property);
+		undo->SetShortInfo("Paste property");
 		return undo;
 	}
 	
-	virtual igdeUndo *UndoName( gdeProperty *property, const decString &name ){
-		return new gdeUGDWPSetName( pPanel.GetGameDefinition(), property, name );
+	virtual igdeUndo *UndoName(gdeProperty *property, const decString &name){
+		return new gdeUGDWPSetName(pPanel.GetGameDefinition(), property, name);
 	}
 	
-	virtual igdeUndo *UndoDescription( gdeProperty *property, const decString &description ){
-		return new gdeUGDWPSetDescription( pPanel.GetGameDefinition(), property, description );
+	virtual igdeUndo *UndoDescription(gdeProperty *property, const decString &description){
+		return new gdeUGDWPSetDescription(pPanel.GetGameDefinition(), property, description);
 	}
 	
-	virtual igdeUndo *UndoType( gdeProperty *property, gdeProperty::ePropertyTypes type ){
-		return new gdeUGDWPSetType( pPanel.GetGameDefinition(), property, type );
+	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type){
+		return new gdeUGDWPSetType(pPanel.GetGameDefinition(), property, type);
 	}
 	
-	virtual igdeUndo *UndoMinimumValue( gdeProperty *property, float value ){
-		return new gdeUGDWPSetMinValue( pPanel.GetGameDefinition(), property, value );
+	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value){
+		return new gdeUGDWPSetMinValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
-	virtual igdeUndo *UndoMaximumValue( gdeProperty *property, float value ){
-		return new gdeUGDWPSetMaxValue( pPanel.GetGameDefinition(), property, value );
+	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value){
+		return new gdeUGDWPSetMaxValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
-	virtual igdeUndo *UndoDefaultValue( gdeProperty *property, const decString &newValue, const decString &oldValue ){
-		return new gdeUGDWPSetDefaultValue( pPanel.GetGameDefinition(), property, newValue, oldValue );
+	virtual igdeUndo *UndoDefaultValue(gdeProperty *property, const decString &newValue, const decString &oldValue){
+		return new gdeUGDWPSetDefaultValue(pPanel.GetGameDefinition(), property, newValue, oldValue);
 	}
 	
-	virtual igdeUndo *UndoOptions( gdeProperty *property, const decStringList &options ){
-		return new gdeUGDWPSetOptions( pPanel.GetGameDefinition(), property, options );
+	virtual igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options){
+		return new gdeUGDWPSetOptions(pPanel.GetGameDefinition(), property, options);
 	}
 	
-	virtual igdeUndo *UndoPathPatternType( gdeProperty *property, gdeProperty::ePathPatternTypes type ){
-		return new gdeUGDWPSetPathPatternType( pPanel.GetGameDefinition(), property, type );
+	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type){
+		return new gdeUGDWPSetPathPatternType(pPanel.GetGameDefinition(), property, type);
 	}
 	
-	virtual igdeUndo *UndoIdentifierGroup( gdeProperty *property, const decString &identifier ){
-		return new gdeUGDWPSetIdentifierGroup( pPanel.GetGameDefinition(), property, identifier );
+	virtual igdeUndo *UndoIdentifierGroup(gdeProperty *property, const decString &identifier){
+		return new gdeUGDWPSetIdentifierGroup(pPanel.GetGameDefinition(), property, identifier);
 	}
 	
-	virtual igdeUndo *UndoIdentifierUsage( gdeProperty *property ){
-		return new gdeUGDWPToggleIdentifierUsage( pPanel.GetGameDefinition(), property );
+	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property){
+		return new gdeUGDWPToggleIdentifierUsage(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternAdd( gdeProperty *property, gdeFilePattern *filePattern ){
-		return new gdeUGDWPCFPAdd( pPanel.GetGameDefinition(), property, filePattern );
+	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern){
+		return new gdeUGDWPCFPAdd(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternRemove( gdeProperty *property, gdeFilePattern *filePattern ){
-		return new gdeUGDWPCFPRemove( pPanel.GetGameDefinition(), property, filePattern );
+	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern){
+		return new gdeUGDWPCFPRemove(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternName( gdeProperty *property,
-	gdeFilePattern *filePattern, const decString &name ){
-		return new gdeUGDWPCFPSetName( pPanel.GetGameDefinition(), property, filePattern, name );
+	virtual igdeUndo *UndoCustomFilePatternName(gdeProperty *property,
+	gdeFilePattern *filePattern, const decString &name){
+		return new gdeUGDWPCFPSetName(pPanel.GetGameDefinition(), property, filePattern, name);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternPattern( gdeProperty *property,
-	gdeFilePattern *filePattern, const decString &pattern ){
-		return new gdeUGDWPCFPSetPattern( pPanel.GetGameDefinition(), property, filePattern, pattern );
+	virtual igdeUndo *UndoCustomFilePatternPattern(gdeProperty *property,
+	gdeFilePattern *filePattern, const decString &pattern){
+		return new gdeUGDWPCFPSetPattern(pPanel.GetGameDefinition(), property, filePattern, pattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternExtension( gdeProperty *property,
-	gdeFilePattern *filePattern, const decString &extension ){
-		return new gdeUGDWPCFPSetExtension( pPanel.GetGameDefinition(), property, filePattern, extension );
+	virtual igdeUndo *UndoCustomFilePatternExtension(gdeProperty *property,
+	gdeFilePattern *filePattern, const decString &extension){
+		return new gdeUGDWPCFPSetExtension(pPanel.GetGameDefinition(), property, filePattern, extension);
 	}
 };
 
@@ -337,86 +337,86 @@ class cEditDecalProperties : public gdeWPPropertyList {
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cEditDecalProperties( gdeWPGameDefinition &panel ) :
-	gdeWPPropertyList( panel.GetEnvironment() ), pPanel( panel ){
-		SetClipboard( &panel.GetWindowProperties().GetWindowMain().GetClipboard() );
+	cEditDecalProperties(gdeWPGameDefinition &panel) :
+	gdeWPPropertyList(panel.GetEnvironment()), pPanel(panel){
+		SetClipboard(&panel.GetWindowProperties().GetWindowMain().GetClipboard());
 	}
 	
-	virtual igdeUndo *UndoAdd( gdeProperty *property ){
-		return new gdeUGDDPropertyAdd( pPanel.GetGameDefinition(), property );
+	virtual igdeUndo *UndoAdd(gdeProperty *property){
+		return new gdeUGDDPropertyAdd(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoRemove( gdeProperty *property ){
-		return new gdeUGDDPropertyRemove( pPanel.GetGameDefinition(), property );
+	virtual igdeUndo *UndoRemove(gdeProperty *property){
+		return new gdeUGDDPropertyRemove(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoPaste( gdeProperty *property ){
-		gdeUGDDPropertyAdd * const undo = new gdeUGDDPropertyAdd( pPanel.GetGameDefinition(), property );
-		undo->SetShortInfo( "Paste property" );
+	virtual igdeUndo *UndoPaste(gdeProperty *property){
+		gdeUGDDPropertyAdd * const undo = new gdeUGDDPropertyAdd(pPanel.GetGameDefinition(), property);
+		undo->SetShortInfo("Paste property");
 		return undo;
 	}
 	
-	virtual igdeUndo *UndoName( gdeProperty *property, const decString &name ){
-		return new gdeUGDDPSetName( pPanel.GetGameDefinition(), property, name );
+	virtual igdeUndo *UndoName(gdeProperty *property, const decString &name){
+		return new gdeUGDDPSetName(pPanel.GetGameDefinition(), property, name);
 	}
 	
-	virtual igdeUndo *UndoDescription( gdeProperty *property, const decString &description ){
-		return new gdeUGDDPSetDescription( pPanel.GetGameDefinition(), property, description );
+	virtual igdeUndo *UndoDescription(gdeProperty *property, const decString &description){
+		return new gdeUGDDPSetDescription(pPanel.GetGameDefinition(), property, description);
 	}
 	
-	virtual igdeUndo *UndoType( gdeProperty *property, gdeProperty::ePropertyTypes type ){
-		return new gdeUGDDPSetType( pPanel.GetGameDefinition(), property, type );
+	virtual igdeUndo *UndoType(gdeProperty *property, gdeProperty::ePropertyTypes type){
+		return new gdeUGDDPSetType(pPanel.GetGameDefinition(), property, type);
 	}
 	
-	virtual igdeUndo *UndoMinimumValue( gdeProperty *property, float value ){
-		return new gdeUGDDPSetMinValue( pPanel.GetGameDefinition(), property, value );
+	virtual igdeUndo *UndoMinimumValue(gdeProperty *property, float value){
+		return new gdeUGDDPSetMinValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
-	virtual igdeUndo *UndoMaximumValue( gdeProperty *property, float value ){
-		return new gdeUGDDPSetMaxValue( pPanel.GetGameDefinition(), property, value );
+	virtual igdeUndo *UndoMaximumValue(gdeProperty *property, float value){
+		return new gdeUGDDPSetMaxValue(pPanel.GetGameDefinition(), property, value);
 	}
 	
-	virtual igdeUndo *UndoDefaultValue( gdeProperty *property, const decString &newValue, const decString &oldValue ){
-		return new gdeUGDDPSetDefaultValue( pPanel.GetGameDefinition(), property, newValue, oldValue );
+	virtual igdeUndo *UndoDefaultValue(gdeProperty *property, const decString &newValue, const decString &oldValue){
+		return new gdeUGDDPSetDefaultValue(pPanel.GetGameDefinition(), property, newValue, oldValue);
 	}
 	
-	virtual igdeUndo *UndoOptions( gdeProperty *property, const decStringList &options ){
-		return new gdeUGDDPSetOptions( pPanel.GetGameDefinition(), property, options );
+	virtual igdeUndo *UndoOptions(gdeProperty *property, const decStringList &options){
+		return new gdeUGDDPSetOptions(pPanel.GetGameDefinition(), property, options);
 	}
 	
-	virtual igdeUndo *UndoPathPatternType( gdeProperty *property, gdeProperty::ePathPatternTypes type ){
-		return new gdeUGDDPSetPathPatternType( pPanel.GetGameDefinition(), property, type );
+	virtual igdeUndo *UndoPathPatternType(gdeProperty *property, gdeProperty::ePathPatternTypes type){
+		return new gdeUGDDPSetPathPatternType(pPanel.GetGameDefinition(), property, type);
 	}
 	
-	virtual igdeUndo *UndoIdentifierGroup( gdeProperty *property, const decString &identifier ){
-		return new gdeUGDDPSetIdentifierGroup( pPanel.GetGameDefinition(), property, identifier );
+	virtual igdeUndo *UndoIdentifierGroup(gdeProperty *property, const decString &identifier){
+		return new gdeUGDDPSetIdentifierGroup(pPanel.GetGameDefinition(), property, identifier);
 	}
 	
-	virtual igdeUndo *UndoIdentifierUsage( gdeProperty *property ){
-		return new gdeUGDDPToggleIdentifierUsage( pPanel.GetGameDefinition(), property );
+	virtual igdeUndo *UndoIdentifierUsage(gdeProperty *property){
+		return new gdeUGDDPToggleIdentifierUsage(pPanel.GetGameDefinition(), property);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternAdd( gdeProperty *property, gdeFilePattern *filePattern ){
-		return new gdeUGDDPCFPAdd( pPanel.GetGameDefinition(), property, filePattern );
+	virtual igdeUndo *UndoCustomFilePatternAdd(gdeProperty *property, gdeFilePattern *filePattern){
+		return new gdeUGDDPCFPAdd(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternRemove( gdeProperty *property, gdeFilePattern *filePattern ){
-		return new gdeUGDDPCFPRemove( pPanel.GetGameDefinition(), property, filePattern );
+	virtual igdeUndo *UndoCustomFilePatternRemove(gdeProperty *property, gdeFilePattern *filePattern){
+		return new gdeUGDDPCFPRemove(pPanel.GetGameDefinition(), property, filePattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternName( gdeProperty *property,
-	gdeFilePattern *filePattern, const decString &name ){
-		return new gdeUGDDPCFPSetName( pPanel.GetGameDefinition(), property, filePattern, name );
+	virtual igdeUndo *UndoCustomFilePatternName(gdeProperty *property,
+	gdeFilePattern *filePattern, const decString &name){
+		return new gdeUGDDPCFPSetName(pPanel.GetGameDefinition(), property, filePattern, name);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternPattern( gdeProperty *property,
-	gdeFilePattern *filePattern, const decString &pattern ){
-		return new gdeUGDDPCFPSetPattern( pPanel.GetGameDefinition(), property, filePattern, pattern );
+	virtual igdeUndo *UndoCustomFilePatternPattern(gdeProperty *property,
+	gdeFilePattern *filePattern, const decString &pattern){
+		return new gdeUGDDPCFPSetPattern(pPanel.GetGameDefinition(), property, filePattern, pattern);
 	}
 	
-	virtual igdeUndo *UndoCustomFilePatternExtension( gdeProperty *property,
-	gdeFilePattern *filePattern, const decString &extension ){
-		return new gdeUGDDPCFPSetExtension( pPanel.GetGameDefinition(), property, filePattern, extension );
+	virtual igdeUndo *UndoCustomFilePatternExtension(gdeProperty *property,
+	gdeFilePattern *filePattern, const decString &extension){
+		return new gdeUGDDPCFPSetExtension(pPanel.GetGameDefinition(), property, filePattern, extension);
 	}
 };
 
@@ -425,12 +425,12 @@ class cEditAutoFindPathObjectClasses : public gdeWPPathList {
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cEditAutoFindPathObjectClasses( gdeWPGameDefinition &panel ) :
-	gdeWPPathList( panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Object Classes" ),
-	pPanel( panel ){ }
+	cEditAutoFindPathObjectClasses(gdeWPGameDefinition &panel) :
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Object Classes"),
+	pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet( const decStringList &paths ){
-		return new gdeUGDSetAutoFindPathObjectClasses( pPanel.GetGameDefinition(), paths );
+	virtual igdeUndo *UndoSet(const decStringList &paths){
+		return new gdeUGDSetAutoFindPathObjectClasses(pPanel.GetGameDefinition(), paths);
 	}
 };
 
@@ -438,12 +438,12 @@ class cEditAutoFindPathSkins : public gdeWPPathList {
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cEditAutoFindPathSkins( gdeWPGameDefinition &panel ) :
-	gdeWPPathList( panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path SkinsClasses" ),
-	pPanel( panel ){ }
+	cEditAutoFindPathSkins(gdeWPGameDefinition &panel) :
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path SkinsClasses"),
+	pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet( const decStringList &paths ){
-		return new gdeUGDSetAutoFindPathSkins( pPanel.GetGameDefinition(), paths );
+	virtual igdeUndo *UndoSet(const decStringList &paths){
+		return new gdeUGDSetAutoFindPathSkins(pPanel.GetGameDefinition(), paths);
 	}
 };
 
@@ -451,12 +451,12 @@ class cEditAutoFindPathSkies : public gdeWPPathList {
 	gdeWPGameDefinition &pPanel;
 	
 public:
-	cEditAutoFindPathSkies( gdeWPGameDefinition &panel ) :
-	gdeWPPathList( panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Skies" ),
-	pPanel( panel ){ }
+	cEditAutoFindPathSkies(gdeWPGameDefinition &panel) :
+	gdeWPPathList(panel.GetEnvironment().GetUIHelper(), 3, "Auto Find Path Skies"),
+	pPanel(panel){}
 	
-	virtual igdeUndo *UndoSet( const decStringList &paths ){
-		return new gdeUGDSetAutoFindPathSkies( pPanel.GetGameDefinition(), paths );
+	virtual igdeUndo *UndoSet(const decStringList &paths){
+		return new gdeUGDSetAutoFindPathSkies(pPanel.GetGameDefinition(), paths);
 	}
 };
 
@@ -470,77 +470,77 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPGameDefinition::gdeWPGameDefinition( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pGameDefinition( NULL ),
-pListener( NULL )
+gdeWPGameDefinition::gdeWPGameDefinition(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pGameDefinition(NULL),
+pListener(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPGameDefinitionListener( *this );
+	pListener = new gdeWPGameDefinitionListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// game definition
-	helper.GroupBox( content, groupBox, "Game Definition:" );
-	helper.EditString( groupBox, "Identifier:", "Identifier", pEditID, new cEditId( *this ) );
-	helper.EditString( groupBox, "Description:", "Description",
-		pEditDescription, 5, new cEditDescription( *this ) );
+	helper.GroupBox(content, groupBox, "Game Definition:");
+	helper.EditString(groupBox, "Identifier:", "Identifier", pEditID, new cEditId(*this));
+	helper.EditString(groupBox, "Description:", "Description",
+		pEditDescription, 5, new cEditDescription(*this));
 	
-	helper.FormLineStretchFirst( groupBox, "Base Path:", "Base path to project data files", frameLine );
-	helper.EditString( frameLine, "Base path to project data files",
-		pEditBasePath, new cEditBasePath( *this ) );
-	pActionBasePath.TakeOver( new cActionBasePath( *this, pEditBasePath ) );
-	helper.Button( frameLine, pActionBasePath );
+	helper.FormLineStretchFirst(groupBox, "Base Path:", "Base path to project data files", frameLine);
+	helper.EditString(frameLine, "Base path to project data files",
+		pEditBasePath, new cEditBasePath(*this));
+	pActionBasePath.TakeOver(new cActionBasePath(*this, pEditBasePath));
+	helper.Button(frameLine, pActionBasePath);
 	
-	helper.EditString( groupBox, "VFS Path:", "VFS path the base path will be visible at",
-		pEditVFSPath, new cEditVfsPath( *this ) );
-	helper.EditString( groupBox, "Script Module:", "Script module this game definition is compatible with",
-		pEditScriptModule, new cEditScriptModule( *this ) );
+	helper.EditString(groupBox, "VFS Path:", "VFS path the base path will be visible at",
+		pEditVFSPath, new cEditVfsPath(*this));
+	helper.EditString(groupBox, "Script Module:", "Script module this game definition is compatible with",
+		pEditScriptModule, new cEditScriptModule(*this));
 	
 	// information
-	helper.GroupBox( content, groupBox, "Information:" );
+	helper.GroupBox(content, groupBox, "Information:");
 	
-	helper.EditString( groupBox, "Use Base Path:",
+	helper.EditString(groupBox, "Use Base Path:",
 		"Actually used base path (can differ if this is the project game definition)",
-		pEditUseBasePath, NULL );
-	pEditUseBasePath->SetEditable( false );
+		pEditUseBasePath, NULL);
+	pEditUseBasePath->SetEditable(false);
 	
-	helper.CheckBox( groupBox, "Is Project Game Definition", "Is Project Game Definition", pChkIsProjectGameDef );
-	pChkIsProjectGameDef->SetEnabled( false );
+	helper.CheckBox(groupBox, "Is Project Game Definition", "Is Project Game Definition", pChkIsProjectGameDef);
+	pChkIsProjectGameDef->SetEnabled(false);
 	
 	// world properties
-	helper.GroupBoxFlow( content, groupBox, "World Properties:", false, true );
-	pEditWorldProperties.TakeOver( new cEditWorldProperties( *this ) );
-	groupBox->AddChild( pEditWorldProperties );
+	helper.GroupBoxFlow(content, groupBox, "World Properties:", false, true);
+	pEditWorldProperties.TakeOver(new cEditWorldProperties(*this));
+	groupBox->AddChild(pEditWorldProperties);
 	
 	// decal properties
-	helper.GroupBoxFlow( content, groupBox, "Decal Properties:", false, true );
-	pEditDecalProperties.TakeOver( new cEditDecalProperties( *this ) );
-	groupBox->AddChild( pEditDecalProperties );
+	helper.GroupBoxFlow(content, groupBox, "Decal Properties:", false, true);
+	pEditDecalProperties.TakeOver(new cEditDecalProperties(*this));
+	groupBox->AddChild(pEditDecalProperties);
 	
 	// auto find path
-	helper.GroupBoxFlow( content, groupBox, "Auto Find Path Object Classes:", false, true );
-	pEditAutoFindPathObjectClasses.TakeOver( new cEditAutoFindPathObjectClasses( *this ) );
-	groupBox->AddChild( pEditAutoFindPathObjectClasses );
+	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Object Classes:", false, true);
+	pEditAutoFindPathObjectClasses.TakeOver(new cEditAutoFindPathObjectClasses(*this));
+	groupBox->AddChild(pEditAutoFindPathObjectClasses);
 	
-	helper.GroupBoxFlow( content, groupBox, "Auto Find Path Skins:", false, true );
-	pEditAutoFindPathSkins.TakeOver( new cEditAutoFindPathSkins( *this ) );
-	groupBox->AddChild( pEditAutoFindPathSkins );
+	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Skins:", false, true);
+	pEditAutoFindPathSkins.TakeOver(new cEditAutoFindPathSkins(*this));
+	groupBox->AddChild(pEditAutoFindPathSkins);
 	
-	helper.GroupBoxFlow( content, groupBox, "Auto Find Path Skies:", false, true );
-	pEditAutoFindPathSkies.TakeOver( new cEditAutoFindPathSkies( *this ) );
-	groupBox->AddChild( pEditAutoFindPathSkies );
+	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Skies:", false, true);
+	pEditAutoFindPathSkies.TakeOver(new cEditAutoFindPathSkies(*this));
+	groupBox->AddChild(pEditAutoFindPathSkies);
 }
 
 gdeWPGameDefinition::~gdeWPGameDefinition(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -550,56 +550,56 @@ gdeWPGameDefinition::~gdeWPGameDefinition(){
 // Management
 ///////////////
 
-void gdeWPGameDefinition::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	gdeWPPropertyList &worldProperties = ( gdeWPPropertyList& )( igdeWidget& )pEditWorldProperties;
-	worldProperties.SetPropertyList( NULL );
-	worldProperties.SetGameDefinition( NULL );
+	gdeWPPropertyList &worldProperties = (gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties;
+	worldProperties.SetPropertyList(NULL);
+	worldProperties.SetGameDefinition(NULL);
 	
-	gdeWPPropertyList &decalProperties = ( gdeWPPropertyList& )( igdeWidget& )pEditDecalProperties;
-	decalProperties.SetPropertyList( NULL );
-	decalProperties.SetGameDefinition( NULL );
+	gdeWPPropertyList &decalProperties = (gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties;
+	decalProperties.SetPropertyList(NULL);
+	decalProperties.SetGameDefinition(NULL);
 	
-	gdeWPPathList &autoFindPathObjectClasses = ( gdeWPPathList& )( igdeWidget& )pEditAutoFindPathObjectClasses;
-	autoFindPathObjectClasses.SetPathList( NULL );
-	autoFindPathObjectClasses.SetUndoSystem( NULL );
+	gdeWPPathList &autoFindPathObjectClasses = (gdeWPPathList&)(igdeWidget&)pEditAutoFindPathObjectClasses;
+	autoFindPathObjectClasses.SetPathList(NULL);
+	autoFindPathObjectClasses.SetUndoSystem(NULL);
 	
-	gdeWPPathList &autoFindPathSkins = ( gdeWPPathList& )( igdeWidget& )pEditAutoFindPathSkins;
-	autoFindPathSkins.SetPathList( NULL );
-	autoFindPathSkins.SetUndoSystem( NULL );
+	gdeWPPathList &autoFindPathSkins = (gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkins;
+	autoFindPathSkins.SetPathList(NULL);
+	autoFindPathSkins.SetUndoSystem(NULL);
 	
-	gdeWPPathList &autoFindPathSkies = ( gdeWPPathList& )( igdeWidget& )pEditAutoFindPathSkies;
-	autoFindPathSkies.SetPathList( NULL );
-	autoFindPathSkies.SetUndoSystem( NULL );
+	gdeWPPathList &autoFindPathSkies = (gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkies;
+	autoFindPathSkies.SetPathList(NULL);
+	autoFindPathSkies.SetUndoSystem(NULL);
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 		
-		worldProperties.SetPropertyList( &gameDefinition->GetWorldProperties() );
-		worldProperties.SetGameDefinition( gameDefinition );
+		worldProperties.SetPropertyList(&gameDefinition->GetWorldProperties());
+		worldProperties.SetGameDefinition(gameDefinition);
 		
-		decalProperties.SetPropertyList( &gameDefinition->GetDecalProperties() );
-		decalProperties.SetGameDefinition( gameDefinition );
+		decalProperties.SetPropertyList(&gameDefinition->GetDecalProperties());
+		decalProperties.SetGameDefinition(gameDefinition);
 		
-		autoFindPathObjectClasses.SetPathList( &gameDefinition->GetAutoFindPathObjectClasses() );
-		autoFindPathObjectClasses.SetUndoSystem( gameDefinition->GetUndoSystem() );
+		autoFindPathObjectClasses.SetPathList(&gameDefinition->GetAutoFindPathObjectClasses());
+		autoFindPathObjectClasses.SetUndoSystem(gameDefinition->GetUndoSystem());
 		
-		autoFindPathSkins.SetPathList( &gameDefinition->GetAutoFindPathSkins() );
-		autoFindPathSkins.SetUndoSystem( gameDefinition->GetUndoSystem() );
+		autoFindPathSkins.SetPathList(&gameDefinition->GetAutoFindPathSkins());
+		autoFindPathSkins.SetUndoSystem(gameDefinition->GetUndoSystem());
 		
-		autoFindPathSkies.SetPathList( &gameDefinition->GetAutoFindPathSkies() );
-		autoFindPathSkies.SetUndoSystem( gameDefinition->GetUndoSystem() );
+		autoFindPathSkies.SetPathList(&gameDefinition->GetAutoFindPathSkies());
+		autoFindPathSkies.SetUndoSystem(gameDefinition->GetUndoSystem());
 	}
 	
 	UpdateWorld();
@@ -608,34 +608,34 @@ void gdeWPGameDefinition::SetGameDefinition( gdeGameDefinition *gameDefinition )
 
 
 gdeProperty *gdeWPGameDefinition::GetActiveWorldProperty() const{
-	return ( ( gdeWPPropertyList& )( igdeWidget& )pEditWorldProperties ).GetProperty();
+	return ((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).GetProperty();
 }
 
 gdeProperty *gdeWPGameDefinition::GetActiveDecalProperty() const{
-	return ( ( gdeWPPropertyList& )( igdeWidget& )pEditDecalProperties ).GetProperty();
+	return ((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).GetProperty();
 }
 
 
 
 void gdeWPGameDefinition::UpdateWorld(){
-	if( pGameDefinition ){
-		pEditID->SetText( pGameDefinition->GetID() );
-		pEditDescription->SetText( pGameDefinition->GetDescription() );
-		pEditBasePath->SetText( pGameDefinition->GetBasePath() );
-		pEditVFSPath->SetText( pGameDefinition->GetVFSPath() );
-		pEditScriptModule->SetText( pGameDefinition->GetScriptModule() );
+	if(pGameDefinition){
+		pEditID->SetText(pGameDefinition->GetID());
+		pEditDescription->SetText(pGameDefinition->GetDescription());
+		pEditBasePath->SetText(pGameDefinition->GetBasePath());
+		pEditVFSPath->SetText(pGameDefinition->GetVFSPath());
+		pEditScriptModule->SetText(pGameDefinition->GetScriptModule());
 		
-		if( pGameDefinition->GetIsProjectGameDef() ){
+		if(pGameDefinition->GetIsProjectGameDef()){
 			const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 			decPath path;
-			path.SetFromNative( gameProject.GetDirectoryPath() );
-			path.AddUnixPath( gameProject.GetPathData() );
-			pEditUseBasePath->SetText( path.GetPathNative() );
-			pChkIsProjectGameDef->SetChecked( true );
+			path.SetFromNative(gameProject.GetDirectoryPath());
+			path.AddUnixPath(gameProject.GetPathData());
+			pEditUseBasePath->SetText(path.GetPathNative());
+			pChkIsProjectGameDef->SetChecked(true);
 			
 		}else{
-			pEditUseBasePath->SetText( pGameDefinition->GetBasePath() );
-			pChkIsProjectGameDef->SetChecked( false );
+			pEditUseBasePath->SetText(pGameDefinition->GetBasePath());
+			pChkIsProjectGameDef->SetChecked(false);
 		}
 		
 	}else{
@@ -645,16 +645,16 @@ void gdeWPGameDefinition::UpdateWorld(){
 		pEditVFSPath->ClearText();
 		pEditScriptModule->ClearText();
 		pEditUseBasePath->ClearText();
-		pChkIsProjectGameDef->SetChecked( false );
+		pChkIsProjectGameDef->SetChecked(false);
 	}
 	
 	const bool enabled = pGameDefinition != NULL;
-	pEditID->SetEnabled( enabled );
-	pEditDescription->SetEnabled( enabled );
-	pEditBasePath->SetEnabled( enabled );
+	pEditID->SetEnabled(enabled);
+	pEditDescription->SetEnabled(enabled);
+	pEditBasePath->SetEnabled(enabled);
 	pActionBasePath->Update();
-	pEditVFSPath->SetEnabled( enabled );
-	pEditScriptModule->SetEnabled( enabled );
+	pEditVFSPath->SetEnabled(enabled);
+	pEditScriptModule->SetEnabled(enabled);
 	
 	UpdateWorldProperties();
 	UpdateDecalProperties();
@@ -666,49 +666,49 @@ void gdeWPGameDefinition::UpdateWorld(){
 
 
 void gdeWPGameDefinition::UpdateWorldProperties(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditWorldProperties ).UpdateList();
+	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateWorldProperty(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditWorldProperties ).UpdateProperty();
+	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateProperty();
 }
 
 void gdeWPGameDefinition::UpdateWorldPropertyCustomPatternList(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditWorldProperties ).UpdateCustomPatternList();
+	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateCustomPatternList();
 }
 
 void gdeWPGameDefinition::UpdateWorldPropertyCustomPattern(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditWorldProperties ).UpdateCustomPattern();
+	((gdeWPPropertyList&)(igdeWidget&)pEditWorldProperties).UpdateCustomPattern();
 }
 
 
 
 void gdeWPGameDefinition::UpdateAutoFindPathObjectClasses(){
-	( ( gdeWPPathList& )( igdeWidget& )pEditAutoFindPathObjectClasses ).UpdateList();
+	((gdeWPPathList&)(igdeWidget&)pEditAutoFindPathObjectClasses).UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateAutoFindPathSkins(){
-	( ( gdeWPPathList& )( igdeWidget& )pEditAutoFindPathSkins ).UpdateList();
+	((gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkins).UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateAutoFindPathSkies(){
-	( ( gdeWPPathList& )( igdeWidget& )pEditAutoFindPathSkies ).UpdateList();
+	((gdeWPPathList&)(igdeWidget&)pEditAutoFindPathSkies).UpdateList();
 }
 
 
 
 void gdeWPGameDefinition::UpdateDecalProperties(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditDecalProperties ).UpdateList();
+	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateList();
 }
 
 void gdeWPGameDefinition::UpdateDecalProperty(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditDecalProperties ).UpdateProperty();
+	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateProperty();
 }
 
 void gdeWPGameDefinition::UpdateDecalPropertyCustomPatternList(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditDecalProperties ).UpdateCustomPatternList();
+	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateCustomPatternList();
 }
 
 void gdeWPGameDefinition::UpdateDecalPropertyCustomPattern(){
-	( ( gdeWPPropertyList& )( igdeWidget& )pEditDecalProperties ).UpdateCustomPattern();
+	((gdeWPPropertyList&)(igdeWidget&)pEditDecalProperties).UpdateCustomPattern();
 }

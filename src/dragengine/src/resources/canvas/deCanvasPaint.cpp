@@ -38,23 +38,23 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasPaint::deCanvasPaint( deCanvasManager *manager ) :
-deCanvas( manager ),
-pShapeType( estRectangle ),
-pLineColor( 0.0f, 0.0f, 0.0f, 1.0f ),
-pFillColor( 0.0f, 0.0f, 0.0f, 0.0f ),
-pThickness( 1.0f ),
-pRoundCornerX( 0.0f ),
-pRoundCornerY( 0.0f ),
-pStartAngle( 0.0f ),
-pEndAngle( TWO_PI ),
+deCanvasPaint::deCanvasPaint(deCanvasManager *manager) :
+deCanvas(manager),
+pShapeType(estRectangle),
+pLineColor(0.0f, 0.0f, 0.0f, 1.0f),
+pFillColor(0.0f, 0.0f, 0.0f, 0.0f),
+pThickness(1.0f),
+pRoundCornerX(0.0f),
+pRoundCornerY(0.0f),
+pStartAngle(0.0f),
+pEndAngle(TWO_PI),
 
-pPoints( NULL ),
-pPointCount( 0 ){
+pPoints(NULL),
+pPointCount(0){
 }
 
 deCanvasPaint::~deCanvasPaint(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -64,12 +64,12 @@ deCanvasPaint::~deCanvasPaint(){
 // Management
 ///////////////
 
-void deCanvasPaint::SetShapeType( eShapeTypes shapeType ){
-	if( shapeType < estPoints || shapeType > estPolygon ){
-		DETHROW( deeInvalidParam );
+void deCanvasPaint::SetShapeType(eShapeTypes shapeType){
+	if(shapeType < estPoints || shapeType > estPolygon){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( shapeType == pShapeType ){
+	if(shapeType == pShapeType){
 		return;
 	}
 	
@@ -77,8 +77,8 @@ void deCanvasPaint::SetShapeType( eShapeTypes shapeType ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetLineColor( const decColor &color ){
-	if( pLineColor.IsEqualTo( color ) ){
+void deCanvasPaint::SetLineColor(const decColor &color){
+	if(pLineColor.IsEqualTo(color)){
 		return;
 	}
 	
@@ -86,8 +86,8 @@ void deCanvasPaint::SetLineColor( const decColor &color ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetFillColor( const decColor &color ){
-	if( pFillColor.IsEqualTo( color ) ){
+void deCanvasPaint::SetFillColor(const decColor &color){
+	if(pFillColor.IsEqualTo(color)){
 		return;
 	}
 	
@@ -95,12 +95,12 @@ void deCanvasPaint::SetFillColor( const decColor &color ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetThickness( float thickness ){
-	if( thickness < 0.0f ){
+void deCanvasPaint::SetThickness(float thickness){
+	if(thickness < 0.0f){
 		thickness = 0.0f;
 	}
 	
-	if( fabsf( thickness - pThickness ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(thickness - pThickness) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -108,10 +108,10 @@ void deCanvasPaint::SetThickness( float thickness ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetRoundCornerX( float roundCorner ){
-	roundCorner = decMath::clamp( roundCorner, 0.0f, 1.0f );
+void deCanvasPaint::SetRoundCornerX(float roundCorner){
+	roundCorner = decMath::clamp(roundCorner, 0.0f, 1.0f);
 	
-	if( fabsf( roundCorner - pRoundCornerX ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(roundCorner - pRoundCornerX) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -119,10 +119,10 @@ void deCanvasPaint::SetRoundCornerX( float roundCorner ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetRoundCornerY( float roundCorner ){
-	roundCorner = decMath::clamp( roundCorner, 0.0f, 1.0f );
+void deCanvasPaint::SetRoundCornerY(float roundCorner){
+	roundCorner = decMath::clamp(roundCorner, 0.0f, 1.0f);
 	
-	if( fabsf( roundCorner - pRoundCornerY ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(roundCorner - pRoundCornerY) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -130,10 +130,10 @@ void deCanvasPaint::SetRoundCornerY( float roundCorner ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetStartAngle( float startAngle ){
-	startAngle = decMath::normalize( startAngle, 0.0f, TWO_PI );
+void deCanvasPaint::SetStartAngle(float startAngle){
+	startAngle = decMath::normalize(startAngle, 0.0f, TWO_PI);
 	
-	if( fabsf( startAngle - pStartAngle ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(startAngle - pStartAngle) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -141,10 +141,10 @@ void deCanvasPaint::SetStartAngle( float startAngle ){
 	NotifyContentChanged();
 }
 
-void deCanvasPaint::SetEndAngle( float endAngle ){
-	endAngle = decMath::normalize( endAngle, 0.0f, TWO_PI );
+void deCanvasPaint::SetEndAngle(float endAngle){
+	endAngle = decMath::normalize(endAngle, 0.0f, TWO_PI);
 	
-	if( fabsf( endAngle - pEndAngle ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(endAngle - pEndAngle) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -157,45 +157,45 @@ void deCanvasPaint::SetEndAngle( float endAngle ){
 // Points
 ///////////
 
-const decPoint &deCanvasPaint::GetPointAt( int position ) const{
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
+const decPoint &deCanvasPaint::GetPointAt(int position) const{
+	if(position < 0 || position >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pPoints[ position ];
+	return pPoints[position];
 }
 
-void deCanvasPaint::AddPoint( const decPoint &point ){
-	decPoint * const newArray = new decPoint[ pPointCount + 1 ];
+void deCanvasPaint::AddPoint(const decPoint &point){
+	decPoint * const newArray = new decPoint[pPointCount + 1];
 	int i;
 	
-	for( i=0; i<pPointCount; i++ ){
-		newArray[ i ] = pPoints[ i ];
+	for(i=0; i<pPointCount; i++){
+		newArray[i] = pPoints[i];
 	}
 	
-	newArray[ pPointCount ] = point;
+	newArray[pPointCount] = point;
 	
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 	pPoints = newArray;
 	pPointCount++;
 }
 
-void deCanvasPaint::RemovePointFrom( int position ){
-	if( position < 0 || position >= pPointCount ){
-		DETHROW( deeInvalidParam );
+void deCanvasPaint::RemovePointFrom(int position){
+	if(position < 0 || position >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=position+1; i<pPointCount; i++ ){
-		pPoints[ i - 1 ] = pPoints[ i ];
+	for(i=position+1; i<pPointCount; i++){
+		pPoints[i - 1] = pPoints[i];
 	}
 	pPointCount--;
 }
 
 void deCanvasPaint::RemoveAllPoints(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 		pPoints = NULL;
 	}
@@ -207,6 +207,6 @@ void deCanvasPaint::RemoveAllPoints(){
 // Visiting
 /////////////
 
-void deCanvasPaint::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitPaint( *this );
+void deCanvasPaint::Visit(deCanvasVisitor &visitor){
+	visitor.VisitPaint(*this);
 }

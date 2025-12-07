@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPSourceListener::seWPSourceListener( seWPSource &panel ) :
-pPanel( panel ){
+seWPSourceListener::seWPSourceListener(seWPSource &panel) :
+pPanel(panel){
 }
 
 seWPSourceListener::~seWPSourceListener(){
@@ -51,8 +51,8 @@ seWPSourceListener::~seWPSourceListener(){
 // Notifications
 //////////////////
 
-void seWPSourceListener::SynthesizerChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::SynthesizerChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -62,16 +62,16 @@ void seWPSourceListener::SynthesizerChanged( seSynthesizer *synthesizer ){
 
 
 
-void seWPSourceListener::ControllerNameChanged( seSynthesizer *synthesizer, seController* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::ControllerNameChanged(seSynthesizer *synthesizer, seController*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void seWPSourceListener::ControllerStructureChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::ControllerStructureChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -80,16 +80,16 @@ void seWPSourceListener::ControllerStructureChanged( seSynthesizer *synthesizer 
 
 
 
-void seWPSourceListener::LinkNameChanged( seSynthesizer *synthesizer, seLink* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::LinkNameChanged(seSynthesizer *synthesizer, seLink*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
 	pPanel.UpdateLinkList();
 }
 
-void seWPSourceListener::LinkStructureChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::LinkStructureChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -98,8 +98,8 @@ void seWPSourceListener::LinkStructureChanged( seSynthesizer *synthesizer ){
 
 
 
-void seWPSourceListener::ActiveSourceChanged( seSynthesizer *synthesizer, seSource* ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::ActiveSourceChanged(seSynthesizer *synthesizer, seSource*){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	
@@ -108,16 +108,16 @@ void seWPSourceListener::ActiveSourceChanged( seSynthesizer *synthesizer, seSour
 	pPanel.UpdateSource();
 }
 
-void seWPSourceListener::SourceChanged( seSynthesizer*, seSource *source ){
-	if( source != pPanel.GetSource() ){
+void seWPSourceListener::SourceChanged(seSynthesizer*, seSource *source){
+	if(source != pPanel.GetSource()){
 		return;
 	}
 	
 	pPanel.UpdateSource();
 }
 
-void seWPSourceListener::SourceNameChanged( seSynthesizer*, seSource *source ){
-	if( source != pPanel.GetSource() ){
+void seWPSourceListener::SourceNameChanged(seSynthesizer*, seSource *source){
+	if(source != pPanel.GetSource()){
 		return;
 	}
 	
@@ -125,8 +125,8 @@ void seWPSourceListener::SourceNameChanged( seSynthesizer*, seSource *source ){
 	pPanel.UpdateSource();
 }
 
-void seWPSourceListener::SourceStructureChanged( seSynthesizer *synthesizer ){
-	if( synthesizer != pPanel.GetSynthesizer() ){
+void seWPSourceListener::SourceStructureChanged(seSynthesizer *synthesizer){
+	if(synthesizer != pPanel.GetSynthesizer()){
 		return;
 	}
 	

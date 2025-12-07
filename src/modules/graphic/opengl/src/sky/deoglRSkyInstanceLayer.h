@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky instance layer. */
-	deoglRSkyInstanceLayer( deoglRSkyInstance &instance, int index );
+	deoglRSkyInstanceLayer(deoglRSkyInstance &instance, int index);
 	
 	/** Clean up sky instance layer. */
 	~deoglRSkyInstanceLayer();
@@ -95,10 +95,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent sky instance, */
-	inline deoglRSkyInstance &GetInstance() const{ return pInstance; }
+	inline deoglRSkyInstance &GetInstance() const{return pInstance;}
 	
 	/** Layer index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** Update. */
 	void Update();
@@ -107,42 +107,42 @@ public:
 	void UpdateWithModifiers();
 	
 	/** Sky needs update. */
-	inline bool GetSkyNeedsUpdate() const{ return pSkyNeedsUpdate; }
+	inline bool GetSkyNeedsUpdate() const{return pSkyNeedsUpdate;}
 	
 	
 	
 	/** Matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** Inverse matrix. */
-	inline const decMatrix &GetInverseMatrix() const{ return pInvMatrix; }
+	inline const decMatrix &GetInverseMatrix() const{return pInvMatrix;}
 	
 	/** Blending color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** Intensity. */
-	inline float GetIntensity() const{ return pIntensity; }
+	inline float GetIntensity() const{return pIntensity;}
 	
 	/** Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** Layer is visible. */
 	bool GetVisible() const;
 	
 	/** Orientation of the sky light. */
-	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
+	inline const decQuaternion &GetLightOrientation() const{return pLightOrientation;}
 	
 	/** Color of the sky light. */
-	inline const decColor &GetLightColor() const{ return pLightColor; }
+	inline const decColor &GetLightColor() const{return pLightColor;}
 	
 	/** Intensity of the direct sky light. */
-	inline float GetLightIntensity() const{ return pLightIntensity; }
+	inline float GetLightIntensity() const{return pLightIntensity;}
 	
 	/** Intensity of the diffuse sky light. */
-	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
+	inline float GetAmbientIntensity() const{return pAmbientIntensity;}
 	
 	/** Total light intensity. */
-	inline float GetTotalLightIntensity() const{ return pLightIntensity + pAmbientIntensity; }
+	inline float GetTotalLightIntensity() const{return pLightIntensity + pAmbientIntensity;}
 	
 	/** Layer has direct light. */
 	bool GetHasLightDirect() const;
@@ -162,10 +162,10 @@ public:
 	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
 	
 	/** Shadow caster. */
-	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
+	inline deoglShadowCaster &GetShadowCaster() const{return *pShadowCaster;}
 	
 	/** Notify skies render static component changed requiring updates. */
-	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	void NotifyUpdateStaticComponent(deoglRComponent *component);
 	
 	
 	
@@ -173,16 +173,16 @@ public:
 	int GetGICascadeCount() const;
 	
 	/** GI Cascade or NULL if not found. */
-	deoglSkyLayerGICascade *GetGICascade( const deoglGICascade &cascade ) const;
+	deoglSkyLayerGICascade *GetGICascade(const deoglGICascade &cascade) const;
 	
 	/** Add GI Cascade if absent. */
-	deoglSkyLayerGICascade *AddGICascade( const deoglGICascade &cascade );
+	deoglSkyLayerGICascade *AddGICascade(const deoglGICascade &cascade);
 	
 	/** Remove GI Cascade if present. */
-	void RemoveGICascade( const deoglGICascade &cascade );
+	void RemoveGICascade(const deoglGICascade &cascade);
 	
 	/** Remove all GI Cascades for GI State if present. */
-	void RemoveAllGICascades( const deoglGIState &state );
+	void RemoveAllGICascades(const deoglGIState &state);
 	
 	/** Remove all GI Cascades. */
 	void RemoveAllGICascades();

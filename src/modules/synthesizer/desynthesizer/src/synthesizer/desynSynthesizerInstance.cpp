@@ -48,39 +48,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynSynthesizerInstance::desynSynthesizerInstance( deDESynthesizer &module, deSynthesizerInstance &instance ) :
-pModule( module ),
-pSynthesizerInstance( instance ),
+desynSynthesizerInstance::desynSynthesizerInstance(deDESynthesizer &module, deSynthesizerInstance &instance) :
+pModule(module),
+pSynthesizerInstance(instance),
 
-pSynthesizer( NULL ),
-pSynthesizerUpdateTracker( 0 ),
+pSynthesizer(NULL),
+pSynthesizerUpdateTracker(0),
 
-pControllers( NULL ),
-pControllerCount( 0 ),
+pControllers(NULL),
+pControllerCount(0),
 
-pChannelCount( 1 ),
-pSampleRate( 11025 ),
-pBytesPerSample( 1 ),
-pSampleCount( 0 ),
-pSilent( true ),
-pInverseSampleRate( 1.0f ),
-pGenerateSampleSize( 1 ),
+pChannelCount(1),
+pSampleRate(11025),
+pBytesPerSample(1),
+pSampleCount(0),
+pSilent(true),
+pInverseSampleRate(1.0f),
+pGenerateSampleSize(1),
 
-pBufferSampleCount( 0 ),
-pBufferCount( 0 ),
+pBufferSampleCount(0),
+pBufferCount(0),
 
-pDirtySynthesizer( true ),
-pDirtyControllers( false ),
-pDirtyFormat( true ),
+pDirtySynthesizer(true),
+pDirtyControllers(false),
+pDirtyFormat(true),
 
-pStateData( NULL ),
-pStateDataSize( 0 )
+pStateData(NULL),
+pStateDataSize(0)
 {
 	SynthesizerChanged();
 }
 
 desynSynthesizerInstance::~desynSynthesizerInstance(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pCleanUp();
 }
 
@@ -89,11 +89,11 @@ desynSynthesizerInstance::~desynSynthesizerInstance(){
 // Management
 ///////////////
 
-desynSynthesizerController &desynSynthesizerInstance::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+desynSynthesizerController &desynSynthesizerInstance::GetControllerAt(int index) const{
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
 
@@ -102,12 +102,12 @@ desynSynthesizerController &desynSynthesizerInstance::GetControllerAt( int index
 //////////////////
 
 void desynSynthesizerInstance::SynthesizerChanged(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pFreeStateData();
 	pClearControllers();
 	
-	if( pSynthesizerInstance.GetSynthesizer() ){
-		pSynthesizer = ( desynSynthesizer* )pSynthesizerInstance.GetSynthesizer()->GetPeerSynthesizer();
+	if(pSynthesizerInstance.GetSynthesizer()){
+		pSynthesizer = (desynSynthesizer*)pSynthesizerInstance.GetSynthesizer()->GetPeerSynthesizer();
 		
 	}else{
 		pSynthesizer = NULL;
@@ -117,17 +117,17 @@ void desynSynthesizerInstance::SynthesizerChanged(){
 	pDirtySynthesizer = true;
 }
 
-void desynSynthesizerInstance::ControllerChanged( int index ){
-	deMutexGuard guard( pMutex );
-	if( index < 0 || index >= pControllerCount ){
+void desynSynthesizerInstance::ControllerChanged(int index){
+	deMutexGuard guard(pMutex);
+	if(index < 0 || index >= pControllerCount){
 		return;
 	}
-	GetControllerAt( index ).SetDirty( true );
+	GetControllerAt(index).SetDirty(true);
 	pDirtyControllers = true;
 }
 
 void desynSynthesizerInstance::PlayTimeChanged(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pDirtyFormat = true;
 	pDirtyControllers = true;
 }
@@ -138,46 +138,46 @@ void desynSynthesizerInstance::PlayTimeChanged(){
 ///////////////////
 
 void desynSynthesizerInstance::Reset(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pFreeStateData();
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pCreateStateData();
 	}
 }
 
-void desynSynthesizerInstance::GenerateSound( void *buffer, int bufferSize, int offset, int samples ){
-	if( samples < 0 || offset < 0 ){
-		DETHROW( deeInvalidParam );
+void desynSynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int offset, int samples){
+	if(samples < 0 || offset < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( samples == 0 ){
+	if(samples == 0){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pPrepare();
 	
-	if( ! buffer || pGenerateSampleSize * samples != bufferSize ){
-		DETHROW( deeInvalidParam );
+	if(! buffer || pGenerateSampleSize * samples != bufferSize){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pSilent || ! pSynthesizer ){
-		pGenerateSilence( buffer, samples );
+	if(pSilent || ! pSynthesizer){
+		pGenerateSilence(buffer, samples);
 	}
 	
 	desynSharedBuffer *sharedBuffer = NULL;
 	
 	try{
-		sharedBuffer = pModule.GetSharedBufferList().ClaimBuffer( samples * pChannelCount );
+		sharedBuffer = pModule.GetSharedBufferList().ClaimBuffer(samples * pChannelCount);
 		
-		pUpdateControllerValues( samples, offset );
-		pGenerateSound( sharedBuffer, buffer, samples );
+		pUpdateControllerValues(samples, offset);
+		pGenerateSound(sharedBuffer, buffer, samples);
 		
-		pModule.GetSharedBufferList().ReleaseBuffer( sharedBuffer );
+		pModule.GetSharedBufferList().ReleaseBuffer(sharedBuffer);
 		
-	}catch( const deException & ){
-		if( sharedBuffer ){
-			pModule.GetSharedBufferList().ReleaseBuffer( sharedBuffer );
+	}catch(const deException &){
+		if(sharedBuffer){
+			pModule.GetSharedBufferList().ReleaseBuffer(sharedBuffer);
 		}
 		throw;
 	}
@@ -195,20 +195,20 @@ void desynSynthesizerInstance::pCleanUp(){
 
 
 void desynSynthesizerInstance::pPrepare(){
-	if( pSynthesizer ){
-		deMutexGuard guard( pSynthesizer->GetMutex() );
+	if(pSynthesizer){
+		deMutexGuard guard(pSynthesizer->GetMutex());
 		const unsigned int updateTracker = pSynthesizer->GetUpdateTracker();
-		if( updateTracker != pSynthesizerUpdateTracker ){
+		if(updateTracker != pSynthesizerUpdateTracker){
 			pSynthesizerUpdateTracker = updateTracker;
 			pDirtySynthesizer = true;
 		}
 	}
 	
-	if( pDirtySynthesizer ){
+	if(pDirtySynthesizer){
 		pClearControllers();
 		
 		pFreeStateData();
-		if( pSynthesizer ){
+		if(pSynthesizer){
 			pSynthesizer->Prepare();
 			pCreateStateData();
 		}
@@ -220,17 +220,17 @@ void desynSynthesizerInstance::pPrepare(){
 		pDirtyFormat = true;
 	}
 	
-	if( pDirtyControllers ){
+	if(pDirtyControllers){
 		int i;
-		for( i=0; i<pControllerCount; i++ ){
-			if( pControllers[ i ].GetDirty() ){
-				pControllers[ i ].Update( *pSynthesizerInstance.GetControllerAt( i ) );
+		for(i=0; i<pControllerCount; i++){
+			if(pControllers[i].GetDirty()){
+				pControllers[i].Update(*pSynthesizerInstance.GetControllerAt(i));
 			}
 		}
 		pDirtyControllers = false;
 	}
 	
-	if( pDirtyFormat ){
+	if(pDirtyFormat){
 		pUpdateFormat();
 		pDirtyFormat = false;
 	}
@@ -239,8 +239,8 @@ void desynSynthesizerInstance::pPrepare(){
 void desynSynthesizerInstance::pUpdateFormat(){
 	// NOTE mutex guarded by caller
 	
-	if( pSynthesizer ){
-		deMutexGuard guard( pSynthesizer->GetMutex() );
+	if(pSynthesizer){
+		deMutexGuard guard(pSynthesizer->GetMutex());
 		pChannelCount = pSynthesizer->GetChannelCount();
 		pSampleRate = pSynthesizer->GetSampleRate();
 		pBytesPerSample = pSynthesizer->GetBytesPerSample();
@@ -257,11 +257,11 @@ void desynSynthesizerInstance::pUpdateFormat(){
 	pSampleCount = pSynthesizerInstance.GetSampleCount();
 	
 	// clamp to supported values
-	pChannelCount = decMath::clamp( pChannelCount, 1, 2 );
-	pBytesPerSample = decMath::clamp( pBytesPerSample, 1, 2 );
+	pChannelCount = decMath::clamp(pChannelCount, 1, 2);
+	pBytesPerSample = decMath::clamp(pBytesPerSample, 1, 2);
 	
 	// convenience values
-	pInverseSampleRate = 1.0f / ( float )pSampleRate;
+	pInverseSampleRate = 1.0f / (float)pSampleRate;
 	pGenerateSampleSize = pBytesPerSample * pChannelCount;
 	
 	// determine streaming parameters
@@ -272,7 +272,7 @@ void desynSynthesizerInstance::pUpdateFormat(){
 
 
 void desynSynthesizerInstance::pClearControllers(){
-	if( ! pControllers ){
+	if(! pControllers){
 		return;
 	}
 	
@@ -285,14 +285,14 @@ void desynSynthesizerInstance::pCreateControllers(){
 	pClearControllers();
 	
 	const int count = pSynthesizerInstance.GetControllerCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pControllers = new desynSynthesizerController[ count ];
+	pControllers = new desynSynthesizerController[count];
 	
-	for( pControllerCount=0; pControllerCount<count; pControllerCount++ ){
-		pControllers[ pControllerCount ].Update( *pSynthesizerInstance.GetControllerAt( pControllerCount ) );
+	for(pControllerCount=0; pControllerCount<count; pControllerCount++){
+		pControllers[pControllerCount].Update(*pSynthesizerInstance.GetControllerAt(pControllerCount));
 	}
 	
 	pDirtyControllers = false;
@@ -300,113 +300,113 @@ void desynSynthesizerInstance::pCreateControllers(){
 
 
 
-void desynSynthesizerInstance::pGenerateSilence( void *buffer, int samples ){
-	if( pBytesPerSample == 1 ){
-		if( pChannelCount == 1 ){
-			sSampleMono8 * const sbuf = ( sSampleMono8* )buffer;
+void desynSynthesizerInstance::pGenerateSilence(void *buffer, int samples){
+	if(pBytesPerSample == 1){
+		if(pChannelCount == 1){
+			sSampleMono8 * const sbuf = (sSampleMono8*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				sbuf[ i ].value = SAMPLE8_ZERO;
+			for(i=0; i<samples; i++){
+				sbuf[i].value = SAMPLE8_ZERO;
 			}
 			
-		}else if( pChannelCount == 2 ){
-			sSampleStereo8 * const sbuf = ( sSampleStereo8* )buffer;
+		}else if(pChannelCount == 2){
+			sSampleStereo8 * const sbuf = (sSampleStereo8*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				sbuf[ i ].left = SAMPLE8_ZERO;
-				sbuf[ i ].right = SAMPLE8_ZERO;
+			for(i=0; i<samples; i++){
+				sbuf[i].left = SAMPLE8_ZERO;
+				sbuf[i].right = SAMPLE8_ZERO;
 			}
 			
 		}else{
-			memset( buffer, 0, samples * pGenerateSampleSize );
+			memset(buffer, 0, samples * pGenerateSampleSize);
 		}
 		
-	}else if( pBytesPerSample == 2 ){
-		if( pChannelCount == 1 ){
-			sSampleMono16 * const sbuf = ( sSampleMono16* )buffer;
+	}else if(pBytesPerSample == 2){
+		if(pChannelCount == 1){
+			sSampleMono16 * const sbuf = (sSampleMono16*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				sbuf[ i ].value = SAMPLE16_ZERO;
+			for(i=0; i<samples; i++){
+				sbuf[i].value = SAMPLE16_ZERO;
 			}
 			
-		}else if( pChannelCount == 2 ){
-			sSampleStereo16 * const sbuf = ( sSampleStereo16* )buffer;
+		}else if(pChannelCount == 2){
+			sSampleStereo16 * const sbuf = (sSampleStereo16*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				sbuf[ i ].left = SAMPLE16_ZERO;
-				sbuf[ i ].right = SAMPLE16_ZERO;
+			for(i=0; i<samples; i++){
+				sbuf[i].left = SAMPLE16_ZERO;
+				sbuf[i].right = SAMPLE16_ZERO;
 			}
 			
 		}else{
-			memset( buffer, 0, samples * pGenerateSampleSize );
+			memset(buffer, 0, samples * pGenerateSampleSize);
 		}
 		
 	}else{
-		memset( buffer, 0, samples * pGenerateSampleSize );
+		memset(buffer, 0, samples * pGenerateSampleSize);
 	}
 }
 
-void desynSynthesizerInstance::pGenerateSound( desynSharedBuffer *sharedBuffer, void *buffer, int samples ){
+void desynSynthesizerInstance::pGenerateSound(desynSharedBuffer *sharedBuffer, void *buffer, int samples){
 	// ensure generate buffer has enough size and clear it to 0
 	float * const sharedBufferData = sharedBuffer->GetBuffer();
-	memset( sharedBufferData, 0, sizeof( float ) * ( samples * pChannelCount ) );
+	memset(sharedBufferData, 0, sizeof(float) * (samples * pChannelCount));
 	
 	// generate sound into generate buffer
-	pSynthesizer->GenerateSound( *this, pStateData, sharedBufferData, samples );
+	pSynthesizer->GenerateSound(*this, pStateData, sharedBufferData, samples);
 	
 	// down-sample and clamp generate buffer into final buffer
-	if( pBytesPerSample == 1 ){
-		if( pChannelCount == 1 ){
+	if(pBytesPerSample == 1){
+		if(pChannelCount == 1){
 			const desynSynthesizerSource::sGenerateBufferMono * const sbuf =
-				( const desynSynthesizerSource::sGenerateBufferMono* )sharedBufferData;
-			sSampleMono8 * const dbuf = ( sSampleMono8* )buffer;
+				(const desynSynthesizerSource::sGenerateBufferMono*)sharedBufferData;
+			sSampleMono8 * const dbuf = (sSampleMono8*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				dbuf[ i ].value = ( Sample8 )decMath::clamp( sbuf[ i ].value
+			for(i=0; i<samples; i++){
+				dbuf[i].value = (Sample8)decMath::clamp(sbuf[i].value
 					* SAMPLE8_RANGE_F, SAMPLE8_MIN_F, SAMPLE8_MAX_F );
 			}
 			
-		}else if( pChannelCount == 2 ){
+		}else if(pChannelCount == 2){
 			const desynSynthesizerSource::sGenerateBufferStereo * const sbuf =
-				( const desynSynthesizerSource::sGenerateBufferStereo* )sharedBufferData;
-			sSampleStereo8 * const dbuf = ( sSampleStereo8* )buffer;
+				(const desynSynthesizerSource::sGenerateBufferStereo*)sharedBufferData;
+			sSampleStereo8 * const dbuf = (sSampleStereo8*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				dbuf[ i ].left = ( Sample8 )decMath::clamp( sbuf[ i ].left
+			for(i=0; i<samples; i++){
+				dbuf[i].left = (Sample8)decMath::clamp(sbuf[i].left
 					* SAMPLE8_RANGE_F, SAMPLE8_MIN_F, SAMPLE8_MAX_F );
-				dbuf[ i ].right = ( Sample8 )decMath::clamp( sbuf[ i ].right
+				dbuf[i].right = (Sample8)decMath::clamp(sbuf[i].right
 					* SAMPLE8_RANGE_F, SAMPLE8_MIN_F, SAMPLE8_MAX_F );
 			}
 		}
 		
-	}else if( pBytesPerSample == 2 ){
-		if( pChannelCount == 1 ){
+	}else if(pBytesPerSample == 2){
+		if(pChannelCount == 1){
 			const desynSynthesizerSource::sGenerateBufferMono * const sbuf =
-				( const desynSynthesizerSource::sGenerateBufferMono* )sharedBufferData;
-			sSampleMono16 * const dbuf = ( sSampleMono16* )buffer;
+				(const desynSynthesizerSource::sGenerateBufferMono*)sharedBufferData;
+			sSampleMono16 * const dbuf = (sSampleMono16*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				dbuf[ i ].value = ( Sample16 )decMath::clamp( sbuf[ i ].value
+			for(i=0; i<samples; i++){
+				dbuf[i].value = (Sample16)decMath::clamp(sbuf[i].value
 					* SAMPLE16_RANGE_F, SAMPLE16_MIN_F, SAMPLE16_MAX_F );
 			}
 			
-		}else if( pChannelCount == 2 ){
+		}else if(pChannelCount == 2){
 			const desynSynthesizerSource::sGenerateBufferStereo * const sbuf =
-				( const desynSynthesizerSource::sGenerateBufferStereo* )sharedBufferData;
-			sSampleStereo16 * const dbuf = ( sSampleStereo16* )buffer;
+				(const desynSynthesizerSource::sGenerateBufferStereo*)sharedBufferData;
+			sSampleStereo16 * const dbuf = (sSampleStereo16*)buffer;
 			int i;
 			
-			for( i=0; i<samples; i++ ){
-				dbuf[ i ].left = ( Sample16 )decMath::clamp( sbuf[ i ].left
+			for(i=0; i<samples; i++){
+				dbuf[i].left = (Sample16)decMath::clamp(sbuf[i].left
 					* SAMPLE16_RANGE_F, SAMPLE16_MIN_F, SAMPLE16_MAX_F );
-				dbuf[ i ].right = ( Sample16 )decMath::clamp( sbuf[ i ].right
+				dbuf[i].right = (Sample16)decMath::clamp(sbuf[i].right
 					* SAMPLE16_RANGE_F, SAMPLE16_MIN_F, SAMPLE16_MAX_F );
 			}
 		}
@@ -415,47 +415,47 @@ void desynSynthesizerInstance::pGenerateSound( desynSharedBuffer *sharedBuffer, 
 
 
 
-void desynSynthesizerInstance::pUpdateControllerValues( int samples, int offset ){
-	const float time = pInverseSampleRate * ( float )offset;
-	const float range = pInverseSampleRate * ( float )1.0f;
+void desynSynthesizerInstance::pUpdateControllerValues(int samples, int offset){
+	const float time = pInverseSampleRate * (float)offset;
+	const float range = pInverseSampleRate * (float)1.0f;
 	int i;
 	
-	for( i=0; i<pControllerCount; i++ ){
-		pControllers[ i ].UpdateValues( samples, time, range );
+	for(i=0; i<pControllerCount; i++){
+		pControllers[i].UpdateValues(samples, time, range);
 	}
 }
 
 
 
 void desynSynthesizerInstance::pCreateStateData(){
-	if( pStateData ){
-		DETHROW( deeInvalidParam );
+	if(pStateData){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pSynthesizer ){
+	if(! pSynthesizer){
 		return;
 	}
 	
-	deMutexGuard guard( pSynthesizer->GetMutex() );
+	deMutexGuard guard(pSynthesizer->GetMutex());
 	pStateDataSize = pSynthesizer->GetStateDataSize();
-	if( pStateDataSize == 0 ){
+	if(pStateDataSize == 0){
 		return;
 	}
 	
-	pStateData = new char[ pStateDataSize ];
-	pSynthesizer->InitStateData( pStateData );
+	pStateData = new char[pStateDataSize];
+	pSynthesizer->InitStateData(pStateData);
 }
 
 void desynSynthesizerInstance::pFreeStateData(){
-	if( ! pStateData ){
+	if(! pStateData){
 		return;
 	}
-	if( ! pSynthesizer ){
-		DETHROW( deeInvalidParam );
+	if(! pSynthesizer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deMutexGuard guard( pSynthesizer->GetMutex() );
-	pSynthesizer->CleanUpStateData( pStateData );
+	deMutexGuard guard(pSynthesizer->GetMutex());
+	pSynthesizer->CleanUpStateData(pStateData);
 	delete [] pStateData;
 	pStateData = NULL;
 	pStateDataSize = 0;

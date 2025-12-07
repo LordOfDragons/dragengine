@@ -46,7 +46,7 @@ void deBaseGraphicSkyInstance::SkyChanged(){
 void deBaseGraphicSkyInstance::OrderChanged(){
 }
 
-void deBaseGraphicSkyInstance::ControllerChanged( int ){
+void deBaseGraphicSkyInstance::ControllerChanged(int){
 }
 
 void deBaseGraphicSkyInstance::LayerMaskChanged(){

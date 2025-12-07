@@ -209,7 +209,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	meWindowMain( meIGDEModule &module );
+	meWindowMain(meIGDEModule &module);
 	
 protected:
 	/** Clean up main window. */
@@ -228,39 +228,39 @@ public:
 	void ResetViews();
 	
 	/** Configuration. */
-	inline meConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline meConfiguration &GetConfiguration() const{return *pConfiguration;}
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const { return pClipboard; }
+	inline igdeClipboard &GetClipboard(){return pClipboard;}
+	inline const igdeClipboard &GetClipboard() const {return pClipboard;}
 	
 	/** Load/save system. */
-	inline meLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline meLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
 	
 	/** Save support. */
-	inline meSaveSupport &GetSaveSupport() const{ return *pSaveSupport; }
+	inline meSaveSupport &GetSaveSupport() const{return *pSaveSupport;}
 	
 	
 	
 	/** Properties window. */
-	inline meWindowProperties *GetWindowProperties() const{ return pWindowProperties; }
+	inline meWindowProperties *GetWindowProperties() const{return pWindowProperties;}
 	
 	/** View 3D. */
-	inline meView3D *GetView3D() const{ return pView3D; }
+	inline meView3D *GetView3D() const{return pView3D;}
 	
 	
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Create world. */
 	void CreateNewWorld();
 	
 	/** Load game world. */
-	void LoadWorld( const char *filename );
+	void LoadWorld(const char *filename);
 	
 	/** Notify configuration enable GI changed. */
 	void ConfigEnableGIChanged();
@@ -270,73 +270,73 @@ public:
 	
 	
 	
-	inline bool GetUse3DCursor() const{ return pUse3DCursor; }
+	inline bool GetUse3DCursor() const{return pUse3DCursor;}
 	void SetUse3DCursor(bool useIt);
-	inline decVector Get3DCursor() const{ return p3DCursor; }
-	inline void Set3DCursor(const decVector &pos){ p3DCursor = pos; }
+	inline decVector Get3DCursor() const{return p3DCursor;}
+	inline void Set3DCursor(const decVector &pos){p3DCursor = pos;}
 	
-	void RotateActiveObjectBy( const decVector &rotation );
+	void RotateActiveObjectBy(const decVector &rotation);
 	
 	/** Sets the visibility of the progress bar in the status bar. */
-	void SetProgressVisible( bool visible );
+	void SetProgressVisible(bool visible);
 	/** Sets the progress bar progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	/** Sets the progress text. */
-	void SetProgressText( const char *text );
+	void SetProgressText(const char *text);
 	
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconEditObject() const{ return pIconEditObject; }
-	inline igdeIcon *GetIconEditDecal() const{ return pIconEditDecal; }
-	inline igdeIcon *GetIconEditNavSpace() const{ return pIconEditNavSpace; }
-	inline igdeIcon *GetIconEditObjectShape() const{ return pIconEditObjectShape; }
-	inline igdeIcon *GetIconEditSelect() const{ return pIconEditSelect; }
-	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
-	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
-	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
-	inline igdeIcon *GetIconEditRotateRandom() const{ return pIconEditRotateRandom; }
-	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
-	inline igdeIcon *GetIconEditHeightPaint() const{ return pIconEditHeightPaint; }
-	inline igdeIcon *GetIconEditMaskPaint() const{ return pIconEditMaskPaint; }
-	inline igdeIcon *GetIconEditVisibilityPaint() const{ return pIconEditVisibilityPaint; }
-	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
-	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
-	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
-	inline const igdeIcon::Ref &GetIconEditLockAxisFlip() const{ return pIconEditLockAxisFlip; }
-	inline igdeIcon *GetIconEditUseLocal() const{ return pIconEditUseLocal; }
-	inline igdeIcon *GetIconEditSnap() const{ return pIconEditSnap; }
-	inline igdeIcon *GetIconViewFullBrightOn() const{ return pIconViewFullBrightOn; }
-	inline igdeIcon *GetIconViewFullBrightOff() const{ return pIconViewFullBrightOff; }
-	inline igdeIcon *GetIconViewMuteSoundOn() const{ return pIconViewMuteSoundOn; }
-	inline igdeIcon *GetIconViewMuteSoundOff() const{ return pIconViewMuteSoundOff; }
-	inline igdeIcon *GetIconObjectLightToggle() const{ return pIconObjectLightToggle; }
+	inline igdeIcon *GetIconEditObject() const{return pIconEditObject;}
+	inline igdeIcon *GetIconEditDecal() const{return pIconEditDecal;}
+	inline igdeIcon *GetIconEditNavSpace() const{return pIconEditNavSpace;}
+	inline igdeIcon *GetIconEditObjectShape() const{return pIconEditObjectShape;}
+	inline igdeIcon *GetIconEditSelect() const{return pIconEditSelect;}
+	inline igdeIcon *GetIconEditMove() const{return pIconEditMove;}
+	inline igdeIcon *GetIconEditScale() const{return pIconEditScale;}
+	inline igdeIcon *GetIconEditRotate() const{return pIconEditRotate;}
+	inline igdeIcon *GetIconEditRotateRandom() const{return pIconEditRotateRandom;}
+	inline igdeIcon *GetIconEdit3DCursor() const{return pIconEdit3DCursor;}
+	inline igdeIcon *GetIconEditHeightPaint() const{return pIconEditHeightPaint;}
+	inline igdeIcon *GetIconEditMaskPaint() const{return pIconEditMaskPaint;}
+	inline igdeIcon *GetIconEditVisibilityPaint() const{return pIconEditVisibilityPaint;}
+	inline igdeIcon *GetIconEditLockAxisX() const{return pIconEditLockAxisX;}
+	inline igdeIcon *GetIconEditLockAxisY() const{return pIconEditLockAxisY;}
+	inline igdeIcon *GetIconEditLockAxisZ() const{return pIconEditLockAxisZ;}
+	inline const igdeIcon::Ref &GetIconEditLockAxisFlip() const{return pIconEditLockAxisFlip;}
+	inline igdeIcon *GetIconEditUseLocal() const{return pIconEditUseLocal;}
+	inline igdeIcon *GetIconEditSnap() const{return pIconEditSnap;}
+	inline igdeIcon *GetIconViewFullBrightOn() const{return pIconViewFullBrightOn;}
+	inline igdeIcon *GetIconViewFullBrightOff() const{return pIconViewFullBrightOff;}
+	inline igdeIcon *GetIconViewMuteSoundOn() const{return pIconViewMuteSoundOn;}
+	inline igdeIcon *GetIconViewMuteSoundOff() const{return pIconViewMuteSoundOff;}
+	inline igdeIcon *GetIconObjectLightToggle() const{return pIconObjectLightToggle;}
 	
 	
 	
 	/** Actions. */
-	inline igdeAction *GetActionObjectSubclassAsEclass() const{ return pActionObjectSubclassAsEclass; }
-	inline igdeAction *GetActionObjectRotateL45() const{ return pActionObjectRotateL45; }
-	inline igdeAction *GetActionObjectRotateL90() const{ return pActionObjectRotateL90; }
-	inline igdeAction *GetActionObjectRotateR45() const{ return pActionObjectRotateR45; }
-	inline igdeAction *GetActionObjectRotateR90() const{ return pActionObjectRotateR90; }
-	inline igdeAction *GetActionObjectRotate180() const{ return pActionObjectRotate180; }
-	inline igdeAction *GetActionObjectRotateRandom() const{ return pActionObjectRotateRandom; }
-	inline igdeAction *GetActionObjectDropToGround() const{ return pActionObjectDropToGround; }
-	inline igdeAction *GetActionObjectSnapToGrid() const{ return pActionObjectSnapToGrid; }
-	inline igdeAction *GetActionObjectCopyPositionX() const{ return pActionObjectCopyPositionX; }
-	inline igdeAction *GetActionObjectCopyPositionY() const{ return pActionObjectCopyPositionY; }
-	inline igdeAction *GetActionObjectCopyPositionZ() const{ return pActionObjectCopyPositionZ; }
-	inline igdeAction *GetActionObjectCopyPositionXZ() const{ return pActionObjectCopyPositionXZ; }
-	inline igdeAction *GetActionObjectCopyPositionXYZ() const{ return pActionObjectCopyPositionXYZ; }
-	inline igdeAction *GetActionObjectCopyRotationX() const{ return pActionObjectCopyRotationX; }
-	inline igdeAction *GetActionObjectCopyRotationY() const{ return pActionObjectCopyRotationY; }
-	inline igdeAction *GetActionObjectCopyRotationZ() const{ return pActionObjectCopyRotationZ; }
-	inline igdeAction *GetActionObjectCopyRotationXYZ() const{ return pActionObjectCopyRotationXYZ; }
-	inline igdeAction *GetActionObjectCopyScaleX() const{ return pActionObjectCopyScaleX; }
-	inline igdeAction *GetActionObjectCopyScaleY() const{ return pActionObjectCopyScaleY; }
-	inline igdeAction *GetActionObjectCopyScaleZ() const{ return pActionObjectCopyScaleZ; }
-	inline igdeAction *GetActionObjectCopyScaleXYZ() const{ return pActionObjectCopyScaleXYZ; }
+	inline igdeAction *GetActionObjectSubclassAsEclass() const{return pActionObjectSubclassAsEclass;}
+	inline igdeAction *GetActionObjectRotateL45() const{return pActionObjectRotateL45;}
+	inline igdeAction *GetActionObjectRotateL90() const{return pActionObjectRotateL90;}
+	inline igdeAction *GetActionObjectRotateR45() const{return pActionObjectRotateR45;}
+	inline igdeAction *GetActionObjectRotateR90() const{return pActionObjectRotateR90;}
+	inline igdeAction *GetActionObjectRotate180() const{return pActionObjectRotate180;}
+	inline igdeAction *GetActionObjectRotateRandom() const{return pActionObjectRotateRandom;}
+	inline igdeAction *GetActionObjectDropToGround() const{return pActionObjectDropToGround;}
+	inline igdeAction *GetActionObjectSnapToGrid() const{return pActionObjectSnapToGrid;}
+	inline igdeAction *GetActionObjectCopyPositionX() const{return pActionObjectCopyPositionX;}
+	inline igdeAction *GetActionObjectCopyPositionY() const{return pActionObjectCopyPositionY;}
+	inline igdeAction *GetActionObjectCopyPositionZ() const{return pActionObjectCopyPositionZ;}
+	inline igdeAction *GetActionObjectCopyPositionXZ() const{return pActionObjectCopyPositionXZ;}
+	inline igdeAction *GetActionObjectCopyPositionXYZ() const{return pActionObjectCopyPositionXYZ;}
+	inline igdeAction *GetActionObjectCopyRotationX() const{return pActionObjectCopyRotationX;}
+	inline igdeAction *GetActionObjectCopyRotationY() const{return pActionObjectCopyRotationY;}
+	inline igdeAction *GetActionObjectCopyRotationZ() const{return pActionObjectCopyRotationZ;}
+	inline igdeAction *GetActionObjectCopyRotationXYZ() const{return pActionObjectCopyRotationXYZ;}
+	inline igdeAction *GetActionObjectCopyScaleX() const{return pActionObjectCopyScaleX;}
+	inline igdeAction *GetActionObjectCopyScaleY() const{return pActionObjectCopyScaleY;}
+	inline igdeAction *GetActionObjectCopyScaleZ() const{return pActionObjectCopyScaleZ;}
+	inline igdeAction *GetActionObjectCopyScaleXYZ() const{return pActionObjectCopyScaleXYZ;}
 	
 	
 	
@@ -359,7 +359,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -370,12 +370,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * Requests a document to be saved.
@@ -385,7 +385,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -427,11 +427,11 @@ private:
 	void pCreateToolBarObject();
 	void pCreateToolBarDecal();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuObject( igdeMenuCascade &menu );
-	void pCreateMenuDecal( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuObject(igdeMenuCascade &menu);
+	void pCreateMenuDecal(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 	
 	void pUpdateLoading();
 };

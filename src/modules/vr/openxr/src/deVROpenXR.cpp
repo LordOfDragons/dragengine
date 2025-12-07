@@ -74,7 +74,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *OpenXRCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -84,11 +84,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *OpenXRCreateModule( deLoadableModule *loadabl
 // Entry Function
 ///////////////////
 
-deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *OpenXRCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deVROpenXR( *loadableModule );
+		return new deVROpenXR(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return nullptr;
 	}
 }
@@ -101,19 +101,19 @@ deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deVROpenXR::deVROpenXR( deLoadableModule &loadableModule ) :
-deBaseVRModule( loadableModule ),
-pDevices( *this ),
-pGraphicApiOpenGL( *this ),
-pLoader( nullptr ),
-pSessionState( XR_SESSION_STATE_UNKNOWN ),
-pShutdownRequested( false ),
-pPreventDeletion( false ),
-pRestartSession( false ),
-pLastDetectedSystem( deoxrSystem::esUnknown ),
-pThreadSync( nullptr ),
-pRequestFeatureEyeGazeTracking( efslDisabled ),
-pRequestFeatureFacialTracking( efslDisabled ),
+deVROpenXR::deVROpenXR(deLoadableModule &loadableModule) :
+deBaseVRModule(loadableModule),
+pDevices(*this),
+pGraphicApiOpenGL(*this),
+pLoader(nullptr),
+pSessionState(XR_SESSION_STATE_UNKNOWN),
+pShutdownRequested(false),
+pPreventDeletion(false),
+pRestartSession(false),
+pLastDetectedSystem(deoxrSystem::esUnknown),
+pThreadSync(nullptr),
+pRequestFeatureEyeGazeTracking(efslDisabled),
+pRequestFeatureFacialTracking(efslDisabled),
 pLogLevel(LogLevel::info)
 {
 	memset(pActions, 0, sizeof(pActions));
@@ -129,45 +129,45 @@ deVROpenXR::~deVROpenXR(){
 // Management
 ///////////////
 
-void deVROpenXR::SendEvent( const deInputEvent &event ){
-	GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+void deVROpenXR::SendEvent(const deInputEvent &event){
+	GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent(event);
 }
 
-void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
+void deVROpenXR::InputEventSetTimestamp(deInputEvent &event) const{
 	#ifdef OS_W32
-	event.SetTime( { ( long )decDateTime().ToSystemTime(), 0 } );
+	event.SetTime({(long)decDateTime().ToSystemTime(), 0});
 	#else
-	event.SetTime( { ( time_t )decDateTime().ToSystemTime(), 0 } );
+	event.SetTime({(time_t)decDateTime().ToSystemTime(), 0});
 	#endif
 }
 
 void deVROpenXR::WaitUntilReadyExit(){
-	if( ! pInstance || pSessionState == XR_SESSION_STATE_EXITING ){
+	if(! pInstance || pSessionState == XR_SESSION_STATE_EXITING){
 		return;
 	}
 	
 	deoxrInstance &instance = pInstance;
 	
 	XrEventDataBuffer event;
-	memset( &event, 0, sizeof( event ) );
+	memset(&event, 0, sizeof(event));
 	event.type = XR_TYPE_EVENT_DATA_BUFFER;
 	
-	while( pSessionState != XR_SESSION_STATE_EXITING ){
-		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
-		if( result != XR_SUCCESS ){
+	while(pSessionState != XR_SESSION_STATE_EXITING){
+		const XrResult result = instance.xrPollEvent(instance.GetInstance(), &event);
+		if(result != XR_SUCCESS){
 			continue;
 		}
 		
-		LogInfoFormat( "WaitUntilReadyExit: Event %d", event.type );
-		switch( event.type ){
+		LogInfoFormat("WaitUntilReadyExit: Event %d", event.type);
+		switch(event.type){
 		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED:
-			pSessionState = ( ( XrEventDataSessionStateChanged& )event ).state;
+			pSessionState = ((XrEventDataSessionStateChanged&)event).state;
 			
-			switch( pSessionState ){
+			switch(pSessionState){
 			case XR_SESSION_STATE_IDLE:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: idle" );
-				if( pSession ){
-					pInstance->xrRequestExitSession( pSession->GetSession() );
+				LogInfo("WaitUntilReadyExit: Session State Changed: idle");
+				if(pSession){
+					pInstance->xrRequestExitSession(pSession->GetSession());
 					pPassthrough = nullptr;
 					pSession = nullptr;
 					pDeviceProfiles.CheckAllAttached();
@@ -176,40 +176,40 @@ void deVROpenXR::WaitUntilReadyExit(){
 				break;
 				
 			case XR_SESSION_STATE_READY:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: ready" );
+				LogInfo("WaitUntilReadyExit: Session State Changed: ready");
 				break;
 				
 			case XR_SESSION_STATE_SYNCHRONIZED:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: synchronized" );
+				LogInfo("WaitUntilReadyExit: Session State Changed: synchronized");
 				break;
 				
 			case XR_SESSION_STATE_VISIBLE:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: visible" );
-				if( pSession ){
+				LogInfo("WaitUntilReadyExit: Session State Changed: visible");
+				if(pSession){
 					pSession->ForceEnd();
 				}
 				break;
 				
 			case XR_SESSION_STATE_FOCUSED:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: focused" );
-				if( pSession ){
+				LogInfo("WaitUntilReadyExit: Session State Changed: focused");
+				if(pSession){
 					pSession->ForceEnd();
 				}
 				break;
 				
 			case XR_SESSION_STATE_STOPPING:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: stopping" );
-				if( pSession ){
+				LogInfo("WaitUntilReadyExit: Session State Changed: stopping");
+				if(pSession){
 					pSession->ForceEnd();
 				}
 				break;
 				
 			case XR_SESSION_STATE_LOSS_PENDING:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: loss pending" );
+				LogInfo("WaitUntilReadyExit: Session State Changed: loss pending");
 				break;
 				
 			case XR_SESSION_STATE_EXITING:
-				LogInfo( "WaitUntilReadyExit: Session State Changed: exiting" );
+				LogInfo("WaitUntilReadyExit: Session State Changed: exiting");
 				break;
 				
 			default:
@@ -223,12 +223,12 @@ void deVROpenXR::WaitUntilReadyExit(){
 	}
 }
 
-deoxrSwapchain *deVROpenXR::GetEyeSwapchain( eEye eye ) const{
-	if( ! pSession ){
+deoxrSwapchain *deVROpenXR::GetEyeSwapchain(eEye eye) const{
+	if(! pSession){
 		return nullptr;
 	}
 	
-	switch( eye ){
+	switch(eye){
 	case deBaseVRModule::evreLeft:
 		return pSession->GetSwapchainLeftEye();
 		
@@ -256,11 +256,11 @@ bool deVROpenXR::Init(){
 	pRestartSession = false;
 	
 	try{
-		pLoader = new deoxrLoader( *this );
+		pLoader = new deoxrLoader(*this);
 		
-	}catch( const deException &e ){
-		LogException( e );
-		if( pLoader ){
+	}catch(const deException &e){
+		LogException(e);
+		if(pLoader){
 			delete pLoader;
 			pLoader = nullptr;
 		}
@@ -269,9 +269,9 @@ bool deVROpenXR::Init(){
 // 	LogInfoFormat( "Runtime Installed: %s", pInstance ? "Yes" : "No" );
 	
 	/*
-	if( pLoader ){
-		LogInfoFormat( "Runtime Config File: %s", pLoader->GetRuntimeConfigFile().GetString() );
-		LogInfoFormat( "Runtime Library: %s", pLoader->GetRuntimeLibraryPath().GetString() );
+	if(pLoader){
+		LogInfoFormat("Runtime Config File: %s", pLoader->GetRuntimeConfigFile().GetString());
+		LogInfoFormat("Runtime Library: %s", pLoader->GetRuntimeLibraryPath().GetString());
 	}
 	*/
 	
@@ -280,14 +280,14 @@ bool deVROpenXR::Init(){
 
 void deVROpenXR::CleanUp(){
 	{
-	const deMutexGuard lock( pMutexOpenXR );
-	SetCamera( nullptr );
+	const deMutexGuard lock(pMutexOpenXR);
+	SetCamera(nullptr);
 	}
 	
 	StopRuntime();
 // 	WaitUntilReadyExit();
 	
-	const deMutexGuard lock( pMutexOpenXR );
+	const deMutexGuard lock(pMutexOpenXR);
 	pDeviceProfiles.RemoveAll(); // has to come before clearing devices
 	
 	pDevices.Clear();
@@ -306,7 +306,7 @@ void deVROpenXR::CleanUp(){
 	pSystem = nullptr;
 	pInstance = nullptr;
 	
-	if( pLoader ){
+	if(pLoader){
 		delete pLoader;
 		pLoader = nullptr;
 	}
@@ -325,39 +325,39 @@ bool deVROpenXR::RuntimeUsable(){
 	return true; //pInstance;
 }
 
-void deVROpenXR::RequestFeatureEyeGazeTracking( eFeatureSupportLevel level ){
+void deVROpenXR::RequestFeatureEyeGazeTracking(eFeatureSupportLevel level){
 	pRequestFeatureEyeGazeTracking = level;
 }
 
-void deVROpenXR::RequestFeatureFacialTracking( eFeatureSupportLevel level ){
+void deVROpenXR::RequestFeatureFacialTracking(eFeatureSupportLevel level){
 	pRequestFeatureFacialTracking = level;
 }
 
 void deVROpenXR::StartRuntime(){
-	deMutexGuard lock( pMutexOpenXR );
+	deMutexGuard lock(pMutexOpenXR);
 	
 	const bool enableDebug = false; //true;
 	
-	LogInfo( "Start Runtime" );
+	LogInfo("Start Runtime");
 	pShutdownRequested = false;
 	pDeviceProfiles.RemoveAll();
 	
 	try{
-		pInstance.TakeOver( new deoxrInstance( *this, enableDebug ) );
+		pInstance.TakeOver(new deoxrInstance(*this, enableDebug));
 		pCreateDeviceProfiles();
 		
-		pSystem.TakeOver( new deoxrSystem( pInstance ) );
+		pSystem.TakeOver(new deoxrSystem(pInstance));
 		pLastDetectedSystem = pSystem->GetSystem();
 		
-		if( ! pThreadSync ){
+		if(! pThreadSync){
 			// pThreadSync = new deoxrThreadSync( *this );
 			// pThreadSync->Start();
 			// for some strange reason this async version can cause XR_ERROR_CALL_ORDER_INVALID.
 			// I guess steamvr is not implemented according to spec here... how annoying
 		}
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		lock.Unlock(); // StopRuntime does lock
 		StopRuntime();
 		throw;
@@ -367,14 +367,14 @@ void deVROpenXR::StartRuntime(){
 void deVROpenXR::StopRuntime(){
 	// we have to delay this since this is the main thread and destroying session
 	// does destroy graphic api resources which typically are linked to another thread
-	LogInfo( "Shutdown runtime requested" );
-	const deMutexGuard lock( pMutexOpenXR );
+	LogInfo("Shutdown runtime requested");
+	const deMutexGuard lock(pMutexOpenXR);
 	
-	if( pSession ){
+	if(pSession){
 		pShutdownRequested = true;
 	}
 	
-	if( pThreadSync ){
+	if(pThreadSync){
 		pThreadSync->ExitThread();
 		pThreadSync->WaitForExit();
 	}
@@ -384,18 +384,18 @@ bool deVROpenXR::IsRuntimeRunning(){
 	return pInstance != nullptr;
 }
 
-void deVROpenXR::SetCamera( deCamera *camera ){
-	if( pCamera == camera ){
+void deVROpenXR::SetCamera(deCamera *camera){
+	if(pCamera == camera){
 		return;
 	}
 	
-	if( pCamera && pCamera->GetPeerGraphic() ){
+	if(pCamera && pCamera->GetPeerGraphic()){
 		// pCamera->GetPeerGraphic()->VRResignedFromHMD();
 	}
 	
 	pCamera = camera;
 	
-	if( camera && camera->GetPeerGraphic() ){
+	if(camera && camera->GetPeerGraphic()){
 		camera->GetPeerGraphic()->VRAssignedToHMD();
 	}
 }
@@ -404,15 +404,15 @@ bool deVROpenXR::SupportsPassthrough(){
 	return pPassthrough;
 }
 
-void deVROpenXR::SetEnablePassthrough( bool enable ){
-	if( pPassthrough ){
-		pPassthrough->SetEnabled( enable );
+void deVROpenXR::SetEnablePassthrough(bool enable){
+	if(pPassthrough){
+		pPassthrough->SetEnabled(enable);
 	}
 }
 
-void deVROpenXR::SetPassthroughTransparency( float transparency ){
-	if( pPassthrough ){
-		pPassthrough->SetTransparency( transparency );
+void deVROpenXR::SetPassthroughTransparency(float transparency){
+	if(pPassthrough){
+		pPassthrough->SetTransparency(transparency);
 	}
 }
 
@@ -431,76 +431,76 @@ int deVROpenXR::GetDeviceCount(){
 	return pDevices.GetCount();
 }
 
-deInputDevice *deVROpenXR::GetDeviceAt( int index ){
-	deInputDevice::Ref device( deInputDevice::Ref::NewWith() );
-	pDevices.GetAt( index )->GetInfo( *device );
+deInputDevice *deVROpenXR::GetDeviceAt(int index){
+	deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	pDevices.GetAt(index)->GetInfo(*device);
 	
 	device->AddReference(); // caller takes over reference
 	return device;
 }
 
-int deVROpenXR::IndexOfDeviceWithID( const char *id ){
-	return pDevices.IndexOfWithID( id );
+int deVROpenXR::IndexOfDeviceWithID(const char *id){
+	return pDevices.IndexOfWithID(id);
 }
 
 
-int deVROpenXR::IndexOfButtonWithID( int device, const char *id ){
-	return pDevices.GetAt( device )->IndexOfButtonWithID( id );
+int deVROpenXR::IndexOfButtonWithID(int device, const char *id){
+	return pDevices.GetAt(device)->IndexOfButtonWithID(id);
 }
 
-int deVROpenXR::IndexOfAxisWithID( int device, const char *id ){
-	return pDevices.GetAt( device )->IndexOfAxisWithID( id );
+int deVROpenXR::IndexOfAxisWithID(int device, const char *id){
+	return pDevices.GetAt(device)->IndexOfAxisWithID(id);
 }
 
-int deVROpenXR::IndexOfFeedbackWithID( int device, const char *id ){
-	return pDevices.GetAt( device )->IndexOfFeedbackWithID( id );
+int deVROpenXR::IndexOfFeedbackWithID(int device, const char *id){
+	return pDevices.GetAt(device)->IndexOfFeedbackWithID(id);
 }
 
-int deVROpenXR::IndexOfComponentWithID( int device, const char *id ){
-	return pDevices.GetAt( device )->IndexOfComponentWithID( id );
+int deVROpenXR::IndexOfComponentWithID(int device, const char *id){
+	return pDevices.GetAt(device)->IndexOfComponentWithID(id);
 }
 
-bool deVROpenXR::GetButtonPressed( int device, int button ){
-	return pDevices.GetAt( device )->GetButtonAt( button )->GetPressed();
+bool deVROpenXR::GetButtonPressed(int device, int button){
+	return pDevices.GetAt(device)->GetButtonAt(button)->GetPressed();
 }
 
-bool deVROpenXR::GetButtonTouched( int device, int button ){
-	return pDevices.GetAt( device )->GetButtonAt( button )->GetTouched();
+bool deVROpenXR::GetButtonTouched(int device, int button){
+	return pDevices.GetAt(device)->GetButtonAt(button)->GetTouched();
 }
 
 bool deVROpenXR::GetButtonNear(int device, int button){
 	return pDevices.GetAt(device)->GetButtonAt(button)->GetNear();
 }
 
-float deVROpenXR::GetAxisValue( int device, int axis ){
-	return pDevices.GetAt( device )->GetAxisAt( axis )->GetValue();
+float deVROpenXR::GetAxisValue(int device, int axis){
+	return pDevices.GetAt(device)->GetAxisAt(axis)->GetValue();
 }
 
-float deVROpenXR::GetFeedbackValue( int device, int feedback ){
-	return pDevices.GetAt( device )->GetFeedbackAt( feedback )->GetValue();
+float deVROpenXR::GetFeedbackValue(int device, int feedback){
+	return pDevices.GetAt(device)->GetFeedbackAt(feedback)->GetValue();
 }
 
-void deVROpenXR::SetFeedbackValue( int device, int feedback, float value ){
-	pDevices.GetAt( device )->GetFeedbackAt( feedback )->SetValue( value );
+void deVROpenXR::SetFeedbackValue(int device, int feedback, float value){
+	pDevices.GetAt(device)->GetFeedbackAt(feedback)->SetValue(value);
 }
 
-void deVROpenXR::GetDevicePose( int device, deInputDevicePose &pose ){
-	pDevices.GetAt( device )->GetDevicePose( pose );
+void deVROpenXR::GetDevicePose(int device, deInputDevicePose &pose){
+	pDevices.GetAt(device)->GetDevicePose(pose);
 }
 
-void deVROpenXR::GetDeviceBonePose( int device, int bone, bool withController, deInputDevicePose &pose ){
+void deVROpenXR::GetDeviceBonePose(int device, int bone, bool withController, deInputDevicePose &pose){
 	// with controller not yet supported
 	(void)withController;
-	deoxrHandTracker * const handTracker = pDevices.GetAt( device )->GetHandTracker();
-	if( handTracker ){
-		pose = handTracker->GetPoseBoneAt( bone );
+	deoxrHandTracker * const handTracker = pDevices.GetAt(device)->GetHandTracker();
+	if(handTracker){
+		pose = handTracker->GetPoseBoneAt(bone);
 	}
 }
 
-float deVROpenXR::GetDeviceFaceExpression( int device, int expression ){
-	deoxrFaceTracker * const faceTracker = pDevices.GetAt( device )->GetFaceTracker();
-	if( faceTracker ){
-		return faceTracker->GetFaceExpressionAt( expression );
+float deVROpenXR::GetDeviceFaceExpression(int device, int expression){
+	deoxrFaceTracker * const faceTracker = pDevices.GetAt(device)->GetFaceTracker();
+	if(faceTracker){
+		return faceTracker->GetFaceExpressionAt(expression);
 	}
 	return 0.0f;
 }
@@ -511,77 +511,77 @@ float deVROpenXR::GetDeviceFaceExpression( int device, int expression ){
 ///////////
 
 void deVROpenXR::ProcessEvents(){
-	if( ! pInstance ){
+	if(! pInstance){
 		return;
 	}
 	
-	const deMutexGuard lock( pMutexOpenXR );
+	const deMutexGuard lock(pMutexOpenXR);
 	deoxrInstance &instance = pInstance;
 	
 	XrEventDataBuffer event;
-	memset( &event, 0, sizeof( event ) );
+	memset(&event, 0, sizeof(event));
 	
-	while( true ){
+	while(true){
 		// WARNING it is important to set type before every call to xrPollEvent or things turn sour
 		event.type = XR_TYPE_EVENT_DATA_BUFFER;
 		
-		const XrResult result = instance.xrPollEvent( instance.GetInstance(), &event );
-		if( result == XR_EVENT_UNAVAILABLE ){
+		const XrResult result = instance.xrPollEvent(instance.GetInstance(), &event);
+		if(result == XR_EVENT_UNAVAILABLE){
 			break;
 			
-		}else if( result != XR_SUCCESS ){
-			OXR_CHECK( result );
+		}else if(result != XR_SUCCESS){
+			OXR_CHECK(result);
 			break;
 		}
 		
 // 		LogInfoFormat( "Event: %d", event.type );
 		
-		switch( event.type ){
+		switch(event.type){
 		case XR_TYPE_EVENT_DATA_SESSION_STATE_CHANGED: {
-			const XrEventDataSessionStateChanged& state = ( XrEventDataSessionStateChanged& )event;
+			const XrEventDataSessionStateChanged& state = (XrEventDataSessionStateChanged&)event;
 			pSessionState = state.state;
 			
-			switch( pSessionState ){
+			switch(pSessionState){
 			case XR_SESSION_STATE_IDLE:
-				LogInfo( "Session State Changed: idle" );
+				LogInfo("Session State Changed: idle");
 				break;
 				
 			case XR_SESSION_STATE_READY:
-				LogInfo( "Session State Changed: ready" );
-				if( pSession ){
+				LogInfo("Session State Changed: ready");
+				if(pSession){
 					pSession->Begin();
 					pDeviceProfiles.CheckAllAttached();
 					pSession->DebugPrintActiveProfilePath();
 				}
-				LogInfo( "Done Session State Changed: ready" );
+				LogInfo("Done Session State Changed: ready");
 				break;
 				
 			case XR_SESSION_STATE_SYNCHRONIZED:
-				LogInfo( "Session State Changed: synchronized" );
+				LogInfo("Session State Changed: synchronized");
 				break;
 				
 			case XR_SESSION_STATE_VISIBLE:
-				LogInfo( "Session State Changed: visible" );
+				LogInfo("Session State Changed: visible");
 				break;
 				
 			case XR_SESSION_STATE_FOCUSED:
-				LogInfo( "Session State Changed: focused" );
+				LogInfo("Session State Changed: focused");
 				break;
 				
 			case XR_SESSION_STATE_STOPPING:
-				LogInfo( "Session State Changed: stopping" );
-				if( pSession ){
+				LogInfo("Session State Changed: stopping");
+				if(pSession){
 					pSession->End();
 					pDeviceProfiles.CheckAllAttached();
 				}
 				break;
 				
 			case XR_SESSION_STATE_LOSS_PENDING:
-				LogInfo( "Session State Changed: loss pending" );
+				LogInfo("Session State Changed: loss pending");
 				break;
 				
 			case XR_SESSION_STATE_EXITING:
-				LogInfo( "Session State Changed: exiting" );
+				LogInfo("Session State Changed: exiting");
 				break;
 				
 			default:
@@ -592,7 +592,7 @@ void deVROpenXR::ProcessEvents(){
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_INSTANCE_LOSS_PENDING: {
-			LogInfo( "Instance loss pending. Shutting down runtime" );
+			LogInfo("Instance loss pending. Shutting down runtime");
 // 			const XrEventDataInstanceLossPending& instance_loss_pending_event =
 // 				( XrEventDataInstanceLossPending& )event;
 			StopRuntime();
@@ -610,7 +610,7 @@ void deVROpenXR::ProcessEvents(){
 		case XR_TYPE_EVENT_DATA_INTERACTION_PROFILE_CHANGED:{
 			// "something" changed but we do not know what. the spec requires us to check
 			// all known top level path to figure out if something changed
-			LogInfo( "Interaction profile changed. Updating devices." );
+			LogInfo("Interaction profile changed. Updating devices.");
 			pDeviceProfiles.CheckAllAttached();
 			if(pSession){
 				pSession->DebugPrintActiveProfilePath();
@@ -618,11 +618,11 @@ void deVROpenXR::ProcessEvents(){
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_VISIBILITY_MASK_CHANGED_KHR:
-			if( pSession && pInstance->SupportsExtension( deoxrInstance::extKHRVisibilityMask ) ){
-				LogInfo( "Visibility mask changed. Updating hidden meshes" );
-				const XrEventDataVisibilityMaskChangedKHR &changed = ( XrEventDataVisibilityMaskChangedKHR& )event;
-				if( changed.viewConfigurationType == XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO ){
-					switch( changed.viewIndex ){
+			if(pSession && pInstance->SupportsExtension(deoxrInstance::extKHRVisibilityMask)){
+				LogInfo("Visibility mask changed. Updating hidden meshes");
+				const XrEventDataVisibilityMaskChangedKHR &changed = (XrEventDataVisibilityMaskChangedKHR&)event;
+				if(changed.viewConfigurationType == XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO){
+					switch(changed.viewIndex){
 					case 0:
 						pSession->UpdateLeftEyeHiddenMesh();
 						break;
@@ -638,10 +638,10 @@ void deVROpenXR::ProcessEvents(){
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
 			const XrEventDataViveTrackerConnectedHTCX &connected =
 				(const XrEventDataViveTrackerConnectedHTCX&)event;
-			const deoxrPath path( pInstance, connected.paths->persistentPath );
-			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
-			LogInfoFormat( "VIVE Tracker Connected Event, updating devices: path='%s' rolePath='%s'",
-				path.GetName().GetString(), pathRole.GetName().GetString() );
+			const deoxrPath path(pInstance, connected.paths->persistentPath);
+			const deoxrPath pathRole(pInstance, connected.paths->rolePath);
+			LogInfoFormat("VIVE Tracker Connected Event, updating devices: path='%s' rolePath='%s'",
+				path.GetName().GetString(), pathRole.GetName().GetString());
 			//LogInfo( "VIVE Tracker connected. Updating devices" );
 			pDeviceProfiles.CheckAllAttached();
 			if(pSession){
@@ -687,10 +687,10 @@ void deVROpenXR::ProcessEvents(){
 	pDevices.CheckNotifyAttachedDetached();
 	
 	// state tracking needs a session
-	if( pSession ){
+	if(pSession){
 		// according to OpenXR documentation sync action is only allowed in focused state.
 		// SteamVR crashes if you try to do it earlier instead of returning an error
-		if( pSessionState == XR_SESSION_STATE_FOCUSED ){
+		if(pSessionState == XR_SESSION_STATE_FOCUSED){
 			pSession->SyncActions();
 			pDeviceProfiles.AllOnActionsSynced();
 		}
@@ -708,9 +708,9 @@ void deVROpenXR::ProcessEvents(){
 ////////////////////////////
 
 decPoint deVROpenXR::GetRenderSize(){
-	const deMutexGuard lock( pMutexOpenXR );
-	if( ! pSystem ){
-		return decPoint( 1024, 1024 );
+	const deMutexGuard lock(pMutexOpenXR);
+	if(! pSystem){
+		return decPoint(1024, 1024);
 	}
 	
 	return pSystem->GetRenderSize();
@@ -735,25 +735,25 @@ deBaseVRModule::eVRRenderFormat deVROpenXR::GetRenderFormat(){
 	// solution but it should keep us running until this mess is fixed or OpenXR obtains
 	// a method to reliably determine what we have to do
 	#ifdef OS_UNIX
-	if( pSystem && pSystem->GetSystem() == deoxrSystem::esSteamVR ){
+	if(pSystem && pSystem->GetSystem() == deoxrSystem::esSteamVR){
 		return evrrfSRGBA8;
 	}
 	#endif
 	return evrrfRGBA16;
 }
 
-void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, float &top, float &bottom ){
-	const deMutexGuard lock( pMutexOpenXR );
+void deVROpenXR::GetProjectionParameters(eEye eye, float &left, float &right, float &top, float &bottom){
+	const deMutexGuard lock(pMutexOpenXR);
 	// returned values are used directly in projection matrix. these values are also
 	// half tan angles from center. hence calculating the tan of the angles works
-	switch( eye ){
+	switch(eye){
 	case deBaseVRModule::evreLeft:
-		if( pSession ){
+		if(pSession){
 			const XrFovf &fov = pSession->GetLeftEyeFov();
-			left = tanf( fov.angleLeft );
-			right = tanf( fov.angleRight );
-			top = tanf( -fov.angleUp );
-			bottom = tanf( -fov.angleDown );
+			left = tanf(fov.angleLeft);
+			right = tanf(fov.angleRight);
+			top = tanf(-fov.angleUp);
+			bottom = tanf(-fov.angleDown);
 			
 		}else{
 			left = -1.39863f;
@@ -764,12 +764,12 @@ void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, f
 		break;
 		
 	case deBaseVRModule::evreRight:
-		if( pSession ){
+		if(pSession){
 			const XrFovf &fov = pSession->GetRightEyeFov();
-			left = tanf( fov.angleLeft );
-			right = tanf( fov.angleRight );
-			top = tanf( -fov.angleUp );
-			bottom = tanf( -fov.angleDown );
+			left = tanf(fov.angleLeft);
+			right = tanf(fov.angleRight);
+			top = tanf(-fov.angleUp);
+			bottom = tanf(-fov.angleDown);
 			
 		}else{
 			left = -1.24382f;
@@ -781,11 +781,11 @@ void deVROpenXR::GetProjectionParameters( eEye eye, float &left, float &right, f
 	}
 }
 
-decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
-	const deMutexGuard lock( pMutexOpenXR );
-	switch( eye ){
+decMatrix deVROpenXR::GetMatrixViewEye(eEye eye){
+	const deMutexGuard lock(pMutexOpenXR);
+	switch(eye){
 	case deBaseVRModule::evreLeft:
-		if( pSession ){
+		if(pSession){
 			return pSession->GetLeftEyeMatrix();
 			
 		}else{
@@ -793,7 +793,7 @@ decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 		}
 		
 	case deBaseVRModule::evreRight:
-		if( pSession ){
+		if(pSession){
 			return pSession->GetRightEyeMatrix();
 			
 		}else{
@@ -804,15 +804,15 @@ decMatrix deVROpenXR::GetMatrixViewEye( eEye eye ){
 	return decMatrix();
 }
 
-deModel *deVROpenXR::GetHiddenArea( eEye eye ){
-	const deMutexGuard lock( pMutexOpenXR );
-	if( ! pSession ){
+deModel *deVROpenXR::GetHiddenArea(eEye eye){
+	const deMutexGuard lock(pMutexOpenXR);
+	if(! pSession){
 		return nullptr;
 	}
 	
 	const deoxrHiddenMesh *hiddenMesh = nullptr;
 	
-	switch( eye ){
+	switch(eye){
 	case deBaseVRModule::evreLeft:
 		hiddenMesh = pSession->GetLeftEyeHiddenMesh();
 		break;
@@ -825,75 +825,75 @@ deModel *deVROpenXR::GetHiddenArea( eEye eye ){
 	return hiddenMesh ? hiddenMesh->GetModel() : nullptr;
 }
 
-deImage *deVROpenXR::GetDistortionMap( eEye ){
+deImage *deVROpenXR::GetDistortionMap(eEye){
 	return nullptr;
 }
 
-int deVROpenXR::GetEyeViewImages( eEye eye, int count, void *views ){
-	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
-	if( ! swapchain ){
+int deVROpenXR::GetEyeViewImages(eEye eye, int count, void *views){
+	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
+	if(! swapchain){
 		return 0;
 	}
 	
 	const int imageCount = swapchain->GetImageCount();
-	if( count == 0 ){
+	if(count == 0){
 		return imageCount;
 	}
 	
-	if( ! views ){
-		DETHROW_INFO( deeNullPointer, "images" );
+	if(! views){
+		DETHROW_INFO(deeNullPointer, "images");
 	}
-	if( count < imageCount ){
-		DETHROW_INFO( deeInvalidParam, "count < imageCount" );
+	if(count < imageCount){
+		DETHROW_INFO(deeInvalidParam, "count < imageCount");
 	}
 	
-	if( pSession->GetIsGACOpenGL() ){
-		uint32_t * const viewOpenGL = ( uint32_t* )views;
+	if(pSession->GetIsGACOpenGL()){
+		uint32_t * const viewOpenGL = (uint32_t*)views;
 		int i;
 		
-		for( i=0; i<imageCount; i++ ){
-			viewOpenGL[ i ] = swapchain->GetImageAt( i ).openglImage;
+		for(i=0; i<imageCount; i++){
+			viewOpenGL[i] = swapchain->GetImageAt(i).openglImage;
 		}
 		
 	}else{
-		DETHROW_INFO( deeInvalidAction, "not implemented yet" );
+		DETHROW_INFO(deeInvalidAction, "not implemented yet");
 	}
 	
 	return imageCount;
 }
 
-void deVROpenXR::GetEyeViewRenderTexCoords( eEye eye, decVector2 &tcFrom, decVector2 &tcTo ){
-	tcFrom.Set( 0.0f, 0.0f );
-	tcTo.Set( 1.0f, 1.0f );
+void deVROpenXR::GetEyeViewRenderTexCoords(eEye eye, decVector2 &tcFrom, decVector2 &tcTo){
+	tcFrom.Set(0.0f, 0.0f);
+	tcTo.Set(1.0f, 1.0f);
 }
 
 void deVROpenXR::StartBeginFrame(){
-	const deMutexGuard guard( pMutexOpenXR );
-	if( ! pBeginFrame() ){
+	const deMutexGuard guard(pMutexOpenXR);
+	if(! pBeginFrame()){
 		return;
 	}
-	if( pThreadSync ){
+	if(pThreadSync){
 		pThreadSync->StartWaitFrame();
 	}
 }
 
 void deVROpenXR::WaitBeginFrameFinished(){
-	const deMutexGuard guard( pMutexOpenXR );
-	if( ! pSystem ){
+	const deMutexGuard guard(pMutexOpenXR);
+	if(! pSystem){
 		return;
 	}
 	
-	if( ! pSession ){
+	if(! pSession){
 		return;
 	}
-	if( pThreadSync ){
+	if(pThreadSync){
 		pThreadSync->WaitWaitFrameFinished();
 		
 	}else{
 		pSession->WaitFrame();
 	}
 	
-	if( pShutdownRequested ){
+	if(pShutdownRequested){
 		pRealShutdown();
 		
 	}else{
@@ -901,31 +901,31 @@ void deVROpenXR::WaitBeginFrameFinished(){
 	}
 }
 
-int deVROpenXR::AcquireEyeViewImage( eEye eye ){
-	const deMutexGuard lock( pMutexOpenXR );
-	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
-	if( ! swapchain || ! pSession->GetFrameRunning() ){
+int deVROpenXR::AcquireEyeViewImage(eEye eye){
+	const deMutexGuard lock(pMutexOpenXR);
+	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
+	if(! swapchain || ! pSession->GetFrameRunning()){
 		return -1;
 	}
 	
 	swapchain->AcquireImage();
-	return ( int )swapchain->GetAcquiredImage();
+	return (int)swapchain->GetAcquiredImage();
 }
 
-void deVROpenXR::ReleaseEyeViewImage( eEye eye ){
-	const deMutexGuard lock( pMutexOpenXR );
-	deoxrSwapchain * const swapchain = GetEyeSwapchain( eye );
-	if( swapchain || ! pSession->GetFrameRunning() ){
+void deVROpenXR::ReleaseEyeViewImage(eEye eye){
+	const deMutexGuard lock(pMutexOpenXR);
+	deoxrSwapchain * const swapchain = GetEyeSwapchain(eye);
+	if(swapchain || ! pSession->GetFrameRunning()){
 		swapchain->ReleaseImage();
 	}
 }
 
-void deVROpenXR::SubmitOpenGLTexture2D( eEye, void*, const decVector2&, const decVector2&, bool ){
+void deVROpenXR::SubmitOpenGLTexture2D(eEye, void*, const decVector2&, const decVector2&, bool){
 }
 
 void deVROpenXR::EndFrame(){
-	const deMutexGuard lock( pMutexOpenXR );
-	if( ! pSession ){
+	const deMutexGuard lock(pMutexOpenXR);
+	if(! pSession){
 		return;
 	}
 	
@@ -964,7 +964,7 @@ void deVROpenXR::SetParameterValue(const char *name, const char *value){
 
 void deVROpenXR::pRealShutdown(){
 	// WARNING caller has to hold mutex lock while calling function
-	LogInfo( "Shutdown runtime" );
+	LogInfo("Shutdown runtime");
 	
 	pDeviceProfiles.ClearActions();
 	pDevices.CheckNotifyAttachedDetached();
@@ -980,108 +980,108 @@ void deVROpenXR::pRealShutdown(){
 }
 
 void deVROpenXR::pCreateActionSet(){
-	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );
+	pActionSet.TakeOver(new deoxrActionSet(pInstance));
 	
-	pActionSet->AddBoolAction( "trigger_press", "Press Trigger" );
+	pActionSet->AddBoolAction("trigger_press", "Press Trigger");
 	pActionSet->AddFloatAction("trigger_force", "Force Trigger");
-	pActionSet->AddBoolAction( "trigger_touch", "Touch Trigger" );
-	pActionSet->AddFloatAction( "trigger_analog", "Pull Trigger" );
-	pActionSet->AddVibrationAction( "trigger_haptic", "Trigger Haptic" );
+	pActionSet->AddBoolAction("trigger_touch", "Touch Trigger");
+	pActionSet->AddFloatAction("trigger_analog", "Pull Trigger");
+	pActionSet->AddVibrationAction("trigger_haptic", "Trigger Haptic");
 	pActionSet->AddFloatAction("trigger_curl", "Curl Trigger");
 	pActionSet->AddFloatAction("trigger_slide", "Slide Trigger");
 	pActionSet->AddBoolAction("trigger_near", "Near Trigger");
 	
-	pActionSet->AddBoolAction( "button_primary_press", "Press Primary Button" );
-	pActionSet->AddBoolAction( "button_primary_touch", "Touch Primary Button" );
+	pActionSet->AddBoolAction("button_primary_press", "Press Primary Button");
+	pActionSet->AddBoolAction("button_primary_touch", "Touch Primary Button");
 	
-	pActionSet->AddBoolAction( "button_secondary_press", "Press Secondary Button" );
-	pActionSet->AddBoolAction( "button_secondary_touch", "Touch Secondary Button" );
+	pActionSet->AddBoolAction("button_secondary_press", "Press Secondary Button");
+	pActionSet->AddBoolAction("button_secondary_touch", "Touch Secondary Button");
 	
-	pActionSet->AddBoolAction( "button_auxiliary1_press", "Press Auxiliary Button 1" );
-	pActionSet->AddBoolAction( "button_auxiliary1_touch", "Touch Auxiliary Button 1" );
+	pActionSet->AddBoolAction("button_auxiliary1_press", "Press Auxiliary Button 1");
+	pActionSet->AddBoolAction("button_auxiliary1_touch", "Touch Auxiliary Button 1");
 	
-	pActionSet->AddBoolAction( "button_auxiliary2_press", "Press Auxiliary Button 2" );
-	pActionSet->AddBoolAction( "button_auxiliary2_touch", "Touch Auxiliary Button 2" );
+	pActionSet->AddBoolAction("button_auxiliary2_press", "Press Auxiliary Button 2");
+	pActionSet->AddBoolAction("button_auxiliary2_touch", "Touch Auxiliary Button 2");
 	
-	pActionSet->AddBoolAction( "joystick_press", "Press Joystick" );
-	pActionSet->AddBoolAction( "joystick_touch", "Touch Joystick" );
-	pActionSet->AddVector2Action( "joystick_analog", "Joystick Analog" );
+	pActionSet->AddBoolAction("joystick_press", "Press Joystick");
+	pActionSet->AddBoolAction("joystick_touch", "Touch Joystick");
+	pActionSet->AddVector2Action("joystick_analog", "Joystick Analog");
 	
-	pActionSet->AddBoolAction( "trackpad_press", "Press TrackPad" );
-	pActionSet->AddBoolAction( "trackpad_touch", "Touch TrackPad" );
-	pActionSet->AddVector2Action( "trackpad_analog", "TrackPad Analog" );
+	pActionSet->AddBoolAction("trackpad_press", "Press TrackPad");
+	pActionSet->AddBoolAction("trackpad_touch", "Touch TrackPad");
+	pActionSet->AddVector2Action("trackpad_analog", "TrackPad Analog");
 	
-	pActionSet->AddBoolAction( "thumbrest_touch", "Touch Thumbrest" );
+	pActionSet->AddBoolAction("thumbrest_touch", "Touch Thumbrest");
 	pActionSet->AddFloatAction("thumbrest_press", "Press Thumbrest");
 	pActionSet->AddBoolAction("thumbrest_near", "Near Thumbrest");
 	pActionSet->AddVibrationAction("thumbrest_haptic", "Thumbrest Haptic");
 	
-	pActionSet->AddBoolAction( "grip_press", "Squeeze Grip" );
-	pActionSet->AddBoolAction( "grip_touch", "Touch Grip" );
-	pActionSet->AddFloatAction( "grip_grab", "Grip Grab" );
-	pActionSet->AddFloatAction( "grip_squeeze", "Grip Squeeze" );
-	pActionSet->AddFloatAction( "grip_pinch", "Grip Pinch" );
-	pActionSet->AddVibrationAction( "grip_haptic", "Haptic Grip" );
+	pActionSet->AddBoolAction("grip_press", "Squeeze Grip");
+	pActionSet->AddBoolAction("grip_touch", "Touch Grip");
+	pActionSet->AddFloatAction("grip_grab", "Grip Grab");
+	pActionSet->AddFloatAction("grip_squeeze", "Grip Squeeze");
+	pActionSet->AddFloatAction("grip_pinch", "Grip Pinch");
+	pActionSet->AddVibrationAction("grip_haptic", "Haptic Grip");
 	
-	pActionSet->AddFloatAction( "gesture_pinch", "Gesture Pinch" );
-	pActionSet->AddFloatAction( "gesture_aim", "Gesture Aim" );
-	pActionSet->AddFloatAction( "gesture_grasp", "Gesture Grasp" );
+	pActionSet->AddFloatAction("gesture_pinch", "Gesture Pinch");
+	pActionSet->AddFloatAction("gesture_aim", "Gesture Aim");
+	pActionSet->AddFloatAction("gesture_grasp", "Gesture Grasp");
 	
-	pActionSet->AddPoseAction( "pose", "Pose" );
-	pActionSet->AddPoseAction( "pose_left", "Pose Left" );
-	pActionSet->AddPoseAction( "pose_right", "Pose Right" );
-	pActionSet->AddPoseAction( "pose_left2", "Pose Left 2" );
-	pActionSet->AddPoseAction( "pose_right2", "Pose Right 2" );
+	pActionSet->AddPoseAction("pose", "Pose");
+	pActionSet->AddPoseAction("pose_left", "Pose Left");
+	pActionSet->AddPoseAction("pose_right", "Pose Right");
+	pActionSet->AddPoseAction("pose_left2", "Pose Left 2");
+	pActionSet->AddPoseAction("pose_right2", "Pose Right 2");
 	
 	// allow device profiles to add actions
 	const int count = pDeviceProfiles.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pDeviceProfiles.GetAt( i )->CreateActions( pActionSet );
+	for(i=0; i<count; i++){
+		pDeviceProfiles.GetAt(i)->CreateActions(pActionSet);
 	}
 	
 	// store actions for quick retrieval
-	for( i=0; i<InputActionCount; i++ ){
-		pActions[ i ] = pActionSet->GetActionAt( i );
+	for(i=0; i<InputActionCount; i++){
+		pActions[i] = pActionSet->GetActionAt(i);
 	}
 }
 
 void deVROpenXR::pDestroyActionSet(){
-	memset( pActions, 0, sizeof( pActions ) );
+	memset(pActions, 0, sizeof(pActions));
 	pActionSet = nullptr;
 }
 
 void deVROpenXR::pCreateDeviceProfiles(){
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHMD( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCVivePro( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHMD(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHTCVivePro(pInstance)));
 	
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSimpleController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPGoogleDaydreamController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHPMixedRealityController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveCosmosControllerInteraction( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCViveFocus3ControllerInteraction( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHUAWEIControllerInteraction( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftMixedRealityMotionController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftXboxController( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPSimpleController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPGoogleDaydreamController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHPMixedRealityController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHTCViveController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHTCViveCosmosControllerInteraction(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHTCViveFocus3ControllerInteraction(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHUAWEIControllerInteraction(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMicrosoftMixedRealityMotionController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMicrosoftXboxController(pInstance)));
 	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMetaTouchControllerPlus(pInstance)));
 	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMetaQuestTouchProController(pInstance)));
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusGoController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPOculusGoController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPOculusTouchController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPSamsungOdysseyController(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPValveIndexController(pInstance)));
 	
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHandInteraction( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCHandInteraction( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMSFTHandInteraction( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHandInteraction(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHTCHandInteraction(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMSFTHandInteraction(pInstance)));
 	
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPHtcViveTracker(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPEyeGazeInteraction(pInstance)));
 	
 	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMndxDevSpace(pInstance)));
 	
 	// has to come last since it adds a device only if no other controller provides hand tracking
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPNoControllerHands( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPNoControllerHands(pInstance)));
 }
 
 void deVROpenXR::pSuggestBindings(){
@@ -1092,8 +1092,8 @@ void deVROpenXR::pSuggestBindings(){
 		LogInfo("Suggesting bindings for device profiles.");
 	}
 	
-	for( i=0; i<count; i++ ){
-		deoxrDeviceProfile &profile = *pDeviceProfiles.GetAt( i );
+	for(i=0; i<count; i++){
+		deoxrDeviceProfile &profile = *pDeviceProfiles.GetAt(i);
 		
 		if(pLogLevel == LogLevel::debug){
 			LogInfoFormat("Suggest bindings for device profile '%s':", profile.GetName().GetString());
@@ -1102,10 +1102,10 @@ void deVROpenXR::pSuggestBindings(){
 		try{
 			profile.SuggestBindings();
 			
-		}catch( const deException &e ){
-			LogException( e );
-			LogWarnFormat( "Device profile '%s' failed suggesting bindings. "
-				"Ignoring device profile", profile.GetPath().GetName().GetString() );
+		}catch(const deException &e){
+			LogException(e);
+			LogWarnFormat("Device profile '%s' failed suggesting bindings. "
+				"Ignoring device profile", profile.GetPath().GetName().GetString());
 		}
 	}
 	
@@ -1115,12 +1115,12 @@ void deVROpenXR::pSuggestBindings(){
 }
 
 bool deVROpenXR::pBeginFrame(){
-	if( ! pSystem ){
+	if(! pSystem){
 		return false;
 	}
 	
-	if( pSession && pRestartSession ){
-		LogInfo( "Restarting session (somebody requested this)" );
+	if(pSession && pRestartSession){
+		LogInfo("Restarting session (somebody requested this)");
 		pDeviceProfiles.ClearActions();
 		pPassthrough = nullptr;
 		pSession = nullptr;
@@ -1129,20 +1129,20 @@ bool deVROpenXR::pBeginFrame(){
 		pRestartSession = false;
 	}
 	
-	if( pSession ){
+	if(pSession){
 		return true;
 	}
 	
 	// create session
-	if( pShutdownRequested ){
+	if(pShutdownRequested){
 		pRealShutdown();
 		return false;
 	}
 	
-	LogInfo( "BeginFrame: Create Session" );
+	LogInfo("BeginFrame: Create Session");
 	pRestartSession = false;
 	try{
-		pSession.TakeOver( new deoxrSession( pSystem ) );
+		pSession.TakeOver(new deoxrSession(pSystem));
 		
 		// required before CheckAllAttached since this could add devices which in turn
 		// accesses actions. creating actions does access device profiles but this is
@@ -1155,17 +1155,17 @@ bool deVROpenXR::pBeginFrame(){
 		
 		pSuggestBindings();
 		
-		pSession->AttachActionSet( pActionSet );
+		pSession->AttachActionSet(pActionSet);
 		
 		if(pSystem->GetSupportsPassthrough()){
 			pPassthrough.TakeOver(new deoxrPassthrough(pSession));
 		}
 		return true;
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		
-		LogError( "Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue." );
+		LogError("Runtime failed during BeginFrame. Shutting down runtime. Restart runtime to continue.");
 		pDeviceProfiles.ClearActions();
 		pDestroyActionSet();
 		pPassthrough = nullptr;

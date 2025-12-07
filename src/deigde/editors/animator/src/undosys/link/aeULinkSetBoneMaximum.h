@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetBoneMaximum( aeLink *link, float newValue );
+	aeULinkSetBoneMaximum(aeLink *link, float newValue);
 	
 protected:
 	/** Clean up undo. */

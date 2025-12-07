@@ -73,19 +73,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Source code. */
-	inline const decString &GetSourceCode() const{ return pSourceCode; }
+	inline const decString &GetSourceCode() const{return pSourceCode;}
 	
 	/** Used defines for filtering. */
-	inline const decStringSet &GetDefines() const{ return pDefines; }
+	inline const decStringSet &GetDefines() const{return pDefines;}
 	
 	/** Validation string. */
-	inline const decString &GetValidationString() const{ return pValidationString; }
+	inline const decString &GetValidationString() const{return pValidationString;}
 	
 	/** Stage. */
-	inline GLenum GetStage() const{ return pStage; }
+	inline GLenum GetStage() const{return pStage;}
 	
 	/** Log stage name. */
 	const char *GetLogStageName() const;

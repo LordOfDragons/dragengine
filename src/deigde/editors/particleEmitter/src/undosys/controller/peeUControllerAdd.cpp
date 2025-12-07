@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerAdd::peeUControllerAdd( peeEmitter *emitter, peeController *controller ){
-	if( ! emitter || ! controller ){
-		DETHROW( deeInvalidParam );
+peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *controller){
+	if(! emitter || ! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEmitter = NULL;
 	pController = NULL;
 	
-	SetShortInfo( "Add Controller" );
+	SetShortInfo("Add Controller");
 	
 	pEmitter = emitter;
 	emitter->AddReference();
@@ -58,10 +58,10 @@ peeUControllerAdd::peeUControllerAdd( peeEmitter *emitter, peeController *contro
 }
 
 peeUControllerAdd::~peeUControllerAdd(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pEmitter ){
+	if(pEmitter){
 		pEmitter->FreeReference();
 	}
 }
@@ -72,10 +72,10 @@ peeUControllerAdd::~peeUControllerAdd(){
 ///////////////
 
 void peeUControllerAdd::Undo(){
-	pEmitter->RemoveController( pController );
+	pEmitter->RemoveController(pController);
 }
 
 void peeUControllerAdd::Redo(){
-	pEmitter->AddController( pController );
-	pEmitter->SetActiveController( pController );
+	pEmitter->AddController(pController);
+	pEmitter->SetActiveController(pController);
 }

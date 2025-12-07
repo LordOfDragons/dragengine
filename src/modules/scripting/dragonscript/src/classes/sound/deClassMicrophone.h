@@ -52,20 +52,20 @@ private:
 	
 public:
 	// constructor
-	deClassMicrophone( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassMicrophone(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassMicrophone();
 	
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	deMicrophone *GetMicrophone( dsRealObject *myself ) const;
-	void PushMicrophone( dsRunTime *rt, deMicrophone *camera );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
+	void CreateClassMembers(dsEngine *engine);
+	deMicrophone *GetMicrophone(dsRealObject *myself) const;
+	void PushMicrophone(dsRunTime *rt, deMicrophone *camera);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
 	
-	inline deClassVector *GetClassVector() const{ return pClsVec; }
-	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
-	inline deClassSpeaker *GetClassSpeaker() const{ return pClsSpk; }
-	inline dsClass *GetClassMicrophoneType() const{ return pClsMicrophoneType; }
+	inline deClassVector *GetClassVector() const{return pClsVec;}
+	inline deClassDVector *GetClassDVector() const{return pClsDVec;}
+	inline deClassSpeaker *GetClassSpeaker() const{return pClsSpk;}
+	inline dsClass *GetClassMicrophoneType() const{return pClsMicrophoneType;}
 	
 private:
 	struct sInitData{
@@ -76,43 +76,43 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfSetType );
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetVelocity );
-	DEF_NATFUNC( nfSetVelocity );
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfSetType);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetVelocity);
+	DEF_NATFUNC(nfSetVelocity);
 	
-	DEF_NATFUNC( nfGetMuted );
-	DEF_NATFUNC( nfSetMuted );
-	DEF_NATFUNC( nfGetVolume );
-	DEF_NATFUNC( nfSetVolume );
+	DEF_NATFUNC(nfGetMuted);
+	DEF_NATFUNC(nfSetMuted);
+	DEF_NATFUNC(nfGetVolume);
+	DEF_NATFUNC(nfSetVolume);
 	
-	DEF_NATFUNC( nfGetLayerMask );
-	DEF_NATFUNC( nfSetLayerMask );
-	DEF_NATFUNC( nfGetSpeakerGain );
-	DEF_NATFUNC( nfSetSpeakerGain);
+	DEF_NATFUNC(nfGetLayerMask);
+	DEF_NATFUNC(nfSetLayerMask);
+	DEF_NATFUNC(nfGetSpeakerGain);
+	DEF_NATFUNC(nfSetSpeakerGain);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfGetEnableAuralization );
-	DEF_NATFUNC( nfSetEnableAuralization );
+	DEF_NATFUNC(nfGetEnableAuralization);
+	DEF_NATFUNC(nfSetEnableAuralization);
 	
-	DEF_NATFUNC( nfAddSpeaker );
-	DEF_NATFUNC( nfRemoveSpeaker );
-	DEF_NATFUNC( nfRemoveAllSpeakers );
+	DEF_NATFUNC(nfAddSpeaker);
+	DEF_NATFUNC(nfRemoveSpeaker);
+	DEF_NATFUNC(nfRemoveAllSpeakers);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

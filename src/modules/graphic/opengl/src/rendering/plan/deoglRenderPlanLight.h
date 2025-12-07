@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan light. */
-	deoglRenderPlanLight( deoglRenderPlan &plan );
+	deoglRenderPlanLight(deoglRenderPlan &plan);
 	
 	/** Clean up render plan light. */
 	~deoglRenderPlanLight();
@@ -78,19 +78,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render plan. */
-	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
+	inline deoglRenderPlan &GetPlan() const{return pPlan;}
 	
 	/** Light. */
-	inline deoglCollideListLight *GetLight() const{ return pLight; }
+	inline deoglCollideListLight *GetLight() const{return pLight;}
 	
 	/** Set light. */
-	void SetLight( deoglCollideListLight *light );
+	void SetLight(deoglCollideListLight *light);
 	
 	/** Light position in world space. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** Distance of light to camera. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{return pDistance;}
 	
 	/** Init. */
 	void Init();
@@ -99,30 +99,30 @@ public:
 	void PlanShadowCasting();
 	
 	/** Shadow size. */
-	inline int GetShadowSizeStatic() const{ return pShadowSizeStatic; }
-	inline int GetTranspShadowSizeStatic() const{ return pTranspShadowSizeStatic; }
-	inline int GetAmbientShadowSizeStatic() const{ return pAmbientShadowSizeStatic; }
+	inline int GetShadowSizeStatic() const{return pShadowSizeStatic;}
+	inline int GetTranspShadowSizeStatic() const{return pTranspShadowSizeStatic;}
+	inline int GetAmbientShadowSizeStatic() const{return pAmbientShadowSizeStatic;}
 	
-	inline int GetShadowSizeDynamic() const{ return pShadowSizeDynamic; }
-	inline int GetTranspShadowSizeDynamic() const{ return pTranspShadowSizeDynamic; }
-	inline int GetAmbientShadowSizeDynamic() const{ return pAmbientShadowSizeDynamic; }
+	inline int GetShadowSizeDynamic() const{return pShadowSizeDynamic;}
+	inline int GetTranspShadowSizeDynamic() const{return pTranspShadowSizeDynamic;}
+	inline int GetAmbientShadowSizeDynamic() const{return pAmbientShadowSizeDynamic;}
 	
-	inline int GetGIShadowSizeDynamic() const{ return pGIShadowSizeDynamic; }
+	inline int GetGIShadowSizeDynamic() const{return pGIShadowSizeDynamic;}
 	
 	/** Set shadow size. */
-	void SetShadowSizeStatic( int size );
-	void SetTranspShadowSizeStatic( int size );
-	void SetAmbientShadowSizeStatic( int size );
+	void SetShadowSizeStatic(int size);
+	void SetTranspShadowSizeStatic(int size);
+	void SetAmbientShadowSizeStatic(int size);
 	
-	void SetShadowSizeDynamic( int size );
-	void SetTranspShadowSizeDynamic( int size );
-	void SetAmbientShadowSizeDynamic( int size );
+	void SetShadowSizeDynamic(int size);
+	void SetTranspShadowSizeDynamic(int size);
+	void SetAmbientShadowSizeDynamic(int size);
 	
 	/** Render switches. */
-	inline bool GetUseShadow() const{ return pUseShadow; }
-	inline bool GetUseShadowTemporary() const{ return pUseShadowTemporary; }
-	inline bool GetUseAmbient() const{ return pUseAmbient; }
-	inline bool GetRefilterShadows() const{ return pRefilterShadows; }
+	inline bool GetUseShadow() const{return pUseShadow;}
+	inline bool GetUseShadowTemporary() const{return pUseShadowTemporary;}
+	inline bool GetUseAmbient() const{return pUseAmbient;}
+	inline bool GetRefilterShadows() const{return pRefilterShadows;}
 	/*@}*/
 	
 	

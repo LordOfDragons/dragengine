@@ -112,25 +112,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderPlan::deoglRenderPlan( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pWorld( nullptr ),
+deoglRenderPlan::deoglRenderPlan(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pWorld(nullptr),
 
-pIsRendering( false ),
+pIsRendering(false),
 
-pLevel( 0 ),
+pLevel(0),
 
-pUseGIState( false ),
-pRenderStereo( false ),
-pUseConstGIState( NULL ),
-pRenderVR( ervrNone ),
-pSkyLightCount( 0 ),
-pLodMaxPixelError( 0 ),
-pLodLevelOffset( 0 ),
-pOcclusionMap( NULL ),
-pOcclusionTest( NULL ),
-pGIState( NULL ),
-pTaskFindContent( NULL )
+pUseGIState(false),
+pRenderStereo(false),
+pUseConstGIState(NULL),
+pRenderVR(ervrNone),
+pSkyLightCount(0),
+pLodMaxPixelError(0),
+pLodLevelOffset(0),
+pOcclusionMap(NULL),
+pOcclusionTest(NULL),
+pGIState(NULL),
+pTaskFindContent(NULL)
 {
 	pCamera = NULL;
 	pCameraFov = DEG2RAD * 90.0f;
@@ -140,7 +140,7 @@ pTaskFindContent( NULL )
 	pCameraAdaptedIntensity = 1.0f;
 	pViewportWidth = 100;
 	pViewportHeight = 100;
-	pAspectRatio = ( float )pViewportWidth / ( float )pViewportHeight;
+	pAspectRatio = (float)pViewportWidth / (float)pViewportHeight;
 	
 	pUpscaleWidth = 0;
 	pUpscaleHeight = 0;
@@ -169,10 +169,10 @@ pTaskFindContent( NULL )
 	pShadowCubeSize = 128;
 	pShadowSkySize = 128;
 	
-	pEnvMaps = new deoglRenderPlanEnvMap[ 16 ];
+	pEnvMaps = new deoglRenderPlanEnvMap[16];
 	pEnvMapCount = 8; //4;
 	
-	pDirectEnvMapFader.SetFadePerTime( 1.0f );
+	pDirectEnvMapFader.SetFadePerTime(1.0f);
 	
 	pLights = NULL;
 	pLightCount = 0;
@@ -199,15 +199,15 @@ pTaskFindContent( NULL )
 
 deoglRenderPlan::~deoglRenderPlan(){
 	CleanUp();
-	SetWorld( NULL );
+	SetWorld(NULL);
 	
 	int i, count;
 	
-	if( pMaskedPlans ){
-		while( pMaskedPlanSize > 0 ){
+	if(pMaskedPlans){
+		while(pMaskedPlanSize > 0){
 			pMaskedPlanSize--;
-			if( pMaskedPlans[ pMaskedPlanSize ] ){
-				delete pMaskedPlans[ pMaskedPlanSize ];
+			if(pMaskedPlans[pMaskedPlanSize]){
+				delete pMaskedPlans[pMaskedPlanSize];
 			}
 		}
 		
@@ -215,17 +215,17 @@ deoglRenderPlan::~deoglRenderPlan(){
 	}
 	
 	count = pSkyLights.GetCount();
-	for( i=0; i<count; i++ ){
-		delete ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglRenderPlanSkyLight*)pSkyLights.GetAt(i);
 	}
 	pSkyLights.RemoveAll();
 	
 	//RemoveAllLights();
-	if( pLights ){
-		while( pLightSize > 0 ){
+	if(pLights){
+		while(pLightSize > 0){
 			pLightSize--;
-			if( pLights[ pLightSize ] ){
-				delete pLights[ pLightSize ];
+			if(pLights[pLightSize]){
+				delete pLights[pLightSize];
 			}
 		}
 		
@@ -234,24 +234,24 @@ deoglRenderPlan::~deoglRenderPlan(){
 	
 	pHTView = nullptr;
 	
-	if( pDebug ){
+	if(pDebug){
 		delete pDebug;
 	}
 	
 	pDirectEnvMapFader.DropAll();
 	
-	if( pEnvMaps ){
-		for( i=0; i<pEnvMapCount; i++ ){
-			if( pEnvMaps[ i ].GetEnvMap() ){
-				pEnvMaps[ i ].GetEnvMap()->RemovePlanUsage();
-				pEnvMaps[ i ].GetEnvMap()->GetRenderPlanList().Remove( this );
+	if(pEnvMaps){
+		for(i=0; i<pEnvMapCount; i++){
+			if(pEnvMaps[i].GetEnvMap()){
+				pEnvMaps[i].GetEnvMap()->RemovePlanUsage();
+				pEnvMaps[i].GetEnvMap()->GetRenderPlanList().Remove(this);
 			}
-			pEnvMaps[ i ].SetEnvMap( nullptr );
+			pEnvMaps[i].SetEnvMap(nullptr);
 		}
 		delete [] pEnvMaps;
 	}
 	
-	if( pGIState ){
+	if(pGIState){
 		delete pGIState;
 	}
 }
@@ -261,51 +261,51 @@ deoglRenderPlan::~deoglRenderPlan(){
 // Management
 ///////////////
 
-void deoglRenderPlan::SetWorld( deoglRWorld *world ){
-	if( world == pWorld ){
+void deoglRenderPlan::SetWorld(deoglRWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	if( pWorld && pGIState ){
-		pWorld->RemoveGICascade( pGIState );
+	if(pWorld && pGIState){
+		pWorld->RemoveGICascade(pGIState);
 	}
 	
 	pWorld = world;
 	
-	if( pGIState ){
+	if(pGIState){
 		pGIState->Invalidate();
 		
-		if( world ){
-			world->AddGICascade( pGIState );
+		if(world){
+			world->AddGICascade(pGIState);
 		}
 	}
 	
 	pHTView = nullptr;
 }
 
-void deoglRenderPlan::SetLevel( int level ){
+void deoglRenderPlan::SetLevel(int level){
 	pLevel = level;
 }
 
 
 
-void deoglRenderPlan::PrepareRender( const deoglRenderPlanMasked *mask ){
-	if( pIsRendering ){
+void deoglRenderPlan::PrepareRender(const deoglRenderPlanMasked *mask){
+	if(pIsRendering){
 		return; // re-entrant rendering causes exceptions. ignore rendering in this case
 	}
 	
-	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.PrepareRender" );
+	const deoglDebugTraceGroup debugTrace(pRenderThread, "Plan.PrepareRender");
 	pIsRendering = true;
 	
 	try{
-		if( pRenderVR == ervrRightEye ){
+		if(pRenderVR == ervrRightEye){
 			pBarePrepareRenderRightEye();
 			
 		}else{
-			pBarePrepareRender( mask );
+			pBarePrepareRender(mask);
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pIsRendering = false;
 		throw;
 	}
@@ -328,24 +328,24 @@ void deoglRenderPlan::PrepareRenderSkyOnly(){
 #define SPECIAL_TIMER_PRINT(w)
 #endif
 
-void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
-	if( ! pWorld ){
+void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
+	if(! pWorld){
 		return;
 	}
 	
 	deoglRenderCanvas &renderCanvas = pRenderThread.GetRenderers().GetCanvas();
-	renderCanvas.ClearAllDebugInfoPlanPrepare( *this );
+	renderCanvas.ClearAllDebugInfoPlanPrepare(*this);
 	INIT_SPECIAL_TIMING
 	
 	CleanUp(); // just to make sure everything is clean
 	
 	// we can not create these objects during construction time since they can create OpenGL
 	// objects and render plan objects are potentially created from inside main thread
-	if( ! pCompute ){
-		pCompute.TakeOver( new deoglRenderPlanCompute( *this ) );
+	if(! pCompute){
+		pCompute.TakeOver(new deoglRenderPlanCompute(*this));
 	}
-	if( ! pTasks ){
-		pTasks.TakeOver( new deoglRenderPlanTasks( *this ) );
+	if(! pTasks){
+		pTasks.TakeOver(new deoglRenderPlanTasks(*this));
 	}
 	
 	// the rest is safe
@@ -354,8 +354,8 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	SPECIAL_TIMER_PRINT("PrepareCamera")
 	
 	pDisableLights = pWorld->GetDisableLights();
-	pWorld->EarlyPrepareForRender( *this );
-	renderCanvas.SampleDebugInfoPlanPrepareEarlyWorld( *this );
+	pWorld->EarlyPrepareForRender(*this);
+	renderCanvas.SampleDebugInfoPlanPrepareEarlyWorld(*this);
 	SPECIAL_TIMER_PRINT("EarlyPrepareWorld")
 	
 	pUpdateHTView();
@@ -368,20 +368,20 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	pPlanSkyLight();
 	pPlanShadowCasting();
 	
-	pStartFindContent( mask ); // starts parallel tasks
+	pStartFindContent(mask); // starts parallel tasks
 	SPECIAL_TIMER_PRINT("Planning")
 	
 	// these calls run in parallel with above started tasks
-	pWorld->PrepareForRender( *this, mask );
+	pWorld->PrepareForRender(*this, mask);
 	pRenderThread.GetShader().UpdateSSBOSkinTextures();
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+	if(pRenderThread.GetChoices().GetUseComputeRenderTask()){
 		pCompute->UpdateElementGeometries();
-		pCompute->BuildRTOcclusion( mask );
+		pCompute->BuildRTOcclusion(mask);
 	}
-	renderCanvas.SampleDebugInfoPlanPrepareWorld( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareWorld(*this);
 	SPECIAL_TIMER_PRINT("PrepareWorld")
 	
-	if( ! pNoReflections ){
+	if(! pNoReflections){
 		// NOTE requires world prepare to be fully done first.
 		// 
 		// NOTE this can trigger rendering in the world and thus can trigger
@@ -399,16 +399,16 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	// NOTE indirectly accesses projection matrix. renders though a separate occlusion map
 	//      so the regular projection matrix could be used. occlusion though can be testes
 	//      for the first rendered eye only and reused for the other eye
-	pRenderOcclusionTests( mask );
-	renderCanvas.SampleDebugInfoPlanPrepareCulling( *this );
+	pRenderOcclusionTests(mask);
+	renderCanvas.SampleDebugInfoPlanPrepareCulling(*this);
 	SPECIAL_TIMER_PRINT("RenderOcclusionTests")
 	
 	// update the blended environment map to use for rendering
-	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
-		pRenderThread.GetRenderers().GetReflection().UpdateEnvMap( *this );
+	if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap){
+		pRenderThread.GetRenderers().GetReflection().UpdateEnvMap(*this);
 	}
 	//PlanEnvMaps(); // doing this here kills the occlusion map causing all kinds of problems
-	renderCanvas.SampleDebugInfoPlanPrepareEnvMaps( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareEnvMaps(*this);
 	SPECIAL_TIMER_PRINT("UpdateEnvMap")
 	
 	// update lod for visible elements
@@ -422,46 +422,46 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	const int particleEmitterCount = particleEmitterList.GetCount();
 	int i;
 	
-	for( i=0; i<particleEmitterCount; i++ ){
-		particleEmitterList.GetAt( i )->PrepareForRender();
+	for(i=0; i<particleEmitterCount; i++){
+		particleEmitterList.GetAt(i)->PrepareForRender();
 	}
 	SPECIAL_TIMER_PRINT("PrepareForRenderParticle")
 	
 	// finish occlusion testing. we can not do this later since this usually removes a large
 	// quantity of elements. processing those below just to drop them later on is not helping
-	pFinishOcclusionTests( mask );
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTasks->BuildComputeRenderTasks( mask );
+	pFinishOcclusionTests(mask);
+	if(pRenderThread.GetChoices().GetUseComputeRenderTask()){
+		pTasks->BuildComputeRenderTasks(mask);
 	}
 	SPECIAL_TIMER_PRINT("FinishOcclusionTests")
 	
 	// update dynamic skins and masked rendering if required
 	// NOTE these calls indirectly access projection matrix. this requires per-eye updating
 	const int componentCount = pCollideList.GetComponentCount();
-	for( i=0; i<componentCount; i++ ){
-		pCollideList.GetComponentAt( i )->GetComponent()->AddSkinStateRenderPlans( *this );
+	for(i=0; i<componentCount; i++){
+		pCollideList.GetComponentAt(i)->GetComponent()->AddSkinStateRenderPlans(*this);
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();
-	for( i=0; i<billboardCount; i++ ){
-		deoglRBillboard &billboard = *pCollideList.GetBillboardAt( i );
+	for(i=0; i<billboardCount; i++){
+		deoglRBillboard &billboard = *pCollideList.GetBillboardAt(i);
 		//billboard.TestCameraInside( pCameraPosition );
 		//renderCanvas.SampleDebugInfoPlanPrepareBillboardsRenderables( *this );
-		billboard.AddSkinStateRenderPlans( *this );
+		billboard.AddSkinStateRenderPlans(*this);
 	}
 	SPECIAL_TIMER_PRINT("Components")
-	renderCanvas.SampleDebugInfoPlanPreparePrepareContent( *this );
+	renderCanvas.SampleDebugInfoPlanPreparePrepareContent(*this);
 	
 	// now we are ready to produce a render plan
 	pBuildRenderPlan();
-	renderCanvas.SampleDebugInfoPlanPrepareBuildPlan( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareBuildPlan(*this);
 	SPECIAL_TIMER_PRINT("PrepareRenderPlan")
 	
 	// finish preparations
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->FinishPrepare();
+	for(i=0; i<pSkyLightCount; i++){
+		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->FinishPrepare();
 	}
-	renderCanvas.SampleDebugInfoPlanPrepareFinish( *this );
+	renderCanvas.SampleDebugInfoPlanPrepareFinish(*this);
 	SPECIAL_TIMER_PRINT("Finish")
 	
 	// determine the stencil properties for pass and mask rendering. right now the
@@ -476,11 +476,11 @@ void deoglRenderPlan::pBarePrepareRender( const deoglRenderPlanMasked *mask ){
 	pTransparencyLayerCount = 0;
 	pCurTransparencyLayer = 0;
 	
-	renderCanvas.SampleDebugInfoPlanPrepare( *this );
+	renderCanvas.SampleDebugInfoPlanPrepare(*this);
 }
 
 void deoglRenderPlan::pBarePrepareRenderRightEye(){
-	if( ! pWorld ){
+	if(! pWorld){
 		return;
 	}
 	
@@ -493,16 +493,16 @@ void deoglRenderPlan::pBarePrepareRenderRightEye(){
 	
 	// and masked rendering if required
 	const int componentCount = pCollideList.GetComponentCount();
-	for( i=0; i<componentCount; i++ ){
-		pCollideList.GetComponentAt( i )->GetComponent()->AddSkinStateRenderPlans( *this );
+	for(i=0; i<componentCount; i++){
+		pCollideList.GetComponentAt(i)->GetComponent()->AddSkinStateRenderPlans(*this);
 	}
 	
 	const int billboardCount = pCollideList.GetBillboardCount();
-	for( i=0; i<billboardCount; i++ ){
-		pCollideList.GetBillboardAt( i )->AddSkinStateRenderPlans( *this );
+	for(i=0; i<billboardCount; i++){
+		pCollideList.GetBillboardAt(i)->AddSkinStateRenderPlans(*this);
 	}
 	SPECIAL_TIMER_PRINT("Components")
-	renderCanvas.SampleDebugInfoPlanPreparePrepareContent( *this );
+	renderCanvas.SampleDebugInfoPlanPreparePrepareContent(*this);
 	
 	// determine the stencil properties for pass and mask rendering. right now the
 	// mask is always 1 bit and the rest is available to the render pass number
@@ -516,15 +516,15 @@ void deoglRenderPlan::pBarePrepareRenderRightEye(){
 	pTransparencyLayerCount = 0;
 	pCurTransparencyLayer = 0;
 	
-	renderCanvas.SampleDebugInfoPlanPrepare( *this );
+	renderCanvas.SampleDebugInfoPlanPrepare(*this);
 }
 
 void deoglRenderPlan::pPlanCamera(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->PrepareForRender();
 	}
 	
-	pWorld->CheckReferencePosition( pCameraPosition );
+	pWorld->CheckReferencePosition(pCameraPosition);
 	UpdateRefPosCameraMatrix();
 	
 	pPlanCameraProjectionMatrix();
@@ -532,15 +532,15 @@ void deoglRenderPlan::pPlanCamera(){
 
 void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	// prepare the projection matrix if dirty
-	if( pDirtyProjMat ){
+	if(pDirtyProjMat){
 		const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 		
-		pProjectionMatrix = defren.CreateProjectionDMatrix( pViewportWidth, pViewportHeight,
-			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
-		pFrustumMatrix = defren.CreateFrustumDMatrix( pViewportWidth, pViewportHeight,
-			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance );
+		pProjectionMatrix = defren.CreateProjectionDMatrix(pViewportWidth, pViewportHeight,
+			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance);
+		pFrustumMatrix = defren.CreateFrustumDMatrix(pViewportWidth, pViewportHeight,
+			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance);
 		
-		if( pRenderThread.GetChoices().GetUseInverseDepth() ){
+		if(pRenderThread.GetChoices().GetUseInverseDepth()){
 			pDepthToPosition.x = -pCameraImageDistance;
 			pDepthToPosition.y = 0.0f;
 			
@@ -549,17 +549,17 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 			pDepthToPosition.y = 1.0f;
 		}
 		
-		pDepthToPosition.z = 1.0f / ( float )pProjectionMatrix.a11;
-		pDepthToPosition.w = 1.0f / ( float )pProjectionMatrix.a22;
-		pDepthToPosition2.Set( 0.0f, 0.0f );
+		pDepthToPosition.z = 1.0f / (float)pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / (float)pProjectionMatrix.a22;
+		pDepthToPosition2.Set(0.0f, 0.0f);
 		
 		// depth sample offset is required to reconstruct depth from nearby depth samples.
 		// offset is relative to 1 fragment texel step
-		pDepthSampleOffset.x = 2.0f / ( float )pViewportWidth;
-		pDepthSampleOffset.y = 2.0f / ( float )pViewportHeight;
+		pDepthSampleOffset.x = 2.0f / (float)pViewportWidth;
+		pDepthSampleOffset.y = 2.0f / (float)pViewportHeight;
 		
 		/* non-infinite projection matrix
-		const int q = pCameraViewDistance / ( pCameraViewDistance - pCameraImageDistance );
+		const int q = pCameraViewDistance / (pCameraViewDistance - pCameraImageDistance);
 		pDepthToPosition.x = q * pCameraImageDistance;
 		pDepthToPosition.y = q;
 		*/
@@ -573,7 +573,7 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	}
 	
 	// VR modifies the matrices
-	if( pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
+	if(pCamera && pCamera->GetVR() && pRenderVR != ervrNone){
 		const deoglVR &vr = *pCamera->GetVR();
 		const deoglVREye &vreye = pRenderVR == ervrRightEye ? vr.GetRightEye() : vr.GetLeftEye();
 		
@@ -581,28 +581,28 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pCameraFovRatio = vr.GetCameraFovRatio();
 		
 		// left eye
-		pProjectionMatrix = vreye.CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
-		pFrustumMatrix = vreye.CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
+		pProjectionMatrix = vreye.CreateProjectionDMatrix(pCameraImageDistance, pCameraViewDistance);
+		pFrustumMatrix = vreye.CreateFrustumDMatrix(pCameraImageDistance, pCameraViewDistance);
 		
-		pDepthToPosition.z = 1.0f / ( float )pProjectionMatrix.a11;
-		pDepthToPosition.w = 1.0f / ( float )pProjectionMatrix.a22;
-		pDepthToPosition2.Set( ( float )-pProjectionMatrix.a13, ( float )-pProjectionMatrix.a23 );
+		pDepthToPosition.z = 1.0f / (float)pProjectionMatrix.a11;
+		pDepthToPosition.w = 1.0f / (float)pProjectionMatrix.a22;
+		pDepthToPosition2.Set((float)-pProjectionMatrix.a13, (float)-pProjectionMatrix.a23);
 		
 		// right eye
-		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix( pCameraImageDistance, pCameraViewDistance );
-		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix( pCameraImageDistance, pCameraViewDistance );
+		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix(pCameraImageDistance, pCameraViewDistance);
+		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix(pCameraImageDistance, pCameraViewDistance);
 		
-		pDepthToPositionStereo.z = 1.0f / ( float )pProjectionMatrixStereo.a11;
-		pDepthToPositionStereo.w = 1.0f / ( float )pProjectionMatrixStereo.a22;
-		pDepthToPositionStereo2.Set( ( float )-pProjectionMatrixStereo.a13, ( float )-pProjectionMatrixStereo.a23 );
+		pDepthToPositionStereo.z = 1.0f / (float)pProjectionMatrixStereo.a11;
+		pDepthToPositionStereo.w = 1.0f / (float)pProjectionMatrixStereo.a22;
+		pDepthToPositionStereo2.Set((float)-pProjectionMatrixStereo.a13, (float)-pProjectionMatrixStereo.a23);
 	}
 	
 	// determine frustum to use
-	if( pUseCustomFrustum ){
+	if(pUseCustomFrustum){
 		pUseFrustum = &pCustomFrustum;
 		
 	}else{
-		pCameraFrustum.SetFrustum( pCameraMatrix * pFrustumMatrix );
+		pCameraFrustum.SetFrustum(pCameraMatrix * pFrustumMatrix);
 		pUseFrustum = &pCameraFrustum;
 	}
 }
@@ -636,40 +636,40 @@ void deoglRenderPlan::pPlanSkyLight(){
 	const int skyCount = GetSkyInstanceCount();
 	int i, j, k;
 	
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->ClearPlanned();
+	for(i=0; i<pSkyLightCount; i++){
+		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->ClearPlanned();
 	}
 	
-	for( i=0; i<skyCount; i++ ){
-		deoglRSkyInstance &instance = *GetSkyInstanceAt( i );
+	for(i=0; i<skyCount; i++){
+		deoglRSkyInstance &instance = *GetSkyInstanceAt(i);
 		
 		const int layerCount = instance.GetLayerCount();
-		for( j=0; j<layerCount; j++ ){
-			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt( j );
-			if( ! skyLayer.GetHasLightDirect() && ! skyLayer.GetHasLightAmbient() ){
+		for(j=0; j<layerCount; j++){
+			deoglRSkyInstanceLayer &skyLayer = instance.GetLayerAt(j);
+			if(! skyLayer.GetHasLightDirect() && ! skyLayer.GetHasLightAmbient()){
 				continue;
 			}
 			
 			deoglRenderPlanSkyLight *planSkyLight = NULL;
 			
-			for( k=0; k<pSkyLightCount; k++ ){
-				deoglRenderPlanSkyLight * const check = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( k );
-				if( check->GetLayer() == &skyLayer ){
+			for(k=0; k<pSkyLightCount; k++){
+				deoglRenderPlanSkyLight * const check = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(k);
+				if(check->GetLayer() == &skyLayer){
 					planSkyLight = check;
 					break;
 				}
 			}
 			
-			if( ! planSkyLight ){
-				if( pSkyLightCount < pSkyLights.GetCount() ){
-					planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( pSkyLightCount );
+			if(! planSkyLight){
+				if(pSkyLightCount < pSkyLights.GetCount()){
+					planSkyLight = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(pSkyLightCount);
 					
 				}else{
-					planSkyLight = new deoglRenderPlanSkyLight( *this );
-					pSkyLights.Add( planSkyLight );
+					planSkyLight = new deoglRenderPlanSkyLight(*this);
+					pSkyLights.Add(planSkyLight);
 				}
 				
-				planSkyLight->SetLayer( &instance, &skyLayer );
+				planSkyLight->SetLayer(&instance, &skyLayer);
 				pSkyLightCount++;
 			}
 			
@@ -677,14 +677,14 @@ void deoglRenderPlan::pPlanSkyLight(){
 		}
 	}
 	
-	for( i=0; i<pSkyLightCount; i++ ){
-		deoglRenderPlanSkyLight * const planSkyLight = ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i );
-		if( planSkyLight->GetPlanned() ){
+	for(i=0; i<pSkyLightCount; i++){
+		deoglRenderPlanSkyLight * const planSkyLight = (deoglRenderPlanSkyLight*)pSkyLights.GetAt(i);
+		if(planSkyLight->GetPlanned()){
 			continue;
 		}
 		
 		planSkyLight->Clear();
-		pSkyLights.Move( i--, --pSkyLightCount );
+		pSkyLights.Move(i--, --pSkyLightCount);
 	}
 }
 
@@ -694,7 +694,7 @@ void deoglRenderPlan::pPlanDominance(){
 	// determines the dominance of the render. this calcuates the relative space this render
 	// occupies compared to the primary render target size. this is used to down-tune if the
 	// render is rather small to speed up more important renders
-	pDominance = 1.0f; //( float )( pViewportWidth * pViewportHeight ) / ( float )( gc.GetRenderTargetWidth() * gc.GetRenderTargetHeight() );
+	pDominance = 1.0f; //(float)(pViewportWidth * pViewportHeight) / (float)(gc.GetRenderTargetWidth() * gc.GetRenderTargetHeight());
 }
 
 void deoglRenderPlan::pPlanShadowCasting(){
@@ -704,7 +704,7 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	// largest screen size
 	int renderSize = pViewportWidth;
 	
-	if( pViewportHeight > pViewportWidth ){
+	if(pViewportHeight > pViewportWidth){
 		renderSize = pViewportHeight;
 	}
 	
@@ -724,42 +724,42 @@ void deoglRenderPlan::pPlanShadowCasting(){
 	// to increase or decrease the shadow map size while keeping the rescaling behavior
 	// for different render viewport dimensions
 	//int unclampedSize = 0;
-	const int shadowMapSize = deoglShadowMapper::ShadowMapSize( config );
+	const int shadowMapSize = deoglShadowMapper::ShadowMapSize(config);
 	int shiftSize = 0;
 	
 	// disabled since shadow maps are now reused across rendered frames. reducing the size
 	// in one render situation is not helping much and is often nullified by the last frame
 	// size limitation
-	if( pRescaleShadowMaps ){
+	if(pRescaleShadowMaps){
 		// TODO review this code. it looks wrong from one end to the other. no idea
 		//      what the original idea has been behind this code
 		
-		if( shadowMapSize > 1024 ){
-			shiftSize = ( shadowMapSize / 1024 ) - 1;
+		if(shadowMapSize > 1024){
+			shiftSize = (shadowMapSize / 1024) - 1;
 			
-		}else if( shadowMapSize < 1024 ){
-			shiftSize = 1 - ( 1024 / shadowMapSize );
+		}else if(shadowMapSize < 1024){
+			shiftSize = 1 - (1024 / shadowMapSize);
 		}
 		
-		for( pShadowMapSize=16; pShadowMapSize<renderSize; pShadowMapSize<<=1 );
+		for(pShadowMapSize=16; pShadowMapSize<renderSize; pShadowMapSize<<=1);
 		
-		if( shiftSize > 0 ){
+		if(shiftSize > 0){
 			pShadowMapSize <<= shiftSize;
 			
-		}else if( shiftSize < 0 ){
+		}else if(shiftSize < 0){
 			pShadowMapSize >>= -shiftSize;
 		}
 		//unclampedSize = pShadowMapSize;
 		
-		pShadowMapSize = decMath::clamp( pShadowMapSize, 16, shadowMapSize );
+		pShadowMapSize = decMath::clamp(pShadowMapSize, 16, shadowMapSize);
 		pShadowCubeSize = pShadowMapSize;
 		pShadowSkySize = pShadowMapSize;
 		
 		/*
-		if( shiftSize > 0 ){
+		if(shiftSize > 0){
 			pShadowCubeSize = config.GetShadowCubeSize() << shiftSize;
 			
-		}else if( shiftSize < 0 ){
+		}else if(shiftSize < 0){
 			pShadowCubeSize = config.GetShadowCubeSize() >> shiftSize;
 			
 		}else{
@@ -774,56 +774,56 @@ void deoglRenderPlan::pPlanShadowCasting(){
 		//unclampedSize = pShadowMapSize;
 	}
 #endif
-	pShadowMapSize = deoglShadowMapper::ShadowMapSize( config );
-	pShadowCubeSize = deoglShadowMapper::ShadowCubeSize( config );
+	pShadowMapSize = deoglShadowMapper::ShadowMapSize(config);
+	pShadowCubeSize = deoglShadowMapper::ShadowCubeSize(config);
 	pShadowSkySize = pShadowMapSize;
 	
 	//printf( "shadow map size: rendersize=%i forced=%i shift=%i size=%i cube=%i sky=%i config=%i\n", renderSize, pForceShadowMapSize, shiftSize, pShadowMapSize, pShadowCubeSize, pShadowSkySize, shadowMapSize );
 }
 
-void deoglRenderPlan::pStartFindContent( const deoglRenderPlanMasked *mask ){
+void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	INIT_SPECIAL_TIMING
 	
 	// camera view
-	DEASSERT_NULL( pTaskFindContent )
+	DEASSERT_NULL(pTaskFindContent)
 	
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
+	if(pRenderThread.GetChoices().GetUseComputeRenderTask()){
 		pCompute->PrepareWorldCompute();
 		pCompute->PrepareBuffers();
 		
 		deoglRenderCompute &renderCompute = pRenderThread.GetRenderers().GetCompute();
 		
-		if( pWorld->GetCompute().GetUpdateElementCount() > 0 ){
-			renderCompute.UpdateElements( *this );
+		if(pWorld->GetCompute().GetUpdateElementCount() > 0){
+			renderCompute.UpdateElements(*this);
 		}
 		
-		renderCompute.FindContent( *this );
+		renderCompute.FindContent(*this);
 	}
 	
-	SetOcclusionMap( pRenderThread.GetTexture().GetOcclusionMapPool().Get( 256, 256, pRenderStereo ? 2 : 1 ) ); // 512
-	SetOcclusionTest( pRenderThread.GetOcclusionTestPool().Get() );
+	SetOcclusionMap(pRenderThread.GetTexture().GetOcclusionMapPool().Get(256, 256, pRenderStereo ? 2 : 1)); // 512
+	SetOcclusionTest(pRenderThread.GetOcclusionTestPool().Get());
 	pOcclusionMapBaseLevel = 0; // logic to choose this comes later
 	pOcclusionTest->RemoveAllInputData();
 	
-	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pTaskFindContent = new deoglRPTFindContent( *this );
-		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync( pTaskFindContent );
+	if(! pRenderThread.GetChoices().GetUseComputeRenderTask()){
+		pTaskFindContent = new deoglRPTFindContent(*this);
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
 	
 	// sky lights
 	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartFindContent();
+	for(i=0; i<pSkyLightCount; i++){
+		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->StartFindContent();
 	}
 }
 
-void deoglRenderPlan::pWaitFinishedFindContent( const deoglRenderPlanMasked *mask ){
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent( *this );
+void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask){
+	if(pRenderThread.GetChoices().GetUseComputeRenderTask()){
+		pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(*this);
 		return;
 	}
 	
-	if( ! pTaskFindContent ){
+	if(! pTaskFindContent){
 		return;
 	}
 	
@@ -838,24 +838,24 @@ void deoglRenderPlan::pWaitFinishedFindContent( const deoglRenderPlanMasked *mas
 }
 
 void deoglRenderPlan::pPlanGI(){
-	if( pUseConstGIState || ! pUseGIState || pDisableLights
-	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
+	if(pUseConstGIState || ! pUseGIState || pDisableLights
+	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
 		return;
 	}
 	
-	if( ! pGIState ){
+	if(! pGIState){
 		// GI state uses probes of 32x8x32 grid size. this is a default ratio of 4 times as width
 		// than high. we use the view distance as the width and thus 1/4 as the height. for a view
 		// distance of 500m this would yield a height of 125m. for most games this is enough.
 		// the camera parameters like field of view are not used. if probes fall outside the
 		// camera the closest GI probe is used. at the far end of the view this is good enough
 		const float length = pCameraViewDistance * 2.0f;
-		const decVector size( length, length / 4.0f, length );
+		const decVector size(length, length / 4.0f, length);
 		
-		pGIState = new deoglGIState( pRenderThread, size );
+		pGIState = new deoglGIState(pRenderThread, size);
 		
-		if( pWorld ){
-			pWorld->AddGICascade( pGIState );
+		if(pWorld){
+			pWorld->AddGICascade(pGIState);
 		}
 	}
 	
@@ -866,35 +866,35 @@ void deoglRenderPlan::pPlanGI(){
 	
 	// while doing the first loop of cascade updates force tone mapping adaption on camera
 	// to avoid bad starting values due t non-lit geometry
-	if( pGIState->CameraForceToneMapAdaption() && pCamera ){
-		pCamera->SetForceToneMapAdaption( true );
+	if(pGIState->CameraForceToneMapAdaption() && pCamera){
+		pCamera->SetForceToneMapAdaption(true);
 	}
 }
 
 void deoglRenderPlan::pUpdateGI(){
 	deoglGIState * const giState = GetUpdateGIState();
-	if( ! giState ){
+	if(! giState){
 		return;
 	}
 	
-	giState->SetWorld( pWorld );
-	giState->SetLayerMask( pUseLayerMask ? pLayerMask : ~decLayerMask() );
-	giState->Update( pCameraPosition, *pUseFrustum );
-	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate( *this );
+	giState->SetWorld(pWorld);
+	giState->SetLayerMask(pUseLayerMask ? pLayerMask : ~decLayerMask());
+	giState->Update(pCameraPosition, *pUseFrustum);
+	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareGIUpdate(*this);
 }
 
 void deoglRenderPlan::pPlanLODLevels(){
-	if( pHTView ){
-		pHTView->UpdateLODLevels( pCameraPosition.ToVector() );
+	if(pHTView){
+		pHTView->UpdateLODLevels(pCameraPosition.ToVector());
 	}
 	
 	deoglLODCalculator lodCalculator;
-	lodCalculator.SetMaxPixelError( pLodMaxPixelError );
-	lodCalculator.SetLodOffset( pLodLevelOffset );
+	lodCalculator.SetMaxPixelError(pLodMaxPixelError);
+	lodCalculator.SetLodOffset(pLodLevelOffset);
 	
-	lodCalculator.SetComponentLODProjection( pCollideList, pCameraPosition,
+	lodCalculator.SetComponentLODProjection(pCollideList, pCameraPosition,
 		pCameraInverseMatrix.TransformView(), pCameraFov, pCameraFov * pCameraFovRatio,
-		pViewportWidth, pViewportHeight );
+		pViewportWidth, pViewportHeight);
 }
 
 void deoglRenderPlan::pPlanEnvMaps(){
@@ -913,37 +913,37 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	// closest environment maps are found the old environment maps in the indices 4 to 7 are
 	// cleared. this way reused environment maps are kept while now unused free their resources
 	// if possible
-	for( i=0; i<pEnvMapCount; i++ ){
-		pEnvMaps[ pEnvMapCount + i ].SetEnvMap( pEnvMaps[ i ].GetEnvMap() );
-		pEnvMaps[ i ].SetEnvMap( NULL );
+	for(i=0; i<pEnvMapCount; i++){
+		pEnvMaps[pEnvMapCount + i].SetEnvMap(pEnvMaps[i].GetEnvMap());
+		pEnvMaps[i].SetEnvMap(NULL);
 	}
 	
 	// first find the environment maps containing the camera
-	for( i=0, j=0; i<pEnvMapCount && j<envmapCount; j++ ){
-		envmap = envmapList.GetAt( j );
+	for(i=0, j=0; i<pEnvMapCount && j<envmapCount; j++){
+		envmap = envmapList.GetAt(j);
 		
-		for( k=0; k<i; k++ ){
-			if( pEnvMaps[ k ].GetEnvMap() == envmap ){
+		for(k=0; k<i; k++){
+			if(pEnvMaps[k].GetEnvMap() == envmap){
 				break;
 			}
-			if( envmap->GetPosition().IsEqualTo( pEnvMaps[ k ].GetEnvMap()->GetPosition() ) ){ // temporary hack required
+			if(envmap->GetPosition().IsEqualTo(pEnvMaps[k].GetEnvMap()->GetPosition())){ // temporary hack required
 				break;
 			}
 		}
 		
-		if( k == i && ! envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()
-		&& envmap->GetInfluenceCollisionBox().IsPointInside( pCameraPosition ) ){
-			pEnvMaps[ i ].SetEnvMap( envmap );
-			pEnvMaps[ i ].SetDistance( 0.0f );
+		if(k == i && ! envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()
+		&& envmap->GetInfluenceCollisionBox().IsPointInside(pCameraPosition)){
+			pEnvMaps[i].SetEnvMap(envmap);
+			pEnvMaps[i].SetDistance(0.0f);
 			
-			for( k=pEnvMapCount; k<pEnvMapCount*2; k++ ){
-				if( pEnvMaps[ k ].GetEnvMap() == envmap ){
-					pEnvMaps[ k ].SetEnvMap( NULL );
+			for(k=pEnvMapCount; k<pEnvMapCount*2; k++){
+				if(pEnvMaps[k].GetEnvMap() == envmap){
+					pEnvMaps[k].SetEnvMap(NULL);
 					break;
 				}
 			}
-			if( k == pEnvMapCount*2 ){
-				envmap->GetRenderPlanList().Add( this );
+			if(k == pEnvMapCount*2){
+				envmap->GetRenderPlanList().Add(this);
 				envmap->AddPlanUsage();
 			}
 			
@@ -953,41 +953,41 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 	
 	// now fill up with environment maps overlapping the found ones
-	while( i < pEnvMapCount ){
+	while(i < pEnvMapCount){
 		cap = i;
 		
-		for( j=0; i<pEnvMapCount && j<envmapCount; j++ ){
-			envmap = envmapList.GetAt( j );
+		for(j=0; i<pEnvMapCount && j<envmapCount; j++){
+			envmap = envmapList.GetAt(j);
 			
-			for( k=0; k<i; k++ ){
-				if( pEnvMaps[ k ].GetEnvMap() == envmap ){
+			for(k=0; k<i; k++){
+				if(pEnvMaps[k].GetEnvMap() == envmap){
 					break;
 				}
-				if( envmap->GetPosition().IsEqualTo( pEnvMaps[ k ].GetEnvMap()->GetPosition() ) ){ // temporary hack required
+				if(envmap->GetPosition().IsEqualTo(pEnvMaps[k].GetEnvMap()->GetPosition())){ // temporary hack required
 					break;
 				}
 			}
 			
-			if( k == i && ! envmap->GetSkyOnly() && envmap->GetHasInfluenceBox() ){
-				for( k=0; k<cap; k++ ){
-					if( envmap->GetInfluenceCollisionBox().BoxHitsBox(
-					&pEnvMaps[ k ].GetEnvMap()->GetInfluenceCollisionBox() ) ){
+			if(k == i && ! envmap->GetSkyOnly() && envmap->GetHasInfluenceBox()){
+				for(k=0; k<cap; k++){
+					if(envmap->GetInfluenceCollisionBox().BoxHitsBox(
+					&pEnvMaps[k].GetEnvMap()->GetInfluenceCollisionBox())){
 						break;
 					}
 				}
 				
-				if( k < cap ){
-					pEnvMaps[ i ].SetEnvMap( envmap );
-					pEnvMaps[ i ].SetDistance( 0.0f );
+				if(k < cap){
+					pEnvMaps[i].SetEnvMap(envmap);
+					pEnvMaps[i].SetDistance(0.0f);
 					
-					for( k=pEnvMapCount; k<pEnvMapCount*2; k++ ){
-						if( pEnvMaps[ k ].GetEnvMap() == envmap ){
-							pEnvMaps[ k ].SetEnvMap( NULL );
+					for(k=pEnvMapCount; k<pEnvMapCount*2; k++){
+						if(pEnvMaps[k].GetEnvMap() == envmap){
+							pEnvMaps[k].SetEnvMap(NULL);
 							break;
 						}
 					}
-					if( k == pEnvMapCount*2 ){
-						envmap->GetRenderPlanList().Add( this );
+					if(k == pEnvMapCount*2){
+						envmap->GetRenderPlanList().Add(this);
 						envmap->AddPlanUsage();
 					}
 					
@@ -997,42 +997,42 @@ void deoglRenderPlan::pPlanEnvMaps(){
 			}
 		}
 		
-		if( cap == i ){
+		if(cap == i){
 			break;
 		}
 	}
 	
 	// eventually fill up the remaining slots with environment maps nearby
-	for( ; i<pEnvMapCount; i++ ){
-		for( j=0; j<envmapCount; j++ ){
-			envmap = envmapList.GetAt( j );
+	for(; i<pEnvMapCount; i++){
+		for(j=0; j<envmapCount; j++){
+			envmap = envmapList.GetAt(j);
 			
-			for( k=0; k<i; k++ ){
-				if( envmap->GetPosition().IsEqualTo( pEnvMaps[ k ].GetEnvMap()->GetPosition() ) ){
+			for(k=0; k<i; k++){
+				if(envmap->GetPosition().IsEqualTo(pEnvMaps[k].GetEnvMap()->GetPosition())){
 					break;
 				}
 			}
 			
-			if( k == i && ! envmap->GetSkyOnly() ){
-				distance = ( float )( ( envmap->GetPosition() - pCameraPosition ).Length() );
+			if(k == i && ! envmap->GetSkyOnly()){
+				distance = (float)((envmap->GetPosition() - pCameraPosition).Length());
 				
-				if( ! pEnvMaps[ i ].GetEnvMap() || distance < pEnvMaps[ i ].GetDistance() ){
-					pEnvMaps[ i ].SetEnvMap( envmap );
-					pEnvMaps[ i ].SetDistance( distance );
+				if(! pEnvMaps[i].GetEnvMap() || distance < pEnvMaps[i].GetDistance()){
+					pEnvMaps[i].SetEnvMap(envmap);
+					pEnvMaps[i].SetDistance(distance);
 				}
 			}
 		}
 		
-		envmap = pEnvMaps[ i ].GetEnvMap();
-		if( envmap ){
-			for( j=pEnvMapCount; j<pEnvMapCount*2; j++ ){
-				if( pEnvMaps[ j ].GetEnvMap() == envmap ){
-					pEnvMaps[ j ].SetEnvMap( NULL );
+		envmap = pEnvMaps[i].GetEnvMap();
+		if(envmap){
+			for(j=pEnvMapCount; j<pEnvMapCount*2; j++){
+				if(pEnvMaps[j].GetEnvMap() == envmap){
+					pEnvMaps[j].SetEnvMap(NULL);
 					break;
 				}
 			}
-			if( j == pEnvMapCount*2 ){
-				envmap->GetRenderPlanList().Add( this );
+			if(j == pEnvMapCount*2){
+				envmap->GetRenderPlanList().Add(this);
 				envmap->AddPlanUsage();
 			}
 			
@@ -1044,22 +1044,22 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 	
 	// if no environment maps have been found add positionless environment maps
-	if( i == 0 ){
-		for( j=0; i<pEnvMapCount && j<envmapCount; j++ ){
-			envmap = envmapList.GetAt( j );
+	if(i == 0){
+		for(j=0; i<pEnvMapCount && j<envmapCount; j++){
+			envmap = envmapList.GetAt(j);
 			
-			if( envmap->GetSkyOnly() ){ // hack, requires a GetIsPositionless function
-				pEnvMaps[ i ].SetEnvMap( envmap );
-				pEnvMaps[ i ].SetDistance( 0.0f );
+			if(envmap->GetSkyOnly()){ // hack, requires a GetIsPositionless function
+				pEnvMaps[i].SetEnvMap(envmap);
+				pEnvMaps[i].SetDistance(0.0f);
 				
-				for( k=pEnvMapCount; k<pEnvMapCount*2; k++ ){
-					if( pEnvMaps[ k ].GetEnvMap() == envmap ){
-						pEnvMaps[ k ].SetEnvMap( NULL );
+				for(k=pEnvMapCount; k<pEnvMapCount*2; k++){
+					if(pEnvMaps[k].GetEnvMap() == envmap){
+						pEnvMaps[k].SetEnvMap(NULL);
 						break;
 					}
 				}
-				if( k == pEnvMapCount*2 ){
-					envmap->GetRenderPlanList().Add( this );
+				if(k == pEnvMapCount*2){
+					envmap->GetRenderPlanList().Add(this);
 					envmap->AddPlanUsage();
 				}
 				
@@ -1070,95 +1070,95 @@ void deoglRenderPlan::pPlanEnvMaps(){
 	}
 	
 	// sort the found environment maps by priority
-	for( j=1; j<i; j++ ){
-		if( pEnvMaps[ j ].GetEnvMap()->GetInfluencePriority() <=
-		pEnvMaps[ j - 1 ].GetEnvMap()->GetInfluencePriority() ){
+	for(j=1; j<i; j++){
+		if(pEnvMaps[j].GetEnvMap()->GetInfluencePriority() <=
+		pEnvMaps[j - 1].GetEnvMap()->GetInfluencePriority()){
 			continue;
 		}
 		
-		envmap = pEnvMaps[ j - 1 ].GetEnvMap();
-		distance = pEnvMaps[ j - 1 ].GetDistance();
+		envmap = pEnvMaps[j - 1].GetEnvMap();
+		distance = pEnvMaps[j - 1].GetDistance();
 		
-		pEnvMaps[ j - 1 ].SetEnvMap( pEnvMaps[ j ].GetEnvMap() );
-		pEnvMaps[ j - 1 ].SetDistance( pEnvMaps[ j ].GetDistance() );
+		pEnvMaps[j - 1].SetEnvMap(pEnvMaps[j].GetEnvMap());
+		pEnvMaps[j - 1].SetDistance(pEnvMaps[j].GetDistance());
 		
-		pEnvMaps[ j ].SetEnvMap( envmap );
-		pEnvMaps[ j ].SetDistance( distance );
+		pEnvMaps[j].SetEnvMap(envmap);
+		pEnvMaps[j].SetDistance(distance);
 		
-		if( j > 1 ){
+		if(j > 1){
 			j -= 2;
 		}
 	}
 	
 	// for the direct environment map fader switch to the first environment map we found
-	if( pEnvMapCount == 0 ){
-		pDirectEnvMapFader.FadeTo( NULL );
+	if(pEnvMapCount == 0){
+		pDirectEnvMapFader.FadeTo(NULL);
 		
 	}else{
-		pDirectEnvMapFader.FadeTo( pEnvMaps[ 0 ].GetEnvMap() );
+		pDirectEnvMapFader.FadeTo(pEnvMaps[0].GetEnvMap());
 	}
 	
 	// clean up
-	for( i=pEnvMapCount; i<pEnvMapCount*2; i++ ){
-		if( pEnvMaps[ i ].GetEnvMap() ){
-			pDirectEnvMapFader.Drop( pEnvMaps[ i ].GetEnvMap() );
+	for(i=pEnvMapCount; i<pEnvMapCount*2; i++){
+		if(pEnvMaps[i].GetEnvMap()){
+			pDirectEnvMapFader.Drop(pEnvMaps[i].GetEnvMap());
 			
-			pEnvMaps[ i ].GetEnvMap()->RemovePlanUsage();
-			pEnvMaps[ i ].GetEnvMap()->GetRenderPlanList().Remove( this );
-			pEnvMaps[ i ].SetEnvMap( NULL );
+			pEnvMaps[i].GetEnvMap()->RemovePlanUsage();
+			pEnvMaps[i].GetEnvMap()->GetRenderPlanList().Remove(this);
+			pEnvMaps[i].SetEnvMap(NULL);
 		}
 	}
 	
 	/*
-	printf( "envmap count %i\n", pEnvMapCount );
-	for( i=0; i<pEnvMapCount; i++ ){
-		if( pEnvMaps[ i ].GetEnvMap() ){
-			printf( "envmap %i priority %i position (%g,%g,%g)\n", i, pEnvMaps[ i ].GetEnvMap()->GetInfluencePriority(), pEnvMaps[ i ].GetEnvMap()->GetPosition().x, pEnvMaps[ i ].GetEnvMap()->GetPosition().y, pEnvMaps[ i ].GetEnvMap()->GetPosition().z );
+	printf("envmap count %i\n", pEnvMapCount);
+	for(i=0; i<pEnvMapCount; i++){
+		if(pEnvMaps[i].GetEnvMap()){
+			printf("envmap %i priority %i position (%g,%g,%g)\n", i, pEnvMaps[i].GetEnvMap()->GetInfluencePriority(), pEnvMaps[i].GetEnvMap()->GetPosition().x, pEnvMaps[i].GetEnvMap()->GetPosition().y, pEnvMaps[i].GetEnvMap()->GetPosition().z);
 		}else{
-			printf( "envmap %i NULL\n", i );
+			printf("envmap %i NULL\n", i);
 		}
 	}
 	*/
 	
 	// update hard limits
 	/*
-	for( i=0; i<envmapCount; i++ ){
-		envmapList.GetAt( i )->PrepareCubeMapHardLimit();
+	for(i=0; i<envmapCount; i++){
+		envmapList.GetAt(i)->PrepareCubeMapHardLimit();
 	}
 	*/
 	
 	// update soft limits
 	/*
-	for( i=0; i<envmapCount; i++ ){
-		envmapList.GetAt( i )->PrepareCubeMapSoftLimit();
+	for(i=0; i<envmapCount; i++){
+		envmapList.GetAt(i)->PrepareCubeMapSoftLimit();
 	}
 	*/
 	
 	// update env map if required
-	if( pWorld->GetEnvMapUpdateCount() > 0 ){
+	if(pWorld->GetEnvMapUpdateCount() > 0){
 		deoglEnvironmentMap *updateEnvmap = NULL;
 		
 		// check if one of the 4 closest environment maps is in need of updating. if so choose this one
-		for( i=0; i<pEnvMapCount; i++ ){
-			if( pEnvMaps[ i ].GetEnvMap() && pEnvMaps[ i ].GetEnvMap()->GetDirty() ){
-				updateEnvmap = pEnvMaps[ i ].GetEnvMap();
+		for(i=0; i<pEnvMapCount; i++){
+			if(pEnvMaps[i].GetEnvMap() && pEnvMaps[i].GetEnvMap()->GetDirty()){
+				updateEnvmap = pEnvMaps[i].GetEnvMap();
 				break;
 			}
 		}
 		
 		// if no environment map has been chosen to update check if the sky environment map needs updating. if so choose this one
-		if( ! updateEnvmap && pWorld->GetSkyEnvironmentMap()->GetDirty() ){
+		if(! updateEnvmap && pWorld->GetSkyEnvironmentMap()->GetDirty()){
 			updateEnvmap = pWorld->GetSkyEnvironmentMap();
 		}
 		
 		// if the sky environment map is not updated yet do this first
 		/*
-		if( pWorld->GetSky() && pWorld->GetSky()->GetEnvironmentMap()->GetDirty() ){
+		if(pWorld->GetSky() && pWorld->GetSky()->GetEnvironmentMap()->GetDirty()){
 			pWorld->GetSky()->GetEnvironmentMap()->Update();
 			
 			// rendering the environment map potentially alters the reference position. ensure the reference
 			// position is back to a proper value and that the reference position camera matrix is correct
-			pWorld->CheckReferencePosition( pCameraPosition );
+			pWorld->CheckReferencePosition(pCameraPosition);
 			UpdateRefPosCameraMatrix();
 			
 			return;
@@ -1171,8 +1171,8 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		decDVector positionDifference;
 		
 		// unmark all environment maps
-		for( i=0; i<envmapCount; i++ ){
-			envmapList.GetAt( i )->SetMarked( false );
+		for(i=0; i<envmapCount; i++){
+			envmapList.GetAt(i)->SetMarked(false);
 		}
 		
 		// find the next environment map to update. for the time being we choose the environment
@@ -1181,17 +1181,17 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		// first check all environment maps assigned to visible components
 #if 0
 		count = pCollideList.GetComponentCount();
-		for( i=0; i<count; i++ ){
-			envmap = pCollideList.GetComponentAt( i )->GetComponent()->GetRenderEnvMap();
+		for(i=0; i<count; i++){
+			envmap = pCollideList.GetComponentAt(i)->GetComponent()->GetRenderEnvMap();
 			
-			if( envmap && ! envmap->GetMarked() ){
-				envmap->SetMarked( true );
+			if(envmap && ! envmap->GetMarked()){
+				envmap->SetMarked(true);
 				
-				if( envmap->GetDirty() ){
+				if(envmap->GetDirty()){
 					positionDifference = envmap->GetPosition() - pCameraPosition;
 					envmapDistSquared = positionDifference * positionDifference;
 					
-					if( ! updateEnvmap || envmapDistSquared < updateEnvmapDistSquared ){
+					if(! updateEnvmap || envmapDistSquared < updateEnvmapDistSquared){
 						updateEnvmap = envmap;
 						updateEnvmapDistSquared = envmapDistSquared;
 					}
@@ -1203,17 +1203,17 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		// if no environment map has been found yet look in the entire list of environment maps
 		// for a match. this includes environment maps that are not yet visible but potentially
 		// are in the next frame
-		for( i=0; i<envmapCount; i++ ){
-			envmap = envmapList.GetAt( i );
+		for(i=0; i<envmapCount; i++){
+			envmap = envmapList.GetAt(i);
 			
-			if( ! envmap->GetMarked() ){
-				envmap->SetMarked( true );
+			if(! envmap->GetMarked()){
+				envmap->SetMarked(true);
 				
-				if( envmap->GetDirty() ){
+				if(envmap->GetDirty()){
 					positionDifference = envmap->GetPosition() - pCameraPosition;
 					envmapDistSquared = positionDifference * positionDifference;
 					
-					if( ! updateEnvmap || envmapDistSquared < updateEnvmapDistSquared ){
+					if(! updateEnvmap || envmapDistSquared < updateEnvmapDistSquared){
 						updateEnvmap = envmap;
 						updateEnvmapDistSquared = envmapDistSquared;
 					}
@@ -1223,27 +1223,27 @@ void deoglRenderPlan::pPlanEnvMaps(){
 #endif
 		
 		// if we found an environment map update it
-		if( updateEnvmap ){
+		if(updateEnvmap){
 			const deoglEnvironmentMap::Ref guard(updateEnvmap);
-			updateEnvmap->Update( *this );
+			updateEnvmap->Update(*this);
 			
 			// rendering the environment map potentially alters the reference position. ensure the reference
 			// position is back to a proper value and that the reference position camera matrix is correct
-			pWorld->CheckReferencePosition( pCameraPosition );
+			pWorld->CheckReferencePosition(pCameraPosition);
 			UpdateRefPosCameraMatrix();
 		}
 	}
 }
 
-void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask ){
+void deoglRenderPlan::pRenderOcclusionTests(const deoglRenderPlanMasked *mask){
 	INIT_SPECIAL_TIMING
-	pWaitFinishedFindContent( mask );
+	pWaitFinishedFindContent(mask);
 	SPECIAL_TIMER_PRINT("> WaitFinishFindContent")
 	
 	// debug information if demanded
 	pDebugVisibleNoCull();
 	
-	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
+	if(pRenderThread.GetConfiguration().GetDebugNoCulling()){
 		pSkyVisible = true;
 		return;
 	}
@@ -1253,59 +1253,59 @@ void deoglRenderPlan::pRenderOcclusionTests( const deoglRenderPlanMasked *mask )
 	
 	// render occlusion tests if there is input data. results are read back in
 	// pFinishOcclusionTests to avoid stalling
-	if( pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pCompute->ReadyRTOcclusion( mask );
+	if(pRenderThread.GetChoices().GetUseComputeRenderTask()){
+		pCompute->ReadyRTOcclusion(mask);
 		SPECIAL_TIMER_PRINT("> ReadyRTOcclusion")
 		
-		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
+		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera(*this, mask);
 		SPECIAL_TIMER_PRINT("> RenderTestsCamera")
 		
 		int i;
-		for( i=0; i<pSkyLightCount; i++ ){
-			( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->RenderOcclusionTests();
+		for(i=0; i<pSkyLightCount; i++){
+			((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->RenderOcclusionTests();
 		}
 		SPECIAL_TIMER_PRINT("> SkyLightsRenderTests")
 		
-		for( i=0; i<pSkyLightCount; i++ ){
-			( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->BuildComputeRenderTasks();
+		for(i=0; i<pSkyLightCount; i++){
+			((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->BuildComputeRenderTasks();
 		}
 		SPECIAL_TIMER_PRINT("> SkyLightsBuildComputeRenderTasks")
 		
 		pCompute->ReadVisibleElements();
 		SPECIAL_TIMER_PRINT("> ReadVisibleElements")
 		
-		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
+		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries(*this, mask, true);
 		SPECIAL_TIMER_PRINT("> RenderOcclusionQueries")
 		
-	}else if( pOcclusionTest->GetInputDataCount() > 0 ){
+	}else if(pOcclusionTest->GetInputDataCount() > 0){
 		pOcclusionTest->UpdateSSBO();
-		if( pDebug ){
-			pDebug->IncrementOccTestCount( pOcclusionTest->GetInputDataCount() );
+		if(pDebug){
+			pDebug->IncrementOccTestCount(pOcclusionTest->GetInputDataCount());
 		}
 		SPECIAL_TIMER_PRINT("> UpdateVBO")
 		
-		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera( *this, mask );
+		pRenderThread.GetRenderers().GetOcclusion().RenderTestsCamera(*this, mask);
 		SPECIAL_TIMER_PRINT("> Render")
 		
-		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries( *this, mask, true );
+		pRenderThread.GetRenderers().GetOcclusion().RenderOcclusionQueries(*this, mask, true);
 		SPECIAL_TIMER_PRINT("> RenderOcclusionQueries")
 	}
 }
 
-void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask ){
-	if( pRenderThread.GetConfiguration().GetDebugNoCulling() ){
-		pTasks->StartBuildTasks( mask );
+void deoglRenderPlan::pFinishOcclusionTests(const deoglRenderPlanMasked *mask){
+	if(pRenderThread.GetConfiguration().GetDebugNoCulling()){
+		pTasks->StartBuildTasks(mask);
 		return;
 	}
 	INIT_SPECIAL_TIMING
 	
 	// occlusion tests have been rendered in pRenderOcclusionTests to avoid stalling
 	// NOTE if compute render tasks are used this will be always 0 and skipped
-	if( pOcclusionTest->GetInputDataCount() > 0 ){
+	if(pOcclusionTest->GetInputDataCount() > 0){
 		pOcclusionTest->UpdateResults();
 		SPECIAL_TIMER_PRINT("> UpdateResults")
 		
-		if( GetUpdateGIState() ){
+		if(GetUpdateGIState()){
 			// we can not use RemoveCulledElements in this situation since lights outside
 			// the frustum have to be kept if inside GI cascade detection box. the light
 			// renderers will take care of not rendering a light for camera view content
@@ -1321,12 +1321,12 @@ void deoglRenderPlan::pFinishOcclusionTests( const deoglRenderPlanMasked *mask )
 	
 	pDebugVisibleCulled();
 	
-	pTasks->StartBuildTasks( mask );
+	pTasks->StartBuildTasks(mask);
 }
 
 void deoglRenderPlan::pDebugPrepare(){
-	if( pRenderThread.GetDebug().GetDeveloperMode().GetDebugRenderPlan() ){
-		if( pDebug ){
+	if(pRenderThread.GetDebug().GetDeveloperMode().GetDebugRenderPlan()){
+		if(pDebug){
 			pDebug->Reset();
 			
 		}else{
@@ -1334,7 +1334,7 @@ void deoglRenderPlan::pDebugPrepare(){
 		}
 		
 	}else{
-		if( pDebug ){
+		if(pDebug){
 			delete pDebug;
 			pDebug = NULL;
 		}
@@ -1343,89 +1343,89 @@ void deoglRenderPlan::pDebugPrepare(){
 
 void deoglRenderPlan::pDebugVisibleNoCull(){
 	/*
-	if( pUseLayerMask ){
+	if(pUseLayerMask){
 		const int componentCount = pCollideList.GetComponentCount();
 		int i, triangleCount = 0;
-		for( i=0; i<componentCount; i++ ){
-			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt( i );
+		for(i=0; i<componentCount; i++){
+			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
-			if( ! component.GetModel() ){
+			if(! component.GetModel()){
 				continue;
 			}
 			
-			const deoglModelLOD &modelLOD = *component.GetModel()->GetLODAt( clistComponent.GetLODLevel() );
+			const deoglModelLOD &modelLOD = *component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
 			triangleCount += modelLOD.GetFaceCount();
 		}
-		pRenderThread.GetLogger().LogInfoFormat( "colliderlist no occlusion test;%i;%i;%i\n", pCollideList.GetComponentCount(), pCollideList.GetLightCount(), triangleCount );
+		pRenderThread.GetLogger().LogInfoFormat("colliderlist no occlusion test;%i;%i;%i\n", pCollideList.GetComponentCount(), pCollideList.GetLightCount(), triangleCount);
 	}
 	*/
-	if( pDebug ){
+	if(pDebug){
 		const int componentCount = pCollideList.GetComponentCount();
 		const int lightCount = pCollideList.GetLightCount();
 		deoglEnvironmentMapList envMapList;
 		int i;
 		
-		pDebug->IncrementViewObjects( componentCount );
-		pDebug->IncrementViewLights( lightCount );
+		pDebug->IncrementViewObjects(componentCount);
+		pDebug->IncrementViewLights(lightCount);
 		
-		for( i=0; i<componentCount; i++ ){
-			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt( i );
+		for(i=0; i<componentCount; i++){
+			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
 			
-			if( component.GetModel() ){
-				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( clistComponent.GetLODLevel() );
-				pDebug->IncrementViewTriangles( modelLOD.GetFaceCount() );
+			if(component.GetModel()){
+				const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
+				pDebug->IncrementViewTriangles(modelLOD.GetFaceCount());
 			}
 			/*
-			if( component.GetRenderEnvMap() ){
-				envMapList.AddIfMissing( component.GetRenderEnvMap() );
+			if(component.GetRenderEnvMap()){
+				envMapList.AddIfMissing(component.GetRenderEnvMap());
 			}
-			if( component.GetRenderEnvMapFade() ){
-				envMapList.AddIfMissing( component.GetRenderEnvMapFade() );
+			if(component.GetRenderEnvMapFade()){
+				envMapList.AddIfMissing(component.GetRenderEnvMapFade());
 			}
 			*/
 		}
 		
-		pDebug->IncrementViewEnvMaps( envMapList.GetCount() );
+		pDebug->IncrementViewEnvMaps(envMapList.GetCount());
 	}
 }
 
 void deoglRenderPlan::pDebugVisibleCulled(){
 	/*
-	if( pUseLayerMask ){
+	if(pUseLayerMask){
 		const int componentCount = pCollideList.GetComponentCount();
 		int i, triangleCount = 0;
-		for( i=0; i<componentCount; i++ ){
-			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt( i );
+		for(i=0; i<componentCount; i++){
+			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
-			if( ! component.GetModel() ){
+			if(! component.GetModel()){
 				continue;
 			}
 			
-			const deoglModelLOD &modelLOD = *component.GetModel()->GetLODAt( clistComponent.GetLODLevel() );
+			const deoglModelLOD &modelLOD = *component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
 			triangleCount += modelLOD.GetFaceCount();
 		}
-		pRenderThread.GetLogger().LogInfoFormat( "colliderlist occlusion tested;%i;%i;%i\n", pCollideList.GetComponentCount(), pCollideList.GetLightCount(), triangleCount );
+		pRenderThread.GetLogger().LogInfoFormat("colliderlist occlusion tested;%i;%i;%i\n", pCollideList.GetComponentCount(), pCollideList.GetLightCount(), triangleCount);
 	}
 	*/
-	if( pDebug ){
+	if(pDebug){
 		const int componentCount = pCollideList.GetComponentCount();
 		const int lightCount = pCollideList.GetLightCount();
 		int i;
 		
-		pDebug->IncrementCullPSObjects( componentCount );
-		pDebug->IncrementCullPSLights( lightCount );
+		pDebug->IncrementCullPSObjects(componentCount);
+		pDebug->IncrementCullPSLights(lightCount);
 		
-		for( i=0; i<componentCount; i++ ){
-			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt( i );
+		for(i=0; i<componentCount; i++){
+			const deoglCollideListComponent &clistComponent = *pCollideList.GetComponentAt(i);
 			const deoglRComponent &component = *clistComponent.GetComponent();
 			
-			if( ! component.GetModel() ){
+			if(! component.GetModel()){
 				continue;
 			}
 			
-			const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( clistComponent.GetLODLevel() );
-			pDebug->IncrementCullPSTriangles( modelLOD.GetFaceCount() );
+			const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt(clistComponent.GetLODLevel());
+			pDebug->IncrementCullPSTriangles(modelLOD.GetFaceCount());
 		}
 	}
 }
@@ -1437,21 +1437,21 @@ void deoglRenderPlan::PrepareRenderOneTurn(){
 	deoglPropField *oglPropField;
 	
 	// prop fields can be prepared for one render turn
-	for( p=0; p<propFieldCount; p++ ){
-		oglPropField = ( deoglPropField* )world->GetPropFieldAt( p )->GetPeerGraphic();
+	for(p=0; p<propFieldCount; p++){
+		oglPropField = (deoglPropField*)world->GetPropFieldAt(p)->GetPeerGraphic();
 		
-		if( oglPropField ){
-			oglPropField->PrepareInstances( pCameraPosition, decDMatrix( pCameraMatrix ) );
+		if(oglPropField){
+			oglPropField->PrepareInstances(pCameraPosition, decDMatrix(pCameraMatrix));
 		}
 	}
 	*/
 }
 
-void deoglRenderPlan::PlanTransparency( int layerCount ){
+void deoglRenderPlan::PlanTransparency(int layerCount){
 	pTransparencyLayerCount = layerCount;
 	pCurTransparencyLayer = 0;
 	
-	if( ! pHasTransparency ){
+	if(! pHasTransparency){
 		// set light shadow parameters to default
 		return;
 	}
@@ -1468,42 +1468,42 @@ void deoglRenderPlan::PlanTransparency( int layerCount ){
 }
 
 void deoglRenderPlan::Render(){
-	const deoglDebugTraceGroup debugTrace( pRenderThread, "Plan.Render" );
-	if( pIsRendering ){
+	const deoglDebugTraceGroup debugTrace(pRenderThread, "Plan.Render");
+	if(pIsRendering){
 		// re-entrant rendering causes exceptions. render instead a black screen and do not clean up
-		pRenderThread.GetRenderers().GetWorld().RenderBlackScreen( *this );
+		pRenderThread.GetRenderers().GetWorld().RenderBlackScreen(*this);
 		return;
 	}
 	
 	// to make sure we clean up everyting even after an exception try this all
 	try{
-		pRenderThread.GetRenderers().GetWorld().RenderWorld( *this, NULL );
+		pRenderThread.GetRenderers().GetWorld().RenderWorld(*this, NULL);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		// add to exception trace
-		if( pRenderVR != ervrLeftEye ){
+		if(pRenderVR != ervrLeftEye){
 			CleanUp();
 		}
 		throw;
 	}
 	
-	if( pRenderVR != ervrLeftEye ){
+	if(pRenderVR != ervrLeftEye){
 		CleanUp();
 	}
 }
 
 void deoglRenderPlan::CleanUp(){
 	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->CleanUp();
+	for(i=0; i<pSkyLightCount; i++){
+		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->CleanUp();
 	}
 	
-	if( pTasks ){
+	if(pTasks){
 		pTasks->CleanUp();
 	}
-	if( ! pRenderThread.GetChoices().GetUseComputeRenderTask() ){
-		pWaitFinishedFindContent( nullptr );
+	if(! pRenderThread.GetChoices().GetUseComputeRenderTask()){
+		pWaitFinishedFindContent(nullptr);
 	}
 	
 	RemoveAllSkyInstances();
@@ -1512,16 +1512,16 @@ void deoglRenderPlan::CleanUp(){
 	pDropLightsTemporary();
 	pCollideList.Clear();
 	pComponentsOccMap.RemoveAll();
-	SetOcclusionTest( NULL );
-	SetOcclusionMap( NULL );
+	SetOcclusionTest(NULL);
+	SetOcclusionMap(NULL);
 }
 
 
 
-void deoglRenderPlan::SetCamera( deoglRCamera *camera ){
+void deoglRenderPlan::SetCamera(deoglRCamera *camera){
 	pCamera = camera;
 	
-	if( camera ){
+	if(camera){
 		pCameraPosition = camera->GetPosition();
 		
 	}else{
@@ -1529,7 +1529,7 @@ void deoglRenderPlan::SetCamera( deoglRCamera *camera ){
 	}
 }
 
-void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
+void deoglRenderPlan::SetCameraMatrix(const decDMatrix &matrix){
 	pCameraMatrix = matrix;
 	pCameraInverseMatrix = matrix.QuickInvert();
 	pCameraMatrixNonMirrored = matrix;
@@ -1550,18 +1550,18 @@ void deoglRenderPlan::SetCameraMatrix( const decDMatrix &matrix ){
 	pCameraStereoInverseMatrix.SetIdentity();
 }
 
-void deoglRenderPlan::SetCameraMatrixNonMirrored( const decDMatrix &matrix ){
+void deoglRenderPlan::SetCameraMatrixNonMirrored(const decDMatrix &matrix){
 	pCameraMatrixNonMirrored = matrix;
 }
 
-void deoglRenderPlan::SetCameraStereoMatrix( const decMatrix &matrix ){
+void deoglRenderPlan::SetCameraStereoMatrix(const decMatrix &matrix){
 	pCameraStereoMatrix = matrix;
 	pCameraStereoInverseMatrix = matrix.QuickInvert();
 }
 
-void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imageDistance, float viewDistance ){
-	if( fov <= 0.0f || fov >= PI || fovRatio <= 0.0f || imageDistance <= 0.0f || imageDistance >= viewDistance ){
-		DETHROW( deeInvalidParam );
+void deoglRenderPlan::SetCameraParameters(float fov, float fovRatio, float imageDistance, float viewDistance){
+	if(fov <= 0.0f || fov >= PI || fovRatio <= 0.0f || imageDistance <= 0.0f || imageDistance >= viewDistance){
+		DETHROW(deeInvalidParam);
 	}
 	pCameraFov = fov;
 	pCameraFovRatio = fovRatio;
@@ -1571,21 +1571,21 @@ void deoglRenderPlan::SetCameraParameters( float fov, float fovRatio, float imag
 	pDirtyProjMat = true;
 }
 
-void deoglRenderPlan::SetCameraAdaptedIntensity( float intensity ){
+void deoglRenderPlan::SetCameraAdaptedIntensity(float intensity){
 	pCameraAdaptedIntensity = intensity;
 }
 
-void deoglRenderPlan::SetViewport( int width, int height ){
-	if( width < 1 || height < 1 ) DETHROW( deeInvalidParam );
+void deoglRenderPlan::SetViewport(int width, int height){
+	if(width < 1 || height < 1) DETHROW(deeInvalidParam);
 	
 	pViewportWidth = width;
 	pViewportHeight = height;
-	pAspectRatio = ( float )pViewportWidth / ( float )pViewportHeight;
+	pAspectRatio = (float)pViewportWidth / (float)pViewportHeight;
 	
 	pDirtyProjMat = true;
 }
 
-void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
+void deoglRenderPlan::CopyCameraParametersFrom(const deoglRenderPlan &plan){
 	pViewportWidth = plan.pViewportWidth;
 	pViewportHeight = plan.pViewportHeight;
 	pAspectRatio = plan.pAspectRatio;
@@ -1610,45 +1610,45 @@ void deoglRenderPlan::CopyCameraParametersFrom( const deoglRenderPlan &plan ){
 
 void deoglRenderPlan::UpdateRefPosCameraMatrix(){
 	// -( campos - refpos )
-	const decVector refPosCam( pWorld->GetReferencePosition() - pCameraPosition );
+	const decVector refPosCam(pWorld->GetReferencePosition() - pCameraPosition);
 	
-	pRefPosCameraMatrix.a11 = ( float )pCameraMatrix.a11;
-	pRefPosCameraMatrix.a12 = ( float )pCameraMatrix.a12;
-	pRefPosCameraMatrix.a13 = ( float )pCameraMatrix.a13;
+	pRefPosCameraMatrix.a11 = (float)pCameraMatrix.a11;
+	pRefPosCameraMatrix.a12 = (float)pCameraMatrix.a12;
+	pRefPosCameraMatrix.a13 = (float)pCameraMatrix.a13;
 	pRefPosCameraMatrix.a14 = refPosCam.x * pRefPosCameraMatrix.a11
 		+ refPosCam.y * pRefPosCameraMatrix.a12 + refPosCam.z * pRefPosCameraMatrix.a13;
 	
-	pRefPosCameraMatrix.a21 = ( float )pCameraMatrix.a21;
-	pRefPosCameraMatrix.a22 = ( float )pCameraMatrix.a22;
-	pRefPosCameraMatrix.a23 = ( float )pCameraMatrix.a23;
+	pRefPosCameraMatrix.a21 = (float)pCameraMatrix.a21;
+	pRefPosCameraMatrix.a22 = (float)pCameraMatrix.a22;
+	pRefPosCameraMatrix.a23 = (float)pCameraMatrix.a23;
 	pRefPosCameraMatrix.a24 = refPosCam.x * pRefPosCameraMatrix.a21
 		+ refPosCam.y * pRefPosCameraMatrix.a22 + refPosCam.z * pRefPosCameraMatrix.a23;
 	
-	pRefPosCameraMatrix.a31 = ( float )pCameraMatrix.a31;
-	pRefPosCameraMatrix.a32 = ( float )pCameraMatrix.a32;
-	pRefPosCameraMatrix.a33 = ( float )pCameraMatrix.a33;
+	pRefPosCameraMatrix.a31 = (float)pCameraMatrix.a31;
+	pRefPosCameraMatrix.a32 = (float)pCameraMatrix.a32;
+	pRefPosCameraMatrix.a33 = (float)pCameraMatrix.a33;
 	pRefPosCameraMatrix.a34 = refPosCam.x * pRefPosCameraMatrix.a31
 		+ refPosCam.y * pRefPosCameraMatrix.a32 + refPosCam.z * pRefPosCameraMatrix.a33;
 	
 	// mirror free
 	
-	pRefPosCameraMatrixNonMirrored.a11 = ( float )pCameraMatrixNonMirrored.a11;
-	pRefPosCameraMatrixNonMirrored.a12 = ( float )pCameraMatrixNonMirrored.a12;
-	pRefPosCameraMatrixNonMirrored.a13 = ( float )pCameraMatrixNonMirrored.a13;
+	pRefPosCameraMatrixNonMirrored.a11 = (float)pCameraMatrixNonMirrored.a11;
+	pRefPosCameraMatrixNonMirrored.a12 = (float)pCameraMatrixNonMirrored.a12;
+	pRefPosCameraMatrixNonMirrored.a13 = (float)pCameraMatrixNonMirrored.a13;
 	pRefPosCameraMatrixNonMirrored.a14 = refPosCam.x * pRefPosCameraMatrixNonMirrored.a11
 		+ refPosCam.y * pRefPosCameraMatrixNonMirrored.a12
 		+ refPosCam.z * pRefPosCameraMatrixNonMirrored.a13;
 	
-	pRefPosCameraMatrixNonMirrored.a21 = ( float )pCameraMatrixNonMirrored.a21;
-	pRefPosCameraMatrixNonMirrored.a22 = ( float )pCameraMatrixNonMirrored.a22;
-	pRefPosCameraMatrixNonMirrored.a23 = ( float )pCameraMatrixNonMirrored.a23;
+	pRefPosCameraMatrixNonMirrored.a21 = (float)pCameraMatrixNonMirrored.a21;
+	pRefPosCameraMatrixNonMirrored.a22 = (float)pCameraMatrixNonMirrored.a22;
+	pRefPosCameraMatrixNonMirrored.a23 = (float)pCameraMatrixNonMirrored.a23;
 	pRefPosCameraMatrixNonMirrored.a24 = refPosCam.x * pRefPosCameraMatrixNonMirrored.a21
 		+ refPosCam.y * pRefPosCameraMatrixNonMirrored.a22
 		+ refPosCam.z * pRefPosCameraMatrixNonMirrored.a23;
 	
-	pRefPosCameraMatrixNonMirrored.a31 = ( float )pCameraMatrixNonMirrored.a31;
-	pRefPosCameraMatrixNonMirrored.a32 = ( float )pCameraMatrixNonMirrored.a32;
-	pRefPosCameraMatrixNonMirrored.a33 = ( float )pCameraMatrixNonMirrored.a33;
+	pRefPosCameraMatrixNonMirrored.a31 = (float)pCameraMatrixNonMirrored.a31;
+	pRefPosCameraMatrixNonMirrored.a32 = (float)pCameraMatrixNonMirrored.a32;
+	pRefPosCameraMatrixNonMirrored.a33 = (float)pCameraMatrixNonMirrored.a33;
 	pRefPosCameraMatrixNonMirrored.a34 = refPosCam.x * pRefPosCameraMatrixNonMirrored.a31
 		+ refPosCam.y * pRefPosCameraMatrixNonMirrored.a32
 		+ refPosCam.z * pRefPosCameraMatrixNonMirrored.a33;
@@ -1656,78 +1656,78 @@ void deoglRenderPlan::UpdateRefPosCameraMatrix(){
 
 
 
-void deoglRenderPlan::SetFBOTarget( deoglFramebuffer *fbo ){
+void deoglRenderPlan::SetFBOTarget(deoglFramebuffer *fbo){
 	pFBOTarget = fbo;
 }
 
-void deoglRenderPlan::SetFBOMaterial( deoglFramebuffer *fbo ){
+void deoglRenderPlan::SetFBOMaterial(deoglFramebuffer *fbo){
 	pFBOMaterial = fbo;
 }
 
-void deoglRenderPlan::SetFBOMaterialMatrix( const decMatrix &matrix ){
+void deoglRenderPlan::SetFBOMaterialMatrix(const decMatrix &matrix){
 	pFBOMaterialMatrix = matrix;
 }
 
 
 
-void deoglRenderPlan::SetUpscaleSize( int width, int height ){
-	if( width < 0 || height < 0 ) DETHROW( deeInvalidParam );
+void deoglRenderPlan::SetUpscaleSize(int width, int height){
+	if(width < 0 || height < 0) DETHROW(deeInvalidParam);
 	
 	pUpscaleWidth = width;
 	pUpscaleHeight = height;
 }
 
-void deoglRenderPlan::SetUseUpscaling( bool useUpscaling ){
+void deoglRenderPlan::SetUseUpscaling(bool useUpscaling){
 	pUseUpscaling = useUpscaling;
 }
 
-void deoglRenderPlan::SetUpsideDown( bool upsideDown ){
+void deoglRenderPlan::SetUpsideDown(bool upsideDown){
 	pUpsideDown = upsideDown;
 }
 
-void deoglRenderPlan::SetUseToneMap( bool useToneMap ){
+void deoglRenderPlan::SetUseToneMap(bool useToneMap){
 	pUseToneMap = useToneMap;
 }
 
-void deoglRenderPlan::SetIgnoreDynamicComponents( bool ignoreStaticComponents ){
+void deoglRenderPlan::SetIgnoreDynamicComponents(bool ignoreStaticComponents){
 	pIgnoreDynamicComponents = ignoreStaticComponents;
 }
 
-void deoglRenderPlan::SetRenderDebugPass( bool render ){
+void deoglRenderPlan::SetRenderDebugPass(bool render){
 	pRenderDebugPass = render;
 }
 
-void deoglRenderPlan::SetNoReflections( bool noReflections ){
+void deoglRenderPlan::SetNoReflections(bool noReflections){
 	pNoReflections = noReflections;
 }
 
-void deoglRenderPlan::SetNoAmbientLight( bool noAmbientLight ){
+void deoglRenderPlan::SetNoAmbientLight(bool noAmbientLight){
 	pNoAmbientLight = noAmbientLight;
 }
 
-void deoglRenderPlan::SetUseGIState( bool useGIState ){
+void deoglRenderPlan::SetUseGIState(bool useGIState){
 	pUseGIState = useGIState;
 }
 
-void deoglRenderPlan::SetUseConstGIState( deoglGIState *giState ){
+void deoglRenderPlan::SetUseConstGIState(deoglGIState *giState){
 	pUseConstGIState = giState;
 }
 
-void deoglRenderPlan::SetRenderStereo ( bool stereoRender ){
+void deoglRenderPlan::SetRenderStereo (bool stereoRender){
 	pRenderStereo = stereoRender;
 }
 
-void deoglRenderPlan::SetRenderVR( eRenderVR renderVR ){
+void deoglRenderPlan::SetRenderVR(eRenderVR renderVR){
 	pRenderVR = renderVR;
 }
 
 
 
-void deoglRenderPlan::SetUseLayerMask( bool useLayerMask ){
+void deoglRenderPlan::SetUseLayerMask(bool useLayerMask){
 	pUseLayerMask = useLayerMask;
 }
 
-void deoglRenderPlan::SetLayerMask( const decLayerMask &layerMask ){
+void deoglRenderPlan::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
@@ -1735,156 +1735,156 @@ void deoglRenderPlan::SetLayerMask( const decLayerMask &layerMask ){
 
 void deoglRenderPlan::SetCustomFrustumBoundaries(
 const decDVector &position, const decDVector &topLeft, const decDVector &topRight,
-const decDVector &bottomLeft, const decDVector &bottomRight, double near, double far ){
+const decDVector &bottomLeft, const decDVector &bottomRight, double near, double far){
 	decDVector normal;
 	
 	// left plane
-	normal = ( topLeft - bottomLeft ) % ( bottomLeft - position );
+	normal = (topLeft - bottomLeft) % (bottomLeft - position);
 	normal.Normalize();
-	pCustomFrustum.SetLeftPlane( normal, -( normal * position ) );
+	pCustomFrustum.SetLeftPlane(normal, -(normal * position));
 	
 	// top plane
-	normal = ( topRight - topLeft ) % ( topLeft - position );
+	normal = (topRight - topLeft) % (topLeft - position);
 	normal.Normalize();
-	pCustomFrustum.SetTopPlane( normal, -( normal * position ) );
+	pCustomFrustum.SetTopPlane(normal, -(normal * position));
 	
 	// right plane
-	normal = ( bottomRight - topRight ) % ( topRight - position );
+	normal = (bottomRight - topRight) % (topRight - position);
 	normal.Normalize();
-	pCustomFrustum.SetRightPlane( normal, -( normal * position ) );
+	pCustomFrustum.SetRightPlane(normal, -(normal * position));
 	
 	// bottom plane
-	normal = ( bottomLeft - bottomRight ) % ( bottomRight - position );
+	normal = (bottomLeft - bottomRight) % (bottomRight - position);
 	normal.Normalize();
-	pCustomFrustum.SetBottomPlane( normal, -( normal * position ) );
+	pCustomFrustum.SetBottomPlane(normal, -(normal * position));
 	
 	// near and far plane
 	//normal = ( topLeft + topRight + bottomLeft + bottomRight ) * 0.25 - position;
-	normal = ( topLeft + bottomRight ) * 0.5 - position; // if this is a real box the center of each diagonal is the same point
+	normal = (topLeft + bottomRight) * 0.5 - position; // if this is a real box the center of each diagonal is the same point
 	normal.Normalize();
-	pCustomFrustum.SetNearPlane( normal, -( normal * position + near ) ); // n*(p+n*near) = n*p+(n*n)*near = n*p+near
-	pCustomFrustum.SetFarPlane( -normal, normal * position + far ); // -n*(p+n*far) = -n*p+(-n*n)*far = -n*p-far = -(n*p+far)
+	pCustomFrustum.SetNearPlane(normal, -(normal * position + near)); // n*(p+n*near) = n*p+(n*n)*near = n*p+near
+	pCustomFrustum.SetFarPlane(-normal, normal * position + far); // -n*(p+n*far) = -n*p+(-n*n)*far = -n*p-far = -(n*p+far)
 }
 
-void deoglRenderPlan::SetUseCustomFrustum( bool useCustomFrustum ){
+void deoglRenderPlan::SetUseCustomFrustum(bool useCustomFrustum){
 	pUseCustomFrustum = useCustomFrustum;
 }
 
-void deoglRenderPlan::SetCustomFrustumScreenArea( const decBoundary &area ){
+void deoglRenderPlan::SetCustomFrustumScreenArea(const decBoundary &area){
 	pCustomFrustumScreenArea = area;
 }
 
 
 
-void deoglRenderPlan::SetNoRenderedOccMesh( bool noRenderedOccMesh ){
+void deoglRenderPlan::SetNoRenderedOccMesh(bool noRenderedOccMesh){
 	pNoRenderedOccMesh = noRenderedOccMesh;
 }
 
-void deoglRenderPlan::SetFlipCulling( bool flipCulling ){
+void deoglRenderPlan::SetFlipCulling(bool flipCulling){
 	pFlipCulling = flipCulling;
 }
 
 
 
-void deoglRenderPlan::SetEmptyPass( bool emptyPass ){
+void deoglRenderPlan::SetEmptyPass(bool emptyPass){
 	pEmptyPass = emptyPass;
 }
 
-void deoglRenderPlan::SetClearStencilPassBits( bool clear ){
+void deoglRenderPlan::SetClearStencilPassBits(bool clear){
 	pClearStencilPassBits = clear;
 }
 
-void deoglRenderPlan::SetClearColor( bool clear ){
+void deoglRenderPlan::SetClearColor(bool clear){
 	pClearColor = clear;
 }
 
 
 
-void deoglRenderPlan::SetCurrentTransparencyLayer( int layer ){
+void deoglRenderPlan::SetCurrentTransparencyLayer(int layer){
 	pCurTransparencyLayer = layer;
 }
 
-void deoglRenderPlan::SetTransparencyLayerCount( int count ){
+void deoglRenderPlan::SetTransparencyLayerCount(int count){
 	pTransparencyLayerCount = count;
 }
 
-void deoglRenderPlan::SetRenderPassNumber( int number ){
+void deoglRenderPlan::SetRenderPassNumber(int number){
 	pRenderPassNumber = number;
 }
 
-void deoglRenderPlan::SetStencilRefValue( int refValue ){
+void deoglRenderPlan::SetStencilRefValue(int refValue){
 	pStencilRefValue = refValue;
 }
 
-void deoglRenderPlan::SetStencilPrevRefValue( int refValue ){
+void deoglRenderPlan::SetStencilPrevRefValue(int refValue){
 	pStencilPrevRefValue = refValue;
 }
 
-void deoglRenderPlan::SetStencilWriteMask( int writeMask ){
+void deoglRenderPlan::SetStencilWriteMask(int writeMask){
 	pStencilWriteMask = writeMask;
 }
 
-void deoglRenderPlan::SetLodMaxPixelError( int error ){
-	pLodMaxPixelError = decMath::max( error, 0 );
+void deoglRenderPlan::SetLodMaxPixelError(int error){
+	pLodMaxPixelError = decMath::max(error, 0);
 }
 
-void deoglRenderPlan::SetLodLevelOffset( int offset ){
+void deoglRenderPlan::SetLodLevelOffset(int offset){
 	pLodLevelOffset = offset;
 }
 
-void deoglRenderPlan::SetOcclusionMap( deoglOcclusionMap *occlusionMap ){
-	if( occlusionMap == pOcclusionMap ){
+void deoglRenderPlan::SetOcclusionMap(deoglOcclusionMap *occlusionMap){
+	if(occlusionMap == pOcclusionMap){
 		return;
 	}
 	
-	if( pOcclusionMap ){
-		pRenderThread.GetTexture().GetOcclusionMapPool().Return( pOcclusionMap );
+	if(pOcclusionMap){
+		pRenderThread.GetTexture().GetOcclusionMapPool().Return(pOcclusionMap);
 	}
 	
 	pOcclusionMap = occlusionMap;
 }
 
-void deoglRenderPlan::SetOcclusionTest( deoglOcclusionTest *occlusionTest ){
-	if( occlusionTest == pOcclusionTest ){
+void deoglRenderPlan::SetOcclusionTest(deoglOcclusionTest *occlusionTest){
+	if(occlusionTest == pOcclusionTest){
 		return;
 	}
 	
-	if( pOcclusionTest ){
-		pRenderThread.GetOcclusionTestPool().Return( pOcclusionTest );
+	if(pOcclusionTest){
+		pRenderThread.GetOcclusionTestPool().Return(pOcclusionTest);
 	}
 	
 	pOcclusionTest = occlusionTest;
 }
 
-void deoglRenderPlan::SetOcclusionMapBaseLevel( int level ){
+void deoglRenderPlan::SetOcclusionMapBaseLevel(int level){
 	pOcclusionMapBaseLevel = level;
 }
 
-void deoglRenderPlan::SetOcclusionTestMatrix( const decMatrix &matrix ){
+void deoglRenderPlan::SetOcclusionTestMatrix(const decMatrix &matrix){
 	pOcclusionTestMatrix = matrix;
 }
 
-void deoglRenderPlan::SetOcclusionTestMatrixStereo( const decMatrix &matrix ){
+void deoglRenderPlan::SetOcclusionTestMatrixStereo(const decMatrix &matrix){
 	pOcclusionTestMatrixStereo = matrix;
 }
 
 
 
 deoglGIState *deoglRenderPlan::GetUpdateGIState() const{
-	if( pUseGIState && ! pUseConstGIState && ! pDisableLights
+	if(pUseGIState && ! pUseConstGIState && ! pDisableLights
 	&& pRenderThread.GetConfiguration().GetGIQuality() != deoglConfiguration::egiqOff
-	&& pRenderVR != ervrRightEye ){
+	&& pRenderVR != ervrRightEye){
 		return pGIState;
 	}
 	return NULL;
 }
 
 deoglGIState *deoglRenderPlan::GetRenderGIState() const{
-	if( ! pUseGIState || pDisableLights
-	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff ){
+	if(! pUseGIState || pDisableLights
+	|| pRenderThread.GetConfiguration().GetGIQuality() == deoglConfiguration::egiqOff){
 		return NULL;
 		
-	}else if( pUseConstGIState ){
+	}else if(pUseConstGIState){
 		return pUseConstGIState;
 		
 	}else{
@@ -1895,14 +1895,14 @@ deoglGIState *deoglRenderPlan::GetRenderGIState() const{
 void deoglRenderPlan::DropGIState(){
 	// WARNING called from main thread during synchronization
 	
-	if( pGIState ){
+	if(pGIState){
 		delete pGIState;
 	}
 }
 
 
 
-void deoglRenderPlan::SetDebugTiming( bool debugTiming ){
+void deoglRenderPlan::SetDebugTiming(bool debugTiming){
 	pDebugTiming = debugTiming;
 }
 
@@ -1911,26 +1911,26 @@ void deoglRenderPlan::SetDebugTiming( bool debugTiming ){
 // Environment Maps
 /////////////////////
 
-deoglRenderPlanEnvMap &deoglRenderPlan::GetEnvMapAt( int index ) const{
-	if( index < 0 || index >= pEnvMapCount ){
-		DETHROW( deeInvalidParam );
+deoglRenderPlanEnvMap &deoglRenderPlan::GetEnvMapAt(int index) const{
+	if(index < 0 || index >= pEnvMapCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pEnvMaps[ index ];
+	return pEnvMaps[index];
 }
 
-void deoglRenderPlan::RemoveEnvMap( deoglEnvironmentMap *envmap ){
-	if( ! envmap ){
-		DETHROW( deeInvalidParam );
+void deoglRenderPlan::RemoveEnvMap(deoglEnvironmentMap *envmap){
+	if(! envmap){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	pDirectEnvMapFader.Drop( envmap );
+	pDirectEnvMapFader.Drop(envmap);
 	
-	for( i=0; i<pEnvMapCount; i++ ){
-		if( pEnvMaps[ i ].GetEnvMap() == envmap ){
-			pEnvMaps[ i ].SetEnvMap( NULL );
+	for(i=0; i<pEnvMapCount; i++){
+		if(pEnvMaps[i].GetEnvMap() == envmap){
+			pEnvMaps[i].SetEnvMap(NULL);
 		}
 	}
 }
@@ -1940,26 +1940,26 @@ void deoglRenderPlan::RemoveEnvMap( deoglEnvironmentMap *envmap ){
 // Lights
 ///////////
 
-deoglRenderPlanLight *deoglRenderPlan::GetLightAt( int index ) const{
-	if( index < 0 || index >= pLightCount ) DETHROW( deeInvalidParam );
+deoglRenderPlanLight *deoglRenderPlan::GetLightAt(int index) const{
+	if(index < 0 || index >= pLightCount) DETHROW(deeInvalidParam);
 	
-	return pLights[ index ];
+	return pLights[index];
 }
 
-deoglRenderPlanLight *deoglRenderPlan::GetLightFor( deoglCollideListLight *light ){
-	if( ! light ){
-		DETHROW( deeInvalidParam );
+deoglRenderPlanLight *deoglRenderPlan::GetLightFor(deoglCollideListLight *light){
+	if(! light){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int index = pIndexOfLightWith( light );
-	if( index == -1 ){
-		if( pLightCount == pLightSize ){
+	int index = pIndexOfLightWith(light);
+	if(index == -1){
+		if(pLightCount == pLightSize){
 			const int newSize = pLightSize * 3 / 2 + 1;
-			deoglRenderPlanLight ** const newArray = new deoglRenderPlanLight*[ newSize ];
+			deoglRenderPlanLight ** const newArray = new deoglRenderPlanLight*[newSize];
 			
-			memset( newArray, 0, sizeof( deoglRenderPlanLight* ) * newSize );
-			if( pLights ){
-				memcpy( newArray, pLights, sizeof( deoglRenderPlanLight* ) * pLightSize );
+			memset(newArray, 0, sizeof(deoglRenderPlanLight*) * newSize);
+			if(pLights){
+				memcpy(newArray, pLights, sizeof(deoglRenderPlanLight*) * pLightSize);
 				delete [] pLights;
 			}
 			
@@ -1967,22 +1967,22 @@ deoglRenderPlanLight *deoglRenderPlan::GetLightFor( deoglCollideListLight *light
 			pLightSize = newSize;
 		}
 		
-		if( ! pLights[ pLightCount ] ){
-			pLights[ pLightCount ] = new deoglRenderPlanLight( *this );
+		if(! pLights[pLightCount]){
+			pLights[pLightCount] = new deoglRenderPlanLight(*this);
 		}
 		
 		index = pLightCount;
-		pLights[ pLightCount ]->SetLight( light );
+		pLights[pLightCount]->SetLight(light);
 		pLightCount++;
 	}
 	
-	return pLights[ index ];
+	return pLights[index];
 }
 
 void deoglRenderPlan::RemoveAllLights(){
-	while( pLightCount > 0 ){
+	while(pLightCount > 0){
 		pLightCount--;
-		pLights[ pLightCount ]->SetLight( NULL );
+		pLights[pLightCount]->SetLight(NULL);
 	}
 }
 
@@ -1991,20 +1991,20 @@ void deoglRenderPlan::RemoveAllLights(){
 // Sky lights
 ///////////////
 
-deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt( int index ) const{
-	return ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( index );
+deoglRenderPlanSkyLight *deoglRenderPlan::GetSkyLightAt(int index) const{
+	return (deoglRenderPlanSkyLight*)pSkyLights.GetAt(index);
 }
 
 void deoglRenderPlan::RemoveAllSkyLights(){
-	while( pSkyLightCount > 0 ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( --pSkyLightCount ) )->Clear();
+	while(pSkyLightCount > 0){
+		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(--pSkyLightCount))->Clear();
 	}
 }
 
 void deoglRenderPlan::SkyLightsStartBuildRT(){
 	int i;
-	for( i=0; i<pSkyLightCount; i++ ){
-		( ( deoglRenderPlanSkyLight* )pSkyLights.GetAt( i ) )->StartBuildRT();
+	for(i=0; i<pSkyLightCount; i++){
+		((deoglRenderPlanSkyLight*)pSkyLights.GetAt(i))->StartBuildRT();
 	}
 }
 
@@ -2017,15 +2017,15 @@ int deoglRenderPlan::GetSkyInstanceCount() const{
 	return pSkyInstances.GetCount();
 }
 
-deoglRSkyInstance *deoglRenderPlan::GetSkyInstanceAt( int index ) const{
-	return ( deoglRSkyInstance* )pSkyInstances.GetAt( index );
+deoglRSkyInstance *deoglRenderPlan::GetSkyInstanceAt(int index) const{
+	return (deoglRSkyInstance*)pSkyInstances.GetAt(index);
 }
 
 void deoglRenderPlan::RemoveAllSkyInstances(){
 	pSkyInstances.RemoveAll();
 }
 
-void deoglRenderPlan::SetSkyBgColor( const decColor& color ){
+void deoglRenderPlan::SetSkyBgColor(const decColor& color){
 	pSkyBgColor = color;
 }
 
@@ -2034,23 +2034,23 @@ void deoglRenderPlan::SetSkyBgColor( const decColor& color ){
 // Sub Plans
 //////////////
 
-deoglRenderPlanMasked *deoglRenderPlan::GetMaskedPlanAt( int index ) const{
-	if( index < 0 || index >= pMaskedPlanCount ) DETHROW( deeInvalidParam );
+deoglRenderPlanMasked *deoglRenderPlan::GetMaskedPlanAt(int index) const{
+	if(index < 0 || index >= pMaskedPlanCount) DETHROW(deeInvalidParam);
 	
-	return pMaskedPlans[ index ];
+	return pMaskedPlans[index];
 }
 
-deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor( deoglRenderPlan *plan ){
-	if( ! plan ) DETHROW( deeInvalidParam );
+deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
+	if(! plan) DETHROW(deeInvalidParam);
 	
-	if( pMaskedPlanCount == pMaskedPlanSize ){
+	if(pMaskedPlanCount == pMaskedPlanSize){
 		int newSize = pMaskedPlanSize * 3 / 2 + 1;
-		deoglRenderPlanMasked **newArray = new deoglRenderPlanMasked*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deoglRenderPlanMasked **newArray = new deoglRenderPlanMasked*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
 		
-		memset( newArray, '\0', sizeof( deoglRenderPlanMasked* ) * newSize );
-		if( pMaskedPlans ){
-			memcpy( newArray, pMaskedPlans, sizeof( deoglRenderPlanMasked* ) * pMaskedPlanSize );
+		memset(newArray, '\0', sizeof(deoglRenderPlanMasked*) * newSize);
+		if(pMaskedPlans){
+			memcpy(newArray, pMaskedPlans, sizeof(deoglRenderPlanMasked*) * pMaskedPlanSize);
 			delete [] pMaskedPlans;
 		}
 		
@@ -2058,24 +2058,24 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor( deoglRenderPlan *plan 
 		pMaskedPlanSize = newSize;
 	}
 	
-	if( ! pMaskedPlans[ pMaskedPlanCount ] ){
-		pMaskedPlans[ pMaskedPlanCount ] = new deoglRenderPlanMasked;
+	if(! pMaskedPlans[pMaskedPlanCount]){
+		pMaskedPlans[pMaskedPlanCount] = new deoglRenderPlanMasked;
 	}
 	
-	pMaskedPlans[ pMaskedPlanCount ]->SetPlan( plan );
-	pMaskedPlans[ pMaskedPlanCount ]->SetComponent( NULL, 0 );
+	pMaskedPlans[pMaskedPlanCount]->SetPlan(plan);
+	pMaskedPlans[pMaskedPlanCount]->SetComponent(NULL, 0);
 	pMaskedPlanCount++;
 	
-	plan->SetLevel( pLevel + 1 ); // it is deeper one level than us
+	plan->SetLevel(pLevel + 1); // it is deeper one level than us
 	
-	return pMaskedPlans[ pMaskedPlanCount - 1 ];
+	return pMaskedPlans[pMaskedPlanCount - 1];
 }
 
 void deoglRenderPlan::RemoveAllMaskedPlans(){
-	while( pMaskedPlanCount > 0 ){
+	while(pMaskedPlanCount > 0){
 		pMaskedPlanCount--;
-		pMaskedPlans[ pMaskedPlanCount ]->SetPlan( NULL );
-		pMaskedPlans[ pMaskedPlanCount ]->SetComponent( NULL, 0 );
+		pMaskedPlans[pMaskedPlanCount]->SetPlan(NULL);
+		pMaskedPlans[pMaskedPlanCount]->SetComponent(NULL, 0);
 	}
 }
 
@@ -2084,11 +2084,11 @@ void deoglRenderPlan::RemoveAllMaskedPlans(){
 // Private Functions
 //////////////////////
 
-int deoglRenderPlan::pIndexOfLightWith( deoglCollideListLight *light ) const{
+int deoglRenderPlan::pIndexOfLightWith(deoglCollideListLight *light) const{
 	int i;
 	
-	for( i=0; i<pLightCount; i++ ){
-		if( light == pLights[ i ]->GetLight() ){
+	for(i=0; i<pLightCount; i++){
+		if(light == pLights[i]->GetLight()){
 			return i;
 		}
 	}
@@ -2105,61 +2105,61 @@ void deoglRenderPlan::pCheckTransparency(){
 	// components
 	const int componentCount = pCollideList.GetComponentCount();
 	int i;
-	for( i=0; i<componentCount; i++ ){
-		const deoglRComponent &component = *pCollideList.GetComponentAt( i )->GetComponent();
-		if( ! component.GetSolid() || ! component.GetOutlineSolid() ){
+	for(i=0; i<componentCount; i++){
+		const deoglRComponent &component = *pCollideList.GetComponentAt(i)->GetComponent();
+		if(! component.GetSolid() || ! component.GetOutlineSolid()){
 			pHasTransparency = true;
 		}
-		if( ! component.GetXRaySolid() ){
+		if(! component.GetXRaySolid()){
 			pHasXRayTransparency = true;
 		}
 	}
-	if( pHasTransparency && pHasXRayTransparency ){
+	if(pHasTransparency && pHasXRayTransparency){
 		return;
 	}
 	
 	// billboards
 	const int billboardCount = pCollideList.GetBillboardCount();
-	for( i=0; i<billboardCount; i++ ){
-		const deoglRBillboard &billboard = *pCollideList.GetBillboardAt( i );
-		if( billboard.GetUseSkinTexture() ){
-			if( ! billboard.GetUseSkinTexture()->GetSolid() ){
+	for(i=0; i<billboardCount; i++){
+		const deoglRBillboard &billboard = *pCollideList.GetBillboardAt(i);
+		if(billboard.GetUseSkinTexture()){
+			if(! billboard.GetUseSkinTexture()->GetSolid()){
 				pHasTransparency = true;
-				if( billboard.GetUseSkinTexture()->GetXRay() ){
+				if(billboard.GetUseSkinTexture()->GetXRay()){
 					pHasXRayTransparency = true;
 				}
 			}
 		}
 	}
-	if( pHasTransparency && pHasXRayTransparency ){
+	if(pHasTransparency && pHasXRayTransparency){
 		return;
 	}
 	
 	// particles
-	if( pRenderThread.GetChoices().GetRealTransparentParticles() ){
+	if(pRenderThread.GetChoices().GetRealTransparentParticles()){
 		const deoglParticleEmitterInstanceList &peinstList = pCollideList.GetParticleEmitterList();
 		const int peinstCount = peinstList.GetCount();
 		int j;
 		
-		for( i=0; i< peinstCount; i++ ){
-			const deoglRParticleEmitterInstance &instance = *peinstList.GetAt( i );
-			if( instance.GetParticleCount() == 0 ){
+		for(i=0; i< peinstCount; i++){
+			const deoglRParticleEmitterInstance &instance = *peinstList.GetAt(i);
+			if(instance.GetParticleCount() == 0){
 				continue;
 			}
 			
 			const int typeCount = instance.GetTypeCount();
-			for( j=0; j<typeCount; j++ ){
-				const deoglRSkin * const skin = instance.GetTypeAt( j ).GetUseSkin();
-				if( skin ){
-					if( ! skin->GetIsSolid() ){
+			for(j=0; j<typeCount; j++){
+				const deoglRSkin * const skin = instance.GetTypeAt(j).GetUseSkin();
+				if(skin){
+					if(! skin->GetIsSolid()){
 						pHasTransparency = true;
-						if( skin->GetHasXRay() ){
+						if(skin->GetHasXRay()){
 							pHasXRayTransparency = true;
 						}
 					}
 				}
 				/*
-				if( instance.GetEmitter()->GetTypeAt( j ).GetHasTransparency() ){
+				if(instance.GetEmitter()->GetTypeAt(j).GetHasTransparency()){
 					pHasTransparency = true;
 					return;
 				}
@@ -2175,19 +2175,19 @@ void deoglRenderPlan::pCheckTransparency(){
 		const int peinstCount = peinstList.GetCount();
 		int j;
 		
-		for( i=0; i< peinstCount; i++ ){
-			const deoglRParticleEmitterInstance &instance = *peinstList.GetAt( i );
-			if( instance.GetParticleCount() == 0 ){
+		for(i=0; i< peinstCount; i++){
+			const deoglRParticleEmitterInstance &instance = *peinstList.GetAt(i);
+			if(instance.GetParticleCount() == 0){
 				continue;
 			}
 			
 			const int typeCount = instance.GetTypeCount();
-			for( j=0; j<typeCount; j++ ){
-				const deoglRSkin * const skin = instance.GetTypeAt( j ).GetUseSkin();
-				if( skin ){
-					if( ! skin->GetIsSolid() ){
+			for(j=0; j<typeCount; j++){
+				const deoglRSkin * const skin = instance.GetTypeAt(j).GetUseSkin();
+				if(skin){
+					if(! skin->GetIsSolid()){
 						pHasTransparency = true;
-						if( skin->GetHasXRay() ){
+						if(skin->GetHasXRay()){
 							pHasXRayTransparency = true;
 						}
 					}
@@ -2216,8 +2216,8 @@ void deoglRenderPlan::pBuildRenderPlan(){
 	
 	// assing the stencil mask to all masked plans
 	int i;
-	for( i=0; i<pMaskedPlanCount; i++ ){
-		pMaskedPlans[ i ]->SetStencilMask( i + 1 );
+	for(i=0; i<pMaskedPlanCount; i++){
+		pMaskedPlans[i]->SetStencilMask(i + 1);
 	}
 	SPECIAL_TIMER_PRINT(">Misc")
 	
@@ -2233,10 +2233,10 @@ void deoglRenderPlan::pBuildLightPlan(){
 	
 	RemoveAllLights(); // better safe than sorry
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		// we have to add lights here. earlier is not possible since the elements in the
 		// collide list are potentially removed due to culling
-		deoglRenderPlanLight &planLight = *GetLightFor( pCollideList.GetLightAt( i ) ) ;
+		deoglRenderPlanLight &planLight = *GetLightFor(pCollideList.GetLightAt(i)) ;
 		
 		planLight.Init();
 		planLight.PlanShadowCasting();
@@ -2246,21 +2246,21 @@ void deoglRenderPlan::pBuildLightPlan(){
 
 
 void deoglRenderPlan::pUpdateHTView(){
-	if( pHTView && pWorld && &pHTView->GetHeightTerrain() == pWorld->GetHeightTerrain() ){
+	if(pHTView && pWorld && &pHTView->GetHeightTerrain() == pWorld->GetHeightTerrain()){
 		pHTView->Prepare();
 		return;
 	}
 	
 	pHTView = nullptr;
 	
-	if( pWorld && pWorld->GetHeightTerrain() ){
-		pHTView.TakeOver( new deoglHTView( pWorld->GetHeightTerrain() ) );
+	if(pWorld && pWorld->GetHeightTerrain()){
+		pHTView.TakeOver(new deoglHTView(pWorld->GetHeightTerrain()));
 		pHTView->Prepare();
 	}
 }
 
 void deoglRenderPlan::pUpdateHTViewRTSInstances(){
-	if( ! pHTView ){
+	if(! pHTView){
 		return;
 	}
 	
@@ -2276,7 +2276,7 @@ void deoglRenderPlan::pCheckOutsideVisibility(){
 	bool outsideWorldVisible = true;
 	
 	pSkyVisible = outsideWorldVisible;
-	if( ! outsideWorldVisible ){
+	if(! outsideWorldVisible){
 		pCollideList.RemoveAllHTSectors();
 	}
 }
@@ -2284,7 +2284,7 @@ void deoglRenderPlan::pCheckOutsideVisibility(){
 void deoglRenderPlan::pDropLightsTemporary(){
 	const int count = pCollideList.GetLightCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pCollideList.GetLightAt( i )->GetLight()->GetShadowCaster()->DropTemporary();
+	for(i=0; i<count; i++){
+		pCollideList.GetLightAt(i)->GetLight()->GetShadowCaster()->DropTemporary();
 	}
 }

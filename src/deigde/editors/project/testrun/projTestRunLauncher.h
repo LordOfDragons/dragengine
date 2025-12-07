@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create launcher simulation. */
-	projTestRunLauncher( projTestRunProcess &process );
+	projTestRunLauncher(projTestRunProcess &process);
 	
 	/** \brief Clean up launcher simulation. */
 	~projTestRunLauncher();
@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief System config path. */
-	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
+	inline const decString &GetPathConfigSystem() const{return pPathConfigSystem;}
 	
 	/** \brief User config path. */
-	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
+	inline const decString &GetPathConfigUser() const{return pPathConfigUser;}
 	
 	/** \brief Shares path. */
-	inline const decString &GetPathShares() const{ return pPathShares; }
+	inline const decString &GetPathShares() const{return pPathShares;}
 	
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem* GetVFS() const{ return pVFS; }
+	inline deVirtualFileSystem* GetVFS() const{return pVFS;}
 	
 	/** \brief Locate path. */
 	void LocatePath();

@@ -67,11 +67,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create session. */
-	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName );
+	deoxrAction(deoxrActionSet &actionSet, eType type, const char *name, const char *localizedName);
 	
 	/** Create session. */
-	deoxrAction( deoxrActionSet &actionSet, eType type, const char *name,
-		const char *localizedName, const XrPath *subactionPath, int subactionPathCount );
+	deoxrAction(deoxrActionSet &actionSet, eType type, const char *name,
+		const char *localizedName, const XrPath *subactionPath, int subactionPathCount);
 	
 protected:
 	/** Clean up space. */
@@ -84,19 +84,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Action set or nullptr if dropped. */
-	inline deoxrActionSet *GetActionSet() const{ return pActionSet; }
+	inline deoxrActionSet *GetActionSet() const{return pActionSet;}
 	
 	/** Type. */
-	inline eType GetType() const{ return pType; }
+	inline eType GetType() const{return pType;}
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Localized name. */
-	inline const decString &GetLocalizedName() const{ return pLocalizedName; }
+	inline const decString &GetLocalizedName() const{return pLocalizedName;}
 	
 	/** Action or XR_NULL_HANDLE if dropped. */
-	inline XrAction GetAction() const{ return pAction; }
+	inline XrAction GetAction() const{return pAction;}
 	
 	/** Drop action set. */
 	void DropActionSet();

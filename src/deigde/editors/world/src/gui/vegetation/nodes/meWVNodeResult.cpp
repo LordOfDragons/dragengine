@@ -58,11 +58,11 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
-	cTextProbability( meWVNodeResult &node ) : pNode( node ){ }
+	cTextProbability(meWVNodeResult &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleResult()->GetProbability() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleResult()->GetProbability()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -77,11 +77,11 @@ protected:
 	meWVNodeResult &pNode;
 	
 public:
-	cTextVariation( meWVNodeResult &node ) : pNode( node ){ }
+	cTextVariation(meWVNodeResult &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const int value = textField->GetInteger();
-		if( value == pNode.GetRuleResult()->GetVariation() ){
+		if(value == pNode.GetRuleResult()->GetVariation()){
 			return;
 		}
 		
@@ -101,33 +101,33 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeResult::meWVNodeResult( meWindowVegetation &windowVegetation, meHTVRuleResult *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleResult( rule )
+meWVNodeResult::meWVNodeResult(meWindowVegetation &windowVegetation, meHTVRuleResult *rule) :
+meWVNode(windowVegetation, rule),
+pRuleResult(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Result" );
+	SetTitle("Result");
 	
 	// slots
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
 		"Probability", "Probability in the range from 0 to 1",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
-	helper.EditFloat( slot, "Probability if slot is not connected.",
-		pEditProbability, new cTextProbability( *this ) );
-	AddSlot( slot );
+	helper.EditFloat(slot, "Probability if slot is not connected.",
+		pEditProbability, new cTextProbability(*this));
+	AddSlot(slot);
 	
 	slot.TakeOverWith(env, "Variation", "Variation to use",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation);
-	helper.EditInteger( slot, "Variation if slot is not connected.",
-		pEditVariation, new cTextVariation( *this ) );
-	AddSlot( slot );
+	helper.EditInteger(slot, "Variation if slot is not connected.",
+		pEditVariation, new cTextVariation(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 }
 
 meWVNodeResult::~meWVNodeResult(){
@@ -141,8 +141,8 @@ meWVNodeResult::~meWVNodeResult(){
 void meWVNodeResult::Update(){
 	meWVNode::Update();
 	
-	pEditProbability->SetFloat( pRuleResult->GetProbability() );
-	pEditVariation->SetInteger( pRuleResult->GetVariation() );
+	pEditProbability->SetFloat(pRuleResult->GetProbability());
+	pEditVariation->SetInteger(pRuleResult->GetVariation());
 }
 
 bool meWVNodeResult::CanDelete() const{

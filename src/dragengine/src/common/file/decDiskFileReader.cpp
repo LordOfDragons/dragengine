@@ -43,9 +43,9 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decDiskFileReader::decDiskFileReader( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+decDiskFileReader::decDiskFileReader(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFile = NULL;
@@ -56,42 +56,42 @@ decDiskFileReader::decDiskFileReader( const char *filename ){
 		pFilename = filename;
 		
 #ifdef OS_W32
-		wchar_t widePath[ MAX_PATH ];
-		deOSWindows::Utf8ToWide( filename, widePath, MAX_PATH );
+		wchar_t widePath[MAX_PATH];
+		deOSWindows::Utf8ToWide(filename, widePath, MAX_PATH);
 		
 		WIN32_FILE_ATTRIBUTE_DATA fa;
-		if( ! GetFileAttributesExW( widePath, GetFileExInfoStandard, &fa ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		
 		#ifdef OS_W32_VS
-		pFile = _wfsopen( widePath, L"rb", _SH_DENYNO );
-		if( ! pFile ){
+		pFile = _wfsopen(widePath, L"rb", _SH_DENYNO);
+		if(! pFile){
 			errno_t result = 0;
-			_get_errno( &result );
-			DETHROW_INFO( deeFileNotFound, pFormatError( result ) );
+			_get_errno(&result);
+			DETHROW_INFO(deeFileNotFound, pFormatError(result));
 		}
 		#else
-		pFile = _wfopen( widePath, L"rb" );
-		if( ! pFile ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		pFile = _wfopen(widePath, L"rb");
+		if(! pFile){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		#endif
 		
-		pLength = ( int )( ( ( uint64_t )fa.nFileSizeHigh << 32 ) + ( uint64_t )fa.nFileSizeLow );
+		pLength = (int)(((uint64_t)fa.nFileSizeHigh << 32) + (uint64_t)fa.nFileSizeLow);
 		
 		SYSTEMTIME stime;
-		if( ! FileTimeToSystemTime( &fa.ftLastWriteTime, &stime ) ){
-			DETHROW( deeInvalidParam );
+		if(! FileTimeToSystemTime(&fa.ftLastWriteTime, &stime)){
+			DETHROW(deeInvalidParam);
 		}
 		
 		decDateTime modTime;
-		modTime.SetYear( stime.wYear );
-		modTime.SetMonth( stime.wMonth - 1 );
-		modTime.SetDay( stime.wDay - 1 );
-		modTime.SetHour( stime.wHour );
-		modTime.SetMinute( stime.wMinute );
-		modTime.SetSecond( stime.wSecond );
+		modTime.SetYear(stime.wYear);
+		modTime.SetMonth(stime.wMonth - 1);
+		modTime.SetDay(stime.wDay - 1);
+		modTime.SetHour(stime.wHour);
+		modTime.SetMinute(stime.wMinute);
+		modTime.SetSecond(stime.wSecond);
 		
 		pModificationTime = modTime.ToSystemTime();
 		
@@ -102,30 +102,30 @@ decDiskFileReader::decDiskFileReader( const char *filename ){
 		// platforms this order of action is fine too
 		struct stat st;
 		
-		if( stat( filename, &st ) ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		if(stat(filename, &st)){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		
-		pFile = fopen( filename, "rb" );
-		if( ! pFile ){
-			DETHROW_INFO( deeFileNotFound, filename );
+		pFile = fopen(filename, "rb");
+		if(! pFile){
+			DETHROW_INFO(deeFileNotFound, filename);
 		}
 		
-		pLength = ( int )st.st_size;
-		pModificationTime = ( TIME_SYSTEM )st.st_mtime;
+		pLength = (int)st.st_size;
+		pModificationTime = (TIME_SYSTEM)st.st_mtime;
 #endif
 		
-	}catch( const deException & ){
-		if( pFile ){
-			fclose( pFile );
+	}catch(const deException &){
+		if(pFile){
+			fclose(pFile);
 		}
 		throw;
 	}
 }
 
 decDiskFileReader::~decDiskFileReader(){
-	if( pFile ){
-		fclose( pFile );
+	if(pFile){
+		fclose(pFile);
 	}
 }
 
@@ -152,24 +152,24 @@ TIME_SYSTEM decDiskFileReader::GetModificationTime(){
 ////////////
 
 int decDiskFileReader::GetPosition(){
-	return ( int )ftell( pFile );
+	return (int)ftell(pFile);
 }
 
-void decDiskFileReader::SetPosition( int position ){
-	if( fseek( pFile, position, SEEK_SET ) ){
-		DETHROW_INFO( deeReadFile, pFilename );
+void decDiskFileReader::SetPosition(int position){
+	if(fseek(pFile, position, SEEK_SET)){
+		DETHROW_INFO(deeReadFile, pFilename);
 	}
 }
 
-void decDiskFileReader::MovePosition( int offset ){
-	if( fseek( pFile, offset, SEEK_CUR ) ){
-		DETHROW_INFO( deeReadFile, pFilename );
+void decDiskFileReader::MovePosition(int offset){
+	if(fseek(pFile, offset, SEEK_CUR)){
+		DETHROW_INFO(deeReadFile, pFilename);
 	}
 }
 
-void decDiskFileReader::SetPositionEnd( int position ){
-	if( fseek( pFile, position, SEEK_END ) ){
-		DETHROW_INFO( deeReadFile, pFilename );
+void decDiskFileReader::SetPositionEnd(int position){
+	if(fseek(pFile, position, SEEK_END)){
+		DETHROW_INFO(deeReadFile, pFilename);
 	}
 }
 
@@ -178,26 +178,26 @@ void decDiskFileReader::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void decDiskFileReader::Read( void *buffer, int size ){
-	const int readBytes = ( int )fread( buffer, 1, size, pFile );
+void decDiskFileReader::Read(void *buffer, int size){
+	const int readBytes = (int)fread(buffer, 1, size, pFile);
 	
-	if( readBytes == size ){
+	if(readBytes == size){
 		return;
 	}
 	
-	const bool endOfFile = ( feof( pFile ) != 0 );
-	clearerr( pFile );  // required to support growing files
+	const bool endOfFile = (feof(pFile) != 0);
+	clearerr(pFile);  // required to support growing files
 	
-	if( ! endOfFile ){
-		DETHROW_INFO( deeReadFile, pFilename );
+	if(! endOfFile){
+		DETHROW_INFO(deeReadFile, pFilename);
 	}
 }
 
 decBaseFileReader::Ref decDiskFileReader::Duplicate(){
-	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
-		new decDiskFileReader( pFilename ) ) );
-	if( fseek( ( ( decDiskFileReader& )( decBaseFileReader& )reader ).pFile, ftell( pFile ), SEEK_SET ) ){
-		DETHROW_INFO( deeReadFile, pFilename );
+	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+		new decDiskFileReader(pFilename)));
+	if(fseek(((decDiskFileReader&)(decBaseFileReader&)reader).pFile, ftell(pFile), SEEK_SET)){
+		DETHROW_INFO(deeReadFile, pFilename);
 	}
 	return reader;
 }
@@ -208,12 +208,12 @@ decBaseFileReader::Ref decDiskFileReader::Duplicate(){
 //////////////////////
 
 #ifdef OS_W32_VS
-decString decDiskFileReader::pFormatError( errno_t error ) const{
-	char buffer[ 100 ];
-	strerror_s( buffer, sizeof( buffer ), error );
+decString decDiskFileReader::pFormatError(errno_t error) const{
+	char buffer[100];
+	strerror_s(buffer, sizeof(buffer), error);
 
 	decString message;
-	message.Format( "%s: %s (%d)", pFilename, buffer, error );
+	message.Format("%s: %s (%d)", pFilename, buffer, error);
 	return message;
 }
 #endif

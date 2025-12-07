@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine controller. */
-	igdeEngineController( igdeMainWindow &mainWindow );
+	igdeEngineController(igdeMainWindow &mainWindow);
 	
 	/** \brief Clean up engine controller. */
 	~igdeEngineController();
@@ -84,10 +84,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Main window. */
-	inline igdeMainWindow &GetMainWindow() const{ return pMainWindow; }
+	inline igdeMainWindow &GetMainWindow() const{return pMainWindow;}
 	
 	/** \brief Initializes the engine. */
 	void InitEngine();
@@ -96,29 +96,29 @@ public:
 	void CloseEngine();
 	
 	/** \brief Resizes the game screen. */
-	void ResizeWindow( int width, int height );
+	void ResizeWindow(int width, int height);
 	
 	/** \brief Create render window. */
 	deRenderWindow *CreateRenderWindow();
 	
 	/** \brief Create render window attached to the given host window. */
-	deRenderWindow *CreateRenderWindow( igdeWidget &hostWindow );
+	deRenderWindow *CreateRenderWindow(igdeWidget &hostWindow);
 	
 	/** \brief Unparent main render window. */
 	void UnparentMainRenderWindow();
 	
 	/** \brief Update engine virtual file system using game definition if present. */
-	void UpdateEngine( const igdeGameProject *gameProject,
-		const char *pathIGDEData, const char *pathIGDEModuleData );
+	void UpdateEngine(const igdeGameProject *gameProject,
+		const char *pathIGDEData, const char *pathIGDEModuleData);
 	
 	/** \brief Adds an internal module to the engine. */
-	void AddInternalModule( deInternalModule *module );
+	void AddInternalModule(deInternalModule *module);
 	
 	/** \brief Activates a module by name. */
-	void ActivateModule( int system, const char *name );
+	void ActivateModule(int system, const char *name);
 	
 	/** \brief Engine is running. */
-	inline bool GetRunning() const{ return pRunning; }
+	inline bool GetRunning() const{return pRunning;}
 	
 	/** \brief Start engine. */
 	void StartEngine();
@@ -134,7 +134,7 @@ private:
 	
 	void pCreateMainRenderWindow();
 	void pDestroyMainRenderWindow();
-	deLoadableModule *GetBestModuleForType( deModuleSystem::eModuleTypes moduleType ) const;
+	deLoadableModule *GetBestModuleForType(deModuleSystem::eModuleTypes moduleType) const;
 };
 
 #endif

@@ -66,9 +66,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the root node. */
-	inline dedsStyledTextNode *GetRootNode() const{ return pRootNode; }
+	inline dedsStyledTextNode *GetRootNode() const{return pRootNode;}
 	/** Sets the root node. */
-	void SetRootNode( dedsStyledTextNode *node );
+	void SetRootNode(dedsStyledTextNode *node);
 	/*@}*/
 	
 private:

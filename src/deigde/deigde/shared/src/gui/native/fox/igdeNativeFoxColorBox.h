@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native colorBox.
  */
 class igdeNativeFoxColorBox : public FXFrame{
-	FXDECLARE( igdeNativeFoxColorBox )
+	FXDECLARE(igdeNativeFoxColorBox)
 	
 protected:
 	igdeNativeFoxColorBox();
@@ -61,14 +61,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxColorBox( igdeColorBox &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxColorBox(igdeColorBox &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxColorBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxColorBox* CreateNativeWidget( igdeColorBox &owner );
+	static igdeNativeFoxColorBox* CreateNativeWidget(igdeColorBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -88,22 +88,22 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEnabled();
 	
-	virtual void ClipboardPutColor( const decColor &color );
+	virtual void ClipboardPutColor(const decColor &color);
 	virtual decColor ClipboardGetColor();
 	
-	static FXColor ColorIgdeToFx( const decColor &color );
-	static decColor ColorFxToIgde( FXColor color );
-	static int ColorBoxFlags( const igdeColorBox &owner );
-	static int ColorBoxHeight( const igdeGuiTheme &guitheme );
+	static FXColor ColorIgdeToFx(const decColor &color);
+	static decColor ColorFxToIgde(FXColor color);
+	static int ColorBoxFlags(const igdeColorBox &owner);
+	static int ColorBoxHeight(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject*, FXSelector, void* );
-	long onClicked( FXObject*, FXSelector, void* );
-	long onRClicked( FXObject*, FXSelector, void* );
+	long onPaint(FXObject*, FXSelector, void*);
+	long onClicked(FXObject*, FXSelector, void*);
+	long onRClicked(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

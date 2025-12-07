@@ -48,8 +48,8 @@
 dealGPModule::dealGPModule(){
 }
 
-dealGPModule::dealGPModule( const dealGPModule &module ){
-	CopyFrom( module );
+dealGPModule::dealGPModule(const dealGPModule &module){
+	CopyFrom(module);
 }
 
 dealGPModule::~dealGPModule(){
@@ -60,13 +60,13 @@ dealGPModule::~dealGPModule(){
 // Management
 ///////////////
 
-void dealGPModule::SetName( const char *name ){
+void dealGPModule::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void dealGPModule::CopyFrom( const dealGPModule &module ){
+void dealGPModule::CopyFrom(const dealGPModule &module){
 	const dealGPMParameterList &parameterList = module.GetParameterList();
 	int i, parameterCount = parameterList.GetParameterCount();
 	dealGPMParameter *parameter = NULL;
@@ -76,25 +76,25 @@ void dealGPModule::CopyFrom( const dealGPModule &module ){
 	pParameterList.RemoveAllParameters();
 	
 	try{
-		for( i=0; i<parameterCount; i++ ){
-			parameter = new dealGPMParameter( *parameterList.GetParameterAt( i ) );
-			pParameterList.AddParameter( parameter );
+		for(i=0; i<parameterCount; i++){
+			parameter = new dealGPMParameter(*parameterList.GetParameterAt(i));
+			pParameterList.AddParameter(parameter);
 			parameter = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( parameter ){
+	}catch(const deException &){
+		if(parameter){
 			parameter->FreeReference();
 		}
 		throw;
 	}
 }
 
-void dealGPModule::ApplyParameters( const char *version, dealLauncher &launcher,
-dealIEngineInstance &engineInstance ) const{
+void dealGPModule::ApplyParameters(const char *version, dealLauncher &launcher,
+dealIEngineInstance &engineInstance) const{
 	dealEngineModule * const engineModule = launcher.GetEngine()
-		.GetModuleList().GetModuleNamed( pName, version );
-	if( ! engineModule ){
+		.GetModuleList().GetModuleNamed(pName, version);
+	if(! engineModule){
 		return;
 	}
 	
@@ -102,15 +102,15 @@ dealIEngineInstance &engineInstance ) const{
 	const int count = pParameterList.GetParameterCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const dealGPMParameter &parameter = *pParameterList.GetParameterAt( i );
+	for(i=0; i<count; i++){
+		const dealGPMParameter &parameter = *pParameterList.GetParameterAt(i);
 		dealEMParameter * const engineParameter =
-			engineParameterList.GetParameterNamed( parameter.GetName() );
+			engineParameterList.GetParameterNamed(parameter.GetName());
 		
-		if( engineParameter ){
-			if( ! engineInstance.SetModuleParameterValue( pName, version,
-					parameter.GetName(), parameter.GetValue() ) ){
-				DETHROW( deeInvalidAction );
+		if(engineParameter){
+			if(! engineInstance.SetModuleParameterValue(pName, version,
+					parameter.GetName(), parameter.GetValue())){
+				DETHROW(deeInvalidAction);
 			}
 		}
 	}

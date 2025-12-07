@@ -38,14 +38,14 @@
 // class devkPipelineGraphic
 //////////////////////////////
 
-devkPipelineGraphic::devkPipelineGraphic( devkDevice &device, const devkPipelineConfiguration &configuration ) :
-devkPipeline( device, configuration )
+devkPipelineGraphic::devkPipelineGraphic(devkDevice &device, const devkPipelineConfiguration &configuration) :
+devkPipeline(device, configuration)
 {
-	DEASSERT_NOTNULL( configuration.GetRenderPass() )
-	DEASSERT_TRUE( configuration.GetShaderVertex() || configuration.GetShaderFragment() )
+	DEASSERT_NOTNULL(configuration.GetRenderPass())
+	DEASSERT_TRUE(configuration.GetShaderVertex() || configuration.GetShaderFragment())
 	
 	const devkSpecialization * const specialization = configuration.GetSpecialization();
-	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+	VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
 	
 	VkGraphicsPipelineCreateInfo pipelineInfo{VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO};
 	pipelineInfo.layout = pLayout;
@@ -54,7 +54,7 @@ devkPipeline( device, configuration )
 	
 	// specialization
 	VkSpecializationInfo specializationInfo{};
-	if( specialization ){
+	if(specialization){
 		specializationInfo.pData = specialization->GetData();
 		specializationInfo.dataSize = specialization->GetDataSize();
 		specializationInfo.mapEntryCount = specialization->GetEntryCount();
@@ -64,38 +64,38 @@ devkPipeline( device, configuration )
 	VkSpecializationInfo * const useSpecialization = specialization ? &specializationInfo : nullptr;
 	
 	// shader stages
-	VkPipelineShaderStageCreateInfo stageInfo[ 5 ]{};
+	VkPipelineShaderStageCreateInfo stageInfo[5]{};
 	
 	pipelineInfo.pStages = stageInfo;
 	
 	devkShaderModule *shader = configuration.GetShaderVertex();
-	if( shader ){
-		pInitShaderStage( stageInfo[ pipelineInfo.stageCount++ ],
-			VK_SHADER_STAGE_VERTEX_BIT, *shader, useSpecialization );
+	if(shader){
+		pInitShaderStage(stageInfo[pipelineInfo.stageCount++],
+			VK_SHADER_STAGE_VERTEX_BIT, *shader, useSpecialization);
 	}
 	
 	shader = configuration.GetShaderTessellationControl();
-	if( shader ){
-		pInitShaderStage( stageInfo[ pipelineInfo.stageCount++ ],
-			VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, *shader, useSpecialization );
+	if(shader){
+		pInitShaderStage(stageInfo[pipelineInfo.stageCount++],
+			VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, *shader, useSpecialization);
 	}
 	
 	shader = configuration.GetShaderTessellationEvaluation();
-	if( shader ){
-		pInitShaderStage( stageInfo[ pipelineInfo.stageCount++ ],
-			VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, *shader, useSpecialization );
+	if(shader){
+		pInitShaderStage(stageInfo[pipelineInfo.stageCount++],
+			VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, *shader, useSpecialization);
 	}
 	
 	shader = configuration.GetShaderGeometry();
-	if( shader ){
-		pInitShaderStage( stageInfo[ pipelineInfo.stageCount++ ],
-			VK_SHADER_STAGE_GEOMETRY_BIT, *shader, useSpecialization );
+	if(shader){
+		pInitShaderStage(stageInfo[pipelineInfo.stageCount++],
+			VK_SHADER_STAGE_GEOMETRY_BIT, *shader, useSpecialization);
 	}
 	
 	shader = configuration.GetShaderFragment();
-	if( shader ){
-		pInitShaderStage( stageInfo[ pipelineInfo.stageCount++ ],
-			VK_SHADER_STAGE_FRAGMENT_BIT, *shader, useSpecialization );
+	if(shader){
+		pInitShaderStage(stageInfo[pipelineInfo.stageCount++],
+			VK_SHADER_STAGE_FRAGMENT_BIT, *shader, useSpecialization);
 	}
 	
 	// vertex input data
@@ -177,11 +177,11 @@ devkPipeline( device, configuration )
 	
 	VkPipelineColorBlendAttachmentState blendAttachment{};
 	
-	if( configuration.GetBlendColor() != devkPipelineConfiguration::ebDisable
-	|| configuration.GetBlendAlpha() != devkPipelineConfiguration::ebDisable ){
+	if(configuration.GetBlendColor() != devkPipelineConfiguration::ebDisable
+	|| configuration.GetBlendAlpha() != devkPipelineConfiguration::ebDisable){
 		blendAttachment.blendEnable = VK_TRUE;
 		
-		switch( configuration.GetBlendColor() ){
+		switch(configuration.GetBlendColor()){
 		case devkPipelineConfiguration::ebDisable:
 			blendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
 			blendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -213,7 +213,7 @@ devkPipeline( device, configuration )
 			break;
 		}
 		
-		switch( configuration.GetBlendAlpha() ){
+		switch(configuration.GetBlendAlpha()){
 		case devkPipelineConfiguration::ebDisable:
 			blendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 			blendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -250,16 +250,16 @@ devkPipeline( device, configuration )
 	}
 	
 	blendAttachment.colorWriteMask = 0;
-	if( configuration.GetColorWriteMaskAt( 0 ) ){
+	if(configuration.GetColorWriteMaskAt(0)){
 		blendAttachment.colorWriteMask |= VK_COLOR_COMPONENT_R_BIT;
 	}
-	if( configuration.GetColorWriteMaskAt( 1 ) ){
+	if(configuration.GetColorWriteMaskAt(1)){
 		blendAttachment.colorWriteMask |= VK_COLOR_COMPONENT_G_BIT;
 	}
-	if( configuration.GetColorWriteMaskAt( 2 ) ){
+	if(configuration.GetColorWriteMaskAt(2)){
 		blendAttachment.colorWriteMask |= VK_COLOR_COMPONENT_B_BIT;
 	}
-	if( configuration.GetColorWriteMaskAt( 3 ) ){
+	if(configuration.GetColorWriteMaskAt(3)){
 		blendAttachment.colorWriteMask |= VK_COLOR_COMPONENT_A_BIT;
 	}
 	
@@ -271,18 +271,18 @@ devkPipeline( device, configuration )
 	// dynamic states
 	VkPipelineDynamicStateCreateInfo dynamicStateInfo{
 		VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO};
-	VkDynamicState dynamicStates[ 8 ];
+	VkDynamicState dynamicStates[8];
 	int countDynamicStates = 0;
 	
-	dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_VIEWPORT;
-	dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_SCISSOR;
-	if( configuration.GetDynamicDepthBias() ){
-		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_DEPTH_BIAS;
+	dynamicStates[countDynamicStates++] = VK_DYNAMIC_STATE_VIEWPORT;
+	dynamicStates[countDynamicStates++] = VK_DYNAMIC_STATE_SCISSOR;
+	if(configuration.GetDynamicDepthBias()){
+		dynamicStates[countDynamicStates++] = VK_DYNAMIC_STATE_DEPTH_BIAS;
 	}
-	if( configuration.GetDynamicStencil() ){
-		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK;
-		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_STENCIL_WRITE_MASK;
-		dynamicStates[ countDynamicStates++ ] = VK_DYNAMIC_STATE_STENCIL_REFERENCE;
+	if(configuration.GetDynamicStencil()){
+		dynamicStates[countDynamicStates++] = VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK;
+		dynamicStates[countDynamicStates++] = VK_DYNAMIC_STATE_STENCIL_WRITE_MASK;
+		dynamicStates[countDynamicStates++] = VK_DYNAMIC_STATE_STENCIL_REFERENCE;
 	}
 	// VK_DYNAMIC_STATE_BLEND_CONSTANTS
 	// VK_DYNAMIC_STATE_DEPTH_BOUNDS
@@ -293,8 +293,8 @@ devkPipeline( device, configuration )
 	pipelineInfo.pDynamicState = &dynamicStateInfo;
 	
 	// create pipeline
-	VK_CHECK( vulkan, pDevice.vkCreateGraphicsPipelines( device.GetDevice(),
-		pCache, 1, &pipelineInfo, VK_NULL_HANDLE, &pPipeline ) );
+	VK_CHECK(vulkan, pDevice.vkCreateGraphicsPipelines(device.GetDevice(),
+		pCache, 1, &pipelineInfo, VK_NULL_HANDLE, &pPipeline));
 	
 	pSaveCache = true;
 }

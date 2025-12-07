@@ -48,8 +48,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delEngineProcessRunGame::delEngineProcessRunGame( delEngineProcess &process ) :
-pProcess( process ){
+delEngineProcessRunGame::delEngineProcessRunGame(delEngineProcess &process) :
+pProcess(process){
 }
 
 delEngineProcessRunGame::~delEngineProcessRunGame(){
@@ -63,14 +63,14 @@ delEngineProcessRunGame::~delEngineProcessRunGame(){
 void delEngineProcessRunGame::Run(){
 	unsigned char command;
 	
-	while( true ){
+	while(true){
 		// read a command from the pipe. blocks the thread until the pipe has a command.
 		// in the unholy case of the game crashing an exception is thrown. in this case
 		// we just go home an leave the cleaning up to the parent process.
 		try{
 			command = BlockingReadCommandFromPipe();
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			break;
 		}
 		
@@ -107,25 +107,25 @@ int delEngineProcessRunGame::BlockingReadCommandFromPipe(){
 	#ifdef OS_W32
 		DWORD bytesRead = 0;
 		
-		if( ! ReadFile( pProcess.GetPipeIn(), &command, sizeof( command ), &bytesRead, NULL ) ){
-			DETHROW_INFO( deeInvalidAction, "read pipe failed" );
+		if(! ReadFile(pProcess.GetPipeIn(), &command, sizeof(command), &bytesRead, NULL)){
+			DETHROW_INFO(deeInvalidAction, "read pipe failed");
 		}
-		if( bytesRead < sizeof( command ) ){
-			DETHROW_INFO( deeInvalidAction, "read pipe too short data received" );
+		if(bytesRead < sizeof(command)){
+			DETHROW_INFO(deeInvalidAction, "read pipe too short data received");
 		}
 		
 	#else
 		ssize_t bytes = 0;
 		
-		while( true ){
-			bytes = read( pProcess.GetPipeIn(), &command, sizeof( command ) );
+		while(true){
+			bytes = read(pProcess.GetPipeIn(), &command, sizeof(command));
 			
-			if( bytes == sizeof( command ) ){
+			if(bytes == sizeof(command)){
 				break;
 			}
 			
-			if( bytes == -1 && errno != EINTR ){
-				DETHROW_INFO( deeInvalidAction, "read pipe failed" );
+			if(bytes == -1 && errno != EINTR){
+				DETHROW_INFO(deeInvalidAction, "read pipe failed");
 			}
 			
 			//printf( "read call interrupted, restarting!\n" );

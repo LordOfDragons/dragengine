@@ -43,44 +43,44 @@
 ////////////////////////////
 
 aeRuleBoneTransformator::aeRuleBoneTransformator() :
-aeRule( deAnimatorRuleVisitorIdentify::ertBoneTransformator ),
-pMinScaling( 1.0f, 1.0f, 1.0f ),
-pMaxScaling( 1.0f, 1.0f, 1.0f ),
-pAxis( 0.0f, 0.0f, 1.0f ),
-pMinAngle( 0.0f ),
-pMaxAngle( 0.0f ),
-pCoordinateFrame( deAnimatorRuleBoneTransformator::ecfComponent ),
-pEnablePosition( false ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pUseAxis( false ),
+aeRule(deAnimatorRuleVisitorIdentify::ertBoneTransformator),
+pMinScaling(1.0f, 1.0f, 1.0f),
+pMaxScaling(1.0f, 1.0f, 1.0f),
+pAxis(0.0f, 0.0f, 1.0f),
+pMinAngle(0.0f),
+pMaxAngle(0.0f),
+pCoordinateFrame(deAnimatorRuleBoneTransformator::ecfComponent),
+pEnablePosition(false),
+pEnableOrientation(true),
+pEnableSize(false),
+pUseAxis(false),
 pInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend)
 {
-	SetName( "Bone Transformator" );
+	SetName("Bone Transformator");
 }
 
-aeRuleBoneTransformator::aeRuleBoneTransformator( const aeRuleBoneTransformator &copy ) :
-aeRule( copy ),
-pMinTranslation( copy.pMinTranslation ),
-pMaxTranslation( copy.pMaxTranslation ),
-pMinRotation( copy.pMinRotation ),
-pMaxRotation( copy.pMaxRotation ),
-pMinScaling( copy.pMinScaling ),
-pMaxScaling( copy.pMaxScaling ),
-pAxis( copy.pAxis ),
-pMinAngle( copy.pMinAngle ),
-pMaxAngle( copy.pMaxAngle ),
-pCoordinateFrame( copy.pCoordinateFrame ),
-pEnablePosition( copy.pEnablePosition ),
-pEnableOrientation( copy.pEnableOrientation ),
-pEnableSize( copy.pEnableSize ),
-pUseAxis( copy.pUseAxis ),
-pTargetBone( copy.pTargetBone ),
+aeRuleBoneTransformator::aeRuleBoneTransformator(const aeRuleBoneTransformator &copy) :
+aeRule(copy),
+pMinTranslation(copy.pMinTranslation),
+pMaxTranslation(copy.pMaxTranslation),
+pMinRotation(copy.pMinRotation),
+pMaxRotation(copy.pMaxRotation),
+pMinScaling(copy.pMinScaling),
+pMaxScaling(copy.pMaxScaling),
+pAxis(copy.pAxis),
+pMinAngle(copy.pMinAngle),
+pMaxAngle(copy.pMaxAngle),
+pCoordinateFrame(copy.pCoordinateFrame),
+pEnablePosition(copy.pEnablePosition),
+pEnableOrientation(copy.pEnableOrientation),
+pEnableSize(copy.pEnableSize),
+pUseAxis(copy.pUseAxis),
+pTargetBone(copy.pTargetBone),
 pInputBone(copy.pInputBone),
 pInputSource(copy.pInputSource),
-pTargetTranslation( copy.pTargetTranslation ),
-pTargetRotation( copy.pTargetRotation ),
-pTargetScaling( copy.pTargetScaling ){
+pTargetTranslation(copy.pTargetTranslation),
+pTargetRotation(copy.pTargetRotation),
+pTargetScaling(copy.pTargetScaling){
 }
 
 aeRuleBoneTransformator::~aeRuleBoneTransformator(){
@@ -91,220 +91,220 @@ aeRuleBoneTransformator::~aeRuleBoneTransformator(){
 // Management
 ///////////////
 
-void aeRuleBoneTransformator::SetMinimumTranslation( const decVector &translation ){
-	if( translation.IsEqualTo( pMinTranslation ) ){
+void aeRuleBoneTransformator::SetMinimumTranslation(const decVector &translation){
+	if(translation.IsEqualTo(pMinTranslation)){
 		return;
 	}
 	
 	pMinTranslation = translation;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMinimumTranslation( translation );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMinimumTranslation(translation);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMaximumTranslation( const decVector &translation ){
-	if( translation.IsEqualTo( pMaxTranslation ) ){
+void aeRuleBoneTransformator::SetMaximumTranslation(const decVector &translation){
+	if(translation.IsEqualTo(pMaxTranslation)){
 		return;
 	}
 	
 	pMaxTranslation = translation;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMaximumTranslation( translation );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMaximumTranslation(translation);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMinimumRotation( const decVector &rotation ){
-	if( rotation.IsEqualTo( pMinRotation ) ){
+void aeRuleBoneTransformator::SetMinimumRotation(const decVector &rotation){
+	if(rotation.IsEqualTo(pMinRotation)){
 		return;
 	}
 	
 	pMinRotation = rotation;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMinimumRotation( rotation * DEG2RAD );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMinimumRotation(rotation * DEG2RAD);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMaximumRotation( const decVector &rotation ){
-	if( rotation.IsEqualTo( pMaxRotation ) ){
+void aeRuleBoneTransformator::SetMaximumRotation(const decVector &rotation){
+	if(rotation.IsEqualTo(pMaxRotation)){
 		return;
 	}
 	
 	pMaxRotation = rotation;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMaximumRotation( rotation * DEG2RAD );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMaximumRotation(rotation * DEG2RAD);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMinimumScaling( const decVector &scaling ){
-	if( scaling.IsEqualTo( pMinScaling ) ){
+void aeRuleBoneTransformator::SetMinimumScaling(const decVector &scaling){
+	if(scaling.IsEqualTo(pMinScaling)){
 		return;
 	}
 	
 	pMinScaling = scaling;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMinimumScaling( scaling );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMinimumScaling(scaling);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMaximumScaling( const decVector &scaling ){
-	if( scaling.IsEqualTo( pMaxScaling ) ){
+void aeRuleBoneTransformator::SetMaximumScaling(const decVector &scaling){
+	if(scaling.IsEqualTo(pMaxScaling)){
 		return;
 	}
 	
 	pMaxScaling = scaling;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMaximumScaling( scaling );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMaximumScaling(scaling);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetAxis( const decVector &axis ){
-	if( axis.IsEqualTo( pAxis ) ){
+void aeRuleBoneTransformator::SetAxis(const decVector &axis){
+	if(axis.IsEqualTo(pAxis)){
 		return;
 	}
 	
 	pAxis = axis;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetAxis( axis );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetAxis(axis);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMinimumAngle( float angle ){
-	if( fabsf( angle - pMinAngle ) < FLOAT_SAFE_EPSILON ){
+void aeRuleBoneTransformator::SetMinimumAngle(float angle){
+	if(fabsf(angle - pMinAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMinAngle = angle;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMinimumAngle( angle * DEG2RAD );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMinimumAngle(angle * DEG2RAD);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetMaximumAngle( float angle ){
-	if( fabsf( angle - pMaxAngle ) < FLOAT_SAFE_EPSILON ){
+void aeRuleBoneTransformator::SetMaximumAngle(float angle){
+	if(fabsf(angle - pMaxAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxAngle = angle;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetMaximumAngle( angle * DEG2RAD );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetMaximumAngle(angle * DEG2RAD);
 		NotifyRuleChanged();
 	}
 }
 
 
-void aeRuleBoneTransformator::SetCoordinateFrame( deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame ){
-	if( coordinateFrame < deAnimatorRuleBoneTransformator::ecfBoneLocal
-	|| coordinateFrame > deAnimatorRuleBoneTransformator::ecfTargetBone ){
-		DETHROW( deeInvalidParam );
+void aeRuleBoneTransformator::SetCoordinateFrame(deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame){
+	if(coordinateFrame < deAnimatorRuleBoneTransformator::ecfBoneLocal
+	|| coordinateFrame > deAnimatorRuleBoneTransformator::ecfTargetBone){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( coordinateFrame == pCoordinateFrame ){
+	if(coordinateFrame == pCoordinateFrame){
 		return;
 	}
 	
 	pCoordinateFrame = coordinateFrame;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetCoordinateFrame( coordinateFrame );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetCoordinateFrame(coordinateFrame);
 		NotifyRuleChanged();
 	}
 }
 
 
-void aeRuleBoneTransformator::SetEnablePosition( bool enable ){
-	if( enable == pEnablePosition ){
+void aeRuleBoneTransformator::SetEnablePosition(bool enable){
+	if(enable == pEnablePosition){
 		return;
 	}
 	
 	pEnablePosition = enable;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetEnablePosition( enable );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetEnablePosition(enable);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetEnableOrientation( bool enable ){
-	if( enable == pEnableOrientation ){
+void aeRuleBoneTransformator::SetEnableOrientation(bool enable){
+	if(enable == pEnableOrientation){
 		return;
 	}
 	
 	pEnableOrientation = enable;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetEnableOrientation( enable );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetEnableOrientation(enable);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetEnableSize( bool enable ){
-	if( enable == pEnableSize ){
+void aeRuleBoneTransformator::SetEnableSize(bool enable){
+	if(enable == pEnableSize){
 		return;
 	}
 	
 	pEnableSize = enable;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetEnableSize( enable );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetEnableSize(enable);
 		NotifyRuleChanged();
 	}
 }
 
-void aeRuleBoneTransformator::SetUseAxis( bool useAxis ){
-	if( useAxis == pUseAxis ){
+void aeRuleBoneTransformator::SetUseAxis(bool useAxis){
+	if(useAxis == pUseAxis){
 		return;
 	}
 	
 	pUseAxis = useAxis;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetUseAxis( useAxis );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetUseAxis(useAxis);
 		NotifyRuleChanged();
 	}
 }
 
 
-void aeRuleBoneTransformator::SetTargetBone( const char *boneName ){
-	if( pTargetBone == boneName ){
+void aeRuleBoneTransformator::SetTargetBone(const char *boneName){
+	if(pTargetBone == boneName){
 		return;
 	}
 	
 	pTargetBone = boneName;
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( rule ){
-		rule->SetTargetBone( boneName );
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetTargetBone(boneName);
 		NotifyRuleChanged();
 	}
 }
@@ -342,43 +342,43 @@ void aeRuleBoneTransformator::SetInputSource(deAnimatorRuleBoneTransformator::eI
 void aeRuleBoneTransformator::UpdateTargets(){
 	aeRule::UpdateTargets();
 	
-	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
-	if( ! rule ){
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(! rule){
 		return;
 	}
 	
-	pTargetTranslation.UpdateEngineTarget( GetAnimator(), rule->GetTargetTranslation() );
-	pTargetRotation.UpdateEngineTarget( GetAnimator(), rule->GetTargetRotation() );
-	pTargetScaling.UpdateEngineTarget( GetAnimator(), rule->GetTargetScaling() );
+	pTargetTranslation.UpdateEngineTarget(GetAnimator(), rule->GetTargetTranslation());
+	pTargetRotation.UpdateEngineTarget(GetAnimator(), rule->GetTargetRotation());
+	pTargetScaling.UpdateEngineTarget(GetAnimator(), rule->GetTargetScaling());
 }
 
-int aeRuleBoneTransformator::CountLinkUsage( aeLink *link ) const{
-	int usageCount = aeRule::CountLinkUsage( link );
+int aeRuleBoneTransformator::CountLinkUsage(aeLink *link) const{
+	int usageCount = aeRule::CountLinkUsage(link);
 	
-	if( pTargetTranslation.HasLink( link ) ){
+	if(pTargetTranslation.HasLink(link)){
 		usageCount++;
 	}
-	if( pTargetRotation.HasLink( link ) ){
+	if(pTargetRotation.HasLink(link)){
 		usageCount++;
 	}
-	if( pTargetScaling.HasLink( link ) ){
+	if(pTargetScaling.HasLink(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
 
-void aeRuleBoneTransformator::RemoveLinkFromTargets( aeLink *link ){
-	aeRule::RemoveLinkFromTargets( link );
+void aeRuleBoneTransformator::RemoveLinkFromTargets(aeLink *link){
+	aeRule::RemoveLinkFromTargets(link);
 	
-	if( pTargetTranslation.HasLink( link ) ){
-		pTargetTranslation.RemoveLink( link );
+	if(pTargetTranslation.HasLink(link)){
+		pTargetTranslation.RemoveLink(link);
 	}
-	if( pTargetRotation.HasLink( link ) ){
-		pTargetRotation.RemoveLink( link );
+	if(pTargetRotation.HasLink(link)){
+		pTargetRotation.RemoveLink(link);
 	}
-	if( pTargetScaling.HasLink( link ) ){
-		pTargetScaling.RemoveLink( link );
+	if(pTargetScaling.HasLink(link)){
+		pTargetScaling.RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -402,32 +402,32 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 	try{
 		engRule = new deAnimatorRuleBoneTransformator;
 		
-		InitEngineRule( engRule );
+		InitEngineRule(engRule);
 		
-		engRule->SetMinimumTranslation( pMinTranslation );
-		engRule->SetMaximumTranslation( pMaxTranslation );
-		engRule->SetMinimumRotation( pMinRotation * DEG2RAD );
-		engRule->SetMaximumRotation( pMaxRotation * DEG2RAD );
-		engRule->SetMinimumScaling( pMinScaling );
-		engRule->SetMaximumScaling( pMaxScaling );
-		engRule->SetAxis( pAxis );
-		engRule->SetMinimumAngle( pMinAngle * DEG2RAD );
-		engRule->SetMaximumAngle( pMaxAngle * DEG2RAD );
-		engRule->SetCoordinateFrame( pCoordinateFrame );
-		engRule->SetEnablePosition( pEnablePosition );
-		engRule->SetEnableOrientation( pEnableOrientation );
-		engRule->SetEnableSize( pEnableSize );
-		engRule->SetUseAxis( pUseAxis );
+		engRule->SetMinimumTranslation(pMinTranslation);
+		engRule->SetMaximumTranslation(pMaxTranslation);
+		engRule->SetMinimumRotation(pMinRotation * DEG2RAD);
+		engRule->SetMaximumRotation(pMaxRotation * DEG2RAD);
+		engRule->SetMinimumScaling(pMinScaling);
+		engRule->SetMaximumScaling(pMaxScaling);
+		engRule->SetAxis(pAxis);
+		engRule->SetMinimumAngle(pMinAngle * DEG2RAD);
+		engRule->SetMaximumAngle(pMaxAngle * DEG2RAD);
+		engRule->SetCoordinateFrame(pCoordinateFrame);
+		engRule->SetEnablePosition(pEnablePosition);
+		engRule->SetEnableOrientation(pEnableOrientation);
+		engRule->SetEnableSize(pEnableSize);
+		engRule->SetUseAxis(pUseAxis);
 		engRule->SetTargetBone(pTargetBone);
 		engRule->SetInputBone(pInputBone);
 		engRule->SetInputSource(pInputSource);
 		
-		pTargetTranslation.UpdateEngineTarget( GetAnimator(), engRule->GetTargetTranslation() );
-		pTargetRotation.UpdateEngineTarget( GetAnimator(), engRule->GetTargetRotation() );
-		pTargetScaling.UpdateEngineTarget( GetAnimator(), engRule->GetTargetScaling() );
+		pTargetTranslation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetTranslation());
+		pTargetRotation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetRotation());
+		pTargetScaling.UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
 		
-	}catch( const deException & ){
-		if( engRule ){
+	}catch(const deException &){
+		if(engRule){
 			engRule->FreeReference();
 		}
 		throw;
@@ -440,14 +440,14 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 
 
 aeRule *aeRuleBoneTransformator::CreateCopy() const{
-	return new aeRuleBoneTransformator( *this );
+	return new aeRuleBoneTransformator(*this);
 }
 
-void aeRuleBoneTransformator::ListLinks( aeLinkList &list ){
-	aeRule::ListLinks( list );
-	pTargetRotation.AddLinksToList( list );
-	pTargetScaling.AddLinksToList( list );
-	pTargetTranslation.AddLinksToList( list );
+void aeRuleBoneTransformator::ListLinks(aeLinkList &list){
+	aeRule::ListLinks(list);
+	pTargetRotation.AddLinksToList(list);
+	pTargetScaling.AddLinksToList(list);
+	pTargetTranslation.AddLinksToList(list);
 }
 
 
@@ -455,27 +455,27 @@ void aeRuleBoneTransformator::ListLinks( aeLinkList &list ){
 // Operators
 //////////////
 
-aeRuleBoneTransformator &aeRuleBoneTransformator::operator=( const aeRuleBoneTransformator &copy ){
-	SetMinimumTranslation( copy.pMinTranslation );
-	SetMaximumTranslation( copy.pMaxTranslation );
-	SetMinimumRotation( copy.pMinRotation );
-	SetMaximumRotation( copy.pMaxRotation );
-	SetMinimumScaling( copy.pMinScaling );
-	SetMaximumScaling( copy.pMaxScaling );
-	SetAxis( copy.pAxis );
-	SetMinimumAngle( copy.pMinAngle );
-	SetMaximumAngle( copy.pMaxAngle );
-	SetCoordinateFrame( copy.pCoordinateFrame );
-	SetEnablePosition( copy.pEnablePosition );
-	SetEnableOrientation( copy.pEnableOrientation );
-	SetEnableSize( copy.pEnableSize );
-	SetUseAxis( copy.pUseAxis );
-	SetTargetBone( copy.pTargetBone );
+aeRuleBoneTransformator &aeRuleBoneTransformator::operator=(const aeRuleBoneTransformator &copy){
+	SetMinimumTranslation(copy.pMinTranslation);
+	SetMaximumTranslation(copy.pMaxTranslation);
+	SetMinimumRotation(copy.pMinRotation);
+	SetMaximumRotation(copy.pMaxRotation);
+	SetMinimumScaling(copy.pMinScaling);
+	SetMaximumScaling(copy.pMaxScaling);
+	SetAxis(copy.pAxis);
+	SetMinimumAngle(copy.pMinAngle);
+	SetMaximumAngle(copy.pMaxAngle);
+	SetCoordinateFrame(copy.pCoordinateFrame);
+	SetEnablePosition(copy.pEnablePosition);
+	SetEnableOrientation(copy.pEnableOrientation);
+	SetEnableSize(copy.pEnableSize);
+	SetUseAxis(copy.pUseAxis);
+	SetTargetBone(copy.pTargetBone);
 	SetInputBone(copy.pInputBone);
 	SetInputSource(copy.pInputSource);
 	pTargetTranslation = copy.pTargetTranslation;
 	pTargetRotation = copy.pTargetRotation;
 	pTargetScaling = copy.pTargetScaling;
-	aeRule::operator=( copy );
+	aeRule::operator=(copy);
 	return *this;
 }

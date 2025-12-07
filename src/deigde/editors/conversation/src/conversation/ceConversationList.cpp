@@ -43,8 +43,8 @@
 ceConversationList::ceConversationList(){
 }
 
-ceConversationList::ceConversationList( const ceConversationList &list ) :
-pConversations( list.pConversations ){
+ceConversationList::ceConversationList(const ceConversationList &list) :
+pConversations(list.pConversations){
 }
 
 ceConversationList::~ceConversationList(){
@@ -59,34 +59,34 @@ int ceConversationList::GetCount() const{
 	return pConversations.GetCount();
 }
 
-ceConversation *ceConversationList::GetAt( int index ) const{
-	return ( ceConversation* )pConversations.GetAt( index );
+ceConversation *ceConversationList::GetAt(int index) const{
+	return (ceConversation*)pConversations.GetAt(index);
 }
 
-int ceConversationList::IndexOf( ceConversation *target ) const{
-	return pConversations.IndexOf( target );
+int ceConversationList::IndexOf(ceConversation *target) const{
+	return pConversations.IndexOf(target);
 }
 
-bool ceConversationList::Has( ceConversation *target ) const{
-	return pConversations.Has( target );
+bool ceConversationList::Has(ceConversation *target) const{
+	return pConversations.Has(target);
 }
 
-void ceConversationList::Add( ceConversation *target ){
-	if( Has( target ) ){
-		DETHROW( deeInvalidParam );
+void ceConversationList::Add(ceConversation *target){
+	if(Has(target)){
+		DETHROW(deeInvalidParam);
 	}
-	pConversations.Add( target );
+	pConversations.Add(target);
 }
 
-void ceConversationList::Remove( ceConversation *target ){
-	pConversations.Remove( target );
+void ceConversationList::Remove(ceConversation *target){
+	pConversations.Remove(target);
 }
 
 void ceConversationList::RemoveAll(){
 	pConversations.RemoveAll();
 }
 
-ceConversationList &ceConversationList::operator=( const ceConversationList &list ){
+ceConversationList &ceConversationList::operator=(const ceConversationList &list){
 	pConversations = list.pConversations;
 	return *this;
 }

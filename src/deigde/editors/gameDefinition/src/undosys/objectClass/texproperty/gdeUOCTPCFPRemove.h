@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPCFPRemove( gdeObjectClass *objectClass, gdeProperty *property, gdeFilePattern *filePattern );
+	gdeUOCTPCFPRemove(gdeObjectClass *objectClass, gdeProperty *property, gdeFilePattern *filePattern);
 	
 protected:
 	/** \brief Clean up undo action. */

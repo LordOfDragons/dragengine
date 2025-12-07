@@ -46,7 +46,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *BRCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *BRCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -56,13 +56,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *BRCreateModule( deLoadableModule *loadableMod
 // Entry Point
 ////////////////
 
-deBaseModule *BRCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *BRCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deCRBasic( *loadableModule );
+		module = new deCRBasic(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -75,8 +75,8 @@ deBaseModule *BRCreateModule( deLoadableModule *loadableModule ){
 //////////////////////////
 
 // constructor, destructor
-deCRBasic::deCRBasic( deLoadableModule &loadableModule ) :
-deBaseCrashRecoveryModule( loadableModule ){
+deCRBasic::deCRBasic(deLoadableModule &loadableModule) :
+deBaseCrashRecoveryModule(loadableModule){
 	pQuitEngine = true;
 	pCoreFault = NULL;
 }
@@ -90,10 +90,10 @@ deCRBasic::~deCRBasic(){
 
 bool deCRBasic::Init(){
 	try{
-		pCoreFault = new decrbCoreFault( this );
+		pCoreFault = new decrbCoreFault(this);
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		return false;
 	}
 	
@@ -101,7 +101,7 @@ bool deCRBasic::Init(){
 }
 
 void deCRBasic::CleanUp(){
-	if( pCoreFault ){
+	if(pCoreFault){
 		delete pCoreFault;
 		pCoreFault = NULL;
 	}
@@ -111,9 +111,9 @@ void deCRBasic::CleanUp(){
 
 // crash management
 bool deCRBasic::RecoverFromError(){
-	char argBuffer[ 6 ] = "dummy";
+	char argBuffer[6] = "dummy";
 	int argc = 1;
-	char *args[ 1 ] = { argBuffer };
+	char *args[1] = {argBuffer};
 	deEngine *engine = GetGameEngine();
 	FXApp *app = NULL;
 	
@@ -126,28 +126,28 @@ bool deCRBasic::RecoverFromError(){
 	//engine->GetInputSystem()->ProcessEvents();
 	// show window
 	try{
-		app = new FXApp( "Drag[en]gine Crash Recovery", "RPTD" );
-		if( ! app ) DETHROW( deeOutOfMemory );
-		app->init( argc, args );
-		new decrbWindowMain( app, this );
+		app = new FXApp("Drag[en]gine Crash Recovery", "RPTD");
+		if(! app) DETHROW(deeOutOfMemory);
+		app->init(argc, args);
+		new decrbWindowMain(app, this);
 		app->create();
 		app->run();
 		delete app;
-	}catch( const deException &e ){
-		if( app ) delete app;
+	}catch(const deException &e){
+		if(app) delete app;
 		e.PrintError();
 		pQuitEngine = true;
 	}
 	// if we are not quitting restart system
-	if( pQuitEngine ){
-		LogInfo( "shuting down engine." );
+	if(pQuitEngine){
+		LogInfo("shuting down engine.");
 		return false;
 	}else{
 		try{
 			engine->GetGraphicSystem()->Start();
-		}catch( const deException & ){
+		}catch(const deException &){
 			engine->GetGraphicSystem()->Stop();
-			LogError( "restarting engine systems failed, quitting." );
+			LogError("restarting engine systems failed, quitting.");
 			return false;
 		}
 		return true;
@@ -155,7 +155,7 @@ bool deCRBasic::RecoverFromError(){
 }
 
 // internal functions for module classes only
-void deCRBasic::SetQuitEngine( bool quitEngine ){
+void deCRBasic::SetQuitEngine(bool quitEngine){
 	pQuitEngine = quitEngine;
 }
 
@@ -164,44 +164,44 @@ void deCRBasic::LogTrace(){
 	const int pointCount = trace.GetPointCount();
 	int i;
 	
-	LogError( decrbWindowMain::GetTextForError( trace.GetError() ) );
+	LogError(decrbWindowMain::GetTextForError(trace.GetError()));
 	
-	for( i=0; i<pointCount; i++ ){
-		const deErrorTracePoint &tracePoint = *trace.GetPoint( i );
+	for(i=0; i<pointCount; i++){
+		const deErrorTracePoint &tracePoint = *trace.GetPoint(i);
 		
-		if( tracePoint.GetSourceModule() ){
-			LogErrorFormat( "Trace %i: %s, %s at %i", i + 1,
+		if(tracePoint.GetSourceModule()){
+			LogErrorFormat("Trace %i: %s, %s at %i", i + 1,
 				tracePoint.GetSourceModule()->GetName().GetString(),
 				tracePoint.GetSourceFunction().GetString(),
-				tracePoint.GetSourceLine() );
+				tracePoint.GetSourceLine());
 			
 		}else{
-			LogErrorFormat( "Trace %i: Game Engine, %s at %i", i + 1,
+			LogErrorFormat("Trace %i: Game Engine, %s at %i", i + 1,
 				tracePoint.GetSourceFunction().GetString(),
-				tracePoint.GetSourceLine() );
+				tracePoint.GetSourceLine());
 		}
 		
 		const int valueCount = tracePoint.GetValueCount();
 		int j;
-		for( j=0; j<valueCount; j++ ){
-			LogTraceSubValues( *tracePoint.GetValue( j ), "  " );
+		for(j=0; j<valueCount; j++){
+			LogTraceSubValues(*tracePoint.GetValue(j), "  ");
 		}
 	}
 }
 
-void deCRBasic::LogTraceSubValues( const deErrorTraceValue &traceValue, const char *indent ){
-	LogErrorFormat( "- %s = %s", traceValue.GetName().GetString(), traceValue.GetValue().GetString() );
+void deCRBasic::LogTraceSubValues(const deErrorTraceValue &traceValue, const char *indent){
+	LogErrorFormat("- %s = %s", traceValue.GetName().GetString(), traceValue.GetValue().GetString());
 	
 	const int valueCount = traceValue.GetSubValueCount();
-	if( valueCount == 0 ){
+	if(valueCount == 0){
 		return;
 	}
 	
-	const decString childIndent( decString( "  " ) + indent );
+	const decString childIndent(decString("  ") + indent);
 	int i;
 	
-	for( i=0; i<valueCount; i++ ){
-		LogTraceSubValues( *traceValue.GetSubValue( i ), indent );
+	for(i=0; i<valueCount; i++){
+		LogTraceSubValues(*traceValue.GetSubValue(i), indent);
 	}
 }
 

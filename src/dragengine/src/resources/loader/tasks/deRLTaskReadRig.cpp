@@ -47,23 +47,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadRig::deRLTaskReadRig( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deRig *rig ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertRig ),
-pSucceeded( false )
+deRLTaskReadRig::deRLTaskReadRig(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deRig *rig) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertRig),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( rig ){
+	if(rig){
 		pRig = rig;
-		SetResource( rig );
-		SetState( esSucceeded );
+		SetResource(rig);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pRig.TakeOver( new deRig( engine.GetRigManager(), vfs, path, 0 ) );
+	pRig.TakeOver(new deRig(engine.GetRigManager(), vfs, path, 0));
 	LogCreateExit();
 }
 
@@ -77,24 +77,24 @@ deRLTaskReadRig::~deRLTaskReadRig(){
 
 void deRLTaskReadRig::Run(){
 	LogRunEnter();
-	deBaseRigModule * const module = ( deBaseRigModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtRig, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseRigModule * const module = (deBaseRigModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtRig, GetPath());
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
-	pRig->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pRig->SetAsynchron( true );
+	pRig->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pRig->SetAsynchron(true);
 	module->LoadRig(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pRig);
 	
-	if( ! pRig->Verify() ){
-		DETHROW( deeInvalidParam );
+	if(! pRig->Verify()){
+		DETHROW(deeInvalidParam);
 	}
 	pRig->Prepare();
 	
-	GetEngine().GetPhysicsSystem()->LoadRig( pRig );
+	GetEngine().GetPhysicsSystem()->LoadRig(pRig);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -102,29 +102,29 @@ void deRLTaskReadRig::Run(){
 
 void deRLTaskReadRig::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded ){
-		SetState( esFailed );
+	if(! pSucceeded){
+		SetState(esFailed);
 		pRig = NULL;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deRigManager &rigManager = *GetEngine().GetRigManager();
-	deRig * const checkRig = rigManager.GetRigWith( GetPath() );
+	deRig * const checkRig = rigManager.GetRigWith(GetPath());
 	
-	if( checkRig ){
-		SetResource( checkRig );
+	if(checkRig){
+		SetResource(checkRig);
 		
 	}else{
-		pRig->SetAsynchron( false );
-		rigManager.AddLoadedRig( pRig );
-		SetResource( pRig );
+		pRig->SetAsynchron(false);
+		rigManager.AddLoadedRig(pRig);
+		SetResource(pRig);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

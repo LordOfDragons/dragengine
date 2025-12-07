@@ -52,22 +52,22 @@
 ////////////////////////////
 
 ceWPTTIMAWaitCondition::ceWPTTIMAWaitCondition(
-ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action ) :
-ceWPTTIMConditionContainer( windowMain, conversation, *action, etActionWaitCondition ),
-pAction( NULL )
+ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action) :
+ceWPTTIMConditionContainer(windowMain, conversation, *action, etActionWaitCondition),
+pAction(NULL)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetText( "Condition" );
+	SetText("Condition");
 	
 	pAction = action;
 	action->AddReference();
 }
 
 ceWPTTIMAWaitCondition::~ceWPTTIMAWaitCondition(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
 }
@@ -79,12 +79,12 @@ ceWPTTIMAWaitCondition::~ceWPTTIMAWaitCondition(){
 
 ceWPTTIMAWait *ceWPTTIMAWaitCondition::GetModelWait() const{
 	ceWPTTreeItemModel * const parent = GetParent();
-	if( ! parent ){
+	if(! parent){
 		return NULL;
 	}
 	
-	if( parent->GetType() == etActionWait ){
-		return ( ceWPTTIMAWait* )parent;
+	if(parent->GetType() == etActionWait){
+		return (ceWPTTIMAWait*)parent;
 		
 	}else{
 		return NULL;
@@ -92,13 +92,13 @@ ceWPTTIMAWait *ceWPTTIMAWaitCondition::GetModelWait() const{
 }
 
 void ceWPTTIMAWaitCondition::Update(){
-	SetExpanded( pAction->GetTIMConditionExpanded() );
+	SetExpanded(pAction->GetTIMConditionExpanded());
 	
-	SetOrUpdateCondition( pAction->GetCondition() );
+	SetOrUpdateCondition(pAction->GetCondition());
 }
 
-void ceWPTTIMAWaitCondition::OnContextMenu( igdeMenuCascade &contextMenu ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMAWaitCondition::OnContextMenu(igdeMenuCascade &contextMenu){
+	if(! GetTreeItem()){
 		return;
 	}
 	
@@ -106,7 +106,7 @@ void ceWPTTIMAWaitCondition::OnContextMenu( igdeMenuCascade &contextMenu ){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(! topic){
 		return;
 	}
 	
@@ -116,25 +116,25 @@ void ceWPTTIMAWaitCondition::OnContextMenu( igdeMenuCascade &contextMenu ){
 	
 	// condition
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
-		environment, "Set Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
-	contextMenu.AddChild( subMenu );
+		environment, "Set Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMAWaitActionsSetCondition( windowMain, conversation, *topic,
+	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMAWaitActionsSetCondition(windowMain, conversation, *topic,
 			*pAction, ceWPTTIMCondition::ListAddMenuConditions[ i ] ), true );
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMAWaitActionsClearCondition(
-		windowMain, conversation, *topic, *pAction ), true );
+	helper.MenuCommand(contextMenu, new ceWPTMAWaitActionsClearCondition(
+		windowMain, conversation, *topic, *pAction), true);
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMAWaitActionsPasteCondition(
-		windowMain, conversation, *topic, *pAction ), true );
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, new ceWPTMAWaitActionsPasteCondition(
+		windowMain, conversation, *topic, *pAction), true);
 }
 
 void ceWPTTIMAWaitCondition::ContextMenuCondition(
-igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
-	if( ! GetTreeItem() ){
+igdeMenuCascade &contextMenu, ceConversationCondition *condition){
+	if(! GetTreeItem()){
 		return;
 	}
 	
@@ -142,7 +142,7 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(! topic){
 		return;
 	}
 	
@@ -152,21 +152,21 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
 	
 	// child action specific
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
-		environment, "Replace Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
-	contextMenu.AddChild( subMenu );
+		environment, "Replace Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMAWaitActionsSetCondition( windowMain, conversation, *topic,
+	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMAWaitActionsSetCondition(windowMain, conversation, *topic,
 			*pAction, ceWPTTIMCondition::ListAddMenuConditions[ i ] ), true );
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMAWaitActionsClearCondition(
-		windowMain, conversation, *topic, *pAction ), true );
+	helper.MenuCommand(contextMenu, new ceWPTMAWaitActionsClearCondition(
+		windowMain, conversation, *topic, *pAction), true);
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMACopyCondition( windowMain, condition ), true );
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, new ceWPTMACopyCondition(windowMain, condition), true);
 }
 
 void ceWPTTIMAWaitCondition::OnExpandedChanged(){
-	pAction->SetTIMConditionExpanded( GetExpanded() );
+	pAction->SetTIMConditionExpanded(GetExpanded());
 }

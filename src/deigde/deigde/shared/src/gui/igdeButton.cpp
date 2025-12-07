@@ -48,39 +48,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeButton::igdeButton( igdeEnvironment &environment, const char *text,
-	igdeIcon *icon, eButtonStyle style ) :
-igdeWidget( environment ),
-pStyle( style ),
-pText( text ),
-pIcon( icon ),
-pEnabled( true ),
-pDefault( false ){
+igdeButton::igdeButton(igdeEnvironment &environment, const char *text,
+	igdeIcon *icon, eButtonStyle style) :
+igdeWidget(environment),
+pStyle(style),
+pText(text),
+pIcon(icon),
+pEnabled(true),
+pDefault(false){
 }
 
-igdeButton::igdeButton( igdeEnvironment &environment, const char *text,
-	const char *description, igdeIcon *icon, eButtonStyle style ) :
-igdeWidget( environment ),
-pStyle( style ),
-pText( text ),
-pDescription( description ),
-pIcon( icon ),
-pEnabled( true ),
-pDefault( false ){
+igdeButton::igdeButton(igdeEnvironment &environment, const char *text,
+	const char *description, igdeIcon *icon, eButtonStyle style) :
+igdeWidget(environment),
+pStyle(style),
+pText(text),
+pDescription(description),
+pIcon(icon),
+pEnabled(true),
+pDefault(false){
 }
 
-igdeButton::igdeButton( igdeEnvironment &environment, igdeAction *action, eButtonStyle style ) :
-igdeWidget( environment ),
-pStyle( style ),
-pEnabled( true ),
-pDefault( false )
+igdeButton::igdeButton(igdeEnvironment &environment, igdeAction *action, eButtonStyle style) :
+igdeWidget(environment),
+pStyle(style),
+pEnabled(true),
+pDefault(false)
 {
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeButton::~igdeButton(){
 	DestroyNativeWidget();
-	SetAction( NULL );
+	SetAction(NULL);
 }
 
 
@@ -88,8 +88,8 @@ igdeButton::~igdeButton(){
 // Management
 ///////////////
 
-void igdeButton::SetStyle( eButtonStyle style ){
-	if( pStyle == style ){
+void igdeButton::SetStyle(eButtonStyle style){
+	if(pStyle == style){
 		return;
 	}
 	
@@ -97,8 +97,8 @@ void igdeButton::SetStyle( eButtonStyle style ){
 	OnStyleChanged();
 }
 
-void igdeButton::SetText( const char *text ){
-	if( pText == text ){
+void igdeButton::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -106,8 +106,8 @@ void igdeButton::SetText( const char *text ){
 	OnTextChanged();
 }
 
-void igdeButton::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeButton::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -115,8 +115,8 @@ void igdeButton::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeButton::SetIcon( igdeIcon *icon ){
-	if( pIcon == icon ){
+void igdeButton::SetIcon(igdeIcon *icon){
+	if(pIcon == icon){
 		return;
 	}
 	
@@ -124,8 +124,8 @@ void igdeButton::SetIcon( igdeIcon *icon ){
 	OnIconChanged();
 }
 
-void igdeButton::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeButton::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -133,8 +133,8 @@ void igdeButton::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeButton::SetDefault( bool isdefault ){
-	if( pDefault == isdefault ){
+void igdeButton::SetDefault(bool isdefault){
+	if(pDefault == isdefault){
 		return;
 	}
 	
@@ -142,112 +142,112 @@ void igdeButton::SetDefault( bool isdefault ){
 	OnDefaultChanged();
 }
 
-void igdeButton::SetAction( igdeAction *action ){
-	if( pAction == action ){
+void igdeButton::SetAction(igdeAction *action){
+	if(pAction == action){
 		return;
 	}
 	
-	if( pAction ){
-		pAction->RemoveListener( this );
+	if(pAction){
+		pAction->RemoveListener(this);
 	}
 	
 	pAction = action;
 	
-	if( action ){
-		action->AddListener( this );
-		OnParameterChanged( action );
+	if(action){
+		action->AddListener(this);
+		OnParameterChanged(action);
 	}
 }
 
 void igdeButton::Focus(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeButton* )GetNativeWidget() )->Focus();
+	if(GetNativeWidget()){
+		((igdeNativeButton*)GetNativeWidget())->Focus();
 	}
 }
 
 
 void igdeButton::OnAction(){
-	if( pAction ){
+	if(pAction){
 		// guard against action being deleted while in use
-		igdeAction::Ref( pAction )->OnAction();
+		igdeAction::Ref(pAction)->OnAction();
 	}
 }
 
-void igdeButton::OnParameterChanged( igdeAction *action ){
-	SetText( action->GetText() );
-	SetDescription( action->GetDescription() );
-	SetIcon( action->GetIcon() );
-	SetEnabled( action->GetEnabled() );
-	SetDefault( action->GetDefault() );
+void igdeButton::OnParameterChanged(igdeAction *action){
+	SetText(action->GetText());
+	SetDescription(action->GetDescription());
+	SetIcon(action->GetIcon());
+	SetEnabled(action->GetEnabled());
+	SetDefault(action->GetDefault());
 }
 
-void igdeButton::OnDestroyed( igdeAction *action ){
-	GetLogger()->LogWarnFormat( "IGDE", "igdeButton::OnDestroyed: "
-		"Action(%s) destroyed while still listening on it", action->GetText().GetString() );
+void igdeButton::OnDestroyed(igdeAction *action){
+	GetLogger()->LogWarnFormat("IGDE", "igdeButton::OnDestroyed: "
+		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
 	pAction = NULL;
 }
 
 
 
 void igdeButton::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeButton * const native = igdeNativeButton::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeButton * const native = igdeNativeButton::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeButton::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeButton* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeButton*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeButton::OnStyleChanged(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeButton* )GetNativeWidget() )->UpdateStyle();
+	((igdeNativeButton*)GetNativeWidget())->UpdateStyle();
 }
 
 void igdeButton::OnTextChanged(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeButton* )GetNativeWidget() )->UpdateText();
+	((igdeNativeButton*)GetNativeWidget())->UpdateText();
 }
 
 void igdeButton::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeButton* )GetNativeWidget() )->UpdateDescription();
+	((igdeNativeButton*)GetNativeWidget())->UpdateDescription();
 }
 
 void igdeButton::OnIconChanged(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeButton* )GetNativeWidget() )->UpdateIcon();
+	((igdeNativeButton*)GetNativeWidget())->UpdateIcon();
 }
 
 void igdeButton::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeButton* )GetNativeWidget() )->UpdateEnabled();
+	((igdeNativeButton*)GetNativeWidget())->UpdateEnabled();
 }
 
 void igdeButton::OnDefaultChanged(){

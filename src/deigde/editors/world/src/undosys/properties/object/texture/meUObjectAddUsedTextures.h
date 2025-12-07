@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectAddUsedTextures( meObject *object );
+	meUObjectAddUsedTextures(meObject *object);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -61,11 +61,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of textures names. */
-	inline decStringList &GetTextureNameList(){ return pTextureNameList; }
-	inline const decStringList &GetTextureNameList() const{ return pTextureNameList; }
+	inline decStringList &GetTextureNameList(){return pTextureNameList;}
+	inline const decStringList &GetTextureNameList() const{return pTextureNameList;}
 	/** Retrieves the list of added textures if existing already. */
-	inline meObjectTextureList &GetTextureList(){ return pTextureList; }
-	inline const meObjectTextureList &GetTextureList() const{ return pTextureList; }
+	inline meObjectTextureList &GetTextureList(){return pTextureList;}
+	inline const meObjectTextureList &GetTextureList() const{return pTextureList;}
 	
 	/** \brief Undo. */
 	virtual void Undo();

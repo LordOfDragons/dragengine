@@ -60,41 +60,41 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
 	/** Retrieves the maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
 	/** Resets the visitor. */
 	void Reset();
 	/** Sets the rotation to apply to shapes before calculating the extends. */
-	void SetRotation( const decQuaternion &rotation );
+	void SetRotation(const decQuaternion &rotation);
 	/** Sets the reference point. */
-	void SetReferencePoint( const decDVector &referencePoint );
+	void SetReferencePoint(const decDVector &referencePoint);
 	/*@}*/
 	
 	/** @name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	virtual void VisitShape(decShape &shape);
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	virtual void VisitShapeSphere(decShapeSphere &sphere);
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	virtual void VisitShapeBox(decShapeBox &box);
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	virtual void VisitShapeHull(decShapeHull &hull);
 	/*@}*/
 	
 private:
-	void pAddExtends( const decDVector &minExtend, const decDVector &maxExtend );
-	void pAddExtendsFrom( debpDCollisionVolume &volume );
+	void pAddExtends(const decDVector &minExtend, const decDVector &maxExtend);
+	void pAddExtendsFrom(debpDCollisionVolume &volume);
 };
 
 // end of include only once

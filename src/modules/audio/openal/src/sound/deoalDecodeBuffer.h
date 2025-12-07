@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create decode buffer. */
-	deoalDecodeBuffer( int size );
+	deoalDecodeBuffer(int size);
 	
 	/** \brief Clean up decode buffer. */
 	~deoalDecodeBuffer();
@@ -56,13 +56,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Buffer. */
-	inline char *GetBuffer() const{ return pBuffer; }
+	inline char *GetBuffer() const{return pBuffer;}
 	
 	/** \brief Size of buffer. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{return pSize;}
 	
 	/** \brief Set size of buffer. */
-	void SetSize( int size );
+	void SetSize(int size);
 	
 	/**
 	 * \brief Decode samples using decoder.
@@ -70,7 +70,7 @@ public:
 	 * Up to size bytes are decoded. If the size is larger than the buffer then the buffer
 	 * is first resized to be large enough. Returns the number of bytes written to the buffer.
 	 */
-	int Decode( deSoundDecoder &decoder, int size );
+	int Decode(deSoundDecoder &decoder, int size);
 	
 	/**
 	 * \brief Decode samples using decoder.
@@ -80,7 +80,7 @@ public:
 	 * size bytes have been written then the decoding starts from the beginning to fill up
 	 * the buffer with size bytes. Returns the number of bytes written to the buffer.
 	 */
-	int DecodeLooping( deSoundDecoder &decoder, int size );
+	int DecodeLooping(deSoundDecoder &decoder, int size);
 	/*@}*/
 };
 

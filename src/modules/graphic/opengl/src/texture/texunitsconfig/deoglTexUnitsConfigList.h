@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglTexUnitsConfigList( deoglRenderThread &renderThread );
+	deoglTexUnitsConfigList(deoglRenderThread &renderThread);
 	
 	/** Clean up list. */
 	~deoglTexUnitsConfigList();
@@ -61,20 +61,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Count of texture units configurations. */
-	inline int GetCount() const{ return pTUCCount; }
+	inline int GetCount() const{return pTUCCount;}
 	
 	/** Root texture units configuration. */
-	inline deoglTexUnitsConfig *GetRoot() const{ return pRootTUC; }
+	inline deoglTexUnitsConfig *GetRoot() const{return pRootTUC;}
 	
 	/**
 	 * Texture units configuration matching parameters. Create texture units configuration
 	 * if absent. Adds usage to texture units configuration. To remove a usage use RemoveUsage.
 	 */
-	deoglTexUnitsConfig *GetWith( const deoglTexUnitConfig *units,
-		int unitCount, deoglShaderParameterBlock *paramBlock );
+	deoglTexUnitsConfig *GetWith(const deoglTexUnitConfig *units,
+		int unitCount, deoglShaderParameterBlock *paramBlock);
 	
 	/** Empty texture units configuration. */
 	deoglTexUnitsConfig *GetEmpty();
@@ -83,7 +83,7 @@ public:
 	deoglTexUnitsConfig *GetEmptyNoUsage() const;
 	
 	/** Remove texture units configuration. For use by deoglTexUnitsConfig only. */
-	void Remove( deoglTexUnitsConfig *config );
+	void Remove(deoglTexUnitsConfig *config);
 	/*@}*/
 };
 

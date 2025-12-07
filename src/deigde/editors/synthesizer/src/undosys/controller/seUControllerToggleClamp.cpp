@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerToggleClamp::seUControllerToggleClamp( seController *controller ) :
-pController( controller )
+seUControllerToggleClamp::seUControllerToggleClamp(seController *controller) :
+pController(controller)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -58,8 +58,8 @@ seUControllerToggleClamp::~seUControllerToggleClamp(){
 ///////////////
 
 void seUControllerToggleClamp::Undo(){
-	seController &controller = ( seController& )( deObject& )pController;
-	controller.SetClamp( ! controller.GetClamp() );
+	seController &controller = (seController&)(deObject&)pController;
+	controller.SetClamp(! controller.GetClamp());
 }
 
 void seUControllerToggleClamp::Redo(){

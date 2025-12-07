@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetGravity::meUWorldSetGravity( meWorld *world, const decVector &newValue ) :
-pWorld( NULL ),
-pNewValue( newValue )
+meUWorldSetGravity::meUWorldSetGravity(meWorld *world, const decVector &newValue) :
+pWorld(NULL),
+pNewValue(newValue)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set world gravity" );
+	SetShortInfo("Set world gravity");
 	
 	pOldValue = world->GetGravity();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 meUWorldSetGravity::~meUWorldSetGravity(){
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ meUWorldSetGravity::~meUWorldSetGravity(){
 ///////////////
 
 void meUWorldSetGravity::Undo(){
-	pWorld->SetGravity( pOldValue );
+	pWorld->SetGravity(pOldValue);
 }
 
 void meUWorldSetGravity::Redo(){
-	pWorld->SetGravity( pNewValue );
+	pWorld->SetGravity(pNewValue);
 }

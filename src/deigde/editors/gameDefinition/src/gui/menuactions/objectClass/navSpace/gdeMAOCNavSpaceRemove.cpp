@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpaceRemove::gdeMAOCNavSpaceRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Navigation Space",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class navigation space" )
+gdeMAOCNavSpaceRemove::gdeMAOCNavSpaceRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Navigation Space",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class navigation space")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Navigation Space",
 ///////////////
 
 igdeUndo *gdeMAOCNavSpaceRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace){
 		return NULL;
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
-	if( ! navSpace ){
+	if(! navSpace){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveNavSpace( &objectClass, navSpace );
+	return new gdeUOCRemoveNavSpace(&objectClass, navSpace);
 }
 
 void gdeMAOCNavSpaceRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace
-		&& gameDefinition->GetActiveOCNavigationSpace() != NULL );
+		&& gameDefinition->GetActiveOCNavigationSpace() != NULL);
 }

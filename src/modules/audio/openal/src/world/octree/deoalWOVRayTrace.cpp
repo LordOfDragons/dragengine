@@ -41,13 +41,13 @@
 /////////////////////////////////
 
 deoalWOVRayTrace::deoalWOVRayTrace() :
-pCheckAxisX( false ),
-pCheckAxisY( false ),
-pCheckAxisZ( false ),
-pRayLength( 0.0 )
+pCheckAxisX(false),
+pCheckAxisY(false),
+pCheckAxisZ(false),
+pRayLength(0.0)
 {
-	SetVisitAll( false );
-	SetVisitComponents( true );
+	SetVisitAll(false);
+	SetVisitComponents(true);
 }
 
 deoalWOVRayTrace::~deoalWOVRayTrace(){
@@ -58,7 +58,7 @@ deoalWOVRayTrace::~deoalWOVRayTrace(){
 // Visiting
 /////////////
 
-void deoalWOVRayTrace::SetRay( const decDVector &origin, const decDVector &direction ){
+void deoalWOVRayTrace::SetRay(const decDVector &origin, const decDVector &direction){
 	pRayOrigin = origin;
 	pRayTarget = origin + direction;
 	pRayDirection = direction;
@@ -69,81 +69,81 @@ void deoalWOVRayTrace::SetRay( const decDVector &origin, const decDVector &direc
 	pCheckAxisY = false;
 	pCheckAxisZ = false;
 	
-	if( fabs( direction.x ) > DOUBLE_SAFE_EPSILON ){
+	if(fabs(direction.x) > DOUBLE_SAFE_EPSILON){
 		pInvRayDirection.x = 1.0 / direction.x;
 		pCheckAxisX = true;
 	}
-	if( fabs( direction.y ) > DOUBLE_SAFE_EPSILON ){
+	if(fabs(direction.y) > DOUBLE_SAFE_EPSILON){
 		pInvRayDirection.y = 1.0 / direction.y;
 		pCheckAxisY = true;
 	}
-	if( fabs( direction.z ) > DOUBLE_SAFE_EPSILON ){
+	if(fabs(direction.z) > DOUBLE_SAFE_EPSILON){
 		pInvRayDirection.z = 1.0 / direction.z;
 		pCheckAxisZ = true;
 	}
 	
-	const decDVector margin( 0.0005, 0.0005, 0.0005 );
-	pRayBoxMin = pRayOrigin.Smallest( pRayTarget ) - margin;
-	pRayBoxMax = pRayOrigin.Largest( pRayTarget ) + margin;
+	const decDVector margin(0.0005, 0.0005, 0.0005);
+	pRayBoxMin = pRayOrigin.Smallest(pRayTarget) - margin;
+	pRayBoxMax = pRayOrigin.Largest(pRayTarget) + margin;
 }
 
-void deoalWOVRayTrace::SetLayerMask( const decLayerMask &layerMask ){
+void deoalWOVRayTrace::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
 
 
-void deoalWOVRayTrace::VisitNode( deoalWorldOctree &node ){
+void deoalWOVRayTrace::VisitNode(deoalWorldOctree &node){
 	// visit components in the node
 	const int count = node.GetComponentCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoalAComponent &component = *node.GetComponentAt( i );
+	for(i=0; i<count; i++){
+		deoalAComponent &component = *node.GetComponentAt(i);
 		// this is implicit. components are not added to the octree if not affecting sound
 // 		if( ! component.GetAffectsSound() ){
 // 			continue;
 // 		}
-		if( component.GetLayerMask().MatchesNot( pLayerMask ) ){
+		if(component.GetLayerMask().MatchesNot(pLayerMask)){
 			continue;
 		}
 // 		if( component.GetMaxExtend() < pRayBoxMin || component.GetMinExtend() > pRayBoxMax ){
 // 			continue;
 // 		}
 		
-		if( pRayHitsBox( component.GetBoxCenter(), component.GetBoxHalfExtends() ) ){
-			VisitComponent( &component );
+		if(pRayHitsBox(component.GetBoxCenter(), component.GetBoxHalfExtends())){
+			VisitComponent(&component);
 		}
 	}
 	
 	// visit child nodes if hit by ray
-	for( i=0; i<8; i++ ){
-		deoalDOctree * const childNode = node.GetNodeAt( i );
-		if( childNode && pRayHitsBox( childNode->GetCenter(), childNode->GetHalfSize() ) ){
-			VisitNode( *( ( deoalWorldOctree* )childNode ) );
+	for(i=0; i<8; i++){
+		deoalDOctree * const childNode = node.GetNodeAt(i);
+		if(childNode && pRayHitsBox(childNode->GetCenter(), childNode->GetHalfSize())){
+			VisitNode(*((deoalWorldOctree*)childNode));
 		}
 	}
 }
 
-void deoalWOVRayTrace::VisitNode( deoalDOctree *node, int /*intersection*/ ){
-	const deoalWorldOctree &sonode = *( ( deoalWorldOctree* )node );
+void deoalWOVRayTrace::VisitNode(deoalDOctree *node, int /*intersection*/){
+	const deoalWorldOctree &sonode = *((deoalWorldOctree*)node);
 	const int count = sonode.GetComponentCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoalAComponent &component = *sonode.GetComponentAt( i );
-		if( ! component.GetAffectsSound() ){
+	for(i=0; i<count; i++){
+		deoalAComponent &component = *sonode.GetComponentAt(i);
+		if(! component.GetAffectsSound()){
 			continue;
 		}
-		if( component.GetLayerMask().MatchesNot( pLayerMask ) ){
+		if(component.GetLayerMask().MatchesNot(pLayerMask)){
 			continue;
 		}
-		if( component.GetMaxExtend() < pRayBoxMin || component.GetMinExtend() > pRayBoxMax ){
+		if(component.GetMaxExtend() < pRayBoxMin || component.GetMinExtend() > pRayBoxMax){
 			continue;
 		}
 		
-		if( pRayHitsBox( component.GetBoxCenter(), component.GetBoxHalfExtends() ) ){
-			VisitComponent( &component );
+		if(pRayHitsBox(component.GetBoxCenter(), component.GetBoxHalfExtends())){
+			VisitComponent(&component);
 		}
 	}
 }
@@ -153,33 +153,33 @@ void deoalWOVRayTrace::VisitNode( deoalDOctree *node, int /*intersection*/ ){
 // Protected Functions
 ////////////////////////
 
-bool deoalWOVRayTrace::pRayHitsBox( const decDVector &center, const decDVector &halfExtends ){
-	const decDVector point( pRayOrigin - center );
-	if( point.Absolute() <= halfExtends || ( pRayTarget - center ).Absolute() <= halfExtends ){
+bool deoalWOVRayTrace::pRayHitsBox(const decDVector &center, const decDVector &halfExtends){
+	const decDVector point(pRayOrigin - center);
+	if(point.Absolute() <= halfExtends || (pRayTarget - center).Absolute() <= halfExtends){
 		return true;
 	}
 	
 	// x axis
-	if( pCheckAxisX ){
+	if(pCheckAxisX){
 		// face on the positive side
-		const double lambda1 = pInvRayDirection.x * ( halfExtends.x - point.x );
-		if( lambda1 >= 0.0 && lambda1 <= 1.0 ){
+		const double lambda1 = pInvRayDirection.x * (halfExtends.x - point.x);
+		if(lambda1 >= 0.0 && lambda1 <= 1.0){
 			const double y = point.y + pRayDirection.y * lambda1;
-			if( y >= -halfExtends.y && y <= halfExtends.y ){
+			if(y >= -halfExtends.y && y <= halfExtends.y){
 				const double z = point.z + pRayDirection.z * lambda1;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
 		}
 		
 		// face on the negative side
-		const double lambda2 = pInvRayDirection.x * ( -halfExtends.x - point.x );
-		if( lambda2 >= 0.0 && lambda2 <= 1.0 ){
+		const double lambda2 = pInvRayDirection.x * (-halfExtends.x - point.x);
+		if(lambda2 >= 0.0 && lambda2 <= 1.0){
 			const double y = point.y + pRayDirection.y * lambda2;
-			if( y >= -halfExtends.y && y <= halfExtends.y ){
+			if(y >= -halfExtends.y && y <= halfExtends.y){
 				const double z = point.z + pRayDirection.z * lambda2;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
@@ -187,26 +187,26 @@ bool deoalWOVRayTrace::pRayHitsBox( const decDVector &center, const decDVector &
 	}
 	
 	// y axis
-	if( pCheckAxisY ){
+	if(pCheckAxisY){
 		// face on the positive side
-		const double lambda1 = pInvRayDirection.y * ( halfExtends.y - point.y );
-		if( lambda1 >= 0.0 && lambda1 <= 1.0 ){
+		const double lambda1 = pInvRayDirection.y * (halfExtends.y - point.y);
+		if(lambda1 >= 0.0 && lambda1 <= 1.0){
 			const double x = point.x + pRayDirection.x * lambda1;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const double z = point.z + pRayDirection.z * lambda1;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
 		}
 		
 		// face on the negative side
-		const double lambda2 = pInvRayDirection.y * ( -halfExtends.y - point.y );
-		if( lambda2 >= 0.0 && lambda2 <= 1.0 ){
+		const double lambda2 = pInvRayDirection.y * (-halfExtends.y - point.y);
+		if(lambda2 >= 0.0 && lambda2 <= 1.0){
 			const double x = point.x + pRayDirection.x * lambda2;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const double z = point.z + pRayDirection.z * lambda2;
-				if( z >= -halfExtends.z && z <= halfExtends.z ){
+				if(z >= -halfExtends.z && z <= halfExtends.z){
 					return true;
 				}
 			}
@@ -214,26 +214,26 @@ bool deoalWOVRayTrace::pRayHitsBox( const decDVector &center, const decDVector &
 	}
 	
 	// z axis
-	if( pCheckAxisZ ){
+	if(pCheckAxisZ){
 		// face on the positive side
-		const double lambda1 = pInvRayDirection.z * ( halfExtends.z - point.z );
-		if( lambda1 >= 0.0 && lambda1 <= 1.0 ){
+		const double lambda1 = pInvRayDirection.z * (halfExtends.z - point.z);
+		if(lambda1 >= 0.0 && lambda1 <= 1.0){
 			const double x = point.x + pRayDirection.x * lambda1;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const double y = point.y + pRayDirection.y * lambda1;
-				if( y >= -halfExtends.y && y <= halfExtends.y ){
+				if(y >= -halfExtends.y && y <= halfExtends.y){
 					return true;
 				}
 			}
 		}
 		
 		// face on the negative side
-		const double lambda2 = pInvRayDirection.z * ( -halfExtends.z - point.z );
-		if( lambda2 >= 0.0 && lambda2 <= 1.0 ){
+		const double lambda2 = pInvRayDirection.z * (-halfExtends.z - point.z);
+		if(lambda2 >= 0.0 && lambda2 <= 1.0){
 			const double x = point.x + pRayDirection.x * lambda2;
-			if( x >= -halfExtends.x && x <= halfExtends.x ){
+			if(x >= -halfExtends.x && x <= halfExtends.x){
 				const double y = point.y + pRayDirection.y * lambda2;
-				if( y >= -halfExtends.y && y <= halfExtends.y ){
+				if(y >= -halfExtends.y && y <= halfExtends.y){
 					return true;
 				}
 			}

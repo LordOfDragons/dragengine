@@ -35,32 +35,32 @@
 // Class decPointerLinkedList::cListEntry
 ///////////////////////////////////////////
 
-decPointerLinkedList::cListEntry::cListEntry( void *owner ) :
-pOwner( owner ),
-pPrev( NULL ),
-pNext( NULL ),
-pList( NULL )
+decPointerLinkedList::cListEntry::cListEntry(void *owner) :
+pOwner(owner),
+pPrev(NULL),
+pNext(NULL),
+pList(NULL)
 {
-	if( ! owner ){
-		DETHROW( deeInvalidParam );
+	if(! owner){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 decPointerLinkedList::cListEntry::~cListEntry(){
-	if( pList ){
-		pList->Remove( this );
+	if(pList){
+		pList->Remove(this);
 	}
 }
 
-void decPointerLinkedList::cListEntry::SetPrevious( cListEntry *previous ){
+void decPointerLinkedList::cListEntry::SetPrevious(cListEntry *previous){
 	pPrev = previous;
 }
 
-void decPointerLinkedList::cListEntry::SetNext( cListEntry *next ){
+void decPointerLinkedList::cListEntry::SetNext(cListEntry *next){
 	pNext = next;
 }
 
-void decPointerLinkedList::cListEntry::SetList( decPointerLinkedList *list ){
+void decPointerLinkedList::cListEntry::SetList(decPointerLinkedList *list){
 	pList = list;
 }
 
@@ -77,52 +77,52 @@ void decPointerLinkedList::cListEntry::Clear(){
 
 namespace {
 	static decPointerLinkedList &decPointerLinkedList_cIterator_List(
-	const decPointerLinkedList::cListEntry *entry ){
-		if( ! entry || ! entry->GetList() ){
-			DETHROW( deeInvalidParam );
+	const decPointerLinkedList::cListEntry *entry){
+		if(! entry || ! entry->GetList()){
+			DETHROW(deeInvalidParam);
 		}
 		return *entry->GetList();
 	}
 }
 
-decPointerLinkedList::cIterator::cIterator( decPointerLinkedList &list ) :
-pList( list ),
-pEntry( NULL ),
-pNextEntry( list.GetRoot() ),
-pLastEntry( list.GetTail() ){
+decPointerLinkedList::cIterator::cIterator(decPointerLinkedList &list) :
+pList(list),
+pEntry(NULL),
+pNextEntry(list.GetRoot()),
+pLastEntry(list.GetTail()){
 }
 
-decPointerLinkedList::cIterator::cIterator( decPointerLinkedList::cListEntry *firstEntry ) :
-pList( decPointerLinkedList_cIterator_List( firstEntry ) ),
-pEntry( NULL ),
-pNextEntry( firstEntry ),
-pLastEntry( pList.GetTail() ){
+decPointerLinkedList::cIterator::cIterator(decPointerLinkedList::cListEntry *firstEntry) :
+pList(decPointerLinkedList_cIterator_List(firstEntry)),
+pEntry(NULL),
+pNextEntry(firstEntry),
+pLastEntry(pList.GetTail()){
 }
 
-decPointerLinkedList::cIterator::cIterator( decPointerLinkedList::cListEntry *firstEntry,
-decPointerLinkedList::cListEntry *lastEntry ) :
-pList( decPointerLinkedList_cIterator_List( firstEntry ) ),
-pEntry( NULL ),
-pNextEntry( firstEntry ),
-pLastEntry( lastEntry )
+decPointerLinkedList::cIterator::cIterator(decPointerLinkedList::cListEntry *firstEntry,
+decPointerLinkedList::cListEntry *lastEntry) :
+pList(decPointerLinkedList_cIterator_List(firstEntry)),
+pEntry(NULL),
+pNextEntry(firstEntry),
+pLastEntry(lastEntry)
 {
-	if( ! lastEntry || lastEntry->GetList() != firstEntry->GetList() ){
-		DETHROW( deeInvalidParam );
+	if(! lastEntry || lastEntry->GetList() != firstEntry->GetList()){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 void *decPointerLinkedList::cIterator::Entry() const{
-	if( ! pEntry ){
-		DETHROW( deeInvalidParam );
+	if(! pEntry){
+		DETHROW(deeInvalidParam);
 	}
 	return pEntry;
 }
 
 bool decPointerLinkedList::cIterator::Advance(){
-	if( pNextEntry ){
+	if(pNextEntry){
 		pEntry = pNextEntry->GetOwner();
 		
-		if( pNextEntry != pLastEntry ){
+		if(pNextEntry != pLastEntry){
 			pNextEntry = pNextEntry->GetNext();
 			
 		}else{
@@ -156,13 +156,13 @@ bool decPointerLinkedList::cIterator::operator++(){
 	return Advance();
 }
 
-bool decPointerLinkedList::cIterator::operator+=( int distance ){
-	if( distance < 0 ){
-		DETHROW( deeInvalidParam );
+bool decPointerLinkedList::cIterator::operator+=(int distance){
+	if(distance < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	bool result = HasNotFinished();
-	while( distance-- > 0 ){
+	while(distance-- > 0){
 		result = Advance();
 	}
 	return result;
@@ -185,9 +185,9 @@ decPointerLinkedList::cIterator::operator bool() const{
 ////////////////////////////
 
 decPointerLinkedList::decPointerLinkedList() :
-pRoot( NULL ),
-pTail( NULL ),
-pCount( 0 ){
+pRoot(NULL),
+pTail(NULL),
+pCount(0){
 }
 
 decPointerLinkedList::~decPointerLinkedList(){
@@ -199,27 +199,27 @@ decPointerLinkedList::~decPointerLinkedList(){
 // Management
 ///////////////
 
-decPointerLinkedList::cListEntry *decPointerLinkedList::GetAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+decPointerLinkedList::cListEntry *decPointerLinkedList::GetAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	cListEntry *entry = pRoot;
-	while( index-- > 0 ){
+	while(index-- > 0){
 		entry = entry->GetNext();
 	}
 	
 	return entry;
 }
 
-int decPointerLinkedList::IndexOf( cListEntry *entry ) const{
-	if( ! entry || entry->GetList() != this ){
+int decPointerLinkedList::IndexOf(cListEntry *entry) const{
+	if(! entry || entry->GetList() != this){
 		return -1;
 	}
 	
 	int index = 0;
 	cListEntry *find = pRoot;
-	while( find != entry ){
+	while(find != entry){
 		index++;
 		find = find->GetNext();
 	}
@@ -227,91 +227,91 @@ int decPointerLinkedList::IndexOf( cListEntry *entry ) const{
 	return index;
 }
 
-bool decPointerLinkedList::Has( cListEntry *entry ) const{
+bool decPointerLinkedList::Has(cListEntry *entry) const{
 	return entry && entry->GetList() == this;
 }
 
-void decPointerLinkedList::Add( cListEntry *entry ){
-	if( ! entry || entry->GetList() ){
-		DETHROW( deeInvalidParam );
+void decPointerLinkedList::Add(cListEntry *entry){
+	if(! entry || entry->GetList()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTail ){
-		pTail->SetNext( entry );
-		entry->SetPrevious( pTail );
-		entry->SetNext( NULL );
+	if(pTail){
+		pTail->SetNext(entry);
+		entry->SetPrevious(pTail);
+		entry->SetNext(NULL);
 		pTail = entry;
 		
 	}else{ // count is 0, root is NULL, tail is NULL
 		pTail = entry;
 		pRoot = entry;
-		entry->SetPrevious( NULL );
-		entry->SetNext( NULL );
+		entry->SetPrevious(NULL);
+		entry->SetNext(NULL);
 	}
 	
-	entry->SetList( this );
+	entry->SetList(this);
 	pCount++;
 }
 
-void decPointerLinkedList::InsertAfter( cListEntry *entry, cListEntry *after ){
-	if( ! entry || entry->GetList() || ! after || after->GetList() != this ){
-		DETHROW( deeInvalidParam );
+void decPointerLinkedList::InsertAfter(cListEntry *entry, cListEntry *after){
+	if(! entry || entry->GetList() || ! after || after->GetList() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( after->GetNext() ){
-		entry->SetPrevious( after );
-		entry->SetNext( after->GetNext() );
-		after->GetNext()->SetPrevious( entry );
-		after->SetNext( entry );
+	if(after->GetNext()){
+		entry->SetPrevious(after);
+		entry->SetNext(after->GetNext());
+		after->GetNext()->SetPrevious(entry);
+		after->SetNext(entry);
 		
 	}else{  // after is tail
-		pTail->SetNext( entry );
-		entry->SetPrevious( pTail );
-		entry->SetNext( NULL );
+		pTail->SetNext(entry);
+		entry->SetPrevious(pTail);
+		entry->SetNext(NULL);
 		pTail = entry;
 	}
 	
-	entry->SetList( this );
+	entry->SetList(this);
 	pCount++;
 }
 
-void decPointerLinkedList::InsertBefore( cListEntry *entry, cListEntry *before ){
-	if( ! entry || entry->GetList() || ! before || before->GetList() != this ){
-		DETHROW( deeInvalidParam );
+void decPointerLinkedList::InsertBefore(cListEntry *entry, cListEntry *before){
+	if(! entry || entry->GetList() || ! before || before->GetList() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( before->GetPrevious() ){
-		entry->SetNext( before );
-		entry->SetPrevious( before->GetPrevious() );
-		before->GetPrevious()->SetNext( entry );
-		before->SetPrevious( entry );
+	if(before->GetPrevious()){
+		entry->SetNext(before);
+		entry->SetPrevious(before->GetPrevious());
+		before->GetPrevious()->SetNext(entry);
+		before->SetPrevious(entry);
 		
 	}else{  // before is root
-		pRoot->SetPrevious( entry );
-		entry->SetPrevious( NULL );
-		entry->SetNext( pRoot );
+		pRoot->SetPrevious(entry);
+		entry->SetPrevious(NULL);
+		entry->SetNext(pRoot);
 		pRoot = entry;
 	}
 	
-	entry->SetList( this );
+	entry->SetList(this);
 	pCount++;
 }
 
-void decPointerLinkedList::Remove( cListEntry *entry ){
-	if( ! entry || entry->GetList() != this ){
-		DETHROW( deeInvalidParam );
+void decPointerLinkedList::Remove(cListEntry *entry){
+	if(! entry || entry->GetList() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( entry->GetPrevious() ){
-		entry->GetPrevious()->SetNext( entry->GetNext() );
+	if(entry->GetPrevious()){
+		entry->GetPrevious()->SetNext(entry->GetNext());
 		
 	}else{ // entry is root
 		pRoot = entry->GetNext();
 		// entry->GetNext() check will set new root previous to NULL
 	}
 	
-	if( entry->GetNext() ){
-		entry->GetNext()->SetPrevious( entry->GetPrevious() );
+	if(entry->GetNext()){
+		entry->GetNext()->SetPrevious(entry->GetPrevious());
 		
 	}else{ // entry is tail
 		pTail = entry->GetPrevious();
@@ -323,7 +323,7 @@ void decPointerLinkedList::Remove( cListEntry *entry ){
 }
 
 void decPointerLinkedList::RemoveAll(){
-	while( pRoot ){
+	while(pRoot){
 		cListEntry &clearEntry = *pRoot;
 		pRoot = pRoot->GetNext();
 		clearEntry.Clear();
@@ -338,6 +338,6 @@ void decPointerLinkedList::RemoveAll(){
 // Operators
 //////////////
 
-decPointerLinkedList::cListEntry *decPointerLinkedList::operator[]( int index ) const{
-	return GetAt( index );
+decPointerLinkedList::cListEntry *decPointerLinkedList::operator[](int index) const{
+	return GetAt(index);
 }

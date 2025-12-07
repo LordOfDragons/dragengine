@@ -60,8 +60,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object envMapProbe. */
-	gdeVAOEnvMapProbe( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe );
+	gdeVAOEnvMapProbe(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe);
 	
 protected:
 	/**
@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class envMapProbe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
+	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{return pOCEnvMapProbe;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

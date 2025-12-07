@@ -51,9 +51,9 @@ class igdeDEConsole_TextCommand : public igdeTextFieldListener{
 	igdeDEConsole &pPanel;
 	
 public:
-	igdeDEConsole_TextCommand( igdeDEConsole &panel ) : pPanel( panel ){}
+	igdeDEConsole_TextCommand(igdeDEConsole &panel) : pPanel(panel){}
 	
-	virtual void OnEnterKey( igdeTextField* ){
+	virtual void OnEnterKey(igdeTextField*){
 		pPanel.SendCommand();
 	}
 };
@@ -66,24 +66,24 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeDEConsole::igdeDEConsole( igdeDialogEngine &windowEngine ) :
-igdeContainerFlow( windowEngine.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esFirst ),
-pDialogEngine( windowEngine ),
-pLog( 1000 )
+igdeDEConsole::igdeDEConsole(igdeDialogEngine &windowEngine) :
+igdeContainerFlow(windowEngine.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esFirst),
+pDialogEngine(windowEngine),
+pLog(1000)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	helper.EditString( *this, "Console Logs", pEditLogs, 10, NULL );
+	helper.EditString(*this, "Console Logs", pEditLogs, 10, NULL);
 	
 	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	AddChild( line );
+	AddChild(line);
 	
-	helper.EditString( line, "Command to send", pEditCommand, new igdeDEConsole_TextCommand( *this ) );
+	helper.EditString(line, "Command to send", pEditCommand, new igdeDEConsole_TextCommand(*this));
 	
-	helper.ComboBox( line, "Module to send command to", pCBModule, NULL );
+	helper.ComboBox(line, "Module to send command to", pCBModule, NULL);
 	pCBModule->SetDefaultSorter();
 	
 	
@@ -103,26 +103,26 @@ void igdeDEConsole::UpdateModulesList(){
 	const int count = moduleSystem.GetModuleCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deLoadableModule * const module = moduleSystem.GetModuleAt( i );
-		if( ! pCBModule->HasItem( module->GetName() ) ){
-			pCBModule->AddItem( module->GetName() );
+	for(i=0; i<count; i++){
+		deLoadableModule * const module = moduleSystem.GetModuleAt(i);
+		if(! pCBModule->HasItem(module->GetName())){
+			pCBModule->AddItem(module->GetName());
 		}
 	}
 	pCBModule->SortItems();
 }
 
-void igdeDEConsole::AddToConsole( decUnicodeString &text ){
+void igdeDEConsole::AddToConsole(decUnicodeString &text){
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
 	
-	pLog.AddMultipleLines( text );
+	pLog.AddMultipleLines(text);
 	
 	decUnicodeString output;
-	pLog.FillLinesInto( output );
-	pEditLogs->SetText( output.ToUTF8() );
+	pLog.FillLinesInto(output);
+	pEditLogs->SetText(output.ToUTF8());
 	
-	if( atBottom ){
-		pEditLogs->SetBottomLine( pEditLogs->GetLineCount() - 1 );
+	if(atBottom){
+		pEditLogs->SetBottomLine(pEditLogs->GetLineCount() - 1);
 	}
 }
 
@@ -132,25 +132,25 @@ void igdeDEConsole::ClearConsole(){
 }
 
 void igdeDEConsole::SendCommand(){
-	if( ! pCBModule->GetSelectedItem() ){
+	if(! pCBModule->GetSelectedItem()){
 		return;
 	}
 	
 	// if this is a special command do it
-	if( pEditCommand->GetText() == "/clear" ){
+	if(pEditCommand->GetText() == "/clear"){
 		ClearConsole();
 		return;
 	}
 	
 	// determine which module to send the command to
 	deLoadableModule * const loadableModule = GetEngine()->GetModuleSystem()->
-		GetModuleNamed( pCBModule->GetSelectedItem()->GetText() );
-	if( ! loadableModule ){
+		GetModuleNamed(pCBModule->GetSelectedItem()->GetText());
+	if(! loadableModule){
 		return;
 	}
 	
 	deBaseModule * const module = loadableModule->GetModule();
-	if( ! module ){
+	if(! module){
 		return;
 	}
 	
@@ -158,31 +158,31 @@ void igdeDEConsole::SendCommand(){
 	decUnicodeArgumentList argList;
 	decUnicodeString command;
 	
-	command.SetFromUTF8( pEditCommand->GetText() );
-	argList.ParseCommand( command );
-	if( argList.GetArgumentCount() == 0){
+	command.SetFromUTF8(pEditCommand->GetText());
+	argList.ParseCommand(command);
+	if(argList.GetArgumentCount() == 0){
 		return;
 	}
 	
 	// add commend to send
 	decUnicodeString answer;
-	answer.SetFromUTF8( loadableModule->GetName() );
-	answer.AppendFromUTF8( " > " );
+	answer.SetFromUTF8(loadableModule->GetName());
+	answer.AppendFromUTF8(" > ");
 	answer += command;
-	AddToConsole( answer );
+	AddToConsole(answer);
 	
 	// send command to the selected module
 	try{
-		answer.SetFromUTF8( "" );
-		module->SendCommand( argList, answer );
+		answer.SetFromUTF8("");
+		module->SendCommand(argList, answer);
 		
-	}catch( const deException &e ){
-		answer.SetFromUTF8( e.FormatOutput().Join( "\n" ) );
+	}catch(const deException &e){
+		answer.SetFromUTF8(e.FormatOutput().Join("\n"));
 	}
 	
-	if( answer.GetLength() > 0 && answer.GetAt( answer.GetLength() - 1 ) != '\n' ){
-		answer.AppendFromUTF8( "\n" );
+	if(answer.GetLength() > 0 && answer.GetAt(answer.GetLength() - 1) != '\n'){
+		answer.AppendFromUTF8("\n");
 	}
 	
-	AddToConsole( answer );
+	AddToConsole(answer);
 }

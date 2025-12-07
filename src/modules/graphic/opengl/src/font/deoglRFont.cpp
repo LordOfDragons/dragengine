@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRFont::deoglRFont( deoglRenderThread &renderThread, const deFont &font ) :
+deoglRFont::deoglRFont(deoglRenderThread &renderThread, const deFont &font) :
 pFilename(font.GetFilename()),
 pIsColorFont(font.GetIsColorFont()),
 pGlyphs(renderThread, font)

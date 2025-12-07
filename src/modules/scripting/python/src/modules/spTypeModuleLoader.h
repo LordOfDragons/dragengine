@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new module. */
-	spTypeModuleLoader( ScriptingPython &sp );
+	spTypeModuleLoader(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
 	virtual ~spTypeModuleLoader();
 	/*@}*/
@@ -47,7 +47,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Parse import path. */
-	void ParseImportPath( const char *path, const char *fullname, decPath &vfsPath ) const;
+	void ParseImportPath(const char *path, const char *fullname, decPath &vfsPath) const;
 	
 	/** \brief Python create. */
 	virtual void PythonCreate();
@@ -55,8 +55,8 @@ public:
 	
 	/** @name Functions */
 	/*@{*/
-	static PyObject *cfFindModule( PyObject *myself, PyObject *args );
-	static PyObject *cfLoadModule( PyObject *myself, PyObject *args );
+	static PyObject *cfFindModule(PyObject *myself, PyObject *args);
+	static PyObject *cfLoadModule(PyObject *myself, PyObject *args);
 	/*@}*/
 };
 

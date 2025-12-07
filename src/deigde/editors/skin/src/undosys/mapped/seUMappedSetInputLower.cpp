@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetInputLower::seUMappedSetInputLower( seMapped *mapped, float newInputLower ) :
-pMapped( mapped ),
-pOldInputLower( mapped ? mapped->GetInputLower() : 0.0f ),
-pNewInputLower( newInputLower )
+seUMappedSetInputLower::seUMappedSetInputLower(seMapped *mapped, float newInputLower) :
+pMapped(mapped),
+pOldInputLower(mapped ? mapped->GetInputLower() : 0.0f),
+pNewInputLower(newInputLower)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Input Lower" );
+	SetShortInfo("Set Mapped Input Lower");
 }
 
 seUMappedSetInputLower::~seUMappedSetInputLower(){
@@ -53,9 +53,9 @@ seUMappedSetInputLower::~seUMappedSetInputLower(){
 ///////////////
 
 void seUMappedSetInputLower::Undo(){
-	pMapped->SetInputLower( pOldInputLower );
+	pMapped->SetInputLower(pOldInputLower);
 }
 
 void seUMappedSetInputLower::Redo(){
-	pMapped->SetInputLower( pNewInputLower );
+	pMapped->SetInputLower(pNewInputLower);
 }

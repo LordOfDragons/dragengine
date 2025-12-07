@@ -66,42 +66,42 @@ struct sARAnimNatDat{
 /////////////////////
 
 // public func new()
-deClassARAnimation::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsARAnim,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassARAnimation::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARAnim,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassARAnimation::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+void deClassARAnimation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
 	// clear ( important )
 	nd.animator = NULL;
 	nd.rule = NULL;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetOwnerClass()->GetBaseClass();
-	baseClass->CallBaseClassConstructor( rt, myself, baseClass->GetFirstConstructor(), 0 );
+	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
 	nd.rule = new deAnimatorRuleAnimation;
-	baseClass->AssignRule( myself->GetRealObject(), nd.rule );
+	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
 // public func destructor()
-deClassARAnimation::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsARAnim,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassARAnimation::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsARAnim,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassARAnimation::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassARAnimation::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 		nd.animator = NULL;
 	}
 	
-	if( nd.rule ){
+	if(nd.rule){
 		nd.rule->FreeReference();
 		nd.rule = NULL;
 	}
@@ -111,116 +111,116 @@ void deClassARAnimation::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myse
 
 
 // public func void setEnablePosition( bool enabled )
-deClassARAnimation::nfSetEnablePosition::nfSetEnablePosition( const sInitData &init ) : dsFunction( init.clsARAnim,
-"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARAnimation::nfSetEnablePosition::nfSetEnablePosition(const sInitData &init) : dsFunction(init.clsARAnim,
+"setEnablePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARAnimation::nfSetEnablePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+void deClassARAnimation::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnablePosition( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableOrientation( bool enabled )
-deClassARAnimation::nfSetEnableOrientation::nfSetEnableOrientation( const sInitData &init ) : dsFunction( init.clsARAnim,
-"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARAnimation::nfSetEnableOrientation::nfSetEnableOrientation(const sInitData &init) : dsFunction(init.clsARAnim,
+"setEnableOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARAnimation::nfSetEnableOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+void deClassARAnimation::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableOrientation( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableSize( bool enabled )
-deClassARAnimation::nfSetEnableSize::nfSetEnableSize( const sInitData &init ) : dsFunction( init.clsARAnim,
-"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARAnimation::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : dsFunction(init.clsARAnim,
+"setEnableSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARAnimation::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+void deClassARAnimation::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableSize( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setEnableVertexPositionSet( bool enabled )
-deClassARAnimation::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
-dsFunction( init.clsARAnim, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // enabled
+deClassARAnimation::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet(const sInitData &init) :
+dsFunction(init.clsARAnim, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // enabled
 }
-void deClassARAnimation::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+void deClassARAnimation::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void targetAddLink( ARAnimationTarget target, int link )
-deClassARAnimation::nfTargetAddLink::nfTargetAddLink( const sInitData &init ) : dsFunction( init.clsARAnim,
-"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsARAnimationTarget ); // target
-	p_AddParameter( init.clsInt ); // link
+deClassARAnimation::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunction(init.clsARAnim,
+"targetAddLink", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARAnimationTarget); // target
+	p_AddParameter(init.clsInt); // link
 }
-void deClassARAnimation::nfTargetAddLink::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassARAnimation::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(! rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
-	const deClassARAnimation::eTargets target = ( deClassARAnimation::eTargets )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
+	const deClassARAnimation::eTargets target = (deClassARAnimation::eTargets)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	const int link = rt->GetValue( 1 )->GetInt();
+	const int link = rt->GetValue(1)->GetInt();
 	
-	switch( target ){
+	switch(target){
 	case deClassARAnimation::etBlendFactor:
-		nd.rule->GetTargetBlendFactor().AddLink( link );
+		nd.rule->GetTargetBlendFactor().AddLink(link);
 		break;
 		
 	case deClassARAnimation::etMoveTime:
-		nd.rule->GetTargetMoveTime().AddLink( link );
+		nd.rule->GetTargetMoveTime().AddLink(link);
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void targetRemoveAllLinks( ARAnimationTarget target )
-deClassARAnimation::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks( const sInitData &init ) : dsFunction( init.clsARAnim,
-"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsARAnimationTarget ); // target
+deClassARAnimation::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &init) : dsFunction(init.clsARAnim,
+"targetRemoveAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARAnimationTarget); // target
 }
-void deClassARAnimation::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
-	if( ! rt->GetValue( 0 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+void deClassARAnimation::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
+	if(! rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassARAnimation::eTargets target = ( deClassARAnimation::eTargets )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+	const deClassARAnimation::eTargets target = (deClassARAnimation::eTargets)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
-	switch( target ){
+	switch(target){
 	case deClassARAnimation::etBlendFactor:
 		nd.rule->GetTargetBlendFactor().RemoveAllLinks();
 		break;
@@ -230,10 +230,10 @@ void deClassARAnimation::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, dsV
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -241,32 +241,32 @@ void deClassARAnimation::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, dsV
 
 
 // public func void setMoveName( String move )
-deClassARAnimation::nfSetMoveName::nfSetMoveName( const sInitData &init ) : dsFunction( init.clsARAnim,
-"setMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // move
+deClassARAnimation::nfSetMoveName::nfSetMoveName(const sInitData &init) : dsFunction(init.clsARAnim,
+"setMoveName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // move
 }
-void deClassARAnimation::nfSetMoveName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
-	const char * const moveName = rt->GetValue( 0 )->GetString();
+void deClassARAnimation::nfSetMoveName::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
+	const char * const moveName = rt->GetValue(0)->GetString();
 	
-	nd.rule->SetMoveName( moveName );
+	nd.rule->SetMoveName(moveName);
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
 
 // public func void setMoveTime( float time )
-deClassARAnimation::nfSetMoveTime::nfSetMoveTime( const sInitData &init ) : dsFunction( init.clsARAnim,
-"setMoveTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // time
+deClassARAnimation::nfSetMoveTime::nfSetMoveTime(const sInitData &init) : dsFunction(init.clsARAnim,
+"setMoveTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // time
 }
-void deClassARAnimation::nfSetMoveTime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself ) );
+void deClassARAnimation::nfSetMoveTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself));
 	
-	nd.rule->SetMoveTime( rt->GetValue( 0 )->GetFloat() );
+	nd.rule->SetMoveTime(rt->GetValue(0)->GetFloat());
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->NotifyRulesChanged();
 	}
 }
@@ -279,13 +279,13 @@ void deClassARAnimation::nfSetMoveTime::RunFunction( dsRunTime *rt, dsValue *mys
 // Constructor
 ////////////////
 
-deClassARAnimation::deClassARAnimation( deScriptingDragonScript &ds ) :
-dsClass( "ARAnimation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "AnimatorRule" );
+deClassARAnimation::deClassARAnimation(deScriptingDragonScript &ds) :
+dsClass("ARAnimation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("AnimatorRule");
 	
-	p_SetNativeDataSize( sizeof( sARAnimNatDat ) );
+	p_SetNativeDataSize(sizeof(sARAnimNatDat));
 }
 
 deClassARAnimation::~deClassARAnimation(){
@@ -296,8 +296,8 @@ deClassARAnimation::~deClassARAnimation(){
 // Management
 ///////////////
 
-void deClassARAnimation::CreateClassMembers( dsEngine *engine ){
-	pClsARAnimationTarget = engine->GetClass( "Dragengine.Scenery.ARAnimationTarget" );
+void deClassARAnimation::CreateClassMembers(dsEngine *engine){
+	pClsARAnimationTarget = engine->GetClass("Dragengine.Scenery.ARAnimationTarget");
 	
 	sInitData init;
 	init.clsARAnim = this;
@@ -315,88 +315,88 @@ void deClassARAnimation::CreateClassMembers( dsEngine *engine ){
 	init.clsARAnimationTarget = pClsARAnimationTarget;
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfSetEnablePosition( init ) );
-	AddFunction( new nfSetEnableOrientation( init ) );
-	AddFunction( new nfSetEnableSize( init ) );
-	AddFunction( new nfSetEnableVertexPositionSet( init ) );
+	AddFunction(new nfSetEnablePosition(init));
+	AddFunction(new nfSetEnableOrientation(init));
+	AddFunction(new nfSetEnableSize(init));
+	AddFunction(new nfSetEnableVertexPositionSet(init));
 	
-	AddFunction( new nfTargetAddLink( init ) );
-	AddFunction( new nfTargetRemoveAllLinks( init ) );
+	AddFunction(new nfTargetAddLink(init));
+	AddFunction(new nfTargetRemoveAllLinks(init));
 	
-	AddFunction( new nfSetMoveName( init ) );
-	AddFunction( new nfSetMoveTime( init ) );
+	AddFunction(new nfSetMoveName(init));
+	AddFunction(new nfSetMoveTime(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deAnimatorRuleAnimation *deClassARAnimation::GetRule( dsRealObject *myself ) const{
-	if( ! myself ){
+deAnimatorRuleAnimation *deClassARAnimation::GetRule(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sARAnimNatDat* )p_GetNativeData( myself->GetBuffer() ) )->rule;
+	return ((sARAnimNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARAnimation::AssignAnimator( dsRealObject *myself, deAnimator *animator ){
-	if( ! myself ){
-		DSTHROW( dueInvalidParam );
+void deClassARAnimation::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+	if(! myself){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pDS.GetClassAnimatorRule()->AssignAnimator( myself, animator );
+	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( myself->GetBuffer() ) );
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(myself->GetBuffer()));
 	
-	if( animator == nd.animator ){
+	if(animator == nd.animator){
 		return;
 	}
 	
-	if( nd.animator ){
+	if(nd.animator){
 		nd.animator->FreeReference();
 	}
 	
 	nd.animator = animator;
 	
-	if( animator ){
+	if(animator){
 		animator->AddReference();
 	}
 }
 
-void deClassARAnimation::PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimation *rule ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassARAnimation::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimation *rule){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! rule ){
-		rt->PushObject( NULL, this );
+	if(! rule){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = ( deClassAnimatorRule* )GetBaseClass();
-	rt->CreateObjectNakedOnStack( this );
-	sARAnimNatDat &nd = *( ( sARAnimNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	rt->CreateObjectNakedOnStack(this);
+	sARAnimNatDat &nd = *((sARAnimNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	
 	try{
-		baseClass->CallBaseClassConstructor( rt, rt->GetValue( 0 ), baseClass->GetFirstConstructor(), 0 );
+		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if( animator ){
+		if(animator){
 			animator->AddReference();
 		}
 		
 		nd.rule = rule;
 		rule->AddReference();
 		
-		baseClass->AssignRule( rt->GetValue( 0 )->GetRealObject(), rule );
-		baseClass->AssignAnimator( rt->GetValue( 0 )->GetRealObject(), animator );
+		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
+		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

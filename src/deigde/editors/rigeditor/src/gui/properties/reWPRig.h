@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPRig( reWindowProperties &windowProperties );
+	reWPRig(reWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -71,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Update root bone list. */
 	void UpdateRootBoneList();

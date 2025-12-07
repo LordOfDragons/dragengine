@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalScale::meUDecalScale( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUDecalScale::meUDecalScale(meWorld *world){
+	if(! world) DETHROW(deeInvalidParam);
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
 	int count = selection.GetCount();
 	
-	SetShortInfo( "Scale Decals" );
+	SetShortInfo("Scale Decals");
 	
 	pWorld = NULL;
 	
@@ -56,18 +56,18 @@ meUDecalScale::meUDecalScale( meWorld *world ){
 	pDecalCount = 0;
 	
 	try{
-		if( count > 0 ){
-			pDecals = new meUndoDataDecal*[ count ];
-			if( ! pDecals ) DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pDecals = new meUndoDataDecal*[count];
+			if(! pDecals) DETHROW(deeOutOfMemory);
 			
-			while( pDecalCount < count ){
-				pDecals[ pDecalCount ] = new meUndoDataDecal( selection.GetAt( pDecalCount ) );
-				if( ! pDecals[ pDecalCount ] ) DETHROW( deeOutOfMemory );
+			while(pDecalCount < count){
+				pDecals[pDecalCount] = new meUndoDataDecal(selection.GetAt(pDecalCount));
+				if(! pDecals[pDecalCount]) DETHROW(deeOutOfMemory);
 				pDecalCount++;
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -89,11 +89,11 @@ void meUDecalScale::Undo(){
 	meDecal *decal;
 	int i;
 	
-	for( i=0; i<pDecalCount; i++ ){
-		decal = pDecals[ i ]->GetDecal();
-		decal->SetPosition( pDecals[ i ]->GetOldPosition() );
-		decal->SetSize( pDecals[ i ]->GetOldSize() );
-		pWorld->NotifyDecalGeometryChanged( decal );
+	for(i=0; i<pDecalCount; i++){
+		decal = pDecals[i]->GetDecal();
+		decal->SetPosition(pDecals[i]->GetOldPosition());
+		decal->SetSize(pDecals[i]->GetOldSize());
+		pWorld->NotifyDecalGeometryChanged(decal);
 	}
 }
 
@@ -106,24 +106,24 @@ void meUDecalScale::Redo(){
 	meDecal *decal;
 	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		decal = pDecals[ d ]->GetDecal();
+	for(d=0; d<pDecalCount; d++){
+		decal = pDecals[d]->GetDecal();
 		
-		position = pDecals[ d ]->GetOldPosition();
-		scaling = pDecals[ d ]->GetOldSize();
+		position = pDecals[d]->GetOldPosition();
+		scaling = pDecals[d]->GetOldSize();
 		oldScalingZ = scaling.z;
 		
-		TransformElement( position, scaling );
+		TransformElement(position, scaling);
 		
-		if( modifySize ){
-			decal->SetSize( decVector( scaling.x, scaling.y, oldScalingZ ) );
+		if(modifySize){
+			decal->SetSize(decVector(scaling.x, scaling.y, oldScalingZ));
 		}
 		
-		if( modifyPosition ){
-			decal->SetPosition( position );
+		if(modifyPosition){
+			decal->SetPosition(position);
 		}
 		
-		pWorld->NotifyDecalGeometryChanged( decal );
+		pWorld->NotifyDecalGeometryChanged(decal);
 	}
 }
 
@@ -137,14 +137,14 @@ void meUDecalScale::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalScale::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
+	if(pDecals){
+		while(pDecalCount > 0){
 			pDecalCount--;
-			delete pDecals[ pDecalCount ];
+			delete pDecals[pDecalCount];
 		}
 		
 		delete [] pDecals;
 	}
 	
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }

@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create info box. */
-	ceConversationInfoBox( ceConversation &conversation );
+	ceConversationInfoBox(ceConversation &conversation);
 	
 	/** \brief Clean up text box. */
 	~ceConversationInfoBox();
@@ -77,55 +77,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return pConversation; }
+	inline ceConversation &GetConversation() const{return pConversation;}
 	
 	/** \brief Engine font. */
-	inline const deFont::Ref &GetFont() const{ return pEngFont; }
+	inline const deFont::Ref &GetFont() const{return pEngFont;}
 	
 	/** \brief Engine font size. */
-	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
+	inline const deFontSize::Ref &GetFontSize() const{return pEngFontSize;}
 	
 	/** \brief Font path. */
-	inline const decString &GetPathFont() const{ return pPathFont; }
+	inline const decString &GetPathFont() const{return pPathFont;}
 	
 	/** \brief Set font path. */
-	void SetPathFont( const char *path );
+	void SetPathFont(const char *path);
 	
 	/** \brief Background color. */
-	inline const decColor &GetBackgroundColor() const{ return pBackgroundColor; }
+	inline const decColor &GetBackgroundColor() const{return pBackgroundColor;}
 	
 	/** \brief Set background color. */
-	void SetBackgroundColor( const decColor &color );
+	void SetBackgroundColor(const decColor &color);
 	
 	/** \brief Text color. */
-	inline const decColor &GetTextColor() const{ return pTextColor; }
+	inline const decColor &GetTextColor() const{return pTextColor;}
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	/** \brief Text size. */
-	inline int GetTextSize() const{ return pTextSize; }
+	inline int GetTextSize() const{return pTextSize;}
 	
 	/** \brief Set text size. */
-	void SetTextSize( int size );
+	void SetTextSize(int size);
 	
 	/** \brief Text padding. */
-	inline int GetPadding() const{ return pPadding; }
+	inline int GetPadding() const{return pPadding;}
 	
 	/** \brief Set text padding. */
-	void SetPadding( int padding );
+	void SetPadding(int padding);
 	
 	/** \brief Text or an empty string to hide the box. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text or an empty string to hide the box. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Clear info box. */
 	void Clear();
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
 	
 	/**
 	 * \brief Update canvas.

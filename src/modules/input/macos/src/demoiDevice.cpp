@@ -43,25 +43,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-demoiDevice::demoiDevice( deMacOSInput &module, eSources source ) :
-pModule( module ),
-pIndex( -1 ),
-pSource( source ),
-pType( deInputDevice::edtMouse ),
+demoiDevice::demoiDevice(deMacOSInput &module, eSources source) :
+pModule(module),
+pIndex(-1),
+pSource(source),
+pType(deInputDevice::edtMouse),
 
-pButtonCount( 0 ),
-pButtons( NULL ),
-pAxisCount( 0 ),
-pAxes( NULL ),
+pButtonCount(0),
+pButtons(NULL),
+pAxisCount(0),
+pAxes(NULL),
 
-pDirtyAxisValues( false ){
+pDirtyAxisValues(false){
 }
 
 demoiDevice::~demoiDevice(){
-	if( pAxes ){
+	if(pAxes){
 		delete [] pAxes;
 	}
-	if( pButtons ){
+	if(pButtons){
 		delete [] pButtons;
 	}
 }
@@ -71,48 +71,48 @@ demoiDevice::~demoiDevice(){
 // Management
 ///////////////
 
-void demoiDevice::SetIndex( int index ){
+void demoiDevice::SetIndex(int index){
     pIndex = index;
 }
 
-void demoiDevice::SetType( deInputDevice::eDeviceTypes type ){
+void demoiDevice::SetType(deInputDevice::eDeviceTypes type){
 	pType = type;
 }
 
-void demoiDevice::SetID( const char *id ){
+void demoiDevice::SetID(const char *id){
 	pID = id;
 }
 
-void demoiDevice::SetName( const char *name ){
+void demoiDevice::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void demoiDevice::SetButtonCount( int count ){
-	if( pButtons ){
+void demoiDevice::SetButtonCount(int count){
+	if(pButtons){
 		delete [] pButtons;
 		pButtons = NULL;
 		pButtonCount = 0;
 	}
 	
-	if( count > 0 ){
-		pButtons = new demoiDeviceButton[ count ];
+	if(count > 0){
+		pButtons = new demoiDeviceButton[count];
 		pButtonCount = count;
 	}
 }
 
-demoiDeviceButton &demoiDevice::GetButtonAt( int index ) const{
-	if( index < 0 || index >= pButtonCount ){
-		DETHROW( deeInvalidParam );
+demoiDeviceButton &demoiDevice::GetButtonAt(int index) const{
+	if(index < 0 || index >= pButtonCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pButtons[ index ];
+	return pButtons[index];
 }
 
-demoiDeviceButton *demoiDevice::GetButtonWithID( const char *id ) const{
+demoiDeviceButton *demoiDevice::GetButtonWithID(const char *id) const{
 	int i;
-	for( i=0; i<pButtonCount; i++ ){
-		if( pButtons[ i ].GetID() == id ){
+	for(i=0; i<pButtonCount; i++){
+		if(pButtons[i].GetID() == id){
 			return pButtons + i;
 		}
 	}
@@ -120,10 +120,10 @@ demoiDeviceButton *demoiDevice::GetButtonWithID( const char *id ) const{
 	return NULL;
 }
 
-int demoiDevice::IndexOfButtonWithID( const char *id ) const{
+int demoiDevice::IndexOfButtonWithID(const char *id) const{
 	int i;
-	for( i=0; i<pButtonCount; i++ ){
-		if( pButtons[ i ].GetID() == id ){
+	for(i=0; i<pButtonCount; i++){
+		if(pButtons[i].GetID() == id){
 			return i;
 		}
 	}
@@ -131,10 +131,10 @@ int demoiDevice::IndexOfButtonWithID( const char *id ) const{
 	return -1;
 }
 
-int demoiDevice::IndexOfButtonWithMOCode( int code ) const{
+int demoiDevice::IndexOfButtonWithMOCode(int code) const{
     int i;
-    for( i=0; i<pButtonCount; i++ ){
-        if( pButtons[ i ].GetMOCode() == code ){
+    for(i=0; i<pButtonCount; i++){
+        if(pButtons[i].GetMOCode() == code){
             return i;
         }
     }
@@ -144,30 +144,30 @@ int demoiDevice::IndexOfButtonWithMOCode( int code ) const{
 
 
 
-void demoiDevice::SetAxisCount( int count ){
-	if( pAxes ){
+void demoiDevice::SetAxisCount(int count){
+	if(pAxes){
 		delete [] pAxes;
 		pAxes = NULL;
 		pAxisCount = 0;
 	}
 	
-	if( count > 0 ){
-		pAxes = new demoiDeviceAxis[ count ];
+	if(count > 0){
+		pAxes = new demoiDeviceAxis[count];
 		pAxisCount = count;
 	}
 }
 
-demoiDeviceAxis &demoiDevice::GetAxisAt( int index ) const{
-	if( index < 0 || index >= pAxisCount ){
-		DETHROW( deeInvalidParam );
+demoiDeviceAxis &demoiDevice::GetAxisAt(int index) const{
+	if(index < 0 || index >= pAxisCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pAxes[ index ];
+	return pAxes[index];
 }
 
-demoiDeviceAxis *demoiDevice::GetAxisWithID( const char *id ) const{
+demoiDeviceAxis *demoiDevice::GetAxisWithID(const char *id) const{
 	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		if( pAxes[ i ].GetID() == id ){
+	for(i=0; i<pAxisCount; i++){
+		if(pAxes[i].GetID() == id){
 			return pAxes + i;
 		}
 	}
@@ -175,10 +175,10 @@ demoiDeviceAxis *demoiDevice::GetAxisWithID( const char *id ) const{
 	return NULL;
 }
 
-int demoiDevice::IndexOfAxisWithID( const char *id ) const{
+int demoiDevice::IndexOfAxisWithID(const char *id) const{
 	int i;
-	for( i=0; i<pAxisCount; i++ ){
-		if( pAxes[ i ].GetID() == id ){
+	for(i=0; i<pAxisCount; i++){
+		if(pAxes[i].GetID() == id){
 			return i;
 		}
 	}
@@ -186,10 +186,10 @@ int demoiDevice::IndexOfAxisWithID( const char *id ) const{
 	return -1;
 }
 
-int demoiDevice::IndexOfAxisWithMOCode( int code ) const{
+int demoiDevice::IndexOfAxisWithMOCode(int code) const{
     int i;
-    for( i=0; i<pAxisCount; i++ ){
-        if( pAxes[ i ].GetMOCode() == code ){
+    for(i=0; i<pAxisCount; i++){
+        if(pAxes[i].GetMOCode() == code){
             return i;
         }
     }
@@ -199,31 +199,31 @@ int demoiDevice::IndexOfAxisWithMOCode( int code ) const{
 
 
 
-void demoiDevice::SetDirtyAxisValues( bool dirty ){
+void demoiDevice::SetDirtyAxisValues(bool dirty){
     pDirtyAxisValues = dirty;
 }
 
 
 
-void demoiDevice::GetInfo( deInputDevice &info ) const{
+void demoiDevice::GetInfo(deInputDevice &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	
-	info.SetDisplayImage( NULL );
-	info.SetDisplayModel( NULL );
-	info.SetDisplaySkin( NULL );
+	info.SetDisplayImage(NULL);
+	info.SetDisplayModel(NULL);
+	info.SetDisplaySkin(NULL);
 	
-	info.SetButtonCount( pButtonCount );
-	for( i=0; i<pButtonCount; i++ ){
-		pButtons[ i ].GetInfo( info.GetButtonAt( i ) );
+	info.SetButtonCount(pButtonCount);
+	for(i=0; i<pButtonCount; i++){
+		pButtons[i].GetInfo(info.GetButtonAt(i));
 	}
 	
-	info.SetAxisCount( pAxisCount );
-	for( i=0; i<pAxisCount; i++ ){
-		pAxes[ i ].GetInfo( info.GetAxisAt( i ) );
+	info.SetAxisCount(pAxisCount);
+	for(i=0; i<pAxisCount; i++){
+		pAxes[i].GetInfo(info.GetAxisAt(i));
 	}
 }
 
@@ -231,14 +231,14 @@ void demoiDevice::Update(){
 }
 
 void demoiDevice::SendDirtyAxisEvents(){
-    if( ! pDirtyAxisValues ){
+    if(! pDirtyAxisValues){
         return;
     }
     
     pDirtyAxisValues = false;
     
     int i;
-    for( i=0; i<pAxisCount; i++ ){
-        pAxes[ i ].SendEvents( *this );
+    for(i=0; i<pAxisCount; i++){
+        pAxes[i].SendEvents(*this);
     }
 }

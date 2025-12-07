@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetRotMin( aeRuleLimit *rule, const decVector &newMin );
+	aeURuleLimitSetRotMin(aeRuleLimit *rule, const decVector &newMin);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleLimitSetRotMin();

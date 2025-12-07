@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	deainpDeviceKeyboard( deAndroidInput &module );
+	deainpDeviceKeyboard(deAndroidInput &module);
 	
 protected:
 	/** \brief Clean up device. */
@@ -52,14 +52,14 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Get button best matching a character. */
-	int ButtonMatchingKeyChar( int keyChar ) const;
+	int ButtonMatchingKeyChar(int keyChar) const;
 	/*@}*/
 	
 	
 	
 private:
-	void pSetButtonAt( int index, const char *id, const char *name, int aiCode,
-		deInputEvent::eKeyCodes keyCode, int aiChar, int matchPriority );
+	void pSetButtonAt(int index, const char *id, const char *name, int aiCode,
+		deInputEvent::eKeyCodes keyCode, int aiChar, int matchPriority);
 };
 
 #endif

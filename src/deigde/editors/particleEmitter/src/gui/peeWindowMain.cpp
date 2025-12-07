@@ -76,15 +76,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeWindowMain::peeWindowMain( igdeEditorModule &module ) :
-igdeEditorWindow( module ),
-pListener( NULL ),
-pConfiguration( NULL ),
-pLoadSaveSystem( NULL ),
-pViewEmitter( NULL ),
-pWindowProperties( NULL ),
-pWindowCurves( NULL ),
-pEmitter( NULL )
+peeWindowMain::peeWindowMain(igdeEditorModule &module) :
+igdeEditorWindow(module),
+pListener(NULL),
+pConfiguration(NULL),
+pLoadSaveSystem(NULL),
+pViewEmitter(NULL),
+pWindowProperties(NULL),
+pWindowCurves(NULL),
+pEmitter(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -93,9 +93,9 @@ pEmitter( NULL )
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new peeWindowMainListener( *this );
-	pLoadSaveSystem = new peeLoadSaveSystem( *this );
-	pConfiguration = new peeConfiguration( *this );
+	pListener = new peeWindowMainListener(*this);
+	pLoadSaveSystem = new peeLoadSaveSystem(*this);
+	pConfiguration = new peeConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
 	
@@ -105,49 +105,49 @@ pEmitter( NULL )
 	
 	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(360)));
-	AddChild( splitted );
+	AddChild(splitted);
 	
-	pWindowProperties = new peeWindowProperties( *this );
-	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
+	pWindowProperties = new peeWindowProperties(*this);
+	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
-	splitted->AddChild( splitted2, igdeContainerSplitted::eaCenter );
+	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves = new peeWindowCurves( *this );
-	splitted2->AddChild( pWindowCurves, igdeContainerSplitted::eaSide );
+	pWindowCurves = new peeWindowCurves(*this);
+	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewEmitter = new peeViewEmitter( *this );
-	splitted2->AddChild( pViewEmitter, igdeContainerSplitted::eaCenter );
+	pViewEmitter = new peeViewEmitter(*this);
+	splitted2->AddChild(pViewEmitter, igdeContainerSplitted::eaCenter);
 	
 	CreateNewEmitter();
 	ResetViews();
 }
 
 peeWindowMain::~peeWindowMain(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfiguration();
 	}
 	
-	SetEmitter( NULL );
+	SetEmitter(NULL);
 	
-	if( pWindowProperties ){
+	if(pWindowProperties){
 		pWindowProperties->FreeReference();
 	}
-	if( pWindowCurves ){
+	if(pWindowCurves){
 		pWindowCurves->FreeReference();
 	}
-	if( pViewEmitter ){
+	if(pViewEmitter){
 		pViewEmitter->FreeReference();
 	}
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pLoadSaveSystem ){
+	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
 	}
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -167,19 +167,19 @@ void peeWindowMain::ResetViews(){
 
 
 
-void peeWindowMain::SetEmitter( peeEmitter *emitter ){
-	if( emitter == pEmitter ){
+void peeWindowMain::SetEmitter(peeEmitter *emitter){
+	if(emitter == pEmitter){
 		return;
 	}
 	
-	pViewEmitter->SetEmitter( NULL );
-	pWindowProperties->SetEmitter( NULL );
-	pWindowCurves->SetEmitter( NULL );
-	pActionEditUndo->SetUndoSystem( NULL );
-	pActionEditRedo->SetUndoSystem( NULL );
+	pViewEmitter->SetEmitter(NULL);
+	pWindowProperties->SetEmitter(NULL);
+	pWindowCurves->SetEmitter(NULL);
+	pActionEditUndo->SetUndoSystem(NULL);
+	pActionEditRedo->SetUndoSystem(NULL);
 	
-	if( pEmitter ){
-		pEmitter->RemoveListener( pListener );
+	if(pEmitter){
+		pEmitter->RemoveListener(pListener);
 		
 		pEmitter->Dispose();
 		pEmitter->FreeReference();
@@ -187,51 +187,51 @@ void peeWindowMain::SetEmitter( peeEmitter *emitter ){
 	
 	pEmitter = emitter;
 	
-	if( emitter ){
+	if(emitter){
 		emitter->AddReference();
-		emitter->AddListener( pListener );
+		emitter->AddListener(pListener);
 		
-		pActionEditUndo->SetUndoSystem( emitter->GetUndoSystem() );
-		pActionEditRedo->SetUndoSystem( emitter->GetUndoSystem() );
+		pActionEditUndo->SetUndoSystem(emitter->GetUndoSystem());
+		pActionEditRedo->SetUndoSystem(emitter->GetUndoSystem());
 	}
 	
-	pViewEmitter->SetEmitter( emitter );
-	pWindowProperties->SetEmitter( emitter );
-	pWindowCurves->SetEmitter( emitter );
+	pViewEmitter->SetEmitter(emitter);
+	pWindowProperties->SetEmitter(emitter);
+	pWindowCurves->SetEmitter(emitter);
 }
 
 void peeWindowMain::CreateNewEmitter(){
 	peeEmitter *emitter = NULL;
 	
 	try{
-		emitter = new peeEmitter( &GetEnvironment(), *pLoadSaveSystem );
+		emitter = new peeEmitter(&GetEnvironment(), *pLoadSaveSystem);
 		
-		SetEmitter( emitter );
+		SetEmitter(emitter);
 		emitter->FreeReference();
 		
-	}catch( const deException & ){
-		if( emitter ){
+	}catch(const deException &){
+		if(emitter){
 			emitter->FreeReference();
 		}
 		throw;
 	}
 }
 
-void peeWindowMain::SaveEmitter( const char *filename ){
-	GetEditorModule().LogInfoFormat( "Saving Emitter %s", filename );
-	pLoadSaveSystem->SaveEmitter( pEmitter, filename );
+void peeWindowMain::SaveEmitter(const char *filename){
+	GetEditorModule().LogInfoFormat("Saving Emitter %s", filename);
+	pLoadSaveSystem->SaveEmitter(pEmitter, filename);
 	
-	const decString basePath( pEmitter->GetDirectoryPath() );
+	const decString basePath(pEmitter->GetDirectoryPath());
 	
-	pEmitter->SetFilePath( filename );
-	pEmitter->SetChanged( false );
-	pEmitter->SetSaved( true );
+	pEmitter->SetFilePath(filename);
+	pEmitter->SetChanged(false);
+	pEmitter->SetSaved(true);
 	
-	if( pEmitter->GetDirectoryPath() != basePath ){
+	if(pEmitter->GetDirectoryPath() != basePath){
 		pWindowProperties->OnEmitterPathChanged();
 	}
 	
-	GetRecentFiles().AddFile( filename );
+	GetRecentFiles().AddFile(filename);
 }
 
 
@@ -254,45 +254,45 @@ void peeWindowMain::OnAfterEngineStop(){
 
 void peeWindowMain::OnActivate(){
 	igdeEditorWindow::OnActivate();
-	pViewEmitter->SetEnableRendering( true );
+	pViewEmitter->SetEnableRendering(true);
 }
 
 void peeWindowMain::OnDeactivate(){
-	pViewEmitter->SetEnableRendering( false );
+	pViewEmitter->SetEnableRendering(false);
 	igdeEditorWindow::OnDeactivate();
 }
 
 
 
-void peeWindowMain::OnFrameUpdate( float elapsed ){
-	if( ! GetActiveModule() ){
+void peeWindowMain::OnFrameUpdate(float elapsed){
+	if(! GetActiveModule()){
 		return;
 	}
 	
-	pViewEmitter->OnFrameUpdate( elapsed );
+	pViewEmitter->OnFrameUpdate(elapsed);
 }
 
 
 
-void peeWindowMain::GetChangedDocuments( decStringList &list ){
-	if( pEmitter && pEmitter->GetChanged() ){
-		list.Add( pEmitter->GetFilePath() );
+void peeWindowMain::GetChangedDocuments(decStringList &list){
+	if(pEmitter && pEmitter->GetChanged()){
+		list.Add(pEmitter->GetFilePath());
 	}
 }
 
-void peeWindowMain::LoadDocument( const char *filename ){
-	peeEmitter *emitter = pLoadSaveSystem->LoadEmitter( filename );
+void peeWindowMain::LoadDocument(const char *filename){
+	peeEmitter *emitter = pLoadSaveSystem->LoadEmitter(filename);
 	
-	SetEmitter( emitter );
+	SetEmitter(emitter);
 	emitter->FreeReference();
 	
-	emitter->SetChanged( false );
-	emitter->SetSaved( true );
-	GetRecentFiles().AddFile( filename );
+	emitter->SetChanged(false);
+	emitter->SetSaved(true);
+	GetRecentFiles().AddFile(filename);
 }
 
-bool peeWindowMain::SaveDocument( const char *filename ){
-	if( pEmitter && pEmitter->GetFilePath().Equals( filename ) ){
+bool peeWindowMain::SaveDocument(const char *filename){
+	if(pEmitter && pEmitter->GetFilePath().Equals(filename)){
 		pActionEmitterSave->OnAction();
 		return true; // TODO better implement this so failure can be detected
 	}
@@ -310,7 +310,7 @@ void peeWindowMain::OnGameProjectChanged(){
 }
 
 igdeStepableTask *peeWindowMain::OnGameDefinitionChanged(){
-	return new peeTaskSyncGameDefinition( *this );
+	return new peeTaskSyncGameDefinition(*this);
 }
 
 
@@ -325,28 +325,28 @@ protected:
 	peeWindowMain &pWindow;
 	
 public:
-	cActionBase( peeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
+	cActionBase(peeWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
-		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
-	igdeAction( text, icon, description, mnemonic, igdeHotKey( modifiers, keyCode ) ),
-	pWindow( window ){}
+		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
+	igdeAction(text, icon, description, mnemonic, igdeHotKey(modifiers, keyCode)),
+	pWindow(window){}
 	
-	cActionBase( peeWindowMain &window, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	igdeAction( text, icon, description, mnemonic ),
-	pWindow( window ){}
+	cActionBase(peeWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic) :
+	igdeAction(text, icon, description, mnemonic),
+	pWindow(window){}
 };
 
 
 class cActionEmitterNew : public cActionBase{
 public:
-	cActionEmitterNew( peeWindowMain &window ) : cActionBase( window, "New",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ), "Creates a new emitter",
-		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN ){}
+	cActionEmitterNew(peeWindowMain &window) : cActionBase(window, "New",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew), "Creates a new emitter",
+		deInputEvent::esmControl, deInputEvent::ekcN, deInputEvent::ekcN){}
 	
 	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Emitter",
-		"Creating a new emitter discarding the current one is that ok?" ) == igdeCommonDialogs::ebYes ){
+		if(igdeCommonDialogs::Question(&pWindow, igdeCommonDialogs::ebsYesNo, "New Emitter",
+		"Creating a new emitter discarding the current one is that ok?") == igdeCommonDialogs::ebYes){
 			pWindow.CreateNewEmitter();
 		}
 	}
@@ -355,71 +355,71 @@ public:
 
 class cActionEmitterOpen : public cActionBase{
 public:
-	cActionEmitterOpen( peeWindowMain &window ) : cActionBase( window, "Open...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ), "Opens a emitter from file",
-		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO ){}
+	cActionEmitterOpen(peeWindowMain &window) : cActionBase(window, "Open...",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Opens a emitter from file",
+		deInputEvent::esmControl, deInputEvent::ekcO, deInputEvent::ekcO){}
 	
 	virtual void OnAction(){
-		decString filename( pWindow.GetEmitter()->GetFilePath() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Emitter",
+		decString filename(pWindow.GetEmitter()->GetFilePath());
+		if(! igdeCommonDialogs::GetFileOpen(&pWindow, "Open Emitter",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
 			return;
 		}
 		
 		// load emitter
-		pWindow.GetEditorModule().LogInfoFormat( "Loading emitter %s", filename.GetString() );
-		peeEmitter *emitter = pWindow.GetLoadSaveSystem().LoadEmitter( filename );
+		pWindow.GetEditorModule().LogInfoFormat("Loading emitter %s", filename.GetString());
+		peeEmitter *emitter = pWindow.GetLoadSaveSystem().LoadEmitter(filename);
 		
 		// replace emitter
-		pWindow.SetEmitter( emitter );
+		pWindow.SetEmitter(emitter);
 		emitter->FreeReference();
 		
 		// store information
-		emitter->SetChanged( false );
-		emitter->SetSaved( true );
-		pWindow.GetRecentFiles().AddFile( filename );
+		emitter->SetChanged(false);
+		emitter->SetSaved(true);
+		pWindow.GetRecentFiles().AddFile(filename);
 	}
 };
 
 
 class cActionEmitterSaveAs : public cActionBase{
 public:
-	cActionEmitterSaveAs( peeWindowMain &window ) : cActionBase( window, "Save As...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-		"Saves the emitter under a differen file", deInputEvent::ekcA ){}
+	cActionEmitterSaveAs(peeWindowMain &window) : cActionBase(window, "Save As...",
+		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
+		"Saves the emitter under a differen file", deInputEvent::ekcA){}
 	
 	virtual void OnAction(){
-		decString filename( pWindow.GetEmitter()->GetFilePath() );
-		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Emitter",
+		decString filename(pWindow.GetEmitter()->GetFilePath());
+		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Emitter",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		*pWindow.GetLoadSaveSystem().GetEmitterFilePatterns(), filename ) ){
-			pWindow.SaveEmitter( filename );
+			pWindow.SaveEmitter(filename);
 		}
 	}
 	
 	virtual void Update(){
-		SetEnabled( pWindow.GetEmitter() );
+		SetEnabled(pWindow.GetEmitter());
 	}
 };
 
 
 class cActionEmitterSave : public cActionEmitterSaveAs{
 public:
-	cActionEmitterSave( peeWindowMain &window ) : cActionEmitterSaveAs( window ){
-		SetText( "Save" );
-		SetDescription( "Saves the emitter to file" );
-		SetHotKey( igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcS ) );
-		SetMnemonic( deInputEvent::ekcS );
-		SetIcon( window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSave ) );
+	cActionEmitterSave(peeWindowMain &window) : cActionEmitterSaveAs(window){
+		SetText("Save");
+		SetDescription("Saves the emitter to file");
+		SetHotKey(igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcS));
+		SetMnemonic(deInputEvent::ekcS);
+		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
 	virtual void OnAction(){
 		peeEmitter &emitter = *pWindow.GetEmitter();
 		
-		if( emitter.GetSaved() ){
-			if( emitter.GetChanged() ){
-				pWindow.SaveEmitter( emitter.GetFilePath() );
+		if(emitter.GetSaved()){
+			if(emitter.GetChanged()){
+				pWindow.SaveEmitter(emitter.GetFilePath());
 			}
 			
 		}else{
@@ -428,7 +428,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pWindow.GetEmitter() && pWindow.GetEmitter()->GetChanged() );
+		SetEnabled(pWindow.GetEmitter() && pWindow.GetEmitter()->GetChanged());
 	}
 };
 
@@ -436,48 +436,48 @@ public:
 
 class cActionEditCut : public cActionBase{
 public:
-	cActionEditCut( peeWindowMain &window ) : cActionBase( window,
-		"Cut", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
+	cActionEditCut(peeWindowMain &window) : cActionBase(window,
+		"Cut", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcX, deInputEvent::ekcT ){}
+		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
 	virtual void OnAction(){
 	}
 	
 	virtual void Update(){
-		SetEnabled( false );
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditCopy : public cActionBase{
 public:
-	cActionEditCopy( peeWindowMain &window ) : cActionBase( window,
-		"Copy", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+	cActionEditCopy(peeWindowMain &window) : cActionBase(window,
+		"Copy", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copies selected objects", deInputEvent::esmControl,
-		deInputEvent::ekcC, deInputEvent::ekcC ){}
+		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
 	virtual void OnAction(){
 	}
 	
 	virtual void Update(){
-		SetEnabled( false );
+		SetEnabled(false);
 	}
 };
 
 
 class cActionEditPaste : public cActionBase{
 public:
-	cActionEditPaste( peeWindowMain &window ) : cActionBase( window,
-		"Paste", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+	cActionEditPaste(peeWindowMain &window) : cActionBase(window,
+		"Paste", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste objects", deInputEvent::esmControl,
-		deInputEvent::ekcV, deInputEvent::ekcP ){}
+		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
 	virtual void OnAction(){
 	}
 	
 	virtual void Update(){
-		SetEnabled( false /*pWindow.GetClipboard().HasClip()*/ );
+		SetEnabled(false /*pWindow.GetClipboard().HasClip()*/);
 	}
 };
 
@@ -493,88 +493,88 @@ void peeWindowMain::pLoadIcons(){
 }
 
 void peeWindowMain::pCreateActions(){
-	pActionEmitterNew.TakeOver( new cActionEmitterNew( *this ) );
-	pActionEmitterOpen.TakeOver( new cActionEmitterOpen( *this ) );
-	pActionEmitterSave.TakeOver( new cActionEmitterSave( *this ) );
-	pActionEmitterSaveAs.TakeOver( new cActionEmitterSaveAs( *this ) );
-	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
-	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
-	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
-	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
+	pActionEmitterNew.TakeOver(new cActionEmitterNew(*this));
+	pActionEmitterOpen.TakeOver(new cActionEmitterOpen(*this));
+	pActionEmitterSave.TakeOver(new cActionEmitterSave(*this));
+	pActionEmitterSaveAs.TakeOver(new cActionEmitterSaveAs(*this));
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
 	
 	
 	// register for updating
-	AddUpdateAction( pActionEmitterNew );
-	AddUpdateAction( pActionEmitterOpen );
-	AddUpdateAction( pActionEmitterSave );
-	AddUpdateAction( pActionEmitterSaveAs );
-	AddUpdateAction( pActionEditUndo );
-	AddUpdateAction( pActionEditRedo );
-	AddUpdateAction( pActionEditCut );
-	AddUpdateAction( pActionEditCopy );
-	AddUpdateAction( pActionEditPaste );
+	AddUpdateAction(pActionEmitterNew);
+	AddUpdateAction(pActionEmitterOpen);
+	AddUpdateAction(pActionEmitterSave);
+	AddUpdateAction(pActionEmitterSaveAs);
+	AddUpdateAction(pActionEditUndo);
+	AddUpdateAction(pActionEditRedo);
+	AddUpdateAction(pActionEditCut);
+	AddUpdateAction(pActionEditCopy);
+	AddUpdateAction(pActionEditPaste);
 }
 
 void peeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
-	helper.ToolBarButton( pTBFile, pActionEmitterNew );
-	helper.ToolBarButton( pTBFile, pActionEmitterOpen );
-	helper.ToolBarButton( pTBFile, pActionEmitterSave );
+	helper.ToolBarButton(pTBFile, pActionEmitterNew);
+	helper.ToolBarButton(pTBFile, pActionEmitterOpen);
+	helper.ToolBarButton(pTBFile, pActionEmitterSave);
 	
-	AddSharedToolBar( pTBFile );
+	AddSharedToolBar(pTBFile);
 }
 
 void peeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver( new igdeToolBar( GetEnvironment() ) );
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
-	helper.ToolBarButton( pTBEdit, pActionEditUndo );
-	helper.ToolBarButton( pTBEdit, pActionEditRedo );
+	helper.ToolBarButton(pTBEdit, pActionEditUndo);
+	helper.ToolBarButton(pTBEdit, pActionEditRedo);
 	
-	helper.ToolBarSeparator( pTBEdit );
-	helper.ToolBarButton( pTBEdit, pActionEditCut );
-	helper.ToolBarButton( pTBEdit, pActionEditCopy );
-	helper.ToolBarButton( pTBEdit, pActionEditPaste );
+	helper.ToolBarSeparator(pTBEdit);
+	helper.ToolBarButton(pTBEdit, pActionEditCut);
+	helper.ToolBarButton(pTBEdit, pActionEditCopy);
+	helper.ToolBarButton(pTBEdit, pActionEditPaste);
 	
-	AddSharedToolBar( pTBEdit );
+	AddSharedToolBar(pTBEdit);
 }
 
 void peeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Emitter", deInputEvent::ekcM ) );
-	pCreateMenuEmitter( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Emitter", deInputEvent::ekcM));
+	pCreateMenuEmitter(cascade);
+	AddSharedMenu(cascade);
 	
-	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
-	pCreateMenuEdit( cascade );
-	AddSharedMenu( cascade );
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	pCreateMenuEdit(cascade);
+	AddSharedMenu(cascade);
 }
 
-void peeWindowMain::pCreateMenuEmitter( igdeMenuCascade &menu ){
+void peeWindowMain::pCreateMenuEmitter(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEmitterNew );
-	helper.MenuCommand( menu, pActionEmitterOpen );
-	helper.MenuRecentFiles( menu, GetRecentFiles() );
-	helper.MenuCommand( menu, pActionEmitterSave );
-	helper.MenuCommand( menu, pActionEmitterSaveAs );
+	helper.MenuCommand(menu, pActionEmitterNew);
+	helper.MenuCommand(menu, pActionEmitterOpen);
+	helper.MenuRecentFiles(menu, GetRecentFiles());
+	helper.MenuCommand(menu, pActionEmitterSave);
+	helper.MenuCommand(menu, pActionEmitterSaveAs);
 }
 
-void peeWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
+void peeWindowMain::pCreateMenuEdit(igdeMenuCascade &menu){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( menu, pActionEditUndo );
-	helper.MenuCommand( menu, pActionEditRedo );
+	helper.MenuCommand(menu, pActionEditUndo);
+	helper.MenuCommand(menu, pActionEditRedo);
 	
-	helper.MenuSeparator( menu );
-	helper.MenuCommand( menu, pActionEditCut );
-	helper.MenuCommand( menu, pActionEditCopy );
-	helper.MenuCommand( menu, pActionEditPaste );
+	helper.MenuSeparator(menu);
+	helper.MenuCommand(menu, pActionEditCut);
+	helper.MenuCommand(menu, pActionEditCopy);
+	helper.MenuCommand(menu, pActionEditPaste);
 }

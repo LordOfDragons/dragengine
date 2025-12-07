@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeMove( meObject *object, const char *property, const meObjectShapeList &list );
+	meUObjectShapeMove(meObject *object, const char *property, const meObjectShapeList &list);
 	/** \brief Clean up undo object. */
 	virtual ~meUObjectShapeMove();
 	/*@}*/

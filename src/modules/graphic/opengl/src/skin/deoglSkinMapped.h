@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin mapped. */
-	deoglSkinMapped( const deSkinMapped &mapped );
+	deoglSkinMapped(const deSkinMapped &mapped);
 	
 protected:
 	/** Clean up skin mapped. */
@@ -65,20 +65,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Skin mapped. */
-	const deSkinMapped &GetMapped() const{ return pMapped; }
+	const deSkinMapped &GetMapped() const{return pMapped;}
 	
 	/** Set renderable index. */
-	void SetRenderable( int renderable );
+	void SetRenderable(int renderable);
 	
 	/** Mapped value. */
-	float Calculate( const deoglSkinState &skinState, const deoglSkinStateMapped &mapped ) const;
+	float Calculate(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const;
 	/*@}*/
 	
 	
 	
 private:
-	float pCalculateInputValue( const deoglSkinState &skinState, const deoglSkinStateMapped &mapped ) const;
-	float pCalculateOutputValue( float inputValue ) const;
+	float pCalculateInputValue(const deoglSkinState &skinState, const deoglSkinStateMapped &mapped) const;
+	float pCalculateOutputValue(float inputValue) const;
 };
 
 #endif

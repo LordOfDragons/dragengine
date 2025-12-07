@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration xml read/save. */
-	dealConfigXML( deLogger *logger, const char *loggerSource );
+	dealConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up configuration xml read/save. */
 	virtual ~dealConfigXML();
@@ -57,20 +57,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, dealConfiguration &config );
+	void ReadFromFile(decBaseFileReader &reader, dealConfiguration &config);
 	
 	/** \brief Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const dealConfiguration &config );
+	void WriteToFile(decBaseFileWriter &writer, const dealConfiguration &config);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const dealConfiguration &config );
-	void pWriteWindow( decXmlWriter &writer, const dealConfigWindow &window, const char *tagName );
+	void pWriteConfig(decXmlWriter &writer, const dealConfiguration &config);
+	void pWriteWindow(decXmlWriter &writer, const dealConfigWindow &window, const char *tagName);
 	
-	void pReadConfig( const decXmlElementTag &root, dealConfiguration &config );
-	void pReadWindow( const decXmlElementTag &root, dealConfigWindow &window );
+	void pReadConfig(const decXmlElementTag &root, dealConfiguration &config);
+	void pReadWindow(const decXmlElementTag &root, dealConfigWindow &window);
 };
 
 #endif

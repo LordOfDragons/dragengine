@@ -38,11 +38,11 @@
 ////////////////////////////
 
 demoiDeviceButton::demoiDeviceButton() :
-pPressed( false ),
-pMOCode( 0 ),
-pMOChar( 0 ),
-pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ){
+pPressed(false),
+pMOCode(0),
+pMOChar(0),
+pKeyCode(deInputEvent::ekcUndefined),
+pMatchPriority(10){
 }
 
 demoiDeviceButton::~demoiDeviceButton(){
@@ -53,37 +53,37 @@ demoiDeviceButton::~demoiDeviceButton(){
 // Management
 ///////////////
 
-void demoiDeviceButton::SetID( const char *id ){
+void demoiDeviceButton::SetID(const char *id){
 	pID = id;
 }
 
-void demoiDeviceButton::SetName( const char *name ){
+void demoiDeviceButton::SetName(const char *name){
 	pName = name;
 }
  
-void demoiDeviceButton::SetPressed( bool pressed ){
+void demoiDeviceButton::SetPressed(bool pressed){
 	pPressed = pressed;
 }
 
-void demoiDeviceButton::SetMOCode( int code ){
+void demoiDeviceButton::SetMOCode(int code){
     pMOCode = code;
 }
 
-void demoiDeviceButton::SetMOChar( int character ){
+void demoiDeviceButton::SetMOChar(int character){
     pMOChar = character;
 }
 
-void demoiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
+void demoiDeviceButton::SetKeyCode(deInputEvent::eKeyCodes keyCode){
     pKeyCode = keyCode;
 }
 
-void demoiDeviceButton::SetMatchPriority( int priority ){
+void demoiDeviceButton::SetMatchPriority(int priority){
     pMatchPriority = priority;
 }
 
 
 
-void demoiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
-	info.SetID( pID );
-	info.SetName( pName );
+void demoiDeviceButton::GetInfo(deInputDeviceButton &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
 }

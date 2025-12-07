@@ -40,12 +40,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetCurve::aeULinkSetCurve( aeLink *link, const decCurveBezier &newCurve ) :
-pLink( link ),
-pOldCurve( ( ( aeLink& )( deObject& )pLink ).GetCurve() ),
-pNewCurve( newCurve )
+aeULinkSetCurve::aeULinkSetCurve(aeLink *link, const decCurveBezier &newCurve) :
+pLink(link),
+pOldCurve(((aeLink&)(deObject&)pLink).GetCurve()),
+pNewCurve(newCurve)
 {
-	SetShortInfo( "Set Link Curve" );
+	SetShortInfo("Set Link Curve");
 }
 
 aeULinkSetCurve::~aeULinkSetCurve(){
@@ -56,18 +56,18 @@ aeULinkSetCurve::~aeULinkSetCurve(){
 // Management
 ///////////////
 
-void aeULinkSetCurve::SetNewCurve( const decCurveBezier &curve ){
+void aeULinkSetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 
 
 
 void aeULinkSetCurve::Undo(){
-	pLink->SetCurve( pOldCurve );
+	pLink->SetCurve(pOldCurve);
 }
 
 void aeULinkSetCurve::Redo(){
-	pLink->SetCurve( pNewCurve );
+	pLink->SetCurve(pNewCurve);
 }
 
 void aeULinkSetCurve::ProgressiveRedo(){

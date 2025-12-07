@@ -51,8 +51,8 @@ public:
 	int bone;
 	int shape;
 	
-	cFindGizmoListener( igdeGizmoManager &manager, igdeEnvironment &environment ) :
-	pManager( manager ), pEnvironment( environment ){
+	cFindGizmoListener(igdeGizmoManager &manager, igdeEnvironment &environment) :
+	pManager(manager), pEnvironment(environment){
 		Reset();
 	}
 	
@@ -63,22 +63,22 @@ public:
 		shape = -1;
 	}
 	
-	virtual void CollisionResponse( deCollider*, deCollisionInfo *info ) override{
-		if( ! info->GetCollider() ){
+	virtual void CollisionResponse(deCollider*, deCollisionInfo *info) override{
+		if(! info->GetCollider()){
 			return;
 		}
 		
-		void * const userPointer = pEnvironment.GetColliderUserPointer( info->GetCollider() );
-		if( ! userPointer ){
+		void * const userPointer = pEnvironment.GetColliderUserPointer(info->GetCollider());
+		if(! userPointer){
 			return;
 		}
 		
-		igdeGizmo * const hitGizmo = pManager.GizmoFromColliderUserPointer( userPointer );
-		if( ! hitGizmo ){
+		igdeGizmo * const hitGizmo = pManager.GizmoFromColliderUserPointer(userPointer);
+		if(! hitGizmo){
 			return;
 		}
 		
-		if( gizmo && info->GetDistance() >= distance ){
+		if(gizmo && info->GetDistance() >= distance){
 			return;
 		}
 		
@@ -88,11 +88,11 @@ public:
 		shape = info->GetShape();
 	}
 	
-	virtual bool CanHitCollider( deCollider*, deCollider* ) override{
+	virtual bool CanHitCollider(deCollider*, deCollider*) override{
 		return true;
 	}
 	
-	virtual void ColliderChanged( deCollider* ) override{}
+	virtual void ColliderChanged(deCollider*) override{}
 };
 
 
@@ -104,11 +104,11 @@ public:
 ////////////////////////////
 
 igdeGizmoManager::igdeGizmoManager() :
-pRayLength( 1e4f ){
+pRayLength(1e4f){
 }
 
 igdeGizmoManager::~igdeGizmoManager(){
-	StopEditing( true );
+	StopEditing(true);
 	ClearHover();
 }
 
@@ -117,22 +117,22 @@ igdeGizmoManager::~igdeGizmoManager(){
 // Management
 ///////////////
 
-void igdeGizmoManager::Hover( igdeGizmo *gizmo, const decDVector &rayOrigin,
-const decDVector &rayDirection, double distance, int bone, int shape, int modifiers ){
-	DEASSERT_NOTNULL( gizmo )
+void igdeGizmoManager::Hover(igdeGizmo *gizmo, const decDVector &rayOrigin,
+const decDVector &rayDirection, double distance, int bone, int shape, int modifiers){
+	DEASSERT_NOTNULL(gizmo)
 	
-	if( pHoverGizmo == gizmo ){
-		gizmo->UpdateHovering( rayOrigin, rayDirection, distance, bone, shape, modifiers );
+	if(pHoverGizmo == gizmo){
+		gizmo->UpdateHovering(rayOrigin, rayDirection, distance, bone, shape, modifiers);
 		
 	}else{
 		ClearHover();
-		gizmo->StartHovering( rayOrigin, rayDirection, distance, bone, shape, modifiers );
+		gizmo->StartHovering(rayOrigin, rayDirection, distance, bone, shape, modifiers);
 		pHoverGizmo = gizmo;
 	}
 }
 
 void igdeGizmoManager::ClearHover(){
-	if( pHoverGizmo ){
+	if(pHoverGizmo){
 		pHoverGizmo->StopHovering();
 		pHoverGizmo = nullptr;
 	}
@@ -140,13 +140,13 @@ void igdeGizmoManager::ClearHover(){
 
 
 
-bool igdeGizmoManager::StartEditing( igdeGizmo *gizmo, const decDVector &rayOrigin,
+bool igdeGizmoManager::StartEditing(igdeGizmo *gizmo, const decDVector &rayOrigin,
 const decDVector &rayDirection, const decDMatrix &viewMatrix, double distance,
-int bone, int shape, int modifiers ){
-	DEASSERT_NOTNULL( gizmo )
-	DEASSERT_NULL( pEditingGizmo )
+int bone, int shape, int modifiers){
+	DEASSERT_NOTNULL(gizmo)
+	DEASSERT_NULL(pEditingGizmo)
 	
-	if( gizmo->StartEditing( rayOrigin, rayDirection, viewMatrix, distance, bone, shape, modifiers ) ){
+	if(gizmo->StartEditing(rayOrigin, rayDirection, viewMatrix, distance, bone, shape, modifiers)){
 		pEditingGizmo = gizmo;
 		return true;
 		
@@ -155,141 +155,141 @@ int bone, int shape, int modifiers ){
 	}
 }
 
-void igdeGizmoManager::UpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-const decDMatrix &viewMatrix, int modifiers ){
-	if( pEditingGizmo ){
-		pEditingGizmo->UpdateEditing( rayOrigin, rayDirection, viewMatrix, modifiers );
+void igdeGizmoManager::UpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+const decDMatrix &viewMatrix, int modifiers){
+	if(pEditingGizmo){
+		pEditingGizmo->UpdateEditing(rayOrigin, rayDirection, viewMatrix, modifiers);
 	}
 }
 
-void igdeGizmoManager::MouseWheeledEditing( const decDVector &rayOrigin,
-const decDVector &rayDirection, const decDMatrix &viewMatrix, const decPoint &change, int modifiers ){
-	if( pEditingGizmo ){
-		pEditingGizmo->MouseWheeledEditing( rayOrigin, rayDirection, viewMatrix, change, modifiers );
+void igdeGizmoManager::MouseWheeledEditing(const decDVector &rayOrigin,
+const decDVector &rayDirection, const decDMatrix &viewMatrix, const decPoint &change, int modifiers){
+	if(pEditingGizmo){
+		pEditingGizmo->MouseWheeledEditing(rayOrigin, rayDirection, viewMatrix, change, modifiers);
 	}
 }
 
-void igdeGizmoManager::StopEditing( bool cancel ){
-	if( pEditingGizmo ){
-		pEditingGizmo->StopEditing( cancel );
+void igdeGizmoManager::StopEditing(bool cancel){
+	if(pEditingGizmo){
+		pEditingGizmo->StopEditing(cancel);
 		pEditingGizmo = nullptr;
 	}
 }
 
 
 
-void igdeGizmoManager::OnFrameUpdate( float elapsed ){
-	if( pEditingGizmo ){
-		pEditingGizmo->OnFrameUpdate( elapsed );
+void igdeGizmoManager::OnFrameUpdate(float elapsed){
+	if(pEditingGizmo){
+		pEditingGizmo->OnFrameUpdate(elapsed);
 		
-	}else if( pHoverGizmo ){
-		pHoverGizmo->OnFrameUpdate( elapsed );
+	}else if(pHoverGizmo){
+		pHoverGizmo->OnFrameUpdate(elapsed);
 	}
 }
 
 
 
-void igdeGizmoManager::OnButtonPress( const igdeViewRenderWindow &view,
-const igdeCamera &camera, int button, const decPoint &position, int modifiers ){
-	if( button != deInputEvent::embcLeft || ! camera.GetEngineWorld() ){
+void igdeGizmoManager::OnButtonPress(const igdeViewRenderWindow &view,
+const igdeCamera &camera, int button, const decPoint &position, int modifiers){
+	if(button != deInputEvent::embcLeft || ! camera.GetEngineWorld()){
 		return;
 	}
 	
 	deBasePhysicsWorld * const peer = camera.GetEngineWorld()->GetPeerPhysics();
-	if( ! peer ){
+	if(! peer){
 		return;
 	}
 	
-	cFindGizmoListener visitor( *this, view.GetEnvironment() );
+	cFindGizmoListener visitor(*this, view.GetEnvironment());
 	const decDMatrix &viewMatrix = camera.GetViewMatrix();
-	const decDVector rayPosition( viewMatrix.GetPosition() );
-	const decVector rayDirection( camera.GetDirectionFor( view.GetRenderAreaSize().x,
-		view.GetRenderAreaSize().y, position.x, position.y ) * pRayLength );
+	const decDVector rayPosition(viewMatrix.GetPosition());
+	const decVector rayDirection(camera.GetDirectionFor(view.GetRenderAreaSize().x,
+		view.GetRenderAreaSize().y, position.x, position.y) * pRayLength);
 	
-	peer->RayHits( rayPosition, rayDirection, &visitor, pRayCollisionFilter );
+	peer->RayHits(rayPosition, rayDirection, &visitor, pRayCollisionFilter);
 	
-	if( visitor.gizmo ){
-		StartEditing( visitor.gizmo, rayPosition, rayDirection, viewMatrix,
-			( double )visitor.distance, visitor.bone, visitor.shape, modifiers );
+	if(visitor.gizmo){
+		StartEditing(visitor.gizmo, rayPosition, rayDirection, viewMatrix,
+			(double)visitor.distance, visitor.bone, visitor.shape, modifiers);
 	}
 }
 
-void igdeGizmoManager::OnButtonRelease( const igdeViewRenderWindow &view,
-const igdeCamera &camera, int button, const decPoint &position, int modifiers ){
-	if( ! pEditingGizmo || button != deInputEvent::embcLeft ){
+void igdeGizmoManager::OnButtonRelease(const igdeViewRenderWindow &view,
+const igdeCamera &camera, int button, const decPoint &position, int modifiers){
+	if(! pEditingGizmo || button != deInputEvent::embcLeft){
 		return;
 	}
 	
-	OnMouseMoved( view, camera, position, modifiers );
+	OnMouseMoved(view, camera, position, modifiers);
 	
-	if( pEditingGizmo ){
-		StopEditing( false );
+	if(pEditingGizmo){
+		StopEditing(false);
 	}
 }
 
-void igdeGizmoManager::OnMouseMoved( const igdeViewRenderWindow &view,
-const igdeCamera &camera, const decPoint &position, int modifiers ){
+void igdeGizmoManager::OnMouseMoved(const igdeViewRenderWindow &view,
+const igdeCamera &camera, const decPoint &position, int modifiers){
 	const decDMatrix &viewMatrix = camera.GetViewMatrix();
-	const decDVector rayPosition( viewMatrix.GetPosition() );
-	const decVector rayDirection( camera.GetDirectionFor( view.GetRenderAreaSize().x,
-		view.GetRenderAreaSize().y, position.x, position.y ) );
+	const decDVector rayPosition(viewMatrix.GetPosition());
+	const decVector rayDirection(camera.GetDirectionFor(view.GetRenderAreaSize().x,
+		view.GetRenderAreaSize().y, position.x, position.y));
 	
-	if( pEditingGizmo ){
-		UpdateEditing( rayPosition, decDVector( rayDirection ), viewMatrix, modifiers );
+	if(pEditingGizmo){
+		UpdateEditing(rayPosition, decDVector(rayDirection), viewMatrix, modifiers);
 		return;
 	}
 	
-	if( ! camera.GetEngineWorld() ){
+	if(! camera.GetEngineWorld()){
 		ClearHover();
 		return;
 	}
 	
 	deBasePhysicsWorld * const peer = camera.GetEngineWorld()->GetPeerPhysics();
-	if( ! peer ){
+	if(! peer){
 		ClearHover();
 		return;
 	}
 	
-	cFindGizmoListener visitor( *this, view.GetEnvironment() );
-	peer->RayHits( rayPosition, decDVector( rayDirection * pRayLength ),
-		&visitor, pRayCollisionFilter );
+	cFindGizmoListener visitor(*this, view.GetEnvironment());
+	peer->RayHits(rayPosition, decDVector(rayDirection * pRayLength),
+		&visitor, pRayCollisionFilter);
 	
-	if( visitor.gizmo ){
-		Hover( visitor.gizmo, rayPosition, rayDirection, ( double )visitor.distance,
-			visitor.bone, visitor.shape, modifiers );
+	if(visitor.gizmo){
+		Hover(visitor.gizmo, rayPosition, rayDirection, (double)visitor.distance,
+			visitor.bone, visitor.shape, modifiers);
 		
 	}else{
 		ClearHover();
 	}
 }
 
-void igdeGizmoManager::OnMouseWheeled( const igdeViewRenderWindow &view,
-const igdeCamera &camera, const decPoint &position, const decPoint &change, int modifiers ){
-	if( pEditingGizmo ){
+void igdeGizmoManager::OnMouseWheeled(const igdeViewRenderWindow &view,
+const igdeCamera &camera, const decPoint &position, const decPoint &change, int modifiers){
+	if(pEditingGizmo){
 		const decDMatrix &viewMatrix = camera.GetViewMatrix();
-		const decDVector rayPosition( viewMatrix.GetPosition() );
-		const decVector rayDirection( camera.GetDirectionFor( view.GetRenderAreaSize().x,
-			view.GetRenderAreaSize().y, position.x, position.y ) );
+		const decDVector rayPosition(viewMatrix.GetPosition());
+		const decVector rayDirection(camera.GetDirectionFor(view.GetRenderAreaSize().x,
+			view.GetRenderAreaSize().y, position.x, position.y));
 		
-		MouseWheeledEditing( rayPosition, decDVector( rayDirection ), viewMatrix, change, modifiers );
+		MouseWheeledEditing(rayPosition, decDVector(rayDirection), viewMatrix, change, modifiers);
 		return;
 	}
 }
 
-void igdeGizmoManager::OnKeyPress( deInputEvent::eKeyCodes keyCode, int /*key*/ ){
-	if( keyCode == deInputEvent::ekcEscape ){
-		StopEditing( true );
+void igdeGizmoManager::OnKeyPress(deInputEvent::eKeyCodes keyCode, int /*key*/){
+	if(keyCode == deInputEvent::ekcEscape){
+		StopEditing(true);
 	}
 }
 
-void igdeGizmoManager::OnKeyRelease( deInputEvent::eKeyCodes /*keyCode*/, int /*key*/ ){
+void igdeGizmoManager::OnKeyRelease(deInputEvent::eKeyCodes /*keyCode*/, int /*key*/){
 }
 
-void igdeGizmoManager::SetRayLength( float length ){
-	pRayLength = decMath::max( length, 0.01f );
+void igdeGizmoManager::SetRayLength(float length){
+	pRayLength = decMath::max(length, 0.01f);
 }
 
-void igdeGizmoManager::SetRayCollisionFilter( const decCollisionFilter &collisionFilter ){
+void igdeGizmoManager::SetRayCollisionFilter(const decCollisionFilter &collisionFilter){
 	pRayCollisionFilter = collisionFilter;
 }
 
@@ -298,6 +298,6 @@ void igdeGizmoManager::SetRayCollisionFilter( const decCollisionFilter &collisio
 // Protected Functions
 ////////////////////////
 
-igdeGizmo *igdeGizmoManager::GizmoFromColliderUserPointer( void* ){
+igdeGizmo *igdeGizmoManager::GizmoFromColliderUserPointer(void*){
 	return nullptr;
 }

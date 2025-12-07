@@ -50,5 +50,5 @@ deBaseScriptingParticleEmitterInstance::~deBaseScriptingParticleEmitterInstance(
 void deBaseScriptingParticleEmitterInstance::LastParticleDied(){
 }
 
-void deBaseScriptingParticleEmitterInstance::CollisionResponse( deCollisionInfo* ){
+void deBaseScriptingParticleEmitterInstance::CollisionResponse(deCollisionInfo*){
 }

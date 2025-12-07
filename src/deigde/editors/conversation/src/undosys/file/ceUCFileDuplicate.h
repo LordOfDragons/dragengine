@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCFileDuplicate( ceConversation *conversation, const ceConversationFile &file, const char *newID );
+	ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCFileDuplicate();
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate file. */
-	inline ceConversationFile *GetDuplicateFile() const{ return pFile; }
+	inline ceConversationFile *GetDuplicateFile() const{return pFile;}
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -47,7 +47,7 @@ public:
 	seEffectList();
 	
 	/** \brief Create copy of effect list. */
-	seEffectList( const seEffectList &copy );
+	seEffectList(const seEffectList &copy);
 	
 	/** \brief Clean up effect list. */
 	~seEffectList();
@@ -64,32 +64,32 @@ public:
 	 * \brief Effect at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	seEffect *GetAt( int index ) const;
+	seEffect *GetAt(int index) const;
 	
 	/**
 	 * \brief Index of effect or -1 if not present in the list.
 	 * \throws deeInvalidParam \em effect is \em NULL.
 	 */
-	int IndexOf( seEffect *effect ) const;
+	int IndexOf(seEffect *effect) const;
 	
 	/**
 	 * \brief Determine if a effect is present in the list.
 	 * \throws deeInvalidParam \em effect is \em NULL.
 	 */
-	bool Has( seEffect *effect ) const;
+	bool Has(seEffect *effect) const;
 	
 	/**
 	 * \brief Add effect.
 	 * \throws deeInvalidParam \em effect is \em NULL.
 	 */
-	void Add( seEffect *effect );
+	void Add(seEffect *effect);
 	
 	/**
 	 * \brief Insert effect.
 	 * \throws deeInvalidParam \em effect is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( seEffect *effect, int index );
+	void Insert(seEffect *effect, int index);
 	
 	/**
 	 * \brief Move effect.
@@ -97,14 +97,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( seEffect *effect, int index );
+	void Move(seEffect *effect, int index);
 	
 	/**
 	 * \brief Remove effect.
 	 * \throws deeInvalidParam \em effect is \em NULL.
 	 * \throws deeInvalidParam \em effect is not present in the list.
 	 */
-	void Remove( seEffect *effect );
+	void Remove(seEffect *effect);
 	
 	/** \brief Remove all effects. */
 	void RemoveAll();
@@ -115,10 +115,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy effect list to this effect list. */
-	seEffectList &operator=( const seEffectList &list );
+	seEffectList &operator=(const seEffectList &list);
 	
 	/** \brief Add effects from effect list if not present in this effect list. */
-	seEffectList &operator+=( const seEffectList &list );
+	seEffectList &operator+=(const seEffectList &list);
 	/*@}*/
 };
 

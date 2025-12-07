@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitPasteCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition );
+	ceUCAWaitPasteCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition);
 	/*@}*/
 };
 

@@ -42,13 +42,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-debiDeviceButton::debiDeviceButton( deBeOSInput &module ) :
-pModule( module ),
-pPressed( false ),
-pBICode( -1 ),
-pBIChar( 0 ),
-pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ){
+debiDeviceButton::debiDeviceButton(deBeOSInput &module) :
+pModule(module),
+pPressed(false),
+pBICode(-1),
+pBIChar(0),
+pKeyCode(deInputEvent::ekcUndefined),
+pMatchPriority(10){
 }
 
 debiDeviceButton::~debiDeviceButton(){
@@ -59,25 +59,25 @@ debiDeviceButton::~debiDeviceButton(){
 // Management
 ///////////////
 
-void debiDeviceButton::SetID( const char *id ){
+void debiDeviceButton::SetID(const char *id){
 	pID = id;
 }
 
-void debiDeviceButton::SetName( const char *name ){
+void debiDeviceButton::SetName(const char *name){
 	pName = name;
 }
  
-void debiDeviceButton::SetPressed( bool pressed ){
+void debiDeviceButton::SetPressed(bool pressed){
 	pPressed = pressed;
 }
 
 
 
-void debiDeviceButton::SetDisplayImages( const char *name ){
+void debiDeviceButton::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(! name){
 		return;
 	}
 	
@@ -86,58 +86,58 @@ void debiDeviceButton::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/button";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	deImage::Ref icon;
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+		pDisplayIcons.Add((deImage*)icon);
 	}
 }
 
-void debiDeviceButton::SetDisplayImages( const debiDeviceButton &button ){
+void debiDeviceButton::SetDisplayImages(const debiDeviceButton &button){
 	pDisplayImage = button.pDisplayImage;
 	pDisplayIcons = button.pDisplayIcons;
 }
 
-void debiDeviceButton::SetDisplayText( const char *text ){
+void debiDeviceButton::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void debiDeviceButton::SetBICode( int code ){
+void debiDeviceButton::SetBICode(int code){
 	pBICode = code;
 }
 
-void debiDeviceButton::SetBIChar( int character ){
+void debiDeviceButton::SetBIChar(int character){
 	pBIChar = character;
 }
 
-void debiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes &keyCode ){
+void debiDeviceButton::SetKeyCode(deInputEvent::eKeyCodes &keyCode){
 	pKeyCode = keyCode;
 }
 
-void debiDeviceButton::SetMatchPriority( int priority ){
+void debiDeviceButton::SetMatchPriority(int priority){
 	pMatchPriority = priority;
 }
 
 
 
-void debiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
+void debiDeviceButton::GetInfo(deInputDeviceButton &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
+	info.SetID(pID);
+	info.SetName(pName);
 	
-	info.SetDisplayImage( pDisplayImage );
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	info.SetDisplayImage(pDisplayImage);
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }

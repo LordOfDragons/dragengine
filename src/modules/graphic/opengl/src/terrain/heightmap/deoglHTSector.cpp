@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTSector::deoglHTSector( deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector ) :
-pHeightTerrain( heightTerrain ),
-pSector( sector ),
-pSectorChanged( true ),
-pDirtyHeights( false ){
+deoglHTSector::deoglHTSector(deoglHeightTerrain &heightTerrain, const deHeightTerrainSector &sector) :
+pHeightTerrain(heightTerrain),
+pSector(sector),
+pSectorChanged(true),
+pDirtyHeights(false){
 }
 
 deoglHTSector::~deoglHTSector(){
@@ -57,23 +57,23 @@ deoglHTSector::~deoglHTSector(){
 ///////////////
 
 void deoglHTSector::SyncToRender(){
-	if( ! pRSector ){
-		pRSector.TakeOver( new deoglRHTSector( pHeightTerrain.GetRHeightTerrain(), pSector ) );
+	if(! pRSector){
+		pRSector.TakeOver(new deoglRHTSector(pHeightTerrain.GetRHeightTerrain(), pSector));
 		pSectorChanged = true;
 	}
 	
-	if( pSectorChanged ){
-		pRSector->SectorChanged( pSector );
+	if(pSectorChanged){
+		pRSector->SectorChanged(pSector);
 		pSectorChanged = false;
 		
 		const int imageDim = pHeightTerrain.GetHeightTerrain().GetSectorResolution();
-		pHeightChangeFrom.Set( 0, 0 );
-		pHeightChangeTo.Set( imageDim - 1, imageDim -1 );
+		pHeightChangeFrom.Set(0, 0);
+		pHeightChangeTo.Set(imageDim - 1, imageDim -1);
 		pDirtyHeights = true;
 	}
 	
-	if( pDirtyHeights ){
-		pRSector->HeightChanged( pSector, pHeightChangeFrom, pHeightChangeTo );
+	if(pDirtyHeights){
+		pRSector->HeightChanged(pSector, pHeightChangeFrom, pHeightChangeTo);
 		pDirtyHeights = false;
 	}
 }
@@ -82,10 +82,10 @@ void deoglHTSector::SectorChanged(){
 	pSectorChanged = true;
 }
 
-void deoglHTSector::HeightChanged( const decPoint &from, const decPoint &to ){
-	if( pDirtyHeights ){
-		pHeightChangeFrom.SetSmallest( from );
-		pHeightChangeTo.SetLargest( to );
+void deoglHTSector::HeightChanged(const decPoint &from, const decPoint &to){
+	if(pDirtyHeights){
+		pHeightChangeFrom.SetSmallest(from);
+		pHeightChangeTo.SetLargest(to);
 		
 	}else{
 		pHeightChangeFrom = from;

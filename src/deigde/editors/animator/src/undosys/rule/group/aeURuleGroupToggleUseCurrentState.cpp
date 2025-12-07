@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupToggleUseCurrentState::aeURuleGroupToggleUseCurrentState( aeRuleGroup *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupToggleUseCurrentState::aeURuleGroupToggleUseCurrentState(aeRuleGroup *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleGroupToggleUseCurrentState::aeURuleGroupToggleUseCurrentState( aeRuleGrou
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule group toggle use current state" );
+		SetShortInfo("Rule group toggle use current state");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleGroupToggleUseCurrentState::~aeURuleGroupToggleUseCurrentState(){
 ///////////////
 
 void aeURuleGroupToggleUseCurrentState::Undo(){
-	pRule->SetUseCurrentState( ! pRule->GetUseCurrentState() );
+	pRule->SetUseCurrentState(! pRule->GetUseCurrentState());
 }
 
 void aeURuleGroupToggleUseCurrentState::Redo(){
-	pRule->SetUseCurrentState( ! pRule->GetUseCurrentState() );
+	pRule->SetUseCurrentState(! pRule->GetUseCurrentState());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleGroupToggleUseCurrentState::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleUseCurrentState::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

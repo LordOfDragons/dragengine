@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetSnapAngle::gdeUOCNavSpaceSetSnapAngle( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, float newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetSnapAngle::gdeUOCNavSpaceSetSnapAngle(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, float newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set snap angle" );
+	SetShortInfo("Nav-space set snap angle");
 	
 	pOldValue = navspace->GetSnapAngle();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetSnapAngle::~gdeUOCNavSpaceSetSnapAngle(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetSnapAngle::~gdeUOCNavSpaceSetSnapAngle(){
 ///////////////
 
 void gdeUOCNavSpaceSetSnapAngle::Undo(){
-	pNavSpace->SetSnapAngle( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetSnapAngle(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetSnapAngle::Redo(){
-	pNavSpace->SetSnapAngle( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetSnapAngle(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

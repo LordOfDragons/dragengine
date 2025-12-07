@@ -188,7 +188,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread context. */
-	deoglRTContext( deoglRenderThread &renderThread );
+	deoglRTContext(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread context. */
 	~deoglRTContext();
@@ -199,16 +199,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Initialize phase 1 called in main thread. */
-	void InitPhase1( deRenderWindow *renderWindow );
+	void InitPhase1(deRenderWindow *renderWindow);
 	
 	/** Initialize phase 2 called in render thread. */
-	void InitPhase2( deRenderWindow *renderWindow );
+	void InitPhase2(deRenderWindow *renderWindow);
 	
 	/** Initialize phase 3 called in main thread. */
-	void InitPhase3( deRenderWindow *renderWindow );
+	void InitPhase3(deRenderWindow *renderWindow);
 	
 	/** Initialize phase 4 called in render thread. */
-	void InitPhase4( deRenderWindow *renderWindow );
+	void InitPhase4(deRenderWindow *renderWindow);
 	
 	/** Clean up. Separate call to make sure everything is fine before deleting. */
 	void CleanUp();
@@ -216,10 +216,10 @@ public:
 	
 	
 	/** Active render window. */
-	inline deoglRRenderWindow *GetActiveRRenderWindow() const{ return pActiveRRenderWindow; }
+	inline deoglRRenderWindow *GetActiveRRenderWindow() const{return pActiveRRenderWindow;}
 	
 	/** Active render render window current. */
-	void ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, bool forceIfNull = false );
+	void ActivateRRenderWindow(deoglRRenderWindow *rrenderWindow, bool forceIfNull = false);
 	
 	/**
 	 * User requests quit.
@@ -229,15 +229,15 @@ public:
 	bool GetUserRequestedQuit();
 	
 	/** Application is activated. */
-	inline bool GetAppActivated() const{ return pAppActivated; }
+	inline bool GetAppActivated() const{return pAppActivated;}
 	
 #ifdef BACKEND_OPENGL
 	/** Special call for module to get a function pointer before extensions can be properly initialized. */
-	void *GetFunctionPointer( const char *funcName );
+	void *GetFunctionPointer(const char *funcName);
 #endif
 	
 	/** Count of compile contexts. */
-	inline int GetCompileContextCount() const{ return pCompileContextCount; }
+	inline int GetCompileContextCount() const{return pCompileContextCount;}
 	
 	/** Release all compile contexts above count. */
 	void DropCompileContexts(int count);
@@ -246,52 +246,52 @@ public:
 	
 #ifdef OS_UNIX_X11
 	/** OS Unix. */
-	inline deOSUnix *GetOSUnix(){ return pOSUnix; }
+	inline deOSUnix *GetOSUnix(){return pOSUnix;}
 	
 	/** Unix visual. */
-	inline XVisualInfo *GetVisualInfo() const{ return pVisInfo; }
+	inline XVisualInfo *GetVisualInfo() const{return pVisInfo;}
 	
 	/** Render thread display. */
-	inline Display *GetDisplay() const{ return pDisplay; }
+	inline Display *GetDisplay() const{return pDisplay;}
 	
 	/** Main thread display. */
 	Display *GetMainThreadDisplay() const;
 	
 #ifdef BACKEND_OPENGL
 	/** Unix best framebuffer configuration. */
-	inline GLXFBConfig &GetBestFBConfig(){ return pBestFBConfig; }
-	inline const GLXFBConfig &GetBestFBConfig() const{ return pBestFBConfig; }
+	inline GLXFBConfig &GetBestFBConfig(){return pBestFBConfig;}
+	inline const GLXFBConfig &GetBestFBConfig() const{return pBestFBConfig;}
 	
 	/** Context. */
-	inline GLXContext GetContext() const{ return pContext; }
+	inline GLXContext GetContext() const{return pContext;}
 	
 	/** Loader context. */
-	inline GLXContext GetLoaderContext() const{ return pLoaderContext; }
+	inline GLXContext GetLoaderContext() const{return pLoaderContext;}
 	
 	/** Compile context or nullptr. */
-	inline GLXContext GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	inline GLXContext GetCompileContextAt(int index) const{return pCompileContext[index];}
 	
 #elif defined BACKEND_VULKAN
 	/** Vulkan. */
-	inline deSharedVulkan &GetVulkan() const{ return pVulkan; }
+	inline deSharedVulkan &GetVulkan() const{return pVulkan;}
 	
 	/** Vulkan device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** queues. */
-	inline devkQueue &GetQueueGraphic() const{ return *pQueueGraphic; }
-	inline devkQueue &GetQueueCompute() const{ return *pQueueCompute; }
-	inline devkQueue &GetQueueTransfer() const{ return *pQueueTransfer; }
+	inline devkQueue &GetQueueGraphic() const{return *pQueueGraphic;}
+	inline devkQueue &GetQueueCompute() const{return *pQueueCompute;}
+	inline devkQueue &GetQueueTransfer() const{return *pQueueTransfer;}
 	
 	/** Command pools. */
-	inline devkCommandPool &GetCommandPoolGraphic() const{ return pCommandPoolGraphic; }
-	inline devkCommandPool &GetCommandPoolCompute() const{ return pCommandPoolCompute; }
-	inline devkCommandPool &GetCommandPoolTransfer() const{ return pCommandPoolTransfer; }
+	inline devkCommandPool &GetCommandPoolGraphic() const{return pCommandPoolGraphic;}
+	inline devkCommandPool &GetCommandPoolCompute() const{return pCommandPoolCompute;}
+	inline devkCommandPool &GetCommandPoolTransfer() const{return pCommandPoolTransfer;}
 #endif
 	
 	/** Atoms. */
-	inline Atom GetAtomProtocols() const{ return pAtomProtocols; }
-	inline Atom GetAtomDeleteWindow() const{ return pAtomDeleteWindow; }
+	inline Atom GetAtomProtocols() const{return pAtomProtocols;}
+	inline Atom GetAtomDeleteWindow() const{return pAtomDeleteWindow;}
 	
 	/** Process event loop. */
 	void ProcessEventLoop();
@@ -299,31 +299,31 @@ public:
 	
 #ifdef OS_ANDROID
 	/** OS Android. */
-	inline deOSAndroid *GetOSAndroid(){ return pOSAndroid; }
+	inline deOSAndroid *GetOSAndroid(){return pOSAndroid;}
 	
 	/** Display. */
-	inline EGLDisplay GetDisplay() const{ return pDisplay; }
+	inline EGLDisplay GetDisplay() const{return pDisplay;}
 	
 	/** Surface. */
-	inline EGLSurface GetSurface() const{ return pSurface; }
+	inline EGLSurface GetSurface() const{return pSurface;}
 	
 	/** Context. */
-	inline EGLContext GetContext() const{ return pContext; }
+	inline EGLContext GetContext() const{return pContext;}
 	
 	/** Loader surface. */
-	inline EGLSurface GetLoaderSurface() const{ return pLoaderSurface; }
+	inline EGLSurface GetLoaderSurface() const{return pLoaderSurface;}
 	
 	/** Loader context. */
-	inline EGLContext GetLoaderContext() const{ return pLoaderContext; }
+	inline EGLContext GetLoaderContext() const{return pLoaderContext;}
 	
 	/** Compile surface or EGL_NO_SURFACE. */
-	inline EGLSurface GetCompileSurfaceAt(int index) const{ return pCompileSurface[index]; }
+	inline EGLSurface GetCompileSurfaceAt(int index) const{return pCompileSurface[index];}
 	
 	/** Compile context or EGL_NO_CONTEXT. */
-	inline EGLContext GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	inline EGLContext GetCompileContextAt(int index) const{return pCompileContext[index];}
 	
 	/** Configuration. */
-	inline const EGLConfig& GetConfig() const{ return pConfig; }
+	inline const EGLConfig& GetConfig() const{return pConfig;}
 	
 	/** Application window has been created. */
 	void InitAppWindow();
@@ -335,17 +335,17 @@ public:
 	void CheckConfigurationChanged();
 	
 	/** Current screen width. */
-	inline int GetScreenWidth() const{ return pScreenWidth; }
+	inline int GetScreenWidth() const{return pScreenWidth;}
 	
 	/** Current screen height. */
-	inline int GetScreenHeight() const{ return pScreenHeight; }
+	inline int GetScreenHeight() const{return pScreenHeight;}
 	
 #elif defined OS_WEBWASM
 	/** OS Web WASM. */
-	inline deOSWebWasm *GetOSWebWasm(){ return pOSWebWasm; }
+	inline deOSWebWasm *GetOSWebWasm(){return pOSWebWasm;}
 	
 	/** Context. */
-	inline EMSCRIPTEN_WEBGL_CONTEXT_HANDLE GetContext() const{ return pContext; }
+	inline EMSCRIPTEN_WEBGL_CONTEXT_HANDLE GetContext() const{return pContext;}
 	
 	/** Loader context. */
 	EMSCRIPTEN_WEBGL_CONTEXT_HANDLE GetLoaderContext();
@@ -363,51 +363,51 @@ public:
 	void CheckConfigurationChanged();
 	
 	/** Current screen width. */
-	inline int GetScreenWidth() const{ return pScreenWidth; }
+	inline int GetScreenWidth() const{return pScreenWidth;}
 	
 	/** Current screen height. */
-	inline int GetScreenHeight() const{ return pScreenHeight; }
+	inline int GetScreenHeight() const{return pScreenHeight;}
 	
 #elif defined OS_BEOS
 	/** OS BeOS. */
-	inline deOSBeOS *GetOSBeOS() const{ return pOSBeOS; }
+	inline deOSBeOS *GetOSBeOS() const{return pOSBeOS;}
 	
 	/** Context. */
 //	inline GLXContext getContext() const{ return pContext; }   ???
 
 #elif defined OS_MACOS
 	/** OS MacOS. */
-	inline deOSMacOS *GetOSMacOS() const{ return pOSMacOS; }
+	inline deOSMacOS *GetOSMacOS() const{return pOSMacOS;}
 	
 	/** Pixel format. */
-	inline NSOpenGLPixelFormat *GetPixelFormat() const{ return pPixelFormat; }
+	inline NSOpenGLPixelFormat *GetPixelFormat() const{return pPixelFormat;}
 	
 	/** Context. */
-	inline NSOpenGLContext *GetContext() const{ return pContext; }
+	inline NSOpenGLContext *GetContext() const{return pContext;}
 	
 	/** Loader context. */
-	inline NSOpenGLContext *GetLoaderContext() const{ return pLoaderContext; }
+	inline NSOpenGLContext *GetLoaderContext() const{return pLoaderContext;}
 	
 	/** Loader context or nullptr. */
-	inline NSOpenGLContext *GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	inline NSOpenGLContext *GetCompileContextAt(int index) const{return pCompileContext[index];}
 	
 #elif defined OS_W32
 	/** Registered window class name. */
-	inline const decString &GetWindowClassname() const{ return pWindowClassname; }
+	inline const decString &GetWindowClassname() const{return pWindowClassname;}
 	
 	/** OS Windows. */
-	inline deOSWindows *GetOSWindow() const{ return pOSWindows; }
+	inline deOSWindows *GetOSWindow() const{return pOSWindows;}
 	
 	/** Context. */
-	inline HGLRC GetContext() const{ return pContext; }
+	inline HGLRC GetContext() const{return pContext;}
 	
 	/** Loader context. */
-	inline HGLRC GetLoaderContext() const{ return pLoaderContext; }
+	inline HGLRC GetLoaderContext() const{return pLoaderContext;}
 	
 	/** Compile context or NULL. */
-	inline HGLRC GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	inline HGLRC GetCompileContextAt(int index) const{return pCompileContext[index];}
 	
-	LRESULT ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );
+	LRESULT ProcessWindowMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
 	/*@}*/
 	
@@ -448,7 +448,7 @@ private:
 	
 #elif defined OS_MACOS
 	void pCreateContext();
-	void pContextMakeCurrent( NSView *view );
+	void pContextMakeCurrent(NSView *view);
 	void pFreeContext();
 #endif
 };

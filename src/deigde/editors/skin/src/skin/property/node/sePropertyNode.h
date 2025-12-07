@@ -118,10 +118,10 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create node. */
-	sePropertyNode( eNodeTypes nodeType, deEngine &engine, int mappedCount );
+	sePropertyNode(eNodeTypes nodeType, deEngine &engine, int mappedCount);
 	
 	/** Create copy of node. */
-	sePropertyNode( const sePropertyNode &node );
+	sePropertyNode(const sePropertyNode &node);
 	
 	/** Clean up node. */
 	virtual ~sePropertyNode();
@@ -133,21 +133,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Engine. */
-	inline deEngine &GetEngine() const{ return pEngine; }
+	inline deEngine &GetEngine() const{return pEngine;}
 	
 	
 	
 	/** Parent node or \em NULL. */
-	inline sePropertyNodeGroup *GetParent() const{ return pParent; }
+	inline sePropertyNodeGroup *GetParent() const{return pParent;}
 	
 	/** Set parent node or \em NULL. */
-	void SetParent( sePropertyNodeGroup *parent );
+	void SetParent(sePropertyNodeGroup *parent);
 	
 	/** Mask parent node or \em NULL. */
-	inline sePropertyNode *GetMaskParent() const{ return pMaskParent; }
+	inline sePropertyNode *GetMaskParent() const{return pMaskParent;}
 	
 	/** Set mask parent node or \em NULL. */
-	void SetMaskParent( sePropertyNode *maskParent );
+	void SetMaskParent(sePropertyNode *maskParent);
 	
 	/** Parent property or \em NULL if not present. */
 	virtual seProperty *GetProperty() const;
@@ -155,33 +155,33 @@ public:
 	
 	
 	/** Node type. */
-	inline eNodeTypes GetNodeType() const{ return pNodeType; }
+	inline eNodeTypes GetNodeType() const{return pNodeType;}
 	
 	
 	
 	/** Position in pixels relative to top-left-front corner. */
-	inline const decPoint3 &GetPosition() const{ return pPosition; }
+	inline const decPoint3 &GetPosition() const{return pPosition;}
 	
 	/** Set position in pixels relative to top-left-front corner. */
-	void SetPosition( const decPoint3 &position );
+	void SetPosition(const decPoint3 &position);
 	
 	/** Size in pixels. */
-	inline const decPoint3 &GetSize() const{ return pSize; }
+	inline const decPoint3 &GetSize() const{return pSize;}
 	
 	/** Set size in pixels. */
-	void SetSize( const decPoint3 &size );
+	void SetSize(const decPoint3 &size);
 	
 	/** Counter clock-wise rotation in radians. */
-	inline float GetRotation() const{ return pRotation; }
+	inline float GetRotation() const{return pRotation;}
 	
 	/** Set counter clock-wise rotation in radians. */
-	void SetRotation( float rotation );
+	void SetRotation(float rotation);
 	
 	/** Shearing in degreed. */
-	inline float GetShearing() const{ return pShearing; }
+	inline float GetShearing() const{return pShearing;}
 	
 	/** Set shearing in degrees. */
-	void SetShearing( float shearing );
+	void SetShearing(float shearing);
 	
 	/**
 	 * Create canvas transformation matrix.
@@ -207,33 +207,33 @@ public:
 	decTexMatrix2 CreateScreenTransformMatrix() const;
 	
 	/** Set geometry from matrix. */
-	void SetFromMatrix( const decTexMatrix2 &matrix, const decPoint3 &referenceSize, float referenceRotation );
+	void SetFromMatrix(const decTexMatrix2 &matrix, const decPoint3 &referenceSize, float referenceRotation);
 	
 	
 	
 	/** Brightness. */
-	inline float GetBrightness() const{ return pBrightness; }
+	inline float GetBrightness() const{return pBrightness;}
 	
 	/** Set brightness. */
-	void SetBrightness( float brightness );
+	void SetBrightness(float brightness);
 	
 	/** Contrast. */
-	inline float GetContrast() const{ return pContrast; }
+	inline float GetContrast() const{return pContrast;}
 	
 	/** Set contrast. */
-	void SetContrast( float contrast );
+	void SetContrast(float contrast);
 	
 	/** Gamma. */
-	inline float GetGamma() const{ return pGamma; }
+	inline float GetGamma() const{return pGamma;}
 	
 	/** Set gamma. */
-	void SetGamma( float gamma );
+	void SetGamma(float gamma);
 	
 	/** Colorize. */
-	inline const decColor &GetColorize() const{ return pColorize; }
+	inline const decColor &GetColorize() const{return pColorize;}
 	
 	/** Set colorize. */
-	void SetColorize( const decColor &color );
+	void SetColorize(const decColor &color);
 	
 	/** Create canvas color transformation matrix. */
 	decColorMatrix CreateCanvasColorTransformMatrix() const;
@@ -241,44 +241,44 @@ public:
 	
 	
 	/** Transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** Mask node or \em NULL if not masked. */
-	inline sePropertyNode *GetMask() const{ return pMask; }
+	inline sePropertyNode *GetMask() const{return pMask;}
 	
 	/** Set mask node or \em NULL if not masked. */
-	void SetMask( sePropertyNode *mask );
+	void SetMask(sePropertyNode *mask);
 	
 	/** Combine mode. */
-	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{ return pCombineMode; }
+	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{return pCombineMode;}
 	
 	/** Set combien mode. */
-	void SetCombineMode( deSkinPropertyNode::eCombineModes mode );
+	void SetCombineMode(deSkinPropertyNode::eCombineModes mode);
 	
 	
 	
 	/** Mapped or nullptr. */
-	const seMapped::Ref &GetMappedFor( int type ) const;
+	const seMapped::Ref &GetMappedFor(int type) const;
 	
 	/** Set mapped or nullptr. */
-	void SetMappedFor( int type, seMapped *mapped );
+	void SetMappedFor(int type, seMapped *mapped);
 	
 	
 	
 	/** Node is the active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	
 	/** Set if node is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Node is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** Set if node is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	

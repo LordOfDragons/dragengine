@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnWorld::debnWorld( deNetworkBasic *netBasic, deWorld *world ){
-	if( ! netBasic || ! world ){
-		DETHROW( deeInvalidParam );
+debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
+	if(! netBasic || ! world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
@@ -59,18 +59,18 @@ debnWorld::debnWorld( deNetworkBasic *netBasic, deWorld *world ){
 	pParentNetwork = NULL;
 	
 	try{
-		pStateSlots = new debnState*[ 1000 ];
-		if( ! pStateSlots ){
-			DETHROW( deeOutOfMemory );
+		pStateSlots = new debnState*[1000];
+		if(! pStateSlots){
+			DETHROW(deeOutOfMemory);
 		}
 		
 		pStateSlotCount = 1000;
 		
-		for( i=0; i<pStateSlotCount; i++ ){
-			pStateSlots[ i ] = NULL;
+		for(i=0; i<pStateSlotCount; i++){
+			pStateSlots[i] = NULL;
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -85,11 +85,11 @@ debnWorld::~debnWorld(){
 // Management
 ///////////////
 
-void debnWorld::SetParentNetwork( debnNetwork *network ){
+void debnWorld::SetParentNetwork(debnNetwork *network){
 	pParentNetwork = network;
 }
 
-void debnWorld::SetCanCreateStates( bool canCreateStates ){
+void debnWorld::SetCanCreateStates(bool canCreateStates){
 	pCanCreateStates = canCreateStates;
 }
 
@@ -97,11 +97,11 @@ void debnWorld::InitStates(){
 	/*int i, count = pScene->GetNetworkStateCount();
 	debnState *bnState;
 	
-	for( i=0; i<count; i++ ){
-		bnState = ( debnState* )pScene->GetNetworkStateAt( i )->GetNetworkState();
+	for(i=0; i<count; i++){
+		bnState = (debnState*)pScene->GetNetworkStateAt(i)->GetNetworkState();
 		
-		if( bnState->GetSlot() == -1 ){
-			bnState->SetSlot( pNextFreeSlot() );
+		if(bnState->GetSlot() == -1){
+			bnState->SetSlot(pNextFreeSlot());
 		}
 	}*/
 }
@@ -111,7 +111,7 @@ void debnWorld::InitStates(){
 // Notifications
 //////////////////
 
-void debnWorld::NetworkStateAdded( deNetworkState *state ){
+void debnWorld::NetworkStateAdded(deNetworkState *state){
 	//debnState *bnState = ( debnState* )state->GetNetworkState();
 	
 	//bnState->SetParentScene( this );
@@ -120,7 +120,7 @@ void debnWorld::NetworkStateAdded( deNetworkState *state ){
 	//bnState->SetSlot( pNextFreeSlot() );
 }
 
-void debnWorld::NetworkStateRemoved( deNetworkState *state ){
+void debnWorld::NetworkStateRemoved(deNetworkState *state){
 	//debnState *bnState = ( debnState* )state->GetNetworkState();
 	//int slot = bnState->GetSlot();
 	
@@ -136,14 +136,14 @@ void debnWorld::AllNetworkStatesRemoved(){
 	/*int i, count = pScene->GetNetworkStateCount();
 	debnState *bnState;
 	
-	for( i=0; i<count; i++ ){
-		bnState = ( debnState* )pScene->GetNetworkStateAt( i )->GetNetworkState();
+	for(i=0; i<count; i++){
+		bnState = (debnState*)pScene->GetNetworkStateAt(i)->GetNetworkState();
 		//bnState->SetSlot( -1 );
-		bnState->SetParentScene( NULL );
+		bnState->SetParentScene(NULL);
 	}
 	
-	for( i=0; i<pStateSlotCount; i++ ){
-		pStateSlots[ i ] = NULL;
+	for(i=0; i<pStateSlotCount; i++){
+		pStateSlots[i] = NULL;
 	}*/
 }
 
@@ -155,14 +155,14 @@ void debnWorld::AllNetworkStatesRemoved(){
 void debnWorld::pCleanUp(){
 	AllNetworkStatesRemoved();
 	
-	if( pStateSlots ) delete [] pStateSlots;
+	if(pStateSlots) delete [] pStateSlots;
 }
 
 int debnWorld::pNextFreeSlot(){
 	int i;
 	
-	for( i=0; i<pStateSlotCount; i++ ){
-		if( ! pStateSlots[ i ] ){
+	for(i=0; i<pStateSlotCount; i++){
+		if(! pStateSlots[i]){
 			return i;
 		}
 	}

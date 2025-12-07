@@ -46,26 +46,26 @@ private:
 	
 public:
 	// constructor
-	deClassServerListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassServerListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassServerListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers( dsEngine *engine );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	void CreateClassMembers(dsEngine *engine);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
 	
-	inline deClassConnection *GetClassConnection() const{ return pClsCon; }
+	inline deClassConnection *GetClassConnection() const{return pClsCon;}
 	
 private:
 	struct sInitData{
 		dsClass *clsSvrL, *clsVoid, *clsBool, *clsInt, *clsStr, *clsCon;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfClientConnected );
+	DEF_NATFUNC(nfClientConnected);
 #undef DEF_NATFUNC
 };
 

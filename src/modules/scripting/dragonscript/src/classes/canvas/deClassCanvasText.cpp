@@ -54,37 +54,37 @@ struct sCTextNatDat{
 /////////////////////
 
 // public func new()
-deClassCanvasText::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsCText,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassCanvasText::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCText,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassCanvasText::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassCanvasText* )GetOwnerClass() )->GetDS();
+void deClassCanvasText::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassCanvasText*)GetOwnerClass())->GetDS();
 	
 	// clear ( important )
 	nd.canvas = NULL;
 	
 	// super call
-	deClassCanvas * const baseClass = ( deClassCanvas* )GetOwnerClass()->GetBaseClass();
-	baseClass->CallBaseClassConstructor( rt, myself, baseClass->GetFirstConstructor(), 0 );
+	deClassCanvas * const baseClass = (deClassCanvas*)GetOwnerClass()->GetBaseClass();
+	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas
 	nd.canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasText();
-	baseClass->AssignCanvas( myself->GetRealObject(), nd.canvas );
+	baseClass->AssignCanvas(myself->GetRealObject(), nd.canvas);
 }
 
 // public func destructor()
-deClassCanvasText::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsCText,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassCanvasText::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsCText,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassCanvasText::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassCanvasText::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
+	sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
 	
-	if( nd.canvas ){
+	if(nd.canvas){
 		nd.canvas->FreeReference();
 		nd.canvas = NULL;
 	}
@@ -96,105 +96,105 @@ void deClassCanvasText::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mysel
 /////////////////////////
 
 // public func Font getFont()
-deClassCanvasText::nfGetFont::nfGetFont( const sInitData &init ) : dsFunction( init.clsCText,
-"getFont", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFont ){
+deClassCanvasText::nfGetFont::nfGetFont(const sInitData &init) : dsFunction(init.clsCText,
+"getFont", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFont){
 }
-void deClassCanvasText::nfGetFont::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassCanvasText* )GetOwnerClass() )->GetDS();
+void deClassCanvasText::nfGetFont::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassCanvasText*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassFont()->PushFont( rt, nd.canvas->GetFont(), ( int )( nd.canvas->GetFontSize() + 0.5f ) );
+	ds.GetClassFont()->PushFont(rt, nd.canvas->GetFont(), (int)(nd.canvas->GetFontSize() + 0.5f));
 }
 
 // public func void setFont( Font font )
-deClassCanvasText::nfSetFont::nfSetFont( const sInitData &init ) : dsFunction( init.clsCText,
-"setFont", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFont ); // font
+deClassCanvasText::nfSetFont::nfSetFont(const sInitData &init) : dsFunction(init.clsCText,
+"setFont", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFont); // font
 }
-void deClassCanvasText::nfSetFont::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassCanvasText* )GetOwnerClass() )->GetDS();
+void deClassCanvasText::nfSetFont::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassCanvasText*)GetOwnerClass())->GetDS();
 	
-	dsRealObject * const objFont = rt->GetValue( 0 )->GetRealObject();
-	deFont * const font = ds.GetClassFont()->GetFont( objFont );
-	const int fontSize = ds.GetClassFont()->GetFontSize( objFont );
+	dsRealObject * const objFont = rt->GetValue(0)->GetRealObject();
+	deFont * const font = ds.GetClassFont()->GetFont(objFont);
+	const int fontSize = ds.GetClassFont()->GetFontSize(objFont);
 	
-	nd.canvas->SetFont( font );
-	nd.canvas->SetFontSize( ( float )fontSize );
+	nd.canvas->SetFont(font);
+	nd.canvas->SetFontSize((float)fontSize);
 }
 
 // public func String getText()
-deClassCanvasText::nfGetText::nfGetText( const sInitData &init ) : dsFunction( init.clsCText,
-"getText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassCanvasText::nfGetText::nfGetText(const sInitData &init) : dsFunction(init.clsCText,
+"getText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassCanvasText::nfGetText::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	rt->PushString( nd.canvas->GetText() );
+void deClassCanvasText::nfGetText::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	rt->PushString(nd.canvas->GetText());
 }
 
 // public func void setText( String text )
-deClassCanvasText::nfSetText::nfSetText( const sInitData &init ) : dsFunction( init.clsCText,
-"setText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // text
+deClassCanvasText::nfSetText::nfSetText(const sInitData &init) : dsFunction(init.clsCText,
+"setText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // text
 }
-void deClassCanvasText::nfSetText::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	nd.canvas->SetText( rt->GetValue( 0 )->GetString() );
+void deClassCanvasText::nfSetText::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	nd.canvas->SetText(rt->GetValue(0)->GetString());
 }
 
 // public func Color getColor()
-deClassCanvasText::nfGetColor::nfGetColor( const sInitData &init ) : dsFunction( init.clsCText,
-"getColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsColor ){
+deClassCanvasText::nfGetColor::nfGetColor(const sInitData &init) : dsFunction(init.clsCText,
+"getColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 }
-void deClassCanvasText::nfGetColor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassCanvasText* )GetOwnerClass() )->GetDS();
+void deClassCanvasText::nfGetColor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassCanvasText*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassColor()->PushColor( rt, nd.canvas->GetColor() );
+	ds.GetClassColor()->PushColor(rt, nd.canvas->GetColor());
 }
 
 // public func void setColor( Color color )
-deClassCanvasText::nfSetColor::nfSetColor( const sInitData &init ) : dsFunction( init.clsCText,
-"setColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsColor ); // color
+deClassCanvasText::nfSetColor::nfSetColor(const sInitData &init) : dsFunction(init.clsCText,
+"setColor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsColor); // color
 }
-void deClassCanvasText::nfSetColor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassCanvasText* )GetOwnerClass() )->GetDS();
+void deClassCanvasText::nfSetColor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassCanvasText*)GetOwnerClass())->GetDS();
 	
-	const decColor &color = ds.GetClassColor()->GetColor( rt->GetValue( 0 )->GetRealObject() );
-	nd.canvas->SetColor( color );
+	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(0)->GetRealObject());
+	nd.canvas->SetColor(color);
 }
 
 
 
 // public func int hashCode()
-deClassCanvasText::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsCText, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassCanvasText::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsCText, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassCanvasText::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCanvasText * const canvas = ( ( sCTextNatDat* )p_GetNativeData( myself ) )->canvas;
+void deClassCanvasText::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCanvasText * const canvas = ((sCTextNatDat*)p_GetNativeData(myself))->canvas;
 	// hash code = memory location
-	rt->PushInt( ( int )( intptr_t )canvas );
+	rt->PushInt((int)(intptr_t)canvas);
 }
 
 // public func bool equals( Object obj )
-deClassCanvasText::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsCText, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassCanvasText::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsCText, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassCanvasText::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deCanvasText * const canvas = ( ( sCTextNatDat* )p_GetNativeData( myself ) )->canvas;
-	deClassCanvasText * const clsCText = ( deClassCanvasText* )GetOwnerClass();
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassCanvasText::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deCanvasText * const canvas = ((sCTextNatDat*)p_GetNativeData(myself))->canvas;
+	deClassCanvasText * const clsCText = (deClassCanvasText*)GetOwnerClass();
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsCText ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsCText)){
+		rt->PushBool(false);
 		
 	}else{
-		deCanvasText * const otherCanvas = ( ( sCTextNatDat* )p_GetNativeData( obj ) )->canvas;
-		rt->PushBool( canvas == otherCanvas );
+		deCanvasText * const otherCanvas = ((sCTextNatDat*)p_GetNativeData(obj))->canvas;
+		rt->PushBool(canvas == otherCanvas);
 	}
 }
 
@@ -206,13 +206,13 @@ void deClassCanvasText::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 // Constructor, Destructor
 ////////////////////////////
 
-deClassCanvasText::deClassCanvasText( deScriptingDragonScript &ds ) :
-dsClass( "CanvasText", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Canvas" );
+deClassCanvasText::deClassCanvasText(deScriptingDragonScript &ds) :
+dsClass("CanvasText", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Canvas");
 	
-	p_SetNativeDataSize( sizeof( sCTextNatDat ) );
+	p_SetNativeDataSize(sizeof(sCTextNatDat));
 }
 
 deClassCanvasText::~deClassCanvasText(){
@@ -223,7 +223,7 @@ deClassCanvasText::~deClassCanvasText(){
 // Management
 ///////////////
 
-void deClassCanvasText::CreateClassMembers( dsEngine *engine ){
+void deClassCanvasText::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -238,18 +238,18 @@ void deClassCanvasText::CreateClassMembers( dsEngine *engine ){
 	init.clsColor = pDS.GetClassColor();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetFont( init ) );
-	AddFunction( new nfSetFont( init ) );
-	AddFunction( new nfGetText( init ) );
-	AddFunction( new nfSetText( init ) );
-	AddFunction( new nfGetColor( init ) );
-	AddFunction( new nfSetColor( init ) );
+	AddFunction(new nfGetFont(init));
+	AddFunction(new nfSetFont(init));
+	AddFunction(new nfGetText(init));
+	AddFunction(new nfSetText(init));
+	AddFunction(new nfGetColor(init));
+	AddFunction(new nfSetColor(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
@@ -257,39 +257,39 @@ void deClassCanvasText::CreateClassMembers( dsEngine *engine ){
 
 
 
-deCanvasText *deClassCanvasText::GetCanvas( dsRealObject *myself ) const {
-	if( ! myself ){
+deCanvasText *deClassCanvasText::GetCanvas(dsRealObject *myself) const {
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sCTextNatDat* )p_GetNativeData( myself->GetBuffer() ) )->canvas;
+	return ((sCTextNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasText::PushCanvas( dsRunTime *rt, deCanvasText *canvas ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! canvas ){
-		rt->PushObject( NULL, this );
+	if(! canvas){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	deClassCanvas * const baseClass = ( deClassCanvas* )GetBaseClass();
-	rt->CreateObjectNakedOnStack( this );
-	sCTextNatDat &nd = *( ( sCTextNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	deClassCanvas * const baseClass = (deClassCanvas*)GetBaseClass();
+	rt->CreateObjectNakedOnStack(this);
+	sCTextNatDat &nd = *((sCTextNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.canvas = NULL;
 	
 	try{
-		baseClass->CallBaseClassConstructor( rt, rt->GetValue( 0 ), baseClass->GetFirstConstructor(), 0 );
+		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		canvas->AddReference();
 		nd.canvas = canvas;
 		
-		baseClass->AssignCanvas( rt->GetValue( 0 )->GetRealObject(), canvas );
+		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

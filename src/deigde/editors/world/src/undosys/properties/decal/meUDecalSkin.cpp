@@ -42,63 +42,63 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSkin::meUDecalSkin( meDecal *decal, const char *newskin ){
-	if( ! decal || ! newskin ){
-		DETHROW( deeInvalidParam );
+meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
+	if(! decal || ! newskin){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Decal Skin" );
+	SetShortInfo("Set Decal Skin");
 	
 	pDecals = NULL;
 	pDecalCount = 0;
 	
 	try{
-		pDecals = new sDecal[ 1 ];
+		pDecals = new sDecal[1];
 		
-		pDecals[ 0 ].oldskin = decal->GetSkinPath();
-		pDecals[ 0 ].newskin = newskin;
-		pDecals[ 0 ].decal = decal;
+		pDecals[0].oldskin = decal->GetSkinPath();
+		pDecals[0].newskin = newskin;
+		pDecals[0].decal = decal;
 		decal->AddReference();
 		
 		pDecalCount = 1;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-meUDecalSkin::meUDecalSkin( meDecalList &decals, const char *newskin ){
+meUDecalSkin::meUDecalSkin(meDecalList &decals, const char *newskin){
 	const int count = decals.GetCount();
 	meDecal *decal;
 	
-	if( count == 0 || ! newskin ){
-		DETHROW( deeInvalidParam );
+	if(count == 0 || ! newskin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Decal Skins" );
+	SetShortInfo("Set Decal Skins");
 	
 	pDecals = NULL;
 	pDecalCount = 0;
 	
 	try{
-		pDecals = new sDecal[ count ];
+		pDecals = new sDecal[count];
 		
-		for( pDecalCount=0; pDecalCount<count; pDecalCount++ ){
-			decal = decals.GetAt( pDecalCount );
+		for(pDecalCount=0; pDecalCount<count; pDecalCount++){
+			decal = decals.GetAt(pDecalCount);
 			
-			pDecals[ pDecalCount ].oldskin = decal->GetSkinPath();
-			pDecals[ pDecalCount ].newskin = newskin;
-			pDecals[ pDecalCount ].decal = decal;
+			pDecals[pDecalCount].oldskin = decal->GetSkinPath();
+			pDecals[pDecalCount].newskin = newskin;
+			pDecals[pDecalCount].decal = decal;
 			decal->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -117,24 +117,24 @@ void meUDecalSkin::Undo(){
 	meDecal *decal;
 	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		decal = pDecals[ d ].decal;
-		decal->SetSkinPath( pDecals[ d ].oldskin.GetString() );
+	for(d=0; d<pDecalCount; d++){
+		decal = pDecals[d].decal;
+		decal->SetSkinPath(pDecals[d].oldskin.GetString());
 	}
 	
-	pDecals[ 0 ].decal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecals[0].decal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalSkin::Redo(){
 	meDecal *decal;
 	int d;
 	
-	for( d=0; d<pDecalCount; d++ ){
-		decal = pDecals[ d ].decal;
-		decal->SetSkinPath( pDecals[ d ].newskin.GetString() );
+	for(d=0; d<pDecalCount; d++){
+		decal = pDecals[d].decal;
+		decal->SetSkinPath(pDecals[d].newskin.GetString());
 	}
 	
-	pDecals[ 0 ].decal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecals[0].decal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 
@@ -143,10 +143,10 @@ void meUDecalSkin::Redo(){
 //////////////////////
 
 void meUDecalSkin::pCleanUp(){
-	if( pDecals ){
-		while( pDecalCount > 0 ){
+	if(pDecals){
+		while(pDecalCount > 0){
 			pDecalCount--;
-			pDecals[ pDecalCount ].decal->FreeReference();
+			pDecals[pDecalCount].decal->FreeReference();
 		}
 		
 		delete [] pDecals;

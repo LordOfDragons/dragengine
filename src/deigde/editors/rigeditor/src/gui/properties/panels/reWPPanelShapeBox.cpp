@@ -56,23 +56,23 @@ namespace {
 class cEditHalfExtends : public igdeEditVectorListener{
 	reWPPanelShapeBox &pPanel;
 public:
-	cEditHalfExtends( reWPPanelShapeBox &panel ) : pPanel( panel ){ }
+	cEditHalfExtends(reWPPanelShapeBox &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		reRig * const rig = pPanel.GetRig();
-		reRigShapeBox * const box = ( reRigShapeBox* )pPanel.GetShape();
-		if( ! rig || ! box ){
+		reRigShapeBox * const box = (reRigShapeBox*)pPanel.GetShape();
+		if(! rig || ! box){
 			return;
 		}
 		
-		if( editVector->GetVector().IsEqualTo( box->GetHalfExtends() ) ){
+		if(editVector->GetVector().IsEqualTo(box->GetHalfExtends())){
 			return;
 		}
 		
 		reUSetShapeBoxHalfExtends::Ref undo(reUSetShapeBoxHalfExtends::Ref::NewWith(
 			box, editVector->GetVector()));
-		if( undo ){
-			rig->GetUndoSystem()->Add( undo );
+		if(undo){
+			rig->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -87,8 +87,8 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-reWPPanelShapeBox::reWPPanelShapeBox( reWPShape &wpShapes ) :
-reWPPanelShape( wpShapes, reRigShape::estBox )
+reWPPanelShapeBox::reWPPanelShapeBox(reWPShape &wpShapes) :
+reWPPanelShape(wpShapes, reRigShape::estBox)
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
 	igdeContainer::Ref groupBox;
@@ -96,16 +96,16 @@ reWPPanelShape( wpShapes, reRigShape::estBox )
 	
 	
 	
-	helper.GroupBox( *this, groupBox, "Box Parameters:" );
+	helper.GroupBox(*this, groupBox, "Box Parameters:");
 	
-	helper.EditVector( groupBox, "Position:", "Position of the box relative to the parent bone.",
-		pEditPosition, new cEditPosition( *this ) );
+	helper.EditVector(groupBox, "Position:", "Position of the box relative to the parent bone.",
+		pEditPosition, new cEditPosition(*this));
 	
-	helper.EditVector( groupBox, "Rotation:", "Rotation of the box.",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.EditVector(groupBox, "Rotation:", "Rotation of the box.",
+		pEditRotation, new cEditRotation(*this));
 	
-	helper.EditVector( groupBox, "Half Extends:", "Half extends of the box.",
-		pEditHalfExtends, new cEditHalfExtends( *this ) );
+	helper.EditVector(groupBox, "Half Extends:", "Half extends of the box.",
+		pEditHalfExtends, new cEditHalfExtends(*this));
 }
 
 reWPPanelShapeBox::~reWPPanelShapeBox(){
@@ -117,23 +117,23 @@ reWPPanelShapeBox::~reWPPanelShapeBox(){
 ///////////////
 
 void reWPPanelShapeBox::UpdateShape(){
-	reRigShapeBox * const box = ( reRigShapeBox* )GetShape();
+	reRigShapeBox * const box = (reRigShapeBox*)GetShape();
 	
 	reWPPanelShape::UpdateShape();
 	
-	if( box ){
-		pEditPosition->SetVector( box->GetPosition() );
-		pEditRotation->SetVector( box->GetOrientation() );
-		pEditHalfExtends->SetVector( box->GetHalfExtends() );
+	if(box){
+		pEditPosition->SetVector(box->GetPosition());
+		pEditRotation->SetVector(box->GetOrientation());
+		pEditHalfExtends->SetVector(box->GetHalfExtends());
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
-		pEditHalfExtends->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
+		pEditHalfExtends->SetVector(decVector());
 	}
 	
 	const bool enabled = box != NULL;
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
-	pEditHalfExtends->SetEnabled( enabled );
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
+	pEditHalfExtends->SetEnabled(enabled);
 }

@@ -42,22 +42,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkRemoveUnused::aeULinkRemoveUnused( aeAnimator *animator ) :
-pAnimator( NULL )
+aeULinkRemoveUnused::aeULinkRemoveUnused(aeAnimator *animator) :
+pAnimator(NULL)
 {
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+	if(! animator){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove unused links" );
+	SetShortInfo("Remove unused links");
 	
 	const int count = animator->GetLinks().GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		aeLink * const link = animator->GetLinks().GetAt( i );
-		if( animator->CountLinkUsage( link ) == 0 ){
-			pLinks.Add( link );
+	for(i=0; i<count; i++){
+		aeLink * const link = animator->GetLinks().GetAt(i);
+		if(animator->CountLinkUsage(link) == 0){
+			pLinks.Add(link);
 		}
 	}
 	
@@ -66,7 +66,7 @@ pAnimator( NULL )
 }
 
 aeULinkRemoveUnused::~aeULinkRemoveUnused(){
-	if( pAnimator ){
+	if(pAnimator){
 		pAnimator->FreeReference();
 	}
 }
@@ -80,8 +80,8 @@ void aeULinkRemoveUnused::Undo(){
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->AddLink( pLinks.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->AddLink(pLinks.GetAt(i));
 	}
 }
 
@@ -89,7 +89,7 @@ void aeULinkRemoveUnused::Redo(){
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->RemoveLink( pLinks.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->RemoveLink(pLinks.GetAt(i));
 	}
 }

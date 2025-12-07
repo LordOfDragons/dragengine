@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCForceFieldRemove::gdeMAOCForceFieldRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Force Field",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class force field" )
+gdeMAOCForceFieldRemove::gdeMAOCForceFieldRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Force Field",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class force field")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Force Field",
 ///////////////
 
 igdeUndo *gdeMAOCForceFieldRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCForceField ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCForceField){
 		return NULL;
 	}
 	
 	gdeOCForceField * const forceField = gameDefinition.GetActiveOCForceField();
-	if( ! forceField ){
+	if(! forceField){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveForceField( &objectClass, forceField );
+	return new gdeUOCRemoveForceField(&objectClass, forceField);
 }
 
 void gdeMAOCForceFieldRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField
-		&& gameDefinition->GetActiveOCForceField() != NULL );
+		&& gameDefinition->GetActiveOCForceField() != NULL);
 }

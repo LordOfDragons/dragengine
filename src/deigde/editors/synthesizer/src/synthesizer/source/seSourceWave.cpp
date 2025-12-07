@@ -43,18 +43,18 @@
 ////////////////////////////
 
 seSourceWave::seSourceWave() :
-seSource( deSynthesizerSourceVisitorIdentify::estWave ),
-pWaveType( deSynthesizerSourceWave::ewtSine ),
-pMinFrequency( 440.0f ),
-pMaxFrequency( 440.0f ){
+seSource(deSynthesizerSourceVisitorIdentify::estWave),
+pWaveType(deSynthesizerSourceWave::ewtSine),
+pMinFrequency(440.0f),
+pMaxFrequency(440.0f){
 }
 
-seSourceWave::seSourceWave( const seSourceWave &copy ) :
-seSource( copy ),
-pWaveType( copy.pWaveType ),
-pMinFrequency( copy.pMinFrequency ),
-pMaxFrequency( copy.pMaxFrequency ),
-pTargetFrequency( copy.pTargetFrequency ){
+seSourceWave::seSourceWave(const seSourceWave &copy) :
+seSource(copy),
+pWaveType(copy.pWaveType),
+pMinFrequency(copy.pMinFrequency),
+pMaxFrequency(copy.pMaxFrequency),
+pTargetFrequency(copy.pTargetFrequency){
 }
 
 seSourceWave::~seSourceWave(){
@@ -65,47 +65,47 @@ seSourceWave::~seSourceWave(){
 // Management
 ///////////////
 
-void seSourceWave::SetWaveType( deSynthesizerSourceWave::eWaveType type ){
-	if( type < deSynthesizerSourceWave::ewtSine || type > deSynthesizerSourceWave::ewtTriangle ){
-		DETHROW( deeInvalidParam );
+void seSourceWave::SetWaveType(deSynthesizerSourceWave::eWaveType type){
+	if(type < deSynthesizerSourceWave::ewtSine || type > deSynthesizerSourceWave::ewtTriangle){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( type == pWaveType ){
+	if(type == pWaveType){
 		return;
 	}
 	
 	pWaveType = type;
 	
-	if( GetEngineSource() ){
-		( ( deSynthesizerSourceWave* )GetEngineSource() )->SetType( type );
+	if(GetEngineSource()){
+		((deSynthesizerSourceWave*)GetEngineSource())->SetType(type);
 		NotifySourceChanged();
 	}
 }
 
-void seSourceWave::SetMinFrequency( float frequency ){
-	frequency = decMath::max( frequency, 0.0f );
-	if( fabsf( frequency - pMinFrequency ) <= FLOAT_SAFE_EPSILON ){
+void seSourceWave::SetMinFrequency(float frequency){
+	frequency = decMath::max(frequency, 0.0f);
+	if(fabsf(frequency - pMinFrequency) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMinFrequency = frequency;
 	
-	if( GetEngineSource() ){
-		( ( deSynthesizerSourceWave* )GetEngineSource() )->SetMinFrequency( frequency );
+	if(GetEngineSource()){
+		((deSynthesizerSourceWave*)GetEngineSource())->SetMinFrequency(frequency);
 		NotifySourceChanged();
 	}
 }
 
-void seSourceWave::SetMaxFrequency( float frequency ){
-	frequency = decMath::max( frequency, 0.0f );
-	if( fabsf( frequency - pMaxFrequency ) <= FLOAT_SAFE_EPSILON ){
+void seSourceWave::SetMaxFrequency(float frequency){
+	frequency = decMath::max(frequency, 0.0f);
+	if(fabsf(frequency - pMaxFrequency) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxFrequency = frequency;
 	
-	if( GetEngineSource() ){
-		( ( deSynthesizerSourceWave* )GetEngineSource() )->SetMaxFrequency( frequency );
+	if(GetEngineSource()){
+		((deSynthesizerSourceWave*)GetEngineSource())->SetMaxFrequency(frequency);
 		NotifySourceChanged();
 	}
 }
@@ -115,27 +115,27 @@ void seSourceWave::SetMaxFrequency( float frequency ){
 void seSourceWave::UpdateTargets(){
 	seSource::UpdateTargets();
 	
-	deSynthesizerSourceWave * const source = ( deSynthesizerSourceWave* )GetEngineSource();
-	if( source ){
-		pTargetFrequency.UpdateEngineTarget( GetSynthesizer(), source->GetTargetFrequency() );
+	deSynthesizerSourceWave * const source = (deSynthesizerSourceWave*)GetEngineSource();
+	if(source){
+		pTargetFrequency.UpdateEngineTarget(GetSynthesizer(), source->GetTargetFrequency());
 	}
 }
 
-int seSourceWave::CountLinkUsage( seLink *link ) const{
-	int usageCount = seSource::CountLinkUsage( link );
+int seSourceWave::CountLinkUsage(seLink *link) const{
+	int usageCount = seSource::CountLinkUsage(link);
 	
-	if( pTargetFrequency.HasLink( link ) ){
+	if(pTargetFrequency.HasLink(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
 
-void seSourceWave::RemoveLinkFromTargets( seLink *link ){
-	seSource::RemoveLinkFromTargets( link );
+void seSourceWave::RemoveLinkFromTargets(seLink *link){
+	seSource::RemoveLinkFromTargets(link);
 	
-	if( pTargetFrequency.HasLink( link ) ){
-		pTargetFrequency.RemoveLink( link );
+	if(pTargetFrequency.HasLink(link)){
+		pTargetFrequency.RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -159,16 +159,16 @@ deSynthesizerSource *seSourceWave::CreateEngineSource(){
 		engSource = new deSynthesizerSourceWave;
 		
 		// init source
-		InitEngineSource( engSource );
+		InitEngineSource(engSource);
 		
-		engSource->SetType( pWaveType );
-		engSource->SetMinFrequency( pMinFrequency );
-		engSource->SetMaxFrequency( pMaxFrequency );
+		engSource->SetType(pWaveType);
+		engSource->SetMinFrequency(pMinFrequency);
+		engSource->SetMaxFrequency(pMaxFrequency);
 		
-		pTargetFrequency.UpdateEngineTarget( GetSynthesizer(), engSource->GetTargetFrequency() );
+		pTargetFrequency.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetFrequency());
 		
-	}catch( const deException & ){
-		if( engSource ){
+	}catch(const deException &){
+		if(engSource){
 			engSource->FreeReference();
 		}
 		throw;
@@ -181,12 +181,12 @@ deSynthesizerSource *seSourceWave::CreateEngineSource(){
 
 
 seSource *seSourceWave::CreateCopy() const{
-	return new seSourceWave( *this );
+	return new seSourceWave(*this);
 }
 
-void seSourceWave::ListLinks( seLinkList &list ){
-	seSource::ListLinks( list );
-	pTargetFrequency.AddLinksToList( list );
+void seSourceWave::ListLinks(seLinkList &list){
+	seSource::ListLinks(list);
+	pTargetFrequency.AddLinksToList(list);
 }
 
 
@@ -194,11 +194,11 @@ void seSourceWave::ListLinks( seLinkList &list ){
 // Operators
 //////////////
 
-seSourceWave &seSourceWave::operator=( const seSourceWave &copy ){
-	SetWaveType( copy.pWaveType );
-	SetMinFrequency( copy.pMinFrequency );
-	SetMaxFrequency( copy.pMaxFrequency );
+seSourceWave &seSourceWave::operator=(const seSourceWave &copy){
+	SetWaveType(copy.pWaveType);
+	SetMinFrequency(copy.pMinFrequency);
+	SetMaxFrequency(copy.pMaxFrequency);
 	pTargetFrequency = copy.pTargetFrequency;
-	seSource::operator=( copy );
+	seSource::operator=(copy);
 	return *this;
 }

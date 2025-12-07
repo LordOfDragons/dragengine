@@ -162,7 +162,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new navigation space with the given resource manager. */
-	deNavigationSpace( deNavigationSpaceManager *manager );
+	deNavigationSpace(deNavigationSpaceManager *manager);
 	
 protected:
 	/**
@@ -180,60 +180,60 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Space type. */
-	inline eSpaceTypes GetType() const{ return pType; }
+	inline eSpaceTypes GetType() const{return pType;}
 	
 	/** \brief Set space type. */
-	void SetType( eSpaceTypes type );
+	void SetType(eSpaceTypes type);
 	
 	/** \brief Layer number. */
-	inline int GetLayer() const{ return pLayer; }
+	inline int GetLayer() const{return pLayer;}
 	
 	/** \brief Set layer number. */
-	void SetLayer( int layer );
+	void SetLayer(int layer);
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/**
 	 * \brief Snap distance in meters up to which edges are linked to neighbor spaces.
 	 * 
 	 * The default snap distance is 0.001 (1mm).
 	 */
-	inline float GetSnapDistance() const{ return pSnapDistance; }
+	inline float GetSnapDistance() const{return pSnapDistance;}
 	
 	/**
 	 * \brief Set snap distance in meters up to which edges are linked to neighbor spaces.
 	 * 
 	 * The default snap distance is 0.001 (1mm).
 	 */
-	void SetSnapDistance( float distance );
+	void SetSnapDistance(float distance);
 	
 	/**
 	 * \brief Snap angle in radians up to which edges are linked to neighbor spaces.
 	 * 
 	 * The default snap angle is 180° in radians.
 	 */
-	inline float GetSnapAngle() const{ return pSnapAngle; }
+	inline float GetSnapAngle() const{return pSnapAngle;}
 	
 	/**
 	 * \brief Set snap angle in radians up to which edges are linked to neighbor spaces.
 	 * 
 	 * The default snap angle is 180° in radians.
 	 */
-	void SetSnapAngle( float angle );
+	void SetSnapAngle(float angle);
 	
 	/** \brief Blocker shape list. */
-	inline decShapeList &GetBlockerShapeList(){ return pBlockerShapeList; }
-	inline const decShapeList &GetBlockerShapeList() const{ return pBlockerShapeList; }
+	inline decShapeList &GetBlockerShapeList(){return pBlockerShapeList;}
+	inline const decShapeList &GetBlockerShapeList() const{return pBlockerShapeList;}
 	
 	/** \brief Notifies the peers that the blocker shape list changed. */
 	void NotifyBlockerShapeListChanged();
@@ -244,7 +244,7 @@ public:
 	 * Navigation meshes is blocked by all blockers with an equal or larger blocking priority.
 	 * If a blocker shape exists it blocks all navigation meshes with equal or less blocking priority.
 	 */
-	inline int GetBlockingPriority() const{ return pBlockingPriority; }
+	inline int GetBlockingPriority() const{return pBlockingPriority;}
 	
 	/**
 	 * \brief Set blocking priority.
@@ -252,7 +252,7 @@ public:
 	 * Navigation meshes is blocked by all blockers with an equal or larger blocking priority.
 	 * If a blocker shape exists it blocks all navigation meshes with equal or less blocking priority.
 	 */
-	void SetBlockingPriority( int priority );
+	void SetBlockingPriority(int priority);
 	
 	/**
 	 * Notifies the peers that the layout of the navigation space changed. This has to be
@@ -270,19 +270,19 @@ public:
 	/** \name Vertices */
 	/*@{*/
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{return pVertexCount;}
 	
 	/** \brief Set number of vertices. */
-	void SetVertexCount( int count );
+	void SetVertexCount(int count);
 	
 	/** \brief Vertex at the given position. */
-	const decVector &GetVertexAt( int index ) const;
+	const decVector &GetVertexAt(int index) const;
 	
 	/** \brief Set vertex at the given position. */
-	void SetVertexAt( int index, const decVector &vertex );
+	void SetVertexAt(int index, const decVector &vertex);
 	
 	/** \brief Pointer to the vertices. */
-	inline decVector *GetVertices() const{ return pVertices; }
+	inline decVector *GetVertices() const{return pVertices;}
 	/*@}*/
 	
 	
@@ -290,16 +290,16 @@ public:
 	/** \name Edges */
 	/*@{*/
 	/** \brief Number of edges. */
-	inline int GetEdgeCount() const{ return pEdgeCount; }
+	inline int GetEdgeCount() const{return pEdgeCount;}
 	
 	/** \brief Set number of edges. */
-	void SetEdgeCount( int count );
+	void SetEdgeCount(int count);
 	
 	/** \brief Edge at the given position. */
-	deNavigationSpaceEdge &GetEdgeAt( int index ) const;
+	deNavigationSpaceEdge &GetEdgeAt(int index) const;
 	
 	/** \brief Pointer to the edges. */
-	inline deNavigationSpaceEdge *GetEdges() const{ return pEdges; }
+	inline deNavigationSpaceEdge *GetEdges() const{return pEdges;}
 	/*@}*/
 	
 	
@@ -307,16 +307,16 @@ public:
 	/** \name Corners */
 	/*@{*/
 	/** \brief Number of corners. */
-	inline int GetCornerCount() const{ return pCornerCount; }
+	inline int GetCornerCount() const{return pCornerCount;}
 	
 	/** \brief Set number of corners. */
-	void SetCornerCount( int count );
+	void SetCornerCount(int count);
 	
 	/** \brief Corner at the given position. */
-	deNavigationSpaceCorner &GetCornerAt( int index ) const;
+	deNavigationSpaceCorner &GetCornerAt(int index) const;
 	
 	/** \brief Pointer to the corners. */
-	inline deNavigationSpaceCorner *GetCorners() const{ return pCorners; }
+	inline deNavigationSpaceCorner *GetCorners() const{return pCorners;}
 	/*@}*/
 	
 	
@@ -324,16 +324,16 @@ public:
 	/** \name Faces */
 	/*@{*/
 	/** \brief Number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	
 	/** \brief Set number of faces. */
-	void SetFaceCount( int count );
+	void SetFaceCount(int count);
 	
 	/** \brief Face at the given position. */
-	deNavigationSpaceFace &GetFaceAt( int index ) const;
+	deNavigationSpaceFace &GetFaceAt(int index) const;
 	
 	/** \brief Pointer to the faces. */
-	inline deNavigationSpaceFace *GetFaces() const{ return pFaces; }
+	inline deNavigationSpaceFace *GetFaces() const{return pFaces;}
 	/*@}*/
 	
 	
@@ -341,16 +341,16 @@ public:
 	/** \name Walls */
 	/*@{*/
 	/** \brief Number of walls. */
-	inline int GetWallCount() const{ return pWallCount; }
+	inline int GetWallCount() const{return pWallCount;}
 	
 	/** \brief Set number of walls. */
-	void SetWallCount( int count );
+	void SetWallCount(int count);
 	
 	/** \brief Wall at the given position. */
-	deNavigationSpaceWall &GetWallAt( int index ) const;
+	deNavigationSpaceWall &GetWallAt(int index) const;
 	
 	/** \brief Pointer to the walls. */
-	inline deNavigationSpaceWall *GetWalls() const{ return pWalls; }
+	inline deNavigationSpaceWall *GetWalls() const{return pWalls;}
 	/*@}*/
 	
 	
@@ -358,16 +358,16 @@ public:
 	/** \name Rooms */
 	/*@{*/
 	/** \brief Number of rooms. */
-	inline int GetRoomCount() const{ return pRoomCount; }
+	inline int GetRoomCount() const{return pRoomCount;}
 	
 	/** \brief Set number of rooms. */
-	void SetRoomCount( int count );
+	void SetRoomCount(int count);
 	
 	/** \brief Room at the given position. */
-	deNavigationSpaceRoom &GetRoomAt( int index ) const;
+	deNavigationSpaceRoom &GetRoomAt(int index) const;
 	
 	/** \brief Pointer to the rooms. */
-	inline deNavigationSpaceRoom *GetRooms() const{ return pRooms; }
+	inline deNavigationSpaceRoom *GetRooms() const{return pRooms;}
 	/*@}*/
 	
 	
@@ -375,10 +375,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief AI system peer. */
-	inline deBaseAINavigationSpace *GetPeerAI() const{ return pPeerAI; }
+	inline deBaseAINavigationSpace *GetPeerAI() const{return pPeerAI;}
 	
 	/** \brief Set AI system peer. */
-	void SetPeerAI( deBaseAINavigationSpace *peer );
+	void SetPeerAI(deBaseAINavigationSpace *peer);
 	/*@}*/
 	
 	
@@ -386,22 +386,22 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous navigation space in the parent world linked list. */
-	inline deNavigationSpace *GetLLWorldPrev() const{ return pLLWorldPrev; }
+	inline deNavigationSpace *GetLLWorldPrev() const{return pLLWorldPrev;}
 	
 	/** \brief Set next navigation space in the parent world linked list. */
-	void SetLLWorldPrev( deNavigationSpace *navspace );
+	void SetLLWorldPrev(deNavigationSpace *navspace);
 	
 	/** \brief Next navigation space in the parent world linked list. */
-	inline deNavigationSpace *GetLLWorldNext() const{ return pLLWorldNext; }
+	inline deNavigationSpace *GetLLWorldNext() const{return pLLWorldNext;}
 	
 	/** \brief Set next navigation space in the parent world linked list. */
-	void SetLLWorldNext( deNavigationSpace *navspace );
+	void SetLLWorldNext(deNavigationSpace *navspace);
 	/*@}*/
 };
 

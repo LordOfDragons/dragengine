@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeSphereRadius::reUSetShapeSphereRadius( reRigShapeSphere *shape, float radius ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float radius){
+	if(! shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldRadius = shape->GetRadius();
 	pNewRadius = radius;
 	
-	SetShortInfo( "Set Sphere Shape Radius" );
+	SetShortInfo("Set Sphere Shape Radius");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapeSphereRadius::~reUSetShapeSphereRadius(){
 ///////////////
 
 void reUSetShapeSphereRadius::Undo(){
-	pShape->SetRadius( pOldRadius );
+	pShape->SetRadius(pOldRadius);
 }
 
 void reUSetShapeSphereRadius::Redo(){
-	pShape->SetRadius( pNewRadius );
+	pShape->SetRadius(pNewRadius);
 }

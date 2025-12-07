@@ -44,26 +44,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRVideoPlayer::deoglRVideoPlayer( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRVideoPlayer::deoglRVideoPlayer(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pVideo( NULL ),
-pCachedFrameTexture( NULL ),
-pUpdateCachedFrameTexture( -1 ),
+pVideo(NULL),
+pCachedFrameTexture(NULL),
+pUpdateCachedFrameTexture(-1),
 
-pWidth( 1 ),
-pHeight( 1 ),
-pComponentCount( 3 ),
+pWidth(1),
+pHeight(1),
+pComponentCount(3),
 
-pTexture( NULL ),
-pDirtyTexture( false )
+pTexture(NULL),
+pDirtyTexture(false)
 {
 }
 
 deoglRVideoPlayer::~deoglRVideoPlayer(){
-	SetVideo( NULL );
+	SetVideo(NULL);
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -73,29 +73,29 @@ deoglRVideoPlayer::~deoglRVideoPlayer(){
 // Management
 ///////////////
 
-void deoglRVideoPlayer::SetVideo( deoglRVideo *video ){
-	if( video == pVideo ){
+void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
+	if(video == pVideo){
 		return;
 	}
 	
-	if( pVideo ){
+	if(pVideo){
 		pVideo->FreeReference();
 	}
 	
 	pVideo = video;
 	
-	if( video ){
+	if(video){
 		video->AddReference();
 	}
 }
 
-void deoglRVideoPlayer::SetCachedFrameTexture( deoglTexture *texture ){
+void deoglRVideoPlayer::SetCachedFrameTexture(deoglTexture *texture){
 	pCachedFrameTexture = texture;
 }
 
-void deoglRVideoPlayer::SetUpdateCachedFrameTexture( int updateCachedFrameTexture ){
+void deoglRVideoPlayer::SetUpdateCachedFrameTexture(int updateCachedFrameTexture){
 	pUpdateCachedFrameTexture = updateCachedFrameTexture;
-	if( updateCachedFrameTexture != -1 ){
+	if(updateCachedFrameTexture != -1){
 		pDirtyTexture = true;
 	}
 }
@@ -106,12 +106,12 @@ bool deoglRVideoPlayer::HasCachedFrameTexture() const{
 
 
 
-void deoglRVideoPlayer::SetVideoSize( int width, int height, int componentCount ){
-	if( width < 1 || height < 1 || componentCount < 3 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+void deoglRVideoPlayer::SetVideoSize(int width, int height, int componentCount){
+	if(width < 1 || height < 1 || componentCount < 3 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( width == pWidth && height == pHeight && componentCount == pComponentCount ){
+	if(width == pWidth && height == pHeight && componentCount == pComponentCount){
 		return;
 	}
 	
@@ -121,7 +121,7 @@ void deoglRVideoPlayer::SetVideoSize( int width, int height, int componentCount 
 	
 	pPixelBuffer = nullptr;
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 		pTexture = NULL;
 	}
@@ -132,8 +132,8 @@ void deoglRVideoPlayer::SetVideoSize( int width, int height, int componentCount 
 	pDirtyTexture = true;
 }
 
-deoglPixelBuffer::Ref deoglRVideoPlayer::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
-	const deoglPixelBuffer::Ref prevPixelBuffer( pPixelBuffer );
+deoglPixelBuffer::Ref deoglRVideoPlayer::SetPixelBuffer(deoglPixelBuffer *pixelBuffer){
+	const deoglPixelBuffer::Ref prevPixelBuffer(pPixelBuffer);
 	
 	pPixelBuffer = pixelBuffer;
 	pDirtyTexture  = true;
@@ -148,28 +148,28 @@ deoglTexture *deoglRVideoPlayer::GetTexture() const{
 
 
 void deoglRVideoPlayer::UpdateTexture(){
-	if( ! pDirtyTexture ){
+	if(! pDirtyTexture){
 		return;
 	}
 	
-	if( pUpdateCachedFrameTexture != -1 ){
+	if(pUpdateCachedFrameTexture != -1){
 		pVideo->UpdateTexture();
-		pCachedFrameTexture = pVideo->GetTexture( pUpdateCachedFrameTexture );
+		pCachedFrameTexture = pVideo->GetTexture(pUpdateCachedFrameTexture);
 		pUpdateCachedFrameTexture = -1;
 	}
 	
-	if( ! pCachedFrameTexture ){
+	if(! pCachedFrameTexture){
 		//pRenderThread.GetLogger().LogInfo( "VideoPlayer: update not cached" );
-		if( ! pTexture ){
-			pTexture = new deoglTexture( pRenderThread );
-			pTexture->SetSize( pWidth, pHeight );
-			pTexture->SetMapingFormat( pComponentCount, false, false );
-			pTexture->SetMipMapped( false ); // true would be nicer but doing it every frame is a waste
+		if(! pTexture){
+			pTexture = new deoglTexture(pRenderThread);
+			pTexture->SetSize(pWidth, pHeight);
+			pTexture->SetMapingFormat(pComponentCount, false, false);
+			pTexture->SetMipMapped(false); // true would be nicer but doing it every frame is a waste
 			pTexture->CreateTexture();
 		}
 		
-		if( pPixelBuffer ){
-			pTexture->SetPixels( pPixelBuffer );
+		if(pPixelBuffer){
+			pTexture->SetPixels(pPixelBuffer);
 		}
 	}
 	

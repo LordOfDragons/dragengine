@@ -53,7 +53,7 @@ public:
 	deoglShaderDefines();
 	
 	/** Create copy of defines. */
-	deoglShaderDefines( const deoglShaderDefines &defines );
+	deoglShaderDefines(const deoglShaderDefines &defines);
 	
 	/** Clean up defines. */
 	~deoglShaderDefines();
@@ -64,46 +64,46 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of defines. */
-	inline int GetDefineCount() const{ return pDefineCount; }
+	inline int GetDefineCount() const{return pDefineCount;}
 	
 	/** Name of define at index. */
-	const decString &GetDefineNameAt( int index ) const;
+	const decString &GetDefineNameAt(int index) const;
 	
 	/** Value of define at index. */
-	const decString &GetDefineValueAt( int index ) const;
+	const decString &GetDefineValueAt(int index) const;
 	
 	/** Named define is present. */
-	bool HasDefineNamed( const char *name ) const;
+	bool HasDefineNamed(const char *name) const;
 	
 	/** Value of named define or default value if absent. */
-	const decString &GetDefineValueFor( const char *name, const decString &defaultValue ) const;
+	const decString &GetDefineValueFor(const char *name, const decString &defaultValue) const;
 	const char *GetDefineValueFor(const char *name, const char *defaultValue) const;
 	
 	/** Set define. */
-	void SetDefine( const char *name, const char *value );
-	void SetDefine( const char *name, int value );
-	void SetDefine( const char *name, bool value );
+	void SetDefine(const char *name, const char *value);
+	void SetDefine(const char *name, int value);
+	void SetDefine(const char *name, bool value);
 	
 	/** Set multiple defines set to '1'. */
-	void SetDefines( const char *name1 );
-	void SetDefines( const char *name1, const char *name2 );
-	void SetDefines( const char *name1, const char *name2, const char *name3 );
-	void SetDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	void SetDefines(const char *name1);
+	void SetDefines(const char *name1, const char *name2);
+	void SetDefines(const char *name1, const char *name2, const char *name3);
+	void SetDefines(const char *name1, const char *name2, const char *name3, const char *name4);
 	
 	/** Remove define. */
-	void RemoveDefine( const char *name );
+	void RemoveDefine(const char *name);
 	
 	/** Remove defines. */
-	void RemoveDefines( const char *name1 );
-	void RemoveDefines( const char *name1, const char *name2 );
-	void RemoveDefines( const char *name1, const char *name2, const char *name3 );
-	void RemoveDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	void RemoveDefines(const char *name1);
+	void RemoveDefines(const char *name1, const char *name2);
+	void RemoveDefines(const char *name1, const char *name2, const char *name3);
+	void RemoveDefines(const char *name1, const char *name2, const char *name3, const char *name4);
 	
 	/** Remove all defines. */
 	void RemoveAllDefines();
 	
 	/** Defines are equal. */
-	bool Equals( const deoglShaderDefines &defines ) const;
+	bool Equals(const deoglShaderDefines &defines) const;
 	
 	/** Filtered defines are equal. */
 	bool Equals(const deoglShaderDefines &defines, const decStringSet &filter) const;
@@ -117,13 +117,13 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Defines are equal. */
-	bool operator==( const deoglShaderDefines &defines ) const;
+	bool operator==(const deoglShaderDefines &defines) const;
 	
 	/** Replace defines. */
-	deoglShaderDefines &operator=( const deoglShaderDefines &defines );
+	deoglShaderDefines &operator=(const deoglShaderDefines &defines);
 	
 	/** Combine defines. */
-	deoglShaderDefines operator+( const deoglShaderDefines &defines ) const;
+	deoglShaderDefines operator+(const deoglShaderDefines &defines) const;
 	/*@}*/
 	
 	

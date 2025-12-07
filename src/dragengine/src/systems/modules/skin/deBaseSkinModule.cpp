@@ -28,8 +28,8 @@
 // Class deBaseSkinModule
 ///////////////////////////
 
-deBaseSkinModule::deBaseSkinModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseSkinModule::deBaseSkinModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseSkinModule::~deBaseSkinModule(){

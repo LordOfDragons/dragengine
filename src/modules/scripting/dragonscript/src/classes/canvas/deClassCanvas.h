@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassCanvas( deScriptingDragonScript &ds );
+	deClassCanvas(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassCanvas();
@@ -57,27 +57,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
-	inline dsClass *GetClassCanvasBlendMode() const{ return pClsCanvasBlendMode; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
+	inline dsClass *GetClassCanvasBlendMode() const{return pClsCanvasBlendMode;}
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve canvas from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deCanvas *GetCanvas( dsRealObject *myself ) const;
+	deCanvas *GetCanvas(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push canvas onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas( dsRunTime *rt, deCanvas *canvas );
+	void PushCanvas(dsRunTime *rt, deCanvas *canvas);
 	
 	/** \brief Assigns canvas or \em NULL. */
-	void AssignCanvas( dsRealObject *myself, deCanvas *canvas );
+	void AssignCanvas(dsRealObject *myself, deCanvas *canvas);
 	/*@}*/
 	
 private:
@@ -88,37 +88,37 @@ private:
 		dsClass *clsCanvasView;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetSize );
-	DEF_NATFUNC( nfSetSize );
-	DEF_NATFUNC( nfGetTransform );
-	DEF_NATFUNC( nfSetTransform );
-	DEF_NATFUNC( nfGetColorTransform );
-	DEF_NATFUNC( nfSetColorTransform );
-	DEF_NATFUNC( nfGetVisible );
-	DEF_NATFUNC( nfSetVisible );
-	DEF_NATFUNC( nfGetOrder );
-	DEF_NATFUNC( nfSetOrder );
-	DEF_NATFUNC( nfGetTransparency );
-	DEF_NATFUNC( nfSetTransparency );
-	DEF_NATFUNC( nfGetBlendMode );
-	DEF_NATFUNC( nfSetBlendMode );
-	DEF_NATFUNC( nfGetMask );
-	DEF_NATFUNC( nfSetMask );
-	DEF_NATFUNC( nfGetParentView );
-	DEF_NATFUNC( nfGetParentMask );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetSize);
+	DEF_NATFUNC(nfSetSize);
+	DEF_NATFUNC(nfGetTransform);
+	DEF_NATFUNC(nfSetTransform);
+	DEF_NATFUNC(nfGetColorTransform);
+	DEF_NATFUNC(nfSetColorTransform);
+	DEF_NATFUNC(nfGetVisible);
+	DEF_NATFUNC(nfSetVisible);
+	DEF_NATFUNC(nfGetOrder);
+	DEF_NATFUNC(nfSetOrder);
+	DEF_NATFUNC(nfGetTransparency);
+	DEF_NATFUNC(nfSetTransparency);
+	DEF_NATFUNC(nfGetBlendMode);
+	DEF_NATFUNC(nfSetBlendMode);
+	DEF_NATFUNC(nfGetMask);
+	DEF_NATFUNC(nfSetMask);
+	DEF_NATFUNC(nfGetParentView);
+	DEF_NATFUNC(nfGetParentMask);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

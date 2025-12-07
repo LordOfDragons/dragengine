@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPPlaygroundListener::aeWPPlaygroundListener( aeWPPlayground &panel ) :
-pPanel( panel ){
+aeWPPlaygroundListener::aeWPPlaygroundListener(aeWPPlayground &panel) :
+pPanel(panel){
 }
 
 aeWPPlaygroundListener::~aeWPPlaygroundListener(){
@@ -51,8 +51,8 @@ aeWPPlaygroundListener::~aeWPPlaygroundListener(){
 // Notifications
 //////////////////
 
-void aeWPPlaygroundListener::LocomotionChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPPlaygroundListener::LocomotionChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -61,32 +61,32 @@ void aeWPPlaygroundListener::LocomotionChanged( aeAnimator *animator ){
 
 
 
-void aeWPPlaygroundListener::ControllerChanged( aeAnimator *animator, aeController *controller ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPPlaygroundListener::ControllerChanged(aeAnimator *animator, aeController *controller){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.RebuildControllers();
 }
 
-void aeWPPlaygroundListener::ControllerNameChanged( aeAnimator *animator, aeController *controller ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPPlaygroundListener::ControllerNameChanged(aeAnimator *animator, aeController *controller){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.RebuildControllers();
 }
 
-void aeWPPlaygroundListener::ControllerValueChanged( aeAnimator *animator, aeController *controller ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPPlaygroundListener::ControllerValueChanged(aeAnimator *animator, aeController *controller){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
-	pPanel.UpdateControllerValue( controller );
+	pPanel.UpdateControllerValue(controller);
 }
 
-void aeWPPlaygroundListener::ControllerStructureChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPPlaygroundListener::ControllerStructureChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	

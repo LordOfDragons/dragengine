@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create load configuration. */
-	debnLoadConfiguration( deNetworkBasic &network );
+	debnLoadConfiguration(deNetworkBasic &network);
 	
 	/** Clean up load configuration. */
 	~debnLoadConfiguration();
@@ -56,18 +56,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Load configuration from XML files. */
-	void LoadConfig( debnConfiguration &configuration );
+	void LoadConfig(debnConfiguration &configuration);
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadConfiguration( debnConfiguration &configuration, decBaseFileReader &reader );
-	decXmlElementTag *pGetTagAt( decXmlElementTag *tag, int index );
-	decXmlAttValue *pFindAttribute( decXmlElementTag *tag, const char *name );
-	const decString &pGetAttributeString( decXmlElementTag *tag, const char *name );
-	int pGetAttributeInt( decXmlElementTag *tag, const char *name );
-	float pGetAttributeFloat( decXmlElementTag *tag, const char *name );
+	void pLoadConfiguration(debnConfiguration &configuration, decBaseFileReader &reader);
+	decXmlElementTag *pGetTagAt(decXmlElementTag *tag, int index);
+	decXmlAttValue *pFindAttribute(decXmlElementTag *tag, const char *name);
+	const decString &pGetAttributeString(decXmlElementTag *tag, const char *name);
+	int pGetAttributeInt(decXmlElementTag *tag, const char *name);
+	float pGetAttributeFloat(decXmlElementTag *tag, const char *name);
 };
 
 #endif

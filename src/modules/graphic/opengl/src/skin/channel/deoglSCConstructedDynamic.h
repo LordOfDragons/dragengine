@@ -52,10 +52,10 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Is dynamic. */
-	static bool IsDynamic( deSkinPropertyNode &node );
+	static bool IsDynamic(deSkinPropertyNode &node);
 	
 	/** Dynamic. */
-	inline bool GetDynamic() const{ return pDynamic; }
+	inline bool GetDynamic() const{return pDynamic;}
 	/*@}*/
 	
 	
@@ -63,19 +63,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit node. */
-	virtual void VisitNode( deSkinPropertyNode &node ) override;
+	virtual void VisitNode(deSkinPropertyNode &node) override;
 	
 	/** Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node ) override;
+	virtual void VisitGroup(deSkinPropertyNodeGroup &node) override;
 	
 	/** Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node ) override;
+	virtual void VisitImage(deSkinPropertyNodeImage &node) override;
 	
 	/** Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node ) override;
+	virtual void VisitShape(deSkinPropertyNodeShape &node) override;
 	
 	/** Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node ) override;
+	virtual void VisitText(deSkinPropertyNodeText &node) override;
 	/*@}*/
 };
 

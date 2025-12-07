@@ -54,10 +54,10 @@ public:
 		bool strikeThrough; //< Strike through font
 		
 		sConfiguration();
-		sConfiguration( const sConfiguration &config );
+		sConfiguration(const sConfiguration &config);
 		
-		sConfiguration &operator=( const sConfiguration &config );
-		bool operator==( const sConfiguration &config ) const;
+		sConfiguration &operator=(const sConfiguration &config);
+		bool operator==(const sConfiguration &config) const;
 	};
 	
 	
@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font. */
-	igdeFont( igdeEnvironment &environment, const sConfiguration &config );
+	igdeFont(igdeEnvironment &environment, const sConfiguration &config);
 	
 	
 	
@@ -95,33 +95,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Font name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Font size in points. */
-	inline float GetSize() const{ return pSize; }
+	inline float GetSize() const{return pSize;}
 	
 	/** \brief Bold font. */
-	inline bool GetBold() const{ return pBold; }
+	inline bool GetBold() const{return pBold;}
 	
 	/** \brief Italic font. */
-	inline bool GetItalic() const{ return pItalic; }
+	inline bool GetItalic() const{return pItalic;}
 	
 	/** \brief Underline font. */
-	inline bool GetUnderline() const{ return pUnderline; }
+	inline bool GetUnderline() const{return pUnderline;}
 	
 	/** \brief Strike through font. */
-	inline bool GetStrikeThrough() const{ return pStrikeThrough; }
+	inline bool GetStrikeThrough() const{return pStrikeThrough;}
 	
 	/** \brief Font configuration. */
-	void GetConfig( sConfiguration &config ) const;
+	void GetConfig(sConfiguration &config) const;
 	
 	
 	
 	/** \brief Text size. */
-	decPoint TextSize( const char *text ) const;
+	decPoint TextSize(const char *text) const;
 	
 	
 	
@@ -144,7 +144,7 @@ public:
 	 * \brief Get native font pointer.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	void *GetNativeFont() const{ return pNativeFont; }
+	void *GetNativeFont() const{return pNativeFont;}
 	/*@}*/
 };
 

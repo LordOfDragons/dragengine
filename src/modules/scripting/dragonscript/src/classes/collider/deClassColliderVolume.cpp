@@ -58,38 +58,38 @@ struct sColVolNatDat{
 /////////////////////
 
 // public func new()
-deClassColliderVolume::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsColVol,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassColliderVolume::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsColVol,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassColliderVolume::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sColVolNatDat &nd = *( ( sColVolNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassColliderVolume* )GetOwnerClass() )->GetDS();
+void deClassColliderVolume::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sColVolNatDat &nd = *((sColVolNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassColliderVolume*)GetOwnerClass())->GetDS();
 	deColliderManager &colMgr = *ds.GetGameEngine()->GetColliderManager();
 	
 	// clear ( important )
 	nd.collider = NULL;
 	
 	// super call
-	deClassCollider * const baseClass = ( deClassCollider* )GetOwnerClass()->GetBaseClass();
-	baseClass->CallBaseClassConstructor( rt, myself, baseClass->GetFirstConstructor(), 0 );
+	deClassCollider * const baseClass = (deClassCollider*)GetOwnerClass()->GetBaseClass();
+	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create collider
 	nd.collider = colMgr.CreateColliderVolume();
-	baseClass->AssignCollider( myself->GetRealObject(), nd.collider );
+	baseClass->AssignCollider(myself->GetRealObject(), nd.collider);
 }
 
 // public func destructor()
-deClassColliderVolume::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsColVol,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassColliderVolume::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsColVol,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassColliderVolume::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassColliderVolume::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sColVolNatDat &nd = *( ( sColVolNatDat* )p_GetNativeData( myself ) );
+	sColVolNatDat &nd = *((sColVolNatDat*)p_GetNativeData(myself));
 	
-	if( nd.collider ){
+	if(nd.collider){
 		nd.collider->FreeReference();
 		nd.collider = NULL;
 	}
@@ -101,73 +101,73 @@ void deClassColliderVolume::nfDestructor::RunFunction( dsRunTime *rt, dsValue *m
 ///////////////
 
 // public func ShapeList getShape()
-deClassColliderVolume::nfGetShape::nfGetShape( const sInitData &init ) : dsFunction( init.clsColVol,
-"getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList ){
+deClassColliderVolume::nfGetShape::nfGetShape(const sInitData &init) : dsFunction(init.clsColVol,
+"getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList){
 }
-void deClassColliderVolume::nfGetShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderVolume &collider = *( ( ( sColVolNatDat* )p_GetNativeData( myself ) )->collider );
-	const deScriptingDragonScript &ds = ( ( deClassColliderVolume* )GetOwnerClass() )->GetDS();
+void deClassColliderVolume::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderVolume &collider = *(((sColVolNatDat*)p_GetNativeData(myself))->collider);
+	const deScriptingDragonScript &ds = ((deClassColliderVolume*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassShapeList()->PushShapeList( rt, collider.GetShapes() );
+	ds.GetClassShapeList()->PushShapeList(rt, collider.GetShapes());
 }
 
 // public func void setShape( ShapeList shape )
-deClassColliderVolume::nfSetShape::nfSetShape( const sInitData &init ) : dsFunction( init.clsColVol,
-"setShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsShapeList ); // shape
+deClassColliderVolume::nfSetShape::nfSetShape(const sInitData &init) : dsFunction(init.clsColVol,
+"setShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsShapeList); // shape
 }
-void deClassColliderVolume::nfSetShape::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderVolume &collider = *( ( ( sColVolNatDat* )p_GetNativeData( myself ) )->collider );
-	const deScriptingDragonScript &ds = ( ( deClassColliderVolume* )GetOwnerClass() )->GetDS();
+void deClassColliderVolume::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderVolume &collider = *(((sColVolNatDat*)p_GetNativeData(myself))->collider);
+	const deScriptingDragonScript &ds = ((deClassColliderVolume*)GetOwnerClass())->GetDS();
 	
-	const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList( rt->GetValue( 0 )->GetRealObject() );
-	collider.SetShapes( shapeList );
+	const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject());
+	collider.SetShapes(shapeList);
 }
 
 
 
 // public func int hashCode()
-deClassColliderVolume::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsColVol, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassColliderVolume::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsColVol, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassColliderVolume::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderVolume *collider = ( ( sColVolNatDat* )p_GetNativeData( myself ) )->collider;
+void deClassColliderVolume::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderVolume *collider = ((sColVolNatDat*)p_GetNativeData(myself))->collider;
 	// hash code = memory location
-	rt->PushInt( ( int )( intptr_t )collider );
+	rt->PushInt((int)(intptr_t)collider);
 }
 
 // public func bool equals( Object obj )
-deClassColliderVolume::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsColVol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassColliderVolume::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsColVol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassColliderVolume::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deColliderVolume * const collider = ( ( sColVolNatDat* )p_GetNativeData( myself ) )->collider;
-	deClassColliderVolume * const clsColVol = ( deClassColliderVolume* )GetOwnerClass();
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassColliderVolume::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deColliderVolume * const collider = ((sColVolNatDat*)p_GetNativeData(myself))->collider;
+	deClassColliderVolume * const clsColVol = (deClassColliderVolume*)GetOwnerClass();
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsColVol ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsColVol)){
+		rt->PushBool(false);
 		
 	}else{
-		deColliderVolume * const otherCol = ( ( sColVolNatDat* )p_GetNativeData( obj ) )->collider;
-		rt->PushBool( collider == otherCol );
+		deColliderVolume * const otherCol = ((sColVolNatDat*)p_GetNativeData(obj))->collider;
+		rt->PushBool(collider == otherCol);
 	}
 }
 
 // public static func bool equals( Collider collider1, Collider collider2 )
-deClassColliderVolume::nfEquals2::nfEquals2( const sInitData &init ) :
-dsFunction( init.clsColVol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
-	p_AddParameter( init.clsColVol ); // collider1
-	p_AddParameter( init.clsColVol ); // collider2
+deClassColliderVolume::nfEquals2::nfEquals2(const sInitData &init) :
+dsFunction(init.clsColVol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+	p_AddParameter(init.clsColVol); // collider1
+	p_AddParameter(init.clsColVol); // collider2
 }
-void deClassColliderVolume::nfEquals2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deClassColliderVolume &clsColVol = *( ( deClassColliderVolume* )GetOwnerClass() );
-	deColliderVolume * const collider1 = clsColVol.GetCollider( rt->GetValue( 0 )->GetRealObject() );
-	deColliderVolume * const collider2 = clsColVol.GetCollider( rt->GetValue( 1 )->GetRealObject() );
+void deClassColliderVolume::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassColliderVolume &clsColVol = *((deClassColliderVolume*)GetOwnerClass());
+	deColliderVolume * const collider1 = clsColVol.GetCollider(rt->GetValue(0)->GetRealObject());
+	deColliderVolume * const collider2 = clsColVol.GetCollider(rt->GetValue(1)->GetRealObject());
 	
-	rt->PushBool( collider1 == collider2 );
+	rt->PushBool(collider1 == collider2);
 }
 
 
@@ -178,13 +178,13 @@ void deClassColliderVolume::nfEquals2::RunFunction( dsRunTime *rt, dsValue *myse
 // Constructor, Destructor
 ////////////////////////////
 
-deClassColliderVolume::deClassColliderVolume( deScriptingDragonScript &ds ) :
-dsClass( "ColliderVolume", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Collider" );
+deClassColliderVolume::deClassColliderVolume(deScriptingDragonScript &ds) :
+dsClass("ColliderVolume", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Collider");
 	
-	p_SetNativeDataSize( sizeof( sColVolNatDat ) );
+	p_SetNativeDataSize(sizeof(sColVolNatDat));
 }
 
 deClassColliderVolume::~deClassColliderVolume(){
@@ -195,7 +195,7 @@ deClassColliderVolume::~deClassColliderVolume(){
 // Management
 ///////////////
 
-void deClassColliderVolume::CreateClassMembers( dsEngine *engine ){
+void deClassColliderVolume::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -213,15 +213,15 @@ void deClassColliderVolume::CreateClassMembers( dsEngine *engine ){
 	init.clsShapeList = pDS.GetClassShapeList();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetShape( init ) );
-	AddFunction( new nfSetShape( init ) );
+	AddFunction(new nfGetShape(init));
+	AddFunction(new nfSetShape(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfEquals2( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfEquals2(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
@@ -229,39 +229,39 @@ void deClassColliderVolume::CreateClassMembers( dsEngine *engine ){
 
 
 
-deColliderVolume *deClassColliderVolume::GetCollider( dsRealObject *myself ) const {
-	if( ! myself ){
+deColliderVolume *deClassColliderVolume::GetCollider(dsRealObject *myself) const {
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sColVolNatDat* )p_GetNativeData( myself->GetBuffer() ) )->collider;
+	return ((sColVolNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
 }
 
-void deClassColliderVolume::PushCollider( dsRunTime *rt, deColliderVolume *collider ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume *collider){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! collider ){
-		rt->PushObject( NULL, this );
+	if(! collider){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	deClassCollider * const baseClass = ( deClassCollider* )GetBaseClass();
-	rt->CreateObjectNakedOnStack( this );
-	sColVolNatDat &nd = *( ( sColVolNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	deClassCollider * const baseClass = (deClassCollider*)GetBaseClass();
+	rt->CreateObjectNakedOnStack(this);
+	sColVolNatDat &nd = *((sColVolNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.collider = NULL;
 	
 	try{
-		baseClass->CallBaseClassConstructor( rt, rt->GetValue( 0 ), baseClass->GetFirstConstructor(), 0 );
+		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		collider->AddReference();
 		nd.collider = collider;
 		
-		baseClass->AssignCollider( rt->GetValue( 0 )->GetRealObject(), collider );
+		baseClass->AssignCollider(rt->GetValue(0)->GetRealObject(), collider);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

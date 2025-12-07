@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine. */
-	dealEngineInstance( android_app &androidApp );
+	dealEngineInstance(android_app &androidApp);
 	
 	/** \brief Clean up engine. */
 	virtual ~dealEngineInstance();
@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger or \em null if not existing. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline deLogger *GetLogger() const{return pLogger;}
 	
 	
 	
@@ -90,7 +90,7 @@ public:
 	 * \brief Start engine.
 	 * \returns \em true if successful or \em false if an exception happened.
 	 */
-	virtual bool Start( const char *logfile, const char *cacheAppID );
+	virtual bool Start(const char *logfile, const char *cacheAppID);
 	
 	/**
 	 * \brief Stop engine.
@@ -99,43 +99,43 @@ public:
 	virtual bool Stop();
 	
 	/** \brief Process input event. */
-	virtual void ProcessInputEvent( const AInputEvent &event );
+	virtual void ProcessInputEvent(const AInputEvent &event);
 	
 	/** \brief Frame update. */
-	virtual bool FrameUpdate( bool &keepRunning );
+	virtual bool FrameUpdate(bool &keepRunning);
 	
 	
 	
 	/** \brief Get module status. */
-	virtual bool GetModuleStatus( const char *moduleName, const char *moduleVersion, int &status );
+	virtual bool GetModuleStatus(const char *moduleName, const char *moduleVersion, int &status);
 	
 	/** \brief Number of module parameters. */
-	virtual bool GetModuleParameterCount( const char *moduleName, const char *moduleVersion,
-		int &parameterCount );
+	virtual bool GetModuleParameterCount(const char *moduleName, const char *moduleVersion,
+		int &parameterCount);
 	
 	/** \brief Module parameter information. */
-	virtual bool GetModuleParameterData( const char *moduleName, const char *moduleVersion,
+	virtual bool GetModuleParameterData(const char *moduleName, const char *moduleVersion,
 		int parameter, const char *&parameterName, const char *&parameterDescription,
-		const char*&parameterValue );
+		const char*&parameterValue);
 	
 	/** \brief Set module parameter value. */
-	virtual bool SetModuleParameterValue( const char *moduleName, const char *moduleVersion,
-		const char *parameter, const char *value );
+	virtual bool SetModuleParameterValue(const char *moduleName, const char *moduleVersion,
+		const char *parameter, const char *value);
 	
 	/** \brief Engine property. */
-	virtual bool GetProperty( int property, const char *&value );
+	virtual bool GetProperty(int property, const char *&value);
 	
 	/** \brief Activate module. */
-	virtual bool ActivateModule( const char *moduleName, const char *moduleVersion );
+	virtual bool ActivateModule(const char *moduleName, const char *moduleVersion);
 	
 	/** \brief Enable or disable module. */
-	virtual bool EnableModule( const char *moduleName, const char *moduleVersion, bool enable );
+	virtual bool EnableModule(const char *moduleName, const char *moduleVersion, bool enable);
 	
 	/** \brief Set command line arguments. */
-	virtual bool SetCmdLineArgs( const char *arguments ) const;
+	virtual bool SetCmdLineArgs(const char *arguments) const;
 	
 	/** \brief Set data directory. */
-	virtual bool SetDataDirectory( const char *directory );
+	virtual bool SetDataDirectory(const char *directory);
 	
 	
 	
@@ -151,12 +151,12 @@ public:
 	 * \param[in] fileOffset Offset in bytes where the content begins. Required for asset files.
 	 * \param[in] fileLength Length of content in bytes. Required for asset files.
 	 */
-	virtual bool OpenDelga( int fileDescriptor, long fileOffset, long fileLength );
+	virtual bool OpenDelga(int fileDescriptor, long fileOffset, long fileLength);
 	
 	
 	
 	/** \brief Add disk directory to virtual file system. */
-	virtual bool VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly );
+	virtual bool VFSAddDiskDir(const char *vfsRoot, const char *nativeDirectory, bool readOnly);
 	
 	/** \brief Add virtual file system container for module shared data. */
 	virtual bool VFSAddScriptSharedDataDir();
@@ -167,24 +167,24 @@ public:
 	 * \param[in] vfsRoot Path to show content at in virtual file system.
 	 * \param[in] vfsBase Base path relative to zip archive to show in virtual file system.
 	 */
-	virtual bool VFSAddDelga( const char *vfsRoot, const char *vfsBase );
+	virtual bool VFSAddDelga(const char *vfsRoot, const char *vfsBase);
 	
 	/** \brief Add redirect directory to virtual file system. */
-	virtual bool VFSAddRedirect( const char *root, const char *redirect );
+	virtual bool VFSAddRedirect(const char *root, const char *redirect);
 	
 	/**
 	 * \brief Make modules add stage specific containers to virtual file system.
 	 * \version 1.23
 	 */
-	virtual bool ModulesAddVFSContainers( const char *stage );
+	virtual bool ModulesAddVFSContainers(const char *stage);
 	
 	
 	
 	/** \brief Create render window. */
-	virtual bool CreateRenderWindow( int width, int height, bool fullScreen, const char *windowTitle );
+	virtual bool CreateRenderWindow(int width, int height, bool fullScreen, const char *windowTitle);
 	
 	/** \brief Start game. */
-	virtual bool StartGame( const char *scriptDirectory, const char *gameObject );
+	virtual bool StartGame(const char *scriptDirectory, const char *gameObject);
 	
 	/** \brief Stop game. */
 	virtual bool StopGame();
@@ -216,7 +216,7 @@ public:
 private:
 	void pCleanUp();
 	
-	void pCreateLogger( const char *logfile );
+	void pCreateLogger(const char *logfile);
 	void pCreateOSFileSystem();
 	void pCloseOSFileSystem();
 };

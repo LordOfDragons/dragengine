@@ -61,23 +61,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deHeightTerrainSector::deHeightTerrainSector( const decPoint &sector ) :
-pSector( sector ),
-pParentHeightTerrain( NULL ),
-pIndex( -1 ),
-pVisibleFaces( NULL ),
-pVFByteCount( 0 ),
-pDecalRoot( NULL ),
-pDecalTail( NULL ),
-pDecalCount( 0 ){
+deHeightTerrainSector::deHeightTerrainSector(const decPoint &sector) :
+pSector(sector),
+pParentHeightTerrain(NULL),
+pIndex(-1),
+pVisibleFaces(NULL),
+pVFByteCount(0),
+pDecalRoot(NULL),
+pDecalTail(NULL),
+pDecalCount(0){
 }
 
 deHeightTerrainSector::~deHeightTerrainSector(){
-	SetHeightImage( NULL );
+	SetHeightImage(NULL);
 	RemoveAllNavSpaces();
 	RemoveAllDecals();
 	RemoveAllTextures();
-	if( pVisibleFaces ){
+	if(pVisibleFaces){
 		delete [] pVisibleFaces;
 	}
 }
@@ -87,52 +87,52 @@ deHeightTerrainSector::~deHeightTerrainSector(){
 // Management
 ///////////////
 
-void deHeightTerrainSector::SetParentHeightTerrain( deHeightTerrain *heightTerrain ){
+void deHeightTerrainSector::SetParentHeightTerrain(deHeightTerrain *heightTerrain){
 	pParentHeightTerrain = heightTerrain;
 }
 
-void deHeightTerrainSector::SetIndex( int index ){
+void deHeightTerrainSector::SetIndex(int index){
 	pIndex = index;
 }
 
 
 
-void deHeightTerrainSector::SetHeightImage( deImage *heightImage ){
-	if( heightImage && heightImage->GetComponentCount() != 1 ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainSector::SetHeightImage(deImage *heightImage){
+	if(heightImage && heightImage->GetComponentCount() != 1){
+		DETHROW(deeInvalidParam);
 	}
-	if( pHeightImage == heightImage ){
+	if(pHeightImage == heightImage){
 		return;
 	}
 	
 	// note: calculate extends requires image data to be retained. thing is
 	//       deprecated anyways and should be done by physics module
-	if( pHeightImage ){
+	if(pHeightImage){
 		pHeightImage->ReleaseImageData();
 	}
 	
 	pHeightImage = heightImage;
 	
-	if( heightImage ){
+	if(heightImage){
 		heightImage->RetainImageData();
 	}
 	
-	if( pParentHeightTerrain ){
+	if(pParentHeightTerrain){
 		const int last = pParentHeightTerrain->GetSectorResolution() - 1;
-		pParentHeightTerrain->NotifyHeightChanged( pSector, pSector, decPoint(), decPoint( last, last ) );
+		pParentHeightTerrain->NotifyHeightChanged(pSector, pSector, decPoint(), decPoint(last, last));
 	}
 }
 
-void deHeightTerrainSector::CalculateHeightExtends( float &minHeight, float &maxHeight ){
+void deHeightTerrainSector::CalculateHeightExtends(float &minHeight, float &maxHeight){
 	minHeight = 0.0f;
 	maxHeight = 0.0f;
 	
-	if( ! pHeightImage || ! pParentHeightTerrain ){
+	if(! pHeightImage || ! pParentHeightTerrain){
 		return;
 	}
 	
-	if( ! pHeightImage->GetData() ){
-		DETHROW( deeInvalidParam ); // data not retained. user has to use SetForceRetainImageData
+	if(! pHeightImage->GetData()){
+		DETHROW(deeInvalidParam); // data not retained. user has to use SetForceRetainImageData
 		// note: this entire calculate extends thing is deprecated anyways and should be done by physics module
 	}
 	
@@ -141,32 +141,32 @@ void deHeightTerrainSector::CalculateHeightExtends( float &minHeight, float &max
 	const int size = width * height;
 	int i;
 	
-	if( pHeightImage->GetBitCount() == 8 ){
+	if(pHeightImage->GetBitCount() == 8){
 		const sGrayscale8 * const imageData = pHeightImage->GetDataGrayscale8();
 		const float scaling = pParentHeightTerrain->GetHeightScaling() * HT_8BIT_PTOH;
 		
-		for( i=0; i<size; i++ ){
-			const float curHeight = ( imageData[ i ].value - HT_8BIT_BASE ) * scaling;
+		for(i=0; i<size; i++){
+			const float curHeight = (imageData[i].value - HT_8BIT_BASE) * scaling;
 			
-			if( curHeight < minHeight ){
+			if(curHeight < minHeight){
 				minHeight = curHeight;
 				
-			}else if( curHeight > maxHeight ){
+			}else if(curHeight > maxHeight){
 				maxHeight = curHeight;
 			}
 		}
 		
-	}else if( pHeightImage->GetBitCount() == 16 ){
+	}else if(pHeightImage->GetBitCount() == 16){
 		const sGrayscale16 * const imageData = pHeightImage->GetDataGrayscale16();
 		const float scaling = pParentHeightTerrain->GetHeightScaling() * HT_16BIT_PTOH;
 		
-		for( i=0; i<size; i++ ){
-			const float curHeight = ( imageData[ i ].value - HT_16BIT_BASE ) * scaling;
+		for(i=0; i<size; i++){
+			const float curHeight = (imageData[i].value - HT_16BIT_BASE) * scaling;
 			
-			if( curHeight < minHeight ){
+			if(curHeight < minHeight){
 				minHeight = curHeight;
 				
-			}else if( curHeight > maxHeight ){
+			}else if(curHeight > maxHeight){
 				maxHeight = curHeight;
 			}
 		}
@@ -174,13 +174,13 @@ void deHeightTerrainSector::CalculateHeightExtends( float &minHeight, float &max
 	}else{
 		const sGrayscale32 * const imageData = pHeightImage->GetDataGrayscale32();
 		
-		for( i=0; i<size; i++ ){
-			const float curHeight = imageData[ i ].value * pParentHeightTerrain->GetHeightScaling();
+		for(i=0; i<size; i++){
+			const float curHeight = imageData[i].value * pParentHeightTerrain->GetHeightScaling();
 			
-			if( curHeight < minHeight ){
+			if(curHeight < minHeight){
 				minHeight = curHeight;
 				
-			}else if( curHeight > maxHeight ){
+			}else if(curHeight > maxHeight){
 				maxHeight = curHeight;
 			}
 		}
@@ -195,54 +195,54 @@ void deHeightTerrainSector::CalculateHeightExtends( float &minHeight, float &max
 // Face Visibility
 ////////////////////
 
-bool deHeightTerrainSector::GetFaceVisibleAt( int x, int y ) const{
-	if( ! pParentHeightTerrain ){
-		DETHROW( deeInvalidParam );
+bool deHeightTerrainSector::GetFaceVisibleAt(int x, int y) const{
+	if(! pParentHeightTerrain){
+		DETHROW(deeInvalidParam);
 	}
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();
-	if( x < 0 || x >= pointCount || y < 0 || y >= pointCount ){
-		DETHROW( deeInvalidParam );
+	if(x < 0 || x >= pointCount || y < 0 || y >= pointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pVisibleFaces ){
+	if(! pVisibleFaces){
 		return true;
 	}
 	
 	const int bitOffset = pointCount * y + x;
-	return ( pVisibleFaces[ bitOffset >> 3 ] & ( 1 << ( bitOffset & 0x7 ) ) ) != 0;
+	return (pVisibleFaces[bitOffset >> 3] & (1 << (bitOffset & 0x7))) != 0;
 }
 
-void deHeightTerrainSector::SetFaceVisibleAt( int x, int y, bool visible ){
-	if( ! pParentHeightTerrain ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainSector::SetFaceVisibleAt(int x, int y, bool visible){
+	if(! pParentHeightTerrain){
+		DETHROW(deeInvalidParam);
 	}
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();
-	if( x < 0 || x >= pointCount || y < 0 || y >= pointCount ){
-		DETHROW( deeInvalidParam );
+	if(x < 0 || x >= pointCount || y < 0 || y >= pointCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCreateVisibleFaces();
 	
 	const int bitOffset = pointCount * y + x;
 	
-	if( visible ){
-		pVisibleFaces[ bitOffset >> 3 ] |= ( unsigned char )( 1 << ( bitOffset & 0x7 ) );
+	if(visible){
+		pVisibleFaces[bitOffset >> 3] |= (unsigned char)(1 << (bitOffset & 0x7));
 		
 	}else{
-		pVisibleFaces[ bitOffset >> 3 ] &= ~( ( unsigned char )( 1 << ( bitOffset & 0x7 ) ) );
+		pVisibleFaces[bitOffset >> 3] &= ~((unsigned char)(1 << (bitOffset & 0x7)));
 	}
 }
 
-void deHeightTerrainSector::SetAllFacesVisible( bool visible ){
-	if( visible ){
-		if( pVisibleFaces ){
+void deHeightTerrainSector::SetAllFacesVisible(bool visible){
+	if(visible){
+		if(pVisibleFaces){
 			delete [] pVisibleFaces;
 			pVisibleFaces = NULL;
 		}
 		
 	}else{
 		pCreateVisibleFaces();
-		memset( pVisibleFaces, 0, pVFByteCount );
+		memset(pVisibleFaces, 0, pVFByteCount);
 	}
 }
 
@@ -255,35 +255,35 @@ int deHeightTerrainSector::GetTextureCount() const{
 	return pTextures.GetCount();
 }
 
-deHeightTerrainTexture *deHeightTerrainSector::GetTextureAt( int index ) const{
-	return ( deHeightTerrainTexture* )pTextures.GetAt( index );
+deHeightTerrainTexture *deHeightTerrainSector::GetTextureAt(int index) const{
+	return (deHeightTerrainTexture*)pTextures.GetAt(index);
 }
 
-int deHeightTerrainSector::IndexOfTexture( deHeightTerrainTexture *texture ) const{
-	return pTextures.IndexOf( texture );
+int deHeightTerrainSector::IndexOfTexture(deHeightTerrainTexture *texture) const{
+	return pTextures.IndexOf(texture);
 }
 
-bool deHeightTerrainSector::HasTexture( deHeightTerrainTexture *texture ) const{
-	return pTextures.Has( texture );
+bool deHeightTerrainSector::HasTexture(deHeightTerrainTexture *texture) const{
+	return pTextures.Has(texture);
 }
 
-void deHeightTerrainSector::AddTexture( deHeightTerrainTexture *texture ){
-	if( HasTexture( texture ) ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainSector::AddTexture(deHeightTerrainTexture *texture){
+	if(HasTexture(texture)){
+		DETHROW(deeInvalidParam);
 	}
-	pTextures.Add( texture );
+	pTextures.Add(texture);
 	
-	if( pParentHeightTerrain ){
-		pParentHeightTerrain->NotifySectorChanged( pIndex );
+	if(pParentHeightTerrain){
+		pParentHeightTerrain->NotifySectorChanged(pIndex);
 	}
 }
 
-void deHeightTerrainSector::RemoveTexture( deHeightTerrainTexture *texture ){
-	pTextures.RemoveFrom( pTextures.IndexOf( texture ) );
+void deHeightTerrainSector::RemoveTexture(deHeightTerrainTexture *texture){
+	pTextures.RemoveFrom(pTextures.IndexOf(texture));
 	delete texture;
 	
-	if( pParentHeightTerrain ){
-		pParentHeightTerrain->NotifySectorChanged( pIndex );
+	if(pParentHeightTerrain){
+		pParentHeightTerrain->NotifySectorChanged(pIndex);
 	}
 }
 
@@ -291,13 +291,13 @@ void deHeightTerrainSector::RemoveAllTextures(){
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deHeightTerrainTexture* )pTextures.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deHeightTerrainTexture*)pTextures.GetAt(i);
 	}
 	pTextures.RemoveAll();
 	
-	if( pParentHeightTerrain ){
-		pParentHeightTerrain->NotifySectorChanged( pIndex );
+	if(pParentHeightTerrain){
+		pParentHeightTerrain->NotifySectorChanged(pIndex);
 	}
 }
 
@@ -306,66 +306,66 @@ void deHeightTerrainSector::RemoveAllTextures(){
 // Decals
 ///////////
 
-void deHeightTerrainSector::AddDecal( deDecal *decal ){
-	if( ! decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector() ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainSector::AddDecal(deDecal *decal){
+	if(! decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDecalTail ){
-		pDecalTail->SetLLHeightTerrainSectorNext( decal );
-		decal->SetLLHeightTerrainSectorPrev( pDecalTail );
-		decal->SetLLHeightTerrainSectorNext( NULL ); // not required by definition, just to make sure...
+	if(pDecalTail){
+		pDecalTail->SetLLHeightTerrainSectorNext(decal);
+		decal->SetLLHeightTerrainSectorPrev(pDecalTail);
+		decal->SetLLHeightTerrainSectorNext(NULL); // not required by definition, just to make sure...
 		
 	}else{
-		decal->SetLLHeightTerrainSectorPrev( NULL ); // not required by definition, just to make sure...
-		decal->SetLLHeightTerrainSectorNext( NULL ); // not required by definition, just to make sure...
+		decal->SetLLHeightTerrainSectorPrev(NULL); // not required by definition, just to make sure...
+		decal->SetLLHeightTerrainSectorNext(NULL); // not required by definition, just to make sure...
 		pDecalRoot = decal;
 	}
 	
 	pDecalTail = decal;
 	pDecalCount++;
-	decal->SetParentHeightTerrainSector( this );
+	decal->SetParentHeightTerrainSector(this);
 	decal->AddReference();
 	
-	if( pParentHeightTerrain ){
-		if( pParentHeightTerrain->GetPeerGraphic() ){
-			pParentHeightTerrain->GetPeerGraphic()->DecalAdded( pIndex, decal );
+	if(pParentHeightTerrain){
+		if(pParentHeightTerrain->GetPeerGraphic()){
+			pParentHeightTerrain->GetPeerGraphic()->DecalAdded(pIndex, decal);
 		}
-		if( pParentHeightTerrain->GetPeerPhysics() ){
-			pParentHeightTerrain->GetPeerPhysics()->DecalAdded( pIndex, decal );
+		if(pParentHeightTerrain->GetPeerPhysics()){
+			pParentHeightTerrain->GetPeerPhysics()->DecalAdded(pIndex, decal);
 		}
 	}
 }
 
-void deHeightTerrainSector::RemoveDecal( deDecal *decal ){
-	if( ! decal || decal->GetParentHeightTerrainSector() != this ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainSector::RemoveDecal(deDecal *decal){
+	if(! decal || decal->GetParentHeightTerrainSector() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( decal->GetLLHeightTerrainSectorPrev() ){
-		decal->GetLLHeightTerrainSectorPrev()->SetLLHeightTerrainSectorNext( decal->GetLLHeightTerrainSectorNext() );
+	if(decal->GetLLHeightTerrainSectorPrev()){
+		decal->GetLLHeightTerrainSectorPrev()->SetLLHeightTerrainSectorNext(decal->GetLLHeightTerrainSectorNext());
 	}
-	if( decal->GetLLHeightTerrainSectorNext() ){
-		decal->GetLLHeightTerrainSectorNext()->SetLLHeightTerrainSectorPrev( decal->GetLLHeightTerrainSectorPrev() );
+	if(decal->GetLLHeightTerrainSectorNext()){
+		decal->GetLLHeightTerrainSectorNext()->SetLLHeightTerrainSectorPrev(decal->GetLLHeightTerrainSectorPrev());
 	}
-	if( decal == pDecalRoot ){
+	if(decal == pDecalRoot){
 		pDecalRoot = decal->GetLLHeightTerrainSectorNext();
 	}
-	if( decal == pDecalTail ){
+	if(decal == pDecalTail){
 		pDecalTail = decal->GetLLHeightTerrainSectorPrev();
 	}
 	pDecalCount--;
 	
-	decal->SetParentHeightTerrainSector( NULL );
-	decal->SetLLHeightTerrainSectorPrev( NULL );
-	decal->SetLLHeightTerrainSectorNext( NULL );
+	decal->SetParentHeightTerrainSector(NULL);
+	decal->SetLLHeightTerrainSectorPrev(NULL);
+	decal->SetLLHeightTerrainSectorNext(NULL);
 	
-	if( pParentHeightTerrain ){
-		if( pParentHeightTerrain->GetPeerGraphic() ){
-			pParentHeightTerrain->GetPeerGraphic()->DecalRemoved( pIndex, decal );
+	if(pParentHeightTerrain){
+		if(pParentHeightTerrain->GetPeerGraphic()){
+			pParentHeightTerrain->GetPeerGraphic()->DecalRemoved(pIndex, decal);
 		}
-		if( pParentHeightTerrain->GetPeerPhysics() ){
-			pParentHeightTerrain->GetPeerPhysics()->DecalRemoved( pIndex, decal );
+		if(pParentHeightTerrain->GetPeerPhysics()){
+			pParentHeightTerrain->GetPeerPhysics()->DecalRemoved(pIndex, decal);
 		}
 	}
 	
@@ -373,23 +373,23 @@ void deHeightTerrainSector::RemoveDecal( deDecal *decal ){
 }
 
 void deHeightTerrainSector::RemoveAllDecals(){
-	while( pDecalTail ){
+	while(pDecalTail){
 		deDecal * const next = pDecalTail->GetLLComponentPrev();
-		pDecalTail->SetParentHeightTerrainSector( NULL );
-		pDecalTail->SetLLHeightTerrainSectorPrev( NULL );
-		pDecalTail->SetLLHeightTerrainSectorNext( NULL );
+		pDecalTail->SetParentHeightTerrainSector(NULL);
+		pDecalTail->SetLLHeightTerrainSectorPrev(NULL);
+		pDecalTail->SetLLHeightTerrainSectorNext(NULL);
 		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}
 	pDecalRoot = NULL;
 	
-	if( pParentHeightTerrain ){
-		if( pParentHeightTerrain->GetPeerGraphic() ){
-			pParentHeightTerrain->GetPeerGraphic()->AllDecalsRemoved( pIndex );
+	if(pParentHeightTerrain){
+		if(pParentHeightTerrain->GetPeerGraphic()){
+			pParentHeightTerrain->GetPeerGraphic()->AllDecalsRemoved(pIndex);
 		}
-		if( pParentHeightTerrain->GetPeerPhysics() ){
-			pParentHeightTerrain->GetPeerPhysics()->AllDecalsRemoved( pIndex );
+		if(pParentHeightTerrain->GetPeerPhysics()){
+			pParentHeightTerrain->GetPeerPhysics()->AllDecalsRemoved(pIndex);
 		}
 	}
 }
@@ -403,36 +403,36 @@ int deHeightTerrainSector::GetNavSpaceCount() const{
 	return pNavSpaces.GetCount();
 }
 
-deHeightTerrainNavSpace *deHeightTerrainSector::GetNavSpaceAt( int index ) const{
-	return ( deHeightTerrainNavSpace* )pNavSpaces.GetAt( index );
+deHeightTerrainNavSpace *deHeightTerrainSector::GetNavSpaceAt(int index) const{
+	return (deHeightTerrainNavSpace*)pNavSpaces.GetAt(index);
 }
 
-int deHeightTerrainSector::IndexOfNavSpace( deHeightTerrainNavSpace *navspace ) const{
-	return pNavSpaces.IndexOf( navspace );
+int deHeightTerrainSector::IndexOfNavSpace(deHeightTerrainNavSpace *navspace) const{
+	return pNavSpaces.IndexOf(navspace);
 }
 
-bool deHeightTerrainSector::HasNavSpace( deHeightTerrainNavSpace *navspace ) const{
-	return pNavSpaces.Has( navspace );
+bool deHeightTerrainSector::HasNavSpace(deHeightTerrainNavSpace *navspace) const{
+	return pNavSpaces.Has(navspace);
 }
 
-void deHeightTerrainSector::AddNavSpace( deHeightTerrainNavSpace *navspace ){
-	if( HasNavSpace( navspace ) ){
-		DETHROW( deeInvalidParam );
+void deHeightTerrainSector::AddNavSpace(deHeightTerrainNavSpace *navspace){
+	if(HasNavSpace(navspace)){
+		DETHROW(deeInvalidParam);
 	}
-	pNavSpaces.Add( navspace );
+	pNavSpaces.Add(navspace);
 	
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->NavSpaceAdded( pIndex, navspace );
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->NavSpaceAdded(pIndex, navspace);
 	}
 }
 
-void deHeightTerrainSector::RemoveNavSpace( deHeightTerrainNavSpace *navspace ){
-	const int index = pNavSpaces.IndexOf( navspace );
+void deHeightTerrainSector::RemoveNavSpace(deHeightTerrainNavSpace *navspace){
+	const int index = pNavSpaces.IndexOf(navspace);
 	
-	pNavSpaces.RemoveFrom( index );
+	pNavSpaces.RemoveFrom(index);
 	
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->NavSpaceRemoved( pIndex, index );
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->NavSpaceRemoved(pIndex, index);
 	}
 	
 	delete navspace;
@@ -442,37 +442,37 @@ void deHeightTerrainSector::RemoveAllNavSpaces(){
 	const int count = pNavSpaces.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deHeightTerrainNavSpace* )pNavSpaces.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deHeightTerrainNavSpace*)pNavSpaces.GetAt(i);
 	}
 	pNavSpaces.RemoveAll();
 	
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->AllNavSpacesRemoved( pIndex );
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->AllNavSpacesRemoved(pIndex);
 	}
 }
 
-void deHeightTerrainSector::NotifyNavSpaceLayerChanged( int index ){
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->NavSpaceLayerChanged( pIndex, index );
+void deHeightTerrainSector::NotifyNavSpaceLayerChanged(int index){
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->NavSpaceLayerChanged(pIndex, index);
 	}
 }
 
-void deHeightTerrainSector::NotifyNavSpaceTypeChanged( int index ){
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->NavSpaceTypeChanged( pIndex, index );
+void deHeightTerrainSector::NotifyNavSpaceTypeChanged(int index){
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->NavSpaceTypeChanged(pIndex, index);
 	}
 }
 
-void deHeightTerrainSector::NotifyNavSpaceSnappingChanged( int index ){
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->NavSpaceSnappingChanged( pIndex, index );
+void deHeightTerrainSector::NotifyNavSpaceSnappingChanged(int index){
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->NavSpaceSnappingChanged(pIndex, index);
 	}
 }
 
-void deHeightTerrainSector::NotifyNavSpaceLayoutChanged( int index ){
-	if( pParentHeightTerrain && pParentHeightTerrain->GetPeerAI() ){
-		pParentHeightTerrain->GetPeerAI()->NavSpaceLayoutChanged( pIndex, index );
+void deHeightTerrainSector::NotifyNavSpaceLayoutChanged(int index){
+	if(pParentHeightTerrain && pParentHeightTerrain->GetPeerAI()){
+		pParentHeightTerrain->GetPeerAI()->NavSpaceLayoutChanged(pIndex, index);
 	}
 }
 
@@ -482,18 +482,18 @@ void deHeightTerrainSector::NotifyNavSpaceLayoutChanged( int index ){
 //////////////////////
 
 void deHeightTerrainSector::pCreateVisibleFaces(){
-	if( pVisibleFaces ){
+	if(pVisibleFaces){
 		return;
 	}
 	
-	if( ! pParentHeightTerrain ){
-		DETHROW( deeInvalidParam );
+	if(! pParentHeightTerrain){
+		DETHROW(deeInvalidParam);
 	}
 	const int pointCount = pParentHeightTerrain->GetSectorResolution();
-	const int byteCount = ( ( pointCount * pointCount - 1 ) >> 3 ) + 1;
+	const int byteCount = ((pointCount * pointCount - 1) >> 3) + 1;
 	
-	pVisibleFaces = new unsigned char[ byteCount ];
-	memset( pVisibleFaces, 255, byteCount );
+	pVisibleFaces = new unsigned char[byteCount];
+	memset(pVisibleFaces, 255, byteCount);
 	
 	pVFByteCount = byteCount;
 }

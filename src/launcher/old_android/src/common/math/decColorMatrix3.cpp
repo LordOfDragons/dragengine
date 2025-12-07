@@ -43,7 +43,7 @@ decColorMatrix3::decColorMatrix3(){
 	a31 = 0.0f; a32 = 0.0f; a33 = 1.0f; a34 = 0.0f; // blue
 }
 
-decColorMatrix3::decColorMatrix3( const decColorMatrix3 &m ){
+decColorMatrix3::decColorMatrix3(const decColorMatrix3 &m){
 	a11 = m.a11; a12 = m.a12; a13 = m.a13; a14 = m.a14;
 	a21 = m.a21; a22 = m.a22; a23 = m.a23; a24 = m.a24;
 	a31 = m.a31; a32 = m.a32; a33 = m.a33; a34 = m.a34;
@@ -58,7 +58,7 @@ decColorMatrix3 decColorMatrix3::CreateIdentity(){
 	return decColorMatrix3();
 }
 
-decColorMatrix3 decColorMatrix3::CreateTranslation( float red, float green, float blue ){
+decColorMatrix3 decColorMatrix3::CreateTranslation(float red, float green, float blue){
 	decColorMatrix3 matrix;
 	
 	matrix.a14 = red;
@@ -68,7 +68,7 @@ decColorMatrix3 decColorMatrix3::CreateTranslation( float red, float green, floa
 	return matrix;
 }
 
-decColorMatrix3 decColorMatrix3::CreateTranslation( const decColor &color ){
+decColorMatrix3 decColorMatrix3::CreateTranslation(const decColor &color){
 	decColorMatrix3 matrix;
 	
 	matrix.a14 = color.r;
@@ -78,7 +78,7 @@ decColorMatrix3 decColorMatrix3::CreateTranslation( const decColor &color ){
 	return matrix;
 }
 
-decColorMatrix3 decColorMatrix3::CreateScaling( float sred, float sgreen, float sblue ){
+decColorMatrix3 decColorMatrix3::CreateScaling(float sred, float sgreen, float sblue){
 	decColorMatrix3 matrix;
 	
 	matrix.a11 = sred;
@@ -88,7 +88,7 @@ decColorMatrix3 decColorMatrix3::CreateScaling( float sred, float sgreen, float 
 	return matrix;
 }
 
-decColorMatrix3 decColorMatrix3::CreateScaling( const decColor &color ){
+decColorMatrix3 decColorMatrix3::CreateScaling(const decColor &color){
 	decColorMatrix3 matrix;
 	
 	matrix.a11 = color.r;
@@ -98,13 +98,13 @@ decColorMatrix3 decColorMatrix3::CreateScaling( const decColor &color ){
 	return matrix;
 }
 
-decColorMatrix3 decColorMatrix3::CreateFrom( const decColor &red, const decColor &green, const decColor &blue, const decColor &translation ){
+decColorMatrix3 decColorMatrix3::CreateFrom(const decColor &red, const decColor &green, const decColor &blue, const decColor &translation){
 	decColorMatrix3 matrix;
 	
-	matrix.SetRedBase( red );
-	matrix.SetGreenBase( green );
-	matrix.SetBlueBase( blue );
-	matrix.SetTranslationBase( translation );
+	matrix.SetRedBase(red);
+	matrix.SetGreenBase(green);
+	matrix.SetBlueBase(blue);
+	matrix.SetTranslationBase(translation);
 	
 	return matrix;
 }
@@ -134,7 +134,7 @@ void decColorMatrix3::SetIdentity(){
 	a34 = 0.0f;
 }
 
-void decColorMatrix3::SetTranslation( float red, float green, float blue ){
+void decColorMatrix3::SetTranslation(float red, float green, float blue){
 	// red
 	a11 = 1.0f;
 	a12 = 0.0f;
@@ -154,7 +154,7 @@ void decColorMatrix3::SetTranslation( float red, float green, float blue ){
 	a34 = blue;
 }
 
-void decColorMatrix3::SetTranslation( const decColor &color ){
+void decColorMatrix3::SetTranslation(const decColor &color){
 	// red
 	a11 = 1.0f;
 	a12 = 0.0f;
@@ -174,7 +174,7 @@ void decColorMatrix3::SetTranslation( const decColor &color ){
 	a34 = color.b;
 }
 
-void decColorMatrix3::SetScaling( float sred, float sgreen, float sblue ){
+void decColorMatrix3::SetScaling(float sred, float sgreen, float sblue){
 	// red
 	a11 = sred;
 	a12 = 0.0f;
@@ -194,7 +194,7 @@ void decColorMatrix3::SetScaling( float sred, float sgreen, float sblue ){
 	a34 = 0.0f;
 }
 
-void decColorMatrix3::SetScaling( const decColor &color ){
+void decColorMatrix3::SetScaling(const decColor &color){
 	// red
 	a11 = color.r;
 	a12 = 0.0f;
@@ -214,7 +214,7 @@ void decColorMatrix3::SetScaling( const decColor &color ){
 	a34 = 0.0f;
 }
 
-void decColorMatrix3::SetFrom( const decColor &red, const decColor &green, const decColor &blue, const decColor &translation ){
+void decColorMatrix3::SetFrom(const decColor &red, const decColor &green, const decColor &blue, const decColor &translation){
 	// red
 	a11 = red.r;
 	a12 = green.r;
@@ -274,65 +274,65 @@ decColorMatrix3 decColorMatrix3::Invert() const{
 
 
 decColor decColorMatrix3::GetRedBase() const{
-	return decColor( a11, a21, a31 );
+	return decColor(a11, a21, a31);
 }
 
 decColor decColorMatrix3::GetGreenBase() const{
-	return decColor( a12, a22, a32 );
+	return decColor(a12, a22, a32);
 }
 
 decColor decColorMatrix3::GetBlueBase() const{
-	return decColor( a13, a23, a33 );
+	return decColor(a13, a23, a33);
 }
 
 decColor decColorMatrix3::GetTranslationBase() const{
-	return decColor( a14, a24, a34 );
+	return decColor(a14, a24, a34);
 }
 
-void decColorMatrix3::SetRedBase( const decColor &color ){
+void decColorMatrix3::SetRedBase(const decColor &color){
 	a11 = color.r;
 	a21 = color.g;
 	a31 = color.b;
 }
 
-void decColorMatrix3::SetGreenBase( const decColor &color ){
+void decColorMatrix3::SetGreenBase(const decColor &color){
 	a12 = color.r;
 	a22 = color.g;
 	a32 = color.b;
 }
 
-void decColorMatrix3::SetBlueBase( const decColor &color ){
+void decColorMatrix3::SetBlueBase(const decColor &color){
 	a13 = color.r;
 	a23 = color.g;
 	a33 = color.b;
 }
 
-void decColorMatrix3::SetTranslationBase( const decColor &color ){
+void decColorMatrix3::SetTranslationBase(const decColor &color){
 	a14 = color.r;
 	a24 = color.g;
 	a34 = color.b;
 }
 
-bool decColorMatrix3::IsEqualTo( const decColorMatrix3 &matrix, float threshold ) const{
-	return fabs( a11 - matrix.a11 ) < threshold
-		&& fabs( a12 - matrix.a12 ) < threshold
-		&& fabs( a13 - matrix.a13 ) < threshold
-		&& fabs( a14 - matrix.a14 ) < threshold
-		&& fabs( a21 - matrix.a21 ) < threshold
-		&& fabs( a22 - matrix.a22 ) < threshold
-		&& fabs( a23 - matrix.a23 ) < threshold
-		&& fabs( a24 - matrix.a24 ) < threshold
-		&& fabs( a31 - matrix.a31 ) < threshold
-		&& fabs( a32 - matrix.a32 ) < threshold
-		&& fabs( a33 - matrix.a33 ) < threshold
-		&& fabs( a34 - matrix.a34 ) < threshold;
+bool decColorMatrix3::IsEqualTo(const decColorMatrix3 &matrix, float threshold) const{
+	return fabs(a11 - matrix.a11) < threshold
+		&& fabs(a12 - matrix.a12) < threshold
+		&& fabs(a13 - matrix.a13) < threshold
+		&& fabs(a14 - matrix.a14) < threshold
+		&& fabs(a21 - matrix.a21) < threshold
+		&& fabs(a22 - matrix.a22) < threshold
+		&& fabs(a23 - matrix.a23) < threshold
+		&& fabs(a24 - matrix.a24) < threshold
+		&& fabs(a31 - matrix.a31) < threshold
+		&& fabs(a32 - matrix.a32) < threshold
+		&& fabs(a33 - matrix.a33) < threshold
+		&& fabs(a34 - matrix.a34) < threshold;
 }
 
-decColor decColorMatrix3::Transform( const decColor &color ) const{
+decColor decColorMatrix3::Transform(const decColor &color) const{
 	return decColor(
 		a11 * color.r + a12 * color.g + a13 * color.b + a14,
 		a21 * color.r + a22 * color.g + a23 * color.b + a24,
-		a31 * color.r + a32 * color.g + a33 * color.b + a34 );
+		a31 * color.r + a32 * color.g + a33 * color.b + a34);
 }
 
 
@@ -340,7 +340,7 @@ decColor decColorMatrix3::Transform( const decColor &color ) const{
 // Operators
 //////////////
 
-decColorMatrix3 &decColorMatrix3::operator=( const decColorMatrix3 &matrix ){
+decColorMatrix3 &decColorMatrix3::operator=(const decColorMatrix3 &matrix){
 	// red
 	a11 = matrix.a11;
 	a12 = matrix.a12;
@@ -363,7 +363,7 @@ decColorMatrix3 &decColorMatrix3::operator=( const decColorMatrix3 &matrix ){
 	return *this;
 }
 
-decColorMatrix3 &decColorMatrix3::operator+=( const decColorMatrix3 &matrix ){
+decColorMatrix3 &decColorMatrix3::operator+=(const decColorMatrix3 &matrix){
 	// red
 	a11 += matrix.a11;
 	a12 += matrix.a12;
@@ -386,7 +386,7 @@ decColorMatrix3 &decColorMatrix3::operator+=( const decColorMatrix3 &matrix ){
 	return *this;
 }
 
-decColorMatrix3 &decColorMatrix3::operator-=( const decColorMatrix3 &matrix ){
+decColorMatrix3 &decColorMatrix3::operator-=(const decColorMatrix3 &matrix){
 	// red
 	a11 -= matrix.a11;
 	a12 -= matrix.a12;
@@ -409,7 +409,7 @@ decColorMatrix3 &decColorMatrix3::operator-=( const decColorMatrix3 &matrix ){
 	return *this;
 }
 
-decColorMatrix3 &decColorMatrix3::operator*=( float scalar ){
+decColorMatrix3 &decColorMatrix3::operator*=(float scalar){
 	// red
 	a11 *= scalar;
 	a12 *= scalar;
@@ -432,15 +432,15 @@ decColorMatrix3 &decColorMatrix3::operator*=( float scalar ){
 	return *this;
 }
 
-decColorMatrix3 &decColorMatrix3::operator/=( float scalar ){
-	if( scalar == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decColorMatrix3 &decColorMatrix3::operator/=(float scalar){
+	if(scalar == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
-	return *this *= ( 1.0f / scalar );
+	return *this *= (1.0f / scalar);
 }
 
-decColorMatrix3 &decColorMatrix3::operator*=( const decColorMatrix3 &matrix ){
+decColorMatrix3 &decColorMatrix3::operator*=(const decColorMatrix3 &matrix){
 	// red
 	const float t11 = a11 * matrix.a11 + a21 * matrix.a12 + a31 * matrix.a13;
 	const float t12 = a12 * matrix.a11 + a22 * matrix.a12 + a32 * matrix.a13;
@@ -479,7 +479,7 @@ decColorMatrix3 &decColorMatrix3::operator*=( const decColorMatrix3 &matrix ){
 	return *this;
 }
 
-decColorMatrix3 decColorMatrix3::operator+( const decColorMatrix3 &matrix ) const{
+decColorMatrix3 decColorMatrix3::operator+(const decColorMatrix3 &matrix) const{
 	decColorMatrix3 result;
 	
 	// red
@@ -504,7 +504,7 @@ decColorMatrix3 decColorMatrix3::operator+( const decColorMatrix3 &matrix ) cons
 	return result;
 }
 
-decColorMatrix3 decColorMatrix3::operator-( const decColorMatrix3 &matrix ) const{
+decColorMatrix3 decColorMatrix3::operator-(const decColorMatrix3 &matrix) const{
 	decColorMatrix3 result;
 	
 	// red
@@ -529,7 +529,7 @@ decColorMatrix3 decColorMatrix3::operator-( const decColorMatrix3 &matrix ) cons
 	return result;
 }
 
-decColorMatrix3 decColorMatrix3::operator*( float scalar ) const{
+decColorMatrix3 decColorMatrix3::operator*(float scalar) const{
 	decColorMatrix3 result;
 	
 	// red
@@ -554,15 +554,15 @@ decColorMatrix3 decColorMatrix3::operator*( float scalar ) const{
 	return result;
 }
 
-decColorMatrix3 decColorMatrix3::operator/( float scalar ) const{
-	if( scalar == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decColorMatrix3 decColorMatrix3::operator/(float scalar) const{
+	if(scalar == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
-	return *this * ( 1.0f / scalar );
+	return *this * (1.0f / scalar);
 }
 
-decColorMatrix3 decColorMatrix3::operator*( const decColorMatrix3 &matrix ) const{
+decColorMatrix3 decColorMatrix3::operator*(const decColorMatrix3 &matrix) const{
 	decColorMatrix3 result;
 	
 	// red
@@ -587,9 +587,9 @@ decColorMatrix3 decColorMatrix3::operator*( const decColorMatrix3 &matrix ) cons
 	return result;
 }
 
-decColor decColorMatrix3::operator*( const decColor &color ) const{
+decColor decColorMatrix3::operator*(const decColor &color) const{
 	return decColor(
 		a11 * color.r + a12 * color.g + a13 * color.b + a14,
 		a21 * color.r + a22 * color.g + a23 * color.b + a24,
-		a31 * color.r + a32 * color.g + a33 * color.b + a34 );
+		a31 * color.r + a32 * color.g + a33 * color.b + a34);
 }

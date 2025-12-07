@@ -37,32 +37,32 @@
 // Class igdeNativeFoxVFSDirectoryBox
 ////////////////////
 
-FXIMPLEMENT( igdeNativeFoxVFSDirectoryBox, FXTreeListBox, nullptr, 0 )
+FXIMPLEMENT(igdeNativeFoxVFSDirectoryBox, FXTreeListBox, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxVFSDirectoryBox::igdeNativeFoxVFSDirectoryBox(){ }
+igdeNativeFoxVFSDirectoryBox::igdeNativeFoxVFSDirectoryBox(){}
 
-igdeNativeFoxVFSDirectoryBox::igdeNativeFoxVFSDirectoryBox( deVirtualFileSystem *vfs, FXComposite *p,
+igdeNativeFoxVFSDirectoryBox::igdeNativeFoxVFSDirectoryBox(deVirtualFileSystem *vfs, FXComposite *p,
 FXObject* tgt, FXSelector sel, FXuint opts, FXint x, FXint y, FXint w, FXint h,
-FXint pl, FXint pr, FXint pt, FXint pb ) :
-FXTreeListBox( p,tgt,sel,opts,x,y,w,h, pl,pr,pt,pb )
+FXint pl, FXint pr, FXint pt, FXint pb) :
+FXTreeListBox(p,tgt,sel,opts,x,y,w,h, pl,pr,pt,pb)
 {
-	if( ! vfs ) DETHROW( deeInvalidParam );
+	if(! vfs) DETHROW(deeInvalidParam);
 	
 	// prepare
 	pVFS = vfs;
 	
 	// init
-	pIconFolder = new FXGIFIcon( getApp(), FoxIcons::minifolder );
+	pIconFolder = new FXGIFIcon(getApp(), FoxIcons::minifolder);
 	
 	// update
-	setCurrentItem( appendItem( NULL, "/", pIconFolder, pIconFolder ) );
+	setCurrentItem(appendItem(NULL, "/", pIconFolder, pIconFolder));
 }
 
 igdeNativeFoxVFSDirectoryBox::~igdeNativeFoxVFSDirectoryBox(){
-	if( pIconFolder ) delete pIconFolder;
+	if(pIconFolder) delete pIconFolder;
 }
 
 
@@ -70,21 +70,21 @@ igdeNativeFoxVFSDirectoryBox::~igdeNativeFoxVFSDirectoryBox(){
 // Management
 ///////////////
 
-void igdeNativeFoxVFSDirectoryBox::GetPath( decPath &path ){
+void igdeNativeFoxVFSDirectoryBox::GetPath(decPath &path){
 	FXTreeItem *item = 	getCurrentItem();
 	
 	path.SetEmpty();
 	
-	if( item ){
-		pGetPathFor( path, item );
+	if(item){
+		pGetPathFor(path, item);
 		
 	}else{
-		path.SetPrefix( "/" );
+		path.SetPrefix("/");
 	}
 }
 
-void igdeNativeFoxVFSDirectoryBox::SetPath( const decPath &path ){
-	setCurrentItem( pBuildListFrom( path ) );
+void igdeNativeFoxVFSDirectoryBox::SetPath(const decPath &path){
+	setCurrentItem(pBuildListFrom(path));
 }
 
 
@@ -118,7 +118,7 @@ void igdeNativeFoxVFSDirectoryBox::destroy(){
 // Private Functions
 //////////////////////
 
-FXTreeItem *igdeNativeFoxVFSDirectoryBox::pBuildListFrom( const decPath &path ){
+FXTreeItem *igdeNativeFoxVFSDirectoryBox::pBuildListFrom(const decPath &path){
 	int c, componentCount = path.GetComponentCount();
 	FXTreeItem *item = NULL;
 	
@@ -126,26 +126,26 @@ FXTreeItem *igdeNativeFoxVFSDirectoryBox::pBuildListFrom( const decPath &path ){
 	clearItems();
 	
 	// add root
-	item = appendItem( NULL, "/", pIconFolder, pIconFolder );
+	item = appendItem(NULL, "/", pIconFolder, pIconFolder);
 	
 	// add the path
-	for( c=0; c<componentCount; c++ ){
-		item = appendItem( item, path.GetComponentAt( c ).GetString(), pIconFolder, pIconFolder );
+	for(c=0; c<componentCount; c++){
+		item = appendItem(item, path.GetComponentAt(c).GetString(), pIconFolder, pIconFolder);
 	}
 	
 	// finished
 	return item;
 }
 
-void igdeNativeFoxVFSDirectoryBox::pGetPathFor( decPath &path, FXTreeItem *item ){
+void igdeNativeFoxVFSDirectoryBox::pGetPathFor(decPath &path, FXTreeItem *item){
 	FXTreeItem *pparent = item->getParent();
 	
-	if( pparent ){
-		pGetPathFor( path, pparent );
-		path.AddComponent( item->getText().text() );
+	if(pparent){
+		pGetPathFor(path, pparent);
+		path.AddComponent(item->getText().text());
 		
 	}else{
-		path.SetPrefix( item->getText().text() );
+		path.SetPrefix(item->getText().text());
 	}
 	
 }

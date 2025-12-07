@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new command. */
-	cePlaybackCommand( const char *command, bool value );
+	cePlaybackCommand(const char *command, bool value);
 	
 protected:
 	/** Cleans up the info. */
@@ -57,11 +57,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the command. */
-	inline const decString &GetCommand() const{ return pCommand; }
+	inline const decString &GetCommand() const{return pCommand;}
 	/** \brief Retrieves the value. */
-	inline bool GetValue() const{ return pValue; }
+	inline bool GetValue() const{return pValue;}
 	/** \brief Sets the value. */
-	void SetValue( bool value );
+	void SetValue(bool value);
 	/*@}*/
 };
 

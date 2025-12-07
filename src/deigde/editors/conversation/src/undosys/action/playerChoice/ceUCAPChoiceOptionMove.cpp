@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int newIndex ){
-	if( ! topic || ! playerChoice || ! option ) DETHROW( deeInvalidParam );
+ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int newIndex){
+	if(! topic || ! playerChoice || ! option) DETHROW(deeInvalidParam);
 	
 	int count = playerChoice->GetOptions().GetCount();
 	
@@ -50,19 +50,19 @@ ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove( ceConversationTopic *topic, ceCA
 	pPlayerChoice = NULL;
 	pOption = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = playerChoice->GetOptions().IndexOf( option );
+	pOldIndex = playerChoice->GetOptions().IndexOf(option);
 	
-	if( pOldIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pOldIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
-	if( pNewIndex < 0 || pNewIndex >= count ){
-		DETHROW( deeInvalidParam );
+	if(pNewIndex < 0 || pNewIndex >= count){
+		DETHROW(deeInvalidParam);
 	}
-	if( pNewIndex == pOldIndex ){
-		DETHROW( deeInvalidParam );
+	if(pNewIndex == pOldIndex){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Player Choice Move Option" );
+	SetShortInfo("Player Choice Move Option");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -75,13 +75,13 @@ ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove( ceConversationTopic *topic, ceCA
 }
 
 ceUCAPChoiceOptionMove::~ceUCAPChoiceOptionMove(){
-	if( pOption ){
+	if(pOption){
 		pOption->FreeReference();
 	}
-	if( pPlayerChoice ){
+	if(pPlayerChoice){
 		pPlayerChoice->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -92,11 +92,11 @@ ceUCAPChoiceOptionMove::~ceUCAPChoiceOptionMove(){
 ///////////////
 
 void ceUCAPChoiceOptionMove::Undo(){
-	pPlayerChoice->GetOptions().MoveTo( pOption, pOldIndex );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->GetOptions().MoveTo(pOption, pOldIndex);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }
 
 void ceUCAPChoiceOptionMove::Redo(){
-	pPlayerChoice->GetOptions().MoveTo( pOption, pNewIndex );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->GetOptions().MoveTo(pOption, pNewIndex);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

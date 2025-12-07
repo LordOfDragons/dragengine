@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetTaskStatus( dealDisplay &display );
+	dealWidgetTaskStatus(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetTaskStatus();
@@ -63,33 +63,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Task name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set task name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Task status text. */
-	inline const decString &GetStatus() const{ return pStatus; }
+	inline const decString &GetStatus() const{return pStatus;}
 	
 	/** \brief Set task status text. */
-	void SetStatus( const char *text );
+	void SetStatus(const char *text);
 	
 	/** \brief Task progress in the range from 0 to progress range. */
 	float GetProgress() const;
 	
 	/** \brief Set task progress range. */
-	void SetProgressRange( int range );
+	void SetProgressRange(int range);
 	
 	/** \brief Set task progress in the range from 0 to progress range - 1. */
-	void SetProgress( int progress );
+	void SetProgress(int progress);
 	
 	
 	
 	/** \brief Finished. */
-	inline bool GetFinished() const{ return pFinished; }
+	inline bool GetFinished() const{return pFinished;}
 	
 	/** \brief Set finished. */
-	void SetFinished( bool finished );
+	void SetFinished(bool finished);
 	/*@}*/
 	
 	

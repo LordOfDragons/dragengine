@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create base action. */
-	gdeBaseAction( gdeWindowMain &windowMain, const char *text, const char *description );
+	gdeBaseAction(gdeWindowMain &windowMain, const char *text, const char *description);
 	
 	/** \brief Create base action. */
-	gdeBaseAction( gdeWindowMain &windowMain, igdeIcon *icon, const char *description );
+	gdeBaseAction(gdeWindowMain &windowMain, igdeIcon *icon, const char *description);
 	
 	/** \brief Create base action. */
-	gdeBaseAction( gdeWindowMain &windowMain, const char *text, igdeIcon *icon, const char *description );
+	gdeBaseAction(gdeWindowMain &windowMain, const char *text, igdeIcon *icon, const char *description);
 	/*@}*/
 	
 	
@@ -73,7 +73,7 @@ public:
 	
 	
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition ) = 0;
+	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition) = 0;
 	/*@}*/
 };
 

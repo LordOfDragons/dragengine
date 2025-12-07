@@ -40,43 +40,43 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicPaste::ceUCTopicPaste( ceConversationFile *file, const ceConversationTopicList &topics ) :
-pFile( NULL ){
-	if( ! file || topics.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+ceUCTopicPaste::ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics) :
+pFile(NULL){
+	if(! file || topics.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = topics.GetCount();
 	ceConversationTopic *newTopic = NULL;
 	int i;
 	
-	if( count == 1 ){
-		SetShortInfo( "Paste topic" );
+	if(count == 1){
+		SetShortInfo("Paste topic");
 		
 	}else{
-		SetShortInfo( "Paste topics" );
+		SetShortInfo("Paste topics");
 	}
 	
 	try{
-		for( i=0; i<count; i++ ){
-			newTopic = new ceConversationTopic( *topics.GetAt( i ) );
-			decString topicID( newTopic->GetID() );
+		for(i=0; i<count; i++){
+			newTopic = new ceConversationTopic(*topics.GetAt(i));
+			decString topicID(newTopic->GetID());
 			int newNameIndex = 1;
 			
-			while( file->GetTopicList().HasWithID( topicID ) ){
+			while(file->GetTopicList().HasWithID(topicID)){
 				newNameIndex++;
-				topicID.Format( "%s_%i", newTopic->GetID().GetString(), newNameIndex );
+				topicID.Format("%s_%i", newTopic->GetID().GetString(), newNameIndex);
 			}
 			
-			newTopic->SetID( topicID );
+			newTopic->SetID(topicID);
 			
-			pTopics.Add( newTopic );
+			pTopics.Add(newTopic);
 			newTopic->FreeReference();
 			newTopic = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( newTopic ){
+	}catch(const deException &){
+		if(newTopic){
 			newTopic->FreeReference();
 		}
 		throw;
@@ -88,7 +88,7 @@ pFile( NULL ){
 
 ceUCTopicPaste::~ceUCTopicPaste(){
 	pTopics.RemoveAll();
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
 }
@@ -102,20 +102,20 @@ void ceUCTopicPaste::Undo(){
 	const int count = pTopics.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pFile->RemoveTopic( pTopics.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pFile->RemoveTopic(pTopics.GetAt(i));
 	}
 }
 
 void ceUCTopicPaste::Redo(){
 	const int count = pTopics.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		pFile->AddTopic( pTopics.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pFile->AddTopic(pTopics.GetAt(i));
 	}
-	pFile->SetActiveTopic( pTopics.GetAt( count - 1 ) );
+	pFile->SetActiveTopic(pTopics.GetAt(count - 1));
 }

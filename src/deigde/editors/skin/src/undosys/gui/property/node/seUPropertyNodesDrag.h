@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesDrag( const sePropertyNodeList &nodes );
+	seUPropertyNodesDrag(const sePropertyNodeList &nodes);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set distance. */
-	void SetDistance( const decPoint &distance );
+	void SetDistance(const decPoint &distance);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

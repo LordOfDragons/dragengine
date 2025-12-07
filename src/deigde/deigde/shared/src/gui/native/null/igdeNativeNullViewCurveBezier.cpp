@@ -63,14 +63,14 @@ void igdeNativeFoxViewCurveBezierView::FitViewToCurve(){
 ////////////////////////////////////////
 
 igdeNativeNullViewCurveBezier::igdeNativeNullViewCurveBezier() :
-pView( new igdeNativeFoxViewCurveBezierView ){
+pView(new igdeNativeFoxViewCurveBezierView){
 }
 
 igdeNativeNullViewCurveBezier::~igdeNativeNullViewCurveBezier(){
 	delete pView;
 }
 
-igdeNativeNullViewCurveBezier *igdeNativeNullViewCurveBezier::CreateNativeWidget( igdeViewCurveBezier& ){
+igdeNativeNullViewCurveBezier *igdeNativeNullViewCurveBezier::CreateNativeWidget(igdeViewCurveBezier&){
 	return new igdeNativeNullViewCurveBezier;
 }
 

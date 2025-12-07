@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnParameterInt::debnParameterInt( deNetworkBasic &network ) :
-debnParameter( network )
+debnParameterInt::debnParameterInt(deNetworkBasic &network) :
+debnParameter(network)
 {
-	SetType( eptNumeric );
+	SetType(eptNumeric);
 }
 
 
@@ -51,10 +51,10 @@ debnParameter( network )
 
 decString debnParameterInt::GetParameterValue(){
 	decString value;
-	value.Format( "%d", GetParameterInt() );
+	value.Format("%d", GetParameterInt());
 	return value;
 }
 
-void debnParameterInt::SetParameterValue( const char *value ){
-	SetParameterInt( decString( value ).ToInt() );
+void debnParameterInt::SetParameterValue(const char *value){
+	SetParameterInt(decString(value).ToInt());
 }

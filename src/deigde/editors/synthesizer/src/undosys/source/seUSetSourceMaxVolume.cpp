@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceMaxVolume::seUSetSourceMaxVolume( seSource *source, float newValue ) :
-pSource( NULL )
+seUSetSourceMaxVolume::seUSetSourceMaxVolume(seSource *source, float newValue) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = source->GetMaxVolume();
@@ -53,9 +53,9 @@ pSource( NULL )
 		pSource = source;
 		pSource->AddReference();
 		
-		SetShortInfo( "Source set maximum volume" );
+		SetShortInfo("Source set maximum volume");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ seUSetSourceMaxVolume::~seUSetSourceMaxVolume(){
 ///////////////
 
 void seUSetSourceMaxVolume::Undo(){
-	pSource->SetMaxVolume( pOldValue );
+	pSource->SetMaxVolume(pOldValue);
 }
 
 void seUSetSourceMaxVolume::Redo(){
-	pSource->SetMaxVolume( pNewValue );
+	pSource->SetMaxVolume(pNewValue);
 }
 
 
@@ -84,7 +84,7 @@ void seUSetSourceMaxVolume::Redo(){
 //////////////////////
 
 void seUSetSourceMaxVolume::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

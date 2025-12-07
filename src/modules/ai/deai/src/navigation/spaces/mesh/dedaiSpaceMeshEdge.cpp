@@ -39,10 +39,10 @@
 /////////////////////////////////
 
 dedaiSpaceMeshEdge::dedaiSpaceMeshEdge() :
-pVertex1( 0 ),
-pVertex2( 0 ),
-pFace1( -1 ),
-pFace2( -1 ){
+pVertex1(0),
+pVertex2(0),
+pFace1(-1),
+pFace2(-1){
 }
 
 dedaiSpaceMeshEdge::~dedaiSpaceMeshEdge(){
@@ -53,18 +53,18 @@ dedaiSpaceMeshEdge::~dedaiSpaceMeshEdge(){
 // Management
 ///////////////
 
-void dedaiSpaceMeshEdge::SetVertex1( unsigned short vertex ){
+void dedaiSpaceMeshEdge::SetVertex1(unsigned short vertex){
 	pVertex1 = vertex;
 }
 
-void dedaiSpaceMeshEdge::SetVertex2( unsigned short vertex ){
+void dedaiSpaceMeshEdge::SetVertex2(unsigned short vertex){
 	pVertex2 = vertex;
 }
 
-void dedaiSpaceMeshEdge::SetFace1( short face ){
+void dedaiSpaceMeshEdge::SetFace1(short face){
 	pFace1 = face;
 }
 
-void dedaiSpaceMeshEdge::SetFace2( short face ){
+void dedaiSpaceMeshEdge::SetFace2(short face){
 	pFace2 = face;
 }

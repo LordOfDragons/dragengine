@@ -54,49 +54,49 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( peeEmitter *emitter );
+	virtual void StateChanged(peeEmitter *emitter);
 	/** Undo changed. */
-	virtual void UndoChanged( peeEmitter *emitter );
+	virtual void UndoChanged(peeEmitter *emitter);
 	/** Emitter changed. */
-	virtual void EmitterChanged( peeEmitter *emitter );
+	virtual void EmitterChanged(peeEmitter *emitter);
 	/** The sky changed. */
-	virtual void SkyChanged( peeEmitter *emitter );
+	virtual void SkyChanged(peeEmitter *emitter);
 	/** The environment object changed. */
-	virtual void EnvObjectChanged( peeEmitter *emitter );
+	virtual void EnvObjectChanged(peeEmitter *emitter);
 	/** The view changed. */
-	virtual void ViewChanged( peeEmitter *emitter );
+	virtual void ViewChanged(peeEmitter *emitter);
 	/** The camera changed. */
-	virtual void CameraChanged( peeEmitter *emitter );
+	virtual void CameraChanged(peeEmitter *emitter);
 	
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged ( peeEmitter *emitter );
+	virtual void ControllerStructureChanged (peeEmitter *emitter);
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerNameChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** \brief Controller changed value. */
-	virtual void ControllerValueChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerValueChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( peeEmitter *emitter );
+	virtual void ActiveControllerChanged(peeEmitter *emitter);
 	
 	/** Type count or order changed. */
-	virtual void TypeStructureChanged( peeEmitter *emitter );
+	virtual void TypeStructureChanged(peeEmitter *emitter);
 	/** Type changed. */
-	virtual void TypeChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeChanged(peeEmitter *emitter, peeType *type);
 	/** Active type active trail controller changed. */
-	virtual void TypeActiveTrailControllerChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeActiveTrailControllerChanged(peeEmitter *emitter, peeType *type);
 	/** Active type active emit controller changed. */
-	virtual void TypeActiveEmitControllerChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeActiveEmitControllerChanged(peeEmitter *emitter, peeType *type);
 	/** A type parameter changed. */
-	virtual void TypeParameterChanged( peeEmitter *emitter, peeType *type, peeParameter *parameter );
+	virtual void TypeParameterChanged(peeEmitter *emitter, peeType *type, peeParameter *parameter);
 	/** Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged( peeEmitter *emitter, peeType *type );
+	virtual void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type);
 	/** Active type changed. */
-	virtual void ActiveTypeChanged( peeEmitter *emitter );
+	virtual void ActiveTypeChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

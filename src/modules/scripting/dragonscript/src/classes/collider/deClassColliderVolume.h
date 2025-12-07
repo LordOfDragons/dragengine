@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new script class. */
-	deClassColliderVolume( deScriptingDragonScript &ds );
+	deClassColliderVolume(deScriptingDragonScript &ds);
 	/** \brief Clean up the script class. */
 	virtual ~deClassColliderVolume();
 	/*@}*/
@@ -53,23 +53,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module owning the script class. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve collider from a script object.
 	 * \details Returns NULL if \em myself is NULL.
 	 */
-	deColliderVolume *GetCollider( dsRealObject *myself ) const;
+	deColliderVolume *GetCollider(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push collider onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is NULL.
 	 */
-	void PushCollider( dsRunTime *rt, deColliderVolume *collider );
+	void PushCollider(dsRunTime *rt, deColliderVolume *collider);
 	/*@}*/
 	
 private:
@@ -78,20 +78,20 @@ private:
 		dsClass *clsVec, *clsObj, *clsBool, *clsDVec, *clsDMat, *clsShapeList;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetShape );
-	DEF_NATFUNC( nfSetShape );
+	DEF_NATFUNC(nfGetShape);
+	DEF_NATFUNC(nfSetShape);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

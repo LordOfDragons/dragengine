@@ -95,7 +95,7 @@ public:
 	
 	
 private:
-	deoglCubeMap::eFaces pCubeFaces[ 6 ];
+	deoglCubeMap::eFaces pCubeFaces[6];
 	
 	deoglCollideList pCollideList;
 	
@@ -145,7 +145,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderLightPoint( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
+	deoglRenderLightPoint(deoglRenderThread &renderThread, deoglRTRenderers &renderers);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderLightPoint();
@@ -156,44 +156,44 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Calculate box boundary for a point light. */
-	void CalculateBoxBoundary( deoglRenderPlanLight &planLight );
+	void CalculateBoxBoundary(deoglRenderPlanLight &planLight);
 	
 	/** Renders lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask);
 	
 	/** Render point light. */
-	void RenderLight( deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask );
+	void RenderLight(deoglRenderPlanLight &planLight, bool solid, const deoglRenderPlanMasked *mask);
 	
 	/** Activate textures for lighting. */
-	void ActivateTextures( deoglRenderPlanLight &planLight, deoglLightShader &shader,
-		const sShadowDepthMaps &shadowDepthMaps );
+	void ActivateTextures(deoglRenderPlanLight &planLight, deoglLightShader &shader,
+		const sShadowDepthMaps &shadowDepthMaps);
 	
 	/** Render shadows for a point light. */
-	void RenderShadows( deoglRenderPlanLight &planLight, sShadowParams &shadowParams );
+	void RenderShadows(deoglRenderPlanLight &planLight, sShadowParams &shadowParams);
 	
 	/** Render shadow cube map. */
-	void RenderShadowMaps( deoglRenderPlanLight &planLight,
-		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
+	void RenderShadowMaps(deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams);
 	
 	/** Render ambient map. */
-	void RenderAmbientMap( deoglRenderPlanLight &planLight,
-		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams );
+	void RenderAmbientMap(deoglRenderPlanLight &planLight,
+		deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams);
 	
 	/** Update light shader parameter block. */
-	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlanLight &planLight );
+	void UpdateLightParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanLight &planLight);
 	
 	/** Update instance shader parameter block. */
-	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps );
+	void UpdateInstanceParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanLight &planLight, sShadowDepthMaps &shadowDepthMaps);
 	
 	
 	
 	/** Debug information solid lighting. */
-	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
+	inline deoglDebugInformation *GetDebugInfoSolid() const{return pDebugInfoSolid;}
 	
 	/** Debug information transparent lighting. */
-	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
+	inline deoglDebugInformation *GetDebugInfoTransparent() const{return pDebugInfoTransparent;}
 	
 	
 	

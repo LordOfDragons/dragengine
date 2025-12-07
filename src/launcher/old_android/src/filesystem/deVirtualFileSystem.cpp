@@ -53,15 +53,15 @@ private:
 	int &pReadCount;
 	
 public:
-	deVFSReadLock( deMutex &mutexWrite, deMutex &mutexRead, int &readCount ) :
-	pMutexWrite( mutexWrite ),
-	pMutexRead( mutexRead ),
-	pReadCount( readCount )
+	deVFSReadLock(deMutex &mutexWrite, deMutex &mutexRead, int &readCount) :
+	pMutexWrite(mutexWrite),
+	pMutexRead(mutexRead),
+	pReadCount(readCount)
 	{
-		deMutexGuard lock( mutexRead );
+		deMutexGuard lock(mutexRead);
 		readCount++;
 		
-		if( readCount == 1 ){
+		if(readCount == 1){
 			// first call read-using the deVirtualFileSystem. lock the mutex to prevent all
 			// calls modifying the deVirtualFileSystem to modify while in use
 			mutexWrite.Lock();
@@ -69,10 +69,10 @@ public:
 	}
 	
 	~deVFSReadLock(){
-		deMutexGuard lock( pMutexRead );
+		deMutexGuard lock(pMutexRead);
 		pReadCount--;
 		
-		if( pReadCount == 0 ){
+		if(pReadCount == 0){
 			// last call read-using the deVirtualFileSystem. unlock the mutex allowing all
 			// calls modifying the deVirtualFileSystem to continue
 			pMutexWrite.Unlock();
@@ -98,17 +98,17 @@ deVirtualFileSystem::~deVirtualFileSystem(){
 // Management
 ///////////////
 
-bool deVirtualFileSystem::ExistsFile( const decPath &path ) const{
+bool deVirtualFileSystem::ExistsFile(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.ExistsFile( relativePath ) ){
+		if(container.ExistsFile(relativePath)){
 			return true;
 		}
 	}
@@ -116,17 +116,17 @@ bool deVirtualFileSystem::ExistsFile( const decPath &path ) const{
 	return false;
 }
 
-bool deVirtualFileSystem::CanReadFile( const decPath &path ) const{
+bool deVirtualFileSystem::CanReadFile(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanReadFile( relativePath ) ){
+		if(container.CanReadFile(relativePath)){
 			return true;
 		}
 	}
@@ -134,17 +134,17 @@ bool deVirtualFileSystem::CanReadFile( const decPath &path ) const{
 	return false;
 }
 
-bool deVirtualFileSystem::CanWriteFile( const decPath &path ) const{
+bool deVirtualFileSystem::CanWriteFile(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanWriteFile( relativePath ) ){
+		if(container.CanWriteFile(relativePath)){
 			return true;
 		}
 	}
@@ -152,17 +152,17 @@ bool deVirtualFileSystem::CanWriteFile( const decPath &path ) const{
 	return false;
 }
 
-bool deVirtualFileSystem::CanDeleteFile( const decPath &path ) const{
+bool deVirtualFileSystem::CanDeleteFile(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanDeleteFile( relativePath ) ){
+		if(container.CanDeleteFile(relativePath)){
 			return true;
 		}
 	}
@@ -170,70 +170,70 @@ bool deVirtualFileSystem::CanDeleteFile( const decPath &path ) const{
 	return false;
 }
 
-decBaseFileReader *deVirtualFileSystem::OpenFileForReading( const decPath &path ) const{
+decBaseFileReader *deVirtualFileSystem::OpenFileForReading(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanReadFile( relativePath ) ){
-			return container.OpenFileForReading( relativePath );
+		if(container.CanReadFile(relativePath)){
+			return container.OpenFileForReading(relativePath);
 		}
 	}
 	
-	DETHROW( deeFileNotFound );
+	DETHROW(deeFileNotFound);
 }
 
-decBaseFileWriter *deVirtualFileSystem::OpenFileForWriting( const decPath &path ) const{
+decBaseFileWriter *deVirtualFileSystem::OpenFileForWriting(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanWriteFile( relativePath ) ){
-			return container.OpenFileForWriting( relativePath );
+		if(container.CanWriteFile(relativePath)){
+			return container.OpenFileForWriting(relativePath);
 		}
 	}
 	
-	DETHROW( deeFileNotFound );
+	DETHROW(deeFileNotFound);
 }
 
-void deVirtualFileSystem::DeleteFile( const decPath &path ) const{
+void deVirtualFileSystem::DeleteFile(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanDeleteFile( relativePath ) ){
-			container.DeleteFile( relativePath );
+		if(container.CanDeleteFile(relativePath)){
+			container.DeleteFile(relativePath);
 		}
 	}
 }
 
-void deVirtualFileSystem::TouchFile( const decPath &path ) const{
+void deVirtualFileSystem::TouchFile(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.CanWriteFile( relativePath ) ){
-			container.TouchFile( relativePath );
+		if(container.CanWriteFile(relativePath)){
+			container.TouchFile(relativePath);
 		}
 	}
 }
@@ -265,46 +265,46 @@ public:
 		return pSpecials;
 	}
 	
-	virtual void Add( const char *name, deVFSContainer::eFileTypes type ){
-		switch( type ){
+	virtual void Add(const char *name, deVFSContainer::eFileTypes type){
+		switch(type){
 		case deVFSContainer::eftRegularFile:
-			pFiles.Add( name );
+			pFiles.Add(name);
 			break;
 			
 		case deVFSContainer::eftDirectory:
-			pDirectories.Add( name );
+			pDirectories.Add(name);
 			break;
 			
 		case deVFSContainer::eftSpecial:
-			pSpecials.Add( name );
+			pSpecials.Add(name);
 			break;
 		}
 	}
 	
-	virtual void Remove( const char *name ){
-		pDirectories.Remove( name );
-		pFiles.Remove( name );
-		pSpecials.Remove( name );
+	virtual void Remove(const char *name){
+		pDirectories.Remove(name);
+		pFiles.Remove(name);
+		pSpecials.Remove(name);
 	}
 };
 
-void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVisitor &visitor ) const{
+void deVirtualFileSystem::SearchFiles(const decPath &directory, deFileSearchVisitor &visitor) const{
 	const int count = pContainers.GetCount();
 	deVirtualFileSystemSearch searcher;
 	decPath relativeDirectory;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( pMatchContainer( container, directory, relativeDirectory ) ){
-			container.SearchFiles( relativeDirectory, searcher );
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(pMatchContainer(container, directory, relativeDirectory)){
+			container.SearchFiles(relativeDirectory, searcher);
 			
-		}else if( pMatchContainerParent( container, directory ) ){
+		}else if(pMatchContainerParent(container, directory)){
 			// this check is required to catch the situation of visiting a directory containing
 			// mounted containers. without this check they would be missed because the
 			// pMatchContainer check catches only the case where directory matches the root
 			// path or is deeper down the file tree.
-			searcher.Add( container.GetRootPath().GetLastComponent(), deVFSContainer::eftDirectory );
+			searcher.Add(container.GetRootPath().GetLastComponent(), deVFSContainer::eftDirectory);
 		}
 	}
 	
@@ -315,87 +315,87 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 	const decStringSet &directories = searcher.GetDirectories();
 	const int directoryCount = directories.GetCount();
 	
-	if( fileCount == 0 && specialCount == 0 && directoryCount == 0 ){
+	if(fileCount == 0 && specialCount == 0 && directoryCount == 0){
 		return;
 	}
 	
-	decPath path( directory );
-	path.AddComponent( "x" );
+	decPath path(directory);
+	path.AddComponent("x");
 	
-	for( i=0; i<fileCount; i++ ){
-		path.SetLastComponent( files.GetAt( i ) );
-		if( ! visitor.VisitFile( *this, path ) ){
+	for(i=0; i<fileCount; i++){
+		path.SetLastComponent(files.GetAt(i));
+		if(! visitor.VisitFile(*this, path)){
 			return;
 		}
 	}
 	
-	for( i=0; i<specialCount; i++ ){
-		path.SetLastComponent( specials.GetAt( i ) );
-		if( ! visitor.VisitSpecial( *this, path ) ){
+	for(i=0; i<specialCount; i++){
+		path.SetLastComponent(specials.GetAt(i));
+		if(! visitor.VisitSpecial(*this, path)){
 			return;
 		}
 	}
 	
-	for( i=0; i<directoryCount; i++ ){
-		path.SetLastComponent( directories.GetAt( i ) );
-		if( ! visitor.VisitDirectory( *this, path ) ){
+	for(i=0; i<directoryCount; i++){
+		path.SetLastComponent(directories.GetAt(i));
+		if(! visitor.VisitDirectory(*this, path)){
 			return;
 		}
 	}
 }
 
-deVFSContainer::eFileTypes deVirtualFileSystem::GetFileType( const decPath& path ) const{
+deVFSContainer::eFileTypes deVirtualFileSystem::GetFileType(const decPath& path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.ExistsFile( relativePath ) ){
-			return container.GetFileType( relativePath );
+		if(container.ExistsFile(relativePath)){
+			return container.GetFileType(relativePath);
 		}
 	}
 	
-	DETHROW( deeFileNotFound );
+	DETHROW(deeFileNotFound);
 }
 
-uint64_t deVirtualFileSystem::GetFileSize( const decPath &path ) const{
+uint64_t deVirtualFileSystem::GetFileSize(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.ExistsFile( relativePath ) ){
-			return container.GetFileSize( relativePath );
+		if(container.ExistsFile(relativePath)){
+			return container.GetFileSize(relativePath);
 		}
 	}
 	
-	DETHROW( deeFileNotFound );
+	DETHROW(deeFileNotFound);
 }
 
-TIME_SYSTEM deVirtualFileSystem::GetFileModificationTime( const decPath &path ) const{
+TIME_SYSTEM deVirtualFileSystem::GetFileModificationTime(const decPath &path) const{
 	const int count = pContainers.GetCount();
 	decPath relativePath;
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
-		if( ! pMatchContainer( container, path, relativePath ) ){
+	for(i=count-1; i>=0; i--){
+		deVFSContainer &container = *((deVFSContainer*)pContainers.GetAt(i));
+		if(! pMatchContainer(container, path, relativePath)){
 			continue;
 		}
-		if( container.ExistsFile( relativePath ) ){
-			return container.GetFileModificationTime( relativePath );
+		if(container.ExistsFile(relativePath)){
+			return container.GetFileModificationTime(relativePath);
 		}
 	}
 	
-	DETHROW( deeFileNotFound );
+	DETHROW(deeFileNotFound);
 }
 
 
@@ -407,27 +407,27 @@ int deVirtualFileSystem::GetContainerCount() const{
 	return pContainers.GetCount();
 }
 
-deVFSContainer *deVirtualFileSystem::GetContainerAt( int index ) const{
-	return ( deVFSContainer* )pContainers.GetAt( index );
+deVFSContainer *deVirtualFileSystem::GetContainerAt(int index) const{
+	return (deVFSContainer*)pContainers.GetAt(index);
 }
 
-int deVirtualFileSystem::IndexOfContainer( deVFSContainer *container ) const{
-	return pContainers.IndexOf( container );
+int deVirtualFileSystem::IndexOfContainer(deVFSContainer *container) const{
+	return pContainers.IndexOf(container);
 }
 
-bool deVirtualFileSystem::HasContainer( deVFSContainer *container ) const{
-	return pContainers.Has( container );
+bool deVirtualFileSystem::HasContainer(deVFSContainer *container) const{
+	return pContainers.Has(container);
 }
 
-void deVirtualFileSystem::AddContainer( deVFSContainer *container ){
-	if( ! container ){
-		DETHROW( deeInvalidParam );
+void deVirtualFileSystem::AddContainer(deVFSContainer *container){
+	if(! container){
+		DETHROW(deeInvalidParam);
 	}
-	pContainers.Add( container );
+	pContainers.Add(container);
 }
 
-void deVirtualFileSystem::RemoveContainer( deVFSContainer *container ){
-	pContainers.Remove( container );
+void deVirtualFileSystem::RemoveContainer(deVFSContainer *container){
+	pContainers.Remove(container);
 }
 
 void deVirtualFileSystem::RemoveAllContainers(){
@@ -439,45 +439,45 @@ void deVirtualFileSystem::RemoveAllContainers(){
 // Private Functions
 //////////////////////
 
-bool deVirtualFileSystem::pMatchContainer( deVFSContainer &container,
-const decPath &absolutePath, decPath &relativePath ) const{
+bool deVirtualFileSystem::pMatchContainer(deVFSContainer &container,
+const decPath &absolutePath, decPath &relativePath) const{
 	const int absoluteComponentCount = absolutePath.GetComponentCount();
 	const decPath &rootPath = container.GetRootPath();
 	const int componentCount = rootPath.GetComponentCount();
 	
 	// if the absolute path has less components then a match is not possible
-	if( absoluteComponentCount < componentCount ){
+	if(absoluteComponentCount < componentCount){
 		return false;
 	}
 	
 	// match the beginning of the absolute path against the root path
 	int i;
-	for( i=0; i<componentCount; i++ ){
-		if( rootPath.GetComponentAt( i ) != absolutePath.GetComponentAt( i ) ){
+	for(i=0; i<componentCount; i++){
+		if(rootPath.GetComponentAt(i) != absolutePath.GetComponentAt(i)){
 			return false;
 		}
 	}
 	
 	// path matches so produce a relative path version of the absolute path to the root path
-	relativePath.SetFromUnix( "/" );
-	for( i=componentCount; i<absoluteComponentCount; i++ ){
-		relativePath.AddComponent( absolutePath.GetComponentAt( i ) );
+	relativePath.SetFromUnix("/");
+	for(i=componentCount; i<absoluteComponentCount; i++){
+		relativePath.AddComponent(absolutePath.GetComponentAt(i));
 	}
 	
 	return true;
 }
 
-bool deVirtualFileSystem::pMatchContainerParent( deVFSContainer &container, const decPath &path ) const{
+bool deVirtualFileSystem::pMatchContainerParent(deVFSContainer &container, const decPath &path) const{
 	const decPath &rootPath = container.GetRootPath();
 	const int componentCount = rootPath.GetComponentCount();
 	const int pathComponentCount = path.GetComponentCount();
-	if( pathComponentCount != componentCount - 1 ){
+	if(pathComponentCount != componentCount - 1){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<pathComponentCount; i++ ){
-		if( rootPath.GetComponentAt( i ) != path.GetComponentAt( i ) ){
+	for(i=0; i<pathComponentCount; i++){
+		if(rootPath.GetComponentAt(i) != path.GetComponentAt(i)){
 			return false;
 		}
 	}

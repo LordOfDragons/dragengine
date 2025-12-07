@@ -55,38 +55,38 @@ int seControllerList::GetCount() const{
 	return pControllers.GetCount();
 }
 
-seController *seControllerList::GetAt( int index ) const{
-	return ( seController* )pControllers.GetAt( index );
+seController *seControllerList::GetAt(int index) const{
+	return (seController*)pControllers.GetAt(index);
 }
 
-int seControllerList::IndexOf( seController *controller ) const{
-	return pControllers.IndexOf( controller );
+int seControllerList::IndexOf(seController *controller) const{
+	return pControllers.IndexOf(controller);
 }
 
-bool seControllerList::Has( seController *controller ) const{
-	return pControllers.Has( controller );
+bool seControllerList::Has(seController *controller) const{
+	return pControllers.Has(controller);
 }
 
-void seControllerList::Add( seController *controller ){
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+void seControllerList::Add(seController *controller){
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Add( controller );
+	pControllers.Add(controller);
 }
 
-void seControllerList::InsertAt( seController *controller, int index ){
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+void seControllerList::InsertAt(seController *controller, int index){
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
-	pControllers.Insert( controller, index );
+	pControllers.Insert(controller, index);
 }
 
-void seControllerList::MoveTo( seController *controller, int index ){
-	pControllers.Move( controller, index );
+void seControllerList::MoveTo(seController *controller, int index){
+	pControllers.Move(controller, index);
 }
 
-void seControllerList::Remove( seController *controller ){
-	pControllers.Remove( controller );
+void seControllerList::Remove(seController *controller){
+	pControllers.Remove(controller);
 }
 
 void seControllerList::RemoveAll(){
@@ -95,7 +95,7 @@ void seControllerList::RemoveAll(){
 
 
 
-seControllerList &seControllerList::operator=( const seControllerList &list ){
+seControllerList &seControllerList::operator=(const seControllerList &list){
 	pControllers = list.pControllers;
 	return *this;
 }

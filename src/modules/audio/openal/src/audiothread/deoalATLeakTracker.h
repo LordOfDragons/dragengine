@@ -36,20 +36,20 @@ class deoalAudioThread;
 
 
 #ifdef ENABLE_LEAK_TRACKING
-	#define IF_LEAK_CHECK( cmd ) cmd
+	#define IF_LEAK_CHECK(cmd) cmd
 	
 	#define LEAK_CHECK_CREATE(audioThread,type) \
-		(audioThread).GetLeakTracker().Add ## type( this )
+		(audioThread).GetLeakTracker().Add ## type(this)
 	
 	#define LEAK_CHECK_FREE(audioThread,type) \
-		(audioThread).GetLeakTracker().Remove ## type( this )
+		(audioThread).GetLeakTracker().Remove ## type(this)
 	
 	#define LEAK_CHECK_REPORT_LEAKS(audioThread,type) \
-		(audioThread).GetLeakTracker().ReportLeaks( #type, \
-			(audioThread).GetLeakTracker().Get ## type() )
+		(audioThread).GetLeakTracker().ReportLeaks(#type, \
+			(audioThread).GetLeakTracker().Get ## type())
 	
 #else
-	#define IF_LEAK_CHECK( cmd )
+	#define IF_LEAK_CHECK(cmd)
 	
 	#define LEAK_CHECK_CREATE(audioThread,type)
 	#define LEAK_CHECK_FREE(audioThread,type)
@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render thread texture related object. */
-	deoalATLeakTracker( deoalAudioThread &audioThread );
+	deoalATLeakTracker(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up render thread texture related object. */
 	virtual ~deoalATLeakTracker();
@@ -81,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Report leaks. */
-	void ReportLeaks( const char *name, const decPointerSet &tracker );
+	void ReportLeaks(const char *name, const decPointerSet &tracker);
 	/*@}*/
 	
 	
@@ -89,22 +89,22 @@ public:
 #ifdef ENABLE_LEAK_TRACKING
 #define DECLARE_TRACKER(type) \
 private: decPointerSet p ## type; \
-public: inline decPointerSet &Get ## type(){ return p ## type; } \
-public: inline void Add ## type( void *object ){ AddTracked( p ## type, object ); } \
-public: inline void Remove ## type( void *object ){ RemoveTracked( p ## type, object ); }
-	DECLARE_TRACKER( Component )
-	DECLARE_TRACKER( Microphone )
-	DECLARE_TRACKER( Model )
-	DECLARE_TRACKER( Skin )
-	DECLARE_TRACKER( Sound )
-	DECLARE_TRACKER( SoundLevelMeter )
-	DECLARE_TRACKER( Speaker )
-	DECLARE_TRACKER( SynthesizerInstance )
-	DECLARE_TRACKER( VideoPlayer )
-	DECLARE_TRACKER( World )
+public: inline decPointerSet &Get ## type(){return p ## type;} \
+public: inline void Add ## type(void *object){AddTracked(p ## type, object);} \
+public: inline void Remove ## type(void *object){RemoveTracked(p ## type, object);}
+	DECLARE_TRACKER(Component)
+	DECLARE_TRACKER(Microphone)
+	DECLARE_TRACKER(Model)
+	DECLARE_TRACKER(Skin)
+	DECLARE_TRACKER(Sound)
+	DECLARE_TRACKER(SoundLevelMeter)
+	DECLARE_TRACKER(Speaker)
+	DECLARE_TRACKER(SynthesizerInstance)
+	DECLARE_TRACKER(VideoPlayer)
+	DECLARE_TRACKER(World)
 	
-	void AddTracked( decPointerSet &list, void *object );
-	void RemoveTracked( decPointerSet &list, void *object );
+	void AddTracked(decPointerSet &list, void *object);
+	void RemoveTracked(decPointerSet &list, void *object);
 #endif
 };
 

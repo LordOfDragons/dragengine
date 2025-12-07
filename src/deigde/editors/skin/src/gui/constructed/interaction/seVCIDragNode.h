@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seVCIDragNode( seViewConstructedView &view );
+	seVCIDragNode(seViewConstructedView &view);
 	
 	/** \brief Clean up listener. */
 	virtual ~seVCIDragNode();
@@ -97,13 +97,13 @@ public:
 	/**
 	 * \brief Dragging ends.
 	 */
-	virtual void OnDragFinish( bool cancelled );
+	virtual void OnDragFinish(bool cancelled);
 	/*@}*/
 	
 	
 	
 protected:
-	bool pInsideMarker( const deCanvas &canvas, const decPoint &position ) const;
+	bool pInsideMarker(const deCanvas &canvas, const decPoint &position) const;
 	void pMove();
 	void pRotate();
 	void pResize();

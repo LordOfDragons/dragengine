@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainerFlow::igdeContainerFlow( igdeEnvironment &environment, eAxis axis,
-	eStretching stretching, int spacing ) :
-igdeContainer( environment ),
-pAxis( axis ),
-pStretching( stretching ),
-pSpacing( spacing )
+igdeContainerFlow::igdeContainerFlow(igdeEnvironment &environment, eAxis axis,
+	eStretching stretching, int spacing) :
+igdeContainer(environment),
+pAxis(axis),
+pStretching(stretching),
+pSpacing(spacing)
 {
-	if( spacing < 0 ){
-		DETHROW( deeInvalidParam );
+	if(spacing < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -59,41 +59,41 @@ igdeContainerFlow::~igdeContainerFlow(){
 // Management
 ///////////////
 
-void igdeContainerFlow::RemoveChild( igdeWidget *child ){
-	igdeContainer::RemoveChild( child );
+void igdeContainerFlow::RemoveChild(igdeWidget *child){
+	igdeContainer::RemoveChild(child);
 	
-	if( GetNativeWidget() ){
-		igdeNativeContainerFlow::ChildRemoved( *this, GetNativeWidget() );
+	if(GetNativeWidget()){
+		igdeNativeContainerFlow::ChildRemoved(*this, GetNativeWidget());
 	}
 }
 
 
 
 void igdeContainerFlow::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	void * const native = igdeNativeContainerFlow::CreateNativeWidget( *this );
-	SetNativeWidget( native );
-	igdeNativeContainerFlow::PostCreateNativeWidget( *this, native );
+	void * const native = igdeNativeContainerFlow::CreateNativeWidget(*this);
+	SetNativeWidget(native);
+	igdeNativeContainerFlow::PostCreateNativeWidget(*this, native);
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeContainerFlow::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
 	void * const native = GetNativeWidget();
 	DropNativeWidget();
-	igdeNativeContainerFlow::DestroyNativeWidget( *this, native );
+	igdeNativeContainerFlow::DestroyNativeWidget(*this, native);
 }
 
 void *igdeContainerFlow::GetNativeContainer() const{
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return NULL;
 	}
-	return igdeNativeContainerFlow::GetNativeContainer( *this, GetNativeWidget() );
+	return igdeNativeContainerFlow::GetNativeContainer(*this, GetNativeWidget());
 }

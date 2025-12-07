@@ -58,22 +58,22 @@ protected:
 	igdeUndo::Ref pUndo;
 	
 public:
-	cEditCurve( meWVNodeCurve &node ) : pNode( node ){ }
+	cEditCurve(meWVNodeCurve &node) : pNode(node){}
 	
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier ){
-		OnCurveChanging( viewCurveBezier );
+	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
+		OnCurveChanging(viewCurveBezier);
 		pUndo = NULL;
 	}
 	
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier ){
-		if( pUndo ){
-			( ( meUHTVRuleCurveSetCurve& )( igdeUndo& )pUndo ).SetNewCurve( viewCurveBezier->GetCurve() );
+	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
+		if(pUndo){
+			((meUHTVRuleCurveSetCurve&)(igdeUndo&)pUndo).SetNewCurve(viewCurveBezier->GetCurve());
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver( new meUHTVRuleCurveSetCurve( pNode.GetWindowVegetation().GetVLayer(),
-				pNode.GetRuleCurve(), viewCurveBezier->GetCurve() ) );
-			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( pUndo );
+			pUndo.TakeOver(new meUHTVRuleCurveSetCurve(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCurve(), viewCurveBezier->GetCurve()));
+			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(pUndo);
 		}
 	}
 };
@@ -88,15 +88,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeCurve::meWVNodeCurve( meWindowVegetation &windowVegetation, meHTVRuleCurve *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleCurve( rule )
+meWVNodeCurve::meWVNodeCurve(meWindowVegetation &windowVegetation, meHTVRuleCurve *rule) :
+meWVNode(windowVegetation, rule),
+pRuleCurve(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Curve" );
+	SetTitle("Curve");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env, "Value", "Value of curve at input value",
@@ -106,10 +106,10 @@ pRuleCurve( rule )
 		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(pFraParameters);
 	
-	helper.ViewCurveBezier( pFraParameters, pCurve, new cEditCurve( *this ) );
+	helper.ViewCurveBezier(pFraParameters, pCurve, new cEditCurve(*this));
 }
 
 meWVNodeCurve::~meWVNodeCurve(){
@@ -123,5 +123,5 @@ meWVNodeCurve::~meWVNodeCurve(){
 void meWVNodeCurve::Update(){
 	meWVNode::Update();
 	
-	pCurve->SetCurve( pRuleCurve->GetCurve() );
+	pCurve->SetCurve(pRuleCurve->GetCurve());
 }

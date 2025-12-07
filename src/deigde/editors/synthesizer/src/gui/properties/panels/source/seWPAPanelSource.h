@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPAPanelSource( seWPSource &wpSource, deSynthesizerSourceVisitorIdentify::eSourceTypes requiredType );
+	seWPAPanelSource(seWPSource &wpSource, deSynthesizerSourceVisitorIdentify::eSourceTypes requiredType);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent window. */
-	inline seWPSource &GetWPSource() const{ return pWPSource; }
+	inline seWPSource &GetWPSource() const{return pWPSource;}
 	
 	/** \brief Required source type. */
-	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetRequiredType() const{ return pRequiredType; }
+	inline deSynthesizerSourceVisitorIdentify::eSourceTypes GetRequiredType() const{return pRequiredType;}
 	
 	/** \brief Main window. */
 	seWindowMain &GetWindowMain() const;
@@ -117,7 +117,7 @@ public:
 	
 	
 	/** \brief Synthesizer changed. */
-	virtual void SetSynthesizer( seSynthesizer *synthesizer );
+	virtual void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Synthesizer path changed. */
 	virtual void OnSynthesizerPathChanged();
@@ -150,13 +150,13 @@ public:
 	void RemoveAllTargets();
 	
 	/** \brief Add target. */
-	void AddTarget( const char *name, seControllerTarget *target );
+	void AddTarget(const char *name, seControllerTarget *target);
 	
 	
 	
 	/** \brief Actions. */
-	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{return pActionLinkAdd;}
+	inline const igdeAction::Ref &GetActionLinkRemove() const{return pActionLinkRemove;}
 	/*@}*/
 };
 

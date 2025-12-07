@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUEffectStretchSetMaxPitch::seUEffectStretchSetMaxPitch( seEffectStretch *effect, float newPitch ) :
-pSource( NULL )
+seUEffectStretchSetMaxPitch::seUEffectStretchSetMaxPitch(seEffectStretch *effect, float newPitch) :
+pSource(NULL)
 {
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+	if(! effect){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Effect stretch set maximum pitch" );
+	SetShortInfo("Effect stretch set maximum pitch");
 	
 	pOldPitch = effect->GetMaxPitch();
 	pNewPitch = newPitch;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUEffectStretchSetMaxPitch::~seUEffectStretchSetMaxPitch(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUEffectStretchSetMaxPitch::~seUEffectStretchSetMaxPitch(){
 ///////////////
 
 void seUEffectStretchSetMaxPitch::Undo(){
-	pSource->SetMaxPitch( pOldPitch );
+	pSource->SetMaxPitch(pOldPitch);
 }
 
 void seUEffectStretchSetMaxPitch::Redo(){
-	pSource->SetMaxPitch( pNewPitch );
+	pSource->SetMaxPitch(pNewPitch);
 }

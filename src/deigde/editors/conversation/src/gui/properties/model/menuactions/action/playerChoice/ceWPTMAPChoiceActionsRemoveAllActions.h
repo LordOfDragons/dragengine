@@ -50,8 +50,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsRemoveAllActions( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice );
+	ceWPTMAPChoiceActionsRemoveAllActions(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice);
 	/*@}*/
 	
 	
@@ -59,10 +59,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
+	inline ceCAPlayerChoice *GetPlayerChoice() const{return pPlayerChoice;}
 
 	/** \brief Create undo action for adding action. */
 	virtual igdeUndo *CreateUndo();

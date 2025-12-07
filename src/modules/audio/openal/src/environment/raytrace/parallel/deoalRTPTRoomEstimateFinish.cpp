@@ -63,15 +63,15 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRTPTRoomEstimateFinish::deoalRTPTRoomEstimateFinish( deoalRTParallelEnvProbe &owner ) :
-deParallelTask( &owner.GetAudioThread().GetOal() ),
-pOwner( owner ),
-pRange( 0.0f ),
-pProbeConfig( NULL ),
-pRoomParameters( NULL )
+deoalRTPTRoomEstimateFinish::deoalRTPTRoomEstimateFinish(deoalRTParallelEnvProbe &owner) :
+deParallelTask(&owner.GetAudioThread().GetOal()),
+pOwner(owner),
+pRange(0.0f),
+pProbeConfig(NULL),
+pRoomParameters(NULL)
 {
-	SetMarkFinishedAfterRun( true );
-	SetLowPriority( true );
+	SetMarkFinishedAfterRun(true);
+	SetLowPriority(true);
 }
 
 deoalRTPTRoomEstimateFinish::~deoalRTPTRoomEstimateFinish(){
@@ -82,29 +82,29 @@ deoalRTPTRoomEstimateFinish::~deoalRTPTRoomEstimateFinish(){
 // Manegement
 ///////////////
 
-void deoalRTPTRoomEstimateFinish::AddDependencies( const decPointerList &tasks ){
+void deoalRTPTRoomEstimateFinish::AddDependencies(const decPointerList &tasks){
 	const int count = tasks.GetCount();
 	int i;
 	
 	pTasks.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		deParallelTask * const task = ( deParallelTask* )tasks.GetAt( i );
-		AddDependsOn( task );
-		pTasks.Add( task );
+	for(i=0; i<count; i++){
+		deParallelTask * const task = (deParallelTask*)tasks.GetAt(i);
+		AddDependsOn(task);
+		pTasks.Add(task);
 	}
 }
 
-void deoalRTPTRoomEstimateFinish::SetRange( float range ){
+void deoalRTPTRoomEstimateFinish::SetRange(float range){
 	pRange = range;
 }
 
-void deoalRTPTRoomEstimateFinish::SetProbeConfig( const deoalRayTraceConfig *probeConfig ){
+void deoalRTPTRoomEstimateFinish::SetProbeConfig(const deoalRayTraceConfig *probeConfig){
 	pProbeConfig = probeConfig;
 }
 
 void deoalRTPTRoomEstimateFinish::SetRoomParameters(
-deoalRTParallelEnvProbe::sRoomParameters *roomParameters ){
+deoalRTParallelEnvProbe::sRoomParameters *roomParameters){
 	pRoomParameters = roomParameters;
 }
 
@@ -114,20 +114,20 @@ void deoalRTPTRoomEstimateFinish::Run(){
 	try{
 		pRun();
 		
-	}catch( ... ){
+	}catch(...){
 		Cancel();
-		pOwner.FinishTaskFinished( this );
+		pOwner.FinishTaskFinished(this);
 		throw;
 	}
 	
-	pOwner.FinishTaskFinished( this );
+	pOwner.FinishTaskFinished(this);
 }
 
 void deoalRTPTRoomEstimateFinish::Finished(){
-	if( IsCancelled() ){
-		pOwner.FinishTaskFinished( this );
+	if(IsCancelled()){
+		pOwner.FinishTaskFinished(this);
 	}
-	pOwner.Enable( this );
+	pOwner.Enable(this);
 }
 
 
@@ -163,19 +163,19 @@ void deoalRTPTRoomEstimateFinish::pRun(){
 	pRoomParameters->avgAbsorptionMedium = 0.0f;
 	pRoomParameters->avgAbsorptionHigh = 0.0f;
 	
-	for( i=0; i<taskCount; i++ ){
-		const deoalRTPTRoomEstimate &task = *( ( deoalRTPTRoomEstimate* )pTasks.GetAt( i ) );
-		if( task.IsCancelled() ){
-			DETHROW( deeInvalidAction ); // task failed
+	for(i=0; i<taskCount; i++){
+		const deoalRTPTRoomEstimate &task = *((deoalRTPTRoomEstimate*)pTasks.GetAt(i));
+		if(task.IsCancelled()){
+			DETHROW(deeInvalidAction); // task failed
 		}
 		
-		if( i == 0 ){
+		if(i == 0){
 			pRoomParameters->minExtend = task.GetMinExtend();
 			pRoomParameters->maxExtend = task.GetMaxExtend();
 			
 		}else{
-			pRoomParameters->minExtend.SetSmallest( task.GetMinExtend() );
-			pRoomParameters->maxExtend.SetLargest( task.GetMaxExtend() );
+			pRoomParameters->minExtend.SetSmallest(task.GetMinExtend());
+			pRoomParameters->maxExtend.SetLargest(task.GetMaxExtend());
 		}
 		
 		pRoomParameters->roomVolume += task.GetRoomVolume();
@@ -189,9 +189,9 @@ void deoalRTPTRoomEstimateFinish::pRun(){
 		hitCount += task.GetHitCount();
 	}
 	
-	if( hitCount < pProbeConfig->GetRayCount() ){
+	if(hitCount < pProbeConfig->GetRayCount()){
 		// rays hit nothing count as hitting with absorption=1 at distance=range
-		float factor = pRange * pRange * ( float )( pProbeConfig->GetRayCount() - hitCount );
+		float factor = pRange * pRange * (float)(pProbeConfig->GetRayCount() - hitCount);
 		pRoomParameters->roomVolume += factor * pRange;
 		
 		pRoomParameters->sabineMedium += factor; // absorption = 1 for all frequencies
@@ -211,7 +211,7 @@ void deoalRTPTRoomEstimateFinish::pRun(){
 	pRoomParameters->roomSurface *= pProbeConfig->GetRayUnitSurface();
 	pRoomParameters->roomVolume *= pProbeConfig->GetRayUnitVolume();
 	
-	const float invAbsorptionCount = 1.0f / ( float )pProbeConfig->GetRayCount();
+	const float invAbsorptionCount = 1.0f / (float)pProbeConfig->GetRayCount();
 	pRoomParameters->avgAbsorptionLow *= invAbsorptionCount;
 	pRoomParameters->avgAbsorptionMedium *= invAbsorptionCount;
 	pRoomParameters->avgAbsorptionHigh *= invAbsorptionCount;
@@ -222,13 +222,13 @@ void deoalRTPTRoomEstimateFinish::pRun(){
 	pRoomParameters->reverberationTimeHigh = 0.0f;
 	
 	const float factorRevTime = pRoomParameters->roomVolume * REVERB_TIME_FACTOR;
-	if( pRoomParameters->sabineLow > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->sabineLow > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeLow = factorRevTime / pRoomParameters->sabineLow;
 	}
-	if( pRoomParameters->sabineMedium > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->sabineMedium > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeMedium = factorRevTime / pRoomParameters->sabineMedium;
 	}
-	if( pRoomParameters->sabineHigh > FLOAT_SAFE_EPSILON ){
+	if(pRoomParameters->sabineHigh > FLOAT_SAFE_EPSILON){
 		pRoomParameters->reverberationTimeHigh = factorRevTime / pRoomParameters->sabineHigh;
 	}
 	
@@ -240,7 +240,7 @@ void deoalRTPTRoomEstimateFinish::pRun(){
 	pRoomParameters->roomAbsorptionLow = 0.0f;
 	pRoomParameters->roomAbsorptionMedium = 0.0f;
 	pRoomParameters->roomAbsorptionHigh = 0.0f;
-	if( pRoomParameters->roomSurface > FLOAT_EPSILON ){
+	if(pRoomParameters->roomSurface > FLOAT_EPSILON){
 		const float invRoomSurface = 1.0f / pRoomParameters->roomSurface;
 		pRoomParameters->roomAbsorptionLow = pRoomParameters->sabineLow * invRoomSurface;
 		pRoomParameters->roomAbsorptionMedium = pRoomParameters->sabineMedium * invRoomSurface;

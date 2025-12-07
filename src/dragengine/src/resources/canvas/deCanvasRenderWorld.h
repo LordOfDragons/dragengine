@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasRenderWorld( deCanvasManager *manager );
+	deCanvasRenderWorld(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera or NULL if not set. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline deCamera *GetCamera() const{return pCamera;}
 	
 	/** \brief Set camera or NULL to unset. */
-	void SetCamera( deCamera *camera );
+	void SetCamera(deCamera *camera);
 	/*@}*/
 	
 	
@@ -76,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 };
 

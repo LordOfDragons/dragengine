@@ -38,38 +38,38 @@
 ////////////////
 
 decColor::decColor() :
-r( 0.0f ),
-g( 0.0f ),
-b( 0.0f ),
-a( 1.0f ){
+r(0.0f),
+g(0.0f),
+b(0.0f),
+a(1.0f){
 }
 
-decColor::decColor( float red, float green, float blue ) :
-r( red ),
-g( green ),
-b( blue ),
-a( 1.0f ){
+decColor::decColor(float red, float green, float blue) :
+r(red),
+g(green),
+b(blue),
+a(1.0f){
 }
 
-decColor::decColor( float red, float green, float blue, float alpha ) :
-r( red ),
-g( green ),
-b( blue ),
-a( alpha ){
+decColor::decColor(float red, float green, float blue, float alpha) :
+r(red),
+g(green),
+b(blue),
+a(alpha){
 }
 
-decColor::decColor( const decColor &copy ) :
-r( copy.r ),
-g( copy.g ),
-b( copy.b ),
-a( copy.a ){
+decColor::decColor(const decColor &copy) :
+r(copy.r),
+g(copy.g),
+b(copy.b),
+a(copy.a){
 }
 
-decColor::decColor( const decColor &copy, float alpha ) :
-r( copy.r ),
-g( copy.g ),
-b( copy.b ),
-a( alpha ){
+decColor::decColor(const decColor &copy, float alpha) :
+r(copy.r),
+g(copy.g),
+b(copy.b),
+a(alpha){
 }
 
 
@@ -79,21 +79,21 @@ a( alpha ){
 
 decColor decColor::Normalized() const{
 	return decColor(
-		decMath::clamp( r, 0.0f, 1.0f ),
-		decMath::clamp( g, 0.0f, 1.0f ),
-		decMath::clamp( b, 0.0f, 1.0f ),
-		decMath::clamp( a, 0.0f, 1.0f ) );
+		decMath::clamp(r, 0.0f, 1.0f),
+		decMath::clamp(g, 0.0f, 1.0f),
+		decMath::clamp(b, 0.0f, 1.0f),
+		decMath::clamp(a, 0.0f, 1.0f));
 }
 
 void decColor::Normalize(){
-	r = decMath::clamp( r, 0.0f, 1.0f );
-	g = decMath::clamp( g, 0.0f, 1.0f );
-	b = decMath::clamp( b, 0.0f, 1.0f );
-	a = decMath::clamp( a, 0.0f, 1.0f );
+	r = decMath::clamp(r, 0.0f, 1.0f);
+	g = decMath::clamp(g, 0.0f, 1.0f);
+	b = decMath::clamp(b, 0.0f, 1.0f);
+	a = decMath::clamp(a, 0.0f, 1.0f);
 }
 
 decColor decColor::Inverted() const{
-	return decColor( 1.0f - r, 1.0f - g, 1.0f - b, a );
+	return decColor(1.0f - r, 1.0f - g, 1.0f - b, a);
 }
 
 void decColor::Invert(){
@@ -109,24 +109,24 @@ void decColor::SetZero(){
 	a = 1.0f;
 }
 
-void decColor::Set( float red, float green, float blue ){
+void decColor::Set(float red, float green, float blue){
 	r = red;
 	g = green;
 	b = blue;
 }
 
-void decColor::Set( float red, float green, float blue, float alpha ){
+void decColor::Set(float red, float green, float blue, float alpha){
 	r = red;
 	g = green;
 	b = blue;
 	a = alpha;
 }
 
-bool decColor::IsEqualTo( const decColor &copy, float threshold ) const{
-	return fabsf( r - copy.r ) < threshold
-		&& fabsf( g - copy.g ) < threshold
-		&& fabsf( b - copy.b ) < threshold
-		&& fabsf( a - copy.a ) < threshold;
+bool decColor::IsEqualTo(const decColor &copy, float threshold) const{
+	return fabsf(r - copy.r) < threshold
+		&& fabsf(g - copy.g) < threshold
+		&& fabsf(b - copy.b) < threshold
+		&& fabsf(a - copy.a) < threshold;
 }
 
 
@@ -134,7 +134,7 @@ bool decColor::IsEqualTo( const decColor &copy, float threshold ) const{
 // Operators
 //////////////
 
-decColor &decColor::operator=( const decColor &color ){
+decColor &decColor::operator=(const decColor &color){
 	r = color.r;
 	g = color.g;
 	b = color.b;
@@ -142,7 +142,7 @@ decColor &decColor::operator=( const decColor &color ){
 	return *this;
 }
 
-decColor &decColor::operator+=( const decColor &color ){
+decColor &decColor::operator+=(const decColor &color){
 	r += color.r;
 	g += color.g;
 	b += color.b;
@@ -150,7 +150,7 @@ decColor &decColor::operator+=( const decColor &color ){
 	return *this;
 }
 
-decColor &decColor::operator-=( const decColor &color ){
+decColor &decColor::operator-=(const decColor &color){
 	r -= color.r;
 	g -= color.g;
 	b -= color.b;
@@ -158,7 +158,7 @@ decColor &decColor::operator-=( const decColor &color ){
 	return *this;
 }
 
-decColor &decColor::operator*=( float scalar ){
+decColor &decColor::operator*=(float scalar){
 	r *= scalar;
 	g *= scalar;
 	b *= scalar;
@@ -166,9 +166,9 @@ decColor &decColor::operator*=( float scalar ){
 	return *this;
 }
 
-decColor &decColor::operator/=( float scalar ){
-	if( scalar == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decColor &decColor::operator/=(float scalar){
+	if(scalar == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	const float factor = 1.0f / scalar;
@@ -179,26 +179,26 @@ decColor &decColor::operator/=( float scalar ){
 	return *this;
 }
 
-decColor decColor::operator+( const decColor &color ) const{
-	return decColor( r + color.r, g + color.g, b + color.b, a + color.a );
+decColor decColor::operator+(const decColor &color) const{
+	return decColor(r + color.r, g + color.g, b + color.b, a + color.a);
 }
 
-decColor decColor::operator-( const decColor &color ) const{
-	return decColor( r - color.r, g - color.g, b - color.b, a - color.a );
+decColor decColor::operator-(const decColor &color) const{
+	return decColor(r - color.r, g - color.g, b - color.b, a - color.a);
 }
 
-decColor decColor::operator*( float scalar ) const{
-	return decColor( r * scalar, g * scalar, b * scalar, a * scalar );
+decColor decColor::operator*(float scalar) const{
+	return decColor(r * scalar, g * scalar, b * scalar, a * scalar);
 }
 
-decColor decColor::operator*( const decColor &color ) const{
-	return decColor( r * color.r, g * color.g, b * color.b, a * color.a );
+decColor decColor::operator*(const decColor &color) const{
+	return decColor(r * color.r, g * color.g, b * color.b, a * color.a);
 }
 
-decColor decColor::operator/( float scalar ) const{
-	if( scalar == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decColor decColor::operator/(float scalar) const{
+	if(scalar == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	const float factor = 1.0f / scalar;
-	return decColor( r * factor, g * factor, b * factor, a * factor );
+	return decColor(r * factor, g * factor, b * factor, a * factor);
 }

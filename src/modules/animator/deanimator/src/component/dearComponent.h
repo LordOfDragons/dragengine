@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	dearComponent( deDEAnimator &module, deComponent &component );
+	dearComponent(deDEAnimator &module, deComponent &component);
 	
 	/** Clean up peer. */
 	virtual ~dearComponent();
@@ -69,38 +69,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deDEAnimator &GetModule(){ return pModule; }
-	inline const deDEAnimator &GetModule() const{ return pModule; }
+	inline deDEAnimator &GetModule(){return pModule;}
+	inline const deDEAnimator &GetModule() const{return pModule;}
 	
 	/** Component resource. */
-	inline deComponent &GetComponent() const{ return pComponent; }
+	inline deComponent &GetComponent() const{return pComponent;}
 	
 	
 	
 	/** Bone states. */
-	inline dearComponentBoneState *GetBoneStates() const{ return pBoneStates; }
+	inline dearComponentBoneState *GetBoneStates() const{return pBoneStates;}
 	
 	/** Number of bone states. */
-	inline int GetBoneStateCount() const{ return pBoneStateCount; }
+	inline int GetBoneStateCount() const{return pBoneStateCount;}
 	
 	/** Bone state at index. */
-	dearComponentBoneState &GetBoneStateAt( int index ) const;
+	dearComponentBoneState &GetBoneStateAt(int index) const;
 	
 	
 	
 	/** Vertex position set states. */
-	inline dearComponentVPSState *GetVPSStates() const{ return pVPSStates; }
+	inline dearComponentVPSState *GetVPSStates() const{return pVPSStates;}
 	
 	/** Count of vertex position set states. */
-	inline int GetVPSStateCount() const{ return pVPSStateCount; }
+	inline int GetVPSStateCount() const{return pVPSStateCount;}
 	
 	/** Vertex position set state at index. */
-	dearComponentVPSState &GetVPSStateAt( int index ) const;
+	dearComponentVPSState &GetVPSStateAt(int index) const;
 	
 	
 	
 	/** Component matrix. */
-	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decDMatrix &GetMatrix() const{return pMatrix;}
 	
 	
 	

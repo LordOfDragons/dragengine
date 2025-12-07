@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resource filename. */
-	deResource *GetWithFilename( deVirtualFileSystem *vfs, const char *filename ) const;
+	deResource *GetWithFilename(deVirtualFileSystem *vfs, const char *filename) const;
 	/*@}*/
 };
 

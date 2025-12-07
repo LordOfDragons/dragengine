@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	seDialogAddProperty( seWindowMain &windowMain );
+	seDialogAddProperty(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -69,13 +69,13 @@ public:
 	decStringSet GetSelectedPropertyNames() const;
 	
 	/** \brief Set selected property names. */
-	void SetSelectedPropertyNames( const decStringSet &list );
+	void SetSelectedPropertyNames(const decStringSet &list);
 	
 	/** \brief Custom property name. */
 	const decString &GetCustomPropertyName() const;
 	
 	/** \brief Set custom property name. */
-	void SetCustomPropertyName( const char *name );
+	void SetCustomPropertyName(const char *name);
 	/*@}*/
 	
 	

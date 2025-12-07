@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file search visitor. */
-	deCollectDirectorySearchVisitor( bool recursive = false );
+	deCollectDirectorySearchVisitor(bool recursive = false);
 	
 	/** \brief Clean up file search visitor. */
 	virtual ~deCollectDirectorySearchVisitor();
@@ -57,14 +57,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable recursion. */
-	inline bool GetRecursion() const{ return pRecursion; }
+	inline bool GetRecursion() const{return pRecursion;}
 	
 	/** \brief Set if recursion is enabled. */
-	void SetRecursion( bool recursion );
+	void SetRecursion(bool recursion);
 	
 	/** \brief Found directories. */
-	inline dePathList &GetDirectories(){ return pDirectories; }
-	inline const dePathList &GetDirectories() const{ return pDirectories; }
+	inline dePathList &GetDirectories(){return pDirectories;}
+	inline const dePathList &GetDirectories() const{return pDirectories;}
 	/*@}*/
 	
 	
@@ -78,7 +78,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path);
 	
 	/**
 	 * \brief Visit directory.
@@ -87,7 +87,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path);
 	
 	/**
 	 * \brief Visit special.
@@ -96,7 +96,7 @@ public:
 	 * \retval true Continue searching.
 	 * \retval false Stop searching.
 	 */
-	virtual bool VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path );
+	virtual bool VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path);
 	/*@}*/
 };
 

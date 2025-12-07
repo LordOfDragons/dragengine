@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	peeWPUndoHistory( igdeEnvironment &environment );
+	peeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline peeEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	/*@}*/
 };
 

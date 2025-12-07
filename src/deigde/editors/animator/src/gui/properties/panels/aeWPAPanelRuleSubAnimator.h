@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRuleSubAnimator( aeWPRule &wpRule );
+	aeWPAPanelRuleSubAnimator(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

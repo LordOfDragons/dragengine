@@ -74,8 +74,8 @@ private:
 	typedef deTObjectReference<deoglRLight> Ref;
 
 
-		WorldComputeElement( deoglRLight &light );
-		virtual void UpdateData( sDataElement &data ) const;
+		WorldComputeElement(deoglRLight &light);
+		virtual void UpdateData(sDataElement &data) const;
 	};
 	
 	
@@ -177,7 +177,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render light. */
-	deoglRLight( deoglRenderThread &renderThread );
+	deoglRLight(deoglRenderThread &renderThread);
 	
 	/** Clean up render light. */
 	virtual ~deoglRLight();
@@ -188,171 +188,171 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** Set parent world or \em NULL if not in a world. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	/** Octree node or \em NULL if not inserted into the parent world octree. */
-	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
+	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
 	
 	/**
 	 * Set octree node or \em NULL if not inserted into the parent world octree.
 	 * \details This call is to be used only by the deoglWorldOctree only.
 	 */
-	void SetOctreeNode( deoglWorldOctree *octreeNode );
+	void SetOctreeNode(deoglWorldOctree *octreeNode);
 	
 	/** Update octree node. */
 	void UpdateOctreeNode();
 	
 	/** Update light skin if used. */
-	void UpdateSkin( float elapsed );
+	void UpdateSkin(float elapsed);
 	
 	
 	
 	/** Light is active. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	
 	/** Set light is active. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** Light type. */
-	inline deLight::eLightTypes GetLightType() const{ return pLightType; }
+	inline deLight::eLightTypes GetLightType() const{return pLightType;}
 	
 	/** Set light type. */
-	void SetLightType( deLight::eLightTypes type );
+	void SetLightType(deLight::eLightTypes type);
 	
 	/** Light casts shadows. */
-	inline bool GetCastShadows() const{ return pCastShadows; }
+	inline bool GetCastShadows() const{return pCastShadows;}
 	
 	/** Set if light casts shadows. */
-	void SetCastShadows( bool castShadows );
+	void SetCastShadows(bool castShadows);
 	
 	/** Outer spot Angle. */
-	inline float GetSpotAngle() const{ return pSpotAngle; }
+	inline float GetSpotAngle() const{return pSpotAngle;}
 	
 	/** Set outer spot angle. */
-	void SetSpotAngle( float angle );
+	void SetSpotAngle(float angle);
 	
 	/** Spot ratio as height divided by width. */
-	inline float GetSpotRatio() const{ return pSpotRatio; }
+	inline float GetSpotRatio() const{return pSpotRatio;}
 	
 	/** Set spot ratio as height divided by width. */
-	void SetSpotRatio( float ratio );
+	void SetSpotRatio(float ratio);
 	
 	/** Spot smoothness. */
-	inline float GetSpotSmoothness() const{ return pSpotSmoothness; }
+	inline float GetSpotSmoothness() const{return pSpotSmoothness;}
 	
 	/** Set spot smoothness. */
-	void SetSpotSmoothness( float smoothness );
+	void SetSpotSmoothness(float smoothness);
 	
 	/** Spot exponent. */
-	inline float GetSpotExponent() const{ return pSpotExponent; }
+	inline float GetSpotExponent() const{return pSpotExponent;}
 	
 	/** Set spot exponent. */
-	void SetSpotExponent( float exponent );
+	void SetSpotExponent(float exponent);
 	
 	/** Movement hint. */
-	inline deLight::eMovementHints GetHintMovement() const{ return pHintMovement; }
+	inline deLight::eMovementHints GetHintMovement() const{return pHintMovement;}
 	
 	/** Set movement hint. */
-	void SetHintMovement( deLight::eMovementHints movement );
+	void SetHintMovement(deLight::eMovementHints movement);
 	
 	/** Shadow importance. */
-	inline int GetHintShadowImportance() const{ return pHintShadowImportance; }
+	inline int GetHintShadowImportance() const{return pHintShadowImportance;}
 	
 	/** Set shadow importance. */
-	void SetHintShadowImportance( int importance );
+	void SetHintShadowImportance(int importance);
 	
 	/** Intensity. */
-	inline float GetIntensity() const{ return pIntensity; }
+	inline float GetIntensity() const{return pIntensity;}
 	
 	/** Set intensity. */
-	void SetIntensity( float intensity );
+	void SetIntensity(float intensity);
 	
 	/** Ambient intensity ratio. */
-	inline float GetAmbientRatio() const{ return pAmbientRatio; }
+	inline float GetAmbientRatio() const{return pAmbientRatio;}
 	
 	/** Set ambient intensity ratio. */
-	void SetAmbientRatio( float ratio );
+	void SetAmbientRatio(float ratio);
 	
 	/** Light canvas or \em NULL if not used. */
-	inline deoglRCanvasView *GetLightCanvas() const{ return pLightCanvas; }
+	inline deoglRCanvasView *GetLightCanvas() const{return pLightCanvas;}
 	
 	/** Set light canvas or \em NULL if not used. */
-	void SetLightCanvas( deoglRCanvasView *canvas );
+	void SetLightCanvas(deoglRCanvasView *canvas);
 	
 	/** Light color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** Set light color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** Camera layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** Set camera layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Shadow layer mask. */
-	inline const decLayerMask &GetLayerMaskShadow() const{ return pLayerMaskShadow; }
+	inline const decLayerMask &GetLayerMaskShadow() const{return pLayerMaskShadow;}
 	
 	/** Set shadow layer mask. */
-	void SetLayerMaskShadow( const decLayerMask &layerMask );
+	void SetLayerMaskShadow(const decLayerMask &layerMask);
 	
 	/** Remove all shadow ignore components. */
 	void RemoveAllShadowIgnoreComponents();
 	
 	/** Add shadow ignore component. */
-	void AddShadowIgnoreComponent( deoglRComponent *component );
+	void AddShadowIgnoreComponent(deoglRComponent *component);
 	
 	/** Has shadow ignore component. */
-	bool HasShadowIgnoreComponent( deoglRComponent *component ) const;
+	bool HasShadowIgnoreComponent(deoglRComponent *component) const;
 	
 	/**
 	 * Check if camera layer mask matches light/shadow layer masks.
 	 * 
 	 * Static shadow maps are only valid if this method returns true.
 	 */
-	bool StaticMatchesCamera( const decLayerMask &layerMask ) const;
+	bool StaticMatchesCamera(const decLayerMask &layerMask) const;
 	
 	
 	
 	/** Light skin or \em NULL if not used. */
-	inline deoglRSkin *GetLightSkin() const{ return pLightSkin; }
+	inline deoglRSkin *GetLightSkin() const{return pLightSkin;}
 	
 	/** Set light skin or \em NULL if not used. */
-	void SetLightSkin( deoglRSkin *skin );
+	void SetLightSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not used. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline deoglRDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
 	
 	/** Set dynamic skin or \em NULL if not used. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Light texture coordinate transformation matrix. */
-	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
+	inline const decTexMatrix2 &GetTransform() const{return pTransform;}
 	
 	/** Set light texture coordinate transformation matrix. */
-	void SetTransform( const decTexMatrix2 &matrix );
+	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** Skin state or \em NULL if not used. */
-	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
+	inline deoglSkinState *GetSkinState() const{return pSkinState;}
 	
 	/** Skin texture to use or \em NULL. */
-	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
+	inline deoglSkinTexture *GetUseSkinTexture() const{return pUseSkinTexture;}
 	
 	void InitSkinStateStates();
 	void UpdateSkinStateStates();
 	
 	void DirtyPrepareSkinStateRenderables();
-	void PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
-	void RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
+	void RenderSkinStateRenderables(const deoglRenderPlanMasked *renderPlanMask);
 	void PrepareSkinStateConstructed();
 	
 	void DynamicSkinRenderablesChanged();
@@ -363,30 +363,30 @@ public:
 	
 	
 	/** Transformation matrix. */
-	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decDMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** Inverse transformation matrix. */
-	inline const decDMatrix &GetInverseMatrix() const{ return pInverseMatrix; }
+	inline const decDMatrix &GetInverseMatrix() const{return pInverseMatrix;}
 	
 	/** Set matrices. */
-	void SetMatrix( const decDMatrix &matrix );
+	void SetMatrix(const decDMatrix &matrix);
 	
 	
 	
 	/** Full minimum extend. */
-	inline const decDVector &GetFullMinExtend() const{ return pFullMinExtend; }
+	inline const decDVector &GetFullMinExtend() const{return pFullMinExtend;}
 	
 	/** Full maximum extend. */
-	inline const decDVector &GetFullMaxExtend() const{ return pFullMaxExtend; }
+	inline const decDVector &GetFullMaxExtend() const{return pFullMaxExtend;}
 	
 	/** Mark full extends dirty. */
 	void SetDirtyFullExtends();
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
 	
 	/** Mark extends dirty. */
 	void SetDirtyExtends();
@@ -394,21 +394,21 @@ public:
 	
 	
 	/** Marked. */
-	inline bool GetMarked() const{ return pMarked; }
+	inline bool GetMarked() const{return pMarked;}
 	
 	/** Set marked. */
-	inline void SetMarked( bool marked ){ pMarked = marked; }
+	inline void SetMarked(bool marked){pMarked = marked;}
 	
 	
 	
 	/** Convex light volume. */
-	inline decConvexVolumeList *GetConvexVolumeList() const{ return pConvexVolumeList; }
+	inline decConvexVolumeList *GetConvexVolumeList() const{return pConvexVolumeList;}
 	
 	/** Has extends. */
 	bool HasExtends() const;
 	
 	/** Collision volume. */
-	inline deoglDCollisionVolume *GetCollisionVolume() const{ return pColVol; }
+	inline deoglDCollisionVolume *GetCollisionVolume() const{return pColVol;}
 	
 	/** Mark collision volume dirty. */
 	void SetDirtyCollisionVolume();
@@ -416,12 +416,12 @@ public:
 	
 	
 	/** Static component list. */
-	inline deoglComponentSet &GetStaticComponentList(){ return pStaticComponentList; }
-	inline const deoglComponentSet &GetStaticComponentList() const{ return pStaticComponentList; }
+	inline deoglComponentSet &GetStaticComponentList(){return pStaticComponentList;}
+	inline const deoglComponentSet &GetStaticComponentList() const{return pStaticComponentList;}
 	
 	/** Dynamic component list. */
-	inline deoglComponentSet &GetDynamicComponentList(){ return pDynamicComponentList; }
-	inline const deoglComponentSet &GetDynamicComponentList() const{ return pDynamicComponentList; }
+	inline deoglComponentSet &GetDynamicComponentList(){return pDynamicComponentList;}
+	inline const deoglComponentSet &GetDynamicComponentList() const{return pDynamicComponentList;}
 	
 	/**
 	 * Static collide list.
@@ -444,13 +444,13 @@ public:
 	void SetLightVolumeDirty();
 	
 	/** Light volume. */
-	inline deoglLightVolume *GetLightVolume() const{ return pLightVolume; }
+	inline deoglLightVolume *GetLightVolume() const{return pLightVolume;}
 	
 	/** Light volume crop box or \em NULL if not set. */
-	inline decShapeBox *GetLightVolumeCropBox() const{ return pLightVolumeCropBox; }
+	inline decShapeBox *GetLightVolumeCropBox() const{return pLightVolumeCropBox;}
 	
 	/** Set light volume crop box or NULL if not set. */
-	void SetLightVolumeCropBox( decShapeBox *box );
+	void SetLightVolumeCropBox(decShapeBox *box);
 	
 	
 	
@@ -467,19 +467,19 @@ public:
 	
 	
 	/** Range. */
-	inline float GetRange() const{ return pRange; }
+	inline float GetRange() const{return pRange;}
 	
 	/** Attenuation coefficient. */
-	inline float GetAttenuationCoefficient() const{ return pAttenCoeff; }
+	inline float GetAttenuationCoefficient() const{return pAttenCoeff;}
 	
 	/** Damping coefficient. */
-	inline float GetDampingCoefficient() const{ return pDampCoeff; }
+	inline float GetDampingCoefficient() const{return pDampCoeff;}
 	
 	/** Damping threshold. */
-	inline float GetDampingThreshold() const{ return pDampThreshold; }
+	inline float GetDampingThreshold() const{return pDampThreshold;}
 	
 	/** Update attenuation parameters. */
-	void UpdateAttenuation( float range, float halfIntensityDistance );
+	void UpdateAttenuation(float range, float halfIntensityDistance);
 	
 	
 	
@@ -495,10 +495,10 @@ public:
 	void EarlyPrepareForRender();
 	
 	/** Prepare for rendering. */
-	void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Prepare for rendering render. */
-	void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	void PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	
 	
@@ -531,8 +531,8 @@ public:
 	void PrepareQuickDispose();
 	
 	/** Compute shader octree index. */
-	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
-	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
+	inline uint32_t GetCSOctreeIndex() const{return pCSOctreeIndex;}
+	void SetCSOctreeIndex(uint32_t index){pCSOctreeIndex = index;}
 	/*@}*/
 	
 	
@@ -540,10 +540,10 @@ public:
 	/** \name Components */
 	/*@{*/
 	/** Add a component. */
-	void AddComponent( deoglRComponent *component );
+	void AddComponent(deoglRComponent *component);
 	
 	/** Remove a component. */
-	void RemoveComponent( deoglRComponent *component );
+	void RemoveComponent(deoglRComponent *component);
 	
 	/** Remove all components. */
 	void RemoveAllComponents();
@@ -554,7 +554,7 @@ public:
 	 *          list of touching component if not already listed. If not touching the
 	 *          component is removed if listed.
 	 */
-	void TestComponent( deoglRComponent *oglComponent );
+	void TestComponent(deoglRComponent *oglComponent);
 	/*@}*/
 	
 	
@@ -565,10 +565,10 @@ public:
 	void LightVolumeImproved();
 	
 	/** Replace light volume with an improved version. */
-	void ReplaceLightVolume( decConvexVolumeList *list );
+	void ReplaceLightVolume(decConvexVolumeList *list);
 	
 	/** Replace shadow caster with an improved version. */
-	void ReplaceShadowCaster( deoglShadowCaster *shadowCaster );
+	void ReplaceShadowCaster(deoglShadowCaster *shadowCaster);
 	/*@}*/
 	
 	
@@ -579,23 +579,23 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
+	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
 	
 	/**
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	
 	
 	
-	inline deoglRLight *GetLLWorldPrev() const{ return pLLWorldPrev; }
-	void SetLLWorldPrev( deoglRLight *light );
-	inline deoglRLight *GetLLWorldNext() const{ return pLLWorldNext; }
-	void SetLLWorldNext( deoglRLight *light );
+	inline deoglRLight *GetLLWorldPrev() const{return pLLWorldPrev;}
+	void SetLLWorldPrev(deoglRLight *light);
+	inline deoglRLight *GetLLWorldNext() const{return pLLWorldNext;}
+	void SetLLWorldNext(deoglRLight *light);
 	
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){return pLLPrepareForRenderWorld;}
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{return pLLPrepareForRenderWorld;}
 	/*@}*/
 	
 private:

@@ -25,7 +25,7 @@ private:
 	QStringListModel *pModelPathInclude;
 	
 public:
-	ProjectConfigPage( IPlugin *self, const KDevelop::ProjectConfigOptions &options, QWidget *parent );
+	ProjectConfigPage(IPlugin *self, const KDevelop::ProjectConfigOptions &options, QWidget *parent);
 	~ProjectConfigPage();
 	
 	QString name() const override;

@@ -61,15 +61,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOForceField::gdeVAOForceField( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCForceField *ocfield ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCForceField( ocfield ),
-pDDSCenter( NULL ),
-pDDSCoordSystem( NULL )
+gdeVAOForceField::gdeVAOForceField(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCForceField *ocfield) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCForceField(ocfield),
+pDDSCenter(NULL),
+pDDSCoordSystem(NULL)
 {
-	if( ! ocfield ){
-		DETHROW( deeInvalidParam );
+	if(! ocfield){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOCForceField->AddReference();
@@ -82,7 +82,7 @@ pDDSCoordSystem( NULL )
 		
 		AttachResources();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -109,41 +109,41 @@ void gdeVAOForceField::RebuildResources(){
 }
 
 void gdeVAOForceField::AttachResources(){
-	if( ! pForceField ){
+	if(! pForceField){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if( ! attachCollider ){
+	if(! attachCollider){
 		return;
 	}
 	
 	const decVector &position = pOCForceField->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCForceField->GetRotation() * DEG2RAD ) );
+	const decQuaternion orientation(decQuaternion::CreateFromEuler(
+		pOCForceField->GetRotation() * DEG2RAD));
 	
 	deColliderAttachment *attachment = NULL;
 	try{
 		// attach particleEmitter
-		attachment = new deColliderAttachment( pForceField );
-		attachment->SetPosition( position );
-		attachment->SetOrientation( orientation );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		attachment = new deColliderAttachment(pForceField);
+		attachment->SetPosition(position);
+		attachment->SetOrientation(orientation);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
-		attachCollider->AddAttachment( attachment );
+		attachCollider->AddAttachment(attachment);
 		attachment = NULL;
 		
 		// attach debug drawer
-		attachment = new deColliderAttachment( pDebugDrawer );
-		attachment->SetPosition( position );
-		attachment->SetOrientation( orientation );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		attachment = new deColliderAttachment(pDebugDrawer);
+		attachment->SetPosition(position);
+		attachment->SetOrientation(orientation);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		
-		attachCollider->AddAttachment( attachment );
+		attachCollider->AddAttachment(attachment);
 		attachment = NULL;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -151,24 +151,24 @@ void gdeVAOForceField::AttachResources(){
 }
 
 void gdeVAOForceField::DetachResources(){
-	if( ! pForceField ){
+	if(! pForceField){
 		return;
 	}
 	
 	deCollider * const attachCollider = pView.GetAttachComponentCollider();
-	if( ! attachCollider ){
+	if(! attachCollider){
 		return;
 	}
 	
 	deColliderAttachment *attachment = NULL;
-	attachment = attachCollider->GetAttachmentWith( pForceField );
-	if( attachment ){
-		attachCollider->RemoveAttachment( attachment );
+	attachment = attachCollider->GetAttachmentWith(pForceField);
+	if(attachment){
+		attachCollider->RemoveAttachment(attachment);
 	}
 	
-	attachment = attachCollider->GetAttachmentWith( pDebugDrawer );
-	if( attachment ){
-		attachCollider->RemoveAttachment( attachment );
+	attachment = attachCollider->GetAttachmentWith(pDebugDrawer);
+	if(attachment){
+		attachCollider->RemoveAttachment(attachment);
 	}
 }
 
@@ -185,18 +185,18 @@ void gdeVAOForceField::pCleanUp(){
 	DetachResources();
 	pReleaseResources();
 	
-	if( pDDSCoordSystem ){
+	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if( pDDSCenter ){
+	if(pDDSCenter){
 		delete pDDSCenter;
 	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
 	}
 	
-	if( pOCForceField ){
+	if(pOCForceField){
 		pOCForceField->FreeReference();
 	}
 }
@@ -207,44 +207,44 @@ void gdeVAOForceField::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer->SetXRay(true);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
 	pDDSCenter = new igdeWDebugDrawerShape;
-	pDDSCenter->AddSphereShape( 0.05f, decVector() );
-	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCenter->AddSphereShape(0.05f, decVector());
+	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create coordinate system shape
 	pDDSCoordSystem = new igdeWCoordSysArrows;
-	pDDSCoordSystem->SetArrowLength( 0.2f );
-	pDDSCoordSystem->SetArrowSize( 0.01f );
-	pDDSCoordSystem->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCoordSystem->SetArrowLength(0.2f);
+	pDDSCoordSystem->SetArrowSize(0.01f);
+	pDDSCoordSystem->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAOForceField::pCreateForceField(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	pForceField.TakeOver( engine.GetForceFieldManager()->CreateForceField() );
+	pForceField.TakeOver(engine.GetForceFieldManager()->CreateForceField());
 	
-	pForceField->SetInfluenceArea( pOCForceField->GetInfluenceArea() );
-	pForceField->SetRadius( pOCForceField->GetRadius() );
-	pForceField->SetExponent( pOCForceField->GetExponent() );
-	pForceField->SetFieldType( pOCForceField->GetFieldType() );
-	pForceField->SetApplicationType( pOCForceField->GetApplicationType() );
-	pForceField->SetDirection( pOCForceField->GetDirection() );
-	pForceField->SetForce( pOCForceField->GetForce() );
-	pForceField->SetFluctuationDirection( pOCForceField->GetFluctuationDirection() * DEG2RAD );
-	pForceField->SetFluctuationForce( pOCForceField->GetFluctuationForce() );
-	pForceField->SetShape( pOCForceField->GetShape() );
-	pForceField->SetEnabled( pOCForceField->GetEnabled() );
+	pForceField->SetInfluenceArea(pOCForceField->GetInfluenceArea());
+	pForceField->SetRadius(pOCForceField->GetRadius());
+	pForceField->SetExponent(pOCForceField->GetExponent());
+	pForceField->SetFieldType(pOCForceField->GetFieldType());
+	pForceField->SetApplicationType(pOCForceField->GetApplicationType());
+	pForceField->SetDirection(pOCForceField->GetDirection());
+	pForceField->SetForce(pOCForceField->GetForce());
+	pForceField->SetFluctuationDirection(pOCForceField->GetFluctuationDirection() * DEG2RAD);
+	pForceField->SetFluctuationForce(pOCForceField->GetFluctuationForce());
+	pForceField->SetShape(pOCForceField->GetShape());
+	pForceField->SetEnabled(pOCForceField->GetEnabled());
 	
 	decLayerMask collisionMask;
-	collisionMask.SetBit( 0 );
-	const decCollisionFilter collisionFilter( collisionMask );
-	pForceField->SetCollisionFilter( collisionFilter );
+	collisionMask.SetBit(0);
+	const decCollisionFilter collisionFilter(collisionMask);
+	pForceField->SetCollisionFilter(collisionFilter);
 	
-	pView.GetGameDefinition()->GetWorld()->AddForceField( pForceField );
+	pView.GetGameDefinition()->GetWorld()->AddForceField(pForceField);
 }
 
 void gdeVAOForceField::pUpdateDDShapes(){
@@ -253,14 +253,14 @@ void gdeVAOForceField::pUpdateDDShapes(){
 void gdeVAOForceField::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField
-	&& pView.GetGameDefinition()->GetActiveOCForceField() == pOCForceField ){
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorForceFieldActive(), 1.0f ) );
-		pDDSCenter->SetFillColor( config.GetColorForceFieldActive() );
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCForceField
+	&& pView.GetGameDefinition()->GetActiveOCForceField() == pOCForceField){
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorForceFieldActive(), 1.0f));
+		pDDSCenter->SetFillColor(config.GetColorForceFieldActive());
 		
 	}else{
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorForceField(), 0.25f ) );
-		pDDSCenter->SetFillColor( config.GetColorForceField() );
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorForceField(), 0.25f));
+		pDDSCenter->SetFillColor(config.GetColorForceField());
 	}
 }
 
@@ -269,8 +269,8 @@ void gdeVAOForceField::pUpdateDDShapeColor(){
 void gdeVAOForceField::pReleaseResources(){
 	deWorld &world = *pView.GetGameDefinition()->GetWorld();
 	
-	if( pForceField ){
-		world.RemoveForceField( pForceField );
+	if(pForceField){
+		world.RemoveForceField(pForceField);
 		pForceField = NULL;
 	}
 }

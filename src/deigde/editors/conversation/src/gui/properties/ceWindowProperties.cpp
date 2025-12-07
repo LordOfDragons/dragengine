@@ -49,27 +49,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWindowProperties::ceWindowProperties( ceWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+ceWindowProperties::ceWindowProperties(ceWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
 	igdeWidget::Ref panel;
 	
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	panel.TakeOver( pPanelConversation = new ceWPConversation( *this ) );
-	AddChild( panel, "Conversation" );
+	panel.TakeOver(pPanelConversation = new ceWPConversation(*this));
+	AddChild(panel, "Conversation");
 	
-	panel.TakeOver( pPanelTopic = new ceWPTopic( *this ) );
-	AddChild( panel, "Topic" );
+	panel.TakeOver(pPanelTopic = new ceWPTopic(*this));
+	AddChild(panel, "Topic");
 	
-	panel.TakeOver( pPanelView = new ceWPView( *this ) );
-	AddChild( panel, "View" );
+	panel.TakeOver(pPanelView = new ceWPView(*this));
+	AddChild(panel, "View");
 	
-	panel.TakeOver( pPanelUndoHistory = new ceWPUndoHistory( GetEnvironment() ) );
-	AddChild( panel, "Undo" );
+	panel.TakeOver(pPanelUndoHistory = new ceWPUndoHistory(GetEnvironment()));
+	AddChild(panel, "Undo");
 	
-	SetActivePanel( 0 ); // conversation
+	SetActivePanel(0); // conversation
 }
 
 ceWindowProperties::~ceWindowProperties(){
@@ -84,11 +84,11 @@ ceWPTopic &ceWindowProperties::GetPanelTopic() const{
 	return *pPanelTopic;
 }
 
-void ceWindowProperties::SetConversation( ceConversation *conversation ){
-	pPanelConversation->SetConversation( conversation );
-	pPanelTopic->SetConversation( conversation );
-	pPanelView->SetConversation( conversation );
-	pPanelUndoHistory->SetConversation( conversation );
+void ceWindowProperties::SetConversation(ceConversation *conversation){
+	pPanelConversation->SetConversation(conversation);
+	pPanelTopic->SetConversation(conversation);
+	pPanelView->SetConversation(conversation);
+	pPanelUndoHistory->SetConversation(conversation);
 }
 
 void ceWindowProperties::OnConversationPathChanged(){

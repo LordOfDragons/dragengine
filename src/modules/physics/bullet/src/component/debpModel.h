@@ -86,7 +86,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model peer. */
-	debpModel( dePhysicsBullet &bullet, deModel &model );
+	debpModel(dePhysicsBullet &bullet, deModel &model);
 	
 	/** \brief Clean up model peer. */
 	virtual ~debpModel();
@@ -97,12 +97,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine resource. */
-	inline deModel &GetModel() const{ return pModel; }
+	inline deModel &GetModel() const{return pModel;}
 	
 	
 	
 	/** \brief Octree or \em NULL if not prepared. */
-	inline debpModelOctree *GetOctree() const{ return pOctree; }
+	inline debpModelOctree *GetOctree() const{return pOctree;}
 	
 	/** \brief Prepare octree if not ready yet. */
 	void PrepareOctree();
@@ -110,33 +110,33 @@ public:
 	
 	
 	/** \brief Weight sets. */
-	inline sWeightSet *GetWeightSets() const{ return pWeightSets; }
+	inline sWeightSet *GetWeightSets() const{return pWeightSets;}
 	
 	/** \brief Weight set count. */
-	inline int GetWeightSetCount() const{ return pWeightSetCount; }
+	inline int GetWeightSetCount() const{return pWeightSetCount;}
 	
 	/** \brief Extends. */
-	inline const sExtends &GetExtends() const{ return pExtends; }
+	inline const sExtends &GetExtends() const{return pExtends;}
 	
 	/** \brief Weightless extends. */
-	inline const sExtends &GetWeightlessExtends() const{ return pWeightlessExtends; }
+	inline const sExtends &GetWeightlessExtends() const{return pWeightlessExtends;}
 	
 	/** \brief Has weightless extends. */
-	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
+	inline bool GetHasWeightlessExtends() const{return pHasWeightlessExtends;}
 	
 	/** \brief Bone extends. */
-	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
+	inline const sExtends *GetBoneExtends() const{return pBoneExtends;}
 	
 	/** \brief Number of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{return pBoneCount;}
 	
 	/** \brief Model can deform. */
-	inline bool GetCanDeform() const{ return pCanDeform; }
+	inline bool GetCanDeform() const{return pCanDeform;}
 	
 	
 	
 	/** \brief Normals or \em NULL if not prepared. */
-	inline const decVector *GetNormals() const{ return pNormals; }
+	inline const decVector *GetNormals() const{return pNormals;}
 	
 	/** \brief Prepare normals if not prepared. */
 	void PrepareNormals();
@@ -144,10 +144,10 @@ public:
 	
 	
 	/** \brief Face probabilities or \em NULL if not prepared. */
-	inline const float *GetFaceProbabilities() const{ return pFaceProbabilities; }
+	inline const float *GetFaceProbabilities() const{return pFaceProbabilities;}
 	
 	/** \brief Index of face containing probability or -1 if not found or not prepared yet. */
-	int IndexOfFaceWithProbability( float probability ) const;
+	int IndexOfFaceWithProbability(float probability) const;
 	
 	/** \brief Prepare face probabilities if not prepared. */
 	void PrepareFaceProbabilities();
@@ -155,7 +155,7 @@ public:
 	
 	
 	/** \brief Shared bullet collision shape or \em NULL if not prepared. */
-	inline debpBulletShapeModel *GetShape() const{ return pBulletShape; }
+	inline debpBulletShapeModel *GetShape() const{return pBulletShape;}
 	
 	/** \brief Prepare shared bullet collision shape if not prepared. */
 	void PrepareShape();

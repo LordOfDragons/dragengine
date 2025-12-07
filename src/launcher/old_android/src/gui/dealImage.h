@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create image from file. */
-	dealImage( dealDisplay &display, const char *filename );
+	dealImage(dealDisplay &display, const char *filename);
 	
 	/** \brief Clean up image. */
 	virtual ~dealImage();
@@ -64,22 +64,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Display. */
-	inline dealDisplay &GetDisplay() const{ return pDisplay; }
+	inline dealDisplay &GetDisplay() const{return pDisplay;}
 	
 	/** \brief Texture. */
-	inline GLuint GetTexture() const{ return pTexture; }
+	inline GLuint GetTexture() const{return pTexture;}
 	
 	/** \brief Texture width. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Texture height. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pLoadImage( const char *filename );
-	void pCreateTexture( decTgaImage &tgaImage );
+	void pLoadImage(const char *filename);
+	void pCreateTexture(decTgaImage &tgaImage);
 };
 
 #endif

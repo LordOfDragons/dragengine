@@ -42,19 +42,19 @@ private:
 	deScriptingDragonScript *pScrMgr;
 public:
 	// constructor
-	deClassTouchSensorListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	deClassTouchSensorListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr);
 	~deClassTouchSensorListener();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	void CreateClassMembers( dsEngine *engine );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	void CreateClassMembers(dsEngine *engine);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deClassCollider *GetClassCollider() const{return pClsCol;}
 	
 	/** \brief Function index for colliderEntered(). */
-	inline int GetFuncIndexColliderEntered() const{ return pFuncIndexColliderEntered; }
+	inline int GetFuncIndexColliderEntered() const{return pFuncIndexColliderEntered;}
 	
 	/** \brief Function index for colliderLeft(). */
-	inline int GetFuncIndexColliderLeft() const{ return pFuncIndexColliderLeft; }
+	inline int GetFuncIndexColliderLeft() const{return pFuncIndexColliderLeft;}
 
 private:
 	int pFuncIndexColliderEntered;
@@ -64,13 +64,13 @@ private:
 		dsClass *clsTSL, *clsVoid, *clsBool, *clsInt, *clsCol;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfColliderEntered );
-	DEF_NATFUNC( nfColliderLeft );
+	DEF_NATFUNC(nfColliderEntered);
+	DEF_NATFUNC(nfColliderLeft);
 #undef DEF_NATFUNC
 };
 

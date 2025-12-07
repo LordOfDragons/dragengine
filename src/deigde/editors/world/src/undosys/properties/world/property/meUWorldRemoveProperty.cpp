@@ -39,23 +39,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldRemoveProperty::meUWorldRemoveProperty( meWorld *world, const char *key, const char *value ) :
-pWorld( NULL ),
-pKey( key ),
-pValue( value )
+meUWorldRemoveProperty::meUWorldRemoveProperty(meWorld *world, const char *key, const char *value) :
+pWorld(NULL),
+pKey(key),
+pValue(value)
 {
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove world property" );
+	SetShortInfo("Remove world property");
 	
 	pWorld = world;
 	world->AddReference();
 }
 
 meUWorldRemoveProperty::~meUWorldRemoveProperty(){
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ meUWorldRemoveProperty::~meUWorldRemoveProperty(){
 ///////////////
 
 void meUWorldRemoveProperty::Undo(){
-	pWorld->SetProperty( pKey, pValue );
+	pWorld->SetProperty(pKey, pValue);
 }
 
 void meUWorldRemoveProperty::Redo(){
-	pWorld->RemoveProperty( pKey );
+	pWorld->RemoveProperty(pKey);
 }

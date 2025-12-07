@@ -42,17 +42,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCGameCmdToggleNegate::ceUCCGameCmdToggleNegate( ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionGameCommand *gameCommand ){
-	if( ! topic || ! action || ! gameCommand ){
-		DETHROW( deeInvalidParam );
+ceUCCGameCmdToggleNegate::ceUCCGameCmdToggleNegate(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionGameCommand *gameCommand){
+	if(! topic || ! action || ! gameCommand){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pGameCommand = NULL;
 	
-	SetShortInfo( "Condition game command negate" );
+	SetShortInfo("Condition game command negate");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -65,13 +65,13 @@ ceConversationAction *action, ceCConditionGameCommand *gameCommand ){
 }
 
 ceUCCGameCmdToggleNegate::~ceUCCGameCmdToggleNegate(){
-	if( pGameCommand ){
+	if(pGameCommand){
 		pGameCommand->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -82,11 +82,11 @@ ceUCCGameCmdToggleNegate::~ceUCCGameCmdToggleNegate(){
 ///////////////
 
 void ceUCCGameCmdToggleNegate::Undo(){
-	pGameCommand->SetNegate( ! pGameCommand->GetNegate() );
-	pTopic->NotifyActionChanged( pAction );
+	pGameCommand->SetNegate(! pGameCommand->GetNegate());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCCGameCmdToggleNegate::Redo(){
-	pGameCommand->SetNegate( ! pGameCommand->GetNegate() );
-	pTopic->NotifyActionChanged( pAction );
+	pGameCommand->SetNegate(! pGameCommand->GetNegate());
+	pTopic->NotifyActionChanged(pAction);
 }

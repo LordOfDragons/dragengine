@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	deglWindowLoggerListener( deglWindowLogger &window );
+	deglWindowLoggerListener(deglWindowLogger &window);
 	
 protected:
 	/** Clean up listener. */
@@ -60,13 +60,13 @@ public:
 	 * Message added.
 	 * \note Histroy mutex is locked while this method is called.
 	 */
-	virtual void MessageAdded( const delLoggerHistory &history, const delLoggerHistoryEntry &entry );
+	virtual void MessageAdded(const delLoggerHistory &history, const delLoggerHistoryEntry &entry);
 	
 	/**
 	 * History cleared.
 	 * \note Histroy mutex is locked while this method is called.
 	 */
-	virtual void HistoryCleared( const delLoggerHistory &history );
+	virtual void HistoryCleared(const delLoggerHistory &history);
 	/*@}*/
 };
 

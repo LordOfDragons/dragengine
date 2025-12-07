@@ -35,10 +35,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleRemoveAllVertexPositionSets::aeUSetRuleRemoveAllVertexPositionSets( aeRule* rule ) :
-aeUSetRuleVertexPositionSets( rule, decStringSet() )
+aeUSetRuleRemoveAllVertexPositionSets::aeUSetRuleRemoveAllVertexPositionSets(aeRule* rule) :
+aeUSetRuleVertexPositionSets(rule, decStringSet())
 {
-	SetShortInfo( "Remove all vertex position sets from rule" );
+	SetShortInfo("Remove all vertex position sets from rule");
 }
 
 aeUSetRuleRemoveAllVertexPositionSets::~aeUSetRuleRemoveAllVertexPositionSets(){

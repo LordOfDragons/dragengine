@@ -70,9 +70,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new texture. */
-	seTexture( deEngine *engine, const char *name = "Texture" );
+	seTexture(deEngine *engine, const char *name = "Texture");
 	/** Creates a new texture as a copy of another texture. */
-	seTexture( const seTexture &texture );
+	seTexture(const seTexture &texture);
 	/** Cleans up the texture. */
 	virtual ~seTexture();
 	/*@}*/
@@ -80,28 +80,28 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	/** \brief Retrieves the texture engine skin or NULL if not created. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline deSkin *GetEngineSkin() const{return pEngSkin;}
 	
 	/** Retrieves the parent skin or NULL if there is none. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline seSkin *GetSkin() const{return pSkin;}
 	/** Sets the parent skin or NULL if there is none. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Determines if the layer is the active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	/** Sets if the layer is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	/** Determines if the layer is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	/** Sets if the layer is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** Invalidate engine skin. */
 	void InvalidateEngineSkin();
@@ -122,19 +122,19 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the property list read-only. */
-	inline const sePropertyList &GetPropertyList() const{ return pPropertyList; }
+	inline const sePropertyList &GetPropertyList() const{return pPropertyList;}
 	/** Adds a new property. */
-	void AddProperty( seProperty *property );
+	void AddProperty(seProperty *property);
 	/** Removes a property. */
-	void RemoveProperty( seProperty *property );
+	void RemoveProperty(seProperty *property);
 	/** Removes all properties. */
 	void RemoveAllProperties();
 	/** Retrieves the active property or NULL if none is active. */
-	inline seProperty *GetActiveProperty() const{ return pActiveProperty; }
+	inline seProperty *GetActiveProperty() const{return pActiveProperty;}
 	/** Determines if there is an active property or not. */
 	bool HasActiveProperty() const;
 	/** Sets the active property or NULL if none is active. */
-	void SetActiveProperty( seProperty *property );
+	void SetActiveProperty(seProperty *property);
 	
 	/**
 	 * \brief Update all resources.
@@ -148,22 +148,22 @@ public:
 	/** \name Preview Parameters */
 	/*@{*/
 	/** \brief Texture coordinates offset. */
-	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
+	inline const decVector2 &GetTexCoordOffset() const{return pTexCoordOffset;}
 	
 	/** \brief Set texture coordinates offset. */
-	void SetTexCoordOffset( const decVector2 &offset );
+	void SetTexCoordOffset(const decVector2 &offset);
 	
 	/** \brief Texture coordinates scaling. */
-	inline const decVector2 &GetTexCoordScaling() const{ return pTexCoordScaling; }
+	inline const decVector2 &GetTexCoordScaling() const{return pTexCoordScaling;}
 	
 	/** \brief Set texture coordinates scaling. */
-	void SetTexCoordScaling( const decVector2 &scaling );
+	void SetTexCoordScaling(const decVector2 &scaling);
 	
 	/** \brief Texture coordinates rotation. */
-	inline float GetTexCoordRotation() const{ return pTexCoordRotation; }
+	inline float GetTexCoordRotation() const{return pTexCoordRotation;}
 	
 	/** \brief Set texture coordinates rotation. */
-	void SetTexCoordRotation( float rotation );
+	void SetTexCoordRotation(float rotation);
 	/*@}*/
 	
 	

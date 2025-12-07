@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardPaste::gdeMAOCBillboardPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Billboard",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class billboard" )
+gdeMAOCBillboardPaste::gdeMAOCBillboardPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Billboard",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class billboard")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCBillboard::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCBillboardPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCBillboard::TYPE_NAME));
+	if(! clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCBillboard &clipOCBillboard =
-		( const gdeClipboardDataOCBillboard & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCBillboard &)(igdeClipboardData&)clip;
 	
 	const gdeOCBillboard::Ref billboard(gdeOCBillboard::Ref::NewWith(*clipOCBillboard.GetBillboard()));
 	
-	igdeUndo * const undo = new gdeUOCAddBillboard( &objectClass,
-		billboard );
-	undo->SetShortInfo( "Paste object class billboard" );
+	igdeUndo * const undo = new gdeUOCAddBillboard(&objectClass,
+		billboard);
+	undo->SetShortInfo("Paste object class billboard");
 	return undo;
 }
 
 void gdeMAOCBillboardPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCBillboard::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCBillboard::TYPE_NAME));
 }

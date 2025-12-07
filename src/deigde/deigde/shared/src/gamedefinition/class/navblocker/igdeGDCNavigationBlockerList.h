@@ -47,7 +47,7 @@ public:
 	igdeGDCNavigationBlockerList();
 	
 	/** \brief Create copy of a game definition class navigation blocker list. */
-	igdeGDCNavigationBlockerList( const igdeGDCNavigationBlockerList &list );
+	igdeGDCNavigationBlockerList(const igdeGDCNavigationBlockerList &list);
 	
 	/** \brief Clean up list. */
 	~igdeGDCNavigationBlockerList();
@@ -61,31 +61,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Navigation blocker by index. */
-	igdeGDCNavigationBlocker *GetAt( int index ) const;
+	igdeGDCNavigationBlocker *GetAt(int index) const;
 	
 	/** \brief Index of an navigation blocker or -1 if not found. */
-	int IndexOf( igdeGDCNavigationBlocker *blocker ) const;
+	int IndexOf(igdeGDCNavigationBlocker *blocker) const;
 	
 	/** \brief Determines if an navigation blocker exists. */
-	bool Has( igdeGDCNavigationBlocker *blocker ) const;
+	bool Has(igdeGDCNavigationBlocker *blocker) const;
 	
 	/** \brief Adds an navigation blocker. */
-	void Add( igdeGDCNavigationBlocker *blocker );
+	void Add(igdeGDCNavigationBlocker *blocker);
 	
 	/** \brief Inserts a new navigation blocker. */
-	void InsertAt( igdeGDCNavigationBlocker *blocker, int index );
+	void InsertAt(igdeGDCNavigationBlocker *blocker, int index);
 	
 	/** \brief Moves an navigation blocker to a new position. */
-	void MoveTo( igdeGDCNavigationBlocker *blocker, int index );
+	void MoveTo(igdeGDCNavigationBlocker *blocker, int index);
 	
 	/** \brief Removes an navigation blocker. */
-	void Remove( igdeGDCNavigationBlocker *blocker );
+	void Remove(igdeGDCNavigationBlocker *blocker);
 	
 	/** \brief Removes all navigation blockers. */
 	void RemoveAll();
 	
 	/** \brief Set this list to a deep copy of another list. */
-	void SetToDeepCopyFrom( const igdeGDCNavigationBlockerList &list );
+	void SetToDeepCopyFrom(const igdeGDCNavigationBlockerList &list);
 	/*@}*/
 	
 	
@@ -93,7 +93,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set list from another list. */
-	igdeGDCNavigationBlockerList &operator=( const igdeGDCNavigationBlockerList &list );
+	igdeGDCNavigationBlockerList &operator=(const igdeGDCNavigationBlockerList &list);
 	/*@}*/
 };
 

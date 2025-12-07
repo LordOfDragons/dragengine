@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPCSkin( igdeEnvironment &environment, igdeGDSkin *gdskin, const decPoint &size );
+	igdeGDPCSkin(igdeEnvironment &environment, igdeGDSkin *gdskin, const decPoint &size);
 	
 	
 	
@@ -95,7 +95,7 @@ public:
 	/**  \name Management */
 	/*@{*/
 	/** \brief Game definition skin to create preview for. */
-	inline igdeGDSkin *GetGDSkin() const{ return pGDSkin; }
+	inline igdeGDSkin *GetGDSkin() const{return pGDSkin;}
 	
 	
 	
@@ -110,7 +110,7 @@ protected:
 	virtual bool IsCanvasReadyForRender();
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed );
+	virtual void UpdateCanvasForRender(float elapsed);
 	/*@}*/
 };
 

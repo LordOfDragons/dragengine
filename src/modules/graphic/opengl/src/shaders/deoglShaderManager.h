@@ -73,7 +73,7 @@ private:
 	public:
 		cCompileProgram(deoglShaderManager &manager, const deoglShaderProgram::Ref &program);
 		
-		inline const deoglShaderProgram::Ref &GetProgram() const{ return pProgram; }
+		inline const deoglShaderProgram::Ref &GetProgram() const{return pProgram;}
 		
 		void AddListener(cGetProgramListener *listener);
 		
@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
-	deoglShaderManager( deoglRenderThread &renderThread );
+	deoglShaderManager(deoglRenderThread &renderThread);
 	
 	/** Cleans up the shader manager object. */
 	~deoglShaderManager();
@@ -116,13 +116,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the language used to compiled and drive shaders. */
-	inline deoglShaderLanguage *GetLanguage() const{ return pLanguage; }
+	inline deoglShaderLanguage *GetLanguage() const{return pLanguage;}
 	
 	/** Validate caches. */
 	void ValidateCaches();
 	
 	/** Logging mutex. */
-	inline deMutex &GetMutexLogging(){ return pMutexLogging; }
+	inline deMutex &GetMutexLogging(){return pMutexLogging;}
 	
 	/** Update. */
 	void Update();
@@ -150,7 +150,7 @@ public:
 	void LoadUnitSourceCodes();
 	
 	/** Includable sources. */
-	inline const decStringDictionary &GetIncludableSources() const{ return pIncludableSources; }
+	inline const decStringDictionary &GetIncludableSources() const{return pIncludableSources;}
 	/*@}*/
 	
 	
@@ -160,10 +160,10 @@ public:
 	int GetSourcesCount() const;
 	
 	/** Named shader sources is exists. */
-	bool HasSourcesNamed( const char *name ) const;
+	bool HasSourcesNamed(const char *name) const;
 	
 	/** Named shader sources or nullptr. */
-	const deoglShaderSources *GetSourcesNamed( const char *name );
+	const deoglShaderSources *GetSourcesNamed(const char *name);
 	
 	/** Shader sources as list for debugging. */
 	decObjectList GetSourcesAsList() const;
@@ -230,7 +230,7 @@ private:
 	
 	void pLoadUnitSourceCodesIn(const char *directory);
 	void pLoadIncludableSourcesIn(const char *directory);
-	void pLoadSourcesIn( const char *directory );
+	void pLoadSourcesIn(const char *directory);
 };
 
 #endif

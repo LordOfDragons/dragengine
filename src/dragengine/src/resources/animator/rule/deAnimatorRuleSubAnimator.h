@@ -85,34 +85,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sub animator or NULL if not assigned. */
-	deAnimator *GetSubAnimator() const{ return pSubAnimator; }
+	deAnimator *GetSubAnimator() const{return pSubAnimator;}
 	
 	/** \brief Set sub animator or NULL if not assigned. */
-	void SetSubAnimator( deAnimator *animator );
+	void SetSubAnimator(deAnimator *animator);
 	
 	/** \brief Determines if position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{return pEnablePosition;}
 	
 	/** \brief Sets if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Determines if orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{return pEnableOrientation;}
 	
 	/** \brief Sets if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Determines if size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{return pEnableSize;}
 	
 	/** \brief Sets if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/**
 	 * \brief Update connection count.
@@ -126,16 +126,16 @@ public:
 	 * \brief Count of connections which is the number of controllers in the sub animator
 	 *        if existing or 0 if there is no sub animator assigned.
 	 */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
+	inline int GetConnectionCount() const{return pConnectionCount;}
 	
 	/** \brief Index of the local controller for the given controller in the sub animator. */
-	int GetConnectionAt( int targetController ) const;
+	int GetConnectionAt(int targetController) const;
 	
 	/** \brief Set index of the local controller for the given controller in the sub animator. */
-	void SetConnectionAt( int targetController, int localController );
+	void SetConnectionAt(int targetController, int localController);
 	
 	/** \brief Set connections by matching controller names. */
-	void SetMatchingConnections( const deAnimator &animator );
+	void SetMatchingConnections(const deAnimator &animator);
 	
 	/** \brief Clear all connections setting them to -1. */
 	void ClearConnections();
@@ -146,7 +146,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

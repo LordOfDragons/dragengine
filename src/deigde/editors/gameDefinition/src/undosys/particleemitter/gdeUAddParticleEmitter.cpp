@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddParticleEmitter::gdeUAddParticleEmitter( gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter ) :
-pGameDefinition( NULL ),
-pParticleEmitter( NULL )
+gdeUAddParticleEmitter::gdeUAddParticleEmitter(gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
+pGameDefinition(NULL),
+pParticleEmitter(NULL)
 {
-	if( ! gameDefinition || ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(! gameDefinition || ! particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add particle emitter" );
+	SetShortInfo("Add particle emitter");
 	
 	pParticleEmitter = particleEmitter;
 	particleEmitter->AddReference();
@@ -58,10 +58,10 @@ pParticleEmitter( NULL )
 }
 
 gdeUAddParticleEmitter::~gdeUAddParticleEmitter(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -72,9 +72,9 @@ gdeUAddParticleEmitter::~gdeUAddParticleEmitter(){
 ///////////////
 
 void gdeUAddParticleEmitter::Undo(){
-	pGameDefinition->RemoveParticleEmitter( pParticleEmitter );
+	pGameDefinition->RemoveParticleEmitter(pParticleEmitter);
 }
 
 void gdeUAddParticleEmitter::Redo(){
-	pGameDefinition->AddParticleEmitter( pParticleEmitter );
+	pGameDefinition->AddParticleEmitter(pParticleEmitter);
 }

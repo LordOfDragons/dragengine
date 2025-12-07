@@ -50,15 +50,15 @@
 ////////////////////////////
 
 deoglParticleEmitterType::deoglParticleEmitterType(
-deoglParticleEmitter &emitter, const deParticleEmitterType &type ) :
-pType( type ),
-pRType( NULL ),
-pDirtyType( true ){
-	pRType = new deoglRParticleEmitterType( *emitter.GetREmitter() );
+deoglParticleEmitter &emitter, const deParticleEmitterType &type) :
+pType(type),
+pRType(NULL),
+pDirtyType(true){
+	pRType = new deoglRParticleEmitterType(*emitter.GetREmitter());
 }
 
 deoglParticleEmitterType::~deoglParticleEmitterType(){
-	if( pRType ){
+	if(pRType){
 		pRType->FreeReference();
 	}
 }
@@ -69,18 +69,18 @@ deoglParticleEmitterType::~deoglParticleEmitterType(){
 ///////////////
 
 void deoglParticleEmitterType::SyncToRender(){
-	if( pDirtyType ){
-		if( pType.GetSkin() ){
-			pRType->SetSkin( ( ( deoglSkin* )pType.GetSkin()->GetPeerGraphic() )->GetRSkin() );
+	if(pDirtyType){
+		if(pType.GetSkin()){
+			pRType->SetSkin(((deoglSkin*)pType.GetSkin()->GetPeerGraphic())->GetRSkin());
 			
 		}else{
-			pRType->SetSkin( NULL );
+			pRType->SetSkin(NULL);
 		}
 		
-		pRType->SetSimulationType( pType.GetSimulationType() );
+		pRType->SetSimulationType(pType.GetSimulationType());
 		
-		pRType->CheckEmitLight( pType );
-		pRType->UpdateParameterSamples( pType );
+		pRType->CheckEmitLight(pType);
+		pRType->UpdateParameterSamples(pType);
 		pRType->DropPipelines();
 		
 		pDirtyType = false;

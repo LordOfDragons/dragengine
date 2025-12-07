@@ -61,7 +61,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkPipeline( devkDevice &device, const devkPipelineConfiguration &configuration );
+	devkPipeline(devkDevice &device, const devkPipelineConfiguration &configuration);
 	
 	/** Clean up pipeline. */
 	virtual ~devkPipeline();
@@ -73,27 +73,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** Configuration. */
-	inline const devkPipelineConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline const devkPipelineConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** Bind point. */
-	inline VkPipelineBindPoint GetBindPoint() const{ return pBindPoint; }
+	inline VkPipelineBindPoint GetBindPoint() const{return pBindPoint;}
 	
 	/** Pipeline layout. */
-	inline VkPipelineLayout GetLayout() const{ return pLayout; }
+	inline VkPipelineLayout GetLayout() const{return pLayout;}
 	
 	/** Pipeline. */
-	inline VkPipeline GetPipeline() const{ return pPipeline; }
+	inline VkPipeline GetPipeline() const{return pPipeline;}
 	/*@}*/
 	
 	
 	
 protected:
-	void pInitShaderStage( VkPipelineShaderStageCreateInfo &info,
+	void pInitShaderStage(VkPipelineShaderStageCreateInfo &info,
 		VkShaderStageFlagBits stage, devkShaderModule &module,
-		const VkSpecializationInfo *specialization = nullptr );
+		const VkSpecializationInfo *specialization = nullptr);
 	
 	
 	

@@ -76,7 +76,7 @@ private:
 	decVector pIKLimitsLower;
 	decVector pIKLimitsUpper;
 	decVector pIKResistance;
-	bool pIKLocked[ 3 ];
+	bool pIKLocked[3];
 	
 	reRigShapeList pShapes;
 	reRigConstraintList pConstraints;
@@ -96,7 +96,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new rig controller. */
-	reRigBone( deEngine *engine );
+	reRigBone(deEngine *engine);
 	/** \brief Cleans up the rig controller. */
 	virtual ~reRigBone();
 	/*@}*/
@@ -104,81 +104,81 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the parent rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	/** \brief Sets the parent rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Sets the order of the bone in the engine rig. */
-	inline int GetOrder() const{ return pOrder; }
+	inline int GetOrder() const{return pOrder;}
 	/** \brief Sets the order of the bone in the engine rig. */
-	void SetOrder( int order );
+	void SetOrder(int order);
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline deColliderVolume *GetCollider() const{return pCollider;}
 	
 	/** \brief Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** \brief Sets the world filename. */
-	void SetName( const char *filename );
+	void SetName(const char *filename);
 	
 	/** \brief Retrieves parent rig bone or NULL if a top level bone. */
-	inline reRigBone *GetParentBone() const{ return pParentBone; }
+	inline reRigBone *GetParentBone() const{return pParentBone;}
 	/** \brief Sets the parent bone or NULL if a top level bone. */
-	void SetParentBone( reRigBone *bone );
+	void SetParentBone(reRigBone *bone);
 	/** \brief Retrieves the position. */
-	inline decVector GetPosition() const{ return pPosition; }
+	inline decVector GetPosition() const{return pPosition;}
 	/** \brief Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** \brief Retrieves the orientation. */
-	inline decVector GetOrientation() const{ return pOrientation; }
+	inline decVector GetOrientation() const{return pOrientation;}
 	/** \brief Sets the orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Update matrices if dirty. */
 	void UpdateMatrices();
 	/** \brief Determines if the matrix is dirty. */
-	inline bool GetDirtyMatrix() const{ return pDirtyMatrix; }
+	inline bool GetDirtyMatrix() const{return pDirtyMatrix;}
 	/** \brief Sets if the matrix is dirty. */
-	void SetDirtyMatrix( bool dirty );
+	void SetDirtyMatrix(bool dirty);
 	/** \brief Retrieves the matrix transforming from local bone space to model space in reference pose. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decMatrix &GetMatrix() const{return pMatrix;}
 	/** \brief Retrieves the matrix transforming from model space to local bone space in reference pose. */
-	inline const decMatrix &GetInverseMatrix() const{ return pInverseMatrix; }
+	inline const decMatrix &GetInverseMatrix() const{return pInverseMatrix;}
 	/** \brief Sets the matrices. */
-	void SetMatrices( const decMatrix &matrix );
+	void SetMatrices(const decMatrix &matrix);
 	/** \brief Updates the pose matrix from the rest pose. */
 	void SetPoseFromRest();
 	/** \brief Retrieves the current pose matrix. */
-	inline const decDMatrix &GetPoseMatrix() const{ return pPoseMatrix; }
+	inline const decDMatrix &GetPoseMatrix() const{return pPoseMatrix;}
 	/** \brief Retrieves the current inverse pose matrix. */
-	inline const decDMatrix &GetInversePoseMatrix() const{ return pInversePoseMatrix; }
+	inline const decDMatrix &GetInversePoseMatrix() const{return pInversePoseMatrix;}
 	
 	/** \brief Retrieves the position of the central mass point. */
-	inline const decVector &GetCentralMassPoint() const{ return pCMP; }
+	inline const decVector &GetCentralMassPoint() const{return pCMP;}
 	/** \brief Sets the position of the central mass point. */
-	void SetCentralMassPoint( const decVector &cmp );
+	void SetCentralMassPoint(const decVector &cmp);
 	/** \brief Determines if the bone is dynamic or not. */
-	inline bool GetDynamic() const{ return pDynamic; }
+	inline bool GetDynamic() const{return pDynamic;}
 	/** \brief Sets of the bone is dynamic. */
-	void SetDynamic( bool dynamic );
+	void SetDynamic(bool dynamic);
 	/** \brief Retrieves the mass. */
-	inline float GetMass() const{ return pMass; }
+	inline float GetMass() const{return pMass;}
 	/** \brief Sets the mass factor. */
-	void SetMass( float mass );
+	void SetMass(float mass);
 	
 	/** \brief Determines if the shape is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	/** \brief Sets if the shape is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	/** \brief Determines if the shape is the active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	/** \brief Sets if the shape is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Determines if this bone has been visited. */
-	inline bool GetVisited() const{ return pVisited; }
+	inline bool GetVisited() const{return pVisited;}
 	/** \brief Sets if this bone has been visited. */
-	void SetVisited( bool visited );
+	void SetVisited(bool visited);
 	
 	/** \brief Show state changed. */
 	void ShowStateChanged();
@@ -196,7 +196,7 @@ public:
 	 *          bone or if while walking back the bone chain at least one bone of
 	 *          the chain is walked a second time producing a loop.
 	 */
-	bool CanHaveParent( reRigBone *bone );
+	bool CanHaveParent(reRigBone *bone);
 	/*@}*/
 	
 	/** \name Shapes */
@@ -204,17 +204,17 @@ public:
 	/** \brief Retrieves the number of shapes. */
 	int GetShapeCount() const;
 	/** \brief Retrieves the shape at the given index. */
-	reRigShape *GetShapeAt( int index ) const;
+	reRigShape *GetShapeAt(int index) const;
 	/** \brief Retrieves the shape with the given collider or NULL if not found. */
-	reRigShape *GetShapeWith( deColliderVolume *collider ) const;
+	reRigShape *GetShapeWith(deColliderVolume *collider) const;
 	/** \brief Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape( reRigShape *shape ) const;
+	int IndexOfShape(reRigShape *shape) const;
 	/** \brief Determines if the shape exists. */
-	bool HasShape( reRigShape *shape ) const;
+	bool HasShape(reRigShape *shape) const;
 	/** \brief Adds a new shape. */
-	void AddShape( reRigShape *shape );
+	void AddShape(reRigShape *shape);
 	/** \brief Removes the given shape. */
-	void RemoveShape( reRigShape *shape );
+	void RemoveShape(reRigShape *shape);
 	/** \brief Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/
@@ -224,46 +224,46 @@ public:
 	/** \name Inverse Kinematics */
 	/*@{*/
 	/** \brief Lower ik limits. */
-	inline const decVector &GetIKLimitsLower() const{ return pIKLimitsLower; }
+	inline const decVector &GetIKLimitsLower() const{return pIKLimitsLower;}
 	
 	/** \brief Set lower ik limits. */
-	void SetIKLimitsLower( const decVector &lower );
+	void SetIKLimitsLower(const decVector &lower);
 	
 	/** \brief Upper ik limits. */
-	inline const decVector &GetIKLimitsUpper() const{ return pIKLimitsUpper; }
+	inline const decVector &GetIKLimitsUpper() const{return pIKLimitsUpper;}
 	
 	/** \brief Set upper ik limits. */
-	void SetIKLimitsUpper( const decVector &upper );
+	void SetIKLimitsUpper(const decVector &upper);
 	
 	/** \brief IK resistance. */
-	inline const decVector &GetIKResistance() const{ return pIKResistance; }
+	inline const decVector &GetIKResistance() const{return pIKResistance;}
 	
 	/** \brief Set ik resistance. */
-	void SetIKResistance( const decVector &resistance );
+	void SetIKResistance(const decVector &resistance);
 	
 	/** \brief X rotation is locked under IK. */
-	inline bool GetIKLockedX() const{ return pIKLocked[ 0 ]; }
+	inline bool GetIKLockedX() const{return pIKLocked[0];}
 	
 	/** \brief Set if X rotation is locked under IK. */
-	void SetIKLockedX( bool locked );
+	void SetIKLockedX(bool locked);
 	
 	/** \brief Y rotation is locked under IK. */
-	inline bool GetIKLockedY() const{ return pIKLocked[ 1 ]; }
+	inline bool GetIKLockedY() const{return pIKLocked[1];}
 	
 	/** \brief Set if y rotation is locked under IK. */
-	void SetIKLockedY( bool locked );
+	void SetIKLockedY(bool locked);
 	
 	/** \brief Z rotation is locked under IK. */
-	inline bool GetIKLockedZ() const{ return pIKLocked[ 2 ]; }
+	inline bool GetIKLockedZ() const{return pIKLocked[2];}
 	
 	/** \brief Set z rotation is locked under IK. */
-	void SetIKLockedZ( bool locked );
+	void SetIKLockedZ(bool locked);
 	
 	/** \brief Rotation is locked under IK. */
-	inline bool GetIKLocked( int axis ) const{ return pIKLocked[ axis ]; }
+	inline bool GetIKLocked(int axis) const{return pIKLocked[axis];}
 	
 	/** \brief Set if rotation is locked under IK. */
-	void SetIKLocked( int axis, bool locked );
+	void SetIKLocked(int axis, bool locked);
 	/*@}*/
 	
 	/** \name Constraints */
@@ -271,17 +271,17 @@ public:
 	/** \brief Retrieves the number of constraints. */
 	int GetConstraintCount() const;
 	/** \brief Retrieves the constraint at the given index. */
-	reRigConstraint *GetConstraintAt( int index ) const;
+	reRigConstraint *GetConstraintAt(int index) const;
 	/** \brief Retrieves the constraint with the given collider or NULL if not found. */
-	reRigConstraint *GetConstraintWith( deColliderVolume *collider ) const;
+	reRigConstraint *GetConstraintWith(deColliderVolume *collider) const;
 	/** \brief Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint( reRigConstraint *constraint ) const;
+	int IndexOfConstraint(reRigConstraint *constraint) const;
 	/** \brief Determines if the constraint exists. */
-	bool HasConstraint( reRigConstraint *constraint ) const;
+	bool HasConstraint(reRigConstraint *constraint) const;
 	/** \brief Adds a new constraint. */
-	void AddConstraint( reRigConstraint *constraint );
+	void AddConstraint(reRigConstraint *constraint);
 	/** \brief Removes the given constraint. */
-	void RemoveConstraint( reRigConstraint *constraint );
+	void RemoveConstraint(reRigConstraint *constraint);
 	/** \brief Removes all constraints. */
 	void RemoveAllConstraints();
 	/*@}*/

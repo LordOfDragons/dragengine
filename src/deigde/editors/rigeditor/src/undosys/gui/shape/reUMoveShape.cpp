@@ -41,34 +41,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUMoveShape::reUMoveShape( reRigShapeList &list ){
+reUMoveShape::reUMoveShape(reRigShapeList &list){
 	int shapeCount = list.GetShapeCount();
 	
-	if( shapeCount == 0 ) DETHROW( deeInvalidParam );
+	if(shapeCount == 0) DETHROW(deeInvalidParam);
 	
 	pShapes = NULL;
 	pShapeCount = 0;
 	
 	try{
-		if( shapeCount > 0 ){
-			pShapes = new reUndoDataShape*[ shapeCount ];
-			if( ! pShapes ) DETHROW( deeOutOfMemory );
+		if(shapeCount > 0){
+			pShapes = new reUndoDataShape*[shapeCount];
+			if(! pShapes) DETHROW(deeOutOfMemory);
 			
-			while( pShapeCount < shapeCount ){
-				pShapes[ pShapeCount ] = new reUndoDataShape( list.GetShapeAt( pShapeCount ) );
-				if( ! pShapes[ pShapeCount ] ) DETHROW( deeOutOfMemory );
+			while(pShapeCount < shapeCount){
+				pShapes[pShapeCount] = new reUndoDataShape(list.GetShapeAt(pShapeCount));
+				if(! pShapes[pShapeCount]) DETHROW(deeOutOfMemory);
 				pShapeCount++;
 			}
 		}
 		
-		if( shapeCount > 1 ){
-			SetShortInfo( "Move Shapes" );
+		if(shapeCount > 1){
+			SetShortInfo("Move Shapes");
 			
 		}else{
-			SetShortInfo( "Move Shape" );
+			SetShortInfo("Move Shape");
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -87,10 +87,10 @@ void reUMoveShape::Undo(){
 	reRigShape *shape;
 	int s;
 	
-	for( s=0; s<pShapeCount; s++ ){
-		shape = pShapes[ s ]->GetShape();
+	for(s=0; s<pShapeCount; s++){
+		shape = pShapes[s]->GetShape();
 		
-		shape->SetPosition( pShapes[ s ]->GetOldPosition() );
+		shape->SetPosition(pShapes[s]->GetOldPosition());
 	}
 }
 
@@ -100,20 +100,20 @@ void reUMoveShape::Redo(){
 	reRigBone *bone;
 	int s;
 	
-	for( s=0; s<pShapeCount; s++ ){
-		shape = pShapes[ s ]->GetShape();
+	for(s=0; s<pShapeCount; s++){
+		shape = pShapes[s]->GetShape();
 		bone = shape->GetRigBone();
 		
-		if( bone ){
+		if(bone){
 			matrix = bone->GetPoseMatrix().ToMatrix()
 				* decMatrix::CreateTranslation( GetDistance() )
 				* bone->GetInversePoseMatrix().ToMatrix();
 			
 		}else{
-			matrix.SetTranslation( GetDistance() );
+			matrix.SetTranslation(GetDistance());
 		}
 		
-		shape->SetPosition( matrix * pShapes[ s ]->GetOldPosition() );
+		shape->SetPosition(matrix * pShapes[s]->GetOldPosition());
 	}
 }
 
@@ -127,10 +127,10 @@ void reUMoveShape::ProgressiveRedo(){
 //////////////////////
 
 void reUMoveShape::pCleanUp(){
-	if( pShapes ){
-		while( pShapeCount > 0 ){
+	if(pShapes){
+		while(pShapeCount > 0){
 			pShapeCount--;
-			delete pShapes[ pShapeCount ];
+			delete pShapes[pShapeCount];
 		}
 		
 		delete [] pShapes;

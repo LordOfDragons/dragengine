@@ -88,8 +88,8 @@ private:
 	
 	VkInstance pInstance;
 	
-	sExtension pSupportsExtension[ ExtensionCount ];
-	sLayer pSupportsLayer[ LayerCount ];
+	sExtension pSupportsExtension[ExtensionCount];
+	sLayer pSupportsLayer[LayerCount];
 	
 	VkPhysicalDevice *pPhysicalDevices;
 	int pPhysicalDeviceCount;
@@ -99,7 +99,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create instance. */
-	devkInstance( deSharedVulkan &vulkan, bool enableDebug );
+	devkInstance(deSharedVulkan &vulkan, bool enableDebug);
 	
 protected:
 	/** Clean up instance. */
@@ -112,54 +112,54 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shared vulkan. */
-	inline deSharedVulkan &GetVulkan() const{ return pVulkan; }
+	inline deSharedVulkan &GetVulkan() const{return pVulkan;}
 	
 	/** Debug support. */
-	inline devkDebug &GetDebug(){ return pDebug; }
+	inline devkDebug &GetDebug(){return pDebug;}
 	
 	
 	
 	/** Extension is supported. */
-	bool SupportsExtension( eExtension extension ) const;
+	bool SupportsExtension(eExtension extension) const;
 	
 	/** Extension version or 0 if not supported. */
-	uint32_t ExtensionVersion( eExtension extension ) const;
+	uint32_t ExtensionVersion(eExtension extension) const;
 	
 	
 	
 	/** Layer is supported. */
-	bool SupportsLayer( eLayer layer ) const;
+	bool SupportsLayer(eLayer layer) const;
 	
 	/** Layer version or 0 if not supported. */
-	uint32_t LayerVersion( eLayer layer ) const;
+	uint32_t LayerVersion(eLayer layer) const;
 	
 	
 	
 	/** Instance. */
-	inline VkInstance GetInstance() const{ return pInstance; }
+	inline VkInstance GetInstance() const{return pInstance;}
 	
 	/** Count of physical devices. */
-	inline int GetPhysicalDeviceCount() const{ return pPhysicalDeviceCount; }
+	inline int GetPhysicalDeviceCount() const{return pPhysicalDeviceCount;}
 	
 	/** Physical device at index. */
-	VkPhysicalDevice GetPhysicalDeviceAt( int index ) const;
+	VkPhysicalDevice GetPhysicalDeviceAt(int index) const;
 	
 	/** Create device. */
-	devkDevice::Ref CreateDevice( int index, const devkDevice::DeviceConfig &config );
+	devkDevice::Ref CreateDevice(int index, const devkDevice::DeviceConfig &config);
 	
 	/** Create headless device for compute use only. */
-	devkDevice::Ref CreateDeviceHeadlessComputeOnly( int index );
+	devkDevice::Ref CreateDeviceHeadlessComputeOnly(int index);
 	
 	/** Create headless device for graphic use. */
-	devkDevice::Ref CreateDeviceHeadlessGraphic( int index );
+	devkDevice::Ref CreateDeviceHeadlessGraphic(int index);
 	/*@}*/
 	
 	
 	
 	/** \name Vulkan Functions */
 	/*@{*/
-	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) PFN_##name name;
-	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) PFN_##name name;
+	#define INSTANCE_LEVEL_VULKAN_FUNCTION(name) PFN_##name name;
+	#define INSTANCE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION(name, extension) PFN_##name name;
 	
 	#include "devkFunctionNames.h"
 	/*@}*/
@@ -170,7 +170,7 @@ private:
 	void pCleanUp();
 	void pDetectExtensions();
 	void pDetectLayers();
-	void pCreateInstance( bool enableValidationLayers );
+	void pCreateInstance(bool enableValidationLayers);
 	void pLoadFunctions();
 	void pFindDevices();
 };

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkAdd( aeAnimator *animator, aeLink *link );
+	aeULinkAdd(aeAnimator *animator, aeLink *link);
 protected:
 	/** Clean up undo. */
 	virtual ~aeULinkAdd();

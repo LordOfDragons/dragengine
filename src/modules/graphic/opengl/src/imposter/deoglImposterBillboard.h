@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new imposter billboard. */
-	deoglImposterBillboard( deoglRenderThread &renderThread );
+	deoglImposterBillboard(deoglRenderThread &renderThread);
 	/** Cleans up the imposter billboard. */
 	~deoglImposterBillboard();
 	/*@}*/
@@ -64,21 +64,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Retrieves the array texture for a skin texture channel. */
-	deoglArrayTexture *GetChannelTextureAt( int channel ) const;
+	deoglArrayTexture *GetChannelTextureAt(int channel) const;
 	/** Sets if an array texture for a skin texture channel exists. */
-	void EnableChannelTexture( int channel, bool enable );
+	void EnableChannelTexture(int channel, bool enable);
 	/** Determines if an array texture for a skin texture channel exists. */
-	bool IsChannelTextureEnabled( int channel ) const;
+	bool IsChannelTextureEnabled(int channel) const;
 	
 	/** Retrieves the minimum extend. */
-	inline const decVector2 &GetMinExtend() const{ return pMinExtend; }
+	inline const decVector2 &GetMinExtend() const{return pMinExtend;}
 	/** Retrieves the maximum extend. */
-	inline const decVector2 &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decVector2 &GetMaxExtend() const{return pMaxExtend;}
 	/** Sets the minimum and maximum extend. */
-	void SetExtends( const decVector2 &minExtend, const decVector2 &maxExtend );
+	void SetExtends(const decVector2 &minExtend, const decVector2 &maxExtend);
 	/*@}*/
 };
 

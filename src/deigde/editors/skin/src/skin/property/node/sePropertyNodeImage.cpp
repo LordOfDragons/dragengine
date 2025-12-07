@@ -45,26 +45,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-sePropertyNodeImage::sePropertyNodeImage( deEngine &engine ) :
-sePropertyNode( entImage, engine, MappedCount ),
-pImage( NULL ),
-pRepeat( 1, 1 ){
+sePropertyNodeImage::sePropertyNodeImage(deEngine &engine) :
+sePropertyNode(entImage, engine, MappedCount),
+pImage(NULL),
+pRepeat(1, 1){
 }
 
-sePropertyNodeImage::sePropertyNodeImage( const sePropertyNodeImage &node ) :
-sePropertyNode( node ),
-pPath( node.pPath ),
-pImage( NULL ),
-pRepeat( node.pRepeat )
+sePropertyNodeImage::sePropertyNodeImage(const sePropertyNodeImage &node) :
+sePropertyNode(node),
+pPath(node.pPath),
+pImage(NULL),
+pRepeat(node.pRepeat)
 {
 	pImage = node.pImage;
-	if( pImage ){
+	if(pImage){
 		pImage->AddReference();
 	}
 }
 
 sePropertyNodeImage::~sePropertyNodeImage(){
-	if( pImage ){
+	if(pImage){
 		pImage->FreeReference();
 	}
 }
@@ -74,8 +74,8 @@ sePropertyNodeImage::~sePropertyNodeImage(){
 // Management
 ///////////////
 
-void sePropertyNodeImage::SetPath( const char *path ){
-	if( pPath.Equals( path ) ){
+void sePropertyNodeImage::SetPath(const char *path){
+	if(pPath.Equals(path)){
 		return;
 	}
 	
@@ -87,36 +87,36 @@ void sePropertyNodeImage::SetPath( const char *path ){
 void sePropertyNodeImage::UpdateImage(){
 	deImage *image = NULL;
 	
-	if( ! pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture() && GetProperty()->GetTexture()->GetSkin() ){
+	if(! pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture() && GetProperty()->GetTexture()->GetSkin()){
 		const decString &basePath = GetProperty()->GetTexture()->GetSkin()->GetDirectoryPath();
 		
 		try{
-			image = GetEngine().GetImageManager()->LoadImage( pPath, basePath );
+			image = GetEngine().GetImageManager()->LoadImage(pPath, basePath);
 			
-		}catch( const deException &e ){
-			GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException( "Skin Editor", e );
+		}catch(const deException &e){
+			GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException("Skin Editor", e);
 		}
 	}
 	
-	if( image == pImage ){
-		if( image ){
+	if(image == pImage){
+		if(image){
 			image->FreeReference();
 		}
 		return;
 	}
 	
-	if( pImage ){
+	if(pImage){
 		pImage->FreeReference();
 	}
 	pImage = image;
 }
 
-void sePropertyNodeImage::SetRepeat( const decPoint &count ){
-	if( ! ( count >= decPoint( 1, 1 ) ) ){
-		DETHROW( deeInvalidParam );
+void sePropertyNodeImage::SetRepeat(const decPoint &count){
+	if(! (count >= decPoint(1, 1))){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeat ){
+	if(count == pRepeat){
 		return;
 	}
 	
@@ -128,7 +128,7 @@ void sePropertyNodeImage::SetRepeat( const decPoint &count ){
 
 
 sePropertyNode *sePropertyNodeImage::Copy() const{
-	return new sePropertyNodeImage( *this );
+	return new sePropertyNodeImage(*this);
 }
 
 void sePropertyNodeImage::UpdateResources(){

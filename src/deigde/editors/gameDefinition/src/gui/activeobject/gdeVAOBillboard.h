@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAOBillboard( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCBillboard *ocbillboard );
+	gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCBillboard *ocbillboard);
 	
 protected:
 	/**
@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pOCBillboard; }
+	inline gdeOCBillboard *GetOCBillboard() const{return pOCBillboard;}
 	
 	/** \brief Collider or \em NULL if not present. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline deCollider *GetCollider() const{return pCollider;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();
@@ -84,7 +84,7 @@ public:
 	void SelectedObjectChanged();
 	
 	/** \brief Extends. */
-	void GetExtends( decVector &minExtend, decVector &maxExtend ) const;
+	void GetExtends(decVector &minExtend, decVector &maxExtend) const;
 	/*@}*/
 	
 	

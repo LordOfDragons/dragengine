@@ -53,8 +53,8 @@ public:
 	/** \rotation Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	gdeUOCTextureSetRotation( gdeObjectClass *objectClass,
-		gdeOCComponentTexture *texture, float newValue );
+	gdeUOCTextureSetRotation(gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture, float newValue);
 	
 protected:
 	/** Clean up undo action. */

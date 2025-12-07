@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintDofSetSpringStiffness( reRigConstraint *constraint,
-		deColliderConstraint::eDegreesOfFreedom dof, float newValue );
+	reUConstraintDofSetSpringStiffness(reRigConstraint *constraint,
+		deColliderConstraint::eDegreesOfFreedom dof, float newValue);
 	
 protected:
 	/** \brief Clean up the undo. */

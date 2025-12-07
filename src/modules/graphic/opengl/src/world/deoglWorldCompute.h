@@ -135,7 +135,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world compute. */
-	deoglWorldCompute( deoglRWorld &world );
+	deoglWorldCompute(deoglRWorld &world);
 	
 protected:
 	/** Clean up world compute. */
@@ -148,7 +148,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** World. */
-	inline deoglRWorld &GetWorld() const{ return pWorld; }
+	inline deoglRWorld &GetWorld() const{return pWorld;}
 	
 	
 	
@@ -159,45 +159,45 @@ public:
 	
 	
 	/** SSBO elements. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOElements() const{ return pSSBOElements; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElements() const{return pSSBOElements;}
 	
 	/** Count of elements. */
 	int GetElementCount() const;
 	
 	/** Element at index. */
-	deoglWorldComputeElement &GetElementAt( int index ) const;
+	deoglWorldComputeElement &GetElementAt(int index) const;
 	
 	/** Add element. */
-	void AddElement( deoglWorldComputeElement *element );
+	void AddElement(deoglWorldComputeElement *element);
 	
 	/** Update element. */
-	void UpdateElement( deoglWorldComputeElement *element );
+	void UpdateElement(deoglWorldComputeElement *element);
 	
 	/** Remove element. */
-	void RemoveElement( deoglWorldComputeElement *element );
+	void RemoveElement(deoglWorldComputeElement *element);
 	
 	/** Update element count. */
-	inline int GetUpdateElementCount() const{ return pUpdateElementCount; }
+	inline int GetUpdateElementCount() const{return pUpdateElementCount;}
 	
 	/** Count of element geometries. */
 	int GetElementGeometryCount() const;
 	
 	/** Update element geometries. */
-	void UpdateElementGeometries( deoglWorldComputeElement *element );
+	void UpdateElementGeometries(deoglWorldComputeElement *element);
 	
 	/** Update element geometry count. */
-	inline int GetUpdateElementGeometryCount() const{ return pUpdateElementGeometryCount; }
+	inline int GetUpdateElementGeometryCount() const{return pUpdateElementGeometryCount;}
 	
 	/** Clear element geometry count. */
-	inline int GetClearGeometryCount() const{ return pClearGeometryCount; }
+	inline int GetClearGeometryCount() const{return pClearGeometryCount;}
 	
 	
 	
 	/** SSBO element geometries. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOElementGeometries() const{ return pSSBOElementGeometries; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOElementGeometries() const{return pSSBOElementGeometries;}
 	
 	/** Shared SPB element geometries. */
-	inline const deoglSharedBlockSPB::Ref &GetSharedSPBGeometries() const{ return pSharedSPBGeometries; }
+	inline const deoglSharedBlockSPB::Ref &GetSharedSPBGeometries() const{return pSharedSPBGeometries;}
 	/*@}*/
 	
 	
@@ -205,8 +205,8 @@ public:
 private:
 	void pUpdateSSBOElements();
 	void pFullUpdateSSBOElements();
-	void pUpdateSSBOElement( deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data );
-	void pCheckElementGeometryCount( deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data );
+	void pUpdateSSBOElement(deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data);
+	void pCheckElementGeometryCount(deoglWorldComputeElement &element, deoglWorldComputeElement::sDataElement &data);
 	
 	void pUpdateSSBOElementGeometries();
 	void pFullUpdateSSBOElementGeometries();

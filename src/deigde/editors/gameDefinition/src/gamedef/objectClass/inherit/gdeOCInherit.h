@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create inherit object. */
-	gdeOCInherit( const char *name );
+	gdeOCInherit(const char *name);
 	
 	/** \brief Create copy of inherit object. */
-	gdeOCInherit( const gdeOCInherit &inherit );
+	gdeOCInherit(const gdeOCInherit &inherit);
 	
 protected:
 	/** \brief Cleans up the link. */
@@ -64,16 +64,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of class to inherit if present. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name of class to inherit if present. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Prefix to add to properties defined in inherited class. */
-	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }
+	inline const decString &GetPropertyPrefix() const{return pPropertyPrefix;}
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
-	void SetPropertyPrefix( const char *prefix );
+	void SetPropertyPrefix(const char *prefix);
 	/*@}*/
 };
 

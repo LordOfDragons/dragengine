@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new action. */
-	declListProfiles( declLauncher &launcher );
+	declListProfiles(declLauncher &launcher);
 	
 	/** Cleans up the action. */
 	~declListProfiles();
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline declLauncher &GetLauncher() const{ return pLauncher; }
+	inline declLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** Print syntax. */
 	void PrintSyntax();

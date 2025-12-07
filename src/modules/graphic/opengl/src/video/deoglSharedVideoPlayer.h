@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared video player. */
-	deoglSharedVideoPlayer( deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer );
+	deoglSharedVideoPlayer(deGraphicOpenGl &ogl, deoglSharedVideoPlayerList &list, deVideoPlayer *videoPlayer);
 	
 	/** Clean up shared video player. */
 	~deoglSharedVideoPlayer();
@@ -62,14 +62,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOpenGL(){ return pOgl; }
-	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOpenGL(){return pOgl;}
+	inline const deGraphicOpenGl &GetOpenGL() const{return pOgl;}
 	
 	/** Video player. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline deVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** Usage count. */
-	inline int GetUsageCount() const{ return pUsageCount; }
+	inline int GetUsageCount() const{return pUsageCount;}
 	
 	/** Increase usage count by one. */
 	void AddUsage();
@@ -83,7 +83,7 @@ public:
 	 * Update the video player.
 	 * \details Called from the main thread.
 	 */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/**
 	 * Update render thread counterparts.

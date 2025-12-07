@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, gdeOCNavigationSpace::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL ),
-pProperty( property )
+gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, gdeOCNavigationSpace::eProperties property, const char *newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL),
+pProperty(property)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "NavSpace set property name" );
+	SetShortInfo("NavSpace set property name");
 	
-	pOldValue = navspace->GetPropertyName( property );
+	pOldValue = navspace->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
@@ -62,10 +62,10 @@ pProperty( property )
 }
 
 gdeUOCNavSpaceSetPropertyName::~gdeUOCNavSpaceSetPropertyName(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetPropertyName::~gdeUOCNavSpaceSetPropertyName(){
 ///////////////
 
 void gdeUOCNavSpaceSetPropertyName::Undo(){
-	pNavSpace->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetPropertyName::Redo(){
-	pNavSpace->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

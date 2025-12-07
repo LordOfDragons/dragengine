@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleIKSetSolverBone( aeRuleInverseKinematic *rule, const char *newName );
+	aeURuleIKSetSolverBone(aeRuleInverseKinematic *rule, const char *newName);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleIKSetSolverBone();

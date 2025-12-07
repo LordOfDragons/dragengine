@@ -49,12 +49,12 @@ int deModioParameterList::GetParameterCount() const{
 	return pParameters.GetCount();
 }
 
-int deModioParameterList::IndexOfParameterNamed( const char *name ) const{
+int deModioParameterList::IndexOfParameterNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( deModioParameter* )pParameters.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((deModioParameter*)pParameters.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -62,37 +62,37 @@ int deModioParameterList::IndexOfParameterNamed( const char *name ) const{
 	return -1;
 }
 
-deModioParameter &deModioParameterList::GetParameterAt( int index ) const{
-	return *( ( deModioParameter* )pParameters.GetAt( index ) );
+deModioParameter &deModioParameterList::GetParameterAt(int index) const{
+	return *((deModioParameter*)pParameters.GetAt(index));
 }
 
-deModioParameter &deModioParameterList::GetParameterNamed( const char *name ) const{
+deModioParameter &deModioParameterList::GetParameterNamed(const char *name) const{
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deModioParameter &parameter = *( ( deModioParameter* )pParameters.GetAt( i ) );
-		if( parameter.GetName() == name ){
+	for(i=0; i<count; i++){
+		deModioParameter &parameter = *((deModioParameter*)pParameters.GetAt(i));
+		if(parameter.GetName() == name){
 			return parameter;
 		}
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
-void deModioParameterList::AddParameter( deModioParameter *parameter ){
-	if( ! parameter || IndexOfParameterNamed( parameter->GetName() ) != -1 ){
-		DETHROW( deeInvalidParam );
+void deModioParameterList::AddParameter(deModioParameter *parameter){
+	if(! parameter || IndexOfParameterNamed(parameter->GetName()) != -1){
+		DETHROW(deeInvalidParam);
 	}
-	pParameters.Add( parameter );
+	pParameters.Add(parameter);
 }
 
 void deModioParameterList::RemoveAllParameters(){
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deModioParameter* )pParameters.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deModioParameter*)pParameters.GetAt(i);
 	}
 	pParameters.RemoveAll();
 }

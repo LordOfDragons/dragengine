@@ -54,19 +54,19 @@ int mePathFindTestTypeList::GetCount() const{
 	return pTypes.GetCount();
 }
 
-mePathFindTestType *mePathFindTestTypeList::GetAt( int position ) const{
-	return ( mePathFindTestType* )pTypes.GetAt( position );
+mePathFindTestType *mePathFindTestTypeList::GetAt(int position) const{
+	return (mePathFindTestType*)pTypes.GetAt(position);
 }
 
-mePathFindTestType *mePathFindTestTypeList::GetWith( int typeNumber ) const{
+mePathFindTestType *mePathFindTestTypeList::GetWith(int typeNumber) const{
 	const int count = pTypes.GetCount();
 	mePathFindTestType *type;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		type = ( mePathFindTestType* )pTypes.GetAt( i );
+	for(i=0; i<count; i++){
+		type = (mePathFindTestType*)pTypes.GetAt(i);
 		
-		if( type->GetTypeNumber() == typeNumber ){
+		if(type->GetTypeNumber() == typeNumber){
 			return type;
 		}
 	}
@@ -74,19 +74,19 @@ mePathFindTestType *mePathFindTestTypeList::GetWith( int typeNumber ) const{
 	return NULL;
 }
 
-int mePathFindTestTypeList::IndexOf( mePathFindTestType *type ) const{
-	return pTypes.IndexOf( type );
+int mePathFindTestTypeList::IndexOf(mePathFindTestType *type) const{
+	return pTypes.IndexOf(type);
 }
 
-int mePathFindTestTypeList::IndexWith( int typeNumber ) const{
+int mePathFindTestTypeList::IndexWith(int typeNumber) const{
 	const int count = pTypes.GetCount();
 	mePathFindTestType *type;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		type = ( mePathFindTestType* )pTypes.GetAt( i );
+	for(i=0; i<count; i++){
+		type = (mePathFindTestType*)pTypes.GetAt(i);
 		
-		if( type->GetTypeNumber() == typeNumber ){
+		if(type->GetTypeNumber() == typeNumber){
 			return i;
 		}
 	}
@@ -94,19 +94,19 @@ int mePathFindTestTypeList::IndexWith( int typeNumber ) const{
 	return -1;
 }
 
-bool mePathFindTestTypeList::Has( mePathFindTestType *type ) const{
-	return pTypes.Has( type );
+bool mePathFindTestTypeList::Has(mePathFindTestType *type) const{
+	return pTypes.Has(type);
 }
 
-bool mePathFindTestTypeList::HasWith( int typeNumber ) const{
+bool mePathFindTestTypeList::HasWith(int typeNumber) const{
 	const int count = pTypes.GetCount();
 	mePathFindTestType *type;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		type = ( mePathFindTestType* )pTypes.GetAt( i );
+	for(i=0; i<count; i++){
+		type = (mePathFindTestType*)pTypes.GetAt(i);
 		
-		if( type->GetTypeNumber() == typeNumber ){
+		if(type->GetTypeNumber() == typeNumber){
 			return true;
 		}
 	}
@@ -114,28 +114,28 @@ bool mePathFindTestTypeList::HasWith( int typeNumber ) const{
 	return false;
 }
 
-void mePathFindTestTypeList::Add( mePathFindTestType *type ){
-	if( ! type || HasWith( type->GetTypeNumber() ) ){
-		DETHROW( deeInvalidParam );
+void mePathFindTestTypeList::Add(mePathFindTestType *type){
+	if(! type || HasWith(type->GetTypeNumber())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTypes.Add( type );
+	pTypes.Add(type);
 }
 
-void mePathFindTestTypeList::AddIfAbsent( mePathFindTestType *type ){
-	if( ! type || HasWith( type->GetTypeNumber() ) ){
-		DETHROW( deeInvalidParam );
+void mePathFindTestTypeList::AddIfAbsent(mePathFindTestType *type){
+	if(! type || HasWith(type->GetTypeNumber())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTypes.AddIfAbsent( type );
+	pTypes.AddIfAbsent(type);
 }
 
-void mePathFindTestTypeList::Remove( mePathFindTestType *type ){
-	pTypes.Remove( type );
+void mePathFindTestTypeList::Remove(mePathFindTestType *type){
+	pTypes.Remove(type);
 }
 
-void mePathFindTestTypeList::RemoveIfPresent( mePathFindTestType *type ){
-	pTypes.RemoveIfPresent( type );
+void mePathFindTestTypeList::RemoveIfPresent(mePathFindTestType *type){
+	pTypes.RemoveIfPresent(type);
 }
 
 void mePathFindTestTypeList::RemoveAll(){

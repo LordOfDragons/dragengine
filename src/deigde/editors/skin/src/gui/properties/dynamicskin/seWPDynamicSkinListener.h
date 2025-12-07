@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPDynamicSkinListener( seWPDynamicSkin &panel );
+	seWPDynamicSkinListener(seWPDynamicSkin &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPDynamicSkinListener();
@@ -53,16 +53,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Dynamic skin renderables have been added or removed. */
-	virtual void DynamicSkinRenderableStructureChanged ( seSkin *skin );
+	virtual void DynamicSkinRenderableStructureChanged (seSkin *skin);
 	
 	/** \brief A dynamic skin renderable changed. */
-	virtual void DynamicSkinRenderableChanged( seSkin *skin, seDynamicSkinRenderable *renderable );
+	virtual void DynamicSkinRenderableChanged(seSkin *skin, seDynamicSkinRenderable *renderable);
 	
 	/** \brief A dynamic skin renderable name changed. */
-	virtual void DynamicSkinRenderableNameChanged( seSkin *skin, seDynamicSkinRenderable *renderable );
+	virtual void DynamicSkinRenderableNameChanged(seSkin *skin, seDynamicSkinRenderable *renderable);
 	
 	/** \brief Active dynamic skin renderable changed. */
-	virtual void DynamicSkinActiveRenderableChanged( seSkin *skin );
+	virtual void DynamicSkinActiveRenderableChanged(seSkin *skin);
 	/*@}*/
 };
 

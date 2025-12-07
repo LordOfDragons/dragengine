@@ -33,8 +33,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reBaseClip::reBaseClip( int type ){
-	if( type < ectObject || type > ectObject ) DETHROW( deeInvalidParam );
+reBaseClip::reBaseClip(int type){
+	if(type < ectObject || type > ectObject) DETHROW(deeInvalidParam);
 	
 	pType = type;
 }

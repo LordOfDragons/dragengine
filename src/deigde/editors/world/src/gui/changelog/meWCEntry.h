@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create entry. */
-	meWCEntry( meWindowChangelog &windowChangelog, eElementTypes type );
+	meWCEntry(meWindowChangelog &windowChangelog, eElementTypes type);
 	
 protected:
 	/** \brief Clean up entry. */
@@ -95,34 +95,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changelog window. */
-	inline meWindowChangelog &GetWindowChangelog() const{ return pWindowChangelog; }
+	inline meWindowChangelog &GetWindowChangelog() const{return pWindowChangelog;}
 	
 	/** \brief Type. */
-	inline eElementTypes GetType() const{ return pType; }
+	inline eElementTypes GetType() const{return pType;}
 	
 	/** \brief Ssector. */
-	inline const decPoint3 &GetSector() const{ return pSector; }
+	inline const decPoint3 &GetSector() const{return pSector;}
 	
 	/** \brief Set sector. */
-	void SetSector( const decPoint3 &sector );
+	void SetSector(const decPoint3 &sector);
 	
 	/** \brief World or \em NULL. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	
 	/** \brief Set world or \em NULL. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Height terrain texture or \em NULL. */
-	inline meHeightTerrainTexture *GetHTTexture() const{ return pHTTexture; }
+	inline meHeightTerrainTexture *GetHTTexture() const{return pHTTexture;}
 	
 	/** \brief Set height terrain texture or \em NULL. */
-	void SetHTTexture( meHeightTerrainTexture *texture );
+	void SetHTTexture(meHeightTerrainTexture *texture);
 	
 	/** \brief Height terrain navigation space or \em NULL. */
-	inline meHeightTerrainNavSpace *GetHTNavSpace() const{ return pHTNavSpace; }
+	inline meHeightTerrainNavSpace *GetHTNavSpace() const{return pHTNavSpace;}
 	
 	/** \brief Set height terrain navigation space or \em NULL. */
-	void SetHTNavSpace( meHeightTerrainNavSpace *navspace );
+	void SetHTNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	/** \brief Update item text. */
 	void UpdateText();

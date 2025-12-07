@@ -65,8 +65,8 @@ private:
 		
 	public:
 		/** \brief Create archive file. */
-		cArchiveFile( const char *filename, const unz_file_pos &archivePosition,
-			uint64_t fileSize, TIME_SYSTEM modificationTime );
+		cArchiveFile(const char *filename, const unz_file_pos &archivePosition,
+			uint64_t fileSize, TIME_SYSTEM modificationTime);
 		
 	protected:
 		/** \brief Clean up archive file. */
@@ -76,16 +76,16 @@ private:
 		
 	public:
 		/** \brief Filename. */
-		inline const decString &GetFilename() const{ return pFilename; }
+		inline const decString &GetFilename() const{return pFilename;}
 		
 		/** \brief Position in zip file. */
-		inline const unz_file_pos &GetArchivePosition() const{ return pArchivePosition; }
+		inline const unz_file_pos &GetArchivePosition() const{return pArchivePosition;}
 		
 		/** \brief Uncompressed file size. */
-		inline uint64_t GetFileSize() const{ return pFileSize; }
+		inline uint64_t GetFileSize() const{return pFileSize;}
 		
 		/** \brief Modification time. */
-		inline TIME_SYSTEM GetModificationTime() const{ return pModificationTime; }
+		inline TIME_SYSTEM GetModificationTime() const{return pModificationTime;}
 	};
 	
 	
@@ -110,7 +110,7 @@ private:
 		
 	public:
 		/** \brief Create archive file. */
-		cArchiveDirectory( const char *filename );
+		cArchiveDirectory(const char *filename);
 		
 	protected:
 		/** \brief Clean up archive file. */
@@ -120,7 +120,7 @@ private:
 		
 	public:
 		/** \brief Filename. */
-		inline const decString &GetFilename() const{ return pFilename; }
+		inline const decString &GetFilename() const{return pFilename;}
 		
 		
 		
@@ -128,22 +128,22 @@ private:
 		int GetDirectoryCount() const;
 		
 		/** \brief Directory at index. */
-		cArchiveDirectory *GetDirectoryAt( int index ) const;
+		cArchiveDirectory *GetDirectoryAt(int index) const;
 		
 		/** \brief Directory with filename is present. */
-		bool HasDirectoryNamed( const char *filename ) const;
+		bool HasDirectoryNamed(const char *filename) const;
 		
 		/** \brief Directory by filename or \em NULL if absent. */
-		cArchiveDirectory *GetDirectoryNamed( const char *filename ) const;
+		cArchiveDirectory *GetDirectoryNamed(const char *filename) const;
 		
 		/** \brief Directory by filename adding it if absent. */
-		cArchiveDirectory *GetOrAddDirectoryNamed( const char *filename );
+		cArchiveDirectory *GetOrAddDirectoryNamed(const char *filename);
 		
 		/** \brief Directory by path or \em NULL if absent. */
-		cArchiveDirectory *GetDirectoryByPath( const decPath &path );
+		cArchiveDirectory *GetDirectoryByPath(const decPath &path);
 		
 		/** \brief Add directory. */
-		void AddDirectory( cArchiveDirectory *directory );
+		void AddDirectory(cArchiveDirectory *directory);
 		
 		
 		
@@ -151,19 +151,19 @@ private:
 		int GetFileCount() const;
 		
 		/** \brief File at index. */
-		cArchiveFile *GetFileAt( int index ) const;
+		cArchiveFile *GetFileAt(int index) const;
 		
 		/** \brief File with filename is present. */
-		bool HasFileNamed( const char *filename ) const;
+		bool HasFileNamed(const char *filename) const;
 		
 		/** \brief File by filename or \em NULL if absent. */
-		cArchiveFile *GetFileNamed( const char *filename ) const;
+		cArchiveFile *GetFileNamed(const char *filename) const;
 		
 		/** \brief File by path or \em NULL if absent. */
-		cArchiveFile *GetFileByPath( const decPath &path ) const;
+		cArchiveFile *GetFileByPath(const decPath &path) const;
 		
 		/** \brief Add file. */
-		void AddFile( cArchiveFile *file );
+		void AddFile(cArchiveFile *file);
 	};
 	
 	
@@ -181,8 +181,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	dealVFSZipArchive( dealEngineInstance &engineInstance,
-		decBaseFileReader *fileReader, const decPath &pathRoot );
+	dealVFSZipArchive(dealEngineInstance &engineInstance,
+		decBaseFileReader *fileReader, const decPath &pathRoot);
 	
 protected:
 	/**
@@ -203,7 +203,7 @@ public:
 	 * \brief File reader.
 	 * \warning For internal use only.
 	 */
-	inline decBaseFileReader &GetFileReader() const{ return *pFileReader; }
+	inline decBaseFileReader &GetFileReader() const{return *pFileReader;}
 	
 	
 	
@@ -212,7 +212,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	virtual bool ExistsFile(const decPath &path);
 	
 	/**
 	 * \brief File can be read.
@@ -221,7 +221,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	virtual bool CanReadFile(const decPath &path);
 	
 	/**
 	 * \brief File can be written.
@@ -233,14 +233,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	virtual bool CanWriteFile(const decPath &path);
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	virtual bool CanDeleteFile(const decPath &path);
 	
 	
 	
@@ -251,7 +251,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
 	
 	/**
 	 * \brief Open file for writing.
@@ -262,45 +262,45 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	virtual void DeleteFile(const decPath &path);
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path );
+	virtual void TouchFile(const decPath &path);
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 * 
 	 * All found files and directories are added to the file listing.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	virtual eFileTypes GetFileType(const decPath &path);
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	virtual uint64_t GetFileSize(const decPath &path);
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
 	/*@}*/
 	
 	
@@ -309,7 +309,7 @@ private:
 	void pCleanUp();
 	void pBuildFileTable();
 	void pLogArchiveContent();
-	void pLogArchiveContent( const cArchiveDirectory &directory, const char *prefix );
+	void pLogArchiveContent(const cArchiveDirectory &directory, const char *prefix);
 	void pOpenZipFile();
 };
 

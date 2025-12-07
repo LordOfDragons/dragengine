@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShapeBox::deoglShapeBox( deoglRenderThread &renderThread ) : deoglShape( renderThread ){
-	SetPointOffsetLines( 0 );
-	SetPointCountLines( 12 * 2 );
+deoglShapeBox::deoglShapeBox(deoglRenderThread &renderThread) : deoglShape(renderThread){
+	SetPointOffsetLines(0);
+	SetPointCountLines(12 * 2);
 	
-	SetPointOffsetFaces( GetPointCountLines() );
-	SetPointCountFaces( 6 * 3 * 2 );
+	SetPointOffsetFaces(GetPointCountLines());
+	SetPointCountFaces(6 * 3 * 2);
 }
 
 deoglShapeBox::~deoglShapeBox(){
@@ -54,37 +54,37 @@ deoglShapeBox::~deoglShapeBox(){
 // Management
 ///////////////
 
-void deoglShapeBox::CalcMatrix( decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector &halfExtends ){
-	matrix = decMatrix::CreateScale( halfExtends )
+void deoglShapeBox::CalcMatrix(decMatrix &matrix, const decVector &position, const decQuaternion &orientation, const decVector &halfExtends){
+	matrix = decMatrix::CreateScale(halfExtends)
 		* decMatrix::CreateFromQuaternion( orientation )
 		* decMatrix::CreateTranslation( position );
 }
 
-void deoglShapeBox::AddVBOLines( sVBOData *data ){
-	const int indices[ 24 ] = {
+void deoglShapeBox::AddVBOLines(sVBOData *data){
+	const int indices[24] = {
 		0,1, 1,2, 2,3, 3,0,  // top line loop
 		4,5, 5,6, 6,7, 7,4,  // bottom line loop
 		0,4, 1,5, 2,6, 3,7   // loop connections
 	};
-	sVBOData points[ 8 ];
+	sVBOData points[8];
 	int i;
 	
-	points[ 0 ].SetSelFalse( -1.0f,  1.0f, -1.0f );
-	points[ 1 ].SetSelFalse(  1.0f,  1.0f, -1.0f );
-	points[ 2 ].SetSelFalse(  1.0f,  1.0f,  1.0f );
-	points[ 3 ].SetSelFalse( -1.0f,  1.0f,  1.0f );
-	points[ 4 ].SetSelFalse( -1.0f, -1.0f, -1.0f );
-	points[ 5 ].SetSelFalse(  1.0f, -1.0f, -1.0f );
-	points[ 6 ].SetSelFalse(  1.0f, -1.0f,  1.0f );
-	points[ 7 ].SetSelFalse( -1.0f, -1.0f,  1.0f );
+	points[0].SetSelFalse(-1.0f,  1.0f, -1.0f);
+	points[1].SetSelFalse(1.0f,  1.0f, -1.0f);
+	points[2].SetSelFalse(1.0f,  1.0f,  1.0f);
+	points[3].SetSelFalse(-1.0f,  1.0f,  1.0f);
+	points[4].SetSelFalse(-1.0f, -1.0f, -1.0f);
+	points[5].SetSelFalse(1.0f, -1.0f, -1.0f);
+	points[6].SetSelFalse(1.0f, -1.0f,  1.0f);
+	points[7].SetSelFalse(-1.0f, -1.0f,  1.0f);
 	
-	for( i=0; i<24; i++ ){
-		data[ i ].SetFrom( points[ indices[ i ] ] );
+	for(i=0; i<24; i++){
+		data[i].SetFrom(points[indices[i]]);
 	}
 }
 
-void deoglShapeBox::AddVBOFaces( sVBOData *data ){
-	const int indices[ 36 ] = {
+void deoglShapeBox::AddVBOFaces(sVBOData *data){
+	const int indices[36] = {
 		0, 1, 2, 0, 2, 3,  // top (y+)
 		7, 6, 5, 7, 5, 4,  // bottom (y-)
 		6, 7, 3, 6, 3, 2,  // front (z+)
@@ -92,19 +92,19 @@ void deoglShapeBox::AddVBOFaces( sVBOData *data ){
 		5, 6, 2, 5, 2, 1,  // left (x+)
 		7, 4, 0, 7, 0, 3   // right (x-)
 	};
-	sVBOData points[ 8 ];
+	sVBOData points[8];
 	int i;
 	
-	points[ 0 ].SetSelFalse( -1.0f,  1.0f, -1.0f );
-	points[ 1 ].SetSelFalse(  1.0f,  1.0f, -1.0f );
-	points[ 2 ].SetSelFalse(  1.0f,  1.0f,  1.0f );
-	points[ 3 ].SetSelFalse( -1.0f,  1.0f,  1.0f );
-	points[ 4 ].SetSelFalse( -1.0f, -1.0f, -1.0f );
-	points[ 5 ].SetSelFalse(  1.0f, -1.0f, -1.0f );
-	points[ 6 ].SetSelFalse(  1.0f, -1.0f,  1.0f );
-	points[ 7 ].SetSelFalse( -1.0f, -1.0f,  1.0f );
+	points[0].SetSelFalse(-1.0f,  1.0f, -1.0f);
+	points[1].SetSelFalse(1.0f,  1.0f, -1.0f);
+	points[2].SetSelFalse(1.0f,  1.0f,  1.0f);
+	points[3].SetSelFalse(-1.0f,  1.0f,  1.0f);
+	points[4].SetSelFalse(-1.0f, -1.0f, -1.0f);
+	points[5].SetSelFalse(1.0f, -1.0f, -1.0f);
+	points[6].SetSelFalse(1.0f, -1.0f,  1.0f);
+	points[7].SetSelFalse(-1.0f, -1.0f,  1.0f);
 	
-	for( i=0; i<36; i++ ){
-		data[ i ].SetFrom( points[ indices[ i ] ] );
+	for(i=0; i<36; i++){
+		data[i].SetFrom(points[indices[i]]);
 	}
 }

@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasText::deoglCanvasText( deGraphicOpenGl &ogl, deCanvasText &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasText( canvas ),
-pRCanvasText( NULL ){
+deoglCanvasText::deoglCanvasText(deGraphicOpenGl &ogl, deCanvasText &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasText(canvas),
+pRCanvasText(NULL){
 }
 
 deoglCanvasText::~deoglCanvasText(){
@@ -79,9 +79,9 @@ void deoglCanvasText::SyncContentToRender(){
 	
 	pRCanvasText->SetFont(rfont);
 	pRCanvasText->SetFontSize(rfontSize);
-	pRCanvasText->SetTextSize( pCanvasText.GetFontSize() );
-	pRCanvasText->SetColor( pCanvasText.GetColor() );
-	pRCanvasText->SetText( pCanvasText.GetText() );
+	pRCanvasText->SetTextSize(pCanvasText.GetFontSize());
+	pRCanvasText->SetColor(pCanvasText.GetColor());
+	pRCanvasText->SetText(pCanvasText.GetText());
 }
 
 
@@ -90,6 +90,6 @@ void deoglCanvasText::SyncContentToRender(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasText::CreateRCanvas(){
-	pRCanvasText = new deoglRCanvasText( GetOgl().GetRenderThread() );
+	pRCanvasText = new deoglRCanvasText(GetOgl().GetRenderThread());
 	return pRCanvasText;
 }

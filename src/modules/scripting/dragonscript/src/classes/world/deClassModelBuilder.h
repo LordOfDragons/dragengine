@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassModelBuilder( deScriptingDragonScript &ds );
+	deClassModelBuilder(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassModelBuilder();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 	
@@ -79,34 +79,34 @@ private:
 		dsClass *clsVector2;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfBuild );
-	DEF_NATFUNC( nfBuildModel );
-	DEF_NATFUNC( nfAddBone );
-	DEF_NATFUNC( nfAddTexture );
-	DEF_NATFUNC( nfAddLOD );
-	DEF_NATFUNC( nfSetLodError );
-	DEF_NATFUNC( nfAddTextureCoordinatesSet );
-	DEF_NATFUNC( nfSetWeightCount );
-	DEF_NATFUNC( nfSetWeightAt );
-	DEF_NATFUNC( nfSetWeightGroupCount );
-	DEF_NATFUNC( nfSetWeightGroupAt );
-	DEF_NATFUNC( nfSetVertexCount );
-	DEF_NATFUNC( nfSetVertexAt );
-	DEF_NATFUNC( nfSetNormalCount );
-	DEF_NATFUNC( nfSetTangentCount );
-	DEF_NATFUNC( nfSetFaceCount );
-	DEF_NATFUNC( nfSetFaceAt );
-	DEF_NATFUNC( nfSetTextureCoordinateSetCount );
-	DEF_NATFUNC( nfSetTextureCoordinateSetAtSetCount );
-	DEF_NATFUNC( nfSetTextureCoordinateSetAtSetAt );
+	DEF_NATFUNC(nfBuild);
+	DEF_NATFUNC(nfBuildModel);
+	DEF_NATFUNC(nfAddBone);
+	DEF_NATFUNC(nfAddTexture);
+	DEF_NATFUNC(nfAddLOD);
+	DEF_NATFUNC(nfSetLodError);
+	DEF_NATFUNC(nfAddTextureCoordinatesSet);
+	DEF_NATFUNC(nfSetWeightCount);
+	DEF_NATFUNC(nfSetWeightAt);
+	DEF_NATFUNC(nfSetWeightGroupCount);
+	DEF_NATFUNC(nfSetWeightGroupAt);
+	DEF_NATFUNC(nfSetVertexCount);
+	DEF_NATFUNC(nfSetVertexAt);
+	DEF_NATFUNC(nfSetNormalCount);
+	DEF_NATFUNC(nfSetTangentCount);
+	DEF_NATFUNC(nfSetFaceCount);
+	DEF_NATFUNC(nfSetFaceAt);
+	DEF_NATFUNC(nfSetTextureCoordinateSetCount);
+	DEF_NATFUNC(nfSetTextureCoordinateSetAtSetCount);
+	DEF_NATFUNC(nfSetTextureCoordinateSetAtSetAt);
 #undef DEF_NATFUNC
 };
 

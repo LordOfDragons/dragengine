@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetContrast::seUPropertyNodeSetContrast( sePropertyNode *node, float newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+seUPropertyNodeSetContrast::seUPropertyNodeSetContrast(sePropertyNode *node, float newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set contrast" );
+	SetShortInfo("Node set contrast");
 	
 	pOldValue = node->GetContrast();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeSetContrast::~seUPropertyNodeSetContrast(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUPropertyNodeSetContrast::~seUPropertyNodeSetContrast(){
 ///////////////
 
 void seUPropertyNodeSetContrast::Undo(){
-	pNode->SetContrast( pOldValue );
+	pNode->SetContrast(pOldValue);
 }
 
 void seUPropertyNodeSetContrast::Redo(){
-	pNode->SetContrast( pNewValue );
+	pNode->SetContrast(pNewValue);
 }

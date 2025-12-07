@@ -47,7 +47,7 @@ public:
 	seSourceList();
 	
 	/** \brief Create copy of source list. */
-	seSourceList( const seSourceList &copy );
+	seSourceList(const seSourceList &copy);
 	
 	/** \brief Clean up source list. */
 	~seSourceList();
@@ -64,32 +64,32 @@ public:
 	 * \brief Source at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	seSource *GetAt( int index ) const;
+	seSource *GetAt(int index) const;
 	
 	/**
 	 * \brief Index of source or -1 if not present in the list.
 	 * \throws deeInvalidParam \em source is \em NULL.
 	 */
-	int IndexOf( seSource *source ) const;
+	int IndexOf(seSource *source) const;
 	
 	/**
 	 * \brief Determine if a source is present in the list.
 	 * \throws deeInvalidParam \em source is \em NULL.
 	 */
-	bool Has( seSource *source ) const;
+	bool Has(seSource *source) const;
 	
 	/**
 	 * \brief Add source.
 	 * \throws deeInvalidParam \em source is \em NULL.
 	 */
-	void Add( seSource *source );
+	void Add(seSource *source);
 	
 	/**
 	 * \brief Insert source.
 	 * \throws deeInvalidParam \em source is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( seSource *source, int index );
+	void Insert(seSource *source, int index);
 	
 	/**
 	 * \brief Move source.
@@ -97,14 +97,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( seSource *source, int index );
+	void Move(seSource *source, int index);
 	
 	/**
 	 * \brief Remove source.
 	 * \throws deeInvalidParam \em source is \em NULL.
 	 * \throws deeInvalidParam \em source is not present in the list.
 	 */
-	void Remove( seSource *source );
+	void Remove(seSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAll();
@@ -115,10 +115,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy source list to this source list. */
-	seSourceList &operator=( const seSourceList &list );
+	seSourceList &operator=(const seSourceList &list);
 	
 	/** \brief Add sources from source list if not present in this source list. */
-	seSourceList &operator+=( const seSourceList &list );
+	seSourceList &operator+=(const seSourceList &list);
 	/*@}*/
 };
 

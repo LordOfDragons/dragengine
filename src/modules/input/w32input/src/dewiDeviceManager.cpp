@@ -53,14 +53,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewiDeviceManager::dewiDeviceManager( deWindowsInput &module ) :
-pModule( module )
+dewiDeviceManager::dewiDeviceManager(deWindowsInput &module) :
+pModule(module)
 {
 	try{
 		pCreateDevices();
 		pCreateControllers();
 
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -84,17 +84,17 @@ int dewiDeviceManager::GetCount() const{
 	return pDevices.GetCount();
 }
 
-dewiDevice *dewiDeviceManager::GetAt( int index ) const{
-	return ( dewiDevice* )pDevices.GetAt( index );
+dewiDevice *dewiDeviceManager::GetAt(int index) const{
+	return (dewiDevice*)pDevices.GetAt(index);
 }
 
-dewiDevice *dewiDeviceManager::GetWithID( const char *id ) const{
+dewiDevice *dewiDeviceManager::GetWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dewiDevice * const device = ( dewiDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDevice * const device = (dewiDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return device;
 		}
 	}
@@ -102,13 +102,13 @@ dewiDevice *dewiDeviceManager::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-int dewiDeviceManager::IndexOfWithID( const char *id ) const{
+int dewiDeviceManager::IndexOfWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dewiDevice * const device = ( dewiDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		dewiDevice * const device = (dewiDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return i;
 		}
 	}
@@ -116,18 +116,18 @@ int dewiDeviceManager::IndexOfWithID( const char *id ) const{
 	return -1;
 }
 
-dewiDeviceWinRTController *dewiDeviceManager::GetWithController( wrgi::RawGameController const &controller ) const{
+dewiDeviceWinRTController *dewiDeviceManager::GetWithController(wrgi::RawGameController const &controller) const{
 	const int count = pDevices.GetCount();
 	int i;
 
-	for( i=0; i<count; i++ ){
-		dewiDevice * const device = ( dewiDevice* )pDevices.GetAt( i );
-		if( device->GetSource() != dewiDevice::esWinRTController ){
+	for(i=0; i<count; i++){
+		dewiDevice * const device = (dewiDevice*)pDevices.GetAt(i);
+		if(device->GetSource() != dewiDevice::esWinRTController){
 			continue;
 		}
 
-		dewiDeviceWinRTController * const wcd = ( dewiDeviceWinRTController* )device;
-		if( wcd->GetController() == controller ){
+		dewiDeviceWinRTController * const wcd = (dewiDeviceWinRTController*)device;
+		if(wcd->GetController() == controller){
 			return wcd;
 		}
 	}
@@ -140,41 +140,41 @@ void dewiDeviceManager::LogDevices() const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	pModule.LogInfo( "Input Devices:" );
+	pModule.LogInfo("Input Devices:");
 	
-	for( i=0; i<count; i++ ){
-		LogDevice( *( ( dewiDevice* )pDevices.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		LogDevice(*((dewiDevice*)pDevices.GetAt(i)));
 	}
 }
 
-void dewiDeviceManager::LogDevice( const dewiDevice &device ) const{
-	pModule.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
-		device.GetID().GetString(), device.GetType() );
+void dewiDeviceManager::LogDevice(const dewiDevice &device) const{
+	pModule.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
+		device.GetID().GetString(), device.GetType());
 		
 	const int axisCount = device.GetAxisCount();
 	int i;
-	if( axisCount > 0 ){
-		pModule.LogInfo( "  Axes:" );
-		for( i=0; i<axisCount; i++ ){
-			const dewiDeviceAxis &axis = *device.GetAxisAt( i );
-			pModule.LogInfoFormat( "    - '%s' (%s)[%d] %d .. %d [%d %d]",
+	if(axisCount > 0){
+		pModule.LogInfo("  Axes:");
+		for(i=0; i<axisCount; i++){
+			const dewiDeviceAxis &axis = *device.GetAxisAt(i);
+			pModule.LogInfoFormat("    - '%s' (%s)[%d] %d .. %d [%d %d]",
 				axis.GetName().GetString(), axis.GetID().GetString(), axis.GetType(),
-				axis.GetMinimum(), axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
+				axis.GetMinimum(), axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat());
 		}
 	}
 	
-	if( device.GetType() == deInputDevice::edtKeyboard){
-		pModule.LogInfoFormat( "  Buttons: %d", device.GetButtonCount() );
+	if(device.GetType() == deInputDevice::edtKeyboard){
+		pModule.LogInfoFormat("  Buttons: %d", device.GetButtonCount());
 
 	}else{
 		const int buttonCount = device.GetButtonCount();
-		if( buttonCount > 0 ){
-			pModule.LogInfo( "  Buttons:" );
-			for( i=0; i<buttonCount; i++ ){
-				const dewiDeviceButton &button = *device.GetButtonAt( i );
-				pModule.LogInfoFormat( "    - '%s' (%s)[%d] %d => %d",
+		if(buttonCount > 0){
+			pModule.LogInfo("  Buttons:");
+			for(i=0; i<buttonCount; i++){
+				const dewiDeviceButton &button = *device.GetButtonAt(i);
+				pModule.LogInfoFormat("    - '%s' (%s)[%d] %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
-					button.GetType(), button.GetWICode(), i );
+					button.GetType(), button.GetWICode(), i);
 			}
 		}
 	}
@@ -188,34 +188,34 @@ void dewiDeviceManager::Update(){
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( dewiDevice* )pDevices.GetAt( i ) )->Update();
+	for(i=0; i<count; i++){
+		((dewiDevice*)pDevices.GetAt(i))->Update();
 	}
 }
 
 
 
-decString dewiDeviceManager::NormalizeID( const char *id ){
-	DEASSERT_NOTNULL( id )
+decString dewiDeviceManager::NormalizeID(const char *id){
+	DEASSERT_NOTNULL(id)
 	
-	const int len = ( int )strlen( id );
-	if( len == 0 ){
+	const int len = (int)strlen(id);
+	if(len == 0){
 		return decString();
 	}
 	
 	decString nid;
-	nid.Set( ' ', len );
+	nid.Set(' ', len);
 	
 	int i;
-	for( i=0; i<len; i++ ){
-		if( ( id[ i ]  >= 'A' && id[ i ] <= 'Z' )
-		|| ( id[ i ] >= 'a' && id[ i ] <= 'z' )
-		|| ( id[ i ] >= '0' && id[ i ] <= '9' )
-		|| id[ i ] == '_' ){
-			nid[ i ] = id[ i ];
+	for(i=0; i<len; i++){
+		if((id[i]  >= 'A' && id[i] <= 'Z')
+		|| (id[i] >= 'a' && id[i] <= 'z')
+		|| (id[i] >= '0' && id[i] <= '9')
+		|| id[i] == '_'){
+			nid[i] = id[i];
 			
 		}else{
-			nid[ i ] = '_';
+			nid[i] = '_';
 		}
 	}
 	
@@ -227,59 +227,59 @@ decString dewiDeviceManager::NormalizeID( const char *id ){
 // Private functions
 //////////////////////
 
-dewiDeviceManager::sEventHandlerController::sEventHandlerController( dewiDeviceManager *manager ) :
-pManager( manager )
+dewiDeviceManager::sEventHandlerController::sEventHandlerController(dewiDeviceManager *manager) :
+pManager(manager)
 {
 	wrgi::RawGameController::RawGameControllerAdded(
-		{ get_strong(), &sEventHandlerController::pOnControllerAdded } );
+		{get_strong(), &sEventHandlerController::pOnControllerAdded});
 	wrgi::RawGameController::RawGameControllerRemoved(
-		{ get_strong(), &sEventHandlerController::pOnControllerRemoved } );
+		{get_strong(), &sEventHandlerController::pOnControllerRemoved});
 }
 
 void dewiDeviceManager::sEventHandlerController::DropManager(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	pManager = nullptr;
 }
 
 void dewiDeviceManager::sEventHandlerController::pOnControllerAdded(
-wrf::IInspectable const &sender, wrgi::RawGameController const &controller ){
-	const deMutexGuard guard( pMutex );
-	if( pManager ){
-		pManager->pOnControllerAdded( controller );
+wrf::IInspectable const &sender, wrgi::RawGameController const &controller){
+	const deMutexGuard guard(pMutex);
+	if(pManager){
+		pManager->pOnControllerAdded(controller);
 	}
 }
 
 void dewiDeviceManager::sEventHandlerController::pOnControllerRemoved(
-wrf::IInspectable const &sender, wrgi::RawGameController const &controller ){
-	const deMutexGuard guard( pMutex );
-	if( pManager ){
-		pManager->pOnControllerRemoved( controller );
+wrf::IInspectable const &sender, wrgi::RawGameController const &controller){
+	const deMutexGuard guard(pMutex);
+	if(pManager){
+		pManager->pOnControllerRemoved(controller);
 	}
 }
 
 
 
 void dewiDeviceManager::pCleanUp(){
-	if( pEventHandlerController ){
+	if(pEventHandlerController){
 		pEventHandlerController->DropManager();
 		pEventHandlerController = nullptr;
 	}
 }
 
 void dewiDeviceManager::pCreateDevices(){
-	pMouse.TakeOver( new dewiDeviceMouse( pModule ) );
-	pMouse->SetIndex( pDevices.GetCount() );
-	pDevices.Add( pMouse );
+	pMouse.TakeOver(new dewiDeviceMouse(pModule));
+	pMouse->SetIndex(pDevices.GetCount());
+	pDevices.Add(pMouse);
 	
-	pKeyboard.TakeOver( new dewiDeviceKeyboard( pModule ) );
-	pKeyboard->SetIndex( pDevices.GetCount() );
-	pDevices.Add( pKeyboard );
+	pKeyboard.TakeOver(new dewiDeviceKeyboard(pModule));
+	pKeyboard->SetIndex(pDevices.GetCount());
+	pDevices.Add(pKeyboard);
 }
 
 void dewiDeviceManager::pCreateControllers(){
 	winrt::init_apartment();
 	
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	for(wrgi::RawGameController const& controller : wrgi::RawGameController::RawGameControllers()){
 		if(GetWithController(controller)){
 			continue;
@@ -298,69 +298,69 @@ void dewiDeviceManager::pCreateControllers(){
 }
 
 void dewiDeviceManager::pProcessAddRemoveDevices(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	bool changed = false;
 
 	std::vector<wrgi::RawGameController>::const_iterator iter;
-	for( iter=pRemoveControllers.cbegin(); iter!=pRemoveControllers.cend(); iter++ ){
+	for(iter=pRemoveControllers.cbegin(); iter!=pRemoveControllers.cend(); iter++){
 		wrgi::RawGameController const &controller = *iter;
 
-		dewiDevice * const device = GetWithController( controller );
-		if( ! device ){
+		dewiDevice * const device = GetWithController(controller);
+		if(! device){
 			continue;
 		}
 
-		pModule.LogInfoFormat( "Controller removed: %s", device->GetName().GetString() );
+		pModule.LogInfoFormat("Controller removed: %s", device->GetName().GetString());
 
-		pDevices.Remove( device );
+		pDevices.Remove(device);
 		changed = true;
 	}
 	pRemoveControllers.clear();
 
-	for( iter=pAddControllers.cbegin(); iter!=pAddControllers.cend(); iter++ ){
+	for(iter=pAddControllers.cbegin(); iter!=pAddControllers.cend(); iter++){
 		wrgi::RawGameController const &controller = *iter;
 
-		if( GetWithController( controller ) ){
+		if(GetWithController(controller)){
 			continue;
 		}
 
-		const dewiDeviceWinRTController::Ref device( dewiDeviceWinRTController::Ref::New(
-			new dewiDeviceWinRTController( pModule, controller ) ) );
+		const dewiDeviceWinRTController::Ref device(dewiDeviceWinRTController::Ref::New(
+			new dewiDeviceWinRTController(pModule, controller)));
 
-		if( device->GetType() == deInputDevice::edtGeneric ){
+		if(device->GetType() == deInputDevice::edtGeneric){
 			continue;
 		}
 
-		device->SetIndex( pDevices.GetCount() );
+		device->SetIndex(pDevices.GetCount());
 
-		pModule.LogInfoFormat( "Controller added: %s", device->GetName().GetString() );
-		LogDevice( device );
+		pModule.LogInfoFormat("Controller added: %s", device->GetName().GetString());
+		LogDevice(device);
 
-		pDevices.Add( device );
+		pDevices.Add(device);
 		changed = true;
 	}
 	pAddControllers.clear();
 	
-	if( changed ){
+	if(changed){
 		pUpdateDeviceIndices();
-		pModule.AddDevicesAttachedDetached( timeGetTime() );
+		pModule.AddDevicesAttachedDetached(timeGetTime());
 	}
 }
 
 void dewiDeviceManager::pUpdateDeviceIndices(){
 	const int count = pDevices.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( dewiDevice* )pDevices.GetAt( i ) )->SetIndex( i );
+	for(i=0; i<count; i++){
+		((dewiDevice*)pDevices.GetAt(i))->SetIndex(i);
 	}
 }
 
-void dewiDeviceManager::pOnControllerAdded( wrgi::RawGameController const &controller ){
-	const deMutexGuard guard( pMutex );
-	pAddControllers.push_back( controller );
+void dewiDeviceManager::pOnControllerAdded(wrgi::RawGameController const &controller){
+	const deMutexGuard guard(pMutex);
+	pAddControllers.push_back(controller);
 }
 
-void dewiDeviceManager::pOnControllerRemoved( wrgi::RawGameController const &controller ){
-	const deMutexGuard guard( pMutex );
-	pRemoveControllers.push_back( controller );
+void dewiDeviceManager::pOnControllerRemoved(wrgi::RawGameController const &controller){
+	const deMutexGuard guard(pMutex);
+	pRemoveControllers.push_back(controller);
 }

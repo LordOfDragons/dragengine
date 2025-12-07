@@ -56,7 +56,7 @@ public:
 	dealGPModule();
 	
 	/** \brief Create copy of game profile module. */
-	dealGPModule( const dealGPModule &module );
+	dealGPModule(const dealGPModule &module);
 	
 	/** \brief Clean up game profile. */
 	virtual ~dealGPModule();
@@ -67,24 +67,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set module name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parameter list. */
-	inline dealGPMParameterList &GetParameterList(){ return pParameterList; }
-	inline const dealGPMParameterList &GetParameterList() const{ return pParameterList; }
+	inline dealGPMParameterList &GetParameterList(){return pParameterList;}
+	inline const dealGPMParameterList &GetParameterList() const{return pParameterList;}
 	
 	/** \brief Copy from another module. */
-	void CopyFrom( const dealGPModule &module );
+	void CopyFrom(const dealGPModule &module);
 	
 	/**
 	 * \brief Set parameters for a module version if possible.
 	 * \details Invalid parameters are silently ignored and do not cause an exception.
 	 *          Version has to be set to the module version to operate on.
 	 */
-	void ApplyParameters( const char *version, dealLauncher &launcher, dealIEngineInstance &engineInstance ) const;
+	void ApplyParameters(const char *version, dealLauncher &launcher, dealIEngineInstance &engineInstance) const;
 	/*@}*/
 };
 

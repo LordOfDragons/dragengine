@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSynthesizer( deScriptingDragonScript &ds );
+	deClassSynthesizer(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSynthesizer();
@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief synthesizer or \em NULL if object is \em NULL. */
-	deSynthesizer *GetSynthesizer( dsRealObject *object ) const;
+	deSynthesizer *GetSynthesizer(dsRealObject *object) const;
 	
 	/** \brief Push synthesizer on the stack (pushes \em nil if instance is \em NULL). */
-	void PushSynthesizer( dsRunTime *rt, deSynthesizer *synthesizer );
+	void PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesizer);
 	/*@}*/
 	
 	
@@ -87,44 +87,44 @@ private:
 	};
 	
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetChannelCount );
-	DEF_NATFUNC( nfSetChannelCount );
-	DEF_NATFUNC( nfGetSampleRate );
-	DEF_NATFUNC( nfSetSampleRate );
-	DEF_NATFUNC( nfGetBytesPerSample );
-	DEF_NATFUNC( nfSetBytesPerSample );
-	DEF_NATFUNC( nfGetSampleCount );
-	DEF_NATFUNC( nfSetSampleCount );
+	DEF_NATFUNC(nfGetChannelCount);
+	DEF_NATFUNC(nfSetChannelCount);
+	DEF_NATFUNC(nfGetSampleRate);
+	DEF_NATFUNC(nfSetSampleRate);
+	DEF_NATFUNC(nfGetBytesPerSample);
+	DEF_NATFUNC(nfSetBytesPerSample);
+	DEF_NATFUNC(nfGetSampleCount);
+	DEF_NATFUNC(nfSetSampleCount);
 	
-	DEF_NATFUNC( nfGetControllerCount );
-	DEF_NATFUNC( nfSetControllerCount );
-	DEF_NATFUNC( nfGetControllerAt );
-	DEF_NATFUNC( nfGetControllerNamed );
-	DEF_NATFUNC( nfIndexOfControllerNamed );
+	DEF_NATFUNC(nfGetControllerCount);
+	DEF_NATFUNC(nfSetControllerCount);
+	DEF_NATFUNC(nfGetControllerAt);
+	DEF_NATFUNC(nfGetControllerNamed);
+	DEF_NATFUNC(nfIndexOfControllerNamed);
 	
-	DEF_NATFUNC( nfGetLinkCount );
-	DEF_NATFUNC( nfAddLink );
-	DEF_NATFUNC( nfRemoveAllLinks );
-	DEF_NATFUNC( nfLinkSetController );
-	DEF_NATFUNC( nfLinkSetRepeat );
-	DEF_NATFUNC( nfLinkSetCurve );
+	DEF_NATFUNC(nfGetLinkCount);
+	DEF_NATFUNC(nfAddLink);
+	DEF_NATFUNC(nfRemoveAllLinks);
+	DEF_NATFUNC(nfLinkSetController);
+	DEF_NATFUNC(nfLinkSetRepeat);
+	DEF_NATFUNC(nfLinkSetCurve);
 	
-	DEF_NATFUNC( nfGetSourceCount );
-	DEF_NATFUNC( nfAddSource );
-	DEF_NATFUNC( nfGetSourceAt );
-	DEF_NATFUNC( nfRemoveAllSources );
+	DEF_NATFUNC(nfGetSourceCount);
+	DEF_NATFUNC(nfAddSource);
+	DEF_NATFUNC(nfGetSourceAt);
+	DEF_NATFUNC(nfRemoveAllSources);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

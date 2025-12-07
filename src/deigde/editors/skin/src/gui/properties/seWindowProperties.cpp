@@ -46,31 +46,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWindowProperties::seWindowProperties( seWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+seWindowProperties::seWindowProperties(seWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelMapped.TakeOver( new seWPMapped( *this ) );
-	AddChild( pPanelMapped, "Mapped" );
+	pPanelMapped.TakeOver(new seWPMapped(*this));
+	AddChild(pPanelMapped, "Mapped");
 	
-	pPanelTexture.TakeOver( new seWPTexture( *this ) );
-	AddChild( pPanelTexture, "Texture" );
+	pPanelTexture.TakeOver(new seWPTexture(*this));
+	AddChild(pPanelTexture, "Texture");
 	
-	pPanelNode.TakeOver( new seWPNode( *this ) );
-	AddChild( pPanelNode, "Node" );
+	pPanelNode.TakeOver(new seWPNode(*this));
+	AddChild(pPanelNode, "Node");
 	
-	pPanelDynamicSkin.TakeOver( new seWPDynamicSkin( *this ) );
-	AddChild( pPanelDynamicSkin, "Dynamic Skin" );
+	pPanelDynamicSkin.TakeOver(new seWPDynamicSkin(*this));
+	AddChild(pPanelDynamicSkin, "Dynamic Skin");
 	
-	pPanelView.TakeOver( new seWPView( *this ) );
-	AddChild( pPanelView, "View" );
+	pPanelView.TakeOver(new seWPView(*this));
+	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver( new seWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory.TakeOver(new seWPUndoHistory(GetEnvironment()));
+	AddChild(pPanelUndoHistory, "Undo");
 	
-	SetActivePanel( 1 ); // texture
+	SetActivePanel(1); // texture
 }
 
 seWindowProperties::~seWindowProperties(){
@@ -81,16 +81,16 @@ seWindowProperties::~seWindowProperties(){
 // Management
 ///////////////
 
-void seWindowProperties::SetSkin( seSkin *skin ){
-	( ( seWPMapped& )( igdeWidget& )pPanelMapped ).SetSkin( skin );
-	( ( seWPTexture& )( igdeWidget& )pPanelTexture ).SetSkin( skin );
-	( ( seWPNode& )( igdeWidget& )pPanelNode ).SetSkin( skin );
-	( ( seWPDynamicSkin& )( igdeWidget& )pPanelDynamicSkin ).SetSkin( skin );
-	( ( seWPView& )( igdeWidget& )pPanelView ).SetSkin( skin );
-	( ( seWPUndoHistory& )( igdeWidget& )pPanelUndoHistory ).SetSkin( skin );
+void seWindowProperties::SetSkin(seSkin *skin){
+	((seWPMapped&)(igdeWidget&)pPanelMapped).SetSkin(skin);
+	((seWPTexture&)(igdeWidget&)pPanelTexture).SetSkin(skin);
+	((seWPNode&)(igdeWidget&)pPanelNode).SetSkin(skin);
+	((seWPDynamicSkin&)(igdeWidget&)pPanelDynamicSkin).SetSkin(skin);
+	((seWPView&)(igdeWidget&)pPanelView).SetSkin(skin);
+	((seWPUndoHistory&)(igdeWidget&)pPanelUndoHistory).SetSkin(skin);
 }
 
 void seWindowProperties::OnSkinPathChanged(){
-	( ( seWPTexture& )( igdeWidget& )pPanelTexture ).OnSkinPathChanged();
-	( ( seWPNode& )( igdeWidget& )pPanelNode ).OnSkinPathChanged();
+	((seWPTexture&)(igdeWidget&)pPanelTexture).OnSkinPathChanged();
+	((seWPNode&)(igdeWidget&)pPanelNode).OnSkinPathChanged();
 }

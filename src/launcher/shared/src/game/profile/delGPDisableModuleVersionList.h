@@ -46,7 +46,7 @@ public:
 	delGPDisableModuleVersionList();
 	
 	/** \brief Create copy of list. */
-	delGPDisableModuleVersionList( const delGPDisableModuleVersionList &copy );
+	delGPDisableModuleVersionList(const delGPDisableModuleVersionList &copy);
 	
 	/** \brief Clean up list. */
 	~delGPDisableModuleVersionList();
@@ -60,28 +60,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Entry at index. */
-	delGPDisableModuleVersion *GetAt( int index ) const;
+	delGPDisableModuleVersion *GetAt(int index) const;
 	
 	/** \brief Matching entry or nullptr if absent. */
-	delGPDisableModuleVersion *GetWith( const char *name, const char *version ) const;
+	delGPDisableModuleVersion *GetWith(const char *name, const char *version) const;
 	
 	/** \brief Entry is present. */
-	bool Has( delGPDisableModuleVersion *entry ) const;
+	bool Has(delGPDisableModuleVersion *entry) const;
 	
 	/** \brief Matching entry is present. */
-	bool HasWith( const char *name, const char *version ) const;
+	bool HasWith(const char *name, const char *version) const;
 	
 	/** \brief Index of entry or -1 if absent. */
-	int IndexOf( delGPDisableModuleVersion *entry ) const;
+	int IndexOf(delGPDisableModuleVersion *entry) const;
 	
 	/** \brief Index of matching entry or -1 if absent. */
-	int IndexOfWith( const char *name, const char *version ) const;
+	int IndexOfWith(const char *name, const char *version) const;
 	
 	/** \brief Add entry. */
-	void Add( delGPDisableModuleVersion *entry );
+	void Add(delGPDisableModuleVersion *entry);
 	
 	/** \brief Remove entry. */
-	void Remove( delGPDisableModuleVersion *entry );
+	void Remove(delGPDisableModuleVersion *entry);
 	
 	/** \brief Remove all entries. */
 	void RemoveAll();
@@ -92,7 +92,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy list. */
-	delGPDisableModuleVersionList &operator=( const delGPDisableModuleVersionList &other );
+	delGPDisableModuleVersionList &operator=(const delGPDisableModuleVersionList &other);
 	/*@}*/
 };
 

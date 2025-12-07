@@ -99,12 +99,12 @@ protected:
 	decVector2 pPosition;
 	
 public:
-	cActionAddNode( meWindowVegetation &view, meHTVRule::eRuleTypes type,
-		const decVector2 &position, const char *text, igdeIcon *icon ) :
-	igdeAction( text, icon, "Add Node" ), pView( view ), pType( type ), pPosition( position ){ }
+	cActionAddNode(meWindowVegetation &view, meHTVRule::eRuleTypes type,
+		const decVector2 &position, const char *text, igdeIcon *icon) :
+	igdeAction(text, icon, "Add Node"), pView(view), pType(type), pPosition(position){}
 	
 	virtual void OnAction(){
-		if( ! pView.GetVLayer() || ! pView.GetWorld() ){
+		if(! pView.GetVLayer() || ! pView.GetWorld()){
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pView.GetVLayer() && pView.GetWorld() );
+		SetEnabled(pView.GetVLayer() && pView.GetWorld());
 	}
 	
 	virtual meHTVRule *CreateRule() = 0;
@@ -123,8 +123,8 @@ public:
 
 class cActionAddClosestProp : public cActionAddNode {
 public:
-	cActionAddClosestProp( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Closest Prop", NULL ){ }
+	cActionAddClosestProp(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Prop", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleClosestProp;
@@ -133,8 +133,8 @@ public:
 
 class cActionAddClosestVegetation : public cActionAddNode {
 public:
-	cActionAddClosestVegetation( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Closest Vegetation", NULL ){ }
+	cActionAddClosestVegetation(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Closest Vegetation", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleClosestVegetation;
@@ -143,8 +143,8 @@ public:
 
 class cActionAddCombine : public cActionAddNode {
 public:
-	cActionAddCombine( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Combine", NULL ){ }
+	cActionAddCombine(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Combine", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleCombine;
@@ -153,8 +153,8 @@ public:
 
 class cActionAddComponents : public cActionAddNode {
 public:
-	cActionAddComponents( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Components", NULL ){ }
+	cActionAddComponents(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Components", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleComponents;
@@ -163,8 +163,8 @@ public:
 
 class cActionAddCurve : public cActionAddNode {
 public:
-	cActionAddCurve( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Curve", NULL ){ }
+	cActionAddCurve(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Curve", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleCurve;
@@ -173,8 +173,8 @@ public:
 
 class cActionAddGeometry : public cActionAddNode {
 public:
-	cActionAddGeometry( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Geometry", NULL ){ }
+	cActionAddGeometry(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Geometry", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleGeometry;
@@ -183,8 +183,8 @@ public:
 
 class cActionAddMapping : public cActionAddNode {
 public:
-	cActionAddMapping( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Mapping", NULL ){ }
+	cActionAddMapping(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Mapping", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleMapping;
@@ -193,8 +193,8 @@ public:
 
 class cActionAddMath : public cActionAddNode {
 public:
-	cActionAddMath( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Math", NULL ){ }
+	cActionAddMath(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Math", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleMath;
@@ -203,8 +203,8 @@ public:
 
 class cActionAddMultiMath : public cActionAddNode {
 public:
-	cActionAddMultiMath( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Multi-Math", NULL ){ }
+	cActionAddMultiMath(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Multi-Math", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleMultiMath;
@@ -213,8 +213,8 @@ public:
 
 class cActionAddVectorMath : public cActionAddNode {
 public:
-	cActionAddVectorMath( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Vector Math", NULL ){ }
+	cActionAddVectorMath(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Vector Math", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleVectorMath;
@@ -223,8 +223,8 @@ public:
 
 class cActionAddRandom : public cActionAddNode {
 public:
-	cActionAddRandom( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Random", NULL ){ }
+	cActionAddRandom(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Random", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleRandom;
@@ -233,8 +233,8 @@ public:
 
 class cActionAddConstant : public cActionAddNode {
 public:
-	cActionAddConstant( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Constant", NULL ){ }
+	cActionAddConstant(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Constant", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRuleConstant;
@@ -243,8 +243,8 @@ public:
 
 class cActionAddPropCount : public cActionAddNode {
 public:
-	cActionAddPropCount( meWindowVegetation &view, const decVector2 &position ) :
-	cActionAddNode( view, meHTVRule::ertClosestProp, position, "Prop Count", NULL ){ }
+	cActionAddPropCount(meWindowVegetation &view, const decVector2 &position) :
+	cActionAddNode(view, meHTVRule::ertClosestProp, position, "Prop Count", NULL){}
 	
 	virtual meHTVRule * CreateRule(){
 		return new meHTVRulePropCount;
@@ -256,19 +256,19 @@ class cActionViewAutoUpdate : public igdeAction {
 	meWindowVegetation &pView;
 	
 public:
-	cActionViewAutoUpdate( meWindowVegetation &view ) : igdeAction(
-		"Auto Update Vegetation", NULL, "Auto Update Vegetation" ), pView( view ){ }
+	cActionViewAutoUpdate(meWindowVegetation &view) : igdeAction(
+		"Auto Update Vegetation", NULL, "Auto Update Vegetation"), pView(view){}
 	
 	virtual void OnAction(){
-		if( pView.GetWorld() ){
+		if(pView.GetWorld()){
 			pView.GetWorld()->GetGuiParameters().SetAutoUpdateVegetation(
-				! pView.GetWorld()->GetGuiParameters().GetAutoUpdateVegetation() );
+				! pView.GetWorld()->GetGuiParameters().GetAutoUpdateVegetation());
 		}
 	}
 	
 	virtual void Update(){
-		SetEnabled( pView.GetWorld() );
-		SetSelected( pView.GetWorld() && pView.GetWorld()->GetGuiParameters().GetAutoUpdateVegetation() );
+		SetEnabled(pView.GetWorld());
+		SetSelected(pView.GetWorld() && pView.GetWorld()->GetGuiParameters().GetAutoUpdateVegetation());
 	}
 };
 
@@ -277,18 +277,18 @@ class cBoardListener : public igdeNVBoardListener {
 	meWindowVegetation &pView;
 	
 public:
-	cBoardListener( meWindowVegetation &view ) : pView( view ){ }
+	cBoardListener(meWindowVegetation &view) : pView(view){}
 	
-	meHTVRLink *RuleLinkForNodeLink( igdeNVSlot *sourceSlot, igdeNVSlot *targetSlot ) const{
-		if( ! pView.GetVLayer() ){
+	meHTVRLink *RuleLinkForNodeLink(igdeNVSlot *sourceSlot, igdeNVSlot *targetSlot) const{
+		if(! pView.GetVLayer()){
 			return NULL;
 		}
 		
-		const meWVNode &wvnodeSource = ( meWVNode& )*sourceSlot->GetOwnerNode();
-		const int indexSlotSource = wvnodeSource.IndexOfSlot( sourceSlot );
-		const meWVNode &wvnodeTarget = ( meWVNode& )*targetSlot->GetOwnerNode();
-		const int indexSlotTarget = wvnodeTarget.IndexOfSlot( targetSlot );
-		if( indexSlotSource == -1 || indexSlotTarget == -1 ){
+		const meWVNode &wvnodeSource = (meWVNode&)*sourceSlot->GetOwnerNode();
+		const int indexSlotSource = wvnodeSource.IndexOfSlot(sourceSlot);
+		const meWVNode &wvnodeTarget = (meWVNode&)*targetSlot->GetOwnerNode();
+		const int indexSlotTarget = wvnodeTarget.IndexOfSlot(targetSlot);
+		if(indexSlotSource == -1 || indexSlotTarget == -1){
 			return NULL;
 		}
 		
@@ -296,20 +296,20 @@ public:
 		const int count = vlayer.GetLinkCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			meHTVRLink * const ruleLink = vlayer.GetLinkAt( i );
-			if( ruleLink->GetSourceRule() == wvnodeSource.GetRule()
+		for(i=0; i<count; i++){
+			meHTVRLink * const ruleLink = vlayer.GetLinkAt(i);
+			if(ruleLink->GetSourceRule() == wvnodeSource.GetRule()
 			&& ruleLink->GetSourceSlot() == indexSlotSource
 			&& ruleLink->GetDestinationRule() == wvnodeTarget.GetRule()
-			&& ruleLink->GetDestinationSlot() == indexSlotTarget ){
+			&& ruleLink->GetDestinationSlot() == indexSlotTarget){
 				return ruleLink;
 			}
 		}
 		return NULL;
 	}
 	
-	virtual void AddContextMenuEntries( igdeNVBoard*, igdeMenuCascade &menu, const decPoint &position ){
-		if( ! pView.GetVLayer() ){
+	virtual void AddContextMenuEntries(igdeNVBoard*, igdeMenuCascade &menu, const decPoint &position){
+		if(! pView.GetVLayer()){
 			return;
 		}
 		
@@ -319,81 +319,81 @@ public:
 		
 		
 		// nodes
-		const decVector2 addNodePosition( decVector2( position - pView.GetSize() / 2 )
+		const decVector2 addNodePosition(decVector2(position - pView.GetSize() / 2)
 			* pView.GetPixelToUnits() - pView.GetVLayer()->GetViewCenter() );
 		
-		subMenu.TakeOver( new igdeMenuCascade( env, "Add Node",
-			env.GetStockIcon( igdeEnvironment::esiPlus ), "Add Node" ) );
-		menu.AddChild( subMenu );
+		subMenu.TakeOver(new igdeMenuCascade(env, "Add Node",
+			env.GetStockIcon(igdeEnvironment::esiPlus), "Add Node"));
+		menu.AddChild(subMenu);
 		
-		subMenu2.TakeOver( new igdeMenuCascade( env, "Input", NULL, "Input" ) );
-		subMenu->AddChild( subMenu2 );
-		helper.MenuCommand( subMenu2, new cActionAddConstant( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddGeometry( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddRandom( pView, addNodePosition ), true );
+		subMenu2.TakeOver(new igdeMenuCascade(env, "Input", NULL, "Input"));
+		subMenu->AddChild(subMenu2);
+		helper.MenuCommand(subMenu2, new cActionAddConstant(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddGeometry(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddRandom(pView, addNodePosition), true);
 		
-		subMenu2.TakeOver( new igdeMenuCascade( env, "Proximity", NULL, "Proximity" ) );
-		subMenu->AddChild( subMenu2 );
-		helper.MenuCommand( subMenu2, new cActionAddClosestProp( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddClosestVegetation( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddPropCount( pView, addNodePosition ), true );
+		subMenu2.TakeOver(new igdeMenuCascade(env, "Proximity", NULL, "Proximity"));
+		subMenu->AddChild(subMenu2);
+		helper.MenuCommand(subMenu2, new cActionAddClosestProp(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddClosestVegetation(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddPropCount(pView, addNodePosition), true);
 		
-		subMenu2.TakeOver( new igdeMenuCascade( env, "Conversion", NULL, "Conversion" ) );
-		subMenu->AddChild( subMenu2 );
-		helper.MenuCommand( subMenu2, new cActionAddCurve( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddMapping( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddMath( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddMultiMath( pView, addNodePosition ), true );
+		subMenu2.TakeOver(new igdeMenuCascade(env, "Conversion", NULL, "Conversion"));
+		subMenu->AddChild(subMenu2);
+		helper.MenuCommand(subMenu2, new cActionAddCurve(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddMapping(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddMath(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddMultiMath(pView, addNodePosition), true);
 		
-		subMenu2.TakeOver( new igdeMenuCascade( env, "Vector", NULL, "Vector" ) );
-		subMenu->AddChild( subMenu2 );
-		helper.MenuCommand( subMenu2, new cActionAddCombine( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddComponents( pView, addNodePosition ), true );
-		helper.MenuCommand( subMenu2, new cActionAddVectorMath( pView, addNodePosition ), true );
+		subMenu2.TakeOver(new igdeMenuCascade(env, "Vector", NULL, "Vector"));
+		subMenu->AddChild(subMenu2);
+		helper.MenuCommand(subMenu2, new cActionAddCombine(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddComponents(pView, addNodePosition), true);
+		helper.MenuCommand(subMenu2, new cActionAddVectorMath(pView, addNodePosition), true);
 		
 		
 		// hover link
 		
 		
 		// view
-		helper.MenuSeparator( menu );
-		helper.MenuCheck( menu, new cActionViewAutoUpdate( pView ), true );
+		helper.MenuSeparator(menu);
+		helper.MenuCheck(menu, new cActionViewAutoUpdate(pView), true);
 	}
 	
-	virtual bool CanLink( igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target ){
-		if( ! pView.GetVLayer() ){
+	virtual bool CanLink(igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target){
+		if(! pView.GetVLayer()){
 			return false;
 		}
 		
-		const meWVNodeSlot &wvslotSource = ( meWVNodeSlot& )*source;
-		const meWVNodeSlot &wvslotTarget = ( meWVNodeSlot& )*target;
-		if( wvslotTarget.GetType() == meWVNodeSlot::estValue && wvslotSource.GetType() != meWVNodeSlot::estValue ){
+		const meWVNodeSlot &wvslotSource = (meWVNodeSlot&)*source;
+		const meWVNodeSlot &wvslotTarget = (meWVNodeSlot&)*target;
+		if(wvslotTarget.GetType() == meWVNodeSlot::estValue && wvslotSource.GetType() != meWVNodeSlot::estValue){
 			return false;
 		}
 		
-		const meWVNode &wvnodeSource = ( meWVNode& )*source->GetOwnerNode();
-		const int indexSlotSource = wvnodeSource.IndexOfSlot( source );
-		const meWVNode &wvnodeTarget = ( meWVNode& )*target->GetOwnerNode();
-		const int indexSlotTarget = wvnodeTarget.IndexOfSlot( target );
-		if( indexSlotSource == -1 || indexSlotTarget == -1 ){
-			DETHROW( deeInvalidParam );
+		const meWVNode &wvnodeSource = (meWVNode&)*source->GetOwnerNode();
+		const int indexSlotSource = wvnodeSource.IndexOfSlot(source);
+		const meWVNode &wvnodeTarget = (meWVNode&)*target->GetOwnerNode();
+		const int indexSlotTarget = wvnodeTarget.IndexOfSlot(target);
+		if(indexSlotSource == -1 || indexSlotTarget == -1){
+			DETHROW(deeInvalidParam);
 		}
 		
-		return ! pView.GetVLayer()->LinkProducesLoop( wvnodeSource.GetRule(),
-			indexSlotSource, wvnodeTarget.GetRule(), indexSlotTarget );
+		return ! pView.GetVLayer()->LinkProducesLoop(wvnodeSource.GetRule(),
+			indexSlotSource, wvnodeTarget.GetRule(), indexSlotTarget);
 	}
 	
-	virtual void OnLinkAdded( igdeNVBoard*, igdeNVLink *link ){
-		if( ! pView.GetVLayer() ){
+	virtual void OnLinkAdded(igdeNVBoard*, igdeNVLink *link){
+		if(! pView.GetVLayer()){
 			return;
 		}
 		
-		const meWVNode &wvnodeSource = ( meWVNode& )*link->GetSource()->GetOwnerNode();
-		const int indexSlotSource = wvnodeSource.IndexOfSlot( link->GetSource() );
-		const meWVNode &wvnodeTarget = ( meWVNode& )*link->GetTarget()->GetOwnerNode();
-		const int indexSlotTarget = wvnodeTarget.IndexOfSlot( link->GetTarget() );
-		if( indexSlotSource == -1 || indexSlotTarget == -1 ){
-			DETHROW( deeInvalidParam );
+		const meWVNode &wvnodeSource = (meWVNode&)*link->GetSource()->GetOwnerNode();
+		const int indexSlotSource = wvnodeSource.IndexOfSlot(link->GetSource());
+		const meWVNode &wvnodeTarget = (meWVNode&)*link->GetTarget()->GetOwnerNode();
+		const int indexSlotTarget = wvnodeTarget.IndexOfSlot(link->GetTarget());
+		if(indexSlotSource == -1 || indexSlotTarget == -1){
+			DETHROW(deeInvalidParam);
 		}
 		
 		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
@@ -403,13 +403,13 @@ public:
 				meUHTVLinkAdd::Ref::NewWith(pView.GetVLayer(), ruleLink));
 	}
 	
-	virtual void OnLinkRemoved( igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target ){
-		if( ! pView.GetVLayer() ){
+	virtual void OnLinkRemoved(igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target){
+		if(! pView.GetVLayer()){
 			return;
 		}
 		
-		meHTVRLink * const ruleLink = RuleLinkForNodeLink( source, target );
-		if( ! ruleLink ){
+		meHTVRLink * const ruleLink = RuleLinkForNodeLink(source, target);
+		if(! ruleLink){
 			return;
 		}
 		
@@ -418,11 +418,11 @@ public:
 		pView.GetWorld()->GetUndoSystem()->Add(undo);
 	}
 	
-	virtual void OnOffsetChanged( igdeNVBoard *board ){
-		if( ! pView.GetVLayer() ){
+	virtual void OnOffsetChanged(igdeNVBoard *board){
+		if(! pView.GetVLayer()){
 			return;
 		}
-		pView.GetVLayer()->SetViewCenter( decVector2( board->GetOffset() ) * pView.GetPixelToUnits() );
+		pView.GetVLayer()->SetViewCenter(decVector2(board->GetOffset()) * pView.GetPixelToUnits());
 	}
 };
 
@@ -436,22 +436,22 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWindowVegetation::meWindowVegetation( meWindowMain &windowMain ) :
-igdeNVBoard( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pListener( NULL ),
-pWorld( NULL ),
-pVLayer( NULL ),
+meWindowVegetation::meWindowVegetation(meWindowMain &windowMain) :
+igdeNVBoard(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
+pListener(NULL),
+pWorld(NULL),
+pVLayer(NULL),
 pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
 pPixelToUnits(1.0f / pUnitsToPixel)
 {
-	pListener = new meWindowVegetationListener( *this );
-	AddListener( new cBoardListener( *this ) );
+	pListener = new meWindowVegetationListener(*this);
+	AddListener(new cBoardListener(*this));
 }
 
 meWindowVegetation::~meWindowVegetation(){
-	SetWorld( NULL );
-	if( pListener ){
+	SetWorld(NULL);
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -461,58 +461,58 @@ meWindowVegetation::~meWindowVegetation(){
 // Management
 ///////////////
 
-void meWindowVegetation::SetWorld( meWorld *world ){
-	if( world == pWorld ){
+void meWindowVegetation::SetWorld(meWorld *world){
+	if(world == pWorld){
 		return;
 	}
 	
-	SetVLayer( NULL );
+	SetVLayer(NULL);
 	
-	if( pWorld ){
-		pWorld->RemoveNotifier( pListener );
+	if(pWorld){
+		pWorld->RemoveNotifier(pListener);
 		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
-	if( world ){
-		world->AddNotifier( pListener );
+	if(world){
+		world->AddNotifier(pListener);
 		world->AddReference();
 		
 		const decPoint3 sector; // = pWorld->GetActiveSector();
-		SetSector( decPoint( sector.x, sector.z ) );
+		SetSector(decPoint(sector.x, sector.z));
 	}
 }
 
-void meWindowVegetation::SetSector( const decPoint &sector ){
+void meWindowVegetation::SetSector(const decPoint &sector){
 	pSector = sector;
 	
 	meHTVegetationLayer *vlayer = NULL;
-	if( pWorld ){
+	if(pWorld){
 		vlayer = pWorld->GetHeightTerrain()->GetActiveVLayer();
 	}
 	
-	SetVLayer( vlayer );
+	SetVLayer(vlayer);
 }
 
-void meWindowVegetation::SetVLayer( meHTVegetationLayer *vlayer ){
-	if( ! pWorld && vlayer ){
-		DETHROW( deeInvalidParam );
+void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
+	if(! pWorld && vlayer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( vlayer == pVLayer ){
+	if(vlayer == pVLayer){
 		return;
 	}
 	
 	Clear();
 	
-	if( pVLayer ){
+	if(pVLayer){
 		pVLayer->FreeReference();
 	}
 	
 	pVLayer = vlayer;
 	
-	if( vlayer ){
+	if(vlayer){
 		vlayer->AddReference();
 	}
 	
@@ -528,7 +528,7 @@ meHTVRule *meWindowVegetation::GetVRule() const{
 void meWindowVegetation::UpdateNodesFromVLayer(){
 	RemoveAllNodes();
 	
-	if( ! pVLayer ){
+	if(! pVLayer){
 		return;
 	}
 	
@@ -536,75 +536,75 @@ void meWindowVegetation::UpdateNodesFromVLayer(){
 	igdeNVNode::Ref node;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		meHTVRule * const rule = pVLayer->GetRuleAt( i );
+	for(i=0; i<count; i++){
+		meHTVRule * const rule = pVLayer->GetRuleAt(i);
 		
-		switch( rule->GetType() ){
+		switch(rule->GetType()){
 		case meHTVRule::ertClosestProp:
-			node.TakeOver( new meWVNodeClosestProp( *this, ( meHTVRuleClosestProp* )rule ) );
+			node.TakeOver(new meWVNodeClosestProp(*this, (meHTVRuleClosestProp*)rule));
 			break;
 			
 		case meHTVRule::ertClosestVegetation:
-			node.TakeOver( new meWVNodeClosestVegetation( *this, ( meHTVRuleClosestVegetation* )rule ) );
+			node.TakeOver(new meWVNodeClosestVegetation(*this, (meHTVRuleClosestVegetation*)rule));
 			break;
 			
 		case meHTVRule::ertCombine:
-			node.TakeOver( new meWVNodeCombine( *this, ( meHTVRuleCombine* )rule ) );
+			node.TakeOver(new meWVNodeCombine(*this, (meHTVRuleCombine*)rule));
 			break;
 			
 		case meHTVRule::ertComponents:
-			node.TakeOver( new meWVNodeComponents( *this, ( meHTVRuleComponents* )rule ) );
+			node.TakeOver(new meWVNodeComponents(*this, (meHTVRuleComponents*)rule));
 			break;
 			
 		case meHTVRule::ertCurve:
-			node.TakeOver( new meWVNodeCurve( *this, ( meHTVRuleCurve* )rule ) );
+			node.TakeOver(new meWVNodeCurve(*this, (meHTVRuleCurve*)rule));
 			break;
 			
 		case meHTVRule::ertGeometry:
-			node.TakeOver( new meWVNodeGeometry( *this, ( meHTVRuleGeometry* )rule ) );
+			node.TakeOver(new meWVNodeGeometry(*this, (meHTVRuleGeometry*)rule));
 			break;
 			
 		case meHTVRule::ertMapping:
-			node.TakeOver( new meWVNodeMapping( *this, ( meHTVRuleMapping* )rule ) );
+			node.TakeOver(new meWVNodeMapping(*this, (meHTVRuleMapping*)rule));
 			break;
 			
 		case meHTVRule::ertMath:
-			node.TakeOver( new meWVNodeMath( *this, ( meHTVRuleMath* )rule ) );
+			node.TakeOver(new meWVNodeMath(*this, (meHTVRuleMath*)rule));
 			break;
 			
 		case meHTVRule::ertMultiMath:
-			node.TakeOver( new meWVNodeMultiMath( *this, ( meHTVRuleMultiMath* )rule ) );
+			node.TakeOver(new meWVNodeMultiMath(*this, (meHTVRuleMultiMath*)rule));
 			break;
 			
 		case meHTVRule::ertVectorMath:
-			node.TakeOver( new meWVNodeVectorMath( *this, ( meHTVRuleVectorMath* )rule ) );
+			node.TakeOver(new meWVNodeVectorMath(*this, (meHTVRuleVectorMath*)rule));
 			break;
 			
 		case meHTVRule::ertRandom:
-			node.TakeOver( new meWVNodeRandom( *this, ( meHTVRuleRandom* )rule ) );
+			node.TakeOver(new meWVNodeRandom(*this, (meHTVRuleRandom*)rule));
 			break;
 			
 		case meHTVRule::ertResult:
-			node.TakeOver( new meWVNodeResult( *this, ( meHTVRuleResult* )rule ) );
+			node.TakeOver(new meWVNodeResult(*this, (meHTVRuleResult*)rule));
 			break;
 			
 		case meHTVRule::ertConstant:
-			node.TakeOver( new meWVNodeConstant( *this, ( meHTVRuleConstant* )rule ) );
+			node.TakeOver(new meWVNodeConstant(*this, (meHTVRuleConstant*)rule));
 			break;
 			
 		case meHTVRule::ertPropCount:
-			node.TakeOver( new meWVNodePropCount( *this, ( meHTVRulePropCount* )rule ) );
+			node.TakeOver(new meWVNodePropCount(*this, (meHTVRulePropCount*)rule));
 			break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
-		meWVNode &wvnode = ( meWVNode& )( igdeNVNode& )node;
+		meWVNode &wvnode = (meWVNode&)(igdeNVNode&)node;
 		wvnode.UpdatePositionFromRule();
 		wvnode.Update();
 		
-		AddNode( node );
+		AddNode(node);
 	}
 	
 	UpdateLinksFromVLayer();
@@ -613,46 +613,46 @@ void meWindowVegetation::UpdateNodesFromVLayer(){
 void meWindowVegetation::UpdateLinksFromVLayer(){
 	RemoveAllLinks();
 	
-	if( ! pVLayer ){
+	if(! pVLayer){
 		return;
 	}
 	
 	const int count = pVLayer->GetLinkCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meHTVRLink &ruleLink = *pVLayer->GetLinkAt( i );
+	for(i=0; i<count; i++){
+		const meHTVRLink &ruleLink = *pVLayer->GetLinkAt(i);
 		
-		igdeNVNode * const sourceNode = GetNodeWithRule( ruleLink.GetSourceRule() );
-		igdeNVNode * const targetNode = GetNodeWithRule( ruleLink.GetDestinationRule() );
-		if( ! sourceNode || ! targetNode ){
-			DETHROW( deeInvalidParam );
+		igdeNVNode * const sourceNode = GetNodeWithRule(ruleLink.GetSourceRule());
+		igdeNVNode * const targetNode = GetNodeWithRule(ruleLink.GetDestinationRule());
+		if(! sourceNode || ! targetNode){
+			DETHROW(deeInvalidParam);
 		}
 		
-		AddLink( sourceNode->GetSlotAt( ruleLink.GetSourceSlot() ),
-			targetNode->GetSlotAt( ruleLink.GetDestinationSlot() ) );
+		AddLink(sourceNode->GetSlotAt(ruleLink.GetSourceSlot()),
+			targetNode->GetSlotAt(ruleLink.GetDestinationSlot()));
 	}
 }
 
 void meWindowVegetation::SelectNodeOfActiveRule(){
 	meHTVRule * const rule = pVLayer ? pVLayer->GetActiveRule() : NULL;
-	if( ! rule ){
+	if(! rule){
 		return;
 	}
 	
-	meWVNode * const node = GetNodeWithRule( rule );
-	if( node ){
+	meWVNode * const node = GetNodeWithRule(rule);
+	if(node){
 		// TODO select node
 	}
 }
 
-meWVNode *meWindowVegetation::GetNodeWithRule( meHTVRule *rule ){
+meWVNode *meWindowVegetation::GetNodeWithRule(meHTVRule *rule){
 	const int count = GetNodeCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		meWVNode * const node = ( meWVNode* )GetNodeAt( i );
-		if( node->GetRule() == rule ){
+	for(i=0; i<count; i++){
+		meWVNode * const node = (meWVNode*)GetNodeAt(i);
+		if(node->GetRule() == rule){
 			return node;
 		}
 	}
@@ -660,16 +660,16 @@ meWVNode *meWindowVegetation::GetNodeWithRule( meHTVRule *rule ){
 	return NULL;
 }
 
-void meWindowVegetation::UpdateNodeWithRule( meHTVRule *rule ){
-	meWVNode * const node = GetNodeWithRule( rule );
-	if( node ){
+void meWindowVegetation::UpdateNodeWithRule(meHTVRule *rule){
+	meWVNode * const node = GetNodeWithRule(rule);
+	if(node){
 		node->Update();
 	}
 }
 
-void meWindowVegetation::NodeWithRuleMoved( meHTVRule *rule ){
-	meWVNode * const node = GetNodeWithRule( rule );
-	if( node ){
+void meWindowVegetation::NodeWithRuleMoved(meHTVRule *rule){
+	meWVNode * const node = GetNodeWithRule(rule);
+	if(node){
 		node->UpdatePositionFromRule();
 	}
 }

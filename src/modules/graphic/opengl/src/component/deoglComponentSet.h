@@ -57,44 +57,44 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of components. */
-	inline int GetCount() const{ return pComponentCount; }
+	inline int GetCount() const{return pComponentCount;}
 	
 	/** Index of the component or -1 if not in the list. */
-	int IndexOfComponent( deoglRComponent *component ) const;
+	int IndexOfComponent(deoglRComponent *component) const;
 	
 	/** Component exists. */
-	bool Has( deoglRComponent *component ) const;
+	bool Has(deoglRComponent *component) const;
 	
 	/** Component at the given index. */
-	deoglRComponent *GetAt( int index ) const;
+	deoglRComponent *GetAt(int index) const;
 	
 	/** Add component. */
-	void Add( deoglRComponent *component );
+	void Add(deoglRComponent *component);
 	
 	/** Add component if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglRComponent *component );
+	bool AddIfMissing(deoglRComponent *component);
 	
 	/** Remove component. */
-	void Remove( deoglRComponent *component );
+	void Remove(deoglRComponent *component);
 	
 	/** Remove component if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglRComponent *component );
+	bool RemoveIfExisting(deoglRComponent *component);
 	
 	/** Remove component from the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** Remove all components. */
 	void RemoveAll();
 	
 	/** Mark all components. */
-	void MarkAll( bool mark );
+	void MarkAll(bool mark);
 	
 	/** Remove marked components. */
-	void RemoveAllMarked( bool mark );
+	void RemoveAllMarked(bool mark);
 	/*@}*/
 	
 private:
-	void pAddComponent( deoglRComponent *component );
+	void pAddComponent(deoglRComponent *component);
 };
 
 #endif

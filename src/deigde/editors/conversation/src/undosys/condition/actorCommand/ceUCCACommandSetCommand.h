@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCACommandSetCommand( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorCommand *condition, const char *newCommand );
+	ceUCCACommandSetCommand(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorCommand *condition, const char *newCommand);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCACommandSetCommand();
 	/*@}*/

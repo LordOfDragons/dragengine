@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	ceCanvasRuleOfThirdsAid( igdeEnvironment &environment );
+	ceCanvasRuleOfThirdsAid(igdeEnvironment &environment);
 	
 	/** \brief Clean up canvas. */
 	~ceCanvasRuleOfThirdsAid();
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas to add to render window. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline deCanvasView *GetCanvasView() const{return pCanvasView;}
 	
 	
 	
@@ -64,7 +64,7 @@ public:
 	void Resize();
 	
 	/** \brief Set visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	
@@ -73,10 +73,10 @@ private:
 	void pCreateCanvas();
 	
 	void pCreateAid();
-	void pAddLine( int x1, int y1, int x2, int y2 );
-	void pAddFocus( int x, int y );
+	void pAddLine(int x1, int y1, int x2, int y2);
+	void pAddFocus(int x, int y);
 	
-	void pAddRect( int x1, int y1, int x2, int y2, const decColor &color, float transparency );
+	void pAddRect(int x1, int y1, int x2, int y2, const decColor &color, float transparency);
 };
 
 #endif

@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	dealGameData( dealLauncher &launcher, jobject objUri );
+	dealGameData(dealLauncher &launcher, jobject objUri);
 	
 protected:
 	/** \brief Clean up game data. */
@@ -75,26 +75,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game data object mapped to virtual file system. */
-	inline jniGlobalJObject &GetObjGameData(){ return pObjGameData; }
+	inline jniGlobalJObject &GetObjGameData(){return pObjGameData;}
 	
 	/** \brief File descriptor. */
-	inline int GetFileDescriptor() const{ return pFileDescriptor; }
+	inline int GetFileDescriptor() const{return pFileDescriptor;}
 	
 	/** \brief Offset in bytes where content begins. */
-	inline long GetFileOffset() const{ return pFileOffset; }
+	inline long GetFileOffset() const{return pFileOffset;}
 	
 	/** \brief Length of content in bytes. */
-	inline long GetFileLength() const{ return pFileLength; }
+	inline long GetFileLength() const{return pFileLength;}
 	
 	/** \brief Game definitions found in the game data file. */
-	inline const dealGameList &GetGames() const{ return pGames; }
+	inline const dealGameList &GetGames() const{return pGames;}
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pOpenParcelFileDescriptor( jobject objUri );
+	void pOpenParcelFileDescriptor(jobject objUri);
 	void pReadGameDefinitions();
 	void pCloseParcelFileDescriptor();
 };

@@ -47,41 +47,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkRemove::seULinkRemove( seLink *link ) :
-pSynthesizer( NULL ),
-pLink( NULL ),
+seULinkRemove::seULinkRemove(seLink *link) :
+pSynthesizer(NULL),
+pLink(NULL),
 
-pTargets( NULL ),
-pTargetCount( 0 )
+pTargets(NULL),
+pTargetCount(0)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSynthesizer * const synthesizer = link->GetSynthesizer();
-	if( ! synthesizer ){
-		DETHROW( deeInvalidParam );
+	if(! synthesizer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int targetCount = synthesizer->CountLinkUsage( link );
+	const int targetCount = synthesizer->CountLinkUsage(link);
 	const int sourceCount = synthesizer->GetSources().GetCount();
 	int i;
 	
-	SetShortInfo( "Remove Link" );
+	SetShortInfo("Remove Link");
 	
-	if( targetCount > 0 ){
+	if(targetCount > 0){
 		try{
-			pTargets = new sTarget[ targetCount ];
+			pTargets = new sTarget[targetCount];
 			
-			for( i=0; i<sourceCount; i++ ){
-				pAddTargetsForSource( link, targetCount, synthesizer->GetSources().GetAt( i ) );
+			for(i=0; i<sourceCount; i++){
+				pAddTargetsForSource(link, targetCount, synthesizer->GetSources().GetAt(i));
 			}
 			
-			if( pTargetCount != targetCount ){
-				DETHROW( deeInvalidParam );
+			if(pTargetCount != targetCount){
+				DETHROW(deeInvalidParam);
 			}
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pCleanUp();
 			throw;
 		}
@@ -106,23 +106,23 @@ seULinkRemove::~seULinkRemove(){
 void seULinkRemove::Undo(){
 	int i;
 	
-	pSynthesizer->AddLink( pLink );
+	pSynthesizer->AddLink(pLink);
 	
-	for( i=0; i<pTargetCount; i++ ){
-		pTargets[ i ].target->AddLink( pLink );
-		pTargets[ i ].source->NotifySourceChanged();
+	for(i=0; i<pTargetCount; i++){
+		pTargets[i].target->AddLink(pLink);
+		pTargets[i].source->NotifySourceChanged();
 	}
 }
 
 void seULinkRemove::Redo(){
 	int i;
 	
-	for( i=0; i<pTargetCount; i++ ){
-		pTargets[ i ].target->RemoveLink( pLink );
-		pTargets[ i ].source->NotifySourceChanged();
+	for(i=0; i<pTargetCount; i++){
+		pTargets[i].target->RemoveLink(pLink);
+		pTargets[i].source->NotifySourceChanged();
 	}
 	
-	pSynthesizer->RemoveLink( pLink );
+	pSynthesizer->RemoveLink(pLink);
 }
 
 
@@ -133,77 +133,77 @@ void seULinkRemove::Redo(){
 void seULinkRemove::pCleanUp(){
 	int i;
 	
-	for( i=0; i<pTargetCount; i++ ){
-		pTargets[ i ].source->FreeReference();
+	for(i=0; i<pTargetCount; i++){
+		pTargets[i].source->FreeReference();
 	}
 	
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }
 
-void seULinkRemove::pAddTargetsForSource( seLink *link, int targetCount, seSource *source ){
-	if( source->GetTargetBlendFactor().HasLink( link ) ){
-		pAddTarget( targetCount, source, &source->GetTargetBlendFactor() );
+void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource *source){
+	if(source->GetTargetBlendFactor().HasLink(link)){
+		pAddTarget(targetCount, source, &source->GetTargetBlendFactor());
 	}
-	if( source->GetTargetPanning().HasLink( link ) ){
-		pAddTarget( targetCount, source, &source->GetTargetPanning() );
+	if(source->GetTargetPanning().HasLink(link)){
+		pAddTarget(targetCount, source, &source->GetTargetPanning());
 	}
-	if( source->GetTargetVolume().HasLink( link ) ){
-		pAddTarget( targetCount, source, &source->GetTargetVolume() );
+	if(source->GetTargetVolume().HasLink(link)){
+		pAddTarget(targetCount, source, &source->GetTargetVolume());
 	}
 	
-	switch( source->GetType() ){
+	switch(source->GetType()){
 	case deSynthesizerSourceVisitorIdentify::estSound:{
-		seSourceSound * const sound = ( seSourceSound* )source;
+		seSourceSound * const sound = (seSourceSound*)source;
 		
-		if( sound->GetTargetSpeed().HasLink( link ) ){
-			pAddTarget( targetCount, source, &sound->GetTargetSpeed() );
+		if(sound->GetTargetSpeed().HasLink(link)){
+			pAddTarget(targetCount, source, &sound->GetTargetSpeed());
 		}
-		if( sound->GetTargetPlay().HasLink( link ) ){
-			pAddTarget( targetCount, source, &sound->GetTargetPlay() );
+		if(sound->GetTargetPlay().HasLink(link)){
+			pAddTarget(targetCount, source, &sound->GetTargetPlay());
 		}
 		}break;
 		
 	case deSynthesizerSourceVisitorIdentify::estWave:{
-		seSourceWave * const wave = ( seSourceWave* )source;
+		seSourceWave * const wave = (seSourceWave*)source;
 		
-		if( wave->GetTargetFrequency().HasLink( link ) ){
-			pAddTarget( targetCount, source, &wave->GetTargetFrequency() );
+		if(wave->GetTargetFrequency().HasLink(link)){
+			pAddTarget(targetCount, source, &wave->GetTargetFrequency());
 		}
 		}break;
 		
 	case deSynthesizerSourceVisitorIdentify::estGroup:{
-		seSourceGroup * const group = ( seSourceGroup* )source;
+		seSourceGroup * const group = (seSourceGroup*)source;
 		
-		if( group->GetTargetSelect().HasLink( link ) ){
-			pAddTarget( targetCount, source, &group->GetTargetSelect() );
+		if(group->GetTargetSelect().HasLink(link)){
+			pAddTarget(targetCount, source, &group->GetTargetSelect());
 		}
 		
 		const seSourceList &list = group->GetSources();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pAddTargetsForSource( link, targetCount, list.GetAt( i ) );
+		for(i=0; i<count; i++){
+			pAddTargetsForSource(link, targetCount, list.GetAt(i));
 		}
 		}break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-void seULinkRemove::pAddTarget( int targetCount, seSource *source, seControllerTarget *target ){
-	if( pTargetCount >= targetCount ){
-		DETHROW( deeInvalidParam );
+void seULinkRemove::pAddTarget(int targetCount, seSource *source, seControllerTarget *target){
+	if(pTargetCount >= targetCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTargets[ pTargetCount ].source = source;
-	pTargets[ pTargetCount ].target = target;
+	pTargets[pTargetCount].source = source;
+	pTargets[pTargetCount].target = target;
 	
 	source->AddReference();
 	

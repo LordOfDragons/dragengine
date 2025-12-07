@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCActorCommand::ceWPTTIMCActorCommand( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionActorCommand *condition ) :
-ceWPTTIMCondition( windowMain, etConditionActorCommand, conversation, action, condition )
+ceWPTTIMCActorCommand::ceWPTTIMCActorCommand(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionActorCommand *condition) :
+ceWPTTIMCondition(windowMain, etConditionActorCommand, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionActorCommand() );
+	SetIcon(windowMain.GetIconConditionActorCommand());
 	Update();
 }
 
@@ -61,25 +61,25 @@ void ceWPTTIMCActorCommand::Update(){
 	const ceCConditionActorCommand &condition = *GetConditionActorCommand();
 	decString text;
 	
-	text.Format( "%s", condition.GetActor().GetString() );
+	text.Format("%s", condition.GetActor().GetString());
 	
-	if( condition.GetNegate() ){
+	if(condition.GetNegate()){
 		text += " [not] => ";
 		
 	}else{
 		text += " => ";
 	}
 	
-	if( ! condition.GetCommand().IsEmpty() ){
-		const decString lineCommand( condition.GetCommand().Split( '\n' ).GetAt( 0 ) );
+	if(! condition.GetCommand().IsEmpty()){
+		const decString lineCommand(condition.GetCommand().Split('\n').GetAt(0));
 		
-		if( lineCommand.GetLength() > 40 ){
-			text += lineCommand.GetLeft( 40 ) + "...";
+		if(lineCommand.GetLength() > 40){
+			text += lineCommand.GetLeft(40) + "...";
 			
 		}else{
 			text += lineCommand;
 		}
 	}
 	
-	SetText( text );
+	SetText(text);
 }

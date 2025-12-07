@@ -36,7 +36,7 @@ igdeNativeNullNVBoard::igdeNativeNullNVBoard(){
 igdeNativeNullNVBoard::~igdeNativeNullNVBoard(){
 }
 
-igdeNativeNullNVBoard *igdeNativeNullNVBoard::CreateNativeWidget( igdeNVBoard& ){
+igdeNativeNullNVBoard *igdeNativeNullNVBoard::CreateNativeWidget(igdeNVBoard&){
 	return new igdeNativeNullNVBoard;
 }
 
@@ -68,28 +68,28 @@ void igdeNativeNullNVBoard::UpdateOffset(){
 }
 
 decPoint igdeNativeNullNVBoard::GetSize(){
-	return decPoint( 256, 256 );
+	return decPoint(256, 256);
 }
 
 
 
-void igdeNativeNullNVBoard::BeginCreateLink( igdeNativeNullNVSlot* ){
+void igdeNativeNullNVBoard::BeginCreateLink(igdeNativeNullNVSlot*){
 }
 
-void igdeNativeNullNVBoard::SetCreateLinkPosition( const decPoint & ){
+void igdeNativeNullNVBoard::SetCreateLinkPosition(const decPoint &){
 }
 
-void igdeNativeNullNVBoard::SetCreateLinkTarget( igdeNativeNullNVSlot* ){
+void igdeNativeNullNVBoard::SetCreateLinkTarget(igdeNativeNullNVSlot*){
 }
 
 void igdeNativeNullNVBoard::FinishCreateLink(){
 }
 
-igdeNVLink *igdeNativeNullNVBoard::ClosestLinkNear( const decPoint &, float ) const{
+igdeNVLink *igdeNativeNullNVBoard::ClosestLinkNear(const decPoint &, float) const{
 	return nullptr;
 }
 
-void igdeNativeNullNVBoard::SetHoverLink( igdeNVLink* ){
+void igdeNativeNullNVBoard::SetHoverLink(igdeNVLink*){
 }
 
 #endif

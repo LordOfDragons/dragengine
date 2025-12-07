@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNodeClosestProp( meWindowVegetation &windowVegetation, meHTVRuleClosestProp *rule );
+	meWVNodeClosestProp(meWindowVegetation &windowVegetation, meHTVRuleClosestProp *rule);
 	
 protected:
 	/** \brief Clean up node. */
@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleClosestProp *GetRuleClosestProp() const{ return pRuleCP; }
+	inline meHTVRuleClosestProp *GetRuleClosestProp() const{return pRuleCP;}
 	
 	
 	

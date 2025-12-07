@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetOrientation::seUBodySetOrientation( seBody *body, const decVector &newOrientation ) :
-pBody( NULL ),
-pNewOrientation( newOrientation )
+seUBodySetOrientation::seUBodySetOrientation(seBody *body, const decVector &newOrientation) :
+pBody(NULL),
+pNewOrientation(newOrientation)
 {
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+	if(! body){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Body Orientation" );
+	SetShortInfo("Set Body Orientation");
 	
 	pOldOrientation = body->GetOrientation();
 	
@@ -56,7 +56,7 @@ pNewOrientation( newOrientation )
 }
 
 seUBodySetOrientation::~seUBodySetOrientation(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUBodySetOrientation::~seUBodySetOrientation(){
 ///////////////
 
 void seUBodySetOrientation::Undo(){
-	pBody->SetOrientation( pOldOrientation );
+	pBody->SetOrientation(pOldOrientation);
 }
 
 void seUBodySetOrientation::Redo(){
-	pBody->SetOrientation( pNewOrientation );
+	pBody->SetOrientation(pNewOrientation);
 }

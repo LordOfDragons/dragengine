@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-dexsiDeviceFeedback::dexsiDeviceFeedback( deXSystemInput &module ) :
-pModule( module ),
+dexsiDeviceFeedback::dexsiDeviceFeedback(deXSystemInput &module) :
+pModule(module),
 
-pIndex( -1 ),
-pType( deInputDeviceFeedback::eftGeneric ),
-pMaximum( 1 ),
-pValue( 0.0f ),
-pEvdevCode( 0 ){
+pIndex(-1),
+pType(deInputDeviceFeedback::eftGeneric),
+pMaximum(1),
+pValue(0.0f),
+pEvdevCode(0){
 }
 
 dexsiDeviceFeedback::~dexsiDeviceFeedback(){
@@ -58,29 +58,29 @@ dexsiDeviceFeedback::~dexsiDeviceFeedback(){
 // Management
 ///////////////
 
-void dexsiDeviceFeedback::SetIndex( int index ){
+void dexsiDeviceFeedback::SetIndex(int index){
 	pIndex = index;
 }
 
-void dexsiDeviceFeedback::SetID( const char *id ){
+void dexsiDeviceFeedback::SetID(const char *id){
 	pID = id;
 }
 
-void dexsiDeviceFeedback::SetName( const char *name ){
+void dexsiDeviceFeedback::SetName(const char *name){
 	pName = name;
 }
 
-void dexsiDeviceFeedback::SetType( deInputDeviceFeedback::eFeedbackTypes type ){
+void dexsiDeviceFeedback::SetType(deInputDeviceFeedback::eFeedbackTypes type){
 	pType = type;
 }
 
 
 
-void dexsiDeviceFeedback::SetDisplayImages( const char *name ){
+void dexsiDeviceFeedback::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(! name){
 		return;
 	}
 	
@@ -89,54 +89,54 @@ void dexsiDeviceFeedback::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/feedback";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	deImage::Ref icon;
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+		pDisplayIcons.Add((deImage*)icon);
 	}
 }
 
-void dexsiDeviceFeedback::SetDisplayText( const char *text ){
+void dexsiDeviceFeedback::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void dexsiDeviceFeedback::SetMaximum( int maximum ){
+void dexsiDeviceFeedback::SetMaximum(int maximum){
 	pMaximum = maximum;
 }
 
 
 
-void dexsiDeviceFeedback::SetValue( float value ){
+void dexsiDeviceFeedback::SetValue(float value){
 	pValue = value;
 }
 
 
 
-void dexsiDeviceFeedback::SetEvdevCode( int code ){
+void dexsiDeviceFeedback::SetEvdevCode(int code){
 	pEvdevCode = code;
 }
 
 
 
-void dexsiDeviceFeedback::GetInfo( deInputDeviceFeedback &info ) const{
+void dexsiDeviceFeedback::GetInfo(deInputDeviceFeedback &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	
-	info.SetDisplayImage( pDisplayImage );
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	info.SetDisplayImage(pDisplayImage);
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }

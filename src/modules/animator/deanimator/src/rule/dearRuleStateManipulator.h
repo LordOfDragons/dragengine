@@ -62,8 +62,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleStateManipulator( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleStateManipulator &rule );
+	dearRuleStateManipulator(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleStateManipulator &rule);
 	
 	/** Clean up animator. */
 	virtual ~dearRuleStateManipulator();
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	/*@}*/
 };
 

@@ -60,8 +60,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file entry. */
-	deadArchiveFile( deArchiveDelga &module, const char *filename,
-		const unz_file_info &info, const unz_file_pos &archivePosition );
+	deadArchiveFile(deArchiveDelga &module, const char *filename,
+		const unz_file_info &info, const unz_file_pos &archivePosition);
 	
 	/** \brief Clean up file entry. */
 	virtual ~deadArchiveFile();
@@ -72,22 +72,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** \brief Position in zip file. */
-	inline const unz_file_pos &GetArchivePosition() const{ return pArchivePosition; }
+	inline const unz_file_pos &GetArchivePosition() const{return pArchivePosition;}
 	
 	/** \brief Uncompressed file size. */
-	inline int GetFileSize() const{ return pFileSize; }
+	inline int GetFileSize() const{return pFileSize;}
 	
 	/** \brief Modification time. */
-	inline TIME_SYSTEM GetModificationTime() const{ return pModificationTime; }
+	inline TIME_SYSTEM GetModificationTime() const{return pModificationTime;}
 	
 	/** \brief Compressed file size. */
-	inline int GetCompressedSize() const{ return pCompressedSize; }
+	inline int GetCompressedSize() const{return pCompressedSize;}
 	
 	/** \brief Read block size. */
-	inline int GetReadBlockSize() const{ return pReadBlockSize; }
+	inline int GetReadBlockSize() const{return pReadBlockSize;}
 	/*@}*/
 };
 

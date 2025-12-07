@@ -42,21 +42,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose ){
-	if( ! topic || ! actorSpeak || ! facePose ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose){
+	if(! topic || ! actorSpeak || ! facePose){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pFacePose = NULL;
-	pIndex = actorSpeak->GetFacePoseList().IndexOf( facePose );
+	pIndex = actorSpeak->GetFacePoseList().IndexOf(facePose);
 	
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove Face Pose" );
+	SetShortInfo("Remove Face Pose");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -69,13 +69,13 @@ ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove( ceConversationTopic *topic, ceCAAc
 }
 
 ceUCAASpeakFaceRemove::~ceUCAASpeakFaceRemove(){
-	if( pFacePose ){
+	if(pFacePose){
 		pFacePose->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -86,11 +86,11 @@ ceUCAASpeakFaceRemove::~ceUCAASpeakFaceRemove(){
 ///////////////
 
 void ceUCAASpeakFaceRemove::Undo(){
-	pActorSpeak->GetFacePoseList().InsertAt( pFacePose, pIndex );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetFacePoseList().InsertAt(pFacePose, pIndex);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakFaceRemove::Redo(){
-	pActorSpeak->GetFacePoseList().Remove( pFacePose );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->GetFacePoseList().Remove(pFacePose);
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

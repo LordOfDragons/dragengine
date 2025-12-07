@@ -75,8 +75,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font resource. */
-	deFont( deFontManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deFont(deFontManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -93,56 +93,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Height of line of text in pixels. */
-	inline int GetLineHeight() const{ return pLineHeight; }
+	inline int GetLineHeight() const{return pLineHeight;}
 	
 	/** \brief Set height of line of text in pixels. */
-	void SetLineHeight( int lineHeight );
+	void SetLineHeight(int lineHeight);
 	
 	/** \brief Font is colored and can not be tinted. */
-	inline bool GetIsColorFont() const{ return pColorFont; }
+	inline bool GetIsColorFont() const{return pColorFont;}
 	
 	/** \brief Set if font is colored and can not be tinted. */
-	void SetIsColorFont( bool colorFont );
+	void SetIsColorFont(bool colorFont);
 	
 	/** \brief Maximum width of all glyphs in pixels. */
-	inline int GetFontWidth() const{ return pFontWidth; }
+	inline int GetFontWidth() const{return pFontWidth;}
 	
 	/** \brief Font is scalable. */
-	inline bool GetScalable() const{ return pScalable; }
+	inline bool GetScalable() const{return pScalable;}
 	
 	/** \brief Set if font is scalable. */
 	void SetScalable(bool scalable);
 	
 	/** \brief Base line position in pixels from top. */
-	inline int GetBaseLine() const{ return pBaseLine; }
+	inline int GetBaseLine() const{return pBaseLine;}
 	
 	/** \brief Set base line position in pixels from top. */
 	void SetBaseLine(int baseLine);
 	
 	
 	/** \brief Undefined glyph. */
-	inline deFontGlyph &GetUndefinedGlyph(){ return pUndefinedGlyph; }
-	inline const deFontGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
+	inline deFontGlyph &GetUndefinedGlyph(){return pUndefinedGlyph;}
+	inline const deFontGlyph &GetUndefinedGlyph() const{return pUndefinedGlyph;}
 	
 	/** \brief Number of glyphs. */
-	inline int GetGlyphCount() const{ return pGlyphCount; }
+	inline int GetGlyphCount() const{return pGlyphCount;}
 	
 	/** \brief Sets number of glyphs resetting all to default values. */
-	void SetGlyphCount( int count );
+	void SetGlyphCount(int count);
 	
 	/** \brief Glyph for unicode is defined. */
-	bool HasGlyph( int unicode ) const;
+	bool HasGlyph(int unicode) const;
 	
 	/** \brief Glyph at index. */
-	deFontGlyph &GetGlyphAt( int index );
-	const deFontGlyph &GetGlyphAt( int index ) const;
+	deFontGlyph &GetGlyphAt(int index);
+	const deFontGlyph &GetGlyphAt(int index) const;
 	
 	/**
 	 * \brief Glyph for Unicode.
 	 * 
 	 * If glyph is not defined the undefined glyph is returned.
 	 */
-	const deFontGlyph &GetGlyph( int unicode ) const;
+	const deFontGlyph &GetGlyph(int unicode) const;
 	
 	/**
 	 * \brief Glyph for Unicode.
@@ -168,21 +168,21 @@ public:
 	
 	
 	/** \brief Path to image resource or empty string is not set. */
-	inline const decString &GetImagePath() const{ return pImagePath; }
+	inline const decString &GetImagePath() const{return pImagePath;}
 	
 	/** \brief Set path to image if existing. */
-	void SetImagePath( const char *path );
+	void SetImagePath(const char *path);
 	
 	/** \brief Image or nullptr. */
-	inline const deImage::Ref &GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{return pImage;}
 	
 	/** \brief Set image or nullptr. */
 	void SetImage(deImage *image);
 	
 	
 	/** \brief List of fixed font sizes (line heights). */
-	inline decIntList &GetFixedSizes(){ return pFixedSizes; }
-	inline const decIntList &GetFixedSizes() const{ return pFixedSizes; }
+	inline decIntList &GetFixedSizes(){return pFixedSizes;}
+	inline const decIntList &GetFixedSizes() const{return pFixedSizes;}
 	
 	/**
 	 * \brief Fixed size best matching line height.
@@ -262,10 +262,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicFont *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicFont *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicFont *peer );
+	void SetPeerGraphic(deBaseGraphicFont *peer);
 	/*@}*/
 	
 	

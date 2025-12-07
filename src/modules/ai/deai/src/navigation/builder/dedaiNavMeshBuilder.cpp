@@ -51,16 +51,16 @@ dedaiNavMeshBuilder::~dedaiNavMeshBuilder(){
 // Management
 ///////////////
 
-dedaiNavMeshBuilderEdge *dedaiNavMeshBuilder::GetEdgeWith( int vertex1, int vertex2 ){
+dedaiNavMeshBuilderEdge *dedaiNavMeshBuilder::GetEdgeWith(int vertex1, int vertex2){
 	dedaiNavMeshBuilderEdge *edge = NULL;
 	const int count = pEdges.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		edge = ( dedaiNavMeshBuilderEdge* )pEdges.GetAt( i );
+	for(i=0; i<count; i++){
+		edge = (dedaiNavMeshBuilderEdge*)pEdges.GetAt(i);
 		
-		if( ( edge->GetVertex1() == vertex1 && edge->GetVertex2() == vertex2 )
-		||  ( edge->GetVertex1() == vertex2 && edge->GetVertex2() == vertex1 ) ){
+		if((edge->GetVertex1() == vertex1 && edge->GetVertex2() == vertex2)
+		||  (edge->GetVertex1() == vertex2 && edge->GetVertex2() == vertex1)){
 			return edge;
 		}
 	}
@@ -68,11 +68,11 @@ dedaiNavMeshBuilderEdge *dedaiNavMeshBuilder::GetEdgeWith( int vertex1, int vert
 	edge = NULL;
 	
 	try{
-		edge = new dedaiNavMeshBuilderEdge( vertex1, vertex2 );
-		pEdges.Add( edge );
+		edge = new dedaiNavMeshBuilderEdge(vertex1, vertex2);
+		pEdges.Add(edge);
 		
-	}catch( const deException & ){
-		if( edge ){
+	}catch(const deException &){
+		if(edge){
 			delete edge;
 		}
 		throw;
@@ -86,10 +86,10 @@ dedaiNavMeshBuilderFace *dedaiNavMeshBuilder::AddFace(){
 	
 	try{
 		face = new dedaiNavMeshBuilderFace;
-		pFaces.Add( face );
+		pFaces.Add(face);
 		
-	}catch( const deException & ){
-		if( face ){
+	}catch(const deException &){
+		if(face){
 			delete face;
 		}
 		throw;
@@ -102,13 +102,13 @@ void dedaiNavMeshBuilder::UpdateIndices(){
 	int i, count;
 	
 	count = pEdges.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( dedaiNavMeshBuilderEdge* )pEdges.GetAt( i ) )->SetIndex( i );
+	for(i=0; i<count; i++){
+		((dedaiNavMeshBuilderEdge*)pEdges.GetAt(i))->SetIndex(i);
 	}
 	
 	count = pFaces.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( dedaiNavMeshBuilderFace* )pFaces.GetAt( i ) )->SetIndex( i );
+	for(i=0; i<count; i++){
+		((dedaiNavMeshBuilderFace*)pFaces.GetAt(i))->SetIndex(i);
 	}
 }
 
@@ -116,14 +116,14 @@ void dedaiNavMeshBuilder::Clear(){
 	int i, count;
 	
 	count = pFaces.GetCount();
-	for( i=0; i<count; i++ ){
-		delete ( dedaiNavMeshBuilderFace* )pFaces.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (dedaiNavMeshBuilderFace*)pFaces.GetAt(i);
 	}
 	pFaces.RemoveAll();
 	
 	count = pEdges.GetCount();
-	for( i=0; i<count; i++ ){
-		delete ( dedaiNavMeshBuilderEdge* )pEdges.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (dedaiNavMeshBuilderEdge*)pEdges.GetAt(i);
 	}
 	pEdges.RemoveAll();
 }

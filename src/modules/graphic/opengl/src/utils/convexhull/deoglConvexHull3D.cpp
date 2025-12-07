@@ -51,7 +51,7 @@ deoglConvexHull3D::deoglConvexHull3D(){
 }
 
 deoglConvexHull3D::~deoglConvexHull3D(){
-	if( pPoints ){
+	if(pPoints){
 		delete [] pPoints;
 	}
 }
@@ -61,20 +61,20 @@ deoglConvexHull3D::~deoglConvexHull3D(){
 // Management
 ///////////////
 
-const decVector &deoglConvexHull3D::GetPointAt( int index ) const{
-	if( index < 0 || index >= pPointCount ){
-		DETHROW( deeInvalidParam );
+const decVector &deoglConvexHull3D::GetPointAt(int index) const{
+	if(index < 0 || index >= pPointCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pPoints[ index ];
+	return pPoints[index];
 }
 
-void deoglConvexHull3D::AddPoint( const decVector &point ){
-	if( pPointCount == pPointSize ){
+void deoglConvexHull3D::AddPoint(const decVector &point){
+	if(pPointCount == pPointSize){
 		const int newSize = pPointSize + 10;
-		decVector * const newArray = new decVector[ newSize ];
+		decVector * const newArray = new decVector[newSize];
 		
-		if( pPoints ){
-			memcpy( newArray, pPoints, sizeof( decVector ) * pPointCount );
+		if(pPoints){
+			memcpy(newArray, pPoints, sizeof(decVector) * pPointCount);
 			delete [] pPoints;
 		}
 		pPoints = newArray;
@@ -82,7 +82,7 @@ void deoglConvexHull3D::AddPoint( const decVector &point ){
 		pPointSize = newSize;
 	}
 	
-	pPoints[ pPointCount++ ] = point;
+	pPoints[pPointCount++] = point;
 }
 
 void deoglConvexHull3D::RemoveAllPoints(){
@@ -94,26 +94,26 @@ void deoglConvexHull3D::RemoveAllPoints(){
 void deoglConvexHull3D::CalculateHull(){
 	pHullIndices.RemoveAll();
 	
-	if( pPointCount < 3 ){
+	if(pPointCount < 3){
 		return;
 	}
 	
-	ch_vertex * const vertices = new ch_vertex[ pPointCount ];
+	ch_vertex * const vertices = new ch_vertex[pPointCount];
 	int i;
-	for( i=0; i<pPointCount; i++ ){
-		vertices[ i ].x = pPoints[ i ].x;
-		vertices[ i ].y = pPoints[ i ].y;
-		vertices[ i ].z = pPoints[ i ].z;
+	for(i=0; i<pPointCount; i++){
+		vertices[i].x = pPoints[i].x;
+		vertices[i].y = pPoints[i].y;
+		vertices[i].z = pPoints[i].z;
 	}
 	
 	int *faceIndices = NULL;
 	int nFaces;
-	convhull_3d_build( vertices, pPointCount, &faceIndices, &nFaces );
+	convhull_3d_build(vertices, pPointCount, &faceIndices, &nFaces);
 	
-	for( i=0; i<nFaces*3; i++ ){
-		pHullIndices.Add( faceIndices[ i ] );
+	for(i=0; i<nFaces*3; i++){
+		pHullIndices.Add(faceIndices[i]);
 	}
 	
-	free( faceIndices );
+	free(faceIndices);
 	delete [] vertices;
 }

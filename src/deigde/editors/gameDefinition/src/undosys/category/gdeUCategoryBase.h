@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategoryBase( gdeGameDefinition *gameDefintiion, eCategoryType type );
+	gdeUCategoryBase(gdeGameDefinition *gameDefintiion, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */
@@ -74,10 +74,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Type. */
-	inline eCategoryType GetType() const{ return pType; }
+	inline eCategoryType GetType() const{return pType;}
 	
 	/** \brief Notify game definition. */
 	void Notify();

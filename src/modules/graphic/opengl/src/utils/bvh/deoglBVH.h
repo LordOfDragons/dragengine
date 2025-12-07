@@ -73,24 +73,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of nodes. */
-	inline int GetNodeCount() const{ return pNodeCount; }
+	inline int GetNodeCount() const{return pNodeCount;}
 	
 	/** Node at index. */
-	deoglBVHNode &GetNodeAt( int index ) const;
+	deoglBVHNode &GetNodeAt(int index) const;
 	
 	/** Direct access to nodes array. */
-	inline deoglBVHNode *GetNodes() const{ return pNodes; }
+	inline deoglBVHNode *GetNodes() const{return pNodes;}
 	
 	
 	
 	/** Count of primitives. */
-	inline int GetPrimitiveCount() const{ return pPrimitiveCount; }
+	inline int GetPrimitiveCount() const{return pPrimitiveCount;}
 	
 	/** Primitive at index. */
-	int GetPrimitiveAt( int index ) const;
+	int GetPrimitiveAt(int index) const;
 	
 	/** Direct access to primitives array. */
-	inline int *GetPrimitives() const{ return pPrimitives; }
+	inline int *GetPrimitives() const{return pPrimitives;}
 	
 	
 	
@@ -106,15 +106,15 @@ public:
 	 * for each primitive in the same order the primitives are indexed.
 	 * The array can be deleted after build.
 	 */
-	void Build( const sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12 );
+	void Build(const sBuildPrimitive *primitives, int primitiveCount, int maxDepth = 12);
 	/*@}*/
 	
 	
 	
 protected:
 	void pAddNode();
-	void pInitPrimitives( int primitiveCount );
-	void pBuildNode( const sBuildPrimitive *primitives, int primitiveCount, int node, int maxDepth );
+	void pInitPrimitives(int primitiveCount);
+	void pBuildNode(const sBuildPrimitive *primitives, int primitiveCount, int node, int maxDepth);
 };
 
 #endif

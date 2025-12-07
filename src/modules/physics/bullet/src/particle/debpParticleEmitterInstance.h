@@ -71,7 +71,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	debpParticleEmitterInstance( dePhysicsBullet *bullet, deParticleEmitterInstance *instance );
+	debpParticleEmitterInstance(dePhysicsBullet *bullet, deParticleEmitterInstance *instance);
 	/** Cleans up the peer. */
 	virtual ~debpParticleEmitterInstance();
 	/*@}*/
@@ -79,46 +79,46 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline dePhysicsBullet *GetBullet() const{ return pBullet; }
+	inline dePhysicsBullet *GetBullet() const{return pBullet;}
 	/** Retrieves the particle emitter instance. */
-	inline deParticleEmitterInstance *GetInstance() const{ return pInstance; }
+	inline deParticleEmitterInstance *GetInstance() const{return pInstance;}
 	
 	/** Retrieves the parent world. */
-	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
+	inline debpWorld *GetParentWorld() const{return pParentWorld;}
 	/** Sets the parent world. */
-	void SetParentWorld( debpWorld *parentWorld );
+	void SetParentWorld(debpWorld *parentWorld);
 	
 	/** Retrieves the particle emitter or null if not set. */
     debpParticleEmitter *GetParticleEmitter() const;
 	
 	/** \brief Force field simulation. */
-	inline const debpForceFieldFluctuation &GetForceFieldFluctuation() const{ return pForceFieldSimulation; }
+	inline const debpForceFieldFluctuation &GetForceFieldFluctuation() const{return pForceFieldSimulation;}
 	
 	/** Retrieves the last position. */
-	inline const decDVector &GetLastPosition() const{ return pLastPosition; }
+	inline const decDVector &GetLastPosition() const{return pLastPosition;}
 	
 	/** Retrieves the number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{return pTypeCount;}
 	/** Retrieves a type by index. */
-	debpParticleEmitterInstanceType &GetTypeAt( int index );
-	const debpParticleEmitterInstanceType &GetTypeAt( int index ) const;
+	debpParticleEmitterInstanceType &GetTypeAt(int index);
+	const debpParticleEmitterInstanceType &GetTypeAt(int index) const;
 	
 	/** Retrieves the emitter matrix. */
 	const decDMatrix &GetEmitterMatrix();
 	/** Retrieves the emitter matrix by distance. */
-	decDMatrix GetEmitterMatrixByDistance( float distance ) const;
+	decDMatrix GetEmitterMatrixByDistance(float distance) const;
 	
 	/** Determines if the particles can collide at all. */
-	inline bool GetCanCollide() const{ return pCanCollide; }
+	inline bool GetCanCollide() const{return pCanCollide;}
 	
 	/** \brief Prepare particles for simulation. */
-	void PrepareParticles( float elapsed );
+	void PrepareParticles(float elapsed);
 	
 	/** \brief Apply forces caused by a force field. */
-	void ApplyForceFields( float elapsed );
+	void ApplyForceFields(float elapsed);
 	
 	/** Steps the particles. */
-	void StepParticles( float elapsed );
+	void StepParticles(float elapsed);
 	/** Finish stepping. */
 	void FinishStepping();
 	
@@ -143,9 +143,9 @@ public:
 	/** \brief Collision filter changed. */
 	virtual void CollisionFilterChanged();
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	/** Type changed. */
-	virtual void TypeChanged( int type );
+	virtual void TypeChanged(int type);
 	
 	/** Reset burst particles. */
 	virtual void ResetBurst();

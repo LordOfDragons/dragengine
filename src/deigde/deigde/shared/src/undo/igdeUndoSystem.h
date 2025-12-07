@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo system. */
-	igdeUndoSystem( igdeEditableEntity *editableEntity );
+	igdeUndoSystem(igdeEditableEntity *editableEntity);
 	
 	/** \brief Clean up undo system. */
 	~igdeUndoSystem();
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Editable entity. */
-	inline igdeEditableEntity *GetEditableEntity() const{ return pEditableEntity; }
+	inline igdeEditableEntity *GetEditableEntity() const{return pEditableEntity;}
 	
 	
 	
@@ -75,7 +75,7 @@ public:
 	int GetCount() const;
 	
 	/** \brief Undo action at index. */
-	igdeUndo *GetAt( int index ) const;
+	igdeUndo *GetAt(int index) const;
 	
 	/** \brief Next undo action. */
 	igdeUndo *GetTop() const;
@@ -87,7 +87,7 @@ public:
 	 * unless disabled. Disable only if you know what you are doing, for example preparing
 	 * an undo action with the possibility to cancel before actually adding it
 	 */
-	void Add( igdeUndo *undo, bool runRedo = true );
+	void Add(igdeUndo *undo, bool runRedo = true);
 	
 	/**
 	 * \brief Remove all undo actions.
@@ -99,16 +99,16 @@ public:
 	
 	
 	/** \brief Maximum number of undo actions. */
-	inline int GetMaxUndoCount() const{ return pMaxUndos; }
+	inline int GetMaxUndoCount() const{return pMaxUndos;}
 	
 	/** \brief Set maximum number of undo actions. */
-	void SetMaxUndoCount( int maxUndos );
+	void SetMaxUndoCount(int maxUndos);
 	
 	/** \brief Maximum memory to consume. */
-	inline int GetMaxMemory() const{ return pMaxMemory; }
+	inline int GetMaxMemory() const{return pMaxMemory;}
 	
 	/** \brief Set maximum memory to consume. */
-	void SetMaxMemory( int maxMemory );
+	void SetMaxMemory(int maxMemory);
 	
 	
 	
@@ -116,7 +116,7 @@ public:
 	int GetUndoableCount() const;
 	
 	/** \brief Number of undo actions that can be redone. */
-	inline int GetRedoableCount() const{ return pRedoCount; }
+	inline int GetRedoableCount() const{return pRedoCount;}
 	
 	/**
 	 * \brief Undo top undo action if present.

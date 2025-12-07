@@ -138,32 +138,32 @@ static sSwapchainFormatName vSwapchainFormatNamesOpenGL[]{
 	{0, nullptr}
 };
 
-deoxrSession::deoxrSession( deoxrSystem &system ) :
-pSystem( system ),
-pGraphicApi( egaHeadless ),
-pSession( 0 ),
-pRunning( false ),
-pPredictedDisplayTime( 0 ),
-pPredictedDisplayPeriod( 0 ),
-pShouldRender( false ),
-pFrameRunning( false ),
+deoxrSession::deoxrSession(deoxrSystem &system) :
+pSystem(system),
+pGraphicApi(egaHeadless),
+pSession(0),
+pRunning(false),
+pPredictedDisplayTime(0),
+pPredictedDisplayPeriod(0),
+pShouldRender(false),
+pFrameRunning(false),
 pRequestCenterSpaceOrigin(false),
-pSwapchainFormats( nullptr ),
-pSwapchainFormatCount( 0 ),
+pSwapchainFormats(nullptr),
+pSwapchainFormatCount(0),
 pLeftEyePose(deoxrUtils::IdentityPose()),
 pRightEyePose(deoxrUtils::IdentityPose()),
-pIsGACOpenGL( false ),
+pIsGACOpenGL(false),
 #ifdef OS_ANDROID
-	pGACOpenGLDisplay( nullptr ),
-	pGACOpenGLConfig( nullptr ),
-	pGACOpenGLContext( nullptr )
+	pGACOpenGLDisplay(nullptr),
+	pGACOpenGLConfig(nullptr),
+	pGACOpenGLContext(nullptr)
 #elif defined OS_UNIX
-	pGACOpenGLDisplay( nullptr ),
-	pGACOpenGLDrawable( 0 ),
-	pGACOpenGLContext( nullptr )
+	pGACOpenGLDisplay(nullptr),
+	pGACOpenGLDrawable(0),
+	pGACOpenGLContext(nullptr)
 #elif defined OS_W32
-	pGACOpenGLHDC( NULL ),
-	pGACOpenGLContext( NULL )
+	pGACOpenGLHDC(NULL),
+	pGACOpenGLContext(NULL)
 #endif
 {
 	const deoxrInstance &instance = system.GetInstance();
@@ -174,34 +174,34 @@ pIsGACOpenGL( false ),
 	// used to not be too far away from the actual values
 	// 
 	// NOTE OpenXR flips up/down and uses angles not projection matrix values
-	pLeftEyeFov.angleLeft = atanf( -1.39863f );
-	pLeftEyeFov.angleRight = atanf( 1.24906f );
-	pLeftEyeFov.angleUp = atanf( 1.47526f );
-	pLeftEyeFov.angleDown = atanf( -1.46793f );
+	pLeftEyeFov.angleLeft = atanf(-1.39863f);
+	pLeftEyeFov.angleRight = atanf(1.24906f);
+	pLeftEyeFov.angleUp = atanf(1.47526f);
+	pLeftEyeFov.angleDown = atanf(-1.46793f);
 	
-	pRightEyeFov.angleLeft = atanf( -1.24382f );
-	pRightEyeFov.angleRight = atanf( 1.39166f );
-	pRightEyeFov.angleUp = atanf( 1.47029f );
-	pRightEyeFov.angleDown = atanf( -1.45786f );
+	pRightEyeFov.angleLeft = atanf(-1.24382f);
+	pRightEyeFov.angleRight = atanf(1.39166f);
+	pRightEyeFov.angleUp = atanf(1.47029f);
+	pRightEyeFov.angleDown = atanf(-1.45786f);
 	
 	try{
 		// query graphic api connection parameters
 		deBaseGraphicModule::sGraphicApiConnection gacon;
-		oxr.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetGraphicApiConnection( gacon );
+		oxr.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetGraphicApiConnection(gacon);
 		
 		#ifdef OS_BEOS
 			#error Unsupported
 		#elif defined OS_ANDROID
-			pGACOpenGLDisplay = ( EGLDisplay )gacon.opengl.display;
-			pGACOpenGLConfig = ( EGLConfig )gacon.opengl.config;
-			pGACOpenGLContext = ( EGLContext )gacon.opengl.context;
+			pGACOpenGLDisplay = (EGLDisplay)gacon.opengl.display;
+			pGACOpenGLConfig = (EGLConfig)gacon.opengl.config;
+			pGACOpenGLContext = (EGLContext)gacon.opengl.context;
 		#elif defined OS_UNIX
-			pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
-			pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
-			pGACOpenGLContext = ( GLXContext )gacon.opengl.glxContext;
+			pGACOpenGLDisplay = (Display*)gacon.opengl.display;
+			pGACOpenGLDrawable = (GLXDrawable)gacon.opengl.glxDrawable;
+			pGACOpenGLContext = (GLXContext)gacon.opengl.glxContext;
 		#elif defined OS_W32
-			pGACOpenGLHDC = ( HDC )gacon.opengl.hDC;
-			pGACOpenGLContext = ( HGLRC )gacon.opengl.hGLRC;
+			pGACOpenGLHDC = (HDC)gacon.opengl.hDC;
+			pGACOpenGLContext = (HGLRC)gacon.opengl.hGLRC;
 		#endif
 		
 		// create session info struct depending on what the graphic module supports
@@ -219,29 +219,29 @@ pIsGACOpenGL( false ),
 		XrGraphicsBindingOpenGLWin32KHR gbopengl;
 		#endif
 		
-		if( instance.SupportsExtension( deoxrInstance::extKHROpenglEnable ) ){
-			oxr.LogInfo( "Create Session: Testing OpenGL Support" );
+		if(instance.SupportsExtension(deoxrInstance::extKHROpenglEnable)){
+			oxr.LogInfo("Create Session: Testing OpenGL Support");
 			// openxr specification requires this call to be done although the result is not used
 			#ifdef OS_ANDROID
 				XrGraphicsRequirementsOpenGLESKHR requirements{
 					XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR};
 				
 				instance.xrGetOpenGLESGraphicsRequirementsKHR(
-					instance.GetInstance(), system.GetSystemId(), &requirements );
+					instance.GetInstance(), system.GetSystemId(), &requirements);
 			#else
 				XrGraphicsRequirementsOpenGLKHR requirements{
 					XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR};
 				
 				instance.xrGetOpenGLGraphicsRequirementsKHR(
-					instance.GetInstance(), system.GetSystemId(), &requirements );
+					instance.GetInstance(), system.GetSystemId(), &requirements);
 			#endif
 			
 			// add opengl connection struct
 			#ifdef OS_ANDROID
-				if( gacon.opengl.display && gacon.opengl.config && gacon.opengl.context ){
+				if(gacon.opengl.display && gacon.opengl.config && gacon.opengl.context){
 					oxr.GetGraphicApiOpenGL().Load();
 					
-					memset( &gbopengl, 0, sizeof( gbopengl ) );
+					memset(&gbopengl, 0, sizeof(gbopengl));
 					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR;
 					gbopengl.display = pGACOpenGLDisplay;
 					gbopengl.config = pGACOpenGLConfig;
@@ -250,53 +250,53 @@ pIsGACOpenGL( false ),
 					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
 					pIsGACOpenGL = true;
-					oxr.LogInfo( "Create Session: Using OpenGL on Android" );
+					oxr.LogInfo("Create Session: Using OpenGL on Android");
 				}
 				
 			#elif defined OS_UNIX
-				if( gacon.opengl.display && gacon.opengl.display
-				&& gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable ){
+				if(gacon.opengl.display && gacon.opengl.display
+				&& gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable){
 					oxr.GetGraphicApiOpenGL().Load();
 					
-					memset( &gbopengl, 0, sizeof( gbopengl ) );
+					memset(&gbopengl, 0, sizeof(gbopengl));
 					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_XLIB_KHR;
 					gbopengl.xDisplay = pGACOpenGLDisplay;
 					gbopengl.visualid = gacon.opengl.visualid;
-					gbopengl.glxFBConfig = ( GLXFBConfig )gacon.opengl.glxFBConfig;
+					gbopengl.glxFBConfig = (GLXFBConfig)gacon.opengl.glxFBConfig;
 					gbopengl.glxDrawable = pGACOpenGLDrawable;
 					gbopengl.glxContext = pGACOpenGLContext;
 					
 					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
 					pIsGACOpenGL = true;
-					oxr.LogInfo( "Create Session: Using OpenGL on Xlib" );
+					oxr.LogInfo("Create Session: Using OpenGL on Xlib");
 				}
 				
 			#elif defined OS_W32
-				if( gacon.opengl.hDC && gacon.opengl.hGLRC ){
+				if(gacon.opengl.hDC && gacon.opengl.hGLRC){
 					oxr.GetGraphicApiOpenGL().Load();
 					
-					memset( &gbopengl, 0, sizeof( gbopengl ) );
+					memset(&gbopengl, 0, sizeof(gbopengl));
 					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_WIN32_KHR;
-					gbopengl.hDC = ( HDC )gacon.opengl.hDC;
-					gbopengl.hGLRC = ( HGLRC )gacon.opengl.hGLRC;
+					gbopengl.hDC = (HDC)gacon.opengl.hDC;
+					gbopengl.hGLRC = (HGLRC)gacon.opengl.hGLRC;
 					
 					pGraphicApi = egaOpenGL;
 					graphicBinding = &gbopengl;
 					pIsGACOpenGL = true;
-					oxr.LogInfo( "Create Session: Using OpenGL on Windows" );
+					oxr.LogInfo("Create Session: Using OpenGL on Windows");
 				}
 			#endif
 		}
 		
-		if( ! graphicBinding ){
-			DETHROW_INFO( deeInvalidAction, "no supported graphic api" );
+		if(! graphicBinding){
+			DETHROW_INFO(deeInvalidAction, "no supported graphic api");
 		}
 		
 		createInfo.next = graphicBinding;
 		
 		// create session
-		OXR_CHECK( instance.xrCreateSession( instance.GetInstance(), &createInfo, &pSession ) );
+		OXR_CHECK(instance.xrCreateSession(instance.GetInstance(), &createInfo, &pSession));
 		
 		// create spaces
 		pSpaceStageOrigin.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_STAGE));
@@ -312,19 +312,19 @@ pIsGACOpenGL( false ),
 		pEnumSwapchainFormats();
 		
 		// create swap chains
-		pSwapchainLeftEye.TakeOver( new deoxrSwapchain(
+		pSwapchainLeftEye.TakeOver(new deoxrSwapchain(
 			*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etColor ) );
-		pSwapchainRightEye.TakeOver( new deoxrSwapchain(
+		pSwapchainRightEye.TakeOver(new deoxrSwapchain(
 			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor ) );
 		
-		if( pSystem.GetInstance().SupportsExtension( deoxrInstance::extKHRCompositionLayerDepth ) ){
+		if(pSystem.GetInstance().SupportsExtension(deoxrInstance::extKHRCompositionLayerDepth)){
 			// pSwapchainDepthLeftEye.TakeOver( new deoxrSwapchain(
 			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth ) );
 			// pSwapchainDepthRightEye.TakeOver( new deoxrSwapchain(
 			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth ) );
 		}
 		
-		if( pIsGACOpenGL ){
+		if(pIsGACOpenGL){
 			// WARNING SteamVR messes with the current context state causing all future OpenGL
 			//         calls to fail. not sure why SteamVR unsets the current context but it
 			//         breaks everything. i dont know if the spec would actually requires
@@ -334,7 +334,7 @@ pIsGACOpenGL( false ),
 			RestoreOpenGLCurrent();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -350,40 +350,40 @@ deoxrSession::~deoxrSession(){
 ///////////////
 
 void deoxrSession::Begin(){
-	if( pRunning ){
+	if(pRunning){
 		return;
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
-	instance.GetOxr().LogInfoFormat( "Begin Session" );
+	instance.GetOxr().LogInfoFormat("Begin Session");
 	
 	XrSessionBeginInfo beginInfo;
-	memset( &beginInfo, 0, sizeof( beginInfo ) );
+	memset(&beginInfo, 0, sizeof(beginInfo));
 	beginInfo.type = XR_TYPE_SESSION_BEGIN_INFO;
 	beginInfo.primaryViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
-	OXR_CHECK( instance.xrBeginSession( pSession, &beginInfo ) );
+	OXR_CHECK(instance.xrBeginSession(pSession, &beginInfo));
 	// pRequestCenterSpaceOrigin = true;
 	
 	pRunning = true;
 }
 
 void deoxrSession::End(){
-	if( ! pRunning ){
+	if(! pRunning){
 		return;
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
-	instance.GetOxr().LogInfoFormat( "End Session" );
+	instance.GetOxr().LogInfoFormat("End Session");
 	
 	EndFrame();
 	pAttachedActionSet = nullptr;
 	
-	if( ! instance.GetOxr().GetPreventDeletion() ){
+	if(! instance.GetOxr().GetPreventDeletion()){
 		// prevent deletion of graphic api resources that are typically linked to another
 		// thread. this will cause memory leaks but better leak than crash if the runtime
 		// is buggy or not very resiliant (like SteamVR for example)
-		OXR_CHECK( instance.xrEndSession( pSession ) );
+		OXR_CHECK(instance.xrEndSession(pSession));
 	}
 	
 	pRunning = false;
@@ -393,16 +393,16 @@ void deoxrSession::End(){
 }
 
 void deoxrSession::ForceEnd(){
-	if( ! pRunning ){
+	if(! pRunning){
 		return;
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
-	instance.GetOxr().LogInfoFormat( "Force End Session" );
+	instance.GetOxr().LogInfoFormat("Force End Session");
 	ForceEndFrame();
 	pAttachedActionSet = nullptr;
-	if( ! instance.GetOxr().GetPreventDeletion() ){
-		instance.xrEndSession( pSession );
+	if(! instance.GetOxr().GetPreventDeletion()){
+		instance.xrEndSession(pSession);
 	}
 	pRunning = false;
 	pPredictedDisplayTime = 0;
@@ -410,29 +410,29 @@ void deoxrSession::ForceEnd(){
 	pShouldRender = false;
 }
 
-void deoxrSession::AttachActionSet( deoxrActionSet *actionSet ){
-	if( ! actionSet ){
-		DETHROW_INFO( deeNullPointer, "actionSet" );
+void deoxrSession::AttachActionSet(deoxrActionSet *actionSet){
+	if(! actionSet){
+		DETHROW_INFO(deeNullPointer, "actionSet");
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
-	instance.GetOxr().LogInfoFormat( "Attach Action Set: %s", actionSet->GetLocalizedName().GetString() );
+	instance.GetOxr().LogInfoFormat("Attach Action Set: %s", actionSet->GetLocalizedName().GetString());
 	
 	XrSessionActionSetsAttachInfo attachInfo;
-	memset( &attachInfo, 0, sizeof( attachInfo ) );
+	memset(&attachInfo, 0, sizeof(attachInfo));
 	attachInfo.type = XR_TYPE_SESSION_ACTION_SETS_ATTACH_INFO;
 	
-	XrActionSet actionSets[ 1 ] = { actionSet->GetActionSet() };
+	XrActionSet actionSets[1] = {actionSet->GetActionSet()};
 	attachInfo.countActionSets = 1;
 	attachInfo.actionSets = actionSets;
 	
-	OXR_CHECK( instance.xrAttachSessionActionSets( pSession, &attachInfo ) );
+	OXR_CHECK(instance.xrAttachSessionActionSets(pSession, &attachInfo));
 	
 	pAttachedActionSet = actionSet;
 }
 
 void deoxrSession::WaitFrame(){
-	if( ! pRunning || pFrameRunning ){
+	if(! pRunning || pFrameRunning){
 		return;
 	}
 	
@@ -440,10 +440,10 @@ void deoxrSession::WaitFrame(){
 	
 	// synchronization
 	XrFrameState state;
-	memset( &state, 0, sizeof( state ) );
+	memset(&state, 0, sizeof(state));
 	state.type = XR_TYPE_FRAME_STATE;
 	
-	OXR_CHECK( instance.xrWaitFrame( pSession, nullptr, &state ) );
+	OXR_CHECK(instance.xrWaitFrame(pSession, nullptr, &state));
 	
 	pPredictedDisplayTime = state.predictedDisplayTime;
 	pPredictedDisplayPeriod = state.predictedDisplayPeriod;
@@ -456,63 +456,63 @@ void deoxrSession::WaitFrame(){
 }
 
 void deoxrSession::BeginFrame(){
-	if( ! pRunning || pFrameRunning ){
+	if(! pRunning || pFrameRunning){
 		return;
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
 	
 	// begin frame
-	OXR_CHECK( instance.xrBeginFrame( pSession, nullptr ) );
+	OXR_CHECK(instance.xrBeginFrame(pSession, nullptr));
 	pFrameRunning = true;
 	
 	// locate views
 	XrViewState viewState;
-	memset( &viewState, 0, sizeof( viewState ) );
+	memset(&viewState, 0, sizeof(viewState));
 	viewState.type = XR_TYPE_VIEW_STATE;
 	
-	XrView views[ 2 ];
-	memset( &views, 0, sizeof( views ) );
-	views[ 0 ].type = XR_TYPE_VIEW;
-	views[ 1 ].type = XR_TYPE_VIEW;
+	XrView views[2];
+	memset(&views, 0, sizeof(views));
+	views[0].type = XR_TYPE_VIEW;
+	views[1].type = XR_TYPE_VIEW;
 	
 	XrViewLocateInfo viewLocateInfo;
-	memset( &viewLocateInfo, 0, sizeof( viewLocateInfo ) );
+	memset(&viewLocateInfo, 0, sizeof(viewLocateInfo));
 	viewLocateInfo.type = XR_TYPE_VIEW_LOCATE_INFO;
 	viewLocateInfo.displayTime = pPredictedDisplayTime;
 	viewLocateInfo.space = pMainSpace->GetSpace();
 	viewLocateInfo.viewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
 	uint32_t viewCount;
-	OXR_CHECK( instance.xrLocateViews( pSession, &viewLocateInfo, &viewState, 2, &viewCount, views ) );
+	OXR_CHECK(instance.xrLocateViews(pSession, &viewLocateInfo, &viewState, 2, &viewCount, views));
 	
-	pLeftEyePose = views[ 0 ].pose;
-	pLeftEyeFov = views[ 0 ].fov;
+	pLeftEyePose = views[0].pose;
+	pLeftEyeFov = views[0].fov;
 	
-	pRightEyePose = views[ 1 ].pose;
-	pRightEyeFov = views[ 1 ].fov;
+	pRightEyePose = views[1].pose;
+	pRightEyeFov = views[1].fov;
 	
 	// if hidden mesh are supported but not existing create and update them. this is done
 	// only once unless an event is received the images changed. theoretically if the fov
 	// changes the mask could change too but this is nigh impossible to ever happen
-	if( instance.SupportsExtension( deoxrInstance::extKHRVisibilityMask ) ){
-		if( ! pLeftEyeHiddenMesh ){
-			pLeftEyeHiddenMesh.TakeOver( new deoxrHiddenMesh( *this,
-				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0 ) );
+	if(instance.SupportsExtension(deoxrInstance::extKHRVisibilityMask)){
+		if(! pLeftEyeHiddenMesh){
+			pLeftEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0));
 			UpdateLeftEyeHiddenMesh();
 		}
 		
-		if( ! pRightEyeHiddenMesh ){
-			pRightEyeHiddenMesh.TakeOver( new deoxrHiddenMesh( *this,
-				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1 ) );
+		if(! pRightEyeHiddenMesh){
+			pRightEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1));
 			UpdateRightEyeHiddenMesh();
 		}
 	}
 	
 	// locate hmd
-	if( pPredictedDisplayTime > 0 ){
-		pSpaceView->LocateSpace( pMainSpace, pPredictedDisplayTime,
-			pHeadPosition, pHeadOrientation, pHeadLinearVelocity, pHeadAngularVelocity );
+	if(pPredictedDisplayTime > 0){
+		pSpaceView->LocateSpace(pMainSpace, pPredictedDisplayTime,
+			pHeadPosition, pHeadOrientation, pHeadLinearVelocity, pHeadAngularVelocity);
 		
 		/*
 		instance.GetOxr().LogInfoFormat(
@@ -529,26 +529,26 @@ void deoxrSession::BeginFrame(){
 		// calculate eye matrices transforming from camera space to eye space. we have to do
 		// this calculation since OpenXR does not provide this information. this happens
 		// though once each frame update so not a performance problem
-		const decMatrix headMatrix( decMatrix::CreateWorld( pHeadPosition, pHeadOrientation ) );
-		pLeftEyeMatrix = headMatrix.QuickMultiply( deoxrUtils::Convert( pLeftEyePose ).QuickInvert() );
-		pRightEyeMatrix = headMatrix.QuickMultiply( deoxrUtils::Convert( pRightEyePose ).QuickInvert() );
+		const decMatrix headMatrix(decMatrix::CreateWorld(pHeadPosition, pHeadOrientation));
+		pLeftEyeMatrix = headMatrix.QuickMultiply(deoxrUtils::Convert(pLeftEyePose).QuickInvert());
+		pRightEyeMatrix = headMatrix.QuickMultiply(deoxrUtils::Convert(pRightEyePose).QuickInvert());
 		
 		/*
-		instance.GetOxr().LogInfoFormat( "- Left Eye: pos=(%g,%g,%g) rot=(%g,%g,%g)",
+		instance.GetOxr().LogInfoFormat("- Left Eye: pos=(%g,%g,%g) rot=(%g,%g,%g)",
 			pLeftEyeMatrix.GetPosition().x, pLeftEyeMatrix.GetPosition().y, pLeftEyeMatrix.GetPosition().z,
 			pLeftEyeMatrix.GetEulerAngles().x * RAD2DEG, pLeftEyeMatrix.GetEulerAngles().y * RAD2DEG,
-				pLeftEyeMatrix.GetEulerAngles().z * RAD2DEG );
+				pLeftEyeMatrix.GetEulerAngles().z * RAD2DEG);
 		
-		instance.GetOxr().LogInfoFormat( "- Right Eye: pos=(%g,%g,%g) rot=(%g,%g,%g)",
+		instance.GetOxr().LogInfoFormat("- Right Eye: pos=(%g,%g,%g) rot=(%g,%g,%g)",
 			pRightEyeMatrix.GetPosition().x, pRightEyeMatrix.GetPosition().y, pRightEyeMatrix.GetPosition().z,
 			pRightEyeMatrix.GetEulerAngles().x * RAD2DEG, pRightEyeMatrix.GetEulerAngles().y * RAD2DEG,
-				pRightEyeMatrix.GetEulerAngles().z * RAD2DEG );
+				pRightEyeMatrix.GetEulerAngles().z * RAD2DEG);
 		*/
 	}
 }
 
 void deoxrSession::EndFrame(){
-	if( ! pRunning || ! pFrameRunning ){
+	if(! pRunning || ! pFrameRunning){
 		return;
 	}
 	
@@ -558,7 +558,7 @@ void deoxrSession::EndFrame(){
 	// end frame. views have to be submitted even if not rendered to otherwise runtimes
 	// like SteamVR can crash entire OpenGL
 	XrFrameEndInfo endInfo;
-	memset( &endInfo, 0, sizeof( endInfo ) );
+	memset(&endInfo, 0, sizeof(endInfo));
 	
 	endInfo.type = XR_TYPE_FRAME_END_INFO;
 	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
@@ -567,61 +567,61 @@ void deoxrSession::EndFrame(){
 	}
 	endInfo.displayTime = pPredictedDisplayTime;
 	
-	XrCompositionLayerProjectionView views[ 2 ];
-	memset( &views, 0, sizeof( views ) );
+	XrCompositionLayerProjectionView views[2];
+	memset(&views, 0, sizeof(views));
 	
-	const void **nextLayer[ 2 ] = { &views[ 0 ].next, &views[ 1 ].next };
+	const void **nextLayer[2] = {&views[0].next, &views[1].next};
 	
-	views[ 0 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
-	views[ 0 ].subImage.swapchain = pSwapchainLeftEye->GetSwapchain();
-	views[ 0 ].subImage.imageRect.extent.width = pSwapchainLeftEye->GetSize().x;
-	views[ 0 ].subImage.imageRect.extent.height = pSwapchainLeftEye->GetSize().y;
-	views[ 0 ].subImage.imageRect.offset.x = 0;
-	views[ 0 ].subImage.imageRect.offset.y = 0;
-	views[ 0 ].pose = pLeftEyePose;
-	views[ 0 ].fov = pLeftEyeFov;
+	views[0].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	views[0].subImage.swapchain = pSwapchainLeftEye->GetSwapchain();
+	views[0].subImage.imageRect.extent.width = pSwapchainLeftEye->GetSize().x;
+	views[0].subImage.imageRect.extent.height = pSwapchainLeftEye->GetSize().y;
+	views[0].subImage.imageRect.offset.x = 0;
+	views[0].subImage.imageRect.offset.y = 0;
+	views[0].pose = pLeftEyePose;
+	views[0].fov = pLeftEyeFov;
 	
-	views[ 1 ].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
-	views[ 1 ].subImage.swapchain = pSwapchainRightEye->GetSwapchain();
-	views[ 1 ].subImage.imageRect.extent.width = pSwapchainRightEye->GetSize().x;
-	views[ 1 ].subImage.imageRect.extent.height = pSwapchainRightEye->GetSize().y;
-	views[ 1 ].subImage.imageRect.offset.x = 0;
-	views[ 1 ].subImage.imageRect.offset.y = 0;
-	views[ 1 ].pose = pRightEyePose;
-	views[ 1 ].fov = pRightEyeFov;
+	views[1].type = XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW;
+	views[1].subImage.swapchain = pSwapchainRightEye->GetSwapchain();
+	views[1].subImage.imageRect.extent.width = pSwapchainRightEye->GetSize().x;
+	views[1].subImage.imageRect.extent.height = pSwapchainRightEye->GetSize().y;
+	views[1].subImage.imageRect.offset.x = 0;
+	views[1].subImage.imageRect.offset.y = 0;
+	views[1].pose = pRightEyePose;
+	views[1].fov = pRightEyeFov;
 	
-	if( pSwapchainDepthLeftEye && pSwapchainDepthRightEye ){
-		XrCompositionLayerDepthInfoKHR depth[ 2 ];
-		memset( &depth, 0, sizeof( depth ) );
+	if(pSwapchainDepthLeftEye && pSwapchainDepthRightEye){
+		XrCompositionLayerDepthInfoKHR depth[2];
+		memset(&depth, 0, sizeof(depth));
 		
-		depth[ 0 ].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
-		depth[ 0 ].subImage.swapchain = pSwapchainDepthLeftEye->GetSwapchain();
-		depth[ 0 ].subImage.imageRect.extent.width = pSwapchainDepthLeftEye->GetSize().x;
-		depth[ 0 ].subImage.imageRect.extent.height = pSwapchainDepthLeftEye->GetSize().y;
-		depth[ 0 ].subImage.imageRect.offset.x = 0;
-		depth[ 0 ].subImage.imageRect.offset.y = 0;
-		depth[ 0 ].minDepth = 0.0f; // TODO get parameters from graphic module
-		depth[ 0 ].maxDepth = 1.0f;
-		depth[ 0 ].nearZ = 0.01f;
-		depth[ 0 ].farZ = 100.0f;
+		depth[0].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
+		depth[0].subImage.swapchain = pSwapchainDepthLeftEye->GetSwapchain();
+		depth[0].subImage.imageRect.extent.width = pSwapchainDepthLeftEye->GetSize().x;
+		depth[0].subImage.imageRect.extent.height = pSwapchainDepthLeftEye->GetSize().y;
+		depth[0].subImage.imageRect.offset.x = 0;
+		depth[0].subImage.imageRect.offset.y = 0;
+		depth[0].minDepth = 0.0f; // TODO get parameters from graphic module
+		depth[0].maxDepth = 1.0f;
+		depth[0].nearZ = 0.01f;
+		depth[0].farZ = 100.0f;
 		*nextLayer[ 0 ] = &depth[ 0 ];
-		nextLayer[ 0 ] = &depth[ 0 ].next;
+		nextLayer[0] = &depth[0].next;
 		
-		depth[ 1 ].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
-		depth[ 1 ].subImage.swapchain = pSwapchainDepthRightEye->GetSwapchain();
-		depth[ 1 ].subImage.imageRect.extent.width = pSwapchainDepthRightEye->GetSize().x;
-		depth[ 1 ].subImage.imageRect.extent.height = pSwapchainDepthRightEye->GetSize().y;
-		depth[ 1 ].subImage.imageRect.offset.x = 0;
-		depth[ 1 ].subImage.imageRect.offset.y = 0;
-		depth[ 1 ].minDepth = 0.0f; // TODO get parameters from graphic module
-		depth[ 1 ].maxDepth = 1.0f;
-		depth[ 1 ].nearZ = 0.01f;
-		depth[ 1 ].farZ = 100.0f;
+		depth[1].type = XR_TYPE_COMPOSITION_LAYER_DEPTH_INFO_KHR;
+		depth[1].subImage.swapchain = pSwapchainDepthRightEye->GetSwapchain();
+		depth[1].subImage.imageRect.extent.width = pSwapchainDepthRightEye->GetSize().x;
+		depth[1].subImage.imageRect.extent.height = pSwapchainDepthRightEye->GetSize().y;
+		depth[1].subImage.imageRect.offset.x = 0;
+		depth[1].subImage.imageRect.offset.y = 0;
+		depth[1].minDepth = 0.0f; // TODO get parameters from graphic module
+		depth[1].maxDepth = 1.0f;
+		depth[1].nearZ = 0.01f;
+		depth[1].farZ = 100.0f;
 		*nextLayer[ 1 ] = &depth[ 1 ];
-		nextLayer[ 1 ] = &depth[ 1 ].next;
+		nextLayer[1] = &depth[1].next;
 	}
 	
-	const XrCompositionLayerBaseHeader *layers[ 2 ];
+	const XrCompositionLayerBaseHeader *layers[2];
 	int layerCount = 0;
 	
 	if(passthrough){
@@ -637,15 +637,15 @@ void deoxrSession::EndFrame(){
 	layerProjection.space = pMainSpace->GetSpace();
 	layerProjection.viewCount = 2;
 	layerProjection.views = views;
-	layers[ layerCount++ ] = ( const XrCompositionLayerBaseHeader* )&layerProjection;
+	layers[layerCount++] = (const XrCompositionLayerBaseHeader*)&layerProjection;
 	
 	endInfo.layerCount = layerCount;
 	endInfo.layers = layers;
 	
-	OXR_CHECK( instance.xrEndFrame( pSession, &endInfo ) );
+	OXR_CHECK(instance.xrEndFrame(pSession, &endInfo));
 	pFrameRunning = false;
 	
-	if( pIsGACOpenGL ){
+	if(pIsGACOpenGL){
 		// WARNING SteamVR messes with the current context state causing all future OpenGL
 		//         calls to fail. not sure why SteamVR unsets the current context but it
 		//         breaks everything. i dont know if the spec would actually requires
@@ -657,49 +657,49 @@ void deoxrSession::EndFrame(){
 }
 
 void deoxrSession::ForceEndFrame(){
-	if( ! pRunning || ! pFrameRunning ){
+	if(! pRunning || ! pFrameRunning){
 		return;
 	}
 	
 	XrFrameEndInfo endInfo;
-	memset( &endInfo, 0, sizeof( endInfo ) );
+	memset(&endInfo, 0, sizeof(endInfo));
 	endInfo.type = XR_TYPE_FRAME_END_INFO;
 	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
 	endInfo.displayTime = pPredictedDisplayTime;
 	endInfo.layerCount = 0;
-	pSystem.GetInstance().xrEndFrame( pSession, &endInfo );
+	pSystem.GetInstance().xrEndFrame(pSession, &endInfo);
 	pFrameRunning = false;
 }
 
 void deoxrSession::SyncActions(){
-	if( ! pRunning || ! pAttachedActionSet ){
+	if(! pRunning || ! pAttachedActionSet){
 		return;
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
 	
 	XrActionsSyncInfo syncInfo;
-	memset( &syncInfo, 0, sizeof( syncInfo ) );
+	memset(&syncInfo, 0, sizeof(syncInfo));
 	
 	syncInfo.type = XR_TYPE_ACTIONS_SYNC_INFO;
 	
-	XrActiveActionSet activeActionSets[ 1 ];
-	activeActionSets[ 0 ].actionSet = pAttachedActionSet->GetActionSet();
-	activeActionSets[ 0 ].subactionPath = XR_NULL_PATH;
+	XrActiveActionSet activeActionSets[1];
+	activeActionSets[0].actionSet = pAttachedActionSet->GetActionSet();
+	activeActionSets[0].subactionPath = XR_NULL_PATH;
 	
 	syncInfo.countActiveActionSets = 1;
 	syncInfo.activeActionSets = activeActionSets;
 	
-	OXR_CHECK( instance.xrSyncActions( pSession, &syncInfo ) );
+	OXR_CHECK(instance.xrSyncActions(pSession, &syncInfo));
 }
 
 void deoxrSession::UpdateLeftEyeHiddenMesh(){
-	pLeftEyeHiddenMesh->SetFov( pLeftEyeFov );
+	pLeftEyeHiddenMesh->SetFov(pLeftEyeFov);
 	pLeftEyeHiddenMesh->UpdateModel();
 }
 
 void deoxrSession::UpdateRightEyeHiddenMesh(){
-	pRightEyeHiddenMesh->SetFov( pRightEyeFov );
+	pRightEyeHiddenMesh->SetFov(pRightEyeFov);
 	pRightEyeHiddenMesh->UpdateModel();
 }
 
@@ -743,17 +743,17 @@ void deoxrSession::RestoreOpenGLCurrent(){
 		// nothing
 	#elif defined OS_UNIX
 		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
-			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext );
+			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext);
 	#elif defined OS_W32
 		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
-			pGACOpenGLHDC, pGACOpenGLContext );
+			pGACOpenGLHDC, pGACOpenGLContext);
 	#endif
 }
 
-bool deoxrSession::HasSwapchainFormat( deoxrSession::eSwapchainFormats format ) const{
+bool deoxrSession::HasSwapchainFormat(deoxrSession::eSwapchainFormats format) const{
 	int i;
-	for( i=0; i<pSwapchainFormatCount; i++ ){
-		if( pSwapchainFormats[ i ] == format ){
+	for(i=0; i<pSwapchainFormatCount; i++){
+		if(pSwapchainFormats[i] == format){
 			return true;
 		}
 	}
@@ -789,11 +789,11 @@ void deoxrSession::DebugPrintActiveProfilePath() const{
 //////////////////////
 
 void deoxrSession::pCleanUp(){
-	if( pRunning ){
+	if(pRunning){
 		const deoxrInstance &instance = pSystem.GetInstance();
-		instance.GetOxr().LogInfoFormat( "Exit Session due to shuting down" );
+		instance.GetOxr().LogInfoFormat("Exit Session due to shuting down");
 		
-		OXR_CHECK( instance.xrRequestExitSession( pSession ) );
+		OXR_CHECK(instance.xrRequestExitSession(pSession));
 		pRunning = false;
 		pPredictedDisplayTime = 0;
 		pPredictedDisplayPeriod = 0;
@@ -801,10 +801,10 @@ void deoxrSession::pCleanUp(){
 		
 		// wait until ready to exit
 		/*
-		instance.GetOxr().LogInfoFormat( "Waiting for exit request to be acknowledged" );
+		instance.GetOxr().LogInfoFormat("Waiting for exit request to be acknowledged");
 		pSystem.GetInstance().GetOxr().WaitUntilReadyExit();
 		
-		instance.GetOxr().LogInfoFormat( "Exit request acknowledged" );
+		instance.GetOxr().LogInfoFormat("Exit request acknowledged");
 		*/
 		End();
 	}
@@ -826,13 +826,13 @@ void deoxrSession::pCleanUp(){
 	pMainSpace = nullptr;
 	pMainSpaceOrigin = nullptr;
 	
-	if( pSession ){
+	if(pSession){
 		pSystem.GetInstance().GetOxr().GetDeviceProfiles().OnSessionEnd();
-		pSystem.GetInstance().xrDestroySession( pSession );
+		pSystem.GetInstance().xrDestroySession(pSession);
 		pSession = XR_NULL_HANDLE;
 	}
 	
-	if( pSwapchainFormats ){
+	if(pSwapchainFormats){
 		delete [] pSwapchainFormats;
 		pSwapchainFormats = nullptr;
 	}

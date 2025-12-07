@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVLinkAdd( meHTVegetationLayer *vlayer, meHTVRLink *link );
+	meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link);
 	/** \brief Clean up object. */
 	virtual ~meUHTVLinkAdd();
 	/*@}*/

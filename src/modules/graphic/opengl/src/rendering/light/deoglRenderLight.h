@@ -92,7 +92,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light renderer. */
-	deoglRenderLight( deoglRenderThread &renderThread, deoglRTRenderers &renderers );
+	deoglRenderLight(deoglRenderThread &renderThread, deoglRTRenderers &renderers);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderLight();
@@ -103,19 +103,19 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Renderer for spot lights. */
-	inline deoglRenderLightSpot &GetRenderLightSpot() const{ return *pRenderLightSpot; }
+	inline deoglRenderLightSpot &GetRenderLightSpot() const{return *pRenderLightSpot;}
 	
 	/** Renderer for sky lights. */
-	inline deoglRenderLightSky &GetRenderLightSky() const{ return *pRenderLightSky; }
+	inline deoglRenderLightSky &GetRenderLightSky() const{return *pRenderLightSky;}
 	
 	/** Renderer for point lights. */
-	inline deoglRenderLightPoint &GetRenderLightPoint() const{ return *pRenderLightPoint; }
+	inline deoglRenderLightPoint &GetRenderLightPoint() const{return *pRenderLightPoint;}
 	
 	/** Renderer for particle lights. */
-	inline deoglRenderLightParticles &GetRenderLightParticles() const{ return *pRenderLightParticles; }
+	inline deoglRenderLightParticles &GetRenderLightParticles() const{return *pRenderLightParticles;}
 	
 	/** Renderer for global illumination. */
-	inline deoglRenderGI &GetRenderGI() const{ return *pRenderGI; }
+	inline deoglRenderGI &GetRenderGI() const{return *pRenderGI;}
 	
 	
 	
@@ -123,24 +123,24 @@ public:
 	const deoglSPBlockUBO::Ref &NextShadowPB();
 	
 	/** Shadow render parameter block. */
-	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{ return pShadowPB; }
+	inline const deoglSPBlockUBO::Ref &GetShadowPB() const{return pShadowPB;}
 	
 	/** Get a new occmap render parameter block. */
 	const deoglSPBlockUBO::Ref &NextOccMapPB();
 	
 	/** Occmap render parameter block. */
-	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{ return pOccMapPB; }
+	inline const deoglSPBlockUBO::Ref &GetOccMapPB() const{return pOccMapPB;}
 	
 	/** Render task. */
-	inline deoglRenderTask &GetRenderTask() const{ return *pRenderTask; }
+	inline deoglRenderTask &GetRenderTask() const{return *pRenderTask;}
 	
 	/** Add to render task. */
-	inline deoglAddToRenderTask &GetAddToRenderTask() const{ return *pAddToRenderTask; }
+	inline deoglAddToRenderTask &GetAddToRenderTask() const{return *pAddToRenderTask;}
 	
 	
 	
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderLights(deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/**
 	 * Render ambient occlusion.
@@ -167,13 +167,13 @@ public:
 	 *      read and AO-Solidity Red/Green Channel written in one go. Still requires
 	 *      GPU Data Load there but it's only once not twice.
 	 */
-	void RenderAO( deoglRenderPlan &plan, bool solid );
+	void RenderAO(deoglRenderPlan &plan, bool solid);
 	
 	/** Render screen space sub surface scattering. */
-	void RenderSSSSS( deoglRenderPlan &plan, bool solid );
+	void RenderSSSSS(deoglRenderPlan &plan, bool solid);
 	
 	/** Copy first depth to third depth. */
-	void CopyDepth1ToDepth3( deoglRenderPlan &plan );
+	void CopyDepth1ToDepth3(deoglRenderPlan &plan);
 	
 	
 	

@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPShadowMapOffsetBias::deoglPShadowMapOffsetBias( deGraphicOpenGl &ogl ) :
-deoglParameterFloat( ogl )
+deoglPShadowMapOffsetBias::deoglPShadowMapOffsetBias(deGraphicOpenGl &ogl) :
+deoglParameterFloat(ogl)
 {
-	SetName( "shadowMapOffsetBias" );
-	SetDescription( "Sets the bias factor of the shadow map offset." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Shadow Map Offset Bias" );
-	SetDefaultValue( "4" );
+	SetName("shadowMapOffsetBias");
+	SetDescription("Sets the bias factor of the shadow map offset.");
+	SetCategory(ecExpert);
+	SetDisplayName("Shadow Map Offset Bias");
+	SetDefaultValue("4");
 }
 
 deoglPShadowMapOffsetBias::~deoglPShadowMapOffsetBias(){
@@ -61,6 +61,6 @@ float deoglPShadowMapOffsetBias::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetShadowMapOffsetBias();
 }
 
-void deoglPShadowMapOffsetBias::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetShadowMapOffsetBias( value );
+void deoglPShadowMapOffsetBias::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetShadowMapOffsetBias(value);
 }

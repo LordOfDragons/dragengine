@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	projWindowMainListener( projWindowMain &window );
+	projWindowMainListener(projWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~projWindowMainListener();
@@ -55,19 +55,19 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( projProject *project );
+	virtual void StateChanged(projProject *project);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( projProject *project );
+	virtual void UndoChanged(projProject *project);
 	
 	/** \brief Project changed. */
-	virtual void ProjectChanged( projProject *project );
+	virtual void ProjectChanged(projProject *project);
 	
 	/** \brief Profile count or order changed. */
-	virtual void ProfileStructureChanged( projProject *project );
+	virtual void ProfileStructureChanged(projProject *project);
 	
 	/** \brief Active profile changed. */
-	virtual void ActiveProfileChanged( projProject *project );
+	virtual void ActiveProfileChanged(projProject *project);
 	/*@}*/
 };
 

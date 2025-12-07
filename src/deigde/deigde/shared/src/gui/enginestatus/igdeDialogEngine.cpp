@@ -43,34 +43,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogEngine::igdeDialogEngine( igdeMainWindow &mainWindow ) :
-igdeDialog( mainWindow.GetEnvironment(), "Engine Control Center" ),
-pMainWindow( mainWindow )
+igdeDialogEngine::igdeDialogEngine(igdeMainWindow &mainWindow) :
+igdeDialog(mainWindow.GetEnvironment(), "Engine Control Center"),
+pMainWindow(mainWindow)
 {
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
 	igdeWidget::Ref panel;
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pTabPanels.TakeOver( new igdeTabBook( environment ) );
+	pTabPanels.TakeOver(new igdeTabBook(environment));
 	
-	panel.TakeOver( new igdeDEStatus( *this ) );
-	pTabPanels->AddChild( panel, "Engine Status" );
+	panel.TakeOver(new igdeDEStatus(*this));
+	pTabPanels->AddChild(panel, "Engine Status");
 	
-	panel.TakeOver( new igdeDEModuleStatus( *this ) );
-	pTabPanels->AddChild( panel, "Module Status" );
+	panel.TakeOver(new igdeDEModuleStatus(*this));
+	pTabPanels->AddChild(panel, "Module Status");
 	
-	panel.TakeOver( new igdeDEParameters( *this ) );
-	pTabPanels->AddChild( panel, "Parameters" );
+	panel.TakeOver(new igdeDEParameters(*this));
+	pTabPanels->AddChild(panel, "Parameters");
 	
-	panel.TakeOver( new igdeDEConsole( *this ) );
-	pTabPanels->AddChild( panel, "Console" );
+	panel.TakeOver(new igdeDEConsole(*this));
+	pTabPanels->AddChild(panel, "Console");
 	
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar( buttonBar, "Close" );
+	CreateButtonBar(buttonBar, "Close");
 	
-	AddContent( pTabPanels, buttonBar );
+	AddContent(pTabPanels, buttonBar);
 }
 
 igdeDialogEngine::~igdeDialogEngine(){

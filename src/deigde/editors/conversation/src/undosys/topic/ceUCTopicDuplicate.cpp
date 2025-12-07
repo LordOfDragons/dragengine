@@ -40,22 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicDuplicate::ceUCTopicDuplicate( ceConversationFile *file, const ceConversationTopic &topic, const char *newID ) :
-pFile( NULL ),
-pTopic( NULL )
+ceUCTopicDuplicate::ceUCTopicDuplicate(ceConversationFile *file, const ceConversationTopic &topic, const char *newID) :
+pFile(NULL),
+pTopic(NULL)
 {
-	if( ! file ){
-		DETHROW( deeInvalidParam );
+	if(! file){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Duplicate topic" );
+	SetShortInfo("Duplicate topic");
 	
 	try{
-		pTopic = new ceConversationTopic( topic );
-		pTopic->SetID( newID );
+		pTopic = new ceConversationTopic(topic);
+		pTopic->SetID(newID);
 		
-	}catch( const deException & ){
-		if( pTopic ){
+	}catch(const deException &){
+		if(pTopic){
 			pTopic->FreeReference();
 		}
 		throw;
@@ -66,10 +66,10 @@ pTopic( NULL )
 }
 
 ceUCTopicDuplicate::~ceUCTopicDuplicate(){
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
 }
@@ -80,10 +80,10 @@ ceUCTopicDuplicate::~ceUCTopicDuplicate(){
 ///////////////
 
 void ceUCTopicDuplicate::Undo(){
-	pFile->RemoveTopic( pTopic );
+	pFile->RemoveTopic(pTopic);
 }
 
 void ceUCTopicDuplicate::Redo(){
-	pFile->AddTopic( pTopic );
-	pFile->SetActiveTopic( pTopic );
+	pFile->AddTopic(pTopic);
+	pFile->SetActiveTopic(pTopic);
 }

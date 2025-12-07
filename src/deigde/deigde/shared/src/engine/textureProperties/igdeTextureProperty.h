@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create texture property. */
-	igdeTextureProperty( const char *name );
+	igdeTextureProperty(const char *name);
 	
 	/** \brief Clean up texture property. */
 	~igdeTextureProperty();
@@ -78,41 +78,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Type. */
-	inline ePropertyTypes GetType() const{ return pType; }
+	inline ePropertyTypes GetType() const{return pType;}
 	
 	/** \brief Set type. */
-	void SetType( ePropertyTypes type );
+	void SetType(ePropertyTypes type);
 	
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** \brief Set number of components. */
-	void SetComponentCount( int count );
+	void SetComponentCount(int count);
 	
 	/** \brief Default value. */
-	inline float GetDefaultValue() const{ return pDefaultValue; }
+	inline float GetDefaultValue() const{return pDefaultValue;}
 	
 	/** \brief Set default value. */
-	void SetDefaultValue( float value );
+	void SetDefaultValue(float value);
 	
 	/** \brief Default color. */
-	inline const decColor &GetDefaultColor() const{ return pDefaultColor; }
+	inline const decColor &GetDefaultColor() const{return pDefaultColor;}
 	
 	/** \brief Set default color. */
-	void SetDefaultColor( const decColor &color );
+	void SetDefaultColor(const decColor &color);
 	
 	/** \brief List of affected modules. */
-	inline decStringSet &GetAffectedModules(){ return pAffectedModules; }
-	inline const decStringSet &GetAffectedModules() const{ return pAffectedModules; }
+	inline decStringSet &GetAffectedModules(){return pAffectedModules;}
+	inline const decStringSet &GetAffectedModules() const{return pAffectedModules;}
 	/*@}*/
 };
 

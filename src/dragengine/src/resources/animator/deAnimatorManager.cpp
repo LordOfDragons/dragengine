@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deAnimatorManager::deAnimatorManager( deEngine *engine ) : deResourceManager( engine,ertAnimator ){
-	SetLoggingName( "animator" );
+deAnimatorManager::deAnimatorManager(deEngine *engine) : deResourceManager(engine,ertAnimator){
+	SetLoggingName("animator");
 }
 
 deAnimatorManager::~deAnimatorManager(){
@@ -63,7 +63,7 @@ int deAnimatorManager::GetAnimatorCount() const{
 }
 
 deAnimator *deAnimatorManager::GetRootAnimator() const{
-	return ( deAnimator* )pAnimators.GetRoot();
+	return (deAnimator*)pAnimators.GetRoot();
 }
 
 deAnimator *deAnimatorManager::CreateAnimator(){
@@ -71,13 +71,13 @@ deAnimator *deAnimatorManager::CreateAnimator(){
 	// load skin
 	try{
 		// create and add animator
-		animator = new deAnimator( this );
-		if( ! animator ) DETHROW( deeOutOfMemory );
-		GetAnimatorSystem()->LoadAnimator( animator );
+		animator = new deAnimator(this);
+		if(! animator) DETHROW(deeOutOfMemory);
+		GetAnimatorSystem()->LoadAnimator(animator);
 		// add animator
-		pAnimators.Add( animator );
-	}catch( const deException & ){
-		if( animator ){
+		pAnimators.Add(animator);
+	}catch(const deException &){
+		if(animator){
 			animator->FreeReference();
 		}
 		throw;
@@ -91,8 +91,8 @@ deAnimator *deAnimatorManager::CreateAnimator(){
 void deAnimatorManager::ReleaseLeakingResources(){
 	int count = GetAnimatorCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking animators", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking animators", count);
 		pAnimators.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -103,27 +103,27 @@ void deAnimatorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deAnimatorManager::SystemAnimatorLoad(){
-	deAnimator *animator = ( deAnimator* )pAnimators.GetRoot();
+	deAnimator *animator = (deAnimator*)pAnimators.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
-	while( animator ){
-		if( ! animator->GetPeerAnimator() ){
-			aniSys.LoadAnimator( animator );
+	while(animator){
+		if(! animator->GetPeerAnimator()){
+			aniSys.LoadAnimator(animator);
 		}
 		
-		animator = ( deAnimator* )animator->GetLLManagerNext();
+		animator = (deAnimator*)animator->GetLLManagerNext();
 	}
 }
 
 void deAnimatorManager::SystemAnimatorUnload(){
-	deAnimator *animator = ( deAnimator* )pAnimators.GetRoot();
+	deAnimator *animator = (deAnimator*)pAnimators.GetRoot();
 	
-	while( animator ){
-		animator->SetPeerAnimator( NULL );
-		animator = ( deAnimator* )animator->GetLLManagerNext();
+	while(animator){
+		animator->SetPeerAnimator(NULL);
+		animator = (deAnimator*)animator->GetLLManagerNext();
 	}
 }
 
-void deAnimatorManager::RemoveResource( deResource *resource ){
-	pAnimators.RemoveIfPresent( resource );
+void deAnimatorManager::RemoveResource(deResource *resource){
+	pAnimators.RemoveIfPresent(resource);
 }

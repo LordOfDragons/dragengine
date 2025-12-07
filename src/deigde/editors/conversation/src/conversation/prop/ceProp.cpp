@@ -72,96 +72,96 @@ ceProp::~ceProp(){
 // Management
 ///////////////
 
-void ceProp::SetConversation( ceConversation *conversation ){
-	if( conversation != pConversation ){
-		if( pConversation ){
+void ceProp::SetConversation(ceConversation *conversation){
+	if(conversation != pConversation){
+		if(pConversation){
 			pObjectWrapper = nullptr;
 		}
 		
 		pConversation = conversation;
 		
-		if( conversation ){
-			const decQuaternion &orientation = decMatrix::CreateRotation( pOrientation * DEG2RAD ).ToQuaternion();
+		if(conversation){
+			const decQuaternion &orientation = decMatrix::CreateRotation(pOrientation * DEG2RAD).ToQuaternion();
 			
 			pObjectWrapper.TakeOver(new igdeWObject(*conversation->GetEnvironment()));
-			pObjectWrapper->SetGDClassName( pObjectClass.GetString() );
-			pObjectWrapper->SetPosition( pPosition );
-			pObjectWrapper->SetOrientation( orientation );
-			pObjectWrapper->SetVisible( pVisible );
-			pObjectWrapper->SetDynamicCollider( false );
-			pObjectWrapper->SetWorld( conversation->GetEngineWorld() );
+			pObjectWrapper->SetGDClassName(pObjectClass.GetString());
+			pObjectWrapper->SetPosition(pPosition);
+			pObjectWrapper->SetOrientation(orientation);
+			pObjectWrapper->SetVisible(pVisible);
+			pObjectWrapper->SetDynamicCollider(false);
+			pObjectWrapper->SetWorld(conversation->GetEngineWorld());
 		}
 	}
 }
 
 
 
-void ceProp::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void ceProp::SetName(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pName.Equals( name ) ){
+	if(! pName.Equals(name)){
 		pName = name;
 		
-		if( pConversation ){
-			pConversation->NotifyPropChanged( this );
+		if(pConversation){
+			pConversation->NotifyPropChanged(this);
 		}
 	}
 }
 
-void ceProp::SetObjectClass( const char *objectClass ){
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+void ceProp::SetObjectClass(const char *objectClass){
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pObjectClass.Equals( objectClass ) ){
+	if(! pObjectClass.Equals(objectClass)){
 		pObjectClass = objectClass;
-		if( pObjectWrapper ){
-			pObjectWrapper->SetGDClassName( pObjectClass.GetString() );
+		if(pObjectWrapper){
+			pObjectWrapper->SetGDClassName(pObjectClass.GetString());
 		}
 		
-		if( pConversation ){
-			pConversation->NotifyPropChanged( this );
+		if(pConversation){
+			pConversation->NotifyPropChanged(this);
 		}
 	}
 }
 
-void ceProp::SetPosition( const decVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void ceProp::SetPosition(const decVector &position){
+	if(! position.IsEqualTo(pPosition)){
 		pPosition = position;
-		if( pObjectWrapper ){
-			pObjectWrapper->SetPosition( decDVector( position ) );
+		if(pObjectWrapper){
+			pObjectWrapper->SetPosition(decDVector(position));
 		}
 		
-		if( pConversation ){
-			pConversation->NotifyPropChanged( this );
+		if(pConversation){
+			pConversation->NotifyPropChanged(this);
 		}
 	}
 }
 
-void ceProp::SetOrientation( const decVector &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void ceProp::SetOrientation(const decVector &orientation){
+	if(! orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
-		if( pObjectWrapper ){
-			pObjectWrapper->SetOrientation( decMatrix::CreateRotation( orientation * DEG2RAD ).ToQuaternion() );
+		if(pObjectWrapper){
+			pObjectWrapper->SetOrientation(decMatrix::CreateRotation(orientation * DEG2RAD).ToQuaternion());
 		}
 		
-		if( pConversation ){
-			pConversation->NotifyPropChanged( this );
+		if(pConversation){
+			pConversation->NotifyPropChanged(this);
 		}
 	}
 }
 
-void ceProp::SetVisible( bool visible ){
-	if( visible != pVisible ){
+void ceProp::SetVisible(bool visible){
+	if(visible != pVisible){
 		pVisible = visible;
-		if( pObjectWrapper ){
-			pObjectWrapper->SetVisible( visible );
+		if(pObjectWrapper){
+			pObjectWrapper->SetVisible(visible);
 		}
 		
-		if( pConversation ){
-			pConversation->NotifyPropChanged( this );
+		if(pConversation){
+			pConversation->NotifyPropChanged(this);
 		}
 	}
 }

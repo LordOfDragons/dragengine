@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullTextArea();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullTextArea* CreateNativeWidget( igdeTextArea &owner );
+	static igdeNativeNullTextArea* CreateNativeWidget(igdeTextArea &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -63,15 +63,15 @@ public:
 	virtual void UpdateEditable();
 	virtual void Focus();
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition( int position );
+	virtual void SetCursorPosition(int position);
 	virtual int GetCursorColumn() const;
 	virtual int GetCursorRow() const;
-	virtual void SetCursorColumn( int column );
-	virtual void SetCursorRow( int row );
+	virtual void SetCursorColumn(int column);
+	virtual void SetCursorRow(int row);
 	virtual int GetTopLine() const;
-	virtual void SetTopLine( int line );
+	virtual void SetTopLine(int line);
 	virtual int GetBottomLine() const;
-	virtual void SetBottomLine( int line );
+	virtual void SetBottomLine(int line);
 	virtual int GetLineCount() const;
 	virtual void UpdateColumns();
 	virtual void UpdateRows();

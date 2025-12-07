@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupNodesUp( sePropertyNodeGroup *node, const sePropertyNodeList &children );
+	seUPNGroupNodesUp(sePropertyNodeGroup *node, const sePropertyNodeList &children);
 	
 protected:
 	/** \brief Clean up undo. */

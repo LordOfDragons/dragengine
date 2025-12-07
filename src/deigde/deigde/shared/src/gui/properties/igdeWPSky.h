@@ -95,10 +95,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeWPSky( igdeEnvironment &environment );
+	igdeWPSky(igdeEnvironment &environment);
 	
 	/** \brief Create panel. */
-	igdeWPSky( igdeEnvironment &environment, igdeAction *action );
+	igdeWPSky(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -113,10 +113,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky wrapper or NULL if not set. */
-	inline igdeWSky *GetSky() const{ return pSky; }
+	inline igdeWSky *GetSky() const{return pSky;}
 	
 	/** \brief Set sky wrapper or NULL if not set. */
-	void SetSky( igdeWSky *sky );
+	void SetSky(igdeWSky *sky);
 	
 	/** \brief Update widget after sky changed outside. */
 	void UpdateSky();
@@ -125,18 +125,18 @@ public:
 	void RebuildControllers();
 	
 	/** \brief Update controller. */
-	void UpdateController( int controller );
+	void UpdateController(int controller);
 	
 	/** \brief Update controller value. */
-	void UpdateControllerValue( int controller );
+	void UpdateControllerValue(int controller);
 	
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline igdeAction *GetAction() const{return pAction;}
 	
 	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	/**
 	 * \brief Sky parameters changed.
@@ -147,10 +147,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	virtual void OnDestroyed(igdeAction *action);
 	/*@}*/
 	
 	

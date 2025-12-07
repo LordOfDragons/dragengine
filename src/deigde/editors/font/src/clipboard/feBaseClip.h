@@ -45,7 +45,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new base clipboard clip. */
-	feBaseClip( int type );
+	feBaseClip(int type);
 	/** Cleans up the clipboard clip. */
 	virtual ~feBaseClip();
 	/*@}*/
@@ -53,7 +53,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the type of the clip. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	/*@}*/
 };
 

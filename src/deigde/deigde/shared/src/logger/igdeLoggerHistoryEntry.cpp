@@ -50,8 +50,8 @@ igdeLoggerHistoryEntry::~igdeLoggerHistoryEntry(){
 // Management
 ///////////////
 
-void igdeLoggerHistoryEntry::SetType( int type ){
-	if( type < emtInfo || type > emtError ) DETHROW( deeInvalidParam );
+void igdeLoggerHistoryEntry::SetType(int type){
+	if(type < emtInfo || type > emtError) DETHROW(deeInvalidParam);
 	
 	pType = type;
 }
@@ -66,15 +66,15 @@ void igdeLoggerHistoryEntry::CleanUpMessage(){
 	int len = pMessage.GetLength();
 	int found, character;
 	
-	for( found=len; found>0; found-- ){
-		character = pMessage.GetAt( found - 1 );
+	for(found=len; found>0; found--){
+		character = pMessage.GetAt(found - 1);
 		
-		if( ! isspace( character ) && character != '\n' && character != '\r' ){
+		if(! isspace(character) && character != '\n' && character != '\r'){
 			break;
 		}
 	}
 	
-	if( found < len ){
-		pMessage.SetAt( found, '\0' );
+	if(found < len){
+		pMessage.SetAt(found, '\0');
 	}
 }

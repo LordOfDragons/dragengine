@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create identifier group identifier with usage count 1. */
-	meIDGroupID( const char *id );
+	meIDGroupID(const char *id);
 	
 	/** \brief Clean up identifier group identifier. */
 	virtual ~meIDGroupID();
@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Identifier. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Usage count. */
-	inline int GetUsageCount() const{ return pUsageCount; }
+	inline int GetUsageCount() const{return pUsageCount;}
 	
 	/** \brief Increment usage count by one. */
 	void Increment();
@@ -75,7 +75,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Objects are equal. */
-	bool operator==( const meIDGroupID &id ) const;
+	bool operator==(const meIDGroupID &id) const;
 	/*@}*/
 };
 

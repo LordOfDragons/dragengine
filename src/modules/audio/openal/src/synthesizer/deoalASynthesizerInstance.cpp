@@ -44,27 +44,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalASynthesizerInstance::deoalASynthesizerInstance( deoalAudioThread &audioThread,
-	deSynthesizerInstance &instance ) :
-pAudioThread( audioThread ),
-pBytesPerSample( 1 ),
-pChannelCount( 1 ),
-pSampleRate( 11025 ),
-pSampleCount( instance.GetSampleCount() ),
-pInstance( &instance )
+deoalASynthesizerInstance::deoalASynthesizerInstance(deoalAudioThread &audioThread,
+	deSynthesizerInstance &instance) :
+pAudioThread(audioThread),
+pBytesPerSample(1),
+pChannelCount(1),
+pSampleRate(11025),
+pSampleCount(instance.GetSampleCount()),
+pInstance(&instance)
 {
 	deSynthesizer * const synthesizer = instance.GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		pBytesPerSample = synthesizer->GetBytesPerSample();
 		pChannelCount = synthesizer->GetChannelCount();
 		pSampleRate = synthesizer->GetSampleRate();
 	}
 	
-	LEAK_CHECK_CREATE( audioThread, SynthesizerInstance );
+	LEAK_CHECK_CREATE(audioThread, SynthesizerInstance);
 }
 
 deoalASynthesizerInstance::~deoalASynthesizerInstance(){
-	LEAK_CHECK_FREE( pAudioThread, SynthesizerInstance );
+	LEAK_CHECK_FREE(pAudioThread, SynthesizerInstance);
 	
 	pCleanUp();
 }
@@ -76,7 +76,7 @@ deoalASynthesizerInstance::~deoalASynthesizerInstance(){
 
 void deoalASynthesizerInstance::UpdateParameters(){
 	// WARNING Called by main thread during synchronization
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	
 	pBytesPerSample = 1;
 	pChannelCount = 1;
@@ -85,14 +85,14 @@ void deoalASynthesizerInstance::UpdateParameters(){
 	
 	pAdvanceUpdateTracker();
 	
-	if( ! pInstance ){
+	if(! pInstance){
 		return;
 	}
 	
 	pSampleCount = pInstance->GetSampleCount();
 	
 	const deSynthesizer * const synthesizer = pInstance->GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		pBytesPerSample = synthesizer->GetBytesPerSample();
 		pChannelCount = synthesizer->GetChannelCount();
 		pSampleRate = synthesizer->GetSampleRate();
@@ -101,22 +101,22 @@ void deoalASynthesizerInstance::UpdateParameters(){
 
 void deoalASynthesizerInstance::DropInstance(){
 	// WARNING Called by main thread during synchronization
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pInstance = NULL;
 	pAdvanceUpdateTracker();
 }
 
 void deoalASynthesizerInstance::Reset(){
-	deMutexGuard guard( pMutex );
-	if( pInstance ){
+	deMutexGuard guard(pMutex);
+	if(pInstance){
 		pInstance->Reset();
 	}
 }
 
-void deoalASynthesizerInstance::GenerateSound( void *buffer, int bufferSize, int offset, int samples ){
-	deMutexGuard guard( pMutex );
-	if( pInstance ){
-		pInstance->GenerateSound( buffer, bufferSize, offset, samples );
+void deoalASynthesizerInstance::GenerateSound(void *buffer, int bufferSize, int offset, int samples){
+	deMutexGuard guard(pMutex);
+	if(pInstance){
+		pInstance->GenerateSound(buffer, bufferSize, offset, samples);
 	}
 }
 
@@ -130,7 +130,7 @@ void deoalASynthesizerInstance::pCleanUp(){
 
 void deoalASynthesizerInstance::pAdvanceUpdateTracker(){
 	pUpdateTracker++;
-	if( pUpdateTracker == 0 ){
+	if(pUpdateTracker == 0){
 		pUpdateTracker = 1;
 	}
 }

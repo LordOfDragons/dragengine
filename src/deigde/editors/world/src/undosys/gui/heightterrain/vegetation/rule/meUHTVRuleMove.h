@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMove( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMove();
 	/*@}*/
@@ -65,9 +65,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the new position. */
-	inline const decVector2 &GetNewPosition() const{ return pNewPosition; }
+	inline const decVector2 &GetNewPosition() const{return pNewPosition;}
 	/** Sets the new position triggering. */
-	void SetNewPosition( const decVector2 &position );
+	void SetNewPosition(const decVector2 &position);
 	
 	/** \brief Undo. */
 	virtual void Undo();

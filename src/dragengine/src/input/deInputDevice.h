@@ -416,7 +416,7 @@ private:
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	decVector pFingerTipOffset[ 5 ];
+	decVector pFingerTipOffset[5];
 	
 	/** \brief Hand rig if ebcHand is used. */
 	deRig::Ref pHandRig;
@@ -462,10 +462,10 @@ public:
 	 * only letters, numbers and underscores. It is suitable to be combined with
 	 * button or axis identifiers to store them in config files as key bindings.
 	 */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/**
 	 * \brief Display name.
@@ -474,25 +474,25 @@ public:
 	 * name is unique but not guaranteed to stay the same across restarting
 	 * the input module or game engine.
 	 */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set Display name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Device type. */
-	inline eDeviceTypes GetType() const{ return pType; }
+	inline eDeviceTypes GetType() const{return pType;}
 	
 	/** \brief Device type. */
-	void SetType( eDeviceTypes type );
+	void SetType(eDeviceTypes type);
 	
 	/** \brief Model to represent the device in 3D user interfaces or NULL if not set. */
-	inline const deModel::Ref &GetDisplayModel() const{ return pDisplayModel; }
+	inline const deModel::Ref &GetDisplayModel() const{return pDisplayModel;}
 	
 	/** \brief Set model to represent the device in 3D user interfaces or NULL if not set. */
 	void SetDisplayModel(const deModel::Ref &model);
 	
 	/** \brief Skin for display model or NULL if not set. */
-	inline const deSkin::Ref &GetDisplaySkin() const{ return pDisplaySkin; }
+	inline const deSkin::Ref &GetDisplaySkin() const{return pDisplaySkin;}
 	
 	/** \brief Set skin for display model or NULL if not set. */
 	void SetDisplaySkin(const deSkin::Ref &skin);
@@ -502,7 +502,7 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{return pDisplayImage;}
 	
 	/**
 	 * \brief Set image to represent the device in 2D user interfaces or NULL if not set.
@@ -529,22 +529,22 @@ public:
 	void AddDisplayIcon(const deImage::Ref &image);
 	
 	/** \brief Text to display centered across display image or icon. */
-	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	inline const decString &GetDisplayText() const{return pDisplayText;}
 	
 	/** \brief Set text to display centered across display image or icon. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	/**
 	 * \brief Bone configuration.
 	 * \version 1.6
 	 */
-	inline eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }
+	inline eBoneConfigurations GetBoneConfiguration() const{return pBoneConfiguration;}
 	
 	/**
 	 * \brief Set bone configuration.
 	 * \version 1.6
 	 */
-	void SetBoneConfiguration( eBoneConfigurations configuration );
+	void SetBoneConfiguration(eBoneConfigurations configuration);
 	
 	/**
 	 * \brief Finger tip offsets.
@@ -554,7 +554,7 @@ public:
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	const decVector &GetFingerTipOffset( int index ) const;
+	const decVector &GetFingerTipOffset(int index) const;
 	
 	/**
 	 * \brief Finger tip offsets.
@@ -564,13 +564,13 @@ public:
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	void SetFingerTipOffset( int index, const decVector &offset );
+	void SetFingerTipOffset(int index, const decVector &offset);
 	
 	/**
 	 * \brief Hand rig if ebcHand is used.
 	 * \version 1.6
 	 */
-	inline const deRig::Ref &GetHandRig() const{ return pHandRig; }
+	inline const deRig::Ref &GetHandRig() const{return pHandRig;}
 	
 	/**
 	 * \brief Set hand rig if ebcHand is used.
@@ -582,31 +582,31 @@ public:
 	 * \brief Device supports face eye expressions.
 	 * \version 1.12
 	 */
-	inline bool GetSupportsFaceEyeExpressions() const{ return pSupportsFaceEyeExpressions; }
+	inline bool GetSupportsFaceEyeExpressions() const{return pSupportsFaceEyeExpressions;}
 	
 	/**
 	 * \brief Set if device supports face eye expressions.
 	 * \version 1.12
 	 */
-	void SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions );
+	void SetSupportsFaceEyeExpressions(bool supportsFaceEyeExpressions);
 	
 	/**
 	 * \brief Device supports face mouth expressions.
 	 * \version 1.12
 	 */
-	inline bool GetSupportsFaceMouthExpressions() const{ return pSupportsFaceMouthExpressions; }
+	inline bool GetSupportsFaceMouthExpressions() const{return pSupportsFaceMouthExpressions;}
 	
 	/**
 	 * \brief Set if device supports face mouth expressions.
 	 * \version 1.12
 	 */
-	void SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions );
+	void SetSupportsFaceMouthExpressions(bool supportsFaceMouthExpressions);
 	
 	/**
 	 * \brief Device is using hand interaction.
 	 * \version 1.28
 	 */
-	inline bool GetUsingHandInteraction() const{ return pUsingHandInteraction; }
+	inline bool GetUsingHandInteraction() const{return pUsingHandInteraction;}
 	
 	/**
 	 * \brief Set if device is using hand interaction.
@@ -618,7 +618,7 @@ public:
 	 * \brief Model to represent the device in VR environments or NULL if not set.
 	 * \version 1.6
 	 */
-	inline const deModel::Ref &GetVRModel() const{ return pVRModel; }
+	inline const deModel::Ref &GetVRModel() const{return pVRModel;}
 	
 	/**
 	 * \brief Set model to represent the device in VR environments or NULL if not set.
@@ -630,7 +630,7 @@ public:
 	 * \brief Skin for VR model or NULL if not set.
 	 * \version 1.6
 	 */
-	inline const deSkin::Ref &GetVRSkin() const{ return pVRSkin; }
+	inline const deSkin::Ref &GetVRSkin() const{return pVRSkin;}
 	
 	/**
 	 * \brief Skin for VR model or NULL if not set.
@@ -644,20 +644,20 @@ public:
 	/** \name Buttons */
 	/*@{*/
 	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
+	inline int GetButtonCount() const{return pButtonCount;}
 	
 	/**
 	 * \brief Set number of buttons.
 	 * 
 	 * Resets all buttons to default values.
 	 */
-	void SetButtonCount( int count );
+	void SetButtonCount(int count);
 	
 	/** \brief Button at index. */
-	deInputDeviceButton &GetButtonAt( int index ) const;
+	deInputDeviceButton &GetButtonAt(int index) const;
 	
 	/** \brief Index of button with identifier or -1 if not found. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	/*@}*/
 	
 	
@@ -665,20 +665,20 @@ public:
 	/** \name Axes */
 	/*@{*/
 	/** \brief Number of axes. */
-	inline int GetAxisCount() const{ return pAxisCount; }
+	inline int GetAxisCount() const{return pAxisCount;}
 	
 	/**
 	 * \brief Set number of axes.
 	 * 
 	 * Resets all axes to default values.
 	 */
-	void SetAxisCount( int count );
+	void SetAxisCount(int count);
 	
 	/** \brief Axis at index. */
-	deInputDeviceAxis &GetAxisAt( int index ) const;
+	deInputDeviceAxis &GetAxisAt(int index) const;
 	
 	/** \brief Index of axis with identifier or -1 if not found. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	/*@}*/
 	
 	
@@ -686,20 +686,20 @@ public:
 	/** \name Feedbacks */
 	/*@{*/
 	/** \brief Number of feedbacks. */
-	inline int GetFeedbackCount() const{ return pFeedbackCount; }
+	inline int GetFeedbackCount() const{return pFeedbackCount;}
 	
 	/**
 	 * \brief Set number of feedbacks.
 	 * 
 	 * Resets all feedbacks to default values.
 	 */
-	void SetFeedbackCount( int count );
+	void SetFeedbackCount(int count);
 	
 	/** \brief Feedback at index. */
-	deInputDeviceFeedback &GetFeedbackAt( int index ) const;
+	deInputDeviceFeedback &GetFeedbackAt(int index) const;
 	
 	/** \brief Index of feedback with identifier or -1 if not found. */
-	int IndexOfFeedbackWithID( const char *id ) const;
+	int IndexOfFeedbackWithID(const char *id) const;
 	/*@}*/
 	
 	
@@ -710,7 +710,7 @@ public:
 	 * \brief Number of components.
 	 * \version 1.6
 	 */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/**
 	 * \brief Set number of components.
@@ -718,19 +718,19 @@ public:
 	 * 
 	 * Resets all components to default values.
 	 */
-	void SetComponentCount( int count );
+	void SetComponentCount(int count);
 	
 	/**
 	 * \brief Component at index.
 	 * \version 1.6
 	 */
-	deInputDeviceComponent &GetComponentAt( int index ) const;
+	deInputDeviceComponent &GetComponentAt(int index) const;
 	
 	/**
 	 * \brief Index of component with identifier or -1 if not found.
 	 * \version 1.6
 	 */
-	int IndexOfComponentWithID( const char *id ) const;
+	int IndexOfComponentWithID(const char *id) const;
 	/*@}*/
 	
 	

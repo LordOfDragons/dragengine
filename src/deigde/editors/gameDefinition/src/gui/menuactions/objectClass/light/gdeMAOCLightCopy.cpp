@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCLightCopy::gdeMAOCLightCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Light",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class light" )
+gdeMAOCLightCopy::gdeMAOCLightCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Light",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class light")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Light",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCLightCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight ){
+igdeUndo *gdeMAOCLightCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCLight){
 		return NULL;
 	}
 	
 	gdeOCLight * const light = gameDefinition.GetActiveOCLight();
-	if( ! light ){
+	if(! light){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCLightCopy::OnActionSubObject( gdeGameDefinition &gameDefinition
 
 void gdeMAOCLightCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCLight
-		&& gameDefinition->GetActiveOCLight() != NULL );
+		&& gameDefinition->GetActiveOCLight() != NULL);
 }

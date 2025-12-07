@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline manager. */
-	deoglPipelineManager( deoglRenderThread &renderThread );
+	deoglPipelineManager(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up pipelines manager. */
@@ -72,17 +72,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** State. */
-	inline deoglPipelineState &GetState(){ return pState; }
+	inline deoglPipelineState &GetState(){return pState;}
 	
 	/** Pipeline with RTS index or nullptr. Caller does not hold reference. */
-	const deoglPipeline *GetWithRTSIndex( int index );
+	const deoglPipeline *GetWithRTSIndex(int index);
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
-	const deoglPipeline *GetWith( const deoglPipelineConfiguration &configuration,
-		bool assignRTSIndex = false );
+	const deoglPipeline *GetWith(const deoglPipelineConfiguration &configuration,
+		bool assignRTSIndex = false);
 	/*@}*/
 };
 

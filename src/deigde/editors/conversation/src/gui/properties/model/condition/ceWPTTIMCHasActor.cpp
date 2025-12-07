@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCHasActor::ceWPTTIMCHasActor( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionHasActor *condition ) :
-ceWPTTIMCondition( windowMain, etConditionHasActor, conversation, action, condition )
+ceWPTTIMCHasActor::ceWPTTIMCHasActor(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionHasActor *condition) :
+ceWPTTIMCondition(windowMain, etConditionHasActor, conversation, action, condition)
 {
-	SetIcon( windowMain.GetIconConditionHasActor() );
+	SetIcon(windowMain.GetIconConditionHasActor());
 	Update();
 }
 
@@ -61,12 +61,12 @@ void ceWPTTIMCHasActor::Update(){
 	const ceCConditionHasActor &condition = *GetConditionHasActor();
 	decString text;
 	
-	if( condition.GetNegate() ){
-		text.Format( "Has Not Actor: '%s'", condition.GetActor().GetString() );
+	if(condition.GetNegate()){
+		text.Format("Has Not Actor: '%s'", condition.GetActor().GetString());
 		
 	}else{
-		text.Format( "Has Actor: '%s'", condition.GetActor().GetString() );
+		text.Format("Has Actor: '%s'", condition.GetActor().GetString());
 	}
 	
-	SetText( text );
+	SetText(text);
 }

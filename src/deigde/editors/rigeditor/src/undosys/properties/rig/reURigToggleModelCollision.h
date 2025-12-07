@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURigToggleModelCollision( reRig *rig );
+	reURigToggleModelCollision(reRig *rig);
 	
 protected:
 	/** \brief Clean up undo. */

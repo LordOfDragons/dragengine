@@ -52,20 +52,20 @@ deoglDCollisionCapsule::deoglDCollisionCapsule(){
 	ClearOrientation();
 }
 
-deoglDCollisionCapsule::deoglDCollisionCapsule( const decDVector &center, double halfHeight, double topRadius, double bottomRadius ){
-	SetPosition( center );
-	SetHalfHeight( halfHeight );
-	SetTopRadius( topRadius );
-	SetBottomRadius( bottomRadius );
+deoglDCollisionCapsule::deoglDCollisionCapsule(const decDVector &center, double halfHeight, double topRadius, double bottomRadius){
+	SetPosition(center);
+	SetHalfHeight(halfHeight);
+	SetTopRadius(topRadius);
+	SetBottomRadius(bottomRadius);
 	ClearOrientation();
 }
 
-deoglDCollisionCapsule::deoglDCollisionCapsule( const decDVector &center, double halfHeight, double topRadius, double bottomRadius, const decQuaternion &orientation ){
-	SetPosition( center );
-	SetHalfHeight( halfHeight );
-	SetTopRadius( topRadius );
-	SetBottomRadius( bottomRadius );
-	SetOrientation( orientation );
+deoglDCollisionCapsule::deoglDCollisionCapsule(const decDVector &center, double halfHeight, double topRadius, double bottomRadius, const decQuaternion &orientation){
+	SetPosition(center);
+	SetHalfHeight(halfHeight);
+	SetTopRadius(topRadius);
+	SetBottomRadius(bottomRadius);
+	SetOrientation(orientation);
 }
 
 deoglDCollisionCapsule::~deoglDCollisionCapsule(){
@@ -76,12 +76,12 @@ deoglDCollisionCapsule::~deoglDCollisionCapsule(){
 // Double Dispatching Calls
 /////////////////////////////
 
-bool deoglDCollisionCapsule::VolumeHitsVolume( deoglDCollisionVolume *volume ){
-	return volume->CapsuleHitsVolume( this );
+bool deoglDCollisionCapsule::VolumeHitsVolume(deoglDCollisionVolume *volume){
+	return volume->CapsuleHitsVolume(this);
 }
 
-double deoglDCollisionCapsule::VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal ){
-	return volume->CapsuleMoveHitsVolume( this, displacement, normal );
+double deoglDCollisionCapsule::VolumeMoveHitsVolume(deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal){
+	return volume->CapsuleMoveHitsVolume(this, displacement, normal);
 }
 
 
@@ -89,63 +89,63 @@ double deoglDCollisionCapsule::VolumeMoveHitsVolume( deoglDCollisionVolume *volu
 // First Stage Calls
 //////////////////////
 
-bool deoglDCollisionCapsule::SphereHitsVolume( deoglDCollisionSphere *sphere ){
-	return SphereHitsCapsule( sphere );
+bool deoglDCollisionCapsule::SphereHitsVolume(deoglDCollisionSphere *sphere){
+	return SphereHitsCapsule(sphere);
 }
 
-bool deoglDCollisionCapsule::CylinderHitsVolume( deoglDCollisionCylinder *cylinder ){
-	return CylinderHitsCapsule( cylinder );
+bool deoglDCollisionCapsule::CylinderHitsVolume(deoglDCollisionCylinder *cylinder){
+	return CylinderHitsCapsule(cylinder);
 }
 
-bool deoglDCollisionCapsule::CapsuleHitsVolume( deoglDCollisionCapsule *capsule ){
-	return CapsuleHitsCapsule( capsule );
+bool deoglDCollisionCapsule::CapsuleHitsVolume(deoglDCollisionCapsule *capsule){
+	return CapsuleHitsCapsule(capsule);
 }
 
-bool deoglDCollisionCapsule::BoxHitsVolume( deoglDCollisionBox *box ){
-	return box->CapsuleHitsBox( this );
+bool deoglDCollisionCapsule::BoxHitsVolume(deoglDCollisionBox *box){
+	return box->CapsuleHitsBox(this);
 }
 
-bool deoglDCollisionCapsule::TriangleHitsVolume( deoglDCollisionTriangle *triangle ){
-	return triangle->CapsuleHitsTriangle( this );
+bool deoglDCollisionCapsule::TriangleHitsVolume(deoglDCollisionTriangle *triangle){
+	return triangle->CapsuleHitsTriangle(this);
 }
 
-bool deoglDCollisionCapsule::FrustumHitsVolume( deoglDCollisionFrustum *frustum ){
-	return frustum->CapsuleHitsFrustum( this );
+bool deoglDCollisionCapsule::FrustumHitsVolume(deoglDCollisionFrustum *frustum){
+	return frustum->CapsuleHitsFrustum(this);
 }
 
 
 
-double deoglDCollisionCapsule::SphereMoveHitsVolume( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
-	return SphereMoveHitsCapsule( sphere, displacement, normal );
+double deoglDCollisionCapsule::SphereMoveHitsVolume(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
+	return SphereMoveHitsCapsule(sphere, displacement, normal);
 }
 
-double deoglDCollisionCapsule::CylinderMoveHitsVolume( deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
-	return CylinderMoveHitsCapsule( cylinder, displacement, normal );
+double deoglDCollisionCapsule::CylinderMoveHitsVolume(deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
+	return CylinderMoveHitsCapsule(cylinder, displacement, normal);
 }
 
-double deoglDCollisionCapsule::CapsuleMoveHitsVolume( deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
-	return CapsuleMoveHitsCapsule( capsule, displacement, normal );
+double deoglDCollisionCapsule::CapsuleMoveHitsVolume(deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
+	return CapsuleMoveHitsCapsule(capsule, displacement, normal);
 }
 
-double deoglDCollisionCapsule::BoxMoveHitsVolume( deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal ){
-	double distance = box->CapsuleMoveHitsBox( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionCapsule::BoxMoveHitsVolume(deoglDCollisionBox *box, const decDVector &displacement, decDVector *normal){
+	double distance = box->CapsuleMoveHitsBox(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionCapsule::TriangleMoveHitsVolume( deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal ){
-	double distance = triangle->CapsuleMoveHitsTriangle( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionCapsule::TriangleMoveHitsVolume(deoglDCollisionTriangle *triangle, const decDVector &displacement, decDVector *normal){
+	double distance = triangle->CapsuleMoveHitsTriangle(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionCapsule::FrustumMoveHitsVolume( deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal ){
-	double distance = frustum->CapsuleMoveHitsFrustum( this, -displacement, normal );
-	if( normal ) normal->Negate();
+double deoglDCollisionCapsule::FrustumMoveHitsVolume(deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal){
+	double distance = frustum->CapsuleMoveHitsFrustum(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-double deoglDCollisionCapsule::PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal ){
+double deoglDCollisionCapsule::PointMoveHitsVolume(const decDVector &point, const decDVector &displacement, decDVector *normal){
 	// TODO
 	return 1.0;
 }
@@ -155,37 +155,37 @@ double deoglDCollisionCapsule::PointMoveHitsVolume( const decDVector &point, con
 // Enclosing Volumes
 //////////////////////
 
-void deoglDCollisionCapsule::GetEnclosingSphere( deoglDCollisionSphere *sphere ){
-	if( ! sphere ) DETHROW( deeInvalidParam );
+void deoglDCollisionCapsule::GetEnclosingSphere(deoglDCollisionSphere *sphere){
+	if(! sphere) DETHROW(deeInvalidParam);
 	
 	// TODO: this is cylinder code => convert to capsule code
 	
 	// the sphere is not fully optial. the real sphere is slightly smaller and has a
 	// different center along the y-axis. the difference is though rather small.
-	if( pTopRadius > pBottomRadius ){
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius ) );
+	if(pTopRadius > pBottomRadius){
+		sphere->SetAll(pPosition, sqrt(pHalfHeight * pHalfHeight + pTopRadius * pTopRadius));
 		
 	}else{
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius ) );
+		sphere->SetAll(pPosition, sqrt(pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius));
 	}
 }
 
-void deoglDCollisionCapsule::GetEnclosingBox( deoglDCollisionBox *box ){
-	if( ! box ) DETHROW( deeInvalidParam );
+void deoglDCollisionCapsule::GetEnclosingBox(deoglDCollisionBox *box){
+	if(! box) DETHROW(deeInvalidParam);
 	double size;
 	
 	// TODO: this is cylinder code => convert to capsule code
 	
 	// TODO: better approximation
-	if( pTopRadius > pBottomRadius ){
-		size = sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius );
+	if(pTopRadius > pBottomRadius){
+		size = sqrt(pHalfHeight * pHalfHeight + pTopRadius * pTopRadius);
 		
 	}else{
-		size = sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius );
+		size = sqrt(pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius);
 	}
 	
-	box->SetCenter( pPosition );
-	box->SetHalfSize( decDVector( size, size, size ) );
+	box->SetCenter(pPosition);
+	box->SetHalfSize(decDVector(size, size, size));
 	box->ClearOrientation();
 }
 
@@ -194,60 +194,60 @@ void deoglDCollisionCapsule::GetEnclosingBox( deoglDCollisionBox *box ){
 // Miscelanous Functions
 //////////////////////////
 
-bool deoglDCollisionCapsule::IsPointInside( const decDVector &point ){
-	decDVector localPoint = WorldToLocal( point );
+bool deoglDCollisionCapsule::IsPointInside(const decDVector &point){
+	decDVector localPoint = WorldToLocal(point);
 	double radius = pTopRadius;
 	double y = localPoint.y;
 	
-	if( pHalfHeight > 1e-5 ){
+	if(pHalfHeight > 1e-5){
 		// this here is not correct if the radi are different. correctly the radius different moves the
 		// line segment to check against up or down. this will be done later on
-		if( y < -pHalfHeight ){
+		if(y < -pHalfHeight){
 			y = -pHalfHeight;
 		}
-		if( y > pHalfHeight ){
+		if(y > pHalfHeight){
 			y = pHalfHeight;
 		}
 		
-		radius = pBottomRadius + ( pTopRadius - pBottomRadius ) * ( y * 0.5 / pHalfHeight + 0.5 );
+		radius = pBottomRadius + (pTopRadius - pBottomRadius) * (y * 0.5 / pHalfHeight + 0.5);
 	}
 	
-	localPoint.y -= y; // localPoint - decDVector( 0.0, y, 0.0 )
+	localPoint.y -= y; // localPoint - decDVector(0.0, y, 0.0)
 	
 	return localPoint.Length() <= radius;
 }
 
-decDVector deoglDCollisionCapsule::ClosestPointTo( const decDVector &point ){
+decDVector deoglDCollisionCapsule::ClosestPointTo(const decDVector &point){
 	// todo
 	return point;
 }
 
-decDVector deoglDCollisionCapsule::NormalAtPoint( const decDVector &point ){
+decDVector deoglDCollisionCapsule::NormalAtPoint(const decDVector &point){
 	// TODO: implement
-	return decDVector( 1.0, 0.0, 0.0 );
+	return decDVector(1.0, 0.0, 0.0);
 }
 
-bool deoglDCollisionCapsule::RayHitsVolume( const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance ){
-	if( pOriented ){
-		if( pTapered ){
-			return deoglDCollisionDetection::RayHitsTaperedCapsule( WorldToLocal( rayOrigin ),
-				NormalWorldToLocal( rayDirection ), decDVector(), pHalfHeight, pTopRadius,
-				pBottomRadius, hitDistance );
+bool deoglDCollisionCapsule::RayHitsVolume(const decDVector &rayOrigin, const decDVector &rayDirection, double &hitDistance){
+	if(pOriented){
+		if(pTapered){
+			return deoglDCollisionDetection::RayHitsTaperedCapsule(WorldToLocal(rayOrigin),
+				NormalWorldToLocal(rayDirection), decDVector(), pHalfHeight, pTopRadius,
+				pBottomRadius, hitDistance);
 			
 		}else{
-			return deoglDCollisionDetection::RayHitsCapsule( WorldToLocal( rayOrigin ),
-				NormalWorldToLocal( rayDirection ), decDVector(), pHalfHeight, pTopRadius,
-				hitDistance );
+			return deoglDCollisionDetection::RayHitsCapsule(WorldToLocal(rayOrigin),
+				NormalWorldToLocal(rayDirection), decDVector(), pHalfHeight, pTopRadius,
+				hitDistance);
 		}
 		
 	}else{
-		if( pTapered ){
-			return deoglDCollisionDetection::RayHitsTaperedCapsule( rayOrigin, rayDirection, pPosition,
-				pHalfHeight, pTopRadius, pBottomRadius, hitDistance );
+		if(pTapered){
+			return deoglDCollisionDetection::RayHitsTaperedCapsule(rayOrigin, rayDirection, pPosition,
+				pHalfHeight, pTopRadius, pBottomRadius, hitDistance);
 			
 		}else{
-			return deoglDCollisionDetection::RayHitsCapsule( rayOrigin, rayDirection, pPosition,
-				pHalfHeight, pTopRadius, hitDistance );
+			return deoglDCollisionDetection::RayHitsCapsule(rayOrigin, rayDirection, pPosition,
+				pHalfHeight, pTopRadius, hitDistance);
 		}
 	}
 }
@@ -257,9 +257,9 @@ bool deoglDCollisionCapsule::RayHitsVolume( const decDVector &rayOrigin, const d
 // Visiting
 /////////////
 
-void deoglDCollisionCapsule::Visit( deoglDCollisionVolumeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
-	visitor->VisitCapsule( this );
+void deoglDCollisionCapsule::Visit(deoglDCollisionVolumeVisitor *visitor){
+	if(! visitor) DETHROW(deeInvalidParam);
+	visitor->VisitCapsule(this);
 }
 
 
@@ -267,24 +267,24 @@ void deoglDCollisionCapsule::Visit( deoglDCollisionVolumeVisitor *visitor ){
 // collision routines
 ///////////////////////
 
-bool deoglDCollisionCapsule::SphereHitsCapsule( deoglDCollisionSphere *sphere ){
+bool deoglDCollisionCapsule::SphereHitsCapsule(deoglDCollisionSphere *sphere){
 	/*
 	const decDVector center = sphere->GetCenter();
 	return deoglDCollisionDetection::SegmentSegmentDistance(
-		pStartPoint, pEndPoint, center, center )
+		pStartPoint, pEndPoint, center, center)
 		<= pRadius + sphere->GetRadius();
 	*/
 	return false;
 }
 
-bool deoglDCollisionCapsule::CylinderHitsCapsule( deoglDCollisionCylinder *cylinder ){
+bool deoglDCollisionCapsule::CylinderHitsCapsule(deoglDCollisionCylinder *cylinder){
 	return false;
 }
 
-bool deoglDCollisionCapsule::CapsuleHitsCapsule( deoglDCollisionCapsule *capsule ){
+bool deoglDCollisionCapsule::CapsuleHitsCapsule(deoglDCollisionCapsule *capsule){
 	/*
 	return deoglDCollisionDetection::SegmentSegmentDistance(
-		pStartPoint, pEndPoint, capsule->pStartPoint, capsule->pEndPoint )
+		pStartPoint, pEndPoint, capsule->pStartPoint, capsule->pEndPoint)
 		<= pRadius + capsule->pRadius;
 	*/
 	return false;
@@ -292,15 +292,15 @@ bool deoglDCollisionCapsule::CapsuleHitsCapsule( deoglDCollisionCapsule *capsule
 
 
 
-double deoglDCollisionCapsule::SphereMoveHitsCapsule( deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal ){
+double deoglDCollisionCapsule::SphereMoveHitsCapsule(deoglDCollisionSphere *sphere, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
-double deoglDCollisionCapsule::CylinderMoveHitsCapsule( deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal ){
+double deoglDCollisionCapsule::CylinderMoveHitsCapsule(deoglDCollisionCylinder *cylinder, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
-double deoglDCollisionCapsule::CapsuleMoveHitsCapsule( deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal ){
+double deoglDCollisionCapsule::CapsuleMoveHitsCapsule(deoglDCollisionCapsule *capsule, const decDVector &displacement, decDVector *normal){
 	return 1;
 }
 
@@ -309,67 +309,67 @@ double deoglDCollisionCapsule::CapsuleMoveHitsCapsule( deoglDCollisionCapsule *c
 // Management
 ///////////////
 
-void deoglDCollisionCapsule::SetPosition( const decDVector &position ){
+void deoglDCollisionCapsule::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void deoglDCollisionCapsule::SetOrientation( const decQuaternion &orientation ){
-	decMatrix matrix = decMatrix::CreateFromQuaternion( orientation );
+void deoglDCollisionCapsule::SetOrientation(const decQuaternion &orientation){
+	decMatrix matrix = decMatrix::CreateFromQuaternion(orientation);
 	
 	pOrientation = orientation;
 	
-	pAxisX.Set( matrix.TransformRight() );
-	pAxisY.Set( matrix.TransformUp() );
-	pAxisZ.Set( matrix.TransformView() );
+	pAxisX.Set(matrix.TransformRight());
+	pAxisY.Set(matrix.TransformUp());
+	pAxisZ.Set(matrix.TransformView());
 	
-	pOriented = ! pOrientation.IsEqualTo( decQuaternion() );
+	pOriented = ! pOrientation.IsEqualTo(decQuaternion());
 }
 
 void deoglDCollisionCapsule::ClearOrientation(){
 	pOrientation = decQuaternion();
 	
-	pAxisX.Set( 1.0, 0.0, 0.0 );
-	pAxisY.Set( 0.0, 1.0, 0.0 );
-	pAxisZ.Set( 0.0, 0.0, 1.0 );
+	pAxisX.Set(1.0, 0.0, 0.0);
+	pAxisY.Set(0.0, 1.0, 0.0);
+	pAxisZ.Set(0.0, 0.0, 1.0);
 	pOriented = false;
 }
 
-void deoglDCollisionCapsule::SetHalfHeight( double halfHeight ){
-	pHalfHeight = decMath::max( halfHeight, 0.0 );
+void deoglDCollisionCapsule::SetHalfHeight(double halfHeight){
+	pHalfHeight = decMath::max(halfHeight, 0.0);
 }
 
-void deoglDCollisionCapsule::SetTopRadius( double topRadius ){
-	pTopRadius = decMath::max( topRadius, 0.0 );
-	pTapered = ( fabs( pTopRadius - pBottomRadius ) > 1e-12 );
+void deoglDCollisionCapsule::SetTopRadius(double topRadius){
+	pTopRadius = decMath::max(topRadius, 0.0);
+	pTapered = (fabs(pTopRadius - pBottomRadius) > 1e-12);
 }
 
-void deoglDCollisionCapsule::SetBottomRadius( double bottomRadius ){
-	pBottomRadius = decMath::max( bottomRadius, 0.0 );
-	pTapered = ( fabs( pTopRadius - pBottomRadius ) > 1e-12 );
+void deoglDCollisionCapsule::SetBottomRadius(double bottomRadius){
+	pBottomRadius = decMath::max(bottomRadius, 0.0);
+	pTapered = (fabs(pTopRadius - pBottomRadius) > 1e-12);
 }
 
-void deoglDCollisionCapsule::SetRadius( double radius ){
-	pTopRadius = decMath::max( radius, 0.0 );
+void deoglDCollisionCapsule::SetRadius(double radius){
+	pTopRadius = decMath::max(radius, 0.0);
 	pBottomRadius = pTopRadius;
 	pTapered = false;
 }
 
 
 
-decDVector deoglDCollisionCapsule::WorldToLocal( const decDVector &point ) const{
+decDVector deoglDCollisionCapsule::WorldToLocal(const decDVector &point) const{
 	decDVector tp = point - pPosition;
-	return decDVector( pAxisX * tp, pAxisY * tp, pAxisZ * tp );
+	return decDVector(pAxisX * tp, pAxisY * tp, pAxisZ * tp);
 }
 
-decDVector deoglDCollisionCapsule::LocalToWorld( const decDVector &point ) const{
+decDVector deoglDCollisionCapsule::LocalToWorld(const decDVector &point) const{
 	return pPosition + pAxisX * point.x + pAxisY * point.y + pAxisZ * point.z;
 }
 
-decDVector deoglDCollisionCapsule::NormalWorldToLocal( const decDVector &normal ) const{
-	return decDVector( pAxisX * normal, pAxisY * normal, pAxisZ * normal );
+decDVector deoglDCollisionCapsule::NormalWorldToLocal(const decDVector &normal) const{
+	return decDVector(pAxisX * normal, pAxisY * normal, pAxisZ * normal);
 }
 
-decDVector deoglDCollisionCapsule::NormalLocalToWorld( const decDVector &normal ) const{
+decDVector deoglDCollisionCapsule::NormalLocalToWorld(const decDVector &normal) const{
 	return pAxisX * normal.x + pAxisY * normal.y + pAxisZ * normal.z;
 }
 

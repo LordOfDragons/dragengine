@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build font into the provided font object. */
-	virtual void BuildFont( deFont *font ) = 0;
+	virtual void BuildFont(deFont *font) = 0;
 	/*@}*/
 };
 

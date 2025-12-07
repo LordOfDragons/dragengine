@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPUndoHistoryListener::seWPUndoHistoryListener( seWPUndoHistory &panel ) :
-pPanel( panel ){
+seWPUndoHistoryListener::seWPUndoHistoryListener(seWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 seWPUndoHistoryListener::~seWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ seWPUndoHistoryListener::~seWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void seWPUndoHistoryListener::UndoChanged( seSky* ){
+void seWPUndoHistoryListener::UndoChanged(seSky*){
 	pPanel.UpdateUndo();
 }

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine config xml read/save. */
-	delEngineConfigXML( deLogger *logger, const char *loggerSource );
+	delEngineConfigXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up engine config xml read/save. */
 	virtual ~delEngineConfigXML();
@@ -55,20 +55,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, delLauncher &launcher );
+	void ReadFromFile(decBaseFileReader &reader, delLauncher &launcher);
 	
 	/** \brief Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const delLauncher &launcher );
+	void WriteToFile(decBaseFileWriter &writer, const delLauncher &launcher);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const delLauncher &launcher );
-	void pWriteProfiles( decXmlWriter &writer, const delLauncher &launcher );
+	void pWriteConfig(decXmlWriter &writer, const delLauncher &launcher);
+	void pWriteProfiles(decXmlWriter &writer, const delLauncher &launcher);
 	
-	void pReadConfig( const decXmlElementTag &root, delLauncher &launcher );
-	void pReadProfiles( const decXmlElementTag &root, delLauncher &launcher );
+	void pReadConfig(const decXmlElementTag &root, delLauncher &launcher);
+	void pReadProfiles(const decXmlElementTag &root, delLauncher &launcher);
 };
 
 #endif

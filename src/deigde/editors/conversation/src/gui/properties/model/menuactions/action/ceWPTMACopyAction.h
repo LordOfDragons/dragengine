@@ -48,12 +48,12 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACopyAction( ceWindowMain &windowMain,
-		ceConversationAction *action );
+	ceWPTMACopyAction(ceWindowMain &windowMain,
+		ceConversationAction *action);
 	
 	/** \brief Crete menu action. */
-	ceWPTMACopyAction( ceWindowMain &windowMain,
-		ceConversationAction *action, const char *text, igdeIcon *icon );
+	ceWPTMACopyAction(ceWindowMain &windowMain,
+		ceConversationAction *action, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline ceConversationAction *GetAction() const{return pAction;}
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

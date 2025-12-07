@@ -53,9 +53,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAActorSpeak::ceCAActorSpeak( deEngine *engine ) : ceConversationAction( eatActorSpeak ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+ceCAActorSpeak::ceCAActorSpeak(deEngine *engine) : ceConversationAction(eatActorSpeak){
+	if(! engine){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEngine = engine;
@@ -66,7 +66,7 @@ ceCAActorSpeak::ceCAActorSpeak( deEngine *engine ) : ceConversationAction( eatAc
 	pUseSpeechAnimation = true;
 }
 
-ceCAActorSpeak::ceCAActorSpeak( const ceCAActorSpeak &action ) : ceConversationAction( action ){
+ceCAActorSpeak::ceCAActorSpeak(const ceCAActorSpeak &action) : ceConversationAction(action){
 	pEngine = action.GetEngine();
 	pEngSound = NULL;
 	pLoaded = true;
@@ -77,24 +77,24 @@ ceCAActorSpeak::ceCAActorSpeak( const ceCAActorSpeak &action ) : ceConversationA
 	pTextBoxTextStyle = action.pTextBoxTextStyle;
 	pPathSound = action.pPathSound;
 	pMovement = action.pMovement;
-	pWords.AddCopyFrom( action.pWords );
-	pFacePoses.AddCopyFrom( action.pFacePoses );
-	pGestures.AddCopyFrom( action.pGestures );
-	pBodyLookAt.AddCopyFrom( action.pBodyLookAt );
-	pHeadLookAt.AddCopyFrom( action.pHeadLookAt );
-	pEyesLookAt.AddCopyFrom( action.pEyesLookAt );
+	pWords.AddCopyFrom(action.pWords);
+	pFacePoses.AddCopyFrom(action.pFacePoses);
+	pGestures.AddCopyFrom(action.pGestures);
+	pBodyLookAt.AddCopyFrom(action.pBodyLookAt);
+	pHeadLookAt.AddCopyFrom(action.pHeadLookAt);
+	pEyesLookAt.AddCopyFrom(action.pEyesLookAt);
 	pMinSpeechTime = action.pMinSpeechTime;
 	pUseSpeechAnimation = action.pUseSpeechAnimation;
 	
 	pEngSound = action.pEngSound;
-	if( pEngSound ){
+	if(pEngSound){
 		pEngSound->AddReference();
 	}
 	pLoaded = action.pLoaded;
 }
 
 ceCAActorSpeak::~ceCAActorSpeak(){
-	if( pEngSound ){
+	if(pEngSound){
 		pEngSound->FreeReference();
 	}
 }
@@ -105,7 +105,7 @@ ceCAActorSpeak::~ceCAActorSpeak(){
 ///////////////
 
 deSound *ceCAActorSpeak::GetEngineSound(){
-	if( ! pLoaded ){
+	if(! pLoaded){
 		pLoadSound();
 	}
 	
@@ -114,24 +114,24 @@ deSound *ceCAActorSpeak::GetEngineSound(){
 
 
 
-void ceCAActorSpeak::SetActor( const char *id ){
+void ceCAActorSpeak::SetActor(const char *id){
 	pActor = id;
 }
 
-void ceCAActorSpeak::SetTextBoxText( const decUnicodeString &text ){
+void ceCAActorSpeak::SetTextBoxText(const decUnicodeString &text){
 	pTextBoxText = text;
 }
 
-void ceCAActorSpeak::SetTextBoxTextTranslate( const char *text ){
+void ceCAActorSpeak::SetTextBoxTextTranslate(const char *text){
 	pTextBoxTextTranslate = text;
 }
 
-decUnicodeString ceCAActorSpeak::ResolveTextBoxText( const ceConversation &conversation ) const{
-	if( ! pTextBoxTextTranslate.IsEmpty() ){
+decUnicodeString ceCAActorSpeak::ResolveTextBoxText(const ceConversation &conversation) const{
+	if(! pTextBoxTextTranslate.IsEmpty()){
 		const ceLangPack * const langpack = conversation.GetLanguagePack();
-		if( langpack ){
-			const ceLangPackEntry * const entry = langpack->GetEntryNamed( pTextBoxTextTranslate );
-			if( entry ){
+		if(langpack){
+			const ceLangPackEntry * const entry = langpack->GetEntryNamed(pTextBoxTextTranslate);
+			if(entry){
 				return entry->GetText();
 			}
 		}
@@ -139,15 +139,15 @@ decUnicodeString ceCAActorSpeak::ResolveTextBoxText( const ceConversation &conve
 	return pTextBoxText;
 }
 
-void ceCAActorSpeak::SetTextBoxTextStyle( const char *style ){
+void ceCAActorSpeak::SetTextBoxTextStyle(const char *style){
 	pTextBoxTextStyle = style;
 }
 
-void ceCAActorSpeak::SetPathSound( const char *path ){
-	if( ! pPathSound.Equals( path ) ){
+void ceCAActorSpeak::SetPathSound(const char *path){
+	if(! pPathSound.Equals(path)){
 		pPathSound = path;
 		
-		if( pEngSound ){
+		if(pEngSound){
 			pEngSound->FreeReference();
 			pEngSound = NULL;
 		}
@@ -155,16 +155,16 @@ void ceCAActorSpeak::SetPathSound( const char *path ){
 	}
 }
 
-void ceCAActorSpeak::SetMovement( const char *movement ){
-	if( ! movement ){
-		DETHROW( deeInvalidParam );
+void ceCAActorSpeak::SetMovement(const char *movement){
+	if(! movement){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMovement = movement;
 }
 
-void ceCAActorSpeak::SetMinSpeechTime( float minSpeechTime ){
-	if( minSpeechTime < 0.0f ){
+void ceCAActorSpeak::SetMinSpeechTime(float minSpeechTime){
+	if(minSpeechTime < 0.0f){
 		pMinSpeechTime = 0.0f;
 		
 	}else{
@@ -172,14 +172,14 @@ void ceCAActorSpeak::SetMinSpeechTime( float minSpeechTime ){
 	}
 }
 
-void ceCAActorSpeak::SetUseSpeechAnimation( bool useSpeechAnimation ){
+void ceCAActorSpeak::SetUseSpeechAnimation(bool useSpeechAnimation){
 	pUseSpeechAnimation = useSpeechAnimation;
 }
 
 
 
 ceConversationAction *ceCAActorSpeak::CreateCopy() const{
-	return new ceCAActorSpeak( *this );
+	return new ceCAActorSpeak(*this);
 }
 
 
@@ -191,26 +191,26 @@ void ceCAActorSpeak::pLoadSound(){
 	deSound *sound = NULL;
 	
 	try{
-		if( ! pPathSound.IsEmpty() ){
-			sound = pEngine->GetSoundManager()->LoadSound( pPathSound.GetString(), "/", false );
+		if(! pPathSound.IsEmpty()){
+			sound = pEngine->GetSoundManager()->LoadSound(pPathSound.GetString(), "/", false);
 		}
 		
-		if( sound && sound->GetChannelCount() != 1 ){
-			pEngine->GetLogger()->LogWarnFormat( LOGSOURCE,
-				"Channel count %i instead of 1. Sound file not used.", sound->GetChannelCount() );
+		if(sound && sound->GetChannelCount() != 1){
+			pEngine->GetLogger()->LogWarnFormat(LOGSOURCE,
+				"Channel count %i instead of 1. Sound file not used.", sound->GetChannelCount());
 			sound->FreeReference();
 			sound = NULL;
 		}
 		
-	}catch( const deException &e ){
-		if( sound ){
+	}catch(const deException &e){
+		if(sound){
 			sound->FreeReference();
 			sound = NULL;
 		}
-		pEngine->GetLogger()->LogException( LOGSOURCE, e );
+		pEngine->GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
-	if( pEngSound ){
+	if(pEngSound){
 		pEngSound->FreeReference();
 	}
 	pEngSound = sound;

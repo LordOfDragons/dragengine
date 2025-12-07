@@ -40,25 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicTBOBlock::deoglDynamicTBOBlock( deoglDynamicTBOShared *tbo ) :
-pSharedTBO( tbo ),
-pOffset( 0 ),
-pSize( 0 ),
-pEmpty( true )
+deoglDynamicTBOBlock::deoglDynamicTBOBlock(deoglDynamicTBOShared *tbo) :
+pSharedTBO(tbo),
+pOffset(0),
+pSize(0),
+pEmpty(true)
 {
-	if( ! tbo ){
-		DETHROW( deeInvalidParam );
+	if(! tbo){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deoglDynamicTBOBlock::deoglDynamicTBOBlock( deoglDynamicTBOShared *tbo, int offset, int size ) :
-pSharedTBO( tbo ),
-pOffset( offset ),
-pSize( size ),
-pEmpty( true )
+deoglDynamicTBOBlock::deoglDynamicTBOBlock(deoglDynamicTBOShared *tbo, int offset, int size) :
+pSharedTBO(tbo),
+pOffset(offset),
+pSize(size),
+pEmpty(true)
 {
-	if( ! tbo || offset < 0 || size < 0 ){
-		DETHROW( deeInvalidParam );
+	if(! tbo || offset < 0 || size < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -74,22 +74,22 @@ void deoglDynamicTBOBlock::DropSharedTBO(){
 	pSharedTBO = NULL;
 }
 
-void deoglDynamicTBOBlock::SetOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOBlock::SetOffset(int offset){
+	if(offset < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( offset == pOffset ){
+	if(offset == pOffset){
 		return;
 	}
 	
 	pOffset = offset;
 }
 
-void deoglDynamicTBOBlock::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBOBlock::SetSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( size == pSize ){
+	if(size == pSize){
 		return;
 	}
 	
@@ -98,30 +98,30 @@ void deoglDynamicTBOBlock::SetSize( int size ){
 	pData2 = NULL;
 }
 
-void deoglDynamicTBOBlock::SetData( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 ){
+void deoglDynamicTBOBlock::SetData(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
 	pData = tbo;
 	pData2 = tbo2;
 }
 
-void deoglDynamicTBOBlock::SetEmpty( bool empty ){
+void deoglDynamicTBOBlock::SetEmpty(bool empty){
 	pEmpty = empty;
 	pData = NULL;
 	pData2 = NULL;
 }
 
 void deoglDynamicTBOBlock::Drop(){
-	if( pSharedTBO && ! pEmpty ){
-		pSharedTBO->RemoveBlock( this );
+	if(pSharedTBO && ! pEmpty){
+		pSharedTBO->RemoveBlock(this);
 	}
 }
 
 void deoglDynamicTBOBlock::WriteToTBO(){
-	if( pEmpty || ! pSharedTBO ){
+	if(pEmpty || ! pSharedTBO){
 		return;
 	}
 	
 	// write data to first TBO
-	if( pData ){
+	if(pData){
 		deoglDynamicTBO &tbo = *pSharedTBO->GetTBO();
 		const int stride = tbo.GetComponentCount() * tbo.GetDataTypeSize() * pSharedTBO->GetStride();
 		uint8_t * const tboData = tbo.GetData();
@@ -129,22 +129,22 @@ void deoglDynamicTBOBlock::WriteToTBO(){
 		//const int offset = pOffset * componentCount;
 		//pTBO->SetTBO( offset, *pData );
 		//pTBO->Update( offset, pSize );
-		const uint8_t * const sourceData = ( ( deoglDynamicTBO* )( deObject* )pData )->GetData();
-		if( sourceData ){
-			memcpy( tboData + pOffset * stride, sourceData, pSize * stride );
+		const uint8_t * const sourceData = ((deoglDynamicTBO*)(deObject*)pData)->GetData();
+		if(sourceData){
+			memcpy(tboData + pOffset * stride, sourceData, pSize * stride);
 		}
 	}
 	
 	// write data to second TBO if present
-	if( pData2 ){
+	if(pData2){
 		deoglDynamicTBO * const tbo2 = pSharedTBO->GetTBO2();
-		if( tbo2 ){
+		if(tbo2){
 			const int stride2 = tbo2->GetComponentCount() * tbo2->GetDataTypeSize() * pSharedTBO->GetStride2();
 			uint8_t * const tboData2 = tbo2->GetData();
 			
-			const uint8_t * const sourceData = ( ( deoglDynamicTBO* )( deObject* )pData2 )->GetData();
-			if( sourceData ){
-				memcpy( tboData2 + pOffset * stride2, sourceData, pSize * stride2 );
+			const uint8_t * const sourceData = ((deoglDynamicTBO*)(deObject*)pData2)->GetData();
+			if(sourceData){
+				memcpy(tboData2 + pOffset * stride2, sourceData, pSize * stride2);
 			}
 		}
 	}

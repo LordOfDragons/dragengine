@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deSteamSdk( deLoadableModule &loadableModule );
+	deSteamSdk(deLoadableModule &loadableModule);
 	
 	/** Delete module. */
 	~deSteamSdk() override;
@@ -70,21 +70,21 @@ public:
 	decStringSet GetSupportedServices() override;
 	
 	/** Initialize Steam SDK if not initialized yet. */
-	void InitSdk( const deServiceObject::Ref &data );
+	void InitSdk(const deServiceObject::Ref &data);
 	
 	/**
 	 * Create service peer.
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	deBaseServiceService *CreateService( deService *service,
-		const char *name, const deServiceObject::Ref &data ) override;
+	deBaseServiceService *CreateService(deService *service,
+		const char *name, const deServiceObject::Ref &data) override;
 	
 	/** Frame update. */
-	void FrameUpdate( float elapsed ) override;
+	void FrameUpdate(float elapsed) override;
 	
 	/** Get message matching result code. */
-	const char *GetResultMessage( EResult result ) const;
+	const char *GetResultMessage(EResult result) const;
 	/*@}*/
 };
 

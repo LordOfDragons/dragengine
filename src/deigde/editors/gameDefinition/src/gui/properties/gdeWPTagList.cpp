@@ -58,19 +58,19 @@ class cActionAppend : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend ( gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox ) : 
-	igdeAction( "Add...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add tag" ),
-	pPanel( panel ), pComboBox( comboBox ), pListBox( listBox ){ }
+	cActionAppend (gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox) : 
+	igdeAction("Add...", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add tag"),
+	pPanel(panel), pComboBox(comboBox), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetTagList() || ! pPanel.GetUndoSystem() ){
+		if(! pPanel.GetTagList() || ! pPanel.GetUndoSystem()){
 			return;
 		}
 		
 		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
-			 pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) ));
+			 pPanel.UndoSet(*pPanel.GetTagList() + pComboBox->GetText())));
 		
-		pListBox->SetSelection( pListBox->IndexOfItem( pComboBox->GetText() ) );
+		pListBox->SetSelection(pListBox->IndexOfItem(pComboBox->GetText()));
 	}
 };
 
@@ -79,22 +79,22 @@ class cActionRemove : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPTagList &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Remove tag" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionRemove(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Remove", panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove tag"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetTagList() || ! pPanel.GetUndoSystem() ){
+		if(! pPanel.GetTagList() || ! pPanel.GetUndoSystem()){
 			return;
 		}
 		
-		decStringSet tags( *pPanel.GetTagList() );
-		tags.Remove( pListBox->GetSelectedItem()->GetText() );
+		decStringSet tags(*pPanel.GetTagList());
+		tags.Remove(pListBox->GetSelectedItem()->GetText());
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( tags ) ));
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(tags)));
 		
-		if( pListBox->GetItemCount() > 0 ){
-			pListBox->SetSelection( 0 );
+		if(pListBox->GetItemCount() > 0){
+			pListBox->SetSelection(0);
 		}
 	}
 };
@@ -104,15 +104,15 @@ class cActionClear : public igdeAction {
 	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPTagList &panel, igdeListBox::Ref &listBox ) :
-	igdeAction( "Clear", NULL, "Clear tag" ), pPanel( panel ), pListBox( listBox ){ }
+	cActionClear(gdeWPTagList &panel, igdeListBox::Ref &listBox) :
+	igdeAction("Clear", NULL, "Clear tag"), pPanel(panel), pListBox(listBox){}
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetTagList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0 ){
+		if(! pPanel.GetTagList() || ! pPanel.GetUndoSystem() || pListBox->GetItemCount() == 0){
 			return;
 		}
 		
-		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( decStringSet() ) ));
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(pPanel.UndoSet(decStringSet())));
 	}
 };
 
@@ -120,16 +120,16 @@ class cListTags : public igdeListBoxListener {
 	gdeWPTagList &pListBox;
 	
 public:
-	cListTags( gdeWPTagList &listBox ) : pListBox( listBox ){ }
+	cListTags(gdeWPTagList &listBox) : pListBox(listBox){}
 	
-	virtual void OnSelectionChanged( igdeListBox* ){
+	virtual void OnSelectionChanged(igdeListBox*){
 	}
 	
-	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+	virtual void AddContextMenuEntries(igdeListBox*, igdeMenuCascade &menu){
 		igdeUIHelper &helper = pListBox.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pListBox.GetActionAdd() );
-		helper.MenuCommand( menu, pListBox.GetActionRemove() );
-		helper.MenuCommand( menu, pListBox.GetActionClear() );
+		helper.MenuCommand(menu, pListBox.GetActionAdd());
+		helper.MenuCommand(menu, pListBox.GetActionRemove());
+		helper.MenuCommand(menu, pListBox.GetActionClear());
 	}
 };
 
@@ -143,24 +143,24 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPTagList::gdeWPTagList( igdeUIHelper &helper, int rows, const char *description ) :
-igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone ),
-pTagList( NULL ),
-pUndoSystem( NULL )
+gdeWPTagList::gdeWPTagList(igdeUIHelper &helper, int rows, const char *description) :
+igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esNone),
+pTagList(NULL),
+pUndoSystem(NULL)
 {
-	pActionAdd.TakeOver( new cActionAppend ( *this, pComboBox, pListBox ) );
-	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
-	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
+	pActionAdd.TakeOver(new cActionAppend (*this, pComboBox, pListBox));
+	pActionRemove.TakeOver(new cActionRemove(*this, pListBox));
+	pActionClear.TakeOver(new cActionClear(*this, pListBox));
 	
 	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::NewWith(
 		GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	helper.ComboBoxFilter( comboLine, true, description, pComboBox, NULL );
+	helper.ComboBoxFilter(comboLine, true, description, pComboBox, NULL);
 	pComboBox->SetDefaultSorter();
-	pComboBox->SetFilterCaseInsentive( true );
-	helper.Button( comboLine, pActionAdd );
-	AddChild( comboLine );
+	pComboBox->SetFilterCaseInsentive(true);
+	helper.Button(comboLine, pActionAdd);
+	AddChild(comboLine);
 	
-	helper.ListBox( *this, rows, description, pListBox, new cListTags( *this ) );
+	helper.ListBox(*this, rows, description, pListBox, new cListTags(*this));
 	pListBox->SetDefaultSorter();
 }
 
@@ -172,8 +172,8 @@ gdeWPTagList::~gdeWPTagList(){
 // Management
 ///////////////
 
-void gdeWPTagList::SetTagList( const decStringSet *tagList ){
-	if( tagList == pTagList ){
+void gdeWPTagList::SetTagList(const decStringSet *tagList){
+	if(tagList == pTagList){
 		return;
 	}
 	
@@ -182,14 +182,14 @@ void gdeWPTagList::SetTagList( const decStringSet *tagList ){
 	UpdateList();
 }
 
-void gdeWPTagList::SetUndoSystem( igdeUndoSystem *undoSystem ){
+void gdeWPTagList::SetUndoSystem(igdeUndoSystem *undoSystem){
 	pUndoSystem = undoSystem;
 }
 
 
 
 const decString &gdeWPTagList::GetSelectedTag() const{
-	if( pListBox->GetSelectedItem() != NULL ){
+	if(pListBox->GetSelectedItem() != NULL){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{
@@ -199,45 +199,45 @@ const decString &gdeWPTagList::GetSelectedTag() const{
 }
 
 void gdeWPTagList::UpdateList(){
-	const decString selection( GetSelectedTag() );
+	const decString selection(GetSelectedTag());
 	
 	pListBox->RemoveAllItems();
 	
-	if( pTagList ){
+	if(pTagList){
 		const int count = pTagList->GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pListBox->AddItem( pTagList->GetAt( i ) );
+		for(i=0; i<count; i++){
+			pListBox->AddItem(pTagList->GetAt(i));
 		}
 		
 		pListBox->SortItems();
 	}
 	
-	SelectTag( selection );
+	SelectTag(selection);
 }
 
-void gdeWPTagList::SelectTag( const decString &tag ){
-	if( pTagList ){
-		pListBox->SetSelection( pListBox->IndexOfItem( tag ) );
+void gdeWPTagList::SelectTag(const decString &tag){
+	if(pTagList){
+		pListBox->SetSelection(pListBox->IndexOfItem(tag));
 	}
 }
 
-void gdeWPTagList::UpdateUsedTagList( const decStringSet &usedTags ){
-	const decString selectedTag( pComboBox->GetText() );
+void gdeWPTagList::UpdateUsedTagList(const decStringSet &usedTags){
+	const decString selectedTag(pComboBox->GetText());
 	
 	pComboBox->RemoveAllItems();
 	
 	const int count = usedTags.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decString& tag = usedTags.GetAt( i );
-		pComboBox->AddItem( tag );
+	for(i=0; i<count; i++){
+		const decString& tag = usedTags.GetAt(i);
+		pComboBox->AddItem(tag);
 	}
 	
 	pComboBox->SortItems();
 	pComboBox->StoreFilterItems();
 	
-	pComboBox->SetText( selectedTag );
+	pComboBox->SetText(selectedTag);
 }

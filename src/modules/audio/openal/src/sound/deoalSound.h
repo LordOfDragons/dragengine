@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound peer. */
-	deoalSound( deAudioOpenAL &oal, deSound &sound );
+	deoalSound(deAudioOpenAL &oal, deSound &sound);
 	
 	/** \brief Clean up sound peer. */
 	virtual ~deoalSound();
@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deAudioOpenAL &GetAudioThread() const{ return pOal; }
+	inline deAudioOpenAL &GetAudioThread() const{return pOal;}
 	
 	/** \brief Sound resource. */
-	inline deSound &GetSound() const{ return pSound; }
+	inline deSound &GetSound() const{return pSound;}
 	
 	/** \brief Audio sound. */
-	inline deoalASound *GetASound() const{ return pASound; }
+	inline deoalASound *GetASound() const{return pASound;}
 	
 	
 	

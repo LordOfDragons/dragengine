@@ -43,7 +43,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassParticleEmitterInstanceListener( deScriptingDragonScript *ds );
+	deClassParticleEmitterInstanceListener(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassParticleEmitterInstanceListener();
 	/*@}*/
@@ -51,15 +51,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index for lastParticleDied(). */
-	inline int GetFuncIndexLastParticleDied() const{ return pFuncIndexLastParticleDied; }
+	inline int GetFuncIndexLastParticleDied() const{return pFuncIndexLastParticleDied;}
 	
 	/** \brief Function index for collisionResponse(). */
-	inline int GetFuncIndexCollisionResponse() const{ return pFuncIndexCollisionResponse; }
+	inline int GetFuncIndexCollisionResponse() const{return pFuncIndexCollisionResponse;}
 	/*@}*/
 	
 private:
@@ -70,13 +70,13 @@ private:
 		dsClass *clsPEIL, *clsVoid, *clsFlt, *clsPEI, *clsCI, *clsInt;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfLastParticleDied );
-	DEF_NATFUNC( nfCollisionResponse );
+	DEF_NATFUNC(nfLastParticleDied);
+	DEF_NATFUNC(nfCollisionResponse);
 #undef DEF_NATFUNC
 };
 

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesComponent::deoglSTPipelinesComponent( const deoglSkinTexture &texture ) :
-deoglSkinTexturePipelines( texture ){
+deoglSTPipelinesComponent::deoglSTPipelinesComponent(const deoglSkinTexture &texture) :
+deoglSkinTexturePipelines(texture){
 }
 
 deoglSTPipelinesComponent::~deoglSTPipelinesComponent(){
@@ -60,19 +60,19 @@ const char *deoglSTPipelinesComponent::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesComponent::pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesComponent::pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetSharedSPB( true );
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmComponent );
+	baseShaderConfig.SetSharedSPB(true);
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmComponent);
 	
 	// create pipelines for each type and all valid modifications
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
-	pPrepareMask( baseShaderConfig, cinfo, batched);
-	pPrepareAllShadow( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
+	pPrepareMask(baseShaderConfig, cinfo, batched);
+	pPrepareAllShadow(baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
 	// pPrepareLuminance( baseShaderConfig, cinfo, batched);
-	pPrepareGIMaterial( baseShaderConfig, cinfo, batched);
+	pPrepareGIMaterial(baseShaderConfig, cinfo, batched);
 }

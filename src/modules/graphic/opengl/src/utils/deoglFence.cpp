@@ -35,13 +35,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglFence::deoglFence( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pFence( nullptr ){
+deoglFence::deoglFence(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pFence(nullptr){
 }
 
 deoglFence::~deoglFence(){
-	pRenderThread.GetDelayedOperations().DeleteOpenGLSync( pFence );
+	pRenderThread.GetDelayedOperations().DeleteOpenGLSync(pFence);
 }
 
 
@@ -51,7 +51,7 @@ deoglFence::~deoglFence(){
 
 void deoglFence::Arm(){
 	Reset();
-	pFence = pglFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+	pFence = pglFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	
 	// ensure the fence is processed by the GPU. AMD goes to work quickly but nVidia delays
 	// processing the queue causing the signal to not be processed causing glClientWaitSync()
@@ -61,13 +61,13 @@ void deoglFence::Arm(){
 }
 
 bool deoglFence::HasFired(){
-	if( ! pFence ){
+	if(! pFence){
 		return true;
 	}
 	
 	oglClearError();
 	
-	switch( pglClientWaitSync( pFence, 0, 0 ) ){ // 0s timeout
+	switch(pglClientWaitSync(pFence, 0, 0)){ // 0s timeout
 	case GL_ALREADY_SIGNALED:
 	case GL_CONDITION_SATISFIED:
 		pFence = nullptr;
@@ -83,18 +83,18 @@ bool deoglFence::HasFired(){
 		
 	default:
 		pFence = nullptr;
-		DETHROW_INFO( deeInvalidAction, "Unknown return value while waiting for fence" );
+		DETHROW_INFO(deeInvalidAction, "Unknown return value while waiting for fence");
 	}
 }
 
 void deoglFence::Wait(){
-	if( ! pFence ){
+	if(! pFence){
 		return;
 	}
 	
 	oglClearError();
 	
-	switch( pglClientWaitSync( pFence, 0, 1000000000 ) ){ // 1s timeout
+	switch(pglClientWaitSync(pFence, 0, 1000000000)){ // 1s timeout
 	case GL_ALREADY_SIGNALED:
 	case GL_CONDITION_SATISFIED:
 		pFence = nullptr;
@@ -102,7 +102,7 @@ void deoglFence::Wait(){
 		
 	case GL_TIMEOUT_EXPIRED:
 		pFence = nullptr;
-		DETHROW_INFO( deeInvalidAction, "Timeout while waiting for fence" );
+		DETHROW_INFO(deeInvalidAction, "Timeout while waiting for fence");
 		
 	case GL_WAIT_FAILED:
 		pFence = nullptr;
@@ -111,13 +111,13 @@ void deoglFence::Wait(){
 		
 	default:
 		pFence = nullptr;
-		DETHROW_INFO( deeInvalidAction, "Unknown return value while waiting for fence" );
+		DETHROW_INFO(deeInvalidAction, "Unknown return value while waiting for fence");
 	}
 }
 
 void deoglFence::Reset(){
-	if( pFence ){
-		pglDeleteSync( pFence );
+	if(pFence){
+		pglDeleteSync(pFence);
 		pFence = nullptr;
 	}
 }

@@ -60,42 +60,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the time in seconds. */
-	inline float GetTime() const{ return pTime; }
+	inline float GetTime() const{return pTime;}
 	/** Retrieves the time step. */
-	inline float GetTimeStep() const{ return pTimeStep; }
+	inline float GetTimeStep() const{return pTimeStep;}
 	/** Retrieves the position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	/** Retrieves the position step. */
-	inline const decVector &GetPositionStep() const{ return pPositionStep; }
+	inline const decVector &GetPositionStep() const{return pPositionStep;}
 	/** Retrieves the quaternion rotation. */
-	inline const decQuaternion &GetRotation() const{ return pRotation; }
+	inline const decQuaternion &GetRotation() const{return pRotation;}
 	/** Retrieves the quaternion rotation step. */
-	inline const decQuaternion &GetRotationStep() const{ return pRotationStep; }
+	inline const decQuaternion &GetRotationStep() const{return pRotationStep;}
 	/** Retrieves the scaling. */
-	inline const decVector &GetScaling() const{ return pScaling; }
+	inline const decVector &GetScaling() const{return pScaling;}
 	/** Retrieves the scaling step. */
-	inline const decVector &GetScalingStep() const{ return pScalingStep; }
+	inline const decVector &GetScalingStep() const{return pScalingStep;}
 	
 	/**
 	 * Retrieve interpolated position.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
-	decVector InterpolatePosition( float time ) const;
+	decVector InterpolatePosition(float time) const;
 	/**
 	 * Retrieve interpolated rotation.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
-	decQuaternion InterpolateRotation( float time ) const;
+	decQuaternion InterpolateRotation(float time) const;
 	/**
 	 * Retrieve interpolated scaling.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
-	decVector InterpolateScaling( float time ) const;
+	decVector InterpolateScaling(float time) const;
 	
 	/** Set keyframe without interpolation data. */
-	void Set( const deAnimationKeyframe &keyframe, bool &negate );
+	void Set(const deAnimationKeyframe &keyframe, bool &negate);
 	/** Set keyframe with interpolation data. */
-	void Set( const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate );
+	void Set(const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate);
 	/*@}*/
 };
 

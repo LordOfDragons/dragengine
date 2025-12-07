@@ -39,7 +39,7 @@ igdeNativeNullSpacer::igdeNativeNullSpacer(){
 igdeNativeNullSpacer::~igdeNativeNullSpacer(){
 }
 
-igdeNativeNullSpacer *igdeNativeNullSpacer::CreateNativeWidget( igdeSpacer& ){
+igdeNativeNullSpacer *igdeNativeNullSpacer::CreateNativeWidget(igdeSpacer&){
 	return new igdeNativeNullSpacer;
 }
 
@@ -55,7 +55,7 @@ void igdeNativeNullSpacer::DestroyNativeWidget(){
 // Management
 ///////////////
 
-void igdeNativeNullSpacer::SetSize( int wwidth, int hheight ){
+void igdeNativeNullSpacer::SetSize(int wwidth, int hheight){
 }
 
 #endif

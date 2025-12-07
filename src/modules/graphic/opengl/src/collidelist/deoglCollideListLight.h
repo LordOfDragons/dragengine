@@ -69,36 +69,36 @@ public:
 	void Clear();
 	
 	/** Light. */
-	inline deoglRLight *GetLight() const{ return pLight; }
+	inline deoglRLight *GetLight() const{return pLight;}
 	
 	/** Set light. */
-	void SetLight( deoglRLight *light );
+	void SetLight(deoglRLight *light);
 	
 	
 	
 	/** Light is culled. */
-	inline bool GetCulled() const{ return pCulled; }
+	inline bool GetCulled() const{return pCulled;}
 	
 	/** Set light is culled. */
-	void SetCulled( bool visible );
+	void SetCulled(bool visible);
 	
 	/** Camera is inside light volume. */
-	inline bool GetCameraInside() const{ return pCameraInside; }
+	inline bool GetCameraInside() const{return pCameraInside;}
 	
 	/** Camera is inside ccclusion query box. */
-	inline bool GetCameraInsideOccQueryBox() const{ return pCameraInsideOccQueryBox; }
+	inline bool GetCameraInsideOccQueryBox() const{return pCameraInsideOccQueryBox;}
 	
 	/** Test if camera is inside light volume and occlusion query box. */
-	void TestInside( const deoglRenderPlan &plan );
+	void TestInside(const deoglRenderPlan &plan);
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &cameraPosition);
 	
 	/** Occlusion test finished with a result of invisible for the element. */
 	virtual void OcclusionTestInvisible();
 	
 	/** Has occlusion query. */
-	inline bool HasOcclusionQuery() const{ return pOcclusionQuery != nullptr; }
+	inline bool HasOcclusionQuery() const{return pOcclusionQuery != nullptr;}
 	
 	/** Occlusion query. */
 	deoglOcclusionQuery &GetOcclusionQuery();
@@ -110,7 +110,7 @@ public:
 	bool IsHiddenByOccQuery() const;
 	
 	/** Set if occlusion query is valid. */
-	void SetOcclusionQueryValid( bool valid );
+	void SetOcclusionQueryValid(bool valid);
 	/*@}*/
 };
 

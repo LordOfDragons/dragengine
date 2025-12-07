@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWindowVegetationListener( meWindowVegetation &window );
+	meWindowVegetationListener(meWindowVegetation &window);
 	
 	/** \brief Clean up object. */
 	virtual ~meWindowVegetationListener();
@@ -55,49 +55,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active sector changed. */
-	virtual void ActiveSectorChanged( meWorld *world );
+	virtual void ActiveSectorChanged(meWorld *world);
 	
 	/** \brief Height terrain sector vegetation layer count changed. */
-	virtual void HTVLayerCountChanged( meWorld *world );
+	virtual void HTVLayerCountChanged(meWorld *world);
 	
 	/** \brief Height terrain sector active vegetation layer changed. */
-	virtual void HTActiveVLayerChanged( meWorld *world );
+	virtual void HTActiveVLayerChanged(meWorld *world);
 	
 	/** \brief Height terrain sector vegetation layer changed. */
-	virtual void HTVLayerChanged( meWorld *world,
-		meHTVegetationLayer *vlayer );
+	virtual void HTVLayerChanged(meWorld *world,
+		meHTVegetationLayer *vlayer);
 	
 	/** \brief Height terrain sector vegetation layer variation count changed. */
-	virtual void HTVLVariationCountChanged( meWorld *world,
-		meHTVegetationLayer *vlayer );
+	virtual void HTVLVariationCountChanged(meWorld *world,
+		meHTVegetationLayer *vlayer);
 	
 	/** \brief Height terrain sector active vegetation layer variation changed. */
-	virtual void HTVLActiveVariationChanged( meWorld *world,
-		meHTVegetationLayer *vlayer );
+	virtual void HTVLActiveVariationChanged(meWorld *world,
+		meHTVegetationLayer *vlayer);
 	
 	/** \brief Height terrain sector vegetation layer variation changed. */
-	virtual void HTVLVariationChanged( meWorld *world,
-		meHTVegetationLayer *vlayer, meHTVVariation *variation );
+	virtual void HTVLVariationChanged(meWorld *world,
+		meHTVegetationLayer *vlayer, meHTVVariation *variation);
 	
 	/** \brief Height terrain sector vegetation layer rule count changed. */
-	virtual void HTVLRuleCountChanged( meWorld *world,
-		meHTVegetationLayer *vlayer );
+	virtual void HTVLRuleCountChanged(meWorld *world,
+		meHTVegetationLayer *vlayer);
 	
 	/** \brief Height terrain sector active vegetation layer rule changed. */
-	virtual void HTVLActiveRuleChanged( meWorld *world,
-		meHTVegetationLayer *vlayer );
+	virtual void HTVLActiveRuleChanged(meWorld *world,
+		meHTVegetationLayer *vlayer);
 	
 	/** \brief Height terrain sector vegetation layer rule changed. */
-	virtual void HTVLRuleChanged( meWorld *world,
-		meHTVegetationLayer *vlayer, meHTVRule *rule );
+	virtual void HTVLRuleChanged(meWorld *world,
+		meHTVegetationLayer *vlayer, meHTVRule *rule);
 	
 	/** \brief Height terrain sector vegetation layer rule moved. */
-	virtual void HTVLRuleMoved( meWorld *world,
-		meHTVegetationLayer *vlayer, meHTVRule *rule );
+	virtual void HTVLRuleMoved(meWorld *world,
+		meHTVegetationLayer *vlayer, meHTVRule *rule);
 	
 	/** \brief Height terrain sector vegetation layer link count changed. */
-	virtual void HTVLLinkCountChanged( meWorld *world,
-		meHTVegetationLayer *vlayer );
+	virtual void HTVLLinkCountChanged(meWorld *world,
+		meHTVegetationLayer *vlayer);
 	/*@}*/
 };
 

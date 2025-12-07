@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceWaveSetMinFrequency::seUSourceWaveSetMinFrequency( seSourceWave *source, float newFrequency ) :
-pSource( NULL )
+seUSourceWaveSetMinFrequency::seUSourceWaveSetMinFrequency(seSourceWave *source, float newFrequency) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Source wave set minimum frequency" );
+	SetShortInfo("Source wave set minimum frequency");
 	
 	pOldFrequency = source->GetMinFrequency();
 	pNewFrequency = newFrequency;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUSourceWaveSetMinFrequency::~seUSourceWaveSetMinFrequency(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSourceWaveSetMinFrequency::~seUSourceWaveSetMinFrequency(){
 ///////////////
 
 void seUSourceWaveSetMinFrequency::Undo(){
-	pSource->SetMinFrequency( pOldFrequency );
+	pSource->SetMinFrequency(pOldFrequency);
 }
 
 void seUSourceWaveSetMinFrequency::Redo(){
-	pSource->SetMinFrequency( pNewFrequency );
+	pSource->SetMinFrequency(pNewFrequency);
 }

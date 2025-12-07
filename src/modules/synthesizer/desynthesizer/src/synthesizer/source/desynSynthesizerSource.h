@@ -84,8 +84,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer source. */
-	desynSynthesizerSource( desynSynthesizer &synthesizer, int firstLink,
-		const deSynthesizerSource &source );
+	desynSynthesizerSource(desynSynthesizer &synthesizer, int firstLink,
+		const deSynthesizerSource &source);
 	
 	/** \brief Clean up synthesizer source. */
 	virtual ~desynSynthesizerSource();
@@ -99,56 +99,56 @@ public:
 	deDESynthesizer &GetModule() const;
 	
 	/** \brief Parent synthesizer. */
-	inline const desynSynthesizer &GetSynthesizer() const{ return pSynthesizer; }
+	inline const desynSynthesizer &GetSynthesizer() const{return pSynthesizer;}
 	
 	
 	
 	/** \brief Source is silent. */
-	inline bool GetSilent() const{ return pSilent; }
+	inline bool GetSilent() const{return pSilent;}
 	
 	/** \brief Set if source is silent. */
-	void SetSilent( bool silent );
+	void SetSilent(bool silent);
 	
 	/** \brief Offset in bytes to state data in synthesizer instances. */
-	inline int GetStateDataOffset() const{ return pStateDataOffset; }
+	inline int GetStateDataOffset() const{return pStateDataOffset;}
 	
 	/** \brief Set offset in bytes to state data in synthesizer instances. */
-	void SetStateDataOffset( int offset );
+	void SetStateDataOffset(int offset);
 	
 	
 	
 	/** \brief Mix mode. */
-	inline deSynthesizerSource::eMixModes GetMixMode() const{ return pMixMode; }
+	inline deSynthesizerSource::eMixModes GetMixMode() const{return pMixMode;}
 	
 	
 	
 	/** \brief Blend factor target. */
-	inline desynSynthesizerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
-	inline const desynSynthesizerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
+	inline desynSynthesizerTarget &GetTargetBlendFactor(){return pTargetBlendFactor;}
+	inline const desynSynthesizerTarget &GetTargetBlendFactor() const{return pTargetBlendFactor;}
 	
 	/** \brief Volume target. */
-	inline desynSynthesizerTarget &GetTargetVolume(){ return pTargetVolume; }
-	inline const desynSynthesizerTarget &GetTargetVolume() const{ return pTargetVolume; }
+	inline desynSynthesizerTarget &GetTargetVolume(){return pTargetVolume;}
+	inline const desynSynthesizerTarget &GetTargetVolume() const{return pTargetVolume;}
 	
 	/** \brief Panning target. */
-	inline desynSynthesizerTarget &GetTargetPanning(){ return pTargetPanning; }
-	inline const desynSynthesizerTarget &GetTargetPanning() const{ return pTargetPanning; }
+	inline desynSynthesizerTarget &GetTargetPanning(){return pTargetPanning;}
+	inline const desynSynthesizerTarget &GetTargetPanning() const{return pTargetPanning;}
 	
 	
 	
 	/** \brief Nearest curve evaluate position. */
-	inline int NearestCurveEvalPosition( int indexSample, float curveOffset, float curveFactor ) const{
-		return ( int )( curveOffset + curveFactor * ( float )indexSample );
+	inline int NearestCurveEvalPosition(int indexSample, float curveOffset, float curveFactor) const{
+		return (int)(curveOffset + curveFactor * (float)indexSample);
 	}
 	
 	/** \brief Blend factor. */
-	float GetBlendFactor( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetBlendFactor(const desynSynthesizerInstance &instance, int sample) const;
 	
 	/** \brief Current volume. */
-	float GetVolume( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetVolume(const desynSynthesizerInstance &instance, int sample) const;
 	
 	/** \brief Current panning. */
-	float GetPanning( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetPanning(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -157,26 +157,26 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	int StateDataSize( int offset );
+	int StateDataSize(int offset);
 	
 	/**
 	 * \brief State data size of the source itself.
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSizeSource( int offset );
+	virtual int StateDataSizeSource(int offset);
 	
 	/** \brief Init state data. */
-	void InitStateData( char *stateData );
+	void InitStateData(char *stateData);
 	
 	/** \brief Init state data of source itself. */
-	virtual void InitStateDataSource( char *stateData );
+	virtual void InitStateDataSource(char *stateData);
 	
 	/** \brief Clean up state data. */
-	void CleanUpStateData( char *stateData );
+	void CleanUpStateData(char *stateData);
 	
 	/** \brief Clean up state data of source itself. */
-	virtual void CleanUpStateDataSource( char *stateData );
+	virtual void CleanUpStateDataSource(char *stateData);
 	
 	
 	
@@ -186,8 +186,8 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	void GenerateSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	void GenerateSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Generate sound using source.
@@ -198,45 +198,45 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor ) = 0;
+	virtual void GenerateSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor) = 0;
 	
 	/** \brief Generate silence. */
-	void GenerateSilence( const desynSynthesizerInstance &instance, float *buffer, int samples );
+	void GenerateSilence(const desynSynthesizerInstance &instance, float *buffer, int samples);
 	
 	/** \brief Generate silence. */
-	void GenerateSilence( const desynSynthesizerInstance &instance, float *buffer, int offset, int samples );
+	void GenerateSilence(const desynSynthesizerInstance &instance, float *buffer, int offset, int samples);
 	
 	/** \brief Apply silence. */
-	void ApplySilence( const desynSynthesizerInstance &instance, float *buffer,
-		int samples, float curveOffset, float curveFactor );
+	void ApplySilence(const desynSynthesizerInstance &instance, float *buffer,
+		int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Apply generated sound to the output buffer using mixing and volume. */
-	void ApplyGeneratedSound( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	void ApplyGeneratedSound(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Apply generated mono sound to the output buffer using add mixing and volume. */
-	void ApplyGeneratedSoundMonoAdd( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	void ApplyGeneratedSoundMonoAdd(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Apply generated mono sound to the output buffer using blend mixing and volume. */
-	void ApplyGeneratedSoundMonoBlend( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	void ApplyGeneratedSoundMonoBlend(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Apply generated stereo sound to the output buffer using add mixing and volume. */
-	void ApplyGeneratedSoundStereoAdd( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	void ApplyGeneratedSoundStereoAdd(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
 	/** \brief Apply generated stereo sound to the output buffer using blend mixing and volume. */
-	void ApplyGeneratedSoundStereoBlend( const desynSynthesizerInstance &instance, float *outputBuffer,
-		const float *generatedBuffer, int samples, float curveOffset, float curveFactor );
+	void ApplyGeneratedSoundStereoBlend(const desynSynthesizerInstance &instance, float *outputBuffer,
+		const float *generatedBuffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	void SkipSound( const desynSynthesizerInstance &instance, char *stateData,
+	void SkipSound(const desynSynthesizerInstance &instance, char *stateData,
 		int samples, float curveOffset, float curveFactor);
 	
 	/**
@@ -246,14 +246,14 @@ public:
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSourceSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor ) = 0;
+	virtual void SkipSourceSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor) = 0;
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateEffects( desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSource &source );
+	void pCreateEffects(desynSynthesizer &synthesizer, int firstLink, const deSynthesizerSource &source);
 	void pFreeEffects();
 };
 

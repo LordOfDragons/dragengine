@@ -54,12 +54,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRPTSkyLightGIFindContent::deoglRPTSkyLightGIFindContent( deoglRenderPlanSkyLight &plan ) :
-deParallelTask( &plan.GetPlan().GetRenderThread().GetOgl() ),
-pPlan( plan ),
-pElapsedTime( 0.0f )
+deoglRPTSkyLightGIFindContent::deoglRPTSkyLightGIFindContent(deoglRenderPlanSkyLight &plan) :
+deParallelTask(&plan.GetPlan().GetRenderThread().GetOgl()),
+pPlan(plan),
+pElapsedTime(0.0f)
 {
-	SetMarkFinishedAfterRun( true );
+	SetMarkFinishedAfterRun(true);
 }
 
 deoglRPTSkyLightGIFindContent::~deoglRPTSkyLightGIFindContent(){
@@ -81,7 +81,7 @@ deoglRPTSkyLightGIFindContent::~deoglRPTSkyLightGIFindContent(){
 #endif
 
 void deoglRPTSkyLightGIFindContent::Run(){
-	if( IsCancelled() ){
+	if(IsCancelled()){
 		return;
 	}
 	
@@ -95,24 +95,24 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		// position update happens in parallel. the detection box though is static so
 		// we do not have to calculate it on our own
 		const deoglGIState * const giState = plan.GetUpdateGIState();
-		if( ! giState ){
-			DETHROW( deeInvalidParam );
+		if(! giState){
+			DETHROW(deeInvalidParam);
 		}
 		
 		const deoglGICascade &cascade = giState->GetSkyShadowCascade();
-		const deoglSkyLayerGICascade * const slgc = pPlan.GetLayer()->GetGICascade( cascade );
-		if( ! slgc ){
-			DETHROW( deeInvalidParam );
+		const deoglSkyLayerGICascade * const slgc = pPlan.GetLayer()->GetGICascade(cascade);
+		if(! slgc){
+			DETHROW(deeInvalidParam);
 		}
 		
 // 		deoglDCollisionFrustum * const frustum = plan.GetUseFrustum();
 		deoglCollideList &collideList = pPlan.GetGICollideList();
 		deoglRWorld &world = *plan.GetWorld();
 		
-		deoglRLSVisitorCollectElements collectElements( collideList );
-		collectElements.InitFromGIBox( slgc->GetPosition(), cascade.GetDetectionBox(), *pPlan.GetLayer(), 2000.0f );
-		collectElements.SetCullLayerMask( plan.GetUseLayerMask() );
-		collectElements.SetLayerMask( plan.GetLayerMask() );
+		deoglRLSVisitorCollectElements collectElements(collideList);
+		collectElements.InitFromGIBox(slgc->GetPosition(), cascade.GetDetectionBox(), *pPlan.GetLayer(), 2000.0f);
+		collectElements.SetCullLayerMask(plan.GetUseLayerMask());
+		collectElements.SetLayerMask(plan.GetLayerMask());
 		
 		const decVector &boxMinExtend = collectElements.GetFrustumBoxMinExtend();
 		const decVector &boxMaxExtend = collectElements.GetFrustumBoxMaxExtend();
@@ -122,13 +122,13 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		const float splitSizeLimitPixels = 0.5f; //1.0f; // smaller to avoid problems
 		const int shadowMapSize = pPlan.GetGIShadowSize();
 		
-		const decVector boxSize( boxMaxExtend - boxMinExtend );
-		const float sizeThresholdX = ( boxSize.x / ( float )shadowMapSize ) * splitSizeLimitPixels;
-		const float sizeThresholdY = ( boxSize.y / ( float )shadowMapSize ) * splitSizeLimitPixels;
+		const decVector boxSize(boxMaxExtend - boxMinExtend);
+		const float sizeThresholdX = (boxSize.x / (float)shadowMapSize) * splitSizeLimitPixels;
+		const float sizeThresholdY = (boxSize.y / (float)shadowMapSize) * splitSizeLimitPixels;
 		
-		collectElements.AddSplit( boxMinExtend, boxMaxExtend, decVector2( sizeThresholdX, sizeThresholdY ) );
+		collectElements.AddSplit(boxMinExtend, boxMaxExtend, decVector2(sizeThresholdX, sizeThresholdY));
 		
-		collectElements.VisitWorldOctree( world.GetOctree() );
+		collectElements.VisitWorldOctree(world.GetOctree());
 		
 // 		if( plan.GetHeightTerrainView() ){
 // 			collideList.AddHTSectorsColliding( plan.GetHeightTerrainView(), frustum );
@@ -139,8 +139,8 @@ void deoglRPTSkyLightGIFindContent::Run(){
 		SPECIAL_TIMER_PRINT("FindContent")
 		pElapsedTime = timer.GetElapsedTime();
 		
-	}catch( const deException &e ){
-		plan.GetRenderThread().GetLogger().LogException( e );
+	}catch(const deException &e){
+		plan.GetRenderThread().GetLogger().LogException(e);
 		pSemaphore.Signal();
 		throw;
 	}

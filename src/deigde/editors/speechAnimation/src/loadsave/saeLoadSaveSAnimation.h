@@ -54,32 +54,32 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader. */
-	saeLoadSaveSAnimation( saeLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource );
+	saeLoadSaveSAnimation(saeLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Retrieves the pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** Loads the speech animation from file. */
-	void LoadSAnimation( saeSAnimation &sanimation, decBaseFileReader &reader );
+	void LoadSAnimation(saeSAnimation &sanimation, decBaseFileReader &reader);
 	/** Saves the speech animation to file. */
-	void SaveSAnimation( const saeSAnimation &sanimation, decBaseFileWriter &writer );
+	void SaveSAnimation(const saeSAnimation &sanimation, decBaseFileWriter &writer);
 	/*@}*/
 	
 private:
-	void pWriteSAnimation( decXmlWriter &writer, const saeSAnimation &sanimation );
-	void pWriteDisplay( decXmlWriter &writer, const saeSAnimation &sanimation );
-	void pWritePhoneme( decXmlWriter &writer, const saePhoneme &phoneme );
-	void pWriteWord( decXmlWriter &writer, const saeWord &word );
+	void pWriteSAnimation(decXmlWriter &writer, const saeSAnimation &sanimation);
+	void pWriteDisplay(decXmlWriter &writer, const saeSAnimation &sanimation);
+	void pWritePhoneme(decXmlWriter &writer, const saePhoneme &phoneme);
+	void pWriteWord(decXmlWriter &writer, const saeWord &word);
 	
-	void pReadSAnimation( const decXmlElementTag &root, saeSAnimation &sanimation );
-	void pReadDisplay( const decXmlElementTag &root, saeSAnimation &sanimation );
-	void pReadPhoneme( const decXmlElementTag &root, saeSAnimation &sanimation );
-	void pReadWord( const decXmlElementTag &root, saeSAnimation &sanimation );
+	void pReadSAnimation(const decXmlElementTag &root, saeSAnimation &sanimation);
+	void pReadDisplay(const decXmlElementTag &root, saeSAnimation &sanimation);
+	void pReadPhoneme(const decXmlElementTag &root, saeSAnimation &sanimation);
+	void pReadWord(const decXmlElementTag &root, saeSAnimation &sanimation);
 };
 
 #endif

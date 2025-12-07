@@ -37,8 +37,8 @@
 ////////////////////////////
 
 deoalDelayedDeletion::deoalDelayedDeletion() :
-pLLPrev( NULL ),
-pLLNext( NULL ){
+pLLPrev(NULL),
+pLLNext(NULL){
 }
 
 deoalDelayedDeletion::~deoalDelayedDeletion(){
@@ -49,10 +49,10 @@ deoalDelayedDeletion::~deoalDelayedDeletion(){
 // Linked list
 ////////////////
 
-void deoalDelayedDeletion::SetLLPrev( deoalDelayedDeletion *prev ){
+void deoalDelayedDeletion::SetLLPrev(deoalDelayedDeletion *prev){
 	pLLPrev = prev;
 }
 
-void deoalDelayedDeletion::SetLLNext( deoalDelayedDeletion *next ){
+void deoalDelayedDeletion::SetLLNext(deoalDelayedDeletion *next){
 	pLLNext = next;
 }

@@ -54,9 +54,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsRemoveAction( ceWindowMain &windowMain,
+	ceWPTMAPChoiceActionsRemoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, ceConversationAction *action );
+		ceCAPlayerChoice &playerChoice, ceConversationAction *action);
 	/*@}*/
 	
 	
@@ -64,16 +64,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
+	inline ceCAPlayerChoice *GetPlayerChoice() const{return pPlayerChoice;}
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline ceConversationAction *GetAction() const{return pAction;}
 	
 	
 	

@@ -42,10 +42,10 @@
 ////////////////////////////
 
 igdeBrowseItemGDPreviewListener::igdeBrowseItemGDPreviewListener(
-igdeIconListBox *iconListBox, igdeListItem *listItem, int iconSize ) :
-pIconListBox( iconListBox ),
-pListItem( listItem ),
-pIconSize( iconSize ){
+igdeIconListBox *iconListBox, igdeListItem *listItem, int iconSize) :
+pIconListBox(iconListBox),
+pListItem(listItem),
+pIconSize(iconSize){
 }
 
 igdeBrowseItemGDPreviewListener::~igdeBrowseItemGDPreviewListener(){
@@ -56,19 +56,19 @@ igdeBrowseItemGDPreviewListener::~igdeBrowseItemGDPreviewListener(){
 // Management
 ///////////////
 
-void igdeBrowseItemGDPreviewListener::ImageCreated( deImage *image ){
-	const int index = pIconListBox->IndexOfItem( pListItem );
-	if( index == -1 ){
+void igdeBrowseItemGDPreviewListener::ImageCreated(deImage *image){
+	const int index = pIconListBox->IndexOfItem(pListItem);
+	if(index == -1){
 		return;
 	}
 	
 	igdeIcon::Ref icon;
-	if( image->GetWidth() > image->GetHeight() ){
-		icon.TakeOver( new igdeIcon( *image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth() ) );
+	if(image->GetWidth() > image->GetHeight()){
+		icon.TakeOver(new igdeIcon(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth()));
 		
 	}else{
-		icon.TakeOver( new igdeIcon( *image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize ) );
+		icon.TakeOver(new igdeIcon(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize));
 	}
-	pListItem->SetIcon( icon );
-	pIconListBox->ItemChangedAt( index );
+	pListItem->SetIcon(icon);
+	pIconListBox->ItemChangedAt(index);
 }

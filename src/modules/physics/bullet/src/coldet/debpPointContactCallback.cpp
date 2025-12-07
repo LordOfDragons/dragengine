@@ -50,13 +50,13 @@
 // Constructors
 /////////////////
 
-debpPointContactCallback::debpPointContactCallback( const btVector3 &point,
+debpPointContactCallback::debpPointContactCallback(const btVector3 &point,
 const decCollisionFilter &collisionFilter, deBaseScriptingCollider &listener,
-debpCollisionDetection &colDet ) :
-pPoint( point ),
-pCollisionFilter( collisionFilter ),
-pListener( listener ),
-pColDet( colDet ){
+debpCollisionDetection &colDet) :
+pPoint(point),
+pCollisionFilter(collisionFilter),
+pListener(listener),
+pColDet(colDet){
 }
 
 
@@ -64,37 +64,37 @@ pColDet( colDet ){
 // Bullet
 ///////////
 
-bool debpPointContactCallback::process( const btBroadphaseProxy *proxy ){
-	btCollisionObject * const bpColObj = ( btCollisionObject* )proxy->m_clientObject;
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )bpColObj->getUserPointer() );
+bool debpPointContactCallback::process(const btBroadphaseProxy *proxy){
+	btCollisionObject * const bpColObj = (btCollisionObject*)proxy->m_clientObject;
+	const debpCollisionObject &colObj = *((debpCollisionObject*)bpColObj->getUserPointer());
 	bool callListener = false;
 	
 	// test against collider
-	if( colObj.IsOwnerCollider() ){
+	if(colObj.IsOwnerCollider()){
 		debpCollider * const collider = colObj.GetOwnerCollider();
 		deCollider * const engCollider = &collider->GetCollider();
 		
-		if( pCollisionFilter.CollidesNot( engCollider->GetCollisionFilter() ) ){
+		if(pCollisionFilter.CollidesNot(engCollider->GetCollisionFilter())){
 			return true;
 		}
-		if( ! pListener.CanHitCollider( NULL, engCollider ) ){
+		if(! pListener.CanHitCollider(NULL, engCollider)){
 			return true;
 		}
-		if( ! pColDet.GetBulletShapeCollision().IsPointInside( *bpColObj, pPoint ) ){
+		if(! pColDet.GetBulletShapeCollision().IsPointInside(*bpColObj, pPoint)){
 			return true;
 		}
 		
-		pColDet.GetCollisionInfo()->SetCollider( engCollider, colObj.GetOwnerBone(),
-			( int )( intptr_t )bpColObj->getCollisionShape()->getUserPointer() - 1,
-			-1 /* convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index */ );
+		pColDet.GetCollisionInfo()->SetCollider(engCollider, colObj.GetOwnerBone(),
+			(int)(intptr_t)bpColObj->getCollisionShape()->getUserPointer() - 1,
+			-1 /* convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index */);
 		callListener = true;
 		
 	// test against height terrain
-	}else if( colObj.IsOwnerHTSector() ){
+	}else if(colObj.IsOwnerHTSector()){
 		const decCollisionFilter &cfHT = colObj.GetOwnerHTSector()->GetHeightTerrain()->
 			GetHeightTerrain()->GetCollisionFilter();
 			
-		if( ! pCollisionFilter.Collides( cfHT ) ){
+		if(! pCollisionFilter.Collides(cfHT)){
 			return true;
 		}
 		
@@ -103,18 +103,18 @@ bool debpPointContactCallback::process( const btBroadphaseProxy *proxy ){
 		return true;
 		
 		const debpHTSector &htsector = *colObj.GetOwnerHTSector();
-		pColDet.GetCollisionInfo()->SetHTSector( htsector.GetHeightTerrain()->GetHeightTerrain(),
-			htsector.GetSector() );
+		pColDet.GetCollisionInfo()->SetHTSector(htsector.GetHeightTerrain()->GetHeightTerrain(),
+			htsector.GetSector());
 		callListener = true;
 	}
 	
 	// call listener if requested
 	deCollisionInfo * const colInfo = pColDet.GetCollisionInfo();
 	
-	if( callListener ){
-		colInfo->SetDistance( 0.0f ); // not used
-		colInfo->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) ); // not used
-		pListener.CollisionResponse( NULL, colInfo );
+	if(callListener){
+		colInfo->SetDistance(0.0f); // not used
+		colInfo->SetNormal(decVector(0.0f, 1.0f, 0.0f)); // not used
+		pListener.CollisionResponse(NULL, colInfo);
 	}
 	
 	// the return value seems to be not used. we use it the same way as in the sweep case

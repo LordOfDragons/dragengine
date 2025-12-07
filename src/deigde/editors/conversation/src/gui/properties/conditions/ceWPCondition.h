@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCondition( ceWPTopic &parentPanel );
+	ceWPCondition(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up property window. */
@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent Panel. */
-	inline ceWPTopic &GetParentPanel() const{ return pParentPanel; }
+	inline ceWPTopic &GetParentPanel() const{return pParentPanel;}
 	
 	/** \brief Update combo box with the list of actor ids an alias ids. */
-	void UpdateComboBoxWithActorIDList( igdeComboBox &combobox );
+	void UpdateComboBoxWithActorIDList(igdeComboBox &combobox);
 	/*@}*/
 };
 

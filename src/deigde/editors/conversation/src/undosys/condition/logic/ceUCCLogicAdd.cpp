@@ -43,16 +43,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicAdd::ceUCCLogicAdd( ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionLogic *logic, ceConversationCondition *condition ){
-	if( ! topic || ! action || ! logic || ! condition ) DETHROW( deeInvalidParam );
+ceUCCLogicAdd::ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionLogic *logic, ceConversationCondition *condition){
+	if(! topic || ! action || ! logic || ! condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pLogic = NULL;
 	pCondition = NULL;
 	
-	SetShortInfo( "Logic Add Condition" );
+	SetShortInfo("Logic Add Condition");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -68,16 +68,16 @@ ceCConditionLogic *logic, ceConversationCondition *condition ){
 }
 
 ceUCCLogicAdd::~ceUCCLogicAdd(){
-	if( pCondition ){
+	if(pCondition){
 		pCondition->FreeReference();
 	}
-	if( pLogic ){
+	if(pLogic){
 		pLogic->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -89,17 +89,17 @@ ceUCCLogicAdd::~ceUCCLogicAdd(){
 
 void ceUCCLogicAdd::Undo(){
 	ceConversationCondition * const activateCondition =
-		ceUConditionHelpers::ActivateConditionAfterRemove( pLogic->GetConditions(), pCondition );
+		ceUConditionHelpers::ActivateConditionAfterRemove(pLogic->GetConditions(), pCondition);
 	
-	pLogic->GetConditions().Remove( pCondition );
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pLogic->GetConditions().Remove(pCondition);
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive( pAction, activateCondition ? activateCondition : pLogic );
+	pTopic->SetActive(pAction, activateCondition ? activateCondition : pLogic);
 }
 
 void ceUCCLogicAdd::Redo(){
-	pLogic->GetConditions().Add( pCondition );
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pLogic->GetConditions().Add(pCondition);
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive( pAction, pCondition );
+	pTopic->SetActive(pAction, pCondition);
 }

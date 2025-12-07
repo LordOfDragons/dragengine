@@ -42,54 +42,54 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerRemove::seUControllerRemove( seController *controller ) :
-pSky( nullptr ),
-pController( nullptr ),
-pIndex( 0 ),
-pLinks( nullptr ),
-pLinkCount( 0 )
+seUControllerRemove::seUControllerRemove(seController *controller) :
+pSky(nullptr),
+pController(nullptr),
+pIndex(0),
+pLinks(nullptr),
+pLinkCount(0)
 {
-	DEASSERT_NOTNULL( controller )
+	DEASSERT_NOTNULL(controller)
 	
 	seSky * const sky = controller->GetSky();
-	DEASSERT_NOTNULL( sky )
+	DEASSERT_NOTNULL(sky)
 	
-	SetShortInfo( "Remove Controller" );
+	SetShortInfo("Remove Controller");
 	
-	pIndex = sky->GetControllers().IndexOf( controller );
-	DEASSERT_TRUE( pIndex != -1 )
+	pIndex = sky->GetControllers().IndexOf(controller);
+	DEASSERT_TRUE(pIndex != -1)
 	
-	const int usageCount = sky->CountControllerUsage( controller );
-	if( usageCount > 0 ){
+	const int usageCount = sky->CountControllerUsage(controller);
+	if(usageCount > 0){
 		const seLayerList &layers = sky->GetLayers();
 		const int layerCount = layers.GetCount();
 		int i, j, k;
 		
 		try{
-			pLinks = new seLink*[ usageCount ];
+			pLinks = new seLink*[usageCount];
 			
-			for( i=0; i<layerCount; i++ ){
-				seLayer * const layer = layers.GetAt( i );
+			for(i=0; i<layerCount; i++){
+				seLayer * const layer = layers.GetAt(i);
 				
-				for( j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++ ){
-					const deSkyLayer::eTargets target = ( deSkyLayer::eTargets )j;
-					const seLinkList &links = layer->GetTarget( target ).GetLinks();
+				for(j=deSkyLayer::etOffsetX; j<=deSkyLayer::etAmbientIntensity; j++){
+					const deSkyLayer::eTargets target = (deSkyLayer::eTargets)j;
+					const seLinkList &links = layer->GetTarget(target).GetLinks();
 					
 					const int linkCount = links.GetCount();
-					for( k=0; k<linkCount; k++ ){
-						seLink * const link = links.GetAt( k );
-						if( link->GetController() != controller ){
+					for(k=0; k<linkCount; k++){
+						seLink * const link = links.GetAt(k);
+						if(link->GetController() != controller){
 							continue;
 						}
 						
-						pLinks[ pLinkCount ] = link;
+						pLinks[pLinkCount] = link;
 						link->AddReference();
 						pLinkCount++;
 					}
 				}
 			}
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			pCleanUp();
 			throw;
 		}
@@ -112,20 +112,20 @@ seUControllerRemove::~seUControllerRemove(){
 ///////////////
 
 void seUControllerRemove::Undo(){
-	pSky->InsertControllerAt( pController, pIndex );
+	pSky->InsertControllerAt(pController, pIndex);
 	
 	int i;
-	for( i=0; i<pLinkCount; i++ ){
-		pLinks[ i ]->SetController( pController );
+	for(i=0; i<pLinkCount; i++){
+		pLinks[i]->SetController(pController);
 	}
 }
 
 void seUControllerRemove::Redo(){
-	pSky->RemoveController( pController );
+	pSky->RemoveController(pController);
 	
 	int i;
-	for( i=0; i<pLinkCount; i++ ){
-		pLinks[ i ]->SetController( nullptr );
+	for(i=0; i<pLinkCount; i++){
+		pLinks[i]->SetController(nullptr);
 	}
 }
 
@@ -136,14 +136,14 @@ void seUControllerRemove::Redo(){
 
 void seUControllerRemove::pCleanUp(){
 	int i;
-	for( i=0; i<pLinkCount; i++ ){
-		pLinks[ i ]->FreeReference();
+	for(i=0; i<pLinkCount; i++){
+		pLinks[i]->FreeReference();
 	}
 	
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }

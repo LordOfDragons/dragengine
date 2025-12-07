@@ -50,34 +50,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWindowProperties::reWindowProperties( reWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain )
+reWindowProperties::reWindowProperties(reWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain)
 {
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelRig.TakeOver( new reWPRig( *this ) );
-	AddChild( pPanelRig, "Rig" );
+	pPanelRig.TakeOver(new reWPRig(*this));
+	AddChild(pPanelRig, "Rig");
 	
-	pPanelBone.TakeOver( new reWPBone( *this ) );
-	AddChild( pPanelBone, "Bone" );
+	pPanelBone.TakeOver(new reWPBone(*this));
+	AddChild(pPanelBone, "Bone");
 	
-	pPanelShape.TakeOver( new reWPShape( *this ) );
-	AddChild( pPanelShape, "Shape" );
+	pPanelShape.TakeOver(new reWPShape(*this));
+	AddChild(pPanelShape, "Shape");
 	
-	pPanelConstraint.TakeOver( new reWPConstraint( *this ) );
-	AddChild( pPanelConstraint, "Constraint" );
+	pPanelConstraint.TakeOver(new reWPConstraint(*this));
+	AddChild(pPanelConstraint, "Constraint");
 	
-	pPanelPush.TakeOver( new reWPPush( *this ) );
-	AddChild( pPanelPush, "Push" );
+	pPanelPush.TakeOver(new reWPPush(*this));
+	AddChild(pPanelPush, "Push");
 	
-	pPanelView.TakeOver( new reWPView( *this ) );
-	AddChild( pPanelView, "View" );
+	pPanelView.TakeOver(new reWPView(*this));
+	AddChild(pPanelView, "View");
 	
-	pPanelUndoHistory.TakeOver( new reWPUndoHistory( GetEnvironment() ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory.TakeOver(new reWPUndoHistory(GetEnvironment()));
+	AddChild(pPanelUndoHistory, "Undo");
 	
-	SetActivePanel( 5 ); // view
+	SetActivePanel(5); // view
 }
 
 reWindowProperties::~reWindowProperties(){
@@ -88,12 +88,12 @@ reWindowProperties::~reWindowProperties(){
 // Management
 ///////////////
 
-void reWindowProperties::SetRig( reRig *rig ){
-	( ( reWPRig& )( igdeWidget& )pPanelRig ).SetRig( rig );
-	( ( reWPBone& )( igdeWidget& )pPanelBone ).SetRig( rig );
-	( ( reWPShape& )( igdeWidget& )pPanelShape ).SetRig( rig );
-	( ( reWPConstraint& )( igdeWidget& )pPanelConstraint ).SetRig( rig );
-	( ( reWPPush& )( igdeWidget& )pPanelPush ).SetRig( rig );
-	( ( reWPView& )( igdeWidget& )pPanelView ).SetRig( rig );
-	( ( reWPUndoHistory& )( igdeWPUndoHistory& )pPanelUndoHistory ).SetRig( rig );
+void reWindowProperties::SetRig(reRig *rig){
+	((reWPRig&)(igdeWidget&)pPanelRig).SetRig(rig);
+	((reWPBone&)(igdeWidget&)pPanelBone).SetRig(rig);
+	((reWPShape&)(igdeWidget&)pPanelShape).SetRig(rig);
+	((reWPConstraint&)(igdeWidget&)pPanelConstraint).SetRig(rig);
+	((reWPPush&)(igdeWidget&)pPanelPush).SetRig(rig);
+	((reWPView&)(igdeWidget&)pPanelView).SetRig(rig);
+	((reWPUndoHistory&)(igdeWPUndoHistory&)pPanelUndoHistory).SetRig(rig);
 }

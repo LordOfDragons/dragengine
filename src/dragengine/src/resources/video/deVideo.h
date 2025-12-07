@@ -74,18 +74,18 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video. */
-	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	deVideo(deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
 		TIME_SYSTEM modificationTime, int width, int height, int componentCount,
 		int bitCount, float frameRate, int frameCount,
 		const decColorMatrix3 &colorConversionMatrix, int bytesPerSample,
-		int sampleCount, int sampleRate, int channelCount );
+		int sampleCount, int sampleRate, int channelCount);
 	
 	/**
 	 * \brief Create video for internal loading.
 	 * \warning For use by deResourceLoader only.
 	 */
-	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime );
+	deVideo(deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
+		TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -103,40 +103,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** \brief Component count. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** \brief Number of frames. */
-	inline int GetFrameCount() const{ return pFrameCount; }
+	inline int GetFrameCount() const{return pFrameCount;}
 	
 	/** \brief Frame rate. */
-	inline float GetFrameRate() const{ return pFrameRate; }
+	inline float GetFrameRate() const{return pFrameRate;}
 	
 	/** \brief Bits per pixel. */
-	inline int GetBitCount() const{ return pBitCount; }
+	inline int GetBitCount() const{return pBitCount;}
 	
 	/** \brief Play time in seconds. */
-	inline float GetPlayTime() const{ return pPlayTime; }
+	inline float GetPlayTime() const{return pPlayTime;}
 	
 	/** \brief Color conversion matrix. */
-	inline const decColorMatrix3 &GetColorConversionMatrix() const{ return pColorConversionMatrix; }
+	inline const decColorMatrix3 &GetColorConversionMatrix() const{return pColorConversionMatrix;}
 	
 	/** \brief Bytes per sample or 0 if no audio. */
-	inline int GetBytesPerSample() const{ return pBytesPerSample; }
+	inline int GetBytesPerSample() const{return pBytesPerSample;}
 	
 	/** \brief Number of samples or 0 if no audio. */
-	inline int GetSampleCount() const{ return pSampleCount; }
+	inline int GetSampleCount() const{return pSampleCount;}
 	
 	/** \brief Number of channels or 0 if no audio. */
-	inline int GetChannelCount() const{ return pChannelCount; }
+	inline int GetChannelCount() const{return pChannelCount;}
 	
 	/** \brief Sample rate or 0 if no audio. */
-	inline int GetSampleRate() const{ return pSampleRate; }
+	inline int GetSampleRate() const{return pSampleRate;}
 	/*@}*/
 	
 	
@@ -144,10 +144,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicVideo *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicVideo *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicVideo *peer );
+	void SetPeerGraphic(deBaseGraphicVideo *peer);
 	/*@}*/
 	
 	
@@ -158,9 +158,9 @@ public:
 	 * \brief Finalize construction after asynchronous loading.
 	 * \warning For use by deResourceLoader only.
 	 */
-	void FinalizeConstruction( int width, int height, int componentCount, int bitCount,
+	void FinalizeConstruction(int width, int height, int componentCount, int bitCount,
 		float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
-		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
+		int bytesPerSample, int sampleCount, int sampleRate, int channelCount);
 	/*@}*/
 };
 

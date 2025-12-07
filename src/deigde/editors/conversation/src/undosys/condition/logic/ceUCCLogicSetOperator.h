@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicSetOperator( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionLogic *logic, ceCConditionLogic::eOperators newOperator );
+	ceUCCLogicSetOperator(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionLogic *logic, ceCConditionLogic::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicSetOperator();

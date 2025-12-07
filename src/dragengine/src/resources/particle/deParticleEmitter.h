@@ -136,7 +136,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new particle emitter. */
-	deParticleEmitter( deParticleEmitterManager *manager );
+	deParticleEmitter(deParticleEmitterManager *manager);
 	
 protected:
 	/**
@@ -154,35 +154,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Burst lifetime of the emitter. */
-	inline float GetBurstLifetime() const{ return pBurstLifetime; }
+	inline float GetBurstLifetime() const{return pBurstLifetime;}
 	
 	/** \brief Set burst lifetime of the emitter. */
-	void SetBurstLifetime( float lifetime );
+	void SetBurstLifetime(float lifetime);
 	
 	/** \brief Particles are emit as burst (particle count curve) or continuous (interval curve). */
-	inline bool GetEmitBurst() const{ return pEmitBurst; }
+	inline bool GetEmitBurst() const{return pEmitBurst;}
 	
 	/** \brief Set if particles are emit as burst (particle count curve) or continuous (interval curve). */
-	void SetEmitBurst( bool emitBurst );
+	void SetEmitBurst(bool emitBurst);
 	
 	/** \brief Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{return pTypeCount;}
 	
 	/** \brief Set number of types. */
-	void SetTypeCount( int count );
+	void SetTypeCount(int count);
 	
 	/** \brief Type at the given index. */
-	deParticleEmitterType &GetTypeAt( int index );
-	const deParticleEmitterType &GetTypeAt( int index ) const;
+	deParticleEmitterType &GetTypeAt(int index);
+	const deParticleEmitterType &GetTypeAt(int index) const;
 	
 	/** \brief Notifies that the type at the given index changed. */
-	void NotifyTypeChangedAt( int type );
+	void NotifyTypeChangedAt(int type);
 	
 	/** \brief Graphic module takes care of simulation. */
-	inline bool GetGraphicModuleSimulates() const{ return pGraphicModuleSimlates; }
+	inline bool GetGraphicModuleSimulates() const{return pGraphicModuleSimlates;}
 	
 	/** \brief Set if graphic module takes care of simulation. */
-	void SetGraphicModuleSimulates( bool graphicModuleSimulates );
+	void SetGraphicModuleSimulates(bool graphicModuleSimulates);
 	/*@}*/
 	
 	
@@ -190,31 +190,31 @@ public:
 	/** \name Controller Management */
 	/*@{*/
 	/** \brief Count of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	inline int GetControllerCount() const{return pControllerCount;}
 	
 	/** \brief Controller at index. */
-	deParticleEmitterController *GetControllerAt( int index ) const;
+	deParticleEmitterController *GetControllerAt(int index) const;
 	
 	/** \brief Index of controller or -1 if absent. */
-	int IndexOfController( deParticleEmitterController *controller ) const;
+	int IndexOfController(deParticleEmitterController *controller) const;
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *controller ) const;
+	int IndexOfControllerNamed(const char *controller) const;
 	
 	/** \brief Controller is present. */
-	bool HasController( deParticleEmitterController *controller ) const;
+	bool HasController(deParticleEmitterController *controller) const;
 	
 	/** \brief Add controller. */
-	void AddController( deParticleEmitterController *controller );
+	void AddController(deParticleEmitterController *controller);
 	
 	/** \brief Remove controller. */
-	void RemoveController( deParticleEmitterController *controller );
+	void RemoveController(deParticleEmitterController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
 	
 	/** \brief Notify peers controller changed. */
-	void NotifyControllerChangedAt( int index );
+	void NotifyControllerChangedAt(int index);
 	/*@}*/
 	
 	
@@ -222,16 +222,16 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer object or NULL if not assigned. */
-	inline deBaseGraphicParticleEmitter *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicParticleEmitter *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer object or NULL if not assigned. */
-	void SetPeerGraphic( deBaseGraphicParticleEmitter *peer );
+	void SetPeerGraphic(deBaseGraphicParticleEmitter *peer);
 	
 	/** \brief Physics system peer object or NULL if not assigned. */
-	inline deBasePhysicsParticleEmitter *GetPeerPhysics() const{ return pPeerPhysics; }
+	inline deBasePhysicsParticleEmitter *GetPeerPhysics() const{return pPeerPhysics;}
 	
 	/** \brief Set physics system peer object or NULL if not assigned. */
-	void SetPeerPhysics( deBasePhysicsParticleEmitter *peer );
+	void SetPeerPhysics(deBasePhysicsParticleEmitter *peer);
 	/*@}*/
 };
 

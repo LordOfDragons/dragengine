@@ -46,13 +46,13 @@ public:
 	decCurveBezierPoint();
 	
 	/** \brief Create a new bezier curve point. */
-	decCurveBezierPoint( const decVector2 &point );
+	decCurveBezierPoint(const decVector2 &point);
 	
 	/** \brief Create a new bezier curve point. */
-	decCurveBezierPoint( const decVector2 &point, const decVector2 &handle1, const decVector2 &handle2 );
+	decCurveBezierPoint(const decVector2 &point, const decVector2 &handle1, const decVector2 &handle2);
 	
 	/** \brief Create a new bezier curve point. */
-	decCurveBezierPoint( const decCurveBezierPoint &point );
+	decCurveBezierPoint(const decCurveBezierPoint &point);
 	/*@}*/
 	
 	
@@ -60,22 +60,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Point. */
-	inline const decVector2 &GetPoint() const{ return pPoint; }
+	inline const decVector2 &GetPoint() const{return pPoint;}
 	
 	/** \brief First handle. */
-	inline const decVector2 &GetHandle1() const{ return pHandle1; }
+	inline const decVector2 &GetHandle1() const{return pHandle1;}
 	
 	/** \brief Second handle. */
-	inline const decVector2 &GetHandle2() const{ return pHandle2; }
+	inline const decVector2 &GetHandle2() const{return pHandle2;}
 	
 	/** \brief Set point. */
-	void SetPoint( const decVector2 &point );
+	void SetPoint(const decVector2 &point);
 	
 	/** \brief Set point. */
-	void SetPoint( const decVector2 &point, const decVector2 &handle1, const decVector2 &handle2 );
+	void SetPoint(const decVector2 &point, const decVector2 &handle1, const decVector2 &handle2);
 	
 	/** \brief Curve points are equal. */
-	bool IsEqualTo( const decCurveBezierPoint &point, float threshold = VECTOR_THRESHOLD ) const;
+	bool IsEqualTo(const decCurveBezierPoint &point, float threshold = VECTOR_THRESHOLD) const;
 	/*@}*/
 };
 

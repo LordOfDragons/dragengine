@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetPlaySpeed( gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue );
+	gdeUOCSpeakerSetPlaySpeed(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

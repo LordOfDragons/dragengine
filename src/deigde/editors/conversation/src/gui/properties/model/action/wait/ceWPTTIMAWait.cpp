@@ -43,27 +43,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMAWait::ceWPTTIMAWait( ceWindowMain &windowMain,
-ceConversation &conversation, ceCAWait *action ) :
-ceWPTTIMAction( windowMain, etActionWait, conversation, action ),
-pCondition( NULL ),
-pActions( NULL )
+ceWPTTIMAWait::ceWPTTIMAWait(ceWindowMain &windowMain,
+ceConversation &conversation, ceCAWait *action) :
+ceWPTTIMAction(windowMain, etActionWait, conversation, action),
+pCondition(NULL),
+pActions(NULL)
 {
-	SetIcon( windowMain.GetIconActionWait() );
-	SetText( "Wait" );
+	SetIcon(windowMain.GetIconActionWait());
+	SetText("Wait");
 	
 	try{
-		pCondition = new ceWPTTIMAWaitCondition( windowMain, conversation, action );
-		AddChild( pCondition );
+		pCondition = new ceWPTTIMAWaitCondition(windowMain, conversation, action);
+		AddChild(pCondition);
 		
-		pActions = new ceWPTTIMAWaitActions( windowMain, conversation, action->GetActions() );
-		AddChild( pActions );
+		pActions = new ceWPTTIMAWaitActions(windowMain, conversation, action->GetActions());
+		AddChild(pActions);
 		
-	}catch( const deException & ){
-		if( pActions ){
+	}catch(const deException &){
+		if(pActions){
 			pActions->FreeReference();
 		}
-		if( pCondition ){
+		if(pCondition){
 			pCondition->FreeReference();
 		}
 		throw;
@@ -83,7 +83,7 @@ ceWPTTIMAWait::~ceWPTTIMAWait(){
 
 void ceWPTTIMAWait::Update(){
 	const ceCAWait &wait = *GetActionWait();
-	SetExpanded( wait.GetTIMExpanded() );
+	SetExpanded(wait.GetTIMExpanded());
 	
 	pCondition->Update();
 	pActions->Update();
@@ -94,5 +94,5 @@ void ceWPTTIMAWait::UpdateActionLists(){
 }
 
 void ceWPTTIMAWait::OnExpandedChanged(){
-	GetActionWait()->SetTIMExpanded( GetExpanded() );
+	GetActionWait()->SetTIMExpanded(GetExpanded());
 }

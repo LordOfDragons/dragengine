@@ -59,21 +59,21 @@ protected:
 	seWPSky &pPanel;
 	
 public:
-	cColorBackground( seWPSky &panel ) : pPanel( panel ){ }
+	cColorBackground(seWPSky &panel) : pPanel(panel){}
 	
-	virtual void OnColorChanged( igdeColorBox *colorBox ){
+	virtual void OnColorChanged(igdeColorBox *colorBox){
 		seSky * const sky = pPanel.GetSky();
-		if( ! sky ){
+		if(! sky){
 			return;
 		}
 		
-		if( colorBox->GetColor().IsEqualTo( sky->GetBgColor() ) ){
+		if(colorBox->GetColor().IsEqualTo(sky->GetBgColor())){
 			return;
 		}
 		
 		seUSkySetBgColor::Ref undo(seUSkySetBgColor::Ref::NewWith(sky, colorBox->GetColor()));
-		if( undo ){
-			sky->GetUndoSystem()->Add( undo );
+		if(undo){
+			sky->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -88,30 +88,30 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPSky::seWPSky( seWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pSky( NULL ),
-pListener( NULL )
+seWPSky::seWPSky(seWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pSky(NULL),
+pListener(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPSkyListener( *this );
+	pListener = new seWPSkyListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	helper.GroupBox( content, groupBox, "Sky:" );
+	helper.GroupBox(content, groupBox, "Sky:");
 	
-	helper.ColorBox( groupBox, "Bg Color:", "Background Color.", pClrBg, new cColorBackground( *this ) );
+	helper.ColorBox(groupBox, "Bg Color:", "Background Color.", pClrBg, new cColorBackground(*this));
 }
 
 seWPSky::~seWPSky(){
-	SetSky( NULL );
+	SetSky(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -121,21 +121,21 @@ seWPSky::~seWPSky(){
 // Management
 ///////////////
 
-void seWPSky::SetSky( seSky *sky ){
-	if( sky == pSky ){
+void seWPSky::SetSky(seSky *sky){
+	if(sky == pSky){
 		return;
 	}
 	
-	if( pSky ){
-		pSky->RemoveListener( pListener );
+	if(pSky){
+		pSky->RemoveListener(pListener);
 		pSky->FreeReference();
 		pSky = NULL;
 	}
 	
 	pSky = sky;
 	
-	if( sky ){
-		sky->AddListener( pListener );
+	if(sky){
+		sky->AddListener(pListener);
 		sky->AddReference();
 	}
 	
@@ -145,14 +145,14 @@ void seWPSky::SetSky( seSky *sky ){
 
 
 void seWPSky::UpdateSky(){
-	if( pSky ){
-		pClrBg->SetColor( pSky->GetBgColor() );
+	if(pSky){
+		pClrBg->SetColor(pSky->GetBgColor());
 		
 	}else{
-		pClrBg->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+		pClrBg->SetColor(decColor(1.0f, 1.0f, 1.0f));
 	}
 	
 	const bool enabled = pSky != NULL;
 	
-	pClrBg->SetEnabled( enabled );
+	pClrBg->SetEnabled(enabled);
 }

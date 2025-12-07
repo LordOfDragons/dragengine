@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create load template. */
-	igdeLoadTemplate( deLogger *logger );
+	igdeLoadTemplate(deLogger *logger);
 	/*@}*/
 	
 	
@@ -52,15 +52,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load template using file reader. */
-	void Load( decBaseFileReader &reader, igdeTemplate &atemplate );
+	void Load(decBaseFileReader &reader, igdeTemplate &atemplate);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadTemplate( const decXmlElementTag &root, igdeTemplate &atemplate );
-	void pReadFile( const decXmlElementTag &root, igdeTemplateFile &file );
-	void pReadReplace( const decXmlElementTag &root, igdeTemplateReplace &replace );
+	void pReadTemplate(const decXmlElementTag &root, igdeTemplate &atemplate);
+	void pReadFile(const decXmlElementTag &root, igdeTemplateFile &file);
+	void pReadReplace(const decXmlElementTag &root, igdeTemplateReplace &replace);
 };
 
 #endif

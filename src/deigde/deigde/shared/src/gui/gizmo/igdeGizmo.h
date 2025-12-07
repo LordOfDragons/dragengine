@@ -73,8 +73,8 @@ private:
 		decColor color;
 		int ddshapeIndex;
 		
-		cShapeColor( const char *aname, const decColor &acolor, int addshapeIndex ) :
-		name( aname ), color( acolor ), ddshapeIndex( addshapeIndex ){
+		cShapeColor(const char *aname, const decColor &acolor, int addshapeIndex) :
+		name(aname), color(acolor), ddshapeIndex(addshapeIndex){
 		}
 	};
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gizmo. */
-	igdeGizmo( igdeEnvironment &environment );
+	igdeGizmo(igdeEnvironment &environment);
 	
 	
 	
@@ -123,59 +123,59 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World or nullptr. */
-	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
+	inline const deWorld::Ref &GetWorld() const{return pWorld;}
 	
 	/** \brief Set world or nullptr. */
-	void SetWorld( deWorld *world );
+	void SetWorld(deWorld *world);
 	
 	
 	
 	/** \brief Get color of named shape. */
-	const decColor &GetShapeColor( const char *name ) const;
+	const decColor &GetShapeColor(const char *name) const;
 	
 	/** \brief Set color of named shape. */
-	void SetShapeColor( const char *name, const decColor &color );
+	void SetShapeColor(const char *name, const decColor &color);
 	
 	/** \brief Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/**
 	 * \brief Set transparency.
 	 * 
 	 * Default value is 0.95 .
 	 */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** \brief Hover transparency. */
-	inline float GetHoverTransparency() const{ return pHoverTransparency; }
+	inline float GetHoverTransparency() const{return pHoverTransparency;}
 	
 	/**
 	 * \brief Set hover transparency.
 	 * 
 	 * Default value is 0.45 .
 	 */
-	void SetHoverTransparency( float transparency );
+	void SetHoverTransparency(float transparency);
 	
 	/** \brief Hover color multiply factor. */
-	inline const decColor &GetHoverColorMultiply() const{ return pHoverColorMultiply; }
+	inline const decColor &GetHoverColorMultiply() const{return pHoverColorMultiply;}
 	
 	/**
 	 * \brief Set hover color multiply factor.
 	 * 
 	 * Default value is white.
 	 */
-	void SetHoverColorMultiply( const decColor &multiply );
+	void SetHoverColorMultiply(const decColor &multiply);
 	
 	/** \brief Collision filter. */
 	const decCollisionFilter &GetCollisionFilter() const;
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &filter );
+	void SetCollisionFilter(const decCollisionFilter &filter);
 	
 	
 	
 	/** \brief Set collider user pointer. */
-	void SetColliderUserPointer( void *userPointer );
+	void SetColliderUserPointer(void *userPointer);
 	
 	
 	
@@ -183,29 +183,29 @@ public:
 	bool GetVisible() const;
 	
 	/** \brief Set if gizmo is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	
 	/** \brief Position. */
 	const decDVector &GetPosition() const;
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
 	const decQuaternion &GetOrientation() const;
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Scale. */
 	const decVector &GetScale() const;
 	
 	/** \brief Set scale. */
-	void SetScale( const decVector &scale );
+	void SetScale(const decVector &scale);
 	
 	/** \brief Set position and orientation. */
-	void SetGeometry( const decDVector &position, const decQuaternion &orientation );
-	void SetGeometry( const decDMatrix &matrix );
+	void SetGeometry(const decDVector &position, const decQuaternion &orientation);
+	void SetGeometry(const decDMatrix &matrix);
 	
 	/** \brief Gizmo matrix without scaling. */
 	decDMatrix GetMatrix() const;
@@ -218,13 +218,13 @@ public:
 	 * Each material is assigned an individual debug drawer shape. Stores the list of
 	 * material names with the list index matching the debug drawer shape index.
 	 */
-	void SetShapeFromModel( const deModel &model );
+	void SetShapeFromModel(const deModel &model);
 	
 	/** \brief Rig or nullptr. */
 	deRig *GetRig() const;
 	
 	/** \brief Set rig or nullptr. */
-	void SetRig( deRig *rig );
+	void SetRig(deRig *rig);
 	/*@}*/
 	
 	
@@ -242,8 +242,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void StartHovering( const decDVector &rayOrigin, const decDVector &rayDirection,
-		double distance, int bone, int shape, int modifiers );
+	void StartHovering(const decDVector &rayOrigin, const decDVector &rayDirection,
+		double distance, int bone, int shape, int modifiers);
 	
 	/**
 	 * \brief Update hovering.
@@ -260,8 +260,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void UpdateHovering( const decDVector &rayOrigin, const decDVector &rayDirection,
-		double distance, int bone, int shape, int modifiers );
+	void UpdateHovering(const decDVector &rayOrigin, const decDVector &rayDirection,
+		double distance, int bone, int shape, int modifiers);
 	
 	/** \brief Stop hovering. */
 	void StopHovering();
@@ -271,10 +271,10 @@ public:
 	 * 
 	 * Returns true between StartHovering() and StopHovering() otherwise false.
 	 */
-	inline bool IsHovering() const{ return pIsHovering; }
+	inline bool IsHovering() const{return pIsHovering;}
 	
 	/** \brief Name of hover shape or empty string. */
-	inline const decString &GetHoverShapeName() const{ return pHoverShapeName; }
+	inline const decString &GetHoverShapeName() const{return pHoverShapeName;}
 	
 	
 	
@@ -292,8 +292,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	bool StartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, double distance, int bone, int shape, int modifiers );
+	bool StartEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, double distance, int bone, int shape, int modifiers);
 	
 	/**
 	 * \brief Update editing.
@@ -307,8 +307,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void UpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, int modifiers );
+	void UpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, int modifiers);
 	
 	/**
 	 * \brief User wheeled mouse while editing.
@@ -319,8 +319,8 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	void MouseWheeledEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, const decPoint &change, int modifiers );
+	void MouseWheeledEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, const decPoint &change, int modifiers);
 	
 	/**
 	 * \brief Stop editing.
@@ -329,14 +329,14 @@ public:
 	 * 
 	 * Called if StartEditing() returned true.
 	 */
-	void StopEditing( bool cancel );
+	void StopEditing(bool cancel);
 	
 	/**
 	 * \brief Gizmo is editing.
 	 * 
 	 * Returns true between StartEditing() returning true and StopEditing() otherwise false.
 	 */
-	inline bool IsEditing() const{ return pIsEditing; }
+	inline bool IsEditing() const{return pIsEditing;}
 	
 	
 	
@@ -344,7 +344,7 @@ public:
 	 * \brief Frame update.
 	 * \param[in] elapsed Elapsed time.
 	 */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	/*@}*/
 	
 	
@@ -359,8 +359,8 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnStartHovering( const decDVector &rayOrigin,
-		const decDVector &rayDirection, const decDVector &hitPoint, int modifiers );
+	virtual void OnStartHovering(const decDVector &rayOrigin,
+		const decDVector &rayDirection, const decDVector &hitPoint, int modifiers);
 	
 	/**
 	 * \brief Update hovering.
@@ -375,8 +375,8 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnUpdateHovering( const decDVector &rayOrigin,
-		const decDVector &rayDirection, const decDVector &hitPoint, int modifiers );
+	virtual void OnUpdateHovering(const decDVector &rayOrigin,
+		const decDVector &rayDirection, const decDVector &hitPoint, int modifiers);
 	
 	/** \brief Stop hovering. */
 	virtual void OnStopHovering();
@@ -397,9 +397,9 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual bool OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+	virtual bool OnStartEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix, const decDVector &hitPoint, const decString &shapeName,
-		int modifiers ) = 0;
+		int modifiers) = 0;
 	
 	/**
 	 * \brief Update editing.
@@ -412,8 +412,8 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnUpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, int modifiers );
+	virtual void OnUpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, int modifiers);
 	
 	/**
 	 * \brief User wheeled mouse while editing.
@@ -424,8 +424,8 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseWheeledEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, const decPoint &change, int modifiers );
+	virtual void OnMouseWheeledEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, const decPoint &change, int modifiers);
 	
 	/**
 	 * \brief Stop editing.
@@ -434,7 +434,7 @@ protected:
 	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	virtual void OnStopEditing( bool cancel );
+	virtual void OnStopEditing(bool cancel);
 	
 	
 	
@@ -448,8 +448,8 @@ protected:
 	
 private:
 	void pApplyShapeColors();
-	cShapeColor *pNamedShapeColor( const char *name ) const;
-	const decString &pCollisionShapeName( int bone, int shape ) const;
+	cShapeColor *pNamedShapeColor(const char *name) const;
+	const decString &pCollisionShapeName(int bone, int shape) const;
 };
 
 #endif

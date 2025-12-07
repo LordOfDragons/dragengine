@@ -46,15 +46,15 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delBaseXML::delBaseXML( deLogger *logger, const char *loggerSource ) :
-pLogger( logger ),
-pLoggerSource( loggerSource )
+delBaseXML::delBaseXML(deLogger *logger, const char *loggerSource) :
+pLogger(logger),
+pLoggerSource(loggerSource)
 {
-	if( ! logger ){
-		DETHROW_INFO( deeNullPointer, "logger" );
+	if(! logger){
+		DETHROW_INFO(deeNullPointer, "logger");
 	}
-	if( ! loggerSource ){
-		DETHROW_INFO( deeNullPointer, "loggerSource" );
+	if(! loggerSource){
+		DETHROW_INFO(deeNullPointer, "loggerSource");
 	}
 }
 
@@ -66,78 +66,78 @@ delBaseXML::~delBaseXML(){
 // Management
 ///////////////
 
-bool delBaseXML::HasAttribute( const decXmlElementTag &tag, const char *name ) const{
-	return tag.FindAttribute( name ) != NULL;
+bool delBaseXML::HasAttribute(const decXmlElementTag &tag, const char *name) const{
+	return tag.FindAttribute(name) != NULL;
 }
 
-const decString &delBaseXML::GetAttributeString( const decXmlElementTag &tag, const char *name ) const{
-	const decXmlAttValue * const value = tag.FindAttribute( name );
-	if( value ){
+const decString &delBaseXML::GetAttributeString(const decXmlElementTag &tag, const char *name) const{
+	const decXmlAttValue * const value = tag.FindAttribute(name);
+	if(value){
 		return value->GetValue();
 	}
 	
-	pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
-		name, tag.GetName().GetString() );
-	DETHROW( deeInvalidParam );
+	pLogger->LogErrorFormat(pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
+		name, tag.GetName().GetString());
+	DETHROW(deeInvalidParam);
 }
 
-int delBaseXML::GetAttributeInt( const decXmlElementTag &tag, const char *name ) const{
-	const decXmlAttValue * const value = tag.FindAttribute( name );
-	if( value ){
+int delBaseXML::GetAttributeInt(const decXmlElementTag &tag, const char *name) const{
+	const decXmlAttValue * const value = tag.FindAttribute(name);
+	if(value){
 		return value->GetValue().ToInt();
 	}
 	
-	pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
-		name, tag.GetName().GetString() );
-	DETHROW( deeInvalidParam );
+	pLogger->LogErrorFormat(pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
+		name, tag.GetName().GetString());
+	DETHROW(deeInvalidParam);
 }
 
-float delBaseXML::GetAttributeFloat( const decXmlElementTag &tag, const char *name ) const{
-	const decXmlAttValue * const value = tag.FindAttribute( name );
-	if( value ){
+float delBaseXML::GetAttributeFloat(const decXmlElementTag &tag, const char *name) const{
+	const decXmlAttValue * const value = tag.FindAttribute(name);
+	if(value){
 		return value->GetValue().ToFloat();
 	}
 	
-	pLogger->LogErrorFormat( pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
-		name, tag.GetName().GetString() );
-	DETHROW( deeInvalidParam );
+	pLogger->LogErrorFormat(pLoggerSource.GetString(), "Missing Attribute %s in tag %s",
+		name, tag.GetName().GetString());
+	DETHROW(deeInvalidParam);
 }
 
-int delBaseXML::GetCDataInt( const decXmlElementTag &tag ) const{
+int delBaseXML::GetCDataInt(const decXmlElementTag &tag) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	return cdata ? cdata->GetData().ToInt() : 0;
 }
 
-float delBaseXML::GetCDataFloat( const decXmlElementTag &tag ) const{
+float delBaseXML::GetCDataFloat(const decXmlElementTag &tag) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	return cdata ? cdata->GetData().ToFloat() : 0.0f;
 }
 
-const decString &delBaseXML::GetCDataString( const decXmlElementTag &tag ) const{
+const decString &delBaseXML::GetCDataString(const decXmlElementTag &tag) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	static const decString empty;
 	return cdata ? cdata->GetData() : empty;
 }
 
-bool delBaseXML::GetCDataBool( const decXmlElementTag &tag ) const{
+bool delBaseXML::GetCDataBool(const decXmlElementTag &tag) const{
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
-	return cdata && ( cdata->GetData() == "true" || cdata->GetData() == "1" );
+	return cdata && (cdata->GetData() == "true" || cdata->GetData() == "1");
 }
 
 
 
-void delBaseXML::ErrorUnknownTag( const decXmlElementTag &root, const decXmlElementTag &tag ){
-	pLogger->LogErrorFormat( pLoggerSource.GetString(), "%s(%i:%i): Unknown Tag %s",
+void delBaseXML::ErrorUnknownTag(const decXmlElementTag &root, const decXmlElementTag &tag){
+	pLogger->LogErrorFormat(pLoggerSource.GetString(), "%s(%i:%i): Unknown Tag %s",
 		root.GetName().GetString(), tag.GetLineNumber(), tag.GetPositionNumber(),
-		tag.GetName().GetString() );
+		tag.GetName().GetString());
 }
 
-void delBaseXML::ErrorUnknownValue( const decXmlElementTag &tag, const char *value ){
-	pLogger->LogErrorFormat( pLoggerSource.GetString(), "%s(%i:%i): Unknown Value %s",
-		tag.GetName().GetString(), tag.GetLineNumber(), tag.GetPositionNumber(), value );
+void delBaseXML::ErrorUnknownValue(const decXmlElementTag &tag, const char *value){
+	pLogger->LogErrorFormat(pLoggerSource.GetString(), "%s(%i:%i): Unknown Value %s",
+		tag.GetName().GetString(), tag.GetLineNumber(), tag.GetPositionNumber(), value);
 }
 
-void delBaseXML::ErrorMissingTag( const decXmlElementTag &root, const char *tagName ){
-	pLogger->LogErrorFormat( pLoggerSource.GetString(), "%s(%i:%i): Missing Tag %s",
-		root.GetName().GetString(), root.GetLineNumber(), root.GetPositionNumber(), tagName );
+void delBaseXML::ErrorMissingTag(const decXmlElementTag &root, const char *tagName){
+	pLogger->LogErrorFormat(pLoggerSource.GetString(), "%s(%i:%i): Missing Tag %s",
+		root.GetName().GetString(), root.GetLineNumber(), root.GetPositionNumber(), tagName);
 }

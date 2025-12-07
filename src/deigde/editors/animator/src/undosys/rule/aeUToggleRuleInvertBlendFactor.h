@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	aeUToggleRuleInvertBlendFactor( aeRule *rule );
+	aeUToggleRuleInvertBlendFactor(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */

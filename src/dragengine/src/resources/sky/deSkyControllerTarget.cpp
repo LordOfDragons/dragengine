@@ -41,8 +41,8 @@
 deSkyControllerTarget::deSkyControllerTarget(){
 }
 
-deSkyControllerTarget::deSkyControllerTarget( const deSkyControllerTarget &target ) :
-pLinks( target.pLinks ){
+deSkyControllerTarget::deSkyControllerTarget(const deSkyControllerTarget &target) :
+pLinks(target.pLinks){
 }
 
 deSkyControllerTarget::~deSkyControllerTarget(){
@@ -57,25 +57,25 @@ int deSkyControllerTarget::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-int deSkyControllerTarget::GetLinkAt( int index ) const{
-	return pLinks.GetAt( index );
+int deSkyControllerTarget::GetLinkAt(int index) const{
+	return pLinks.GetAt(index);
 }
 
-bool deSkyControllerTarget::HasLink( int link ) const{
-	return pLinks.Has( link );
+bool deSkyControllerTarget::HasLink(int link) const{
+	return pLinks.Has(link);
 }
 
-void deSkyControllerTarget::AddLink( int link ){
-	pLinks.Add( link );
+void deSkyControllerTarget::AddLink(int link){
+	pLinks.Add(link);
 }
 
-void deSkyControllerTarget::RemoveLink( int link ){
-	const int index = pLinks.IndexOf( link );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void deSkyControllerTarget::RemoveLink(int link){
+	const int index = pLinks.IndexOf(link);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pLinks.RemoveFrom( index );
+	pLinks.RemoveFrom(index);
 }
 
 void deSkyControllerTarget::RemoveAllLinks(){

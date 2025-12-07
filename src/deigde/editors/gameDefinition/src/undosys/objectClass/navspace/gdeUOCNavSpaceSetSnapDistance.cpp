@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetSnapDistance::gdeUOCNavSpaceSetSnapDistance( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, float newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetSnapDistance::gdeUOCNavSpaceSetSnapDistance(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, float newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set snap distance" );
+	SetShortInfo("Nav-space set snap distance");
 	
 	pOldValue = navspace->GetSnapDistance();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetSnapDistance::~gdeUOCNavSpaceSetSnapDistance(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetSnapDistance::~gdeUOCNavSpaceSetSnapDistance(){
 ///////////////
 
 void gdeUOCNavSpaceSetSnapDistance::Undo(){
-	pNavSpace->SetSnapDistance( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetSnapDistance(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetSnapDistance::Redo(){
-	pNavSpace->SetSnapDistance( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetSnapDistance(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

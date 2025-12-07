@@ -47,7 +47,7 @@ public:
 	gdeSkinList();
 	
 	/** \brief Create copy of skin list. */
-	gdeSkinList( const gdeSkinList &list );
+	gdeSkinList(const gdeSkinList &list);
 	
 	/** \brief Clean up skin list. */
 	~gdeSkinList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Skin at position. */
-	gdeSkin *GetAt( int index ) const;
+	gdeSkin *GetAt(int index) const;
 	
 	/** \brief Skin with path or \em NULL if absent. */
-	gdeSkin *GetWithPath( const char *path ) const;
+	gdeSkin *GetWithPath(const char *path) const;
 	
 	/** \brief Index of skin or -1 if absent. */
-	int IndexOf( gdeSkin *skin ) const;
+	int IndexOf(gdeSkin *skin) const;
 	
 	/** \brief Index of skin with path or -1 if absent. */
-	int IndexOfWithPath( const char *path ) const;
+	int IndexOfWithPath(const char *path) const;
 	
 	/** \brief Skin is present. */
-	bool Has( gdeSkin *skin ) const;
+	bool Has(gdeSkin *skin) const;
 	
 	/** \brief Skin with path is present. */
-	bool HasWithPath( const char *path ) const;
+	bool HasWithPath(const char *path) const;
 	
 	/** \brief Add skin. */
-	void Add( gdeSkin *skin );
+	void Add(gdeSkin *skin);
 	
 	/** \brief Remove skin. */
-	void Remove( gdeSkin *skin );
+	void Remove(gdeSkin *skin);
 	
 	/** \brief Remove all skins. */
 	void RemoveAll();
 	
 	/** \brief Set from another skin list. */
-	gdeSkinList &operator=( const gdeSkinList &list );
+	gdeSkinList &operator=(const gdeSkinList &list);
 	/*@}*/
 };
 

@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPShadowQuality( deGraphicOpenGl &ogl );
+	deoglPShadowQuality(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
 	virtual ~deoglPShadowQuality();
@@ -50,7 +50,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

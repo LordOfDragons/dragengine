@@ -43,8 +43,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskWriteImage( deEngine &engine, deResourceLoader &resourceLoader,
-		deImage *image, deVirtualFileSystem *vfs, const char *path );
+	deRLTaskWriteImage(deEngine &engine, deResourceLoader &resourceLoader,
+		deImage *image, deVirtualFileSystem *vfs, const char *path);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskWriteImage();

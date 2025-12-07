@@ -88,23 +88,23 @@ protected:
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cBaseEditVectorListener( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if( ! forceField ){
+		if(! forceField){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), forceField ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), forceField)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-		gdeOCForceField *forceField ) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+		gdeOCForceField *forceField) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -112,23 +112,23 @@ protected:
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cBaseComboBoxListener( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if( ! forceField ){
+		if(! forceField){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( *comboBox, pPanel.GetObjectClass(), forceField ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(*comboBox, pPanel.GetObjectClass(), forceField)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox,
-		gdeObjectClass *objectClass, gdeOCForceField *forceField ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox,
+		gdeObjectClass *objectClass, gdeOCForceField *forceField) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -136,36 +136,36 @@ protected:
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cBaseAction( gdeWPSOCForceField &panel, const char *text, const char *description ) :
-		igdeAction( text, description ), pPanel( panel ){ }
+	cBaseAction(gdeWPSOCForceField &panel, const char *text, const char *description) :
+		igdeAction(text, description), pPanel(panel){}
 	
 	virtual void OnAction(){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if( ! forceField ){
+		if(! forceField){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnActionForceField( pPanel.GetObjectClass(), forceField ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnActionForceField(pPanel.GetObjectClass(), forceField)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnActionForceField( gdeObjectClass *objectClass, gdeOCForceField *forceField ) = 0;
+	virtual igdeUndo *OnActionForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField) = 0;
 	
 	virtual void Update(){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if( forceField ){
-			Update( *pPanel.GetObjectClass(), *forceField );
+		if(forceField){
+			Update(*pPanel.GetObjectClass(), *forceField);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const gdeObjectClass &, const gdeOCForceField & ){
+	virtual void Update(const gdeObjectClass &, const gdeOCForceField &){
 	}
 };
 
@@ -174,232 +174,232 @@ protected:
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cBaseTextFieldListener( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if( ! forceField ){
+		if(! forceField){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( *textField, pPanel.GetObjectClass(), forceField ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(*textField, pPanel.GetObjectClass(), forceField)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField,
-		gdeObjectClass *objectClass, gdeOCForceField *forceField ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField,
+		gdeObjectClass *objectClass, gdeOCForceField *forceField) = 0;
 };
 
 
 class cEditPosition : public cBaseEditVectorListener {
 public:
-	cEditPosition( gdeWPSOCForceField &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditPosition(gdeWPSOCForceField &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
-		return ! forceField->GetPosition().IsEqualTo( vector )
-			? new gdeUOCForceFieldSetPosition( objectClass, forceField, vector ) : NULL;
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
+		return ! forceField->GetPosition().IsEqualTo(vector)
+			? new gdeUOCForceFieldSetPosition(objectClass, forceField, vector) : NULL;
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener {
 public:
-	cEditRotation( gdeWPSOCForceField &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditRotation(gdeWPSOCForceField &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
-		return ! forceField->GetRotation().IsEqualTo( vector )
-			? new gdeUOCForceFieldSetRotation( objectClass, forceField, vector ) : NULL;
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
+		return ! forceField->GetRotation().IsEqualTo(vector)
+			? new gdeUOCForceFieldSetRotation(objectClass, forceField, vector) : NULL;
 	}
 };
 
 class cTextBoneName : public cBaseTextFieldListener{
 public:
-	cTextBoneName( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextBoneName(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		return forceField->GetBoneName() != textField.GetText()
-			? new gdeUOCForceFieldSetBoneName( objectClass, forceField, textField.GetText() ) : NULL;
+			? new gdeUOCForceFieldSetBoneName(objectClass, forceField, textField.GetText()) : NULL;
 	}
 };
 
 class cEditInfluenceArea : public cBaseTextFieldListener{
 public:
-	cEditInfluenceArea( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cEditInfluenceArea(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		igdeCodecPropertyString codec;
 		decString oldEncoded;
-		codec.EncodeShapeList( forceField->GetInfluenceArea(), oldEncoded );
-		const decString encoded( textField.GetText() );
-		if( encoded == oldEncoded ){
+		codec.EncodeShapeList(forceField->GetInfluenceArea(), oldEncoded);
+		const decString encoded(textField.GetText());
+		if(encoded == oldEncoded){
 			return NULL;
 		}
 		
 		decShapeList shapeList;
 		try{
-			codec.DecodeShapeList( encoded, shapeList );
+			codec.DecodeShapeList(encoded, shapeList);
 			
-		}catch( const deException & ){
-			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list" );
+		}catch(const deException &){
+			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Invalid Input",
+				"Input value does not decode to a proper shape list");
 			textField.Focus();
 			return NULL;
 		}
 		
-		return new gdeUOCForceFieldSetInfluenceArea( objectClass, forceField, shapeList );
+		return new gdeUOCForceFieldSetInfluenceArea(objectClass, forceField, shapeList);
 	}
 };
 
 class cTextRadius : public cBaseTextFieldListener{
 public:
-	cTextRadius( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextRadius(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		const float value = textField.GetFloat();
-		return fabsf( forceField->GetRadius() - value ) > FLOAT_SAFE_EPSILON
-			? new gdeUOCForceFieldSetRadius( objectClass, forceField, value ) : NULL;
+		return fabsf(forceField->GetRadius() - value) > FLOAT_SAFE_EPSILON
+			? new gdeUOCForceFieldSetRadius(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cTextExponent : public cBaseTextFieldListener{
 public:
-	cTextExponent( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextExponent(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		const float value = textField.GetFloat();
-		return fabsf( forceField->GetExponent() - value ) > FLOAT_SAFE_EPSILON
-			? new gdeUOCForceFieldSetExponent( objectClass, forceField, value ) : NULL;
+		return fabsf(forceField->GetExponent() - value) > FLOAT_SAFE_EPSILON
+			? new gdeUOCForceFieldSetExponent(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cComboFieldType : public cBaseComboBoxListener{
 public:
-	cComboFieldType( gdeWPSOCForceField &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboFieldType(gdeWPSOCForceField &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
-		if( ! comboBox.GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
+		if(! comboBox.GetSelectedItem()){
 			return NULL;
 		}
 		const deForceField::eFieldTypes value =
-			( deForceField::eFieldTypes )( intptr_t )comboBox.GetSelectedItem()->GetData();
+			(deForceField::eFieldTypes)(intptr_t)comboBox.GetSelectedItem()->GetData();
 		return forceField->GetFieldType() != value
-			? new gdeUOCForceFieldSetFieldType( objectClass, forceField, value ) : NULL;
+			? new gdeUOCForceFieldSetFieldType(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cComboApplicationType : public cBaseComboBoxListener{
 public:
-	cComboApplicationType( gdeWPSOCForceField &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboApplicationType(gdeWPSOCForceField &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
-		if( ! comboBox.GetSelectedItem() ){
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
+		if(! comboBox.GetSelectedItem()){
 			return NULL;
 		}
 		const deForceField::eApplicationTypes value =
-			( deForceField::eApplicationTypes )( intptr_t )comboBox.GetSelectedItem()->GetData();
+			(deForceField::eApplicationTypes)(intptr_t)comboBox.GetSelectedItem()->GetData();
 		return forceField->GetApplicationType() != value
-			? new gdeUOCForceFieldSetApplicationType( objectClass, forceField, value ) : NULL;
+			? new gdeUOCForceFieldSetApplicationType(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cEditDirection : public cBaseEditVectorListener {
 public:
-	cEditDirection( gdeWPSOCForceField &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditDirection(gdeWPSOCForceField &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
-		return ! forceField->GetDirection().IsEqualTo( vector )
-			? new gdeUOCForceFieldSetDirection( objectClass, forceField, vector ) : NULL;
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
+		return ! forceField->GetDirection().IsEqualTo(vector)
+			? new gdeUOCForceFieldSetDirection(objectClass, forceField, vector) : NULL;
 	}
 };
 
 class cTextForce : public cBaseTextFieldListener{
 public:
-	cTextForce( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextForce(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		const float value = textField.GetFloat();
-		return fabsf( forceField->GetForce() - value ) > FLOAT_SAFE_EPSILON
-			? new gdeUOCForceFieldSetForce( objectClass, forceField, value ) : NULL;
+		return fabsf(forceField->GetForce() - value) > FLOAT_SAFE_EPSILON
+			? new gdeUOCForceFieldSetForce(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cTextFluctuationDirection : public cBaseTextFieldListener{
 public:
-	cTextFluctuationDirection( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextFluctuationDirection(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		const float value = textField.GetFloat();
-		return fabsf( forceField->GetFluctuationDirection() - value ) > FLOAT_SAFE_EPSILON
-			? new gdeUOCForceFieldSetFluctuationDirection( objectClass, forceField, value ) : NULL;
+		return fabsf(forceField->GetFluctuationDirection() - value) > FLOAT_SAFE_EPSILON
+			? new gdeUOCForceFieldSetFluctuationDirection(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cTextFluctuationForce : public cBaseTextFieldListener{
 public:
-	cTextFluctuationForce( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextFluctuationForce(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		const float value = textField.GetFloat();
-		return fabsf( forceField->GetFluctuationForce() - value ) > FLOAT_SAFE_EPSILON
-			? new gdeUOCForceFieldSetFluctuationForce( objectClass, forceField, value ) : NULL;
+		return fabsf(forceField->GetFluctuationForce() - value) > FLOAT_SAFE_EPSILON
+			? new gdeUOCForceFieldSetFluctuationForce(objectClass, forceField, value) : NULL;
 	}
 };
 
 class cEditShape : public cBaseTextFieldListener{
 public:
-	cEditShape( gdeWPSOCForceField &panel ) : cBaseTextFieldListener( panel ){ }
+	cEditShape(gdeWPSOCForceField &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCForceField *forceField ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCForceField *forceField){
 		igdeCodecPropertyString codec;
 		decString oldEncoded;
-		codec.EncodeShapeList( forceField->GetShape(), oldEncoded );
-		const decString encoded( textField.GetText() );
-		if( encoded == oldEncoded ){
+		codec.EncodeShapeList(forceField->GetShape(), oldEncoded);
+		const decString encoded(textField.GetText());
+		if(encoded == oldEncoded){
 			return NULL;
 		}
 		
 		decShapeList shapeList;
 		try{
-			codec.DecodeShapeList( encoded, shapeList );
+			codec.DecodeShapeList(encoded, shapeList);
 			
-		}catch( const deException & ){
-			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
-				"Input value does not decode to a proper shape list" );
+		}catch(const deException &){
+			igdeCommonDialogs::Error(pPanel.GetParentWindow(), "Invalid Input",
+				"Input value does not decode to a proper shape list");
 			textField.Focus();
 			return NULL;
 		}
 		
-		return new gdeUOCForceFieldSetShape( objectClass, forceField, shapeList );
+		return new gdeUOCForceFieldSetShape(objectClass, forceField, shapeList);
 	}
 };
 
 class cActionEnabled : public cBaseAction{
 public:
-	cActionEnabled( gdeWPSOCForceField &panel ) :
-	cBaseAction( panel, "Enabled", "Force field is enabled" ){ }
+	cActionEnabled(gdeWPSOCForceField &panel) :
+	cBaseAction(panel, "Enabled", "Force field is enabled"){}
 	
-	virtual igdeUndo *OnActionForceField( gdeObjectClass *objectClass, gdeOCForceField *forceField ){
-		return new gdeUOCForceFieldToggleEnabled( objectClass, forceField );
+	virtual igdeUndo *OnActionForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField){
+		return new gdeUOCForceFieldToggleEnabled(objectClass, forceField);
 	}
 	
-	virtual void Update( const gdeObjectClass &, const gdeOCForceField &forceField ){
-		SetEnabled( true );
-		SetSelected( forceField.GetEnabled() );
+	virtual void Update(const gdeObjectClass &, const gdeOCForceField &forceField){
+		SetEnabled(true);
+		SetSelected(forceField.GetEnabled());
 	}
 };
 
@@ -408,10 +408,10 @@ class cComboPropertyNames : public igdeComboBoxListener{
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cComboPropertyNames( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cComboPropertyNames(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		if( pPanel.GetForceField() ){
+	virtual void OnTextChanged(igdeComboBox*){
+		if(pPanel.GetForceField()){
 			pPanel.UpdatePropertyName();
 		}
 	}
@@ -421,16 +421,16 @@ class cComboPropertyNameTarget : public igdeComboBoxListener{
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cComboPropertyNameTarget( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cComboPropertyNameTarget(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCForceField * const forceField = pPanel.GetForceField();
-		if( ! forceField ){
+		if(! forceField){
 			return;
 		}
 		
 		const gdeOCForceField::eProperties propertyName = pPanel.GetPropertyName();
-		if( forceField->GetPropertyName( propertyName ) == comboBox->GetText() ){
+		if(forceField->GetPropertyName(propertyName) == comboBox->GetText()){
 			return;
 		}
 		
@@ -444,10 +444,10 @@ class cComboTriggerNames : public igdeComboBoxListener{
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cComboTriggerNames( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cComboTriggerNames(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		if( pPanel.GetForceField() ){
+	virtual void OnTextChanged(igdeComboBox*){
+		if(pPanel.GetForceField()){
 			pPanel.UpdateTriggerName();
 		}
 	}
@@ -457,15 +457,15 @@ class cComboTriggerNameTarget : public igdeComboBoxListener{
 	gdeWPSOCForceField &pPanel;
 	
 public:
-	cComboTriggerNameTarget( gdeWPSOCForceField &panel ) : pPanel( panel ){ }
+	cComboTriggerNameTarget(gdeWPSOCForceField &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( ! pPanel.GetForceField() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(! pPanel.GetForceField()){
 			return;
 		}
 		
 		const gdeOCForceField::eTriggers triggerName = pPanel.GetTriggerName();
-		if( pPanel.GetForceField()->GetTriggerName( triggerName ) == comboBox->GetText() ){
+		if(pPanel.GetForceField()->GetTriggerName(triggerName) == comboBox->GetText()){
 			return;
 		}
 		
@@ -485,102 +485,102 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCForceField::gdeWPSOCForceField( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSOCForceField::gdeWPSOCForceField(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pGameDefinition(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCForceFieldListener( *this );
+	pListener = new gdeWPSOCForceFieldListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	helper.GroupBox( content, groupBox, "Object Class Particle Emitter:" );
+	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");
 	
-	helper.EditVector( groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
-		pEditRotation, new cEditRotation( *this ) );
-	helper.EditString( groupBox, "Bone:", "Bone name or empty string if not used",
-		pEditBoneName, new cTextBoneName( *this ) );
-	helper.EditString( groupBox, "Influence Area:", "Area influenced by the force field",
-		pEditInfluenceArea, new cEditInfluenceArea( *this ) );
-	helper.EditFloat( groupBox, "Radius:", "Radius in meters of force field effect",
-		pEditRadius, new cTextRadius( *this ) );
-	helper.EditFloat( groupBox, "Exponent:", "Force fall-off exponent",
-		pEditExponent, new cTextExponent( *this ) );
+	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+		pEditPosition, new cEditPosition(*this));
+	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class", 4, 1,
+		pEditRotation, new cEditRotation(*this));
+	helper.EditString(groupBox, "Bone:", "Bone name or empty string if not used",
+		pEditBoneName, new cTextBoneName(*this));
+	helper.EditString(groupBox, "Influence Area:", "Area influenced by the force field",
+		pEditInfluenceArea, new cEditInfluenceArea(*this));
+	helper.EditFloat(groupBox, "Radius:", "Radius in meters of force field effect",
+		pEditRadius, new cTextRadius(*this));
+	helper.EditFloat(groupBox, "Exponent:", "Force fall-off exponent",
+		pEditExponent, new cTextExponent(*this));
 	
-	helper.ComboBox( groupBox, "Field Type:", "Force field type",
-		pCBFieldType, new cComboFieldType( *this ) );
-	pCBFieldType->AddItem( "Radial", NULL, ( void* )( intptr_t )deForceField::eftRadial );
-	pCBFieldType->AddItem( "Linear", NULL, ( void* )( intptr_t )deForceField::eftLinear );
-	pCBFieldType->AddItem( "Vortex", NULL, ( void* )( intptr_t )deForceField::eftVortex );
+	helper.ComboBox(groupBox, "Field Type:", "Force field type",
+		pCBFieldType, new cComboFieldType(*this));
+	pCBFieldType->AddItem("Radial", NULL, (void*)(intptr_t)deForceField::eftRadial);
+	pCBFieldType->AddItem("Linear", NULL, (void*)(intptr_t)deForceField::eftLinear);
+	pCBFieldType->AddItem("Vortex", NULL, (void*)(intptr_t)deForceField::eftVortex);
 	
-	helper.ComboBox( groupBox, "Application Type:", "Force application type",
-		pCBApplicationType, new cComboApplicationType( *this ) );
-	pCBApplicationType->AddItem( "Direct", NULL, ( void* )( intptr_t )deForceField::eatDirect );
-	pCBApplicationType->AddItem( "Surface", NULL, ( void* )( intptr_t )deForceField::eatSurface );
-	pCBApplicationType->AddItem( "Mass", NULL, ( void* )( intptr_t )deForceField::eatMass );
-	pCBApplicationType->AddItem( "Speed", NULL, ( void* )( intptr_t )deForceField::eatSpeed );
+	helper.ComboBox(groupBox, "Application Type:", "Force application type",
+		pCBApplicationType, new cComboApplicationType(*this));
+	pCBApplicationType->AddItem("Direct", NULL, (void*)(intptr_t)deForceField::eatDirect);
+	pCBApplicationType->AddItem("Surface", NULL, (void*)(intptr_t)deForceField::eatSurface);
+	pCBApplicationType->AddItem("Mass", NULL, (void*)(intptr_t)deForceField::eatMass);
+	pCBApplicationType->AddItem("Speed", NULL, (void*)(intptr_t)deForceField::eatSpeed);
 	
-	helper.EditVector( groupBox, "Direction:", "Direction the force is applied in (linear)",
-		pEditDirection, new cEditDirection( *this ) );
-	helper.EditFloat( groupBox, "Force:", "Force in newtons",
-		pEditForce, new cTextForce( *this ) );
-	helper.EditFloat( groupBox, "Fluctuation Direction:", "Fluctiation direction in degrees",
-		pEditFluctuationDirection, new cTextFluctuationDirection( *this ) );
-	helper.EditFloat( groupBox, "Fluctuation Force:", "Fluctiation force in newtons",
-		pEditFluctuationForce, new cTextFluctuationForce( *this ) );
-	helper.EditString( groupBox, "Shape:", "Shape of force source",
-		pEditShape, new cEditShape( *this ) );
-	helper.CheckBox( groupBox, pChkEnabled, new cActionEnabled( *this ), true );
+	helper.EditVector(groupBox, "Direction:", "Direction the force is applied in (linear)",
+		pEditDirection, new cEditDirection(*this));
+	helper.EditFloat(groupBox, "Force:", "Force in newtons",
+		pEditForce, new cTextForce(*this));
+	helper.EditFloat(groupBox, "Fluctuation Direction:", "Fluctiation direction in degrees",
+		pEditFluctuationDirection, new cTextFluctuationDirection(*this));
+	helper.EditFloat(groupBox, "Fluctuation Force:", "Fluctiation force in newtons",
+		pEditFluctuationForce, new cTextFluctuationForce(*this));
+	helper.EditString(groupBox, "Shape:", "Shape of force source",
+		pEditShape, new cEditShape(*this));
+	helper.CheckBox(groupBox, pChkEnabled, new cActionEnabled(*this), true);
 	
 	// property targets
-	helper.GroupBox( content, groupBox, "Properties:" );
-	helper.ComboBox( groupBox, "Property:", "Property to set target for",
-		pCBPropertyNames, new cComboPropertyNames( *this ) );
-	pCBPropertyNames->AddItem( "Influence Area", NULL, ( void* )( intptr_t )gdeOCForceField::epInfluenceArea );
-	pCBPropertyNames->AddItem( "Radius", NULL, ( void* )( intptr_t )gdeOCForceField::epRadius );
-	pCBPropertyNames->AddItem( "Exponent", NULL, ( void* )( intptr_t )gdeOCForceField::epExponent );
-	pCBPropertyNames->AddItem( "Field Type", NULL, ( void* )( intptr_t )gdeOCForceField::epFieldType );
-	pCBPropertyNames->AddItem( "Application Type", NULL, ( void* )( intptr_t )gdeOCForceField::epApplicationType );
-	pCBPropertyNames->AddItem( "Direction", NULL, ( void* )( intptr_t )gdeOCForceField::epDirection );
-	pCBPropertyNames->AddItem( "Force", NULL, ( void* )( intptr_t )gdeOCForceField::epForce );
-	pCBPropertyNames->AddItem( "Fluctuation Direction", NULL, ( void* )( intptr_t )gdeOCForceField::epFluctuationDirection );
-	pCBPropertyNames->AddItem( "Fluctuation Force", NULL, ( void* )( intptr_t )gdeOCForceField::epFluctuationForce );
-	pCBPropertyNames->AddItem( "Shape", NULL, ( void* )( intptr_t )gdeOCForceField::epShape );
-	pCBPropertyNames->AddItem( "Enabled", NULL, ( void* )( intptr_t )gdeOCForceField::epEnabled );
-	pCBPropertyNames->AddItem( "Attach position", NULL, ( void* )( intptr_t )gdeOCForceField::epAttachPosition );
-	pCBPropertyNames->AddItem( "Attach rotation", NULL, ( void* )( intptr_t )gdeOCForceField::epAttachRotation );
+	helper.GroupBox(content, groupBox, "Properties:");
+	helper.ComboBox(groupBox, "Property:", "Property to set target for",
+		pCBPropertyNames, new cComboPropertyNames(*this));
+	pCBPropertyNames->AddItem("Influence Area", NULL, (void*)(intptr_t)gdeOCForceField::epInfluenceArea);
+	pCBPropertyNames->AddItem("Radius", NULL, (void*)(intptr_t)gdeOCForceField::epRadius);
+	pCBPropertyNames->AddItem("Exponent", NULL, (void*)(intptr_t)gdeOCForceField::epExponent);
+	pCBPropertyNames->AddItem("Field Type", NULL, (void*)(intptr_t)gdeOCForceField::epFieldType);
+	pCBPropertyNames->AddItem("Application Type", NULL, (void*)(intptr_t)gdeOCForceField::epApplicationType);
+	pCBPropertyNames->AddItem("Direction", NULL, (void*)(intptr_t)gdeOCForceField::epDirection);
+	pCBPropertyNames->AddItem("Force", NULL, (void*)(intptr_t)gdeOCForceField::epForce);
+	pCBPropertyNames->AddItem("Fluctuation Direction", NULL, (void*)(intptr_t)gdeOCForceField::epFluctuationDirection);
+	pCBPropertyNames->AddItem("Fluctuation Force", NULL, (void*)(intptr_t)gdeOCForceField::epFluctuationForce);
+	pCBPropertyNames->AddItem("Shape", NULL, (void*)(intptr_t)gdeOCForceField::epShape);
+	pCBPropertyNames->AddItem("Enabled", NULL, (void*)(intptr_t)gdeOCForceField::epEnabled);
+	pCBPropertyNames->AddItem("Attach position", NULL, (void*)(intptr_t)gdeOCForceField::epAttachPosition);
+	pCBPropertyNames->AddItem("Attach rotation", NULL, (void*)(intptr_t)gdeOCForceField::epAttachRotation);
 	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "Object class property to target",
-		pCBPropertyNameTarget, new cComboPropertyNameTarget( *this ) );
-	pCBPropertyNameTarget->SetEditable( true );
+	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+		pCBPropertyNameTarget, new cComboPropertyNameTarget(*this));
+	pCBPropertyNameTarget->SetEditable(true);
 	pCBPropertyNameTarget->SetDefaultSorter();
-	pCBPropertyNameTarget->SetFilterCaseInsentive( true );
+	pCBPropertyNameTarget->SetFilterCaseInsentive(true);
 	
 	// trigger targets
-	helper.GroupBox( content, groupBox, "Triggers:" );
-	helper.ComboBox( groupBox, "Trigger:", "Trigger to set target for",
-		pCBTriggerNames, new cComboTriggerNames( *this ) );
-	pCBTriggerNames->AddItem( "Enabled", NULL, ( void* )( intptr_t )gdeOCForceField::etEnabled );
+	helper.GroupBox(content, groupBox, "Triggers:");
+	helper.ComboBox(groupBox, "Trigger:", "Trigger to set target for",
+		pCBTriggerNames, new cComboTriggerNames(*this));
+	pCBTriggerNames->AddItem("Enabled", NULL, (void*)(intptr_t)gdeOCForceField::etEnabled);
 	
-	helper.ComboBoxFilter( groupBox, "Target:", true, "Object class property to target",
-		pCBTriggerNameTarget, new cComboTriggerNameTarget( *this ) );
-	pCBTriggerNameTarget->SetEditable( true );
+	helper.ComboBoxFilter(groupBox, "Target:", true, "Object class property to target",
+		pCBTriggerNameTarget, new cComboTriggerNameTarget(*this));
+	pCBTriggerNameTarget->SetEditable(true);
 	pCBTriggerNameTarget->SetDefaultSorter();
-	pCBTriggerNameTarget->SetFilterCaseInsentive( true );
+	pCBTriggerNameTarget->SetFilterCaseInsentive(true);
 }
 
 gdeWPSOCForceField::~gdeWPSOCForceField(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -590,20 +590,20 @@ gdeWPSOCForceField::~gdeWPSOCForceField(){
 // Management
 ///////////////
 
-void gdeWPSOCForceField::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSOCForceField::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 	}
 	
@@ -623,11 +623,11 @@ gdeOCForceField *gdeWPSOCForceField::GetForceField() const{
 }
 
 const gdeOCForceField::eProperties gdeWPSOCForceField::GetPropertyName() const{
-	return ( gdeOCForceField::eProperties )( intptr_t )pCBPropertyNames->GetSelectedItem()->GetData();
+	return (gdeOCForceField::eProperties)(intptr_t)pCBPropertyNames->GetSelectedItem()->GetData();
 }
 
 const gdeOCForceField::eTriggers gdeWPSOCForceField::GetTriggerName() const{
-	return ( gdeOCForceField::eTriggers )( intptr_t )pCBTriggerNames->GetSelectedItem()->GetData();
+	return (gdeOCForceField::eTriggers)(intptr_t)pCBTriggerNames->GetSelectedItem()->GetData();
 }
 
 
@@ -637,26 +637,26 @@ void gdeWPSOCForceField::UpdatePropertyList(){
 	int i;
 	
 	decStringSet properties;
-	if( objectClass ){
-		objectClass->AddPropertyNamesTo( properties, true );
+	if(objectClass){
+		objectClass->AddPropertyNamesTo(properties, true);
 	}
 	
-	const decString selectionProperty( pCBPropertyNameTarget->GetText() );
-	const decString selectionTrigger( pCBTriggerNameTarget->GetText() );
+	const decString selectionProperty(pCBPropertyNameTarget->GetText());
+	const decString selectionTrigger(pCBTriggerNameTarget->GetText());
 	pCBPropertyNameTarget->RemoveAllItems();
 	pCBTriggerNameTarget->RemoveAllItems();
 	
 	const int count = properties.GetCount();
-	for( i=0; i<count; i++ ){
-		pCBPropertyNameTarget->AddItem( properties.GetAt( i ) );
-		pCBTriggerNameTarget->AddItem( properties.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pCBPropertyNameTarget->AddItem(properties.GetAt(i));
+		pCBTriggerNameTarget->AddItem(properties.GetAt(i));
 	}
 	
 	pCBPropertyNameTarget->SortItems();
-	pCBPropertyNameTarget->SetText( selectionProperty );
+	pCBPropertyNameTarget->SetText(selectionProperty);
 	
 	pCBTriggerNameTarget->SortItems();
-	pCBTriggerNameTarget->SetText( selectionTrigger );
+	pCBTriggerNameTarget->SetText(selectionTrigger);
 }
 
 
@@ -664,39 +664,39 @@ void gdeWPSOCForceField::UpdatePropertyList(){
 void gdeWPSOCForceField::UpdateForceField(){
 	const gdeOCForceField * const forceField = GetForceField();
 	
-	if( forceField ){
+	if(forceField){
 		igdeCodecPropertyString codec;
 		decString encoded;
 		
-		pEditPosition->SetVector( forceField->GetPosition() );
-		pEditRotation->SetVector( forceField->GetRotation() );
-		pEditBoneName->SetText( forceField->GetBoneName() );
+		pEditPosition->SetVector(forceField->GetPosition());
+		pEditRotation->SetVector(forceField->GetRotation());
+		pEditBoneName->SetText(forceField->GetBoneName());
 		
-		codec.EncodeShapeList( forceField->GetInfluenceArea(), encoded );
-		pEditInfluenceArea->SetText( encoded );
+		codec.EncodeShapeList(forceField->GetInfluenceArea(), encoded);
+		pEditInfluenceArea->SetText(encoded);
 		
-		pEditRadius->SetFloat( forceField->GetRadius() );
-		pEditExponent->SetFloat( forceField->GetExponent() );
-		pCBFieldType->SetSelectionWithData( ( void* )( intptr_t )forceField->GetFieldType() );
-		pCBApplicationType->SetSelectionWithData( ( void* )( intptr_t )forceField->GetApplicationType() );
-		pEditDirection->SetVector( forceField->GetDirection() );
-		pEditForce->SetFloat( forceField->GetForce() );
-		pEditFluctuationDirection->SetFloat( forceField->GetFluctuationDirection() );
-		pEditFluctuationForce->SetFloat( forceField->GetFluctuationForce() );
+		pEditRadius->SetFloat(forceField->GetRadius());
+		pEditExponent->SetFloat(forceField->GetExponent());
+		pCBFieldType->SetSelectionWithData((void*)(intptr_t)forceField->GetFieldType());
+		pCBApplicationType->SetSelectionWithData((void*)(intptr_t)forceField->GetApplicationType());
+		pEditDirection->SetVector(forceField->GetDirection());
+		pEditForce->SetFloat(forceField->GetForce());
+		pEditFluctuationDirection->SetFloat(forceField->GetFluctuationDirection());
+		pEditFluctuationForce->SetFloat(forceField->GetFluctuationForce());
 		
-		codec.EncodeShapeList( forceField->GetShape(), encoded );
-		pEditShape->SetText( encoded );
+		codec.EncodeShapeList(forceField->GetShape(), encoded);
+		pEditShape->SetText(encoded);
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pEditBoneName->ClearText();
 		pEditInfluenceArea->ClearText();
 		pEditRadius->ClearText();
 		pEditExponent->ClearText();
-		pCBFieldType->SetSelectionWithData( ( void* )( intptr_t )deForceField::eftRadial );
-		pCBApplicationType->SetSelectionWithData( ( void* )( intptr_t )deForceField::eatDirect );
-		pEditDirection->SetVector( decVector() );
+		pCBFieldType->SetSelectionWithData((void*)(intptr_t)deForceField::eftRadial);
+		pCBApplicationType->SetSelectionWithData((void*)(intptr_t)deForceField::eatDirect);
+		pEditDirection->SetVector(decVector());
 		pEditForce->ClearText();
 		pEditFluctuationDirection->ClearText();
 		pEditFluctuationForce->ClearText();
@@ -704,19 +704,19 @@ void gdeWPSOCForceField::UpdateForceField(){
 	}
 	
 	const bool enabled = forceField;
-	pEditPosition->SetEnabled( enabled );	
-	pEditRotation->SetEnabled( enabled );
-	pEditBoneName->SetEnabled( enabled );
-	pEditInfluenceArea->SetEnabled( enabled );
-	pEditRadius->SetEnabled( enabled );
-	pEditExponent->SetEnabled( enabled );
-	pCBFieldType->SetEnabled( enabled );
-	pCBApplicationType->SetEnabled( enabled );
-	pEditDirection->SetEnabled( enabled );
-	pEditForce->SetEnabled( enabled );
-	pEditFluctuationDirection->SetEnabled( enabled );
-	pEditFluctuationForce->SetEnabled( enabled );
-	pEditShape->SetEnabled( enabled );
+	pEditPosition->SetEnabled(enabled);	
+	pEditRotation->SetEnabled(enabled);
+	pEditBoneName->SetEnabled(enabled);
+	pEditInfluenceArea->SetEnabled(enabled);
+	pEditRadius->SetEnabled(enabled);
+	pEditExponent->SetEnabled(enabled);
+	pCBFieldType->SetEnabled(enabled);
+	pCBApplicationType->SetEnabled(enabled);
+	pEditDirection->SetEnabled(enabled);
+	pEditForce->SetEnabled(enabled);
+	pEditFluctuationDirection->SetEnabled(enabled);
+	pEditFluctuationForce->SetEnabled(enabled);
+	pEditShape->SetEnabled(enabled);
 	
 	pChkEnabled->GetAction()->Update();
 	
@@ -727,25 +727,25 @@ void gdeWPSOCForceField::UpdateForceField(){
 void gdeWPSOCForceField::UpdatePropertyName(){
 	const gdeOCForceField * const forceField = GetForceField();
 	
-	if( forceField ){
-		pCBPropertyNameTarget->SetText( forceField->GetPropertyName( GetPropertyName() ) );
+	if(forceField){
+		pCBPropertyNameTarget->SetText(forceField->GetPropertyName(GetPropertyName()));
 		
 	}else{
 		pCBPropertyNameTarget->ClearText();
 	}
 	
-	pCBPropertyNameTarget->SetEnabled( forceField );
+	pCBPropertyNameTarget->SetEnabled(forceField);
 }
 
 void gdeWPSOCForceField::UpdateTriggerName(){
 	const gdeOCForceField * const forceField = GetForceField();
 	
-	if( forceField ){
-		pCBTriggerNameTarget->SetText( forceField->GetTriggerName( GetTriggerName() ) );
+	if(forceField){
+		pCBTriggerNameTarget->SetText(forceField->GetTriggerName(GetTriggerName()));
 		
 	}else{
 		pCBTriggerNameTarget->ClearText();
 	}
 	
-	pCBTriggerNameTarget->SetEnabled( forceField );
+	pCBTriggerNameTarget->SetEnabled(forceField);
 }

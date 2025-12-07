@@ -34,11 +34,11 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxContainerSplitted ) igdeNativeFoxContainerSplittedMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, igdeNativeFoxContainerSplitted::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerSplitted::onChildLayoutFlags ),
-	FXMAPFUNC( SEL_COMMAND, igdeNativeFoxContainerSplitted::ID_SELF, igdeNativeFoxContainerSplitted::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, igdeNativeFoxContainerSplitted::ID_SELF, igdeNativeFoxContainerSplitted::onCommand ),
+FXDEFMAP(igdeNativeFoxContainerSplitted) igdeNativeFoxContainerSplittedMap[] = {
+	FXMAPFUNC(SEL_CONFIGURE, 0, igdeNativeFoxContainerSplitted::onResize),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxContainerSplitted::onChildLayoutFlags),
+	FXMAPFUNC(SEL_COMMAND, igdeNativeFoxContainerSplitted::ID_SELF, igdeNativeFoxContainerSplitted::onCommand),
+	FXMAPFUNC(SEL_CHANGED, igdeNativeFoxContainerSplitted::ID_SELF, igdeNativeFoxContainerSplitted::onCommand),
 };
 
 
@@ -46,52 +46,52 @@ FXDEFMAP( igdeNativeFoxContainerSplitted ) igdeNativeFoxContainerSplittedMap[] =
 // Class igdeNativeFoxContainerSplitted
 /////////////////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxContainerSplitted, FXSplitter,
-	igdeNativeFoxContainerSplittedMap, ARRAYNUMBER( igdeNativeFoxContainerSplittedMap ) )
+FXIMPLEMENT(igdeNativeFoxContainerSplitted, FXSplitter,
+	igdeNativeFoxContainerSplittedMap, ARRAYNUMBER(igdeNativeFoxContainerSplittedMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxContainerSplitted::igdeNativeFoxContainerSplitted(){ }
+igdeNativeFoxContainerSplitted::igdeNativeFoxContainerSplitted(){}
 
 igdeNativeFoxContainerSplitted::igdeNativeFoxContainerSplitted(
-	igdeContainerSplitted &powner, FXComposite *pparent, int layoutFlags ) :
-FXSplitter( pparent, SplitterFlags( powner ) | layoutFlags ),
-pOwner( &powner ),
-pNoUpdate( false )
+	igdeContainerSplitted &powner, FXComposite *pparent, int layoutFlags) :
+FXSplitter(pparent, SplitterFlags(powner) | layoutFlags),
+pOwner(&powner),
+pNoUpdate(false)
 {
 	/*
 	FXColor bgColor = getBackColor();
-	bgColor = makeHiliteColor( bgColor, 33 );
+	bgColor = makeHiliteColor(bgColor, 33);
 // 	bgColor = makeShadowColor( bgColor, 33 );
-	setBackColor( bgColor );
+	setBackColor(bgColor);
 	*/
 	
-	setTarget( this );
-	setSelector( ID_SELF );
+	setTarget(this);
+	setSelector(ID_SELF);
 	UpdateSplitValue();
 }
 
 igdeNativeFoxContainerSplitted::~igdeNativeFoxContainerSplitted(){
 }
 
-igdeNativeFoxContainerSplitted *igdeNativeFoxContainerSplitted::CreateNativeWidget( igdeContainerSplitted &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxContainerSplitted *igdeNativeFoxContainerSplitted::CreateNativeWidget(igdeContainerSplitted &powner){
+	if(! powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(! pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxContainerSplitted( powner, pparent,
-		igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxContainerSplitted(powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxContainerSplitted::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -111,42 +111,42 @@ void igdeNativeFoxContainerSplitted::UpdateSplitValue(){
 	// with index 1 instead of 0 since the height/width of the second widget is changed
 	// instead of the height/width of the first widget
 	
-	if( numChildren() != 2 ){
+	if(numChildren() != 2){
 		return;
 	}
 	
-	switch( pOwner->GetSidePlacement() ){
+	switch(pOwner->GetSidePlacement()){
 	case igdeContainerSplitted::espTop:
-		if( pOwner->GetSplitPosition() >= 0 ){
-			setSplit( 0, pOwner->GetSplitPosition() );
+		if(pOwner->GetSplitPosition() >= 0){
+			setSplit(0, pOwner->GetSplitPosition());
 			
 		}else{
-			setSplit( 0, ( int )( pOwner->GetSplitPositionRelative() * getHeight() + 0.5f ) );
+			setSplit(0, (int)(pOwner->GetSplitPositionRelative() * getHeight() + 0.5f));
 		}
 		break;
 		
 	case igdeContainerSplitted::espBottom:
-		if( pOwner->GetSplitPosition() >= 0 ){
-			setSplit( 1, pOwner->GetSplitPosition() );
+		if(pOwner->GetSplitPosition() >= 0){
+			setSplit(1, pOwner->GetSplitPosition());
 			
 		}else{
-			setSplit( 1, ( int )( pOwner->GetSplitPositionRelative() * getHeight() + 0.5f ) );
+			setSplit(1, (int)(pOwner->GetSplitPositionRelative() * getHeight() + 0.5f));
 		}
 		break;
 		
 	case igdeContainerSplitted::espLeft:
-		if( pOwner->GetSplitPosition() >= 0 ){
-			setSplit( 0, pOwner->GetSplitPosition() );
+		if(pOwner->GetSplitPosition() >= 0){
+			setSplit(0, pOwner->GetSplitPosition());
 		}else{
-			setSplit( 0, ( int )( pOwner->GetSplitPositionRelative() * getWidth() + 0.5f ) );
+			setSplit(0, (int)(pOwner->GetSplitPositionRelative() * getWidth() + 0.5f));
 		}
 		break;
 		
 	case igdeContainerSplitted::espRight:
-		if( pOwner->GetSplitPosition() >= 0 ){
-			setSplit( 1, pOwner->GetSplitPosition() );
+		if(pOwner->GetSplitPosition() >= 0){
+			setSplit(1, pOwner->GetSplitPosition());
 		}else{
-			setSplit( 1, ( int )( pOwner->GetSplitPositionRelative() * getWidth() + 0.5f ) );
+			setSplit(1, (int)(pOwner->GetSplitPositionRelative() * getWidth() + 0.5f));
 		}
 		break;
 		
@@ -155,10 +155,10 @@ void igdeNativeFoxContainerSplitted::UpdateSplitValue(){
 	}
 }
 
-int igdeNativeFoxContainerSplitted::SplitterFlags( const igdeContainerSplitted &powner ){
+int igdeNativeFoxContainerSplitted::SplitterFlags(const igdeContainerSplitted &powner){
 	int fflags = 0;
 	
-	switch( powner.GetSidePlacement() ){
+	switch(powner.GetSidePlacement()){
 	case igdeContainerSplitted::espTop:
 		fflags |= SPLITTER_VERTICAL | SPLITTER_TRACKING;
 		break;
@@ -187,39 +187,39 @@ int igdeNativeFoxContainerSplitted::SplitterFlags( const igdeContainerSplitted &
 // Events
 ///////////
 
-long igdeNativeFoxContainerSplitted::onResize( FXObject*, FXSelector, void* ){
+long igdeNativeFoxContainerSplitted::onResize(FXObject*, FXSelector, void*){
 	pOwner->OnResize();
 	//UpdateSplitValue();
 	return 1;
 }
 
-long igdeNativeFoxContainerSplitted::onCommand( FXObject*, FXSelector, void* ){
-	if( pNoUpdate ){
+long igdeNativeFoxContainerSplitted::onCommand(FXObject*, FXSelector, void*){
+	if(pNoUpdate){
 		return 0;
 	}
 	
 	int ssplit = 0;
 	int size = 1;
 	
-	switch( pOwner->GetSidePlacement() ){
+	switch(pOwner->GetSidePlacement()){
 	case igdeContainerSplitted::espTop:
-		size = decMath::max( getHeight(), 1 );
-		ssplit = getSplit( 0 );
+		size = decMath::max(getHeight(), 1);
+		ssplit = getSplit(0);
 		break;
 		
 	case igdeContainerSplitted::espBottom:
-		size = decMath::max( getHeight(), 1 );
-		ssplit = getSplit( 1 );
+		size = decMath::max(getHeight(), 1);
+		ssplit = getSplit(1);
 		break;
 		
 	case igdeContainerSplitted::espLeft:
-		size = decMath::max( getWidth(), 1 );
-		ssplit = getSplit( 0 );
+		size = decMath::max(getWidth(), 1);
+		ssplit = getSplit(0);
 		break;
 		
 	case igdeContainerSplitted::espRight:
-		size = decMath::max( getWidth(), 1 );
-		ssplit = getSplit( 1 );
+		size = decMath::max(getWidth(), 1);
+		ssplit = getSplit(1);
 		break;
 		
 	default:
@@ -228,22 +228,22 @@ long igdeNativeFoxContainerSplitted::onCommand( FXObject*, FXSelector, void* ){
 	
 	pNoUpdate = true;
 	
-	if( pOwner->GetSplitPosition() >= 0 ){
-		pOwner->SetSplitPosition( ssplit );
+	if(pOwner->GetSplitPosition() >= 0){
+		pOwner->SetSplitPosition(ssplit);
 		
 	}else{
-		pOwner->SetSplitPositionRelative( ( float ) ssplit / ( float )size );
+		pOwner->SetSplitPositionRelative((float) ssplit / (float)size);
 	}
 	
 	pNoUpdate = false;
 	return 1;
 }
 
-long igdeNativeFoxContainerSplitted::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxContainerSplitted::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	
-	if( pOwner->GetWidgetIn( igdeContainerSplitted::eaSide ) == clflags.widget ){
-		switch( pOwner->GetSidePlacement() ){
+	if(pOwner->GetWidgetIn(igdeContainerSplitted::eaSide) == clflags.widget){
+		switch(pOwner->GetSidePlacement()){
 		case igdeContainerSplitted::espTop:
 		case igdeContainerSplitted::espBottom:
 			clflags.flags = LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y;
@@ -259,8 +259,8 @@ long igdeNativeFoxContainerSplitted::onChildLayoutFlags( FXObject*, FXSelector, 
 			break;
 		}
 		
-	}else if( pOwner->GetWidgetIn( igdeContainerSplitted::eaCenter ) == clflags.widget ){
-		switch( pOwner->GetSidePlacement() ){
+	}else if(pOwner->GetWidgetIn(igdeContainerSplitted::eaCenter) == clflags.widget){
+		switch(pOwner->GetSidePlacement()){
 		case igdeContainerSplitted::espTop:
 		case igdeContainerSplitted::espBottom:
 			clflags.flags = LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y;

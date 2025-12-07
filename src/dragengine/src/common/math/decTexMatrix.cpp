@@ -273,16 +273,16 @@ void decTexMatrix::SetCenterRotation(float rotation){
 }
 
 
-bool decTexMatrix::IsEqualTo( const decTexMatrix &matrix, float threshold ) const{
-	return fabs( a11 - matrix.a11 ) < threshold
-		&& fabs( a12 - matrix.a12 ) < threshold
-		&& fabs( a13 - matrix.a13 ) < threshold
-		&& fabs( a21 - matrix.a21 ) < threshold
-		&& fabs( a22 - matrix.a22 ) < threshold
-		&& fabs( a23 - matrix.a23 ) < threshold
-		&& fabs( a31 - matrix.a31 ) < threshold
-		&& fabs( a32 - matrix.a32 ) < threshold
-		&& fabs( a33 - matrix.a33 ) < threshold;
+bool decTexMatrix::IsEqualTo(const decTexMatrix &matrix, float threshold) const{
+	return fabs(a11 - matrix.a11) < threshold
+		&& fabs(a12 - matrix.a12) < threshold
+		&& fabs(a13 - matrix.a13) < threshold
+		&& fabs(a21 - matrix.a21) < threshold
+		&& fabs(a22 - matrix.a22) < threshold
+		&& fabs(a23 - matrix.a23) < threshold
+		&& fabs(a31 - matrix.a31) < threshold
+		&& fabs(a32 - matrix.a32) < threshold
+		&& fabs(a33 - matrix.a33) < threshold;
 }
 
 
@@ -366,37 +366,37 @@ decTexMatrix decTexMatrix::Normalized() const{
 // Operators
 //////////////
 
-decTexMatrix &decTexMatrix::operator=( const decTexMatrix &m ){
+decTexMatrix &decTexMatrix::operator=(const decTexMatrix &m){
 	a11 = m.a11; a12 = m.a12; a13 = m.a13;
 	a21 = m.a21; a22 = m.a22; a23 = m.a23;
 	a31 = m.a31; a32 = m.a32; a33 = m.a33;
 	return *this;
 }
 
-decTexMatrix &decTexMatrix::operator+=( const decTexMatrix &m ){
+decTexMatrix &decTexMatrix::operator+=(const decTexMatrix &m){
 	a11 += m.a11; a12 += m.a12; a13 += m.a13;
 	a21 += m.a21; a22 += m.a22; a23 += m.a23;
 	a31 += m.a31; a32 += m.a32; a33 += m.a33;
 	return *this;
 }
 
-decTexMatrix &decTexMatrix::operator-=( const decTexMatrix &m ){
+decTexMatrix &decTexMatrix::operator-=(const decTexMatrix &m){
 	a11 -= m.a11; a12 -= m.a12; a13 -= m.a13;
 	a21 -= m.a21; a22 -= m.a22; a23 -= m.a23;
 	a31 -= m.a31; a32 -= m.a32; a33 -= m.a33;
 	return *this;
 }
 
-decTexMatrix &decTexMatrix::operator*=( float k ){
+decTexMatrix &decTexMatrix::operator*=(float k){
 	a11 *= k; a12 *= k; a13 *= k;
 	a21 *= k; a22 *= k; a23 *= k;
 	a31 *= k; a32 *= k; a33 *= k;
 	return *this;
 }
 
-decTexMatrix &decTexMatrix::operator/=( float k ){
-	if( k == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decTexMatrix &decTexMatrix::operator/=(float k){
+	if(k == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	a11 /= k; a12 /= k; a13 /= k;
@@ -406,7 +406,7 @@ decTexMatrix &decTexMatrix::operator/=( float k ){
 	return *this;
 }
 
-decTexMatrix &decTexMatrix::operator*=( const decTexMatrix &m ){
+decTexMatrix &decTexMatrix::operator*=(const decTexMatrix &m){
 	const float t11 = a11 * m.a11 + a21 * m.a12 + a31 * m.a13;
 	const float t12 = a12 * m.a11 + a22 * m.a12 + a32 * m.a13;
 	const float t13 = a13 * m.a11 + a23 * m.a12 + a33 * m.a13;
@@ -424,7 +424,7 @@ decTexMatrix &decTexMatrix::operator*=( const decTexMatrix &m ){
 	return *this;
 }
 
-decTexMatrix decTexMatrix::operator+( const decTexMatrix &m ) const{
+decTexMatrix decTexMatrix::operator+(const decTexMatrix &m) const{
 	decTexMatrix n;
 	
 	n.a11 = a11 + m.a11; n.a12 = a12 + m.a12; n.a13 = a13 + m.a13;
@@ -434,7 +434,7 @@ decTexMatrix decTexMatrix::operator+( const decTexMatrix &m ) const{
 	return n;
 }
 
-decTexMatrix decTexMatrix::operator-( const decTexMatrix &m ) const{
+decTexMatrix decTexMatrix::operator-(const decTexMatrix &m) const{
 	decTexMatrix n;
 	
 	n.a11 = a11 - m.a11; n.a12 = a12 - m.a12; n.a13 = a13 - m.a13;
@@ -444,7 +444,7 @@ decTexMatrix decTexMatrix::operator-( const decTexMatrix &m ) const{
 	return n;
 }
 
-decTexMatrix decTexMatrix::operator*( float k ) const{
+decTexMatrix decTexMatrix::operator*(float k) const{
 	decTexMatrix n;
 	
 	n.a11 = a11 * k; n.a12 = a12 * k; n.a13 = a13 * k;
@@ -454,9 +454,9 @@ decTexMatrix decTexMatrix::operator*( float k ) const{
 	return n;
 }
 
-decTexMatrix decTexMatrix::operator/( float k ) const{
-	if( k == 0.0f ){
-		DETHROW( deeDivisionByZero );
+decTexMatrix decTexMatrix::operator/(float k) const{
+	if(k == 0.0f){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	decTexMatrix n;
@@ -468,7 +468,7 @@ decTexMatrix decTexMatrix::operator/( float k ) const{
 	return n;
 }
 
-decTexMatrix decTexMatrix::operator*( const decTexMatrix &m ) const{
+decTexMatrix decTexMatrix::operator*(const decTexMatrix &m) const{
 	decTexMatrix n;
 	
 	n.a11 = a11 * m.a11 + a21 * m.a12 + a31 * m.a13;
@@ -487,8 +487,8 @@ decTexMatrix decTexMatrix::operator*( const decTexMatrix &m ) const{
 	return n;
 }
 
-decVector2 decTexMatrix::operator*( const decVector2 &v ) const{
+decVector2 decTexMatrix::operator*(const decVector2 &v) const{
 	return decVector2(
 		a11 * v.x + a12 * v.y + a13,
-		a21 * v.x + a22 * v.y + a23 );
+		a21 * v.x + a22 * v.y + a23);
 }

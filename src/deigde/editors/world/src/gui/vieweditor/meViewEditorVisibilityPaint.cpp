@@ -48,13 +48,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditorVisibilityPaint::meViewEditorVisibilityPaint( meView3D &view ) :
-meViewEditorNavigation( view ){
-	pVisPainter = new meCLVisibilityPaint( view.GetWorld() );
+meViewEditorVisibilityPaint::meViewEditorVisibilityPaint(meView3D &view) :
+meViewEditorNavigation(view){
+	pVisPainter = new meCLVisibilityPaint(view.GetWorld());
 }
 
 meViewEditorVisibilityPaint::~meViewEditorVisibilityPaint(){
-	if( pVisPainter ){
+	if(pVisPainter){
 		delete pVisPainter;
 	}
 }
@@ -69,57 +69,57 @@ meViewEditorVisibilityPaint::~meViewEditorVisibilityPaint(){
 // Callbacks
 //////////////
 
-void meViewEditorVisibilityPaint::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonPress( x, y, shift, control );
+void meViewEditorVisibilityPaint::OnLeftMouseButtonPress(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonPress(x, y, shift, control);
 	
 	meCamera &camera = GetActiveCamera();
 	decLayerMask layerMask;
 	
 	const decDVector rayPosition = GetMatrixView().GetPosition();
-	const decVector rayDirection = camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), x, y ) * 500.0f; // 500m
-	pVisPainter->SetRay( rayPosition, rayDirection );
+	const decVector rayDirection = camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y) * 500.0f; // 500m
+	pVisPainter->SetRay(rayPosition, rayDirection);
 	
 	pVisPainter->BeginSession();
 	pVisPainter->PreparePaint();
 	
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmHeightTerrains );
+	collisionFilter.SetBit(meWorld::eclmHeightTerrains);
 	
-	RayTestCollision( pVisPainter, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
+	RayTestCollision(pVisPainter, rayPosition, rayDirection, decCollisionFilter(collisionCategory, collisionFilter));
 	
 	pVisPainter->Paint();
 }
 
-void meViewEditorVisibilityPaint::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnLeftMouseButtonRelease( x, y, shift, control );
+void meViewEditorVisibilityPaint::OnLeftMouseButtonRelease(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnLeftMouseButtonRelease(x, y, shift, control);
 	
-	if( GetDragLeftMouseButton() ){
+	if(GetDragLeftMouseButton()){
 		pVisPainter->EndSession();
 	}
 }
 
-void meViewEditorVisibilityPaint::OnMouseMove( int x, int y, bool shift, bool control ){
-	meViewEditorNavigation::OnMouseMove( x, y, shift, control );
+void meViewEditorVisibilityPaint::OnMouseMove(int x, int y, bool shift, bool control){
+	meViewEditorNavigation::OnMouseMove(x, y, shift, control);
 	
-	if( GetDragLeftMouseButton() ){
+	if(GetDragLeftMouseButton()){
 		meCamera &camera = GetActiveCamera();
 		
 		const decDVector rayPosition = GetMatrixView().GetPosition();
-		const decVector rayDirection = camera.GetDirectionFor( GetViewWidth(), GetViewHeight(), x, y ) * 50.0f; // 50m
-		pVisPainter->SetRay( rayPosition, rayDirection );
+		const decVector rayDirection = camera.GetDirectionFor(GetViewWidth(), GetViewHeight(), x, y) * 50.0f; // 50m
+		pVisPainter->SetRay(rayPosition, rayDirection);
 		
 		pVisPainter->PreparePaint();
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmEditing );
+		collisionCategory.SetBit(meWorld::eclmEditing);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmHeightTerrains );
+		collisionFilter.SetBit(meWorld::eclmHeightTerrains);
 		
-		RayTestCollision( pVisPainter, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
+		RayTestCollision(pVisPainter, rayPosition, rayDirection, decCollisionFilter(collisionCategory, collisionFilter));
 		
 		pVisPainter->Paint();
 	}

@@ -50,9 +50,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCondition::ceWPCondition( ceWPTopic &parentPanel ) :
-igdeContainerForm( parentPanel.GetEnvironment() ),
-pParentPanel( parentPanel ){
+ceWPCondition::ceWPCondition(ceWPTopic &parentPanel) :
+igdeContainerForm(parentPanel.GetEnvironment()),
+pParentPanel(parentPanel){
 }
 
 ceWPCondition::~ceWPCondition(){
@@ -63,35 +63,35 @@ ceWPCondition::~ceWPCondition(){
 // Management
 ///////////////
 
-void ceWPCondition::UpdateComboBoxWithActorIDList( igdeComboBox &combobox ){
+void ceWPCondition::UpdateComboBoxWithActorIDList(igdeComboBox &combobox){
 	const ceConversation * const conversation = pParentPanel.GetConversation();
-	const decString selection( combobox.GetText() );
+	const decString selection(combobox.GetText());
 	
 	combobox.RemoveAllItems();
 	
-	if( conversation ){
+	if(conversation){
 		const ceConversationActorList &list = conversation->GetActorList();
 		const int count = list.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			if( list.GetAt( i )->GetID().IsEmpty() ){
+		for(i=0; i<count; i++){
+			if(list.GetAt(i)->GetID().IsEmpty()){
 				continue;
 			}
 			
-			const decString &id = list.GetAt( i )->GetID();
-			if( ! combobox.HasItem( id ) ){
-				combobox.AddItem( id );
+			const decString &id = list.GetAt(i)->GetID();
+			if(! combobox.HasItem(id)){
+				combobox.AddItem(id);
 			}
 			
-			const decString &aliasID = list.GetAt( i )->GetAliasID();
-			if( ! aliasID.IsEmpty() && ! combobox.HasItem( aliasID ) ){
-				combobox.AddItem( aliasID );
+			const decString &aliasID = list.GetAt(i)->GetAliasID();
+			if(! aliasID.IsEmpty() && ! combobox.HasItem(aliasID)){
+				combobox.AddItem(aliasID);
 			}
 		}
 		
 		combobox.SortItems();
 	}
 	
-	combobox.SetText( selection );
+	combobox.SetText(selection);
 }

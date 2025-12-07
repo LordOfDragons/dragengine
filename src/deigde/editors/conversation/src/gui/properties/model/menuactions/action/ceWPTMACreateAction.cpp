@@ -66,14 +66,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACreateAction::ceWPTMACreateAction( ceWindowMain &windowMain,
+ceWPTMACreateAction::ceWPTMACreateAction(ceWindowMain &windowMain,
 ceConversation &conversation,
-ceConversationAction::eActionTypes actionType ) :
-ceWPTMenuAction( windowMain,
-	ActionTypeText( windowMain, actionType ),
-	ActionTypeIcon( windowMain, actionType ) ),
-pConversation( &conversation ),
-pActionType( actionType ){
+ceConversationAction::eActionTypes actionType) :
+ceWPTMenuAction(windowMain,
+	ActionTypeText(windowMain, actionType),
+	ActionTypeIcon(windowMain, actionType)),
+pConversation(&conversation),
+pActionType(actionType){
 }
 
 
@@ -86,16 +86,16 @@ void ceWPTMACreateAction::OnAction(){
 		CreateUndo(ceConversationAction::Ref::New(CreateAction()))));
 }
 
-igdeUndo *ceWPTMACreateAction::CreateUndo( ceConversationAction* ){
+igdeUndo *ceWPTMACreateAction::CreateUndo(ceConversationAction*){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 
 
 ceConversationAction *ceWPTMACreateAction::CreateAction(){
-	switch( pActionType ){
+	switch(pActionType){
 	case ceConversationAction::eatCameraShot:
 		return new ceCACameraShot;
 		
@@ -103,7 +103,7 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		return new ceCAMusic;
 		
 	case ceConversationAction::eatActorSpeak:
-		return new ceCAActorSpeak( pConversation->GetEngine() );
+		return new ceCAActorSpeak(pConversation->GetEngine());
 		
 	case ceConversationAction::eatSetVariable:
 		return new ceCASetVariable;
@@ -121,14 +121,14 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		try{
 			ifElse = new ceCAIfElse;
 			ifCase = new ceCAIfElseCase;
-			ifElse->GetCases().Add( ifCase );
+			ifElse->GetCases().Add(ifCase);
 			ifCase->FreeReference();
 			
-		}catch( const deException & ){
-			if( ifCase ){
+		}catch(const deException &){
+			if(ifCase){
 				ifCase->FreeReference();
 			}
-			if( ifElse ){
+			if(ifElse){
 				ifElse->FreeReference();
 			}
 			throw;
@@ -144,14 +144,14 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		try{
 			playerChoice = new ceCAPlayerChoice;
 			option = new ceCAPlayerChoiceOption;
-			playerChoice->GetOptions().Add( option );
+			playerChoice->GetOptions().Add(option);
 			option->FreeReference();
 			
-		}catch( const deException & ){
-			if( option ){
+		}catch(const deException &){
+			if(option){
 				option->FreeReference();
 			}
-			if( playerChoice ){
+			if(playerChoice){
 				playerChoice->FreeReference();
 			}
 			throw;
@@ -194,13 +194,13 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		return new ceCAComment;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 }
 
-const char *ceWPTMACreateAction::ActionTypeText( ceWindowMain &windowMain,
-ceConversationAction::eActionTypes actionType ){
-	switch( actionType ){
+const char *ceWPTMACreateAction::ActionTypeText(ceWindowMain &windowMain,
+ceConversationAction::eActionTypes actionType){
+	switch(actionType){
 	case ceConversationAction::eatCameraShot:
 		return "Camera Shot";
 		
@@ -263,9 +263,9 @@ ceConversationAction::eActionTypes actionType ){
 	}
 }
 
-igdeIcon *ceWPTMACreateAction::ActionTypeIcon( ceWindowMain &windowMain,
-ceConversationAction::eActionTypes actionType ){
-	switch( actionType ){
+igdeIcon *ceWPTMACreateAction::ActionTypeIcon(ceWindowMain &windowMain,
+ceConversationAction::eActionTypes actionType){
+	switch(actionType){
 	case ceConversationAction::eatCameraShot:
 		return windowMain.GetIconActionCameraShot();
 		

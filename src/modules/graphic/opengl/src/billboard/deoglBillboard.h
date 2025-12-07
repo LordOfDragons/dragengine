@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglBillboard( deGraphicOpenGl &ogl, const deBillboard &billboard );
+	deoglBillboard(deGraphicOpenGl &ogl, const deBillboard &billboard);
 	
 	/** Clean up peer. */
 	virtual ~deoglBillboard();
@@ -92,26 +92,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
 	
 	/** Billboard. */
-	inline const deBillboard &GetBillboard() const{ return pBillboard; }
+	inline const deBillboard &GetBillboard() const{return pBillboard;}
 	
 	
 	
 	/** Render billboard. */
-	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
+	inline deoglRBillboard *GetRBillboard() const{return pRBillboard;}
 	
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	void SyncToRender();
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
@@ -128,8 +128,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
 	/*@}*/
 	
 	
@@ -138,8 +138,8 @@ public:
 	/*@{*/
 	virtual void DynamicSkinDestroyed();
 	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	

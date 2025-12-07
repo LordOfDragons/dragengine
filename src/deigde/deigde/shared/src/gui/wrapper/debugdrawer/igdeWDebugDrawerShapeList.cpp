@@ -54,24 +54,24 @@ int igdeWDebugDrawerShapeList::GetCount() const{
 	return pList.GetCount();
 }
 
-igdeWDebugDrawerShape *igdeWDebugDrawerShapeList::GetAt( int index ) const{
-	return ( igdeWDebugDrawerShape* )pList.GetAt( index );
+igdeWDebugDrawerShape *igdeWDebugDrawerShapeList::GetAt(int index) const{
+	return (igdeWDebugDrawerShape*)pList.GetAt(index);
 }
 
-bool igdeWDebugDrawerShapeList::Has( igdeWDebugDrawerShape *wrapper ) const{
-	return pList.Has( wrapper );
+bool igdeWDebugDrawerShapeList::Has(igdeWDebugDrawerShape *wrapper) const{
+	return pList.Has(wrapper);
 }
 
-void igdeWDebugDrawerShapeList::Add( igdeWDebugDrawerShape *wrapper ){
-	if( ! wrapper ){
-		DETHROW( deeInvalidParam );
+void igdeWDebugDrawerShapeList::Add(igdeWDebugDrawerShape *wrapper){
+	if(! wrapper){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Add( wrapper );
+	pList.Add(wrapper);
 }
 
-void igdeWDebugDrawerShapeList::Remove( igdeWDebugDrawerShape *wrapper ){
-	pList.Remove( wrapper );
+void igdeWDebugDrawerShapeList::Remove(igdeWDebugDrawerShape *wrapper){
+	pList.Remove(wrapper);
 	delete wrapper;
 }
 
@@ -79,28 +79,28 @@ void igdeWDebugDrawerShapeList::RemoveAll(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( igdeWDebugDrawerShape* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (igdeWDebugDrawerShape*)pList.GetAt(i);
 	}
 	pList.RemoveAll();
 }
 
 
 
-void igdeWDebugDrawerShapeList::SetParentDebugDrawerAll( deDebugDrawer *debugDrawer ){
+void igdeWDebugDrawerShapeList::SetParentDebugDrawerAll(deDebugDrawer *debugDrawer){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeWDebugDrawerShape* )pList.GetAt( i ) )->SetParentDebugDrawer( debugDrawer );
+	for(i=0; i<count; i++){
+		((igdeWDebugDrawerShape*)pList.GetAt(i))->SetParentDebugDrawer(debugDrawer);
 	}
 }
 
-void igdeWDebugDrawerShapeList::SetVisibleAll( bool visible ){
+void igdeWDebugDrawerShapeList::SetVisibleAll(bool visible){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeWDebugDrawerShape* )pList.GetAt( i ) )->SetVisible( visible );
+	for(i=0; i<count; i++){
+		((igdeWDebugDrawerShape*)pList.GetAt(i))->SetVisible(visible);
 	}
 }

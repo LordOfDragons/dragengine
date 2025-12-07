@@ -69,7 +69,7 @@ aeALColliderListener::~aeALColliderListener(){
 // Management
 ///////////////
 
-void aeALColliderListener::SetAnimatorLocomotion( aeAnimatorLocomotion *locomotion ){
+void aeALColliderListener::SetAnimatorLocomotion(aeAnimatorLocomotion *locomotion){
 	pLocomotion = locomotion;
 }
 
@@ -78,35 +78,35 @@ void aeALColliderListener::SetAnimatorLocomotion( aeAnimatorLocomotion *locomoti
 // Notifications
 //////////////////
 
-void aeALColliderListener::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void aeALColliderListener::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	const decVector &linvelo = owner->GetLinearVelocity();
 	const decVector &normal = info->GetNormal();
 	
-	if( linvelo * normal < 0.0f ){
-		owner->SetPosition( owner->GetPosition() + decDVector( normal ) * 0.001 );
-		owner->SetLinearVelocity( linvelo - normal * ( normal * linvelo ) );
+	if(linvelo * normal < 0.0f){
+		owner->SetPosition(owner->GetPosition() + decDVector(normal) * 0.001);
+		owner->SetLinearVelocity(linvelo - normal * (normal * linvelo));
 	}
 	
-	if( pLocomotion->GetLegCount() > 1 ){
+	if(pLocomotion->GetLegCount() > 1){
 		float correctTurn = owner->GetAngularVelocity().y * info->GetDistance();
-		if( correctTurn > 0.0f ){
+		if(correctTurn > 0.0f){
 			correctTurn += 0.1f;
 		}else{
 			correctTurn -= 0.01f;
 		}
-		pLocomotion->SetOrientation( pLocomotion->GetOrientation().GetValue() - correctTurn );
-		pLocomotion->GetLookLeftRight().SetValue( pLocomotion->GetLookLeftRight().GetValue() + correctTurn );
-		pLocomotion->GetLookLeftRight().SetGoal( pLocomotion->GetLookLeftRight().GetGoal() + correctTurn );
+		pLocomotion->SetOrientation(pLocomotion->GetOrientation().GetValue() - correctTurn);
+		pLocomotion->GetLookLeftRight().SetValue(pLocomotion->GetLookLeftRight().GetValue() + correctTurn);
+		pLocomotion->GetLookLeftRight().SetGoal(pLocomotion->GetLookLeftRight().GetGoal() + correctTurn);
 		
-		owner->SetOrientation( pLocomotion->GetOrientationQuaternion() );
-		owner->SetAngularVelocity( decVector() );
+		owner->SetOrientation(pLocomotion->GetOrientationQuaternion());
+		owner->SetAngularVelocity(decVector());
 	}
 }
 
-bool aeALColliderListener::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool aeALColliderListener::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }
 
-void aeALColliderListener::ColliderChanged( deCollider *owner ){
+void aeALColliderListener::ColliderChanged(deCollider *owner){
 	pLocomotion->OnColliderChanged();
 }

@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadFontInternal( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deRLTaskReadFont *parentTask );
+	deRLTaskReadFontInternal(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deRLTaskReadFont *parentTask);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadFontInternal();
@@ -70,13 +70,13 @@ public:
 	virtual void Finished();
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline deFont *GetFont() const{return pFont;}
 	
 	/** \brief Font has been already loaded. */
-	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
+	inline bool GetAlreadyLoaded() const{return pAlreadyLoaded;}
 	
 	/** \brief Second task or NULL. */
-	inline deRLTaskReadFontInternal2 *GetInternalTask() const{ return pInternalTask; }
+	inline deRLTaskReadFontInternal2 *GetInternalTask() const{return pInternalTask;}
 	/*@}*/
 	
 	

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetRigPath( saeSAnimation *sanimation, const char *newName );
+	saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *newName);
 	
 protected:
 	/** Clean up undo. */

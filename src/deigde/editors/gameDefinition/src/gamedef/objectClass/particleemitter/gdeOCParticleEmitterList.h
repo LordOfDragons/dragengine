@@ -47,7 +47,7 @@ public:
 	gdeOCParticleEmitterList();
 	
 	/** \brief Create copy of object class particle emitter list. */
-	gdeOCParticleEmitterList( const gdeOCParticleEmitterList &list );
+	gdeOCParticleEmitterList(const gdeOCParticleEmitterList &list);
 	
 	/** \brief Clean up object class particle emitter list. */
 	~gdeOCParticleEmitterList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class particle emitter at position. */
-	gdeOCParticleEmitter *GetAt( int index ) const;
+	gdeOCParticleEmitter *GetAt(int index) const;
 	
 	/** \brief Index of named object class particle emitter or -1 if absent. */
-	int IndexOf( gdeOCParticleEmitter *emitter ) const;
+	int IndexOf(gdeOCParticleEmitter *emitter) const;
 	
 	/** \brief Object class particle emitter is present. */
-	bool Has( gdeOCParticleEmitter *emitter ) const;
+	bool Has(gdeOCParticleEmitter *emitter) const;
 	
 	/** \brief Add object class particle emitter. */
-	void Add( gdeOCParticleEmitter *emitter );
+	void Add(gdeOCParticleEmitter *emitter);
 	
 	/** \brief Remove object class particle emitter. */
-	void Remove( gdeOCParticleEmitter *emitter );
+	void Remove(gdeOCParticleEmitter *emitter);
 	
 	/** \brief Remove all object class particle emitters. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class particle emitter list. */
-	gdeOCParticleEmitterList &operator=( const gdeOCParticleEmitterList &list );
+	gdeOCParticleEmitterList &operator=(const gdeOCParticleEmitterList &list);
 	/*@}*/
 };
 

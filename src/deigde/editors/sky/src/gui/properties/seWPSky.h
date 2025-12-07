@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPSky( seWindowProperties &windowProperties );
+	seWPSky(seWindowProperties &windowProperties);
 	
 	/** \brief Clean up panel. */
 	virtual ~seWPSky();
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline seSky *GetSky() const{return pSky;}
 	
 	/** \brief Set sky. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Update sky. */
 	void UpdateSky();

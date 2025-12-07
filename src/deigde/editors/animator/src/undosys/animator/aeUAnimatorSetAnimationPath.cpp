@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAnimatorSetAnimationPath::aeUAnimatorSetAnimationPath( aeAnimator *animator, const char *newValue ) :
-pAnimator( animator ),
-pNewValue( newValue )
+aeUAnimatorSetAnimationPath::aeUAnimatorSetAnimationPath(aeAnimator *animator, const char *newValue) :
+pAnimator(animator),
+pNewValue(newValue)
 {
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+	if(! animator){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = animator->GetAnimationPath();
 	
-	SetShortInfo( "Animator set animation path" );
+	SetShortInfo("Animator set animation path");
 }
 
 aeUAnimatorSetAnimationPath::~aeUAnimatorSetAnimationPath(){
@@ -61,9 +61,9 @@ aeUAnimatorSetAnimationPath::~aeUAnimatorSetAnimationPath(){
 ///////////////
 
 void aeUAnimatorSetAnimationPath::Undo(){
-	pAnimator->SetAnimationPath( pOldValue );
+	pAnimator->SetAnimationPath(pOldValue);
 }
 
 void aeUAnimatorSetAnimationPath::Redo(){
-	pAnimator->SetAnimationPath( pNewValue );
+	pAnimator->SetAnimationPath(pNewValue);
 }

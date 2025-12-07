@@ -40,10 +40,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasVideoPlayer::deCanvasVideoPlayer( deCanvasManager *manager ) :
-deCanvas( manager ),
-pRepeatX( 1 ),
-pRepeatY( 1 ){
+deCanvasVideoPlayer::deCanvasVideoPlayer(deCanvasManager *manager) :
+deCanvas(manager),
+pRepeatX(1),
+pRepeatY(1){
 }
 
 deCanvasVideoPlayer::~deCanvasVideoPlayer(){
@@ -54,8 +54,8 @@ deCanvasVideoPlayer::~deCanvasVideoPlayer(){
 // Management
 ///////////////
 
-void deCanvasVideoPlayer::SetVideoPlayer( deVideoPlayer *videoPlayer ){
-	if( videoPlayer == pVideoPlayer ){
+void deCanvasVideoPlayer::SetVideoPlayer(deVideoPlayer *videoPlayer){
+	if(videoPlayer == pVideoPlayer){
 		return;
 	}
 	
@@ -63,12 +63,12 @@ void deCanvasVideoPlayer::SetVideoPlayer( deVideoPlayer *videoPlayer ){
 	NotifyContentChanged();
 }
 
-void deCanvasVideoPlayer::SetRepeatX( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deCanvasVideoPlayer::SetRepeatX(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeatX ){
+	if(count == pRepeatX){
 		return;
 	}
 	
@@ -76,12 +76,12 @@ void deCanvasVideoPlayer::SetRepeatX( int count ){
 	NotifyContentChanged();
 }
 
-void deCanvasVideoPlayer::SetRepeatY( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void deCanvasVideoPlayer::SetRepeatY(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count == pRepeatY ){
+	if(count == pRepeatY){
 		return;
 	}
 	
@@ -94,6 +94,6 @@ void deCanvasVideoPlayer::SetRepeatY( int count ){
 // Visiting
 /////////////
 
-void deCanvasVideoPlayer::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitVideoPlayer( *this );
+void deCanvasVideoPlayer::Visit(deCanvasVisitor &visitor){
+	visitor.VisitVideoPlayer(*this);
 }

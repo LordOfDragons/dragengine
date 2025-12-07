@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCPToggleIdentifierUsage::gdeUOCPToggleIdentifierUsage(
-gdeObjectClass *objectClass, gdeProperty *property ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeObjectClass *objectClass, gdeProperty *property) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property toggle identifier usage" );
+	SetShortInfo("Object class property toggle identifier usage");
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
@@ -59,10 +59,10 @@ pProperty( NULL )
 }
 
 gdeUOCPToggleIdentifierUsage::~gdeUOCPToggleIdentifierUsage(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ gdeUOCPToggleIdentifierUsage::~gdeUOCPToggleIdentifierUsage(){
 ///////////////
 
 void gdeUOCPToggleIdentifierUsage::Undo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPToggleIdentifierUsage::Redo(){
-	pProperty->SetIdentifierUsage( ! pProperty->GetIdentifierUsage() );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pProperty->SetIdentifierUsage(! pProperty->GetIdentifierUsage());
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

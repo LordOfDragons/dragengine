@@ -53,30 +53,30 @@ meNavigationSpaceSelection::~meNavigationSpaceSelection(){
 // Management
 ///////////////
 
-void meNavigationSpaceSelection::Add( meNavigationSpace *navspaces ){
-	if( ! navspaces ){
-		DETHROW( deeInvalidParam );
+void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
+	if(! navspaces){
+		DETHROW(deeInvalidParam);
 	}
 	
-	navspaces->SetSelected( true );
-	pSelection.AddIfAbsent( navspaces );
+	navspaces->SetSelected(true);
+	pSelection.AddIfAbsent(navspaces);
 }
 
-void meNavigationSpaceSelection::Remove( meNavigationSpace *navspaces ){
-	if( ! navspaces ){
-		DETHROW( deeInvalidParam );
+void meNavigationSpaceSelection::Remove(meNavigationSpace *navspaces){
+	if(! navspaces){
+		DETHROW(deeInvalidParam);
 	}
 	
-	navspaces->SetSelected( false );
-	pSelection.RemoveIfPresent( navspaces );
+	navspaces->SetSelected(false);
+	pSelection.RemoveIfPresent(navspaces);
 }
 
 void meNavigationSpaceSelection::RemoveAll(){
 	const int count = pSelection.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSelection.GetAt( i )->SetSelected( false );
+	for(i=0; i<count; i++){
+		pSelection.GetAt(i)->SetSelected(false);
 	}
 	
 	pSelection.RemoveAll();
@@ -88,17 +88,17 @@ bool meNavigationSpaceSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meNavigationSpaceSelection::SetActive( meNavigationSpace *navspaces ){
-	if( pActive ){
-		pActive->SetActive( false );
+void meNavigationSpaceSelection::SetActive(meNavigationSpace *navspaces){
+	if(pActive){
+		pActive->SetActive(false);
 		pActive->FreeReference();
 	}
 	
 	pActive = navspaces;
 	
-	if( navspaces ){
+	if(navspaces){
 		navspaces->AddReference();
-		navspaces->SetActive( true );
+		navspaces->SetActive(true);
 	}
 }
 
@@ -107,17 +107,17 @@ void meNavigationSpaceSelection::ActivateNext(){
 	meNavigationSpace *next = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pActive != pSelection.GetAt( i ) ){
-			next = pSelection.GetAt( i );
+	for(i=0; i<count; i++){
+		if(pActive != pSelection.GetAt(i)){
+			next = pSelection.GetAt(i);
 			break;
 		}
 	}
 	
-	SetActive( next );
+	SetActive(next);
 }
 
 void meNavigationSpaceSelection::Reset(){
 	RemoveAll();
-	SetActive( NULL );
+	SetActive(NULL);
 }

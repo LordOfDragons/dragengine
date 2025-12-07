@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceSynthSetConController( seSourceSynthesizer *source, int target, seController *newController );
+	seUSourceSynthSetConController(seSourceSynthesizer *source, int target, seController *newController);
 	
 protected:
 	/** \brief Clean up undo action. */

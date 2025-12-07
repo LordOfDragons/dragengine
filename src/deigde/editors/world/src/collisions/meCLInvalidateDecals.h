@@ -43,15 +43,15 @@ public:
 		meCLInvalidateDecals *pVisitor;
 		
 	public:
-		Helper( meWorld *world );
+		Helper(meWorld *world);
 		~Helper();
 		
 		void InvalidateDecals();
 		
-		void Collect( const decDVector &position, const decVector &minExtend,
-			const decVector &maxExtend, const decQuaternion &orientation );
+		void Collect(const decDVector &position, const decVector &minExtend,
+			const decVector &maxExtend, const decQuaternion &orientation);
 		
-		void Collect( igdeWObject &wobject );
+		void Collect(igdeWObject &wobject);
 	};
 	
 	
@@ -74,11 +74,11 @@ public:
 	void InvalidateDecals();
 	
 	/** \brief Collect decals. */
-	void Collect( const decDVector &position, const decVector &minExtend,
-		const decVector &maxExtend, const decQuaternion &orientation );
+	void Collect(const decDVector &position, const decVector &minExtend,
+		const decVector &maxExtend, const decQuaternion &orientation);
 	
 	/** \brief Collect decals. */
-	void Collect( igdeWObject &wobject );
+	void Collect(igdeWObject &wobject);
 	/*@}*/
 };
 

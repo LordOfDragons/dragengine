@@ -71,7 +71,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic bsp tree object. */
-	decBSPTree( const decVector &normal, float distance );
+	decBSPTree(const decVector &normal, float distance);
 	/** Cleans up the generic bsp tree object. */
 	virtual ~decBSPTree();
 	/*@}*/
@@ -79,45 +79,45 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent of the bsp tree or NULL if a root bsp tree. */
-	inline decBSPTree *GetParent() const{ return pParent; }
+	inline decBSPTree *GetParent() const{return pParent;}
 	/** Sets the parent of the bsp tree or NULL if a root bsp tree. */
-	void SetParent( decBSPTree *parent );
+	void SetParent(decBSPTree *parent);
 	/** Retrieves the normal. */
-	inline const decVector &GetNormal() const{ return pNormal; }
+	inline const decVector &GetNormal() const{return pNormal;}
 	/** Retrieves the distance. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{return pDistance;}
 	/** Retrieves the front node or NULL if not existing. */
-	inline decBSPTree *GetFrontNode() const{ return pNodeFront; }
+	inline decBSPTree *GetFrontNode() const{return pNodeFront;}
 	/** Sets the front node or NULL if not existing. */
-	void SetFrontNode( decBSPTree *bsptree );
+	void SetFrontNode(decBSPTree *bsptree);
 	/** Retrieves the back node or NULL if not existing. */
-	inline decBSPTree *GetBackNode() const{ return pNodeBack; }
+	inline decBSPTree *GetBackNode() const{return pNodeBack;}
 	/** Sets the back node or NULL if not existing. */
-	void SetBackNode( decBSPTree *bsptree );
+	void SetBackNode(decBSPTree *bsptree);
 	/**
 	 * Clears the bsp tree. If clearNodes is set to true all elements are cleared and
 	 * nodes are reset to NULL. Otherwise only all elements are removed but the
 	 * nodes stay intact.
 	 */
-	void ClearTree( bool clearNodes );
+	void ClearTree(bool clearNodes);
 	
 	/**
 	 * Creates new bsp tree for the specified octant. Implement this function
 	 * to create a new bsp tree of your own type. Do not set the parent of
 	 * bsp tree. The caller is responsible for this action if applicable.
 	 */
-	virtual decBSPTree *CreateBSPTree( const decVector &normal, float distance ) const;
+	virtual decBSPTree *CreateBSPTree(const decVector &normal, float distance) const;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent();
 	/** Add face as a coplanar face for this node. */
-	virtual void AddCoplanarFace( const decBSPTreeFace &face );
+	virtual void AddCoplanarFace(const decBSPTreeFace &face);
 	
 	/**
 	 * Tests the face against this node. Returns 1 if the face is fully on
 	 * the front side or -1 if fully on the back side. If the face crosses
 	 * the plane 0 is returned.
 	 */
-	int TestFaceAgainstNode( const decBSPTreeFace &face ) const;
+	int TestFaceAgainstNode(const decBSPTreeFace &face) const;
 	/**
 	 * Tests if a face is inside the bsp tree. The face is send down the bsp
 	 * tree like during an insert action but instead of inserting the last
@@ -126,11 +126,11 @@ public:
 	 * back side it is considered outside and -1 is returned as the result.
 	 * if the face crosses the last split plane 0 is returned as result.
 	 */
-	bool IsFaceInsideTree( const decBSPTreeFace &face ) const;
+	bool IsFaceInsideTree(const decBSPTreeFace &face) const;
 	/** Splits a face against this node. */
-	void SplitFace( const decBSPTreeFace &face, decBSPTreeFace &front, decBSPTreeFace &back ) const;
+	void SplitFace(const decBSPTreeFace &face, decBSPTreeFace &front, decBSPTreeFace &back) const;
 	/** Adds a new face into bsp tree splitting it if required. */
-	void InsertFaceIntoTree( const decBSPTreeFace &face );
+	void InsertFaceIntoTree(const decBSPTreeFace &face);
 	/*@}*/
 };
 

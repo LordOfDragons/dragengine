@@ -45,13 +45,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHTVRuleRandom::meHTVRuleRandom() : meHTVRule( ertRandom, 1 ){
-	GetSlotAt( eosRandom ).SetIsInput( false );
+meHTVRuleRandom::meHTVRuleRandom() : meHTVRule(ertRandom, 1){
+	GetSlotAt(eosRandom).SetIsInput(false);
 }
 
-meHTVRuleRandom::meHTVRuleRandom( const meHTVRuleRandom &rule ) :
-meHTVRule( rule ),
-pRandom( rule.pRandom ){
+meHTVRuleRandom::meHTVRuleRandom(const meHTVRuleRandom &rule) :
+meHTVRule(rule),
+pRandom(rule.pRandom){
 }
 
 meHTVRuleRandom::~meHTVRuleRandom(){
@@ -63,21 +63,21 @@ meHTVRuleRandom::~meHTVRuleRandom(){
 ///////////////
 
 void meHTVRuleRandom::Reset(){
-	pRandom = ( float )random() / ( float )RAND_MAX;
+	pRandom = (float)random() / (float)RAND_MAX;
 }
 
-float meHTVRuleRandom::GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != 0 ) DETHROW( deeInvalidParam );
+float meHTVRuleRandom::GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != 0) DETHROW(deeInvalidParam);
 	
 	return pRandom;
 }
 
-decVector meHTVRuleRandom::GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv ){
-	if( slot != 0 ) DETHROW( deeInvalidParam );
+decVector meHTVRuleRandom::GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv){
+	if(slot != 0) DETHROW(deeInvalidParam);
 	
-	return decVector( pRandom, pRandom, pRandom );
+	return decVector(pRandom, pRandom, pRandom);
 }
 
 meHTVRule *meHTVRuleRandom::Copy() const{
-	return new meHTVRuleRandom( *this );
+	return new meHTVRuleRandom(*this);
 }

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightPipelinesParticle::deoglLightPipelinesParticle( const deoglRParticleEmitterType &emitter ) :
-deoglLightPipelines( emitter.GetEmitter().GetRenderThread() ),
-pEmitter( emitter ){
+deoglLightPipelinesParticle::deoglLightPipelinesParticle(const deoglRParticleEmitterType &emitter) :
+deoglLightPipelines(emitter.GetEmitter().GetRenderThread()),
+pEmitter(emitter){
 }
 
 deoglLightPipelinesParticle::~deoglLightPipelinesParticle(){
@@ -64,35 +64,35 @@ const char *deoglLightPipelinesParticle::GetDebugName() const{
 void deoglLightPipelinesParticle::pPreparePipelines(deoglBatchedShaderLoading &batched){
 	// base pipeline configuration
 	deoglPipelineConfiguration basePipelineConfig;
-	pBasePipelineConfig( pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig );
+	pBasePipelineConfig(pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig);
 	
 	// base light shader configuration
 	deoglLightShaderConfig baseShaderConfig;
 	baseShaderConfig.Reset();
-	baseShaderConfig.SetLightMode( deoglLightShaderConfig::elmParticle );
+	baseShaderConfig.SetLightMode(deoglLightShaderConfig::elmParticle);
 	
-	switch( pEmitter.GetSimulationType() ){
+	switch(pEmitter.GetSimulationType()){
 	case deParticleEmitterType::estRibbon:
-		baseShaderConfig.SetParticleMode( deoglLightShaderConfig::epmRibbon );
+		baseShaderConfig.SetParticleMode(deoglLightShaderConfig::epmRibbon);
 		break;
 		
 	case deParticleEmitterType::estBeam:
-		baseShaderConfig.SetParticleMode( deoglLightShaderConfig::epmBeam );
+		baseShaderConfig.SetParticleMode(deoglLightShaderConfig::epmBeam);
 		break;
 		
 	default:
-		baseShaderConfig.SetParticleMode( deoglLightShaderConfig::epmParticle );
+		baseShaderConfig.SetParticleMode(deoglLightShaderConfig::epmParticle);
 	}
 	
-	baseShaderConfig.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esmaCube );
-	baseShaderConfig.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esmaCube );
-	baseShaderConfig.SetHWDepthCompare( true );
-	baseShaderConfig.SetDecodeInShadow( false );
-	baseShaderConfig.SetShadowMatrix2EqualsMatrix1( true );
-	baseShaderConfig.SetTextureNoise( false );
+	baseShaderConfig.SetShadowMappingAlgorithm1(deoglLightShaderConfig::esmaCube);
+	baseShaderConfig.SetShadowMappingAlgorithm2(deoglLightShaderConfig::esmaCube);
+	baseShaderConfig.SetHWDepthCompare(true);
+	baseShaderConfig.SetDecodeInShadow(false);
+	baseShaderConfig.SetShadowMatrix2EqualsMatrix1(true);
+	baseShaderConfig.SetTextureNoise(false);
 	
 	// create pipelines for each type and all valid modifications
-	pPrepareNoShadow( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareNoShadow(basePipelineConfig, baseShaderConfig, batched);
 }
 
 
@@ -102,20 +102,20 @@ void deoglLightPipelinesParticle::pPreparePipelines(deoglBatchedShaderLoading &b
 
 void deoglLightPipelinesParticle::pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
 deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetNonGI( shaconf );
+	pSetNonGI(shaconf);
 	// shaconf.SetAmbientLighting( true );
 	
-	pCreatePipelines( pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig, shaconf,
-		etNoShadow, emStereo | emTransparent | emFlipCullFace, batched );
+	pCreatePipelines(pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig, shaconf,
+		etNoShadow, emStereo | emTransparent | emFlipCullFace, batched);
 }
 
 
 
-void deoglLightPipelinesParticle::pSetNonGI( deoglLightShaderConfig &shaconf ){
-	shaconf.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmIntBasic );
-	shaconf.SetMaterialNormalModeEnc( deoglLightShaderConfig::emnmFloat );
-	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-	shaconf.SetSubSurface( pEmitter.GetEmitter().GetRenderThread().GetConfiguration().GetSSSSSEnable() );
+void deoglLightPipelinesParticle::pSetNonGI(deoglLightShaderConfig &shaconf){
+	shaconf.SetMaterialNormalModeDec(deoglLightShaderConfig::emnmIntBasic);
+	shaconf.SetMaterialNormalModeEnc(deoglLightShaderConfig::emnmFloat);
+	shaconf.SetShadowTapMode(deoglLightShaderConfig::estmPcf9);
+	shaconf.SetSubSurface(pEmitter.GetEmitter().GetRenderThread().GetConfiguration().GetSSSSSEnable());
 }

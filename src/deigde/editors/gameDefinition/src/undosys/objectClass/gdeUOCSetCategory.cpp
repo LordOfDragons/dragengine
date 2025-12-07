@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetCategory::gdeUOCSetCategory( gdeObjectClass *objectClass, const char *newValue ) :
-pObjectClass( NULL )
+gdeUOCSetCategory::gdeUOCSetCategory(gdeObjectClass *objectClass, const char *newValue) :
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class set category" );
+	SetShortInfo("Object class set category");
 	
 	pOldValue = objectClass->GetCategory();
 	pNewValue = newValue;
@@ -56,7 +56,7 @@ pObjectClass( NULL )
 }
 
 gdeUOCSetCategory::~gdeUOCSetCategory(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ gdeUOCSetCategory::~gdeUOCSetCategory(){
 ///////////////
 
 void gdeUOCSetCategory::Undo(){
-	pObjectClass->SetCategory( pOldValue );
+	pObjectClass->SetCategory(pOldValue);
 }
 
 void gdeUOCSetCategory::Redo(){
-	pObjectClass->SetCategory( pNewValue );
+	pObjectClass->SetCategory(pNewValue);
 }

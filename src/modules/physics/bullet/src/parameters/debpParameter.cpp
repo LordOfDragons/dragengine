@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpParameter::debpParameter( dePhysicsBullet &bullet ) :
-pBullet( bullet ){
+debpParameter::debpParameter(dePhysicsBullet &bullet) :
+pBullet(bullet){
 }
 
 debpParameter::~debpParameter(){

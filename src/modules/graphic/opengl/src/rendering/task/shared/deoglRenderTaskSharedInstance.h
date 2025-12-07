@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared render task instance. */
-	deoglRenderTaskSharedInstance( deoglRenderTaskSharedPool &pool, int index );
+	deoglRenderTaskSharedInstance(deoglRenderTaskSharedPool &pool, int index);
 	
 protected:
 	/** Clean up shared render task instance. */
@@ -79,74 +79,74 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline deoglRenderTaskSharedPool &GetPool() const{ return pPool; }
+	inline deoglRenderTaskSharedPool &GetPool() const{return pPool;}
 	
 	/** Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	
 	
 	/** Shader parameter block or NULL. */
-	inline deoglShaderParameterBlock *GetParameterBlock() const{ return pParamBlock; }
+	inline deoglShaderParameterBlock *GetParameterBlock() const{return pParamBlock;}
 	
 	/** Set shader parameter block or NULL. */
-	void SetParameterBlock( deoglShaderParameterBlock *block );
+	void SetParameterBlock(deoglShaderParameterBlock *block);
 	
 	/** Special shader parameter block or NULL. */
-	inline deoglShaderParameterBlock *GetParameterBlockSpecial() const{ return pParamBlockSpecial; }
+	inline deoglShaderParameterBlock *GetParameterBlockSpecial() const{return pParamBlockSpecial;}
 	
 	/** Set special shader parameter block or NULL. */
-	void SetParameterBlockSpecial( deoglShaderParameterBlock *block );
+	void SetParameterBlockSpecial(deoglShaderParameterBlock *block);
 	
 	
 	
 	/** Index of first point in VAO. */
-	inline int GetFirstPoint() const{ return pFirstPoint; }
+	inline int GetFirstPoint() const{return pFirstPoint;}
 	
 	/** Set index of first point in VAO. */
-	void SetFirstPoint( int firstPoint );
+	void SetFirstPoint(int firstPoint);
 	
 	/** Number of points to render. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{return pPointCount;}
 	
 	/** Set number of points to render. */
-	void SetPointCount( int pointCount );
+	void SetPointCount(int pointCount);
 	
 	/** First index in VAO index buffer. */
-	inline int GetFirstIndex() const{ return pFirstIndex; }
+	inline int GetFirstIndex() const{return pFirstIndex;}
 	
 	/** Set first index in VAO index buffer. */
-	void SetFirstIndex( int firstIndex );
+	void SetFirstIndex(int firstIndex);
 	
 	/** Number of indices in VAO index buffer. */
-	inline int GetIndexCount() const{ return pIndexCount; }
+	inline int GetIndexCount() const{return pIndexCount;}
 	
 	/** Set number of indices in VAO index buffer. */
-	void SetIndexCount( int indexCount );
+	void SetIndexCount(int indexCount);
 	
 	/** Number of sub instances to render. */
-	inline int GetSubInstanceCount() const{ return pSubInstanceCount; }
+	inline int GetSubInstanceCount() const{return pSubInstanceCount;}
 	
 	/** Set number of sub instances to render. */
-	void SetSubInstanceCount( int subInstanceCount );
+	void SetSubInstanceCount(int subInstanceCount);
 	
 	/** Sub instances SPB or NULL. */
-	inline deoglSharedSPB *GetSubInstanceSPB() const{ return pSubInstanceSPB; }
+	inline deoglSharedSPB *GetSubInstanceSPB() const{return pSubInstanceSPB;}
 	
 	/** Set sub instances SPB or NULL. */
-	void SetSubInstanceSPB( deoglSharedSPB *element );
+	void SetSubInstanceSPB(deoglSharedSPB *element);
 	
 	/** Primitive type. */
-	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }
+	inline GLenum GetPrimitiveType() const{return pPrimitiveType;}
 	
 	/** Set primitive type. */
-	void SetPrimitiveType( GLenum primitiveType );
+	void SetPrimitiveType(GLenum primitiveType);
 	
 	/** Patch verted count. */
-	inline int GetTessPatchVertexCount() const{ return pTessPatchVertexCount; }
+	inline int GetTessPatchVertexCount() const{return pTessPatchVertexCount;}
 	
 	/** Set patch verted count. */
-	void SetTessPatchVertexCount( int count );
+	void SetTessPatchVertexCount(int count);
 	
 	
 	

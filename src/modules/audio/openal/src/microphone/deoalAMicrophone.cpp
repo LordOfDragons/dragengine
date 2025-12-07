@@ -61,26 +61,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalAMicrophone::deoalAMicrophone( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pVolume( 1.0f ),
-pMuted( true ),
-pSpeakerGain( 1.0f ),
-pEnableAuralization( true ),
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
-pEnvProbeList( NULL ),
-pActive( false ),
-pEnvProbe( NULL ),
-pDirtyEnvProbe( true ),
-pDirtyGeometry( true ),
-pDirtyGain( true ),
+deoalAMicrophone::deoalAMicrophone(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pVolume(1.0f),
+pMuted(true),
+pSpeakerGain(1.0f),
+pEnableAuralization(true),
+pParentWorld(NULL),
+pOctreeNode(NULL),
+pEnvProbeList(NULL),
+pActive(false),
+pEnvProbe(NULL),
+pDirtyEnvProbe(true),
+pDirtyGeometry(true),
+pDirtyGain(true),
 
-pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pWorldMarkedRemove(false),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL)
 {
-	pWOVPrepareRayTrace.SetRTWorldBVH( &pRTWorldBVH );
+	pWOVPrepareRayTrace.SetRTWorldBVH(&pRTWorldBVH);
 	
 	try{
 		// set cone stuff ( not working )
@@ -88,16 +88,16 @@ pLLWorldNext( NULL )
 		//OAL_CHECK( pAudioThread, alListenerf( AL_CONE_OUTER_ANGLE, 180.0f ) );
 		//OAL_CHECK( pAudioThread, alListenerf( AL_CONE_OUTER_GAIN, 0.5f ) );
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	LEAK_CHECK_CREATE( audioThread, Microphone );
+	LEAK_CHECK_CREATE(audioThread, Microphone);
 }
 
 deoalAMicrophone::~deoalAMicrophone(){
-	LEAK_CHECK_FREE( pAudioThread, Microphone );
+	LEAK_CHECK_FREE(pAudioThread, Microphone);
 	
 	pCleanUp();
 }
@@ -107,42 +107,42 @@ deoalAMicrophone::~deoalAMicrophone(){
 // Management
 ///////////////
 
-void deoalAMicrophone::SetGeometry( const decDVector &position, const decQuaternion &orientation ){
+void deoalAMicrophone::SetGeometry(const decDVector &position, const decQuaternion &orientation){
 	pPosition = position;
 	pOrientation = orientation;
 	pDirtyGeometry = true;
-	pWOVPrepareRayTrace.SetCenter( position );
+	pWOVPrepareRayTrace.SetCenter(position);
 }
 
-void deoalAMicrophone::SetVelocity( const decVector &velocity ){
+void deoalAMicrophone::SetVelocity(const decVector &velocity){
 	pVelocity = velocity;
 	pDirtyGeometry = true;
 }
 
-void deoalAMicrophone::SetVolume( float volume ){
+void deoalAMicrophone::SetVolume(float volume){
 	pVolume = volume;
 	pDirtyGain = true;
 }
 
-void deoalAMicrophone::SetMuted( bool muted ){
+void deoalAMicrophone::SetMuted(bool muted){
 	pMuted = muted;
 	pDirtyGain = true;
 }
 
-void deoalAMicrophone::SetLayerMask( const decLayerMask &layerMask ){
+void deoalAMicrophone::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
-	pWOVPrepareRayTrace.SetLayerMask( layerMask );
+	pWOVPrepareRayTrace.SetLayerMask(layerMask);
 	
-	if( pEnvProbeList ){
-		pEnvProbeList->SetLayerMask( layerMask );
+	if(pEnvProbeList){
+		pEnvProbeList->SetLayerMask(layerMask);
 	}
 }
 
-void deoalAMicrophone::SetSpeakerGain( float gain ){
+void deoalAMicrophone::SetSpeakerGain(float gain){
 	pSpeakerGain = gain;
 }
 
-void deoalAMicrophone::SetEnableAuralization( bool enable ){
+void deoalAMicrophone::SetEnableAuralization(bool enable){
 	pEnableAuralization = enable;
 }
 
@@ -183,11 +183,11 @@ int deoalAMicrophone::GetSpeakerCount() const{
 	return pSpeakers.GetCount();
 }
 
-deoalASpeaker *deoalAMicrophone::GetSpeakerAt( int index ) const{
-	return ( deoalASpeaker* )pSpeakers.GetAt( index );
+deoalASpeaker *deoalAMicrophone::GetSpeakerAt(int index) const{
+	return (deoalASpeaker*)pSpeakers.GetAt(index);
 }
 
-void deoalAMicrophone::AddSpeaker( deoalASpeaker *speaker ){
+void deoalAMicrophone::AddSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
 	pInvalidateSpeakers.RemoveIfPresent(speaker);
@@ -198,7 +198,7 @@ void deoalAMicrophone::AddSpeaker( deoalASpeaker *speaker ){
 	speaker->SetParentMicrophone(this);
 }
 
-void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
+void deoalAMicrophone::RemoveSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
 	const int index = pSpeakers.IndexOf(speaker);
@@ -239,10 +239,10 @@ void deoalAMicrophone::RemoveRemovalMarkedSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
 	
-	for( i=count-1; i>=0; i-- ){
-		deoalASpeaker * const speaker = ( deoalASpeaker* )pSpeakers.GetAt( i );
-		if( speaker->GetMicrophoneMarkedRemove() ){
-			RemoveSpeaker( speaker );
+	for(i=count-1; i>=0; i--){
+		deoalASpeaker * const speaker = (deoalASpeaker*)pSpeakers.GetAt(i);
+		if(speaker->GetMicrophoneMarkedRemove()){
+			RemoveSpeaker(speaker);
 		}
 	}
 }
@@ -253,13 +253,13 @@ void deoalAMicrophone::FindActiveSpeakers(){
 	// determine list of speakers
 	deoalSpeakerList &list = pAudioThread.GetSpeakerList();
 	list.RemoveAll();
-	if( pParentWorld ){
-		deoalWOVFindSpeakers::FindSpeakers( *pParentWorld, pPosition, pLayerMask, list );
+	if(pParentWorld){
+		deoalWOVFindSpeakers::FindSpeakers(*pParentWorld, pPosition, pLayerMask, list);
 	}
 	
 	// enable/disable speakers.
-	pActiveSpeakers.FlagAll( false );
-	list.FlagAll( true );
+	pActiveSpeakers.FlagAll(false);
+	list.FlagAll(true);
 	
 	pActiveSpeakers.FlagToEnabledAll();
 	list.FlagToEnabledAll();
@@ -271,7 +271,7 @@ void deoalAMicrophone::FindActiveSpeakers(){
 	// problem since we can reuse the information. only if the range becomes larger we need
 	// to extend the result. theoretically we could just extend the existing results but this
 	// is difficult to do and most probably not work the hazzle
-	if( pEnvProbeList && ! pDirtyEnvProbe ){
+	if(pEnvProbeList && ! pDirtyEnvProbe){
 		pDirtyEnvProbe = pMaxActiveSpeakerRange() > pEnvProbeList->GetRange();
 	}
 }
@@ -315,21 +315,21 @@ void deoalAMicrophone::SetParentWorld(deoalAWorld *world){
 	}
 }
 
-void deoalAMicrophone::SetOctreeNode( deoalWorldOctree *node ){
+void deoalAMicrophone::SetOctreeNode(deoalWorldOctree *node){
 	pOctreeNode = node;
 }
 
 void deoalAMicrophone::UpdateOctreeNode(){
-	if( pParentWorld && pActive && ! pMuted ){
-		pParentWorld->GetOctree()->InsertMicrophoneIntoTree( this, 8 );
+	if(pParentWorld && pActive && ! pMuted){
+		pParentWorld->GetOctree()->InsertMicrophoneIntoTree(this, 8);
 		
-	}else if( pOctreeNode ){
-		pOctreeNode->RemoveMicrophone( this );
+	}else if(pOctreeNode){
+		pOctreeNode->RemoveMicrophone(this);
 	}
 }
 
 void deoalAMicrophone::PrepareQuickDispose(){
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		pEnvProbeList->PrepareQuickDispose();
 		delete pEnvProbeList;
 		pEnvProbeList = NULL;
@@ -349,14 +349,14 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 // 	}
 	// this check is disabled because with pDirtyEnvProbe is set to true for each frame update
 	
-	if( ! pDirtyEnvProbe ){
+	if(! pDirtyEnvProbe){
 		return pEnvProbe;
 	}
 	
 	pDirtyEnvProbe = false;
 	pEnvProbe = NULL;
 	
-	if( ! pParentWorld || pActiveSpeakers.GetCount() == 0 ){
+	if(! pParentWorld || pActiveSpeakers.GetCount() == 0){
 		return NULL;
 	}
 	
@@ -364,15 +364,15 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 	const float range = pMaxActiveSpeakerRange();
 // 	const float range = 200.0f; // debug
 	
-	if( ! pEnvProbeList ){
+	if(! pEnvProbeList){
 		const float reuseDistance = 0.25; // 1.0, 0.05
 		const int maxProbeCount = 100;
 		
-		pEnvProbeList = new deoalEnvProbeList( *pParentWorld, reuseDistance, maxProbeCount );
-		pEnvProbeList->SetRange( range );
-		pEnvProbeList->SetLayerMask( pLayerMask );
-		pEnvProbeList->SetRTWorldBVH( &pRTWorldBVH );
-		pEnvProbeList->SetRTConfig( &pAudioThread.GetRayTracing().GetConfigSoundTracingMicrophone() );
+		pEnvProbeList = new deoalEnvProbeList(*pParentWorld, reuseDistance, maxProbeCount);
+		pEnvProbeList->SetRange(range);
+		pEnvProbeList->SetLayerMask(pLayerMask);
+		pEnvProbeList->SetRTWorldBVH(&pRTWorldBVH);
+		pEnvProbeList->SetRTConfig(&pAudioThread.GetRayTracing().GetConfigSoundTracingMicrophone());
 	}
 	
 	// prepare for ray-tracing all components touched by the audible distance. no ray can
@@ -380,15 +380,15 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 	// which are potentially affected improving performance
 	// 
 	// NOTE the visitor parameters are kept up to date so they are not set here
-	pWOVPrepareRayTrace.SetRadius( range );
-	pWOVPrepareRayTrace.Visit( *pParentWorld );
+	pWOVPrepareRayTrace.SetRadius(range);
+	pWOVPrepareRayTrace.Visit(*pParentWorld);
 	
 	// trace sound rays
 	try{
-		pEnvProbe = pEnvProbeList->GetProbeTraceSoundRays( pPosition );
+		pEnvProbe = pEnvProbeList->GetProbeTraceSoundRays(pPosition);
 		
-	}catch( const deException &e ){
-		pAudioThread.GetLogger().LogException( e );
+	}catch(const deException &e){
+		pAudioThread.GetLogger().LogException(e);
 		// exceptions can happen during cancelling. using NULL is fine
 	}
 	
@@ -438,21 +438,21 @@ void deoalAMicrophone::ProcessAudio(){
 	pActiveSpeakers.UpdateAll();
 	
 	int i, count = pInvalidateSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pInvalidateSpeakers.GetAt(i))->PrepareProcessAudio();
 	}
 	pInvalidateSpeakers.RemoveAll();
 	pAudioThread.GetDebugInfo().StoreTimeAudioThreadSpeakersUpdate();
 	
 	// process speakers stored in the world and this microphone
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->PrepareProcessAudio();
 	}
 	pAudioThread.GetDebugInfo().StoreTimeAudioThreadWorldProcess();
 	
 	count = pSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pSpeakers.GetAt(i))->PrepareProcessAudio();
 	}
 	pAudioThread.GetDebugInfo().StoreTimeAudioThreadSpeakersProcess();
 	
@@ -462,48 +462,48 @@ void deoalAMicrophone::ProcessAudio(){
 }
 
 void deoalAMicrophone::ProcessAudioFast(){
-	if( ! pActive ){
+	if(! pActive){
 		return;
 	}
 	
 	pActiveSpeakers.UpdateAll();
 	
 	int i, count = pInvalidateSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pInvalidateSpeakers.GetAt(i))->PrepareProcessAudio();
 	}
 	pInvalidateSpeakers.RemoveAll();
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->PrepareProcessAudio();
 	}
 	
 	count = pSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pSpeakers.GetAt(i))->PrepareProcessAudio();
 	}
 }
 
 void deoalAMicrophone::ProcessDeactivate(){
 	int i, count = pInvalidateSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->ProcessDeactivate();
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pInvalidateSpeakers.GetAt(i))->ProcessDeactivate();
 	}
 	pInvalidateSpeakers.RemoveAll();
 	
 	count = pSpeakers.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->ProcessDeactivate();
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pSpeakers.GetAt(i))->ProcessDeactivate();
 	}
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->ProcessDeactivate();
 	}
 }
 
-void deoalAMicrophone::InvalidateSpeaker( deoalASpeaker *speaker ){
-	pActiveSpeakers.RemoveIfExisting( speaker );
-	pInvalidateSpeakers.AddIfAbsent( speaker );
+void deoalAMicrophone::InvalidateSpeaker(deoalASpeaker *speaker){
+	pActiveSpeakers.RemoveIfExisting(speaker);
+	pInvalidateSpeakers.AddIfAbsent(speaker);
 }
 
 
@@ -523,95 +523,95 @@ enum eDebugInfo{
 	ediProbeCount
 };
 
-void deoalAMicrophone::DebugUpdateInfo( deDebugBlockInfo &debugInfo ){
-	if( debugInfo.GetEntryCount() == 0 ){
-		debugInfo.AddEntry( "Position", "" );
-		debugInfo.AddEntry( "Velocity", "" );
-		debugInfo.AddEntry( "Range", "" );
-		debugInfo.AddEntry( "Sound Rays", "" );
-		debugInfo.AddEntry( "Hit Space Size", "" );
-		debugInfo.AddEntry( "Room Vol/Surf", "" );
-		debugInfo.AddEntry( "Room Sabine", "" );
-		debugInfo.AddEntry( "Mean Free Path", "" );
-		debugInfo.AddEntry( "Sep Time F/L", "" );
-		debugInfo.AddEntry( "Reverbe Time", "" );
-		debugInfo.AddEntry( "Echo Delay", "" );
-		debugInfo.AddEntry( "Env-Probes", "" );
+void deoalAMicrophone::DebugUpdateInfo(deDebugBlockInfo &debugInfo){
+	if(debugInfo.GetEntryCount() == 0){
+		debugInfo.AddEntry("Position", "");
+		debugInfo.AddEntry("Velocity", "");
+		debugInfo.AddEntry("Range", "");
+		debugInfo.AddEntry("Sound Rays", "");
+		debugInfo.AddEntry("Hit Space Size", "");
+		debugInfo.AddEntry("Room Vol/Surf", "");
+		debugInfo.AddEntry("Room Sabine", "");
+		debugInfo.AddEntry("Mean Free Path", "");
+		debugInfo.AddEntry("Sep Time F/L", "");
+		debugInfo.AddEntry("Reverbe Time", "");
+		debugInfo.AddEntry("Echo Delay", "");
+		debugInfo.AddEntry("Env-Probes", "");
 	}
 	
 	decString text;
-	text.Format( "(%+.3f,%+.3f,%+.3f)", pPosition.x, pPosition.y, pPosition.z );
-	debugInfo.SetEntryText( ediPosition, text );
+	text.Format("(%+.3f,%+.3f,%+.3f)", pPosition.x, pPosition.y, pPosition.z);
+	debugInfo.SetEntryText(ediPosition, text);
 	
-	text.Format( "(%+.3f,%+.3f,%+.3f)", pVelocity.x, pVelocity.y, pVelocity.z );
-	debugInfo.SetEntryText( ediVelocity, text );
+	text.Format("(%+.3f,%+.3f,%+.3f)", pVelocity.x, pVelocity.y, pVelocity.z);
+	debugInfo.SetEntryText(ediVelocity, text);
 	
-	text.Format( "%.1f", pEnvProbe ? pEnvProbe->GetRange() : pMaxActiveSpeakerRange() );
-	debugInfo.SetEntryText( ediRange, text );
+	text.Format("%.1f", pEnvProbe ? pEnvProbe->GetRange() : pMaxActiveSpeakerRange());
+	debugInfo.SetEntryText(ediRange, text);
 	
-	const decColor colorGood( 1.0f, 1.0f, 1.0f );
-	const decColor colorWarning( 1.0f, 0.0f, 0.0f );
+	const decColor colorGood(1.0f, 1.0f, 1.0f);
+	const decColor colorWarning(1.0f, 0.0f, 0.0f);
 	
 	deoalEnvProbe * const envProbe = GetEnvProbe();
 	
-	if( envProbe ){
-		text.Format( "%d %d", envProbe->GetSoundRayList().GetRayCount(),
-			envProbe->GetSoundRayList().GetSegmentCount() );
-		debugInfo.SetEntryText( ediSoundRayCount, text );
+	if(envProbe){
+		text.Format("%d %d", envProbe->GetSoundRayList().GetRayCount(),
+			envProbe->GetSoundRayList().GetSegmentCount());
+		debugInfo.SetEntryText(ediSoundRayCount, text);
 		
-		const decDVector roomSize( envProbe->GetMaxExtend() - envProbe->GetMinExtend() );
-		text.Format( "(%.1f,%.1f,%.1f)", roomSize.x, roomSize.y, roomSize.z );
-		debugInfo.SetEntryText( ediRoomSize, text );
-		debugInfo.SetEntryColor( ediRoomSize, roomSize < decVector( 100.0f, 100.0f, 100.0f )
-			? colorGood : colorWarning );
+		const decDVector roomSize(envProbe->GetMaxExtend() - envProbe->GetMinExtend());
+		text.Format("(%.1f,%.1f,%.1f)", roomSize.x, roomSize.y, roomSize.z);
+		debugInfo.SetEntryText(ediRoomSize, text);
+		debugInfo.SetEntryColor(ediRoomSize, roomSize < decVector(100.0f, 100.0f, 100.0f)
+			? colorGood : colorWarning);
 		
-		text.Format( "%.1f %.1f", envProbe->GetRoomVolume(), envProbe->GetRoomSurface() );
-		debugInfo.SetEntryText( ediRoomVolSurf, text );
-		debugInfo.SetEntryColor( ediRoomVolSurf, envProbe->GetRoomVolume() < 2000.0f
-			|| envProbe->GetRoomSurface() > 1000.0f ? colorGood : colorWarning );
+		text.Format("%.1f %.1f", envProbe->GetRoomVolume(), envProbe->GetRoomSurface());
+		debugInfo.SetEntryText(ediRoomVolSurf, text);
+		debugInfo.SetEntryColor(ediRoomVolSurf, envProbe->GetRoomVolume() < 2000.0f
+			|| envProbe->GetRoomSurface() > 1000.0f ? colorGood : colorWarning);
 		
-		text.Format( "%.1f %.1f", envProbe->GetRoomSabineLow(), envProbe->GetRoomSabineHigh() );
-		debugInfo.SetEntryText( ediRoomSabine, text );
+		text.Format("%.1f %.1f", envProbe->GetRoomSabineLow(), envProbe->GetRoomSabineHigh());
+		debugInfo.SetEntryText(ediRoomSabine, text);
 		
-		text.Format( "%.3f", envProbe->GetMeanFreePath() );
-		debugInfo.SetEntryText( ediMeanFreePath, text );
+		text.Format("%.3f", envProbe->GetMeanFreePath());
+		debugInfo.SetEntryText(ediMeanFreePath, text);
 		
-		text.Format( "%.3f", envProbe->GetSepTimeFirstLateRefl() );
-		debugInfo.SetEntryText( ediSepTimeFirstLate, text );
+		text.Format("%.3f", envProbe->GetSepTimeFirstLateRefl());
+		debugInfo.SetEntryText(ediSepTimeFirstLate, text);
 		
-		text.Format( "%.1f %.1f", envProbe->GetReverberationTimeLow(),
-			envProbe->GetReverberationTimeHigh() );
-		debugInfo.SetEntryText( ediReverbeTime, text );
+		text.Format("%.1f %.1f", envProbe->GetReverberationTimeLow(),
+			envProbe->GetReverberationTimeHigh());
+		debugInfo.SetEntryText(ediReverbeTime, text);
 		
-		text.Format( "%.3f", envProbe->GetEchoDelay() );
-		debugInfo.SetEntryText( ediEchoDelay, text );
+		text.Format("%.3f", envProbe->GetEchoDelay());
+		debugInfo.SetEntryText(ediEchoDelay, text);
 		
 		int probeCount = 0;
 		int validProbeCount = 0;
-		if( pEnvProbeList ){
+		if(pEnvProbeList){
 			probeCount = pEnvProbeList->GetProbeCount();
 			validProbeCount = pEnvProbeList->GetValidProbeCount();
 		}
-		text.Format( "%d %d", probeCount, validProbeCount );
-		debugInfo.SetEntryText( ediProbeCount, text );
+		text.Format("%d %d", probeCount, validProbeCount);
+		debugInfo.SetEntryText(ediProbeCount, text);
 		
 	}else{
-		debugInfo.SetEntryText( ediSoundRayCount, "-" );
-		debugInfo.SetEntryText( ediRoomSize, "-" );
-		debugInfo.SetEntryColor( ediRoomSize, colorGood );
-		debugInfo.SetEntryText( ediRoomVolSurf, "-" );
-		debugInfo.SetEntryColor( ediRoomVolSurf, colorGood );
-		debugInfo.SetEntryText( ediRoomSabine, "-" );
-		debugInfo.SetEntryText( ediReverbeTime, "-" );
-		debugInfo.SetEntryText( ediEchoDelay, "-" );
-		debugInfo.SetEntryText( ediProbeCount, "-" );
+		debugInfo.SetEntryText(ediSoundRayCount, "-");
+		debugInfo.SetEntryText(ediRoomSize, "-");
+		debugInfo.SetEntryColor(ediRoomSize, colorGood);
+		debugInfo.SetEntryText(ediRoomVolSurf, "-");
+		debugInfo.SetEntryColor(ediRoomVolSurf, colorGood);
+		debugInfo.SetEntryText(ediRoomSabine, "-");
+		debugInfo.SetEntryText(ediReverbeTime, "-");
+		debugInfo.SetEntryText(ediEchoDelay, "-");
+		debugInfo.SetEntryText(ediProbeCount, "-");
 	}
 	
 	debugInfo.UpdateView();
 }
 
-void deoalAMicrophone::DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){
-	pDebugCaptureRays( debugDrawer, xray, volume );
+void deoalAMicrophone::DebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, bool volume){
+	pDebugCaptureRays(debugDrawer, xray, volume);
 }
 
 
@@ -619,15 +619,15 @@ void deoalAMicrophone::DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, 
 // Render world usage
 ///////////////////////
 
-void deoalAMicrophone::SetWorldMarkedRemove( bool marked ){
+void deoalAMicrophone::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoalAMicrophone::SetLLWorldPrev( deoalAMicrophone *microphone ){
+void deoalAMicrophone::SetLLWorldPrev(deoalAMicrophone *microphone){
 	pLLWorldPrev = microphone;
 }
 
-void deoalAMicrophone::SetLLWorldNext( deoalAMicrophone *microphone ){
+void deoalAMicrophone::SetLLWorldNext(deoalAMicrophone *microphone){
 	pLLWorldNext = microphone;
 }
 
@@ -641,7 +641,7 @@ void deoalAMicrophone::pCleanUp(){
 	
 	pParentWorld = NULL;
 	pEnvProbe = NULL;
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		delete pEnvProbeList;
 		pEnvProbeList = NULL;
 	}
@@ -649,13 +649,13 @@ void deoalAMicrophone::pCleanUp(){
 
 
 
-void deoalAMicrophone::pEnableAttachedSpeakers( bool enable ){
+void deoalAMicrophone::pEnableAttachedSpeakers(bool enable){
 	// WARNING Called during synchronization time from main thread.
 	
 	const int count = pSpeakers.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->SetEnabled( enable );
+	for(i=0; i<count; i++){
+		((deoalASpeaker*)pSpeakers.GetAt(i))->SetEnabled(enable);
 	}
 }
 
@@ -669,34 +669,34 @@ void deoalAMicrophone::pProcessEffects(){
 	#if 0
 	deoalAWorld * const world = GetParentWorld();
 	
-	if( pEnvProbe ){
+	if(pEnvProbe){
 		pEnvProbe->RemoveUsage();
 		pEnvProbe = NULL;
 	}
 	
-	if( world && pActiveSpeakers.GetCount() > 0 ){
+	if(world && pActiveSpeakers.GetCount() > 0){
 		// calculate range of probe. set this to the largest range of all audible speakers
 		// but not larger than the audible distance set by the developer
 		const int count = pActiveSpeakers.GetCount();
 		float range = 0.0f;
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			range = decMath::max( range, pActiveSpeakers.GetAt( i )->GetRange() );
+		for(i=0; i<count; i++){
+			range = decMath::max(range, pActiveSpeakers.GetAt(i)->GetRange());
 		}
-		range = decMath::min( range, GetAudibleDistance() );
+		range = decMath::min(range, GetAudibleDistance());
 		
 		// trace sound rays. since this sound ray list is going to be used with varying sound
 		// source range and attenuation parameters we use no attenuation (refDist=1, rollOff=0)
 		#ifdef LISTENER_CENTRIC_RAY_CAST
-		pEnvProbe = world->GetEnvProbeManager().GetProbeTraceSoundRays( pPosition, range, 1.0f, 0.0f );
+		pEnvProbe = world->GetEnvProbeManager().GetProbeTraceSoundRays(pPosition, range, 1.0f, 0.0f);
 		pEnvProbe->AddUsage();
 		
 		/*
-		if( pAudioThread.GetDevMode()->GetLogCalcEnvProbe() ){
-			pAudioThread.LogInfoFormat( "Microphone.ProcessEffects: pos=(%.3f,%.3f,%.3f) "
+		if(pAudioThread.GetDevMode()->GetLogCalcEnvProbe()){
+			pAudioThread.LogInfoFormat("Microphone.ProcessEffects: pos=(%.3f,%.3f,%.3f) "
 				"speakers=%d audDist=%.3f range=%.3f", pPosition.x, pPosition.y, pPosition.z,
-				pActiveSpeakers.GetCount(), GetAudibleDistance(), range );
+				pActiveSpeakers.GetCount(), GetAudibleDistance(), range);
 		}
 		*/
 		#endif
@@ -764,8 +764,8 @@ void deoalAMicrophone::pProcessEffects(){
 		// pAudioThread.GetSharedEffectSlotManager().AssignSpeakers();
 	// }
 	
-	if( ! pAudioThread.GetExtensions().GetHasEFX()
-	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ){
+	if(! pAudioThread.GetExtensions().GetHasEFX()
+	|| ! pAudioThread.GetConfiguration().GetEnableEFX()){
 		pAudioThread.GetSharedEffectSlotManager().DropEffects();
 		
 	}else{
@@ -773,35 +773,35 @@ void deoalAMicrophone::pProcessEffects(){
 	}
 }
 
-void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){
+void deoalAMicrophone::pDebugCaptureRays(deDebugDrawer &debugDrawer, bool xray, bool volume){
 	debugDrawer.RemoveAllShapes();
 	
 	deoalEnvProbe * const envProbe = GetEnvProbe();
 	
-	if( ! envProbe ){
-		debugDrawer.SetVisible( false );
+	if(! envProbe){
+		debugDrawer.SetVisible(false);
 		return;
 	}
 	
-	debugDrawer.SetVisible( true );
-	debugDrawer.SetXRay( xray );
+	debugDrawer.SetVisible(true);
+	debugDrawer.SetXRay(xray);
 	
-	debugDrawer.SetPosition( envProbe->GetPosition() );
+	debugDrawer.SetPosition(envProbe->GetPosition());
 	
 	const deoalSoundRayList &srlist = envProbe->GetSoundRayList();
 	const int rayCount = srlist.GetRayCount();
-	const float hsvFactor = 6.0f / ( float )( decMath::max( rayCount - 1, 1 ) );
+	const float hsvFactor = 6.0f / (float)(decMath::max(rayCount - 1, 1));
 	const float colorA = 0.5f;
 	decColor color;
 	int i;
 	
-	for( i=0; i<rayCount; i++ ){
-		const deoalSoundRay &ray = srlist.GetRayAt( i );
-		if( ray.GetSegmentCount() == 0 && ray.GetTransmittedRayCount() == 0 ){
+	for(i=0; i<rayCount; i++){
+		const deoalSoundRay &ray = srlist.GetRayAt(i);
+		if(ray.GetSegmentCount() == 0 && ray.GetTransmittedRayCount() == 0){
 			continue;
 		}
 		
-		if( volume ){
+		if(volume){
 			color.Set(1, 0, 0);
 			
 		}else{
@@ -819,79 +819,79 @@ void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray,
 			// case 4: rgb = (x+m, m, c+m) = (x, 0, 1)
 			// case 5: rgb = (c+m, m, x+m) = (1, 0, x)
 			const float hsvT = hsvFactor * i;
-			const float hsvX = 1.0f - fabsf( fmodf( hsvT, 2.0f ) - 1.0f );
+			const float hsvX = 1.0f - fabsf(fmodf(hsvT, 2.0f) - 1.0f);
 			
-			switch( ( int )hsvT ){
-			case 0: color.Set( 1.0f, hsvX, 0.0f, colorA ); break;
-			case 1: color.Set( hsvX, 1.0f, 0.0f, colorA ); break;
-			case 2: color.Set( 0.0f, 1.0f, hsvX, colorA ); break;
-			case 3: color.Set( 0.0f, hsvX, 1.0f, colorA ); break;
-			case 4: color.Set( hsvX, 0.0f, 1.0f, colorA ); break;
+			switch((int)hsvT){
+			case 0: color.Set(1.0f, hsvX, 0.0f, colorA); break;
+			case 1: color.Set(hsvX, 1.0f, 0.0f, colorA); break;
+			case 2: color.Set(0.0f, 1.0f, hsvX, colorA); break;
+			case 3: color.Set(0.0f, hsvX, 1.0f, colorA); break;
+			case 4: color.Set(hsvX, 0.0f, 1.0f, colorA); break;
 			case 5:
-			default: color.Set( 1.0f, 0.0f, hsvX, colorA );
+			default: color.Set(1.0f, 0.0f, hsvX, colorA);
 			}
 		}
 		
 		deDebugDrawerShape * const shape = new deDebugDrawerShape;
-		shape->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		shape->SetEdgeColor( color );
+		shape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+		shape->SetEdgeColor(color);
 		
-		pDebugCaptureRays( *shape, srlist, ray, volume );
+		pDebugCaptureRays(*shape, srlist, ray, volume);
 		
-		debugDrawer.AddShape( shape );
+		debugDrawer.AddShape(shape);
 	}
 	
 	deDebugDrawerShape * const shapeOrigin = new deDebugDrawerShape;
-	shapeOrigin->SetFillColor( decColor( 1.0f, 1.0f, 1.0f, colorA * 0.25f ) );
-	shapeOrigin->SetEdgeColor( decColor( 1.0f, 1.0f, 1.0f, colorA ) );
-	shapeOrigin->GetShapeList().Add( new decShapeSphere( 0.05f ) );
-	debugDrawer.AddShape( shapeOrigin );
+	shapeOrigin->SetFillColor(decColor(1.0f, 1.0f, 1.0f, colorA * 0.25f));
+	shapeOrigin->SetEdgeColor(decColor(1.0f, 1.0f, 1.0f, colorA));
+	shapeOrigin->GetShapeList().Add(new decShapeSphere(0.05f));
+	debugDrawer.AddShape(shapeOrigin);
 	
-	for( i=0; i<rayCount; i++ ){
-		const deoalSoundRay &ray = srlist.GetRayAt( i );
-		if( ray.GetSegmentCount() == 0 ){
+	for(i=0; i<rayCount; i++){
+		const deoalSoundRay &ray = srlist.GetRayAt(i);
+		if(ray.GetSegmentCount() == 0){
 			continue;
 		}
 		
 		deDebugDrawerShape * const shape = new deDebugDrawerShape;
-		shape->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		shape->SetEdgeColor( decColor( 1.0f, 1.0f, 1.0f, colorA ) );
+		shape->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+		shape->SetEdgeColor(decColor(1.0f, 1.0f, 1.0f, colorA));
 		
 		deDebugDrawerShapeFace * const face = new deDebugDrawerShapeFace;
-		face->AddVertex( decVector() );
-		face->AddVertex( srlist.GetSegmentAt( ray.GetFirstSegment() ).GetPosition() );
-		face->AddVertex( decVector() );
-		face->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
-		shape->AddFace( face );
+		face->AddVertex(decVector());
+		face->AddVertex(srlist.GetSegmentAt(ray.GetFirstSegment()).GetPosition());
+		face->AddVertex(decVector());
+		face->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+		shape->AddFace(face);
 		
-		debugDrawer.AddShape( shape );
+		debugDrawer.AddShape(shape);
 	}
 	
 	debugDrawer.NotifyShapeGeometryChanged();
 }
 
-void deoalAMicrophone::pDebugCaptureRays( deDebugDrawerShape &shape,
-const deoalSoundRayList &rayList, const deoalSoundRay &ray, bool volume ){
+void deoalAMicrophone::pDebugCaptureRays(deDebugDrawerShape &shape,
+const deoalSoundRayList &rayList, const deoalSoundRay &ray, bool volume){
 	const int segmentCount = ray.GetSegmentCount();
 	const int firstSegment = ray.GetFirstSegment();
 	int i;
 	
-	for( i=0; i<segmentCount; i++ ){
-		const deoalSoundRaySegment &segment = rayList.GetSegmentAt( firstSegment + i );
+	for(i=0; i<segmentCount; i++){
+		const deoalSoundRaySegment &segment = rayList.GetSegmentAt(firstSegment + i);
 		
 		deDebugDrawerShapeFace * const face = new deDebugDrawerShapeFace;
-		face->AddVertex( segment.GetPosition() );
-		face->AddVertex( segment.GetPosition() + segment.GetDirection() * segment.GetLength() );
-		face->AddVertex( segment.GetPosition() );
-		face->SetNormal( decVector( 0.0f, 0.0f, 1.0f ) );
-		shape.AddFace( face );
+		face->AddVertex(segment.GetPosition());
+		face->AddVertex(segment.GetPosition() + segment.GetDirection() * segment.GetLength());
+		face->AddVertex(segment.GetPosition());
+		face->SetNormal(decVector(0.0f, 0.0f, 1.0f));
+		shape.AddFace(face);
 	}
 	
 	const int transmittedRayCount = ray.GetTransmittedRayCount();
 	const int firstTransmittedRay = ray.GetFirstTransmittedRay();
 	
-	for( i=0; i<transmittedRayCount; i++ ){
-		pDebugCaptureRays( shape, rayList, rayList.GetTransmittedRayAt( firstTransmittedRay + i ), volume );
+	for(i=0; i<transmittedRayCount; i++){
+		pDebugCaptureRays(shape, rayList, rayList.GetTransmittedRayAt(firstTransmittedRay + i), volume);
 	}
 }
 
@@ -900,8 +900,8 @@ float deoalAMicrophone::pMaxActiveSpeakerRange() const{
 	float range = 0.0f;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		range = decMath::max( range, pActiveSpeakers.GetAt( i )->GetRange() );
+	for(i=0; i<count; i++){
+		range = decMath::max(range, pActiveSpeakers.GetAt(i)->GetRange());
 	}
 	
 	return range;

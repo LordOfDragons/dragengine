@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetAudioModelPath( gdeObjectClass *objectClass,
-		gdeOCComponent *component, const char *newValue );
+	gdeUOCComponentSetAudioModelPath(gdeObjectClass *objectClass,
+		gdeOCComponent *component, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

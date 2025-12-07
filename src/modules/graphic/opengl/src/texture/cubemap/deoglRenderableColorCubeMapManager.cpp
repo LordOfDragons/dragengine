@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderableColorCubeMapManager::deoglRenderableColorCubeMapManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pCubeMaps( NULL ),
-pCubeMapCount( 0 ),
-pCubeMapSize( 0 ){
+deoglRenderableColorCubeMapManager::deoglRenderableColorCubeMapManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pCubeMaps(NULL),
+pCubeMapCount(0),
+pCubeMapSize(0){
 }
 
 deoglRenderableColorCubeMapManager::~deoglRenderableColorCubeMapManager(){
-	if( pCubeMaps ){
-		while( pCubeMapCount > 0 ){
+	if(pCubeMaps){
+		while(pCubeMapCount > 0){
 			pCubeMapCount--;
-			delete pCubeMaps[ pCubeMapCount ];
+			delete pCubeMaps[pCubeMapCount];
 		}
 		delete [] pCubeMaps;
 	}
@@ -62,46 +62,46 @@ deoglRenderableColorCubeMapManager::~deoglRenderableColorCubeMapManager(){
 // Management
 ///////////////
 
-const deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapAt( int index ) const{
-	if( index < 0 || index >= pCubeMapCount ) DETHROW( deeInvalidParam );
+const deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapAt(int index) const{
+	if(index < 0 || index >= pCubeMapCount) DETHROW(deeInvalidParam);
 	
-	return pCubeMaps[ index ];
+	return pCubeMaps[index];
 }
 
-deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapWith( int size, int componentCount, bool isFloat ){
+deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapWith(int size, int componentCount, bool isFloat){
 	deoglRenderableColorCubeMap *cubemap = NULL;
 	int i;
 	
 	// find the cubemap with the matching format
-	for( i=0; i<pCubeMapCount; i++ ){
-		if( ! pCubeMaps[ i ]->GetInUse() && pCubeMaps[ i ]->Matches( size, componentCount, isFloat ) ){
-			cubemap = pCubeMaps[ i ];
+	for(i=0; i<pCubeMapCount; i++){
+		if(! pCubeMaps[i]->GetInUse() && pCubeMaps[i]->Matches(size, componentCount, isFloat)){
+			cubemap = pCubeMaps[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if( ! cubemap ){
-		if( pCubeMapCount == pCubeMapSize ){
+	if(! cubemap){
+		if(pCubeMapCount == pCubeMapSize){
 			int newSize = pCubeMapSize * 3 / 2 + 1;
-			deoglRenderableColorCubeMap **newArray = new deoglRenderableColorCubeMap*[ newSize ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
-			if( pCubeMaps ){
-				memcpy( newArray, pCubeMaps, sizeof( deoglRenderableColorCubeMap* ) * pCubeMapSize );
+			deoglRenderableColorCubeMap **newArray = new deoglRenderableColorCubeMap*[newSize];
+			if(! newArray) DETHROW(deeOutOfMemory);
+			if(pCubeMaps){
+				memcpy(newArray, pCubeMaps, sizeof(deoglRenderableColorCubeMap*) * pCubeMapSize);
 				delete [] pCubeMaps;
 			}
 			pCubeMaps = newArray;
 			pCubeMapSize = newSize;
 		}
 		
-		cubemap = new deoglRenderableColorCubeMap( pRenderThread, size, componentCount, isFloat );
-		if( ! cubemap ) DETHROW( deeOutOfMemory );
+		cubemap = new deoglRenderableColorCubeMap(pRenderThread, size, componentCount, isFloat);
+		if(! cubemap) DETHROW(deeOutOfMemory);
 		
-		pCubeMaps[ pCubeMapCount ] = cubemap;
+		pCubeMaps[pCubeMapCount] = cubemap;
 		pCubeMapCount++;
 	}
 	
 	// mark the cubemap in use and return it
-	cubemap->SetInUse( true );
+	cubemap->SetInUse(true);
 	return cubemap;
 }

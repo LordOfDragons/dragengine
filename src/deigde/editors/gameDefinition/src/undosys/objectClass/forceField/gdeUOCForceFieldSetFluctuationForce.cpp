@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCForceFieldSetFluctuationForce::gdeUOCForceFieldSetFluctuationForce(
-gdeObjectClass *objectClass, gdeOCForceField *forceField, float newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeObjectClass *objectClass, gdeOCForceField *forceField, float newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set fluctuation force" );
+	SetShortInfo("Force field set fluctuation force");
 	
 	pOldValue = forceField->GetFluctuationForce();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetFluctuationForce::~gdeUOCForceFieldSetFluctuationForce(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetFluctuationForce::~gdeUOCForceFieldSetFluctuationForce(){
 ///////////////
 
 void gdeUOCForceFieldSetFluctuationForce::Undo(){
-	pForceField->SetFluctuationForce( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetFluctuationForce(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetFluctuationForce::Redo(){
-	pForceField->SetFluctuationForce( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetFluctuationForce(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

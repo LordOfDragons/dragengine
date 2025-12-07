@@ -36,13 +36,13 @@
 deLoggerBuffer::sEntry::sEntry(){
 }
 
-deLoggerBuffer::sEntry::sEntry( const deLoggerBuffer::sEntry &entry ) :
-type( entry.type ),
-source( entry.source ),
-message( entry.message ){
+deLoggerBuffer::sEntry::sEntry(const deLoggerBuffer::sEntry &entry) :
+type(entry.type),
+source(entry.source),
+message(entry.message){
 }
 
-deLoggerBuffer::sEntry &deLoggerBuffer::sEntry::operator=( const deLoggerBuffer::sEntry &entry ){
+deLoggerBuffer::sEntry &deLoggerBuffer::sEntry::operator=(const deLoggerBuffer::sEntry &entry){
 	type = entry.type;
 	source = entry.source;
 	message = entry.message;
@@ -58,13 +58,13 @@ deLoggerBuffer::sEntry &deLoggerBuffer::sEntry::operator=( const deLoggerBuffer:
 ////////////////////////////
 
 deLoggerBuffer::deLoggerBuffer() :
-pEntries( NULL ),
-pEntrySize( 0 ),
-pEntryCount( 0 ){
+pEntries(NULL),
+pEntrySize(0),
+pEntryCount(0){
 }
 
 deLoggerBuffer::~deLoggerBuffer(){
-	if( pEntries ){
+	if(pEntries){
 		delete [] pEntries;
 	}
 }
@@ -81,26 +81,26 @@ int deLoggerBuffer::GetEntryCount(){
 	return count;
 }
 
-deLoggerBuffer::sEntry deLoggerBuffer::GetEntryAt( int index ){
+deLoggerBuffer::sEntry deLoggerBuffer::GetEntryAt(int index){
 	pMutex.Lock();
 	
-	if( index < 0 || index >= pEntryCount ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index >= pEntryCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const sEntry entry( pEntries[ index ] );
+	const sEntry entry(pEntries[index]);
 	pMutex.Unlock();
 	return entry;
 }
 
-void deLoggerBuffer::AddEntry( eMessageTypes type, const decString &source, const decString &message ){
+void deLoggerBuffer::AddEntry(eMessageTypes type, const decString &source, const decString &message){
 	pMutex.Lock();
 	
 	try{
-		pAddEntry( type, source, message );
+		pAddEntry(type, source, message);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -114,23 +114,23 @@ void deLoggerBuffer::Clear(){
 
 
 
-void deLoggerBuffer::SendToLogger( deLogger &logger ){
+void deLoggerBuffer::SendToLogger(deLogger &logger){
 	pMutex.Lock();
 	
 	try{
 		int i;
-		for( i=0; i<pEntryCount; i++ ){
-			switch( pEntries[ i ].type ){
+		for(i=0; i<pEntryCount; i++){
+			switch(pEntries[i].type){
 			case emtInfo:
-				logger.LogInfo( pEntries[ i ].source, pEntries[ i ].message );
+				logger.LogInfo(pEntries[i].source, pEntries[i].message);
 				break;
 				
 			case emtWarn:
-				logger.LogWarn( pEntries[ i ].source, pEntries[ i ].message );
+				logger.LogWarn(pEntries[i].source, pEntries[i].message);
 				break;
 				
 			case emtError:
-				logger.LogError( pEntries[ i ].source, pEntries[ i ].message );
+				logger.LogError(pEntries[i].source, pEntries[i].message);
 				break;
 			}
 		}
@@ -138,7 +138,7 @@ void deLoggerBuffer::SendToLogger( deLogger &logger ){
 		pClear();
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -146,52 +146,52 @@ void deLoggerBuffer::SendToLogger( deLogger &logger ){
 
 
 
-void deLoggerBuffer::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerBuffer::LogInfo(const char *source, const char *message){
+	if(! source || ! message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pAddEntry( emtInfo, source, message );
+		pAddEntry(emtInfo, source, message);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerBuffer::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerBuffer::LogWarn(const char *source, const char *message){
+	if(! source || ! message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pAddEntry( emtWarn, source, message );
+		pAddEntry(emtWarn, source, message);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
 }
 
-void deLoggerBuffer::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
+void deLoggerBuffer::LogError(const char *source, const char *message){
+	if(! source || ! message){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMutex.Lock();
 	
 	try{
-		pAddEntry( emtError, source, message );
+		pAddEntry(emtError, source, message);
 		pMutex.Unlock();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pMutex.Unlock();
 		throw;
 	}
@@ -206,21 +206,21 @@ void deLoggerBuffer::pClear(){
 	pEntryCount = 0;
 }
 
-void deLoggerBuffer::pAddEntry( eMessageTypes type, const decString &source, const decString &message ){
-	if( pEntryCount == pEntrySize ){
+void deLoggerBuffer::pAddEntry(eMessageTypes type, const decString &source, const decString &message){
+	if(pEntryCount == pEntrySize){
 		const int newSize = pEntrySize + 10;
-		sEntry * const newArray = new sEntry[ newSize ];
-		if( pEntries ){
+		sEntry * const newArray = new sEntry[newSize];
+		if(pEntries){
 			int i;
-			for( i=0; i<pEntrySize; i++ ){
-				newArray[ i ] = pEntries[ i ];
+			for(i=0; i<pEntrySize; i++){
+				newArray[i] = pEntries[i];
 			}
 			delete [] pEntries;
 		}
 		pEntries = newArray;
 	}
 	
-	sEntry &entry = pEntries[ pEntryCount++ ];
+	sEntry &entry = pEntries[pEntryCount++];
 	entry.type = type;
 	entry.source = source;
 	entry.message = message;

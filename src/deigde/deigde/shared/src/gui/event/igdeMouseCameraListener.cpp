@@ -33,19 +33,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMouseCameraListener::igdeMouseCameraListener( igdeCamera *camera ) :
-pCamera( camera ),
-pEnableRotate( true ),
-pEnablePan( true ),
-pEnableMove( true ),
-pEnableZoom( true ),
-pSpeedRotate( 0.2f ),
-pSpeedPan( 1.0f / 50.0f ),
-pSpeedMove( 1.0f / 50.0f ),
-pSpeedZoom( 0.5f / 50.0f ),
-pInteraction( eiNone ),
-pZoomOrigin( 0.0f ),
-pZoomCurrent( 0.0f ){
+igdeMouseCameraListener::igdeMouseCameraListener(igdeCamera *camera) :
+pCamera(camera),
+pEnableRotate(true),
+pEnablePan(true),
+pEnableMove(true),
+pEnableZoom(true),
+pSpeedRotate(0.2f),
+pSpeedPan(1.0f / 50.0f),
+pSpeedMove(1.0f / 50.0f),
+pSpeedZoom(0.5f / 50.0f),
+pInteraction(eiNone),
+pZoomOrigin(0.0f),
+pZoomCurrent(0.0f){
 }
 
 igdeMouseCameraListener::~igdeMouseCameraListener(){
@@ -56,8 +56,8 @@ igdeMouseCameraListener::~igdeMouseCameraListener(){
 // Management
 ///////////////
 
-void igdeMouseCameraListener::SetCamera( igdeCamera *camera ){
-	if( camera == pCamera ){
+void igdeMouseCameraListener::SetCamera(igdeCamera *camera){
+	if(camera == pCamera){
 		return;
 	}
 	
@@ -65,23 +65,23 @@ void igdeMouseCameraListener::SetCamera( igdeCamera *camera ){
 	pCamera = camera;
 }
 
-void igdeMouseCameraListener::SetEnableRotate( bool enable ){
+void igdeMouseCameraListener::SetEnableRotate(bool enable){
 	pEnableRotate = enable;
 }
 
-void igdeMouseCameraListener::SetEnablePan( bool enable ){
+void igdeMouseCameraListener::SetEnablePan(bool enable){
 	pEnablePan = enable;
 }
 
-void igdeMouseCameraListener::SetEnableMove( bool enable ){
+void igdeMouseCameraListener::SetEnableMove(bool enable){
 	pEnableMove = enable;
 }
 
-void igdeMouseCameraListener::SetEnableZoom( bool enable ){
+void igdeMouseCameraListener::SetEnableZoom(bool enable){
 	pEnableZoom = enable;
 }
 
-void igdeMouseCameraListener::SetEnabledAll( bool enable ){
+void igdeMouseCameraListener::SetEnabledAll(bool enable){
 	pEnableRotate = enable;
 	pEnablePan = enable;
 	pEnableMove = enable;
@@ -90,55 +90,55 @@ void igdeMouseCameraListener::SetEnabledAll( bool enable ){
 
 
 
-void igdeMouseCameraListener::SetSpeedRotate( float degreesPerPixel ){
-	pSpeedRotate = decMath::max( degreesPerPixel, 0.0f );
+void igdeMouseCameraListener::SetSpeedRotate(float degreesPerPixel){
+	pSpeedRotate = decMath::max(degreesPerPixel, 0.0f);
 }
 
-void igdeMouseCameraListener::SetSpeedPan( float metersPerPixel ){
-	pSpeedPan = decMath::max( metersPerPixel, 0.0f );
+void igdeMouseCameraListener::SetSpeedPan(float metersPerPixel){
+	pSpeedPan = decMath::max(metersPerPixel, 0.0f);
 }
 
-void igdeMouseCameraListener::SetSpeedMove( float metersPerPixel ){
-	pSpeedMove = decMath::max( metersPerPixel, 0.0f );
+void igdeMouseCameraListener::SetSpeedMove(float metersPerPixel){
+	pSpeedMove = decMath::max(metersPerPixel, 0.0f);
 }
 
-void igdeMouseCameraListener::SetSpeedZoom( float metersPerPixel ){
-	pSpeedZoom = decMath::max( metersPerPixel, 0.0f );
+void igdeMouseCameraListener::SetSpeedZoom(float metersPerPixel){
+	pSpeedZoom = decMath::max(metersPerPixel, 0.0f);
 }
 
 
 
-void igdeMouseCameraListener::SetInteraction( eInteraction interaction ){
+void igdeMouseCameraListener::SetInteraction(eInteraction interaction){
 	pInteraction = interaction;
 }
 
 
 
-void igdeMouseCameraListener::SetMoveOrigin( const decDVector &position ){
+void igdeMouseCameraListener::SetMoveOrigin(const decDVector &position){
 	pMoveOrigin = position;
 }
 
-void igdeMouseCameraListener::SetMoveCurrent( const decDVector &position ){
+void igdeMouseCameraListener::SetMoveCurrent(const decDVector &position){
 	pMoveCurrent = position;
 }
 
-void igdeMouseCameraListener::SetRotateOrigin( const decVector &rotation ){
+void igdeMouseCameraListener::SetRotateOrigin(const decVector &rotation){
 	pRotateOrigin = rotation;
 }
 
-void igdeMouseCameraListener::SetRotationCurrent( const decVector &rotation ){
+void igdeMouseCameraListener::SetRotationCurrent(const decVector &rotation){
 	pRotateCurrent = rotation;
 }
 
-void igdeMouseCameraListener::SetZoomOrigin( float zoom ){
-	pZoomOrigin = decMath::max( zoom, 0.0f );
+void igdeMouseCameraListener::SetZoomOrigin(float zoom){
+	pZoomOrigin = decMath::max(zoom, 0.0f);
 }
 
-void igdeMouseCameraListener::SetZoomCurrent( float zoom ){
-	pZoomCurrent = decMath::max( zoom, 0.0f );
+void igdeMouseCameraListener::SetZoomCurrent(float zoom){
+	pZoomCurrent = decMath::max(zoom, 0.0f);
 }
 
-void igdeMouseCameraListener::SetMoveMatrix( const decDMatrix &matrix ){
+void igdeMouseCameraListener::SetMoveMatrix(const decDMatrix &matrix){
 	pMoveMatrix = matrix;
 }
 
@@ -148,17 +148,17 @@ void igdeMouseCameraListener::SetMoveMatrix( const decDMatrix &matrix ){
 ///////////////////////
 
 igdeMouseCameraListener::eInteraction igdeMouseCameraListener::ChooseInteraction(){
-	if( GetDragState() != edsRight ){
+	if(GetDragState() != edsRight){
 		return eiNone;
 	}
 	
-	if( GetShiftOrigin() && GetControlOrigin() ){
+	if(GetShiftOrigin() && GetControlOrigin()){
 		return eiZoom;
 		
-	}else if( GetShiftOrigin() ){
+	}else if(GetShiftOrigin()){
 		return eiPan;
 		
-	}else if( GetControlOrigin() ){
+	}else if(GetControlOrigin()){
 		return eiMove;
 		
 	}else{
@@ -171,7 +171,7 @@ igdeMouseCameraListener::eInteraction igdeMouseCameraListener::ChooseInteraction
 
 
 bool igdeMouseCameraListener::OnRotateBegin(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return false;
 	}
 	
@@ -181,29 +181,29 @@ bool igdeMouseCameraListener::OnRotateBegin(){
 }
 
 void igdeMouseCameraListener::OnRotateUpdate(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return;
 	}
 	
-	const decPoint distance( GetDragDistance() );
+	const decPoint distance(GetDragDistance());
 	
 	pRotateCurrent.y = decMath::normalize(
-		pRotateOrigin.y - pSpeedRotate * ( float )distance.x, 360.0f );
+		pRotateOrigin.y - pSpeedRotate * (float)distance.x, 360.0f);
 	pRotateCurrent.x = decMath::normalize(
-		pRotateOrigin.x + pSpeedRotate * ( float )distance.y, 360.0f );
+		pRotateOrigin.x + pSpeedRotate * (float)distance.y, 360.0f);
 	
-	pCamera->SetOrientation( pRotateCurrent );
+	pCamera->SetOrientation(pRotateCurrent);
 	
 	OnCameraChanged();
 }
 
-void igdeMouseCameraListener::OnRotateFinish( bool cancelled ){
+void igdeMouseCameraListener::OnRotateFinish(bool cancelled){
 }
 
 
 
 bool igdeMouseCameraListener::OnPanBegin(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return false;
 	}
 	
@@ -214,27 +214,27 @@ bool igdeMouseCameraListener::OnPanBegin(){
 }
 
 void igdeMouseCameraListener::OnPanUpdate(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return;
 	}
 	
-	const decPoint distance( GetDragDistance() );
+	const decPoint distance(GetDragDistance());
 	
 	pMoveCurrent = pMoveOrigin
-		- pMoveMatrix.TransformRight() * ( double )( pSpeedPan * ( float )distance.x )
-		+ pMoveMatrix.TransformUp() * ( double )( pSpeedPan * ( float )distance.y );
-	pCamera->SetPosition( pMoveCurrent );
+		- pMoveMatrix.TransformRight() * (double)(pSpeedPan * (float)distance.x)
+		+ pMoveMatrix.TransformUp() * (double)(pSpeedPan * (float)distance.y);
+	pCamera->SetPosition(pMoveCurrent);
 	
 	OnCameraChanged();
 }
 
-void igdeMouseCameraListener::OnPanFinish( bool cancelled ){
+void igdeMouseCameraListener::OnPanFinish(bool cancelled){
 }
 
 
 
 bool igdeMouseCameraListener::OnMoveBegin(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return false;
 	}
 	
@@ -245,27 +245,27 @@ bool igdeMouseCameraListener::OnMoveBegin(){
 }
 
 void igdeMouseCameraListener::OnMoveUpdate(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return;
 	}
 	
-	const decPoint distance( GetDragDistance() );
+	const decPoint distance(GetDragDistance());
 	
 	pMoveCurrent = pMoveOrigin
-		- pMoveMatrix.TransformView() * ( double )( pSpeedMove * ( float )distance.y );
+		- pMoveMatrix.TransformView() * (double)(pSpeedMove * (float)distance.y);
 	
-	pCamera->SetPosition( pMoveCurrent );
+	pCamera->SetPosition(pMoveCurrent);
 	
 	OnCameraChanged();
 }
 
-void igdeMouseCameraListener::OnMoveFinish( bool cancelled ){
+void igdeMouseCameraListener::OnMoveFinish(bool cancelled){
 }
 
 
 
 bool igdeMouseCameraListener::OnZoomBegin(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return false;
 	}
 	
@@ -275,20 +275,20 @@ bool igdeMouseCameraListener::OnZoomBegin(){
 }
 
 void igdeMouseCameraListener::OnZoomUpdate(){
-	if( ! pCamera ){
+	if(! pCamera){
 		return;
 	}
 	
-	const decPoint distance( GetDragDistance() );
+	const decPoint distance(GetDragDistance());
 	
-	pZoomCurrent = decMath::max( pZoomOrigin + pSpeedZoom * ( float )distance.y, 0.0f );
+	pZoomCurrent = decMath::max(pZoomOrigin + pSpeedZoom * (float)distance.y, 0.0f);
 	
-	pCamera->SetDistance( pZoomCurrent );
+	pCamera->SetDistance(pZoomCurrent);
 	
 	OnCameraChanged();
 }
 
-void igdeMouseCameraListener::OnZoomFinish( bool cancelled ){
+void igdeMouseCameraListener::OnZoomFinish(bool cancelled){
 }
 
 
@@ -304,7 +304,7 @@ void igdeMouseCameraListener::OnCameraChanged(){
 bool igdeMouseCameraListener::OnDragBegin(){
 	pInteraction = ChooseInteraction();
 	
-	switch( pInteraction ){
+	switch(pInteraction){
 	case eiRotate:
 		return OnRotateBegin();
 		
@@ -323,7 +323,7 @@ bool igdeMouseCameraListener::OnDragBegin(){
 }
 
 void igdeMouseCameraListener::OnDragUpdate(){
-	switch( pInteraction ){
+	switch(pInteraction){
 	case eiRotate:
 		OnRotateUpdate();
 		break;
@@ -345,22 +345,22 @@ void igdeMouseCameraListener::OnDragUpdate(){
 	}
 }
 
-void igdeMouseCameraListener::OnDragFinish( bool cancelled ){
-	switch( pInteraction ){
+void igdeMouseCameraListener::OnDragFinish(bool cancelled){
+	switch(pInteraction){
 	case eiRotate:
-		OnRotateFinish( cancelled );
+		OnRotateFinish(cancelled);
 		break;
 		
 	case eiPan:
-		OnPanFinish( cancelled );
+		OnPanFinish(cancelled);
 		break;
 		
 	case eiMove:
-		OnMoveFinish( cancelled );
+		OnMoveFinish(cancelled);
 		break;
 		
 	case eiZoom:
-		OnZoomFinish( cancelled );
+		OnZoomFinish(cancelled);
 		break;
 		
 	default:

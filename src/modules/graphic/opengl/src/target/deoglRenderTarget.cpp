@@ -44,26 +44,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTarget::deoglRenderTarget( deoglRenderThread &renderThread,
-	const decPoint &size, int componentCount, int bitCount ) :
-pRenderThread( renderThread ),
+deoglRenderTarget::deoglRenderTarget(deoglRenderThread &renderThread,
+	const decPoint &size, int componentCount, int bitCount) :
+pRenderThread(renderThread),
 
-pSize( decPoint( 1, 1 ).Largest( size ) ),
-pTextureSize( pSize ),
-pAspectRatio( ( float )pSize.x / ( float )pSize.y ),
-pBitCount( bitCount ),
-pComponentCount( componentCount ),
-pFloatTexture( bitCount != 8 ),
+pSize(decPoint(1, 1).Largest(size)),
+pTextureSize(pSize),
+pAspectRatio((float)pSize.x / (float)pSize.y),
+pBitCount(bitCount),
+pComponentCount(componentCount),
+pFloatTexture(bitCount != 8),
 
-pDirtyTexture( true ),
+pDirtyTexture(true),
 
-pTexture( NULL ){
+pTexture(NULL){
 }
 
 deoglRenderTarget::~deoglRenderTarget(){
 	ReleaseFramebuffer();
 	
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 }
@@ -73,23 +73,23 @@ deoglRenderTarget::~deoglRenderTarget(){
 // Management
 ///////////////
 
-void deoglRenderTarget::SetSize( const decPoint &size ){
-	if( ! ( size > decPoint() ) ){
-		DETHROW( deeInvalidParam );
+void deoglRenderTarget::SetSize(const decPoint &size){
+	if(! (size > decPoint())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size == pSize ){
+	if(size == pSize){
 		return;
 	}
 	
 	ReleaseFramebuffer();
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 		pTexture = NULL;
 	}
 	
 	pSize = size;
-	pAspectRatio = ( float )pSize.x / ( float )pSize.y;
+	pAspectRatio = (float)pSize.x / (float)pSize.y;
 	
 	pTextureSize = pSize;
 	
@@ -99,14 +99,14 @@ void deoglRenderTarget::SetSize( const decPoint &size ){
 
 
 void deoglRenderTarget::PrepareTexture(){
-	if( pTexture ){
+	if(pTexture){
 		return;
 	}
 	
-	pTexture = new deoglTexture( pRenderThread );
-	pTexture->SetSize( pTextureSize );
-	pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
-	pTexture->SetMipMapped( false );
+	pTexture = new deoglTexture(pRenderThread);
+	pTexture->SetSize(pTextureSize);
+	pTexture->SetFBOFormat(pComponentCount, pFloatTexture);
+	pTexture->SetMipMapped(false);
 	pTexture->CreateTexture(); // required or framebuffer attaching fails
 }
 
@@ -137,7 +137,7 @@ void deoglRenderTarget::ReleaseFramebuffer(){
 }
 
 
-void deoglRenderTarget::SetTextureDirty( bool dirty ){
+void deoglRenderTarget::SetTextureDirty(bool dirty){
 	pDirtyTexture = dirty;
 }
 
@@ -146,113 +146,113 @@ void deoglRenderTarget::ClearTexture(){
 	deoglPixelBuffer::ePixelFormats pbtype = deoglPixelBuffer::epfByte3;
 	bool useFloat = false;
 	
-	if( pBitCount == 8 ){
-		if( pComponentCount == 1 ){
+	if(pBitCount == 8){
+		if(pComponentCount == 1){
 			pbtype = deoglPixelBuffer::epfByte1;
 			
-		}else if( pComponentCount == 2 ){
+		}else if(pComponentCount == 2){
 			pbtype = deoglPixelBuffer::epfByte2;
 			
-		}else if( pComponentCount == 3 ){
+		}else if(pComponentCount == 3){
 			pbtype = deoglPixelBuffer::epfByte3;
 			
-		}else if( pComponentCount == 4 ){
+		}else if(pComponentCount == 4){
 			pbtype = deoglPixelBuffer::epfByte4;
 		}
 		
 	}else{
 		useFloat = true;
 		
-		if( pComponentCount == 1 ){
+		if(pComponentCount == 1){
 			pbtype = deoglPixelBuffer::epfFloat1;
 			
-		}else if( pComponentCount == 2 ){
+		}else if(pComponentCount == 2){
 			pbtype = deoglPixelBuffer::epfFloat2;
 			
-		}else if( pComponentCount == 3 ){
+		}else if(pComponentCount == 3){
 			pbtype = deoglPixelBuffer::epfFloat3;
 			
-		}else if( pComponentCount == 4 ){
+		}else if(pComponentCount == 4){
 			pbtype = deoglPixelBuffer::epfFloat4;
 		}
 	}
 	
-	deoglPixelBuffer pixelBuffer( pbtype, pTextureWidth, pTextureHeight, 1 );
+	deoglPixelBuffer pixelBuffer(pbtype, pTextureWidth, pTextureHeight, 1);
 	const int pixelCount = pTextureWidth * pTextureHeight;
 	
-	if( useFloat ){
-		if( pComponentCount == 1 ){
+	if(useFloat){
+		if(pComponentCount == 1){
 			deoglPixelBuffer::sFloat1 * const destData = pixelBuffer.GetPointerFloat1();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0.0f;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0.0f;
 			}
 			
-		}else if( pComponentCount == 2 ){
+		}else if(pComponentCount == 2){
 			deoglPixelBuffer::sFloat2 * const destData = pixelBuffer.GetPointerFloat2();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0.0f;
-				destData[ i ].g = 1.0f;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0.0f;
+				destData[i].g = 1.0f;
 			}
 			
-		}else if( pComponentCount == 3 ){
+		}else if(pComponentCount == 3){
 			deoglPixelBuffer::sFloat3 * const destData = pixelBuffer.GetPointerFloat3();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0.0f;
-				destData[ i ].g = 0.0f;
-				destData[ i ].b = 0.0f;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0.0f;
+				destData[i].g = 0.0f;
+				destData[i].b = 0.0f;
 			}
 			
-		}else if( pComponentCount == 4 ){
+		}else if(pComponentCount == 4){
 			deoglPixelBuffer::sFloat4 * const destData = pixelBuffer.GetPointerFloat4();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0.0f;
-				destData[ i ].g = 0.0f;
-				destData[ i ].b = 0.0f;
-				destData[ i ].a = 1.0f;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0.0f;
+				destData[i].g = 0.0f;
+				destData[i].b = 0.0f;
+				destData[i].a = 1.0f;
 			}
 		}
 		
 	}else{
-		if( pComponentCount == 1 ){
+		if(pComponentCount == 1){
 			deoglPixelBuffer::sByte1 * const destData = pixelBuffer.GetPointerByte1();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0;
 			}
 			
-		}else if( pComponentCount == 2 ){
+		}else if(pComponentCount == 2){
 			deoglPixelBuffer::sByte2 * const destData = pixelBuffer.GetPointerByte2();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0;
-				destData[ i ].g = 255;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0;
+				destData[i].g = 255;
 			}
 			
-		}else if( pComponentCount == 3 ){
+		}else if(pComponentCount == 3){
 			deoglPixelBuffer::sByte3 * const destData = pixelBuffer.GetPointerByte3();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0;
-				destData[ i ].g = 0;
-				destData[ i ].b = 0;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0;
+				destData[i].g = 0;
+				destData[i].b = 0;
 			}
 			
-		}else if( pComponentCount == 4 ){
+		}else if(pComponentCount == 4){
 			deoglPixelBuffer::sByte4 * const destData = pixelBuffer.GetPointerByte4();
 			
-			for( i=0; i< pixelCount; i++ ){
-				destData[ i ].r = 0;
-				destData[ i ].g = 0;
-				destData[ i ].b = 0;
-				destData[ i ].a = 255;
+			for(i=0; i< pixelCount; i++){
+				destData[i].r = 0;
+				destData[i].g = 0;
+				destData[i].b = 0;
+				destData[i].a = 255;
 			}
 		}
 	}
 	
-	pTexture->SetPixels( pixelBuffer );
+	pTexture->SetPixels(pixelBuffer);
 }
 #endif

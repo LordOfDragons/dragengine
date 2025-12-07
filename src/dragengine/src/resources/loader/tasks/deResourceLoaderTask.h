@@ -89,9 +89,9 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deResourceLoaderTask( deEngine &engine, deResourceLoader &resourceLoader,
+	deResourceLoaderTask(deEngine &engine, deResourceLoader &resourceLoader,
 		deVirtualFileSystem *vfs, const char *path,
-		deResourceLoader::eResourceType resourceType );
+		deResourceLoader::eResourceType resourceType);
 	
 	/** \brief Clean up task. */
 	virtual ~deResourceLoaderTask();
@@ -104,28 +104,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem *GetVFS() const{ return pVFS; }
+	inline deVirtualFileSystem *GetVFS() const{return pVFS;}
 	
 	/** \brief Path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Resource type. */
-	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
+	inline deResourceLoader::eResourceType GetResourceType() const{return pResourceType;}
 	
 	/** \brief Task matches the given path/resourceType. */
-	bool Matches( deVirtualFileSystem *vfs, const char *path,
-		deResourceLoader::eResourceType resourceType ) const;
+	bool Matches(deVirtualFileSystem *vfs, const char *path,
+		deResourceLoader::eResourceType resourceType) const;
 	
 	
 	
 	/** \brief Resource or NULL. */
-	inline deFileResource *GetResource() const{ return ( deFileResource* )( deResource* )pResource; }
+	inline deFileResource *GetResource() const{return (deFileResource*)(deResource*)pResource;}
 	
 	/** \brief State. */
-	inline eStates GetState() const{ return pState; }
+	inline eStates GetState() const{return pState;}
 	
 	/** \brief Type. */
-	inline eTypes GetType() const{ return pType; }
+	inline eTypes GetType() const{return pType;}
 	/*@}*/
 	
 	
@@ -143,11 +143,11 @@ public:
 	
 	
 protected:
-	inline deEngine &GetEngine(){ return pEngine; }
-	inline deResourceLoader &GetResourceLoader(){ return pResourceLoader; }
-	void SetResource( deFileResource *resource );
-	void SetState( eStates state );
-	void SetType( eTypes type );
+	inline deEngine &GetEngine(){return pEngine;}
+	inline deResourceLoader &GetResourceLoader(){return pResourceLoader;}
+	void SetResource(deFileResource *resource);
+	void SetState(eStates state);
+	void SetType(eTypes type);
 	void LogCreateEnter();
 	void LogCreateExit();
 	void LogRunEnter();

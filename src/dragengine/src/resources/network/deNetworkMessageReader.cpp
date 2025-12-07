@@ -38,18 +38,18 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deNetworkMessageReader::deNetworkMessageReader( deNetworkMessage *message ) :
-pMessage( message ),
-pPosition( 0 )
+deNetworkMessageReader::deNetworkMessageReader(deNetworkMessage *message) :
+pMessage(message),
+pPosition(0)
 {
-	if( ! message ){
-		DETHROW( deeInvalidParam );
+	if(! message){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-deNetworkMessageReader::deNetworkMessageReader( const deNetworkMessageReader &reader ) :
-pMessage( reader.pMessage ),
-pPosition( reader.pPosition ){
+deNetworkMessageReader::deNetworkMessageReader(const deNetworkMessageReader &reader) :
+pMessage(reader.pMessage),
+pPosition(reader.pPosition){
 }
 
 deNetworkMessageReader::~deNetworkMessageReader(){
@@ -81,24 +81,24 @@ int deNetworkMessageReader::GetPosition(){
 	return pPosition;
 }
 
-void deNetworkMessageReader::SetPosition( int position ){
-	if( position < 0 || position > pMessage->GetDataLength() ){
-		DETHROW( deeOutOfBoundary );
+void deNetworkMessageReader::SetPosition(int position){
+	if(position < 0 || position > pMessage->GetDataLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = position;
 }
 
-void deNetworkMessageReader::MovePosition( int offset ){
+void deNetworkMessageReader::MovePosition(int offset){
 	const int newPos = pPosition + offset;
-	if( newPos < 0 || newPos > pMessage->GetDataLength() ){
-		DETHROW( deeOutOfBoundary );
+	if(newPos < 0 || newPos > pMessage->GetDataLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = newPos;
 }
 
-void deNetworkMessageReader::SetPositionEnd( int position ){
-	if( position < 0 || position > pMessage->GetDataLength() ){
-		DETHROW( deeOutOfBoundary );
+void deNetworkMessageReader::SetPositionEnd(int position){
+	if(position < 0 || position > pMessage->GetDataLength()){
+		DETHROW(deeOutOfBoundary);
 	}
 	pPosition = pMessage->GetDataLength() - position;
 }
@@ -108,19 +108,19 @@ void deNetworkMessageReader::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void deNetworkMessageReader::Read( void *buffer, int size ){
-	if( ! buffer ){
-		DETHROW( deeInvalidParam );
+void deNetworkMessageReader::Read(void *buffer, int size){
+	if(! buffer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPosition + size > pMessage->GetDataLength() ){
-		DETHROW( deeInvalidParam );
+	if(pPosition + size > pMessage->GetDataLength()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	memcpy( buffer, pMessage->GetBuffer() + pPosition, size );
+	memcpy(buffer, pMessage->GetBuffer() + pPosition, size);
 	pPosition += size;
 }
 
 decBaseFileReader::Ref deNetworkMessageReader::Duplicate(){
-	return decBaseFileReader::Ref::New( new deNetworkMessageReader( *this ) );
+	return decBaseFileReader::Ref::New(new deNetworkMessageReader(*this));
 }

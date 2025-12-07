@@ -59,16 +59,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpColliderAttachment::debpColliderAttachment( deColliderAttachment *attachment ) :
-pAttachment( attachment ),
-pTrackBone( -1 ),
-pBoneMappings( nullptr ),
-pBoneMappingCount( 0 ),
-pVpsMappings( nullptr ),
-pVpsMappingCount( 0 ),
-pDirtyMappings( true ),
-pDirtyLocalMatrix( true ),
-pHasLocalMatrix( false ){
+debpColliderAttachment::debpColliderAttachment(deColliderAttachment *attachment) :
+pAttachment(attachment),
+pTrackBone(-1),
+pBoneMappings(nullptr),
+pBoneMappingCount(0),
+pVpsMappings(nullptr),
+pVpsMappingCount(0),
+pDirtyMappings(true),
+pDirtyLocalMatrix(true),
+pHasLocalMatrix(false){
 }
 
 debpColliderAttachment::~debpColliderAttachment(){
@@ -80,91 +80,91 @@ debpColliderAttachment::~debpColliderAttachment(){
 // Management
 ///////////////
 
-void debpColliderAttachment::SetBoneMappingCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
+void debpColliderAttachment::SetBoneMappingCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( count == pBoneMappingCount ){
+	if(count == pBoneMappingCount){
 		return;
 	}
 	
 	int i, *newArray = nullptr;
-	if( count > 0 ){
-		newArray = new int[ count ];
-		for( i=0; i<count; i++ ){
-			newArray[ i ] = -1;
+	if(count > 0){
+		newArray = new int[count];
+		for(i=0; i<count; i++){
+			newArray[i] = -1;
 		}
 	}
 	
-	if( pBoneMappings ){
+	if(pBoneMappings){
 		delete [] pBoneMappings;
 	}
 	pBoneMappings = newArray;
 	pBoneMappingCount = count;
 }
 
-void debpColliderAttachment::SetVpsMappingCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
+void debpColliderAttachment::SetVpsMappingCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( count == pVpsMappingCount ){
+	if(count == pVpsMappingCount){
 		return;
 	}
 	
 	int i, *newArray = nullptr;
-	if( count > 0 ){
-		newArray = new int[ count ];
-		for( i=0; i<count; i++ ){
-			newArray[ i ] = -1;
+	if(count > 0){
+		newArray = new int[count];
+		for(i=0; i<count; i++){
+			newArray[i] = -1;
 		}
 	}
 	
-	if( pVpsMappings ){
+	if(pVpsMappings){
 		delete [] pVpsMappings;
 	}
 	pVpsMappings = newArray;
 	pVpsMappingCount = count;
 }
 
-void debpColliderAttachment::SetTrackBone( int boneIndex ){
-	DEASSERT_TRUE( boneIndex >= -1 )
+void debpColliderAttachment::SetTrackBone(int boneIndex){
+	DEASSERT_TRUE(boneIndex >= -1)
 	
 	pTrackBone = boneIndex;
 }
 
-int debpColliderAttachment::GetBoneMappingAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pBoneMappingCount )
+int debpColliderAttachment::GetBoneMappingAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pBoneMappingCount)
 	
-	return pBoneMappings[ index ];
+	return pBoneMappings[index];
 }
 
-void debpColliderAttachment::SetBoneMappingAt( int index, int boneIndex ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pBoneMappingCount )
-	DEASSERT_TRUE( boneIndex >= -1 )
+void debpColliderAttachment::SetBoneMappingAt(int index, int boneIndex){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pBoneMappingCount)
+	DEASSERT_TRUE(boneIndex >= -1)
 	
-	pBoneMappings[ index ] = boneIndex;
+	pBoneMappings[index] = boneIndex;
 }
 
-int debpColliderAttachment::GetVpsMappingAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pVpsMappingCount )
+int debpColliderAttachment::GetVpsMappingAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pVpsMappingCount)
 	
-	return pVpsMappings[ index ];
+	return pVpsMappings[index];
 }
 
-void debpColliderAttachment::SetVpsMappingAt( int index, int boneIndex ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pVpsMappingCount )
-	DEASSERT_TRUE( boneIndex >= -1 )
+void debpColliderAttachment::SetVpsMappingAt(int index, int boneIndex){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pVpsMappingCount)
+	DEASSERT_TRUE(boneIndex >= -1)
 	
-	pVpsMappings[ index ] = boneIndex;
+	pVpsMappings[index] = boneIndex;
 }
 
-void debpColliderAttachment::SetDirtyMappings( bool dirtyMappings ){
+void debpColliderAttachment::SetDirtyMappings(bool dirtyMappings){
 	pDirtyMappings = dirtyMappings;
 }
 
-void debpColliderAttachment::SetAccumRelMoveMatrix( const decDMatrix &matrix ){
+void debpColliderAttachment::SetAccumRelMoveMatrix(const decDMatrix &matrix){
 	pAccumRelMoveMatrix = matrix;
 }
 
@@ -177,69 +177,69 @@ void debpColliderAttachment::AttachmentChanged(){
 
 
 
-void debpColliderAttachment::Reposition( const decDMatrix &matrix, const decVector &velocity,
-bool changeNotify ){
+void debpColliderAttachment::Reposition(const decDMatrix &matrix, const decVector &velocity,
+bool changeNotify){
 	pPrepareLocalMatrix();
 	
-	if( pHasLocalMatrix ){
-		const decDMatrix attmat( pLocalMatrix.QuickMultiply( matrix ) );
-		const decDVector scale( attmat.GetScale() );
-		const decDMatrix nor( attmat.Normalized() );
-		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), scale, velocity, changeNotify );
+	if(pHasLocalMatrix){
+		const decDMatrix attmat(pLocalMatrix.QuickMultiply(matrix));
+		const decDVector scale(attmat.GetScale());
+		const decDMatrix nor(attmat.Normalized());
+		pRepositionResource(nor.GetPosition(), nor.ToQuaternion(), scale, velocity, changeNotify);
 		
 	}else{
-		const decDVector scale( matrix.GetScale() );
-		const decDMatrix nor( matrix.Normalized() );
-		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), scale, velocity, changeNotify );
+		const decDVector scale(matrix.GetScale());
+		const decDMatrix nor(matrix.Normalized());
+		pRepositionResource(nor.GetPosition(), nor.ToQuaternion(), scale, velocity, changeNotify);
 	}
 }
 
-void debpColliderAttachment::Reposition( const decDVector &position,
+void debpColliderAttachment::Reposition(const decDVector &position,
 const decQuaternion &orientation, const decDVector &scale, const decVector &velocity,
-bool changeNotify ){
+bool changeNotify){
 	pPrepareLocalMatrix();
 	
-	if( pHasLocalMatrix ){
-		const decDMatrix attmat( pLocalMatrix.QuickMultiply(
-			decDMatrix::CreateWorld( position, orientation, scale ) ) );
-		const decDVector amscale( attmat.GetScale() );
-		const decDMatrix nor( attmat.Normalized() );
-		pRepositionResource( nor.GetPosition(), nor.ToQuaternion(), amscale, velocity, changeNotify );
+	if(pHasLocalMatrix){
+		const decDMatrix attmat(pLocalMatrix.QuickMultiply(
+			decDMatrix::CreateWorld(position, orientation, scale)));
+		const decDVector amscale(attmat.GetScale());
+		const decDMatrix nor(attmat.Normalized());
+		pRepositionResource(nor.GetPosition(), nor.ToQuaternion(), amscale, velocity, changeNotify);
 		
 	}else{
-		pRepositionResource( position, orientation, scale, velocity, changeNotify );
+		pRepositionResource(position, orientation, scale, velocity, changeNotify);
 	}
 }
 
-void debpColliderAttachment::Transform( const decDMatrix &matrix, const decVector &velocity,
-bool changeNotify ){
+void debpColliderAttachment::Transform(const decDMatrix &matrix, const decVector &velocity,
+bool changeNotify){
 	deResource * const resource = pAttachment->GetResource();
 	
-	switch( resource->GetResourceManager()->GetResourceType() ){
+	switch(resource->GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertCollider:{
-		deCollider &collider = *( ( deCollider* )resource );
-		const decDVector position( matrix * collider.GetPosition() );
-		const decQuaternion orientation( collider.GetOrientation() * matrix.Normalized().ToQuaternion() );
-		const decDVector scale( matrix.GetScale().Multiply( collider.GetScale() ) );
-		debpCollider &bpCollider = *( ( debpCollider* )collider.GetPeerPhysics() );
+		deCollider &collider = *((deCollider*)resource);
+		const decDVector position(matrix * collider.GetPosition());
+		const decQuaternion orientation(collider.GetOrientation() * matrix.Normalized().ToQuaternion());
+		const decDVector scale(matrix.GetScale().Multiply(collider.GetScale()));
+		debpCollider &bpCollider = *((debpCollider*)collider.GetPeerPhysics());
 		
-		if( changeNotify ){
-			if( collider.GetPosition().IsEqualTo( position )
-			&& collider.GetOrientation().IsEqualTo( orientation )
-			&& ( pAttachment->GetNoScaling() || collider.GetScale().IsEqualTo( scale ) ) ){
+		if(changeNotify){
+			if(collider.GetPosition().IsEqualTo(position)
+			&& collider.GetOrientation().IsEqualTo(orientation)
+			&& (pAttachment->GetNoScaling() || collider.GetScale().IsEqualTo(scale))){
 				break;
 			}
 		}
 		
-		if( pAttachment->GetNoScaling() ){
-			collider.SetGeometry( position, orientation );
+		if(pAttachment->GetNoScaling()){
+			collider.SetGeometry(position, orientation);
 			
 		}else{
-			collider.SetGeometry( position, orientation, scale );
+			collider.SetGeometry(position, orientation, scale);
 		}
 		
-		if( changeNotify ){
-			collider.GetPeerScripting()->ColliderChanged( &collider );
+		if(changeNotify){
+			collider.GetPeerScripting()->ColliderChanged(&collider);
 			bpCollider.ClearRequiresUpdate();
 			
 		}else{
@@ -250,117 +250,117 @@ bool changeNotify ){
 		}break;
 		
 	case deResourceManager::ertBillboard:{
-		deBillboard &billboard = *( ( deBillboard* )resource );
-		billboard.SetPosition( matrix * billboard.GetPosition() );
-		if( ! pAttachment->GetNoScaling() ){
-			const decDVector msca( matrix.GetScale() );
-			const decVector2 bsca( ( float )msca.x, ( float )msca.y );
-			billboard.SetSize( billboard.GetSize().Multiply( bsca ) );
-			billboard.SetOffset( billboard.GetOffset().Multiply( bsca ) );
+		deBillboard &billboard = *((deBillboard*)resource);
+		billboard.SetPosition(matrix * billboard.GetPosition());
+		if(! pAttachment->GetNoScaling()){
+			const decDVector msca(matrix.GetScale());
+			const decVector2 bsca((float)msca.x, (float)msca.y);
+			billboard.SetSize(billboard.GetSize().Multiply(bsca));
+			billboard.SetOffset(billboard.GetOffset().Multiply(bsca));
 		}
 		}break;
 		
 	case deResourceManager::ertCamera:{
-		deCamera &camera = *( ( deCamera* )resource );
-		camera.SetPosition( matrix * camera.GetPosition() );
-		camera.SetOrientation( camera.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deCamera &camera = *((deCamera*)resource);
+		camera.SetPosition(matrix * camera.GetPosition());
+		camera.SetOrientation(camera.GetOrientation() * matrix.Normalized().ToQuaternion());
 		}break;
 		
 	case deResourceManager::ertComponent:{
-		deComponent &component = *( ( deComponent* )resource );
-		component.SetPosition( matrix * component.GetPosition() );
-		component.SetOrientation( component.GetOrientation() * matrix.Normalized().ToQuaternion() );
-		if( ! pAttachment->GetNoScaling() ){
-			component.SetScaling( component.GetScaling().Multiply( matrix.GetScale() ) );
+		deComponent &component = *((deComponent*)resource);
+		component.SetPosition(matrix * component.GetPosition());
+		component.SetOrientation(component.GetOrientation() * matrix.Normalized().ToQuaternion());
+		if(! pAttachment->GetNoScaling()){
+			component.SetScaling(component.GetScaling().Multiply(matrix.GetScale()));
 		}
 		}break;
 		
 	case deResourceManager::ertDebugDrawer:{
-		deDebugDrawer &debugDrawer = *( ( deDebugDrawer* )resource );
-		debugDrawer.SetPosition( matrix * debugDrawer.GetPosition() );
-		debugDrawer.SetOrientation( debugDrawer.GetOrientation() * matrix.Normalized().ToQuaternion() );
-		if( ! pAttachment->GetNoScaling() ){
-			debugDrawer.SetScale( debugDrawer.GetScale().Multiply( matrix.GetScale() ) );
+		deDebugDrawer &debugDrawer = *((deDebugDrawer*)resource);
+		debugDrawer.SetPosition(matrix * debugDrawer.GetPosition());
+		debugDrawer.SetOrientation(debugDrawer.GetOrientation() * matrix.Normalized().ToQuaternion());
+		if(! pAttachment->GetNoScaling()){
+			debugDrawer.SetScale(debugDrawer.GetScale().Multiply(matrix.GetScale()));
 		}
 		}break;
 		
 	case deResourceManager::ertEnvMapProbe:{
-		deEnvMapProbe &envMapProbe = *( ( deEnvMapProbe* )resource );
-		envMapProbe.SetPosition( matrix * envMapProbe.GetPosition() );
-		envMapProbe.SetOrientation( envMapProbe.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deEnvMapProbe &envMapProbe = *((deEnvMapProbe*)resource);
+		envMapProbe.SetPosition(matrix * envMapProbe.GetPosition());
+		envMapProbe.SetOrientation(envMapProbe.GetOrientation() * matrix.Normalized().ToQuaternion());
 		}break;
 		
 	case deResourceManager::ertForceField:{
-		deForceField &forceField = *( ( deForceField* )resource );
-		forceField.SetPosition( matrix * forceField.GetPosition() );
-		forceField.SetOrientation( forceField.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deForceField &forceField = *((deForceField*)resource);
+		forceField.SetPosition(matrix * forceField.GetPosition());
+		forceField.SetOrientation(forceField.GetOrientation() * matrix.Normalized().ToQuaternion());
 		}break;
 		
 	case deResourceManager::ertLight:{
-		deLight &light = *( ( deLight* )resource );
-		light.SetPosition( matrix * light.GetPosition() );
-		light.SetOrientation( light.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deLight &light = *((deLight*)resource);
+		light.SetPosition(matrix * light.GetPosition());
+		light.SetOrientation(light.GetOrientation() * matrix.Normalized().ToQuaternion());
 		}break;
 		
 	case deResourceManager::ertLumimeter:{
-		deLumimeter &lumimeter = *( ( deLumimeter* )resource );
-		lumimeter.SetPosition( matrix * lumimeter.GetPosition() );
+		deLumimeter &lumimeter = *((deLumimeter*)resource);
+		lumimeter.SetPosition(matrix * lumimeter.GetPosition());
 		//lumimeter.SetOrientation( lumimeter.GetOrientation() * matrix.Normalized().ToQuaternion() ); // TODO missing
 		}break;
 		
 	case deResourceManager::ertMicrophone:{
-		deMicrophone &microphone = *( ( deMicrophone* )resource );
-		microphone.SetPosition( matrix * microphone.GetPosition() );
-		microphone.SetOrientation( microphone.GetOrientation() * matrix.Normalized().ToQuaternion() );
-		microphone.SetVelocity( velocity );
+		deMicrophone &microphone = *((deMicrophone*)resource);
+		microphone.SetPosition(matrix * microphone.GetPosition());
+		microphone.SetOrientation(microphone.GetOrientation() * matrix.Normalized().ToQuaternion());
+		microphone.SetVelocity(velocity);
 		}break;
 		
 	case deResourceManager::ertNavigationSpace:{
-		deNavigationSpace &navigationSpace = *( ( deNavigationSpace* )resource );
-		navigationSpace.SetPosition( matrix * navigationSpace.GetPosition() );
-		navigationSpace.SetOrientation( navigationSpace.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deNavigationSpace &navigationSpace = *((deNavigationSpace*)resource);
+		navigationSpace.SetPosition(matrix * navigationSpace.GetPosition());
+		navigationSpace.SetOrientation(navigationSpace.GetOrientation() * matrix.Normalized().ToQuaternion());
 		// TODO navigation block has scaling but not navigation space. add it?
 		}break;
 		
 	case deResourceManager::ertNavigationBlocker:{
-		deNavigationBlocker &navigationBlocker = *( ( deNavigationBlocker* )resource );
-		navigationBlocker.SetPosition( matrix * navigationBlocker.GetPosition() );
-		navigationBlocker.SetOrientation( navigationBlocker.GetOrientation() * matrix.Normalized().ToQuaternion() );
-		if( ! pAttachment->GetNoScaling() ){
-			navigationBlocker.SetScaling( navigationBlocker.GetScaling().Multiply( matrix.GetScale() ) );
+		deNavigationBlocker &navigationBlocker = *((deNavigationBlocker*)resource);
+		navigationBlocker.SetPosition(matrix * navigationBlocker.GetPosition());
+		navigationBlocker.SetOrientation(navigationBlocker.GetOrientation() * matrix.Normalized().ToQuaternion());
+		if(! pAttachment->GetNoScaling()){
+			navigationBlocker.SetScaling(navigationBlocker.GetScaling().Multiply(matrix.GetScale()));
 		}
 		}break;
 		
 	case deResourceManager::ertParticleEmitterInstance:{
-		deParticleEmitterInstance &instance = *( ( deParticleEmitterInstance* )resource );
-		instance.SetPosition( matrix * instance.GetPosition() );
-		instance.SetOrientation( instance.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deParticleEmitterInstance &instance = *((deParticleEmitterInstance*)resource);
+		instance.SetPosition(matrix * instance.GetPosition());
+		instance.SetOrientation(instance.GetOrientation() * matrix.Normalized().ToQuaternion());
 		}break;
 		
 	case deResourceManager::ertPropField:{
-		dePropField &propField = *( ( dePropField* )resource );
-		propField.SetPosition( matrix * propField.GetPosition() );
+		dePropField &propField = *((dePropField*)resource);
+		propField.SetPosition(matrix * propField.GetPosition());
 		//propField.SetOrientation( propfield.GetOrientation() * matrix.Normalized().ToQuaternion() ); // TODO missing
 		}break;
 		
 	case deResourceManager::ertSpeaker:{
-		deSpeaker &speaker = *( ( deSpeaker* )resource );
-		speaker.SetPosition( matrix * speaker.GetPosition() );
-		speaker.SetOrientation( speaker.GetOrientation() * matrix.Normalized().ToQuaternion() );
-		speaker.SetVelocity( velocity );
+		deSpeaker &speaker = *((deSpeaker*)resource);
+		speaker.SetPosition(matrix * speaker.GetPosition());
+		speaker.SetOrientation(speaker.GetOrientation() * matrix.Normalized().ToQuaternion());
+		speaker.SetVelocity(velocity);
 		}break;
 		
 	case deResourceManager::ertTouchSensor:{
-		deTouchSensor &touchSensor = *( ( deTouchSensor* )resource );
-		touchSensor.SetPosition( matrix * touchSensor.GetPosition() );
-		touchSensor.SetOrientation( touchSensor.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deTouchSensor &touchSensor = *((deTouchSensor*)resource);
+		touchSensor.SetPosition(matrix * touchSensor.GetPosition());
+		touchSensor.SetOrientation(touchSensor.GetOrientation() * matrix.Normalized().ToQuaternion());
 		// TODO touch sensor has no size. add it?
 		}break;
 		
 	case deResourceManager::ertSoundLevelMeter:{
-		deSoundLevelMeter &soundLevelMeter = *( ( deSoundLevelMeter* )resource );
-		soundLevelMeter.SetPosition( matrix * soundLevelMeter.GetPosition() );
-		soundLevelMeter.SetOrientation( soundLevelMeter.GetOrientation() * matrix.Normalized().ToQuaternion() );
+		deSoundLevelMeter &soundLevelMeter = *((deSoundLevelMeter*)resource);
+		soundLevelMeter.SetPosition(matrix * soundLevelMeter.GetPosition());
+		soundLevelMeter.SetOrientation(soundLevelMeter.GetOrientation() * matrix.Normalized().ToQuaternion());
 		}break;
 		
 	default:
@@ -374,10 +374,10 @@ bool changeNotify ){
 //////////////////////
 
 void debpColliderAttachment::pCleanUp(){
-	if( pBoneMappings ){
+	if(pBoneMappings){
 		delete [] pBoneMappings;
 	}
-	if( pVpsMappings ){
+	if(pVpsMappings){
 		delete [] pVpsMappings;
 	}
 }
@@ -385,7 +385,7 @@ void debpColliderAttachment::pCleanUp(){
 
 
 void debpColliderAttachment::pPrepareLocalMatrix(){
-	if( ! pDirtyLocalMatrix ){
+	if(! pDirtyLocalMatrix){
 		return;
 	}
 	
@@ -393,46 +393,46 @@ void debpColliderAttachment::pPrepareLocalMatrix(){
 	const decVector &localPosition = pAttachment->GetPosition();
 	const decVector &localScaling = pAttachment->GetScaling();
 	
-	if( localPosition.IsEqualTo( decVector() ) && localOrientation.IsEqualTo( decQuaternion() )
-	&& localScaling.IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
+	if(localPosition.IsEqualTo(decVector()) && localOrientation.IsEqualTo(decQuaternion())
+	&& localScaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
 		pLocalMatrix.SetIdentity();
 		pHasLocalMatrix = false;
 		
 	}else{
-		pLocalMatrix.SetWorld( localPosition, localOrientation, localScaling );
+		pLocalMatrix.SetWorld(localPosition, localOrientation, localScaling);
 		pHasLocalMatrix = true;
 	}
 	
 	pDirtyLocalMatrix = false;
 }
 
-void debpColliderAttachment::pRepositionResource( const decDVector &position,
+void debpColliderAttachment::pRepositionResource(const decDVector &position,
 const decQuaternion &orientation, const decDVector &scale, const decVector &velocity,
-bool changeNotify ){
+bool changeNotify){
 	deResource * const resource = pAttachment->GetResource();
 	
-	switch( resource->GetResourceManager()->GetResourceType() ){
+	switch(resource->GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertCollider:{
-		deCollider &collider = *( ( deCollider* )resource );
-		debpCollider &bpCollider = *( ( debpCollider* )collider.GetPeerPhysics() );
+		deCollider &collider = *((deCollider*)resource);
+		debpCollider &bpCollider = *((debpCollider*)collider.GetPeerPhysics());
 		
-		if( changeNotify ){
-			if( collider.GetPosition().IsEqualTo( position )
-			&& collider.GetOrientation().IsEqualTo( orientation )
-			&& ( pAttachment->GetNoScaling() || collider.GetScale().IsEqualTo( scale ) ) ){
+		if(changeNotify){
+			if(collider.GetPosition().IsEqualTo(position)
+			&& collider.GetOrientation().IsEqualTo(orientation)
+			&& (pAttachment->GetNoScaling() || collider.GetScale().IsEqualTo(scale))){
 				break;
 			}
 		}
 		
-		if( ! pAttachment->GetNoScaling() ){
-			collider.SetGeometry( position, orientation );
+		if(! pAttachment->GetNoScaling()){
+			collider.SetGeometry(position, orientation);
 			
 		}else{
-			collider.SetGeometry( position, orientation, scale );
+			collider.SetGeometry(position, orientation, scale);
 		}
 		
-		if( changeNotify ){
-			collider.GetPeerScripting()->ColliderChanged( &collider );
+		if(changeNotify){
+			collider.GetPeerScripting()->ColliderChanged(&collider);
 			bpCollider.ClearRequiresUpdate();
 			
 		}else{
@@ -443,119 +443,119 @@ bool changeNotify ){
 		}break;
 		
 	case deResourceManager::ertBillboard:{
-		deBillboard &billboard = *( ( deBillboard* )resource );
-		billboard.SetPosition( position );
-		if( ! pAttachment->GetNoScaling() ){
+		deBillboard &billboard = *((deBillboard*)resource);
+		billboard.SetPosition(position);
+		if(! pAttachment->GetNoScaling()){
 // 			const decVector2 oldsca( billboard.GetSize() );
 // 			const decVector2 newsca( ( float )scale.x, ( float )scale.y );
 // 			const decVector2 resca( fabsf( oldsca.x ) != 0.001f ? newsca.x / oldsca.x : 1.0f,
 // 				fabsf( oldsca.y ) != 0.001f ? newsca.y / oldsca.y : 1.0f );
-			billboard.SetSize( decVector2( ( float )scale.x, ( float )scale.y ) );
+			billboard.SetSize(decVector2((float)scale.x, (float)scale.y));
 // 			billboard.SetOffset( billboard.GetOffset().Multiply( resca ) );
 		}
 		}break;
 		
 	case deResourceManager::ertCamera:{
-		deCamera &camera = *( ( deCamera* )resource );
-		camera.SetPosition( position );
-		camera.SetOrientation( orientation );
+		deCamera &camera = *((deCamera*)resource);
+		camera.SetPosition(position);
+		camera.SetOrientation(orientation);
 		}break;
 		
 	case deResourceManager::ertComponent:{
-		deComponent &component = *( ( deComponent* )resource );
-		component.SetPosition( position );
-		component.SetOrientation( orientation );
-		if( ! pAttachment->GetNoScaling() ){
-			component.SetScaling( scale );
+		deComponent &component = *((deComponent*)resource);
+		component.SetPosition(position);
+		component.SetOrientation(orientation);
+		if(! pAttachment->GetNoScaling()){
+			component.SetScaling(scale);
 		}
 		}break;
 		
 	case deResourceManager::ertDebugDrawer:{
-		deDebugDrawer &debugDrawer = *( ( deDebugDrawer* )resource );
-		debugDrawer.SetPosition( position );
-		debugDrawer.SetOrientation( orientation );
-		if( ! pAttachment->GetNoScaling() ){
-			debugDrawer.SetScale( scale );
+		deDebugDrawer &debugDrawer = *((deDebugDrawer*)resource);
+		debugDrawer.SetPosition(position);
+		debugDrawer.SetOrientation(orientation);
+		if(! pAttachment->GetNoScaling()){
+			debugDrawer.SetScale(scale);
 		}
 		}break;
 		
 	case deResourceManager::ertEnvMapProbe:{
-		deEnvMapProbe &envMapProbe = *( ( deEnvMapProbe* )resource );
-		envMapProbe.SetPosition( position );
-		envMapProbe.SetOrientation( orientation );
+		deEnvMapProbe &envMapProbe = *((deEnvMapProbe*)resource);
+		envMapProbe.SetPosition(position);
+		envMapProbe.SetOrientation(orientation);
 		}break;
 		
 	case deResourceManager::ertForceField:{
-		deForceField &forceField = *( ( deForceField* )resource );
-		forceField.SetPosition( position );
-		forceField.SetOrientation( orientation );
+		deForceField &forceField = *((deForceField*)resource);
+		forceField.SetPosition(position);
+		forceField.SetOrientation(orientation);
 		}break;
 		
 	case deResourceManager::ertLight:{
-		deLight &light = *( ( deLight* )resource );
-		light.SetPosition( position );
-		light.SetOrientation( orientation );
+		deLight &light = *((deLight*)resource);
+		light.SetPosition(position);
+		light.SetOrientation(orientation);
 		}break;
 		
 	case deResourceManager::ertLumimeter:{
-		deLumimeter &lumimeter = *( ( deLumimeter* )resource );
-		lumimeter.SetPosition( position );
+		deLumimeter &lumimeter = *((deLumimeter*)resource);
+		lumimeter.SetPosition(position);
 		//lumimeter.SetOrientation( orientation ); // TODO missing
 		}break;
 		
 	case deResourceManager::ertMicrophone:{
-		deMicrophone &microphone = *( ( deMicrophone* )resource );
-		microphone.SetPosition( position );
-		microphone.SetOrientation( orientation );
-		microphone.SetVelocity( velocity );
+		deMicrophone &microphone = *((deMicrophone*)resource);
+		microphone.SetPosition(position);
+		microphone.SetOrientation(orientation);
+		microphone.SetVelocity(velocity);
 		}break;
 		
 	case deResourceManager::ertNavigationSpace:{
-		deNavigationSpace &navigationSpace = *( ( deNavigationSpace* )resource );
-		navigationSpace.SetPosition( position );
-		navigationSpace.SetOrientation( orientation );
+		deNavigationSpace &navigationSpace = *((deNavigationSpace*)resource);
+		navigationSpace.SetPosition(position);
+		navigationSpace.SetOrientation(orientation);
 		// TODO navigation blocker has scaling but not navigation space. add it?
 		}break;
 		
 	case deResourceManager::ertNavigationBlocker:{
-		deNavigationBlocker &navigationBlocker = *( ( deNavigationBlocker* )resource );
-		navigationBlocker.SetPosition( position );
-		navigationBlocker.SetOrientation( orientation );
-		if( ! pAttachment->GetNoScaling() ){
-			navigationBlocker.SetScaling( scale );
+		deNavigationBlocker &navigationBlocker = *((deNavigationBlocker*)resource);
+		navigationBlocker.SetPosition(position);
+		navigationBlocker.SetOrientation(orientation);
+		if(! pAttachment->GetNoScaling()){
+			navigationBlocker.SetScaling(scale);
 		}
 		}break;
 		
 	case deResourceManager::ertParticleEmitterInstance:{
-		deParticleEmitterInstance &particleEmitterInstance = *( ( deParticleEmitterInstance* )resource );
-		particleEmitterInstance.SetPosition( position );
-		particleEmitterInstance.SetOrientation( orientation );
+		deParticleEmitterInstance &particleEmitterInstance = *((deParticleEmitterInstance*)resource);
+		particleEmitterInstance.SetPosition(position);
+		particleEmitterInstance.SetOrientation(orientation);
 		}break;
 		
 	case deResourceManager::ertPropField:{
-		dePropField &propField = *( ( dePropField* )resource );
-		propField.SetPosition( position );
+		dePropField &propField = *((dePropField*)resource);
+		propField.SetPosition(position);
 		//propField.SetOrientation( orientation ); // TODO missing
 		}break;
 		
 	case deResourceManager::ertSpeaker:{
-		deSpeaker &speaker = *( ( deSpeaker* )resource );
-		speaker.SetPosition( position );
-		speaker.SetOrientation( orientation );
-		speaker.SetVelocity( velocity );
+		deSpeaker &speaker = *((deSpeaker*)resource);
+		speaker.SetPosition(position);
+		speaker.SetOrientation(orientation);
+		speaker.SetVelocity(velocity);
 		}break;
 		
 	case deResourceManager::ertTouchSensor:{
-		deTouchSensor &touchSensor = *( ( deTouchSensor* )resource );
-		touchSensor.SetPosition( position );
-		touchSensor.SetOrientation( orientation );
+		deTouchSensor &touchSensor = *((deTouchSensor*)resource);
+		touchSensor.SetPosition(position);
+		touchSensor.SetOrientation(orientation);
 		// TODO touch sensor has no scaling. add it?
 		}break;
 		
 	case deResourceManager::ertSoundLevelMeter:{
-		deSoundLevelMeter &soundLevelMeter = *( ( deSoundLevelMeter* )resource );
-		soundLevelMeter.SetPosition( position );
-		soundLevelMeter.SetOrientation( orientation );
+		deSoundLevelMeter &soundLevelMeter = *((deSoundLevelMeter*)resource);
+		soundLevelMeter.SetPosition(position);
+		soundLevelMeter.SetOrientation(orientation);
 		}break;
 		
 	default:

@@ -47,9 +47,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpParticleEmitter::debpParticleEmitter( dePhysicsBullet *bullet, deParticleEmitter *emitter ){
-	if( ! bullet || ! emitter ){
-		DETHROW( deeInvalidParam );
+debpParticleEmitter::debpParticleEmitter(dePhysicsBullet *bullet, deParticleEmitter *emitter){
+	if(! bullet || ! emitter){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBullet = bullet;
@@ -73,30 +73,30 @@ debpParticleEmitter::~debpParticleEmitter(){
 // Management
 ///////////////
 
-debpParticleEmitterType &debpParticleEmitter::GetTypeAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+debpParticleEmitterType &debpParticleEmitter::GetTypeAt(int index){
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
-const debpParticleEmitterType &debpParticleEmitter::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+const debpParticleEmitterType &debpParticleEmitter::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
 
 
 void debpParticleEmitter::UpdateParameters(){
-	if( pDirtyParameters ){
+	if(pDirtyParameters){
 		int t;
 		
-		for( t=0; t<pTypeCount; t++ ){
-			pTypes[ t ].UpdateParameters();
+		for(t=0; t<pTypeCount; t++){
+			pTypes[t].UpdateParameters();
 		}
 		
 		pDirtyParameters = false;
@@ -113,11 +113,11 @@ void debpParticleEmitter::TypeCountChanged(){
 	pUpdateTypes();
 }
 
-void debpParticleEmitter::TypeChanged( int type ){
+void debpParticleEmitter::TypeChanged(int type){
 	pDirtyParameters = true;
 	
-	if( type >= 0 && type < pTypeCount ){
-		pTypes[ type ].UpdateType();
+	if(type >= 0 && type < pTypeCount){
+		pTypes[type].UpdateType();
 	}
 	// this would require a link back to all instances using it
 	//if( parameter == deParticleEmitter::epInterval ){
@@ -135,7 +135,7 @@ void debpParticleEmitter::GraphicModuleRequestsChanged(){
 //////////////////////
 
 void debpParticleEmitter::pCleanUp(){
-	if( pTypes ){
+	if(pTypes){
 		delete [] pTypes;
 	}
 }
@@ -143,19 +143,19 @@ void debpParticleEmitter::pCleanUp(){
 void debpParticleEmitter::pUpdateTypes(){
 	const int typeCount = pEmitter->GetTypeCount();
 	
-	if( pTypes ){
+	if(pTypes){
 		delete [] pTypes;
 		pTypes = NULL;
 	}
 	pTypeCount = 0;
 	
-	if( typeCount > 0 ){
-		pTypes = new debpParticleEmitterType[ typeCount ];
+	if(typeCount > 0){
+		pTypes = new debpParticleEmitterType[typeCount];
 		
-		for( pTypeCount=0; pTypeCount<typeCount; pTypeCount++ ){
-			pTypes[ pTypeCount ].SetEmitter( pEmitter );
-			pTypes[ pTypeCount ].SetType( pTypeCount );
-			pTypes[ pTypeCount ].UpdateType();
+		for(pTypeCount=0; pTypeCount<typeCount; pTypeCount++){
+			pTypes[pTypeCount].SetEmitter(pEmitter);
+			pTypes[pTypeCount].SetType(pTypeCount);
+			pTypes[pTypeCount].UpdateType();
 		}
 	}
 	

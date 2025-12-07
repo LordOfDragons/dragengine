@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeReplace( meObject *object, const char *property, int shapeIndex, const decShape &shape );
+	meUObjectShapeReplace(meObject *object, const char *property, int shapeIndex, const decShape &shape);
 	/** \brief Clean up undo object. */
 	virtual ~meUObjectShapeReplace();
 	/*@}*/

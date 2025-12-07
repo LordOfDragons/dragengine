@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPosition::gdeUOCSpeakerSetPosition( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, const decVector &newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetPosition::gdeUOCSpeakerSetPosition(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const decVector &newValue) :
+pObjectClass(NULL),
+pSpeaker(NULL)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set position" );
+	SetShortInfo("Speaker set position");
 	
 	pOldValue = speaker->GetPosition();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSpeaker( NULL )
 }
 
 gdeUOCSpeakerSetPosition::~gdeUOCSpeakerSetPosition(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSpeakerSetPosition::~gdeUOCSpeakerSetPosition(){
 ///////////////
 
 void gdeUOCSpeakerSetPosition::Undo(){
-	pSpeaker->SetPosition( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPosition(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetPosition::Redo(){
-	pSpeaker->SetPosition( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetPosition(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

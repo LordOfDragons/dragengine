@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device list. */
-	dewiDeviceManager( deWindowsInput &module );
+	dewiDeviceManager(deWindowsInput &module);
 	
 protected:
 	/** Clean up device list. */
@@ -91,24 +91,24 @@ public:
 	int GetCount() const;
 	
 	/** Device at index. */
-	dewiDevice *GetAt( int index ) const;
+	dewiDevice *GetAt(int index) const;
 	
 	/** Device with identifier or \em NULL if absent. */
-	dewiDevice *GetWithID( const char *id ) const;
+	dewiDevice *GetWithID(const char *id) const;
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	/** Input device matching controller. */
-	dewiDeviceWinRTController *GetWithController( wrgi::RawGameController const &controller ) const;
+	dewiDeviceWinRTController *GetWithController(wrgi::RawGameController const &controller) const;
 	
 	
 	
 	/** Mouse device. */
-	inline const dewiDeviceMouse::Ref &GetMouse() const{ return pMouse; }
+	inline const dewiDeviceMouse::Ref &GetMouse() const{return pMouse;}
 	
 	/** Keyboard device. */
-	inline const dewiDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
+	inline const dewiDeviceKeyboard::Ref &GetKeyboard() const{return pKeyboard;}
 	
 
 	
@@ -116,7 +116,7 @@ public:
 	void LogDevices() const;
 
 	/** Log input device. */
-	void LogDevice( const dewiDevice &device ) const;
+	void LogDevice(const dewiDevice &device) const;
 	
 
 
@@ -126,7 +126,7 @@ public:
 	
 	
 	/** Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	
@@ -138,12 +138,12 @@ private:
 		dewiDeviceManager *pManager;
 
 	public:
-		sEventHandlerController( dewiDeviceManager *manager );
+		sEventHandlerController(dewiDeviceManager *manager);
 		void DropManager();
 
 	private:
-		void pOnControllerAdded( wrf::IInspectable const &sender, wrgi::RawGameController const &controller );
-		void pOnControllerRemoved( wrf::IInspectable const &sender, wrgi::RawGameController const &controller );
+		void pOnControllerAdded(wrf::IInspectable const &sender, wrgi::RawGameController const &controller);
+		void pOnControllerRemoved(wrf::IInspectable const &sender, wrgi::RawGameController const &controller);
 	};
 
 	winrt::com_ptr<sEventHandlerController> pEventHandlerController;
@@ -157,8 +157,8 @@ private:
 	void pProcessAddRemoveDevices();
 	void pUpdateDeviceIndices();
 
-	void pOnControllerAdded( wrgi::RawGameController const &controller );
-	void pOnControllerRemoved( wrgi::RawGameController const &controller );
+	void pOnControllerAdded(wrgi::RawGameController const &controller);
+	void pOnControllerRemoved(wrgi::RawGameController const &controller);
 };
 
 #endif

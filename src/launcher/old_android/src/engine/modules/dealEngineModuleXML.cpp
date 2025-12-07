@@ -47,7 +47,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dealEngineModuleXML::dealEngineModuleXML( deLogger *logger, const char *loggerSource ) : dealBaseXML( logger, loggerSource ){
+dealEngineModuleXML::dealEngineModuleXML(deLogger *logger, const char *loggerSource) : dealBaseXML(logger, loggerSource){
 }
 
 dealEngineModuleXML::~dealEngineModuleXML(){
@@ -58,20 +58,20 @@ dealEngineModuleXML::~dealEngineModuleXML(){
 // Management
 ///////////////
 
-void dealEngineModuleXML::ReadFromFile( decBaseFileReader &reader, dealEngineModule &module ){
+void dealEngineModuleXML::ReadFromFile(decBaseFileReader &reader, dealEngineModule &module){
 	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser parser( GetLogger() );
+	decXmlParser parser(GetLogger());
 	
-	parser.ParseXml( &reader, xmldoc );
+	parser.ParseXml(&reader, xmldoc);
 	
 	xmldoc->StripComments();
 	xmldoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmldoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "module" ) != 0 ) DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "module") != 0) DETHROW(deeInvalidParam);
 	
-	pReadModule( *root, module );
+	pReadModule(*root, module);
 }
 
 
@@ -79,43 +79,43 @@ void dealEngineModuleXML::ReadFromFile( decBaseFileReader &reader, dealEngineMod
 // Private Functions
 //////////////////////
 
-void dealEngineModuleXML::pReadModule( const decXmlElementTag &root, dealEngineModule &module ){
+void dealEngineModuleXML::pReadModule(const decXmlElementTag &root, dealEngineModule &module){
 	int e, elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "name" ) == 0 ){
-				module.SetName( pGetCDataString( *tag ) );
+		if(tag){
+			if(strcmp(tag->GetName(), "name") == 0){
+				module.SetName(pGetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "description" ) == 0 ){
-				module.SetDescription( decUnicodeString::NewFromUTF8( pGetCDataString( *tag ) ) );
+			}else if(strcmp(tag->GetName(), "description") == 0){
+				module.SetDescription(decUnicodeString::NewFromUTF8(pGetCDataString(*tag)));
 				
-			}else if( strcmp( tag->GetName(), "author" ) == 0 ){
-				module.SetAuthor( decUnicodeString::NewFromUTF8( pGetCDataString( *tag ) ) );
+			}else if(strcmp(tag->GetName(), "author") == 0){
+				module.SetAuthor(decUnicodeString::NewFromUTF8(pGetCDataString(*tag)));
 				
-			}else if( strcmp( tag->GetName(), "version" ) == 0 ){
-				module.SetVersion( pGetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "version") == 0){
+				module.SetVersion(pGetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "type" ) == 0 ){
-				module.SetType( pModuleTypeFromString( pGetCDataString( *tag ) ) );
+			}else if(strcmp(tag->GetName(), "type") == 0){
+				module.SetType(pModuleTypeFromString(pGetCDataString(*tag)));
 				
-			}else if( strcmp( tag->GetName(), "pattern" ) == 0 ){
-				module.SetPattern( pGetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "pattern") == 0){
+				module.SetPattern(pGetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "homepage" ) == 0 ){
+			}else if(strcmp(tag->GetName(), "homepage") == 0){
 				// no interest in this tag
 				
-			}else if( strcmp( tag->GetName(), "library" ) == 0 ){
-				pReadModuleLibrary( *tag, module );
+			}else if(strcmp(tag->GetName(), "library") == 0){
+				pReadModuleLibrary(*tag, module);
 				
-			}else if( strcmp( tag->GetName(), "data" ) == 0 ){
+			}else if(strcmp(tag->GetName(), "data") == 0){
 				// deprecated
 				
-			}else if( strcmp( tag->GetName(), "fallback" ) == 0 ){
-				module.SetIsFallback( true );
+			}else if(strcmp(tag->GetName(), "fallback") == 0){
+				module.SetIsFallback(true);
 				
 			}else{
 // 				pErrorUnknownTag( root, *tag );
@@ -124,99 +124,99 @@ void dealEngineModuleXML::pReadModule( const decXmlElementTag &root, dealEngineM
 	}
 }
 
-void dealEngineModuleXML::pReadModuleLibrary( const decXmlElementTag &root, dealEngineModule &module ){
+void dealEngineModuleXML::pReadModuleLibrary(const decXmlElementTag &root, dealEngineModule &module){
 	int e, elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	
-	for( e=0; e<elementCount; e++ ){
-		tag = root.GetElementIfTag( e );
+	for(e=0; e<elementCount; e++){
+		tag = root.GetElementIfTag(e);
 		
-		if( tag ){
-			if( strcmp( tag->GetName(), "file" ) == 0 ){
-				module.SetLibFileName( pGetCDataString( *tag ) );
+		if(tag){
+			if(strcmp(tag->GetName(), "file") == 0){
+				module.SetLibFileName(pGetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "size" ) == 0 ){
-				module.SetLibFileSizeShould( pGetCDataInt( *tag ) );
+			}else if(strcmp(tag->GetName(), "size") == 0){
+				module.SetLibFileSizeShould(pGetCDataInt(*tag));
 				
-			}else if( strcmp( tag->GetName(), "sha1" ) == 0 ){
-				module.SetLibFileHashShould( pGetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "sha1") == 0){
+				module.SetLibFileHashShould(pGetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "entrypoint" ) == 0 ){
-				module.SetLibFileEntryPoint( pGetCDataString( *tag ) );
+			}else if(strcmp(tag->GetName(), "entrypoint") == 0){
+				module.SetLibFileEntryPoint(pGetCDataString(*tag));
 				
-			}else if( strcmp( tag->GetName(), "preloadLibrary" ) == 0 ){
+			}else if(strcmp(tag->GetName(), "preloadLibrary") == 0){
 				// no need to store this information. list of libraries the module needs to be preloaded.
 				// this is very much internal information.
 				
 			}else{
-				pErrorUnknownTag( root, *tag );
+				pErrorUnknownTag(root, *tag);
 			}
 		}
 	}
 }
 
-dealEngineModule::eModuleTypes dealEngineModuleXML::pModuleTypeFromString( const char *typeString ) const{
-	if( strcmp( typeString, "Graphic" ) == 0 ){
+dealEngineModule::eModuleTypes dealEngineModuleXML::pModuleTypeFromString(const char *typeString) const{
+	if(strcmp(typeString, "Graphic") == 0){
 		return dealEngineModule::emtGraphic;
 		
-	}else if( strcmp( typeString, "Audio" ) == 0 ){
+	}else if(strcmp(typeString, "Audio") == 0){
 		return dealEngineModule::emtAudio;
 		
-	}else if( strcmp( typeString, "Input" ) == 0 ){
+	}else if(strcmp(typeString, "Input") == 0){
 		return dealEngineModule::emtInput;
 		
-	}else if( strcmp( typeString, "Network" ) == 0 ){
+	}else if(strcmp(typeString, "Network") == 0){
 		return dealEngineModule::emtNetwork;
 		
-	}else if( strcmp( typeString, "Physics" ) == 0 ){
+	}else if(strcmp(typeString, "Physics") == 0){
 		return dealEngineModule::emtPhysics;
 		
-	}else if( strcmp( typeString, "Image" ) == 0 ){
+	}else if(strcmp(typeString, "Image") == 0){
 		return dealEngineModule::emtImage;
 		
-	}else if( strcmp( typeString, "Video" ) == 0 ){
+	}else if(strcmp(typeString, "Video") == 0){
 		return dealEngineModule::emtVideo;
 		
-	}else if( strcmp( typeString, "Script" ) == 0 ){
+	}else if(strcmp(typeString, "Script") == 0){
 		return dealEngineModule::emtScript;
 		
-	}else if( strcmp( typeString, "Model" ) == 0 ){
+	}else if(strcmp(typeString, "Model") == 0){
 		return dealEngineModule::emtModel;
 		
-	}else if( strcmp( typeString, "Rig" ) == 0 ){
+	}else if(strcmp(typeString, "Rig") == 0){
 		return dealEngineModule::emtRig;
 		
-	}else if( strcmp( typeString, "Skin" ) == 0 ){
+	}else if(strcmp(typeString, "Skin") == 0){
 		return dealEngineModule::emtSkin;
 		
-	}else if( strcmp( typeString, "Animation" ) == 0 ){
+	}else if(strcmp(typeString, "Animation") == 0){
 		return dealEngineModule::emtAnimation;
 		
-	}else if( strcmp( typeString, "Font" ) == 0 ){
+	}else if(strcmp(typeString, "Font") == 0){
 		return dealEngineModule::emtFont;
 		
-	}else if( strcmp( typeString, "CrashRecovery" ) == 0 ){
+	}else if(strcmp(typeString, "CrashRecovery") == 0){
 		return dealEngineModule::emtCrashRecovery;
 		
-	}else if( strcmp( typeString, "LanguagePack" ) == 0 ){
+	}else if(strcmp(typeString, "LanguagePack") == 0){
 		return dealEngineModule::emtLanguagePack;
 		
-	}else if( strcmp( typeString, "Animator" ) == 0 ){
+	}else if(strcmp(typeString, "Animator") == 0){
 		return dealEngineModule::emtAnimator;
 		
-	}else if( strcmp( typeString, "Sound" ) == 0 ){
+	}else if(strcmp(typeString, "Sound") == 0){
 		return dealEngineModule::emtSound;
 		
-	}else if( strcmp( typeString, "Video" ) == 0 ){
+	}else if(strcmp(typeString, "Video") == 0){
 		return dealEngineModule::emtVideo;
 		
-	}else if( strcmp( typeString, "AI" ) == 0 ){
+	}else if(strcmp(typeString, "AI") == 0){
 		return dealEngineModule::emtAI;
 		
-	}else if( strcmp( typeString, "OcclusionMesh" ) == 0 ){
+	}else if(strcmp(typeString, "OcclusionMesh") == 0){
 		return dealEngineModule::emtOcclusionMesh;
 		
-	}else if( strcmp( typeString, "Synthesizer" ) == 0 ){
+	}else if(strcmp(typeString, "Synthesizer") == 0){
 		return dealEngineModule::emtSynthesizer;
 		
 	}else{

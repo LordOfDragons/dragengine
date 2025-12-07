@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullStatusBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullStatusBar* CreateNativeWidget( igdeStatusBar &owner );
+	static igdeNativeNullStatusBar* CreateNativeWidget(igdeStatusBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

@@ -38,22 +38,22 @@
 // class devkPipelineCompute
 //////////////////////////////
 
-devkPipelineCompute::devkPipelineCompute( devkDevice &device, const devkPipelineConfiguration &configuration ) :
-devkPipeline( device, configuration )
+devkPipelineCompute::devkPipelineCompute(devkDevice &device, const devkPipelineConfiguration &configuration) :
+devkPipeline(device, configuration)
 {
-	if( ! configuration.GetShaderCompute() ){
-		DETHROW_INFO( deeNullPointer, "configuration.shaderCompute" );
+	if(! configuration.GetShaderCompute()){
+		DETHROW_INFO(deeNullPointer, "configuration.shaderCompute");
 	}
 	
 	const devkSpecialization * const specialization = configuration.GetSpecialization();
-	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+	VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
 	
 	VkComputePipelineCreateInfo pipelineInfo{VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
 	pipelineInfo.layout = pLayout;
 	pipelineInfo.flags = 0;
 	
 	VkSpecializationInfo specializationInfo{};
-	if( specialization ){
+	if(specialization){
 		specializationInfo.pData = specialization->GetData();
 		specializationInfo.dataSize = specialization->GetDataSize();
 		specializationInfo.mapEntryCount = specialization->GetEntryCount();
@@ -62,11 +62,11 @@ devkPipeline( device, configuration )
 	
 	VkSpecializationInfo * const useSpecialization = specialization ? &specializationInfo : nullptr;
 	
-	pInitShaderStage( pipelineInfo.stage, VK_SHADER_STAGE_COMPUTE_BIT,
+	pInitShaderStage(pipelineInfo.stage, VK_SHADER_STAGE_COMPUTE_BIT,
 		*configuration.GetShaderCompute(), useSpecialization );
 	
-	VK_CHECK( vulkan, pDevice.vkCreateComputePipelines( device.GetDevice(),
-		pCache, 1, &pipelineInfo, VK_NULL_HANDLE, &pPipeline ) );
+	VK_CHECK(vulkan, pDevice.vkCreateComputePipelines(device.GetDevice(),
+		pCache, 1, &pipelineInfo, VK_NULL_HANDLE, &pPipeline));
 	
 	pSaveCache = true;
 }

@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/**
 	 * \brief Log formatted information message.
@@ -77,7 +77,7 @@ public:
 	 * The default implementation builds a \ref decString with the formatted
 	 * string handling it over to \ref LogInfo.
 	 */
-	virtual void LogInfoFormat( const char *source, const char *message, ... )
+	virtual void LogInfoFormat(const char *source, const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
@@ -89,11 +89,11 @@ public:
 	 * The default implementation builds a \ref decString with the formatted
 	 * string handling it over to \ref LogInfo.
 	 */
-	virtual void LogInfoFormatUsing( const char *source, const char *message, va_list args );
+	virtual void LogInfoFormatUsing(const char *source, const char *message, va_list args);
 	
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/**
 	 * \brief Log formated warning message.
@@ -101,7 +101,7 @@ public:
 	 * The default implementation builds a \ref decString with the formatted
 	 * string handling it over to \ref LogWarn.
 	 */
-	virtual void LogWarnFormat( const char *source, const char *message, ... )
+	virtual void LogWarnFormat(const char *source, const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
@@ -113,10 +113,10 @@ public:
 	 * The default implementation builds a \ref decString with the formatted
 	 * string handling it over to \ref LogWarn.
 	 */
-	virtual void LogWarnFormatUsing( const char *source, const char *message, va_list args );
+	virtual void LogWarnFormatUsing(const char *source, const char *message, va_list args);
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	
 	/**
 	 * \brief Log formated error message.
@@ -124,7 +124,7 @@ public:
 	 * The default implementation builds a \ref decString with the formatted
 	 * string handling it over to \ref LogError.
 	 */
-	virtual void LogErrorFormat( const char *source, const char *message, ... )
+	virtual void LogErrorFormat(const char *source, const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
@@ -136,7 +136,7 @@ public:
 	 * The default implementation builds a \ref decString with the formatted
 	 * string handling it over to \ref LogError.
 	 */
-	virtual void LogErrorFormatUsing( const char *source, const char *message, va_list args );
+	virtual void LogErrorFormatUsing(const char *source, const char *message, va_list args);
 	
 	/**
 	 * \brief Log exception error message.
@@ -146,7 +146,7 @@ public:
 	 * "exception(file:line): message (description)" if description is not an
 	 * empty string or "exception(file:line): message" otherwise.
 	 */
-	virtual void LogException( const char *source, const deException &exception );
+	virtual void LogException(const char *source, const deException &exception);
 	/*@}*/
 };
 

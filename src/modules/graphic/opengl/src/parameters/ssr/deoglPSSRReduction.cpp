@@ -40,26 +40,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSRReduction::deoglPSSRReduction( deGraphicOpenGl &ogl ) :
-deoglParameterInt( ogl )
+deoglPSSRReduction::deoglPSSRReduction(deGraphicOpenGl &ogl) :
+deoglParameterInt(ogl)
 {
-	SetName( "ssrReduction" );
-	SetDescription( "Set Screen Space Reflection (SSR) reduction."
+	SetName("ssrReduction");
+	SetDescription("Set Screen Space Reflection (SSR) reduction."
 		" SSR is expensive especially on larger resolutions."
-		" Rendering SSR at lower resolution then up-scaling improves performance." );
-	SetType( deModuleParameter::eptSelection );
-	SetDisplayName( "SSR Reduction" );
-	SetCategory( ecAdvanced );
+		" Rendering SSR at lower resolution then up-scaling improves performance.");
+	SetType(deModuleParameter::eptSelection);
+	SetDisplayName("SSR Reduction");
+	SetCategory(ecAdvanced);
 	
-	const deModuleParameter::SelectionEntry entries[ 4 ] = {
-		{ "1", "1x", "Render SSR at full resolution. For strong graphic cards." },
-		{ "2", "2x", "Render SSR at half resolution then up-scale to full resolution." },
-		{ "4", "4x", "Render SSR at quarter resolution then up-scale to full resolution." },
-		{ "8", "8x", "Render SSR at 1/8 resolution then up-scale to full resolution." }
+	const deModuleParameter::SelectionEntry entries[4] = {
+		{"1", "1x", "Render SSR at full resolution. For strong graphic cards."},
+		{"2", "2x", "Render SSR at half resolution then up-scale to full resolution."},
+		{"4", "4x", "Render SSR at quarter resolution then up-scale to full resolution."},
+		{"8", "8x", "Render SSR at 1/8 resolution then up-scale to full resolution."}
 	};
-	AddSelectionEntries( entries, 4 );
+	AddSelectionEntries(entries, 4);
 	
-	SetDefaultValue( "1" );
+	SetDefaultValue("1");
 }
 
 deoglPSSRReduction::~deoglPSSRReduction(){
@@ -74,6 +74,6 @@ int deoglPSSRReduction::GetParameterInt(){
 	return pOgl.GetConfiguration().GetSSRReduction();
 }
 
-void deoglPSSRReduction::SetParameterInt( int value ){
-	pOgl.GetConfiguration().SetSSRReduction( value );
+void deoglPSSRReduction::SetParameterInt(int value){
+	pOgl.GetConfiguration().SetSSRReduction(value);
 }

@@ -41,8 +41,8 @@
 meBaseUndoRotate::meBaseUndoRotate(){
 	pModifyPosition = true;
 	pModifyOrientation = true;
-	SetShortInfo( "Rotate ?" );
-	pAxis.Set( 0.0, 0.0, 1.0 );
+	SetShortInfo("Rotate ?");
+	pAxis.Set(0.0, 0.0, 1.0);
 }
 
 meBaseUndoRotate::~meBaseUndoRotate(){
@@ -53,73 +53,73 @@ meBaseUndoRotate::~meBaseUndoRotate(){
 // Management
 ///////////////
 
-void meBaseUndoRotate::SetAngle( float angle ){
+void meBaseUndoRotate::SetAngle(float angle){
 	pAngle = angle;
 	UpdateRotationMatrix();
 }
 
-void meBaseUndoRotate::SetPivot( const decDVector &pivot ){
+void meBaseUndoRotate::SetPivot(const decDVector &pivot){
 	pPivot = pivot;
 	UpdateRotationMatrix();
 }
 
-void meBaseUndoRotate::SetAxis( const decDVector &axis ){
+void meBaseUndoRotate::SetAxis(const decDVector &axis){
 	pAxis = axis;
 	pAxis.Normalize();
 	UpdateRotationMatrix();
 }
 
-void meBaseUndoRotate::SetModifyPosition( bool modifyPosition ){
+void meBaseUndoRotate::SetModifyPosition(bool modifyPosition){
 	pModifyPosition = modifyPosition;
 }
 
-void meBaseUndoRotate::SetModifyOrientation( bool modifyOrientation ){
+void meBaseUndoRotate::SetModifyOrientation(bool modifyOrientation){
 	pModifyOrientation = modifyOrientation;
 }
 
 void meBaseUndoRotate::UpdateRotationMatrix(){
-	pMatrix = decDMatrix::CreateTranslation( -pPivot )
+	pMatrix = decDMatrix::CreateTranslation(-pPivot)
 		* decDMatrix::CreateRotationAxis( pAxis, pAngle * DEG2RAD )
 		* decDMatrix::CreateTranslation( pPivot );
 	
 	decString info;
-	info.Format( "axis(%g,%g,%g) center(%g,%g,%g) angle=%g",
-		pAxis.x, pAxis.y, pAxis.z, pPivot.x, pPivot.y, pPivot.z, pAngle );
+	info.Format("axis(%g,%g,%g) center(%g,%g,%g) angle=%g",
+		pAxis.x, pAxis.y, pAxis.z, pPivot.x, pPivot.y, pPivot.z, pAngle);
 }
 
-void meBaseUndoRotate::TransformElement( decDVector &position, decDVector &rotation ){
-	const decDMatrix matrix = decDMatrix::CreateRT( rotation * DEG2RAD, position ) * pMatrix;
+void meBaseUndoRotate::TransformElement(decDVector &position, decDVector &rotation){
+	const decDMatrix matrix = decDMatrix::CreateRT(rotation * DEG2RAD, position) * pMatrix;
 	
-	if( pModifyOrientation ){
-		decDVector view( matrix.TransformView() );
-		decDVector up( matrix.TransformUp() );
+	if(pModifyOrientation){
+		decDVector view(matrix.TransformView());
+		decDVector up(matrix.TransformUp());
 		
 		view.Normalize();
 		up.Normalize();
 		
-		rotation = decDMatrix::CreateWorld( decDVector(), view, up ).GetEulerAngles() / DEG2RAD;
+		rotation = decDMatrix::CreateWorld(decDVector(), view, up).GetEulerAngles() / DEG2RAD;
 		
-		if( fabs( rotation.x ) < 1e-5 ){
+		if(fabs(rotation.x) < 1e-5){
 			rotation.x = 0.0;
 		}
-		if( fabs( rotation.y ) < 1e-5 ){
+		if(fabs(rotation.y) < 1e-5){
 			rotation.y = 0.0;
 		}
-		if( fabs( rotation.z ) < 1e-5 ){
+		if(fabs(rotation.z) < 1e-5){
 			rotation.z = 0.0;
 		}
 	}
 	
-	if( pModifyPosition ){
+	if(pModifyPosition){
 		position = matrix.GetPosition();
 		
-		if( fabs( position.x ) < 1e-5 ){
+		if(fabs(position.x) < 1e-5){
 			position.x = 0.0;
 		}
-		if( fabs( position.y ) < 1e-5 ){
+		if(fabs(position.y) < 1e-5){
 			position.y = 0.0;
 		}
-		if( fabs( position.z ) < 1e-5 ){
+		if(fabs(position.z) < 1e-5){
 			position.z = 0.0;
 		}
 	}

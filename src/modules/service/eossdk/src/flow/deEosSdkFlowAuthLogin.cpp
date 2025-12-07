@@ -33,75 +33,75 @@
 // Class deEosSdkFlowAuthLogin
 ////////////////////////////////
 
-static void fAutoLoginCallback( const EOS_Auth_LoginCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogin* )data->ClientData )->OnAutoLoginCallback( *data );
+static void fAutoLoginCallback(const EOS_Auth_LoginCallbackInfo *data){
+	((deEosSdkFlowAuthLogin*)data->ClientData)->OnAutoLoginCallback(*data);
 }
 
 static void fAutoLoginDeletePersistentAuthCallback(
-const EOS_Auth_DeletePersistentAuthCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogin* )data->ClientData )->
-		OnAutoLoginDeletePersistentAuthCallback( *data );
+const EOS_Auth_DeletePersistentAuthCallbackInfo *data){
+	((deEosSdkFlowAuthLogin*)data->ClientData)->
+		OnAutoLoginDeletePersistentAuthCallback(*data);
 }
 
-static void fLoginCallback( const EOS_Auth_LoginCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogin* )data->ClientData )->OnLoginCallback( *data );
+static void fLoginCallback(const EOS_Auth_LoginCallbackInfo *data){
+	((deEosSdkFlowAuthLogin*)data->ClientData)->OnLoginCallback(*data);
 }
 
-static void fConnectLoginCallback( const EOS_Connect_LoginCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogin* )data->ClientData )->OnConnectLoginCallback( *data );
+static void fConnectLoginCallback(const EOS_Connect_LoginCallbackInfo *data){
+	((deEosSdkFlowAuthLogin*)data->ClientData)->OnConnectLoginCallback(*data);
 }
 
-static void fCreateUserCallback( const EOS_Connect_CreateUserCallbackInfo *data ){
-	( ( deEosSdkFlowAuthLogin* )data->ClientData )->OnCreateUserCallback( *data );
+static void fCreateUserCallback(const EOS_Connect_CreateUserCallbackInfo *data){
+	((deEosSdkFlowAuthLogin*)data->ClientData)->OnCreateUserCallback(*data);
 }
 
 // Constructor, destructor
 ////////////////////////////
 
-deEosSdkFlowAuthLogin::deEosSdkFlowAuthLogin( deEosSdkServiceEos &service,
-	const decUniqueID &id, const deServiceObject &request ) :
-deEosSdkFlow( service, id ),
-pScope( EOS_EAuthScopeFlags::EOS_AS_BasicProfile )
+deEosSdkFlowAuthLogin::deEosSdkFlowAuthLogin(deEosSdkServiceEos &service,
+	const decUniqueID &id, const deServiceObject &request) :
+deEosSdkFlow(service, id),
+pScope(EOS_EAuthScopeFlags::EOS_AS_BasicProfile)
 {
 	deServiceObject::Ref so;
 	
-	so = request.GetChildAt( "exchangeCode" );
-	if( so ){
+	so = request.GetChildAt("exchangeCode");
+	if(so){
 		pExchangeCode = so->GetString();
 	}
 	
-	so = request.GetChildAt( "userId" );
-	if( so ){
+	so = request.GetChildAt("userId");
+	if(so){
 		pUserId = so->GetString();
 	}
 	
-	so = request.GetChildAt( "userPassword" );
-	if( so ){
+	so = request.GetChildAt("userPassword");
+	if(so){
 		pUserPassword = so->GetString();
 	}
 	
 	so = request.GetChildAt("scopeFriends");
-	if( so && so->GetBoolean() ){
+	if(so && so->GetBoolean()){
 		pScope |= EOS_EAuthScopeFlags::EOS_AS_FriendsList;
 	}
 	
 	so = request.GetChildAt("scopePresence");
-	if( so && so->GetBoolean() ){
+	if(so && so->GetBoolean()){
 		pScope |= EOS_EAuthScopeFlags::EOS_AS_Presence;
 	}
 	
-	service.NewPendingRequest( id, "authLogin" );
+	service.NewPendingRequest(id, "authLogin");
 	
 	try{
-		if( pExchangeCode.IsEmpty() && pUserId.IsEmpty() && pUserPassword.IsEmpty() ){
+		if(pExchangeCode.IsEmpty() && pUserId.IsEmpty() && pUserPassword.IsEmpty()){
 			AutoLogin();
 			
 		}else{
 			Login();
 		}
 		
-	}catch( const deException &e ){
-		Fail( e );
+	}catch(const deException &e){
+		Fail(e);
 		Finish();
 	}
 }
@@ -121,31 +121,31 @@ void deEosSdkFlowAuthLogin::AutoLogin(){
 	options.ScopeFlags = pScope;
 	options.Credentials = &credentials;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogin.AutoLogin: Logging in user using persistent authentification" );
-	EOS_Auth_Login( pService.GetHandleAuth(), &options, this, fAutoLoginCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogin.AutoLogin: Logging in user using persistent authentification");
+	EOS_Auth_Login(pService.GetHandleAuth(), &options, this, fAutoLoginCallback);
 }
 
 void deEosSdkFlowAuthLogin::Login(){
 	EOS_Auth_Credentials credentials{};
 	credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
 	
-	if( ! pExchangeCode.IsEmpty() ){
+	if(! pExchangeCode.IsEmpty()){
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
 		credentials.Token = pExchangeCode;
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using exchange code" );
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.Login: Logging in user using exchange code");
 		
-	} else if( ! pUserId.IsEmpty() && ! pUserPassword.IsEmpty() ){
+	} else if(! pUserId.IsEmpty() && ! pUserPassword.IsEmpty()){
 		/*
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
 		credentials.Id = pUserId;
 		credentials.Token = pUserPassword;
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using username and password" );
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.Login: Logging in user using username and password");
 		*/
-		DETHROW_INFO( deeInvalidParam, "Logging in using username and password not allowed anymore" );
+		DETHROW_INFO(deeInvalidParam, "Logging in using username and password not allowed anymore");
 		
 	} else {
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_AccountPortal;
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using account portal" );
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.Login: Logging in user using account portal");
 	}
 	
 	EOS_Auth_LoginOptions options{};
@@ -153,7 +153,7 @@ void deEosSdkFlowAuthLogin::Login(){
 	options.ScopeFlags = pScope;
 	options.Credentials = &credentials;
 	
-	EOS_Auth_Login( pService.GetHandleAuth(), &options, this, fLoginCallback );
+	EOS_Auth_Login(pService.GetHandleAuth(), &options, this, fLoginCallback);
 }
 
 void deEosSdkFlowAuthLogin::ConnectLogin(){
@@ -163,9 +163,9 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	ctoptions.AccountId = pService.selectedAccountId;
 	
 	EOS_Auth_IdToken *token = nullptr;
-	EOS_EResult res = EOS_Auth_CopyIdToken( pService.GetHandleAuth(), &ctoptions, &token );
-	if( res != EOS_EResult::EOS_Success ){
-		Fail( res );
+	EOS_EResult res = EOS_Auth_CopyIdToken(pService.GetHandleAuth(), &ctoptions, &token);
+	if(res != EOS_EResult::EOS_Success){
+		Fail(res);
 		Finish();
 		return;
 	}
@@ -184,51 +184,51 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	options.Credentials = &credentials;
 	options.UserLoginInfo = &userLoginInfo;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogin.ConnectLogin: Connect login using logged in user" );
-	EOS_Connect_Login( pService.GetHandleConnect(), &options, this, fConnectLoginCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogin.ConnectLogin: Connect login using logged in user");
+	EOS_Connect_Login(pService.GetHandleConnect(), &options, this, fConnectLoginCallback);
 	
-	EOS_Auth_IdToken_Release( token );
+	EOS_Auth_IdToken_Release(token);
 }
 
-void deEosSdkFlowAuthLogin::CreateUser( EOS_ContinuanceToken token ){
+void deEosSdkFlowAuthLogin::CreateUser(EOS_ContinuanceToken token){
 	EOS_Connect_CreateUserOptions options{};
 	options.ApiVersion = EOS_CONNECT_CREATEUSER_API_LATEST;
 	options.ContinuanceToken = token;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogin.CreateUser: Create user" );
-	EOS_Connect_CreateUser( pService.GetHandleConnect(), &options, this, fCreateUserCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogin.CreateUser: Create user");
+	EOS_Connect_CreateUser(pService.GetHandleConnect(), &options, this, fCreateUserCallback);
 }
 
-void deEosSdkFlowAuthLogin::OnAutoLoginCallback( const EOS_Auth_LoginCallbackInfo &data ){
+void deEosSdkFlowAuthLogin::OnAutoLoginCallback(const EOS_Auth_LoginCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowAuthLogin.OnAutoLoginCallback: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		OnLoginCallback( data );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		OnLoginCallback(data);
 		return;
 	}
 	
 	EOS_Auth_DeletePersistentAuthOptions options{};
 	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnAutoLoginCallback: Login failed. Delete persistent auth token" );
-	EOS_Auth_DeletePersistentAuth( pService.GetHandleAuth(), &options,
-		this, fAutoLoginDeletePersistentAuthCallback );
+	GetModule().LogInfo("deEosSdkFlowAuthLogin.OnAutoLoginCallback: Login failed. Delete persistent auth token");
+	EOS_Auth_DeletePersistentAuth(pService.GetHandleAuth(), &options,
+		this, fAutoLoginDeletePersistentAuthCallback);
 }
 
 void deEosSdkFlowAuthLogin::OnAutoLoginDeletePersistentAuthCallback(
-const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
+const EOS_Auth_DeletePersistentAuthCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowAuthLogin.OnAutoLoginDeletePersistentAuthCallback: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	
-	if( pService.GetPendingRequestWithId( pId ) ){
+	if(pService.GetPendingRequestWithId(pId)){
 		try{
 			Login();
 			
-		}catch( const deException &e ){
-			Fail( e );
+		}catch(const deException &e){
+			Fail(e);
 			Finish();
 		}
 		
@@ -237,55 +237,55 @@ const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
 	}
 }
 
-void deEosSdkFlowAuthLogin::OnLoginCallback( const EOS_Auth_LoginCallbackInfo &data ){
+void deEosSdkFlowAuthLogin::OnLoginCallback(const EOS_Auth_LoginCallbackInfo &data){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowAuthLogin.OnLoginCallback: res=%d",
-		( int )data.ResultCode );
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnLoginCallback: User logged in." );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.OnLoginCallback: User logged in.");
 		pService.localUserId = data.LocalUserId;
 		pService.selectedAccountId = data.SelectedAccountId;
 		ConnectLogin();
 		
 	}else{
-		Fail( data.ResultCode );
+		Fail(data.ResultCode);
 		Finish();
 	}
 }
 
-void deEosSdkFlowAuthLogin::OnConnectLoginCallback( const EOS_Connect_LoginCallbackInfo &data ){
-	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: res=%d",
-		( int )data.ResultCode );
+void deEosSdkFlowAuthLogin::OnConnectLoginCallback(const EOS_Connect_LoginCallbackInfo &data){
+	GetModule().LogInfoFormat("deEosSdkFlowAuthLogin.OnConnectLoginCallback: res=%d",
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
-			"Game service connected using logged in user." );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
+			"Game service connected using logged in user.");
 		pService.productUserId = data.LocalUserId;
 		Finish();
 		
-	}else if( data.ResultCode == EOS_EResult::EOS_InvalidUser ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
-			"Game service connect failed due to invalid user. Creating new user." );
-		CreateUser( data.ContinuanceToken );
+	}else if(data.ResultCode == EOS_EResult::EOS_InvalidUser){
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
+			"Game service connect failed due to invalid user. Creating new user.");
+		CreateUser(data.ContinuanceToken);
 		
 	}else{
-		Fail( data.ResultCode );
+		Fail(data.ResultCode);
 		Finish();
 	}
 }
 
-void deEosSdkFlowAuthLogin::OnCreateUserCallback( const EOS_Connect_CreateUserCallbackInfo &data )
+void deEosSdkFlowAuthLogin::OnCreateUserCallback(const EOS_Connect_CreateUserCallbackInfo &data)
 {
-	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogin.OnCreateUserCallback: res=%d",
-		( int )data.ResultCode );
+	GetModule().LogInfoFormat("deEosSdkFlowAuthLogin.OnCreateUserCallback: res=%d",
+		(int)data.ResultCode);
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnCreateUserCallback: User created." );
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowAuthLogin.OnCreateUserCallback: User created.");
 		pService.productUserId = data.LocalUserId;
 		
 	}else{
-		Fail( data.ResultCode );
+		Fail(data.ResultCode);
 	}
 	
 	Finish();

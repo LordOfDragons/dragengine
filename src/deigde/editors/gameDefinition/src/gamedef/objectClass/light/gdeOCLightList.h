@@ -47,7 +47,7 @@ public:
 	gdeOCLightList();
 	
 	/** \brief Create copy of object class light list. */
-	gdeOCLightList( const gdeOCLightList &list );
+	gdeOCLightList(const gdeOCLightList &list);
 	
 	/** \brief Clean up object class light list. */
 	~gdeOCLightList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class light at position. */
-	gdeOCLight *GetAt( int index ) const;
+	gdeOCLight *GetAt(int index) const;
 	
 	/** \brief Index of named object class light or -1 if absent. */
-	int IndexOf( gdeOCLight *light ) const;
+	int IndexOf(gdeOCLight *light) const;
 	
 	/** \brief Object class light is present. */
-	bool Has( gdeOCLight *light ) const;
+	bool Has(gdeOCLight *light) const;
 	
 	/** \brief Add object class light. */
-	void Add( gdeOCLight *light );
+	void Add(gdeOCLight *light);
 	
 	/** \brief Remove object class light. */
-	void Remove( gdeOCLight *light );
+	void Remove(gdeOCLight *light);
 	
 	/** \brief Remove all object class lights. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class light list. */
-	gdeOCLightList &operator=( const gdeOCLightList &list );
+	gdeOCLightList &operator=(const gdeOCLightList &list);
 	/*@}*/
 };
 

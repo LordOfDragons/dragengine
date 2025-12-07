@@ -58,40 +58,40 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit element. */
-	virtual void VisitElement( decXmlElement &element );
+	virtual void VisitElement(decXmlElement &element);
 	
 	/** \brief Visit container. */
-	virtual void VisitContainer( decXmlContainer &container );
+	virtual void VisitContainer(decXmlContainer &container);
 	
 	/** \brief Visit document. */
-	virtual void VisitDocument( decXmlDocument &document );
+	virtual void VisitDocument(decXmlDocument &document);
 	
 	/** \brief Visit comment. */
-	virtual void VisitComment( decXmlComment &comment );
+	virtual void VisitComment(decXmlComment &comment);
 	
 	/** \brief Visit processing instructions. */
-	virtual void VisitPI( decXmlPI &pi );
+	virtual void VisitPI(decXmlPI &pi);
 	
 	/** \brief Visit element tag. */
-	virtual void VisitElementTag( decXmlElementTag &tag );
+	virtual void VisitElementTag(decXmlElementTag &tag);
 	
 	/** \brief Visit element character data. */
-	virtual void VisitCharacterData( decXmlCharacterData &data );
+	virtual void VisitCharacterData(decXmlCharacterData &data);
 	
 	/** \brief Visit element entity reference. */
-	virtual void VisitEntityReference( decXmlEntityReference &ref );
+	virtual void VisitEntityReference(decXmlEntityReference &ref);
 	
 	/** \brief Visit character reference. */
-	virtual void VisitCharReference( decXmlCharReference &ref );
+	virtual void VisitCharReference(decXmlCharReference &ref);
 	
 	/** \brief Visit character data section. */
-	virtual void VisitCDSect( decXmlCDSect &cdsect );
+	virtual void VisitCDSect(decXmlCDSect &cdsect);
 	
 	/** \brief Visit attribute value. */
-	virtual void VisitAttValue( decXmlAttValue &value );
+	virtual void VisitAttValue(decXmlAttValue &value);
 	
 	/** \brief Visit namespace. */
-	virtual void VisitNamespace( decXmlNamespace &ns );
+	virtual void VisitNamespace(decXmlNamespace &ns);
 	/*@}*/
 };
 

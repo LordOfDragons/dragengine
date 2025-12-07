@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCCamera( gdeWindowProperties &windowMain );
+	gdeWPSOCCamera(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -71,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	

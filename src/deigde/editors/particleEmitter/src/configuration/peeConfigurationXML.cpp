@@ -51,8 +51,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-peeConfigurationXML::peeConfigurationXML( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+peeConfigurationXML::peeConfigurationXML(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 peeConfigurationXML::~peeConfigurationXML(){
@@ -63,28 +63,28 @@ peeConfigurationXML::~peeConfigurationXML(){
 // Management
 ///////////////
 
-void peeConfigurationXML::ReadFromFile( decBaseFileReader &reader, peeConfiguration &config ){
+void peeConfigurationXML::ReadFromFile(decBaseFileReader &reader, peeConfiguration &config){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "particleEmitterEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "particleEmitterEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void peeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const peeConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void peeConfigurationXML::WriteToFile(decBaseFileWriter &writer, const peeConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -92,31 +92,31 @@ void peeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const peeConfi
 // Private Functions
 //////////////////////
 
-void peeConfigurationXML::pWriteConfig( decXmlWriter &writer, const peeConfiguration &config ){
-	writer.WriteOpeningTag( "particleEmitterEditor", false, true );
+void peeConfigurationXML::pWriteConfig(decXmlWriter &writer, const peeConfiguration &config){
+	writer.WriteOpeningTag("particleEmitterEditor", false, true);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	writer.WriteClosingTag( "particleEmitterEditor", true );
+	writer.WriteClosingTag("particleEmitterEditor", true);
 }
 
 
 
-void peeConfigurationXML::pReadConfig( const decXmlElementTag &root, peeConfiguration &config ){
+void peeConfigurationXML::pReadConfig(const decXmlElementTag &root, peeConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

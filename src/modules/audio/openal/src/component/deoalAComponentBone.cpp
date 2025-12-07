@@ -40,9 +40,9 @@
 ////////////////////////////
 
 deoalAComponentBone::deoalAComponentBone() :
-pIndex( 0 ),
-pScale( 1.0f, 1.0f, 1.0f ),
-pParent( NULL ){
+pIndex(0),
+pScale(1.0f, 1.0f, 1.0f),
+pParent(NULL){
 }
 
 deoalAComponentBone::~deoalAComponentBone(){
@@ -53,43 +53,43 @@ deoalAComponentBone::~deoalAComponentBone(){
 // Management
 ///////////////
 
-void deoalAComponentBone::SetIndex( int index ){
+void deoalAComponentBone::SetIndex(int index){
 	pIndex = index;
 }
 
-void deoalAComponentBone::SetName( const char *name ){
+void deoalAComponentBone::SetName(const char *name){
 	pName = name;
 }
 
-void deoalAComponentBone::SetGeometry( const decVector &position,
-const decQuaternion &rotation, const decVector &scale ){
+void deoalAComponentBone::SetGeometry(const decVector &position,
+const decQuaternion &rotation, const decVector &scale){
 	pPosition = position;
 	pRotation = rotation;
 	pScale = scale;
 }
 
-void deoalAComponentBone::SetGeometry( const deComponentBone &bone ){
+void deoalAComponentBone::SetGeometry(const deComponentBone &bone){
 	pPosition = bone.GetPosition();
 	pRotation = bone.GetRotation();
 	pScale = bone.GetScale();
 }
 
-void deoalAComponentBone::SetOriginalMatrix( const decMatrix &matrix ){
+void deoalAComponentBone::SetOriginalMatrix(const decMatrix &matrix){
 	pOriginalMatrix = matrix;
 }
 
-void deoalAComponentBone::SetRigInverseMatrix( const decMatrix &matrix ){
+void deoalAComponentBone::SetRigInverseMatrix(const decMatrix &matrix){
 	pRigInverseMatrix = matrix;
 }
 
-void deoalAComponentBone::SetParent( deoalAComponentBone *bone ){
+void deoalAComponentBone::SetParent(deoalAComponentBone *bone){
 	pParent = bone;
 }
 
 void deoalAComponentBone::UpdateMatrix(){
-	pMatrix = decMatrix::CreateWorld( pPosition, pRotation, pScale ).QuickMultiply( GetOriginalMatrix() );
-	if( pParent ){
-		pMatrix = pMatrix.QuickMultiply( pParent->pMatrix );
+	pMatrix = decMatrix::CreateWorld(pPosition, pRotation, pScale).QuickMultiply(GetOriginalMatrix());
+	if(pParent){
+		pMatrix = pMatrix.QuickMultiply(pParent->pMatrix);
 	}
-	pWeightMatrix = pRigInverseMatrix.QuickMultiply( pMatrix );
+	pWeightMatrix = pRigInverseMatrix.QuickMultiply(pMatrix);
 }

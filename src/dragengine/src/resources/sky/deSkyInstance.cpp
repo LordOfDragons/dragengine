@@ -42,12 +42,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkyInstance::deSkyInstance( deSkyInstanceManager *manager ) :
-deResource( manager ),
-pOrder( 0 ),
+deSkyInstance::deSkyInstance(deSkyInstanceManager *manager) :
+deResource(manager),
+pOrder(0),
 
 pControllers(nullptr),
-pControllerCount( 0 ),
+pControllerCount(0),
 
 pPassthroughTransparency(0.0f),
 
@@ -59,12 +59,12 @@ pLLWorldNext(nullptr){
 }
 
 deSkyInstance::~deSkyInstance(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = nullptr;
 	}
 	
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 	}
 }
@@ -74,12 +74,12 @@ deSkyInstance::~deSkyInstance(){
 // Management
 ///////////////
 
-void deSkyInstance::SetSky( deSky *sky ){
-	if( pSky == sky ){
+void deSkyInstance::SetSky(deSky *sky){
+	if(pSky == sky){
 		return;
 	}
 	
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 		pControllers = NULL;
 		pControllerCount = 0;
@@ -87,75 +87,75 @@ void deSkyInstance::SetSky( deSky *sky ){
 	
 	pSky = sky;
 	
-	if( sky ){
+	if(sky){
 		const int controllerCount = sky->GetControllerCount();
-		if( controllerCount > 0 ){
-			pControllers = new deSkyController[ controllerCount ];
+		if(controllerCount > 0){
+			pControllers = new deSkyController[controllerCount];
 			
 			int i;
-			for( i=0; i<controllerCount; i++ ){
-				pControllers[ i ] = sky->GetControllerAt( i );
+			for(i=0; i<controllerCount; i++){
+				pControllers[i] = sky->GetControllerAt(i);
 			}
 			pControllerCount = controllerCount;
 		}
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SkyChanged();
 	}
 }
 
-void deSkyInstance::SetOrder( int order ){
-	if( pOrder == order ){
+void deSkyInstance::SetOrder(int order){
+	if(pOrder == order){
 		return;
 	}
 	
 	pOrder = order;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->OrderChanged();
 	}
 }
 
 
 
-deSkyController &deSkyInstance::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+deSkyController &deSkyInstance::GetControllerAt(int index) const{
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
-int deSkyInstance::IndexOfControllerNamed( const char *name ) const{
+int deSkyInstance::IndexOfControllerNamed(const char *name) const{
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ].GetName() == name ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i].GetName() == name){
 			return i;
 		}
 	}
 	return -1;
 }
 
-void deSkyInstance::NotifyControllerChangedAt( int index ){
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+void deSkyInstance::NotifyControllerChangedAt(int index){
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->ControllerChanged( index );
+	if(pPeerGraphic){
+		pPeerGraphic->ControllerChanged(index);
 	}
 }
 
 
 
-void deSkyInstance::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deSkyInstance::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->LayerMaskChanged();
 	}
 }
@@ -177,12 +177,12 @@ void deSkyInstance::SetPassthroughTransparency(float transparency){
 // System Peers
 /////////////////
 
-void deSkyInstance::SetPeerGraphic( deBaseGraphicSkyInstance *peer ){
-	if( peer == pPeerGraphic ){
+void deSkyInstance::SetPeerGraphic(deBaseGraphicSkyInstance *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	
@@ -193,14 +193,14 @@ void deSkyInstance::SetPeerGraphic( deBaseGraphicSkyInstance *peer ){
 // Linked List
 ////////////////
 
-void deSkyInstance::SetParentWorld( deWorld *world ){
+void deSkyInstance::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deSkyInstance::SetLLWorldPrev( deSkyInstance *sky ){
+void deSkyInstance::SetLLWorldPrev(deSkyInstance *sky){
 	pLLWorldPrev = sky;
 }
 
-void deSkyInstance::SetLLWorldNext( deSkyInstance *sky ){
+void deSkyInstance::SetLLWorldNext(deSkyInstance *sky){
 	pLLWorldNext = sky;
 }

@@ -51,28 +51,28 @@
 ////////////////////////////
 
 debpPhysicsBody::debpPhysicsBody() :
-pDynWorld( NULL ),
-pRigidBody( NULL ),
-pMotionState( NULL ),
-pShape( NULL ),
-pShapeSurface( 0.0f ),
+pDynWorld(NULL),
+pRigidBody(NULL),
+pMotionState(NULL),
+pShape(NULL),
+pShapeSurface(0.0f),
 
-pMass( 0.0f ),
-pResponseType( ertDynamic ),
-pEnabled( false ),
-pDirtyMatrix( true ),
-pHasGravity( false ),
-pHasLinVelo( false ),
-pHasAngVelo( false ),
-pPreventUpdate( false ),
-pStateChanged( false ),
+pMass(0.0f),
+pResponseType(ertDynamic),
+pEnabled(false),
+pDirtyMatrix(true),
+pHasGravity(false),
+pHasLinVelo(false),
+pHasAngVelo(false),
+pPreventUpdate(false),
+pStateChanged(false),
 
-pCcdThreshold( 0.001f ),
-pCcdRadius( 0.001f ),
+pCcdThreshold(0.001f),
+pCcdRadius(0.001f),
 
-pConstraints( NULL ),
-pConstraintCount( 0 ),
-pConstraintSize( 0 )
+pConstraints(NULL),
+pConstraintCount(0),
+pConstraintSize(0)
 {
 	pMotionState = new debpMotionState;
 }
@@ -86,8 +86,8 @@ debpPhysicsBody::~debpPhysicsBody(){
 // bullet objects
 ///////////////////
 
-void debpPhysicsBody::SetDynamicsWorld( debpCollisionWorld *dynWorld ){
-	if( pDynWorld == dynWorld ){
+void debpPhysicsBody::SetDynamicsWorld(debpCollisionWorld *dynWorld){
+	if(pDynWorld == dynWorld){
 		return;
 	}
 	
@@ -96,44 +96,44 @@ void debpPhysicsBody::SetDynamicsWorld( debpCollisionWorld *dynWorld ){
 	pCreateRigidBody();
 }
 
-void debpPhysicsBody::SetShape( debpBulletShape *shape ){
-	if( shape == pShape ){
+void debpPhysicsBody::SetShape(debpBulletShape *shape){
+	if(shape == pShape){
 		return;
 	}
 	
-	if( shape ){
-		if( pRigidBody ){
-			pRigidBody->setCollisionShape( shape->GetShape() );
+	if(shape){
+		if(pRigidBody){
+			pRigidBody->setCollisionShape(shape->GetShape());
 			pRigidBody->updateInertiaTensor();
-			SetDirtyAABB( true );
+			SetDirtyAABB(true);
 		}
 		
 	}else{
 		pFreeRigidBody();
 	}
 	
-	if( pShape ){
+	if(pShape){
 		pShape->FreeReference();
 	}
 	
 	pShape = shape;
 	pShapeSurface = 0.0f;
 	
-	if( shape ){
+	if(shape){
 		shape->AddReference();
 	}
 	
 	pCreateRigidBody();
 }
 
-void debpPhysicsBody::SetShapeSurface( float surface ){
-	pShapeSurface = decMath::max( surface, 0.0f );
+void debpPhysicsBody::SetShapeSurface(float surface){
+	pShapeSurface = decMath::max(surface, 0.0f);
 }
 
 
 
 void debpPhysicsBody::Activate(){
-	if( pRigidBody ){
+	if(pRigidBody){
 		pRigidBody->activate();
 	}
 }
@@ -141,7 +141,7 @@ void debpPhysicsBody::Activate(){
 bool debpPhysicsBody::UpdateFromBody(){
 	pStateChanged = false;
 	
-	if( pRigidBody && pResponseType == ertDynamic && pRigidBody->isActive() ){
+	if(pRigidBody && pResponseType == ertDynamic && pRigidBody->isActive()){
 		const btVector3 &linVelo = pRigidBody->getLinearVelocity();
 		const btVector3 &angVelo = pRigidBody->getAngularVelocity();
 		const decDVector &position = pMotionState->GetPosition();
@@ -149,10 +149,10 @@ bool debpPhysicsBody::UpdateFromBody(){
 		
 		pPreventUpdate = true;
 		
-		SetPosition( position );
-		SetOrientation( orientation );
-		SetLinearVelocity( decVector( linVelo.getX(), linVelo.getY(), linVelo.getZ() ) );
-		SetAngularVelocity( decVector( angVelo.getX(), angVelo.getY(), angVelo.getZ() ) );
+		SetPosition(position);
+		SetOrientation(orientation);
+		SetLinearVelocity(decVector(linVelo.getX(), linVelo.getY(), linVelo.getZ()));
+		SetAngularVelocity(decVector(angVelo.getX(), angVelo.getY(), angVelo.getZ()));
 		
 		pPreventUpdate = false;
 	}
@@ -162,75 +162,75 @@ bool debpPhysicsBody::UpdateFromBody(){
 
 void debpPhysicsBody::CollisionFilteringChanged(){
 	// see debpCollisionDispatcher for the reason why this is required
-	if( ! pRigidBody ){
+	if(! pRigidBody){
 		return;
 	}
 	
-	if( pDynWorld->GetDelayedOperation().IsLocked() ){
-		pDynWorld->GetDelayedOperation().AddClearFromBroadphase( pRigidBody );
+	if(pDynWorld->GetDelayedOperation().IsLocked()){
+		pDynWorld->GetDelayedOperation().AddClearFromBroadphase(pRigidBody);
 		
 	}else{
 		pDynWorld->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(
-			pRigidBody->getBroadphaseHandle(), pDynWorld->getDispatcher() );
+			pRigidBody->getBroadphaseHandle(), pDynWorld->getDispatcher());
 	}
 }
 
 
 
-void debpPhysicsBody::SetPosition( const decDVector &position ){
-	if( pPosition.IsEqualTo( position ) ){
+void debpPhysicsBody::SetPosition(const decDVector &position){
+	if(pPosition.IsEqualTo(position)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( ! pPreventUpdate ){
-		pMotionState->SetPosition( position );
+	if(! pPreventUpdate){
+		pMotionState->SetPosition(position);
 		
-		if( pRigidBody ){
-			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+		if(pRigidBody){
+			if(! pDynWorld->GetWorld().GetProcessingPhysics()){
 				pUpdateTransform();
 			}
 			
-			if( pResponseType == ertKinematic ){
-				pRigidBody->activate( true );
+			if(pResponseType == ertKinematic){
+				pRigidBody->activate(true);
 			}
 		}
 	}
 	
 	pStateChanged = true;
 	pDirtyMatrix = true;
-	SetDirtyAABB( true );
+	SetDirtyAABB(true);
 }
 
-void debpPhysicsBody::SetOrientation( const decQuaternion &orientation ){
-	if( pOrientation.IsEqualTo( orientation ) ){
+void debpPhysicsBody::SetOrientation(const decQuaternion &orientation){
+	if(pOrientation.IsEqualTo(orientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( ! pPreventUpdate ){
-		pMotionState->SetOrientation( orientation );
+	if(! pPreventUpdate){
+		pMotionState->SetOrientation(orientation);
 		
-		if( pRigidBody ){
-			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+		if(pRigidBody){
+			if(! pDynWorld->GetWorld().GetProcessingPhysics()){
 				pUpdateTransform();
 			}
 			
-			if( pResponseType == ertKinematic ){
-				pRigidBody->activate( true );
+			if(pResponseType == ertKinematic){
+				pRigidBody->activate(true);
 			}
 		}
 	}
 	
 	pStateChanged = true;
 	pDirtyMatrix = true;
-	SetDirtyAABB( true );
+	SetDirtyAABB(true);
 }
 
-void debpPhysicsBody::SetLinearVelocity( const decVector &linVelo ){
-	if( pLinVelo.IsEqualTo( linVelo ) ){
+void debpPhysicsBody::SetLinearVelocity(const decVector &linVelo){
+	if(pLinVelo.IsEqualTo(linVelo)){
 		return;
 	}
 	
@@ -239,26 +239,26 @@ void debpPhysicsBody::SetLinearVelocity( const decVector &linVelo ){
 	
 	pHasLinVelo = pLinVelo.LengthSquared() > 1e-6f;
 	
-	if( ! pPreventUpdate && pRigidBody ){
-		if( pResponseType == ertDynamic ){
-			if( pHasLinVelo ){
+	if(! pPreventUpdate && pRigidBody){
+		if(pResponseType == ertDynamic){
+			if(pHasLinVelo){
 				pRigidBody->activate();
-				pRigidBody->setLinearVelocity( btVector3( ( btScalar )linVelo.x, ( btScalar )linVelo.y, ( btScalar )linVelo.z ) );
+				pRigidBody->setLinearVelocity(btVector3((btScalar)linVelo.x, (btScalar)linVelo.y, (btScalar)linVelo.z));
 				
 			}else{
-				pRigidBody->setLinearVelocity( btVector3( 0.0f, 0.0f, 0.0f ) );
+				pRigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			}
 			
-		}else if( pResponseType == ertKinematic ){
-			if( pHasLinVelo ){
-				pRigidBody->activate( true );
+		}else if(pResponseType == ertKinematic){
+			if(pHasLinVelo){
+				pRigidBody->activate(true);
 			}
 		}
 	}
 }
 
-void debpPhysicsBody::SetAngularVelocity( const decVector &angVelo ){
-	if( pAngVelo.IsEqualTo( angVelo ) ){
+void debpPhysicsBody::SetAngularVelocity(const decVector &angVelo){
+	if(pAngVelo.IsEqualTo(angVelo)){
 		return;
 	}
 	
@@ -267,27 +267,27 @@ void debpPhysicsBody::SetAngularVelocity( const decVector &angVelo ){
 	
 	pHasAngVelo = pAngVelo.LengthSquared() > 0.0003046174f;
 	
-	if( ! pPreventUpdate && pRigidBody ){
-		if( pResponseType == ertDynamic ){
-			if( pHasAngVelo ){
+	if(! pPreventUpdate && pRigidBody){
+		if(pResponseType == ertDynamic){
+			if(pHasAngVelo){
 				pRigidBody->activate();
 				//pRigidBody->setAngularVelocity( pRigidBody->getCenterOfMassTransform() * btVector3( angVelo.x, angVelo.y, angVelo.z ) );
-				pRigidBody->setAngularVelocity( btVector3( angVelo.x, angVelo.y, angVelo.z ) );
+				pRigidBody->setAngularVelocity(btVector3(angVelo.x, angVelo.y, angVelo.z));
 				
 			}else{
-				pRigidBody->setAngularVelocity( btVector3( 0.0f, 0.0f, 0.0f ) );
+				pRigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 			}
 			
-		}else if( pResponseType == ertKinematic ){
-			if( pHasAngVelo ){
-				pRigidBody->activate( true );
+		}else if(pResponseType == ertKinematic){
+			if(pHasAngVelo){
+				pRigidBody->activate(true);
 			}
 		}
 	}
 }
 
-void debpPhysicsBody::SetGravity( const decVector &gravity ){
-	if( pGravity.IsEqualTo( gravity ) ){
+void debpPhysicsBody::SetGravity(const decVector &gravity){
+	if(pGravity.IsEqualTo(gravity)){
 		return;
 	}
 	
@@ -295,34 +295,34 @@ void debpPhysicsBody::SetGravity( const decVector &gravity ){
 	
 	pHasGravity = gravity.LengthSquared() > 1e-6f;
 	
-	if( ! pPreventUpdate && pRigidBody && pResponseType == ertDynamic ){
-		pRigidBody->setGravity( btVector3( ( btScalar )gravity.x, ( btScalar )gravity.y, ( btScalar )gravity.z ) );
+	if(! pPreventUpdate && pRigidBody && pResponseType == ertDynamic){
+		pRigidBody->setGravity(btVector3((btScalar)gravity.x, (btScalar)gravity.y, (btScalar)gravity.z));
 	}
 }
 
-void debpPhysicsBody::SetMass( float mass ){
-	if( fabs( pMass - mass ) < FLOAT_SAFE_EPSILON ){
+void debpPhysicsBody::SetMass(float mass){
+	if(fabs(pMass - mass) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMass = mass;
 	
-	if( pRigidBody && pResponseType == ertDynamic ){
-		btVector3 localInertia( 0.0, 0.0, 0.0 );
-		pShape->GetShape()->calculateLocalInertia( mass, localInertia );
-		pRigidBody->setMassProps( mass, localInertia );
+	if(pRigidBody && pResponseType == ertDynamic){
+		btVector3 localInertia(0.0, 0.0, 0.0);
+		pShape->GetShape()->calculateLocalInertia(mass, localInertia);
+		pRigidBody->setMassProps(mass, localInertia);
 		pRigidBody->updateInertiaTensor();
 		
-		pRigidBody->setGravity( btVector3( pGravity.x, pGravity.y, pGravity.z ) );
+		pRigidBody->setGravity(btVector3(pGravity.x, pGravity.y, pGravity.z));
 	}
 }
 
-void debpPhysicsBody::SetResponseType( eResponseTypes responseType ){
-	if( responseType < ertStatic || responseType > ertDynamic ){
-		DETHROW( deeInvalidParam );
+void debpPhysicsBody::SetResponseType(eResponseTypes responseType){
+	if(responseType < ertStatic || responseType > ertDynamic){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( responseType == pResponseType ){
+	if(responseType == pResponseType){
 		return;
 	}
 	
@@ -334,17 +334,17 @@ void debpPhysicsBody::SetResponseType( eResponseTypes responseType ){
 }
 
 void debpPhysicsBody::ResetKinematicInterpolation(){
-	if( ! pRigidBody /*|| pResponseType == ertDynamic*/ ){
+	if(! pRigidBody /*|| pResponseType == ertDynamic*/){
 		return;
 	}
 	
-	pRigidBody->setInterpolationWorldTransform( pRigidBody->getCenterOfMassTransform() );
-	pRigidBody->setInterpolationLinearVelocity( btVector3( 0.0f, 0.0f, 0.0f ) );
-	pRigidBody->setInterpolationAngularVelocity( btVector3( 0.0f, 0.0f, 0.0f ) );
+	pRigidBody->setInterpolationWorldTransform(pRigidBody->getCenterOfMassTransform());
+	pRigidBody->setInterpolationLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+	pRigidBody->setInterpolationAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 }
 
-void debpPhysicsBody::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void debpPhysicsBody::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -354,7 +354,7 @@ void debpPhysicsBody::SetEnabled( bool enabled ){
 }
 
 bool debpPhysicsBody::GetIsActive() const{
-	if( pRigidBody && pResponseType != ertStatic ){
+	if(pRigidBody && pResponseType != ertStatic){
 		return pRigidBody->isActive();
 	}
 	
@@ -362,8 +362,8 @@ bool debpPhysicsBody::GetIsActive() const{
 }
 
 const decDMatrix &debpPhysicsBody::GetMatrix(){
-	if( pDirtyMatrix ){
-		pMatrix.SetWorld( pPosition, pOrientation );
+	if(pDirtyMatrix){
+		pMatrix.SetWorld(pPosition, pOrientation);
 		pDirtyMatrix = false;
 	}
 	
@@ -372,20 +372,20 @@ const decDMatrix &debpPhysicsBody::GetMatrix(){
 
 
 
-void debpPhysicsBody::SetCcdParameters( float threshold, float radius ){
+void debpPhysicsBody::SetCcdParameters(float threshold, float radius){
 	pCcdThreshold = threshold;
 	pCcdRadius = radius;
 }
 
 
 
-void debpPhysicsBody::ApplyGravity( float elapsed ){
-	SetLinearVelocity( pLinVelo + pGravity * elapsed );
+void debpPhysicsBody::ApplyGravity(float elapsed){
+	SetLinearVelocity(pLinVelo + pGravity * elapsed);
 }
 
 void debpPhysicsBody::UpdateAABB(){
-	if( pRigidBody ){
-		pDynWorld->updateSingleAabb( pRigidBody );
+	if(pRigidBody){
+		pDynWorld->updateSingleAabb(pRigidBody);
 	}
 }
 
@@ -394,84 +394,84 @@ void debpPhysicsBody::UpdateAABB(){
 // Forces
 ///////////
 
-void debpPhysicsBody::ApplyImpuls( const decVector &impuls ){
-	if( ! pRigidBody || pResponseType != ertDynamic ){
+void debpPhysicsBody::ApplyImpuls(const decVector &impuls){
+	if(! pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
 	pCreateRigidBody();
 	
-	pRigidBody->activate( true );
+	pRigidBody->activate(true);
 	
-	const btVector3 btImpulse( ( btScalar )impuls.x, ( btScalar )impuls.y, ( btScalar )impuls.z );
-	pRigidBody->applyCentralImpulse( btImpulse );
+	const btVector3 btImpulse((btScalar)impuls.x, (btScalar)impuls.y, (btScalar)impuls.z);
+	pRigidBody->applyCentralImpulse(btImpulse);
 }
 
-void debpPhysicsBody::ApplyImpulsAt( const decVector &impuls, const decVector &position ){
-	if( ! pRigidBody || pResponseType != ertDynamic ){
+void debpPhysicsBody::ApplyImpulsAt(const decVector &impuls, const decVector &position){
+	if(! pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
 	pCreateRigidBody();
 	
-	pRigidBody->activate( true );
+	pRigidBody->activate(true);
 	
-	const btVector3 btImpulse( ( btScalar )impuls.x, ( btScalar )impuls.y, ( btScalar )impuls.z );
-	const btVector3 btPosition( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z );
-	pRigidBody->applyImpulse( btImpulse, btPosition );
+	const btVector3 btImpulse((btScalar)impuls.x, (btScalar)impuls.y, (btScalar)impuls.z);
+	const btVector3 btPosition((btScalar)position.x, (btScalar)position.y, (btScalar)position.z);
+	pRigidBody->applyImpulse(btImpulse, btPosition);
 }
 
-void debpPhysicsBody::ApplyTorqueImpuls( const decVector &torqueImpuls ){
-	if( ! pRigidBody || pResponseType != ertDynamic ){
+void debpPhysicsBody::ApplyTorqueImpuls(const decVector &torqueImpuls){
+	if(! pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
 	pCreateRigidBody();
 	
-	pRigidBody->activate( true );
+	pRigidBody->activate(true);
 	
-	const btVector3 btTorqueImpulse( ( btScalar )torqueImpuls.x, ( btScalar )torqueImpuls.y, ( btScalar )torqueImpuls.z );
-	pRigidBody->applyTorqueImpulse( btTorqueImpulse );
+	const btVector3 btTorqueImpulse((btScalar)torqueImpuls.x, (btScalar)torqueImpuls.y, (btScalar)torqueImpuls.z);
+	pRigidBody->applyTorqueImpulse(btTorqueImpulse);
 }
 
-void debpPhysicsBody::ApplyForce( const decVector &force ){
-	if( ! pRigidBody || pResponseType != ertDynamic ){
+void debpPhysicsBody::ApplyForce(const decVector &force){
+	if(! pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
 	pCreateRigidBody();
 	
-	pRigidBody->activate( true );
+	pRigidBody->activate(true);
 	
-	const btVector3 btForce( ( btScalar )force.x, ( btScalar )force.y, ( btScalar )force.z );
-	pRigidBody->applyCentralForce( btForce );
+	const btVector3 btForce((btScalar)force.x, (btScalar)force.y, (btScalar)force.z);
+	pRigidBody->applyCentralForce(btForce);
 }
 
-void debpPhysicsBody::ApplyForceAt( const decVector &force, const decVector &position ){
-	if( ! pRigidBody || pResponseType != ertDynamic ){
+void debpPhysicsBody::ApplyForceAt(const decVector &force, const decVector &position){
+	if(! pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
 	pCreateRigidBody();
 	
-	pRigidBody->activate( true );
+	pRigidBody->activate(true);
 	
-	const btVector3 btForce( ( btScalar )force.x, ( btScalar )force.y, ( btScalar )force.z );
-	const btVector3 btPosition( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z );
-	pRigidBody->applyForce( btForce, btPosition );
+	const btVector3 btForce((btScalar)force.x, (btScalar)force.y, (btScalar)force.z);
+	const btVector3 btPosition((btScalar)position.x, (btScalar)position.y, (btScalar)position.z);
+	pRigidBody->applyForce(btForce, btPosition);
 }
 
-void debpPhysicsBody::ApplyTorque( const decVector &torque ){
-	if( ! pRigidBody || pResponseType != ertDynamic ){
+void debpPhysicsBody::ApplyTorque(const decVector &torque){
+	if(! pRigidBody || pResponseType != ertDynamic){
 		return;
 	}
 	
-	btVector3 btTorque( torque.x, torque.y, torque.z );
+	btVector3 btTorque(torque.x, torque.y, torque.z);
 	
 	pCreateRigidBody();
 	
-	pRigidBody->activate( true );
-	pRigidBody->applyTorque( btTorque );
+	pRigidBody->activate(true);
+	pRigidBody->applyTorque(btTorque);
 }
 
 
@@ -479,22 +479,22 @@ void debpPhysicsBody::ApplyTorque( const decVector &torque ){
 // Linked Constraints
 ///////////////////////
 
-debpColliderConstraint *debpPhysicsBody::GetConstraintAt( int index ) const{
-	if( index < 0 || index >= pConstraintCount ){
-		DETHROW( deeInvalidParam );
+debpColliderConstraint *debpPhysicsBody::GetConstraintAt(int index) const{
+	if(index < 0 || index >= pConstraintCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pConstraints[ index ];
+	return pConstraints[index];
 }
 
-int debpPhysicsBody::IndexOfConstraint( debpColliderConstraint *constraint ) const{
-	if( ! constraint ){
-		DETHROW( deeInvalidParam );
+int debpPhysicsBody::IndexOfConstraint(debpColliderConstraint *constraint) const{
+	if(! constraint){
+		DETHROW(deeInvalidParam);
 	}
 	int i;
 	
-	for( i=0; i<pConstraintCount; i++ ){
-		if( constraint == pConstraints[ i ] ){
+	for(i=0; i<pConstraintCount; i++){
+		if(constraint == pConstraints[i]){
 			return i;
 		}
 	}
@@ -502,14 +502,14 @@ int debpPhysicsBody::IndexOfConstraint( debpColliderConstraint *constraint ) con
 	return -1;
 }
 
-bool debpPhysicsBody::HasConstraint( debpColliderConstraint *constraint ) const{
-	if( ! constraint ){
-		DETHROW( deeInvalidParam );
+bool debpPhysicsBody::HasConstraint(debpColliderConstraint *constraint) const{
+	if(! constraint){
+		DETHROW(deeInvalidParam);
 	}
 	int i;
 	
-	for( i=0; i<pConstraintCount; i++ ){
-		if( constraint == pConstraints[ i ] ){
+	for(i=0; i<pConstraintCount; i++){
+		if(constraint == pConstraints[i]){
 			return true;
 		}
 	}
@@ -517,35 +517,35 @@ bool debpPhysicsBody::HasConstraint( debpColliderConstraint *constraint ) const{
 	return false;
 }
 
-void debpPhysicsBody::AddConstraint( debpColliderConstraint *constraint ){
-	if( HasConstraint( constraint ) ){
-		DETHROW( deeInvalidParam );
+void debpPhysicsBody::AddConstraint(debpColliderConstraint *constraint){
+	if(HasConstraint(constraint)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pConstraintCount == pConstraintSize ){
+	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
-		debpColliderConstraint **newArray = new debpColliderConstraint*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pConstraints ){
-			memcpy( newArray, pConstraints, sizeof( debpColliderConstraint* ) * pConstraintSize );
+		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pConstraints){
+			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;
 		}
 		pConstraints = newArray;
 		pConstraintSize = newSize;
 	}
 	
-	pConstraints[ pConstraintCount ] = constraint;
+	pConstraints[pConstraintCount] = constraint;
 	pConstraintCount++;
 }
 
-void debpPhysicsBody::RemoveConstraint( debpColliderConstraint *constraint ){
-	int i, index = IndexOfConstraint( constraint );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+void debpPhysicsBody::RemoveConstraint(debpColliderConstraint *constraint){
+	int i, index = IndexOfConstraint(constraint);
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=index+1; i<pConstraintCount; i++ ){
-		pConstraints[ i - 1 ] = pConstraints[ i ];
+	for(i=index+1; i<pConstraintCount; i++){
+		pConstraints[i - 1] = pConstraints[i];
 	}
 	pConstraintCount--;
 }
@@ -558,7 +558,7 @@ void debpPhysicsBody::RemoveConstraint( debpColliderConstraint *constraint ){
 void debpPhysicsBody::pCleanUp(){
 	pFreeRigidBody();
 	
-	if( pShape ){
+	if(pShape){
 		pShape->FreeReference();
 	}
 	
@@ -568,49 +568,49 @@ void debpPhysicsBody::pCleanUp(){
 	// unregister itself during this process
 	int currentIndex;
 	
-	while( pConstraintCount > 0 ){
+	while(pConstraintCount > 0){
 		currentIndex = pConstraintCount - 1;
 		
-		pConstraints[ currentIndex ]->PhysicsBodyDestroy( this );
+		pConstraints[currentIndex]->PhysicsBodyDestroy(this);
 		
-		if( currentIndex < pConstraintCount ){
+		if(currentIndex < pConstraintCount){
 			pConstraintCount--;
 		}
 	}
 	
 	// now we can free the list
-	if( pConstraints ){
+	if(pConstraints){
 		delete [] pConstraints;
 	}
 	
 	// free the motion state
-	if( pMotionState ){
+	if(pMotionState){
 		delete pMotionState;
 	}
 }
 
 void debpPhysicsBody::pCreateRigidBody(){
-	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape || ! pShape->GetShape() ){
+	if(pRigidBody || ! pEnabled || ! pDynWorld || ! pShape || ! pShape->GetShape()){
 		return;
 	}
 	
-	SetDirtyAABB( true );
+	SetDirtyAABB(true);
 	
 	// update the motion state to be sure anything works.
-	pMotionState->SetPosition( pPosition );
-	pMotionState->SetOrientation( pOrientation );
+	pMotionState->SetPosition(pPosition);
+	pMotionState->SetOrientation(pOrientation);
 	
 	// create rigid body
 	btCollisionShape * const shape = pShape->GetShape();
-	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
+	btVector3 localInertia(0.0f, 0.0f, 0.0f);
 	float mass = 0.0f;
 	
-	if( pResponseType == ertDynamic ){
+	if(pResponseType == ertDynamic){
 		mass = pMass;
-		shape->calculateLocalInertia( mass, localInertia );
+		shape->calculateLocalInertia(mass, localInertia);
 	}
 	
-	btRigidBody::btRigidBodyConstructionInfo cinfo( mass, pMotionState, shape, localInertia );
+	btRigidBody::btRigidBodyConstructionInfo cinfo(mass, pMotionState, shape, localInertia);
 	
 	cinfo.m_linearDamping = 0.05f; /*0.001f, 0.3f*/ // default 0
 // 	cinfo.m_linearDamping = 0.0f;
@@ -646,84 +646,84 @@ void debpPhysicsBody::pCreateRigidBody(){
 	// later on to modify this value.
 	cinfo.m_angularSleepingThreshold = DEG2RAD * 2.0f;
 	
-	pRigidBody = new btRigidBody( cinfo );
+	pRigidBody = new btRigidBody(cinfo);
 	
-	pRigidBody->setAnisotropicFriction( shape->getAnisotropicRollingFrictionDirection(),
-		btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION );
+	pRigidBody->setAnisotropicFriction(shape->getAnisotropicRollingFrictionDirection(),
+		btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION);
 	
 	// set parameters
-	pRigidBody->setGravity( btVector3( pGravity.x, pGravity.y, pGravity.z ) );
-	pRigidBody->setFlags( pRigidBody->getFlags() | BT_DISABLE_WORLD_GRAVITY );
+	pRigidBody->setGravity(btVector3(pGravity.x, pGravity.y, pGravity.z));
+	pRigidBody->setFlags(pRigidBody->getFlags() | BT_DISABLE_WORLD_GRAVITY);
 	
-	if( pResponseType == ertStatic ){
-		pRigidBody->setCollisionFlags( btCollisionObject::CF_STATIC_OBJECT
-			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
+	if(pResponseType == ertStatic){
+		pRigidBody->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT
+			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 // 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
 // 		pRigidBody->setDeactivationTime( 0.1f );
-		pRigidBody->forceActivationState( ISLAND_SLEEPING ); // bullet demo
-		pRigidBody->setDeactivationTime( 0.0f );
+		pRigidBody->forceActivationState(ISLAND_SLEEPING); // bullet demo
+		pRigidBody->setDeactivationTime(0.0f);
 		
-	}else if( pResponseType == ertKinematic ){
-		pRigidBody->setCollisionFlags( btCollisionObject::CF_KINEMATIC_OBJECT
-			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
+	}else if(pResponseType == ertKinematic){
+		pRigidBody->setCollisionFlags(btCollisionObject::CF_KINEMATIC_OBJECT
+			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 // 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
 // 		pRigidBody->setDeactivationTime( 0.1f );
 // 		pRigidBody->forceActivationState( DISABLE_DEACTIVATION ); // bullet demo but set by addRigidBody
-		pRigidBody->setDeactivationTime( 0.0f );
+		pRigidBody->setDeactivationTime(0.0f);
 		
 	}else{
-		pRigidBody->setCollisionFlags( btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
+		pRigidBody->setCollisionFlags(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 // 		pRigidBody->forceActivationState( ACTIVE_TAG ); // set by addRigidBody
-		pRigidBody->setDeactivationTime( 0.0f );
+		pRigidBody->setDeactivationTime(0.0f);
 	}
 	// NOTE actually forceActivationState helps nothing since addRigidBody() resets it
 	
 	//pRigidBody->setCcdSquareMotionThreshold( pCcdThreshold );
 	//pRigidBody->setCcdSweptSphereRadius( pCcdRadius );
-	pRigidBody->setUserPointer( ( debpCollisionObject* )this );
+	pRigidBody->setUserPointer((debpCollisionObject*)this);
 	
 	// set the motion parameters not covered by the motion state
-	if( pResponseType == ertDynamic ){
+	if(pResponseType == ertDynamic){
 		//const btTransform &xform = pRigidBody->getCenterOfMassTransform();
 		
-		pRigidBody->setLinearVelocity( btVector3( pLinVelo.x, pLinVelo.y, pLinVelo.z ) );
+		pRigidBody->setLinearVelocity(btVector3(pLinVelo.x, pLinVelo.y, pLinVelo.z));
 		//pRigidBody->setAngularVelocity( xform.getBasis() * btVector3( pAngVelo.x, pAngVelo.y, pAngVelo.z ) );
-		pRigidBody->setAngularVelocity( btVector3( pAngVelo.x, pAngVelo.y, pAngVelo.z ) );
+		pRigidBody->setAngularVelocity(btVector3(pAngVelo.x, pAngVelo.y, pAngVelo.z));
 	}
 	
 	// add rigid body to dynamics world or add it to the delayed operation if the world is locked
-	if( pDynWorld->GetDelayedOperation().IsLocked() ){
-		pDynWorld->GetDelayedOperation().AddRigidBody( pRigidBody );
+	if(pDynWorld->GetDelayedOperation().IsLocked()){
+		pDynWorld->GetDelayedOperation().AddRigidBody(pRigidBody);
 		
 	}else{
-		pDynWorld->addRigidBody( pRigidBody );
+		pDynWorld->addRigidBody(pRigidBody);
 	}
 	
 	// notify all constraints that the rigid body has been created
 	int i;
-	for( i=0; i<pConstraintCount; i++ ){
-		pConstraints[ i ]->RigidBodyCreated( this );
+	for(i=0; i<pConstraintCount; i++){
+		pConstraints[i]->RigidBodyCreated(this);
 	}
 }
 
 void debpPhysicsBody::pFreeRigidBody(){
-	if( ! pRigidBody ){
+	if(! pRigidBody){
 		return;
 	}
 	
 	int c;
 	
 	// notify all constraints that the rigid body is about to be destroyed
-	for( c=0; c<pConstraintCount; c++ ){
-		pConstraints[ c ]->RigidBodyDestroy( this );
+	for(c=0; c<pConstraintCount; c++){
+		pConstraints[c]->RigidBodyDestroy(this);
 	}
 	
 	// destroy the rigid body or add it to the delayed operation if the world is locked
-	if( pDynWorld->GetDelayedOperation().IsLocked() ){
-		pDynWorld->GetDelayedOperation().RemoveRigidBody( pRigidBody );
+	if(pDynWorld->GetDelayedOperation().IsLocked()){
+		pDynWorld->GetDelayedOperation().RemoveRigidBody(pRigidBody);
 		
 	}else{
-		pDynWorld->removeRigidBody( pRigidBody );
+		pDynWorld->removeRigidBody(pRigidBody);
 		delete pRigidBody;
 	}
 	
@@ -731,12 +731,12 @@ void debpPhysicsBody::pFreeRigidBody(){
 }
 
 void debpPhysicsBody::pUpdateTransform(){
-	if( ! pRigidBody ){
+	if(! pRigidBody){
 		return;
 	}
 	
-	pRigidBody->setCenterOfMassTransform( btTransform(
-		btQuaternion( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-			( btScalar )pOrientation.z, ( btScalar )pOrientation.w ),
-		btVector3( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z ) ) );
+	pRigidBody->setCenterOfMassTransform(btTransform(
+		btQuaternion((btScalar)pOrientation.x, (btScalar)pOrientation.y,
+			(btScalar)pOrientation.z, (btScalar)pOrientation.w),
+		btVector3((btScalar)pPosition.x, (btScalar)pPosition.y, (btScalar)pPosition.z)));
 }

@@ -89,7 +89,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPPropertyList( igdeEnvironment &environment );
+	meWPPropertyList(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -102,28 +102,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	/** \brief Clipboard or NULL. */
-	inline igdeClipboard *GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard *GetClipboard() const{return pClipboard;}
 	
 	/** \brief Set clipboard or NULL. */
-	void SetClipboard( igdeClipboard *clipboard );
+	void SetClipboard(igdeClipboard *clipboard);
 	
 	/** \brief Property list to edit. */
-	inline const decStringDictionary &GetProperties() const{ return pProperties; }
+	inline const decStringDictionary &GetProperties() const{return pProperties;}
 	
 	/** \brief Set property list to edit. */
-	void SetProperties( const decStringDictionary &properties );
+	void SetProperties(const decStringDictionary &properties);
 	
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -140,15 +140,15 @@ public:
 	const decString &GetEditPropertyValue() const;
 	
 	/** \brief Set edit property value. */
-	void SetEditPropertyValue( const char *value ) const;
+	void SetEditPropertyValue(const char *value) const;
 	
 	
 	
 	/** \brief Game definition property for key or NULL. */
-	virtual const igdeGDProperty *GetGDProperty( const char *key ) const = 0;
+	virtual const igdeGDProperty *GetGDProperty(const char *key) const = 0;
 	
 	/** \brief Game definition default value for key. */
-	virtual decString GetGDDefaultValue( const char *key ) const = 0;
+	virtual decString GetGDDefaultValue(const char *key) const = 0;
 	
 	/** \brief List of game definition property keys. */
 	virtual decStringSet GetGDPropertyKeys() const = 0;
@@ -168,10 +168,10 @@ public:
 	void UpdateEnabled();
 	
 	/** \brief Select key in combo box. */
-	void SelectKey( const char *key );
+	void SelectKey(const char *key);
 	
 	/** \brief Select property. */
-	void SelectProperty( const char *property );
+	void SelectProperty(const char *property);
 	
 	/** \brief Edit property value in dialog. */
 	void EditPropertyValueInDialog();
@@ -180,13 +180,13 @@ public:
 	void VerifyProperties();
 	
 	/** \brief Update display information. */
-	void UpdateInformation( const char *key );
+	void UpdateInformation(const char *key);
 	
 	/** \brief Set identifiers. */
-	void SetIdentifiers( const decStringSet &identifiers );
+	void SetIdentifiers(const decStringSet &identifiers);
 	
 	/** \brief Set trigger target list with updating. */
-	void SetTriggerTargetList( igdeTriggerTargetList *list );
+	void SetTriggerTargetList(igdeTriggerTargetList *list);
 	
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();
@@ -194,36 +194,36 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionPropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
-	inline igdeAction *GetActionPropertyClear() const{ return pActionPropertyClear; }
-	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
-	inline igdeAction *GetActionPropertyCopyAll() const{ return pActionPropertyCopyAll; }
-	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
-	inline igdeAction *GetActionPropertyCutAll() const{ return pActionPropertyCutAll; }
-	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
-	inline igdeAction *GetActionPropertyRename() const{ return pActionPropertyRename; }
-	inline igdeAction *GetActionPropertyExport() const{ return pActionPropertyExport; }
-	inline igdeAction *GetActionPropertyImport() const{ return pActionPropertyImport; }
+	inline igdeAction *GetActionPropertyAdd() const{return pActionPropertyAdd;}
+	inline igdeAction *GetActionPropertyRemove() const{return pActionPropertyRemove;}
+	inline igdeAction *GetActionPropertyClear() const{return pActionPropertyClear;}
+	inline igdeAction *GetActionPropertyCopy() const{return pActionPropertyCopy;}
+	inline igdeAction *GetActionPropertyCopyAll() const{return pActionPropertyCopyAll;}
+	inline igdeAction *GetActionPropertyCut() const{return pActionPropertyCut;}
+	inline igdeAction *GetActionPropertyCutAll() const{return pActionPropertyCutAll;}
+	inline igdeAction *GetActionPropertyPaste() const{return pActionPropertyPaste;}
+	inline igdeAction *GetActionPropertyRename() const{return pActionPropertyRename;}
+	inline igdeAction *GetActionPropertyExport() const{return pActionPropertyExport;}
+	inline igdeAction *GetActionPropertyImport() const{return pActionPropertyImport;}
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoAddProperty( const decString &key, const decString &value ) = 0;
-	virtual igdeUndo *UndoRemoveProperty( const decString &key ) = 0;
-	virtual igdeUndo *UndoSetProperty( const decString &key, const decString &oldValue, const decString &newValue ) = 0;
-	virtual igdeUndo *UndoSetProperties( const decStringDictionary &properties ) = 0;
+	virtual igdeUndo *UndoAddProperty(const decString &key, const decString &value) = 0;
+	virtual igdeUndo *UndoRemoveProperty(const decString &key) = 0;
+	virtual igdeUndo *UndoSetProperty(const decString &key, const decString &oldValue, const decString &newValue) = 0;
+	virtual igdeUndo *UndoSetProperties(const decStringDictionary &properties) = 0;
 	/*@}*/
 	
 	
 	
 	/** \name Subclass notifications */
 	/*@{*/
-	virtual void OnKeyChanged( const decString &key );
-	virtual void OnPropertySelected( const decString &key, const decString &value );
-	virtual void AddContextMenuEntries( igdeUIHelper &helper, igdeMenuCascade &menu );
+	virtual void OnKeyChanged(const decString &key);
+	virtual void OnPropertySelected(const decString &key, const decString &value);
+	virtual void AddContextMenuEntries(igdeUIHelper &helper, igdeMenuCascade &menu);
 	/*@}*/
 };
 

@@ -41,10 +41,10 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-debpOctree::debpOctree( const decVector &center, const decVector &halfSize ){
+debpOctree::debpOctree(const decVector &center, const decVector &halfSize){
 	int i;
 	
-	for( i=0; i<8; i++ ) pNodes[ i ] = NULL;
+	for(i=0; i<8; i++) pNodes[i] = NULL;
 	pCenter = center;
 	pHalfSize = halfSize;
 	pParent = NULL;
@@ -53,8 +53,8 @@ debpOctree::debpOctree( const decVector &center, const decVector &halfSize ){
 debpOctree::~debpOctree(){
 	int i;
 	
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ) delete pNodes[ i ];
+	for(i=0; i<8; i++){
+		if(pNodes[i]) delete pNodes[i];
 	}
 }
 
@@ -63,68 +63,68 @@ debpOctree::~debpOctree(){
 // Management
 ///////////////
 
-void debpOctree::SetParent( debpOctree *parent ){
+void debpOctree::SetParent(debpOctree *parent){
 	pParent = parent;
 }
 
-debpOctree *debpOctree::GetNodeAt( int octant ) const{
-	if( octant < 0 || octant > 7 ) DETHROW( deeInvalidParam );
-	return pNodes[ octant ];
+debpOctree *debpOctree::GetNodeAt(int octant) const{
+	if(octant < 0 || octant > 7) DETHROW(deeInvalidParam);
+	return pNodes[octant];
 }
 
-void debpOctree::SetNodeAt( int octant, debpOctree *node ){
-	if( octant < 0 || octant > 7 ) DETHROW( deeInvalidParam );
-	if( pNodes[ octant ] != node ){
-		if( pNodes[ octant ] ) delete pNodes[ octant ];
-		pNodes[ octant ] = node;
+void debpOctree::SetNodeAt(int octant, debpOctree *node){
+	if(octant < 0 || octant > 7) DETHROW(deeInvalidParam);
+	if(pNodes[octant] != node){
+		if(pNodes[octant]) delete pNodes[octant];
+		pNodes[octant] = node;
 	}
 }
 
-debpOctree *debpOctree::GetNodeAtBox( const decVector &boxCenter, const decVector &boxHalfSize ){
-	int octant = FindOctantAtBox( boxCenter, boxHalfSize );
+debpOctree *debpOctree::GetNodeAtBox(const decVector &boxCenter, const decVector &boxHalfSize){
+	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
+	if(octant == eoNotFound) return NULL;
 	
 	// if the node does not exist create it
-	if( ! pNodes[ octant ] ){
-		pNodes[ octant ] = CreateOctree( octant );
-		pNodes[ octant ]->SetParent( this );
+	if(! pNodes[octant]){
+		pNodes[octant] = CreateOctree(octant);
+		pNodes[octant]->SetParent(this);
 	}
 	
 	// return the node that we found
-	return pNodes[ octant ];
+	return pNodes[octant];
 }
 
-debpOctree *debpOctree::FindNodeAtBox( const decVector &boxCenter, const decVector &boxHalfSize ) const{
-	int octant = FindOctantAtBox( boxCenter, boxHalfSize );
+debpOctree *debpOctree::FindNodeAtBox(const decVector &boxCenter, const decVector &boxHalfSize) const{
+	int octant = FindOctantAtBox(boxCenter, boxHalfSize);
 	
 	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
+	if(octant == eoNotFound) return NULL;
 	
 	// return the node that we found
-	return pNodes[ octant ];
+	return pNodes[octant];
 }
 
-int debpOctree::FindOctantAtBox( const decVector &boxCenter, const decVector &boxHalfSize ) const{
+int debpOctree::FindOctantAtBox(const decVector &boxCenter, const decVector &boxHalfSize) const{
 	int octant = 0;
 	
 	// determine the bit mask of the box compared to the center of the node.
 	// a positive axis becomes a 1 bit and a negative axis a 0 bit. if an
 	// axis does not split no octant is found.
-	if( boxCenter.x - boxHalfSize.x >= pCenter.x ){
+	if(boxCenter.x - boxHalfSize.x >= pCenter.x){
 		octant |= 4;
-	}else if( boxCenter.x + boxHalfSize.x >= pCenter.x ){
+	}else if(boxCenter.x + boxHalfSize.x >= pCenter.x){
 		return eoNotFound;
 	}
-	if( boxCenter.y - boxHalfSize.y >= pCenter.y ){
+	if(boxCenter.y - boxHalfSize.y >= pCenter.y){
 		octant |= 2;
-	}else if( boxCenter.y + boxHalfSize.y >= pCenter.y ){
+	}else if(boxCenter.y + boxHalfSize.y >= pCenter.y){
 		return eoNotFound;
 	}
-	if( boxCenter.z - boxHalfSize.z >= pCenter.z ){
+	if(boxCenter.z - boxHalfSize.z >= pCenter.z){
 		octant |= 1;
-	}else if( boxCenter.z + boxHalfSize.z >= pCenter.z ){
+	}else if(boxCenter.z + boxHalfSize.z >= pCenter.z){
 		return eoNotFound;
 	}
 	
@@ -132,131 +132,131 @@ int debpOctree::FindOctantAtBox( const decVector &boxCenter, const decVector &bo
 	return octant;
 }
 
-bool debpOctree::ContainsBox( const decVector &boxCenter, const decVector &boxHalfSize ) const{
-	return ( boxCenter - boxHalfSize ) >= ( pCenter - pHalfSize )
-		&& ( boxCenter + boxHalfSize ) < ( pCenter + pHalfSize );
+bool debpOctree::ContainsBox(const decVector &boxCenter, const decVector &boxHalfSize) const{
+	return (boxCenter - boxHalfSize) >= (pCenter - pHalfSize)
+		&& (boxCenter + boxHalfSize) < (pCenter + pHalfSize);
 }
 
-debpOctree *debpOctree::FindNodeAtPoint( const decVector &point ) const{
-	int octant = FindOctantAtPoint( point );
+debpOctree *debpOctree::FindNodeAtPoint(const decVector &point) const{
+	int octant = FindOctantAtPoint(point);
 	
 	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
+	if(octant == eoNotFound) return NULL;
 	
 	// return the node that we found
-	return pNodes[ octant ];
+	return pNodes[octant];
 }
 
-int debpOctree::FindOctantAtPoint( const decVector &point ) const{
+int debpOctree::FindOctantAtPoint(const decVector &point) const{
 	int bitmask = 0;
 	
 	// determine the bit mask of the box compared to the center of the node.
 	// a positive axis becomes a 1 bit and a negative axis a 0 bit.
-	if( point.x >= pCenter.x ) bitmask |= 4;
-	if( point.y >= pCenter.y ) bitmask |= 2;
-	if( point.z >= pCenter.z ) bitmask |= 1;
+	if(point.x >= pCenter.x) bitmask |= 4;
+	if(point.y >= pCenter.y) bitmask |= 2;
+	if(point.z >= pCenter.z) bitmask |= 1;
 	
 	// return the found octant
 	return bitmask;
 }
 
-bool debpOctree::ContainsPoint( const decVector &point ) const{
-	return point >= ( pCenter - pHalfSize ) &&  point < ( pCenter + pHalfSize );
+bool debpOctree::ContainsPoint(const decVector &point) const{
+	return point >= (pCenter - pHalfSize) &&  point < (pCenter + pHalfSize);
 }
 
 
 
-debpOctree *debpOctree::SearchTreeForBox( const decVector &boxCenter, const decVector &boxHalfSize ) const{
-	debpOctree *nextNode = FindNodeAtBox( boxCenter, boxHalfSize );
-	debpOctree *curNode = ( debpOctree* )this;
+debpOctree *debpOctree::SearchTreeForBox(const decVector &boxCenter, const decVector &boxHalfSize) const{
+	debpOctree *nextNode = FindNodeAtBox(boxCenter, boxHalfSize);
+	debpOctree *curNode = (debpOctree*)this;
 	
-	while( nextNode ){
+	while(nextNode){
 		curNode = nextNode;
-		nextNode = curNode->FindNodeAtBox( boxCenter, boxHalfSize );
+		nextNode = curNode->FindNodeAtBox(boxCenter, boxHalfSize);
 	}
 	
 	return curNode;
 }
 
-debpOctree *debpOctree::SearchTreeForPoint( const decVector &point ) const{
-	debpOctree *nextNode = FindNodeAtPoint( point );
-	debpOctree *curNode = ( debpOctree* )this;
+debpOctree *debpOctree::SearchTreeForPoint(const decVector &point) const{
+	debpOctree *nextNode = FindNodeAtPoint(point);
+	debpOctree *curNode = (debpOctree*)this;
 	
-	while( nextNode ){
+	while(nextNode){
 		curNode = nextNode;
-		nextNode = curNode->FindNodeAtPoint( point );
+		nextNode = curNode->FindNodeAtPoint(point);
 	}
 	
 	return curNode;
 }
 
-void debpOctree::VisitNodes( debpOctreeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
+void debpOctree::VisitNodes(debpOctreeVisitor *visitor){
+	if(! visitor) DETHROW(deeInvalidParam);
 	int i;
 	
 	// visit
-	visitor->VisitNode( this, debpDECollisionDetection::eirInside );
+	visitor->VisitNode(this, debpDECollisionDetection::eirInside);
 	
 	// visit each child node
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ) pNodes[ i ]->VisitNodes( visitor );
+	for(i=0; i<8; i++){
+		if(pNodes[i]) pNodes[i]->VisitNodes(visitor);
 	}
 }
 
-void debpOctree::VisitNodesColliding( debpOctreeVisitor *visitor, debpCollisionVolume *volume ){
-	if( ! visitor || ! volume ) DETHROW( deeInvalidParam );
-	debpCollisionBox colBox( pCenter, pHalfSize );
+void debpOctree::VisitNodesColliding(debpOctreeVisitor *visitor, debpCollisionVolume *volume){
+	if(! visitor || ! volume) DETHROW(deeInvalidParam);
+	debpCollisionBox colBox(pCenter, pHalfSize);
 	int i;
 	
 	// exit if this node is not in the collision volume
-	if( ! volume->BoxHitsVolume( &colBox ) ) return;
+	if(! volume->BoxHitsVolume(&colBox)) return;
 	
 	// visit
-	visitor->VisitNode( this, debpDECollisionDetection::eirPartial );
+	visitor->VisitNode(this, debpDECollisionDetection::eirPartial);
 	
 	// test each child node
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ) pNodes[ i ]->VisitNodesColliding( visitor, volume );
+	for(i=0; i<8; i++){
+		if(pNodes[i]) pNodes[i]->VisitNodesColliding(visitor, volume);
 	}
 }
 
-void debpOctree::VisitNodesColliding( debpOctreeVisitor *visitor, const decVector &boxMinExtend, const decVector &boxMaxExtend ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
+void debpOctree::VisitNodesColliding(debpOctreeVisitor *visitor, const decVector &boxMinExtend, const decVector &boxMaxExtend){
+	if(! visitor) DETHROW(deeInvalidParam);
 	int i, result;
 	
-	result = debpDECollisionDetection::AABoxIntersectsAABox( pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend );
+	result = debpDECollisionDetection::AABoxIntersectsAABox(pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend);
 	
-	if( result == debpDECollisionDetection::eirOutside ) return;
+	if(result == debpDECollisionDetection::eirOutside) return;
 	
-	visitor->VisitNode( this, result );
+	visitor->VisitNode(this, result);
 	
-	if( result == debpDECollisionDetection::eirInside ){
-		for( i=0; i<8; i++ ){
-			if( pNodes[ i ] ){
-				pNodes[ i ]->VisitNodes( visitor );
+	if(result == debpDECollisionDetection::eirInside){
+		for(i=0; i<8; i++){
+			if(pNodes[i]){
+				pNodes[i]->VisitNodes(visitor);
 			}
 		}
 		
 	}else{
-		for( i=0; i<8; i++ ){
-			if( pNodes[ i ] ){
-				pNodes[ i ]->VisitNodesColliding( visitor, boxMinExtend, boxMaxExtend );
+		for(i=0; i<8; i++){
+			if(pNodes[i]){
+				pNodes[i]->VisitNodesColliding(visitor, boxMinExtend, boxMaxExtend);
 			}
 		}
 	}
 }
 
-void debpOctree::ClearTree( bool clearNodes ){
+void debpOctree::ClearTree(bool clearNodes){
 	int i;
 	
 	ClearNodeContent();
 	
-	for( i=0; i<8; i++ ){
-		if( pNodes[ i ] ){
-			pNodes[ i ]->ClearTree( clearNodes );
-			if( clearNodes ){
-				delete pNodes[ i ];
-				pNodes[ i ] = NULL;
+	for(i=0; i<8; i++){
+		if(pNodes[i]){
+			pNodes[i]->ClearTree(clearNodes);
+			if(clearNodes){
+				delete pNodes[i];
+				pNodes[i] = NULL;
 			}
 		}
 	}

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetDefaultVector( aeController *controller, const decVector &newVector );
+	aeUControllerSetDefaultVector(aeController *controller, const decVector &newVector);
 	
 protected:
 	/** Clean up undo. */

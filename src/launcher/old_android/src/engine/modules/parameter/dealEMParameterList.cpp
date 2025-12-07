@@ -55,19 +55,19 @@ int dealEMParameterList::GetParameterCount() const{
 	return pParameters.GetCount();
 }
 
-dealEMParameter *dealEMParameterList::GetParameterAt( int index ) const{
-	return ( dealEMParameter* )pParameters.GetAt( index );
+dealEMParameter *dealEMParameterList::GetParameterAt(int index) const{
+	return (dealEMParameter*)pParameters.GetAt(index);
 }
 
-dealEMParameter *dealEMParameterList::GetParameterNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+dealEMParameter *dealEMParameterList::GetParameterNamed(const char *name) const{
+	if(! name) DETHROW(deeInvalidParam);
 	
 	int i, count = pParameters.GetCount();
 	dealEMParameter *parameter;
 	
-	for( i=0; i<count; i++ ){
-		parameter = ( dealEMParameter* )pParameters.GetAt( i );
-		if( parameter->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		parameter = (dealEMParameter*)pParameters.GetAt(i);
+		if(parameter->GetName().Equals(name)){
 			return parameter;
 		}
 	}
@@ -75,25 +75,25 @@ dealEMParameter *dealEMParameterList::GetParameterNamed( const char *name ) cons
 	return NULL;
 }
 
-bool dealEMParameterList::HasParameter( dealEMParameter *parameter ) const{
-	return pParameters.Has( parameter );
+bool dealEMParameterList::HasParameter(dealEMParameter *parameter) const{
+	return pParameters.Has(parameter);
 }
 
-bool dealEMParameterList::HasParameterNamed( const char *name ) const{
-	return GetParameterNamed( name ) != NULL;
+bool dealEMParameterList::HasParameterNamed(const char *name) const{
+	return GetParameterNamed(name) != NULL;
 }
 
-int dealEMParameterList::IndexOfParameter( dealEMParameter *parameter ) const{
-	return pParameters.IndexOf( parameter );
+int dealEMParameterList::IndexOfParameter(dealEMParameter *parameter) const{
+	return pParameters.IndexOf(parameter);
 }
 
-int dealEMParameterList::IndexOfParameterNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+int dealEMParameterList::IndexOfParameterNamed(const char *name) const{
+	if(! name) DETHROW(deeInvalidParam);
 	
 	int i, count = pParameters.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( dealEMParameter* )pParameters.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((dealEMParameter*)pParameters.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -101,18 +101,18 @@ int dealEMParameterList::IndexOfParameterNamed( const char *name ) const{
 	return -1;
 }
 
-void dealEMParameterList::AddParameter( dealEMParameter *parameter ){
-	if( ! parameter || HasParameterNamed( parameter->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void dealEMParameterList::AddParameter(dealEMParameter *parameter){
+	if(! parameter || HasParameterNamed(parameter->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pParameters.Add( parameter );
+	pParameters.Add(parameter);
 }
 
-void dealEMParameterList::RemoveParameter( dealEMParameter *parameter ){
-	int index = IndexOfParameter( parameter );
+void dealEMParameterList::RemoveParameter(dealEMParameter *parameter){
+	int index = IndexOfParameter(parameter);
 	
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	pParameters.RemoveFrom( index );
+	pParameters.RemoveFrom(index);
 }
 
 void dealEMParameterList::RemoveAllParameters(){

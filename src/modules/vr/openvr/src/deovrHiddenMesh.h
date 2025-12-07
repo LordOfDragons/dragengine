@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load hidden mesh. */
-	deovrHiddenMesh( deVROpenVR &ovr, vr::Hmd_Eye eye );
+	deovrHiddenMesh(deVROpenVR &ovr, vr::Hmd_Eye eye);
 	
 protected:
 	/** Clean up hidden mesh. */
@@ -67,13 +67,13 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{ return pOvr; }
+	inline deVROpenVR &GetOvr() const{return pOvr;}
 	
 	/** Eye. */
-	inline vr::Hmd_Eye GetEye() const{ return pEye; }
+	inline vr::Hmd_Eye GetEye() const{return pEye;}
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline deModel *GetModel() const{return pModel;}
 	/*@}*/
 	
 	

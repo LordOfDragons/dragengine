@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound or NULL if silent. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline deSound *GetSound() const{return pSound;}
 	
 	/** \brief Set sound or NULL if silent. */
-	void SetSound( deSound *sound );
+	void SetSound(deSound *sound);
 	
 	
 	
@@ -85,7 +85,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	inline float GetMinSpeed() const{ return pMinSpeed; }
+	inline float GetMinSpeed() const{return pMinSpeed;}
 	
 	/**
 	 * \brief Set minimum play speed.
@@ -93,7 +93,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	void SetMinSpeed( float speed );
+	void SetMinSpeed(float speed);
 	
 	/**
 	 * \brief Maximum play speed.
@@ -101,7 +101,7 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	inline float GetMaxSpeed() const{ return pMaxSpeed; }
+	inline float GetMaxSpeed() const{return pMaxSpeed;}
 	
 	/**
 	 * \brief Set maximum play speed.
@@ -109,19 +109,19 @@ public:
 	 * A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
 	 * values play backwards. A value of -1 would play backwards at original speed.
 	 */
-	void SetMaxSpeed( float speed );
+	void SetMaxSpeed(float speed);
 	
 	/** \brief Sound is played back looping. */
-	inline bool GetLooping() const{ return pLooping; }
+	inline bool GetLooping() const{return pLooping;}
 	
 	/** \brief Set if sound is played back looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	
 	
 	/** \brief Play speed target. */
-	inline deSynthesizerControllerTarget &GetTargetSpeed(){ return pTargetSpeed; }
-	inline const deSynthesizerControllerTarget &GetTargetSpeed() const{ return pTargetSpeed; }
+	inline deSynthesizerControllerTarget &GetTargetSpeed(){return pTargetSpeed;}
+	inline const deSynthesizerControllerTarget &GetTargetSpeed() const{return pTargetSpeed;}
 	
 	/**
 	 * \brief Play target.
@@ -131,8 +131,8 @@ public:
 	 * playback freezing playback position. A value of 0 stops playback and rewinds playback
 	 * position to the beginning.
 	 */
-	inline deSynthesizerControllerTarget &GetTargetPlay(){ return pTargetPlay; }
-	inline const deSynthesizerControllerTarget &GetTargetPlay() const{ return pTargetPlay; }
+	inline deSynthesizerControllerTarget &GetTargetPlay(){return pTargetPlay;}
+	inline const deSynthesizerControllerTarget &GetTargetPlay() const{return pTargetPlay;}
 	/*@}*/
 	
 	
@@ -140,7 +140,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

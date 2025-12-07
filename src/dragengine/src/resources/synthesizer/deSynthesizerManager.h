@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer resource manager. */
-	deSynthesizerManager( deEngine *engine );
+	deSynthesizerManager(deEngine *engine);
 	
 	/** \brief Clean up synthesizer resource manager and report leaking resources. */
 	~deSynthesizerManager();
@@ -88,7 +88,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

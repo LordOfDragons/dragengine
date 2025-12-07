@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderLightParticles( deoglRenderThread &renderThread );
+	deoglRenderLightParticles(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
 	~deoglRenderLightParticles();
 	/*@}*/
@@ -57,22 +57,22 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render lights. */
-	void RenderLights( deoglRenderPlan &plan );
+	void RenderLights(deoglRenderPlan &plan);
 	
 	/** Render particle emitter instance lights. */
-	void RenderParticleEmitterInstance( deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance );
+	void RenderParticleEmitterInstance(deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance);
 	
 	/** Render particle emitter instance type lights. */
-	void RenderParticleEmitterInstanceType( deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance,
-		deoglRParticleEmitterInstanceType &itype, deoglRParticleEmitterType &etype );
+	void RenderParticleEmitterInstanceType(deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance,
+		deoglRParticleEmitterInstanceType &itype, deoglRParticleEmitterType &etype);
 	
 	/** Updates the light shader parameter block. */
-	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRParticleEmitter &emitter, deoglRParticleEmitterType &type );
+	void UpdateLightParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlan &plan, deoglRParticleEmitter &emitter, deoglRParticleEmitterType &type);
 	
 	/** Updates the instance shader parameter block. */
-	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &type );
+	void UpdateInstanceParamBlock(deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlan &plan, deoglRParticleEmitterInstance &instance, deoglRParticleEmitterInstanceType &type);
 	/*@}*/
 	
 private:

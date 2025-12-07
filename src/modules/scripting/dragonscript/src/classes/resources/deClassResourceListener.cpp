@@ -42,22 +42,22 @@
 /////////////////////
 
 // public func void finishedLoading( String filename, ResourceLoaderType resourceType, Object resource )
-deClassResourceListener::nfFinishedLoading::nfFinishedLoading( const sInitData &init ) :
-dsFunction( init.clsRN, "finishedLoading", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // filename
-	p_AddParameter( init.clsResourceLoaderType ); // resourceType
-	p_AddParameter( init.clsObj ); // resource
+deClassResourceListener::nfFinishedLoading::nfFinishedLoading(const sInitData &init) :
+dsFunction(init.clsRN, "finishedLoading", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // filename
+	p_AddParameter(init.clsResourceLoaderType); // resourceType
+	p_AddParameter(init.clsObj); // resource
 }
-void deClassResourceListener::nfFinishedLoading::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassResourceListener::nfFinishedLoading::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 // public func void failedLoading( String filename, ResourceLoaderType resourceType )
-deClassResourceListener::nfFailedLoading::nfFailedLoading( const sInitData &init ) :
-dsFunction( init.clsRN, "failedLoading", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // filename
-	p_AddParameter( init.clsResourceLoaderType ); // resourceType
+deClassResourceListener::nfFailedLoading::nfFailedLoading(const sInitData &init) :
+dsFunction(init.clsRN, "failedLoading", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // filename
+	p_AddParameter(init.clsResourceLoaderType); // resourceType
 }
-void deClassResourceListener::nfFailedLoading::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassResourceListener::nfFailedLoading::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 
@@ -68,19 +68,19 @@ void deClassResourceListener::nfFailedLoading::RunFunction( dsRunTime *rt, dsVal
 // Constructor, Destructors
 /////////////////////////////
 
-deClassResourceListener::deClassResourceListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
-dsClass( "ResourceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassResourceListener::deClassResourceListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("ResourceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
 	// set parser info
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	
 	// do the rest
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassResourceListener::~deClassResourceListener(){
@@ -91,8 +91,8 @@ deClassResourceListener::~deClassResourceListener(){
 // Management
 ///////////////
 
-void deClassResourceListener::CreateClassMembers( dsEngine *engine ){
-	pClsResourceLoaderType = engine->GetClass( "Dragengine.ResourceLoaderType" );
+void deClassResourceListener::CreateClassMembers(dsEngine *engine){
+	pClsResourceLoaderType = engine->GetClass("Dragengine.ResourceLoaderType");
 	
 	sInitData init;
 	init.clsRN = this;
@@ -103,15 +103,15 @@ void deClassResourceListener::CreateClassMembers( dsEngine *engine ){
 	init.clsResourceLoaderType = pClsResourceLoaderType;
 	
 	// add functions
-	AddFunction( new nfFinishedLoading( init ) ); // function 0
-	AddFunction( new nfFailedLoading( init ) ); // function 1
+	AddFunction(new nfFinishedLoading(init)); // function 0
+	AddFunction(new nfFailedLoading(init)); // function 1
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function indices for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexFinishedLoading = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexFailedLoading = funcList.GetIndexOf( GetFunction( 1 ) );
+	pFuncIndexFinishedLoading = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexFailedLoading = funcList.GetIndexOf(GetFunction(1));
 }
 

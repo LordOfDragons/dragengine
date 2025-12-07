@@ -47,7 +47,7 @@ public:
 	ceActorPoseList();
 	
 	/** \brief Create pose list. */
-	ceActorPoseList( const ceActorPoseList &pose );
+	ceActorPoseList(const ceActorPoseList &pose);
 	
 	/** \brief Clean up pose list. */
 	~ceActorPoseList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Gesture at index. */
-	ceActorPose *GetAt( int index ) const;
+	ceActorPose *GetAt(int index) const;
 	
 	/** \brief Named pose or \em NULL if absent. */
-	ceActorPose *GetNamed( const char *name ) const;
+	ceActorPose *GetNamed(const char *name) const;
 	
 	/** \brief Index of pose or -1 if absent. */
-	int IndexOf( ceActorPose *pose ) const;
+	int IndexOf(ceActorPose *pose) const;
 	
 	/** \brief Index of named pose or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Gesture is present. */
-	bool Has( ceActorPose *pose ) const;
+	bool Has(ceActorPose *pose) const;
 	
 	/** \brief Named pose is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add pose. */
-	void Add( ceActorPose *pose );
+	void Add(ceActorPose *pose);
 	
 	/** \brief Remove pose. */
-	void Remove( ceActorPose *pose );
+	void Remove(ceActorPose *pose);
 	
 	/** \brief Remove all poses. */
 	void RemoveAll();
 	
 	/** \brief Set from another list. */
-	ceActorPoseList &operator=( const ceActorPoseList &list );
+	ceActorPoseList &operator=(const ceActorPoseList &list);
 	/*@}*/
 };
 

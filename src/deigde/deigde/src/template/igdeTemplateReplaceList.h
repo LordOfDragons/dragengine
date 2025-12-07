@@ -47,7 +47,7 @@ public:
 	igdeTemplateReplaceList();
 	
 	/** \brief Create copy of project template replace list. */
-	igdeTemplateReplaceList( const igdeTemplateReplaceList &list );
+	igdeTemplateReplaceList(const igdeTemplateReplaceList &list);
 	
 	/** \brief Clean up project template replace list. */
 	~igdeTemplateReplaceList();
@@ -61,19 +61,19 @@ public:
 	int GetCount() const;
 	
 	/** \brief Project template replace at index. */
-	igdeTemplateReplace *GetAt( int index ) const;
+	igdeTemplateReplace *GetAt(int index) const;
 	
 	/** \brief Index of project template replace or -1 if absent. */
-	int IndexOf( igdeTemplateReplace *replace ) const;
+	int IndexOf(igdeTemplateReplace *replace) const;
 	
 	/** \brief Project template replace is present. */
-	bool Has( igdeTemplateReplace *replace ) const;
+	bool Has(igdeTemplateReplace *replace) const;
 	
 	/** \brief Add project template replace. */
-	void Add( igdeTemplateReplace *replace );
+	void Add(igdeTemplateReplace *replace);
 	
 	/** \brief Remove project template replace. */
-	void Remove( igdeTemplateReplace *replace );
+	void Remove(igdeTemplateReplace *replace);
 	
 	/** \brief Remove all project template replaces. */
 	void RemoveAll();
@@ -84,7 +84,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy list. */
-	igdeTemplateReplaceList &operator=( const igdeTemplateReplaceList &list );
+	igdeTemplateReplaceList &operator=(const igdeTemplateReplaceList &list);
 	/*@}*/
 };
 

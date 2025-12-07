@@ -40,25 +40,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerRemove::seULayerRemove( seLayer *layer ) :
-pSky( NULL ),
-pLayer( NULL ),
-pIndex( 0 )
+seULayerRemove::seULayerRemove(seLayer *layer) :
+pSky(NULL),
+pLayer(NULL),
+pIndex(0)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSky * const sky = layer->GetSky();
-	if( ! sky ){
-		DETHROW( deeInvalidParam );
+	if(! sky){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Remove Layer" );
+	SetShortInfo("Remove Layer");
 	
-	pIndex = sky->GetLayers().IndexOf( layer );
-	if( pIndex == -1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = sky->GetLayers().IndexOf(layer);
+	if(pIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSky = sky;
@@ -69,10 +69,10 @@ pIndex( 0 )
 }
 
 seULayerRemove::~seULayerRemove(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
-	if( pSky ){
+	if(pSky){
 		pSky->FreeReference();
 	}
 }
@@ -83,9 +83,9 @@ seULayerRemove::~seULayerRemove(){
 ///////////////
 
 void seULayerRemove::Undo(){
-	pSky->InsertLayerAt( pLayer, pIndex );
+	pSky->InsertLayerAt(pLayer, pIndex);
 }
 
 void seULayerRemove::Redo(){
-	pSky->RemoveLayer( pLayer );
+	pSky->RemoveLayer(pLayer);
 }

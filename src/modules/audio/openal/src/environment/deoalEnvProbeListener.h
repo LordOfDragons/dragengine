@@ -69,7 +69,7 @@ public:
 	deoalEnvProbeListener();
 	
 	/** \brief Create environment probe listener. */
-	deoalEnvProbeListener( const deoalEnvProbeListener &listener );
+	deoalEnvProbeListener(const deoalEnvProbeListener &listener);
 	
 	/** \brief Clean up environment probe listener. */
 	~deoalEnvProbeListener();
@@ -80,82 +80,82 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Reflected percentage for low frequencies. */
-	inline float GetReflectedLow() const{ return pReflectedLow; }
+	inline float GetReflectedLow() const{return pReflectedLow;}
 	
 	/** \brief Reflected percentage for medium frequencies. */
-	inline float GetReflectedMedium() const{ return pReflectedMedium; }
+	inline float GetReflectedMedium() const{return pReflectedMedium;}
 	
 	/** \brief Reflected percentage for high frequencies. */
-	inline float GetReflectedHigh() const{ return pReflectedHigh; }
+	inline float GetReflectedHigh() const{return pReflectedHigh;}
 	
 	/** \brief Reflection delay in seconds. */
-	inline float GetReflectionDelay() const{ return pReflectionDelay; }
+	inline float GetReflectionDelay() const{return pReflectionDelay;}
 	
 	/** \brief Set reflected. */
-	void SetReflected( float gainLow, float gainMedium, float gainHigh, float delay );
+	void SetReflected(float gainLow, float gainMedium, float gainHigh, float delay);
 	
 	/** \brief Reflection pan direction. */
-	inline const decVector &GetReflectionPan() const{ return pReflectionPan; }
+	inline const decVector &GetReflectionPan() const{return pReflectionPan;}
 	
 	/** \brief Set reflection pan direction. */
-	void SetReflectionPan( const decVector &pan );
+	void SetReflectionPan(const decVector &pan);
 	
 	/** \brief Reverberation gain for low frequencies. */
-	inline float GetReverberationGainLow() const{ return pReverberationGainLow; }
+	inline float GetReverberationGainLow() const{return pReverberationGainLow;}
 	
 	/** \brief Reverberation gain for medium frequencies. */
-	inline float GetReverberationGainMedium() const{ return pReverberationGainMedium; }
+	inline float GetReverberationGainMedium() const{return pReverberationGainMedium;}
 	
 	/** \brief Reverberation gain for high frequencies. */
-	inline float GetReverberationGainHigh() const{ return pReverberationGainHigh; }
+	inline float GetReverberationGainHigh() const{return pReverberationGainHigh;}
 	
 	/** \brief Reverberation delay in seconds. */
-	inline float GetReverberationDelay() const{ return pReverberationDelay; }
+	inline float GetReverberationDelay() const{return pReverberationDelay;}
 	
 	/** \brief Set reverberation. */
-	void SetReverberation( float gainLow, float gainMedium, float gainHigh, float delay );
+	void SetReverberation(float gainLow, float gainMedium, float gainHigh, float delay);
 	
 	/** \brief Reverberation pan direction. */
-	inline const decVector &GetReverberationPan() const{ return pReverberationPan; }
+	inline const decVector &GetReverberationPan() const{return pReverberationPan;}
 	
 	/** \brief Set reverberation pan direction. */
-	void SetReverberationPan( const decVector &pan );
+	void SetReverberationPan(const decVector &pan);
 	
 	
 	
 	/** \brief Reverberation time in seconds for medium frequencies. */
-	inline float GetReverberationTimeMedium() const{ return pReverberationTimeMedium; }
+	inline float GetReverberationTimeMedium() const{return pReverberationTimeMedium;}
 	
 	/** \brief Reverberation time in seconds for low frequencies. */
-	inline float GetReverberationTimeLow() const{ return pReverberationTimeLow; }
+	inline float GetReverberationTimeLow() const{return pReverberationTimeLow;}
 	
 	/** \brief Reverberation time in seconds for high frequencies. */
-	inline float GetReverberationTimeHigh() const{ return pReverberationTimeHigh; }
+	inline float GetReverberationTimeHigh() const{return pReverberationTimeHigh;}
 	
 	/** \brief Set reverberation. */
-	void SetReverberationTime( float timeLow, float timeMedium, float timeHigh );
+	void SetReverberationTime(float timeLow, float timeMedium, float timeHigh);
 	
 	/** \brief Echo delay. */
-	inline float GetEchoDelay() const{ return pEchoDelay; }
+	inline float GetEchoDelay() const{return pEchoDelay;}
 	
 	/** \brief Set echo. */
-	void SetEcho( float delay );
+	void SetEcho(float delay);
 	
 	/** \brief Impulse response. */
-	inline deoalImpulseResponse &GetImpulseResponse(){ return pImpulseResponse; }
-	inline const deoalImpulseResponse &GetImpulseResponse() const{ return pImpulseResponse; }
+	inline deoalImpulseResponse &GetImpulseResponse(){return pImpulseResponse;}
+	inline const deoalImpulseResponse &GetImpulseResponse() const{return pImpulseResponse;}
 	
 	/** \brief Energy histogram. */
-	inline deoalEnergyHistogram &GetEnergyHistogram(){ return pEnergyHistogram; }
-	inline const deoalEnergyHistogram &GetEnergyHistogram() const{ return pEnergyHistogram; }
+	inline deoalEnergyHistogram &GetEnergyHistogram(){return pEnergyHistogram;}
+	inline const deoalEnergyHistogram &GetEnergyHistogram() const{return pEnergyHistogram;}
 	
 	
 	
 	/** \brif Apply scaled parameters. */
-	void AddScaled( const deoalEnvProbeListener &listener, float factor );
+	void AddScaled(const deoalEnvProbeListener &listener, float factor);
 	
 	/** \brif Normalize. */
-	void Normalize( float factor );
+	void Normalize(float factor);
 	
 	/** \brif Clear. */
 	void Clear();
@@ -166,10 +166,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Assign. */
-	deoalEnvProbeListener &operator=( const deoalEnvProbeListener &listener );
+	deoalEnvProbeListener &operator=(const deoalEnvProbeListener &listener);
 	
 	/** \brief Add. */
-	deoalEnvProbeListener &operator+=( const deoalEnvProbeListener &listener );
+	deoalEnvProbeListener &operator+=(const deoalEnvProbeListener &listener);
 	/*@}*/
 };
 

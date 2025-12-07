@@ -68,21 +68,21 @@ protected:
 	seWPSynthesizer &pPanel;
 	
 public:
-	cBaseTextFieldListener( seWPSynthesizer &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(seWPSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if( ! synthesizer ){
+		if(! synthesizer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, synthesizer ) ));
-		if( undo ){
-			synthesizer->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, synthesizer)));
+		if(undo){
+			synthesizer->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSynthesizer *synthesizer ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer *synthesizer) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -90,21 +90,21 @@ protected:
 	seWPSynthesizer &pPanel;
 	
 public:
-	cBaseComboBoxListener( seWPSynthesizer &panel ) : pPanel( panel ){ }
+	cBaseComboBoxListener(seWPSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if( ! synthesizer ){
+		if(! synthesizer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, synthesizer ) ));
-		if( undo ){
-			synthesizer->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, synthesizer)));
+		if(undo){
+			synthesizer->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, seSynthesizer *synthesizer ) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -112,157 +112,157 @@ protected:
 	seWPSynthesizer &pPanel;
 	
 public:
-	cBaseAction( seWPSynthesizer &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(seWPSynthesizer &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if( ! synthesizer ){
+		if(! synthesizer){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( synthesizer ) ));
-		if( undo ){
-			synthesizer->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(synthesizer)));
+		if(undo){
+			synthesizer->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( seSynthesizer *synthesizer ) = 0;
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer) = 0;
 	
 	virtual void Update(){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
-		if( synthesizer ){
-			Update( *synthesizer );
+		if(synthesizer){
+			Update(*synthesizer);
 			
 		}else{
-			SetEnabled( false );
+			SetEnabled(false);
 		}
 	}
 	
-	virtual void Update( const seSynthesizer & ){
-		SetEnabled( true );
+	virtual void Update(const seSynthesizer &){
+		SetEnabled(true);
 	}
 };
 
 
 class cComboChannelCount : public cBaseComboBoxListener{
 public:
-	cComboChannelCount( seWPSynthesizer &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboChannelCount(seWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, seSynthesizer *synthesizer ){
-		const int value = decMath::max( comboBox->GetText().ToInt(), 1 );
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer){
+		const int value = decMath::max(comboBox->GetText().ToInt(), 1);
 		return synthesizer->GetChannelCount() != value
-			? new seUSynthesizerSetChannelCount( synthesizer, value ) : NULL;
+			? new seUSynthesizerSetChannelCount(synthesizer, value) : NULL;
 	}
 };
 
 class cComboSampleRate : public cBaseComboBoxListener{
 public:
-	cComboSampleRate( seWPSynthesizer &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboSampleRate(seWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, seSynthesizer *synthesizer){
-		const int value = decMath::max( comboBox->GetText().ToInt(), 1 );
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer){
+		const int value = decMath::max(comboBox->GetText().ToInt(), 1);
 		return synthesizer->GetSampleRate() != value
-			? new seUSynthesizerSetSampleRate( synthesizer, value ) : NULL;
+			? new seUSynthesizerSetSampleRate(synthesizer, value) : NULL;
 	}
 };
 
 class cComboBytesPerSample : public cBaseComboBoxListener{
 public:
-	cComboBytesPerSample( seWPSynthesizer &panel ) : cBaseComboBoxListener( panel ){ }
+	cComboBytesPerSample(seWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeComboBox *comboBox, seSynthesizer *synthesizer){
-		const int value = decMath::max( comboBox->GetText().ToInt(), 1 );
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer){
+		const int value = decMath::max(comboBox->GetText().ToInt(), 1);
 		return synthesizer->GetBytesPerSample() != value
-			? new seUSynthesizerSetBytesPerSample( synthesizer, value ) : NULL;
+			? new seUSynthesizerSetBytesPerSample(synthesizer, value) : NULL;
 	}
 };
 
 class cTextSampleCount : public cBaseTextFieldListener{
 public:
-	cTextSampleCount( seWPSynthesizer &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextSampleCount(seWPSynthesizer &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSynthesizer *synthesizer ){
-		const int value = decMath::max( textField->GetInteger(), 1 );
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer *synthesizer){
+		const int value = decMath::max(textField->GetInteger(), 1);
 		return synthesizer->GetSampleCount() != value
-			? new seUSynthesizerSetSampleCount( synthesizer, value ) : NULL;
+			? new seUSynthesizerSetSampleCount(synthesizer, value) : NULL;
 	}
 };
 
 class cTextPlayTime : public cBaseTextFieldListener{
 	bool &pPreventUpdate;
 public:
-	cTextPlayTime( seWPSynthesizer &panel, bool &preventUpdate ) :
-	cBaseTextFieldListener( panel ), pPreventUpdate( preventUpdate ){ }
+	cTextPlayTime(seWPSynthesizer &panel, bool &preventUpdate) :
+	cBaseTextFieldListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, seSynthesizer *synthesizer ){
-		if( pPreventUpdate ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer *synthesizer){
+		if(pPreventUpdate){
 			return NULL;
 		}
-		const int value = decMath::max( ( int )( textField->GetFloat() * synthesizer->GetSampleRate() + 0.5f ), 1 );
+		const int value = decMath::max((int)(textField->GetFloat() * synthesizer->GetSampleRate() + 0.5f), 1);
 		return synthesizer->GetSampleCount() != value
-			? new seUSynthesizerSetSampleCount( synthesizer, value ) : NULL;
+			? new seUSynthesizerSetSampleCount(synthesizer, value) : NULL;
 	}
 };
 
 
 class cActionLooping : public cBaseAction{
 public:
-	cActionLooping( seWPSynthesizer &panel ) : cBaseAction( panel, "Looping",
-		NULL, "Playback looping" ){ }
+	cActionLooping(seWPSynthesizer &panel) : cBaseAction(panel, "Looping",
+		NULL, "Playback looping"){}
 	
-	virtual igdeUndo *OnAction( seSynthesizer *synthesizer ){
-		synthesizer->SetLooping( ! synthesizer->GetLooping() );
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+		synthesizer->SetLooping(! synthesizer->GetLooping());
 		return NULL;
 	}
 };
 
 class cActionPlay : public cBaseAction{
 public:
-	cActionPlay( seWPSynthesizer &panel ) : cBaseAction( panel, "Play",
+	cActionPlay(seWPSynthesizer &panel) : cBaseAction(panel, "Play",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPlay(),
-		"Start playing back" ){ }
+		"Start playing back"){}
 	
-	virtual igdeUndo *OnAction( seSynthesizer *synthesizer ){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		synthesizer->Play();
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer ){
-		SetEnabled( synthesizer.GetStopped() );
+	virtual void Update(const seSynthesizer &synthesizer){
+		SetEnabled(synthesizer.GetStopped());
 	}
 };
 
 class cActionPause : public cBaseAction{
 public:
-	cActionPause( seWPSynthesizer &panel ) : cBaseAction( panel, "Pause",
+	cActionPause(seWPSynthesizer &panel) : cBaseAction(panel, "Pause",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPause(),
-		"Pause playing back" ){ }
+		"Pause playing back"){}
 	
-	virtual igdeUndo *OnAction( seSynthesizer *synthesizer ){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		synthesizer->Pause();
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer ){
-		SetEnabled( synthesizer.GetPlaying() );
+	virtual void Update(const seSynthesizer &synthesizer){
+		SetEnabled(synthesizer.GetPlaying());
 	}
 };
 
 class cActionStop : public cBaseAction{
 public:
-	cActionStop( seWPSynthesizer &panel ) : cBaseAction( panel, "Stop",
+	cActionStop(seWPSynthesizer &panel) : cBaseAction(panel, "Stop",
 		panel.GetViewSynthesizer().GetWindowMain().GetIconStop(),
-		"Stop playing back" ){ }
+		"Stop playing back"){}
 	
-	virtual igdeUndo *OnAction( seSynthesizer *synthesizer ){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		synthesizer->Stop();
 		return NULL;
 	}
 	
-	virtual void Update(const seSynthesizer &synthesizer ){
-		SetEnabled( ! synthesizer.GetStopped() );
+	virtual void Update(const seSynthesizer &synthesizer){
+		SetEnabled(! synthesizer.GetStopped());
 	}
 };
 
@@ -276,67 +276,67 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPSynthesizer::seWPSynthesizer( seViewSynthesizer &viewSynthesizer ) :
-igdeContainerScroll( viewSynthesizer.GetEnvironment(), false, true ),
-pViewSynthesizer( viewSynthesizer ),
-pListener( NULL ),
-pSynthesizer( NULL ),
-pPreventUpdate( false )
+seWPSynthesizer::seWPSynthesizer(seViewSynthesizer &viewSynthesizer) :
+igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
+pViewSynthesizer(viewSynthesizer),
+pListener(NULL),
+pSynthesizer(NULL),
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPSynthesizerListener( *this );
+	pListener = new seWPSynthesizerListener(*this);
 	
 	
-	pActionPlay.TakeOver( new cActionPlay( *this ) );
-	pActionPause.TakeOver( new cActionPause( *this ) );
-	pActionStop.TakeOver( new cActionStop( *this ) );
+	pActionPlay.TakeOver(new cActionPlay(*this));
+	pActionPause.TakeOver(new cActionPause(*this));
+	pActionStop.TakeOver(new cActionStop(*this));
 	
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	
-	helper.GroupBoxFlow( content, groupBox, "Synthesizer Settings:" );
+	helper.GroupBoxFlow(content, groupBox, "Synthesizer Settings:");
 	
-	helper.ComboBox( groupBox, "Channels:", true, "Number of channels",
-		pCBChannelCount, new cComboChannelCount( *this ) );
-	pCBChannelCount->AddItem( "1" );
-	pCBChannelCount->AddItem( "2" );
+	helper.ComboBox(groupBox, "Channels:", true, "Number of channels",
+		pCBChannelCount, new cComboChannelCount(*this));
+	pCBChannelCount->AddItem("1");
+	pCBChannelCount->AddItem("2");
 	
-	helper.ComboBox( groupBox, "Sample rate:", true, "Sample rate in Hz",
-		pCBSampleRate, new cComboSampleRate( *this ) );
-	pCBSampleRate->AddItem( "44100" );
-	pCBSampleRate->AddItem( "22050" );
-	pCBSampleRate->AddItem( "11025" );
+	helper.ComboBox(groupBox, "Sample rate:", true, "Sample rate in Hz",
+		pCBSampleRate, new cComboSampleRate(*this));
+	pCBSampleRate->AddItem("44100");
+	pCBSampleRate->AddItem("22050");
+	pCBSampleRate->AddItem("11025");
 	
-	helper.ComboBox( groupBox, "Bytes per sample:", true, "Bytes per sample",
-		pCBBytesPerSample, new cComboBytesPerSample( *this ) );
-	pCBBytesPerSample->AddItem( "1" );
-	pCBBytesPerSample->AddItem( "2" );
-	
-	
-	helper.EditInteger( groupBox, "Sample count:", "Number of samples to create", 8,
-		pEditSampleCount, new cTextSampleCount( *this ) );
-	helper.EditFloat( groupBox, "Play time:", "Play time in seconds", 6, 1,
-		pEditPlayTime, new cTextPlayTime( *this, pPreventUpdate ) );
+	helper.ComboBox(groupBox, "Bytes per sample:", true, "Bytes per sample",
+		pCBBytesPerSample, new cComboBytesPerSample(*this));
+	pCBBytesPerSample->AddItem("1");
+	pCBBytesPerSample->AddItem("2");
 	
 	
-	helper.GroupBoxFlow( content, groupBox, "Playback / Testing:" );
-	helper.CheckBox( groupBox, pChkLooping, new cActionLooping( *this ), true );
-	helper.Button( groupBox, pBtnPlay, pActionPlay );
-	helper.Button( groupBox, pBtnPause, pActionPause );
-	helper.Button( groupBox, pBtnStop, pActionStop );
+	helper.EditInteger(groupBox, "Sample count:", "Number of samples to create", 8,
+		pEditSampleCount, new cTextSampleCount(*this));
+	helper.EditFloat(groupBox, "Play time:", "Play time in seconds", 6, 1,
+		pEditPlayTime, new cTextPlayTime(*this, pPreventUpdate));
+	
+	
+	helper.GroupBoxFlow(content, groupBox, "Playback / Testing:");
+	helper.CheckBox(groupBox, pChkLooping, new cActionLooping(*this), true);
+	helper.Button(groupBox, pBtnPlay, pActionPlay);
+	helper.Button(groupBox, pBtnPause, pActionPause);
+	helper.Button(groupBox, pBtnStop, pActionStop);
 }
 
 seWPSynthesizer::~seWPSynthesizer(){
-	if( pSynthesizer ){
-		pSynthesizer->RemoveNotifier( pListener );
+	if(pSynthesizer){
+		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->FreeReference();
 	}
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -346,20 +346,20 @@ seWPSynthesizer::~seWPSynthesizer(){
 // Management
 ///////////////
 
-void seWPSynthesizer::SetSynthesizer( seSynthesizer *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void seWPSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
-	if( pSynthesizer ){
-		pSynthesizer->RemoveNotifier( pListener );
+	if(pSynthesizer){
+		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
-	if( synthesizer ){
-		synthesizer->AddNotifier( pListener );
+	if(synthesizer){
+		synthesizer->AddNotifier(pListener);
 		synthesizer->AddReference();
 	}
 	
@@ -370,50 +370,50 @@ void seWPSynthesizer::SetSynthesizer( seSynthesizer *synthesizer ){
 
 
 void seWPSynthesizer::UpdateSynthesizer(){
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		decString text;
 		
-		text.Format( "%d", pSynthesizer->GetChannelCount() );
-		pCBChannelCount->SetText( text );
+		text.Format("%d", pSynthesizer->GetChannelCount());
+		pCBChannelCount->SetText(text);
 		
-		text.Format( "%d", pSynthesizer->GetSampleRate() );
-		pCBSampleRate->SetText( text );
+		text.Format("%d", pSynthesizer->GetSampleRate());
+		pCBSampleRate->SetText(text);
 		
-		text.Format( "%d", pSynthesizer->GetBytesPerSample()  );
-		pCBBytesPerSample->SetText( text );
+		text.Format("%d", pSynthesizer->GetBytesPerSample());
+		pCBBytesPerSample->SetText(text);
 		
-		pEditSampleCount->SetInteger( pSynthesizer->GetSampleCount() );
+		pEditSampleCount->SetInteger(pSynthesizer->GetSampleCount());
 		
 		pPreventUpdate = true;
-		pEditPlayTime->SetFloat( pSynthesizer->GetPlayTime() );
+		pEditPlayTime->SetFloat(pSynthesizer->GetPlayTime());
 		pPreventUpdate = false;
 		
 	}else{
-		pCBChannelCount->SetSelection( 0 );
-		pCBSampleRate->SetSelection( 0 );
-		pCBBytesPerSample->SetSelection( 0 );
+		pCBChannelCount->SetSelection(0);
+		pCBSampleRate->SetSelection(0);
+		pCBBytesPerSample->SetSelection(0);
 		pEditSampleCount->ClearText();
 		pEditPlayTime->ClearText();
 	}
 	
 	const bool enabled = pSynthesizer;
-	pCBChannelCount->SetEnabled( enabled );
-	pCBSampleRate->SetEnabled( enabled );
-	pCBBytesPerSample->SetEnabled( enabled );
-	pEditSampleCount->SetEnabled( enabled );
-	pEditPlayTime->SetEnabled( enabled );
+	pCBChannelCount->SetEnabled(enabled);
+	pCBSampleRate->SetEnabled(enabled);
+	pCBBytesPerSample->SetEnabled(enabled);
+	pEditSampleCount->SetEnabled(enabled);
+	pEditPlayTime->SetEnabled(enabled);
 }
 
 void seWPSynthesizer::UpdatePlayback(){
-	if( pSynthesizer ){
-		pChkLooping->SetChecked( pSynthesizer->GetLooping() );
+	if(pSynthesizer){
+		pChkLooping->SetChecked(pSynthesizer->GetLooping());
 		
 	}else{
-		pChkLooping->SetChecked( false );
+		pChkLooping->SetChecked(false);
 	}
 	
 	const bool enabled = pSynthesizer;
-	pChkLooping->SetEnabled( enabled );
+	pChkLooping->SetEnabled(enabled);
 	
 	pActionPlay->Update();
 	pActionPause->Update();

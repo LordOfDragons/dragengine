@@ -48,7 +48,7 @@ public:
 	jniGlobalJObject();
 	
 	/** \brief Create jobject. */
-	jniGlobalJObject( JNIEnv *env, jobject object );
+	jniGlobalJObject(JNIEnv *env, jobject object);
 	
 	/** \brief Clean jobject. */
 	~jniGlobalJObject();
@@ -59,22 +59,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast. */
-	inline jobject Ptr(){ return pObject; }
+	inline jobject Ptr(){return pObject;}
 	
 	/** \brief Auto-cast. */
-	inline operator jobject(){ return pObject; }
+	inline operator jobject(){return pObject;}
 	
 	/** \brief Testing. */
-	inline operator bool(){ return pObject != NULL; }
+	inline operator bool(){return pObject != NULL;}
 	
 	/** \brief Testing. */
-	inline bool operator!(){ return pObject == NULL; }
+	inline bool operator!(){return pObject == NULL;}
 	
 	/** \brief Copy. */
-	jniGlobalJObject &operator=( const jniGlobalJObject &object );
+	jniGlobalJObject &operator=(const jniGlobalJObject &object);
 	
 	/** \brief Set. */
-	void Set( JNIEnv *env, jobject object );
+	void Set(JNIEnv *env, jobject object);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -100,7 +100,7 @@ public:
 	jniGlobalJClass();
 	
 	/** \brief Create jobject. */
-	jniGlobalJClass( JNIEnv *env, jclass clazz );
+	jniGlobalJClass(JNIEnv *env, jclass clazz);
 	
 	/** \brief Clean jobject. */
 	~jniGlobalJClass();
@@ -111,22 +111,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast. */
-	inline jobject Ptr(){ return pClass; }
+	inline jobject Ptr(){return pClass;}
 	
 	/** \brief Auto-cast. */
-	inline operator jclass(){ return pClass; }
+	inline operator jclass(){return pClass;}
 	
 	/** \brief Testing. */
-	inline operator bool(){ return pClass != NULL; }
+	inline operator bool(){return pClass != NULL;}
 	
 	/** \brief Testing. */
-	inline bool operator!(){ return pClass == NULL; }
+	inline bool operator!(){return pClass == NULL;}
 	
 	/** \brief Copy. */
-	jniGlobalJClass &operator=( const jniGlobalJClass &clazz );
+	jniGlobalJClass &operator=(const jniGlobalJClass &clazz);
 	
 	/** \brief Set. */
-	void Set( JNIEnv *env, jclass clazz );
+	void Set(JNIEnv *env, jclass clazz);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -152,10 +152,10 @@ public:
 	jniGlobalJString();
 	
 	/** \brief Create jobject. */
-	jniGlobalJString( JNIEnv *env, jstring string );
+	jniGlobalJString(JNIEnv *env, jstring string);
 	
 	/** \brief Create jobject. */
-	jniGlobalJString( JNIEnv *env, const char *string );
+	jniGlobalJString(JNIEnv *env, const char *string);
 	
 	/** \brief Clean jobject. */
 	~jniGlobalJString();
@@ -166,25 +166,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cast. */
-	inline jobject Ptr(){ return pString; }
+	inline jobject Ptr(){return pString;}
 	
 	/** \brief Auto-cast. */
-	inline operator jstring(){ return pString; }
+	inline operator jstring(){return pString;}
 	
 	/** \brief Testing. */
-	inline operator bool(){ return pString != NULL; }
+	inline operator bool(){return pString != NULL;}
 	
 	/** \brief Testing. */
-	inline bool operator!(){ return pString == NULL; }
+	inline bool operator!(){return pString == NULL;}
 	
 	/** \brief Auto-cast to decString. */
 	operator decString();
 	
 	/** \brief Copy. */
-	jniGlobalJString &operator=( const jniGlobalJString &string );
+	jniGlobalJString &operator=(const jniGlobalJString &string);
 	
 	/** \brief Set. */
-	void Set( JNIEnv *env, jstring string );
+	void Set(JNIEnv *env, jstring string);
 	
 	/** \brief Clear. */
 	void Clear();

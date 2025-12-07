@@ -42,31 +42,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionPasteActions::ceWPTMAPChoiceOptionPasteActions( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionPasteActions::ceWPTMAPChoiceOptionPasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index ) :
-ceWPTMAPasteActions( windowMain, conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ),
-pIndex( index )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index) :
+ceWPTMAPasteActions(windowMain, conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option),
+pIndex(index)
 {
-	if( index < 0 || index > option.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > option.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
-ceWPTMAPChoiceOptionPasteActions::ceWPTMAPChoiceOptionPasteActions( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionPasteActions::ceWPTMAPChoiceOptionPasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index, const char *text ) :
-ceWPTMAPasteActions( windowMain, conversation, text ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ),
-pIndex( index )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index, const char *text) :
+ceWPTMAPasteActions(windowMain, conversation, text),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option),
+pIndex(index)
 {
-	if( index < 0 || index > option.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > option.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -75,6 +75,6 @@ pIndex( index )
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAPChoiceOptionPasteActions::CreateUndo( const ceConversationActionList &actions ){
-	return new ceUCAPChoiceActionPaste( pTopic, pPlayerChoice, pOption, actions, pIndex );
+ceUCActionPaste *ceWPTMAPChoiceOptionPasteActions::CreateUndo(const ceConversationActionList &actions){
+	return new ceUCAPChoiceActionPaste(pTopic, pPlayerChoice, pOption, actions, pIndex);
 }

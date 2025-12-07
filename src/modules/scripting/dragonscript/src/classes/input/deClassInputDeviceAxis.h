@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassInputDeviceAxis( deScriptingDragonScript &ds );
+	deClassInputDeviceAxis(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassInputDeviceAxis();
@@ -56,15 +56,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push axis. */
-	void PushAxis( dsRunTime *rt, dedsInputDevice *device, int index );
+	void PushAxis(dsRunTime *rt, dedsInputDevice *device, int index);
 	
-	inline dsClass *GetClassInputDeviceAxisType() const{ return pClsInputDeviceAxisType; }
+	inline dsClass *GetClassInputDeviceAxisType() const{return pClsInputDeviceAxisType;}
 	/*@}*/
 	
 	
@@ -86,30 +86,30 @@ private:
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetInputDevice );
-	DEF_NATFUNC( nfGetAxisIndex );
-	DEF_NATFUNC( nfGetDisplayImage );
-	DEF_NATFUNC( nfGetDisplayIconCount );
-	DEF_NATFUNC( nfGetDisplayIconAt );
-	DEF_NATFUNC( nfGetLargestDisplayIconX );
-	DEF_NATFUNC( nfGetLargestDisplayIconY );
-	DEF_NATFUNC( nfGetDisplayText );
+	DEF_NATFUNC(nfGetInputDevice);
+	DEF_NATFUNC(nfGetAxisIndex);
+	DEF_NATFUNC(nfGetDisplayImage);
+	DEF_NATFUNC(nfGetDisplayIconCount);
+	DEF_NATFUNC(nfGetDisplayIconAt);
+	DEF_NATFUNC(nfGetLargestDisplayIconX);
+	DEF_NATFUNC(nfGetLargestDisplayIconY);
+	DEF_NATFUNC(nfGetDisplayText);
 	
-	DEF_NATFUNC( nfGetID );
-	DEF_NATFUNC( nfGetName );
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfGetComponent );
+	DEF_NATFUNC(nfGetID);
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfGetComponent);
 	
-	DEF_NATFUNC( nfGetValue );
+	DEF_NATFUNC(nfGetValue);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

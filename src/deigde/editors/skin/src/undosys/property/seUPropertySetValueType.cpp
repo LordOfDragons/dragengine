@@ -37,12 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValueType::seUPropertySetValueType( seProperty *property, seProperty::eValueTypes newType ){
-	if( ! property ) DETHROW( deeInvalidParam );
+seUPropertySetValueType::seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType){
+	if(! property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	
-	SetShortInfo( "Property Set Value Type" );
+	SetShortInfo("Property Set Value Type");
 	
 	pOldType = property->GetValueType();
 	pNewType = newType;
@@ -52,7 +52,7 @@ seUPropertySetValueType::seUPropertySetValueType( seProperty *property, seProper
 }
 
 seUPropertySetValueType::~seUPropertySetValueType(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -63,9 +63,9 @@ seUPropertySetValueType::~seUPropertySetValueType(){
 ///////////////
 
 void seUPropertySetValueType::Undo(){
-	pProperty->SetValueType( pOldType );
+	pProperty->SetValueType(pOldType);
 }
 
 void seUPropertySetValueType::Redo(){
-	pProperty->SetValueType( pNewType );
+	pProperty->SetValueType(pNewType);
 }

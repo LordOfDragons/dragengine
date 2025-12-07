@@ -50,7 +50,7 @@ public:
 	typedef deTObjectReference<meUSetObjectPosition> Ref;
 	
 	// constructor, destructor
-	meUSetObjectPosition( meObject *object, const decDVector &newPosition );
+	meUSetObjectPosition(meObject *object, const decDVector &newPosition);
 	
 protected:
 	~meUSetObjectPosition();

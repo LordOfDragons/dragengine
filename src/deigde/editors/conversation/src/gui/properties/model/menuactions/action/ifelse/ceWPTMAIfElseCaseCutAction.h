@@ -54,9 +54,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseCutAction( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseCutAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse,
-		ceCAIfElseCase &ifCase, ceConversationAction *action );
+		ceCAIfElseCase &ifCase, ceConversationAction *action);
 	/*@}*/
 	
 	
@@ -64,16 +64,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
+	inline ceConversationTopic &GetTopic() const{return *pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse *GetIfElse() const{ return pIfElse; }
+	inline ceCAIfElse *GetIfElse() const{return pIfElse;}
 	
 	/** \brief If-case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
 	
 	
 	

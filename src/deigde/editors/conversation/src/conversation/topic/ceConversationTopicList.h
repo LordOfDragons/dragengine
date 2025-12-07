@@ -52,29 +52,29 @@ public:
 	/** Retrieves the number of topics. */
 	int GetCount() const;
 	/** Retrieves the topic at the given position. */
-	ceConversationTopic *GetAt( int index ) const;
+	ceConversationTopic *GetAt(int index) const;
 	/** Retrieves the topic with the given id or NULL if not found. */
-	ceConversationTopic *GetWithID( const char *id ) const;
+	ceConversationTopic *GetWithID(const char *id) const;
 	/** Retrieves the index of the given topic or -1 if not found. */
-	int IndexOf( ceConversationTopic *topic ) const;
+	int IndexOf(ceConversationTopic *topic) const;
 	/** Retrieves the index of the topic with the given id or -1 if not found. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	/** Determines if a topic exists. */
-	bool Has( ceConversationTopic *topic ) const;
+	bool Has(ceConversationTopic *topic) const;
 	/** Determines if a topic with the given id exists. */
-	bool HasWithID( const char *id ) const;
+	bool HasWithID(const char *id) const;
 	/** Adds a topic. */
-	void Add( ceConversationTopic *topic );
+	void Add(ceConversationTopic *topic);
 	/** Removes a topic. */
-	void Remove( ceConversationTopic *topic );
+	void Remove(ceConversationTopic *topic);
 	/** Removes all topics. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceConversationTopicList &operator=( const ceConversationTopicList &list );
+	ceConversationTopicList &operator=(const ceConversationTopicList &list);
 	
 	/** \brief Append topics if absent. */
-	ceConversationTopicList &operator+=( const ceConversationTopicList &list );
+	ceConversationTopicList &operator+=(const ceConversationTopicList &list);
 	/*@}*/
 };
 

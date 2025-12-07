@@ -40,11 +40,11 @@
 ////////////////////////////
 
 seUSourceSynthSetPathSynthesizer::seUSourceSynthSetPathSynthesizer(
-		seSourceSynthesizer *source, const char *newPath ) :
-pSource( NULL )
+		seSourceSynthesizer *source, const char *newPath) :
+pSource(NULL)
 {
-	if( ! source || ! newPath ){
-		DETHROW( deeInvalidParam );
+	if(! source || ! newPath){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldPath = source->GetPathSynthesizer();
@@ -52,14 +52,14 @@ pSource( NULL )
 	
 	pOldConCount = source->GetConnectionCount();
 	
-	SetShortInfo( "Synthesizer source set synthesizer path" );
+	SetShortInfo("Synthesizer source set synthesizer path");
 	
 	pSource = source;
 	pSource->AddReference();
 }
 
 seUSourceSynthSetPathSynthesizer::~seUSourceSynthSetPathSynthesizer(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -70,18 +70,18 @@ seUSourceSynthSetPathSynthesizer::~seUSourceSynthSetPathSynthesizer(){
 ///////////////
 
 void seUSourceSynthSetPathSynthesizer::Undo(){
-	if( pSource->GetConnectionCount() != pOldConCount ){
-		pSource->SetConnectionCount( pOldConCount );
+	if(pSource->GetConnectionCount() != pOldConCount){
+		pSource->SetConnectionCount(pOldConCount);
 	}
 	
-	pSource->SetPathSynthesizer( pOldPath );
+	pSource->SetPathSynthesizer(pOldPath);
 }
 
 void seUSourceSynthSetPathSynthesizer::Redo(){
-	pSource->SetPathSynthesizer( pNewPath );
+	pSource->SetPathSynthesizer(pNewPath);
 	
 	const int count = pSource->GetControllerNameCount();
-	if( count > pOldConCount ){
-		pSource->SetConnectionCount( count );
+	if(count > pOldConCount){
+		pSource->SetConnectionCount(count);
 	}
 }

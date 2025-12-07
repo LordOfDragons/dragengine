@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetCurveProgress::peeUParameterSetCurveProgress( peeType *type,
-	peeParameter *parameter, const decCurveBezier &newCurve ) :
-peeUParameterSetCurve( type, parameter, newCurve )
+peeUParameterSetCurveProgress::peeUParameterSetCurveProgress(peeType *type,
+	peeParameter *parameter, const decCurveBezier &newCurve) :
+peeUParameterSetCurve(type, parameter, newCurve)
 {
-	SetShortInfo( "Set Parameter Progress Curve" );
+	SetShortInfo("Set Parameter Progress Curve");
 	pOldCurve = parameter->GetCurveProgress();
 }
 
@@ -57,9 +57,9 @@ peeUParameterSetCurveProgress::~peeUParameterSetCurveProgress(){
 ///////////////
 
 void peeUParameterSetCurveProgress::Undo(){
-	pParameter->SetCurveProgress( pOldCurve );
+	pParameter->SetCurveProgress(pOldCurve);
 }
 
 void peeUParameterSetCurveProgress::Redo(){
-	pParameter->SetCurveProgress( pNewCurve );
+	pParameter->SetCurveProgress(pNewCurve);
 }

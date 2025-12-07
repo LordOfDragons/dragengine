@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new renderable. */
-	deDSRenderableImage( const char *name );
+	deDSRenderableImage(const char *name);
 	
 	/** \brief Clean up renderable. */
 	virtual ~deDSRenderableImage();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline deImage *GetImage() const{return pImage;}
 	
 	/** \brief Set image or NULL if not set. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	/*@}*/
 	
 	
@@ -66,7 +66,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the renderable. */
-	virtual void Visit( deDSRenderableVisitor &visitor );
+	virtual void Visit(deDSRenderableVisitor &visitor);
 };
 
 #endif

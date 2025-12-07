@@ -62,21 +62,21 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGame::delGame( delLauncher &launcher ) :
-pLauncher( launcher ),
+delGame::delGame(delLauncher &launcher) :
+pLauncher(launcher),
 
-pAllFormatsSupported( false ),
-pScriptModuleFound( false ),
-pGameUpToDate( false ),
-pCanRun( false ),
+pAllFormatsSupported(false),
+pScriptModuleFound(false),
+pGameUpToDate(false),
+pCanRun(false),
 
-pLogToConsole( false ),
+pLogToConsole(false),
 
-pUseLatestPatch( true ){
+pUseLatestPatch(true){
 }
 
 delGame::~delGame(){
-	SetEngineInstance( nullptr );
+	SetEngineInstance(nullptr);
 }
 
 
@@ -84,59 +84,59 @@ delGame::~delGame(){
 // Management
 ///////////////
 
-void delGame::SetIdentifier( const decUuid &identifier ){
+void delGame::SetIdentifier(const decUuid &identifier){
 	pIdentifier = identifier;
 }
 
-void delGame::SetAliasIdentifier( const char *identifier ){
+void delGame::SetAliasIdentifier(const char *identifier){
 	pAliasIdentifier = identifier;
 }
 
-void delGame::SetTitle( const decUnicodeString &title ){
+void delGame::SetTitle(const decUnicodeString &title){
 	pTitle = title;
 }
 
-void delGame::SetDescription( const decUnicodeString &description ){
+void delGame::SetDescription(const decUnicodeString &description){
 	pDescription = description;
 }
 
-void delGame::SetCreator( const decUnicodeString &creator ){
+void delGame::SetCreator(const decUnicodeString &creator){
 	pCreator = creator;
 }
 
-void delGame::SetHomepage( const char *homepage ){
+void delGame::SetHomepage(const char *homepage){
 	pHomepage = homepage;
 }
 
-void delGame::SetGameDirectory( const char *directory ){
+void delGame::SetGameDirectory(const char *directory){
 	pGameDirectory = directory;
 }
 
-void delGame::SetDataDirectory( const char *directory ){
+void delGame::SetDataDirectory(const char *directory){
 	pDataDirectory = directory;
 }
 
-void delGame::SetScriptDirectory( const char *directory ){
+void delGame::SetScriptDirectory(const char *directory){
 	pScriptDirectory = directory;
 }
 
-void delGame::SetGameObject( const char *gameObject ){
+void delGame::SetGameObject(const char *gameObject){
 	pGameObject = gameObject;
 }
 
-void delGame::SetPathConfig( const char *path ){
+void delGame::SetPathConfig(const char *path){
 	pPathConfig = path;
 }
 
-void delGame::SetPathCapture( const char *path ){
+void delGame::SetPathCapture(const char *path){
 	pPathCapture = path;
 }
 
-void delGame::SetScriptModule( const char *module ){
+void delGame::SetScriptModule(const char *module){
 	pScriptModule = module;
 }
 
-void delGame::SetScriptModuleVersion( const char *version ){
+void delGame::SetScriptModuleVersion(const char *version){
 	pScriptModuleVersion = version;
 }
 
@@ -145,8 +145,8 @@ decPoint delGame::GetDisplayScaledWindowSize() const{
 	return decPoint(pWindowSize.x * scaleFactor / 100, pWindowSize.y * scaleFactor / 100);
 }
 
-void delGame::SetWindowSize( const decPoint &size ){
-	pWindowSize = size.Largest( decPoint() );
+void delGame::SetWindowSize(const decPoint &size){
+	pWindowSize = size.Largest(decPoint());
 }
 
 
@@ -155,7 +155,7 @@ bool delGame::HasEngineInstance() const{
 	return pEngineInstance;
 }
 
-void delGame::SetEngineInstance( delEngineInstance *engineInstance ){
+void delGame::SetEngineInstance(delEngineInstance *engineInstance){
 	pEngineInstance = engineInstance;
 }
 
@@ -169,53 +169,53 @@ void delGame::VerifyRequirements(){
 	delEngineModule *module;
 	
 	// verify custom profile if present
-	if( pCustomProfile ){
-		GetCustomProfile()->Verify( pLauncher );
+	if(pCustomProfile){
+		GetCustomProfile()->Verify(pLauncher);
 	}
 	
 	// check if all file formats are supported
 	pAllFormatsSupported = true;
 	
-	for( f=0; f<formatCount; f++ ){
-		delFileFormat &format = *pFileFormats.GetAt ( f );
+	for(f=0; f<formatCount; f++){
+		delFileFormat &format = *pFileFormats.GetAt (f);
 		const deModuleSystem::eModuleTypes formatType = format.GetType();
 		
-		format.SetSupported( false );
+		format.SetSupported(false);
 		
-		if( ! deModuleSystem::IsSingleType( formatType ) ){
+		if(! deModuleSystem::IsSingleType(formatType)){
 			const decString &formatPattern = format.GetPattern();
 			
-			for( m=0; m<moduleCount; m++ ){
-				module = modules.GetAt ( m );
+			for(m=0; m<moduleCount; m++){
+				module = modules.GetAt (m);
 				
-				if( module->GetType() == formatType
+				if(module->GetType() == formatType
 				&& module->GetStatus() == delEngineModule::emsReady
-				&& formatPattern.MatchesPattern( module->GetPattern() ) ){
-					format.SetSupported( true );
+				&& formatPattern.MatchesPattern(module->GetPattern())){
+					format.SetSupported(true);
 					break;
 				}
 			}
 		}
 		
-		if( ! format.GetSupported() ){
+		if(! format.GetSupported()){
 			pAllFormatsSupported = false;
 		}
 	}
 	
 	// check if the script module exists. we can only check if a module of any version exists.
 	// the actual version check can only be done once the actual profile is known
-	if( pScriptModuleVersion.IsEmpty() ){
-		module = modules.GetNamed ( pScriptModule );
+	if(pScriptModuleVersion.IsEmpty()){
+		module = modules.GetNamed (pScriptModule);
 		
 	}else{
-		module = modules.GetNamedAtLeast ( pScriptModule, pScriptModuleVersion );
+		module = modules.GetNamedAtLeast (pScriptModule, pScriptModuleVersion);
 	}
 	
 	pScriptModuleFound = module
 		&& module->GetType() == deModuleSystem::emtScript
 		&& module->GetStatus() == delEngineModule::emsReady;
 	
-	if( module ){
+	if(module){
 		pScriptModuleFoundVersion = module->GetVersion();
 	}
 	
@@ -226,59 +226,59 @@ void delGame::VerifyRequirements(){
 	pCanRun = pAllFormatsSupported && pScriptModuleFound;
 }
 
-void delGame::SetAllFormatsSupported( bool supported ){
+void delGame::SetAllFormatsSupported(bool supported){
 	pAllFormatsSupported = supported;
 }
 
-void delGame::SetScriptModuleFound( bool found ){
+void delGame::SetScriptModuleFound(bool found){
 	pScriptModuleFound = found;
 }
 
-void delGame::SetGameUpToDate( bool upToDate ){
+void delGame::SetGameUpToDate(bool upToDate){
 	pGameUpToDate = upToDate;
 }
 
-void delGame::SetCanRun( bool canRun ){
+void delGame::SetCanRun(bool canRun){
 	pCanRun = canRun;
 }
 
 
 
-void delGame::SetCustomProfile( delGameProfile *profile ){
+void delGame::SetCustomProfile(delGameProfile *profile){
 	pCustomProfile = profile;
 }
 
-void delGame::SetActiveProfile( delGameProfile *profile ){
+void delGame::SetActiveProfile(delGameProfile *profile){
 	pActiveProfile = profile;
 }
 
-void delGame::SetRunArguments( const char *arguments ){
+void delGame::SetRunArguments(const char *arguments){
 	pRunArguments = arguments;
 }
 
 
 
-void delGame::SetLogFile( const char *path ){
+void delGame::SetLogFile(const char *path){
 	pLogFile = path;
 }
 
 void delGame::SetDefaultLogFile(){
-	pLogFile.Format( "games/%s/logs/last_run.log", pIdentifier.ToHexString( false ).GetString() );
+	pLogFile.Format("games/%s/logs/last_run.log", pIdentifier.ToHexString(false).GetString());
 }
 
-void delGame::SetLogToConsole( bool logToConsole ){
+void delGame::SetLogToConsole(bool logToConsole){
 	pLogToConsole = logToConsole;
 }
 
-void delGame::SetDelgaFile( const char *delgaFile ){
+void delGame::SetDelgaFile(const char *delgaFile){
 	pDelgaFile = delgaFile;
 }
 
-void delGame::SetUseLatestPatch( bool useLatestPatch ){
+void delGame::SetUseLatestPatch(bool useLatestPatch){
 	pUseLatestPatch = useLatestPatch;
 }
 
-void delGame::SetUseCustomPatch( const decUuid &patch ){
+void delGame::SetUseCustomPatch(const decUuid &patch){
 	pUseCustomPatch = patch;
 }
 
@@ -296,68 +296,68 @@ bool delGame::IsRunning() const{
 	return pEngineInstance;
 }
 
-void delGame::StartGame( const delGameRunParams &runParams ){
-	StartGame( runParams, pLauncher.GetEngineInstanceFactory() );
+void delGame::StartGame(const delGameRunParams &runParams){
+	StartGame(runParams, pLauncher.GetEngineInstanceFactory());
 }
 
-void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::Factory &factory ){
+void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Factory &factory){
 	decPath filePath;
 	
 	SaveConfig(); // ensure game profile exists
 	
-	if( IsRunning() ){
-		DETHROW_INFO( deeInvalidAction, "game is running" );
+	if(IsRunning()){
+		DETHROW_INFO(deeInvalidAction, "game is running");
 	}
-	if( ! pCanRun ){
-		DETHROW_INFO( deeInvalidAction, "game can not run" );
+	if(! pCanRun){
+		DETHROW_INFO(deeInvalidAction, "game can not run");
 	}
-	if( ! runParams.GetGameProfile() ){
-		DETHROW_INFO( deeNullPointer, "runParams.gameProfile" );
+	if(! runParams.GetGameProfile()){
+		DETHROW_INFO(deeNullPointer, "runParams.gameProfile");
 	}
-	if( ! runParams.GetGameProfile()->GetValid() ){
-		DETHROW_INFO( deeInvalidAction, "runParams.gameProfile is not valid" );
+	if(! runParams.GetGameProfile()->GetValid()){
+		DETHROW_INFO(deeInvalidAction, "runParams.gameProfile is not valid");
 	}
 	
 	deLogger &logger = *pLauncher.GetLogger();
 	decString logfile;
 	
 	// clear the log file. a bit an ugly hack but it works
-	if( ! pLogToConsole ){
-		logfile.Format( "games/%s/logs/last_run.log", pIdentifier.ToHexString( false ).GetString() );
+	if(! pLogToConsole){
+		logfile.Format("games/%s/logs/last_run.log", pIdentifier.ToHexString(false).GetString());
 		
 		// using open file for writing instead of delete file to allow applications
 		// to keep file open in a text viewer on operating systems preventing file
 		// deleting while the file is open in an application (windows for example)
-		filePath.SetFromUnix( "/logs" );
-		filePath.AddUnixPath( logfile );
-		decBaseFileWriter::Ref::New( pLauncher.GetVFS()->OpenFileForWriting( filePath ) );
+		filePath.SetFromUnix("/logs");
+		filePath.AddUnixPath(logfile);
+		decBaseFileWriter::Ref::New(pLauncher.GetVFS()->OpenFileForWriting(filePath));
 	}
 	
 	// start the game
-	logger.LogInfoFormat( pLauncher.GetLogSource(), "Starting game '%s'", pTitle.ToUTF8().GetString() );
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "Starting game '%s'", pTitle.ToUTF8().GetString());
 	
 	try{
 		// create engine instance and start engine
-		pEngineInstance.TakeOver( factory.CreateEngineInstance( pLauncher, logfile ) );
+		pEngineInstance.TakeOver(factory.CreateEngineInstance(pLauncher, logfile));
 		pEngineInstance->StartEngine();
-		pEngineInstance->SetCacheAppID( pIdentifier.ToHexString( false ) );
+		pEngineInstance->SetCacheAppID(pIdentifier.ToHexString(false));
 		pEngineInstance->LoadModules();
 		
 		// activate profile
-		runParams.GetGameProfile()->Activate( pLauncher, *pEngineInstance );
+		runParams.GetGameProfile()->Activate(pLauncher, *pEngineInstance);
 		
 		// activate script module and set the path.
-		pEngineInstance->ActivateModule( pScriptModule, pScriptModuleFoundVersion );
+		pEngineInstance->ActivateModule(pScriptModule, pScriptModuleFoundVersion);
 		
 		// set data directory. the engine expects an absolute native path. it is composed of the
 		// data directory placed underneath the game directory
 		decPath pathDataDir;
-		pathDataDir.SetFromNative( pGameDirectory );
-		pathDataDir.AddUnixPath( pDataDirectory );
-		pEngineInstance->SetDataDirectory( pathDataDir.GetPathNative() );
+		pathDataDir.SetFromNative(pGameDirectory);
+		pathDataDir.AddUnixPath(pDataDirectory);
+		pEngineInstance->SetDataDirectory(pathDataDir.GetPathNative());
 		
 		// set command line arguments
-		pEngineInstance->SetCmdLineArgs( runParams.GetRunArguments() );
+		pEngineInstance->SetCmdLineArgs(runParams.GetRunArguments());
 		
 		// set up virtual file system
 #ifdef OS_ANDROID
@@ -371,77 +371,77 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 			pEngineInstance->VFSAddDelgaFile(pDelgaFile, pDataDirectory);
 		}
 #else
-		if( pDelgaFile.IsEmpty() ){
-			pEngineInstance->VFSAddDiskDir( "/", pathDataDir.GetPathNative(), true );
+		if(pDelgaFile.IsEmpty()){
+			pEngineInstance->VFSAddDiskDir("/", pathDataDir.GetPathNative(), true);
 			
 		}else{
-			pEngineInstance->VFSAddDelgaFile( pDelgaFile, pDataDirectory );
+			pEngineInstance->VFSAddDelgaFile(pDelgaFile, pDataDirectory);
 		}
 #endif
 		
 		int i;
-		for( i=0; i<runParams.GetPatches().GetCount(); i++ ){
-			const delPatch &patch = *runParams.GetPatches().GetAt( i );
+		for(i=0; i<runParams.GetPatches().GetCount(); i++){
+			const delPatch &patch = *runParams.GetPatches().GetAt(i);
 			
-			if( patch.GetDelgaFile().IsEmpty() ){
-				pathDataDir.SetFromNative( patch.GetPatchDirectory() );
-				pathDataDir.AddUnixPath( patch.GetDataDirectory() );
-				pEngineInstance->VFSAddDiskDir( "/", pathDataDir.GetPathNative(), true );
+			if(patch.GetDelgaFile().IsEmpty()){
+				pathDataDir.SetFromNative(patch.GetPatchDirectory());
+				pathDataDir.AddUnixPath(patch.GetDataDirectory());
+				pEngineInstance->VFSAddDiskDir("/", pathDataDir.GetPathNative(), true);
 				
 			}else{
-				pEngineInstance->VFSAddDelgaFile( patch.GetDelgaFile(),
-					patch.GetDataDirectory(), patch.GetHiddenPath() );
+				pEngineInstance->VFSAddDelgaFile(patch.GetDelgaFile(),
+					patch.GetDataDirectory(), patch.GetHiddenPath());
 			}
 		}
 		
 		pEngineInstance->VFSAddScriptSharedDataDir();
 		
-		pEngineInstance->ModulesAddVFSContainers( deModuleSystem::VFSStagePatches );
-		pEngineInstance->ModulesAddVFSContainers( deModuleSystem::VFSStageMods );
-		pEngineInstance->ModulesAddVFSContainers( deModuleSystem::VFSStageOverlay );
+		pEngineInstance->ModulesAddVFSContainers(deModuleSystem::VFSStagePatches);
+		pEngineInstance->ModulesAddVFSContainers(deModuleSystem::VFSStageMods);
+		pEngineInstance->ModulesAddVFSContainers(deModuleSystem::VFSStageOverlay);
 		
-		filePath.SetFromNative( pLauncher.GetPathConfigUser() );
-		filePath.AddComponent( "games" );
-		filePath.AddComponent( pIdentifier.ToHexString( false ) );
-		filePath.AddComponent( "overlay" );
-		pEngineInstance->VFSAddDiskDir( "/", filePath.GetPathNative(), false );
+		filePath.SetFromNative(pLauncher.GetPathConfigUser());
+		filePath.AddComponent("games");
+		filePath.AddComponent(pIdentifier.ToHexString(false));
+		filePath.AddComponent("overlay");
+		pEngineInstance->VFSAddDiskDir("/", filePath.GetPathNative(), false);
 		
-		pEngineInstance->SetPathOverlay( filePath.GetPathNative() );
+		pEngineInstance->SetPathOverlay(filePath.GetPathNative());
 		
-		filePath.SetFromNative( pLauncher.GetPathConfigUser() );
-		filePath.AddComponent( "games" );
-		filePath.AddComponent( pIdentifier.ToHexString( false ) );
-		filePath.AddComponent( "config" );
-		pEngineInstance->VFSAddDiskDir( pPathConfig, filePath.GetPathNative(), false );
+		filePath.SetFromNative(pLauncher.GetPathConfigUser());
+		filePath.AddComponent("games");
+		filePath.AddComponent(pIdentifier.ToHexString(false));
+		filePath.AddComponent("config");
+		pEngineInstance->VFSAddDiskDir(pPathConfig, filePath.GetPathNative(), false);
 		
-		pEngineInstance->SetPathConfig( filePath.GetPathNative() );
+		pEngineInstance->SetPathConfig(filePath.GetPathNative());
 		
-		filePath.SetFromNative( pLauncher.GetPathConfigUser() );
-		filePath.AddComponent( "games" );
-		filePath.AddComponent( pIdentifier.ToHexString( false ) );
-		filePath.AddComponent( "capture" );
-		pEngineInstance->VFSAddDiskDir( pPathCapture, filePath.GetPathNative(), false );
+		filePath.SetFromNative(pLauncher.GetPathConfigUser());
+		filePath.AddComponent("games");
+		filePath.AddComponent(pIdentifier.ToHexString(false));
+		filePath.AddComponent("capture");
+		pEngineInstance->VFSAddDiskDir(pPathCapture, filePath.GetPathNative(), false);
 		
-		pEngineInstance->SetPathCapture( filePath.GetPathNative() );
+		pEngineInstance->SetPathCapture(filePath.GetPathNative());
 		
 		// create render window. for the time being use the largest icon present
 		delGameIcon * const icon = pIcons.GetLargest();
 		
-		pEngineInstance->CreateRenderWindow( runParams.GetWidth(), runParams.GetHeight(),
-			runParams.GetFullScreen(), pTitle.ToUTF8(), icon ? icon->GetPath().GetString() : "" );
+		pEngineInstance->CreateRenderWindow(runParams.GetWidth(), runParams.GetHeight(),
+			runParams.GetFullScreen(), pTitle.ToUTF8(), icon ? icon->GetPath().GetString() : "");
 		
 		// store information for handling parameter changes during runtime
 		pCollectChangedParams.RemoveAll();
-		pCollectChangedParamsProfile.TakeOver( pLauncher.CreateGameProfile( runParams.GetGameProfile() ) );
+		pCollectChangedParamsProfile.TakeOver(pLauncher.CreateGameProfile(runParams.GetGameProfile()));
 		
 		// start game
-		pEngineInstance->StartGame( pScriptDirectory, pScriptModuleVersion,
-			pGameObject, &pCollectChangedParams );
+		pEngineInstance->StartGame(pScriptDirectory, pScriptModuleVersion,
+			pGameObject, &pCollectChangedParams);
 		
-	}catch( const deException &e ){
-		logger.LogErrorFormat( pLauncher.GetLogSource(),
-			"Game '%s' caused an exception", pTitle.ToUTF8().GetString() );
-		logger.LogException( pLauncher.GetLogSource(), e );
+	}catch(const deException &e){
+		logger.LogErrorFormat(pLauncher.GetLogSource(),
+			"Game '%s' caused an exception", pTitle.ToUTF8().GetString());
+		logger.LogException(pLauncher.GetLogSource(), e);
 		StopGame();
 		throw;
 	}
@@ -451,16 +451,16 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 }
 
 void delGame::StopGame(){
-	if( ! IsRunning() ){
-		DETHROW_INFO( deeInvalidAction, "game is not running" );
+	if(! IsRunning()){
+		DETHROW_INFO(deeInvalidAction, "game is not running");
 	}
-	if( ! pEngineInstance ){
-		DETHROW_INFO( deeNullPointer, "engineInstance" );
+	if(! pEngineInstance){
+		DETHROW_INFO(deeNullPointer, "engineInstance");
 	}
 	
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	logger.LogInfoFormat( pLauncher.GetLogSource(), "Stopping game '%s'", pTitle.ToUTF8().GetString() );
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "Stopping game '%s'", pTitle.ToUTF8().GetString());
 	
 	// calling IsGameRunning collects information if threaded
 	if(pEngineInstance->IsGameRunning() != 0){
@@ -471,100 +471,100 @@ void delGame::StopGame(){
 	if(pEngineInstance->IsGameRunning() != 0){
 		pEngineInstance->KillEngine();
 	}
-	SetEngineInstance( nullptr );
+	SetEngineInstance(nullptr);
 	
-	logger.LogInfoFormat( pLauncher.GetLogSource(), "Game '%s' stopped", pTitle.ToUTF8().GetString() );
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "Game '%s' stopped", pTitle.ToUTF8().GetString());
 	pStoreCustomConfig();
 }
 
 void delGame::KillGame(){
-	if( ! IsRunning() || ! pEngineInstance ) DETHROW( deeInvalidAction );
+	if(! IsRunning() || ! pEngineInstance) DETHROW(deeInvalidAction);
 	
 	deLogger &logger = *pLauncher.GetLogger();
 	
-	logger.LogInfoFormat( pLauncher.GetLogSource(), "Killing game '%s'", pTitle.ToUTF8().GetString() );
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "Killing game '%s'", pTitle.ToUTF8().GetString());
 	
 	pEngineInstance->KillEngine();
-	SetEngineInstance( nullptr );
+	SetEngineInstance(nullptr);
 	
-	logger.LogInfoFormat( pLauncher.GetLogSource(), "Game '%s' killed", pTitle.ToUTF8().GetString() );
+	logger.LogInfoFormat(pLauncher.GetLogSource(), "Game '%s' killed", pTitle.ToUTF8().GetString());
 }
 
 void delGame::PulseChecking(){
-	if( ! IsRunning() ){
+	if(! IsRunning()){
 		return;
 	}
 	
 	try{
-		if( pEngineInstance->IsGameRunning() == 0 ){
-			pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(),
-				"Game '%s' is no longer running", pTitle.ToUTF8().GetString() );
+		if(pEngineInstance->IsGameRunning() == 0){
+			pLauncher.GetLogger()->LogInfoFormat(pLauncher.GetLogSource(),
+				"Game '%s' is no longer running", pTitle.ToUTF8().GetString());
 			StopGame();
 		}
 		
-	}catch( const deException &e ){
-		pLauncher.GetLogger()->LogInfoFormat( pLauncher.GetLogSource(),
-			"Game '%s' caused an exception", pTitle.ToUTF8().GetString() );
-		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
+	}catch(const deException &e){
+		pLauncher.GetLogger()->LogInfoFormat(pLauncher.GetLogSource(),
+			"Game '%s' caused an exception", pTitle.ToUTF8().GetString());
+		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
 		KillGame(); // just to make sure the process is gone
 	}
 }
 
 void delGame::LoadConfig(){
-	delGameConfigXML configXML( pLauncher );
+	delGameConfigXML configXML(pLauncher);
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( "/config/user/games" );
-	pathFile.AddComponent( pIdentifier.ToHexString( false ) );
-	pathFile.AddComponent( "launcher.xml" );
+	pathFile.SetFromUnix("/config/user/games");
+	pathFile.AddComponent(pIdentifier.ToHexString(false));
+	pathFile.AddComponent("launcher.xml");
 	
-	if( vfs.ExistsFile( pathFile ) ){
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfoFormat( pLauncher.GetLogSource(),
-				"Reading game configuration file for '%s'", pTitle.ToUTF8().GetString() );
-			configXML.ReadFromFile( decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ), *this );
+	if(vfs.ExistsFile(pathFile)){
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfoFormat(pLauncher.GetLogSource(),
+				"Reading game configuration file for '%s'", pTitle.ToUTF8().GetString());
+			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 			
 		}else{
-			logger.LogErrorFormat( pLauncher.GetLogSource(),
-				"Game configuration file is not a regular file" );
-			DETHROW_INFO( deeInvalidParam, "game configuration file is not regular file" );
+			logger.LogErrorFormat(pLauncher.GetLogSource(),
+				"Game configuration file is not a regular file");
+			DETHROW_INFO(deeInvalidParam, "game configuration file is not regular file");
 		}
 		
 	}else{
-		logger.LogInfoFormat( pLauncher.GetLogSource(),
-			"Game configuration file not found, will be created upon exiting" );
+		logger.LogInfoFormat(pLauncher.GetLogSource(),
+			"Game configuration file not found, will be created upon exiting");
 	}
 	
 	// VR module exists since version 1.6 . if absent use module from default profile
 	const delGameProfile * const defaultProfile = pLauncher.GetGameManager().GetDefaultProfile();
-	if( defaultProfile && pCustomProfile && pCustomProfile->GetModuleVR().IsEmpty() ){
-		pCustomProfile->SetModuleVR( defaultProfile->GetModuleVR() );
-		pCustomProfile->SetModuleVRVersion( defaultProfile->GetModuleVRVersion() );
+	if(defaultProfile && pCustomProfile && pCustomProfile->GetModuleVR().IsEmpty()){
+		pCustomProfile->SetModuleVR(defaultProfile->GetModuleVR());
+		pCustomProfile->SetModuleVRVersion(defaultProfile->GetModuleVRVersion());
 	}
 }
 
 void delGame::SaveConfig(){
-	delGameConfigXML configXML( pLauncher );
+	delGameConfigXML configXML(pLauncher);
 	deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 	deLogger &logger = *pLauncher.GetLogger();
 	decPath pathFile;
 	
-	pathFile.SetFromUnix( "/config/user/games" );
-	pathFile.AddComponent( pIdentifier.ToHexString( false ) );
-	pathFile.AddComponent( "launcher.xml" );
+	pathFile.SetFromUnix("/config/user/games");
+	pathFile.AddComponent(pIdentifier.ToHexString(false));
+	pathFile.AddComponent("launcher.xml");
 	
-	if( vfs.CanWriteFile( pathFile ) ){
-		logger.LogInfoFormat( pLauncher.GetLogSource(),
-			"Writing game configuration file for '%s'", pTitle.ToUTF8().GetString() );
+	if(vfs.CanWriteFile(pathFile)){
+		logger.LogInfoFormat(pLauncher.GetLogSource(),
+			"Writing game configuration file for '%s'", pTitle.ToUTF8().GetString());
 		
 		try{
-			configXML.WriteToFile( decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( pathFile ) ), *this );
+			configXML.WriteToFile(decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
 			
-		}catch( const deException & ){
-			logger.LogError( pLauncher.GetLogSource(),
-				"Failed to write game configuration file (file permission problem)" );
+		}catch(const deException &){
+			logger.LogError(pLauncher.GetLogSource(),
+				"Failed to write game configuration file (file permission problem)");
 			// DIALOG BOX
 			// "Game configuration can not be written!\n"
 			// "Make sure you have write permission for the file and parent directory.\n"
@@ -572,8 +572,8 @@ void delGame::SaveConfig(){
 		}
 		
 	}else{
-		logger.LogError( pLauncher.GetLogSource(),
-			"Failed to write game configuration file (file writing problem)" );
+		logger.LogError(pLauncher.GetLogSource(),
+			"Failed to write game configuration file (file writing problem)");
 		
 		// DIALOG BOX
 		// "Game configuration can not be written!\n"
@@ -583,66 +583,66 @@ void delGame::SaveConfig(){
 }
 
 delGameProfile *delGame::GetProfileToUse() const{
-	if( pActiveProfile ){
+	if(pActiveProfile){
 		return pActiveProfile;
 	}
-	if( pCustomProfile ){
+	if(pCustomProfile){
 		return pCustomProfile;
 	}
 	
 	const delGameManager &gameManager = pLauncher.GetGameManager();
-	if( gameManager.GetActiveProfile() ){
+	if(gameManager.GetActiveProfile()){
 		return gameManager.GetActiveProfile();
 	}
 	
 	return gameManager.GetDefaultProfile();
 }
 
-void delGame::FindPatches( delPatchList &list ) const{
-	delPatchList patches( pLauncher.GetPatchManager().GetPatches() );
-	patches.AddAll( pLocalPatches );
+void delGame::FindPatches(delPatchList &list) const{
+	delPatchList patches(pLauncher.GetPatchManager().GetPatches());
+	patches.AddAll(pLocalPatches);
 	
 	const int count = patches.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delPatch * const patch = patches.GetAt( i );
-		if( patch->GetGameID() == pIdentifier ){
-			list.Add( patch );
+	for(i=0; i<count; i++){
+		delPatch * const patch = patches.GetAt(i);
+		if(patch->GetGameID() == pIdentifier){
+			list.Add(patch);
 		}
 	}
 }
 
-void delGame::SortPatches( delPatchList &sorted, const delPatchList &patches ) const{
+void delGame::SortPatches(delPatchList &sorted, const delPatchList &patches) const{
 	const int count = patches.GetCount();
 	bool hasAdded = true;
 	int i, j;
 	
 	sorted.RemoveAll();
 	
-	while( hasAdded ){
+	while(hasAdded){
 		hasAdded = false;
 		
-		for( i=0; i<count; i++ ){
-			delPatch * const patch = patches.GetAt( i );
-			if( sorted.Has( patch ) ){
+		for(i=0; i<count; i++){
+			delPatch * const patch = patches.GetAt(i);
+			if(sorted.Has(patch)){
 				continue;
 			}
 			
 			const decUuidSet &requiredPatches = patch->GetRequiredPatches();
 			const int requiredPatchCount = requiredPatches.GetCount();
-			if( requiredPatchCount > 0 ){
-				for( j=0; j<requiredPatchCount; j++ ){
-					if( sorted.HasWithID( requiredPatches.GetAt( j ) ) ){
+			if(requiredPatchCount > 0){
+				for(j=0; j<requiredPatchCount; j++){
+					if(sorted.HasWithID(requiredPatches.GetAt(j))){
 						break;
 					}
 				}
-				if( j == requiredPatchCount ){
+				if(j == requiredPatchCount){
 					continue;
 				}
 			}
 			
-			sorted.Add( patch );
+			sorted.Add(patch);
 			hasAdded = true;
 		}
 	}
@@ -654,36 +654,36 @@ void delGame::SortPatches( delPatchList &sorted, const delPatchList &patches ) c
 //////////////////////
 
 void delGame::pStoreCustomConfig(){
-	if( pCollectChangedParams.GetCount() == 0 || ! pCollectChangedParamsProfile ){
+	if(pCollectChangedParams.GetCount() == 0 || ! pCollectChangedParamsProfile){
 		return;
 	}
 	
 	deLogger &logger = *pLauncher.GetLogger();
-	logger.LogInfo( pLauncher.GetLogSource(), "Engine module parameters changed. Store custom profile" );
+	logger.LogInfo(pLauncher.GetLogSource(), "Engine module parameters changed. Store custom profile");
 	
 	// ensure custom profile exists and is initialized with profile used to run the game
 	// unless this had been already the custom profile
-	if( ! pCustomProfile ){
-		pCustomProfile.TakeOver( pLauncher.CreateGameProfile() );
+	if(! pCustomProfile){
+		pCustomProfile.TakeOver(pLauncher.CreateGameProfile());
 	}
 	
-	if( pCollectChangedParamsProfile != pCustomProfile ){
+	if(pCollectChangedParamsProfile != pCustomProfile){
 		*pCustomProfile = *pCollectChangedParamsProfile; // copy content not pointer
 	}
 	
 	// update custom profile
-	pCustomProfile->GetModules().Update( pCollectChangedParams );
+	pCustomProfile->GetModules().Update(pCollectChangedParams);
 	
 	// if game wants window mode adjust the profile to have the same values
-	if( pWindowSize != decPoint() ){
-		pCustomProfile->SetFullScreen( false );
-		pCustomProfile->SetWidth( pWindowSize.x );
-		pCustomProfile->SetHeight( pWindowSize.y );
+	if(pWindowSize != decPoint()){
+		pCustomProfile->SetFullScreen(false);
+		pCustomProfile->SetWidth(pWindowSize.x);
+		pCustomProfile->SetHeight(pWindowSize.y);
 	}
 	
 	// save configuration
 	SaveConfig();
 	
 	// verify profile and game so it is immediately usable
-	pCustomProfile->Verify( pLauncher );
+	pCustomProfile->Verify(pLauncher);
 }

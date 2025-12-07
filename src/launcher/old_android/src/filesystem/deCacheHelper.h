@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create cache helper building the mapping from the cache directory. */
-	deCacheHelper( deVirtualFileSystem *vfs, const decPath &cachePath );
+	deCacheHelper(deVirtualFileSystem *vfs, const decPath &cachePath);
 	
 	/** \brief Clean up cache helper. */
 	~deCacheHelper();
@@ -91,10 +91,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Compression method to use for new cached files. */
-	inline eCompressionMethods GetCompressionMethod() const{ return pCompressionMethod; }
+	inline eCompressionMethods GetCompressionMethod() const{return pCompressionMethod;}
 	
 	/** \brief Set compression method to use for new cached files. */
-	void SetCompressionMethod( eCompressionMethods compressionMethod );
+	void SetCompressionMethod(eCompressionMethods compressionMethod);
 	
 	
 	
@@ -102,13 +102,13 @@ public:
 	 * \brief Open cache file by identifier for reading if existing.
 	 * \returns NULL if file is absent.
 	 */
-	decBaseFileReader *Read( const char *id );
+	decBaseFileReader *Read(const char *id);
 	
 	/** \brief Open cache file by identifier for writing. */
-	decBaseFileWriter *Write( const char *id );
+	decBaseFileWriter *Write(const char *id);
 	
 	/** \brief Delete cache file by identifier if present. */
-	void Delete( const char *id );
+	void Delete(const char *id);
 	
 	/** \brief Delete all cache files. */
 	void DeleteAll();
@@ -117,7 +117,7 @@ public:
 	void BuildMapping();
 	
 	/** \brief Debug print stats about the cache to a logger. */
-	void DebugPrint( deLogger &logger, const char *loggingSource );
+	void DebugPrint(deLogger &logger, const char *loggingSource);
 	/*@}*/
 };
 

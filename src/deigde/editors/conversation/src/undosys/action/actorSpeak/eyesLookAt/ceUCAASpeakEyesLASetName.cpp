@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLASetName::ceUCAASpeakEyesLASetName( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, const char *newName )
-: ceUCAASpeakStripSetID( topic, actorSpeak, eyesLookAt, newName ){
-	SetShortInfo( "EyesLookAt Set Name" );
+ceUCAASpeakEyesLASetName::ceUCAASpeakEyesLASetName(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, const char *newName)
+: ceUCAASpeakStripSetID(topic, actorSpeak, eyesLookAt, newName){
+	SetShortInfo("EyesLookAt Set Name");
 }
 
 ceUCAASpeakEyesLASetName::~ceUCAASpeakEyesLASetName(){

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPNodeListener::seWPNodeListener( seWPNode &panel ) :
-pPanel( panel ){
+seWPNodeListener::seWPNodeListener(seWPNode &panel) :
+pPanel(panel){
 }
 
 seWPNodeListener::~seWPNodeListener(){
@@ -54,22 +54,22 @@ seWPNodeListener::~seWPNodeListener(){
 // Management
 ///////////////
 
-void seWPNodeListener::MappedStructureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPNodeListener::MappedStructureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdateMappedTargetList();
 }
 
-void seWPNodeListener::MappedNameChanged( seSkin *skin, seMapped* ){
-	MappedStructureChanged( skin );
+void seWPNodeListener::MappedNameChanged(seSkin *skin, seMapped*){
+	MappedStructureChanged(skin);
 }
 
 
 
-void seWPNodeListener::ActiveTextureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPNodeListener::ActiveTextureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
@@ -77,8 +77,8 @@ void seWPNodeListener::ActiveTextureChanged( seSkin *skin ){
 	pPanel.UpdateNode();
 }
 
-void seWPNodeListener::PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive() ){
+void seWPNodeListener::PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
 		return;
 	}
 	
@@ -86,8 +86,8 @@ void seWPNodeListener::PropertyChanged( seSkin *skin, seTexture *texture, seProp
 	pPanel.UpdateNode();
 }
 
-void seWPNodeListener::ActivePropertyChanged( seSkin *skin, seTexture *texture ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() ){
+void seWPNodeListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive()){
 		return;
 	}
 	
@@ -97,9 +97,9 @@ void seWPNodeListener::ActivePropertyChanged( seSkin *skin, seTexture *texture )
 	pPanel.UpdateNode();
 }
 
-void seWPNodeListener::PropertyNodeChanged( seSkin *skin, seTexture *texture,
-seProperty *property, sePropertyNode* ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive() ){
+void seWPNodeListener::PropertyNodeChanged(seSkin *skin, seTexture *texture,
+seProperty *property, sePropertyNode*){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
 		return;
 	}
 	
@@ -107,9 +107,9 @@ seProperty *property, sePropertyNode* ){
 	pPanel.UpdateNode();
 }
 
-void seWPNodeListener::PropertyNodeStructureChanged( seSkin *skin, seTexture *texture,
-seProperty *property ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive() ){
+void seWPNodeListener::PropertyNodeStructureChanged(seSkin *skin, seTexture *texture,
+seProperty *property){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
 		return;
 	}
 	
@@ -117,9 +117,9 @@ seProperty *property ){
 	pPanel.OutlinerSelectActive();
 }
 
-void seWPNodeListener::PropertyNodeSelectionChanged( seSkin *skin, seTexture *texture,
-seProperty *property ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive() ){
+void seWPNodeListener::PropertyNodeSelectionChanged(seSkin *skin, seTexture *texture,
+seProperty *property){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
 		return;
 	}
 	
@@ -127,9 +127,9 @@ seProperty *property ){
 	pPanel.ShowNodePanel();
 }
 
-void seWPNodeListener::PropertyActiveNodeChanged( seSkin *skin, seTexture *texture,
-seProperty *property ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive() ){
+void seWPNodeListener::PropertyActiveNodeChanged(seSkin *skin, seTexture *texture,
+seProperty *property){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
 		return;
 	}
 	

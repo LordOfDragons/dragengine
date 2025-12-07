@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new speaker resource manager linked to the given engine. */
-	deSpeakerManager( deEngine *engine );
+	deSpeakerManager(deEngine *engine);
 	
 	/** \brief Clean up speaker resource manager and reports leaking resources. */
 	~deSpeakerManager();
@@ -94,7 +94,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

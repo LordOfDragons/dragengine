@@ -56,7 +56,7 @@ public:
 	decSmoothDouble();
 	
 	/** \brief Create copy of a smooth double. */
-	decSmoothDouble( const decSmoothDouble &copy );
+	decSmoothDouble(const decSmoothDouble &copy);
 	
 	/** \brief Clean up smooth double. */
 	~decSmoothDouble();
@@ -67,34 +67,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	inline double GetValue() const{ return pValue; }
+	inline double GetValue() const{return pValue;}
 	
 	/** \brief Set current value. */
-	void SetValue( double value );
+	void SetValue(double value);
 	
 	/** \brief Goal value. */
-	inline double GetGoal() const{ return pGoal; }
+	inline double GetGoal() const{return pGoal;}
 	
 	/** \brief Set goal value. */
-	void SetGoal( double goal );
+	void SetGoal(double goal);
 	
 	/** \brief Adjustment time in seconds. */
-	inline double GetAdjustTime() const{ return pAdjustTime; }
+	inline double GetAdjustTime() const{return pAdjustTime;}
 	
 	/** \brief Adjustment time in seconds. Clamped to 0 or larger. */
-	void SetAdjustTime( double adjustTime );
+	void SetAdjustTime(double adjustTime);
 	
 	/** \brief Adjustment range in units. */
-	inline double GetAdjustRange() const{ return pAdjustRange; }
+	inline double GetAdjustRange() const{return pAdjustRange;}
 	
 	/** \brief Set adjustment range in units. Clamped to 0 or larger. */
-	void SetAdjustRange( double range );
+	void SetAdjustRange(double range);
 	
 	/** \brief Change speed of the value in units per second. */
-	inline double GetChangeSpeed() const{ return pChangeSpeed; }
+	inline double GetChangeSpeed() const{return pChangeSpeed;}
 	
 	/** \brief Set change speed of the value in units per second. */
-	void SetChangeSpeed( double changeSpeed );
+	void SetChangeSpeed(double changeSpeed);
 	
 	
 	
@@ -107,7 +107,7 @@ public:
 	 * Goal is not modified.
 	 * \param[in] elapsed Elapsed time in seconds. If less than 0.001s update is skipped.
 	 */
-	void Update( double elapsed );
+	void Update(double elapsed);
 	/*@}*/
 	
 	
@@ -119,17 +119,17 @@ public:
 	 * 
 	 * Two smooth doubles are equal if their value difference is less than \em DOUBLE_SAFE_EPSILON.
 	 */
-	bool operator==( const decSmoothDouble &other ) const;
+	bool operator==(const decSmoothDouble &other) const;
 	
 	/**
 	 * \brief Determine if two smooth double are not equal.
 	 * 
 	 * Two smooth doubles are not equal if their value difference is larger than or equal to \em DOUBLE_SAFE_EPSILON.
 	 */
-	bool operator!=( const decSmoothDouble &other ) const;
+	bool operator!=(const decSmoothDouble &other) const;
 	
 	/** \brief Copy another smooth double to this smooth double. */
-	decSmoothDouble &operator=( const decSmoothDouble &other );
+	decSmoothDouble &operator=(const decSmoothDouble &other);
 	/*@}*/
 	
 	

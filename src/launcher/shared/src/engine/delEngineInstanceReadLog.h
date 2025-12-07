@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine instance read log. */
-	delEngineInstanceReadLog( delEngineInstance &engineInstance, deLogger *logger );
+	delEngineInstanceReadLog(delEngineInstance &engineInstance, deLogger *logger);
 	
 	/** \brief Clean up engine instance. */
 	virtual ~delEngineInstanceReadLog();
@@ -69,13 +69,13 @@ public:
 	 * \brief Read data from log pipe.
 	 * \returns true if new data is available or false if the pipe broke.
 	 */
-	bool ReadFromPipe( void *data, int length );
+	bool ReadFromPipe(void *data, int length);
 	
 	/** \brief Prepare source buffer to be at least requiredLength long excluding the 0-termination character. */
-	void PrepareBufferSource( int requiredLength );
+	void PrepareBufferSource(int requiredLength);
 	
 	/** \brief Prepare the message buffer to be at least requiredLength long excluding the 0-termination character. */
-	void PrepareBufferMessage( int requiredLength );
+	void PrepareBufferMessage(int requiredLength);
 	/*@}*/
 };
 

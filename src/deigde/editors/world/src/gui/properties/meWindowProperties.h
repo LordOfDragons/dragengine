@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	meWindowProperties( meWindowMain &windowMain );
+	meWindowProperties(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -75,10 +75,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief World path changed. */
 	void OnWorldPathChanged();
@@ -90,7 +90,7 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** \brief Browser panel. */
-	inline meWPBrowser &GetBrowser() const{ return *pPropBrowser; }
+	inline meWPBrowser &GetBrowser() const{return *pPropBrowser;}
 	
 	/** \brief Switch to browser panel. */
 	void SwitchToBrowser();

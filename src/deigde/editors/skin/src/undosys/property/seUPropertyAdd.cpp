@@ -40,18 +40,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyAdd::seUPropertyAdd( seTexture *texture, const sePropertyList &properties ){
-	if( ! texture || properties.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+seUPropertyAdd::seUPropertyAdd(seTexture *texture, const sePropertyList &properties){
+	if(! texture || properties.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexture = NULL;
 	
-	if( properties.GetCount() == 1 ){
-		SetShortInfo( "Add Property" );
+	if(properties.GetCount() == 1){
+		SetShortInfo("Add Property");
 		
 	}else{
-		SetShortInfo( "Add Properties" );
+		SetShortInfo("Add Properties");
 	}
 	
 	pProperties = properties;
@@ -62,7 +62,7 @@ seUPropertyAdd::seUPropertyAdd( seTexture *texture, const sePropertyList &proper
 
 seUPropertyAdd::~seUPropertyAdd(){
 	pProperties.RemoveAll();
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }
@@ -76,21 +76,21 @@ void seUPropertyAdd::Undo(){
 	const int count = pProperties.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pTexture->RemoveProperty( pProperties.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pTexture->RemoveProperty(pProperties.GetAt(i));
 	}
 }
 
 void seUPropertyAdd::Redo(){
 	const int count = pProperties.GetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		pTexture->AddProperty( pProperties.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pTexture->AddProperty(pProperties.GetAt(i));
 	}
 	
-	pTexture->SetActiveProperty( pProperties.GetAt( 0 ) );
+	pTexture->SetActiveProperty(pProperties.GetAt(0));
 }

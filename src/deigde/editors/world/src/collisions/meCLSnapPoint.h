@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	meCLSnapPoint( meWorld &world, meObject *object );
+	meCLSnapPoint(meWorld &world, meObject *object);
 	
 	/** \brief Clean up visitor. */
 	virtual ~meCLSnapPoint();
@@ -76,10 +76,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline meWorld &GetWorld() const{ return pWorld; }
+	inline meWorld &GetWorld() const{return pWorld;}
 	
 	/** \brief Object. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline meObject *GetObject() const{return pObject;}
 	
 	/** \brief Snapping is enabled due to gui parameters. */
 	bool IsSnappingEnabled() const;
@@ -92,27 +92,27 @@ public:
 	 * relative to the object center. Thus set the collider position and orientation to
 	 * match the object position and orientation.
 	 */
-	void CalcBoundingBoxShape( decShapeList &list );
+	void CalcBoundingBoxShape(decShapeList &list);
 	
 	
 	
 	/** \brief Add object to ignore. */
-	void AddIgnoreObject( meObject *object );
+	void AddIgnoreObject(meObject *object);
 	
 	/** \brief Reset visitor. */
 	void Reset();
 	
 	/** \brief Distance between source point and target snap point. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{return pDistance;}
 	
 	/** \brief Source snap point or \em NULL to use object position. */
-	inline igdeGDCSnapPoint *GetSourceSnapPoint() const{ return pSourceSnapPoint; }
+	inline igdeGDCSnapPoint *GetSourceSnapPoint() const{return pSourceSnapPoint;}
 	
 	/** \brief Target object or \em NULL if not set. */
-	inline meObject *GetTargetObject() const{ return pTargetObject; }
+	inline meObject *GetTargetObject() const{return pTargetObject;}
 	
 	/** \brief Target snap point or \em NULL if not set. */
-	inline const igdeGDCSnapPoint *GetTargetSnapPoint() const{ return pTargetSnapPoint; }
+	inline const igdeGDCSnapPoint *GetTargetSnapPoint() const{return pTargetSnapPoint;}
 	
 	
 	
@@ -125,13 +125,13 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Collision response. */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	
 	/** \brief Can hit collider. */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	
 	/** \brief Collider changed which is not used. */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 };
 

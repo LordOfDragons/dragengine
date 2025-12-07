@@ -48,8 +48,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDebugOverlay::deoglDebugOverlay( deGraphicOpenGl &ogl ) :
-pOgl( ogl ){
+deoglDebugOverlay::deoglDebugOverlay(deGraphicOpenGl &ogl) :
+pOgl(ogl){
 }
 
 deoglDebugOverlay::~deoglDebugOverlay(){
@@ -60,44 +60,44 @@ deoglDebugOverlay::~deoglDebugOverlay(){
 // Management
 ///////////////
 
-void deoglDebugOverlay::PrepareOverlay( deCanvasView &canvasView ){
+void deoglDebugOverlay::PrepareOverlay(deCanvasView &canvasView){
 	deoglRenderThread &renderThread = pOgl.GetRenderThread();
 	
-	if( ! canvasView.GetRootCanvas() ){
-		renderThread.SetCanvasDebugOverlay( nullptr );
+	if(! canvasView.GetRootCanvas()){
+		renderThread.SetCanvasDebugOverlay(nullptr);
 		return;
 	}
 	
 	decPoint size;
 	
-	if( renderThread.GetVRCamera() ){
+	if(renderThread.GetVRCamera()){
 		const deoglVR * const vr = renderThread.GetVRCamera()->GetVR();
-		if( vr ){
-			canvasView.SetSize( vr->GetDebugPanelSize() );
+		if(vr){
+			canvasView.SetSize(vr->GetDebugPanelSize());
 			
 		}else{
-			renderThread.SetCanvasDebugOverlay( nullptr );
+			renderThread.SetCanvasDebugOverlay(nullptr);
 			return;
 		}
 		
 	}else{
 		const deRenderWindow * const renderWindow = pOgl.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
-		if( renderWindow ){
-			canvasView.SetSize( decPoint( renderWindow->GetWidth(), renderWindow->GetHeight() ) );
+		if(renderWindow){
+			canvasView.SetSize(decPoint(renderWindow->GetWidth(), renderWindow->GetHeight()));
 			
 		}else{
-			renderThread.SetCanvasDebugOverlay( nullptr );
+			renderThread.SetCanvasDebugOverlay(nullptr);
 			return;
 		}
 	}
 	
-	pSortViews( canvasView );
+	pSortViews(canvasView);
 	pAlignViews();
 	
-	deoglCanvasView &oglCanvas = *( ( deoglCanvasView* )canvasView.GetPeerGraphic() );
+	deoglCanvasView &oglCanvas = *((deoglCanvasView*)canvasView.GetPeerGraphic());
 	oglCanvas.SyncToRender();
 	
-	renderThread.SetCanvasDebugOverlay( oglCanvas.GetRCanvasView() );
+	renderThread.SetCanvasDebugOverlay(oglCanvas.GetRCanvasView());
 }
 
 
@@ -105,8 +105,8 @@ void deoglDebugOverlay::PrepareOverlay( deCanvasView &canvasView ){
 // Private Functions
 //////////////////////
 
-void deoglDebugOverlay::pSortViews( deCanvasView &canvasView ){
-	if( canvasView.GetCanvasCount() == 0 ){
+void deoglDebugOverlay::pSortViews(deCanvasView &canvasView){
+	if(canvasView.GetCanvasCount() == 0){
 		pList1.RemoveAll();
 		pList2.RemoveAll();
 		return;
@@ -115,8 +115,8 @@ void deoglDebugOverlay::pSortViews( deCanvasView &canvasView ){
 	pList1.RemoveAll();
 	
 	deCanvas *childCanvas = canvasView.GetRootCanvas();
-	while( childCanvas ){
-		pList1.Add( childCanvas );
+	while(childCanvas){
+		pList1.Add(childCanvas);
 		childCanvas = childCanvas->GetLLViewNext();
 	}
 	
@@ -124,34 +124,34 @@ void deoglDebugOverlay::pSortViews( deCanvasView &canvasView ){
 	float bestOrder;
 	int i;
 	
-	while( pList1.GetCount() > 0 ){
+	while(pList1.GetCount() > 0){
 		const int count = pList1.GetCount();
 		int bestIndex = -1;
 		
-		for( i=0; i<count; i++ ){
-			const float order = ( ( deCanvas* )pList1.GetAt( i ) )->GetOrder();
-			if( bestIndex == -1 || order < bestOrder ){
+		for(i=0; i<count; i++){
+			const float order = ((deCanvas*)pList1.GetAt(i))->GetOrder();
+			if(bestIndex == -1 || order < bestOrder){
 				bestOrder = order;
 				bestIndex = i;
 			}
 		}
 		
-		pList2.Add( pList1.GetAt( bestIndex ) );
-		pList1.RemoveFrom( bestIndex );
+		pList2.Add(pList1.GetAt(bestIndex));
+		pList1.RemoveFrom(bestIndex);
 	}
 }
 
 void deoglDebugOverlay::pAlignViews(){
 	// for the time being just take each canvas and align it from left to right using
 	// the order value to sort them
-	decPoint position( 5, 5 );
+	decPoint position(5, 5);
 	
 	const int count = pList2.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deCanvas &canvas = *( ( deCanvas* )pList2.GetAt( i ) );
-		canvas.SetPosition( position );
+	for(i=0; i<count; i++){
+		deCanvas &canvas = *((deCanvas*)pList2.GetAt(i));
+		canvas.SetPosition(position);
 		position.x += canvas.GetSize().x + 5;
 	}
 }

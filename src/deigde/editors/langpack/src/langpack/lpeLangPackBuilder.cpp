@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeLangPackBuilder::lpeLangPackBuilder( lpeLangPack *langpack ){
-	if( ! langpack ){
-		DETHROW( deeInvalidParam );
+lpeLangPackBuilder::lpeLangPackBuilder(lpeLangPack *langpack){
+	if(! langpack){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLangPack = langpack;
@@ -58,23 +58,23 @@ lpeLangPackBuilder::~lpeLangPackBuilder(){
 // Management
 ///////////////
 
-void lpeLangPackBuilder::BuildLanguagePack( deLanguagePack &langPack ){
+void lpeLangPackBuilder::BuildLanguagePack(deLanguagePack &langPack){
 	const lpeLangPackEntryList &entryList = pLangPack->GetEntryList();
 	const int entryCount = entryList.GetCount();
 	int i;
 	
-	langPack.SetEntryCount( entryCount );
+	langPack.SetEntryCount(entryCount);
 	
-	langPack.SetIdentifier( pLangPack->GetIdentifier() );
-	langPack.SetName( pLangPack->GetName() );
-	langPack.SetDescription( pLangPack->GetDescription() );
-	langPack.SetMissingText( pLangPack->GetMissingText() );
+	langPack.SetIdentifier(pLangPack->GetIdentifier());
+	langPack.SetName(pLangPack->GetName());
+	langPack.SetDescription(pLangPack->GetDescription());
+	langPack.SetMissingText(pLangPack->GetMissingText());
 	
-	for( i=0; i<entryCount; i++ ){
-		const lpeLangPackEntry &entry = *entryList.GetAt( i );
-		deLanguagePackEntry &engEntry = langPack.GetEntryAt( i );
+	for(i=0; i<entryCount; i++){
+		const lpeLangPackEntry &entry = *entryList.GetAt(i);
+		deLanguagePackEntry &engEntry = langPack.GetEntryAt(i);
 		
-		engEntry.SetName( entry.GetName() );
-		engEntry.SetText( entry.GetText() );
+		engEntry.SetName(entry.GetName());
+		engEntry.SetText(entry.GetText());
 	}
 }

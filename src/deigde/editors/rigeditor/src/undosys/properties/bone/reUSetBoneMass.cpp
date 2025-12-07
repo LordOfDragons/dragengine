@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetBoneMass::reUSetBoneMass( reRigBone *bone, float mass ){
-	if( ! bone ) DETHROW( deeInvalidParam );
+reUSetBoneMass::reUSetBoneMass(reRigBone *bone, float mass){
+	if(! bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
 	pBone->AddReference();
@@ -45,9 +45,9 @@ reUSetBoneMass::reUSetBoneMass( reRigBone *bone, float mass ){
 	pNewMass = mass;
 	
 	try{
-		SetShortInfo( "Set Bone Mass" );
+		SetShortInfo("Set Bone Mass");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,11 +63,11 @@ reUSetBoneMass::~reUSetBoneMass(){
 ///////////////
 
 void reUSetBoneMass::Undo(){
-	pBone->SetMass( pOldMass );
+	pBone->SetMass(pOldMass);
 }
 
 void reUSetBoneMass::Redo(){
-	pBone->SetMass( pNewMass );
+	pBone->SetMass(pNewMass);
 }
 
 
@@ -76,5 +76,5 @@ void reUSetBoneMass::Redo(){
 //////////////////////
 
 void reUSetBoneMass::pCleanUp(){
-	if( pBone ) pBone->FreeReference();
+	if(pBone) pBone->FreeReference();
 }

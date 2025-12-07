@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	seWindowCurves( seWindowMain &windowMain );
+	seWindowCurves(seWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline seWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline seSky *GetSky() const{return pSky;}
 	
 	/** \brief Set sky. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Active link or \em NULL. */
 	seLink *GetLink() const;

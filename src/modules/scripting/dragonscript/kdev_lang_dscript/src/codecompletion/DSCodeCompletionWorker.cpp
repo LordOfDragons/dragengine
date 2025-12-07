@@ -19,35 +19,35 @@ using KTextEditor::View;
 
 namespace DragonScript {
 
-DSCodeCompletionWorker::DSCodeCompletionWorker( DSCodeCompletionModel &model, const QUrl &document ) :
-CodeCompletionWorker( &model ),
-pModel( model )
+DSCodeCompletionWorker::DSCodeCompletionWorker(DSCodeCompletionModel &model, const QUrl &document) :
+CodeCompletionWorker(&model),
+pModel(model)
 {
-	Q_UNUSED( document );
+	Q_UNUSED(document);
 }
 
 CodeCompletionContext *DSCodeCompletionWorker::createCompletionContext(
 const DUContextPointer context, const QString &contextText, const QString &followingText,
-const CursorInRevision &position ) const{
-	if( ! context ){
+const CursorInRevision &position) const{
+	if(! context){
 		return nullptr;
 	}
 	
-	return new DSCodeCompletionContext( *this, context, contextText, followingText, position, 0 );
+	return new DSCodeCompletionContext(*this, context, contextText, followingText, position, 0);
 }
 
-void DSCodeCompletionWorker::updateContextRange( Range &contextRange, View *view,
-const DUContextPointer context ) const{
-	if( ! context ){
+void DSCodeCompletionWorker::updateContextRange(Range &contextRange, View *view,
+const DUContextPointer context) const{
+	if(! context){
 		return;
 	}
-	if( ! contextRange.start().isValid() ){
-		contextRange.setStart( { 0, 0 } );
+	if(! contextRange.start().isValid()){
+		contextRange.setStart({0, 0});
 	}
 	
-	Q_UNUSED( view );
+	Q_UNUSED(view);
 	/*
-	if( CodeHelpers::endsInside( view->document()->text( contextRange ) ) == CodeHelpers::String ){
+	if(CodeHelpers::endsInside(view->document()->text(contextRange)) == CodeHelpers::String){
 		qDebug() << "we're dealing with string completion. extend the range";
 		contextRange = context->rangeInCurrentRevision();
 	}

@@ -50,11 +50,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of shapes. */
-	inline int GetShapeCount() const{ return pShapeCount; }
+	inline int GetShapeCount() const{return pShapeCount;}
 	/** Retrieves a shape by index. */
-	deoglShape *GetShapeAt( int index ) const;
+	deoglShape *GetShapeAt(int index) const;
 	/** Adds a shape. */
-	void AddShape( deoglShape *shape );
+	void AddShape(deoglShape *shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/

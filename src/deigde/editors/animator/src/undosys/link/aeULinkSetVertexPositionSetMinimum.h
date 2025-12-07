@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkSetVertexPositionSetMinimum( aeLink *link, float newValue );
+	aeULinkSetVertexPositionSetMinimum(aeLink *link, float newValue);
 	
 protected:
 	/** Clean up undo. */

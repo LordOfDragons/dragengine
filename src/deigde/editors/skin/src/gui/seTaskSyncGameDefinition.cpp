@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-seTaskSyncGameDefinition::seTaskSyncGameDefinition( seWindowMain &windowMain ) :
-pWindowMain( windowMain )
+seTaskSyncGameDefinition::seTaskSyncGameDefinition(seWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Skin Editor: Synchronize Game Definition" );
+	SetMessage("Skin Editor: Synchronize Game Definition");
 }
 
 seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){
@@ -60,7 +60,7 @@ seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){
 ///////////////
 
 bool seTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetSkin() ){
+	if(! pWindowMain.GetSkin()){
 		return false;
 	}
 	

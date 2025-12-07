@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetName( seLink *link, const char *newName );
+	seULinkSetName(seLink *link, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

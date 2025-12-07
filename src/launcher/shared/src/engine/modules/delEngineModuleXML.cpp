@@ -51,8 +51,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delEngineModuleXML::delEngineModuleXML( deLogger *logger, const char *loggerSource ) :
-delBaseXML( logger, loggerSource ){
+delEngineModuleXML::delEngineModuleXML(deLogger *logger, const char *loggerSource) :
+delBaseXML(logger, loggerSource){
 }
 
 delEngineModuleXML::~delEngineModuleXML(){
@@ -63,25 +63,25 @@ delEngineModuleXML::~delEngineModuleXML(){
 // Management
 ///////////////
 
-void delEngineModuleXML::ReadFromFile( const char *filename, decBaseFileReader &reader, delEngineModule &module ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+void delEngineModuleXML::ReadFromFile(const char *filename, decBaseFileReader &reader, delEngineModule &module){
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "module" ){
-		DETHROW_INFO( deeInvalidParam, "missing root tag 'module'" );
+	if(! root || root->GetName() != "module"){
+		DETHROW_INFO(deeInvalidParam, "missing root tag 'module'");
 	}
 	
-	pReadModule( *root, module );
+	pReadModule(*root, module);
 	
 	decPath basePath;
-	basePath.SetFromUnix( filename );
+	basePath.SetFromUnix(filename);
 	basePath.RemoveLastComponent(); // module.xml
 	basePath.RemoveLastComponent(); // version
-	module.SetDirectoryName( basePath.GetLastComponent() );
+	module.SetDirectoryName(basePath.GetLastComponent());
 }
 
 
@@ -89,52 +89,52 @@ void delEngineModuleXML::ReadFromFile( const char *filename, decBaseFileReader &
 // Private Functions
 //////////////////////
 
-void delEngineModuleXML::pReadModule( const decXmlElementTag &root, delEngineModule &module ){
+void delEngineModuleXML::pReadModule(const decXmlElementTag &root, delEngineModule &module){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "name" ){
-			module.SetName( GetCDataString( *tag ) );
+		if(tag->GetName() == "name"){
+			module.SetName(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "description" ){
-			module.SetDescription( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+		}else if(tag->GetName() == "description"){
+			module.SetDescription(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			
-		}else if( tag->GetName() == "author" ){
-			module.SetAuthor( decUnicodeString::NewFromUTF8( GetCDataString( *tag ) ) );
+		}else if(tag->GetName() == "author"){
+			module.SetAuthor(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			
-		}else if( tag->GetName() == "version" ){
-			module.SetVersion( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "version"){
+			module.SetVersion(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "type" ){
-			module.SetType( deModuleSystem::GetTypeFromString( GetCDataString( *tag ) ) );
+		}else if(tag->GetName() == "type"){
+			module.SetType(deModuleSystem::GetTypeFromString(GetCDataString(*tag)));
 			
-		}else if( tag->GetName() == "pattern" ){
+		}else if(tag->GetName() == "pattern"){
 			decString pattern(module.GetPattern());
 			if(pattern.IsEmpty()){
 				pattern.AppendCharacter(',');
 			}
 			module.SetPattern(pattern + GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "homepage" ){
+		}else if(tag->GetName() == "homepage"){
 			// no interest in this tag
 			
-		}else if( tag->GetName() == "library" ){
-			pReadModuleLibrary( *tag, module );
+		}else if(tag->GetName() == "library"){
+			pReadModuleLibrary(*tag, module);
 			
-		}else if( tag->GetName() == "data" ){
+		}else if(tag->GetName() == "data"){
 			// deprecated
 			
-		}else if( tag->GetName() == "fallback" ){
-			module.SetIsFallback( true );
+		}else if(tag->GetName() == "fallback"){
+			module.SetIsFallback(true);
 			
-		}else if( tag->GetName() == "priority" ){
-			module.SetPriority( GetCDataInt( *tag ) );
+		}else if(tag->GetName() == "priority"){
+			module.SetPriority(GetCDataInt(*tag));
 			
 		}else{
 // 			ErrorUnknownTag( root, *tag );
@@ -142,33 +142,33 @@ void delEngineModuleXML::pReadModule( const decXmlElementTag &root, delEngineMod
 	}
 }
 
-void delEngineModuleXML::pReadModuleLibrary( const decXmlElementTag &root, delEngineModule &module ){
+void delEngineModuleXML::pReadModuleLibrary(const decXmlElementTag &root, delEngineModule &module){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "file" ){
-			module.SetLibFileName( GetCDataString( *tag ) );
+		if(tag->GetName() == "file"){
+			module.SetLibFileName(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "size" ){
-			module.SetLibFileSizeShould( GetCDataInt( *tag ) );
+		}else if(tag->GetName() == "size"){
+			module.SetLibFileSizeShould(GetCDataInt(*tag));
 			
-		}else if( tag->GetName() == "sha1" ){
-			module.SetLibFileHashShould( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "sha1"){
+			module.SetLibFileHashShould(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "entrypoint" ){
-			module.SetLibFileEntryPoint( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "entrypoint"){
+			module.SetLibFileEntryPoint(GetCDataString(*tag));
 			
-		}else if( tag->GetName() == "preloadLibrary" ){
+		}else if(tag->GetName() == "preloadLibrary"){
 			// we do not care about this
 			
 		}else{
-			ErrorUnknownTag( root, *tag );
+			ErrorUnknownTag(root, *tag);
 		}
 	}
 }

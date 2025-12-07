@@ -53,57 +53,57 @@ enum {
 ////////////////////////////
 
 decString::decString(){
-	pString = new char[ 1 ];
-	if( ! pString ) DETHROW( deeOutOfMemory );
-	pString[ 0 ] = '\0';
+	pString = new char[1];
+	if(! pString) DETHROW(deeOutOfMemory);
+	pString[0] = '\0';
 }
 
-decString::decString( const char *string ){
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+decString::decString(const char *string){
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
-	int length = strlen( string );
+	int length = strlen(string);
 	
-	pString = new char[ length + 1 ];
-	if( ! pString ) DETHROW( deeOutOfMemory );
-	strncpy( pString, string, length );
-	pString[ length ] = '\0';
+	pString = new char[length + 1];
+	if(! pString) DETHROW(deeOutOfMemory);
+	strncpy(pString, string, length);
+	pString[length] = '\0';
 }
 
-decString::decString( const decString &string ){
-	int length = strlen( string.pString );
+decString::decString(const decString &string){
+	int length = strlen(string.pString);
 	
-	pString = new char[ length + 1 ];
-	if( ! pString ) DETHROW( deeOutOfMemory );
-	strncpy( pString, string.pString, length );
-	pString[ length ] = '\0';
+	pString = new char[length + 1];
+	if(! pString) DETHROW(deeOutOfMemory);
+	strncpy(pString, string.pString, length);
+	pString[length] = '\0';
 }
 
-decString::decString( const decString &string1, const decString &string2 ){
-	int length1 = strlen( string1.pString );
-	int length2 = strlen( string2.pString );
+decString::decString(const decString &string1, const decString &string2){
+	int length1 = strlen(string1.pString);
+	int length2 = strlen(string2.pString);
 	
-	pString = new char[ length1 + length2 + 1 ];
-	if( ! pString ) DETHROW( deeOutOfMemory );
-	strncpy( pString, string1.pString, length1 );
-	strncpy( pString + length1, string2.pString, length2 );
-	pString[ length1 + length2 ] = '\0';
+	pString = new char[length1 + length2 + 1];
+	if(! pString) DETHROW(deeOutOfMemory);
+	strncpy(pString, string1.pString, length1);
+	strncpy(pString + length1, string2.pString, length2);
+	pString[length1 + length2] = '\0';
 }
 
-decString::decString( const decString &string1, const char *string2 ){
-	if( ! string2 ) DETHROW( deeInvalidParam );
-	int length1 = strlen( string1.pString );
-	int length2 = strlen( string2 );
+decString::decString(const decString &string1, const char *string2){
+	if(! string2) DETHROW(deeInvalidParam);
+	int length1 = strlen(string1.pString);
+	int length2 = strlen(string2);
 	
-	pString = new char[ length1 + length2 + 1 ];
-	if( ! pString ) DETHROW( deeOutOfMemory );
-	strncpy( pString, string1.pString, length1 );
-	strncpy( pString + length1, string2, length2 );
-	pString[ length1 + length2 ] = '\0';
+	pString = new char[length1 + length2 + 1];
+	if(! pString) DETHROW(deeOutOfMemory);
+	strncpy(pString, string1.pString, length1);
+	strncpy(pString + length1, string2, length2);
+	pString[length1 + length2] = '\0';
 }
 
 decString::~decString(){
-	if( pString ) delete [] pString;
+	if(pString) delete [] pString;
 }
 
 
@@ -112,14 +112,14 @@ decString::~decString(){
 ///////////////
 
 bool decString::IsEmpty() const{
-	return pString[ 0 ] == '\0';
+	return pString[0] == '\0';
 }
 
 void decString::Empty(){
-	if( pString[ 0 ] != '\0' ){
-		char *newString = new char[ 1 ];
-		if( ! newString ) DETHROW( deeOutOfMemory );
-		newString[ 0 ] = '\0';
+	if(pString[0] != '\0'){
+		char *newString = new char[1];
+		if(! newString) DETHROW(deeOutOfMemory);
+		newString[0] = '\0';
 		
 		delete [] pString;
 		pString = newString;
@@ -127,442 +127,442 @@ void decString::Empty(){
 }
 
 int decString::GetLength() const{
-	return strlen( pString );
+	return strlen(pString);
 }
 
-int decString::GetAt( int position ) const{
+int decString::GetAt(int position) const{
 	const int len = GetLength();
 	
-	if( position < 0 ){
+	if(position < 0){
 		position += len;
 	}
 	
-	if( position < 0 || position >= len ){
-		DETHROW( deeInvalidParam );
+	if(position < 0 || position >= len){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pString[ position ];
+	return pString[position];
 }
 
-void decString::SetAt( int position, int character ){
+void decString::SetAt(int position, int character){
 	const int len = GetLength();
 	
-	if( position < 0 ){
+	if(position < 0){
 		position += len;
 	}
 	
-	if( position < 0 || position >= len ){
-		DETHROW( deeInvalidParam );
+	if(position < 0 || position >= len){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( character < 0 || character > 255 ){
-		DETHROW( deeInvalidParam );
+	if(character < 0 || character > 255){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pString[ position ] = character;
+	pString[position] = character;
 }
 
 
 
-void decString::Set( const decString &string ){
-	int length = strlen( string.pString );
+void decString::Set(const decString &string){
+	int length = strlen(string.pString);
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, string.pString, length );
-	newString[ length ] = '\0';
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, string.pString, length);
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::Set( const char *string ){
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+void decString::Set(const char *string){
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int length = strlen( string );
+	int length = strlen(string);
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, string, length );
-	newString[ length ] = '\0';
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, string, length);
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::Set( int character, int count ){
-	if( character < 0 || character > 255 || count < 0 ){
-		DETHROW( deeInvalidParam );
+void decString::Set(int character, int count){
+	if(character < 0 || character > 255 || count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	char * const newString = new char[ count + 1 ];
-	memset( newString, character, count );
-	newString[ count ] = '\0';
+	char * const newString = new char[count + 1];
+	memset(newString, character, count);
+	newString[count] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::SetValue( char value ){
+void decString::SetValue(char value){
 #ifdef OS_W32
-    int length = snprintf( NULL, 0, "%hi", value );
+    int length = snprintf(NULL, 0, "%hi", value);
 #else
-	int length = snprintf( NULL, 0, "%hhi", value );
+	int length = snprintf(NULL, 0, "%hhi", value);
 #endif
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
-	snprintf( newString, length + 1, "%hi", value );
+	snprintf(newString, length + 1, "%hi", value);
 #else
-	snprintf( newString, length + 1, "%hhi", value );
+	snprintf(newString, length + 1, "%hhi", value);
 #endif
-	newString[ length ] = '\0';
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::SetValue( unsigned char value ){
+void decString::SetValue(unsigned char value){
 #ifdef OS_W32
-	int length = snprintf( NULL, 0, "%hu", value );
+	int length = snprintf(NULL, 0, "%hu", value);
 #else
-	int length = snprintf( NULL, 0, "%hhu", value );
+	int length = snprintf(NULL, 0, "%hhu", value);
 #endif
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
-	snprintf( newString, length + 1, "%hu", value );
+	snprintf(newString, length + 1, "%hu", value);
 #else
-	snprintf( newString, length + 1, "%hhu", value );
+	snprintf(newString, length + 1, "%hhu", value);
 #endif
-	newString[ length ] = '\0';
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::SetValue( short value ){
-	int length = snprintf( NULL, 0, "%hi", value );
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+void decString::SetValue(short value){
+	int length = snprintf(NULL, 0, "%hi", value);
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	snprintf( newString, length + 1, "%hi", value );
-	newString[ length ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::SetValue( unsigned short value ){
-	int length = snprintf( NULL, 0, "%hu", value );
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
-	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	snprintf( newString, length + 1, "%hu", value );
-	newString[ length ] = '\0';
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	snprintf(newString, length + 1, "%hi", value);
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::SetValue( int value ){
-	int length = snprintf( NULL, 0, "%i", value );
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+void decString::SetValue(unsigned short value){
+	int length = snprintf(NULL, 0, "%hu", value);
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	snprintf( newString, length + 1, "%i", value );
-	newString[ length ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::SetValue( unsigned int value ){
-	int length = snprintf( NULL, 0, "%u", value );
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
-	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	snprintf( newString, length + 1, "%u", value );
-	newString[ length ] = '\0';
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	snprintf(newString, length + 1, "%hu", value);
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::SetValue( float value ){
-	int length = snprintf( NULL, 0, "%g", value );
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+void decString::SetValue(int value){
+	int length = snprintf(NULL, 0, "%i", value);
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	snprintf( newString, length + 1, "%g", value );
-	newString[ length ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::SetValue( double value ){
-	int length = snprintf( NULL, 0, "%g", value );
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
-	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	snprintf( newString, length + 1, "%g", value );
-	newString[ length ] = '\0';
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	snprintf(newString, length + 1, "%i", value);
+	newString[length] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::Format( const char *format, ... ){
+void decString::SetValue(unsigned int value){
+	int length = snprintf(NULL, 0, "%u", value);
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
+	
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	snprintf(newString, length + 1, "%u", value);
+	newString[length] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::SetValue(float value){
+	int length = snprintf(NULL, 0, "%g", value);
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
+	
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	snprintf(newString, length + 1, "%g", value);
+	newString[length] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::SetValue(double value){
+	int length = snprintf(NULL, 0, "%g", value);
+	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
+	
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	snprintf(newString, length + 1, "%g", value);
+	newString[length] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::Format(const char *format, ...){
 	va_list list;
-	va_start( list, format );
-	FormatUsing( format, list );
-	va_end( list );
+	va_start(list, format);
+	FormatUsing(format, list);
+	va_end(list);
 }
 
-void decString::FormatUsing( const char *format, va_list args ){
+void decString::FormatUsing(const char *format, va_list args){
 	va_list copyargs;
 	
-	va_copy( copyargs, args );
-	int length = vsnprintf( NULL, 0, format, copyargs );
-	va_end( copyargs );
+	va_copy(copyargs, args);
+	int length = vsnprintf(NULL, 0, format, copyargs);
+	va_end(copyargs);
 	
-	if( length < 0 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if(length < 0) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 	
-	char *newString = new char[ length + 1 ];
-	if( ! newString ) DETHROW( deeInvalidParam );
+	char *newString = new char[length + 1];
+	if(! newString) DETHROW(deeInvalidParam);
 	
-	if( vsnprintf( newString, length + 1, format, args ) != length ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	
-	delete [] pString;
-	pString = newString;
-}
-
-
-
-void decString::Append( const decString &string ){
-	int length1 = strlen( pString );
-	int length2 = strlen( string.pString );
-	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	strncpy( newString + length1, string.pString, length2 );
-	newString[ length1 + length2 ] = '\0';
+	if(vsnprintf(newString, length + 1, format, args) != length) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::Append( const char *string ){
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+
+
+void decString::Append(const decString &string){
+	int length1 = strlen(pString);
+	int length2 = strlen(string.pString);
+	
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	strncpy(newString + length1, string.pString, length2);
+	newString[length1 + length2] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::Append(const char *string){
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	int length1 = strlen( pString );
-	int length2 = strlen( string );
+	int length1 = strlen(pString);
+	int length2 = strlen(string);
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	strncpy( newString + length1, string, length2 );
-	newString[ length1 + length2 ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::AppendCharacter( char character ){
-	int length = strlen( pString );
-	
-	char *newString = new char[ length + 2 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length );
-	newString[ length ] = character;
-	newString[ length + 1 ] = '\0';
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	strncpy(newString + length1, string, length2);
+	newString[length1 + length2] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::AppendCharacter( unsigned char character ){
-	AppendCharacter( ( char )character );
+void decString::AppendCharacter(char character){
+	int length = strlen(pString);
+	
+	char *newString = new char[length + 2];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length);
+	newString[length] = character;
+	newString[length + 1] = '\0';
+	
+	delete [] pString;
+	pString = newString;
 }
 
-void decString::AppendCharacter( int character ){
-	AppendCharacter( ( unsigned char )character );
+void decString::AppendCharacter(unsigned char character){
+	AppendCharacter((char)character);
 }
 
-void decString::AppendValue( char value ){
-	int length1 = strlen( pString );
+void decString::AppendCharacter(int character){
+	AppendCharacter((unsigned char)character);
+}
+
+void decString::AppendValue(char value){
+	int length1 = strlen(pString);
 #ifdef OS_W32
-	int length2 = snprintf( NULL, 0, "%hi", value );
+	int length2 = snprintf(NULL, 0, "%hi", value);
 #else
-	int length2 = snprintf( NULL, 0, "%hhi", value );
+	int length2 = snprintf(NULL, 0, "%hhi", value);
 #endif
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
 #ifdef OS_W32
-	if( snprintf( newString + length1, length2 + 1, "%hi", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if(snprintf(newString + length1, length2 + 1, "%hi", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 #else
-	if( snprintf( newString + length1, length2 + 1, "%hhi", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if(snprintf(newString + length1, length2 + 1, "%hhi", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 #endif
-	newString[ length1 + length2 ] = '\0';
+	newString[length1 + length2] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::AppendValue( unsigned char value ){
-	int length1 = strlen( pString );
+void decString::AppendValue(unsigned char value){
+	int length1 = strlen(pString);
 #ifdef OS_W32
-	int length2 = snprintf( NULL, 0, "%hu", value );
+	int length2 = snprintf(NULL, 0, "%hu", value);
 #else
-	int length2 = snprintf( NULL, 0, "%hhu", value );
+	int length2 = snprintf(NULL, 0, "%hhu", value);
 #endif
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
 #ifdef OS_W32
-	if( snprintf( newString + length1, length2 + 1, "%hu", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if(snprintf(newString + length1, length2 + 1, "%hu", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 #else
-	if( snprintf( newString + length1, length2 + 1, "%hhu", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if(snprintf(newString + length1, length2 + 1, "%hhu", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 #endif
-	newString[ length1 + length2 ] = '\0';
+	newString[length1 + length2] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::AppendValue( short value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%hi", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+void decString::AppendValue(short value){
+	int length1 = strlen(pString);
+	int length2 = snprintf(NULL, 0, "%hi", value);
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	if( snprintf( newString + length1, length2 + 1, "%hi", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	newString[ length1 + length2 ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::AppendValue( short unsigned value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%hu", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
-	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	if( snprintf( newString + length1, length2 + 1, "%hu", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	newString[ length1 + length2 ] = '\0';
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	if(snprintf(newString + length1, length2 + 1, "%hi", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
+	newString[length1 + length2] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::AppendValue( int value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%i", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+void decString::AppendValue(short unsigned value){
+	int length1 = strlen(pString);
+	int length2 = snprintf(NULL, 0, "%hu", value);
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	if( snprintf( newString + length1, length2 + 1, "%i", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	newString[ length1 + length2 ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::AppendValue( unsigned int value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%u", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
-	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	if( snprintf( newString + length1, length2 + 1, "%u", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	newString[ length1 + length2 ] = '\0';
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	if(snprintf(newString + length1, length2 + 1, "%hu", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
+	newString[length1 + length2] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::AppendValue( float value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%g", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
+void decString::AppendValue(int value){
+	int length1 = strlen(pString);
+	int length2 = snprintf(NULL, 0, "%i", value);
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	if( snprintf( newString + length1, length2 + 1, "%g", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	newString[ length1 + length2 ] = '\0';
-	
-	delete [] pString;
-	pString = newString;
-}
-
-void decString::AppendValue( double value ){
-	int length1 = strlen( pString );
-	int length2 = snprintf( NULL, 0, "%g", value );
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken snprintf implementation
-	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeOutOfMemory );
-	strncpy( newString, pString, length1 );
-	if( snprintf( newString + length1, length2 + 1, "%g", value ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
-	newString[ length1 + length2 ] = '\0';
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	if(snprintf(newString + length1, length2 + 1, "%i", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
+	newString[length1 + length2] = '\0';
 	
 	delete [] pString;
 	pString = newString;
 }
 
-void decString::AppendFormat( const char *format, ... ){
+void decString::AppendValue(unsigned int value){
+	int length1 = strlen(pString);
+	int length2 = snprintf(NULL, 0, "%u", value);
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
+	
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	if(snprintf(newString + length1, length2 + 1, "%u", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
+	newString[length1 + length2] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::AppendValue(float value){
+	int length1 = strlen(pString);
+	int length2 = snprintf(NULL, 0, "%g", value);
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
+	
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	if(snprintf(newString + length1, length2 + 1, "%g", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
+	newString[length1 + length2] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::AppendValue(double value){
+	int length1 = strlen(pString);
+	int length2 = snprintf(NULL, 0, "%g", value);
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
+	
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeOutOfMemory);
+	strncpy(newString, pString, length1);
+	if(snprintf(newString + length1, length2 + 1, "%g", value) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
+	newString[length1 + length2] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::AppendFormat(const char *format, ...){
 	va_list list;
-	va_start( list, format );
-	AppendFormatUsing( format, list );
-	va_end( list );
+	va_start(list, format);
+	AppendFormatUsing(format, list);
+	va_end(list);
 }
 
-void decString::AppendFormatUsing( const char *format, va_list args ){
-	int length1 = strlen( pString );
+void decString::AppendFormatUsing(const char *format, va_list args){
+	int length1 = strlen(pString);
 	va_list copyargs;
 	
-	va_copy( copyargs, args );
-	int length2 = vsnprintf( NULL, 0, format, copyargs );
-	va_end( copyargs );
+	va_copy(copyargs, args);
+	int length2 = vsnprintf(NULL, 0, format, copyargs);
+	va_end(copyargs);
 	
-	if( length2 < 0 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	if(length2 < 0) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 	
-	char *newString = new char[ length1 + length2 + 1 ];
-	if( ! newString ) DETHROW( deeInvalidParam );
+	char *newString = new char[length1 + length2 + 1];
+	if(! newString) DETHROW(deeInvalidParam);
 	
-	strncpy( newString, pString, length1 );
-	if( vsnprintf( newString + length1, length2 + 1, format, args ) != length2 ) DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	strncpy(newString, pString, length1);
+	if(vsnprintf(newString + length1, length2 + 1, format, args) != length2) DETHROW(deeInvalidParam); // broken vsnprintf implementation
 	
 	delete [] pString;
 	pString = newString;
@@ -570,34 +570,34 @@ void decString::AppendFormatUsing( const char *format, va_list args ){
 
 
 
-int decString::Find( int character ) const{
-	return Find( character, 0, GetLength() );
+int decString::Find(int character) const{
+	return Find(character, 0, GetLength());
 }
 
-int decString::Find( int character, int start ) const{
-	return Find( character, start, GetLength() );
+int decString::Find(int character, int start) const{
+	return Find(character, start, GetLength());
 }
 
-int decString::Find( int character, int start, int end ) const{
+int decString::Find(int character, int start, int end) const{
 	const int len = GetLength();
 	int i;
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = len + start;
 	}
-	if( end < 0 ){
+	if(end < 0){
 		end = len + end;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = 0;
 	}
-	if( end > len ){
+	if(end > len){
 		end = len;
 	}
 	
-	for( i=start; i<end; i++ ){
-		if( pString[ i ] == character ){
+	for(i=start; i<end; i++){
+		if(pString[i] == character){
 			return i;
 		}
 	}
@@ -605,26 +605,26 @@ int decString::Find( int character, int start, int end ) const{
 	return -1;
 }
 
-int decString::Find( const char *characters ) const{
-	return Find( characters, 0, GetLength() );
+int decString::Find(const char *characters) const{
+	return Find(characters, 0, GetLength());
 }
 
-int decString::Find( const char *characters, int start ) const{
-	return Find( characters, start, GetLength() );
+int decString::Find(const char *characters, int start) const{
+	return Find(characters, start, GetLength());
 }
 
-int decString::Find( const char *characters, int start, int end ) const{
-	if( ! characters ){
-		DETHROW( deeInvalidParam );
+int decString::Find(const char *characters, int start, int end) const{
+	if(! characters){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int ccount = strlen( characters );
+	const int ccount = strlen(characters);
 	int i, found, foundBest = -1;
 	
-	for( i=0; i<ccount; i++ ){
-		found = Find( characters[ i ], start, end );
+	for(i=0; i<ccount; i++){
+		found = Find(characters[i], start, end);
 		
-		if( found != -1 && ( foundBest == -1 || found < foundBest ) ){
+		if(found != -1 && (foundBest == -1 || found < foundBest)){
 			foundBest = found;
 		}
 	}
@@ -632,46 +632,46 @@ int decString::Find( const char *characters, int start, int end ) const{
 	return foundBest;
 }
 
-int decString::Find( const decString &characters ) const{
-	return Find( characters.GetString(), 0, GetLength() );
+int decString::Find(const decString &characters) const{
+	return Find(characters.GetString(), 0, GetLength());
 }
 
-int decString::Find( const decString &characters, int start ) const{
-	return Find( characters.GetString(), start, GetLength() );
+int decString::Find(const decString &characters, int start) const{
+	return Find(characters.GetString(), start, GetLength());
 }
 
-int decString::Find( const decString &characters, int start, int end ) const{
-	return Find( characters.GetString(), start, end );
+int decString::Find(const decString &characters, int start, int end) const{
+	return Find(characters.GetString(), start, end);
 }
 
-int decString::FindReverse( int character ) const{
-	return FindReverse( character, 0, GetLength() );
+int decString::FindReverse(int character) const{
+	return FindReverse(character, 0, GetLength());
 }
 
-int decString::FindReverse( int character, int start ) const{
-	return FindReverse( character, start, GetLength() );
+int decString::FindReverse(int character, int start) const{
+	return FindReverse(character, start, GetLength());
 }
 
-int decString::FindReverse( int character, int start, int end ) const{
+int decString::FindReverse(int character, int start, int end) const{
 	const int len = GetLength();
 	int i;
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = len + start;
 	}
-	if( end < 0 ){
+	if(end < 0){
 		end = len + end;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = 0;
 	}
-	if( end > len ){
+	if(end > len){
 		end = len;
 	}
 	
-	for( i=end-1; i>=start; i-- ){
-		if( pString[ i ] == character ){
+	for(i=end-1; i>=start; i--){
+		if(pString[i] == character){
 			return i;
 		}
 	}
@@ -679,26 +679,26 @@ int decString::FindReverse( int character, int start, int end ) const{
 	return -1;
 }
 
-int decString::FindReverse( const char *characters ) const{
-	return FindReverse( characters, 0, GetLength() );
+int decString::FindReverse(const char *characters) const{
+	return FindReverse(characters, 0, GetLength());
 }
 
-int decString::FindReverse( const char *characters, int start ) const{
-	return FindReverse( characters, start, GetLength() );
+int decString::FindReverse(const char *characters, int start) const{
+	return FindReverse(characters, start, GetLength());
 }
 
-int decString::FindReverse( const char *characters, int start, int end ) const{
-	if( ! characters ){
-		DETHROW( deeInvalidParam );
+int decString::FindReverse(const char *characters, int start, int end) const{
+	if(! characters){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int ccount = strlen( characters );
+	const int ccount = strlen(characters);
 	int i, found, foundBest = -1;
 	
-	for( i=0; i<ccount; i++ ){
-		found = FindReverse( characters[ i ], start, end );
+	for(i=0; i<ccount; i++){
+		found = FindReverse(characters[i], start, end);
 		
-		if( found != -1 && found > foundBest ){
+		if(found != -1 && found > foundBest){
 			foundBest = found;
 		}
 	}
@@ -706,55 +706,55 @@ int decString::FindReverse( const char *characters, int start, int end ) const{
 	return foundBest;
 }
 
-int decString::FindReverse( const decString &characters ) const{
-	return FindReverse( characters.GetString(), 0, GetLength() );
+int decString::FindReverse(const decString &characters) const{
+	return FindReverse(characters.GetString(), 0, GetLength());
 }
 
-int decString::FindReverse( const decString &characters, int start ) const{
-	return FindReverse( characters.GetString(), start, GetLength() );
+int decString::FindReverse(const decString &characters, int start) const{
+	return FindReverse(characters.GetString(), start, GetLength());
 }
 
-int decString::FindReverse( const decString &characters, int start, int end ) const{
-	return FindReverse( characters.GetString(), start, end );
+int decString::FindReverse(const decString &characters, int start, int end) const{
+	return FindReverse(characters.GetString(), start, end);
 }
 
-int decString::FindString( const char *string ) const{
-	return FindString( string, 0, GetLength() );
+int decString::FindString(const char *string) const{
+	return FindString(string, 0, GetLength());
 }
 
-int decString::FindString( const char *string, int start ) const{
-	return FindString( string, start, GetLength() );
+int decString::FindString(const char *string, int start) const{
+	return FindString(string, start, GetLength());
 }
 
-int decString::FindString( const char *string, int start, int end ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+int decString::FindString(const char *string, int start, int end) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int slen = strlen( string );
+	const int slen = strlen(string);
 	const int rlen = GetLength();
 	int i;
 	
-	if( rlen < slen ){
+	if(rlen < slen){
 		return -1;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = rlen + start;
 	}
-	if( end < 0 ){
+	if(end < 0){
 		end = rlen + end;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = 0;
 	}
-	if( end > rlen ){
+	if(end > rlen){
 		end = rlen;
 	}
 	
-	for( i=start; i<end; i++ ){
-		if( strncmp( pString + i, string, slen ) == 0 ){
+	for(i=start; i<end; i++){
+		if(strncmp(pString + i, string, slen) == 0){
 			return i;
 		}
 	}
@@ -762,55 +762,55 @@ int decString::FindString( const char *string, int start, int end ) const{
 	return -1;
 }
 
-int decString::FindString( const decString &string ) const{
-	return FindString( string.GetString(), 0, GetLength() );
+int decString::FindString(const decString &string) const{
+	return FindString(string.GetString(), 0, GetLength());
 }
 
-int decString::FindString( const decString &string, int start ) const{
-	return FindString( string.GetString(), start, GetLength() );
+int decString::FindString(const decString &string, int start) const{
+	return FindString(string.GetString(), start, GetLength());
 }
 
-int decString::FindString( const decString &string, int start, int end ) const{
-	return FindString( string.GetString(), start, end );
+int decString::FindString(const decString &string, int start, int end) const{
+	return FindString(string.GetString(), start, end);
 }
 
-int decString::FindStringReverse( const char *string ) const{
-	return FindStringReverse( string, 0, GetLength() );
+int decString::FindStringReverse(const char *string) const{
+	return FindStringReverse(string, 0, GetLength());
 }
 
-int decString::FindStringReverse( const char *string, int start ) const{
-	return FindStringReverse( string, start, GetLength() );
+int decString::FindStringReverse(const char *string, int start) const{
+	return FindStringReverse(string, start, GetLength());
 }
 
-int decString::FindStringReverse( const char *string, int start, int end ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+int decString::FindStringReverse(const char *string, int start, int end) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int slen = strlen( string );
+	const int slen = strlen(string);
 	const int rlen = GetLength();
 	int i;
 	
-	if( rlen < slen ){
+	if(rlen < slen){
 		return -1;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = rlen + start;
 	}
-	if( end < 0 ){
+	if(end < 0){
 		end = rlen + end;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = 0;
 	}
-	if( end > rlen ){
+	if(end > rlen){
 		end = rlen;
 	}
 	
-	for( i=end-1; i>=start; i-- ){
-		if( strncmp( pString + i, string, slen ) == 0 ){
+	for(i=end-1; i>=start; i--){
+		if(strncmp(pString + i, string, slen) == 0){
 			return i;
 		}
 	}
@@ -818,68 +818,68 @@ int decString::FindStringReverse( const char *string, int start, int end ) const
 	return -1;
 }
 
-int decString::FindStringReverse( const decString &string ) const{
-	return FindStringReverse( string.GetString(), 0, GetLength() );
+int decString::FindStringReverse(const decString &string) const{
+	return FindStringReverse(string.GetString(), 0, GetLength());
 }
 
-int decString::FindStringReverse( const decString &string, int start ) const{
-	return FindStringReverse( string.GetString(), start, GetLength() );
+int decString::FindStringReverse(const decString &string, int start) const{
+	return FindStringReverse(string.GetString(), start, GetLength());
 }
 
-int decString::FindStringReverse( const decString &string, int start, int end ) const{
-	return FindStringReverse( string.GetString(), start, end );
+int decString::FindStringReverse(const decString &string, int start, int end) const{
+	return FindStringReverse(string.GetString(), start, end);
 }
 
 
 
-decString decString::GetLeft( int count ) const{
-	if( count < 0 ){
+decString decString::GetLeft(int count) const{
+	if(count < 0){
 		count = 0;
 	}
 	
-	return GetMiddle( 0, count );
+	return GetMiddle(0, count);
 }
 
-decString decString::GetRight( int count ) const{
+decString decString::GetRight(int count) const{
 	const int len = GetLength();
 	
-	if( count < 0 ){
+	if(count < 0){
 		count = 0;
 	}
-	if( count > len ){
+	if(count > len){
 		count = len;
 	}
 	
-	return GetMiddle( len - count, len );
+	return GetMiddle(len - count, len);
 }
 
-decString decString::GetMiddle( int start ) const{
-	return GetMiddle( start, GetLength() );
+decString decString::GetMiddle(int start) const{
+	return GetMiddle(start, GetLength());
 }
 
-decString decString::GetMiddle( int start, int end ) const{
+decString decString::GetMiddle(int start, int end) const{
 	const int len = GetLength();
 	decString string;
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = len + start;
 	}
-	if( end < 0 ){
+	if(end < 0){
 		end = len + end;
 	}
 	
-	if( start < 0 ){
+	if(start < 0){
 		start = 0;
 	}
-	if( end > len ){
+	if(end > len){
 		end = len;
 	}
 	
-	if( start < end ){
+	if(start < end){
 		const int count = end - start;
 		
-		string.Set( ' ', count );
-		strncpy( string.pString, pString + start, count );
+		string.Set(' ', count);
+		strncpy(string.pString, pString + start, count);
 	}
 	
 	return string;
@@ -890,10 +890,10 @@ decString decString::GetMiddle( int start, int end ) const{
 void decString::Reverse(){
 	int start, end, swap;
 	
-	for( start=0, end=GetLength()-1; start<end; start++, end-- ){
-		swap = pString[ start ];
-		pString[ start ] = pString[ end ];
-		pString[ end ] = swap;
+	for(start=0, end=GetLength()-1; start<end; start++, end--){
+		swap = pString[start];
+		pString[start] = pString[end];
+		pString[end] = swap;
 	}
 }
 
@@ -901,70 +901,70 @@ decString decString::GetReversed() const{
 	int len = GetLength();
 	decString string;
 	
-	if( len > 0 ){
+	if(len > 0){
 		int from, to;
 		
-		string.Set( ' ', len );
+		string.Set(' ', len);
 		
-		for( from=len-1, to=0; to<len; from--, to++ ){
-			string.pString[ to ] = pString[ from ];
+		for(from=len-1, to=0; to<len; from--, to++){
+			string.pString[to] = pString[from];
 		}
 	}
 	
 	return string;
 }
 
-decStringList decString::Split( int character ) const{
+decStringList decString::Split(int character) const{
 	const int len = GetLength();
 	decStringList list;
 	int i, start = -1;
 	
-	for( i=0; i<len; i++ ){
-		if( start == -1 ){
-			if( pString[ i ] != character ){
+	for(i=0; i<len; i++){
+		if(start == -1){
+			if(pString[i] != character){
 				start = i;
 			}
 			
 		}else{
-			if( pString[ i ] == character ){
-				list.Add( GetMiddle( start, i ) );
+			if(pString[i] == character){
+				list.Add(GetMiddle(start, i));
 				start = -1;
 			}
 		}
 	}
 	
-	if( start != -1 ){
-		list.Add( GetMiddle( start, len ) );
+	if(start != -1){
+		list.Add(GetMiddle(start, len));
 	}
 	
 	return list;
 }
 
-decStringList decString::Split( const char *characters ) const{
-	if( ! characters ){
-		DETHROW( deeInvalidParam );
+decStringList decString::Split(const char *characters) const{
+	if(! characters){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int clen = strlen( characters );
+	const int clen = strlen(characters);
 	const int len = GetLength();
 	decStringList list;
 	int i, j, start = -1;
 	
-	for( i=0; i<len; i++ ){
-		if( start == -1 ){
-			for( j=0; j<clen; j++ ){
-				if( pString[ i ] == characters[ j ] ){
+	for(i=0; i<len; i++){
+		if(start == -1){
+			for(j=0; j<clen; j++){
+				if(pString[i] == characters[j]){
 					break;
 				}
 			}
-			if( j == clen ){
+			if(j == clen){
 				start = i;
 			}
 			
 		}else{
-			for( j=0; j<clen; j++ ){
-				if( pString[ i ] == characters[ j ] ){
-					list.Add( GetMiddle( start, i ) );
+			for(j=0; j<clen; j++){
+				if(pString[i] == characters[j]){
+					list.Add(GetMiddle(start, i));
 					start = -1;
 					break;
 				}
@@ -972,112 +972,112 @@ decStringList decString::Split( const char *characters ) const{
 		}
 	}
 	
-	if( start != -1 ){
-		list.Add( GetMiddle( start, len ) );
+	if(start != -1){
+		list.Add(GetMiddle(start, len));
 	}
 	
 	return list;
 }
 
-decStringList decString::Split( const decString &characters ) const{
-	return Split( characters.GetString() );
+decStringList decString::Split(const decString &characters) const{
+	return Split(characters.GetString());
 }
 
 
 
-void decString::Replace( int replaceCharacter, int withCharacter ){
-	const char rc = ( char )replaceCharacter;
-	const char wc = ( char )withCharacter;
+void decString::Replace(int replaceCharacter, int withCharacter){
+	const char rc = (char)replaceCharacter;
+	const char wc = (char)withCharacter;
 	const int len = GetLength();
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		if( pString[ i ] == rc ){
-			pString[ i ] = wc;
+	for(i=0; i<len; i++){
+		if(pString[i] == rc){
+			pString[i] = wc;
 		}
 	}
 }
 
-void decString::Replace( const char *replaceCharacters, int withCharacter ){
-	if( ! replaceCharacters ){
-		DETHROW( deeInvalidParam );
+void decString::Replace(const char *replaceCharacters, int withCharacter){
+	if(! replaceCharacters){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = strlen( replaceCharacters );
+	const int len = strlen(replaceCharacters);
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		Replace( replaceCharacters[ i ], withCharacter );
+	for(i=0; i<len; i++){
+		Replace(replaceCharacters[i], withCharacter);
 	}
 }
 
-void decString::Replace( const decString &replaceCharacters, int withCharacter ){
-	Replace( replaceCharacters.GetString(), withCharacter );
+void decString::Replace(const decString &replaceCharacters, int withCharacter){
+	Replace(replaceCharacters.GetString(), withCharacter);
 }
 
-void decString::ReplaceString( const char *replaceString, const char *withString ){
-	if( ! replaceString || ! withString ){
-		DETHROW( deeInvalidParam );
+void decString::ReplaceString(const char *replaceString, const char *withString){
+	if(! replaceString || ! withString){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int rlen = strlen( replaceString );
+	const int rlen = strlen(replaceString);
 	const int len = GetLength() - rlen + 1;
 	
-	if( rlen > 0 && len > 0 ){
-		const int wlen = strlen( withString );
+	if(rlen > 0 && len > 0){
+		const int wlen = strlen(withString);
 		const int difflen = wlen - rlen;
 		const decString string = *this;
 		int newlen = len + rlen;
 		int i, npos;
 		
-		for( i=0; i<len; i++ ){
-			if( strncmp( string.pString + i, replaceString, rlen ) == 0 ){
+		for(i=0; i<len; i++){
+			if(strncmp(string.pString + i, replaceString, rlen) == 0){
 				i += rlen - 1;
 				newlen += difflen;
 			}
 		}
 		
-		Set( ' ', newlen );
+		Set(' ', newlen);
 		
-		for( npos=0, i=0; i<len; i++ ){
-			if( strncmp( string.pString + i, replaceString, rlen ) == 0 ){
-				if( wlen > 0 ){
-					strncpy( pString + npos, withString, wlen );
+		for(npos=0, i=0; i<len; i++){
+			if(strncmp(string.pString + i, replaceString, rlen) == 0){
+				if(wlen > 0){
+					strncpy(pString + npos, withString, wlen);
 					npos += wlen;
 				}
 				i += rlen - 1;
 				
 			}else{
-				pString[ npos++ ] = string.pString[ i ];
+				pString[npos++] = string.pString[i];
 			}
 		}
-		for( i=0; i<rlen; i++ ){
-			pString[ npos + i ] = string.pString[ len + i ];
+		for(i=0; i<rlen; i++){
+			pString[npos + i] = string.pString[len + i];
 		}
 	}
 }
 
-void decString::ReplaceString( const decString &replaceString, const decString &withString ){
-	ReplaceString( replaceString.GetString(), withString.GetString() );
+void decString::ReplaceString(const decString &replaceString, const decString &withString){
+	ReplaceString(replaceString.GetString(), withString.GetString());
 }
 
-decString decString::GetReplaced( int replaceCharacter, int withCharacter ) const{
+decString decString::GetReplaced(int replaceCharacter, int withCharacter) const{
 	const int len = GetLength();
 	decString string;
 	
-	if( len > 0 ){
-		const char rc = ( char )replaceCharacter;
-		const char wc = ( char )withCharacter;
+	if(len > 0){
+		const char rc = (char)replaceCharacter;
+		const char wc = (char)withCharacter;
 		int i;
 		
-		string.Set( ' ', len );
+		string.Set(' ', len);
 		
-		for( i=0; i<len; i++ ){
-			if( pString[ i ] == rc ){
-				string.pString[ i ] = wc;
+		for(i=0; i<len; i++){
+			if(pString[i] == rc){
+				string.pString[i] = wc;
 				
 			}else{
-				string.pString[ i ] = pString[ i ];
+				string.pString[i] = pString[i];
 			}
 		}
 	}
@@ -1085,69 +1085,69 @@ decString decString::GetReplaced( int replaceCharacter, int withCharacter ) cons
 	return string;
 }
 
-decString decString::GetReplaced( const char *replaceCharacters, int withCharacter ) const{
-	if( ! replaceCharacters ){
-		DETHROW( deeInvalidParam );
+decString decString::GetReplaced(const char *replaceCharacters, int withCharacter) const{
+	if(! replaceCharacters){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = strlen( replaceCharacters );
+	const int len = strlen(replaceCharacters);
 	decString string;
 	
-	if( len > 0 ){
+	if(len > 0){
 		int i;
 		
-		string = GetReplaced( replaceCharacters[ 0 ], withCharacter );
+		string = GetReplaced(replaceCharacters[0], withCharacter);
 		
-		for( i=1; i<len; i++ ){
-			string.Replace( replaceCharacters[ i ], withCharacter );
+		for(i=1; i<len; i++){
+			string.Replace(replaceCharacters[i], withCharacter);
 		}
 	}
 	
 	return string;
 }
 
-decString decString::GetReplaced( const decString &replaceCharacters, int withCharacter ) const{
-	return GetReplaced( replaceCharacters.GetString(), withCharacter );
+decString decString::GetReplaced(const decString &replaceCharacters, int withCharacter) const{
+	return GetReplaced(replaceCharacters.GetString(), withCharacter);
 }
 
-decString decString::GetReplacedString( const char *replaceString, const char *withString ) const{
-	if( ! replaceString || ! withString ){
-		DETHROW( deeInvalidParam );
+decString decString::GetReplacedString(const char *replaceString, const char *withString) const{
+	if(! replaceString || ! withString){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int rlen = strlen( replaceString );
+	const int rlen = strlen(replaceString);
 	const int len = GetLength() - rlen + 1;
 	decString string;
 	
-	if( rlen > 0 && len > 0 ){
-		const int wlen = strlen( withString );
+	if(rlen > 0 && len > 0){
+		const int wlen = strlen(withString);
 		const int difflen = wlen - rlen;
 		int newlen = len + rlen;
 		int i, npos;
 		
-		for( i=0; i<len; i++ ){
-			if( strncmp( pString + i, replaceString, rlen ) == 0 ){
+		for(i=0; i<len; i++){
+			if(strncmp(pString + i, replaceString, rlen) == 0){
 				i += rlen - 1;
 				newlen += difflen;
 			}
 		}
 		
-		string.Set( ' ', newlen );
+		string.Set(' ', newlen);
 		
-		for( npos=0, i=0; i<len; i++ ){
-			if( strncmp( pString + i, replaceString, rlen ) == 0 ){
-				if( wlen > 0 ){
-					strncpy( string.pString + npos, withString, wlen );
+		for(npos=0, i=0; i<len; i++){
+			if(strncmp(pString + i, replaceString, rlen) == 0){
+				if(wlen > 0){
+					strncpy(string.pString + npos, withString, wlen);
 					npos += wlen;
 				}
 				i += rlen - 1;
 				
 			}else{
-				string.pString[ npos++ ] = pString[ i ];
+				string.pString[npos++] = pString[i];
 			}
 		}
-		for( i=0; i<rlen; i++ ){
-			string.pString[ npos + i ] = pString[ len + i ];
+		for(i=0; i<rlen; i++){
+			string.pString[npos + i] = pString[len + i];
 		}
 		
 	}else{
@@ -1157,8 +1157,8 @@ decString decString::GetReplacedString( const char *replaceString, const char *w
 	return string;
 }
 
-decString decString::GetReplacedString( const decString &replaceString, const decString &withString ) const{
-	return GetReplacedString( replaceString.GetString(), withString.GetString() );
+decString decString::GetReplacedString(const decString &replaceString, const decString &withString) const{
+	return GetReplacedString(replaceString.GetString(), withString.GetString());
 }
 
 
@@ -1167,38 +1167,38 @@ void decString::TrimLeft(){
 	const int len = GetLength();
 	int i, j;
 	
-	for( i=0; i<len; i++ ){
-		if( isspace( pString[ i ] ) == 0 ){
+	for(i=0; i<len; i++){
+		if(isspace(pString[i]) == 0){
 			break;
 		}
 	}
 	
-	for( j=i; j<len; j++ ){
-		pString[ j - i ] = pString[ j ];
+	for(j=i; j<len; j++){
+		pString[j - i] = pString[j];
 	}
-	pString[ len - i ] = '\0';
+	pString[len - i] = '\0';
 }
 
 decString decString::GetTrimmedLeft() const{
 	const int len = GetLength();
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		if( isspace( pString[ i ] ) == 0 ){
+	for(i=0; i<len; i++){
+		if(isspace(pString[i]) == 0){
 			break;
 		}
 	}
 	
-	return GetMiddle( i, len );
+	return GetMiddle(i, len);
 }
 
 void decString::TrimRight(){
 	const int len = GetLength();
 	int i;
 	
-	for( i=len-1; i>=0; i-- ){
-		if( isspace( pString[ i ] ) == 0 ){
-			pString[ i + 1 ] = '\0';
+	for(i=len-1; i>=0; i--){
+		if(isspace(pString[i]) == 0){
+			pString[i + 1] = '\0';
 			break;
 		}
 	}
@@ -1208,54 +1208,54 @@ decString decString::GetTrimmedRight() const{
 	const int len = GetLength();
 	int i;
 	
-	for( i=len-1; i>=0; i-- ){
-		if( isspace( pString[ i ] ) == 0 ){
+	for(i=len-1; i>=0; i--){
+		if(isspace(pString[i]) == 0){
 			break;
 		}
 	}
 	
-	return GetLeft( i + 1 );
+	return GetLeft(i + 1);
 }
 
 void decString::Trim(){
 	const int len = GetLength();
 	int start, end, i;
 	
-	for( start=0; start<len; start++ ){
-		if( isspace( pString[ start ] ) == 0 ){
+	for(start=0; start<len; start++){
+		if(isspace(pString[start]) == 0){
 			break;
 		}
 	}
 	
-	for( end=len-1; end>=start; end-- ){
-		if( isspace( pString[ end ] ) == 0 ){
+	for(end=len-1; end>=start; end--){
+		if(isspace(pString[end]) == 0){
 			break;
 		}
 	}
 	
-	for( i=start; i<=end; i++ ){
-		pString[ i - start ] = pString[ i ];
+	for(i=start; i<=end; i++){
+		pString[i - start] = pString[i];
 	}
-	pString[ end - start + 1 ] = '\0';
+	pString[end - start + 1] = '\0';
 }
 
 decString decString::GetTrimmed() const{
 	const int len = GetLength();
 	int start, end;
 	
-	for( start=0; start<len; start++ ){
-		if( isspace( pString[ start ] ) == 0 ){
+	for(start=0; start<len; start++){
+		if(isspace(pString[start]) == 0){
 			break;
 		}
 	}
 	
-	for( end=len-1; end>=start; end-- ){
-		if( isspace( pString[ end ] ) == 0 ){
+	for(end=len-1; end>=start; end--){
+		if(isspace(pString[end]) == 0){
 			break;
 		}
 	}
 	
-	return GetMiddle( start, end + 1 );
+	return GetMiddle(start, end + 1);
 }
 
 
@@ -1264,8 +1264,8 @@ void decString::ToLower(){
 	const int len = GetLength();
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		pString[ i ] = ( char )tolower( pString[ i ] );
+	for(i=0; i<len; i++){
+		pString[i] = (char)tolower(pString[i]);
 	}
 }
 
@@ -1273,13 +1273,13 @@ decString decString::GetLower() const{
 	const int len = GetLength();
 	decString string;
 	
-	if( len > 0 ){
+	if(len > 0){
 		int i;
 		
-		string.Set( ' ', len );
+		string.Set(' ', len);
 		
-		for( i=0; i<len; i++ ){
-			string.pString[ i ] = ( char )tolower( pString[ i ] );
+		for(i=0; i<len; i++){
+			string.pString[i] = (char)tolower(pString[i]);
 		}
 	}
 	
@@ -1290,8 +1290,8 @@ void decString::ToUpper(){
 	const int len = GetLength();
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		pString[ i ] = ( char )toupper( pString[ i ] );
+	for(i=0; i<len; i++){
+		pString[i] = (char)toupper(pString[i]);
 	}
 }
 
@@ -1299,13 +1299,13 @@ decString decString::GetUpper() const{
 	const int len = GetLength();
 	decString string;
 	
-	if( len > 0 ){
+	if(len > 0){
 		int i;
 		
-		string.Set( ' ', len );
+		string.Set(' ', len);
 		
-		for( i=0; i<len; i++ ){
-			string.pString[ i ] = ( char )toupper( pString[ i ] );
+		for(i=0; i<len; i++){
+			string.pString[i] = (char)toupper(pString[i]);
 		}
 	}
 	
@@ -1315,106 +1315,106 @@ decString decString::GetUpper() const{
 
 
 int decString::ToInt() const{
-	return ( int )strtol( pString, NULL, 10 );
+	return (int)strtol(pString, NULL, 10);
 }
 
 long long decString::ToLong() const{
-	return strtol( pString, NULL, 10 );
+	return strtol(pString, NULL, 10);
 }
 
 float decString::ToFloat() const{
-	return strtof( pString, NULL );
+	return strtof(pString, NULL);
 }
 
 double decString::ToDouble() const{
-	return strtod( pString, NULL );
+	return strtod(pString, NULL);
 }
 
 const char *decString::GetString() const{
-	return ( const char * )pString;
+	return (const char *)pString;
 }
 
 
 
-bool decString::Equals( const decString &string ) const{
-	return pCompare( string.pString ) == 0;
+bool decString::Equals(const decString &string) const{
+	return pCompare(string.pString) == 0;
 }
 
-bool decString::Equals( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::Equals(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompare( string ) == 0;
+	return pCompare(string) == 0;
 }
 
-bool decString::EqualsInsensitive( const decString &string ) const{
-	return pCompareInsensitive( string.pString ) == 0;
+bool decString::EqualsInsensitive(const decString &string) const{
+	return pCompareInsensitive(string.pString) == 0;
 }
 
-bool decString::EqualsInsensitive( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::EqualsInsensitive(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompareInsensitive( string ) == 0;
+	return pCompareInsensitive(string) == 0;
 }
 
-int decString::Compare( const decString &string ) const{
-	return pCompare( string.pString );
+int decString::Compare(const decString &string) const{
+	return pCompare(string.pString);
 }
 
-int decString::Compare( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+int decString::Compare(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompare( string );
+	return pCompare(string);
 }
 
-int decString::CompareInsensitive( const decString &string ) const{
-	return pCompareInsensitive( string.pString );
+int decString::CompareInsensitive(const decString &string) const{
+	return pCompareInsensitive(string.pString);
 }
 
-int decString::CompareInsensitive( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+int decString::CompareInsensitive(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompareInsensitive( string );
+	return pCompareInsensitive(string);
 }
 
 
 
-bool decString::MatchesPattern( const decString &pattern ) const{
-	return decString::fxfilematch( pattern.GetString(), pString, FILEMATCH_PERIOD );
+bool decString::MatchesPattern(const decString &pattern) const{
+	return decString::fxfilematch(pattern.GetString(), pString, FILEMATCH_PERIOD);
 }
 
-bool decString::MatchesPattern( const char *pattern ) const{
-	if( ! pattern ) DETHROW( deeInvalidParam );
+bool decString::MatchesPattern(const char *pattern) const{
+	if(! pattern) DETHROW(deeInvalidParam);
 	
-	return decString::fxfilematch( pattern, pString, FILEMATCH_PERIOD );
+	return decString::fxfilematch(pattern, pString, FILEMATCH_PERIOD);
 }
 
-bool decString::StringMatchesPattern( const char *string, const char *pattern ){
-	if( ! string || ! pattern ) DETHROW( deeInvalidParam );
+bool decString::StringMatchesPattern(const char *string, const char *pattern){
+	if(! string || ! pattern) DETHROW(deeInvalidParam);
 	
-	return decString::fxfilematch( pattern, string, FILEMATCH_PERIOD );
+	return decString::fxfilematch(pattern, string, FILEMATCH_PERIOD);
 }
 
 unsigned int decString::Hash() const{
-	return Hash( pString );
+	return Hash(pString);
 }
 
-unsigned int decString::Hash( const char *string ){
+unsigned int decString::Hash(const char *string){
 	// SDBM hash algorithm
 	unsigned int hash = 0;
 	int c;
 	
-	if( string ){
+	if(string){
 		c = *string++;
-		while( c ){
-			hash = c + ( hash << 6 ) + ( hash << 16 ) - hash;
+		while(c){
+			hash = c + (hash << 6) + (hash << 16) - hash;
 			c = *string++;
 		}
 	}
@@ -1427,145 +1427,145 @@ unsigned int decString::Hash( const char *string ){
 // Operators
 //////////////
 
-char decString::operator[]( int position ) const{
+char decString::operator[](int position) const{
 	const int len = GetLength();
 	
-	if( position < 0 ){
+	if(position < 0){
 		position += len;
 	}
 	
-	if( position < 0 || position >= len ){
-		DETHROW( deeInvalidParam );
+	if(position < 0 || position >= len){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pString[ position ];
+	return pString[position];
 }
 
-char &decString::operator[]( int position ){
+char &decString::operator[](int position){
 	const int len = GetLength();
 	
-	if( position < 0 ){
+	if(position < 0){
 		position += len;
 	}
 	
-	if( position < 0 || position >= len ){
-		DETHROW( deeInvalidParam );
+	if(position < 0 || position >= len){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pString[ position ];
+	return pString[position];
 }
 
 bool decString::operator!() const{
-	return pString[ 0 ] == '\0';
+	return pString[0] == '\0';
 }
 
-bool decString::operator==( const decString &string ) const{
-	return pCompare( string.pString ) == 0;
+bool decString::operator==(const decString &string) const{
+	return pCompare(string.pString) == 0;
 }
 
-bool decString::operator==( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::operator==(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompare( string ) == 0;
+	return pCompare(string) == 0;
 }
 
-bool decString::operator!=( const decString &string ) const{
-	return pCompare( string.pString ) != 0;
+bool decString::operator!=(const decString &string) const{
+	return pCompare(string.pString) != 0;
 }
 
-bool decString::operator!=( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::operator!=(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
-	return pCompare( string ) != 0;
+	return pCompare(string) != 0;
 }
 
-bool decString::operator<( const decString &string ) const{
-	return pCompare( string.pString ) < 0;
+bool decString::operator<(const decString &string) const{
+	return pCompare(string.pString) < 0;
 }
 
-bool decString::operator<( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pCompare( string ) < 0;
-}
-
-bool decString::operator<=( const decString &string ) const{
-	return pCompare( string.pString ) <= 0;
-}
-
-bool decString::operator<=( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::operator<(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompare( string ) <= 0;
+	return pCompare(string) < 0;
 }
 
-bool decString::operator>( const decString &string ) const{
-	return pCompare( string.pString ) > 0;
+bool decString::operator<=(const decString &string) const{
+	return pCompare(string.pString) <= 0;
 }
 
-bool decString::operator>( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::operator<=(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompare( string ) > 0;
+	return pCompare(string) <= 0;
 }
 
-bool decString::operator>=( const decString &string ) const{
-	return pCompare( string.pString ) >= 0;
+bool decString::operator>(const decString &string) const{
+	return pCompare(string.pString) > 0;
 }
 
-bool decString::operator>=( const char *string ) const{
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+bool decString::operator>(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCompare( string ) >= 0;
+	return pCompare(string) > 0;
+}
+
+bool decString::operator>=(const decString &string) const{
+	return pCompare(string.pString) >= 0;
+}
+
+bool decString::operator>=(const char *string) const{
+	if(! string){
+		DETHROW(deeInvalidParam);
+	}
+	
+	return pCompare(string) >= 0;
 }
 
 
 
-decString decString::operator+( const decString &string ) const{
-	return decString( *this, string );
+decString decString::operator+(const decString &string) const{
+	return decString(*this, string);
 }
 
-decString decString::operator+( const char *string ) const{
-	return decString( *this, string );
+decString decString::operator+(const char *string) const{
+	return decString(*this, string);
 }
 
 
 
-decString &decString::operator=( const decString &string ){
-	Set( string );
+decString &decString::operator=(const decString &string){
+	Set(string);
 	return *this;
 }
 
-decString &decString::operator=( const char *string ){
-	Set( string );
+decString &decString::operator=(const char *string){
+	Set(string);
 	return *this;
 }
 
-decString &decString::operator+=( const decString &string ){
-	Append( string );
+decString &decString::operator+=(const decString &string){
+	Append(string);
 	return *this;
 }
 
-decString &decString::operator+=( const char *string ){
-	Append( string );
+decString &decString::operator+=(const char *string){
+	Append(string);
 	return *this;
 }
 
 
 
 decString::operator const char*() const{
-	return ( const char * )pString;
+	return (const char *)pString;
 }
 
 
@@ -1573,20 +1573,20 @@ decString::operator const char*() const{
 // Private Functions
 //////////////////////
 
-int decString::pCompare( const char *string ) const{
-	return strcmp( pString, string );
+int decString::pCompare(const char *string) const{
+	return strcmp(pString, string);
 }
 
-int decString::pCompareInsensitive( const char *string ) const{
+int decString::pCompareInsensitive(const char *string) const{
 	int compare, i = 0;
 	
 	do{
-		compare = tolower( pString[ i ] ) - tolower( string[ i ] );
-		if( compare != 0 ){
+		compare = tolower(pString[i]) - tolower(string[i]);
+		if(compare != 0){
 			return compare;
 		}
 		
-	} while( pString[ i++ ] );
+	} while(pString[i++]);
 	
 	return 0;
 }
@@ -1648,79 +1648,79 @@ int decString::pCompareInsensitive( const char *string ) const{
 
 // If folding case, make lower case
 //#define FOLD(c)          ( ( flags & FILEMATCH_CASEFOLD ) ? Ascii::toLower( c ) : ( c ) )
-#define FOLD(c)			( c )
+#define FOLD(c)			(c)
 
-bool decString::domatch( const char *pattern, const char *string, int flags ){
+bool decString::domatch(const char *pattern, const char *string, int flags){
 	char c, cs, ce, cc, neg;
 	const char *p = pattern;
 	const char *q = string;
 	//const char *s;
 	int level;
 	
-	while( ( c = *p++ ) != '\0' ){
-		switch( c ){
+	while((c = *p++) != '\0'){
+		switch(c){
 			case '?':
-				if( *q == '\0' ) return false;
-				if( ( flags & FILEMATCH_PERIOD ) && ( *q == '.' ) && ( q == string ) ) return false;
+				if(*q == '\0') return false;
+				if((flags & FILEMATCH_PERIOD) && (*q == '.') && (q == string)) return false;
 				q++;
 				break;
 			
 			case '*':
 				c = *p;
-				while( c == '*' ){
+				while(c == '*'){
 					c = *++p;
 				}
-				if( ( flags & FILEMATCH_PERIOD ) && ( *q == '.' ) && ( q == string ) ) return false;
-				if( c == '\0'){    // Optimize for case of trailing '*'
+				if((flags & FILEMATCH_PERIOD) && (*q == '.') && (q == string)) return false;
+				if(c == '\0'){    // Optimize for case of trailing '*'
 					return true;
 				}
-				while( ! domatch( p, q, flags & ~FILEMATCH_PERIOD ) ){
-					if( *q++ == '\0' ) return false;
+				while(! domatch(p, q, flags & ~FILEMATCH_PERIOD)){
+					if(*q++ == '\0') return false;
 				}
 				return true;
 			
 			case '[':
-				if( *q == '\0' ) return false;
-				if( ( flags & FILEMATCH_PERIOD ) && ( *q == '.' ) && ( q == string ) ) return false;
-				cc = FOLD( *q );
-				neg = ( ( *p == '!' ) || ( *p == '^' ) );
-				if( neg ) p++;
+				if(*q == '\0') return false;
+				if((flags & FILEMATCH_PERIOD) && (*q == '.') && (q == string)) return false;
+				cc = FOLD(*q);
+				neg = ((*p == '!') || (*p == '^'));
+				if(neg) p++;
 				c = *p++;
 				do{
-					if( c == '\\' ) c = *p++;
-					cs = ce = FOLD( c );
-					if( c == '\0' ) return false;
+					if(c == '\\') c = *p++;
+					cs = ce = FOLD(c);
+					if(c == '\0') return false;
 					c = *p++;
-					c = FOLD( c );
-					if( c == '-' && *p != ']' ){
+					c = FOLD(c);
+					if(c == '-' && *p != ']'){
 						c = *p++;
-						if( c == '\\' ) c = *p++;
-						if( c == '\0' ) return false;
-						ce = FOLD( c );
+						if(c == '\\') c = *p++;
+						if(c == '\0') return false;
+						ce = FOLD(c);
 						c = *p++;
 					}
-					if( ( cs <= cc ) && ( cc <= ce ) ) goto match;
+					if((cs <= cc) && (cc <= ce)) goto match;
 				}
-				while( c != ']' );
-				if( ! neg ) return false;
+				while(c != ']');
+				if(! neg) return false;
 				q++;
 				break;
 				
-match:			while( c != ']' ){
-					if( c == '\0' ) return false;
+match:			while(c != ']'){
+					if(c == '\0') return false;
 					c = *p++;
-					if( c == '\\' ) p++;
+					if(c == '\\') p++;
 				}
-				if( neg ) return false;
+				if(neg) return false;
 				q++;
 				break;
 			
 			case '(':
-nxt:			if( domatch( p, q, flags ) ) return true;
-				for( level = 0; *p && 0 <= level; ){
-					switch( *p++ ){
+nxt:			if(domatch(p, q, flags)) return true;
+				for(level = 0; *p && 0 <= level;){
+					switch(*p++){
 					case '\\':
-						if( *p ) p++;
+						if(*p) p++;
 						break;
 					
 					case '(':
@@ -1733,7 +1733,7 @@ nxt:			if( domatch( p, q, flags ) ) return true;
 					
 					case '|':
 					case ',':
-						if( level == 0 ) goto nxt;
+						if(level == 0) goto nxt;
 					}
 				}
 				return false;
@@ -1743,10 +1743,10 @@ nxt:			if( domatch( p, q, flags ) ) return true;
 			
 			case '|':
 			case ',':
-				for( level = 0; *p && 0 <= level; ){
-					switch( *p++ ){
+				for(level = 0; *p && 0 <= level;){
+					switch(*p++){
 					case '\\':
-						if( *p ) p++;
+						if(*p) p++;
 						break;
 					
 					case '(':
@@ -1761,28 +1761,28 @@ nxt:			if( domatch( p, q, flags ) ) return true;
 				break;
 			
 			case '\\':
-				if( *p ) c = *p++;   // Trailing escape represents itself
+				if(*p) c = *p++;   // Trailing escape represents itself
 			
 			default:
-				if( FOLD( c ) != FOLD( *q ) ) return false;
+				if(FOLD(c) != FOLD(*q)) return false;
 				q++;
 				break;
 		}
 	}
-	return ( *q == '\0' );
+	return (*q == '\0');
 }
 
-bool decString::fxfilematch( const char *pattern, const char *string, int flags ){
+bool decString::fxfilematch(const char *pattern, const char *string, int flags){
 	const char *p = pattern;
 	const char *q = string;
 	int level;
 	
-	if( p && q ){
-nxt:	if( decString::domatch( p, q, flags ) ) return true;
-		for( level = 0; *p && 0 <= level; ){
-			switch( *p++ ){
+	if(p && q){
+nxt:	if(decString::domatch(p, q, flags)) return true;
+		for(level = 0; *p && 0 <= level;){
+			switch(*p++){
 			case '\\':
-				if( *p ) p++;
+				if(*p) p++;
 				break;
 			
 			case '(':
@@ -1795,7 +1795,7 @@ nxt:	if( decString::domatch( p, q, flags ) ) return true;
 			
 			case '|':
 			case ',':
-				if( level == 0 ) goto nxt;
+				if(level == 0) goto nxt;
 			}
 		}
 	}

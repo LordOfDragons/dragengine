@@ -46,32 +46,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTextField::igdeTextField( igdeEnvironment &environment, int columns, const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pColumns( columns ),
-pEditable( true ),
-pDescription( description ),
-pPrecision( 3 ),
-pInvalidValue( false )
+igdeTextField::igdeTextField(igdeEnvironment &environment, int columns, const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pColumns(columns),
+pEditable(true),
+pDescription(description),
+pPrecision(3),
+pInvalidValue(false)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeTextField::igdeTextField( igdeEnvironment &environment, int columns, bool editable,
-	const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pColumns( columns ),
-pEditable( editable ),
-pDescription( description ),
-pPrecision( 3 ),
-pInvalidValue( false )
+igdeTextField::igdeTextField(igdeEnvironment &environment, int columns, bool editable,
+	const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pColumns(columns),
+pEditable(editable),
+pDescription(description),
+pPrecision(3),
+pInvalidValue(false)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -84,8 +84,8 @@ igdeTextField::~igdeTextField(){
 // Management
 ///////////////
 
-void igdeTextField::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeTextField::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -93,8 +93,8 @@ void igdeTextField::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeTextField::SetEditable( bool editable ){
-	if( pEditable == editable ){
+void igdeTextField::SetEditable(bool editable){
+	if(pEditable == editable){
 		return;
 	}
 	
@@ -102,8 +102,8 @@ void igdeTextField::SetEditable( bool editable ){
 	OnEditableChanged();
 }
 
-void igdeTextField::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeTextField::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -111,15 +111,15 @@ void igdeTextField::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeTextField::SetPrecision( int precision ){
-	if( precision < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeTextField::SetPrecision(int precision){
+	if(precision < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pPrecision = precision;
 }
 
-void igdeTextField::SetInvalidValue( bool invalidValue ){
-	if( pInvalidValue == invalidValue ){
+void igdeTextField::SetInvalidValue(bool invalidValue){
+	if(pInvalidValue == invalidValue){
 		return;
 	}
 	
@@ -129,15 +129,15 @@ void igdeTextField::SetInvalidValue( bool invalidValue ){
 
 
 
-void igdeTextField::SetText( const char *text, bool changing, bool forceNotify ){
-	if( pText == text && ! forceNotify ){
+void igdeTextField::SetText(const char *text, bool changing, bool forceNotify){
+	if(pText == text && ! forceNotify){
 		return;
 	}
 	
 	pText = text;
 	OnTextChanged();
 	
-	if( changing ){
+	if(changing){
 		NotifyTextChanging();
 		
 	}else{
@@ -146,7 +146,7 @@ void igdeTextField::SetText( const char *text, bool changing, bool forceNotify )
 }
 
 void igdeTextField::ClearText(){
-	if( pText.IsEmpty() ){
+	if(pText.IsEmpty()){
 		return;
 	}
 	
@@ -158,153 +158,153 @@ int igdeTextField::GetInteger() const{
 	return pText.ToInt();
 }
 
-void igdeTextField::SetInteger( int value, bool changing ){
+void igdeTextField::SetInteger(int value, bool changing){
 	decString text;
-	text.Format( "%d", value );
-	SetText( text, changing );
+	text.Format("%d", value);
+	SetText(text, changing);
 }
 
 float igdeTextField::GetFloat() const{
 	return pText.ToFloat();
 }
 
-void igdeTextField::SetFloat( float value, bool changing ){
+void igdeTextField::SetFloat(float value, bool changing){
 	decString format, text;
-	format.Format( "%%.%df", pPrecision );
-	text.Format( format, value );
-	SetText( text, changing );
+	format.Format("%%.%df", pPrecision);
+	text.Format(format, value);
+	SetText(text, changing);
 }
 
 double igdeTextField::GetDouble() const{
 	return pText.ToDouble();
 }
 
-void igdeTextField::SetDouble( double value, bool changing ){
+void igdeTextField::SetDouble(double value, bool changing){
 	decString format, text;
-	format.Format( "%%.%df", pPrecision );
-	text.Format( format, value );
-	SetText( text, changing );
+	format.Format("%%.%df", pPrecision);
+	text.Format(format, value);
+	SetText(text, changing);
 }
 
 
 
 int igdeTextField::GetCursorPosition() const{
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return 0;
 	}
-	return ( ( igdeNativeTextField* )GetNativeWidget() )->GetCursorPosition();
+	return ((igdeNativeTextField*)GetNativeWidget())->GetCursorPosition();
 }
 
-void igdeTextField::SetCursorPosition( int position ){
-	if( ! GetNativeWidget() ){
+void igdeTextField::SetCursorPosition(int position){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	if( position < 0 || position >= pText.GetLength() ){
-		DETHROW( deeInvalidParam );
+	if(position < 0 || position >= pText.GetLength()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	( ( igdeNativeTextField* )GetNativeWidget() )->SetCursorPosition( position );
+	((igdeNativeTextField*)GetNativeWidget())->SetCursorPosition(position);
 }
 
 void igdeTextField::Focus(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeTextField* )GetNativeWidget() )->Focus();
+	((igdeNativeTextField*)GetNativeWidget())->Focus();
 }
 
 
 
-void igdeTextField::AddListener( igdeTextFieldListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeTextField::AddListener(igdeTextFieldListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeTextField::RemoveListener( igdeTextFieldListener *listener ){
-	pListeners.Remove( listener );
+void igdeTextField::RemoveListener(igdeTextFieldListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeTextField::NotifyTextChanged(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeTextFieldListener* )listeners.GetAt( i ) )->OnTextChanged( this );
+	for(i=0; i<count; i++){
+		((igdeTextFieldListener*)listeners.GetAt(i))->OnTextChanged(this);
 	}
 }
 
 void igdeTextField::NotifyTextChanging(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeTextFieldListener* )listeners.GetAt( i ) )->OnTextChanging( this );
+	for(i=0; i<count; i++){
+		((igdeTextFieldListener*)listeners.GetAt(i))->OnTextChanging(this);
 	}
 }
 
 void igdeTextField::NotifyEnterKey(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeTextFieldListener* )listeners.GetAt( i ) )->OnEnterKey( this );
+	for(i=0; i<count; i++){
+		((igdeTextFieldListener*)listeners.GetAt(i))->OnEnterKey(this);
 	}
 }
 
 
 
 void igdeTextField::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeTextField * const native = igdeNativeTextField::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeTextField * const native = igdeNativeTextField::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeTextField::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeTextField* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeTextField*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeTextField::OnTextChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateText();
+	if(GetNativeWidget()){
+		((igdeNativeTextField*)GetNativeWidget())->UpdateText();
 	}
 }
 
 void igdeTextField::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateEnabled();
+	if(GetNativeWidget()){
+		((igdeNativeTextField*)GetNativeWidget())->UpdateEnabled();
 	}
 }
 
 void igdeTextField::OnEditableChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateEditable();
+	if(GetNativeWidget()){
+		((igdeNativeTextField*)GetNativeWidget())->UpdateEditable();
 	}
 }
 
 void igdeTextField::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeTextField* )GetNativeWidget() )->UpdateDescription();
+	if(GetNativeWidget()){
+		((igdeNativeTextField*)GetNativeWidget())->UpdateDescription();
 	}
 }
 
 void igdeTextField::OnInvalidValueChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeTextField* )GetNativeWidget() )->OnInvalidValueChanged();
+	if(GetNativeWidget()){
+		((igdeNativeTextField*)GetNativeWidget())->OnInvalidValueChanged();
 	}
 }

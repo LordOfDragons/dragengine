@@ -41,14 +41,14 @@
 ////////////////////////////
 
 dedsLControllerMapping::dedsLControllerMapping() :
-pController( 0 ),
-pAttribute( eaElapsedTime ){
+pController(0),
+pAttribute(eaElapsedTime){
 }
 
-dedsLControllerMapping::dedsLControllerMapping( const dedsLControllerMapping &mapping ) :
-pAnimatorInstance( mapping.pAnimatorInstance ),
-pController( mapping.pController ),
-pAttribute( mapping.pAttribute ){
+dedsLControllerMapping::dedsLControllerMapping(const dedsLControllerMapping &mapping) :
+pAnimatorInstance(mapping.pAnimatorInstance),
+pController(mapping.pController),
+pAttribute(mapping.pAttribute){
 }
 
 
@@ -56,144 +56,144 @@ pAttribute( mapping.pAttribute ){
 // Management
 ///////////////
 
-void dedsLControllerMapping::SetAnimatorInstance( deAnimatorInstance *animatorInstance ){
+void dedsLControllerMapping::SetAnimatorInstance(deAnimatorInstance *animatorInstance){
 	pAnimatorInstance = animatorInstance;
 }
 
-void dedsLControllerMapping::SetController( int controller ){
+void dedsLControllerMapping::SetController(int controller){
 	pController = controller;
 }
 
-void dedsLControllerMapping::SetAttribute( eAttributes attribute ){
+void dedsLControllerMapping::SetAttribute(eAttributes attribute){
 	pAttribute = attribute;
 }
 
 
 
-void dedsLControllerMapping::Apply( const dedsLocomotion &locomotion, float elapsed ){
-	if( ! pAnimatorInstance ){
+void dedsLControllerMapping::Apply(const dedsLocomotion &locomotion, float elapsed){
+	if(! pAnimatorInstance){
 		return;
 	}
 	
 	const int controllerCount = pAnimatorInstance->GetControllerCount();
-	if( pController < 0 || pController >= controllerCount ){
+	if(pController < 0 || pController >= controllerCount){
 		return;
 	}
 	
-	deAnimatorController &controller = pAnimatorInstance->GetControllerAt( pController );
+	deAnimatorController &controller = pAnimatorInstance->GetControllerAt(pController);
 	
-	switch( pAttribute ){
+	switch(pAttribute){
 	case eaElapsedTime:
-		controller.IncrementCurrentValue( elapsed );
+		controller.IncrementCurrentValue(elapsed);
 		break;
 		
 	case eaLookVertical:
-		controller.SetCurrentValue( locomotion.GetLookVertical().GetValue() );
+		controller.SetCurrentValue(locomotion.GetLookVertical().GetValue());
 		break;
 		
 	case eaLookHorizontal:
-		controller.SetCurrentValue( locomotion.GetLookHorizontal().GetValue() );
+		controller.SetCurrentValue(locomotion.GetLookHorizontal().GetValue());
 		break;
 		
 	case eaMovingSpeed:
-		controller.SetCurrentValue( locomotion.GetMovingSpeed() );
+		controller.SetCurrentValue(locomotion.GetMovingSpeed());
 		break;
 		
 	case eaMovingDirection:
-		controller.SetCurrentValue( locomotion.GetMovingDirection() );
+		controller.SetCurrentValue(locomotion.GetMovingDirection());
 		break;
 		
 	case eaRelativeMovingSpeed:
-		if( fabs( locomotion.GetMovingDirection() ) > 90.0f ){
-			controller.SetCurrentValue( -locomotion.GetMovingSpeed() );
+		if(fabs(locomotion.GetMovingDirection()) > 90.0f){
+			controller.SetCurrentValue(-locomotion.GetMovingSpeed());
 			
 		}else{
-			controller.SetCurrentValue( locomotion.GetMovingSpeed() );
+			controller.SetCurrentValue(locomotion.GetMovingSpeed());
 		}
 		break;
 		
 	case eaTurningSpeed:
-		controller.SetCurrentValue( locomotion.GetTurningSpeed() );
+		controller.SetCurrentValue(locomotion.GetTurningSpeed());
 		break;
 		
 	case eaStance:
-		controller.SetCurrentValue( locomotion.GetStance().GetValue() );
+		controller.SetCurrentValue(locomotion.GetStance().GetValue());
 		break;
 		
 	case eaDisplacement:
-		controller.IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+		controller.IncrementCurrentValue(fabsf(locomotion.GetMovingSpeed()) * elapsed);
 		break;
 		
 	case eaRelativeDisplacement:
-		if( fabs( locomotion.GetMovingDirection() ) > 90.0f ){
-			controller.IncrementCurrentValue( -fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+		if(fabs(locomotion.GetMovingDirection()) > 90.0f){
+			controller.IncrementCurrentValue(-fabsf(locomotion.GetMovingSpeed()) * elapsed);
 			
 		}else{
-			controller.IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+			controller.IncrementCurrentValue(fabsf(locomotion.GetMovingSpeed()) * elapsed);
 		}
 		break;
 		
 	case eaTimeTurnIP:
-		if( locomotion.GetReverseTimeTurnIP() ){
-			controller.SetCurrentValue( controller.GetMaximumValue() - controller.GetCurrentValue() );
+		if(locomotion.GetReverseTimeTurnIP()){
+			controller.SetCurrentValue(controller.GetMaximumValue() - controller.GetCurrentValue());
 		}
-		if( locomotion.GetResetTimeTurnIP() ){
-			controller.SetCurrentValue( elapsed );
+		if(locomotion.GetResetTimeTurnIP()){
+			controller.SetCurrentValue(elapsed);
 			
 		}else{
-			controller.IncrementCurrentValue( elapsed );
+			controller.IncrementCurrentValue(elapsed);
 		}
 		break;
 		
 	case eaTiltOffset:
-		controller.SetCurrentValue( locomotion.GetTiltOffset() );
+		controller.SetCurrentValue(locomotion.GetTiltOffset());
 		break;
 		
 	case eaTiltVertical:
-		controller.SetCurrentValue( locomotion.GetTiltVertical().GetValue() );
+		controller.SetCurrentValue(locomotion.GetTiltVertical().GetValue());
 		break;
 		
 	case eaTiltHorizontal:
-		controller.SetCurrentValue( locomotion.GetTiltHorizontal().GetValue() );
+		controller.SetCurrentValue(locomotion.GetTiltHorizontal().GetValue());
 		break;
 		
 	default:
 		return;
 	}
 	
-	pAnimatorInstance->NotifyControllerChangedAt( pController );
+	pAnimatorInstance->NotifyControllerChangedAt(pController);
 }
 
-void dedsLControllerMapping::ApplyPost( const dedsLocomotion &locomotion, float elapsed ){
-	if( ! pAnimatorInstance ){
+void dedsLControllerMapping::ApplyPost(const dedsLocomotion &locomotion, float elapsed){
+	if(! pAnimatorInstance){
 		return;
 	}
 	
 	const int controllerCount = pAnimatorInstance->GetControllerCount();
-	if( pController < 0 || pController >= controllerCount ){
+	if(pController < 0 || pController >= controllerCount){
 		return;
 	}
 	
-	deAnimatorController &controller = pAnimatorInstance->GetControllerAt( pController );
+	deAnimatorController &controller = pAnimatorInstance->GetControllerAt(pController);
 	
-	switch( pAttribute ){
+	switch(pAttribute){
 	case eaTiltOffset:
-		controller.SetCurrentValue( locomotion.GetTiltOffset() );
+		controller.SetCurrentValue(locomotion.GetTiltOffset());
 		break;
 		
 	case eaTiltVertical:
-		controller.SetCurrentValue( locomotion.GetTiltVertical().GetValue() );
+		controller.SetCurrentValue(locomotion.GetTiltVertical().GetValue());
 		break;
 		
 	case eaTiltHorizontal:
-		controller.SetCurrentValue( locomotion.GetTiltHorizontal().GetValue() );
+		controller.SetCurrentValue(locomotion.GetTiltHorizontal().GetValue());
 		break;
 		
 	default:
 		return;
 	}
 	
-	pAnimatorInstance->NotifyControllerChangedAt( pController );
+	pAnimatorInstance->NotifyControllerChangedAt(pController);
 }
 
 
@@ -201,7 +201,7 @@ void dedsLControllerMapping::ApplyPost( const dedsLocomotion &locomotion, float 
 // Operators
 //////////////
 
-dedsLControllerMapping &dedsLControllerMapping::operator=( const dedsLControllerMapping &mapping ){
+dedsLControllerMapping &dedsLControllerMapping::operator=(const dedsLControllerMapping &mapping){
 	pAnimatorInstance = mapping.pAnimatorInstance;
 	pController = mapping.pController;
 	pAttribute = mapping.pAttribute;

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create command executer. */
-	desynCommandExecuter( deDESynthesizer &module );
+	desynCommandExecuter(deDESynthesizer &module);
 	
 	/** \brief Clean up command executer. */
 	~desynCommandExecuter();
@@ -55,15 +55,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deDESynthesizer &GetModule() const{ return pModule; }
+	inline deDESynthesizer &GetModule() const{return pModule;}
 	
 	
 	
 	/** \brief Run command. */
-	void ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	/** \brief Display help message. */
-	void CmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void CmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 };
 

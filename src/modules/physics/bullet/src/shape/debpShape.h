@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shape. */
-	debpShape( int type, decShape *shape );
+	debpShape(int type, decShape *shape);
 	
 protected:
 	/** \brief Clean up shape. */
@@ -83,26 +83,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	
 	/** \brief Engine shape. */
-	inline decShape *GetShape() const{ return pShape; }
+	inline decShape *GetShape() const{return pShape;}
 	
 	/** \brief Collision volume. */
-	inline debpDCollisionVolume *GetCollisionVolume() const{ return pCollisionVolume; }
+	inline debpDCollisionVolume *GetCollisionVolume() const{return pCollisionVolume;}
 	
 	/** \brief Update collision volume using a transformation matrix. */
-	virtual void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ) = 0;
+	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale) = 0;
 	
 	/** \brief Print out on console debugging information about shape. */
-	virtual void PrintDebug( dePhysicsBullet &module ) = 0;
+	virtual void PrintDebug(dePhysicsBullet &module) = 0;
 	/*@}*/
 	
 	
 	
 protected:
-	void SetCollisionVolume( debpDCollisionVolume *collisionVolume );
-	static float UniformScale( const decDMatrix &matrix );
+	void SetCollisionVolume(debpDCollisionVolume *collisionVolume);
+	static float UniformScale(const decDMatrix &matrix);
 };
 
 #endif

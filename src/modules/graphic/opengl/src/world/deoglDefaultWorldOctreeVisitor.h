@@ -61,37 +61,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Visit billboards. */
-	inline bool GetVisitBillboards() const{ return pVisitBillboards; }
+	inline bool GetVisitBillboards() const{return pVisitBillboards;}
 	
 	/** Set if billboards are visited. */
-	void SetVisitBillboards( bool visitBillboards );
+	void SetVisitBillboards(bool visitBillboards);
 	
 	/** Visit particle emitters. */
-	inline bool GetVisitParticleEmitters() const{ return pVisitParticleEmitters; }
+	inline bool GetVisitParticleEmitters() const{return pVisitParticleEmitters;}
 	
 	/** Set if particle emitters are visited. */
-	void SetVisitParticleEmitters( bool visitEmitters );
+	void SetVisitParticleEmitters(bool visitEmitters);
 	
 	/** Visit components. */
-	inline bool GetVisitComponents() const{ return pVisitComponents; }
+	inline bool GetVisitComponents() const{return pVisitComponents;}
 	
 	/** Set if components are visited. */
-	void SetVisitComponents( bool visitComponents );
+	void SetVisitComponents(bool visitComponents);
 	
 	/** Visit lights. */
-	inline bool GetVisitLights() const{ return pVisitLights; }
+	inline bool GetVisitLights() const{return pVisitLights;}
 	
 	/** Set if lights are visited. */
-	void SetVisitLights( bool visitLights );
+	void SetVisitLights(bool visitLights);
 	
 	/** Visit environment maps. */
-	inline bool GetVisitEnvMaps() const{ return pVisitEnvMaps; }
+	inline bool GetVisitEnvMaps() const{return pVisitEnvMaps;}
 	
 	/** Set if environment maps are visited. */
-	void SetVisitEnvMaps( bool visitEnvMaps );
+	void SetVisitEnvMaps(bool visitEnvMaps);
 	
 	/** Set if all elements are visited. */
-	void SetVisitAll( bool visitAll );
+	void SetVisitAll(bool visitAll);
 	/*@}*/
 	
 	
@@ -99,22 +99,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit octree node. */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	
 	/** Visit billboard. */
-	virtual void VisitBillboard( deoglRBillboard *billboard );
+	virtual void VisitBillboard(deoglRBillboard *billboard);
 	
 	/** Visit particle emitter. */
-	virtual void VisitParticleEmitter( deoglRParticleEmitterInstance *emitter );
+	virtual void VisitParticleEmitter(deoglRParticleEmitterInstance *emitter);
 	
 	/** Visit component. */
-	virtual void VisitComponent( deoglRComponent *component );
+	virtual void VisitComponent(deoglRComponent *component);
 	
 	/** Visit light. */
-	virtual void VisitLight( deoglRLight *light );
+	virtual void VisitLight(deoglRLight *light);
 	
 	/** Visit environment maps. */
-	virtual void VisitEnvMaps( deoglEnvironmentMap *envmap );
+	virtual void VisitEnvMaps(deoglEnvironmentMap *envmap);
 	/*@}*/
 };
 

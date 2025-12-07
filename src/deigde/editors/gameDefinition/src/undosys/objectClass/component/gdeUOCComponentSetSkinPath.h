@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetSkinPath( gdeObjectClass *objectClass,
-		gdeOCComponent *component, const char *newValue );
+	gdeUOCComponentSetSkinPath(gdeObjectClass *objectClass,
+		gdeOCComponent *component, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

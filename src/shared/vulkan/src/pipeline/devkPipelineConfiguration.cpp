@@ -36,79 +36,79 @@
 ////////////////////////////////////
 
 devkPipelineConfiguration::devkPipelineConfiguration() :
-pType( etGraphics ),
-pDescriptorSetLayout( nullptr ),
-pShaderVertex( nullptr ),
-pShaderTessellationControl( nullptr ),
-pShaderTessellationEvaluation( nullptr ),
-pShaderGeometry( nullptr ),
-pShaderFragment( nullptr ),
-pShaderCompute( nullptr ),
-pShaderRayGen( nullptr ),
-pShaderAnyHit( nullptr ),
-pShaderClosestHit( nullptr ),
-pShaderMiss( nullptr ),
-pShaderIntersection( nullptr ),
-pShaderCallable( nullptr ),
-pShaderTask( nullptr ),
-pShaderMesh( nullptr ),
-pTopology( VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN ),
-pCulling( VK_CULL_MODE_NONE ),
-pBlendColor( ebDisable ),
-pBlendAlpha( ebDisable ),
-pDepthWriteMask( false ),
-pDepthFunction( VK_COMPARE_OP_LESS_OR_EQUAL ),
-pDepthTest( false ),
-pStencilTest( false ),
-pBindingCount( 0 ),
-pBindings( nullptr ),
-pAttributeCount( 0 ),
-pAttributes( nullptr ),
-pDynamicDepthBias( false ),
-pDynamicStencil( false )
+pType(etGraphics),
+pDescriptorSetLayout(nullptr),
+pShaderVertex(nullptr),
+pShaderTessellationControl(nullptr),
+pShaderTessellationEvaluation(nullptr),
+pShaderGeometry(nullptr),
+pShaderFragment(nullptr),
+pShaderCompute(nullptr),
+pShaderRayGen(nullptr),
+pShaderAnyHit(nullptr),
+pShaderClosestHit(nullptr),
+pShaderMiss(nullptr),
+pShaderIntersection(nullptr),
+pShaderCallable(nullptr),
+pShaderTask(nullptr),
+pShaderMesh(nullptr),
+pTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN),
+pCulling(VK_CULL_MODE_NONE),
+pBlendColor(ebDisable),
+pBlendAlpha(ebDisable),
+pDepthWriteMask(false),
+pDepthFunction(VK_COMPARE_OP_LESS_OR_EQUAL),
+pDepthTest(false),
+pStencilTest(false),
+pBindingCount(0),
+pBindings(nullptr),
+pAttributeCount(0),
+pAttributes(nullptr),
+pDynamicDepthBias(false),
+pDynamicStencil(false)
 {
-	pColorWriteMask[ 0 ] = true;
-	pColorWriteMask[ 1 ] = true;
-	pColorWriteMask[ 2 ] = true;
-	pColorWriteMask[ 3 ] = true;
+	pColorWriteMask[0] = true;
+	pColorWriteMask[1] = true;
+	pColorWriteMask[2] = true;
+	pColorWriteMask[3] = true;
 }
 
-devkPipelineConfiguration::devkPipelineConfiguration( const devkPipelineConfiguration &configuration ) :
-pType( etGraphics ),
-pDescriptorSetLayout( nullptr ),
-pShaderVertex( nullptr ),
-pShaderTessellationControl( nullptr ),
-pShaderTessellationEvaluation( nullptr ),
-pShaderGeometry( nullptr ),
-pShaderFragment( nullptr ),
-pShaderCompute( nullptr ),
-pShaderRayGen( nullptr ),
-pShaderAnyHit( nullptr ),
-pShaderClosestHit( nullptr ),
-pShaderMiss( nullptr ),
-pShaderIntersection( nullptr ),
-pShaderCallable( nullptr ),
-pShaderTask( nullptr ),
-pShaderMesh( nullptr ),
-pTopology( VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN ),
-pCulling( VK_CULL_MODE_NONE ),
-pBlendColor( ebDisable ),
-pBlendAlpha( ebDisable ),
-pDepthWriteMask( false ),
-pDepthFunction( VK_COMPARE_OP_LESS_OR_EQUAL ),
-pDepthTest( false ),
-pStencilTest( false ),
-pBindingCount( 0 ),
-pBindings( nullptr ),
-pAttributeCount( 0 ),
-pAttributes( nullptr ),
-pDynamicDepthBias( false ),
-pDynamicStencil( false )
+devkPipelineConfiguration::devkPipelineConfiguration(const devkPipelineConfiguration &configuration) :
+pType(etGraphics),
+pDescriptorSetLayout(nullptr),
+pShaderVertex(nullptr),
+pShaderTessellationControl(nullptr),
+pShaderTessellationEvaluation(nullptr),
+pShaderGeometry(nullptr),
+pShaderFragment(nullptr),
+pShaderCompute(nullptr),
+pShaderRayGen(nullptr),
+pShaderAnyHit(nullptr),
+pShaderClosestHit(nullptr),
+pShaderMiss(nullptr),
+pShaderIntersection(nullptr),
+pShaderCallable(nullptr),
+pShaderTask(nullptr),
+pShaderMesh(nullptr),
+pTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN),
+pCulling(VK_CULL_MODE_NONE),
+pBlendColor(ebDisable),
+pBlendAlpha(ebDisable),
+pDepthWriteMask(false),
+pDepthFunction(VK_COMPARE_OP_LESS_OR_EQUAL),
+pDepthTest(false),
+pStencilTest(false),
+pBindingCount(0),
+pBindings(nullptr),
+pAttributeCount(0),
+pAttributes(nullptr),
+pDynamicDepthBias(false),
+pDynamicStencil(false)
 {
-	pColorWriteMask[ 0 ] = true;
-	pColorWriteMask[ 1 ] = true;
-	pColorWriteMask[ 2 ] = true;
-	pColorWriteMask[ 3 ] = true;
+	pColorWriteMask[0] = true;
+	pColorWriteMask[1] = true;
+	pColorWriteMask[2] = true;
+	pColorWriteMask[3] = true;
 	*this = configuration;
 }
 
@@ -120,255 +120,255 @@ devkPipelineConfiguration::~devkPipelineConfiguration(){
 // Management
 ///////////////
 
-void devkPipelineConfiguration::SetType( eType type ){
+void devkPipelineConfiguration::SetType(eType type){
 	pType = type;
 }
 
-void devkPipelineConfiguration::SetDescriptorSetLayout( devkDescriptorSetLayout *layout ){
+void devkPipelineConfiguration::SetDescriptorSetLayout(devkDescriptorSetLayout *layout){
 	pDescriptorSetLayout = layout;
 }
 
-void devkPipelineConfiguration::SetRenderPass( devkRenderPass *renderPass ){
+void devkPipelineConfiguration::SetRenderPass(devkRenderPass *renderPass){
 	pRenderPass = renderPass;
 }
 
 
 
-void devkPipelineConfiguration::SetShaderVertex( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderVertex(devkShaderModule *shader){
 	pShaderVertex = shader;
 }
 
-void devkPipelineConfiguration::SetShaderTessellationControl( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderTessellationControl(devkShaderModule *shader){
 	pShaderTessellationControl = shader;
 }
 
-void devkPipelineConfiguration::SetShaderTessellationEvaluation( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderTessellationEvaluation(devkShaderModule *shader){
 	pShaderTessellationEvaluation = shader;
 }
 
-void devkPipelineConfiguration::SetShaderGeometry( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderGeometry(devkShaderModule *shader){
 	pShaderGeometry = shader;
 }
 
-void devkPipelineConfiguration::SetShaderFragment( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderFragment(devkShaderModule *shader){
 	pShaderFragment = shader;
 }
 
 
 
-void devkPipelineConfiguration::SetShaderCompute( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderCompute(devkShaderModule *shader){
 	pShaderCompute = shader;
 }
 
 
 
-void devkPipelineConfiguration::SetShaderRayGen( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderRayGen(devkShaderModule *shader){
 	pShaderRayGen = shader;
 }
 
-void devkPipelineConfiguration::SetShaderAnyHit( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderAnyHit(devkShaderModule *shader){
 	pShaderAnyHit = shader;
 }
 
-void devkPipelineConfiguration::SetShaderClosestHit( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderClosestHit(devkShaderModule *shader){
 	pShaderClosestHit = shader;
 }
 
-void devkPipelineConfiguration::SetShaderMiss( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderMiss(devkShaderModule *shader){
 	pShaderMiss = shader;
 }
 
-void devkPipelineConfiguration::SetShaderIntersection( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderIntersection(devkShaderModule *shader){
 	pShaderIntersection = shader;
 }
 
-void devkPipelineConfiguration::SetShaderCallable( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderCallable(devkShaderModule *shader){
 	pShaderCallable = shader;
 }
 
 
-void devkPipelineConfiguration::SetShaderTask( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderTask(devkShaderModule *shader){
 	pShaderTask = shader;
 }
 
-void devkPipelineConfiguration::SetShaderMesh( devkShaderModule *shader ){
+void devkPipelineConfiguration::SetShaderMesh(devkShaderModule *shader){
 	pShaderMesh = shader;
 }
 
 
 
-void devkPipelineConfiguration::SetSpecialization( devkSpecialization *specialization ){
+void devkPipelineConfiguration::SetSpecialization(devkSpecialization *specialization){
 	pSpecialization = specialization;
 }
 
 
 
-void devkPipelineConfiguration::SetTopology( VkPrimitiveTopology topology ){
+void devkPipelineConfiguration::SetTopology(VkPrimitiveTopology topology){
 	pTopology = topology;
 }
 
-void devkPipelineConfiguration::SetCulling( VkCullModeFlagBits culling ){
+void devkPipelineConfiguration::SetCulling(VkCullModeFlagBits culling){
 	pCulling = culling;
 }
 
-void devkPipelineConfiguration::SetBlendColor( eBlending blending ){
+void devkPipelineConfiguration::SetBlendColor(eBlending blending){
 	pBlendColor = blending;
 }
 
-void devkPipelineConfiguration::SetBlendAlpha( eBlending blending ){
+void devkPipelineConfiguration::SetBlendAlpha(eBlending blending){
 	pBlendAlpha = blending;
 }
 
-void devkPipelineConfiguration::SetBlending( eBlending blending ){
+void devkPipelineConfiguration::SetBlending(eBlending blending){
 	pBlendColor = blending;
 	pBlendAlpha = blending;
 }
 
-bool devkPipelineConfiguration::GetColorWriteMaskAt( int component ) const{
-	if( component < 0 ){
-		DETHROW_INFO( deeInvalidParam, "component < 0" );
+bool devkPipelineConfiguration::GetColorWriteMaskAt(int component) const{
+	if(component < 0){
+		DETHROW_INFO(deeInvalidParam, "component < 0");
 	}
-	if( component > 3 ){
-		DETHROW_INFO( deeInvalidParam, "component > 3" );
+	if(component > 3){
+		DETHROW_INFO(deeInvalidParam, "component > 3");
 	}
-	return pColorWriteMask[ component ];
+	return pColorWriteMask[component];
 }
 
-void devkPipelineConfiguration::SetColorWriteMaskAt( int component, bool enable ){
-	if( component < 0 ){
-		DETHROW_INFO( deeInvalidParam, "component < 0" );
+void devkPipelineConfiguration::SetColorWriteMaskAt(int component, bool enable){
+	if(component < 0){
+		DETHROW_INFO(deeInvalidParam, "component < 0");
 	}
-	if( component > 3 ){
-		DETHROW_INFO( deeInvalidParam, "component > 3" );
+	if(component > 3){
+		DETHROW_INFO(deeInvalidParam, "component > 3");
 	}
-	pColorWriteMask[ component ] = enable;
+	pColorWriteMask[component] = enable;
 }
 
-void devkPipelineConfiguration::SetColorWriteMask( bool red, bool green, bool blue, bool alpha ){
-	pColorWriteMask[ 0 ] = red;
-	pColorWriteMask[ 1 ] = green;
-	pColorWriteMask[ 2 ] = blue;
-	pColorWriteMask[ 3 ] = alpha;
+void devkPipelineConfiguration::SetColorWriteMask(bool red, bool green, bool blue, bool alpha){
+	pColorWriteMask[0] = red;
+	pColorWriteMask[1] = green;
+	pColorWriteMask[2] = blue;
+	pColorWriteMask[3] = alpha;
 }
 
-void devkPipelineConfiguration::SetDepthWriteMask( bool enable ){
+void devkPipelineConfiguration::SetDepthWriteMask(bool enable){
 	pDepthWriteMask = enable;
 }
 
-void devkPipelineConfiguration::SetDepthFunction( VkCompareOp function ){
+void devkPipelineConfiguration::SetDepthFunction(VkCompareOp function){
 	pDepthFunction = function;
 }
 
-void devkPipelineConfiguration::SetDepthTest( bool enable ){
+void devkPipelineConfiguration::SetDepthTest(bool enable){
 	pDepthTest = enable;
 }
 
-void devkPipelineConfiguration::SetStencilTest( bool enable ){
+void devkPipelineConfiguration::SetStencilTest(bool enable){
 	pStencilTest = enable;
 }
 
 
 
-void devkPipelineConfiguration::SetBindingCount( int count ){
-	if( count < 0 ){
-		DETHROW_INFO( deeInvalidParam, "count < 0" );
+void devkPipelineConfiguration::SetBindingCount(int count){
+	if(count < 0){
+		DETHROW_INFO(deeInvalidParam, "count < 0");
 	}
 	
-	if( pBindings ){
+	if(pBindings){
 		delete [] pBindings;
 		pBindings = nullptr;
 		pBindingCount = 0;
 	}
 	
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pBindings = new VkVertexInputBindingDescription[ count ];
+	pBindings = new VkVertexInputBindingDescription[count];
 	pBindingCount = count;
 }
 
-const VkVertexInputBindingDescription &devkPipelineConfiguration::GetBindingAt( int index ) const{
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
+const VkVertexInputBindingDescription &devkPipelineConfiguration::GetBindingAt(int index) const{
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
 	}
-	if( index >= pBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= bindingCount" );
-	}
-	
-	return pBindings[ index ];
-}
-
-void devkPipelineConfiguration::SetBindingAt( int index, const VkVertexInputBindingDescription &binding ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pBindingCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= bindingCount" );
+	if(index >= pBindingCount){
+		DETHROW_INFO(deeInvalidParam, "index >= bindingCount");
 	}
 	
-	memcpy( pBindings + index, &binding, sizeof( binding ) );
+	return pBindings[index];
 }
 
-void devkPipelineConfiguration::SetBindingAt( int index, int binding, int stride, VkVertexInputRate inputRate ){
+void devkPipelineConfiguration::SetBindingAt(int index, const VkVertexInputBindingDescription &binding){
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
+	}
+	if(index >= pBindingCount){
+		DETHROW_INFO(deeInvalidParam, "index >= bindingCount");
+	}
+	
+	memcpy(pBindings + index, &binding, sizeof(binding));
+}
+
+void devkPipelineConfiguration::SetBindingAt(int index, int binding, int stride, VkVertexInputRate inputRate){
 	VkVertexInputBindingDescription description;
-	description.binding = ( uint32_t )binding;
-	description.stride = ( uint32_t )stride;
+	description.binding = (uint32_t)binding;
+	description.stride = (uint32_t)stride;
 	description.inputRate = inputRate;
-	SetBindingAt( index, description );
+	SetBindingAt(index, description);
 }
 
 
 
-void devkPipelineConfiguration::SetAttributeCount( int count ){
-	if( count < 0 ){
-		DETHROW_INFO( deeInvalidParam, "count < 0" );
+void devkPipelineConfiguration::SetAttributeCount(int count){
+	if(count < 0){
+		DETHROW_INFO(deeInvalidParam, "count < 0");
 	}
 	
-	if( pAttributes ){
+	if(pAttributes){
 		delete [] pAttributes;
 		pAttributes = nullptr;
 		pAttributeCount = 0;
 	}
 	
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pAttributes = new VkVertexInputAttributeDescription[ count ];
+	pAttributes = new VkVertexInputAttributeDescription[count];
 	pAttributeCount = count;
 }
 
-const VkVertexInputAttributeDescription &devkPipelineConfiguration::GetAttributeAt( int index ) const{
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
+const VkVertexInputAttributeDescription &devkPipelineConfiguration::GetAttributeAt(int index) const{
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
 	}
-	if( index >= pAttributeCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= attributeCount" );
-	}
-	
-	return pAttributes[ index ];
-}
-
-void devkPipelineConfiguration::SetAttributeAt( int index, const VkVertexInputAttributeDescription &attribute ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pAttributeCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= attributeCount" );
+	if(index >= pAttributeCount){
+		DETHROW_INFO(deeInvalidParam, "index >= attributeCount");
 	}
 	
-	memcpy( pAttributes + index, &attribute, sizeof( attribute ) );
+	return pAttributes[index];
 }
 
-void devkPipelineConfiguration::SetAttributeAt( int index, int location, int binding,
-eAttributeFormat format, int offset ){
+void devkPipelineConfiguration::SetAttributeAt(int index, const VkVertexInputAttributeDescription &attribute){
+	if(index < 0){
+		DETHROW_INFO(deeInvalidParam, "index < 0");
+	}
+	if(index >= pAttributeCount){
+		DETHROW_INFO(deeInvalidParam, "index >= attributeCount");
+	}
+	
+	memcpy(pAttributes + index, &attribute, sizeof(attribute));
+}
+
+void devkPipelineConfiguration::SetAttributeAt(int index, int location, int binding,
+eAttributeFormat format, int offset){
 	VkVertexInputAttributeDescription description;
-	description.location = ( uint32_t )location;
-	description.binding = ( uint32_t )binding;
-	description.offset = ( uint32_t )offset;
+	description.location = (uint32_t)location;
+	description.binding = (uint32_t)binding;
+	description.offset = (uint32_t)offset;
 	
-	switch( format ){
+	switch(format){
 	case eafHalfFloat1:
 		description.format = VK_FORMAT_R16_SFLOAT;
 		break;
@@ -434,16 +434,16 @@ eAttributeFormat format, int offset ){
 		break;
 	}
 	
-	SetAttributeAt( index, description );
+	SetAttributeAt(index, description);
 }
 
 
 
-void devkPipelineConfiguration::SetDynamicDepthBias( bool dynamic ){
+void devkPipelineConfiguration::SetDynamicDepthBias(bool dynamic){
 	pDynamicDepthBias = dynamic;
 }
 
-void devkPipelineConfiguration::SetDynamicStencil( bool dynamic ){
+void devkPipelineConfiguration::SetDynamicStencil(bool dynamic){
 	pDynamicStencil = dynamic;
 }
 
@@ -452,20 +452,20 @@ void devkPipelineConfiguration::SetDynamicStencil( bool dynamic ){
 // Operators
 //////////////
 
-bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &configuration ) const{
-	if( pBindingCount != configuration.pBindingCount ){
+bool devkPipelineConfiguration::operator==(const devkPipelineConfiguration &configuration) const{
+	if(pBindingCount != configuration.pBindingCount){
 		return false;
 	}
-	if( pBindingCount > 0 && memcmp( pBindings, configuration.pBindings,
-	sizeof( VkVertexInputBindingDescription ) * pBindingCount ) ){
+	if(pBindingCount > 0 && memcmp(pBindings, configuration.pBindings,
+	sizeof(VkVertexInputBindingDescription) * pBindingCount)){
 		return false;
 	}
 	
-	if( pAttributeCount != configuration.pAttributeCount ){
+	if(pAttributeCount != configuration.pAttributeCount){
 		return false;
 	}
-	if( pAttributeCount > 0 && memcmp( pAttributes, configuration.pAttributes,
-	sizeof( VkVertexInputAttributeDescription ) * pAttributeCount ) ){
+	if(pAttributeCount > 0 && memcmp(pAttributes, configuration.pAttributes,
+	sizeof(VkVertexInputAttributeDescription) * pAttributeCount)){
 		return false;
 	}
 	
@@ -491,10 +491,10 @@ bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &con
 		&& pCulling == configuration.pCulling
 		&& pBlendColor == configuration.pBlendColor
 		&& pBlendAlpha == configuration.pBlendAlpha
-		&& pColorWriteMask[ 0 ] == configuration.pColorWriteMask[ 0 ]
-		&& pColorWriteMask[ 1 ] == configuration.pColorWriteMask[ 1 ]
-		&& pColorWriteMask[ 2 ] == configuration.pColorWriteMask[ 2 ]
-		&& pColorWriteMask[ 3 ] == configuration.pColorWriteMask[ 3 ]
+		&& pColorWriteMask[0] == configuration.pColorWriteMask[0]
+		&& pColorWriteMask[1] == configuration.pColorWriteMask[1]
+		&& pColorWriteMask[2] == configuration.pColorWriteMask[2]
+		&& pColorWriteMask[3] == configuration.pColorWriteMask[3]
 		&& pDepthWriteMask == configuration.pDepthWriteMask
 		&& pDepthFunction == configuration.pDepthFunction
 		&& pDepthTest == configuration.pDepthTest
@@ -503,7 +503,7 @@ bool devkPipelineConfiguration::operator==( const devkPipelineConfiguration &con
 		&& pDynamicStencil == configuration.pDynamicStencil;
 }
 
-devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipelineConfiguration &configuration ){
+devkPipelineConfiguration &devkPipelineConfiguration::operator=(const devkPipelineConfiguration &configuration){
 	pType = configuration.pType;
 	pDescriptorSetLayout = configuration.pDescriptorSetLayout;
 	pRenderPass = configuration.pRenderPass;
@@ -526,10 +526,10 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pCulling = configuration.pCulling;
 	pBlendColor = configuration.pBlendColor;
 	pBlendAlpha = configuration.pBlendAlpha;
-	pColorWriteMask[ 0 ] = configuration.pColorWriteMask[ 0 ];
-	pColorWriteMask[ 1 ] = configuration.pColorWriteMask[ 1 ];
-	pColorWriteMask[ 2 ] = configuration.pColorWriteMask[ 2 ];
-	pColorWriteMask[ 3 ] = configuration.pColorWriteMask[ 3 ];
+	pColorWriteMask[0] = configuration.pColorWriteMask[0];
+	pColorWriteMask[1] = configuration.pColorWriteMask[1];
+	pColorWriteMask[2] = configuration.pColorWriteMask[2];
+	pColorWriteMask[3] = configuration.pColorWriteMask[3];
 	pDepthWriteMask = configuration.pDepthWriteMask;
 	pDepthFunction = configuration.pDepthFunction;
 	pDepthTest = configuration.pDepthTest;
@@ -537,16 +537,16 @@ devkPipelineConfiguration &devkPipelineConfiguration::operator=( const devkPipel
 	pDynamicDepthBias = configuration.pDynamicDepthBias;
 	pDynamicStencil = configuration.pDynamicStencil;
 	
-	SetBindingCount( configuration.pBindingCount );
-	if( pBindingCount > 0 ){
-		memcpy( pBindings, configuration.pBindings,
-			sizeof( VkVertexInputBindingDescription ) * pBindingCount );
+	SetBindingCount(configuration.pBindingCount);
+	if(pBindingCount > 0){
+		memcpy(pBindings, configuration.pBindings,
+			sizeof(VkVertexInputBindingDescription) * pBindingCount);
 	}
 	
-	SetAttributeCount( configuration.pAttributeCount );
-	if( pAttributeCount > 0 ){
-		memcpy( pAttributes, configuration.pAttributes,
-			sizeof( VkVertexInputAttributeDescription ) * pAttributeCount );
+	SetAttributeCount(configuration.pAttributeCount);
+	if(pAttributeCount > 0){
+		memcpy(pAttributes, configuration.pAttributes,
+			sizeof(VkVertexInputAttributeDescription) * pAttributeCount);
 	}
 
 	return *this;

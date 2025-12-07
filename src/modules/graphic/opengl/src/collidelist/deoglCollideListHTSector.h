@@ -63,24 +63,24 @@ public:
 	void Clear();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &referencePosition);
 	
 	
 	
 	/** Sector. */
-	inline deoglHTViewSector *GetSector() const{ return pSector; }
+	inline deoglHTViewSector *GetSector() const{return pSector;}
 	
 	/** Set sector. */
-	void SetSector( deoglHTViewSector *sector );
+	void SetSector(deoglHTViewSector *sector);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{ return pClusterCount; }
+	inline int GetClusterCount() const{return pClusterCount;}
 	
 	/** Cluster at index. */
-	deoglCollideListHTSCluster &GetClusterAt( int index ) const;
+	deoglCollideListHTSCluster &GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	deoglCollideListHTSCluster *AddCluster( const decPoint &coordinates );
+	deoglCollideListHTSCluster *AddCluster(const decPoint &coordinates);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();

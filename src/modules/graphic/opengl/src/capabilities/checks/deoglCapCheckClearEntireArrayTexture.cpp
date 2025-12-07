@@ -52,9 +52,9 @@
 ////////////////////////////
 
 deoglCapCheckClearEntireArrayTexture::deoglCapCheckClearEntireArrayTexture(
-deoglCapabilities &capabilities ) :
-pCapabilities( capabilities ),
-pWorking( true ){
+deoglCapabilities &capabilities) :
+pCapabilities(capabilities),
+pWorking(true){
 }
 
 
@@ -62,7 +62,7 @@ pWorking( true ){
 // Management
 ///////////////
 
-void deoglCapCheckClearEntireArrayTexture::Check( GLuint fbo ){
+void deoglCapCheckClearEntireArrayTexture::Check(GLuint fbo){
 	// Summary:
 	//    The clear entire array texture bug has been seen on the ATI graphic driver for the linux
 	//    system ( 12.6_beta_pre897:legacy ) and nvidia. The presence of this bug prevents all layers
@@ -87,7 +87,7 @@ void deoglCapCheckClearEntireArrayTexture::Check( GLuint fbo ){
 	//    implementation all pixels of all layers have the value of 1. If the driver has the bug the pixels
 	//    of one or more layers have the value 0.5 .
 	
-	if( ! pglFramebufferTexture ){
+	if(! pglFramebufferTexture){
 		return;
 	}
 	
@@ -96,67 +96,67 @@ void deoglCapCheckClearEntireArrayTexture::Check( GLuint fbo ){
 	#ifdef OS_ANDROID
 		pWorking = false;
 		renderThread.GetLogger().LogWarn(
-			"Capabilities: Clear entire array texture: Working (Android)" );
+			"Capabilities: Clear entire array texture: Working (Android)");
 		return;
 	#endif
 	
 	const deoglCapsTextureFormat &texformat = *pCapabilities.GetFormats()
-		.GetUseFBOArrayTexFormatFor( deoglCapsFmtSupport::eutfDepth );
-	GLfloat pixels[ 5 ] = { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f };
+		.GetUseFBOArrayTexFormatFor(deoglCapsFmtSupport::eutfDepth);
+	GLfloat pixels[5] = {0.5f, 0.5f, 0.5f, 0.5f, 0.5f};
 	GLuint texture = 0;
 	int i;
 	
 	try{
 		// generate test array texture
-		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-		if( ! texture ){
-			DETHROW( deeOutOfMemory );
+		OGL_CHECK(renderThread, glGenTextures(1, &texture));
+		if(! texture){
+			DETHROW(deeOutOfMemory);
 		}
 		
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, texture ) );
-		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ) );
-		OGL_CHECK( renderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0,
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, texture));
+		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		OGL_CHECK(renderThread, pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0,
 			texformat.GetFormat(), 1, 1, 5, 0, texformat.GetPixelFormat(),
-			texformat.GetPixelType(), ( GLvoid* )&pixels ) );
-		OGL_CHECK( renderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 4 ) );
+			texformat.GetPixelType(), (GLvoid*)&pixels));
+		OGL_CHECK(renderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
 		
 		// bind test array texture to fbo and set render parameters
-		OGL_CHECK( renderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-			GL_DEPTH_ATTACHMENT, texture, 0 ) );
-		const GLenum buffers[ 1 ] = { GL_NONE };
-		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( renderThread, glReadBuffer( GL_NONE ) );
+		OGL_CHECK(renderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
+			GL_DEPTH_ATTACHMENT, texture, 0));
+		const GLenum buffers[1] = {GL_NONE};
+		OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(renderThread, glReadBuffer(GL_NONE));
 		
-		OGL_CHECK( renderThread, glViewport( 0, 0, 1, 1 ) );
-		OGL_CHECK( renderThread, glScissor( 0, 0, 1, 1 ) );
-		OGL_CHECK( renderThread, glEnable( GL_SCISSOR_TEST ) );
+		OGL_CHECK(renderThread, glViewport(0, 0, 1, 1));
+		OGL_CHECK(renderThread, glScissor(0, 0, 1, 1));
+		OGL_CHECK(renderThread, glEnable(GL_SCISSOR_TEST));
 		
-		OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-		OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-		OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-		OGL_CHECK( renderThread, glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ) );
-		OGL_CHECK( renderThread, glDepthMask( GL_TRUE ) );
+		OGL_CHECK(renderThread, glDisable(GL_DEPTH_TEST));
+		OGL_CHECK(renderThread, glDisable(GL_BLEND));
+		OGL_CHECK(renderThread, glDisable(GL_CULL_FACE));
+		OGL_CHECK(renderThread, glDisable(GL_STENCIL_TEST));
+		OGL_CHECK(renderThread, glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE));
+		OGL_CHECK(renderThread, glDepthMask(GL_TRUE));
 		
 		// clear array texture and unbind from fbo
 		const GLfloat clearDepth = 1.0f;
-		OGL_CHECK( renderThread, pglClearBufferfv( GL_DEPTH, 0, &clearDepth ) );
+		OGL_CHECK(renderThread, pglClearBufferfv(GL_DEPTH, 0, &clearDepth));
 		
-		OGL_CHECK( renderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-			GL_DEPTH_ATTACHMENT, 0, 0 ) );
+		OGL_CHECK(renderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
+			GL_DEPTH_ATTACHMENT, 0, 0));
 		
 		// retrieve the results and clean up
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, texture ) );
-		OGL_CHECK( renderThread, glGetTexImage( GL_TEXTURE_2D_ARRAY, 0,
-			GL_DEPTH_COMPONENT, GL_FLOAT, ( GLvoid* )&pixels ) );
-		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D_ARRAY, 0 ) );
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, texture));
+		OGL_CHECK(renderThread, glGetTexImage(GL_TEXTURE_2D_ARRAY, 0,
+			GL_DEPTH_COMPONENT, GL_FLOAT, (GLvoid*)&pixels));
+		OGL_CHECK(renderThread, glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
 		
-		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
+		OGL_CHECK(renderThread, glDeleteTextures(1, &texture));
 		texture = 0;
 		
-	}catch( const deException & ){
-		if( texture ){
-			glDeleteTextures( 1, &texture );
+	}catch(const deException &){
+		if(texture){
+			glDeleteTextures(1, &texture);
 		}
 		
 		throw;
@@ -165,16 +165,16 @@ void deoglCapCheckClearEntireArrayTexture::Check( GLuint fbo ){
 	// evaluate the results
 	//printf( "pTestBugClearEntireArrayTexture: %g %g %g %g %g\n",
 	//	pixels[ 0 ], pixels[ 1 ], pixels[ 2 ], pixels[ 3 ], pixels[ 4 ] );
-	for( i=0; i<5; i++ ){
-		if( fabsf( pixels[ i ] - 1.0f ) > 1e-3f ){
+	for(i=0; i<5; i++){
+		if(fabsf(pixels[i] - 1.0f) > 1e-3f){
 			pWorking = false;
 		}
 	}
 	
-	if( pWorking ){
-		renderThread.GetLogger().LogInfo( "Capabilities: Clear entire array texture: Working" );
+	if(pWorking){
+		renderThread.GetLogger().LogInfo("Capabilities: Clear entire array texture: Working");
 		
 	}else{
-		renderThread.GetLogger().LogWarn( "Capabilities: Clear entire array texture: Driver Bug!" );
+		renderThread.GetLogger().LogWarn("Capabilities: Clear entire array texture: Driver Bug!");
 	}
 }

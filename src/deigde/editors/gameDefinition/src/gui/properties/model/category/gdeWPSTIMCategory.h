@@ -43,7 +43,7 @@ protected:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategory( gdeWPSTreeModel &tree, eTypes type, gdeCategory *category );
+	gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -56,16 +56,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Category. */
-	inline gdeCategory *GetCategory() const{ return pCategory; }
+	inline gdeCategory *GetCategory() const{return pCategory;}
 	
 	
 	
 	/** \brief Compare this item with another for sorting.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	virtual int Compare(const gdeWPSTreeItemModel &item) const;
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitSetInterval::ceUCAWaitSetInterval( ceConversationTopic *topic, ceCAWait *wait, float newInterval ){
-	if( ! topic || ! wait ) DETHROW( deeInvalidParam );
+ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait *wait, float newInterval){
+	if(! topic || ! wait) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pWait = NULL;
 	
-	SetShortInfo( "Action Wait Set Interval" );
+	SetShortInfo("Action Wait Set Interval");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCAWaitSetInterval::ceUCAWaitSetInterval( ceConversationTopic *topic, ceCAWait
 }
 
 ceUCAWaitSetInterval::~ceUCAWaitSetInterval(){
-	if( pWait ){
+	if(pWait){
 		pWait->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCAWaitSetInterval::~ceUCAWaitSetInterval(){
 ///////////////
 
 void ceUCAWaitSetInterval::Undo(){
-	pWait->SetInterval( pOldInterval );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->SetInterval(pOldInterval);
+	pTopic->NotifyActionStructureChanged(pWait);
 }
 
 void ceUCAWaitSetInterval::Redo(){
-	pWait->SetInterval( pNewInterval );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->SetInterval(pNewInterval);
+	pTopic->NotifyActionStructureChanged(pWait);
 }

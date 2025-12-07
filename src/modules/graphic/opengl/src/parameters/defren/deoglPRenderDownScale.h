@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPRenderDownScale( deGraphicOpenGl &ogl );
+	deoglPRenderDownScale(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPRenderDownScale();
 	/*@}*/
@@ -47,7 +47,7 @@ public:
 	/** Retrieves the current value. */
 	virtual int GetParameterInt();
 	/** Sets the current value. */
-	virtual void SetParameterInt( int value );
+	virtual void SetParameterInt(int value);
 	/*@}*/
 };
 

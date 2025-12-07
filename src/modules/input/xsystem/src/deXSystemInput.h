@@ -92,7 +92,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deXSystemInput( deLoadableModule &loadableModule );
+	deXSystemInput(deLoadableModule &loadableModule);
 	
 	/** Clean up module. */
 	~deXSystemInput() override;
@@ -103,21 +103,21 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** OS. */
-	inline deOSUnix *GetOSUnix() const{ return pOSUnix; }
+	inline deOSUnix *GetOSUnix() const{return pOSUnix;}
 	
 	/** Device manager. */
-	inline const dexsiDeviceManager::Ref &GetDevices() const{ return pDevices; }
+	inline const dexsiDeviceManager::Ref &GetDevices() const{return pDevices;}
 	
 	/** Log level. */
-	inline LogLevel GetLogLevel() const{ return pLogLevel; }
-	void SetLogLevel(LogLevel level){ pLogLevel = level; }
+	inline LogLevel GetLogLevel() const{return pLogLevel;}
+	void SetLogLevel(LogLevel level){pLogLevel = level;}
 	
 	/** Raw mouse input. */
-	inline bool GetEnableRawMouseInput() const{ return pEnableRawMouseInput; }
+	inline bool GetEnableRawMouseInput() const{return pEnableRawMouseInput;}
 	void SetEnableRawMouseInput(bool enable);
 	
 	/** Raw mouse input sensitivity. */
-	inline double GetRawMouseInputSensitivity() const{ return pRawMouseInputSensitivity; }
+	inline double GetRawMouseInputSensitivity() const{return pRawMouseInputSensitivity;}
 	void SetRawMouseInputSensitivity(double sensitivity);
 	
 	
@@ -140,31 +140,31 @@ public:
 	int GetDeviceCount() override;
 	
 	/** Information for input device at index. */
-	deInputDevice *GetDeviceAt( int index ) override;
+	deInputDevice *GetDeviceAt(int index) override;
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfDeviceWithID( const char *id ) override;
+	int IndexOfDeviceWithID(const char *id) override;
 	
 	/** Index of button with identifier on device at index or -1 if absent. */
-	int IndexOfButtonWithID( int device, const char *id ) override;
+	int IndexOfButtonWithID(int device, const char *id) override;
 	
 	/** Index of axis with identifier on device at index or -1 if absent. */
-	int IndexOfAxisWithID( int device, const char *id ) override;
+	int IndexOfAxisWithID(int device, const char *id) override;
 	
 	/** Index of feedback with identifier on device at index or -1 if absent. */
-	int IndexOfFeedbackWithID( int device, const char *id ) override;
+	int IndexOfFeedbackWithID(int device, const char *id) override;
 	
 	/** Button at index on device at index is pressed down. */
-	bool GetButtonPressed( int device, int button ) override;
+	bool GetButtonPressed(int device, int button) override;
 	
 	/** Value of axis at index on device at index. */
-	float GetAxisValue( int device, int axis ) override;
+	float GetAxisValue(int device, int axis) override;
 	
 	/** Value of feedback at index on device at index. */
-	float GetFeedbackValue( int device, int feedback ) override;
+	float GetFeedbackValue(int device, int feedback) override;
 	
 	/** Set value of feedback at index on device at index. */
-	void SetFeedbackValue( int device, int feedback, float value ) override;
+	void SetFeedbackValue(int device, int feedback, float value) override;
 	
 	/**
 	 * Index of button best matching key code or -1 if not found.
@@ -177,7 +177,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ) override;
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode) override;
 	
 	/**
 	 * Index of button best matching character or -1 if not found.
@@ -196,7 +196,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	int ButtonMatchingKeyChar( int device, int character ) override;
+	int ButtonMatchingKeyChar(int device, int character) override;
 	
 	/**
 	 * Index of button best matching key code or -1 if not found.
@@ -204,8 +204,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
-		deInputEvent::eKeyLocation location ) override;
+	int ButtonMatchingKeyCode(int device, deInputEvent::eKeyCodes keyCode,
+		deInputEvent::eKeyLocation location) override;
 	
 	/**
 	 * Index of button best matching character or -1 if not found.
@@ -213,8 +213,8 @@ public:
 	 * Same as ButtonMatchingKeyChar(int,int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	int ButtonMatchingKeyChar( int device, int character,
-		deInputEvent::eKeyLocation location ) override;
+	int ButtonMatchingKeyChar(int device, int character,
+		deInputEvent::eKeyLocation location) override;
 	/*@}*/
 	
 	
@@ -242,25 +242,25 @@ public:
 	void AppActivationChanged() override;
 	
 	/** An event processed by the application event loop. */
-	void EventLoop( XEvent &event ) override;
+	void EventLoop(XEvent &event) override;
 	
 	
 	
 	/** Add axis changed event. */
-	void AddAxisChanged( int device, int axis, float value, const timeval &eventTime );
+	void AddAxisChanged(int device, int axis, float value, const timeval &eventTime);
 	
 	/** Add button pressed. */
-	void AddButtonPressed( int device, int button, const timeval &eventTime );
+	void AddButtonPressed(int device, int button, const timeval &eventTime);
 	
 	/** Add button released. */
-	void AddButtonReleased( int device, int button, const timeval &eventTime );
+	void AddButtonReleased(int device, int button, const timeval &eventTime);
 	
 	/** Add mouse wheel changed event. */
-	void AddMouseWheelChanged( int device, int axis, int x, int y, int state,
-		const timeval &eventTime );
+	void AddMouseWheelChanged(int device, int axis, int x, int y, int state,
+		const timeval &eventTime);
 	
 	/** Add device attached/detached event. */
-	void AddDeviceAttachedDetached( const timeval &eventTime );
+	void AddDeviceAttachedDetached(const timeval &eventTime);
 	/*@}*/
 	
 	
@@ -292,21 +292,21 @@ public:
 private:
 	void pCenterPointer();
 	
-	void pAddKeyPress( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime );
+	void pAddKeyPress(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime);
 	
-	void pAddKeyRelease( int device, int button, int keyChar,
-		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime );
+	void pAddKeyRelease(int device, int button, int keyChar,
+		deInputEvent::eKeyCodes keyCode, int state, const timeval &eventTime);
 	
-	void pAddMousePress( int device, int button, int state, const timeval &eventTime );
-	void pAddMouseRelease( int device, int button, int state, const timeval &eventTime );
-	void pAddMouseMove( int device, int state, int x, int y, const timeval &eventTime );
-	void pQueryMousePosition( bool sendEvents );
-	int pModifiersFromXState( int xstate ) const;
-	bool pLookUpKey( XKeyEvent &event, sKey &key );
+	void pAddMousePress(int device, int button, int state, const timeval &eventTime);
+	void pAddMouseRelease(int device, int button, int state, const timeval &eventTime);
+	void pAddMouseMove(int device, int state, int x, int y, const timeval &eventTime);
+	void pQueryMousePosition(bool sendEvents);
+	int pModifiersFromXState(int xstate) const;
+	bool pLookUpKey(XKeyEvent &event, sKey &key);
 	//int pModifiersFromKeyState() const;
 	void pUpdateAutoRepeat();
-	void pSetAutoRepeatEnabled( bool enabled );
+	void pSetAutoRepeatEnabled(bool enabled);
 	void pUpdateRawMouseInput();
 	void pCreateParameters();
 };

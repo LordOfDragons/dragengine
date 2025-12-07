@@ -58,7 +58,7 @@ public:
 		gdeObjectClass *objectClass, gdeProperty *property) override;
 	
 	/** \brief Object properties changed. */
-	void OCPropertiesChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass ) override;
+	void OCPropertiesChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) override;
 	
 	/** \brief Active object class changed. */
 	void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition) override;

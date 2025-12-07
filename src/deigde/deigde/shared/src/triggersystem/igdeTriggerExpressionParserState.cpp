@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTriggerExpressionParserState::igdeTriggerExpressionParserState( const char *string ){
-	if( ! string ){
-		DETHROW( deeInvalidParam );
+igdeTriggerExpressionParserState::igdeTriggerExpressionParserState(const char *string){
+	if(! string){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pString = string;
@@ -61,9 +61,9 @@ bool igdeTriggerExpressionParserState::HasMoreCharacters() const{
 }
 
 char igdeTriggerExpressionParserState::GetNextCharacter(){
-	return pString.GetAt( pPosition++ );
+	return pString.GetAt(pPosition++);
 }
 
-void igdeTriggerExpressionParserState::AdjustPosition( int amount ){
+void igdeTriggerExpressionParserState::AdjustPosition(int amount){
 	pPosition += amount;
 }

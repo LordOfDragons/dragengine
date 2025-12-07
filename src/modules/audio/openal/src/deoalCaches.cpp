@@ -43,17 +43,17 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deoalCaches::deoalCaches( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pSound( NULL )
+deoalCaches::deoalCaches(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pSound(NULL)
 {
 	(void)pAudioThread; // silence compiler warning
 	
 	try{
-		pSound = new deCacheHelper( &audioThread.GetOal().GetVFS(),
-			decPath::CreatePathUnix( "/cache/local/sound" ) );
+		pSound = new deCacheHelper(&audioThread.GetOal().GetVFS(),
+			decPath::CreatePathUnix("/cache/local/sound"));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -82,7 +82,7 @@ void deoalCaches::Unlock(){
 //////////////////////
 
 void deoalCaches::pCleanUp(){
-	if( pSound ){
+	if(pSound){
 		delete pSound;
 	}
 }

@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSSSynthesizer( deScriptingDragonScript &ds );
+	deClassSSSynthesizer(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSSSynthesizer();
@@ -75,21 +75,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Source or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerSourceSynthesizer *GetSource( dsRealObject *myself ) const;
+	deSynthesizerSourceSynthesizer *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer( dsRealObject *myself, deSynthesizer *synthesizer );
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource( dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSynthesizer *source );
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSynthesizer *source);
 	
-	inline dsClass *GetClassSSSynthesizerTarget() const{ return pClsSSSynthesizerTarget; }
+	inline dsClass *GetClassSSSynthesizerTarget() const{return pClsSSSynthesizerTarget;}
 	/*@}*/
 	
 	
@@ -108,19 +108,19 @@ private:
 		dsClass *clsSSSynthesizerTarget;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfTargetAddLink );
-	DEF_NATFUNC( nfTargetRemoveAllLinks );
+	DEF_NATFUNC(nfTargetAddLink);
+	DEF_NATFUNC(nfTargetRemoveAllLinks);
 	
-	DEF_NATFUNC( nfSetSynthesizer );
-	DEF_NATFUNC( nfSetConnectionAt );
+	DEF_NATFUNC(nfSetSynthesizer);
+	DEF_NATFUNC(nfSetConnectionAt);
 #undef DEF_NATFUNC
 };
 

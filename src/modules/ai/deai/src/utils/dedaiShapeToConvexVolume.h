@@ -62,24 +62,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Cconvex volume list to add volumes to or \em NULL if not set. */
-	inline decConvexVolumeList *GetList() const{ return pList; }
+	inline decConvexVolumeList *GetList() const{return pList;}
 	
 	/** \brief Set convex volume list to add volumes to or \em NULL if not set. */
-	void SetList( decConvexVolumeList *list );
+	void SetList(decConvexVolumeList *list);
 	
 	
 	
 	/** \brief Number of rings to generate for spheres. */
-	inline int GetSphereRingCount() const{ return pSphereRingCount; }
+	inline int GetSphereRingCount() const{return pSphereRingCount;}
 	
 	/** \brief Set number of rings to generate for spheres clamped to 2 or larger. */
-	void SetSphereRingCount( int ringCount );
+	void SetSphereRingCount(int ringCount);
 	
 	/** \brief Number of segments to generate for spheres. */
-	inline int GetSphereSegmentCount() const{ return pSphereSegmentCount; }
+	inline int GetSphereSegmentCount() const{return pSphereSegmentCount;}
 	
 	/** \brief Set number of segments to generate for spheres clamped to 8 or larger. */
-	void SetSphereSegmentsCount( int segmentCount );
+	void SetSphereSegmentsCount(int segmentCount);
 	
 	
 	
@@ -87,13 +87,13 @@ public:
 	 * \brief Adds a triangle convex face.
 	 * \details Calculates the normal for the new face.
 	 */
-	void AddTriangle( decConvexVolume &volume, int p1, int p2, int p3 );
+	void AddTriangle(decConvexVolume &volume, int p1, int p2, int p3);
 	
 	/**
 	 * \brief Adds a quadrilateral convex face.
 	 * \details Calculates the normal for the new face.
 	 */
-	void AddQuad( decConvexVolume &volume, int p1, int p2, int p3, int p4 );
+	void AddQuad(decConvexVolume &volume, int p1, int p2, int p3, int p4);
 	
 	
 	
@@ -117,22 +117,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	virtual void VisitShape(decShape &shape);
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	virtual void VisitShapeSphere(decShapeSphere &sphere);
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	virtual void VisitShapeBox(decShapeBox &box);
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	virtual void VisitShapeHull(decShapeHull &hull);
 	/*@}*/
 };
 

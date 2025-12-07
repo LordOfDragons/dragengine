@@ -53,7 +53,7 @@ private:
 		bool asyncLoadFinished;
 	public:
 		cAsyncFinished();
-		virtual void LoadFinished( igdeWObject &wrapper, bool succeeded );
+		virtual void LoadFinished(igdeWObject &wrapper, bool succeeded);
 	};
 	
 	igdeGDClass *pGDClass;
@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */
-	igdeGDPCObjectClass( igdeEnvironment &environment, igdeGDClass *gdclass, const decPoint &size );
+	igdeGDPCObjectClass(igdeEnvironment &environment, igdeGDClass *gdclass, const decPoint &size);
 	
 	
 	
@@ -93,7 +93,7 @@ public:
 	/**  \name Management */
 	/*@{*/
 	/** \brief Game definition object class to create preview for. */
-	inline igdeGDClass *GetGDClass() const{ return pGDClass; }
+	inline igdeGDClass *GetGDClass() const{return pGDClass;}
 	
 	
 	
@@ -108,7 +108,7 @@ protected:
 	virtual bool IsCanvasReadyForRender();
 	
 	/** \brief Update canvas to render animations. */
-	virtual void UpdateCanvasForRender( float elapsed );
+	virtual void UpdateCanvasForRender(float elapsed);
 	/*@}*/
 };
 

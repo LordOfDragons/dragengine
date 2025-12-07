@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	ceUCGestureSetDuration( ceGesture *gesture, float newValue );
+	ceUCGestureSetDuration(ceGesture *gesture, float newValue);
 	
 protected:
 	/** Clean up undo. */

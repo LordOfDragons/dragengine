@@ -39,8 +39,8 @@
 ////////////////////////////
 
 deoalRayCacheRayHit::deoalRayCacheRayHit() :
-pDistance( 0.0f ),
-pFaceIndex( 0 ){
+pDistance(0.0f),
+pFaceIndex(0){
 }
 
 deoalRayCacheRayHit::~deoalRayCacheRayHit(){
@@ -51,22 +51,22 @@ deoalRayCacheRayHit::~deoalRayCacheRayHit(){
 // Management
 ///////////////
 
-void deoalRayCacheRayHit::SetDistance( float distance ){
+void deoalRayCacheRayHit::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void deoalRayCacheRayHit::SetFaceIndex( int faceIndex ){
+void deoalRayCacheRayHit::SetFaceIndex(int faceIndex){
 	pFaceIndex = faceIndex;
 }
 
-void deoalRayCacheRayHit::SetForwardFacing( bool forwardFacing ){
+void deoalRayCacheRayHit::SetForwardFacing(bool forwardFacing){
 	pForwardFacing = forwardFacing;
 }
 
-void deoalRayCacheRayHit::SetPoint( const decVector &point ){
+void deoalRayCacheRayHit::SetPoint(const decVector &point){
 	pPoint = point;
 }
 
-void deoalRayCacheRayHit::SetNormal( const decVector &normal ){
+void deoalRayCacheRayHit::SetNormal(const decVector &normal){
 	pNormal = normal;
 }

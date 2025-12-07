@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceAddEffect( seSource *source, seEffect *effect, int index );
+	seUSourceAddEffect(seSource *source, seEffect *effect, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

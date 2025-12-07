@@ -44,15 +44,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeDefaultPropertyValue::gdeDefaultPropertyValue( igdeUIHelper &helper ) :
-igdeEditPropertyValue( helper ),
-pGDProperty( NULL )
+gdeDefaultPropertyValue::gdeDefaultPropertyValue(igdeUIHelper &helper) :
+igdeEditPropertyValue(helper),
+pGDProperty(NULL)
 {
-	pGDProperty = new igdeGDProperty( "Property" );
+	pGDProperty = new igdeGDProperty("Property");
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
-	if( pGDProperty ){
+	if(pGDProperty){
 		pGDProperty->FreeReference();
 	}
 }
@@ -62,176 +62,176 @@ gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
 // Management
 ///////////////
 
-void gdeDefaultPropertyValue::CreateAndAdd( igdeContainer &form, igdeUIHelper &helper,
+void gdeDefaultPropertyValue::CreateAndAdd(igdeContainer &form, igdeUIHelper &helper,
 const char *label, const char *description, igdeEditPropertyValue::Ref &widget,
-igdeEditPropertyValueListener *listener ){
-	helper.Label( form, label, description, igdeLabel::eaLeft | igdeLabel::eaMiddle );
-	widget.TakeOver( new gdeDefaultPropertyValue( helper ) );
-	if( listener ){
-		widget->AddListener( listener );
+igdeEditPropertyValueListener *listener){
+	helper.Label(form, label, description, igdeLabel::eaLeft | igdeLabel::eaMiddle);
+	widget.TakeOver(new gdeDefaultPropertyValue(helper));
+	if(listener){
+		widget->AddListener(listener);
 		listener->FreeReference();
 	}
-	form.AddChild( widget );
+	form.AddChild(widget);
 }
 
-void gdeDefaultPropertyValue::CreateAndAdd( igdeContainer &parent, igdeUIHelper &helper,
-igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener ){
-	widget.TakeOver( new gdeDefaultPropertyValue( helper ) );
-	if( listener ){
-		widget->AddListener( listener );
+void gdeDefaultPropertyValue::CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
+igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener){
+	widget.TakeOver(new gdeDefaultPropertyValue(helper));
+	if(listener){
+		widget->AddListener(listener);
 		listener->FreeReference();
 	}
-	parent.AddChild( widget );
+	parent.AddChild(widget);
 }
 
 
 
-void gdeDefaultPropertyValue::SetValue( const decString &value, const gdeProperty &property ){
-	pGDProperty->SetName( property.GetName() );
+void gdeDefaultPropertyValue::SetValue(const decString &value, const gdeProperty &property){
+	pGDProperty->SetName(property.GetName());
 	
-	switch( property.GetType() ){
+	switch(property.GetType()){
 	case gdeProperty::eptString:
 	default:
-		pGDProperty->SetType( igdeGDProperty::eptString );
+		pGDProperty->SetType(igdeGDProperty::eptString);
 		break;
 		
 	case gdeProperty::eptInteger:
-		pGDProperty->SetType( igdeGDProperty::eptInteger );
+		pGDProperty->SetType(igdeGDProperty::eptInteger);
 		break;
 		
 	case gdeProperty::eptPoint2:
-		pGDProperty->SetType( igdeGDProperty::eptPoint2 );
+		pGDProperty->SetType(igdeGDProperty::eptPoint2);
 		break;
 		
 	case gdeProperty::eptPoint3:
-		pGDProperty->SetType( igdeGDProperty::eptPoint3 );
+		pGDProperty->SetType(igdeGDProperty::eptPoint3);
 		break;
 		
 	case gdeProperty::eptFloat:
-		pGDProperty->SetType( igdeGDProperty::eptFloat );
+		pGDProperty->SetType(igdeGDProperty::eptFloat);
 		break;
 		
 	case gdeProperty::eptVector2:
-		pGDProperty->SetType( igdeGDProperty::eptVector2 );
+		pGDProperty->SetType(igdeGDProperty::eptVector2);
 		break;
 		
 	case gdeProperty::eptVector3:
-		pGDProperty->SetType( igdeGDProperty::eptVector3 );
+		pGDProperty->SetType(igdeGDProperty::eptVector3);
 		break;
 		
 	case gdeProperty::eptColor:
-		pGDProperty->SetType( igdeGDProperty::eptColor );
+		pGDProperty->SetType(igdeGDProperty::eptColor);
 		break;
 		
 	case gdeProperty::eptBoolean:
-		pGDProperty->SetType( igdeGDProperty::eptBoolean );
+		pGDProperty->SetType(igdeGDProperty::eptBoolean);
 		break;
 		
 	case gdeProperty::eptPath:
-		pGDProperty->SetType( igdeGDProperty::eptPath );
-		pGDProperty->SetMinimumValue( property.GetMinimumValue() );
-		pGDProperty->SetMaximumValue( property.GetMaximumValue() );
+		pGDProperty->SetType(igdeGDProperty::eptPath);
+		pGDProperty->SetMinimumValue(property.GetMinimumValue());
+		pGDProperty->SetMaximumValue(property.GetMaximumValue());
 		break;
 		
 	case gdeProperty::eptRange:
-		pGDProperty->SetType( igdeGDProperty::eptRange );
+		pGDProperty->SetType(igdeGDProperty::eptRange);
 		break;
 		
 	case gdeProperty::eptSelect:
-		pGDProperty->SetType( igdeGDProperty::eptSelect );
+		pGDProperty->SetType(igdeGDProperty::eptSelect);
 		pGDProperty->GetOptions() = property.GetOptions();
 		break;
 		
 	case gdeProperty::eptList:
-		pGDProperty->SetType( igdeGDProperty::eptList );
+		pGDProperty->SetType(igdeGDProperty::eptList);
 		break;
 		
 	case gdeProperty::eptTriggerExpression:
-		pGDProperty->SetType( igdeGDProperty::eptTriggerExpression );
+		pGDProperty->SetType(igdeGDProperty::eptTriggerExpression);
 		break;
 		
 	case gdeProperty::eptTriggerTarget:
-		pGDProperty->SetType( igdeGDProperty::eptTriggerTarget );
+		pGDProperty->SetType(igdeGDProperty::eptTriggerTarget);
 		break;
 		
 	case gdeProperty::eptShape:
-		pGDProperty->SetType( igdeGDProperty::eptShape );
+		pGDProperty->SetType(igdeGDProperty::eptShape);
 		break;
 		
 	case gdeProperty::eptShapeList:
-		pGDProperty->SetType( igdeGDProperty::eptShapeList );
+		pGDProperty->SetType(igdeGDProperty::eptShapeList);
 		break;
 		
 	case gdeProperty::eptIdentifier:
-		pGDProperty->SetType( igdeGDProperty::eptIdentifier );
+		pGDProperty->SetType(igdeGDProperty::eptIdentifier);
 		//pGDProperty->SetIdentifiers();
 		break;
 	}
 	
-	switch( property.GetPathPatternType() ){
+	switch(property.GetPathPatternType()){
 	case gdeProperty::epptAll:
 	default:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptAll );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptAll);
 		break;
 		
 	case gdeProperty::epptModel:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptModel );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptModel);
 		break;
 		
 	case gdeProperty::epptSkin:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptSkin );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptSkin);
 		break;
 		
 	case gdeProperty::epptRig:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptRig );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptRig);
 		break;
 		
 	case gdeProperty::epptAnimation:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptAnimation );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptAnimation);
 		break;
 		
 	case gdeProperty::epptAnimator:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptAnimator );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptAnimator);
 		break;
 		
 	case gdeProperty::epptImage:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptImage );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptImage);
 		break;
 		
 	case gdeProperty::epptOcclusionMesh:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptOcclusionMesh );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptOcclusionMesh);
 		break;
 		
 	case gdeProperty::epptNavigationSpace:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptNavigationSpace );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptNavigationSpace);
 		break;
 		
 	case gdeProperty::epptParticleEmitter:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptParticleEmitter );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptParticleEmitter);
 		break;
 		
 	case gdeProperty::epptSound:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptSound );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptSound);
 		break;
 		
 	case gdeProperty::epptSynthesizer:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptSynthesizer );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptSynthesizer);
 		break;
 		
 	case gdeProperty::epptVideo:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptVideo );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptVideo);
 		break;
 		
 	case gdeProperty::epptFont:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptFont );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptFont);
 		break;
 		
 	case gdeProperty::epptSky:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptSky );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptSky);
 		break;
 		
 	case gdeProperty::epptCamera:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptCamera );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptCamera);
 		break;
 		
 	case gdeProperty::epptWorld:
@@ -239,9 +239,9 @@ void gdeDefaultPropertyValue::SetValue( const decString &value, const gdePropert
 		break;
 		
 	case gdeProperty::epptCustom:
-		pGDProperty->SetPathPatternType( igdeGDProperty::epptCustom );
+		pGDProperty->SetPathPatternType(igdeGDProperty::epptCustom);
 		break;
 	}
 	
-	igdeEditPropertyValue::SetValue( value, pGDProperty );
+	igdeEditPropertyValue::SetValue(value, pGDProperty);
 }

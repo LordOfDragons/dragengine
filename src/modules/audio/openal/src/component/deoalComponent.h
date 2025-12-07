@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component peer. */
-	deoalComponent( deAudioOpenAL &audioThread, deComponent &component );
+	deoalComponent(deAudioOpenAL &audioThread, deComponent &component);
 	
 	/** \brief Clean up component peer. */
 	virtual ~deoalComponent();
@@ -95,28 +95,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{ return pOal; }
+	inline deAudioOpenAL &GetOal() const{return pOal;}
 	
 	/** \brief Component. */
-	inline deComponent &GetComponent() const{ return pComponent; }
+	inline deComponent &GetComponent() const{return pComponent;}
 	
 	/** \brief Parent world or NULL. */
-	inline deoalWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoalWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deoalWorld *world );
+	void SetParentWorld(deoalWorld *world);
 	
 	/** \brief Model or NULL. */
-	inline deoalModel *GetModel() const{ return pModel; }
+	inline deoalModel *GetModel() const{return pModel;}
 	
 	/** \brief Skin or NULL. */
-	inline deoalSkin *GetSkin() const{ return pSkin; }
+	inline deoalSkin *GetSkin() const{return pSkin;}
 	
 	/** \brief Audio model or NULL. */
-	inline deoalModel *GetAudioModel() const{ return pAudioModel; }
+	inline deoalModel *GetAudioModel() const{return pAudioModel;}
 	
 	/** \brief Audio component. */
-	inline deoalAComponent *GetAComponent() const{ return pAComponent; }
+	inline deoalAComponent *GetAComponent() const{return pAComponent;}
 	
 	
 	
@@ -131,10 +131,10 @@ public:
 	
 	
 	/** \brief Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** \brief Texture at index. */
-	deoalComponentTexture &GetTextureAt( int index ) const;
+	deoalComponentTexture &GetTextureAt(int index) const;
 	
 	
 	
@@ -196,7 +196,7 @@ public:
 	virtual void ParametersChanged();
 	
 	/** \brief Texture changed. */
-	virtual void TextureChanged( int index, deComponentTexture &texture );
+	virtual void TextureChanged(int index, deComponentTexture &texture);
 	
 	/** \brief Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
@@ -207,8 +207,8 @@ public:
 	/** \name Linking */
 	/*@{*/
 	/** \brief World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
 	/*@}*/
 	
 	

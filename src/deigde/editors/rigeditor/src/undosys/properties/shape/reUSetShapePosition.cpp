@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapePosition::reUSetShapePosition( reRigShape *shape, const decVector &newPosition ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapePosition::reUSetShapePosition(reRigShape *shape, const decVector &newPosition){
+	if(! shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldPosition = shape->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo( "Set Shape Position" );
+	SetShortInfo("Set Shape Position");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapePosition::~reUSetShapePosition(){
 ///////////////
 
 void reUSetShapePosition::Undo(){
-	pShape->SetPosition( pOldPosition );
+	pShape->SetPosition(pOldPosition);
 }
 
 void reUSetShapePosition::Redo(){
-	pShape->SetPosition( pNewPosition );
+	pShape->SetPosition(pNewPosition);
 }

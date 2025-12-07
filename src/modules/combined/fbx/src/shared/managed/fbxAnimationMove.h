@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationMove( fbxAnimation &animation, fbxNode &nodeStack );
+	fbxAnimationMove(fbxAnimation &animation, fbxNode &nodeStack);
 	
 protected:
 	/** \brief Clean up move. */
@@ -81,25 +81,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Animation. */
-	inline fbxAnimation &GetAnimation() const{ return pAnimation; }
+	inline fbxAnimation &GetAnimation() const{return pAnimation;}
 	
 	/** \brief Stack node. */
-	inline fbxNode &GetNodeStack() const{ return pNodeStack; }
+	inline fbxNode &GetNodeStack() const{return pNodeStack;}
 	
 	/** \brief Node stack ID. */
-	inline int64_t GetNodeStackID() const{ return pNodeStackID; }
+	inline int64_t GetNodeStackID() const{return pNodeStackID;}
 	
 	/** \brief Node layer. */
-	inline fbxNode &GetNodeLayer() const{ return *pNodeLayer; }
+	inline fbxNode &GetNodeLayer() const{return *pNodeLayer;}
 	
 	/** \brief Node layer ID. */
-	inline int64_t GetNodeLayerID() const{ return pNodeLayerID; }
+	inline int64_t GetNodeLayerID() const{return pNodeLayerID;}
 	
 	/** \brief Bone name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
@@ -107,25 +107,25 @@ public:
 	int GetCurvesCount() const;
 	
 	/** \brief Curves at index. */
-	fbxAnimationMoveCurves *GetCurvesAt( int index ) const;
+	fbxAnimationMoveCurves *GetCurvesAt(int index) const;
 	
 	/** \brief Match curves against rig. */
-	void MatchRig( const fbxRig &rig );
+	void MatchRig(const fbxRig &rig);
 	
 	/** \brief Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	inline int GetFrameRate() const{return pFrameRate;}
 	
 	/** \brief Set frame rate. */
-	void SetFrameRate( int frameRate );
+	void SetFrameRate(int frameRate);
 	
 	/** \brief Convert time to frame number. */
-	int TimeToFrame( float time ) const;
+	int TimeToFrame(float time) const;
 	
 	/** \brief Convert frame number to time. */
-	float FrameToTime( int frame ) const;
+	float FrameToTime(int frame) const;
 	
 	/** \brief Quantize time. */
-	float QuantizeTime( float time ) const;
+	float QuantizeTime(float time) const;
 	
 	
 	
@@ -133,7 +133,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

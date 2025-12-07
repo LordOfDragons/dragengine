@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWPControllerListener( peeWPController &panel );
+	peeWPControllerListener(peeWPController &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~peeWPControllerListener();
@@ -55,19 +55,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller added or removed. */
-	virtual void ControllerStructureChanged ( peeEmitter *emitter );
+	virtual void ControllerStructureChanged (peeEmitter *emitter);
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerNameChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** \brief Controller changed value. */
-	virtual void ControllerValueChanged( peeEmitter *emitter, peeController *controller );
+	virtual void ControllerValueChanged(peeEmitter *emitter, peeController *controller);
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( peeEmitter *emitter );
+	virtual void ActiveControllerChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

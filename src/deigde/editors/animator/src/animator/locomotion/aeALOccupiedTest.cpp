@@ -60,11 +60,11 @@ void aeALOccupiedTest::Reset(){
 // Notifications
 //////////////////
 
-void aeALOccupiedTest::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void aeALOccupiedTest::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	pHasCollision = true;
-	info->SetStopTesting( true );
+	info->SetStopTesting(true);
 }
 
-bool aeALOccupiedTest::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool aeALOccupiedTest::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }

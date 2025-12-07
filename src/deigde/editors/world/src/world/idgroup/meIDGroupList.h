@@ -58,13 +58,13 @@ public:
 	int GetCount() const;
 	
 	/** \brief Named id group is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Named id group or \em NULL if absent. */
-	meIDGroup *GetNamed( const char *name ) const;
+	meIDGroup *GetNamed(const char *name) const;
 	
 	/** \brief Named id group creating it if absent. */
-	meIDGroup *GetOrAddNamed( const char *name );
+	meIDGroup *GetOrAddNamed(const char *name);
 	
 	/** \brief Remove all id groups. */
 	void RemoveAll();

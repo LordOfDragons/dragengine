@@ -40,23 +40,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetScaling::meUObjectSetScaling( meObject *object, const decVector &nscaling ){
-	if( ! object ) DETHROW( deeInvalidParam );
+meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nscaling){
+	if(! object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(! world) DETHROW(deeInvalidParam);
 	
 	pOldScaling = object->GetScaling();
 	pNewScaling = nscaling;
 	
-	SetShortInfo( "Object Set Scaling" );
+	SetShortInfo("Object Set Scaling");
 	
 	pObject = object;
 	object->AddReference();
 }
 
 meUObjectSetScaling::~meUObjectSetScaling(){
-	if( pObject ) pObject->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
 
 
@@ -67,15 +67,15 @@ meUObjectSetScaling::~meUObjectSetScaling(){
 void meUObjectSetScaling::Undo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetScaling( pOldScaling );
+	pObject->SetScaling(pOldScaling);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUObjectSetScaling::Redo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetScaling( pNewScaling );
+	pObject->SetScaling(pNewScaling);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }

@@ -29,7 +29,7 @@ private:
 
         void LogInfo(const char *source, const char *message) override;
         void LogWarn(const char *source, const char *message) override;
-        void LogError( const char *source, const char *message ) override;
+        void LogError(const char *source, const char *message) override;
     };
 
     ClientLogger::Ref pLogger;
@@ -62,7 +62,7 @@ public:
     RemoteLauncherClient(JNIEnv *env, jobject objListener);
     ~RemoteLauncherClient() override;
 
-    inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
+    inline const deLogger::Ref &GetEngineLogger() const{return pEngineLogger;}
     void SetLauncher(delLauncher *launcher);
     void AddLogs(denLogger::LogSeverity severity, const std::string &logs);
     bool IsDisconnected();

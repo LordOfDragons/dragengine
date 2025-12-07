@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new optimizer. */
-	deoglOptimizerLight( deoglRLight *light, deoglWorld *world );
+	deoglOptimizerLight(deoglRLight *light, deoglWorld *world);
 	/** Cleans up the optimizer. */
 	virtual ~deoglOptimizerLight();
 	/*@}*/
@@ -89,30 +89,30 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the light to optimize. */
-	inline deoglRLight *GetLight() const{ return pLight; }
+	inline deoglRLight *GetLight() const{return pLight;}
 	/** Runs optimizer until the given time slice has elapsed. */
-	virtual bool Run( int timeSlice );
+	virtual bool Run(int timeSlice);
 	
 	/** Retrieves the initial warm up time in ms. */
-	inline int GetInitialWarmUpTime() const{ return pInitWarmUpTime; }
+	inline int GetInitialWarmUpTime() const{return pInitWarmUpTime;}
 	/** Sets the initial warm up time in ms. */
-	void SetInitialWarmUpTime( int warmUpTime );
+	void SetInitialWarmUpTime(int warmUpTime);
 	
 	/** Determines if the light volume will be optimized. */
-	inline bool GetOptimizeLightVolume() const{ return pDoOptimizeLightVolume; }
+	inline bool GetOptimizeLightVolume() const{return pDoOptimizeLightVolume;}
 	/** Sets if the light volume will be optimized. */
-	void SetOptimizeLightVolume( bool optimizeLightVolume );
+	void SetOptimizeLightVolume(bool optimizeLightVolume);
 	/** Resets the light volume optimization. */
 	void ResetLightVolume();
 	/** Retrieves the maximal volume count. */
-	inline int GetMaximalVolumeCount() const{ return pMaxVolumeCount; }
+	inline int GetMaximalVolumeCount() const{return pMaxVolumeCount;}
 	/** Sets the maximal volume count. */
-	void SetMaximalVolumeCount( int maximalVolumeCount );
+	void SetMaximalVolumeCount(int maximalVolumeCount);
 	
 	/** Determines if the shadow casters will be optimized. */
-	inline bool GetOptimizeShadowCaster() const{ return pDoOptimizeShadowCaster; }
+	inline bool GetOptimizeShadowCaster() const{return pDoOptimizeShadowCaster;}
 	/** Sets if the shadow casters will be optimized. */
-	void SetOptimizeShadowCaster( bool optimizeShadowCaster );
+	void SetOptimizeShadowCaster(bool optimizeShadowCaster);
 	/** Resets the shadow caster optimization. */
 	void ResetShadowCaster();
 	
@@ -122,16 +122,16 @@ public:
 	
 private:
 	void pCleanUp();
-	bool pOptimizeLightVolume( int timeSlice );
+	bool pOptimizeLightVolume(int timeSlice);
 	void pBuildTriangleList();
 	void pPrepareCroping();
-	bool pCropLightVolume( int timeSlice );
-	bool pOptimizeShadowCaster( int timeSlice );
+	bool pCropLightVolume(int timeSlice);
+	bool pOptimizeShadowCaster(int timeSlice);
 	void pSCBuildCollideList();
 	void pSCBuildShadowCaster();
-	decVector pGetSectorOffset( const decVector &sectorSize, const decPoint3 &sectorFrom, const decPoint3 &sectorTo ) const;
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal );
-	void pVolumeAddFace( decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal );
+	decVector pGetSectorOffset(const decVector &sectorSize, const decPoint3 &sectorFrom, const decPoint3 &sectorTo) const;
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal);
+	void pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal);
 };
 
 // end of include only once

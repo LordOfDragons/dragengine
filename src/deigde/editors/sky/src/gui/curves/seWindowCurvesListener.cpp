@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWindowCurvesListener::seWindowCurvesListener( seWindowCurves &window ) :
-pWindow( window ){
+seWindowCurvesListener::seWindowCurvesListener(seWindowCurves &window) :
+pWindow(window){
 }
 
 seWindowCurvesListener::~seWindowCurvesListener(){
@@ -52,20 +52,20 @@ seWindowCurvesListener::~seWindowCurvesListener(){
 // Management
 ///////////////
 
-void seWindowCurvesListener::LinkStructureChanged( seSky* ){
+void seWindowCurvesListener::LinkStructureChanged(seSky*){
 	pWindow.UpdateLinkList();
 }
 
-void seWindowCurvesListener::LinkChanged( seSky*, seLink *link ){
-	if( link->GetActive() ){
+void seWindowCurvesListener::LinkChanged(seSky*, seLink *link){
+	if(link->GetActive()){
 		pWindow.UpdateCurve();
 	}
 }
 
-void seWindowCurvesListener::LinkNameChanged( seSky*, seLink* ){
+void seWindowCurvesListener::LinkNameChanged(seSky*, seLink*){
 	pWindow.UpdateLinkList();
 }
 
-void seWindowCurvesListener::ActiveLinkChanged( seSky* ){
+void seWindowCurvesListener::ActiveLinkChanged(seSky*){
 	pWindow.SelectActiveLink();
 }

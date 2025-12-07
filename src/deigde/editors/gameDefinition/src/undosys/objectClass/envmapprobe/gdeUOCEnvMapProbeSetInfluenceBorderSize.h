@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetInfluenceBorderSize( gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *component, float newValue );
+	gdeUOCEnvMapProbeSetInfluenceBorderSize(gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *component, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

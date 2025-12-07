@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceSoundMaxSpeed::seUSetSourceSoundMaxSpeed( seSourceSound *source, float newSpeed ) :
-pSource( NULL )
+seUSetSourceSoundMaxSpeed::seUSetSourceSoundMaxSpeed(seSourceSound *source, float newSpeed) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set sound source maximum speed" );
+	SetShortInfo("Set sound source maximum speed");
 	
 	pOldSpeed = source->GetMaxSpeed();
 	pNewSpeed = newSpeed;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUSetSourceSoundMaxSpeed::~seUSetSourceSoundMaxSpeed(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSetSourceSoundMaxSpeed::~seUSetSourceSoundMaxSpeed(){
 ///////////////
 
 void seUSetSourceSoundMaxSpeed::Undo(){
-	pSource->SetMaxSpeed( pOldSpeed );
+	pSource->SetMaxSpeed(pOldSpeed);
 }
 
 void seUSetSourceSoundMaxSpeed::Redo(){
-	pSource->SetMaxSpeed( pNewSpeed );
+	pSource->SetMaxSpeed(pNewSpeed);
 }

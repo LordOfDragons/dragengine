@@ -77,11 +77,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui theme property. */
-	igdeGuiThemeProperty( const char *name, int value );
-	igdeGuiThemeProperty( const char *name, float value );
-	igdeGuiThemeProperty( const char *name, const decPoint &value );
-	igdeGuiThemeProperty( const char *name, const decColor &value );
-	igdeGuiThemeProperty( const char *name, const decString &value );
+	igdeGuiThemeProperty(const char *name, int value);
+	igdeGuiThemeProperty(const char *name, float value);
+	igdeGuiThemeProperty(const char *name, const decPoint &value);
+	igdeGuiThemeProperty(const char *name, const decColor &value);
+	igdeGuiThemeProperty(const char *name, const decString &value);
 	
 	
 	
@@ -101,10 +101,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Type. */
-	inline eType GetType() const{ return pType; }
+	inline eType GetType() const{return pType;}
 	
 	/**
 	 * \brief Integer value.

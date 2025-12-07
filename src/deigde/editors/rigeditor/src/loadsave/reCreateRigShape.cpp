@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCreateRigShape::reCreateRigShape( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+reCreateRigShape::reCreateRigShape(deEngine *engine){
+	if(! engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pRigShape = NULL;
 }
 
 reCreateRigShape::~reCreateRigShape(){
-	if( pRigShape ) pRigShape->FreeReference();
+	if(pRigShape) pRigShape->FreeReference();
 }
 
 
@@ -64,7 +64,7 @@ reCreateRigShape::~reCreateRigShape(){
 ///////////////
 
 void reCreateRigShape::Reset(){
-	if( pRigShape ) pRigShape->FreeReference();
+	if(pRigShape) pRigShape->FreeReference();
 	pRigShape = NULL;
 }
 
@@ -73,84 +73,84 @@ void reCreateRigShape::Reset(){
 // Visiting
 /////////////
 
-void reCreateRigShape::VisitShape( decShape &shape ){
+void reCreateRigShape::VisitShape(decShape &shape){
 	Reset();
 }
 
-void reCreateRigShape::VisitShapeSphere( decShapeSphere &sphere ){
+void reCreateRigShape::VisitShapeSphere(decShapeSphere &sphere){
 	reRigShapeSphere *rigSphere = NULL;
 	
 	Reset();
 	
-	rigSphere = new reRigShapeSphere( pEngine );
-	if( ! rigSphere ) DETHROW( deeOutOfMemory );
+	rigSphere = new reRigShapeSphere(pEngine);
+	if(! rigSphere) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigSphere;
 	
-	rigSphere->SetPosition( sphere.GetPosition() );
-	rigSphere->SetRadius( sphere.GetRadius() );
+	rigSphere->SetPosition(sphere.GetPosition());
+	rigSphere->SetRadius(sphere.GetRadius());
 }
 
-void reCreateRigShape::VisitShapeBox( decShapeBox &box ){
+void reCreateRigShape::VisitShapeBox(decShapeBox &box){
 	reRigShapeBox *rigBox = NULL;
 	
 	Reset();
 	
-	rigBox = new reRigShapeBox( pEngine );
-	if( ! rigBox ) DETHROW( deeOutOfMemory );
+	rigBox = new reRigShapeBox(pEngine);
+	if(! rigBox) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigBox;
 	
-	rigBox->SetPosition( box.GetPosition() );
-	rigBox->SetOrientation( decMatrix::CreateFromQuaternion( box.GetOrientation() ).GetEulerAngles() * RAD2DEG );
-	rigBox->SetHalfExtends( box.GetHalfExtends() );
+	rigBox->SetPosition(box.GetPosition());
+	rigBox->SetOrientation(decMatrix::CreateFromQuaternion(box.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigBox->SetHalfExtends(box.GetHalfExtends());
 }
 
-void reCreateRigShape::VisitShapeCylinder( decShapeCylinder &cylinder ){
+void reCreateRigShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	reRigShapeCylinder *rigCylinder = NULL;
 	
 	Reset();
 	
-	rigCylinder = new reRigShapeCylinder( pEngine );
-	if( ! rigCylinder ) DETHROW( deeOutOfMemory );
+	rigCylinder = new reRigShapeCylinder(pEngine);
+	if(! rigCylinder) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigCylinder;
 	
-	rigCylinder->SetPosition( cylinder.GetPosition() );
-	rigCylinder->SetOrientation( decMatrix::CreateFromQuaternion( cylinder.GetOrientation() ).GetEulerAngles() * RAD2DEG );
-	rigCylinder->SetHalfHeight( cylinder.GetHalfHeight() );
-	rigCylinder->SetTopRadius( cylinder.GetTopRadius() );
-	rigCylinder->SetBottomRadius( cylinder.GetBottomRadius() );
+	rigCylinder->SetPosition(cylinder.GetPosition());
+	rigCylinder->SetOrientation(decMatrix::CreateFromQuaternion(cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigCylinder->SetHalfHeight(cylinder.GetHalfHeight());
+	rigCylinder->SetTopRadius(cylinder.GetTopRadius());
+	rigCylinder->SetBottomRadius(cylinder.GetBottomRadius());
 }
 
-void reCreateRigShape::VisitShapeCapsule( decShapeCapsule &capsule ){
+void reCreateRigShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	reRigShapeCapsule *rigCapsule = NULL;
 	
 	Reset();
 	
-	rigCapsule = new reRigShapeCapsule( pEngine );
-	if( ! rigCapsule ) DETHROW( deeOutOfMemory );
+	rigCapsule = new reRigShapeCapsule(pEngine);
+	if(! rigCapsule) DETHROW(deeOutOfMemory);
 	
 	pRigShape = rigCapsule;
 	
-	rigCapsule->SetPosition( capsule.GetPosition() );
-	rigCapsule->SetOrientation( decMatrix::CreateFromQuaternion( capsule.GetOrientation() ).GetEulerAngles() * RAD2DEG );
-	rigCapsule->SetHalfHeight( capsule.GetHalfHeight() );
-	rigCapsule->SetTopRadius( capsule.GetTopRadius() );
-	rigCapsule->SetBottomRadius( capsule.GetBottomRadius() );
+	rigCapsule->SetPosition(capsule.GetPosition());
+	rigCapsule->SetOrientation(decMatrix::CreateFromQuaternion(capsule.GetOrientation()).GetEulerAngles() * RAD2DEG);
+	rigCapsule->SetHalfHeight(capsule.GetHalfHeight());
+	rigCapsule->SetTopRadius(capsule.GetTopRadius());
+	rigCapsule->SetBottomRadius(capsule.GetBottomRadius());
 }
 
-void reCreateRigShape::VisitShapeHull( decShapeHull &hull ){
+void reCreateRigShape::VisitShapeHull(decShapeHull &hull){
 	Reset();
 	
-	reRigShapeHull * const rigHull = new reRigShapeHull( pEngine );
+	reRigShapeHull * const rigHull = new reRigShapeHull(pEngine);
 	pRigShape = rigHull;
 	
-	rigHull->SetPosition( hull.GetPosition() );
-	rigHull->SetOrientation( decMatrix::CreateFromQuaternion( hull.GetOrientation() ).GetEulerAngles() * RAD2DEG );
+	rigHull->SetPosition(hull.GetPosition());
+	rigHull->SetOrientation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() * RAD2DEG);
 	const int count = hull.GetPointCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		rigHull->AddPoint( hull.GetPointAt( i ) );
+	for(i=0; i<count; i++){
+		rigHull->AddPoint(hull.GetPointAt(i));
 	}
 }

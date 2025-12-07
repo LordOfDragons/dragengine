@@ -56,7 +56,7 @@ public:
 	deSkyLink();
 	
 	/** \brief Create copy of link. */
-	deSkyLink( const deSkyLink &copy );
+	deSkyLink(const deSkyLink &copy);
 	
 	/** \brief Clean up link. */
 	~deSkyLink();
@@ -68,29 +68,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Controller or -1 if not set. */
-	inline int GetController() const{ return pController; }
+	inline int GetController() const{return pController;}
 	
 	/** \brief Controller is set. */
-	inline bool HasController() const{ return pController != -1; }
+	inline bool HasController() const{return pController != -1;}
 	
 	/**
 	 * \brief Set controller or -1 to not set.
 	 * \throws deeInvalidParam \em controller is less than -1.
 	 */
-	void SetController( int controller );
+	void SetController(int controller);
 	
 	/** \brief Curve. */
-	inline decCurveBezier &GetCurve(){ return pCurve; }
-	inline const decCurveBezier &GetCurve() const{ return pCurve; }
+	inline decCurveBezier &GetCurve(){return pCurve;}
+	inline const decCurveBezier &GetCurve() const{return pCurve;}
 	
 	/** \brief Repeat count of input value. */
-	inline int GetRepeat() const{ return pRepeat; }
+	inline int GetRepeat() const{return pRepeat;}
 	
 	/**
 	 * \brief Set repeat count of input value.
 	 * \throws deeInvalidParam \em repeat is less than 1.
 	 */
-	void SetRepeat( int repeat );
+	void SetRepeat(int repeat);
 	/*@}*/
 	
 	
@@ -98,7 +98,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy link to this link. */
-	deSkyLink &operator=( const deSkyLink &copy );
+	deSkyLink &operator=(const deSkyLink &copy);
 	/*@}*/
 };
 

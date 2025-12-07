@@ -51,7 +51,7 @@
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS	timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat( "Rule Foreign State = %iys", ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat("Rule Foreign State = %iys", (int)(timer.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER
@@ -62,33 +62,33 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleForeignState::dearRuleForeignState( dearAnimatorInstance &instance,
-const dearAnimator &animator, int firstLink, const deAnimatorRuleForeignState &rule ) :
-dearRule( instance, animator, firstLink, rule ),
+dearRuleForeignState::dearRuleForeignState(dearAnimatorInstance &instance,
+const dearAnimator &animator, int firstLink, const deAnimatorRuleForeignState &rule) :
+dearRule(instance, animator, firstLink, rule),
 
-pForeignState( rule ),
-pForeignBone( -1 ),
-pForeignVPS( -1 ),
+pForeignState(rule),
+pForeignBone(-1),
+pForeignVPS(-1),
 
-pTargetPosition( rule.GetTargetPosition(), firstLink ),
-pTargetOrientation( rule.GetTargetOrientation(), firstLink ),
-pTargetSize( rule.GetTargetSize(), firstLink ),
-pTargetVPS( rule.GetTargetVertexPositionSet(), firstLink ),
+pTargetPosition(rule.GetTargetPosition(), firstLink),
+pTargetOrientation(rule.GetTargetOrientation(), firstLink),
+pTargetSize(rule.GetTargetSize(), firstLink),
+pTargetVPS(rule.GetTargetVertexPositionSet(), firstLink),
 
-pScalePosition( rule.GetScalePosition() ),
-pScaleOrientation( rule.GetScaleOrientation() ),
-pScaleSize( rule.GetScaleSize() ),
-pScaleVPS( rule.GetScaleVertexPositionSet() ),
-pSourceCoordFrame( rule.GetSourceCoordinateFrame() ),
-pDestCoordFrame( rule.GetDestCoordinateFrame() ),
-pLockX( ! rule.GetModifyX() ),
-pLockY( ! rule.GetModifyY() ),
-pLockZ( ! rule.GetModifyZ() ),
-pLockNone( ! pLockX && ! pLockY && ! pLockZ ),
-pEnablePosition( rule.GetEnablePosition() ),
-pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() ),
-pEnableVPS( rule.GetEnableVertexPositionSet() )
+pScalePosition(rule.GetScalePosition()),
+pScaleOrientation(rule.GetScaleOrientation()),
+pScaleSize(rule.GetScaleSize()),
+pScaleVPS(rule.GetScaleVertexPositionSet()),
+pSourceCoordFrame(rule.GetSourceCoordinateFrame()),
+pDestCoordFrame(rule.GetDestCoordinateFrame()),
+pLockX(! rule.GetModifyX()),
+pLockY(! rule.GetModifyY()),
+pLockZ(! rule.GetModifyZ()),
+pLockNone(! pLockX && ! pLockY && ! pLockZ),
+pEnablePosition(rule.GetEnablePosition()),
+pEnableOrientation(rule.GetEnableOrientation()),
+pEnableSize(rule.GetEnableSize()),
+pEnableVPS(rule.GetEnableVertexPositionSet())
 {
 	RuleChanged();
 }
@@ -101,14 +101,14 @@ dearRuleForeignState::~dearRuleForeignState(){
 // Management
 ///////////////
 
-void dearRuleForeignState::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
+void dearRuleForeignState::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
+	if(! GetEnabled()){
 		return;
 	}
 	
 	const float blendFactor = GetBlendFactor();
-	if( blendFactor < FLOAT_SAFE_EPSILON ){
+	if(blendFactor < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -119,33 +119,33 @@ DEBUG_RESET_TIMERS;
 	int i;
 	
 	// controller affected values
-	const float scalePosition = pTargetPosition.GetValue( instance, pScalePosition );
-	const float scaleOrientation = pTargetOrientation.GetValue( instance, pScaleOrientation );
-	const float scaleSize = pTargetSize.GetValue( instance, pScaleSize );
-	const float scaleVPS = pTargetVPS.GetValue( instance, pScaleVPS );
+	const float scalePosition = pTargetPosition.GetValue(instance, pScalePosition);
+	const float scaleOrientation = pTargetOrientation.GetValue(instance, pScaleOrientation);
+	const float scaleSize = pTargetSize.GetValue(instance, pScaleSize);
+	const float scaleVPS = pTargetVPS.GetValue(instance, pScaleVPS);
 	
 	// calculate the foreign state
-	decVector scale( 1.0f, 1.0f, 1.0f );
+	decVector scale(1.0f, 1.0f, 1.0f);
 	decQuaternion orientation;
 	float weight = 0.0f;
 	decVector position;
 	decMatrix matrix;
 	
-	if( pForeignBone != -1 ){
-		dearBoneState &boneState = *stalist.GetStateAt( pForeignBone );
+	if(pForeignBone != -1){
+		dearBoneState &boneState = *stalist.GetStateAt(pForeignBone);
 		
-		switch( pSourceCoordFrame ){
+		switch(pSourceCoordFrame){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
-			switch( pDestCoordFrame ){
+			switch(pDestCoordFrame){
 			case deAnimatorRuleForeignState::ecfBoneLocal:
-				if( pEnablePosition ){
+				if(pEnablePosition){
 					position = boneState.GetPosition() * scalePosition;
 				}
-				if( pEnableOrientation ){
-					orientation = decQuaternion().Slerp( boneState.GetOrientation(), scaleOrientation );
+				if(pEnableOrientation){
+					orientation = decQuaternion().Slerp(boneState.GetOrientation(), scaleOrientation);
 				}
-				if( pEnableSize ){
-					scale += ( boneState.GetScale() - scale ) * scaleSize;
+				if(pEnableSize){
+					scale += (boneState.GetScale() - scale) * scaleSize;
 				}
 				break;
 				
@@ -160,23 +160,23 @@ DEBUG_RESET_TIMERS;
 			boneState.UpdateMatrices();
 			matrix = boneState.GetGlobalMatrix();
 			
-			if( pDestCoordFrame == deAnimatorRuleForeignState::ecfBoneLocal ){
-				if( pEnablePosition ){
+			if(pDestCoordFrame == deAnimatorRuleForeignState::ecfBoneLocal){
+				if(pEnablePosition){
 					position = matrix.GetPosition() * scalePosition;
 				}
-				if( pEnableOrientation ){
-					orientation = decQuaternion().Slerp( matrix.ToQuaternion(), scaleOrientation );
+				if(pEnableOrientation){
+					orientation = decQuaternion().Slerp(matrix.ToQuaternion(), scaleOrientation);
 				}
-				if( pEnableSize ){
-					scale += ( matrix.GetScale() - scale ) * scaleSize;
+				if(pEnableSize){
+					scale += (matrix.GetScale() - scale) * scaleSize;
 				}
 			}
 			break;
 		}
 	}
 	
-	if( pForeignVPS != -1 && pEnableVPS ){
-		weight = vpsstalist.GetStateAt( pForeignVPS ).GetWeight() * scaleVPS;
+	if(pForeignVPS != -1 && pEnableVPS){
+		weight = vpsstalist.GetStateAt(pForeignVPS).GetWeight() * scaleVPS;
 	}
 	
 	// apply state.
@@ -186,144 +186,144 @@ DEBUG_RESET_TIMERS;
 	decVector modifyPosition, modifyScale;
 	decQuaternion modifyOrientation;
 	
-	for( i=0; i<boneCount; i++ ){
-		const int animatorBone = GetBoneMappingFor( i );
-		if( animatorBone == -1 ){
+	for(i=0; i<boneCount; i++){
+		const int animatorBone = GetBoneMappingFor(i);
+		if(animatorBone == -1){
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
+		dearBoneState &boneState = *stalist.GetStateAt(animatorBone);
 		
-		switch( pDestCoordFrame ){
+		switch(pDestCoordFrame){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
-			if( pLockNone ){
-				boneState.BlendWith( position, orientation, scale, blendMode,
-					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			if(pLockNone){
+				boneState.BlendWith(position, orientation, scale, blendMode,
+					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 				
 			}else{
-				if( pEnablePosition ){
+				if(pEnablePosition){
 					const decVector &lockPosition = boneState.GetPosition();
 					modifyPosition = position;
 					
-					if( pLockX ){
+					if(pLockX){
 						modifyPosition.x = lockPosition.x;
 					}
-					if( pLockY ){
+					if(pLockY){
 						modifyPosition.y = lockPosition.y;
 					}
-					if( pLockZ ){
+					if(pLockZ){
 						modifyPosition.z = lockPosition.z;
 					}
 				}
 				
-				if( pEnableOrientation ){
-					const decVector lockRotation( boneState.GetOrientation().GetEulerAngles() );
-					decVector rotation( orientation.GetEulerAngles() );
+				if(pEnableOrientation){
+					const decVector lockRotation(boneState.GetOrientation().GetEulerAngles());
+					decVector rotation(orientation.GetEulerAngles());
 					
-					if( pLockX ){
+					if(pLockX){
 						rotation.x = lockRotation.x;
 					}
-					if( pLockY ){
+					if(pLockY){
 						rotation.y = lockRotation.y;
 					}
-					if( pLockZ ){
+					if(pLockZ){
 						rotation.z = lockRotation.z;
 					}
 					
-					modifyOrientation = decQuaternion::CreateFromEuler( rotation );
+					modifyOrientation = decQuaternion::CreateFromEuler(rotation);
 				}
 				
-				if( pEnableSize ){
+				if(pEnableSize){
 					const decVector &lockScale = boneState.GetScale();
 					modifyScale = scale;
 					
-					if( pLockX ){
+					if(pLockX){
 						modifyScale.x = lockScale.x;
 					}
-					if( pLockY ){
+					if(pLockY){
 						modifyScale.y = lockScale.y;
 					}
-					if( pLockZ ){
+					if(pLockZ){
 						modifyScale.z = lockScale.z;
 					}
 				}
 				
-				boneState.BlendWith( modifyPosition, modifyOrientation, modifyScale,
-					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				boneState.BlendWith(modifyPosition, modifyOrientation, modifyScale,
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			break;
 			
 		case deAnimatorRuleForeignState::ecfComponent:
 			boneState.UpdateMatrices();
 			
-			const decMatrix m( matrix.QuickMultiply( boneState.GetInverseGlobalMatrix() )
-				.QuickMultiply( boneState.GetLocalMatrix() ) );
+			const decMatrix m(matrix.QuickMultiply(boneState.GetInverseGlobalMatrix())
+				.QuickMultiply(boneState.GetLocalMatrix()));
 			
-			if( pLockNone ){
-				boneState.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
-					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			if(pLockNone){
+				boneState.BlendWith(m.GetPosition(), m.ToQuaternion(), m.GetScale(),
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 				
 			}else{
-				if( pEnablePosition ){
+				if(pEnablePosition){
 					const decVector &lockPosition = boneState.GetPosition();
 					modifyPosition = m.GetPosition();
 					
-					if( pLockX ){
+					if(pLockX){
 						modifyPosition.x = lockPosition.x;
 					}
-					if( pLockY ){
+					if(pLockY){
 						modifyPosition.y = lockPosition.y;
 					}
-					if( pLockZ ){
+					if(pLockZ){
 						modifyPosition.z = lockPosition.z;
 					}
 				}
 				
-				if( pEnableOrientation ){
-					const decVector lockRotation( boneState.GetOrientation().GetEulerAngles() );
-					decVector rotation( m.GetEulerAngles() );
+				if(pEnableOrientation){
+					const decVector lockRotation(boneState.GetOrientation().GetEulerAngles());
+					decVector rotation(m.GetEulerAngles());
 					
-					if( pLockX ){
+					if(pLockX){
 						rotation.x = lockRotation.x;
 					}
-					if( pLockY ){
+					if(pLockY){
 						rotation.y = lockRotation.y;
 					}
-					if( pLockZ ){
+					if(pLockZ){
 						rotation.z = lockRotation.z;
 					}
 					
-					modifyOrientation = decQuaternion::CreateFromEuler( rotation );
+					modifyOrientation = decQuaternion::CreateFromEuler(rotation);
 				}
 				
-				if( pEnableSize ){
+				if(pEnableSize){
 					const decVector &lockScale = boneState.GetScale();
 					modifyScale = m.GetScale();
 					
-					if( pLockX ){
+					if(pLockX){
 						modifyScale.x = lockScale.x;
 					}
-					if( pLockY ){
+					if(pLockY){
 						modifyScale.y = lockScale.y;
 					}
-					if( pLockZ ){
+					if(pLockZ){
 						modifyScale.z = lockScale.z;
 					}
 				}
 				
-				boneState.BlendWith( modifyPosition, modifyOrientation, modifyScale,
-					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				boneState.BlendWith(modifyPosition, modifyOrientation, modifyScale,
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			break;
 		}
 	}
 	
-	for( i=0; i<vpsCount; i++ ){
-		const int animatorVps = GetVPSMappingFor( i );
-		if( animatorVps == -1 ){
+	for(i=0; i<vpsCount; i++){
+		const int animatorVps = GetVPSMappingFor(i);
+		if(animatorVps == -1){
 			continue;
 		}
-		vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+		vpsstalist.GetStateAt(animatorVps).BlendWith(weight, blendMode, blendFactor, pEnableVPS);
 	}
 DEBUG_PRINT_TIMER;
 }
@@ -342,6 +342,6 @@ void dearRuleForeignState::RuleChanged(){
 //////////////////////
 
 void dearRuleForeignState::pUpdateForeignBone(){
-	pForeignBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pForeignState.GetForeignBone() );
-	pForeignVPS = GetInstance().GetVPSStateList().IndexOfStateNamed( pForeignState.GetForeignVertexPositionSet() );
+	pForeignBone = GetInstance().GetBoneStateList().IndexOfStateNamed(pForeignState.GetForeignBone());
+	pForeignVPS = GetInstance().GetVPSStateList().IndexOfStateNamed(pForeignState.GetForeignVertexPositionSet());
 }

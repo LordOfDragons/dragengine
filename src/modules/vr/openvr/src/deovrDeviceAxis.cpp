@@ -43,19 +43,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deovrDeviceAxis::deovrDeviceAxis( deovrDevice &device ) :
-pDevice( device ),
-pIndex( -1 ),
-pActionAnalogHandle( vr::k_ulInvalidActionHandle ),
-pComponent( 0 ),
-pFinger( -1 ),
-pType( deInputDeviceAxis::eatGeneric ),
-pMinimum( -1.0f ),
-pMaximum( 1.0f ),
-pCenter( 0.0f ),
-pDeadZone( 0.0f ),
-pResolution( 0.01f ),
-pValue( 0.0f ){
+deovrDeviceAxis::deovrDeviceAxis(deovrDevice &device) :
+pDevice(device),
+pIndex(-1),
+pActionAnalogHandle(vr::k_ulInvalidActionHandle),
+pComponent(0),
+pFinger(-1),
+pType(deInputDeviceAxis::eatGeneric),
+pMinimum(-1.0f),
+pMaximum(1.0f),
+pCenter(0.0f),
+pDeadZone(0.0f),
+pResolution(0.01f),
+pValue(0.0f){
 }
 
 deovrDeviceAxis::~deovrDeviceAxis(){
@@ -66,45 +66,45 @@ deovrDeviceAxis::~deovrDeviceAxis(){
 // Management
 ///////////////
 
-void deovrDeviceAxis::SetIndex( int index ){
+void deovrDeviceAxis::SetIndex(int index){
 	pIndex = index;
 }
 
-void deovrDeviceAxis::SetActionAnalogHandle( vr::VRActionHandle_t handle ){
+void deovrDeviceAxis::SetActionAnalogHandle(vr::VRActionHandle_t handle){
 	pActionAnalogHandle = handle;
 }
 
-void deovrDeviceAxis::SetComponent( int component ){
+void deovrDeviceAxis::SetComponent(int component){
 	pComponent = component;
 }
 
-void deovrDeviceAxis::SetFinger( int finger ){
+void deovrDeviceAxis::SetFinger(int finger){
 	pFinger = finger;
 }
 
-void deovrDeviceAxis::SetID( const char *id ){
+void deovrDeviceAxis::SetID(const char *id){
 	pID = id;
 }
 
-void deovrDeviceAxis::SetName( const char *name ){
+void deovrDeviceAxis::SetName(const char *name){
 	pName = name;
 }
 
-void deovrDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
+void deovrDeviceAxis::SetType(deInputDeviceAxis::eAxisTypes type){
 	pType = type;
 }
 
-void deovrDeviceAxis::SetInputDeviceComponent( deovrDeviceComponent *component ){
+void deovrDeviceAxis::SetInputDeviceComponent(deovrDeviceComponent *component){
 	pInputDeviceComponent = component;
 }
 
 
 
-void deovrDeviceAxis::SetDisplayImages( const char *name ){
+void deovrDeviceAxis::SetDisplayImages(const char *name){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(! name){
 		return;
 	}
 	
@@ -113,90 +113,90 @@ void deovrDeviceAxis::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/axis";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		pDisplayIcons.Add( deImage::Ref::New( imageManager.LoadImage( vfs, filename, "/" ) ) );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		pDisplayIcons.Add(deImage::Ref::New(imageManager.LoadImage(vfs, filename, "/")));
 	}
 }
 
-void deovrDeviceAxis::SetDisplayText( const char *text ){
+void deovrDeviceAxis::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void deovrDeviceAxis::SetRange( float minimum, float maximum ){
+void deovrDeviceAxis::SetRange(float minimum, float maximum){
 	pMinimum = minimum;
 	pMaximum = maximum;
 }
 
-void deovrDeviceAxis::SetCenter( float center ){
+void deovrDeviceAxis::SetCenter(float center){
 	pCenter = center;
 }
 
-void deovrDeviceAxis::SetDeadZone( float deadZone ){
+void deovrDeviceAxis::SetDeadZone(float deadZone){
 	pDeadZone = deadZone;
 }
 
-void deovrDeviceAxis::SetResolution( float resolution ){
+void deovrDeviceAxis::SetResolution(float resolution){
 	pResolution = resolution;
 }
 
-void deovrDeviceAxis::SetValue( float value ){
+void deovrDeviceAxis::SetValue(float value){
 	pValue = value;
 }
 
-void deovrDeviceAxis::UpdateValue( float value ){
-	value = decMath::clamp( value, -1.0f, 1.0f );
+void deovrDeviceAxis::UpdateValue(float value){
+	value = decMath::clamp(value, -1.0f, 1.0f);
 	
-	if( fabsf( value - pCenter ) < pDeadZone ){
+	if(fabsf(value - pCenter) < pDeadZone){
 		value = pCenter;
 	}
 	
-	if( fabsf( value - pValue ) < pResolution ){
+	if(fabsf(value - pValue) < pResolution){
 		return;
 	}
 	
-	SetValue( value );
+	SetValue(value);
 	
 	deInputEvent event;
-	event.SetType( deInputEvent::eeAxisMove );
-	event.SetSource( deInputEvent::esVR );
-	event.SetDevice( pDevice.GetIndex() );
-	event.SetCode( pIndex );
-	event.SetValue( value );
-	pDevice.GetOvr().InputEventSetTimestamp( event );
-	pDevice.GetOvr().SendEvent( event );
+	event.SetType(deInputEvent::eeAxisMove);
+	event.SetSource(deInputEvent::esVR);
+	event.SetDevice(pDevice.GetIndex());
+	event.SetCode(pIndex);
+	event.SetValue(value);
+	pDevice.GetOvr().InputEventSetTimestamp(event);
+	pDevice.GetOvr().SendEvent(event);
 }
 
 void deovrDeviceAxis::TrackState(){
-	switch( pType ){
+	switch(pType){
 	case deInputDeviceAxis::eatFingerBend:
-		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerCurl[ pFinger ],
-			pMinimum, pMaximum, -1.0f, 1.0f ) );
+		UpdateValue(decMath::linearStep(pDevice.GetSkeletalSummaryData().flFingerCurl[pFinger],
+			pMinimum, pMaximum, -1.0f, 1.0f));
 		break;
 		
 	case deInputDeviceAxis::eatFingerSpread:
-		UpdateValue( decMath::linearStep( pDevice.GetSkeletalSummaryData().flFingerSplay[ pFinger ],
-			pMinimum, pMaximum, -1.0f, 1.0f ) );
+		UpdateValue(decMath::linearStep(pDevice.GetSkeletalSummaryData().flFingerSplay[pFinger],
+			pMinimum, pMaximum, -1.0f, 1.0f));
 		break;
 		
 	default:{
 		vr::IVRInput &vrinput = pDevice.GetOvr().GetVRInput();
 		
 		vr::InputAnalogActionData_t dataAnalog;
-		vr::EVRInputError error = vrinput.GetAnalogActionData( pActionAnalogHandle,
-			&dataAnalog, sizeof( dataAnalog ), pDevice.GetInputValueHandle() );
+		vr::EVRInputError error = vrinput.GetAnalogActionData(pActionAnalogHandle,
+			&dataAnalog, sizeof(dataAnalog), pDevice.GetInputValueHandle());
 		
-		if( error == vr::VRInputError_None ){
-			UpdateValue( decMath::linearStep( ( &dataAnalog.x )[ pComponent ],
-				pMinimum, pMaximum, -1.0f, 1.0f ) );
+		if(error == vr::VRInputError_None){
+			UpdateValue(decMath::linearStep((&dataAnalog.x)[pComponent],
+				pMinimum, pMaximum, -1.0f, 1.0f));
 			
 		}else{
 			//UpdateValue( pCenterValue );
@@ -207,23 +207,23 @@ void deovrDeviceAxis::TrackState(){
 }
 
 void deovrDeviceAxis::ResetState(){
-	UpdateValue( pCenter );
-	SetValue( pCenter );
+	UpdateValue(pCenter);
+	SetValue(pCenter);
 }
 
 
 
-void deovrDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
-	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID() : "" );
+void deovrDeviceAxis::GetInfo(deInputDeviceAxis &info) const{
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
+	info.SetComponent(pInputDeviceComponent ? pInputDeviceComponent->GetID() : "");
 	
-	info.SetDisplayImage( pDisplayImage );
+	info.SetDisplayImage(pDisplayImage);
 	
 	int i;
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }

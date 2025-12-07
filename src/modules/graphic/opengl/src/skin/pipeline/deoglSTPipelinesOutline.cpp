@@ -35,8 +35,8 @@
 // Defines
 /////////////
 
-#define ISPROPDYN(name) pTexture.GetMaterialPropertyAt( deoglSkinTexture::name ).IsDynamic()
-#define HASCHANTEX(name) cinfo[ deoglSkinChannel::name ].hasTextures
+#define ISPROPDYN(name) pTexture.GetMaterialPropertyAt(deoglSkinTexture::name).IsDynamic()
+#define HASCHANTEX(name) cinfo[deoglSkinChannel::name].hasTextures
 
 
 
@@ -46,8 +46,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesOutline::deoglSTPipelinesOutline( const deoglSkinTexture &texture ) :
-deoglSkinTexturePipelines( texture ){
+deoglSTPipelinesOutline::deoglSTPipelinesOutline(const deoglSkinTexture &texture) :
+deoglSkinTexturePipelines(texture){
 }
 
 deoglSTPipelinesOutline::~deoglSTPipelinesOutline(){
@@ -67,17 +67,17 @@ const char *deoglSTPipelinesOutline::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesOutline::pPreparePipelines( const ChannelInfo &cinfo,
-deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesOutline::pPreparePipelines(const ChannelInfo &cinfo,
+deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetSharedSPB( true );
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmComponent );
-	baseShaderConfig.SetOutline( true );
+	baseShaderConfig.SetSharedSPB(true);
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmComponent);
+	baseShaderConfig.SetOutline(true);
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
 	// pPrepareMask( baseShaderConfig, cinfo, batched);
 	// pPrepareAllShadow( baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
@@ -87,111 +87,111 @@ deoglBatchedShaderLoading &batched ){
 
 
 
-void deoglSTPipelinesOutline::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
-	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
+void deoglSTPipelinesOutline::pPipelineConfigGeometry(deoglPipelineConfiguration &config){
+	deoglSkinTexturePipelines::pPipelineConfigGeometry(config);
 	
-	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+	config.EnableCulling(true); // cull face has to be flipped (super class does 'false')
 }
 
-void deoglSTPipelinesOutline::pPipelineConfigDepth( deoglPipelineConfiguration &config ){
+void deoglSTPipelinesOutline::pPipelineConfigDepth(deoglPipelineConfiguration &config){
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
 	
-	deoglSkinTexturePipelines::pPipelineConfigDepth( config );
+	deoglSkinTexturePipelines::pPipelineConfigDepth(config);
 	
-	if( pTexture.GetIsOutlineSolid() ){
-		config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+	if(pTexture.GetIsOutlineSolid()){
+		config.EnableDepthTest(choices.GetDepthCompareFuncRegular());
 		
 	}else{
-		config.EnableDepthTest( choices.GetDepthCompareFuncReversed() );
+		config.EnableDepthTest(choices.GetDepthCompareFuncReversed());
 	}
 	
-	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+	config.EnableCulling(true); // cull face has to be flipped (super class does 'false')
 }
 
-void deoglSTPipelinesOutline::pPipelineConfigDepthReversed( deoglPipelineConfiguration &config ){
+void deoglSTPipelinesOutline::pPipelineConfigDepthReversed(deoglPipelineConfiguration &config){
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
 	
-	deoglSkinTexturePipelines::pPipelineConfigDepthReversed( config );
+	deoglSkinTexturePipelines::pPipelineConfigDepthReversed(config);
 	
-	if( ! pTexture.GetIsOutlineSolid() ){
-		config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
+	if(! pTexture.GetIsOutlineSolid()){
+		config.EnableDepthTest(choices.GetDepthCompareFuncRegular());
 	}
 	
-	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+	config.EnableCulling(true); // cull face has to be flipped (super class does 'false')
 }
 
-void deoglSTPipelinesOutline::pPipelineConfigCounter( deoglPipelineConfiguration &config ){
-	deoglSkinTexturePipelines::pPipelineConfigCounter( config );
+void deoglSTPipelinesOutline::pPipelineConfigCounter(deoglPipelineConfiguration &config){
+	deoglSkinTexturePipelines::pPipelineConfigCounter(config);
 	
-	config.EnableCulling( true ); // cull face has to be flipped (super class does 'false')
+	config.EnableCulling(true); // cull face has to be flipped (super class does 'false')
 }
 
 
 
-void deoglSTPipelinesOutline::pSetBase( deoglSkinShaderConfig &config ){
-	config.SetInverseDepth( pTexture.GetRenderThread().GetChoices().GetUseInverseDepth() );
-	config.SetFadeOutRange( config.GetInverseDepth() );
+void deoglSTPipelinesOutline::pSetBase(deoglSkinShaderConfig &config){
+	config.SetInverseDepth(pTexture.GetRenderThread().GetChoices().GetUseInverseDepth());
+	config.SetFadeOutRange(config.GetInverseDepth());
 	
-	config.SetOutlineThicknessScreen( pTexture.GetOutlineThicknessScreen() );
+	config.SetOutlineThicknessScreen(pTexture.GetOutlineThicknessScreen());
 }
 
-void deoglSTPipelinesOutline::pSetGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
-	config.SetShaderMode( deoglSkinShaderConfig::esmGeometry );
-	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
+void deoglSTPipelinesOutline::pSetGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
+	config.SetShaderMode(deoglSkinShaderConfig::esmGeometry);
+	config.SetDepthMode(deoglSkinShaderConfig::edmProjection);
 	
-	config.SetMaterialNormalModeDec( deoglSkinShaderConfig::emnmIntBasic );
+	config.SetMaterialNormalModeDec(deoglSkinShaderConfig::emnmIntBasic);
 	
-	config.SetTextureNormal( HASCHANTEX( ectNormal ) );
-	config.SetTextureHeight( HASCHANTEX( ectHeight ) );
-	config.SetTextureRenderColor( ! pTexture.GetIsOutlineSolid() );
+	config.SetTextureNormal(HASCHANTEX(ectNormal));
+	config.SetTextureHeight(HASCHANTEX(ectHeight));
+	config.SetTextureRenderColor(! pTexture.GetIsOutlineSolid());
 	
-	config.SetDynamicHeightRemap( ISPROPDYN( empHeightScale ) || ISPROPDYN( empHeightOffset ) );
-	config.SetDynamicNormalStrength( ISPROPDYN( empNormalStrength ) );
-	config.SetDynamicVariation( ISPROPDYN( empVariationU ) || ISPROPDYN( empVariationV ) );
+	config.SetDynamicHeightRemap(ISPROPDYN(empHeightScale) || ISPROPDYN(empHeightOffset));
+	config.SetDynamicNormalStrength(ISPROPDYN(empNormalStrength));
+	config.SetDynamicVariation(ISPROPDYN(empVariationU) || ISPROPDYN(empVariationV));
 	
-	config.SetDynamicOutlineColor( ISPROPDYN( empOutlineColor ) );
-	config.SetDynamicOutlineColorTint( ISPROPDYN( empOutlineColorTint ) );
-	config.SetDynamicOutlineThickness( ISPROPDYN( empOutlineThickness ) );
-	config.SetDynamicOutlineSolidity( ISPROPDYN( empOutlineSolidity ) );
-	config.SetDynamicOutlineEmissivity( ISPROPDYN( empOutlineEmissivity )
-		|| ISPROPDYN( empOutlineEmissivityIntensity ) );
-	config.SetDynamicOutlineEmissivityTint( ISPROPDYN( empOutlineEmissivityTint ) );
+	config.SetDynamicOutlineColor(ISPROPDYN(empOutlineColor));
+	config.SetDynamicOutlineColorTint(ISPROPDYN(empOutlineColorTint));
+	config.SetDynamicOutlineThickness(ISPROPDYN(empOutlineThickness));
+	config.SetDynamicOutlineSolidity(ISPROPDYN(empOutlineSolidity));
+	config.SetDynamicOutlineEmissivity(ISPROPDYN(empOutlineEmissivity)
+		|| ISPROPDYN(empOutlineEmissivityIntensity));
+	config.SetDynamicOutlineEmissivityTint(ISPROPDYN(empOutlineEmissivityTint));
 	
-	pSetSkinClipping( config );
+	pSetSkinClipping(config);
 }
 
-void deoglSTPipelinesOutline::pSetDepth( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
-	config.SetShaderMode( deoglSkinShaderConfig::esmDepth );
-	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
+void deoglSTPipelinesOutline::pSetDepth(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
+	config.SetShaderMode(deoglSkinShaderConfig::esmDepth);
+	config.SetDepthMode(deoglSkinShaderConfig::edmProjection);
 	
-	if( pTexture.GetIsOutlineSolid() ){
-		config.SetDepthTestMode( deoglSkinShaderConfig::edtmNone );
+	if(pTexture.GetIsOutlineSolid()){
+		config.SetDepthTestMode(deoglSkinShaderConfig::edtmNone);
 		
 	}else{
-		config.SetDepthTestMode( deoglSkinShaderConfig::edtmLarger );
+		config.SetDepthTestMode(deoglSkinShaderConfig::edtmLarger);
 	}
 	
-	config.SetTextureHeight( HASCHANTEX( ectHeight ) );
-	config.SetDynamicHeightRemap( ISPROPDYN( empHeightScale ) || ISPROPDYN( empHeightOffset ) );
+	config.SetTextureHeight(HASCHANTEX(ectHeight));
+	config.SetDynamicHeightRemap(ISPROPDYN(empHeightScale) || ISPROPDYN(empHeightOffset));
 	
-	config.SetDynamicOutlineThickness( ISPROPDYN( empOutlineThickness ) );
+	config.SetDynamicOutlineThickness(ISPROPDYN(empOutlineThickness));
 	
 	// emissivity is required to avoid discarding non-solid fragments
-	config.SetDynamicOutlineEmissivity( ISPROPDYN( empOutlineEmissivity )
-		|| ISPROPDYN( empOutlineEmissivityIntensity ) );
+	config.SetDynamicOutlineEmissivity(ISPROPDYN(empOutlineEmissivity)
+		|| ISPROPDYN(empOutlineEmissivityIntensity));
 	
-	pSetSkinClipping( config );
+	pSetSkinClipping(config);
 }
 
-void deoglSTPipelinesOutline::pSetCounter( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
-	config.SetShaderMode( deoglSkinShaderConfig::esmDepth );
-	config.SetDepthMode( deoglSkinShaderConfig::edmProjection );
+void deoglSTPipelinesOutline::pSetCounter(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
+	config.SetShaderMode(deoglSkinShaderConfig::esmDepth);
+	config.SetDepthMode(deoglSkinShaderConfig::edmProjection);
 	
-	config.SetOutputConstant( true );
+	config.SetOutputConstant(true);
 	
-	config.SetDynamicOutlineThickness( ISPROPDYN( empOutlineThickness ) );
+	config.SetDynamicOutlineThickness(ISPROPDYN(empOutlineThickness));
 	
 	// emissivity is required to avoid discarding non-solid fragments
-	config.SetDynamicOutlineEmissivity( ISPROPDYN( empOutlineEmissivity )
-		|| ISPROPDYN( empOutlineEmissivityIntensity ) );
+	config.SetDynamicOutlineEmissivity(ISPROPDYN(empOutlineEmissivity)
+		|| ISPROPDYN(empOutlineEmissivityIntensity));
 }

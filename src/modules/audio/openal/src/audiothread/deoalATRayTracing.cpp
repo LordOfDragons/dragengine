@@ -44,17 +44,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalATRayTracing::deoalATRayTracing( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
+deoalATRayTracing::deoalATRayTracing(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
 
-pConfigTraceSoundRays( NULL ),
-pConfigRoomEstimate( NULL ),
-pConfigTraceSoundRaysSensor( NULL )
+pConfigTraceSoundRays(NULL),
+pConfigRoomEstimate(NULL),
+pConfigTraceSoundRaysSensor(NULL)
 {
 	try{
 		pCreateRayTraceConfigs();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -79,13 +79,13 @@ void deoalATRayTracing::ConfigurationChanged(){
 //////////////////////
 
 void deoalATRayTracing::pCleanUp(){
-	if( pConfigTraceSoundRays ){
+	if(pConfigTraceSoundRays){
 		delete pConfigTraceSoundRays;
 	}
-	if( pConfigRoomEstimate ){
+	if(pConfigRoomEstimate){
 		delete pConfigRoomEstimate;
 	}
-	if( pConfigTraceSoundRaysSensor ){
+	if(pConfigTraceSoundRaysSensor){
 		delete pConfigTraceSoundRaysSensor;
 	}
 }
@@ -94,30 +94,30 @@ void deoalATRayTracing::pCreateRayTraceConfigs(){
 	const deoalConfiguration &config = pAudioThread.GetConfiguration();
 	
 	// configuration for tracing sound rays
-	if( pConfigTraceSoundRays ){
+	if(pConfigTraceSoundRays){
 		delete pConfigTraceSoundRays;
 		pConfigTraceSoundRays = NULL;
 	}
 	pConfigTraceSoundRays = new deoalRayTraceConfig;
-	pConfigTraceSoundRays->SetRaysEquallySpaced( config.GetSoundTraceRayCount() );
-	pConfigTraceSoundRays->Rotate( 5.0f, 7.0f, 3.0f );
+	pConfigTraceSoundRays->SetRaysEquallySpaced(config.GetSoundTraceRayCount());
+	pConfigTraceSoundRays->Rotate(5.0f, 7.0f, 3.0f);
 	
 	// configuration for estimating room parameters
-	if( pConfigRoomEstimate ){
+	if(pConfigRoomEstimate){
 		delete pConfigRoomEstimate;
 		pConfigRoomEstimate = NULL;
 	}
 	pConfigRoomEstimate = new deoalRayTraceConfig;
-	pConfigRoomEstimate->SetRaysEquallySpaced( config.GetEstimateRoomRayCount() );
+	pConfigRoomEstimate->SetRaysEquallySpaced(config.GetEstimateRoomRayCount());
 	
 	// configuration for tracing sound rays for sound sensor meters
-	if( pConfigTraceSoundRaysSensor ){
+	if(pConfigTraceSoundRaysSensor){
 		delete pConfigTraceSoundRaysSensor;
 		pConfigTraceSoundRaysSensor = NULL;
 	}
 	pConfigTraceSoundRaysSensor = new deoalRayTraceConfig;
-	pConfigTraceSoundRaysSensor->SetRaysEquallySpaced( 24 ); //config.GetSoundTraceRayCount() );
-	pConfigTraceSoundRaysSensor->Rotate( 5.0f, 7.0f, 3.0f );
+	pConfigTraceSoundRaysSensor->SetRaysEquallySpaced(24); //config.GetSoundTraceRayCount());
+	pConfigTraceSoundRaysSensor->Rotate(5.0f, 7.0f, 3.0f);
 	
 	// sound tracing configuration for microphone usage
 	pConfigSoundTracingMicrophone.addRayMinLength = 0.2f; // 0.1f
@@ -157,13 +157,13 @@ void deoalATRayTracing::pCreateRayTraceConfigs(){
 		pCreateInitialIcoSphere();
 		
 		probeConfig = new deoalRayTraceConfig;
-		probeConfig->SetFromVertices( pIcoSphere.GetVertices(),
-			pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() );
-		pProbeConfigs.Add( probeConfig );
+		probeConfig->SetFromVertices(pIcoSphere.GetVertices(),
+			pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle());
+		pProbeConfigs.Add(probeConfig);
 		probeConfig = NULL;
 		
 		// create refinemenet levels untli the ray count is around ~10k.
-		while( pIcoSphere.GetVertexCount() + pIcoSphere.GetEdgeCount() < 10000 ){
+		while(pIcoSphere.GetVertexCount() + pIcoSphere.GetEdgeCount() < 10000){
 			// level 0: 162 rays
 			// level 1: 642 rays
 			// level 2: 2562 rays
@@ -175,28 +175,28 @@ void deoalATRayTracing::pCreateRayTraceConfigs(){
 		
 		// create configs
 		/*
-		deoalIcoSphere ico( deoalIcoSphere::BaseLevel() ); // 12 rays
+		deoalIcoSphere ico(deoalIcoSphere::BaseLevel()); // 12 rays
 		ico = ico.Subdivide(); // 42 rays
 		pConfigTraceSoundRays = new deoalRayTraceConfig;
-		pConfigTraceSoundRays->SetFromIcoSphere( ico );
+		pConfigTraceSoundRays->SetFromIcoSphere(ico);
 // 		pConfigTraceSoundRays->SetFromIcoSphere( ico.Subdivide() );
 // 		pConfigTraceSoundRays->SetFromIcoSphere( ico.Subdivide().Subdivide() );
-		pConfigTraceSoundRays->Rotate( 5.0f, 7.0f, 3.0f );
+		pConfigTraceSoundRays->Rotate(5.0f, 7.0f, 3.0f);
 		
 		ico = ico.Subdivide(); // 162 rays
 		pConfigRoomEstimate = new deoalRayTraceConfig;
-		pConfigRoomEstimate->SetFromIcoSphere( ico );
+		pConfigRoomEstimate->SetFromIcoSphere(ico);
 		*/
 		
 		pConfigTraceSoundRays = new deoalRayTraceConfig;
-		pConfigTraceSoundRays->SetRaysEquallySpaced( config.GetSoundTraceRayCount() );
-		pConfigTraceSoundRays->Rotate( 5.0f, 7.0f, 3.0f );
+		pConfigTraceSoundRays->SetRaysEquallySpaced(config.GetSoundTraceRayCount());
+		pConfigTraceSoundRays->Rotate(5.0f, 7.0f, 3.0f);
 		
 		pConfigRoomEstimate = new deoalRayTraceConfig;
-		pConfigRoomEstimate->SetRaysEquallySpaced( config.GetEstimateRoomRayCount() );
+		pConfigRoomEstimate->SetRaysEquallySpaced(config.GetEstimateRoomRayCount());
 		
-	}catch( const deException & ){
-		if( probeConfig ){
+	}catch(const deException &){
+		if(probeConfig){
 			delete probeConfig;
 		}
 		throw;
@@ -217,7 +217,7 @@ void deoalEnvProbeList::pCreateInitialIcoSphere(){
 	pIcoSphere = deoalIcoSphere::BaseLevel(); // 12 vertices
 	
 	int i;
-	for( i=0; i<subDivCount; i++ ){
+	for(i=0; i<subDivCount; i++){
 		pSubdivideIcoSphere();
 	}
 }
@@ -260,7 +260,7 @@ void deoalEnvProbeList::pSubdivideIcoSphere(){
 	pIcoSphere = pIcoSphere.Subdivide();
 	pWorld.GetAudioThread().GetLogger().LogInfoFormat(
 		"pSubdivideIcoSphere: vertices=%d openingAngle=%.1f",
-		pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() / DEG2RAD );
+		pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() / DEG2RAD);
 }
 
 void deoalEnvProbeList::pIncreaseProbeConfigLevels(){
@@ -268,7 +268,7 @@ void deoalEnvProbeList::pIncreaseProbeConfigLevels(){
 	int i;
 	
 	int levelCount = 1;
-	for( i=0; i<=pIcoSphereLevel; i++ ){
+	for(i=0; i<=pIcoSphereLevel; i++){
 		levelCount *= 3;
 	}
 	
@@ -282,21 +282,21 @@ void deoalEnvProbeList::pIncreaseProbeConfigLevels(){
 		int raysPerLevel = vertexCount / levelCount;
 		int firstRay = 0;
 		
-		for( i=0; i<levelCount; i++ ){
-			if( i == levelCount - 1 ){
+		for(i=0; i<levelCount; i++){
+			if(i == levelCount - 1){
 				raysPerLevel = vertexCount - firstRay;
 			}
 			
 			probeConfig = new deoalRayTraceConfig;
-			probeConfig->SetFromVertices( vertices + firstRay, raysPerLevel, openingAngle );
-			pProbeConfigs.Add( probeConfig );
+			probeConfig->SetFromVertices(vertices + firstRay, raysPerLevel, openingAngle);
+			pProbeConfigs.Add(probeConfig);
 			probeConfig = NULL;
 			
 			firstRay += raysPerLevel;
 		}
 		
-	}catch( const deException & ){
-		if( probeConfig ){
+	}catch(const deException &){
+		if(probeConfig){
 			delete probeConfig;
 		}
 		throw;
@@ -304,6 +304,6 @@ void deoalEnvProbeList::pIncreaseProbeConfigLevels(){
 	
 	pWorld.GetAudioThread().GetLogger().LogInfoFormat(
 		"pIncreaseProbeConfigLevels: level=%d vertices=%d openingAngle=%.1f",
-		pIcoSphereLevel, pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() / DEG2RAD );
+		pIcoSphereLevel, pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() / DEG2RAD);
 }
 #endif

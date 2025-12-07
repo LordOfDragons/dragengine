@@ -65,29 +65,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the ghost object. */
-	inline btGhostObject *GetGhostObject() const{ return pGhostObject; }
+	inline btGhostObject *GetGhostObject() const{return pGhostObject;}
 	/** \brief Retrieves the dynamics world or NULL if not assigned to one yet. */
-	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
+	inline debpCollisionWorld *GetDynamicsWorld() const{return pDynWorld;}
 	/** \brief Sets the dynamics world or NULL if not assigned to one yet. */
-	void SetDynamicsWorld( debpCollisionWorld *dynWorld );
+	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	/** \brief Retrieves the collision shape or NULL if not set. */
-	inline debpBulletShape *GetShape() const{ return pShape; }
+	inline debpBulletShape *GetShape() const{return pShape;}
 	/** \brief Sets the collision shape or NULL if not set. */
-	void SetShape( debpBulletShape *shape );
+	void SetShape(debpBulletShape *shape);
 	
 	/** \brief Retrieves the position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	/** \brief Sets the position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	/** \brief Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	/** \brief Sets the orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Determines if the ghost object is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	/** \brief Sets if the ghost object is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/** \brief Retrieves the ghost object matrix. */
 	const decDMatrix &GetMatrix();
 	

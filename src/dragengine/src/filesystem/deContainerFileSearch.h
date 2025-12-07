@@ -49,10 +49,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Add file. */
-	virtual void Add( const char *name, deVFSContainer::eFileTypes type ) = 0;
+	virtual void Add(const char *name, deVFSContainer::eFileTypes type) = 0;
 	
 	/** \brief Remove file. */
-	virtual void Remove( const char *name ) = 0;
+	virtual void Remove(const char *name) = 0;
 	/*@}*/
 };
 

@@ -47,14 +47,14 @@ public:
 	~deClassAnimation() override;
 	
 	void CreateClassMembers(dsEngine *engine) override;
-	inline deEngine &GetGameEngine() const{ return pGameEngine; }
+	inline deEngine &GetGameEngine() const{return pGameEngine;}
 	
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	deAnimation *GetAnimation(dsRealObject *This) const;
-	void PushAnimation( dsRunTime *rt, deAnimation *anim );
+	void PushAnimation(dsRunTime *rt, deAnimation *anim);
 	
-	inline dsClass *GetClassAnimationBoneParameter() const{ return pClsBoneParameter; }
+	inline dsClass *GetClassAnimationBoneParameter() const{return pClsBoneParameter;}
 	
 private:
 	struct sInitData{
@@ -63,27 +63,27 @@ private:
 		dsClass *clsAnimationBoneParameter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC(nfLoad);
-	DEF_NATFUNC( nfLoadAsynchron );
+	DEF_NATFUNC(nfLoadAsynchron);
 	DEF_NATFUNC(nfSave);
 	DEF_NATFUNC(nfDestructor);
 	DEF_NATFUNC(nfGetFilename);
 	DEF_NATFUNC(nfGetMovePlaytime);
-	DEF_NATFUNC( nfGetBoneCount );
-	DEF_NATFUNC( nfIndexOfBoneNamed );
-	DEF_NATFUNC( nfGetBoneName );
+	DEF_NATFUNC(nfGetBoneCount);
+	DEF_NATFUNC(nfIndexOfBoneNamed);
+	DEF_NATFUNC(nfGetBoneName);
 	DEF_NATFUNC(nfGetVertexPositionSetCount);
 	DEF_NATFUNC(nfIndexOfVertexPositionSetNamed);
 	DEF_NATFUNC(nfGetVertexPositionSetName);
-	DEF_NATFUNC( nfGetMoveFPS );
-	DEF_NATFUNC( nfGetMoveCount );
-	DEF_NATFUNC( nfGetMoveName );
-	DEF_NATFUNC( nfIndexOfMoveNamed );
+	DEF_NATFUNC(nfGetMoveFPS);
+	DEF_NATFUNC(nfGetMoveCount);
+	DEF_NATFUNC(nfGetMoveName);
+	DEF_NATFUNC(nfIndexOfMoveNamed);
 	DEF_NATFUNC(nfGetKeyframeCurve);
 	DEF_NATFUNC(nfGetVertexPositionSetKeyframeCurve);
 	DEF_NATFUNC(nfEquals);

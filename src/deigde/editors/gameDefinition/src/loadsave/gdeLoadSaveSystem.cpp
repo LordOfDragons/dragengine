@@ -59,10 +59,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeLoadSaveSystem::gdeLoadSaveSystem( gdeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pLSGameDef( *this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE ),
-pLSXmlEClass( *this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE )
+gdeLoadSaveSystem::gdeLoadSaveSystem(gdeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pLSGameDef(*this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE),
+pLSXmlEClass(*this, windowMain.GetEnvironment().GetLogger(), LOGSOURCE)
 {
 	pBuildFilePattern();
 }
@@ -75,21 +75,21 @@ gdeLoadSaveSystem::~gdeLoadSaveSystem(){
 // Management
 ///////////////
 
-gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader::Ref fileReader;
 	gdeGameDefinition *gameDefinition = NULL;
 	
 	try{
-		fileReader.TakeOver( new decDiskFileReader( filename ) );
-		gameDefinition = new gdeGameDefinition( &pWindowMain.GetEnvironment() );
-		pLSGameDef.LoadGameDefinition( *gameDefinition, fileReader );
+		fileReader.TakeOver(new decDiskFileReader(filename));
+		gameDefinition = new gdeGameDefinition(&pWindowMain.GetEnvironment());
+		pLSGameDef.LoadGameDefinition(*gameDefinition, fileReader);
 		
-	}catch( const deException & ){
-		if( gameDefinition ){
+	}catch(const deException &){
+		if(gameDefinition){
 			gameDefinition->FreeReference();
 		}
 		throw;
@@ -98,21 +98,21 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition( const char *filename )
 	return gameDefinition;
 }
 
-void gdeLoadSaveSystem::SaveGameDefinition( const gdeGameDefinition &gameDefinition, const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+void gdeLoadSaveSystem::SaveGameDefinition(const gdeGameDefinition &gameDefinition, const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileWriter *fileWriter = NULL;
 	
 	try{
-		fileWriter = new decDiskFileWriter( filename, false );
-		pLSGameDef.SaveGameDefinition( gameDefinition, *fileWriter );
+		fileWriter = new decDiskFileWriter(filename, false);
+		pLSGameDef.SaveGameDefinition(gameDefinition, *fileWriter);
 		
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
@@ -121,22 +121,22 @@ void gdeLoadSaveSystem::SaveGameDefinition( const gdeGameDefinition &gameDefinit
 
 
 
-gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader *fileReader = NULL;
 	gdeObjectClass *objectClass = NULL;
 	
 	try{
-		fileReader = new decDiskFileReader( filename );
+		fileReader = new decDiskFileReader(filename);
 		
-		objectClass = pLSXmlEClass.LoadXmlEClass( *fileReader );
+		objectClass = pLSXmlEClass.LoadXmlEClass(*fileReader);
 		fileReader->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileReader ){
+	}catch(const deException &){
+		if(fileReader){
 			fileReader->FreeReference();
 		}
 		throw;
@@ -145,8 +145,8 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass( const char *filename ){
 	return objectClass;
 }
 
-void gdeLoadSaveSystem::SaveXmlEClass( const gdeGameDefinition &gameDefinition,
-const gdeObjectClass &objectClass, const char *filename ){
+void gdeLoadSaveSystem::SaveXmlEClass(const gdeGameDefinition &gameDefinition,
+const gdeObjectClass &objectClass, const char *filename){
 	pLSXmlEClass.SaveXmlEClass(gameDefinition, objectClass,
 		decDiskFileWriter::Ref::NewWith(filename, false));
 }
@@ -162,45 +162,45 @@ void gdeLoadSaveSystem::pBuildFilePattern(){
 	
 	try{
 		// load/save game definition
-		pattern.Format( "*%s", pLSGameDef.GetPattern().GetString() );
+		pattern.Format("*%s", pLSGameDef.GetPattern().GetString());
 		
-		filePattern = new igdeFilePattern( pLSGameDef.GetName(), pattern, pLSGameDef.GetPattern() );
+		filePattern = new igdeFilePattern(pLSGameDef.GetName(), pattern, pLSGameDef.GetPattern());
 		
-		pFPGameDef.AddFilePattern( filePattern );
+		pFPGameDef.AddFilePattern(filePattern);
 		
 		// load/save xml element class
-		pattern.Format( "*%s", pLSXmlEClass.GetPattern().GetString() );
+		pattern.Format("*%s", pLSXmlEClass.GetPattern().GetString());
 		
-		filePattern = new igdeFilePattern( pLSXmlEClass.GetName(), pattern, pLSXmlEClass.GetPattern() );
+		filePattern = new igdeFilePattern(pLSXmlEClass.GetName(), pattern, pLSXmlEClass.GetPattern());
 		
-		pFPXmlEClass.AddFilePattern( filePattern );
+		pFPXmlEClass.AddFilePattern(filePattern);
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;
 	}
 	
 	// convert file pattern lists to fox ones
-	pConvertToFOX( pFPGameDef, pFoxFPLGameDef );
-	pConvertToFOX( pFPXmlEClass, pFoxFPLXmlEClass );
+	pConvertToFOX(pFPGameDef, pFoxFPLGameDef);
+	pConvertToFOX(pFPXmlEClass, pFoxFPLXmlEClass);
 }
 
-void gdeLoadSaveSystem::pConvertToFOX( const igdeFilePatternList &fpl, decString &foxfpl ){
+void gdeLoadSaveSystem::pConvertToFOX(const igdeFilePatternList &fpl, decString &foxfpl){
 	const int count = fpl.GetFilePatternCount();
 	int i;
 	
 	foxfpl.Empty();
 	
-	for( i=0; i<count; i++ ){
-		const igdeFilePattern &pattern = *fpl.GetFilePatternAt( i );
+	for(i=0; i<count; i++){
+		const igdeFilePattern &pattern = *fpl.GetFilePatternAt(i);
 		
-		if( i > 0 ){
-			foxfpl.AppendCharacter( '\n' );
+		if(i > 0){
+			foxfpl.AppendCharacter('\n');
 		}
 		
-		foxfpl.AppendFormat( "%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString() );
+		foxfpl.AppendFormat("%s (%s)", pattern.GetName().GetString(), pattern.GetPattern().GetString());
 	}
 	
 	//foxfpl.Append( "\nAll Files (*)" );

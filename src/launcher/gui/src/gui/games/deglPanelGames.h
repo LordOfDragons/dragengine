@@ -36,14 +36,14 @@ class delGame;
  * Games Panel.
  */
 class deglPanelGames : public FXVerticalFrame{
-	FXDECLARE( deglPanelGames )
+	FXDECLARE(deglPanelGames)
 protected:
 	deglPanelGames();
 	
 public:
 	/** Icon list extended to send header click to enable sorting. */
 	class ExtIconList : public FXIconList{
-		FXDECLARE( ExtIconList )
+		FXDECLARE(ExtIconList)
 	protected:
 		ExtIconList();
 		
@@ -52,13 +52,13 @@ public:
 			SEL_HEADER_CLICKED = SEL_LAST
 		};
 		
-		ExtIconList( FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0,
+		ExtIconList(FXComposite *p, FXObject *tgt = nullptr, FXSelector sel = 0,
 			FXuint opts = ICONLIST_NORMAL, FXint x = 0, FXint y = 0,
-			FXint w = 0, FXint h = 0 );
+			FXint w = 0, FXint h = 0);
 		
 		~ExtIconList();
 		
-		long onHeaderClicked( FXObject *sender, FXSelector selector, void *data );
+		long onHeaderClicked(FXObject *sender, FXSelector selector, void *data);
 	};
 	
 	
@@ -97,7 +97,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	deglPanelGames( deglWindowMain *windowMain, FXComposite *container );
+	deglPanelGames(deglWindowMain *windowMain, FXComposite *container);
 	
 	/** Clean up panel. */
 	virtual ~deglPanelGames();
@@ -108,51 +108,51 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
+	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
 	
 	/** Selected game or nullptr. */
 	delGame *GetSelectedGame() const;
 	
 	/** Set selected game. */
-	void SetSelectedGame( delGame *game );
+	void SetSelectedGame(delGame *game);
 	
 	/** Update the games list. */
 	void UpdateGameList();
 	
 	/** Sort game list by the title. */
-	static FXint SortGamesByTitleAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortGamesByTitleDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortGamesByTitleAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortGamesByTitleDesc(const FXIconItem *item1, const FXIconItem *item2);
 	
 	/** Sort game list by the status. */
-	static FXint SortGamesByStatusAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortGamesByStatusDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortGamesByStatusAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortGamesByStatusDesc(const FXIconItem *item1, const FXIconItem *item2);
 	
 	/** Sort game list by the creator. */
-	static FXint SortGamesByCreatorAsc( const FXIconItem *item1, const FXIconItem *item2 );
-	static FXint SortGamesByCreatorDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint SortGamesByCreatorAsc(const FXIconItem *item1, const FXIconItem *item2);
+	static FXint SortGamesByCreatorDesc(const FXIconItem *item1, const FXIconItem *item2);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onListGamesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onListGamesRDown( FXObject *sender, FXSelector selector, void *data );
-	long onListGamesRUp( FXObject *sender, FXSelector selector, void *data );
-	long onListGamesDblClick( FXObject *sender, FXSelector selector, void *data );
-	long onListGamesHeaderClicked( FXObject *sender, FXSelector selector, void *data );
+	long onListGamesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onListGamesRDown(FXObject *sender, FXSelector selector, void *data);
+	long onListGamesRUp(FXObject *sender, FXSelector selector, void *data);
+	long onListGamesDblClick(FXObject *sender, FXSelector selector, void *data);
+	long onListGamesHeaderClicked(FXObject *sender, FXSelector selector, void *data);
 	
-	long onPUGameProps( FXObject *sender, FXSelector selector, void *data );
-	long updatePUGameProps( FXObject *sender, FXSelector selector, void *data );
-	long onPUGameRun( FXObject *sender, FXSelector selector, void *data );
-	long onPUGameRunWith( FXObject *sender, FXSelector selector, void *data );
-	long updatePUGameRun( FXObject *sender, FXSelector selector, void *data );
-	long onPUGameKill( FXObject *sender, FXSelector selector, void *data );
-	long updatePUGameKill( FXObject *sender, FXSelector selector, void *data );
-	long onPUGameUninstall( FXObject *sender, FXSelector selector, void *data );
-	long updatePUGameUninstall( FXObject *sender, FXSelector selector, void *data );
-	long onPUGameShowLogs( FXObject *sender, FXSelector selector, void *data );
-	long updatePUGameShowLogs( FXObject *sender, FXSelector selector, void *data );
+	long onPUGameProps(FXObject *sender, FXSelector selector, void *data);
+	long updatePUGameProps(FXObject *sender, FXSelector selector, void *data);
+	long onPUGameRun(FXObject *sender, FXSelector selector, void *data);
+	long onPUGameRunWith(FXObject *sender, FXSelector selector, void *data);
+	long updatePUGameRun(FXObject *sender, FXSelector selector, void *data);
+	long onPUGameKill(FXObject *sender, FXSelector selector, void *data);
+	long updatePUGameKill(FXObject *sender, FXSelector selector, void *data);
+	long onPUGameUninstall(FXObject *sender, FXSelector selector, void *data);
+	long updatePUGameUninstall(FXObject *sender, FXSelector selector, void *data);
+	long onPUGameShowLogs(FXObject *sender, FXSelector selector, void *data);
+	long updatePUGameShowLogs(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

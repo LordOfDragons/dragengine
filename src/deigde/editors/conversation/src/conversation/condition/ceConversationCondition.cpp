@@ -38,17 +38,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceConversationCondition::ceConversationCondition( eConditionTypes type ) :
-pType( type )
+ceConversationCondition::ceConversationCondition(eConditionTypes type) :
+pType(type)
 {
-	if( type < ectLogic || type > ectTrigger ){
-		DETHROW( deeInvalidParam );
+	if(type < ectLogic || type > ectTrigger){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-ceConversationCondition::ceConversationCondition( const ceConversationCondition &condition ) :
-pType( condition.pType )/*,
-pTreeExpandedLists( condition.pTreeExpandedLists )*/
+ceConversationCondition::ceConversationCondition(const ceConversationCondition &condition) :
+pType(condition.pType)/*,
+pTreeExpandedLists(condition.pTreeExpandedLists)*/
 {
 }
 

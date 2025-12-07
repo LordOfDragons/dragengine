@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor window. */
-	feWindowMain( igdeEditorModule &module );
+	feWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** \brief Clean up editor window. */
@@ -101,17 +101,17 @@ public:
 	//inline igdeIcon* GetIconFontNew() const{ return pIconFontNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionFontNew() const{ return pActionFontNew; }
-	inline igdeAction *GetActionFontOpen() const{ return pActionFontOpen; }
-	inline igdeAction *GetActionFontSave() const{ return pActionFontSave; }
-	inline igdeAction *GetActionFontSaveAs() const{ return pActionFontSaveAs; }
-	inline igdeAction *GetActionFontGenerate() const{ return pActionFontGenerate; }
+	inline igdeAction *GetActionFontNew() const{return pActionFontNew;}
+	inline igdeAction *GetActionFontOpen() const{return pActionFontOpen;}
+	inline igdeAction *GetActionFontSave() const{return pActionFontSave;}
+	inline igdeAction *GetActionFontSaveAs() const{return pActionFontSaveAs;}
+	inline igdeAction *GetActionFontGenerate() const{return pActionFontGenerate;}
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
+	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
+	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
+	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
+	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -119,26 +119,26 @@ public:
 	void ResetViews();
 	
 	/** Retrieves the configuration. */
-	inline feConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline feConfiguration &GetConfiguration() const{return *pConfiguration;}
 	/** Retrieves the clipboard. */
-	inline feClipboard &GetClipboard() const{ return *pClipboard; }
+	inline feClipboard &GetClipboard() const{return *pClipboard;}
 	/** Retrieves the load save system. */
-	inline feLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline feLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
 	
 	/** \breif Font generation font configuration. */
-	inline const igdeFont::sConfiguration &GetGenFontConfig() const{ return pGenFontConfig; }
+	inline const igdeFont::sConfiguration &GetGenFontConfig() const{return pGenFontConfig;}
 	
 	/** \brief Set font generation font configuration. */
-	void SetGenFontConfig( const igdeFont::sConfiguration &config );
+	void SetGenFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** Retrieves the rig. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline feFont *GetFont() const{return pFont;}
 	/** Sets the font. */
-	void SetFont( feFont *font );
+	void SetFont(feFont *font);
 	/** Creates a new font. */
 	void CreateNewFont();
 	/** Saves the font under the given file. */
-	void SaveFont( const char *filename );
+	void SaveFont(const char *filename);
 	
 	/** \brief Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
@@ -159,18 +159,18 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief List of unsaved open documents. */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/** \brief Request document to be saved. */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -189,8 +189,8 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFont( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
+	void pCreateMenuFont(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
 };
 
 #endif

@@ -40,21 +40,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkToggleWrapY::aeULinkToggleWrapY( aeLink *link ) :
-pLink( nullptr )
+aeULinkToggleWrapY::aeULinkToggleWrapY(aeLink *link) :
+pLink(nullptr)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Link set bone parameter" );
+	SetShortInfo("Link set bone parameter");
 	
 	pLink = link;
 	pLink->AddReference();
 }
 
 aeULinkToggleWrapY::~aeULinkToggleWrapY(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ aeULinkToggleWrapY::~aeULinkToggleWrapY(){
 ///////////////
 
 void aeULinkToggleWrapY::Undo(){
-	pLink->SetWrapY( ! pLink->GetWrapY() );
+	pLink->SetWrapY(! pLink->GetWrapY());
 }
 
 void aeULinkToggleWrapY::Redo(){
-	pLink->SetWrapY( ! pLink->GetWrapY() );
+	pLink->SetWrapY(! pLink->GetWrapY());
 }

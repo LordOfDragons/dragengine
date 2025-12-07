@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMASnippet::ceWPTTIMASnippet( ceWindowMain &windowMain,
-ceConversation &conversation, ceCASnippet *action ) :
-ceWPTTIMAction( windowMain, etActionSnippet, conversation, action )
+ceWPTTIMASnippet::ceWPTTIMASnippet(ceWindowMain &windowMain,
+ceConversation &conversation, ceCASnippet *action) :
+ceWPTTIMAction(windowMain, etActionSnippet, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionSnippet() );
+	SetIcon(windowMain.GetIconActionSnippet());
 	Update();
 }
 

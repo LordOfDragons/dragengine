@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent synthesizer. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline deSynthesizer *GetSynthesizer() const{return pSynthesizer;}
 	
 	/**
 	 * \brief Set parent synthesizer.
@@ -80,25 +80,25 @@ public:
 	 * This function has to be used only by the deSynthesizer class to
 	 * assign itself as a parent. Do not call this function directly.
 	 */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	/** \brief Effect is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if effect is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Strength. */
-	inline float GetStrength() const{ return pStrength; }
+	inline float GetStrength() const{return pStrength;}
 	
 	/** \brief Set strength. */
-	void SetStrength( float strength );
+	void SetStrength(float strength);
 	
 	
 	
 	/** \brief Strength target. */
-	inline deSynthesizerControllerTarget &GetTargetStrength(){ return pTargetStrength; }
-	inline const deSynthesizerControllerTarget &GetTargetStrength() const{ return pTargetStrength; }
+	inline deSynthesizerControllerTarget &GetTargetStrength(){return pTargetStrength;}
+	inline const deSynthesizerControllerTarget &GetTargetStrength() const{return pTargetStrength;}
 	/*@}*/
 	
 	
@@ -106,7 +106,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deSynthesizerEffectVisitor &visitor );
+	virtual void Visit(deSynthesizerEffectVisitor &visitor);
 	/*@}*/
 };
 

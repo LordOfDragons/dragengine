@@ -81,10 +81,10 @@ void deBaseGraphicComponent::MeshDirty(){
 
 
 
-void deBaseGraphicComponent::TextureChanged( int index, deComponentTexture &texture ){
+void deBaseGraphicComponent::TextureChanged(int index, deComponentTexture &texture){
 }
 
-int deBaseGraphicComponent::IndexOfTextureClosestTo( const decVector &vector, float radius ){
+int deBaseGraphicComponent::IndexOfTextureClosestTo(const decVector &vector, float radius){
 	return -1;
 }
 
@@ -97,10 +97,10 @@ void deBaseGraphicComponent::AnimatorChanged(){
 void deBaseGraphicComponent::LayerMaskChanged(){
 }
 
-void deBaseGraphicComponent::DecalAdded( deDecal *decal ){
+void deBaseGraphicComponent::DecalAdded(deDecal *decal){
 }
 
-void deBaseGraphicComponent::DecalRemoved( deDecal *decal ){
+void deBaseGraphicComponent::DecalRemoved(deDecal *decal){
 }
 
 void deBaseGraphicComponent::AllDecalsRemoved(){

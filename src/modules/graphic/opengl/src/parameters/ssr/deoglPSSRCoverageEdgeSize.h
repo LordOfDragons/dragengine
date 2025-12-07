@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPSSRCoverageEdgeSize( deGraphicOpenGl &ogl );
+	deoglPSSRCoverageEdgeSize(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPSSRCoverageEdgeSize();
 	/*@}*/
@@ -46,7 +46,7 @@ public:
 	/** Retrieves the current value. */
 	virtual float GetParameterFloat();
 	/** Sets the current value. */
-	virtual void SetParameterFloat( float value );
+	virtual void SetParameterFloat(float value);
 	/*@}*/
 };
 

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create script class. */
-	deClassInputSystem( deScriptingDragonScript &ds );
+	deClassInputSystem(deScriptingDragonScript &ds);
 	
 	/** Clean up script class. */
 	virtual ~deClassInputSystem();
@@ -62,16 +62,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Create class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/** Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** Cached input device count. */
 	int GetCachedDeviceCount();
 	
 	/** Cached device. */
-	dedsInputDevice *GetCachedDeviceAt( int index );
+	dedsInputDevice *GetCachedDeviceAt(int index);
 	
 	/** Invalidate cached devices. */
 	void InvalidCachedDevices();
@@ -79,7 +79,7 @@ public:
 	/** Frame update. */
 	void OnFrameUpdate();
 	
-	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
+	inline dsClass *GetClassInputEventKeyLocation() const{return pClsInputEventKeyLocation;}
 	/*@}*/
 	
 	
@@ -101,38 +101,38 @@ private:
 		dsClass *clsInputEventKeyLocation;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfGetCaptureInputDevices );
-	DEF_NATFUNC( nfSetCaptureInputDevices );
+	DEF_NATFUNC(nfGetCaptureInputDevices);
+	DEF_NATFUNC(nfSetCaptureInputDevices);
 	
-	DEF_NATFUNC( nfGetDeviceCount );
-	DEF_NATFUNC( nfGetDeviceAt );
-	DEF_NATFUNC( nfIndexOfDeviceWithID );
-	DEF_NATFUNC( nfIndexOfButtonWithID );
-	DEF_NATFUNC( nfIndexOfAxisWithID );
-	DEF_NATFUNC( nfIndexOfFeedbackWithID );
-	DEF_NATFUNC( nfGetButtonPressed );
-	DEF_NATFUNC( nfGetButtonTouched );
+	DEF_NATFUNC(nfGetDeviceCount);
+	DEF_NATFUNC(nfGetDeviceAt);
+	DEF_NATFUNC(nfIndexOfDeviceWithID);
+	DEF_NATFUNC(nfIndexOfButtonWithID);
+	DEF_NATFUNC(nfIndexOfAxisWithID);
+	DEF_NATFUNC(nfIndexOfFeedbackWithID);
+	DEF_NATFUNC(nfGetButtonPressed);
+	DEF_NATFUNC(nfGetButtonTouched);
 	DEF_NATFUNC(nfGetButtonNear);
-	DEF_NATFUNC( nfGetAxisValue );
-	DEF_NATFUNC( nfGetFeedbackValue );
-	DEF_NATFUNC( nfSetFeedbackValue );
-	DEF_NATFUNC( nfButtonMatchingKeyCode );
-	DEF_NATFUNC( nfButtonMatchingKeyChar );
-	DEF_NATFUNC( nfButtonMatchingKeyCode2 );
-	DEF_NATFUNC( nfButtonMatchingKeyChar2 );
+	DEF_NATFUNC(nfGetAxisValue);
+	DEF_NATFUNC(nfGetFeedbackValue);
+	DEF_NATFUNC(nfSetFeedbackValue);
+	DEF_NATFUNC(nfButtonMatchingKeyCode);
+	DEF_NATFUNC(nfButtonMatchingKeyChar);
+	DEF_NATFUNC(nfButtonMatchingKeyCode2);
+	DEF_NATFUNC(nfButtonMatchingKeyChar2);
 	
-	DEF_NATFUNC( nfGetParameterCount );
-	DEF_NATFUNC( nfGetParameterInfo );
-	DEF_NATFUNC( nfGetParameterInfo2 );
-	DEF_NATFUNC( nfGetParameterValue );
-	DEF_NATFUNC( nfSetParameterValue );
-	DEF_NATFUNC( nfSendCommand );
+	DEF_NATFUNC(nfGetParameterCount);
+	DEF_NATFUNC(nfGetParameterInfo);
+	DEF_NATFUNC(nfGetParameterInfo2);
+	DEF_NATFUNC(nfGetParameterValue);
+	DEF_NATFUNC(nfSetParameterValue);
+	DEF_NATFUNC(nfSendCommand);
 #undef DEF_NATFUNC
 };
 

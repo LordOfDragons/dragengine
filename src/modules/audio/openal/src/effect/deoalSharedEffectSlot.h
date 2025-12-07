@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create openal shared effect slot. */
-	deoalSharedEffectSlot( deoalAudioThread &audioThread );
+	deoalSharedEffectSlot(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up openal shared effect slot. */
@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/** Effect slot. */
 	const deoalEffectSlot::Ref &GetEffectSlot();
@@ -81,22 +81,22 @@ public:
 	int GetSpeakerCount() const;
 	
 	/** Speaker at index. */
-	deoalASpeaker *GetSpeakerAt( int index ) const;
+	deoalASpeaker *GetSpeakerAt(int index) const;
 	
 	/** Add speaker. */
-	void AddSpeaker( deoalASpeaker *speaker );
+	void AddSpeaker(deoalASpeaker *speaker);
 	
 	/** Remove speaker. */
-	void RemoveSpeaker( deoalASpeaker *speaker );
+	void RemoveSpeaker(deoalASpeaker *speaker);
 	
 	/** Remove all speakers. */
 	void RemoveAllSpeakers();
 	
 	/** Move speaker to first position and make it reference. */
-	void MoveSpeakerFront( deoalASpeaker *speaker );
+	void MoveSpeakerFront(deoalASpeaker *speaker);
 	
 	/** Reference speaker or nullptr. */
-	inline deoalASpeaker *GetReferenceSpeaker() const{ return pRefSpeaker; }
+	inline deoalASpeaker *GetReferenceSpeaker() const{return pRefSpeaker;}
 	
 	/** Update effect slot. */
 	void UpdateEffectSlot();

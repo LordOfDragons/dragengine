@@ -51,18 +51,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-feViewFIImage::feViewFIImage( feWindowMain &windowMain ) :
-igdeViewRenderWindow( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
+feViewFIImage::feViewFIImage(feWindowMain &windowMain) :
+igdeViewRenderWindow(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
 
-pFont( NULL ),
+pFont(NULL),
 
-pBorderSize( 2 ),
-pZoom( 100 ){
+pBorderSize(2),
+pZoom(100){
 }
 
 feViewFIImage::~feViewFIImage(){
-	if( pFont ){
+	if(pFont){
 		pFont->FreeReference();
 	}
 }
@@ -73,27 +73,27 @@ void feViewFIImage::ResetView(){
 }
 
 
-void feViewFIImage::SetFont( feFont *font ){
-	if( font == pFont ){
+void feViewFIImage::SetFont(feFont *font){
+	if(font == pFont){
 		return;
 	}
 	
-	if( pFont ){
+	if(pFont){
 		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
-	if( font ){
+	if(font){
 		font->AddReference();
 	}
 	
 	ResizeCanvas();
 }
 
-void feViewFIImage::SetZoom( int zoom ){
-	zoom = decMath::clamp( zoom, 100, 8000 );
-	if( zoom == pZoom ){
+void feViewFIImage::SetZoom(int zoom){
+	zoom = decMath::clamp(zoom, 100, 8000);
+	if(zoom == pZoom){
 		return;
 	}
 	
@@ -101,8 +101,8 @@ void feViewFIImage::SetZoom( int zoom ){
 	ResizeCanvas();
 }
 
-void feViewFIImage::SetOffset( const decPoint &offset ){
-	if( offset == pOffset ){
+void feViewFIImage::SetOffset(const decPoint &offset){
+	if(offset == pOffset){
 		return;
 	}
 	
@@ -113,9 +113,9 @@ void feViewFIImage::SetOffset( const decPoint &offset ){
 
 
 decPoint feViewFIImage::GetContentSize() const{
-	const decPoint borderSize( pBorderSize * 2, pBorderSize * 2 );
+	const decPoint borderSize(pBorderSize * 2, pBorderSize * 2);
 	
-	if( pCanvasFontImage ){
+	if(pCanvasFontImage){
 		return borderSize + pCanvasFontImage->GetSize();
 		
 	}else{
@@ -128,41 +128,41 @@ decPoint feViewFIImage::GetContentSize() const{
 void feViewFIImage::CreateCanvas(){
 	igdeViewRenderWindow::CreateCanvas();
 	
-	if( ! pCanvasImageBackground ){
-		pCanvasImageBackground.TakeOver( pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
-		pCanvasImageBackground->SetShapeType( deCanvasPaint::estRectangle );
-		pCanvasImageBackground->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 1.0f ) );
-		pCanvasImageBackground->SetLineColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		pCanvasImageBackground->SetThickness( 0.0f );
-		pCanvasImageBackground->SetOrder( 2.0f );
-		AddCanvas( pCanvasImageBackground );
+	if(! pCanvasImageBackground){
+		pCanvasImageBackground.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+		pCanvasImageBackground->SetShapeType(deCanvasPaint::estRectangle);
+		pCanvasImageBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f, 1.0f));
+		pCanvasImageBackground->SetLineColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+		pCanvasImageBackground->SetThickness(0.0f);
+		pCanvasImageBackground->SetOrder(2.0f);
+		AddCanvas(pCanvasImageBackground);
 	}
 	
-	if( ! pCanvasFontImage ){
-		pCanvasFontImage.TakeOver( pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage() );
-		pCanvasFontImage->SetOrder( 3.0f );
-		pCanvasFontImage->SetVisible( false );
-		AddCanvas( pCanvasFontImage );
+	if(! pCanvasFontImage){
+		pCanvasFontImage.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage());
+		pCanvasFontImage->SetOrder(3.0f);
+		pCanvasFontImage->SetVisible(false);
+		AddCanvas(pCanvasFontImage);
 	}
 	
-	if( ! pCanvasActiveGlyph ){
-		pCanvasActiveGlyph.TakeOver( pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
-		pCanvasActiveGlyph->SetShapeType( deCanvasPaint::estRectangle );
-		pCanvasActiveGlyph->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
-		pCanvasActiveGlyph->SetLineColor( decColor( 1.0f, 0.0f, 0.0f, 1.0f ) );
-		pCanvasActiveGlyph->SetThickness( 1.0f );
-		pCanvasActiveGlyph->SetOrder( 4.0f );
-		pCanvasActiveGlyph->SetTransparency( 0.75f );
-		pCanvasActiveGlyph->SetVisible( false );
-		AddCanvas( pCanvasActiveGlyph );
+	if(! pCanvasActiveGlyph){
+		pCanvasActiveGlyph.TakeOver(pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasPaint());
+		pCanvasActiveGlyph->SetShapeType(deCanvasPaint::estRectangle);
+		pCanvasActiveGlyph->SetFillColor(decColor(1.0f, 0.0f, 0.0f, 0.1f));
+		pCanvasActiveGlyph->SetLineColor(decColor(1.0f, 0.0f, 0.0f, 1.0f));
+		pCanvasActiveGlyph->SetThickness(1.0f);
+		pCanvasActiveGlyph->SetOrder(4.0f);
+		pCanvasActiveGlyph->SetTransparency(0.75f);
+		pCanvasActiveGlyph->SetVisible(false);
+		AddCanvas(pCanvasActiveGlyph);
 	}
 }
 
-void feViewFIImage::OnFrameUpdate( float elapsed ){
-	igdeViewRenderWindow::OnFrameUpdate( elapsed );
+void feViewFIImage::OnFrameUpdate(float elapsed){
+	igdeViewRenderWindow::OnFrameUpdate(elapsed);
 	
-	if( pFont ){
-		pFont->Update( elapsed );
+	if(pFont){
+		pFont->Update(elapsed);
 	}
 }
 
@@ -174,21 +174,21 @@ void feViewFIImage::OnResize(){
 
 
 void feViewFIImage::ResizeCanvas(){
-	if( ! GetRenderWindowCanvas() ){
+	if(! GetRenderWindowCanvas()){
 		return;
 	}
 	
 	const decPoint &parentSize = GetRenderWindowCanvas()->GetSize();
 	
-	if( ! pFont ){
-		if( pCanvasFontImage ){
-			pCanvasFontImage->SetVisible( false );
+	if(! pFont){
+		if(pCanvasFontImage){
+			pCanvasFontImage->SetVisible(false);
 		}
-		if( pCanvasImageBackground ){
-			pCanvasImageBackground->SetVisible( false );
+		if(pCanvasImageBackground){
+			pCanvasImageBackground->SetVisible(false);
 		}
-		if( pCanvasActiveGlyph ){
-			pCanvasActiveGlyph->SetVisible( false );
+		if(pCanvasActiveGlyph){
+			pCanvasActiveGlyph->SetVisible(false);
 		}
 		return;
 	}
@@ -196,61 +196,61 @@ void feViewFIImage::ResizeCanvas(){
 	const feFontImage &fontImage = *pFont->GetFontImage();
 	deImage * const engImage = fontImage.GetEngineImage();
 	
-	if( ! engImage ){
-		if( pCanvasFontImage ){
-			pCanvasFontImage->SetVisible( false );
+	if(! engImage){
+		if(pCanvasFontImage){
+			pCanvasFontImage->SetVisible(false);
 		}
-		if( pCanvasImageBackground ){
-			pCanvasImageBackground->SetVisible( false );
+		if(pCanvasImageBackground){
+			pCanvasImageBackground->SetVisible(false);
 		}
-		if( pCanvasActiveGlyph ){
-			pCanvasActiveGlyph->SetVisible( false );
+		if(pCanvasActiveGlyph){
+			pCanvasActiveGlyph->SetVisible(false);
 		}
 		return;
 	}
 	
-	const float zoom = ( float )pZoom * 0.01f;
+	const float zoom = (float)pZoom * 0.01f;
 	
-	const int imageWidth = ( int )( ( float )engImage->GetWidth() * zoom );
-	const int imageHeight = ( int )( ( float )engImage->GetHeight() * zoom );
-	const int imageOffsetX = ( parentSize.x - imageWidth ) / 2 + pOffset.x;
-	const int imageOffsetY = ( parentSize.y - imageHeight ) / 2 + pOffset.y;
+	const int imageWidth = (int)((float)engImage->GetWidth() * zoom);
+	const int imageHeight = (int)((float)engImage->GetHeight() * zoom);
+	const int imageOffsetX = (parentSize.x - imageWidth) / 2 + pOffset.x;
+	const int imageOffsetY = (parentSize.y - imageHeight) / 2 + pOffset.y;
 	
-	if( pCanvasFontImage ){
-		pCanvasFontImage->SetImage( engImage );
-		pCanvasFontImage->SetVisible( true );
-		pCanvasFontImage->SetPosition( decPoint( imageOffsetX, imageOffsetY ) );
-		pCanvasFontImage->SetSize( decPoint( imageWidth, imageHeight ) );
+	if(pCanvasFontImage){
+		pCanvasFontImage->SetImage(engImage);
+		pCanvasFontImage->SetVisible(true);
+		pCanvasFontImage->SetPosition(decPoint(imageOffsetX, imageOffsetY));
+		pCanvasFontImage->SetSize(decPoint(imageWidth, imageHeight));
 	}
 	
-	if( pCanvasImageBackground ){
-		pCanvasImageBackground->SetPosition( pCanvasFontImage->GetPosition() );
-		pCanvasImageBackground->SetSize( pCanvasFontImage->GetSize() );
-		pCanvasImageBackground->SetVisible( true );
+	if(pCanvasImageBackground){
+		pCanvasImageBackground->SetPosition(pCanvasFontImage->GetPosition());
+		pCanvasImageBackground->SetSize(pCanvasFontImage->GetSize());
+		pCanvasImageBackground->SetVisible(true);
 	}
 	
-	if( pCanvasActiveGlyph ){
+	if(pCanvasActiveGlyph){
 		const feFontGlyph * const activeGlyph = pFont->GetGlyphSelection().GetActiveGlyph();
 		
-		if( activeGlyph ){
-			pCanvasActiveGlyph->SetVisible( true );
-			pCanvasActiveGlyph->SetThickness( zoom );
+		if(activeGlyph){
+			pCanvasActiveGlyph->SetVisible(true);
+			pCanvasActiveGlyph->SetThickness(zoom);
 			
 			const int glyphU = activeGlyph->GetU();
 			const int glyphV = activeGlyph->GetV();
 			const int glyphWidth = activeGlyph->GetWidth();
 			const int glyphHeight = pFont->GetLineHeight();
 			
-			const int x1 = imageOffsetX + ( int )( ( float )glyphU * zoom );
-			const int y1 = imageOffsetY + ( int )( ( float )glyphV * zoom );
-			const int x2 = imageOffsetX + ( int )( ( float )( glyphU + glyphWidth ) * zoom );
-			const int y2 = imageOffsetY + ( int )( ( float )( glyphV + glyphHeight ) * zoom );
+			const int x1 = imageOffsetX + (int)((float)glyphU * zoom);
+			const int y1 = imageOffsetY + (int)((float)glyphV * zoom);
+			const int x2 = imageOffsetX + (int)((float)(glyphU + glyphWidth) * zoom);
+			const int y2 = imageOffsetY + (int)((float)(glyphV + glyphHeight) * zoom);
 			
-			pCanvasActiveGlyph->SetPosition( decPoint( x1, y1 ) );
-			pCanvasActiveGlyph->SetSize( decPoint( x2 - x1, y2 - y1 ) );
+			pCanvasActiveGlyph->SetPosition(decPoint(x1, y1));
+			pCanvasActiveGlyph->SetSize(decPoint(x2 - x1, y2 - y1));
 			
 		}else{
-			pCanvasActiveGlyph->SetVisible( false );
+			pCanvasActiveGlyph->SetVisible(false);
 		}
 	}
 }

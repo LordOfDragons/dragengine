@@ -45,24 +45,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-dethOggReader::dethOggReader( deVideoTheora &module, decBaseFileReader &reader ) :
-pModule( module ),
+dethOggReader::dethOggReader(deVideoTheora &module, decBaseFileReader &reader) :
+pModule(module),
 
-pReader( reader ),
-pStream( NULL ),
+pReader(reader),
+pStream(NULL),
 
-pCurFrame( 0 )
+pCurFrame(0)
 {
-	if( ogg_sync_init( &pSyncState ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(ogg_sync_init(&pSyncState) != 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 dethOggReader::~dethOggReader(){
-	if( pStream ){
+	if(pStream){
 		delete pStream;
 	}
-	ogg_sync_clear( &pSyncState );
+	ogg_sync_clear(&pSyncState);
 }
 
 
@@ -70,36 +70,36 @@ dethOggReader::~dethOggReader(){
 // Management
 ///////////////
 
-void dethOggReader::ReadStreamHeaders( dethInfos &infos ){
+void dethOggReader::ReadStreamHeaders(dethInfos &infos){
 	ogg_int64_t maxGranulePos = 0;
 	ogg_int64_t pageGranulePos;
 	ogg_page page;
 	int serial;
 	
-	while( /* ! infos.GetHeaderFinished() && */ ReadPage( page ) ){
-		serial = ogg_page_serialno( &page );
+	while(/* ! infos.GetHeaderFinished() && */ ReadPage(page)){
+		serial = ogg_page_serialno(&page);
 		
-		if( ogg_page_bos( &page ) ){
-			if( ! pStream ){
-				pStream = new dethStreamReader( this, serial );
+		if(ogg_page_bos(&page)){
+			if(! pStream){
+				pStream = new dethStreamReader(this, serial);
 				//pModule.LogInfoFormat( "Stream %i: Testing for Theora", serial );
 			}
 			
 		}else{
-			if( ! pStream ) break;
+			if(! pStream) break;
 			//pModule.LogInfoFormat( "Stream %i: additional page", serial );
 		}
 		
-		if( pStream && serial == pStream->GetSerial() ){
-			pageGranulePos = ogg_page_granulepos( &page );
-			if( pageGranulePos > maxGranulePos ){
+		if(pStream && serial == pStream->GetSerial()){
+			pageGranulePos = ogg_page_granulepos(&page);
+			if(pageGranulePos > maxGranulePos){
 				maxGranulePos = pageGranulePos;
 			}
 			
-			if( ! infos.GetHeaderFinished() ){
-				pStream->AddPage( page );
+			if(! infos.GetHeaderFinished()){
+				pStream->AddPage(page);
 				
-				if( ! pStream->ReadTheoraHeader( infos ) ){
+				if(! pStream->ReadTheoraHeader(infos)){
 					//pModule.LogWarnFormat( "Stream %i: Not a Theora stream, ignoring it", serial );
 					delete pStream;
 					pStream = NULL;
@@ -108,77 +108,77 @@ void dethOggReader::ReadStreamHeaders( dethInfos &infos ){
 		}
 	}
 	
-	if( infos.GetHeaderFinished() ){
+	if(infos.GetHeaderFinished()){
 		const th_info &tinfo = infos.GetInfo();
 		decColorMatrix3 colorMatrix;
 		
-		infos.SetWidth( tinfo.pic_width );
-		infos.SetHeight( tinfo.pic_height );
-		infos.SetFrameCount( pStream ? pStream->GranuleToFrame( maxGranulePos ) + 1 : 0 );
-		infos.SetFrameRate( ( float )tinfo.fps_numerator / ( float )tinfo.fps_denominator );
+		infos.SetWidth(tinfo.pic_width);
+		infos.SetHeight(tinfo.pic_height);
+		infos.SetFrameCount(pStream ? pStream->GranuleToFrame(maxGranulePos) + 1 : 0);
+		infos.SetFrameRate((float)tinfo.fps_numerator / (float)tinfo.fps_denominator);
 		
-		DefaultColorConversionMatrix( colorMatrix );
-		infos.SetColorConversionMatrix( colorMatrix );
+		DefaultColorConversionMatrix(colorMatrix);
+		infos.SetColorConversionMatrix(colorMatrix);
 		
-		switch( tinfo.pixel_fmt ){
+		switch(tinfo.pixel_fmt){
 		case TH_PF_420:
 		case TH_PF_422:
 		case TH_PF_444:
-			infos.SetComponentCount( 3 );
+			infos.SetComponentCount(3);
 			break;
 			
 		default:
-			pModule.LogErrorFormat( "Unsupported Pixel Format %i", tinfo.pixel_fmt );
+			pModule.LogErrorFormat("Unsupported Pixel Format %i", tinfo.pixel_fmt);
 		}
 	}
 }
 
-int dethOggReader::ReadFromFile( char *buffer, int size ){
+int dethOggReader::ReadFromFile(char *buffer, int size){
 	int remaining = pReader.GetLength() - pReader.GetPosition();
 	
-	if( size > remaining ){
+	if(size > remaining){
 		size = remaining;
 	}
 	
-	if( size > 0 ){
-		pReader.Read( buffer, size );
+	if(size > 0){
+		pReader.Read(buffer, size);
 	}
 	
 	return size;
 }
 
-bool dethOggReader::ReadPage( ogg_page &page ){
+bool dethOggReader::ReadPage(ogg_page &page){
 	int bufferSize = 4096;
 	char *buffer = NULL;
 	int readBytes;
 	
 	try{
-		while( ogg_sync_pageout( &pSyncState, &page ) != 1 ){
-			buffer = ogg_sync_buffer( &pSyncState, bufferSize );
-			if( ! buffer ){
-				DETHROW( deeOutOfMemory );
+		while(ogg_sync_pageout(&pSyncState, &page) != 1){
+			buffer = ogg_sync_buffer(&pSyncState, bufferSize);
+			if(! buffer){
+				DETHROW(deeOutOfMemory);
 			}
 			
-			readBytes = ReadFromFile( buffer, bufferSize );
-			if( readBytes == 0 ){
+			readBytes = ReadFromFile(buffer, bufferSize);
+			if(readBytes == 0){
 				return false; // end of file
 			}
 			
-			if( ogg_sync_wrote( &pSyncState, readBytes ) != 0 ){
-				DETHROW( deeOutOfMemory );
+			if(ogg_sync_wrote(&pSyncState, readBytes) != 0){
+				DETHROW(deeOutOfMemory);
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		throw;
 	}
 	
 	return true;
 }
 
-bool dethOggReader::ReadPage( ogg_page &page, int serial ){
-	while( ReadPage( page ) ){
-		if( ogg_page_serialno( &page ) == serial ){
+bool dethOggReader::ReadPage(ogg_page &page, int serial){
+	while(ReadPage(page)){
+		if(ogg_page_serialno(&page) == serial){
 			return true;
 		}
 	}
@@ -187,7 +187,7 @@ bool dethOggReader::ReadPage( ogg_page &page, int serial ){
 }
 
 void dethOggReader::Rewind(){
-	if( pStream ){
+	if(pStream){
 		int serial = pStream->GetSerial();
 		ogg_int64_t granulePacket;
 		bool keepRunning = true;
@@ -195,40 +195,40 @@ void dethOggReader::Rewind(){
 		ogg_page page;
 		
 		// reset the sync and stream states
-		ogg_sync_reset( &pSyncState );
+		ogg_sync_reset(&pSyncState);
 		pStream->Reset();
 		
 		// rewind to the beginning of the file. an optimization would be to store
 		// the file position of the first page that contained video data
-		pReader.SetPosition( 0 );
+		pReader.SetPosition(0);
 		
 		// seek until the first page is found which contains data packets
 		// of the right stream. once found add it to the decoder
-		while( keepRunning && ReadPage( page ) ){
-			if( ogg_page_serialno( &page ) == serial ){
-				pStream->AddPage( page );
+		while(keepRunning && ReadPage(page)){
+			if(ogg_page_serialno(&page) == serial){
+				pStream->AddPage(page);
 				
-				while( pStream->PeekPacket( packet ) == 1 ){
-					if( th_packet_isheader( &packet ) == 0 ){
-						pStream->AddPacketToDecoder( packet, granulePacket );
+				while(pStream->PeekPacket(packet) == 1){
+					if(th_packet_isheader(&packet) == 0){
+						pStream->AddPacketToDecoder(packet, granulePacket);
 						keepRunning = false;
 						break;
 					}
 					
-					pStream->SubmitPacket( packet );
+					pStream->SubmitPacket(packet);
 				}
 			}
 		}
 		
 		// reset the granule position
-		pStream->SetGranulePosition( pStream->FrameToGranule( 0, 0 ) );
+		pStream->SetGranulePosition(pStream->FrameToGranule(0, 0));
 	}
 	
 	pCurFrame = 0;
 }
 
-void dethOggReader::SeekFrame( int frame ){
-	if( pStream ){
+void dethOggReader::SeekFrame(int frame){
+	if(pStream){
 		int serial = pStream->GetSerial();
 		ogg_int64_t granulePacket;
 		ogg_packet packet;
@@ -236,22 +236,22 @@ void dethOggReader::SeekFrame( int frame ){
 		int result;
 		
 		// if the seek goes backwards restart from the beginning of the file
-		if( frame < pCurFrame ){
+		if(frame < pCurFrame){
 			Rewind();
 		}
 		
 		// read packets until we find the one with the matching frame number
-		while( pCurFrame < frame ){
-			if( pStream->ReadPacket( packet ) == 1 ){
-				result = pStream->AddPacketToDecoder( packet, granulePacket );
+		while(pCurFrame < frame){
+			if(pStream->ReadPacket(packet) == 1){
+				result = pStream->AddPacketToDecoder(packet, granulePacket);
 				
-				if( result == 0 || result == TH_DUPFRAME ){
+				if(result == 0 || result == TH_DUPFRAME){
 					pCurFrame++;
 				}
 				
 			}else{
-				if( ! ReadPage( page, serial ) ) break;
-				pStream->AddPage( page );
+				if(! ReadPage(page, serial)) break;
+				pStream->AddPage(page);
 			}
 		}
 	}
@@ -259,7 +259,7 @@ void dethOggReader::SeekFrame( int frame ){
 
 
 
-void dethOggReader::DefaultColorConversionMatrix( decColorMatrix3 &matrix ){
+void dethOggReader::DefaultColorConversionMatrix(decColorMatrix3 &matrix){
 	// offsets: 16, 128, 128
 	// exculsions: 219, 224, 224
 	// kr = 0.299
@@ -310,10 +310,10 @@ void dethOggReader::DefaultColorConversionMatrix( decColorMatrix3 &matrix ){
 	float kr = 0.299f;
 	float kb = 0.114f;
 	
-	float c1 = 2.0f * ( 1.0f - kr );
-	float c2 = -2.0f * ( 1.0f - kb ) * kb / ( 1.0f - kb - kr );
-	float c3 = -2.0f * ( 1.0f - kr ) * kr / ( 1.0f - kb - kr );
-	float c4 = 2.0f * ( 1.0f - kb );
+	float c1 = 2.0f * (1.0f - kr);
+	float c2 = -2.0f * (1.0f - kb) * kb / (1.0f - kb - kr);
+	float c3 = -2.0f * (1.0f - kr) * kr / (1.0f - kb - kr);
+	float c4 = 2.0f * (1.0f - kb);
 	
 	// calculate matrix from parameters
 	matrix.a11 = 1.0f / excY;

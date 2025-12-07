@@ -88,8 +88,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerFlow( igdeEnvironment &environment, eAxis axis,
-		eStretching stretching = esNone, int spacing = 0 );
+	igdeContainerFlow(igdeEnvironment &environment, eAxis axis,
+		eStretching stretching = esNone, int spacing = 0);
 	
 	
 	
@@ -109,18 +109,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Layout axis. */
-	inline eAxis GetAxis() const{ return pAxis; }
+	inline eAxis GetAxis() const{return pAxis;}
 	
 	/** \brief Stretching. */
-	inline eStretching GetStretching() const{ return pStretching; }
+	inline eStretching GetStretching() const{return pStretching;}
 	
 	/** \brief Spacing. */
-	inline int GetSpacing() const{ return pSpacing; }
+	inline int GetSpacing() const{return pSpacing;}
 	
 	
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	/*@}*/
 	
 	

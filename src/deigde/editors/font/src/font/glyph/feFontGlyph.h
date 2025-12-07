@@ -62,57 +62,57 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent font or NULL if not assigned. */
-	inline feFont *GetParentFont() const{ return pParentFont; }
+	inline feFont *GetParentFont() const{return pParentFont;}
 	/** Sets the parent font or NULL it not assigned. */
-	void SetParentFont( feFont *font );
+	void SetParentFont(feFont *font);
 	
 	/** Retrieves the code. */
-	inline int GetCode() const{ return pCode; }
+	inline int GetCode() const{return pCode;}
 	/** Sets the code. */
-	void SetCode( int code );
+	void SetCode(int code);
 	/** Retrieves the u position. */
-	inline int GetU() const{ return pU; }
+	inline int GetU() const{return pU;}
 	/** Sets the u position. */
-	void SetU( int u );
+	void SetU(int u);
 	/** Retrieves the v position. */
-	inline int GetV() const{ return pV; }
+	inline int GetV() const{return pV;}
 	/** Sets the v position. */
-	void SetV( int v );
+	void SetV(int v);
 	/** Retrieves the width. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	/** Sets the width. */
-	void SetWidth( int width );
+	void SetWidth(int width);
 	
 	/** Height. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** Set height. */
 	void SetHeight(int height);
 	
 	/** Retrieves the bearing in x direction. */
-	inline int GetBearing() const{ return pBearing; }
+	inline int GetBearing() const{return pBearing;}
 	/** Sets the bearing in x direction. */
-	void SetBearing( int bearing );
+	void SetBearing(int bearing);
 	
 	/** Bearing in y direction. */
-	inline int GetBearingY() const{ return pBearingY; }
+	inline int GetBearingY() const{return pBearingY;}
 	
 	/** Set bearing in y direction. */
 	void SetBearingY(int bearing);
 	
 	/** Retrieves the advance in x direction. */
-	inline int GetAdvance() const{ return pAdvance; }
+	inline int GetAdvance() const{return pAdvance;}
 	/** Sets the advance in x direction. */
-	void SetAdvance( int advance );
+	void SetAdvance(int advance);
 	
 	/** Determines if the glyph is the active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	/** Sets if the glyph is the active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	/** Determines if the glyph is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	/** Sets if the glyph is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** Creates a copy of this glyph. */
 	feFontGlyph *Copy() const;

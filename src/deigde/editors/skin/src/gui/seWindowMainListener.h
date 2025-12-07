@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWindowMainListener( seWindowMain &window );
+	seWindowMainListener(seWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	~seWindowMainListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( seSkin *skin );
+	virtual void StateChanged(seSkin *skin);
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( seSkin *skin );
+	virtual void UndoChanged(seSkin *skin);
 	
 	/** \brief Textures have been added or removed. */
-	virtual void TextureStructureChanged ( seSkin *skin );
+	virtual void TextureStructureChanged (seSkin *skin);
 	
 	/** \brief Properties have been added or removed. */
-	virtual void PropertyStructureChanged ( seSkin *skin, seTexture *texture );
+	virtual void PropertyStructureChanged (seSkin *skin, seTexture *texture);
 	/*@}*/
 };
 

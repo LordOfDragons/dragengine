@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a collider attachment. */
-	debpColliderAttachment( deColliderAttachment *attachment );
+	debpColliderAttachment(deColliderAttachment *attachment);
 	
 	/** Clean up the collider attachment. */
 	~debpColliderAttachment();
@@ -62,43 +62,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the collider attachment. */
-	inline deColliderAttachment *GetAttachment() const{ return pAttachment; }
+	inline deColliderAttachment *GetAttachment() const{return pAttachment;}
 	
 	/** Track bone index. */
-	inline int GetTrackBone() const{ return pTrackBone; }
+	inline int GetTrackBone() const{return pTrackBone;}
 	
 	/** Set the track bone index. */
-	void SetTrackBone( int boneIndex );
+	void SetTrackBone(int boneIndex);
 	
 	/** Set the number of bone mappings. */
-	void SetBoneMappingCount( int count );
+	void SetBoneMappingCount(int count);
 	
 	/** Bone mapping by index. */
-	int GetBoneMappingAt( int index ) const;
+	int GetBoneMappingAt(int index) const;
 	
 	/** Set bone mapping by index. */
-	void SetBoneMappingAt( int index, int boneIndex );
+	void SetBoneMappingAt(int index, int boneIndex);
 	
 	/** Set the number of vertex position set mappings. */
-	void SetVpsMappingCount( int count );
+	void SetVpsMappingCount(int count);
 	
 	/** Vertex position set mapping by index. */
-	int GetVpsMappingAt( int index ) const;
+	int GetVpsMappingAt(int index) const;
 	
 	/** Set vertex position set mapping by index. */
-	void SetVpsMappingAt( int index, int boneIndex );
+	void SetVpsMappingAt(int index, int boneIndex);
 	
 	/** Determine if mapping is dirty. */
-	inline bool GetDirtyMappings() const{ return pDirtyMappings; }
+	inline bool GetDirtyMappings() const{return pDirtyMappings;}
 	
 	/** Set if mapping is dirty. */
-	void SetDirtyMappings( bool dirtyMappings );
+	void SetDirtyMappings(bool dirtyMappings);
 	
 	/** Relative movement accumulation. */
-	inline const decDMatrix &GetAccumRelMoveMatrix() const{ return pAccumRelMoveMatrix; }
+	inline const decDMatrix &GetAccumRelMoveMatrix() const{return pAccumRelMoveMatrix;}
 	
 	/** Set relative movement accumulation. */
-	void SetAccumRelMoveMatrix( const decDMatrix &matrix );
+	void SetAccumRelMoveMatrix(const decDMatrix &matrix);
 	
 	
 	
@@ -112,29 +112,29 @@ public:
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Reposition( const decDMatrix &matrix, const decVector &velocity, bool changeNotify );
+	void Reposition(const decDMatrix &matrix, const decVector &velocity, bool changeNotify);
 	
 	/**
 	 * Reposition attached resource using a matrix modified by the local matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Reposition( const decDVector &position, const decQuaternion &orientation,
-		const decDVector &scaling, const decVector &velocity, bool changeNotify );
+	void Reposition(const decDVector &position, const decQuaternion &orientation,
+		const decDVector &scaling, const decVector &velocity, bool changeNotify);
 	
 	/**
 	 * Transform attached resource using a relative matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Transform( const decDMatrix &matrix, const decVector &velocity, bool changeNotify );
+	void Transform(const decDMatrix &matrix, const decVector &velocity, bool changeNotify);
 	/*@}*/
 	
 private:
 	void pCleanUp();
 	void pPrepareLocalMatrix();
-	void pRepositionResource( const decDVector &position, const decQuaternion &orientation,
-		const decDVector &scaling, const decVector &velocity, bool changeNotify );
+	void pRepositionResource(const decDVector &position, const decQuaternion &orientation,
+		const decDVector &scaling, const decVector &velocity, bool changeNotify);
 };
 
 #endif

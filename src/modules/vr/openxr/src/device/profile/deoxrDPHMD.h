@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHMD( deoxrInstance &instance );
+	deoxrDPHMD(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */

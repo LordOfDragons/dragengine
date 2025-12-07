@@ -83,27 +83,27 @@ private:
 	
 public:
 	// constructor, destructor
-	debpColliderVolume( dePhysicsBullet *bullet, deColliderVolume &collider );
+	debpColliderVolume(dePhysicsBullet *bullet, deColliderVolume &collider);
 	~debpColliderVolume();
 	// information
-	inline const decVector &GetPredictedDisplacement() const{ return pPredictDisp; }
-	inline const decVector &GetPredictedRotation() const{ return pPredictRot; }
+	inline const decVector &GetPredictedDisplacement() const{return pPredictDisp;}
+	inline const decVector &GetPredictedRotation() const{return pPredictRot;}
 	// physics management
-	inline deColliderVolume &GetColliderVolume() const{ return pColliderVolume; }
+	inline deColliderVolume &GetColliderVolume() const{return pColliderVolume;}
 	
 	/** Retrieves the list of shapes. */
-	inline debpShapeList &GetShapes(){ return pShapes; }
-	inline const debpShapeList &GetShapes() const{ return pShapes; }
+	inline debpShapeList &GetShapes(){return pShapes;}
+	inline const debpShapeList &GetShapes() const{return pShapes;}
 	
 	/** Retrieves the physics body. */
-	inline debpPhysicsBody *GetPhysicsBody() const{ return pPhyBody; }
+	inline debpPhysicsBody *GetPhysicsBody() const{return pPhyBody;}
 	/** Determines if the collider has to be simulated using fake dynamics. */
-	inline bool GetUseFakeDynamics() const{ return pUseFakeDynamics; }
+	inline bool GetUseFakeDynamics() const{return pUseFakeDynamics;}
 	
 	/** Retrieves the gravity. */
-	inline const decVector &GetGravity() const{ return pGravity; }
+	inline const decVector &GetGravity() const{return pGravity;}
 	/** Retrieves the linear velocity. */
-	inline const decVector &GetLinearVelocity() const{ return pLinVelo; }
+	inline const decVector &GetLinearVelocity() const{return pLinVelo;}
 	
 	/** \brief Mark shapes dirty. */
 	void DirtyBPShape();
@@ -112,20 +112,20 @@ public:
 	void DirtyAttachments();
 	
 	/** Applies the gravity to the linear velocity for kinematic simulation. */
-	void ApplyGravity( float elapsed );
+	void ApplyGravity(float elapsed);
 	/** Predict the displacement and rotation. */
-	void PredictDisplacement( float elapsed );
+	void PredictDisplacement(float elapsed);
 	/** Interpolate position using the predicted displacement and rotation. */
-	void InterpolatePosition( float percentage );
+	void InterpolatePosition(float percentage);
 	/** Applies the predicted displacement and rotation to the position. */
 	void ApplyDisplacement();
 	/** Apply fake dynamics response. */
-	void ApplyFakeDynamicResponse( deCollisionInfo &colinfo );
+	void ApplyFakeDynamicResponse(deCollisionInfo &colinfo);
 	
 	/** Updates shapes with the current matirx. */
 	void UpdateShapes() override;
 	/** Updates shapes using a transformation matrix. */
-	void UpdateShapesWithMatrix( const decDMatrix &transformation ) override;
+	void UpdateShapesWithMatrix(const decDMatrix &transformation) override;
 	/** Updates the shape extends. */
 	void UpdateShapeExtends();
 	
@@ -146,9 +146,9 @@ public:
 	bool PrepareStaticCollisionTest() override;
 	
 	/** \brief Retrieves the position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	/** \brief Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** Create physics body if not existing already. */
 	void CreateBody() override;
@@ -161,10 +161,10 @@ public:
 	/** Prepare for a simulation step. */
 	void PrepareForStep() override;
 	/** Detect collision for a custom collision step. */
-	void DetectCustomCollision( float elapsed ) override;
+	void DetectCustomCollision(float elapsed) override;
 	
 	/** Prepares the collision detection. */
-	void PrepareDetection( float elapsed ) override;
+	void PrepareDetection(float elapsed) override;
 	/** Finished the collision detection updating the collider and send notifications. */
 	void FinishDetection() override;
 	
@@ -188,17 +188,17 @@ public:
 	/** \name Force and Impuls */
 	/*@{*/
 	/** \brief Applies an impuls at the center mass point. */
-	void ApplyImpuls( const decVector &impuls ) override;
+	void ApplyImpuls(const decVector &impuls) override;
 	/** \brief Applies an impuls relative to the collider position. */
-	void ApplyImpulsAt( const decVector &impuls, const decVector &position ) override;
+	void ApplyImpulsAt(const decVector &impuls, const decVector &position) override;
 	/** \brief Applies a torque impuls at the center mass point. */
-	void ApplyTorqueImpuls( const decVector &torqueImpuls ) override;
+	void ApplyTorqueImpuls(const decVector &torqueImpuls) override;
 	/** \brief Applies a force at the center mass point. */
-	void ApplyForce( const decVector &force ) override;
+	void ApplyForce(const decVector &force) override;
 	/** \brief Applies a force relative to the collider position. */
-	void ApplyForceAt( const decVector &force, const decVector &position )override;
+	void ApplyForceAt(const decVector &force, const decVector &position)override;
 	/** \brief Applies a torque force at the center mass point. */
-	void ApplyTorque( const decVector &torque ) override;
+	void ApplyTorque(const decVector &torque) override;
 	/*@}*/
 	
 	/** @name Notifications */
@@ -242,13 +242,13 @@ public:
 	
 	
 	/** \brief Attachment added. */
-	void AttachmentAdded( int index, deColliderAttachment *attachment ) override;
+	void AttachmentAdded(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief Attachment changed. */
-	void AttachmentChanged( int index, deColliderAttachment *attachment ) override;
+	void AttachmentChanged(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief Attachment removed. */
-	void AttachmentRemoved( int index, deColliderAttachment *attachment ) override;
+	void AttachmentRemoved(int index, deColliderAttachment *attachment) override;
 	
 	/** \brief All attachments removed. */
 	void AllAttachmentsRemoved() override;
@@ -264,10 +264,10 @@ public:
 	
 	
 	/** \brief Constraint added. */
-	void ConstraintAdded( int index, deColliderConstraint *constraint ) override;
+	void ConstraintAdded(int index, deColliderConstraint *constraint) override;
 	
 	/** \brief Constraint changed. */
-	void ConstraintChanged( int index, deColliderConstraint *constraint ) override;
+	void ConstraintChanged(int index, deColliderConstraint *constraint) override;
 	/*@}*/
 	
 	
@@ -275,7 +275,7 @@ public:
 	/** \name Collision Detection */
 	/*@{*/
 	/** \brief Test if a point is located inside the collider. */
-	bool PointInside( const decDVector &point ) override;
+	bool PointInside(const decDVector &point) override;
 	
 	/**
 	 * \brief Test ray for collision with the collider.
@@ -288,7 +288,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void RayHits( const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener ) override;
+	void RayHits(const decDVector &rayOrigin, const decVector &rayDirection, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test collider for collision with collider.
@@ -300,7 +300,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderHits( deCollider *engCollider, deBaseScriptingCollider *listener ) override;
+	void ColliderHits(deCollider *engCollider, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test moving collider for collision with collider.
@@ -312,7 +312,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderMoveHits( deCollider *engCollider, const decVector &displacement, deBaseScriptingCollider *listener ) override;
+	void ColliderMoveHits(deCollider *engCollider, const decVector &displacement, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test rotating collider for collision with collider.
@@ -324,7 +324,7 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderRotateHits( deCollider *engCollider, const decVector &rotation, deBaseScriptingCollider *listener ) override;
+	void ColliderRotateHits(deCollider *engCollider, const decVector &rotation, deBaseScriptingCollider *listener) override;
 	
 	/**
 	 * \brief Test moving and rotating collider for collision with collider.
@@ -336,8 +336,8 @@ public:
 	 * Has to be overwritten by the physics system to provide this test. The default
 	 * implementation does nothing at all.
 	 */
-	void ColliderMoveRotateHits( deCollider *engCollider, const decVector &displacement,
-		const decVector &rotation, deBaseScriptingCollider *listener ) override;
+	void ColliderMoveRotateHits(deCollider *engCollider, const decVector &displacement,
+		const decVector &rotation, deBaseScriptingCollider *listener) override;
 	/*@}*/
 	
 private:
@@ -362,7 +362,7 @@ private:
 	
 	void pUpdateBPShape();
 	debpBulletShape *pCreateBPShape();
-	void pUpdateAttachments( bool force );
+	void pUpdateAttachments(bool force);
 	void pUpdateIsMoving();
 };
 

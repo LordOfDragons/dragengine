@@ -50,14 +50,14 @@ deNavigationSpaceRoom::~deNavigationSpaceRoom(){
 // Management
 ///////////////
 
-void deNavigationSpaceRoom::SetFrontWallCount( unsigned short count ){
+void deNavigationSpaceRoom::SetFrontWallCount(unsigned short count){
 	pFrontWallCount = count;
 }
 
-void deNavigationSpaceRoom::SetBackWallCount( unsigned short count ){
+void deNavigationSpaceRoom::SetBackWallCount(unsigned short count){
 	pBackWallCount = count;
 }
 
-void deNavigationSpaceRoom::SetType( unsigned short type ){
+void deNavigationSpaceRoom::SetType(unsigned short type){
 	pType = type;
 }

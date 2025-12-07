@@ -58,17 +58,17 @@ public:
 	/** @name Visiting */
 	/*@{*/
 	/** Visits a collision sphere. */
-	virtual void VisitSphere( decDCollisionSphere *sphere );
+	virtual void VisitSphere(decDCollisionSphere *sphere);
 	/** Visits a collision cylinder. */
-	virtual void VisitCylinder( decDCollisionCylinder *cylinder );
+	virtual void VisitCylinder(decDCollisionCylinder *cylinder);
 	/** Visits a collision capsule. */
-	virtual void VisitCapsule( decDCollisionCapsule *capsule );
+	virtual void VisitCapsule(decDCollisionCapsule *capsule);
 	/** Visits a collision box. */
-	virtual void VisitBox( decDCollisionBox *box );
+	virtual void VisitBox(decDCollisionBox *box);
 	/** Visits a collision triangle. */
-	virtual void VisitTriangle( decDCollisionTriangle *triangle );
+	virtual void VisitTriangle(decDCollisionTriangle *triangle);
 	/** Visits a collision frustum. */
-	virtual void VisitFrustum( decDCollisionFrustum *frustum );
+	virtual void VisitFrustum(decDCollisionFrustum *frustum);
 	/*@}*/
 	
 };

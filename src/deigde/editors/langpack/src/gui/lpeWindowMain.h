@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create window. */
-	lpeWindowMain( igdeEditorModule &module );
+	lpeWindowMain(igdeEditorModule &module);
 	
 protected:
 	/** Clean up window. */
@@ -103,64 +103,64 @@ public:
 	//inline igdeIcon* GetIconLangPackNew() const{ return pIconLangPackNew; }
 	
 	/** Actions. */
-	inline igdeAction *GetActionLangPackNew() const{ return pActionLangPackNew; }
-	inline igdeAction *GetActionLangPackOpen() const{ return pActionLangPackOpen; }
-	inline igdeAction *GetActionLangPackSave() const{ return pActionLangPackSave; }
-	inline igdeAction *GetActionLangPackSaveAs() const{ return pActionLangPackSaveAs; }
-	inline igdeAction *GetActionLangPackOpenRef() const{ return pActionLangPackOpenRef; }
-	inline igdeAction *GetActionEntryAdd() const{ return pActionEntryAdd; }
-	inline igdeAction *GetActionEntryRemove() const{ return pActionEntryRemove; }
-	inline igdeAction *GetActionEntryNextMissing() const{ return pActionEntryNextMissing; }
+	inline igdeAction *GetActionLangPackNew() const{return pActionLangPackNew;}
+	inline igdeAction *GetActionLangPackOpen() const{return pActionLangPackOpen;}
+	inline igdeAction *GetActionLangPackSave() const{return pActionLangPackSave;}
+	inline igdeAction *GetActionLangPackSaveAs() const{return pActionLangPackSaveAs;}
+	inline igdeAction *GetActionLangPackOpenRef() const{return pActionLangPackOpenRef;}
+	inline igdeAction *GetActionEntryAdd() const{return pActionEntryAdd;}
+	inline igdeAction *GetActionEntryRemove() const{return pActionEntryRemove;}
+	inline igdeAction *GetActionEntryNextMissing() const{return pActionEntryNextMissing;}
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline igdeActionUndo *GetActionEditUndo() const{return pActionEditUndo;}
+	inline igdeActionRedo *GetActionEditRedo() const{return pActionEditRedo;}
+	inline igdeAction *GetActionEditCut() const{return pActionEditCut;}
+	inline igdeAction *GetActionEditCopy() const{return pActionEditCopy;}
+	inline igdeAction *GetActionEditPaste() const{return pActionEditPaste;}
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
 	
 	/** Configuration. */
-	inline lpeConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline lpeConfiguration &GetConfiguration() const{return *pConfiguration;}
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){return pClipboard;}
 	
 	/** Load save system. */
-	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
 	
 	/** Language pack. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	inline lpeLangPack *GetLangPack() const{return pLangPack;}
 	
 	/** Set language pack. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** Create new language pack. */
 	void CreateNewLangPack();
 	
 	/** Save language pack under the given file. */
-	void SaveLangPack( const char *filename );
+	void SaveLangPack(const char *filename);
 	
 	/** Get reference language pack. */
 	lpeLangPack *GetReferenceLangPack() const;
 	
 	/** Set reference language pack. */
-	void SetReferenceLangPack( lpeLangPack *langpack );
+	void SetReferenceLangPack(lpeLangPack *langpack);
 	
 	/** Select next missing language pack entry. */
 	void SelectNextMissingEntry();
 	
 	/** List of unsaved open documents. */
-	void GetChangedDocuments( decStringList &list );
+	void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/** Request document to be saved. */
-	bool SaveDocument( const char *filename );
+	bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -179,9 +179,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuLangPack( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuEntry( igdeMenuCascade &menu );
+	void pCreateMenuLangPack(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuEntry(igdeMenuCascade &menu);
 };
 
 #endif

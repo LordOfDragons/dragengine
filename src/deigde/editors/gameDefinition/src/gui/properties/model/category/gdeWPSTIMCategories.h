@@ -49,7 +49,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategories( gdeWPSTreeModel &tree );
+	gdeWPSTIMCategories(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -62,16 +62,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Type object class. */
-	inline gdeWPSTIMCategoriesObjectClass &GetObjectClass() const{ return *pObjectClass; }
+	inline gdeWPSTIMCategoriesObjectClass &GetObjectClass() const{return *pObjectClass;}
 	
 	/** \brief Type skin. */
-	inline gdeWPSTIMCategoriesSkin &GetSkin() const{ return *pSkin; }
+	inline gdeWPSTIMCategoriesSkin &GetSkin() const{return *pSkin;}
 	
 	/** \brief Type sky. */
-	inline gdeWPSTIMCategoriesSky &GetSky() const{ return *pSky; }
+	inline gdeWPSTIMCategoriesSky &GetSky() const{return *pSky;}
 	
 	/** \brief Type particle emitter. */
-	inline gdeWPSTIMCategoriesParticleEmitter &GetParticleEmitter() const{ return *pParticleEmitter; }
+	inline gdeWPSTIMCategoriesParticleEmitter &GetParticleEmitter() const{return *pParticleEmitter;}
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	virtual void OnAddedToTree();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

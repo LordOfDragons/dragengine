@@ -44,13 +44,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Map block. */
-	deoglSPBMapBuffer( deoglShaderParameterBlock &block );
+	deoglSPBMapBuffer(deoglShaderParameterBlock &block);
 	
 	/** Map block. */
-	deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element );
+	deoglSPBMapBuffer(deoglShaderParameterBlock &block, int element);
 	
 	/** Map block. */
-	deoglSPBMapBuffer( deoglShaderParameterBlock &block, int element, int count );
+	deoglSPBMapBuffer(deoglShaderParameterBlock &block, int element, int count);
 	
 	/** Unmap block if mapped. */
 	~deoglSPBMapBuffer();

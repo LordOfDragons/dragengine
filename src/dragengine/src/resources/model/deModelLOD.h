@@ -92,16 +92,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Has custom lod error. */
-	inline bool GetHasLodError() const{ return pHasLodError; }
+	inline bool GetHasLodError() const{return pHasLodError;}
 	
 	/** \brief Set has custom lod error. */
-	void SetHasLodError( bool hasError );
+	void SetHasLodError(bool hasError);
 	
 	/** \brief Custom lod error. */
-	inline float GetLodError() const{ return pLodError; }
+	inline float GetLodError() const{return pLodError;}
 	
 	/** \brief Set custom lod error. */
-	void SetLodError( float error );
+	void SetLodError(float error);
 	/*@}*/
 	
 	
@@ -109,31 +109,31 @@ public:
 	/** \name Weight Sets Management */
 	/*@{*/
 	/** \brief Number of weights. */
-	inline int GetWeightCount() const{ return pWeightCount; }
+	inline int GetWeightCount() const{return pWeightCount;}
 	
 	/** \brief Set number of weights. */
-	void SetWeightCount( int count );
+	void SetWeightCount(int count);
 	
 	/** \brief Weight at the given position. */
-	deModelWeight &GetWeightAt( int index ) const;
+	deModelWeight &GetWeightAt(int index) const;
 	
 	/** \brief Pointer to the weights. */
-	inline deModelWeight *GetWeights() const{ return pWeights; }
+	inline deModelWeight *GetWeights() const{return pWeights;}
 	
 	/** \brief Number of weight groups. */
-	inline int GetWeightGroupCount() const{ return pWeightGroupCount; }
+	inline int GetWeightGroupCount() const{return pWeightGroupCount;}
 	
 	/** \brief Set number of weight groups. */
-	void SetWeightGroupCount( int count );
+	void SetWeightGroupCount(int count);
 	
 	/** \brief Weight group at the given position. */
-	int GetWeightGroupAt( int index ) const;
+	int GetWeightGroupAt(int index) const;
 	
 	/** \brief Set weight group at the given position. */
-	void SetWeightGroupAt( int index, int weightSetCount ) const;
+	void SetWeightGroupAt(int index, int weightSetCount) const;
 	
 	/** \brief Pointer to the weight groups. */
-	inline int *GetWeightGroups() const{ return pWeightGroups; }
+	inline int *GetWeightGroups() const{return pWeightGroups;}
 	/*@}*/
 	
 	
@@ -141,16 +141,16 @@ public:
 	/** \name Vertex Management */
 	/*@{*/
 	/** \brief Count of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{return pVertexCount;}
 	
 	/** \brief Set number of vertices. */
-	void SetVertexCount( int count );
+	void SetVertexCount(int count);
 	
 	/** \brief Vertex at the given index. */
-	deModelVertex &GetVertexAt( int index ) const;
+	deModelVertex &GetVertexAt(int index) const;
 	
 	/** \brief Pointer to the vertices. */
-	inline deModelVertex *GetVertices() const{ return pVertices; }
+	inline deModelVertex *GetVertices() const{return pVertices;}
 	/*@}*/
 	
 	
@@ -158,28 +158,28 @@ public:
 	/** \name Face Management */
 	/*@{*/
 	/** \brief Count of normals. */
-	inline int GetNormalCount() const{ return pNormalCount; }
+	inline int GetNormalCount() const{return pNormalCount;}
 	
 	/** \brief Set count of normals. */
-	void SetNormalCount( int count );
+	void SetNormalCount(int count);
 	
 	/** \brief Count of tangents. */
-	inline int GetTangentCount() const{ return pTangentCount; }
+	inline int GetTangentCount() const{return pTangentCount;}
 	
 	/** \brief Set count of tangents. */
-	void SetTangentCount( int count );
+	void SetTangentCount(int count);
 	
 	/** \brief Count of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	
 	/** \brief Set number of faces. */
-	void SetFaceCount( int count );
+	void SetFaceCount(int count);
 	
 	/** \brief Face at the given index. */
-	deModelFace &GetFaceAt( int index ) const;
+	deModelFace &GetFaceAt(int index) const;
 	
 	/** \brief Pointer to the faces. */
-	inline deModelFace *GetFaces() const{ return pFaces; }
+	inline deModelFace *GetFaces() const{return pFaces;}
 	/*@}*/
 	
 	
@@ -187,22 +187,22 @@ public:
 	/** \name Texture Coordinates. */
 	/*@{*/
 	/** \brief Number of texture coordinates per set. */
-	inline int GetTextureCoordinatesCount() const{ return pTextureCoordinatesCount; }
+	inline int GetTextureCoordinatesCount() const{return pTextureCoordinatesCount;}
 	
 	/** \brief Set number of texture coordinates per set. */
-	void SetTextureCoordinatesCount( int count );
+	void SetTextureCoordinatesCount(int count);
 	
 	/** \brief Number of texture coordinates sets. */
-	inline int GetTextureCoordinatesSetCount() const{ return pTextureCoordinatesSetsCount; }
+	inline int GetTextureCoordinatesSetCount() const{return pTextureCoordinatesSetsCount;}
 	
 	/** \brief Set number of texture coordinates sets which has to be at least 1. */
-	void SetTextureCoordinatesSetCount( int count );
+	void SetTextureCoordinatesSetCount(int count);
 	
 	/** \brief Texture coordinates set at the given index. */
-	deModelTextureCoordinatesSet &GetTextureCoordinatesSetAt( int index ) const;
+	deModelTextureCoordinatesSet &GetTextureCoordinatesSetAt(int index) const;
 	
 	/** \brief Pointer to the texture coordinates sets. */
-	inline deModelTextureCoordinatesSet *GetTextureCoordinatesSets() const{ return pTextureCoordinatesSets; }
+	inline deModelTextureCoordinatesSet *GetTextureCoordinatesSets() const{return pTextureCoordinatesSets;}
 	/*@}*/
 	
 	
@@ -210,16 +210,16 @@ public:
 	/** \name Vertex position sets. */
 	/*@{*/
 	/** \brief Count of vertex position sets. */
-	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	inline int GetVertexPositionSetCount() const{return pVertexPositionSetCount;}
 	
 	/** \brief Set count of vertex position sets. */
-	void SetVertexPositionSetCount( int count );
+	void SetVertexPositionSetCount(int count);
 	
 	/** \brief Vertex position set at index. */
-	deModelLodVertexPositionSet &GetVertexPositionSetAt( int index ) const;
+	deModelLodVertexPositionSet &GetVertexPositionSetAt(int index) const;
 	
 	/** \brief Pointer to the vertex position sets. */
-	inline deModelLodVertexPositionSet *GetVertexPositionSets() const{ return pVertexPositionSets; }
+	inline deModelLodVertexPositionSet *GetVertexPositionSets() const{return pVertexPositionSets;}
 	/*@}*/
 };
 

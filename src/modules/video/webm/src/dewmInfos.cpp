@@ -39,11 +39,11 @@
 ////////////////////////////
 
 dewmInfos::dewmInfos() :
-pDuration( 0.0 ),
-pVideoCodec( evcUnsupported ),
-pVideoTrackNumber( 0 ),
-pAudioCodec( eacUnsupported ),
-pAudioTrackNumber( 0 ){
+pDuration(0.0),
+pVideoCodec(evcUnsupported),
+pVideoTrackNumber(0),
+pAudioCodec(eacUnsupported),
+pAudioTrackNumber(0){
 }
 
 dewmInfos::~dewmInfos(){
@@ -54,26 +54,26 @@ dewmInfos::~dewmInfos(){
 // Management
 ///////////////
 
-void dewmInfos::SetDuration( double duration ){
-	pDuration = decMath::max( duration, 0.0 );
+void dewmInfos::SetDuration(double duration){
+	pDuration = decMath::max(duration, 0.0);
 }
 
 
 
-void dewmInfos::SetVideoCodec( dewmInfos::eVideoCodec codec ){
+void dewmInfos::SetVideoCodec(dewmInfos::eVideoCodec codec){
 	pVideoCodec = codec;
 }
 
-void dewmInfos::SetVideoTrackNumber( uint64_t number ){
+void dewmInfos::SetVideoTrackNumber(uint64_t number){
 	pVideoTrackNumber = number;
 }
 
 
 
-void dewmInfos::SetAudioCodec( dewmInfos::eAudioCodec codec ){
+void dewmInfos::SetAudioCodec(dewmInfos::eAudioCodec codec){
 	pAudioCodec = codec;
 }
 
-void dewmInfos::SetAudioTrackNumber( uint64_t number ){
+void dewmInfos::SetAudioTrackNumber(uint64_t number){
 	pAudioTrackNumber = number;
 }

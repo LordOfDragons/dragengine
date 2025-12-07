@@ -40,15 +40,15 @@
 
 
 deoglSPBParameter::deoglSPBParameter() :
-pValueType( evtFloat ),
-pComponentCount( 1 ),
-pVectorCount( 1 ),
-pArrayCount( 1 ),
+pValueType(evtFloat),
+pComponentCount(1),
+pVectorCount(1),
+pArrayCount(1),
 
-pOffset( 0 ),
-pStride( 0 ),
-pArrayStride( 0 ),
-pDataSize( 0 ){
+pOffset(0),
+pStride(0),
+pArrayStride(0),
+pDataSize(0){
 }
 
 deoglSPBParameter::~deoglSPBParameter(){
@@ -59,75 +59,75 @@ deoglSPBParameter::~deoglSPBParameter(){
 // Management
 ///////////////
 
-void deoglSPBParameter::SetValueType( eValueTypes valueType ){
-	if( valueType < evtFloat || valueType > evtBool ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetValueType(eValueTypes valueType){
+	if(valueType < evtFloat || valueType > evtBool){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pValueType = valueType;
 }
 
-void deoglSPBParameter::SetComponentCount( int componentCount ){
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetComponentCount(int componentCount){
+	if(componentCount < 1 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pComponentCount = componentCount;
 }
 
-void deoglSPBParameter::SetVectorCount( int vectorCount ){
-	if( vectorCount < 1 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetVectorCount(int vectorCount){
+	if(vectorCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pVectorCount = vectorCount;
 }
 
-void deoglSPBParameter::SetArrayCount( int arrayCount ){
-	if( arrayCount < 1 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetArrayCount(int arrayCount){
+	if(arrayCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pArrayCount = arrayCount;
 }
 
-void deoglSPBParameter::SetAll( eValueTypes valueType, int componentCount,
-int vectorCount, int arrayCount ){
-	SetValueType( valueType );
-	SetComponentCount( componentCount );
-	SetVectorCount( vectorCount );
-	SetArrayCount( arrayCount );
+void deoglSPBParameter::SetAll(eValueTypes valueType, int componentCount,
+int vectorCount, int arrayCount){
+	SetValueType(valueType);
+	SetComponentCount(componentCount);
+	SetVectorCount(vectorCount);
+	SetArrayCount(arrayCount);
 }
 
 
 
-void deoglSPBParameter::SetOffset( int offset ){
-	if( offset < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetOffset(int offset){
+	if(offset < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOffset = offset;
 }
 
-void deoglSPBParameter::SetStride( int stride ){
-	if( stride < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetStride(int stride){
+	if(stride < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pStride = stride;
 }
 
-void deoglSPBParameter::SetArrayStride( int arrayStride ){
-	if( arrayStride < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetArrayStride(int arrayStride){
+	if(arrayStride < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pArrayStride = arrayStride;
 }
 
-void deoglSPBParameter::SetDataSize ( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglSPBParameter::SetDataSize (int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDataSize = size;

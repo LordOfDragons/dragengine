@@ -40,40 +40,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceFaceRemove::meUHTNavSpaceFaceRemove( const decObjectOrderedSet &faces ) :
-pFaces( NULL ),
-pFaceCount( 0 )
+meUHTNavSpaceFaceRemove::meUHTNavSpaceFaceRemove(const decObjectOrderedSet &faces) :
+pFaces(NULL),
+pFaceCount(0)
 {
-	if( faces.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	if(faces.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = faces.GetCount();
 	
-	if( count == 1 ){
-		SetShortInfo( "Height terrain nav-space remove face" );
+	if(count == 1){
+		SetShortInfo("Height terrain nav-space remove face");
 		
 	}else{
-		SetShortInfo( "Height terrain nav-space remove faces" );
+		SetShortInfo("Height terrain nav-space remove faces");
 	}
 	
 	try{
-		pFaces = new sFace[ count ];
+		pFaces = new sFace[count];
 		
-		for( pFaceCount=0; pFaceCount<count; pFaceCount++ ){
-			sFace &face = pFaces[ pFaceCount ];
+		for(pFaceCount=0; pFaceCount<count; pFaceCount++){
+			sFace &face = pFaces[pFaceCount];
 			
-			face.face = ( meHeightTerrainNavSpaceFace* )faces.GetAt( pFaceCount );
+			face.face = (meHeightTerrainNavSpaceFace*)faces.GetAt(pFaceCount);
 			face.face->AddReference();
 			
 			face.type = face.face->GetType();
-			if( ! face.type ){
-				DETHROW( deeInvalidParam );
+			if(! face.type){
+				DETHROW(deeInvalidParam);
 			}
 			face.type->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -91,16 +91,16 @@ meUHTNavSpaceFaceRemove::~meUHTNavSpaceFaceRemove(){
 void meUHTNavSpaceFaceRemove::Undo(){
 	int i;
 	
-	for( i=0; i<pFaceCount; i++ ){
-		pFaces[ i ].type->AddFace( pFaces[ i ].face );
+	for(i=0; i<pFaceCount; i++){
+		pFaces[i].type->AddFace(pFaces[i].face);
 	}
 }
 
 void meUHTNavSpaceFaceRemove::Redo(){
 	int i;
 	
-	for( i=0; i<pFaceCount; i++ ){
-		pFaces[ i ].type->RemoveFace( pFaces[ i ].face );
+	for(i=0; i<pFaceCount; i++){
+		pFaces[i].type->RemoveFace(pFaces[i].face);
 	}
 }
 
@@ -110,18 +110,18 @@ void meUHTNavSpaceFaceRemove::Redo(){
 //////////////////////
 
 void meUHTNavSpaceFaceRemove::pCleanUp(){
-	if( ! pFaces ){
+	if(! pFaces){
 		return;
 	}
 	
 	int i;
 	
-	for( i=0; i<pFaceCount; i++ ){
-		if( pFaces[ i ].face ){
-			pFaces[ i ].face->FreeReference();
+	for(i=0; i<pFaceCount; i++){
+		if(pFaces[i].face){
+			pFaces[i].face->FreeReference();
 		}
-		if( pFaces[ i ].type ){
-			pFaces[ i ].type->FreeReference();
+		if(pFaces[i].type){
+			pFaces[i].type->FreeReference();
 		}
 	}
 }

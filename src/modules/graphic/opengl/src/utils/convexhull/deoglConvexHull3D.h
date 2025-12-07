@@ -57,19 +57,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{return pPointCount;}
 	
 	/** Point by index. */
-	const decVector &GetPointAt( int index ) const;
+	const decVector &GetPointAt(int index) const;
 	
 	/** Add point. */
-	void AddPoint( const decVector &point );
+	void AddPoint(const decVector &point);
 	
 	/** Remove all points. */
 	void RemoveAllPoints();
 	
 	/** Convex hull indices in groups of 3 per face. */
-	inline const decIntList &GetHullIndices() const{ return pHullIndices; }
+	inline const decIntList &GetHullIndices() const{return pHullIndices;}
 	
 	/** Calculate convex hull. */
 	void CalculateHull();

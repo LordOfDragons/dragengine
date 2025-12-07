@@ -39,7 +39,7 @@ igdeNativeNullSlider::igdeNativeNullSlider(){
 igdeNativeNullSlider::~igdeNativeNullSlider(){
 }
 
-igdeNativeNullSlider *igdeNativeNullSlider::CreateNativeWidget( igdeSlider& ){
+igdeNativeNullSlider *igdeNativeNullSlider::CreateNativeWidget(igdeSlider&){
 	return new igdeNativeNullSlider;
 }
 

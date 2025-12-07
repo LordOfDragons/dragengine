@@ -40,5 +40,5 @@ decQuadtreeVisitor::~decQuadtreeVisitor(){
 }
 
 // visiting
-void decQuadtreeVisitor::VisitNode( decQuadtree *node ){
+void decQuadtreeVisitor::VisitNode(decQuadtree *node){
 }

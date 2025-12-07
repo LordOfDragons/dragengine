@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAACmdSetCommand::ceUCAACmdSetCommand( ceConversationTopic *topic, ceCAActorCommand *action, const char *newCommand ){
-	if( ! topic || ! newCommand ) DETHROW( deeInvalidParam );
+ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCommand *action, const char *newCommand){
+	if(! topic || ! newCommand) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pOldCommand = action->GetCommand();
 	pNewCommand = newCommand;
 	
-	SetShortInfo( "Action ActorCommand Set Command" );
+	SetShortInfo("Action ActorCommand Set Command");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceUCAACmdSetCommand::ceUCAACmdSetCommand( ceConversationTopic *topic, ceCAActorC
 }
 
 ceUCAACmdSetCommand::~ceUCAACmdSetCommand(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCAACmdSetCommand::~ceUCAACmdSetCommand(){
 ///////////////
 
 void ceUCAACmdSetCommand::Undo(){
-	pAction->SetCommand( pOldCommand.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetCommand(pOldCommand.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCAACmdSetCommand::Redo(){
-	pAction->SetCommand( pNewCommand.GetString() );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetCommand(pNewCommand.GetString());
+	pTopic->NotifyActionChanged(pAction);
 }

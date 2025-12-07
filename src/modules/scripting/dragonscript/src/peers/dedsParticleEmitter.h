@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsParticleEmitter( deScriptingDragonScript *ds, deParticleEmitterInstance *emitter );
+	dedsParticleEmitter(deScriptingDragonScript *ds, deParticleEmitterInstance *emitter);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedsParticleEmitter();
@@ -64,7 +64,7 @@ public:
 	dsRealObject *GetCallback() const;
 	
 	/** \brief Set callback object. */
-	void SetCallback( dsRealObject *object );
+	void SetCallback(dsRealObject *object);
 	/*@}*/
 	
 	
@@ -79,7 +79,7 @@ public:
 	 * 
 	 * Update \em collisionInfo with the particle response to use.
 	 */
-	virtual void CollisionResponse( deCollisionInfo *collisionInfo );
+	virtual void CollisionResponse(deCollisionInfo *collisionInfo);
 	/*@}*/
 };
 

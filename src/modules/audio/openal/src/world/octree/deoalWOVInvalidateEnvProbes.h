@@ -58,8 +58,8 @@ public:
 	deoalWOVInvalidateEnvProbes();
 	
 	/** \brief Create visitor. */
-	deoalWOVInvalidateEnvProbes( const decDVector &minExtend,
-		const decDVector &maxExtend, const decLayerMask &layerMask );
+	deoalWOVInvalidateEnvProbes(const decDVector &minExtend,
+		const decDVector &maxExtend, const decLayerMask &layerMask);
 	
 	/** \brief Clean up visitor. */
 	virtual ~deoalWOVInvalidateEnvProbes();
@@ -70,24 +70,24 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	/** \brief Set extends. */
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
 	/** \brief Visits components affecting sound hit by ray. */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	virtual void VisitNode(deoalDOctree *node, int intersection);
 	/*@}*/
 };
 

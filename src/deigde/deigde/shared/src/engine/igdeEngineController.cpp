@@ -86,13 +86,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeEngineController::igdeEngineController( igdeMainWindow &mainWindow ) :
-pMainWindow( mainWindow ),
-pEngine( NULL ),
-pMainRenderWindow( NULL ),
-pReadyForUse( false ),
-pRunning( false ),
-pRenderCounter( 0 )
+igdeEngineController::igdeEngineController(igdeMainWindow &mainWindow) :
+pMainWindow(mainWindow),
+pEngine(NULL),
+pMainRenderWindow(NULL),
+pReadyForUse(false),
+pRunning(false),
+pRenderCounter(0)
 {
 	deLogger *logger = mainWindow.GetLogger();
 	deOS *os = NULL;
@@ -102,33 +102,33 @@ pRenderCounter( 0 )
 	try{
 		// create os
 #if defined OS_UNIX && defined HAS_LIB_X11
-		logger->LogInfo( LOGSOURCE, "Creating OS Unix." );
+		logger->LogInfo(LOGSOURCE, "Creating OS Unix.");
 		os = new deOSUnix();
 #elif defined OS_W32
-		logger->LogInfo( LOGSOURCE, "Creating OS Windows." );
+		logger->LogInfo(LOGSOURCE, "Creating OS Windows.");
 		os = new deOSWindows();
 #else
-		logger->LogInfo( LOGSOURCE, "Creating OS Console." );
+		logger->LogInfo(LOGSOURCE, "Creating OS Console.");
 		os = new deOSConsole();
 #endif
-		if( ! os ) DETHROW( deeOutOfMemory );
+		if(! os) DETHROW(deeOutOfMemory);
 		
 		// create game engine
-		logger->LogInfo( LOGSOURCE, "Creating Game Engine." );
-		pEngine = new deEngine( os );
+		logger->LogInfo(LOGSOURCE, "Creating Game Engine.");
+		pEngine = new deEngine(os);
 		os = NULL;
 		
-		pEngine->SetLogger( logger );
-		pEngine->SetCacheAppID( "4e25ac01-0b95-406f-8234-d921a32ae832" );
+		pEngine->SetLogger(logger);
+		pEngine->SetCacheAppID("4e25ac01-0b95-406f-8234-d921a32ae832");
 		
 		// configurate the modules
 		pConfigModules();
 		
 		// so far done
-		logger->LogInfo( LOGSOURCE, "Game Engine Ready." );
+		logger->LogInfo(LOGSOURCE, "Game Engine Ready.");
 		
-	}catch( const deException & ){
-		if( os ) delete os;
+	}catch(const deException &){
+		if(os) delete os;
 		CloseEngine();
 		throw;
 	}
@@ -144,48 +144,48 @@ igdeEngineController::~igdeEngineController(){
 ///////////////
 
 void igdeEngineController::InitEngine(){
-	if( pReadyForUse ){
+	if(pReadyForUse){
 		return;
 	}
 	
 	pCreateMainRenderWindow();
 	
-	pEngine->GetGraphicSystem()->SetRenderWindow( pMainRenderWindow );
+	pEngine->GetGraphicSystem()->SetRenderWindow(pMainRenderWindow);
 	
-	pMainWindow.GetLogger()->LogInfo( LOGSOURCE, "Engine ready to be started." );
+	pMainWindow.GetLogger()->LogInfo(LOGSOURCE, "Engine ready to be started.");
 	pReadyForUse = true;
 }
 
 void igdeEngineController::CloseEngine(){
-	if( ! pEngine ){
+	if(! pEngine){
 		return;
 	}
 	
 	deLogger &logger = *pMainWindow.GetLogger();
 	
 	// stop the engine
-	logger.LogInfo( LOGSOURCE, "Stopping engine." );
+	logger.LogInfo(LOGSOURCE, "Stopping engine.");
 	StopEngine();
 	
 	// give up the reference to the main render mainWindow
-	logger.LogInfo( LOGSOURCE, "Releasing main render window." );
+	logger.LogInfo(LOGSOURCE, "Releasing main render window.");
 	pDestroyMainRenderWindow();
 	
 	// free the engine
-	logger.LogInfo( LOGSOURCE, "Releasing engine." );
+	logger.LogInfo(LOGSOURCE, "Releasing engine.");
 	delete pEngine;
 	pEngine = NULL;
-	logger.LogInfo( LOGSOURCE, "Engine released." );
+	logger.LogInfo(LOGSOURCE, "Engine released.");
 }
 
-void igdeEngineController::UpdateEngine( const igdeGameProject *gameProject,
-const char *pathIGDEData, const char *pathIGDEModuleData ){
-	DEASSERT_NOTNULL( pathIGDEData )
-	DEASSERT_NOTNULL( pathIGDEModuleData )
+void igdeEngineController::UpdateEngine(const igdeGameProject *gameProject,
+const char *pathIGDEData, const char *pathIGDEModuleData){
+	DEASSERT_NOTNULL(pathIGDEData)
+	DEASSERT_NOTNULL(pathIGDEModuleData)
 	
 	decPath pathData;
-	if( gameProject ){
-		pathData.SetFromNative( gameProject->GetDirectoryPath() );
+	if(gameProject){
+		pathData.SetFromNative(gameProject->GetDirectoryPath());
 	}
 	const bool notEmptyPathData = pathData.GetComponentCount() > 0;
 	deLogger &logger = *pMainWindow.GetLogger();
@@ -194,22 +194,22 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	decPath diskPath, rootPath;
 	
 	// set engine specific parameters
-	if( notEmptyPathData ){
+	if(notEmptyPathData){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject->GetPathData() );
-		logger.LogInfoFormat( LOGSOURCE, "Set Data Directory %s", diskPath.GetPathNative().GetString() );
-		pEngine->SetDataDir( diskPath.GetPathNative() );
+		diskPath.AddUnixPath(gameProject->GetPathData());
+		logger.LogInfoFormat(LOGSOURCE, "Set Data Directory %s", diskPath.GetPathNative().GetString());
+		pEngine->SetDataDir(diskPath.GetPathNative());
 		
 	}else{
-		logger.LogInfoFormat( LOGSOURCE, "Set Data Directory %s", pathIGDEData );
-		pEngine->SetDataDir( pathIGDEData );
+		logger.LogInfoFormat(LOGSOURCE, "Set Data Directory %s", pathIGDEData);
+		pEngine->SetDataDir(pathIGDEData);
 	}
 	
 	// setup virtual file system
-	logger.LogInfo( LOGSOURCE, "Setup virtual file system:" );
+	logger.LogInfo(LOGSOURCE, "Setup virtual file system:");
 	vfs.RemoveAllContainers();
 	
-	if( gameProject ){
+	if(gameProject){
 		const decPath sharePath(decPath::CreatePathNative(pEngine->GetOS()->GetPathShare()));
 		const deVirtualFileSystem::Ref &vfsAssetLibraries =
 			pEngine->GetModuleSystem()->GetVFSAssetLibraries();
@@ -235,68 +235,68 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 		}
 	}
 	
-	rootPath.SetFromUnix( "/" );
-	if( notEmptyPathData ){
+	rootPath.SetFromUnix("/");
+	if(notEmptyPathData){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject->GetPathData() );
-		logger.LogInfoFormat( LOGSOURCE, "- Adding data directory '%s' as '%s' (read-write)",
-			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
+		diskPath.AddUnixPath(gameProject->GetPathData());
+		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' as '%s' (read-write)",
+			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
+		container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
 		
 	}else{
-		logger.LogInfoFormat( LOGSOURCE, "- Adding data directory '%s' (null)",
-			rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSNull( rootPath ) );
+		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' (null)",
+			rootPath.GetPathUnix().GetString());
+		container.TakeOver(new deVFSNull(rootPath));
 	}
-	vfs.AddContainer( container );
+	vfs.AddContainer(container);
 	
-	diskPath.SetFromNative( pathIGDEData );
-	rootPath.SetFromUnix( "/igde" );
-	logger.LogInfoFormat( LOGSOURCE, "- Adding igde data directory '%s' as '%s' (read-only)",
-		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-	container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-	vfs.AddContainer( container );
+	diskPath.SetFromNative(pathIGDEData);
+	rootPath.SetFromUnix("/igde");
+	logger.LogInfoFormat(LOGSOURCE, "- Adding igde data directory '%s' as '%s' (read-only)",
+		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
+	container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
+	((deVFSDiskDirectory&)(deVFSContainer&)container).SetReadOnly(true);
+	vfs.AddContainer(container);
 	
-	rootPath.SetFromUnix( "/igde/cache" );
-	if( notEmptyPathData ){
+	rootPath.SetFromUnix("/igde/cache");
+	if(notEmptyPathData){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject->GetPathCache() );
-		logger.LogInfoFormat( LOGSOURCE, "- Adding cache directory '%s' as '%s' (read-write)",
-			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
+		diskPath.AddUnixPath(gameProject->GetPathCache());
+		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' as '%s' (read-write)",
+			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
+		container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
 		
 	}else{
-		logger.LogInfoFormat( LOGSOURCE, "- Adding cache directory '%s' (null)",
-			rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSNull( rootPath ) );
+		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' (null)",
+			rootPath.GetPathUnix().GetString());
+		container.TakeOver(new deVFSNull(rootPath));
 	}
-	vfs.AddContainer( container );
+	vfs.AddContainer(container);
 	
-	diskPath.SetFromNative( pathIGDEModuleData );
-	rootPath.SetFromUnix( "/igde/editors" );
-	logger.LogInfoFormat( LOGSOURCE, "- Adding igde editors data directory '%s' as '%s' (read-only)",
-		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-	container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-	container->SetHidden( true );
-	vfs.AddContainer( container );
+	diskPath.SetFromNative(pathIGDEModuleData);
+	rootPath.SetFromUnix("/igde/editors");
+	logger.LogInfoFormat(LOGSOURCE, "- Adding igde editors data directory '%s' as '%s' (read-only)",
+		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
+	container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
+	((deVFSDiskDirectory&)(deVFSContainer&)container).SetReadOnly(true);
+	container->SetHidden(true);
+	vfs.AddContainer(container);
 	
-	rootPath.SetFromUnix( "/igde/local" );
-	if( notEmptyPathData ){
+	rootPath.SetFromUnix("/igde/local");
+	if(notEmptyPathData){
 		diskPath = pathData;
-		diskPath.AddUnixPath( gameProject->GetPathLocal() );
-		logger.LogInfoFormat( LOGSOURCE, "- Adding local directory '%s' as '%s' (read-write)",
-			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
+		diskPath.AddUnixPath(gameProject->GetPathLocal());
+		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' as '%s' (read-write)",
+			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
+		container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
 		
 	}else{
-		logger.LogInfoFormat( LOGSOURCE, "- Adding local directory '%s' (null)",
-			rootPath.GetPathUnix().GetString() );
-		container.TakeOver( new deVFSNull( rootPath ) );
+		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' (null)",
+			rootPath.GetPathUnix().GetString());
+		container.TakeOver(new deVFSNull(rootPath));
 	}
-	container->SetHidden( true );
-	vfs.AddContainer( container );
+	container->SetHidden(true);
+	vfs.AddContainer(container);
 }
 
 
@@ -305,70 +305,70 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 ///////////////////
 
 void igdeEngineController::StartEngine(){
-	if( pRunning ) return;
+	if(pRunning) return;
 	
-	decString scriptDirectory( "/" ); //( "/epsylon/scripts" );
+	decString scriptDirectory("/"); //("/epsylon/scripts");
 	decString gameObject;
 	
 	// prepare for engine launch
 	try{
 		// test if we can start all required systems
-		if( ! pEngine->GetCrashRecoverySystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetAnimatorSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetGraphicSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetAudioSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetPhysicsSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetInputSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetScriptingSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetSynthesizerSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetAISystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetNetworkSystem()->CanStart() ) DETHROW( deeInvalidParam );
-		if( ! pEngine->GetVRSystem()->CanStart() ) DETHROW( deeInvalidParam );
+		if(! pEngine->GetCrashRecoverySystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetAnimatorSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetGraphicSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetAudioSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetPhysicsSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetInputSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetScriptingSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetSynthesizerSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetAISystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetNetworkSystem()->CanStart()) DETHROW(deeInvalidParam);
+		if(! pEngine->GetVRSystem()->CanStart()) DETHROW(deeInvalidParam);
 		
 		// set script module directory
-		pEngine->GetScriptingSystem()->SetScriptDirectory( scriptDirectory );
-		pEngine->GetScriptingSystem()->SetScriptVersion( "1.0" );
-		pEngine->GetScriptingSystem()->SetGameObject( gameObject );
+		pEngine->GetScriptingSystem()->SetScriptDirectory(scriptDirectory);
+		pEngine->GetScriptingSystem()->SetScriptVersion("1.0");
+		pEngine->GetScriptingSystem()->SetGameObject(gameObject);
 		
 		// bring up the crash recovery module. this module is required to ensure
 		// that we do not crash to desktop.
-		if( ! pEngine->GetCrashRecoverySystem()->GetIsRunning() ){
+		if(! pEngine->GetCrashRecoverySystem()->GetIsRunning()){
 			pEngine->GetCrashRecoverySystem()->Start();
 		}
 		
 		// start all other systems if not running yet
-		if( ! pEngine->GetAISystem()->GetIsRunning() ){
+		if(! pEngine->GetAISystem()->GetIsRunning()){
 			pEngine->GetAISystem()->Start();
 		}
-		if( ! pEngine->GetAnimatorSystem()->GetIsRunning() ){
+		if(! pEngine->GetAnimatorSystem()->GetIsRunning()){
 			pEngine->GetAnimatorSystem()->Start();
 		}
-		if( ! pEngine->GetGraphicSystem()->GetIsRunning() ){
+		if(! pEngine->GetGraphicSystem()->GetIsRunning()){
 			pEngine->GetGraphicSystem()->Start();
 		}
-		if( ! pEngine->GetAudioSystem()->GetIsRunning() ){
+		if(! pEngine->GetAudioSystem()->GetIsRunning()){
 			pEngine->GetAudioSystem()->Start();
 		}
-		if( ! pEngine->GetPhysicsSystem()->GetIsRunning() ){
+		if(! pEngine->GetPhysicsSystem()->GetIsRunning()){
 			pEngine->GetPhysicsSystem()->Start();
 		}
-		if( ! pEngine->GetInputSystem()->GetIsRunning() ){
+		if(! pEngine->GetInputSystem()->GetIsRunning()){
 			pEngine->GetInputSystem()->Start();
 		}
-		if( ! pEngine->GetSynthesizerSystem()->GetIsRunning() ){
+		if(! pEngine->GetSynthesizerSystem()->GetIsRunning()){
 			pEngine->GetSynthesizerSystem()->Start();
 		}
-		if( ! pEngine->GetScriptingSystem()->GetIsRunning() ){
+		if(! pEngine->GetScriptingSystem()->GetIsRunning()){
 			pEngine->GetScriptingSystem()->Start();
 		}
-		if( ! pEngine->GetNetworkSystem()->GetIsRunning() ){
+		if(! pEngine->GetNetworkSystem()->GetIsRunning()){
 			pEngine->GetNetworkSystem()->Start();
 		}
-		if( ! pEngine->GetVRSystem()->GetIsRunning() ){
+		if(! pEngine->GetVRSystem()->GetIsRunning()){
 			pEngine->GetVRSystem()->Start();
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		throw;
 	}
@@ -401,38 +401,38 @@ void igdeEngineController::StopEngine(){
 		//	pEngine->GetScriptingSystem()->Stop();
 		//}
 		
-		if( pEngine->GetVRSystem()->GetIsRunning() ){
+		if(pEngine->GetVRSystem()->GetIsRunning()){
 			pEngine->GetVRSystem()->Stop();
 		}
-		if( pEngine->GetNetworkSystem()->GetIsRunning() ){
+		if(pEngine->GetNetworkSystem()->GetIsRunning()){
 			pEngine->GetNetworkSystem()->Stop();
 		}
-		if( pEngine->GetInputSystem()->GetIsRunning() ){
+		if(pEngine->GetInputSystem()->GetIsRunning()){
 			pEngine->GetInputSystem()->Stop();
 		}
-		if( pEngine->GetSynthesizerSystem()->GetIsRunning() ){
+		if(pEngine->GetSynthesizerSystem()->GetIsRunning()){
 			pEngine->GetSynthesizerSystem()->Stop();
 		}
-		if( pEngine->GetPhysicsSystem()->GetIsRunning() ){
+		if(pEngine->GetPhysicsSystem()->GetIsRunning()){
 			pEngine->GetPhysicsSystem()->Stop();
 		}
-		if( pEngine->GetGraphicSystem()->GetIsRunning() ){
+		if(pEngine->GetGraphicSystem()->GetIsRunning()){
 			pEngine->GetGraphicSystem()->Stop();
 		}
-		if( pEngine->GetAudioSystem()->GetIsRunning() ){
+		if(pEngine->GetAudioSystem()->GetIsRunning()){
 			pEngine->GetAudioSystem()->Stop();
 		}
-		if( pEngine->GetAnimatorSystem()->GetIsRunning() ){
+		if(pEngine->GetAnimatorSystem()->GetIsRunning()){
 			pEngine->GetAnimatorSystem()->Stop();
 		}
-		if( pEngine->GetAISystem()->GetIsRunning() ){
+		if(pEngine->GetAISystem()->GetIsRunning()){
 			pEngine->GetAISystem()->Stop();
 		}
-		if( pEngine->GetCrashRecoverySystem()->GetIsRunning() ){
+		if(pEngine->GetCrashRecoverySystem()->GetIsRunning()){
 			pEngine->GetCrashRecoverySystem()->Stop();
 		}
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		e.PrintError();
 		throw;
 	}
@@ -448,21 +448,21 @@ deRenderWindow *igdeEngineController::CreateRenderWindow(){
 	return pEngine->GetRenderWindowManager()->CreateRenderWindow();
 }
 
-deRenderWindow *igdeEngineController::CreateRenderWindow( igdeWidget &hostWindow ){
-	if( ! igdeNativeWidget::HasNativeParent( hostWindow ) ){
-		DETHROW( deeNullPointer );
+deRenderWindow *igdeEngineController::CreateRenderWindow(igdeWidget &hostWindow){
+	if(! igdeNativeWidget::HasNativeParent(hostWindow)){
+		DETHROW(deeNullPointer);
 	}
 	
 	#ifdef IGDE_TOOLKIT_NULL
 	return pEngine->GetRenderWindowManager()->CreateRenderWindow();
 	#else
 	return pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-		igdeNativeWidget::NativeWidgetParentID( hostWindow ) );
+		igdeNativeWidget::NativeWidgetParentID(hostWindow));
 	#endif
 }
 
 void igdeEngineController::UnparentMainRenderWindow(){
-	if( ! pMainRenderWindow ){
+	if(! pMainRenderWindow){
 		return;
 	}
 	
@@ -471,26 +471,26 @@ void igdeEngineController::UnparentMainRenderWindow(){
 	// already destroy it we do not attempt to modify the window. detach above works no matter
 	// if the window is still existing or not but not these calls here
 	#if defined OS_UNIX && defined HAS_LIB_X11
-	if( pMainRenderWindow->GetWindow() && pMainWindow.GetNativeWidget() ){
+	if(pMainRenderWindow->GetWindow() && pMainWindow.GetNativeWidget()){
 		Display * const display = igdeNativeWidget::GetDisplayConnection();
 		Window window = pMainRenderWindow->GetWindow();
 		
-		igdeNativeWidget::DetachNativeWindow( pMainWindow );
+		igdeNativeWidget::DetachNativeWindow(pMainWindow);
 		
-		XUnmapWindow( display, window );
-		XReparentWindow( display, window, XDefaultRootWindow( display ), 0, 0 );
-		XSync( display, False ); // required or funny things happen
+		XUnmapWindow(display, window);
+		XReparentWindow(display, window, XDefaultRootWindow(display), 0, 0);
+		XSync(display, False); // required or funny things happen
 	}
 	#endif
 	
 	#ifdef OS_W32
-	if( pMainRenderWindow->GetWindow() ){
-		SetParent( (HWND)pMainRenderWindow->GetWindow(), NULL );
+	if(pMainRenderWindow->GetWindow()){
+		SetParent((HWND)pMainRenderWindow->GetWindow(), NULL);
 	}
 	#endif
 }
 
-void igdeEngineController::ResizeWindow( int width, int height ){
+void igdeEngineController::ResizeWindow(int width, int height){
 	//if( ! pEngine ) return;
 	//
 	//pEngine->GetGraphicSystem()->SetWindowGeometry( width, height, false );
@@ -498,77 +498,77 @@ void igdeEngineController::ResizeWindow( int width, int height ){
 
 
 
-void igdeEngineController::AddInternalModule( deInternalModule *module ){
-	if( ! module ) DETHROW( deeInvalidParam );
+void igdeEngineController::AddInternalModule(deInternalModule *module){
+	if(! module) DETHROW(deeInvalidParam);
 	
 	// load the module. this should not fail unless somebody made a big
 	// mistake in his internal module
 	module->LoadModule();
 	
 	// eventually add the module to the system not that it is ready
-	pEngine->GetModuleSystem()->AddModule( module );
+	pEngine->GetModuleSystem()->AddModule(module);
 }
 
-void igdeEngineController::ActivateModule( int system, const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+void igdeEngineController::ActivateModule(int system, const char *name){
+	if(! name) DETHROW(deeInvalidParam);
 	deModuleSystem *modSys = pEngine->GetModuleSystem();
 	deLoadableModule *engineModule;
 	
 	// try to find the module
-	engineModule = modSys->GetModuleNamed( name );
-	if( ! engineModule ){
-		pMainWindow.GetLogger()->LogErrorFormat( "igdeEngineController.ActivateModule", "Failed loading module '%s'.", name );
-		DETHROW( deeInvalidParam );
+	engineModule = modSys->GetModuleNamed(name);
+	if(! engineModule){
+		pMainWindow.GetLogger()->LogErrorFormat("igdeEngineController.ActivateModule", "Failed loading module '%s'.", name);
+		DETHROW(deeInvalidParam);
 	}
 	
 	// select it in the specified system
-	switch( system ){
+	switch(system){
 	case esCrashRecovery:
-		pEngine->GetCrashRecoverySystem()->SetActiveModule( engineModule );
+		pEngine->GetCrashRecoverySystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esGraphic:
-		pEngine->GetGraphicSystem()->SetActiveModule( engineModule );
+		pEngine->GetGraphicSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esAudio:
-		pEngine->GetAudioSystem()->SetActiveModule( engineModule );
+		pEngine->GetAudioSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esPhysics:
-		pEngine->GetPhysicsSystem()->SetActiveModule( engineModule );
+		pEngine->GetPhysicsSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esNetwork:
-		pEngine->GetNetworkSystem()->SetActiveModule( engineModule );
+		pEngine->GetNetworkSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esInput:
-		pEngine->GetInputSystem()->SetActiveModule( engineModule );
+		pEngine->GetInputSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esAnimator:
-		pEngine->GetAnimatorSystem()->SetActiveModule( engineModule );
+		pEngine->GetAnimatorSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esAI:
-		pEngine->GetAISystem()->SetActiveModule( engineModule );
+		pEngine->GetAISystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esSynthesizer:
-		pEngine->GetSynthesizerSystem()->SetActiveModule( engineModule );
+		pEngine->GetSynthesizerSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esScripting:
-		pEngine->GetScriptingSystem()->SetActiveModule( engineModule );
+		pEngine->GetScriptingSystem()->SetActiveModule(engineModule);
 		break;
 		
 	case esVR:
-		pEngine->GetVRSystem()->SetActiveModule( engineModule );
+		pEngine->GetVRSystem()->SetActiveModule(engineModule);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -578,52 +578,52 @@ void igdeEngineController::ActivateModule( int system, const char *name ){
 //////////////////////
 
 void igdeEngineController::pConfigModules(){
-	pMainWindow.GetLogger()->LogInfo( LOGSOURCE, "Loading Modules." );
+	pMainWindow.GetLogger()->LogInfo(LOGSOURCE, "Loading Modules.");
 	pEngine->LoadModules();
 	
 	#ifdef IGDE_TOOLKIT_NULL
-	pEngine->GetGraphicSystem()->SetActiveModule( pEngine->GetModuleSystem()->GetModuleNamed( "NullGraphic" ) );
+	pEngine->GetGraphicSystem()->SetActiveModule(pEngine->GetModuleSystem()->GetModuleNamed("NullGraphic"));
 	#else
-	pEngine->GetGraphicSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtGraphic ) );
+	pEngine->GetGraphicSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtGraphic));
 	#endif
 	
-	pEngine->GetAudioSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAudio ) );
-	pEngine->GetPhysicsSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtPhysics ) );
-	pEngine->GetAnimatorSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAnimator ) );
-	pEngine->GetAISystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtAI ) );
-	pEngine->GetSynthesizerSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtSynthesizer ) );
-	pEngine->GetCrashRecoverySystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtCrashRecovery ) );
-	pEngine->GetNetworkSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtNetwork ) );
+	pEngine->GetAudioSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtAudio));
+	pEngine->GetPhysicsSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtPhysics));
+	pEngine->GetAnimatorSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtAnimator));
+	pEngine->GetAISystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtAI));
+	pEngine->GetSynthesizerSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtSynthesizer));
+	pEngine->GetCrashRecoverySystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtCrashRecovery));
+	pEngine->GetNetworkSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtNetwork));
 	
 	#ifdef IGDE_TOOLKIT_NULL
-	pEngine->GetVRSystem()->SetActiveModule( pEngine->GetModuleSystem()->GetModuleNamed( "NullVR" ) );
+	pEngine->GetVRSystem()->SetActiveModule(pEngine->GetModuleSystem()->GetModuleNamed("NullVR"));
 	#else
-	pEngine->GetVRSystem()->SetActiveModule( GetBestModuleForType( deModuleSystem::emtVR ) );
+	pEngine->GetVRSystem()->SetActiveModule(GetBestModuleForType(deModuleSystem::emtVR));
 	#endif
 }
 
 void igdeEngineController::pCreateMainRenderWindow(){
-	if( pMainRenderWindow ){
+	if(pMainRenderWindow){
 		return;
 	}
 	
 	#ifdef IGDE_TOOLKIT_NULL
 		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindow();
 	#else
-		if( ! igdeNativeWidget::HasNativeParent( pMainWindow ) ){
-			DETHROW( deeNullPointer );
+		if(! igdeNativeWidget::HasNativeParent(pMainWindow)){
+			DETHROW(deeNullPointer);
 		}
 		
 		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-			igdeNativeWidget::NativeWidgetID( pMainWindow ) );
+			igdeNativeWidget::NativeWidgetID(pMainWindow));
 	#endif
 	
-	pMainRenderWindow->SetSize( 0, 0 );
-	pMainRenderWindow->SetPaint( false ); // disable painting since this is only a dummy window
+	pMainRenderWindow->SetSize(0, 0);
+	pMainRenderWindow->SetPaint(false); // disable painting since this is only a dummy window
 }
 
 void igdeEngineController::pDestroyMainRenderWindow(){
-	if( ! pMainRenderWindow ){
+	if(! pMainRenderWindow){
 		return;
 	}
 	
@@ -631,7 +631,7 @@ void igdeEngineController::pDestroyMainRenderWindow(){
 	pMainRenderWindow = NULL;
 }
 
-deLoadableModule *igdeEngineController::GetBestModuleForType( deModuleSystem::eModuleTypes moduleType ) const{
+deLoadableModule *igdeEngineController::GetBestModuleForType(deModuleSystem::eModuleTypes moduleType) const{
 	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
 	const int count = modsys.GetModuleCount();
 	deLoadableModule *bestModule = nullptr;
@@ -640,33 +640,33 @@ deLoadableModule *igdeEngineController::GetBestModuleForType( deModuleSystem::eM
 	// for the time being we simply pick the first module which matches the type and is ready
 	// to be used. later on this has to be improved to use a matching metrics which tells
 	// how well a module matches a given set of feature requirements.
-	for( i=0; i<count; i++ ){
-		deLoadableModule * const module = modsys.GetModuleAt( i );
+	for(i=0; i<count; i++){
+		deLoadableModule * const module = modsys.GetModuleAt(i);
 		
-		if( module->GetType() != moduleType ){
+		if(module->GetType() != moduleType){
 			continue;
 		}
-		if( module->GetErrorCode() != deLoadableModule::eecSuccess ){
+		if(module->GetErrorCode() != deLoadableModule::eecSuccess){
 			continue;
 		}
 		
 		// no best module found. use this module
-		if( ! bestModule ){
+		if(! bestModule){
 			bestModule = module;
 			
 		// best module has been found and this module is fallback. skip module
-		}else if( module->GetIsFallback() ){
+		}else if(module->GetIsFallback()){
 			
 		// best module has same name as this module
-		}else if( module->GetName() == bestModule->GetName() ){
+		}else if(module->GetName() == bestModule->GetName()){
 			// use this module if it has higher version than the best module
-			if( deModuleSystem::CompareVersion( module->GetVersion(), bestModule->GetVersion() ) > 0 ){
+			if(deModuleSystem::CompareVersion(module->GetVersion(), bestModule->GetVersion()) > 0){
 				bestModule = module;
 			}
 			
 		// best module has different name than this module. use this module if
 		// it has higher priority than the best module or best module is fallback
-		}else if( module->GetPriority() > bestModule->GetPriority() || bestModule->GetIsFallback() ){
+		}else if(module->GetPriority() > bestModule->GetPriority() || bestModule->GetIsFallback()){
 			bestModule = module;
 		}
 	}

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetRotation( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, const decVector &newValue );
+	gdeUOCNavSpaceSetRotation(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

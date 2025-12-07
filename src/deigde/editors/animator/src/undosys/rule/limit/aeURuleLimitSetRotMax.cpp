@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetRotMax::aeURuleLimitSetRotMax( aeRuleLimit *rule, const decVector &newMax ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetRotMax::aeURuleLimitSetRotMax(aeRuleLimit *rule, const decVector &newMax){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeURuleLimitSetRotMax::aeURuleLimitSetRotMax( aeRuleLimit *rule, const decVector
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Limit set maximum rotation" );
+		SetShortInfo("Limit set maximum rotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeURuleLimitSetRotMax::~aeURuleLimitSetRotMax(){
 ///////////////
 
 void aeURuleLimitSetRotMax::Undo(){
-	pRule->SetMaximumRotation( pOldMax );
+	pRule->SetMaximumRotation(pOldMax);
 }
 
 void aeURuleLimitSetRotMax::Redo(){
-	pRule->SetMaximumRotation( pNewMax );
+	pRule->SetMaximumRotation(pNewMax);
 }
 
 
@@ -84,7 +84,7 @@ void aeURuleLimitSetRotMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetRotMax::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

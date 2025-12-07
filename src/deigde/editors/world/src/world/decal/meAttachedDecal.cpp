@@ -45,21 +45,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meAttachedDecal::meAttachedDecal( deEngine *engine, meDecal *decal ) :
-pEngine( engine ),
-pDecal( decal ),
-pParentObject( NULL )
+meAttachedDecal::meAttachedDecal(deEngine *engine, meDecal *decal) :
+pEngine(engine),
+pDecal(decal),
+pParentObject(NULL)
 {
-	if( ! engine || ! decal ){
-		DETHROW( deeInvalidParam );
+	if(! engine || ! decal){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pEngDecal.TakeOver( engine->GetDecalManager()->CreateDecal() );
+	pEngDecal.TakeOver(engine->GetDecalManager()->CreateDecal());
 }
 
 meAttachedDecal::~meAttachedDecal(){
 	RemoveFromParent();
-	if( pParentObject ){
+	if(pParentObject){
 		pParentObject->FreeReference();
 	}
 }
@@ -69,21 +69,21 @@ meAttachedDecal::~meAttachedDecal(){
 // Management
 ///////////////
 
-void meAttachedDecal::SetParentObject( meObject *object ){
-	if( object == pParentObject ){
+void meAttachedDecal::SetParentObject(meObject *object){
+	if(object == pParentObject){
 		return;
 	}
 	
 	RemoveFromParent();
 	
-	if( pParentObject ){
+	if(pParentObject){
 		pParentObject->FreeReference();
 		pParentObject = NULL;
 	}
 	
 	pParentObject = object;
 	
-	if( object ){
+	if(object){
 		object->AddReference();
 	}
 	
@@ -95,29 +95,29 @@ void meAttachedDecal::SetParentObject( meObject *object ){
 void meAttachedDecal::AttachToParent(){
 	RemoveFromParent(); // just to make sure
 	
-	if( ! pParentObject ){
+	if(! pParentObject){
 		return;
 	}
 	
 	deComponent * const engComponent = pParentObject->GetObjectWrapper()->GetComponent();
-	if( ! engComponent ){
+	if(! engComponent){
 		return;
 	}
 	
 	const decDMatrix matrix(
-		decDMatrix::CreateRT( pDecal->GetRotation() * DEG2RAD, pDecal->GetPosition() )
+		decDMatrix::CreateRT(pDecal->GetRotation() * DEG2RAD, pDecal->GetPosition())
 		* decDMatrix::CreateRT( pParentObject->GetRotation() * DEG2RAD, pParentObject->GetPosition() ).Invert() );
-	const decVector size( decVector( 0.001f, 0.001f, 0.001f ).Largest( pDecal->GetSize() ) );
+	const decVector size(decVector(0.001f, 0.001f, 0.001f).Largest(pDecal->GetSize()));
 	
-	pEngDecal->SetPosition( matrix.GetPosition().ToVector() );
-	pEngDecal->SetOrientation( matrix.ToQuaternion() );
-	pEngDecal->SetSize( size );
+	pEngDecal->SetPosition(matrix.GetPosition().ToVector());
+	pEngDecal->SetOrientation(matrix.ToQuaternion());
+	pEngDecal->SetSize(size);
 	
-	engComponent->AddDecal( pEngDecal );
+	engComponent->AddDecal(pEngDecal);
 }
 
 void meAttachedDecal::RemoveFromParent(){
-	if( pEngDecal->GetParentComponent() ){
-		pEngDecal->GetParentComponent()->RemoveDecal( pEngDecal );
+	if(pEngDecal->GetParentComponent()){
+		pEngDecal->GetParentComponent()->RemoveDecal(pEngDecal);
 	}
 }

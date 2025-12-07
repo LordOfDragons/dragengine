@@ -61,12 +61,12 @@ protected:
 	public:
 		typedef deTObjectReference<cListener> Ref;
 		
-		cListener( igdeEditDVector &editDVector, igdeTextField *textX,
-			igdeTextField *textY, igdeTextField *textz );
+		cListener(igdeEditDVector &editDVector, igdeTextField *textX,
+			igdeTextField *textY, igdeTextField *textz);
 		
 		virtual ~cListener();
-		virtual void OnTextChanged( igdeTextField *textField );
-		virtual void OnTextChanging( igdeTextField *textField );
+		virtual void OnTextChanged(igdeTextField *textField);
+		virtual void OnTextChanging(igdeTextField *textField);
 	};
 	
 	
@@ -92,11 +92,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit vector. */
-	igdeEditDVector( igdeUIHelper &helper, int columns, int precision,
-		const char *description = "" );
+	igdeEditDVector(igdeUIHelper &helper, int columns, int precision,
+		const char *description = "");
 	
-	igdeEditDVector( igdeUIHelper &helper, int columns, int precision,
-		bool editable, const char *description = "" );
+	igdeEditDVector(igdeUIHelper &helper, int columns, int precision,
+		bool editable, const char *description = "");
 	
 	
 	
@@ -116,31 +116,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Widget is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if widget is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit fields. */
-	inline int GetColumns() const{ return pColumns; }
+	inline int GetColumns() const{return pColumns;}
 	
 	/** \brief Widget is editable. */
-	inline bool GetEditable() const{ return pEditable; }
+	inline bool GetEditable() const{return pEditable;}
 	
 	/** \brief Set if widget is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Precision for floating point values as digits after period. */
-	inline int GetPrecision() const{ return pPrecision; }
+	inline int GetPrecision() const{return pPrecision;}
 	
 	/** \brief Set precision for floating point values as digits after period. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -148,18 +148,18 @@ public:
 	
 	
 	/** \brief DVector. */
-	inline const decDVector &GetDVector() const{ return pDVector; }
+	inline const decDVector &GetDVector() const{return pDVector;}
 	
 	/** \brief Set vector. */
-	void SetDVector( const decDVector &vector );
+	void SetDVector(const decDVector &vector);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditDVectorListener *listener );
+	void AddListener(igdeEditDVectorListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditDVectorListener *listener );
+	void RemoveListener(igdeEditDVectorListener *listener);
 	
 	/** \brief Notify listeners vector changed. */
 	virtual void NotifyDVectorChanged();
@@ -192,7 +192,7 @@ protected:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper );
+	void pCreateContent(igdeUIHelper &helper);
 };
 
 #endif

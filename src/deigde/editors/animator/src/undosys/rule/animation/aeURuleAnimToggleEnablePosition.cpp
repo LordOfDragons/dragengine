@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleAnimToggleEnablePosition::aeURuleAnimToggleEnablePosition( aeRuleAnimation *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleAnimToggleEnablePosition::aeURuleAnimToggleEnablePosition(aeRuleAnimation *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleAnimToggleEnablePosition::aeURuleAnimToggleEnablePosition( aeRuleAnimatio
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule animation toggle enable position" );
+		SetShortInfo("Rule animation toggle enable position");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleAnimToggleEnablePosition::~aeURuleAnimToggleEnablePosition(){
 ///////////////
 
 void aeURuleAnimToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(! pRule->GetEnablePosition());
 }
 
 void aeURuleAnimToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(! pRule->GetEnablePosition());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleAnimToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnablePosition::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

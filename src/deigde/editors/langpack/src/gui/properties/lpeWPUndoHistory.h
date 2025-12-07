@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	lpeWPUndoHistory( igdeEnvironment &environment );
+	lpeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	inline lpeLangPack *GetLangPack() const{return pLangPack;}
 	
 	/** \brief Set language pack or NULL. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	/*@}*/
 };
 

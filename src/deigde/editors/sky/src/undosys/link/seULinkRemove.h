@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkRemove( seLink *link );
+	seULinkRemove(seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml element tag. */
-	decXmlElementTag( const char *name );
+	decXmlElementTag(const char *name);
 	
 protected:
 	/** \brief Clean up xml element tag. */
@@ -58,16 +58,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString GetName() const{ return pName; }
+	inline const decString GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Namespace part of the tag name. */
-	inline const decString &GetNamespace() const{ return pNamespace; }
+	inline const decString &GetNamespace() const{return pNamespace;}
 	
 	/** \brief Local name part of the tag name. */
-	inline const decString &GetLocalName() const{ return pLocalName; }
+	inline const decString &GetLocalName() const{return pLocalName;}
 	/*@}*/
 	
 	
@@ -78,17 +78,17 @@ public:
 	decXmlCharacterData *GetFirstData() const;
 	
 	/** \brief Index-th element tag beeing a decXmlElementTag or NULL otherwise. */
-	decXmlElementTag *GetElementIfTag( int index ) const;
+	decXmlElementTag *GetElementIfTag(int index) const;
 	
 	/** \brief decXmlAttValue with the given name or NULL otherwise. */
-	decXmlAttValue *FindAttribute( const char *name ) const;
+	decXmlAttValue *FindAttribute(const char *name) const;
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	/** \name Casting */

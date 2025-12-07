@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUCategorySetDescription( gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type, const char *newValue );
+	gdeUCategorySetDescription(gdeGameDefinition *gameDefintiion,
+		gdeCategory *category, eCategoryType type, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

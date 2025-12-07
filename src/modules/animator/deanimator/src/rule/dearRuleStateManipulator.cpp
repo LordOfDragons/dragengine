@@ -51,7 +51,7 @@
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS	timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat( "Rule State Manipulator = %iys", ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat("Rule State Manipulator = %iys", (int)(timer.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER
@@ -62,30 +62,30 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleStateManipulator::dearRuleStateManipulator( dearAnimatorInstance &instance,
-const dearAnimator &animator, int firstLink, const deAnimatorRuleStateManipulator &rule ) :
-dearRule( instance, animator, firstLink, rule ),
+dearRuleStateManipulator::dearRuleStateManipulator(dearAnimatorInstance &instance,
+const dearAnimator &animator, int firstLink, const deAnimatorRuleStateManipulator &rule) :
+dearRule(instance, animator, firstLink, rule),
 //pStateManipulator( rule ),
 
-pTargetPosition( rule.GetTargetPosition(), firstLink ),
-pTargetRotation( rule.GetTargetRotation(), firstLink ),
-pTargetSize( rule.GetTargetSize(), firstLink ),
-pTargetVPS( rule.GetTargetVertexPositionSet(), firstLink ),
+pTargetPosition(rule.GetTargetPosition(), firstLink),
+pTargetRotation(rule.GetTargetRotation(), firstLink),
+pTargetSize(rule.GetTargetSize(), firstLink),
+pTargetVPS(rule.GetTargetVertexPositionSet(), firstLink),
 
-pEnablePosition( rule.GetEnablePosition() ),
-pEnableOrientation( rule.GetEnableRotation() ),
-pEnableScale( rule.GetEnableSize() ),
-pEnableVPS( rule.GetEnableVertexPositionSet() ),
-pEnableBones( pEnablePosition || pEnableOrientation || pEnableScale ),
+pEnablePosition(rule.GetEnablePosition()),
+pEnableOrientation(rule.GetEnableRotation()),
+pEnableScale(rule.GetEnableSize()),
+pEnableVPS(rule.GetEnableVertexPositionSet()),
+pEnableBones(pEnablePosition || pEnableOrientation || pEnableScale),
 
-pMinPosition( rule.GetMinimumPosition() ),
-pMaxPosition( rule.GetMaximumPosition() ),
-pMinRotation( rule.GetMinimumRotation() ),
-pMaxRotation( rule.GetMaximumRotation() ),
-pMinSize( rule.GetMinimumSize() ),
-pMaxSize( rule.GetMaximumSize() ),
-pMinVPS( rule.GetMinimumVertexPositionSet() ),
-pMaxVPS( rule.GetMaximumVertexPositionSet() )
+pMinPosition(rule.GetMinimumPosition()),
+pMaxPosition(rule.GetMaximumPosition()),
+pMinRotation(rule.GetMinimumRotation()),
+pMaxRotation(rule.GetMaximumRotation()),
+pMinSize(rule.GetMinimumSize()),
+pMaxSize(rule.GetMaximumSize()),
+pMinVPS(rule.GetMinimumVertexPositionSet()),
+pMaxVPS(rule.GetMaximumVertexPositionSet())
 {
 	RuleChanged();
 }
@@ -98,14 +98,14 @@ dearRuleStateManipulator::~dearRuleStateManipulator(){
 // Management
 ///////////////
 
-void dearRuleStateManipulator::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
+void dearRuleStateManipulator::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
+	if(! GetEnabled()){
 		return;
 	}
 	
 	const float blendFactor = GetBlendFactor();
-	if( blendFactor < FLOAT_SAFE_EPSILON ){
+	if(blendFactor < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -116,54 +116,54 @@ DEBUG_RESET_TIMERS;
 	int i;
 	
 	// retrieve the blend factors
-	decVector scale( 1.0f, 1.0f, 1.0f );
+	decVector scale(1.0f, 1.0f, 1.0f);
 	decQuaternion orientation;
 	decVector position;
 	float weight = 0.0f;
 	
-	if( pEnableBones ){
-		if( pEnablePosition ){
-			const float valuePosition = decMath::clamp( pTargetPosition.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-			position = pMinPosition * ( 1.0f - valuePosition ) + pMaxPosition * valuePosition;
+	if(pEnableBones){
+		if(pEnablePosition){
+			const float valuePosition = decMath::clamp(pTargetPosition.GetValue(instance, 0.0f), 0.0f, 1.0f);
+			position = pMinPosition * (1.0f - valuePosition) + pMaxPosition * valuePosition;
 		}
 	
-		if( pEnableOrientation ){
-			const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-			orientation.SetFromEuler( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
+		if(pEnableOrientation){
+			const float valueRotation = decMath::clamp(pTargetRotation.GetValue(instance, 0.0f), 0.0f, 1.0f);
+			orientation.SetFromEuler(pMinRotation * (1.0f - valueRotation) + pMaxRotation * valueRotation);
 		}
 	
-		if( pEnableScale ){
-			const float valueScale = decMath::clamp( pTargetSize.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-			scale = pMinSize * ( 1.0f - valueScale ) + pMaxSize * valueScale;
+		if(pEnableScale){
+			const float valueScale = decMath::clamp(pTargetSize.GetValue(instance, 0.0f), 0.0f, 1.0f);
+			scale = pMinSize * (1.0f - valueScale) + pMaxSize * valueScale;
 		}
 	}
 	
-	if( pEnableVPS ){
-		const float valueWeight = decMath::clamp( pTargetVPS.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-		weight = pMinVPS * ( 1.0f - valueWeight ) + pMaxVPS * valueWeight;
+	if(pEnableVPS){
+		const float valueWeight = decMath::clamp(pTargetVPS.GetValue(instance, 0.0f), 0.0f, 1.0f);
+		weight = pMinVPS * (1.0f - valueWeight) + pMaxVPS * valueWeight;
 	}
 	
 	// apply states
-	if( pEnableBones ){
-		for( i=0; i<boneCount; i++ ){
-			const int animatorBone = GetBoneMappingFor( i );
-			if( animatorBone == -1 ){
+	if(pEnableBones){
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
 				continue;
 			}
 		
-			stalist.GetStateAt( animatorBone )->BlendWith( position, orientation, scale,
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale );
+			stalist.GetStateAt(animatorBone)->BlendWith(position, orientation, scale,
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableScale);
 		}
 	}
 	
-	if( pEnableVPS ){
-		for( i=0; i<vpsCount; i++ ){
-			const int animatorVps = GetVPSMappingFor( i );
-			if( animatorVps == -1 ){
+	if(pEnableVPS){
+		for(i=0; i<vpsCount; i++){
+			const int animatorVps = GetVPSMappingFor(i);
+			if(animatorVps == -1){
 				continue;
 			}
 		
-			vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+			vpsstalist.GetStateAt(animatorVps).BlendWith(weight, blendMode, blendFactor, pEnableVPS);
 		}
 	}
 DEBUG_PRINT_TIMER;

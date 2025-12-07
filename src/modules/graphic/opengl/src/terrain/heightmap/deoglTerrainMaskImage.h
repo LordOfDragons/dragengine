@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create terrain mask image wrapper. */
-	deoglTerrainMaskImage( deImage &image );
+	deoglTerrainMaskImage(deImage &image);
 	
 	/** Clean up terrain mask image wrapper. */
 	~deoglTerrainMaskImage();
@@ -64,24 +64,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** Height. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/**
 	 * Mask value at position.
 	 * 
 	 * No checking is done on the parameters so make sure they are inside the boundaries.
 	 */
-	float GetMaskValueAt( int x, int y ) const;
+	float GetMaskValueAt(int x, int y) const;
 	
 	/**
 	 * Mask value at position.
 	 * 
 	 * No checking is done on the parameters so make sure they are inside the boundaries.
 	 */
-	float GetMaskValueAt( int index ) const;
+	float GetMaskValueAt(int index) const;
 	/*@}*/
 };
 

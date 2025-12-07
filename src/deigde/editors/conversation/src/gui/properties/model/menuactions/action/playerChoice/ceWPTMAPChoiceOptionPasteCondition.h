@@ -51,9 +51,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionPasteCondition( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionPasteCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option );
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option);
 	/*@}*/
 	
 	
@@ -61,16 +61,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
+	inline ceCAPlayerChoice *GetPlayerChoice() const{return pPlayerChoice;}
 	
 	/** \brief If-case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
+	inline ceCAPlayerChoiceOption *GetOption() const{return pOption;}
 	
 	/** \brief Create undo action for pasting condition. */
-	virtual igdeUndo *CreateUndo( const ceConversationConditionList &conditions );
+	virtual igdeUndo *CreateUndo(const ceConversationConditionList &conditions);
 	/*@}*/
 };
 

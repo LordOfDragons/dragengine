@@ -37,8 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meIDGroup::meIDGroup( const char *name ) :
-pName( name ){
+meIDGroup::meIDGroup(const char *name) :
+pName(name){
 }
 
 meIDGroup::~meIDGroup(){
@@ -58,63 +58,63 @@ decStringList meIDGroup::GetIDList() const{
 	return pIDs.GetKeys();
 }
 
-int meIDGroup::GetUsageCountFor( const char *id ) const{
+int meIDGroup::GetUsageCountFor(const char *id) const{
 	deObject *object;
 	
-	if( pIDs.GetAt( id, &object ) ){
-		return ( ( meIDGroupID* )object )->GetUsageCount();
+	if(pIDs.GetAt(id, &object)){
+		return ((meIDGroupID*)object)->GetUsageCount();
 		
 	}else{
 		return 0;
 	}
 }
 
-bool meIDGroup::Has( const char *id ) const{
-	return pIDs.Has( id );
+bool meIDGroup::Has(const char *id) const{
+	return pIDs.Has(id);
 }
 
-void meIDGroup::Add( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void meIDGroup::Add(const char *id){
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deObject *object;
 	
-	if( pIDs.GetAt( id, &object ) ){
-		( ( meIDGroupID* )object )->Increment();
+	if(pIDs.GetAt(id, &object)){
+		((meIDGroupID*)object)->Increment();
 		return;
 	}
 	
 	meIDGroupID *groupID = NULL;
 	
 	try{
-		groupID = new meIDGroupID( id );
-		pIDs.SetAt( id, groupID );
+		groupID = new meIDGroupID(id);
+		pIDs.SetAt(id, groupID);
 		groupID->FreeReference();
 		
-	}catch( const deException & ){
-		if( groupID ){
+	}catch(const deException &){
+		if(groupID){
 			groupID->FreeReference();
 		}
 		throw;
 	}
 }
 
-void meIDGroup::Remove( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void meIDGroup::Remove(const char *id){
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deObject *object;
 	
-	if( ! pIDs.GetAt( id, &object ) ){
-		DETHROW( deeInvalidParam );
+	if(! pIDs.GetAt(id, &object)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	meIDGroupID &groupID = *( ( meIDGroupID* )object );
+	meIDGroupID &groupID = *((meIDGroupID*)object);
 	groupID.Decrement();
-	if( groupID.GetUsageCount() == 0 ){
-		pIDs.Remove( id );
+	if(groupID.GetUsageCount() == 0){
+		pIDs.Remove(id);
 	}
 }
 

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	peeUTypeRemove( peeType *type );
+	peeUTypeRemove(peeType *type);
 	
 protected:
 	/** \brief Clean up the undo object. */

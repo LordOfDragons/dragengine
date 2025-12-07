@@ -87,7 +87,7 @@ void devkSpecialization::SetEntryCount(int count){
 		return;
 	}
 	
-	pEntries = new VkSpecializationMapEntry[ count ]{};
+	pEntries = new VkSpecializationMapEntry[count]{};
 	pEntryCount = count;
 }
 
@@ -105,7 +105,7 @@ void devkSpecialization::SetEntryAt(int index, const VkSpecializationMapEntry &e
 	DEASSERT_TRUE(entry.offset >= 0)
 	DEASSERT_TRUE(entry.size >= 0)
 	
-	pEntries[ index ] = entry;
+	pEntries[index] = entry;
 }
 
 void devkSpecialization::SetEntryAt(int index, int constantID, int offset, int size){
@@ -146,7 +146,7 @@ void devkSpecialization::SetData(const void *data, int size){
 		return;
 	}
 	
-	pData = new char[ size ];
+	pData = new char[size];
 	memcpy(pData, data, size);
 	pDataSize = size;
 }
@@ -165,9 +165,9 @@ bool devkSpecialization::operator==(const devkSpecialization &configuration) con
 	
 	int i;
 	for(i=0; i<pEntryCount; i++){
-		if(pEntries[ i ].constantID != configuration.pEntries[ i ].constantID
-		|| pEntries[ i ].offset != configuration.pEntries[ i ].offset
-		|| pEntries[ i ].size != configuration.pEntries[ i ].size){
+		if(pEntries[i].constantID != configuration.pEntries[i].constantID
+		|| pEntries[i].offset != configuration.pEntries[i].offset
+		|| pEntries[i].size != configuration.pEntries[i].size){
 			return false;
 		}
 	}

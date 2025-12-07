@@ -38,20 +38,20 @@
 /////////////////////////////////
 
 dedaiSpaceGridVertex::dedaiSpaceGridVertex() :
-pGrid( NULL ),
-pFirstEdge( 0 ),
-pIndex( 0 ),
-pEdgeCount( 0 ),
-pFirstLink( 0 ),
-pLinkCount( 0 ),
+pGrid(NULL),
+pFirstEdge(0),
+pIndex(0),
+pEdgeCount(0),
+pFirstLink(0),
+pLinkCount(0),
 
-pEnabled( true ),
+pEnabled(true),
 
-pPathParent( NULL ),
-pPathCostF( 0.0f ),
-pPathCostG( 0.0f ),
-pPathCostH( 0.0f ),
-pPathType( epftFree ){
+pPathParent(NULL),
+pPathCostF(0.0f),
+pPathCostG(0.0f),
+pPathCostH(0.0f),
+pPathType(epftFree){
 }
 
 dedaiSpaceGridVertex::~dedaiSpaceGridVertex(){
@@ -62,61 +62,61 @@ dedaiSpaceGridVertex::~dedaiSpaceGridVertex(){
 // Management
 ///////////////
 
-void dedaiSpaceGridVertex::SetGrid( dedaiSpaceGrid *grid ){
+void dedaiSpaceGridVertex::SetGrid(dedaiSpaceGrid *grid){
 	pGrid = grid;
 }
 
-void dedaiSpaceGridVertex::SetIndex( unsigned short index ){
+void dedaiSpaceGridVertex::SetIndex(unsigned short index){
 	pIndex = index;
 }
 
 
 
-void dedaiSpaceGridVertex::SetPosition( const decVector &position ){
+void dedaiSpaceGridVertex::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void dedaiSpaceGridVertex::SetFirstEdge( unsigned short first ){
+void dedaiSpaceGridVertex::SetFirstEdge(unsigned short first){
 	pFirstEdge = first;
 }
 
-void dedaiSpaceGridVertex::SetEdgeCount( unsigned short count ){
+void dedaiSpaceGridVertex::SetEdgeCount(unsigned short count){
 	pEdgeCount = count;
 }
 
-void dedaiSpaceGridVertex::SetFirstLink( unsigned short first ){
+void dedaiSpaceGridVertex::SetFirstLink(unsigned short first){
 	pFirstLink = first;
 }
 
-void dedaiSpaceGridVertex::SetLinkCount( unsigned short count ){
+void dedaiSpaceGridVertex::SetLinkCount(unsigned short count){
 	pLinkCount = count;
 }
 
 
 
-void dedaiSpaceGridVertex::SetEnabled( bool enabled ){
+void dedaiSpaceGridVertex::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
 
 
-void dedaiSpaceGridVertex::SetPathParent( dedaiSpaceGridVertex *face ){
+void dedaiSpaceGridVertex::SetPathParent(dedaiSpaceGridVertex *face){
 	pPathParent = face;
 }
 
-void dedaiSpaceGridVertex::SetPathCostF( float cost ){
+void dedaiSpaceGridVertex::SetPathCostF(float cost){
 	pPathCostF = cost;
 }
 
-void dedaiSpaceGridVertex::SetPathCostG( float cost ){
+void dedaiSpaceGridVertex::SetPathCostG(float cost){
 	pPathCostG = cost;
 }
 
-void dedaiSpaceGridVertex::SetPathCostH( float cost ){
+void dedaiSpaceGridVertex::SetPathCostH(float cost){
 	pPathCostH = cost;
 }
 
-void dedaiSpaceGridVertex::SetPathType( ePathFindingTypes type ){
+void dedaiSpaceGridVertex::SetPathType(ePathFindingTypes type){
 	pPathType = type;
 }
 

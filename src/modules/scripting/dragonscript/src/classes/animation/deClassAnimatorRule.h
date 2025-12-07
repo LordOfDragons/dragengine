@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassAnimatorRule( deScriptingDragonScript &ds );
+	deClassAnimatorRule(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassAnimatorRule();
@@ -64,27 +64,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Rule or \em NULL if deleted or myself is \em NULL. */
-	deAnimatorRule *GetRule( dsRealObject *myself ) const;
+	deAnimatorRule *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns rule or \em NULL. */
-	void AssignRule( dsRealObject *myself, deAnimatorRule *rule );
+	void AssignRule(dsRealObject *myself, deAnimatorRule *rule);
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator( dsRealObject *myself, deAnimator *animator );
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/**
 	 * \brief Pushes a rule.
 	 * \details Delegates the call to the matching rule script class.
 	 */
-	void PushRule( dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule );
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule);
 	
-	inline dsClass *GetClassAnimatorRuleBlendMode() const{ return pClsAnimatorRuleBlendMode; }
+	inline dsClass *GetClassAnimatorRuleBlendMode() const{return pClsAnimatorRuleBlendMode;}
 	/*@}*/
 	
 private:
@@ -93,26 +93,26 @@ private:
 		dsClass *clsAnimatorRuleBlendMode;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetEnabled );
-	DEF_NATFUNC( nfSetBlendMode );
-	DEF_NATFUNC( nfSetBlendFactor );
-	DEF_NATFUNC( nfSetInvertBlendFactor );
+	DEF_NATFUNC(nfSetEnabled);
+	DEF_NATFUNC(nfSetBlendMode);
+	DEF_NATFUNC(nfSetBlendFactor);
+	DEF_NATFUNC(nfSetInvertBlendFactor);
 	
-	DEF_NATFUNC( nfAddBone );
-	DEF_NATFUNC( nfRemoveAllBones );
-	DEF_NATFUNC( nfCopyBonesFrom );
+	DEF_NATFUNC(nfAddBone);
+	DEF_NATFUNC(nfRemoveAllBones);
+	DEF_NATFUNC(nfCopyBonesFrom);
 	
-	DEF_NATFUNC( nfAddVertexPositionSet );
-	DEF_NATFUNC( nfRemoveAllVertexPositionSets );
-	DEF_NATFUNC( nfCopyVertexPositionSetsFrom );
+	DEF_NATFUNC(nfAddVertexPositionSet);
+	DEF_NATFUNC(nfRemoveAllVertexPositionSets);
+	DEF_NATFUNC(nfCopyVertexPositionSetsFrom);
 #undef DEF_NATFUNC
 };
 

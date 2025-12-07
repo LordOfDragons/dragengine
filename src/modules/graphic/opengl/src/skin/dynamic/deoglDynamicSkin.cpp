@@ -56,23 +56,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicSkin::deoglDynamicSkin( deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin ) :
-pOgl( ogl ),
-pDynamicSkin( dynamicSkin ),
-pRDynamicSkin( NULL ),
-pDirtyRenderables( true )
+deoglDynamicSkin::deoglDynamicSkin(deGraphicOpenGl &ogl, const deDynamicSkin &dynamicSkin) :
+pOgl(ogl),
+pDynamicSkin(dynamicSkin),
+pRDynamicSkin(NULL),
+pDirtyRenderables(true)
 {
 	const int renderableCount = dynamicSkin.GetRenderableCount();
 	int i;
 	
 	try{
-		pRDynamicSkin = new deoglRDynamicSkin( ogl.GetRenderThread() );
+		pRDynamicSkin = new deoglRDynamicSkin(ogl.GetRenderThread());
 		
-		for( i=0; i<renderableCount; i++ ){
-			RenderableAdded( i, dynamicSkin.GetRenderableAt( i ) );
+		for(i=0; i<renderableCount; i++){
+			RenderableAdded(i, dynamicSkin.GetRenderableAt(i));
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -91,8 +91,8 @@ int deoglDynamicSkin::GetRenderableCount() const{
 	return pRenderables.GetCount();
 }
 
-deoglDSRenderable *deoglDynamicSkin::GetRenderableAt( int index ) const{
-	return ( deoglDSRenderable* )pRenderables.GetAt( index );
+deoglDSRenderable *deoglDynamicSkin::GetRenderableAt(int index) const{
+	return (deoglDSRenderable*)pRenderables.GetAt(index);
 }
 
 
@@ -101,20 +101,20 @@ void deoglDynamicSkin::SyncToRender(){
 	const int count = pRenderables.GetCount();
 	int i;
 	
-	if( pDirtyRenderables ){
+	if(pDirtyRenderables){
 		pRDynamicSkin->RemoveAllRenderables();
 		
-		for( i=0; i<count; i++ ){
-			deoglDSRenderable &renderable = *( ( deoglDSRenderable* )pRenderables.GetAt( i ) );
+		for(i=0; i<count; i++){
+			deoglDSRenderable &renderable = *((deoglDSRenderable*)pRenderables.GetAt(i));
 			renderable.SyncToRender();
-			pRDynamicSkin->AddRenderable( renderable.GetRRenderable() );
+			pRDynamicSkin->AddRenderable(renderable.GetRRenderable());
 		}
 		
 		pDirtyRenderables = false;
 	}
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglDSRenderable* )pRenderables.GetAt( i ) )->SyncToRender();
+	for(i=0; i<count; i++){
+		((deoglDSRenderable*)pRenderables.GetAt(i))->SyncToRender();
 	}
 }
 
@@ -123,46 +123,46 @@ void deoglDynamicSkin::SyncToRender(){
 // Listeners
 //////////////
 
-void deoglDynamicSkin::AddListener( deoglDynamicSkinListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicSkin::AddListener(deoglDynamicSkinListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void deoglDynamicSkin::RemoveListener( deoglDynamicSkinListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void deoglDynamicSkin::RemoveListener(deoglDynamicSkinListener *listener){
+	pListeners.RemoveIfPresent(listener);
 }
 
 void deoglDynamicSkin::NotifyDestroyed(){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinDestroyed();
+	for(i=0; i<count; i++){
+		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinDestroyed();
 	}
 }
 
 void deoglDynamicSkin::NotifyRenderablesChanged(){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinRenderablesChanged();
+	for(i=0; i<count; i++){
+		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderablesChanged();
 	}
 }
 
-void deoglDynamicSkin::NotifyRenderableChanged( deoglDSRenderable &renderable ){
+void deoglDynamicSkin::NotifyRenderableChanged(deoglDSRenderable &renderable){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinRenderableChanged( renderable );
+	for(i=0; i<count; i++){
+		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableChanged(renderable);
 	}
 }
 
-void deoglDynamicSkin::NotifyRenderableRequiresSync( deoglDSRenderable &renderable ){
+void deoglDynamicSkin::NotifyRenderableRequiresSync(deoglDSRenderable &renderable){
 	const int count = pListeners.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinRenderableRequiresSync( renderable );
+	for(i=0; i<count; i++){
+		((deoglDynamicSkinListener*)pListeners.GetAt(i))->DynamicSkinRenderableRequiresSync(renderable);
 	}
 }
 
@@ -171,54 +171,54 @@ void deoglDynamicSkin::NotifyRenderableRequiresSync( deoglDSRenderable &renderab
 // Notifications
 //////////////////
 
-void deoglDynamicSkin::RenderableAdded( int, deDSRenderable *renderable ){
-	if( ! renderable ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicSkin::RenderableAdded(int, deDSRenderable *renderable){
+	if(! renderable){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deDSRenderableVisitorIdentify identify;
-	renderable->Visit( identify );
+	renderable->Visit(identify);
 	
-	switch( identify.GetType() ){
+	switch(identify.GetType()){
 	case deDSRenderableVisitorIdentify::eptCamera:
-		pRenderables.Add( new deoglDSRenderableCamera( *this, identify.CastToCamera() ) );
+		pRenderables.Add(new deoglDSRenderableCamera(*this, identify.CastToCamera()));
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptCanvas:
-		pRenderables.Add( new deoglDSRenderableCanvas( *this, identify.CastToCanvas() ) );
+		pRenderables.Add(new deoglDSRenderableCanvas(*this, identify.CastToCanvas()));
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptColor:
-		pRenderables.Add( new deoglDSRenderableColor( *this, identify.CastToColor() ) );
+		pRenderables.Add(new deoglDSRenderableColor(*this, identify.CastToColor()));
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptImage:
-		pRenderables.Add( new deoglDSRenderableImage( *this, identify.CastToImage() ) );
+		pRenderables.Add(new deoglDSRenderableImage(*this, identify.CastToImage()));
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptValue:
-		pRenderables.Add( new deoglDSRenderableValue( *this, identify.CastToValue() ) );
+		pRenderables.Add(new deoglDSRenderableValue(*this, identify.CastToValue()));
 		break;
 		
 	case deDSRenderableVisitorIdentify::eptVideoFrame:
-		pRenderables.Add( new deoglDSRenderableVideoFrame( *this, identify.CastToVideoFrame() ) );
+		pRenderables.Add(new deoglDSRenderableVideoFrame(*this, identify.CastToVideoFrame()));
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDirtyRenderables = true;
 	NotifyRenderablesChanged();
 }
 
-void deoglDynamicSkin::RenderableChanged( int index, deDSRenderable *renderable ){
-	( ( deoglDSRenderable* )pRenderables.GetAt( index ) )->RenderableChanged();
+void deoglDynamicSkin::RenderableChanged(int index, deDSRenderable *renderable){
+	((deoglDSRenderable*)pRenderables.GetAt(index))->RenderableChanged();
 }
 
-void deoglDynamicSkin::RenderableRemoved( int index, deDSRenderable* ){
-	delete ( deoglDSRenderable* )pRenderables.GetAt( index );
-	pRenderables.RemoveFrom( index );
+void deoglDynamicSkin::RenderableRemoved(int index, deDSRenderable*){
+	delete (deoglDSRenderable*)pRenderables.GetAt(index);
+	pRenderables.RemoveFrom(index);
 	
 	pDirtyRenderables = true;
 	NotifyRenderablesChanged();
@@ -228,8 +228,8 @@ void deoglDynamicSkin::AllRenderablesRemoved(){
 	const int count = pRenderables.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deoglDSRenderable* )pRenderables.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglDSRenderable*)pRenderables.GetAt(i);
 	}
 	pRenderables.RemoveAll();
 	
@@ -244,12 +244,12 @@ void deoglDynamicSkin::AllRenderablesRemoved(){
 
 void deoglDynamicSkin::pCleanUp(){
 	int i, count = pRenderables.GetCount();
-	for( i=0; i<count; i++ ){
-		delete ( deoglDSRenderable* )pRenderables.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglDSRenderable*)pRenderables.GetAt(i);
 	}
 	pRenderables.RemoveAll();
 	
-	if( pRDynamicSkin ){
+	if(pRDynamicSkin){
 		pRDynamicSkin->FreeReference();
 	}
 	

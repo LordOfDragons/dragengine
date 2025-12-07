@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceFacePose::ceFacePose( const char *name ) :
-pConversation( NULL ),
-pName( name ){
+ceFacePose::ceFacePose(const char *name) :
+pConversation(NULL),
+pName(name){
 }
 
 ceFacePose::~ceFacePose(){
@@ -53,26 +53,26 @@ ceFacePose::~ceFacePose(){
 // Management
 ///////////////
 
-void ceFacePose::SetConversation( ceConversation *conversation ){
+void ceFacePose::SetConversation(ceConversation *conversation){
 	pConversation = conversation;
 }
 
-void ceFacePose::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
+void ceFacePose::SetName(const char *name){
+	if(! name) DETHROW(deeInvalidParam);
 	
-	if( ! pName.Equals( name ) ){
-		if( pConversation && pConversation->GetFacePoseList().HasNamed( name ) ) DETHROW( deeInvalidParam );
+	if(! pName.Equals(name)){
+		if(pConversation && pConversation->GetFacePoseList().HasNamed(name)) DETHROW(deeInvalidParam);
 		
 		pName = name;
 		
-		if( pConversation ){
-			pConversation->NotifyFacePoseChanged( this );
+		if(pConversation){
+			pConversation->NotifyFacePoseChanged(this);
 		}
 	}
 }
 
 void ceFacePose::NotifyControllersChanged(){
-	if( pConversation ){
-		pConversation->NotifyFacePoseChanged( this );
+	if(pConversation){
+		pConversation->NotifyFacePoseChanged(this);
 	}
 }

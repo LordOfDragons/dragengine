@@ -70,38 +70,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Minimum time stretch factor. */
-	inline float GetMinTime() const{ return pMinTime; }
+	inline float GetMinTime() const{return pMinTime;}
 	
 	/** \brief Set minimum time stretch factor. */
-	void SetMinTime( float stretch );
+	void SetMinTime(float stretch);
 	
 	/** \brief Maximum time stretch factor. */
-	inline float GetMaxTime() const{ return pMaxTime; }
+	inline float GetMaxTime() const{return pMaxTime;}
 	
 	/** \brief Set maximum time stretch factor. */
-	void SetMaxTime( float stretch );
+	void SetMaxTime(float stretch);
 	
 	/** \brief Minimum pitch shift factor. */
-	inline float GetMinPitch() const{ return pMinPitch; }
+	inline float GetMinPitch() const{return pMinPitch;}
 	
 	/** \brief Set minimum pitch shift factor. */
-	void SetMinPitch( float shift );
+	void SetMinPitch(float shift);
 	
 	/** \brief Maximum pitch shift factor. */
-	inline float GetMaxPitch() const{ return pMaxPitch; }
+	inline float GetMaxPitch() const{return pMaxPitch;}
 	
 	/** \brief Set maximum pitch shift factor. */
-	void SetMaxPitch( float shift );
+	void SetMaxPitch(float shift);
 	
 	
 	
 	/** \brief Time stretch target. */
-	inline deSynthesizerControllerTarget &GetTargetTime(){ return pTargetTime; }
-	inline const deSynthesizerControllerTarget &GetTargetTime() const{ return pTargetTime; }
+	inline deSynthesizerControllerTarget &GetTargetTime(){return pTargetTime;}
+	inline const deSynthesizerControllerTarget &GetTargetTime() const{return pTargetTime;}
 	
 	/** \brief Pitch stretch target. */
-	inline deSynthesizerControllerTarget &GetTargetPitch(){ return pTargetPitch; }
-	inline const deSynthesizerControllerTarget &GetTargetPitch() const{ return pTargetPitch; }
+	inline deSynthesizerControllerTarget &GetTargetPitch(){return pTargetPitch;}
+	inline const deSynthesizerControllerTarget &GetTargetPitch() const{return pTargetPitch;}
 	/*@}*/
 	
 	
@@ -109,7 +109,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deSynthesizerEffectVisitor &visitor );
+	virtual void Visit(deSynthesizerEffectVisitor &visitor);
 	/*@}*/
 };
 

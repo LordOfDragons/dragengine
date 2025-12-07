@@ -38,16 +38,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPGammaCorrection::deoglPGammaCorrection( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "gammaCorrection" );
-	SetDescription( "Gamma correction" );
-	SetType( deModuleParameter::eptRanged );
-	SetMinimumValue( 0.5f );
-	SetMaximumValue( 1.5f );
-	SetValueStepSize( 0.05f );
-	SetDisplayName( "Gamma" );
-	SetCategory( ecBasic );
-	SetDefaultValue( "1" );
+deoglPGammaCorrection::deoglPGammaCorrection(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("gammaCorrection");
+	SetDescription("Gamma correction");
+	SetType(deModuleParameter::eptRanged);
+	SetMinimumValue(0.5f);
+	SetMaximumValue(1.5f);
+	SetValueStepSize(0.05f);
+	SetDisplayName("Gamma");
+	SetCategory(ecBasic);
+	SetDefaultValue("1");
 }
 
 deoglPGammaCorrection::~deoglPGammaCorrection(){
@@ -62,6 +62,6 @@ float deoglPGammaCorrection::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetGammaCorrection();
 }
 
-void deoglPGammaCorrection::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetGammaCorrection( value );
+void deoglPGammaCorrection::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetGammaCorrection(value);
 }

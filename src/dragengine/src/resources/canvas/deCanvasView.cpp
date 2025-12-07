@@ -38,12 +38,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvasView::deCanvasView( deCanvasManager *manager ) :
-deCanvas( manager ),
+deCanvasView::deCanvasView(deCanvasManager *manager) :
+deCanvas(manager),
 
-pCanvasRoot( NULL ),
-pCanvasTail( NULL ),
-pCanvasCount( 0 ){
+pCanvasRoot(NULL),
+pCanvasTail(NULL),
+pCanvasCount(0){
 }
 
 deCanvasView::~deCanvasView(){
@@ -55,61 +55,61 @@ deCanvasView::~deCanvasView(){
 // Management
 ///////////////
 
-void deCanvasView::AddCanvas( deCanvas *canvas ){
-	if( ! canvas || canvas->GetParentMask() || canvas->GetParentView()){
-		DETHROW( deeInvalidParam );
+void deCanvasView::AddCanvas(deCanvas *canvas){
+	if(! canvas || canvas->GetParentMask() || canvas->GetParentView()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pCanvasTail ){
-		pCanvasTail->SetLLViewNext( canvas );
-		canvas->SetLLViewPrev( pCanvasTail );
-		canvas->SetLLViewNext( NULL ); // not required by definition, just to make sure...
+	if(pCanvasTail){
+		pCanvasTail->SetLLViewNext(canvas);
+		canvas->SetLLViewPrev(pCanvasTail);
+		canvas->SetLLViewNext(NULL); // not required by definition, just to make sure...
 		
 	}else{
-		canvas->SetLLViewPrev( NULL ); // not required by definition, just to make sure...
-		canvas->SetLLViewNext( NULL ); // not required by definition, just to make sure...
+		canvas->SetLLViewPrev(NULL); // not required by definition, just to make sure...
+		canvas->SetLLViewNext(NULL); // not required by definition, just to make sure...
 		pCanvasRoot = canvas;
 	}
 	
 	pCanvasTail = canvas;
 	pCanvasCount++;
-	canvas->SetParentView( this );
+	canvas->SetParentView(this);
 	canvas->AddReference();
 	
 	NotifyContentChanged();
 }
 
-void deCanvasView::RemoveCanvas( deCanvas *canvas ){
-	if( ! canvas || canvas->GetParentMask() || canvas->GetParentView() != this ){
-		DETHROW( deeInvalidParam );
+void deCanvasView::RemoveCanvas(deCanvas *canvas){
+	if(! canvas || canvas->GetParentMask() || canvas->GetParentView() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( canvas->GetLLViewPrev() ){
-		canvas->GetLLViewPrev()->SetLLViewNext( canvas->GetLLViewNext() );
+	if(canvas->GetLLViewPrev()){
+		canvas->GetLLViewPrev()->SetLLViewNext(canvas->GetLLViewNext());
 	}
-	if( canvas->GetLLViewNext() ){
-		canvas->GetLLViewNext()->SetLLViewPrev( canvas->GetLLViewPrev() );
+	if(canvas->GetLLViewNext()){
+		canvas->GetLLViewNext()->SetLLViewPrev(canvas->GetLLViewPrev());
 	}
-	if( canvas == pCanvasRoot ){
+	if(canvas == pCanvasRoot){
 		pCanvasRoot = canvas->GetLLViewNext();
 	}
-	if( canvas == pCanvasTail ){
+	if(canvas == pCanvasTail){
 		pCanvasTail = canvas->GetLLViewPrev();
 	}
 	pCanvasCount--;
 	
-	canvas->SetParentView( NULL );
-	canvas->SetLLViewPrev( NULL );
-	canvas->SetLLViewNext( NULL );
+	canvas->SetParentView(NULL);
+	canvas->SetLLViewPrev(NULL);
+	canvas->SetLLViewNext(NULL);
 	canvas->FreeReference();
 	
 	NotifyContentChanged();
 }
 
 void deCanvasView::RemoveAllCanvas(){
-	while( pCanvasTail ){
+	while(pCanvasTail){
 		deCanvas * const next = pCanvasTail->GetLLViewPrev();
-		pCanvasTail->SetParentView( NULL );
+		pCanvasTail->SetParentView(NULL);
 		pCanvasTail->FreeReference();
 		pCanvasTail = next;
 		pCanvasCount--;
@@ -124,6 +124,6 @@ void deCanvasView::RemoveAllCanvas(){
 // Visiting
 /////////////
 
-void deCanvasView::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitView( *this );
+void deCanvasView::Visit(deCanvasVisitor &visitor){
+	visitor.VisitView(*this);
 }

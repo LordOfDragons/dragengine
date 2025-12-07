@@ -62,10 +62,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create actor pose. */
-	ceActorPose( igdeEnvironment &environment, const char *name );
+	ceActorPose(igdeEnvironment &environment, const char *name);
 	
 	/** Create copy of actor pose. */
-	ceActorPose( const ceActorPose &pose );
+	ceActorPose(const ceActorPose &pose);
 	
 protected:
 	/** Clean up actor pose. */
@@ -78,35 +78,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Environment. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** Engine animator or \em NULL. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline deAnimator *GetEngineAnimator() const{return pEngAnimator;}
 	
 	
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Animator path. */
-	inline const decString &GetPathAnimator() const{ return pPathAnimator; }
+	inline const decString &GetPathAnimator() const{return pPathAnimator;}
 	
 	/** Set animator path. */
-	void SetPathAnimator( const char *path );
+	void SetPathAnimator(const char *path);
 	
 	/** Controllers. */
-	inline ceActorControllerList &GetControllers(){ return pControllers; }
-	inline const ceActorControllerList &GetControllers() const{ return pControllers; }
+	inline ceActorControllerList &GetControllers(){return pControllers;}
+	inline const ceActorControllerList &GetControllers() const{return pControllers;}
 	
 	/** Gestures. */
-	inline ceActorGestureList &GetGestures(){ return pGestures; }
-	inline const ceActorGestureList &GetGestures() const{ return pGestures; }
+	inline ceActorGestureList &GetGestures(){return pGestures;}
+	inline const ceActorGestureList &GetGestures() const{return pGestures;}
 	
 	/** Controller names. */
-	inline const decStringList &GetControllerNames() const{ return pControllerNames; }
+	inline const decStringList &GetControllerNames() const{return pControllerNames;}
 	/*@}*/
 	
 	

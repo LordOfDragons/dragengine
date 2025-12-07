@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglCaptureCanvasList( deGraphicOpenGl &ogl );
+	deoglCaptureCanvasList(deGraphicOpenGl &ogl);
 	
 	/** Clean up list. */
 	~deoglCaptureCanvasList();
@@ -59,13 +59,13 @@ public:
 	int GetCount() const;
 	
 	/** Capture canvas at index. */
-	deoglCaptureCanvas *GetAt( int index ) const;
+	deoglCaptureCanvas *GetAt(int index) const;
 	
 	/** Add capture canvas. */
-	void Add( deoglCaptureCanvas *captureCanvas );
+	void Add(deoglCaptureCanvas *captureCanvas);
 	
 	/** Remove capture canvas . */
-	void Remove( deoglCaptureCanvas *captureCanvas );
+	void Remove(deoglCaptureCanvas *captureCanvas);
 	
 	/** Removes all capture canvas. */
 	void RemoveAll();

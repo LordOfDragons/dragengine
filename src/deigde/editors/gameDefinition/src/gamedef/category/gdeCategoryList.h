@@ -47,7 +47,7 @@ public:
 	gdeCategoryList();
 	
 	/** \brief Create copy of category list. */
-	gdeCategoryList( const gdeCategoryList &list );
+	gdeCategoryList(const gdeCategoryList &list);
 	
 	/** \brief Clean up category list. */
 	~gdeCategoryList();
@@ -61,37 +61,37 @@ public:
 	int GetCount() const;
 	
 	/** \brief Property at position. */
-	gdeCategory *GetAt( int index ) const;
+	gdeCategory *GetAt(int index) const;
 	
 	/** \brief Named category or \em NULL if absent. */
-	gdeCategory *GetNamed( const char *name ) const;
+	gdeCategory *GetNamed(const char *name) const;
 	
 	/** \brief Category with path or \em NULL if absent. */
-	gdeCategory *GetWithPath( const char *path ) const;
+	gdeCategory *GetWithPath(const char *path) const;
 	
 	/** \brief Index of named category or -1 if absent. */
-	int IndexOf( gdeCategory *proeprty ) const;
+	int IndexOf(gdeCategory *proeprty) const;
 	
 	/** \brief Index of named category or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Property is present. */
-	bool Has( gdeCategory *proeprty ) const;
+	bool Has(gdeCategory *proeprty) const;
 	
 	/** \brief Named category is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add category. */
-	void Add( gdeCategory *proeprty );
+	void Add(gdeCategory *proeprty);
 	
 	/** \brief Remove category. */
-	void Remove( gdeCategory *proeprty );
+	void Remove(gdeCategory *proeprty);
 	
 	/** \brief Remove all categoryes. */
 	void RemoveAll();
 	
 	/** \brief Set from another category list. */
-	gdeCategoryList &operator=( const gdeCategoryList &list );
+	gdeCategoryList &operator=(const gdeCategoryList &list);
 	/*@}*/
 };
 

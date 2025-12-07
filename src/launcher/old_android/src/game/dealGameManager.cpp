@@ -62,18 +62,18 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dealGameManager::dealGameManager( dealLauncher &launcher ) :
-pLauncher( launcher ),
-pActiveProfile( NULL ),
-pDefaultProfile( NULL )
+dealGameManager::dealGameManager(dealLauncher &launcher) :
+pLauncher(launcher),
+pActiveProfile(NULL),
+pDefaultProfile(NULL)
 {
 }
 
 dealGameManager::~dealGameManager(){
-	if( pDefaultProfile ){
+	if(pDefaultProfile){
 		pDefaultProfile->FreeReference();
 	}
-	SetActiveProfile( NULL );
+	SetActiveProfile(NULL);
 	
 	pGameList.RemoveAll();
 }
@@ -84,7 +84,7 @@ dealGameManager::~dealGameManager(){
 ///////////////
 
 void dealGameManager::LoadGameList(){
-	dealGameXML gameXML( &pLauncher.GetLogger(), LOGSOURCE );
+	dealGameXML gameXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileReader *reader;
@@ -92,53 +92,53 @@ void dealGameManager::LoadGameList(){
 	dealGame *game;
 	int i, count;
 	
-	logger.LogInfo( LOGSOURCE, "Loading game list" );
+	logger.LogInfo(LOGSOURCE, "Loading game list");
 	
-	deCollectFileSearchVisitor collect( "*.degame" );
-	vfs.SearchFiles( decPath::CreatePathUnix( "/data/games" ), collect );
+	deCollectFileSearchVisitor collect("*.degame");
+	vfs.SearchFiles(decPath::CreatePathUnix("/data/games"), collect);
 	
 	const dePathList &result = collect.GetFiles();
 	count = result.GetCount();
-	for( i=0; i<count; i++ ){
-		const decPath &pathFile = result.GetAt( i );
+	for(i=0; i<count; i++){
+		const decPath &pathFile = result.GetAt(i);
 		
-		if( vfs.GetFileType( pathFile ) == deVFSContainer::eftRegularFile ){
-			logger.LogInfoFormat( LOGSOURCE, "Reading game definition file '%s'", pathFile.GetLastComponent().GetString() );
+		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
+			logger.LogInfoFormat(LOGSOURCE, "Reading game definition file '%s'", pathFile.GetLastComponent().GetString());
 			reader = NULL;
 			game = NULL;
 			
 			try{
-				reader = vfs.OpenFileForReading( pathFile );
+				reader = vfs.OpenFileForReading(pathFile);
 				
-				game = new dealGame( pLauncher );
-				if( ! game ) DETHROW( deeOutOfMemory );
+				game = new dealGame(pLauncher);
+				if(! game) DETHROW(deeOutOfMemory);
 				
-				gameXML.ReadFromFile( *reader, *game );
+				gameXML.ReadFromFile(*reader, *game);
 				reader->FreeReference();
 				reader = NULL;
 				
-				if( game->GetIdentifier().IsEmpty() ){
-					logger.LogInfo( LOGSOURCE, "No identifier specified, ignoring game file." );
-					DETHROW( deeInvalidFileFormat );
+				if(game->GetIdentifier().IsEmpty()){
+					logger.LogInfo(LOGSOURCE, "No identifier specified, ignoring game file.");
+					DETHROW(deeInvalidFileFormat);
 				}
-				if( game->GetPathConfig().IsEmpty() ){
-					logger.LogInfo( LOGSOURCE, "No configuration path specified, ignoring game file." );
-					DETHROW( deeInvalidFileFormat );
+				if(game->GetPathConfig().IsEmpty()){
+					logger.LogInfo(LOGSOURCE, "No configuration path specified, ignoring game file.");
+					DETHROW(deeInvalidFileFormat);
 				}
-				if( game->GetPathCapture().IsEmpty() ){
-					logger.LogInfo( LOGSOURCE, "No capture path specified, ignoring game file." );
-					DETHROW( deeInvalidFileFormat );
+				if(game->GetPathCapture().IsEmpty()){
+					logger.LogInfo(LOGSOURCE, "No capture path specified, ignoring game file.");
+					DETHROW(deeInvalidFileFormat);
 				}
 				
-				pGameList.Add( game );
+				pGameList.Add(game);
 				game->FreeReference();
 				
-			}catch( const deException & ){
-				logger.LogError( LOGSOURCE, "Failed to read game file" );
-				if( game ){
+			}catch(const deException &){
+				logger.LogError(LOGSOURCE, "Failed to read game file");
+				if(game){
 					game->FreeReference();
 				}
-				if( reader ){
+				if(reader){
 					reader->FreeReference();
 				}
 			}
@@ -149,65 +149,65 @@ void dealGameManager::LoadGameList(){
 void dealGameManager::Verify(){
 	int i, count = pGameList.GetCount();
 	
-	if( pDefaultProfile ){
-		pDefaultProfile->Verify( pLauncher );
+	if(pDefaultProfile){
+		pDefaultProfile->Verify(pLauncher);
 	}
-	pProfileList.ValidateProfiles( pLauncher );
+	pProfileList.ValidateProfiles(pLauncher);
 	
-	for( i=0; i<count; i++ ){
-		pGameList.GetAt( i )->VerifyRequirements();
+	for(i=0; i<count; i++){
+		pGameList.GetAt(i)->VerifyRequirements();
 	}
 }
 
 void dealGameManager::ApplyProfileChanges(){
 	int i, count = pGameList.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		dealGame &game = *pGameList.GetAt( i );
+	for(i=0; i<count; i++){
+		dealGame &game = *pGameList.GetAt(i);
 		
-		if( ! pProfileList.Has( game.GetGlobalProfile() ) ){
-			game.SetGlobalProfile( NULL );
+		if(! pProfileList.Has(game.GetGlobalProfile())){
+			game.SetGlobalProfile(NULL);
 			game.VerifyRequirements();
 		}
 	}
 }
 
-dealGame *dealGameManager::LoadGameFromDisk( const char *path ){
-	dealGameXML gameXML( &pLauncher.GetLogger(), LOGSOURCE );
+dealGame *dealGameManager::LoadGameFromDisk(const char *path){
+	dealGameXML gameXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deLogger &logger = pLauncher.GetLogger();
 	decBaseFileReader *reader = NULL;
 	dealGame *game = NULL;
 	
-	logger.LogInfoFormat( LOGSOURCE, "Reading game definition file '%s'", path );
+	logger.LogInfoFormat(LOGSOURCE, "Reading game definition file '%s'", path);
 	
 	try{
-		reader = new decDiskFileReader( path );
+		reader = new decDiskFileReader(path);
 		
-		game = new dealGame( pLauncher );
+		game = new dealGame(pLauncher);
 		
-		gameXML.ReadFromFile( *reader, *game );
+		gameXML.ReadFromFile(*reader, *game);
 		reader->FreeReference();
 		reader = NULL;
 		
-		if( game->GetIdentifier().IsEmpty() ){
-			logger.LogInfo( LOGSOURCE, "No identifier specified, ignoring game file." );
-			DETHROW( deeInvalidFileFormat );
+		if(game->GetIdentifier().IsEmpty()){
+			logger.LogInfo(LOGSOURCE, "No identifier specified, ignoring game file.");
+			DETHROW(deeInvalidFileFormat);
 		}
-		if( game->GetPathConfig().IsEmpty() ){
-			logger.LogInfo( LOGSOURCE, "No configuration path specified, ignoring game file." );
-			DETHROW( deeInvalidFileFormat );
+		if(game->GetPathConfig().IsEmpty()){
+			logger.LogInfo(LOGSOURCE, "No configuration path specified, ignoring game file.");
+			DETHROW(deeInvalidFileFormat);
 		}
-		if( game->GetPathCapture().IsEmpty() ){
-			logger.LogInfo( LOGSOURCE, "No capture path specified, ignoring game file." );
-			DETHROW( deeInvalidFileFormat );
+		if(game->GetPathCapture().IsEmpty()){
+			logger.LogInfo(LOGSOURCE, "No capture path specified, ignoring game file.");
+			DETHROW(deeInvalidFileFormat);
 		}
 		
-	}catch( const deException & ){
-		logger.LogError( LOGSOURCE, "Failed to read game file" );
-		if( game ){
+	}catch(const deException &){
+		logger.LogError(LOGSOURCE, "Failed to read game file");
+		if(game){
 			game->FreeReference();
 		}
-		if( reader ){
+		if(reader){
 			reader->FreeReference();
 		}
 		throw;
@@ -221,116 +221,116 @@ void dealGameManager::CreateDefaultProfile(){
 	deLogger &logger = pLauncher.GetLogger();
 	dealEngineModule *module;
 	
-	if( ! pDefaultProfile ){
+	if(! pDefaultProfile){
 		pDefaultProfile = new dealGameProfile;
 	}
 	
 	// graphic module
-	module = engine.GetBestModuleForType( dealEngineModule::emtGraphic );
-	if( module ){
-		pDefaultProfile->SetModuleGraphic( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtGraphic);
+	if(module){
+		pDefaultProfile->SetModuleGraphic(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleGraphic( "" );
+		pDefaultProfile->SetModuleGraphic("");
 	}
 	
 	// input module
-	module = engine.GetBestModuleForType( dealEngineModule::emtInput );
-	if( module ){
-		pDefaultProfile->SetModuleInput( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtInput);
+	if(module){
+		pDefaultProfile->SetModuleInput(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleInput( "" );
+		pDefaultProfile->SetModuleInput("");
 	}
 	
 	// physics module
-	module = engine.GetBestModuleForType( dealEngineModule::emtPhysics );
-	if( module ){
-		pDefaultProfile->SetModulePhysics( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtPhysics);
+	if(module){
+		pDefaultProfile->SetModulePhysics(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModulePhysics( "" );
+		pDefaultProfile->SetModulePhysics("");
 	}
 	
 	// animator module
-	module = engine.GetBestModuleForType( dealEngineModule::emtAnimator );
-	if( module ){
-		pDefaultProfile->SetModuleAnimator( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtAnimator);
+	if(module){
+		pDefaultProfile->SetModuleAnimator(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleAnimator( "" );
+		pDefaultProfile->SetModuleAnimator("");
 	}
 	
 	// ai module
-	module = engine.GetBestModuleForType( dealEngineModule::emtAI );
-	if( module ){
-		pDefaultProfile->SetModuleAI( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtAI);
+	if(module){
+		pDefaultProfile->SetModuleAI(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleAI( "" );
+		pDefaultProfile->SetModuleAI("");
 	}
 	
 	// crash recovery module
-	module = engine.GetBestModuleForType( dealEngineModule::emtCrashRecovery );
-	if( module ){
-		pDefaultProfile->SetModuleCrashRecovery( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtCrashRecovery);
+	if(module){
+		pDefaultProfile->SetModuleCrashRecovery(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleCrashRecovery( "" );
+		pDefaultProfile->SetModuleCrashRecovery("");
 	}
 	
 	// audio module
-	module = engine.GetBestModuleForType( dealEngineModule::emtAudio );
-	if( module ){
-		pDefaultProfile->SetModuleAudio( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtAudio);
+	if(module){
+		pDefaultProfile->SetModuleAudio(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleAudio( "" );
+		pDefaultProfile->SetModuleAudio("");
 	}
 	
 	// synthesizer module
-	module = engine.GetBestModuleForType( dealEngineModule::emtSynthesizer );
-	if( module ){
-		pDefaultProfile->SetModuleSynthesizer( module->GetName() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtSynthesizer);
+	if(module){
+		pDefaultProfile->SetModuleSynthesizer(module->GetName());
 		
 	}else{
-		pDefaultProfile->SetModuleSynthesizer( "" );
+		pDefaultProfile->SetModuleSynthesizer("");
 	}
 	
 	// network module
-	module = engine.GetBestModuleForType( dealEngineModule::emtNetwork );
-	if( module ){
-		pDefaultProfile->SetModuleNetwork( module->GetName().GetString() );
+	module = engine.GetBestModuleForType(dealEngineModule::emtNetwork);
+	if(module){
+		pDefaultProfile->SetModuleNetwork(module->GetName().GetString());
 		
 	}else{
-		pDefaultProfile->SetModuleNetwork( "" );
+		pDefaultProfile->SetModuleNetwork("");
 	}
 	
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: graphic module = '%s'", pDefaultProfile->GetModuleGraphic().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: input module = '%s'", pDefaultProfile->GetModuleInput().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: physics module = '%s'", pDefaultProfile->GetModulePhysics().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: animator module = '%s'", pDefaultProfile->GetModuleAnimator().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: ai module = '%s'", pDefaultProfile->GetModuleAI().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: crash recovery module = '%s'", pDefaultProfile->GetModuleCrashRecovery().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: audio module = '%s'", pDefaultProfile->GetModuleAudio().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: synthesizer module = '%s'", pDefaultProfile->GetModuleSynthesizer().GetString() );
-	logger.LogInfoFormat( LOGSOURCE, "Default profile: network module = '%s'", pDefaultProfile->GetModuleNetwork().GetString() );
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: graphic module = '%s'", pDefaultProfile->GetModuleGraphic().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: input module = '%s'", pDefaultProfile->GetModuleInput().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: physics module = '%s'", pDefaultProfile->GetModulePhysics().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: animator module = '%s'", pDefaultProfile->GetModuleAnimator().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: ai module = '%s'", pDefaultProfile->GetModuleAI().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: crash recovery module = '%s'", pDefaultProfile->GetModuleCrashRecovery().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: audio module = '%s'", pDefaultProfile->GetModuleAudio().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: synthesizer module = '%s'", pDefaultProfile->GetModuleSynthesizer().GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Default profile: network module = '%s'", pDefaultProfile->GetModuleNetwork().GetString());
 }
 
 
 
-void dealGameManager::SetActiveProfile( dealGameProfile *profile ){
-	if( profile == pActiveProfile ){
+void dealGameManager::SetActiveProfile(dealGameProfile *profile){
+	if(profile == pActiveProfile){
 		return;
 	}
 	
-	if( pActiveProfile ){
+	if(pActiveProfile){
 		pActiveProfile->FreeReference();
 	}
 	
 	pActiveProfile = profile;
 	
-	if( profile ){
+	if(profile){
 		profile->AddReference();
 	}
 }
@@ -340,15 +340,15 @@ void dealGameManager::SetActiveProfile( dealGameProfile *profile ){
 void dealGameManager::LoadGameConfigs(){
 	int i, count = pGameList.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		pGameList.GetAt( i )->LoadConfig();
+	for(i=0; i<count; i++){
+		pGameList.GetAt(i)->LoadConfig();
 	}
 }
 
 void dealGameManager::SaveGameConfigs(){
 	int i, count = pGameList.GetCount();
 	
-	for( i=0; i<count; i++ ){
-		pGameList.GetAt( i )->SaveConfig();
+	for(i=0; i<count; i++){
+		pGameList.GetAt(i)->SaveConfig();
 	}
 }

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new peer. */
-	dearAnimation( deDEAnimator *module, deAnimation *animation );
+	dearAnimation(deDEAnimator *module, deAnimation *animation);
 	/** Cleans up the peer. */
 	virtual ~dearAnimation();
 	/*@}*/
@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieve the module. */
-	inline deDEAnimator *GetModule() const{ return pModule; }
+	inline deDEAnimator *GetModule() const{return pModule;}
 	/** Retrieve the animation. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline deAnimation *GetAnimation() const{return pAnimation;}
 	
 	/** Retrieve the number of moves. */
 	int GetMoveCount() const;
 	/** Retrieve move by index. */
-	dearAnimationMove *GetMoveAt( int index ) const;
+	dearAnimationMove *GetMoveAt(int index) const;
 	/** Retrieve move by name or NULL if not found. */
-	dearAnimationMove *GetMoveNamed( const char *name ) const;
+	dearAnimationMove *GetMoveNamed(const char *name) const;
 	/*@}*/
 	
 private:

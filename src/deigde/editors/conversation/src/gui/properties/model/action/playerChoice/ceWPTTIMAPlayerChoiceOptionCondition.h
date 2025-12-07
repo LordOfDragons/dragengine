@@ -47,8 +47,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoiceOptionCondition( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option );
+	ceWPTTIMAPlayerChoiceOptionCondition(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -70,10 +70,10 @@ public:
 	void Update();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief User requests context menu for selected child condition. */
-	virtual void ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition );
+	virtual void ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition);
 	
 	/** \brief Expanded state changed. */
 	virtual void OnExpandedChanged();

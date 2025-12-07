@@ -54,8 +54,8 @@ private:
 		epmSingle = 0x8
 	};
 	
-	const deoglPipeline *pPipelinesOccMap[ epmSingle << 1 ];
-	const deoglPipeline *pPipelinesOccQuery[ epmOrtho << 1 ];
+	const deoglPipeline *pPipelinesOccMap[epmSingle << 1];
+	const deoglPipeline *pPipelinesOccQuery[epmOrtho << 1];
 	
 	const deoglPipeline *pPipelineOccMapDownSample;
 	const deoglPipeline *pPipelineOccMapDownSampleStereo;
@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderOcclusion( deoglRenderThread &renderThread );
+	deoglRenderOcclusion(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
 	virtual ~deoglRenderOcclusion();
 	/*@}*/
@@ -87,41 +87,41 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render occlusion tests. */
-	void RenderTestsCamera( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
+	void RenderTestsCamera(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Render occlusion tests. */
-	void RenderTestsSkyLayer( deoglRenderPlanSkyLight &planSkyLigh );
+	void RenderTestsSkyLayer(deoglRenderPlanSkyLight &planSkyLigh);
 	
 	/** Shader to use for occlusion map rendering. */
-	const deoglPipeline *GetRenderOcclusionMapRTS( const deoglRenderPlan &plan,
-		const deoglRenderPlanMasked *mask, bool perspective, bool singleSided ) const;
+	const deoglPipeline *GetRenderOcclusionMapRTS(const deoglRenderPlan &plan,
+		const deoglRenderPlanMasked *mask, bool perspective, bool singleSided) const;
 	
 	/** Render occlusion meshes into the occlusion map. */
-	void RenderOcclusionMap( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
-	void RenderOcclusionMap( deoglRenderPlan &plan, deoglRenderTask *renderTask,
-		deoglComputeRenderTask *computeRenderTask );
+	void RenderOcclusionMap(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
+	void RenderOcclusionMap(deoglRenderPlan &plan, deoglRenderTask *renderTask,
+		deoglComputeRenderTask *computeRenderTask);
 	
 	/** Render occlusion queries using active occlusion map. */
-	void RenderOcclusionQueries( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective );
+	void RenderOcclusionQueries(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool perspective);
 	
 	/** Render occlusion tests. */
-	void RenderOcclusionTests( deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
+	void RenderOcclusionTests(deoglRenderPlan &plan, deoglOcclusionTest &occlusionTest,
 		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
-		const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo );
+		const decMatrix &matrixCamera, const decMatrix &matrixCameraStereo);
 	
 	/** Render occlusion tests with frustum check. */
-	void RenderOcclusionTestsSun( deoglRenderPlanSkyLight &planSkyLight, deoglOcclusionTest &occlusionTest,
+	void RenderOcclusionTestsSun(deoglRenderPlanSkyLight &planSkyLight, deoglOcclusionTest &occlusionTest,
 		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear,
 		const decMatrix &matrixCamera, float clipNear2, const decMatrix &matrixCamera2,
-		const decMatrix &matrixCamera2Stereo );
+		const decMatrix &matrixCamera2Stereo);
 	
 	/** Render occlusion tests using dual occlusion maps. */
-	void RenderOcclusionTestsDual( deoglRenderPlan &plan, deoglOcclusionTest &occlusioNTest,
+	void RenderOcclusionTestsDual(deoglRenderPlan &plan, deoglOcclusionTest &occlusioNTest,
 		deoglOcclusionMap &occlusionMap, int baselevel, float clipNear, const decMatrix &matrixCamera,
-		deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatrix &matrixCamera2 );
+		deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatrix &matrixCamera2);
 	
 	/** Debug render plan occlusion map. */
-	void DebugOcclusionMap( deoglRenderPlan &plan );
+	void DebugOcclusionMap(deoglRenderPlan &plan);
 	
 	/** Render occlusion meshes into a cube map. The position is relative to the reference position. */
 // 	void RenderOcclusionCubeMap( const deoglCollideList &collideList, deoglCubeMap *cubemap,

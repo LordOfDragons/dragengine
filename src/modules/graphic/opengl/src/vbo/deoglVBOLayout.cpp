@@ -42,34 +42,34 @@
 ////////////////////////////
 
 deoglVBOLayout::deoglVBOLayout() :
-pSize( 0 ),
-pStride( 0 ),
-pAttributes( nullptr ),
-pAttributeCount( 0 ),
-pIndexType( eitNone ),
-pIndexSize( 0 ),
-pIndexGLType( GL_NONE ){
+pSize(0),
+pStride(0),
+pAttributes(nullptr),
+pAttributeCount(0),
+pIndexType(eitNone),
+pIndexSize(0),
+pIndexGLType(GL_NONE){
 }
 
-deoglVBOLayout::deoglVBOLayout( const deoglVBOLayout &layout ) :
-pSize( layout.pSize ),
-pStride( layout.pStride ),
-pAttributes( nullptr ),
-pAttributeCount( 0 ),
-pIndexType( layout.pIndexType ),
-pIndexSize( layout.pIndexSize ),
-pIndexGLType( layout.pIndexGLType )
+deoglVBOLayout::deoglVBOLayout(const deoglVBOLayout &layout) :
+pSize(layout.pSize),
+pStride(layout.pStride),
+pAttributes(nullptr),
+pAttributeCount(0),
+pIndexType(layout.pIndexType),
+pIndexSize(layout.pIndexSize),
+pIndexGLType(layout.pIndexGLType)
 {
-	SetAttributeCount( layout.pAttributeCount );
+	SetAttributeCount(layout.pAttributeCount);
 	
 	int i;
-	for( i=0; i<layout.pAttributeCount; i++ ){
-		pAttributes[ i ] = layout.pAttributes[ i ];
+	for(i=0; i<layout.pAttributeCount; i++){
+		pAttributes[i] = layout.pAttributes[i];
 	}
 }
 
 deoglVBOLayout::~deoglVBOLayout(){
-	if( pAttributes ){
+	if(pAttributes){
 		delete [] pAttributes;
 	}
 }
@@ -79,20 +79,20 @@ deoglVBOLayout::~deoglVBOLayout(){
 // Management
 ///////////////
 
-void deoglVBOLayout::SetSize( int size ){
-	DEASSERT_TRUE( size >= 0 )
+void deoglVBOLayout::SetSize(int size){
+	DEASSERT_TRUE(size >= 0)
 	pSize = size;
 }
 
-void deoglVBOLayout::SetStride( int stride ){
-	DEASSERT_TRUE( stride >= 0 )
+void deoglVBOLayout::SetStride(int stride){
+	DEASSERT_TRUE(stride >= 0)
 	pStride = stride;
 }
 
-void deoglVBOLayout::SetIndexType( eIndexTypes indexType ){
+void deoglVBOLayout::SetIndexType(eIndexTypes indexType){
 	pIndexType = indexType;
 	
-	switch( indexType ){
+	switch(indexType){
 	case eitUnsignedInt:
 		pIndexSize = 4;
 		pIndexGLType = GL_UNSIGNED_INT;
@@ -123,20 +123,20 @@ void deoglVBOLayout::SetIndexType( eIndexTypes indexType ){
 // Attributes
 ///////////////
 
-void deoglVBOLayout::SetAttributeCount( int count ){
-	DEASSERT_TRUE( count >= 0 )
+void deoglVBOLayout::SetAttributeCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( count == pAttributeCount ){
+	if(count == pAttributeCount){
 		return;
 	}
 	
-	deoglVBOAttribute * const newArray = count > 0 ? new deoglVBOAttribute[ count ] : nullptr;
+	deoglVBOAttribute * const newArray = count > 0 ? new deoglVBOAttribute[count] : nullptr;
 	
-	if( pAttributes ){
-		const int copyCount = decMath::min( pAttributeCount, count );
+	if(pAttributes){
+		const int copyCount = decMath::min(pAttributeCount, count);
 		int i;
-		for( i=0; i<copyCount; i++ ){
-			newArray[ i ] = pAttributes[ i ];
+		for(i=0; i<copyCount; i++){
+			newArray[i] = pAttributes[i];
 		}
 		
 		delete [] pAttributes;
@@ -148,19 +148,19 @@ void deoglVBOLayout::SetAttributeCount( int count ){
 	pAttributeCount = count;
 }
 
-deoglVBOAttribute& deoglVBOLayout::GetAttributeAt( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pAttributeCount )
+deoglVBOAttribute& deoglVBOLayout::GetAttributeAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pAttributeCount)
 	
-	return pAttributes[ index ];
+	return pAttributes[index];
 }
 
-void deoglVBOLayout::SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target ) const{
-	GetAttributeAt( attribute ).SetVAOAttributeAt( renderThread, target, pStride );
+void deoglVBOLayout::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target) const{
+	GetAttributeAt(attribute).SetVAOAttributeAt(renderThread, target, pStride);
 }
 
-void deoglVBOLayout::SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target, int offset ) const{
-	GetAttributeAt( attribute ).SetVAOAttributeAt( renderThread, target, pStride, offset );
+void deoglVBOLayout::SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int target, int offset) const{
+	GetAttributeAt(attribute).SetVAOAttributeAt(renderThread, target, pStride, offset);
 }
 
 
@@ -168,30 +168,30 @@ void deoglVBOLayout::SetVAOAttributeAt( deoglRenderThread &renderThread, int att
 // Operators
 //////////////
 
-deoglVBOLayout &deoglVBOLayout::operator=( const deoglVBOLayout &layout ){
+deoglVBOLayout &deoglVBOLayout::operator=(const deoglVBOLayout &layout){
 	pSize = layout.pSize;
 	pStride = layout.pStride;
 	pIndexType = layout.pIndexType;
 	pIndexSize = layout.pIndexSize;
 	pIndexGLType = layout.pIndexGLType;
 	
-	SetAttributeCount( layout.pAttributeCount );
+	SetAttributeCount(layout.pAttributeCount);
 	int i;
-	for( i=0; i<layout.pAttributeCount; i++ ){
-		pAttributes[ i ] = layout.pAttributes[ i ];
+	for(i=0; i<layout.pAttributeCount; i++){
+		pAttributes[i] = layout.pAttributes[i];
 	}
 	
 	return *this;
 }
 
-bool deoglVBOLayout::operator==( const deoglVBOLayout &layout ) const{
-	if( layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount ){
+bool deoglVBOLayout::operator==(const deoglVBOLayout &layout) const{
+	if(layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<pAttributeCount; i++ ){
-		if( layout.GetAttributeAt( i ) != pAttributes[ i ] ){
+	for(i=0; i<pAttributeCount; i++){
+		if(layout.GetAttributeAt(i) != pAttributes[i]){
 			return false;
 		}
 	}
@@ -199,14 +199,14 @@ bool deoglVBOLayout::operator==( const deoglVBOLayout &layout ) const{
 	return true;
 }
 
-bool deoglVBOLayout::operator!=( const deoglVBOLayout &layout ) const{
-	if( layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount ){
+bool deoglVBOLayout::operator!=(const deoglVBOLayout &layout) const{
+	if(layout.GetStride() != pStride || layout.GetAttributeCount() != pAttributeCount){
 		return true;
 	}
 	
 	int i;
-	for( i=0; i<pAttributeCount; i++ ){
-		if( layout.GetAttributeAt( i ) != pAttributes[ i ] ){
+	for(i=0; i<pAttributeCount; i++){
+		if(layout.GetAttributeAt(i) != pAttributes[i]){
 			return true;
 		}
 	}
@@ -219,18 +219,18 @@ bool deoglVBOLayout::operator!=( const deoglVBOLayout &layout ) const{
 // Debugging
 //////////////
 
-void deoglVBOLayout::PrintToConsole( deoglRenderThread &renderThread, const char* name ){
+void deoglVBOLayout::PrintToConsole(deoglRenderThread &renderThread, const char* name){
 	const char * const typeNames[] = {
 		"float", "byte", "ubyte", "short", "ushort", "int", "uint",
-		"ibyte", "iubyte", "ishort", "iushort", "iint", "iuint" };
-	const char * const indexTypeNames[] = { "none", "uint", "ushort", "ubyte" };
+		"ibyte", "iubyte", "ishort", "iushort", "iint", "iuint"};
+	const char * const indexTypeNames[] = {"none", "uint", "ushort", "ubyte"};
 	int a;
 	
-	renderThread.GetLogger().LogInfoFormat( "%s VBO Layout: size=%i stride=%i", name, pSize, pStride );
+	renderThread.GetLogger().LogInfoFormat("%s VBO Layout: size=%i stride=%i", name, pSize, pStride);
 	
-	for( a=0; a<pAttributeCount; a++ ){
-		renderThread.GetLogger().LogInfoFormat( "- attribute %i: components=%i type=%s offset=%i indexType=%s indexSize=%i",
-			a, pAttributes[ a ].GetComponentCount(), typeNames[ pAttributes[ a ].GetDataType() ],
-			pAttributes[ a ].GetOffset(), indexTypeNames[ pIndexType ], pIndexSize );
+	for(a=0; a<pAttributeCount; a++){
+		renderThread.GetLogger().LogInfoFormat("- attribute %i: components=%i type=%s offset=%i indexType=%s indexSize=%i",
+			a, pAttributes[a].GetComponentCount(), typeNames[pAttributes[a].GetDataType()],
+			pAttributes[a].GetOffset(), indexTypeNames[pIndexType], pIndexSize);
 	}
 }

@@ -45,7 +45,7 @@ debnStateLinkList::debnStateLinkList(){
 }
 
 debnStateLinkList::~debnStateLinkList(){
-	if( pLinks ) delete [] pLinks;
+	if(pLinks) delete [] pLinks;
 }
 
 
@@ -53,69 +53,69 @@ debnStateLinkList::~debnStateLinkList(){
 // Management
 ///////////////
 
-debnStateLink *debnStateLinkList::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ) DETHROW( deeInvalidParam );
+debnStateLink *debnStateLinkList::GetLinkAt(int index) const{
+	if(index < 0 || index >= pLinkCount) DETHROW(deeInvalidParam);
 	
-	return pLinks[ index ];
+	return pLinks[index];
 }
 
-int debnStateLinkList::IndexOfLink( debnStateLink *link ) const{
-	if( ! link ) DETHROW( deeInvalidParam );
+int debnStateLinkList::IndexOfLink(debnStateLink *link) const{
+	if(! link) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		if( link == pLinks[ i ] ) return i;
+	for(i=0; i<pLinkCount; i++){
+		if(link == pLinks[i]) return i;
 	}
 	
 	return -1;
 }
 
-bool debnStateLinkList::HasLink( debnStateLink *link ) const{
-	if( ! link ) DETHROW( deeInvalidParam );
+bool debnStateLinkList::HasLink(debnStateLink *link) const{
+	if(! link) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pLinkCount; i++ ){
-		if( link == pLinks[ i ] ) return true;
+	for(i=0; i<pLinkCount; i++){
+		if(link == pLinks[i]) return true;
 	}
 	
 	return false;
 }
 
-void debnStateLinkList::AddLink( debnStateLink *link ){
-	if( ! link ) DETHROW( deeInvalidParam );
+void debnStateLinkList::AddLink(debnStateLink *link){
+	if(! link) DETHROW(deeInvalidParam);
 	
-	if( pLinkCount == pLinkSize ){
+	if(pLinkCount == pLinkSize){
 		int newSize = pLinkSize * 3 / 2 + 1;
-		debnStateLink **newArray = new debnStateLink*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pLinks ){
-			memcpy( newArray, pLinks, sizeof( debnStateLink* ) * pLinkSize );
+		debnStateLink **newArray = new debnStateLink*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pLinks){
+			memcpy(newArray, pLinks, sizeof(debnStateLink*) * pLinkSize);
 			delete pLinks;
 		}
 		pLinks = newArray;
 		pLinkSize = newSize;
 	}
 	
-	pLinks[ pLinkCount ] = link;
+	pLinks[pLinkCount] = link;
 	pLinkCount++;
 }
 
-void debnStateLinkList::RemoveLink( debnStateLink *link ){
-	int i, index = IndexOfLink( link );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void debnStateLinkList::RemoveLink(debnStateLink *link){
+	int i, index = IndexOfLink(link);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pLinkCount; i++ ){
-		pLinks[ i - 1 ] = pLinks[ i ];
+	for(i=index+1; i<pLinkCount; i++){
+		pLinks[i - 1] = pLinks[i];
 	}
 	pLinkCount--;
 }
 
-void debnStateLinkList::RemoveLinkIfExisting( debnStateLink *link ){
-	int i, index = IndexOfLink( link );
+void debnStateLinkList::RemoveLinkIfExisting(debnStateLink *link){
+	int i, index = IndexOfLink(link);
 	
-	if( index != -1 ){
-		for( i=index+1; i<pLinkCount; i++ ){
-			pLinks[ i - 1 ] = pLinks[ i ];
+	if(index != -1){
+		for(i=index+1; i<pLinkCount; i++){
+			pLinks[i - 1] = pLinks[i];
 		}
 		pLinkCount--;
 	}

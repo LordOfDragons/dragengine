@@ -44,19 +44,19 @@ decUnicodeStringSet::decUnicodeStringSet(){
 	pStringSize = 0;
 }
 
-decUnicodeStringSet::decUnicodeStringSet( const decUnicodeStringSet &set ){
+decUnicodeStringSet::decUnicodeStringSet(const decUnicodeStringSet &set){
 	const int count = set.GetCount();
 	
 	pStrings = NULL;
 	pStringCount = 0;
 	pStringSize = 0;
 	
-	if( count > 0 ){
-		pStrings = new decUnicodeString*[ count ];
+	if(count > 0){
+		pStrings = new decUnicodeString*[count];
 		pStringSize = count;
 		
-		while( pStringCount < count ){
-			pStrings[ pStringCount ] = new decUnicodeString( set.GetAt( pStringCount ) );
+		while(pStringCount < count){
+			pStrings[pStringCount] = new decUnicodeString(set.GetAt(pStringCount));
 			pStringCount++;
 		}
 	}
@@ -64,7 +64,7 @@ decUnicodeStringSet::decUnicodeStringSet( const decUnicodeStringSet &set ){
 
 decUnicodeStringSet::~decUnicodeStringSet(){
 	RemoveAll();
-	if( pStrings ){
+	if(pStrings){
 		delete [] pStrings;
 	}
 }
@@ -74,19 +74,19 @@ decUnicodeStringSet::~decUnicodeStringSet(){
 // Management
 ///////////////
 
-const decUnicodeString &decUnicodeStringSet::GetAt( int index ) const{
-	if( index < 0 || index >= pStringCount ){
-		DETHROW( deeInvalidParam );
+const decUnicodeString &decUnicodeStringSet::GetAt(int index) const{
+	if(index < 0 || index >= pStringCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *pStrings[ index ];
+	return *pStrings[index];
 }
 
-int decUnicodeStringSet::IndexOf( const decUnicodeString &string ) const{
+int decUnicodeStringSet::IndexOf(const decUnicodeString &string) const{
 	int s;
 	
-	for( s=0; s<pStringCount; s++ ){
-		if( pStrings[ s ]->Equals( string ) ){
+	for(s=0; s<pStringCount; s++){
+		if(pStrings[s]->Equals(string)){
 			return s;
 		}
 	}
@@ -94,57 +94,57 @@ int decUnicodeStringSet::IndexOf( const decUnicodeString &string ) const{
 	return -1;
 }
 
-bool decUnicodeStringSet::Has( const decUnicodeString &string ) const{
-	return IndexOf( string ) != -1;
+bool decUnicodeStringSet::Has(const decUnicodeString &string) const{
+	return IndexOf(string) != -1;
 }
 
-void decUnicodeStringSet::Add( const decUnicodeString &string ){
-	if( Has( string ) ){
+void decUnicodeStringSet::Add(const decUnicodeString &string){
+	if(Has(string)){
 		return;
 	}
 	
-	if( pStringCount == pStringSize ){
+	if(pStringCount == pStringSize){
 		const int newSize = pStringSize * 3 / 2 + 1;
-		decUnicodeString ** const newArray = new decUnicodeString*[ newSize ];
-		if( pStrings ){
-			memcpy( newArray, pStrings, sizeof( decUnicodeString* ) * pStringSize );
+		decUnicodeString ** const newArray = new decUnicodeString*[newSize];
+		if(pStrings){
+			memcpy(newArray, pStrings, sizeof(decUnicodeString*) * pStringSize);
 			delete [] pStrings;
 		}
 		pStrings = newArray;
 		pStringSize = newSize;
 	}
 	
-	pStrings[ pStringCount ] = new decUnicodeString( string );
+	pStrings[pStringCount] = new decUnicodeString(string);
 	pStringCount++;
 }
 
-void decUnicodeStringSet::Remove( const decUnicodeString &string ){
-	const int index = IndexOf( string );
+void decUnicodeStringSet::Remove(const decUnicodeString &string){
+	const int index = IndexOf(string);
 	int s;
 	
-	if( index != -1 ){
-		delete pStrings[ index ];
+	if(index != -1){
+		delete pStrings[index];
 		
-		for( s=index+1; s<pStringCount; s++ ){
-			pStrings[ s - 1 ] = pStrings[ s ];
+		for(s=index+1; s<pStringCount; s++){
+			pStrings[s - 1] = pStrings[s];
 		}
 		pStringCount--;
 	}
 }
 
 void decUnicodeStringSet::RemoveAll(){
-	while( pStringCount > 0 ){
+	while(pStringCount > 0){
 		pStringCount--;
-		delete pStrings[ pStringCount ];
+		delete pStrings[pStringCount];
 	}
 }
 
 void decUnicodeStringSet::SortAscending(){
-	pSortAscending( 0, pStringCount - 1 );
+	pSortAscending(0, pStringCount - 1);
 }
 
 void decUnicodeStringSet::SortDescending(){
-	pSortDescending( 0, pStringCount - 1 );
+	pSortDescending(0, pStringCount - 1);
 }
 
 
@@ -152,31 +152,31 @@ void decUnicodeStringSet::SortDescending(){
 // Operators
 //////////////
 
-const decUnicodeString &decUnicodeStringSet::operator[]( int index ) const{
-	return GetAt( index );
+const decUnicodeString &decUnicodeStringSet::operator[](int index) const{
+	return GetAt(index);
 }
 
-decUnicodeStringSet &decUnicodeStringSet::operator=( const decUnicodeStringSet &set ){
+decUnicodeStringSet &decUnicodeStringSet::operator=(const decUnicodeStringSet &set){
 	const int count = set.GetCount();
 	int s;
 	
 	RemoveAll();
-	for( s=0; s<count; s++ ){
-		Add( set.GetAt( s ) ); // hard coding this call would remove the HasString checks
+	for(s=0; s<count; s++){
+		Add(set.GetAt(s)); // hard coding this call would remove the HasString checks
 	}
 	
 	return *this;
 }
 
-bool decUnicodeStringSet::operator==( const decUnicodeStringSet &set ){
+bool decUnicodeStringSet::operator==(const decUnicodeStringSet &set){
 	int i;
 	
-	if( set.GetCount() != pStringCount ){
+	if(set.GetCount() != pStringCount){
 		return false;
 	}
 	
-	for( i=0; i<pStringCount; i++ ){
-		if( ! set.Has( *pStrings[ i ] ) ){
+	for(i=0; i<pStringCount; i++){
+		if(! set.Has(*pStrings[i])){
 			return false;
 		}
 	}
@@ -184,43 +184,43 @@ bool decUnicodeStringSet::operator==( const decUnicodeStringSet &set ){
 	return true;
 }
 
-bool decUnicodeStringSet::operator!=( const decUnicodeStringSet &set ){
-	return ! ( *this == set );
+bool decUnicodeStringSet::operator!=(const decUnicodeStringSet &set){
+	return ! (*this == set);
 }
 
-decUnicodeStringSet decUnicodeStringSet::operator+( const decUnicodeStringSet &set ) const{
+decUnicodeStringSet decUnicodeStringSet::operator+(const decUnicodeStringSet &set) const{
 	const int count = set.GetCount();
-	decUnicodeStringSet newSet( *this );
+	decUnicodeStringSet newSet(*this);
 	int s;
 	
-	for( s=0; s<count; s++ ){
-		newSet.Add( set.GetAt( s ) );
+	for(s=0; s<count; s++){
+		newSet.Add(set.GetAt(s));
 	}
 	
 	return newSet;
 }
 
-decUnicodeStringSet &decUnicodeStringSet::operator+=( const decUnicodeStringSet &set ){
+decUnicodeStringSet &decUnicodeStringSet::operator+=(const decUnicodeStringSet &set){
 	const int count = set.GetCount();
 	int s;
 	
-	for( s=0; s<count; s++ ){
-		Add( set.GetAt( s ) );
+	for(s=0; s<count; s++){
+		Add(set.GetAt(s));
 	}
 	
 	return *this;
 }
 
-decUnicodeStringSet decUnicodeStringSet::operator+( const decUnicodeString &string ) const{
-	decUnicodeStringSet newList( *this );
+decUnicodeStringSet decUnicodeStringSet::operator+(const decUnicodeString &string) const{
+	decUnicodeStringSet newList(*this);
 	
-	newList.Add( string );
+	newList.Add(string);
 	
 	return newList;
 }
 
-decUnicodeStringSet &decUnicodeStringSet::operator+=( const decUnicodeString &string ){
-	Add( string );
+decUnicodeStringSet &decUnicodeStringSet::operator+=(const decUnicodeString &string){
+	Add(string);
 	
 	return *this;
 }
@@ -230,64 +230,64 @@ decUnicodeStringSet &decUnicodeStringSet::operator+=( const decUnicodeString &st
 // Private Functions
 //////////////////////
 
-void decUnicodeStringSet::pSortAscending( int left, int right ){
-	decUnicodeString * const pivot = pStrings[ left ];
+void decUnicodeStringSet::pSortAscending(int left, int right){
+	decUnicodeString * const pivot = pStrings[left];
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( *pStrings[ right ] >= *pivot ) && ( left < right ) ){
+	while(left < right){
+		while((*pStrings[right] >= *pivot) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pStrings[ left ] = pStrings[ right ];
+		if(left != right){
+			pStrings[left] = pStrings[right];
 			left++;
 		}
-		while( ( *pStrings[ left ] <= *pivot ) && ( left < right ) ){
+		while((*pStrings[left] <= *pivot) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pStrings[ right ] = pStrings[ left ];
+		if(left != right){
+			pStrings[right] = pStrings[left];
 			right--;
 		}
 	}
 	
-	pStrings[ left ] = pivot;
-	if( l_hold < left ){
-		pSortAscending( l_hold, left - 1 );
+	pStrings[left] = pivot;
+	if(l_hold < left){
+		pSortAscending(l_hold, left - 1);
 	}
-	if( r_hold > left ){
-		pSortAscending( left + 1, r_hold );
+	if(r_hold > left){
+		pSortAscending(left + 1, r_hold);
 	}
 }
 
-void decUnicodeStringSet::pSortDescending( int left, int right ){
-	decUnicodeString * const pivot = pStrings[ left ];
+void decUnicodeStringSet::pSortDescending(int left, int right){
+	decUnicodeString * const pivot = pStrings[left];
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( *pStrings[ right ] <= *pivot ) && ( left < right ) ){
+	while(left < right){
+		while((*pStrings[right] <= *pivot) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pStrings[ left ] = pStrings[ right ];
+		if(left != right){
+			pStrings[left] = pStrings[right];
 			left++;
 		}
-		while( ( *pStrings[ left ] >= *pivot ) && ( left < right ) ){
+		while((*pStrings[left] >= *pivot) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pStrings[ right ] = pStrings[ left ];
+		if(left != right){
+			pStrings[right] = pStrings[left];
 			right--;
 		}
 	}
 	
-	pStrings[ left ] = pivot;
-	if( l_hold < left ){
-		pSortDescending( l_hold, left - 1 );
+	pStrings[left] = pivot;
+	if(l_hold < left){
+		pSortDescending(l_hold, left - 1);
 	}
-	if( r_hold > left ){
-		pSortDescending( left + 1, r_hold );
+	if(r_hold > left){
+		pSortDescending(left + 1, r_hold);
 	}
 }

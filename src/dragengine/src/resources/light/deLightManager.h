@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scene light resource manager linked to the given engine. */
-	deLightManager( deEngine *engine );
+	deLightManager(deEngine *engine);
 	
 	/** \brief Clean up scene light resource manager and reports leaking resources. */
 	~deLightManager();
@@ -85,7 +85,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

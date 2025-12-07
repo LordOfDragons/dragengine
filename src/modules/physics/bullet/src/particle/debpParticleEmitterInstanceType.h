@@ -123,25 +123,25 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent instance. */
-	inline debpParticleEmitterInstance *GetInstance() const{ return pInstance; }
+	inline debpParticleEmitterInstance *GetInstance() const{return pInstance;}
 	/** Sets the parent instance. */
-	void SetInstance( debpParticleEmitterInstance *instance );
+	void SetInstance(debpParticleEmitterInstance *instance);
 	/** Retrieves the type number. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	/** Sets the type number. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	/** Retrieves the particles. */
-	inline sParticle *GetParticles() const{ return pParticles; }
+	inline sParticle *GetParticles() const{return pParticles;}
 	/** Retrieves the number of particles. */
-	inline int GetParticlesCount() const{ return pParticleCount; }
+	inline int GetParticlesCount() const{return pParticleCount;}
 	
 	/** Prepare stepping. */
-	void PrepareParticles( bool casting, float elapsed, float travelledDistance );
+	void PrepareParticles(bool casting, float elapsed, float travelledDistance);
 	/** Applies forces caused by a force field. */
-	void ApplyForceField( const debpForceField &forceField, float elapsed );
+	void ApplyForceField(const debpForceField &forceField, float elapsed);
 	/** Steps the particles. */
-	void StepParticles( float elapsed );
+	void StepParticles(float elapsed);
 	/** Finish stepping. */
 	void FinishStepping();
 	/** Update graphic particles. */
@@ -155,39 +155,39 @@ public:
 	void OnTypeChanged();
 	
 	/** Cast a particle. */
-	void CastParticle( float distance, float timeOffset );
+	void CastParticle(float distance, float timeOffset);
 	/** Kill a particle. */
-	void KillParticle( int index );
+	void KillParticle(int index);
 	/** Kill all particles. */
 	void KillAllParticles();
 	
 	/** \brief Cast single particle. */
-	void CastSingleParticle( float distance, float timeOffset );
+	void CastSingleParticle(float distance, float timeOffset);
 	
 	/** \brief Cast beam particle. */
-	void CastBeamParticle( float distance );
+	void CastBeamParticle(float distance);
 	
 	/** Set the cast values of a particle. */
-	void ParticleSetCastParams( sParticle &particle, float distance, float timeOffset );
+	void ParticleSetCastParams(sParticle &particle, float distance, float timeOffset);
 	/** Calculate for a particle the cast matrix. */
-	void ParticleCastMatrix( decDMatrix &matrix );
+	void ParticleCastMatrix(decDMatrix &matrix);
 	/** Create trail emitter for a particle. */
-	void ParticleCreateTrailEmitter( sParticle &particle );
+	void ParticleCreateTrailEmitter(sParticle &particle);
 	/** Set particle progress parameters for a point in time from cast parameters using the particle lifetime value. */
-	void ParticleSetProgressParams( sParticle &particle );
+	void ParticleSetProgressParams(sParticle &particle);
 	
 	/** Simulate particle. Returns false if the particle has to be killed due to a collision or true to keep it alive. */
-	bool ParticleSimulate( sParticle &particle, float elapsed );
+	bool ParticleSimulate(sParticle &particle, float elapsed);
 	/** Test for particle collision. Returns false if the particle has to be killed due to a collision or true to keep it alive. */
-	bool ParticleTestCollision( sParticle &particle, float elapsed );
+	bool ParticleTestCollision(sParticle &particle, float elapsed);
 	/** Set controllers of a trail or impact emitter. */
-	void ParticleSetEmitterControllers( const sParticle &particle,
-		deParticleEmitterInstance &instance, float linearVelocity );
+	void ParticleSetEmitterControllers(const sParticle &particle,
+		deParticleEmitterInstance &instance, float linearVelocity);
 	/** Update particle trail emitter if existing. */
-	void ParticleUpdateTrailEmitter( const sParticle &particle );
+	void ParticleUpdateTrailEmitter(const sParticle &particle);
 	/** Set controllers of a trail or impact emitter. */
-	void ParticleSetTrailEmitterControllers( const sParticle &particle,
-		deParticleEmitterInstance &instance, float linearVelocity );
+	void ParticleSetTrailEmitterControllers(const sParticle &particle,
+		deParticleEmitterInstance &instance, float linearVelocity);
 	/*@}*/
 	
 private:

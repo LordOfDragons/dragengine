@@ -57,7 +57,7 @@ debpCreateShape::~debpCreateShape(){
 // Management
 ///////////////
 
-void debpCreateShape::SetCreatedShape( debpShape *shape ){
+void debpCreateShape::SetCreatedShape(debpShape *shape){
 	pShape = shape;
 }
 
@@ -70,35 +70,35 @@ void debpCreateShape::Reset(){
 // Visiting
 /////////////
 
-void debpCreateShape::VisitShape( decShape& ){
+void debpCreateShape::VisitShape(decShape&){
 	pShape = NULL;
 }
 
-void debpCreateShape::VisitShapeSphere( decShapeSphere &sphere ){
-	pShape.TakeOver( new debpShapeSphere( &sphere ) );
+void debpCreateShape::VisitShapeSphere(decShapeSphere &sphere){
+	pShape.TakeOver(new debpShapeSphere(&sphere));
 }
 
-void debpCreateShape::VisitShapeBox( decShapeBox &box ){
-	pShape.TakeOver( new debpShapeBox( &box ) );
+void debpCreateShape::VisitShapeBox(decShapeBox &box){
+	pShape.TakeOver(new debpShapeBox(&box));
 }
 
 #include "debpShapeHackBox.h"
-void debpCreateShape::VisitShapeCylinder( decShapeCylinder &cylinder ){
+void debpCreateShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	// hack required because of debpCollisionWorld::contactTest with USE_BULLET_COLLISION disabled
-	printf( "[TEMPORARY HACK] debpCreateShape::VisitShapeCylinder\n" );
+	printf("[TEMPORARY HACK] debpCreateShape::VisitShapeCylinder\n");
 	const float radius = cylinder.GetTopRadius() / 1.414213f;
-	pShape.TakeOver( new debpShapeHackBox( new decShapeBox(
-		decVector( radius, cylinder.GetHalfHeight(), radius ),
-		cylinder.GetPosition(), cylinder.GetOrientation() ) ) );
+	pShape.TakeOver(new debpShapeHackBox(new decShapeBox(
+		decVector(radius, cylinder.GetHalfHeight(), radius),
+		cylinder.GetPosition(), cylinder.GetOrientation())));
 	
 	//pShape.TakeOver( new debpShapeCylinder( &cylinder ) );
 }
 
-void debpCreateShape::VisitShapeCapsule( decShapeCapsule &capsule ){
-	pShape.TakeOver( new debpShapeCapsule( &capsule ) );
+void debpCreateShape::VisitShapeCapsule(decShapeCapsule &capsule){
+	pShape.TakeOver(new debpShapeCapsule(&capsule));
 }
 
-void debpCreateShape::VisitShapeHull( decShapeHull &hull ){
+void debpCreateShape::VisitShapeHull(decShapeHull &hull){
 	// not supported
-	VisitShape( hull );
+	VisitShape(hull);
 }

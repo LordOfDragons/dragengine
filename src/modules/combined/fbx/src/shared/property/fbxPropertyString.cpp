@@ -44,16 +44,16 @@
 ////////////////////////////
 
 fbxPropertyString::fbxPropertyString() :
-fbxProperty( etString ){
+fbxProperty(etString){
 }
 
-fbxPropertyString::fbxPropertyString( decBaseFileReader &reader ) :
-fbxProperty( etString )
+fbxPropertyString::fbxPropertyString(decBaseFileReader &reader) :
+fbxProperty(etString)
 {
 	const int count = reader.ReadUInt();
-	if( count > 0 ){
-		pValue.Set( 0, count );
-		reader.Read( ( char* )pValue.GetString(), count );
+	if(count > 0){
+		pValue.Set(0, count);
+		reader.Read((char*)pValue.GetString(), count);
 	}
 }
 
@@ -65,7 +65,7 @@ fbxPropertyString::~fbxPropertyString(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyString::SetValue( const char *value ){
+void fbxPropertyString::SetValue(const char *value){
 	pValue = value;
 }
 
@@ -75,9 +75,9 @@ fbxPropertyString &fbxPropertyString::CastString(){
 
 
 
-void fbxPropertyString::Save(decBaseFileWriter &writer ){
+void fbxPropertyString::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyString::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty String: '%s'", prefix.GetString(), pValue.GetString() );
+void fbxPropertyString::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty String: '%s'", prefix.GetString(), pValue.GetString());
 }

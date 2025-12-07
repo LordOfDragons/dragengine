@@ -40,21 +40,21 @@
 ////////////////////////////
 
 aeURuleAnimSelectToggleEnablePosition::aeURuleAnimSelectToggleEnablePosition(
-aeRuleAnimationSelect *rule ) :
-pRule( NULL )
+aeRuleAnimationSelect *rule) :
+pRule(NULL)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Rule animation select toggle enable position" );
+	SetShortInfo("Rule animation select toggle enable position");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnablePosition::~aeURuleAnimSelectToggleEnablePosition(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ aeURuleAnimSelectToggleEnablePosition::~aeURuleAnimSelectToggleEnablePosition(){
 ///////////////
 
 void aeURuleAnimSelectToggleEnablePosition::Undo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(! pRule->GetEnablePosition());
 }
 
 void aeURuleAnimSelectToggleEnablePosition::Redo(){
-	pRule->SetEnablePosition( ! pRule->GetEnablePosition() );
+	pRule->SetEnablePosition(! pRule->GetEnablePosition());
 }

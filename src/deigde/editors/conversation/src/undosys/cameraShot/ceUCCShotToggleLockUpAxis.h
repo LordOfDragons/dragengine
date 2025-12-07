@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */
-	ceUCCShotToggleLockUpAxis( ceCameraShot *cameraShot );
+	ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot);
 	/** \brief Cleans up the undo action. */
 	virtual ~ceUCCShotToggleLockUpAxis();
 	/*@}*/

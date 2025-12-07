@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	seUSourcePasteEffect( seSource *source, const seEffectList &effectList, int index );
+	seUSourcePasteEffect(seSource *source, const seEffectList &effectList, int index);
 	
 protected:
 	/** \brief Clean up the undo object. */

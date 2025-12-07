@@ -53,75 +53,75 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalRTPTTraceSoundRays::deoalRTPTTraceSoundRays( deoalRTParallelEnvProbe &owner ) :
-deParallelTask( &owner.GetAudioThread().GetOal() ),
-pOwner( owner ),
-pWorld( NULL ),
-    pRTWorldBVH( NULL ),
-pProbeConfig( NULL ),
-pRange( 0.0f ),
-pRefDist( 1.0f ),
-pRollOff( 0.0f ),
-pDistanceOffset( 0.0f ),
-pUseAttenuation( false ),
-pFirstRay( 0 ),
+deoalRTPTTraceSoundRays::deoalRTPTTraceSoundRays(deoalRTParallelEnvProbe &owner) :
+deParallelTask(&owner.GetAudioThread().GetOal()),
+pOwner(owner),
+pWorld(NULL),
+    pRTWorldBVH(NULL),
+pProbeConfig(NULL),
+pRange(0.0f),
+pRefDist(1.0f),
+pRollOff(0.0f),
+pDistanceOffset(0.0f),
+pUseAttenuation(false),
+pFirstRay(0),
 #ifndef RTPTTSR_ONE_TASK_PER_RAY
-pRayCount( 0 ),
+pRayCount(0),
 #endif
-pAddRayMinLength( 0.2f ), // 0.1f
-pThresholdTransmit( 1e-3f ),
-pThresholdReflect( 1e-3f /*1e-4f*/ ),
-pMaxBounceCount( 20 ),
-pMaxTransmitCount( 2 ),
-pInitialRayLength( 10.0f ), // 5.0f
-pInverseRayTracing( false ),
-pDetectOutsideLength( 100.0 ),
-pBackStepDistance( 1e-4 )
+pAddRayMinLength(0.2f), // 0.1f
+pThresholdTransmit(1e-3f),
+pThresholdReflect(1e-3f /*1e-4f*/),
+pMaxBounceCount(20),
+pMaxTransmitCount(2),
+pInitialRayLength(10.0f), // 5.0f
+pInverseRayTracing(false),
+pDetectOutsideLength(100.0),
+pBackStepDistance(1e-4)
 {
 	(void)pOwner; // silence compiler warning
 	
-	pWOVRayHitsElement.SetResult( &pRTResult );
-	pRTWOVRayHitsElement.SetResult( &pRTResult );
-	SetMarkFinishedAfterRun( true );
-	SetLowPriority( true );
+	pWOVRayHitsElement.SetResult(&pRTResult);
+	pRTWOVRayHitsElement.SetResult(&pRTResult);
+	SetMarkFinishedAfterRun(true);
+	SetLowPriority(true);
 	
 	/*
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=60.000 rays=162
 	none) time: 8.80ms 9.28ms 9.60ms 9.43ms
-	10m ) time: 7.26ms 7.99ms 7.62ms
-	5m  ) time: 7.75ms 7.16ms 8.83ms
+	10m) time: 7.26ms 7.99ms 7.62ms
+	5m) time: 7.75ms 7.16ms 8.83ms
 	2.5m) time: 8.49ms 8.24ms 8.39ms
 
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=300.000 rays=162 maxBounces=100 maxTransmit=3
 	none) time: 44.86ms 41.45ms 45.13ms
-	10m ) time: 32.03ms 31.25ms 31.85ms
-	5m  ) time: 30.26ms 29.99ms 29.11ms
+	10m) time: 32.03ms 31.25ms 31.85ms
+	5m) time: 30.26ms 29.99ms 29.11ms
 	2.5m) time: 42.15ms 32.00ms 42.02ms
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=300.000 rays=162 maxBounces=20 maxTransmit=3
-	10m ) time: 22.44ms 24.89ms 23.13ms
+	10m) time: 22.44ms 24.89ms 23.13ms
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=60.000 rays=162 maxBounces=20 maxTransmit=3
-	10m ) time: 28.17ms 23.28ms 18.42ms
+	10m) time: 28.17ms 23.28ms 18.42ms
 	
 	
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=300.000 rays=162 maxBounces=100 maxTransmit=1
-	10m ) time: 53.19ms 62.38ms 53.97ms
+	10m) time: 53.19ms 62.38ms 53.97ms
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=300.000 rays=162 maxBounces=20 maxTransmit=3
-	10m ) time: 21.93ms 22.94ms 23.42ms
+	10m) time: 21.93ms 22.94ms 23.42ms
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=300.000 rays=162 maxBounces=20 maxTransmit=1
-	10m ) time: 15.16ms 16.43ms 15.58ms
+	10m) time: 15.16ms 16.43ms 15.58ms
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=300.000 rays=162 maxBounces=20 maxTransmit=0
-	10m ) time: 7.97ms 7.23ms 7.54ms
+	10m) time: 7.97ms 7.23ms 7.54ms
 	
 	
 	
 	Parallel-CalcProbePreCalc: pos=(0.000,1.600,-4.000) range=60.000 rays=162 maxBounces=20 maxTransmit=1
-	10m ) time: 14.47ms 15.72ms 14.78ms
+	10m) time: 14.47ms 15.72ms 14.78ms
 	*/
 }
 
@@ -133,75 +133,75 @@ deoalRTPTTraceSoundRays::~deoalRTPTTraceSoundRays(){
 // Manegement
 ///////////////
 
-void deoalRTPTTraceSoundRays::SetWorld( deoalAWorld *world, deoalRTWorldBVH *rtBVH ){
+void deoalRTPTTraceSoundRays::SetWorld(deoalAWorld *world, deoalRTWorldBVH *rtBVH){
 	pWorld = world;
 	pRTWorldBVH = rtBVH;
 }
 
-void deoalRTPTTraceSoundRays::SetProbeConfig( const deoalRayTraceConfig *probeConfig ){
+void deoalRTPTTraceSoundRays::SetProbeConfig(const deoalRayTraceConfig *probeConfig){
 	pProbeConfig = probeConfig;
 }
 
-void deoalRTPTTraceSoundRays::SetPosition( const decDVector &position ){
+void deoalRTPTTraceSoundRays::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void deoalRTPTTraceSoundRays::SetRange( float range ){
+void deoalRTPTTraceSoundRays::SetRange(float range){
 	pRange = range;
 }
 
-void deoalRTPTTraceSoundRays::SetAttenuationParameters( float refDist, float rollOff, float distanceOffset ){
+void deoalRTPTTraceSoundRays::SetAttenuationParameters(float refDist, float rollOff, float distanceOffset){
 	pRefDist = refDist;
 	pRollOff = rollOff;
 	pDistanceOffset = distanceOffset;
-	pUseAttenuation = fabsf( pRefDist - 1.0f ) > FLOAT_SAFE_EPSILON
-		|| fabsf( pRollOff ) > FLOAT_SAFE_EPSILON || fabsf( pDistanceOffset ) > 0.001f;
+	pUseAttenuation = fabsf(pRefDist - 1.0f) > FLOAT_SAFE_EPSILON
+		|| fabsf(pRollOff) > FLOAT_SAFE_EPSILON || fabsf(pDistanceOffset) > 0.001f;
 }
 
-void deoalRTPTTraceSoundRays::SetFirstRay( int firstRay ){
+void deoalRTPTTraceSoundRays::SetFirstRay(int firstRay){
 	pFirstRay = firstRay;
 }
 
 #ifndef RTPTTSR_ONE_TASK_PER_RAY
-void deoalRTPTTraceSoundRays::SetRayCount( int rayCount ){
+void deoalRTPTTraceSoundRays::SetRayCount(int rayCount){
 	pRayCount = rayCount;
 }
 #endif
 
-void deoalRTPTTraceSoundRays::SetAddRayMinLength( float length ){
+void deoalRTPTTraceSoundRays::SetAddRayMinLength(float length){
 	pAddRayMinLength = length;
 }
 
-void deoalRTPTTraceSoundRays::SetThresholdTransmit( float gain ){
+void deoalRTPTTraceSoundRays::SetThresholdTransmit(float gain){
 	pThresholdTransmit  = gain;
 }
 
-void deoalRTPTTraceSoundRays::SetThresholdReflect( float gain ){
+void deoalRTPTTraceSoundRays::SetThresholdReflect(float gain){
 	pThresholdReflect = gain;
 }
 
-void deoalRTPTTraceSoundRays::SetMaxBounceCount( int count ){
+void deoalRTPTTraceSoundRays::SetMaxBounceCount(int count){
 	pMaxBounceCount = count;
 }
 
-void deoalRTPTTraceSoundRays::SetMaxTransmitCount( int count ){
+void deoalRTPTTraceSoundRays::SetMaxTransmitCount(int count){
 	pMaxTransmitCount = count;
 }
 
-void deoalRTPTTraceSoundRays::SetInitialRayLength( float length ){
+void deoalRTPTTraceSoundRays::SetInitialRayLength(float length){
 	pInitialRayLength = length;
 }
 
-void deoalRTPTTraceSoundRays::SetLayerMask( const decLayerMask &layerMask ){
+void deoalRTPTTraceSoundRays::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
-void deoalRTPTTraceSoundRays::SetInverseRayTracing( bool inverseRayTracing ){
+void deoalRTPTTraceSoundRays::SetInverseRayTracing(bool inverseRayTracing){
 	pInverseRayTracing = inverseRayTracing;
 }
 
-void deoalRTPTTraceSoundRays::SetDetectOutsideLength( double detectOutsideLength ){
-	pDetectOutsideLength = decMath::max( detectOutsideLength, 1.0 );
+void deoalRTPTTraceSoundRays::SetDetectOutsideLength(double detectOutsideLength){
+	pDetectOutsideLength = decMath::max(detectOutsideLength, 1.0);
 }
 
 
@@ -224,15 +224,15 @@ void deoalRTPTTraceSoundRays::Run(){
 	const decVector * const rayDirections = pProbeConfig->GetRayDirections() + pFirstRay;
 	#endif
 	
-	pWOVRayHitsElement.SetLayerMask( pLayerMask );
-	pWOVRayBlocked.SetLayerMask( pLayerMask );
+	pWOVRayHitsElement.SetLayerMask(pLayerMask);
+	pWOVRayBlocked.SetLayerMask(pLayerMask);
 	
 	pSoundRayList.RemoveAllRays();
 	#ifndef RTPTTSR_ONE_TASK_PER_RAY
-	pSoundRayList.ReserveSize( pRayCount, pRayCount * pMaxBounceCount, pMaxTransmitCount );
+	pSoundRayList.ReserveSize(pRayCount, pRayCount * pMaxBounceCount, pMaxTransmitCount);
 		// assume 20 bounces per ray
 	#else
-	pSoundRayList.ReserveSize( 1, pMaxBounceCount, pMaxTransmitCount );
+	pSoundRayList.ReserveSize(1, pMaxBounceCount, pMaxTransmitCount);
 	#endif
 	pMeanFreePath = 0.0f;
 	pRoomVolume = 0.0f;
@@ -269,16 +269,16 @@ void deoalRTPTTraceSoundRays::Run(){
 	absorptionSum.high = 0.0f;
 	
 	#ifndef RTPTTSR_ONE_TASK_PER_RAY
-	for( pRayIndex=0; pRayIndex<pRayCount; pRayIndex++ ){
+	for(pRayIndex=0; pRayIndex<pRayCount; pRayIndex++){
 		ray.rayIndex = pSoundRayList.AddRay();
-		ray.direction = rayDirections[ pRayIndex ];
-		pTraceRay( ray, gain, absorptionSum );
+		ray.direction = rayDirections[pRayIndex];
+		pTraceRay(ray, gain, absorptionSum);
 	}
 	#else
 	ray.rayIndex = pSoundRayList.AddRay();
-	ray.direction = pProbeConfig->GetRayDirections()[ pFirstRay ];
+	ray.direction = pProbeConfig->GetRayDirections()[pFirstRay];
 	ray.normal.SetZero();
-	pTraceRay( ray, gain, absorptionSum );
+	pTraceRay(ray, gain, absorptionSum);
 	#endif
 	
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
@@ -298,8 +298,8 @@ void deoalRTPTTraceSoundRays::Run(){
 void deoalRTPTTraceSoundRays::Finished(){
 	// this task never runs alone. it is always a dependency and clean up by these tasks
 	/*
-	if( GetDependedOnBy().GetCount() == 0 ){
-		pOwner.Enable( this );
+	if(GetDependedOnBy().GetCount() == 0){
+		pOwner.Enable(this);
 	}
 	*/
 }
@@ -331,8 +331,8 @@ decString deoalRTPTTraceSoundRays::GetDebugDetails() const{
 static deMutex mutex;
 #endif
 
-void deoalRTPTTraceSoundRays::pTraceRay( const sTraceRay &ray, const sTraceGain &gain,
-const sTraceAbsorptionSum &absorptionSum ){
+void deoalRTPTTraceSoundRays::pTraceRay(const sTraceRay &ray, const sTraceGain &gain,
+const sTraceAbsorptionSum &absorptionSum){
 	#ifdef DEBUG_CORRECTNESS
 		deoalRayTraceResult expected;
 	#endif
@@ -356,100 +356,100 @@ const sTraceAbsorptionSum &absorptionSum ){
 	// in small environments since those are very expensive
 #ifdef USE_STEPWISE_RAY_LENGTH
 	const deoalRayTraceHitElement *hitElement = NULL;
-	decDVector rayOrigin( ray.position );
+	decDVector rayOrigin(ray.position);
 	float rayLength = pInitialRayLength;
 	float rayOffset = 0.0f;
 	int hitIndex = 0, hitCount;
 	
-	while( rayOffset < ray.remainingDistance ){
-		const float nextRayOffset = decMath::min( rayOffset + rayLength, ray.remainingDistance );
-		const decDVector rayEnd( ray.position + ray.direction * nextRayOffset );
+	while(rayOffset < ray.remainingDistance){
+		const float nextRayOffset = decMath::min(rayOffset + rayLength, ray.remainingDistance);
+		const decDVector rayEnd(ray.position + ray.direction * nextRayOffset);
 		rayLength *= 2.0f;
 		
 		hitElement = NULL;
 		pRTResult.Clear();
 		
-		if( pRTWorldBVH ){
-			pRTWOVRayHitsClosest.SetRay( *pRTWorldBVH, rayOrigin, rayEnd - rayOrigin );
-			pRTWOVRayHitsClosest.SetFrontFacing( true );
-			pRTWOVRayHitsClosest.SetLimitDistance( 1.0f );
-			pRTWOVRayHitsClosest.VisitBVH( *pRTWorldBVH );
+		if(pRTWorldBVH){
+			pRTWOVRayHitsClosest.SetRay(*pRTWorldBVH, rayOrigin, rayEnd - rayOrigin);
+			pRTWOVRayHitsClosest.SetFrontFacing(true);
+			pRTWOVRayHitsClosest.SetLimitDistance(1.0f);
+			pRTWOVRayHitsClosest.VisitBVH(*pRTWorldBVH);
 			
-			if( pRTWOVRayHitsClosest.GetHasResult() ){
+			if(pRTWOVRayHitsClosest.GetHasResult()){
 				hitElement = &pRTWOVRayHitsClosest.GetResult();
 			}
 			
 			#ifdef DEBUG_CORRECTNESS
-				if( pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe() ){
+				if(pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe()){
 					expected.Clear();
-					pWOVRayHitsElement.SetResult( &expected );
-					pWOVRayHitsElement.SetRay( rayOrigin, rayEnd - rayOrigin );
-					pWOVRayHitsElement.VisitNode( *pWorld->GetOctree() );
-					pWOVRayHitsElement.SetResult( &pRTResult );
+					pWOVRayHitsElement.SetResult(&expected);
+					pWOVRayHitsElement.SetRay(rayOrigin, rayEnd - rayOrigin);
+					pWOVRayHitsElement.VisitNode(*pWorld->GetOctree());
+					pWOVRayHitsElement.SetResult(&pRTResult);
 				}
 			#endif
 			
 			#if 0
-			if( pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe() ){
+			if(pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe()){
 									mutex.Lock();
 				pRTResult.Clear();
-				pRTWOVRayHitsElement.SetRay( *pRTWorldBVH, rayOrigin, rayEnd - rayOrigin );
-				pRTWOVRayHitsElement.VisitBVH( *pRTWorldBVH );
+				pRTWOVRayHitsElement.SetRay(*pRTWorldBVH, rayOrigin, rayEnd - rayOrigin);
+				pRTWOVRayHitsElement.VisitBVH(*pRTWorldBVH);
 				
 				const deoalRayTraceHitElement *e1 = NULL;
 				int i;
-				for( i=0; i<pRTResult.GetElementCount(); i++ ){
-					const deoalRayTraceHitElement &e = pRTResult.GetElementAt( i );
-					if( e.GetForwardFacing() ){
+				for(i=0; i<pRTResult.GetElementCount(); i++){
+					const deoalRayTraceHitElement &e = pRTResult.GetElementAt(i);
+					if(e.GetForwardFacing()){
 						e1 = &e;
 						break;
 					}
 				}
 				
-				if( e1 ){
-					if( pRTWOVRayHitsClosest.GetHasResult() ){
+				if(e1){
+					if(pRTWOVRayHitsClosest.GetHasResult()){
 						const deoalRayTraceHitElement &e2 = pRTWOVRayHitsClosest.GetResult();
 						
-						if( /*e1->GetComponent() == e2.GetComponent()*/
+						if(/*e1->GetComponent() == e2.GetComponent()*/
 							//&& e1->GetComponentFace() == e2.GetComponentFace()
 							/*&&*/ fabsf( e1->GetDistance() - e2.GetDistance() ) < 1e-3f
 							&& e1->GetForwardFacing() == e2.GetForwardFacing()
 							//&& e1->GetNormal().IsEqualTo( e2.GetNormal(), 1e3f )
-							&& e1->GetPoint().IsEqualTo( e2.GetPoint(), 1e3f ) ){
-								pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(+) Matching.",
-									pFirstRay, ray.bounces, ray.transmissions );
+							&& e1->GetPoint().IsEqualTo(e2.GetPoint(), 1e3f)){
+								pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Matching.",
+									pFirstRay, ray.bounces, ray.transmissions);
 						}else{
-							pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(+) Not Matching!",
-								pFirstRay, ray.bounces, ray.transmissions );
-							pRTResult.DebugPrint( pOwner.GetAudioThread(), "Expected: " );
+							pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching!",
+								pFirstRay, ray.bounces, ray.transmissions);
+							pRTResult.DebugPrint(pOwner.GetAudioThread(), "Expected: ");
 							deoalRayTraceResult found;
-							found.AddElement( pRTWOVRayHitsClosest.GetResult() );
-							found.DebugPrint( pOwner.GetAudioThread(), "Found: " );
+							found.AddElement(pRTWOVRayHitsClosest.GetResult());
+							found.DebugPrint(pOwner.GetAudioThread(), "Found: ");
 							
-									pRTWOVRayHitsClosest.SetRay( *pRTWorldBVH, rayOrigin, rayEnd - rayOrigin );
-									pRTWOVRayHitsClosest.SetFrontFacing( true );
-									pRTWOVRayHitsClosest.SetLimitDistance( 1.0f );
-									pRTWOVRayHitsClosest.VisitBVH( *pRTWorldBVH );
+									pRTWOVRayHitsClosest.SetRay(*pRTWorldBVH, rayOrigin, rayEnd - rayOrigin);
+									pRTWOVRayHitsClosest.SetFrontFacing(true);
+									pRTWOVRayHitsClosest.SetLimitDistance(1.0f);
+									pRTWOVRayHitsClosest.VisitBVH(*pRTWorldBVH);
 						}
 						
 					}else{
-						pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(+) Not Matching!",
-							pFirstRay, ray.bounces, ray.transmissions );
-						pRTResult.DebugPrint( pOwner.GetAudioThread(), "Expected: " );
+						pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching!",
+							pFirstRay, ray.bounces, ray.transmissions);
+						pRTResult.DebugPrint(pOwner.GetAudioThread(), "Expected: ");
 					}
 					
 				}else{
-					if( pRTWOVRayHitsClosest.GetHasResult() ){
-						pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(-) Not Matching!",
-							pFirstRay, ray.bounces, ray.transmissions );
-						pRTResult.DebugPrint( pOwner.GetAudioThread(), "Expected: " );
+					if(pRTWOVRayHitsClosest.GetHasResult()){
+						pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Not Matching!",
+							pFirstRay, ray.bounces, ray.transmissions);
+						pRTResult.DebugPrint(pOwner.GetAudioThread(), "Expected: ");
 						deoalRayTraceResult found;
-						found.AddElement( pRTWOVRayHitsClosest.GetResult() );
-						found.DebugPrint( pOwner.GetAudioThread(), "Found: " );
+						found.AddElement(pRTWOVRayHitsClosest.GetResult());
+						found.DebugPrint(pOwner.GetAudioThread(), "Found: ");
 						
 					}else{
-						pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(-) Matching.",
-							pFirstRay, ray.bounces, ray.transmissions );
+						pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Matching.",
+							pFirstRay, ray.bounces, ray.transmissions);
 					}
 				}
 									mutex.Unlock();
@@ -457,51 +457,51 @@ const sTraceAbsorptionSum &absorptionSum ){
 			#endif
 			
 			#if 0
-			if( pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe() ){
+			if(pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe()){
 				deoalRayTraceResult expectedResult;
-				pWOVRayHitsElement.SetRay( rayOrigin, rayEnd - rayOrigin );
-				pWOVRayHitsElement.SetResult( &expectedResult );
-				pWOVRayHitsElement.VisitNode( *pWorld->GetOctree() );
-				pWOVRayHitsElement.SetResult( &pRTResult );
+				pWOVRayHitsElement.SetRay(rayOrigin, rayEnd - rayOrigin);
+				pWOVRayHitsElement.SetResult(&expectedResult);
+				pWOVRayHitsElement.VisitNode(*pWorld->GetOctree());
+				pWOVRayHitsElement.SetResult(&pRTResult);
 				
 				bool matching = true;
-				if( pRTResult.GetElementCount() == expectedResult.GetElementCount() ){
+				if(pRTResult.GetElementCount() == expectedResult.GetElementCount()){
 					const int count = expectedResult.GetElementCount();
 					int i;
-					for( i=0; i<count; i++ ){
-						const deoalRayTraceHitElement &e1 = expectedResult.GetElementAt( i );
-						const deoalRayTraceHitElement &e2 = pRTResult.GetElementAt( i );
+					for(i=0; i<count; i++){
+						const deoalRayTraceHitElement &e1 = expectedResult.GetElementAt(i);
+						const deoalRayTraceHitElement &e2 = pRTResult.GetElementAt(i);
 						
-						if( e1.GetComponent() == e2.GetComponent()
+						if(e1.GetComponent() == e2.GetComponent()
 							&& e1.GetComponentFace() == e2.GetComponentFace()
-							&& fabsf( e1.GetDistance() - e2.GetDistance() ) < 1e-3f
+							&& fabsf(e1.GetDistance() - e2.GetDistance()) < 1e-3f
 							&& e1.GetForwardFacing() == e2.GetForwardFacing()
-							&& e1.GetNormal().IsEqualTo( e2.GetNormal(), 1e3f )
-							&& e1.GetPoint().IsEqualTo( e2.GetPoint(), 1e3f ) ){
+							&& e1.GetNormal().IsEqualTo(e2.GetNormal(), 1e3f)
+							&& e1.GetPoint().IsEqualTo(e2.GetPoint(), 1e3f)){
 								continue;
 						}
 						
-						if( i == count - 1 ){
+						if(i == count - 1){
 							matching = false;
 							break;
 						}
 						
-						const deoalRayTraceHitElement &e1b = expectedResult.GetElementAt( i + 1 );
-						const deoalRayTraceHitElement &e2b = pRTResult.GetElementAt( i + 1 );
+						const deoalRayTraceHitElement &e1b = expectedResult.GetElementAt(i + 1);
+						const deoalRayTraceHitElement &e2b = pRTResult.GetElementAt(i + 1);
 						
-						if( e1.GetComponent() == e2b.GetComponent()
+						if(e1.GetComponent() == e2b.GetComponent()
 							&& e1.GetComponentFace() == e2b.GetComponentFace()
-							&& fabsf( e1.GetDistance() - e2b.GetDistance() ) < 1e-3f
+							&& fabsf(e1.GetDistance() - e2b.GetDistance()) < 1e-3f
 							&& e1.GetForwardFacing() == e2b.GetForwardFacing()
-							&& e1.GetNormal().IsEqualTo( e2b.GetNormal(), 1e3f )
-							&& e1.GetPoint().IsEqualTo( e2b.GetPoint(), 1e3f )
+							&& e1.GetNormal().IsEqualTo(e2b.GetNormal(), 1e3f)
+							&& e1.GetPoint().IsEqualTo(e2b.GetPoint(), 1e3f)
 							
 							&& e1b.GetComponent() == e2.GetComponent()
 							&& e1b.GetComponentFace() == e2.GetComponentFace()
-							&& fabsf( e1b.GetDistance() - e2.GetDistance() ) < 1e-3f
+							&& fabsf(e1b.GetDistance() - e2.GetDistance()) < 1e-3f
 							&& e1b.GetForwardFacing() == e2.GetForwardFacing()
-							&& e1b.GetNormal().IsEqualTo( e2.GetNormal(), 1e3f )
-							&& e1b.GetPoint().IsEqualTo( e2.GetPoint(), 1e3f ) ){
+							&& e1b.GetNormal().IsEqualTo(e2.GetNormal(), 1e3f)
+							&& e1b.GetPoint().IsEqualTo(e2.GetPoint(), 1e3f)){
 								i++;
 								continue;
 						}
@@ -513,37 +513,37 @@ const sTraceAbsorptionSum &absorptionSum ){
 					matching = false;
 				}
 				
-				if( matching ){
-					pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Matching.",
-						pFirstRay, ray.bounces, ray.transmissions );
+				if(matching){
+					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Matching.",
+						pFirstRay, ray.bounces, ray.transmissions);
 				}else{
-					pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Not Matching!",
-						pFirstRay, ray.bounces, ray.transmissions );
-					expectedResult.DebugPrint( pOwner.GetAudioThread(), "Expected: " );
-					pRTResult.DebugPrint( pOwner.GetAudioThread(), "Found: " );
+					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Not Matching!",
+						pFirstRay, ray.bounces, ray.transmissions);
+					expectedResult.DebugPrint(pOwner.GetAudioThread(), "Expected: ");
+					pRTResult.DebugPrint(pOwner.GetAudioThread(), "Found: ");
 				}
 			}
 			#endif
 			
 		}else{
-			pWOVRayHitsElement.SetRay( rayOrigin, rayEnd - rayOrigin );
-			pWOVRayHitsElement.VisitNode( *pWorld->GetOctree() );
+			pWOVRayHitsElement.SetRay(rayOrigin, rayEnd - rayOrigin);
+			pWOVRayHitsElement.VisitNode(*pWorld->GetOctree());
 			
 			// find result. use the first forward facing element. backward facing elements are
 			// ignored because the probe can be inside geometry. without skipping backwards facing
 			// faces this can result in incorrect probe data
 			hitCount = pRTResult.GetElementCount();
 			
-			for( hitIndex=0; hitIndex<hitCount; hitIndex++ ){
-				const deoalRayTraceHitElement &he = pRTResult.GetElementAt( hitIndex );
-				if( he.GetForwardFacing() ){
+			for(hitIndex=0; hitIndex<hitCount; hitIndex++){
+				const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
+				if(he.GetForwardFacing()){
 					hitElement = &he;
 					break;
 				}
 			}
 		}
 		
-		if( hitElement ){
+		if(hitElement){
 			break;
 		}
 		
@@ -551,16 +551,16 @@ const sTraceAbsorptionSum &absorptionSum ){
 		rayOrigin = rayEnd;
 	}
 	
-	const decDVector scaledDirection( ray.direction * rayOffset );
+	const decDVector scaledDirection(ray.direction * rayOffset);
 	
 #else
-	const decDVector scaledDirection( ray.direction * ray.remainingDistance );
+	const decDVector scaledDirection(ray.direction * ray.remainingDistance);
 	const deoalRayTraceHitElement *hitElement = NULL;
 	int hitIndex, hitCount;
 	
 	pRTResult.Clear();
-	pWOVRayHitsElement.SetRay( ray.position, scaledDirection );
-	pWOVRayHitsElement.VisitNode( *pWorld->GetOctree() );
+	pWOVRayHitsElement.SetRay(ray.position, scaledDirection);
+	pWOVRayHitsElement.VisitNode(*pWorld->GetOctree());
 	
 	// find result. use the first forward facing element. backward facing elements are
 	// ignored because the probe can be inside geometry. without skipping backwards facing
@@ -568,9 +568,9 @@ const sTraceAbsorptionSum &absorptionSum ){
 	hitCount = pRTResult.GetElementCount();
 	hitElement = NULL;
 	
-	for( hitIndex=0; hitIndex<hitCount; hitIndex++ ){
-		const deoalRayTraceHitElement &he = pRTResult.GetElementAt( hitIndex );
-		if( he.GetForwardFacing() ){
+	for(hitIndex=0; hitIndex<hitCount; hitIndex++){
+		const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
+		if(he.GetForwardFacing()){
 			hitElement = &he;
 			break;
 		}
@@ -584,27 +584,27 @@ const sTraceAbsorptionSum &absorptionSum ){
 	// is only for the indirect contribution
 	const float hitDistance = hitElement ? hitElement->GetDistance() + rayOffset : ray.remainingDistance;
 	
-	if( ray.bounces > 0 && hitDistance >= pAddRayMinLength ){
-		deoalSoundRaySegment &segment = pSoundRayList.GetSegmentAt( pSoundRayList.AddSegment() );
+	if(ray.bounces > 0 && hitDistance >= pAddRayMinLength){
+		deoalSoundRaySegment &segment = pSoundRayList.GetSegmentAt(pSoundRayList.AddSegment());
 		
 		deoalSoundRay &sray = ray.transmittedRayIndex != -1
-			? pSoundRayList.GetTransmittedRayAt( ray.transmittedRayIndex )
-			: pSoundRayList.GetRayAt( ray.rayIndex );
+			? pSoundRayList.GetTransmittedRayAt(ray.transmittedRayIndex)
+			: pSoundRayList.GetRayAt(ray.rayIndex);
 		sray.IncSegmentCount();
 		
-		segment.SetPosition( ray.position - pPosition );
-		segment.SetDirection( ray.direction );
-		segment.SetNormal( ray.normal );
-		segment.SetLength( hitDistance );
-		segment.SetDistance( ray.distance );
-		segment.SetGainLow( gain.low );
-		segment.SetGainMedium( gain.medium );
-		segment.SetGainHigh( gain.high );
-		segment.SetAbsorptionSumLow( absorptionSum.low );
-		segment.SetAbsorptionSumMedium( absorptionSum.medium );
-		segment.SetAbsorptionSumHigh( absorptionSum.high );
-		segment.SetBounceCount( ray.bounces );
-		segment.SetTransmittedCount( ray.transmissions );
+		segment.SetPosition(ray.position - pPosition);
+		segment.SetDirection(ray.direction);
+		segment.SetNormal(ray.normal);
+		segment.SetLength(hitDistance);
+		segment.SetDistance(ray.distance);
+		segment.SetGainLow(gain.low);
+		segment.SetGainMedium(gain.medium);
+		segment.SetGainHigh(gain.high);
+		segment.SetAbsorptionSumLow(absorptionSum.low);
+		segment.SetAbsorptionSumMedium(absorptionSum.medium);
+		segment.SetAbsorptionSumHigh(absorptionSum.high);
+		segment.SetBounceCount(ray.bounces);
+		segment.SetTransmittedCount(ray.transmissions);
 		
 		// add to mean free path. if path are too short they are not added which overall counts
 		// them as having a length of 0. this is a small error. more interesting is how to deal
@@ -629,7 +629,7 @@ const sTraceAbsorptionSum &absorptionSum ){
 		// 
 		// for this reason pRange is added if nothing is hit otherwise the hit distance
 		/*
-		if( hitElement ){
+		if(hitElement){
 			pMeanFreePath += hitDistance;
 			
 		}else{
@@ -640,19 +640,19 @@ const sTraceAbsorptionSum &absorptionSum ){
 	}
 	
 	// ray hits nothing and ends
-	if( ! hitElement ){
-		const decDVector rayPosition( ray.position + scaledDirection );
-		pUpdateExtends( rayPosition );
-		DetectRayOutside( ray, rayPosition );
+	if(! hitElement){
+		const decDVector rayPosition(ray.position + scaledDirection);
+		pUpdateExtends(rayPosition);
+		DetectRayOutside(ray, rayPosition);
 		return;
 	}
 	
 	// ray hits something
 	const decDVector &hitPoint = hitElement->GetPoint();
-	pUpdateExtends( hitPoint );
+	pUpdateExtends(hitPoint);
 	
 	const decDVector &hitNormal = hitElement->GetNormal();
-	const double dotOut = -( hitNormal * ray.direction );
+	const double dotOut = -(hitNormal * ray.direction);
 	
 	// calculate the absorption and transmission gain at the hit point. physically correctly
 	// for inverse listening the exciting face should be used but this way we can not speed
@@ -660,8 +660,8 @@ const sTraceAbsorptionSum &absorptionSum ){
 	// into the wall before becoming inaudible. the back face has to be found inside this
 	// range which optimizes the ray tracing
 	deoalAComponent &component = *hitElement->GetComponent();
-	const deoalModelFace &face = component.GetModel()->GetFaceAt( hitElement->GetComponentFace() );
-	const deoalAComponentTexture &texture = component.GetModelTextureAt( face.GetTexture() );
+	const deoalModelFace &face = component.GetModel()->GetFaceAt(hitElement->GetComponentFace());
+	const deoalAComponentTexture &texture = component.GetModelTextureAt(face.GetTexture());
 	
 	const float absorbedLow = gain.low * texture.GetAbsorptionLow();
 	const float absorbedMedium = gain.medium * texture.GetAbsorptionMedium();
@@ -698,8 +698,8 @@ const sTraceAbsorptionSum &absorptionSum ){
 // 	const deoalAComponentTexture *textureBack = NULL;
 	float hitElementBackOffset = 0.0f;
 	
-	if( ray.transmissions < pMaxTransmitCount ){
-		if( pRTWorldBVH ){
+	if(ray.transmissions < pMaxTransmitCount){
+		if(pRTWorldBVH){
 			hitElementBackOffset = hitDistance;
 			pRTResult.Clear();
 			hitIndex = -1;
@@ -707,31 +707,31 @@ const sTraceAbsorptionSum &absorptionSum ){
 			const float maxThickness = decMath::max(
 				textureTransmit.GetTransmissionLow() * nonAbsLow,
 				textureTransmit.GetTransmissionMedium() * nonAbsMedium,
-				textureTransmit.GetTransmissionHigh() * nonAbsHigh );
-			if( maxThickness > 0.01f ){
-				pRTWOVRayHitsElement.SetRay( *pRTWorldBVH, hitPoint, ray.direction * maxThickness );
-				pRTWOVRayHitsElement.VisitBVH( *pRTWorldBVH );
+				textureTransmit.GetTransmissionHigh() * nonAbsHigh);
+			if(maxThickness > 0.01f){
+				pRTWOVRayHitsElement.SetRay(*pRTWorldBVH, hitPoint, ray.direction * maxThickness);
+				pRTWOVRayHitsElement.VisitBVH(*pRTWorldBVH);
 			}
 		}
 		
 		const int count = pRTResult.GetElementCount();
 		int findBackCounter = 1;
 		
-		for( hitIndex++; hitIndex<count; hitIndex++ ){
-			const deoalRayTraceHitElement &he = pRTResult.GetElementAt( hitIndex );
+		for(hitIndex++; hitIndex<count; hitIndex++){
+			const deoalRayTraceHitElement &he = pRTResult.GetElementAt(hitIndex);
 			
-			if( he.GetComponent() == hitElement->GetComponent()
-			&& he.GetComponentFace() == hitElement->GetComponentFace() ){
+			if(he.GetComponent() == hitElement->GetComponent()
+			&& he.GetComponentFace() == hitElement->GetComponentFace()){
 				continue;
 			}
 			
-			if( he.GetForwardFacing() ){
+			if(he.GetForwardFacing()){
 				findBackCounter++;
 				continue;
 			}
 			
 			findBackCounter--;
-			if( findBackCounter > 0 ){
+			if(findBackCounter > 0){
 				continue;
 			}
 			
@@ -739,15 +739,15 @@ const sTraceAbsorptionSum &absorptionSum ){
 			
 	// 		const float thresholdDistance = he.GetDistance() + pBackStepDistance;
 			const deoalRayTraceHitElement *heLast = &he;
-			for( hitIndex++; hitIndex<count; hitIndex++ ){
-				const deoalRayTraceHitElement &he2 = pRTResult.GetElementAt( hitIndex );
+			for(hitIndex++; hitIndex<count; hitIndex++){
+				const deoalRayTraceHitElement &he2 = pRTResult.GetElementAt(hitIndex);
 	// 			if( he2.GetDistance() > thresholdDistance ){
-				if( he2.GetDistance() > heLast->GetDistance() + pBackStepDistance ){
+				if(he2.GetDistance() > heLast->GetDistance() + pBackStepDistance){
 					hitIndex--;
 					break;
 				}
 				
-				if( he2.GetForwardFacing() ){
+				if(he2.GetForwardFacing()){
 					findBackCounter++;
 					
 				}else{
@@ -758,7 +758,7 @@ const sTraceAbsorptionSum &absorptionSum ){
 				heLast = &he2;
 			}
 			
-			if( findBackCounter > 0 ){
+			if(findBackCounter > 0){
 				hitElementBack = NULL;
 				continue;
 			}
@@ -773,20 +773,20 @@ const sTraceAbsorptionSum &absorptionSum ){
 	}
 	
 	#ifdef DEBUG_CORRECTNESS
-	if( pRTWorldBVH && pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe() ){
+	if(pRTWorldBVH && pOwner.GetAudioThread().GetDebug().GetLogCalcEnvProbe()){
 		mutex.Lock();
 		
 		const float maxThickness = decMath::max(
 			textureTransmit.GetTransmissionLow() * nonAbsLow,
 			textureTransmit.GetTransmissionMedium() * nonAbsMedium,
-			textureTransmit.GetTransmissionHigh() * nonAbsHigh );
+			textureTransmit.GetTransmissionHigh() * nonAbsHigh);
 		
 		// expected
 		const deoalRayTraceHitElement *e1 = NULL;
 		int hi;
-		for( hi=0; hi<expected.GetElementCount(); hi++ ){
-			const deoalRayTraceHitElement &e = expected.GetElementAt( hi );
-			if( e.GetForwardFacing() ){
+		for(hi=0; hi<expected.GetElementCount(); hi++){
+			const deoalRayTraceHitElement &e = expected.GetElementAt(hi);
+			if(e.GetForwardFacing()){
 				e1 = &e;
 				break;
 			}
@@ -794,26 +794,26 @@ const sTraceAbsorptionSum &absorptionSum ){
 		
 		const deoalRayTraceHitElement *e2 = NULL;
 		int findBackCounter = 1;
-		for( hi++; hi<expected.GetElementCount(); hi++ ){
-			const deoalRayTraceHitElement &he = expected.GetElementAt( hi );
-			if( he.GetForwardFacing() ){
+		for(hi++; hi<expected.GetElementCount(); hi++){
+			const deoalRayTraceHitElement &he = expected.GetElementAt(hi);
+			if(he.GetForwardFacing()){
 				findBackCounter++;
 				continue;
 			}
 			findBackCounter--;
-			if( findBackCounter > 0 ){
+			if(findBackCounter > 0){
 				continue;
 			}
 			e2 = &he;
 			
 			const deoalRayTraceHitElement *heLast = &he;
-			for( hi++; hi<expected.GetElementCount(); hi++ ){
-				const deoalRayTraceHitElement &he2 = expected.GetElementAt( hi );
-				if( he2.GetDistance() > heLast->GetDistance() + pBackStepDistance ){
+			for(hi++; hi<expected.GetElementCount(); hi++){
+				const deoalRayTraceHitElement &he2 = expected.GetElementAt(hi);
+				if(he2.GetDistance() > heLast->GetDistance() + pBackStepDistance){
 					hi--;
 					break;
 				}
-				if( he2.GetForwardFacing() ){
+				if(he2.GetForwardFacing()){
 					findBackCounter++;
 				}else{
 					findBackCounter--;
@@ -822,7 +822,7 @@ const sTraceAbsorptionSum &absorptionSum ){
 				heLast = &he2;
 			}
 			
-			if( findBackCounter > 0 ){
+			if(findBackCounter > 0){
 				e2 = NULL;
 				continue;
 			}
@@ -831,50 +831,50 @@ const sTraceAbsorptionSum &absorptionSum ){
 		
 		// compare to found
 		bool matching = true;
-		if( e1 ){
-			if( ! hitElement
+		if(e1){
+			if(! hitElement
 			|| e1->GetForwardFacing() != hitElement->GetForwardFacing()
-			|| ! e1->GetPoint().IsEqualTo( hitElement->GetPoint(), 1e3f ) ){
-				pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(+) Not Matching! (maxThick=%.3f)",
-					pFirstRay, ray.bounces, ray.transmissions, maxThickness );
+			|| ! e1->GetPoint().IsEqualTo(hitElement->GetPoint(), 1e3f)){
+				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(+) Not Matching! (maxThick=%.3f)",
+					pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 				matching = false;
 			}
-		}else if( hitElement ){
-			pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Forward(-) Not Matching! (maxThick=%.3f)",
-				pFirstRay, ray.bounces, ray.transmissions, maxThickness );
+		}else if(hitElement){
+			pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Forward(-) Not Matching! (maxThick=%.3f)",
+				pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 			matching = false;
 		}
 		
-		if( ray.transmissions < pMaxTransmitCount && maxThickness > 0.01f ){
-			if( e2 && ( e2->GetPoint() - e1->GetPoint() ).Length() <= maxThickness ){
-				if( ! hitElementBack
+		if(ray.transmissions < pMaxTransmitCount && maxThickness > 0.01f){
+			if(e2 && (e2->GetPoint() - e1->GetPoint()).Length() <= maxThickness){
+				if(! hitElementBack
 				|| e2->GetForwardFacing() != hitElementBack->GetForwardFacing()
-				|| ! e2->GetPoint().IsEqualTo( hitElementBack->GetPoint(), 1e3f ) ){
-					pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Backward(+) Not Matching! (maxThick=%.3f)",
-						pFirstRay, ray.bounces, ray.transmissions, maxThickness );
+				|| ! e2->GetPoint().IsEqualTo(hitElementBack->GetPoint(), 1e3f)){
+					pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(+) Not Matching! (maxThick=%.3f)",
+						pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 					matching = false;
 				}
-			}else if( hitElementBack ){
-				pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Backward(-) Not Matching! (maxThick=%.3f)",
-					pFirstRay, ray.bounces, ray.transmissions, maxThickness );
+			}else if(hitElementBack){
+				pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Backward(-) Not Matching! (maxThick=%.3f)",
+					pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 				matching = false;
 			}
 		}
 		
-		if( matching ){
-			pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: Matching (maxThick=%.3f)",
-				pFirstRay, ray.bounces, ray.transmissions, maxThickness );
+		if(matching){
+			pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: Matching (maxThick=%.3f)",
+				pFirstRay, ray.bounces, ray.transmissions, maxThickness);
 		}else{
-			expected.DebugPrint( pOwner.GetAudioThread(), "Expected: " );
+			expected.DebugPrint(pOwner.GetAudioThread(), "Expected: ");
 			deoalRayTraceResult found;
-			if( hitElement ){
-				found.AddElement( *hitElement );
+			if(hitElement){
+				found.AddElement(*hitElement);
 			}
-			if( hitElementBack ){
-				found.AddElement( *hitElementBack );
+			if(hitElementBack){
+				found.AddElement(*hitElementBack);
 			}
-			found.DebugPrint( pOwner.GetAudioThread(), "Found: " );
-			pRTResult.DebugPrint( pOwner.GetAudioThread(), "Last RTResult: " );
+			found.DebugPrint(pOwner.GetAudioThread(), "Found: ");
+			pRTResult.DebugPrint(pOwner.GetAudioThread(), "Last RTResult: ");
 		}
 		
 		mutex.Unlock();
@@ -901,25 +901,25 @@ const sTraceAbsorptionSum &absorptionSum ){
 	
 	// the transmitted rays are not traced the transmitted gain is lost. this would
 	// result in weaker reflections
-	if( hitElementBack ){
+	if(hitElementBack){
 		const float thickness = hitElementBack->GetDistance()
 			+ hitElementBackOffset - hitElement->GetDistance();
 		
-		transmittedGain.low = decMath::linearStep( thickness, 0.0f,
-			textureTransmit.GetTransmissionLow(), nonAbsLow, 0.0f );
-		transmittedGain.medium = decMath::linearStep( thickness, 0.0f,
-			textureTransmit.GetTransmissionMedium(), nonAbsMedium, 0.0f );
-		transmittedGain.high = decMath::linearStep( thickness, 0.0f,
-			textureTransmit.GetTransmissionHigh(), nonAbsHigh, 0.0f );
+		transmittedGain.low = decMath::linearStep(thickness, 0.0f,
+			textureTransmit.GetTransmissionLow(), nonAbsLow, 0.0f);
+		transmittedGain.medium = decMath::linearStep(thickness, 0.0f,
+			textureTransmit.GetTransmissionMedium(), nonAbsMedium, 0.0f);
+		transmittedGain.high = decMath::linearStep(thickness, 0.0f,
+			textureTransmit.GetTransmissionHigh(), nonAbsHigh, 0.0f);
 		
 		transmittedAbsorptionSum.low = absorptionSum.low + textureTransmit.GetAbsorptionLow();
 		transmittedAbsorptionSum.medium = absorptionSum.medium + textureTransmit.GetAbsorptionMedium();
 		transmittedAbsorptionSum.high = absorptionSum.high + textureTransmit.GetAbsorptionHigh();
 		
 		/*
-		pOwner.GetAudioThread().GetLogger().LogInfoFormat( "Ray #%d:%d:%d: thickness=%.3f gain=(%.3f,%.3f,%.3f)",
+		pOwner.GetAudioThread().GetLogger().LogInfoFormat("Ray #%d:%d:%d: thickness=%.3f gain=(%.3f,%.3f,%.3f)",
 			pFirstRay + pRayIndex, ray.bounces, ray.transmissions, thickness,
-			transmittedGain.low, transmittedGain.medium, transmittedGain.high );
+			transmittedGain.low, transmittedGain.medium, transmittedGain.high);
 		*/
 	}
 	
@@ -940,11 +940,11 @@ const sTraceAbsorptionSum &absorptionSum ){
 	reflectedAbsorptionSum.high = absorptionSum.high + texture.GetAbsorptionHigh();
 	
 	// update room parameters with first hit rays
-	if( ray.bounces == 0 ){
+	if(ray.bounces == 0){
 		float roomFactor = hitDistance * hitDistance;
 		pRoomVolume += roomFactor * hitDistance;
 		
-		roomFactor *= 1.0f + ( 1.0f - ( float )dotOut ) * 2.0f;
+		roomFactor *= 1.0f + (1.0f - (float)dotOut) * 2.0f;
 			// apply first a scale factor to make area larger if at shallow angle. the value of
 			// the scale factor is found experimental and is not based on calculations. this would
 			// be difficult to do and most probably not much more true than this version here
@@ -970,7 +970,7 @@ const sTraceAbsorptionSum &absorptionSum ){
 	
 	// NOTE if source centric tracing is done pDistanceOffset can be larger than 0 and far
 	//      away sound sources can be traced. if listener centris pDistanceOffset is always 0
-	const float attGain = Attenuate( reflectedRay.distance );
+	const float attGain = Attenuate(reflectedRay.distance);
 	
 	// WARNING
 	// store transmission parameters aside. this is required since bouncing rays overwites
@@ -991,9 +991,9 @@ const sTraceAbsorptionSum &absorptionSum ){
 // 			reflectedGain.low, reflectedGain.medium, reflectedGain.high );
 // 	}
 #if 0
-	if( pFirstRay == 22 && pSoundRayList.GetRayAt( ray.rayIndex ).GetSegmentCount() == 1
-	&& ray.bounces == 1 && ray.transmissions == 0 ){
-		pRTResult.DebugPrint( pOwner.GetAudioThread(), "TraceSound" );
+	if(pFirstRay == 22 && pSoundRayList.GetRayAt(ray.rayIndex).GetSegmentCount() == 1
+	&& ray.bounces == 1 && ray.transmissions == 0){
+		pRTResult.DebugPrint(pOwner.GetAudioThread(), "TraceSound");
 		
 		/*
 Ray-Trace Result (3 elements):
@@ -1029,9 +1029,9 @@ EAX: 0.108675 1.000000 0.063526 (0.080500 0.108675; 0.006904 0.000000)
 	sTraceRay transmittedRay;
 	transmittedRay.transmittedRayIndex = -1;
 	
-	if( transmittedGain.low * attGain > pThresholdTransmit
+	if(transmittedGain.low * attGain > pThresholdTransmit
 	|| transmittedGain.medium * attGain > pThresholdTransmit
-	|| transmittedGain.high * attGain > pThresholdTransmit ){
+	|| transmittedGain.high * attGain > pThresholdTransmit){
 		const float hitDistanceBack = hitElementBack->GetDistance() + hitElementBackOffset + rayOffset;
 		bounceTransmissions++;
 		transmittedRay.rayIndex = ray.rayIndex;
@@ -1044,10 +1044,10 @@ EAX: 0.108675 1.000000 0.063526 (0.080500 0.108675; 0.006904 0.000000)
 		transmittedRay.bounces = ray.bounces;
 		
 		transmittedRay.transmittedRayIndex = pSoundRayList.AddTransmittedRay();
-		if( ray.transmittedRayIndex != -1 ){
-			pSoundRayList.GetTransmittedRayAt( ray.transmittedRayIndex ).IncTransmittedRayCount();
+		if(ray.transmittedRayIndex != -1){
+			pSoundRayList.GetTransmittedRayAt(ray.transmittedRayIndex).IncTransmittedRayCount();
 		}else{
-			pSoundRayList.GetRayAt( ray.rayIndex ).IncTransmittedRayCount();
+			pSoundRayList.GetRayAt(ray.rayIndex).IncTransmittedRayCount();
 		}
 		
 		/*
@@ -1056,23 +1056,23 @@ EAX: 0.108675 1.000000 0.063526 (0.080500 0.108675; 0.006904 0.000000)
 			pFirstRay + pRayIndex, ray.bounces, ray.transmissions,
 			hitElementBack->GetDistance() - hitElement->GetDistance(),
 			transmittedGain.low, transmittedGain.medium, transmittedGain.high,
-			( hitElementBack->GetPoint() + ray.direction * pBackStepDistance ).x,
-			( hitElementBack->GetPoint() + ray.direction * pBackStepDistance ).y,
-			( hitElementBack->GetPoint() + ray.direction * pBackStepDistance ).z );
+			(hitElementBack->GetPoint() + ray.direction * pBackStepDistance).x,
+			(hitElementBack->GetPoint() + ray.direction * pBackStepDistance).y,
+			(hitElementBack->GetPoint() + ray.direction * pBackStepDistance).z);
 		*/
 	}
 	
 	// bounce ray and continue if still audible
-	if( ray.bounces < pMaxBounceCount && (
+	if(ray.bounces < pMaxBounceCount && (
 	   reflectedGain.low * attGain > pThresholdReflect
 	|| reflectedGain.medium * attGain > pThresholdReflect
-	|| reflectedGain.high * attGain > pThresholdReflect ) ){
+	|| reflectedGain.high * attGain > pThresholdReflect)){
 		/*
-		pOwner.GetAudioThread().GetLogger().LogInfoFormat( "(%p %d %d) Bounce: dist=%3f rem=%.3f gain=(%.3f,%.3f,%.3f) "
+		pOwner.GetAudioThread().GetLogger().LogInfoFormat("(%p %d %d) Bounce: dist=%3f rem=%.3f gain=(%.3f,%.3f,%.3f) "
 			" refl=(%.3f,%.3f,%.3f) abs=(%.3f,%.3f,%.3f) tra=(%.3f,%.3f,%.3f)",
 			this, pRayIndex, ray.bounce + 1, reflectedRay.distance, reflectedRay.remainingDistance,
 			gain.low, gain.medium, gain.high, reflectedGain.low, reflectedGain.medium, reflectedGain.high,
-			absorbedLow, absorbedMedium, absorbedHigh, transmitLow, transmitMedium, transmitHigh );
+			absorbedLow, absorbedMedium, absorbedHigh, transmitLow, transmitMedium, transmitHigh);
 		*/
 		
 		reflectedRay.bounces = ray.bounces + 1;
@@ -1084,50 +1084,50 @@ EAX: 0.108675 1.000000 0.063526 (0.080500 0.108675; 0.006904 0.000000)
 		// error in the calculation which is though neglectable
 		reflectedRay.transmissions = bounceTransmissions; //ray.transmissions;
 		reflectedRay.position = hitPoint - ray.direction * pBackStepDistance;
-		reflectedRay.direction = ray.direction + hitNormal * ( dotOut * 2.0 );
+		reflectedRay.direction = ray.direction + hitNormal * (dotOut * 2.0);
 		reflectedRay.normal = hitNormal;
-		pTraceRay( reflectedRay, reflectedGain, reflectedAbsorptionSum );
+		pTraceRay(reflectedRay, reflectedGain, reflectedAbsorptionSum);
 		
 // 	}else{
 // 		pOwner.GetAudioThread().GetLogger().LogInfoFormat( "(%p %d) Died out after %.3f", this, pRayIndex, distance );
 		
 	}else{
 		// detect if ray is outside. has to be done if there is no hit or ray stops bouncing
-		DetectRayOutside( ray, ray.position + scaledDirection );
+		DetectRayOutside(ray, ray.position + scaledDirection);
 	}
 	
 	// transmit ray if still audible. we can only rely on the parameters we have stored aside
 	// since the previous bouncings have modified the ray tracing results
-	if( transmittedRay.transmittedRayIndex != -1 ){
+	if(transmittedRay.transmittedRayIndex != -1){
 		// adjust the first segment and transmitted ray count. this is required since bouncing
 		// can add more segments and transmitted rays before this transmitted ray is processed
-		deoalSoundRay &tray = pSoundRayList.GetTransmittedRayAt( transmittedRay.transmittedRayIndex );
-		tray.SetFirstSegment( pSoundRayList.GetSegmentCount() );
-		tray.SetFirstTransmittedRay( pSoundRayList.GetTransmittedRayCount() );
+		deoalSoundRay &tray = pSoundRayList.GetTransmittedRayAt(transmittedRay.transmittedRayIndex);
+		tray.SetFirstSegment(pSoundRayList.GetSegmentCount());
+		tray.SetFirstTransmittedRay(pSoundRayList.GetTransmittedRayCount());
 		
-		pTraceRay( transmittedRay, transmittedGain, transmittedAbsorptionSum );
+		pTraceRay(transmittedRay, transmittedGain, transmittedAbsorptionSum);
 	}
 }
 
-void deoalRTPTTraceSoundRays::pUpdateExtends( const decDVector &position ){
-	if( pFirstHit ){
+void deoalRTPTTraceSoundRays::pUpdateExtends(const decDVector &position){
+	if(pFirstHit){
 		pMinExtend = pMaxExtend = position;
 		pFirstHit = false;
 		
 	}else{
-		pMinExtend.SetSmallest( position );
-		pMaxExtend.SetLargest( position );
+		pMinExtend.SetSmallest(position);
+		pMaxExtend.SetLargest(position);
 	}
 }
 
-float deoalRTPTTraceSoundRays::Attenuate( float distance ) const{
-	if( pUseAttenuation ){
-		return pRefDist / ( pRefDist + pRollOff * decMath::max( distance + pDistanceOffset - pRefDist, 0.0f ) );
+float deoalRTPTTraceSoundRays::Attenuate(float distance) const{
+	if(pUseAttenuation){
+		return pRefDist / (pRefDist + pRollOff * decMath::max(distance + pDistanceOffset - pRefDist, 0.0f));
 	}
 	return 1.0f;
 }
 
-void deoalRTPTTraceSoundRays::DetectRayOutside( const sTraceRay &ray, const decDVector &position ){
+void deoalRTPTTraceSoundRays::DetectRayOutside(const sTraceRay &ray, const decDVector &position){
 	// to handle outside situations better it is required to know if the ray is outside.
 	// the correct solution would be to trace the ray to infinity and check if no geometry
 	// is hit. this exhaustive search would be expensive. instead we do a simple is-ray-blocked
@@ -1136,26 +1136,26 @@ void deoalRTPTTraceSoundRays::DetectRayOutside( const sTraceRay &ray, const decD
 	// performance but less than doing a full search.
 	// 
 	// NOTE rays are added with the outside flag set to false
-	if( IsRayBlocked( position, ray.direction * pDetectOutsideLength ) ){
+	if(IsRayBlocked(position, ray.direction * pDetectOutsideLength)){
 		return;
 	}
 	
-	( ray.transmittedRayIndex != -1
-		? pSoundRayList.GetTransmittedRayAt( ray.transmittedRayIndex )
-		: pSoundRayList.GetRayAt( ray.rayIndex ) ).SetOutside( true );
+	(ray.transmittedRayIndex != -1
+		? pSoundRayList.GetTransmittedRayAt(ray.transmittedRayIndex)
+		: pSoundRayList.GetRayAt(ray.rayIndex)).SetOutside(true);
 }
 
-bool deoalRTPTTraceSoundRays::IsRayBlocked( const decDVector &position, const decDVector &direction ){
-	if( pRTWorldBVH ){
-		pRTWOVRayBlocked.SetRay( *pRTWorldBVH, position, direction );
-		pRTWOVRayBlocked.SetBlocked( false );
-		pRTWOVRayBlocked.VisitBVH( *pRTWorldBVH );
+bool deoalRTPTTraceSoundRays::IsRayBlocked(const decDVector &position, const decDVector &direction){
+	if(pRTWorldBVH){
+		pRTWOVRayBlocked.SetRay(*pRTWorldBVH, position, direction);
+		pRTWOVRayBlocked.SetBlocked(false);
+		pRTWOVRayBlocked.VisitBVH(*pRTWorldBVH);
 		return pRTWOVRayBlocked.GetBlocked();
 		
 	}else{
-		pWOVRayBlocked.SetRay( position, direction );
-		pWOVRayBlocked.SetBlocked( false );
-		pWOVRayBlocked.VisitNode( *pWorld->GetOctree() );
+		pWOVRayBlocked.SetRay(position, direction);
+		pWOVRayBlocked.SetBlocked(false);
+		pWOVRayBlocked.VisitNode(*pWorld->GetOctree());
 		return pWOVRayBlocked.GetBlocked();
 	}
 }

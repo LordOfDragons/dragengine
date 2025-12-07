@@ -39,18 +39,18 @@
 // constructor, destructor
 ////////////////////////////
 
-deEffectFilterKernel::deEffectFilterKernel( deEffectManager *manager ) :
-deEffect( manager ),
-pKernel( NULL ),
-pKernelRows( 0 ),
-pKernelCols( 0 ),
-pScale( 1.0f )
+deEffectFilterKernel::deEffectFilterKernel(deEffectManager *manager) :
+deEffect(manager),
+pKernel(NULL),
+pKernelRows(0),
+pKernelCols(0),
+pScale(1.0f)
 {
-	SetKernelSize( 1, 1 );
+	SetKernelSize(1, 1);
 }
 
 deEffectFilterKernel::~deEffectFilterKernel(){
-	if( pKernel ){
+	if(pKernel){
 		delete [] pKernel;
 	}
 }
@@ -60,73 +60,73 @@ deEffectFilterKernel::~deEffectFilterKernel(){
 // Management
 ///////////////
 
-void deEffectFilterKernel::SetKernelSize( int rows, int cols ){
-	if( rows < 1 || cols < 1 ){
-		DETHROW( deeInvalidParam );
+void deEffectFilterKernel::SetKernelSize(int rows, int cols){
+	if(rows < 1 || cols < 1){
+		DETHROW(deeInvalidParam);
 	}
-	if( ( rows % 2 ) == 0 || ( cols % 2 ) == 0 ){
-		DETHROW( deeInvalidParam );
+	if((rows % 2) == 0 || (cols % 2) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( rows == pKernelRows && cols == pKernelCols ){
+	if(rows == pKernelRows && cols == pKernelCols){
 		return;
 	}
 	
 	int i, count = rows * cols;
-	float *newKernel = new float[ count ];
-	if( ! newKernel ) DETHROW( deeOutOfMemory );
-	if( pKernel ) delete [] pKernel;
+	float *newKernel = new float[count];
+	if(! newKernel) DETHROW(deeOutOfMemory);
+	if(pKernel) delete [] pKernel;
 	pKernel = newKernel;
 	pKernelRows = rows;
 	pKernelCols = cols;
-	for( i=0; i<count; i++ ){
-		pKernel[ i ] = 0.0f;
+	for(i=0; i<count; i++){
+		pKernel[i] = 0.0f;
 	}
-	pKernel[ ( ( rows - 1 ) / 2  ) * cols + ( cols - 1 ) / 2 ] = 1.0f;
+	pKernel[((rows - 1) / 2) * cols + (cols - 1) / 2] = 1.0f;
 	
 	deBaseGraphicEffect * const graEffect = GetPeerGraphic();
-	if( graEffect ){
+	if(graEffect){
 		graEffect->FilterKernelChanged();
 	}
 }
 
-float deEffectFilterKernel::GetKernelValueAt( int row, int col ) const{
-	if( row < 0 || row >= pKernelRows ){
-		DETHROW( deeInvalidParam );
+float deEffectFilterKernel::GetKernelValueAt(int row, int col) const{
+	if(row < 0 || row >= pKernelRows){
+		DETHROW(deeInvalidParam);
 	}
-	if( col < 0 || col >= pKernelCols ){
-		DETHROW( deeInvalidParam );
+	if(col < 0 || col >= pKernelCols){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pKernel[ row * pKernelCols + col ];
+	return pKernel[row * pKernelCols + col];
 }
 
-void deEffectFilterKernel::SetKernelValueAt( int row, int col, float value ){
-	if( row < 0 || row >= pKernelRows ){
-		DETHROW( deeInvalidParam );
+void deEffectFilterKernel::SetKernelValueAt(int row, int col, float value){
+	if(row < 0 || row >= pKernelRows){
+		DETHROW(deeInvalidParam);
 	}
-	if( col < 0 || col >= pKernelCols ){
-		DETHROW( deeInvalidParam );
+	if(col < 0 || col >= pKernelCols){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pKernel[ row * pKernelCols + col ] = value;
+	pKernel[row * pKernelCols + col] = value;
 	
 	deBaseGraphicEffect * const graEffect = GetPeerGraphic();
-	if( graEffect ){
+	if(graEffect){
 		graEffect->FilterKernelChanged();
 	}
 }
 
-void deEffectFilterKernel::SetScale( float scale ){
-	scale = decMath::max( scale, 0.0f );
-	if( fabsf( scale - pScale ) <= FLOAT_SAFE_EPSILON ){
+void deEffectFilterKernel::SetScale(float scale){
+	scale = decMath::max(scale, 0.0f);
+	if(fabsf(scale - pScale) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pScale = scale;
 	
 	deBaseGraphicEffect * const graEffect = GetPeerGraphic();
-	if( graEffect ){
+	if(graEffect){
 		graEffect->FilterKernelChanged();
 	}
 }
@@ -136,6 +136,6 @@ void deEffectFilterKernel::SetScale( float scale ){
 // visiting
 /////////////
 
-void deEffectFilterKernel::Visit( deEffectVisitor &visitor ){
-	visitor.VisitFilterKernel( *this );
+void deEffectFilterKernel::Visit(deEffectVisitor &visitor){
+	visitor.VisitFilterKernel(*this);
 }

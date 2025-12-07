@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, int newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, int newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set blocking priority" );
+	SetShortInfo("Nav-space set blocking priority");
 	
 	pOldValue = navspace->GetBlockingPriority();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetBlockingPriority::~gdeUOCNavSpaceSetBlockingPriority(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetBlockingPriority::~gdeUOCNavSpaceSetBlockingPriority(){
 ///////////////
 
 void gdeUOCNavSpaceSetBlockingPriority::Undo(){
-	pNavSpace->SetBlockingPriority( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetBlockingPriority(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetBlockingPriority::Redo(){
-	pNavSpace->SetBlockingPriority( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetBlockingPriority(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

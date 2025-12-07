@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSound( deScriptingDragonScript &ds );
+	deClassSound(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSound();
@@ -56,16 +56,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Get sound from object or \em NULL if \em myself is \em NULL. */
-	deSound *GetSound( dsRealObject *myself ) const;
+	deSound *GetSound(dsRealObject *myself) const;
 	
 	/** \brief Push sound to stack or \em NULL if \em sound is \em NULL. */
-	void PushSound( dsRunTime *rt, deSound *sound );
+	void PushSound(dsRunTime *rt, deSound *sound);
 	/*@}*/
 	
 	
@@ -84,24 +84,24 @@ private:
 		dsClass *clsResNot;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
-	DEF_NATFUNC( nfGetBytesPerSample );
-	DEF_NATFUNC( nfGetSampleRate );
-	DEF_NATFUNC( nfGetChannelCount );
-	DEF_NATFUNC( nfGetSampleCount );
-	DEF_NATFUNC( nfGetPlayTime );
+	DEF_NATFUNC(nfGetFilename);
+	DEF_NATFUNC(nfGetBytesPerSample);
+	DEF_NATFUNC(nfGetSampleRate);
+	DEF_NATFUNC(nfGetChannelCount);
+	DEF_NATFUNC(nfGetSampleCount);
+	DEF_NATFUNC(nfGetPlayTime);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

@@ -153,7 +153,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	reWindowMain( reIGDEModule &module );
+	reWindowMain(reIGDEModule &module);
 	
 protected:
 	/** \brief Clean up window. */
@@ -172,47 +172,47 @@ public:
 	void ResetViews();
 	
 	/** \brief Configuration. */
-	inline reConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline reConfiguration &GetConfiguration() const{return *pConfiguration;}
 	
 	/** \brief Clipboard. */
-	inline reClipboard &GetClipboard() const{ return *pClipboard; }
+	inline reClipboard &GetClipboard() const{return *pClipboard;}
 	
 	/** \brief Load save system. */
-	inline reLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline reLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
 	
 	/** \brief 3D View. */
-	inline reView3D &GetView3D() const{ return *pView3D; }
+	inline reView3D &GetView3D() const{return *pView3D;}
 	
 	
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline reRig *GetRig() const{return pRig;}
 	
 	/** \brief Set rig. */
-	void SetRig( reRig *rig );
+	void SetRig(reRig *rig);
 	
 	/** \brief Create new rig. */
 	void CreateNewRig();
 	
 	/** \brief Save rig under the given file. */
-	void SaveRig( const char *filename );
+	void SaveRig(const char *filename);
 	
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconEditBone() const{ return pIconEditBone; }
-	inline igdeIcon *GetIconEditShape() const{ return pIconEditShape; }
-	inline igdeIcon *GetIconEditConstraint() const{ return pIconEditConstraint; }
-	inline igdeIcon *GetIconEditPush() const{ return pIconEditPush; }
-	inline igdeIcon *GetIconEditSelect() const{ return pIconEditSelect; }
-	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
-	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
-	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
+	inline igdeIcon *GetIconEditBone() const{return pIconEditBone;}
+	inline igdeIcon *GetIconEditShape() const{return pIconEditShape;}
+	inline igdeIcon *GetIconEditConstraint() const{return pIconEditConstraint;}
+	inline igdeIcon *GetIconEditPush() const{return pIconEditPush;}
+	inline igdeIcon *GetIconEditSelect() const{return pIconEditSelect;}
+	inline igdeIcon *GetIconEditMove() const{return pIconEditMove;}
+	inline igdeIcon *GetIconEditScale() const{return pIconEditScale;}
+	inline igdeIcon *GetIconEditRotate() const{return pIconEditRotate;}
 // 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
-	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
-	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
-	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
-	inline igdeIcon *GetIconEditLockLocal() const{ return pIconEditLockLocal; }
+	inline igdeIcon *GetIconEditLockAxisX() const{return pIconEditLockAxisX;}
+	inline igdeIcon *GetIconEditLockAxisY() const{return pIconEditLockAxisY;}
+	inline igdeIcon *GetIconEditLockAxisZ() const{return pIconEditLockAxisZ;}
+	inline igdeIcon *GetIconEditLockLocal() const{return pIconEditLockLocal;}
 	
 	
 	
@@ -235,7 +235,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -246,12 +246,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -261,7 +261,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -301,12 +301,12 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuRig( igdeMenuCascade &menu );
-	void pCreateMenuBone( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
-	void pCreateMenuSimulation( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuRig(igdeMenuCascade &menu);
+	void pCreateMenuBone(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
+	void pCreateMenuSimulation(igdeMenuCascade &menu);
 };
 
 #endif

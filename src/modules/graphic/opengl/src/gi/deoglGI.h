@@ -109,7 +109,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination. */
-	deoglGI( deoglRenderThread &renderThread );
+	deoglGI(deoglRenderThread &renderThread);
 	
 	/** Clean up global illumination. */
 	~deoglGI();
@@ -120,32 +120,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** BVH Shared. */
-	inline deoglGIBVHShared &GetBVHShared(){ return pBVHShared; }
-	inline const deoglGIBVHShared &GetBVHShared() const{ return pBVHShared; }
+	inline deoglGIBVHShared &GetBVHShared(){return pBVHShared;}
+	inline const deoglGIBVHShared &GetBVHShared() const{return pBVHShared;}
 	
 	/** Trace rays. */
-	inline deoglGITraceRays &GetTraceRays(){ return pTraceRays; }
-	inline const deoglGITraceRays &GetTraceRays() const{ return pTraceRays; }
+	inline deoglGITraceRays &GetTraceRays(){return pTraceRays;}
+	inline const deoglGITraceRays &GetTraceRays() const{return pTraceRays;}
 	
 	/** Materials. */
-	inline deoglGIMaterials &GetMaterials(){ return pMaterials; }
-	inline const deoglGIMaterials &GetMaterials() const{ return pMaterials; }
+	inline deoglGIMaterials &GetMaterials(){return pMaterials;}
+	inline const deoglGIMaterials &GetMaterials() const{return pMaterials;}
 	
 	/** UBO. */
 	deoglSPBlockUBO &NextUBOParameter();
-	inline deoglSPBlockUBO &GetUBOParameter() const{ return pUBOParameter; }
+	inline deoglSPBlockUBO &GetUBOParameter() const{return pUBOParameter;}
 	
 	deoglSPBlockUBO &NextUBOProbeIndex();
-	inline deoglSPBlockUBO &GetUBOProbeIndex() const{ return pUBOProbeIndex; }
+	inline deoglSPBlockUBO &GetUBOProbeIndex() const{return pUBOProbeIndex;}
 	
 	deoglSPBlockUBO &NextUBOProbePosition();
-	inline deoglSPBlockUBO &GetUBOProbePosition() const{ return pUBOProbePosition; }
+	inline deoglSPBlockUBO &GetUBOProbePosition() const{return pUBOProbePosition;}
 	
 	deoglSPBlockUBO &NextUBORayDirection();
-	inline deoglSPBlockUBO &GetUBORayDirection() const{ return pUBORayDirection; }
+	inline deoglSPBlockUBO &GetUBORayDirection() const{return pUBORayDirection;}
 	/*@}*/
 	
 	

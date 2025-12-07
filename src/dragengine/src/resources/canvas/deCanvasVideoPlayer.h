@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasVideoPlayer( deCanvasManager *manager );
+	deCanvasVideoPlayer(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -67,28 +67,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline deVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** \brief Set video player or NULL to unset. */
-	void SetVideoPlayer( deVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	/** \brief Repeat count along X axis. */
-	inline int GetRepeatX() const{ return pRepeatX; }
+	inline int GetRepeatX() const{return pRepeatX;}
 	
 	/**
 	 * \brief Set repeat count along X axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatX( int count );
+	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
-	inline int GetRepeatY() const{ return pRepeatY; }
+	inline int GetRepeatY() const{return pRepeatY;}
 	
 	/**
 	 * \brief Set repeat count along Y axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatY( int count );
+	void SetRepeatY(int count);
 	/*@}*/
 	
 	
@@ -96,7 +96,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 };
 

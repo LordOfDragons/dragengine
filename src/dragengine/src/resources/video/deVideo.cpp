@@ -38,60 +38,60 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVideo::deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
+deVideo::deVideo(deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
 	TIME_SYSTEM modificationTime, int width, int height, int componentCount, int bitCount,
 	float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
-	int bytesPerSample, int sampleCount, int sampleRate, int channelCount ) :
-deFileResource( manager, vfs, filename, modificationTime ),
-pWidth( width ),
-pHeight( height ),
-pComponentCount( componentCount ),
-pBitCount( bitCount ),
-pFrameCount( frameCount ),
-pFrameRate( frameRate ),
-pColorConversionMatrix( colorConversionMatrix ),
-pBytesPerSample( bytesPerSample ),
-pSampleCount( sampleCount ),
-pSampleRate( sampleRate ),
-pChannelCount( channelCount ),
-pPeerGraphic( NULL )
+	int bytesPerSample, int sampleCount, int sampleRate, int channelCount) :
+deFileResource(manager, vfs, filename, modificationTime),
+pWidth(width),
+pHeight(height),
+pComponentCount(componentCount),
+pBitCount(bitCount),
+pFrameCount(frameCount),
+pFrameRate(frameRate),
+pColorConversionMatrix(colorConversionMatrix),
+pBytesPerSample(bytesPerSample),
+pSampleCount(sampleCount),
+pSampleRate(sampleRate),
+pChannelCount(channelCount),
+pPeerGraphic(NULL)
 {
-	DEASSERT_TRUE( width >= 1 )
-	DEASSERT_TRUE( height >= 1 )
-	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
-	DEASSERT_TRUE( bitCount == 8 )
-	DEASSERT_TRUE( frameRate > 0.0f )
-	DEASSERT_TRUE( frameCount >= 0 )
-	DEASSERT_TRUE( bytesPerSample == 1 || bytesPerSample == 2 )
-	DEASSERT_TRUE( sampleCount >= 0 )
-	DEASSERT_TRUE( sampleRate >= 8000 )
-	DEASSERT_TRUE( channelCount >= 1 )
+	DEASSERT_TRUE(width >= 1)
+	DEASSERT_TRUE(height >= 1)
+	DEASSERT_TRUE(componentCount >= 1 && componentCount <= 4)
+	DEASSERT_TRUE(bitCount == 8)
+	DEASSERT_TRUE(frameRate > 0.0f)
+	DEASSERT_TRUE(frameCount >= 0)
+	DEASSERT_TRUE(bytesPerSample == 1 || bytesPerSample == 2)
+	DEASSERT_TRUE(sampleCount >= 0)
+	DEASSERT_TRUE(sampleRate >= 8000)
+	DEASSERT_TRUE(channelCount >= 1)
 	
-	pPlayTime = ( float )frameCount / frameRate;
+	pPlayTime = (float)frameCount / frameRate;
 	
 	// this rounds up to a full second... why has this been here?
 	//pPlayTime += fmodf( ( float )frameCount, frameRate ) / frameRate;
 }
 
-deVideo::deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
-	TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
-pWidth( 1 ),
-pHeight( 1 ),
-pComponentCount( 3 ),
-pBitCount( 8 ),
-pFrameCount( 0 ),
-pFrameRate( 30.0f ),
-pPlayTime( 0.0f ),
-pBytesPerSample( 2 ),
-pSampleCount( 0 ),
-pSampleRate( 44100 ),
-pChannelCount( 1 ),
-pPeerGraphic( NULL ){
+deVideo::deVideo(deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime),
+pWidth(1),
+pHeight(1),
+pComponentCount(3),
+pBitCount(8),
+pFrameCount(0),
+pFrameRate(30.0f),
+pPlayTime(0.0f),
+pBytesPerSample(2),
+pSampleCount(0),
+pSampleRate(44100),
+pChannelCount(1),
+pPeerGraphic(NULL){
 }
 
 deVideo::~deVideo(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
@@ -102,12 +102,12 @@ deVideo::~deVideo(){
 // System Peers
 /////////////////
 
-void deVideo::SetPeerGraphic( deBaseGraphicVideo *peer ){
-	if( peer == pPeerGraphic ){
+void deVideo::SetPeerGraphic(deBaseGraphicVideo *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
@@ -118,19 +118,19 @@ void deVideo::SetPeerGraphic( deBaseGraphicVideo *peer ){
 // Special
 ////////////
 
-void deVideo::FinalizeConstruction( int width, int height, int componentCount,
+void deVideo::FinalizeConstruction(int width, int height, int componentCount,
 int bitCount, float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
-int bytesPerSample, int sampleCount, int sampleRate, int channelCount ){
-	DEASSERT_TRUE( width >= 1 )
-	DEASSERT_TRUE( height >= 1 )
-	DEASSERT_TRUE( componentCount >= 1 && componentCount <= 4 )
-	DEASSERT_TRUE( bitCount == 8 )
-	DEASSERT_TRUE( frameRate > 0.0f )
-	DEASSERT_TRUE( frameCount >= 0 )
-	DEASSERT_TRUE( bytesPerSample == 1 || bytesPerSample == 2 )
-	DEASSERT_TRUE( sampleCount >= 0 )
-	DEASSERT_TRUE( sampleRate >= 8000 )
-	DEASSERT_TRUE( channelCount >= 1 )
+int bytesPerSample, int sampleCount, int sampleRate, int channelCount){
+	DEASSERT_TRUE(width >= 1)
+	DEASSERT_TRUE(height >= 1)
+	DEASSERT_TRUE(componentCount >= 1 && componentCount <= 4)
+	DEASSERT_TRUE(bitCount == 8)
+	DEASSERT_TRUE(frameRate > 0.0f)
+	DEASSERT_TRUE(frameCount >= 0)
+	DEASSERT_TRUE(bytesPerSample == 1 || bytesPerSample == 2)
+	DEASSERT_TRUE(sampleCount >= 0)
+	DEASSERT_TRUE(sampleRate >= 8000)
+	DEASSERT_TRUE(channelCount >= 1)
 	
 	pWidth = width;
 	pHeight = height;
@@ -138,7 +138,7 @@ int bytesPerSample, int sampleCount, int sampleRate, int channelCount ){
 	pFrameCount = frameCount;
 	pFrameRate = frameRate;
 	pColorConversionMatrix = colorConversionMatrix;
-	pPlayTime = ( float )frameCount / frameRate + fmodf( ( float )frameCount, frameRate ) / frameRate;
+	pPlayTime = (float)frameCount / frameRate + fmodf((float)frameCount, frameRate) / frameRate;
 	pBytesPerSample = bytesPerSample;
 	pSampleCount = sampleCount;
 	pSampleRate = sampleRate;

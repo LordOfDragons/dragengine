@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetValueVariable( ceConversationTopic *topic,
-		ceCASetActorParameter *action, const char *newName );
+	ceUCASetAParamSetValueVariable(ceConversationTopic *topic,
+		ceCASetActorParameter *action, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

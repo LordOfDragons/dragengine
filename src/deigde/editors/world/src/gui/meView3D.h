@@ -54,7 +54,7 @@ private:
 	igdeMouseKeyListener::Ref pListenerEditor;
 	meViewEditor *pEditor;
 	
-	int pFPSHistory[ 30 ];
+	int pFPSHistory[30];
 	float pFPSRedrawCanvasDelay;
 	
 	deFont::Ref pFontStats;
@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	meView3D( meWindowMain &windowMain );
+	meView3D(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up view. */
@@ -81,16 +81,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Window. */
-	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Reset view. */
 	void ResetView();
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	
 	/** \brief Set world render. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();
@@ -99,7 +99,7 @@ public:
 	virtual void OnResize();
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/** \brief Mode changed. */
 	void ModeChanged();
@@ -108,7 +108,7 @@ public:
 	void ActiveCameraChanged();
 	
 	/** \brief Editor or NULL. */
-	inline meViewEditor *GetEditor() const{ return pEditor; }
+	inline meViewEditor *GetEditor() const{return pEditor;}
 	/*@}*/
 };
 

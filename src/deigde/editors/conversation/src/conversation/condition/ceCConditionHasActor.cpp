@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCConditionHasActor::ceCConditionHasActor() : ceConversationCondition( ectHasActor ){
+ceCConditionHasActor::ceCConditionHasActor() : ceConversationCondition(ectHasActor){
 	pNegate = false;
 }
 
-ceCConditionHasActor::ceCConditionHasActor( const ceCConditionHasActor &condition )
-: ceConversationCondition( condition ){
+ceCConditionHasActor::ceCConditionHasActor(const ceCConditionHasActor &condition)
+: ceConversationCondition(condition){
 	pActor = condition.GetActor();
 	pNegate = condition.GetNegate();
 }
@@ -56,20 +56,20 @@ ceCConditionHasActor::~ceCConditionHasActor(){
 // Management
 ///////////////
 
-void ceCConditionHasActor::SetActor( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+void ceCConditionHasActor::SetActor(const char *id){
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pActor = id;
 }
 
-void ceCConditionHasActor::SetNegate( bool negate ){
+void ceCConditionHasActor::SetNegate(bool negate){
 	pNegate = negate;
 }
 
 
 
 ceConversationCondition *ceCConditionHasActor::CreateCopy() const{
-	return new ceCConditionHasActor( *this );
+	return new ceCConditionHasActor(*this);
 }

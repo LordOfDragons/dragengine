@@ -56,15 +56,15 @@ namespace {
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeGeometry::meWVNodeGeometry( meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleGeometry( rule )
+meWVNodeGeometry::meWVNodeGeometry(meWindowVegetation &windowVegetation, meHTVRuleGeometry *rule) :
+meWVNode(windowVegetation, rule),
+pRuleGeometry(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Geometry" );
+	SetTitle("Geometry");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -80,8 +80,8 @@ pRuleGeometry( rule )
 		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 }
 
 meWVNodeGeometry::~meWVNodeGeometry(){

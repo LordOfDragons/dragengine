@@ -75,23 +75,23 @@ protected:
 	gdeWPSOCCamera &pPanel;
 	
 public:
-	cBaseTextFieldListener( gdeWPSOCCamera &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(gdeWPSOCCamera &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		gdeOCCamera * const camera = pPanel.GetCamera();
-		if( ! camera ){
+		if(! camera){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( *textField, pPanel.GetObjectClass(), camera ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(*textField, pPanel.GetObjectClass(), camera)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField,
-		gdeObjectClass *objectClass, gdeOCCamera *camera ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField,
+		gdeObjectClass *objectClass, gdeOCCamera *camera) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -99,105 +99,105 @@ protected:
 	gdeWPSOCCamera &pPanel;
 	
 public:
-	cBaseEditVectorListener( gdeWPSOCCamera &panel ) : pPanel( panel ){ }
+	cBaseEditVectorListener(gdeWPSOCCamera &panel) : pPanel(panel){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		gdeOCCamera * const camera = pPanel.GetCamera();
-		if( ! camera ){
+		if(! camera){
 			return;
 		}
 		
 		igdeUndo::Ref undo(igdeUndo::Ref::New(
-			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), camera ) ));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+			 OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), camera)));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-		gdeOCCamera *camera ) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+		gdeOCCamera *camera) = 0;
 };
 
 
 class cTextFov : public cBaseTextFieldListener{
 public:
-	cTextFov( gdeWPSOCCamera &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextFov(gdeWPSOCCamera &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCCamera *camera ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCCamera *camera){
 		const float value = textField.GetFloat();
-		if( fabsf( camera->GetFov() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(camera->GetFov() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new gdeUOCCameraSetFov( objectClass, camera, value );
+		return new gdeUOCCameraSetFov(objectClass, camera, value);
 	}
 };
 
 class cTextFovRatio : public cBaseTextFieldListener{
 public:
-	cTextFovRatio( gdeWPSOCCamera &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextFovRatio(gdeWPSOCCamera &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCCamera *camera ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCCamera *camera){
 		const float value = textField.GetFloat();
-		if( fabsf( camera->GetFovRatio() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(camera->GetFovRatio() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new gdeUOCCameraSetFovRatio( objectClass, camera, value );
+		return new gdeUOCCameraSetFovRatio(objectClass, camera, value);
 	}
 };
 
 class cTextImageDistance : public cBaseTextFieldListener{
 public:
-	cTextImageDistance( gdeWPSOCCamera &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextImageDistance(gdeWPSOCCamera &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCCamera *camera ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCCamera *camera){
 		const float value = textField.GetFloat();
-		if( fabsf( camera->GetImageDistance() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(camera->GetImageDistance() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new gdeUOCCameraSetImageDistance( objectClass, camera, value );
+		return new gdeUOCCameraSetImageDistance(objectClass, camera, value);
 	}
 };
 
 class cTextViewDistance : public cBaseTextFieldListener{
 public:
-	cTextViewDistance( gdeWPSOCCamera &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextViewDistance(gdeWPSOCCamera &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
-	gdeOCCamera *camera ){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCCamera *camera){
 		const float value = textField.GetFloat();
-		if( fabsf( camera->GetViewDistance() - value ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(camera->GetViewDistance() - value) < FLOAT_SAFE_EPSILON){
 			return NULL;
 		}
-		return new gdeUOCCameraSetViewDistance( objectClass, camera, value );
+		return new gdeUOCCameraSetViewDistance(objectClass, camera, value);
 	}
 };
 
 class cEditPosition : public cBaseEditVectorListener {
 public:
-	cEditPosition( gdeWPSOCCamera &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditPosition(gdeWPSOCCamera &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCCamera *camera ){
-		if( camera->GetPosition().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCCamera *camera){
+		if(camera->GetPosition().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new gdeUOCCameraSetPosition( objectClass, camera, vector );
+		return new gdeUOCCameraSetPosition(objectClass, camera, vector);
 	}
 };
 
 class cEditRotation : public cBaseEditVectorListener {
 public:
-	cEditRotation( gdeWPSOCCamera &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditRotation(gdeWPSOCCamera &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, gdeObjectClass *objectClass,
-	gdeOCCamera *camera ){
-		if( camera->GetRotation().IsEqualTo( vector ) ){
+	virtual igdeUndo *OnChanged(const decVector &vector, gdeObjectClass *objectClass,
+	gdeOCCamera *camera){
+		if(camera->GetRotation().IsEqualTo(vector)){
 			return NULL;
 		}
-		return new gdeUOCCameraSetRotation( objectClass, camera, vector );
+		return new gdeUOCCameraSetRotation(objectClass, camera, vector);
 	}
 };
 
@@ -205,18 +205,18 @@ class cComboPropertyName : public igdeComboBoxListener{
 	gdeWPSOCCamera &pPanel;
 	
 public:
-	cComboPropertyName( gdeWPSOCCamera &panel ) : pPanel( panel ){ }
+	cComboPropertyName(gdeWPSOCCamera &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		gdeOCCamera * const camera = pPanel.GetCamera();
-		if( ! camera || camera->GetPropName() == comboBox->GetText() ){
+		if(! camera || camera->GetPropName() == comboBox->GetText()){
 			return;
 		}
 		
 		gdeUOCCameraSetPropertyName::Ref undo(gdeUOCCameraSetPropertyName::Ref::NewWith(
 			pPanel.GetObjectClass(), camera, comboBox->GetText()));
-		if( undo ){
-			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
 	}
 };
@@ -271,34 +271,34 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCCamera::gdeWPSOCCamera( gdeWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pListener( NULL ),
-pGameDefinition( NULL )
+gdeWPSOCCamera::gdeWPSOCCamera(gdeWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pListener(NULL),
+pGameDefinition(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCCameraListener( *this );
+	pListener = new gdeWPSOCCameraListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
-	helper.GroupBox( content, groupBox, "Object Class Camera:" );
-	helper.EditFloat( groupBox, "FOV:", "Field of view (FOV) in degrees", 4, 1,
-		pEditFov, new cTextFov( *this ) );
-	helper.EditFloat( groupBox, "FOV Ratio:", "Field of view Ratio", 4, 2,
-		pEditFovRatio, new cTextFovRatio( *this ) );
-	helper.EditFloat( groupBox, "Image Distance:", "Image distance in meters",
-		pEditImageDistance, new cTextImageDistance( *this ) );
-	helper.EditFloat( groupBox, "View Distance:", "View distance in meters", 4, 1,
-		pEditViewDistance, new cTextViewDistance( *this ) );
-	helper.EditVector( groupBox, "Position:", "Position relative to object class",
-		pEditPosition, new cEditPosition( *this ) );
-	helper.EditVector( groupBox, "Rotation:", "Rotation in degrees relative to object class",
-		pEditRotation, new cEditRotation( *this ) );
+	helper.GroupBox(content, groupBox, "Object Class Camera:");
+	helper.EditFloat(groupBox, "FOV:", "Field of view (FOV) in degrees", 4, 1,
+		pEditFov, new cTextFov(*this));
+	helper.EditFloat(groupBox, "FOV Ratio:", "Field of view Ratio", 4, 2,
+		pEditFovRatio, new cTextFovRatio(*this));
+	helper.EditFloat(groupBox, "Image Distance:", "Image distance in meters",
+		pEditImageDistance, new cTextImageDistance(*this));
+	helper.EditFloat(groupBox, "View Distance:", "View distance in meters", 4, 1,
+		pEditViewDistance, new cTextViewDistance(*this));
+	helper.EditVector(groupBox, "Position:", "Position relative to object class",
+		pEditPosition, new cEditPosition(*this));
+	helper.EditVector(groupBox, "Rotation:", "Rotation in degrees relative to object class",
+		pEditRotation, new cEditRotation(*this));
 	helper.ComboBox(groupBox, "ID Property:", true,
 		"Object class property containing camera identifier",
 		pCBPropertyName, new cComboPropertyName(*this));
@@ -314,9 +314,9 @@ pGameDefinition( NULL )
 }
 
 gdeWPSOCCamera::~gdeWPSOCCamera(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -326,20 +326,20 @@ gdeWPSOCCamera::~gdeWPSOCCamera(){
 // Management
 ///////////////
 
-void gdeWPSOCCamera::SetGameDefinition( gdeGameDefinition *gameDefinition ){
-	if( gameDefinition == pGameDefinition ){
+void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition *gameDefinition){
+	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
-	if( pGameDefinition ){
-		pGameDefinition->RemoveListener( pListener );
+	if(pGameDefinition){
+		pGameDefinition->RemoveListener(pListener);
 		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
-	if( gameDefinition ){
-		gameDefinition->AddListener( pListener );
+	if(gameDefinition){
+		gameDefinition->AddListener(pListener);
 		gameDefinition->AddReference();
 	}
 	
@@ -365,8 +365,8 @@ void gdeWPSOCCamera::UpdatePropertyList(){
 	int i;
 	
 	decStringSet properties;
-	if( objectClass ){
-		objectClass->AddPropertyNamesTo( properties, true );
+	if(objectClass){
+		objectClass->AddPropertyNamesTo(properties, true);
 	}
 	
 	const decString selectionName(pCBPropertyName->GetText());
@@ -396,13 +396,13 @@ void gdeWPSOCCamera::UpdatePropertyList(){
 void gdeWPSOCCamera::UpdateCamera(){
 	const gdeOCCamera * const camera = GetCamera();
 	
-	if( camera ){
-		pEditFov->SetFloat( camera->GetFov() );
-		pEditFovRatio->SetFloat( camera->GetFovRatio() );
-		pEditImageDistance->SetFloat( camera->GetImageDistance() );
-		pEditViewDistance->SetFloat( camera->GetViewDistance() );
-		pEditPosition->SetVector( camera->GetPosition() );
-		pEditRotation->SetVector( camera->GetRotation() );
+	if(camera){
+		pEditFov->SetFloat(camera->GetFov());
+		pEditFovRatio->SetFloat(camera->GetFovRatio());
+		pEditImageDistance->SetFloat(camera->GetImageDistance());
+		pEditViewDistance->SetFloat(camera->GetViewDistance());
+		pEditPosition->SetVector(camera->GetPosition());
+		pEditRotation->SetVector(camera->GetRotation());
 		pCBPropertyName->SetText(camera->GetPropName());
 		pCBPropertyPosition->SetText(camera->GetPropPosition());
 		pCBPropertyRotation->SetText(camera->GetPropRotation());
@@ -412,20 +412,20 @@ void gdeWPSOCCamera::UpdateCamera(){
 		pEditFovRatio->ClearText();
 		pEditImageDistance->ClearText();
 		pEditViewDistance->ClearText();
-		pEditPosition->SetVector( decVector() );
-		pEditRotation->SetVector( decVector() );
+		pEditPosition->SetVector(decVector());
+		pEditRotation->SetVector(decVector());
 		pCBPropertyName->ClearText();
 		pCBPropertyPosition->ClearText();
 		pCBPropertyRotation->ClearText();
 	}
 	
 	const bool enabled = camera;
-	pEditFov->SetEnabled( enabled );
-	pEditFovRatio->SetEnabled( enabled );
-	pEditImageDistance->SetEnabled( enabled );
-	pEditViewDistance->SetEnabled( enabled );
-	pEditPosition->SetEnabled( enabled );
-	pEditRotation->SetEnabled( enabled );
+	pEditFov->SetEnabled(enabled);
+	pEditFovRatio->SetEnabled(enabled);
+	pEditImageDistance->SetEnabled(enabled);
+	pEditViewDistance->SetEnabled(enabled);
+	pEditPosition->SetEnabled(enabled);
+	pEditRotation->SetEnabled(enabled);
 	pCBPropertyName->SetEnabled(enabled);
 	pCBPropertyPosition->SetEnabled(enabled);
 	pCBPropertyRotation->SetEnabled(enabled);

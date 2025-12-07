@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveTexture::meUObjectRemoveTexture( meObjectTexture *texture ){
-	if( ! texture ) DETHROW( deeInvalidParam );
+meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
+	if(! texture) DETHROW(deeInvalidParam);
 	
 	meObject *object = texture->GetObject();
-	if( ! object ) DETHROW( deeInvalidParam );
+	if(! object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(! world) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Remove Object Texture" );
+	SetShortInfo("Remove Object Texture");
 	
 	pObject = object;
 	object->AddReference();
@@ -60,8 +60,8 @@ meUObjectRemoveTexture::meUObjectRemoveTexture( meObjectTexture *texture ){
 }
 
 meUObjectRemoveTexture::~meUObjectRemoveTexture(){
-	if( pTexture ) pTexture->FreeReference();
-	if( pObject ) pObject->FreeReference();
+	if(pTexture) pTexture->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
 
 
@@ -70,9 +70,9 @@ meUObjectRemoveTexture::~meUObjectRemoveTexture(){
 ///////////////
 
 void meUObjectRemoveTexture::Undo(){
-	pObject->AddTexture( pTexture );
+	pObject->AddTexture(pTexture);
 }
 
 void meUObjectRemoveTexture::Redo(){
-	pObject->RemoveTexture( pTexture );
+	pObject->RemoveTexture(pTexture);
 }

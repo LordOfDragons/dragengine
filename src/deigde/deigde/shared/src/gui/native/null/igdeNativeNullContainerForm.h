@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullContainerForm();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullContainerForm* CreateNativeWidget( igdeContainerForm &owner );
+	static igdeNativeNullContainerForm* CreateNativeWidget(igdeContainerForm &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

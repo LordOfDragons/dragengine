@@ -70,7 +70,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPAPanelEffect( seWPEffect &wpEffect, deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType );
+	seWPAPanelEffect(seWPEffect &wpEffect, deSynthesizerEffectVisitorIdentify::eEffectTypes requiredType);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -83,10 +83,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent window. */
-	inline seWPEffect &GetWPEffect() const{ return pWPEffect; }
+	inline seWPEffect &GetWPEffect() const{return pWPEffect;}
 	
 	/** \brief Required effect type. */
-	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetRequiredType() const{ return pRequiredType; }
+	inline deSynthesizerEffectVisitorIdentify::eEffectTypes GetRequiredType() const{return pRequiredType;}
 	
 	/** \brief Main window. */
 	seWindowMain &GetWindowMain() const;
@@ -130,13 +130,13 @@ public:
 	void RemoveAllTargets();
 	
 	/** \brief Add target. */
-	void AddTarget( const char *name, seControllerTarget *target );
+	void AddTarget(const char *name, seControllerTarget *target);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline igdeAction *GetActionLinkAdd() const{return pActionLinkAdd;}
+	inline igdeAction *GetActionLinkRemove() const{return pActionLinkRemove;}
 	/*@}*/
 };
 

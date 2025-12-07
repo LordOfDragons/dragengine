@@ -60,9 +60,9 @@
 #define COLOR_ALPHA				0.1f
 #define COLOR_ALPHA_ACTIVE		0.2f
 
-gdeConfiguration::gdeConfiguration( gdeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pPreventSaving( false )
+gdeConfiguration::gdeConfiguration(gdeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pPreventSaving(false)
 {
 	pReset();
 }
@@ -76,7 +76,7 @@ gdeConfiguration::~gdeConfiguration(){
 // Management
 ///////////////
 
-void gdeConfiguration::SetPreventSaving( bool preventSaving ){
+void gdeConfiguration::SetPreventSaving(bool preventSaving){
 	pPreventSaving = preventSaving;
 }
 
@@ -88,41 +88,41 @@ void gdeConfiguration::LoadConfiguration(){
 		pReset();
 		pWindowMain.GetRecentFiles().RemoveAllFiles();
 		
-		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
-		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+		const decPath pathFile(decPath::CreatePathUnix("/igde/local/gameDefinitionEditor.xml"));
+		if(! vfs.ExistsFile(pathFile) || vfs.GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 			pPreventSaving = false;
 			return;
 		}
 		
-		gdeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+		gdeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
 			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pPreventSaving = false;
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
 void gdeConfiguration::SaveConfiguration(){
-	if( pPreventSaving ){
+	if(pPreventSaving){
 		return;
 	}
 	
 	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
 	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
-	if( ! vfs.CanWriteFile( pathFile ) ){
+	const decPath pathFile(decPath::CreatePathUnix("/igde/local/gameDefinitionEditor.xml"));
+	if(! vfs.CanWriteFile(pathFile)){
 		return;
 	}
 	
 	decBaseFileWriter::Ref writer;
 	try{
-		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
-		gdeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );
+		writer.TakeOver(vfs.OpenFileForWriting(pathFile));
+		gdeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(writer, *this);
 		
-	}catch( const deException &e ){
-		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
@@ -135,40 +135,40 @@ void gdeConfiguration::pCleanUp(){
 }
 
 void gdeConfiguration::pReset(){
-	pColorBoundingBox.Set( 0.75f, 0.25f, 0.25f, COLOR_ALPHA );
+	pColorBoundingBox.Set(0.75f, 0.25f, 0.25f, COLOR_ALPHA);
 	
-	pColorCamera.Set( 0.0f, 0.0f, 1.0f, COLOR_ALPHA );
-	pColorCameraActive.Set( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE );
+	pColorCamera.Set(0.0f, 0.0f, 1.0f, COLOR_ALPHA);
+	pColorCameraActive.Set(0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE);
 	
-	pColorEnvMapProbe.Set( 0.5f, 0.5f, 0.5f, COLOR_ALPHA );
-	pColorEnvMapProbeReflection.Set( 0.65f, 0.35f, 0.35f, COLOR_ALPHA );
-	pColorEnvMapProbeInfluence.Set( 0.35f, 0.65f, 0.35f, COLOR_ALPHA );
-	pColorEnvMapProbeMask.Set( 0.35f, 0.35f, 0.65f, COLOR_ALPHA );
-	pColorEnvMapProbeActive.Set( 0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE );
-	pColorEnvMapProbeActiveReflection.Set( 0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE );
-	pColorEnvMapProbeActiveInfluence.Set( 0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE );
-	pColorEnvMapProbeActiveMask.Set( 0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbe.Set(0.5f, 0.5f, 0.5f, COLOR_ALPHA);
+	pColorEnvMapProbeReflection.Set(0.65f, 0.35f, 0.35f, COLOR_ALPHA);
+	pColorEnvMapProbeInfluence.Set(0.35f, 0.65f, 0.35f, COLOR_ALPHA);
+	pColorEnvMapProbeMask.Set(0.35f, 0.35f, 0.65f, COLOR_ALPHA);
+	pColorEnvMapProbeActive.Set(0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE);
+	pColorEnvMapProbeActiveReflection.Set(0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE);
+	pColorEnvMapProbeActiveInfluence.Set(0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE);
+	pColorEnvMapProbeActiveMask.Set(0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE);
 	
-	pColorLight.Set( 1.0f, 1.0f, 0.0f, COLOR_ALPHA );
-	pColorLightActive.Set( 1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE );
+	pColorLight.Set(1.0f, 1.0f, 0.0f, COLOR_ALPHA);
+	pColorLightActive.Set(1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE);
 	
-	pColorNavigationSpace.Set( 0.0f, 0.25f, 1.0f, COLOR_ALPHA );
-	pColorNavigationSpaceActive.Set( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE );
+	pColorNavigationSpace.Set(0.0f, 0.25f, 1.0f, COLOR_ALPHA);
+	pColorNavigationSpaceActive.Set(0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE);
 	
-	pColorNavigationBlocker.Set( 0.0f, 0.5f, 0.0f, COLOR_ALPHA );
-	pColorNavigationBlockerActive.Set( 0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE );
+	pColorNavigationBlocker.Set(0.0f, 0.5f, 0.0f, COLOR_ALPHA);
+	pColorNavigationBlockerActive.Set(0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE);
 	
-	pColorParticleEmitter.Set( 0.5f, 0.0f, 0.25f, COLOR_ALPHA );
-	pColorParticleEmitterActive.Set( 1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE );
+	pColorParticleEmitter.Set(0.5f, 0.0f, 0.25f, COLOR_ALPHA);
+	pColorParticleEmitterActive.Set(1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE);
 	
-	pColorForceField.Set( 0.5f, 0.25f, 0.25f, COLOR_ALPHA );
-	pColorForceFieldActive.Set( 1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE );
+	pColorForceField.Set(0.5f, 0.25f, 0.25f, COLOR_ALPHA);
+	pColorForceFieldActive.Set(1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE);
 	
-	pColorSnapPoint.Set( 0.0f, 0.5f, 0.0f, COLOR_ALPHA );
-	pColorSnapPointActive.Set( 0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE );
+	pColorSnapPoint.Set(0.0f, 0.5f, 0.0f, COLOR_ALPHA);
+	pColorSnapPointActive.Set(0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE);
 	
-	pColorSpeaker.Set( 0.5f, 0.0f, 0.0f, COLOR_ALPHA );
-	pColorSpeakerActive.Set( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE );
+	pColorSpeaker.Set(0.5f, 0.0f, 0.0f, COLOR_ALPHA);
+	pColorSpeakerActive.Set(0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE);
 	
 	pColorWorld.Set(0.0f, 0.25f, 1.0f, COLOR_ALPHA);
 	pColorWorldActive.Set(0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE);

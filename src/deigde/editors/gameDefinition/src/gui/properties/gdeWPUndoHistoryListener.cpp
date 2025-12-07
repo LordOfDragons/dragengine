@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPUndoHistoryListener::gdeWPUndoHistoryListener( gdeWPUndoHistory &panel ) :
-pPanel( panel ){
+gdeWPUndoHistoryListener::gdeWPUndoHistoryListener(gdeWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 gdeWPUndoHistoryListener::~gdeWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ gdeWPUndoHistoryListener::~gdeWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void gdeWPUndoHistoryListener::UndoChanged( gdeGameDefinition* ){
+void gdeWPUndoHistoryListener::UndoChanged(gdeGameDefinition*){
 	pPanel.UpdateUndo();
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAddBone( aeRule *rule, const char *pattern );
+	aeUSetRuleAddBone(aeRule *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleAddBone();

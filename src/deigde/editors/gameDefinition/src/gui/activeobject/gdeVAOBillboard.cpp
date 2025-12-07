@@ -61,13 +61,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOBillboard::gdeVAOBillboard( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCBillboard *ocbillboard ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCBillboard( ocbillboard )
+gdeVAOBillboard::gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCBillboard *ocbillboard) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCBillboard(ocbillboard)
 {
-	if( ! ocbillboard ){
-		DETHROW( deeInvalidParam );
+	if(! ocbillboard){
+		DETHROW(deeInvalidParam);
 	}
 	ocbillboard->AddReference();
 	
@@ -86,7 +86,7 @@ gdeVAOBillboard::~gdeVAOBillboard(){
 ///////////////
 
 void gdeVAOBillboard::RebuildResources(){
-	const deBillboard::Ref oldBillboard( pBillboard );
+	const deBillboard::Ref oldBillboard(pBillboard);
 	
 	pReleaseResources();
 	
@@ -98,19 +98,19 @@ void gdeVAOBillboard::RebuildResources(){
 void gdeVAOBillboard::SelectedObjectChanged(){
 }
 
-void gdeVAOBillboard::GetExtends( decVector &minExtend, decVector &maxExtend ) const{
+void gdeVAOBillboard::GetExtends(decVector &minExtend, decVector &maxExtend) const{
 	minExtend.SetZero();
 	maxExtend.SetZero();
-	if( ! pBillboard ){
+	if(! pBillboard){
 		return;
 	}
 	
-	const decVector position( pOCBillboard->GetPosition() );
+	const decVector position(pOCBillboard->GetPosition());
 	const decVector2 &size = pOCBillboard->GetSize();
 	const float width = size.x * 0.5f;
 	const float height = size.y * 0.5f;
 	
-	if( width > height ){
+	if(width > height){
 		minExtend.x = position.x - width;
 		minExtend.y = position.y - width;
 		minExtend.z = position.z - width;
@@ -136,7 +136,7 @@ void gdeVAOBillboard::GetExtends( decVector &minExtend, decVector &maxExtend ) c
 void gdeVAOBillboard::pCleanUp(){
 	pReleaseResources();
 	
-	if( pOCBillboard ){
+	if(pOCBillboard){
 		pOCBillboard->FreeReference();
 	}
 }
@@ -152,68 +152,68 @@ void gdeVAOBillboard::pCreateBillboard(){
 	deSkin::Ref skin;
 	decString path;
 	
-	path = PropertyString( pOCBillboard->GetPropertyName( gdeOCBillboard::epSkin ), pOCBillboard->GetSkinPath() );
-	if( ! path.IsEmpty() ){
+	path = PropertyString(pOCBillboard->GetPropertyName(gdeOCBillboard::epSkin), pOCBillboard->GetSkinPath());
+	if(! path.IsEmpty()){
 		try{
-			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
+			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
 			
-		}catch( const deException & ){
-			skin = environment.GetStockSkin( igdeEnvironment::essError );
+		}catch(const deException &){
+			skin = environment.GetStockSkin(igdeEnvironment::essError);
 		}
 	}
 	
 	// create billboard if skin is present
-	if( skin ){
-		pBillboard.TakeOver( engine.GetBillboardManager()->CreateBillboard() );
-		pBillboard->SetSkin( skin );
-		pBillboard->SetAxis( PropertyVector( pOCBillboard->GetPropertyName( gdeOCBillboard::epAxis ), pOCBillboard->GetAxis() ) );
-		pBillboard->SetSize( pOCBillboard->GetSize() );
-		pBillboard->SetOffset( PropertyVector2( pOCBillboard->GetPropertyName( gdeOCBillboard::epOffset ), pOCBillboard->GetOffset() ) );
-		pBillboard->SetLocked( PropertyBool( pOCBillboard->GetPropertyName( gdeOCBillboard::epLocked ), pOCBillboard->GetLocked() ) );
-		pBillboard->SetSpherical( PropertyBool( pOCBillboard->GetPropertyName( gdeOCBillboard::epSpherical ), pOCBillboard->GetSpherical() ) );
-		pBillboard->SetSizeFixedToScreen( pOCBillboard->GetSizeFixedToScreen() );
-		pView.GetGameDefinition()->GetWorld()->AddBillboard( pBillboard );
+	if(skin){
+		pBillboard.TakeOver(engine.GetBillboardManager()->CreateBillboard());
+		pBillboard->SetSkin(skin);
+		pBillboard->SetAxis(PropertyVector(pOCBillboard->GetPropertyName(gdeOCBillboard::epAxis), pOCBillboard->GetAxis()));
+		pBillboard->SetSize(pOCBillboard->GetSize());
+		pBillboard->SetOffset(PropertyVector2(pOCBillboard->GetPropertyName(gdeOCBillboard::epOffset), pOCBillboard->GetOffset()));
+		pBillboard->SetLocked(PropertyBool(pOCBillboard->GetPropertyName(gdeOCBillboard::epLocked), pOCBillboard->GetLocked()));
+		pBillboard->SetSpherical(PropertyBool(pOCBillboard->GetPropertyName(gdeOCBillboard::epSpherical), pOCBillboard->GetSpherical()));
+		pBillboard->SetSizeFixedToScreen(pOCBillboard->GetSizeFixedToScreen());
+		pView.GetGameDefinition()->GetWorld()->AddBillboard(pBillboard);
 	}
 }
 
 void gdeVAOBillboard::pCreateCollider(){
 	decShapeList shapeList;
-	if( pBillboard ){
-		shapeList.Add( new decShapeBox( decVector(
-			pOCBillboard->GetSize().x * 0.5f, pOCBillboard->GetSize().y * 0.5f, 0.02f ) ) );
+	if(pBillboard){
+		shapeList.Add(new decShapeBox(decVector(
+			pOCBillboard->GetSize().x * 0.5f, pOCBillboard->GetSize().y * 0.5f, 0.02f)));
 		
 	}else{
-		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
+		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
 	}
 	
-	pCollider.TakeOver( pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume() );
-	pCollider->SetEnabled( true );
-	pCollider->SetResponseType( deCollider::ertKinematic );
-	pCollider->SetUseLocalGravity( true );
-	( ( deColliderVolume& )( deCollider& )pCollider ).SetShapes( shapeList );
+	pCollider.TakeOver(pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume());
+	pCollider->SetEnabled(true);
+	pCollider->SetResponseType(deCollider::ertKinematic);
+	pCollider->SetUseLocalGravity(true);
+	((deColliderVolume&)(deCollider&)pCollider).SetShapes(shapeList);
 	
 	decLayerMask collisionMask;
-	collisionMask.SetBit( 0 );
-	pCollider->SetCollisionFilter( decCollisionFilter( collisionMask ) );
+	collisionMask.SetBit(0);
+	pCollider->SetCollisionFilter(decCollisionFilter(collisionMask));
 	
-	pView.GetGameDefinition()->GetWorld()->AddCollider( pCollider );
+	pView.GetGameDefinition()->GetWorld()->AddCollider(pCollider);
 }
 
 void gdeVAOBillboard::pAttachBillboard(){
-	if( ! pBillboard || ! pCollider ){
+	if(! pBillboard || ! pCollider){
 		return;
 	}
 	
 	deColliderAttachment *attachment = NULL;
 	
 	try{
-		attachment = new deColliderAttachment( pCollider );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
-		pCollider->AddAttachment( attachment );
+		attachment = new deColliderAttachment(pCollider);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
+		pCollider->AddAttachment(attachment);
 		attachment = NULL;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -223,14 +223,14 @@ void gdeVAOBillboard::pAttachBillboard(){
 void gdeVAOBillboard::pReleaseResources(){
 	deWorld &world = *pView.GetGameDefinition()->GetWorld();
 	
-	if( pCollider ){
+	if(pCollider){
 		pCollider->RemoveAllAttachments(); // because otherwise cyclic loop with component
-		world.RemoveCollider( pCollider );
+		world.RemoveCollider(pCollider);
 		pCollider = NULL;
 	}
 	
-	if( pBillboard ){
-		world.RemoveBillboard( pBillboard );
+	if(pBillboard){
+		world.RemoveBillboard(pBillboard);
 		pBillboard = NULL;
 	}
 }

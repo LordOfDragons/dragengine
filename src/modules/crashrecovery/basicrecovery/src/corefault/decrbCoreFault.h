@@ -67,7 +67,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new object. */
-	decrbCoreFault( deCRBasic *module );
+	decrbCoreFault(deCRBasic *module);
 	/** Cleans up the object. */
 	~decrbCoreFault();
 	/*@}*/
@@ -78,11 +78,11 @@ public:
 	static decrbCoreFault *GetGlobalCoreFault();
 	
 	/** Retrieves the module. */
-	inline deCRBasic *GetModule() const{ return pModule; }
+	inline deCRBasic *GetModule() const{return pModule;}
 	/** Handle a segmentation fault. */
-	void HandleSegFault( int error, void *memoryLocation, void *ptrContext );
+	void HandleSegFault(int error, void *memoryLocation, void *ptrContext);
 	/** Handle an unhandled exception. */
-	void HandleAbort( void *ptrContext );
+	void HandleAbort(void *ptrContext);
 	/*@}*/
 	
 private:

@@ -57,17 +57,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOEnvMapProbe::gdeVAOEnvMapProbe( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCEnvMapProbe( ocenvMapProbe ),
-pDDSCenter( NULL ),
-pDDSReflection( NULL ),
-pDDSInfluence( NULL ),
-pDDSMask( NULL )
+gdeVAOEnvMapProbe::gdeVAOEnvMapProbe(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCEnvMapProbe *ocenvMapProbe) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCEnvMapProbe(ocenvMapProbe),
+pDDSCenter(NULL),
+pDDSReflection(NULL),
+pDDSInfluence(NULL),
+pDDSMask(NULL)
 {
-	if( ! ocenvMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(! ocenvMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOCEnvMapProbe->AddReference();
@@ -79,7 +79,7 @@ pDDSMask( NULL )
 		pUpdateDDShapeColor();
 		UpdateDDVisibility();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -111,9 +111,9 @@ void gdeVAOEnvMapProbe::SelectedObjectChanged(){
 void gdeVAOEnvMapProbe::UpdateDDVisibility(){
 	const gdeGameDefinition &gameDefinition = *pView.GetGameDefinition();
 	
-	pDebugDrawer->SetVisible( pView.GetShowEnvMapProbes()
-		|| ( gameDefinition.GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-			&& gameDefinition.GetActiveOCEnvMapProbe() == pOCEnvMapProbe ) );
+	pDebugDrawer->SetVisible(pView.GetShowEnvMapProbes()
+		|| (gameDefinition.GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
+			&& gameDefinition.GetActiveOCEnvMapProbe() == pOCEnvMapProbe));
 }
 
 
@@ -124,24 +124,24 @@ void gdeVAOEnvMapProbe::UpdateDDVisibility(){
 void gdeVAOEnvMapProbe::pCleanUp(){
 	pReleaseResources();
 	
-	if( pDDSMask ){
+	if(pDDSMask){
 		delete pDDSMask;
 	}
-	if( pDDSReflection ){
+	if(pDDSReflection){
 		delete pDDSReflection;
 	}
-	if( pDDSInfluence ){
+	if(pDDSInfluence){
 		delete pDDSInfluence;
 	}
-	if( pDDSCenter ){
+	if(pDDSCenter){
 		delete pDDSCenter;
 	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
 	}
 	
-	if( pOCEnvMapProbe ){
+	if(pOCEnvMapProbe){
 		pOCEnvMapProbe->FreeReference();
 	}
 }
@@ -152,39 +152,39 @@ void gdeVAOEnvMapProbe::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer->SetXRay(true);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
 	pDDSCenter = new igdeWDebugDrawerShape;
-	pDDSCenter->AddSphereShape( 0.05f, decVector() );
-	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCenter->AddSphereShape(0.05f, decVector());
+	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create reflection shape
 	pDDSReflection = new igdeWDebugDrawerShape;
-	pDDSReflection->SetParentDebugDrawer( pDebugDrawer );
+	pDDSReflection->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create influence shape
 	pDDSInfluence = new igdeWDebugDrawerShape;
-	pDDSInfluence->SetParentDebugDrawer( pDebugDrawer );
+	pDDSInfluence->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create mask shape
 	pDDSMask = new igdeWDebugDrawerShape;
-	pDDSMask->SetParentDebugDrawer( pDebugDrawer );
+	pDDSMask->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAOEnvMapProbe::pCreateEnvMapProbe(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
-	pEnvMapProbe.TakeOver( engine.GetEnvMapProbeManager()->CreateEnvMapProbe() );
-	pEnvMapProbe->SetPosition( pOCEnvMapProbe->GetPosition() );
-	pEnvMapProbe->SetOrientation( decQuaternion::CreateFromEuler(
-		pOCEnvMapProbe->GetRotation() * DEG2RAD ) );
-	pEnvMapProbe->SetScaling( pOCEnvMapProbe->GetScaling() );
+	pEnvMapProbe.TakeOver(engine.GetEnvMapProbeManager()->CreateEnvMapProbe());
+	pEnvMapProbe->SetPosition(pOCEnvMapProbe->GetPosition());
+	pEnvMapProbe->SetOrientation(decQuaternion::CreateFromEuler(
+		pOCEnvMapProbe->GetRotation() * DEG2RAD));
+	pEnvMapProbe->SetScaling(pOCEnvMapProbe->GetScaling());
 	
-	if( pOCEnvMapProbe->GetShapeReflection() ){
-		pEnvMapProbe->SetShapeReflection( pOCEnvMapProbe->GetShapeReflection()->Copy() );
+	if(pOCEnvMapProbe->GetShapeReflection()){
+		pEnvMapProbe->SetShapeReflection(pOCEnvMapProbe->GetShapeReflection()->Copy());
 	}
 	
 	pEnvMapProbe->GetShapeListInfluence() = pOCEnvMapProbe->GetShapeListInfluence();
@@ -193,74 +193,74 @@ void gdeVAOEnvMapProbe::pCreateEnvMapProbe(){
 	pEnvMapProbe->GetShapeListReflectionMask() = pOCEnvMapProbe->GetShapeListReflectionMask();
 	pEnvMapProbe->NotifyShapeReflectionChanged();
 	
-	pEnvMapProbe->SetInfluenceBorderSize( pOCEnvMapProbe->GetInfluenceBorderSize() );
-	pEnvMapProbe->SetInfluencePriority( pOCEnvMapProbe->GetInfluencePriority() );
+	pEnvMapProbe->SetInfluenceBorderSize(pOCEnvMapProbe->GetInfluenceBorderSize());
+	pEnvMapProbe->SetInfluencePriority(pOCEnvMapProbe->GetInfluencePriority());
 	
-	pView.GetGameDefinition()->GetWorld()->AddEnvMapProbe( pEnvMapProbe );
+	pView.GetGameDefinition()->GetWorld()->AddEnvMapProbe(pEnvMapProbe);
 }
 
 void gdeVAOEnvMapProbe::pUpdateDDShapes(){
 	const decVector &position = pOCEnvMapProbe->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCEnvMapProbe->GetRotation() * DEG2RAD ) );
+	const decQuaternion orientation(decQuaternion::CreateFromEuler(
+		pOCEnvMapProbe->GetRotation() * DEG2RAD));
 	
 	// center
-	pDDSCenter->SetPosition( position );
-	pDDSCenter->SetOrientation( orientation );
+	pDDSCenter->SetPosition(position);
+	pDDSCenter->SetOrientation(orientation);
 	
 	// reflection
-	pDDSReflection->SetPosition( position );
-	pDDSReflection->SetOrientation( orientation );
+	pDDSReflection->SetPosition(position);
+	pDDSReflection->SetOrientation(orientation);
 	
 	pDDSReflection->RemoveAllShapes();
-	if( pOCEnvMapProbe->GetShapeReflection() ){
-		pDDSReflection->AddShape( pOCEnvMapProbe->GetShapeReflection()->Copy() );
+	if(pOCEnvMapProbe->GetShapeReflection()){
+		pDDSReflection->AddShape(pOCEnvMapProbe->GetShapeReflection()->Copy());
 	}
 	
 	// influence
-	pDDSInfluence->SetPosition( position );
-	pDDSInfluence->SetOrientation( orientation );
+	pDDSInfluence->SetPosition(position);
+	pDDSInfluence->SetOrientation(orientation);
 	
 	pDDSInfluence->RemoveAllShapes();
-	pDDSInfluence->AddShapes( pOCEnvMapProbe->GetShapeListInfluence() );
+	pDDSInfluence->AddShapes(pOCEnvMapProbe->GetShapeListInfluence());
 	
 	// mask
-	pDDSMask->SetPosition( position );
-	pDDSMask->SetOrientation( orientation );
+	pDDSMask->SetPosition(position);
+	pDDSMask->SetOrientation(orientation);
 	
 	pDDSMask->RemoveAllShapes();
-	pDDSMask->AddShapes( pOCEnvMapProbe->GetShapeListReflectionMask() );
+	pDDSMask->AddShapes(pOCEnvMapProbe->GetShapeListReflectionMask());
 }
 
 void gdeVAOEnvMapProbe::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
-	&& pView.GetGameDefinition()->GetActiveOCEnvMapProbe() == pOCEnvMapProbe ){
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorEnvMapProbeActive(), 1.0f ) );
-		pDDSCenter->SetFillColor( config.GetColorEnvMapProbeActive() );
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCEnvMapProbe
+	&& pView.GetGameDefinition()->GetActiveOCEnvMapProbe() == pOCEnvMapProbe){
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorEnvMapProbeActive(), 1.0f));
+		pDDSCenter->SetFillColor(config.GetColorEnvMapProbeActive());
 		
-		pDDSReflection->SetEdgeColor( decColor( config.GetColorEnvMapProbeActiveReflection(), 1.0f ) );
-		pDDSReflection->SetFillColor( config.GetColorEnvMapProbeActiveReflection() );
+		pDDSReflection->SetEdgeColor(decColor(config.GetColorEnvMapProbeActiveReflection(), 1.0f));
+		pDDSReflection->SetFillColor(config.GetColorEnvMapProbeActiveReflection());
 		
-		pDDSInfluence->SetEdgeColor( decColor( config.GetColorEnvMapProbeActiveInfluence(), 1.0f ) );
-		pDDSInfluence->SetFillColor( config.GetColorEnvMapProbeActiveInfluence() );
+		pDDSInfluence->SetEdgeColor(decColor(config.GetColorEnvMapProbeActiveInfluence(), 1.0f));
+		pDDSInfluence->SetFillColor(config.GetColorEnvMapProbeActiveInfluence());
 		
-		pDDSMask->SetEdgeColor( decColor( config.GetColorEnvMapProbeActiveMask(), 1.0f ) );
-		pDDSMask->SetFillColor( config.GetColorEnvMapProbeActiveMask() );
+		pDDSMask->SetEdgeColor(decColor(config.GetColorEnvMapProbeActiveMask(), 1.0f));
+		pDDSMask->SetFillColor(config.GetColorEnvMapProbeActiveMask());
 		
 	}else{
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorEnvMapProbe(), 0.25f ) );
-		pDDSCenter->SetFillColor( config.GetColorEnvMapProbe() );
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorEnvMapProbe(), 0.25f));
+		pDDSCenter->SetFillColor(config.GetColorEnvMapProbe());
 		
-		pDDSReflection->SetEdgeColor( decColor( config.GetColorEnvMapProbeReflection(), 0.25f ) );
-		pDDSReflection->SetFillColor( config.GetColorEnvMapProbeReflection() );
+		pDDSReflection->SetEdgeColor(decColor(config.GetColorEnvMapProbeReflection(), 0.25f));
+		pDDSReflection->SetFillColor(config.GetColorEnvMapProbeReflection());
 		
-		pDDSInfluence->SetEdgeColor( decColor( config.GetColorEnvMapProbeInfluence(), 0.25f ) );
-		pDDSInfluence->SetFillColor( config.GetColorEnvMapProbeInfluence() );
+		pDDSInfluence->SetEdgeColor(decColor(config.GetColorEnvMapProbeInfluence(), 0.25f));
+		pDDSInfluence->SetFillColor(config.GetColorEnvMapProbeInfluence());
 		
-		pDDSMask->SetEdgeColor( decColor( config.GetColorEnvMapProbeMask(), 0.25f ) );
-		pDDSMask->SetFillColor( config.GetColorEnvMapProbeMask() );
+		pDDSMask->SetEdgeColor(decColor(config.GetColorEnvMapProbeMask(), 0.25f));
+		pDDSMask->SetFillColor(config.GetColorEnvMapProbeMask());
 	}
 }
 
@@ -269,8 +269,8 @@ void gdeVAOEnvMapProbe::pUpdateDDShapeColor(){
 void gdeVAOEnvMapProbe::pReleaseResources(){
 	deWorld &world = *pView.GetGameDefinition()->GetWorld();
 	
-	if( pEnvMapProbe ){
-		world.RemoveEnvMapProbe( pEnvMapProbe );
+	if(pEnvMapProbe){
+		world.RemoveEnvMapProbe(pEnvMapProbe);
 		pEnvMapProbe = NULL;
 	}
 	

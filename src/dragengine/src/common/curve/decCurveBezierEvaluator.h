@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new bezier curve evaluator. */
-	decCurveBezierEvaluator( const decCurveBezier &curve );
+	decCurveBezierEvaluator(const decCurveBezier &curve);
 	
 	/** \brief Clean up the bezier curve evaluator. */
 	~decCurveBezierEvaluator();
@@ -54,16 +54,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bezier curve. */
-	inline const decCurveBezier &GetCurve() const{ return pCurve; }
+	inline const decCurveBezier &GetCurve() const{return pCurve;}
 	
 	/** \brief Evaluate curve at the given position. */
-	float EvaluateAt( float x ) const;
+	float EvaluateAt(float x) const;
 	
 	/** \brief Test if a value is inside the valid range. */
-	inline bool ValidValue( double value ) const{ return value >= -0.000001 && value <= 1.000001; }
+	inline bool ValidValue(double value) const{return value >= -0.000001 && value <= 1.000001;}
 	
 	/** \brief Test if a value is outside the valid range. */
-	inline bool InvalidValue( double value ) const{ return value < -0.000001 || value > 1.000001; }
+	inline bool InvalidValue(double value) const{return value < -0.000001 || value > 1.000001;}
 	/*@}*/
 };
 

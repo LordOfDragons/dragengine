@@ -57,17 +57,17 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionContextMenu( const char *text, igdeIcon *icon, const char *description );
+	igdeActionContextMenu(const char *text, igdeIcon *icon, const char *description);
 	
-	igdeActionContextMenu( const char *text, igdeIcon *icon, const char *description,
-		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+	igdeActionContextMenu(const char *text, igdeIcon *icon, const char *description,
+		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
-	igdeActionContextMenu( igdeWidget *widget, const char *text,
-		igdeIcon *icon, const char *description );
+	igdeActionContextMenu(igdeWidget *widget, const char *text,
+		igdeIcon *icon, const char *description);
 	
-	igdeActionContextMenu( igdeWidget *widget, const char *text,
+	igdeActionContextMenu(igdeWidget *widget, const char *text,
 		igdeIcon *icon, const char *description,
-		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+		deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
 	
 	
@@ -87,10 +87,10 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Widget to show context menu below or NULL if not present. */
-	inline igdeWidget *GetWidget() const{ return pWidget; }
+	inline igdeWidget *GetWidget() const{return pWidget;}
 	
 	/** \brief Set widget to show context menu below or NULL if not present. */
-	void SetWidget( igdeWidget *widget );
+	void SetWidget(igdeWidget *widget);
 	
 	
 	
@@ -108,7 +108,7 @@ public:
 	 * The most simple way to fill the context menu is to use
 	 * contextMenu.GetEnvironment().GetUIHelper() .
 	 */
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

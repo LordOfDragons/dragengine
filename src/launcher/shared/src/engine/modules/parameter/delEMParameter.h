@@ -52,10 +52,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info );
+	delEMParameter(int index, const deModuleParameter &info);
 	
 	/** \brief Create engine module parameter. */
-	delEMParameter( int index, const deModuleParameter &info, const char *value );
+	delEMParameter(int index, const deModuleParameter &info, const char *value);
 	
 	/** \brief Clean up engine module parameter. */
 	virtual ~delEMParameter();
@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parameter index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Parameter info. */
-	inline const deModuleParameter &GetInfo() const{ return pInfo; }
+	inline const deModuleParameter &GetInfo() const{return pInfo;}
 	
 	/** \brief Value. */
-	inline const decString &GetValue() const{ return pValue; }
+	inline const decString &GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 };
 

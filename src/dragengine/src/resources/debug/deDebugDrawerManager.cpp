@@ -39,8 +39,8 @@
 // constructor, destructor
 ////////////////////////////
 
-deDebugDrawerManager::deDebugDrawerManager( deEngine *engine ) : deResourceManager( engine, ertDebugDrawer ){
-	SetLoggingName( "debug drawer" );
+deDebugDrawerManager::deDebugDrawerManager(deEngine *engine) : deResourceManager(engine, ertDebugDrawer){
+	SetLoggingName("debug drawer");
 }
 
 deDebugDrawerManager::~deDebugDrawerManager(){
@@ -57,19 +57,19 @@ int deDebugDrawerManager::GetDebugDrawerCount() const{
 }
 
 deDebugDrawer *deDebugDrawerManager::GetRootDebugDrawer() const{
-	return ( deDebugDrawer* )pDebugDrawers.GetRoot();
+	return (deDebugDrawer*)pDebugDrawers.GetRoot();
 }
 
 deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
 	deDebugDrawer *debugDrawer = NULL;
 	// create and add debug drawer
 	try{
-		debugDrawer = new deDebugDrawer( this );
-		if( ! debugDrawer ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadDebugDrawer( debugDrawer );
-		pDebugDrawers.Add( debugDrawer );
-	}catch( const deException & ){
-		if( debugDrawer ){
+		debugDrawer = new deDebugDrawer(this);
+		if(! debugDrawer) DETHROW(deeOutOfMemory);
+		GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
+		pDebugDrawers.Add(debugDrawer);
+	}catch(const deException &){
+		if(debugDrawer){
 			debugDrawer->FreeReference();
 		}
 		throw;
@@ -81,8 +81,8 @@ deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
 
 
 void deDebugDrawerManager::ReleaseLeakingResources(){
-	if( GetDebugDrawerCount() > 0 ){
-		LogWarnFormat( "%i leaking debug drawers", GetDebugDrawerCount() );
+	if(GetDebugDrawerCount() > 0){
+		LogWarnFormat("%i leaking debug drawers", GetDebugDrawerCount());
 		pDebugDrawers.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -93,26 +93,26 @@ void deDebugDrawerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deDebugDrawerManager::SystemGraphicLoad(){
-	deDebugDrawer *debugDrawer = ( deDebugDrawer* )pDebugDrawers.GetRoot();
+	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
 	
-	while( debugDrawer ){
-		if( ! debugDrawer->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadDebugDrawer( debugDrawer );
+	while(debugDrawer){
+		if(! debugDrawer->GetPeerGraphic()){
+			GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
 		}
 		
-		debugDrawer = ( deDebugDrawer* )debugDrawer->GetLLManagerNext();
+		debugDrawer = (deDebugDrawer*)debugDrawer->GetLLManagerNext();
 	}
 }
 
 void deDebugDrawerManager::SystemGraphicUnload(){
-	deDebugDrawer *debugDrawer = ( deDebugDrawer* )pDebugDrawers.GetRoot();
+	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
 	
-	while( debugDrawer ){
-		debugDrawer->SetPeerGraphic( NULL );
-		debugDrawer = ( deDebugDrawer* )debugDrawer->GetLLManagerNext();
+	while(debugDrawer){
+		debugDrawer->SetPeerGraphic(NULL);
+		debugDrawer = (deDebugDrawer*)debugDrawer->GetLLManagerNext();
 	}
 }
 
-void deDebugDrawerManager::RemoveResource( deResource *resource ){
-	pDebugDrawers.RemoveIfPresent( resource );
+void deDebugDrawerManager::RemoveResource(deResource *resource){
+	pDebugDrawers.RemoveIfPresent(resource);
 }

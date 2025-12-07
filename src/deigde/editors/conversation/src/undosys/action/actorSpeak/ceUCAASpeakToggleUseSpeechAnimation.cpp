@@ -42,15 +42,15 @@
 ////////////////////////////
 
 ceUCAASpeakToggleUseSpeechAnimation::ceUCAASpeakToggleUseSpeechAnimation(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ){
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
+	if(! topic){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	
-	SetShortInfo( "Actor speak toggle use speech animation" );
+	SetShortInfo("Actor speak toggle use speech animation");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -60,10 +60,10 @@ ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ){
 }
 
 ceUCAASpeakToggleUseSpeechAnimation::~ceUCAASpeakToggleUseSpeechAnimation(){
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -78,6 +78,6 @@ void ceUCAASpeakToggleUseSpeechAnimation::Undo(){
 }
 
 void ceUCAASpeakToggleUseSpeechAnimation::Redo(){
-	pActorSpeak->SetUseSpeechAnimation( ! pActorSpeak->GetUseSpeechAnimation() );
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pActorSpeak->SetUseSpeechAnimation(! pActorSpeak->GetUseSpeechAnimation());
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

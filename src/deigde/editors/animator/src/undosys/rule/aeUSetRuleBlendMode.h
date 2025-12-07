@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleBlendMode( aeRule *rule, deAnimatorRule::eBlendModes newMode );
+	aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendModes newMode);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleBlendMode();

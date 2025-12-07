@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWPView( saeWindowProperties &windowProperties );
+	saeWPView(saeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -72,13 +72,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline saeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline saeSAnimation *GetSAnimation() const{return pSAnimation;}
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Update view. */
 	void UpdateView();

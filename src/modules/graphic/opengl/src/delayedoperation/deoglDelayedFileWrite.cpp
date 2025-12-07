@@ -41,13 +41,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDelayedFileWrite::deoglDelayedFileWrite( const decPath &path ) :
-pMemoryFile( NULL ),
-pPath( path ){
+deoglDelayedFileWrite::deoglDelayedFileWrite(const decPath &path) :
+pMemoryFile(NULL),
+pPath(path){
 	try{
-		pMemoryFile = new decMemoryFile( path.GetPathUnix() );
+		pMemoryFile = new decMemoryFile(path.GetPathUnix());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,20 +63,20 @@ deoglDelayedFileWrite::~deoglDelayedFileWrite(){
 ///////////////
 
 decBaseFileWriter *deoglDelayedFileWrite::GetFileWriter() const{
-	return new decMemoryFileWriter( pMemoryFile, false );
+	return new decMemoryFileWriter(pMemoryFile, false);
 }
 
-void deoglDelayedFileWrite::SaveFile( deVirtualFileSystem &vfs ){
+void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){
 	decBaseFileWriter *fileWriter = NULL;
-	decPath noConstPath( pPath );
+	decPath noConstPath(pPath);
 	
 	try{
-		fileWriter = vfs.OpenFileForWriting( noConstPath );
-		fileWriter->Write( pMemoryFile->GetPointer(), pMemoryFile->GetLength() );
+		fileWriter = vfs.OpenFileForWriting(noConstPath);
+		fileWriter->Write(pMemoryFile->GetPointer(), pMemoryFile->GetLength());
 		fileWriter->FreeReference();
 		
-	}catch( const deException & ){
-		if( fileWriter ){
+	}catch(const deException &){
+		if(fileWriter){
 			fileWriter->FreeReference();
 		}
 		throw;
@@ -89,7 +89,7 @@ void deoglDelayedFileWrite::SaveFile( deVirtualFileSystem &vfs ){
 //////////////////////
 
 void deoglDelayedFileWrite::pCleanUp(){
-	if( pMemoryFile ){
+	if(pMemoryFile){
 		pMemoryFile->FreeReference();
 	}
 }

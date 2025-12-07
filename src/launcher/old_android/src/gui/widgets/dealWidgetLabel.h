@@ -73,10 +73,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetLabel( dealDisplay &display, const char *text );
+	dealWidgetLabel(dealDisplay &display, const char *text);
 	
 	/** \brief Create widget. */
-	dealWidgetLabel( dealDisplay &display, dealFont *font, int fontSize, const char *text );
+	dealWidgetLabel(dealDisplay &display, dealFont *font, int fontSize, const char *text);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetLabel();
@@ -87,10 +87,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font or \em NULL if not set. */
-	inline dealFont *GetFont() const{ return pFont; }
+	inline dealFont *GetFont() const{return pFont;}
 	
 	/** \brief Set font or \em NULL if not set. */
-	void SetFont( dealFont *font );
+	void SetFont(dealFont *font);
 	
 	/** \brief Font size in pixels. */
 	inline int GetFontSize() const{
@@ -98,31 +98,31 @@ public:
 	}
 	
 	/** \brief Set font size in pixels. */
-	void SetFontSize( int fontSize );
+	void SetFontSize(int fontSize);
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Text color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Alignment. */
-	inline eAlignments GetAlignment() const{ return pAlignment; }
+	inline eAlignments GetAlignment() const{return pAlignment;}
 	
 	/** \brief Set alignment. */
-	void SetAlignment( eAlignments alignment );
+	void SetAlignment(eAlignments alignment);
 	
 	/** \brief Maximum line width. */
-	inline int GetMaxLineWidth() const{ return pMaxLineWidth; }
+	inline int GetMaxLineWidth() const{return pMaxLineWidth;}
 	
 	/** \brief Set maximum line width. */
-	void SetMaxLineWidth( int lineWidth );
+	void SetMaxLineWidth(int lineWidth);
 	
 	
 	
@@ -132,7 +132,7 @@ public:
 	
 	
 	/** \brief Render content. */
-	virtual void RenderContent( const sRenderContext &context );
+	virtual void RenderContent(const sRenderContext &context);
 	
 	
 	
@@ -144,12 +144,12 @@ public:
 
 
 /** \brief Helper for combining alignments. */
-inline dealWidgetLabel::eAlignments operator|( dealWidgetLabel::eAlignments a, dealWidgetLabel::eAlignments b ){
-	return ( dealWidgetLabel::eAlignments )( ( int )a | ( int )b );
+inline dealWidgetLabel::eAlignments operator|(dealWidgetLabel::eAlignments a, dealWidgetLabel::eAlignments b){
+	return (dealWidgetLabel::eAlignments)((int)a | (int)b);
 }
 
-inline dealWidgetLabel::eAlignments operator&( dealWidgetLabel::eAlignments a, dealWidgetLabel::eAlignments b ){
-	return a = ( dealWidgetLabel::eAlignments )( ( int )a & ( int )b );
+inline dealWidgetLabel::eAlignments operator&(dealWidgetLabel::eAlignments a, dealWidgetLabel::eAlignments b){
+	return a = (dealWidgetLabel::eAlignments)((int)a & (int)b);
 }
 
 #endif

@@ -56,8 +56,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delEngineConfigXML::delEngineConfigXML( deLogger *logger, const char *loggerSource ) :
-delSharedConfigXML( logger, loggerSource ){
+delEngineConfigXML::delEngineConfigXML(deLogger *logger, const char *loggerSource) :
+delSharedConfigXML(logger, loggerSource){
 }
 
 delEngineConfigXML::~delEngineConfigXML(){
@@ -68,25 +68,25 @@ delEngineConfigXML::~delEngineConfigXML(){
 // Management
 ///////////////
 
-void delEngineConfigXML::ReadFromFile( decBaseFileReader &reader, delLauncher &launcher ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
-	decXmlParser( launcher.GetLogger() ).ParseXml( &reader, xmlDoc );
+void delEngineConfigXML::ReadFromFile(decBaseFileReader &reader, delLauncher &launcher){
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlParser(launcher.GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "launcherConfig" ){
-		DETHROW_INFO( deeInvalidParam, "missing root tag 'launcherConfig'" );
+	if(! root || root->GetName() != "launcherConfig"){
+		DETHROW_INFO(deeInvalidParam, "missing root tag 'launcherConfig'");
 	}
 	
-	pReadConfig( *root, launcher );
+	pReadConfig(*root, launcher);
 }
 
-void delEngineConfigXML::WriteToFile( decBaseFileWriter &writer, const delLauncher &launcher ){
-	decXmlWriter xmlWriter( &writer );
+void delEngineConfigXML::WriteToFile(decBaseFileWriter &writer, const delLauncher &launcher){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteConfig( xmlWriter, launcher );
+	pWriteConfig(xmlWriter, launcher);
 }
 
 
@@ -94,94 +94,94 @@ void delEngineConfigXML::WriteToFile( decBaseFileWriter &writer, const delLaunch
 // Private Functions
 //////////////////////
 
-void delEngineConfigXML::pWriteConfig( decXmlWriter &writer, const delLauncher &launcher ){
+void delEngineConfigXML::pWriteConfig(decXmlWriter &writer, const delLauncher &launcher){
 	const delGameManager &gameManager = launcher.GetGameManager();
 	
-	writer.WriteOpeningTag( "launcherConfig", false, true );
+	writer.WriteOpeningTag("launcherConfig", false, true);
 	
-	pWriteProfiles( writer, launcher );
+	pWriteProfiles(writer, launcher);
 	
-	if( gameManager.GetActiveProfile() ){
-		writer.WriteDataTagString( "activeProfile", gameManager.GetActiveProfile()->GetName() );
+	if(gameManager.GetActiveProfile()){
+		writer.WriteDataTagString("activeProfile", gameManager.GetActiveProfile()->GetName());
 	}
 	
-	writer.WriteClosingTag( "launcherConfig", true );
+	writer.WriteClosingTag("launcherConfig", true);
 }
 
-void delEngineConfigXML::pWriteProfiles( decXmlWriter &writer, const delLauncher &launcher ){
+void delEngineConfigXML::pWriteProfiles(decXmlWriter &writer, const delLauncher &launcher){
 	const delGameManager &gameManager = launcher.GetGameManager();
 	const delGameProfileList &profileList = gameManager.GetProfiles();
 	const int count = profileList.GetCount();
 	int i;
 	
-	writer.WriteOpeningTag( "profiles", false, true );
+	writer.WriteOpeningTag("profiles", false, true);
 	
-	for( i=0; i<count; i++ ){
-		WriteProfile( writer, *profileList.GetAt ( i ), "profile" );
+	for(i=0; i<count; i++){
+		WriteProfile(writer, *profileList.GetAt (i), "profile");
 	}
 	
-	writer.WriteClosingTag( "profiles", true );
+	writer.WriteClosingTag("profiles", true);
 }
 
 
 
-void delEngineConfigXML::pReadConfig( const decXmlElementTag &root, delLauncher &launcher ){
+void delEngineConfigXML::pReadConfig(const decXmlElementTag &root, delLauncher &launcher){
 	delGameManager &gameManager = launcher.GetGameManager();
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "profiles" ){
-			pReadProfiles( *tag, launcher );
+		if(tag->GetName() == "profiles"){
+			pReadProfiles(*tag, launcher);
 			
-		}else if( tag->GetName() == "activeProfile" ){
-			const decString &profileName = GetCDataString( *tag );
+		}else if(tag->GetName() == "activeProfile"){
+			const decString &profileName = GetCDataString(*tag);
 			
-			if( profileName.IsEmpty() ){
-				gameManager.SetActiveProfile( nullptr );
+			if(profileName.IsEmpty()){
+				gameManager.SetActiveProfile(nullptr);
 				
 			}else{
-				gameManager.SetActiveProfile( gameManager.GetProfiles().GetNamed( profileName ) );
-				if( ! gameManager.GetActiveProfile() ){
-					GetLogger()->LogWarnFormat( GetLoggerSource().GetString(),
+				gameManager.SetActiveProfile(gameManager.GetProfiles().GetNamed(profileName));
+				if(! gameManager.GetActiveProfile()){
+					GetLogger()->LogWarnFormat(GetLoggerSource().GetString(),
 						"%s(%i:%i): Profile '%s' does not exist", tag->GetName().GetString(),
-						tag->GetLineNumber(), tag->GetPositionNumber(), profileName.GetString() );
+						tag->GetLineNumber(), tag->GetPositionNumber(), profileName.GetString());
 				}
 			}
 			
 		}else{
-			ErrorUnknownTag( root, *tag );
+			ErrorUnknownTag(root, *tag);
 		}
 	}
 }
 
-void delEngineConfigXML::pReadProfiles( const decXmlElementTag &root, delLauncher &launcher ){
+void delEngineConfigXML::pReadProfiles(const decXmlElementTag &root, delLauncher &launcher){
 	delGameManager &gameManager = launcher.GetGameManager();
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "profile" ){
-			delGameProfile::Ref profile( delGameProfile::Ref::New( launcher.CreateGameProfile() ) );
-			ReadProfile( *tag, profile );
+		if(tag->GetName() == "profile"){
+			delGameProfile::Ref profile(delGameProfile::Ref::New(launcher.CreateGameProfile()));
+			ReadProfile(*tag, profile);
 			
-			if( ! profile->GetName().IsEmpty()
-			&& ! gameManager.GetProfiles().HasNamed ( profile->GetName() ) ){
-				gameManager.GetProfiles().Add ( profile );
+			if(! profile->GetName().IsEmpty()
+			&& ! gameManager.GetProfiles().HasNamed (profile->GetName())){
+				gameManager.GetProfiles().Add (profile);
 			}
 			
 		}else{
-			ErrorUnknownTag( root, *tag );
+			ErrorUnknownTag(root, *tag);
 		}
 	}
 }

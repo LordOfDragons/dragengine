@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCACoordSystemRemove::ceCACoordSystemRemove() : ceConversationAction( eatCoordSystemRemove ){
+ceCACoordSystemRemove::ceCACoordSystemRemove() : ceConversationAction(eatCoordSystemRemove){
 }
 
-ceCACoordSystemRemove::ceCACoordSystemRemove( const ceCACoordSystemRemove &action ) : ceConversationAction( action ){
+ceCACoordSystemRemove::ceCACoordSystemRemove(const ceCACoordSystemRemove &action) : ceConversationAction(action){
 	pCoordSystemID = action.GetCoordSystemID();
 }
 
@@ -53,12 +53,12 @@ ceCACoordSystemRemove::~ceCACoordSystemRemove(){
 // Management
 ///////////////
 
-void ceCACoordSystemRemove::SetCoordSystemID( const char *id ){
+void ceCACoordSystemRemove::SetCoordSystemID(const char *id){
 	pCoordSystemID = id;
 }
 
 
 
 ceConversationAction *ceCACoordSystemRemove::CreateCopy() const{
-	return new ceCACoordSystemRemove( *this );
+	return new ceCACoordSystemRemove(*this);
 }

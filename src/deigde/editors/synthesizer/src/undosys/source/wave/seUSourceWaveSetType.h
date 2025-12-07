@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceWaveSetType( seSourceWave *source, deSynthesizerSourceWave::eWaveType newType );
+	seUSourceWaveSetType(seSourceWave *source, deSynthesizerSourceWave::eWaveType newType);
 	
 protected:
 	/** \brief Clean up undo action. */

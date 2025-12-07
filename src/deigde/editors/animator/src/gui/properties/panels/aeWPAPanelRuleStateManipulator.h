@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new panel. */
-	aeWPAPanelRuleStateManipulator( aeWPRule &wpRule );
+	aeWPAPanelRuleStateManipulator(aeWPRule &wpRule);
 	
 protected:
 	/** Clean up panel. */

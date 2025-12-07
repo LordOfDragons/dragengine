@@ -52,7 +52,7 @@ public:
 	/** \missingText Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackSetMissingText( lpeLangPack *langpack, const decUnicodeString &newMissingText );
+	lpeULangPackSetMissingText(lpeLangPack *langpack, const decUnicodeString &newMissingText);
 	
 protected:
 	/** \brief Clean up undo. */

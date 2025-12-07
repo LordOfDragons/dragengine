@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPSynthesizerListener( seWPSynthesizer &panel );
+	seWPSynthesizerListener(seWPSynthesizer &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPSynthesizerListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged( seSynthesizer *synthesizer );
+	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
 	
 	/** \brief Playback properties changed. */
-	virtual void PlaybackChanged( seSynthesizer *synthesizer );
+	virtual void PlaybackChanged(seSynthesizer *synthesizer);
 	/*@}*/
 };
 

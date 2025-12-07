@@ -39,13 +39,13 @@ public:
 	decVector2();
 	
 	/** \brief Create vector with initial values. */
-	decVector2( float nx, float ny );
+	decVector2(float nx, float ny);
 	
 	/** \brief Create copy of vector. */
-	decVector2( const decVector2 &v );
+	decVector2(const decVector2 &v);
 	
 	/** \brief Create vector from point. */
-	decVector2( const decPoint &p );
+	decVector2(const decPoint &p);
 	/*@}*/
 	
 	
@@ -71,40 +71,40 @@ public:
 	const decVector2 Absolute() const;
 	
 	/** \brief Snaps the components of the vector to a grid with the given size. */
-	void Snap( float grid );
+	void Snap(float grid);
 	
 	/** \brief Component of vector are equal to another one with respect to a threshold. */
-	bool IsEqualTo( const decVector2 &v, float threshold = VECTOR_THRESHOLD ) const;
+	bool IsEqualTo(const decVector2 &v, float threshold = VECTOR_THRESHOLD) const;
 	
 	/** \brief Set all components to 0. */
 	void SetZero();
 	
 	/** \brief Set components to the given values. */
-	void Set( float nx, float ny );
+	void Set(float nx, float ny);
 	
 	/** \brief Set components to the given vector. */
-	void Set( const decVector2 &v );
+	void Set(const decVector2 &v);
 	
 	/** \brief Negate vector. */
 	void Negate();
 	
 	/** \brief Set each component to the smallest value of this vector and another vector. */
-	void SetSmallest( const decVector2 &v );
+	void SetSmallest(const decVector2 &v);
 	
 	/** \brief Vector with each component set to the smallest value of this vector and another vector. */
-	decVector2 Smallest( const decVector2 &v ) const;
+	decVector2 Smallest(const decVector2 &v) const;
 	
 	/** \brief Set each component to the largest value of this vector and another vector. */
-	void SetLargest( const decVector2 &v );
+	void SetLargest(const decVector2 &v);
 	
 	/** \brief Vector with each component set to the largest value of this vector and another vector. */
-	decVector2 Largest( const decVector2 &v ) const;
+	decVector2 Largest(const decVector2 &v) const;
 	
 	/** \brief Clamp each component to the provided range. */
-	void SetClamped( const decVector2 &minValue, const decVector2 &maxValue );
+	void SetClamped(const decVector2 &minValue, const decVector2 &maxValue);
 	
 	/** \brief Vector with each component clamped to the provided range. */
-	decVector2 Clamped( const decVector2 &minValue, const decVector2 &maxValue ) const;
+	decVector2 Clamped(const decVector2 &minValue, const decVector2 &maxValue) const;
 	
 	/** \brief Rotate vector counter-clock-wise by 90 degrees. */
 	decVector2 RotateLeft() const;
@@ -116,10 +116,10 @@ public:
 	decPoint Round() const;
 	
 	/** \brief Mix vectors component wise. */
-	decVector2 Mix( const decVector2 &vector, float blendFactor ) const;
+	decVector2 Mix(const decVector2 &vector, float blendFactor) const;
 	
 	/** \brief Multiply component wise. */
-	decVector2 Multiply( const decVector2 &vector ) const;
+	decVector2 Multiply(const decVector2 &vector) const;
 	/*@}*/
 	
 	
@@ -130,51 +130,51 @@ public:
 	decVector2 operator-() const;
 	
 	/** \brief Set components of this vector to the values of another one. */
-	decVector2 &operator=( const decVector2 &v );
+	decVector2 &operator=(const decVector2 &v);
 	
 	/** \brief Add components of another vector to this one. */
-	decVector2 &operator+=( const decVector2 &v );
+	decVector2 &operator+=(const decVector2 &v);
 	
 	/** \brief Subtract components of another vector from this vector. */
-	decVector2 &operator-=( const decVector2 &v );
+	decVector2 &operator-=(const decVector2 &v);
 	
 	/** \brief Multiply components of this vector with a value k. */
-	decVector2 &operator*=( float k );
+	decVector2 &operator*=(float k);
 	
 	/**
 	 * \brief Divide components of this vector by a value k.
 	 * \throws deeDivisionByZero Length of vector is 0.
 	 */
-	decVector2 &operator/=( float k );
+	decVector2 &operator/=(float k);
 	
 	/** \brief Vector with the sum of this vector with another one. */
-	decVector2 operator+( const decVector2 &v ) const;
+	decVector2 operator+(const decVector2 &v) const;
 	
 	/** \brief Vector with the difference of this vector to another one. */
-	decVector2 operator-( const decVector2 &v ) const;
+	decVector2 operator-(const decVector2 &v) const;
 	
 	/** \brief Vector with this vector scaled by k. */
-	decVector2 operator*( float k ) const;
+	decVector2 operator*(float k) const;
 	
 	/** \brief Calculate dot product of this vector with another one. */
-	float operator*( const decVector2 &v ) const;
+	float operator*(const decVector2 &v) const;
 	
 	/**
 	 * \brief Vector with this vector divided by k.
 	 * \throws deeDivisionByZero Length of vector is 0.
 	 */
-	decVector2 operator/( float k ) const;
+	decVector2 operator/(float k) const;
 	
 	/** \brief All the components of this vector are less then the components of another one. */
-	bool operator<( const decVector2 &v ) const;
+	bool operator<(const decVector2 &v) const;
 	
 	/** \brief All the components of this vector are greater then the components of another one. */
-	bool operator>( const decVector2 &v ) const;
+	bool operator>(const decVector2 &v) const;
 	
 	/** \brief All the components of this vector are less then or equal to the components of another one. */
-	bool operator<=( const decVector2 &v ) const;
+	bool operator<=(const decVector2 &v) const;
 	
 	/** \brief All the components of this vector are greater then or equal to the components of another one. */
-	bool operator>=( const decVector2 &v ) const;
+	bool operator>=(const decVector2 &v) const;
 	/*@}*/
 };

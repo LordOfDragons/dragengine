@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meView3DListener::meView3DListener( meView3D &view3D ) :
-pView3D( view3D ){
+meView3DListener::meView3DListener(meView3D &view3D) :
+pView3D(view3D){
 }
 
 meView3DListener::~meView3DListener(){
@@ -50,10 +50,10 @@ meView3DListener::~meView3DListener(){
 // Notifications
 //////////////////
 
-void meView3DListener::ModeChanged( meWorld* ){
+void meView3DListener::ModeChanged(meWorld*){
 	pView3D.ModeChanged();
 }
 
-void meView3DListener::ActiveCameraChanged( meWorld* ){
+void meView3DListener::ActiveCameraChanged(meWorld*){
 	pView3D.ActiveCameraChanged();
 }

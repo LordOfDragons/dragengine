@@ -49,7 +49,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassPropField( deScriptingDragonScript *ds );
+	deClassPropField(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassPropField();
 	/*@}*/
@@ -57,14 +57,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Retrieves the prop field or NULL if myself is NULL. */
-	dePropField *GetPropField( dsRealObject *myself ) const;
+	dePropField *GetPropField(dsRealObject *myself) const;
 	/** Pushes the prop field which can be NULL. */
-	void PushPropField( dsRunTime *rt, dePropField *propfield );
+	void PushPropField(dsRunTime *rt, dePropField *propfield);
 	/*@}*/
 	
 private:
@@ -74,26 +74,26 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetPosition );
+	DEF_NATFUNC(nfSetPosition);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfAddType );
-	DEF_NATFUNC( nfRemoveAllTypes );
-	DEF_NATFUNC( nfSetInstanceAt );
+	DEF_NATFUNC(nfAddType);
+	DEF_NATFUNC(nfRemoveAllTypes);
+	DEF_NATFUNC(nfSetInstanceAt);
 	
-	DEF_NATFUNC( nfGetListener );
-	DEF_NATFUNC( nfSetListener );
+	DEF_NATFUNC(nfGetListener);
+	DEF_NATFUNC(nfSetListener);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

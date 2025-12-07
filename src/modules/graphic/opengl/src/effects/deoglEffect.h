@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create effect peer. */
-	deoglEffect( deGraphicOpenGl &ogl, const deEffect &effect );
+	deoglEffect(deGraphicOpenGl &ogl, const deEffect &effect);
 	
 	/** Clean up effect. */
 	virtual ~deoglEffect();
@@ -61,15 +61,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Effect engine resource. */
-	inline const deEffect &GetEffect() const{ return pEffect; }
+	inline const deEffect &GetEffect() const{return pEffect;}
 	
 	
 	
 	/** Render effect. */
-	inline deoglREffect *GetREffect() const{ return pREffect; }
+	inline deoglREffect *GetREffect() const{return pREffect;}
 	
 	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();
@@ -84,7 +84,7 @@ public:
 	/*@}*/
 	
 protected:
-	void InitREffect( deoglREffect *reffect );
+	void InitREffect(deoglREffect *reffect);
 };
 
 #endif

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPCAParam( ceWPTopic &parentPanel );
+	ceWPCAParam(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up view property window. */

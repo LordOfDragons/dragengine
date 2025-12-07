@@ -35,11 +35,11 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decWeakFileReader::decWeakFileReader( decBaseFileReader *reader ) :
-pReader( reader )
+decWeakFileReader::decWeakFileReader(decBaseFileReader *reader) :
+pReader(reader)
 {
-	if( ! reader ){
-		DETHROW( deeInvalidParam );
+	if(! reader){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -78,18 +78,18 @@ int decWeakFileReader::GetPosition(){
 	return pReader->GetPosition();
 }
 
-void decWeakFileReader::SetPosition( int position ){
-	pReader->SetPosition( position );
+void decWeakFileReader::SetPosition(int position){
+	pReader->SetPosition(position);
 }
 
-void decWeakFileReader::MovePosition( int offset ){
-	pReader->MovePosition( offset );
+void decWeakFileReader::MovePosition(int offset){
+	pReader->MovePosition(offset);
 }
 
-void decWeakFileReader::SetPositionEnd( int position ){
-	pReader->SetPositionEnd( position );
+void decWeakFileReader::SetPositionEnd(int position){
+	pReader->SetPositionEnd(position);
 }
 
-void decWeakFileReader::Read( void *buffer, int size ){
-	pReader->Read( buffer, size );
+void decWeakFileReader::Read(void *buffer, int size){
+	pReader->Read(buffer, size);
 }

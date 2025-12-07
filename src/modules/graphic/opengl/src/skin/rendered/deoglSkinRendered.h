@@ -61,9 +61,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin rendered. */
-	deoglSkinRendered( deoglRenderThread &renderThread, deoglRComponent &component );
-	deoglSkinRendered( deoglRenderThread &renderThread, deoglRBillboard &billboard );
-	deoglSkinRendered( deoglRenderThread &renderThread, deoglRDecal &decal );
+	deoglSkinRendered(deoglRenderThread &renderThread, deoglRComponent &component);
+	deoglSkinRendered(deoglRenderThread &renderThread, deoglRBillboard &billboard);
+	deoglSkinRendered(deoglRenderThread &renderThread, deoglRDecal &decal);
 	
 	/** Clean up skin rendered. */
 	~deoglSkinRendered();
@@ -74,18 +74,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
 	/** Owner component or NULL. */
-	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
+	inline deoglRComponent *GetOwnerComponent() const{return pOwnerComponent;}
 	
 	/** Owner billboard or NULL. */
-	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
+	inline deoglRBillboard *GetOwnerBillboard() const{return pOwnerBillboard;}
 	
 	/** Owner decal or NULL. */
-	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
+	inline deoglRDecal *GetOwnerDecal() const{return pOwnerDecal;}
 	
 	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
@@ -96,10 +96,10 @@ public:
 	int GetTexturedCount() const;
 	
 	/** Texture at index. */
-	deoglSkinRenderedTexture *GetTextureAt( int index ) const;
+	deoglSkinRenderedTexture *GetTextureAt(int index) const;
 	
 	/** Add texture. */
-	deoglSkinRenderedTexture *AddTexture( deoglRSkin &skin, int texture, int modelTexture );
+	deoglSkinRenderedTexture *AddTexture(deoglRSkin &skin, int texture, int modelTexture);
 	
 	/** Remove all textures. */
 	void RemoveAllTextures();
@@ -113,7 +113,7 @@ public:
 	void Prepare();
 	
 	/** Add render plans. */
-	void AddRenderPlans( deoglRenderPlan &plan );
+	void AddRenderPlans(deoglRenderPlan &plan);
 	
 	
 	
@@ -124,7 +124,7 @@ public:
 	
 	
 private:
-	void pAddTextureIfRequired( deoglRSkin &skin, int texture, int modelTexture );
+	void pAddTextureIfRequired(deoglRSkin &skin, int texture, int modelTexture);
 };
 
 #endif

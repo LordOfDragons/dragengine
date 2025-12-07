@@ -51,10 +51,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new error trace point object. */
-	deErrorTracePoint( const char *sourceFunc, int sourceLine );
+	deErrorTracePoint(const char *sourceFunc, int sourceLine);
 	
 	/** \brief Create new error trace point object. */
-	deErrorTracePoint( deLoadableModule *module, const char *sourceFunc, int sourceLine );
+	deErrorTracePoint(deLoadableModule *module, const char *sourceFunc, int sourceLine);
 	
 	/** \brief Clean up error trace object. */
 	~deErrorTracePoint();
@@ -65,31 +65,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source module or NULL if the error occurred in the engine itself. */
-	inline deLoadableModule *GetSourceModule() const{ return pSourceModule; }
+	inline deLoadableModule *GetSourceModule() const{return pSourceModule;}
 	
 	/** \brief Source function. */
-	inline const decString &GetSourceFunction() const{ return pSourceFunc; }
+	inline const decString &GetSourceFunction() const{return pSourceFunc;}
 	
 	/** \brief Source line. */
-	inline int GetSourceLine() const{ return pSourceLine; }
+	inline int GetSourceLine() const{return pSourceLine;}
 	/*@}*/
 
 	/** \name Trace Value Management */
 	/*@{*/
 	/** \brief Determines if there exist trace values. */
-	inline bool HasValues() const{ return pValueCount > 0; }
+	inline bool HasValues() const{return pValueCount > 0;}
 	
 	/** \brief Count of trace values. */
-	inline int GetValueCount() const{ return pValueCount; }
+	inline int GetValueCount() const{return pValueCount;}
 	
 	/** \brief Indexed trace value. */
-	deErrorTraceValue *GetValue( int index ) const;
+	deErrorTraceValue *GetValue(int index) const;
 	
 	/** \brief Named trace value or NULL if not found. */
-	deErrorTraceValue *FindValue( const char *name ) const;
+	deErrorTraceValue *FindValue(const char *name) const;
 	
 	/** \brief Adds a new trace value. */
-	void AddValue( deErrorTraceValue *value );
+	void AddValue(deErrorTraceValue *value);
 	
 	/** \brief Removes all trace values. */
 	void RemoveAllValues();
@@ -100,16 +100,16 @@ public:
 	/** \name Convenience Functions */
 	/*@{*/
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValue( const char *name, const char *value );
+	deErrorTraceValue *AddValue(const char *name, const char *value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueInt( const char *name, int value );
+	deErrorTraceValue *AddValueInt(const char *name, int value);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueFloat( const char *name, float );
+	deErrorTraceValue *AddValueFloat(const char *name, float);
 	
 	/** \brief Adds a new trace value with the given information. */
-	deErrorTraceValue *AddValueBool( const char *name, bool value );
+	deErrorTraceValue *AddValueBool(const char *name, bool value);
 	/*@}*/
 };
 

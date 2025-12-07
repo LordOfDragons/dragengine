@@ -37,7 +37,7 @@ class delFileFormat;
  * Shows problems with the file formats used by the game.
  */
 class deglDGPPanelFileFormats : public FXVerticalFrame{
-	FXDECLARE( deglDGPPanelFileFormats )
+	FXDECLARE(deglDGPPanelFileFormats)
 protected:
 	deglDGPPanelFileFormats();
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDGPPanelFileFormats( deglDialogGameProblems *parentDialog, FXComposite *container );
+	deglDGPPanelFileFormats(deglDialogGameProblems *parentDialog, FXComposite *container);
 	
 	/** Clean up dialog. */
 	virtual ~deglDGPPanelFileFormats();
@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent dialog. */
-	inline deglDialogGameProblems *GetParentDialog() const{ return pParentDialog; }
+	inline deglDialogGameProblems *GetParentDialog() const{return pParentDialog;}
 	
 	/** System is working. */
-	inline bool GetStatusWorking() const{ return pStatusWorking; }
+	inline bool GetStatusWorking() const{return pStatusWorking;}
 	
 	/** Update panel. */
 	void UpdatePanel();

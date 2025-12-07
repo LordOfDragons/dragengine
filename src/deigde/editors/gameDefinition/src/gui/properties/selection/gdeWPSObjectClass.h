@@ -126,7 +126,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSObjectClass( gdeWindowProperties &windowMain );
+	gdeWPSObjectClass(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -139,13 +139,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline gdeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
@@ -173,16 +173,16 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionInheritAdd() const{ return pActionInheritAdd; }
-	inline igdeAction *GetActionInheritRemove() const{ return pActionInheritRemove; }
-	inline igdeAction *GetActionInheritRemoveAll() const{ return pActionInheritRemoveAll; }
-	inline igdeAction *GetActionPropertyValueSet() const{ return pActionPropertyValueSet; }
-	inline igdeAction *GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
-	inline igdeAction *GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }
-	inline igdeAction *GetActionPropertyValuesFromSubObjects() const{ return pActionPropertyValuesFromSubObjects; }
-	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline igdeAction *GetActionInheritAdd() const{return pActionInheritAdd;}
+	inline igdeAction *GetActionInheritRemove() const{return pActionInheritRemove;}
+	inline igdeAction *GetActionInheritRemoveAll() const{return pActionInheritRemoveAll;}
+	inline igdeAction *GetActionPropertyValueSet() const{return pActionPropertyValueSet;}
+	inline igdeAction *GetActionPropertyValueRemove() const{return pActionPropertyValueRemove;}
+	inline igdeAction *GetActionPropertyValueClear() const{return pActionPropertyValueClear;}
+	inline igdeAction *GetActionPropertyValuesFromSubObjects() const{return pActionPropertyValuesFromSubObjects;}
+	inline igdeActionContextMenu *GetActionTexturesMenu() const{return pActionTexturesMenu;}
+	inline igdeAction *GetActionTextureAdd() const{return pActionTextureAdd;}
+	inline igdeAction *GetActionTextureRemove() const{return pActionTextureRemove;}
 	
 	
 	
@@ -228,7 +228,7 @@ public:
 	void UpdateInherit();
 	
 	/** \brief Select inherit. */
-	void SelectInherit( gdeOCInherit *inherit );
+	void SelectInherit(gdeOCInherit *inherit);
 	
 	/** \brief Update hide tags. */
 	void UpdateHideTags();
@@ -250,7 +250,7 @@ public:
 	
 private:
 	/** \brief Update category list. */
-	void pUpdateCategoryList( const gdeCategoryList &list, const char *prefix );
+	void pUpdateCategoryList(const gdeCategoryList &list, const char *prefix);
 };
 
 #endif

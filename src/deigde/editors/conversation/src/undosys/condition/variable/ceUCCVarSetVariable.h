@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCVarSetVariable( ceConversationTopic *topic, ceConversationAction *action, ceCConditionVariable *condition, const char *newVariable );
+	ceUCCVarSetVariable(ceConversationTopic *topic, ceConversationAction *action, ceCConditionVariable *condition, const char *newVariable);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCVarSetVariable();

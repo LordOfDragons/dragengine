@@ -38,13 +38,13 @@
 /////////////////////////////////
 
 deDebugDrawerShapeFace::deDebugDrawerShapeFace() :
-pVertices( NULL ),
-pVertexCount( 0 ),
-pNormal( 0.0f, 0.0f, 1.0f ){
+pVertices(NULL),
+pVertexCount(0),
+pNormal(0.0f, 0.0f, 1.0f){
 }
 
 deDebugDrawerShapeFace::~deDebugDrawerShapeFace(){
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 }
@@ -54,47 +54,47 @@ deDebugDrawerShapeFace::~deDebugDrawerShapeFace(){
 // Management
 ///////////////
 
-void deDebugDrawerShapeFace::SetNormal( const decVector &normal ){
+void deDebugDrawerShapeFace::SetNormal(const decVector &normal){
 	pNormal = normal;
 	pNormal.Normalize();
 }
 
 void deDebugDrawerShapeFace::CalculateNormal(){
-	if( pVertexCount < 3 ){
+	if(pVertexCount < 3){
 		return;
 	}
-	pNormal = ( ( pVertices[ 1 ] - pVertices[ 0 ] ) % ( pVertices[ 2 ] - pVertices[ 1 ] ) ).Normalized();
+	pNormal = ((pVertices[1] - pVertices[0]) % (pVertices[2] - pVertices[1])).Normalized();
 }
 
-const decVector &deDebugDrawerShapeFace::GetVertexAt( int index ) const{
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+const decVector &deDebugDrawerShapeFace::GetVertexAt(int index) const{
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pVertices[ index ];
+	return pVertices[index];
 }
 
-void deDebugDrawerShapeFace::SetVertexAt( int index, const decVector &vertex ){
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+void deDebugDrawerShapeFace::SetVertexAt(int index, const decVector &vertex){
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
-	pVertices[ index ] = vertex;
+	pVertices[index] = vertex;
 }
 
-void deDebugDrawerShapeFace::AddVertex( const decVector &vertex ){
-	decVector * const newArray = new decVector[ pVertexCount + 1 ];
+void deDebugDrawerShapeFace::AddVertex(const decVector &vertex){
+	decVector * const newArray = new decVector[pVertexCount + 1];
 	
-	if( pVertices ){
-		memcpy( newArray, pVertices, sizeof( decVector ) * pVertexCount );
+	if(pVertices){
+		memcpy(newArray, pVertices, sizeof(decVector) * pVertexCount);
 		delete [] pVertices;
 	}
 	
 	pVertices = newArray;
-	pVertices[ pVertexCount ] = vertex;
+	pVertices[pVertexCount] = vertex;
 	pVertexCount++;
 }
 
 void deDebugDrawerShapeFace::RemoveAllVertices(){
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 		pVertices = NULL;
 	}
@@ -106,9 +106,9 @@ void deDebugDrawerShapeFace::RemoveAllVertices(){
 // Helper Functions
 /////////////////////
 
-void deDebugDrawerShapeFace::MakeCoplanarTo( const decVector &position ){
+void deDebugDrawerShapeFace::MakeCoplanarTo(const decVector &position){
 	int i;
-	for( i=0; i<pVertexCount; i++ ){
-		pVertices[ i ] += pNormal * ( pNormal * ( position - pVertices[ i ] ) );
+	for(i=0; i<pVertexCount; i++){
+		pVertices[i] += pNormal * (pNormal * (position - pVertices[i]));
 	}
 }

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCNavBlockerToggleEnabled::gdeUOCNavBlockerToggleEnabled(
-gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ) :
-pObjectClass( NULL ),
-pNavBlocker( NULL )
+gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
+pObjectClass(NULL),
+pNavBlocker(NULL)
 {
-	if( ! objectClass || ! navblocker ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! navblocker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-blocker toggle enabled" );
+	SetShortInfo("Nav-blocker toggle enabled");
 	
 	pNavBlocker = navblocker;
 	navblocker->AddReference();
@@ -59,10 +59,10 @@ pNavBlocker( NULL )
 }
 
 gdeUOCNavBlockerToggleEnabled::~gdeUOCNavBlockerToggleEnabled(){
-	if( pNavBlocker ){
+	if(pNavBlocker){
 		pNavBlocker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCNavBlockerToggleEnabled::~gdeUOCNavBlockerToggleEnabled(){
 ///////////////
 
 void gdeUOCNavBlockerToggleEnabled::Undo(){
-	pNavBlocker->SetEnabled( ! pNavBlocker->GetEnabled() );
-	pObjectClass->NotifyNavigationBlockerChanged( pNavBlocker );
+	pNavBlocker->SetEnabled(! pNavBlocker->GetEnabled());
+	pObjectClass->NotifyNavigationBlockerChanged(pNavBlocker);
 }
 
 void gdeUOCNavBlockerToggleEnabled::Redo(){

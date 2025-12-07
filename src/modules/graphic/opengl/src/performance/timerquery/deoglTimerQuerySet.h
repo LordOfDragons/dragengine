@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create timer query set. */
-	deoglTimerQuerySet( deoglRenderThread &renderThrad );
+	deoglTimerQuerySet(deoglRenderThread &renderThrad);
 	
 	/** Clean up timer query set. */
 	~deoglTimerQuerySet();
@@ -59,25 +59,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Number of queries in the set. */
-	inline int GetQueryCount() const{ return pQueryCount; }
+	inline int GetQueryCount() const{return pQueryCount;}
 	
 	/** Set number of queries in the set. */
-	void SetQueryCount( int count );
+	void SetQueryCount(int count);
 	
 	/** Begin query at index. */
-	void BeginQuery( int index );
+	void BeginQuery(int index);
 	
 	/** End active query. */
 	void EndQuery();
 	
 	/** Result of the query at index is present. */
-	bool HasResult( int index ) const;
+	bool HasResult(int index) const;
 	
 	/** Result of query at index as nano-seconds. */
-	unsigned int GetResult( int index ) const;
+	unsigned int GetResult(int index) const;
 	/*@}*/
 };
 

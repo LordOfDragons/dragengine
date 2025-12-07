@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller target. */
-	dearControllerTarget( const deAnimatorControllerTarget &target, int firstLink );
+	dearControllerTarget(const deAnimatorControllerTarget &target, int firstLink);
 	
 	/** Clean up controller target. */
 	~dearControllerTarget();
@@ -53,21 +53,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{return pLinkCount;}
 	
 	/** Link at index. */
-	int GetLinkAt( int index ) const;
+	int GetLinkAt(int index) const;
 	
 	
 	
 	/** Value of target. */
-	float GetValue( const dearAnimatorInstance &instance, float defaultValue ) const;
+	float GetValue(const dearAnimatorInstance &instance, float defaultValue) const;
 	
 	/** Vector of target. */
-	void GetVector( const dearAnimatorInstance &instance, decVector &vector ) const;
+	void GetVector(const dearAnimatorInstance &instance, decVector &vector) const;
 	
 	/** Quaternion of target. */
-	void GetQuaternion( const dearAnimatorInstance &instance, decQuaternion &quaternion ) const;
+	void GetQuaternion(const dearAnimatorInstance &instance, decQuaternion &quaternion) const;
 	/*@}*/
 };
 

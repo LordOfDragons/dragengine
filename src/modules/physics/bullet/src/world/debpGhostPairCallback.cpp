@@ -59,66 +59,66 @@ debpGhostPairCallback::~debpGhostPairCallback(){
 // Management
 ///////////////
 
-btBroadphasePair *debpGhostPairCallback::addOverlappingPair( btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1 ){
+btBroadphasePair *debpGhostPairCallback::addOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1){
 	// collision pairs added here passed the broad phase filter. they have to near phase
 	// filtered if the touch sensor is tracking objects entering and leaving shapes
-	const btCollisionObject &btColObj0 = *( ( btCollisionObject*)proxy0->m_clientObject );
-	const btCollisionObject &btColObj1 = *( ( btCollisionObject* )proxy1->m_clientObject );
-	const debpCollisionObject &colObj0 = *( ( debpCollisionObject* )btColObj0.getUserPointer() );
-	const debpCollisionObject &colObj1 = *( ( debpCollisionObject* )btColObj1.getUserPointer() );
+	const btCollisionObject &btColObj0 = *((btCollisionObject*)proxy0->m_clientObject);
+	const btCollisionObject &btColObj1 = *((btCollisionObject*)proxy1->m_clientObject);
+	const debpCollisionObject &colObj0 = *((debpCollisionObject*)btColObj0.getUserPointer());
+	const debpCollisionObject &colObj1 = *((debpCollisionObject*)btColObj1.getUserPointer());
 	
 	// test first proxy for being a touch sensor
-	if( colObj0.IsOwnerTouchSensor() ){
+	if(colObj0.IsOwnerTouchSensor()){
 		const debpTouchSensor &touchSensor = *colObj0.GetOwnerTouchSensor();
-		touchSensor.GetGhostObject()->GetGhostObject()->addOverlappingObjectInternal( proxy1, proxy0 );
+		touchSensor.GetGhostObject()->GetGhostObject()->addOverlappingObjectInternal(proxy1, proxy0);
 		
 // 		printf( "GPC+: ts=%p s=%p co=%p(%c)\n", touchSensor.GetTouchSensor(), &touchSensor,
 // 			&colObj1, colObj1.IsOwnerCollider() ? 'C' : ( colObj1.IsOwnerHTSector() ? 'H' : 'T' ) );
 		
 	// for all other ghost objects use the default behavior
-	}else if( btColObj0.getInternalType() == btCollisionObject::CO_GHOST_OBJECT ){ 
-		( ( btGhostObject* )&btColObj0 )->addOverlappingObjectInternal( proxy1, proxy0 );
+	}else if(btColObj0.getInternalType() == btCollisionObject::CO_GHOST_OBJECT){ 
+		((btGhostObject*)&btColObj0)->addOverlappingObjectInternal(proxy1, proxy0);
 	}
 	
 	// test second proxy for being a touch sensor
-	if( colObj1.IsOwnerTouchSensor() ){
+	if(colObj1.IsOwnerTouchSensor()){
 		const debpTouchSensor &touchSensor = *colObj1.GetOwnerTouchSensor();
-		touchSensor.GetGhostObject()->GetGhostObject()->addOverlappingObjectInternal( proxy0, proxy1 );
+		touchSensor.GetGhostObject()->GetGhostObject()->addOverlappingObjectInternal(proxy0, proxy1);
 		
 // 		printf( "GPC+: ts=%p s=%p co=%p(%c)\n", touchSensor.GetTouchSensor(), &touchSensor,
 // 			&colObj0, colObj0.IsOwnerCollider() ? 'C' : ( colObj0.IsOwnerHTSector() ? 'H' : 'T' ) );
 		
 	// for all other ghost objects use the default behavior
-	}else if( btColObj1.getInternalType() == btCollisionObject::CO_GHOST_OBJECT ){ 
-		( ( btGhostObject* )&btColObj1 )->addOverlappingObjectInternal( proxy0, proxy1 );
+	}else if(btColObj1.getInternalType() == btCollisionObject::CO_GHOST_OBJECT){ 
+		((btGhostObject*)&btColObj1)->addOverlappingObjectInternal(proxy0, proxy1);
 	}
 	
 	// return value is not used by bullet code. return NULL for future safety
 	return NULL;
 }
 
-void *debpGhostPairCallback::removeOverlappingPair( btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher ){
-	const btCollisionObject &btColObj0 = *( ( btCollisionObject*)proxy0->m_clientObject );
-	const btCollisionObject &btColObj1 = *( ( btCollisionObject* )proxy1->m_clientObject );
-	const debpCollisionObject &colObj0 = *( ( debpCollisionObject* )btColObj0.getUserPointer() );
-	const debpCollisionObject &colObj1 = *( ( debpCollisionObject* )btColObj1.getUserPointer() );
+void *debpGhostPairCallback::removeOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher){
+	const btCollisionObject &btColObj0 = *((btCollisionObject*)proxy0->m_clientObject);
+	const btCollisionObject &btColObj1 = *((btCollisionObject*)proxy1->m_clientObject);
+	const debpCollisionObject &colObj0 = *((debpCollisionObject*)btColObj0.getUserPointer());
+	const debpCollisionObject &colObj1 = *((debpCollisionObject*)btColObj1.getUserPointer());
 	
 	// test first proxy for being a touch sensor
-	if( colObj0.IsOwnerTouchSensor() ){
+	if(colObj0.IsOwnerTouchSensor()){
 		debpTouchSensor &touchSensor = *colObj0.GetOwnerTouchSensor();
-		touchSensor.GetGhostObject()->GetGhostObject()->removeOverlappingObjectInternal( proxy1, dispatcher, proxy0 );
+		touchSensor.GetGhostObject()->GetGhostObject()->removeOverlappingObjectInternal(proxy1, dispatcher, proxy0);
 		
 // 		printf( "GPC-: ts=%p s=%p co=%p(%c)\n", touchSensor.GetTouchSensor(), &touchSensor,
 // 			&colObj1, colObj1.IsOwnerCollider() ? 'C' : ( colObj1.IsOwnerHTSector() ? 'H' : 'T' ) );
 		
-		if( touchSensor.GetTouchSensor().GetTrackEnterLeave() ){
-			if( colObj1.IsOwnerCollider() ){
+		if(touchSensor.GetTouchSensor().GetTrackEnterLeave()){
+			if(colObj1.IsOwnerCollider()){
 				debpCollider * const collider = colObj1.GetOwnerCollider();
 				
-				if( touchSensor.GetTouchingColliders().Has( collider ) ){
+				if(touchSensor.GetTouchingColliders().Has(collider)){
 // 					printf( "GPC: ts=%p s=%p => remove collider %p\n", touchSensor.GetTouchSensor(), &touchSensor, &colObj1 );
-					touchSensor.GetTouchingColliders().Remove( collider );
-					touchSensor.GetLeavingColliders().Add( collider );
+					touchSensor.GetTouchingColliders().Remove(collider);
+					touchSensor.GetLeavingColliders().Add(collider);
 				}
 				
 			//}else if( colObj1.IsOwnerHTSector() ){
@@ -127,26 +127,26 @@ void *debpGhostPairCallback::removeOverlappingPair( btBroadphaseProxy *proxy0, b
 		}
 		
 	// for all other ghost objects use the default behavior
-	}else if( btColObj0.getInternalType() == btCollisionObject::CO_GHOST_OBJECT ){ 
-		( ( btGhostObject* )&btColObj0 )->removeOverlappingObjectInternal( proxy1, dispatcher, proxy0 );
+	}else if(btColObj0.getInternalType() == btCollisionObject::CO_GHOST_OBJECT){ 
+		((btGhostObject*)&btColObj0)->removeOverlappingObjectInternal(proxy1, dispatcher, proxy0);
 	}
 	
 	// test second proxy for being a touch sensor
-	if( colObj1.IsOwnerTouchSensor() ){
+	if(colObj1.IsOwnerTouchSensor()){
 		debpTouchSensor &touchSensor = *colObj1.GetOwnerTouchSensor();
-		touchSensor.GetGhostObject()->GetGhostObject()->removeOverlappingObjectInternal( proxy0, dispatcher, proxy1 );
+		touchSensor.GetGhostObject()->GetGhostObject()->removeOverlappingObjectInternal(proxy0, dispatcher, proxy1);
 		
 // 		printf( "GPC-: ts=%p s=%p co=%p(%c)\n", touchSensor.GetTouchSensor(), &touchSensor,
 // 			&colObj0, colObj0.IsOwnerCollider() ? 'C' : ( colObj0.IsOwnerHTSector() ? 'H' : 'T' ) );
 		
-		if( touchSensor.GetTouchSensor().GetTrackEnterLeave() ){
-			if( colObj0.IsOwnerCollider() ){
+		if(touchSensor.GetTouchSensor().GetTrackEnterLeave()){
+			if(colObj0.IsOwnerCollider()){
 				debpCollider * const collider = colObj0.GetOwnerCollider();
 				
-				if( touchSensor.GetTouchingColliders().Has( collider ) ){
+				if(touchSensor.GetTouchingColliders().Has(collider)){
 // 					printf( "GPC: ts=%p s=%p => remove collider %p\n", touchSensor.GetTouchSensor(), &touchSensor, &colObj1 );
-					touchSensor.GetTouchingColliders().Remove( collider );
-					touchSensor.GetLeavingColliders().Add( collider );
+					touchSensor.GetTouchingColliders().Remove(collider);
+					touchSensor.GetLeavingColliders().Add(collider);
 				}
 				
 			//}else if( colObj1.IsOwnerHTSector() ){
@@ -155,15 +155,15 @@ void *debpGhostPairCallback::removeOverlappingPair( btBroadphaseProxy *proxy0, b
 		}
 		
 	// for all other ghost objects use the default behavior
-	}else if( btColObj1.getInternalType() == btCollisionObject::CO_GHOST_OBJECT ){ 
-		( ( btGhostObject* )&btColObj1 )->removeOverlappingObjectInternal( proxy1, dispatcher, proxy0 );
+	}else if(btColObj1.getInternalType() == btCollisionObject::CO_GHOST_OBJECT){ 
+		((btGhostObject*)&btColObj1)->removeOverlappingObjectInternal(proxy1, dispatcher, proxy0);
 	}
 	
 	// return NULL... no idea why
 	return NULL;
 }
 
-void debpGhostPairCallback::removeOverlappingPairsContainingProxy( btBroadphaseProxy *proxy0, btDispatcher *dispatcher ){
+void debpGhostPairCallback::removeOverlappingPairsContainingProxy(btBroadphaseProxy *proxy0, btDispatcher *dispatcher){
 	// bullet throws an assertion so this is most probably not supposed to be called yet
-	DETHROW( deeInvalidAction );
+	DETHROW(deeInvalidAction);
 }

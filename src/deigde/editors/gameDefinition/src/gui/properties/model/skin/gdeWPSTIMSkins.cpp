@@ -46,11 +46,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMSkins::gdeWPSTIMSkins( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etSkins )
+gdeWPSTIMSkins::gdeWPSTIMSkins(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etSkins)
 {
-	SetText( "Skins" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText("Skins");
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMSkins::~gdeWPSTIMSkins(){
@@ -61,14 +61,14 @@ gdeWPSTIMSkins::~gdeWPSTIMSkins(){
 // Management
 ///////////////
 
-gdeWPSTIMSkin *gdeWPSTIMSkins::GetChildWith( gdeSkin *skin ) const{
-	gdeWPSTIMSkin *child = ( gdeWPSTIMSkin* )GetFirstChild();
+gdeWPSTIMSkin *gdeWPSTIMSkins::GetChildWith(gdeSkin *skin) const{
+	gdeWPSTIMSkin *child = (gdeWPSTIMSkin*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetSkin() == skin ){
+	while(child){
+		if(child->GetSkin() == skin){
 			return child;
 		}
-		child = ( gdeWPSTIMSkin* )child->GetNext();
+		child = (gdeWPSTIMSkin*)child->GetNext();
 	}
 	
 	return NULL;
@@ -81,24 +81,24 @@ void gdeWPSTIMSkins::StructureChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeSkin * const skin = list.GetAt( i );
-		gdeWPSTIMSkin * const modelSkin = GetChildWith( skin );
+	for(i=0; i<count; i++){
+		gdeSkin * const skin = list.GetAt(i);
+		gdeWPSTIMSkin * const modelSkin = GetChildWith(skin);
 		
-		if( ! modelSkin ){
-			item.TakeOver( new gdeWPSTIMSkin( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+		if(! modelSkin){
+			item.TakeOver(new gdeWPSTIMSkin(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMSkin * const modelSkin = ( gdeWPSTIMSkin* )child;
+	while(child){
+		gdeWPSTIMSkin * const modelSkin = (gdeWPSTIMSkin*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelSkin->GetSkin() ) ){
-			RemoveModel( modelSkin );
+		if(! list.Has(modelSkin->GetSkin())){
+			RemoveModel(modelSkin);
 		}
 	}
 	
@@ -114,39 +114,39 @@ void gdeWPSTIMSkins::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMSkin( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMSkin(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMSkins::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMSkins::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionSkinAdd() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionSkinAdd());
 }
 
-void gdeWPSTIMSkins::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMSkins::SelectBestMatching(const char *string){
+	if(! string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
 	
-	while( child ){
-		gdeSkin * const skin = ( ( gdeWPSTIMSkin* )child )->GetSkin();
+	while(child){
+		gdeSkin * const skin = ((gdeWPSTIMSkin*)child)->GetSkin();
 		child = child->GetNext();
 		
-		if( skin->GetName().GetLower().FindString( searchString ) == -1 ){
+		if(skin->GetName().GetLower().FindString(searchString) == -1){
 			continue;
 		}
 		
-		GetGameDefinition().SetActiveSkin( skin );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotSkin );
+		GetGameDefinition().SetActiveSkin(skin);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotSkin);
 		return;
 	}
 }

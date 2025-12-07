@@ -31,31 +31,31 @@
 // Class deMCTagOptions
 /////////////////////////
 
-deServiceObject::Ref deMCTagOptions::ModTagOptions( const Modio::ModTagOptions &tagOptions ){
+deServiceObject::Ref deMCTagOptions::ModTagOptions(const Modio::ModTagOptions &tagOptions){
 	Modio::List<std::vector, Modio::ModTagInfo>::const_iterator iter;
-	const deServiceObject::Ref so( deServiceObject::NewList() );
-	for( iter = tagOptions.begin(); iter != tagOptions.end(); iter++ ){
-		so->AddChild( ModTagInfo( *iter ) );
+	const deServiceObject::Ref so(deServiceObject::NewList());
+	for(iter = tagOptions.begin(); iter != tagOptions.end(); iter++){
+		so->AddChild(ModTagInfo(*iter));
 	}
 	return so;
 }
 
-deServiceObject::Ref deMCTagOptions::ModTagInfo( const Modio::ModTagInfo &info ){
-	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
-	so->SetStringChildAt( "name", info.TagGroupName.c_str() );
-	so->SetChildAt( "nameTranslations", deMCCommon::StringMap( info.TagGroupNameLocData ) );
-	so->SetBoolChildAt( "allowMultipleSelection", info.bAllowMultipleSelection );
+deServiceObject::Ref deMCTagOptions::ModTagInfo(const Modio::ModTagInfo &info){
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	so->SetStringChildAt("name", info.TagGroupName.c_str());
+	so->SetChildAt("nameTranslations", deMCCommon::StringMap(info.TagGroupNameLocData));
+	so->SetBoolChildAt("allowMultipleSelection", info.bAllowMultipleSelection);
 	
-	const deServiceObject::Ref soTags( deServiceObject::NewList() );
+	const deServiceObject::Ref soTags(deServiceObject::NewList());
 	const std::vector<Modio::ModTagLocalizationData> &tags = info.TagGroupValueLocData;
 	std::vector<Modio::ModTagLocalizationData>::const_iterator iterTags;
-	for( iterTags = tags.cbegin(); iterTags != tags.cend(); iterTags++ ){
-		const deServiceObject::Ref soTag( deServiceObject::Ref::NewWith() );
-		soTag->SetStringChildAt( "name", iterTags->Tag.c_str() );
-		soTag->SetChildAt( "nameTranslations", deMCCommon::StringMap( iterTags->Translations ) );
-		soTags->AddChild( soTag );
+	for(iterTags = tags.cbegin(); iterTags != tags.cend(); iterTags++){
+		const deServiceObject::Ref soTag(deServiceObject::Ref::NewWith());
+		soTag->SetStringChildAt("name", iterTags->Tag.c_str());
+		soTag->SetChildAt("nameTranslations", deMCCommon::StringMap(iterTags->Translations));
+		soTags->AddChild(soTag);
 	}
-	so->SetChildAt( "tags", soTags );
+	so->SetChildAt("tags", soTags);
 	
 	return so;
 }

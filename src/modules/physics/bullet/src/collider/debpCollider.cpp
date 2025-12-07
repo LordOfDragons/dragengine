@@ -62,10 +62,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpCollider::debpCollider( dePhysicsBullet *bullet, deCollider &collider, int type ) :
-pCollider( collider )
+debpCollider::debpCollider(dePhysicsBullet *bullet, deCollider &collider, int type) :
+pCollider(collider)
 {
-	if( ! bullet || type < ectVolume || type > ectRig ) DETHROW( deeInvalidParam );
+	if(! bullet || type < ectVolume || type > ectRig) DETHROW(deeInvalidParam);
 	int i, count;
 	
 	pType = type;
@@ -104,23 +104,23 @@ pCollider( collider )
 	
 	try{
 		count = pCollider.GetAttachmentCount();
-		for( i=0; i<count; i++ ){
-			AttachmentAdded( i, pCollider.GetAttachmentAt( i ) );
+		for(i=0; i<count; i++){
+			AttachmentAdded(i, pCollider.GetAttachmentAt(i));
 		}
 		
 		count = pCollider.GetConstraintCount();
-		for( i=0; i<count; i++ ){
-			ConstraintAdded( i, pCollider.GetConstraintAt( i ) );
+		for(i=0; i<count; i++){
+			ConstraintAdded(i, pCollider.GetConstraintAt(i));
 		}
 		
 		count = pCollider.GetCollisionTestCount();
-		for( i=0; i<count; i++ ){
-			CollisionTestAdded( i );
+		for(i=0; i<count; i++){
+			CollisionTestAdded(i);
 		}
 		
 		CollisionFilterChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -136,29 +136,29 @@ debpCollider::~debpCollider(){
 ///////////////////////
 
 debpColliderVolume *debpCollider::CastToVolume() const{
-	if( pType != ectVolume ) DETHROW( deeInvalidParam );
-	return ( debpColliderVolume* )this;
+	if(pType != ectVolume) DETHROW(deeInvalidParam);
+	return (debpColliderVolume*)this;
 }
 
 debpColliderComponent *debpCollider::CastToComponent() const{
-	if( pType != ectComponent ) DETHROW( deeInvalidParam );
-	return ( debpColliderComponent* )this;
+	if(pType != ectComponent) DETHROW(deeInvalidParam);
+	return (debpColliderComponent*)this;
 }
 
 debpColliderRig *debpCollider::CastToRigged() const{
-	if( pType != ectRig ) DETHROW( deeInvalidParam );
-	return ( debpColliderRig* )this;
+	if(pType != ectRig) DETHROW(deeInvalidParam);
+	return (debpColliderRig*)this;
 }
 
-void debpCollider::SetIsMoving( bool isMoving ){
+void debpCollider::SetIsMoving(bool isMoving){
 	pIsMoving = isMoving;
 	
-	SetAutoColDetPrepare( CalcAutoColDetPrepare() );
-	SetAutoColDetFinish( CalcAutoColDetFinish() );
+	SetAutoColDetPrepare(CalcAutoColDetPrepare());
+	SetAutoColDetFinish(CalcAutoColDetFinish());
 }
 
 const decDMatrix &debpCollider::GetMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		UpdateMatrix();
 		pDirtyMatrix = false;
 	}
@@ -166,7 +166,7 @@ const decDMatrix &debpCollider::GetMatrix(){
 }
 
 const decDMatrix &debpCollider::GetInverseMatrix(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		UpdateMatrix();
 		pDirtyMatrix = false;
 	}
@@ -174,30 +174,30 @@ const decDMatrix &debpCollider::GetInverseMatrix(){
 }
 
 const decDMatrix &debpCollider::GetMatrixNormal(){
-	if( pDirtyMatrix ){
+	if(pDirtyMatrix){
 		UpdateMatrix();
 		pDirtyMatrix = false;
 	}
 	return pMatrixNormal;
 }
 
-void debpCollider::SetIndex( int index ){
+void debpCollider::SetIndex(int index){
 	pIndex = index;
 }
 
-void debpCollider::SetParentWorld( debpWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void debpCollider::SetParentWorld(debpWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		UnregisterUpdateOctree();
 		UnregisterPPCProcessing();
 		UnregisterColDetFinish();
 		UnregisterColDetPrepare();
 		
-		if( pDebugDrawer ){
-			pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 		}
 		
 		// tell all touch sensors we are leaving. we can not delay this like we do if the
@@ -207,11 +207,11 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 		/*
 		const int tttCount = pTrackingTouchSensors.GetCount();
 		int i;
-		for( i=0; i<tttCount; i++ ){
-			debpTouchSensor &touchSensor = *( ( debpTouchSensor* )pTrackingTouchSensors.GetAt( i ) );
-			if( touchSensor.GetTouchingColliders().Has( this ) ){
-				touchSensor.GetTouchingColliders().Remove( this );
-				touchSensor.GetLeavingColliders().AddIfAbsent( this );
+		for(i=0; i<tttCount; i++){
+			debpTouchSensor &touchSensor = *((debpTouchSensor*)pTrackingTouchSensors.GetAt(i));
+			if(touchSensor.GetTouchingColliders().Has(this)){
+				touchSensor.GetTouchingColliders().Remove(this);
+				touchSensor.GetLeavingColliders().AddIfAbsent(this);
 			}
 		}
 		*/
@@ -220,15 +220,15 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 	
 	pParentWorld = parentWorld;
 	
-	if( parentWorld ){
-		if( pDebugDrawer ){
-			parentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+	if(parentWorld){
+		if(pDebugDrawer){
+			parentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 		}
 	}
 	
 	ParentWorldChanged();
 	MarkDirtyOctree();
-	if( pCollisionTests.GetCount() > 0 ){
+	if(pCollisionTests.GetCount() > 0){
 		RegisterPPCProcessing();
 	}
 	
@@ -238,7 +238,7 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 }
 
 void debpCollider::ParentWorldChanged(){
-	if( pParentWorld ){
+	if(pParentWorld){
 		CreateBody();
 		
 	}else{
@@ -246,11 +246,11 @@ void debpCollider::ParentWorldChanged(){
 	}
 }
 
-void debpCollider::SetAddToOctree( bool doAdd ){
+void debpCollider::SetAddToOctree(bool doAdd){
 	MarkDirtyOctree();
 }
 
-void debpCollider::SetExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void debpCollider::SetExtends(const decDVector &minExtend, const decDVector &maxExtend){
 	pMinExtend = minExtend;
 	pMaxExtend = maxExtend;
 }
@@ -263,7 +263,7 @@ void debpCollider::MarkDirtyOctree(){
 	pDirtyOctree = true;
 	RegisterUpdateOctree();
 	
-	if( pParentWorld ){
+	if(pParentWorld){
 		pParentWorld->MarkOctreeDirty();
 	}
 }
@@ -281,18 +281,18 @@ void debpCollider::ClearRequiresUpdate(){
 	pRequiresUpdate = false;
 }
 
-bool debpCollider::Collides( const debpCollider &collider ) const{
+bool debpCollider::Collides(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
-	return pCollider.GetCollisionFilter().Collides( engCollider.GetCollisionFilter() )
-		&& ! pCollider.HasIgnoreCollider( &engCollider )
-		&& ! engCollider.HasIgnoreCollider( &pCollider );
+	return pCollider.GetCollisionFilter().Collides(engCollider.GetCollisionFilter())
+		&& ! pCollider.HasIgnoreCollider(&engCollider)
+		&& ! engCollider.HasIgnoreCollider(&pCollider);
 }
 
-bool debpCollider::CollidesNot( const debpCollider &collider ) const{
+bool debpCollider::CollidesNot(const debpCollider &collider) const{
 	deCollider &engCollider = collider.GetCollider();
-	return pCollider.GetCollisionFilter().CollidesNot( engCollider.GetCollisionFilter() )
-		|| pCollider.HasIgnoreCollider( &engCollider )
-		|| engCollider.HasIgnoreCollider( &pCollider );
+	return pCollider.GetCollisionFilter().CollidesNot(engCollider.GetCollisionFilter())
+		|| pCollider.HasIgnoreCollider(&engCollider)
+		|| engCollider.HasIgnoreCollider(&pCollider);
 }
 
 void debpCollider::CreateBody(){
@@ -308,9 +308,9 @@ void debpCollider::UpdateExtends(){
 }
 
 void debpCollider::UpdateMatrix(){
-	pMatrixNormal.SetFromQuaternion( pCollider.GetOrientation() );
-	pMatrix = decDMatrix::CreateScale( pCollider.GetScale() ).QuickMultiply( pMatrixNormal )
-		.QuickMultiply( decDMatrix::CreateTranslation( pCollider.GetPosition() ) );
+	pMatrixNormal.SetFromQuaternion(pCollider.GetOrientation());
+	pMatrix = decDMatrix::CreateScale(pCollider.GetScale()).QuickMultiply(pMatrixNormal)
+		.QuickMultiply(decDMatrix::CreateTranslation(pCollider.GetPosition()));
 	pInvMatrix = pMatrix.QuickInvert();
 }
 
@@ -318,23 +318,23 @@ void debpCollider::PrepareForStep(){
 	PrepareConstraintsForStep();
 }
 
-void debpCollider::DetectCustomCollision( float elapsed ){
+void debpCollider::DetectCustomCollision(float elapsed){
 }
 
 
 
-void debpCollider::PrepareDetection( float elapsed ){
+void debpCollider::PrepareDetection(float elapsed){
 	pRequiresUpdate = false;
 	pIsPrepared = true;
 }
 
 void debpCollider::FinishDetection(){
-	if( pIsPrepared ){
+	if(pIsPrepared){
 		CheckColliderConstraintsBroke();
 	}
 	
-	if( pRequiresUpdate ){
-		pCollider.GetPeerScripting()->ColliderChanged( &pCollider );
+	if(pRequiresUpdate){
+		pCollider.GetPeerScripting()->ColliderChanged(&pCollider);
 		pRequiresUpdate = false;
 	}
 	
@@ -350,21 +350,21 @@ void debpCollider::UpdateCollisionObjectAABBs(){
 
 
 void debpCollider::UpdateOctreePosition(){
-	if( pDirtyOctree && pParentWorld ){
+	if(pDirtyOctree && pParentWorld){
 		UpdateExtends();
 		pDirtyOctree = false;
 	}
 }
 
 debpCollisionWorld *debpCollider::GetDynamicsWorld() const{
-	if( pParentWorld ){
+	if(pParentWorld){
 		return pParentWorld->GetDynamicsWorld();
 	}
 	
 	return NULL;
 }
 
-void debpCollider::SetUseKinematicSimulation( bool useKinematicSimulation ){
+void debpCollider::SetUseKinematicSimulation(bool useKinematicSimulation){
 	pUseKinematicSim = useKinematicSimulation;
 }
 
@@ -373,10 +373,10 @@ void debpCollider::SetUseKinematicSimulation( bool useKinematicSimulation ){
 void debpCollider::UpdateShapes(){
 }
 
-void debpCollider::UpdateShapesWithMatrix( const decDMatrix &transformation ){
+void debpCollider::UpdateShapesWithMatrix(const decDMatrix &transformation){
 }
 
-void debpCollider::SetShapeExtends( const decDVector &minExtend, const decDVector &maxExtend ){
+void debpCollider::SetShapeExtends(const decDVector &minExtend, const decDVector &maxExtend){
 	pShapeMinExtend = minExtend;
 	pShapeMaxExtend = maxExtend;
 }
@@ -385,8 +385,8 @@ void debpCollider::SetShapeExtends( const decDVector &minExtend, const decDVecto
 
 void debpCollider::PrepareConstraintsForStep(){
 	int i;
-	for( i=0; i<pConstraintCount; i++ ){
-		pConstraints[ i ]->PrepareForStep();
+	for(i=0; i<pConstraintCount; i++){
+		pConstraints[i]->PrepareForStep();
 	}
 }
 
@@ -400,10 +400,10 @@ void debpCollider::CheckColliderConstraintsBroke(){
 	//      FinishDetection is required if there are any constraints. furthermore we can
 	//      rule out any constraint which can not break.
 	int i;
-	for( i=0; i<pConstraintCount; i++ ){
-		if( pConstraints[ i ]->CheckHasBroken() ){
+	for(i=0; i<pConstraintCount; i++){
+		if(pConstraints[i]->CheckHasBroken()){
 			pCollider.GetPeerScripting()->ColliderConstraintBroke(
-				&pCollider, i, &pConstraints[ i ]->GetConstraint() );
+				&pCollider, i, &pConstraints[i]->GetConstraint());
 		}
 	}
 }
@@ -414,48 +414,48 @@ void debpCollider::ProcessColliderCollisionTests(){
 	const int count = pCollisionTests.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( debpColliderCollisionTest* )pCollisionTests.GetAt( i ) )->Update();
+	for(i=0; i<count; i++){
+		((debpColliderCollisionTest*)pCollisionTests.GetAt(i))->Update();
 	}
 }
 
 
 
 void debpCollider::RegisterColDetPrepare(){
-	if( pColDetPrepareIndex != -1 || ! pParentWorld ){
+	if(pColDetPrepareIndex != -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetPrepareColliderAdd( this );
+	pParentWorld->pColDetPrepareColliderAdd(this);
 }
 
 void debpCollider::UnregisterColDetPrepare(){
-	if( pColDetPrepareIndex == -1 || ! pParentWorld ){
+	if(pColDetPrepareIndex == -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetPrepareColliderRemove( this );
+	pParentWorld->pColDetPrepareColliderRemove(this);
 }
 
-void debpCollider::SetColDetPrepareIndex( int index ){
+void debpCollider::SetColDetPrepareIndex(int index){
 	pColDetPrepareIndex = index;
 }
 
-void debpCollider::SetAutoColDetPrepare( bool autoColDetPrepare ){
+void debpCollider::SetAutoColDetPrepare(bool autoColDetPrepare){
 	pAutoColDetPrepare = autoColDetPrepare;
 	
-	if( autoColDetPrepare ){
+	if(autoColDetPrepare){
 		RegisterColDetPrepare();
 	}
 }
 
 bool debpCollider::CalcAutoColDetPrepare(){
-	if( pIsMoving ){
+	if(pIsMoving){
 		return true;
 	}
 	
 	// see CheckColliderConstraintsBroke()
 	int i;
-	for( i=0; i<pConstraintCount; i++ ){
-		if( pConstraints[ i ]->IsBreakable() ){
+	for(i=0; i<pConstraintCount; i++){
+		if(pConstraints[i]->IsBreakable()){
 			return true;
 		}
 	}
@@ -466,10 +466,10 @@ bool debpCollider::CalcAutoColDetPrepare(){
 
 
 void debpCollider::RegisterColDetFinish(){
-	if( pColDetFinishIndex != -1 || ! pParentWorld ){
+	if(pColDetFinishIndex != -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetFinishColliderAdd( this );
+	pParentWorld->pColDetFinishColliderAdd(this);
 	
 	// we need to reset pRequiresUpdate if the collider is not registered for prepare.
 	// this is due to PrepareDetection() reseting pRequiresUpdate. if the collider is
@@ -484,33 +484,33 @@ void debpCollider::RegisterColDetFinish(){
 }
 
 void debpCollider::UnregisterColDetFinish(){
-	if( pColDetFinishIndex == -1 || ! pParentWorld ){
+	if(pColDetFinishIndex == -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pColDetFinishColliderRemove( this );
+	pParentWorld->pColDetFinishColliderRemove(this);
 }
 
-void debpCollider::SetColDetFinishIndex( int index ){
+void debpCollider::SetColDetFinishIndex(int index){
 	pColDetFinishIndex = index;
 }
 
-void debpCollider::SetAutoColDetFinish( bool autoColDetFinish ){
+void debpCollider::SetAutoColDetFinish(bool autoColDetFinish){
 	pAutoColDetFinish = autoColDetFinish;
 	
-	if( autoColDetFinish ){
+	if(autoColDetFinish){
 		RegisterColDetFinish();
 	}
 }
 
 bool debpCollider::CalcAutoColDetFinish(){
-	if( pIsMoving ){
+	if(pIsMoving){
 		return true;
 	}
 	
 	// see CheckColliderConstraintsBroke()
 	int i;
-	for( i=0; i<pConstraintCount; i++ ){
-		if( pConstraints[ i ]->IsBreakable() ){
+	for(i=0; i<pConstraintCount; i++){
+		if(pConstraints[i]->IsBreakable()){
 			return true;
 		}
 	}
@@ -521,40 +521,40 @@ bool debpCollider::CalcAutoColDetFinish(){
 
 
 void debpCollider::RegisterPPCProcessing(){
-	if( pPPCTColliderIndex != -1 || ! pParentWorld ){
+	if(pPPCTColliderIndex != -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pPPCTColliderAdd( this );
+	pParentWorld->pPPCTColliderAdd(this);
 }
 
 void debpCollider::UnregisterPPCProcessing(){
-	if( pPPCTColliderIndex == -1 || ! pParentWorld ){
+	if(pPPCTColliderIndex == -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pPPCTColliderRemove( this );
+	pParentWorld->pPPCTColliderRemove(this);
 }
 
-void debpCollider::SetPPCProcessingIndex( int index ){
+void debpCollider::SetPPCProcessingIndex(int index){
 	pPPCTColliderIndex = index;
 }
 
 
 
 void debpCollider::RegisterUpdateOctree(){
-	if( pUpdateOctreeIndex != -1 || ! pParentWorld ){
+	if(pUpdateOctreeIndex != -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pUpdateOctreeColliderAdd( this );
+	pParentWorld->pUpdateOctreeColliderAdd(this);
 }
 
 void debpCollider::UnregisterUpdateOctree(){
-	if( pUpdateOctreeIndex == -1 || ! pParentWorld ){
+	if(pUpdateOctreeIndex == -1 || ! pParentWorld){
 		return;
 	}
-	pParentWorld->pUpdateOctreeColliderRemove( this );
+	pParentWorld->pUpdateOctreeColliderRemove(this);
 }
 
-void debpCollider::SetUpdateOctreeIndex( int index ){
+void debpCollider::SetUpdateOctreeIndex(int index){
 	pUpdateOctreeIndex = index;
 }
 
@@ -563,12 +563,12 @@ void debpCollider::SetUpdateOctreeIndex( int index ){
 // Attachments
 ////////////////
 
-debpColliderAttachment *debpCollider::GetAttachmentAt( int index ) const{
-	if( index < 0 || index >= pAttachmentCount ){
-		DETHROW( deeInvalidParam );
+debpColliderAttachment *debpCollider::GetAttachmentAt(int index) const{
+	if(index < 0 || index >= pAttachmentCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pAttachments[ index ];
+	return pAttachments[index];
 }
 
 
@@ -576,10 +576,10 @@ debpColliderAttachment *debpCollider::GetAttachmentAt( int index ) const{
 // Constraints
 ////////////////
 
-debpColliderConstraint *debpCollider::GetConstraintAt( int index ) const{
-	if( index < 0 || index >= pConstraintCount ) DETHROW( deeInvalidParam );
+debpColliderConstraint *debpCollider::GetConstraintAt(int index) const{
+	if(index < 0 || index >= pConstraintCount) DETHROW(deeInvalidParam);
 	
-	return pConstraints[ index ];
+	return pConstraints[index];
 }
 
 
@@ -591,8 +591,8 @@ int debpCollider::GetCollisionTestCount() const{
 	return pCollisionTests.GetCount();
 }
 
-debpColliderCollisionTest *debpCollider::GetCollisionTestAt( int index ) const{
-	return ( debpColliderCollisionTest* )pCollisionTests.GetAt( index );
+debpColliderCollisionTest *debpCollider::GetCollisionTestAt(int index) const{
+	return (debpColliderCollisionTest*)pCollisionTests.GetAt(index);
 }
 
 
@@ -603,35 +603,35 @@ debpColliderCollisionTest *debpCollider::GetCollisionTestAt( int index ) const{
 void debpCollider::UpdateDebugDrawer(){
 	const debpDeveloperMode &devmode = pBullet->GetDeveloperMode();
 	
-	if( devmode.GetEnabled()
+	if(devmode.GetEnabled()
 	&& devmode.GetShowCategory().IsNotEmpty()
-	&& devmode.GetShowCategory().Matches( pCollider.GetCollisionFilter().GetCategory() ) ){
+	&& devmode.GetShowCategory().Matches(pCollider.GetCollisionFilter().GetCategory())){
 		// ensure the debug drawer exists
-		if( ! pDebugDrawer ){
+		if(! pDebugDrawer){
 			pDebugDrawer = pBullet->GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
-			pDebugDrawer->SetXRay( true );
-			pDebugDrawer->SetPosition( pCollider.GetPosition() );
-			pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
-			pDebugDrawer->SetScale( pCollider.GetScale() );
+			pDebugDrawer->SetXRay(true);
+			pDebugDrawer->SetPosition(pCollider.GetPosition());
+			pDebugDrawer->SetOrientation(pCollider.GetOrientation());
+			pDebugDrawer->SetScale(pCollider.GetScale());
 			
-			if( pParentWorld ){
-				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
+			if(pParentWorld){
+				pParentWorld->GetWorld().AddDebugDrawer(pDebugDrawer);
 			}
 		}
 		
 		// show shapes if layer mask matches
-		if( ! pDDSShape ){
+		if(! pDDSShape){
 			pDDSShape = new deDebugDrawerShape;
-			pDebugDrawer->AddShape( pDDSShape );
+			pDebugDrawer->AddShape(pDDSShape);
 			UpdateDDSShape();
 		}
 		
 		// update color
-		decColor colorFill( pDDSShape->GetFillColor() );
-		decColor colorEdge( pDDSShape->GetEdgeColor() );
+		decColor colorFill(pDDSShape->GetFillColor());
+		decColor colorEdge(pDDSShape->GetEdgeColor());
 		
-		if( devmode.GetHighlightResponseType() != -1 ){
-			if( pCollider.GetResponseType() == ( deCollider::eResponseType )devmode.GetHighlightResponseType() ){
+		if(devmode.GetHighlightResponseType() != -1){
+			if(pCollider.GetResponseType() == (deCollider::eResponseType)devmode.GetHighlightResponseType()){
 				colorFill = debpDebugDrawerColors::colliderFill;
 				colorEdge = debpDebugDrawerColors::colliderEdge;
 				
@@ -640,8 +640,8 @@ void debpCollider::UpdateDebugDrawer(){
 				colorEdge = debpDebugDrawerColors::colliderLowEdge;
 			}
 			
-		}else if( devmode.GetHighlightDeactivation() ){
-			if( GetRigidBodyDeactivated() ){
+		}else if(devmode.GetHighlightDeactivation()){
+			if(GetRigidBodyDeactivated()){
 				colorFill = debpDebugDrawerColors::colliderLowFill;
 				colorEdge = debpDebugDrawerColors::colliderLowEdge;
 				
@@ -655,17 +655,17 @@ void debpCollider::UpdateDebugDrawer(){
 			colorEdge = debpDebugDrawerColors::colliderEdge;
 		}
 		
-		if( ! colorFill.IsEqualTo( pDDSShape->GetFillColor() ) || ! colorEdge.IsEqualTo( pDDSShape->GetEdgeColor() ) ){
-			pDDSShape->SetFillColor( colorFill );
-			pDDSShape->SetEdgeColor( colorEdge );
+		if(! colorFill.IsEqualTo(pDDSShape->GetFillColor()) || ! colorEdge.IsEqualTo(pDDSShape->GetEdgeColor())){
+			pDDSShape->SetFillColor(colorFill);
+			pDDSShape->SetEdgeColor(colorEdge);
 			pDebugDrawer->NotifyShapeColorChanged();
 		}
 		
 	}else{
 		// if the debug drawer exists remove it
-		if( pDebugDrawer ){
-			if( pParentWorld ){
-				pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
+		if(pDebugDrawer){
+			if(pParentWorld){
+				pParentWorld->GetWorld().RemoveDebugDrawer(pDebugDrawer);
 			}
 			
 			pDDSShape = NULL;
@@ -689,37 +689,37 @@ bool debpCollider::GetRigidBodyDeactivated() const{
 //////////////////
 
 void debpCollider::PositionChanged(){
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( pCollider.GetPosition() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(pCollider.GetPosition());
 	}
 }
 
 void debpCollider::OrientationChanged(){
-	if( pDebugDrawer ){
-		pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetOrientation(pCollider.GetOrientation());
 	}
 }
 
 void debpCollider::ScaleChanged(){
-	if( pDebugDrawer ){
-		pDebugDrawer->SetScale( pCollider.GetScale() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetScale(pCollider.GetScale());
 	}
 }
 
 void debpCollider::GeometryChanged(){
-	if( pDebugDrawer ){
-		pDebugDrawer->SetPosition( pCollider.GetPosition() );
-		pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
-		pDebugDrawer->SetScale( pCollider.GetScale() );
+	if(pDebugDrawer){
+		pDebugDrawer->SetPosition(pCollider.GetPosition());
+		pDebugDrawer->SetOrientation(pCollider.GetOrientation());
+		pDebugDrawer->SetScale(pCollider.GetScale());
 	}
 }
 
-void debpCollider::LinearVelocityChanged(){ }
-void debpCollider::AngularVelocityChanged(){ }
-void debpCollider::GravityChanged(){ }
-void debpCollider::EnabledChanged(){ }
-void debpCollider::PropertiesChanged(){ }
-void debpCollider::ResponseTypeChanged(){ }
+void debpCollider::LinearVelocityChanged(){}
+void debpCollider::AngularVelocityChanged(){}
+void debpCollider::GravityChanged(){}
+void debpCollider::EnabledChanged(){}
+void debpCollider::PropertiesChanged(){}
+void debpCollider::ResponseTypeChanged(){}
 
 void debpCollider::CollisionFilterChanged(){
 }
@@ -730,141 +730,141 @@ void debpCollider::IgnoreCollidersChanged(){
 void debpCollider::ForceFieldChanged(){
 }
 
-void debpCollider::AttachmentAdded( int index, deColliderAttachment *attachment ){
-	if( pAttachmentCount == pAttachmentSize ){
+void debpCollider::AttachmentAdded(int index, deColliderAttachment *attachment){
+	if(pAttachmentCount == pAttachmentSize){
 		int newSize = pAttachmentSize * 3 / 2 + 1;
-		debpColliderAttachment **newArray = new debpColliderAttachment*[ newSize ];
-		if( pAttachments ){
-			memcpy( newArray, pAttachments, sizeof( debpColliderAttachment* ) * pAttachmentSize );
+		debpColliderAttachment **newArray = new debpColliderAttachment*[newSize];
+		if(pAttachments){
+			memcpy(newArray, pAttachments, sizeof(debpColliderAttachment*) * pAttachmentSize);
 			delete [] pAttachments;
 		}
 		pAttachments = newArray;
 		pAttachmentSize = newSize;
 	}
 	
-	pAttachments[ pAttachmentCount ] = new debpColliderAttachment( attachment );
+	pAttachments[pAttachmentCount] = new debpColliderAttachment(attachment);
 	pAttachmentCount++;
 	
 	deResource * const resource = attachment->GetResource();
-	if( resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider ){
-		( ( debpCollider* )( ( ( deCollider* )resource )->GetPeerPhysics() ) )->GetAttachedToList().Add( this );
+	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
+		((debpCollider*)(((deCollider*)resource)->GetPeerPhysics()))->GetAttachedToList().Add(this);
 	}
 }
 
-void debpCollider::AttachmentChanged( int index, deColliderAttachment *attachment ){
-	pAttachments[ index ]->AttachmentChanged();
+void debpCollider::AttachmentChanged(int index, deColliderAttachment *attachment){
+	pAttachments[index]->AttachmentChanged();
 }
 
-void debpCollider::AttachmentRemoved( int index, deColliderAttachment *attachment ){
+void debpCollider::AttachmentRemoved(int index, deColliderAttachment *attachment){
 	int i;
 	
 	deResource * const resource = attachment->GetResource();
-	if( resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider ){
-		debpCollider * const collider = ( debpCollider* )( ( ( deCollider* )resource )->GetPeerPhysics() );
-		if( collider ){
-			collider->GetAttachedToList().Remove( this );
+	if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
+		debpCollider * const collider = (debpCollider*)(((deCollider*)resource)->GetPeerPhysics());
+		if(collider){
+			collider->GetAttachedToList().Remove(this);
 		}
 	}
 	
-	delete pAttachments[ index ];
+	delete pAttachments[index];
 	
-	for( i=index+1; i<pAttachmentCount; i++ ){
-		pAttachments[ i - 1 ] = pAttachments[ i ];
+	for(i=index+1; i<pAttachmentCount; i++){
+		pAttachments[i - 1] = pAttachments[i];
 	}
 	
 	pAttachmentCount--;
 }
 
 void debpCollider::AllAttachmentsRemoved(){
-	while( pAttachmentCount > 0 ){
+	while(pAttachmentCount > 0){
 		pAttachmentCount--;
 		
-		deResource * const resource = pAttachments[ pAttachmentCount ]->GetAttachment()->GetResource();
-		if( resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider ){
-			debpCollider * const collider = ( debpCollider* )( ( ( deCollider* )resource )->GetPeerPhysics() );
-			if( collider ){
-				collider->GetAttachedToList().Remove( this );
+		deResource * const resource = pAttachments[pAttachmentCount]->GetAttachment()->GetResource();
+		if(resource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider){
+			debpCollider * const collider = (debpCollider*)(((deCollider*)resource)->GetPeerPhysics());
+			if(collider){
+				collider->GetAttachedToList().Remove(this);
 			}
 		}
 		
-		delete pAttachments[ pAttachmentCount ];
+		delete pAttachments[pAttachmentCount];
 	}
 }
 
 
 
-void debpCollider::ConstraintAdded( int index, deColliderConstraint *constraint ){
-	if( pConstraintCount == pConstraintSize ){
+void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
+	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
-		debpColliderConstraint **newArray = new debpColliderConstraint*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pConstraints ){
-			memcpy( newArray, pConstraints, sizeof( debpColliderConstraint* ) * pConstraintSize );
+		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pConstraints){
+			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;
 		}
 		pConstraints = newArray;
 		pConstraintSize = newSize;
 	}
 	
-	pConstraints[ pConstraintCount ] = new debpColliderConstraint( *pBullet, *constraint );
-	if( ! pConstraints[ pConstraintCount ] ) DETHROW( deeOutOfMemory );
+	pConstraints[pConstraintCount] = new debpColliderConstraint(*pBullet, *constraint);
+	if(! pConstraints[pConstraintCount]) DETHROW(deeOutOfMemory);
 	pConstraintCount++;
 	
 	// see CheckColliderConstraintsBroke() for the reason to register
-	SetAutoColDetPrepare( CalcAutoColDetPrepare() );
-	SetAutoColDetFinish( CalcAutoColDetFinish() );
+	SetAutoColDetPrepare(CalcAutoColDetPrepare());
+	SetAutoColDetFinish(CalcAutoColDetFinish());
 }
 
-void debpCollider::ConstraintChanged( int index, deColliderConstraint *constraint ){
+void debpCollider::ConstraintChanged(int index, deColliderConstraint *constraint){
 	//pConstraints[ index ]->ConstraintChanged();
 }
 
-void debpCollider::ConstraintRemoved( int index, deColliderConstraint *constraint ){
+void debpCollider::ConstraintRemoved(int index, deColliderConstraint *constraint){
 	int i;
 	
-	delete pConstraints[ index ];
-	for( i=index+1; i<pConstraintCount; i++ ){
-		pConstraints[ i - 1 ] = pConstraints[ i ];
+	delete pConstraints[index];
+	for(i=index+1; i<pConstraintCount; i++){
+		pConstraints[i - 1] = pConstraints[i];
 	}
 	pConstraintCount--;
 }
 
 void debpCollider::AllConstraintsRemoved(){
-	while( pConstraintCount > 0 ){
+	while(pConstraintCount > 0){
 		pConstraintCount--;
-		delete pConstraints[ pConstraintCount ];
+		delete pConstraints[pConstraintCount];
 	}
 }
 
 
 
-void debpCollider::CollisionTestChanged( int index ){
-	( ( debpColliderCollisionTest* )pCollisionTests.GetAt( index ) )->CollisionTestChanged();
+void debpCollider::CollisionTestChanged(int index){
+	((debpColliderCollisionTest*)pCollisionTests.GetAt(index))->CollisionTestChanged();
 }
 
-void debpCollider::CollisionTestEnabledChanged( int index ){
+void debpCollider::CollisionTestEnabledChanged(int index){
 	// not interesting for us. we check this during each update
 }
 
-void debpCollider::CollisionTestAdded( int index ){
-	pCollisionTests.Add( new debpColliderCollisionTest( *this, *pCollider.GetCollisionTestAt( index ) ) );
+void debpCollider::CollisionTestAdded(int index){
+	pCollisionTests.Add(new debpColliderCollisionTest(*this, *pCollider.GetCollisionTestAt(index)));
 	RegisterPPCProcessing();
 }
 
-void debpCollider::CollisionTestRemoved( int index ){
-	debpColliderCollisionTest * const cct = ( debpColliderCollisionTest* )pCollisionTests.GetAt( index );
-	pCollisionTests.RemoveFrom( index );
+void debpCollider::CollisionTestRemoved(int index){
+	debpColliderCollisionTest * const cct = (debpColliderCollisionTest*)pCollisionTests.GetAt(index);
+	pCollisionTests.RemoveFrom(index);
 	delete cct;
 	
-	if( pCollisionTests.GetCount() == 0 ){
+	if(pCollisionTests.GetCount() == 0){
 		UnregisterPPCProcessing();
 	}
 }
 
 void debpCollider::AllCollisionTestsRemoved(){
-	while( pCollisionTests.GetCount() > 0 ){
-		delete ( debpColliderCollisionTest* )pCollisionTests.GetAt( pCollisionTests.GetCount() - 1 );
-		pCollisionTests.RemoveFrom( pCollisionTests.GetCount() - 1 );
+	while(pCollisionTests.GetCount() > 0){
+		delete (debpColliderCollisionTest*)pCollisionTests.GetAt(pCollisionTests.GetCount() - 1);
+		pCollisionTests.RemoveFrom(pCollisionTests.GetCount() - 1);
 	}
 	
 	UnregisterPPCProcessing();
@@ -880,17 +880,17 @@ void debpCollider::pCleanUp(){
 	
 	AllCollisionTestsRemoved();
 	
-	if( pConstraints ){
+	if(pConstraints){
 		AllConstraintsRemoved();
 		delete [] pConstraints;
 	}
 	
-	if( pAttachments ){
+	if(pAttachments){
 		AllAttachmentsRemoved();
 		delete [] pAttachments;
 	}
 	
-	if( pDebugDrawer ){
+	if(pDebugDrawer){
 		pDebugDrawer->FreeReference();
 	}
 }
@@ -899,8 +899,8 @@ void debpCollider::pRemoveFromAllTrackingTouchSensors(){
 	const int count = pTrackingTouchSensors.GetCount();
 	int i;
 	
-	for( i=0; i< count; i++ ){
-		( ( debpTouchSensor* )pTrackingTouchSensors.GetAt( i ) )->RemoveColliderImmediately( this );
+	for(i=0; i< count; i++){
+		((debpTouchSensor*)pTrackingTouchSensors.GetAt(i))->RemoveColliderImmediately(this);
 	}
 	
 	pTrackingTouchSensors.RemoveAll();

@@ -60,13 +60,13 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionSelectFile( igdeEnvironment &environment,
+	igdeActionSelectFile(igdeEnvironment &environment,
 		igdeEnvironment::eFilePatternListTypes resourceType, igdeTextField &textField,
-		bool useGameVFS = true );
+		bool useGameVFS = true);
 	
-	igdeActionSelectFile( igdeEnvironment &environment,
+	igdeActionSelectFile(igdeEnvironment &environment,
 		const igdeFilePatternList &filePatterns, igdeTextField &textField,
-		bool useGameVFS = true );
+		bool useGameVFS = true);
 	
 	
 	
@@ -86,16 +86,16 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief File pattern list. */
-	inline const igdeFilePatternList &GetFilePatterns() const{ return pFilePatterns; }
+	inline const igdeFilePatternList &GetFilePatterns() const{return pFilePatterns;}
 	
 	/** \brief Use game virtual file system or native file system. */
-	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
+	inline bool GetUseGameVFS() const{return pUseGameVFS;}
 	
 	/** \brief Text field. */
-	inline igdeTextField &GetTextField() const{ return pTextField; }
+	inline igdeTextField &GetTextField() const{return pTextField;}
 	
 	
 	
@@ -113,7 +113,7 @@ public:
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the initial value.
 	 */
-	virtual void PrepareFile( decString &path );
+	virtual void PrepareFile(decString &path);
 	
 	/**
 	 * \brief Accept file.
@@ -123,7 +123,7 @@ public:
 	 * 
 	 * \note Implementation is allowed to change \em path to modify the stored value.
 	 */
-	virtual bool AcceptFile( decString &path );
+	virtual bool AcceptFile(decString &path);
 	
 	/**
 	 * \brief Default filename if text is empty.

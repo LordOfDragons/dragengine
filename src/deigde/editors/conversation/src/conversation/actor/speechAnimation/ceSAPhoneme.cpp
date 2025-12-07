@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceSAPhoneme::ceSAPhoneme( int ipa ) :
-pIPA( ipa ),
-pLength( 0.2f ),
-pEngController( -1 ){
+ceSAPhoneme::ceSAPhoneme(int ipa) :
+pIPA(ipa),
+pLength(0.2f),
+pEngController(-1){
 }
 
 ceSAPhoneme::~ceSAPhoneme(){
@@ -52,22 +52,22 @@ ceSAPhoneme::~ceSAPhoneme(){
 // Management
 ///////////////
 
-void ceSAPhoneme::SetLength( float length ){
+void ceSAPhoneme::SetLength(float length){
 	pLength = length;
 }
 
-void ceSAPhoneme::SetMoveName( const char *name ){
+void ceSAPhoneme::SetMoveName(const char *name){
 	pMoveName = name;
 }
 
-void ceSAPhoneme::SetVertexPositionSet( const char *vertexPositionSet ){
+void ceSAPhoneme::SetVertexPositionSet(const char *vertexPositionSet){
 	pVertexPositionSet = vertexPositionSet;
 }
 
-void ceSAPhoneme::SetSampleText( const char *sampleText ){
+void ceSAPhoneme::SetSampleText(const char *sampleText){
 	pSampleText = sampleText;
 }
 
-void ceSAPhoneme::SetEngineController( int controller ){
+void ceSAPhoneme::SetEngineController(int controller){
 	pEngController = controller;
 }

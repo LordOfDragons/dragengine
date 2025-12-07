@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create navigation space undo data. */
-	meUndoDataNavSpace( meNavigationSpace *navspace );
+	meUndoDataNavSpace(meNavigationSpace *navspace);
 	
 	/** \brief Clean up navigation space undo data. */
 	virtual ~meUndoDataNavSpace();
@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline meNavigationSpace *GetNavSpace() const{return pNavSpace;}
 	
 	/** \brief Position before action. */
-	inline const decDVector &GetOldPosition() const{ return pOldPosition; }
+	inline const decDVector &GetOldPosition() const{return pOldPosition;}
 	
 	/** \brief Orientation before action. */
-	inline const decVector &GetOldOrientation() const{ return pOldOrientation; }
+	inline const decVector &GetOldOrientation() const{return pOldOrientation;}
 	/*@}*/
 };
 

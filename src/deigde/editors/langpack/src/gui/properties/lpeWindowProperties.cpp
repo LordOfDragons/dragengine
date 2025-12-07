@@ -46,21 +46,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeWindowProperties::lpeWindowProperties( lpeWindowMain &windowMain ) :
-igdeTabBook( windowMain.GetEnvironment() ),
-pWindowMain( windowMain ),
-pPanelLangPack( NULL )
+lpeWindowProperties::lpeWindowProperties(lpeWindowMain &windowMain) :
+igdeTabBook(windowMain.GetEnvironment()),
+pWindowMain(windowMain),
+pPanelLangPack(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
-	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
+	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPanelLangPack = new lpeWPLangPack( *this );
-	AddChild( pPanelLangPack, "Language Pack" );
+	pPanelLangPack = new lpeWPLangPack(*this);
+	AddChild(pPanelLangPack, "Language Pack");
 	
-	pPanelUndoHistory.TakeOver( new lpeWPUndoHistory( env ) );
-	AddChild( pPanelUndoHistory, "Undo" );
+	pPanelUndoHistory.TakeOver(new lpeWPUndoHistory(env));
+	AddChild(pPanelUndoHistory, "Undo");
 	
-	SetActivePanel( 0 );
+	SetActivePanel(0);
 }
 
 lpeWindowProperties::~lpeWindowProperties(){
@@ -71,7 +71,7 @@ lpeWindowProperties::~lpeWindowProperties(){
 // Management
 ///////////////
 
-void lpeWindowProperties::SetLangPack( lpeLangPack *langpack ){
-	pPanelLangPack->SetLangPack( langpack );
-	( ( lpeWPUndoHistory* )pPanelUndoHistory.operator->() )->SetLangPack( langpack );
+void lpeWindowProperties::SetLangPack(lpeLangPack *langpack){
+	pPanelLangPack->SetLangPack(langpack);
+	((lpeWPUndoHistory*)pPanelUndoHistory.operator->())->SetLangPack(langpack);
 }

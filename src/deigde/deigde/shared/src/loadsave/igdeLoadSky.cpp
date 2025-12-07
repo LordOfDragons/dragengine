@@ -60,13 +60,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeLoadSky::igdeLoadSky( igdeEnvironment &environment, deLogger *logger,
-	const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ),
-pEnvironment( environment ),
-pName( "Drag[en]gine Sky" ),
-pPattern( "*.desky" ),
-pDefaultExtension( ".desky" ){
+igdeLoadSky::igdeLoadSky(igdeEnvironment &environment, deLogger *logger,
+	const char *loggerSource) :
+igdeBaseXML(logger, loggerSource),
+pEnvironment(environment),
+pName("Drag[en]gine Sky"),
+pPattern("*.desky"),
+pDefaultExtension(".desky"){
 }
 
 igdeLoadSky::~igdeLoadSky(){
@@ -77,15 +77,15 @@ igdeLoadSky::~igdeLoadSky(){
 // Management
 ///////////////
 
-void igdeLoadSky::SetName( const char *name ){
+void igdeLoadSky::SetName(const char *name){
 	pName = name;
 }
 
-void igdeLoadSky::SetPattern( const char *pattern ){
+void igdeLoadSky::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void igdeLoadSky::SetDefaultExtension( const char *extension ){
+void igdeLoadSky::SetDefaultExtension(const char *extension){
 	pDefaultExtension = extension;
 }
 
@@ -94,29 +94,29 @@ void igdeLoadSky::SetDefaultExtension( const char *extension ){
 // Loading and saving
 ///////////////////////
 
-void igdeLoadSky::Load( const decString &pathSky, deSky &sky, decBaseFileReader &reader ){
+void igdeLoadSky::Load(const decString &pathSky, deSky &sky, decBaseFileReader &reader){
 	decPath basePath;
-	basePath.SetFromUnix( pathSky.GetString() );
-	if( basePath.GetComponentCount() > 1 ){
+	basePath.SetFromUnix(pathSky.GetString());
+	if(basePath.GetComponentCount() > 1){
 		basePath.RemoveLastComponent();
 		
 	}else{
-		basePath.SetFromUnix( "/" );
+		basePath.SetFromUnix("/");
 	}
 	
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "sky" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "sky") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadSky( *root, basePath.GetPathUnix(), sky );
+	pReadSky(*root, basePath.GetPathUnix(), sky);
 }
 
 
@@ -124,275 +124,275 @@ void igdeLoadSky::Load( const decString &pathSky, deSky &sky, decBaseFileReader 
 // Private Functions
 //////////////////////
 
-void igdeLoadSky::pReadSky( const decXmlElementTag &root, const char *basePath, deSky &sky ){
+void igdeLoadSky::pReadSky(const decXmlElementTag &root, const char *basePath, deSky &sky){
 	int controllerCount = 0;
 	int linkCount = 0;
 	int layerCount = 0;
 	int i;
 	
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		const decString tagName( tag->GetName() );
+		const decString tagName(tag->GetName());
 		
-		if( tagName == "controller" ){
+		if(tagName == "controller"){
 			controllerCount++;
 			
-		}else if( tagName == "link" ){
+		}else if(tagName == "link"){
 			linkCount++;
 			
-		}else if( tagName == "layer" ){
+		}else if(tagName == "layer"){
 			layerCount++;
 		}
 	}
 	
-	sky.SetControllerCount( controllerCount );
-	sky.SetLinkCount( linkCount );
-	sky.SetLayerCount( layerCount );
+	sky.SetControllerCount(controllerCount);
+	sky.SetLinkCount(linkCount);
+	sky.SetLayerCount(layerCount);
 	
 	int controllerIndex = 0;
 	int linkIndex = 0;
 	int layerIndex = 0;
 	
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		const decString tagName( tag->GetName() );
+		const decString tagName(tag->GetName());
 		
-		if( tagName == "bgColor" ){
-			decColor color( 1.0f, 1.0f, 1.0f );
-			ReadColor( *tag, color );
-			sky.SetBgColor( color );
+		if(tagName == "bgColor"){
+			decColor color(1.0f, 1.0f, 1.0f);
+			ReadColor(*tag, color);
+			sky.SetBgColor(color);
 			
-		}else if( tagName == "controller" ){
-			pReadController( *tag, sky.GetControllerAt( controllerIndex++ ) );
+		}else if(tagName == "controller"){
+			pReadController(*tag, sky.GetControllerAt(controllerIndex++));
 			
-		}else if( tagName == "link" ){
-			pReadLink( *tag, sky.GetLinkAt( linkIndex++ ) );
+		}else if(tagName == "link"){
+			pReadLink(*tag, sky.GetLinkAt(linkIndex++));
 			
-		}else if( tagName == "layer" ){
-			pReadLayer( *tag, sky, sky.GetLayerAt( layerIndex++ ), basePath );
+		}else if(tagName == "layer"){
+			pReadLayer(*tag, sky, sky.GetLayerAt(layerIndex++), basePath);
 		}
 	}
 }
 
-void igdeLoadSky::pReadController( const decXmlElementTag &root, deSkyController &controller ){
+void igdeLoadSky::pReadController(const decXmlElementTag &root, deSkyController &controller){
 	int i;
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "name" ){
-			controller.SetName( GetCDataString( *tag ) );
+		if(tagName == "name"){
+			controller.SetName(GetCDataString(*tag));
 			
-		}else if( tagName == "clamp"){
-			controller.SetClamp( GetCDataBool( *tag ) );
+		}else if(tagName == "clamp"){
+			controller.SetClamp(GetCDataBool(*tag));
 			
-		}else if( tagName == "frozen"){
-			controller.SetFrozen( GetCDataBool( *tag ) );
+		}else if(tagName == "frozen"){
+			controller.SetFrozen(GetCDataBool(*tag));
 			
-		}else if( tagName == "limits"){
-			controller.SetValueRange( GetAttributeFloat( *tag, "min" ), GetAttributeFloat( *tag, "max" ) );
+		}else if(tagName == "limits"){
+			controller.SetValueRange(GetAttributeFloat(*tag, "min"), GetAttributeFloat(*tag, "max"));
 		}
 	}
 }
 
-void igdeLoadSky::pReadLink( const decXmlElementTag &root, deSkyLink &link ){
+void igdeLoadSky::pReadLink(const decXmlElementTag &root, deSkyLink &link){
 	int i;
 	
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "name" ){
+		if(tagName == "name"){
 			// used only in editor: GetCDataString( *tag )
 			
-		}else if( tagName == "controller"){
-			link.SetController( GetCDataInt( *tag ) );
+		}else if(tagName == "controller"){
+			link.SetController(GetCDataInt(*tag));
 			
-		}else if( tagName == "repeat"){
-			link.SetRepeat( GetCDataInt( *tag ) );
+		}else if(tagName == "repeat"){
+			link.SetRepeat(GetCDataInt(*tag));
 			
-		}else if( tagName == "curve"){
-			ReadCurveBezier( *tag, link.GetCurve() );
+		}else if(tagName == "curve"){
+			ReadCurveBezier(*tag, link.GetCurve());
 		}
 	}
 }
 
-void igdeLoadSky::pReadLayer( const decXmlElementTag &root, deSky &sky,
-deSkyLayer &layer, const char *basePath ){
+void igdeLoadSky::pReadLayer(const decXmlElementTag &root, deSky &sky,
+deSkyLayer &layer, const char *basePath){
 	int i, bodyCount = 0;
 	
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "body"){
+		if(tagName == "body"){
 			bodyCount++;
 		}
 	}
 	
-	layer.SetBodyCount( bodyCount );
+	layer.SetBodyCount(bodyCount);
 	
 	int bodyIndex = 0;
 	
-	for( i=0; i<root.GetElementCount(); i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<root.GetElementCount(); i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "name"){
+		if(tagName == "name"){
 			// used only in editor: GetCDataString( *tag );
 			
-		}else if( tagName == "offset"){
+		}else if(tagName == "offset"){
 			decVector offset;
-			ReadVector( *tag, offset );
-			layer.SetOffset( offset );
+			ReadVector(*tag, offset);
+			layer.SetOffset(offset);
 			
-		}else if( tagName == "orientation"){
+		}else if(tagName == "orientation"){
 			decVector orientation;
-			ReadVector( *tag, orientation );
-			layer.SetOrientation( orientation * DEG2RAD );
+			ReadVector(*tag, orientation);
+			layer.SetOrientation(orientation * DEG2RAD);
 			
-		}else if( tagName == "color"){
-			decColor color( 1.0f, 1.0f, 1.0f );
-			ReadColor( *tag, color );
-			layer.SetColor( color );
+		}else if(tagName == "color"){
+			decColor color(1.0f, 1.0f, 1.0f);
+			ReadColor(*tag, color);
+			layer.SetColor(color);
 			
-		}else if( tagName == "intensity"){
-			layer.SetIntensity( GetCDataFloat( *tag ) );
+		}else if(tagName == "intensity"){
+			layer.SetIntensity(GetCDataFloat(*tag));
 			
-		}else if( tagName == "transparency"){
-			layer.SetTransparency( GetCDataFloat( *tag ) );
+		}else if(tagName == "transparency"){
+			layer.SetTransparency(GetCDataFloat(*tag));
 			
-		}else if( tagName == "mulBySkyLight"){
-			layer.SetMultiplyBySkyLight( GetCDataBool( *tag ) );
+		}else if(tagName == "mulBySkyLight"){
+			layer.SetMultiplyBySkyLight(GetCDataBool(*tag));
 			
-		}else if( tagName == "mulBySkyColor"){
-			layer.SetMultiplyBySkyColor( GetCDataBool( *tag ) );
+		}else if(tagName == "mulBySkyColor"){
+			layer.SetMultiplyBySkyColor(GetCDataBool(*tag));
 			
-		}else if( tagName == "skin"){
-			const decString path( GetCDataString( *tag ) );
+		}else if(tagName == "skin"){
+			const decString path(GetCDataString(*tag));
 			
-			if( ! path.IsEmpty() ){
+			if(! path.IsEmpty()){
 				deSkin *skin = NULL;
 				
 				try{
-					skin = sky.GetEngine()->GetSkinManager()->LoadSkin( path, basePath );
-					layer.SetSkin( skin );
+					skin = sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath);
+					layer.SetSkin(skin);
 					skin->FreeReference();
 					
-				}catch( const deException & ){
-					if( skin ){
+				}catch(const deException &){
+					if(skin){
 						skin->FreeReference();
 					}
-					LogWarnGenericProblemTag( *tag, tag->GetName(),
-						"Failed loading resource file" );
+					LogWarnGenericProblemTag(*tag, tag->GetName(),
+						"Failed loading resource file");
 				}
 			}
 			
-		}else if( tagName == "lightOrientation"){
+		}else if(tagName == "lightOrientation"){
 			decVector orientation;
-			ReadVector( *tag, orientation );
-			layer.SetLightOrientation( decQuaternion::CreateFromEuler( orientation * DEG2RAD ) );
+			ReadVector(*tag, orientation);
+			layer.SetLightOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
 			
-		}else if( tagName == "lightColor"){
-			decColor color( 1.0f, 1.0f, 1.0f );
-			ReadColor( *tag, color );
-			layer.SetLightColor( color );
+		}else if(tagName == "lightColor"){
+			decColor color(1.0f, 1.0f, 1.0f);
+			ReadColor(*tag, color);
+			layer.SetLightColor(color);
 			
-		}else if( tagName == "lightIntensity"){
-			layer.SetLightIntensity( GetCDataFloat( *tag ) );
+		}else if(tagName == "lightIntensity"){
+			layer.SetLightIntensity(GetCDataFloat(*tag));
 			
-		}else if( tagName == "ambientIntensity"){
-			layer.SetAmbientIntensity( GetCDataFloat( *tag ) );
+		}else if(tagName == "ambientIntensity"){
+			layer.SetAmbientIntensity(GetCDataFloat(*tag));
 			
-		}else if( tagName == "body"){
-			pReadBody( *tag, sky, layer.GetBodyAt( bodyIndex++ ), basePath );
+		}else if(tagName == "body"){
+			pReadBody(*tag, sky, layer.GetBodyAt(bodyIndex++), basePath);
 			
-		}else if( tagName == "target"){
-			pReadTarget( *tag, layer );
+		}else if(tagName == "target"){
+			pReadTarget(*tag, layer);
 		}
 	}
 }
 
-void igdeLoadSky::pReadTarget( const decXmlElementTag &root, deSkyLayer &layer ){
-	const decString &type = GetAttributeString( root, "type" );
+void igdeLoadSky::pReadTarget(const decXmlElementTag &root, deSkyLayer &layer){
+	const decString &type = GetAttributeString(root, "type");
 	deSkyControllerTarget *target = NULL;
 	
-	if( type == "offsetX" ){
-		target = &layer.GetTarget( deSkyLayer::etOffsetX );
+	if(type == "offsetX"){
+		target = &layer.GetTarget(deSkyLayer::etOffsetX);
 		
-	}else if( type == "offsetY" ){
-		target = &layer.GetTarget( deSkyLayer::etOffsetY );
+	}else if(type == "offsetY"){
+		target = &layer.GetTarget(deSkyLayer::etOffsetY);
 		
-	}else if( type == "offsetZ" ){
-		target = &layer.GetTarget( deSkyLayer::etOffsetZ );
+	}else if(type == "offsetZ"){
+		target = &layer.GetTarget(deSkyLayer::etOffsetZ);
 		
-	}else if( type == "orieintationX" ){
-		target = &layer.GetTarget( deSkyLayer::etOrientationX );
+	}else if(type == "orieintationX"){
+		target = &layer.GetTarget(deSkyLayer::etOrientationX);
 		
-	}else if( type == "orientationY" ){
-		target = &layer.GetTarget( deSkyLayer::etOrientationY );
+	}else if(type == "orientationY"){
+		target = &layer.GetTarget(deSkyLayer::etOrientationY);
 		
-	}else if( type == "orientationZ" ){
-		target = &layer.GetTarget( deSkyLayer::etOrientationZ );
+	}else if(type == "orientationZ"){
+		target = &layer.GetTarget(deSkyLayer::etOrientationZ);
 		
-	}else if( type == "rotationX" ){
-		target = &layer.GetTarget( deSkyLayer::etRotationX );
+	}else if(type == "rotationX"){
+		target = &layer.GetTarget(deSkyLayer::etRotationX);
 		
-	}else if( type == "rotationY" ){
-		target = &layer.GetTarget( deSkyLayer::etRotationY );
+	}else if(type == "rotationY"){
+		target = &layer.GetTarget(deSkyLayer::etRotationY);
 		
-	}else if( type == "rotationZ" ){
-		target = &layer.GetTarget( deSkyLayer::etRotationZ );
+	}else if(type == "rotationZ"){
+		target = &layer.GetTarget(deSkyLayer::etRotationZ);
 		
-	}else if( type == "colorR" ){
-		target = &layer.GetTarget( deSkyLayer::etColorR );
+	}else if(type == "colorR"){
+		target = &layer.GetTarget(deSkyLayer::etColorR);
 		
-	}else if( type == "colorG" ){
-		target = &layer.GetTarget( deSkyLayer::etColorG );
+	}else if(type == "colorG"){
+		target = &layer.GetTarget(deSkyLayer::etColorG);
 		
-	}else if( type == "colorB" ){
-		target = &layer.GetTarget( deSkyLayer::etColorB );
+	}else if(type == "colorB"){
+		target = &layer.GetTarget(deSkyLayer::etColorB);
 		
-	}else if( type == "intensity" ){
-		target = &layer.GetTarget( deSkyLayer::etIntensity );
+	}else if(type == "intensity"){
+		target = &layer.GetTarget(deSkyLayer::etIntensity);
 		
-	}else if( type == "transparency" ){
-		target = &layer.GetTarget( deSkyLayer::etTransparency );
+	}else if(type == "transparency"){
+		target = &layer.GetTarget(deSkyLayer::etTransparency);
 		
-	}else if( type == "lightColorR" ){
-		target = &layer.GetTarget( deSkyLayer::etLightColorR );
+	}else if(type == "lightColorR"){
+		target = &layer.GetTarget(deSkyLayer::etLightColorR);
 		
-	}else if( type == "lightColorG" ){
-		target = &layer.GetTarget( deSkyLayer::etLightColorG );
+	}else if(type == "lightColorG"){
+		target = &layer.GetTarget(deSkyLayer::etLightColorG);
 		
-	}else if( type == "lightColorB" ){
-		target = &layer.GetTarget( deSkyLayer::etLightColorB );
+	}else if(type == "lightColorB"){
+		target = &layer.GetTarget(deSkyLayer::etLightColorB);
 		
-	}else if( type == "lightIntensity" ){
-		target = &layer.GetTarget( deSkyLayer::etLightIntensity );
+	}else if(type == "lightIntensity"){
+		target = &layer.GetTarget(deSkyLayer::etLightIntensity);
 		
-	}else if( type == "ambientIntensity" ){
-		target = &layer.GetTarget( deSkyLayer::etAmbientIntensity );
+	}else if(type == "ambientIntensity"){
+		target = &layer.GetTarget(deSkyLayer::etAmbientIntensity);
 		
 	}else{
 		return;
@@ -401,66 +401,66 @@ void igdeLoadSky::pReadTarget( const decXmlElementTag &root, deSkyLayer &layer )
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "link"){
-			const int link = GetCDataInt( *tag );
-			if( ! target->HasLink( link ) ){
-				target->AddLink( link );
+		if(tagName == "link"){
+			const int link = GetCDataInt(*tag);
+			if(! target->HasLink(link)){
+				target->AddLink(link);
 			}
 		}
 	}
 }
 
-void igdeLoadSky::pReadBody( const decXmlElementTag &root, deSky &sky,
-deSkyLayerBody &body, const char *basePath ){
+void igdeLoadSky::pReadBody(const decXmlElementTag &root, deSky &sky,
+deSkyLayerBody &body, const char *basePath){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "orientation"){
+		if(tagName == "orientation"){
 			decVector orientation;
-			ReadVector( *tag, orientation );
-			body.SetOrientation( decQuaternion::CreateFromEuler( orientation ) );
+			ReadVector(*tag, orientation);
+			body.SetOrientation(decQuaternion::CreateFromEuler(orientation));
 			
-		}else if( tagName == "size"){
-			decVector2 size( 5.0f, 5.0f );
-			ReadVector2( *tag, size );
-			body.SetSize( size * DEG2RAD );
+		}else if(tagName == "size"){
+			decVector2 size(5.0f, 5.0f);
+			ReadVector2(*tag, size);
+			body.SetSize(size * DEG2RAD);
 			
-		}else if( tagName == "color"){
-			decColor color( 1.0f, 1.0f, 1.0f );
-			ReadColor( *tag, color );
-			body.SetColor( color );
+		}else if(tagName == "color"){
+			decColor color(1.0f, 1.0f, 1.0f);
+			ReadColor(*tag, color);
+			body.SetColor(color);
 			
-		}else if( tagName == "skin"){
-			const decString path( GetCDataString( *tag ) );
+		}else if(tagName == "skin"){
+			const decString path(GetCDataString(*tag));
 			
-			if( ! path.IsEmpty() ){
+			if(! path.IsEmpty()){
 				deSkin *skin = NULL;
 				
 				try{
-					skin = sky.GetEngine()->GetSkinManager()->LoadSkin( path, basePath );
-					body.SetSkin( skin );
+					skin = sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath);
+					body.SetSkin(skin);
 					skin->FreeReference();
 					
-				}catch( const deException & ){
-					if( skin ){
+				}catch(const deException &){
+					if(skin){
 						skin->FreeReference();
 					}
-					LogWarnGenericProblemTag( *tag, tag->GetName(),
-						"Failed loading resource file" );
+					LogWarnGenericProblemTag(*tag, tag->GetName(),
+						"Failed loading resource file");
 				}
 			}
 		}

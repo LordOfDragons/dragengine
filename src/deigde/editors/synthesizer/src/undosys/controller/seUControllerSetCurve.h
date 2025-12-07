@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	seUControllerSetCurve( seController *controller, const decCurveBezier &newValue );
+	seUControllerSetCurve(seController *controller, const decCurveBezier &newValue);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new curve. */
-	void SetNewValue( const decCurveBezier &value );
+	void SetNewValue(const decCurveBezier &value);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

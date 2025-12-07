@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetName( aeController *controller, const char *newValue );
+	aeUControllerSetName(aeController *controller, const char *newValue);
 	
 protected:
 	/** Clean up undo. */

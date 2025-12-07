@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deArchiveContainer::deArchiveContainer( const decPath &rootPath, deArchive *archive,
-const decPath &archivePath ) :
-deVFSContainer( rootPath ),
-pArchivePath( archivePath ),
-pArchive( NULL ),
-pLLManagerPrev( NULL ),
-pLLManagerNext( NULL )
+deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive *archive,
+const decPath &archivePath) :
+deVFSContainer(rootPath),
+pArchivePath(archivePath),
+pArchive(NULL),
+pLLManagerPrev(NULL),
+pLLManagerNext(NULL)
 {
-	if( ! archive ){
-		DETHROW( deeInvalidParam );
+	if(! archive){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pArchive = archive;
@@ -58,9 +58,9 @@ pLLManagerNext( NULL )
 }
 
 deArchiveContainer::~deArchiveContainer(){
-	if( pArchive ){
-		if( pArchive->GetResourceManager() ){
-			( ( deArchiveManager*)pArchive->GetResourceManager() )->RemoveContainer( this );
+	if(pArchive){
+		if(pArchive->GetResourceManager()){
+			((deArchiveManager*)pArchive->GetResourceManager())->RemoveContainer(this);
 		}
 		pArchive->FreeReference();
 	}
@@ -71,160 +71,160 @@ deArchiveContainer::~deArchiveContainer(){
 // Management
 ///////////////
 
-bool deArchiveContainer::ExistsFile( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
+bool deArchiveContainer::ExistsFile(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
 		return false;
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->ExistsFile( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->ExistsFile(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->ExistsFile( pArchivePath + path );
+		return pArchive->GetPeerContainer()->ExistsFile(pArchivePath + path);
 	}
 }
 
-bool deArchiveContainer::CanReadFile( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
+bool deArchiveContainer::CanReadFile(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
 		return false;
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->CanReadFile( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->CanReadFile(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->CanReadFile( pArchivePath + path );
+		return pArchive->GetPeerContainer()->CanReadFile(pArchivePath + path);
 	}
 }
 
-bool deArchiveContainer::CanWriteFile( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
+bool deArchiveContainer::CanWriteFile(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
 		return false;
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->CanWriteFile( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->CanWriteFile(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->CanWriteFile( pArchivePath + path );
+		return pArchive->GetPeerContainer()->CanWriteFile(pArchivePath + path);
 	}
 }
 
-bool deArchiveContainer::CanDeleteFile( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
+bool deArchiveContainer::CanDeleteFile(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
 		return false;
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->CanDeleteFile( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->CanDeleteFile(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->CanDeleteFile( pArchivePath + path );
+		return pArchive->GetPeerContainer()->CanDeleteFile(pArchivePath + path);
 	}
 }
 
-decBaseFileReader *deArchiveContainer::OpenFileForReading( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+decBaseFileReader *deArchiveContainer::OpenFileForReading(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->OpenFileForReading( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->OpenFileForReading(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->OpenFileForReading( pArchivePath + path );
+		return pArchive->GetPeerContainer()->OpenFileForReading(pArchivePath + path);
 	}
 }
 
-decBaseFileWriter *deArchiveContainer::OpenFileForWriting( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+decBaseFileWriter *deArchiveContainer::OpenFileForWriting(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->OpenFileForWriting( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->OpenFileForWriting(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->OpenFileForWriting( pArchivePath + path );
+		return pArchive->GetPeerContainer()->OpenFileForWriting(pArchivePath + path);
 	}
 }
 
-void deArchiveContainer::DeleteFile( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+void deArchiveContainer::DeleteFile(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		pArchive->GetPeerContainer()->DeleteFile( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		pArchive->GetPeerContainer()->DeleteFile(path);
 		
 	}else{
-		pArchive->GetPeerContainer()->DeleteFile( pArchivePath + path );
+		pArchive->GetPeerContainer()->DeleteFile(pArchivePath + path);
 	}
 }
 
-void deArchiveContainer::TouchFile( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+void deArchiveContainer::TouchFile(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		pArchive->GetPeerContainer()->TouchFile( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		pArchive->GetPeerContainer()->TouchFile(path);
 		
 	}else{
-		pArchive->GetPeerContainer()->TouchFile( pArchivePath + path );
+		pArchive->GetPeerContainer()->TouchFile(pArchivePath + path);
 	}
 }
 
-void deArchiveContainer::SearchFiles( const decPath &directory, deContainerFileSearch &searcher ){
-	if( ! pArchive->GetPeerContainer() ){
+void deArchiveContainer::SearchFiles(const decPath &directory, deContainerFileSearch &searcher){
+	if(! pArchive->GetPeerContainer()){
 		return;
 	}
 	
-	if( pArchivePath.GetComponentCount() > 0 ){
-		pArchive->GetPeerContainer()->SearchFiles( pArchivePath + directory, searcher );
+	if(pArchivePath.GetComponentCount() > 0){
+		pArchive->GetPeerContainer()->SearchFiles(pArchivePath + directory, searcher);
 		
 	}else{
-		pArchive->GetPeerContainer()->SearchFiles( directory, searcher );
+		pArchive->GetPeerContainer()->SearchFiles(directory, searcher);
 	}
 	
 }
 
-deVFSContainer::eFileTypes deArchiveContainer::GetFileType( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+deVFSContainer::eFileTypes deArchiveContainer::GetFileType(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->GetFileType( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->GetFileType(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->GetFileType( pArchivePath + path );
+		return pArchive->GetPeerContainer()->GetFileType(pArchivePath + path);
 	}
 }
 
-uint64_t deArchiveContainer::GetFileSize( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+uint64_t deArchiveContainer::GetFileSize(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->GetFileSize( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->GetFileSize(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->GetFileSize( pArchivePath + path );
+		return pArchive->GetPeerContainer()->GetFileSize(pArchivePath + path);
 	}
 }
 
-TIME_SYSTEM deArchiveContainer::GetFileModificationTime( const decPath &path ){
-	if( ! pArchive->GetPeerContainer() ){
-		DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
+TIME_SYSTEM deArchiveContainer::GetFileModificationTime(const decPath &path){
+	if(! pArchive->GetPeerContainer()){
+		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	if( pArchivePath.GetComponentCount() == 0 ){
-		return pArchive->GetPeerContainer()->GetFileModificationTime( path );
+	if(pArchivePath.GetComponentCount() == 0){
+		return pArchive->GetPeerContainer()->GetFileModificationTime(path);
 		
 	}else{
-		return pArchive->GetPeerContainer()->GetFileModificationTime( pArchivePath + path );
+		return pArchive->GetPeerContainer()->GetFileModificationTime(pArchivePath + path);
 	}
 }
 
@@ -233,11 +233,11 @@ TIME_SYSTEM deArchiveContainer::GetFileModificationTime( const decPath &path ){
 // Resource manager linked list
 /////////////////////////////////
 
-void deArchiveContainer::SetLLManagerNext( deArchiveContainer *resource ){
+void deArchiveContainer::SetLLManagerNext(deArchiveContainer *resource){
 	pLLManagerNext = resource;
 }
 
-void deArchiveContainer::SetLLManagerPrev( deArchiveContainer *resource ){
+void deArchiveContainer::SetLLManagerPrev(deArchiveContainer *resource){
 	pLLManagerPrev = resource;
 }
 

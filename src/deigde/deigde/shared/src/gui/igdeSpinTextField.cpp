@@ -47,18 +47,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeSpinTextField::igdeSpinTextField( igdeEnvironment &environment,
-	int lower, int upper, int columns, const char *description ) :
-igdeWidget( environment ),
-pEnabled( true ),
-pColumns( columns ),
-pLower( lower ),
-pUpper( decMath::max( upper, lower ) ),
-pValue( lower ),
-pDescription( description )
+igdeSpinTextField::igdeSpinTextField(igdeEnvironment &environment,
+	int lower, int upper, int columns, const char *description) :
+igdeWidget(environment),
+pEnabled(true),
+pColumns(columns),
+pLower(lower),
+pUpper(decMath::max(upper, lower)),
+pValue(lower),
+pDescription(description)
 {
-	if( columns < 1 ){
-		DETHROW( deeInvalidParam );
+	if(columns < 1){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -71,8 +71,8 @@ igdeSpinTextField::~igdeSpinTextField(){
 // Management
 ///////////////
 
-void igdeSpinTextField::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeSpinTextField::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -80,8 +80,8 @@ void igdeSpinTextField::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeSpinTextField::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeSpinTextField::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -90,16 +90,16 @@ void igdeSpinTextField::SetDescription( const char *description ){
 }
 
 void igdeSpinTextField::Focus(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpinTextField* )GetNativeWidget() )->Focus();
+	if(GetNativeWidget()){
+		((igdeNativeSpinTextField*)GetNativeWidget())->Focus();
 	}
 }
 
 
 
-void igdeSpinTextField::SetValue( int value ){
-	value = decMath::clamp( value, pLower, pUpper );
-	if( value == pValue ){
+void igdeSpinTextField::SetValue(int value){
+	value = decMath::clamp(value, pLower, pUpper);
+	if(value == pValue){
 		return;
 	}
 	
@@ -107,88 +107,88 @@ void igdeSpinTextField::SetValue( int value ){
 	OnValueChanged();
 }
 
-void igdeSpinTextField::SetRange( int lower, int upper ){
-	if( lower == pLower && upper == pUpper ){
+void igdeSpinTextField::SetRange(int lower, int upper){
+	if(lower == pLower && upper == pUpper){
 		return;
 	}
 	
 	pLower = lower;
-	pUpper = decMath::max( upper, lower );
+	pUpper = decMath::max(upper, lower);
 	
 	const int oldValue = pValue;
-	pValue = decMath::clamp( pValue, lower, upper );
+	pValue = decMath::clamp(pValue, lower, upper);
 	
 	OnRangeChanged();
 	
-	if( pValue != oldValue ){
+	if(pValue != oldValue){
 		OnValueChanged();
 	}
 }
 
 
 
-void igdeSpinTextField::AddListener( igdeSpinTextFieldListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void igdeSpinTextField::AddListener(igdeSpinTextFieldListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void igdeSpinTextField::RemoveListener( igdeSpinTextFieldListener *listener ){
-	pListeners.Remove( listener );
+void igdeSpinTextField::RemoveListener(igdeSpinTextFieldListener *listener){
+	pListeners.Remove(listener);
 }
 
 void igdeSpinTextField::NotifyValueChanged(){
-	const decObjectOrderedSet listeners( pListeners );
+	const decObjectOrderedSet listeners(pListeners);
 	const int count = listeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeSpinTextFieldListener* )listeners.GetAt( i ) )->OnValueChanged( this );
+	for(i=0; i<count; i++){
+		((igdeSpinTextFieldListener*)listeners.GetAt(i))->OnValueChanged(this);
 	}
 }
 
 
 
 void igdeSpinTextField::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeSpinTextField * const native = igdeNativeSpinTextField::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeSpinTextField * const native = igdeNativeSpinTextField::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeSpinTextField::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeSpinTextField* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeSpinTextField*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeSpinTextField::OnRangeChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateRange();
+	if(GetNativeWidget()){
+		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateRange();
 	}
 }
 
 void igdeSpinTextField::OnValueChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateValue();
+	if(GetNativeWidget()){
+		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateValue();
 	}
 }
 
 void igdeSpinTextField::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateEnabled();
+	if(GetNativeWidget()){
+		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateEnabled();
 	}
 }
 
 void igdeSpinTextField::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateDescription();
+	if(GetNativeWidget()){
+		((igdeNativeSpinTextField*)GetNativeWidget())->UpdateDescription();
 	}
 }

@@ -50,7 +50,7 @@ public:
 	/** @name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
-	virtual void VisitNode( decQuadtree *node );
+	virtual void VisitNode(decQuadtree *node);
 	/*@}*/
 };
 

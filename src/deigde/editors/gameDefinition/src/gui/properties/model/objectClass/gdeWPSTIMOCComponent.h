@@ -42,8 +42,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCComponent( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCComponent *component, int index );
+	gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCComponent *component, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pComponent; }
+	inline gdeOCComponent *GetOCComponent() const{return pComponent;}
 	
 	/** \brief Validate component and update state accordingly. */
 	void Validate();
@@ -76,7 +76,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

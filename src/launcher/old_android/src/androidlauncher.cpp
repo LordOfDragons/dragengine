@@ -34,8 +34,8 @@ struct engine {
 */
 
 /** \brief Process the next input event. */
-static int32_t processAndroidInputEvent( struct android_app *app, AInputEvent *event ){
-	( ( dealLauncher* )app->userData )->ProcessInputEvent( *event );
+static int32_t processAndroidInputEvent(struct android_app *app, AInputEvent *event){
+	((dealLauncher*)app->userData)->ProcessInputEvent(*event);
 	return 1;
 	/*
 	struct engine* engine = (struct engine*)app->userData;
@@ -51,13 +51,13 @@ static int32_t processAndroidInputEvent( struct android_app *app, AInputEvent *e
 
 #if 0
 /** Enum assets in directory. */
-static void enumAssetsIn( AAssetManager *assetmgr, const char *dirname ){
-	pNullLogger.LogInforFormat( LOGSOURCE, "List directory '%s'", dirname );
-	AAssetDir *assetdir = AAssetManager_openDir( assetmgr, dirname[0]=='\0' ? "/" : dirname );
+static void enumAssetsIn(AAssetManager *assetmgr, const char *dirname){
+	pNullLogger.LogInforFormat(LOGSOURCE, "List directory '%s'", dirname);
+	AAssetDir *assetdir = AAssetManager_openDir(assetmgr, dirname[0]=='\0' ? "/" : dirname);
 	
-	const char *assetfile = AAssetDir_getNextFileName( assetdir );
-	while( assetfile ){
-		pNullLogger.LogInforFormat( LOGSOURCE, "Asset %s/%s", dirname, assetfile );
+	const char *assetfile = AAssetDir_getNextFileName(assetdir);
+	while(assetfile){
+		pNullLogger.LogInforFormat(LOGSOURCE, "Asset %s/%s", dirname, assetfile);
 		//AAsset *asset = AAssetManager_open( assetmgr, assetfile, AASSET_MODE_STREAMING );
 		//
 		//int AAsset_read(AAsset* asset, void* buf, size_t count);
@@ -71,15 +71,15 @@ static void enumAssetsIn( AAssetManager *assetmgr, const char *dirname ){
 // 		char buffer[ 256 ];
 // 		sprintf( (char*)buffer, "%s/%s", dirname, assetfile );
 // 		enumAssetsIn( assetmgr, buffer );
-		assetfile = AAssetDir_getNextFileName( assetdir );
+		assetfile = AAssetDir_getNextFileName(assetdir);
 	}
 	
-	AAssetDir_close( assetdir );
+	AAssetDir_close(assetdir);
 }
 
 /** Enum assets. */
-static void enumAssets( AAssetManager *assetmgr ){
-	enumAssetsIn( assetmgr, "" );
+static void enumAssets(AAssetManager *assetmgr){
+	enumAssetsIn(assetmgr, "");
 }
 #endif
 
@@ -93,38 +93,38 @@ static struct NullLogger{
 		pNullLogger = new deLoggerConsole;
 	}
 	~NullLogger(){
-		if( pNullLogger ){
+		if(pNullLogger){
 			pNullLogger->FreeReference();
 		}
 	}
 } vNullLogger;
 
 /** \brief Process the next main command. */
-static void processAndroidCommand( struct android_app *app, int32_t cmd ){
-	dealLauncher &launcher = *( ( dealLauncher* )app->userData );
+static void processAndroidCommand(struct android_app *app, int32_t cmd){
+	dealLauncher &launcher = *((dealLauncher*)app->userData);
 	
-	switch( cmd ){
+	switch(cmd){
 	case APP_CMD_SAVE_STATE:
 		try{
 			launcher.SaveState();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		
 		break;
 		
 	case APP_CMD_INIT_WINDOW:
 		// window is being shown, get it ready.
-		if( ! launcher.HasAppWindow() ){
+		if(! launcher.HasAppWindow()){
 			break;
 		};
 		
 		try{
 			launcher.InitWindow();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		
 		break;
@@ -134,8 +134,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.TerminateWindow();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
@@ -143,8 +143,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.FocusGained();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		
 		// When our app gains focus, we start monitoring the accelerometer.
@@ -163,8 +163,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.FocusLost();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		
 		// When our app loses focus, we stop monitoring the accelerometer.
@@ -183,8 +183,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.ConfigChanged();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
@@ -192,8 +192,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.InputChanged();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
@@ -201,8 +201,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.AppStart();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
@@ -210,8 +210,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.AppStop();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
@@ -219,8 +219,8 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.AppPause();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
@@ -228,17 +228,17 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
 		try{
 			launcher.AppResume();
 			
-		}catch( const deException &e ){
-			launcher.GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher.GetLogger().LogException(LOGSOURCE, e);
 		}
 		break;
 		
 	case APP_CMD_DESTROY:
-		launcher.GetLogger().LogInfo( LOGSOURCE, "APP_CMD_DESTROY" );
+		launcher.GetLogger().LogInfo(LOGSOURCE, "APP_CMD_DESTROY");
 		break;
 		
 	default:
-		launcher.GetLogger().LogWarnFormat( LOGSOURCE, "Unhandled command %d", cmd );
+		launcher.GetLogger().LogWarnFormat(LOGSOURCE, "Unhandled command %d", cmd);
 	}
 }
 
@@ -246,7 +246,7 @@ static void processAndroidCommand( struct android_app *app, int32_t cmd ){
  * \brief Main entry point of a native application using android_native_app_glue.
  * \details Runs own thread, with own event loop for receiving input events and doing other things.
  */
-void android_main( struct android_app *androidApp ){
+void android_main(struct android_app *androidApp){
 	// make sure glue isn't stripped.
 	app_dummy();
 	
@@ -254,10 +254,10 @@ void android_main( struct android_app *androidApp ){
 	dealLauncher *launcher = NULL;
 	
 	try{
-		launcher = new dealLauncher( *androidApp );
+		launcher = new dealLauncher(*androidApp);
 		
-	}catch( const deException &e ){
-		pNullLogger->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pNullLogger->LogException(LOGSOURCE, e);
 		pNullLogger->FreeReference();
 		return;
 	}
@@ -277,7 +277,7 @@ void android_main( struct android_app *androidApp ){
 	// loop waiting for stuff to do.
 	bool keepRunning = true;
 	
-	while( keepRunning ){
+	while(keepRunning){
 		// Read all pending events.
 		int ident;
 		int events;
@@ -290,12 +290,12 @@ void android_main( struct android_app *androidApp ){
 				(void**)&source)) >= 0) {
 			
 			// Process this event.
-			if( source ){
-				source->process( androidApp, source );
+			if(source){
+				source->process(androidApp, source);
 			}
 			
 			// If a sensor has data, process it now.
-			if( ident == LOOPER_ID_USER ){
+			if(ident == LOOPER_ID_USER){
 				/*
 				if (engine.accelerometerSensor != NULL) {
 					ASensorEvent event;
@@ -313,8 +313,8 @@ void android_main( struct android_app *androidApp ){
 		try{
 			keepRunning = launcher->FrameLoop();
 			
-		}catch( const deException &e ){
-			launcher->GetLogger().LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			launcher->GetLogger().LogException(LOGSOURCE, e);
 		}
 		
 		/*
@@ -334,13 +334,13 @@ void android_main( struct android_app *androidApp ){
 	}
 	
 	// clean up
-	if( launcher ){
+	if(launcher){
 		try{
 			delete launcher;
-			pNullLogger->LogInfo( LOGSOURCE, "Launcher destroyed" );
+			pNullLogger->LogInfo(LOGSOURCE, "Launcher destroyed");
 			
-		}catch( const deException &e ){
-			pNullLogger->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			pNullLogger->LogException(LOGSOURCE, e);
 		}
 		
 		androidApp->userData = NULL;

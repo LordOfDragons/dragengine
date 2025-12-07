@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	ceWPAPlayerChoice( ceWPTopic &parentPanel );
+	ceWPAPlayerChoice(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up view. */

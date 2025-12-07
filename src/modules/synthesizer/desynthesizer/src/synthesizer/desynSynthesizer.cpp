@@ -46,24 +46,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynSynthesizer::desynSynthesizer( deDESynthesizer &module, deSynthesizer &synthesizer ) :
-pModule( module ),
-pSynthesizer( synthesizer ),
+desynSynthesizer::desynSynthesizer(deDESynthesizer &module, deSynthesizer &synthesizer) :
+pModule(module),
+pSynthesizer(synthesizer),
 
-pSources( NULL ),
-pSourceCount( 0 ),
+pSources(NULL),
+pSourceCount(0),
 
-pSilent( true ),
-pStateDataSize( 0 ),
+pSilent(true),
+pStateDataSize(0),
 
-pDirtyContent( true ),
+pDirtyContent(true),
 
-pChannelCount( synthesizer.GetChannelCount() ),
-pSampleRate( synthesizer.GetSampleRate() ),
-pBytesPerSample( synthesizer.GetBytesPerSample() ),
-pSampleCount( synthesizer.GetSampleCount() ),
+pChannelCount(synthesizer.GetChannelCount()),
+pSampleRate(synthesizer.GetSampleRate()),
+pBytesPerSample(synthesizer.GetBytesPerSample()),
+pSampleCount(synthesizer.GetSampleCount()),
 
-pUpdateTracker( 0 ){
+pUpdateTracker(0){
 }
 
 desynSynthesizer::~desynSynthesizer(){
@@ -75,12 +75,12 @@ desynSynthesizer::~desynSynthesizer(){
 // Management
 ///////////////
 
-void desynSynthesizer::SetSilent( bool silent ){
+void desynSynthesizer::SetSilent(bool silent){
 	pSilent = silent;
 }
 
-void desynSynthesizer::SetStateDataSize( int size ){
-	pStateDataSize = decMath::max( size, 0 );
+void desynSynthesizer::SetStateDataSize(int size){
+	pStateDataSize = decMath::max(size, 0);
 }
 
 
@@ -89,31 +89,31 @@ int desynSynthesizer::GetLinkCount() const{
 	return pLinks.GetCount();
 }
 
-const desynSynthesizerLink &desynSynthesizer::GetLinkAt( int index ) const{
-	return *( ( desynSynthesizerLink* )pLinks.GetAt( index ) );
+const desynSynthesizerLink &desynSynthesizer::GetLinkAt(int index) const{
+	return *((desynSynthesizerLink*)pLinks.GetAt(index));
 }
 
-void desynSynthesizer::AddLink( desynSynthesizerLink *link ){
-	pLinks.Add( link );
+void desynSynthesizer::AddLink(desynSynthesizerLink *link){
+	pLinks.Add(link);
 }
 
 
 
-const desynSynthesizerSource &desynSynthesizer::GetSourceAt( int index ) const{
-	if( index < 0 || index >= pSourceCount ){
-		DETHROW( deeInvalidParam );
+const desynSynthesizerSource &desynSynthesizer::GetSourceAt(int index) const{
+	if(index < 0 || index >= pSourceCount){
+		DETHROW(deeInvalidParam);
 	}
-	return *pSources[ index ];
+	return *pSources[index];
 }
 
 
 
 void desynSynthesizer::Prepare(){
-	if( ! pDirtyContent ){
+	if(! pDirtyContent){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pClearSources();
 	pClearLinks();
 	
@@ -125,30 +125,30 @@ void desynSynthesizer::Prepare(){
 
 
 
-void desynSynthesizer::InitStateData( char *stateData ){
+void desynSynthesizer::InitStateData(char *stateData){
 	int i;
-	for( i=0; i<pSourceCount; i++ ){
-		pSources[ i ]->InitStateData( stateData );
+	for(i=0; i<pSourceCount; i++){
+		pSources[i]->InitStateData(stateData);
 	}
 }
 
-void desynSynthesizer::CleanUpStateData( char *stateData ){
+void desynSynthesizer::CleanUpStateData(char *stateData){
 	int i;
-	for( i=0; i<pSourceCount; i++ ){
-		pSources[ i ]->CleanUpStateData( stateData );
+	for(i=0; i<pSourceCount; i++){
+		pSources[i]->CleanUpStateData(stateData);
 	}
 }
 
-void desynSynthesizer::GenerateSound( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples ){
-	if( pSilent ){
+void desynSynthesizer::GenerateSound(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples){
+	if(pSilent){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	int i;
-	for( i=0; i<pSourceCount; i++ ){
-		pSources[ i ]->GenerateSound( instance, stateData, buffer, samples, 0.0f, 1.0f );
+	for(i=0; i<pSourceCount; i++){
+		pSources[i]->GenerateSound(instance, stateData, buffer, samples, 0.0f, 1.0f);
 	}
 }
 
@@ -158,7 +158,7 @@ char *stateData, float *buffer, int samples ){
 //////////////////
 
 void desynSynthesizer::ParametersChanged(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pUpdateTracker++;
 	pBytesPerSample = pSynthesizer.GetBytesPerSample();
 	pChannelCount = pSynthesizer.GetChannelCount();
@@ -167,26 +167,26 @@ void desynSynthesizer::ParametersChanged(){
 }
 
 void desynSynthesizer::ControllersChanged(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pUpdateTracker++;
 }
 
 void desynSynthesizer::LinksChanged(){
-	if( pDirtyContent ){
+	if(pDirtyContent){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pDirtyContent = true;
 	pUpdateTracker++;
 }
 
 void desynSynthesizer::SourcesChanged(){
-	if( pDirtyContent ){
+	if(pDirtyContent){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pDirtyContent = true;
 	pUpdateTracker++;
 }
@@ -197,7 +197,7 @@ void desynSynthesizer::SourcesChanged(){
 //////////////////////
 
 void desynSynthesizer::pCleanUp(){
-	deMutexGuard guard( pMutex );
+	deMutexGuard guard(pMutex);
 	pClearSources();
 	pClearLinks();
 }
@@ -208,8 +208,8 @@ void desynSynthesizer::pClearLinks(){
 	const int count = pLinks.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( desynSynthesizerLink* )pLinks.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (desynSynthesizerLink*)pLinks.GetAt(i);
 	}
 	
 	pLinks.RemoveAll();
@@ -219,13 +219,13 @@ void desynSynthesizer::pCreateLinks(){
 	pClearLinks();
 	
 	const int count = pSynthesizer.GetLinkCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<count; i++ ){
-		pLinks.Add( new desynSynthesizerLink( *pSynthesizer.GetLinkAt( i ) ) );
+	for(i=0; i<count; i++){
+		pLinks.Add(new desynSynthesizerLink(*pSynthesizer.GetLinkAt(i)));
 	}
 }
 
@@ -234,28 +234,28 @@ void desynSynthesizer::pCreateSources(){
 	pStateDataSize = 0;
 	
 	const int count = pSynthesizer.GetSourceCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	desynCreateSynthesizerSource createSource( *this, 0 );
-	pSources = new desynSynthesizerSource*[ count ];
+	desynCreateSynthesizerSource createSource(*this, 0);
+	pSources = new desynSynthesizerSource*[count];
 	
-	for( pSourceCount=0; pSourceCount<count; pSourceCount++ ){
+	for(pSourceCount=0; pSourceCount<count; pSourceCount++){
 		createSource.Reset();
 		
 		try{
-			pSynthesizer.GetSourceAt( pSourceCount )->Visit( createSource );
-			pSources[ pSourceCount ] = createSource.GetSource();
+			pSynthesizer.GetSourceAt(pSourceCount)->Visit(createSource);
+			pSources[pSourceCount] = createSource.GetSource();
 			
-			if( ! pSources[ pSourceCount ]->GetSilent() ){
+			if(! pSources[pSourceCount]->GetSilent()){
 				pSilent = false;
 			}
 			
-			pStateDataSize += pSources[ pSourceCount ]->StateDataSize( pStateDataSize );
+			pStateDataSize += pSources[pSourceCount]->StateDataSize(pStateDataSize);
 			
-		}catch( const deException & ){
-			if( createSource.GetSource() ){
+		}catch(const deException &){
+			if(createSource.GetSource()){
 				delete createSource.GetSource();
 			}
 			throw;
@@ -264,13 +264,13 @@ void desynSynthesizer::pCreateSources(){
 }
 
 void desynSynthesizer::pClearSources(){
-	if( ! pSources ){
+	if(! pSources){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<pSourceCount; i++ ){
-		delete pSources[ i ];
+	for(i=0; i<pSourceCount; i++){
+		delete pSources[i];
 	}
 	delete [] pSources;
 	

@@ -53,31 +53,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set the maximum pixel error on screen. */
-	void SetMaxPixelError( int maxPixelError );
+	void SetMaxPixelError(int maxPixelError);
 	
 	/** Set lod offset. */
-	void SetLodOffset( int offset );
+	void SetLodOffset(int offset);
 	
 	/** Set lod level of all components to 0. */
-	void SetComponentLOD0( const deoglCollideList &collideList );
+	void SetComponentLOD0(const deoglCollideList &collideList);
 	
 	/** Set lod level of all components to highest. */
-	void SetComponentLODMax( const deoglCollideList &collideList );
+	void SetComponentLODMax(const deoglCollideList &collideList);
 	
 	/** Calculate projective lod levels for all components. */
-	void SetComponentLODProjection( const deoglCollideList &collideList, const decDVector &position,
-		const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight );
+	void SetComponentLODProjection(const deoglCollideList &collideList, const decDVector &position,
+		const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeight);
 	
 	/** Calculate orthographic lod levels for all components. */
-	void SetComponentLODOrtho( const deoglCollideList &collideList, float boxWidth, float boxHeight,
-		int screenWidth, int screenHeight );
+	void SetComponentLODOrtho(const deoglCollideList &collideList, float boxWidth, float boxHeight,
+		int screenWidth, int screenHeight);
 	
 	/** Calculate orthographic lod levels for all components. */
-	void SetComponentLODOrtho( deoglCollideListComponent &clistComponent, float boxWidth,
-		float boxHeight, int screenWidth, int screenHeight );
+	void SetComponentLODOrtho(deoglCollideListComponent &clistComponent, float boxWidth,
+		float boxHeight, int screenWidth, int screenHeight);
 	
 	/** Calculate omnidirection lod levels for all components. */
-	void SetComponentLODOmniDir( const deoglCollideList &collideList, const decDVector &position, int size );
+	void SetComponentLODOmniDir(const deoglCollideList &collideList, const decDVector &position, int size);
 	/*@}*/
 };
 

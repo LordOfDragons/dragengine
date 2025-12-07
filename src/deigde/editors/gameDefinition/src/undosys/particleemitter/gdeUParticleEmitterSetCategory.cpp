@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetCategory::gdeUParticleEmitterSetCategory(
-gdeParticleEmitter *particleEmitter, const char *newValue ) :
-pParticleEmitter( NULL )
+gdeParticleEmitter *particleEmitter, const char *newValue) :
+pParticleEmitter(NULL)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(! particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set category" );
+	SetShortInfo("Particle emitter set category");
 	
 	pOldValue = particleEmitter->GetCategory();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pParticleEmitter( NULL )
 }
 
 gdeUParticleEmitterSetCategory::~gdeUParticleEmitterSetCategory(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUParticleEmitterSetCategory::~gdeUParticleEmitterSetCategory(){
 ///////////////
 
 void gdeUParticleEmitterSetCategory::Undo(){
-	pParticleEmitter->SetCategory( pOldValue );
+	pParticleEmitter->SetCategory(pOldValue);
 }
 
 void gdeUParticleEmitterSetCategory::Redo(){
-	pParticleEmitter->SetCategory( pNewValue );
+	pParticleEmitter->SetCategory(pNewValue);
 }

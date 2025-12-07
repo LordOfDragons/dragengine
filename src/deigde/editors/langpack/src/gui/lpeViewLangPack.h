@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view. */
-	lpeViewLangPack( lpeWindowMain &windowMain );
+	lpeViewLangPack(lpeWindowMain &windowMain);
 	
 protected:
 	/** Cleanup view. */
@@ -79,16 +79,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Language pack or nullptr. */
-	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
+	inline const lpeLangPack::Ref &GetLangPack() const{return pLangPack;}
 	
 	/** Set language pack or nullptr. */
-	void SetLangPack( lpeLangPack *langpack );
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** Reference language pack or nullptr. */
-	inline const lpeLangPack::Ref &GetReferenceLangPack() const{ return pRefLangPack; }
+	inline const lpeLangPack::Ref &GetReferenceLangPack() const{return pRefLangPack;}
 	
 	/** Set reference language pack or nullptr. */
-	void SetReferenceLangPack( lpeLangPack *langpack );
+	void SetReferenceLangPack(lpeLangPack *langpack);
 	
 	/** Retrieves the active entry or nullptr if there is none. */
 	lpeLangPackEntry *GetActiveEntry() const;
@@ -105,10 +105,10 @@ public:
 	void SelectActiveEntry();
 	
 	/** Select entry with name. */
-	void SelectEntryNamed( const char *name );
+	void SelectEntryNamed(const char *name);
 	
 	/** Select entry. */
-	void SelectEntry( lpeLangPackEntry *entry );
+	void SelectEntry(lpeLangPackEntry *entry);
 	
 	/** Select next missing. */
 	void SelectNextMissingEntry();
@@ -120,7 +120,7 @@ public:
 	void UpdateEntrySelection();
 	
 	/** Update a specific entry. */
-	void UpdateEntry( lpeLangPackEntry *entry );
+	void UpdateEntry(lpeLangPackEntry *entry);
 	/*@}*/
 };
 

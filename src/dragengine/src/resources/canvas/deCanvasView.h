@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasView( deCanvasManager *manager );
+	deCanvasView(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -66,24 +66,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of child canvas. */
-	inline int GetCanvasCount() const{ return pCanvasCount; }
+	inline int GetCanvasCount() const{return pCanvasCount;}
 	
 	/** \brief Root canvas or NULL if there is none. */
-	inline deCanvas *GetRootCanvas() const{ return pCanvasRoot; }
+	inline deCanvas *GetRootCanvas() const{return pCanvasRoot;}
 	
 	/**
 	 * \brief Add child canvas.
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas has a parent view.
 	 */
-	void AddCanvas( deCanvas *canvas );
+	void AddCanvas(deCanvas *canvas);
 	
 	/**
 	 * \brief Remove child canvas.
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas parent view is not this canvas.
 	 */
-	void RemoveCanvas( deCanvas *canvas );
+	void RemoveCanvas(deCanvas *canvas);
 	
 	/** \brief Remove all child canvas. */
 	void RemoveAllCanvas();
@@ -94,7 +94,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 };
 

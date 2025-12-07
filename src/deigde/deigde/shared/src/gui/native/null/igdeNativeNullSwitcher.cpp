@@ -39,7 +39,7 @@ igdeNativeNullSwitcher::igdeNativeNullSwitcher(){
 igdeNativeNullSwitcher::~igdeNativeNullSwitcher(){
 }
 
-igdeNativeNullSwitcher *igdeNativeNullSwitcher::CreateNativeWidget( igdeSwitcher& ){
+igdeNativeNullSwitcher *igdeNativeNullSwitcher::CreateNativeWidget(igdeSwitcher&){
 	return new igdeNativeNullSwitcher;
 }
 

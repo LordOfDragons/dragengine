@@ -34,12 +34,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyMapped::deSkinPropertyMapped( const char *type ) :
-deSkinProperty( type )
+deSkinPropertyMapped::deSkinPropertyMapped(const char *type) :
+deSkinProperty(type)
 {
 	int i;
-	for( i=0; i<4; i++ ){
-		pComponents[ i ] = -1;
+	for(i=0; i<4; i++){
+		pComponents[i] = -1;
 	}
 }
 
@@ -51,37 +51,37 @@ deSkinPropertyMapped::~deSkinPropertyMapped(){
 // Management
 ///////////////
 
-void deSkinPropertyMapped::SetRed( int mapped ){
-	DEASSERT_TRUE( mapped >= -1 )
-	pComponents[ 0 ] = mapped;
+void deSkinPropertyMapped::SetRed(int mapped){
+	DEASSERT_TRUE(mapped >= -1)
+	pComponents[0] = mapped;
 }
 
-void deSkinPropertyMapped::SetGreen( int mapped ){
-	DEASSERT_TRUE( mapped >= -1 )
-	pComponents[ 1 ] = mapped;
+void deSkinPropertyMapped::SetGreen(int mapped){
+	DEASSERT_TRUE(mapped >= -1)
+	pComponents[1] = mapped;
 }
 
-void deSkinPropertyMapped::SetBlue( int mapped ){
-	DEASSERT_TRUE( mapped >= -1 )
-	pComponents[ 2 ] = mapped;
+void deSkinPropertyMapped::SetBlue(int mapped){
+	DEASSERT_TRUE(mapped >= -1)
+	pComponents[2] = mapped;
 }
 
-void deSkinPropertyMapped::SetAlpha( int mapped ){
-	DEASSERT_TRUE( mapped >= -1 )
-	pComponents[ 3 ] = mapped;
+void deSkinPropertyMapped::SetAlpha(int mapped){
+	DEASSERT_TRUE(mapped >= -1)
+	pComponents[3] = mapped;
 }
 
-int deSkinPropertyMapped::GetComponent( int component ) const{
-	DEASSERT_TRUE( component >= 0 )
-	DEASSERT_TRUE( component <= 3 )
-	return pComponents[ component ];
+int deSkinPropertyMapped::GetComponent(int component) const{
+	DEASSERT_TRUE(component >= 0)
+	DEASSERT_TRUE(component <= 3)
+	return pComponents[component];
 }
 
-void deSkinPropertyMapped::SetComponent( int component, int mapped ){
-	DEASSERT_TRUE( component >= 0 )
-	DEASSERT_TRUE( component <= 3 )
-	DEASSERT_TRUE( mapped >= -1 )
-	pComponents[ component ] = mapped;
+void deSkinPropertyMapped::SetComponent(int component, int mapped){
+	DEASSERT_TRUE(component >= 0)
+	DEASSERT_TRUE(component <= 3)
+	DEASSERT_TRUE(mapped >= -1)
+	pComponents[component] = mapped;
 }
 
 
@@ -89,6 +89,6 @@ void deSkinPropertyMapped::SetComponent( int component, int mapped ){
 // Visiting
 /////////////
 
-void deSkinPropertyMapped::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitMapped( *this );
+void deSkinPropertyMapped::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitMapped(*this);
 }

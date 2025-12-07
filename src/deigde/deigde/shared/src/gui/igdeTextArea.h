@@ -74,11 +74,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textarea. */
-	igdeTextArea( igdeEnvironment &environment, int columns, int rows,
-		const char *description = "" );
+	igdeTextArea(igdeEnvironment &environment, int columns, int rows,
+		const char *description = "");
 	
-	igdeTextArea( igdeEnvironment &environment, int columns, int rows,
-		bool editable, const char *description = "" );
+	igdeTextArea(igdeEnvironment &environment, int columns, int rows,
+		bool editable, const char *description = "");
 	
 	
 	
@@ -98,34 +98,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief TextArea is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in text area. */
-	inline int GetColumns() const{ return pColumns; }
+	inline int GetColumns() const{return pColumns;}
 	
 	/** \brief Set visible columns in text area. */
-	void SetColumns( int columns );
+	void SetColumns(int columns);
 	
 	/** \brief Visible rows in text area. */
-	inline int GetRows() const{ return pRows; }
+	inline int GetRows() const{return pRows;}
 	
 	/** \brief Set visible rows in text area. */
-	void SetRows( int rows );
+	void SetRows(int rows);
 	
 	/** \brief Text is editable. */
-	inline bool GetEditable() const{ return pEditable; }
+	inline bool GetEditable() const{return pEditable;}
 	
 	/** \brief Set if text is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	
 	
@@ -133,16 +133,16 @@ public:
 	int GetStyleCount() const;
 	
 	/** \brief Get style at index. */
-	igdeTextStyle *GetStyleAt( int index ) const;
+	igdeTextStyle *GetStyleAt(int index) const;
 	
 	/** \brief Get named style or NULL if absent. */
-	igdeTextStyle *GetStyleNamed( const char *name ) const;
+	igdeTextStyle *GetStyleNamed(const char *name) const;
 	
 	/** \brief Index of named style or -1 if absent. */
-	int IndexOfStyleNamed( const char *name ) const;
+	int IndexOfStyleNamed(const char *name) const;
 	
 	/** \brief Add style. */
-	void AddStyle( igdeTextStyle *style );
+	void AddStyle(igdeTextStyle *style);
 	
 	/** \brief Remove all styles. */
 	void RemoveAllStyles();
@@ -153,29 +153,29 @@ public:
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/**
 	 * \brief Set text.
 	 * \note Removes all text segment information.
 	 */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Append text. */
-	void AppendText( const char *text );
+	void AppendText(const char *text);
 	
 	/** \brief Append text with named style. */
-	void AppendText( const char *text, const char *style );
+	void AppendText(const char *text, const char *style);
 	
 	/** \brief Append text with named style and action. */
-	void AppendText( const char *text, const char *style, igdeAction *action );
+	void AppendText(const char *text, const char *style, igdeAction *action);
 	
 	/**
 	 * \brief Delete text.
 	 * \param[in] begin Offset to first character to delete.
 	 * \param[in] end Offset to character after the last character to delete.
 	 */
-	void DeleteText( int begin, int end );
+	void DeleteText(int begin, int end);
 	
 	/**
 	 * \brief Clear text.
@@ -189,25 +189,25 @@ public:
 	int GetCursorPosition() const;
 	
 	/** \brief Set cursor position as offset from start of text. */
-	void SetCursorPosition( int position );
+	void SetCursorPosition(int position);
 	
 	/** \brief Cursor coordinate as point with column and line. */
 	decPoint GetCursorCoordinate() const;
 	
 	/** \brief Set cursor coordinate as point with column and line. */
-	void SetCursorCoordinate( const decPoint &coordinate );
+	void SetCursorCoordinate(const decPoint &coordinate);
 	
 	/** \brief Top line. */
 	int GetTopLine() const;
 	
 	/** \brief Set top line. */
-	void SetTopLine( int line );
+	void SetTopLine(int line);
 	
 	/** \brief Bottom line. */
 	int GetBottomLine() const;
 	
 	/** \brief Set bottom line. */
-	void SetBottomLine( int line );
+	void SetBottomLine(int line);
 	
 	/** \brief Number of lines. */
 	int GetLineCount() const;
@@ -221,10 +221,10 @@ public:
 	int GetSegmentCount() const;
 	
 	/** \brief Get segment at index. */
-	const igdeTextSegment &GetSegmentAt( int index ) const;
+	const igdeTextSegment &GetSegmentAt(int index) const;
 	
 	/** \brief Segment containing position or NULL if not found. */
-	const igdeTextSegment *GetSegmentWith( int offset ) const;
+	const igdeTextSegment *GetSegmentWith(int offset) const;
 	
 	/**
 	 * \brief Set style of text segment.
@@ -237,7 +237,7 @@ public:
 	 * \param[in] style Name of style.
 	 * \param[in] action Action to use on clicking or NULL.
 	 */
-	void SetTextSegment( int begin, int end, const char *style, igdeAction *action );
+	void SetTextSegment(int begin, int end, const char *style, igdeAction *action);
 	
 	/**
 	 * \brief Clear style of text segment.
@@ -248,15 +248,15 @@ public:
 	 * \param[in] begin Offset to first character.
 	 * \param[in] end Offset to last character.
 	 */
-	void ClearTextSegment( int begin, int end );
+	void ClearTextSegment(int begin, int end);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeTextAreaListener *listener );
+	void AddListener(igdeTextAreaListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeTextAreaListener *listener );
+	void RemoveListener(igdeTextAreaListener *listener);
 	
 	/** \brief Notify listeners text changed. */
 	virtual void NotifyTextChanged();
@@ -312,7 +312,7 @@ protected:
 	 * \brief Clear segment without sending notifications.
 	 * \returns \em true if anything change otherwise \em false.
 	 */
-	bool pClearSegment( int begin, int end );
+	bool pClearSegment(int begin, int end);
 	/*@}*/
 };
 

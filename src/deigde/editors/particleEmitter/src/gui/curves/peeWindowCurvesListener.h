@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWindowCurvesListener( peeWindowCurves &window );
+	peeWindowCurvesListener(peeWindowCurves &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~peeWindowCurvesListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type count or order changed. */
-	virtual void TypeStructureChanged( peeEmitter *emitter );
+	virtual void TypeStructureChanged(peeEmitter *emitter);
 	
 	/** \brief A type parameter changed. */
-	virtual void TypeParameterChanged( peeEmitter *emitter, peeType *type, peeParameter *parameter );
+	virtual void TypeParameterChanged(peeEmitter *emitter, peeType *type, peeParameter *parameter);
 	
 	/** \brief Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged( peeEmitter *emitter, peeType *type );
+	virtual void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type);
 	
 	/** \brief Active type changed. */
-	virtual void ActiveTypeChanged( peeEmitter *emitter );
+	virtual void ActiveTypeChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

@@ -52,11 +52,11 @@ igdeGDVisitor::~igdeGDVisitor(){
 // Visiting
 /////////////
 
-void igdeGDVisitor::VisitObjectClass( igdeGDClass *gdclass ){
+void igdeGDVisitor::VisitObjectClass(igdeGDClass *gdclass){
 }
 
-void igdeGDVisitor::VisitSkin( igdeGDSkin *gdskin ){
+void igdeGDVisitor::VisitSkin(igdeGDSkin *gdskin){
 }
 
-void igdeGDVisitor::VisitSky( igdeGDSky *gdsky ){
+void igdeGDVisitor::VisitSky(igdeGDSky *gdsky){
 }

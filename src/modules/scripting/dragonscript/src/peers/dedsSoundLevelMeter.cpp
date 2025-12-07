@@ -45,22 +45,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsSoundLevelMeter::dedsSoundLevelMeter( deScriptingDragonScript &ds,
-deSoundLevelMeter *soundLevelMeter ) :
-pDS( ds ),
-pSoundLevelMeter( soundLevelMeter ),
-pValCB( NULL ),
-pHasCB( false )
+dedsSoundLevelMeter::dedsSoundLevelMeter(deScriptingDragonScript &ds,
+deSoundLevelMeter *soundLevelMeter) :
+pDS(ds),
+pSoundLevelMeter(soundLevelMeter),
+pValCB(NULL),
+pHasCB(false)
 {
-	if( ! soundLevelMeter ){
-		DSTHROW( dueInvalidParam );
+	if(! soundLevelMeter){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue( ds.GetClassSoundLevelMeterListener() );
+	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassSoundLevelMeterListener());
 }
 
 dedsSoundLevelMeter::~dedsSoundLevelMeter(){
-	if( ! pValCB ){
+	if(! pValCB){
 		return;
 	}
 	
@@ -68,11 +68,11 @@ dedsSoundLevelMeter::~dedsSoundLevelMeter(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( pSoundLevelMeter && pSoundLevelMeter->GetRefCount() > 0 ){
-		pDS.AddValueDeleteLater( pValCB );
+	if(pSoundLevelMeter && pSoundLevelMeter->GetRefCount() > 0){
+		pDS.AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = NULL;
@@ -88,20 +88,20 @@ dsRealObject *dedsSoundLevelMeter::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsSoundLevelMeter::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsSoundLevelMeter::SetCallback(dsRealObject *object){
+	if(! pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
-		rt.CastValueTo( pValCB, pValCB, pDS.GetClassSoundLevelMeterListener() );
+	if(object){
+		rt.SetObject(pValCB, object);
+		rt.CastValueTo(pValCB, pValCB, pDS.GetClassSoundLevelMeterListener());
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS.GetClassSoundLevelMeterListener() );
+		rt.SetNull(pValCB, pDS.GetClassSoundLevelMeterListener());
 		pHasCB = false;
 	}
 }
@@ -111,8 +111,8 @@ void dedsSoundLevelMeter::SetCallback( dsRealObject *object ){
 // Notifications
 //////////////////
 
-void dedsSoundLevelMeter::SpeakerAudible( const deSoundLevelMeter::cAudibleSpeaker &speaker ){
-	if( ! pHasCB ){
+void dedsSoundLevelMeter::SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker){
+	if(! pHasCB){
 		return;
 	}
 	
@@ -120,21 +120,21 @@ void dedsSoundLevelMeter::SpeakerAudible( const deSoundLevelMeter::cAudibleSpeak
 	dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 	
 	try{
-		pDS.GetClassSoundLevelMeterSpeaker()->PushSoundLevelMeterSpeaker( rt, speaker ); // speaker
-		rt->RunFunctionFast( pValCB, funcIndex );
+		pDS.GetClassSoundLevelMeterSpeaker()->PushSoundLevelMeterSpeaker(rt, speaker); // speaker
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}
 }
 
-void dedsSoundLevelMeter::SpeakerInaudible( deSpeaker *speaker ){
-	if( ! speaker ){
-		DSTHROW( dueInvalidParam );
+void dedsSoundLevelMeter::SpeakerInaudible(deSpeaker *speaker){
+	if(! speaker){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! pHasCB ){
+	if(! pHasCB){
 		return;
 	}
 	
@@ -142,10 +142,10 @@ void dedsSoundLevelMeter::SpeakerInaudible( deSpeaker *speaker ){
 	dsRunTime * const rt = pDS.GetScriptEngine()->GetMainRunTime();
 	
 	try{
-		pDS.GetClassSpeaker()->PushSpeaker( rt, speaker ); // speaker
-		rt->RunFunctionFast( pValCB, funcIndex );
+		pDS.GetClassSpeaker()->PushSpeaker(rt, speaker); // speaker
+		rt->RunFunctionFast(pValCB, funcIndex);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt->PrintExceptionTrace();
 		e.PrintError();
 	}

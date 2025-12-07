@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSynthesizerSetChannelCount( seSynthesizer *synthesizer, int newChannelCount );
+	seUSynthesizerSetChannelCount(seSynthesizer *synthesizer, int newChannelCount);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Build language pack into resource object. */
-	virtual void BuildLanguagePack( deLanguagePack &langPack ) = 0;
+	virtual void BuildLanguagePack(deLanguagePack &langPack) = 0;
 	/*@}*/
 };
 

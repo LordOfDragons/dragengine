@@ -67,37 +67,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Microphones are visited. */
-	inline bool GetVisitMicrophones() const{ return pVisitMicrophones; }
+	inline bool GetVisitMicrophones() const{return pVisitMicrophones;}
 	
 	/** \brief Set if microphones are visited. */
-	void SetVisitMicrophones( bool visitMicrophones );
+	void SetVisitMicrophones(bool visitMicrophones);
 	
 	/** \brief Components are visited. */
-	inline bool GetVisitComponents() const{ return pVisitComponents; }
+	inline bool GetVisitComponents() const{return pVisitComponents;}
 	
 	/** \brief Set if components are visited. */
-	void SetVisitComponents( bool visitComponents );
+	void SetVisitComponents(bool visitComponents);
 	
 	/** \brief Speakers are visited. */
-	inline bool GetVisitSpeakers() const{ return pVisitSpeakers; }
+	inline bool GetVisitSpeakers() const{return pVisitSpeakers;}
 	
 	/** \brief Set if speakers are visited. */
-	void SetVisitSpeakers( bool visitSpeakers );
+	void SetVisitSpeakers(bool visitSpeakers);
 	
 	/** \brief Sound level meters are visited. */
-	inline bool GetVisitSoundLevelMeters() const{ return pVisitSoundLevelMeters; }
+	inline bool GetVisitSoundLevelMeters() const{return pVisitSoundLevelMeters;}
 	
 	/** \brief Set if sound level meters are visited. */
-	void SetVisitSoundLevelMeters( bool visitSoundLevelMeters );
+	void SetVisitSoundLevelMeters(bool visitSoundLevelMeters);
 	
 	/** \brief Set visiting of all elements. */
-	void SetVisitAll( bool visitAll );
+	void SetVisitAll(bool visitAll);
 	
 	/** \brief Environment probes are visited. */
-	inline bool GetVisitEnvProbes() const{ return pVisitEnvProbes; }
+	inline bool GetVisitEnvProbes() const{return pVisitEnvProbes;}
 	
 	/** \brief Set if environment probes are visited. */
-	void SetVisitEnvProbes( bool visitEnvProbes );
+	void SetVisitEnvProbes(bool visitEnvProbes);
 	/*@}*/
 	
 	
@@ -114,29 +114,29 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalWorldOctree &node );
+	virtual void VisitNode(deoalWorldOctree &node);
 	
 	/**
 	 * \brief Visit octree node.
 	 * 
 	 * Visits all elements marked as to be visited using the respective functions.
 	 */
-	virtual void VisitNode( deoalDOctree *node, int intersection );
+	virtual void VisitNode(deoalDOctree *node, int intersection);
 	
 	/** \brief Visit microphone. */
-	virtual void VisitMicrophone( deoalAMicrophone *microphone );
+	virtual void VisitMicrophone(deoalAMicrophone *microphone);
 	
 	/** \brief Visit component. */
-	virtual void VisitComponent( deoalAComponent *component );
+	virtual void VisitComponent(deoalAComponent *component);
 	
 	/** \brief Visit speaker. */
-	virtual void VisitSpeaker( deoalASpeaker *speaker );
+	virtual void VisitSpeaker(deoalASpeaker *speaker);
 	
 	/** \brief Visit environment probes. */
-	virtual void VisitEnvProbe( deoalEnvProbe *envProbe );
+	virtual void VisitEnvProbe(deoalEnvProbe *envProbe);
 	
 	/** \brief Visit sound level meter. */
-	virtual void VisitSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter );
+	virtual void VisitSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	/*@}*/
 };
 

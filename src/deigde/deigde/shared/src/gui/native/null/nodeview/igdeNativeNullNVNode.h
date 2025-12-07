@@ -44,7 +44,7 @@ public:
 	virtual ~igdeNativeNullNVNode();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullNVNode* CreateNativeWidget( igdeNVNode &owner );
+	static igdeNativeNullNVNode* CreateNativeWidget(igdeNVNode &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

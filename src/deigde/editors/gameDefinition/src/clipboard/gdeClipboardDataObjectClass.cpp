@@ -38,12 +38,12 @@ const char * const gdeClipboardDataObjectClass::TYPE_NAME = "ObjectClass";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataObjectClass::gdeClipboardDataObjectClass( gdeObjectClass *objectClass ) :
-igdeClipboardData( TYPE_NAME ),
-pObjectClass( NULL )
+gdeClipboardDataObjectClass::gdeClipboardDataObjectClass(gdeObjectClass *objectClass) :
+igdeClipboardData(TYPE_NAME),
+pObjectClass(NULL)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pObjectClass = objectClass;
@@ -51,7 +51,7 @@ pObjectClass( NULL )
 }
 
 gdeClipboardDataObjectClass::~gdeClipboardDataObjectClass(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }

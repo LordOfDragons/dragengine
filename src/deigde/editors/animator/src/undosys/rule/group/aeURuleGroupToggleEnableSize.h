@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupToggleEnableSize( aeRuleGroup *rule );
+	aeURuleGroupToggleEnableSize(aeRuleGroup *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupToggleEnableSize();

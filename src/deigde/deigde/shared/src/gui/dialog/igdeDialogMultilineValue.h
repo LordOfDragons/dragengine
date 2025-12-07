@@ -49,8 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogMultilineValue( igdeEnvironment &environment, const char *title, const char *message,
-		int rows = 8, int columns = 50 );
+	igdeDialogMultilineValue(igdeEnvironment &environment, const char *title, const char *message,
+		int rows = 8, int columns = 50);
 	
 	
 	
@@ -68,7 +68,7 @@ public:
 	const decString &GetValue() const;
 	
 	/** \brief Set value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 };
 

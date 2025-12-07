@@ -56,8 +56,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object component. */
-	gdeVAONavBlocker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent );
+	gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCNavigationBlocker *occomponent);
 	
 protected:
 	/**
@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pOCNavBlocker; }
+	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{return pOCNavBlocker;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

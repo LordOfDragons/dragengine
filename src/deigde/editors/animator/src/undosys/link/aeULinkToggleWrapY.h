@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeULinkToggleWrapY( aeLink *link );
+	aeULinkToggleWrapY(aeLink *link);
 	
 protected:
 	/** Clean up undo. */

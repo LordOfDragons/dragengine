@@ -43,8 +43,8 @@ private:
 		sDictEntry *next;
 		
 		sDictEntry();
-		sDictEntry( const sDictEntry &entry );
-		sDictEntry( unsigned int nhash, const decUnicodeString &nkey, const decUnicodeString &nvalue );
+		sDictEntry(const sDictEntry &entry);
+		sDictEntry(unsigned int nhash, const decUnicodeString &nkey, const decUnicodeString &nvalue);
 		~sDictEntry();
 	};
 	
@@ -58,9 +58,9 @@ public:
 	/** \brief Creates a new dictionary. */
 	decUnicodeStringDictionary();
 	/** \brief Creates a new dictionary. */
-	decUnicodeStringDictionary( int bucketCount );
+	decUnicodeStringDictionary(int bucketCount);
 	/** \brief Creates a new dictionary. */
-	decUnicodeStringDictionary( const decUnicodeStringDictionary &dict );
+	decUnicodeStringDictionary(const decUnicodeStringDictionary &dict);
 	/** \brief Cleans up the dictionary. */
 	~decUnicodeStringDictionary();
 	/*@}*/
@@ -68,19 +68,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the number of entries in the dictionary. */
-	inline int GetCount() const{ return pEntryCount; }
+	inline int GetCount() const{return pEntryCount;}
 	/** \brief Determines if a key is located in the dictionary. */
-	bool Has( const decUnicodeString &key ) const;
+	bool Has(const decUnicodeString &key) const;
 	/** \brief Retrieves an string by key throwing an exception if not found. */
-	const decUnicodeString &GetAt( const decUnicodeString &key ) const;
+	const decUnicodeString &GetAt(const decUnicodeString &key) const;
 	/** \brief Retrieves an string by key into a variable returning true if the key has been found or false otherwise. */
-	bool GetAt( const decUnicodeString &key, decUnicodeString **string ) const;
+	bool GetAt(const decUnicodeString &key, decUnicodeString **string) const;
 	/** \brief Adds an string to the dictionary by key replacing an old string if present. */
-	void SetAt( const decUnicodeString &key, const decUnicodeString &value );
+	void SetAt(const decUnicodeString &key, const decUnicodeString &value);
 	/** \brief Removes a key from the dictionary throwing an exception if not found. */
-	void Remove( const decUnicodeString &key );
+	void Remove(const decUnicodeString &key);
 	/** \brief Removes a key from the dictionary if present. */
-	void RemoveIfPresent( const decUnicodeString &key );
+	void RemoveIfPresent(const decUnicodeString &key);
 	/** \brief Removes all keys from the dictionary. */
 	void RemoveAll();
 	
@@ -90,7 +90,7 @@ public:
 	decUnicodeStringList GetValues() const;
 	
 	/** \brief Determines if this dictionary equals another dictionary. */
-	bool Equals( const decUnicodeStringDictionary &dict ) const;
+	bool Equals(const decUnicodeStringDictionary &dict) const;
 	
 	/** \brief Check load of the dictionary changing bucket count if required. */
 	void CheckLoad();
@@ -99,16 +99,16 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determines if this dictionary equals another dictionary. */
-	bool operator==( const decUnicodeStringDictionary &dict ) const;
+	bool operator==(const decUnicodeStringDictionary &dict) const;
 	/** \brief Retrieves a new dictionary containing this dictionary and another applied to it. */
-	decUnicodeStringDictionary operator+( const decUnicodeStringDictionary &dict ) const;
+	decUnicodeStringDictionary operator+(const decUnicodeStringDictionary &dict) const;
 	/** \brief Retrieves an string by key throwing an exception if not found. */
-	const decUnicodeString &operator[]( const decUnicodeString &key ) const;
+	const decUnicodeString &operator[](const decUnicodeString &key) const;
 	
 	/** \brief Sets this dictionary to another dictionary. */
-	decUnicodeStringDictionary &operator=( const decUnicodeStringDictionary &dict );
+	decUnicodeStringDictionary &operator=(const decUnicodeStringDictionary &dict);
 	/** \brief Applies a dictionary to this dictionary. */
-	decUnicodeStringDictionary &operator+=( const decUnicodeStringDictionary &dict );
+	decUnicodeStringDictionary &operator+=(const decUnicodeStringDictionary &dict);
 	/*@}*/
 };
 

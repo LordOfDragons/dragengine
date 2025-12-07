@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationMoveCurves( fbxAnimationMove &move, fbxNode &nodeCurves );
+	fbxAnimationMoveCurves(fbxAnimationMove &move, fbxNode &nodeCurves);
 	
 protected:
 	/** \brief Clean up move. */
@@ -97,48 +97,48 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Model. */
-	inline fbxAnimationMove &GetMove() const{ return pMove; }
+	inline fbxAnimationMove &GetMove() const{return pMove;}
 	
 	/** \brief Curves node. */
-	inline fbxNode &GetNodeCurves() const{ return pNodeCurves; }
+	inline fbxNode &GetNodeCurves() const{return pNodeCurves;}
 	
 	/** \brief Node curves ID. */
-	inline int64_t GetNodeCurvesID() const{ return pNodeCurvesID; }
+	inline int64_t GetNodeCurvesID() const{return pNodeCurvesID;}
 	
 	/** \brief Model node. */
-	inline fbxNode *GetNodeModel() const{ return pNodeModel; }
+	inline fbxNode *GetNodeModel() const{return pNodeModel;}
 	
 	/** \brief Model node ID. */
-	inline int64_t GetNodeModelID() const{ return pNodeModelID; }
+	inline int64_t GetNodeModelID() const{return pNodeModelID;}
 	
 	/** \brief Target property. */
-	inline eTargetProperty GetTargetProperty() const{ return pTargetProperty; }
+	inline eTargetProperty GetTargetProperty() const{return pTargetProperty;}
 	
 	/** \brief Set target property. */
-	void SetTargetProperty( eTargetProperty targetProperty );
+	void SetTargetProperty(eTargetProperty targetProperty);
 	
 	/** \brief Bone name. */
-	inline const decString &GetBoneName() const{ return pBoneName; }
+	inline const decString &GetBoneName() const{return pBoneName;}
 	
 	/** \brief Set bone name. */
-	void SetBoneName( const char *name );
+	void SetBoneName(const char *name);
 	
 	/** \brief Rig bone or NULL. */
-	inline fbxRigBone *GetRigBone() const{ return pRigBone; }
+	inline fbxRigBone *GetRigBone() const{return pRigBone;}
 	
 	/** \brief Set rig bone or NULL. */
-	void SetRigBone( fbxRigBone *bone );
+	void SetRigBone(fbxRigBone *bone);
 	
 	/** \brief Curves or NULL. */
-	inline const fbxAnimationCurve::Ref &GetCurveX() const{ return pCurveX; }
-	inline const fbxAnimationCurve::Ref &GetCurveY() const{ return pCurveY; }
-	inline const fbxAnimationCurve::Ref &GetCurveZ() const{ return pCurveZ; }
+	inline const fbxAnimationCurve::Ref &GetCurveX() const{return pCurveX;}
+	inline const fbxAnimationCurve::Ref &GetCurveY() const{return pCurveY;}
+	inline const fbxAnimationCurve::Ref &GetCurveZ() const{return pCurveZ;}
 	
 	/** \brief Default value. */
-	inline const decVector &GetDefaultValue() const{ return pDefaultValue; }
+	inline const decVector &GetDefaultValue() const{return pDefaultValue;}
 	
 	/** \brief Set default value. */
-	void SetDefaultValue( const decVector &defaultValue );
+	void SetDefaultValue(const decVector &defaultValue);
 	
 	
 	
@@ -146,7 +146,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

@@ -37,7 +37,7 @@ class deglWindowMain;
  * Module Properties Panel.
  */
 class deglDialogModuleProps : public FXDialogBox{
-	FXDECLARE( deglDialogModuleProps )
+	FXDECLARE(deglDialogModuleProps)
 protected:
 	deglDialogModuleProps();
 	
@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new dialog. */
-	deglDialogModuleProps( deglWindowMain *windowMain, delEngineModule *module, FXWindow *owner );
+	deglDialogModuleProps(deglWindowMain *windowMain, delEngineModule *module, FXWindow *owner);
 	/** Cleans up the dialog. */
 	virtual ~deglDialogModuleProps();
 	/*@}*/
@@ -84,9 +84,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
+	inline deglWindowMain *GetWindowMain() const{return pWindowMain;}
 	/** Retrieves the module. */
-	inline delEngineModule *GetModule() const{ return pModule; }
+	inline delEngineModule *GetModule() const{return pModule;}
 	
 	/** Set values from moduel. */
 	void SetFromModule();
@@ -94,7 +94,7 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onBtnInfo( FXObject *sender, FXSelector selector, void *data );
+	long onBtnInfo(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 };
 

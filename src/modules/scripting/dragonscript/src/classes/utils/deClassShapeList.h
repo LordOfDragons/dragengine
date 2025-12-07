@@ -46,7 +46,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassShapeList( deScriptingDragonScript *ds );
+	deClassShapeList(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassShapeList();
 	/*@}*/
@@ -54,18 +54,18 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the shape list stored in a real object. */
-	const decShapeList &GetShapeList( dsRealObject *myself ) const;
+	const decShapeList &GetShapeList(dsRealObject *myself) const;
 	/** Pushes a shape list onto the stack. */
-	void PushShapeList( dsRunTime *rt, const decShapeList &shapeList );
+	void PushShapeList(dsRunTime *rt, const decShapeList &shapeList);
 	
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	
-	void HullAddPoints( dsRunTime &rt, decShapeHull &hull, dsValue &pointsArray ) const;
+	void HullAddPoints(dsRunTime &rt, decShapeHull &hull, dsValue &pointsArray) const;
 	
-	inline dsClass *GetClassShapeType() const{ return pClsShapeType; }
+	inline dsClass *GetClassShapeType() const{return pClsShapeType;}
 	/*@}*/
 	
 private:
@@ -78,69 +78,69 @@ private:
 		dsClass *clsShapeType;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCount );
-	DEF_NATFUNC( nfEmpty );
-	DEF_NATFUNC( nfNotEmpty );
-	DEF_NATFUNC( nfRemoveAllShapes );
+	DEF_NATFUNC(nfGetCount);
+	DEF_NATFUNC(nfEmpty);
+	DEF_NATFUNC(nfNotEmpty);
+	DEF_NATFUNC(nfRemoveAllShapes);
 	
-	DEF_NATFUNC( nfGetTypeAt );
-	DEF_NATFUNC( nfGetPositionAt );
-	DEF_NATFUNC( nfGetRadiusAt );
-	DEF_NATFUNC( nfGetHalfExtendsAt );
-	DEF_NATFUNC( nfGetOrientationAt );
-	DEF_NATFUNC( nfGetHalfHeightAt );
-	DEF_NATFUNC( nfGetTopRadiusAt );
-	DEF_NATFUNC( nfGetBottomRadiusAt );
-	DEF_NATFUNC( nfGetTopAxisScalingAt );
-	DEF_NATFUNC( nfGetBottomAxisScalingAt );
-	DEF_NATFUNC( nfGetPointCountAt );
-	DEF_NATFUNC( nfGetPointAt );
+	DEF_NATFUNC(nfGetTypeAt);
+	DEF_NATFUNC(nfGetPositionAt);
+	DEF_NATFUNC(nfGetRadiusAt);
+	DEF_NATFUNC(nfGetHalfExtendsAt);
+	DEF_NATFUNC(nfGetOrientationAt);
+	DEF_NATFUNC(nfGetHalfHeightAt);
+	DEF_NATFUNC(nfGetTopRadiusAt);
+	DEF_NATFUNC(nfGetBottomRadiusAt);
+	DEF_NATFUNC(nfGetTopAxisScalingAt);
+	DEF_NATFUNC(nfGetBottomAxisScalingAt);
+	DEF_NATFUNC(nfGetPointCountAt);
+	DEF_NATFUNC(nfGetPointAt);
 	
-	DEF_NATFUNC( nfAddSphere );
+	DEF_NATFUNC(nfAddSphere);
 	
-	DEF_NATFUNC( nfAddBox );
-	DEF_NATFUNC( nfAddBox2 );
-	DEF_NATFUNC( nfAddBox3 );
-	DEF_NATFUNC( nfAddBox4 );
+	DEF_NATFUNC(nfAddBox);
+	DEF_NATFUNC(nfAddBox2);
+	DEF_NATFUNC(nfAddBox3);
+	DEF_NATFUNC(nfAddBox4);
 	
-	DEF_NATFUNC( nfAddCylinder );
-	DEF_NATFUNC( nfAddCylinder2 );
-	DEF_NATFUNC( nfAddCylinder3 );
-	DEF_NATFUNC( nfAddCylinder4 );
-	DEF_NATFUNC( nfAddCylinder5 );
-	DEF_NATFUNC( nfAddCylinder6 );
-	DEF_NATFUNC( nfAddCylinder7 );
-	DEF_NATFUNC( nfAddCylinder8 );
-	DEF_NATFUNC( nfAddCylinder9 );
+	DEF_NATFUNC(nfAddCylinder);
+	DEF_NATFUNC(nfAddCylinder2);
+	DEF_NATFUNC(nfAddCylinder3);
+	DEF_NATFUNC(nfAddCylinder4);
+	DEF_NATFUNC(nfAddCylinder5);
+	DEF_NATFUNC(nfAddCylinder6);
+	DEF_NATFUNC(nfAddCylinder7);
+	DEF_NATFUNC(nfAddCylinder8);
+	DEF_NATFUNC(nfAddCylinder9);
 	
-	DEF_NATFUNC( nfAddCapsule );
-	DEF_NATFUNC( nfAddCapsule2 );
-	DEF_NATFUNC( nfAddCapsule3 );
-	DEF_NATFUNC( nfAddCapsule4 );
-	DEF_NATFUNC( nfAddCapsule5 );
-	DEF_NATFUNC( nfAddCapsule6 );
-	DEF_NATFUNC( nfAddCapsule7 );
-	DEF_NATFUNC( nfAddCapsule8 );
-	DEF_NATFUNC( nfAddCapsule9 );
+	DEF_NATFUNC(nfAddCapsule);
+	DEF_NATFUNC(nfAddCapsule2);
+	DEF_NATFUNC(nfAddCapsule3);
+	DEF_NATFUNC(nfAddCapsule4);
+	DEF_NATFUNC(nfAddCapsule5);
+	DEF_NATFUNC(nfAddCapsule6);
+	DEF_NATFUNC(nfAddCapsule7);
+	DEF_NATFUNC(nfAddCapsule8);
+	DEF_NATFUNC(nfAddCapsule9);
 	
-	DEF_NATFUNC( nfAddHull );
-	DEF_NATFUNC( nfAddHull2 );
-	DEF_NATFUNC( nfAddHull3 );
+	DEF_NATFUNC(nfAddHull);
+	DEF_NATFUNC(nfAddHull2);
+	DEF_NATFUNC(nfAddHull3);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

@@ -52,24 +52,24 @@ public:
 	/** Retrieves the number of options. */
 	int GetCount() const;
 	/** Retrieves the option at the given position. */
-	ceCAPlayerChoiceOption *GetAt( int index ) const;
+	ceCAPlayerChoiceOption *GetAt(int index) const;
 	/** Retrieves the index of the given option or -1 if not found. */
-	int IndexOf( ceCAPlayerChoiceOption *option ) const;
+	int IndexOf(ceCAPlayerChoiceOption *option) const;
 	/** Determines if a option exists. */
-	bool Has( ceCAPlayerChoiceOption *option ) const;
+	bool Has(ceCAPlayerChoiceOption *option) const;
 	/** Adds a option. */
-	void Add( ceCAPlayerChoiceOption *option );
+	void Add(ceCAPlayerChoiceOption *option);
 	/** Inserts a new option. */
-	void InsertAt( ceCAPlayerChoiceOption *option, int index );
+	void InsertAt(ceCAPlayerChoiceOption *option, int index);
 	/** Moves a option to a new position. */
-	void MoveTo( ceCAPlayerChoiceOption *option, int index );
+	void MoveTo(ceCAPlayerChoiceOption *option, int index);
 	/** Removes a option. */
-	void Remove( ceCAPlayerChoiceOption *option );
+	void Remove(ceCAPlayerChoiceOption *option);
 	/** Removes all options. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceCAPlayerChoiceOptionList &operator=( const ceCAPlayerChoiceOptionList &list );
+	ceCAPlayerChoiceOptionList &operator=(const ceCAPlayerChoiceOptionList &list);
 	/*@}*/
 };
 

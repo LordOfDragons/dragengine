@@ -34,11 +34,11 @@
 deInputDevicePose::deInputDevicePose(){
 }
 
-deInputDevicePose::deInputDevicePose( const deInputDevicePose &pose ) :
-pPosition( pose.pPosition ),
-pOrientation( pose.pOrientation ),
-pLinearVelocity( pose.pLinearVelocity ),
-pAngularVelocity( pose.pAngularVelocity ){
+deInputDevicePose::deInputDevicePose(const deInputDevicePose &pose) :
+pPosition(pose.pPosition),
+pOrientation(pose.pOrientation),
+pLinearVelocity(pose.pLinearVelocity),
+pAngularVelocity(pose.pAngularVelocity){
 }
 
 deInputDevicePose::~deInputDevicePose(){
@@ -49,19 +49,19 @@ deInputDevicePose::~deInputDevicePose(){
 // Device information
 ///////////////////////
 
-void deInputDevicePose::SetPosition( const decVector &position ){
+void deInputDevicePose::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deInputDevicePose::SetOrientation( const decQuaternion &orientation ){
+void deInputDevicePose::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void deInputDevicePose::SetLinearVelocity( const decVector &velocity ){
+void deInputDevicePose::SetLinearVelocity(const decVector &velocity){
 	pLinearVelocity = velocity;
 }
 
-void deInputDevicePose::SetAngularVelocity( const decVector &velocity ){
+void deInputDevicePose::SetAngularVelocity(const decVector &velocity){
 	pAngularVelocity = velocity;
 }
 
@@ -70,7 +70,7 @@ void deInputDevicePose::SetAngularVelocity( const decVector &velocity ){
 // Operators
 //////////////
 
-deInputDevicePose &deInputDevicePose::operator=( const deInputDevicePose &pose ){
+deInputDevicePose &deInputDevicePose::operator=(const deInputDevicePose &pose){
 	pPosition = pose.pPosition;
 	pOrientation = pose.pOrientation;
 	pLinearVelocity = pose.pLinearVelocity;

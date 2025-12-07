@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleIKSetLocalRotation::aeURuleIKSetLocalRotation( aeRuleInverseKinematic *rule, const decVector &newRot ){
-	if( ! rule ) DETHROW( deeInvalidParam );
+aeURuleIKSetLocalRotation::aeURuleIKSetLocalRotation(aeRuleInverseKinematic *rule, const decVector &newRot){
+	if(! rule) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	
@@ -51,9 +51,9 @@ aeURuleIKSetLocalRotation::aeURuleIKSetLocalRotation( aeRuleInverseKinematic *ru
 		pOldRot = rule->GetLocalOrientation();
 		pNewRot = newRot;
 		
-		SetShortInfo( "Set inverse kinematic rule local rotation" );
+		SetShortInfo("Set inverse kinematic rule local rotation");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -69,11 +69,11 @@ aeURuleIKSetLocalRotation::~aeURuleIKSetLocalRotation(){
 ///////////////
 
 void aeURuleIKSetLocalRotation::Undo(){
-	pRule->SetLocalOrientation( pOldRot );
+	pRule->SetLocalOrientation(pOldRot);
 }
 
 void aeURuleIKSetLocalRotation::Redo(){
-	pRule->SetLocalOrientation( pNewRot );
+	pRule->SetLocalOrientation(pNewRot);
 }
 
 
@@ -82,5 +82,5 @@ void aeURuleIKSetLocalRotation::Redo(){
 //////////////////////
 
 void aeURuleIKSetLocalRotation::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

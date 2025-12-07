@@ -77,27 +77,27 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline eShapeTypes GetType() const{ return pType; }
+	inline eShapeTypes GetType() const{return pType;}
 	
 	
 	
 	/** \brief Visited shape is an unknown shape. */
-	inline bool IsUnknown() const{ return pType == estUnknown; }
+	inline bool IsUnknown() const{return pType == estUnknown;}
 	
 	/** \brief Visited shape is a sphere shape. */
-	inline bool IsSphere() const{ return pType == estSphere; }
+	inline bool IsSphere() const{return pType == estSphere;}
 	
 	/** \brief Visited shape is a box shape. */
-	inline bool IsBox() const{ return pType == estBox; }
+	inline bool IsBox() const{return pType == estBox;}
 	
 	/** \brief Visited shape is cylinder shape. */
-	inline bool IsCylinder() const{ return pType == estCylinder; }
+	inline bool IsCylinder() const{return pType == estCylinder;}
 	
 	/** \brief Visited shape is capsule shape. */
-	inline bool IsCapsule() const{ return pType == estCapsule; }
+	inline bool IsCapsule() const{return pType == estCapsule;}
 	
 	/** \brief Visited shape is hull shape. */
-	inline bool IsHull() const{ return pType == estHull; }
+	inline bool IsHull() const{return pType == estHull;}
 	
 	
 	
@@ -142,22 +142,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	virtual void VisitShape(decShape &shape);
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	virtual void VisitShapeSphere(decShapeSphere &sphere);
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	virtual void VisitShapeBox(decShapeBox &box);
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	virtual void VisitShapeHull(decShapeHull &hull);
 	/*@}*/
 	
 };

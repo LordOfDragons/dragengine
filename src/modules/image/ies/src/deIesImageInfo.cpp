@@ -38,10 +38,10 @@
 ////////////////////////////
 
 deIesImageInfo::deIesImageInfo() :
-pWidth( 0 ),
-pHeight( 0 ),
-pDepth( 1 ),
-pCurLine( 0 ){
+pWidth(0),
+pHeight(0),
+pDepth(1),
+pCurLine(0){
 }
 
 deIesImageInfo::~deIesImageInfo(){
@@ -76,24 +76,24 @@ int deIesImageInfo::GetBitCount(){
 // Protected Functions
 ////////////////////////
 
-void deIesImageInfo::pReadLines( decBaseFileReader &reader ){
+void deIesImageInfo::pReadLines(decBaseFileReader &reader){
 	const int length = reader.GetLength();
 	decString content;
-	content.Set( ' ', length );
-	reader.Read( ( char* )content.GetString(), length );
+	content.Set(' ', length);
+	reader.Read((char*)content.GetString(), length);
 	
 	int position = 0;
-	while( position < length ){
-		const int deli = content.FindString( "\r\n", position );
-		if( deli == -1 ){
+	while(position < length){
+		const int deli = content.FindString("\r\n", position);
+		if(deli == -1){
 			break;
 		}
 		
-		pLines.Add( content.GetMiddle( position, deli ) );
+		pLines.Add(content.GetMiddle(position, deli));
 		position = deli + 2;
 	}
 	
-	if( position < length ){
-		pLines.Add( content.GetMiddle( position ) );
+	if(position < length){
+		pLines.Add(content.GetMiddle(position));
 	}
 }

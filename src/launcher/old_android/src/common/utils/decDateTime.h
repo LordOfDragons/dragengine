@@ -49,9 +49,9 @@ public:
 	/** \brief Creates an empty date time object. */
 	decDateTime();
 	/** \brief Creates a date time object set to a system time. */
-	decDateTime( const TIME_SYSTEM systemTime );
+	decDateTime(const TIME_SYSTEM systemTime);
 	/** \brief Creates a copy of a date time object. */
-	decDateTime( const decDateTime &dateTime );
+	decDateTime(const decDateTime &dateTime);
 	/** \brief Cleans up a date time object. */
 	~decDateTime();
 	/*@}*/
@@ -59,34 +59,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the year. */
-	inline int GetYear() const{ return pYear; }
+	inline int GetYear() const{return pYear;}
 	/** \brief Sets the year. */
-	void SetYear( int year );
+	void SetYear(int year);
 	/** \brief Retrieves the month starting with 0 for january. */
-	inline int GetMonth() const{ return pMonth; }
+	inline int GetMonth() const{return pMonth;}
 	/** \brief Sets the month starting with 0 for january. */
-	void SetMonth( int month );
+	void SetMonth(int month);
 	/** \brief Retrieves the day starting with 0 for the first day in the month. */
-	inline int GetDay() const{ return pDay; }
+	inline int GetDay() const{return pDay;}
 	/** \brief Sets the day starting with 0 for the first day in the month. */
-	void SetDay( int day );
+	void SetDay(int day);
 	/** \brief Retrieves the hour. */
-	inline int GetHour() const{ return pHour; }
+	inline int GetHour() const{return pHour;}
 	/** \brief Sets the hour. */
-	void SetHour( int hour );
+	void SetHour(int hour);
 	/** \brief Retrieves the minute. */
-	inline int GetMinute() const{ return pMinute; }
+	inline int GetMinute() const{return pMinute;}
 	/** \brief Sets the minute. */
-	void SetMinute( int minute );
+	void SetMinute(int minute);
 	/** \brief Retrieves the second. */
-	inline int GetSecond() const{ return pSecond; }
+	inline int GetSecond() const{return pSecond;}
 	/** \brief Sets the second. */
-	void SetSecond( int second );
+	void SetSecond(int second);
 	
 	/** \brief Retrieves the system time for this date and time. */
 	TIME_SYSTEM ToSystemTime() const;
 	/** \brief Sets the date time from a system time. */
-	void SetFrom( const TIME_SYSTEM systemTime );
+	void SetFrom(const TIME_SYSTEM systemTime);
 	
 	/** \brief Retrieves the current system time. */
 	static TIME_SYSTEM GetSystemTime();

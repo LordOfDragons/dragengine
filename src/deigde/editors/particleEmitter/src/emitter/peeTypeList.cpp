@@ -55,19 +55,19 @@ int peeTypeList::GetCount() const{
 	return pTypes.GetCount();
 }
 
-peeType *peeTypeList::GetAt( int index ) const{
-	return ( peeType* )pTypes.GetAt( index );
+peeType *peeTypeList::GetAt(int index) const{
+	return (peeType*)pTypes.GetAt(index);
 }
 
-peeType *peeTypeList::GetNamed( const char *name ) const{
+peeType *peeTypeList::GetNamed(const char *name) const{
 	const int count = pTypes.GetCount();
 	peeType *type;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		type = ( peeType* )pTypes.GetAt( p );
+	for(p=0; p<count; p++){
+		type = (peeType*)pTypes.GetAt(p);
 		
-		if( type->GetName().Equals( name ) ){
+		if(type->GetName().Equals(name)){
 			return type;
 		}
 	}
@@ -75,16 +75,16 @@ peeType *peeTypeList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int peeTypeList::IndexOf( peeType *type ) const{
-	return pTypes.IndexOf( type );
+int peeTypeList::IndexOf(peeType *type) const{
+	return pTypes.IndexOf(type);
 }
 
-int peeTypeList::IndexOfNamed( const char *name ) const{
+int peeTypeList::IndexOfNamed(const char *name) const{
 	const int count = pTypes.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( peeType* )pTypes.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((peeType*)pTypes.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int peeTypeList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool peeTypeList::Has( peeType *type ) const{
-	return pTypes.Has( type );
+bool peeTypeList::Has(peeType *type) const{
+	return pTypes.Has(type);
 }
 
-bool peeTypeList::HasNamed( const char *name ) const{
+bool peeTypeList::HasNamed(const char *name) const{
 	const int count = pTypes.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( peeType* )pTypes.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((peeType*)pTypes.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,28 +109,28 @@ bool peeTypeList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void peeTypeList::Add( peeType *type ){
-	if( ! type || HasNamed( type->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void peeTypeList::Add(peeType *type){
+	if(! type || HasNamed(type->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTypes.Add( type );
+	pTypes.Add(type);
 }
 
-void peeTypeList::InsertAt( peeType *type, int index ){
-	if( ! type || HasNamed( type->GetName().GetString() ) ){
-		DETHROW( deeInvalidParam );
+void peeTypeList::InsertAt(peeType *type, int index){
+	if(! type || HasNamed(type->GetName().GetString())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTypes.Insert( type, index );
+	pTypes.Insert(type, index);
 }
 
-void peeTypeList::MoveTo( peeType *type, int index ){
-	pTypes.Move( type, index );
+void peeTypeList::MoveTo(peeType *type, int index){
+	pTypes.Move(type, index);
 }
 
-void peeTypeList::Remove( peeType *type ){
-	pTypes.Remove( type );
+void peeTypeList::Remove(peeType *type){
+	pTypes.Remove(type);
 }
 
 void peeTypeList::RemoveAll(){
@@ -139,7 +139,7 @@ void peeTypeList::RemoveAll(){
 
 
 
-peeTypeList &peeTypeList::operator=( const peeTypeList &list ){
+peeTypeList &peeTypeList::operator=(const peeTypeList &list){
 	pTypes = list.pTypes;
 	return *this;
 }

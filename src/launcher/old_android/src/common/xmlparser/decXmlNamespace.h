@@ -44,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml namespace with the given name and url. */
-	decXmlNamespace( const char *name, const char *url );
+	decXmlNamespace(const char *name, const char *url);
 	
 	/** \brief Create xml namespace with the given name and an empty url. */
-	decXmlNamespace( const char *name );
+	decXmlNamespace(const char *name);
 	
 protected:
 	/** \brief Clean up xml namespace. */
@@ -60,23 +60,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief URL. */
-	inline const decString &GetURL() const{ return pURL; }
+	inline const decString &GetURL() const{return pURL;}
 	
 	/** \brief Set URL. */
-	void SetURL( const char *url );
+	void SetURL(const char *url);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	/** \name Casting */

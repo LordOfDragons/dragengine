@@ -55,21 +55,21 @@ int delGPMParameterList::GetCount() const{
 	return pParameters.GetCount();
 }
 
-delGPMParameter *delGPMParameterList::GetAt( int index ) const{
-	return ( delGPMParameter* )pParameters.GetAt( index );
+delGPMParameter *delGPMParameterList::GetAt(int index) const{
+	return (delGPMParameter*)pParameters.GetAt(index);
 }
 
-delGPMParameter *delGPMParameterList::GetNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+delGPMParameter *delGPMParameterList::GetNamed(const char *name) const{
+	if(! name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGPMParameter * const parameter = ( delGPMParameter* )pParameters.GetAt( i );
-		if( parameter->GetName() == name ){
+	for(i=0; i<count; i++){
+		delGPMParameter * const parameter = (delGPMParameter*)pParameters.GetAt(i);
+		if(parameter->GetName() == name){
 			return parameter;
 		}
 	}
@@ -77,28 +77,28 @@ delGPMParameter *delGPMParameterList::GetNamed( const char *name ) const{
 	return nullptr;
 }
 
-bool delGPMParameterList::Has( delGPMParameter *parameter ) const{
-	return pParameters.Has( parameter );
+bool delGPMParameterList::Has(delGPMParameter *parameter) const{
+	return pParameters.Has(parameter);
 }
 
-bool delGPMParameterList::HasNamed( const char *name ) const{
-	return GetNamed ( name ) != NULL;
+bool delGPMParameterList::HasNamed(const char *name) const{
+	return GetNamed (name) != NULL;
 }
 
-int delGPMParameterList::IndexOf( delGPMParameter *parameter ) const{
-	return pParameters.IndexOf( parameter );
+int delGPMParameterList::IndexOf(delGPMParameter *parameter) const{
+	return pParameters.IndexOf(parameter);
 }
 
-int delGPMParameterList::IndexOfNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW_INFO( deeNullPointer, "name" );
+int delGPMParameterList::IndexOfNamed(const char *name) const{
+	if(! name){
+		DETHROW_INFO(deeNullPointer, "name");
 	}
 	
 	const int count = pParameters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( delGPMParameter* )pParameters.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((delGPMParameter*)pParameters.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -106,24 +106,24 @@ int delGPMParameterList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-void delGPMParameterList::Add( delGPMParameter *parameter ){
-	if( ! parameter ){
-		DETHROW_INFO( deeNullPointer, "parameter" );
+void delGPMParameterList::Add(delGPMParameter *parameter){
+	if(! parameter){
+		DETHROW_INFO(deeNullPointer, "parameter");
 	}
-	if( HasNamed ( parameter->GetName() ) ){
-		DETHROW_INFO( deeInvalidParam, "parameter is present" );
+	if(HasNamed (parameter->GetName())){
+		DETHROW_INFO(deeInvalidParam, "parameter is present");
 	}
 	
-	pParameters.Add( parameter );
+	pParameters.Add(parameter);
 }
 
-void delGPMParameterList::Remove( delGPMParameter *parameter ){
-	const int index = IndexOf ( parameter );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "parameter is absent" );
+void delGPMParameterList::Remove(delGPMParameter *parameter){
+	const int index = IndexOf (parameter);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "parameter is absent");
 	}
 	
-	pParameters.RemoveFrom( index );
+	pParameters.RemoveFrom(index);
 }
 
 void delGPMParameterList::RemoveAll(){

@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetOutputLower::seUMappedSetOutputLower( seMapped *mapped, float newOutputLower ) :
-pMapped( mapped ),
-pOldOutputLower( mapped ? mapped->GetOutputLower() : 0.0f ),
-pNewOutputLower( newOutputLower )
+seUMappedSetOutputLower::seUMappedSetOutputLower(seMapped *mapped, float newOutputLower) :
+pMapped(mapped),
+pOldOutputLower(mapped ? mapped->GetOutputLower() : 0.0f),
+pNewOutputLower(newOutputLower)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Output Lower" );
+	SetShortInfo("Set Mapped Output Lower");
 }
 
 seUMappedSetOutputLower::~seUMappedSetOutputLower(){
@@ -53,9 +53,9 @@ seUMappedSetOutputLower::~seUMappedSetOutputLower(){
 ///////////////
 
 void seUMappedSetOutputLower::Undo(){
-	pMapped->SetOutputLower( pOldOutputLower );
+	pMapped->SetOutputLower(pOldOutputLower);
 }
 
 void seUMappedSetOutputLower::Redo(){
-	pMapped->SetOutputLower( pNewOutputLower );
+	pMapped->SetOutputLower(pNewOutputLower);
 }

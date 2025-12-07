@@ -48,30 +48,30 @@ private:
 	
 public:
 	// constructor, destructor
-	meLSXMLWorld( meLoadSaveSystem *lssys );
+	meLSXMLWorld(meLoadSaveSystem *lssys);
 	virtual ~meLSXMLWorld();
 	// loading and saving
-	virtual void SaveWorld( meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file );
+	virtual void SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file);
 	
 	/** Creates a stepable loader. */
-	virtual igdeStepableTask *CreateLoadTask( meWorld *world, decBaseFileReader *file );
+	virtual igdeStepableTask *CreateLoadTask(meWorld *world, decBaseFileReader *file);
 	
 	
 	
 private:
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name ) const;
-	int pGetAttributeInt( const decXmlElementTag &tag, const char *name ) const;
-	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name ) const;
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name) const;
+	int pGetAttributeInt(const decXmlElementTag &tag, const char *name) const;
+	float pGetAttributeFloat(const decXmlElementTag &tag, const char *name) const;
 	
-	void pWriteWorld( decXmlWriter &writer, const meWorld &world );
-	void pWriteWorldEditor( decXmlWriter &writer, const meWorld &world );
+	void pWriteWorld(decXmlWriter &writer, const meWorld &world);
+	void pWriteWorldEditor(decXmlWriter &writer, const meWorld &world);
 	void pWriteWorldEditorBackgroundObject(decXmlWriter &writer, const meWorld &world);
 	void pWriteWorldEditorLimitBox(decXmlWriter &writer, const meWorld &world);
-	void pWriteObject( decXmlWriter &writer, const meObject &object );
-	void pWriteObjectTexture( decXmlWriter &writer, const meObjectTexture &texture );
-	void pWriteDecal( decXmlWriter &writer, const meDecal &decal );
-	void pWriteNavigationSystem( decXmlWriter &writer, const meNavigationSpace &navspace );
-	void pWriteProperties( decXmlWriter &writer, const decStringDictionary &properties );
+	void pWriteObject(decXmlWriter &writer, const meObject &object);
+	void pWriteObjectTexture(decXmlWriter &writer, const meObjectTexture &texture);
+	void pWriteDecal(decXmlWriter &writer, const meDecal &decal);
+	void pWriteNavigationSystem(decXmlWriter &writer, const meNavigationSpace &navspace);
+	void pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties);
 };
 
 #endif

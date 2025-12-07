@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglParticleEmitterInstance( deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance );
+	deoglParticleEmitterInstance(deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance);
 	
 	/** Clean up peer. */
 	virtual ~deoglParticleEmitterInstance();
@@ -74,15 +74,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Particle emitter instance. */
-	inline const deParticleEmitterInstance &GetInstance() const{ return pInstance; }
+	inline const deParticleEmitterInstance &GetInstance() const{return pInstance;}
 	
 	
 	
 	/** Render particle emitter instance. */
-	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
+	inline deoglRParticleEmitterInstance *GetRInstance() const{return pRInstance;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -90,13 +90,13 @@ public:
 	
 	
 	/** Emitter or \em NULL if not set. */
-	inline deoglParticleEmitter *GetEmitter() const{ return pEmitter; }
+	inline deoglParticleEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** Number of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{return pTypeCount;}
 	
 	/** Type at index. */
-	deoglParticleEmitterInstanceType &GetTypeAt( int index );
+	deoglParticleEmitterInstanceType &GetTypeAt(int index);
 	/*@}*/
 	
 	
@@ -131,13 +131,13 @@ public:
 	virtual void LayerMaskChanged();
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** Type changed. */
-	virtual void TypeChanged( int type );
+	virtual void TypeChanged(int type);
 	
 	/** Type particles changed. */
-	virtual void TypeParticlesChanged( int type );
+	virtual void TypeParticlesChanged(int type);
 	
 	/** Reset burst particles. */
 	virtual void ResetBurst();

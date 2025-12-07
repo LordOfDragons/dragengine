@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	ceLoadSaveCTGS( ceLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource );
+	ceLoadSaveCTGS(ceLoadSaveSystem &loadSaveSystem, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	
@@ -64,24 +64,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** \brief Load conversation test game state. */
-	void LoadCTGS( ceConversation &conversation, decBaseFileReader &reader );
+	void LoadCTGS(ceConversation &conversation, decBaseFileReader &reader);
 	
 	/** \brief Save conversation test game state. */
-	void SaveCTGS( const ceConversation &conversation, decBaseFileWriter &writer );
+	void SaveCTGS(const ceConversation &conversation, decBaseFileWriter &writer);
 	
 	
 	
 	/** \brief Write game state tag. */
-	void WriteGameState( decXmlWriter &writer, const cePlayback &playback, const char *tagName );
+	void WriteGameState(decXmlWriter &writer, const cePlayback &playback, const char *tagName);
 	
 	/** \brief Read game state tag. */
-	void ReadGameState( const decXmlElementTag &root, cePlayback &playback );
+	void ReadGameState(const decXmlElementTag &root, cePlayback &playback);
 	/*@}*/
 	
 	

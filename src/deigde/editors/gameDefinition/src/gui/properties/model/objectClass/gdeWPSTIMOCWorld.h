@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCWorld *GetOCWorld() const{ return pWorld; }
+	inline gdeOCWorld *GetOCWorld() const{return pWorld;}
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
@@ -73,7 +73,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

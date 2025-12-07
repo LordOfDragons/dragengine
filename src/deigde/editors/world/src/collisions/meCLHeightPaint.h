@@ -51,7 +51,7 @@ private:
 	float pGaussRadius;
 	float pGaussParam;
 	
-	float pGaussKernel3x3[ 3 ][ 3 ];
+	float pGaussKernel3x3[3][3];
 	
 	decDVector pHitPoint;
 	float pHitDistance;
@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new listener. */
-	meCLHeightPaint( meWorld *world );
+	meCLHeightPaint(meWorld *world);
 	/** \brief Cleans up the listener. */
 	virtual ~meCLHeightPaint();
 	/*@}*/
@@ -87,18 +87,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the ray origin. */
-	inline const decDVector &GetRayOrigin() const{ return pRayOrigin; }
+	inline const decDVector &GetRayOrigin() const{return pRayOrigin;}
 	/** \brief Retrieves the ray direction. */
-	inline const decVector &GetRayDirection() const{ return pRayDirection; }
+	inline const decVector &GetRayDirection() const{return pRayDirection;}
 	/** \brief Sets the paint ray. */
-	void SetRay( const decDVector &origin, const decVector &direction );
+	void SetRay(const decDVector &origin, const decVector &direction);
 	
 	/** \brief Starts a paint session. */
 	void BeginSession();
 	/** \brief Prepares for a single paint turn. */
 	void PreparePaint();
 	/** \brief Paint. */
-	void Paint( float elapsed );
+	void Paint(float elapsed);
 	/** \brief End the paint session. */
 	void EndSession();
 	/*@}*/
@@ -111,7 +111,7 @@ public:
 	 *          with the response to the collision. In all other cases you do
 	 *          must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	/**
 	 * \brief Determines if a collider can be hit.
 	 * \details If this peer is used with a collider then the script is asked to
@@ -122,29 +122,29 @@ public:
 	 * \param collider Collider to test.
 	 * \return True if the owner/ray can hit the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/**
 	 * \brief Notifies the scripts that the properties of this collider have changed
 	 *        and that the attached element has to update.
 	 * \details This is usually called after the collision detection but can also be
 	 *          called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 	/*@}*/
 	
 private:
 	void pCalculateGaussParameter();
-	float pGauss( float x, float y );
+	float pGauss(float x, float y);
 	
 	void pPaintRaise();
 	void pPaintLower();
 	void pPaintLevel();
 	void pPaintSmooth();
 	
-	void pFetch3x3( float *values, int sectorX, int sectorY, int gridX, int gridY );
-	float pSmooth3x3( float *values );
+	void pFetch3x3(float *values, int sectorX, int sectorY, int gridX, int gridY);
+	float pSmooth3x3(float *values);
 	
-	void pUpdateOldHeights( const decPoint &sector, const decVector2 &grid, const decVector2 &size );
+	void pUpdateOldHeights(const decPoint &sector, const decVector2 &grid, const decVector2 &size);
 };
 
 #endif

@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTreeItemModel::gdeWPSTreeItemModel( gdeWPSTreeModel &tree, eTypes type ) :
-igdeTreeItem( "" ),
-pTree( tree ),
-pType( type ){
+gdeWPSTreeItemModel::gdeWPSTreeItemModel(gdeWPSTreeModel &tree, eTypes type) :
+igdeTreeItem(""),
+pTree(tree),
+pType(type){
 }
 
 gdeWPSTreeItemModel::~gdeWPSTreeItemModel(){
@@ -64,34 +64,34 @@ gdeGameDefinition &gdeWPSTreeItemModel::GetGameDefinition() const{
 
 
 void gdeWPSTreeItemModel::SortChildren(){
-	pTree.GetTreeList().SortItems( this );
+	pTree.GetTreeList().SortItems(this);
 }
 
 void gdeWPSTreeItemModel::ParentSortItems(){
-	if( GetParent() ){
-		pTree.GetTreeList().SortItems( GetParent() );
+	if(GetParent()){
+		pTree.GetTreeList().SortItems(GetParent());
 	}
 }
 
 void gdeWPSTreeItemModel::SetAsCurrentItem(){
-	pTree.GetTreeList().SetSelection( this );
+	pTree.GetTreeList().SetSelection(this);
 }
 
-void gdeWPSTreeItemModel::AppendModel( igdeTreeItem *item ){
-	pTree.GetTreeList().AppendItem( this, item );
-	( ( gdeWPSTreeItemModel* )item )->OnAddedToTree();
+void gdeWPSTreeItemModel::AppendModel(igdeTreeItem *item){
+	pTree.GetTreeList().AppendItem(this, item);
+	((gdeWPSTreeItemModel*)item)->OnAddedToTree();
 }
 
-void gdeWPSTreeItemModel::RemoveModel( igdeTreeItem *item ){
-	pTree.GetTreeList().RemoveItem( item );
+void gdeWPSTreeItemModel::RemoveModel(igdeTreeItem *item){
+	pTree.GetTreeList().RemoveItem(item);
 }
 
 void gdeWPSTreeItemModel::RemoveAllModels(){
-	pTree.GetTreeList().RemoveAllItems( this );
+	pTree.GetTreeList().RemoveAllItems(this);
 }
 
 void gdeWPSTreeItemModel::ItemChanged(){
-	pTree.GetTreeList().ItemChanged( this );
+	pTree.GetTreeList().ItemChanged(this);
 }
 
 
@@ -99,16 +99,16 @@ void gdeWPSTreeItemModel::ItemChanged(){
 void gdeWPSTreeItemModel::OnAddedToTree(){
 }
 
-int gdeWPSTreeItemModel::Compare( const gdeWPSTreeItemModel &item ) const{
+int gdeWPSTreeItemModel::Compare(const gdeWPSTreeItemModel &item) const{
 	return 0;
 }
 
 void gdeWPSTreeItemModel::OnSelected(){
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotNoSelection );
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotNoSelection);
 }
 
-void gdeWPSTreeItemModel::OnContextMenu( igdeMenuCascade& ){
+void gdeWPSTreeItemModel::OnContextMenu(igdeMenuCascade&){
 }
 
-void gdeWPSTreeItemModel::SelectBestMatching( const char* ){
+void gdeWPSTreeItemModel::SelectBestMatching(const char*){
 }

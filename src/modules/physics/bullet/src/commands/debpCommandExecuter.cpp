@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpCommandExecuter::debpCommandExecuter( dePhysicsBullet *bullet ){
-	if( ! bullet ) DETHROW( deeInvalidParam );
+debpCommandExecuter::debpCommandExecuter(dePhysicsBullet *bullet){
+	if(! bullet) DETHROW(deeInvalidParam);
 	
 	pBullet = bullet;
 }
@@ -55,18 +55,18 @@ debpCommandExecuter::~debpCommandExecuter(){
 // Management
 ///////////////
 
-void debpCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 0 ){
-		answer.SetFromUTF8( "No command provided." );
+void debpCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 0){
+		answer.SetFromUTF8("No command provided.");
 		
 	}else{
-		if( command.MatchesArgumentAt( 0, "help" ) ){
-			pHelp( command, answer );
+		if(command.MatchesArgumentAt(0, "help")){
+			pHelp(command, answer);
 			
-		}else if( ! pBullet->GetDeveloperMode().ExecuteCommand( command, answer ) ){
-			answer.SetFromUTF8( "Unknown command '" );
-			answer += *command.GetArgumentAt( 0 );
-			answer.AppendFromUTF8( "'." );
+		}else if(! pBullet->GetDeveloperMode().ExecuteCommand(command, answer)){
+			answer.SetFromUTF8("Unknown command '");
+			answer += *command.GetArgumentAt(0);
+			answer.AppendFromUTF8("'.");
 		}
 	}
 }
@@ -77,6 +77,6 @@ void debpCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command,
 // Private functions
 //////////////////////
 
-void debpCommandExecuter::pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	answer.SetFromUTF8( "help => Displays this help screen.\n" );
+void debpCommandExecuter::pHelp(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	answer.SetFromUTF8("help => Displays this help screen.\n");
 }

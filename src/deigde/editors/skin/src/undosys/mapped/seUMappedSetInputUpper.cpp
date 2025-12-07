@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetInputUpper::seUMappedSetInputUpper( seMapped *mapped, float newInputUpper ) :
-pMapped( mapped ),
-pOldInputUpper( mapped ? mapped->GetInputUpper() : 1.0f ),
-pNewInputUpper( newInputUpper )
+seUMappedSetInputUpper::seUMappedSetInputUpper(seMapped *mapped, float newInputUpper) :
+pMapped(mapped),
+pOldInputUpper(mapped ? mapped->GetInputUpper() : 1.0f),
+pNewInputUpper(newInputUpper)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Input Upper" );
+	SetShortInfo("Set Mapped Input Upper");
 }
 
 seUMappedSetInputUpper::~seUMappedSetInputUpper(){
@@ -53,9 +53,9 @@ seUMappedSetInputUpper::~seUMappedSetInputUpper(){
 ///////////////
 
 void seUMappedSetInputUpper::Undo(){
-	pMapped->SetInputUpper( pOldInputUpper );
+	pMapped->SetInputUpper(pOldInputUpper);
 }
 
 void seUMappedSetInputUpper::Redo(){
-	pMapped->SetInputUpper( pNewInputUpper );
+	pMapped->SetInputUpper(pNewInputUpper);
 }

@@ -38,13 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlNamespace::decXmlNamespace( const char *name, const char *url ) :
-pName( name ),
-pURL( url ){
+decXmlNamespace::decXmlNamespace(const char *name, const char *url) :
+pName(name),
+pURL(url){
 }
 
-decXmlNamespace::decXmlNamespace( const char *name ) :
-pName( name ){
+decXmlNamespace::decXmlNamespace(const char *name) :
+pName(name){
 }
 
 decXmlNamespace::~decXmlNamespace(){
@@ -55,18 +55,18 @@ decXmlNamespace::~decXmlNamespace(){
 // Management
 ///////////////
 
-void decXmlNamespace::SetName( const char *name ){
+void decXmlNamespace::SetName(const char *name){
 	pName = name;
 }
 
-void decXmlNamespace::SetURL( const char *url ){
+void decXmlNamespace::SetURL(const char *url){
 	pURL = url;
 }
 
 
 
-void decXmlNamespace::Visit( decXmlVisitor &visitor ){
-	visitor.VisitNamespace( *this );
+void decXmlNamespace::Visit(decXmlVisitor &visitor){
+	visitor.VisitNamespace(*this);
 }
 
 bool decXmlNamespace::CanCastToNamespace() const{

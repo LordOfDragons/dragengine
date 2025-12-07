@@ -37,7 +37,7 @@ class igdeFont;
  * \brief FOX toolkit Native Text Area.
  */
 class igdeNativeFoxStatusBar : public FXStatusBar{
-	FXDECLARE( igdeNativeFoxStatusBar )
+	FXDECLARE(igdeNativeFoxStatusBar)
 protected:
 	   igdeNativeFoxStatusBar();
 	
@@ -56,14 +56,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text widget. */
-	igdeNativeFoxStatusBar( igdeStatusBar &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxStatusBar(igdeStatusBar &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up text widget. */
 	virtual ~igdeNativeFoxStatusBar();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxStatusBar* CreateNativeWidget( igdeStatusBar &owner );
+	static igdeNativeFoxStatusBar* CreateNativeWidget(igdeStatusBar &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -78,16 +78,16 @@ public:
 	/*@{*/
 	virtual void UpdateText();
 	
-	static int StatusBarFlags( const igdeStatusBar &owner );
-	static igdeFont *StatusBarFont( const igdeStatusBar &owner, const igdeGuiTheme &guitheme );
+	static int StatusBarFlags(const igdeStatusBar &owner);
+	static igdeFont *StatusBarFont(const igdeStatusBar &owner, const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

@@ -52,8 +52,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu condition. */
-	ceWPTMACreateCondition( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationCondition::eConditionTypes conditionType );
+	ceWPTMACreateCondition(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -61,10 +61,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Type of condition to create. */
-	inline ceConversationCondition::eConditionTypes GetConditionType() const{ return pConditionType; }
+	inline ceConversationCondition::eConditionTypes GetConditionType() const{return pConditionType;}
 	
 	
 	
@@ -72,7 +72,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Create undo action for adding condition. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	virtual igdeUndo *CreateUndo(ceConversationCondition *condition);
 	
 	
 	
@@ -80,12 +80,12 @@ public:
 	ceConversationCondition *CreateCondition();
 	
 	/** \brief Text for condition type. */
-	static const char *ConditionTypeText( ceWindowMain &windowMain,
-		ceConversationCondition::eConditionTypes conditionType );
+	static const char *ConditionTypeText(ceWindowMain &windowMain,
+		ceConversationCondition::eConditionTypes conditionType);
 	
 	/** \brief Icon for condition type. */
-	static igdeIcon *ConditionTypeIcon( ceWindowMain &windowMain,
-		ceConversationCondition::eConditionTypes conditionType );
+	static igdeIcon *ConditionTypeIcon(ceWindowMain &windowMain,
+		ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 };
 

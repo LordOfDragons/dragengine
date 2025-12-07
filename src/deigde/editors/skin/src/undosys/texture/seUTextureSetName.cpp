@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureSetName::seUTextureSetName( seTexture *texture, const char *newName ){
-	if( ! texture || ! newName ) DETHROW( deeInvalidParam );
+seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
+	if(! texture || ! newName) DETHROW(deeInvalidParam);
 	
 	pTexture = NULL;
 	
-	SetShortInfo( "Set Texture Name" );
+	SetShortInfo("Set Texture Name");
 	
 	pOldName = texture->GetName();
 	pNewName = newName;
@@ -54,7 +54,7 @@ seUTextureSetName::seUTextureSetName( seTexture *texture, const char *newName ){
 }
 
 seUTextureSetName::~seUTextureSetName(){
-	if( pTexture ) pTexture->FreeReference();
+	if(pTexture) pTexture->FreeReference();
 }
 
 
@@ -63,9 +63,9 @@ seUTextureSetName::~seUTextureSetName(){
 ///////////////
 
 void seUTextureSetName::Undo(){
-	pTexture->SetName( pOldName.GetString() );
+	pTexture->SetName(pOldName.GetString());
 }
 
 void seUTextureSetName::Redo(){
-	pTexture->SetName( pNewName.GetString() );
+	pTexture->SetName(pNewName.GetString());
 }

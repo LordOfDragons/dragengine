@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	ceDialogPasteSnippet( igdeEnvironment &environment, ceConversation *conversation );
+	ceDialogPasteSnippet(igdeEnvironment &environment, ceConversation *conversation);
 	
 protected:
 	/** \brief Clean up dialog. */
@@ -90,14 +90,14 @@ public:
 	void GenerateActions();
 	
 	/** \brief Words from text. */
-	void WordsFromText( ceStripList &wordList, const decUnicodeString &text, float scale );
+	void WordsFromText(ceStripList &wordList, const decUnicodeString &text, float scale);
 	
 	/**
 	 * \brief List of action snippet.
 	 * 
 	 * Present after dialog returned successfully.
 	 */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationActionList &GetActions() const{return pActions;}
 	
 	
 	

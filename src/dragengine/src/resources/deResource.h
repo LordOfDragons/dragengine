@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource. */
-	deResource( deResourceManager *resourceManager );
+	deResource(deResourceManager *resourceManager);
 	
 protected:
 	/**
@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Resource manager or NULL if resource is leaking. */
-	inline deResourceManager *GetResourceManager() const{ return pResourceManager; }
+	inline deResourceManager *GetResourceManager() const{return pResourceManager;}
 	
 	/**
 	 * \brief Game engine object from resource manager.
@@ -92,22 +92,22 @@ public:
 	/** \name Resource manager linked list */
 	/*@{*/
 	/** \brief Previous resource in the resource manager linked list. */
-	inline deResource *GetLLManagerPrev() const{ return pLLManagerPrev; }
+	inline deResource *GetLLManagerPrev() const{return pLLManagerPrev;}
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For use by resource managers only.
 	 */
-	void SetLLManagerPrev( deResource *resource );
+	void SetLLManagerPrev(deResource *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
-	inline deResource *GetLLManagerNext() const{ return pLLManagerNext; }
+	inline deResource *GetLLManagerNext() const{return pLLManagerNext;}
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For use by resource managers only.
 	 */
-	void SetLLManagerNext( deResource *resource );
+	void SetLLManagerNext(deResource *resource);
 	
 	/**
 	 * \brief Marks the resource leaking.

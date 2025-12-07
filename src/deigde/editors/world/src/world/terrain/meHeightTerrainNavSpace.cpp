@@ -74,33 +74,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-meHeightTerrainNavSpace::meHeightTerrainNavSpace( deEngine &engine, const char *name ) :
-pEngine( engine ),
-pEngNavSpace( NULL ),
-    pHTSector( NULL ),
+meHeightTerrainNavSpace::meHeightTerrainNavSpace(deEngine &engine, const char *name) :
+pEngine(engine),
+pEngNavSpace(NULL),
+    pHTSector(NULL),
 
-pName( name ),
-pSpaceType( deNavigationSpace::estMesh ),
-pLayer( 0 ),
-pSnapDistance( 0.001f ),
-pSnapAngle( 180.0f ),
+pName(name),
+pSpaceType(deNavigationSpace::estMesh),
+pLayer(0),
+pSnapDistance(0.001f),
+pSnapAngle(180.0f),
 
-pActiveType( NULL ),
+pActiveType(NULL),
 
-pNavSpaceChanged( false ),
-pNavSpaceSaved( false ),
+pNavSpaceChanged(false),
+pNavSpaceSaved(false),
 
-pActive( false ),
+pActive(false),
 
-pDDTypeFaces( NULL ),
-pBulkUpdate( false )
+pDDTypeFaces(NULL),
+pBulkUpdate(false)
 {
 	try{
 		pDDTypeFaces = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDDTypeFaces->SetXRay( true );
-		pDDTypeFaces->SetVisible( false );
+		pDDTypeFaces->SetXRay(true);
+		pDDTypeFaces->SetVisible(false);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -115,20 +115,20 @@ meHeightTerrainNavSpace::~meHeightTerrainNavSpace(){
 // Management
 ///////////////
 
-void meHeightTerrainNavSpace::SetHTSector( meHeightTerrainSector *sector ){
-	if( sector == pHTSector ){
+void meHeightTerrainNavSpace::SetHTSector(meHeightTerrainSector *sector){
+	if(sector == pHTSector){
 		return;
 	}
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		RemoveDDFromWorld( *pHTSector->GetHeightTerrain()->GetWorld().GetEngineWorld() );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		RemoveDDFromWorld(*pHTSector->GetHeightTerrain()->GetWorld().GetEngineWorld());
 	}
 	
-	SetEngineNavSpace( NULL );
+	SetEngineNavSpace(NULL);
 	pHTSector = sector;
 	
-	if( sector && sector->GetHeightTerrain() ){
-		AddDDToWorld( *sector->GetHeightTerrain()->GetWorld().GetEngineWorld() );
+	if(sector && sector->GetHeightTerrain()){
+		AddDDToWorld(*sector->GetHeightTerrain()->GetWorld().GetEngineWorld());
 	}
 	
 	pRepositionDD();
@@ -142,49 +142,49 @@ deHeightTerrainNavSpace *meHeightTerrainNavSpace::CreateEngineNavSpace() const{
 	int navFaceCount = 0;
 	int i, j, k;
 	
-	for( i=0; i<typeCount; i++ ){
-		const meHeightTerrainNavSpaceType &type = *( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) );
+	for(i=0; i<typeCount; i++){
+		const meHeightTerrainNavSpaceType &type = *((meHeightTerrainNavSpaceType*)pTypes.GetAt(i));
 		const int faceCount = type.GetFaceCount();
 		
-		for( j=0; j<faceCount; j++ ){
-			navCornerCount += type.GetFaceAt( j )->GetNavPoints().GetCount();
+		for(j=0; j<faceCount; j++){
+			navCornerCount += type.GetFaceAt(j)->GetNavPoints().GetCount();
 		}
 		navFaceCount += faceCount;
 	}
 	
 	try{
 		navspace = new deHeightTerrainNavSpace;
-		navspace->SetType( pSpaceType );
-		navspace->SetLayer( pLayer );
-		navspace->SetSnapDistance( pSnapDistance );
-		navspace->SetSnapAngle( pSnapAngle * DEG2RAD );
-		navspace->SetCornerCount( navCornerCount );
-		navspace->SetEdgeCount( 0 ); // TODO
-		navspace->SetFaceCount( navFaceCount );
+		navspace->SetType(pSpaceType);
+		navspace->SetLayer(pLayer);
+		navspace->SetSnapDistance(pSnapDistance);
+		navspace->SetSnapAngle(pSnapAngle * DEG2RAD);
+		navspace->SetCornerCount(navCornerCount);
+		navspace->SetEdgeCount(0); // TODO
+		navspace->SetFaceCount(navFaceCount);
 		
 		unsigned int *navCorners = navspace->GetCorners();
 		deNavigationSpaceFace *navFaces = navspace->GetFaces();
 		
-		for( i=0; i<typeCount; i++ ){
-			const meHeightTerrainNavSpaceType &type = *( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) );
+		for(i=0; i<typeCount; i++){
+			const meHeightTerrainNavSpaceType &type = *((meHeightTerrainNavSpaceType*)pTypes.GetAt(i));
 			const int faceCount = type.GetFaceCount();
 			
-			for( j=0; j<faceCount; j++ ){
-				const decIntList &points = type.GetFaceAt( j )->GetNavPoints();
+			for(j=0; j<faceCount; j++){
+				const decIntList &points = type.GetFaceAt(j)->GetNavPoints();
 				const int pointCount = points.GetCount();
 				
-				navFaces->SetType( ( unsigned short )type.GetType() );
-				navFaces->SetCornerCount( pointCount );
+				navFaces->SetType((unsigned short)type.GetType());
+				navFaces->SetCornerCount(pointCount);
 				navFaces++;
 				
-				for( k=0; k<pointCount; k++ ){
+				for(k=0; k<pointCount; k++){
 					*navCorners++ = ( unsigned int )points.GetAt( k );
 				}
 			}
 		}
 		
-	}catch( const deException & ){
-		if( navspace ){
+	}catch(const deException &){
+		if(navspace){
 			delete navspace;
 		}
 		throw;
@@ -193,82 +193,82 @@ deHeightTerrainNavSpace *meHeightTerrainNavSpace::CreateEngineNavSpace() const{
 	return navspace;
 }
 
-void meHeightTerrainNavSpace::SetEngineNavSpace( deHeightTerrainNavSpace *navspace ){
+void meHeightTerrainNavSpace::SetEngineNavSpace(deHeightTerrainNavSpace *navspace){
 	pEngNavSpace = navspace;
 }
 
 
 
-void meHeightTerrainNavSpace::SetName( const char *name ){
+void meHeightTerrainNavSpace::SetName(const char *name){
 	pName = name;
 }
 
-void meHeightTerrainNavSpace::SetSpaceType( deNavigationSpace::eSpaceTypes type ){
-	if( type < deNavigationSpace::estGrid || type > deNavigationSpace::estVolume ){
-		DETHROW( deeInvalidParam );
+void meHeightTerrainNavSpace::SetSpaceType(deNavigationSpace::eSpaceTypes type){
+	if(type < deNavigationSpace::estGrid || type > deNavigationSpace::estVolume){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pSpaceType == type ){
+	if(pSpaceType == type){
 		return;
 	}
 	
 	pSpaceType = type;
 	
-	if( pEngNavSpace ){
-		pEngNavSpace->SetType( type );
+	if(pEngNavSpace){
+		pEngNavSpace->SetType(type);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceTypeChanged( engHTSector.IndexOfNavSpace( pEngNavSpace ) );
+		engHTSector.NotifyNavSpaceTypeChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
 	}
 	
 	InvalidatePathTest();
 	NotifyChanged();
 }
 
-void meHeightTerrainNavSpace::SetLayer( int layer ){
-	if( pLayer == layer ){
+void meHeightTerrainNavSpace::SetLayer(int layer){
+	if(pLayer == layer){
 		return;
 	}
 	
 	pLayer = layer;
 	
-	if( pEngNavSpace ){
-		pEngNavSpace->SetLayer( layer );
+	if(pEngNavSpace){
+		pEngNavSpace->SetLayer(layer);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceLayerChanged( engHTSector.IndexOfNavSpace( pEngNavSpace ) );
+		engHTSector.NotifyNavSpaceLayerChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
 		InvalidatePathTest();
 	}
 	
 	NotifyChanged();
 }
 
-void meHeightTerrainNavSpace::SetSnapDistance( float distance ){
-	if( fabsf( distance - pSnapDistance ) < FLOAT_SAFE_EPSILON ){
+void meHeightTerrainNavSpace::SetSnapDistance(float distance){
+	if(fabsf(distance - pSnapDistance) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pSnapDistance = distance;
 	
-	if( pEngNavSpace ){
-		pEngNavSpace->SetSnapDistance( distance );
+	if(pEngNavSpace){
+		pEngNavSpace->SetSnapDistance(distance);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceSnappingChanged( engHTSector.IndexOfNavSpace( pEngNavSpace ) );
+		engHTSector.NotifyNavSpaceSnappingChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
 		InvalidatePathTest();
 	}
 	
 	NotifyChanged();
 }
 
-void meHeightTerrainNavSpace::SetSnapAngle( float angle ){
-	if( fabsf( angle - pSnapAngle ) < FLOAT_SAFE_EPSILON ){
+void meHeightTerrainNavSpace::SetSnapAngle(float angle){
+	if(fabsf(angle - pSnapAngle) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pSnapAngle = angle;
 	
-	if( pEngNavSpace ){
-		pEngNavSpace->SetSnapAngle( angle * DEG2RAD );
+	if(pEngNavSpace){
+		pEngNavSpace->SetSnapAngle(angle * DEG2RAD);
 		deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-		engHTSector.NotifyNavSpaceSnappingChanged( engHTSector.IndexOfNavSpace( pEngNavSpace ) );
+		engHTSector.NotifyNavSpaceSnappingChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
 		InvalidatePathTest();
 	}
 	
@@ -278,18 +278,18 @@ void meHeightTerrainNavSpace::SetSnapAngle( float angle ){
 
 
 void meHeightTerrainNavSpace::NotifyChanged(){
-	if( ! pHTSector ){
+	if(! pHTSector){
 		return;
 	}
 	
 	pHTSector->NotifySectorChanged();
-	if( pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceChanged( this );
+	if(pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceChanged(this);
 	}
 }
 
 void meHeightTerrainNavSpace::InvalidatePathTest() {
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
 		return;
 	}
 	pHTSector->GetHeightTerrain()->GetWorld().GetPathFindTest()->Invalidate();
@@ -302,15 +302,15 @@ void meHeightTerrainNavSpace::HeightTerrainSizeChanged(){
 }
 
 void meHeightTerrainNavSpace::SectorSizeOrResChanged(){
-	if( ! pHTSector ){
+	if(! pHTSector){
 		return;
 	}
 	
 	const int typeCount = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<typeCount; i++ ){
-		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->RemoveAllFaces();
+	for(i=0; i<typeCount; i++){
+		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->RemoveAllFaces();
 	}
 	
 	UpdateNavSpaceFaces();
@@ -320,12 +320,12 @@ void meHeightTerrainNavSpace::HeightTerrainHeightParametersChanged(){
 	pRepositionDD();
 }
 
-void meHeightTerrainNavSpace::AddDDToWorld( deWorld &world ){
-	world.AddDebugDrawer( pDDTypeFaces );
+void meHeightTerrainNavSpace::AddDDToWorld(deWorld &world){
+	world.AddDebugDrawer(pDDTypeFaces);
 }
 
-void meHeightTerrainNavSpace::RemoveDDFromWorld( deWorld &world ){
-	world.RemoveDebugDrawer( pDDTypeFaces );
+void meHeightTerrainNavSpace::RemoveDDFromWorld(deWorld &world){
+	world.RemoveDebugDrawer(pDDTypeFaces);
 }
 
 void meHeightTerrainNavSpace::InvalidateHeights(){
@@ -333,14 +333,14 @@ void meHeightTerrainNavSpace::InvalidateHeights(){
 }
 
 void meHeightTerrainNavSpace::UpdateDDColors(){
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
 	const meWorld &world = pHTSector->GetHeightTerrain()->GetWorld();
 	bool visible = false;
 	
-	switch( world.GetGuiParameters().GetWorkMode() ){
+	switch(world.GetGuiParameters().GetWorkMode()){
 	case meWorldGuiParameters::ewmNavSpaceEdit:
 		visible = pActive;
 		break;
@@ -355,33 +355,33 @@ void meHeightTerrainNavSpace::UpdateDDColors(){
 		break;
 	}
 	
-	if( world.GetGuiParameters().GetShowNavigationSpaces() ){
+	if(world.GetGuiParameters().GetShowNavigationSpaces()){
 		visible = true;
 	}
 	
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deDebugDrawerShape &shape = *pDDTypeFaces->GetShapeAt( i );
-		decColor color( 0.5f, 0.5f, 0.5f, 1.0f );
+	for(i=0; i<count; i++){
+		deDebugDrawerShape &shape = *pDDTypeFaces->GetShapeAt(i);
+		decColor color(0.5f, 0.5f, 0.5f, 1.0f);
 		
 		//if( pHeightTerrain->GetActive() ){
-			color = ( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->GetColor();
+			color = ((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->GetColor();
 		//}
 		
-		shape.SetEdgeColor( color );
-		shape.SetFillColor( decColor( color, 0.1f ) );
+		shape.SetEdgeColor(color);
+		shape.SetFillColor(decColor(color, 0.1f));
 	}
 	
 	pDDTypeFaces->NotifyShapeColorChanged();
-	pDDTypeFaces->SetVisible( visible );
+	pDDTypeFaces->SetVisible(visible);
 }
 
 
 
-void meHeightTerrainNavSpace::SetActive( bool active ){
-	if( active == pActive ){
+void meHeightTerrainNavSpace::SetActive(bool active){
+	if(active == pActive){
 		return;
 	}
 	
@@ -398,21 +398,21 @@ int meHeightTerrainNavSpace::GetTypeCount() const{
 	return pTypes.GetCount();
 }
 
-meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeAt( int index ) const{
-	return ( meHeightTerrainNavSpaceType* )pTypes.GetAt( index );
+meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeAt(int index) const{
+	return (meHeightTerrainNavSpaceType*)pTypes.GetAt(index);
 }
 
-meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		meHeightTerrainNavSpaceType * const type = ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i );
-		if( type->GetName() == name ){
+	for(i=0; i<count; i++){
+		meHeightTerrainNavSpaceType * const type = (meHeightTerrainNavSpaceType*)pTypes.GetAt(i);
+		if(type->GetName() == name){
 			return type;
 		}
 	}
@@ -420,16 +420,16 @@ meHeightTerrainNavSpaceType *meHeightTerrainNavSpace::GetTypeNamed( const char *
 	return NULL;
 }
 
-bool meHeightTerrainNavSpace::HasTypeNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+bool meHeightTerrainNavSpace::HasTypeNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -437,20 +437,20 @@ bool meHeightTerrainNavSpace::HasTypeNamed( const char *name ) const{
 	return false;
 }
 
-int meHeightTerrainNavSpace::IndexOfType( meHeightTerrainNavSpaceType *type ) const{
-	return pTypes.IndexOf( type );
+int meHeightTerrainNavSpace::IndexOfType(meHeightTerrainNavSpaceType *type) const{
+	return pTypes.IndexOf(type);
 }
 
-int meHeightTerrainNavSpace::IndexOfTypeNamed( const char *name ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+int meHeightTerrainNavSpace::IndexOfTypeNamed(const char *name) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -458,49 +458,49 @@ int meHeightTerrainNavSpace::IndexOfTypeNamed( const char *name ) const{
 	return -1;
 }
 
-bool meHeightTerrainNavSpace::HasType( meHeightTerrainNavSpaceType *type ) const{
-	return pTypes.Has( type );
+bool meHeightTerrainNavSpace::HasType(meHeightTerrainNavSpaceType *type) const{
+	return pTypes.Has(type);
 }
 
-void meHeightTerrainNavSpace::AddType( meHeightTerrainNavSpaceType *type ){
-	if( ! type || HasTypeNamed( type->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void meHeightTerrainNavSpace::AddType(meHeightTerrainNavSpaceType *type){
+	if(! type || HasTypeNamed(type->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTypes.Add( type );
-	type->SetNavSpace( this );
+	pTypes.Add(type);
+	type->SetNavSpace(this);
 	
-	if( ! pBulkUpdate ){
+	if(! pBulkUpdate){
 		pUpdateDDTypeFaces();
 	}
 	
 	NotifyTypeCountChanged();
 	
-	if( ! pActiveType ){
-		SetActiveType( type );
+	if(! pActiveType){
+		SetActiveType(type);
 	}
 }
 
-void meHeightTerrainNavSpace::RemoveType( meHeightTerrainNavSpaceType *type ){
-	if( ! pTypes.Has( type ) ){
-		DETHROW( deeInvalidParam );
+void meHeightTerrainNavSpace::RemoveType(meHeightTerrainNavSpaceType *type){
+	if(! pTypes.Has(type)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( type == pActiveType ){
-		if( pTypes.GetCount() == 1 ){
-			SetActiveType( NULL );
+	if(type == pActiveType){
+		if(pTypes.GetCount() == 1){
+			SetActiveType(NULL);
 			
-		}else if( pTypes.GetAt( 0 ) == type ){
-			SetActiveType( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( 1 ) );
+		}else if(pTypes.GetAt(0) == type){
+			SetActiveType((meHeightTerrainNavSpaceType*)pTypes.GetAt(1));
 			
 		}else{
-			SetActiveType( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( 0 ) );
+			SetActiveType((meHeightTerrainNavSpaceType*)pTypes.GetAt(0));
 		}
 	}
 	
-	type->SetNavSpace( NULL );
+	type->SetNavSpace(NULL);
 	
-	pTypes.Remove( type );
+	pTypes.Remove(type);
 	
 	pUpdateDDTypeFaces();
 	UpdateNavSpaceFaces();
@@ -512,10 +512,10 @@ void meHeightTerrainNavSpace::RemoveAllTypes(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	SetActiveType( NULL );
+	SetActiveType(NULL);
 	
-	for( i=0; i<count; i++ ){
-		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->SetNavSpace( NULL );
+	for(i=0; i<count; i++){
+		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->SetNavSpace(NULL);
 	}
 	pTypes.RemoveAll();
 	
@@ -525,28 +525,28 @@ void meHeightTerrainNavSpace::RemoveAllTypes(){
 	NotifyTypeCountChanged();
 }
 
-void meHeightTerrainNavSpace::SetActiveType( meHeightTerrainNavSpaceType *type ){
-	if( type == pActiveType ){
+void meHeightTerrainNavSpace::SetActiveType(meHeightTerrainNavSpaceType *type){
+	if(type == pActiveType){
 		return;
 	}
 	
 	pActiveType = type;
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceActiveTypeChanged( this );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceActiveTypeChanged(this);
 	}
 }
 
 void meHeightTerrainNavSpace::NotifyTypeCountChanged(){
-	if( ! pHTSector ){
+	if(! pHTSector){
 		return;
 	}
 	
 	pHTSector->NotifySectorChanged();
 	
-	if( pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetDepChanged( true );
-		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceTypeCountChanged( this );
+	if(pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetDepChanged(true);
+		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceTypeCountChanged(this);
 	}
 }
 
@@ -555,42 +555,42 @@ void meHeightTerrainNavSpace::NotifyTypeCountChanged(){
 // Nav-space file
 ///////////////////
 
-void meHeightTerrainNavSpace::SetPathNavSpace( const char *path, bool load ){
-	if( pPathNavSpace == path ){
+void meHeightTerrainNavSpace::SetPathNavSpace(const char *path, bool load){
+	if(pPathNavSpace == path){
 		return;
 	}
 	
 	pPathNavSpace = path;
 	
-	if( load ){
+	if(load){
 		LoadNavSpaceFromFile();
 		
 	}else{
-		SetNavSpaceSaved( true );
+		SetNavSpaceSaved(true);
 	}
-	SetNavSpaceChanged( true );
+	SetNavSpaceChanged(true);
 	
 	NotifyTypeCountChanged();
 }
 
-void meHeightTerrainNavSpace::SetNavSpaceChanged( bool changed ){
-	if( changed == pNavSpaceChanged ){
+void meHeightTerrainNavSpace::SetNavSpaceChanged(bool changed){
+	if(changed == pNavSpaceChanged){
 		return;
 	}
 	
 	pNavSpaceChanged = changed;
 	
-	if( changed && pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->SetDepChanged( true );
+	if(changed && pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->SetDepChanged(true);
 	}
 }
 
-void meHeightTerrainNavSpace::SetNavSpaceSaved( bool saved ){
+void meHeightTerrainNavSpace::SetNavSpaceSaved(bool saved){
 	pNavSpaceSaved = saved;
 }
 
 void meHeightTerrainNavSpace::UpdateNavSpaceFaces(){
-	if( ! pEngNavSpace ){
+	if(! pEngNavSpace){
 		return;
 	}
 	
@@ -599,65 +599,65 @@ void meHeightTerrainNavSpace::UpdateNavSpaceFaces(){
 	int navFaceCount = 0;
 	int i, j, k;
 	
-	for( i=0; i<typeCount; i++ ){
-		const meHeightTerrainNavSpaceType &type = *( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) );
+	for(i=0; i<typeCount; i++){
+		const meHeightTerrainNavSpaceType &type = *((meHeightTerrainNavSpaceType*)pTypes.GetAt(i));
 		const int faceCount = type.GetFaceCount();
 		
-		for( j=0; j<faceCount; j++ ){
-			navCornerCount += type.GetFaceAt( j )->GetNavPoints().GetCount();
+		for(j=0; j<faceCount; j++){
+			navCornerCount += type.GetFaceAt(j)->GetNavPoints().GetCount();
 		}
 		navFaceCount += faceCount;
 	}
 	
-	pEngNavSpace->SetCornerCount( navCornerCount );
-	pEngNavSpace->SetEdgeCount( 0 ); // TODO
-	pEngNavSpace->SetFaceCount( navFaceCount );
+	pEngNavSpace->SetCornerCount(navCornerCount);
+	pEngNavSpace->SetEdgeCount(0); // TODO
+	pEngNavSpace->SetFaceCount(navFaceCount);
 	
 	unsigned int *navCorners = pEngNavSpace->GetCorners();
 	deNavigationSpaceFace *navFaces = pEngNavSpace->GetFaces();
 	
-	for( i=0; i<typeCount; i++ ){
-		const meHeightTerrainNavSpaceType &type = *( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) );
+	for(i=0; i<typeCount; i++){
+		const meHeightTerrainNavSpaceType &type = *((meHeightTerrainNavSpaceType*)pTypes.GetAt(i));
 		const int faceCount = type.GetFaceCount();
 		
-		for( j=0; j<faceCount; j++ ){
-			const decIntList &points = type.GetFaceAt( j )->GetNavPoints();
+		for(j=0; j<faceCount; j++){
+			const decIntList &points = type.GetFaceAt(j)->GetNavPoints();
 			const int pointCount = points.GetCount();
 			
-			navFaces->SetType( ( unsigned short )type.GetType() );
-			navFaces->SetCornerCount( pointCount );
+			navFaces->SetType((unsigned short)type.GetType());
+			navFaces->SetCornerCount(pointCount);
 			navFaces++;
 			
-			for( k=0; k<pointCount; k++ ){
+			for(k=0; k<pointCount; k++){
 				*navCorners++ = ( unsigned int )points.GetAt( k );
 			}
 		}
 	}
 	
 	deHeightTerrainSector &engHTSector = *pHTSector->GetEngineSector();
-	engHTSector.NotifyNavSpaceLayoutChanged( engHTSector.IndexOfNavSpace( pEngNavSpace ) );
+	engHTSector.NotifyNavSpaceLayoutChanged(engHTSector.IndexOfNavSpace(pEngNavSpace));
 	
 	InvalidatePathTest();
 	
-	if( pHTSector && pHTSector->GetHeightTerrain() ){
-		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceFacesChanged( this );
+	if(pHTSector && pHTSector->GetHeightTerrain()){
+		pHTSector->GetHeightTerrain()->GetWorld().NotifyHTNavSpaceFacesChanged(this);
 	}
 }
 
 void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
 		return; // this is a problem. we can not load the file without an environment
 	}
 	
 	meWorld &world = pHTSector->GetHeightTerrain()->GetWorld();
 	world.GetUndoSystem()->RemoveAll(); // sorry, no better way yet to keep this consistent... without using a complex undo action
 	
-	if( ! pPathNavSpace.IsEmpty() ){
-		const decString baseDir( pHTSector->GetHeightTerrain()->GetBaseDirectory() );
-		const decPath path( decPath::AbsolutePathUnix( pPathNavSpace, baseDir ) );
+	if(! pPathNavSpace.IsEmpty()){
+		const decString baseDir(pHTSector->GetHeightTerrain()->GetBaseDirectory());
+		const decPath path(decPath::AbsolutePathUnix(pPathNavSpace, baseDir));
 		
-		if( pEngine.GetVirtualFileSystem()->ExistsFile( path ) ){
-			igdeLoadSaveHTNavSpace loadNavSpace( *world.GetEnvironment(), LOGSOURCE );
+		if(pEngine.GetVirtualFileSystem()->ExistsFile(path)){
+			igdeLoadSaveHTNavSpace loadNavSpace(*world.GetEnvironment(), LOGSOURCE);
 			deHeightTerrainNavSpace *engNavSpace = NULL;
 			int i, j;
 			
@@ -665,76 +665,76 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 				pBulkUpdate = true;
 				
 				engNavSpace = new deHeightTerrainNavSpace;
-				loadNavSpace.Load( *engNavSpace, decBaseFileReader::Ref::New(
-					pEngine.GetVirtualFileSystem()->OpenFileForReading( path ) ) );
+				loadNavSpace.Load(*engNavSpace, decBaseFileReader::Ref::New(
+					pEngine.GetVirtualFileSystem()->OpenFileForReading(path)));
 				
 				int typeCount = pTypes.GetCount();
-				for( i=0; i<typeCount; i++ ){
-					( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->RemoveAllFaces();
+				for(i=0; i<typeCount; i++){
+					((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->RemoveAllFaces();
 				}
 				
 				const int navFaceCount = engNavSpace->GetFaceCount();
 				const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces();
 				const unsigned int *navCorners = engNavSpace->GetCorners();
 				
-				for( i=0; i<navFaceCount; i++ ){
-					const int cornerCount = navFaces[ i ].GetCornerCount();
-					const int navType = ( int )navFaces[ i ].GetType();
+				for(i=0; i<navFaceCount; i++){
+					const int cornerCount = navFaces[i].GetCornerCount();
+					const int navType = (int)navFaces[i].GetType();
 					
 					meHeightTerrainNavSpaceType *type = NULL;
-					for( j=0; j<typeCount; j++ ){
-						meHeightTerrainNavSpaceType * const checkType = ( meHeightTerrainNavSpaceType* )pTypes.GetAt( j );
-						if( checkType->GetType() == navType ){
+					for(j=0; j<typeCount; j++){
+						meHeightTerrainNavSpaceType * const checkType = (meHeightTerrainNavSpaceType*)pTypes.GetAt(j);
+						if(checkType->GetType() == navType){
 							type = checkType;
 							break;
 						}
 					}
 					
-					if( ! type ){
-						decString name( "Type " );
-						name.AppendValue( navType );
+					if(! type){
+						decString name("Type ");
+						name.AppendValue(navType);
 						
 						const meHeightTerrainNavSpaceType::Ref newType(
-							meHeightTerrainNavSpaceType::Ref::NewWith() );
-						newType->SetName( name );
-						newType->SetType( navType );
-						AddType( newType );
+							meHeightTerrainNavSpaceType::Ref::NewWith());
+						newType->SetName(name);
+						newType->SetType(navType);
+						AddType(newType);
 						type = newType;
 						typeCount = pTypes.GetCount();
 					}
 					
 					const meHeightTerrainNavSpaceFace::Ref newFace(
-						meHeightTerrainNavSpaceFace::Ref::NewWith() );
+						meHeightTerrainNavSpaceFace::Ref::NewWith());
 					decIntList &newFacePoints = newFace->GetNavPoints();
-					for( j=0; j<cornerCount; j++ ){
-						newFacePoints.Add( ( int )*navCorners++ );
+					for(j=0; j<cornerCount; j++){
+						newFacePoints.Add((int)*navCorners++);
 					}
-					type->AddFace( newFace );
+					type->AddFace(newFace);
 				}
 				
 				pBulkUpdate = false;
 				
-			}catch( const deException &e ){
+			}catch(const deException &e){
 				pBulkUpdate = false;
-				world.GetLogger()->LogException( LOGSOURCE, e );
+				world.GetLogger()->LogException(LOGSOURCE, e);
 			}
 		}
 	}
 	
 	const int typeCount = pTypes.GetCount();
 	int i;
-	for( i=0; i<typeCount; i++ ){
-		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->UpdateDDFaces();
+	for(i=0; i<typeCount; i++){
+		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->UpdateDDFaces();
 	}
 	
 	pUpdateDDTypeFaces();
 	
-	SetNavSpaceSaved( true );
-	SetNavSpaceChanged( true );
+	SetNavSpaceSaved(true);
+	SetNavSpaceChanged(true);
 	
 	NotifyTypeCountChanged();
 	
-	world.NotifyHTNavSpaceFacesChanged( this );
+	world.NotifyHTNavSpaceFacesChanged(this);
 }
 
 
@@ -743,11 +743,11 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 //////////////////////
 
 void meHeightTerrainNavSpace::pCleanUp(){
-	SetHTSector( NULL );
+	SetHTSector(NULL);
 	
 	RemoveAllTypes();
 	
-	if( pDDTypeFaces ){
+	if(pDDTypeFaces){
 		pDDTypeFaces->FreeReference();
 	}
 }
@@ -755,7 +755,7 @@ void meHeightTerrainNavSpace::pCleanUp(){
 
 
 void meHeightTerrainNavSpace::pRepositionDD(){
-	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
+	if(! pHTSector || ! pHTSector->GetHeightTerrain()){
 		return;
 	}
 	
@@ -763,23 +763,23 @@ void meHeightTerrainNavSpace::pRepositionDD(){
 	const float heightScaling = pHTSector->GetHeightTerrain()->GetHeightScaling();
 	const float baseHeight = pHTSector->GetHeightTerrain()->GetBaseHeight();
 	const decPoint &coordinates = pHTSector->GetCoordinates();
-	const decVector scaling( sectorSize, heightScaling, sectorSize );
+	const decVector scaling(sectorSize, heightScaling, sectorSize);
 	
 	decDVector position;
-	position.x = ( double )sectorSize * ( double )coordinates.x;
-	position.y = ( double )baseHeight;
-	position.z = ( double )sectorSize * ( double )coordinates.y;
+	position.x = (double)sectorSize * (double)coordinates.x;
+	position.y = (double)baseHeight;
+	position.z = (double)sectorSize * (double)coordinates.y;
 	
-	pDDTypeFaces->SetPosition( position );
-	pDDTypeFaces->SetScale( scaling );
+	pDDTypeFaces->SetPosition(position);
+	pDDTypeFaces->SetScale(scaling);
 }
 
 void meHeightTerrainNavSpace::pUpdateDDTypeFaces(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->SetDDShape( NULL );
+	for(i=0; i<count; i++){
+		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->SetDDShape(NULL);
 	}
 	pDDTypeFaces->RemoveAllShapes();
 	
@@ -787,19 +787,19 @@ void meHeightTerrainNavSpace::pUpdateDDTypeFaces(){
 	deDebugDrawerShape *safeShape;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			meHeightTerrainNavSpaceType &type = *( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) );
+		for(i=0; i<count; i++){
+			meHeightTerrainNavSpaceType &type = *((meHeightTerrainNavSpaceType*)pTypes.GetAt(i));
 			
 			shape = new deDebugDrawerShape;
-			pDDTypeFaces->AddShape( shape );
+			pDDTypeFaces->AddShape(shape);
 			safeShape = shape;
 			shape = NULL;
 			
-			type.SetDDShape( safeShape );
+			type.SetDDShape(safeShape);
 		}
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
@@ -812,15 +812,15 @@ void meHeightTerrainNavSpace::pUpdateDDTypeFaces(){
 }
 
 void meHeightTerrainNavSpace::pUpdateDDHeights(){
-	if( ! pHTSector ){
+	if(! pHTSector){
 		return;
 	}
 	
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->UpdateHeights();
+	for(i=0; i<count; i++){
+		((meHeightTerrainNavSpaceType*)pTypes.GetAt(i))->UpdateHeights();
 	}
 	pDDTypeFaces->NotifyShapeContentChanged();
 }

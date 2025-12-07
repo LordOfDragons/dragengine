@@ -42,15 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEffect::deoglEffect( deGraphicOpenGl &ogl, const deEffect &effect ) :
-pOgl( ogl ),
-pEffect( effect ),
-pREffect( NULL ),
-pDirtyEnabled( true ){
+deoglEffect::deoglEffect(deGraphicOpenGl &ogl, const deEffect &effect) :
+pOgl(ogl),
+pEffect(effect),
+pREffect(NULL),
+pDirtyEnabled(true){
 }
 
 deoglEffect::~deoglEffect(){
-	if( pREffect ){
+	if(pREffect){
 		pREffect->FreeReference();
 	}
 }
@@ -61,8 +61,8 @@ deoglEffect::~deoglEffect(){
 ///////////////
 
 void deoglEffect::SyncToRender(){
-	if( pDirtyEnabled ){
-		pREffect->SetEnabled( pEffect.GetEnabled() );
+	if(pDirtyEnabled){
+		pREffect->SetEnabled(pEffect.GetEnabled());
 		pDirtyEnabled = false;
 	}
 }
@@ -81,9 +81,9 @@ void deoglEffect::EnabledChanged(){
 // Protected Functions
 ////////////////////////
 
-void deoglEffect::InitREffect( deoglREffect *reffect ){
-	if( pREffect ){
-		DETHROW( deeInvalidParam );
+void deoglEffect::InitREffect(deoglREffect *reffect){
+	if(pREffect){
+		DETHROW(deeInvalidParam);
 	}
 	pREffect = reffect;
 }

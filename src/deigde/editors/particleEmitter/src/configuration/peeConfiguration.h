@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new configuration. */
-	peeConfiguration( peeWindowMain &windowMain );
+	peeConfiguration(peeWindowMain &windowMain);
 	/** \brief Clean up the configuration. */
 	~peeConfiguration();
 	/*@}*/
@@ -53,15 +53,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the main window. */
-	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline peeWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	
 	
 	/** \brief Prevent saving. */
-	inline bool GetPreventSaving() const{ return pPreventSaving; }
+	inline bool GetPreventSaving() const{return pPreventSaving;}
 	
 	/** \brief Set prevent saving. */
-	void SetPreventSaving( bool preventSaving );
+	void SetPreventSaving(bool preventSaving);
 	
 	/**
 	 * Load the configuration. Tries to locate the configuration file in

@@ -38,14 +38,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceWaveSetType::seUSourceWaveSetType( seSourceWave *source, deSynthesizerSourceWave::eWaveType newType ) :
-pSource( NULL )
+seUSourceWaveSetType::seUSourceWaveSetType(seSourceWave *source, deSynthesizerSourceWave::eWaveType newType) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Source wave set type" );
+	SetShortInfo("Source wave set type");
 	
 	pOldType = source->GetWaveType();
 	pNewType = newType;
@@ -55,7 +55,7 @@ pSource( NULL )
 }
 
 seUSourceWaveSetType::~seUSourceWaveSetType(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUSourceWaveSetType::~seUSourceWaveSetType(){
 ///////////////
 
 void seUSourceWaveSetType::Undo(){
-	pSource->SetWaveType( pOldType );
+	pSource->SetWaveType(pOldType);
 }
 
 void seUSourceWaveSetType::Redo(){
-	pSource->SetWaveType( pNewType );
+	pSource->SetWaveType(pNewType);
 }

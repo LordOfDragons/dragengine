@@ -54,10 +54,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseMove( ceWindowMain &windowMain,
+	ceWPTMAIfElseCaseMove(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index,
-		const char *text, igdeIcon *icon );
+		const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -65,19 +65,19 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
+	inline ceConversationTopic &GetTopic() const{return *pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse &GetIfElse() const{ return *pIfElse; }
+	inline ceCAIfElse &GetIfElse() const{return *pIfElse;}
 	
 	/** \brief If-case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
 	
 	/** \brief Index of new position. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	
 	

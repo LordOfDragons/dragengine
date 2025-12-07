@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create synchronization thread. */
-	deoxrThreadSync( deVROpenXR &oxr );
+	deoxrThreadSync(deVROpenXR &oxr);
 	
 	/** Clean up synchronization thread. */
 	virtual ~deoxrThreadSync();

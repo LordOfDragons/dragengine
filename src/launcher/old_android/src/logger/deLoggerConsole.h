@@ -63,19 +63,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 	
 	
 	
 protected:
-	inline deMutex &GetMutex(){ return pMutex; }
+	inline deMutex &GetMutex(){return pMutex;}
 };
 
 #endif

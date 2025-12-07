@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassSafeArray( deScriptingDragonScript *ds );
+	deClassSafeArray(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassSafeArray();
 	/*@}*/
@@ -52,10 +52,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/*@}*/
 	
 private:
@@ -63,29 +63,29 @@ private:
 		dsClass *clsSA, *clsVoid, *clsInt, *clsFlt, *clsStr, *clsObj, *clsBool, *clsBlock;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCount );
-	DEF_NATFUNC( nfHas );
-	DEF_NATFUNC( nfIndexOf );
-	DEF_NATFUNC( nfGetAt );
-	DEF_NATFUNC( nfSetAt );
-	DEF_NATFUNC( nfAdd );
-	DEF_NATFUNC( nfAddIfAbsent );
-	DEF_NATFUNC( nfRemove );
-	DEF_NATFUNC( nfRemoveFrom );
-	DEF_NATFUNC( nfRemoveIfPresent );
-	DEF_NATFUNC( nfRemoveAll );
-	DEF_NATFUNC( nfRemoveAll2 );
+	DEF_NATFUNC(nfGetCount);
+	DEF_NATFUNC(nfHas);
+	DEF_NATFUNC(nfIndexOf);
+	DEF_NATFUNC(nfGetAt);
+	DEF_NATFUNC(nfSetAt);
+	DEF_NATFUNC(nfAdd);
+	DEF_NATFUNC(nfAddIfAbsent);
+	DEF_NATFUNC(nfRemove);
+	DEF_NATFUNC(nfRemoveFrom);
+	DEF_NATFUNC(nfRemoveIfPresent);
+	DEF_NATFUNC(nfRemoveAll);
+	DEF_NATFUNC(nfRemoveAll2);
 	
-	DEF_NATFUNC( nfForEach );
-	DEF_NATFUNC( nfFind );
+	DEF_NATFUNC(nfForEach);
+	DEF_NATFUNC(nfFind);
 #undef DEF_NATFUNC
 };
 

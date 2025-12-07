@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin camera renderable. */
-	deoglRDSRenderableCamera( deoglRDynamicSkin &dynamicSkin );
+	deoglRDSRenderableCamera(deoglRDynamicSkin &dynamicSkin);
 	
 	/** Clean up render dynamic skin camera renderable. */
 	virtual ~deoglRDSRenderableCamera();
@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set camera. */
-	void SetCamera( deoglRCamera *camera );
+	void SetCamera(deoglRCamera *camera);
 	
 	/** Prepare for render. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/**
 	 * Get render plan to use for rendering or \em NULL if not applicable.

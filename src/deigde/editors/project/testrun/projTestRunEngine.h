@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine. */
-	projTestRunEngine( projTestRunProcess &process );
+	projTestRunEngine(projTestRunProcess &process);
 	
 	/** \brief Clean up engine. */
 	~projTestRunEngine();
@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Config path. */
-	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	inline const decString &GetPathConfig() const{return pPathConfig;}
 	
 	/** \brief Share path. */
-	inline const decString &GetPathShare() const{ return pPathShare; }
+	inline const decString &GetPathShare() const{return pPathShare;}
 	
 	/** \brief Library path. */
-	inline const decString &GetPathLib() const{ return pPathLib; }
+	inline const decString &GetPathLib() const{return pPathLib;}
 	
 	/** \brief Start engine. */
 	void Start();
@@ -84,7 +84,7 @@ public:
 	void ActivateModules();
 	
 	/** \brief Activate module. */
-	void ActivateModule( deModuleSystem::eModuleTypes type, const char *name, const char *version = "" );
+	void ActivateModule(deModuleSystem::eModuleTypes type, const char *name, const char *version = "");
 	
 	/** \brief Set data directory. */
 	void SetDataDirectory();
@@ -96,7 +96,7 @@ public:
 	void InitVFS();
 	
 	/** \brief Add disk directory. */
-	void VFSAddDiskDir( const char *pathRoot, const char *pathDisk, bool readOnly );
+	void VFSAddDiskDir(const char *pathRoot, const char *pathDisk, bool readOnly);
 	
 	/** \brief Create main window. */
 	void CreateMainWindow();

@@ -39,13 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupAddSource::seUSourceGroupAddSource( seSourceGroup *group, seSource *source, int index ) :
-pGroup( NULL ),
-pSource( NULL ),
-pIndex( index )
+seUSourceGroupAddSource::seUSourceGroupAddSource(seSourceGroup *group, seSource *source, int index) :
+pGroup(NULL),
+pSource(NULL),
+pIndex(index)
 {
-	if( ! group || ! source ){
-		DETHROW( deeInvalidParam );
+	if(! group || ! source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pGroup = group;
@@ -56,10 +56,10 @@ pIndex( index )
 }
 
 seUSourceGroupAddSource::~seUSourceGroupAddSource(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
-	if( pGroup ){
+	if(pGroup){
 		pGroup->FreeReference();
 	}
 }
@@ -70,9 +70,9 @@ seUSourceGroupAddSource::~seUSourceGroupAddSource(){
 ///////////////
 
 void seUSourceGroupAddSource::Undo(){
-	pGroup->RemoveSource( pSource );
+	pGroup->RemoveSource(pSource);
 }
 
 void seUSourceGroupAddSource::Redo(){
-	pGroup->InsertSourceAt( pSource, pIndex );
+	pGroup->InsertSourceAt(pSource, pIndex);
 }

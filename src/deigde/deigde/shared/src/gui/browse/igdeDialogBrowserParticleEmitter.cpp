@@ -45,8 +45,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogBrowserParticleEmitter::igdeDialogBrowserParticleEmitter( igdeEnvironment &environment, const char *title ) :
-igdeDialogBrowser( environment, title, true ){
+igdeDialogBrowserParticleEmitter::igdeDialogBrowserParticleEmitter(igdeEnvironment &environment, const char *title) :
+igdeDialogBrowser(environment, title, true){
 	UpdateCategoryList();
 	UpdateItemList();
 }
@@ -61,32 +61,32 @@ igdeDialogBrowserParticleEmitter::~igdeDialogBrowserParticleEmitter(){
 
 igdeGDParticleEmitter *igdeDialogBrowserParticleEmitter::GetSelectedParticleEmitter() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? ( igdeGDParticleEmitter* )selection->GetData() : NULL;
+	return selection ? (igdeGDParticleEmitter*)selection->GetData() : NULL;
 }
 
-void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter( igdeGDParticleEmitter *gdParticleEmitter ){
-	if( ! gdParticleEmitter ){
+void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter(igdeGDParticleEmitter *gdParticleEmitter){
+	if(! gdParticleEmitter){
 		return;
 	}
 	
 	igdeGDCategory * const category = GetRootCategory()->GetCategoryWithPath(
-		decPath::CreatePathUnix( gdParticleEmitter->GetCategory() ) );
+		decPath::CreatePathUnix(gdParticleEmitter->GetCategory()));
 	
-	SelectCategory( category );
-	SelectListItemWithData( gdParticleEmitter );
+	SelectCategory(category);
+	SelectListItemWithData(gdParticleEmitter);
 }
 
 
 
-bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter( igdeWidget *owner,
-igdeGDParticleEmitter* &particleEmitter, const char *title ){
+bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter(igdeWidget *owner,
+igdeGDParticleEmitter* &particleEmitter, const char *title){
 	igdeDialogBrowserParticleEmitter::Ref dialog(
 		igdeDialogBrowserParticleEmitter::Ref::NewWith(owner->GetEnvironment(), title));
-	if( particleEmitter ){
-		dialog->SetSelectedParticleEmitter( particleEmitter );
+	if(particleEmitter){
+		dialog->SetSelectedParticleEmitter(particleEmitter);
 	}
 	
-	if( dialog->Run( owner ) && dialog->GetSelectedParticleEmitter() ){
+	if(dialog->Run(owner) && dialog->GetSelectedParticleEmitter()){
 		particleEmitter = dialog->GetSelectedParticleEmitter();
 		return true;
 		
@@ -95,10 +95,10 @@ igdeGDParticleEmitter* &particleEmitter, const char *title ){
 	}
 }
 
-bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter( igdeWidget *owner, decString &particleEmitter, const char *title ){
+bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter(igdeWidget *owner, decString &particleEmitter, const char *title){
 	const igdeGDParticleEmitterManager &particleEmitterManager = owner->GetGameDefinition()->GetParticleEmitterManager();
-	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().GetWithPath( particleEmitter );
-	if( SelectParticleEmitter( owner, gdParticleEmitter, title ) ){
+	igdeGDParticleEmitter *gdParticleEmitter = particleEmitterManager.GetEmitterList().GetWithPath(particleEmitter);
+	if(SelectParticleEmitter(owner, gdParticleEmitter, title)){
 		particleEmitter = gdParticleEmitter->GetPath();
 		return true;
 		
@@ -116,12 +116,12 @@ igdeGDCategory *igdeDialogBrowserParticleEmitter::GetRootCategory() const{
 	return GetGameDefinition()->GetParticleEmitterManager().GetCategories();
 }
 
-void igdeDialogBrowserParticleEmitter::AddItemsToList( igdeGDAddToListVisitor &visitor ){
+void igdeDialogBrowserParticleEmitter::AddItemsToList(igdeGDAddToListVisitor &visitor){
 	const decString &filter = GetFilter();
 	
-	if( filter.IsEmpty() ){
+	if(filter.IsEmpty()){
 		igdeGDCategory * const category = GetSelectedCategory();
-		if( category ){
+		if(category){
 // 			GetGameDefinition()->GetParticleEmitterManager().VisitParticleEmittersMatchingCategory( visitor, category );
 		}
 		
@@ -130,17 +130,17 @@ void igdeDialogBrowserParticleEmitter::AddItemsToList( igdeGDAddToListVisitor &v
 	}
 }
 
-void igdeDialogBrowserParticleEmitter::RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener ){
+void igdeDialogBrowserParticleEmitter::RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener){
 	igdeGDParticleEmitter * const gdParticleEmitter = GetSelectedParticleEmitter();
-	if( gdParticleEmitter ){
+	if(gdParticleEmitter){
 // 		pvmgr.ClearPreviewParticleEmitter( gdParticleEmitter );
 // 		pvmgr.CreatePreviewParticleEmitter( gdParticleEmitter, listener );
 	}
 }
 
-void igdeDialogBrowserParticleEmitter::GetSelectedItemInfo( decString &info ){
+void igdeDialogBrowserParticleEmitter::GetSelectedItemInfo(decString &info){
 	const igdeGDParticleEmitter * const gdParticleEmitter = GetSelectedParticleEmitter();
-	if( gdParticleEmitter ){
-		info.Format( "%s:\n%s", gdParticleEmitter->GetName().GetString(), gdParticleEmitter->GetDescription().GetString() );
+	if(gdParticleEmitter){
+		info.Format("%s:\n%s", gdParticleEmitter->GetName().GetString(), gdParticleEmitter->GetDescription().GetString());
 	}
 }

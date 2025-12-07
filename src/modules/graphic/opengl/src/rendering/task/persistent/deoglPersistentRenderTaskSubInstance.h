@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render task instance. */
-	deoglPersistentRenderTaskSubInstance( deoglPersistentRenderTaskPool &pool );
+	deoglPersistentRenderTaskSubInstance(deoglPersistentRenderTaskPool &pool);
 	
 	/** Clean up render task instance. */
 	~deoglPersistentRenderTaskSubInstance();
@@ -62,22 +62,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent instance. */
-	inline deoglPersistentRenderTaskInstance *GetParentInstance() const{ return pParentInstance; }
+	inline deoglPersistentRenderTaskInstance *GetParentInstance() const{return pParentInstance;}
 	
 	/** Set parent instance. */
-	void SetParentInstance( deoglPersistentRenderTaskInstance *instance );
+	void SetParentInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Instance index. */
-	inline int GetIndexInstance() const{ return pIndexInstance; }
+	inline int GetIndexInstance() const{return pIndexInstance;}
 	
 	/** Set instance index. */
-	void SetIndexInstance( int indexInstance );
+	void SetIndexInstance(int indexInstance);
 	
 	/** Flags. */
-	inline int GetFlags() const{ return pFlags; }
+	inline int GetFlags() const{return pFlags;}
 	
 	/** Set flags. */
-	void SetFlags( int flags );
+	void SetFlags(int flags);
 	
 	
 	
@@ -87,8 +87,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLInstance(){ return pLLInstance; }
-	inline const decPointerLinkedList::cListEntry &GetLLInstance() const{ return pLLInstance; }
+	inline decPointerLinkedList::cListEntry &GetLLInstance(){return pLLInstance;}
+	inline const decPointerLinkedList::cListEntry &GetLLInstance() const{return pLLInstance;}
 	/*@}*/
 };
 

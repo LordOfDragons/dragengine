@@ -50,13 +50,13 @@ dearBoneState::dearBoneState(){
 	pChildStates = NULL;
 	pChildStateCount = 0;
 	pChildStateSize = 0;
-	pScale.Set( 1.0f, 1.0f, 1.0f );
+	pScale.Set(1.0f, 1.0f, 1.0f);
 	pProtect = false;
 	pDirty = true;
 }
 
 dearBoneState::~dearBoneState(){
-	if( pChildStates ){
+	if(pChildStates){
 		delete [] pChildStates;
 	}
 }
@@ -66,110 +66,110 @@ dearBoneState::~dearBoneState(){
 // Management
 ///////////////
 
-void dearBoneState::SetParentState( dearBoneState *boneState ){
+void dearBoneState::SetParentState(dearBoneState *boneState){
 	pParentState = boneState;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetRigBone( deRigBone *bone ){
+void dearBoneState::SetRigBone(deRigBone *bone){
 	pRigBone = bone;
 }
 
-void dearBoneState::SetRigBoneName( const char *name ){
+void dearBoneState::SetRigBoneName(const char *name){
 	pRigBoneName = name;
 }
 
-void dearBoneState::SetIndex( int index ){
-	if( index < 0 ){
-		DETHROW( deeInvalidParam );
+void dearBoneState::SetIndex(int index){
+	if(index < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pIndex = index;
 }
 
-void dearBoneState::SetRigIndex( int index ){
+void dearBoneState::SetRigIndex(int index){
 	pRigIndex = index;
 }
 
-void dearBoneState::SetPosition( const decVector &position ){
+void dearBoneState::SetPosition(const decVector &position){
 	pPosition = position;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetOrientation( const decQuaternion &orientation ){
+void dearBoneState::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetScale( const decVector &size ){
+void dearBoneState::SetScale(const decVector &size){
 	pScale = size;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetPosOrient( const decVector &position, const decQuaternion &orientation ){
+void dearBoneState::SetPosOrient(const decVector &position, const decQuaternion &orientation){
 	pPosition = position;
 	pOrientation = orientation;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetRigLocalMatrix( const decMatrix &matrix ){
+void dearBoneState::SetRigLocalMatrix(const decMatrix &matrix){
 	pRigLocalMatrix = matrix;
 	pInvRigLocalMatrix = matrix.QuickInvert();
 }
 
-void dearBoneState::SetLocalMatrix( const decMatrix &matrix ){
+void dearBoneState::SetLocalMatrix(const decMatrix &matrix){
 	pLocalMatrix = matrix;
 }
 
-void dearBoneState::SetInverseLocalMatrix( const decMatrix &matrix ){
+void dearBoneState::SetInverseLocalMatrix(const decMatrix &matrix){
 	pInvLocalMatrix = matrix;
 }
 
-void dearBoneState::SetGlobalMatrix( const decMatrix &matrix ){
+void dearBoneState::SetGlobalMatrix(const decMatrix &matrix){
 	pGlobalMatrix = matrix;
 }
 
-void dearBoneState::SetInverseGlobalMatrix( const decMatrix &matrix ){
+void dearBoneState::SetInverseGlobalMatrix(const decMatrix &matrix){
 	pInvGlobalMatrix = matrix;
 }
 
-void dearBoneState::SetProtected( bool prot ){
+void dearBoneState::SetProtected(bool prot){
 	pProtect = prot;
 }
 
-void dearBoneState::SetDirty( bool dirty ){
-	if( dirty == pDirty ){
+void dearBoneState::SetDirty(bool dirty){
+	if(dirty == pDirty){
 		return;
 	}
 	
 	pDirty = dirty;
 	
-	if( dirty ){
+	if(dirty){
 		int i;
 		
-		for( i=0; i<pChildStateCount; i++ ){
-			pChildStates[ i ]->SetDirty( true );
+		for(i=0; i<pChildStateCount; i++){
+			pChildStates[i]->SetDirty(true);
 		}
 	}
 }
 
 void dearBoneState::UpdateMatrices(){
-	if( ! pDirty ){
+	if(! pDirty){
 		return;
 	}
 	
 	// local matrices
-	pLocalMatrix.SetWorld( pPosition, pOrientation, pScale );
+	pLocalMatrix.SetWorld(pPosition, pOrientation, pScale);
 	pInvLocalMatrix = pLocalMatrix.QuickInvert();
 	
 	// global matrices
-	if( pParentState ){
+	if(pParentState){
 		pParentState->UpdateMatrices();
-		pGlobalMatrix = pLocalMatrix.QuickMultiply( pRigLocalMatrix )
-			.QuickMultiply( pParentState->GetGlobalMatrix() );
+		pGlobalMatrix = pLocalMatrix.QuickMultiply(pRigLocalMatrix)
+			.QuickMultiply(pParentState->GetGlobalMatrix());
 		
 	}else{
-		pGlobalMatrix = pLocalMatrix.QuickMultiply( pRigLocalMatrix );
+		pGlobalMatrix = pLocalMatrix.QuickMultiply(pRigLocalMatrix);
 	}
 	
 	pInvGlobalMatrix = pGlobalMatrix.QuickInvert();
@@ -179,27 +179,27 @@ void dearBoneState::UpdateMatrices(){
 }
 
 void dearBoneState::UpdateFromGlobalMatrix(){
-	const decMatrix matrix = CalcLocalFromGlobal( pGlobalMatrix );
-	SetPosition( matrix.GetPosition() );
-	SetOrientation( matrix.ToQuaternion() );
+	const decMatrix matrix = CalcLocalFromGlobal(pGlobalMatrix);
+	SetPosition(matrix.GetPosition());
+	SetOrientation(matrix.ToQuaternion());
 }
 
-decMatrix dearBoneState::CalcLocalFromGlobal( const decMatrix &globalMatrix ) const{
-	if( pParentState ){
-		return globalMatrix.QuickMultiply( pParentState->GetInverseGlobalMatrix() )
-			.QuickMultiply( pInvRigLocalMatrix );
+decMatrix dearBoneState::CalcLocalFromGlobal(const decMatrix &globalMatrix) const{
+	if(pParentState){
+		return globalMatrix.QuickMultiply(pParentState->GetInverseGlobalMatrix())
+			.QuickMultiply(pInvRigLocalMatrix);
 		
 	}else{
-		return globalMatrix.QuickMultiply( pInvRigLocalMatrix );
+		return globalMatrix.QuickMultiply(pInvRigLocalMatrix);
 	}
 }
 
 void dearBoneState::UpdateMatricesKeepGlobal(){
-	if( ! pDirty ){
+	if(! pDirty){
 		return;
 	}
 	
-	pLocalMatrix.SetWorld( pPosition, pOrientation, pScale );
+	pLocalMatrix.SetWorld(pPosition, pOrientation, pScale);
 	pInvLocalMatrix = pLocalMatrix.QuickInvert();
 	
 	pInvGlobalMatrix = pGlobalMatrix.QuickInvert();
@@ -218,94 +218,94 @@ void dearBoneState::ResetMatrices(){
 
 
 
-void dearBoneState::SetFrom( const dearBoneState &state ){
+void dearBoneState::SetFrom(const dearBoneState &state){
 	pPosition = state.pPosition;
 	pOrientation = state.pOrientation;
 	pScale = state.pScale;
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetFrom( const deComponentBone &bone ){
+void dearBoneState::SetFrom(const deComponentBone &bone){
 	pPosition = bone.GetPosition();
 	pOrientation = bone.GetRotation();
 	pScale = bone.GetScale();
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::SetFrom( const dearComponentBoneState &state ){
+void dearBoneState::SetFrom(const dearComponentBoneState &state){
 	pPosition = state.GetPosition();
 	pOrientation = state.GetRotation();
 	pScale = state.GetScale();
-	SetDirty( true );
+	SetDirty(true);
 }
 
-void dearBoneState::BlendWithDefault( deAnimatorRule::eBlendModes blendMode, float blendFactor,
-bool enablePosition, bool enableOrientation, bool enableScale ){
-	BlendWith( decVector(), decQuaternion(), decVector( 1.0f, 1.0f, 1.0f ),
-		blendMode, blendFactor, enablePosition, enableOrientation, enableScale );
+void dearBoneState::BlendWithDefault(deAnimatorRule::eBlendModes blendMode, float blendFactor,
+bool enablePosition, bool enableOrientation, bool enableScale){
+	BlendWith(decVector(), decQuaternion(), decVector(1.0f, 1.0f, 1.0f),
+		blendMode, blendFactor, enablePosition, enableOrientation, enableScale);
 }
 
-void dearBoneState::BlendWith( const dearBoneState& state, deAnimatorRule::eBlendModes blendMode,
-float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale ){
-	BlendWith( state.GetPosition(), state.GetOrientation(), state.GetScale(),
-		blendMode, blendFactor, enablePosition, enableOrientation, enableScale );
+void dearBoneState::BlendWith(const dearBoneState& state, deAnimatorRule::eBlendModes blendMode,
+float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale){
+	BlendWith(state.GetPosition(), state.GetOrientation(), state.GetScale(),
+		blendMode, blendFactor, enablePosition, enableOrientation, enableScale);
 }
 
-void dearBoneState::BlendWith( const dearAnimationState& state, deAnimatorRule::eBlendModes blendMode,
-float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale ){
-	BlendWith( state.GetPosition(), state.GetOrientation(), state.GetSize(),
-		blendMode, blendFactor, enablePosition, enableOrientation, enableScale );
+void dearBoneState::BlendWith(const dearAnimationState& state, deAnimatorRule::eBlendModes blendMode,
+float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale){
+	BlendWith(state.GetPosition(), state.GetOrientation(), state.GetSize(),
+		blendMode, blendFactor, enablePosition, enableOrientation, enableScale);
 }
 
-void dearBoneState::BlendWith( const deComponentBone& bone, deAnimatorRule::eBlendModes blendMode,
-float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale ){
-	BlendWith( bone.GetPosition(), bone.GetRotation(), bone.GetScale(),
-		blendMode, blendFactor, enablePosition, enableOrientation, enableScale );
+void dearBoneState::BlendWith(const deComponentBone& bone, deAnimatorRule::eBlendModes blendMode,
+float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale){
+	BlendWith(bone.GetPosition(), bone.GetRotation(), bone.GetScale(),
+		blendMode, blendFactor, enablePosition, enableOrientation, enableScale);
 }
 
-void dearBoneState::BlendWith( const dearComponentBoneState &state, deAnimatorRule::eBlendModes blendMode,
-float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale ){
-	BlendWith( state.GetPosition(), state.GetRotation(), state.GetScale(),
-		blendMode, blendFactor, enablePosition, enableOrientation, enableScale );
+void dearBoneState::BlendWith(const dearComponentBoneState &state, deAnimatorRule::eBlendModes blendMode,
+float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale){
+	BlendWith(state.GetPosition(), state.GetRotation(), state.GetScale(),
+		blendMode, blendFactor, enablePosition, enableOrientation, enableScale);
 }
 
-void dearBoneState::BlendWith( const decVector& position, const decQuaternion& orientation,
-deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enablePosition, bool enableOrientation ){
-	BlendWith( position, orientation, decVector( 1.0f, 1.0f, 1.0f ),
-		blendMode, blendFactor, enablePosition, enableOrientation, false );
+void dearBoneState::BlendWith(const decVector& position, const decQuaternion& orientation,
+deAnimatorRule::eBlendModes blendMode, float blendFactor, bool enablePosition, bool enableOrientation){
+	BlendWith(position, orientation, decVector(1.0f, 1.0f, 1.0f),
+		blendMode, blendFactor, enablePosition, enableOrientation, false);
 }
 
-void dearBoneState::BlendWith( const decVector& position, const decQuaternion& orientation,
+void dearBoneState::BlendWith(const decVector& position, const decQuaternion& orientation,
 const decVector& scale, deAnimatorRule::eBlendModes blendMode, float blendFactor,
-bool enablePosition, bool enableOrientation, bool enableScale ){
+bool enablePosition, bool enableOrientation, bool enableScale){
 	// blend new state over old state
-	if( blendMode == deAnimatorRule::ebmBlend ){
-		if( fabsf( blendFactor ) < FLOAT_SAFE_EPSILON ){ // blendFactor = 0
+	if(blendMode == deAnimatorRule::ebmBlend){
+		if(fabsf(blendFactor) < FLOAT_SAFE_EPSILON){ // blendFactor = 0
 			// keep the old state
 			return;
 			
-		}else if( fabsf( 1.0f - blendFactor ) < FLOAT_SAFE_EPSILON ){ // blendFactor = 1
+		}else if(fabsf(1.0f - blendFactor) < FLOAT_SAFE_EPSILON){ // blendFactor = 1
 			// apply the new state
-			if( enablePosition ){
+			if(enablePosition){
 				pPosition = position;
 			}
 			
-			if( enableOrientation ){
+			if(enableOrientation){
 				pOrientation = orientation;
 			}
 			
-			if( enableScale ){
+			if(enableScale){
 				pScale = scale;
 			}
 			
 		}else{
 			// blend the state
-			if( enablePosition ){
-				pPosition = pPosition * ( 1.0f - blendFactor ) + position * blendFactor;
+			if(enablePosition){
+				pPosition = pPosition * (1.0f - blendFactor) + position * blendFactor;
 			}
 			
-			if( enableOrientation ){
-				pOrientation = pOrientation.Slerp( orientation, blendFactor );
+			if(enableOrientation){
+				pOrientation = pOrientation.Slerp(orientation, blendFactor);
 				
 				//pOrientation =
 				//	( decQuaternion( 0.0f, 0.0f, 0.0f, blendFactor ) + pOrientation * ( 1.0f - blendFactor ) ) *
@@ -316,25 +316,25 @@ bool enablePosition, bool enableOrientation, bool enableScale ){
 				//    decQuaternion().Slerp( orientation, blendFactor ) );
 			}
 			
-			if( enableScale ) {
-				pScale = pScale * ( 1.0f - blendFactor ) + scale * blendFactor;
+			if(enableScale) {
+				pScale = pScale * (1.0f - blendFactor) + scale * blendFactor;
 			}
 		}
 		
 	// overlay new state over the old state
-	}else if( blendMode == deAnimatorRule::ebmOverlay ){
-		if( fabsf( blendFactor ) < FLOAT_SAFE_EPSILON ){ // blendFactor = 0
+	}else if(blendMode == deAnimatorRule::ebmOverlay){
+		if(fabsf(blendFactor) < FLOAT_SAFE_EPSILON){ // blendFactor = 0
 			// keep the old state
 			return;
 			
 		}else{
 			// add new state to the old state
-			if( enablePosition ){
+			if(enablePosition){
 				pPosition += position * blendFactor;
 			}
 			
-			if( enableOrientation ){
-				pOrientation *= decQuaternion().Slerp( orientation, blendFactor );
+			if(enableOrientation){
+				pOrientation *= decQuaternion().Slerp(orientation, blendFactor);
 				
 				//pOrientation =
 				//	( decQuaternion( 0.0f, 0.0f, 0.0f, blendFactor ) + pOrientation * ( 1.0f - blendFactor ) ) *
@@ -345,16 +345,16 @@ bool enablePosition, bool enableOrientation, bool enableScale ){
 				//    decQuaternion().Slerp( orientation, blendFactor ) );
 			}
 			
-			if( enableScale ) {
-				pScale += ( scale - decVector( 1.0f, 1.0f, 1.0f ) ) * blendFactor;
+			if(enableScale) {
+				pScale += (scale - decVector(1.0f, 1.0f, 1.0f)) * blendFactor;
 			}
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetDirty( true );
+	SetDirty(true);
 }
 
 
@@ -362,27 +362,27 @@ bool enablePosition, bool enableOrientation, bool enableScale ){
 // Child states
 /////////////////
 
-dearBoneState *dearBoneState::GetChildStateAt( int index ) const{
-	if( index < 0 || index >= pChildStateCount ){
-		DETHROW( deeInvalidParam );
+dearBoneState *dearBoneState::GetChildStateAt(int index) const{
+	if(index < 0 || index >= pChildStateCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pChildStates[ index ];
+	return pChildStates[index];
 }
 
-void dearBoneState::AddChildState( dearBoneState *boneState ){
-	if( ! boneState ){
-		DETHROW( deeInvalidParam );
+void dearBoneState::AddChildState(dearBoneState *boneState){
+	if(! boneState){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pChildStateCount == pChildStateSize ){
+	if(pChildStateCount == pChildStateSize){
 		const int newSize = pChildStateSize * 3 / 2 + 1;
-		dearBoneState ** const newArray = new dearBoneState*[ newSize ];
+		dearBoneState ** const newArray = new dearBoneState*[newSize];
 		
-		if( pChildStates ){
+		if(pChildStates){
 			int i;
-			for( i=0; i<pChildStateSize; i++ ){
-				newArray[ i ] = pChildStates[ i ];
+			for(i=0; i<pChildStateSize; i++){
+				newArray[i] = pChildStates[i];
 			}
 			delete [] pChildStates;
 		}
@@ -390,7 +390,7 @@ void dearBoneState::AddChildState( dearBoneState *boneState ){
 		pChildStateSize = newSize;
 	}
 	
-	pChildStates[ pChildStateCount ] = boneState;
+	pChildStates[pChildStateCount] = boneState;
 	pChildStateCount++;
 }
 

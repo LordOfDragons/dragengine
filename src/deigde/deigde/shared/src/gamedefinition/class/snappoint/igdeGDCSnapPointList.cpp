@@ -43,8 +43,8 @@
 igdeGDCSnapPointList::igdeGDCSnapPointList(){
 }
 
-igdeGDCSnapPointList::igdeGDCSnapPointList( const igdeGDCSnapPointList &list ) :
-pSnapPoints( list.pSnapPoints ){
+igdeGDCSnapPointList::igdeGDCSnapPointList(const igdeGDCSnapPointList &list) :
+pSnapPoints(list.pSnapPoints){
 }
 
 igdeGDCSnapPointList::~igdeGDCSnapPointList(){
@@ -59,27 +59,27 @@ int igdeGDCSnapPointList::GetCount() const{
 	return pSnapPoints.GetCount();
 }
 
-igdeGDCSnapPoint *igdeGDCSnapPointList::GetAt( int index ) const{
-	return ( igdeGDCSnapPoint* )pSnapPoints.GetAt( index );
+igdeGDCSnapPoint *igdeGDCSnapPointList::GetAt(int index) const{
+	return (igdeGDCSnapPoint*)pSnapPoints.GetAt(index);
 }
 
-int igdeGDCSnapPointList::IndexOf( igdeGDCSnapPoint *snapPoint ) const{
-	return pSnapPoints.IndexOf( snapPoint );
+int igdeGDCSnapPointList::IndexOf(igdeGDCSnapPoint *snapPoint) const{
+	return pSnapPoints.IndexOf(snapPoint);
 }
 
-bool igdeGDCSnapPointList::Has( igdeGDCSnapPoint *snapPoint ) const{
-	return pSnapPoints.Has( snapPoint );
+bool igdeGDCSnapPointList::Has(igdeGDCSnapPoint *snapPoint) const{
+	return pSnapPoints.Has(snapPoint);
 }
 
-void igdeGDCSnapPointList::Add( igdeGDCSnapPoint *snapPoint ){
-	if( ! snapPoint || Has( snapPoint ) ){
-		DETHROW( deeInvalidParam );
+void igdeGDCSnapPointList::Add(igdeGDCSnapPoint *snapPoint){
+	if(! snapPoint || Has(snapPoint)){
+		DETHROW(deeInvalidParam);
 	}
-	pSnapPoints.Add( snapPoint );
+	pSnapPoints.Add(snapPoint);
 }
 
-void igdeGDCSnapPointList::Remove( igdeGDCSnapPoint *snapPoint ){
-	pSnapPoints.Remove( snapPoint );
+void igdeGDCSnapPointList::Remove(igdeGDCSnapPoint *snapPoint){
+	pSnapPoints.Remove(snapPoint);
 }
 
 void igdeGDCSnapPointList::RemoveAll(){
@@ -88,7 +88,7 @@ void igdeGDCSnapPointList::RemoveAll(){
 
 
 
-igdeGDCSnapPointList &igdeGDCSnapPointList::operator=( const igdeGDCSnapPointList &list ){
+igdeGDCSnapPointList &igdeGDCSnapPointList::operator=(const igdeGDCSnapPointList &list){
 	pSnapPoints = list.pSnapPoints;
 	return *this;
 }

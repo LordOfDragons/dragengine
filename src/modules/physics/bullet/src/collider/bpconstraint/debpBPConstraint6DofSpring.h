@@ -49,12 +49,12 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create constraint. */
-	debpBPConstraint6DofSpring( debpColliderConstraint &constraint, btRigidBody &rbA,
-		btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB );
+	debpBPConstraint6DofSpring(debpColliderConstraint &constraint, btRigidBody &rbA,
+		btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB);
 	
 	/** \brief Create constraint. */
-	debpBPConstraint6DofSpring( debpColliderConstraint &constraint, btRigidBody &rbA,
-		const btTransform &frameInA, const btTransform &frameInB );
+	debpBPConstraint6DofSpring(debpColliderConstraint &constraint, btRigidBody &rbA,
+		const btTransform &frameInA, const btTransform &frameInB);
 	
 	/** \brief Clean up constraint. */
 	virtual ~debpBPConstraint6DofSpring();
@@ -64,13 +64,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set motor indices. */
-	void SetMotorIndices( int x, int y, int z );
+	void SetMotorIndices(int x, int y, int z);
 	
 	/**
 	 * \brief Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
-	virtual void getInfo2( btConstraintInfo2 *info );
+	virtual void getInfo2(btConstraintInfo2 *info);
 	/*@}*/
 };
 

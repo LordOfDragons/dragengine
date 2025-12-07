@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceMoveEffectDown( seSource *source, seEffect *effect );
+	seUSourceMoveEffectDown(seSource *source, seEffect *effect);
 	
 protected:
 	/** \brief Clean up undo action. */

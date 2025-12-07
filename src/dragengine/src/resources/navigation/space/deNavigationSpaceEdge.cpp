@@ -51,18 +51,18 @@ deNavigationSpaceEdge::~deNavigationSpaceEdge(){
 // Management
 ///////////////
 
-void deNavigationSpaceEdge::SetVertex1( unsigned short vertex ){
+void deNavigationSpaceEdge::SetVertex1(unsigned short vertex){
 	pVertex1 = vertex;
 }
 
-void deNavigationSpaceEdge::SetVertex2( unsigned short vertex ){
+void deNavigationSpaceEdge::SetVertex2(unsigned short vertex){
 	pVertex2 = vertex;
 }
 
-void deNavigationSpaceEdge::SetType1( unsigned short type ){
+void deNavigationSpaceEdge::SetType1(unsigned short type){
 	pType1 = type;
 }
 
-void deNavigationSpaceEdge::SetType2( unsigned short type ){
+void deNavigationSpaceEdge::SetType2(unsigned short type){
 	pType2 = type;
 }

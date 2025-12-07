@@ -55,16 +55,16 @@ struct csVector2 : public csObject{
 // Constructor, destructor
 ////////////////////////////
 
-stClassVector2::stClassVector2( ScriptingSmalltalk &st ) :
-pST( st ){
-	gst_define_cfunc( "DEVector2.new", ( void* )ccNew );
-	gst_define_cfunc( "DEVector2.newXY", ( void* )ccNewXY );
+stClassVector2::stClassVector2(ScriptingSmalltalk &st) :
+pST(st){
+	gst_define_cfunc("DEVector2.new", (void*)ccNew);
+	gst_define_cfunc("DEVector2.newXY", (void*)ccNewXY);
 	
-	gst_define_cfunc( "DEVector2.x", ( void* )ccX );
-	gst_define_cfunc( "DEVector2.y", ( void* )ccY );
+	gst_define_cfunc("DEVector2.x", (void*)ccX);
+	gst_define_cfunc("DEVector2.y", (void*)ccY);
 	
-	gst_define_cfunc( "DEVector2.hash", ( void* )ccHash );
-	gst_define_cfunc( "DEVector2.asString", ( void* )ccAsString );
+	gst_define_cfunc("DEVector2.hash", (void*)ccHash);
+	gst_define_cfunc("DEVector2.asString", (void*)ccAsString);
 }
 
 stClassVector2::~stClassVector2(){
@@ -76,35 +76,35 @@ stClassVector2::~stClassVector2(){
 ///////////////
 
 void stClassVector2::SetUpLinks(){
-	pOOPClass = gst_class_name_to_oop( "DEVector2" );
-	if( ! pOOPClass ){
-		DETHROW( deeInvalidParam );
+	pOOPClass = gst_class_name_to_oop("DEVector2");
+	if(! pOOPClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	csVector2Class &csclass = *( ( csVector2Class* )OOP_TO_OBJ( pOOPClass ) );
+	csVector2Class &csclass = *((csVector2Class*)OOP_TO_OBJ(pOOPClass));
 	csclass.scripting = pST.GetClassScripting()->GetSingleton();
 }
 
-const decVector2 &stClassVector2::OOPToVector2( OOP object ) const{
-	if( object == pST.GetNil() ){
-		DETHROW( deeNullPointer );
+const decVector2 &stClassVector2::OOPToVector2(OOP object) const{
+	if(object == pST.GetNil()){
+		DETHROW(deeNullPointer);
 	}
 	
-	if( gst_get_object_class( object ) != pOOPClass ){
-		DETHROW( deeInvalidAction );
+	if(gst_get_object_class(object) != pOOPClass){
+		DETHROW(deeInvalidAction);
 	}
-	return ( ( csVector2* )OOP_TO_OBJ( object ) )->vector;
+	return ((csVector2*)OOP_TO_OBJ(object))->vector;
 }
 
-OOP stClassVector2::Vector2ToOOP( const decVector2 &vector ){
+OOP stClassVector2::Vector2ToOOP(const decVector2 &vector){
 	OOP oopVector = NULL;
 	
-	oopVector = pST.CreateNewObjectWithInit( pOOPClass, sizeof( csVector2 ) - sizeof( csObject ) );
-	if( ! oopVector || oopVector == pST.GetNil() ){
-		DETHROW( deeOutOfMemory );
+	oopVector = pST.CreateNewObjectWithInit(pOOPClass, sizeof(csVector2) - sizeof(csObject));
+	if(! oopVector || oopVector == pST.GetNil()){
+		DETHROW(deeOutOfMemory);
 	}
 	
-	csVector2 &csobject = *( ( csVector2* )OOP_TO_OBJ( oopVector ) );
+	csVector2 &csobject = *((csVector2*)OOP_TO_OBJ(oopVector));
 	csobject.clsVec2 = this;
 	csobject.vector = vector;
 	
@@ -116,15 +116,15 @@ OOP stClassVector2::Vector2ToOOP( const decVector2 &vector ){
 // cCall Methods
 //////////////////
 
-OOP stClassVector2::ccNew( OOP self ){
-	const csVector2Class &csclass = *( ( csVector2Class* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassVector2::ccNew(OOP self){
+	const csVector2Class &csclass = *((csVector2Class*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	OOP result = NULL;
 	
 	try{
-		result = st.GetClassVector2()->Vector2ToOOP( decVector2() );
+		result = st.GetClassVector2()->Vector2ToOOP(decVector2());
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		result = st.GetNil();
 		e.PrintError();
 	}
@@ -132,15 +132,15 @@ OOP stClassVector2::ccNew( OOP self ){
 	return result;
 }
 
-OOP stClassVector2::ccNewXY( OOP self, double x, double y ){
-	const csVector2Class &csclass = *( ( csVector2Class* )OOP_TO_OBJ( self ) );
-	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP( csclass.scripting );
+OOP stClassVector2::ccNewXY(OOP self, double x, double y){
+	const csVector2Class &csclass = *((csVector2Class*)OOP_TO_OBJ(self));
+	const ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	OOP result = NULL;
 	
 	try{
-		result = st.GetClassVector2()->Vector2ToOOP( decVector2( ( float )x, ( float )y ) );
+		result = st.GetClassVector2()->Vector2ToOOP(decVector2((float)x, (float)y));
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		result = st.GetNil();
 		e.PrintError();
 	}
@@ -150,30 +150,30 @@ OOP stClassVector2::ccNewXY( OOP self, double x, double y ){
 
 
 
-double stClassVector2::ccX( OOP self ){
-	const csVector2 &cscanvas = *( ( csVector2* )OOP_TO_OBJ( self ) );
-	return ( double )cscanvas.vector.x;
+double stClassVector2::ccX(OOP self){
+	const csVector2 &cscanvas = *((csVector2*)OOP_TO_OBJ(self));
+	return (double)cscanvas.vector.x;
 }
 
-double stClassVector2::ccY( OOP self ){
-	const csVector2 &cscanvas = *( ( csVector2* )OOP_TO_OBJ( self ) );
-	return ( double )cscanvas.vector.y;
+double stClassVector2::ccY(OOP self){
+	const csVector2 &cscanvas = *((csVector2*)OOP_TO_OBJ(self));
+	return (double)cscanvas.vector.y;
 }
 
 
 
-int stClassVector2::ccHash( OOP self ){
-	const csVector2 &cscanvas = *( ( csVector2* )OOP_TO_OBJ( self ) );
+int stClassVector2::ccHash(OOP self){
+	const csVector2 &cscanvas = *((csVector2*)OOP_TO_OBJ(self));
 	
-	return ( int )( cscanvas.vector.x * 1000000.0f )
-		+ ( int )( cscanvas.vector.y * 1000.0f );
+	return (int)(cscanvas.vector.x * 1000000.0f)
+		+ (int)(cscanvas.vector.y * 1000.0f);
 }
 
-OOP stClassVector2::ccAsString( OOP self ){
-	const csVector2 &cscanvas = *( ( csVector2* )OOP_TO_OBJ( self ) );
+OOP stClassVector2::ccAsString(OOP self){
+	const csVector2 &cscanvas = *((csVector2*)OOP_TO_OBJ(self));
 	
-	char buffer[ 50 ];
-	sprintf( ( char* )buffer, "(%f,%f)", cscanvas.vector.x, cscanvas.vector.y );
+	char buffer[50];
+	sprintf((char*)buffer, "(%f,%f)", cscanvas.vector.x, cscanvas.vector.y);
 	
-	return gst_string_to_oop( buffer );
+	return gst_string_to_oop(buffer);
 }

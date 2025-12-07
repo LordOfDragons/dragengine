@@ -47,10 +47,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Speaker became audible. */
-	virtual void SpeakerAudible( const deSoundLevelMeter::cAudibleSpeaker &speaker );
+	virtual void SpeakerAudible(const deSoundLevelMeter::cAudibleSpeaker &speaker);
 	
 	/** \brief Speaker became inaudible. */
-	virtual void SpeakerInaudible( deSpeaker *speaker );
+	virtual void SpeakerInaudible(deSpeaker *speaker);
 	/*@}*/
 };
 

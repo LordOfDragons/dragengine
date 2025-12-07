@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFacePoseSetName( ceFacePose *file, const char *newName );
+	ceUCFacePoseSetName(ceFacePose *file, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFacePoseSetName();
@@ -70,8 +70,8 @@ public:
 	/*@}*/
 	
 private:
-	void pSetName( const char *oldNname, const char *newName );
-	void pAddActions( ceConversationTopic *topic, const ceConversationActionList &list );
+	void pSetName(const char *oldNname, const char *newName);
+	void pAddActions(ceConversationTopic *topic, const ceConversationActionList &list);
 };
 
 #endif

@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline meWorld &GetWorld() const{ return pWorld; }
+	inline meWorld &GetWorld() const{return pWorld;}
 	
 	
 	/** Set if height terrain are tested. */
@@ -93,22 +93,22 @@ public:
 	void SetIgnoreDecal(meDecal *decal);
 	
 	/** Object filter or nullptr to not use filtering. */
-	inline const meFilterObjects *GetFilterObjects() const{ return pFilterObjects; }
+	inline const meFilterObjects *GetFilterObjects() const{return pFilterObjects;}
 	
 	/** Set object filter or nullptr to not use filtering. */
 	void SetFilterObjects(const meFilterObjects *filter);
 	
 	/** List of objects to ignore. */
-	inline meObjectList &GetIgnoreObjects(){ return pIgnoreObjects; }
-	inline const meObjectList &GetIgnoreObjects() const{ return pIgnoreObjects; }
+	inline meObjectList &GetIgnoreObjects(){return pIgnoreObjects;}
+	inline const meObjectList &GetIgnoreObjects() const{return pIgnoreObjects;}
 	
 	
 	/** Resets the collector. */
 	void Reset();
 	
 	/** List of collected elements. */
-	inline meCLHitList &GetCollectedElements(){ return pElements; }
-	inline const meCLHitList &GetCollectedElements() const{ return pElements; }
+	inline meCLHitList &GetCollectedElements(){return pElements;}
+	inline const meCLHitList &GetCollectedElements() const{return pElements;}
 	
 	
 	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);

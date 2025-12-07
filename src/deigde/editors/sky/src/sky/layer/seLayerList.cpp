@@ -55,38 +55,38 @@ int seLayerList::GetCount() const{
 	return pLayers.GetCount();
 }
 
-seLayer *seLayerList::GetAt( int index ) const{
-	return ( seLayer* )pLayers.GetAt( index );
+seLayer *seLayerList::GetAt(int index) const{
+	return (seLayer*)pLayers.GetAt(index);
 }
 
-int seLayerList::IndexOf( seLayer *layer ) const{
-	return pLayers.IndexOf( layer );
+int seLayerList::IndexOf(seLayer *layer) const{
+	return pLayers.IndexOf(layer);
 }
 
-bool seLayerList::Has( seLayer *layer ) const{
-	return pLayers.Has( layer );
+bool seLayerList::Has(seLayer *layer) const{
+	return pLayers.Has(layer);
 }
 
-void seLayerList::Add( seLayer *layer ){
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+void seLayerList::Add(seLayer *layer){
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
-	pLayers.Add( layer );
+	pLayers.Add(layer);
 }
 
-void seLayerList::InsertAt( seLayer *layer, int index ){
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+void seLayerList::InsertAt(seLayer *layer, int index){
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
-	pLayers.Insert( layer, index );
+	pLayers.Insert(layer, index);
 }
 
-void seLayerList::MoveTo( seLayer *layer, int index ){
-	pLayers.Move( layer, index );
+void seLayerList::MoveTo(seLayer *layer, int index){
+	pLayers.Move(layer, index);
 }
 
-void seLayerList::Remove( seLayer *layer ){
-	pLayers.Remove( layer );
+void seLayerList::Remove(seLayer *layer){
+	pLayers.Remove(layer);
 }
 
 void seLayerList::RemoveAll(){
@@ -95,7 +95,7 @@ void seLayerList::RemoveAll(){
 
 
 
-seLayerList &seLayerList::operator=( const seLayerList &list ){
+seLayerList &seLayerList::operator=(const seLayerList &list){
 	pLayers = list.pLayers;
 	return *this;
 }

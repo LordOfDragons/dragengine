@@ -60,21 +60,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the active environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetActiveEnvMap() const{ return pEnvMapActive; }
+	inline deoglEnvironmentMap *GetActiveEnvMap() const{return pEnvMapActive;}
 	/** Retrieves the fading environment map or NULL if not fading. */
-	inline deoglEnvironmentMap *GetFadingEnvMap() const{ return pEnvMapFading; }
+	inline deoglEnvironmentMap *GetFadingEnvMap() const{return pEnvMapFading;}
 	/** Retrieves the delayed environment map or NULL if not fading. */
-	inline deoglEnvironmentMap *GetDelayedEnvMap() const{ return pEnvMapDelayed; }
+	inline deoglEnvironmentMap *GetDelayedEnvMap() const{return pEnvMapDelayed;}
 	/**
 	 * Retrieves the blend factor for the active environment map. The blend factor for the
 	 * fading environment map is 1 minus blend factor.
 	 */
-	inline float GetBlendFactor() const{ return pBlendFactor; }
+	inline float GetBlendFactor() const{return pBlendFactor;}
 	
 	/** Retrieves the amount of fading per second. */
-	inline float GetFadePerTime() const{ return pFadePerTime; }
+	inline float GetFadePerTime() const{return pFadePerTime;}
 	/** Sets the amount of fading per second. */
-	void SetFadePerTime( float fadePerTime );
+	void SetFadePerTime(float fadePerTime);
 	
 	/**
 	 * Switch the active environment map. If a fading is in progress the environment map
@@ -82,7 +82,7 @@ public:
 	 * is in progress the environment map is set as the fading environment map and fading
 	 * starts.
 	 */
-	void FadeTo( deoglEnvironmentMap *envmap );
+	void FadeTo(deoglEnvironmentMap *envmap);
 	/** Determines if fading is in progess. */
 	bool IsFading() const;
 	/**
@@ -91,12 +91,12 @@ public:
 	 * be deleted or if the contained texture is about to get invalid. This operation can lead
 	 * to popping.
 	 */
-	void Drop( deoglEnvironmentMap *envmap );
+	void Drop(deoglEnvironmentMap *envmap);
 	/** Drop all environment maps. */
 	void DropAll();
 	
 	/** Update fading. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

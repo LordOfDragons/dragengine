@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer instance resource manager. */
-	deSynthesizerInstanceManager( deEngine *engine );
+	deSynthesizerInstanceManager(deEngine *engine);
 	
 	/** \brief Clean up synthesizer instance resource manager and report leaking resources. */
 	virtual ~deSynthesizerInstanceManager();
@@ -92,7 +92,7 @@ public:
 	 * \brief Those functions are only for resource objects and should never be called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

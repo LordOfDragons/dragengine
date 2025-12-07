@@ -58,19 +58,19 @@ public:
 	int GetCount() const;
 	
 	/** Index of a block or -1 if not in the list. */
-	int IndexOf( deoglShaderParameterBlock *block ) const;
+	int IndexOf(deoglShaderParameterBlock *block) const;
 	
 	/** Block exists. */
-	bool Has( deoglShaderParameterBlock *block ) const;
+	bool Has(deoglShaderParameterBlock *block) const;
 	
 	/** Block by index. */
-	deoglShaderParameterBlock *GetAt( int index ) const;
+	deoglShaderParameterBlock *GetAt(int index) const;
 	
 	/** Add block. */
-	void Add( deoglShaderParameterBlock *block );
+	void Add(deoglShaderParameterBlock *block);
 	
 	/** Remove block. */
-	void Remove( deoglShaderParameterBlock *block );
+	void Remove(deoglShaderParameterBlock *block);
 	
 	/** Remove all blocks. */
 	void RemoveAll();

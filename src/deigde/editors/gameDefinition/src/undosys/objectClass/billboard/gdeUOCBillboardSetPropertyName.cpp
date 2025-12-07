@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetPropertyName::gdeUOCBillboardSetPropertyName( gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, gdeOCBillboard::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pBillboard( NULL ),
-pProperty( property )
+gdeUOCBillboardSetPropertyName::gdeUOCBillboardSetPropertyName(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, gdeOCBillboard::eProperties property, const char *newValue) :
+pObjectClass(NULL),
+pBillboard(NULL),
+pProperty(property)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard set property name" );
+	SetShortInfo("Billboard set property name");
 	
-	pOldValue = billboard->GetPropertyName( property );
+	pOldValue = billboard->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
@@ -62,10 +62,10 @@ pProperty( property )
 }
 
 gdeUOCBillboardSetPropertyName::~gdeUOCBillboardSetPropertyName(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCBillboardSetPropertyName::~gdeUOCBillboardSetPropertyName(){
 ///////////////
 
 void gdeUOCBillboardSetPropertyName::Undo(){
-	pBillboard->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardSetPropertyName::Redo(){
-	pBillboard->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }

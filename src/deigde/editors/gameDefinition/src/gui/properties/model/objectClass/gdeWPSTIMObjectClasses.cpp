@@ -46,11 +46,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMObjectClasses::gdeWPSTIMObjectClasses( gdeWPSTreeModel &tree ) :
-gdeWPSTreeItemModel( tree, etObjectClasses )
+gdeWPSTIMObjectClasses::gdeWPSTIMObjectClasses(gdeWPSTreeModel &tree) :
+gdeWPSTreeItemModel(tree, etObjectClasses)
 {
-	SetText( "Object Classes" );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText("Object Classes");
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 }
 
 gdeWPSTIMObjectClasses::~gdeWPSTIMObjectClasses(){
@@ -61,14 +61,14 @@ gdeWPSTIMObjectClasses::~gdeWPSTIMObjectClasses(){
 // Management
 ///////////////
 
-gdeWPSTIMObjectClass *gdeWPSTIMObjectClasses::GetChildWith( gdeObjectClass *objectClass ) const{
-	gdeWPSTIMObjectClass *child = ( gdeWPSTIMObjectClass* )GetFirstChild();
+gdeWPSTIMObjectClass *gdeWPSTIMObjectClasses::GetChildWith(gdeObjectClass *objectClass) const{
+	gdeWPSTIMObjectClass *child = (gdeWPSTIMObjectClass*)GetFirstChild();
 	
-	while( child ){
-		if( child->GetObjectClass() == objectClass ){
+	while(child){
+		if(child->GetObjectClass() == objectClass){
 			return child;
 		}
-		child = ( gdeWPSTIMObjectClass* )child->GetNext();
+		child = (gdeWPSTIMObjectClass*)child->GetNext();
 	}
 	
 	return NULL;
@@ -81,24 +81,24 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 	int i;
 	
 	// update existing and add new categories
-	for( i=0; i<count; i++ ){
-		gdeObjectClass * const objectClass = list.GetAt( i );
-		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith( objectClass );
+	for(i=0; i<count; i++){
+		gdeObjectClass * const objectClass = list.GetAt(i);
+		gdeWPSTIMObjectClass * const modelObjectClass = GetChildWith(objectClass);
 		
-		if( ! modelObjectClass ){
-			item.TakeOver( new gdeWPSTIMObjectClass( GetTree(), list.GetAt( i ) ) );
-			AppendModel( item );
+		if(! modelObjectClass){
+			item.TakeOver(new gdeWPSTIMObjectClass(GetTree(), list.GetAt(i)));
+			AppendModel(item);
 		}
 	}
 	
 	// remove no more existing categories
 	igdeTreeItem *child = GetFirstChild();
-	while( child ){
-		gdeWPSTIMObjectClass * const modelObjectClass = ( gdeWPSTIMObjectClass* )child;
+	while(child){
+		gdeWPSTIMObjectClass * const modelObjectClass = (gdeWPSTIMObjectClass*)child;
 		child = child->GetNext();
 		
-		if( ! list.Has( modelObjectClass->GetObjectClass() ) ){
-			RemoveModel( modelObjectClass );
+		if(! list.Has(modelObjectClass->GetObjectClass())){
+			RemoveModel(modelObjectClass);
 		}
 	}
 	
@@ -110,18 +110,18 @@ void gdeWPSTIMObjectClasses::StructureChanged(){
 }
 
 void gdeWPSTIMObjectClasses::ValidateObjectClassName(){
-	gdeWPSTIMObjectClass *child = ( gdeWPSTIMObjectClass* )GetFirstChild();
-	while( child ){
+	gdeWPSTIMObjectClass *child = (gdeWPSTIMObjectClass*)GetFirstChild();
+	while(child){
 		child->ValidateObjectClassName();
-		child = ( gdeWPSTIMObjectClass* )child->GetNext();
+		child = (gdeWPSTIMObjectClass*)child->GetNext();
 	}
 }
 
 void gdeWPSTIMObjectClasses::ValidateCategoryName(){
-	gdeWPSTIMObjectClass *child = ( gdeWPSTIMObjectClass* )GetFirstChild();
-	while( child ){
+	gdeWPSTIMObjectClass *child = (gdeWPSTIMObjectClass*)GetFirstChild();
+	while(child){
 		child->ValidateCategoryName();
-		child = ( gdeWPSTIMObjectClass* )child->GetNext();
+		child = (gdeWPSTIMObjectClass*)child->GetNext();
 	}
 }
 
@@ -133,50 +133,50 @@ void gdeWPSTIMObjectClasses::OnAddedToTree(){
 	igdeTreeItem::Ref item;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		item.TakeOver( new gdeWPSTIMObjectClass( GetTree(), list.GetAt( i ) ) );
-		AppendModel( item );
+	for(i=0; i<count; i++){
+		item.TakeOver(new gdeWPSTIMObjectClass(GetTree(), list.GetAt(i)));
+		AppendModel(item);
 	}
 	
 	SortChildren();
 }
 
-void gdeWPSTIMObjectClasses::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMObjectClasses::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionObjectClassAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionObjectClassPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionObjectClassAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionObjectClassPaste());
 }
 
-void gdeWPSTIMObjectClasses::SelectBestMatching( const char *string ){
-	if( ! string ){
+void gdeWPSTIMObjectClasses::SelectBestMatching(const char *string){
+	if(! string){
 		return;
 	}
 	
-	const decString searchString( decString( string ).GetLower() );
+	const decString searchString(decString(string).GetLower());
 	igdeTreeItem *child = GetFirstChild();
 	gdeObjectClass *bestObjectClass = NULL;
 	decString bestName;
 	
-	while( child ){
-		gdeObjectClass * const objectClass = ( ( gdeWPSTIMObjectClass* )child )->GetObjectClass();
+	while(child){
+		gdeObjectClass * const objectClass = ((gdeWPSTIMObjectClass*)child)->GetObjectClass();
 		child = child->GetNext();
 		
-		const decString name( objectClass->GetName().GetLower() );
+		const decString name(objectClass->GetName().GetLower());
 		
-		if( name == searchString ){
+		if(name == searchString){
 			// exact match is always best
 			bestObjectClass = objectClass;
 			break;
 		}
 		
-		if( name.FindString( searchString ) == -1 ){
+		if(name.FindString(searchString) == -1){
 			continue;
 		}
 		
 		// partial matching. best match is the one earlier in the alphabet
-		if( bestObjectClass && bestName < name ){
+		if(bestObjectClass && bestName < name){
 			continue;
 		}
 		
@@ -184,8 +184,8 @@ void gdeWPSTIMObjectClasses::SelectBestMatching( const char *string ){
 		bestName = name;
 	}
 
-	if( bestObjectClass ){
-		GetGameDefinition().SetActiveObjectClass( bestObjectClass );
-		GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(bestObjectClass){
+		GetGameDefinition().SetActiveObjectClass(bestObjectClass);
+		GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 	}
 }

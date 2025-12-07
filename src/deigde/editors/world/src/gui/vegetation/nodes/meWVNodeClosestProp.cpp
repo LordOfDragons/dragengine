@@ -68,10 +68,10 @@ protected:
 	meWVNodeClosestProp &pNode;
 	
 public:
-	cComboClass( meWVNodeClosestProp &node ) : pNode( node ){ }
+	cComboClass(meWVNodeClosestProp &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( comboBox->GetText() == pNode.GetRuleClosestProp()->GetPropClass() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(comboBox->GetText() == pNode.GetRuleClosestProp()->GetPropClass()){
 			return;
 		}
 		
@@ -84,16 +84,16 @@ public:
 class cActionClassSelect : public igdeAction{
 	meWVNodeClosestProp &pNode;
 public:
-	cActionClassSelect( meWVNodeClosestProp &node ) :
-		igdeAction( "", NULL, "Select Object Class" ), pNode( node ){ }
+	cActionClassSelect(meWVNodeClosestProp &node) :
+		igdeAction("", NULL, "Select Object Class"), pNode(node){}
 	
 	virtual void OnAction(){
-		if( ! pNode.GetGameDefinition() ){
+		if(! pNode.GetGameDefinition()){
 			return;
 		}
 		
-		decString propClass( pNode.GetRuleClosestProp()->GetPropClass() );
-		if( igdeDialogBrowserObjectClass::SelectObjectClass( &pNode, propClass ) ){
+		decString propClass(pNode.GetRuleClosestProp()->GetPropClass());
+		if(igdeDialogBrowserObjectClass::SelectObjectClass(&pNode, propClass)){
 			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
 				meUHTVRuleCPSetClass::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
 					pNode.GetRuleClosestProp(), propClass));
@@ -104,11 +104,11 @@ public:
 class cActionMenuClass : public igdeActionContextMenu{
 	meWVNodeClosestProp &pNode;
 public:
-	cActionMenuClass( meWVNodeClosestProp &node ) : igdeActionContextMenu( "",
-		node.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Class menu" ),
-		pNode( node ){ }
+	cActionMenuClass(meWVNodeClosestProp &node) : igdeActionContextMenu("",
+		node.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Class menu"),
+		pNode(node){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu){
 		// TODO
 	}
 };
@@ -118,11 +118,11 @@ protected:
 	meWVNodeClosestProp &pNode;
 	
 public:
-	cTextSearchRadius( meWVNodeClosestProp &node ) : pNode( node ){ }
+	cTextSearchRadius(meWVNodeClosestProp &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		const float value = textField->GetFloat();
-		if( fabsf( value - pNode.GetRuleClosestProp()->GetSearchRadius() ) <= FLOAT_SAFE_EPSILON ){
+		if(fabsf(value - pNode.GetRuleClosestProp()->GetSearchRadius()) <= FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -142,17 +142,17 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeClosestProp::meWVNodeClosestProp( meWindowVegetation &windowVegetation, meHTVRuleClosestProp *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleCP( rule )
+meWVNodeClosestProp::meWVNodeClosestProp(meWindowVegetation &windowVegetation, meHTVRuleClosestProp *rule) :
+meWVNode(windowVegetation, rule),
+pRuleCP(rule)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Closest Prop" );
+	SetTitle("Closest Prop");
 	
-	pActionMenuClass.TakeOver( new cActionMenuClass( *this ) );
+	pActionMenuClass.TakeOver(new cActionMenuClass(*this));
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -164,17 +164,17 @@ pRuleCP( rule )
 		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestProp::eosDirection));
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 	
-	helper.FormLineStretchFirst( pFraParameters, "Class:", "Select class name of prop to search for.", formLine );
-	helper.ComboBoxFilter( formLine, true, "Select class name of prop to search for.",
-		pCBPropClass, new cComboClass( *this ) );
-	helper.Button( formLine, pBtnPropClass, pActionMenuClass );
-	pActionMenuClass->SetWidget( pBtnPropClass );
+	helper.FormLineStretchFirst(pFraParameters, "Class:", "Select class name of prop to search for.", formLine);
+	helper.ComboBoxFilter(formLine, true, "Select class name of prop to search for.",
+		pCBPropClass, new cComboClass(*this));
+	helper.Button(formLine, pBtnPropClass, pActionMenuClass);
+	pActionMenuClass->SetWidget(pBtnPropClass);
 	
-	helper.EditFloat( pFraParameters, "Radius:", "Set search radius in meters.",
-		pEditSearchRadius, new cTextSearchRadius( *this ) );
+	helper.EditFloat(pFraParameters, "Radius:", "Set search radius in meters.",
+		pEditSearchRadius, new cTextSearchRadius(*this));
 }
 
 meWVNodeClosestProp::~meWVNodeClosestProp(){
@@ -188,12 +188,12 @@ meWVNodeClosestProp::~meWVNodeClosestProp(){
 void meWVNodeClosestProp::Update(){
 	meWVNode::Update();
 	
-	pCBPropClass->SetText( pRuleCP->GetPropClass() );
-	pEditSearchRadius->SetFloat( pRuleCP->GetSearchRadius() );
+	pCBPropClass->SetText(pRuleCP->GetPropClass());
+	pEditSearchRadius->SetFloat(pRuleCP->GetSearchRadius());
 }
 
 void meWVNodeClosestProp::UpdateClassLists(){
-	const decString selection( pCBPropClass->GetText() );
+	const decString selection(pCBPropClass->GetText());
 	
 	pCBPropClass->RemoveAllItems();
 	
@@ -201,15 +201,15 @@ void meWVNodeClosestProp::UpdateClassLists(){
 	const int count = classes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClass &objectClass = *classes.GetAt( i );
-		if( objectClass.GetCanInstantiate() ){
-			pCBPropClass->AddItem( objectClass.GetName() );
+	for(i=0; i<count; i++){
+		const igdeGDClass &objectClass = *classes.GetAt(i);
+		if(objectClass.GetCanInstantiate()){
+			pCBPropClass->AddItem(objectClass.GetName());
 		}
 	}
 	
 	pCBPropClass->SortItems();
 	pCBPropClass->StoreFilterItems();
 	
-	pCBPropClass->SetText( selection );
+	pCBPropClass->SetText(selection);
 }

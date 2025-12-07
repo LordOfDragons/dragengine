@@ -47,15 +47,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create button. */
-	igdeToggleButton( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		eButtonStyle = ebsNormal );
+	igdeToggleButton(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeToggleButton( igdeEnvironment &environment, const char *text, const char *description,
-		igdeIcon *icon, eButtonStyle = ebsNormal );
+	igdeToggleButton(igdeEnvironment &environment, const char *text, const char *description,
+		igdeIcon *icon, eButtonStyle = ebsNormal);
 	
 	/** \brief Create button. */
-	igdeToggleButton( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
+	igdeToggleButton(igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal);
 	
 	
 	
@@ -75,10 +75,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Button is toggled. */
-	inline bool GetToggled() const{ return pToggled; }
+	inline bool GetToggled() const{return pToggled;}
 	
 	/** \brief Set if button is toggled. */
-	void SetToggled( bool toogled );
+	void SetToggled(bool toogled);
 	
 	
 	
@@ -90,7 +90,7 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	/*@}*/
 	
 	

@@ -38,24 +38,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectCopyPosition::meUObjectCopyPosition( meWorld *world, bool copyX, bool copyY, bool copyZ ) :
-pCopyX( copyX ),
-pCopyY( copyY ),
-pCopyZ( copyZ )
+meUObjectCopyPosition::meUObjectCopyPosition(meWorld *world, bool copyX, bool copyY, bool copyZ) :
+pCopyX(copyX),
+pCopyY(copyY),
+pCopyZ(copyZ)
 {
-	if( ! world || ! world->GetSelectionObject().GetActive() ){
-		DETHROW( deeInvalidParam );
+	if(! world || ! world->GetSelectionObject().GetActive()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const meObjectList &list = world->GetSelectionObject().GetSelected();
 	const int count = list.GetCount();
 	int i;
 	
-	SetShortInfo( "Copy Object Position" );
-	SetLongInfo( "Copy Object Position" );
+	SetShortInfo("Copy Object Position");
+	SetLongInfo("Copy Object Position");
 	
-	for( i=0; i<count; i++ ){
-		pObjects.Add( meUndoDataObject::Ref::NewWith(list.GetAt( i )) );
+	for(i=0; i<count; i++){
+		pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
 	}
 	
 	pNewPosition = world->GetSelectionObject().GetActive()->GetPosition();
@@ -73,12 +73,12 @@ void meUObjectCopyPosition::Undo(){
 	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		object->SetPosition( data.GetOldPosition() );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
+		object->SetPosition(data.GetOldPosition());
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
 	}
 }
 
@@ -86,23 +86,23 @@ void meUObjectCopyPosition::Redo(){
 	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		decDVector position( data.GetOldPosition() );
+		decDVector position(data.GetOldPosition());
 		
-		if( pCopyX ){
+		if(pCopyX){
 			position.x = pNewPosition.x;
 		}
-		if( pCopyY ){
+		if(pCopyY){
 			position.y = pNewPosition.y;
 		}
-		if( pCopyZ ){
+		if(pCopyZ){
 			position.z = pNewPosition.z;
 		}
 		
-		object->SetPosition( position );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
+		object->SetPosition(position);
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
 	}
 }

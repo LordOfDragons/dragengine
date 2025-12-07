@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSnapPointAdd::gdeMAOCSnapPointAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Snap Point...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class snap point" )
+gdeMAOCSnapPointAdd::gdeMAOCSnapPointAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Snap Point...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class snap point")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Snap Point...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCSnapPointAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddSnapPoint(&objectClass, gdeOCSnapPoint::Ref::NewWith());
 }
 
 void gdeMAOCSnapPointAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

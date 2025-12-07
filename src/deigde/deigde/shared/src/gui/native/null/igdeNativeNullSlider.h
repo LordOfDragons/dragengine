@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullSlider();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSlider* CreateNativeWidget( igdeSlider &owner );
+	static igdeNativeNullSlider* CreateNativeWidget(igdeSlider &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

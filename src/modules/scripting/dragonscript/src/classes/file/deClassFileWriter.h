@@ -43,7 +43,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassFileWriter( deScriptingDragonScript *ds );
+	deClassFileWriter(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	virtual ~deClassFileWriter();
 	/*@}*/
@@ -51,15 +51,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the fileWriter or NULL if myself is NULL. */
-	decBaseFileWriter *GetFileWriter( dsRealObject *myself ) const;
+	decBaseFileWriter *GetFileWriter(dsRealObject *myself) const;
 	/** Retrieves the stream version. */
-	int GetStreamVersion( dsRealObject *myself ) const;
+	int GetStreamVersion(dsRealObject *myself) const;
 	/** Pushes the file writer on the stack. File writer can be NULL to push a null object. */
-	void PushFileWriter( dsRunTime *rt, decBaseFileWriter *fileWriter );
+	void PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWriter);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/*@}*/
 	
 private:
@@ -78,41 +78,41 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewZCompressed );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewZCompressed);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
+	DEF_NATFUNC(nfGetFilename);
 	
-	DEF_NATFUNC( nfGetStreamVersion );
-	DEF_NATFUNC( nfSetStreamVersion );
+	DEF_NATFUNC(nfGetStreamVersion);
+	DEF_NATFUNC(nfSetStreamVersion);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfMovePosition );
-	DEF_NATFUNC( nfSetPositionEnd );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfMovePosition);
+	DEF_NATFUNC(nfSetPositionEnd);
 	
-	DEF_NATFUNC( nfWriteChar );
-	DEF_NATFUNC( nfWriteByte );
-	DEF_NATFUNC( nfWriteShort );
-	DEF_NATFUNC( nfWriteUShort );
-	DEF_NATFUNC( nfWriteInt );
-	DEF_NATFUNC( nfWriteUInt );
-	DEF_NATFUNC( nfWriteVarUInt );
-	DEF_NATFUNC( nfWriteFloat );
-	DEF_NATFUNC( nfWriteString8 );
-	DEF_NATFUNC( nfWriteString16 );
-	DEF_NATFUNC( nfWriteString32 );
-	DEF_NATFUNC( nfWriteVarString );
-	DEF_NATFUNC( nfWriteString );
-	DEF_NATFUNC( nfWriteData );
-	DEF_NATFUNC( nfWriteData2 );
-	DEF_NATFUNC( nfWriteTimeDate );
+	DEF_NATFUNC(nfWriteChar);
+	DEF_NATFUNC(nfWriteByte);
+	DEF_NATFUNC(nfWriteShort);
+	DEF_NATFUNC(nfWriteUShort);
+	DEF_NATFUNC(nfWriteInt);
+	DEF_NATFUNC(nfWriteUInt);
+	DEF_NATFUNC(nfWriteVarUInt);
+	DEF_NATFUNC(nfWriteFloat);
+	DEF_NATFUNC(nfWriteString8);
+	DEF_NATFUNC(nfWriteString16);
+	DEF_NATFUNC(nfWriteString32);
+	DEF_NATFUNC(nfWriteVarString);
+	DEF_NATFUNC(nfWriteString);
+	DEF_NATFUNC(nfWriteData);
+	DEF_NATFUNC(nfWriteData2);
+	DEF_NATFUNC(nfWriteTimeDate);
 #undef DEF_NATFUNC
 };
 

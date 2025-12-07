@@ -74,11 +74,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader program. */
-	deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources );
+	deoglShaderProgram(deoglRenderThread &renderThread, const deoglShaderSources *sources);
 	
 	/** Create shader program. */
-	deoglShaderProgram( deoglRenderThread &renderThread,
-		const deoglShaderSources *sources, const deoglShaderDefines &defines );
+	deoglShaderProgram(deoglRenderThread &renderThread,
+		const deoglShaderSources *sources, const deoglShaderDefines &defines);
 	
 protected:
 	/** Clean up shader program. */
@@ -92,49 +92,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sources. */
-	inline const deoglShaderSources *GetSources() const{ return pSources; }
+	inline const deoglShaderSources *GetSources() const{return pSources;}
 	
 	/** Defines. */
-	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
+	inline const deoglShaderDefines &GetDefines() const{return pDefines;}
 	
 	/** Cache identifier. */
-	inline const decString &GetCacheId() const{ return pCacheId; }
+	inline const decString &GetCacheId() const{return pCacheId;}
 	
 	/** Set cache identifier. */
-	void SetCacheId( const decString &id );
+	void SetCacheId(const decString &id);
 	
 	/** Compute unit or nullptr. */
-	inline deoglShaderProgramUnit *GetUnitCompute() const{ return pUnitCompute; }
+	inline deoglShaderProgramUnit *GetUnitCompute() const{return pUnitCompute;}
 	
 	/** Set compute unit or nullptr. */
 	void SetUnitCompute(deoglShaderProgramUnit *unit);
 	
 	/** Tessellation control unit or nullptr. */
-	inline deoglShaderProgramUnit *GetUnitTessellationControl() const{ return pUnitTessellationControl; }
+	inline deoglShaderProgramUnit *GetUnitTessellationControl() const{return pUnitTessellationControl;}
 	
 	/** Set tessellation control unit or nullptr. */
 	void SetUnitTessellationControl(deoglShaderProgramUnit *unit);
 	
 	/** Tessellation evaluation unit or nullptr. */
-	inline deoglShaderProgramUnit *GetUnitTessellationEvaluation() const{ return pUnitTessellationEvaluation; }
+	inline deoglShaderProgramUnit *GetUnitTessellationEvaluation() const{return pUnitTessellationEvaluation;}
 	
 	/** Set tessellation evaluation unit or nullptr. */
 	void SetUnitTessellationEvaluation(deoglShaderProgramUnit *unit);
 	
 	/** Geometry unit or nullptr. */
-	inline deoglShaderProgramUnit *GetUnitGeometry() const{ return pUnitGeometry; }
+	inline deoglShaderProgramUnit *GetUnitGeometry() const{return pUnitGeometry;}
 	
 	/** Set geometry unit or nullptr. */
 	void SetUnitGeometry(deoglShaderProgramUnit *unit);
 	
 	/** Vertex unit or nullptr. */
-	inline deoglShaderProgramUnit *GetUnitVertex() const{ return pUnitVertex; }
+	inline deoglShaderProgramUnit *GetUnitVertex() const{return pUnitVertex;}
 	
 	/** Set vertex unit or nullptr. */
 	void SetUnitVertex(deoglShaderProgramUnit *unit);
 	
 	/** Fragment unit or nullptr. */
-	inline deoglShaderProgramUnit *GetUnitFragment() const{ return pUnitFragment; }
+	inline deoglShaderProgramUnit *GetUnitFragment() const{return pUnitFragment;}
 	
 	/** Set fragment unit or nullptr. */
 	void SetUnitFragment(deoglShaderProgramUnit *unit);
@@ -143,19 +143,19 @@ public:
 	bool CanCompile() const;
 	
 	/** Compiled shader or nullptr. */
-	inline deoglShaderCompiled *GetCompiled() const{ return pCompiled; }
+	inline deoglShaderCompiled *GetCompiled() const{return pCompiled;}
 	
 	/** Set compiled shader or nullptr. */
-	void SetCompiled( deoglShaderCompiled *compiled );
+	void SetCompiled(deoglShaderCompiled *compiled);
 	
 	/** Move compiled shader or nullptr. */
 	void MoveCompiled(deoglShaderProgram &program);
 	
 	/** Unique key for use with dictionaries. */
-	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	inline unsigned int GetUniqueKey() const{return pUniqueKey;}
 	
 	/** Compile timer. */
-	inline decTimer &GetTimerCompile(){ return pTimerCompile; }
+	inline decTimer &GetTimerCompile(){return pTimerCompile;}
 	/*@}*/
 };
 

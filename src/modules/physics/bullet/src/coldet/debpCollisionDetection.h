@@ -123,7 +123,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new object. */
-	debpCollisionDetection( dePhysicsBullet &bullet );
+	debpCollisionDetection(dePhysicsBullet &bullet);
 	/** Cleans up the object. */
 	~debpCollisionDetection();
 	/*@}*/
@@ -131,13 +131,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** \brief Shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo(){ return pColInfo; }
+	inline deCollisionInfo *GetCollisionInfo(){return pColInfo;}
 	
 	/** \brief Bullet shape collision. */
-	inline debpBulletShapeCollision &GetBulletShapeCollision(){ return pShapeCollision; }
+	inline debpBulletShapeCollision &GetBulletShapeCollision(){return pShapeCollision;}
 	
 	/** \brief Ray hack shape. */
-	inline debpSweepCollisionTest &GetRayHackShape(){ return pRayHackShape; }
+	inline debpSweepCollisionTest &GetRayHackShape(){return pRayHackShape;}
 	/*@}*/
 	
 	/** @name Collision Detection */
@@ -148,51 +148,51 @@ public:
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	void PointHits( const decDVector &point, debpWorld &world,
-	const decCollisionFilter &collisionFilter, deBaseScriptingCollider &listener );
+	void PointHits(const decDVector &point, debpWorld &world,
+	const decCollisionFilter &collisionFilter, deBaseScriptingCollider &listener);
 	
 	
 	/**
 	 * Tests a ray for collisions with world elements. For each hit the listener is invoked and
 	 * the collision detection stopped if requested by the user.
 	 */
-	void RayHits( const decDVector &origin, const decDVector &direction, debpWorld &world,
-	const decCollisionFilter &collisionFilter, deBaseScriptingCollider &listener );
+	void RayHits(const decDVector &origin, const decDVector &direction, debpWorld &world,
+	const decCollisionFilter &collisionFilter, deBaseScriptingCollider &listener);
 	
 	/**
 	 * Tests a collider for collisions with colliders in a world. For each hit the
 	 * listener is invoked and the collision detection stopped if requested by the user.
 	 */
-	void ColliderHits( debpCollider *collider, debpWorld *world, deBaseScriptingCollider *listener );
+	void ColliderHits(debpCollider *collider, debpWorld *world, deBaseScriptingCollider *listener);
 	
 	/**
 	 * Tests a moving collider for collisions with colliders in a world. For each hit the
 	 * listener is invoked and the collision detection stopped if requested by the user.
 	 */
-	void ColliderMoveHits( debpCollider *collider, const decDVector &displacement,
-		debpWorld *world, deBaseScriptingCollider *listener );
+	void ColliderMoveHits(debpCollider *collider, const decDVector &displacement,
+		debpWorld *world, deBaseScriptingCollider *listener);
 	
 	/**
 	 * Tests a rotating collider for collisions with colliders in a world. For each hit the
 	 * listener is invoked and the collision detection stopped if requested by the user.
 	 */
-	void ColliderRotateHits( debpCollider *collider, const decVector &rotation,
-		debpWorld *world, deBaseScriptingCollider *listener );
+	void ColliderRotateHits(debpCollider *collider, const decVector &rotation,
+		debpWorld *world, deBaseScriptingCollider *listener);
 	
 	/**
 	 * Tests a moving and rotating collider for collisions with colliders in a world. For each hit the
 	 * listener is invoked and the collision detection stopped if requested by the user.
 	 */
-	void ColliderMoveRotateHits( debpCollider *collider, const decVector &displacement,
-		const decVector &rotation, debpWorld *world, deBaseScriptingCollider *listener );
+	void ColliderMoveRotateHits(debpCollider *collider, const decVector &displacement,
+		const decVector &rotation, debpWorld *world, deBaseScriptingCollider *listener);
 	
 #if 0
 	/**
 	 * Determines if a ray hits a height terrain.
 	 * \deprecated Can be deleted.
 	 */
-	bool RayHitsHeightTerrain( const decDVector &origin, const decDVector &direction, debpHTSector *sector,
-		bool testHiddenFaces, debpCollisionResult &result );
+	bool RayHitsHeightTerrain(const decDVector &origin, const decDVector &direction, debpHTSector *sector,
+		bool testHiddenFaces, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -200,7 +200,7 @@ public:
 	 * Determines if a shape hits a height terrain.
 	 * \deprecated Can be deleted.
 	 */
-	bool ShapeHitsHeightTerrain( debpShape *shape, debpHTSector *sector, debpCollisionResult &result );
+	bool ShapeHitsHeightTerrain(debpShape *shape, debpHTSector *sector, debpCollisionResult &result);
 #endif
 	
 	/**
@@ -208,7 +208,7 @@ public:
 	 * parameter is set in the result.
 	 * \deprecated Still used by debpCollisionWorld::HitContactCallback::process and debpTSShape::ColliderHits()
 	 */
-	bool ColliderHitsHeightTerrain( debpCollider *collider, debpHTSector *sector, debpCollisionResult &result );
+	bool ColliderHitsHeightTerrain(debpCollider *collider, debpHTSector *sector, debpCollisionResult &result);
 	
 #if 0
 	/**
@@ -216,8 +216,8 @@ public:
 	 * distance, normal and shape1 parameter are set in the result.
 	 * \deprecated Can be deleted.
 	 */
-	bool ColliderMoveHitsHeightTerrain( debpCollider *collider, const decDVector &displacement,
-		debpHTSector *sector, debpCollisionResult &result );
+	bool ColliderMoveHitsHeightTerrain(debpCollider *collider, const decDVector &displacement,
+		debpHTSector *sector, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -226,8 +226,8 @@ public:
 	 * distance, normal and shape1 parameter are set in the result.
 	 * \deprecated Can be deleted.
 	 */
-	bool ColliderRotateHitsHeightTerrain( debpCollider *collider, const decVector &rotation,
-		debpHTSector *sector, debpCollisionResult &result );
+	bool ColliderRotateHitsHeightTerrain(debpCollider *collider, const decVector &rotation,
+		debpHTSector *sector, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -235,8 +235,8 @@ public:
 	 * Determines if a ray hits a collider. The ray is supposed to be transformed relative to the
 	 * world. If the collider is hit the shape2 and bone2 parameters are set in the result.
 	 */
-	bool RayHitsCollider( const decDVector &origin, const decDVector &direction, debpCollider *collider,
-		debpCollisionResult &result );
+	bool RayHitsCollider(const decDVector &origin, const decDVector &direction, debpCollider *collider,
+		debpCollisionResult &result);
 #endif
 	
 	/**
@@ -257,7 +257,7 @@ public:
 	 * transformed relative to the world. If the collider is hit the shape2 and bone2 parameters
 	 * are set in the result.
 	 */
-	bool ShapeHitsCollider( debpShape *shape, debpCollider *collider, debpCollisionResult &result );
+	bool ShapeHitsCollider(debpShape *shape, debpCollider *collider, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -266,29 +266,29 @@ public:
 	 * transformed relative to the world. If the collider is hit the shape1, shape2, bone1 and
 	 * bone2 parameters are set in the result.
 	 */
-	bool ColliderMoveHitsCollider( debpCollider *collider1, const decDVector &displacement,
-		debpCollider *collider2, debpCollisionResult &result );
+	bool ColliderMoveHitsCollider(debpCollider *collider1, const decDVector &displacement,
+		debpCollider *collider2, debpCollisionResult &result);
 #endif
 	
 	/**
 	 * Determines if a shape hits a model face. The shape is supposed to be transformed relative to the
 	 * component owning the model.
 	 */
-	bool ShapeHitsModelFace( debpShape &shape, debpComponent &component, int face );
+	bool ShapeHitsModelFace(debpShape &shape, debpComponent &component, int face);
 	
 	/**
 	 * Determines if a shape move hits a model face. The shape is supposed to be transformed relative
 	 * to the model. If the face is hit the normal and distance parameter of the result are set.
 	 */
-	bool ShapeMoveHitsModelFace( debpShape &shape, const decDVector &displacement,
-		const debpComponent &component, int face, debpCollisionResult &result );
+	bool ShapeMoveHitsModelFace(debpShape &shape, const decDVector &displacement,
+		const debpComponent &component, int face, debpCollisionResult &result);
 	
 	/**
 	 * Determines if a collider hits a triangle. The collider shapes are supposed to be transformed
 	 * relative to the triangle. If the triangle is hit the shape1 parameter of the result are set.
 	 */
-	bool ColliderHitsTriangle( debpCollider *collider, const decDVector &p1, const decDVector &p2,
-		const decDVector &p3, debpCollisionResult &result );
+	bool ColliderHitsTriangle(debpCollider *collider, const decDVector &p1, const decDVector &p2,
+		const decDVector &p3, debpCollisionResult &result);
 	
 #if 0
 	/**
@@ -296,8 +296,8 @@ public:
 	 * transformed relative to the triangle. If the triangle is hit the shape1, normal and distance
 	 * parameter of the result are set.
 	 */
-	bool ColliderMoveHitsTriangle( debpCollider *collider, const decDVector &displacement,
-		const decDVector &p1, const decDVector &p2, const decDVector &p3, debpCollisionResult &result );
+	bool ColliderMoveHitsTriangle(debpCollider *collider, const decDVector &displacement,
+		const decDVector &p1, const decDVector &p2, const decDVector &p3, debpCollisionResult &result);
 #endif
 	
 	/**
@@ -305,15 +305,15 @@ public:
 	 * transformed relative to the model. If the face is hit the shape1, normal and distance
 	 * parameter of the result are set.
 	 */
-	bool ColliderMoveHitsModelFace( debpCollider *collider, const decDVector &displacement,
-		const debpComponent &component, int face, debpCollisionResult &result );
+	bool ColliderMoveHitsModelFace(debpCollider *collider, const decDVector &displacement,
+		const debpComponent &component, int face, debpCollisionResult &result);
 	
 #if 0
 	/**
 	 * Calculates the bounding box of the shapes of a moving collider.
 	 * @warning This method is supposed to be moved later on into the collider itself.
 	 */
-	void GetColliderMoveBoundingBox( debpCollider &collider, const decDVector &displacement, debpDCollisionBox &box );
+	void GetColliderMoveBoundingBox(debpCollider &collider, const decDVector &displacement, debpDCollisionBox &box);
 #endif
 	
 #if 0
@@ -321,8 +321,8 @@ public:
 	 * Determines if a ray hits a collider component. The ray is supposed to be transformed relative to the
 	 * world. If the collider is hit the bone2 parameter is set in the result.
 	 */
-	bool RayHitsColliderComponent( const decDVector &origin, const decDVector &direction, debpColliderComponent &collider,
-		debpCollisionResult &result );
+	bool RayHitsColliderComponent(const decDVector &origin, const decDVector &direction, debpColliderComponent &collider,
+		debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -330,8 +330,8 @@ public:
 	 * Determines if a ray hits a collider rigged. The ray is supposed to be transformed relative to the
 	 * world. If the collider is hit the bone2 parameter is set in the result.
 	 */
-	bool RayHitsColliderRig( const decDVector &origin, const decDVector &direction, debpColliderRig &collider,
-		debpCollisionResult &result );
+	bool RayHitsColliderRig(const decDVector &origin, const decDVector &direction, debpColliderRig &collider,
+		debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -340,7 +340,7 @@ public:
 	 * transformed relative to the world. If the collider is hit the shape2 parameters is set in the
 	 * result.
 	 */
-	bool ShapeHitsColliderVolume( debpShape &shape, debpColliderVolume &collider, debpCollisionResult &result );
+	bool ShapeHitsColliderVolume(debpShape &shape, debpColliderVolume &collider, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -348,7 +348,7 @@ public:
 	 * Determines if a shape hits a collider component. The shape and collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the bone2 parameters is set in the result.
 	 */
-	bool ShapeHitsColliderComponent( debpShape &shape, debpColliderComponent &collider, debpCollisionResult &result );
+	bool ShapeHitsColliderComponent(debpShape &shape, debpColliderComponent &collider, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -356,7 +356,7 @@ public:
 	 * Determines if a shape hits a collider rigged. The shape and collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the bone2 parameters is set in the result.
 	 */
-	bool ShapeHitsColliderRig( debpShape &shape, debpColliderRig &collider, debpCollisionResult &result );
+	bool ShapeHitsColliderRig(debpShape &shape, debpColliderRig &collider, debpCollisionResult &result);
 #endif
 	
 	/**
@@ -364,38 +364,38 @@ public:
 	 * transformed relative to the world. If the collider is hit the shape1 and shape2 parameters are set
 	 * in the result.
 	 */
-	bool ColliderVolumeHitsColliderVolume( debpColliderVolume &collider1, debpColliderVolume &collider2,
-		debpCollisionResult &result );
+	bool ColliderVolumeHitsColliderVolume(debpColliderVolume &collider1, debpColliderVolume &collider2,
+		debpCollisionResult &result);
 	
 	/**
 	 * Determines if a collider volume hits a collider component. The collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the shape1 and bone2 parameters are set
 	 * in the result.
 	 */
-	bool ColliderVolumeHitsColliderComponent( debpColliderVolume &collider1, debpColliderComponent &collider2,
-		debpCollisionResult &result );
+	bool ColliderVolumeHitsColliderComponent(debpColliderVolume &collider1, debpColliderComponent &collider2,
+		debpCollisionResult &result);
 	
 	/**
 	 * Determines if a collider volume hits a collider rigged. The collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the shape1 and bone2 parameters are set
 	 * in the result.
 	 */
-	bool ColliderVolumeHitsColliderRig( debpColliderVolume &collider1, debpColliderRig &collider2,
-		debpCollisionResult &result );
+	bool ColliderVolumeHitsColliderRig(debpColliderVolume &collider1, debpColliderRig &collider2,
+		debpCollisionResult &result);
 	
 	/**
 	 * Determines if a collider component hits another collider component. The collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the bone1 and bone2 parameters are set in the result.
 	 */
-	bool ColliderComponentHitsColliderComponent( debpColliderComponent &collider1, debpColliderComponent &collider2,
-		debpCollisionResult &result );
+	bool ColliderComponentHitsColliderComponent(debpColliderComponent &collider1, debpColliderComponent &collider2,
+		debpCollisionResult &result);
 	
 	/**
 	 * Determines if a collider component hits a collider rigged. The collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the bone1 and bone2 parameters are set in the result.
 	 */
-	bool ColliderComponentHitsColliderRig( debpColliderComponent &collider1, debpColliderRig &collider2,
-		debpCollisionResult &result );
+	bool ColliderComponentHitsColliderRig(debpColliderComponent &collider1, debpColliderRig &collider2,
+		debpCollisionResult &result);
 	
 #if 0
 	/**
@@ -403,8 +403,8 @@ public:
 	 * transformed relative to the world. If the collider is hit the shape1 and bone2 parameters are set
 	 * in the result.
 	 */
-	bool ColliderVolumeMoveHitsColliderComponent( debpColliderVolume &collider1, const decDVector &displacement,
-		debpColliderComponent &collider2, debpCollisionResult &result );
+	bool ColliderVolumeMoveHitsColliderComponent(debpColliderVolume &collider1, const decDVector &displacement,
+		debpColliderComponent &collider2, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -413,8 +413,8 @@ public:
 	 * transformed relative to the world. If the collider is hit the shape1 and bone2 parameters are set
 	 * in the result.
 	 */
-	bool ColliderVolumeMoveHitsColliderRig( debpColliderVolume &collider1, const decDVector &displacement,
-		debpColliderRig &collider2, debpCollisionResult &result );
+	bool ColliderVolumeMoveHitsColliderRig(debpColliderVolume &collider1, const decDVector &displacement,
+		debpColliderRig &collider2, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -422,8 +422,8 @@ public:
 	 * Determines if a collider component move hits another collider component. The collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the bone1 and bone2 parameters are set in the result.
 	 */
-	bool ColliderComponentMoveHitsColliderComponent( debpColliderComponent &collider1, const decDVector &displacement,
-		debpColliderComponent &collider2, debpCollisionResult &result );
+	bool ColliderComponentMoveHitsColliderComponent(debpColliderComponent &collider1, const decDVector &displacement,
+		debpColliderComponent &collider2, debpCollisionResult &result);
 #endif
 	
 #if 0
@@ -431,8 +431,8 @@ public:
 	 * Determines if a collider component move hits a collider rigged. The collider shapes are supposed to be
 	 * transformed relative to the world. If the collider is hit the bone1 and bone2 parameters are set in the result.
 	 */
-	bool ColliderComponentMoveHitsColliderRig( debpColliderComponent &collider1, const decDVector &displacement,
-		debpColliderRig &collider2, debpCollisionResult &result );
+	bool ColliderComponentMoveHitsColliderRig(debpColliderComponent &collider1, const decDVector &displacement,
+		debpColliderRig &collider2, debpCollisionResult &result);
 #endif
 	
 	/**

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCParticleEmitter( gdeOCParticleEmitter *particleEmitter );
+	gdeClipboardDataOCParticleEmitter(gdeOCParticleEmitter *particleEmitter);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter. */
-	gdeOCParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
+	gdeOCParticleEmitter *GetParticleEmitter() const{return pParticleEmitter;}
 	/*@}*/
 };
 

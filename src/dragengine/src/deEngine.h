@@ -187,7 +187,7 @@ public:
 	 * \param[in] os OS object to use. Deleted during destructor.
 	 * \param[in] fileSystem OS file system or NULL if not used.
 	 */
-	deEngine( deOS *os, deVirtualFileSystem *fileSystem = nullptr );
+	deEngine(deOS *os, deVirtualFileSystem *fileSystem = nullptr);
 	
 	~deEngine();
 	/*@}*/
@@ -197,17 +197,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Default pseudo rundom number generator. */
-	inline decPRNG &GetPRNG(){ return pPRNG; }
+	inline decPRNG &GetPRNG(){return pPRNG;}
 	/*@}*/
 	
 	
 	
 	/** \name System Accessors */
 	/*@{*/
-	inline deModuleSystem *GetModuleSystem() const{ return pModSys; }
+	inline deModuleSystem *GetModuleSystem() const{return pModSys;}
 	
 	int GetSystemCount() const;
-	deBaseSystem *GetSystemAt( int index ) const;
+	deBaseSystem *GetSystemAt(int index) const;
 	
 	deGraphicSystem *GetGraphicSystem() const;
 	deInputSystem *GetInputSystem() const;
@@ -235,28 +235,28 @@ public:
 	 */
 	/*@{*/
 	/** \brief Error trace object. */
-	inline deErrorTrace *GetErrorTrace() const{ return pErrorTrace; }
+	inline deErrorTrace *GetErrorTrace() const{return pErrorTrace;}
 	
 	/** \brief Scripting system failed. */
-	inline bool GetScriptFailed() const{ return pScriptFailed; }
+	inline bool GetScriptFailed() const{return pScriptFailed;}
 	
 	/** \brief Signals that the scripting system failed. */
-	inline void SignalScriptFailed(){ pScriptFailed = true; }
+	inline void SignalScriptFailed(){pScriptFailed = true;}
 	
 	/** \brief Determines if some other system failed. */
-	inline bool GetSystemFailed() const{ return pSystemFailed; }
+	inline bool GetSystemFailed() const{return pSystemFailed;}
 	
 	/** \brief Signals that some other system failed. */
-	inline void SignalSystemFailed(){ pSystemFailed = true; }
+	inline void SignalSystemFailed(){pSystemFailed = true;}
 	
 	/** \brief Reset failure flags. */
 	void ResetFailureFlags();
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline deLogger *GetLogger() const{return pLogger;}
 	
 	/** \brief Set logger. */
-	void SetLogger( deLogger *logger );
+	void SetLogger(deLogger *logger);
 	/*@}*/
 	
 	
@@ -270,8 +270,8 @@ public:
 	 */
 	/*@{*/
 	int GetResourceManagerCount() const;
-	deResourceManager *GetResourceManagerAt( int index ) const;
-	deResourceManager *GetResourceManagerFor( int resourceType ) const;
+	deResourceManager *GetResourceManagerAt(int index) const;
+	deResourceManager *GetResourceManagerFor(int resourceType) const;
 	
 	deAnimationManager *GetAnimationManager() const;
 	deAnimatorManager *GetAnimatorManager() const;
@@ -325,11 +325,11 @@ public:
 	deServiceManager *GetServiceManager() const;
 	
 	/** \brief Parallel processing. */
-	inline deParallelProcessing &GetParallelProcessing(){ return *pParallelProcessing; }
-	inline const deParallelProcessing &GetParallelProcessing() const{ return *pParallelProcessing; }
+	inline deParallelProcessing &GetParallelProcessing(){return *pParallelProcessing;}
+	inline const deParallelProcessing &GetParallelProcessing() const{return *pParallelProcessing;}
 	
 	/** \brief Resource loader. */
-	inline deResourceLoader *GetResourceLoader() const{ return pResLoader; }
+	inline deResourceLoader *GetResourceLoader() const{return pResLoader;}
 	
 	/**
 	 * \brief Remove all resources and report them.
@@ -357,7 +357,7 @@ public:
 	 * all resource files. Also the scripting system expects script files to be
 	 * somewhere inside this directory.
 	 */
-	inline const decString &GetDataDir() const{ return pPathData; }
+	inline const decString &GetDataDir() const{return pPathData;}
 	
 	/**
 	 * \brief Set game data directory.
@@ -368,24 +368,24 @@ public:
 	 * all resource files. Also the scripting system expects script files to be
 	 * somewhere inside this directory.
 	 */
-	void SetDataDir( const char *dataDir );
+	void SetDataDir(const char *dataDir);
 	
 	/**
 	 * \brief Unique catch directory identifier for the application.
 	 * 
 	 * If the path is empty no application specific cache will be provided.
 	 */
-	inline const decString &GetCacheAppID() const{ return pCacheAppID; }
+	inline const decString &GetCacheAppID() const{return pCacheAppID;}
 	
 	/**
 	 * \brief Set unique catch directory identifier for the application.
 	 * 
 	 * If the path is empty no application specific cache will be provided.
 	 */
-	void SetCacheAppID( const char *cacheAppID );
+	void SetCacheAppID(const char *cacheAppID);
 	
 	/** \brief Virtual file system used by the game engine. */
-	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{return pVFS;}
 	
 	/**
 	 * \brief Overlay directory.
@@ -394,7 +394,7 @@ public:
 	 * Set by the launcher to indicate to script modules the native path under
 	 * which overlay data is stored or an empty string if not available.
 	 */
-	inline const decString &GetPathOverlay() const{ return pPathOverlay; }
+	inline const decString &GetPathOverlay() const{return pPathOverlay;}
 	
 	/**
 	 * \brief Set overlay directory.
@@ -403,7 +403,7 @@ public:
 	 * Set by the launcher to indicate to script modules the native path under
 	 * which overlay data is stored or an empty string if not available.
 	 */
-	void SetPathOverlay( const char *path );
+	void SetPathOverlay(const char *path);
 	
 	/**
 	 * \brief Capture directory.
@@ -412,7 +412,7 @@ public:
 	 * Set by the launcher to indicate to script modules the native path under
 	 * which capture data is stored or an empty string if not available.
 	 */
-	inline const decString &GetPathCapture() const{ return pPathCapture; }
+	inline const decString &GetPathCapture() const{return pPathCapture;}
 	
 	/**
 	 * \brief Set capture directory.
@@ -421,7 +421,7 @@ public:
 	 * Set by the launcher to indicate to script modules the native path under
 	 * which capture data is stored or an empty string if not available.
 	 */
-	void SetPathCapture( const char *path );
+	void SetPathCapture(const char *path);
 	
 	/**
 	 * \brief Config directory.
@@ -430,7 +430,7 @@ public:
 	 * Set by the launcher to indicate to script modules the native path under
 	 * which config data is stored or an empty string if not available.
 	 */
-	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	inline const decString &GetPathConfig() const{return pPathConfig;}
 	
 	/**
 	 * \brief Set config directory.
@@ -439,7 +439,7 @@ public:
 	 * Set by the launcher to indicate to script modules the native path under
 	 * which config data is stored or an empty string if not available.
 	 */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	/*@}*/
 	
 	
@@ -449,7 +449,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Time elapsed since the last frame update in seconds. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/**
 	 * \brief Set the time elapsed since the last frame update in seconds.
@@ -457,7 +457,7 @@ public:
 	 * Can be called instead of UpdateElapsedTime to explicitely set the elapsed time.
 	 * Resets the elapsed time timer and updates the FPS Rate.
 	 */
-	void SetElapsedTime( float elapsed );
+	void SetElapsedTime(float elapsed);
 	
 	/** \brief Frame-per-second rate averaged over the last couple of frames. */
 	int GetFPSRate() const;
@@ -470,10 +470,10 @@ public:
 	 */
 	/*@{*/
 	/** \brief Command line arguments. */
-	inline deCmdLineArgs *GetArguments() const{ return pArgs; }
+	inline deCmdLineArgs *GetArguments() const{return pArgs;}
 	
 	/** \brief Operating system object. */
-	inline deOS *GetOS() const{ return pOS; }
+	inline deOS *GetOS() const{return pOS;}
 	
 	/**
 	 * \brief OS file system or nullptr if not used.
@@ -484,10 +484,10 @@ public:
 	 * \warning Do not make this file system available to game scripts. Faulty or malicious
 	 * applications could damage the system or the content of the file system.
 	 */
-	inline const deVirtualFileSystem::Ref &GetOSFileSystem() const{ return pOSFileSystem; }
+	inline const deVirtualFileSystem::Ref &GetOSFileSystem() const{return pOSFileSystem;}
 	
 	/** \brief Determine if the engine received a quit request. */
-	inline bool GetQuitRequest() const{ return pRequestQuit; }
+	inline bool GetQuitRequest() const{return pRequestQuit;}
 	
 	/** \brief Requests the engine to quit before the next frame update cycle. */
 	void Quit();
@@ -506,7 +506,7 @@ public:
 	 * \brief Run game engine.
 	 * \deprecated Use Run(const char*, const char*, const char*);
 	 */
-	bool Run( const char *scriptDirectory, const char *gameObject );
+	bool Run(const char *scriptDirectory, const char *gameObject);
 	
 	/**
 	 * \brief Run game engine.
@@ -525,7 +525,7 @@ public:
 	 * \returns true if the game engine exited under normal circumstances or false if an
 	 *          unrecoverable error occurred
 	 */
-	bool Run( const char *scriptDirectory, const char *scriptVersion, const char *gameObject );
+	bool Run(const char *scriptDirectory, const char *scriptVersion, const char *gameObject);
 	
 	/**
 	 * \brief Reset elapsed time counter.

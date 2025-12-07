@@ -111,7 +111,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new developer mode object. */
-	deoglDeveloperMode( deoglRenderThread &renderThread );
+	deoglDeveloperMode(deoglRenderThread &renderThread);
 	/** Cleans up the developer mode object. */
 	~deoglDeveloperMode();
 	/*@}*/
@@ -119,93 +119,93 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if the developer mode is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** Determines if the vis mesh has to be shown. */
 	/** Determines if the visibility of components is shown. */
-	inline bool GetShowVisComponent() const{ return pShowVisComponent; }
+	inline bool GetShowVisComponent() const{return pShowVisComponent;}
 	/** Determines if the visibility of lights is shown. */
-	inline bool GetShowVisLight() const{ return pShowVisLight; }
+	inline bool GetShowVisLight() const{return pShowVisLight;}
 	/** Determines if the component lod levels are shown. */
-	inline bool GetShowComponentLODLevels() const{ return pShowComponentLODLevels; }
+	inline bool GetShowComponentLODLevels() const{return pShowComponentLODLevels;}
 	
 	/** Determines if height terrain information are shown. */
-	inline bool GetShowHeightTerrain() const{ return pShowHeightTerrain; }
+	inline bool GetShowHeightTerrain() const{return pShowHeightTerrain;}
 	/** Determines if prop field boundaries are shown as boxes. */
-	inline bool GetShowPropFieldBox() const{ return pShowPropFieldBox; }
+	inline bool GetShowPropFieldBox() const{return pShowPropFieldBox;}
 	/** Retrieves the index of the prop field type to show clusters for. */
-	inline int GetShowPropFieldClusters() const{ return pShowPropFieldClusters; }
+	inline int GetShowPropFieldClusters() const{return pShowPropFieldClusters;}
 	
 	/** Determines if the light full box is shown. */
-	inline bool GetShowLightFullBox() const{ return pShowLightFullBox; }
+	inline bool GetShowLightFullBox() const{return pShowLightFullBox;}
 	/** Determines if the light box is shown. */
-	inline bool GetShowLightBox() const{ return pShowLightBox; }
+	inline bool GetShowLightBox() const{return pShowLightBox;}
 	/** Determines if the light volumes are shown. */
-	inline bool GetShowLightVolume() const{ return pShowLightVolume; }
+	inline bool GetShowLightVolume() const{return pShowLightVolume;}
 	/** Determines if the light rooms are shown. */
-	inline bool GetShowLightRooms() const{ return pShowLightRooms; }
+	inline bool GetShowLightRooms() const{return pShowLightRooms;}
 	/** Retrieves the index of the light to show visual information for or -1 to disable. */
-	inline int GetShowLightVisualInfo() const{ return pShowLightVisualInfo; }
+	inline int GetShowLightVisualInfo() const{return pShowLightVisualInfo;}
 	
 	/** Determines if the number of transparency levels are shown. */
-	inline bool GetShowTranspLevelCount() const{ return pShowTranspLevelCount; }
+	inline bool GetShowTranspLevelCount() const{return pShowTranspLevelCount;}
 	/** Determines if transparent objects are highlighted. */
-	inline bool GetHighlightTransparentObjects() const{ return pHighlightTransparentObjects; }
+	inline bool GetHighlightTransparentObjects() const{return pHighlightTransparentObjects;}
 	
 	/** Determines if the render plan debug mode is enabled. */
-	inline bool GetDebugRenderPlan() const{ return pDebugRenderPlan; }
+	inline bool GetDebugRenderPlan() const{return pDebugRenderPlan;}
 	/** Determines if the memory information are displayed. */
-	inline bool GetShowMemoryInfo() const{ return pShowMemoryInfo; }
+	inline bool GetShowMemoryInfo() const{return pShowMemoryInfo;}
 	
 	/** Log memory consumption. */
-	inline bool GetLogMemoryConsumption() const{ return pLogMemoryConsumption; }
+	inline bool GetLogMemoryConsumption() const{return pLogMemoryConsumption;}
 	
 	/** Retrieves the occlusion map level to show or -1 to disable. */
-	inline int GetShowOccMapLevel() const{ return pShowOccMapLevel; }
+	inline int GetShowOccMapLevel() const{return pShowOccMapLevel;}
 	
 	/** Environment maps are shown. */
-	inline bool GetShowEnvMaps() const{ return pShowEnvMaps; }
+	inline bool GetShowEnvMaps() const{return pShowEnvMaps;}
 	
 	/** Determines if environment map hulls are shown. */
-	inline bool GetShowEnvMapHull() const{ return pShowEnvMapHull; }
+	inline bool GetShowEnvMapHull() const{return pShowEnvMapHull;}
 	
 	/** Determines if depth and stencil tests using a depth copy is enabled for lighting passes. */
-	inline bool GetDebugEnableLightDepthStencil() const{ return pDebugEnableLightDepthStencil; }
+	inline bool GetDebugEnableLightDepthStencil() const{return pDebugEnableLightDepthStencil;}
 	
 	/** Determines if the SSAO image is shown. */
-	inline bool GetShowSSAO() const{ return pShowSSAO; }
+	inline bool GetShowSSAO() const{return pShowSSAO;}
 	
 	
 	
 	/** Show debug information which also enables debug timing measurements. */
-	inline bool GetShowDebugInfo() const{ return pShowDebugInfo; }
+	inline bool GetShowDebugInfo() const{return pShowDebugInfo;}
 	
 	/** Call glFinish before each debug timing measurement for true GPU time measuring. */
-	inline bool GetDebugInfoSync() const{ return pDebugInfoSync; }
+	inline bool GetDebugInfoSync() const{return pDebugInfoSync;}
 	
 	/** Log debug timing measurement result per frame. */
-	inline bool GetDebugInfoLog() const{ return pDebugInfoLog; }
+	inline bool GetDebugInfoLog() const{return pDebugInfoLog;}
 	
 	/** Debug information details to show. */
-	inline int GetDebugInfoDetails() const{ return pDebugInfoDetails; }
+	inline int GetDebugInfoDetails() const{return pDebugInfoDetails;}
 	
 	
 	
-	inline bool GetGIShowProbes() const{ return pGIShowProbes; }
-	inline bool GetGIShowProbeOffsets() const{ return pGIShowProbeOffsets; }
-	inline bool GetGIShowProbeUpdate() const{ return pGIShowProbeUpdate; }
-	inline int GetGIShowCascade() const{ return pGIShowCascade; }
-	inline bool GetGIShowProbeRays() const{ return pGIShowProbeRays; }
+	inline bool GetGIShowProbes() const{return pGIShowProbes;}
+	inline bool GetGIShowProbeOffsets() const{return pGIShowProbeOffsets;}
+	inline bool GetGIShowProbeUpdate() const{return pGIShowProbeUpdate;}
+	inline int GetGIShowCascade() const{return pGIShowCascade;}
+	inline bool GetGIShowProbeRays() const{return pGIShowProbeRays;}
 	
 	
 	
 	/** Retrieves the debug image texture or NULL if not existing. */
-	inline deoglTexture *GetTextureDebugImage() const{ return pTextureDebugImage; }
+	inline deoglTexture *GetTextureDebugImage() const{return pTextureDebugImage;}
 	/**
 	 * Retrieves the debug image framebuffer for the given size. Attached the debug image texture to the
 	 * framebuffer. If the texture does not exist or the size does not match it is created first.
 	 */
-	const deoglFramebuffer::Ref &GetFBODebugImageWith( int width, int height );
+	const deoglFramebuffer::Ref &GetFBODebugImageWith(int width, int height);
 	/** Check if the debug image has been used since the last time deleting it if so. */
 	void CheckDebugImageUse();
 	
@@ -213,70 +213,70 @@ public:
 	 * Executes a command. If the command is recognized true is returned
 	 * otherwise false.
 	 */
-	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	bool ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 private:
-	void pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowVisComponent( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowVisLight( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowComponentLodLevels( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowVisComponent(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowVisLight(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowComponentLodLevels(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowHeightTerrain( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPropFieldBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPropFieldClusters( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowHeightTerrain(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPropFieldBox(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPropFieldClusters(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdQuickTest( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdQuickTest(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdOpenGLCaps( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdOpenGLCaps(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdStats( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdStats(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdCapabilities( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdCapabilities(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdMemoryInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowLightFullBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightVolume( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightRooms( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowLightVisualInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowLightFullBox(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightBox(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightVolume(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightRooms(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowLightVisualInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowTranspLayerCount( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHighlightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowTranspLayerCount(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdHighlightTransparentObjects(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdTests( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdTests(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdDebugRenderPlan( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdLogMemoryConsumption( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugRenderPlan(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowMemoryInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdLogMemoryConsumption(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowOccMapLevel( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowOccMapLevel(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowEnvMaps( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowEnvMaps(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowEnvMapHull( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowEnvMapHull(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowSSAO( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowSSAO(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdDebugEnableLightDepthStencil( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugEnableLightDepthStencil(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugInfoLog( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowDebugInfo(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugInfoSync(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugInfoLog(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdDebugInfoDetails(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdGIShowProbeRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbes(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowProbeOffsets(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowProbeUpdate(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowCascade(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdGIShowProbeRays(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
-		bool &variable, const char *commandName );
-	bool pBaseCmdInt( const decUnicodeArgumentList &command, decUnicodeString &answer,
-		int &variable, const char *commandName );
+	bool pBaseCmdBool(const decUnicodeArgumentList &command, decUnicodeString &answer,
+		bool &variable, const char *commandName);
+	bool pBaseCmdInt(const decUnicodeArgumentList &command, decUnicodeString &answer,
+		int &variable, const char *commandName);
 };
 
 #endif

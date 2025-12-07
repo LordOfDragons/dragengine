@@ -50,7 +50,7 @@ public:
 	devkFramebufferConfiguration();
 	
 	/** Create copy of framebuffer configuration. */
-	devkFramebufferConfiguration( const devkFramebufferConfiguration &configuration );
+	devkFramebufferConfiguration(const devkFramebufferConfiguration &configuration);
 	
 	/** Clean up framebuffere configuration. */
 	~devkFramebufferConfiguration();
@@ -61,28 +61,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Attachment count. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	inline int GetAttachmentCount() const{return pAttachmentCount;}
 	
 	/** Set attachment count. */
-	void SetAttachmentCount( int count );
+	void SetAttachmentCount(int count);
 	
 	/** Attachment at index. */
-	devkImageView *GetAttachmentAt( int index ) const;
+	devkImageView *GetAttachmentAt(int index) const;
 	
 	/** Set attachment at index. */
-	void SetAttachmentAt( int index, devkImageView *attachment );
+	void SetAttachmentAt(int index, devkImageView *attachment);
 	
 	/** Size. */
-	inline const decPoint &GetSize() const{ return pSize; }
+	inline const decPoint &GetSize() const{return pSize;}
 	
 	/** Set size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	/** Layer count. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/** Set layer count. */
-	void SetLayerCount( int count );
+	void SetLayerCount(int count);
 	/*@}*/
 	
 	
@@ -90,10 +90,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Configurations are equal. */
-	bool operator==( const devkFramebufferConfiguration &configuration ) const;
+	bool operator==(const devkFramebufferConfiguration &configuration) const;
 	
 	/** Copy configuration. */
-	devkFramebufferConfiguration &operator=( const devkFramebufferConfiguration &configuration );
+	devkFramebufferConfiguration &operator=(const devkFramebufferConfiguration &configuration);
 	/*@}*/
 };
 

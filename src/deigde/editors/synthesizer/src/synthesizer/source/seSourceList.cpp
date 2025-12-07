@@ -43,8 +43,8 @@
 seSourceList::seSourceList(){
 }
 
-seSourceList::seSourceList( const seSourceList &copy ) :
-pSources( copy.pSources ){
+seSourceList::seSourceList(const seSourceList &copy) :
+pSources(copy.pSources){
 }
 
 seSourceList::~seSourceList(){
@@ -59,38 +59,38 @@ int seSourceList::GetCount() const{
 	return pSources.GetCount();
 }
 
-seSource *seSourceList::GetAt( int index ) const{
-	return ( seSource* )pSources.GetAt( index );
+seSource *seSourceList::GetAt(int index) const{
+	return (seSource*)pSources.GetAt(index);
 }
 
-int seSourceList::IndexOf( seSource *source ) const{
-	return pSources.IndexOf( source );
+int seSourceList::IndexOf(seSource *source) const{
+	return pSources.IndexOf(source);
 }
 
-bool seSourceList::Has( seSource *source ) const{
-	return pSources.Has( source );
+bool seSourceList::Has(seSource *source) const{
+	return pSources.Has(source);
 }
 
-void seSourceList::Add( seSource *source ){
-	if( ! source || Has( source ) ){
-		DETHROW( deeInvalidParam );
+void seSourceList::Add(seSource *source){
+	if(! source || Has(source)){
+		DETHROW(deeInvalidParam);
 	}
-	pSources.Add( source );
+	pSources.Add(source);
 }
 
-void seSourceList::Insert( seSource *source, int index ){
-	if( ! source || Has( source ) ){
-		DETHROW( deeInvalidParam );
+void seSourceList::Insert(seSource *source, int index){
+	if(! source || Has(source)){
+		DETHROW(deeInvalidParam);
 	}
-	pSources.Insert( source, index );
+	pSources.Insert(source, index);
 }
 
-void seSourceList::Move( seSource *source, int index ){
-	pSources.Move( source, index );
+void seSourceList::Move(seSource *source, int index){
+	pSources.Move(source, index);
 }
 
-void seSourceList::Remove( seSource *source ){
-	pSources.Remove( source );
+void seSourceList::Remove(seSource *source){
+	pSources.Remove(source);
 }
 
 void seSourceList::RemoveAll(){
@@ -102,12 +102,12 @@ void seSourceList::RemoveAll(){
 // Operators
 //////////////
 
-seSourceList &seSourceList::operator=( const seSourceList &list ){
+seSourceList &seSourceList::operator=(const seSourceList &list){
 	pSources = list.pSources;
 	return *this;
 }
 
-seSourceList &seSourceList::operator+=( const seSourceList &list ){
+seSourceList &seSourceList::operator+=(const seSourceList &list){
 	pSources += list.pSources;
 	return *this;
 }

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPControllerListener::aeWPControllerListener( aeWPController &panel ) :
-pPanel( panel ){
+aeWPControllerListener::aeWPControllerListener(aeWPController &panel) :
+pPanel(panel){
 }
 
 aeWPControllerListener::~aeWPControllerListener(){
@@ -51,8 +51,8 @@ aeWPControllerListener::~aeWPControllerListener(){
 // Notifications
 //////////////////
 
-void aeWPControllerListener::ActiveControllerChanged( aeAnimator *animator, aeController* ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPControllerListener::ActiveControllerChanged(aeAnimator *animator, aeController*){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
@@ -60,32 +60,32 @@ void aeWPControllerListener::ActiveControllerChanged( aeAnimator *animator, aeCo
 	pPanel.UpdateController();
 }
 
-void aeWPControllerListener::ControllerChanged( aeAnimator *animator, aeController *controller ){
-	if( controller != pPanel.GetController() ){
+void aeWPControllerListener::ControllerChanged(aeAnimator *animator, aeController *controller){
+	if(controller != pPanel.GetController()){
 		return;
 	}
 	
 	pPanel.UpdateController();
 }
 
-void aeWPControllerListener::ControllerNameChanged( aeAnimator *animator, aeController *controller ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPControllerListener::ControllerNameChanged(aeAnimator *animator, aeController *controller){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void aeWPControllerListener::ControllerValueChanged( aeAnimator *animator, aeController *controller ){
-	if( controller != pPanel.GetController() ){
+void aeWPControllerListener::ControllerValueChanged(aeAnimator *animator, aeController *controller){
+	if(controller != pPanel.GetController()){
 		return;
 	}
 	
 	pPanel.UpdateControllerValue();
 }
 
-void aeWPControllerListener::ControllerStructureChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPControllerListener::ControllerStructureChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	

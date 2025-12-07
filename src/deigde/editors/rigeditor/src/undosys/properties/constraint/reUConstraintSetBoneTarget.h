@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetBoneTarget( reRigConstraint *constraint, reRigBone *newBone );
+	reUConstraintSetBoneTarget(reRigConstraint *constraint, reRigBone *newBone);
 	
 protected:
 	/** \brief Clean up the undo. */

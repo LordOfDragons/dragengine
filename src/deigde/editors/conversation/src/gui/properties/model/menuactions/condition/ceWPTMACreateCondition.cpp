@@ -52,14 +52,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMACreateCondition::ceWPTMACreateCondition( ceWindowMain &windowMain,
+ceWPTMACreateCondition::ceWPTMACreateCondition(ceWindowMain &windowMain,
 ceConversation &conversation,
-ceConversationCondition::eConditionTypes conditionType ) :
-ceWPTMenuAction( windowMain,
-	ConditionTypeText( windowMain, conditionType ),
-	ConditionTypeIcon( windowMain, conditionType ) ),
-pConversation( &conversation ),
-pConditionType( conditionType ){
+ceConversationCondition::eConditionTypes conditionType) :
+ceWPTMenuAction(windowMain,
+	ConditionTypeText(windowMain, conditionType),
+	ConditionTypeIcon(windowMain, conditionType)),
+pConversation(&conversation),
+pConditionType(conditionType){
 }
 
 
@@ -72,16 +72,16 @@ void ceWPTMACreateCondition::OnAction(){
 		CreateUndo(ceConversationCondition::Ref::New(CreateCondition()))));
 }
 
-igdeUndo *ceWPTMACreateCondition::CreateUndo( ceConversationCondition *condition ){
+igdeUndo *ceWPTMACreateCondition::CreateUndo(ceConversationCondition *condition){
 	// only not pure-virtual because FOX toolkit requires final classes. if the system
 	// moves over to the IGDE ToolKit this will become a pure virtual again
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 
 
 ceConversationCondition *ceWPTMACreateCondition::CreateCondition(){
-	switch( pConditionType ){
+	switch(pConditionType){
 	case ceConversationCondition::ectLogic:
 		return new ceCConditionLogic;
 		
@@ -107,13 +107,13 @@ ceConversationCondition *ceWPTMACreateCondition::CreateCondition(){
 		return new ceCConditionTrigger;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-const char *ceWPTMACreateCondition::ConditionTypeText( ceWindowMain &windowMain,
-ceConversationCondition::eConditionTypes conditionType ){
-	switch( conditionType ){
+const char *ceWPTMACreateCondition::ConditionTypeText(ceWindowMain &windowMain,
+ceConversationCondition::eConditionTypes conditionType){
+	switch(conditionType){
 	case ceConversationCondition::ectLogic:
 		return "Logic";
 		
@@ -143,9 +143,9 @@ ceConversationCondition::eConditionTypes conditionType ){
 	}
 }
 
-igdeIcon *ceWPTMACreateCondition::ConditionTypeIcon( ceWindowMain &windowMain,
-ceConversationCondition::eConditionTypes conditionType ){
-	switch( conditionType ){
+igdeIcon *ceWPTMACreateCondition::ConditionTypeIcon(ceWindowMain &windowMain,
+ceConversationCondition::eConditionTypes conditionType){
+	switch(conditionType){
 	case ceConversationCondition::ectLogic:
 		return windowMain.GetIconConditionLogic();
 		

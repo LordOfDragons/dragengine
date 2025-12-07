@@ -53,28 +53,28 @@ class igdeRecentFiles_ActionOpenFile : public igdeAction{
 	decString pFilename;
 	
 public:
-	igdeRecentFiles_ActionOpenFile( igdeRecentFiles &recentFiles, const char *filename ) :
-	pRecentFiles( recentFiles ), pFilename( filename ){
+	igdeRecentFiles_ActionOpenFile(igdeRecentFiles &recentFiles, const char *filename) :
+	pRecentFiles(recentFiles), pFilename(filename){
 		/*
 		decPath path;
 		
-		if( recentFiles.GetUnixPath() ){
-			path.SetFromUnix( filename );
+		if(recentFiles.GetUnixPath()){
+			path.SetFromUnix(filename);
 			
 		}else{
-			path.SetFromNative( filename );
+			path.SetFromNative(filename);
 		}
 		
-		SetText( path.GetLastComponent() );
+		SetText(path.GetLastComponent());
 		*/
 		
-		SetText( filename );
-		SetDescription( decString( "Load " ) + filename );
+		SetText(filename);
+		SetDescription(decString("Load ") + filename);
 	}
 	
 	virtual void OnAction(){
-		igdeAction::Ref guard( this );
-		pRecentFiles.OpenFile( pFilename );
+		igdeAction::Ref guard(this);
+		pRecentFiles.OpenFile(pFilename);
 	}
 };
 
@@ -82,9 +82,9 @@ class igdeRecentFiles_ActionClear : public igdeAction{
 	igdeRecentFiles &pRecentFiles;
 	
 public:
-	igdeRecentFiles_ActionClear( igdeRecentFiles &recentFiles ) : igdeAction( "Clear List",
-	recentFiles.GetEnvironment().GetStockIcon( igdeEnvironment::esiDelete ),
-	"Clear List" ), pRecentFiles( recentFiles ){
+	igdeRecentFiles_ActionClear(igdeRecentFiles &recentFiles) : igdeAction("Clear List",
+	recentFiles.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
+	"Clear List"), pRecentFiles(recentFiles){
 	}
 	
 	virtual void OnAction(){
@@ -92,7 +92,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pRecentFiles.GetFiles().GetCount() > 0 );
+		SetEnabled(pRecentFiles.GetFiles().GetCount() > 0);
 	}
 };
 
@@ -105,22 +105,22 @@ public:
 // Constructors and Destructors
 /////////////////////////////////
 
-igdeRecentFiles::igdeRecentFiles( igdeEnvironment &environment, bool unixPath, int size ) :
-pEnvironment( environment ),
-pEditorWindow( NULL ),
-pSize( 0 ),
-pUnixPath( unixPath )
+igdeRecentFiles::igdeRecentFiles(igdeEnvironment &environment, bool unixPath, int size) :
+pEnvironment(environment),
+pEditorWindow(NULL),
+pSize(0),
+pUnixPath(unixPath)
 {
-	SetSize( size );
+	SetSize(size);
 }
 
-igdeRecentFiles::igdeRecentFiles( igdeEditorWindow &editorWindow, bool unixPath, int size ) :
-pEnvironment( editorWindow.GetEnvironment() ),
-pEditorWindow( &editorWindow ),
-pSize( 0 ),
-pUnixPath( unixPath )
+igdeRecentFiles::igdeRecentFiles(igdeEditorWindow &editorWindow, bool unixPath, int size) :
+pEnvironment(editorWindow.GetEnvironment()),
+pEditorWindow(&editorWindow),
+pSize(0),
+pUnixPath(unixPath)
 {
-	SetSize( size );
+	SetSize(size);
 }
 
 igdeRecentFiles::~igdeRecentFiles(){
@@ -131,11 +131,11 @@ igdeRecentFiles::~igdeRecentFiles(){
 // Management
 ///////////////
 
-void igdeRecentFiles::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeRecentFiles::SetSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( size == pSize ){
+	if(size == pSize){
 		return;
 	}
 	
@@ -144,8 +144,8 @@ void igdeRecentFiles::SetSize( int size ){
 	UpdateMenu();
 }
 
-void igdeRecentFiles::SetFiles( const decStringList &files ){
-	if( files == pFiles ){
+void igdeRecentFiles::SetFiles(const decStringList &files){
+	if(files == pFiles){
 		return;
 	}
 	
@@ -155,12 +155,12 @@ void igdeRecentFiles::SetFiles( const decStringList &files ){
 	FilesChanged();
 }
 
-void igdeRecentFiles::SetMenu( igdeMenuCascade *menu ){
-	if( menu == pMenu ){
+void igdeRecentFiles::SetMenu(igdeMenuCascade *menu){
+	if(menu == pMenu){
 		return;
 	}
 	
-	if( pMenu ){
+	if(pMenu){
 		pMenu->RemoveAllChildren();
 	}
 	
@@ -169,43 +169,43 @@ void igdeRecentFiles::SetMenu( igdeMenuCascade *menu ){
 	UpdateMenu();
 }
 
-void igdeRecentFiles::AddFile( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+void igdeRecentFiles::AddFile(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pUnixPath ){
-		if( decPath::CreatePathUnix( filename ).GetComponentCount() == 0 ){
-			DETHROW( deeInvalidParam );
+	if(pUnixPath){
+		if(decPath::CreatePathUnix(filename).GetComponentCount() == 0){
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
-		if( decPath::CreatePathNative( filename ).GetComponentCount() == 0 ){
-			DETHROW( deeInvalidParam );
+		if(decPath::CreatePathNative(filename).GetComponentCount() == 0){
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	const int index = pFiles.IndexOf( filename );
-	if( index == 0 ){
+	const int index = pFiles.IndexOf(filename);
+	if(index == 0){
 		return;
 	}
 	
-	if( index != -1 ){
-		pFiles.RemoveFrom( index );
+	if(index != -1){
+		pFiles.RemoveFrom(index);
 	}
-	pFiles.InsertAt( filename, 0 );
+	pFiles.InsertAt(filename, 0);
 	EnsureSize();
 	UpdateMenu();
 	FilesChanged();
 	
 	// add to environment recent editor files if attached to an editor window
-	if( pEditorWindow ){
-		pEnvironment.AddRecentEditorFile( filename );
+	if(pEditorWindow){
+		pEnvironment.AddRecentEditorFile(filename);
 	}
 }
 
 void igdeRecentFiles::RemoveAllFiles(){
-	if( pFiles.GetCount() == 0 ){
+	if(pFiles.GetCount() == 0){
 		return;
 	}
 	
@@ -214,32 +214,32 @@ void igdeRecentFiles::RemoveAllFiles(){
 	FilesChanged();
 }
 
-void igdeRecentFiles::ReadFromXml( const decXmlElementTag &root ){
+void igdeRecentFiles::ReadFromXml(const decXmlElementTag &root){
 	const int count = root.GetElementCount();
 	int i;
 	
 	pFiles.RemoveAll();
 	
-	const decXmlAttValue * const attributeSize = root.FindAttribute( "size" );
-	if( attributeSize ){
-		SetSize( attributeSize->GetValue().ToInt() );
+	const decXmlAttValue * const attributeSize = root.FindAttribute("size");
+	if(attributeSize){
+		SetSize(attributeSize->GetValue().ToInt());
 	}
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "filename" ){
+		if(tag->GetName() == "filename"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( ! cdata ){
-				DETHROW( deeInvalidParam );
+			if(! cdata){
+				DETHROW(deeInvalidParam);
 			}
-			pFiles.Add( cdata->GetData() );
+			pFiles.Add(cdata->GetData());
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
@@ -247,35 +247,35 @@ void igdeRecentFiles::ReadFromXml( const decXmlElementTag &root ){
 	UpdateMenu();
 }
 
-void igdeRecentFiles::WriteToXml( decXmlWriter &writer, const char *tagName ) const{
+void igdeRecentFiles::WriteToXml(decXmlWriter &writer, const char *tagName) const{
 	const int count = pFiles.GetCount();
 	int i;
 	
-	writer.WriteOpeningTagStart( tagName );
-	writer.WriteAttributeInt( "size", pSize );
+	writer.WriteOpeningTagStart(tagName);
+	writer.WriteAttributeInt("size", pSize);
 	writer.WriteOpeningTagEnd();
 	
-	for( i=0; i<count; i++ ){
-		writer.WriteDataTagString( "filename", pFiles.GetAt( i ) );
+	for(i=0; i<count; i++){
+		writer.WriteDataTagString("filename", pFiles.GetAt(i));
 	}
 	
-	writer.WriteClosingTag( tagName );
+	writer.WriteClosingTag(tagName);
 }
 
 
 
-void igdeRecentFiles::OpenFile( const char *filename ){
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
+void igdeRecentFiles::OpenFile(const char *filename){
+	if(! filename){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pEditorWindow ){
-		pEditorWindow->LoadDocument( filename );
+	if(pEditorWindow){
+		pEditorWindow->LoadDocument(filename);
 	}
 }
 
 void igdeRecentFiles::UpdateMenu(){
-	if( ! pMenu ){
+	if(! pMenu){
 		return;
 	}
 	
@@ -285,16 +285,16 @@ void igdeRecentFiles::UpdateMenu(){
 	const int count = pFiles.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		helper.MenuCommand( pMenu, new igdeRecentFiles_ActionOpenFile( *this, pFiles.GetAt( i ) ), true );
+	for(i=0; i<count; i++){
+		helper.MenuCommand(pMenu, new igdeRecentFiles_ActionOpenFile(*this, pFiles.GetAt(i)), true);
 	}
 	
-	helper.MenuSeparator( pMenu );
-	helper.MenuCommand( pMenu, new igdeRecentFiles_ActionClear( *this ), true );
+	helper.MenuSeparator(pMenu);
+	helper.MenuCommand(pMenu, new igdeRecentFiles_ActionClear(*this), true);
 }
 
 void igdeRecentFiles::FilesChanged(){
-	if( pEditorWindow ){
+	if(pEditorWindow){
 		pEditorWindow->RecentFilesChanged();
 	}
 }
@@ -305,7 +305,7 @@ void igdeRecentFiles::FilesChanged(){
 ////////////////////////
 
 void igdeRecentFiles::EnsureSize(){
-	while( pSize < pFiles.GetCount() ){
-		pFiles.RemoveFrom( pFiles.GetCount() - 1 );
+	while(pSize < pFiles.GetCount()){
+		pFiles.RemoveFrom(pFiles.GetCount() - 1);
 	}
 }

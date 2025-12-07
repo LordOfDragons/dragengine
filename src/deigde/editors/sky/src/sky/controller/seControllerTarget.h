@@ -47,7 +47,7 @@ public:
 	seControllerTarget();
 	
 	/** \brief Create copy of controller target. */
-	seControllerTarget( const seControllerTarget &copy );
+	seControllerTarget(const seControllerTarget &copy);
 	
 	/** \brief Clean up controller target. */
 	~seControllerTarget();
@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Links. */
-	const seLinkList &GetLinks() const{ return pLinks; }
+	const seLinkList &GetLinks() const{return pLinks;}
 	
 	/** \brief Add link. */
-	void AddLink( seLink *link );
+	void AddLink(seLink *link);
 	
 	/** \brief Remove link. */
-	void RemoveLink( seLink *link );
+	void RemoveLink(seLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
@@ -75,7 +75,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy another controller target to this controller target. */
-	seControllerTarget &operator=( const seControllerTarget &copy );
+	seControllerTarget &operator=(const seControllerTarget &copy);
 	/*@}*/
 };
 

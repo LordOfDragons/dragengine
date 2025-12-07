@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUHTVRuleRemove( meHTVegetationLayer *vlayer, meHTVRule *rule );
+	meUHTVRuleRemove(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	
 protected:
 	/** \brief Clean up object. */

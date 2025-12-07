@@ -92,11 +92,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader storage buffer object. */
-	deoglSPBlockSSBO( deoglRenderThread &renderThread, eType type );
+	deoglSPBlockSSBO(deoglRenderThread &renderThread, eType type);
 	
 	/** Create copy of shader storage buffer object. */
-	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock );
-	deoglSPBlockSSBO( const deoglSPBlockSSBO &paramBlock, eType eype );
+	deoglSPBlockSSBO(const deoglSPBlockSSBO &paramBlock);
+	deoglSPBlockSSBO(const deoglSPBlockSSBO &paramBlock, eType eype);
 	
 protected:
 	/** Clean up shader storage buffer object. */
@@ -109,46 +109,46 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Type. */
-	inline eType GetType() const{ return pType; }
+	inline eType GetType() const{return pType;}
 	
 	/** Shader storage buffer object or 0 if not created yet. */
-	inline GLuint GetSSBO() const{ return pSSBO; }
+	inline GLuint GetSSBO() const{return pSSBO;}
 	
 	/** Binding point. */
-	inline int GetBindingPoint() const{ return pBindingPoint; }
+	inline int GetBindingPoint() const{return pBindingPoint;}
 	
 	/** Set binding point. */
-	void SetBindingPoint( int bindingPoint );
+	void SetBindingPoint(int bindingPoint);
 	
 	/** UBO Binding point. */
-	inline int GetBindingPointUBO() const{ return pBindingPointUBO; }
+	inline int GetBindingPointUBO() const{return pBindingPointUBO;}
 	
 	/** Set UBO binding point. */
-	void SetBindingPointUBO( int bindingPoint );
+	void SetBindingPointUBO(int bindingPoint);
 	
 	/** Atmomic counter binding point. */
-	inline int GetBindingPointAtomic() const{ return pBindingPointAtomic; }
+	inline int GetBindingPointAtomic() const{return pBindingPointAtomic;}
 	
 	/** Set atomic counter binding point. */
-	void SetBindingPointAtomic( int bindingPoint );
+	void SetBindingPointAtomic(int bindingPoint);
 	
 	/** Compact elements. If true mapping individual elements is prohibited. */
-	inline bool GetCompact() const{ return pCompact; }
+	inline bool GetCompact() const{return pCompact;}
 	
 	/** Set if elements are compact. If true mapping individual elements is prohibited. */
-	void SetCompact( bool compact );
+	void SetCompact(bool compact);
 	
 	/** Activate buffer. */
 	virtual void Activate() const;
 	
 	/** Activate buffer overriding binding point. */
-	virtual void Activate( int bindingPoint ) const;
+	virtual void Activate(int bindingPoint) const;
 	
 	/** Deactivate buffer. */
 	virtual void Deactivate() const;
 	
 	/** Deactivate buffer overriding binding point. */
-	virtual void Deactivate( int bindingPoint ) const;
+	virtual void Deactivate(int bindingPoint) const;
 	
 	/** Activate buffer as UBO. */
 	void ActivateUBO() const;
@@ -160,13 +160,13 @@ public:
 	void ActivateAtomic() const;
 	
 	/** Activate buffer as atomic buffer overriding binding point. */
-	void ActivateAtomic( int bindingPoint ) const;
+	void ActivateAtomic(int bindingPoint) const;
 	
 	/** Deactivate buffer as atomic buffer. */
 	void DeactivateAtomic() const;
 	
 	/** Deactivate buffer as atomic buffer overriding binding point. */
-	void DeactivateAtomic( int bindingPoint ) const;
+	void DeactivateAtomic(int bindingPoint) const;
 	
 	/** Activate buffer as dispatch indirect. */
 	void ActivateDispatchIndirect() const;
@@ -183,7 +183,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element );
+	virtual void MapBuffer(int element);
 	
 	/**
 	 * Map buffer for specific elements discarding content.
@@ -191,7 +191,7 @@ public:
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
-	virtual void MapBuffer( int element, int count );
+	virtual void MapBuffer(int element, int count);
 	
 	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
@@ -200,30 +200,30 @@ public:
 	virtual void EnsureBuffer();
 	
 	/** Clear buffer. */
-	void ClearDataUInt( uint32_t value );
-	void ClearDataUInt( int offset, int count, uint32_t value );
-	void ClearDataUInt( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
-	void ClearDataUInt( int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+	void ClearDataUInt(uint32_t value);
+	void ClearDataUInt(int offset, int count, uint32_t value);
+	void ClearDataUInt(uint32_t r, uint32_t g, uint32_t b, uint32_t a);
+	void ClearDataUInt(int offset, int count, uint32_t r, uint32_t g, uint32_t b, uint32_t a);
 	
-	void ClearDataFloat( float value );
-	void ClearDataFloat( int offset, int count, float value );
-	void ClearDataFloat( float r, float g, float b, float a );
-	void ClearDataFloat( int offset, int count, float r, float g, float b, float a );
+	void ClearDataFloat(float value);
+	void ClearDataFloat(int offset, int count, float value);
+	void ClearDataFloat(float r, float g, float b, float a);
+	void ClearDataFloat(int offset, int count, float r, float g, float b, float a);
 	
 	/** Copy buffer data from SSBO into this SSBO. */
-	void CopyData( const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset );
+	void CopyData(const deoglSPBlockSSBO &ssbo, int offset, int count, int ssboOffset);
 	
 	/** GPU finished writing data to SSBO. */
 	void GPUFinishedWriting();
 	
 	/** Asynchronously read data from GPU to CPU. */
 	void GPUReadToCPU();
-	void GPUReadToCPU( int elementCount );
+	void GPUReadToCPU(int elementCount);
 	
 	/** Map buffer for reading. */
 	void MapBufferRead();
-	void MapBufferRead( int element );
-	void MapBufferRead( int element, int count );
+	void MapBufferRead(int element);
+	void MapBufferRead(int element, int count);
 	
 	/** Unmap buffer after reading. */
 	void UnmapBufferRead();
@@ -240,10 +240,10 @@ public:
 	
 	
 	/** GPU memory consumption for the VBO. */
-	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUSSBO; }
+	inline int GetMemoryConsumptionGPUVBO() const{return pMemoryGPUSSBO;}
 	
 	/** Debug print configuration. */
-	void DebugPrintConfig( const char *name );
+	void DebugPrintConfig(const char *name);
 	/*@}*/
 	
 	
@@ -254,7 +254,7 @@ protected:
 	
 	
 private:
-	void pGrowWriteBuffer( int size );
+	void pGrowWriteBuffer(int size);
 	void pEnsureSSBO();
 };
 

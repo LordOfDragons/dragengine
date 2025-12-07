@@ -46,17 +46,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadSkin::deRLTaskReadSkin( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deSkin *skin ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertSkin ),
-pInternalTask( NULL ),
-pSucceeded( false )
+deRLTaskReadSkin::deRLTaskReadSkin(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deSkin *skin) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertSkin),
+pInternalTask(NULL),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( skin ){
-		SetResource( skin );
-		SetState( esSucceeded );
+	if(skin){
+		SetResource(skin);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
@@ -68,30 +68,30 @@ pSucceeded( false )
 	// are small files only defining where to get the resources from, namely images. these
 	// are loaded later on in an asynchronous way
 	try{
-		pInternalTask = new deRLTaskReadSkinInternal( engine, resourceLoader, vfs, path );
+		pInternalTask = new deRLTaskReadSkinInternal(engine, resourceLoader, vfs, path);
 		
-		switch( pInternalTask->GetState() ){
+		switch(pInternalTask->GetState()){
 		case esPending:
-			AddDependsOn( pInternalTask );
-			engine.GetParallelProcessing().AddTask( pInternalTask );
+			AddDependsOn(pInternalTask);
+			engine.GetParallelProcessing().AddTask(pInternalTask);
 			break;
 			
 		case esSucceeded:
 			break;
 			
 		case esFailed:
-			SetState( esFailed );
+			SetState(esFailed);
 			Cancel();
 			break;
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		// avoid nasty reference bug if exception thrown with bad timing
 		//RemoveAllDependsOn(); // if we do not throw we do not need this
 		//pCleanUp();
 		//throw;
 		
-		SetState( esFailed );
+		SetState(esFailed);
 		Cancel();
 	}
 	LogCreateExit();
@@ -108,20 +108,20 @@ deRLTaskReadSkin::~deRLTaskReadSkin(){
 
 void deRLTaskReadSkin::Run(){
 	LogRunEnter();
-	if( ! pInternalTask ){
-		DETHROW( deeInvalidParam );
+	if(! pInternalTask){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deSkin * const skin = pInternalTask->GetSkin();
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(! skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	skin->SetAsynchron( true );
+	skin->SetAsynchron(true);
 	
-	GetEngine().GetGraphicSystem()->LoadSkin( skin );
-	GetEngine().GetAudioSystem()->LoadSkin( skin );
-	GetEngine().GetPhysicsSystem()->LoadSkin( skin );
+	GetEngine().GetGraphicSystem()->LoadSkin(skin);
+	GetEngine().GetAudioSystem()->LoadSkin(skin);
+	GetEngine().GetPhysicsSystem()->LoadSkin(skin);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -129,36 +129,36 @@ void deRLTaskReadSkin::Run(){
 
 void deRLTaskReadSkin::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded || ! pInternalTask ){
-		SetState( esFailed );
+	if(! pSucceeded || ! pInternalTask){
+		SetState(esFailed);
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deSkin * const skin = pInternalTask->GetSkin();
-	if( pInternalTask->GetState() != esSucceeded || ! skin ){
-		SetState( esFailed );
+	if(pInternalTask->GetState() != esSucceeded || ! skin){
+		SetState(esFailed);
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deSkinManager &skinManager = *GetEngine().GetSkinManager();
-	deSkin * const checkSkin = skinManager.GetSkinWith( GetPath() );
+	deSkin * const checkSkin = skinManager.GetSkinWith(GetPath());
 	
-	if( checkSkin ){
-		SetResource( checkSkin );
+	if(checkSkin){
+		SetResource(checkSkin);
 		
 	}else{
-		skin->SetAsynchron( false );
-		skinManager.AddLoadedSkin( skin );
-		SetResource( skin );
+		skin->SetAsynchron(false);
+		skinManager.AddLoadedSkin(skin);
+		SetResource(skin);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 
@@ -176,7 +176,7 @@ decString deRLTaskReadSkin::GetDebugName() const{
 //////////////////////
 
 void deRLTaskReadSkin::pCleanUp(){
-	if( pInternalTask ){
+	if(pInternalTask){
 		pInternalTask->FreeReference();
 	}
 }

@@ -180,7 +180,7 @@ private:
 	decMemoryFile *pCacheConstrVerifySource2;
 	
 	decColor pUniformColor;
-	bool pUniformColorMask[ 4 ];
+	bool pUniformColorMask[4];
 	deoglRImage::Ref pCombinedImage1;
 	deoglRImage::Ref pCombinedImage2;
 	deoglImage *pDelayedCombineImage1;
@@ -206,7 +206,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin channel. */
-	deoglSkinChannel( deoglRenderThread &renderThread, eChannelTypes type );
+	deoglSkinChannel(deoglRenderThread &renderThread, eChannelTypes type);
 	
 	/** Clean up skin channel. */
 	~deoglSkinChannel();
@@ -217,7 +217,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
@@ -227,88 +227,88 @@ public:
 	
 	
 	/** Full quality size. */
-	inline const decPoint3 &GetSize() const{ return pSize; }
+	inline const decPoint3 &GetSize() const{return pSize;}
 	
 	/** Set full quality size. */
-	void SetSize( const decPoint3 &size );
+	void SetSize(const decPoint3 &size);
 	
 	/** Retrieves the component count. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** Sets the component count. */
-	void SetComponentCount( int componentCount );
+	void SetComponentCount(int componentCount);
 	
 	
 	
 	/** Texture scaling factor in u direction. */
-	inline float GetFactorU() const{ return pFactorU; }
+	inline float GetFactorU() const{return pFactorU;}
 	
 	/** Set texture scaling factor in u direction. */
-	void SetFactorU( float factor );
+	void SetFactorU(float factor);
 	
 	/** Texture scaling factor in v direction. */
-	inline float GetFactorV() const{ return pFactorV; }
+	inline float GetFactorV() const{return pFactorV;}
 	
 	/** Set texture scaling factor in v direction. */
-	void SetFactorV( float factor );
+	void SetFactorV(float factor);
 	
 	/** Texture or nullptr if this is not used. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	inline deoglTexture *GetTexture() const{return pTexture;}
 	
 	/** Cube map or nullptr if this is not used. */
-	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
+	inline deoglCubeMap *GetCubeMap() const{return pCubeMap;}
 	
 	/** Array texture or nullptr if this is not used. */
-	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
+	inline deoglArrayTexture *GetArrayTexture() const{return pArrayTexture;}
 	
 	/** Combined texture or nullptr if not used. */
-	inline deoglCombinedTexture *GetCombinedTexture() const{ return pCombinedTexture; }
+	inline deoglCombinedTexture *GetCombinedTexture() const{return pCombinedTexture;}
 	
 	/** Set combined texture or nullptr if not used. */
-	void SetCombinedTexture( deoglCombinedTexture *combinedTexture );
+	void SetCombinedTexture(deoglCombinedTexture *combinedTexture);
 	
 	/** Texture type. */
-	inline deoglSkinChannel::eTextureType GetTextureType() const{ return pTextureType; }
+	inline deoglSkinChannel::eTextureType GetTextureType() const{return pTextureType;}
 	
 	
 	
 	/** Pixel buffer mip map or nullptr if not existing. */
-	inline const deoglPixelBufferMipMap::Ref &GetPixelBufferMipMap() const{ return pPixelBufferMipMap; }
+	inline const deoglPixelBufferMipMap::Ref &GetPixelBufferMipMap() const{return pPixelBufferMipMap;}
 	
 	/** Set pixel buffer mip map or nullptr if not existing. */
-	void SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap );
+	void SetPixelBufferMipMap(deoglPixelBufferMipMap *pbmipmap);
 	
 	/** Texture data is cached. */
-	inline bool GetIsCached() const{ return pIsCached; }
+	inline bool GetIsCached() const{return pIsCached;}
 	
 	/** Set if texture data is cached. */
-	void SetIsCached( bool isCached );
+	void SetIsCached(bool isCached);
 	
 	/** Texture can be cached. */
-	inline bool GetCanBeCached() const{ return pCanBeCached; }
+	inline bool GetCanBeCached() const{return pCanBeCached;}
 	
 	/** Set if texture can be cached. */
-	void SetCanBeCached( bool canBeCached );
+	void SetCanBeCached(bool canBeCached);
 	
 	/** Cache identifier. */
-	inline const decString &GetCacheID() const{ return pCacheID; }
+	inline const decString &GetCacheID() const{return pCacheID;}
 	
 	/** Set cache identifier. */
-	void SetCacheID( const char *cacheID );
+	void SetCacheID(const char *cacheID);
 	
 	/** Cache verify data or nullptr if absent. */
-	inline const decMemoryFile *GetCacheVerify() const{ return pCacheVerify; }
+	inline const decMemoryFile *GetCacheVerify() const{return pCacheVerify;}
 	
 	
 	
 	/** Uniform color. */
-	inline const decColor &GetUniformColor() const{ return pUniformColor; }
+	inline const decColor &GetUniformColor() const{return pUniformColor;}
 	
 	/** Set uniform color. */
-	void SetUniformColor( const decColor &color );
+	void SetUniformColor(const decColor &color);
 	
 	/** Color component is static. */
-	bool IsComponentStatic( int component ) const;
+	bool IsComponentStatic(int component) const;
 	
 	/** At least one color component is static. */
 	bool HasStaticComponent() const;
@@ -320,73 +320,73 @@ public:
 	bool AllComponentsNotStatic() const;
 	
 	/** First combined image or nullptr if not existing. */
-	inline const deoglRImage::Ref &GetCombinedImage1() const{ return pCombinedImage1; }
+	inline const deoglRImage::Ref &GetCombinedImage1() const{return pCombinedImage1;}
 	
 	/** Second combined image or nullptr if not existing. */
-	inline const deoglRImage::Ref &GetCombinedImage2() const{ return pCombinedImage2; }
+	inline const deoglRImage::Ref &GetCombinedImage2() const{return pCombinedImage2;}
 	
 	/** First delayed combined image or nullptr if not existing. */
-	inline deoglImage *GetDelayedCombinedImage1() const{ return pDelayedCombineImage1; }
+	inline deoglImage *GetDelayedCombinedImage1() const{return pDelayedCombineImage1;}
 	
 	/** Second delayed combined image or nullptr if not existing. */
-	inline deoglImage *GetDelayedCombinedImage2() const{ return pDelayedCombineImage2; }
+	inline deoglImage *GetDelayedCombinedImage2() const{return pDelayedCombineImage2;}
 	
 	
 	
 	/** Channel is purely a uniform color. */
-	inline bool GetUniform() const{ return pUniform; }
+	inline bool GetUniform() const{return pUniform;}
 	
 	/** Set if channel is purely a uniform color. */
-	void SetUniform( bool uniform );
+	void SetUniform(bool uniform);
 	
 	/** Channel has dynamic content. */
-	inline bool GetDynamic() const{ return pDynamic; }
+	inline bool GetDynamic() const{return pDynamic;}
 	
 	/** Set channel has dynamic content. */
-	void SetDynamic( bool dynamic );
+	void SetDynamic(bool dynamic);
 	
 	
 	
 	/** Image or nullptr to use the texture stored locally. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	inline deoglRImage *GetImage() const{return pImage;}
 	
 	/**
 	 * Video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */
-	inline deVideo *GetVideo() const{ return pVideo; }
+	inline deVideo *GetVideo() const{return pVideo;}
 	
 	/**
 	 * Set video or nullptr to use the texture stored locally.
 	 * \details This has to be called only by synchronization in main thread. The video pointer
 	 *          is only valid as long as deoglSkin is existing.
 	 */
-	void SetVideo( deVideo *video );
+	void SetVideo(deVideo *video);
 	
 	/** Video player index or -1 if not used. */
-	inline int GetVideoPlayer() const{ return pVideoPlayer; }
+	inline int GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** Set video player index or -1 if not used. */
-	void SetVideoPlayer( int index );
+	void SetVideoPlayer(int index);
 	
 	/** Video player is shared. */
-	inline bool GetSharedVideoPlayer() const{ return pSharedVideoPlayer; }
+	inline bool GetSharedVideoPlayer() const{return pSharedVideoPlayer;}
 	
 	/** Set if video player is shared. */
-	void SetSharedVideoPlayer( bool shared );
+	void SetSharedVideoPlayer(bool shared);
 	
 	/** Index of the renderable or -1 if not dynamic. */
-	inline int GetRenderable() const{ return pRenderable; }
+	inline int GetRenderable() const{return pRenderable;}
 	
 	/** Set index of the renderable or -1 if not dynamic. */
-	void SetRenderable( int index );
+	void SetRenderable(int index);
 	
 	/** Index of the dynamic constructed or -1. */
-	inline int GetDynamicConstructed() const{ return pDynamicConstructed; }
+	inline int GetDynamicConstructed() const{return pDynamicConstructed;}
 	
 	/** Set index of the dynamic constructed or -1. */
-	void SetDynamicConstructed( int index );
+	void SetDynamicConstructed(int index);
 	
 	
 	
@@ -394,14 +394,14 @@ public:
 	 * Prepare for building channel.
 	 * \details Creates the required texture object and cache parameters required for loading caches.
 	 */
-	void PrepareChannel( deoglRSkin &skin, deoglSkinTexture &texture, const deSkinTexture &engTexture,
-		const deoglVSDetermineChannelFormat &channelFormat );
+	void PrepareChannel(deoglRSkin &skin, deoglSkinTexture &texture, const deSkinTexture &engTexture,
+		const deoglVSDetermineChannelFormat &channelFormat);
 	
 	/**
 	 * Build channel but does not create anything requiring opengl calls.
 	 * \details Call after loading caches if cache ID is empty or cache is outdated or missing.
 	 */
-	void BuildChannel( const deSkinTexture &engTexture );
+	void BuildChannel(const deSkinTexture &engTexture);
 	
 	/** Generate cone map. */
 	void GenerateConeMap();
@@ -422,7 +422,7 @@ public:
 	
 	
 	/** Channel name for logging and debugging. */
-	static const char *ChannelNameFor( eChannelTypes type );
+	static const char *ChannelNameFor(eChannelTypes type);
 	
 	/**
 	 * Channel type matching property type.
@@ -430,50 +430,50 @@ public:
 	 * \param[out] channelType Matching channel type. Updated only if \em true is returned.
 	 * \returns \em true if matching.
 	 */
-	static bool ChannelTypeMatchingPropertyType( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		eChannelTypes &channelType );
+	static bool ChannelTypeMatchingPropertyType(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		eChannelTypes &channelType);
 	/*@}*/
 	
 	
 	
 private:
 	void pInitUniformColor();
-	bool pIsPropertyValidForType( deoglSkinPropertyMap::ePropertyTypes propertyType ) const;
+	bool pIsPropertyValidForType(deoglSkinPropertyMap::ePropertyTypes propertyType) const;
 	
 	
 	
-	void pCreatePixelBufferMipMap( deoglSkinTexture &texture,
-		const deoglVSDetermineChannelFormat &channelFormat );
+	void pCreatePixelBufferMipMap(deoglSkinTexture &texture,
+		const deoglVSDetermineChannelFormat &channelFormat);
 	
-	void pCreateTextureObject( const deoglSkinTexture &texture );
+	void pCreateTextureObject(const deoglSkinTexture &texture);
 	
-	void pPrepareProperty( deoglRSkin &skin, deoglSkinTexture &texture,
-		deSkinProperty &property );
+	void pPrepareProperty(deoglRSkin &skin, deoglSkinTexture &texture,
+		deSkinProperty &property);
 	
-	void pPreparePropertyValue( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglSkinTexture &texture, const deSkinPropertyValue &property );
+	void pPreparePropertyValue(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		deoglSkinTexture &texture, const deSkinPropertyValue &property);
 	
-	void pPreparePropertyColor( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglSkinTexture &texture, const deSkinPropertyColor &property );
+	void pPreparePropertyColor(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		deoglSkinTexture &texture, const deSkinPropertyColor &property);
 	
-	void pPreparePropertyImage( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglSkinTexture &texture, const deSkinPropertyImage &property );
+	void pPreparePropertyImage(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		deoglSkinTexture &texture, const deSkinPropertyImage &property);
 	
-	void pPreparePropertyVideo( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property );
+	void pPreparePropertyVideo(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property);
 	
-	void pPreparePropertyConstructed( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &property );
+	void pPreparePropertyConstructed(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &property);
 	
-	void pPreparePropertyMapped( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &property );
+	void pPreparePropertyMapped(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &property);
 	
-	void pClearUniformMasks( int targetRed, int targetGreen, int targetBlue, int targetAlpha );
+	void pClearUniformMasks(int targetRed, int targetGreen, int targetBlue, int targetAlpha);
 	
-	decString pCRC32String( const decString &string ) const;
-	decString pCRC32Data( const decMemoryFile &data ) const;
+	decString pCRC32String(const decString &string) const;
+	decString pCRC32Data(const decMemoryFile &data) const;
 	
-	decString pColor2CacheBinary( const decColor &color ) const;
+	decString pColor2CacheBinary(const decColor &color) const;
 	
 	void pBuildCacheID();
 	
@@ -481,19 +481,19 @@ private:
 	
 	
 	
-	void pBuildProperty( deSkinProperty &property );
+	void pBuildProperty(deSkinProperty &property);
 	
-	void pBuildPropertyImage( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		const deSkinPropertyImage &property );
+	void pBuildPropertyImage(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		const deSkinPropertyImage &property);
 	
-	void pBuildPropertyConstructed( deoglSkinPropertyMap::ePropertyTypes propertyType,
-		const deSkinPropertyConstructed &property );
+	void pBuildPropertyConstructed(deoglSkinPropertyMap::ePropertyTypes propertyType,
+		const deSkinPropertyConstructed &property);
 	
-	void pWriteImageToPixelBuffer( const deImage &image, int targetRed,
-		int targetGreen, int targetBlue, int targetAlpha );
+	void pWriteImageToPixelBuffer(const deImage &image, int targetRed,
+		int targetGreen, int targetBlue, int targetAlpha);
 	
-	void pWriteImageToPixelBuffer( const deImage &image, int srcLayer, int destLayer,
-		int targetRed, int targetGreen, int targetBlue, int targetAlpha );
+	void pWriteImageToPixelBuffer(const deImage &image, int srcLayer, int destLayer,
+		int targetRed, int targetGreen, int targetBlue, int targetAlpha);
 	
 	void pFillWithUniformColor();
 };

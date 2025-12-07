@@ -57,34 +57,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Profile at the given position. */
-	dealGameProfile *GetAt( int index ) const;
+	dealGameProfile *GetAt(int index) const;
 	
 	/** \brief Profile with the given name or \em NULL if not found. */
-	dealGameProfile *GetNamed( const char *name ) const;
+	dealGameProfile *GetNamed(const char *name) const;
 	
 	/** \brief Profile exists. */
-	bool Has( dealGameProfile *profile ) const;
+	bool Has(dealGameProfile *profile) const;
 	
 	/** \brief Profile with the given name exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \breif Index of a profile or -1 if not found. */
-	int IndexOf( dealGameProfile *profile ) const;
+	int IndexOf(dealGameProfile *profile) const;
 	
 	/** \brief Index of a profile with the given name or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Add profile. */
-	void Add( dealGameProfile *profile );
+	void Add(dealGameProfile *profile);
 	
 	/** \brief Remove profile. */
-	void Remove( dealGameProfile *profile );
+	void Remove(dealGameProfile *profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAll();
 	
 	/** \brief Validate profiles. */
-	void ValidateProfiles( dealLauncher &launcher );
+	void ValidateProfiles(dealLauncher &launcher);
 	/*@}*/
 };
 

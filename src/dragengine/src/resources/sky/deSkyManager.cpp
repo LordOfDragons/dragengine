@@ -37,8 +37,8 @@
 /////////////////////////////
 
 // constructor, destructor
-deSkyManager::deSkyManager( deEngine *engine ) : deResourceManager( engine, ertSky ){
-	SetLoggingName( "sky" );
+deSkyManager::deSkyManager(deEngine *engine) : deResourceManager(engine, ertSky){
+	SetLoggingName("sky");
 }
 deSkyManager::~deSkyManager(){
 	ReleaseLeakingResources();
@@ -50,19 +50,19 @@ int deSkyManager::GetSkyCount() const{
 }
 
 deSky *deSkyManager::GetRootSky() const{
-	return ( deSky* )pSkies.GetRoot();
+	return (deSky*)pSkies.GetRoot();
 }
 
 deSky *deSkyManager::CreateSky(){
 	deSky *sky = NULL;
 	// create and add sky
 	try{
-		sky = new deSky( this );
-		if( ! sky ) DETHROW( deeOutOfMemory );
-		GetGraphicSystem()->LoadSky( sky );
-		pSkies.Add( sky );
-	}catch( const deException & ){
-		if( sky ){
+		sky = new deSky(this);
+		if(! sky) DETHROW(deeOutOfMemory);
+		GetGraphicSystem()->LoadSky(sky);
+		pSkies.Add(sky);
+	}catch(const deException &){
+		if(sky){
 			sky->FreeReference();
 		}
 		throw;
@@ -74,8 +74,8 @@ deSky *deSkyManager::CreateSky(){
 
 
 void deSkyManager::ReleaseLeakingResources(){
-	if( GetSkyCount() > 0 ){
-		LogWarnFormat( "%i leaking skies", GetSkyCount() );
+	if(GetSkyCount() > 0){
+		LogWarnFormat("%i leaking skies", GetSkyCount());
 		pSkies.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -86,25 +86,25 @@ void deSkyManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkyManager::SystemGraphicLoad(){
-	deSky *sky = ( deSky* )pSkies.GetRoot();
+	deSky *sky = (deSky*)pSkies.GetRoot();
 	
-	while( sky ){
-		if( ! sky->GetPeerGraphic() ){
-			GetGraphicSystem()->LoadSky( sky );
+	while(sky){
+		if(! sky->GetPeerGraphic()){
+			GetGraphicSystem()->LoadSky(sky);
 		}
-		sky = ( deSky* )sky->GetLLManagerNext();
+		sky = (deSky*)sky->GetLLManagerNext();
 	}
 }
 
 void deSkyManager::SystemGraphicUnload(){
-	deSky *sky = ( deSky* )pSkies.GetRoot();
+	deSky *sky = (deSky*)pSkies.GetRoot();
 	
-	while( sky ){
-		sky->SetPeerGraphic( NULL );
-		sky = ( deSky* )sky->GetLLManagerNext();
+	while(sky){
+		sky->SetPeerGraphic(NULL);
+		sky = (deSky*)sky->GetLLManagerNext();
 	}
 }
 
-void deSkyManager::RemoveResource( deResource *resource ){
-	pSkies.RemoveIfPresent( resource );
+void deSkyManager::RemoveResource(deResource *resource){
+	pSkies.RemoveIfPresent(resource);
 }

@@ -53,9 +53,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the delegee or NULL. */
-	inline deBaseScriptingPropField *GetDelegee() const{ return pDelegee; }
+	inline deBaseScriptingPropField *GetDelegee() const{return pDelegee;}
 	/** Sets the delegee or NULL. */
-	void SetDelegee( deBaseScriptingPropField *delegee );
+	void SetDelegee(deBaseScriptingPropField *delegee);
 	/*@}*/
 	
 	/** @name Notifications */
@@ -65,7 +65,7 @@ public:
 	 * indicates the percentage of instances to use compared to a fully populated
 	 * prop field.
 	 */
-	virtual void CreateInstances( float density );
+	virtual void CreateInstances(float density);
 	/*@}*/
 };
 

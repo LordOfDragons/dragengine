@@ -123,9 +123,9 @@ static const sKeyTableEntry vKeyTable[] = {
 	{VK_OEM_102,"OEM_102 (> <)"},
 	{VK_OEM_2,"OEM_2 (? /)"},
 	{VK_OEM_3,"OEM_3 (~ `)"},
-	{VK_OEM_4,"OEM_4 ({ [)"},
+	{VK_OEM_4,"OEM_4 ({[)"},
 	{VK_OEM_5,"OEM_5 (| \\)"},
-	{VK_OEM_6,"OEM_6 (} ])"},
+	{VK_OEM_6,"OEM_6 (}])"},
 	{VK_OEM_7,"OEM_7 (\"},\" ')"},
 	{VK_OEM_8,"OEM_8 (§ !)"},
 	{VK_OEM_ATTN,"Oem Attn"},
@@ -244,16 +244,16 @@ static const sKeyTableEntry vKeyTable[] = {
 	{0,NULL}
 };
 
-dewiDeviceKeyboard::dewiDeviceKeyboard( deWindowsInput &module ) :
-dewiDevice( module, esWindows )
+dewiDeviceKeyboard::dewiDeviceKeyboard(deWindowsInput &module) :
+dewiDevice(module, esWindows)
 {
 	decString string;
 	
-	string.Format( "%s%dkeyboard", WINP_DEVID_PREFIX, esWindows );
-	SetID( string );
-	SetName( "Keyboard" );
-	SetType( deInputDevice::edtKeyboard );
-	SetDisplayImages( "keyboard" );
+	string.Format("%s%dkeyboard", WINP_DEVID_PREFIX, esWindows);
+	SetID(string);
+	SetName("Keyboard");
+	SetType(deInputDevice::edtKeyboard);
+	SetDisplayImages("keyboard");
 	
 	// find keys. GetKeyNameText is used with the lParam of messages and thus we have to
 	// produce the same bit encoding. documentation has this:
@@ -264,89 +264,89 @@ dewiDevice( module, esWindows )
 	//           bit to indicate that the function should not distinguish between
 	//           left and right CTRL and SHIFT keys, for example.
 #if 0
-	const int sharedKeyNameValue = ( 1 << 24 ) | ( 0 << 25 );
+	const int sharedKeyNameValue = (1 << 24) | (0 << 25);
 	int i, buttonCount = 0;
-	char buffer[ 100 ];
+	char buffer[100];
 	
-	for( i=0; i<256; i++ ){
-		if( MapVirtualKey( i, MAPVK_VSC_TO_VK_EX ) == 0 ){
+	for(i=0; i<256; i++){
+		if(MapVirtualKey(i, MAPVK_VSC_TO_VK_EX) == 0){
 			continue;
 		}
 		
-		if( GetKeyNameText( sharedKeyNameValue | ( i << 16 ),
-		( LPTSTR )buffer, sizeof( buffer ) ) == 0 ){
+		if(GetKeyNameText(sharedKeyNameValue | (i << 16),
+		(LPTSTR)buffer, sizeof(buffer)) == 0){
 			continue;
 		}
 		
 		buttonCount++;
 	}
 	
-	SetButtonCount( buttonCount );
+	SetButtonCount(buttonCount);
 	
 	int buttonIndex = 0;
-	for( i=0; i<256; i++ ){
-		const int wicode = MapVirtualKey( i, MAPVK_VSC_TO_VK_EX );
-		if( wicode == 0 ){
+	for(i=0; i<256; i++){
+		const int wicode = MapVirtualKey(i, MAPVK_VSC_TO_VK_EX);
+		if(wicode == 0){
 			continue;
 		}
 		
-		const int len = GetKeyNameText( sharedKeyNameValue | ( i << 16 ),
-		( LPTSTR )buffer, sizeof( buffer ) );
-		if( len == 0 ){
+		const int len = GetKeyNameText(sharedKeyNameValue | (i << 16),
+		(LPTSTR)buffer, sizeof(buffer));
+		if(len == 0){
 			continue;
 		}
 		
-		dewiDeviceButton &button = GetButtonAt( buttonIndex );
+		dewiDeviceButton &button = GetButtonAt(buttonIndex);
 		
-		string.Format( "sc%d", i );
-		button.SetID( string );
+		string.Format("sc%d", i);
+		button.SetID(string);
 		
-		button.SetName( buffer );
+		button.SetName(buffer);
 		
-		button.SetWICode( wicode );
+		button.SetWICode(wicode);
 		
-		const int wichar = MapVirtualKey( wicode, MAPVK_VK_TO_CHAR );
-		if( wichar != 0 ){
-			button.SetWIChar( wichar );
+		const int wichar = MapVirtualKey(wicode, MAPVK_VK_TO_CHAR);
+		if(wichar != 0){
+			button.SetWIChar(wichar);
 		}
 		
-		button.SetKeyCode( KeyCodeForWICode( wicode ) );
-		button.SetMatchPriority( MatchingPriorityForWICode( wicode ) );
+		button.SetKeyCode(KeyCodeForWICode(wicode));
+		button.SetMatchPriority(MatchingPriorityForWICode(wicode));
 		
 		buttonIndex++;
 	}
 #endif
 	
 	dewiDeviceButton::Ref sharedButton(dewiDeviceButton::Ref::NewWith(module));
-	sharedButton->SetDisplayImages( "key" );
+	sharedButton->SetDisplayImages("key");
 	
 	int buttonIndex = 0;
 	const sKeyTableEntry *iterentry = &vKeyTable[0];
 	
-	while( iterentry->virtkey ){
+	while(iterentry->virtkey){
 		const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::NewWith(module));
 		AddButton(button);
 		
-		string.Format( "sc%d", buttonIndex );
-		button->SetID( string );
+		string.Format("sc%d", buttonIndex);
+		button->SetID(string);
 		
-		button->SetName( iterentry->name );
-		button->SetWICode( iterentry->virtkey );
+		button->SetName(iterentry->name);
+		button->SetWICode(iterentry->virtkey);
 		
-		button->SetDisplayImages( sharedButton );
+		button->SetDisplayImages(sharedButton);
 		
-		const int wichar = MapVirtualKey( iterentry->virtkey, MAPVK_VK_TO_CHAR );
-		if( wichar >= 32 ){
-			button->SetWIChar( wichar );
-			button->SetDisplayText( decUnicodeString( wichar ).GetUpper().ToUTF8() );
+		const int wichar = MapVirtualKey(iterentry->virtkey, MAPVK_VK_TO_CHAR);
+		if(wichar >= 32){
+			button->SetWIChar(wichar);
+			button->SetDisplayText(decUnicodeString(wichar).GetUpper().ToUTF8());
 			
 		}else{
-			button->SetDisplayText( button->GetName() );
+			button->SetDisplayText(button->GetName());
 		}
 		
-		button->SetKeyCode( KeyCodeForWICode( iterentry->virtkey ) );
-		button->SetKeyLocation( KeyLocationForWICode( iterentry->virtkey ) );
-		button->SetMatchPriority( MatchingPriorityForWICode( iterentry->virtkey ) );
+		button->SetKeyCode(KeyCodeForWICode(iterentry->virtkey));
+		button->SetKeyLocation(KeyLocationForWICode(iterentry->virtkey));
+		button->SetMatchPriority(MatchingPriorityForWICode(iterentry->virtkey));
 		
 		buttonIndex++;
 		iterentry++;
@@ -361,8 +361,8 @@ dewiDeviceKeyboard::~dewiDeviceKeyboard(){
 // Management
 ///////////////
 
-deInputEvent::eKeyCodes dewiDeviceKeyboard::KeyCodeForWICode( int code ){
-	switch( code ){
+deInputEvent::eKeyCodes dewiDeviceKeyboard::KeyCodeForWICode(int code){
+	switch(code){
 	case VK_BACK:
 	case VK_CLEAR:
 		return deInputEvent::ekcBackSpace;
@@ -432,25 +432,25 @@ deInputEvent::eKeyCodes dewiDeviceKeyboard::KeyCodeForWICode( int code ){
 		return deInputEvent::ekcSuper;
 		
 	default:
-		if( code >= VK_F1 && code <= VK_F12 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekcF1 + ( code - VK_F1 ) );
+		if(code >= VK_F1 && code <= VK_F12){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcF1 + (code - VK_F1));
 			
-		}else if( code >= 0x30 && code <= 0x39 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekc0 + ( code - 0x30 ) );
+		}else if(code >= 0x30 && code <= 0x39){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (code - 0x30));
 			
-		}else if( code >= VK_NUMPAD0 && code <= VK_NUMPAD9 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekc0 + ( code - VK_NUMPAD0 ) );
+		}else if(code >= VK_NUMPAD0 && code <= VK_NUMPAD9){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (code - VK_NUMPAD0));
 			
-		}else if( code >= 0x41 && code <= 0x5A ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekcA + ( code - 0x41 ) );
+		}else if(code >= 0x41 && code <= 0x5A){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (code - 0x41));
 		}
 	}
 	
 	return deInputEvent::ekcUndefined;
 }
 
-deInputEvent::eKeyLocation dewiDeviceKeyboard::KeyLocationForWICode( int code ){
-	switch( code ){
+deInputEvent::eKeyLocation dewiDeviceKeyboard::KeyLocationForWICode(int code){
+	switch(code){
 	case VK_LSHIFT:
 	case VK_LCONTROL:
 	case VK_LMENU:
@@ -464,7 +464,7 @@ deInputEvent::eKeyLocation dewiDeviceKeyboard::KeyLocationForWICode( int code ){
 		return deInputEvent::eklRight;
 		
 	default:
-		if( code >= VK_NUMPAD0 && code <= VK_NUMPAD9 ){
+		if(code >= VK_NUMPAD0 && code <= VK_NUMPAD9){
 			return deInputEvent::eklNumberPad;
 		}
 	}
@@ -472,10 +472,10 @@ deInputEvent::eKeyLocation dewiDeviceKeyboard::KeyLocationForWICode( int code ){
 	return deInputEvent::eklNone;
 }
 
-int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
+int dewiDeviceKeyboard::MatchingPriorityForWICode(int code){
 	// lower value is higher priority
 	
-	switch( code ){
+	switch(code){
 	case VK_BACK:
 	case VK_TAB:
 	case VK_RETURN:
@@ -509,16 +509,16 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 		return 1;
 		
 	default:
-		if( code >= VK_F1 && code <= VK_F12 ){
+		if(code >= VK_F1 && code <= VK_F12){
 			return 0;
 			
-		}else if( code >= 0x30 && code <= 0x39 ){
+		}else if(code >= 0x30 && code <= 0x39){
 			return 0;
 			
-		}else if( code >= VK_NUMPAD0 && code <= VK_NUMPAD9 ){
+		}else if(code >= VK_NUMPAD0 && code <= VK_NUMPAD9){
 			return 1;
 			
-		}else if( code >= 0x41 && code <= 0x5A ){
+		}else if(code >= 0x41 && code <= 0x5A){
 			return 0;
 		}
 	}
@@ -526,12 +526,12 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	return 10;
 }
 
-int dewiDeviceKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
+int dewiDeviceKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 	// this task is just a guess so missing a solution is fine
 	const int count = GetButtonCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( GetButtonAt( i )->GetWIChar() == keyChar ){
+	for(i=0; i<count; i++){
+		if(GetButtonAt(i)->GetWIChar() == keyChar){
 			return i;
 		}
 	}
@@ -544,14 +544,14 @@ int dewiDeviceKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
 // Private Functions
 //////////////////////
 
-void dewiDeviceKeyboard::pSetButtonAt( int index, const char *id, const char *name,
-int wiCode, deInputEvent::eKeyCodes keyCode, int wiChar, int matchPriority ){
-	dewiDeviceButton &button = *GetButtonAt( index );
+void dewiDeviceKeyboard::pSetButtonAt(int index, const char *id, const char *name,
+int wiCode, deInputEvent::eKeyCodes keyCode, int wiChar, int matchPriority){
+	dewiDeviceButton &button = *GetButtonAt(index);
 	
-	button.SetID( id );
-	button.SetName( name );
-	button.SetWICode( wiCode );
-	button.SetWIChar( wiChar );
-	button.SetKeyCode( keyCode );
-	button.SetMatchPriority( matchPriority );
+	button.SetID(id);
+	button.SetName(name);
+	button.SetWICode(wiCode);
+	button.SetWIChar(wiChar);
+	button.SetKeyCode(keyCode);
+	button.SetMatchPriority(matchPriority);
 }

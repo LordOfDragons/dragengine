@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullListBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullListBox* CreateNativeWidget( igdeListBox &owner );
+	static igdeNativeNullListBox* CreateNativeWidget(igdeListBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -56,15 +56,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	virtual void BuildList();
-	virtual void UpdateItem( int index );
+	virtual void UpdateItem(int index);
 	virtual void UpdateStyles();
 	virtual void UpdateSelection();
 	virtual void Focus();
-	virtual void MakeItemVisible( int index );
-	virtual void InsertItem( int index );
-	virtual void RemoveItem( int index );
+	virtual void MakeItemVisible(int index);
+	virtual void InsertItem(int index);
+	virtual void RemoveItem(int index);
 	virtual void RemoveAllItems();
-	virtual void MoveItem( int fromIndex, int toIndex );
+	virtual void MoveItem(int fromIndex, int toIndex);
 	virtual void UpdateEnabled();
 	virtual void UpdateRowCount();
 	virtual void UpdateDescription();

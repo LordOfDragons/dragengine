@@ -49,8 +49,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpSmokeEmitter::debpSmokeEmitter( dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter ){
-	if( ! bullet || ! smokeEmitter ) DETHROW( deeInvalidParam );
+debpSmokeEmitter::debpSmokeEmitter(dePhysicsBullet *bullet, deSmokeEmitter *smokeEmitter){
+	if(! bullet || ! smokeEmitter) DETHROW(deeInvalidParam);
 	
 	pBullet = bullet;
 	pSmokeEmitter = smokeEmitter;
@@ -79,20 +79,20 @@ debpSmokeEmitter::~debpSmokeEmitter(){
 // Management
 ///////////////
 
-void debpSmokeEmitter::SetParentWorld( debpWorld *parentWorld ){
+void debpSmokeEmitter::SetParentWorld(debpWorld *parentWorld){
 	pParentWorld = parentWorld;
 	GravityChanged();
 }
 
-void debpSmokeEmitter::PreparePoints( float elapsed ){
+void debpSmokeEmitter::PreparePoints(float elapsed){
 }
 
-void debpSmokeEmitter::StepPoints( float elapsed ){
+void debpSmokeEmitter::StepPoints(float elapsed){
 }
 
 const decMatrix &debpSmokeEmitter::GetEmitterMatrix(){
-	if( pDirtyEmitterMatrix ){
-		pEmitterMatrix.SetFromQuaternion( pSmokeEmitter->GetEmitterOrientation() );
+	if(pDirtyEmitterMatrix){
+		pEmitterMatrix.SetFromQuaternion(pSmokeEmitter->GetEmitterOrientation());
 		pDirtyEmitterMatrix = false;
 	}
 	
@@ -102,10 +102,10 @@ const decMatrix &debpSmokeEmitter::GetEmitterMatrix(){
 void debpSmokeEmitter::CastPoint(){
 }
 
-void debpSmokeEmitter::KillPoint( int index ){
+void debpSmokeEmitter::KillPoint(int index){
 }
 
-void debpSmokeEmitter::ApplyForceField( debpForceField *forceField, float elapsed ){
+void debpSmokeEmitter::ApplyForceField(debpForceField *forceField, float elapsed){
 }
 
 
@@ -139,10 +139,10 @@ void debpSmokeEmitter::CollisionFilterChanged(){
 }
 
 void debpSmokeEmitter::GravityChanged(){
-	if( pSmokeEmitter->GetUseLocalGravity() ){
+	if(pSmokeEmitter->GetUseLocalGravity()){
 		pGravity = pSmokeEmitter->GetGravity();
 		
-	}else if( pParentWorld ){
+	}else if(pParentWorld){
 		pGravity = pParentWorld->GetWorld().GetGravity();
 		
 	}else{
@@ -156,5 +156,5 @@ void debpSmokeEmitter::GravityChanged(){
 //////////////////////
 
 void debpSmokeEmitter::pCleanUp(){
-	if( pPoints ) delete [] pPoints;
+	if(pPoints) delete [] pPoints;
 }

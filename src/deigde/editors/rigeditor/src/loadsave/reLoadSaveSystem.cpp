@@ -59,8 +59,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reLoadSaveSystem::reLoadSaveSystem( reWindowMain &windowMain ) :
-pWindowMain( windowMain )
+reLoadSaveSystem::reLoadSaveSystem(reWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
 	pLSRigs = NULL;
 	pLSRigCount = 0;
@@ -76,18 +76,18 @@ reLoadSaveSystem::~reLoadSaveSystem(){
 // Management
 ///////////////
 
-reLSRig *reLoadSaveSystem::GetLSRigAt( int index ) const{
-	if( index < 0 || index >= pLSRigCount ) DETHROW( deeInvalidParam );
+reLSRig *reLoadSaveSystem::GetLSRigAt(int index) const{
+	if(index < 0 || index >= pLSRigCount) DETHROW(deeInvalidParam);
 	
-	return pLSRigs[ index ];
+	return pLSRigs[index];
 }
 
-int reLoadSaveSystem::IndexOfLSRig( reLSRig *lsRig ) const{
-	if( ! lsRig ) DETHROW( deeInvalidParam );
+int reLoadSaveSystem::IndexOfLSRig(reLSRig *lsRig) const{
+	if(! lsRig) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pLSRigCount; i++ ){
-		if( lsRig == pLSRigs[ i ] ){
+	for(i=0; i<pLSRigCount; i++){
+		if(lsRig == pLSRigs[i]){
 			return i;
 		}
 	}
@@ -95,12 +95,12 @@ int reLoadSaveSystem::IndexOfLSRig( reLSRig *lsRig ) const{
 	return -1;
 }
 
-bool reLoadSaveSystem::HasLSRig( reLSRig *lsRig ) const{
-	if( ! lsRig ) DETHROW( deeInvalidParam );
+bool reLoadSaveSystem::HasLSRig(reLSRig *lsRig) const{
+	if(! lsRig) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pLSRigCount; i++ ){
-		if( lsRig == pLSRigs[ i ] ){
+	for(i=0; i<pLSRigCount; i++){
+		if(lsRig == pLSRigs[i]){
 			return true;
 		}
 	}
@@ -108,12 +108,12 @@ bool reLoadSaveSystem::HasLSRig( reLSRig *lsRig ) const{
 	return false;
 }
 
-int reLoadSaveSystem::IndexOfLSRigMatching( const char *filename ){
-	const decString testFilename( filename );
+int reLoadSaveSystem::IndexOfLSRigMatching(const char *filename){
+	const decString testFilename(filename);
 	int i;
 	
-	for( i=0; i<pLSRigCount; i++ ){
-		if( testFilename.MatchesPattern( pLSRigs[ i ]->GetPattern() ) ){
+	for(i=0; i<pLSRigCount; i++){
+		if(testFilename.MatchesPattern(pLSRigs[i]->GetPattern())){
 			return i;
 		}
 	}
@@ -121,31 +121,31 @@ int reLoadSaveSystem::IndexOfLSRigMatching( const char *filename ){
 	return -1;
 }
 
-void reLoadSaveSystem::AddLSRig( reLSRig *lsRig ){
-	if( HasLSRig( lsRig ) ) DETHROW( deeInvalidParam );
+void reLoadSaveSystem::AddLSRig(reLSRig *lsRig){
+	if(HasLSRig(lsRig)) DETHROW(deeInvalidParam);
 	
-	if( pLSRigCount == pLSRigSize ){
+	if(pLSRigCount == pLSRigSize){
 		int newSize = pLSRigSize * 3 / 2 + 1;
-		reLSRig **newArray = new reLSRig*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pLSRigs ){
-			memcpy( newArray, pLSRigs, sizeof( reLSRig* ) * pLSRigSize );
+		reLSRig **newArray = new reLSRig*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pLSRigs){
+			memcpy(newArray, pLSRigs, sizeof(reLSRig*) * pLSRigSize);
 			delete [] pLSRigs;
 		}
 		pLSRigs = newArray;
 		pLSRigSize = newSize;
 	}
 	
-	pLSRigs[ pLSRigCount ] = lsRig;
+	pLSRigs[pLSRigCount] = lsRig;
 	pLSRigCount++;
 }
 
-void reLoadSaveSystem::RemoveLSRig( reLSRig *lsRig ){
-	int i, index = IndexOfLSRig( lsRig );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void reLoadSaveSystem::RemoveLSRig(reLSRig *lsRig){
+	int i, index = IndexOfLSRig(lsRig);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pLSRigCount; i++ ){
-		pLSRigs[ i - 1 ] = pLSRigs[ i ];
+	for(i=index+1; i<pLSRigCount; i++){
+		pLSRigs[i - 1] = pLSRigs[i];
 	}
 	pLSRigCount--;
 	
@@ -153,9 +153,9 @@ void reLoadSaveSystem::RemoveLSRig( reLSRig *lsRig ){
 }
 
 void reLoadSaveSystem::RemoveAllLSRigs(){
-	while( pLSRigCount > 0 ){
+	while(pLSRigCount > 0){
 		pLSRigCount--;
-		delete pLSRigs[ pLSRigCount ];
+		delete pLSRigs[pLSRigCount];
 	}
 }
 
@@ -172,31 +172,31 @@ void reLoadSaveSystem::UpdateLSRigs(){
 	try{
 		// add a new load save rig for each rig module found in the engine that is also
 		// running and usable therefore
-		for( m=0; m<moduleCount; m++ ){
-			loadableModule = modSys->GetModuleAt( m );
+		for(m=0; m<moduleCount; m++){
+			loadableModule = modSys->GetModuleAt(m);
 			
-			if( loadableModule->GetType() != deModuleSystem::emtRig ) continue;
-			if( ! loadableModule->IsLoaded() ) continue;
+			if(loadableModule->GetType() != deModuleSystem::emtRig) continue;
+			if(! loadableModule->IsLoaded()) continue;
 			
-			lsRig = new reLSRig( ( deBaseRigModule* )loadableModule->GetModule() );
-			if( ! lsRig ) DETHROW( deeOutOfMemory );
+			lsRig = new reLSRig((deBaseRigModule*)loadableModule->GetModule());
+			if(! lsRig) DETHROW(deeOutOfMemory);
 			
-			AddLSRig( lsRig );
+			AddLSRig(lsRig);
 			lsRig = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( lsRig ) delete lsRig;
+	}catch(const deException &){
+		if(lsRig) delete lsRig;
 		throw;
 	}
 }
 
 
 
-reRig *reLoadSaveSystem::LoadRig( const char *filename ){
-	const int lsIndex = IndexOfLSRigMatching( filename );
-	if( lsIndex == -1 ){
-		DETHROW( deeInvalidParam );
+reRig *reLoadSaveSystem::LoadRig(const char *filename){
+	const int lsIndex = IndexOfLSRigMatching(filename);
+	if(lsIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const reRig::Ref rig(reRig::Ref::NewWith(&pWindowMain.GetEnvironment()));
@@ -205,18 +205,18 @@ reRig *reLoadSaveSystem::LoadRig( const char *filename ){
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix(filename))));
 	
-	rig->SetFilePath( filename );
-	rig->SetChanged( false );
-	rig->SetSaved( true );
+	rig->SetFilePath(filename);
+	rig->SetChanged(false);
+	rig->SetSaved(true);
 	
 	rig->AddReference(); // required to hand over reference to caller
 	return rig;
 }
 
-void reLoadSaveSystem::SaveRig( reRig *rig, const char *filename ){
-	const int lsIndex = IndexOfLSRigMatching( filename );
-	if( lsIndex == -1 ){
-		DETHROW( deeInvalidParam );
+void reLoadSaveSystem::SaveRig(reRig *rig, const char *filename){
+	const int lsIndex = IndexOfLSRigMatching(filename);
+	if(lsIndex == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLSRigs[lsIndex]->SaveRig(rig, decBaseFileWriter::Ref::New(
@@ -232,5 +232,5 @@ void reLoadSaveSystem::SaveRig( reRig *rig, const char *filename ){
 
 void reLoadSaveSystem::pCleanUp(){
 	RemoveAllLSRigs();
-	if( pLSRigs ) delete [] pLSRigs;
+	if(pLSRigs) delete [] pLSRigs;
 }

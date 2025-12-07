@@ -50,7 +50,7 @@ public:
 	deNavigatorPath();
 	
 	/** \brief Create copy of navigator path. */
-	deNavigatorPath( const deNavigatorPath &path );
+	deNavigatorPath(const deNavigatorPath &path);
 	
 	/** \brief Clean up navigator path. */
 	~deNavigatorPath();
@@ -61,31 +61,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{return pCount;}
 	
 	/**
 	 * \brief Path point at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
 	 */
-	const decDVector &GetAt( int index ) const;
+	const decDVector &GetAt(int index) const;
 	
 	/**
 	 * \brief Set path point at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
 	 */
-	void SetAt( int index, const decDVector &position );
+	void SetAt(int index, const decDVector &position);
 	
 	/** \brief Add path point to end of path. */
-	void Add( const decDVector &point );
+	void Add(const decDVector &point);
 	
 	/** \brief Add path points to end of path. */
-	void AddPath( const deNavigatorPath &path );
+	void AddPath(const deNavigatorPath &path);
 	
 	/**
 	 * \brief Remove path point at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal to GetPointCount().
 	 */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** \brief Remove all path points. */
 	void RemoveAll();
@@ -96,7 +96,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set points. */
-	deNavigatorPath &operator=( const deNavigatorPath &path );
+	deNavigatorPath &operator=(const deNavigatorPath &path);
 	/*@}*/
 };
 

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meTerrainHeightImage::meTerrainHeightImage( deImage *image ){
-	if( ! image ) DETHROW( deeInvalidParam );
+meTerrainHeightImage::meTerrainHeightImage(deImage *image){
+	if(! image) DETHROW(deeInvalidParam);
 	
 	pWidth = image->GetWidth();
 	pHeight = image->GetHeight();
@@ -49,10 +49,10 @@ meTerrainHeightImage::meTerrainHeightImage( deImage *image ){
 	pData16 = NULL;
 	pData32 = NULL;
 	
-	if( image->GetBitCount() == 8 ){
+	if(image->GetBitCount() == 8){
 		pData8 = image->GetDataGrayscale8();
 		
-	}else if( image->GetBitCount() == 16 ){
+	}else if(image->GetBitCount() == 16){
 		pData16 = image->GetDataGrayscale16();
 		
 	}else{
@@ -68,50 +68,50 @@ meTerrainHeightImage::~meTerrainHeightImage(){
 // Management
 ///////////////
 
-float meTerrainHeightImage::GetHeightAt( int x, int y ) const{
-	if( pData8 ){
-		return ( float )( pData8[ pWidth * y + x ].value - THM_8BIT_BASE ) * THM_8BIT_PTOH;
+float meTerrainHeightImage::GetHeightAt(int x, int y) const{
+	if(pData8){
+		return (float)(pData8[pWidth * y + x].value - THM_8BIT_BASE) * THM_8BIT_PTOH;
 		
-	}else if( pData16 ){
-		return ( float )( pData16[ pWidth * y + x ].value - THM_16BIT_BASE ) * THM_16BIT_PTOH;
+	}else if(pData16){
+		return (float)(pData16[pWidth * y + x].value - THM_16BIT_BASE) * THM_16BIT_PTOH;
 		
 	}else{
-		return pData32[ pWidth * y + x ].value;
+		return pData32[pWidth * y + x].value;
 	}
 }
 
-float meTerrainHeightImage::GetHeightAt( int index ) const{
-	if( pData8 ){
-		return ( float )( pData8[ index ].value - THM_8BIT_BASE ) * THM_8BIT_PTOH;
+float meTerrainHeightImage::GetHeightAt(int index) const{
+	if(pData8){
+		return (float)(pData8[index].value - THM_8BIT_BASE) * THM_8BIT_PTOH;
 		
-	}else if( pData16 ){
-		return ( float )( pData16[ index ].value - THM_16BIT_BASE ) * THM_16BIT_PTOH;
+	}else if(pData16){
+		return (float)(pData16[index].value - THM_16BIT_BASE) * THM_16BIT_PTOH;
 		
 	}else{
-		return pData32[ index ].value;
+		return pData32[index].value;
 	}
 }
 
-void meTerrainHeightImage::SetHeightAt( int x, int y, float height ){
-	if( pData8 ){
-		pData8[ pWidth * y + x ].value = ( unsigned char )( ( int )( height * THM_8BIT_HTOP ) + THM_8BIT_BASE );
+void meTerrainHeightImage::SetHeightAt(int x, int y, float height){
+	if(pData8){
+		pData8[pWidth * y + x].value = (unsigned char)((int)(height * THM_8BIT_HTOP) + THM_8BIT_BASE);
 		
-	}else if( pData16 ){
-		pData16[ pWidth * y + x ].value = ( unsigned short )( ( int )( height * THM_16BIT_HTOP ) + THM_16BIT_BASE );
+	}else if(pData16){
+		pData16[pWidth * y + x].value = (unsigned short)((int)(height * THM_16BIT_HTOP) + THM_16BIT_BASE);
 		
 	}else{
-		pData32[ pWidth * y + x ].value = height;
+		pData32[pWidth * y + x].value = height;
 	}
 }
 
-void meTerrainHeightImage::SetHeightAt( int index, float height ){
-	if( pData8 ){
-		pData8[ index ].value = ( unsigned char )( ( int )( height * THM_8BIT_HTOP ) + THM_8BIT_BASE );
+void meTerrainHeightImage::SetHeightAt(int index, float height){
+	if(pData8){
+		pData8[index].value = (unsigned char)((int)(height * THM_8BIT_HTOP) + THM_8BIT_BASE);
 		
-	}else if( pData16 ){
-		pData16[ index ].value = ( unsigned short )( ( int )( height * THM_16BIT_HTOP ) + THM_16BIT_BASE );
+	}else if(pData16){
+		pData16[index].value = (unsigned short)((int)(height * THM_16BIT_HTOP) + THM_16BIT_BASE);
 		
 	}else{
-		pData32[ index ].value = height;
+		pData32[index].value = height;
 	}
 }

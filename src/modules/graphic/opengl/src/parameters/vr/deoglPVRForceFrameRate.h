@@ -34,7 +34,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPVRForceFrameRate( deGraphicOpenGl &ogl );
+	deoglPVRForceFrameRate(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
 	virtual ~deoglPVRForceFrameRate();
@@ -48,7 +48,7 @@ public:
 	virtual decString GetParameterValue();
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

@@ -71,29 +71,29 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if inclusive or exlusive matching has to be used. */
-	inline bool GetMatchInclusive() const{ return pMatchInclusive; }
+	inline bool GetMatchInclusive() const{return pMatchInclusive;}
 	/** Sets if inclusive or exclusive matching has to be used. */
-	void SetMatchInclusive( bool matchInclusive );
+	void SetMatchInclusive(bool matchInclusive);
 	/** Determines if ghost objects are rejected. */
-	inline bool GetRejectGhosts() const{ return pRejectGhosts; }
+	inline bool GetRejectGhosts() const{return pRejectGhosts;}
 	/** Sets if ghost objects are rejected. */
-	void SetRejectGhosts( bool rejectGhosts );
+	void SetRejectGhosts(bool rejectGhosts);
 	/** Retrieves the object to reject or NULL. */
-	inline meObject *GetRejectObject() const{ return pRejectObject; }
+	inline meObject *GetRejectObject() const{return pRejectObject;}
 	/** Sets the object to reject or NULL. */
-	void SetRejectObject( meObject *object );
+	void SetRejectObject(meObject *object);
 	
 	/** Adds a class name. */
-	void AddClassName( const char *className );
+	void AddClassName(const char *className);
 	/** Removes all class names. */
 	void RemoveAllClassNames();
 	/** Sets class names set. */
-	void SetClassNamesFrom( const decStringSet &set );
+	void SetClassNamesFrom(const decStringSet &set);
 	
 	/**
 	 * Determines if the given object is accepted by the filter.
 	 */
-	virtual bool AcceptObject( meObject *object ) const;
+	virtual bool AcceptObject(meObject *object) const;
 	/*@}*/
 };
 

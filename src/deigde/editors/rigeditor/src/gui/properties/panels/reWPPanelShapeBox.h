@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeBox( reWPShape &wpShapes );
+	reWPPanelShapeBox(reWPShape &wpShapes);
 	
 protected:
 	/** \brief Clean up panel. */

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	ceClipboardDataTopic( const ceConversationTopicList &topics );
+	ceClipboardDataTopic(const ceConversationTopicList &topics);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Topics. */
-	inline const ceConversationTopicList &GetTopics() const{ return pTopics; }
+	inline const ceConversationTopicList &GetTopics() const{return pTopics;}
 	/*@}*/
 };
 

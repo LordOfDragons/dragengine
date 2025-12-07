@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shadow caster. */
-	deoglShadowCaster( deoglRenderThread &renderThread );
+	deoglShadowCaster(deoglRenderThread &renderThread);
 	
 	/** Clean up shadow caster. */
 	~deoglShadowCaster();
@@ -116,16 +116,16 @@ public:
 	bool RequiresUpdate() const;
 	
 	/** Solid shadow caster. */
-	inline deoglSCSolid &GetSolid(){ return pSolid; }
-	inline const deoglSCSolid &GetSolid() const{ return pSolid; }
+	inline deoglSCSolid &GetSolid(){return pSolid;}
+	inline const deoglSCSolid &GetSolid() const{return pSolid;}
 	
 	/** Transparent shadow caster. */
-	inline deoglSCTransparent &GetTransparent(){ return pTransparent; }
-	inline const deoglSCTransparent &GetTransparent() const{ return pTransparent; }
+	inline deoglSCTransparent &GetTransparent(){return pTransparent;}
+	inline const deoglSCTransparent &GetTransparent() const{return pTransparent;}
 	
 	/** Ambient shadow caster. */
-	inline deoglSCAmbient &GetAmbient(){ return pAmbient; }
-	inline const deoglSCAmbient &GetAmbient() const{ return pAmbient; }
+	inline deoglSCAmbient &GetAmbient(){return pAmbient;}
+	inline const deoglSCAmbient &GetAmbient() const{return pAmbient;}
 	
 	/** Clear shadow caster. */
 	void Clear();
@@ -136,56 +136,56 @@ public:
 	
 	
 	/** Shadow type. */
-	inline eShadowTypes GetShadowType() const{ return pShadowType; }
+	inline eShadowTypes GetShadowType() const{return pShadowType;}
 	
 	/** Set shadow type. */
-	void SetShadowType( eShadowTypes shadowType );
+	void SetShadowType(eShadowTypes shadowType);
 	
 	
 	
 	/** Near distance for static shadows. */
-	inline float GetStaticNear() const{ return pStaticNear; }
+	inline float GetStaticNear() const{return pStaticNear;}
 	
 	/** Far distance for static shadows. */
-	inline float GetStaticFar() const{ return pStaticFar; }
+	inline float GetStaticFar() const{return pStaticFar;}
 	
 	/** Scale factor for static shadows. */
-	inline float GetStaticScale() const{ return pStaticScale; }
+	inline float GetStaticScale() const{return pStaticScale;}
 	
 	/** Offset for static shadows. */
-	inline float GetStaticOffset() const{ return pStaticOffset; }
+	inline float GetStaticOffset() const{return pStaticOffset;}
 	
 	/** Set static shadows parameters. */
-	void SetStaticParams( float near, float far );
+	void SetStaticParams(float near, float far);
 	
 	
 	
 	/** Near distance for dynamic shadows. */
-	inline float GetDynamicNear() const{ return pDynamicNear; }
+	inline float GetDynamicNear() const{return pDynamicNear;}
 	
 	/** Far distance for dynamic shadows. */
-	inline float GetDynamicFar() const{ return pDynamicFar; }
+	inline float GetDynamicFar() const{return pDynamicFar;}
 	
 	/** Scale factor for dynamic shadows. */
-	inline float GetDynamicScale() const{ return pDynamicScale; }
+	inline float GetDynamicScale() const{return pDynamicScale;}
 	
 	/** Offset for dynamic shadows. */
-	inline float GetDynamicOffset() const{ return pDynamicOffset; }
+	inline float GetDynamicOffset() const{return pDynamicOffset;}
 	
 	/** Set dynamic shadows parameters. */
-	void SetDynamicParams( float near, float far );
+	void SetDynamicParams(float near, float far);
 	
 	
 	
 	/** Shadow layer count. */
-	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
+	inline int GetShadowLayerCount() const{return pShadowLayerCount;}
 	
 	/** Set shadow layer count. Clears shadow layer parameters if count changed. */
-	void SetShadowLayerCount( int count );
+	void SetShadowLayerCount(int count);
 	
 	/** Shadow layer at index. */
-	sShadowLayer &GetShadowLayerAt( int index );
-	const sShadowLayer &GetShadowLayerAt( int index ) const;
+	sShadowLayer &GetShadowLayerAt(int index);
+	const sShadowLayer &GetShadowLayerAt(int index) const;
 	/*@}*/
 };
 

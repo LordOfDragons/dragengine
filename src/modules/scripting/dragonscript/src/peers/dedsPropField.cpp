@@ -43,20 +43,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsPropField::dedsPropField( deScriptingDragonScript *ds, dePropField *propField ){
-	if( ! ds || ! propField ){
-		DSTHROW( dueInvalidParam );
+dedsPropField::dedsPropField(deScriptingDragonScript *ds, dePropField *propField){
+	if(! ds || ! propField){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	pDS = ds;
 	pPropField = propField;
 	pHasCB = false;
-	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue( ds->GetClassPropFieldListener() );
+	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue(ds->GetClassPropFieldListener());
 	pDelegee = NULL;
 }
 
 dedsPropField::~dedsPropField(){
-	if( ! pValCB ){
+	if(! pValCB){
 		return;
 	}
 	
@@ -64,11 +64,11 @@ dedsPropField::~dedsPropField(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( pPropField && pPropField->GetRefCount() > 0 ){
-		pDS->AddValueDeleteLater( pValCB );
+	if(pPropField && pPropField->GetRefCount() > 0){
+		pDS->AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS->GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = NULL;
@@ -84,25 +84,25 @@ dsRealObject *dedsPropField::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsPropField::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsPropField::SetCallback(dsRealObject *object){
+	if(! pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS->GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
-		rt.CastValueTo( pValCB, pValCB, pDS->GetClassPropFieldListener() );
+	if(object){
+		rt.SetObject(pValCB, object);
+		rt.CastValueTo(pValCB, pValCB, pDS->GetClassPropFieldListener());
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS->GetClassPropFieldListener() );
+		rt.SetNull(pValCB, pDS->GetClassPropFieldListener());
 		pHasCB = false;
 	}
 }
 
-void dedsPropField::SetDelegee( deBaseScriptingPropField *delegee ){
+void dedsPropField::SetDelegee(deBaseScriptingPropField *delegee){
 	pDelegee = delegee;
 }
 
@@ -111,23 +111,23 @@ void dedsPropField::SetDelegee( deBaseScriptingPropField *delegee ){
 // Notifications
 //////////////////
 
-void dedsPropField::CreateInstances( float density ){
-	if( pHasCB ){
+void dedsPropField::CreateInstances(float density){
+	if(pHasCB){
 		const int funcIndex = pDS->GetClassPropFieldListener()->GetFuncIndexCreateInstances();
 		dsRunTime * const rt = pDS->GetScriptEngine()->GetMainRunTime();
 		deClassPropField &clsPF = *pDS->GetClassPropField();
 		
 		try{
-			rt->PushFloat( density ); // density
-			clsPF.PushPropField( rt, pPropField ); // propfield
-			rt->RunFunctionFast( pValCB, funcIndex );
+			rt->PushFloat(density); // density
+			clsPF.PushPropField(rt, pPropField); // propfield
+			rt->RunFunctionFast(pValCB, funcIndex);
 			
-		}catch( const duException &e ){
+		}catch(const duException &e){
 			rt->PrintExceptionTrace();
 			e.PrintError();
 		}
 		
-	}else if( pDelegee ){
-		pDelegee->CreateInstances( density );
+	}else if(pDelegee){
+		pDelegee->CreateInstances(density);
 	}
 }

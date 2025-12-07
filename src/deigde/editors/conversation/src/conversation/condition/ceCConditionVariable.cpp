@@ -39,18 +39,18 @@
 ////////////////////////////
 
 ceCConditionVariable::ceCConditionVariable() :
-ceConversationCondition( ectVariable ),
-pVariable( "Variable" ),
-pOperator( eopEqual ),
-pTestValue( 0 ){
+ceConversationCondition(ectVariable),
+pVariable("Variable"),
+pOperator(eopEqual),
+pTestValue(0){
 }
 
-ceCConditionVariable::ceCConditionVariable( const ceCConditionVariable &condition ) :
-ceConversationCondition( condition ),
-pVariable( condition.pVariable ),
-pOperator( condition.pOperator ),
-pTestValue( condition.pTestValue ),
-pTestVariable( condition.pTestVariable ){
+ceCConditionVariable::ceCConditionVariable(const ceCConditionVariable &condition) :
+ceConversationCondition(condition),
+pVariable(condition.pVariable),
+pOperator(condition.pOperator),
+pTestValue(condition.pTestValue),
+pTestVariable(condition.pTestVariable){
 }
 
 ceCConditionVariable::~ceCConditionVariable(){
@@ -61,27 +61,27 @@ ceCConditionVariable::~ceCConditionVariable(){
 // Management
 ///////////////
 
-void ceCConditionVariable::SetVariable( const char *name ){
+void ceCConditionVariable::SetVariable(const char *name){
 	pVariable = name;
 }
 
-void ceCConditionVariable::SetOperator( eOperators aOperator ){
-	if( aOperator < eopEqual || aOperator > eopGreaterEqual ){
-		DETHROW( deeInvalidParam );
+void ceCConditionVariable::SetOperator(eOperators aOperator){
+	if(aOperator < eopEqual || aOperator > eopGreaterEqual){
+		DETHROW(deeInvalidParam);
 	}
 	pOperator = aOperator;
 }
 
-void ceCConditionVariable::SetTestValue( int value ){
+void ceCConditionVariable::SetTestValue(int value){
 	pTestValue = value;
 }
 
-void ceCConditionVariable::SetTestVariable( const char *variable ){
+void ceCConditionVariable::SetTestVariable(const char *variable){
 	pTestVariable = variable;
 }
 
 
 
 ceConversationCondition *ceCConditionVariable::CreateCopy() const{
-	return new ceCConditionVariable( *this );
+	return new ceCConditionVariable(*this);
 }

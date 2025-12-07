@@ -43,7 +43,7 @@ public:
 	virtual ~igdeNativeNullTreeList();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullTreeList *CreateNativeWidget( igdeTreeList &owner );
+	static igdeNativeNullTreeList *CreateNativeWidget(igdeTreeList &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -57,15 +57,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	virtual void BuildTree();
-	virtual void UpdateItem( igdeTreeItem *item );
-	virtual void MakeItemVisible( igdeTreeItem *item );
-	virtual void CreateAndInsertItem( igdeTreeItem *item );
-	virtual void CreateAndAppendItem( igdeTreeItem *item );
-	virtual void RemoveItem( igdeTreeItem *item );
-	virtual void RemoveAllItems( igdeTreeItem *parent );
-	virtual void ItemMoved( igdeTreeItem *item );
-	virtual void SelectItem( igdeTreeItem *item );
-	virtual void ItemsSortedIn( igdeTreeItem *item );
+	virtual void UpdateItem(igdeTreeItem *item);
+	virtual void MakeItemVisible(igdeTreeItem *item);
+	virtual void CreateAndInsertItem(igdeTreeItem *item);
+	virtual void CreateAndAppendItem(igdeTreeItem *item);
+	virtual void RemoveItem(igdeTreeItem *item);
+	virtual void RemoveAllItems(igdeTreeItem *parent);
+	virtual void ItemMoved(igdeTreeItem *item);
+	virtual void SelectItem(igdeTreeItem *item);
+	virtual void ItemsSortedIn(igdeTreeItem *item);
 	virtual void Focus();
 	virtual void UpdateEnabled();
 	virtual void UpdateRows();

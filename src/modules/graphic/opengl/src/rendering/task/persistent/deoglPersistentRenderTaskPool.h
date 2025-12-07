@@ -84,22 +84,22 @@ public:
 	
 	
 	/** Return owner. */
-	void ReturnOwner( deoglPersistentRenderTaskOwner *owner );
+	void ReturnOwner(deoglPersistentRenderTaskOwner *owner);
 	
 	/** Return pipeline. */
-	void ReturnPipeline( deoglPersistentRenderTaskPipeline *pipeline );
+	void ReturnPipeline(deoglPersistentRenderTaskPipeline *pipeline);
 	
 	/** Return texture. */
-	void ReturnTexture( deoglPersistentRenderTaskTexture *texture );
+	void ReturnTexture(deoglPersistentRenderTaskTexture *texture);
 	
 	/** Return VAO. */
-	void ReturnVAO( deoglPersistentRenderTaskVAO *vao );
+	void ReturnVAO(deoglPersistentRenderTaskVAO *vao);
 	
 	/** Return instance. */
-	void ReturnInstance( deoglPersistentRenderTaskInstance *instance );
+	void ReturnInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Return sub instance. */
-	void ReturnSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
+	void ReturnSubInstance(deoglPersistentRenderTaskSubInstance *subInstance);
 	/*@}*/
 	
 	

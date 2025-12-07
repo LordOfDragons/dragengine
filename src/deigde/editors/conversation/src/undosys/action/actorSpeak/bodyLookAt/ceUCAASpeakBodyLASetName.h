@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakBodyLASetName( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, const char *newName );
+	ceUCAASpeakBodyLASetName(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, const char *newName);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakBodyLASetName();
 	/*@}*/

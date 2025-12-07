@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetPathConfig( projProject *project, const char *newValue );
+	projUProjectSetPathConfig(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProjectSetPathConfig();

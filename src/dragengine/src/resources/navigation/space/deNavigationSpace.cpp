@@ -43,59 +43,59 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigationSpace::deNavigationSpace( deNavigationSpaceManager *manager ) :
-deResource( manager ),
+deNavigationSpace::deNavigationSpace(deNavigationSpaceManager *manager) :
+deResource(manager),
 
-pType( estGrid ),
-pLayer( 0 ),
+pType(estGrid),
+pLayer(0),
 
-pVertices( NULL ),
-pEdges( NULL ),
-pCorners( NULL ),
-pFaces( NULL ),
-pWalls( NULL ),
-pRooms( NULL ),
-pVertexCount( 0 ),
-pEdgeCount( 0 ),
-pCornerCount( 0 ),
-pFaceCount( 0 ),
-pWallCount( 0 ),
-pRoomCount( 0 ),
+pVertices(NULL),
+pEdges(NULL),
+pCorners(NULL),
+pFaces(NULL),
+pWalls(NULL),
+pRooms(NULL),
+pVertexCount(0),
+pEdgeCount(0),
+pCornerCount(0),
+pFaceCount(0),
+pWallCount(0),
+pRoomCount(0),
 
-pSnapDistance( 0.001f ),
-pSnapAngle( 180.0f * DEG2RAD ),
+pSnapDistance(0.001f),
+pSnapAngle(180.0f * DEG2RAD),
 
-pBlockingPriority( 0 ),
+pBlockingPriority(0),
 
-pPeerAI( NULL ),
+pPeerAI(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL){
 }
 
 deNavigationSpace::~deNavigationSpace(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		delete pPeerAI;
 		pPeerAI = NULL;
 	}
 	
-	if( pRooms ){
+	if(pRooms){
 		delete [] pRooms;
 	}
-	if( pWalls ){
+	if(pWalls){
 		delete [] pWalls;
 	}
-	if( pFaces ){
+	if(pFaces){
 		delete [] pFaces;
 	}
-	if( pCorners ){
+	if(pCorners){
 		delete [] pCorners;
 	}
-	if( pEdges ){
+	if(pEdges){
 		delete [] pEdges;
 	}
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 	}
 }
@@ -105,89 +105,89 @@ deNavigationSpace::~deNavigationSpace(){
 // Management
 ///////////////
 
-void deNavigationSpace::SetType( eSpaceTypes type ){
-	if( type < estGrid || type > estVolume ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetType(eSpaceTypes type){
+	if(type < estGrid || type > estVolume){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( type != pType ){
+	if(type != pType){
 		pType = type;
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->TypeChanged();
 		}
 	}
 }
 
-void deNavigationSpace::SetLayer( int layer ){
-	if( layer != pLayer ){
+void deNavigationSpace::SetLayer(int layer){
+	if(layer != pLayer){
 		pLayer = layer;
 		
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->LayerChanged();
 		}
 	}
 }
 
-void deNavigationSpace::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void deNavigationSpace::SetPosition(const decDVector &position){
+	if(! position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->PositionChanged();
 		}
 	}
 }
 
-void deNavigationSpace::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void deNavigationSpace::SetOrientation(const decQuaternion &orientation){
+	if(! orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->OrientationChanged();
 		}
 	}
 }
 
-void deNavigationSpace::SetSnapDistance( float distance ) {
-	if( fabsf( distance - pSnapDistance ) > FLOAT_SAFE_EPSILON ){
+void deNavigationSpace::SetSnapDistance(float distance) {
+	if(fabsf(distance - pSnapDistance) > FLOAT_SAFE_EPSILON){
 		pSnapDistance = distance;
 		
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->SnappingChanged();
 		}
 	}
 }
 
-void deNavigationSpace::SetSnapAngle( float angle ) {
-	if( fabsf( angle - pSnapAngle ) > FLOAT_SAFE_EPSILON ){
+void deNavigationSpace::SetSnapAngle(float angle) {
+	if(fabsf(angle - pSnapAngle) > FLOAT_SAFE_EPSILON){
 		pSnapAngle = angle;
 		
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->SnappingChanged();
 		}
 	}
 }
 
 void deNavigationSpace::NotifyBlockerShapeListChanged(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->BlockerShapeChanged();
 	}
 }
 
-void deNavigationSpace::SetBlockingPriority( int priority ){
-	if( priority == pBlockingPriority ){
+void deNavigationSpace::SetBlockingPriority(int priority){
+	if(priority == pBlockingPriority){
 		return;
 	}
 	
 	pBlockingPriority = priority;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->BlockingPriorityChanged();
 	}
 }
 
 void deNavigationSpace::NotifyLayoutChanged(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->LayoutChanged();
 	}
 }
@@ -201,42 +201,42 @@ bool deNavigationSpace::Verify() const{
 // Vertices
 /////////////
 
-void deNavigationSpace::SetVertexCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetVertexCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pVertexCount ){
-		if( pVertices ){
+	if(count != pVertexCount){
+		if(pVertices){
 			delete [] pVertices;
 		}
 		pVertices = NULL;
 		pVertexCount = 0;
 		
-		if( count > 0 ){
-			pVertices = new decVector[ count ];
-			if( ! pVertices ){
-				DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pVertices = new decVector[count];
+			if(! pVertices){
+				DETHROW(deeOutOfMemory);
 			}
 			pVertexCount = count;
 		}
 	}
 }
 
-const decVector &deNavigationSpace::GetVertexAt( int index ) const{
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+const decVector &deNavigationSpace::GetVertexAt(int index) const{
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pVertices[ index ];
+	return pVertices[index];
 }
 
-void deNavigationSpace::SetVertexAt( int index, const decVector &vertex ){
-	if( index < 0 || index >= pVertexCount ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetVertexAt(int index, const decVector &vertex){
+	if(index < 0 || index >= pVertexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pVertices[ index ] = vertex;
+	pVertices[index] = vertex;
 }
 
 
@@ -244,34 +244,34 @@ void deNavigationSpace::SetVertexAt( int index, const decVector &vertex ){
 // Edges
 //////////
 
-void deNavigationSpace::SetEdgeCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetEdgeCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pEdgeCount ){
-		if( pEdges ){
+	if(count != pEdgeCount){
+		if(pEdges){
 			delete [] pEdges;
 		}
 		pEdges = NULL;
 		pEdgeCount = 0;
 		
-		if( count > 0 ){
-			pEdges = new deNavigationSpaceEdge[ count ];
-			if( ! pEdges ){
-				DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pEdges = new deNavigationSpaceEdge[count];
+			if(! pEdges){
+				DETHROW(deeOutOfMemory);
 			}
 			pEdgeCount = count;
 		}
 	}
 }
 
-deNavigationSpaceEdge &deNavigationSpace::GetEdgeAt( int index ) const{
-	if( index < 0 || index >= pEdgeCount ){
-		DETHROW( deeInvalidParam );
+deNavigationSpaceEdge &deNavigationSpace::GetEdgeAt(int index) const{
+	if(index < 0 || index >= pEdgeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pEdges[ index ];
+	return pEdges[index];
 }
 
 
@@ -279,34 +279,34 @@ deNavigationSpaceEdge &deNavigationSpace::GetEdgeAt( int index ) const{
 // Corners
 ////////////
 
-void deNavigationSpace::SetCornerCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetCornerCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pCornerCount ){
-		if( pCorners ){
+	if(count != pCornerCount){
+		if(pCorners){
 			delete [] pCorners;
 		}
 		pCorners = NULL;
 		pCornerCount = 0;
 		
-		if( count > 0 ){
-			pCorners = new deNavigationSpaceCorner[ count ];
-			if( ! pCorners ){
-				DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pCorners = new deNavigationSpaceCorner[count];
+			if(! pCorners){
+				DETHROW(deeOutOfMemory);
 			}
 			pCornerCount = count;
 		}
 	}
 }
 
-deNavigationSpaceCorner &deNavigationSpace::GetCornerAt( int index ) const{
-	if( index < 0 || index >= pCornerCount ){
-		DETHROW( deeInvalidParam );
+deNavigationSpaceCorner &deNavigationSpace::GetCornerAt(int index) const{
+	if(index < 0 || index >= pCornerCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pCorners[ index ];
+	return pCorners[index];
 }
 
 
@@ -314,34 +314,34 @@ deNavigationSpaceCorner &deNavigationSpace::GetCornerAt( int index ) const{
 // Faces
 //////////
 
-void deNavigationSpace::SetFaceCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetFaceCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pFaceCount ){
-		if( pFaces ){
+	if(count != pFaceCount){
+		if(pFaces){
 			delete [] pFaces;
 		}
 		pFaces = NULL;
 		pFaceCount = 0;
 		
-		if( count > 0 ){
-			pFaces = new deNavigationSpaceFace[ count ];
-			if( ! pFaces ){
-				DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pFaces = new deNavigationSpaceFace[count];
+			if(! pFaces){
+				DETHROW(deeOutOfMemory);
 			}
 			pFaceCount = count;
 		}
 	}
 }
 
-deNavigationSpaceFace &deNavigationSpace::GetFaceAt( int index ) const{
-	if( index < 0 || index >= pFaceCount ){
-		DETHROW( deeInvalidParam );
+deNavigationSpaceFace &deNavigationSpace::GetFaceAt(int index) const{
+	if(index < 0 || index >= pFaceCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pFaces[ index ];
+	return pFaces[index];
 }
 
 
@@ -349,34 +349,34 @@ deNavigationSpaceFace &deNavigationSpace::GetFaceAt( int index ) const{
 // Walls
 //////////
 
-void deNavigationSpace::SetWallCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetWallCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pWallCount ){
-		if( pWalls ){
+	if(count != pWallCount){
+		if(pWalls){
 			delete [] pWalls;
 		}
 		pWalls = NULL;
 		pWallCount = 0;
 		
-		if( count > 0 ){
-			pWalls = new deNavigationSpaceWall[ count ];
-			if( ! pWalls ){
-				DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pWalls = new deNavigationSpaceWall[count];
+			if(! pWalls){
+				DETHROW(deeOutOfMemory);
 			}
 			pWallCount = count;
 		}
 	}
 }
 
-deNavigationSpaceWall &deNavigationSpace::GetWallAt( int index ) const{
-	if( index < 0 || index >= pWallCount ){
-		DETHROW( deeInvalidParam );
+deNavigationSpaceWall &deNavigationSpace::GetWallAt(int index) const{
+	if(index < 0 || index >= pWallCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pWalls[ index ];
+	return pWalls[index];
 }
 
 
@@ -384,34 +384,34 @@ deNavigationSpaceWall &deNavigationSpace::GetWallAt( int index ) const{
 // Rooms
 //////////
 
-void deNavigationSpace::SetRoomCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deNavigationSpace::SetRoomCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pRoomCount ){
-		if( pRooms ){
+	if(count != pRoomCount){
+		if(pRooms){
 			delete [] pRooms;
 		}
 		pRooms = NULL;
 		pRoomCount = 0;
 		
-		if( count > 0 ){
-			pRooms = new deNavigationSpaceRoom[ count ];
-			if( ! pRooms ){
-				DETHROW( deeOutOfMemory );
+		if(count > 0){
+			pRooms = new deNavigationSpaceRoom[count];
+			if(! pRooms){
+				DETHROW(deeOutOfMemory);
 			}
 			pRoomCount = count;
 		}
 	}
 }
 
-deNavigationSpaceRoom &deNavigationSpace::GetRoomAt( int index ) const{
-	if( index < 0 || index >= pRoomCount ){
-		DETHROW( deeInvalidParam );
+deNavigationSpaceRoom &deNavigationSpace::GetRoomAt(int index) const{
+	if(index < 0 || index >= pRoomCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pRooms[ index ];
+	return pRooms[index];
 }
 
 
@@ -419,8 +419,8 @@ deNavigationSpaceRoom &deNavigationSpace::GetRoomAt( int index ) const{
 // System Peers
 /////////////////
 
-void deNavigationSpace::SetPeerAI( deBaseAINavigationSpace *peer ){
-	if( pPeerAI ){
+void deNavigationSpace::SetPeerAI(deBaseAINavigationSpace *peer){
+	if(pPeerAI){
 		delete pPeerAI;
 	}
 	pPeerAI = peer;
@@ -431,14 +431,14 @@ void deNavigationSpace::SetPeerAI( deBaseAINavigationSpace *peer ){
 // Linked List
 ////////////////
 
-void deNavigationSpace::SetParentWorld( deWorld *world ){
+void deNavigationSpace::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deNavigationSpace::SetLLWorldPrev( deNavigationSpace *navspace ){
+void deNavigationSpace::SetLLWorldPrev(deNavigationSpace *navspace){
 	pLLWorldPrev = navspace;
 }
 
-void deNavigationSpace::SetLLWorldNext( deNavigationSpace *navspace ){
+void deNavigationSpace::SetLLWorldNext(deNavigationSpace *navspace){
 	pLLWorldNext = navspace;
 }

@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpClosestRayResultCallback::debpClosestRayResultCallback( const btVector3 &rayFromWorld,
-const btVector3 &rayToWorld, const decCollisionFilter *collisionFilter ) :
-ClosestRayResultCallback( rayFromWorld, rayToWorld ),
-pCollisionFilter( collisionFilter ){
+debpClosestRayResultCallback::debpClosestRayResultCallback(const btVector3 &rayFromWorld,
+const btVector3 &rayToWorld, const decCollisionFilter *collisionFilter) :
+ClosestRayResultCallback(rayFromWorld, rayToWorld),
+pCollisionFilter(collisionFilter){
 }
 
 
@@ -56,20 +56,20 @@ pCollisionFilter( collisionFilter ){
 // Overwriting
 ////////////////
 
-bool debpClosestRayResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const{
-	if( ! btCollisionWorld::RayResultCallback::needsCollision( proxy0 ) ){
+bool debpClosestRayResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
+	if(! btCollisionWorld::RayResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
-	const btCollisionObject &collisionObject = *( ( btCollisionObject* )proxy0->m_clientObject );
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )collisionObject.getUserPointer() );
+	const btCollisionObject &collisionObject = *((btCollisionObject*)proxy0->m_clientObject);
+	const debpCollisionObject &colObj = *((debpCollisionObject*)collisionObject.getUserPointer());
 	
-	if( colObj.IsOwnerCollider() ){
-		return pCollisionFilter->Collides( colObj.GetOwnerCollider()->GetCollider().GetCollisionFilter() );
+	if(colObj.IsOwnerCollider()){
+		return pCollisionFilter->Collides(colObj.GetOwnerCollider()->GetCollider().GetCollisionFilter());
 		
-	}else if( colObj.IsOwnerHTSector() ){
-		return pCollisionFilter->Collides( colObj.GetOwnerHTSector()->GetHeightTerrain()
-			->GetHeightTerrain()->GetCollisionFilter() );
+	}else if(colObj.IsOwnerHTSector()){
+		return pCollisionFilter->Collides(colObj.GetOwnerHTSector()->GetHeightTerrain()
+			->GetHeightTerrain()->GetCollisionFilter());
 	}
 	
 	// all other combinations score no collision

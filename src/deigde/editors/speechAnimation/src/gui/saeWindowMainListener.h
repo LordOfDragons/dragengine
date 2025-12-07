@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	saeWindowMainListener( saeWindowMain &window );
+	saeWindowMainListener(saeWindowMain &window);
 	
 	/** Clean up listener. */
 	virtual ~saeWindowMainListener();
@@ -55,32 +55,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( saeSAnimation *sanimation );
+	virtual void StateChanged(saeSAnimation *sanimation);
 	
 	/** Undo changed. */
-	virtual void UndoChanged( saeSAnimation *sanimation );
+	virtual void UndoChanged(saeSAnimation *sanimation);
 	
 	/** View properties changed. */
-	virtual void ViewChanged( saeSAnimation *sanimation );
+	virtual void ViewChanged(saeSAnimation *sanimation);
 	
 	/** Speech animation changed. */
-	virtual void SAnimationChanged( saeSAnimation *sanimation );
+	virtual void SAnimationChanged(saeSAnimation *sanimation);
 	
 	
 	
 	/** Phoneme count or order changed. */
-	virtual void PhonemeStructureChanged( saeSAnimation *sanimation );
+	virtual void PhonemeStructureChanged(saeSAnimation *sanimation);
 	
 	/** Active phoneme changed. */
-	virtual void ActivePhonemeChanged( saeSAnimation *sanimation );
+	virtual void ActivePhonemeChanged(saeSAnimation *sanimation);
 	
 	
 	
 	/** Word count or order changed. */
-	virtual void WordStructureChanged( saeSAnimation *sanimation );
+	virtual void WordStructureChanged(saeSAnimation *sanimation);
 	
 	/** Active word changed. */
-	virtual void ActiveWordChanged( saeSAnimation *sanimation );
+	virtual void ActiveWordChanged(saeSAnimation *sanimation);
 	/*@}*/
 };
 

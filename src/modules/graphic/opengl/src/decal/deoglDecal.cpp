@@ -48,34 +48,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDecal::deoglDecal( deGraphicOpenGl &ogl, const deDecal &decal ) :
-pOgl( ogl ),
-pDecal( decal ),
-pRDecal( NULL ),
+deoglDecal::deoglDecal(deGraphicOpenGl &ogl, const deDecal &decal) :
+pOgl(ogl),
+pDecal(decal),
+pRDecal(NULL),
 
-pDynamicSkin( NULL ),
+pDynamicSkin(NULL),
 
-pDirtyVBO( true ),
-pDirtyGeometry( true ),
-pDirtyTransform( true ),
-pDirtySkin( true ),
-pDirtyDynamicSkin( true ),
-pDirtyVisibility( true ),
-pDirtyParamBlocks( false ),
-pDirtyRenderableMapping( true ),
-pDirtyStaticTexture( true ),
+pDirtyVBO(true),
+pDirtyGeometry(true),
+pDirtyTransform(true),
+pDirtySkin(true),
+pDirtyDynamicSkin(true),
+pDirtyVisibility(true),
+pDirtyParamBlocks(false),
+pDirtyRenderableMapping(true),
+pDirtyStaticTexture(true),
 
-pDynamicSkinRequiresSync( true ),
+pDynamicSkinRequiresSync(true),
 
-pNotifyTextureChanged( false ),
-pNotifyTUCChanged( false ),
+pNotifyTextureChanged(false),
+pNotifyTUCChanged(false),
 
-pParentComponent( NULL )
+pParentComponent(NULL)
 {
 	try{
-		pRDecal = new deoglRDecal( ogl.GetRenderThread() );
+		pRDecal = new deoglRDecal(ogl.GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -91,27 +91,27 @@ deoglDecal::~deoglDecal(){
 ///////////////
 
 void deoglDecal::SyncToRender(){
-	if( pDirtyGeometry ){
-		pRDecal->SetPosition( pDecal.GetPosition() );
-		pRDecal->SetOrientation( pDecal.GetOrientation() );
-		pRDecal->SetSize( pDecal.GetSize() );
+	if(pDirtyGeometry){
+		pRDecal->SetPosition(pDecal.GetPosition());
+		pRDecal->SetOrientation(pDecal.GetOrientation());
+		pRDecal->SetSize(pDecal.GetSize());
 		pDirtyGeometry = false;
 	}
 	
-	if( pDirtyTransform ){
-		pRDecal->SetTransform( pDecal.GetTransform() );
+	if(pDirtyTransform){
+		pRDecal->SetTransform(pDecal.GetTransform());
 		pDirtyTransform = false;
 	}
 	
-	if( pDirtyVisibility ){
-		pRDecal->SetVisible( pDecal.GetVisible() );
+	if(pDirtyVisibility){
+		pRDecal->SetVisible(pDecal.GetVisible());
 		pDirtyVisibility = false;
 	}
 	
 	pSyncSkin();
 	pSyncDynamicSkin();
 	
-	if( pDirtyRenderableMapping ){
+	if(pDirtyRenderableMapping){
 		pDirtyRenderableMapping = false;
 		pRDecal->UpdateRenderableMapping();
 		
@@ -125,27 +125,27 @@ void deoglDecal::SyncToRender(){
 		pNotifyTextureChanged = true;
 	}
 	
-	if( pDirtyVBO ){
+	if(pDirtyVBO){
 		pDirtyVBO = false;
 		pRDecal->SetDirtyVBO();
 		pRDecal->SetDirtyGIBVH();
 		pRDecal->NotifyGeometryChanged();
 	}
 	
-	if( pDirtyParamBlocks ){
+	if(pDirtyParamBlocks){
 		pDirtyParamBlocks = false;
 		pRDecal->MarkParamBlocksDirty();
 	}
 	
-	if( pDirtyStaticTexture ){
+	if(pDirtyStaticTexture){
 		pDirtyStaticTexture = false;
 		pRDecal->UpdateStaticTexture();
 	}
-	if( pNotifyTextureChanged ){
+	if(pNotifyTextureChanged){
 		pNotifyTextureChanged = false;
 		pRDecal->NotifyTextureChanged();
 	}
-	if( pNotifyTUCChanged ){
+	if(pNotifyTUCChanged){
 		pNotifyTUCChanged = false;
 		pRDecal->NotifyTUCChanged();
 	}
@@ -153,7 +153,7 @@ void deoglDecal::SyncToRender(){
 
 
 
-void deoglDecal::SetParentComponent( deoglComponent *component ){
+void deoglDecal::SetParentComponent(deoglComponent *component){
 	pParentComponent = component;
 }
 
@@ -175,7 +175,7 @@ void deoglDecal::DynamicSkinRenderablesChanged(){
 	pRequiresSync();
 }
 
-void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+void deoglDecal::DynamicSkinRenderableChanged(deoglDSRenderable&){
 	pDynamicSkinRequiresSync = true;
 	pDirtyRenderableMapping = true;
 	pDirtyStaticTexture = true;
@@ -184,7 +184,7 @@ void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable& ){
 	pRequiresSync();
 }
 
-void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+void deoglDecal::DynamicSkinRenderableRequiresSync(deoglDSRenderable&){
 	pDynamicSkinRequiresSync = true;
 	pDirtyStaticTexture = true;
 	pNotifyTextureChanged = true;
@@ -221,13 +221,13 @@ void deoglDecal::SkinChanged(){
 }
 
 void deoglDecal::DynamicSkinChanged(){
-	if( pDynamicSkin ){
-		pDynamicSkin->RemoveListener( this );
+	if(pDynamicSkin){
+		pDynamicSkin->RemoveListener(this);
 	}
 	
-	if( pDecal.GetDynamicSkin() ){
-		pDynamicSkin = ( deoglDynamicSkin* )pDecal.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->AddListener( this );
+	if(pDecal.GetDynamicSkin()){
+		pDynamicSkin = (deoglDynamicSkin*)pDecal.GetDynamicSkin()->GetPeerGraphic();
+		pDynamicSkin->AddListener(this);
 		
 	}else{
 		pDynamicSkin = NULL;
@@ -255,27 +255,27 @@ void deoglDecal::VisibleChanged(){
 //////////////////////
 
 void deoglDecal::pCleanUp(){
-	if( pRDecal ){
+	if(pRDecal){
 		pRDecal->FreeReference();
 	}
 	
-	if( pDynamicSkin ){
-		pDynamicSkin->RemoveListener( this );
+	if(pDynamicSkin){
+		pDynamicSkin->RemoveListener(this);
 	}
 }
 
 
 
 void deoglDecal::pSyncSkin(){
-	if( ! pDirtySkin ){
+	if(! pDirtySkin){
 		return;
 	}
 	
-	if( pDecal.GetSkin() ){
-		pRDecal->SetSkin( ( ( deoglSkin* )pDecal.GetSkin()->GetPeerGraphic() )->GetRSkin() );
+	if(pDecal.GetSkin()){
+		pRDecal->SetSkin(((deoglSkin*)pDecal.GetSkin()->GetPeerGraphic())->GetRSkin());
 		
 	}else{
-		pRDecal->SetSkin( NULL );
+		pRDecal->SetSkin(NULL);
 	}
 	
 	pDirtySkin = false;
@@ -284,20 +284,20 @@ void deoglDecal::pSyncSkin(){
 }
 
 void deoglDecal::pSyncDynamicSkin(){
-	if( pDirtyDynamicSkin ){
-		if( pDynamicSkin ){
-			pRDecal->SetDynamicSkin( pDynamicSkin->GetRDynamicSkin() );
+	if(pDirtyDynamicSkin){
+		if(pDynamicSkin){
+			pRDecal->SetDynamicSkin(pDynamicSkin->GetRDynamicSkin());
 			
 		}else{
-			pRDecal->SetDynamicSkin( NULL );
+			pRDecal->SetDynamicSkin(NULL);
 		}
 		
 		pDirtyDynamicSkin = false;
 	}
 	
-	if( pDynamicSkinRequiresSync ){
+	if(pDynamicSkinRequiresSync){
 		pDynamicSkinRequiresSync = false;
-		if( pDynamicSkin ){
+		if(pDynamicSkin){
 			pDynamicSkin->SyncToRender();
 		}
 	}
@@ -306,7 +306,7 @@ void deoglDecal::pSyncDynamicSkin(){
 
 
 void deoglDecal::pRequiresSync(){
-	if( pParentComponent ){
+	if(pParentComponent){
 		pParentComponent->DecalRequiresSync();
 	}
 }

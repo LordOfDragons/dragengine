@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerSetMaximumValue( aeController *controller, float newValue );
+	aeUControllerSetMaximumValue(aeController *controller, float newValue);
 	
 protected:
 	/** Clean up undo. */

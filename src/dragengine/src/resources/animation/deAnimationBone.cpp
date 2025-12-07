@@ -49,6 +49,6 @@ deAnimationBone::~deAnimationBone(){
 // management
 ///////////////
 
-void deAnimationBone::SetName( const char *name ){
+void deAnimationBone::SetName(const char *name){
 	pName = name;
 }

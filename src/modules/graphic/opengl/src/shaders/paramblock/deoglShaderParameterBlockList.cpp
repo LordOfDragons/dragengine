@@ -55,24 +55,24 @@ int deoglShaderParameterBlockList::GetCount() const{
 	return pList.GetCount();
 }
 
-deoglShaderParameterBlock *deoglShaderParameterBlockList::GetAt( int index ) const{
-	return ( deoglShaderParameterBlock* )pList.GetAt( index );
+deoglShaderParameterBlock *deoglShaderParameterBlockList::GetAt(int index) const{
+	return (deoglShaderParameterBlock*)pList.GetAt(index);
 }
 
-int deoglShaderParameterBlockList::IndexOf( deoglShaderParameterBlock *block ) const{
-	return pList.IndexOf( block );
+int deoglShaderParameterBlockList::IndexOf(deoglShaderParameterBlock *block) const{
+	return pList.IndexOf(block);
 }
 
-bool deoglShaderParameterBlockList::Has( deoglShaderParameterBlock *block ) const{
-	return pList.Has( block );
+bool deoglShaderParameterBlockList::Has(deoglShaderParameterBlock *block) const{
+	return pList.Has(block);
 }
 
-void deoglShaderParameterBlockList::Add( deoglShaderParameterBlock *block ){
-	pList.Add( block );
+void deoglShaderParameterBlockList::Add(deoglShaderParameterBlock *block){
+	pList.Add(block);
 }
 
-void deoglShaderParameterBlockList::Remove( deoglShaderParameterBlock *block ){
-	pList.RemoveFrom( pList.IndexOf( block ) );
+void deoglShaderParameterBlockList::Remove(deoglShaderParameterBlock *block){
+	pList.RemoveFrom(pList.IndexOf(block));
 }
 
 void deoglShaderParameterBlockList::RemoveAll(){

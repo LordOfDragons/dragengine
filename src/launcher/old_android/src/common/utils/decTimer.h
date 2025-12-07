@@ -46,10 +46,10 @@
  */
 class decTimer{
 private:
-#if defined( OS_UNIX )
+#if defined(OS_UNIX)
 	time_t pLastSec;
 	suseconds_t pLastUSec;
-#elif defined( OS_W32 )
+#elif defined(OS_W32)
 	DWORD pLastTime;
 #endif
 public:

@@ -61,22 +61,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Resource type. */
-	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
+	inline deResourceLoader::eResourceType GetResourceType() const{return pResourceType;}
 	
 	/** \brief Set resource type. */
-	void SetResourceType( deResourceLoader::eResourceType resourceType );
+	void SetResourceType(deResourceLoader::eResourceType resourceType);
 	
 	/** \brief Resource or NULL if not ready yet. */
-	inline deFileResource *GetResource() const{ return pResource; }
+	inline deFileResource *GetResource() const{return pResource;}
 	
 	/** \brief Set resource or NULL if not ready yet. */
-	void SetResource( deFileResource *resource );
+	void SetResource(deFileResource *resource);
 	/*@}*/
 };
 

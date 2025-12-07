@@ -56,14 +56,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-feGenerateFont::feGenerateFont( igdeEnvironment &environment ) :
-pEnvironment( environment ),
-pFirstCode( 32 ),
-pLastCode( 255 ),
-pMinImageWidth( 64 ),
-pMaxImageWidth( 1024 ),
-pBorderSize( 1 ),
-pEnlargeGlyph( 0 ){
+feGenerateFont::feGenerateFont(igdeEnvironment &environment) :
+pEnvironment(environment),
+pFirstCode(32),
+pLastCode(255),
+pMinImageWidth(64),
+pMaxImageWidth(1024),
+pBorderSize(1),
+pEnlargeGlyph(0){
 }
 
 feGenerateFont::~feGenerateFont(){
@@ -74,30 +74,30 @@ feGenerateFont::~feGenerateFont(){
 // Management
 ///////////////
 
-void feGenerateFont::SetFontConfig( const igdeFont::sConfiguration &config ){
+void feGenerateFont::SetFontConfig(const igdeFont::sConfiguration &config){
 	pFontConfig = config;
 }
 
-void feGenerateFont::SetCodeRange( int first, int last ){
-	if( first < 0 || last < 0 || first > last ){
-		DETHROW( deeInvalidParam );
+void feGenerateFont::SetCodeRange(int first, int last){
+	if(first < 0 || last < 0 || first > last){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pFirstCode = first;
 	pLastCode = last;
 }
 
-void feGenerateFont::SetBorderSize( int borderSize ){
-	if( borderSize < 0 ){
-		DETHROW( deeInvalidParam );
+void feGenerateFont::SetBorderSize(int borderSize){
+	if(borderSize < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBorderSize = borderSize;
 }
 
-void feGenerateFont::SetEnlargeGlpyh( int enlarge ){
-	if( enlarge < 0 ){
-		DETHROW( deeInvalidParam );
+void feGenerateFont::SetEnlargeGlpyh(int enlarge){
+	if(enlarge < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEnlargeGlyph = enlarge;
@@ -106,16 +106,16 @@ void feGenerateFont::SetEnlargeGlpyh( int enlarge ){
 
 
 feFont* feGenerateFont::GenerateFont(){
-	pSystemFont = pEnvironment.GetSharedFont( pFontConfig )->GetEngineFont();
+	pSystemFont = pEnvironment.GetSharedFont(pFontConfig)->GetEngineFont();
 	
 	const feFont::Ref font(feFont::Ref::NewWith(&pEnvironment));
 	
-	font->SetLineHeight( pSystemFont->GetLineHeight() + pEnlargeGlyph * 2 );
+	font->SetLineHeight(pSystemFont->GetLineHeight() + pEnlargeGlyph * 2);
 	font->SetBaseLine(pSystemFont->GetBaseLine());
 	
-	pAddGlyphs( *font );
-	pCalcLayout( *font );
-	pRenderImage( *font );
+	pAddGlyphs(*font);
+	pCalcLayout(*font);
+	pRenderImage(*font);
 	
 	font->AddReference(); // caller takes over reference
 	return font;
@@ -126,31 +126,31 @@ feFont* feGenerateFont::GenerateFont(){
 // Private Functions
 //////////////////////
 
-void feGenerateFont::pAddGlyphs( feFont &font ){
+void feGenerateFont::pAddGlyphs(feFont &font){
 	int i;
 	
-	for( i=pFirstCode; i<=pLastCode; i++ ){
-		if( ! pSystemFont->HasGlyph( i ) ){
+	for(i=pFirstCode; i<=pLastCode; i++){
+		if(! pSystemFont->HasGlyph(i)){
 			continue;
 		}
 		
-		const deFontGlyph &sfGlyph = pSystemFont->GetGlyph( i );
+		const deFontGlyph &sfGlyph = pSystemFont->GetGlyph(i);
 		
 		const feFontGlyph::Ref glyph(feFontGlyph::Ref::NewWith());
-		glyph->SetCode( i );
-		glyph->SetU( 0 );
-		glyph->SetV( 0 );
-		glyph->SetWidth( sfGlyph.GetWidth() + pEnlargeGlyph * 2 );
+		glyph->SetCode(i);
+		glyph->SetU(0);
+		glyph->SetV(0);
+		glyph->SetWidth(sfGlyph.GetWidth() + pEnlargeGlyph * 2);
 		glyph->SetHeight(sfGlyph.GetHeight() + pEnlargeGlyph * 2);
-		glyph->SetBearing( sfGlyph.GetBearing() + pEnlargeGlyph );
+		glyph->SetBearing(sfGlyph.GetBearing() + pEnlargeGlyph);
 		glyph->SetBearingY(sfGlyph.GetBearingY() + pEnlargeGlyph);
-		glyph->SetAdvance( glyph->GetWidth() );
+		glyph->SetAdvance(glyph->GetWidth());
 		
-		font.AddGlyph( glyph );
+		font.AddGlyph(glyph);
 	}
 }
 
-void feGenerateFont::pCalcLayout( feFont &font ){
+void feGenerateFont::pCalcLayout(feFont &font){
 	const int lineHeight = font.GetLineHeight();
 	deLogger &logger = *pEnvironment.GetLogger();
 	int g, glyphCount = font.GetGlyphCount();
@@ -160,55 +160,55 @@ void feGenerateFont::pCalcLayout( feFont &font ){
 	int fullWidth = pBorderSize;
 	int maxGlyphWidth = 0;
 	
-	for( g=0; g<glyphCount; g++ ){
-		const feFontGlyph &glyph = *font.GetGlyphAt( g );
-		maxGlyphWidth = decMath::max( maxGlyphWidth, glyph.GetWidth() );
+	for(g=0; g<glyphCount; g++){
+		const feFontGlyph &glyph = *font.GetGlyphAt(g);
+		maxGlyphWidth = decMath::max(maxGlyphWidth, glyph.GetWidth());
 		fullWidth += glyph.GetWidth() + pBorderSize;
 	}
 	
-	logger.LogInfoFormat( LOGSOURCE, "Calculate layout: fullWidth=%i maxGlyphWidth=%i", fullWidth, maxGlyphWidth );
+	logger.LogInfoFormat(LOGSOURCE, "Calculate layout: fullWidth=%i maxGlyphWidth=%i", fullWidth, maxGlyphWidth);
 // 	maxGlyphWidth = ( int )( ( float )maxGlyphWidth * 0.75f );
 	
 	// determine the smallest image width where the glyph line can be
 	// wrapped to so that the height does not exceed the image width
 	// ( hence the glyphs would all fit into a square texture )
 	imageHeight = 0; // to stop compiler from complaining
-	for( imageWidth=pMinImageWidth; imageWidth<=pMaxImageWidth; imageWidth<<=1 ){
-		imageHeight = lineHeight * ( ( fullWidth - maxGlyphWidth ) / imageWidth + 1 );
-		logger.LogInfoFormat( LOGSOURCE, "Testing image size %ix%i", imageWidth, imageHeight );
-		if( imageHeight <= imageWidth ) break;
+	for(imageWidth=pMinImageWidth; imageWidth<=pMaxImageWidth; imageWidth<<=1){
+		imageHeight = lineHeight * ((fullWidth - maxGlyphWidth) / imageWidth + 1);
+		logger.LogInfoFormat(LOGSOURCE, "Testing image size %ix%i", imageWidth, imageHeight);
+		if(imageHeight <= imageWidth) break;
 	}
-	logger.LogInfoFormat( LOGSOURCE, "Using image size %ix%i", imageWidth, imageHeight );
+	logger.LogInfoFormat(LOGSOURCE, "Using image size %ix%i", imageWidth, imageHeight);
 	
 	// layout the glyphs using the found image width
 	int u = pBorderSize;
 	int v = pBorderSize;
 	
-	for( g=0; g<glyphCount; g++ ){
-		feFontGlyph &glyph = *font.GetGlyphAt( g );
+	for(g=0; g<glyphCount; g++){
+		feFontGlyph &glyph = *font.GetGlyphAt(g);
 		
 		const int width = glyph.GetWidth();
 		
-		if( u + width > imageWidth ){
+		if(u + width > imageWidth){
 			u = pBorderSize;
 			v += lineHeight + pBorderSize;
 		}
 		
-		glyph.SetU( u );
-		glyph.SetV( v );
+		glyph.SetU(u);
+		glyph.SetV(v);
 		
 		u += width + pBorderSize;
 	}
 	
 	// determine a matching image height for the generated layout
 	imageHeight = v + lineHeight + pBorderSize;
-	logger.LogInfoFormat( LOGSOURCE, "Final image size %ix%i", imageWidth, imageHeight );
+	logger.LogInfoFormat(LOGSOURCE, "Final image size %ix%i", imageWidth, imageHeight);
 	
 	// set the image size which also creates the image to draw in the next step
-	font.GetFontImage()->SetSize( imageWidth, imageHeight );
+	font.GetFontImage()->SetSize(imageWidth, imageHeight);
 }
 
-void feGenerateFont::pRenderImage( feFont &font ){
+void feGenerateFont::pRenderImage(feFont &font){
 	const int sysFontLineHeight = pSystemFont->GetLineHeight();
 	const deImage &sysFontImage = *pSystemFont->GetImage();
 	feFontImage &fontImage = *font.GetFontImage();
@@ -224,31 +224,31 @@ void feGenerateFont::pRenderImage( feFont &font ){
 	const sRGBA8 * const sysFontImageData = sysFontImage.GetDataRGBA8();
 	sRGBA8 * const imageData = engImage.GetDataRGBA8();
 	
-	for( i=0; i<pixelCount; i++ ){
-		imageData[ i ].red = 0;
-		imageData[ i ].green = 0;
-		imageData[ i ].blue = 0;
-		imageData[ i ].alpha = 0;
+	for(i=0; i<pixelCount; i++){
+		imageData[i].red = 0;
+		imageData[i].green = 0;
+		imageData[i].blue = 0;
+		imageData[i].alpha = 0;
 	}
 	
 	// copy glyphs at their stored location using solid white
-	for( i=0; i<glyphCount; i++ ){
-		const feFontGlyph &glyph = *font.GetGlyphAt( i );
+	for(i=0; i<glyphCount; i++){
+		const feFontGlyph &glyph = *font.GetGlyphAt(i);
 		const int left = glyph.GetU() + pEnlargeGlyph;
 		const int top = glyph.GetV() + pEnlargeGlyph;
 		
-		const deFontGlyph &sfGlyph = pSystemFont->GetGlyph( glyph.GetCode() );
+		const deFontGlyph &sfGlyph = pSystemFont->GetGlyph(glyph.GetCode());
 		const int srcLeft = sfGlyph.GetX();
 		const int srcRight = srcLeft + sfGlyph.GetWidth();
 		const int srcTop = sfGlyph.GetY();
 		const int srcBottom = srcTop + sysFontLineHeight;
 		
-		for( dy=top, sy=srcTop; sy<srcBottom; dy++, sy++ ){
+		for(dy=top, sy=srcTop; sy<srcBottom; dy++, sy++){
 			const sRGBA8 * const sysFontImageDataLine = sysFontImageData + sysFontImage.GetWidth() * sy;
 			sRGBA8 * const imageDataLine = imageData + imageWidth * dy;
 			
-			for( dx=left, sx=srcLeft; sx<srcRight; dx++, sx++ ){
-				imageDataLine[ dx ] = sysFontImageDataLine[ sx ];
+			for(dx=left, sx=srcLeft; sx<srcRight; dx++, sx++){
+				imageDataLine[dx] = sysFontImageDataLine[sx];
 			}
 		}
 	}

@@ -37,21 +37,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBPConstraint6DofSpring::debpBPConstraint6DofSpring( debpColliderConstraint &constraint,
-btRigidBody &rbA, btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB ) :
-btGeneric6DofSpringConstraint( rbA, rbB, frameInA, frameInB, true ),
-pConstraint( constraint )
+debpBPConstraint6DofSpring::debpBPConstraint6DofSpring(debpColliderConstraint &constraint,
+btRigidBody &rbA, btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB) :
+btGeneric6DofSpringConstraint(rbA, rbB, frameInA, frameInB, true),
+pConstraint(constraint)
 {
 	(void)pConstraint; // for future use
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
-debpBPConstraint6DofSpring::debpBPConstraint6DofSpring( debpColliderConstraint &constraint,
-btRigidBody &rbA, const btTransform &frameInA, const btTransform &frameInB ) :
-btGeneric6DofSpringConstraint( rbA, getFixedBody(), frameInA, frameInB, true ),
-pConstraint( constraint )
+debpBPConstraint6DofSpring::debpBPConstraint6DofSpring(debpColliderConstraint &constraint,
+btRigidBody &rbA, const btTransform &frameInA, const btTransform &frameInB) :
+btGeneric6DofSpringConstraint(rbA, getFixedBody(), frameInA, frameInB, true),
+pConstraint(constraint)
 {
-	setUserConstraintPtr( ( debpBPConstraintBase* )this );
+	setUserConstraintPtr((debpBPConstraintBase*)this);
 }
 
 debpBPConstraint6DofSpring::~debpBPConstraint6DofSpring(){
@@ -62,12 +62,12 @@ debpBPConstraint6DofSpring::~debpBPConstraint6DofSpring(){
 // Management
 ///////////////
 
-void debpBPConstraint6DofSpring::SetMotorIndices( int x, int y, int z ){
+void debpBPConstraint6DofSpring::SetMotorIndices(int x, int y, int z){
 	pIndexMotorX = x;
 	pIndexMotorY = y;
 	pIndexMotorZ = z;
 }
 
-void debpBPConstraint6DofSpring::getInfo2( btTypedConstraint::btConstraintInfo2 *info ){
-	btGeneric6DofSpringConstraint::getInfo2( info );
+void debpBPConstraint6DofSpring::getInfo2(btTypedConstraint::btConstraintInfo2 *info){
+	btGeneric6DofSpringConstraint::getInfo2(info);
 }

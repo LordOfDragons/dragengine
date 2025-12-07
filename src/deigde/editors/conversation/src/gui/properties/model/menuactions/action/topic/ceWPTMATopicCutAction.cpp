@@ -45,13 +45,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMATopicCutAction::ceWPTMATopicCutAction( ceWindowMain &windowMain,
+ceWPTMATopicCutAction::ceWPTMATopicCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceConversationAction *action ) :
-ceWPTMACopyAction( windowMain, action, "Cut Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ){
+ceConversationAction *action) :
+ceWPTMACopyAction(windowMain, action, "Cut Action",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic){
 }
 
 
@@ -64,6 +64,6 @@ void ceWPTMATopicCutAction::OnAction(){
 	
 	// remove
 	ceUCActionRemove::Ref undo(ceUCActionRemove::Ref::NewWith(pTopic, GetAction()));
-	undo->SetShortInfo( "Cut Action" );
-	pConversation->GetUndoSystem()->Add( undo );
+	undo->SetShortInfo("Cut Action");
+	pConversation->GetUndoSystem()->Add(undo);
 }

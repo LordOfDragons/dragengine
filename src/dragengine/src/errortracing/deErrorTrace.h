@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Error. */
-	inline const decString &GetError() const{ return pError; }
+	inline const decString &GetError() const{return pError;}
 	
 	/** \brief Set error. */
-	void SetError( const char *error );
+	void SetError(const char *error);
 	
 	/** \brief Clears the error trace. */
 	void Clear();
@@ -76,19 +76,19 @@ public:
 	/** \name Trace Point Management */
 	/*@{*/
 	/** \brief Determines if there exist trace points. */
-	inline bool HasPoints() const{ return pPointCount > 0; }
+	inline bool HasPoints() const{return pPointCount > 0;}
 	
 	/** \brief Trace is empty. */
-	inline bool IsEmpty() const{ return pPointCount == 0; }
+	inline bool IsEmpty() const{return pPointCount == 0;}
 	
 	/** \brief Count of trace points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{return pPointCount;}
 	
 	/** \brief Indexed trace point. */
-	deErrorTracePoint *GetPoint( int index ) const;
+	deErrorTracePoint *GetPoint(int index) const;
 	
 	/** \brief Adds a new trace point. */
-	void AddPoint( deErrorTracePoint *point );
+	void AddPoint(deErrorTracePoint *point);
 	
 	/** \brief Removes all trace points. */
 	void RemoveAllPoints();
@@ -103,18 +103,18 @@ public:
 	 * 
 	 * Returns the new trace point if added or NULL otherwise.
 	 */
-	deErrorTracePoint *AddAndSetIfEmpty( const char *error, deLoadableModule *sourceModule,
-		const char *sourceFunc, int sourceLine );
+	deErrorTracePoint *AddAndSetIfEmpty(const char *error, deLoadableModule *sourceModule,
+		const char *sourceFunc, int sourceLine);
 	
 	/** \brief Add new trace point with the given information. */
-	deErrorTracePoint *AddPoint( deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine );
+	deErrorTracePoint *AddPoint(deLoadableModule *sourceModule, const char *sourceFunc, int sourceLine);
 	
 	/**
 	 * \brief Print error trace out to the given logger.
 	 * 
 	 * This is more of a temporary function and should not be used.
 	 */
-	void PrintTrace( deLogger &logger );
+	void PrintTrace(deLogger &logger);
 	/*@}*/
 };
 

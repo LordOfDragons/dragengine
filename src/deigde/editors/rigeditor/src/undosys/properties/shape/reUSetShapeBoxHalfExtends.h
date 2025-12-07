@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeBoxHalfExtends( reRigShapeBox *shape, const decVector &halfExtends );
+	reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const decVector &halfExtends);
 	
 protected:
 	/** \brief Clean up undo. */

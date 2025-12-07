@@ -45,7 +45,7 @@ public:
 	dealGPDisableModuleVersionList();
 	
 	/** \brief Create copy of disabled module version list. */
-	dealGPDisableModuleVersionList( const dealGPDisableModuleVersionList &copy );
+	dealGPDisableModuleVersionList(const dealGPDisableModuleVersionList &copy);
 	
 	/** \brief Clean up disabled module version list. */
 	~dealGPDisableModuleVersionList();
@@ -59,28 +59,28 @@ public:
 	int GetCount() const;
 	
 	/** \brief Entry at the given position. */
-	dealGPDisableModuleVersion *GetAt( int index ) const;
+	dealGPDisableModuleVersion *GetAt(int index) const;
 	
 	/** \brief Matching entry or \em NULL if not found. */
-	dealGPDisableModuleVersion *GetWith( const char *name, const char *version ) const;
+	dealGPDisableModuleVersion *GetWith(const char *name, const char *version) const;
 	
 	/** \brief Entry exists. */
-	bool Has( dealGPDisableModuleVersion *entry ) const;
+	bool Has(dealGPDisableModuleVersion *entry) const;
 	
 	/** \brief Matching entry exists. */
-	bool HasWith( const char *name, const char *version ) const;
+	bool HasWith(const char *name, const char *version) const;
 	
 	/** \brief Index of an entry or -1 if not found. */
-	int IndexOf( dealGPDisableModuleVersion *entry ) const;
+	int IndexOf(dealGPDisableModuleVersion *entry) const;
 	
 	/** \brief Index of a matching entry or -1 if not found. */
-	int IndexOfWith( const char *name, const char *version ) const;
+	int IndexOfWith(const char *name, const char *version) const;
 	
 	/** \brief Add an entry. */
-	void Add( dealGPDisableModuleVersion *entry );
+	void Add(dealGPDisableModuleVersion *entry);
 	
 	/** \brief Remove an entry. */
-	void Remove( dealGPDisableModuleVersion *entry );
+	void Remove(dealGPDisableModuleVersion *entry);
 	
 	/** \brief Remove all entries. */
 	void RemoveAll();
@@ -91,7 +91,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Set disable module version list to a copy of another list. */
-	dealGPDisableModuleVersionList &operator=( const dealGPDisableModuleVersionList &other );
+	dealGPDisableModuleVersionList &operator=(const dealGPDisableModuleVersionList &other);
 	/*@}*/
 };
 

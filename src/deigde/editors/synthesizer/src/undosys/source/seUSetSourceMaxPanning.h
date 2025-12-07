@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceMaxPanning( seSource *source, float newValue );
+	seUSetSourceMaxPanning(seSource *source, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

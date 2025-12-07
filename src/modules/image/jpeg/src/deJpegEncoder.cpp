@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deJpegEncoder::deJpegEncoder( deJpegModule *module ){
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+deJpegEncoder::deJpegEncoder(deJpegModule *module){
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pModule = module;
@@ -50,15 +50,15 @@ deJpegEncoder::deJpegEncoder( deJpegModule *module ){
 	pDataBuffer = NULL;
 	pWriter = NULL;
 	
-	memset( &pErrorMgr, '\0', sizeof( pErrorMgr ) );
-	memset( &pDestMgr, '\0', sizeof( pDestMgr ) );
-	memset( &pEncode, '\0', sizeof( pEncode ) );
+	memset(&pErrorMgr, '\0', sizeof(pErrorMgr));
+	memset(&pDestMgr, '\0', sizeof(pDestMgr));
+	memset(&pEncode, '\0', sizeof(pEncode));
 	pEncode.client_data = this;
 	pEncode.err = &pErrorMgr;
 }
 
 deJpegEncoder::~deJpegEncoder(){
-	if( pDataBuffer ){
+	if(pDataBuffer){
 		delete [] pDataBuffer;
 	}
 }
@@ -68,15 +68,15 @@ deJpegEncoder::~deJpegEncoder(){
 // Data Buffer
 ////////////////
 
-void deJpegEncoder::InitWrite( decBaseFileWriter *writer ){
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
+void deJpegEncoder::InitWrite(decBaseFileWriter *writer){
+	if(! writer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pWriter = writer;
 	
-	if( ! pDataBuffer ){
-		pDataBuffer = new JOCTET[ 1024 ];
+	if(! pDataBuffer){
+		pDataBuffer = new JOCTET[1024];
 	}
 	
 	pEncode.dest = &pDestMgr;
@@ -88,15 +88,15 @@ void deJpegEncoder::ResetBuffer(){
 }
 
 void deJpegEncoder::WriteEntireBuffer(){
-	pWriter->Write( pDataBuffer, 1024 );
+	pWriter->Write(pDataBuffer, 1024);
 	ResetBuffer();
 }
 
 void deJpegEncoder::WriteRemaining(){
-	const int bytes = 1024 - ( int )pDestMgr.free_in_buffer;
+	const int bytes = 1024 - (int)pDestMgr.free_in_buffer;
 	
-	if( bytes > 0 ){
-		pWriter->Write( pDataBuffer, bytes );
+	if(bytes > 0){
+		pWriter->Write(pDataBuffer, bytes);
 	}
 	
 	pDestMgr.next_output_byte = NULL;
@@ -104,7 +104,7 @@ void deJpegEncoder::WriteRemaining(){
 }
 
 void deJpegEncoder::CloseReader(){
-	if( pDataBuffer ){
+	if(pDataBuffer){
 		delete [] pDataBuffer;
 		pDataBuffer = NULL;
 	}

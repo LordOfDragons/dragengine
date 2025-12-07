@@ -105,7 +105,7 @@ public:
 	
 	#ifdef OS_BEOS
 	/** \brief Set name of thread used for debugging. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	#endif
 	/*@}*/
 	
@@ -117,16 +117,16 @@ protected:
 	 * 
 	 * Locked while changing thread state.
 	 */
-	inline deMutex &GetMutexState(){ return pMutexState; }
+	inline deMutex &GetMutexState(){return pMutexState;}
 	
 	
 private:
 	#if defined OS_UNIX || defined OS_BEOS
-	static void *pThreadRunner( void *parameter );
+	static void *pThreadRunner(void *parameter);
 	#endif
 	
 	#ifdef OS_W32
-	static DWORD WINAPI pThreadRunner( LPVOID parameter );
+	static DWORD WINAPI pThreadRunner(LPVOID parameter);
 	#endif
 	
 	#ifdef OS_BEOS

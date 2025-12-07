@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUMoveRuleUp( aeAnimator *animator, aeRule *rule );
+	aeUMoveRuleUp(aeAnimator *animator, aeRule *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUMoveRuleUp();

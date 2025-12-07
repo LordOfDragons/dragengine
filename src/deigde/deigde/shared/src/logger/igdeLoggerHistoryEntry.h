@@ -73,18 +73,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline int GetType() const{ return pType; }
+	inline int GetType() const{return pType;}
 	
 	/** \brief Set type. */
-	void SetType( int type );
+	void SetType(int type);
 	
 	/** \brief Source. */
-	inline const decString &GetSource() const{ return pSource; }
-	inline decString &GetSource(){ return pSource; }
+	inline const decString &GetSource() const{return pSource;}
+	inline decString &GetSource(){return pSource;}
 	
 	/** \brief Message. */
-	inline const decString &GetMessage() const{ return pMessage; }
-	inline decString &GetMessage(){ return pMessage; }
+	inline const decString &GetMessage() const{return pMessage;}
+	inline decString &GetMessage(){return pMessage;}
 	
 	/** \brief Clears the entry. */
 	void Clear();

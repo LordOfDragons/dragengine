@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetMinAngle( aeRuleBoneTransformator *rule, float newValue );
+	aeURuleBTransSetMinAngle(aeRuleBoneTransformator *rule, float newValue);
 	
 protected:
 	/** Clean up undo. */

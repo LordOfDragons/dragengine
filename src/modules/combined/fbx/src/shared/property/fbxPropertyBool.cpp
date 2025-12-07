@@ -44,13 +44,13 @@
 ////////////////////////////
 
 fbxPropertyBool::fbxPropertyBool() :
-fbxProperty( etBoolean ),
-pValue( false ){
+fbxProperty(etBoolean),
+pValue(false){
 }
 
-fbxPropertyBool::fbxPropertyBool( decBaseFileReader &reader ) :
-fbxProperty( etBoolean ),
-pValue( reader.ReadChar() != 0 ){
+fbxPropertyBool::fbxPropertyBool(decBaseFileReader &reader) :
+fbxProperty(etBoolean),
+pValue(reader.ReadChar() != 0){
 }
 
 fbxPropertyBool::~fbxPropertyBool(){
@@ -61,7 +61,7 @@ fbxPropertyBool::~fbxPropertyBool(){
 // Loading and Saving
 ///////////////////////
 
-void fbxPropertyBool::SetValue( bool value ){
+void fbxPropertyBool::SetValue(bool value){
 	pValue = value;
 }
 
@@ -91,9 +91,9 @@ double fbxPropertyBool::GetValueAsDouble() const{
 
 
 
-void fbxPropertyBool::Save(decBaseFileWriter &writer ){
+void fbxPropertyBool::Save(decBaseFileWriter &writer){
 }
 
-void fbxPropertyBool::DebugPrintStructure( deBaseModule &module, const decString &prefix ) const{
-	module.LogInfoFormat( "%sProperty Bool: %s", prefix.GetString(), pValue ? "true" : "false" );
+void fbxPropertyBool::DebugPrintStructure(deBaseModule &module, const decString &prefix) const{
+	module.LogInfoFormat("%sProperty Bool: %s", prefix.GetString(), pValue ? "true" : "false");
 }

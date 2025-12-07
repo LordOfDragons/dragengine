@@ -62,19 +62,19 @@ public:
 	int GetCount() const;
 	
 	/** \brief Data matching type name is present. */
-	bool HasWithTypeName( const char *typeName ) const;
+	bool HasWithTypeName(const char *typeName) const;
 	
 	/** \brief Data object at index. */
-	igdeClipboardData *GetAt( int index ) const;
+	igdeClipboardData *GetAt(int index) const;
 	
 	/** \brief Data matching type name or NULL if absent. */
-	igdeClipboardData *GetWithTypeName( const char *typeName ) const;
+	igdeClipboardData *GetWithTypeName(const char *typeName) const;
 	
 	/** \brief Set data replacing data with the same type name if present. */
-	void Set( igdeClipboardData *data );
+	void Set(igdeClipboardData *data);
 	
 	/** \brief Remove data matching type name if present. */
-	void Clear( const char *typeName );
+	void Clear(const char *typeName);
 	
 	/** \brief Clear clipboard. */
 	void ClearAll();

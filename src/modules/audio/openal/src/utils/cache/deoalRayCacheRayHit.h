@@ -56,34 +56,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Distance along ray to hit point. */
-	inline float GetDistance() const{ return pDistance; }
+	inline float GetDistance() const{return pDistance;}
 	
 	/** \brief Set distance along ray to hit point. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	/** \brief Index of hit face. */
-	inline int GetFaceIndex() const{ return pFaceIndex; }
+	inline int GetFaceIndex() const{return pFaceIndex;}
 	
 	/** \brief Set index of hit face. */
-	void SetFaceIndex( int faceIndex );
+	void SetFaceIndex(int faceIndex);
 	
 	/** \brief Forward facing. */
-	inline bool GetForwardFacing() const{ return pForwardFacing; }
+	inline bool GetForwardFacing() const{return pForwardFacing;}
 	
 	/** \brief Set forward facing. */
-	void SetForwardFacing( bool forwardFacing );
+	void SetForwardFacing(bool forwardFacing);
 	
 	/** \brief Hit point. */
-	inline const decVector &GetPoint() const{ return pPoint; }
+	inline const decVector &GetPoint() const{return pPoint;}
 	
 	/** \brief Set hit point. */
-	void SetPoint( const decVector &point );
+	void SetPoint(const decVector &point);
 	
 	/** \brief Normal. */
-	inline const decVector &GetNormal() const{ return pNormal; }
+	inline const decVector &GetNormal() const{return pNormal;}
 	
 	/** \brief Set normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	/*@}*/
 };
 

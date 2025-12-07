@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullContainerBorder();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullContainerBorder* CreateNativeWidget( igdeContainerBorder &owner );
+	static igdeNativeNullContainerBorder* CreateNativeWidget(igdeContainerBorder &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

@@ -73,52 +73,52 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set parent debug drawer or NULL. */
-	void SetParentDebugDrawer( deDebugDrawer *debugDrawer );
+	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Anchor position. */
-	inline const decVector &GetAnchorPosition() const{ return pAnchorPosition; }
+	inline const decVector &GetAnchorPosition() const{return pAnchorPosition;}
 	
 	/** \brief Set anchor position. */
-	void SetAnchorPosition( const decVector &position );
+	void SetAnchorPosition(const decVector &position);
 	
 	/** \brief Target position. */
-	inline const decVector &GetTargetPosition() const{ return pTargetPosition; }
+	inline const decVector &GetTargetPosition() const{return pTargetPosition;}
 	
 	/** \brief Set target position. */
-	void SetTargetPosition( const decVector &position );
+	void SetTargetPosition(const decVector &position);
 	
 	/** \brief Set anchor and target position at the same time. */
-	void SetPositions( const decVector &anchorPosition, const decVector &targetPosition );
+	void SetPositions(const decVector &anchorPosition, const decVector &targetPosition);
 	
 	/** \brief Connection color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set connection color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Determines if an arrow head is drawn on the anchor end. */
-	inline bool GetArrowOnAnchor() const{ return pArrowOnAnchor; }
+	inline bool GetArrowOnAnchor() const{return pArrowOnAnchor;}
 	
 	/** \brief Sets if an arrow head is drawn on the anchor end. */
-	void SetArrowOnAnchor( bool arrowOnAnchor );
+	void SetArrowOnAnchor(bool arrowOnAnchor);
 	
 	/** \brief Determines if an arrow head is drawn on the target end. */
-	inline bool GetArrowOnTarget() const{ return pArrowOnTarget; }
+	inline bool GetArrowOnTarget() const{return pArrowOnTarget;}
 	
 	/** \brief Sets if an arrow head is drawn on the target end. */
-	void SetArrowOnTarget( bool arrowOnTarget );
+	void SetArrowOnTarget(bool arrowOnTarget);
 	
 	/** \brief Size of the arrow heads. */
-	inline float GetArrowSize() const{ return pArrowSize; }
+	inline float GetArrowSize() const{return pArrowSize;}
 	
 	/** \brief Set size of the arrow heads. */
-	void SetArrowSize( float size );
+	void SetArrowSize(float size);
 	
 	/** \brief Determines if the debug drawer shape is visible. */
-	inline bool GetVisible() const{ return pVisible; }
+	inline bool GetVisible() const{return pVisible;}
 	
 	/** \brief Sets if the debug drawer shape is visible. */
-	void SetVisible( bool visible );
+	void SetVisible(bool visible);
 	/*@}*/
 	
 	

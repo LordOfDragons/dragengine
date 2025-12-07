@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new network system linked to the given engine. */
-	deNetworkSystem( deEngine *engine );
+	deNetworkSystem(deEngine *engine);
 	
 	/** \brief Clean up network system. */
 	~deNetworkSystem();
@@ -58,7 +58,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline deBaseNetworkModule *GetActiveModule() const{ return pActiveModule; }
+	inline deBaseNetworkModule *GetActiveModule() const{return pActiveModule;}
 	/*@}*/
 	
 	
@@ -73,16 +73,16 @@ public:
 	void ProcessNetwork();
 	
 	/** \brief Create peer object for the given server using the active module and assigns it. */
-	void LoadServer( deServer *server );
+	void LoadServer(deServer *server);
 	
 	/** \brief Create peer object for the given connection using the active module and assigns it. */
-	void LoadConnection( deConnection *connection );
+	void LoadConnection(deConnection *connection);
 	
 	/** \brief Create peer object for the given state using the active module and assigns it. */
-	void LoadState( deNetworkState *state );
+	void LoadState(deNetworkState *state);
 	
 	/** \brief Create peer object for the given world using the active module and assigns it. */
-	void LoadWorld( deWorld *world );
+	void LoadWorld(deWorld *world);
 	/*@}*/
 	
 	
@@ -94,7 +94,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

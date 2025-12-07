@@ -47,5 +47,5 @@ decOctreeVisitor::~decOctreeVisitor(){
 // Visiting
 /////////////
 
-void decOctreeVisitor::VisitNode( decOctree *node, int intersection ){
+void decOctreeVisitor::VisitNode(decOctree *node, int intersection){
 }

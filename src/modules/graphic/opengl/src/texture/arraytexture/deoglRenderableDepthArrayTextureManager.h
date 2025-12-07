@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable texture manager. */
-	deoglRenderableDepthArrayTextureManager( deoglRenderThread &renderThread );
+	deoglRenderableDepthArrayTextureManager(deoglRenderThread &renderThread);
 	
 	/** Clean up renderable texture manager. */
 	~deoglRenderableDepthArrayTextureManager();
@@ -64,14 +64,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of renderable textures. */
-	inline int GetCount() const{ return pArrayTextureCount; }
+	inline int GetCount() const{return pArrayTextureCount;}
 	
 	/** Renderable texture at index for reading purpose only. */
-	const deoglRenderableDepthArrayTexture *GetAt( int index ) const;
+	const deoglRenderableDepthArrayTexture *GetAt(int index) const;
 	
 	/** Renderable texture matching format. */
-	deoglRenderableDepthArrayTexture *GetWith( int width, int height, int layerCount,
-		bool withStencil, bool useFloat );
+	deoglRenderableDepthArrayTexture *GetWith(int width, int height, int layerCount,
+		bool withStencil, bool useFloat);
 	/*@}*/
 };
 

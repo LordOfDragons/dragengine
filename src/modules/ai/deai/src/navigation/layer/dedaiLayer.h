@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create layer. */
-	dedaiLayer( dedaiWorld &world, int layer );
+	dedaiLayer(dedaiWorld &world, int layer);
 	
 	/** \brief Clean up layer. */
 	virtual ~dedaiLayer();
@@ -71,21 +71,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent world. */
-	inline dedaiWorld &GetWorld() const{ return pWorld; }
+	inline dedaiWorld &GetWorld() const{return pWorld;}
 	
 	/** \brief Layer. */
-	inline int GetLayer() const{ return pLayer; }
+	inline int GetLayer() const{return pLayer;}
 	
 	
 	
 	/** \brief Cost table. */
-	inline dedaiCostTable &GetCostTable(){ return pCostTable; }
-	inline const dedaiCostTable &GetCostTable() const{ return pCostTable; }
+	inline dedaiCostTable &GetCostTable(){return pCostTable;}
+	inline const dedaiCostTable &GetCostTable() const{return pCostTable;}
 	
 	
 	
 	/** \brief Update layer. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Prepare layer if dirty. */
 	void Prepare();
@@ -101,28 +101,28 @@ public:
 	
 	
 	/** \brief Navigation grid vertex closest to a given position. */
-	dedaiSpaceGridVertex *GetGridVertexClosestTo( const decDVector &position, float &distance );
+	dedaiSpaceGridVertex *GetGridVertexClosestTo(const decDVector &position, float &distance);
 	
 	/** \brief Navigation mesh face closest to a given position. */
-	dedaiSpaceMeshFace *GetMeshFaceClosestTo( const decDVector &position, float &distance );
+	dedaiSpaceMeshFace *GetMeshFaceClosestTo(const decDVector &position, float &distance);
 	
 	/**
 	 * \brief Nearest position inside radius.
 	 * \details Sets position and returns face if found otherwise returns \em NULL.
 	 */
-	dedaiSpaceGridEdge *GetGridNearestPoint( const decDVector &point, float radius,
-		decDVector &nearestPoint, float &nearestLambda );
+	dedaiSpaceGridEdge *GetGridNearestPoint(const decDVector &point, float radius,
+		decDVector &nearestPoint, float &nearestLambda);
 	
 	/**
 	 * \brief Nearest position inside radius.
 	 * \details Sets position and returns face if found otherwise returns \em NULL.
 	 */
-	dedaiSpaceMeshFace *GetNavMeshNearestPoint( const decDVector &point, float radius, decDVector &nearest );
+	dedaiSpaceMeshFace *GetNavMeshNearestPoint(const decDVector &point, float radius, decDVector &nearest);
 	
 	/**
 	 * \brief Check for line colliding with mesh boundaries.
 	 */
-	bool NavMeshLineCollide( const decDVector &origin, const decVector &direction, float &distance );
+	bool NavMeshLineCollide(const decDVector &origin, const decVector &direction, float &distance);
 	
 	
 	
@@ -130,10 +130,10 @@ public:
 	void InvalidateLinks();
 	
 	/** \brief Invalidate linking for all navigation spaces. */
-	void InvalidateLinks( deNavigationSpace::eSpaceTypes type );
+	void InvalidateLinks(deNavigationSpace::eSpaceTypes type);
 	
 	/** \brief Invalidate linking for overlapping navigation spaces. */
-	void InvalidateLinks( deNavigationSpace::eSpaceTypes type, const decDVector &boxMin, const decDVector &boxMax );
+	void InvalidateLinks(deNavigationSpace::eSpaceTypes type, const decDVector &boxMin, const decDVector &boxMax);
 	
 	
 	
@@ -147,13 +147,13 @@ public:
 	 * \brief Invalidate blocking for all navigation spaces.
 	 * \details Implicitely invalidates links too.
 	 */
-	void InvalidateBlocking( deNavigationSpace::eSpaceTypes type );
+	void InvalidateBlocking(deNavigationSpace::eSpaceTypes type);
 	
 	/**
 	 * \brief Invalidate blocking for overlapping navigation spaces.
 	 * \details Implicitely invalidates links too.
 	 */
-	void InvalidateBlocking( deNavigationSpace::eSpaceTypes type, const decDVector &boxMin, const decDVector &boxMax );
+	void InvalidateBlocking(deNavigationSpace::eSpaceTypes type, const decDVector &boxMin, const decDVector &boxMax);
 	/*@}*/
 	
 	

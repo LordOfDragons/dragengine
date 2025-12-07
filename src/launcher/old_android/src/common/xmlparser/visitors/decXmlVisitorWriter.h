@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Writer or \em NULL. */
-	inline decXmlWriter *GetWriter(){ return pWriter; }
+	inline decXmlWriter *GetWriter(){return pWriter;}
 	
 	/** \brief Write compact XML for example for network transfer. */
-	inline bool GetCompact() const{ return pCompact; }
+	inline bool GetCompact() const{return pCompact;}
 	
 	/** \brief Set to write compact XML for example for network transfer. */
-	void SetCompact( bool compact );
+	void SetCompact(bool compact);
 	
 	/** \brief Write XML document to file. */
-	void WriteDocument( decBaseFileWriter *file, decXmlDocument &document );
+	void WriteDocument(decBaseFileWriter *file, decXmlDocument &document);
 	/*@}*/
 	
 	
@@ -74,31 +74,31 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit comment. */
-	virtual void VisitComment( decXmlComment &comment );
+	virtual void VisitComment(decXmlComment &comment);
 	
 	/** \brief Visit processing instructions. */
-	virtual void VisitPI( decXmlPI &pi );
+	virtual void VisitPI(decXmlPI &pi);
 	
 	/** \brief Visit element tag. */
-	virtual void VisitElementTag( decXmlElementTag &tag );
+	virtual void VisitElementTag(decXmlElementTag &tag);
 	
 	/** \brief Visit element character data. */
-	virtual void VisitCharacterData( decXmlCharacterData &data );
+	virtual void VisitCharacterData(decXmlCharacterData &data);
 	
 	/** \brief Visit element entity reference. */
-	virtual void VisitEntityReference( decXmlEntityReference &ref );
+	virtual void VisitEntityReference(decXmlEntityReference &ref);
 	
 	/** \brief Visit character reference. */
-	virtual void VisitCharReference( decXmlCharReference &ref );
+	virtual void VisitCharReference(decXmlCharReference &ref);
 	
 	/** \brief Visit character data section. */
-	virtual void VisitCDSect( decXmlCDSect &cdsect );
+	virtual void VisitCDSect(decXmlCDSect &cdsect);
 	
 	/** \brief Visit attribute value. */
-	virtual void VisitAttValue( decXmlAttValue &value );
+	virtual void VisitAttValue(decXmlAttValue &value);
 	
 	/** \brief Visit namespace. */
-	virtual void VisitNamespace( decXmlNamespace &ns );
+	virtual void VisitNamespace(decXmlNamespace &ns);
 	/*@}*/
 };
 

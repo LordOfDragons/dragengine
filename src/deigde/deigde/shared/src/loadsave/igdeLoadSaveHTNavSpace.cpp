@@ -55,12 +55,12 @@ static const int vSignatureCheckLen = 44;
 // Constructor, destructor
 ////////////////////////////
 
-igdeLoadSaveHTNavSpace::igdeLoadSaveHTNavSpace( igdeEnvironment &environment, const char *loggingSource ) :
-pEnvironment( environment ),
-pLoggingSource( loggingSource ),
-pName( "Drag[en]gine Height Terrain Navigation Space" ),
-pPattern( "*.dehtnavspace" ),
-pDefaultExtension( ".dehtnavspace" ){
+igdeLoadSaveHTNavSpace::igdeLoadSaveHTNavSpace(igdeEnvironment &environment, const char *loggingSource) :
+pEnvironment(environment),
+pLoggingSource(loggingSource),
+pName("Drag[en]gine Height Terrain Navigation Space"),
+pPattern("*.dehtnavspace"),
+pDefaultExtension(".dehtnavspace"){
 }
 
 igdeLoadSaveHTNavSpace::~igdeLoadSaveHTNavSpace(){
@@ -71,15 +71,15 @@ igdeLoadSaveHTNavSpace::~igdeLoadSaveHTNavSpace(){
 // Management
 ///////////////
 
-void igdeLoadSaveHTNavSpace::SetName( const char *name ){
+void igdeLoadSaveHTNavSpace::SetName(const char *name){
 	pName = name;
 }
 
-void igdeLoadSaveHTNavSpace::SetPattern( const char *pattern ){
+void igdeLoadSaveHTNavSpace::SetPattern(const char *pattern){
 	pPattern = pattern;
 }
 
-void igdeLoadSaveHTNavSpace::SetDefaultExtension( const char *extension ){
+void igdeLoadSaveHTNavSpace::SetDefaultExtension(const char *extension){
 	pDefaultExtension = extension;
 }
 
@@ -88,8 +88,8 @@ void igdeLoadSaveHTNavSpace::SetDefaultExtension( const char *extension ){
 // Loading and saving
 ///////////////////////
 
-void igdeLoadSaveHTNavSpace::Load( deHeightTerrainNavSpace &navspace, decBaseFileReader &reader ){
-	char signature[ vSignatureCheckLen ];
+void igdeLoadSaveHTNavSpace::Load(deHeightTerrainNavSpace &navspace, decBaseFileReader &reader){
+	char signature[vSignatureCheckLen];
 	int cornerCount = 0;
 	int faceCount = 0;
 	int edgeCount = 0;
@@ -98,92 +98,92 @@ void igdeLoadSaveHTNavSpace::Load( deHeightTerrainNavSpace &navspace, decBaseFil
 	int i;
 	
 	// clear the navigation space
-	navspace.SetEdgeCount( 0 );
-	navspace.SetFaceCount( 0 );
-	navspace.SetCornerCount( 0 );
-	navspace.SetType( deNavigationSpace::estMesh );
+	navspace.SetEdgeCount(0);
+	navspace.SetFaceCount(0);
+	navspace.SetCornerCount(0);
+	navspace.SetType(deNavigationSpace::estMesh);
 	
 	// read header
-	reader.Read( signature, vSignatureCheckLen );
-	if( strncmp( signature, vSignatureCheck, vSignatureCheckLen ) != 0 ){
-		DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
+	reader.Read(signature, vSignatureCheckLen);
+	if(strncmp(signature, vSignatureCheck, vSignatureCheckLen) != 0){
+		DETHROW_INFO(deeInvalidFileFormat, reader.GetFilename());
 	}
 	
-	version = ( int )reader.ReadUShort();
-	flags = ( int )reader.ReadUShort();
-	( void )flags;
+	version = (int)reader.ReadUShort();
+	flags = (int)reader.ReadUShort();
+	(void)flags;
 	
-	if( version == 1 ){
+	if(version == 1){
 		// read counts
-		cornerCount = ( int )reader.ReadUShort();
-		edgeCount = ( int )reader.ReadUShort();
-		faceCount = ( int )reader.ReadUShort();
+		cornerCount = (int)reader.ReadUShort();
+		edgeCount = (int)reader.ReadUShort();
+		faceCount = (int)reader.ReadUShort();
 		
-		navspace.SetType( ( deNavigationSpace::eSpaceTypes )reader.ReadUShort() );
+		navspace.SetType((deNavigationSpace::eSpaceTypes)reader.ReadUShort());
 		
-		navspace.SetCornerCount( cornerCount );
-		navspace.SetFaceCount( faceCount );
+		navspace.SetCornerCount(cornerCount);
+		navspace.SetFaceCount(faceCount);
 		
 		// read corners
-		for( i=0; i<cornerCount; i++ ){
-			navspace.SetCornerAt( i, reader.ReadUInt() );
+		for(i=0; i<cornerCount; i++){
+			navspace.SetCornerAt(i, reader.ReadUInt());
 		}
 		
 		// read edges
-		for( i=0; i<edgeCount; i++ ){
-			deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt( i );
-			edge.SetPoint1( reader.ReadUInt() );
-			edge.SetPoint2( reader.ReadUInt() );
-			edge.SetType1( reader.ReadUShort() );
-			edge.SetType2( reader.ReadUShort() );
+		for(i=0; i<edgeCount; i++){
+			deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt(i);
+			edge.SetPoint1(reader.ReadUInt());
+			edge.SetPoint2(reader.ReadUInt());
+			edge.SetType1(reader.ReadUShort());
+			edge.SetType2(reader.ReadUShort());
 		}
 		
 		// read faces
-		for( i=0; i<faceCount; i++ ){
-			deNavigationSpaceFace &face = navspace.GetFaceAt( i );
-			face.SetCornerCount( reader.ReadUShort() );
-			face.SetType( reader.ReadUShort() );
+		for(i=0; i<faceCount; i++){
+			deNavigationSpaceFace &face = navspace.GetFaceAt(i);
+			face.SetCornerCount(reader.ReadUShort());
+			face.SetType(reader.ReadUShort());
 		}
 	}
 }
 
-void igdeLoadSaveHTNavSpace::Save( const deHeightTerrainNavSpace &navspace, decBaseFileWriter &writer ){
+void igdeLoadSaveHTNavSpace::Save(const deHeightTerrainNavSpace &navspace, decBaseFileWriter &writer){
 	const int cornerCount = navspace.GetCornerCount();
 	const int faceCount = navspace.GetFaceCount();
 	const int edgeCount = navspace.GetEdgeCount();
 	int i;
 	
 	// write header
-	writer.Write( vSignatureCheck, vSignatureCheckLen );
+	writer.Write(vSignatureCheck, vSignatureCheckLen);
 	
-	writer.WriteUShort( 1 ); // version
-	writer.WriteUShort( 0 ); // flags
+	writer.WriteUShort(1); // version
+	writer.WriteUShort(0); // flags
 	
 	// write counts
-	writer.WriteUShort( ( uint16_t )cornerCount );
-	writer.WriteUShort( ( uint16_t )edgeCount );
-	writer.WriteUShort( ( uint16_t )faceCount );
+	writer.WriteUShort((uint16_t)cornerCount);
+	writer.WriteUShort((uint16_t)edgeCount);
+	writer.WriteUShort((uint16_t)faceCount);
 	
-	writer.WriteUShort( ( uint16_t )navspace.GetType() );
+	writer.WriteUShort((uint16_t)navspace.GetType());
 	
 	// write corners
-	for( i=0; i<cornerCount; i++ ){
-		writer.WriteUInt( ( uint32_t )navspace.GetCornerAt( i ) );
+	for(i=0; i<cornerCount; i++){
+		writer.WriteUInt((uint32_t)navspace.GetCornerAt(i));
 	}
 	
 	// write edges
-	for( i=0; i<edgeCount; i++ ){
-		deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt( i );
-		writer.WriteUInt( ( uint32_t )edge.GetPoint1() );
-		writer.WriteUInt( ( uint32_t )edge.GetPoint2() );
-		writer.WriteUShort( ( uint16_t )edge.GetType1() );
-		writer.WriteUShort( ( uint16_t )edge.GetType2() );
+	for(i=0; i<edgeCount; i++){
+		deHeightTerrainNavSpaceEdge &edge = navspace.GetEdgeAt(i);
+		writer.WriteUInt((uint32_t)edge.GetPoint1());
+		writer.WriteUInt((uint32_t)edge.GetPoint2());
+		writer.WriteUShort((uint16_t)edge.GetType1());
+		writer.WriteUShort((uint16_t)edge.GetType2());
 	}
 	
 	// write faces
-	for( i=0; i<faceCount; i++ ){
-		deNavigationSpaceFace &face = navspace.GetFaceAt( i );
-		writer.WriteUShort( ( uint16_t )face.GetCornerCount() );
-		writer.WriteUShort( ( uint16_t )face.GetType() );
+	for(i=0; i<faceCount; i++){
+		deNavigationSpaceFace &face = navspace.GetFaceAt(i);
+		writer.WriteUShort((uint16_t)face.GetCornerCount());
+		writer.WriteUShort((uint16_t)face.GetType());
 	}
 }

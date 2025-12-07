@@ -38,18 +38,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceCAComment::ceCAComment() : ceConversationAction( eatComment ){
-	SetDelay( 0.0f ); // force no delay
-	SetWaitForActor( false );
-	SetWaitForActor( "" );
+ceCAComment::ceCAComment() : ceConversationAction(eatComment){
+	SetDelay(0.0f); // force no delay
+	SetWaitForActor(false);
+	SetWaitForActor("");
 }
 
-ceCAComment::ceCAComment( const ceCAComment &action ): ceConversationAction( action ){
+ceCAComment::ceCAComment(const ceCAComment &action): ceConversationAction(action){
 	pComment = action.pComment;
 	
-	SetDelay( 0.0f ); // force no delay
-	SetWaitForActor( false );
-	SetWaitForActor( "" );
+	SetDelay(0.0f); // force no delay
+	SetWaitForActor(false);
+	SetWaitForActor("");
 }
 
 ceCAComment::~ceCAComment(){
@@ -60,12 +60,12 @@ ceCAComment::~ceCAComment(){
 // Management
 ///////////////
 
-void ceCAComment::SetComment( const char *comment ){
+void ceCAComment::SetComment(const char *comment){
 	pComment = comment;
 }
 
 
 
 ceConversationAction *ceCAComment::CreateCopy() const{
-	return new ceCAComment( *this );
+	return new ceCAComment(*this);
 }

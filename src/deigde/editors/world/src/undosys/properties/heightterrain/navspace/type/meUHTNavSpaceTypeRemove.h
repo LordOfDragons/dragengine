@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceTypeRemove( meHeightTerrainNavSpaceType *type );
+	meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType *type);
 	
 protected:
 	/** \brief Clean up undo action. */

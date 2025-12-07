@@ -34,23 +34,23 @@
 ////////////////////////////
 
 debnMessage::debnMessage() :
-pMessage( deNetworkMessage::Ref::NewWith() ),
-pNumber( -1 ),
-pState( emsPending ),
-pType( 0 ),
-pResendElapsed( 0.0f ),
-pTimeoutElapsed( 0 ){
+pMessage(deNetworkMessage::Ref::NewWith()),
+pNumber(-1),
+pState(emsPending),
+pType(0),
+pResendElapsed(0.0f),
+pTimeoutElapsed(0){
 }
 
-debnMessage::debnMessage( deNetworkMessage *message ) :
-pMessage( message ),
-pNumber( -1 ),
-pState( emsPending ),
-pType( 0 ),
-pResendElapsed( 0.0f ),
-pTimeoutElapsed( 0 )
+debnMessage::debnMessage(deNetworkMessage *message) :
+pMessage(message),
+pNumber(-1),
+pState(emsPending),
+pType(0),
+pResendElapsed(0.0f),
+pTimeoutElapsed(0)
 {
-	DEASSERT_NOTNULL( message )
+	DEASSERT_NOTNULL(message)
 }
 
 
@@ -58,27 +58,27 @@ pTimeoutElapsed( 0 )
 // Management
 ///////////////
 
-void debnMessage::SetNumber( int number ){
+void debnMessage::SetNumber(int number){
 	pNumber = number;
 }
 
-void debnMessage::SetState( eMessageStates state ){
+void debnMessage::SetState(eMessageStates state){
 	pState = state;
 }
 
-void debnMessage::SetType( int type ){
+void debnMessage::SetType(int type){
 	pType = type;
 }
 
-void debnMessage::SetResendElapsed( float elapsed ){
+void debnMessage::SetResendElapsed(float elapsed){
 	pResendElapsed = elapsed;
 }
 
-void debnMessage::SetTimeoutElapsed( float elapsed ){
+void debnMessage::SetTimeoutElapsed(float elapsed){
 	pTimeoutElapsed = elapsed;
 }
 
-void debnMessage::IncrementElapsed( float elapsed ){
+void debnMessage::IncrementElapsed(float elapsed){
 	pResendElapsed += elapsed;
 	pTimeoutElapsed += elapsed;
 }

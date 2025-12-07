@@ -40,13 +40,13 @@
 ////////////////////////////
 
 deoglParticleEmitterInstanceList::deoglParticleEmitterInstanceList() :
-pInstances( NULL ),
-pInstanceCount( 0 ),
-pInstanceSize( 0 ){
+pInstances(NULL),
+pInstanceCount(0),
+pInstanceSize(0){
 }
 
 deoglParticleEmitterInstanceList::~deoglParticleEmitterInstanceList(){
-	if( pInstances ){
+	if(pInstances){
 		delete [] pInstances;
 	}
 }
@@ -56,23 +56,23 @@ deoglParticleEmitterInstanceList::~deoglParticleEmitterInstanceList(){
 // Management
 ///////////////
 
-deoglRParticleEmitterInstance *deoglParticleEmitterInstanceList::GetAt( int index ) const{
-	if( index < 0 || index >= pInstanceCount ){
-		DETHROW( deeInvalidParam );
+deoglRParticleEmitterInstance *deoglParticleEmitterInstanceList::GetAt(int index) const{
+	if(index < 0 || index >= pInstanceCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pInstances[ index ];
+	return pInstances[index];
 }
 
-int deoglParticleEmitterInstanceList::IndexOf( deoglRParticleEmitterInstance *instance ) const{
-	if( ! instance ){
-		DETHROW( deeInvalidParam );
+int deoglParticleEmitterInstanceList::IndexOf(deoglRParticleEmitterInstance *instance) const{
+	if(! instance){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int l;
 	
-	for( l=0; l<pInstanceCount; l++ ){
-		if( instance == pInstances[ l ] ){
+	for(l=0; l<pInstanceCount; l++){
+		if(instance == pInstances[l]){
 			return l;
 		}
 	}
@@ -80,15 +80,15 @@ int deoglParticleEmitterInstanceList::IndexOf( deoglRParticleEmitterInstance *in
 	return -1;
 }
 
-bool deoglParticleEmitterInstanceList::Has( deoglRParticleEmitterInstance *instance ) const{
-	if( ! instance ){
-		DETHROW( deeInvalidParam );
+bool deoglParticleEmitterInstanceList::Has(deoglRParticleEmitterInstance *instance) const{
+	if(! instance){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int l;
 	
-	for( l=0; l<pInstanceCount; l++ ){
-		if( instance == pInstances[ l ] ){
+	for(l=0; l<pInstanceCount; l++){
+		if(instance == pInstances[l]){
 			return true;
 		}
 	}
@@ -96,59 +96,59 @@ bool deoglParticleEmitterInstanceList::Has( deoglRParticleEmitterInstance *insta
 	return false;
 }
 
-void deoglParticleEmitterInstanceList::Add( deoglRParticleEmitterInstance *instance ){
-	if( Has( instance ) ){
-		DETHROW( deeInvalidParam );
+void deoglParticleEmitterInstanceList::Add(deoglRParticleEmitterInstance *instance){
+	if(Has(instance)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pAddInstance( instance );
+	pAddInstance(instance);
 }
 
-bool deoglParticleEmitterInstanceList::AddIfMissing( deoglRParticleEmitterInstance *instance ){
-	if( Has( instance ) ){
+bool deoglParticleEmitterInstanceList::AddIfMissing(deoglRParticleEmitterInstance *instance){
+	if(Has(instance)){
 		return false;
 	}
 	
-	pAddInstance( instance );
+	pAddInstance(instance);
 	
 	return true;
 }
 
-void deoglParticleEmitterInstanceList::Remove( deoglRParticleEmitterInstance *instance ){
-	int index = IndexOf( instance );
+void deoglParticleEmitterInstanceList::Remove(deoglRParticleEmitterInstance *instance){
+	int index = IndexOf(instance);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pInstanceCount - 1 ){
-		pInstances[ index ] = pInstances[ pInstanceCount - 1 ];
+	if(index < pInstanceCount - 1){
+		pInstances[index] = pInstances[pInstanceCount - 1];
 	}
 	pInstanceCount--;
 }
 
-bool deoglParticleEmitterInstanceList::RemoveIfExisting( deoglRParticleEmitterInstance *instance ){
-	int index = IndexOf( instance );
+bool deoglParticleEmitterInstanceList::RemoveIfExisting(deoglRParticleEmitterInstance *instance){
+	int index = IndexOf(instance);
 	
-	if( index == -1 ){
+	if(index == -1){
 		return false;
 	}
 	
-	if( index < pInstanceCount - 1 ){
-		pInstances[ index ] = pInstances[ pInstanceCount - 1 ];
+	if(index < pInstanceCount - 1){
+		pInstances[index] = pInstances[pInstanceCount - 1];
 	}
 	pInstanceCount--;
 	
 	return true;
 }
 
-void deoglParticleEmitterInstanceList::RemoveFrom( int index ){
-	if( index < 0 || index >= pInstanceCount ){
-		DETHROW( deeInvalidParam );
+void deoglParticleEmitterInstanceList::RemoveFrom(int index){
+	if(index < 0 || index >= pInstanceCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pInstanceCount - 1 ){
-		pInstances[ index ] = pInstances[ pInstanceCount - 1 ];
+	if(index < pInstanceCount - 1){
+		pInstances[index] = pInstances[pInstanceCount - 1];
 	}
 	pInstanceCount--;
 }
@@ -162,13 +162,13 @@ void deoglParticleEmitterInstanceList::RemoveAll(){
 // Private Functions
 //////////////////////
 
-void deoglParticleEmitterInstanceList::pAddInstance( deoglRParticleEmitterInstance *instance ){
-	if( pInstanceCount == pInstanceSize ){
+void deoglParticleEmitterInstanceList::pAddInstance(deoglRParticleEmitterInstance *instance){
+	if(pInstanceCount == pInstanceSize){
 		int newSize = pInstanceCount + 10; // * 3 / 2 + 1;
-		deoglRParticleEmitterInstance **newArray = new deoglRParticleEmitterInstance*[ newSize ];
+		deoglRParticleEmitterInstance **newArray = new deoglRParticleEmitterInstance*[newSize];
 		
-		if( pInstances ){
-			memcpy( newArray, pInstances, sizeof( deoglRParticleEmitterInstance* ) * pInstanceSize );
+		if(pInstances){
+			memcpy(newArray, pInstances, sizeof(deoglRParticleEmitterInstance*) * pInstanceSize);
 			delete [] pInstances;
 		}
 		
@@ -176,5 +176,5 @@ void deoglParticleEmitterInstanceList::pAddInstance( deoglRParticleEmitterInstan
 		pInstanceSize = newSize;
 	}
 	
-	pInstances[ pInstanceCount++ ] = instance;
+	pInstances[pInstanceCount++] = instance;
 }

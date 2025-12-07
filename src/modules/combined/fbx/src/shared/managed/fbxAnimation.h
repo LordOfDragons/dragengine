@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create animation. */
-	fbxAnimation( fbxScene &scene );
+	fbxAnimation(fbxScene &scene);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Scene. */
-	inline fbxScene &GetScene() const{ return pScene; }
+	inline fbxScene &GetScene() const{return pScene;}
 	
 	
 	
@@ -83,22 +83,22 @@ public:
 	int GetMoveCount() const;
 	
 	/** \brief Move at index. */
-	fbxAnimationMove *GetMoveAt( int index ) const;
+	fbxAnimationMove *GetMoveAt(int index) const;
 	
 	/** \brief Named move or NULL if absent. */
-	fbxAnimationMove *GetMoveNamed( const char *name ) const;
+	fbxAnimationMove *GetMoveNamed(const char *name) const;
 	
 	/** \brief Match moves against rig. */
-	void MatchRig( const fbxRig &rig );
+	void MatchRig(const fbxRig &rig);
 	
 	/** \brief Convert FBX time to seconds. */
-	static float ConvTime( int64_t time );
+	static float ConvTime(int64_t time);
 	
 	
 	
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

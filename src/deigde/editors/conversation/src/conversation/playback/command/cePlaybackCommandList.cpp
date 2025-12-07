@@ -43,7 +43,7 @@
 cePlaybackCommandList::cePlaybackCommandList(){
 }
 
-cePlaybackCommandList::cePlaybackCommandList( const cePlaybackCommandList &list ){
+cePlaybackCommandList::cePlaybackCommandList(const cePlaybackCommandList &list){
 	*this = list;
 }
 
@@ -59,18 +59,18 @@ int cePlaybackCommandList::GetCount() const{
 	return pCommands.GetCount();
 }
 
-cePlaybackCommand *cePlaybackCommandList::GetAt( int index ) const{
-	return ( cePlaybackCommand* )pCommands.GetAt( index );
+cePlaybackCommand *cePlaybackCommandList::GetAt(int index) const{
+	return (cePlaybackCommand*)pCommands.GetAt(index);
 }
 
-cePlaybackCommand *cePlaybackCommandList::GetWith( const char *command ) const{
+cePlaybackCommand *cePlaybackCommandList::GetWith(const char *command) const{
 	const int count = pCommands.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		cePlaybackCommand * const entry = ( cePlaybackCommand* )pCommands.GetAt( i );
+	for(i=0; i<count; i++){
+		cePlaybackCommand * const entry = (cePlaybackCommand*)pCommands.GetAt(i);
 		
-		if( entry->GetCommand().Equals( command ) ){
+		if(entry->GetCommand().Equals(command)){
 			return entry;
 		}
 	}
@@ -78,18 +78,18 @@ cePlaybackCommand *cePlaybackCommandList::GetWith( const char *command ) const{
 	return NULL;
 }
 
-int cePlaybackCommandList::IndexOf( cePlaybackCommand *command ) const{
-	return pCommands.IndexOf( command );
+int cePlaybackCommandList::IndexOf(cePlaybackCommand *command) const{
+	return pCommands.IndexOf(command);
 }
 
-int cePlaybackCommandList::IndexWith( const char *command ) const{
+int cePlaybackCommandList::IndexWith(const char *command) const{
 	const int count = pCommands.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const cePlaybackCommand &entry = *( ( cePlaybackCommand* )pCommands.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const cePlaybackCommand &entry = *((cePlaybackCommand*)pCommands.GetAt(i));
 		
-		if( entry.GetCommand().Equals( command ) ){
+		if(entry.GetCommand().Equals(command)){
 			return i;
 		}
 	}
@@ -97,24 +97,24 @@ int cePlaybackCommandList::IndexWith( const char *command ) const{
 	return -1;
 }
 
-bool cePlaybackCommandList::Has( cePlaybackCommand *command ) const{
-	return pCommands.Has( command );
+bool cePlaybackCommandList::Has(cePlaybackCommand *command) const{
+	return pCommands.Has(command);
 }
 
-bool cePlaybackCommandList::HasWith( const char *command ) const{
-	return IndexWith( command ) != -1;
+bool cePlaybackCommandList::HasWith(const char *command) const{
+	return IndexWith(command) != -1;
 }
 
-void cePlaybackCommandList::Add( cePlaybackCommand *command ){
-	if( ! command || Has( command ) ){
-		DETHROW( deeInvalidParam );
+void cePlaybackCommandList::Add(cePlaybackCommand *command){
+	if(! command || Has(command)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pCommands.Add( command );
+	pCommands.Add(command);
 }
 
-void cePlaybackCommandList::Remove( cePlaybackCommand *command ){
-	pCommands.Remove( command );
+void cePlaybackCommandList::Remove(cePlaybackCommand *command){
+	pCommands.Remove(command);
 }
 
 void cePlaybackCommandList::RemoveAll(){
@@ -123,7 +123,7 @@ void cePlaybackCommandList::RemoveAll(){
 
 
 
-cePlaybackCommandList &cePlaybackCommandList::operator=( const cePlaybackCommandList &list ){
+cePlaybackCommandList &cePlaybackCommandList::operator=(const cePlaybackCommandList &list){
 	pCommands = list.pCommands;
 	return *this;
 }

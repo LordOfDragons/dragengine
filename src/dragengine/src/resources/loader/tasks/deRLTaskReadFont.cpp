@@ -50,18 +50,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadFont::deRLTaskReadFont( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deFont *font ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertFont ),
-pInternalTask( NULL ),
-pSucceeded( false )
+deRLTaskReadFont::deRLTaskReadFont(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deFont *font) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertFont),
+pInternalTask(NULL),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	
 	// if already loaded set finished
-	if( font ){
-		SetResource( font );
-		SetState( esSucceeded );
+	if(font){
+		SetResource(font);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
@@ -72,25 +72,25 @@ pSucceeded( false )
 	// the loaded resources, creating font peers and finalize the font. creating the
 	// peers can be done asynchronous
 	try{
-		pInternalTask = new deRLTaskReadFontInternal( engine, resourceLoader, vfs, path, this );
+		pInternalTask = new deRLTaskReadFontInternal(engine, resourceLoader, vfs, path, this);
 		
-		switch( pInternalTask->GetState() ){
+		switch(pInternalTask->GetState()){
 		case esPending:
-			AddDependsOn( pInternalTask );
-			engine.GetParallelProcessing().AddTask( pInternalTask );
+			AddDependsOn(pInternalTask);
+			engine.GetParallelProcessing().AddTask(pInternalTask);
 			break;
 			
 		case esSucceeded:
 			break;
 			
 		case esFailed:
-			SetState( esFailed );
+			SetState(esFailed);
 			Cancel();
 			break;
 		}
 		
-	}catch( const deException & ){
-		SetState( esFailed );
+	}catch(const deException &){
+		SetState(esFailed);
 		Cancel();
 	}
 	
@@ -98,7 +98,7 @@ pSucceeded( false )
 }
 
 deRLTaskReadFont::~deRLTaskReadFont(){
-	if( pInternalTask ){
+	if(pInternalTask){
 		pInternalTask->FreeReference();
 	}
 }
@@ -112,40 +112,40 @@ void deRLTaskReadFont::Run(){
 	LogRunEnter();
 	
 	// checks
-	if( ! pInternalTask ){
-		DETHROW( deeInvalidParam );
+	if(! pInternalTask){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pInternalTask->GetAlreadyLoaded() ){
+	if(pInternalTask->GetAlreadyLoaded()){
 		pSucceeded = true;
 		LogRunExit();
 		return;
 	}
 	
 	deFont * const font = pInternalTask->GetFont();
-	if( ! font ){
-		DETHROW( deeInvalidParam );
+	if(! font){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const deRLTaskReadFontInternal2 * const internalTask2 = pInternalTask->GetInternalTask();
-	if( ! internalTask2 ){
-		DETHROW( deeInvalidParam );
+	if(! internalTask2){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( internalTask2->GetAlreadyLoaded() ){
+	if(internalTask2->GetAlreadyLoaded()){
 		pSucceeded = true;
 		LogRunExit();
 		return;
 	}
 	
 	// verify font and update glyphs
-	if( ! font->Verify() ){
-		DETHROW( deeInvalidParam );
+	if(! font->Verify()){
+		DETHROW(deeInvalidParam);
 	}
 	font->UpdateGlyphs();
 	
 	// create peers
-	GetEngine().GetGraphicSystem()->LoadFont( font );
+	GetEngine().GetGraphicSystem()->LoadFont(font);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -154,59 +154,59 @@ void deRLTaskReadFont::Run(){
 void deRLTaskReadFont::Finished(){
 	LogFinishedEnter();
 	
-	if( ! pSucceeded || ! pInternalTask ){
-		SetState( esFailed );
+	if(! pSucceeded || ! pInternalTask){
+		SetState(esFailed);
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deFont * const font = pInternalTask->GetFont();
-	if( pInternalTask->GetState() != esSucceeded || ! font ){
-		SetState( esFailed );
+	if(pInternalTask->GetState() != esSucceeded || ! font){
+		SetState(esFailed);
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	const deRLTaskReadFontInternal2 * const internalTask2 = pInternalTask->GetInternalTask();
 	bool alreadyLoaded = false;
 	
-	if( pInternalTask->GetAlreadyLoaded() ){
-		SetResource( font );
+	if(pInternalTask->GetAlreadyLoaded()){
+		SetResource(font);
 		alreadyLoaded = true;
 		
-	}else if( internalTask2 ){
-		if( internalTask2->GetState() != esSucceeded ){
-			SetState( esFailed );
+	}else if(internalTask2){
+		if(internalTask2->GetState() != esSucceeded){
+			SetState(esFailed);
 			LogFinishedExit();
-			GetResourceLoader().FinishTask( this );
+			GetResourceLoader().FinishTask(this);
 			return;
 		}
 		
-		if( internalTask2->GetAlreadyLoaded() ){
-			SetResource( font );
+		if(internalTask2->GetAlreadyLoaded()){
+			SetResource(font);
 			alreadyLoaded = true;
 		}
 	}
 	
-	if( ! alreadyLoaded ){
+	if(! alreadyLoaded){
 		deFontManager &fontManager = *GetEngine().GetFontManager();
-		deFont * const checkFont = fontManager.GetFontWith( GetPath() );
+		deFont * const checkFont = fontManager.GetFontWith(GetPath());
 		
-		if( checkFont ){
-			SetResource( checkFont );
+		if(checkFont){
+			SetResource(checkFont);
 			
 		}else{
-			font->SetAsynchron( false );
-			fontManager.AddLoadedFont( font );
-			SetResource( font );
+			font->SetAsynchron(false);
+			fontManager.AddLoadedFont(font);
+			SetResource(font);
 		}
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

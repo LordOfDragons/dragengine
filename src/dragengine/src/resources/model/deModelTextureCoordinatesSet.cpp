@@ -42,7 +42,7 @@ deModelTextureCoordinatesSet::deModelTextureCoordinatesSet(){
 }
 
 deModelTextureCoordinatesSet::~deModelTextureCoordinatesSet(){
-	if( pTextureCoordinates ){
+	if(pTextureCoordinates){
 		delete [] pTextureCoordinates;
 	}
 }
@@ -52,35 +52,35 @@ deModelTextureCoordinatesSet::~deModelTextureCoordinatesSet(){
 // Management
 ///////////////
 
-void deModelTextureCoordinatesSet::SetTextureCoordinatesCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deModelTextureCoordinatesSet::SetTextureCoordinatesCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pTextureCoordinates ){
+	if(pTextureCoordinates){
 		delete [] pTextureCoordinates;
 		pTextureCoordinates = NULL;
 		pTextureCoordinatesCount = 0;
 	}
 	
-	if( count > 0 ){
-		pTextureCoordinates = new decVector2[ count ];
+	if(count > 0){
+		pTextureCoordinates = new decVector2[count];
 		pTextureCoordinatesCount = count;
 	}
 }
 
-const decVector2 &deModelTextureCoordinatesSet::GetTextureCoordinatesAt( int index ) const{
-	if( index < 0 || index >= pTextureCoordinatesCount ){
-		DETHROW( deeInvalidParam );
+const decVector2 &deModelTextureCoordinatesSet::GetTextureCoordinatesAt(int index) const{
+	if(index < 0 || index >= pTextureCoordinatesCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTextureCoordinates[ index ];
+	return pTextureCoordinates[index];
 }
 
-void deModelTextureCoordinatesSet::SetTextureCoordinatesAt( int index, const decVector2 &textureCoordinates ){
-	if( index < 0 || index >= pTextureCoordinatesCount ){
-		DETHROW( deeInvalidParam );
+void deModelTextureCoordinatesSet::SetTextureCoordinatesAt(int index, const decVector2 &textureCoordinates){
+	if(index < 0 || index >= pTextureCoordinatesCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pTextureCoordinates[ index ] = textureCoordinates;
+	pTextureCoordinates[index] = textureCoordinates;
 }

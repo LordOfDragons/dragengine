@@ -47,41 +47,41 @@
 ///////////////
 
 // public static func Microphone getActiveMicrophone()
-deClassAudioSystem::nfGetActiveMicrophone::nfGetActiveMicrophone( const sInitData &init ) :
-dsFunction( init.clsAudSys, "getActiveMicrophone", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsMic ){
+deClassAudioSystem::nfGetActiveMicrophone::nfGetActiveMicrophone(const sInitData &init) :
+dsFunction(init.clsAudSys, "getActiveMicrophone", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsMic){
 }
-void deClassAudioSystem::nfGetActiveMicrophone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAudioSystem *clsAudSys = ( deClassAudioSystem* )GetOwnerClass();
+void deClassAudioSystem::nfGetActiveMicrophone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAudioSystem *clsAudSys = (deClassAudioSystem*)GetOwnerClass();
 	deAudioSystem *audSys = clsAudSys->GetDS().GetGameEngine()->GetAudioSystem();
 	deClassMicrophone *clsMic = clsAudSys->GetDS().GetClassMicrophone();
 	deMicrophone *microphone = audSys->GetActiveMicrophone();
 	
-	if( microphone ){
-		clsMic->PushMicrophone( rt, microphone );
+	if(microphone){
+		clsMic->PushMicrophone(rt, microphone);
 		
 	}else{
-		rt->PushObject( NULL, clsMic );
+		rt->PushObject(NULL, clsMic);
 	}
 }
 
 // public static func setActiveMicrophone( Microphone microphone )
-deClassAudioSystem::nfSetActiveMicrophone::nfSetActiveMicrophone( const sInitData &init ) :
-dsFunction( init.clsAudSys, "setActiveMicrophone", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsMic ); // microphone
+deClassAudioSystem::nfSetActiveMicrophone::nfSetActiveMicrophone(const sInitData &init) :
+dsFunction(init.clsAudSys, "setActiveMicrophone", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsMic); // microphone
 }
-void deClassAudioSystem::nfSetActiveMicrophone::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAudioSystem *clsAudSys = ( deClassAudioSystem* )GetOwnerClass();
+void deClassAudioSystem::nfSetActiveMicrophone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAudioSystem *clsAudSys = (deClassAudioSystem*)GetOwnerClass();
 	deAudioSystem *audSys = clsAudSys->GetDS().GetGameEngine()->GetAudioSystem();
 	deClassMicrophone *clsMic = clsAudSys->GetDS().GetClassMicrophone();
-	dsRealObject *object = rt->GetValue( 0 )->GetRealObject();
+	dsRealObject *object = rt->GetValue(0)->GetRealObject();
 	
-	if( object ){
-		audSys->SetActiveMicrophone( clsMic->GetMicrophone( object ) );
+	if(object){
+		audSys->SetActiveMicrophone(clsMic->GetMicrophone(object));
 		
 	}else{
-		audSys->SetActiveMicrophone( NULL );
+		audSys->SetActiveMicrophone(NULL);
 	}
 }
 
@@ -91,107 +91,107 @@ void deClassAudioSystem::nfSetActiveMicrophone::RunFunction( dsRunTime *rt, dsVa
 ///////////////
 
 // public static func int getParameterCount()
-deClassAudioSystem::nfGetParameterCount::nfGetParameterCount( const sInitData &init ) :
-dsFunction( init.clsAudSys, "getParameterCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+deClassAudioSystem::nfGetParameterCount::nfGetParameterCount(const sInitData &init) :
+dsFunction(init.clsAudSys, "getParameterCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
-void deClassAudioSystem::nfGetParameterCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAudioSystem *clsAudSys = ( deClassAudioSystem* )GetOwnerClass();
+void deClassAudioSystem::nfGetParameterCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAudioSystem *clsAudSys = (deClassAudioSystem*)GetOwnerClass();
 	deAudioSystem *audSys = clsAudSys->GetDS().GetGameEngine()->GetAudioSystem();
 	deBaseAudioModule *module = audSys->GetActiveModule();
 	
-	rt->PushInt( module->GetParameterCount() );
+	rt->PushInt(module->GetParameterCount());
 }
 
 // public static func ModuleParameter getParameterInfo( int index )
-deClassAudioSystem::nfGetParameterInfo::nfGetParameterInfo( const sInitData &init ) :
-dsFunction( init.clsAudSys, "getParameterInfo", DSFT_FUNCTION,
+deClassAudioSystem::nfGetParameterInfo::nfGetParameterInfo(const sInitData &init) :
+dsFunction(init.clsAudSys, "getParameterInfo", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
-	p_AddParameter( init.clsInteger ); // index
+	p_AddParameter(init.clsInteger); // index
 }
-void deClassAudioSystem::nfGetParameterInfo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAudioSystem *clsAudSys = ( deClassAudioSystem* )GetOwnerClass();
+void deClassAudioSystem::nfGetParameterInfo::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAudioSystem *clsAudSys = (deClassAudioSystem*)GetOwnerClass();
 	deAudioSystem *audSys = clsAudSys->GetDS().GetGameEngine()->GetAudioSystem();
 	deBaseAudioModule *module = audSys->GetActiveModule();
-	int index = rt->GetValue( 0 )->GetInt();
+	int index = rt->GetValue(0)->GetInt();
 	
-	if( index < 0 || index >= module->GetParameterCount() ) DSTHROW( dueInvalidParam );
+	if(index < 0 || index >= module->GetParameterCount()) DSTHROW(dueInvalidParam);
 	
-	clsAudSys->GetDS().GetClassModuleParameter()->PushParameter( rt, module, index );
+	clsAudSys->GetDS().GetClassModuleParameter()->PushParameter(rt, module, index);
 }
 
 // public static func ModuleParameter getParameterInfo( String name )
-deClassAudioSystem::nfGetParameterInfo2::nfGetParameterInfo2( const sInitData &init ) :
-dsFunction( init.clsAudSys, "getParameterInfo", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar ){
-	p_AddParameter( init.clsString ); // name
+deClassAudioSystem::nfGetParameterInfo2::nfGetParameterInfo2(const sInitData &init) :
+dsFunction(init.clsAudSys, "getParameterInfo", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
+	p_AddParameter(init.clsString); // name
 }
-void deClassAudioSystem::nfGetParameterInfo2::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAudioSystem* )GetOwnerClass() )->GetDS();
+void deClassAudioSystem::nfGetParameterInfo2::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAudioSystem*)GetOwnerClass())->GetDS();
 	const deAudioSystem &audSys = *ds.GetGameEngine()->GetAudioSystem();
 	deBaseAudioModule * const module = audSys.GetActiveModule();
 	
-	ds.GetClassModuleParameter()->PushParameter( rt, module,
-		module->IndexOfParameterNamed( rt->GetValue( 0 )->GetString() ) );
+	ds.GetClassModuleParameter()->PushParameter(rt, module,
+		module->IndexOfParameterNamed(rt->GetValue(0)->GetString()));
 }
 
 // public static func String getParameterValue( String name )
-deClassAudioSystem::nfGetParameterValue::nfGetParameterValue( const sInitData &init ) :
-dsFunction( init.clsAudSys, "getParameterValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
-	p_AddParameter( init.clsString ); // name
+deClassAudioSystem::nfGetParameterValue::nfGetParameterValue(const sInitData &init) :
+dsFunction(init.clsAudSys, "getParameterValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
+	p_AddParameter(init.clsString); // name
 }
-void deClassAudioSystem::nfGetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAudioSystem *clsAudSys = ( deClassAudioSystem* )GetOwnerClass();
+void deClassAudioSystem::nfGetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAudioSystem *clsAudSys = (deClassAudioSystem*)GetOwnerClass();
 	deAudioSystem *audSys = clsAudSys->GetDS().GetGameEngine()->GetAudioSystem();
 	deBaseAudioModule *module = audSys->GetActiveModule();
-	rt->PushString( module->GetParameterValue( rt->GetValue( 0 )->GetString() ) );
+	rt->PushString(module->GetParameterValue(rt->GetValue(0)->GetString()));
 }
 
 // public static func void setParameterValue( String name, String value )
-deClassAudioSystem::nfSetParameterValue::nfSetParameterValue( const sInitData &init ) :
-dsFunction( init.clsAudSys, "setParameterValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsString ); // name
-	p_AddParameter( init.clsString ); // value
+deClassAudioSystem::nfSetParameterValue::nfSetParameterValue(const sInitData &init) :
+dsFunction(init.clsAudSys, "setParameterValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsString); // name
+	p_AddParameter(init.clsString); // value
 }
-void deClassAudioSystem::nfSetParameterValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassAudioSystem *clsAudSys = ( deClassAudioSystem* )GetOwnerClass();
+void deClassAudioSystem::nfSetParameterValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassAudioSystem *clsAudSys = (deClassAudioSystem*)GetOwnerClass();
 	deAudioSystem *audSys = clsAudSys->GetDS().GetGameEngine()->GetAudioSystem();
 	deBaseAudioModule *module = audSys->GetActiveModule();
 	
-	module->SetParameterValue( rt->GetValue( 0 )->GetString(), rt->GetValue( 1 )->GetString() );
+	module->SetParameterValue(rt->GetValue(0)->GetString(), rt->GetValue(1)->GetString());
 }
 
 
 
 // public static func String sendCommand( String command )
-deClassAudioSystem::nfSendCommand::nfSendCommand( const sInitData &init ) : dsFunction( init.clsAudSys,
-"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
-	p_AddParameter( init.clsString ); // command
+deClassAudioSystem::nfSendCommand::nfSendCommand(const sInitData &init) : dsFunction(init.clsAudSys,
+"sendCommand", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
+	p_AddParameter(init.clsString); // command
 }
-void deClassAudioSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassAudioSystem* )GetOwnerClass() )->GetDS();
+void deClassAudioSystem::nfSendCommand::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassAudioSystem*)GetOwnerClass())->GetDS();
 	const deAudioSystem &audioSystem = *ds.GetGameEngine()->GetAudioSystem();
 	deBaseAudioModule &module = *audioSystem.GetActiveModule();
 	decUnicodeArgumentList argList;
 	decUnicodeString command;
 	decUnicodeString answer;
 	
-	command.SetFromUTF8( rt->GetValue( 0 )->GetString() );
-	argList.ParseCommand( command );
-	module.SendCommand( argList, answer );
-	rt->PushString( answer.ToUTF8() );
+	command.SetFromUTF8(rt->GetValue(0)->GetString());
+	argList.ParseCommand(command);
+	module.SendCommand(argList, answer);
+	rt->PushString(answer.ToUTF8());
 }
 
 // public static func int getFPSRate()
-deClassAudioSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
-dsFunction( init.clsAudSys, "getFPSRate", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+deClassAudioSystem::nfGetFPSRate::nfGetFPSRate(const sInitData &init) :
+dsFunction(init.clsAudSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
-void deClassAudioSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassAudioSystem* )GetOwnerClass() )->GetDS();
-	rt->PushInt( ds.GetGameEngine()->GetAudioSystem()->GetActiveModule()->GetFPSRate() );
+void deClassAudioSystem::nfGetFPSRate::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassAudioSystem*)GetOwnerClass())->GetDS();
+	rt->PushInt(ds.GetGameEngine()->GetAudioSystem()->GetActiveModule()->GetFPSRate());
 }
 
 
@@ -202,14 +202,14 @@ void deClassAudioSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
 // Constructor, Destructor
 ////////////////////////////
 
-deClassAudioSystem::deClassAudioSystem( deScriptingDragonScript &ds ) :
-dsClass( "AudioSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ),
-pDS( ds )
+deClassAudioSystem::deClassAudioSystem(deScriptingDragonScript &ds) :
+dsClass("AudioSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassAudioSystem::~deClassAudioSystem(){
@@ -220,7 +220,7 @@ deClassAudioSystem::~deClassAudioSystem(){
 // Management
 ///////////////
 
-void deClassAudioSystem::CreateClassMembers( dsEngine *engine ){
+void deClassAudioSystem::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -234,15 +234,15 @@ void deClassAudioSystem::CreateClassMembers( dsEngine *engine ){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	
 	// add functions
-	AddFunction( new nfGetActiveMicrophone( init ) );
-	AddFunction( new nfSetActiveMicrophone( init ) );
+	AddFunction(new nfGetActiveMicrophone(init));
+	AddFunction(new nfSetActiveMicrophone(init));
 	
-	AddFunction( new nfGetParameterCount( init ) );
-	AddFunction( new nfGetParameterInfo( init ) );
-	AddFunction( new nfGetParameterInfo2( init ) );
-	AddFunction( new nfGetParameterValue( init ) );
-	AddFunction( new nfSetParameterValue( init ) );
+	AddFunction(new nfGetParameterCount(init));
+	AddFunction(new nfGetParameterInfo(init));
+	AddFunction(new nfGetParameterInfo2(init));
+	AddFunction(new nfGetParameterValue(init));
+	AddFunction(new nfSetParameterValue(init));
 	
-	AddFunction( new nfSendCommand( init ) );
-	AddFunction( new nfGetFPSRate( init ) );
+	AddFunction(new nfSendCommand(init));
+	AddFunction(new nfGetFPSRate(init));
 }

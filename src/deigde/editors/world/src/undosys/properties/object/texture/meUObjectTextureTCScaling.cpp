@@ -41,22 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCScaling::meUObjectTextureTCScaling( meObjectTexture *texture, const decVector2 &newScaling ){
-	if( ! texture ){
-		DETHROW( deeInvalidParam );
+meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, const decVector2 &newScaling){
+	if(! texture){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meObject * const object = texture->GetObject();
-	if( ! object ){
-		DETHROW( deeInvalidParam );
+	if(! object){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = object->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Objext Texture Scaling" );
+	SetShortInfo("Objext Texture Scaling");
 	
 	pTexture = NULL;
 	
@@ -68,7 +68,7 @@ meUObjectTextureTCScaling::meUObjectTextureTCScaling( meObjectTexture *texture, 
 }
 
 meUObjectTextureTCScaling::~meUObjectTextureTCScaling(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
 }
@@ -79,9 +79,9 @@ meUObjectTextureTCScaling::~meUObjectTextureTCScaling(){
 ///////////////
 
 void meUObjectTextureTCScaling::Undo(){
-	pTexture->SetTexCoordScaling( pOldScaling );
+	pTexture->SetTexCoordScaling(pOldScaling);
 }
 
 void meUObjectTextureTCScaling::Redo(){
-	pTexture->SetTexCoordScaling( pNewScaling );
+	pTexture->SetTexCoordScaling(pNewScaling);
 }

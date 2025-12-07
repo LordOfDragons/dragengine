@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine. */
-	dealEngine( dealLauncher &launcher );
+	dealEngine(dealLauncher &launcher);
 	
 	/** \brief Clean up engine. */
 	~dealEngine();
@@ -69,54 +69,54 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Config path. */
-	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	inline const decString &GetPathConfig() const{return pPathConfig;}
 	
 	/** \brief Set config path. */
-	void SetPathConfig( const char *path );
+	void SetPathConfig(const char *path);
 	
 	/** \brief Share path. */
-	inline const decString &GetPathShare() const{ return pPathShare; }
+	inline const decString &GetPathShare() const{return pPathShare;}
 	
 	/** \brief Set share path. */
-	void SetPathShare( const char *path );
+	void SetPathShare(const char *path);
 	
 	/** \brief Lib path. */
-	inline const decString &GetPathLib() const{ return pPathLib; }
+	inline const decString &GetPathLib() const{return pPathLib;}
 	
 	/** \brief Set lib path. */
-	void SetPathLib( const char *path );
+	void SetPathLib(const char *path);
 	
 	/** \brief Cache path. */
-	inline const decString &GetPathCache() const{ return pPathCache; }
+	inline const decString &GetPathCache() const{return pPathCache;}
 	
 	/** \brief Set cache path. */
-	void SetPathCache( const char *path );
+	void SetPathCache(const char *path);
 	
 	/** \brief Engine log filename. */
-	inline const decString &GetLogFile() const{ return pLogFile; }
+	inline const decString &GetLogFile() const{return pLogFile;}
 	
 	/** \brief Set engine log filename. */
-	void SetLogFile( const char *path );
+	void SetLogFile(const char *path);
 	
 	/** \brief Module list. */
-	inline dealEngineModuleList &GetModuleList(){ return pModuleList; }
-	inline const dealEngineModuleList &GetModuleList() const{ return pModuleList; }
+	inline dealEngineModuleList &GetModuleList(){return pModuleList;}
+	inline const dealEngineModuleList &GetModuleList() const{return pModuleList;}
 	
 	
 	
 	/** \brief Engine instance or \em NULL if not created. */
-	inline dealIEngineInstance *GetEngine() const{ return pEngine; }
+	inline dealIEngineInstance *GetEngine() const{return pEngine;}
 	
 	
 	
 	/** \brief Start engine. */
-	void Start( const char *cacheAppID );
+	void Start(const char *cacheAppID);
 	
 	/** \brief Stop engine. */
 	void Stop();
 	
 	/** \brief Process input event. */
-	void ProcessInputEvent( const AInputEvent &event );
+	void ProcessInputEvent(const AInputEvent &event);
 	
 	
 	
@@ -127,16 +127,16 @@ public:
 	void CheckModules();
 	
 	/** \brief Add modules found in directory. */
-	void AddModulesFrom( const char *directory, int type );
+	void AddModulesFrom(const char *directory, int type);
 	
 	/** \brief Best module for type. */
-	dealEngineModule *GetBestModuleForType( int moduleType );
+	dealEngineModule *GetBestModuleForType(int moduleType);
 	
 	/** \brief Get engine path and add virtual file system containers for them. */
 	void PutEngineIntoVFS();
 	
 	/** \brief Text for type. */
-	const char *GetModuleTypeText( int moduleType ) const;
+	const char *GetModuleTypeText(int moduleType) const;
 	
 	
 	

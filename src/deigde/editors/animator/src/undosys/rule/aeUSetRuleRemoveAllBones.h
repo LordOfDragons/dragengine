@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleRemoveAllBones( aeRule *rule );
+	aeUSetRuleRemoveAllBones(aeRule *rule);
 	
 protected:
 	/** Clean up undo. */

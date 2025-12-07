@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionPaste( ceConversationTopic *topic, const ceConversationActionList &actions, int index );
+	ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionPaste();
@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
+	inline ceConversationTopic &GetTopic() const{return *pTopic;}
 	
 	/** \brief Retrieves the list of actions. */
-	inline const ceConversationActionList &GetActions() const{ return pActions; }
+	inline const ceConversationActionList &GetActions() const{return pActions;}
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Undo. */
 	virtual void Undo();
@@ -74,10 +74,10 @@ public:
 	/*@}*/
 	
 protected:
-	void pInsertActions( ceConversationActionList &list );
-	void pRemoveActions( ceConversationActionList &list );
+	void pInsertActions(ceConversationActionList &list);
+	void pRemoveActions(ceConversationActionList &list);
 	void pSelectInserted();
-	ceConversationAction *ActivateActionAfterRemove( const ceConversationActionList &list ) const;
+	ceConversationAction *ActivateActionAfterRemove(const ceConversationActionList &list) const;
 };
 
 #endif

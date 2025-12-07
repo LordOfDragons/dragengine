@@ -36,16 +36,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSPBSingleUse::deoglSPBSingleUse( const deoglRenderThread& renderThread,
-	deoglShaderParameterBlock *block ) :
-pRenderThread( renderThread ),
-pInitialBlock( block ),
-pFrameCounter( ~0 ),
-pStartIndex( 0 ),
-pNextIndex( 0 )
+deoglSPBSingleUse::deoglSPBSingleUse(const deoglRenderThread& renderThread,
+	deoglShaderParameterBlock *block) :
+pRenderThread(renderThread),
+pInitialBlock(block),
+pFrameCounter(~0),
+pStartIndex(0),
+pNextIndex(0)
 {
-	DEASSERT_NOTNULL( block );
-	pBlocks.Add( block );
+	DEASSERT_NOTNULL(block);
+	pBlocks.Add(block);
 }
 
 deoglSPBSingleUse::~deoglSPBSingleUse(){
@@ -59,9 +59,9 @@ deoglSPBSingleUse::~deoglSPBSingleUse(){
 deoglShaderParameterBlock *deoglSPBSingleUse::Next(){
 	const uint32_t frameCounter = pRenderThread.GetFrameCounter();
 	
-	if( frameCounter == pFrameCounter ){
-		if( pNextIndex == pStartIndex ){
-			pBlocks.Insert( deoglShaderParameterBlock::Ref::New( pInitialBlock->Copy() ), pNextIndex );
+	if(frameCounter == pFrameCounter){
+		if(pNextIndex == pStartIndex){
+			pBlocks.Insert(deoglShaderParameterBlock::Ref::New(pInitialBlock->Copy()), pNextIndex);
 			pStartIndex++;
 		}
 		
@@ -70,7 +70,7 @@ deoglShaderParameterBlock *deoglSPBSingleUse::Next(){
 		pStartIndex = pNextIndex;
 	}
 	
-	deoglShaderParameterBlock * const block = ( deoglShaderParameterBlock* )pBlocks.GetAt( pNextIndex );
-	pNextIndex = ( pNextIndex + 1 ) % pBlocks.GetCount();
+	deoglShaderParameterBlock * const block = (deoglShaderParameterBlock*)pBlocks.GetAt(pNextIndex);
+	pNextIndex = (pNextIndex + 1) % pBlocks.GetCount();
 	return block;
 }

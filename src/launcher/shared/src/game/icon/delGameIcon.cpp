@@ -33,12 +33,12 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-delGameIcon::delGameIcon( int size, const char *path ) :
-pSize( size ),
-pPath( path )
+delGameIcon::delGameIcon(int size, const char *path) :
+pSize(size),
+pPath(path)
 {
-	if( size < 1 ){
-		DETHROW_INFO( deeInvalidParam, "size < 1" );
+	if(size < 1){
+		DETHROW_INFO(deeInvalidParam, "size < 1");
 	}
 }
 
@@ -50,8 +50,8 @@ delGameIcon::~delGameIcon(){
 // Management
 ///////////////
 
-void delGameIcon::SetContent( decMemoryFile *content ){
-	if( pContent == content ){
+void delGameIcon::SetContent(decMemoryFile *content){
+	if(pContent == content){
 		return;
 	}
 	

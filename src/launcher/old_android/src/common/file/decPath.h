@@ -50,7 +50,7 @@ public:
 	decPath();
 	
 	/** \brief Create copy of path. */
-	decPath( const decPath &path );
+	decPath(const decPath &path);
 	
 	/** \brief Clean up path. */
 	~decPath();
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create path from unix path. */
-	static decPath CreatePathUnix( const char *path );
+	static decPath CreatePathUnix(const char *path);
 	
 	/** \brief Create path from native path. */
-	static decPath CreatePathNative( const char *path );
+	static decPath CreatePathNative(const char *path);
 	
 	/** \brief Working directory absolute path. */
 	static decPath CreateWorkingDirectory();
@@ -78,7 +78,7 @@ public:
 	 * 
 	 * This method is safe to be used with path containing '..' at the beginning.
 	 */
-	static decPath AbsolutePathUnix( const char *path, const char *baseDirectory );
+	static decPath AbsolutePathUnix(const char *path, const char *baseDirectory);
 	
 	/**
 	 * \brief Create absolute path of base directory and a potential relative path.
@@ -89,7 +89,7 @@ public:
 	 * 
 	 * This method is safe to be used with path containing '..' at the beginning.
 	 */
-	static decPath AbsolutePathNative( const char *path, const char *baseDirectory );
+	static decPath AbsolutePathNative(const char *path, const char *baseDirectory);
 	
 	/**
 	 * \brief Create relative or absolute path of source path relative to base directory.
@@ -97,7 +97,7 @@ public:
 	 * \param[in] baseDirectory Base directory.
 	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
 	 */
-	static decPath RelativePathUnix( const char *path, const char *baseDirectory, bool onlyBelow = false );
+	static decPath RelativePathUnix(const char *path, const char *baseDirectory, bool onlyBelow = false);
 	
 	/**
 	 * \brief Create relative or absolute path of source path relative to base directory.
@@ -105,28 +105,28 @@ public:
 	 * \param[in] baseDirectory Base directory.
 	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
 	 */
-	static decPath RelativePathNative( const char *path, const char *baseDirectory, bool onlyBelow = false );
+	static decPath RelativePathNative(const char *path, const char *baseDirectory, bool onlyBelow = false);
 	
 	/** \brief Path prefix. */
-	inline const decString &GetPrefix() const{ return pPrefix; }
+	inline const decString &GetPrefix() const{return pPrefix;}
 	
 	/**
 	 * \brief Set path prefix.
 	 * \throws deeInvalidParam \em prefix is NULL.
 	 */
-	void SetPrefix( const char *prefix );
+	void SetPrefix(const char *prefix);
 	
 	/**
 	 * \brief Set path from the given string path in unix form.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	void SetFromUnix( const char *path );
+	void SetFromUnix(const char *path);
 	
 	/**
 	 * \brief Set from the given string path in native form.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	void SetFromNative( const char *path );
+	void SetFromNative(const char *path);
 	
 	/** \brief Set to working directory. */
 	void SetWorkingDirectory();
@@ -158,25 +158,25 @@ public:
 	bool IsRelative() const;
 	
 	/** \brief Copy another path to this path. */
-	void SetFrom( const decPath &path );
+	void SetFrom(const decPath &path);
 	
 	/** \brief Add path to this path. */
-	void Add( const decPath &path );
+	void Add(const decPath &path);
 	
 	/**
 	 * \brief Add unix path to this path.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	void AddUnixPath( const char *path );
+	void AddUnixPath(const char *path);
 	
 	/**
 	 * \brief Add native path to this path.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	void AddNativePath( const char *path );
+	void AddNativePath(const char *path);
 	
 	/** \brief Path matches file pattern. */
-	bool MatchesPattern( const decPath &filePattern ) const;
+	bool MatchesPattern(const decPath &filePattern) const;
 	
 	/**
 	 * \brief Create absolute path of base directory and a potential relative path.
@@ -187,7 +187,7 @@ public:
 	 * 
 	 * This method is safe to be used with path containing '..' at the beginning.
 	 */
-	decPath AbsolutePath( const decPath &baseDirectory ) const;
+	decPath AbsolutePath(const decPath &baseDirectory) const;
 	
 	/**
 	 * \brief Relative path of source path relative to base directory if possible.
@@ -195,7 +195,7 @@ public:
 	 * \param[in] baseDirectory Base directory.
 	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
 	 */
-	decPath RelativePath( const decPath &baseDirectory, bool onlyBelow = false ) const;
+	decPath RelativePath(const decPath &baseDirectory, bool onlyBelow = false) const;
 	/*@}*/
 	
 	
@@ -210,14 +210,14 @@ public:
 	 * \throws deeInvalidParam \em index is less than 0.
 	 * \throws deeInvalidParam \em index is larger than or equal to GetComponentCount().
 	 */
-	const decString &GetComponentAt( int index ) const;
+	const decString &GetComponentAt(int index) const;
 	
 	/**
 	 * \brief Set component at index.
 	 * \throws deeInvalidParam \em index is less than 0.
 	 * \throws deeInvalidParam \em index is larger than or equal to GetComponentCount().
 	 */
-	void SetComponentAt( int index, const char *component );
+	void SetComponentAt(int index, const char *component);
 	
 	/**
 	 * \brief Last path component.
@@ -229,20 +229,20 @@ public:
 	 * \brief Set last path component.
 	 * \throws deeInvalidParam Path is empty.
 	 */
-	void SetLastComponent( const char *component );
+	void SetLastComponent(const char *component);
 	
 	/**
 	 * \brief Add component.
 	 * \throws deeInvalidParam \em component is NULL.
 	 */
-	void AddComponent( const char *component );
+	void AddComponent(const char *component);
 	
 	/**
 	 * \brief Remove component from index.
 	 * \throws deeInvalidParam \em index is less than 0.
 	 * \throws deeInvalidParam \em index is larger than or equal to GetComponentCount().
 	 */
-	void RemoveComponentFrom( int index );
+	void RemoveComponentFrom(int index);
 	
 	/**
 	 * \brief Remove last component.
@@ -265,13 +265,13 @@ public:
 	 * \brief Unix path is absolute.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	static bool IsUnixPathAbsolute( const char *path );
+	static bool IsUnixPathAbsolute(const char *path);
 	
 	/**
 	 * \brief Native path is absolute.
 	 * \throws deeInvalidParam \em path is NULL.
 	 */
-	static bool IsNativePathAbsolute( const char *path );
+	static bool IsNativePathAbsolute(const char *path);
 	/*@}*/
 	
 	
@@ -290,37 +290,37 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Path is equal to another path. */
-	bool operator==( const decPath &path ) const;
+	bool operator==(const decPath &path) const;
 	
 	/** \brief Path is not equal to another path. */
-	bool operator!=( const decPath &path ) const;
+	bool operator!=(const decPath &path) const;
 	
 	/** \brief Copy another path to this path. */
-	decPath &operator=( const decPath &path );
+	decPath &operator=(const decPath &path);
 	
 	/** \brief Add another path to this path. */
-	decPath &operator+=( const decPath &path );
+	decPath &operator+=(const decPath &path);
 	
 	/** \brief Concatenation of path with another path. */
-	decPath operator+( const decPath &path ) const;
+	decPath operator+(const decPath &path) const;
 	/*@}*/
 	
 	
 	
 private:
 	/** \brief Parse relative path. */
-	void pParseRelativePath( const char *filename, int separator );
+	void pParseRelativePath(const char *filename, int separator);
 	
 	/** \brief Get prefix length. */
-	int pGetPrefixLength( const char *path ) const;
+	int pGetPrefixLength(const char *path) const;
 	
 	/**
 	 * \brief File matching function borrowed from the fox toolkit ( www.fox-toolkit.org ).
 	 * 
 	 * Original file is fxfilematch.cpp .
 	 */
-	static bool domatch( const char *pattern,const char *string, int flags );
-	static bool fxfilematch( const char *pattern,const char *string, int flags );
+	static bool domatch(const char *pattern,const char *string, int flags);
+	static bool fxfilematch(const char *pattern,const char *string, int flags);
 };
 
 #endif

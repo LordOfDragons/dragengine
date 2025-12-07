@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionPasteSnippet::ceWPTMAPChoiceOptionPasteSnippet( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionPasteSnippet::ceWPTMAPChoiceOptionPasteSnippet(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index ) :
-ceWPTMAPasteSnippet( windowMain, conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ),
-pIndex( index )
+ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option, int index) :
+ceWPTMAPasteSnippet(windowMain, conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option),
+pIndex(index)
 {
-	if( index < 0 || index > option.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > option.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -58,8 +58,8 @@ pIndex( index )
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAPChoiceOptionPasteSnippet::CreateUndo( const ceConversationActionList &actions ){
-	ceUCActionPaste * const undo = new ceUCAPChoiceActionPaste( pTopic, pPlayerChoice, pOption, actions, pIndex );
-	undo->SetShortInfo( "Paste Conversation Snippet" );
+ceUCActionPaste *ceWPTMAPChoiceOptionPasteSnippet::CreateUndo(const ceConversationActionList &actions){
+	ceUCActionPaste * const undo = new ceUCAPChoiceActionPaste(pTopic, pPlayerChoice, pOption, actions, pIndex);
+	undo->SetShortInfo("Paste Conversation Snippet");
 	return undo;
 }

@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetUpper::peeUControllerSetUpper( peeController *controller, float newValue ) :
-pController( NULL ),
-pNewUpper( newValue )
+peeUControllerSetUpper::peeUControllerSetUpper(peeController *controller, float newValue) :
+pController(NULL),
+pNewUpper(newValue)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Controller Upper" );
+	SetShortInfo("Set Controller Upper");
 	
 	pOldUpper = controller->GetUpper();
 	pOldLower = controller->GetLower();
@@ -57,7 +57,7 @@ pNewUpper( newValue )
 }
 
 peeUControllerSetUpper::~peeUControllerSetUpper(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -68,10 +68,10 @@ peeUControllerSetUpper::~peeUControllerSetUpper(){
 ///////////////
 
 void peeUControllerSetUpper::Undo(){
-	pController->SetUpper( pOldUpper );
-	pController->SetLower( pOldLower );
+	pController->SetUpper(pOldUpper);
+	pController->SetLower(pOldLower);
 }
 
 void peeUControllerSetUpper::Redo(){
-	pController->SetUpper( pNewUpper );
+	pController->SetUpper(pNewUpper);
 }

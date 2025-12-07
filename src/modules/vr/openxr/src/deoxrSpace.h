@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reference space. */
-	deoxrSpace( deoxrSession &session, XrReferenceSpaceType referenceType );
+	deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType);
 	
 	/** Create reference space. */
 	deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType, const XrPosef &pose);
@@ -73,11 +73,11 @@ public:
 	deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType, const decMatrix &pose);
 	
 	/** Create action space. */
-	deoxrSpace( deoxrSession &session, const deoxrAction &action,
-		const deoxrPath &subactionPath, const decVector &rotation );
+	deoxrSpace(deoxrSession &session, const deoxrAction &action,
+		const deoxrPath &subactionPath, const decVector &rotation);
 	
 	/** Create action space. */
-	deoxrSpace( deoxrSession &session, const deoxrAction &action );
+	deoxrSpace(deoxrSession &session, const deoxrAction &action);
 	
 	/** Create extension space. */
 	deoxrSpace(deoxrSession &session, XrSpace space);
@@ -93,10 +93,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{ return pSession; }
+	inline deoxrSession &GetSession() const{return pSession;}
 	
 	/** Space. */
-	inline XrSpace GetSpace() const{ return pSpace; }
+	inline XrSpace GetSpace() const{return pSpace;}
 	
 	/**
 	 * Transform relative to another space. If time is not valid or data is not present
@@ -104,8 +104,8 @@ public:
 	 * 
 	 * \returns Valid data flags as combination of eValidData.
 	 */
-	int LocateSpace( const deoxrSpace &space, XrTime time,
-		decVector &position, decQuaternion &orientation ) const;
+	int LocateSpace(const deoxrSpace &space, XrTime time,
+		decVector &position, decQuaternion &orientation) const;
 	
 	/**
 	 * Transform relative to another space with velocities. If time is not valid or data
@@ -113,8 +113,8 @@ public:
 	 * 
 	 * \returns Valid data flags as combination of eValidData.
 	 */
-	int LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
-		decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const;
+	int LocateSpace(const deoxrSpace &space, XrTime time, decVector &position,
+		decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity) const;
 	
 	/**
 	 * Transform relative to another space with velocities. If time is not valid or data
@@ -122,8 +122,8 @@ public:
 	 * 
 	 * \returns Valid data flags as combination of eValidData.
 	 */
-	int LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
-		decVector &linearVelocity, decVector &angularVelocity ) const;
+	int LocateSpaceEye(XrTime time, decVector &position, decQuaternion &orientation,
+		decVector &linearVelocity, decVector &angularVelocity) const;
 	/*@}*/
 	
 	

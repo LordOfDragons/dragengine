@@ -51,7 +51,7 @@ public:
 	deoglLightList();
 	
 	/** Create copy of light list. */
-	deoglLightList( const deoglLightList &copy );
+	deoglLightList(const deoglLightList &copy);
 	
 	/** Clean up light list. */
 	~deoglLightList();
@@ -65,30 +65,30 @@ public:
 	int GetCount() const;
 	
 	/** Light is present. */
-	bool Has( deoglRLight *light ) const;
+	bool Has(deoglRLight *light) const;
 	
 	/** Light at index. */
-	deoglRLight *GetAt( int index ) const;
+	deoglRLight *GetAt(int index) const;
 	
 	/** Add light. */
-	void Add( deoglRLight *light );
+	void Add(deoglRLight *light);
 	
 	/**
 	 * Add light if absent.
 	 * 
 	 * \returns \em true if added otherwise \em false.
 	 */
-	bool AddIfMissing( deoglRLight *light );
+	bool AddIfMissing(deoglRLight *light);
 	
 	/** Remove light. */
-	void Remove( deoglRLight *light );
+	void Remove(deoglRLight *light);
 	
 	/**
 	 * Remove light if present.
 	 * 
 	 * \returns \em true if removed otherwise \em false.
 	 */
-	bool RemoveIfExisting( deoglRLight *light );
+	bool RemoveIfExisting(deoglRLight *light);
 	
 	/** Remove all lights. */
 	void RemoveAll();

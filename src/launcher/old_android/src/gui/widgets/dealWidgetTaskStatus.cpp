@@ -44,16 +44,16 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetTaskStatus::dealWidgetTaskStatus( dealDisplay &display ) :
-dealWidgetLayoutStack( display, true ),
+dealWidgetTaskStatus::dealWidgetTaskStatus(dealDisplay &display) :
+dealWidgetLayoutStack(display, true),
 
-pLabelName( NULL ),
-pLabelStatus( NULL ),
-pProgressBar( NULL ),
-pBgPending( NULL ),
-pBgFinished( NULL ),
+pLabelName(NULL),
+pLabelStatus(NULL),
+pProgressBar(NULL),
+pBgPending(NULL),
+pBgFinished(NULL),
 
-pFinished( false )
+pFinished(false)
 {
 	pBuildContent();
 }
@@ -66,52 +66,52 @@ dealWidgetTaskStatus::~dealWidgetTaskStatus(){
 // Management
 ///////////////
 
-void dealWidgetTaskStatus::SetName( const char *name ){
-	if( pName == name ){
+void dealWidgetTaskStatus::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
-	pLabelName->SetText( name );
+	pLabelName->SetText(name);
 }
 
-void dealWidgetTaskStatus::SetStatus( const char *text ){
-	if( pStatus == text ){
+void dealWidgetTaskStatus::SetStatus(const char *text){
+	if(pStatus == text){
 		return;
 	}
 	
 	pStatus = text;
 	
-	pLabelStatus->SetText( text );
+	pLabelStatus->SetText(text);
 }
 
-void dealWidgetTaskStatus::SetProgressRange( int range ){
-	pProgressBar->SetRange( 0, range );
+void dealWidgetTaskStatus::SetProgressRange(int range){
+	pProgressBar->SetRange(0, range);
 }
 
 float dealWidgetTaskStatus::GetProgress() const{
 	return pProgressBar->GetProgress();
 }
 
-void dealWidgetTaskStatus::SetProgress( int progress ){
-	pProgressBar->SetProgress( progress );
+void dealWidgetTaskStatus::SetProgress(int progress){
+	pProgressBar->SetProgress(progress);
 }
 
 
 
-void dealWidgetTaskStatus::SetFinished( bool finished ){
-	if( pFinished == finished ){
+void dealWidgetTaskStatus::SetFinished(bool finished){
+	if(pFinished == finished){
 		return;
 	}
 	
 	pFinished = finished;
 	
-	if( pBgPending ){
-		pBgPending->SetVisible( ! pFinished );
+	if(pBgPending){
+		pBgPending->SetVisible(! pFinished);
 	}
-	if( pBgFinished ){
-		pBgFinished->SetVisible( pFinished );
+	if(pBgFinished){
+		pBgFinished->SetVisible(pFinished);
 	}
 }
 /*@}*/
@@ -126,29 +126,29 @@ void dealWidgetTaskStatus::pBuildContent(){
 	const int fontSize = display.GetDefaultFontSize();
 	
 	// background
-	pBgFinished = new dealWidget( display );
-	pBgFinished->SetBackgroundColor( decColor( 0.5f, 1.0f, 0.5f ) );
-	pBgFinished->SetVisible( false );
-	AddWidget( pBgFinished );
+	pBgFinished = new dealWidget(display);
+	pBgFinished->SetBackgroundColor(decColor(0.5f, 1.0f, 0.5f));
+	pBgFinished->SetVisible(false);
+	AddWidget(pBgFinished);
 	
-	pBgPending = new dealWidget( display );
-	pBgPending->SetBackgroundColor( decColor( 1.0f, 0.5f, 0.5f ) );
-	AddWidget( pBgPending );
+	pBgPending = new dealWidget(display);
+	pBgPending->SetBackgroundColor(decColor(1.0f, 0.5f, 0.5f));
+	AddWidget(pBgPending);
 	
 	// information
-	dealWidgetLayoutFlow * const layout = new dealWidgetLayoutFlow( display, false,
-		fontSize / 2, dealWidgetLayoutFlow::eltFill, dealWidgetLayoutFlow::eltFill );
-	layout->SetPadding( fontSize, fontSize / 2 );
+	dealWidgetLayoutFlow * const layout = new dealWidgetLayoutFlow(display, false,
+		fontSize / 2, dealWidgetLayoutFlow::eltFill, dealWidgetLayoutFlow::eltFill);
+	layout->SetPadding(fontSize, fontSize / 2);
 	
-	pLabelName = new dealWidgetLabel( display, "" );
-	layout->AddWidget( pLabelName );
+	pLabelName = new dealWidgetLabel(display, "");
+	layout->AddWidget(pLabelName);
 	
-	pLabelStatus = new dealWidgetLabel( display, "" );
-	layout->AddWidget( pLabelStatus );
+	pLabelStatus = new dealWidgetLabel(display, "");
+	layout->AddWidget(pLabelStatus);
 	
-	pProgressBar = new dealWidgetProgressBar( display, 0, 100 );
-	layout->AddWidget( pProgressBar );
+	pProgressBar = new dealWidgetProgressBar(display, 0, 100);
+	layout->AddWidget(pProgressBar);
 	
-	AddWidget( layout );
+	AddWidget(layout);
 	layout->FreeReference();
 }

@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCForceFieldPaste::gdeMAOCForceFieldPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Force Field",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class force field" )
+gdeMAOCForceFieldPaste::gdeMAOCForceFieldPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Force Field",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class force field")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Force Field",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCForceFieldPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCForceField::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCForceFieldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME));
+	if(! clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCForceField &clipOCForceField =
-		( const gdeClipboardDataOCForceField & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCForceField &)(igdeClipboardData&)clip;
 	
 	const gdeOCForceField::Ref forceField(gdeOCForceField::Ref::NewWith(*clipOCForceField.GetForceField()));
 	
-	igdeUndo * const undo = new gdeUOCAddForceField( &objectClass,
-		forceField );
-	undo->SetShortInfo( "Paste object class particle emitter" );
+	igdeUndo * const undo = new gdeUOCAddForceField(&objectClass,
+		forceField);
+	undo->SetShortInfo("Paste object class particle emitter");
 	return undo;
 }
 
 void gdeMAOCForceFieldPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCForceField::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCForceField::TYPE_NAME));
 }

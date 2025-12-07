@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game patch manager. */
-	delPatchManager( delLauncher &launcher );
+	delPatchManager(delLauncher &launcher);
 	
 	/** \brief Clean up game patch manager. */
 	~delPatchManager();
@@ -60,23 +60,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline delLauncher &GetLauncher() const{ return pLauncher; }
+	inline delLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** \brief Game list. */
-	inline delPatchList &GetPatches(){ return pPatches; }
-	inline const delPatchList &GetPatches() const{ return pPatches; }
+	inline delPatchList &GetPatches(){return pPatches;}
+	inline const delPatchList &GetPatches() const{return pPatches;}
 	
 	/** \brief Load list of game patches from game patch directory. */
-	void LoadPatches( delEngineInstance &instance );
+	void LoadPatches(delEngineInstance &instance);
 	
 	/** \brief Load a game patch from a disk file. */
-	void LoadPatchFromDisk( delEngineInstance &instance, const decString &path, delPatchList &list );
+	void LoadPatchFromDisk(delEngineInstance &instance, const decString &path, delPatchList &list);
 	
 	/**
 	 * \brief Search and load patches inside and below directory.
 	 * \version 1.13
 	 */
-	void LoadPatchesFromDisk( delEngineInstance &instance, const decString &baseDir, delPatchList &list );
+	void LoadPatchesFromDisk(delEngineInstance &instance, const decString &baseDir, delPatchList &list);
 	
 	/** \brief Clear. */
 	void Clear();
@@ -85,10 +85,10 @@ public:
 	
 	
 protected:
-	void pScanPatchDefFiles( delEngineInstance &instance, deVirtualFileSystem &vfs,
-		const decPath &baseDir, const decPath &directory, delPatchList &list );
+	void pScanPatchDefFiles(delEngineInstance &instance, deVirtualFileSystem &vfs,
+		const decPath &baseDir, const decPath &directory, delPatchList &list);
 	
-	void pProcessFoundFiles( delEngineInstance &instance, const decPath &path, delPatchList &list );
+	void pProcessFoundFiles(delEngineInstance &instance, const decPath &path, delPatchList &list);
 };
 
 #endif

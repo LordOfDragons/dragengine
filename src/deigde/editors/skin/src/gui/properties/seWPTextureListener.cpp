@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPTextureListener::seWPTextureListener( seWPTexture &panel ) :
-pPanel( panel ){
+seWPTextureListener::seWPTextureListener(seWPTexture &panel) :
+pPanel(panel){
 }
 
 seWPTextureListener::~seWPTextureListener(){
@@ -51,44 +51,44 @@ seWPTextureListener::~seWPTextureListener(){
 // Management
 ///////////////
 
-void seWPTextureListener::MappedStructureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPTextureListener::MappedStructureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdatePropertyMappedTargetList();
 }
 
-void seWPTextureListener::MappedNameChanged( seSkin *skin, seMapped* ){
-	MappedStructureChanged( skin );
+void seWPTextureListener::MappedNameChanged(seSkin *skin, seMapped*){
+	MappedStructureChanged(skin);
 }
 
-void seWPTextureListener::TextureStructureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPTextureListener::TextureStructureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdateTextureList();
 }
 
-void seWPTextureListener::TextureChanged( seSkin *skin, seTexture *texture ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() ){
+void seWPTextureListener::TextureChanged(seSkin *skin, seTexture *texture){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdateTexture();
 }
 
-void seWPTextureListener::TextureNameChanged( seSkin *skin, seTexture* ){
-	if( skin != pPanel.GetSkin() ){
+void seWPTextureListener::TextureNameChanged(seSkin *skin, seTexture*){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
 	pPanel.UpdateTextureList();
 }
 
-void seWPTextureListener::ActiveTextureChanged( seSkin *skin ){
-	if( skin != pPanel.GetSkin() ){
+void seWPTextureListener::ActiveTextureChanged(seSkin *skin){
+	if(skin != pPanel.GetSkin()){
 		return;
 	}
 	
@@ -97,16 +97,16 @@ void seWPTextureListener::ActiveTextureChanged( seSkin *skin ){
 
 
 
-void seWPTextureListener::PropertyStructureChanged( seSkin *skin, seTexture *texture ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() ){
+void seWPTextureListener::PropertyStructureChanged(seSkin *skin, seTexture *texture){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive()){
 		return;
 	}
 	
 	pPanel.UpdatePropertyList();
 }
 
-void seWPTextureListener::PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive() ){
+void seWPTextureListener::PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()){
 		return;
 	}
 	
@@ -114,8 +114,8 @@ void seWPTextureListener::PropertyChanged( seSkin *skin, seTexture *texture, seP
 	pPanel.UpdateProperty();
 }
 
-void seWPTextureListener::ActivePropertyChanged( seSkin *skin, seTexture *texture ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() ){
+void seWPTextureListener::ActivePropertyChanged(seSkin *skin, seTexture *texture){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive()){
 		return;
 	}
 	
@@ -123,10 +123,10 @@ void seWPTextureListener::ActivePropertyChanged( seSkin *skin, seTexture *textur
 	pPanel.SelectActiveProperty();
 }
 
-void seWPTextureListener::PropertyNodeChanged( seSkin* skin, seTexture* texture,
-seProperty* property, sePropertyNode* node ){
-	if( skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()
-	|| node != property->GetNodeGroup() ){
+void seWPTextureListener::PropertyNodeChanged(seSkin* skin, seTexture* texture,
+seProperty* property, sePropertyNode* node){
+	if(skin != pPanel.GetSkin() || ! texture->GetActive() || ! property->GetActive()
+	|| node != property->GetNodeGroup()){
 		return;
 	}
 	

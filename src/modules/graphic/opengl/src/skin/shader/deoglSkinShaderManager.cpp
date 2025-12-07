@@ -40,7 +40,7 @@
 // Unit Source Code Path
 //////////////////////////
 
-static const char *vUnitSourceCodePath[ deoglSkinShaderManager::UnitSourceCodePathCount ] = {
+static const char *vUnitSourceCodePath[deoglSkinShaderManager::UnitSourceCodePathCount] = {
 	"V DefRen Skin Geometry", // euscpVertexGeometry
 	"V DefRen Skin Depth", // euscpVertexDepth
 	"V DefRen Skin Particle", // euscpVertexParticle
@@ -115,9 +115,9 @@ void deoglSkinShaderManager::cPrepareShader::PrepareShaderFinished(deoglSkinShad
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinShaderManager::deoglSkinShaderManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pMaintananceInterval( 0 ){
+deoglSkinShaderManager::deoglSkinShaderManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pMaintananceInterval(0){
 }
 
 deoglSkinShaderManager::~deoglSkinShaderManager(){
@@ -128,8 +128,8 @@ deoglSkinShaderManager::~deoglSkinShaderManager(){
 // Management
 ///////////////
 
-const char *deoglSkinShaderManager::GetUnitSourceCodePath( eUnitSourceCodePath unitSourceCodePath ) const{
-	return vUnitSourceCodePath[ unitSourceCodePath ];
+const char *deoglSkinShaderManager::GetUnitSourceCodePath(eUnitSourceCodePath unitSourceCodePath) const{
+	return vUnitSourceCodePath[unitSourceCodePath];
 }
 
 
@@ -144,7 +144,7 @@ const deoglSkinShader &deoglSkinShaderManager::GetShaderAt(int index){
 	return *(const deoglSkinShader*)pShaderList.GetAt(index);
 }
 
-deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
+deoglSkinShader *deoglSkinShaderManager::GetShaderWith(deoglSkinShaderConfig &configuration){
 	const deMutexGuard guard(pMutex);
 	configuration.UpdateKey();
 	
@@ -156,7 +156,7 @@ deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &c
 	const deoglSkinShader::Ref shader(deoglSkinShader::Ref::New(
 		new deoglSkinShader(pRenderThread, configuration)));
 	shader->PrepareShader(nullptr);
-	pShaderList.Add( shader );
+	pShaderList.Add(shader);
 	return shader;
 }
 
@@ -217,9 +217,9 @@ const deoglSkinShaderConfig &configuration) const{
 	const int count = pShaderList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );
-		if( shader->GetConfig() == configuration ){
+	for(i=0; i<count; i++){
+		deoglSkinShader * const shader = (deoglSkinShader*)pShaderList.GetAt(i);
+		if(shader->GetConfig() == configuration){
 			return shader;
 		}
 	}

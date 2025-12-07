@@ -37,17 +37,17 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decMemoryFile::decMemoryFile( const char *filename ) :
-pFilename( filename ),
-pData( NULL ),
-pSize( 0 ),
-pCapacity( 0 ),
-pModificationTime( decDateTime().ToSystemTime() ){
+decMemoryFile::decMemoryFile(const char *filename) :
+pFilename(filename),
+pData(NULL),
+pSize(0),
+pCapacity(0),
+pModificationTime(decDateTime().ToSystemTime()){
 }
 
 decMemoryFile::~decMemoryFile(){
-	if( pData ){
-		free( pData );
+	if(pData){
+		free(pData);
 	}
 }
 
@@ -56,22 +56,22 @@ decMemoryFile::~decMemoryFile(){
 // Management
 ///////////////
 
-void decMemoryFile::SetModificationTime( TIME_SYSTEM time ){
+void decMemoryFile::SetModificationTime(TIME_SYSTEM time){
 	pModificationTime = time;
 }
 
-void decMemoryFile::Resize( int size, bool compact ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void decMemoryFile::Resize(int size, bool compact){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( size == pSize ){
+	if(size == pSize){
 		return;
 	}
 	
-	if( size == 0 ){
-		if( compact ){
-			free( pData );
+	if(size == 0){
+		if(compact){
+			free(pData);
 			pData = NULL;
 			pCapacity = 0;
 		}
@@ -79,11 +79,11 @@ void decMemoryFile::Resize( int size, bool compact ){
 		return;
 	}
 	
-	if( size > pCapacity ){
+	if(size > pCapacity){
 		const int newCapacity = compact ? size : size * 5 / 4; // 25% larger to avoid re-allocating quickly
-		char * const newData = ( char* )realloc( pData, newCapacity );
-		if( ! newData ){
-			DETHROW( deeOutOfMemory );
+		char * const newData = (char*)realloc(pData, newCapacity);
+		if(! newData){
+			DETHROW(deeOutOfMemory);
 		}
 		pData = newData;
 		pCapacity = newCapacity;

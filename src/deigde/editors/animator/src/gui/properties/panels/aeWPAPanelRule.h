@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAPanelRule( aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType );
+	aeWPAPanelRule(aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType);
 	
 protected:
 	/** Clean up panel. */
@@ -94,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent window. */
-	inline aeWPRule &GetWPRule() const{ return pWPRule; }
+	inline aeWPRule &GetWPRule() const{return pWPRule;}
 	
 	/** Required rule type. */
-	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetRequiredType() const{ return pRequiredType; }
+	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetRequiredType() const{return pRequiredType;}
 	
 	/** Main window. */
 	aeWindowMain &GetWindowMain() const;
@@ -111,10 +111,10 @@ public:
 	aeRule *GetRule() const;
 	
 	/** Target or \em NULL. */
-	inline aeControllerTarget *GetTarget() const{ return pTarget; }
+	inline aeControllerTarget *GetTarget() const{return pTarget;}
 	
 	/** Set target or \em NULL. */
-	void SetTarget( aeControllerTarget *target );
+	void SetTarget(aeControllerTarget *target);
 	
 	
 	
@@ -155,7 +155,7 @@ public:
 	const decString &GetCBBoneText() const;
 	
 	/** Set bone combo box text. */
-	void SetCBBoneText( const char *text );
+	void SetCBBoneText(const char *text);
 	
 	/** Selected bone list or NULL. */
 	const char *GetListBoneSelection() const;
@@ -164,7 +164,7 @@ public:
 	const decString &GetCBVertexPositionSetText() const;
 	
 	/** Set vertex position set combo box text. */
-	void SetCBVertexPositionSetText( const char *text );
+	void SetCBVertexPositionSetText(const char *text);
 	
 	/** Selected vertex position set list or NULL. */
 	const char *GetListVertexPositionSetSelection() const;
@@ -173,13 +173,13 @@ public:
 	aeLink *GetCBLinkSelection() const;
 	
 	/** Set link combo box selection. */
-	void SetCBLinkSelection( aeLink *selection );
+	void SetCBLinkSelection(aeLink *selection);
 	
 	/** Link list selection. */
 	aeLink *GetListLinkSelection() const;
 	
 	/** Set link list selection. */
-	void SetListLinkSelection( aeLink *selection );
+	void SetListLinkSelection(aeLink *selection);
 	
 	
 	
@@ -187,7 +187,7 @@ public:
 	void RemoveAllTargets();
 	
 	/** Add target. */
-	void AddTarget( const char *name, aeControllerTarget *target );
+	void AddTarget(const char *name, aeControllerTarget *target);
 	/*@}*/
 };
 

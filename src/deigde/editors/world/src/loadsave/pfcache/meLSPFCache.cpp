@@ -64,8 +64,8 @@ meLSPFCache::~meLSPFCache(){
 // Management
 ///////////////
 
-void meLSPFCache::LoadFromFile( meHeightTerrainSector &sector, decBaseFileReader &file ){
-	double sectorDim = ( double )sector.GetHeightTerrain()->GetSectorSize();
+void meLSPFCache::LoadFromFile(meHeightTerrainSector &sector, decBaseFileReader &file){
+	double sectorDim = (double)sector.GetHeightTerrain()->GetSectorSize();
 	int p, propfieldCount = sector.GetPropFieldCount();
 	const decPoint &scoord = sector.GetCoordinates();
 	meHeightTerrainPropField *propfield;
@@ -86,33 +86,33 @@ void meLSPFCache::LoadFromFile( meHeightTerrainSector &sector, decBaseFileReader
 	//printf( "meLSPFCache: load cache from %s\n", file.GetFilename() );
 	
 	// determine sector position
-	sectorPosition.x = sectorDim * ( double )scoord.x;
+	sectorPosition.x = sectorDim * (double)scoord.x;
 	sectorPosition.y = 0.0f;
-	sectorPosition.z = sectorDim * ( double )scoord.y;
+	sectorPosition.z = sectorDim * (double)scoord.y;
 	
 	// determine scaling factors
-	scaleRotation.Set( ( DEG2RAD * 360.0f ) / 255.0f, ( DEG2RAD * 360.0f ) / 255.0f, ( DEG2RAD * 360.0f ) / 255.0f );
+	scaleRotation.Set((DEG2RAD * 360.0f) / 255.0f, (DEG2RAD * 360.0f) / 255.0f, (DEG2RAD * 360.0f) / 255.0f);
 	
 	scaleScaling = 5.0f / 255.0f;
 	
 	// read the header
 	char header[10];
-	file.Read( ( char* )&header, 10 ); // signature { char[10] }
-	if( strncmp( header, "DEPFCache ", 10 ) != 0 ){
-		DETHROW_INFO( deeInvalidFileFormat, file.GetFilename() );
+	file.Read((char*)&header, 10); // signature {char[10]}
+	if(strncmp(header, "DEPFCache ", 10) != 0){
+		DETHROW_INFO(deeInvalidFileFormat, file.GetFilename());
 	}
 	
-	int version = file.ReadByte(); // version { byte }
-	if( version != 1 ){
-		DETHROW_INFO( deeInvalidFileFormat, file.GetFilename() );
+	int version = file.ReadByte(); // version {byte}
+	if(version != 1){
+		DETHROW_INFO(deeInvalidFileFormat, file.GetFilename());
 	}
 	
-	scalePosition.x = file.ReadFloat(); // scalePositionX { float }
-	scalePosition.y = file.ReadFloat(); // scalePositionY { float }
-	scalePosition.z = file.ReadFloat(); // scalePositionZ { float }
+	scalePosition.x = file.ReadFloat(); // scalePositionX {float}
+	scalePosition.y = file.ReadFloat(); // scalePositionY {float}
+	scalePosition.z = file.ReadFloat(); // scalePositionZ {float}
 	
 	// read the list of types and determine which vlayer and variation they might belong to
-	typeCount = file.ReadShort(); // number of types { short }
+	typeCount = file.ReadShort(); // number of types {short}
 	
 	int lookforVLayer, lookforVariation;
 	float rotPerForce, restitution;
@@ -120,24 +120,24 @@ void meLSPFCache::LoadFromFile( meHeightTerrainSector &sector, decBaseFileReader
 	int l, layerCount = sector.GetHeightTerrain()->GetVLayerCount();
 	int v, variationCount;
 	
-	for( t=0; t<typeCount; t++ ){
-		pathModel = file.ReadString8(); // model path { string8 }
-		pathSkin = file.ReadString8(); // skin path { string8 }
-		rotPerForce = file.ReadFloat(); // rotation per force { float }
-		restitution = file.ReadFloat(); // restitution { float }
+	for(t=0; t<typeCount; t++){
+		pathModel = file.ReadString8(); // model path {string8}
+		pathSkin = file.ReadString8(); // skin path {string8}
+		rotPerForce = file.ReadFloat(); // rotation per force {float}
+		restitution = file.ReadFloat(); // restitution {float}
 		
 		lookforVLayer = -1;
 		lookforVariation = -1;
-		for( l=0; l<layerCount; l++ ){
-			vlayer = sector.GetHeightTerrain()->GetVLayerAt( l );
+		for(l=0; l<layerCount; l++){
+			vlayer = sector.GetHeightTerrain()->GetVLayerAt(l);
 			variationCount = vlayer->GetVariationCount();
 			
-			for( v=0; v<variationCount; v++ ){
-				variation = vlayer->GetVariationAt( v );
+			for(v=0; v<variationCount; v++){
+				variation = vlayer->GetVariationAt(v);
 				
-				if( pathModel.Equals( variation->GetPathModel() ) && pathSkin.Equals( variation->GetPathSkin() )
-				&&  fabsf( rotPerForce - variation->GetRotationPerForce() ) < 0.001f
-				&&  fabsf( restitution - variation->GetRestitution() ) < 0.001f ){
+				if(pathModel.Equals(variation->GetPathModel()) && pathSkin.Equals(variation->GetPathSkin())
+				&&  fabsf(rotPerForce - variation->GetRotationPerForce()) < 0.001f
+				&&  fabsf(restitution - variation->GetRestitution()) < 0.001f){
 					lookforVLayer = l;
 					lookforVariation = v;
 					break;
@@ -145,42 +145,42 @@ void meLSPFCache::LoadFromFile( meHeightTerrainSector &sector, decBaseFileReader
 			}
 		}
 		
-		if( lookforVLayer == -1 || lookforVariation == -1 ) DETHROW( deeInvalidAction );
+		if(lookforVLayer == -1 || lookforVariation == -1) DETHROW(deeInvalidAction);
 		
-		typeList.AddType( lookforVLayer, lookforVariation );
+		typeList.AddType(lookforVLayer, lookforVariation);
 	}
 	
 	// read the prop fields
-	propfieldCount = file.ReadShort(); // prop field count { short }
-	if( propfieldCount != sector.GetPropFieldCount() ) DETHROW( deeInvalidAction );
+	propfieldCount = file.ReadShort(); // prop field count {short}
+	if(propfieldCount != sector.GetPropFieldCount()) DETHROW(deeInvalidAction);
 	
-	for( p=0; p<propfieldCount; p++ ){
-		propfield = sector.GetPropFieldAt( p );
+	for(p=0; p<propfieldCount; p++){
+		propfield = sector.GetPropFieldAt(p);
 		
-		propfieldPosition = ( propfield->GetEnginePropField()->GetPosition() - sectorPosition ).ToVector();
+		propfieldPosition = (propfield->GetEnginePropField()->GetPosition() - sectorPosition).ToVector();
 		
-		file.ReadFloat(); // prop field position X { float }
-		file.ReadFloat(); // prop field position Y { float }
-		file.ReadFloat(); // prop field position Z { float }
-		instanceCount = file.ReadInt(); // instance count { int }
+		file.ReadFloat(); // prop field position X {float}
+		file.ReadFloat(); // prop field position Y {float}
+		file.ReadFloat(); // prop field position Z {float}
+		instanceCount = file.ReadInt(); // instance count {int}
 		
 		propfield->RemoveAllVInstances();
 		
-		for( i=0; i<instanceCount; i++ ){
+		for(i=0; i<instanceCount; i++){
 			meHTVInstance &instance = propfield->AddVInstance();
 			
-			t = file.ReadShort(); // instance type { short }
-			const meLSPFCacheTypeList::sType &type = typeList.GetTypeAt( t );
+			t = file.ReadShort(); // instance type {short}
+			const meLSPFCacheTypeList::sType &type = typeList.GetTypeAt(t);
 			
-			ipos.x = ( float )file.ReadShort() * scalePosition.x; // instance position X { short, encoded }
-			ipos.y = file.ReadFloat(); // instance position Y { float }
-			ipos.z = ( float )file.ReadShort() * scalePosition.z; // instance position Z { short, encoded }
-			irot.x = ( float )file.ReadByte() * scaleRotation.x; // instance rotation X { byte, encoded }
-			irot.y = ( float )file.ReadByte() * scaleRotation.y; // instance rotation Y { byte, encoded }
-			irot.z = ( float )file.ReadByte() * scaleRotation.z; // instance rotation Z { byte, encoded }
-			iscale = ( float )file.ReadByte() * scaleScaling; // instance scaling { byte, encoded }
+			ipos.x = (float)file.ReadShort() * scalePosition.x; // instance position X {short, encoded}
+			ipos.y = file.ReadFloat(); // instance position Y {float}
+			ipos.z = (float)file.ReadShort() * scalePosition.z; // instance position Z {short, encoded}
+			irot.x = (float)file.ReadByte() * scaleRotation.x; // instance rotation X {byte, encoded}
+			irot.y = (float)file.ReadByte() * scaleRotation.y; // instance rotation Y {byte, encoded}
+			irot.z = (float)file.ReadByte() * scaleRotation.z; // instance rotation Z {byte, encoded}
+			iscale = (float)file.ReadByte() * scaleScaling; // instance scaling {byte, encoded}
 			
-			instance.SetParameters( type.vlayer, type.variation, ipos, irot, iscale );
+			instance.SetParameters(type.vlayer, type.variation, ipos, irot, iscale);
 		}
 		
 		propfield->MarkVInstancesValid();
@@ -188,8 +188,8 @@ void meLSPFCache::LoadFromFile( meHeightTerrainSector &sector, decBaseFileReader
 	}
 }
 
-void meLSPFCache::SaveToFile( meHeightTerrainSector &sector, decBaseFileWriter &file ){
-	double sectorDim = ( double )sector.GetHeightTerrain()->GetSectorSize();
+void meLSPFCache::SaveToFile(meHeightTerrainSector &sector, decBaseFileWriter &file){
+	double sectorDim = (double)sector.GetHeightTerrain()->GetSectorSize();
 	int p, propfieldCount = sector.GetPropFieldCount();
 	const decPoint &scoord = sector.GetCoordinates();
 	meHeightTerrainPropField *propfield;
@@ -207,103 +207,103 @@ void meLSPFCache::SaveToFile( meHeightTerrainSector &sector, decBaseFileWriter &
 	decVector irot;
 	
 	// build the list of all types
-	for( p=0; p<propfieldCount; p++ ){
-		propfield = sector.GetPropFieldAt( p );
+	for(p=0; p<propfieldCount; p++){
+		propfield = sector.GetPropFieldAt(p);
 		instanceCount = propfield->GetVInstanceCount();
 		
-		for( i=0; i<instanceCount; i++ ){
-			const meHTVInstance &instance = propfield->GetVInstanceAt( i );
+		for(i=0; i<instanceCount; i++){
+			const meHTVInstance &instance = propfield->GetVInstanceAt(i);
 			
-			typeList.AddType( instance.GetVLayer(), instance.GetVariation() );
+			typeList.AddType(instance.GetVLayer(), instance.GetVariation());
 		}
 	}
 	
 	// determine sector position
-	sectorPosition.x = sectorDim * ( double )scoord.x;
+	sectorPosition.x = sectorDim * (double)scoord.x;
 	sectorPosition.y = 0.0f;
-	sectorPosition.z = sectorDim * ( double )scoord.y;
+	sectorPosition.z = sectorDim * (double)scoord.y;
 	
 	// determine scaling factors
 	//scalePosition.Set( 32768.0f / 100.0f, 1.0f, 32768.0f / 100.0f );
-	scalePosition.Set( 327.68f, 1.0f, 327.68f );
+	scalePosition.Set(327.68f, 1.0f, 327.68f);
 	
-	scaleRotation.Set( 255.0f / twopi, 255.0f / twopi, 255.0f / twopi );
+	scaleRotation.Set(255.0f / twopi, 255.0f / twopi, 255.0f / twopi);
 	
 	scaleScaling = 255.0f / 5.0f;
 	
 	// write the header
-	file.WriteString( "DEPFCache " ); // signature { char[10] }
-	file.WriteByte( 1 ); // version { byte }
-	file.WriteFloat( 1.0f / scalePosition.x ); // scalePositionX { float }
-	file.WriteFloat( 1.0f / scalePosition.y ); // scalePositionY { float }
-	file.WriteFloat( 1.0f / scalePosition.z ); // scalePositionZ { float }
+	file.WriteString("DEPFCache "); // signature {char[10]}
+	file.WriteByte(1); // version {byte}
+	file.WriteFloat(1.0f / scalePosition.x); // scalePositionX {float}
+	file.WriteFloat(1.0f / scalePosition.y); // scalePositionY {float}
+	file.WriteFloat(1.0f / scalePosition.z); // scalePositionZ {float}
 	
 	// write the list of types
 	typeCount = typeList.GetTypeCount();
-	file.WriteShort( ( short )typeCount ); // number of types { short }
+	file.WriteShort((short)typeCount); // number of types {short}
 	
-	for( t=0; t<typeCount; t++ ){
-		const meLSPFCacheTypeList::sType &type = typeList.GetTypeAt( t );
-		vlayer = sector.GetHeightTerrain()->GetVLayerAt( type.vlayer );
-		variation = vlayer->GetVariationAt( type.variation );
+	for(t=0; t<typeCount; t++){
+		const meLSPFCacheTypeList::sType &type = typeList.GetTypeAt(t);
+		vlayer = sector.GetHeightTerrain()->GetVLayerAt(type.vlayer);
+		variation = vlayer->GetVariationAt(type.variation);
 		
-		file.WriteString8( variation->GetPathModel().GetString() ); // model path { string8 }
-		file.WriteString8( variation->GetPathSkin().GetString() ); // skin path { string8 }
-		file.WriteFloat( variation->GetRotationPerForce() ); // rotation per force { float }
-		file.WriteFloat( variation->GetRestitution() ); // restitution { float }
+		file.WriteString8(variation->GetPathModel().GetString()); // model path {string8}
+		file.WriteString8(variation->GetPathSkin().GetString()); // skin path {string8}
+		file.WriteFloat(variation->GetRotationPerForce()); // rotation per force {float}
+		file.WriteFloat(variation->GetRestitution()); // restitution {float}
 	}
 	
 	// write the prop fields
-	file.WriteShort( ( short )propfieldCount ); // prop field count { short }
+	file.WriteShort((short)propfieldCount); // prop field count {short}
 	
-	for( p=0; p<propfieldCount; p++ ){
-		propfield = sector.GetPropFieldAt( p );
+	for(p=0; p<propfieldCount; p++){
+		propfield = sector.GetPropFieldAt(p);
 		instanceCount = propfield->GetVInstanceCount();
 		
-		if( ! propfield->GetEnginePropField() ) DETHROW( deeInvalidParam ); // HACK because the position is not yet in the propfield itself
+		if(! propfield->GetEnginePropField()) DETHROW(deeInvalidParam); // HACK because the position is not yet in the propfield itself
 		
-		propfieldPosition = ( propfield->GetEnginePropField()->GetPosition() - sectorPosition ).ToVector();
+		propfieldPosition = (propfield->GetEnginePropField()->GetPosition() - sectorPosition).ToVector();
 		
-		file.WriteFloat( propfieldPosition.x ); // prop field position X { float }
-		file.WriteFloat( propfieldPosition.y ); // prop field position Y { float }
-		file.WriteFloat( propfieldPosition.z ); // prop field position Z { float }
-		file.WriteInt( instanceCount ); // instance count { int }
+		file.WriteFloat(propfieldPosition.x); // prop field position X {float}
+		file.WriteFloat(propfieldPosition.y); // prop field position Y {float}
+		file.WriteFloat(propfieldPosition.z); // prop field position Z {float}
+		file.WriteInt(instanceCount); // instance count {int}
 		
-		for( i=0; i<instanceCount; i++ ){
-			const meHTVInstance &instance = propfield->GetVInstanceAt( i );
+		for(i=0; i<instanceCount; i++){
+			const meHTVInstance &instance = propfield->GetVInstanceAt(i);
 			const decVector &ipos = instance.GetPosition();
 			
 			irot = instance.GetRotation();
-			if( irot.x < 0.0f ){
-				irot.x = fmodf( irot.x, twopi ) + twopi;
+			if(irot.x < 0.0f){
+				irot.x = fmodf(irot.x, twopi) + twopi;
 				
 			}else{
-				irot.x = fmodf( irot.x, twopi );
+				irot.x = fmodf(irot.x, twopi);
 			}
-			if( irot.y < 0.0f ){
-				irot.y = fmodf( irot.y, twopi ) + twopi;
+			if(irot.y < 0.0f){
+				irot.y = fmodf(irot.y, twopi) + twopi;
 				
 			}else{
-				irot.y = fmodf( irot.y, twopi );
+				irot.y = fmodf(irot.y, twopi);
 			}
-			if( irot.z < 0.0f ){
-				irot.z = fmodf( irot.z, twopi ) + twopi;
+			if(irot.z < 0.0f){
+				irot.z = fmodf(irot.z, twopi) + twopi;
 				
 			}else{
-				irot.z = fmodf( irot.z, twopi );
+				irot.z = fmodf(irot.z, twopi);
 			}
 			
-			t = typeList.IndexOfTypeWith( instance.GetVLayer(), instance.GetVariation() );
-			if( t == -1 ) DETHROW( deeInvalidAction ); // can never happen but better safe then sorry
+			t = typeList.IndexOfTypeWith(instance.GetVLayer(), instance.GetVariation());
+			if(t == -1) DETHROW(deeInvalidAction); // can never happen but better safe then sorry
 			
-			file.WriteShort( ( short )t ); // instance type { short }
-			file.WriteShort( ( short )( ipos.x * scalePosition.x ) ); // instance position X { short, encoded }
-			file.WriteFloat( ipos.y ); // instance position Y { float }
-			file.WriteShort( ( short )( ipos.z * scalePosition.z ) ); // instance position Z { short, encoded }
-			file.WriteByte( ( unsigned char )( irot.x * scaleRotation.x ) ); // instance rotation X { byte, encoded }
-			file.WriteByte( ( unsigned char )( irot.y * scaleRotation.y ) ); // instance rotation Y { byte, encoded }
-			file.WriteByte( ( unsigned char )( irot.z * scaleRotation.z ) ); // instance rotation Z { byte, encoded }
-			file.WriteByte( ( unsigned char )( instance.GetScaling() * scaleScaling ) ); // instance scaling { byte, encoded }
+			file.WriteShort((short)t); // instance type {short}
+			file.WriteShort((short)(ipos.x * scalePosition.x)); // instance position X {short, encoded}
+			file.WriteFloat(ipos.y); // instance position Y {float}
+			file.WriteShort((short)(ipos.z * scalePosition.z)); // instance position Z {short, encoded}
+			file.WriteByte((unsigned char)(irot.x * scaleRotation.x)); // instance rotation X {byte, encoded}
+			file.WriteByte((unsigned char)(irot.y * scaleRotation.y)); // instance rotation Y {byte, encoded}
+			file.WriteByte((unsigned char)(irot.z * scaleRotation.z)); // instance rotation Z {byte, encoded}
+			file.WriteByte((unsigned char)(instance.GetScaling() * scaleScaling)); // instance scaling {byte, encoded}
 		}
 	}
 }

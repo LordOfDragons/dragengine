@@ -43,27 +43,27 @@
 igdeTemplate::igdeTemplate(){
 }
 
-igdeTemplate::igdeTemplate( const igdeTemplate &atemplate ) :
-pBasePath( atemplate.pBasePath ),
-pName( atemplate.pName ),
-pDescription( atemplate.pDescription ),
-pScriptModule( atemplate.pScriptModule ),
-pBaseGameDefinitions( atemplate.pBaseGameDefinitions )
+igdeTemplate::igdeTemplate(const igdeTemplate &atemplate) :
+pBasePath(atemplate.pBasePath),
+pName(atemplate.pName),
+pDescription(atemplate.pDescription),
+pScriptModule(atemplate.pScriptModule),
+pBaseGameDefinitions(atemplate.pBaseGameDefinitions)
 {
 	const int fileCount = atemplate.pFiles.GetCount();
 	igdeTemplateFile *file = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<fileCount; i++ ){
-			file = new igdeTemplateFile( *atemplate.pFiles.GetAt( i ) );
-			pFiles.Add( file );
+		for(i=0; i<fileCount; i++){
+			file = new igdeTemplateFile(*atemplate.pFiles.GetAt(i));
+			pFiles.Add(file);
 			file->FreeReference();
 			file = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( file ){
+	}catch(const deException &){
+		if(file){
 			file->FreeReference();
 		}
 		throw;
@@ -78,18 +78,18 @@ igdeTemplate::~igdeTemplate(){
 // Management
 ///////////////
 
-void igdeTemplate::SetBasePath( const char *path ){
+void igdeTemplate::SetBasePath(const char *path){
 	pBasePath = path;
 }
 
-void igdeTemplate::SetName( const char *name ){
+void igdeTemplate::SetName(const char *name){
 	pName = name;
 }
 
-void igdeTemplate::SetDescription( const char *description ){
+void igdeTemplate::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeTemplate::SetScriptModule( const char* moduleName ){
+void igdeTemplate::SetScriptModule(const char* moduleName){
 	pScriptModule = moduleName;
 }

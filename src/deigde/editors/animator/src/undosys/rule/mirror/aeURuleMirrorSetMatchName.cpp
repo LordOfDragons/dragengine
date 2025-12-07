@@ -33,19 +33,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorSetMatchName::aeURuleMirrorSetMatchName( aeRuleMirror *rule,
-int index, aeRuleMirror::cMatchName *newValue ) :
-pRule( rule ),
-pIndex( index ),
-pNewValue( newValue )
+aeURuleMirrorSetMatchName::aeURuleMirrorSetMatchName(aeRuleMirror *rule,
+int index, aeRuleMirror::cMatchName *newValue) :
+pRule(rule),
+pIndex(index),
+pNewValue(newValue)
 {
-	if( ! rule || ! newValue || rule->HasMatchName( newValue ) ){
-		DETHROW( deeInvalidParam );
+	if(! rule || ! newValue || rule->HasMatchName(newValue)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pOldValue = rule->GetMatchNameAt( index );
+	pOldValue = rule->GetMatchNameAt(index);
 	
-	SetShortInfo( "Mirror rule set match name" );
+	SetShortInfo("Mirror rule set match name");
 }
 
 aeURuleMirrorSetMatchName::~aeURuleMirrorSetMatchName(){
@@ -57,9 +57,9 @@ aeURuleMirrorSetMatchName::~aeURuleMirrorSetMatchName(){
 ///////////////
 
 void aeURuleMirrorSetMatchName::Undo(){
-	pRule->SetMatchNameAt( pIndex, pOldValue );
+	pRule->SetMatchNameAt(pIndex, pOldValue);
 }
 
 void aeURuleMirrorSetMatchName::Redo(){
-	pRule->SetMatchNameAt( pIndex, pNewValue );
+	pRule->SetMatchNameAt(pIndex, pNewValue);
 }

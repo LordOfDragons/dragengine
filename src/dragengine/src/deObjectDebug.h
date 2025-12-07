@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object with reference count of 1. */
-	deObjectDebug( const char *logname, int logTraceIndex );
+	deObjectDebug(const char *logname, int logTraceIndex);
 	
 protected:
 	/**
@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reference count. */
-	inline int GetRefCount() const{ return pRefCount; }
+	inline int GetRefCount() const{return pRefCount;}
 	
 	/** \brief Add reference increasing reference count by 1. */
 	void AddReference();

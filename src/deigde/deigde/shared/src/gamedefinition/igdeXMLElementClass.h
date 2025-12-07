@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	igdeXMLElementClass( deLogger *logger );
+	igdeXMLElementClass(deLogger *logger);
 	
 	/** \brief Clean up loader. */
 	virtual ~igdeXMLElementClass();
@@ -88,10 +88,10 @@ protected:
 		virtual ~cMap();
 	};
 	
-	decBoundary ReadBorderSize( const decXmlElementTag &root );
-	decBoundary ReadRectArea( const decXmlElementTag &root );
-	decVector4 ReadFloatRectArea( const decXmlElementTag &root );
-	void pReadECColor( const decXmlElementTag &root, decColor &color, const char *filename );
+	decBoundary ReadBorderSize(const decXmlElementTag &root);
+	decBoundary ReadRectArea(const decXmlElementTag &root);
+	decVector4 ReadFloatRectArea(const decXmlElementTag &root);
+	void pReadECColor(const decXmlElementTag &root, decColor &color, const char *filename);
 	
 	
 	
@@ -99,11 +99,11 @@ private:
 	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
 	void pReadBehavior(const decXmlElementTag &root, igdeGDClass &gdClass,
 		const char *filename, const decString &basePathStr);
-	bool pReadPropertyValue( const decXmlElementTag &root, decString &value,
-		cMap *map, const char *filename );
-	void pReadList( const decXmlElementTag &root, decStringList &list, const char *filename );
-	void pReadMap( const decXmlElementTag &root, cMap &map, const char *filename );
-	void pProcessTextureReplacements( const cMap &map, igdeGDClass &gdClass, const char *basePath );
+	bool pReadPropertyValue(const decXmlElementTag &root, decString &value,
+		cMap *map, const char *filename);
+	void pReadList(const decXmlElementTag &root, decStringList &list, const char *filename);
+	void pReadMap(const decXmlElementTag &root, cMap &map, const char *filename);
+	void pProcessTextureReplacements(const cMap &map, igdeGDClass &gdClass, const char *basePath);
 	//igdeGDCComponent &pGetLoadedComponent( igdeGDClass &gdClass );
 };
 

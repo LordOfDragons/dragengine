@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAnimatorAddVertexPositionSet( aeAnimator *rule, const char *pattern );
+	aeUAnimatorAddVertexPositionSet(aeAnimator *rule, const char *pattern);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUAnimatorAddVertexPositionSet();

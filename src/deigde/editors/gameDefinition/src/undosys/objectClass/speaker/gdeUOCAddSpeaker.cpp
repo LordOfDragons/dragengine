@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSpeaker::gdeUOCAddSpeaker( gdeObjectClass *objectClass, gdeOCSpeaker *speaker ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
+pObjectClass(NULL),
+pSpeaker(NULL)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add speaker" );
+	SetShortInfo("Add speaker");
 	
 	pSpeaker = speaker;
 	speaker->AddReference();
@@ -59,10 +59,10 @@ pSpeaker( NULL )
 }
 
 gdeUOCAddSpeaker::~gdeUOCAddSpeaker(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddSpeaker::~gdeUOCAddSpeaker(){
 
 void gdeUOCAddSpeaker::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCSpeaker() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCSpeaker()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCSpeaker( NULL );
+		gameDefinition->SetActiveOCSpeaker(NULL);
 	}
 	
-	pObjectClass->GetSpeakers().Remove( pSpeaker );
+	pObjectClass->GetSpeakers().Remove(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
 }
 
 void gdeUOCAddSpeaker::Redo(){
-	pObjectClass->GetSpeakers().Add( pSpeaker );
+	pObjectClass->GetSpeakers().Add(pSpeaker);
 	pObjectClass->NotifySpeakersChanged();
 }

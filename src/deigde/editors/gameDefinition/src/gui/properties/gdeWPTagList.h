@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPTagList( igdeUIHelper &helper, int rows, const char *description );
+	gdeWPTagList(igdeUIHelper &helper, int rows, const char *description);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -73,16 +73,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Tag list to edit. */
-	inline const decStringSet *GetTagList() const{ return pTagList; }
+	inline const decStringSet *GetTagList() const{return pTagList;}
 	
 	/** \brief Set tag list to edit. */
-	void SetTagList( const decStringSet *tagList );
+	void SetTagList(const decStringSet *tagList);
 	
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
+	inline igdeUndoSystem *GetUndoSystem() const{return pUndoSystem;}
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	
@@ -93,34 +93,34 @@ public:
 	void UpdateList();
 	
 	/** \brief Select tag. */
-	void SelectTag( const decString &tag );
+	void SelectTag(const decString &tag);
 	
 	/** \brief Update used tag list in the combo box. */
-	void UpdateUsedTagList( const decStringSet &usedTags );
+	void UpdateUsedTagList(const decStringSet &usedTags);
 	
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline igdeAction *GetActionAdd() const{return pActionAdd;}
+	inline igdeAction *GetActionRemove() const{return pActionRemove;}
+	inline igdeAction *GetActionClear() const{return pActionClear;}
 	/*@}*/
 	
 	
 	
 	/** \name Subclass undo creation */
 	/*@{*/
-	virtual igdeUndo *UndoSet( const decStringSet &tags ) = 0;
+	virtual igdeUndo *UndoSet(const decStringSet &tags) = 0;
 	/*@}*/
 	
 	
 	
 protected:
 	/** \brief Combo box. */
-	inline igdeComboBoxFilter *GetComboBox() const{ return pComboBox; }
+	inline igdeComboBoxFilter *GetComboBox() const{return pComboBox;}
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline igdeListBox *GetListBox() const{return pListBox;}
 };
 
 #endif

@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSynthesizerSetChannelCount::seUSynthesizerSetChannelCount( seSynthesizer *synthesizer, int newChannelCount ) :
-pSynthesizer( NULL )
+seUSynthesizerSetChannelCount::seUSynthesizerSetChannelCount(seSynthesizer *synthesizer, int newChannelCount) :
+pSynthesizer(NULL)
 {
-	if( ! synthesizer ){
-		DETHROW( deeInvalidParam );
+	if(! synthesizer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldChannelCount = synthesizer->GetChannelCount();
@@ -54,9 +54,9 @@ pSynthesizer( NULL )
 		pSynthesizer = synthesizer;
 		pSynthesizer->AddReference();
 		
-		SetShortInfo( "Synthesizer set channel count" );
+		SetShortInfo("Synthesizer set channel count");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -72,11 +72,11 @@ seUSynthesizerSetChannelCount::~seUSynthesizerSetChannelCount(){
 ///////////////
 
 void seUSynthesizerSetChannelCount::Undo(){
-	pSynthesizer->SetChannelCount( pOldChannelCount );
+	pSynthesizer->SetChannelCount(pOldChannelCount);
 }
 
 void seUSynthesizerSetChannelCount::Redo(){
-	pSynthesizer->SetChannelCount( pNewChannelCount );
+	pSynthesizer->SetChannelCount(pNewChannelCount);
 }
 
 
@@ -85,7 +85,7 @@ void seUSynthesizerSetChannelCount::Redo(){
 //////////////////////
 
 void seUSynthesizerSetChannelCount::pCleanUp(){
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

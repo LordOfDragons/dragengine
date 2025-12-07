@@ -98,14 +98,14 @@ public:
 	deoglGIBVHDynamic *pGIBVHDynamic;
 	bool pDirtyGIBVHPositions;
 	
-	deoglRenderTaskConfig pRenderTaskConfigs[ 6 ];
+	deoglRenderTaskConfig pRenderTaskConfigs[6];
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render component lod. */
-	deoglRComponentLOD( deoglRComponent &component, int lodIndex );
+	deoglRComponentLOD(deoglRComponent &component, int lodIndex);
 	
 	/** Clean up render component lod. */
 	virtual ~deoglRComponentLOD();
@@ -116,10 +116,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent component. */
-	inline deoglRComponent &GetComponent() const{ return pComponent; }
+	inline deoglRComponent &GetComponent() const{return pComponent;}
 	
 	/** LOD index. */
-	inline int GetLODIndex() const{ return pLODIndex; }
+	inline int GetLODIndex() const{return pLODIndex;}
 	
 	/** Get ModelLOD or NULL. */
 	deoglModelLOD *GetModelLOD() const;
@@ -130,37 +130,37 @@ public:
 	
 	
 	/** Weights for debuging purpose. */
-	inline oglMatrix3x4 *GetWeights() const{ return pWeights; }
+	inline oglMatrix3x4 *GetWeights() const{return pWeights;}
 	
 	/**
 	 * Retrieves the face normals.
 	 * \details Valid only after calling PrepareNormalsTangents and faces exist.
 	 */
-	inline oglVector3 *GetFaceNormals() const{ return pFaceNormals; }
+	inline oglVector3 *GetFaceNormals() const{return pFaceNormals;}
 	
 	/**
 	 * Retrieves the positions.
 	 * \details Valid only after calling PreparePositions and positions exist.
 	 */
-	inline oglVector3 *GetPositions() const{ return pPositions; }
+	inline oglVector3 *GetPositions() const{return pPositions;}
 	
 	/**
 	 * Retrieves the real normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector3 *GetRealNormals() const{ return pRealNormals; }
+	inline oglVector3 *GetRealNormals() const{return pRealNormals;}
 	
 	/**
 	 * Retrieves the normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector3 *GetNormals() const{ return pNormals; }
+	inline oglVector3 *GetNormals() const{return pNormals;}
 	
 	/**
 	 * Retrieves the tangents.
 	 * \details Valid only after calling PrepareNormalsTangents and tangents exist.
 	 */
-	inline oglVector3 *GetTangents() const{ return pTangents; }
+	inline oglVector3 *GetTangents() const{return pTangents;}
 	
 	
 	
@@ -182,10 +182,10 @@ public:
 	int GetIndexOffset() const;
 	
 	/** VBO. */
-	inline const deoglSPBlockSSBO::Ref &GetVBO() const{ return pVBO; }
+	inline const deoglSPBlockSSBO::Ref &GetVBO() const{return pVBO;}
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline deoglVAO *GetVAO() const{return pVAO;}
 	
 	/** VAO to use. Can be dynamic VAO or static model VAO. */
 	deoglVAO *GetUseVAO() const;
@@ -222,7 +222,7 @@ public:
 	
 	
 	/** GI Dynamic BVH or NULL. */
-	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{ return pGIBVHDynamic; }
+	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{return pGIBVHDynamic;}
 	
 	/** Prepare GI Dynamic BVH if not build yet. */
 	void PrepareGIDynamicBVH();
@@ -233,7 +233,7 @@ public:
 	
 	
 	/** Render task configuration or NULL. */
-	const deoglRenderTaskConfig *GetRenderTaskConfig( deoglSkinTexturePipelines::eTypes type ) const;
+	const deoglRenderTaskConfig *GetRenderTaskConfig(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/** Update render task configuration. */
 	void UpdateRenderTaskConfigurations();
@@ -245,18 +245,18 @@ private:
 	void pCleanUp();
 	
 	void pEnsureVBO();
-	void pBuildVBO( const deoglModelLOD &modelLOD );
-	void pWriteVBOData( const deoglModelLOD &modelLOD );
-	void pUpdateVAO( deoglModelLOD &modelLOD );
+	void pBuildVBO(const deoglModelLOD &modelLOD);
+	void pWriteVBOData(const deoglModelLOD &modelLOD);
+	void pUpdateVAO(deoglModelLOD &modelLOD);
 	
-	void pCalculateWeights( const deoglModelLOD &modelLOD );
-	void pTransformVertices( const deoglModelLOD &modelLOD );
-	void pCalculateNormalsAndTangents( const deoglModelLOD &modelLOD );
+	void pCalculateWeights(const deoglModelLOD &modelLOD);
+	void pTransformVertices(const deoglModelLOD &modelLOD);
+	void pCalculateNormalsAndTangents(const deoglModelLOD &modelLOD);
 	
-	void pPrepareVBOLayout( const deoglModelLOD &modelLOD );
+	void pPrepareVBOLayout(const deoglModelLOD &modelLOD);
 	
-	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexturePipelines::eTypes type,
-		int renderTaskFlags, int renderTaskFlagMask, bool shadow );
+	void pUpdateRenderTaskConfig(deoglRenderTaskConfig &config, deoglSkinTexturePipelines::eTypes type,
+		int renderTaskFlags, int renderTaskFlagMask, bool shadow);
 };
 
 #endif

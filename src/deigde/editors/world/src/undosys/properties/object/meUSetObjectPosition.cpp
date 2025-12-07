@@ -36,23 +36,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectPosition::meUSetObjectPosition( meObject *object, const decDVector &newPosition ){
-	if( ! object ) DETHROW( deeInvalidParam );
+meUSetObjectPosition::meUSetObjectPosition(meObject *object, const decDVector &newPosition){
+	if(! object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
-	if( ! world ) DETHROW( deeInvalidParam );
+	if(! world) DETHROW(deeInvalidParam);
 	
 	pOldPosition = object->GetPosition();
 	pNewPosition = newPosition;
 	
-	SetShortInfo( "Set Object position" );
+	SetShortInfo("Set Object position");
 	
 	pObject = object;
 	object->AddReference();
 }
 
 meUSetObjectPosition::~meUSetObjectPosition(){
-	if( pObject ) pObject->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
 
 
@@ -63,15 +63,15 @@ meUSetObjectPosition::~meUSetObjectPosition(){
 void meUSetObjectPosition::Undo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetPosition( pOldPosition );
+	pObject->SetPosition(pOldPosition);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUSetObjectPosition::Redo(){
 	meWorld *world = pObject->GetWorld();
 	
-	pObject->SetPosition( pNewPosition );
+	pObject->SetPosition(pNewPosition);
 	
-	world->NotifyObjectGeometryChanged( pObject );
+	world->NotifyObjectGeometryChanged(pObject);
 }

@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetName( ceTarget *target, const char *newName );
+	ceUCTargetSetName(ceTarget *target, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetName();
@@ -72,8 +72,8 @@ public:
 	/*@}*/
 	
 private:
-	void pSetName( const char *oldName, const char *newName );
-	void pAddActions( ceConversationTopic *topic, const ceConversationActionList &list );
+	void pSetName(const char *oldName, const char *newName);
+	void pAddActions(ceConversationTopic *topic, const ceConversationActionList &list);
 };
 
 #endif

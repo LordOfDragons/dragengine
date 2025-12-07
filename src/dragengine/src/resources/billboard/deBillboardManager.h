@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new billboard resource manager. */
-	deBillboardManager( deEngine *engine );
+	deBillboardManager(deEngine *engine);
 	
 	/** \brief Clean up billboard resource manager. */
 	virtual ~deBillboardManager();
@@ -84,7 +84,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

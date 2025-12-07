@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class world. */
-	inline gdeOCWorld *GetOCWorld() const{ return pOCWorld; }
+	inline gdeOCWorld *GetOCWorld() const{return pOCWorld;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCCameraListener( gdeWPSOCCamera &panel );
+	gdeWPSOCCameraListener(gdeWPSOCCamera &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSOCCameraListener();
@@ -55,29 +55,29 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	
 	/** \brief Object class cameras changed. */
-	virtual void OCCamerasChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCCamerasChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** \brief Object class camera changed. */
-	virtual void OCCameraChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCCamera *camera );
+	virtual void OCCameraChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCCamera *camera);
 	
 	/** \brief Active object class camera changed. */
-	virtual void ActiveOCCameraChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCCameraChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

@@ -35,14 +35,14 @@
 ////////////////////////////
 
 seUMappedSetRenderableComponent::seUMappedSetRenderableComponent(
-	seMapped *mapped, deSkinMapped::eRenderableComponent newComponent ) :
-pMapped( mapped ),
-pOldValue( mapped ? mapped->GetRenderableComponent() : deSkinMapped::ercRed ),
-pNewValue( newComponent )
+	seMapped *mapped, deSkinMapped::eRenderableComponent newComponent) :
+pMapped(mapped),
+pOldValue(mapped ? mapped->GetRenderableComponent() : deSkinMapped::ercRed),
+pNewValue(newComponent)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Renderable Component" );
+	SetShortInfo("Set Mapped Renderable Component");
 }
 
 seUMappedSetRenderableComponent::~seUMappedSetRenderableComponent(){
@@ -54,9 +54,9 @@ seUMappedSetRenderableComponent::~seUMappedSetRenderableComponent(){
 ///////////////
 
 void seUMappedSetRenderableComponent::Undo(){
-	pMapped->SetRenderableComponent( pOldValue );
+	pMapped->SetRenderableComponent(pOldValue);
 }
 
 void seUMappedSetRenderableComponent::Redo(){
-	pMapped->SetRenderableComponent( pNewValue );
+	pMapped->SetRenderableComponent(pNewValue);
 }

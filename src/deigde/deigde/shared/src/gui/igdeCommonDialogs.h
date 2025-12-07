@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create common dialog builder. */
-	igdeCommonDialogs( igdeEditorModule &editorModule );
+	igdeCommonDialogs(igdeEditorModule &editorModule);
 	
 	/** \brief Clean up common dialog builder. */
 	~igdeCommonDialogs();
@@ -118,20 +118,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Editor module. */
-	inline igdeEditorModule &GetEditorModule() const{ return pEditorModule; }
+	inline igdeEditorModule &GetEditorModule() const{return pEditorModule;}
 	
 	
 	
 	/**
 	 * \brief Shows information dialog with OK button.
 	 */
-	static void Information( igdeWidget *owner, const char *title, const char *text );
+	static void Information(igdeWidget *owner, const char *title, const char *text);
 	
 	/**
 	 * \brief Shows information dialog with OK button and formatted text.
 	 */
-	static void InformationFormat( igdeWidget *owner, const char *title,
-		const char *textFormat, ... )
+	static void InformationFormat(igdeWidget *owner, const char *title,
+		const char *textFormat, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
@@ -140,14 +140,14 @@ public:
 	/**
 	 * \brief Shows question dialog.
 	 */
-	static eButton Question( igdeWidget *owner, eButtonSet buttons,
-		const char *title, const char *text );
+	static eButton Question(igdeWidget *owner, eButtonSet buttons,
+		const char *title, const char *text);
 	
 	/**
 	 * \brief Shows question dialog with formatted text.
 	 */
-	static eButton QuestionFormat( igdeWidget *owner, eButtonSet buttons,
-		const char *title, const char *textFormat, ... )
+	static eButton QuestionFormat(igdeWidget *owner, eButtonSet buttons,
+		const char *title, const char *textFormat, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 4, 5)))
 		#endif
@@ -156,12 +156,12 @@ public:
 	/**
 	 * \brief Shows warning dialog with OK button.
 	 */
-	static void Warning( igdeWidget *owner, const char *title, const char *text );
+	static void Warning(igdeWidget *owner, const char *title, const char *text);
 	
 	/**
 	 * \brief Shows warning dialog with OK button and formatted text.
 	 */
-	static void WarningFormat( igdeWidget *owner, const char *title, const char *textFormat, ... )
+	static void WarningFormat(igdeWidget *owner, const char *title, const char *textFormat, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
@@ -170,12 +170,12 @@ public:
 	/**
 	 * \brief Shows error dialog with OK button.
 	 */
-	static void Error( igdeWidget *owner, const char *title, const char *text );
+	static void Error(igdeWidget *owner, const char *title, const char *text);
 	
 	/**
 	 * \brief Shows error dialog with OK button and formatted text.
 	 */
-	static void ErrorFormat( igdeWidget *owner, const char *title, const char *textFormat, ... )
+	static void ErrorFormat(igdeWidget *owner, const char *title, const char *textFormat, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 3, 4)))
 		#endif
@@ -186,14 +186,14 @@ public:
 	/**
 	 * \brief Shows message dialog.
 	 */
-	static eButton Message( igdeWidget *owner, eButtonSet buttons, eIcon icon,
-		const char *title, const char *text );
+	static eButton Message(igdeWidget *owner, eButtonSet buttons, eIcon icon,
+		const char *title, const char *text);
 	
 	/**
 	 * \brief Shows message dialog with formatted text.
 	 */
-	static eButton MessageFormat( igdeWidget *owner, eButtonSet buttons, eIcon icon,
-		const char *title, const char *textFormat, ... )
+	static eButton MessageFormat(igdeWidget *owner, eButtonSet buttons, eIcon icon,
+		const char *title, const char *textFormat, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 5, 6)))
 		#endif
@@ -202,10 +202,10 @@ public:
 	
 	
 	/** \brief Format exception for display or logging purpose. */
-	static decString FormatException( const deException &exception );
+	static decString FormatException(const deException &exception);
 	
 	/** \brief Display exception to user. */
-	static void Exception( igdeWidget *owner, const deException &exception );
+	static void Exception(igdeWidget *owner, const deException &exception);
 	
 	/** \brief Display exception to user. */
 	static void Exception(igdeWidget *owner, const char *title, const deException &exception);
@@ -219,7 +219,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetInteger( igdeWidget *owner, const char *title, const char *text, int &value );
+	static bool GetInteger(igdeWidget *owner, const char *title, const char *text, int &value);
 	
 	/**
 	 * \brief Request decimal input from user.
@@ -228,7 +228,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFloat( igdeWidget *owner, const char *title, const char *text, float &value );
+	static bool GetFloat(igdeWidget *owner, const char *title, const char *text, float &value);
 	
 	/**
 	 * \brief Request string input from user.
@@ -237,8 +237,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetString( igdeWidget *owner, const char *title, const char *text,
-		decString &value );
+	static bool GetString(igdeWidget *owner, const char *title, const char *text,
+		decString &value);
 	
 	/**
 	 * \brief Request multiline string input from user.
@@ -247,8 +247,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetMultilineString( igdeWidget *owner, const char *title, const char *text,
-		decString &value );
+	static bool GetMultilineString(igdeWidget *owner, const char *title, const char *text,
+		decString &value);
 	
 	/**
 	 * \brief Request string input from user with proposed values.
@@ -257,8 +257,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetString( igdeWidget *owner, const char *title, const char *text,
-		decString &value, const decStringList &proposals );
+	static bool GetString(igdeWidget *owner, const char *title, const char *text,
+		decString &value, const decStringList &proposals);
 	
 	/**
 	 * \brief Request string selection input from user.
@@ -267,8 +267,8 @@ public:
 	 * If the user accepts the input \em selection is updated with the user selection
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
-	static bool SelectString( igdeWidget *owner, const char *title, const char *text,
-		const decStringList &list, int &selection );
+	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
+		const decStringList &list, int &selection);
 	
 	
 	
@@ -279,8 +279,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileOpen( igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileOpen(igdeWidget *owner, const char *title,
+		const igdeFilePatternList &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request open file from user.
@@ -289,8 +289,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileOpen( igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileOpen(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
+		const igdeFilePatternList &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -299,8 +299,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileSave( igdeWidget *owner, const char *title,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileSave(igdeWidget *owner, const char *title,
+		const igdeFilePatternList &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request save file from user.
@@ -309,8 +309,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetFileSave( igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		const igdeFilePatternList &filePatterns, decString &filename );
+	static bool GetFileSave(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
+		const igdeFilePatternList &filePatterns, decString &filename);
 	
 	/**
 	 * \brief Request directory from user.
@@ -319,7 +319,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetDirectory( igdeWidget *owner, const char *title, decString &dirname );
+	static bool GetDirectory(igdeWidget *owner, const char *title, decString &dirname);
 	
 	/**
 	 * \brief Request directory from user.
@@ -328,8 +328,8 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool GetDirectory( igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
-		decString &dirname );
+	static bool GetDirectory(igdeWidget *owner, const char *title, deVirtualFileSystem &vfs,
+		decString &dirname);
 	
 	/**
 	 * \brief Select system font.
@@ -338,7 +338,7 @@ public:
 	 * is updated with the user input and \em true returned. If the user cancelled
 	 * the input \em false is returned.
 	 */
-	static bool SelectSystemFont( igdeWidget *owner, const char *title, igdeFont::sConfiguration &config );
+	static bool SelectSystemFont(igdeWidget *owner, const char *title, igdeFont::sConfiguration &config);
 	/*@}*/
 };
 

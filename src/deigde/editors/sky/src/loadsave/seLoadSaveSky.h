@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	seLoadSaveSky( seLoadSaveSystem &lssys, deLogger *logger, const char *source );
+	seLoadSaveSky(seLoadSaveSystem &lssys, deLogger *logger, const char *source);
 	/*@}*/
 	
 	
@@ -66,36 +66,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	
 	
 	/** \brief Load sky from file. */
-	void LoadSky( seLoadSaveSystem &lssys, seSky &sky, decBaseFileReader &reader );
+	void LoadSky(seLoadSaveSystem &lssys, seSky &sky, decBaseFileReader &reader);
 	
 	/** \brief Save sky to file. */
-	void SaveSky( seLoadSaveSystem &lssys, const seSky &sky, decBaseFileWriter &writer );
+	void SaveSky(seLoadSaveSystem &lssys, const seSky &sky, decBaseFileWriter &writer);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteSky( decXmlWriter &writer, const seSky &sky );
-	void pWriteController( decXmlWriter &writer, const seController &controller );
-	void pWriteLink( decXmlWriter &writer, const seLink &link );
-	void pWriteLayer( decXmlWriter &writer, const seLayer &layer );
-	void pWriteTarget( decXmlWriter &writer, const seLayer &layer, deSkyLayer::eTargets target );
-	void pWriteBody( decXmlWriter &writer, const seBody &body );
+	void pWriteSky(decXmlWriter &writer, const seSky &sky);
+	void pWriteController(decXmlWriter &writer, const seController &controller);
+	void pWriteLink(decXmlWriter &writer, const seLink &link);
+	void pWriteLayer(decXmlWriter &writer, const seLayer &layer);
+	void pWriteTarget(decXmlWriter &writer, const seLayer &layer, deSkyLayer::eTargets target);
+	void pWriteBody(decXmlWriter &writer, const seBody &body);
 	
-	void pReadSky( const decXmlElementTag &root, seSky &sky );
-	void pReadController( const decXmlElementTag &root, seSky &sky );
-	void pReadLink( const decXmlElementTag &root, seSky &sky );
-	void pReadLayer( const decXmlElementTag &root, seSky &sky );
-	void pReadTarget( const decXmlElementTag &root, seSky &sky, seLayer &layer );
-	void pReadBody( const decXmlElementTag &root, seSky &sky, seLayer &layer );
+	void pReadSky(const decXmlElementTag &root, seSky &sky);
+	void pReadController(const decXmlElementTag &root, seSky &sky);
+	void pReadLink(const decXmlElementTag &root, seSky &sky);
+	void pReadLayer(const decXmlElementTag &root, seSky &sky);
+	void pReadTarget(const decXmlElementTag &root, seSky &sky, seLayer &layer);
+	void pReadBody(const decXmlElementTag &root, seSky &sky, seLayer &layer);
 };
 
 #endif

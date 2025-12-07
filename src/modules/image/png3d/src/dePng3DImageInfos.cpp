@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-dePng3DImageInfo::dePng3DImageInfo( const char *nfilename ){
-	if( ! nfilename ) DETHROW( deeInvalidParam );
+dePng3DImageInfo::dePng3DImageInfo(const char *nfilename){
+	if(! nfilename) DETHROW(deeInvalidParam);
 	
 	filename = nfilename;
 }

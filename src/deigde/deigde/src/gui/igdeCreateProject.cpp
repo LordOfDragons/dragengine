@@ -76,19 +76,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeCreateProject::igdeCreateProject( igdeWindowMain &windowMain ) :
-pWindowMain( windowMain ),
-pTemplate( NULL ),
-pProject( NULL ),
-pGameId( decUuid::Random().ToHexString( false ) ),
-pGameDef( NULL ){
+igdeCreateProject::igdeCreateProject(igdeWindowMain &windowMain) :
+pWindowMain(windowMain),
+pTemplate(NULL),
+pProject(NULL),
+pGameId(decUuid::Random().ToHexString(false)),
+pGameDef(NULL){
 }
 
 igdeCreateProject::~igdeCreateProject(){
-	if( pGameDef ){
+	if(pGameDef){
 		pGameDef->FreeReference();
 	}
-	if( pProject ){
+	if(pProject){
 		pProject->FreeReference();
 	}
 }
@@ -98,61 +98,61 @@ igdeCreateProject::~igdeCreateProject(){
 // Management
 ///////////////
 
-void igdeCreateProject::SetName( const char *name ){
+void igdeCreateProject::SetName(const char *name){
 	pName = name;
 }
 
-void igdeCreateProject::SetDescription( const char *description ){
+void igdeCreateProject::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeCreateProject::SetPathGameDefProject( const char *path ){
+void igdeCreateProject::SetPathGameDefProject(const char *path){
 	pPathGameDefProject = path;
 }
 
-void igdeCreateProject::SetPathProject( const char *path ){
+void igdeCreateProject::SetPathProject(const char *path){
 	pPathProject = path;
 }
 
-void igdeCreateProject::SetPathData( const char *path ){
+void igdeCreateProject::SetPathData(const char *path){
 	pPathData = path;
 }
 
-void igdeCreateProject::SetPathCache( const char *path ){
+void igdeCreateProject::SetPathCache(const char *path){
 	pPathCache = path;
 }
 
-void igdeCreateProject::SetScriptModule( const char *module ){
+void igdeCreateProject::SetScriptModule(const char *module){
 	pScriptModule = module;
 }
 
-void igdeCreateProject::SetTemplate( const igdeTemplate *atemplate ){
+void igdeCreateProject::SetTemplate(const igdeTemplate *atemplate){
 	pTemplate = atemplate;
 }
 
 
 
 void igdeCreateProject::CreateProject(){
-	pNativePathProject.SetFromNative( pPathProject );
+	pNativePathProject.SetFromNative(pPathProject);
 	
-	decPath path( pNativePathProject );
-	path.AddUnixPath( pPathData );
+	decPath path(pNativePathProject);
+	path.AddUnixPath(pPathData);
 	pNativePathData = path.GetPathNative();
 	
-	pProject = new igdeGameProject( pWindowMain.GetEnvironment() );
-	pProject->SetName( pName );
-	pProject->SetDescription( pDescription );
-	pProject->SetPathProjectGameDefinition( pPathGameDefProject );
-	pProject->SetPathData( pPathData );
-	pProject->SetPathCache( pPathCache );
-	pProject->SetScriptModule( pScriptModule );
+	pProject = new igdeGameProject(pWindowMain.GetEnvironment());
+	pProject->SetName(pName);
+	pProject->SetDescription(pDescription);
+	pProject->SetPathProjectGameDefinition(pPathGameDefProject);
+	pProject->SetPathData(pPathData);
+	pProject->SetPathCache(pPathCache);
+	pProject->SetScriptModule(pScriptModule);
 	
 	const deLoadableModule * const scriptModule =
-		pWindowMain.GetEngine()->GetModuleSystem()->GetModuleNamed( pScriptModule );
-	if( ! scriptModule ){
-		DETHROW_INFO( deeInvalidParam, "Script module not found" );
+		pWindowMain.GetEngine()->GetModuleSystem()->GetModuleNamed(pScriptModule);
+	if(! scriptModule){
+		DETHROW_INFO(deeInvalidParam, "Script module not found");
 	}
-	pProject->SetScriptModuleVersion( scriptModule->GetVersion() );
+	pProject->SetScriptModuleVersion(scriptModule->GetVersion());
 	
 	pCreateGameAliasId();
 	pCreateDirectories();
@@ -160,21 +160,21 @@ void igdeCreateProject::CreateProject(){
 	pCreateGameDefinition();
 	pStoreBaseGameDefs();
 	
-	if( pTemplate ){
+	if(pTemplate){
 		pApplyTemplate();
 	}
 	
 	// finish game project
-	decPath pathProjectFile( pNativePathProject );
-	pathProjectFile.AddComponent( pName + ".degp" );
-	pProject->SetFilePath( pathProjectFile.GetPathNative() );
+	decPath pathProjectFile(pNativePathProject);
+	pathProjectFile.AddComponent(pName + ".degp");
+	pProject->SetFilePath(pathProjectFile.GetPathNative());
 	
-	pProject->SetProjectGameDefinition( pGameDef );
+	pProject->SetProjectGameDefinition(pGameDef);
 	pProject->MergeGameDefinitions();
 	
 	// save game project
-	pWindowMain.GetLoadSaveSystem()->SaveGameProject( pProject, pProject->GetFilePath() );
-	pProject->SetChanged( false );
+	pWindowMain.GetLoadSaveSystem()->SaveGameProject(pProject, pProject->GetFilePath());
+	pProject->SetChanged(false);
 }
 
 
@@ -185,80 +185,80 @@ void igdeCreateProject::CreateProject(){
 void igdeCreateProject::pCreateGameAliasId(){
 	const char *iterName = pName.GetString();
 	
-	while( *iterName ){
+	while(*iterName){
 		const int c = *iterName++;
 		
-		if( c >= 'a' && c <= 'z' ){
-			pGameAliasId.AppendCharacter( c );
+		if(c >= 'a' && c <= 'z'){
+			pGameAliasId.AppendCharacter(c);
 			
-		}else if( c >= 'A' && c <= 'Z' ){
-			pGameAliasId.AppendCharacter( tolower( c ) );
+		}else if(c >= 'A' && c <= 'Z'){
+			pGameAliasId.AppendCharacter(tolower(c));
 			
-		}else if( c >= '0' && c <= '9' ){
-			pGameAliasId.AppendCharacter( c );
+		}else if(c >= '0' && c <= '9'){
+			pGameAliasId.AppendCharacter(c);
 			
-		}else if( c == '_' || c == '-' ){
-			pGameAliasId.AppendCharacter( c );
+		}else if(c == '_' || c == '-'){
+			pGameAliasId.AppendCharacter(c);
 		}
 	}
 }
 
 void igdeCreateProject::pCreateDirectories(){
-	const decPath pathDeleteMe( decPath::CreatePathUnix( "/deleteMe" ) );
+	const decPath pathDeleteMe(decPath::CreatePathUnix("/deleteMe"));
 	deVFSContainer::Ref diskDirectory;
 	decPath path;
 	
 	// create data directory if absent
-	path.SetFromNative( pNativePathData );
-	diskDirectory.TakeOver( new deVFSDiskDirectory( path ) );
+	path.SetFromNative(pNativePathData);
+	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
 	
-	if( ! diskDirectory->ExistsFile( pathDeleteMe ) ){
-		diskDirectory->TouchFile( pathDeleteMe );
-		diskDirectory->DeleteFile( pathDeleteMe );
+	if(! diskDirectory->ExistsFile(pathDeleteMe)){
+		diskDirectory->TouchFile(pathDeleteMe);
+		diskDirectory->DeleteFile(pathDeleteMe);
 	}
 	
 	// create cache directory if absent
 	path = pNativePathProject;
-	path.AddUnixPath( pPathCache );
+	path.AddUnixPath(pPathCache);
 	
-	diskDirectory.TakeOver( new deVFSDiskDirectory( path ) );
+	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
 	
-	if( ! diskDirectory->ExistsFile( pathDeleteMe ) ){
-		diskDirectory->TouchFile( pathDeleteMe );
-		diskDirectory->DeleteFile( pathDeleteMe );
+	if(! diskDirectory->ExistsFile(pathDeleteMe)){
+		diskDirectory->TouchFile(pathDeleteMe);
+		diskDirectory->DeleteFile(pathDeleteMe);
 	}
 	
 	// create local directory if absent
 	path = pNativePathProject;
-	path.AddUnixPath( pProject->GetPathLocal() );
+	path.AddUnixPath(pProject->GetPathLocal());
 	
-	diskDirectory.TakeOver( new deVFSDiskDirectory( path ) );
+	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
 	
-	if( ! diskDirectory->ExistsFile( pathDeleteMe ) ){
-		diskDirectory->TouchFile( pathDeleteMe );
-		diskDirectory->DeleteFile( pathDeleteMe );
+	if(! diskDirectory->ExistsFile(pathDeleteMe)){
+		diskDirectory->TouchFile(pathDeleteMe);
+		diskDirectory->DeleteFile(pathDeleteMe);
 	}
 }
 
 void igdeCreateProject::pCopyDefaultFiles(){
 	// save ignore files for revisioning systems
-	decPath path( pNativePathProject );
-	path.AddComponent( ".gitignore" );
+	decPath path(pNativePathProject);
+	path.AddComponent(".gitignore");
 	
 	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false));
-	writer->WriteString( pProject->GetPathLocal() + "\n" );
-	writer->WriteString( pPathCache + "\n" );
-	writer->WriteString( "distribute\n" );
-	writer->WriteString( "testRun*.log\n" );
-	writer->WriteString( "*.kdev*\n" );
-	writer->WriteString( "*.blend[1-9]\n" );
-	writer->WriteString( "*.delga\n" );
+	writer->WriteString(pProject->GetPathLocal() + "\n");
+	writer->WriteString(pPathCache + "\n");
+	writer->WriteString("distribute\n");
+	writer->WriteString("testRun*.log\n");
+	writer->WriteString("*.kdev*\n");
+	writer->WriteString("*.blend[1-9]\n");
+	writer->WriteString("*.delga\n");
 	
 	// save lfs files for revisioning systems
 	path = pNativePathProject;
-	path.AddComponent( ".gitattributes" );
+	path.AddComponent(".gitattributes");
 	
-	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
+	writer.TakeOver(new decDiskFileWriter(path.GetPathNative(), false));
 	
 	const char * const extensions[] = {
 		// images
@@ -291,13 +291,13 @@ void igdeCreateProject::pCopyDefaultFiles(){
 		// dragengine specific
 		"delga",
 		// end of list
-		nullptr };
+		nullptr};
 	
 	int i;
 	decString line;
-	for( i=0; extensions[ i ]; i++ ){
-		line.Format( "*.%s filter=lfs diff=lfs merge=lfs -text\n", extensions[ i ] );
-		writer->WriteString( line );
+	for(i=0; extensions[i]; i++){
+		line.Format("*.%s filter=lfs diff=lfs merge=lfs -text\n", extensions[i]);
+		writer->WriteString(line);
 	}
 }
 
@@ -305,15 +305,15 @@ void igdeCreateProject::pCreateGameDefinition(){
 	// create project game definition from shared new game definition file. we store the
 	// file content aside so we can save it as new game definition with a bit of text
 	// replacing. avoids the need to implement a full save code for game definition xml
-	pGameDef = new igdeGameDefinition( pWindowMain.GetEnvironment() );
+	pGameDef = new igdeGameDefinition(pWindowMain.GetEnvironment());
 	
 	pLoadSharedGameDefContent();
 	pSharedGameDefContentReplace();
 	
 	// save project game definition
 	
-	decPath path( pNativePathProject );
-	path.AddUnixPath( pPathGameDefProject );
+	decPath path(pNativePathProject);
+	path.AddUnixPath(pPathGameDefProject);
 	
 	decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false)->Write(
 		pSharedGameDefContent, pSharedGameDefContent.GetLength());
@@ -321,68 +321,68 @@ void igdeCreateProject::pCreateGameDefinition(){
 
 void igdeCreateProject::pLoadSharedGameDefContent(){
 	decPath path;
-	path.SetFromNative( pWindowMain.GetConfiguration().GetPathShares() );
-	path.AddComponent( "newproject.degd" );
-	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(path.GetPathNative()) );
+	path.SetFromNative(pWindowMain.GetConfiguration().GetPathShares());
+	path.AddComponent("newproject.degd");
+	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
 	
 	const int contentLen = reader->GetLength();
-	pSharedGameDefContent.Set( ' ', contentLen );
-	reader->Read( ( char* )pSharedGameDefContent.GetString(), contentLen );
-	reader->SetPosition( 0 );
+	pSharedGameDefContent.Set(' ', contentLen);
+	reader->Read((char*)pSharedGameDefContent.GetString(), contentLen);
+	reader->SetPosition(0);
 	
-	igdeXMLGameDefinition loadGameDefinition( pWindowMain.GetEnvironment(), pWindowMain.GetLogger() );
-	loadGameDefinition.Load( reader, *pGameDef );
+	igdeXMLGameDefinition loadGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger());
+	loadGameDefinition.Load(reader, *pGameDef);
 }
 
 void igdeCreateProject::pSharedGameDefContentReplace(){
 	decString string;
 	
 	// update values. has to be done after loading the game definition
-	pGameDef->SetFilename( pPathGameDefProject );
-	pGameDef->SetBasePath( pNativePathData );
-	pGameDef->SetScriptModule( pScriptModule );
+	pGameDef->SetFilename(pPathGameDefProject);
+	pGameDef->SetBasePath(pNativePathData);
+	pGameDef->SetScriptModule(pScriptModule);
 	
 	// replace tokens with project parameters
 	decStringList tokens, values;
-	pCreateProjectReplacements( tokens, values );
+	pCreateProjectReplacements(tokens, values);
 	
-	pGameDef->SetID( pReplaceTokens( pGameDef->GetID(), tokens, values ) );
-	pGameDef->SetDescription( pReplaceTokens( pGameDef->GetDescription(), tokens, values ) );
+	pGameDef->SetID(pReplaceTokens(pGameDef->GetID(), tokens, values));
+	pGameDef->SetDescription(pReplaceTokens(pGameDef->GetDescription(), tokens, values));
 	
-	pXmlEscapeValues( values );
-	pSharedGameDefContent = pReplaceTokens( pSharedGameDefContent, tokens, values );
+	pXmlEscapeValues(values);
+	pSharedGameDefContent = pReplaceTokens(pSharedGameDefContent, tokens, values);
 }
 
-decString igdeCreateProject::pReplaceTokens( const decString &string,
-const decStringList &tokens, const decStringList &values ){
+decString igdeCreateProject::pReplaceTokens(const decString &string,
+const decStringList &tokens, const decStringList &values){
 	const int count = tokens.GetCount();
-	decString work( string );
+	decString work(string);
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		work.ReplaceString( tokens.GetAt( i ), values.GetAt( i ) );
+	for(i=0; i<count; i++){
+		work.ReplaceString(tokens.GetAt(i), values.GetAt(i));
 	}
 	
 	return work;
 }
 
-void igdeCreateProject::pCreateProjectReplacements( decStringList &tokens, decStringList &values ){
-	tokens.Add( "%{PROJECT_NAME}" );
-	values.Add( pName );
+void igdeCreateProject::pCreateProjectReplacements(decStringList &tokens, decStringList &values){
+	tokens.Add("%{PROJECT_NAME}");
+	values.Add(pName);
 	
-	tokens.Add( "%{PROJECT_PATH}" );
-	values.Add( pNativePathData );
+	tokens.Add("%{PROJECT_PATH}");
+	values.Add(pNativePathData);
 	
-	tokens.Add( "%{PROJECT_SCRIPT_MODULE}" );
-	values.Add( pScriptModule );
+	tokens.Add("%{PROJECT_SCRIPT_MODULE}");
+	values.Add(pScriptModule);
 }
 
-void igdeCreateProject::pXmlEscapeValues( decStringList &values ){
+void igdeCreateProject::pXmlEscapeValues(decStringList &values){
 	const int count = values.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		values.SetAt( i, decXmlWriter::EscapeText( values.GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		values.SetAt(i, decXmlWriter::EscapeText(values.GetAt(i)));
 	}
 }
 
@@ -391,29 +391,29 @@ void igdeCreateProject::pStoreBaseGameDefs(){
 	const int count = pBaseGameDefs.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decString &id = pBaseGameDefs.GetAt( i );
-		pProject->GetBaseGameDefinitionIDList().Add( id );
-		pProject->GetBaseGameDefinitionList().Add( sharedGameDefList.GetWithID( id ) );
+	for(i=0; i<count; i++){
+		const decString &id = pBaseGameDefs.GetAt(i);
+		pProject->GetBaseGameDefinitionIDList().Add(id);
+		pProject->GetBaseGameDefinitionList().Add(sharedGameDefList.GetWithID(id));
 	}
 }
 
 void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
-	pVFS.TakeOver( new deVirtualFileSystem );
+	pVFS.TakeOver(new deVirtualFileSystem);
 	
 	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
-		decPath::CreatePathUnix( VFS_DIR_DATA ), decPath::CreatePathNative( pNativePathData )));
-	pVFS->AddContainer( container );
+		decPath::CreatePathUnix(VFS_DIR_DATA), decPath::CreatePathNative(pNativePathData)));
+	pVFS->AddContainer(container);
 	
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_PROJECT ),
-		pNativePathProject ) );
-	pVFS->AddContainer( container );
+	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix(VFS_DIR_PROJECT),
+		pNativePathProject));
+	pVFS->AddContainer(container);
 	
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ),
-		decPath::CreatePathNative( pTemplate->GetBasePath() ) ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-	pVFS->AddContainer( container );
+	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix(VFS_DIR_TEMPLATE),
+		decPath::CreatePathNative(pTemplate->GetBasePath())));
+	((deVFSDiskDirectory&)(deVFSContainer&)container).SetReadOnly(true);
+	pVFS->AddContainer(container);
 	
 	// create file renames
 	pCreateFileRenames();
@@ -423,33 +423,33 @@ void igdeCreateProject::pApplyTemplate(){
 	const int fileCount = files.GetCount();
 	int i;
 	
-	for( i=0; i<fileCount; i++ ){
-		pTemplateCreateFile( *files.GetAt( i ) );
+	for(i=0; i<fileCount; i++){
+		pTemplateCreateFile(*files.GetAt(i));
 	}
 }
 
-void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
+void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
 	dePathList list;
 	
 	// set up replacements if present
 	decStringList replaceTokens, replaceValues;
-	pCreateFileReplacements( file, replaceTokens, replaceValues );
+	pCreateFileReplacements(file, replaceTokens, replaceValues);
 	const bool hasReplacements = replaceTokens.GetCount() > 0;
 	decString renamePath;
 	
 	// find files
-	if( ! file.GetPattern().IsEmpty() ){
+	if(! file.GetPattern().IsEmpty()){
 		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
-		deCollectFileSearchVisitor collect( file.GetPattern() );
-		pVFS->SearchFiles( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ), collect );
+		deCollectFileSearchVisitor collect(file.GetPattern());
+		pVFS->SearchFiles(decPath::CreatePathUnix(VFS_DIR_TEMPLATE), collect);
 		list = collect.GetFiles();
 		
 	}else{
-		list.Add( decPath::CreatePathUnix( file.GetPath() ) );
+		list.Add(decPath::CreatePathUnix(file.GetPath()));
 		
-		if( ! file.GetPathRename().IsEmpty() ){
-			renamePath = pReplaceTokens( file.GetPathRename(), pFileRenameTokens, pFileRenameValues );
+		if(! file.GetPathRename().IsEmpty()){
+			renamePath = pReplaceTokens(file.GetPathRename(), pFileRenameTokens, pFileRenameValues);
 		}
 	}
 	
@@ -459,73 +459,73 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	decBaseFileWriter::Ref writer;
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		// read file from template
-		decPath path( list.GetAt( i ) );
-		reader.TakeOver( pVFS->OpenFileForReading( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ) + path ) );
+		decPath path(list.GetAt(i));
+		reader.TakeOver(pVFS->OpenFileForReading(decPath::CreatePathUnix(VFS_DIR_TEMPLATE) + path));
 		
 		int contentLen = reader->GetLength();
 		decString content;
-		content.Set( ' ', contentLen );
-		reader->Read( ( char* )content.GetString(), contentLen );
+		content.Set(' ', contentLen);
+		reader->Read((char*)content.GetString(), contentLen);
 		reader = NULL;
 		
 		// process file content if required. works only for text files
-		if( hasReplacements ){
-			content = pReplaceTokens( content, replaceTokens, replaceValues );
+		if(hasReplacements){
+			content = pReplaceTokens(content, replaceTokens, replaceValues);
 			contentLen = content.GetLength();
 		}
 		
 		// create project file with content
-		if( ! renamePath.IsEmpty() ){
-			path = decPath::CreatePathUnix( renamePath );
+		if(! renamePath.IsEmpty()){
+			path = decPath::CreatePathUnix(renamePath);
 		}
 		
-		switch( file.GetDirectory() ){
+		switch(file.GetDirectory()){
 		case igdeTemplateFile::edData:
-			writer.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( VFS_DIR_DATA ) + path ) );
+			writer.TakeOver(pVFS->OpenFileForWriting(decPath::CreatePathUnix(VFS_DIR_DATA) + path));
 			break;
 			
 		case igdeTemplateFile::edProject:
-			writer.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( VFS_DIR_PROJECT ) + path ) );
+			writer.TakeOver(pVFS->OpenFileForWriting(decPath::CreatePathUnix(VFS_DIR_PROJECT) + path));
 			break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
-		writer->Write( content.GetString(), contentLen );
+		writer->Write(content.GetString(), contentLen);
 		writer = NULL;
 	}
 }
 
 void igdeCreateProject::pCreateFileRenames(){
-	pFileRenameTokens.Add( "{projectPathDirectory}" );
-	pFileRenameValues.Add( pNativePathProject.GetLastComponent() );
+	pFileRenameTokens.Add("{projectPathDirectory}");
+	pFileRenameValues.Add(pNativePathProject.GetLastComponent());
 	
-	pFileRenameTokens.Add( "{projectName}" );
-	pFileRenameValues.Add( pName );
+	pFileRenameTokens.Add("{projectName}");
+	pFileRenameValues.Add(pName);
 	
-	pFileRenameTokens.Add( "{gameId}" );
-	pFileRenameValues.Add( pGameId );
+	pFileRenameTokens.Add("{gameId}");
+	pFileRenameValues.Add(pGameId);
 	
-	pFileRenameTokens.Add( "{gameAliasId}" );
-	pFileRenameValues.Add( pGameAliasId );
+	pFileRenameTokens.Add("{gameAliasId}");
+	pFileRenameValues.Add(pGameAliasId);
 }
 
-void igdeCreateProject::pCreateFileReplacements( const igdeTemplateFile &file,
-decStringList &tokens, decStringList &values ){
+void igdeCreateProject::pCreateFileReplacements(const igdeTemplateFile &file,
+decStringList &tokens, decStringList &values){
 	const igdeTemplateReplaceList &list = file.GetReplacements();
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeTemplateReplace &replace = *list.GetAt( i );
-		tokens.Add( replace.GetToken() );
+	for(i=0; i<count; i++){
+		const igdeTemplateReplace &replace = *list.GetAt(i);
+		tokens.Add(replace.GetToken());
 		
 		decString value;
 		
-		switch( replace.GetValue() ){
+		switch(replace.GetValue()){
 		case igdeTemplateReplace::evProjectPath:
 			value = pNativePathProject.GetPathNative();
 			break;
@@ -562,17 +562,17 @@ decStringList &tokens, decStringList &values ){
 			value = replace.GetToken();
 		}
 		
-		switch( replace.GetFormat() ){
+		switch(replace.GetFormat()){
 		case igdeTemplateReplace::efStringC:
-			value = pEscapeStringC( value );
+			value = pEscapeStringC(value);
 			break;
 			
 		case igdeTemplateReplace::efXml:
-			value = pEscapeStringXml( value );
+			value = pEscapeStringXml(value);
 			break;
 			
 		case igdeTemplateReplace::efXmlMultiline:
-			value = pEscapeStringXmlMultiline( value );
+			value = pEscapeStringXmlMultiline(value);
 			break;
 			
 		case igdeTemplateReplace::efText:
@@ -580,48 +580,48 @@ decStringList &tokens, decStringList &values ){
 			break;
 		}
 		
-		values.Add( value );
+		values.Add(value);
 	}
 }
 
-decString igdeCreateProject::pEscapeStringC( const decString &string ){
+decString igdeCreateProject::pEscapeStringC(const decString &string){
 	const char *iter = string.GetString();
 	decString escaped;
 	
-	while( *iter ){
+	while(*iter){
 		const int c = *iter++;
 		
-		if( c == '"' ){
+		if(c == '"'){
 			escaped += "\\\"";
 			
-		}else if( c == '\'' ){
+		}else if(c == '\''){
 			escaped += "\\\'";
 			
 		}else{
-			escaped.AppendCharacter( c );
+			escaped.AppendCharacter(c);
 		}
 	}
 	
 	return escaped;
 }
 
-decString igdeCreateProject::pEscapeStringXml( const decString &string ){
-	return decXmlWriter::EscapeText( string );
+decString igdeCreateProject::pEscapeStringXml(const decString &string){
+	return decXmlWriter::EscapeText(string);
 }
 
-decString igdeCreateProject::pEscapeStringXmlMultiline( const decString &string ){
-	const decString escaped( pEscapeStringXml( string ) );
+decString igdeCreateProject::pEscapeStringXmlMultiline(const decString &string){
+	const decString escaped(pEscapeStringXml(string));
 	const char *iter = escaped.GetString();
 	decString multiline;
 	
-	while( *iter ){
+	while(*iter){
 		const int c = *iter++;
 		
-		if( c == '\n' ){
+		if(c == '\n'){
 			multiline += "<br/>";
 			
 		}else{
-			multiline.AppendCharacter( c );
+			multiline.AppendCharacter(c);
 		}
 	}
 	

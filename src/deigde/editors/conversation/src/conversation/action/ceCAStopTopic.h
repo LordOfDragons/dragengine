@@ -45,7 +45,7 @@ public:
 	ceCAStopTopic();
 	
 	/** \brief Create copy of stop topic conversation action. */
-	ceCAStopTopic( const ceCAStopTopic &action );
+	ceCAStopTopic(const ceCAStopTopic &action);
 	
 	/** \brief Clean up stop conversation conversation action. */
 	virtual ~ceCAStopTopic();

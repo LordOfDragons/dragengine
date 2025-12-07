@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffectDistortImage( deoglRenderThread &renderThread );
+	deoglREffectDistortImage(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
 	virtual ~deoglREffectDistortImage();
@@ -58,16 +58,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Distortion strength in U and V direction. */
-	inline const decVector2 &GetStrength() const{ return pStrength; }
+	inline const decVector2 &GetStrength() const{return pStrength;}
 	
 	/** Set distortion strength in U and V direction. */
-	void SetStrength( const decVector2 &strength );
+	void SetStrength(const decVector2 &strength);
 	
 	/** Image or nullptr to render nothing. */
-	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
+	inline const deoglRImage::Ref &GetImage() const{return pImage;}
 	
 	/** Set image or nullptr to render nothing. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	virtual void PrepareForRender();
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan );
+	virtual void Render(deoglRenderPlan &plan);
 };
 
 #endif

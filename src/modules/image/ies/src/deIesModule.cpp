@@ -40,18 +40,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *IESCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *IESCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
 
-deBaseModule *IESCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *IESCreateModule(deLoadableModule *loadableModule){
 	try{
-		return new deIesModule( *loadableModule );
+		return new deIesModule(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 }
@@ -64,8 +64,8 @@ deBaseModule *IESCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deIesModule::deIesModule( deLoadableModule &loadableModule ) :
-deBaseImageModule( loadableModule ){
+deIesModule::deIesModule(deLoadableModule &loadableModule) :
+deBaseImageModule(loadableModule){
 }
 
 deIesModule::~deIesModule(){
@@ -75,19 +75,19 @@ deIesModule::~deIesModule(){
 // Loading and saving
 ///////////////////////
 
-deBaseImageInfo *deIesModule::InitLoadImage( decBaseFileReader &file ){
+deBaseImageInfo *deIesModule::InitLoadImage(decBaseFileReader &file){
 	deIesImageInfo *info = NULL;
 	
 	try{
 		info = new deIesFormatLm63d1986;
 		
-		if( ! info->LoadHeader( file ) ){
+		if(! info->LoadHeader(file)){
 			delete info;
 			return NULL;
 		}
 		
-	}catch( const deException & ){
-		if( info ){
+	}catch(const deException &){
+		if(info){
 			delete info;
 		}
 		throw;
@@ -96,14 +96,14 @@ deBaseImageInfo *deIesModule::InitLoadImage( decBaseFileReader &file ){
 	return info;
 }
 
-void deIesModule::LoadImage( decBaseFileReader&, deImage &image, deBaseImageInfo &info ){
+void deIesModule::LoadImage(decBaseFileReader&, deImage &image, deBaseImageInfo &info){
 // 	( ( deIesImageInfo& )info ).LoadFile( ( float* )image.GetDataGrayscale32() );
-	( ( deIesImageInfo& )info ).LoadFile( ( unsigned short* )image.GetDataGrayscale16() );
+	((deIesImageInfo&)info).LoadFile((unsigned short*)image.GetDataGrayscale16());
 }
 
-void deIesModule::SaveImage( decBaseFileWriter&, const deImage & ){
+void deIesModule::SaveImage(decBaseFileWriter&, const deImage &){
 	// TODO not supported so far
-	DETHROW_INFO( deeInvalidAction, "not supported" );
+	DETHROW_INFO(deeInvalidAction, "not supported");
 }
 
 #ifdef WITH_INTERNAL_MODULE

@@ -44,10 +44,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-seTaskSyncGameDefinition::seTaskSyncGameDefinition( seWindowMain &windowMain ) :
-pWindowMain( windowMain )
+seTaskSyncGameDefinition::seTaskSyncGameDefinition(seWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Sky Editor: Synchronize Game Definition" );
+	SetMessage("Sky Editor: Synchronize Game Definition");
 }
 
 seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){
@@ -59,7 +59,7 @@ seTaskSyncGameDefinition::~seTaskSyncGameDefinition(){
 ///////////////
 
 bool seTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetSky() ){
+	if(! pWindowMain.GetSky()){
 		return false;
 	}
 	

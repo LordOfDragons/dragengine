@@ -38,7 +38,7 @@ class igdeNativeFoxResizer;
  * \brief FOX toolkit Native list box.
  */
 class igdeNativeFoxListBox : public FXVerticalFrame{
-	FXDECLARE( igdeNativeFoxListBox )
+	FXDECLARE(igdeNativeFoxListBox)
 protected:
 	   igdeNativeFoxListBox();
 	
@@ -60,14 +60,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxListBox( igdeListBox &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxListBox(igdeListBox &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxListBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxListBox* CreateNativeWidget( igdeListBox &owner );
+	static igdeNativeFoxListBox* CreateNativeWidget(igdeListBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -81,48 +81,48 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List box. */
-	inline FXList *GetListBox() const{ return pListBox; }
+	inline FXList *GetListBox() const{return pListBox;}
 	
 	/** \brief Resizer or \em NULL. */
-	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
+	inline igdeNativeFoxResizer *GetResizser() const{return pResizer;}
 	
 	
 	
 	virtual void BuildList();
-	virtual void UpdateItem( int index );
+	virtual void UpdateItem(int index);
 	virtual void UpdateStyles();
 	virtual void UpdateSelection();
 	virtual void Focus();
-	virtual void MakeItemVisible( int index );
-	virtual void InsertItem( int index );
-	virtual void RemoveItem( int index );
+	virtual void MakeItemVisible(int index);
+	virtual void InsertItem(int index);
+	virtual void RemoveItem(int index);
 	virtual void RemoveAllItems();
-	virtual void MoveItem( int fromIndex, int toIndex );
+	virtual void MoveItem(int fromIndex, int toIndex);
 	virtual void UpdateEnabled();
 	virtual void UpdateRowCount();
 	virtual void UpdateDescription();
 	
-	static int ListBoxFlags( const igdeListBox &owner );
-	static igdeFont *ListBoxFont( const igdeListBox &owner, const igdeGuiTheme &guitheme );
-	static int ListBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int ListBoxPadRight( const igdeGuiTheme &guitheme );
-	static int ListBoxPadTop( const igdeGuiTheme &guitheme );
-	static int ListBoxPadBottom( const igdeGuiTheme &guitheme );
+	static int ListBoxFlags(const igdeListBox &owner);
+	static igdeFont *ListBoxFont(const igdeListBox &owner, const igdeGuiTheme &guitheme);
+	static int ListBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int ListBoxPadRight(const igdeGuiTheme &guitheme);
+	static int ListBoxPadTop(const igdeGuiTheme &guitheme);
+	static int ListBoxPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onListCommand( FXObject*, FXSelector, void* );
-	long onListChanged( FXObject*, FXSelector, void* );
-	long onListSelected( FXObject*, FXSelector, void* );
-	long onListDeselected( FXObject*, FXSelector, void* );
-	long onListRightMouseDown( FXObject*, FXSelector, void* );
-	long onListRightMouseUp( FXObject*, FXSelector, void* );
-	long onListDoubleClicked( FXObject*, FXSelector, void* );
+	long onListCommand(FXObject*, FXSelector, void*);
+	long onListChanged(FXObject*, FXSelector, void*);
+	long onListSelected(FXObject*, FXSelector, void*);
+	long onListDeselected(FXObject*, FXSelector, void*);
+	long onListRightMouseDown(FXObject*, FXSelector, void*);
+	long onListRightMouseUp(FXObject*, FXSelector, void*);
+	long onListDoubleClicked(FXObject*, FXSelector, void*);
 	
-	long onResizerDrag( FXObject*, FXSelector, void* );
+	long onResizerDrag(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetColor::seULayerSetColor( seLayer *layer, const decColor &newColor ) :
-pLayer( NULL ),
-pNewColor( newColor )
+seULayerSetColor::seULayerSetColor(seLayer *layer, const decColor &newColor) :
+pLayer(NULL),
+pNewColor(newColor)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Color" );
+	SetShortInfo("Set Layer Color");
 	
 	pOldColor = layer->GetColor();
 	
@@ -56,7 +56,7 @@ pNewColor( newColor )
 }
 
 seULayerSetColor::~seULayerSetColor(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetColor::~seULayerSetColor(){
 ///////////////
 
 void seULayerSetColor::Undo(){
-	pLayer->SetColor( pOldColor );
+	pLayer->SetColor(pOldColor);
 }
 
 void seULayerSetColor::Redo(){
-	pLayer->SetColor( pNewColor );
+	pLayer->SetColor(pNewColor);
 }

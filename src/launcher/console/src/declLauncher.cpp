@@ -66,12 +66,12 @@
 ////////////////////////////
 
 declLauncher::declLauncher() :
-pConfiguration( NULL ){
+pConfiguration(NULL){
 	// also log to "/logs/delauncher-console"
-	AddFileLogger( "delauncher-console" );
+	AddFileLogger("delauncher-console");
 	
 	// set launcher to use direct engine instance
-	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::NewWith() );
+	SetEngineInstanceFactory(delEngineInstanceDirect::Factory::Ref::NewWith());
 }
 
 declLauncher::~declLauncher(){
@@ -83,31 +83,31 @@ declLauncher::~declLauncher(){
 // Management
 ///////////////
 
-void declLauncher::AddArgument( const decUnicodeString &argument ){
-	pArgList.AddArgument( argument );
+void declLauncher::AddArgument(const decUnicodeString &argument){
+	pArgList.AddArgument(argument);
 }
 
 void declLauncher::PrintSyntax(){
-	printf( "Drag[en]gine Console Launcher.\n" );
-	printf( "Written by Plüss Roland (roland@rptd.ch).\n" );
-	printf( "Released under the GPL (http://www.gnu.org/licenses/gpl.html), 2020.\n" );
-	printf( "\n" );
-	printf( "Syntax:\n" );
-	printf( "delauncher-console [ <action> [ <action-options> ] ]\n" );
-	printf( "   <action> can be one or more of the following:\n" );
-	printf( "      help       Print syntax of an action.\n" );
-	printf( "      run        Run games.\n" );
-	printf( "      delga      Manage DELGA files.\n" );
-	printf( "      games      Manage games.\n" );
-	printf( "      profiles   Manage profiles.\n" );
-	printf( "      patches    Manage patches.\n" );
-	printf( "\n" );
+	printf("Drag[en]gine Console Launcher.\n");
+	printf("Written by Plüss Roland (roland@rptd.ch).\n");
+	printf("Released under the GPL (http://www.gnu.org/licenses/gpl.html), 2020.\n");
+	printf("\n");
+	printf("Syntax:\n");
+	printf("delauncher-console [<action> [<action-options>]]\n");
+	printf("   <action> can be one or more of the following:\n");
+	printf("      help       Print syntax of an action.\n");
+	printf("      run        Run games.\n");
+	printf("      delga      Manage DELGA files.\n");
+	printf("      games      Manage games.\n");
+	printf("      profiles   Manage profiles.\n");
+	printf("      patches    Manage patches.\n");
+	printf("\n");
 }
 
 
 
 void declLauncher::Init(){
-	pConfiguration = new declConfiguration( *this );
+	pConfiguration = new declConfiguration(*this);
 	
 	pInitLogger();
 	
@@ -115,42 +115,42 @@ void declLauncher::Init(){
 }
 
 int declLauncher::Run(){
-	if( pArgList.GetArgumentCount() < 1 ){
+	if(pArgList.GetArgumentCount() < 1){
 		PrintSyntax();
 		return -1;
 	}
 	
-	const decString actionName( pArgList.GetArgumentAt( 0 )->ToUTF8() );
+	const decString actionName(pArgList.GetArgumentAt(0)->ToUTF8());
 	
-	if( actionName == "help" ){
-		declActionHelp( *this ).Run();
+	if(actionName == "help"){
+		declActionHelp(*this).Run();
 		
-	}else if( actionName == "version" ){
-		printf( "%s", DE_VERSION );
+	}else if(actionName == "version"){
+		printf("%s", DE_VERSION);
 		return 0;
 		
-	}else if( actionName == "run" ){
+	}else if(actionName == "run"){
 		Init();
-		declRunGame( *this ).Run();
+		declRunGame(*this).Run();
 		
-	}else if( actionName == "games" ){
+	}else if(actionName == "games"){
 		Init();
-		return declActionGames( *this ).Run();
+		return declActionGames(*this).Run();
 		
-	}else if( actionName == "delga" ){
+	}else if(actionName == "delga"){
 		Init();
-		return declActionDelga( *this ).Run();
+		return declActionDelga(*this).Run();
 		
-	}else if( actionName == "profiles" ){
+	}else if(actionName == "profiles"){
 		Init();
-		declListProfiles( *this ).Run();
+		declListProfiles(*this).Run();
 		
-	}else if( actionName == "patches" ){
+	}else if(actionName == "patches"){
 		Init();
-		declActionPatches( *this ).Run();
+		declActionPatches(*this).Run();
 		
 	}else{
-		GetLogger()->LogErrorFormat( LOGSOURCE, "Unknown action '%s'", actionName.GetString() );
+		GetLogger()->LogErrorFormat(LOGSOURCE, "Unknown action '%s'", actionName.GetString());
 		PrintSyntax();
 	}
 	
@@ -158,11 +158,11 @@ int declLauncher::Run(){
 }
 
 void declLauncher::CleanUp(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		//pConfiguration->SaveConfiguration();
 	}
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 		pConfiguration = NULL;
 	}
@@ -170,24 +170,24 @@ void declLauncher::CleanUp(){
 
 decString declLauncher::ReadInput() const{
 	decString input;
-	while( true ){
-		const int character = fgetc( stdin );
-		if( character == '\n' || character == EOF ){
+	while(true){
+		const int character = fgetc(stdin);
+		if(character == '\n' || character == EOF){
 			break;
 		}
-		input.AppendCharacter( character );
+		input.AppendCharacter(character);
 	}
 	return input;
 }
 
 bool declLauncher::ReadInputConfirm() const{
-	const decString input( ReadInput() );
+	const decString input(ReadInput());
 	return input == "y" || input == "Y";
 }
 
 int declLauncher::ReadInputSelection() const{
-	const decString input( ReadInput() );
-	if( input.IsEmpty() ){
+	const decString input(ReadInput());
+	if(input.IsEmpty()){
 		return -1;
 		
 	}else{
@@ -204,40 +204,40 @@ void declLauncher::pInitLogger(){
 	// clear logger chain set up by the shared launcher. we want a custom one
 	GetLogger()->RemoveAllLoggers();
 	
-	const declLoggerFiltered::Ref loggerLauncher( declLoggerFiltered::Ref::NewWith() );
-	GetLogger()->AddLogger( loggerLauncher );
+	const declLoggerFiltered::Ref loggerLauncher(declLoggerFiltered::Ref::NewWith());
+	GetLogger()->AddLogger(loggerLauncher);
 	
-	const deLoggerChain::Ref loggerLauncherError( deLoggerChain::Ref::NewWith() );
-	loggerLauncher->SetLoggerError( loggerLauncherError );
+	const deLoggerChain::Ref loggerLauncherError(deLoggerChain::Ref::NewWith());
+	loggerLauncher->SetLoggerError(loggerLauncherError);
 	
-	const deLoggerChain::Ref loggerLauncherWarn( deLoggerChain::Ref::NewWith() );
-	loggerLauncher->SetLoggerWarning( loggerLauncherWarn );
+	const deLoggerChain::Ref loggerLauncherWarn(deLoggerChain::Ref::NewWith());
+	loggerLauncher->SetLoggerWarning(loggerLauncherWarn);
 	
-	const deLoggerChain::Ref loggerLauncherInfo( deLoggerChain::Ref::NewWith() );
-	loggerLauncher->SetLoggerInfo( loggerLauncherInfo );
+	const deLoggerChain::Ref loggerLauncherInfo(deLoggerChain::Ref::NewWith());
+	loggerLauncher->SetLoggerInfo(loggerLauncherInfo);
 	
-	declLoggerFiltered::Ref loggerEngine( declLoggerFiltered::Ref::NewWith() );
-	loggerEngine->SetLoggerError( loggerLauncherError );
-	loggerEngine->SetLoggerWarning( loggerLauncherWarn );
+	declLoggerFiltered::Ref loggerEngine(declLoggerFiltered::Ref::NewWith());
+	loggerEngine->SetLoggerError(loggerLauncherError);
+	loggerEngine->SetLoggerWarning(loggerLauncherWarn);
 	pEngineLogger = loggerEngine;
 	
-	const deLoggerChain::Ref loggerEngineDebug( deLoggerChain::Ref::NewWith() );
+	const deLoggerChain::Ref loggerEngineDebug(deLoggerChain::Ref::NewWith());
 	pEngineLoggerDebug = loggerEngineDebug;
 	
 	// console
-	const deLoggerConsoleColor::Ref loggerConsole( deLoggerConsoleColor::Ref::NewWith() );
-	loggerLauncherError->AddLogger( loggerConsole );
-	loggerEngineDebug->AddLogger( loggerConsole );
+	const deLoggerConsoleColor::Ref loggerConsole(deLoggerConsoleColor::Ref::NewWith());
+	loggerLauncherError->AddLogger(loggerConsole);
+	loggerEngineDebug->AddLogger(loggerConsole);
 	
 	// file
-	const deLoggerFile::Ref loggerFile( deLoggerFile::Ref::New( new deLoggerFile(
-		decBaseFileWriter::Ref::New( GetVFS()->OpenFileForWriting(
-			decPath::CreatePathUnix( "/logs/delauncher-console.log" ) ) ) ) ) );
+	const deLoggerFile::Ref loggerFile(deLoggerFile::Ref::New(new deLoggerFile(
+		decBaseFileWriter::Ref::New(GetVFS()->OpenFileForWriting(
+			decPath::CreatePathUnix("/logs/delauncher-console.log"))))));
 	
-	loggerLauncherError->AddLogger( loggerFile );
-	loggerLauncherWarn->AddLogger( loggerFile );
-	loggerLauncherInfo->AddLogger( loggerFile );
+	loggerLauncherError->AddLogger(loggerFile);
+	loggerLauncherWarn->AddLogger(loggerFile);
+	loggerLauncherInfo->AddLogger(loggerFile);
 	
-	loggerEngine->SetLoggerInfo( loggerFile );
-	loggerEngineDebug->AddLogger( loggerFile );
+	loggerEngine->SetLoggerInfo(loggerFile);
+	loggerEngineDebug->AddLogger(loggerFile);
 }

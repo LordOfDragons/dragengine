@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	saeWPSAnimListener( saeWPSAnim &panel );
+	saeWPSAnimListener(saeWPSAnim &panel);
 	
 	/** Clean up listener. */
 	virtual ~saeWPSAnimListener();
@@ -55,31 +55,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation changed. */
-	virtual void SAnimationChanged( saeSAnimation *sanimation );
+	virtual void SAnimationChanged(saeSAnimation *sanimation);
 	
 	/** Model changed. */
-	virtual void ModelChanged( saeSAnimation *sanimation );
+	virtual void ModelChanged(saeSAnimation *sanimation);
 	
 	/** Phoneme count or order changed. */
-	virtual void PhonemeStructureChanged( saeSAnimation *sanimation );
+	virtual void PhonemeStructureChanged(saeSAnimation *sanimation);
 	
 	/** Phoneme changed. */
-	virtual void PhonemeChanged( saeSAnimation *sanimation, saePhoneme *phoneme );
+	virtual void PhonemeChanged(saeSAnimation *sanimation, saePhoneme *phoneme);
 	
 	/** Active phoneme changed. */
-	virtual void ActivePhonemeChanged( saeSAnimation *sanimation );
+	virtual void ActivePhonemeChanged(saeSAnimation *sanimation);
 	
 	/** Word count or order changed. */
-	virtual void WordStructureChanged( saeSAnimation *sanimation );
+	virtual void WordStructureChanged(saeSAnimation *sanimation);
 	
 	/** Word name changed. */
-	virtual void WordNameChanged( saeSAnimation *sanimation, saeWord *word );
+	virtual void WordNameChanged(saeSAnimation *sanimation, saeWord *word);
 	
 	/** Word changed. */
-	virtual void WordChanged( saeSAnimation *sanimation, saeWord *word );
+	virtual void WordChanged(saeSAnimation *sanimation, saeWord *word);
 	
 	/** Active word changed. */
-	virtual void ActiveWordChanged( saeSAnimation *sanimation );
+	virtual void ActiveWordChanged(saeSAnimation *sanimation);
 	/*@}*/
 };
 

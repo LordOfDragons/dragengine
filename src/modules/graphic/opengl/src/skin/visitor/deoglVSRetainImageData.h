@@ -61,13 +61,13 @@ public:
 	 * \param[in] forceLock Force locking even if not necessary. Required to deal with
 	 *                      combined images until they are removed
 	 */
-	void RetainPropertyImages( deSkinProperty &property, bool forceLock );
+	void RetainPropertyImages(deSkinProperty &property, bool forceLock);
 	
 	/** Release all retained images. */
 	void ReleaseImages();
 	
 	/** Process image. */
-	void ProcessImage( deImage &image, bool forceLock );
+	void ProcessImage(deImage &image, bool forceLock);
 	/*@}*/
 	
 	
@@ -75,22 +75,22 @@ public:
 	/** \name Visiting Property */
 	/*@{*/
 	/** Visit property. */
-	virtual void VisitProperty( deSkinProperty &property );
+	virtual void VisitProperty(deSkinProperty &property);
 	
 	/** Visit single value property. */
-	virtual void VisitValue( deSkinPropertyValue &property );
+	virtual void VisitValue(deSkinPropertyValue &property);
 	
 	/** Visit uniform color property. */
-	virtual void VisitColor( deSkinPropertyColor &property );
+	virtual void VisitColor(deSkinPropertyColor &property);
 	
 	/** Visit image property. */
-	virtual void VisitImage( deSkinPropertyImage &property );
+	virtual void VisitImage(deSkinPropertyImage &property);
 	
 	/** Visit video property. */
-	virtual void VisitVideo( deSkinPropertyVideo &property );
+	virtual void VisitVideo(deSkinPropertyVideo &property);
 	
 	/** Visit complex property. */
-	virtual void VisitConstructed( deSkinPropertyConstructed &property );
+	virtual void VisitConstructed(deSkinPropertyConstructed &property);
 	/*@}*/
 	
 	
@@ -98,19 +98,19 @@ public:
 	/** \name Visiting Node */
 	/*@{*/
 	/** Visit node. */
-	virtual void VisitNode( deSkinPropertyNode &node );
+	virtual void VisitNode(deSkinPropertyNode &node);
 	
 	/** Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
 	
 	/** Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	virtual void VisitImage(deSkinPropertyNodeImage &node);
 	
 	/** Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node );
+	virtual void VisitShape(deSkinPropertyNodeShape &node);
 	
 	/** Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	virtual void VisitText(deSkinPropertyNodeText &node);
 	/*@}*/
 };
 

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleRenderEnvMap::gdeUOCBillboardToggleRenderEnvMap(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle render env-map" );
+	SetShortInfo("Billboard toggle render env-map");
 	
 	pBillboard = billboard;
 	billboard->AddReference();
@@ -59,10 +59,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardToggleRenderEnvMap::~gdeUOCBillboardToggleRenderEnvMap(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCBillboardToggleRenderEnvMap::~gdeUOCBillboardToggleRenderEnvMap(){
 ///////////////
 
 void gdeUOCBillboardToggleRenderEnvMap::Undo(){
-	pBillboard->SetRenderEnvMap( ! pBillboard->GetRenderEnvMap() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetRenderEnvMap(! pBillboard->GetRenderEnvMap());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardToggleRenderEnvMap::Redo(){

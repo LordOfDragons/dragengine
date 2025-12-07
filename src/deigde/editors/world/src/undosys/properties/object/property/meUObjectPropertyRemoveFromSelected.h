@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectPropertyRemoveFromSelected( const meObjectList &list, const char *key );
+	meUObjectPropertyRemoveFromSelected(const meObjectList &list, const char *key);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -61,8 +61,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline decObjectList &GetList(){return pList;}
+	inline const decObjectList &GetList() const{return pList;}
 	
 	/** \brief Undo. */
 	virtual void Undo();

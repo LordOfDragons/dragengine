@@ -39,27 +39,27 @@
 ////////////////////////////
 
 deSkinPropertyNode::deSkinPropertyNode() :
-pSize( 256, 256, 1 ),
-pRotation( 0.0f ),
-pShear( 0.0f ),
+pSize(256, 256, 1),
+pRotation(0.0f),
+pShear(0.0f),
 
-pBrightness( 0.0f ),
-pContrast( 1.0f ),
-pGamma( 1.0f ),
-pColorize( 1.0f, 1.0f, 1.0f ),
+pBrightness(0.0f),
+pContrast(1.0f),
+pGamma(1.0f),
+pColorize(1.0f, 1.0f, 1.0f),
 
-pTransparency( 1.0f ),
-pMask( NULL ),
-pCombineMode( ecmBlend )
+pTransparency(1.0f),
+pMask(NULL),
+pCombineMode(ecmBlend)
 {
 	int i;
-	for( i=0; i<MappedCount; i++ ){
-		pMapped[ i ] = -1;
+	for(i=0; i<MappedCount; i++){
+		pMapped[i] = -1;
 	}
 }
 
 deSkinPropertyNode::~deSkinPropertyNode(){
-	if( pMask ){
+	if(pMask){
 		delete pMask;
 	}
 }
@@ -69,70 +69,70 @@ deSkinPropertyNode::~deSkinPropertyNode(){
 // Management
 ///////////////
 
-void deSkinPropertyNode::SetPosition( const decPoint3 &position ){
+void deSkinPropertyNode::SetPosition(const decPoint3 &position){
 	pPosition = position;
 }
 
-void deSkinPropertyNode::SetSize( const decPoint3 &size ){
+void deSkinPropertyNode::SetSize(const decPoint3 &size){
 	pSize = size;
 }
 
-void deSkinPropertyNode::SetRotation( float rotation ){
+void deSkinPropertyNode::SetRotation(float rotation){
 	pRotation = rotation;
 }
 
-void deSkinPropertyNode::SetShear( float shear ){
+void deSkinPropertyNode::SetShear(float shear){
 	pShear = shear;
 }
 
 
 
-void deSkinPropertyNode::SetBrightness( float brightness ){
+void deSkinPropertyNode::SetBrightness(float brightness){
 	pBrightness = brightness;
 }
 
-void deSkinPropertyNode::SetContrast( float contrast ){
+void deSkinPropertyNode::SetContrast(float contrast){
 	pContrast = contrast;
 }
 
-void deSkinPropertyNode::SetGamma( float gamma ){
+void deSkinPropertyNode::SetGamma(float gamma){
 	pGamma = gamma;
 }
 
-void deSkinPropertyNode::SetColorize( const decColor &color ){
+void deSkinPropertyNode::SetColorize(const decColor &color){
 	pColorize = color;
 }
 
 
 
-void deSkinPropertyNode::SetTransparency( float transparency ){
+void deSkinPropertyNode::SetTransparency(float transparency){
 	pTransparency = transparency;
 }
 
-void deSkinPropertyNode::SetMask( deSkinPropertyNode *mask ){
-	if( mask == pMask ){
+void deSkinPropertyNode::SetMask(deSkinPropertyNode *mask){
+	if(mask == pMask){
 		return;
 	}
 	
-	if( pMask ){
+	if(pMask){
 		delete pMask;
 	}
 	pMask = mask;
 }
 
-void deSkinPropertyNode::SetCombineMode( eCombineModes mode ){
+void deSkinPropertyNode::SetCombineMode(eCombineModes mode){
 	pCombineMode = mode;
 }
 
 
 
-int deSkinPropertyNode::GetMappedFor( eMapped mapped ) const{
-	return pMapped[ mapped ];
+int deSkinPropertyNode::GetMappedFor(eMapped mapped) const{
+	return pMapped[mapped];
 }
 
-void deSkinPropertyNode::SetMappedFor( eMapped mapped, int index ){
-	DEASSERT_TRUE( index >= -1 )
-	pMapped[ mapped ] = index;
+void deSkinPropertyNode::SetMappedFor(eMapped mapped, int index){
+	DEASSERT_TRUE(index >= -1)
+	pMapped[mapped] = index;
 }
 
 
@@ -140,6 +140,6 @@ void deSkinPropertyNode::SetMappedFor( eMapped mapped, int index ){
 // Visiting
 /////////////
 
-void deSkinPropertyNode::Visit( deSkinPropertyNodeVisitor &visitor ){
-	visitor.VisitNode( *this );
+void deSkinPropertyNode::Visit(deSkinPropertyNodeVisitor &visitor){
+	visitor.VisitNode(*this);
 }

@@ -43,21 +43,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEnvMapProbe::deoglEnvMapProbe( deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe ) :
-pOgl( ogl ),
-pEnvMapProbe( envMapProbe ),
-pREnvMapProbe( NULL ),
+deoglEnvMapProbe::deoglEnvMapProbe(deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe) :
+pOgl(ogl),
+pEnvMapProbe(envMapProbe),
+pREnvMapProbe(NULL),
 
-pDirtyOctreeNode( true ),
-pDirtyEnvMapProbe( true ),
-pDirtyMatrix( true ),
-pDirtyInfluenceShape( true ),
-pDirtyReflectionShape( true )
+pDirtyOctreeNode(true),
+pDirtyEnvMapProbe(true),
+pDirtyMatrix(true),
+pDirtyInfluenceShape(true),
+pDirtyReflectionShape(true)
 {
 	try{
-		pREnvMapProbe = new deoglREnvMapProbe( ogl.GetRenderThread() );
+		pREnvMapProbe = new deoglREnvMapProbe(ogl.GetRenderThread());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -73,33 +73,33 @@ deoglEnvMapProbe::~deoglEnvMapProbe(){
 ///////////////
 
 void deoglEnvMapProbe::SyncToRender(){
-	if( pDirtyEnvMapProbe ){
-		pREnvMapProbe->SetInfluenceBorderSize( pEnvMapProbe.GetInfluenceBorderSize() );
-		pREnvMapProbe->GetEnvironmentMap()->SetInfluencePriority( pEnvMapProbe.GetInfluencePriority() );
-		pREnvMapProbe->GetEnvironmentMap()->SetLayerMask( pEnvMapProbe.GetLayerMask() );
+	if(pDirtyEnvMapProbe){
+		pREnvMapProbe->SetInfluenceBorderSize(pEnvMapProbe.GetInfluenceBorderSize());
+		pREnvMapProbe->GetEnvironmentMap()->SetInfluencePriority(pEnvMapProbe.GetInfluencePriority());
+		pREnvMapProbe->GetEnvironmentMap()->SetLayerMask(pEnvMapProbe.GetLayerMask());
 		pDirtyEnvMapProbe = false;
 	}
 	
-	if( pDirtyMatrix ){
-		pREnvMapProbe->GetEnvironmentMap()->SetPosition( pEnvMapProbe.GetPosition() );
-		pREnvMapProbe->SetMatrix( decDMatrix::CreateScale( decDVector( pEnvMapProbe.GetScaling() ) )
+	if(pDirtyMatrix){
+		pREnvMapProbe->GetEnvironmentMap()->SetPosition(pEnvMapProbe.GetPosition());
+		pREnvMapProbe->SetMatrix(decDMatrix::CreateScale(decDVector(pEnvMapProbe.GetScaling()))
 			* decDMatrix::CreateWorld( pEnvMapProbe.GetPosition(), pEnvMapProbe.GetOrientation() ) );
 		pDirtyMatrix = false;
 	}
 	
-	if( pDirtyOctreeNode ){
+	if(pDirtyOctreeNode){
 		pREnvMapProbe->GetEnvironmentMap()->UpdateOctreePosition();
 		pDirtyOctreeNode = false;
 	}
 	
-	if( pDirtyInfluenceShape ){
-		pREnvMapProbe->UpdateInfluenceShape( pEnvMapProbe.GetShapeListInfluence() );
+	if(pDirtyInfluenceShape){
+		pREnvMapProbe->UpdateInfluenceShape(pEnvMapProbe.GetShapeListInfluence());
 		pDirtyInfluenceShape = false;
 	}
 	
-	if( pDirtyReflectionShape ){
-		pREnvMapProbe->UpdateReflectionShape( pEnvMapProbe.GetShapeListReflectionMask(),
-			pEnvMapProbe.GetShapeReflection() );
+	if(pDirtyReflectionShape){
+		pREnvMapProbe->UpdateReflectionShape(pEnvMapProbe.GetShapeListReflectionMask(),
+			pEnvMapProbe.GetShapeReflection());
 		pDirtyReflectionShape = false;
 	}
 }
@@ -163,7 +163,7 @@ void deoglEnvMapProbe::LayerMaskChanged(){
 //////////////////////
 
 void deoglEnvMapProbe::pCleanUp(){
-	if( pREnvMapProbe ){
+	if(pREnvMapProbe){
 		pREnvMapProbe->FreeReference();
 	}
 }

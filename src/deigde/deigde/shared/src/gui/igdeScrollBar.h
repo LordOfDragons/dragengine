@@ -69,11 +69,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create button. */
-	igdeScrollBar( igdeEnvironment &environment, eOrientation orientation );
+	igdeScrollBar(igdeEnvironment &environment, eOrientation orientation);
 	
 	/** \brief Create button. */
-	igdeScrollBar( igdeEnvironment &environment, eOrientation orientation,
-		int lower, int upper, int pageSize, int value );
+	igdeScrollBar(igdeEnvironment &environment, eOrientation orientation,
+		int lower, int upper, int pageSize, int value);
 	
 	
 	
@@ -93,48 +93,48 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Orientation. */
-	inline eOrientation GetOrientation() const{ return pOrientation; }
+	inline eOrientation GetOrientation() const{return pOrientation;}
 	
 	/** \brief Range lower value. */
-	inline int GetLower() const{ return pLower; }
+	inline int GetLower() const{return pLower;}
 	
 	/** \brief Set range lower value. */
-	void SetLower( int lower );
+	void SetLower(int lower);
 	
 	/** \brief Range upper value. */
-	inline int GetUpper() const{ return pUpper; }
+	inline int GetUpper() const{return pUpper;}
 	
 	/** \brief Set range upper value. */
-	void SetUpper( int upper );
+	void SetUpper(int upper);
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	
 	/** \brief Page size. */
-	inline int GetPageSize() const{ return pPageSize; }
+	inline int GetPageSize() const{return pPageSize;}
 	
 	/** \brief Set page size. */
-	void SetPageSize( int pageSize );
+	void SetPageSize(int pageSize);
 	
 	/** \brief Value. */
-	inline int GetValue() const{ return pValue; }
+	inline int GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief ScrollBar is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeScrollBarListener *listener );
+	void AddListener(igdeScrollBarListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeScrollBarListener *listener );
+	void RemoveListener(igdeScrollBarListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	void NotifyValueChanged();

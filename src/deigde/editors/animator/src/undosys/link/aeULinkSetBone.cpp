@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetBone::aeULinkSetBone( aeLink *link, const char *newBone ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+aeULinkSetBone::aeULinkSetBone(aeLink *link, const char *newBone){
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLink = NULL;
 	
-	SetShortInfo( "Link set bone" );
+	SetShortInfo("Link set bone");
 	
 	pLink = link;
 	pLink->AddReference();
@@ -57,7 +57,7 @@ aeULinkSetBone::aeULinkSetBone( aeLink *link, const char *newBone ){
 }
 
 aeULinkSetBone::~aeULinkSetBone(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ aeULinkSetBone::~aeULinkSetBone(){
 ///////////////
 
 void aeULinkSetBone::Undo(){
-	pLink->SetBone( pOldValue );
+	pLink->SetBone(pOldValue);
 }
 
 void aeULinkSetBone::Redo(){
-	pLink->SetBone( pNewValue );
+	pLink->SetBone(pNewValue);
 }

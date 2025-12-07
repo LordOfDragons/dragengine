@@ -97,7 +97,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader compiling info. */
-	deoglShaderCompilingInfo( deGraphicOpenGl &ogl );
+	deoglShaderCompilingInfo(deGraphicOpenGl &ogl);
 	
 protected:
 	/** Clean up shader compiling info. */
@@ -110,25 +110,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** State. */
-	inline eState GetState() const{ return pState; }
+	inline eState GetState() const{return pState;}
 	
 	/** Visible. */
 	bool IsVisible() const;
 	
 	/** Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** Shaders are loading. */
-	inline bool GetHasLoadingShader() const{ return pHasLoadingShader; }
+	inline bool GetHasLoadingShader() const{return pHasLoadingShader;}
 	
 	/** Shaders are compiling. */
-	inline bool GetHasCompilingShader() const{ return pHasCompilingShader; }
+	inline bool GetHasCompilingShader() const{return pHasCompilingShader;}
 	
 	/** Update. Called from main thread. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Prepare for render. Called from render thread. */
-	void PrepareForRender( float elapsed );
+	void PrepareForRender(float elapsed);
 	/*@}*/
 	
 	
@@ -137,9 +137,9 @@ private:
 	void pCreateCanvas();
 	void pUpdateChecks();
 	bool pShouldBeVisible() const;
-	void pUpdateState( float elapsed );
+	void pUpdateState(float elapsed);
 	void pUpdateTransparency();
-	void pUpdateCanvas( float elapsed );
+	void pUpdateCanvas(float elapsed);
 	void pUpdateText();
 };
 

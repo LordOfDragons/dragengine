@@ -54,35 +54,35 @@
 
 //FXIMPLEMENT( deglDialogGameProblems, FXDialogBox,
 //	deglDialogGameProblemsMap, ARRAYNUMBER( deglDialogGameProblemsMap ) )
-FXIMPLEMENT( deglDialogGameProblems, FXDialogBox, nullptr, 0 )
+FXIMPLEMENT(deglDialogGameProblems, FXDialogBox, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-deglDialogGameProblems::deglDialogGameProblems(){ }
+deglDialogGameProblems::deglDialogGameProblems(){}
 
-deglDialogGameProblems::deglDialogGameProblems( deglWindowMain *windowMain,
-	delGame *game, delGameProfile *profile, FXWindow *powner ) :
-FXDialogBox( powner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
-	0, 0, 600, 450, 10, 10, 10, 5 ),
-pWindowMain( windowMain ),
+deglDialogGameProblems::deglDialogGameProblems(deglWindowMain *windowMain,
+	delGame *game, delGameProfile *profile, FXWindow *powner) :
+FXDialogBox(powner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+	0, 0, 600, 450, 10, 10, 10, 5),
+pWindowMain(windowMain),
 
-pProfileOrg( delGameProfile::Ref::New( windowMain->GetLauncher()->CreateGameProfile( profile ) ) ),
-pProfileWork( delGameProfile::Ref::New( windowMain->GetLauncher()->CreateGameProfile( profile ) ) ),
+pProfileOrg(delGameProfile::Ref::New(windowMain->GetLauncher()->CreateGameProfile(profile))),
+pProfileWork(delGameProfile::Ref::New(windowMain->GetLauncher()->CreateGameProfile(profile))),
 
-pGame( game ),
+pGame(game),
 
-pStatusWorking( false ),
+pStatusWorking(false),
 
-pClrValidBack( FXRGB( 87, 217, 87 ) ),
-pClrValidText( FXRGB( 0, 0, 0 ) ),
-pClrProblemBack( FXRGB( 255, 128, 128 ) ),
-pClrProblemText( FXRGB( 0, 0, 0 ) ),
+pClrValidBack(FXRGB(87, 217, 87)),
+pClrValidText(FXRGB(0, 0, 0)),
+pClrProblemBack(FXRGB(255, 128, 128)),
+pClrProblemText(FXRGB(0, 0, 0)),
 
-pPanelSystems( nullptr ),
-pPanelFileFormats( nullptr )
+pPanelSystems(nullptr),
+pPanelFileFormats(nullptr)
 {
-	if( ! game || ! profile ) DETHROW( deeInvalidParam );
+	if(! game || ! profile) DETHROW(deeInvalidParam);
 	
 	//const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXVerticalFrame *frameGroup;
@@ -93,36 +93,36 @@ pPanelFileFormats( nullptr )
 	
 	
 	// create content
-	content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
-	frameGroup = new FXVerticalFrame( content, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+	content =  new FXVerticalFrame(this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10);
+	frameGroup = new FXVerticalFrame(content, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	
 	// status display
-	pFraStatus = new FXHorizontalFrame( frameGroup, FRAME_GROOVE | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+	pFraStatus = new FXHorizontalFrame(frameGroup, FRAME_GROOVE | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	
-	pLabStatus = new FXLabel( pFraStatus, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	pLabStatus->setJustify( JUSTIFY_CENTER_X | JUSTIFY_TOP );
+	pLabStatus = new FXLabel(pFraStatus, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y);
+	pLabStatus->setJustify(JUSTIFY_CENTER_X | JUSTIFY_TOP);
 	
 	// panels
-	pTabPanels = new FXTabBook( frameGroup, nullptr, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
+	pTabPanels = new FXTabBook(frameGroup, nullptr, 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y);
 	
-	pTabSystems = new FXTabItem( pTabPanels, "Systems", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
-	pPanelSystems = new deglDGPPanelSystem( this, pTabPanels );
+	pTabSystems = new FXTabItem(pTabPanels, "Systems", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2);
+	pPanelSystems = new deglDGPPanelSystem(this, pTabPanels);
 	
-	pTabFileFormats = new FXTabItem( pTabPanels, "File Formats", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
-	pPanelFileFormats = new deglDGPPanelFileFormats( this, pTabPanels );
+	pTabFileFormats = new FXTabItem(pTabPanels, "File Formats", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2);
+	pPanelFileFormats = new deglDGPPanelFileFormats(this, pTabPanels);
 	
 	pCreateTabGame();
 	
 	// buttons
-	frameGroup =  new FXVerticalFrame( content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 );
+	frameGroup =  new FXVerticalFrame(content, LAYOUT_SIDE_TOP | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5);
 	
-	new FXSeparator( frameGroup );
+	new FXSeparator(frameGroup);
 	
-	frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
-	pBtnRunGame = new FXButton( frameLine, "Run Game", nullptr, this, ID_ACCEPT,
-		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
-	new FXButton( frameLine, "Abord", nullptr, this, ID_CANCEL,
-		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	frameLine = new FXHorizontalFrame(frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0);
+	pBtnRunGame = new FXButton(frameLine, "Run Game", nullptr, this, ID_ACCEPT,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30);
+	new FXButton(frameLine, "Abord", nullptr, this, ID_CANCEL,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30);
 	
 	// prepare
 	UpdatePanels();
@@ -145,13 +145,13 @@ void deglDialogGameProblems::VerifyGameAndProfile(){
 	
 	pStatusWorking = true;
 	
-	pProfileWork->Verify( launcher );
-	if( ! pProfileWork->GetValid() ){
+	pProfileWork->Verify(launcher);
+	if(! pProfileWork->GetValid()){
 		pStatusWorking = false;
 	}
 	
 	pGame->VerifyRequirements();
-	if( ! pGame->GetCanRun() ){
+	if(! pGame->GetCanRun()){
 		pStatusWorking = false;
 	}
 	
@@ -164,41 +164,41 @@ void deglDialogGameProblems::UpdatePanels(){
 	//pStatusWorking = true;
 	
 	pPanelSystems->UpdatePanel();
-	if( pPanelSystems->GetStatusWorking() ){
-		pTabSystems->setBackColor( pClrValidBack );
-		pTabSystems->setTextColor( pClrValidText );
+	if(pPanelSystems->GetStatusWorking()){
+		pTabSystems->setBackColor(pClrValidBack);
+		pTabSystems->setTextColor(pClrValidText);
 		
 	}else{
-		pTabSystems->setBackColor( pClrProblemBack );
-		pTabSystems->setTextColor( pClrProblemText );
+		pTabSystems->setBackColor(pClrProblemBack);
+		pTabSystems->setTextColor(pClrProblemText);
 	}
 	//pStatusWorking &= pPanelSystems->GetStatusWorking();
 	
 	pPanelFileFormats->UpdatePanel();
-	if( pPanelFileFormats->GetStatusWorking() ){
-		pTabFileFormats->setBackColor( pClrValidBack );
-		pTabFileFormats->setTextColor( pClrValidText );
+	if(pPanelFileFormats->GetStatusWorking()){
+		pTabFileFormats->setBackColor(pClrValidBack);
+		pTabFileFormats->setTextColor(pClrValidText);
 		
 	}else{
-		pTabFileFormats->setBackColor( pClrProblemBack );
-		pTabFileFormats->setTextColor( pClrProblemText );
+		pTabFileFormats->setBackColor(pClrProblemBack);
+		pTabFileFormats->setTextColor(pClrProblemText);
 	}
 	//pStatusWorking &= pPanelFileFormats->GetStatusWorking();
 	
 	UpdatePanelGame();
 	
-	if( pStatusWorking ){
-		pFraStatus->setBackColor( pClrValidBack );
-		pLabStatus->setBackColor( pClrValidBack );
-		pLabStatus->setTextColor( pClrValidText );
-		pLabStatus->setText( "The game can be started.\nHave fun." );
+	if(pStatusWorking){
+		pFraStatus->setBackColor(pClrValidBack);
+		pLabStatus->setBackColor(pClrValidBack);
+		pLabStatus->setTextColor(pClrValidText);
+		pLabStatus->setText("The game can be started.\nHave fun.");
 		pBtnRunGame->enable();
 		
 	}else{
-		pFraStatus->setBackColor( pClrProblemBack );
-		pLabStatus->setBackColor( pClrProblemBack );
-		pLabStatus->setTextColor( pClrProblemText );
-		pLabStatus->setText( "The game can not be started.\nSome of the requirements are not met." );
+		pFraStatus->setBackColor(pClrProblemBack);
+		pLabStatus->setBackColor(pClrProblemBack);
+		pLabStatus->setTextColor(pClrProblemText);
+		pLabStatus->setText("The game can not be started.\nSome of the requirements are not met.");
 		pBtnRunGame->disable();
 	}
 	
@@ -208,20 +208,20 @@ void deglDialogGameProblems::UpdatePanelGame(){
 	const delEngineModuleList &modules = pWindowMain->GetLauncher()->GetEngine().GetModules();
 	bool working = true;
 	
-	const delEngineModule * const module = modules.GetNamed( pGame->GetScriptModule() );
+	const delEngineModule * const module = modules.GetNamed(pGame->GetScriptModule());
 	
-	if( ! module || module->GetType() != deModuleSystem::emtScript
-	|| module->GetStatus() != delEngineModule::emsReady ){
+	if(! module || module->GetType() != deModuleSystem::emtScript
+	|| module->GetStatus() != delEngineModule::emsReady){
 		working = false;
 	}
 	
-	if( working ){
-		pTabGame->setBackColor( pClrValidBack );
-		pTabGame->setTextColor( pClrValidText );
+	if(working){
+		pTabGame->setBackColor(pClrValidBack);
+		pTabGame->setTextColor(pClrValidText);
 		
 	}else{
-		pTabGame->setBackColor( pClrProblemBack );
-		pTabGame->setTextColor( pClrProblemText );
+		pTabGame->setBackColor(pClrProblemBack);
+		pTabGame->setTextColor(pClrProblemText);
 	}
 }
 
@@ -231,7 +231,7 @@ void deglDialogGameProblems::UpdatePanelGame(){
 //////////////////////
 
 void deglDialogGameProblems::pCreateTabGame(){
-	pTabGame = new FXTabItem( pTabPanels, "Game", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
-	new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
-		0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
+	pTabGame = new FXTabItem(pTabPanels, "Game", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2);
+	new FXVerticalFrame(pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 10, 10, 10, 10, 0, 3);
 }

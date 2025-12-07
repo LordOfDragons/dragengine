@@ -56,35 +56,35 @@ int demdlWeightSetList::GetCount() const{
 	return pList.GetCount();
 }
 
-demdlWeightSet *demdlWeightSetList::GetAt( int index ) const{
-	return ( demdlWeightSet* )pList.GetAt( index );
+demdlWeightSet *demdlWeightSetList::GetAt(int index) const{
+	return (demdlWeightSet*)pList.GetAt(index);
 }
 
-void demdlWeightSetList::Add( demdlWeightSet *weightSet ){
-	if( ! weightSet ){
-		DETHROW( deeInvalidParam );
+void demdlWeightSetList::Add(demdlWeightSet *weightSet){
+	if(! weightSet){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pList.Add( weightSet );
+	pList.Add(weightSet);
 }
 
 void demdlWeightSetList::RemoveAll(){
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( demdlWeightSet* )pList.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (demdlWeightSet*)pList.GetAt(i);
 	}
 	
 	pList.RemoveAll();
 }
 
-int demdlWeightSetList::IndexOfEqual( const demdlWeightSet &weightSet ) const{
+int demdlWeightSetList::IndexOfEqual(const demdlWeightSet &weightSet) const{
 	const int count = pList.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( demdlWeightSet* )pList.GetAt( i ) )->Equals( weightSet ) ){
+	for(i=0; i<count; i++){
+		if(((demdlWeightSet*)pList.GetAt(i))->Equals(weightSet)){
 			return i;
 		}
 	}
@@ -97,10 +97,10 @@ int demdlWeightSetList::GetLargestWeightCount() const{
 	int weightCount = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const demdlWeightSet &weightSet = *( ( demdlWeightSet* )pList.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const demdlWeightSet &weightSet = *((demdlWeightSet*)pList.GetAt(i));
 		
-		if( weightSet.GetCount() > weightCount ){
+		if(weightSet.GetCount() > weightCount){
 			weightCount = weightSet.GetCount();
 		}
 	}

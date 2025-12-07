@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new loader. */
-	meLSHeightTerrain( deLogger *logger, const char *loggerSource );
+	meLSHeightTerrain(deLogger *logger, const char *loggerSource);
 	/** Cleans up the loader. */
 	virtual ~meLSHeightTerrain();
 	/*@}*/
@@ -57,18 +57,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
-	inline const char *GetName() const{ return pName.GetString(); }
+	inline const char *GetName() const{return pName.GetString();}
 	/** Sets the name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the pattern. */
-	inline const char *GetPattern() const{ return pPattern.GetString(); }
+	inline const char *GetPattern() const{return pPattern.GetString();}
 	/** Sets the pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/** Loads a height terrain. */
-	virtual void LoadFromFile( meHeightTerrain &heightTerrain, decBaseFileReader &file ) = 0;
+	virtual void LoadFromFile(meHeightTerrain &heightTerrain, decBaseFileReader &file) = 0;
 	/** Saves the height terrain. */
-	virtual void SaveToFile( meHeightTerrain &heightTerrain, decBaseFileWriter &file ) = 0;
+	virtual void SaveToFile(meHeightTerrain &heightTerrain, decBaseFileWriter &file) = 0;
 	/*@}*/
 };
 

@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeStatusBar::igdeStatusBar( igdeEnvironment &environment ) :
-igdeContainer( environment ){
+igdeStatusBar::igdeStatusBar(igdeEnvironment &environment) :
+igdeContainer(environment){
 }
 
 igdeStatusBar::~igdeStatusBar(){
@@ -57,8 +57,8 @@ igdeStatusBar::~igdeStatusBar(){
 // Management
 ///////////////
 
-void igdeStatusBar::SetText( const char *text ){
-	if( pText == text ){
+void igdeStatusBar::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -67,7 +67,7 @@ void igdeStatusBar::SetText( const char *text ){
 }
 
 void igdeStatusBar::ClearText(){
-	if( pText.IsEmpty() ){
+	if(pText.IsEmpty()){
 		return;
 	}
 	
@@ -78,28 +78,28 @@ void igdeStatusBar::ClearText(){
 
 
 void igdeStatusBar::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeStatusBar * const native = igdeNativeStatusBar::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeStatusBar * const native = igdeNativeStatusBar::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeStatusBar::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeStatusBar* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeStatusBar*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeStatusBar::OnTextChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeStatusBar* )GetNativeWidget() )->UpdateText();
+	if(GetNativeWidget()){
+		((igdeNativeStatusBar*)GetNativeWidget())->UpdateText();
 	}
 }

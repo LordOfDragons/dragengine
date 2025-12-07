@@ -47,19 +47,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseRemoveAction::ceWPTMAIfElseCaseRemoveAction( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseRemoveAction::ceWPTMAIfElseCaseRemoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, ceConversationAction *action ) :
-ceWPTMenuAction( windowMain, "Remove Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ),
-pAction( action )
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, ceConversationAction *action) :
+ceWPTMenuAction(windowMain, "Remove Action",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase),
+pAction(action)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 }
 

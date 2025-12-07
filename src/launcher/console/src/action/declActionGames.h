@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create action. */
-	declActionGames( declLauncher &launcher );
+	declActionGames(declLauncher &launcher);
 	
 	/** Clean up action. */
 	~declActionGames();
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline declLauncher &GetLauncher() const{ return pLauncher; }
+	inline declLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** Print syntax. */
 	void PrintSyntax();

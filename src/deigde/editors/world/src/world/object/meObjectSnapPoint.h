@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create snap point. */
-	meObjectSnapPoint( meObject *object, igdeGDCSnapPoint *snapPoint );
+	meObjectSnapPoint(meObject *object, igdeGDCSnapPoint *snapPoint);
 	
 	/** \brief Clean up snap point. */
 	virtual ~meObjectSnapPoint();
@@ -78,13 +78,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline meObject *GetObject() const{return pObject;}
 	
 	/** \brief Snap point. */
-	inline igdeGDCSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
+	inline igdeGDCSnapPoint *GetSnapPoint() const{return pSnapPoint;}
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	/*@}*/
 	
 	

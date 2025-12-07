@@ -38,7 +38,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deSoundOGG( deLoadableModule &loadableModule );
+	deSoundOGG(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deSoundOGG();
@@ -48,7 +48,7 @@ public:
 	
 	/** \name Management */
 	/** \brief Read sound information from file. */
-	virtual void InitLoadSound( decBaseFileReader &reader, deBaseSoundInfo &info );
+	virtual void InitLoadSound(decBaseFileReader &reader, deBaseSoundInfo &info);
 	
 	/**
 	 * \brief Save sound.
@@ -56,10 +56,10 @@ public:
 	 * You can be sure that the file provided has been rewinded prior to this
 	 * function call.
 	 */
-	virtual void SaveSound( decBaseFileWriter &writer, const deSound &sound );
+	virtual void SaveSound(decBaseFileWriter &writer, const deSound &sound);
 	
 	/** \brief Create sound decoder peer. */
-	virtual deBaseSoundDecoder *CreateDecoder( decBaseFileReader *reader );
+	virtual deBaseSoundDecoder *CreateDecoder(decBaseFileReader *reader);
 	/*@}*/
 };
 

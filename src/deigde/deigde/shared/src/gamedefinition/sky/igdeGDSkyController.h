@@ -48,10 +48,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky controller. */
-	igdeGDSkyController( const char *name, float value );
+	igdeGDSkyController(const char *name, float value);
 	
 	/** \brief Create copy of sky controller. */
-	igdeGDSkyController( const igdeGDSkyController &controller );
+	igdeGDSkyController(const igdeGDSkyController &controller);
 	
 protected:
 	/** \brief Clean up sky controller. */
@@ -64,16 +64,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	/*@}*/
 };
 

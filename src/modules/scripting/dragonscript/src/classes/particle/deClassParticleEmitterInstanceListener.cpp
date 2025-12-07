@@ -44,20 +44,20 @@
 /////////////////////
 
 // public func void lastParticleDied( ParticleEmitterInstance instance )
-deClassParticleEmitterInstanceListener::nfLastParticleDied::nfLastParticleDied( const sInitData &init ) :
-dsFunction( init.clsPEIL, "lastParticleDied", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsPEI ); // instance
+deClassParticleEmitterInstanceListener::nfLastParticleDied::nfLastParticleDied(const sInitData &init) :
+dsFunction(init.clsPEIL, "lastParticleDied", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsPEI); // instance
 }
-void deClassParticleEmitterInstanceListener::nfLastParticleDied::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassParticleEmitterInstanceListener::nfLastParticleDied::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 // public func void collisionResponse( ParticleEmitterInstance instance, CollisionInfo collisionInfo )
-deClassParticleEmitterInstanceListener::nfCollisionResponse::nfCollisionResponse( const sInitData &init ) :
-dsFunction( init.clsPEIL, "collisionResponse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsPEI ); // instance
-	p_AddParameter( init.clsCI ); // cinfo
+deClassParticleEmitterInstanceListener::nfCollisionResponse::nfCollisionResponse(const sInitData &init) :
+dsFunction(init.clsPEIL, "collisionResponse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsPEI); // instance
+	p_AddParameter(init.clsCI); // cinfo
 }
-void deClassParticleEmitterInstanceListener::nfCollisionResponse::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassParticleEmitterInstanceListener::nfCollisionResponse::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 
@@ -68,17 +68,17 @@ void deClassParticleEmitterInstanceListener::nfCollisionResponse::RunFunction( d
 // Constructor, destructor
 ////////////////////////////
 
-deClassParticleEmitterInstanceListener::deClassParticleEmitterInstanceListener( deScriptingDragonScript *ds ) :
-dsClass( "ParticleEmitterInstanceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! ds ){
-		DSTHROW( dueInvalidParam );
+deClassParticleEmitterInstanceListener::deClassParticleEmitterInstanceListener(deScriptingDragonScript *ds) :
+dsClass("ParticleEmitterInstanceListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! ds){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	pDS = ds;
 	
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent(DENS_SCENERY);
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassParticleEmitterInstanceListener::~deClassParticleEmitterInstanceListener(){
@@ -89,7 +89,7 @@ deClassParticleEmitterInstanceListener::~deClassParticleEmitterInstanceListener(
 // Management
 ///////////////
 
-void deClassParticleEmitterInstanceListener::CreateClassMembers( dsEngine *engine ){
+void deClassParticleEmitterInstanceListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsPEIL = this;
@@ -99,12 +99,12 @@ void deClassParticleEmitterInstanceListener::CreateClassMembers( dsEngine *engin
 	init.clsPEI = pDS->GetClassParticleEmitterInstance();
 	init.clsCI = pDS->GetClassCollisionInfo();
 	
-	AddFunction( new nfLastParticleDied( init ) ); // function 0
-	AddFunction( new nfCollisionResponse( init ) ); // function 1
+	AddFunction(new nfLastParticleDied(init)); // function 0
+	AddFunction(new nfCollisionResponse(init)); // function 1
 	
 	CalcMemberOffsets();
 	
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexLastParticleDied = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexCollisionResponse = funcList.GetIndexOf( GetFunction( 1 ) );
+	pFuncIndexLastParticleDied = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexCollisionResponse = funcList.GetIndexOf(GetFunction(1));
 }

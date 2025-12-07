@@ -57,16 +57,16 @@ public:
 	int GetCount() const;
 	
 	/** Index of the component or -1 if absent. */
-	int IndexOfComponent( deoglRComponent *component ) const;
+	int IndexOfComponent(deoglRComponent *component) const;
 	
 	/** Component at index. */
-	deoglRComponent *GetAt( int index ) const;
+	deoglRComponent *GetAt(int index) const;
 	
 	/** Add component. */
-	void Add( deoglRComponent *component );
+	void Add(deoglRComponent *component);
 	
 	/** Remove component from index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** Remove all components. */
 	void RemoveAll();

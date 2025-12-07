@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynParameterBool::desynParameterBool( deDESynthesizer &synthesizer ) :
-desynParameter( synthesizer ){
+desynParameterBool::desynParameterBool(deDESynthesizer &synthesizer) :
+desynParameter(synthesizer){
 }
 
 
@@ -51,6 +51,6 @@ decString desynParameterBool::GetParameterValue(){
 	return GetParameterBool() ? "1" : "0";
 }
 
-void desynParameterBool::SetParameterValue( const char *value ){
-	SetParameterBool( decString( value ) == "1" );
+void desynParameterBool::SetParameterValue(const char *value){
+	SetParameterBool(decString(value) == "1");
 }

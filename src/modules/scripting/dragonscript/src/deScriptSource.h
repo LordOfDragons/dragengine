@@ -49,7 +49,7 @@ private:
 	
 public:
 	// Constructor, destructor
-	deScriptSource( const deVirtualFileSystem &vfs, const decPath &path );
+	deScriptSource(const deVirtualFileSystem &vfs, const decPath &path);
 	virtual ~deScriptSource();
 	
 	// Management

@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new module. */
-	spTypeWorld( ScriptingPython &sp );
+	spTypeWorld(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
 	virtual ~spTypeWorld();
 	/*@}*/
@@ -47,19 +47,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the world from an object. */
-	deWorld *WorldFromObject( PyObject *object );
+	deWorld *WorldFromObject(PyObject *object);
 	/** \brief Create an object from a world. */
-	PyObject *ObjectFromWorld( deWorld *world );
+	PyObject *ObjectFromWorld(deWorld *world);
 	
 	/** Constructor. */
-	virtual void Constructor( PyObject *myself, PyObject *args, PyObject *kwds );
+	virtual void Constructor(PyObject *myself, PyObject *args, PyObject *kwds);
 	/** Destructor. */
-	virtual void Destructor( PyObject *myself );
+	virtual void Destructor(PyObject *myself);
 	/*@}*/
 	
 	/** \name Functions */
 	/*@{*/
-	static PyObject *cfUpdate( PyObject *myself, PyObject *args );
+	static PyObject *cfUpdate(PyObject *myself, PyObject *args);
 	/*@}*/
 };
 

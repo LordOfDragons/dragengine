@@ -40,7 +40,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeMenuBar( igdeEnvironment &environment );
+	igdeMenuBar(igdeEnvironment &environment);
 	
 	
 	

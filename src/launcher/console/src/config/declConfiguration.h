@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create configuration. */
-	declConfiguration( declLauncher &launcher );
+	declConfiguration(declLauncher &launcher);
 	
 	/** Clean up configuration. */
 	~declConfiguration();

@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeIGDEModule::gdeIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+gdeIGDEModule::gdeIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 gdeIGDEModule::~gdeIGDEModule(){
@@ -48,7 +48,7 @@ gdeIGDEModule::~gdeIGDEModule(){
 ///////////////
 
 void gdeIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new gdeWindowMain( *this ) );
+	if(! GetEditorWindow()){
+		SetEditorWindow(new gdeWindowMain(*this));
 	}
 }

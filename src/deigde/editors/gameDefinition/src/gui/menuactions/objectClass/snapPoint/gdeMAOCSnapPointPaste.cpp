@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSnapPointPaste::gdeMAOCSnapPointPaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Snap Point",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class snap point" )
+gdeMAOCSnapPointPaste::gdeMAOCSnapPointPaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Snap Point",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class snap point")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Snap Point",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCSnapPoint::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME));
+	if(! clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCSnapPoint &clipOCSnapPoint =
-		( const gdeClipboardDataOCSnapPoint & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCSnapPoint &)(igdeClipboardData&)clip;
 	
 	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::NewWith(*clipOCSnapPoint.GetSnapPoint()));
 	
-	igdeUndo * const undo = new gdeUOCAddSnapPoint( &objectClass,
-		snapPoint );
-	undo->SetShortInfo( "Paste object class snap point" );
+	igdeUndo * const undo = new gdeUOCAddSnapPoint(&objectClass,
+		snapPoint);
+	undo->SetShortInfo("Paste object class snap point");
 	return undo;
 }
 
 void gdeMAOCSnapPointPaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCSnapPoint::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCSnapPoint::TYPE_NAME));
 }

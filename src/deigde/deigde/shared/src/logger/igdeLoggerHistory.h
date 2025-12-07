@@ -82,23 +82,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Mutex. Lock before working with the history entries in any way. */
-	inline deMutex &GetMutex(){ return pMutex; }
+	inline deMutex &GetMutex(){return pMutex;}
 	
 	/** \brief Size of the history. */
-	int GetHistorySize() const{ return pHistorySize; }
+	int GetHistorySize() const{return pHistorySize;}
 	
 	/**
 	 * \brief Set size of the history. This clears the history.
 	 * \note This call does an implicite lock/unlock on the mutex.
 	 */
-	void SetHistorySize( int size );
+	void SetHistorySize(int size);
 	
 	/** \brief Number of history entries. */
-	inline int GetEntryCount() const{ return pEntryCount; }
+	inline int GetEntryCount() const{return pEntryCount;}
 	
 	/** \brief Entry at the given position. */
-	igdeLoggerHistoryEntry &GetEntryAt( int index );
-	const igdeLoggerHistoryEntry &GetEntryAt( int index ) const;
+	igdeLoggerHistoryEntry &GetEntryAt(int index);
+	const igdeLoggerHistoryEntry &GetEntryAt(int index) const;
 	
 	/**
 	 * \brief Adds a new entry to the history.
@@ -115,25 +115,25 @@ public:
 	void Clear();
 	
 	/** \brief Determines if a message can be added. */
-	bool CanAddMessage( int type, const char *source );
+	bool CanAddMessage(int type, const char *source);
 	
 	/** \brief Adds a listener. */
-	void AddListener( igdeLoggerHistoryListener *listener );
+	void AddListener(igdeLoggerHistoryListener *listener);
 	
 	/** \brief Removes a listener. */
-	void RemoveListener( igdeLoggerHistoryListener *listener );
+	void RemoveListener(igdeLoggerHistoryListener *listener);
 	
 	/** \brief Notifies all listeners that a message has been added. */
-	void NotifyMessageAdded( igdeLoggerHistoryEntry &entry );
+	void NotifyMessageAdded(igdeLoggerHistoryEntry &entry);
 	
 	/** \brief Log an information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log a warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log an error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 };
 

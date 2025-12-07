@@ -64,10 +64,10 @@ void deBasePhysicsParticleEmitterInstance::CollisionFilterChanged(){
 void deBasePhysicsParticleEmitterInstance::IgnoreCollidersChanged(){
 }
 
-void deBasePhysicsParticleEmitterInstance::ControllerChanged( int ){
+void deBasePhysicsParticleEmitterInstance::ControllerChanged(int){
 }
 
-void deBasePhysicsParticleEmitterInstance::TypeChanged( int ){
+void deBasePhysicsParticleEmitterInstance::TypeChanged(int){
 }
 
 

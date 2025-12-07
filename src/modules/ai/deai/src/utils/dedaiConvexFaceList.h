@@ -72,7 +72,7 @@ public:
 	dedaiConvexFaceList();
 	
 	/** \brief Create copy of list. */
-	dedaiConvexFaceList( const dedaiConvexFaceList &list );
+	dedaiConvexFaceList(const dedaiConvexFaceList &list);
 	
 	/** \brief Clean up list. */
 	~dedaiConvexFaceList();
@@ -86,19 +86,19 @@ public:
 	int GetVertexCount() const;
 	
 	/** \brief Vertex at position. */
-	const decVector &GetVertexAt( int index ) const;
+	const decVector &GetVertexAt(int index) const;
 	
 	/** \brief Vertex is present. */
-	bool HasVertex( const decVector &vertex ) const;
+	bool HasVertex(const decVector &vertex) const;
 	
 	/** \brief Index of vertex or -1 if absent. */
-	int IndexOfVertex( const decVector &vertex ) const;
+	int IndexOfVertex(const decVector &vertex) const;
 	
 	/** \brief Add vertex. */
-	void AddVertex( const decVector &vertex );
+	void AddVertex(const decVector &vertex);
 	
 	/** \brief Remove vertex. */
-	void RemoveVertex( int index );
+	void RemoveVertex(int index);
 	
 	/** \brief Remove all vertices. */
 	void RemoveAllVertices();
@@ -112,28 +112,28 @@ public:
 	int GetFaceCount() const;
 	
 	/** \brief Face at index. */
-	dedaiConvexFace *GetFaceAt( int index ) const;
+	dedaiConvexFace *GetFaceAt(int index) const;
 	
 	/** \brief Face is present. */
-	bool HasFace( dedaiConvexFace *face ) const;
+	bool HasFace(dedaiConvexFace *face) const;
 	
 	/** \brief Index of face or -1 if absent. */
-	int IndexOfFace( dedaiConvexFace *face ) const;
+	int IndexOfFace(dedaiConvexFace *face) const;
 	
 	/** \brief Add face. */
-	void AddFace( dedaiConvexFace *face );
+	void AddFace(dedaiConvexFace *face);
 	
 	/** \brief Remove face. */
-	void RemoveFace( dedaiConvexFace *face );
+	void RemoveFace(dedaiConvexFace *face);
 	
 	/** \brief Remove face at index. */
-	void RemoveFaceAt( int index );
+	void RemoveFaceAt(int index);
 	
 	/** \brief Remvoe face without deleting it. */
-	void ExtractFace( dedaiConvexFace *face );
+	void ExtractFace(dedaiConvexFace *face);
 	
 	/** \brief Remove face at index without deleting it. */
-	void ExtractFaceAt( int index );
+	void ExtractFaceAt(int index);
 	
 	/** \brief Remove all faces. */
 	void RemoveAllFaces();
@@ -144,7 +144,7 @@ public:
 	/** \name Operations */
 	/*@{*/
 	/** \brief Move all vertices. */
-	void Move( const decVector &direction );
+	void Move(const decVector &direction);
 	
 	/**
 	 * \brief Split using face.
@@ -152,13 +152,13 @@ public:
 	 * All newly created faces are added to the list. The face has
 	 * not to be part of the convex face list.
 	 */
-	void SplitByFace( const dedaiConvexFaceList &splitterFaceList, int splitterFaceIndex );
+	void SplitByFace(const dedaiConvexFaceList &splitterFaceList, int splitterFaceIndex);
 	
 	/** \brief Split using list. */
-	void SplitByFaceList( const dedaiConvexFaceList &splitterFaceList );
+	void SplitByFaceList(const dedaiConvexFaceList &splitterFaceList);
 	
 	/** \brief Split using convex volume removing split faces inside. */
-	void SplitByVolume( const decConvexVolume &volume );
+	void SplitByVolume(const decConvexVolume &volume);
 	/*@}*/
 	
 	
@@ -166,13 +166,13 @@ public:
 	/** \name Subclassing */
 	/*@{*/
 	/** \brief Create convex face. */
-	dedaiConvexFace *CreateFace( int marker );
+	dedaiConvexFace *CreateFace(int marker);
 	/*@}*/
 	
 	
 	
 private:
-	void pSplitFaceByEdge( int faceIndex, const decVector &cutEdgeFrom, const decVector &cutEdgeTo );
+	void pSplitFaceByEdge(int faceIndex, const decVector &cutEdgeFrom, const decVector &cutEdgeTo);
 };
 
 #endif

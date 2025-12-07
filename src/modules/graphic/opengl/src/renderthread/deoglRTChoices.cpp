@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
+deoglRTChoices::deoglRTChoices(deoglRenderThread &renderThread){
 	const deoglConfiguration &conf = renderThread.GetConfiguration();
 	const deoglCapabilities &caps = renderThread.GetCapabilities();
 	const deoglExtensions &ext = renderThread.GetExtensions();
@@ -89,18 +89,18 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
 	//   ^== this requires 4.6 core or it will not work
 	pRenderStereoVSLayer =
-		( HAS_EXT( ext_ARB_shader_viewport_layer_array ) || HAS_EXT( ext_AMD_vertex_shader_layer ) )
-		&& HAS_EXT( ext_ARB_multi_draw_indirect )
-		&& HAS_EXT( ext_ARB_draw_elements_base_vertex )
-		&& HAS_EXT( ext_ARB_shader_draw_parameters );
+		(HAS_EXT(ext_ARB_shader_viewport_layer_array) || HAS_EXT(ext_AMD_vertex_shader_layer))
+		&& HAS_EXT(ext_ARB_multi_draw_indirect)
+		&& HAS_EXT(ext_ARB_draw_elements_base_vertex)
+		&& HAS_EXT(ext_ARB_shader_draw_parameters);
 	
 	// use layer in vertex shaders for fullscreen quad rendering. requires these extensions (% coverage):
 	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
 	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
 	//   ^== this requires 4.6 core or it will not work
 	pRenderFSQuadStereoVSLayer =
-		( HAS_EXT( ext_ARB_shader_viewport_layer_array ) || HAS_EXT( ext_AMD_vertex_shader_layer ) )
-		&& HAS_EXT( ext_ARB_shader_draw_parameters );
+		(HAS_EXT(ext_ARB_shader_viewport_layer_array) || HAS_EXT(ext_AMD_vertex_shader_layer))
+		&& HAS_EXT(ext_ARB_shader_draw_parameters);
 	
 	// meta quest notes:
 	//
@@ -128,31 +128,31 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// inverse depth
 	pUseInverseDepth = conf.GetUseInverseDepth();
 	
-	if( ! caps.GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
-	||  ! caps.GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF )
-	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
-	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF )
-	||  ! pglClipControl ){
+	if(! caps.GetFormats().GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfDepthF_Stencil)
+	||  ! caps.GetFormats().GetUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfDepthF)
+	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor(deoglCapsFmtSupport::eutfDepthF_Stencil)
+	||  ! caps.GetFormats().GetUseFBOTexCubeFormatFor(deoglCapsFmtSupport::eutfDepthF)
+	||  ! pglClipControl){
 		pUseInverseDepth = false; // not supported
 	}
 	
-	if( pUseInverseDepth ){
+	if(pUseInverseDepth){
 		pDepthCompareFuncRegular = GL_GEQUAL;
 		pDepthCompareFuncReversed = GL_LEQUAL;
-		pClearDepthValueRegular = ( GLfloat )0.0f;
-		pClearDepthValueReversed = ( GLfloat )1.0f;
+		pClearDepthValueRegular = (GLfloat)0.0f;
+		pClearDepthValueReversed = (GLfloat)1.0f;
 		
 	}else{
 		pDepthCompareFuncRegular = GL_LEQUAL;
 		pDepthCompareFuncReversed = GL_GEQUAL;
-		pClearDepthValueRegular = ( GLfloat )1.0f;
-		pClearDepthValueReversed = ( GLfloat )0.0f;
+		pClearDepthValueRegular = (GLfloat)1.0f;
+		pClearDepthValueReversed = (GLfloat)0.0f;
 	}
 	
-	pUseDirectStateAccess = HAS_EXT( ext_ARB_direct_state_access );
+	pUseDirectStateAccess = HAS_EXT(ext_ARB_direct_state_access);
 
 	// temporary until working properly
-	if( /* HASEXT( ext_ARB_shader_atomic_counter_ops ) && */ pUseSSBORender ){
+	if(/* HASEXT(ext_ARB_shader_atomic_counter_ops) && */ pUseSSBORender){
 		pUseComputeRenderTask = true;
 		
 	}else{
@@ -166,36 +166,36 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// log choices
 	deoglRTLogger &l = renderThread.GetLogger();
 	
-	l.LogInfo( "Render Thread Choices:" );
-	l.LogInfoFormat( "- Use SSBO for Rendering: %s", pUseSSBORender ? "Yes" : "No" );
-	l.LogInfoFormat( "- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No" );
-	l.LogInfoFormat( "- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No" );
-	l.LogInfoFormat( "- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No" );
-	l.LogInfoFormat( "- Real Transparent Particles: %s", pRealTransparentParticles ? "Yes" : "No" );
+	l.LogInfo("Render Thread Choices:");
+	l.LogInfoFormat("- Use SSBO for Rendering: %s", pUseSSBORender ? "Yes" : "No");
+	l.LogInfoFormat("- Shared VBO Use Base Vertex: %s", pSharedVBOUseBaseVertex ? "Yes" : "No");
+	l.LogInfoFormat("- Shared SPB Use SSBO: %s", pSharedSPBUseSSBO ? "Yes" : "No");
+	l.LogInfoFormat("- Global Shared SPB Lists: %s", pGlobalSharedSPBLists ? "Yes" : "No");
+	l.LogInfoFormat("- Real Transparent Particles: %s", pRealTransparentParticles ? "Yes" : "No");
 	
-	switch( pGPUTransformVertices ){
+	switch(pGPUTransformVertices){
 	case egputvAccurate:
-		l.LogInfo( "- GPU Transform Vertices: Accurate" );
+		l.LogInfo("- GPU Transform Vertices: Accurate");
 		break;
 		
 	case egputvApproximate:
-		l.LogInfo( "- GPU Transform Vertices: Approximate" );
+		l.LogInfo("- GPU Transform Vertices: Approximate");
 		break;
 		
 	case egputvNone:
-		l.LogInfo( "- GPU Transform Vertices: None" );
+		l.LogInfo("- GPU Transform Vertices: None");
 		break;
 	}
 	
-	l.LogInfoFormat( "- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No" );
-	l.LogInfoFormat( "- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No" );
-	l.LogInfoFormat( "- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No" );
-	l.LogInfoFormat( "- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No" );
-	l.LogInfoFormat( "- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No" );
-	l.LogInfoFormat( "- Use Direct State Access: %s", pUseDirectStateAccess ? "Yes" : "No" );
+	l.LogInfoFormat("- GI Move Using Cache: %s", pGIMoveUsingCache ? "Yes" : "No");
+	l.LogInfoFormat("- VR Render Stereo: %s", pVRRenderStereo ? "Yes" : "No");
+	l.LogInfoFormat("- Render Stereo Vertex Shader Layer: %s", pRenderStereoVSLayer ? "Yes" : "No");
+	l.LogInfoFormat("- Render Fullscreen Quad Stereo Vertex Shader Layer: %s", pRenderFSQuadStereoVSLayer ? "Yes" : "No");
+	l.LogInfoFormat("- Use Inverse Depth: %s", pUseInverseDepth ? "Yes" : "No");
+	l.LogInfoFormat("- Use Direct State Access: %s", pUseDirectStateAccess ? "Yes" : "No");
 
 	#ifdef OS_W32
-		l.LogInfo( "- Windows: Force disable DSA on SSBO (driver misbehavior)" );
+		l.LogInfo("- Windows: Force disable DSA on SSBO (driver misbehavior)");
 	#endif
 	
 	pRenderDocDebugFlags = 0;

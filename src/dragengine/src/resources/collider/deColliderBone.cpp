@@ -40,14 +40,14 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deColliderBone::deColliderBone( deCollider *collider, int index ) :
-pCollider( collider ),
-pIndex( index ),
-pMass( 1.0f ),
-pDynamic( false )
+deColliderBone::deColliderBone(deCollider *collider, int index) :
+pCollider(collider),
+pIndex(index),
+pMass(1.0f),
+pDynamic(false)
 {
-	if( ! collider || index < 0 ){
-		DETHROW( deeInvalidParam );
+	if(! collider || index < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -59,65 +59,65 @@ deColliderBone::~deColliderBone(){
 // Management
 ///////////////
 
-void deColliderBone::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deColliderBone::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
-	pCollider->pNotifyBonePositionChanged( pIndex );
+	pCollider->pNotifyBonePositionChanged(pIndex);
 }
 
-void deColliderBone::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void deColliderBone::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
-	pCollider->pNotifyBoneOrientationChanged( pIndex );
+	pCollider->pNotifyBoneOrientationChanged(pIndex);
 }
 
-void deColliderBone::SetLinearVelocity( const decVector &linearVelocity ){
-	if( linearVelocity.IsEqualTo( pLinearVelocity ) ){
+void deColliderBone::SetLinearVelocity(const decVector &linearVelocity){
+	if(linearVelocity.IsEqualTo(pLinearVelocity)){
 		return;
 	}
 	
 	pLinearVelocity = linearVelocity;
-	pCollider->pNotifyBoneLinearVelocityChanged( pIndex );
+	pCollider->pNotifyBoneLinearVelocityChanged(pIndex);
 }
 
-void deColliderBone::SetAngularVelocity( const decVector &angularVelocity ){
-	if( angularVelocity.IsEqualTo( pAngularVelocity ) ){
+void deColliderBone::SetAngularVelocity(const decVector &angularVelocity){
+	if(angularVelocity.IsEqualTo(pAngularVelocity)){
 		return;
 	}
 	
 	pAngularVelocity = angularVelocity;
-	pCollider->pNotifyBoneAngularVelocityChanged( pIndex );
+	pCollider->pNotifyBoneAngularVelocityChanged(pIndex);
 }
 
 void deColliderBone::UpdateMatrix(){
-	pMatrix.SetWorld( pPosition, pOrientation );
+	pMatrix.SetWorld(pPosition, pOrientation);
 	pInvMatrix = pMatrix.QuickInvert();
 }
 
-void deColliderBone::SetMass( float mass ){
-	if( mass < 0.0f ){
+void deColliderBone::SetMass(float mass){
+	if(mass < 0.0f){
 		mass = 0.0f;
 	}
 	
-	if( fabs( mass - pMass ) <= FLOAT_SAFE_EPSILON ){
+	if(fabs(mass - pMass) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMass = mass;
-	pCollider->pNotifyBonePropertiesChanged( pIndex );
+	pCollider->pNotifyBonePropertiesChanged(pIndex);
 }
 
-void deColliderBone::SetDynamic( bool dynamic ){
-	if( pDynamic == dynamic ){
+void deColliderBone::SetDynamic(bool dynamic){
+	if(pDynamic == dynamic){
 		return;
 	}
 	
 	pDynamic = dynamic;
-	pCollider->pNotifyBoneDynamicChanged( pIndex );
+	pCollider->pNotifyBoneDynamicChanged(pIndex);
 }

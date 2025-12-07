@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPCFPSetName::gdeUOCPCFPSetName( gdeObjectClass *objectClass,
-gdeProperty *property, gdeFilePattern *filePattern, const char *newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL ),
-pFilePattern( NULL )
+gdeUOCPCFPSetName::gdeUOCPCFPSetName(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
+pObjectClass(NULL),
+pProperty(NULL),
+pFilePattern(NULL)
 {
-	if( ! objectClass || ! property || ! filePattern ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property || ! filePattern){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property custom file pattern set name" );
+	SetShortInfo("Object class property custom file pattern set name");
 	
 	pOldValue = filePattern->GetName();
 	pNewValue = newValue;
@@ -67,13 +67,13 @@ pFilePattern( NULL )
 }
 
 gdeUOCPCFPSetName::~gdeUOCPCFPSetName(){
-	if( pFilePattern ){
+	if(pFilePattern){
 		pFilePattern->FreeReference();
 	}
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -84,11 +84,11 @@ gdeUOCPCFPSetName::~gdeUOCPCFPSetName(){
 ///////////////
 
 void gdeUOCPCFPSetName::Undo(){
-	pFilePattern->SetName( pOldValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pFilePattern->SetName(pOldValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPCFPSetName::Redo(){
-	pFilePattern->SetName( pNewValue );
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pFilePattern->SetName(pNewValue);
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

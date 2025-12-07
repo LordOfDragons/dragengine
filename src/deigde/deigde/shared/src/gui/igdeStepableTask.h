@@ -69,28 +69,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Message. */
-	inline const decString &GetMessage() const{ return pMessage; }
+	inline const decString &GetMessage() const{return pMessage;}
 	
 	/** \brief Set message. */
-	void SetMessage( const char *message );
+	void SetMessage(const char *message);
 	
 	/** \brief Progress. */
-	inline float GetProgress() const{ return pProgress; }
+	inline float GetProgress() const{return pProgress;}
 	
 	/** \brief Set progress. */
-	void SetProgress( float progress );
+	void SetProgress(float progress);
 	
 	/** \brief Message is dirty. */
-	inline bool GetDirtyMessage() const{ return pDirtyMessage; }
+	inline bool GetDirtyMessage() const{return pDirtyMessage;}
 	
 	/** \brief Set message dirty flag. */
-	void SetDirtyMessage( bool dirty );
+	void SetDirtyMessage(bool dirty);
 	
 	/** \brief Progress is dirty. */
-	inline bool GetDirtyProgress() const{ return pDirtyProgress; }
+	inline bool GetDirtyProgress() const{return pDirtyProgress;}
 	
 	/** \brief Set if progress is dirty. */
-	void SetDirtyProgress( bool dirty );
+	void SetDirtyProgress(bool dirty);
 	
 	
 	

@@ -59,21 +59,21 @@ void dedaiPathCollisionListener::Reset(){
 // Notifications
 //////////////////
 
-bool dedaiPathCollisionListener::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool dedaiPathCollisionListener::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }
 
-void dedaiPathCollisionListener::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( info->IsCollider() ){
+void dedaiPathCollisionListener::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(info->IsCollider()){
 		pHitDistance = info->GetDistance();
 	}
 }
 
-void dedaiPathCollisionListener::ColliderChanged( deCollider *owner ){
+void dedaiPathCollisionListener::ColliderChanged(deCollider *owner){
 }
 
-void dedaiPathCollisionListener::ColliderConstraintBroke( deCollider *owner, int index, deColliderConstraint *constraint ){
+void dedaiPathCollisionListener::ColliderConstraintBroke(deCollider *owner, int index, deColliderConstraint *constraint){
 }
 
-void dedaiPathCollisionListener::RigConstraintBroke( deCollider *owner, int bone, int index, deRigConstraint *constraint ){
+void dedaiPathCollisionListener::RigConstraintBroke(deCollider *owner, int bone, int index, deRigConstraint *constraint){
 }

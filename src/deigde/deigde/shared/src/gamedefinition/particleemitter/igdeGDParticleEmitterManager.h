@@ -60,25 +60,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter list. */
-	inline const igdeGDParticleEmitterList &GetEmitterList() const{ return pEmitterList; }
+	inline const igdeGDParticleEmitterList &GetEmitterList() const{return pEmitterList;}
 	
 	/** \brief Add emitter. */
-	void AddEmitter( igdeGDParticleEmitter *emitter );
+	void AddEmitter(igdeGDParticleEmitter *emitter);
 	
 	/** \brief Remove emitter. */
-	void RemoveEmitter( igdeGDParticleEmitter *emitter );
+	void RemoveEmitter(igdeGDParticleEmitter *emitter);
 	
 	/** \brief Remove all emitters. */
 	void RemoveAllEmitters();
 	
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline igdeGDCategory *GetCategories() const{return pCategories;}
 	
 	/** \brief Path of default emitter. */
-	inline const decString &GetDefaultPath() const{ return pDefaultPath; }
+	inline const decString &GetDefaultPath() const{return pDefaultPath;}
 	
 	/** \brief Set path of default emitter. */
-	void SetDefaultPath( const char *path );
+	void SetDefaultPath(const char *path);
 	
 	/**
 	 * \brief Updates the particle emitter manager using another particle emitter manager.
@@ -86,7 +86,7 @@ public:
 	 * Adds copies of particle emitters in the given particle emitter manager .
 	 * If the particle emitter exists already it is replaced.
 	 */
-	void UpdateWith( const igdeGDParticleEmitterManager &particleEmitterManager );
+	void UpdateWith(const igdeGDParticleEmitterManager &particleEmitterManager);
 	/*@}*/
 };
 

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUNavSpaceSetPath( meNavigationSpace *navspace, const char *newPath );
+	meUNavSpaceSetPath(meNavigationSpace *navspace, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo object. */

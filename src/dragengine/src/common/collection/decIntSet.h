@@ -51,10 +51,10 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	decIntSet( int capacity );
+	decIntSet(int capacity);
 	
 	/** \brief Create copy of a set. */
-	decIntSet( const decIntSet &set );
+	decIntSet(const decIntSet &set);
 	
 	/** \brief Clean up the set. */
 	~decIntSet();
@@ -65,40 +65,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of values. */
-	inline int GetCount() const{ return pValueCount; }
+	inline int GetCount() const{return pValueCount;}
 	
 	/**
 	 * \brief Value at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	int GetAt( int index ) const;
+	int GetAt(int index) const;
 	
 	/** \brief Determine if a value exists. */
-	bool Has( int value ) const;
+	bool Has(int value) const;
 	
 	/**
 	 * \brief Add value.
 	 * \throws deeInvalidParam \em value is contained in the set.
 	 */
-	void Add( int value );
+	void Add(int value);
 	
 	/** \brief Add value if not existing. */
-	void AddIfAbsent( int value );
+	void AddIfAbsent(int value);
 	
 	/**
 	 * \brief Remove value.
 	 * \throws deeInvalidParam \em value is absent from the set.
 	 */
-	void Remove( int value );
+	void Remove(int value);
 	
 	/** \brief Remove value if present. */
-	void RemoveIfPresent( int value );
+	void RemoveIfPresent(int value);
 	
 	/** \brief Removes all values. */
 	void RemoveAll();
 	
 	/** \brief Determine if this set is equal to another set. */
-	bool Equals( const decIntSet &set ) const;
+	bool Equals(const decIntSet &set) const;
 	/*@}*/
 	
 	
@@ -106,28 +106,28 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
-	bool operator==( const decIntSet &set ) const;
+	bool operator==(const decIntSet &set) const;
 	
 	/** \brief New set with all values from this set followed by all values of another set. */
-	decIntSet operator+( const decIntSet &set ) const;
+	decIntSet operator+(const decIntSet &set) const;
 	
 	/**
 	 * \brief Value at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	int operator[]( int position ) const;
+	int operator[](int position) const;
 	
 	/** \brief Copy set to this set. */
-	decIntSet &operator=( const decIntSet &set );
+	decIntSet &operator=(const decIntSet &set);
 	
 	/** \brief Append absent values of set to this set. */
-	decIntSet &operator+=( const decIntSet &set );
+	decIntSet &operator+=(const decIntSet &set);
 	/*@}*/
 	
 	
 	
 private:
-	int pIndexOf( int value ) const;
+	int pIndexOf(int value) const;
 };
 
 #endif

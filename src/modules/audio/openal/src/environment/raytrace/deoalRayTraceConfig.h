@@ -53,7 +53,7 @@ public:
 	deoalRayTraceConfig();
 	
 	/** \brief Create ray trace config. */
-	deoalRayTraceConfig( const deoalRayTraceConfig &config );
+	deoalRayTraceConfig(const deoalRayTraceConfig &config);
 	
 	/** \brief Clean up ray trace config. */
 	~deoalRayTraceConfig();
@@ -64,46 +64,46 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Number of rays. */
-	inline int GetRayCount() const{ return pRayCount; }
+	inline int GetRayCount() const{return pRayCount;}
 	
 	/** \brief Ray directions. */
-	inline const decVector *GetRayDirections() const{ return pRayDirections; }
+	inline const decVector *GetRayDirections() const{return pRayDirections;}
 	
 	/**
 	 * \brief Ray unit volume.
 	 * 
 	 * Multiply by distance raised to the power of 3.
 	 */
-	inline float GetRayUnitVolume() const{ return pRayUnitVolume; }
+	inline float GetRayUnitVolume() const{return pRayUnitVolume;}
 	
 	/**
 	 * \brief Ray unit surface.
 	 * 
 	 * Multiply by distance raised to the power of 2.
 	 */
-	inline float GetRayUnitSurface() const{ return pRayUnitSurface; }
+	inline float GetRayUnitSurface() const{return pRayUnitSurface;}
 	
 	/**
 	 * \brief Ray beam opening angle.
 	 */
-	inline float GetOpeningAngle() const{ return pOpeningAngle; }
+	inline float GetOpeningAngle() const{return pOpeningAngle;}
 	
 	
 	
 	/** \brief Set from vertices (creates copy). */
-	void SetFromVertices( const decVector *vertices, int count, float openingAngle );
+	void SetFromVertices(const decVector *vertices, int count, float openingAngle);
 	
 	/**
 	 * \brief Rotate rays.
 	 * \param[in] rotation Rotation in degrees.
 	 */
-	void Rotate( float rx, float ry, float rz );
+	void Rotate(float rx, float ry, float rz);
 	
 	/** \brief Set ray directions approximatly equally spaces points on a sphere. */
-	void SetRaysEquallySpaced( int rayCount );
+	void SetRaysEquallySpaced(int rayCount);
 	
 	/** \brief Set from ico sphere vertices. */
-	void SetFromIcoSphere( const deoalIcoSphere &icoSphere );
+	void SetFromIcoSphere(const deoalIcoSphere &icoSphere);
 	/*@}*/
 };
 

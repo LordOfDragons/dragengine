@@ -52,10 +52,10 @@ public:
 	 * \brief Create a new set with initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	decPointerOrderedSet( int capacity );
+	decPointerOrderedSet(int capacity);
 	
 	/** \brief Create copy of a set. */
-	decPointerOrderedSet( const decPointerOrderedSet &set );
+	decPointerOrderedSet(const decPointerOrderedSet &set);
 	
 	/** \brief Clean up the set. */
 	~decPointerOrderedSet();
@@ -66,87 +66,87 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of pointers. */
-	inline int GetCount() const{ return pPointerCount; }
+	inline int GetCount() const{return pPointerCount;}
 	
 	/**
 	 * \brief Pointer at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void *GetAt( int index ) const;
+	void *GetAt(int index) const;
 	
 	/** \brief Index of the first occurance of an pointer or -1 if not found. */
-	int IndexOf( void *pointer ) const;
+	int IndexOf(void *pointer) const;
 	
 	/** \brief Determine if pointer exists in the list. */
-	bool Has( void *pointer ) const;
+	bool Has(void *pointer) const;
 	
 	/**
 	 * \brief Add pointer.
 	 * \throws deeInvalidParam \em pointer is present in the set.
 	 */
-	void Add( void *pointer );
+	void Add(void *pointer);
 	
 	/** \brief Add pointer if absent from the set. */
-	void AddIfAbsent( void *pointer );
+	void AddIfAbsent(void *pointer);
 	
 	/**
 	 * \brief Insert pointer.
 	 * \throws deeInvalidParam \em pointer is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void Insert( void *pointer, int index );
+	void Insert(void *pointer, int index);
 	
 	/**
 	 * \brief Move pointer.
 	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
-	void Move( void *pointer, int to );
+	void Move(void *pointer, int to);
 	
 	/**
 	 * \brief Remove pointer.
 	 * \throws deeInvalidParam \em pointer is is absent from the set.
 	 */
-	void Remove( void *pointer );
+	void Remove(void *pointer);
 	
 	/** \brief Remove pointer if present in the set. */
-	void RemoveIfPresent( void *pointer );
+	void RemoveIfPresent(void *pointer);
 	
 	/**
 	 * \brief Remove pointer from index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** \brief Remove all pointers. */
 	void RemoveAll();
 	
 	/** \brief Determine if this set is equal to another set. */
-	bool Equals( const decPointerOrderedSet &set ) const;
+	bool Equals(const decPointerOrderedSet &set) const;
 	
 	/**
 	 * \brief New set with the pointers from the beginning of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decPointerOrderedSet GetHead( int count ) const;
+	decPointerOrderedSet GetHead(int count) const;
 	
 	/**
 	 * \brief Set set to pointers from the beginning of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void GetHead( decPointerOrderedSet &set, int count ) const;
+	void GetHead(decPointerOrderedSet &set, int count) const;
 	
 	/**
 	 * \brief New set with pointers from the end of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decPointerOrderedSet GetTail( int count ) const;
+	decPointerOrderedSet GetTail(int count) const;
 	
 	/**
 	 * \brief Set set to pointers from the end of this set.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void GetTail( decPointerOrderedSet &set, int count ) const;
+	void GetTail(decPointerOrderedSet &set, int count) const;
 	
 	/**
 	 * \brief New set with pointers from the middle of this set.
@@ -156,7 +156,7 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	decPointerOrderedSet GetMiddle( int from, int to ) const;
+	decPointerOrderedSet GetMiddle(int from, int to) const;
 	
 	/**
 	 * \brief Set set to pointers from the middle of this set.
@@ -166,7 +166,7 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	void GetMiddle( decPointerOrderedSet &set, int from, int to ) const;
+	void GetMiddle(decPointerOrderedSet &set, int from, int to) const;
 	
 	/**
 	 * \brief New set with pointers from the middle of this set using a step size.
@@ -177,7 +177,7 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	decPointerOrderedSet GetSliced( int from, int to, int step ) const;
+	decPointerOrderedSet GetSliced(int from, int to, int step) const;
 	
 	/**
 	 * \brief Set set to pointers from the middle of this set using a step size.
@@ -188,7 +188,7 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	void GetSliced( decPointerOrderedSet &set, int from, int to, int step ) const;
+	void GetSliced(decPointerOrderedSet &set, int from, int to, int step) const;
 	
 	
 	
@@ -201,7 +201,7 @@ public:
 	 */
 	void Visit(decPointerVisitor &visitor, int from, int to = -1, int step = 1) const;
 	
-	inline void Visit(decPointerVisitor &visitor) const{ Visit(visitor, 0, pPointerCount); }
+	inline void Visit(decPointerVisitor &visitor) const{Visit(visitor, 0, pPointerCount);}
 	
 	/**
 	 * \brief Find pointer.
@@ -241,7 +241,7 @@ public:
 	 */
 	void RemoveIf(decPointerEvaluator &evaluator, int from, int to = -1, int step = 1);
 	
-	inline void RemoveIf(decPointerEvaluator &evaluator){ RemoveIf(evaluator, 0, pPointerCount); }
+	inline void RemoveIf(decPointerEvaluator &evaluator){RemoveIf(evaluator, 0, pPointerCount);}
 	
 	/** \brief Sort pointers in place. */
 	void Sort(decPointerComparator &comparator);
@@ -255,22 +255,22 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
-	bool operator==( const decPointerOrderedSet &set ) const;
+	bool operator==(const decPointerOrderedSet &set) const;
 	
 	/** \brief New set containing all pointers of this set followed by all pointers of another set. */
-	decPointerOrderedSet operator+( const decPointerOrderedSet &set ) const;
+	decPointerOrderedSet operator+(const decPointerOrderedSet &set) const;
 	
 	/**
 	 * \brief Pointer at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void *operator[]( int index ) const;
+	void *operator[](int index) const;
 	
 	/** \brief Copy set to this set. */
-	decPointerOrderedSet &operator=( const decPointerOrderedSet &set );
+	decPointerOrderedSet &operator=(const decPointerOrderedSet &set);
 	
 	/** \brief Append pointers of set to this set. */
-	decPointerOrderedSet &operator+=( const decPointerOrderedSet &set );
+	decPointerOrderedSet &operator+=(const decPointerOrderedSet &set);
 	/*@}*/
 	
 	

@@ -53,7 +53,7 @@
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS	timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat( "Rule Limit = %iys", ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat("Rule Limit = %iys", (int)(timer.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER
@@ -64,59 +64,59 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleLimit::dearRuleLimit( dearAnimatorInstance &instance, const dearAnimator &animator,
-	int firstLink, const deAnimatorRuleLimit &rule ) :
-dearRule( instance, animator, firstLink, rule ),
-pLimit( rule ),
+dearRuleLimit::dearRuleLimit(dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleLimit &rule) :
+dearRule(instance, animator, firstLink, rule),
+pLimit(rule),
 
-pEnablePositionXMin( rule.GetEnablePositionXMin() ),
-pEnablePositionXMax( rule.GetEnablePositionXMax() ),
-pEnablePositionYMin( rule.GetEnablePositionYMin() ),
-pEnablePositionYMax( rule.GetEnablePositionYMax() ),
-pEnablePositionZMin( rule.GetEnablePositionZMin() ),
-pEnablePositionZMax( rule.GetEnablePositionZMax() ),
+pEnablePositionXMin(rule.GetEnablePositionXMin()),
+pEnablePositionXMax(rule.GetEnablePositionXMax()),
+pEnablePositionYMin(rule.GetEnablePositionYMin()),
+pEnablePositionYMax(rule.GetEnablePositionYMax()),
+pEnablePositionZMin(rule.GetEnablePositionZMin()),
+pEnablePositionZMax(rule.GetEnablePositionZMax()),
 pEnablePositionAny(
 	pEnablePositionXMin || pEnablePositionXMax ||
 	pEnablePositionYMin || pEnablePositionYMax ||
-	pEnablePositionZMin || pEnablePositionZMax ),
+	pEnablePositionZMin || pEnablePositionZMax),
 
-pEnableRotationXMin( rule.GetEnableRotationXMin() ),
-pEnableRotationXMax( rule.GetEnableRotationXMax() ),
-pEnableRotationYMin( rule.GetEnableRotationYMin() ),
-pEnableRotationYMax( rule.GetEnableRotationYMax() ),
-pEnableRotationZMin( rule.GetEnableRotationZMin() ),
-pEnableRotationZMax( rule.GetEnableRotationZMax() ),
+pEnableRotationXMin(rule.GetEnableRotationXMin()),
+pEnableRotationXMax(rule.GetEnableRotationXMax()),
+pEnableRotationYMin(rule.GetEnableRotationYMin()),
+pEnableRotationYMax(rule.GetEnableRotationYMax()),
+pEnableRotationZMin(rule.GetEnableRotationZMin()),
+pEnableRotationZMax(rule.GetEnableRotationZMax()),
 pEnableRotationAny(
 	pEnableRotationXMin || pEnableRotationXMax ||
 	pEnableRotationYMin || pEnableRotationYMax ||
-	pEnableRotationZMin || pEnableRotationZMax ),
+	pEnableRotationZMin || pEnableRotationZMax),
 
-pEnableScalingXMin( rule.GetEnableScalingXMin() ),
-pEnableScalingXMax( rule.GetEnableScalingXMax() ),
-pEnableScalingYMin( rule.GetEnableScalingYMin() ),
-pEnableScalingYMax( rule.GetEnableScalingYMax() ),
-pEnableScalingZMin( rule.GetEnableScalingZMin() ),
-pEnableScalingZMax( rule.GetEnableScalingZMax() ),
+pEnableScalingXMin(rule.GetEnableScalingXMin()),
+pEnableScalingXMax(rule.GetEnableScalingXMax()),
+pEnableScalingYMin(rule.GetEnableScalingYMin()),
+pEnableScalingYMax(rule.GetEnableScalingYMax()),
+pEnableScalingZMin(rule.GetEnableScalingZMin()),
+pEnableScalingZMax(rule.GetEnableScalingZMax()),
 pEnableScalingAny(
 	pEnableScalingXMin || pEnableScalingXMax ||
 	pEnableScalingYMin || pEnableScalingYMax ||
-	pEnableScalingZMin || pEnableScalingZMax ),
+	pEnableScalingZMin || pEnableScalingZMax),
 
-pEnableVPSMin( rule.GetEnableVertexPositionSetMin() ),
-pEnableVPSMax( rule.GetEnableVertexPositionSetMax() ),
-pEnableVPSAny( pEnableVPSMin || pEnableVPSMax ),
+pEnableVPSMin(rule.GetEnableVertexPositionSetMin()),
+pEnableVPSMax(rule.GetEnableVertexPositionSetMax()),
+pEnableVPSAny(pEnableVPSMin || pEnableVPSMax),
 
-pEnabledAny( pEnablePositionAny || pEnableRotationAny || pEnableScalingAny || pEnableVPSAny ),
+pEnabledAny(pEnablePositionAny || pEnableRotationAny || pEnableScalingAny || pEnableVPSAny),
 
-pCoordinateFrame( rule.GetCoordinateFrame() ),
-pMinPosition( rule.GetMinimumPosition() ),
-pMaxPosition( rule.GetMaximumPosition() ),
-pMinRotation( rule.GetMinimumRotation() ),
-pMaxRotation( rule.GetMaximumRotation() ),
-pMinScaling( rule.GetMinimumScaling() ),
-pMaxScaling( rule.GetMaximumScaling() ),
-pMinVPS( rule.GetMinimumVertexPositionSet() ),
-pMaxVPS( rule.GetMaximumVertexPositionSet() )
+pCoordinateFrame(rule.GetCoordinateFrame()),
+pMinPosition(rule.GetMinimumPosition()),
+pMaxPosition(rule.GetMaximumPosition()),
+pMinRotation(rule.GetMinimumRotation()),
+pMaxRotation(rule.GetMaximumRotation()),
+pMinScaling(rule.GetMinimumScaling()),
+pMaxScaling(rule.GetMaximumScaling()),
+pMinVPS(rule.GetMinimumVertexPositionSet()),
+pMaxVPS(rule.GetMaximumVertexPositionSet())
 {
 	RuleChanged();
 }
@@ -129,14 +129,14 @@ dearRuleLimit::~dearRuleLimit(){
 // Management
 ///////////////
 
-void dearRuleLimit::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
+void dearRuleLimit::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() || ! pEnabledAny ){
+	if(! GetEnabled() || ! pEnabledAny){
 		return;
 	}
 	
 	const float blendFactor = GetBlendFactor();
-	if( blendFactor < FLOAT_SAFE_EPSILON ){
+	if(blendFactor < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -147,19 +147,19 @@ DEBUG_RESET_TIMERS;
 	int i;
 	
 	// for bone local a quick version can be used
-	switch( pCoordinateFrame ){
+	switch(pCoordinateFrame){
 	case deAnimatorRuleLimit::ecfBoneLocal:
-		for( i=0; i<boneCount; i++ ){
-			const int animatorBone = GetBoneMappingFor( i );
-			if( animatorBone == -1 ){
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
 				continue;
 			}
 			
 			// calculate limit coordinate space matrix
-			dearBoneState &bstate = *stalist.GetStateAt( animatorBone );
+			dearBoneState &bstate = *stalist.GetStateAt(animatorBone);
 			
 			bstate.UpdateMatrices();
-			decMatrix boneMatrix( bstate.GetLocalMatrix() );
+			decMatrix boneMatrix(bstate.GetLocalMatrix());
 			
 			// get the parameters but only if the respective parameter has any
 			// chance to change to avoid unrequired calculations
@@ -167,13 +167,13 @@ DEBUG_RESET_TIMERS;
 			decVector rotation;
 			decVector scaling;
 			
-			if( pEnablePositionAny ){
+			if(pEnablePositionAny){
 				position = boneMatrix.GetPosition();
 			}
-			if( pEnableRotationAny ){
+			if(pEnableRotationAny){
 				rotation = boneMatrix.GetEulerAngles();
 			}
-			if( pEnableScalingAny ){
+			if(pEnableScalingAny){
 				scaling = boneMatrix.GetScale();
 			}
 			
@@ -182,94 +182,94 @@ DEBUG_RESET_TIMERS;
 			bool hasChangedRotation = false;
 			bool hasChangedScaling = false;
 			
-			if( pEnablePositionXMin && position.x < pMinPosition.x ){
+			if(pEnablePositionXMin && position.x < pMinPosition.x){
 				position.x = pMinPosition.x;
 				hasChangedPosition = true;
 			}
-			if( pEnablePositionXMax && position.x > pMaxPosition.x ){
+			if(pEnablePositionXMax && position.x > pMaxPosition.x){
 				position.x = pMaxPosition.x;
 				hasChangedPosition = true;
 			}
-			if( pEnablePositionYMin && position.y < pMinPosition.y ){
+			if(pEnablePositionYMin && position.y < pMinPosition.y){
 				position.y = pMinPosition.y;
 				hasChangedPosition = true;
 			}
-			if( pEnablePositionYMax && position.y > pMaxPosition.y ){
+			if(pEnablePositionYMax && position.y > pMaxPosition.y){
 				position.y = pMaxPosition.y;
 				hasChangedPosition = true;
 			}
-			if( pEnablePositionZMin && position.z < pMinPosition.z ){
+			if(pEnablePositionZMin && position.z < pMinPosition.z){
 				position.z = pMinPosition.z;
 				hasChangedPosition = true;
 			}
-			if( pEnablePositionZMax && position.z > pMaxPosition.z ){
+			if(pEnablePositionZMax && position.z > pMaxPosition.z){
 				position.z = pMaxPosition.z;
 				hasChangedPosition = true;
 			}
 			
-			if( pEnableRotationXMin && rotation.x < pMinRotation.x ){
+			if(pEnableRotationXMin && rotation.x < pMinRotation.x){
 				rotation.x = pMinRotation.x;
 				hasChangedRotation = true;
 			}
-			if( pEnableRotationXMax && rotation.x > pMaxRotation.x ){
+			if(pEnableRotationXMax && rotation.x > pMaxRotation.x){
 				rotation.x = pMaxRotation.x;
 				hasChangedRotation = true;
 			}
-			if( pEnableRotationYMin && rotation.y < pMinRotation.y ){
+			if(pEnableRotationYMin && rotation.y < pMinRotation.y){
 				rotation.y = pMinRotation.y;
 				hasChangedRotation = true;
 			}
-			if( pEnableRotationYMax && rotation.y > pMaxRotation.y ){
+			if(pEnableRotationYMax && rotation.y > pMaxRotation.y){
 				rotation.y = pMaxRotation.y;
 				hasChangedRotation = true;
 			}
-			if( pEnableRotationZMin && rotation.z < pMinRotation.z ){
+			if(pEnableRotationZMin && rotation.z < pMinRotation.z){
 				rotation.z = pMinRotation.z;
 				hasChangedRotation = true;
 			}
-			if( pEnableRotationZMax && rotation.z > pMaxRotation.z ){
+			if(pEnableRotationZMax && rotation.z > pMaxRotation.z){
 				rotation.z = pMaxRotation.z;
 				hasChangedRotation = true;
 			}
 			
-			if( pEnableScalingXMin && scaling.x < pMinScaling.x ){
+			if(pEnableScalingXMin && scaling.x < pMinScaling.x){
 				scaling.x = pMinScaling.x;
 				hasChangedScaling = true;
 			}
-			if( pEnableScalingXMax && scaling.x > pMaxScaling.x ){
+			if(pEnableScalingXMax && scaling.x > pMaxScaling.x){
 				scaling.x = pMaxScaling.x;
 				hasChangedScaling = true;
 			}
-			if( pEnableScalingYMin && scaling.y < pMinScaling.y ){
+			if(pEnableScalingYMin && scaling.y < pMinScaling.y){
 				scaling.y = pMinScaling.y;
 				hasChangedScaling = true;
 			}
-			if( pEnableScalingYMax && scaling.y > pMaxScaling.y ){
+			if(pEnableScalingYMax && scaling.y > pMaxScaling.y){
 				scaling.y = pMaxScaling.y;
 				hasChangedScaling = true;
 			}
-			if( pEnableScalingZMin && scaling.z < pMinScaling.z ){
+			if(pEnableScalingZMin && scaling.z < pMinScaling.z){
 				scaling.z = pMinScaling.z;
 				hasChangedScaling = true;
 			}
-			if( pEnableScalingZMax && scaling.z > pMaxScaling.z ){
+			if(pEnableScalingZMax && scaling.z > pMaxScaling.z){
 				scaling.z = pMaxScaling.z;
 				hasChangedScaling = true;
 			}
 			
 			// if nothing changed there is no need to apply any calculations
-			if( ! hasChangedPosition && ! hasChangedRotation && ! hasChangedScaling ){
+			if(! hasChangedPosition && ! hasChangedRotation && ! hasChangedScaling){
 				continue;
 			}
 			
 			// apply the blending
-			if( hasChangedRotation ){
-				bstate.BlendWith( position, decQuaternion::CreateFromEuler( rotation ), scaling,
-					blendMode, blendFactor, hasChangedPosition, true, hasChangedScaling );
+			if(hasChangedRotation){
+				bstate.BlendWith(position, decQuaternion::CreateFromEuler(rotation), scaling,
+					blendMode, blendFactor, hasChangedPosition, true, hasChangedScaling);
 				
 			}else{
-				bstate.BlendWith( position, decQuaternion(), scaling, blendMode, blendFactor,
-					hasChangedPosition, false, hasChangedScaling );
+				bstate.BlendWith(position, decQuaternion(), scaling, blendMode, blendFactor,
+					hasChangedPosition, false, hasChangedScaling);
 			}
 		}
 		break;
@@ -280,137 +280,137 @@ DEBUG_RESET_TIMERS;
 		// prepare transformation matrix
 		decMatrix matrix1, matrix2;
 		
-		if( pCoordinateFrame == deAnimatorRuleLimit::ecfTargetBone && pTargetBone != -1 ){
-			dearBoneState &bstate = *stalist.GetStateAt( pTargetBone );
+		if(pCoordinateFrame == deAnimatorRuleLimit::ecfTargetBone && pTargetBone != -1){
+			dearBoneState &bstate = *stalist.GetStateAt(pTargetBone);
 			bstate.UpdateMatrices();
 			matrix1 = bstate.GetInverseGlobalMatrix();
 			matrix2 = bstate.GetGlobalMatrix();
 		}
 		
 		// step through all bones and apply limitation
-		for( i=0; i<boneCount; i++ ){
-			const int animatorBone = GetBoneMappingFor( i );
-			if( animatorBone == -1 ){
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
 				continue;
 			}
 			
 			// calculate limit coordinate space matrix
-			dearBoneState &bstate = *stalist.GetStateAt( animatorBone );
+			dearBoneState &bstate = *stalist.GetStateAt(animatorBone);
 			decMatrix boneMatrix;
 			
 			bstate.UpdateMatrices();
 			
-			switch( pCoordinateFrame ){
+			switch(pCoordinateFrame){
 			case deAnimatorRuleLimit::ecfComponent:
 				boneMatrix = bstate.GetGlobalMatrix();
 				break;
 				
 			case deAnimatorRuleLimit::ecfBoneLocal:
 			case deAnimatorRuleLimit::ecfTargetBone:
-				if( pTargetBone == -1 ){
+				if(pTargetBone == -1){
 					boneMatrix = bstate.GetLocalMatrix();
 					
 				}else{
-					boneMatrix = bstate.GetGlobalMatrix().QuickMultiply( matrix1 );
+					boneMatrix = bstate.GetGlobalMatrix().QuickMultiply(matrix1);
 				}
 				break;
 			}
 			
 			// get the parameters but only if the respective parameter has any
 			// chance to change to avoid unrequired calculations
-			decVector position( boneMatrix.GetPosition() );
-			decVector rotation( boneMatrix.GetEulerAngles() );
-			decVector scaling( boneMatrix.GetScale() );
+			decVector position(boneMatrix.GetPosition());
+			decVector rotation(boneMatrix.GetEulerAngles());
+			decVector scaling(boneMatrix.GetScale());
 			
 			// apply limits. keep track if anything changes to avoid doing calculations if they have no effect
 			bool hasChanged = false;
 			
-			if( pEnablePositionXMin && position.x < pMinPosition.x ){
+			if(pEnablePositionXMin && position.x < pMinPosition.x){
 				position.x = pMinPosition.x;
 				hasChanged = true;
 			}
-			if( pEnablePositionXMax && position.x > pMaxPosition.x ){
+			if(pEnablePositionXMax && position.x > pMaxPosition.x){
 				position.x = pMaxPosition.x;
 				hasChanged = true;
 			}
-			if( pEnablePositionYMin && position.y < pMinPosition.y ){
+			if(pEnablePositionYMin && position.y < pMinPosition.y){
 				position.y = pMinPosition.y;
 				hasChanged = true;
 			}
-			if( pEnablePositionYMax && position.y > pMaxPosition.y ){
+			if(pEnablePositionYMax && position.y > pMaxPosition.y){
 				position.y = pMaxPosition.y;
 				hasChanged = true;
 			}
-			if( pEnablePositionZMin && position.z < pMinPosition.z ){
+			if(pEnablePositionZMin && position.z < pMinPosition.z){
 				position.z = pMinPosition.z;
 				hasChanged = true;
 			}
-			if( pEnablePositionZMax && position.z > pMaxPosition.z ){
+			if(pEnablePositionZMax && position.z > pMaxPosition.z){
 				position.z = pMaxPosition.z;
 				hasChanged = true;
 			}
 			
-			if( pEnableRotationXMin && rotation.x < pMinRotation.x ){
+			if(pEnableRotationXMin && rotation.x < pMinRotation.x){
 				rotation.x = pMinRotation.x;
 				hasChanged = true;
 			}
-			if( pEnableRotationXMax && rotation.x > pMaxRotation.x ){
+			if(pEnableRotationXMax && rotation.x > pMaxRotation.x){
 				rotation.x = pMaxRotation.x;
 				hasChanged = true;
 			}
-			if( pEnableRotationYMin && rotation.y < pMinRotation.y ){
+			if(pEnableRotationYMin && rotation.y < pMinRotation.y){
 				rotation.y = pMinRotation.y;
 				hasChanged = true;
 			}
-			if( pEnableRotationYMax && rotation.y > pMaxRotation.y ){
+			if(pEnableRotationYMax && rotation.y > pMaxRotation.y){
 				rotation.y = pMaxRotation.y;
 				hasChanged = true;
 			}
-			if( pEnableRotationZMin && rotation.z < pMinRotation.z ){
+			if(pEnableRotationZMin && rotation.z < pMinRotation.z){
 				rotation.z = pMinRotation.z;
 				hasChanged = true;
 			}
-			if( pEnableRotationZMax && rotation.z > pMaxRotation.z ){
+			if(pEnableRotationZMax && rotation.z > pMaxRotation.z){
 				rotation.z = pMaxRotation.z;
 				hasChanged = true;
 			}
 			
-			if( pEnableScalingXMin && scaling.x < pMinScaling.x ){
+			if(pEnableScalingXMin && scaling.x < pMinScaling.x){
 				scaling.x = pMinScaling.x;
 				hasChanged = true;
 			}
-			if( pEnableScalingXMax && scaling.x > pMaxScaling.x ){
+			if(pEnableScalingXMax && scaling.x > pMaxScaling.x){
 				scaling.x = pMaxScaling.x;
 				hasChanged = true;
 			}
-			if( pEnableScalingYMin && scaling.y < pMinScaling.y ){
+			if(pEnableScalingYMin && scaling.y < pMinScaling.y){
 				scaling.y = pMinScaling.y;
 				hasChanged = true;
 			}
-			if( pEnableScalingYMax && scaling.y > pMaxScaling.y ){
+			if(pEnableScalingYMax && scaling.y > pMaxScaling.y){
 				scaling.y = pMaxScaling.y;
 				hasChanged = true;
 			}
-			if( pEnableScalingZMin && scaling.z < pMinScaling.z ){
+			if(pEnableScalingZMin && scaling.z < pMinScaling.z){
 				scaling.z = pMinScaling.z;
 				hasChanged = true;
 			}
-			if( pEnableScalingZMax && scaling.z > pMaxScaling.z ){
+			if(pEnableScalingZMax && scaling.z > pMaxScaling.z){
 				scaling.z = pMaxScaling.z;
 				hasChanged = true;
 			}
 			
 			// if nothing changed there is no need to apply any calculations
-			if( ! hasChanged ){
+			if(! hasChanged){
 				continue;
 			}
 			
 			// apply transformation
 			decQuaternion orientation;
 			
-			switch( pCoordinateFrame ){
+			switch(pCoordinateFrame){
 			case deAnimatorRuleLimit::ecfComponent:
-				boneMatrix = bstate.CalcLocalFromGlobal( decMatrix::CreateSRT( scaling, rotation, position ) );
+				boneMatrix = bstate.CalcLocalFromGlobal(decMatrix::CreateSRT(scaling, rotation, position));
 				position = boneMatrix.GetPosition();
 				orientation = boneMatrix.ToQuaternion();
 				scaling = boneMatrix.GetScale();
@@ -418,8 +418,8 @@ DEBUG_RESET_TIMERS;
 				
 			case deAnimatorRuleLimit::ecfBoneLocal:
 			case deAnimatorRuleLimit::ecfTargetBone:
-				if( pTargetBone != -1 ){
-					boneMatrix = bstate.CalcLocalFromGlobal( decMatrix::CreateSRT( scaling, rotation, position ).QuickMultiply( matrix2 ) );
+				if(pTargetBone != -1){
+					boneMatrix = bstate.CalcLocalFromGlobal(decMatrix::CreateSRT(scaling, rotation, position).QuickMultiply(matrix2));
 					position = boneMatrix.GetPosition();
 					orientation = boneMatrix.ToQuaternion();
 					scaling = boneMatrix.GetScale();
@@ -428,38 +428,38 @@ DEBUG_RESET_TIMERS;
 			}
 			
 			// apply the blending
-			bstate.BlendWith( position, orientation, scaling, blendMode, blendFactor, true, true, true );
+			bstate.BlendWith(position, orientation, scaling, blendMode, blendFactor, true, true, true);
 		}
 		break;
 	}
 	
 	// vertex position sets
-	for( i=0; i<vpsCount; i++ ){
-		const int animatorVps = GetVPSMappingFor( i );
-		if( animatorVps == -1 ){
+	for(i=0; i<vpsCount; i++){
+		const int animatorVps = GetVPSMappingFor(i);
+		if(animatorVps == -1){
 			continue;
 		}
 		
-		dearVPSState &vpsState = vpsstalist.GetStateAt( animatorVps );
+		dearVPSState &vpsState = vpsstalist.GetStateAt(animatorVps);
 		
 		float weight = 0.0f;
-		if( pEnableVPSAny ){
+		if(pEnableVPSAny){
 			weight = vpsState.GetWeight();
 		}
 		
 		bool hasChanged = false;
 		
-		if( pEnableVPSMin && weight < pMinVPS ){
+		if(pEnableVPSMin && weight < pMinVPS){
 			weight = pMinVPS;
 			hasChanged = true;
 		}
-		if( pEnableVPSMax && weight > pMaxVPS ){
+		if(pEnableVPSMax && weight > pMaxVPS){
 			weight = pMaxVPS;
 			hasChanged = true;
 		}
 		
-		if( hasChanged ){
-			vpsState.BlendWith( weight, blendMode, blendFactor, true );
+		if(hasChanged){
+			vpsState.BlendWith(weight, blendMode, blendFactor, true);
 		}
 	}
 DEBUG_PRINT_TIMER;
@@ -477,5 +477,5 @@ void dearRuleLimit::RuleChanged(){
 //////////////////////
 
 void dearRuleLimit::pUpdateTargetBone(){
-	pTargetBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pLimit.GetTargetBone() );
+	pTargetBone = GetInstance().GetBoneStateList().IndexOfStateNamed(pLimit.GetTargetBone());
 }

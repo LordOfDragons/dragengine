@@ -47,5 +47,5 @@ deoglOctreeVisitor::~deoglOctreeVisitor(){
 // Visiting
 /////////////
 
-void deoglOctreeVisitor::VisitNode( deoglOctree *node, int intersection ){
+void deoglOctreeVisitor::VisitNode(deoglOctree *node, int intersection){
 }

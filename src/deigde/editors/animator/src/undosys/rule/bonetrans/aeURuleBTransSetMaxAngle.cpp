@@ -37,12 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetMaxAngle::aeURuleBTransSetMaxAngle( aeRuleBoneTransformator *rule, float newValue ) :
-pRule( rule ),
-pOldValue( rule->GetMaximumAngle() ),
-pNewValue( newValue )
+aeURuleBTransSetMaxAngle::aeURuleBTransSetMaxAngle(aeRuleBoneTransformator *rule, float newValue) :
+pRule(rule),
+pOldValue(rule->GetMaximumAngle()),
+pNewValue(newValue)
 {
-	SetShortInfo( "Bone transformator set maximum angle" );
+	SetShortInfo("Bone transformator set maximum angle");
 }
 
 aeURuleBTransSetMaxAngle::~aeURuleBTransSetMaxAngle(){
@@ -54,9 +54,9 @@ aeURuleBTransSetMaxAngle::~aeURuleBTransSetMaxAngle(){
 ///////////////
 
 void aeURuleBTransSetMaxAngle::Undo(){
-	pRule->SetMaximumAngle( pOldValue );
+	pRule->SetMaximumAngle(pOldValue);
 }
 
 void aeURuleBTransSetMaxAngle::Redo(){
-	pRule->SetMaximumAngle( pNewValue );
+	pRule->SetMaximumAngle(pNewValue);
 }

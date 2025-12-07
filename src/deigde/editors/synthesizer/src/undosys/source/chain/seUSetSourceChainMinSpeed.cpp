@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceChainMinSpeed::seUSetSourceChainMinSpeed( seSourceChain *source, float newSpeed ) :
-pSource( NULL )
+seUSetSourceChainMinSpeed::seUSetSourceChainMinSpeed(seSourceChain *source, float newSpeed) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set chain source minimum speed" );
+	SetShortInfo("Set chain source minimum speed");
 	
 	pOldSpeed = source->GetMinSpeed();
 	pNewSpeed = newSpeed;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUSetSourceChainMinSpeed::~seUSetSourceChainMinSpeed(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSetSourceChainMinSpeed::~seUSetSourceChainMinSpeed(){
 ///////////////
 
 void seUSetSourceChainMinSpeed::Undo(){
-	pSource->SetMinSpeed( pOldSpeed );
+	pSource->SetMinSpeed(pOldSpeed);
 }
 
 void seUSetSourceChainMinSpeed::Redo(){
-	pSource->SetMinSpeed( pNewSpeed );
+	pSource->SetMinSpeed(pNewSpeed);
 }

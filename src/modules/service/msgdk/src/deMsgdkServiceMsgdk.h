@@ -103,7 +103,7 @@ public:
 	/**
 	 * \brief Run action returning result immediately.
 	 */
-	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	deServiceObject::Ref RunAction(const deServiceObject &action) override;
 	
 	/**
 	 * \brief Frame update.
@@ -117,13 +117,13 @@ public:
 	/*@{*/
 	static deMsgdkServiceMsgdk *GlobalService(){return pGlobalService;}
 
-	inline deMicrosoftGdk &GetModule() const{ return pModule; }
-	inline deService *GetService() const{ return pService; }
-	inline const deMsgdkAsyncTask::Invalidator::Ref &GetInvalidator() const{ return pInvalidator; }
+	inline deMicrosoftGdk &GetModule() const{return pModule;}
+	inline deService *GetService() const{return pService;}
+	inline const deMsgdkAsyncTask::Invalidator::Ref &GetInvalidator() const{return pInvalidator;}
 	
-	inline XUserHandle GetUser() const{ return pUser; }
-	inline uint64_t GetUserId() const{ return pUserId; }
-	inline const XUserLocalId &GetUserLocalId() const{ return pUserLocalId; }
+	inline XUserHandle GetUser() const{return pUser;}
+	inline uint64_t GetUserId() const{return pUserId;}
+	inline const XUserLocalId &GetUserLocalId() const{return pUserLocalId;}
 	void SetUser(XUserHandle user);
 	
 	inline XblContextHandle GetXblContext() const{return pXblContext;}
@@ -145,7 +145,7 @@ public:
 	void AssertResult(HRESULT result, const char *source) const;
 
 	void UpdateAchievementManager();
-	inline bool GetAchievementsSynced() const{ return pAchievementsSynced; }
+	inline bool GetAchievementsSynced() const{return pAchievementsSynced;}
 
 	void AddFrameUpdateTask(deMsgdkAsyncTask *task);
 	void RemoveFrameUpdateTask(deMsgdkAsyncTask *task);

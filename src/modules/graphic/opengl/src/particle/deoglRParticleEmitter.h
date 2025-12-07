@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render emitter. */
-	deoglRParticleEmitter( deoglRenderThread &renderThread );
+	deoglRParticleEmitter(deoglRenderThread &renderThread);
 	
 	/** Clean up render emitter. */
 	virtual ~deoglRParticleEmitter();
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render threaf. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Shared VBO layout. */
 	deoglVBOLayout *GetVBOLayoutShared();
@@ -82,13 +82,13 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type at index. */
-	deoglRParticleEmitterType &GetTypeAt( int index ) const;
+	deoglRParticleEmitterType &GetTypeAt(int index) const;
 	
 	/** Remove all types. */
 	void RemoveAllTypes();
 	
 	/** Add type. */
-	void AddType( deoglRParticleEmitterType *type );
+	void AddType(deoglRParticleEmitterType *type);
 	/*@}*/
 };
 

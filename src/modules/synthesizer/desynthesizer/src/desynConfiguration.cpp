@@ -48,9 +48,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynConfiguration::desynConfiguration( deDESynthesizer &module ) :
-pModule( module ),
-pStreamBufSizeThreshold( 700000 ) // see desynSound.cpp
+desynConfiguration::desynConfiguration(deDESynthesizer &module) :
+pModule(module),
+pStreamBufSizeThreshold(700000) // see desynSound.cpp
 {
 }
 
@@ -62,9 +62,9 @@ desynConfiguration::~desynConfiguration(){
 // Parmeters
 //////////////
 
-void desynConfiguration::SetStreamBufSizeThreshold( int threshold ){
-	if( threshold < 0 ){
-		DETHROW( deeInvalidParam );
+void desynConfiguration::SetStreamBufSizeThreshold(int threshold){
+	if(threshold < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pStreamBufSizeThreshold = threshold;
 }
@@ -73,8 +73,8 @@ void desynConfiguration::SetStreamBufSizeThreshold( int threshold ){
 
 void desynConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pModule.GetVFS();
-	const decPath path( decPath::CreatePathNative( "/config/desynthesizer.xml" ) );
-	if( ! vfs.ExistsFile( path ) ){
+	const decPath path(decPath::CreatePathNative("/config/desynthesizer.xml"));
+	if(! vfs.ExistsFile(path)){
 		return;
 	}
 	
@@ -94,10 +94,10 @@ void desynConfiguration::pCleanUp(){
 
 
 
-decXmlElementTag *desynConfiguration::pGetTagAt( const decXmlElementTag &tag, int index ){
-	decXmlElement &element = *tag.GetElementAt( index );
+decXmlElementTag *desynConfiguration::pGetTagAt(const decXmlElementTag &tag, int index){
+	decXmlElement &element = *tag.GetElementAt(index);
 	
-	if( element.CanCastToElementTag() ){
+	if(element.CanCastToElementTag()){
 		return element.CastToElementTag();
 		
 	}else{
@@ -105,17 +105,17 @@ decXmlElementTag *desynConfiguration::pGetTagAt( const decXmlElementTag &tag, in
 	}
 }
 
-decXmlAttValue *desynConfiguration::pFindAttribute( const decXmlElementTag &tag, const char *name ){
+decXmlAttValue *desynConfiguration::pFindAttribute(const decXmlElementTag &tag, const char *name){
 	const int count = tag.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		decXmlElement &element = *tag.GetElementAt( i );
+	for(i=0; i<count; i++){
+		decXmlElement &element = *tag.GetElementAt(i);
 		
-		if( element.CanCastToAttValue() ){
+		if(element.CanCastToAttValue()){
 			decXmlAttValue * const value = element.CastToAttValue();
 			
-			if( strcmp( value->GetName(), name ) == 0 ){
+			if(strcmp(value->GetName(), name) == 0){
 				return value;
 			}
 		}
@@ -124,49 +124,49 @@ decXmlAttValue *desynConfiguration::pFindAttribute( const decXmlElementTag &tag,
 	return NULL;
 }
 
-const char *desynConfiguration::pGetAttributeString( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+const char *desynConfiguration::pGetAttributeString(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
+	if(value){
 		return value->GetValue();
 		
 	}else{
-		pModule.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.", name,
-			tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		pModule.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name,
+			tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
-int desynConfiguration::pGetAttributeInt( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+int desynConfiguration::pGetAttributeInt(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
-		return ( int )strtol( value->GetValue(), NULL, 10 );
+	if(value){
+		return (int)strtol(value->GetValue(), NULL, 10);
 		
 	}else{
-		pModule.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.", name,
-			tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		pModule.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name,
+			tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
-float desynConfiguration::pGetAttributeFloat( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+float desynConfiguration::pGetAttributeFloat(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
-		return strtof( value->GetValue(), NULL );
+	if(value){
+		return strtof(value->GetValue(), NULL);
 		
 	}else{
-		pModule.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.", name,
-			tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		pModule.LogErrorFormat("Missing Attribute '%s' in tag '%s'.", name,
+			tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
-const char *desynConfiguration::pGetCData( const decXmlElementTag &tag, const char *defaultValue ){
+const char *desynConfiguration::pGetCData(const decXmlElementTag &tag, const char *defaultValue){
 	decXmlCharacterData * const cdata = tag.GetFirstData();
 	
-	if( cdata ){
+	if(cdata){
 		return cdata->GetData();
 		
 	}else{
@@ -174,19 +174,19 @@ const char *desynConfiguration::pGetCData( const decXmlElementTag &tag, const ch
 	}
 }
 
-bool desynConfiguration::pGetCDataBool( const decXmlElementTag &tag, bool defaultValue ){
-	if( defaultValue ){
-		return strcmp( pGetCData( tag, "1" ), "1" ) == 0;
+bool desynConfiguration::pGetCDataBool(const decXmlElementTag &tag, bool defaultValue){
+	if(defaultValue){
+		return strcmp(pGetCData(tag, "1"), "1") == 0;
 		
 	}else{
-		return strcmp( pGetCData( tag, "0" ), "1" ) == 0;
+		return strcmp(pGetCData(tag, "0"), "1") == 0;
 	}
 }
 
-int desynConfiguration::pGetCDataInt( const decXmlElementTag &tag, int defaultValue ){
+int desynConfiguration::pGetCDataInt(const decXmlElementTag &tag, int defaultValue){
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
-	if( cdata ){
+	if(cdata){
 		return cdata->GetData().ToInt();
 		
 	}else{
@@ -196,44 +196,44 @@ int desynConfiguration::pGetCDataInt( const decXmlElementTag &tag, int defaultVa
 
 
 
-void desynConfiguration::pLoadConfig( decBaseFileReader *file ){
+void desynConfiguration::pLoadConfig(decBaseFileReader *file){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( pModule.GetGameEngine()->GetLogger() ).ParseXml( file, xmlDoc );
+	decXmlParser(pModule.GetGameEngine()->GetLogger()).ParseXml(file, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "config" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "config") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// read properties
 	const int elementCount = root->GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = pGetTagAt( *root, i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = pGetTagAt(*root, i);
+		if(! tag){
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "property" ) == 0 ){
-			const decString name( pGetAttributeString( *tag, "name" ) );
+		if(strcmp(tag->GetName(), "property") == 0){
+			const decString name(pGetAttributeString(*tag, "name"));
 			
-			if( strcmp( name, "streamBufSizeThreshold" ) == 0 ){
-				SetStreamBufSizeThreshold( pGetCDataInt( *tag, pStreamBufSizeThreshold ) );
+			if(strcmp(name, "streamBufSizeThreshold") == 0){
+				SetStreamBufSizeThreshold(pGetCDataInt(*tag, pStreamBufSizeThreshold));
 				
 			}else{
-				pModule.LogWarnFormat( "desynthesizer.xml %s(%i:%i): Invalid property name %s.",
+				pModule.LogWarnFormat("desynthesizer.xml %s(%i:%i): Invalid property name %s.",
 					tag->GetName().GetString(), tag->GetLineNumber(),
-					tag->GetPositionNumber(), name.GetString() );
+					tag->GetPositionNumber(), name.GetString());
 			}
 		}else{
-			pModule.LogWarnFormat( "desynthesizer.xml %s(%i:%i): Unknown Tag %s.",
+			pModule.LogWarnFormat("desynthesizer.xml %s(%i:%i): Unknown Tag %s.",
 				root->GetName().GetString(), tag->GetLineNumber(),
-				tag->GetPositionNumber(), tag->GetName().GetString() );
+				tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
 }

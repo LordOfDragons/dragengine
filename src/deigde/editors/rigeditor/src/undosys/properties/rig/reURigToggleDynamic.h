@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURigToggleDynamic( reRig *rig );
+	reURigToggleDynamic(reRig *rig);
 	
 protected:
 	/** \brief Clean up undo. */

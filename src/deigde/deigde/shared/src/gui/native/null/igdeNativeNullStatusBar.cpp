@@ -39,7 +39,7 @@ igdeNativeNullStatusBar::igdeNativeNullStatusBar(){
 igdeNativeNullStatusBar::~igdeNativeNullStatusBar(){
 }
 
-igdeNativeNullStatusBar *igdeNativeNullStatusBar::CreateNativeWidget( igdeStatusBar& ){
+igdeNativeNullStatusBar *igdeNativeNullStatusBar::CreateNativeWidget(igdeStatusBar&){
 	return new igdeNativeNullStatusBar;
 }
 

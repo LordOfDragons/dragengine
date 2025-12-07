@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAACmdSetActor( ceConversationTopic *topic, ceCAActorCommand *action, const char *newActorID );
+	ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorCommand *action, const char *newActorID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAACmdSetActor();

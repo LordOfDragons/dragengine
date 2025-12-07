@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalFilter::deoalFilter( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pType( eftNull ),
-pGain( 1.0f ),
-pGainLF( 1.0f ),
-pGainHF( 1.0f ),
-pFilter( 0 )
+deoalFilter::deoalFilter(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pType(eftNull),
+pGain(1.0f),
+pGainLF(1.0f),
+pGainHF(1.0f),
+pFilter(0)
 {
-	if( ! audioThread.GetExtensions().GetHasEFX() ){
-		DETHROW( deeInvalidParam );
+	if(! audioThread.GetExtensions().GetHasEFX()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	OAL_CHECK( audioThread, palGenFilters( 1, &pFilter ) );
+	OAL_CHECK(audioThread, palGenFilters(1, &pFilter));
 }
 
 deoalFilter::~deoalFilter(){
-	if( pFilter ){
-		palDeleteFilters( 1, &pFilter );
+	if(pFilter){
+		palDeleteFilters(1, &pFilter);
 	}
 }
 
@@ -66,46 +66,46 @@ deoalFilter::~deoalFilter(){
 // Management
 ///////////////
 
-void deoalFilter::SetType( eFilterType type ){
-	if( type == pType ){
+void deoalFilter::SetType(eFilterType type){
+	if(type == pType){
 		return;
 	}
 	
 	pType = type;
 	
-	switch( type ){
+	switch(type){
 	case eftNull:
-		OAL_CHECK( pAudioThread, palFilteri( pFilter, AL_FILTER_TYPE, AL_FILTER_NULL ) );
+		OAL_CHECK(pAudioThread, palFilteri(pFilter, AL_FILTER_TYPE, AL_FILTER_NULL));
 		break;
 		
 	case eftLowPass:
-		OAL_CHECK( pAudioThread, palFilteri( pFilter, AL_FILTER_TYPE, AL_FILTER_LOWPASS ) );
+		OAL_CHECK(pAudioThread, palFilteri(pFilter, AL_FILTER_TYPE, AL_FILTER_LOWPASS));
 		break;
 		
 	case eftHighPass:
-		OAL_CHECK( pAudioThread, palFilteri( pFilter, AL_FILTER_TYPE, AL_FILTER_HIGHPASS ) );
+		OAL_CHECK(pAudioThread, palFilteri(pFilter, AL_FILTER_TYPE, AL_FILTER_HIGHPASS));
 		break;
 		
 	case eftBandPass:
-		OAL_CHECK( pAudioThread, palFilteri( pFilter, AL_FILTER_TYPE, AL_FILTER_BANDPASS ) );
+		OAL_CHECK(pAudioThread, palFilteri(pFilter, AL_FILTER_TYPE, AL_FILTER_BANDPASS));
 		break;
 	}
 }
 
-void deoalFilter::SetGain( float gain ){
+void deoalFilter::SetGain(float gain){
 	pGain = gain;
 	
-	switch( pType ){
+	switch(pType){
 	case eftLowPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_LOWPASS_GAIN, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_LOWPASS_GAIN, gain));
 		break;
 		
 	case eftHighPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_HIGHPASS_GAIN, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_HIGHPASS_GAIN, gain));
 		break;
 		
 	case eftBandPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_BANDPASS_GAIN, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_BANDPASS_GAIN, gain));
 		break;
 		
 	default:
@@ -113,16 +113,16 @@ void deoalFilter::SetGain( float gain ){
 	}
 }
 
-void deoalFilter::SetGainLF( float gain ){
+void deoalFilter::SetGainLF(float gain){
 	pGainLF = gain;
 	
-	switch( pType ){
+	switch(pType){
 	case eftHighPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_HIGHPASS_GAINLF, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_HIGHPASS_GAINLF, gain));
 		break;
 		
 	case eftBandPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_BANDPASS_GAINLF, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_BANDPASS_GAINLF, gain));
 		break;
 		
 	default:
@@ -130,16 +130,16 @@ void deoalFilter::SetGainLF( float gain ){
 	}
 }
 
-void deoalFilter::SetGainHF( float gain ){
+void deoalFilter::SetGainHF(float gain){
 	pGainHF = gain;
 	
-	switch( pType ){
+	switch(pType){
 	case eftLowPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_LOWPASS_GAINHF, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_LOWPASS_GAINHF, gain));
 		break;
 		
 	case eftBandPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_BANDPASS_GAINHF, gain ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_BANDPASS_GAINHF, gain));
 		break;
 		
 	default:
@@ -147,26 +147,26 @@ void deoalFilter::SetGainHF( float gain ){
 	}
 }
 
-void deoalFilter::SetGains( float gain, float gainLF, float gainHF ){
+void deoalFilter::SetGains(float gain, float gainLF, float gainHF){
 	pGain = gain;
 	pGainLF = gainLF;
 	pGainHF = gainHF;
 	
-	switch( pType ){
+	switch(pType){
 	case eftLowPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_LOWPASS_GAIN, pGain ) );
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_LOWPASS_GAINHF, pGainHF ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_LOWPASS_GAIN, pGain));
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_LOWPASS_GAINHF, pGainHF));
 		break;
 		
 	case eftHighPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_HIGHPASS_GAIN, pGain ) );
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_HIGHPASS_GAINLF, pGainLF ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_HIGHPASS_GAIN, pGain));
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_HIGHPASS_GAINLF, pGainLF));
 		break;
 		
 	case eftBandPass:
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_BANDPASS_GAIN, pGain ) );
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_BANDPASS_GAINLF, pGainLF ) );
-		OAL_CHECK( pAudioThread, palFilterf( pFilter, AL_BANDPASS_GAINHF, pGainHF ) );
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_BANDPASS_GAIN, pGain));
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_BANDPASS_GAINLF, pGainLF));
+		OAL_CHECK(pAudioThread, palFilterf(pFilter, AL_BANDPASS_GAINHF, pGainHF));
 		break;
 		
 	default:

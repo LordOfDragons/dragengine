@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCNavBlocker( gdeOCNavigationBlocker *navBlocker );
+	gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker *navBlocker);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavBlocker. */
-	gdeOCNavigationBlocker *GetNavBlocker() const{ return pNavBlocker; }
+	gdeOCNavigationBlocker *GetNavBlocker() const{return pNavBlocker;}
 	/*@}*/
 };
 

@@ -45,23 +45,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMParticleEmitter::gdeWPSTIMParticleEmitter( gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter ) :
-gdeWPSTreeItemModel( tree, etParticleEmitter ),
-pParticleEmitter( NULL )
+gdeWPSTIMParticleEmitter::gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter) :
+gdeWPSTreeItemModel(tree, etParticleEmitter),
+pParticleEmitter(NULL)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(! particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetText( particleEmitter->GetName() );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(particleEmitter->GetName());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pParticleEmitter = particleEmitter;
 	particleEmitter->AddReference();
 }
 
 gdeWPSTIMParticleEmitter::~gdeWPSTIMParticleEmitter(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
 }
@@ -72,32 +72,32 @@ gdeWPSTIMParticleEmitter::~gdeWPSTIMParticleEmitter(){
 ///////////////
 
 void gdeWPSTIMParticleEmitter::NameChanged(){
-	SetText( pParticleEmitter->GetName() );
+	SetText(pParticleEmitter->GetName());
 	ParentSortItems();
 }
 
 
 
-int gdeWPSTIMParticleEmitter::Compare( const gdeWPSTreeItemModel &item ) const{
-	const gdeWPSTIMParticleEmitter &other = ( const gdeWPSTIMParticleEmitter & )item;
-	return pParticleEmitter->GetName().Compare( other.GetParticleEmitter()->GetName() );
+int gdeWPSTIMParticleEmitter::Compare(const gdeWPSTreeItemModel &item) const{
+	const gdeWPSTIMParticleEmitter &other = (const gdeWPSTIMParticleEmitter &)item;
+	return pParticleEmitter->GetName().Compare(other.GetParticleEmitter()->GetName());
 }
 
 void gdeWPSTIMParticleEmitter::OnSelected(){
-	GetGameDefinition().SetActiveParticleEmitter( pParticleEmitter );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotParticleEmitter );
+	GetGameDefinition().SetActiveParticleEmitter(pParticleEmitter);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotParticleEmitter);
 }
 
-void gdeWPSTIMParticleEmitter::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMParticleEmitter::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionParticleEmitterAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionParticleEmitterRemove() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionParticleEmitterAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionParticleEmitterRemove());
 }
 
-void gdeWPSTIMParticleEmitter::SelectBestMatching( const char *string ){
-	if( GetParent() ){
-		( ( gdeWPSTreeItemModel* )GetParent() )->SelectBestMatching( string );
+void gdeWPSTIMParticleEmitter::SelectBestMatching(const char *string){
+	if(GetParent()){
+		((gdeWPSTreeItemModel*)GetParent())->SelectBestMatching(string);
 	}
 }

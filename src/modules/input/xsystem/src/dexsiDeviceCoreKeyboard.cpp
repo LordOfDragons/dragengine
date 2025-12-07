@@ -52,35 +52,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-dexsiDeviceCoreKeyboard::dexsiDeviceCoreKeyboard( deXSystemInput &module ) :
-dexsiDevice( module, esX11 )
+dexsiDeviceCoreKeyboard::dexsiDeviceCoreKeyboard(deXSystemInput &module) :
+dexsiDevice(module, esX11)
 {
 	decString string;
 	
-	string.Format( "%s%dck", XINP_DEVID_PREFIX, dexsiDevice::esX11 );
-	SetID( string );
-	SetName( "Core Keyboard" );
-	SetType( deInputDevice::edtKeyboard );
-	SetDisplayImages( "keyboard" );
+	string.Format("%s%dck", XINP_DEVID_PREFIX, dexsiDevice::esX11);
+	SetID(string);
+	SetName("Core Keyboard");
+	SetType(deInputDevice::edtKeyboard);
+	SetDisplayImages("keyboard");
 	
 	// get key information
 	Display * const display = GetModule().GetOSUnix()->GetDisplay();
 	int i, minKeyCode, maxKeyCode, keySymPerKeyCode;
 	KeySym *keysyms = NULL;
 	
-	XDisplayKeycodes( display, &minKeyCode, &maxKeyCode );
+	XDisplayKeycodes(display, &minKeyCode, &maxKeyCode);
 	
 	const dexsiDeviceButton::Ref sharedButton(dexsiDeviceButton::Ref::NewWith(module));
-	sharedButton->SetDisplayImages( "key" );
+	sharedButton->SetDisplayImages("key");
 	
 	XKeyEvent fakeKeyEvent;
-	memset( &fakeKeyEvent, 0, sizeof( fakeKeyEvent ) );
+	memset(&fakeKeyEvent, 0, sizeof(fakeKeyEvent));
 	fakeKeyEvent.display = display;
 	fakeKeyEvent.type = ButtonPress;
-	fakeKeyEvent.root = XDefaultRootWindow( display );
+	fakeKeyEvent.root = XDefaultRootWindow(display);
 	fakeKeyEvent.window = fakeKeyEvent.root;
 	
-	const unsigned int fakeKeyEventStates[ 8 ] = {
+	const unsigned int fakeKeyEventStates[8] = {
 		0,
 		ShiftMask,
 		LockMask,
@@ -100,75 +100,75 @@ dexsiDevice( module, esX11 )
 		// defined key sym
 		const int keyCodeCount = maxKeyCode - minKeyCode + 1;
 		
-		keysyms = XGetKeyboardMapping( display, minKeyCode, keyCodeCount, &keySymPerKeyCode );
-		if( ! keysyms ){
-			DETHROW( deeInvalidParam );
+		keysyms = XGetKeyboardMapping(display, minKeyCode, keyCodeCount, &keySymPerKeyCode);
+		if(! keysyms){
+			DETHROW(deeInvalidParam);
 		}
 		
 		int validCount = 0;
-		for( i=0; i<keyCodeCount; i++ ){
-			if( keysyms[ i * keySymPerKeyCode ] != NoSymbol ){
+		for(i=0; i<keyCodeCount; i++){
+			if(keysyms[i * keySymPerKeyCode] != NoSymbol){
 				validCount++;
 			}
 		}
 		
-		ResetX11KeyCodeMap( minKeyCode, keyCodeCount );
+		ResetX11KeyCodeMap(minKeyCode, keyCodeCount);
 		
 		int buttonIndex = 0;
-		for( i=0; i<keyCodeCount; i++ ){
-			const KeySym keysym = keysyms[ i * keySymPerKeyCode ];
+		for(i=0; i<keyCodeCount; i++){
+			const KeySym keysym = keysyms[i * keySymPerKeyCode];
 			
-			if( keysym == NoSymbol ){
+			if(keysym == NoSymbol){
 				continue;
 			}
 			
 			const dexsiDeviceButton::Ref button(dexsiDeviceButton::Ref::NewWith(module));
 			AddButton(button);
 			
-			string.Format( "k%d", minKeyCode + i );
-			button->SetID( string );
+			string.Format("k%d", minKeyCode + i);
+			button->SetID(string);
 			
-			const char * const keysymString = XKeysymToString( keysym );
-			if( keysymString ){
+			const char * const keysymString = XKeysymToString(keysym);
+			if(keysymString){
 				string = keysymString;
-				if( ! string.IsEmpty() ){
-					string.SetAt( 0, toupper( string.GetAt( 0 ) ) );
+				if(! string.IsEmpty()){
+					string.SetAt(0, toupper(string.GetAt(0)));
 				}
-				button->SetName( string );
+				button->SetName(string);
 				
 			}else{
-				string.Format( "<KeyCode %d>", minKeyCode + i );
-				button->SetName( string );
+				string.Format("<KeyCode %d>", minKeyCode + i);
+				button->SetName(string);
 			}
 			
-			button->SetX11Code( minKeyCode + i );
-			button->SetKeyCode( KeyCodeForKeySym( keysym ) );
-			button->SetKeyLocation( KeyLocationForKeySym( keysym ) );
-			button->SetMatchPriority( MatchingPriorityForKeySym( keysym ) );
+			button->SetX11Code(minKeyCode + i);
+			button->SetKeyCode(KeyCodeForKeySym(keysym));
+			button->SetKeyLocation(KeyLocationForKeySym(keysym));
+			button->SetMatchPriority(MatchingPriorityForKeySym(keysym));
 			
-			button->SetDisplayImages( sharedButton );
+			button->SetDisplayImages(sharedButton);
 			
 			// try to find a representative character for this key. X11 has no useful
 			// function for this so we have to do this on our own. furthermore various
 			// characters can result from pressing a key. we can easily end up with a
 			// non-printable one so we try a few combinations picking the first one
 			// which is printable
-			fakeKeyEvent.keycode = XKeysymToKeycode( display, keysym );
+			fakeKeyEvent.keycode = XKeysymToKeycode(display, keysym);
 			int displayCharacter = 0;
 			int j;
 			
-			for( j=0; j<8; j++ ){
-				fakeKeyEvent.state = fakeKeyEventStates[ j ];
+			for(j=0; j<8; j++){
+				fakeKeyEvent.state = fakeKeyEventStates[j];
 				
 				char character = 0;
 				KeySym charKeySym = 0;
-				if( ! XLookupString( &fakeKeyEvent, &character, 1, &charKeySym, NULL )
-				|| ! charKeySym || ! character ){
+				if(! XLookupString(&fakeKeyEvent, &character, 1, &charKeySym, NULL)
+				|| ! charKeySym || ! character){
 					continue;
 				}
 				
-				const int ordinal = ( unsigned char )character;
-				if( ordinal < 32 ){
+				const int ordinal = (unsigned char)character;
+				if(ordinal < 32){
 					continue; // only printable
 				}
 				
@@ -177,21 +177,21 @@ dexsiDevice( module, esX11 )
 				break;
 			}
 			
-			if( displayCharacter ){
-				button->SetDisplayText( decUnicodeString( displayCharacter ).GetUpper().ToUTF8() );
+			if(displayCharacter){
+				button->SetDisplayText(decUnicodeString(displayCharacter).GetUpper().ToUTF8());
 				
 			}else{
-				button->SetDisplayText( button->GetName() );
+				button->SetDisplayText(button->GetName());
 			}
 			
-			SetLookupX11KeyCode( button->GetX11Code(), buttonIndex++ );
+			SetLookupX11KeyCode(button->GetX11Code(), buttonIndex++);
 		}
 		
-		XFree( keysyms );
+		XFree(keysyms);
 		
-	}catch( const deException & ){
-		if( keysyms ){
-			XFree( keysyms );
+	}catch(const deException &){
+		if(keysyms){
+			XFree(keysyms);
 		}
 		throw;
 	}
@@ -206,8 +206,8 @@ dexsiDeviceCoreKeyboard::~dexsiDeviceCoreKeyboard(){
 // Management
 ///////////////
 
-deInputEvent::eKeyCodes dexsiDeviceCoreKeyboard::KeyCodeForKeySym( KeySym keysym ){
-	switch( keysym ){
+deInputEvent::eKeyCodes dexsiDeviceCoreKeyboard::KeyCodeForKeySym(KeySym keysym){
+	switch(keysym){
 	case XK_Shift_L:
 	case XK_Shift_R:
 		return deInputEvent::ekcShift;
@@ -298,31 +298,31 @@ deInputEvent::eKeyCodes dexsiDeviceCoreKeyboard::KeyCodeForKeySym( KeySym keysym
 		return deInputEvent::ekcInsert;
 		
 	default:
-		if( keysym >= XK_F1 && keysym <= XK_F12 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekcF1 + ( keysym - XK_F1 ) );
+		if(keysym >= XK_F1 && keysym <= XK_F12){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcF1 + (keysym - XK_F1));
 			
-		}else if( keysym >= XK_KP_F1 && keysym <= XK_KP_F4 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekcF1 + ( keysym - XK_KP_F1 ) );
+		}else if(keysym >= XK_KP_F1 && keysym <= XK_KP_F4){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcF1 + (keysym - XK_KP_F1));
 			
-		}else if( keysym >= XK_KP_0 && keysym <= XK_KP_9 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekc0 + ( keysym - XK_KP_0 ) );
+		}else if(keysym >= XK_KP_0 && keysym <= XK_KP_9){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (keysym - XK_KP_0));
 			
-		}else if( keysym >= XK_0 && keysym <= XK_9 ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekc0 + ( keysym - XK_0 ) );
+		}else if(keysym >= XK_0 && keysym <= XK_9){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekc0 + (keysym - XK_0));
 			
-		}else if( keysym >= XK_a && keysym <= XK_z ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekcA + ( keysym - XK_a ) );
+		}else if(keysym >= XK_a && keysym <= XK_z){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (keysym - XK_a));
 			
-		}else if( keysym >= XK_A && keysym <= XK_Z ){
-			return ( deInputEvent::eKeyCodes )( deInputEvent::ekcA + ( keysym - XK_A ) );
+		}else if(keysym >= XK_A && keysym <= XK_Z){
+			return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (keysym - XK_A));
 		}
 	}
 	
 	return deInputEvent::ekcUndefined;
 }
 
-deInputEvent::eKeyLocation dexsiDeviceCoreKeyboard::KeyLocationForKeySym( KeySym keysym ){
-	switch( keysym ){
+deInputEvent::eKeyLocation dexsiDeviceCoreKeyboard::KeyLocationForKeySym(KeySym keysym){
+	switch(keysym){
 	case XK_Shift_L:
 	case XK_Control_L:
 	case XK_Meta_L:
@@ -355,10 +355,10 @@ deInputEvent::eKeyLocation dexsiDeviceCoreKeyboard::KeyLocationForKeySym( KeySym
 		return deInputEvent::eklNumberPad;
 		
 	default:
-		if( keysym >= XK_KP_F1 && keysym <= XK_KP_F4 ){
+		if(keysym >= XK_KP_F1 && keysym <= XK_KP_F4){
 			return deInputEvent::eklNumberPad;
 			
-		}else if( keysym >= XK_KP_0 && keysym <= XK_KP_9 ){
+		}else if(keysym >= XK_KP_0 && keysym <= XK_KP_9){
 			return deInputEvent::eklNumberPad;
 		}
 	}
@@ -366,10 +366,10 @@ deInputEvent::eKeyLocation dexsiDeviceCoreKeyboard::KeyLocationForKeySym( KeySym
 	return deInputEvent::eklNone;
 }
 
-int dexsiDeviceCoreKeyboard::MatchingPriorityForKeySym( KeySym keysym ){
+int dexsiDeviceCoreKeyboard::MatchingPriorityForKeySym(KeySym keysym){
 	// lower value is higher priority
 	
-	switch( keysym ){
+	switch(keysym){
 	case XK_Shift_R:
 	case XK_Control_R:
 	case XK_Meta_R:
@@ -422,22 +422,22 @@ int dexsiDeviceCoreKeyboard::MatchingPriorityForKeySym( KeySym keysym ){
 		return 2;
 		
 	default:
-		if( keysym >= XK_F1 && keysym <= XK_F12 ){
+		if(keysym >= XK_F1 && keysym <= XK_F12){
 			return 0;
 			
-		}else if( keysym >= XK_KP_F1 && keysym <= XK_KP_F4 ){
+		}else if(keysym >= XK_KP_F1 && keysym <= XK_KP_F4){
 			return 1;
 			
-		}else if( keysym >= XK_KP_0 && keysym <= XK_KP_9 ){
+		}else if(keysym >= XK_KP_0 && keysym <= XK_KP_9){
 			return 1;
 			
-		}else if( keysym >= XK_0 && keysym <= XK_9 ){
+		}else if(keysym >= XK_0 && keysym <= XK_9){
 			return 0;
 			
-		}else if( keysym >= XK_a && keysym <= XK_z ){
+		}else if(keysym >= XK_a && keysym <= XK_z){
 			return 0;
 			
-		}else if( keysym >= XK_A && keysym <= XK_Z ){
+		}else if(keysym >= XK_A && keysym <= XK_Z){
 			return 1;
 		}
 	}
@@ -445,7 +445,7 @@ int dexsiDeviceCoreKeyboard::MatchingPriorityForKeySym( KeySym keysym ){
 	return 10;
 }
 
-int dexsiDeviceCoreKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
+int dexsiDeviceCoreKeyboard::ButtonMatchingKeyChar(int keyChar) const{
 	// this task is just a guess so missing a solution is fine. it so happens that for
 	// x11 the key syms in the range 0x20 - 0xff match their correspondig key character.
 	// other characters would have to be manually matched. this effort is not worth the
@@ -453,13 +453,13 @@ int dexsiDeviceCoreKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
 	// configuration than doing precise key scanning
 	Display * const display = GetModule().GetOSUnix()->GetDisplay();
 	
-	if( keyChar >= 0x20 && keyChar <= 0xff ){
-		const KeyCode x11code = XKeysymToKeycode( display, ( KeySym )keyChar );
-		if( x11code == 0 ){
+	if(keyChar >= 0x20 && keyChar <= 0xff){
+		const KeyCode x11code = XKeysymToKeycode(display, (KeySym)keyChar);
+		if(x11code == 0){
 			return -1;
 		}
 		
-		return LookupX11KeyCode( x11code );
+		return LookupX11KeyCode(x11code);
 	}
 	
 	return -1;

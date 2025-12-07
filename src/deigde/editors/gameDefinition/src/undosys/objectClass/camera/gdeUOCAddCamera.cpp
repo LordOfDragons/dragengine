@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddCamera::gdeUOCAddCamera( gdeObjectClass *objectClass, gdeOCCamera *camera ) :
-pObjectClass( NULL ),
-pCamera( NULL )
+gdeUOCAddCamera::gdeUOCAddCamera(gdeObjectClass *objectClass, gdeOCCamera *camera) :
+pObjectClass(NULL),
+pCamera(NULL)
 {
-	if( ! objectClass || ! camera ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! camera){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Add camera" );
+	SetShortInfo("Add camera");
 	
 	pCamera = camera;
 	camera->AddReference();
@@ -59,10 +59,10 @@ pCamera( NULL )
 }
 
 gdeUOCAddCamera::~gdeUOCAddCamera(){
-	if( pCamera ){
+	if(pCamera){
 		pCamera->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,18 +74,18 @@ gdeUOCAddCamera::~gdeUOCAddCamera(){
 
 void gdeUOCAddCamera::Undo(){
 	gdeGameDefinition * const gameDefinition = pObjectClass->GetGameDefinition();
-	if( gameDefinition && gameDefinition->GetActiveOCCamera() ){
-		if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera ){
-			gameDefinition->SetSelectedObjectType( gdeGameDefinition::eotObjectClass );
+	if(gameDefinition && gameDefinition->GetActiveOCCamera()){
+		if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera){
+			gameDefinition->SetSelectedObjectType(gdeGameDefinition::eotObjectClass);
 		}
-		gameDefinition->SetActiveOCCamera( NULL );
+		gameDefinition->SetActiveOCCamera(NULL);
 	}
 	
-	pObjectClass->GetCameras().Remove( pCamera );
+	pObjectClass->GetCameras().Remove(pCamera);
 	pObjectClass->NotifyCamerasChanged();
 }
 
 void gdeUOCAddCamera::Redo(){
-	pObjectClass->GetCameras().Add( pCamera );
+	pObjectClass->GetCameras().Add(pCamera);
 	pObjectClass->NotifyCamerasChanged();
 }

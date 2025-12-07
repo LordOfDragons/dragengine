@@ -48,8 +48,8 @@ private:
 		deoglHTView &pHTView;
 		
 	public:
-		HTListener( deoglHTView &htview );
-		virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+		HTListener(deoglHTView &htview);
+		virtual void SectorsChanged(deoglRHeightTerrain &heightTerrain);
 	};
 	
 	
@@ -69,7 +69,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create view. */
-	deoglHTView( deoglRHeightTerrain *heightTerrain );
+	deoglHTView(deoglRHeightTerrain *heightTerrain);
 	
 protected:
 	/** Clean up view. */
@@ -82,16 +82,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain. */
-	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
+	inline deoglRHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
 	
 	/** Count of sectors. */
-	inline int GetSectorCount() const{ return pSectorCount; }
+	inline int GetSectorCount() const{return pSectorCount;}
 	
 	/** Sector at index. */
-	deoglHTViewSector *GetSectorAt( int index ) const;
+	deoglHTViewSector *GetSectorAt(int index) const;
 	
 	/** Add sector. */
-	void AddSector( deoglHTViewSector *sector );
+	void AddSector(deoglHTViewSector *sector);
 	
 	/** Remove all sectors. */
 	void RemoveAllSectors();
@@ -104,7 +104,7 @@ public:
 	 * terrain. LOD level neighbor rules are taken into account. Also updates the borders to
 	 * render the terrain correctly.
 	 */
-	void UpdateLODLevels( const decVector &camera );
+	void UpdateLODLevels(const decVector &camera);
 	
 	/** Prepate. */
 	void Prepare();
@@ -118,7 +118,7 @@ public:
 	
 	
 	/** Sectors changed. */
-	virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+	virtual void SectorsChanged(deoglRHeightTerrain &heightTerrain);
 	/*@}*/
 	
 	

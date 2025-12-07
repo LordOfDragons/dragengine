@@ -46,18 +46,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-deConnection::deConnection( deConnectionManager *manager ) :
-deResource( manager ),
-pConnected( false ),
-pPeerNetwork( NULL ),
-pPeerScripting( NULL ){
+deConnection::deConnection(deConnectionManager *manager) :
+deResource(manager),
+pConnected(false),
+pPeerNetwork(NULL),
+pPeerScripting(NULL){
 }
 
 deConnection::~deConnection(){
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		delete pPeerNetwork;
 	}
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 }
@@ -67,63 +67,63 @@ deConnection::~deConnection(){
 // Management
 ///////////////
 
-void deConnection::SetLocalAddress( const char *address ){
+void deConnection::SetLocalAddress(const char *address){
 	pLocalAddress = address;
 }
 
-void deConnection::SetRemoteAddress( const char *address ){
+void deConnection::SetRemoteAddress(const char *address){
 	pRemoteAddress = address;
 }
 
-void deConnection::SetConnected( bool connected ){
+void deConnection::SetConnected(bool connected){
 	pConnected = connected;
 }
 
-bool deConnection::ConnectTo( const char *address ){
-	if( ! address ){
-		DETHROW( deeInvalidParam );
+bool deConnection::ConnectTo(const char *address){
+	if(! address){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerNetwork ){
-		return pPeerNetwork->ConnectTo( address );
+	if(pPeerNetwork){
+		return pPeerNetwork->ConnectTo(address);
 	}
 	
 	return false;
 }
 
 void deConnection::Disconnect(){
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		pPeerNetwork->Disconnect();
 	}
 }
 	
-void deConnection::SendMessage( deNetworkMessage *message, int maxDelay ){
-	if( ! message || message->GetDataLength() < 1 || maxDelay < 0 ){
-		DETHROW( deeInvalidParam );
+void deConnection::SendMessage(deNetworkMessage *message, int maxDelay){
+	if(! message || message->GetDataLength() < 1 || maxDelay < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerNetwork ){
-		pPeerNetwork->SendMessage( message, maxDelay );
+	if(pPeerNetwork){
+		pPeerNetwork->SendMessage(message, maxDelay);
 	}
 }
 
-void deConnection::SendReliableMessage( deNetworkMessage *message ){
-	if( ! message || message->GetDataLength() < 1 ){
-		DETHROW( deeInvalidParam );
+void deConnection::SendReliableMessage(deNetworkMessage *message){
+	if(! message || message->GetDataLength() < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerNetwork ){
-		pPeerNetwork->SendReliableMessage( message );
+	if(pPeerNetwork){
+		pPeerNetwork->SendReliableMessage(message);
 	}
 }
 
-void deConnection::LinkState( deNetworkMessage *message, deNetworkState *state, bool readOnly ){
-	if( ! message || message->GetDataLength() < 1 || ! state ){
-		DETHROW( deeInvalidParam );
+void deConnection::LinkState(deNetworkMessage *message, deNetworkState *state, bool readOnly){
+	if(! message || message->GetDataLength() < 1 || ! state){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerNetwork ){
-		pPeerNetwork->LinkState( message, state, readOnly );
+	if(pPeerNetwork){
+		pPeerNetwork->LinkState(message, state, readOnly);
 	}
 }
 
@@ -132,23 +132,23 @@ void deConnection::LinkState( deNetworkMessage *message, deNetworkState *state, 
 // System Peers
 /////////////////
 
-void deConnection::SetPeerNetwork( deBaseNetworkConnection *peer ){
-	if( peer == pPeerNetwork ){
+void deConnection::SetPeerNetwork(deBaseNetworkConnection *peer){
+	if(peer == pPeerNetwork){
 		return;
 	}
 	
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		delete pPeerNetwork;
 	}
 	pPeerNetwork = peer;
 }
 
-void deConnection::SetPeerScripting( deBaseScriptingConnection *peer ){
-	if( peer == pPeerScripting ){
+void deConnection::SetPeerScripting(deBaseScriptingConnection *peer){
+	if(peer == pPeerScripting){
 		return;
 	}
 	
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 	pPeerScripting = peer;

@@ -37,12 +37,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetAxis::aeURuleBTransSetAxis( aeRuleBoneTransformator *rule, const decVector &newValue ) :
-pRule( rule ),
-pOldValue( rule->GetAxis() ),
-pNewValue( newValue )
+aeURuleBTransSetAxis::aeURuleBTransSetAxis(aeRuleBoneTransformator *rule, const decVector &newValue) :
+pRule(rule),
+pOldValue(rule->GetAxis()),
+pNewValue(newValue)
 {
-	SetShortInfo( "Bone transformator set axis" );
+	SetShortInfo("Bone transformator set axis");
 }
 
 aeURuleBTransSetAxis::~aeURuleBTransSetAxis(){
@@ -54,9 +54,9 @@ aeURuleBTransSetAxis::~aeURuleBTransSetAxis(){
 ///////////////
 
 void aeURuleBTransSetAxis::Undo(){
-	pRule->SetAxis( pOldValue );
+	pRule->SetAxis(pOldValue);
 }
 
 void aeURuleBTransSetAxis::Redo(){
-	pRule->SetAxis( pNewValue );
+	pRule->SetAxis(pNewValue);
 }

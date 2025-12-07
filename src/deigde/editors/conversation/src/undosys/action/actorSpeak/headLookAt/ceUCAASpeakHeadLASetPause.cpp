@@ -36,10 +36,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLASetPause::ceUCAASpeakHeadLASetPause( ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, float newPause )
-: ceUCAASpeakStripSetPause( topic, actorSpeak, headLookAt, newPause ){
-	SetShortInfo( "HeadLookAt Set Pause" );
+ceUCAASpeakHeadLASetPause::ceUCAASpeakHeadLASetPause(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, float newPause)
+: ceUCAASpeakStripSetPause(topic, actorSpeak, headLookAt, newPause){
+	SetShortInfo("HeadLookAt Set Pause");
 }
 
 ceUCAASpeakHeadLASetPause::~ceUCAASpeakHeadLASetPause(){

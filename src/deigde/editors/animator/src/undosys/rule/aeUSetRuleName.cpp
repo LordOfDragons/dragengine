@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleName::aeUSetRuleName( aeRule *rule, const char *newName ){
-	if( ! rule || ! newName ) DETHROW( deeInvalidParam );
+aeUSetRuleName::aeUSetRuleName(aeRule *rule, const char *newName){
+	if(! rule || ! newName) DETHROW(deeInvalidParam);
 	
 	pRule = NULL;
 	pOldName = rule->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set Rule Name" );
+	SetShortInfo("Set Rule Name");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeUSetRuleName::~aeUSetRuleName(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }
 
 
@@ -62,9 +62,9 @@ aeUSetRuleName::~aeUSetRuleName(){
 ///////////////
 
 void aeUSetRuleName::Undo(){
-	pRule->SetName( pOldName.GetString() );
+	pRule->SetName(pOldName.GetString());
 }
 
 void aeUSetRuleName::Redo(){
-	pRule->SetName( pNewName.GetString() );
+	pRule->SetName(pNewName.GetString());
 }

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureColorTint( meObjectTexture *texture, const decColor &newColor );
+	meUObjectTextureColorTint(meObjectTexture *texture, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo object. */

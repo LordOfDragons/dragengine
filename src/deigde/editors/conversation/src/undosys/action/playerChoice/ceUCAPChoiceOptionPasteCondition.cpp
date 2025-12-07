@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionPasteCondition::ceUCAPChoiceOptionPasteCondition( ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
-ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition ) :
-ceUCAPChoiceOptionSetCondition( topic, ifElse, ifcase, newCondition ){
-	SetShortInfo( "Player Choice Option paste case condition" );
+ceUCAPChoiceOptionPasteCondition::ceUCAPChoiceOptionPasteCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
+ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition) :
+ceUCAPChoiceOptionSetCondition(topic, ifElse, ifcase, newCondition){
+	SetShortInfo("Player Choice Option paste case condition");
 }

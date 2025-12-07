@@ -83,7 +83,7 @@ private:
 	deoglArrayTexture *pTextureTemporary2;
 	deoglArrayTexture *pTextureTemporary3;
 	
-	deoglFramebuffer::Ref pFBOs[ 38 ];
+	deoglFramebuffer::Ref pFBOs[38];
 	decObjectList pFBOMipMapDepth1;
 	decObjectList pFBOMipMapDepth2;
 	decObjectList pFBOMipMapTemporary1;
@@ -92,7 +92,7 @@ private:
 	bool pModeDepth;
 	bool pModePostProcess;
 	
-	deoglFramebuffer::Ref pFBOCopyDepth[ 8 ];
+	deoglFramebuffer::Ref pFBOCopyDepth[8];
 	
 	deoglDRDepthMinMax *pDepthMinMax;
 	
@@ -115,7 +115,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new opengl deferred rendering object. */
-	deoglDeferredRendering( deoglRenderThread &renderThread );
+	deoglDeferredRendering(deoglRenderThread &renderThread);
 	/** Cleans up the opengl deferred rendering object. */
 	~deoglDeferredRendering();
 	/*@}*/
@@ -123,38 +123,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Width of buffers. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** Height of buffers. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** Buffer layer count. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/** Real width of buffers. */
-	inline int GetRealWidth() const{ return pRealWidth; }
+	inline int GetRealWidth() const{return pRealWidth;}
 	
 	/** Real height of buffers. */
-	inline int GetRealHeight() const{ return pRealHeight; }
+	inline int GetRealHeight() const{return pRealHeight;}
 	
 	/** Real buffer layer count. */
-	inline int GetRealLayerCount() const{ return pRealLayerCount; }
+	inline int GetRealLayerCount() const{return pRealLayerCount;}
 	
 	/** Retrieves the scaling factor in u direction. */
-	inline float GetScalingU() const{ return pScalingU; }
+	inline float GetScalingU() const{return pScalingU;}
 	/** Retrieves the scaling factor in v direction. */
-	inline float GetScalingV() const{ return pScalingV; }
+	inline float GetScalingV() const{return pScalingV;}
 	/** Retrieves the texture coordinate displacement in u direction for 1 pixel. */
-	inline float GetPixelSizeU() const{ return pPixelSizeU; }
+	inline float GetPixelSizeU() const{return pPixelSizeU;}
 	/** Retrieves the texture coordinate displacement in v direction for 1 pixel. */
-	inline float GetPixelSizeV() const{ return pPixelSizeV; }
+	inline float GetPixelSizeV() const{return pPixelSizeV;}
 	/** Resizes the buffers. */
-	void Resize( int width, int height, int layerCount = 1 );
+	void Resize(int width, int height, int layerCount = 1);
 	
 	
 	
 	/** Fade out near render range. */
-	inline bool GetUseFadeOutRange() const{ return pUseFadeOutRange; }
+	inline bool GetUseFadeOutRange() const{return pUseFadeOutRange;}
 	
 	
 	
@@ -163,14 +163,14 @@ public:
 	 * \details Depending on the inverse depth mode used the projection matrix is either
 	 *          infinite or non-infinite.
 	 */
-	decDMatrix CreateProjectionDMatrix( int width, int height, float fov, float fovRatio, float znear, float zfar ) const;
+	decDMatrix CreateProjectionDMatrix(int width, int height, float fov, float fovRatio, float znear, float zfar) const;
 	
 	/**
 	 * Create frustum matrix.
 	 * \details This is the same as CreateProjectionDMatrix but always creates a
 	 *          non-infinite projection matrix.
 	 */
-	decDMatrix CreateFrustumDMatrix( int width, int height, float fov, float fovRatio, float znear, float zfar ) const;
+	decDMatrix CreateFrustumDMatrix(int width, int height, float fov, float fovRatio, float znear, float zfar) const;
 	
 	
 	
@@ -181,10 +181,10 @@ public:
 	deoglArrayTexture *GetDepthTexture2() const;
 	
 	/** Third depth texture. */
-	inline deoglArrayTexture *GetDepthTexture3() const{ return pTextureDepth3; }
+	inline deoglArrayTexture *GetDepthTexture3() const{return pTextureDepth3;}
 	
 	/** XRay depth texture. */
-	inline deoglArrayTexture *GetDepthTextureXRay() const{ return pTextureDepthXRay; }
+	inline deoglArrayTexture *GetDepthTextureXRay() const{return pTextureDepthXRay;}
 	
 	/** Swap first depth texture to second. */
 	void SwapDepthTextures();
@@ -193,44 +193,44 @@ public:
 	 * Copy first depth texture to second using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
-	void CopyFirstDepthToSecond( bool copyDepth, bool copyStencil );
+	void CopyFirstDepthToSecond(bool copyDepth, bool copyStencil);
 	
 	/**
 	 * Copy first depth texture to third depth using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
-	void CopyFirstDepthToThirdDepth( bool copyDepth, bool copyStencil );
+	void CopyFirstDepthToThirdDepth(bool copyDepth, bool copyStencil);
 	
 	/**
 	 * Copy first depth texture to XRay depth using framebuffer blitting.
 	 * \details After call returns active framebuffer is undefined.
 	 */
-	void CopyFirstDepthToXRayDepth( bool copyDepth, bool copyStencil );
+	void CopyFirstDepthToXRayDepth(bool copyDepth, bool copyStencil);
 	
 	/** Retrieves the diffuse texture. */
-	inline deoglArrayTexture *GetTextureDiffuse() const{ return pTextureDiffuse; }
+	inline deoglArrayTexture *GetTextureDiffuse() const{return pTextureDiffuse;}
 	/** Retrieves the normal texture. */
-	inline deoglArrayTexture *GetTextureNormal() const{ return pTextureNormal; }
+	inline deoglArrayTexture *GetTextureNormal() const{return pTextureNormal;}
 	/** Retrieves the reflectivity texture. */
-	inline deoglArrayTexture *GetTextureReflectivity() const{ return pTextureReflectivity; }
+	inline deoglArrayTexture *GetTextureReflectivity() const{return pTextureReflectivity;}
 	/** Retrieves the roughness texture. */
-	inline deoglArrayTexture *GetTextureRoughness() const{ return pTextureRoughness; }
+	inline deoglArrayTexture *GetTextureRoughness() const{return pTextureRoughness;}
 	/** Retrieves the ao and solidity texture. */
-	inline deoglArrayTexture *GetTextureAOSolidity() const{ return pTextureAOSolidity; }
+	inline deoglArrayTexture *GetTextureAOSolidity() const{return pTextureAOSolidity;}
 	/** Retrieves the sub-surface texture. */
-	inline deoglArrayTexture *GetTextureSubSurface() const{ return pTextureSubSurface; }
+	inline deoglArrayTexture *GetTextureSubSurface() const{return pTextureSubSurface;}
 	/** Retrieves the color texture. */
-	inline deoglArrayTexture *GetTextureColor() const{ return pTextureColor; }
+	inline deoglArrayTexture *GetTextureColor() const{return pTextureColor;}
 	
 	/** Luminance texture. */
-	inline deoglArrayTexture *GetTextureLuminance() const{ return pTextureLuminance; }
+	inline deoglArrayTexture *GetTextureLuminance() const{return pTextureLuminance;}
 	
 	/** Retrieves the first temporary texture. */
-	inline deoglArrayTexture *GetTextureTemporary1() const{ return pTextureTemporary1; }
+	inline deoglArrayTexture *GetTextureTemporary1() const{return pTextureTemporary1;}
 	/** Retrieves the second temporary texture. */
-	inline deoglArrayTexture *GetTextureTemporary2() const{ return pTextureTemporary2; }
+	inline deoglArrayTexture *GetTextureTemporary2() const{return pTextureTemporary2;}
 	/** Retrieves the third temporary texture. */
-	inline deoglArrayTexture *GetTextureTemporary3() const{ return pTextureTemporary3; }
+	inline deoglArrayTexture *GetTextureTemporary3() const{return pTextureTemporary3;}
 	
 	/** Sets the normal as the current post processing target. */
 	void InitPostProcessTarget();
@@ -245,7 +245,7 @@ public:
 	void ActivateFBODepth();
 	
 	/** Activate fbo for rendering to mip-map level of current depth texture. */
-	void ActivateFBODepthLevel( int level );
+	void ActivateFBODepthLevel(int level);
 	
 	/** Activate fbo for rendering to third depth texture. */
 	void ActivateFBODepth3();
@@ -254,36 +254,36 @@ public:
 	void ActivateFBODepthXRay();
 	
 	/** Activates the current post process fbo with or without depth enabled. */
-	void ActivatePostProcessFBO( bool withDepth );
+	void ActivatePostProcessFBO(bool withDepth);
 	/** Activates the diffuse fbo with or without depth. */
-	void ActivateFBODiffuse( bool withDepth );
+	void ActivateFBODiffuse(bool withDepth);
 	/** Activates the reflectivity fbo with or without depth. */
-	void ActivateFBOReflectivity( bool withDepth );
+	void ActivateFBOReflectivity(bool withDepth);
 	/** Activates the roughness fbo with or without depth. */
-	void ActivateFBORoughness( bool withDepth );
+	void ActivateFBORoughness(bool withDepth);
 	/** Activates the ao-solidity fbo with or without depth. */
-	void ActivateFBOAOSolidity( bool withDepth );
+	void ActivateFBOAOSolidity(bool withDepth);
 	/** Activates the first temporary fbo with depth. */
-	void ActivateFBOTemporary1( bool withDepth );
+	void ActivateFBOTemporary1(bool withDepth);
 	/** Activates the fbo for a mip-map level of the first temporary. */
-	void ActivateFBOTemporary1Level( int level );
+	void ActivateFBOTemporary1Level(int level);
 	/** Activates the second temporary fbo with depth. */
-	void ActivateFBOTemporary2( bool withDepth );
+	void ActivateFBOTemporary2(bool withDepth);
 	/** Activates the fbo for a mip-map level of the second temporary. */
-	void ActivateFBOTemporary2Level( int level );
+	void ActivateFBOTemporary2Level(int level);
 	/** Activates the third temporary fbo without depth. */
 	void ActivateFBOTemporary3();
 	/** Activates the color fbo with or without depth. */
-	void ActivateFBOColor( bool withDepth, bool withLuminance );
+	void ActivateFBOColor(bool withDepth, bool withLuminance);
 	/** Activates the color and temporary2 fbo with depth. */
-	void ActivateFBOColorTemp2( bool withDepth, bool withLuminance );
+	void ActivateFBOColorTemp2(bool withDepth, bool withLuminance);
 	/** Activates the diffuse, normal, reflectivity, roughness and color fbo with depth. */
 	void ActivateFBOMaterialColor();
 	/** Activate luminance without depth. */
 	void ActivateFBOLuminance();
 	
 	/** Retrieves the depth min-map texture. */
-	inline deoglDRDepthMinMax &GetDepthMinMax() const{ return *pDepthMinMax; }
+	inline deoglDRDepthMinMax &GetDepthMinMax() const{return *pDepthMinMax;}
 	
 	/** Luminance texture. */
 // 	inline deoglArrayTexture *GetTextureLuminance() const{ return pTextureLuminance; }
@@ -301,12 +301,12 @@ public:
 // 	void ActivateFBOLuminanceNormal();
 	
 	/** Retrieves the full screen quad VAO. */
-	inline deoglVAO *GetVAOFullScreenQuad() const{ return pVAOFullScreenQuad; }
+	inline deoglVAO *GetVAOFullScreenQuad() const{return pVAOFullScreenQuad;}
 	/** Retrieves the billboard VAO. */
-	inline deoglVAO *GetVAOBillboard() const{ return pVAOBillboard; }
+	inline deoglVAO *GetVAOBillboard() const{return pVAOBillboard;}
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{ return pMemUse; }
+	inline const deoglMemoryConsumptionDeferredRenderingUse &GetMemoryConsumption() const{return pMemUse;}
 	/*@}*/
 	
 	/** \name Rendering */
@@ -320,37 +320,37 @@ public:
 	 * instead from 0 to width/height. Former is used for rectangular textures and later for
 	 * non-rectangular textures.
 	 */
-	void SetShaderViewport( deoglShaderCompiled &shader, int parameter, bool normalized );
-	void SetShaderViewport( deoglSPBlockUBO &paramBlock, int parameter, bool normalized );
+	void SetShaderViewport(deoglShaderCompiled &shader, int parameter, bool normalized);
+	void SetShaderViewport(deoglSPBlockUBO &paramBlock, int parameter, bool normalized);
 	/**
 	 * Sets the scaling and offset parameters in a shader required to convert from full screen
 	 * quad positions to texture coordinates.
 	 */
-	void SetShaderParamFSQuad( deoglShaderCompiled &shader, int parameter ) const;
-	void SetShaderParamFSQuad( deoglShaderCompiled &shader, int parameter, int width, int height ) const;
-	void SetShaderParamFSQuad( deoglShaderCompiled &shader, int parameter, float x1, float y1, float x2, float y2 ) const;
-	void SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter ) const;
-	void SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter, int width, int height ) const;
-	void SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter, float x1, float y1, float x2, float y2 ) const;
-	void SetShaderParamFSQuad( deoglSPBlockUBO &paramBlock, int parameter ) const;
+	void SetShaderParamFSQuad(deoglShaderCompiled &shader, int parameter) const;
+	void SetShaderParamFSQuad(deoglShaderCompiled &shader, int parameter, int width, int height) const;
+	void SetShaderParamFSQuad(deoglShaderCompiled &shader, int parameter, float x1, float y1, float x2, float y2) const;
+	void SetShaderParamFSQuadUpsideDown(deoglShaderCompiled &shader, int parameter) const;
+	void SetShaderParamFSQuadUpsideDown(deoglShaderCompiled &shader, int parameter, int width, int height) const;
+	void SetShaderParamFSQuadUpsideDown(deoglShaderCompiled &shader, int parameter, float x1, float y1, float x2, float y2) const;
+	void SetShaderParamFSQuad(deoglSPBlockUBO &paramBlock, int parameter) const;
 	/**
 	 * Sets the scaling and offset parameters in a shader required to convert from screen
 	 * coordinates to texture coordinates.
 	 */
-	void SetShaderParamSCToTC( deoglShaderCompiled &shader, int parameter ) const;
+	void SetShaderParamSCToTC(deoglShaderCompiled &shader, int parameter) const;
 	/**
 	 * Sets the scaling and offset parameters in a shader required to convert from screen
 	 * coordinates to full size texture coordinates.
 	 */
-	void SetShaderParamSCToFSTC( deoglShaderCompiled &shader, int parameter ) const;
+	void SetShaderParamSCToFSTC(deoglShaderCompiled &shader, int parameter) const;
 	/**
 	 * Sets the scaling and offset parameters in a shader required to convert from screen
 	 * coordinates to camera space coordinates.
 	 */
-	void SetShaderParamSCToCSP( deoglShaderCompiled &shader, int parameter ) const;
+	void SetShaderParamSCToCSP(deoglShaderCompiled &shader, int parameter) const;
 	
 	/** Render doc debug texture. */
-	inline deoglTexture *GetTexRenderDocDebug() const{ return pTexRenderDocDebug; }
+	inline deoglTexture *GetTexRenderDocDebug() const{return pTexRenderDocDebug;}
 	/*@}*/
 	
 private:
@@ -358,13 +358,13 @@ private:
 	void pCreateTextures();
 	void pUpdateMemoryUsage();
 	void pCreateFBOs();
-	void pCreateFBOTex( int index, const char *debugName, deoglArrayTexture *texture1,
+	void pCreateFBOTex(int index, const char *debugName, deoglArrayTexture *texture1,
 		deoglArrayTexture *texture2, deoglArrayTexture *texture3, deoglArrayTexture *texture4,
 		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7,
-		deoglArrayTexture *depth );
-	void pFBOAttachColors( int index, const char *debugName, deoglArrayTexture *texture1,
+		deoglArrayTexture *depth);
+	void pFBOAttachColors(int index, const char *debugName, deoglArrayTexture *texture1,
 		deoglArrayTexture *texture2, deoglArrayTexture *texture3, deoglArrayTexture *texture4,
-		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7 );
+		deoglArrayTexture *texture5, deoglArrayTexture *texture6, deoglArrayTexture *texture7);
 	void pDestroyFBOs();
 };
 

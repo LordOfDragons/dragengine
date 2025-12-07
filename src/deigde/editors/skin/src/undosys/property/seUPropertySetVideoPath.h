@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetVideoPath( seProperty *property, const char *newPath );
+	seUPropertySetVideoPath(seProperty *property, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

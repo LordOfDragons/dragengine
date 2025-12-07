@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceSynthConTargetLess( seSourceSynthesizer *source );
+	seUSourceSynthConTargetLess(seSourceSynthesizer *source);
 	
 protected:
 	/** Clean up undo action. */

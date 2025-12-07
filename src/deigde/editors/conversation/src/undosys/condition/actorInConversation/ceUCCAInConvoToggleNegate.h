@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCAInConvoToggleNegate( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorInConversation *condition );
+	ceUCCAInConvoToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorInConversation *condition);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCCAInConvoToggleNegate();

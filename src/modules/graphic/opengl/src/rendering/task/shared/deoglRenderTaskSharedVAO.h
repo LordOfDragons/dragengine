@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared render task shader. */
-	deoglRenderTaskSharedVAO( deoglRenderTaskSharedPool &pool, int index );
+	deoglRenderTaskSharedVAO(deoglRenderTaskSharedPool &pool, int index);
 	
 protected:
 	/** Clean up shared render task shader. */
@@ -64,18 +64,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline deoglRenderTaskSharedPool &GetPool() const{ return pPool; }
+	inline deoglRenderTaskSharedPool &GetPool() const{return pPool;}
 	
 	/** Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline deoglVAO *GetVAO() const{return pVAO;}
 	
 	/** Set vao. */
-	void SetVAO( deoglVAO *shader );
+	void SetVAO(deoglVAO *shader);
 	
 	
 	

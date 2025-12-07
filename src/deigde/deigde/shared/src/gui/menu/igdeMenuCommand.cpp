@@ -47,23 +47,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeMenuCommand::igdeMenuCommand( igdeEnvironment &environment ) :
-igdeWidget( environment ),
-pMnemonic( deInputEvent::ekcUndefined ),
-pEnabled( true ){
+igdeMenuCommand::igdeMenuCommand(igdeEnvironment &environment) :
+igdeWidget(environment),
+pMnemonic(deInputEvent::ekcUndefined),
+pEnabled(true){
 }
 
-igdeMenuCommand::igdeMenuCommand( igdeEnvironment &environment, igdeAction *action ) :
-igdeWidget( environment ),
-pMnemonic( deInputEvent::ekcUndefined ),
-pEnabled( true )
+igdeMenuCommand::igdeMenuCommand(igdeEnvironment &environment, igdeAction *action) :
+igdeWidget(environment),
+pMnemonic(deInputEvent::ekcUndefined),
+pEnabled(true)
 {
-	SetAction( action );
+	SetAction(action);
 }
 
 igdeMenuCommand::~igdeMenuCommand(){
 	igdeMenuCommand::DestroyNativeWidget();
-	SetAction( NULL );
+	SetAction(NULL);
 }
 
 
@@ -71,8 +71,8 @@ igdeMenuCommand::~igdeMenuCommand(){
 // Management
 ///////////////
 
-void igdeMenuCommand::SetText( const char *text ){
-	if( pText == text ){
+void igdeMenuCommand::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -80,8 +80,8 @@ void igdeMenuCommand::SetText( const char *text ){
 	OnTextChanged();
 }
 
-void igdeMenuCommand::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeMenuCommand::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -89,8 +89,8 @@ void igdeMenuCommand::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeMenuCommand::SetHotKey( const igdeHotKey &hotKey ){
-	if( pHotKey == hotKey ){
+void igdeMenuCommand::SetHotKey(const igdeHotKey &hotKey){
+	if(pHotKey == hotKey){
 		return;
 	}
 	
@@ -98,8 +98,8 @@ void igdeMenuCommand::SetHotKey( const igdeHotKey &hotKey ){
 	OnHotKeyChanged();
 }
 
-void igdeMenuCommand::SetMnemonic( deInputEvent::eKeyCodes mnemonic ){
-	if( pMnemonic == mnemonic ){
+void igdeMenuCommand::SetMnemonic(deInputEvent::eKeyCodes mnemonic){
+	if(pMnemonic == mnemonic){
 		return;
 	}
 	
@@ -107,8 +107,8 @@ void igdeMenuCommand::SetMnemonic( deInputEvent::eKeyCodes mnemonic ){
 	OnMnemonicChanged();
 }
 
-void igdeMenuCommand::SetIcon( igdeIcon *icon ){
-	if( pIcon == icon ){
+void igdeMenuCommand::SetIcon(igdeIcon *icon){
+	if(pIcon == icon){
 		return;
 	}
 	
@@ -116,8 +116,8 @@ void igdeMenuCommand::SetIcon( igdeIcon *icon ){
 	OnIconChanged();
 }
 
-void igdeMenuCommand::SetEnabled( bool enabled ){
-	if( pEnabled == enabled ){
+void igdeMenuCommand::SetEnabled(bool enabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -125,100 +125,100 @@ void igdeMenuCommand::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeMenuCommand::SetAction( igdeAction *action ){
-	if( pAction == action ){
+void igdeMenuCommand::SetAction(igdeAction *action){
+	if(pAction == action){
 		return;
 	}
 	
-	if( pAction ){
-		pAction->RemoveListener( this );
+	if(pAction){
+		pAction->RemoveListener(this);
 	}
 	
 	pAction = action;
 	
-	if( action ){
-		action->AddListener( this );
-		OnParameterChanged( action );
+	if(action){
+		action->AddListener(this);
+		OnParameterChanged(action);
 	}
 }
 
 
 void igdeMenuCommand::OnAction(){
-	if( pAction ){
+	if(pAction){
 		pAction->OnAction();
 	}
 }
 
-void igdeMenuCommand::OnParameterChanged( igdeAction *action ){
-	SetText( action->GetText() );
-	SetDescription( action->GetDescription() );
-	SetHotKey( action->GetHotKey() );
-	SetMnemonic( action->GetMnemonic() );
-	SetIcon( action->GetIcon() );
-	SetEnabled( action->GetEnabled() );
+void igdeMenuCommand::OnParameterChanged(igdeAction *action){
+	SetText(action->GetText());
+	SetDescription(action->GetDescription());
+	SetHotKey(action->GetHotKey());
+	SetMnemonic(action->GetMnemonic());
+	SetIcon(action->GetIcon());
+	SetEnabled(action->GetEnabled());
 }
 
-void igdeMenuCommand::OnDestroyed( igdeAction *action ){
-	GetLogger()->LogWarnFormat( "IGDE", "igdeMenuCommand::OnDestroyed: "
-		"Action(%s) destroyed while still listening on it", action->GetText().GetString() );
+void igdeMenuCommand::OnDestroyed(igdeAction *action){
+	GetLogger()->LogWarnFormat("IGDE", "igdeMenuCommand::OnDestroyed: "
+		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
 	pAction = NULL;
 }
 
 
 
 void igdeMenuCommand::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeMenuCommand * const native = igdeNativeMenuCommand::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeMenuCommand * const native = igdeNativeMenuCommand::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeMenuCommand::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeMenuCommand* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeMenuCommand*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeMenuCommand::OnTextChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateText();
+	if(GetNativeWidget()){
+		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateText();
 	}
 }
 
 void igdeMenuCommand::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateDescription();
+	if(GetNativeWidget()){
+		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateDescription();
 	}
 }
 
 void igdeMenuCommand::OnHotKeyChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateHotKey();
+	if(GetNativeWidget()){
+		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateHotKey();
 	}
 }
 
 void igdeMenuCommand::OnMnemonicChanged(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 }
 
 void igdeMenuCommand::OnIconChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateIcon();
+	if(GetNativeWidget()){
+		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateIcon();
 	}
 }
 
 void igdeMenuCommand::OnEnabledChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeMenuCommand* )GetNativeWidget() )->UpdateEnabled();
+	if(GetNativeWidget()){
+		((igdeNativeMenuCommand*)GetNativeWidget())->UpdateEnabled();
 	}
 }

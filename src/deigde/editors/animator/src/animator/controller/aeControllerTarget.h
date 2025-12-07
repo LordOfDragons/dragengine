@@ -46,7 +46,7 @@ public:
 	/** Create a new controller target. */
 	aeControllerTarget();
 	/** Create a copy of a controller target. */
-	aeControllerTarget( const aeControllerTarget &copy );
+	aeControllerTarget(const aeControllerTarget &copy);
 	/** Cleans up the controller target. */
 	~aeControllerTarget();
 	/*@}*/
@@ -56,29 +56,29 @@ public:
 	/** Retrieves the number of links. */
 	int GetLinkCount() const;
 	/** Retrieves the link at the given index. */
-	aeLink *GetLinkAt( int index ) const;
+	aeLink *GetLinkAt(int index) const;
 	/** Retrieves the index of the link or -1 if not found. */
-	int IndexOfLink( aeLink *link ) const;
+	int IndexOfLink(aeLink *link) const;
 	/** Determines if the link exists. */
-	bool HasLink( aeLink *link ) const;
+	bool HasLink(aeLink *link) const;
 	/** Adds a new link. */
-	void AddLink( aeLink *link );
+	void AddLink(aeLink *link);
 	/** Removes a link. */
-	void RemoveLink( aeLink *link );
+	void RemoveLink(aeLink *link);
 	/** Removes all links. */
 	void RemoveAllLinks();
 	
 	/** Updates the given engine target. */
-	void UpdateEngineTarget( aeAnimator *animator, deAnimatorControllerTarget &target ) const;
+	void UpdateEngineTarget(aeAnimator *animator, deAnimatorControllerTarget &target) const;
 	
 	/** Add links to a list of links. */
-	void AddLinksToList( aeLinkList &list );
+	void AddLinksToList(aeLinkList &list);
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another controller target to this controller target. */
-	aeControllerTarget &operator=( const aeControllerTarget &copy );
+	aeControllerTarget &operator=(const aeControllerTarget &copy);
 	/*@}*/
 };
 

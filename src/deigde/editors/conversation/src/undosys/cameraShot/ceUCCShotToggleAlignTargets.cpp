@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleAlignTargets::ceUCCShotToggleAlignTargets( ceCameraShot *cameraShot ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotToggleAlignTargets::ceUCCShotToggleAlignTargets(ceCameraShot *cameraShot){
+	if(! cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Toggle Billboard Targets" );
+	SetShortInfo("Camera Shot Toggle Billboard Targets");
 	
 	pCameraShot = cameraShot;
 	cameraShot->AddReference();
 }
 
 ceUCCShotToggleAlignTargets::~ceUCCShotToggleAlignTargets(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -62,9 +62,9 @@ ceUCCShotToggleAlignTargets::~ceUCCShotToggleAlignTargets(){
 ///////////////
 
 void ceUCCShotToggleAlignTargets::Undo(){
-	pCameraShot->SetAlignTargets( ! pCameraShot->GetAlignTargets() );
+	pCameraShot->SetAlignTargets(! pCameraShot->GetAlignTargets());
 }
 
 void ceUCCShotToggleAlignTargets::Redo(){
-	pCameraShot->SetAlignTargets( ! pCameraShot->GetAlignTargets() );
+	pCameraShot->SetAlignTargets(! pCameraShot->GetAlignTargets());
 }

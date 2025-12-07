@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	desmWritePropertyNode( decXmlWriter &writer, const deSkin &skin );
+	desmWritePropertyNode(decXmlWriter &writer, const deSkin &skin);
 	
 	/** \brief Clean up visitor. */
 	virtual ~desmWritePropertyNode();
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Write common node properties. */
-	void WriteNodeCommon( const deSkinPropertyNode &node );
+	void WriteNodeCommon(const deSkinPropertyNode &node);
 	/*@}*/
 	
 	
@@ -65,19 +65,19 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit node. */
-	virtual void VisitNode( deSkinPropertyNode &node );
+	virtual void VisitNode(deSkinPropertyNode &node);
 	
 	/** \brief Visit group node. */
-	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
+	virtual void VisitGroup(deSkinPropertyNodeGroup &node);
 	
 	/** \brief Visit image node. */
-	virtual void VisitImage( deSkinPropertyNodeImage &node );
+	virtual void VisitImage(deSkinPropertyNodeImage &node);
 	
 	/** \brief Visit shape node. */
-	virtual void VisitShape( deSkinPropertyNodeShape &node );
+	virtual void VisitShape(deSkinPropertyNodeShape &node);
 	
 	/** \brief Visit text node. */
-	virtual void VisitText( deSkinPropertyNodeText &node );
+	virtual void VisitText(deSkinPropertyNodeText &node);
 	/*@}*/
 };
 

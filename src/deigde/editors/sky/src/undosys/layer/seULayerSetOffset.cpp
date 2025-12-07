@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetOffset::seULayerSetOffset( seLayer *layer, const decVector &newOffset ) :
-pLayer( NULL ),
-pNewOffset( newOffset )
+seULayerSetOffset::seULayerSetOffset(seLayer *layer, const decVector &newOffset) :
+pLayer(NULL),
+pNewOffset(newOffset)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Offset" );
+	SetShortInfo("Set Layer Offset");
 	
 	pOldOffset = layer->GetOffset();
 	
@@ -56,7 +56,7 @@ pNewOffset( newOffset )
 }
 
 seULayerSetOffset::~seULayerSetOffset(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetOffset::~seULayerSetOffset(){
 ///////////////
 
 void seULayerSetOffset::Undo(){
-	pLayer->SetOffset( pOldOffset );
+	pLayer->SetOffset(pOldOffset);
 }
 
 void seULayerSetOffset::Redo(){
-	pLayer->SetOffset( pNewOffset );
+	pLayer->SetOffset(pNewOffset);
 }

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bit array. */
-	meBitArray( int colons, int rows );
+	meBitArray(int colons, int rows);
 	/** Cleans up the bit array. */
 	~meBitArray();
 	/*@}*/
@@ -55,17 +55,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of colons. */
-	inline int GetColons() const{ return pColons; }
+	inline int GetColons() const{return pColons;}
 	/** Retrieves the number of rows. */
-	inline int GetRows() const{ return pRows; }
+	inline int GetRows() const{return pRows;}
 	/** Retrieves the boolean value at the given location. */
-	bool GetValueAt( int x, int y ) const;
+	bool GetValueAt(int x, int y) const;
 	/** Sets the boolean value at the given location. */
-	void SetValueAt( int x, int y, bool value );
+	void SetValueAt(int x, int y, bool value);
 	/** Copies the values to another bit array. */
-	void CopyTo( meBitArray &bitArray ) const;
+	void CopyTo(meBitArray &bitArray) const;
 	/** Clears all values. */
-	void ClearTo( bool value );
+	void ClearTo(bool value);
 	/*@}*/
 };
 

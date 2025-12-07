@@ -41,11 +41,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMACameraShot::ceWPTTIMACameraShot( ceWindowMain &windowMain,
-ceConversation &conversation, ceCACameraShot *action ) :
-ceWPTTIMAction( windowMain, etActionCameraShot, conversation, action )
+ceWPTTIMACameraShot::ceWPTTIMACameraShot(ceWindowMain &windowMain,
+ceConversation &conversation, ceCACameraShot *action) :
+ceWPTTIMAction(windowMain, etActionCameraShot, conversation, action)
 {
-	SetIcon( windowMain.GetIconActionCameraShot() );
+	SetIcon(windowMain.GetIconActionCameraShot());
 	Update();
 }
 
@@ -61,6 +61,6 @@ void ceWPTTIMACameraShot::Update(){
 	const ceCACameraShot &action = *GetActionCameraShot();
 	decString text;
 	
-	text.Format( "Camera Shot (%s)", action.GetName().GetString() );
-	SetText( text );
+	text.Format("Camera Shot (%s)", action.GetName().GetString());
+	SetText(text);
 }

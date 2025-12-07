@@ -81,21 +81,21 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray is blocked. */
-	inline bool GetBlocked() const{ return pBlocked; }
+	inline bool GetBlocked() const{return pBlocked;}
 	
 	/** \brief Set if ray is blocked. */
-	void SetBlocked( bool blocked );
+	void SetBlocked(bool blocked);
 	
 	
 	
 	/** \brief Visit optimized ray-trace bvh. */
-	void VisitBVH( const deoalRTWorldBVH &bvh );
+	void VisitBVH(const deoalRTWorldBVH &bvh);
 	
 	/** \brief Visit optimized ray-trace bvh node. */
-	void VisitNode( const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node );
+	void VisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node);
 	
 	/** \brief Visit component. */
-	void VisitComponent( const deoalRTWorldBVH::sVisitComponent &rtcomponent );
+	void VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent);
 	/*@}*/
 };
 

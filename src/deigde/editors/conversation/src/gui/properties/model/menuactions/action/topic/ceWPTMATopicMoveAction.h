@@ -53,9 +53,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */
-	ceWPTMATopicMoveAction( ceWindowMain &windowMain,
+	ceWPTMATopicMoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceConversationAction *action, int index, const char *text, igdeIcon *icon );
+		ceConversationAction *action, int index, const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -63,16 +63,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline ceConversationAction *GetAction() const{return pAction;}
 	
 	/** \brief Index of new position. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	
 	

@@ -44,7 +44,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassEnvMapProbe( deScriptingDragonScript *ds );
+	deClassEnvMapProbe(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	~deClassEnvMapProbe();
 	/*@}*/
@@ -52,14 +52,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Creates the class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the scripting module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	
 	/** Retrieves the environment map probe or NULL if object is NULL. */
-	deEnvMapProbe *GetEnvMapProbe( dsRealObject *object ) const;
+	deEnvMapProbe *GetEnvMapProbe(dsRealObject *object) const;
 	/** Pushes an environment map probe on the stack (pushes null if instance is NULL). */
-	void PushEnvMapProbe( dsRunTime *rt, deEnvMapProbe *envMapProbe );
+	void PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapProbe);
 	/*@}*/
 	
 private:
@@ -81,41 +81,41 @@ private:
 		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfGetOrientation );
-	DEF_NATFUNC( nfSetOrientation );
-	DEF_NATFUNC( nfGetScaling );
-	DEF_NATFUNC( nfSetScaling );
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
+	DEF_NATFUNC(nfGetScaling);
+	DEF_NATFUNC(nfSetScaling);
 	
-	DEF_NATFUNC( nfGetLayerMask );
-	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC(nfGetLayerMask);
+	DEF_NATFUNC(nfSetLayerMask);
 	DEF_NATFUNC(nfGetParentWorld);
 	
-	DEF_NATFUNC( nfGetShapeListInfluence );
-	DEF_NATFUNC( nfSetShapeListInfluence );
+	DEF_NATFUNC(nfGetShapeListInfluence);
+	DEF_NATFUNC(nfSetShapeListInfluence);
 	
-	DEF_NATFUNC( nfGetShapeReflection );
-	DEF_NATFUNC( nfSetShapeReflection );
-	DEF_NATFUNC( nfGetShapeListReflectionMask );
-	DEF_NATFUNC( nfSetShapeListReflectionMask );
+	DEF_NATFUNC(nfGetShapeReflection);
+	DEF_NATFUNC(nfSetShapeReflection);
+	DEF_NATFUNC(nfGetShapeListReflectionMask);
+	DEF_NATFUNC(nfSetShapeListReflectionMask);
 	
-	DEF_NATFUNC( nfGetInfluenceBorderSize );
-	DEF_NATFUNC( nfSetInfluenceBorderSize );
-	DEF_NATFUNC( nfGetInfluencePriority );
-	DEF_NATFUNC( nfSetInfluencePriority );
+	DEF_NATFUNC(nfGetInfluenceBorderSize);
+	DEF_NATFUNC(nfSetInfluenceBorderSize);
+	DEF_NATFUNC(nfGetInfluencePriority);
+	DEF_NATFUNC(nfSetInfluencePriority);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
 #undef DEF_NATFUNC
 };
 

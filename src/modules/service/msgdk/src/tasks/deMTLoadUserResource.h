@@ -55,7 +55,7 @@ protected:
 
 
 public:
-	inline deMsgdkServiceMsgdk &GetService() const{ return pService; }
+	inline deMsgdkServiceMsgdk &GetService() const{return pService;}
 
 
 protected:

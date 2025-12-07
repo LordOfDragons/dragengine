@@ -56,8 +56,8 @@
 
 debnVisitorValueType::debnVisitorValueType(){
 	pType = 0;
-	pMessage.TakeOver( new deNetworkMessage() );
-	pWriter.TakeOver( new deNetworkMessageWriter( pMessage, false ) );
+	pMessage.TakeOver(new deNetworkMessage());
+	pWriter.TakeOver(new deNetworkMessageWriter(pMessage, false));
 }
 
 debnVisitorValueType::~debnVisitorValueType(){
@@ -73,145 +73,145 @@ debnVisitorValueType::~debnVisitorValueType(){
 // Visiting
 /////////////
 
-void debnVisitorValueType::VisitValue( deNetworkValue *value ){
-	DETHROW( deeInvalidParam );
+void debnVisitorValueType::VisitValue(deNetworkValue *value){
+	DETHROW(deeInvalidParam);
 }
 
-void debnVisitorValueType::VisitInteger( deNetworkValueInteger *value ){
+void debnVisitorValueType::VisitInteger(deNetworkValueInteger *value){
 	//int absInt = abs( value->GetInt() );
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	/*if( absInt < 128 ){
 		pType = evtIntB8;
-		pWriter->WriteChar( ( signed char )value->GetInt() );
+		pWriter->WriteChar((signed char)value->GetInt());
 		
-	}else if( absInt < 32768 ){
+	}else if(absInt < 32768){
 		pType = evtIntB16;
-		pWriter->WriteShort( ( signed short )value->GetInt() );
+		pWriter->WriteShort((signed short)value->GetInt());
 		
 	}else{*/
 		pType = evtSInt32;
-		pWriter->WriteInt( ( int32_t )value->GetInt() );
+		pWriter->WriteInt((int32_t)value->GetInt());
 	//}
 }
 
-void debnVisitorValueType::VisitFloat( deNetworkValueFloat *value ){
+void debnVisitorValueType::VisitFloat(deNetworkValueFloat *value){
 	pType = evtFloat32;
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
-	pWriter->WriteFloat( ( float )value->GetFloat() );
+	pWriter->WriteFloat((float)value->GetFloat());
 }
 
-void debnVisitorValueType::VisitString( deNetworkValueString *value ){
+void debnVisitorValueType::VisitString(deNetworkValueString *value){
 	pType = evtString;
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
-	pWriter->WriteString16( value->GetString() );
+	pWriter->WriteString16(value->GetString());
 }
 
-void debnVisitorValueType::VisitData( deNetworkValueData *value ){
+void debnVisitorValueType::VisitData(deNetworkValueData *value){
 	int length = value->GetLength();
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	pType = evtData;
-	pWriter->WriteUInt( ( uint32_t )length );
-	pWriter->Write( value->GetData(), length );
+	pWriter->WriteUInt((uint32_t)length);
+	pWriter->Write(value->GetData(), length);
 }
 
-void debnVisitorValueType::VisitPoint2( deNetworkValuePoint2 *value ){
+void debnVisitorValueType::VisitPoint2(deNetworkValuePoint2 *value){
 	const decPoint &point = value->GetPoint();
 	//int absX = abs( point.x );
 	//int absY = abs( point.y );
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	/*if( absX < 128 && absY < 128 ){
 		pType = evtPoint2B8;
-		pWriter->WriteChar( ( signed char )point.x );
-		pWriter->WriteChar( ( signed char )point.y );
+		pWriter->WriteChar((signed char)point.x);
+		pWriter->WriteChar((signed char)point.y);
 		
-	}else if( absX < 32768 && absY < 32768 ){
+	}else if(absX < 32768 && absY < 32768){
 		pType = evtPoint2B16;
-		pWriter->WriteShort( ( signed short )point.x );
-		pWriter->WriteShort( ( signed short )point.y );
+		pWriter->WriteShort((signed short)point.x);
+		pWriter->WriteShort((signed short)point.y);
 		
 	}else{*/
 		pType = evtPoint2S32;
-		pWriter->WriteInt( ( int32_t )point.x );
-		pWriter->WriteInt( ( int32_t )point.y );
+		pWriter->WriteInt((int32_t)point.x);
+		pWriter->WriteInt((int32_t)point.y);
 	//}
 }
 
-void debnVisitorValueType::VisitPoint3( deNetworkValuePoint3 *value ){
+void debnVisitorValueType::VisitPoint3(deNetworkValuePoint3 *value){
 	const decPoint3 &point = value->GetPoint();
 	//int absX = abs( point.x );
 	//int absY = abs( point.y );
 	//int absZ = abs( point.z );
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	/*if( absX < 128 && absY < 128 && absZ < 128 ){
 		pType = evtPoint3B8;
-		pWriter->WriteChar( ( signed char )point.x );
-		pWriter->WriteChar( ( signed char )point.y );
-		pWriter->WriteChar( ( signed char )point.z );
+		pWriter->WriteChar((signed char)point.x);
+		pWriter->WriteChar((signed char)point.y);
+		pWriter->WriteChar((signed char)point.z);
 		
-	}else if( absX < 32768 && absY < 32768 && absZ < 32768 ){
+	}else if(absX < 32768 && absY < 32768 && absZ < 32768){
 		pType = evtPoint3B16;
-		pWriter->WriteShort( ( signed short )point.x );
-		pWriter->WriteShort( ( signed short )point.y );
-		pWriter->WriteShort( ( signed short )point.z );
+		pWriter->WriteShort((signed short)point.x);
+		pWriter->WriteShort((signed short)point.y);
+		pWriter->WriteShort((signed short)point.z);
 		
 	}else{*/
 		pType = evtPoint3S32;
-		pWriter->WriteInt( ( int32_t )point.x );
-		pWriter->WriteInt( ( int32_t )point.y );
-		pWriter->WriteInt( ( int32_t )point.z );
+		pWriter->WriteInt((int32_t)point.x);
+		pWriter->WriteInt((int32_t)point.y);
+		pWriter->WriteInt((int32_t)point.z);
 	//}
 }
 
-void debnVisitorValueType::VisitVector2( deNetworkValueVector2 *value ){
+void debnVisitorValueType::VisitVector2(deNetworkValueVector2 *value){
 	const decVector2 &vector = value->GetVector();
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	pType = evtVector2F32;
-	pWriter->WriteFloat( vector.x );
-	pWriter->WriteFloat( vector.y );
+	pWriter->WriteFloat(vector.x);
+	pWriter->WriteFloat(vector.y);
 }
 
-void debnVisitorValueType::VisitVector3( deNetworkValueVector3 *value ){
+void debnVisitorValueType::VisitVector3(deNetworkValueVector3 *value){
 	const decDVector &vector = value->GetVector();
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	pType = evtVector3F64;
-	pWriter->WriteDouble( vector.x );
-	pWriter->WriteDouble( vector.y );
-	pWriter->WriteDouble( vector.z );
+	pWriter->WriteDouble(vector.x);
+	pWriter->WriteDouble(vector.y);
+	pWriter->WriteDouble(vector.z);
 }
 
-void debnVisitorValueType::VisitQuaternion( deNetworkValueQuaternion *value ){
+void debnVisitorValueType::VisitQuaternion(deNetworkValueQuaternion *value){
 	const decQuaternion &quaternion = value->GetQuaternion();
 	
-	pWriter->SetPosition( 0 );
+	pWriter->SetPosition(0);
 	pMessage->Clear();
 	
 	pType = evtQuaternionF32;
-	pWriter->WriteFloat( quaternion.x );
-	pWriter->WriteFloat( quaternion.y );
-	pWriter->WriteFloat( quaternion.z );
-	pWriter->WriteFloat( quaternion.w );
+	pWriter->WriteFloat(quaternion.x);
+	pWriter->WriteFloat(quaternion.y);
+	pWriter->WriteFloat(quaternion.z);
+	pWriter->WriteFloat(quaternion.w);
 }

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create add to render task particles object. */
-	deoglAddToRenderTaskParticles( deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask );
+	deoglAddToRenderTaskParticles(deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask);
 	
 	/** Clean up add to render task particles object. */
 	~deoglAddToRenderTaskParticles();
@@ -65,24 +65,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline type. */
-	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{return pSkinPipelineType;}
 	
 	/** Set pipeline type. */
-	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
+	void SetSkinPipelineType(deoglSkinTexturePipelines::eTypes type);
 	
 	/** Pipeline modifier. */
-	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
+	inline int GetSkinPipelineModifier() const{return pSkinPipelineModifier;}
 	
 	/** Set pipeline modifier. */
-	void SetSkinPipelineModifier( int modifier );
+	void SetSkinPipelineModifier(int modifier);
 	
 	
 	
 	/** Add particle emitter particless from all emitters in a list to the render task. */
-	void AddParticles( const deoglParticleEmitterInstanceList &list );
+	void AddParticles(const deoglParticleEmitterInstanceList &list);
 	
 	/** Add a particle emitter particles to the render task. */
-	void AddParticle( deoglRParticleEmitterInstance &emitter, const deoglRParticleEmitterInstance::sParticle *particle );
+	void AddParticle(deoglRParticleEmitterInstance &emitter, const deoglRParticleEmitterInstance::sParticle *particle);
 	/*@}*/
 };
 

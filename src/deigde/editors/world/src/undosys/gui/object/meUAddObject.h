@@ -49,9 +49,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUAddObject( meWorld *world, meObject *object );
+	meUAddObject(meWorld *world, meObject *object);
 	/** \brief Create new undo object. */
-	meUAddObject( meWorld *world, const decDVector &position, const char *classname );
+	meUAddObject(meWorld *world, const decDVector &position, const char *classname);
 	/** \brief Clean up undo object. */
 	virtual ~meUAddObject();
 	/*@}*/
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object to add. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline meObject *GetObject() const{return pObject;}
 	
 	/** \brief Undo. */
 	virtual void Undo();

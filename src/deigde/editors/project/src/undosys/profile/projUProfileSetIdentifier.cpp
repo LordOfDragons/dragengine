@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetIdentifier::projUProfileSetIdentifier( projProfile *profile, const decUuid &newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetIdentifier::projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set identifier" );
+	SetShortInfo("Profile set identifier");
 	
 	pOldValue = profile->GetIdentifier();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetIdentifier::~projUProfileSetIdentifier(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ projUProfileSetIdentifier::~projUProfileSetIdentifier(){
 ///////////////
 
 void projUProfileSetIdentifier::Undo(){
-	pProfile->SetIdentifier( pOldValue );
+	pProfile->SetIdentifier(pOldValue);
 }
 
 void projUProfileSetIdentifier::Redo(){
-	pProfile->SetIdentifier( pNewValue );
+	pProfile->SetIdentifier(pNewValue);
 }

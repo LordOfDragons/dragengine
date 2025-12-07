@@ -56,7 +56,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionUndo( igdeEnvironment &environment, igdeUndoSystem *undoSystem = NULL );
+	igdeActionUndo(igdeEnvironment &environment, igdeUndoSystem *undoSystem = NULL);
 	
 	
 	
@@ -76,13 +76,13 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Undo system or NULL. */
-	inline igdeUndoSystem *GetRedoSystem() const{ return pUndoSystem; }
+	inline igdeUndoSystem *GetRedoSystem() const{return pUndoSystem;}
 	
 	/** \brief Set undo system or NULL. */
-	void SetUndoSystem( igdeUndoSystem *undoSystem );
+	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	
 	

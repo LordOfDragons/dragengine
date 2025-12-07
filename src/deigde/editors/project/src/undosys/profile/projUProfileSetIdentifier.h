@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetIdentifier( projProfile *profile, const decUuid &newValue );
+	projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetIdentifier();

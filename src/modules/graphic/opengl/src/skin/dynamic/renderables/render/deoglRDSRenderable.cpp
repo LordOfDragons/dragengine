@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRDSRenderable::deoglRDSRenderable( eType type, deoglRDynamicSkin &dynamicSkin ) :
-pType( type ),
-pDynamicSkin( dynamicSkin ){
+deoglRDSRenderable::deoglRDSRenderable(eType type, deoglRDynamicSkin &dynamicSkin) :
+pType(type),
+pDynamicSkin(dynamicSkin){
 }
 
 deoglRDSRenderable::~deoglRDSRenderable(){
@@ -51,18 +51,18 @@ deoglRDSRenderable::~deoglRDSRenderable(){
 // Management
 ///////////////
 
-void deoglRDSRenderable::SetName( const char *name ){
+void deoglRDSRenderable::SetName(const char *name){
 	pName = name;
 }
 
-void deoglRDSRenderable::Render( const deoglRenderPlanMasked* ){
+void deoglRDSRenderable::Render(const deoglRenderPlanMasked*){
 }
 
-float deoglRDSRenderable::GetRenderValue( float defaultValue ){
+float deoglRDSRenderable::GetRenderValue(float defaultValue){
 	return defaultValue;
 }
 
-decColor deoglRDSRenderable::GetRenderColor( const decColor &defaultColor ){
+decColor deoglRDSRenderable::GetRenderColor(const decColor &defaultColor){
 	return defaultColor;
 }
 

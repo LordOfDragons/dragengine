@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetRange( gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue );
+	gdeUOCSpeakerSetRange(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

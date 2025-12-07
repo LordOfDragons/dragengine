@@ -54,10 +54,10 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action ) = 0;
+	virtual void OnParameterChanged(igdeAction *action) = 0;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action ) = 0;
+	virtual void OnDestroyed(igdeAction *action) = 0;
 	/*@}*/
 };
 

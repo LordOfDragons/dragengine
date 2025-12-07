@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitRemove( ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action );
+	ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitRemove();

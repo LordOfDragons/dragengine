@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCVarSetTestVariable( ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionVariable *condition, const char *newVariable );
+	ceUCCVarSetTestVariable(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionVariable *condition, const char *newVariable);
 	
 protected:
 	/** \brief Clean up undo. */

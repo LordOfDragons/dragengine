@@ -41,20 +41,20 @@
 ////////////////////////////
 
 deSkyController::deSkyController() :
-pMinValue( 0.0f ),
-pMaxValue( 1.0f ),
-pCurValue( 0.0f ),
-pClamp( true ),
-pFrozen( false ){
+pMinValue(0.0f),
+pMaxValue(1.0f),
+pCurValue(0.0f),
+pClamp(true),
+pFrozen(false){
 }
 
-deSkyController::deSkyController( const deSkyController &controller ) :
-pName( controller.pName ),
-pMinValue( controller.pMinValue ),
-pMaxValue( controller.pMaxValue ),
-pCurValue( controller.pCurValue ),
-pClamp( controller.pClamp ),
-pFrozen( controller.pFrozen ){
+deSkyController::deSkyController(const deSkyController &controller) :
+pName(controller.pName),
+pMinValue(controller.pMinValue),
+pMaxValue(controller.pMaxValue),
+pCurValue(controller.pCurValue),
+pClamp(controller.pClamp),
+pFrozen(controller.pFrozen){
 }
 
 deSkyController::~deSkyController(){
@@ -65,23 +65,23 @@ deSkyController::~deSkyController(){
 // Management
 ///////////////
 
-void deSkyController::SetName( const char *name ){
+void deSkyController::SetName(const char *name){
 	pName = name;
 }
 
-void deSkyController::SetValueRange( float minValue, float maxValue ){
-	if( pFrozen ){
+void deSkyController::SetValueRange(float minValue, float maxValue){
+	if(pFrozen){
 		return;
 	}
 	
 	pMinValue = minValue;
-	pMaxValue = decMath::max( maxValue, minValue );
+	pMaxValue = decMath::max(maxValue, minValue);
 	
 	pUpdateValue();
 }
 
-void deSkyController::SetCurrentValue( float value ){
-	if( pFrozen ){
+void deSkyController::SetCurrentValue(float value){
+	if(pFrozen){
 		return;
 	}
 	
@@ -90,8 +90,8 @@ void deSkyController::SetCurrentValue( float value ){
 	pUpdateValue();
 }
 
-void deSkyController::IncrementCurrentValue( float incrementBy ){
-	if( pFrozen ){
+void deSkyController::IncrementCurrentValue(float incrementBy){
+	if(pFrozen){
 		return;
 	}
 	
@@ -100,11 +100,11 @@ void deSkyController::IncrementCurrentValue( float incrementBy ){
 	pUpdateValue();
 }
 
-void deSkyController::SetClamp( bool clamp ){
+void deSkyController::SetClamp(bool clamp){
 	pClamp = clamp;
 }
 
-void deSkyController::SetFrozen( bool frozen ){
+void deSkyController::SetFrozen(bool frozen){
 	pFrozen = frozen;
 }
 
@@ -113,7 +113,7 @@ void deSkyController::SetFrozen( bool frozen ){
 // Operators
 //////////////
 
-deSkyController &deSkyController::operator=( const deSkyController &controller ){
+deSkyController &deSkyController::operator=(const deSkyController &controller){
 	pName = controller.pName;
 	pMinValue = controller.pMinValue;
 	pMaxValue = controller.pMaxValue;
@@ -132,18 +132,18 @@ void deSkyController::pUpdateValue(){
 	const float range = pMaxValue - pMinValue;
 	const bool hasRange = range > 1e-5f;
 	
-	if( pClamp ){
-		if( pCurValue < pMinValue ){
+	if(pClamp){
+		if(pCurValue < pMinValue){
 			pCurValue = pMinValue;
 			
-		}else if( pCurValue > pMaxValue ){
+		}else if(pCurValue > pMaxValue){
 			pCurValue = pMaxValue;
 		}
 		
 	}else{
-		if( hasRange ){
-			pCurValue = fmodf( pCurValue - pMinValue, range );
-			if( pCurValue < 0 ){
+		if(hasRange){
+			pCurValue = fmodf(pCurValue - pMinValue, range);
+			if(pCurValue < 0){
 				pCurValue += pMinValue + range;
 				
 			}else{

@@ -97,7 +97,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create connection. */
-	fbxModel( fbxScene &scene, fbxNode &nodeGeometry );
+	fbxModel(fbxScene &scene, fbxNode &nodeGeometry);
 	
 protected:
 	/** Clean up connection. */
@@ -110,25 +110,25 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Scene. */
-	inline fbxScene &GetScene() const{ return pScene; }
+	inline fbxScene &GetScene() const{return pScene;}
 	
 	/** Geometry node. */
-	inline fbxNode &GetNodeGeometry() const{ return pNodeGeomtry; }
+	inline fbxNode &GetNodeGeometry() const{return pNodeGeomtry;}
 	
 	/** Model node. */
-	inline fbxNode &GetNodeModel() const{ return *pNodeModel; }
+	inline fbxNode &GetNodeModel() const{return *pNodeModel;}
 	
 	/** Deformer node. */
-	inline fbxNode *GetNodeDeformer() const{ return pNodeDeformer; }
+	inline fbxNode *GetNodeDeformer() const{return pNodeDeformer;}
 	
 	/** Geometry ID. */
-	inline int64_t GetGeometryID() const{ return pGeometryID; }
+	inline int64_t GetGeometryID() const{return pGeometryID;}
 	
 	/** Model ID. */
-	inline int64_t GetModelID() const{ return pModelID; }
+	inline int64_t GetModelID() const{return pModelID;}
 	
 	/** Deformer ID. */
-	inline int64_t GetDeformerID() const{ return pDeformerID; }
+	inline int64_t GetDeformerID() const{return pDeformerID;}
 	
 	
 	
@@ -136,55 +136,55 @@ public:
 	int GetClusterCount() const;
 	
 	/** Cluster at index. */
-	fbxModelCluster *GetClusterAt( int index ) const;
+	fbxModelCluster *GetClusterAt(int index) const;
 	
 	/** Named cluster or NULL if absent. */
-	fbxModelCluster *GetClusterNamed( const char *name ) const;
+	fbxModelCluster *GetClusterNamed(const char *name) const;
 	
 	/** Match clusters against rig. */
-	void MatchClusters( const fbxRig &rig );
+	void MatchClusters(const fbxRig &rig);
 	
 	/** Build weights. */
 	void BuildWeights();
 	
 	/** Count of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{return pVertexCount;}
 	
 	/** Vertex position. */
-	inline const decVector &GetVertexPositionAt( int index ) const{ return pVertices[ index ].position; }
+	inline const decVector &GetVertexPositionAt(int index) const{return pVertices[index].position;}
 	
 	/** Vertex weight set. */
-	inline int GetVertexWeightSetAt( int index ) const{ return pVertices[ index ].weightSet; }
+	inline int GetVertexWeightSetAt(int index) const{return pVertices[index].weightSet;}
 	
 	/** Get weight. */
-	const deModelWeight &GetWeightAt( int index ) const;
+	const deModelWeight &GetWeightAt(int index) const;
 	
 	/** Weight sets. */
-	inline const decIntList &GetWeightSetWeights() const{ return pWeightSetWeights; }
-	inline const decIntList &GetWeightSetsFirstWeight() const{ return pWeightSetsFirstWeight; }
-	inline const decIntList &GetWeightSetsWeightsCount() const{ return pWeightSetsWeightsCount; }
-	inline const decIntList &GetWeightGroupsSetCount() const{ return pWeightGroupsSetCount; }
+	inline const decIntList &GetWeightSetWeights() const{return pWeightSetWeights;}
+	inline const decIntList &GetWeightSetsFirstWeight() const{return pWeightSetsFirstWeight;}
+	inline const decIntList &GetWeightSetsWeightsCount() const{return pWeightSetsWeightsCount;}
+	inline const decIntList &GetWeightGroupsSetCount() const{return pWeightGroupsSetCount;}
 	
 	
 	
 	/** Matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** Culling. */
-	inline bool GetCulling() const{ return pCulling; }
+	inline bool GetCulling() const{return pCulling;}
 	
 	
 	
 	/** Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 	
 	
 	
 private:
-	int pAddVertexWeight( int bone, float weight );
-	int pAddWeight( int bone, float weight );
-	int pAddWeightSet( const decIntList &weights );
+	int pAddVertexWeight(int bone, float weight);
+	int pAddWeight(int bone, float weight);
+	int pAddWeightSet(const decIntList &weights);
 };
 
 #endif

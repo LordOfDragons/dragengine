@@ -39,19 +39,19 @@
 ////////////////////////////
 
 ceCASetActorParameter::ceCASetActorParameter() :
-ceConversationAction( eatSetActorParameter ),
-pName( "Parameter" ),
-pOperator( eopSet ),
-pValue( 0 ){
+ceConversationAction(eatSetActorParameter),
+pName("Parameter"),
+pOperator(eopSet),
+pValue(0){
 }
 
-ceCASetActorParameter::ceCASetActorParameter( const ceCASetActorParameter &action ) :
-ceConversationAction( action ),
-pActor( action.pActor ),
-pName( action.pName ),
-pOperator( action.pOperator ),
-pValue( action.pValue ),
-pValueVariable( action.pValueVariable ){
+ceCASetActorParameter::ceCASetActorParameter(const ceCASetActorParameter &action) :
+ceConversationAction(action),
+pActor(action.pActor),
+pName(action.pName),
+pOperator(action.pOperator),
+pValue(action.pValue),
+pValueVariable(action.pValueVariable){
 }
 
 ceCASetActorParameter::~ceCASetActorParameter(){
@@ -62,28 +62,28 @@ ceCASetActorParameter::~ceCASetActorParameter(){
 // Management
 ///////////////
 
-void ceCASetActorParameter::SetActor( const char *id ){
+void ceCASetActorParameter::SetActor(const char *id){
 	pActor = id;
 }
 
-void ceCASetActorParameter::SetName( const char *name ){
+void ceCASetActorParameter::SetName(const char *name){
 	pName = name;
 }
 
-void ceCASetActorParameter::SetOperator( eOperators aOperator ){
+void ceCASetActorParameter::SetOperator(eOperators aOperator){
 	pOperator = aOperator;
 }
 
-void ceCASetActorParameter::SetValue( int value ){
+void ceCASetActorParameter::SetValue(int value){
 	pValue = value;
 }
 
-void ceCASetActorParameter::SetValueVariable( const char *variable ){
+void ceCASetActorParameter::SetValueVariable(const char *variable){
 	pValueVariable = variable;
 }
 
 
 
 ceConversationAction *ceCASetActorParameter::CreateCopy() const{
-	return new ceCASetActorParameter( *this );
+	return new ceCASetActorParameter(*this);
 }

@@ -64,7 +64,7 @@ public:
 	meHTVRuleResult();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleResult( const meHTVRuleResult &rule );
+	meHTVRuleResult(const meHTVRuleResult &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleResult();
@@ -73,16 +73,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Probability to use if there is no input probability. */
-	inline float GetProbability() const{ return pProbability; }
+	inline float GetProbability() const{return pProbability;}
 	/** Sets the probability to use if there is no input probability. */
-	void SetProbability( float probability );
+	void SetProbability(float probability);
 	/** Variation to use if there is no input variation. */
-	inline int GetVariation() const{ return pVariation; }
+	inline int GetVariation() const{return pVariation;}
 	/** Sets the variation to use if there is no input variation. */
-	void SetVariation( int variation );
+	void SetVariation(int variation);
 	
 	/** Evaluate rule. */
-	virtual void Evaluate( meHTVEvaluationEnvironment &evalEnv );
+	virtual void Evaluate(meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

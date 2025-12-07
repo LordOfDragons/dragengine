@@ -35,18 +35,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUShapeHullSetPoint::reUShapeHullSetPoint( reRigShapeHull *shape, const decVector &pointNew, int index ) :
-pShape( shape ),
-pPointNew( pointNew ),
-pIndex( index )
+reUShapeHullSetPoint::reUShapeHullSetPoint(reRigShapeHull *shape, const decVector &pointNew, int index) :
+pShape(shape),
+pPointNew(pointNew),
+pIndex(index)
 {
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+	if(! shape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPointOld = shape->GetPointAt( index );
+	pPointOld = shape->GetPointAt(index);
 	
-	SetShortInfo( "Shape hull set point" );
+	SetShortInfo("Shape hull set point");
 }
 
 reUShapeHullSetPoint::~reUShapeHullSetPoint(){
@@ -58,9 +58,9 @@ reUShapeHullSetPoint::~reUShapeHullSetPoint(){
 ///////////////
 
 void reUShapeHullSetPoint::Undo(){
-	( ( reRigShapeHull& )( deObject& )pShape ).SetPointAt( pIndex, pPointOld );
+	((reRigShapeHull&)(deObject&)pShape).SetPointAt(pIndex, pPointOld);
 }
 
 void reUShapeHullSetPoint::Redo(){
-	( ( reRigShapeHull& )( deObject& )pShape ).SetPointAt( pIndex, pPointNew );
+	((reRigShapeHull&)(deObject&)pShape).SetPointAt(pIndex, pPointNew);
 }

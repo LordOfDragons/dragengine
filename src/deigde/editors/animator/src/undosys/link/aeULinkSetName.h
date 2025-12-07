@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkSetName( aeLink *link, const char *newName );
+	aeULinkSetName(aeLink *link, const char *newName);
 protected:
 	/** Clean up undo. */
 	virtual ~aeULinkSetName();

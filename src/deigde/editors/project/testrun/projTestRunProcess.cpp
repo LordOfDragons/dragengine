@@ -80,12 +80,12 @@
 /////////////////////////////
 
 projTestRunProcess::sRunParameters::sRunParameters() :
-parameterCount( 0 ),
-parameters( NULL ){
+parameterCount(0),
+parameters(NULL){
 }
 
 projTestRunProcess::sRunParameters::~sRunParameters(){
-	if( parameters ){
+	if(parameters){
 		delete [] parameters;
 	}
 }
@@ -94,17 +94,17 @@ projTestRunProcess::sRunParameters::~sRunParameters(){
 /////////////////////////////////
 
 #ifdef OS_W32
-projTestRunProcess::projTestRunProcess( HANDLE pipeIn, HANDLE pipeOut )
+projTestRunProcess::projTestRunProcess(HANDLE pipeIn, HANDLE pipeOut)
 #else
-projTestRunProcess::projTestRunProcess( int pipeIn, int pipeOut )
+projTestRunProcess::projTestRunProcess(int pipeIn, int pipeOut)
 #endif
 :
-pPipeIn( pipeIn ),
-pPipeOut( pipeOut ),
+pPipeIn(pipeIn),
+pPipeOut(pipeOut),
 
-pLauncher( *this ),
-pEngine( *this ),
-pCommandThread( NULL ){
+pLauncher(*this),
+pEngine(*this),
+pCommandThread(NULL){
 }
 
 projTestRunProcess::~projTestRunProcess(){
@@ -115,102 +115,102 @@ projTestRunProcess::~projTestRunProcess(){
 // Management
 ///////////////
 
-void projTestRunProcess::WriteUCharToPipe( int value ){
-	if( value < 0 || value > 0xff ){
-		DETHROW( deeInvalidParam );
+void projTestRunProcess::WriteUCharToPipe(int value){
+	if(value < 0 || value > 0xff){
+		DETHROW(deeInvalidParam);
 	}
-	const uint8_t uchar = ( uint8_t )value;
-	WriteToPipe( &uchar, sizeof( uint8_t ) );
+	const uint8_t uchar = (uint8_t)value;
+	WriteToPipe(&uchar, sizeof(uint8_t));
 }
 
-void projTestRunProcess::WriteUShortToPipe( int value ){
-	if( value < 0 || value > 0xffff ){
-		DETHROW( deeInvalidParam );
+void projTestRunProcess::WriteUShortToPipe(int value){
+	if(value < 0 || value > 0xffff){
+		DETHROW(deeInvalidParam);
 	}
-	const uint16_t vushort = ( uint16_t )value;
-	WriteToPipe( &vushort, sizeof( uint16_t ) );
+	const uint16_t vushort = (uint16_t)value;
+	WriteToPipe(&vushort, sizeof(uint16_t));
 }
 
-void projTestRunProcess::WriteFloatToPipe( float value ){
-	WriteToPipe( &value, sizeof( float ) );
+void projTestRunProcess::WriteFloatToPipe(float value){
+	WriteToPipe(&value, sizeof(float));
 }
 
-void projTestRunProcess::WriteString16ToPipe( const char *string ){
-	const int length = ( int )strlen( string );
-	WriteUShortToPipe( length );
-	WriteToPipe( string, length );
+void projTestRunProcess::WriteString16ToPipe(const char *string){
+	const int length = (int)strlen(string);
+	WriteUShortToPipe(length);
+	WriteToPipe(string, length);
 }
 
-void projTestRunProcess::WriteToPipe( const void *data, int length ){
-	if( length == 0 ){
+void projTestRunProcess::WriteToPipe(const void *data, int length){
+	if(length == 0){
 		return;
 	}
 	
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if( ! WriteFile( pPipeOut, data, length, &bytesWritten, NULL ) ){
-		DETHROW( deeInvalidAction );
+	if(! WriteFile(pPipeOut, data, length, &bytesWritten, NULL)){
+		DETHROW(deeInvalidAction);
 	}
-	if( ( int )bytesWritten < length ){
-		DETHROW( deeInvalidAction );
+	if((int)bytesWritten < length){
+		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	if( write( pPipeOut, data, length ) < length ){
-		DETHROW( deeInvalidAction );
+	if(write(pPipeOut, data, length) < length){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 }
 
 int projTestRunProcess::ReadUCharFromPipe(){
 	uint8_t uchar;
-	ReadFromPipe( &uchar, sizeof( uint8_t ) );
+	ReadFromPipe(&uchar, sizeof(uint8_t));
 	return uchar;
 }
 
 int projTestRunProcess::ReadUShortFromPipe(){
 	uint16_t vushort;
-	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	ReadFromPipe(&vushort, sizeof(uint16_t));
 	return vushort;
 }
 
 float projTestRunProcess::ReadFloatFromPipe(){
 	float value;
-	ReadFromPipe( &value, sizeof( float ) );
+	ReadFromPipe(&value, sizeof(float));
 	return value;
 }
 
 decString projTestRunProcess::ReadString16FromPipe(){
 	const int length = ReadUShortFromPipe();
 	decString string;
-	string.Set( ' ', length );
-	ReadFromPipe( ( char* )string.GetString(), length );
+	string.Set(' ', length);
+	ReadFromPipe((char*)string.GetString(), length);
 	return string;
 }
 
-void projTestRunProcess::ReadFromPipe( void *data, int length ){
-	if( length == 0 ){
+void projTestRunProcess::ReadFromPipe(void *data, int length){
+	if(length == 0){
 		return;
 	}
 	
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if( ! ReadFile( pPipeIn, data, length, &bytesRead, NULL ) ){
-		pLogger->LogErrorFormat( LOGSOURCE, "ReadFromPipe failed with error %ld:",
-			GetLastError() );
-		DETHROW( deeInvalidAction );
+	if(! ReadFile(pPipeIn, data, length, &bytesRead, NULL)){
+		pLogger->LogErrorFormat(LOGSOURCE, "ReadFromPipe failed with error %ld:",
+			GetLastError());
+		DETHROW(deeInvalidAction);
 	}
-	if( ( int )bytesRead < length ){
-		pLogger->LogErrorFormat( LOGSOURCE, "ReadFromPipe read %ld bytes but should"
-			" have read %d bytes:", bytesRead, length );
-		DETHROW( deeInvalidAction );
+	if((int)bytesRead < length){
+		pLogger->LogErrorFormat(LOGSOURCE, "ReadFromPipe read %ld bytes but should"
+			" have read %d bytes:", bytesRead, length);
+		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	if( read( pPipeIn, data, length ) != length ){
-		DETHROW( deeInvalidAction );
+	if(read(pPipeIn, data, length) != length){
+		DETHROW(deeInvalidAction);
 	}
 	#endif
 }
@@ -231,14 +231,14 @@ void projTestRunProcess::Run(){
 		pRunGame();
 		pStopEngine();
 		
-	}catch( const deException &e ){
-		if( pLogger ){
-			pLogger->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		if(pLogger){
+			pLogger->LogException(LOGSOURCE, e);
 			
 		}else{
 #ifdef OS_W32
-			MessageBoxA( NULL, e.FormatOutput().Join( "\n" ).GetString(),
-				"Test-Runner Error", MB_OK | MB_ICONERROR );
+			MessageBoxA(NULL, e.FormatOutput().Join("\n").GetString(),
+				"Test-Runner Error", MB_OK | MB_ICONERROR);
 #else
 			e.PrintError();
 #endif
@@ -247,13 +247,13 @@ void projTestRunProcess::Run(){
 		throw;
 	}
 	
-	if( pLogger ){
-		pLogger->LogInfo( LOGSOURCE, "Test-Run Finished. Exiting process" );
+	if(pLogger){
+		pLogger->LogInfo(LOGSOURCE, "Test-Run Finished. Exiting process");
 	}
 }
 
 void projTestRunProcess::RequestQuit(){
-	if( pEngine.GetEngine() ){
+	if(pEngine.GetEngine()){
 		pEngine.GetEngine()->Quit();
 	}
 }
@@ -268,7 +268,7 @@ void projTestRunProcess::pReadRunParameters(){
 	
 	pRunParameters.pathLogFile = ReadString16FromPipe();
 	pCreateLogger();
-	pLogger->LogInfo( LOGSOURCE, "TestRunner launched. Reading run parameters..." );
+	pLogger->LogInfo(LOGSOURCE, "TestRunner launched. Reading run parameters...");
 
 	pRunParameters.pathDataDirectory = ReadString16FromPipe();
 	pRunParameters.pathOverlay = ReadString16FromPipe();
@@ -284,29 +284,29 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.identifier = ReadString16FromPipe();
 	pRunParameters.windowSizeX = ReadUShortFromPipe();
 	pRunParameters.windowSizeY = ReadUShortFromPipe();
-	pRunParameters.fullScreen = ( ReadUCharFromPipe() != 0 );
+	pRunParameters.fullScreen = (ReadUCharFromPipe() != 0);
 	pRunParameters.windowTitle = ReadString16FromPipe();
 	
 	pRunParameters.parameterCount = ReadUShortFromPipe();
-	if( pRunParameters.parameterCount > 0 ){
-		pRunParameters.parameters = new sModuleParameter[ pRunParameters.parameterCount ];
-		for( i=0; i<pRunParameters.parameterCount; i++ ){
-			pRunParameters.parameters[ i ].module = ReadString16FromPipe();
-			pRunParameters.parameters[ i ].parameter = ReadString16FromPipe();
-			pRunParameters.parameters[ i ].value = ReadString16FromPipe();
+	if(pRunParameters.parameterCount > 0){
+		pRunParameters.parameters = new sModuleParameter[pRunParameters.parameterCount];
+		for(i=0; i<pRunParameters.parameterCount; i++){
+			pRunParameters.parameters[i].module = ReadString16FromPipe();
+			pRunParameters.parameters[i].parameter = ReadString16FromPipe();
+			pRunParameters.parameters[i].value = ReadString16FromPipe();
 		}
 	}
 	
 	pRunParameters.runArguments = ReadString16FromPipe();
 	
 	count = ReadUShortFromPipe();
-	for( i=0; i<count; i++ ){
-		pRunParameters.excludePatterns.Add( ReadString16FromPipe() );
+	for(i=0; i<count; i++){
+		pRunParameters.excludePatterns.Add(ReadString16FromPipe());
 	}
 	
 	count = ReadUShortFromPipe();
-	for( i=0; i<count; i++ ){
-		pRunParameters.requiredExtensions.Add( ReadString16FromPipe() );
+	for(i=0; i<count; i++){
+		pRunParameters.requiredExtensions.Add(ReadString16FromPipe());
 	}
 	
 	pRunParameters.moduleScript = ReadString16FromPipe();
@@ -325,112 +325,112 @@ void projTestRunProcess::pReadRunParameters(){
 	
 // 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
 
-	pLogger->LogInfo( LOGSOURCE, "Run parameters read" );
+	pLogger->LogInfo(LOGSOURCE, "Run parameters read");
 }
 
 void projTestRunProcess::pLogConfiguration(){
 	int i;
 	
-	pLogger->LogInfo( LOGSOURCE, "Run-Configuration:" );
+	pLogger->LogInfo(LOGSOURCE, "Run-Configuration:");
 	
-	pLogger->LogInfoFormat( LOGSOURCE, "- Path Log-File: %s",
-		pRunParameters.pathLogFile.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Path Data Directory: %s",
-		pRunParameters.pathDataDirectory.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Path Overlay Directory: %s",
-		pRunParameters.pathOverlay.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Path Config Directory: %s",
-		pRunParameters.pathConfig.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Path Capture Directory: %s",
-		pRunParameters.pathCapture.GetString() );
+	pLogger->LogInfoFormat(LOGSOURCE, "- Path Log-File: %s",
+		pRunParameters.pathLogFile.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Path Data Directory: %s",
+		pRunParameters.pathDataDirectory.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Path Overlay Directory: %s",
+		pRunParameters.pathOverlay.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Path Config Directory: %s",
+		pRunParameters.pathConfig.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Path Capture Directory: %s",
+		pRunParameters.pathCapture.GetString());
 	
-	pLogger->LogInfoFormat( LOGSOURCE, "- Script Directory: %s",
-		pRunParameters.scriptDirectory.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Script Version: %s",
-		pRunParameters.scriptVersion.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Game Object: %s",
-		pRunParameters.gameObject.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Config: %s",
-		pRunParameters.vfsPathConfig.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Capture: %s",
-		pRunParameters.vfsPathCapture.GetString() );
+	pLogger->LogInfoFormat(LOGSOURCE, "- Script Directory: %s",
+		pRunParameters.scriptDirectory.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Script Version: %s",
+		pRunParameters.scriptVersion.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Game Object: %s",
+		pRunParameters.gameObject.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- VFS Path Config: %s",
+		pRunParameters.vfsPathConfig.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- VFS Path Capture: %s",
+		pRunParameters.vfsPathCapture.GetString());
 	
-	pLogger->LogInfoFormat( LOGSOURCE, "- App-ID: %s",
-		pRunParameters.identifier.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Window Size: %dx%d",
-		pRunParameters.windowSizeX, pRunParameters.windowSizeY );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Full Screen: %s",
-		pRunParameters.fullScreen ? "Yes" : "No" );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Window Title: %s",
-		pRunParameters.windowTitle.GetString() );
+	pLogger->LogInfoFormat(LOGSOURCE, "- App-ID: %s",
+		pRunParameters.identifier.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Window Size: %dx%d",
+		pRunParameters.windowSizeX, pRunParameters.windowSizeY);
+	pLogger->LogInfoFormat(LOGSOURCE, "- Full Screen: %s",
+		pRunParameters.fullScreen ? "Yes" : "No");
+	pLogger->LogInfoFormat(LOGSOURCE, "- Window Title: %s",
+		pRunParameters.windowTitle.GetString());
 	
-	pLogger->LogInfo( LOGSOURCE, "- Module Parameters:" );
-	for( i=0; i<pRunParameters.parameterCount; i++ ){
-		pLogger->LogInfoFormat( LOGSOURCE, "  - %s:%s = %s",
-			pRunParameters.parameters[ i ].module.GetString(),
-			pRunParameters.parameters[ i ].parameter.GetString(),
-			pRunParameters.parameters[ i ].value.GetString() );
+	pLogger->LogInfo(LOGSOURCE, "- Module Parameters:");
+	for(i=0; i<pRunParameters.parameterCount; i++){
+		pLogger->LogInfoFormat(LOGSOURCE, "  - %s:%s = %s",
+			pRunParameters.parameters[i].module.GetString(),
+			pRunParameters.parameters[i].parameter.GetString(),
+			pRunParameters.parameters[i].value.GetString());
 	}
 	
-	pLogger->LogInfoFormat( LOGSOURCE, "- Run Arguments: %s",
-		pRunParameters.runArguments.GetString() );
+	pLogger->LogInfoFormat(LOGSOURCE, "- Run Arguments: %s",
+		pRunParameters.runArguments.GetString());
 	
-	pLogger->LogInfo( LOGSOURCE, "- Exclude Patterns:" );
-	for( i=0; i<pRunParameters.excludePatterns.GetCount(); i++ ){
-		pLogger->LogInfoFormat( LOGSOURCE, "  - %s",
-			pRunParameters.excludePatterns.GetAt( i ).GetString() );
+	pLogger->LogInfo(LOGSOURCE, "- Exclude Patterns:");
+	for(i=0; i<pRunParameters.excludePatterns.GetCount(); i++){
+		pLogger->LogInfoFormat(LOGSOURCE, "  - %s",
+			pRunParameters.excludePatterns.GetAt(i).GetString());
 	}
 	
-	pLogger->LogInfo( LOGSOURCE, "- Required Extensions:" );
-	for( i=0; i<pRunParameters.requiredExtensions.GetCount(); i++ ){
-		pLogger->LogInfoFormat( LOGSOURCE, "  - %s",
-			pRunParameters.requiredExtensions.GetAt( i ).GetString() );
+	pLogger->LogInfo(LOGSOURCE, "- Required Extensions:");
+	for(i=0; i<pRunParameters.requiredExtensions.GetCount(); i++){
+		pLogger->LogInfoFormat(LOGSOURCE, "  - %s",
+			pRunParameters.requiredExtensions.GetAt(i).GetString());
 	}
 	
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Script: %s (%s)",
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Script: %s (%s)",
 		pRunParameters.moduleScript.GetString(),
-		pRunParameters.moduleScriptVersion.GetString() );
+		pRunParameters.moduleScriptVersion.GetString());
 	
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Graphic: %s",
-		pRunParameters.moduleGraphic.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Input: %s",
-		pRunParameters.moduleInput.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Physics: %s",
-		pRunParameters.modulePhysics.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Animator: %s",
-		pRunParameters.moduleAnimator.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module AI: %s",
-		pRunParameters.moduleAI.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Crash-Recovery: %s",
-		pRunParameters.moduleCrashRecovery.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Audio: %s",
-		pRunParameters.moduleAudio.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Synthesizer: %s",
-		pRunParameters.moduleSynthesizer.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module Network: %s",
-		pRunParameters.moduleNetwork.GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "- Module VR: %s",
-		pRunParameters.moduleVR.GetString() );
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Graphic: %s",
+		pRunParameters.moduleGraphic.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Input: %s",
+		pRunParameters.moduleInput.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Physics: %s",
+		pRunParameters.modulePhysics.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Animator: %s",
+		pRunParameters.moduleAnimator.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module AI: %s",
+		pRunParameters.moduleAI.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Crash-Recovery: %s",
+		pRunParameters.moduleCrashRecovery.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Audio: %s",
+		pRunParameters.moduleAudio.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Synthesizer: %s",
+		pRunParameters.moduleSynthesizer.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module Network: %s",
+		pRunParameters.moduleNetwork.GetString());
+	pLogger->LogInfoFormat(LOGSOURCE, "- Module VR: %s",
+		pRunParameters.moduleVR.GetString());
 }
 
 void projTestRunProcess::pCreateLogger(){
-	if( pRunParameters.pathLogFile.IsEmpty() ){
-		pLogger.TakeOver( new deLoggerConsoleColor );
+	if(pRunParameters.pathLogFile.IsEmpty()){
+		pLogger.TakeOver(new deLoggerConsoleColor);
 		return;
 	}
 	
-	decPath diskPath( decPath::CreatePathNative( pRunParameters.pathLogFile ) );
+	decPath diskPath(decPath::CreatePathNative(pRunParameters.pathLogFile));
 	decPath filePath;
-	filePath.AddComponent( diskPath.GetLastComponent() );
+	filePath.AddComponent(diskPath.GetLastComponent());
 	diskPath.RemoveLastComponent();
 	
 	deVFSContainer::Ref container;
 	decBaseFileWriter::Ref writer;
 	
-	container.TakeOver( new deVFSDiskDirectory( diskPath ) );
-	writer.TakeOver( container->OpenFileForWriting( filePath ) );
+	container.TakeOver(new deVFSDiskDirectory(diskPath));
+	writer.TakeOver(container->OpenFileForWriting(filePath));
 	
-	pLogger.TakeOver( new deLoggerFile( writer ) );
+	pLogger.TakeOver(new deLoggerFile(writer));
 }
 
 void projTestRunProcess::pRunGame(){
@@ -440,14 +440,14 @@ void projTestRunProcess::pRunGame(){
 	pEngine.InitVFS();
 	pEngine.CreateMainWindow();
 	
-	pCommandThread = new projTestRunCommandThread( *this );
+	pCommandThread = new projTestRunCommandThread(*this);
 	pCommandThread->Start();
 	
 	pEngine.Run();
 }
 
 void projTestRunProcess::pStopEngine(){
-	if( pCommandThread ){
+	if(pCommandThread){
 		pCommandThread->Abort();
 		delete pCommandThread;
 		pCommandThread = NULL;

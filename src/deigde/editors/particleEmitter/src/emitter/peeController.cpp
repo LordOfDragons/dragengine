@@ -56,7 +56,7 @@ peeController::peeController(){
 }
 
 peeController::~peeController(){
-	SetEmitter( NULL );
+	SetEmitter(NULL);
 }
 
 
@@ -64,44 +64,44 @@ peeController::~peeController(){
 // Management
 ///////////////
 
-void peeController::SetEmitter( peeEmitter *emitter ){
+void peeController::SetEmitter(peeEmitter *emitter){
 	pEmitter = emitter;
 }
 
-void peeController::UpdateEngineController( deParticleEmitterController &controller ){
-	controller.SetName( pName );
-	controller.SetRange( pLower, pUpper );
-	controller.SetValue( pValue );
-	controller.SetFrozen( pFrozen );
-	controller.SetClamp( pClamp );
+void peeController::UpdateEngineController(deParticleEmitterController &controller){
+	controller.SetName(pName);
+	controller.SetRange(pLower, pUpper);
+	controller.SetValue(pValue);
+	controller.SetFrozen(pFrozen);
+	controller.SetClamp(pClamp);
 }
 
-void peeController::SetEngineControllerIndex( int index ){
+void peeController::SetEngineControllerIndex(int index){
 	pEngControllerIndex = index;
 }
 
 
 
-void peeController::SetName( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+void peeController::SetName(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pName.Equals( name ) ){
+	if(! pName.Equals(name)){
 		pName = name;
 		
-		if( pEmitter ){
-			pEmitter->NotifyControllerNameChanged( this );
+		if(pEmitter){
+			pEmitter->NotifyControllerNameChanged(this);
 		}
 	}
 }
 
-void peeController::SetLower( float value ){
-	if( fabsf( value - pLower ) <= FLOAT_SAFE_EPSILON ){
+void peeController::SetLower(float value){
+	if(fabsf(value - pLower) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	if( value > pUpper ){
+	if(value > pUpper){
 		pLower = value;
 		pUpper = value;
 		
@@ -111,18 +111,18 @@ void peeController::SetLower( float value ){
 	
 	pUpdateRange();
 	
-	if( pEmitter ){
-		pEmitter->NotifyControllerChanged( this );
-		pEmitter->NotifyControllerValueChanged( this );
+	if(pEmitter){
+		pEmitter->NotifyControllerChanged(this);
+		pEmitter->NotifyControllerValueChanged(this);
 	}
 }
 
-void peeController::SetUpper( float value ){
-	if( fabsf( value - pUpper ) <= FLOAT_SAFE_EPSILON ){
+void peeController::SetUpper(float value){
+	if(fabsf(value - pUpper) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	if( value < pLower ){
+	if(value < pLower){
 		pLower = value;
 		pUpper = value;
 		
@@ -132,102 +132,102 @@ void peeController::SetUpper( float value ){
 	
 	pUpdateRange();
 	
-	if( pEmitter ){
-		pEmitter->NotifyControllerChanged( this );
-		pEmitter->NotifyControllerValueChanged( this );
+	if(pEmitter){
+		pEmitter->NotifyControllerChanged(this);
+		pEmitter->NotifyControllerValueChanged(this);
 	}
 }
 
-void peeController::SetValue( float value ){
-	if( pFrozen ){
+void peeController::SetValue(float value){
+	if(pFrozen){
 		return;
 	}
 	
-	value = pCheckValue( value );
-	if( fabsf( value - pValue ) < FLOAT_SAFE_EPSILON ){
+	value = pCheckValue(value);
+	if(fabsf(value - pValue) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pValue = value;
 	
-	if( pEmitter && pEmitter->GetEngineEmitter() ){
+	if(pEmitter && pEmitter->GetEngineEmitter()){
 		deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-		deParticleEmitterController &engController = engEmitterInstance.GetControllerAt( pEngControllerIndex );
+		deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
 		
-		engController.SetValue( pValue );
-		engEmitterInstance.NotifyControllerChangedAt( pEngControllerIndex );
+		engController.SetValue(pValue);
+		engEmitterInstance.NotifyControllerChangedAt(pEngControllerIndex);
 	}
 	
-	if( pEmitter ){
-		pEmitter->NotifyControllerValueChanged( this );
+	if(pEmitter){
+		pEmitter->NotifyControllerValueChanged(this);
 	}
 }
 
-void peeController::IncrementValue( float amount ){
-	SetValue( pValue + amount );
+void peeController::IncrementValue(float amount){
+	SetValue(pValue + amount);
 }
 
-void peeController::SetFrozen( bool frozen ){
-	if( frozen != pFrozen ){
+void peeController::SetFrozen(bool frozen){
+	if(frozen != pFrozen){
 		pFrozen = frozen;
 		
-		if( pEmitter && pEmitter->GetEngineEmitter() ){
+		if(pEmitter && pEmitter->GetEngineEmitter()){
 			deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-			deParticleEmitterController &engController = engEmitterInstance.GetControllerAt( pEngControllerIndex );
+			deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
 			
-			engController.SetFrozen( pFrozen );
-			engController.SetRange( pLower, pUpper );
-			engController.SetValue( pValue );
+			engController.SetFrozen(pFrozen);
+			engController.SetRange(pLower, pUpper);
+			engController.SetValue(pValue);
 			
-			engEmitterInstance.NotifyControllerChangedAt( pEngControllerIndex );
+			engEmitterInstance.NotifyControllerChangedAt(pEngControllerIndex);
 		}
 		
-		if( pEmitter ){
-			pEmitter->NotifyControllerChanged( this );
+		if(pEmitter){
+			pEmitter->NotifyControllerChanged(this);
 		}
 	}
 }
 
-void peeController::SetClamp( bool clamp ){
-	if( clamp != pClamp ){
+void peeController::SetClamp(bool clamp){
+	if(clamp != pClamp){
 		pClamp = clamp;
 		
-		if( pEmitter && pEmitter->GetEngineEmitter() ){
+		if(pEmitter && pEmitter->GetEngineEmitter()){
 			deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-			deParticleEmitterController &engController = engEmitterInstance.GetControllerAt( pEngControllerIndex );
+			deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
 			
-			engController.SetClamp( pClamp );
+			engController.SetClamp(pClamp);
 			
-			engEmitterInstance.NotifyControllerChangedAt( pEngControllerIndex );
+			engEmitterInstance.NotifyControllerChangedAt(pEngControllerIndex);
 		}
 		
-		if( pEmitter ){
-			pEmitter->NotifyControllerChanged( this );
+		if(pEmitter){
+			pEmitter->NotifyControllerChanged(this);
 		}
 	}
 }
 
-void peeController::SetLinkToTime( bool linkToTime ){
-	if( linkToTime != pLinkToTime ){
+void peeController::SetLinkToTime(bool linkToTime){
+	if(linkToTime != pLinkToTime){
 		pLinkToTime = linkToTime;
 		
-		if( pEmitter ){
-			pEmitter->NotifyControllerChanged( this );
+		if(pEmitter){
+			pEmitter->NotifyControllerChanged(this);
 		}
 	}
 }
 
 
 
-void peeController::SetActive( bool active ){
+void peeController::SetActive(bool active){
 	pActive = active;
 }
 
 
 
-void peeController::UpdateValue( float elapsed ){
-	if( pLinkToTime ){
-		IncrementValue( elapsed );
+void peeController::UpdateValue(float elapsed){
+	if(pLinkToTime){
+		IncrementValue(elapsed);
 	}
 }
 
@@ -236,22 +236,22 @@ void peeController::UpdateValue( float elapsed ){
 // Private Functions
 //////////////////////
 
-float peeController::pCheckValue( float value ){
-	if( pClamp ){
-		if( value < pLower ){
+float peeController::pCheckValue(float value){
+	if(pClamp){
+		if(value < pLower){
 			value = pLower;
 			
-		}else if( value > pUpper ){
+		}else if(value > pUpper){
 			value = pUpper;
 		}
 		
 	}else{
 		float range = pUpper - pLower;
 		
-		if( range > 1e-5f ){
-			value = fmodf( value - pLower, range );
+		if(range > 1e-5f){
+			value = fmodf(value - pLower, range);
 			
-			if( value < 0.0f ){
+			if(value < 0.0f){
 				value += pLower + range;
 				
 			}else{
@@ -267,13 +267,13 @@ float peeController::pCheckValue( float value ){
 }
 
 void peeController::pUpdateRange(){
-	if( pEmitter && pEmitter->GetEngineEmitter() ){
+	if(pEmitter && pEmitter->GetEngineEmitter()){
 		deParticleEmitterInstance &engEmitterInstance = *pEmitter->GetEngineEmitterInstance();
-		deParticleEmitterController &engController = engEmitterInstance.GetControllerAt( pEngControllerIndex );
+		deParticleEmitterController &engController = engEmitterInstance.GetControllerAt(pEngControllerIndex);
 		
-		engController.SetRange( pLower, pUpper );
-		engController.SetValue( pValue );
+		engController.SetRange(pLower, pUpper);
+		engController.SetValue(pValue);
 		
-		engEmitterInstance.NotifyControllerChangedAt( pEngControllerIndex );
+		engEmitterInstance.NotifyControllerChangedAt(pEngControllerIndex);
 	}
 }

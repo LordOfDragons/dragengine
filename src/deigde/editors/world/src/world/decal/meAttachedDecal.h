@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create attached decal. */
-	meAttachedDecal( deEngine *engine, meDecal *decal );
+	meAttachedDecal(deEngine *engine, meDecal *decal);
 	
 	/** \brief Clean up attached decal. */
 	~meAttachedDecal();
@@ -63,16 +63,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Engine decal or NULL. */
-	inline deDecal *GetEngineDecal() const{ return pEngDecal; }
+	inline deDecal *GetEngineDecal() const{return pEngDecal;}
 	
 	/** \brief Parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline meObject *GetParentObject() const{return pParentObject;}
 	
 	/** \brief Set parent object. */
-	void SetParentObject( meObject *object );
+	void SetParentObject(meObject *object);
 	
 	/** \brief Attach decal to parent. */
 	void AttachToParent();

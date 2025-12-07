@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleLimitSetEnablePosXMax::aeURuleLimitSetEnablePosXMax( aeRuleLimit *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleLimitSetEnablePosXMax::aeURuleLimitSetEnablePosXMax(aeRuleLimit *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Limit toggle enable maximum x position" );
+	SetShortInfo("Limit toggle enable maximum x position");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosXMax::~aeURuleLimitSetEnablePosXMax(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleLimitSetEnablePosXMax::Undo(){
 }
 
 void aeURuleLimitSetEnablePosXMax::Redo(){
-	pRule->SetEnablePositionXMax( ! pRule->GetEnablePositionXMax() );
+	pRule->SetEnablePositionXMax(! pRule->GetEnablePositionXMax());
 }

@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlay action button. */
-	deainpOverlayActionButton( deAndroidInput &androidInput );
+	deainpOverlayActionButton(deAndroidInput &androidInput);
 	
 	/** \brief Clean up overlay action button. */
 	virtual ~deainpOverlayActionButton();
@@ -69,24 +69,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Binding. */
-	inline const deainpInputBinding &GetBinding() const{ return pBinding; }
+	inline const deainpInputBinding &GetBinding() const{return pBinding;}
 	
 	/** \brief Set binding. */
-	void SetBinding( const deainpInputBinding &binding );
+	void SetBinding(const deainpInputBinding &binding);
 	
 	
 	
 	/** \brief Button radius in pixels. */
-	inline int GetRadius() const{ return pRadius; }
+	inline int GetRadius() const{return pRadius;}
 	
 	/** \brief Set button radius in pixels. */
-	void SetRadius( int radius );
+	void SetRadius(int radius);
 	
 	/** \brief Center of button. */
-	inline const decPoint &GetCenter() const{ return pCenter; }
+	inline const decPoint &GetCenter() const{return pCenter;}
 	
 	/** \brief Set center of button. */
-	void SetCenter( const decPoint &center );
+	void SetCenter(const decPoint &center);
 	
 	
 	
@@ -94,27 +94,27 @@ public:
 	const decString &GetText() const;
 	
 	/** \brief Set button text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Button text color. */
 	const decColor &GetColor() const;
 	
 	/** \brief Set button text color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Button text font or \em NULL if not set. */
 	deFont *GetFont() const;
 	
 	/** \brief Set button text font or \em NULL if not set. */
-	void SetFont( deFont *font );
+	void SetFont(deFont *font);
 	
 	
 	
 	/** \brief Button is pressed. */
-	inline bool GetPressed() const{ return pPressed; }
+	inline bool GetPressed() const{return pPressed;}
 	
 	/** \brief Set if button is pressed. */
-	void SetPressed( bool pressed );
+	void SetPressed(bool pressed);
 	
 	
 	
@@ -131,13 +131,13 @@ public:
 	 * \param[in] position Touch position.
 	 * \returns \em true if event has been handled or \em false otherwise.
 	 */
-	virtual bool OnTouch( int pointerId, const decPoint &position );
+	virtual bool OnTouch(int pointerId, const decPoint &position);
 	
 	/**
 	 * \brief Move event.
 	 * \param[in] position Move distance since last move event.
 	 */
-	virtual void OnMove( const decPoint &position );
+	virtual void OnMove(const decPoint &position);
 	
 	/** \brief Release. */
 	virtual void OnRelease();

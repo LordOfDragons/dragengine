@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTBuildRTsDepth( deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask );
+	deoglRPTBuildRTsDepth(deoglRenderPlanTasks &plan, const deoglRenderPlanMasked *mask);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTBuildRTsDepth();
@@ -68,17 +68,17 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Elapsed time. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/** Finished semaphore. */
-	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
+	inline deSemaphore &GetSemaphore(){return pSemaphore;}
 	/*@}*/
 	
 	
 	
 private:
-	void pSolid( bool xray );
-	void pSolidOutline( bool xray );
+	void pSolid(bool xray);
+	void pSolidOutline(bool xray);
 };
 
 #endif

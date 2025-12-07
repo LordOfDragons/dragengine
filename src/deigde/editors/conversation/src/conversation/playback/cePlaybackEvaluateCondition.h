@@ -58,40 +58,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Evaluate condition. */
-	bool EvaluateCondition( ceConversation &conversation,
-		const ceConversationCondition &condition );
+	bool EvaluateCondition(ceConversation &conversation,
+		const ceConversationCondition &condition);
 	
 	/** \brief Evaluate logic condition. */
-	bool EvaluateLogic( ceConversation &conversation,
-		const ceCConditionLogic &condition );
+	bool EvaluateLogic(ceConversation &conversation,
+		const ceCConditionLogic &condition);
 	
 	/** \brief Evaluate has actor condition. */
-	bool EvaluateHasActor( ceConversation &conversation,
-		const ceCConditionHasActor &condition );
+	bool EvaluateHasActor(ceConversation &conversation,
+		const ceCConditionHasActor &condition);
 	
 	/** \brief Evaluate actor in conversation. */
-	bool EvaluateActorInConversation( ceConversation &conversation,
-		const ceCConditionActorInConversation &condition );
+	bool EvaluateActorInConversation(ceConversation &conversation,
+		const ceCConditionActorInConversation &condition);
 	
 	/** \brief Evaluate variable condition. */
-	bool EvaluateVariable( ceConversation &conversation,
-		const ceCConditionVariable &condition );
+	bool EvaluateVariable(ceConversation &conversation,
+		const ceCConditionVariable &condition);
 	
 	/** \brief Evaluate actor parameter condition. */
-	bool EvaluateActorParameter( ceConversation &conversation,
-		const ceCConditionActorParameter &condition );
+	bool EvaluateActorParameter(ceConversation &conversation,
+		const ceCConditionActorParameter &condition);
 	
 	/** \brief Evaluate actor command condition. */
-	bool EvaluateActorCommand( ceConversation &conversation,
-		const ceCConditionActorCommand &condition );
+	bool EvaluateActorCommand(ceConversation &conversation,
+		const ceCConditionActorCommand &condition);
 	
 	/** \brief Evaluate game command condition. */
-	bool EvaluateGameCommand( ceConversation &conversation,
-		const ceCConditionGameCommand &condition );
+	bool EvaluateGameCommand(ceConversation &conversation,
+		const ceCConditionGameCommand &condition);
 	
 	/** \brief Evaluate trigger condition. */
-	bool EvaluateTrigger( ceConversation &conversation,
-		const ceCConditionTrigger &condition );
+	bool EvaluateTrigger(ceConversation &conversation,
+		const ceCConditionTrigger &condition);
 	/*@}*/
 };
 

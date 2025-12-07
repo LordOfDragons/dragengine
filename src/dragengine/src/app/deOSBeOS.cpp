@@ -54,18 +54,18 @@
 ////////////////////////////
 
 deOSBeOS::deOSBeOS() :
-pScreenWidth( 0 ),
-pScreenHeight( 0 ),
-pCurWindow( NULL ),
-pHostingMainWindow( NULL ),
-pHostingRenderWindow( NULL )
+pScreenWidth(0),
+pScreenHeight(0),
+pCurWindow(NULL),
+pHostingMainWindow(NULL),
+pHostingRenderWindow(NULL)
 {
-	const BRect screenSize( BScreen().Frame() );
+	const BRect screenSize(BScreen().Frame());
 	pScreenWidth = screenSize.IntegerWidth();
 	pScreenHeight = screenSize.IntegerHeight();
 	
 	// init locale
-	setlocale( LC_ALL, "" );
+	setlocale(LC_ALL, "");
 }
 
 deOSBeOS::~deOSBeOS(){
@@ -78,51 +78,51 @@ deOSBeOS::~deOSBeOS(){
 ///////////////
 
 decString deOSBeOS::GetPathEngine(){
-	const char * const envPath = getenv( "DE_ENGINE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_ENGINE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
-	return decString( DE_ENGINE_PATH );
+	return decString(DE_ENGINE_PATH);
 }
 
 decString deOSBeOS::GetPathShare(){
-	const char * const envPath = getenv( "DE_SHARE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_SHARE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
-	return decString( DE_SHARE_PATH );
+	return decString(DE_SHARE_PATH);
 }
 
 decString deOSBeOS::GetPathSystemConfig(){
-	const char * const envPath = getenv( "DE_CONFIG_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CONFIG_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
-	return decString( DE_CONFIG_PATH );
+	return decString(DE_CONFIG_PATH);
 }
 
 decString deOSBeOS::GetPathUserConfig(){
-	const char * const envPath = getenv( "DE_CONFIG_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CONFIG_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
-	return decString( pGetHomeDirectory() + "/config/settings/dragengine" );
+	return decString(pGetHomeDirectory() + "/config/settings/dragengine");
 }
 
 decString deOSBeOS::GetPathUserCache(){
-	const char * const envPath = getenv( "DE_CACHE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CACHE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
-	return decString( pGetHomeDirectory() + "/config/cache/dragengine" );
+	return decString(pGetHomeDirectory() + "/config/cache/dragengine");
 }
 
 decString deOSBeOS::GetPathUserCapture(){
-	const char * const envPath = getenv( "DE_CAPTURE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CAPTURE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
-	return decString( GetPathUserCache() + "/config/capture" );
+	return decString(GetPathUserCache() + "/config/capture");
 }
 
 
@@ -134,33 +134,33 @@ int deOSBeOS::GetDisplayCount(){
 	return 1;
 }
 
-decPoint deOSBeOS::GetDisplayCurrentResolution( int display ){
-	DEASSERT_TRUE( display == 0 )
+decPoint deOSBeOS::GetDisplayCurrentResolution(int display){
+	DEASSERT_TRUE(display == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSBeOS::GetDisplayCurrentRefreshRate( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSBeOS::GetDisplayCurrentRefreshRate(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 30;
 }
 
-int deOSBeOS::GetDisplayResolutionCount( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSBeOS::GetDisplayResolutionCount(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 1;
 }
 
-decPoint deOSBeOS::GetDisplayResolution( int display, int resolution ){
-	DEASSERT_TRUE( display == 0 )
-	DEASSERT_TRUE( resolution == 0 )
+decPoint deOSBeOS::GetDisplayResolution(int display, int resolution){
+	DEASSERT_TRUE(display == 0)
+	DEASSERT_TRUE(resolution == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSBeOS::GetDisplayCurrentScaleFactor( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSBeOS::GetDisplayCurrentScaleFactor(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 100;
 }
@@ -179,9 +179,9 @@ deOSBeOS *deOSBeOS::CastToOSBeOS(){
 // Unix related
 /////////////////
 
-void deOSBeOS::SetWindow( BWindow *window ){
+void deOSBeOS::SetWindow(BWindow *window){
 	// check if there is a window at the moment
-	if( pCurWindow ){
+	if(pCurWindow){
 		// ungrab mouse pointer
 	}
 	
@@ -189,16 +189,16 @@ void deOSBeOS::SetWindow( BWindow *window ){
 	pCurWindow = window;
 	
 	// show new window if not null
-	if( pCurWindow ){
+	if(pCurWindow){
 		pCurWindow->Show();
 	}
 }
 
-void deOSBeOS::SetHostingMainWindow( BWindow *window ){
+void deOSBeOS::SetHostingMainWindow(BWindow *window){
 	pHostingMainWindow = window;
 }
 
-void deOSBeOS::SetHostingRenderWindow( BWindow *window ){
+void deOSBeOS::SetHostingRenderWindow(BWindow *window){
 	pHostingRenderWindow = window;
 }
 
@@ -212,26 +212,26 @@ bool deOSBeOS::HasHostingRenderWindow() const{
 
 
 
-void deOSBeOS::ProcessEventLoop( bool sendToInputModule ){
+void deOSBeOS::ProcessEventLoop(bool sendToInputModule){
 	BMessage *message = NULL;
-	while( true ){
+	while(true){
 		// get next message
 		pMessageQueue.Lock();
 		message = pMessageQueue.NextMessage();
 		pMessageQueue.Unlock();
-		if( ! message ){
+		if(! message){
 			break; // finished
 		}
 		
 		/*const char whatStr[4] = {(char)((message->what>>24)&0xff), (char)((message->what>>16)&0xff),
 			(char)((message->what>>8)&0xff), (char)(message->what&0xff)};
-		printf( "OS.ProcessEventLoop: procees %.4s\n", (char*)whatStr );*/
+		printf("OS.ProcessEventLoop: procees %.4s\n", (char*)whatStr);*/
 		
 		// process message
 		try{
-			switch( message->what ){
+			switch(message->what){
 			case B_APP_ACTIVATED:
-				SetAppActive( message->GetBool( "active", true ) );
+				SetAppActive(message->GetBool("active", true));
 				break;
 				
 			case B_QUIT_REQUESTED:
@@ -242,12 +242,12 @@ void deOSBeOS::ProcessEventLoop( bool sendToInputModule ){
 				break;
 			}
 			
-			if( sendToInputModule ){
-				GetEngine()->GetInputSystem()->GetActiveModule()->EventLoop( *message );
+			if(sendToInputModule){
+				GetEngine()->GetInputSystem()->GetActiveModule()->EventLoop(*message);
 			}
 			
-		}catch( const deException &e ){
-			if( message ){
+		}catch(const deException &e){
+			if(message){
 				delete message;
 			}
 			throw;
@@ -258,19 +258,19 @@ void deOSBeOS::ProcessEventLoop( bool sendToInputModule ){
 	}
 }
 
-void deOSBeOS::MessageReceived( BMessage *message ){
+void deOSBeOS::MessageReceived(BMessage *message){
 	pMessageQueue.Lock();
-	pMessageQueue.AddMessage( new BMessage( *message ) );
+	pMessageQueue.AddMessage(new BMessage(*message));
 	pMessageQueue.Unlock();
 }
 
 decString deOSBeOS::GetUserLocaleLanguage(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			return ls.GetLeft( deli ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			return ls.GetLeft(deli).GetLower();
 			
 		}else{
 			return ls.GetLower();
@@ -280,17 +280,17 @@ decString deOSBeOS::GetUserLocaleLanguage(){
 }
 
 decString deOSBeOS::GetUserLocaleTerritory(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			const int deli2 = ls.Find( '.', deli + 1 );
-			if( deli2 != -1 ){
-				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			const int deli2 = ls.Find('.', deli + 1);
+			if(deli2 != -1){
+				return ls.GetMiddle(deli + 1, deli2).GetLower();
 				
 			}else{
-				return ls.GetMiddle( deli + 1 ).GetLower();
+				return ls.GetMiddle(deli + 1).GetLower();
 			}
 			
 		}else{
@@ -311,22 +311,22 @@ void deOSBeOS::pCleanUp(){
 decString deOSBeOS::pGetHomeDirectory(){
 	// the user configuration directory is located under the user home directory.
 	// can be changed at runtime using an environment parameter.
-	const char *envPath = getenv( "HOME" );
-	if( envPath ){
-		return decString( envPath );
+	const char *envPath = getenv("HOME");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	envPath = getenv( "USER" );
-	if( envPath ){
-		return decString( "/home/" ) + envPath;
+	envPath = getenv("USER");
+	if(envPath){
+		return decString("/home/") + envPath;
 	}
 	
-	envPath = getenv( "LOGUSER" );
-	if( envPath ){
-		return decString( "/home/" ) + envPath;
+	envPath = getenv("LOGUSER");
+	if(envPath){
+		return decString("/home/") + envPath;
 	}
 	
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 #endif

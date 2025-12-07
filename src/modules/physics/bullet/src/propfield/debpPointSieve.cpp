@@ -39,27 +39,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpPointSieve::debpPointSieve( int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ ){
-	if( bucketCountX < 1 || bucketCountZ < 1 || sieveSizeX <= 0.0f || sieveSizeZ <= 0.0f ) DETHROW( deeInvalidParam );
+debpPointSieve::debpPointSieve(int bucketCountX, int bucketCountZ, float sieveSizeX, float sieveSizeZ){
+	if(bucketCountX < 1 || bucketCountZ < 1 || sieveSizeX <= 0.0f || sieveSizeZ <= 0.0f) DETHROW(deeInvalidParam);
 	
 	pSieveSizeX = sieveSizeX;
 	pSieveSizeZ = sieveSizeZ;
 	pSieveLeft = -sieveSizeX * 0.5f;
 	pSieveTop = sieveSizeZ * 0.5f;
-	pSieveDivX = ( float )bucketCountX / sieveSizeX;
-	pSieveDivZ = ( float )bucketCountZ / sieveSizeZ;
+	pSieveDivX = (float)bucketCountX / sieveSizeX;
+	pSieveDivZ = (float)bucketCountZ / sieveSizeZ;
 	
 	pBuckets = NULL;
 	pBucketCountX = bucketCountX;
 	pBucketCountZ = bucketCountZ;
 	pBucketCount = bucketCountX * bucketCountZ;
 	
-	pBuckets = new debpPointSieveBucket[ pBucketCount ];
-	if( ! pBuckets ) DETHROW( deeOutOfMemory );
+	pBuckets = new debpPointSieveBucket[pBucketCount];
+	if(! pBuckets) DETHROW(deeOutOfMemory);
 }
 
 debpPointSieve::~debpPointSieve(){
-	if( pBuckets ) delete [] pBuckets;
+	if(pBuckets) delete [] pBuckets;
 }
 
 
@@ -67,43 +67,43 @@ debpPointSieve::~debpPointSieve(){
 // Management
 ///////////////
 
-debpPointSieveBucket &debpPointSieve::GetBucketAt( int index ) const{
-	if( index < 0 || index >= pBucketCount ) DETHROW( deeInvalidParam );
+debpPointSieveBucket &debpPointSieve::GetBucketAt(int index) const{
+	if(index < 0 || index >= pBucketCount) DETHROW(deeInvalidParam);
 	
-	return pBuckets[ index ];
+	return pBuckets[index];
 }
 
-debpPointSieveBucket &debpPointSieve::GetBucketWith( int x, int z ) const{
-	if( x < 0 || x >= pBucketCountX || z < 0 || z >= pBucketCountZ ) DETHROW( deeInvalidParam );
+debpPointSieveBucket &debpPointSieve::GetBucketWith(int x, int z) const{
+	if(x < 0 || x >= pBucketCountX || z < 0 || z >= pBucketCountZ) DETHROW(deeInvalidParam);
 	
-	return pBuckets[ pBucketCountX * z + x ];
+	return pBuckets[pBucketCountX * z + x];
 }
 
-debpPointSieveBucket &debpPointSieve::GetBucketContaining( float x, float z ) const{
-	int bx = ( int )( ( x - pSieveLeft ) * pSieveDivX );
-	int bz = ( int )( ( pSieveTop - z ) * pSieveDivZ );
+debpPointSieveBucket &debpPointSieve::GetBucketContaining(float x, float z) const{
+	int bx = (int)((x - pSieveLeft) * pSieveDivX);
+	int bz = (int)((pSieveTop - z) * pSieveDivZ);
 	
-	if( bx < 0 ){
+	if(bx < 0){
 		bx = 0;
 		
-	}else if( bx >= pBucketCountX ){
+	}else if(bx >= pBucketCountX){
 		bx = pBucketCountX - 1;
 	}
 	
-	if( bz < 0 ){
+	if(bz < 0){
 		bz = 0;
 		
-	}else if( bz >= pBucketCountZ ){
+	}else if(bz >= pBucketCountZ){
 		bz = pBucketCountZ - 1;
 	}
 	
-	return pBuckets[ pBucketCountX * bz + bx ];
+	return pBuckets[pBucketCountX * bz + bx];
 }
 
 
 
-void debpPointSieve::DropPoint( float x, float z, int index ){
-	GetBucketContaining( x, z ).AddIndex( index );
+void debpPointSieve::DropPoint(float x, float z, int index){
+	GetBucketContaining(x, z).AddIndex(index);
 }
 
 
@@ -111,7 +111,7 @@ void debpPointSieve::DropPoint( float x, float z, int index ){
 void debpPointSieve::Clear(){
 	int b;
 	
-	for( b=0; b<pBucketCount; b++ ){
-		pBuckets[ b ].RemoveAllIndices();
+	for(b=0; b<pBucketCount; b++){
+		pBuckets[b].RemoveAllIndices();
 	}
 }

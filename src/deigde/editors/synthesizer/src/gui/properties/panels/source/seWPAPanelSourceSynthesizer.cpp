@@ -62,11 +62,11 @@ class cPathSynthesizer : public igdeEditPathListener{
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	cPathSynthesizer( seWPAPanelSourceSynthesizer &panel ) : pPanel( panel ){ }
+	cPathSynthesizer(seWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnEditPathChanged( igdeEditPath * editPath ){
-		seSourceSynthesizer * const source = ( seSourceSynthesizer* )pPanel.GetSource();
-		if( ! source || source->GetPathSynthesizer() == editPath->GetPath() ){
+	virtual void OnEditPathChanged(igdeEditPath * editPath){
+		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
+		if(! source || source->GetPathSynthesizer() == editPath->GetPath()){
 			return;
 		}
 		
@@ -79,11 +79,11 @@ class cComboConTarget : public igdeComboBoxListener{
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	cComboConTarget( seWPAPanelSourceSynthesizer &panel ) : pPanel( panel ){ }
+	cComboConTarget(seWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox* ){
-		seSourceSynthesizer * const source = ( seSourceSynthesizer* )pPanel.GetSource();
-		if( source ){
+	virtual void OnTextChanged(igdeComboBox*){
+		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
+		if(source){
 			pPanel.UpdateConnection();
 		}
 	}
@@ -93,13 +93,13 @@ class cActionConTargetMore : public igdeAction {
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	cActionConTargetMore( seWPAPanelSourceSynthesizer &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Increase the number of targets" ), pPanel( panel ){ }
+	cActionConTargetMore(seWPAPanelSourceSynthesizer &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+		"Increase the number of targets"), pPanel(panel){}
 	
 	virtual void OnAction(){
-		seSourceSynthesizer * const source = ( seSourceSynthesizer* )pPanel.GetSource();
-		if( ! source ){
+		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
+		if(! source){
 			return;
 		}
 		
@@ -108,7 +108,7 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled( pPanel.GetSource() );
+		SetEnabled(pPanel.GetSource());
 	}
 };
 
@@ -116,13 +116,13 @@ class cActionConTargetLess : public igdeAction {
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	cActionConTargetLess( seWPAPanelSourceSynthesizer &panel ) : igdeAction( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-		"Decrease the number of targets" ), pPanel( panel ){ }
+	cActionConTargetLess(seWPAPanelSourceSynthesizer &panel) : igdeAction("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Decrease the number of targets"), pPanel(panel){}
 	
 	virtual void OnAction(){
-		seSourceSynthesizer * const source = ( seSourceSynthesizer* )pPanel.GetSource();
-		if( ! source || source->GetConnectionCount() == 0 ){
+		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
+		if(! source || source->GetConnectionCount() == 0){
 			return;
 		}
 		
@@ -131,8 +131,8 @@ public:
 	}
 	
 	virtual void Update(){
-		const seSourceSynthesizer * const source = ( seSourceSynthesizer* )pPanel.GetSource();
-		SetEnabled( source && source->GetConnectionCount() > 0 );
+		const seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
+		SetEnabled(source && source->GetConnectionCount() > 0);
 	}
 };
 
@@ -140,18 +140,18 @@ class cComboController : public igdeComboBoxListener{
 	seWPAPanelSourceSynthesizer &pPanel;
 	
 public:
-	cComboController( seWPAPanelSourceSynthesizer &panel ) : pPanel( panel ){ }
+	cComboController(seWPAPanelSourceSynthesizer &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		seSourceSynthesizer * const source = ( seSourceSynthesizer* )pPanel.GetSource();
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		seSourceSynthesizer * const source = (seSourceSynthesizer*)pPanel.GetSource();
 		const int target = pPanel.GetCBControllerTarget();
-		if( ! source || target == -1 || pPanel.GetPreventUpdate() ){
+		if(! source || target == -1 || pPanel.GetPreventUpdate()){
 			return;
 		}
 		
 		seController * const controller = comboBox->GetSelectedItem()
-			? ( seController* )comboBox->GetSelectedItem()->GetData() : NULL;
-		if( source->GetControllerAt( target ) == controller ){
+			? (seController*)comboBox->GetSelectedItem()->GetData() : NULL;
+		if(source->GetControllerAt(target) == controller){
 			return;
 		}
 		
@@ -170,29 +170,29 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-seWPAPanelSourceSynthesizer::seWPAPanelSourceSynthesizer( seWPSource &wpSource ) :
-seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estSynthesizer ),
-pPreventUpdate( false )
+seWPAPanelSourceSynthesizer::seWPAPanelSourceSynthesizer(seWPSource &wpSource) :
+seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estSynthesizer),
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, formLine;
 	
 	
-	helper.GroupBox( *this, groupBox, "Synthesizer:" );
-	helper.EditPath( groupBox, "Path:", "Sets the synthesizer to use", igdeEnvironment::efpltSynthesizer,
-		pEditPathSynthesizer, new cPathSynthesizer( *this ) );
+	helper.GroupBox(*this, groupBox, "Synthesizer:");
+	helper.EditPath(groupBox, "Path:", "Sets the synthesizer to use", igdeEnvironment::efpltSynthesizer,
+		pEditPathSynthesizer, new cPathSynthesizer(*this));
 	
 	
-	helper.GroupBox( *this, groupBox, "Connections:" );
+	helper.GroupBox(*this, groupBox, "Connections:");
 	
-	helper.FormLineStretchFirst( groupBox, "Target:", "Target controller to edit", formLine );
-	helper.ComboBox( formLine, "Target controller", pCBConTarget, new cComboConTarget( *this ) );
-	helper.Button( formLine, pBtnConTargetMore, new cActionConTargetMore( *this ), true );
-	helper.Button( formLine, pBtnConTargetLess, new cActionConTargetLess( *this ), true );
+	helper.FormLineStretchFirst(groupBox, "Target:", "Target controller to edit", formLine);
+	helper.ComboBox(formLine, "Target controller", pCBConTarget, new cComboConTarget(*this));
+	helper.Button(formLine, pBtnConTargetMore, new cActionConTargetMore(*this), true);
+	helper.Button(formLine, pBtnConTargetLess, new cActionConTargetLess(*this), true);
 	
-	helper.ComboBox( groupBox, "Controller:", "Controller to take value from",
-		pCBConController, new cComboController( *this ) );
+	helper.ComboBox(groupBox, "Controller:", "Controller to take value from",
+		pCBConController, new cComboController(*this));
 	
 	UpdateControllerList();
 }
@@ -207,42 +207,42 @@ seWPAPanelSourceSynthesizer::~seWPAPanelSourceSynthesizer(){
 
 void seWPAPanelSourceSynthesizer::OnSynthesizerPathChanged(){
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
-		pEditPathSynthesizer->SetBasePath( synthesizer->GetDirectoryPath() );
+	if(synthesizer){
+		pEditPathSynthesizer->SetBasePath(synthesizer->GetDirectoryPath());
 		
 	}else{
-		pEditPathSynthesizer->SetBasePath( "" );
+		pEditPathSynthesizer->SetBasePath("");
 	}
 }
 
 void seWPAPanelSourceSynthesizer::UpdateConTargetList(){
-	const seSourceSynthesizer * const source = ( seSourceSynthesizer* )GetSource();
+	const seSourceSynthesizer * const source = (seSourceSynthesizer*)GetSource();
 	const int selection = pCBConTarget->GetSelection();
 	int subControllerCount = 0;
 	int connectionCount = 0;
 	
 	pCBConTarget->RemoveAllItems();
 	
-	if( source ){
+	if(source){
 		decString text;
 		int i;
 		
 		connectionCount = source->GetConnectionCount();
 		subControllerCount = source->GetControllerNameCount();
 		
-		for( i=0; i<connectionCount; i++ ){
-			if( i < subControllerCount ){
-				text.Format( "%d: %s", i, source->GetControllerNameAt( i ).GetString() );
+		for(i=0; i<connectionCount; i++){
+			if(i < subControllerCount){
+				text.Format("%d: %s", i, source->GetControllerNameAt(i).GetString());
 				
 			}else{
-				text.Format( "%d: < invalid >", i );
+				text.Format("%d: < invalid >", i);
 			}
 			
-			pCBConTarget->AddItem( text );
+			pCBConTarget->AddItem(text);
 		}
 	}
 	
-	pCBConTarget->SetSelection( selection >= connectionCount ? selection : connectionCount - 1 );
+	pCBConTarget->SetSelection(selection >= connectionCount ? selection : connectionCount - 1);
 	
 	UpdateConnection();
 }
@@ -254,30 +254,30 @@ int seWPAPanelSourceSynthesizer::GetCBControllerTarget() const{
 void seWPAPanelSourceSynthesizer::UpdateControllerList(){
 	const seSynthesizer * const synthesizer = GetSynthesizer();
 	seController * const selection = pCBConController->GetSelectedItem()
-		? ( seController* )pCBConController->GetSelectedItem()->GetData() : NULL;
+		? (seController*)pCBConController->GetSelectedItem()->GetData() : NULL;
 	
 	pPreventUpdate = true; // required since changing list causes text changes
 	
 	try{
 		pCBConController->RemoveAllItems();
-		pCBConController->AddItem( "< No Controller >", NULL );
+		pCBConController->AddItem("< No Controller >", NULL);
 		
-		if( synthesizer ){
+		if(synthesizer){
 			const seControllerList &list = synthesizer->GetControllers();
 			const int count = list.GetCount();
 			int i;
 			
-			for( i=0; i<count; i++ ){
-				seController * const controller = list.GetAt( i );
-				pCBConController->AddItem( controller->GetName(), NULL, controller );
+			for(i=0; i<count; i++){
+				seController * const controller = list.GetAt(i);
+				pCBConController->AddItem(controller->GetName(), NULL, controller);
 			}
 		}
 		
 		pCBConController->SortItems();
 		
-		pCBConController->SetSelectionWithData( selection );
+		pCBConController->SetSelectionWithData(selection);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pPreventUpdate = false;
 		throw;
 	}
@@ -288,18 +288,18 @@ void seWPAPanelSourceSynthesizer::UpdateControllerList(){
 void seWPAPanelSourceSynthesizer::UpdateSource(){
 	seWPAPanelSource::UpdateSource();
 	
-	const seSourceSynthesizer * const source = ( seSourceSynthesizer* )GetSource();
-	if( source ){
-		pEditPathSynthesizer->SetPath( source->GetPathSynthesizer() );
+	const seSourceSynthesizer * const source = (seSourceSynthesizer*)GetSource();
+	if(source){
+		pEditPathSynthesizer->SetPath(source->GetPathSynthesizer());
 		
 	}else{
 		pEditPathSynthesizer->ClearPath();
 	}
 	
 	const bool enabled = source;
-	pEditPathSynthesizer->SetEnabled( enabled );
-	pEditPathSynthesizer->SetEnabled( enabled );
-	pCBConTarget->SetEnabled( enabled );
+	pEditPathSynthesizer->SetEnabled(enabled);
+	pEditPathSynthesizer->SetEnabled(enabled);
+	pCBConTarget->SetEnabled(enabled);
 	
 	pBtnConTargetMore->GetAction()->Update();
 	pBtnConTargetLess->GetAction()->Update();
@@ -310,12 +310,12 @@ void seWPAPanelSourceSynthesizer::UpdateSource(){
 void seWPAPanelSourceSynthesizer::UpdateConnection(){
 	seWPAPanelSource::UpdateSource();
 	
-	const seSourceSynthesizer * const source = ( seSourceSynthesizer* )GetSource();
+	const seSourceSynthesizer * const source = (seSourceSynthesizer*)GetSource();
 	const int selection = pCBConTarget->GetSelection();
 	
-	if( source && selection != -1 ){
-		pCBConController->SetSelectionWithData( source->GetControllerAt( selection ) );
+	if(source && selection != -1){
+		pCBConController->SetSelectionWithData(source->GetControllerAt(selection));
 	}
 	
-	pCBConController->SetEnabled( source && selection != -1 );
+	pCBConController->SetEnabled(source && selection != -1);
 }

@@ -42,21 +42,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedsNetworkState::dedsNetworkState( deScriptingDragonScript &ds, deNetworkState *state ) :
-pDS( ds ), 
-pNetworkState( state ),
-pValCB( NULL ),
-pHasCB( false )
+dedsNetworkState::dedsNetworkState(deScriptingDragonScript &ds, deNetworkState *state) :
+pDS(ds), 
+pNetworkState(state),
+pValCB(NULL),
+pHasCB(false)
 {
-	if( ! state ){
-		DSTHROW( dueInvalidParam );
+	if(! state){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue( ds.GetClassNetworkStateListener() );
+	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassNetworkStateListener());
 }
 
 dedsNetworkState::~dedsNetworkState(){
-	if( ! pValCB ){
+	if(! pValCB){
 		return;
 	}
 	
@@ -64,11 +64,11 @@ dedsNetworkState::~dedsNetworkState(){
 	// the case we can end up re-entering this destructor due to the resource
 	// being deleted due to links breaking while freeing the value. if this
 	// is the case delay the deletion until a safe time
-	if( pNetworkState && pNetworkState->GetRefCount() > 0 ){
-		pDS.AddValueDeleteLater( pValCB );
+	if(pNetworkState && pNetworkState->GetRefCount() > 0){
+		pDS.AddValueDeleteLater(pValCB);
 		
 	}else{
-		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue( pValCB );
+		pDS.GetScriptEngine()->GetMainRunTime()->FreeValue(pValCB);
 	}
 	
 	pValCB = NULL;
@@ -80,17 +80,17 @@ dedsNetworkState::~dedsNetworkState(){
 // Notifications
 //////////////////
 
-void dedsNetworkState::StateValueChanged( int index ){
-	if( ! pHasCB ){
+void dedsNetworkState::StateValueChanged(int index){
+	if(! pHasCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	try{
-		rt.PushInt( index ); // index
-		rt.RunFunction( pValCB, "stateValueChanged", 1 );
+		rt.PushInt(index); // index
+		rt.RunFunction(pValCB, "stateValueChanged", 1);
 		
-	}catch( const duException &e ){
+	}catch(const duException &e){
 		rt.PrintExceptionTrace();
 		e.PrintError();
 	}
@@ -105,19 +105,19 @@ dsRealObject *dedsNetworkState::GetCallback() const{
 	return pValCB->GetRealObject();
 }
 
-void dedsNetworkState::SetCallback( dsRealObject *object ){
-	if( ! pValCB ){
+void dedsNetworkState::SetCallback(dsRealObject *object){
+	if(! pValCB){
 		return;
 	}
 	
 	dsRunTime &rt = *pDS.GetScriptEngine()->GetMainRunTime();
 	
-	if( object ){
-		rt.SetObject( pValCB, object );
+	if(object){
+		rt.SetObject(pValCB, object);
 		pHasCB = true;
 		
 	}else{
-		rt.SetNull( pValCB, pDS.GetClassNetworkStateListener() );
+		rt.SetNull(pValCB, pDS.GetClassNetworkStateListener());
 		pHasCB = false;
 	}
 }

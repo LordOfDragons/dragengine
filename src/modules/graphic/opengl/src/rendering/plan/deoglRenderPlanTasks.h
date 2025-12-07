@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan tasks. */
-	deoglRenderPlanTasks( deoglRenderPlan &plan );
+	deoglRenderPlanTasks(deoglRenderPlan &plan);
 	
 	/** Clean up render plan tasks. */
 	~deoglRenderPlanTasks();
@@ -87,56 +87,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent plan. */
-	inline deoglRenderPlan &GetPlan() const{ return pPlan; }
+	inline deoglRenderPlan &GetPlan() const{return pPlan;}
 	
 	
 	
-	inline deoglRenderTask &GetSolidDepthTask(){ return *pSolidDepthTask; }
+	inline deoglRenderTask &GetSolidDepthTask(){return *pSolidDepthTask;}
 	
-	inline deoglRenderTask &GetSolidDepthOutlineTask(){ return *pSolidDepthOutlineTask; }
+	inline deoglRenderTask &GetSolidDepthOutlineTask(){return *pSolidDepthOutlineTask;}
 	
-	inline deoglRenderTask &GetSolidGeometryTask(){ return *pSolidGeometryTask; }
+	inline deoglRenderTask &GetSolidGeometryTask(){return *pSolidGeometryTask;}
 	
-	inline deoglRenderTask &GetSolidGeometryHeight1Task(){ return *pSolidGeometryHeight1Task; }
-	inline deoglRenderTask &GetSolidGeometryHeight2Task(){ return *pSolidGeometryHeight2Task; }
+	inline deoglRenderTask &GetSolidGeometryHeight1Task(){return *pSolidGeometryHeight1Task;}
+	inline deoglRenderTask &GetSolidGeometryHeight2Task(){return *pSolidGeometryHeight2Task;}
 	
-	inline deoglRenderTask &GetSolidGeometryOutlineTask(){ return *pSolidGeometryOutlineTask; }
+	inline deoglRenderTask &GetSolidGeometryOutlineTask(){return *pSolidGeometryOutlineTask;}
 	
-	inline deoglRenderTask &GetSolidDecalsTask(){ return *pSolidDecalsTask; }
-	
-	
-	
-	inline deoglRenderTask &GetSolidDepthXRayTask(){ return *pSolidDepthXRayTask; }
-	
-	inline deoglRenderTask &GetSolidDepthOutlineXRayTask(){ return *pSolidDepthOutlineXRayTask; }
-	
-	inline deoglRenderTask &GetSolidGeometryXRayTask(){ return *pSolidGeometryXRayTask; }
-	
-	inline deoglRenderTask &GetSolidGeometryHeight1XRayTask(){ return *pSolidGeometryHeight1XRayTask; }
-	inline deoglRenderTask &GetSolidGeometryHeight2XRayTask(){ return *pSolidGeometryHeight2XRayTask; }
-	
-	inline deoglRenderTask &GetSolidGeometryOutlineXRayTask(){ return *pSolidGeometryOutlineXRayTask; }
-	
-	inline deoglRenderTask &GetSolidDecalsXRayTask(){ return *pSolidDecalsXRayTask; }
+	inline deoglRenderTask &GetSolidDecalsTask(){return *pSolidDecalsTask;}
 	
 	
 	
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepth() const{ return pCRTSolidDepth; }
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometry() const{ return pCRTSolidGeometry; }
+	inline deoglRenderTask &GetSolidDepthXRayTask(){return *pSolidDepthXRayTask;}
 	
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepthXRay() const{ return pCRTSolidDepthXRay; }
-	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometryXRay() const{ return pCRTSolidGeometryXRay; }
+	inline deoglRenderTask &GetSolidDepthOutlineXRayTask(){return *pSolidDepthOutlineXRayTask;}
+	
+	inline deoglRenderTask &GetSolidGeometryXRayTask(){return *pSolidGeometryXRayTask;}
+	
+	inline deoglRenderTask &GetSolidGeometryHeight1XRayTask(){return *pSolidGeometryHeight1XRayTask;}
+	inline deoglRenderTask &GetSolidGeometryHeight2XRayTask(){return *pSolidGeometryHeight2XRayTask;}
+	
+	inline deoglRenderTask &GetSolidGeometryOutlineXRayTask(){return *pSolidGeometryOutlineXRayTask;}
+	
+	inline deoglRenderTask &GetSolidDecalsXRayTask(){return *pSolidDecalsXRayTask;}
+	
+	
+	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepth() const{return pCRTSolidDepth;}
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometry() const{return pCRTSolidGeometry;}
+	
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidDepthXRay() const{return pCRTSolidDepthXRay;}
+	inline const deoglComputeRenderTask::Ref &GetCRTSolidGeometryXRay() const{return pCRTSolidGeometryXRay;}
 	
 	
 	
 	/** Build compute render tasks and begin reading back steps. */
-	void BuildComputeRenderTasks( const deoglRenderPlanMasked *mask, bool rebuild = false );
+	void BuildComputeRenderTasks(const deoglRenderPlanMasked *mask, bool rebuild = false);
 	
 	/** Finish read back compute render tasks. */
-	void FinishReadBackComputeRenderTasks( const deoglRenderPlanMasked *mask );
+	void FinishReadBackComputeRenderTasks(const deoglRenderPlanMasked *mask);
 	
 	/** Start building render tasks. */
-	void StartBuildTasks( const deoglRenderPlanMasked *mask );
+	void StartBuildTasks(const deoglRenderPlanMasked *mask);
 	
 	/** Wait for task building to finish. */
 	void WaitFinishBuildingTasksDepth();
@@ -149,11 +149,11 @@ public:
 	
 	
 private:
-	void pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
-		const deoglRenderPlanMasked *mask , bool xray );
+	void pBuildCRTSolidDepth(deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray);
 	
-	void pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
-		const deoglRenderPlanMasked *mask , bool xray );
+	void pBuildCRTSolidGeometry(deoglComputeRenderTask &renderTask,
+		const deoglRenderPlanMasked *mask , bool xray);
 };
 
 #endif

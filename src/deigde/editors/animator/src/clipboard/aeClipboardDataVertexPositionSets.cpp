@@ -36,9 +36,9 @@ const char * const aeClipboardDataVertexPositionSets::TYPE_NAME = "vertexPositio
 // Constructor, destructor
 ////////////////////////////
 
-aeClipboardDataVertexPositionSets::aeClipboardDataVertexPositionSets( const decStringSet &sets ) :
-igdeClipboardData( TYPE_NAME ),
-pVertexPositionSets( sets ){
+aeClipboardDataVertexPositionSets::aeClipboardDataVertexPositionSets(const decStringSet &sets) :
+igdeClipboardData(TYPE_NAME),
+pVertexPositionSets(sets){
 }
 
 aeClipboardDataVertexPositionSets::~aeClipboardDataVertexPositionSets(){

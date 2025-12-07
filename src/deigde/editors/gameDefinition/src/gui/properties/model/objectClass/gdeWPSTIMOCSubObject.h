@@ -44,7 +44,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSubObject( gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index );
+	gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -57,10 +57,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline gdeObjectClass *GetObjectClass() const{return pObjectClass;}
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Verify if component is valid. */
 	virtual bool IsValid() const;
@@ -75,10 +75,10 @@ public:
 	 * 
 	 * Default implementation returns 0 to keep same order.
 	 */
-	virtual int Compare( const gdeWPSTreeItemModel &item ) const;
+	virtual int Compare(const gdeWPSTreeItemModel &item) const;
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 };
 

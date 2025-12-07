@@ -50,12 +50,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseAdd::ceWPTMAIfElseCaseAdd( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse ) :
-ceWPTMenuAction( windowMain, "Add If-Case", windowMain.GetIconActionIfElseCaseIf() ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ){
+ceWPTMAIfElseCaseAdd::ceWPTMAIfElseCaseAdd(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse) :
+ceWPTMenuAction(windowMain, "Add If-Case", windowMain.GetIconActionIfElseCaseIf()),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse){
 }
 
 
@@ -70,33 +70,33 @@ void ceWPTMAIfElseCaseAdd::OnAction(){
 	
 	try{
 		ifCase = new ceCAIfElseCase;
-		undo.TakeOver( new ceUCAIfElseCaseAdd( pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount() ) );
+		undo.TakeOver(new ceUCAIfElseCaseAdd(pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount()));
 		selectIfCase = ifCase;
 		ifCase->FreeReference();
 		ifCase = NULL;
 		
-		pConversation->GetUndoSystem()->Add( undo );
+		pConversation->GetUndoSystem()->Add(undo);
 		
-	}catch( const deException & ){
-		if( ifCase ){
+	}catch(const deException &){
+		if(ifCase){
 			ifCase->FreeReference();
 		}
 		throw;
 	}
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();
-	if( ! wptopic.GetActionTreeModel() ){
+	if(! wptopic.GetActionTreeModel()){
 		return;
 	}
 	
 	ceWPTTreeModel &model = *wptopic.GetActionTreeModel();
-	ceWPTTIMAIfElse * const modelIfElse = ( ceWPTTIMAIfElse* )model.DeepFindAction( pIfElse );
-	if( ! modelIfElse ){
+	ceWPTTIMAIfElse * const modelIfElse = (ceWPTTIMAIfElse*)model.DeepFindAction(pIfElse);
+	if(! modelIfElse){
 		return;
 	}
 	
-	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild( selectIfCase );
-	if( ! modelIfCase ){
+	ceWPTTIMAIfElseIfCase * const modelIfCase = modelIfElse->GetIfCaseChild(selectIfCase);
+	if(! modelIfCase){
 		return;
 	}
 	

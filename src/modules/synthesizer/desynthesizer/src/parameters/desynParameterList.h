@@ -58,16 +58,16 @@ public:
 	int GetParameterCount() const;
 	
 	/** \brief Index of named parameter or -1 if absent. */
-	int IndexOfParameterNamed( const char *name ) const;
+	int IndexOfParameterNamed(const char *name) const;
 	
 	/** \brief Parameter at index. */
-	desynParameter &GetParameterAt( int index ) const;
+	desynParameter &GetParameterAt(int index) const;
 	
 	/** \brief Named parameter. */
-	desynParameter &GetParameterNamed( const char *name ) const;
+	desynParameter &GetParameterNamed(const char *name) const;
 	
 	/** \brief Add parameter. */
-	void AddParameter( desynParameter *parameter );
+	void AddParameter(desynParameter *parameter);
 	
 	/** \brief Remove all parameters. */
 	void RemoveAllParameters();

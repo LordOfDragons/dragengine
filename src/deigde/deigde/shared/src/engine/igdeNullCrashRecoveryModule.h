@@ -38,7 +38,7 @@ public:
 	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
 		typedef deTObjectReference<cModule> Ref;
-		cModule( deModuleSystem *system );
+		cModule(deModuleSystem *system);
 		virtual ~cModule();
 		virtual void CreateModule();
 	};
@@ -49,7 +49,7 @@ public:
 	/** \name Constructor, destructor */
 	/*@{*/
 	/** \brief Create module. */
-	igdeNullCrashRecoveryModule( deLoadableModule &loadableModule );
+	igdeNullCrashRecoveryModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~igdeNullCrashRecoveryModule();

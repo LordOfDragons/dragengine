@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object speaker. */
-	gdeVAOSpeaker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCSpeaker *ocspeaker );
+	gdeVAOSpeaker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSpeaker *ocspeaker);
 	
 protected:
 	/**
@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{ return pOCSpeaker; }
+	inline gdeOCSpeaker *GetOCSpeaker() const{return pOCSpeaker;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

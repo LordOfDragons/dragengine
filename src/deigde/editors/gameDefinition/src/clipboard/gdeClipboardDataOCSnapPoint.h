@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSnapPoint( gdeOCSnapPoint *snapPoint );
+	gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoint);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief SnapPoint. */
-	gdeOCSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
+	gdeOCSnapPoint *GetSnapPoint() const{return pSnapPoint;}
 	/*@}*/
 };
 

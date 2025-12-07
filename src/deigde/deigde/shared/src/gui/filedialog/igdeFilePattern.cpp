@@ -37,9 +37,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeFilePattern::igdeFilePattern( const char *name, const char *pattern, const char *defaultExtension ){
-	if( ! name || ! pattern || ! defaultExtension ){
-		DETHROW( deeInvalidParam );
+igdeFilePattern::igdeFilePattern(const char *name, const char *pattern, const char *defaultExtension){
+	if(! name || ! pattern || ! defaultExtension){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -47,7 +47,7 @@ igdeFilePattern::igdeFilePattern( const char *name, const char *pattern, const c
 	pDefExtension = defaultExtension;
 }
 
-igdeFilePattern::igdeFilePattern( const igdeFilePattern &filePattern ){
+igdeFilePattern::igdeFilePattern(const igdeFilePattern &filePattern){
 	pName = filePattern.GetName();
 	pPattern = filePattern.GetPattern();
 	pDefExtension = filePattern.GetDefaultExtension();

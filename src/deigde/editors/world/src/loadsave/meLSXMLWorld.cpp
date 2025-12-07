@@ -72,12 +72,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meLSXMLWorld::meLSXMLWorld( meLoadSaveSystem *lssys ) :
-igdeBaseXML( lssys->GetWindowMain()->GetEnvironment().GetLogger(), LOGSOURCE )
+meLSXMLWorld::meLSXMLWorld(meLoadSaveSystem *lssys) :
+igdeBaseXML(lssys->GetWindowMain()->GetEnvironment().GetLogger(), LOGSOURCE)
 {
 	pLSSys = lssys;
-	SetName( "Drag[en]gine XML World" );
-	SetPattern( "*.deworld" );
+	SetName("Drag[en]gine XML World");
+	SetPattern("*.deworld");
 }
 
 meLSXMLWorld::~meLSXMLWorld(){
@@ -88,22 +88,22 @@ meLSXMLWorld::~meLSXMLWorld(){
 // Loading and saving
 ///////////////////////
 
-void meLSXMLWorld::SaveWorld( meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file ){
-	if( ! file ){
-		DETHROW( deeInvalidParam );
+void meLSXMLWorld::SaveWorld(meLoadSaveSystem &lssys, const meWorld &world, decBaseFileWriter *file){
+	if(! file){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decXmlWriter writer( file );
+	decXmlWriter writer(file);
 	
 	writer.WriteXMLDeclaration();
-	pWriteWorld( writer, world );
+	pWriteWorld(writer, world);
 }
 
-igdeStepableTask *meLSXMLWorld::CreateLoadTask( meWorld *world, decBaseFileReader *file ){
-	if( ! world || ! file ){
-		DETHROW( deeInvalidParam );
+igdeStepableTask *meLSXMLWorld::CreateLoadTask(meWorld *world, decBaseFileReader *file){
+	if(! world || ! file){
+		DETHROW(deeInvalidParam);
 	}
-	return new meLoadXMLWorldTask( pLSSys, world, file );
+	return new meLoadXMLWorldTask(pLSSys, world, file);
 }
 
 
@@ -111,88 +111,88 @@ igdeStepableTask *meLSXMLWorld::CreateLoadTask( meWorld *world, decBaseFileReade
 // Private functions
 //////////////////////
 
-const char *meLSXMLWorld::pGetAttributeString( const decXmlElementTag &tag, const char *name ) const{
-	const decXmlAttValue * const value = tag.FindAttribute( name );
-	if( value ){
+const char *meLSXMLWorld::pGetAttributeString(const decXmlElementTag &tag, const char *name) const{
+	const decXmlAttValue * const value = tag.FindAttribute(name);
+	if(value){
 		return value->GetValue();
 	}
 	
-	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat( LOGSOURCE,
-		"Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString() );
-	DETHROW( deeInvalidParam );
+	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat(LOGSOURCE,
+		"Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString());
+	DETHROW(deeInvalidParam);
 }
 
-int meLSXMLWorld::pGetAttributeInt( const decXmlElementTag &tag, const char *name ) const{
-	const decXmlAttValue * const value = tag.FindAttribute( name );
-	if( value ){
-		return ( int )strtol( value->GetValue(), NULL, 10 );
+int meLSXMLWorld::pGetAttributeInt(const decXmlElementTag &tag, const char *name) const{
+	const decXmlAttValue * const value = tag.FindAttribute(name);
+	if(value){
+		return (int)strtol(value->GetValue(), NULL, 10);
 	}
 	
-	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat( LOGSOURCE,
-		"Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString() );
-	DETHROW( deeInvalidParam );
+	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat(LOGSOURCE,
+		"Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString());
+	DETHROW(deeInvalidParam);
 }
 
-float meLSXMLWorld::pGetAttributeFloat( const decXmlElementTag &tag, const char *name ) const{
-	const decXmlAttValue *value = tag.FindAttribute( name );
-	if( value ){
-		return strtof( value->GetValue(), NULL );
+float meLSXMLWorld::pGetAttributeFloat(const decXmlElementTag &tag, const char *name) const{
+	const decXmlAttValue *value = tag.FindAttribute(name);
+	if(value){
+		return strtof(value->GetValue(), NULL);
 	}
 	
-	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat( LOGSOURCE,
-		"Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString() );
-	DETHROW( deeInvalidParam );
+	pLSSys->GetWindowMain()->GetLogger()->LogErrorFormat(LOGSOURCE,
+		"Missing Attribute '%s' in tag '%s'", name, tag.GetName().GetString());
+	DETHROW(deeInvalidParam);
 }
 
 
 
-void meLSXMLWorld::pWriteWorld( decXmlWriter &writer, const meWorld &world ){
+void meLSXMLWorld::pWriteWorld(decXmlWriter &writer, const meWorld &world){
 	int i;
 	
-	writer.WriteOpeningTag( "world" );
+	writer.WriteOpeningTag("world");
 	
-	WriteDVector( writer, "size", world.GetSize() );
-	WriteVector( writer, "gravity", world.GetGravity() );
+	WriteDVector(writer, "size", world.GetSize());
+	WriteVector(writer, "gravity", world.GetGravity());
 	
-	pWriteWorldEditor( writer, world );
+	pWriteWorldEditor(writer, world);
 	
-	pWriteProperties( writer, world.GetProperties() );
+	pWriteProperties(writer, world.GetProperties());
 	
 	meHeightTerrain * const heightTerrain = world.GetHeightTerrain();
-	if( ! heightTerrain->GetPathHT().IsEmpty() ){
-		writer.WriteDataTagString( "heightTerrain", heightTerrain->GetPathHT() );
+	if(! heightTerrain->GetPathHT().IsEmpty()){
+		writer.WriteDataTagString("heightTerrain", heightTerrain->GetPathHT());
 	}
 	
-	writer.WriteDataTagString( "nextObjectID", world.GetNextObjectID().ToHexString() );
+	writer.WriteDataTagString("nextObjectID", world.GetNextObjectID().ToHexString());
 	
 	const meObjectList &objects = world.GetObjects();
 	const int objectCount = objects.GetCount();
-	if( objectCount > 0 ){
+	if(objectCount > 0){
 		writer.WriteNewline();
-		for( i=0; i<objectCount; i++ ){
-			pWriteObject( writer, *objects.GetAt( i ) );
+		for(i=0; i<objectCount; i++){
+			pWriteObject(writer, *objects.GetAt(i));
 		}
 	}
 	
 	const meDecalList &decals = world.GetDecals();
 	const int decalCount = decals.GetCount();
-	if( decalCount > 0 ){
+	if(decalCount > 0){
 		writer.WriteNewline();
-		for( i=0; i<decalCount; i++ ){
-			pWriteDecal( writer, *decals.GetAt( i ) );
+		for(i=0; i<decalCount; i++){
+			pWriteDecal(writer, *decals.GetAt(i));
 		}
 	}
 	
 	const meNavigationSpaceList &navspaces = world.GetNavSpaces();
 	const int navspaceCount = navspaces.GetCount();
-	if( navspaceCount > 0 ){
+	if(navspaceCount > 0){
 		writer.WriteNewline();
-		for( i=0; i<navspaceCount; i++ ){
-			pWriteNavigationSystem( writer, *navspaces.GetAt( i ) );
+		for(i=0; i<navspaceCount; i++){
+			pWriteNavigationSystem(writer, *navspaces.GetAt(i));
 		}
 	}
 	
-	writer.WriteClosingTag( "world" );
+	writer.WriteClosingTag("world");
 }
 
 void meLSXMLWorld::pWriteWorldEditor(decXmlWriter &writer, const meWorld &world){
@@ -278,49 +278,49 @@ void meLSXMLWorld::pWriteWorldEditorLimitBox(decXmlWriter &writer, const meWorld
 	writer.WriteClosingTag("limitBox");
 }
 
-void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
+void meLSXMLWorld::pWriteObject(decXmlWriter &writer, const meObject &object){
 	const int textureCount = object.GetTextureCount();
 	const decDVector &position = object.GetPosition();
 	const decVector &rotation = object.GetRotation();
 	const decVector &scaling = object.GetScaling();
 	int i;
 	
-	writer.WriteOpeningTagStart( "object" );
-	writer.WriteAttributeString( "id", object.GetID().ToHexString() );
+	writer.WriteOpeningTagStart("object");
+	writer.WriteAttributeString("id", object.GetID().ToHexString());
 	writer.WriteOpeningTagEnd();
 	
-	writer.WriteDataTagString( "classname", object.GetClassName().GetString() );
+	writer.WriteDataTagString("classname", object.GetClassName().GetString());
 	
-	writer.WriteOpeningTagStart( "position" );
-	writer.WriteAttributeDouble( "x", position.x );
-	writer.WriteAttributeDouble( "y", position.y );
-	writer.WriteAttributeDouble( "z", position.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteOpeningTagStart("position");
+	writer.WriteAttributeDouble("x", position.x);
+	writer.WriteAttributeDouble("y", position.y);
+	writer.WriteAttributeDouble("z", position.z);
+	writer.WriteOpeningTagEnd(true);
 	
 	if(!rotation.IsZero()){
-		writer.WriteOpeningTagStart( "rotation" );
-		writer.WriteAttributeDouble( "x", rotation.x );
-		writer.WriteAttributeDouble( "y", rotation.y );
-		writer.WriteAttributeDouble( "z", rotation.z );
-		writer.WriteOpeningTagEnd( true );
+		writer.WriteOpeningTagStart("rotation");
+		writer.WriteAttributeDouble("x", rotation.x);
+		writer.WriteAttributeDouble("y", rotation.y);
+		writer.WriteAttributeDouble("z", rotation.z);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	if( ! scaling.IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
-		writer.WriteOpeningTagStart( "scaling" );
-		writer.WriteAttributeDouble( "x", scaling.x );
-		writer.WriteAttributeDouble( "y", scaling.y );
-		writer.WriteAttributeDouble( "z", scaling.z );
-		writer.WriteOpeningTagEnd( true );
+	if(! scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+		writer.WriteOpeningTagStart("scaling");
+		writer.WriteAttributeDouble("x", scaling.x);
+		writer.WriteAttributeDouble("y", scaling.y);
+		writer.WriteAttributeDouble("z", scaling.z);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	pWriteProperties( writer, object.GetProperties() );
+	pWriteProperties(writer, object.GetProperties());
 	
-	for( i=0; i<textureCount; i++ ){
-		pWriteObjectTexture( writer, *object.GetTextureAt( i ) );
+	for(i=0; i<textureCount; i++){
+		pWriteObjectTexture(writer, *object.GetTextureAt(i));
 	}
 	
-	if( object.GetAttachedTo() ){
-		writer.WriteDataTagString( "attachTo", object.GetAttachedTo()->GetID().ToHexString() );
+	if(object.GetAttachedTo()){
+		writer.WriteDataTagString("attachTo", object.GetAttachedTo()->GetID().ToHexString());
 	}
 	
 	const decStringList &attachBehaviors = object.GetAttachBehaviors();
@@ -329,65 +329,65 @@ void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
 		writer.WriteDataTagString("attachBehavior", attachBehaviors.GetAt(i));
 	}
 	
-	writer.WriteClosingTag( "object" );
+	writer.WriteClosingTag("object");
 }
 
-void meLSXMLWorld::pWriteObjectTexture( decXmlWriter &writer, const meObjectTexture &texture ){
+void meLSXMLWorld::pWriteObjectTexture(decXmlWriter &writer, const meObjectTexture &texture){
 	const decVector2 &texCoordOffset = texture.GetTexCoordOffset();
 	const decVector2 &texCoordScaling = texture.GetTexCoordScaling();
 	const float texCoordRotation = texture.GetTexCoordRotation();
 	const decColor &tint = texture.GetColorTint();
-	const bool hasTexCoordOffset = ! texCoordOffset.IsEqualTo( decVector2( 0.0f, 0.0f ) );
-	const bool hasTexCoordScaling = ! texCoordScaling.IsEqualTo( decVector2( 1.0f, 1.0f ) );
-	const bool hasTexCoordRotation = ( fabsf( texCoordRotation ) > FLOAT_SAFE_EPSILON );
-	const bool hasTint = ! tint.IsEqualTo( decColor( 1.0f, 1.0f, 1.0f ) );
+	const bool hasTexCoordOffset = ! texCoordOffset.IsEqualTo(decVector2(0.0f, 0.0f));
+	const bool hasTexCoordScaling = ! texCoordScaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool hasTexCoordRotation = (fabsf(texCoordRotation) > FLOAT_SAFE_EPSILON);
+	const bool hasTint = ! tint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 	
-	writer.WriteOpeningTagStart( "texture" );
-	writer.WriteAttributeString( "name", texture.GetName().GetString() );
-	writer.WriteOpeningTagEnd( false, true );
+	writer.WriteOpeningTagStart("texture");
+	writer.WriteAttributeString("name", texture.GetName().GetString());
+	writer.WriteOpeningTagEnd(false, true);
 	
-	if( ! texture.GetSkinPath().IsEmpty() ){
-		writer.WriteDataTagString( "skin", texture.GetSkinPath().GetString() );
+	if(! texture.GetSkinPath().IsEmpty()){
+		writer.WriteDataTagString("skin", texture.GetSkinPath().GetString());
 	}
 	
-	if( hasTexCoordOffset || hasTexCoordScaling || hasTexCoordRotation ){
-		writer.WriteOpeningTag( "transform" );
+	if(hasTexCoordOffset || hasTexCoordScaling || hasTexCoordRotation){
+		writer.WriteOpeningTag("transform");
 		
-		if( hasTexCoordOffset ){
-			writer.WriteOpeningTagStart( "translation" );
-			writer.WriteAttributeFloat( "u", texCoordOffset.x );
-			writer.WriteAttributeFloat( "v", texCoordOffset.y );
-			writer.WriteOpeningTagEnd( true );
+		if(hasTexCoordOffset){
+			writer.WriteOpeningTagStart("translation");
+			writer.WriteAttributeFloat("u", texCoordOffset.x);
+			writer.WriteAttributeFloat("v", texCoordOffset.y);
+			writer.WriteOpeningTagEnd(true);
 		}
 		
-		if( hasTexCoordScaling ){
-			writer.WriteOpeningTagStart( "scaling" );
-			writer.WriteAttributeFloat( "u", texCoordScaling.x );
-			writer.WriteAttributeFloat( "v", texCoordScaling.y );
-			writer.WriteOpeningTagEnd( true );
+		if(hasTexCoordScaling){
+			writer.WriteOpeningTagStart("scaling");
+			writer.WriteAttributeFloat("u", texCoordScaling.x);
+			writer.WriteAttributeFloat("v", texCoordScaling.y);
+			writer.WriteOpeningTagEnd(true);
 		}
 		
-		if( hasTexCoordRotation ){
-			writer.WriteDataTagFloat( "rotation", texCoordRotation );
+		if(hasTexCoordRotation){
+			writer.WriteDataTagFloat("rotation", texCoordRotation);
 		}
 		
-		writer.WriteClosingTag( "transform" );
+		writer.WriteClosingTag("transform");
 	}
 	
-	if( hasTint ){
-		writer.WriteOpeningTagStart( "tint" );
-		writer.WriteAttributeFloat( "r", tint.r );
-		writer.WriteAttributeFloat( "g", tint.g );
-		writer.WriteAttributeFloat( "b", tint.b );
-		writer.WriteOpeningTagEnd( true );
+	if(hasTint){
+		writer.WriteOpeningTagStart("tint");
+		writer.WriteAttributeFloat("r", tint.r);
+		writer.WriteAttributeFloat("g", tint.g);
+		writer.WriteAttributeFloat("b", tint.b);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	pWriteProperties( writer, texture.GetProperties() );
+	pWriteProperties(writer, texture.GetProperties());
 	
-	writer.WriteClosingTag( "texture" );
+	writer.WriteClosingTag("texture");
 }
 
-void meLSXMLWorld::pWriteDecal( decXmlWriter &writer, const meDecal &decal ){
+void meLSXMLWorld::pWriteDecal(decXmlWriter &writer, const meDecal &decal){
 	const decDVector &position = decal.GetPosition();
 	const decVector &rotation = decal.GetRotation();
 	const decVector &size = decal.GetSize();
@@ -395,109 +395,109 @@ void meLSXMLWorld::pWriteDecal( decXmlWriter &writer, const meDecal &decal ){
 	const decVector2 &texCoordScaling = decal.GetTexCoordScaling();
 	const float texCoordRotation = decal.GetTexCoordRotation();
 	const decColor &tint = decal.GetColorTint();
-	const bool hasTexCoordOffset = ! texCoordOffset.IsEqualTo( decVector2( 0.0f, 0.0f ) );
-	const bool hasTexCoordScaling = ! texCoordScaling.IsEqualTo( decVector2( 1.0f, 1.0f ) );
-	const bool hasTexCoordRotation = ( fabsf( texCoordRotation ) > FLOAT_SAFE_EPSILON );
-	const bool hasTint = ! tint.IsEqualTo( decColor( 1.0f, 1.0f, 1.0f ) );
+	const bool hasTexCoordOffset = ! texCoordOffset.IsEqualTo(decVector2(0.0f, 0.0f));
+	const bool hasTexCoordScaling = ! texCoordScaling.IsEqualTo(decVector2(1.0f, 1.0f));
+	const bool hasTexCoordRotation = (fabsf(texCoordRotation) > FLOAT_SAFE_EPSILON);
+	const bool hasTint = ! tint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 	
-	writer.WriteOpeningTag( "decal" );
+	writer.WriteOpeningTag("decal");
 	
-	writer.WriteDataTagString( "skin", decal.GetSkinPath() );
+	writer.WriteDataTagString("skin", decal.GetSkinPath());
 	//writer.WriteDataTagString( "texture", decal.GetTextureName() );
 	
-	writer.WriteOpeningTagStart( "position" );
-	writer.WriteAttributeDouble( "x", position.x );
-	writer.WriteAttributeDouble( "y", position.y );
-	writer.WriteAttributeDouble( "z", position.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteOpeningTagStart("position");
+	writer.WriteAttributeDouble("x", position.x);
+	writer.WriteAttributeDouble("y", position.y);
+	writer.WriteAttributeDouble("z", position.z);
+	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteOpeningTagStart( "rotation" );
-	writer.WriteAttributeDouble( "x", rotation.x );
-	writer.WriteAttributeDouble( "y", rotation.y );
-	writer.WriteAttributeDouble( "z", rotation.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteOpeningTagStart("rotation");
+	writer.WriteAttributeDouble("x", rotation.x);
+	writer.WriteAttributeDouble("y", rotation.y);
+	writer.WriteAttributeDouble("z", rotation.z);
+	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteOpeningTagStart( "size" );
-	writer.WriteAttributeDouble( "x", size.x );
-	writer.WriteAttributeDouble( "y", size.y );
-	writer.WriteAttributeDouble( "z", size.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteOpeningTagStart("size");
+	writer.WriteAttributeDouble("x", size.x);
+	writer.WriteAttributeDouble("y", size.y);
+	writer.WriteAttributeDouble("z", size.z);
+	writer.WriteOpeningTagEnd(true);
 	
-	if( ! decal.GetVisible() ){
-		writer.WriteDataTagBool( "visible", decal.GetVisible() );
+	if(! decal.GetVisible()){
+		writer.WriteDataTagBool("visible", decal.GetVisible());
 	}
 	
-	if( hasTexCoordOffset || hasTexCoordScaling || hasTexCoordRotation ){
-		writer.WriteOpeningTag( "transform" );
+	if(hasTexCoordOffset || hasTexCoordScaling || hasTexCoordRotation){
+		writer.WriteOpeningTag("transform");
 		
-		if( hasTexCoordOffset ){
-			writer.WriteOpeningTagStart( "translation" );
-			writer.WriteAttributeFloat( "u", texCoordOffset.x );
-			writer.WriteAttributeFloat( "v", texCoordOffset.y );
-			writer.WriteOpeningTagEnd( true );
+		if(hasTexCoordOffset){
+			writer.WriteOpeningTagStart("translation");
+			writer.WriteAttributeFloat("u", texCoordOffset.x);
+			writer.WriteAttributeFloat("v", texCoordOffset.y);
+			writer.WriteOpeningTagEnd(true);
 		}
 		
-		if( hasTexCoordScaling ){
-			writer.WriteOpeningTagStart( "scaling" );
-			writer.WriteAttributeFloat( "u", texCoordScaling.x );
-			writer.WriteAttributeFloat( "v", texCoordScaling.y );
-			writer.WriteOpeningTagEnd( true );
+		if(hasTexCoordScaling){
+			writer.WriteOpeningTagStart("scaling");
+			writer.WriteAttributeFloat("u", texCoordScaling.x);
+			writer.WriteAttributeFloat("v", texCoordScaling.y);
+			writer.WriteOpeningTagEnd(true);
 		}
 		
-		if( hasTexCoordRotation ){
-			writer.WriteDataTagFloat( "rotation", texCoordRotation );
+		if(hasTexCoordRotation){
+			writer.WriteDataTagFloat("rotation", texCoordRotation);
 		}
 		
-		writer.WriteClosingTag( "transform" );
+		writer.WriteClosingTag("transform");
 	}
 	
-	if( hasTint ){
-		writer.WriteOpeningTagStart( "tint" );
-		writer.WriteAttributeFloat( "r", tint.r );
-		writer.WriteAttributeFloat( "g", tint.g );
-		writer.WriteAttributeFloat( "b", tint.b );
-		writer.WriteOpeningTagEnd( true );
+	if(hasTint){
+		writer.WriteOpeningTagStart("tint");
+		writer.WriteAttributeFloat("r", tint.r);
+		writer.WriteAttributeFloat("g", tint.g);
+		writer.WriteAttributeFloat("b", tint.b);
+		writer.WriteOpeningTagEnd(true);
 	}
 	
-	pWriteProperties( writer, decal.GetProperties() );
+	pWriteProperties(writer, decal.GetProperties());
 	
-	writer.WriteClosingTag( "decal" );
+	writer.WriteClosingTag("decal");
 }
 
-void meLSXMLWorld::pWriteNavigationSystem( decXmlWriter &writer, const meNavigationSpace &navspace ){
+void meLSXMLWorld::pWriteNavigationSystem(decXmlWriter &writer, const meNavigationSpace &navspace){
 	const decDVector &position = navspace.GetPosition();
 	const decVector &orientation = navspace.GetOrientation();
 	
-	writer.WriteOpeningTag( "navigationSpace" );
+	writer.WriteOpeningTag("navigationSpace");
 	
-	writer.WriteOpeningTagStart( "position" );
-	writer.WriteAttributeDouble( "x", position.x );
-	writer.WriteAttributeDouble( "y", position.y );
-	writer.WriteAttributeDouble( "z", position.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteOpeningTagStart("position");
+	writer.WriteAttributeDouble("x", position.x);
+	writer.WriteAttributeDouble("y", position.y);
+	writer.WriteAttributeDouble("z", position.z);
+	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteOpeningTagStart( "orientation" );
-	writer.WriteAttributeDouble( "x", orientation.x );
-	writer.WriteAttributeDouble( "y", orientation.y );
-	writer.WriteAttributeDouble( "z", orientation.z );
-	writer.WriteOpeningTagEnd( true );
+	writer.WriteOpeningTagStart("orientation");
+	writer.WriteAttributeDouble("x", orientation.x);
+	writer.WriteAttributeDouble("y", orientation.y);
+	writer.WriteAttributeDouble("z", orientation.z);
+	writer.WriteOpeningTagEnd(true);
 	
-	writer.WriteDataTagString( "filename", navspace.GetFilename().GetString() );
+	writer.WriteDataTagString("filename", navspace.GetFilename().GetString());
 	
-	writer.WriteClosingTag( "navigationSpace" );
+	writer.WriteClosingTag("navigationSpace");
 }
 
-void meLSXMLWorld::pWriteProperties( decXmlWriter &writer, const decStringDictionary &properties ){
-	const decStringList keys( properties.GetKeys() );
-	const decStringList values( properties.GetValues() );
+void meLSXMLWorld::pWriteProperties(decXmlWriter &writer, const decStringDictionary &properties){
+	const decStringList keys(properties.GetKeys());
+	const decStringList values(properties.GetValues());
 	const int count = keys.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		writer.WriteOpeningTagStart( "property" );
-		writer.WriteAttributeString( "key", keys.GetAt( i ) );
-		writer.WriteOpeningTagEnd( false, false );
-		WriteTextMultilineString( writer, values.GetAt( i ) );
-		writer.WriteClosingTag( "property", false, true );
+	for(i=0; i<count; i++){
+		writer.WriteOpeningTagStart("property");
+		writer.WriteAttributeString("key", keys.GetAt(i));
+		writer.WriteOpeningTagEnd(false, false);
+		WriteTextMultilineString(writer, values.GetAt(i));
+		writer.WriteClosingTag("property", false, true);
 	}
 }

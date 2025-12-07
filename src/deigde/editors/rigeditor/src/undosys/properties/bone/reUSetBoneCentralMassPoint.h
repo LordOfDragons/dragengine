@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBoneCentralMassPoint( reRigBone *bone, const decVector &centralMassPoint );
+	reUSetBoneCentralMassPoint(reRigBone *bone, const decVector &centralMassPoint);
 	
 protected:
 	/** \brief Clean up undo. */

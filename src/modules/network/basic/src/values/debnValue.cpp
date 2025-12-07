@@ -40,7 +40,7 @@
 ////////////////////////////
 
 debnValue::debnValue() :
-pDataType( evtFloat32 ){
+pDataType(evtFloat32){
 }
 
 debnValue::~debnValue(){
@@ -51,9 +51,9 @@ debnValue::~debnValue(){
 // Management
 ///////////////
 
-void debnValue::SetDataType( eValueTypes dataType ){
-	if( dataType < evtSInt8 || dataType > evtQuaternionF32 ){
-		DETHROW( deeInvalidParam );
+void debnValue::SetDataType(eValueTypes dataType){
+	if(dataType < evtSInt8 || dataType > evtQuaternionF32){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDataType = dataType;

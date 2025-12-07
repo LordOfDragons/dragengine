@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetOptionBox( dealDisplay &display, dealImage *image = NULL, const char *label = "" );
+	dealWidgetOptionBox(dealDisplay &display, dealImage *image = NULL, const char *label = "");
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetOptionBox();
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set widget from gui theme. */
-	virtual void SetFromGuiTheme( const dealGuiTheme &guitheme );
+	virtual void SetFromGuiTheme(const dealGuiTheme &guitheme);
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	const decColor &GetTextColor() const;
 	
 	/** \brief Set text color. */
-	void SetTextColor( const decColor &color );
+	void SetTextColor(const decColor &color);
 	
 	
 	
@@ -79,33 +79,33 @@ public:
 	const decString &GetLabel() const;
 	
 	/** \brief Set label or empty string to not displayed. */
-	void SetLabel( const char *label );
+	void SetLabel(const char *label);
 	
 	/** \brief Image or \em NULL if not set. */
 	dealImage *GetImage() const;
 	
 	/** \brief Set image or \em NULL if not set. */
-	void SetImage( dealImage *image );
+	void SetImage(dealImage *image);
 	
 	/** \brief Bordered box image widget for deselected state. */
-	inline dealWidgetImage &GetBoxImageDeselected() const{ return *pBoxImageDeselected; }
+	inline dealWidgetImage &GetBoxImageDeselected() const{return *pBoxImageDeselected;}
 	
 	/** \brief Bordered box image widget for selected state. */
-	inline dealWidgetImage &GetBoxImageSelected() const{ return *pBoxImageSelected; }
+	inline dealWidgetImage &GetBoxImageSelected() const{return *pBoxImageSelected;}
 	
 	
 	
 	/** \brief Group or \em NULL if not assigned to one. */
-	inline dealWidgetOptionGroup *GetGroup() const{ return pGroup; }
+	inline dealWidgetOptionGroup *GetGroup() const{return pGroup;}
 	
 	/** \brief Set group or \em NULL if not assigned to one. */
-	void SetGroup( dealWidgetOptionGroup *group );
+	void SetGroup(dealWidgetOptionGroup *group);
 	
 	/** \brief Button is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** \brief Set if button is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	
@@ -121,19 +121,19 @@ public:
 	 * \brief Key has been pressed down.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyPress( int keycode );
+	virtual void OnKeyPress(int keycode);
 	
 	/**
 	 * \brief Key has been released.
 	 * \param[in] keycode A value of AKEYCODE_*.
 	 */
-	virtual void OnKeyRelease( int keycode );
+	virtual void OnKeyRelease(int keycode);
 	
 	/**
 	 * \brief Mouse button press / finger press.
 	* \param[in] buttons Buttons pressed while pressing screen. OR of values of AMOTION_EVENT_BUTTON_.
 	 */
-	virtual void OnMousePress( int buttons, const decPoint &position );
+	virtual void OnMousePress(int buttons, const decPoint &position);
 	/*@}*/
 	
 	

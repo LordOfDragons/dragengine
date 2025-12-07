@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceFaceRemove( const decObjectOrderedSet &faces );
+	meUHTNavSpaceFaceRemove(const decObjectOrderedSet &faces);
 	
 protected:
 	/** \brief Clean up undo action. */

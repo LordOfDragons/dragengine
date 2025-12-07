@@ -39,13 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureSetDuration::ceUCGestureSetDuration( ceGesture *gesture, float newValue ) :
-pGesture( gesture ),
-pNewValue( newValue )
+ceUCGestureSetDuration::ceUCGestureSetDuration(ceGesture *gesture, float newValue) :
+pGesture(gesture),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( gesture )
+	DEASSERT_NOTNULL(gesture)
 	
-	SetShortInfo( "Gesture Set Duration" );
+	SetShortInfo("Gesture Set Duration");
 	pOldValue = gesture->GetDuration();
 }
 
@@ -57,9 +57,9 @@ ceUCGestureSetDuration::~ceUCGestureSetDuration(){
 ///////////////
 
 void ceUCGestureSetDuration::Undo(){
-	pGesture->SetDuration( pOldValue );
+	pGesture->SetDuration(pOldValue);
 }
 
 void ceUCGestureSetDuration::Redo(){
-	pGesture->SetDuration( pNewValue );
+	pGesture->SetDuration(pNewValue);
 }

@@ -54,10 +54,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACLogicCutCondition( ceWindowMain &windowMain,
+	ceWPTMACLogicCutCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
 		ceConversationAction &action, ceCConditionLogic &logic,
-		ceConversationCondition *condition );
+		ceConversationCondition *condition);
 	/*@}*/
 	
 	
@@ -65,16 +65,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
+	inline ceConversationTopic &GetTopic() const{return *pTopic;}
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline ceConversationAction *GetAction() const{return pAction;}
 	
 	/** \brief If-else action. */
-	inline ceCConditionLogic *GetLogic() const{ return pLogic; }
+	inline ceCConditionLogic *GetLogic() const{return pLogic;}
 	
 	
 	

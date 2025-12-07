@@ -37,8 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-devkDescriptorSetLayoutManager::devkDescriptorSetLayoutManager( devkDevice &device ) :
-pDevice( device ){
+devkDescriptorSetLayoutManager::devkDescriptorSetLayoutManager(devkDevice &device) :
+pDevice(device){
 }
 
 devkDescriptorSetLayoutManager::~devkDescriptorSetLayoutManager(){
@@ -53,31 +53,31 @@ int devkDescriptorSetLayoutManager::GetCount() const{
 	return pLayouts.GetCount();
 }
 
-devkDescriptorSetLayout *devkDescriptorSetLayoutManager::GetAt( int index ) const{
-	return ( devkDescriptorSetLayout* )pLayouts.GetAt( index );
+devkDescriptorSetLayout *devkDescriptorSetLayoutManager::GetAt(int index) const{
+	return (devkDescriptorSetLayout*)pLayouts.GetAt(index);
 }
 
 devkDescriptorSetLayout *devkDescriptorSetLayoutManager::GetWith(
-const devkDescriptorSetLayoutConfiguration &configuration ){
+const devkDescriptorSetLayoutConfiguration &configuration){
 	const int count = pLayouts.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		devkDescriptorSetLayout * const layout = ( devkDescriptorSetLayout* )pLayouts.GetAt( i );
-		if( layout->GetConfiguration() == configuration ){
+	for(i=0; i<count; i++){
+		devkDescriptorSetLayout * const layout = (devkDescriptorSetLayout*)pLayouts.GetAt(i);
+		if(layout->GetConfiguration() == configuration){
 			return layout;
 		}
 	}
 	
 	devkDescriptorSetLayout::Ref layout(devkDescriptorSetLayout::Ref::NewWith(pDevice, configuration));
-	pLayouts.Add( layout );
+	pLayouts.Add(layout);
 	return layout; // called does not hold reference
 }
 
-bool devkDescriptorSetLayoutManager::HasWith( const devkDescriptorSetLayoutConfiguration &configuration ) const{
+bool devkDescriptorSetLayoutManager::HasWith(const devkDescriptorSetLayoutConfiguration &configuration) const{
 	const int count = pLayouts.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		if( ( ( devkDescriptorSetLayout* )pLayouts.GetAt( i ) )->GetConfiguration() == configuration ){
+	for(i=0; i<count; i++){
+		if(((devkDescriptorSetLayout*)pLayouts.GetAt(i))->GetConfiguration() == configuration){
 			return true;
 		}
 	}

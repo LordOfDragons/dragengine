@@ -57,10 +57,10 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu action. */
-	ceWPTMAPChoiceOptionMoveAction( ceWindowMain &windowMain,
+	ceWPTMAPChoiceOptionMoveAction(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice,
 		ceCAPlayerChoiceOption &option, ceConversationAction *action, int index,
-		const char *text, igdeIcon *icon );
+		const char *text, igdeIcon *icon);
 	/*@}*/
 	
 	
@@ -68,22 +68,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline ceConversationAction *GetAction() const{return pAction;}
 	
 	/** \brief If-else action. */
-	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
+	inline ceCAPlayerChoice *GetPlayerChoice() const{return pPlayerChoice;}
 	
 	/** \brief If-case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
+	inline ceCAPlayerChoiceOption *GetOption() const{return pOption;}
 	
 	/** \brief Index of new position. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	
 	

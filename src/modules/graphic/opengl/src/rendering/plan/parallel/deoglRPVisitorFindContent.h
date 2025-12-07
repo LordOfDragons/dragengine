@@ -89,24 +89,24 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	deoglRPVisitorFindContent( deoglRenderPlan &plan );
+	deoglRPVisitorFindContent(deoglRenderPlan &plan);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
 	/** Initialize parameters. Call this first before any other culling function. */
-	void Init( deoglDCollisionFrustum *frustum );
+	void Init(deoglDCollisionFrustum *frustum);
 	
 	
 	
 	/** Frustum. */
-	inline deoglDCollisionFrustum *GetFrustum() const{ return pFrustum; }
+	inline deoglDCollisionFrustum *GetFrustum() const{return pFrustum;}
 	
 	/** Frustum minimum extend. */
-	inline const decDVector &GetFrustumMinExtend() const{ return pFrustumMinExtend; }
+	inline const decDVector &GetFrustumMinExtend() const{return pFrustumMinExtend;}
 	
 	/** Frustum maximum extend. */
-	inline const decDVector &GetFrustumMaxExtend() const{ return pFrustumMaxExtend; }
+	inline const decDVector &GetFrustumMaxExtend() const{return pFrustumMaxExtend;}
 	
 	/** Calculate frustum boundary box from the plan camera parameters. */
 	void CalculateFrustumBoundaryBox();
@@ -114,19 +114,19 @@ public:
 	
 	
 	/** Camera view vector for the too-small filter. */
-	inline const decDVector &GetCameraView() const{ return pCameraView; }
+	inline const decDVector &GetCameraView() const{return pCameraView;}
 	
 	/** Minimal pixel size for the too-small filter. The value is set to 0.1 if set to less than 0.1 . */
-	inline float GetCullPixelSize() const{ return pCullPixelSize; }
+	inline float GetCullPixelSize() const{return pCullPixelSize;}
 	
 	/** Set minimal pixel size for the too-small filter. */
-	void SetCullPixelSize( float cullPixelSize );
+	void SetCullPixelSize(float cullPixelSize);
 	
 	/** Error scaling factor for the too-small filter. */
-	inline float GetErrorScaling() const{ return pErrorScaling; }
+	inline float GetErrorScaling() const{return pErrorScaling;}
 	
 	/** Set error scaling factor for the too-small filter. */
-	void SetErrorScaling( float errorScaling );
+	void SetErrorScaling(float errorScaling);
 	
 	/** Calculate error scaling from the plan viewport and camera parameters. */
 	void CalculateErrorScaling();
@@ -134,25 +134,25 @@ public:
 	
 	
 	/** Dynamic components are culled. */
-	inline bool GetCullDynamicComponents() const{ return pCullDynamicComponents; }
+	inline bool GetCullDynamicComponents() const{return pCullDynamicComponents;}
 	
 	/** Set if dynamic components are culled. */
-	void SetCullDynamicComponents( bool cullDynamicComponents );
+	void SetCullDynamicComponents(bool cullDynamicComponents);
 	
 	/** Layer mask is used for culling. */
-	inline bool GetCullLayerMask() const{ return pCullLayerMask; }
+	inline bool GetCullLayerMask() const{return pCullLayerMask;}
 	
 	/** Set if layer mask is used for culling. */
-	void SetCullLayerMask( bool cull );
+	void SetCullLayerMask(bool cull);
 	
 	/** Layer mask. */
-	const decLayerMask &GetLayerMask(){ return pLayerMask; }
+	const decLayerMask &GetLayerMask(){return pLayerMask;}
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Enable GI Cascade. */
-	void EnableGIBox( const decDVector &minExtend, const decDVector &maxExtend );
+	void EnableGIBox(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	/** Disable GI Cascade. */
 	void DisableGIBox();
@@ -160,19 +160,19 @@ public:
 	
 	
 	/** Visit world octree. */
-	void VisitWorldOctree( const deoglWorldOctree &octree );
+	void VisitWorldOctree(const deoglWorldOctree &octree);
 	/*@}*/
 	
 	
 	
 private:
-	void pVisitNode( const deoglWorldOctree &node, bool intersect );
-	void pVisitNodeGICascade( const deoglWorldOctree &node, bool intersect );
-	void pVisitComponents( const deoglWorldOctree &node, bool intersect );
-	void pVisitBillboards( const deoglWorldOctree &node, bool intersect );
-	void pVisitLights( const deoglWorldOctree &node, bool intersect );
-	void pVisitLightsGICascade( const deoglWorldOctree &node, bool intersect );
-	void pVisitParticleEmitters( const deoglWorldOctree &node, bool intersect );
+	void pVisitNode(const deoglWorldOctree &node, bool intersect);
+	void pVisitNodeGICascade(const deoglWorldOctree &node, bool intersect);
+	void pVisitComponents(const deoglWorldOctree &node, bool intersect);
+	void pVisitBillboards(const deoglWorldOctree &node, bool intersect);
+	void pVisitLights(const deoglWorldOctree &node, bool intersect);
+	void pVisitLightsGICascade(const deoglWorldOctree &node, bool intersect);
+	void pVisitParticleEmitters(const deoglWorldOctree &node, bool intersect);
 };
 
 #endif

@@ -43,32 +43,32 @@
 ////////////////////////////
 
 seSourceGroup::seSourceGroup() :
-seSource( deSynthesizerSourceVisitorIdentify::estGroup ),
-pApplicationType( deSynthesizerSourceGroup::eatAll ),
-pTreeListExpanded( false ){
+seSource(deSynthesizerSourceVisitorIdentify::estGroup),
+pApplicationType(deSynthesizerSourceGroup::eatAll),
+pTreeListExpanded(false){
 }
 
-seSourceGroup::seSourceGroup( const seSourceGroup &copy ) :
-seSource( copy ),
-pApplicationType( copy.pApplicationType ),
-pTargetSelect( copy.pTargetSelect ),
-pTreeListExpanded( copy.pTreeListExpanded )
+seSourceGroup::seSourceGroup(const seSourceGroup &copy) :
+seSource(copy),
+pApplicationType(copy.pApplicationType),
+pTargetSelect(copy.pTargetSelect),
+pTreeListExpanded(copy.pTreeListExpanded)
 {
 	const int sourceCount = copy.pSources.GetCount();
 	seSource *source = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<sourceCount; i++ ){
-			source = copy.pSources.GetAt( i )->CreateCopy();
-			pSources.Add( source );
-			source->SetParentGroup( this );
+		for(i=0; i<sourceCount; i++){
+			source = copy.pSources.GetAt(i)->CreateCopy();
+			pSources.Add(source);
+			source->SetParentGroup(this);
 			source->FreeReference();
 			source = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( source ){
+	}catch(const deException &){
+		if(source){
 			source->FreeReference();
 		}
 		throw;
@@ -84,72 +84,72 @@ seSourceGroup::~seSourceGroup(){
 // Management
 ///////////////
 
-void seSourceGroup::AddSource( seSource *source ){
-	pSources.Add( source );
+void seSourceGroup::AddSource(seSource *source){
+	pSources.Add(source);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	source->SetParentGroup( this );
-	source->SetSynthesizer( synthesizer );
+	source->SetParentGroup(this);
+	source->SetSynthesizer(synthesizer);
 	
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
 		synthesizer->NotifySourceStructureChanged();
 	}
 }
 
-void seSourceGroup::InsertSourceAt( seSource *source, int index ){
-	pSources.Insert( source, index );
+void seSourceGroup::InsertSourceAt(seSource *source, int index){
+	pSources.Insert(source, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	source->SetParentGroup( this );
-	source->SetSynthesizer( synthesizer );
+	source->SetParentGroup(this);
+	source->SetSynthesizer(synthesizer);
 	
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
 		synthesizer->NotifySourceStructureChanged();
 	}
 }
 
-void seSourceGroup::MoveSourceTo( seSource *source, int index ){
-	pSources.Move( source, index );
+void seSourceGroup::MoveSourceTo(seSource *source, int index){
+	pSources.Move(source, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
 		synthesizer->NotifySourceStructureChanged();
 	}
 }
 
-void seSourceGroup::RemoveSource( seSource *source ){
-	if( ! pSources.Has( source ) ){
-		DETHROW( deeInvalidParam );
+void seSourceGroup::RemoveSource(seSource *source){
+	if(! pSources.Has(source)){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	if( synthesizer && source == synthesizer->GetActiveSource() ){
-		const int index = pSources.IndexOf( source );
+	if(synthesizer && source == synthesizer->GetActiveSource()){
+		const int index = pSources.IndexOf(source);
 		const int sourceCount = pSources.GetCount();
 		
-		if( sourceCount == 1 ){
-			synthesizer->SetActiveSource( this );
+		if(sourceCount == 1){
+			synthesizer->SetActiveSource(this);
 			
-		}else if( index < sourceCount - 1 ){
-			synthesizer->SetActiveSource( pSources.GetAt( index + 1 ) );
+		}else if(index < sourceCount - 1){
+			synthesizer->SetActiveSource(pSources.GetAt(index + 1));
 			
 		}else{
-			synthesizer->SetActiveSource( pSources.GetAt( index - 1 ) );
+			synthesizer->SetActiveSource(pSources.GetAt(index - 1));
 		}
 	}
 	
-	source->SetParentGroup( NULL );
-	source->SetSynthesizer( NULL );
+	source->SetParentGroup(NULL);
+	source->SetSynthesizer(NULL);
 	
-	pSources.Remove( source );
+	pSources.Remove(source);
 	
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
 		synthesizer->NotifySourceStructureChanged();
 	}
@@ -161,19 +161,19 @@ void seSourceGroup::RemoveAllSources(){
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	
-	if( synthesizer && pSources.Has( synthesizer->GetActiveSource() ) ){
-		synthesizer->SetActiveSource( this );
+	if(synthesizer && pSources.Has(synthesizer->GetActiveSource())){
+		synthesizer->SetActiveSource(this);
 	}
 	
-	for( i=0; i<count; i++ ){
-		seSource * const source = pSources.GetAt( i );
-		source->SetParentGroup( NULL );
-		source->SetSynthesizer( NULL );
+	for(i=0; i<count; i++){
+		seSource * const source = pSources.GetAt(i);
+		source->SetParentGroup(NULL);
+		source->SetSynthesizer(NULL);
 	}
 	
 	pSources.RemoveAll();
 	
-	if( synthesizer ){
+	if(synthesizer){
 		synthesizer->RebuildSources();
 		synthesizer->NotifySourceStructureChanged();
 	}
@@ -181,15 +181,15 @@ void seSourceGroup::RemoveAllSources(){
 
 
 
-void seSourceGroup::SetApplicationType( deSynthesizerSourceGroup::eApplicationTypes type ){
-	if( type == pApplicationType ){
+void seSourceGroup::SetApplicationType(deSynthesizerSourceGroup::eApplicationTypes type){
+	if(type == pApplicationType){
 		return;
 	}
 	
 	pApplicationType = type;
 	
-	if( GetEngineSource() ){
-		( ( deSynthesizerSourceGroup* )GetEngineSource() )->SetApplicationType( type );
+	if(GetEngineSource()){
+		((deSynthesizerSourceGroup*)GetEngineSource())->SetApplicationType(type);
 		NotifySourceChanged();
 	}
 }
@@ -199,46 +199,46 @@ void seSourceGroup::SetApplicationType( deSynthesizerSourceGroup::eApplicationTy
 void seSourceGroup::UpdateTargets(){
 	seSource::UpdateTargets();
 	
-	deSynthesizerSourceGroup * const source = ( deSynthesizerSourceGroup* )GetEngineSource();
-	if( source ){
-		pTargetSelect.UpdateEngineTarget( GetSynthesizer(), source->GetTargetSelect() );
+	deSynthesizerSourceGroup * const source = (deSynthesizerSourceGroup*)GetEngineSource();
+	if(source){
+		pTargetSelect.UpdateEngineTarget(GetSynthesizer(), source->GetTargetSelect());
 	}
 	
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( seSource* )pSources.GetAt( i ) )->UpdateTargets();
+	for(i=0; i<count; i++){
+		((seSource*)pSources.GetAt(i))->UpdateTargets();
 	}
 }
 
-int seSourceGroup::CountLinkUsage( seLink *link ) const{
-	int i, usageCount = seSource::CountLinkUsage( link );
+int seSourceGroup::CountLinkUsage(seLink *link) const{
+	int i, usageCount = seSource::CountLinkUsage(link);
 	const int count = pSources.GetCount();
 	
-	if( pTargetSelect.HasLink( link ) ){
+	if(pTargetSelect.HasLink(link)){
 		usageCount++;
 	}
 	
-	for( i=0; i<count; i++ ){
-		usageCount += pSources.GetAt( i )->CountLinkUsage( link );
+	for(i=0; i<count; i++){
+		usageCount += pSources.GetAt(i)->CountLinkUsage(link);
 	}
 	
 	return usageCount;
 }
 
-void seSourceGroup::RemoveLinkFromTargets( seLink *link ){
-	seSource::RemoveLinkFromTargets( link );
+void seSourceGroup::RemoveLinkFromTargets(seLink *link){
+	seSource::RemoveLinkFromTargets(link);
 	
-	if( pTargetSelect.HasLink( link ) ){
-		pTargetSelect.RemoveLink( link );
+	if(pTargetSelect.HasLink(link)){
+		pTargetSelect.RemoveLink(link);
 	}
 	
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSources.GetAt( i )->RemoveLinkFromTargets( link );
+	for(i=0; i<count; i++){
+		pSources.GetAt(i)->RemoveLinkFromTargets(link);
 	}
 	
 	seSource::UpdateTargets();
@@ -252,8 +252,8 @@ void seSourceGroup::RemoveLinksFromAllTargets(){
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSources.GetAt( i )->RemoveLinksFromAllTargets();
+	for(i=0; i<count; i++){
+		pSources.GetAt(i)->RemoveLinksFromAllTargets();
 	}
 	
 	seSource::UpdateTargets();
@@ -267,34 +267,34 @@ deSynthesizerSource *seSourceGroup::CreateEngineSource(){
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSources.GetAt( i )->SetEngineSource( NULL );
+	for(i=0; i<count; i++){
+		pSources.GetAt(i)->SetEngineSource(NULL);
 	}
 	
 	try{
 		engSource = new deSynthesizerSourceGroup;
 		
-		InitEngineSource( engSource );
+		InitEngineSource(engSource);
 		
-		for( i=0; i<count; i++ ){
-			seSource * const source = pSources.GetAt( i );
+		for(i=0; i<count; i++){
+			seSource * const source = pSources.GetAt(i);
 			
 			subEngSource = source->CreateEngineSource();
-			engSource->AddSource( subEngSource );
-			source->SetEngineSource( subEngSource );
+			engSource->AddSource(subEngSource);
+			source->SetEngineSource(subEngSource);
 			subEngSource->FreeReference();
 			subEngSource = NULL;
 		}
 		
-		engSource->SetApplicationType( pApplicationType );
+		engSource->SetApplicationType(pApplicationType);
 		
-		pTargetSelect.UpdateEngineTarget( GetSynthesizer(), engSource->GetTargetSelect() );
+		pTargetSelect.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetSelect());
 		
-	}catch( const deException & ){
-		if( subEngSource ){
+	}catch(const deException &){
+		if(subEngSource){
 			subEngSource->FreeReference();
 		}
-		if( engSource ){
+		if(engSource){
 			engSource->FreeReference();
 		}
 		throw;
@@ -307,25 +307,25 @@ deSynthesizerSource *seSourceGroup::CreateEngineSource(){
 
 
 seSource *seSourceGroup::CreateCopy() const{
-	return new seSourceGroup( *this );
+	return new seSourceGroup(*this);
 }
 
-void seSourceGroup::ListLinks( seLinkList &list ){
+void seSourceGroup::ListLinks(seLinkList &list){
 	const int count = pSources.GetCount();
 	int i;
 	
-	seSource::ListLinks( list );
+	seSource::ListLinks(list);
 	
-	pTargetSelect.AddLinksToList( list );
+	pTargetSelect.AddLinksToList(list);
 	
-	for( i=0; i<count; i++ ){
-		pSources.GetAt( i )->ListLinks( list );
+	for(i=0; i<count; i++){
+		pSources.GetAt(i)->ListLinks(list);
 	}
 }
 
 
 
-void seSourceGroup::SetTreeListExpanded( bool expanded ){
+void seSourceGroup::SetTreeListExpanded(bool expanded){
 	pTreeListExpanded = expanded;
 }
 
@@ -335,8 +335,8 @@ void seSourceGroup::SynthesizerChanged(){
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSources.GetAt( i )->SynthesizerChanged();
+	for(i=0; i<count; i++){
+		pSources.GetAt(i)->SynthesizerChanged();
 	}
 }
 
@@ -346,8 +346,8 @@ void seSourceGroup::SynthesizerDirectoryChanged(){
 	const int count = pSources.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pSources.GetAt( i )->SynthesizerDirectoryChanged();
+	for(i=0; i<count; i++){
+		pSources.GetAt(i)->SynthesizerDirectoryChanged();
 	}
 }
 
@@ -356,8 +356,8 @@ void seSourceGroup::SynthesizerDirectoryChanged(){
 // Operators
 //////////////
 
-seSourceGroup &seSourceGroup::operator=( const seSourceGroup &copy ){
-	SetApplicationType( copy.pApplicationType );
+seSourceGroup &seSourceGroup::operator=(const seSourceGroup &copy){
+	SetApplicationType(copy.pApplicationType);
 	pTargetSelect = copy.pTargetSelect;
 	
 	const int sourceCount = copy.pSources.GetCount();
@@ -366,24 +366,24 @@ seSourceGroup &seSourceGroup::operator=( const seSourceGroup &copy ){
 	
 	RemoveAllSources();
 	try{
-		for( i=0; i<sourceCount; i++ ){
-			source = copy.pSources.GetAt( i )->CreateCopy();
-			AddSource( source );
-			source->SetParentGroup( this );
+		for(i=0; i<sourceCount; i++){
+			source = copy.pSources.GetAt(i)->CreateCopy();
+			AddSource(source);
+			source->SetParentGroup(this);
 			source->FreeReference();
 			source = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( source ){
+	}catch(const deException &){
+		if(source){
 			source->FreeReference();
 		}
 		throw;
 	}
 	
-	SetTreeListExpanded( copy.pTreeListExpanded );
+	SetTreeListExpanded(copy.pTreeListExpanded);
 	
-	seSource::operator=( copy );
+	seSource::operator=(copy);
 	return *this;
 }
 

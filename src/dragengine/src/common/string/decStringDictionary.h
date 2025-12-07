@@ -42,8 +42,8 @@ private:
 		sDictEntry *next;
 		
 		sDictEntry();
-		sDictEntry( const sDictEntry &entry );
-		sDictEntry( unsigned int nhash, const char *nkey, const char *nvalue );
+		sDictEntry(const sDictEntry &entry);
+		sDictEntry(unsigned int nhash, const char *nkey, const char *nvalue);
 		~sDictEntry();
 	};
 	
@@ -60,10 +60,10 @@ public:
 	decStringDictionary();
 	
 	/** \brief Create new dictionary. */
-	decStringDictionary( int bucketCount );
+	decStringDictionary(int bucketCount);
 	
 	/** \brief Create new dictionary. */
-	decStringDictionary( const decStringDictionary &dict );
+	decStringDictionary(const decStringDictionary &dict);
 	
 	/** \brief Clean up dictionary. */
 	~decStringDictionary();
@@ -74,28 +74,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of entries in the dictionary. */
-	inline int GetCount() const{ return pEntryCount; }
+	inline int GetCount() const{return pEntryCount;}
 	
 	/** \brief Determines if a key is located in the dictionary. */
-	bool Has( const char *key ) const;
+	bool Has(const char *key) const;
 	
 	/** \brief Retrieves an string by key throwing an exception if not found. */
-	const decString &GetAt( const char *key ) const;
+	const decString &GetAt(const char *key) const;
 	
 	/** \brief Retrieves an string by key or default value if absent. */
-	const decString &GetAt( const char *key, const decString &defaultValue ) const;
+	const decString &GetAt(const char *key, const decString &defaultValue) const;
 	
 	/** \brief Retrieves an string by key into a variable returning true if the key has been found or false otherwise. */
-	bool GetAt( const char *key, const decString **string ) const;
+	bool GetAt(const char *key, const decString **string) const;
 	
 	/** \brief Adds an string to the dictionary by key replacing an old string if present. */
-	void SetAt( const char *key, const char *value );
+	void SetAt(const char *key, const char *value);
 	
 	/** \brief Removes a key from the dictionary throwing an exception if not found. */
-	void Remove( const char *key );
+	void Remove(const char *key);
 	
 	/** \brief Removes a key from the dictionary if present. */
-	void RemoveIfPresent( const char *key );
+	void RemoveIfPresent(const char *key);
 	
 	/** \brief Removes all keys from the dictionary. */
 	void RemoveAll();
@@ -107,7 +107,7 @@ public:
 	decStringList GetValues() const;
 	
 	/** \brief Determines if this dictionary equals another dictionary. */
-	bool Equals( const decStringDictionary &dict ) const;
+	bool Equals(const decStringDictionary &dict) const;
 	
 	/** \brief Check load of the dictionary changing bucket count if required. */
 	void CheckLoad();
@@ -118,19 +118,19 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determines if this dictionary equals another dictionary. */
-	bool operator==( const decStringDictionary &dict ) const;
+	bool operator==(const decStringDictionary &dict) const;
 	
 	/** \brief Retrieves a new dictionary containing this dictionary and another applied to it. */
-	decStringDictionary operator+( const decStringDictionary &dict ) const;
+	decStringDictionary operator+(const decStringDictionary &dict) const;
 	
 	/** \brief Retrieves an string by key throwing an exception if not found. */
-	const decString &operator[]( const char *key ) const;
+	const decString &operator[](const char *key) const;
 	
 	/** \brief Sets this dictionary to another dictionary. */
-	decStringDictionary &operator=( const decStringDictionary &dict );
+	decStringDictionary &operator=(const decStringDictionary &dict);
 	
 	/** \brief Applies a dictionary to this dictionary. */
-	decStringDictionary &operator+=( const decStringDictionary &dict );
+	decStringDictionary &operator+=(const decStringDictionary &dict);
 	/*@}*/
 };
 

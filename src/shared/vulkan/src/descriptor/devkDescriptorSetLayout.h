@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor layout. */
-	devkDescriptorSetLayout( devkDevice &device, const devkDescriptorSetLayoutConfiguration &configuration );
+	devkDescriptorSetLayout(devkDevice &device, const devkDescriptorSetLayoutConfiguration &configuration);
 	
 protected:
 	/** Clean up descriptor layout. */
@@ -66,13 +66,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** Configuration. */
-	inline const devkDescriptorSetLayoutConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline const devkDescriptorSetLayoutConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** Layout. */
-	inline const VkDescriptorSetLayout GetLayout() const{ return pLayout; }
+	inline const VkDescriptorSetLayout GetLayout() const{return pLayout;}
 	/*@}*/
 };
 

@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create height terrain sector texture. */
-	deoglHTSTexture( deoglRHTSector &sector, int index );
+	deoglHTSTexture(deoglRHTSector &sector, int index);
 	
 	/** Clean up height terrain sector texture. */
 	~deoglHTSTexture();
@@ -79,28 +79,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Height terrain sector. */
-	inline deoglRHTSector &GetHTSector() const{ return pSector; }
+	inline deoglRHTSector &GetHTSector() const{return pSector;}
 	
 	/** Texture index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** Texture matrix. */
-	inline const decTexMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decTexMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** Set texture matrix. */
-	void SetMatrix( const decTexMatrix &matrix );
+	void SetMatrix(const decTexMatrix &matrix);
 	
 	/** Skin or NULL. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline deoglRSkin *GetSkin() const{return pSkin;}
 	
 	/** Set skin or NULL. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL. */
-	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
+	inline deoglSkinTexture *GetUseSkinTexture() const{return pUseSkinTexture;}
 	
 	/** Shader parameter block. */
-	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{ return pParamBlock; }
+	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{return pParamBlock;}
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
@@ -112,7 +112,7 @@ public:
 	void MarkTUCsDirty();
 	
 	/** Texture units configuration for shader type. */
-	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *GetTUCForPipelineType (deoglSkinTexturePipelines::eTypes type) const;
 	
 	/**
 	 * Texture units configuration for depth type shaders or NULL if empty.
@@ -122,14 +122,14 @@ public:
 	 * - estComponentCounter
 	 * - estComponentCounterClipPlane
 	 */
-	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
+	inline deoglTexUnitsConfig *GetTUCDepth() const{return pTUCDepth;}
 	
 	/**
 	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * Works for these shader types:
 	 * - estComponentGeometry.
 	 */
-	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
+	inline deoglTexUnitsConfig *GetTUCGeometry() const{return pTUCGeometry;}
 	
 	/**
 	 * Texture units configuration for shadow type shaders or NULL if empty.
@@ -139,27 +139,27 @@ public:
 	 * - estComponentShadowOrthogonalCascaded
 	 * - estComponentShadowDistance
 	 */
-	inline deoglTexUnitsConfig *GetTUCShadow() const{ return pTUCShadow; }
+	inline deoglTexUnitsConfig *GetTUCShadow() const{return pTUCShadow;}
 	
 	/**
 	 * Texture units configuration for the environment map shader or NULL if empty.
 	 * Works for these shader types:
 	 * - estEnvMap.
 	 */
-	inline deoglTexUnitsConfig *GetTUCEnvMap() const{ return pTUCEnvMap; }
+	inline deoglTexUnitsConfig *GetTUCEnvMap() const{return pTUCEnvMap;}
 	
 	/**
 	 * Texture units configuration for luminance type shaders or NULL if empty.
 	 * Works for these shader types:
 	 * - estHeightMapLuminance.
 	 */
-	inline deoglTexUnitsConfig *GetTUCLuminance() const{ return pTUCLuminance; }
+	inline deoglTexUnitsConfig *GetTUCLuminance() const{return pTUCLuminance;}
 	
 	/** Obtain texture units configuration for a shader type. Bare call not to be used directly. */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
+	deoglTexUnitsConfig *BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const;
 	
 	/** Update instance parameter shader parameter block. */
-	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
+	void UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader);
 	
 	/** Prepare for render. */
 	void PrepareForRender();

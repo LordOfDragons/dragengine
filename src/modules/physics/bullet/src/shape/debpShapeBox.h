@@ -53,7 +53,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	debpShapeBox( decShapeBox *shape );
+	debpShapeBox(decShapeBox *shape);
 	/** Cleans up the shape. */
 	virtual ~debpShapeBox();
 	/*@}*/
@@ -61,14 +61,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the box shape. */
-	inline decShapeBox *GetShapeBox() const{ return pSBox; }
+	inline decShapeBox *GetShapeBox() const{return pSBox;}
 	/** Retrieves the box collision volume. */
-	inline const debpDCollisionBox &GetCollisionBox() const{ return pCBox; }
+	inline const debpDCollisionBox &GetCollisionBox() const{return pCBox;}
 	
 	/** Updates the collision volume using a transformation matrix. */
-	virtual void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale );
+	virtual void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);
 	/** Prints out on the console some debugging information about the shape. */
-	virtual void PrintDebug( dePhysicsBullet &module );
+	virtual void PrintDebug(dePhysicsBullet &module);
 	/*@}*/
 };
 

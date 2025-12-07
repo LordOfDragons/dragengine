@@ -49,33 +49,33 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTTexture::deoglRTTexture( deoglRenderThread &renderThread ) :
-pTextureStageManager( NULL ),
-pImageStageManager( NULL ),
-pCombinedTextureList( NULL ),
-pRenColorTexMgr( NULL ),
-pRenDepthTexMgr( NULL ),
-pRenColorCubeMgr( NULL ),
-pRenDepthCubeMgr( NULL ),
-pRenColorArrTexMgr( NULL ),
-pRenDepthArrTexMgr( NULL ),
-pOcclusionMapPool( NULL )
+deoglRTTexture::deoglRTTexture(deoglRenderThread &renderThread) :
+pTextureStageManager(NULL),
+pImageStageManager(NULL),
+pCombinedTextureList(NULL),
+pRenColorTexMgr(NULL),
+pRenDepthTexMgr(NULL),
+pRenColorCubeMgr(NULL),
+pRenDepthCubeMgr(NULL),
+pRenColorArrTexMgr(NULL),
+pRenDepthArrTexMgr(NULL),
+pOcclusionMapPool(NULL)
 {
 	try{
-		pTextureStageManager = new deoglTextureStageManager( renderThread );
-		pImageStageManager = new deoglImageStageManager( renderThread );
-		pCombinedTextureList = new deoglCombinedTextureList( renderThread );
+		pTextureStageManager = new deoglTextureStageManager(renderThread);
+		pImageStageManager = new deoglImageStageManager(renderThread);
+		pCombinedTextureList = new deoglCombinedTextureList(renderThread);
 		
-		pRenColorTexMgr = new deoglRenderableColorTextureManager( renderThread );
-		pRenDepthTexMgr = new deoglRenderableDepthTextureManager( renderThread );
-		pRenColorCubeMgr = new deoglRenderableColorCubeMapManager( renderThread );
-		pRenDepthCubeMgr = new deoglRenderableDepthCubeMapManager( renderThread );
-		pRenColorArrTexMgr = new deoglRenderableColorArrayTextureManager( renderThread );
-		pRenDepthArrTexMgr = new deoglRenderableDepthArrayTextureManager( renderThread );
+		pRenColorTexMgr = new deoglRenderableColorTextureManager(renderThread);
+		pRenDepthTexMgr = new deoglRenderableDepthTextureManager(renderThread);
+		pRenColorCubeMgr = new deoglRenderableColorCubeMapManager(renderThread);
+		pRenDepthCubeMgr = new deoglRenderableDepthCubeMapManager(renderThread);
+		pRenColorArrTexMgr = new deoglRenderableColorArrayTextureManager(renderThread);
+		pRenDepthArrTexMgr = new deoglRenderableDepthArrayTextureManager(renderThread);
 		
-		pOcclusionMapPool = new deoglOcclusionMapPool( renderThread );
+		pOcclusionMapPool = new deoglOcclusionMapPool(renderThread);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -96,36 +96,36 @@ deoglRTTexture::~deoglRTTexture(){
 //////////////////////
 
 void deoglRTTexture::pCleanUp(){
-	if( pOcclusionMapPool ){
+	if(pOcclusionMapPool){
 		delete pOcclusionMapPool;
 	}
 	
-	if( pRenColorArrTexMgr ){
+	if(pRenColorArrTexMgr){
 		delete pRenColorArrTexMgr;
 	}
-	if( pRenDepthArrTexMgr ){
+	if(pRenDepthArrTexMgr){
 		delete pRenDepthArrTexMgr;
 	}
-	if( pRenColorCubeMgr ){
+	if(pRenColorCubeMgr){
 		delete pRenColorCubeMgr;
 	}
-	if( pRenDepthCubeMgr ){
+	if(pRenDepthCubeMgr){
 		delete pRenDepthCubeMgr;
 	}
-	if( pRenColorTexMgr ){
+	if(pRenColorTexMgr){
 		delete pRenColorTexMgr;
 	}
-	if( pRenDepthTexMgr ){
+	if(pRenDepthTexMgr){
 		delete pRenDepthTexMgr;
 	}
 	
-	if( pCombinedTextureList ){
+	if(pCombinedTextureList){
 		delete pCombinedTextureList;
 	}
-	if( pTextureStageManager ){
+	if(pTextureStageManager){
 		delete pTextureStageManager;
 	}
-	if( pImageStageManager ){
+	if(pImageStageManager){
 		delete pImageStageManager;
 	}
 }

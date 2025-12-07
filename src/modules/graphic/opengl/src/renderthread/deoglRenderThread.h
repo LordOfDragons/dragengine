@@ -233,7 +233,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread. */
-	deoglRenderThread( deGraphicOpenGl &ogl );
+	deoglRenderThread(deGraphicOpenGl &ogl);
 	
 	/** Clean up render thread. */
 	virtual ~deoglRenderThread();
@@ -244,177 +244,177 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	
 	
 	/** Asynchronous rendering. */
-	inline bool GetAsyncRendering() const{ return pAsyncRendering; }
+	inline bool GetAsyncRendering() const{return pAsyncRendering;}
 	
 	
 	
 	/** Frame counter. */
-	inline uint32_t GetFrameCounter() const{ return pFrameCounter; }
+	inline uint32_t GetFrameCounter() const{return pFrameCounter;}
 	
 	/** VR camera or nullptr. */
-	inline deoglRCamera *GetVRCamera() const{ return pVRCamera; }
+	inline deoglRCamera *GetVRCamera() const{return pVRCamera;}
 	
 	/** Set VR camera or nullptr. */
-	void SetVRCamera( deoglRCamera *camera );
+	void SetVRCamera(deoglRCamera *camera);
 	
 	/** VR debug panel matrix. */
-	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{return pVRDebugPanelMatrix;}
 	
 	/** Set VR debug panel matrix. */
-	void SetVRDebugPanelMatrix( const decDMatrix &matrix );
+	void SetVRDebugPanelMatrix(const decDMatrix &matrix);
 	
 	/** Configuration. */
-	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline deoglConfiguration &GetConfiguration(){return pConfiguration;}
 	
 	/** Render render window list. */
-	inline decObjectOrderedSet &GetRRenderWindowList(){ return pRRenderWindowList; }
+	inline decObjectOrderedSet &GetRRenderWindowList(){return pRRenderWindowList;}
 	
 	/** Rendr capture canvas list. */
-	inline decObjectOrderedSet &GetRCaptureCanvasList(){ return pRCaptureCanvasList; }
+	inline decObjectOrderedSet &GetRCaptureCanvasList(){return pRCaptureCanvasList;}
 	
 	/** Input overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
+	inline deoglRCanvasView *GetCanvasInputOverlay() const{return pCanvasInputOverlay;}
 	
 	/** Set input overlay canvas view or nullptr. */
-	void SetCanvasInputOverlay( deoglRCanvasView *canvas );
+	void SetCanvasInputOverlay(deoglRCanvasView *canvas);
 	
 	/** Debug overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
+	inline deoglRCanvasView *GetCanvasDebugOverlay() const{return pCanvasDebugOverlay;}
 	
 	/** Set debug overlay canvas view or nullptr. */
-	void SetCanvasDebugOverlay( deoglRCanvasView *canvas );
+	void SetCanvasDebugOverlay(deoglRCanvasView *canvas);
 	
 	/** Overlay canvas view or nullptr. */
-	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
+	inline deoglRCanvasView *GetCanvasOverlay() const{return pCanvasOverlay;}
 	
 	/** Set overlay canvas view or nullptr. */
-	void SetCanvasOverlay( deoglRCanvasView *canvas );
+	void SetCanvasOverlay(deoglRCanvasView *canvas);
 	
 	
 	
 	/** Choices. */
-	inline const deoglRTChoices &GetChoices() const{ return *pChoices; }
-	inline bool HasChoices() const{ return pChoices != nullptr; }
+	inline const deoglRTChoices &GetChoices() const{return *pChoices;}
+	inline bool HasChoices() const{return pChoices != nullptr;}
 	
 	/** Buffer objects. */
-	inline deoglRTBufferObject &GetBufferObject() const{ return *pBufferObject; }
+	inline deoglRTBufferObject &GetBufferObject() const{return *pBufferObject;}
 	
 	/** Has context. */
 	bool HasContext() const;
 	
 	/** Context. */
-	inline deoglRTContext &GetContext() const{ return *pContext; }
+	inline deoglRTContext &GetContext() const{return *pContext;}
 	
 	/** Loader thread. */
-	inline deoglLoaderThread &GetLoaderThread() const{ return *pLoaderThread; }
+	inline deoglLoaderThread &GetLoaderThread() const{return *pLoaderThread;}
 	
 	/** Debug. */
-	inline deoglRTDebug &GetDebug() const{ return *pDebug; }
-	inline bool HasDebug() const{ return pDebug != nullptr; }
+	inline deoglRTDebug &GetDebug() const{return *pDebug;}
+	inline bool HasDebug() const{return pDebug != nullptr;}
 	
 	/** Default textures. */
-	inline deoglRTDefaultTextures &GetDefaultTextures() const{ return *pDefaultTextures; }
+	inline deoglRTDefaultTextures &GetDefaultTextures() const{return *pDefaultTextures;}
 	
 	/** Framebuffer related. */
-	inline deoglRTFramebuffer &GetFramebuffer() const{ return *pFramebuffer; }
-	inline bool HasFramebuffer() const{ return pFramebuffer != nullptr; }
+	inline deoglRTFramebuffer &GetFramebuffer() const{return *pFramebuffer;}
+	inline bool HasFramebuffer() const{return pFramebuffer != nullptr;}
 	
 	/** Logger. */
-	inline deoglRTLogger &GetLogger() const{ return *pLogger; }
+	inline deoglRTLogger &GetLogger() const{return *pLogger;}
 	
 	/** Renderers. */
-	inline deoglRTRenderers &GetRenderers() const{ return *pRenderers; }
+	inline deoglRTRenderers &GetRenderers() const{return *pRenderers;}
 	
 	/** Shader related. */
-	inline deoglRTShader &GetShader() const{ return *pShader; }
+	inline deoglRTShader &GetShader() const{return *pShader;}
 	
 	/** Texture related. */
-	inline deoglRTTexture &GetTexture() const{ return *pTexture; }
+	inline deoglRTTexture &GetTexture() const{return *pTexture;}
 	
 	/** Pipeline manager. */
-	inline deoglPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
+	inline deoglPipelineManager &GetPipelineManager() const{return pPipelineManager;}
 	
 	
 	
 	/** Memory  manager. */
-	inline deoglMemoryManager &GetMemoryManager(){ return pMemoryManager; }
+	inline deoglMemoryManager &GetMemoryManager(){return pMemoryManager;}
 	
 	/** Extensions. */
-	inline deoglExtensions &GetExtensions() const{ return *pExtensions; }
+	inline deoglExtensions &GetExtensions() const{return *pExtensions;}
 	
 	/** Capabilities. */
-	inline deoglCapabilities &GetCapabilities() const{ return *pCapabilities; }
+	inline deoglCapabilities &GetCapabilities() const{return *pCapabilities;}
 	
 	/** Delayed operations manager. */
-	inline deoglDelayedOperations &GetDelayedOperations() const{ return *pDelayedOperations; }
+	inline deoglDelayedOperations &GetDelayedOperations() const{return *pDelayedOperations;}
 	
 	/** Shadow mapper. */
-	inline deoglShadowMapper &GetShadowMapper() const{ return *pShadowMapper; }
+	inline deoglShadowMapper &GetShadowMapper() const{return *pShadowMapper;}
 	
 	/** Deferred rendering. */
-	inline deoglDeferredRendering &GetDeferredRendering() const{ return *pDeferredRendering; }
+	inline deoglDeferredRendering &GetDeferredRendering() const{return *pDeferredRendering;}
 	
 	/** Environment map slot manager. */
-	inline deoglEnvMapSlotManager &GetEnvMapSlotManager() const{ return *pEnvMapSlotManager; }
+	inline deoglEnvMapSlotManager &GetEnvMapSlotManager() const{return *pEnvMapSlotManager;}
 	
 	/** Occlusion query manager. */
-	inline deoglOcclusionQueryManager &GetOcclusionQueryManager() const{ return *pOccQueryMgr; }
+	inline deoglOcclusionQueryManager &GetOcclusionQueryManager() const{return *pOccQueryMgr;}
 	
 	/** Global illumination. */
-	inline deoglGI &GetGI() const{ return *pGI; }
+	inline deoglGI &GetGI() const{return *pGI;}
 	
 	/** Light boundary box having at least the given size. */
-	deoglLightBoundaryMap &GetLightBoundaryMap( int size );
+	deoglLightBoundaryMap &GetLightBoundaryMap(int size);
 	
 	/** Triangle sorter. */
-	deoglTriangleSorter &GetTriangleSorter() const{ return *pTriangleSorter; }
+	deoglTriangleSorter &GetTriangleSorter() const{return *pTriangleSorter;}
 	
 	/** Persistent render task pool. */
-	inline deoglPersistentRenderTaskPool &GetPersistentRenderTaskPool() const{ return *pPersistentRenderTaskPool; }
+	inline deoglPersistentRenderTaskPool &GetPersistentRenderTaskPool() const{return *pPersistentRenderTaskPool;}
 	
 	/** Render task shared pool. */
-	inline deoglRenderTaskSharedPool &GetRenderTaskSharedPool() const{ return *pRenderTaskSharedPool; }
+	inline deoglRenderTaskSharedPool &GetRenderTaskSharedPool() const{return *pRenderTaskSharedPool;}
 	
 	/** Unique key. */
-	inline deoglRTUniqueKey &GetUniqueKey() const{ return *pUniqueKey; }
+	inline deoglRTUniqueKey &GetUniqueKey() const{return *pUniqueKey;}
 	
 	/** Occlusion test pool. */
-	inline deoglOcclusionTestPool &GetOcclusionTestPool() const{ return *pOcclusionTestPool; }
+	inline deoglOcclusionTestPool &GetOcclusionTestPool() const{return *pOcclusionTestPool;}
 	
 	
 	
 #ifdef BACKEND_OPENGL
 	/** Vulkan if present. */
-	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
+	inline deSharedVulkan *GetVulkan() const{return pVulkan;}
 	
 	/** Vulkan device if present. */
-	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }
+	inline const devkDevice::Ref &GetVulkanDevice() const{return pVulkanDevice;}
 #endif
 	
 	
 	
 	/** Main thread time history. */
-	inline decTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
-	inline const decTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
+	inline decTimeHistory &GetTimeHistoryMain(){return pTimeHistoryMain;}
+	inline const decTimeHistory &GetTimeHistoryMain() const{return pTimeHistoryMain;}
 	
 	/** Render thread time history. */
-	inline decTimeHistory &GetTimeHistoryRender(){ return pTimeHistoryRender; }
-	inline const decTimeHistory &GetTimeHistoryRender() const{ return pTimeHistoryRender; }
+	inline decTimeHistory &GetTimeHistoryRender(){return pTimeHistoryRender;}
+	inline const decTimeHistory &GetTimeHistoryRender() const{return pTimeHistoryRender;}
 	
 	
 	
 	/** Leak tracker. */
-	inline deoglRTLeakTracker &GetLeakTracker(){ return pLeakTracker; }
+	inline deoglRTLeakTracker &GetLeakTracker(){return pLeakTracker;}
 	
 	
 	
 	/** Initialize. */
-	void Init( deRenderWindow *renderWindow );
+	void Init(deRenderWindow *renderWindow);
 	
 	/** Clean up. */
 	void CleanUp();
@@ -476,10 +476,10 @@ public:
 	void Unfreeze();
 	
 	/** Create a render window thread safe. */
-	void CreateRenderWindow( deoglRRenderWindow *window );
+	void CreateRenderWindow(deoglRRenderWindow *window);
 	
 	/** FPS Rate. */
-	inline int GetFPSRate() const{ return pFPSRate; }
+	inline int GetFPSRate() const{return pFPSRate;}
 	/*@}*/
 	
 	
@@ -502,8 +502,8 @@ public:
 	
 	#ifdef WITH_OPENGLES
 	bool DoesDebugMemoryUsage() const;
-	void DebugMemoryUsage( const char *prefix );
-	void DebugMemoryUsageSmall( const char *prefix );
+	void DebugMemoryUsage(const char *prefix);
+	void DebugMemoryUsageSmall(const char *prefix);
 	#endif
 	/*@}*/
 	
@@ -512,10 +512,10 @@ public:
 	/** \name Deprecated */
 	/*@{*/
 	/** Quick sorter. */
-	inline deoglQuickSorter &GetQuickSorter() const{ return *pQuickSorter; }
+	inline deoglQuickSorter &GetQuickSorter() const{return *pQuickSorter;}
 	
 	/** Optimizer. */
-	inline deoglOptimizerManager &GetOptimizerManager() const{ return *pOptimizerManager; }
+	inline deoglOptimizerManager &GetOptimizerManager() const{return *pOptimizerManager;}
 	/*@}*/
 	
 private:
@@ -540,7 +540,7 @@ private:
 	void pVREndFrame();
 	void pCaptureCanvas();
 	void pEndFrame();
-	void pLimitFrameRate( float elapsed );
+	void pLimitFrameRate(float elapsed);
 	
 	void pUpdateConfigFrameLimiter();
 	void pCleanUpThread();

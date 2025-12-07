@@ -47,7 +47,7 @@ public:
 	gdeObjectClassList();
 	
 	/** \brief Create copy of object class list. */
-	gdeObjectClassList( const gdeObjectClassList &list );
+	gdeObjectClassList(const gdeObjectClassList &list);
 	
 	/** \brief Clean up object class list. */
 	~gdeObjectClassList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class at position. */
-	gdeObjectClass *GetAt( int index ) const;
+	gdeObjectClass *GetAt(int index) const;
 	
 	/** \brief Named object class or \em NULL if absent. */
-	gdeObjectClass *GetNamed( const char *name ) const;
+	gdeObjectClass *GetNamed(const char *name) const;
 	
 	/** \brief Index of named object class or -1 if absent. */
-	int IndexOf( gdeObjectClass *objectClass ) const;
+	int IndexOf(gdeObjectClass *objectClass) const;
 	
 	/** \brief Index of named object class or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Object class is present. */
-	bool Has( gdeObjectClass *objectClass ) const;
+	bool Has(gdeObjectClass *objectClass) const;
 	
 	/** \brief Named object class is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add object class. */
-	void Add( gdeObjectClass *objectClass );
+	void Add(gdeObjectClass *objectClass);
 	
 	/** \brief Remove object class. */
-	void Remove( gdeObjectClass *objectClass );
+	void Remove(gdeObjectClass *objectClass);
 	
 	/** \brief Remove all object classes. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class list. */
-	gdeObjectClassList &operator=( const gdeObjectClassList &list );
+	gdeObjectClassList &operator=(const gdeObjectClassList &list);
 	/*@}*/
 };
 

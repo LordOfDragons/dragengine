@@ -39,7 +39,7 @@
 ////////////////////////////
 
 igdeUndo::igdeUndo() :
-pMemoryConsumption( 0 ){
+pMemoryConsumption(0){
 }
 
 
@@ -47,17 +47,17 @@ pMemoryConsumption( 0 ){
 // Management
 ///////////////
 
-void igdeUndo::SetShortInfo( const char *info ){
+void igdeUndo::SetShortInfo(const char *info){
 	pShortInfo = info;
 }
 
-void igdeUndo::SetLongInfo( const char *info ){
+void igdeUndo::SetLongInfo(const char *info){
 	pLongInfo = info;
 }
 
-void igdeUndo::SetMemoryConsumption( int bytes ){
-	if( bytes < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeUndo::SetMemoryConsumption(int bytes){
+	if(bytes < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pMemoryConsumption = bytes;
 }

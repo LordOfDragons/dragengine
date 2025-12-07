@@ -43,38 +43,38 @@
 ////////////////////////////
 
 deainpInputBinding::deainpInputBinding() :
-pInvertAxis( false ),
-pDeviceIndex( -1 ),
-pAxisIndex( -1 ),
-pButtonIndex( -1 ){
+pInvertAxis(false),
+pDeviceIndex(-1),
+pAxisIndex(-1),
+pButtonIndex(-1){
 }
 
-deainpInputBinding::deainpInputBinding( const char *deviceID, const char *buttonID ) :
-pDeviceID( deviceID ),
-pButtonID( buttonID ),
-pInvertAxis( false ),
-pDeviceIndex( -1 ),
-pAxisIndex( -1 ),
-pButtonIndex( -1 ){
+deainpInputBinding::deainpInputBinding(const char *deviceID, const char *buttonID) :
+pDeviceID(deviceID),
+pButtonID(buttonID),
+pInvertAxis(false),
+pDeviceIndex(-1),
+pAxisIndex(-1),
+pButtonIndex(-1){
 }
 
-deainpInputBinding::deainpInputBinding( const char *deviceID, const char *axisID, bool invertAxis ) :
-pDeviceID( deviceID ),
-pAxisID( axisID ),
-pInvertAxis( invertAxis ),
-pDeviceIndex( -1 ),
-pAxisIndex( -1 ),
-pButtonIndex( -1 ){
+deainpInputBinding::deainpInputBinding(const char *deviceID, const char *axisID, bool invertAxis) :
+pDeviceID(deviceID),
+pAxisID(axisID),
+pInvertAxis(invertAxis),
+pDeviceIndex(-1),
+pAxisIndex(-1),
+pButtonIndex(-1){
 }
 
-deainpInputBinding::deainpInputBinding( const deainpInputBinding &binding ) :
-pDeviceID( binding.pDeviceID ),
-pAxisID( binding.pAxisID ),
-pButtonID( binding.pButtonID ),
-pInvertAxis( binding.pInvertAxis ),
-pDeviceIndex( binding.pDeviceIndex ),
-pAxisIndex( binding.pAxisIndex ),
-pButtonIndex( binding.pButtonIndex ){
+deainpInputBinding::deainpInputBinding(const deainpInputBinding &binding) :
+pDeviceID(binding.pDeviceID),
+pAxisID(binding.pAxisID),
+pButtonID(binding.pButtonID),
+pInvertAxis(binding.pInvertAxis),
+pDeviceIndex(binding.pDeviceIndex),
+pAxisIndex(binding.pAxisIndex),
+pButtonIndex(binding.pButtonIndex){
 }
 
 deainpInputBinding::~deainpInputBinding(){
@@ -85,31 +85,31 @@ deainpInputBinding::~deainpInputBinding(){
 // Management
 ///////////////
 
-void deainpInputBinding::SetDeviceID( const char *id ){
+void deainpInputBinding::SetDeviceID(const char *id){
 	pDeviceID = id;
 }
 
-void deainpInputBinding::SetAxisID( const char *id ){
+void deainpInputBinding::SetAxisID(const char *id){
 	pAxisID = id;
 }
 
-void deainpInputBinding::SetButtonID( const char *id ){
+void deainpInputBinding::SetButtonID(const char *id){
 	pButtonID = id;
 }
 
-void deainpInputBinding::SetInvertAxis( bool invertAxis ){
+void deainpInputBinding::SetInvertAxis(bool invertAxis){
 	pInvertAxis = invertAxis;
 }
 
 
 
-void deainpInputBinding::UpdateIndices( const deainpDeviceManager &devices ){
-	pDeviceIndex = devices.IndexOfWithID( pDeviceID );
+void deainpInputBinding::UpdateIndices(const deainpDeviceManager &devices){
+	pDeviceIndex = devices.IndexOfWithID(pDeviceID);
 	
-	if( pDeviceIndex != -1 ){
-		const deainpDevice &device = *devices.GetAt( pDeviceIndex );
-		pAxisIndex = device.IndexOfAxisWithID( pAxisID );
-		pButtonIndex = device.IndexOfButtonWithID( pButtonID );
+	if(pDeviceIndex != -1){
+		const deainpDevice &device = *devices.GetAt(pDeviceIndex);
+		pAxisIndex = device.IndexOfAxisWithID(pAxisID);
+		pButtonIndex = device.IndexOfButtonWithID(pButtonID);
 		
 	}else{
 		pAxisIndex = -1;
@@ -117,46 +117,46 @@ void deainpInputBinding::UpdateIndices( const deainpDeviceManager &devices ){
 	}
 }
 
-void deainpInputBinding::ChangeButtonState( deAndroidInput &androidInput, bool pressed ) const{
-	if( pButtonIndex == -1 ){
+void deainpInputBinding::ChangeButtonState(deAndroidInput &androidInput, bool pressed) const{
+	if(pButtonIndex == -1){
 		return;
 	}
 	
-	const deainpDevice &device = *androidInput.GetDevices().GetAt( pDeviceIndex );
+	const deainpDevice &device = *androidInput.GetDevices().GetAt(pDeviceIndex);
 	const timeval timestamp = androidInput.TimeValNow();
 	
-	deainpDeviceButton &button = device.GetButtonAt( pButtonIndex );
-	button.SetPressed( pressed );
+	deainpDeviceButton &button = device.GetButtonAt(pButtonIndex);
+	button.SetPressed(pressed);
 	
-	switch( device.GetType() ){
+	switch(device.GetType()){
 	case deInputDevice::edtMouse:
-		if( pressed ){
-			androidInput.AddMousePress( pDeviceIndex, pButtonIndex, 0, timestamp );
+		if(pressed){
+			androidInput.AddMousePress(pDeviceIndex, pButtonIndex, 0, timestamp);
 			
 		}else{
-			androidInput.AddMouseRelease( pDeviceIndex, pButtonIndex, 0, timestamp );
+			androidInput.AddMouseRelease(pDeviceIndex, pButtonIndex, 0, timestamp);
 		}
 		break;
 		
 	case deInputDevice::edtKeyboard:
-		if( pressed ){
-			androidInput.AddKeyPress( pDeviceIndex, pButtonIndex,
-				button.GetAIChar(), button.GetKeyCode(), timestamp );
+		if(pressed){
+			androidInput.AddKeyPress(pDeviceIndex, pButtonIndex,
+				button.GetAIChar(), button.GetKeyCode(), timestamp);
 			
 		}else{
-			androidInput.AddKeyRelease( pDeviceIndex, pButtonIndex,
-				button.GetAIChar(), button.GetKeyCode(), timestamp );
+			androidInput.AddKeyRelease(pDeviceIndex, pButtonIndex,
+				button.GetAIChar(), button.GetKeyCode(), timestamp);
 		}
 		break;
 		
 	default:
-		if( pressed ){
-			androidInput.AddButtonPressed( pDeviceIndex,
-				pButtonIndex, timestamp );
+		if(pressed){
+			androidInput.AddButtonPressed(pDeviceIndex,
+				pButtonIndex, timestamp);
 			
 		}else{
-			androidInput.AddButtonReleased( pDeviceIndex,
-				pButtonIndex, timestamp );
+			androidInput.AddButtonReleased(pDeviceIndex,
+				pButtonIndex, timestamp);
 		}
 	}
 }
@@ -166,14 +166,14 @@ void deainpInputBinding::ChangeButtonState( deAndroidInput &androidInput, bool p
 // Operators
 //////////////
 
-bool deainpInputBinding::operator==( const deainpInputBinding &binding ) const{
+bool deainpInputBinding::operator==(const deainpInputBinding &binding) const{
 	return pDeviceID == binding.pDeviceID
 		&& pAxisID == binding.pAxisID
 		&& pButtonID == binding.pButtonID
 		&& pInvertAxis == binding.pInvertAxis;
 }
 
-deainpInputBinding &deainpInputBinding::operator=( const deainpInputBinding &binding ){
+deainpInputBinding &deainpInputBinding::operator=(const deainpInputBinding &binding){
 	pDeviceID = binding.pDeviceID;
 	pAxisID = binding.pAxisID;
 	pButtonID = binding.pButtonID;

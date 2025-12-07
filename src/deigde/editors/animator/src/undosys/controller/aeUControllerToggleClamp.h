@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUControllerToggleClamp( aeController *controller );
+	aeUControllerToggleClamp(aeController *controller);
 	
 protected:
 	/** Clean up undo. */

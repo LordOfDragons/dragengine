@@ -51,14 +51,14 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsPasteActions( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, int index );
+		ceCAWait &wait, int index);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsPasteActions( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAWait &wait, int index, const char *text );
+		ceCAWait &wait, int index, const char *text);
 	/*@}*/
 	
 	
@@ -66,16 +66,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAWait *GetWait() const{ return pWait; }
+	inline ceCAWait *GetWait() const{return pWait;}
 	
 	/** \brief Index to insert action at. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

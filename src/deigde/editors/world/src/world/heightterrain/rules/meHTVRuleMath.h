@@ -116,7 +116,7 @@ public:
 	meHTVRuleMath();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleMath( const meHTVRuleMath &rule );
+	meHTVRuleMath(const meHTVRuleMath &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleMath();
@@ -125,22 +125,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the value-A to use if there is no input value-A. */
-	inline float GetValueA() const{ return pValueA; }
+	inline float GetValueA() const{return pValueA;}
 	/** Sets the value-A to use if there is no input value-A. */
-	void SetValueA( float value );
+	void SetValueA(float value);
 	/** Retrieves the value-B to use if there is no input value-B. */
-	inline float GetValueB() const{ return pValueB; }
+	inline float GetValueB() const{return pValueB;}
 	/** Sets the value-B to use if there is no input value-B. */
-	void SetValueB( float value );
+	void SetValueB(float value);
 	/** Retrieves the operator. */
-	inline eOperators GetOperator() const{ return pOperator; }
+	inline eOperators GetOperator() const{return pOperator;}
 	/** Sets the operator. */
-	void SetOperator( eOperators oper );
+	void SetOperator(eOperators oper);
 	
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

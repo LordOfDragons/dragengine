@@ -47,7 +47,7 @@ public:
 	gdeOCComponentList();
 	
 	/** \brief Create copy of object class component list. */
-	gdeOCComponentList( const gdeOCComponentList &list );
+	gdeOCComponentList(const gdeOCComponentList &list);
 	
 	/** \brief Clean up object class component list. */
 	~gdeOCComponentList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class at position. */
-	gdeOCComponent *GetAt( int index ) const;
+	gdeOCComponent *GetAt(int index) const;
 	
 	/** \brief Index of named object class component or -1 if absent. */
-	int IndexOf( gdeOCComponent *component ) const;
+	int IndexOf(gdeOCComponent *component) const;
 	
 	/** \brief Object class is present. */
-	bool Has( gdeOCComponent *component ) const;
+	bool Has(gdeOCComponent *component) const;
 	
 	/** \brief Add object class component. */
-	void Add( gdeOCComponent *component );
+	void Add(gdeOCComponent *component);
 	
 	/** \brief Remove object class component. */
-	void Remove( gdeOCComponent *component );
+	void Remove(gdeOCComponent *component);
 	
 	/** \brief Remove all object class components. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class component list. */
-	gdeOCComponentList &operator=( const gdeOCComponentList &list );
+	gdeOCComponentList &operator=(const gdeOCComponentList &list);
 	/*@}*/
 };
 

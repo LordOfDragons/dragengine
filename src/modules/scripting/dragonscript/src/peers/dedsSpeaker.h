@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	dedsSpeaker( deScriptingDragonScript &ds, deSpeaker *speaker );
+	dedsSpeaker(deScriptingDragonScript &ds, deSpeaker *speaker);
 	
 	/** \brief Clean up peer. */
 	virtual ~dedsSpeaker();
@@ -64,7 +64,7 @@ public:
 	dsRealObject *GetOwner() const;
 	
 	/** \brief Set owner object or \em NULL. */
-	void SetOwner( dsRealObject *object );
+	void SetOwner(dsRealObject *object);
 	/*@}*/
 };
 

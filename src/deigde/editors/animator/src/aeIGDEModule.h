@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	aeIGDEModule( igdeEnvironment &environment );
+	aeIGDEModule(igdeEnvironment &environment);
 	
 protected:
 	/** Clean up module. */

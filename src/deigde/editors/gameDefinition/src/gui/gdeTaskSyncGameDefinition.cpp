@@ -45,10 +45,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeTaskSyncGameDefinition::gdeTaskSyncGameDefinition( gdeWindowMain &windowMain ) :
-pWindowMain( windowMain )
+gdeTaskSyncGameDefinition::gdeTaskSyncGameDefinition(gdeWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Game Definition Editor: Synchronize Game Definition" );
+	SetMessage("Game Definition Editor: Synchronize Game Definition");
 }
 
 gdeTaskSyncGameDefinition::~gdeTaskSyncGameDefinition(){
@@ -60,7 +60,7 @@ gdeTaskSyncGameDefinition::~gdeTaskSyncGameDefinition(){
 ///////////////
 
 bool gdeTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetActiveGameDefinition() ){
+	if(! pWindowMain.GetActiveGameDefinition()){
 		return false;
 	}
 	

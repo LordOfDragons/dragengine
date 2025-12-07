@@ -51,21 +51,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the cache size. */
-	inline int GetCacheSize() const{ return pCacheSize; }
+	inline int GetCacheSize() const{return pCacheSize;}
 	/** Sets the cache size to simulate. */
-	void SetCacheSize( int cacheSize );
+	void SetCacheSize(int cacheSize);
 	
 	/** Resets the simulator. */
 	void Reset();
 	/** Process a face composed of three vertex indices. */
-	void ProcessFace( int vertex1, int vertex2, int vertex3 );
+	void ProcessFace(int vertex1, int vertex2, int vertex3);
 	
 	/** Retrieves the number of cache hits. */
-	inline int GetCacheHitCount() const{ return pCacheHitCount; }
+	inline int GetCacheHitCount() const{return pCacheHitCount;}
 	/** Retrieves the number of cache misses. */
-	inline int GetCacheMissCount() const{ return pCacheMissCount; }
+	inline int GetCacheMissCount() const{return pCacheMissCount;}
 	/** Retrieves the number of processed faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	/** Calculates the average cache miss ratio. */
 	float GetAvgCacheMissRatio() const;
 	
@@ -76,7 +76,7 @@ public:
 	 * in the cache the cache hit count is incremented by one. Otherwise the cache miss
 	 * count is incremented by one.
 	 */
-	void TestVertexAgainstCache( int vertex );
+	void TestVertexAgainstCache(int vertex);
 	/*@}*/
 };
 

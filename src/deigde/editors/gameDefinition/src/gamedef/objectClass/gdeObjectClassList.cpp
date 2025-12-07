@@ -43,8 +43,8 @@
 gdeObjectClassList::gdeObjectClassList(){
 }
 
-gdeObjectClassList::gdeObjectClassList( const gdeObjectClassList &list ) :
-pObjectClasses( list.pObjectClasses ){
+gdeObjectClassList::gdeObjectClassList(const gdeObjectClassList &list) :
+pObjectClasses(list.pObjectClasses){
 }
 
 gdeObjectClassList::~gdeObjectClassList(){
@@ -59,18 +59,18 @@ int gdeObjectClassList::GetCount() const{
 	return pObjectClasses.GetCount();
 }
 
-gdeObjectClass *gdeObjectClassList::GetAt( int index ) const{
-	return ( gdeObjectClass* )pObjectClasses.GetAt( index );
+gdeObjectClass *gdeObjectClassList::GetAt(int index) const{
+	return (gdeObjectClass*)pObjectClasses.GetAt(index);
 }
 
-gdeObjectClass *gdeObjectClassList::GetNamed( const char *name ) const{
+gdeObjectClass *gdeObjectClassList::GetNamed(const char *name) const{
 	const int count = pObjectClasses.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeObjectClass * const objectClass = ( gdeObjectClass* )pObjectClasses.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeObjectClass * const objectClass = (gdeObjectClass*)pObjectClasses.GetAt(i);
 		
-		if( objectClass->GetName() == name ){
+		if(objectClass->GetName() == name){
 			return objectClass;
 		}
 	}
@@ -78,16 +78,16 @@ gdeObjectClass *gdeObjectClassList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int gdeObjectClassList::IndexOf( gdeObjectClass *objectClass ) const{
-	return pObjectClasses.IndexOf( objectClass );
+int gdeObjectClassList::IndexOf(gdeObjectClass *objectClass) const{
+	return pObjectClasses.IndexOf(objectClass);
 }
 
-int gdeObjectClassList::IndexOfNamed( const char *name ) const{
+int gdeObjectClassList::IndexOfNamed(const char *name) const{
 	const int count = pObjectClasses.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeObjectClass* )pObjectClasses.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeObjectClass*)pObjectClasses.GetAt(i))->GetName() == name){
 			return i;
 		}
 	}
@@ -95,16 +95,16 @@ int gdeObjectClassList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool gdeObjectClassList::Has( gdeObjectClass *objectClass ) const{
-	return pObjectClasses.Has( objectClass );
+bool gdeObjectClassList::Has(gdeObjectClass *objectClass) const{
+	return pObjectClasses.Has(objectClass);
 }
 
-bool gdeObjectClassList::HasNamed( const char *name ) const{
+bool gdeObjectClassList::HasNamed(const char *name) const{
 	const int count = pObjectClasses.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeObjectClass* )pObjectClasses.GetAt( i ) )->GetName() == name ){
+	for(i=0; i<count; i++){
+		if(((gdeObjectClass*)pObjectClasses.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -112,16 +112,16 @@ bool gdeObjectClassList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void gdeObjectClassList::Add( gdeObjectClass *objectClass ){
-	if( ! objectClass || HasNamed( objectClass->GetName() ) ){
-		DETHROW( deeInvalidParam );
+void gdeObjectClassList::Add(gdeObjectClass *objectClass){
+	if(! objectClass || HasNamed(objectClass->GetName())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjectClasses.Add( objectClass );
+	pObjectClasses.Add(objectClass);
 }
 
-void gdeObjectClassList::Remove( gdeObjectClass *objectClass ){
-	pObjectClasses.Remove( objectClass );
+void gdeObjectClassList::Remove(gdeObjectClass *objectClass){
+	pObjectClasses.Remove(objectClass);
 }
 
 void gdeObjectClassList::RemoveAll(){
@@ -130,7 +130,7 @@ void gdeObjectClassList::RemoveAll(){
 
 
 
-gdeObjectClassList &gdeObjectClassList::operator=( const gdeObjectClassList &list ){
+gdeObjectClassList &gdeObjectClassList::operator=(const gdeObjectClassList &list){
 	pObjectClasses = list.pObjectClasses;
 	return *this;
 }

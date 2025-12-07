@@ -40,7 +40,7 @@ public:
        const delGameRunParams &params, jobject objListener);
     ~RunGameHandler() override;
 
-    inline State GetState() const{ return pState; }
+    inline State GetState() const{return pState;}
 
     void RequestStopGame();
 

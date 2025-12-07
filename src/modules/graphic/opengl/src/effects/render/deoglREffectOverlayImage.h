@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffectOverlayImage( deoglRenderThread &renderThread );
+	deoglREffectOverlayImage(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
 	virtual ~deoglREffectOverlayImage();
@@ -58,16 +58,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** Image or nullptr to render nothing. */
-	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
+	inline const deoglRImage::Ref &GetImage() const{return pImage;}
 	
 	/** Set image or nullptr to render nothing. */
-	void SetImage( deoglRImage *image );
+	void SetImage(deoglRImage *image);
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	virtual void PrepareForRender();
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan );
+	virtual void Render(deoglRenderPlan &plan);
 };
 
 #endif

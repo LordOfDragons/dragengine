@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullSpacer();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSpacer* CreateNativeWidget( igdeSpacer &owner );
+	static igdeNativeNullSpacer* CreateNativeWidget(igdeSpacer &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Set size. */
-	virtual void SetSize( int width, int height );
+	virtual void SetSize(int width, int height);
 };
 
 typedef igdeNativeNullSpacer igdeNativeSpacer;

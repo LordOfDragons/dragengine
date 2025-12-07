@@ -43,14 +43,14 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deVRSystem::deVRSystem( deEngine *engine ) :
-deBaseSystem( engine, "VR", deModuleSystem::emtVR ),
-pActiveModule( nullptr ),
-pEventQueue( 100 ),
-pRequestFeatureEyeGazeTracking( deBaseVRModule::efslDisabled ),
-pRequestFeatureFacialTracking( deBaseVRModule::efslDisabled ),
-pEnablePassthrough( false ),
-pPassthroughTransparency( 1.0f ){
+deVRSystem::deVRSystem(deEngine *engine) :
+deBaseSystem(engine, "VR", deModuleSystem::emtVR),
+pActiveModule(nullptr),
+pEventQueue(100),
+pRequestFeatureEyeGazeTracking(deBaseVRModule::efslDisabled),
+pRequestFeatureFacialTracking(deBaseVRModule::efslDisabled),
+pEnablePassthrough(false),
+pPassthroughTransparency(1.0f){
 }
 
 deVRSystem::~deVRSystem(){
@@ -69,23 +69,23 @@ void deVRSystem::ProcessEvents(){
 
 bool deVRSystem::RuntimeUsable(){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
 	return pActiveModule->RuntimeUsable();
 }
 
-void deVRSystem::RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level ){
+void deVRSystem::RequestFeatureEyeGazeTracking(deBaseVRModule::eFeatureSupportLevel level){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
 	pRequestFeatureEyeGazeTracking = level;
 }
 
-void deVRSystem::RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level ){
+void deVRSystem::RequestFeatureFacialTracking(deBaseVRModule::eFeatureSupportLevel level){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
 	pRequestFeatureFacialTracking = level;
@@ -93,22 +93,22 @@ void deVRSystem::RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLe
 
 void deVRSystem::StartRuntime(){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
-	pActiveModule->RequestFeatureEyeGazeTracking( pRequestFeatureEyeGazeTracking );
-	pActiveModule->RequestFeatureFacialTracking( pRequestFeatureFacialTracking );
+	pActiveModule->RequestFeatureEyeGazeTracking(pRequestFeatureEyeGazeTracking);
+	pActiveModule->RequestFeatureFacialTracking(pRequestFeatureFacialTracking);
 	
 	pActiveModule->StartRuntime();
 	
-	pActiveModule->SetCamera( pCamera );
-	pActiveModule->SetEnablePassthrough( pEnablePassthrough );
-	pActiveModule->SetPassthroughTransparency( pPassthroughTransparency );
+	pActiveModule->SetCamera(pCamera);
+	pActiveModule->SetEnablePassthrough(pEnablePassthrough);
+	pActiveModule->SetPassthroughTransparency(pPassthroughTransparency);
 }
 
 void deVRSystem::StopRuntime(){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
 	pActiveModule->StopRuntime();
@@ -122,54 +122,54 @@ bool deVRSystem::IsRuntimeRunning(){
 	return pActiveModule->IsRuntimeRunning();
 }
 
-void deVRSystem::SetCamera( deCamera *camera ){
+void deVRSystem::SetCamera(deCamera *camera){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
-	if( camera == pCamera ){
+	if(camera == pCamera){
 		return;
 	}
 	
 	pCamera = camera;
 	
-	pActiveModule->SetCamera( camera );
+	pActiveModule->SetCamera(camera);
 }
 
 bool deVRSystem::SupportsPassthrough(){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
 	return pActiveModule->SupportsPassthrough();
 }
 
-void deVRSystem::SetEnablePassthrough( bool enable ){
+void deVRSystem::SetEnablePassthrough(bool enable){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
-	if( enable == pEnablePassthrough ){
+	if(enable == pEnablePassthrough){
 		return;
 	}
 	
 	pEnablePassthrough = enable;
 	
-	pActiveModule->SetEnablePassthrough( enable );
+	pActiveModule->SetEnablePassthrough(enable);
 }
 
-void deVRSystem::SetPassthroughTransparency( float transparency ){
+void deVRSystem::SetPassthroughTransparency(float transparency){
 	if(!GetIsRunning()){
-		DETHROW_INFO( deeInvalidAction, "Module not running" );
+		DETHROW_INFO(deeInvalidAction, "Module not running");
 	}
 	
-	if( fabsf( transparency - pPassthroughTransparency ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(transparency - pPassthroughTransparency) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pPassthroughTransparency = transparency;
 	
-	pActiveModule->SetPassthroughTransparency( transparency );
+	pActiveModule->SetPassthroughTransparency(transparency);
 }
 
 void deVRSystem::CenterPlayspace(){
@@ -182,9 +182,9 @@ void deVRSystem::CenterPlayspace(){
 
 
 
-void deVRSystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseVRModule* )module->GetModule();
+void deVRSystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseVRModule*)module->GetModule();
 }
 
 void deVRSystem::ClearPermanents(){
@@ -193,18 +193,18 @@ void deVRSystem::ClearPermanents(){
 }
 
 void deVRSystem::PostStart(){
-	if( ! pActiveModule || ! pActiveModule->Init() ){
-		DETHROW( deeInvalidAction );
+	if(! pActiveModule || ! pActiveModule->Init()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
 void deVRSystem::PreStop(){
-	if( ! pActiveModule ){
+	if(! pActiveModule){
 		return;
 	}
 	
 	// remove all parallel tasks if present
-	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	pActiveModule->CleanUp();
 }

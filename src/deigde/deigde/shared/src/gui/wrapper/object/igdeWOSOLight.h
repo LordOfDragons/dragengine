@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOLight( igdeWObject &wrapper, const igdeGDCLight &gdLight, const decString &prefix );
+	igdeWOSOLight(igdeWObject &wrapper, const igdeGDCLight &gdLight, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOLight();
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Light resource. */
-	inline deLight *GetLight() const{ return pLight; }
+	inline deLight *GetLight() const{return pLight;}
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -92,10 +92,10 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading();
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	virtual void Visit(igdeWOSOVisitor &visitor);
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	

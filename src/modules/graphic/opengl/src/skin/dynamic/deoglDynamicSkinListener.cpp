@@ -49,8 +49,8 @@ void deoglDynamicSkinListener::DynamicSkinDestroyed(){
 void deoglDynamicSkinListener::DynamicSkinRenderablesChanged(){
 }
 
-void deoglDynamicSkinListener::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+void deoglDynamicSkinListener::DynamicSkinRenderableChanged(deoglDSRenderable&){
 }
 
-void deoglDynamicSkinListener::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+void deoglDynamicSkinListener::DynamicSkinRenderableRequiresSync(deoglDSRenderable&){
 }

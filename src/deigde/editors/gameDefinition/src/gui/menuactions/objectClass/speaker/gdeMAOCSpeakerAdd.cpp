@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCSpeakerAdd::gdeMAOCSpeakerAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Speaker...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class speaker" )
+gdeMAOCSpeakerAdd::gdeMAOCSpeakerAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Speaker...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class speaker")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Speaker...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCSpeakerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCSpeakerAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddSpeaker(&objectClass, gdeOCSpeaker::Ref::NewWith());
 }
 
 void gdeMAOCSpeakerAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

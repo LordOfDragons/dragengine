@@ -51,17 +51,17 @@ public:
 	/** @name Entries */
 	/*@{*/
 	/** Retrieves the number of entries. */
-	inline int GetEntryCount() const{ return pEntryCount; }
+	inline int GetEntryCount() const{return pEntryCount;}
 	/** Retrieves the entry at the given index. */
-	reCLHitListEntry *GetEntryAt( int index ) const;
+	reCLHitListEntry *GetEntryAt(int index) const;
 	/** Retrieves the index of the entry of -1 if not found. */
-	int IndexOfEntry( reCLHitListEntry *entry ) const;
+	int IndexOfEntry(reCLHitListEntry *entry) const;
 	/** Determines if the entry exists. */
-	bool HasEntry( reCLHitListEntry *entry ) const;
+	bool HasEntry(reCLHitListEntry *entry) const;
 	/** Adds a entry. */
-	void AddEntry( reCLHitListEntry *entry );
+	void AddEntry(reCLHitListEntry *entry);
 	/** Removes a entry. */
-	void RemoveEntry( reCLHitListEntry *entry );
+	void RemoveEntry(reCLHitListEntry *entry);
 	/** Removes all entries. */
 	void RemoveAllEntries();
 	

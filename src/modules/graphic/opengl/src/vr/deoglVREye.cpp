@@ -61,14 +61,14 @@ static decTimer dtimerTotal;
 
 #define DEBUG_RESET_TIMER dtimer.Reset(); dtimerTotal.Reset();
 #define DEBUG_PRINT_TIMER(what) \
-	renderThread.GetLogger().LogInfoFormat( "VREye(%s) %s = %iys",\
+	renderThread.GetLogger().LogInfoFormat("VREye(%s) %s = %iys",\
 		pEye == deBaseVRModule::evreRight ? "R" : "L", \
-		what, ( int )( dtimer.GetElapsedTime() * 1000000.0 ) );\
+		what, (int)(dtimer.GetElapsedTime() * 1000000.0));\
 	dtimer.Reset();
 #define DEBUG_PRINT_TIMER_TOTAL(what) \
-	renderThread.GetLogger().LogInfoFormat( "VREye(%s) %s = %iys",\
+	renderThread.GetLogger().LogInfoFormat("VREye(%s) %s = %iys",\
 		pEye == deBaseVRModule::evreRight ? "R" : "L", \
-		what, ( int )( dtimerTotal.GetElapsedTime() * 1000000.0 ) );\
+		what, (int)(dtimerTotal.GetElapsedTime() * 1000000.0));\
 	dtimerTotal.Reset();
 #else
 #define DEBUG_RESET_TIMER
@@ -83,25 +83,25 @@ static decTimer dtimerTotal;
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglVREye::deoglVREye( deoglVR &vr, deBaseVRModule::eEye eye ) :
-pVR( vr ),
-pEye( eye ),
-pRenderFormat( deBaseVRModule::evrrfRGB16 ),
-pProjectionLeft( -1.0f ),
-pProjectionRight( 1.0f ),
-pProjectionTop( 1.0f ),
-pProjectionBottom( -1.0f ),
-pVRGetViewsBuffer( nullptr ),
-pVRGetViewsBufferSize( 0 ),
-pVRViewImages( nullptr ),
-pVRViewImageCount( 0 ),
-pUseGammaCorrection( false ){
+deoglVREye::deoglVREye(deoglVR &vr, deBaseVRModule::eEye eye) :
+pVR(vr),
+pEye(eye),
+pRenderFormat(deBaseVRModule::evrrfRGB16),
+pProjectionLeft(-1.0f),
+pProjectionRight(1.0f),
+pProjectionTop(1.0f),
+pProjectionBottom(-1.0f),
+pVRGetViewsBuffer(nullptr),
+pVRGetViewsBufferSize(0),
+pVRViewImages(nullptr),
+pVRViewImageCount(0),
+pUseGammaCorrection(false){
 }
 
 deoglVREye::~deoglVREye(){
 	pDestroyEyeViews();
 	
-	if( pVRGetViewsBuffer ){
+	if(pVRGetViewsBuffer){
 		delete [] pVRGetViewsBuffer;
 	}
 }
@@ -111,16 +111,16 @@ deoglVREye::~deoglVREye(){
 // Management
 ///////////////
 
-decDMatrix deoglVREye::CreateProjectionDMatrix( float znear, float zfar ) const{
-	if( znear <= 0.0f || znear >= zfar ){
-		DETHROW( deeInvalidParam );
+decDMatrix deoglVREye::CreateProjectionDMatrix(float znear, float zfar) const{
+	if(znear <= 0.0f || znear >= zfar){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// infinite projective matrix. works for both the inverse depth case and the fallback
 	// non-inverse depth case. for fallback it is slightly better than non-infinite thus
 	// the same infinite projection matrix can be used for both cases
-	const double idx = 1.0 / ( pProjectionRight - pProjectionLeft );
-	const double idy = 1.0 / ( pProjectionBottom - pProjectionTop );
+	const double idx = 1.0 / (pProjectionRight - pProjectionLeft);
+	const double idy = 1.0 / (pProjectionBottom - pProjectionTop);
 	const double sx = pProjectionRight + pProjectionLeft;
 	const double sy = pProjectionBottom + pProjectionTop;
 	decDMatrix m;
@@ -138,7 +138,7 @@ decDMatrix deoglVREye::CreateProjectionDMatrix( float znear, float zfar ) const{
 	m.a31 = 0.0;
 	m.a32 = 0.0;
 	
-	if( pVR.GetCamera().GetRenderThread().GetChoices().GetUseInverseDepth() ){
+	if(pVR.GetCamera().GetRenderThread().GetChoices().GetUseInverseDepth()){
 		// due to inverse depth changing z-clamping
 		m.a33 = 0.0;
 		m.a34 = znear;
@@ -156,11 +156,11 @@ decDMatrix deoglVREye::CreateProjectionDMatrix( float znear, float zfar ) const{
 	return m;
 }
 
-decDMatrix deoglVREye::CreateFrustumDMatrix( float znear, float zfar ) const{
+decDMatrix deoglVREye::CreateFrustumDMatrix(float znear, float zfar) const{
 	// frustum matrix is always non-infinite otherwise SetFrustum calls fail
-	const double idx = 1.0 / ( pProjectionRight - pProjectionLeft );
-	const double idy = 1.0 / ( pProjectionBottom - pProjectionTop );
-	const double idz = 1.0 / ( double )( zfar - znear );
+	const double idx = 1.0 / (pProjectionRight - pProjectionLeft);
+	const double idy = 1.0 / (pProjectionBottom - pProjectionTop);
+	const double idz = 1.0 / (double)(zfar - znear);
 	const double sx = pProjectionRight + pProjectionLeft;
 	const double sy = pProjectionBottom + pProjectionTop;
 	decDMatrix m;
@@ -177,7 +177,7 @@ decDMatrix deoglVREye::CreateFrustumDMatrix( float znear, float zfar ) const{
 	
 	m.a31 = 0.0;
 	m.a32 = 0.0;
-	m.a33 = ( zfar + znear ) * idz;
+	m.a33 = (zfar + znear) * idz;
 	m.a34 = -2.0 * zfar * znear * idz;
 	
 	m.a41 = 0.0;
@@ -188,68 +188,68 @@ decDMatrix deoglVREye::CreateFrustumDMatrix( float znear, float zfar ) const{
 	return m;
 }
 
-void deoglVREye::BeginFrame( deBaseVRModule &vrmodule ){
+void deoglVREye::BeginFrame(deBaseVRModule &vrmodule){
 	// parameters are queried every frame update. this is required since some VR runtimes
 	// can change these parameters on the fly or can provide them at all times. resources
 	// are recreated if parameters changed
-	pGetParameters( vrmodule );
+	pGetParameters(vrmodule);
 	
-	if( ! pRenderTarget || pTargetSize != pRenderTarget->GetSize() ){
+	if(! pRenderTarget || pTargetSize != pRenderTarget->GetSize()){
 		deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
-		pLogParameters( renderThread );
+		pLogParameters(renderThread);
 		
 		// examples on the internet use RGBA8
 		pVR.DropFBOStereo();
 		
-		if( pRenderTarget ){
-			pRenderTarget->SetSize( pTargetSize );
+		if(pRenderTarget){
+			pRenderTarget->SetSize(pTargetSize);
 			
 		}else{
-			pRenderTarget.TakeOver( new deoglRenderTarget( renderThread, pTargetSize, 4, 8 ) );
+			pRenderTarget.TakeOver(new deoglRenderTarget(renderThread, pTargetSize, 4, 8));
 		}
 	}
 	
-	pUpdateEyeViews( vrmodule );
+	pUpdateEyeViews(vrmodule);
 }
 
 void deoglVREye::Render(){
 	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	
-	pRenderSize = ( decVector2( pTargetSize ) * config.GetVRRenderScale() ).Round();
+	pRenderSize = (decVector2(pTargetSize) * config.GetVRRenderScale()).Round();
 	
 	// OpenVR uses blitting which is very slow with scaling. use up scaling instead
 	deoglRenderPlan &plan = pVR.GetCamera().GetPlan();
-	plan.SetViewport( pRenderSize.x, pRenderSize.y );
-	plan.SetUpscaleSize( pTargetSize.x, pTargetSize.y );
-	plan.SetUseUpscaling( pRenderSize != pTargetSize );
-	plan.SetUpsideDown( true );
-	plan.SetLodMaxPixelError( config.GetLODMaxPixelError() );
-	plan.SetLodLevelOffset( 0 );
-	plan.SetRenderStereo( false );
+	plan.SetViewport(pRenderSize.x, pRenderSize.y);
+	plan.SetUpscaleSize(pTargetSize.x, pTargetSize.y);
+	plan.SetUseUpscaling(pRenderSize != pTargetSize);
+	plan.SetUpsideDown(true);
+	plan.SetLodMaxPixelError(config.GetLODMaxPixelError());
+	plan.SetLodLevelOffset(0);
+	plan.SetRenderStereo(false);
 	
 	try{
-		pRender( renderThread );
+		pRender(renderThread);
 		
-	}catch( const deException & ){
-		plan.SetFBOTarget( nullptr );
-		plan.SetRenderVR( deoglRenderPlan::ervrNone );
+	}catch(const deException &){
+		plan.SetFBOTarget(nullptr);
+		plan.SetRenderVR(deoglRenderPlan::ervrNone);
 		throw;
 	}
 	
-	plan.SetFBOTarget( nullptr );
-	plan.SetRenderVR( deoglRenderPlan::ervrNone );
+	plan.SetFBOTarget(nullptr);
+	plan.SetRenderVR(deoglRenderPlan::ervrNone);
 }
 
-void deoglVREye::Submit( deBaseVRModule &vrmodule ){
-	if( ! pRenderTarget->GetFBO() || ! pRenderTarget->GetTexture() ){
+void deoglVREye::Submit(deBaseVRModule &vrmodule){
+	if(! pRenderTarget->GetFBO() || ! pRenderTarget->GetTexture()){
 		// shutdown protection
 		return;
 	}
 
-	if( pVRViewImageCount > 0 ){
-		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage( pEye );
-		if( acquiredImageIndex == -1 ){
+	if(pVRViewImageCount > 0){
+		const int acquiredImageIndex = vrmodule.AcquireEyeViewImage(pEye);
+		if(acquiredImageIndex == -1){
 			// do not render. perhaps we can honor this earlier but right now it is not
 			// known if somebody else than the VR headset requires the rendered image.
 			// so for the time being we render but we do not submit
@@ -265,35 +265,35 @@ void deoglVREye::Submit( deBaseVRModule &vrmodule ){
 			
 			renderThread.GetFramebuffer().Activate(pVRViewImages[acquiredImageIndex].fbo);
 			
-			OGL_CHECK( renderThread, pglBindFramebuffer(
-				GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
+			OGL_CHECK(renderThread, pglBindFramebuffer(
+				GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO()));
 			
-			const decPoint src1( 0, 0 );
+			const decPoint src1(0, 0);
 			const decPoint &src2 = pTargetSize;
 			
-			const decPoint dest1( pVRViewTCFrom.Multiply( decVector2( pTargetSize ) ).Round() );
-			const decPoint dest2( pVRViewTCTo.Multiply( decVector2( pTargetSize ) ).Round() );
+			const decPoint dest1(pVRViewTCFrom.Multiply(decVector2(pTargetSize)).Round());
+			const decPoint dest2(pVRViewTCTo.Multiply(decVector2(pTargetSize)).Round());
 			
-			OGL_CHECK( renderThread, pglBlitFramebuffer( src1.x, src1.y, src2.x, src2.y,
-				dest1.x, dest1.y, dest2.x, dest2.y, GL_COLOR_BUFFER_BIT, GL_NEAREST ) );
+			OGL_CHECK(renderThread, pglBlitFramebuffer(src1.x, src1.y, src2.x, src2.y,
+				dest1.x, dest1.y, dest2.x, dest2.y, GL_COLOR_BUFFER_BIT, GL_NEAREST));
 			
-			vrmodule.ReleaseEyeViewImage( pEye );
+			vrmodule.ReleaseEyeViewImage(pEye);
 			
-		}catch( const deException & ){
-			vrmodule.ReleaseEyeViewImage( pEye );
+		}catch(const deException &){
+			vrmodule.ReleaseEyeViewImage(pEye);
 			throw;
 		}
 		
 	}else{
 		// OpenVR uses blitting which is very slow with scaling
-		const decVector2 tcFrom( 0.0f, 0.0f );
-		const decVector2 tcTo( 1.0f, 1.0f );
+		const decVector2 tcFrom(0.0f, 0.0f);
+		const decVector2 tcTo(1.0f, 1.0f);
 	// 	const decVector2 tcTo( ( float )pRenderSize.x / ( float )pTargetSize.x,
 	// 		( float )pRenderSize.y / ( float )pTargetSize.y );
 	// 	pVR.GetCamera().GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
 		
-		vrmodule.SubmitOpenGLTexture2D( pEye,
-			( void* )( intptr_t )pRenderTarget->GetTexture()->GetTexture(), tcFrom, tcTo, false );
+		vrmodule.SubmitOpenGLTexture2D(pEye,
+			(void*)(intptr_t)pRenderTarget->GetTexture()->GetTexture(), tcFrom, tcTo, false);
 	}
 }
 
@@ -302,11 +302,11 @@ void deoglVREye::Submit( deBaseVRModule &vrmodule ){
 // Private Functions
 //////////////////////
 
-void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
+void deoglVREye::pGetParameters(deBaseVRModule &vrmodule){
 	pTargetSize = vrmodule.GetRenderSize();
 	pRenderFormat = vrmodule.GetRenderFormat();
 	
-	switch( pRenderFormat ){
+	switch(pRenderFormat){
 	case deBaseVRModule::evrrfSRGB8:
 	case deBaseVRModule::evrrfSRGBA8:
 		pUseGammaCorrection = true;
@@ -316,35 +316,35 @@ void deoglVREye::pGetParameters( deBaseVRModule &vrmodule ){
 		pUseGammaCorrection = false;
 	}
 	
-	float p[ 4 ];
-	vrmodule.GetProjectionParameters( pEye, p[ 0 ], p[ 1 ], p[ 2 ], p[ 3 ] );
-	pProjectionLeft = ( double )p[ 0 ];
-	pProjectionRight = ( double )p[ 1 ];
-	pProjectionTop = ( double )p[ 2 ];
-	pProjectionBottom = ( double )p[ 3 ];
+	float p[4];
+	vrmodule.GetProjectionParameters(pEye, p[0], p[1], p[2], p[3]);
+	pProjectionLeft = (double)p[0];
+	pProjectionRight = (double)p[1];
+	pProjectionTop = (double)p[2];
+	pProjectionBottom = (double)p[3];
 	
-	pMatrixViewToEye = vrmodule.GetMatrixViewEye( pEye );
+	pMatrixViewToEye = vrmodule.GetMatrixViewEye(pEye);
 	
-	vrmodule.GetEyeViewRenderTexCoords( pEye, pVRViewTCFrom, pVRViewTCTo );
+	vrmodule.GetEyeViewRenderTexCoords(pEye, pVRViewTCFrom, pVRViewTCTo);
 	
-	pCanvasTCFrom.Set( 0.0f, 0.0f );
-	pCanvasTCTo.Set( 1.0f, 1.0f );
+	pCanvasTCFrom.Set(0.0f, 0.0f);
+	pCanvasTCTo.Set(1.0f, 1.0f);
 	
-	deModel * const hiddenMesh = vrmodule.GetHiddenArea( pEye );
+	deModel * const hiddenMesh = vrmodule.GetHiddenArea(pEye);
 // 	if( hiddenMesh != pHiddenMesh ){
 		pHiddenMesh = hiddenMesh;
 		pHiddenRMesh = nullptr;
-		if( pHiddenMesh ){
-			deoglModel * const oglModel = ( deoglModel* )pHiddenMesh->GetPeerGraphic();
+		if(pHiddenMesh){
+			deoglModel * const oglModel = (deoglModel*)pHiddenMesh->GetPeerGraphic();
 			pHiddenRMesh = oglModel ? oglModel->GetRModel() : nullptr;
 		}
 // 	}
 }
 
-void deoglVREye::pLogParameters( deoglRenderThread &renderThread ){
+void deoglVREye::pLogParameters(deoglRenderThread &renderThread){
 	const char * const prefix = LogPrefix();
-	renderThread.GetLogger().LogInfoFormat( "%s: size=(%d,%d) format=%d useGamma=%d",
-		prefix, pTargetSize.x, pTargetSize.y, pRenderFormat, pUseGammaCorrection );
+	renderThread.GetLogger().LogInfoFormat("%s: size=(%d,%d) format=%d useGamma=%d",
+		prefix, pTargetSize.x, pTargetSize.y, pRenderFormat, pUseGammaCorrection);
 	
 	renderThread.GetLogger().LogInfoFormat(
 		"%s: matrix view to eye:\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]\n[%g,%g,%g,%g]", prefix,
@@ -352,42 +352,42 @@ void deoglVREye::pLogParameters( deoglRenderThread &renderThread ){
 		pMatrixViewToEye.a21, pMatrixViewToEye.a22, pMatrixViewToEye.a23, pMatrixViewToEye.a24,
 		pMatrixViewToEye.a31, pMatrixViewToEye.a32, pMatrixViewToEye.a33, pMatrixViewToEye.a34);
 	
-	renderThread.GetLogger().LogInfoFormat( "%s: projection=(%g,%g,%g,%g)", prefix,
+	renderThread.GetLogger().LogInfoFormat("%s: projection=(%g,%g,%g,%g)", prefix,
 		pProjectionLeft, pProjectionRight, pProjectionTop, pProjectionBottom);
 }
 
-void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
-	const int count = vrmodule.GetEyeViewImages( pEye, 0, nullptr );
+void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
+	const int count = vrmodule.GetEyeViewImages(pEye, 0, nullptr);
 	
-	if( count > 0 ){
-		if( count > pVRGetViewsBufferSize ){
-			if( pVRGetViewsBuffer ){
+	if(count > 0){
+		if(count > pVRGetViewsBufferSize){
+			if(pVRGetViewsBuffer){
 				delete [] pVRGetViewsBuffer;
 				pVRGetViewsBuffer = nullptr;
 				pVRGetViewsBufferSize = 0;
 			}
 			
-			pVRGetViewsBuffer = new GLuint[ count ];
+			pVRGetViewsBuffer = new GLuint[count];
 			pVRGetViewsBufferSize = count;
 		}
 		
-		if( vrmodule.GetEyeViewImages( pEye, count, pVRGetViewsBuffer ) != count ){
-			DETHROW( deeInvalidAction );
+		if(vrmodule.GetEyeViewImages(pEye, count, pVRGetViewsBuffer) != count){
+			DETHROW(deeInvalidAction);
 		}
 	}
 	
 	bool same = count == pVRViewImageCount;
-	if( same ){
+	if(same){
 		int i;
-		for( i=0; i<count; i++ ){
-			if( pVRViewImages[ i ].texture != pVRGetViewsBuffer[ i ] ){
+		for(i=0; i<count; i++){
+			if(pVRViewImages[i].texture != pVRGetViewsBuffer[i]){
 				same = false;
 				break;
 			}
 		}
 	}
 	
-	if( same ){
+	if(same){
 		return;
 	}
 	
@@ -395,12 +395,12 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 	
 	deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 	
-	if( count == 0 ){
-		renderThread.GetLogger().LogInfoFormat( "%s: view images 0", LogPrefix() );
+	if(count == 0){
+		renderThread.GetLogger().LogInfoFormat("%s: view images 0", LogPrefix());
 		return;
 	}
 	
-	const deoglRestoreFramebuffer restoreFbo( renderThread );
+	const deoglRestoreFramebuffer restoreFbo(renderThread);
 	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 	
 	pVRViewImages = new cViewImage[count];
@@ -424,7 +424,7 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 }
 
 void deoglVREye::pDestroyEyeViews(){
-	if( ! pVRViewImages ){
+	if(! pVRViewImages){
 		return;
 	}
 	
@@ -433,7 +433,7 @@ void deoglVREye::pDestroyEyeViews(){
 	pVRViewImageCount = 0;
 }
 
-void deoglVREye::pRender( deoglRenderThread &renderThread ){
+void deoglVREye::pRender(deoglRenderThread &renderThread){
 	DEBUG_RESET_TIMER
 	// prepare render target and fbo
 	pRenderTarget->PrepareFramebuffer();
@@ -441,39 +441,39 @@ void deoglVREye::pRender( deoglRenderThread &renderThread ){
 	// render using render plan
 	deoglRenderPlan &plan = pVR.GetCamera().GetPlan();
 	
-	switch( pEye ){
+	switch(pEye){
 	case deBaseVRModule::evreLeft:
-		plan.SetRenderVR( deoglRenderPlan::ervrLeftEye );
+		plan.SetRenderVR(deoglRenderPlan::ervrLeftEye);
 		break;
 		
 	case deBaseVRModule::evreRight:
-		plan.SetRenderVR( deoglRenderPlan::ervrRightEye );
-		plan.SetCameraStereoMatrix( pVR.GetLeftEye().pMatrixViewToEye.QuickInvert().QuickMultiply( pMatrixViewToEye ) );
+		plan.SetRenderVR(deoglRenderPlan::ervrRightEye);
+		plan.SetCameraStereoMatrix(pVR.GetLeftEye().pMatrixViewToEye.QuickInvert().QuickMultiply(pMatrixViewToEye));
 		break;
 	}
 	
-	plan.SetCameraMatrix( pVR.GetCamera().GetCameraMatrix().QuickMultiply( pMatrixViewToEye ) );
-	plan.SetFBOTarget( pRenderTarget->GetFBO() );
+	plan.SetCameraMatrix(pVR.GetCamera().GetCameraMatrix().QuickMultiply(pMatrixViewToEye));
+	plan.SetFBOTarget(pRenderTarget->GetFBO());
 	
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
-	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );
-	DEBUG_PRINT_TIMER( "Prepare" )
+	plan.SetDebugTiming(devmode.GetEnabled() && devmode.GetShowDebugInfo());
+	DEBUG_PRINT_TIMER("Prepare")
 	
-	plan.PrepareRender( nullptr );
-	DEBUG_PRINT_TIMER( "RenderPlan Prepare" )
+	plan.PrepareRender(nullptr);
+	DEBUG_PRINT_TIMER("RenderPlan Prepare")
 	
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	defren.Resize( pRenderSize.x, pRenderSize.y );
+	defren.Resize(pRenderSize.x, pRenderSize.y);
 	
 	
 	plan.Render();
-	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, true, pUseGammaCorrection );
-	DEBUG_PRINT_TIMER( "RenderWorld" )
+	renderThread.GetRenderers().GetWorld().RenderFinalizeFBO(plan, true, pUseGammaCorrection);
+	DEBUG_PRINT_TIMER("RenderWorld")
 	// set render target dirty?
 }
 
 const char *deoglVREye::LogPrefix() const{
-	switch( pEye ){
+	switch(pEye){
 	case deBaseVRModule::evreLeft:
 		return "VREye Left";
 		

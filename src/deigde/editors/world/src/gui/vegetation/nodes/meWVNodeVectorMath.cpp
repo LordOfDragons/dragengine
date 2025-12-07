@@ -64,16 +64,16 @@ protected:
 	meWVNodeVectorMath &pNode;
 	
 public:
-	cComboOperator( meWVNodeVectorMath &node ) : pNode( node ){ }
+	cComboOperator(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		if( ! pNode.GetRuleVectorMath() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		if(! pNode.GetRuleVectorMath()){
 			return;
 		}
 		
-		const meHTVRuleVectorMath::eOperators op = ( meHTVRuleVectorMath::eOperators )( intptr_t )
+		const meHTVRuleVectorMath::eOperators op = (meHTVRuleVectorMath::eOperators)(intptr_t)
 			comboBox->GetSelectedItem()->GetData();
-		if( op == pNode.GetRuleVectorMath()->GetOperator() ){
+		if(op == pNode.GetRuleVectorMath()->GetOperator()){
 			return;
 		}
 		
@@ -88,11 +88,11 @@ protected:
 	meWVNodeVectorMath &pNode;
 	
 public:
-	cTextVectorA( meWVNodeVectorMath &node ) : pNode( node ){ }
+	cTextVectorA(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		const decVector &value = editVector->GetVector();
-		if( value.IsEqualTo( pNode.GetRuleVectorMath()->GetVectorA() ) ){
+		if(value.IsEqualTo(pNode.GetRuleVectorMath()->GetVectorA())){
 			return;
 		}
 		
@@ -107,11 +107,11 @@ protected:
 	meWVNodeVectorMath &pNode;
 	
 public:
-	cTextVectorB( meWVNodeVectorMath &node ) : pNode( node ){ }
+	cTextVectorB(meWVNodeVectorMath &node) : pNode(node){}
 	
-	virtual void OnVectorChanged( igdeEditVector *editVector ){
+	virtual void OnVectorChanged(igdeEditVector *editVector){
 		const decVector &value = editVector->GetVector();
-		if( value.IsEqualTo( pNode.GetRuleVectorMath()->GetVectorB() ) ){
+		if(value.IsEqualTo(pNode.GetRuleVectorMath()->GetVectorB())){
 			return;
 		}
 		
@@ -131,15 +131,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNodeVectorMath::meWVNodeVectorMath( meWindowVegetation &windowVegetation, meHTVRuleVectorMath *rule ) :
-meWVNode( windowVegetation, rule ),
-pRuleVectorMath( NULL )
+meWVNodeVectorMath::meWVNodeVectorMath(meWindowVegetation &windowVegetation, meHTVRuleVectorMath *rule) :
+meWVNode(windowVegetation, rule),
+pRuleVectorMath(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	SetTitle( "Vector-Math" );
+	SetTitle("Vector-Math");
 	
 	// slots
 	AddSlot(meWVNodeSlot::Ref::NewWith(env,
@@ -153,27 +153,27 @@ pRuleVectorMath( NULL )
 	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
 		"Vector A", "First operand",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA));
-	helper.EditVector( slot, "First operant if slot is not connected.",
-		pEditVectorA, new cTextVectorA( *this ) );
-	AddSlot( slot );
+	helper.EditVector(slot, "First operant if slot is not connected.",
+		pEditVectorA, new cTextVectorA(*this));
+	AddSlot(slot);
 	
 	slot.TakeOverWith(env, "Vector B", "Second operand if required",
 		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB);
-	helper.EditVector( slot, "Second operant if slot is not connected.",
-		pEditVectorB, new cTextVectorB( *this ) );
-	AddSlot( slot );
+	helper.EditVector(slot, "Second operant if slot is not connected.",
+		pEditVectorB, new cTextVectorB(*this));
+	AddSlot(slot);
 	
 	// parameters
-	pFraParameters.TakeOver( new igdeContainerForm( env ) );
-	AddChild( pFraParameters );
+	pFraParameters.TakeOver(new igdeContainerForm(env));
+	AddChild(pFraParameters);
 	
-	helper.ComboBox( pFraParameters, "Operator:", "Operator to use.", pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "Add", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopAdd );
-	pCBOperator->AddItem( "Subtract", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopSubtract );
-	pCBOperator->AddItem( "Average", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopAverage );
-	pCBOperator->AddItem( "Normalize", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopNormalize );
-	pCBOperator->AddItem( "Dot", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopDot );
-	pCBOperator->AddItem( "Cross", NULL, ( void* )( intptr_t )meHTVRuleVectorMath::eopCross );
+	helper.ComboBox(pFraParameters, "Operator:", "Operator to use.", pCBOperator, new cComboOperator(*this));
+	pCBOperator->AddItem("Add", NULL, (void*)(intptr_t)meHTVRuleVectorMath::eopAdd);
+	pCBOperator->AddItem("Subtract", NULL, (void*)(intptr_t)meHTVRuleVectorMath::eopSubtract);
+	pCBOperator->AddItem("Average", NULL, (void*)(intptr_t)meHTVRuleVectorMath::eopAverage);
+	pCBOperator->AddItem("Normalize", NULL, (void*)(intptr_t)meHTVRuleVectorMath::eopNormalize);
+	pCBOperator->AddItem("Dot", NULL, (void*)(intptr_t)meHTVRuleVectorMath::eopDot);
+	pCBOperator->AddItem("Cross", NULL, (void*)(intptr_t)meHTVRuleVectorMath::eopCross);
 	
 	pRuleVectorMath = rule; // required for combo box listener to not fire while list is build
 }
@@ -189,7 +189,7 @@ meWVNodeVectorMath::~meWVNodeVectorMath(){
 void meWVNodeVectorMath::Update(){
 	meWVNode::Update();
 	
-	pCBOperator->SetSelectionWithData( ( void* )( intptr_t )pRuleVectorMath->GetOperator() );
-	pEditVectorA->SetVector( pRuleVectorMath->GetVectorA() );
-	pEditVectorB->SetVector( pRuleVectorMath->GetVectorB() );
+	pCBOperator->SetSelectionWithData((void*)(intptr_t)pRuleVectorMath->GetOperator());
+	pEditVectorA->SetVector(pRuleVectorMath->GetVectorA());
+	pEditVectorB->SetVector(pRuleVectorMath->GetVectorB());
 }

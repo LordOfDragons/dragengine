@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared vbo list list. */
-	deoglSharedVBOListList( deoglRenderThread &renderThread, int maxSize, int maxIndexSize );
+	deoglSharedVBOListList(deoglRenderThread &renderThread, int maxSize, int maxIndexSize);
 	
 	/** Clean up shared vbo list list. */
 	~deoglSharedVBOListList();
@@ -62,25 +62,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Maximum VBO size. */
-	inline int GetMaxSize() const{ return pMaxSize; }
+	inline int GetMaxSize() const{return pMaxSize;}
 	
 	/** Maximum IBO size. */
-	inline int GetMaxIndexSize() const{ return pMaxIndexSize; }
+	inline int GetMaxIndexSize() const{return pMaxIndexSize;}
 	
 	/** Count of lists. */
 	int GetCount() const;
 	
 	/** List at index. */
-	deoglSharedVBOList *GetAt( int index ) const;
+	deoglSharedVBOList *GetAt(int index) const;
 	
 	/** Matching list is present. */
-	bool HasWith( const deoglVBOLayout &layout, GLenum drawType ) const;
+	bool HasWith(const deoglVBOLayout &layout, GLenum drawType) const;
 	
 	/** Matching list creating it if absent. */
-	deoglSharedVBOList *GetWith( const deoglVBOLayout &layout, GLenum drawType );
+	deoglSharedVBOList *GetWith(const deoglVBOLayout &layout, GLenum drawType);
 	
 	/** Prepare all lists. */
 	void PrepareAllLists();

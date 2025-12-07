@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create descriptor pool pool. */
-	devkDescriptorPoolPool( devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo );
+	devkDescriptorPoolPool(devkDescriptorPool &owner, const VkDescriptorPoolCreateInfo &poolCreateInfo);
 	
 protected:
 	/** Clean up descriptor pool pool. */
@@ -70,13 +70,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner. */
-	inline devkDescriptorPool &GetOwner() const{ return pOwner; }
+	inline devkDescriptorPool &GetOwner() const{return pOwner;}
 	
 	/** Get next free slot or nullptr if pool is full. */
 	devkDescriptorPoolSlot *Get();
 	
 	/** Return slot to pool. */
-	void Return( devkDescriptorPoolSlot *slot );
+	void Return(devkDescriptorPoolSlot *slot);
 	/*@}*/
 	
 	

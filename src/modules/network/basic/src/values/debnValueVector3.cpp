@@ -43,25 +43,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnValueVector3::debnValueVector3( deNetworkValueVector3 &valueVector3 ) :
-pValueVector3( valueVector3 ),
-pLastValue( valueVector3.GetVector() )
+debnValueVector3::debnValueVector3(deNetworkValueVector3 &valueVector3) :
+pValueVector3(valueVector3),
+pLastValue(valueVector3.GetVector())
 {
-	switch( valueVector3.GetFormat() ){
+	switch(valueVector3.GetFormat()){
 	case deNetworkValue::evfFloat16:
-		SetDataType( evtVector3F16 );
+		SetDataType(evtVector3F16);
 		break;
 		
 	case deNetworkValue::evfFloat32:
-		SetDataType( evtVector3F32 );
+		SetDataType(evtVector3F32);
 		break;
 		
 	case deNetworkValue::evfFloat64:
-		SetDataType( evtVector3F64 );
+		SetDataType(evtVector3F64);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -73,8 +73,8 @@ debnValueVector3::~debnValueVector3(){
 // Management
 ///////////////
 
-bool debnValueVector3::UpdateValue( bool force ){
-	if( ! force && pValueVector3.GetVector().IsEqualTo( pLastValue, pValueVector3.GetPrecision() ) ){
+bool debnValueVector3::UpdateValue(bool force){
+	if(! force && pValueVector3.GetVector().IsEqualTo(pLastValue, pValueVector3.GetPrecision())){
 		return false;
 	}
 	
@@ -82,12 +82,12 @@ bool debnValueVector3::UpdateValue( bool force ){
 	return true;
 }
 
-void debnValueVector3::ReadValue( decBaseFileReader &reader ){
-	switch( GetDataType() ){
+void debnValueVector3::ReadValue(decBaseFileReader &reader){
+	switch(GetDataType()){
 	case evtVector3F16:
-		pLastValue.x = halfToFloat( reader.ReadUShort() );
-		pLastValue.y = halfToFloat( reader.ReadUShort() );
-		pLastValue.z = halfToFloat( reader.ReadUShort() );
+		pLastValue.x = halfToFloat(reader.ReadUShort());
+		pLastValue.y = halfToFloat(reader.ReadUShort());
+		pLastValue.z = halfToFloat(reader.ReadUShort());
 		break;
 		
 	case evtVector3F32:
@@ -106,29 +106,29 @@ void debnValueVector3::ReadValue( decBaseFileReader &reader ){
 		return;
 	}
 	
-	pValueVector3.SetVector( pLastValue );
+	pValueVector3.SetVector(pLastValue);
 }
 
-void debnValueVector3::WriteValue( decBaseFileWriter &writer ){
+void debnValueVector3::WriteValue(decBaseFileWriter &writer){
 	const decDVector &vector = pValueVector3.GetVector();
 	
-	switch( GetDataType() ){
+	switch(GetDataType()){
 	case evtVector3F16:
-		writer.WriteUShort( floatToHalf( ( float )vector.x ) );
-		writer.WriteUShort( floatToHalf( ( float )vector.y ) );
-		writer.WriteUShort( floatToHalf( ( float )vector.z ) );
+		writer.WriteUShort(floatToHalf((float)vector.x));
+		writer.WriteUShort(floatToHalf((float)vector.y));
+		writer.WriteUShort(floatToHalf((float)vector.z));
 		break;
 		
 	case evtVector3F32:
-		writer.WriteFloat( ( float )vector.x );
-		writer.WriteFloat( ( float )vector.y );
-		writer.WriteFloat( ( float )vector.z );
+		writer.WriteFloat((float)vector.x);
+		writer.WriteFloat((float)vector.y);
+		writer.WriteFloat((float)vector.z);
 		break;
 		
 	case evtVector3F64:
-		writer.WriteDouble( vector.x );
-		writer.WriteDouble( vector.y );
-		writer.WriteDouble( vector.z );
+		writer.WriteDouble(vector.x);
+		writer.WriteDouble(vector.y);
+		writer.WriteDouble(vector.z);
 		break;
 		
 	default:

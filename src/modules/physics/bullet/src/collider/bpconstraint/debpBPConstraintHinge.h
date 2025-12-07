@@ -39,9 +39,9 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new constraint. */
-	debpBPConstraintHinge( btRigidBody &rbA, btRigidBody &rbB, const btTransform &rbAFrame, const btTransform &rbBFrame );
+	debpBPConstraintHinge(btRigidBody &rbA, btRigidBody &rbB, const btTransform &rbAFrame, const btTransform &rbBFrame);
 	/** Creates a new constraint. */
-	debpBPConstraintHinge( btRigidBody &rbA, const btTransform &rbAFrame, const btTransform &rbBFrame );
+	debpBPConstraintHinge(btRigidBody &rbA, const btTransform &rbAFrame, const btTransform &rbBFrame);
 	/** Cleans up the constraint. */
 	virtual ~debpBPConstraintHinge();
 	
@@ -49,9 +49,9 @@ public:
 	/*@{*/
 #if 0
 	/** \brief Calculate constraint solver information. */
-	virtual void getInfo2( btConstraintInfo2 *info );
+	virtual void getInfo2(btConstraintInfo2 *info);
 	/** \brief Set breaking parameters. */
-	void SetBreakingParameters( btConstraintInfo2 &info );
+	void SetBreakingParameters(btConstraintInfo2 &info);
 #endif
 	/*@}*/
 };

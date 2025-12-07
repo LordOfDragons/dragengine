@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create vbo writer. */
-	deoglVBOWriterModel( deoglRenderThread &renderThread );
+	deoglVBOWriterModel(deoglRenderThread &renderThread);
 	
 	/** Clean up vbo writer. */
 	~deoglVBOWriterModel();
@@ -60,21 +60,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set data pointers to start writing points and indices to. */
-	void Reset( deoglSharedVBOBlock *vboBlock );
+	void Reset(deoglSharedVBOBlock *vboBlock);
 	
 	/** Write point and advances the pointer for the next write. */
-	void WritePoint( const decVector &position, const decVector &normal, const decVector &tangent,
-		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal );
+	void WritePoint(const decVector &position, const decVector &normal, const decVector &tangent,
+		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal);
 	
 	/** Write point and advances the pointer for the next write. */
-	void WritePoint( const decVector &position, const decVector &normal, const decVector &tangent,
-		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal, int weights );
+	void WritePoint(const decVector &position, const decVector &normal, const decVector &tangent,
+		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal, int weights);
 	
 	/** Write texture coordinate set point and advance the pointer for the next write. */
-	void WriteTexCoordSetPoint( const decVector &tangent, bool negateTangent, const decVector2 &texCoord );
+	void WriteTexCoordSetPoint(const decVector &tangent, bool negateTangent, const decVector2 &texCoord);
 	
 	/** Write 3 indices and advances the pointer for the next write. */
-	void WriteIndices( int index1, int index2, int index3 );
+	void WriteIndices(int index1, int index2, int index3);
 	/*@}*/
 };
 

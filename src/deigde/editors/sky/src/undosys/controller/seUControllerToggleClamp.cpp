@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerToggleClamp::seUControllerToggleClamp( seController *controller ) :
-pController( NULL )
+seUControllerToggleClamp::seUControllerToggleClamp(seController *controller) :
+pController(NULL)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Toggle Controller Clamp" );
+	SetShortInfo("Toggle Controller Clamp");
 	
 	pController = controller;
 	controller->AddReference();
 }
 
 seUControllerToggleClamp::~seUControllerToggleClamp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seUControllerToggleClamp::~seUControllerToggleClamp(){
 ///////////////
 
 void seUControllerToggleClamp::Undo(){
-	pController->SetClamp( ! pController->GetClamp() );
+	pController->SetClamp(! pController->GetClamp());
 }
 
 void seUControllerToggleClamp::Redo(){
-	pController->SetClamp( ! pController->GetClamp() );
+	pController->SetClamp(! pController->GetClamp());
 }

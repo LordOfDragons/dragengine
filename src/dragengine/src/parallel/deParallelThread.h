@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create thread. */
-	deParallelThread( deParallelProcessing &parallelProcessing, int number, bool takeLowPriorityTasks );
+	deParallelThread(deParallelProcessing &parallelProcessing, int number, bool takeLowPriorityTasks);
 	
 	/** \brief Clean up thread. */
 	virtual ~deParallelThread();
@@ -70,10 +70,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Thread number. */
-	inline int GetNumber() const{ return pNumber; }
+	inline int GetNumber() const{return pNumber;}
 	
 	/** \brief Thread takes low priority tasks. */
-	inline bool GetTakeLowPriorityTasks() const{ return pTakeLowPriorityTasks; }
+	inline bool GetTakeLowPriorityTasks() const{return pTakeLowPriorityTasks;}
 	
 	
 	
@@ -87,7 +87,7 @@ public:
 	
 	/** \brief Assigned task. */
 	deParallelTask *GetTask();
-	inline deParallelTask *GetTaskDebug() const{ return pTask; }
+	inline deParallelTask *GetTaskDebug() const{return pTask;}
 	
 	
 	

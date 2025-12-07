@@ -80,47 +80,47 @@ protected:
 	feWPFont &pPanel;
 	
 public:
-	cBaseTextFieldListener( feWPFont &panel ) : pPanel( panel ){ }
+	cBaseTextFieldListener(feWPFont &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		feFont * const font = pPanel.GetFont();
-		if( ! font ){
+		if(! font){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, font ) ));
-		if( undo ){
-			font->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, font)));
+		if(undo){
+			font->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, feFont *font ) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font) = 0;
 };
 
 
 
 class cTextImagePath : public cBaseTextFieldListener{
 public:
-	cTextImagePath( feWPFont &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextImagePath(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, feFont *font ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
 		feFontImage * const image = font->GetFontImage();
-		if( image->GetFilename() == textField->GetText() ){
+		if(image->GetFilename() == textField->GetText()){
 			return NULL;
 		}
-		return new feUFontSetImagePath( image, textField->GetText() );
+		return new feUFontSetImagePath(image, textField->GetText());
 	}
 };
 
 class cActionSelectImagePath : public igdeActionSelectFile{
 	feWindowMain &pWindow;
 public:
-	cActionSelectImagePath( feWindowMain &window, igdeTextField &textField ) :
-	igdeActionSelectFile( window.GetEnvironment(), igdeEnvironment::efpltImage, textField ),
-	pWindow( window ){ }
+	cActionSelectImagePath(feWindowMain &window, igdeTextField &textField) :
+	igdeActionSelectFile(window.GetEnvironment(), igdeEnvironment::efpltImage, textField),
+	pWindow(window){}
 	
-	virtual bool AcceptFile( decString &path ){
-		if( ! pWindow.GetEngine()->GetVirtualFileSystem()->ExistsFile( decPath::CreatePathUnix( path ) ) ){
+	virtual bool AcceptFile(decString &path){
+		if(! pWindow.GetEngine()->GetVirtualFileSystem()->ExistsFile(decPath::CreatePathUnix(path))){
 			return true;
 		}
 		
@@ -131,22 +131,22 @@ public:
 			"[YES] imports the image and changes the path and size.\n"
 			"[NO] just changes the path and the next time the font is saved\n"
 			"the image is overwritten.\n"
-			"[CANCEL] does neither import nor change the path." );
+			"[CANCEL] does neither import nor change the path.");
 		
-		if( answer == igdeCommonDialogs::ebCancel ){
+		if(answer == igdeCommonDialogs::ebCancel){
 			return false;
 		}
-		if( answer == igdeCommonDialogs::ebNo ){
+		if(answer == igdeCommonDialogs::ebNo){
 			return true;
 		}
 		
 		deImage::Ref image(deImage::Ref::New(
-			 pWindow.GetEngine()->GetImageManager()->LoadImage( path, "/" ) ));
+			 pWindow.GetEngine()->GetImageManager()->LoadImage(path, "/")));
 		
-		if( image->GetComponentCount() != 4 ){
-			igdeCommonDialogs::Error( &pWindow, "Import Font Image",
+		if(image->GetComponentCount() != 4){
+			igdeCommonDialogs::Error(&pWindow, "Import Font Image",
 				"The font image does not have exactly 4 color channel. Only\n"
-				"images with 4 color channel can be used as font images." );
+				"images with 4 color channel can be used as font images.");
 			return false;
 		}
 		return true;
@@ -155,27 +155,27 @@ public:
 
 class cTextLineHeight : public cBaseTextFieldListener{
 public:
-	cTextLineHeight( feWPFont &panel ) : cBaseTextFieldListener( panel ){ }
+	cTextLineHeight(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged( igdeTextField *textField, feFont *font ){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
 		const int lineHeight = textField->GetInteger();
-		if( lineHeight == font->GetLineHeight() ){
+		if(lineHeight == font->GetLineHeight()){
 			return NULL;
 		}
-		return new feUFontSetLineHeight( font, lineHeight );
+		return new feUFontSetLineHeight(font, lineHeight);
 	}
 };
 
 class cActionColorFont : public igdeAction{
 	feWPFont &pPanel;
 public:
-	cActionColorFont( feWPFont &panel ) : 
-	igdeAction( "Color Font", "Font is a color font" ),
-	pPanel( panel ){ }
+	cActionColorFont(feWPFont &panel) : 
+	igdeAction("Color Font", "Font is a color font"),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		feFont * const font = pPanel.GetFont();
-		if( ! font ){
+		if(! font){
 			return;
 		}
 		
@@ -203,41 +203,41 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-feWPFont::feWPFont( feWindowProperties &windowProperties ) :
-igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
-pWindowProperties( windowProperties ),
-pFont( NULL ),
-pListener( NULL )
+feWPFont::feWPFont(feWindowProperties &windowProperties) :
+igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
+pWindowProperties(windowProperties),
+pFont(NULL),
+pListener(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPFontListener( *this );
+	pListener = new feWPFontListener(*this);
 	
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	AddChild( content );
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	AddChild(content);
 	
 	// font
-	helper.GroupBox( content, groupBox, "Font:" );
+	helper.GroupBox(content, groupBox, "Font:");
 	
-	helper.FormLineStretchFirst( groupBox, "Image:", "Font image.", frameLine );
-	helper.EditString( frameLine, "Font image.", pEditImagePath, new cTextImagePath( *this ) );
-	helper.Button( frameLine, pBtnImagePath, new cActionSelectImagePath(
-		windowProperties.GetWindowMain(), pEditImagePath ), true );
+	helper.FormLineStretchFirst(groupBox, "Image:", "Font image.", frameLine);
+	helper.EditString(frameLine, "Font image.", pEditImagePath, new cTextImagePath(*this));
+	helper.Button(frameLine, pBtnImagePath, new cActionSelectImagePath(
+		windowProperties.GetWindowMain(), pEditImagePath), true);
 	
-	helper.EditInteger( groupBox, "Line Height:", "Line height in pixels.",
-		pEditLineHeight, new cTextLineHeight( *this ) );
-	helper.CheckBox( groupBox, pChkColorFont, new cActionColorFont( *this ), true );
+	helper.EditInteger(groupBox, "Line Height:", "Line height in pixels.",
+		pEditLineHeight, new cTextLineHeight(*this));
+	helper.CheckBox(groupBox, pChkColorFont, new cActionColorFont(*this), true);
 	
 	helper.EditInteger(groupBox, "Base Line:", "Base line from top in pixels.",
 		pEditBaseLine, new cTextBaseLine(*this));
 }
 
 feWPFont::~feWPFont(){
-	SetFont( NULL );
+	SetFont(NULL);
 	
-	if( pListener ){
+	if(pListener){
 		pListener->FreeReference();
 	}
 }
@@ -247,21 +247,21 @@ feWPFont::~feWPFont(){
 // Management
 ///////////////
 
-void feWPFont::SetFont( feFont *font ){
-	if( font == pFont ){
+void feWPFont::SetFont(feFont *font){
+	if(font == pFont){
 		return;
 	}
 	
-	if( pFont ){
-		pFont->RemoveNotifier( pListener );
+	if(pFont){
+		pFont->RemoveNotifier(pListener);
 		pFont->FreeReference();
 		pFont = NULL;
 	}
 	
 	pFont = font;
 	
-	if( font ){
-		font->AddNotifier( pListener );
+	if(font){
+		font->AddNotifier(pListener);
 		font->AddReference();
 	}
 	
@@ -271,16 +271,16 @@ void feWPFont::SetFont( feFont *font ){
 
 
 void feWPFont::UpdateFont(){
-	if( pFont ){
-		pEditImagePath->SetText( pFont->GetFontImage()->GetFilename() );
-		pEditLineHeight->SetInteger( pFont->GetLineHeight() );
-		pChkColorFont->SetChecked( pFont->GetColorFont() );
+	if(pFont){
+		pEditImagePath->SetText(pFont->GetFontImage()->GetFilename());
+		pEditLineHeight->SetInteger(pFont->GetLineHeight());
+		pChkColorFont->SetChecked(pFont->GetColorFont());
 		pEditBaseLine->SetInteger(pFont->GetBaseLine());
 		
 	}else{
 		pEditImagePath->ClearText();
 		pEditLineHeight->ClearText();
-		pChkColorFont->SetChecked( false );
+		pChkColorFont->SetChecked(false);
 		pEditBaseLine->ClearText();
 	}
 }

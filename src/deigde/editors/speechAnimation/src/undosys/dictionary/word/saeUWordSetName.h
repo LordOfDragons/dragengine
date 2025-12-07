@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordSetName( saeWord *word, const char *newName );
+	saeUWordSetName(saeWord *word, const char *newName);
 	
 protected:
 	/** Clean up undo. */

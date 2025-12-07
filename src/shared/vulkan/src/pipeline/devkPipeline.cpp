@@ -42,17 +42,17 @@
 // class devkPipeline
 ///////////////////////
 
-devkPipeline::devkPipeline( devkDevice &device, const devkPipelineConfiguration &configuration ) :
-pDevice( device ),
-pConfiguration( configuration ),
-pBindPoint( VK_PIPELINE_BIND_POINT_GRAPHICS ),
-pLayout( VK_NULL_HANDLE ),
-pPipeline( VK_NULL_HANDLE ),
-pCache( VK_NULL_HANDLE ),
-pSaveCache( false )
+devkPipeline::devkPipeline(devkDevice &device, const devkPipelineConfiguration &configuration) :
+pDevice(device),
+pConfiguration(configuration),
+pBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS),
+pLayout(VK_NULL_HANDLE),
+pPipeline(VK_NULL_HANDLE),
+pCache(VK_NULL_HANDLE),
+pSaveCache(false)
 {
 	try{
-		switch( configuration.GetType() ){
+		switch(configuration.GetType()){
 		case devkPipelineConfiguration::etGraphics:
 			pBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 			break;
@@ -72,40 +72,40 @@ pSaveCache( false )
 		
 		VkPipelineLayoutCreateInfo layoutInfo{VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
 		
-		if( configuration.GetDescriptorSetLayout() ){
+		if(configuration.GetDescriptorSetLayout()){
 			layouts = configuration.GetDescriptorSetLayout()->GetLayout();
 			
 			layoutInfo.setLayoutCount = 1;
 			layoutInfo.pSetLayouts = &layouts;
 		}
 		
-		VK_CHECK( vulkan, device.vkCreatePipelineLayout(
-			device.GetDevice(), &layoutInfo, VK_NULL_HANDLE, &pLayout ) );
+		VK_CHECK(vulkan, device.vkCreatePipelineLayout(
+			device.GetDevice(), &layoutInfo, VK_NULL_HANDLE, &pLayout));
 		
 		VkPipelineCacheCreateInfo cacheInfo{VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO};
 		
 		// load cache if present
 		deBaseModule &baseModule = vulkan.GetModule();
 		deVirtualFileSystem &vfs = baseModule.GetVFS();
-		const decPath path( pCachePath() );
+		const decPath path(pCachePath());
 		
 		try{
-			if( vfs.ExistsFile( path ) ){
-				baseModule.LogInfoFormat( "Vulkan Pipeline: Read Cache for device %x", pDevice.GetProperties().deviceID );
+			if(vfs.ExistsFile(path)){
+				baseModule.LogInfoFormat("Vulkan Pipeline: Read Cache for device %x", pDevice.GetProperties().deviceID);
 				
-				decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( path ) ));
+				decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
 				
 				cacheInfo.initialDataSize = reader->GetLength();
-				if( cacheInfo.initialDataSize > 0 ){
-					cacheInfo.pInitialData = new char[ cacheInfo.initialDataSize ];
-					reader->Read( ( char* )cacheInfo.pInitialData, ( int )cacheInfo.initialDataSize );
+				if(cacheInfo.initialDataSize > 0){
+					cacheInfo.pInitialData = new char[cacheInfo.initialDataSize];
+					reader->Read((char*)cacheInfo.pInitialData, (int)cacheInfo.initialDataSize);
 				}
 			}
 			
-		}catch( const deException &e ){
-			baseModule.LogException( e );
-			if( cacheInfo.pInitialData ){
-				delete [] ( char* )cacheInfo.pInitialData;
+		}catch(const deException &e){
+			baseModule.LogException(e);
+			if(cacheInfo.pInitialData){
+				delete [] (char*)cacheInfo.pInitialData;
 			}
 			pDropCache();
 		}
@@ -113,27 +113,27 @@ pSaveCache( false )
 		// create pipeline cache. if this failes drop the cache since it might be the
 		// reason for the cache failing then try again
 		try{
-			VK_CHECK( vulkan, pDevice.vkCreatePipelineCache(
-				device.GetDevice(), &cacheInfo, VK_NULL_HANDLE, &pCache ) );
+			VK_CHECK(vulkan, pDevice.vkCreatePipelineCache(
+				device.GetDevice(), &cacheInfo, VK_NULL_HANDLE, &pCache));
 			
-		}catch( const deException &e ){
-			if( cacheInfo.pInitialData ){
-				baseModule.LogException( e );
+		}catch(const deException &e){
+			if(cacheInfo.pInitialData){
+				baseModule.LogException(e);
 				
 				pDropCache();
 				
 				cacheInfo.pInitialData = nullptr;
 				cacheInfo.initialDataSize = 0;
 				
-				VK_CHECK( vulkan, pDevice.vkCreatePipelineCache(
-					device.GetDevice(), &cacheInfo, VK_NULL_HANDLE, &pCache ) );
+				VK_CHECK(vulkan, pDevice.vkCreatePipelineCache(
+					device.GetDevice(), &cacheInfo, VK_NULL_HANDLE, &pCache));
 				
 			}else{
 				throw;
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -153,9 +153,9 @@ devkPipeline::~devkPipeline(){
 // Protected Functions
 ////////////////////////
 
-void devkPipeline::pInitShaderStage( VkPipelineShaderStageCreateInfo &info,
+void devkPipeline::pInitShaderStage(VkPipelineShaderStageCreateInfo &info,
 VkShaderStageFlagBits stage, devkShaderModule &module,
-const VkSpecializationInfo *specialization ){
+const VkSpecializationInfo *specialization){
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	info.stage = stage;
 	info.module = module.GetModule();
@@ -171,53 +171,53 @@ const VkSpecializationInfo *specialization ){
 void devkPipeline::pCleanUp(){
 	VkDevice device = pDevice.GetDevice();
 	
-	if( pPipeline ){
-		pDevice.vkDestroyPipeline( device, pPipeline, VK_NULL_HANDLE );
+	if(pPipeline){
+		pDevice.vkDestroyPipeline(device, pPipeline, VK_NULL_HANDLE);
 	}
 	
-	if( pCache ){
-		if( pSaveCache ){
+	if(pCache){
+		if(pSaveCache){
 			deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan();
 			deBaseModule &baseModule = vulkan.GetModule();
 			deVirtualFileSystem &vfs = baseModule.GetVFS();
-			const decPath path( pCachePath() );
+			const decPath path(pCachePath());
 			char *data = nullptr;
 			
-			baseModule.LogInfoFormat( "Vulkan Pipeline: Save Cache for device %x", pDevice.GetProperties().deviceID );
+			baseModule.LogInfoFormat("Vulkan Pipeline: Save Cache for device %x", pDevice.GetProperties().deviceID);
 			
 			try{
 				size_t sizeData = 0;
-				VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, VK_NULL_HANDLE ) );
+				VK_CHECK(vulkan, pDevice.vkGetPipelineCacheData(device, pCache, &sizeData, VK_NULL_HANDLE));
 				
-				if( sizeData > 0 ){
-					data = new char[ sizeData ];
-					VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, data ) );
+				if(sizeData > 0){
+					data = new char[sizeData];
+					VK_CHECK(vulkan, pDevice.vkGetPipelineCacheData(device, pCache, &sizeData, data));
 					
 					decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(path))->Write(data, (int)sizeData);
 				}
 				
-			}catch( const deException &e ){
-				baseModule.LogException( e );
-				if( data ){
+			}catch(const deException &e){
+				baseModule.LogException(e);
+				if(data){
 					delete [] data;
 				}
 				pDropCache();
 			}
 		}
 		
-		pDevice.vkDestroyPipelineCache( device, pCache, VK_NULL_HANDLE );
+		pDevice.vkDestroyPipelineCache(device, pCache, VK_NULL_HANDLE);
 	}
-	if( pLayout ){
-		pDevice.vkDestroyPipelineLayout( device, pLayout, VK_NULL_HANDLE );
+	if(pLayout){
+		pDevice.vkDestroyPipelineLayout(device, pLayout, VK_NULL_HANDLE);
 	}
 }
 
 decPath devkPipeline::pCachePath() const{
 	decString directory;
-	directory.Format( "pipelines-%x", pDevice.GetProperties().deviceID );
+	directory.Format("pipelines-%x", pDevice.GetProperties().deviceID);
 	
-	decPath path( pDevice.GetInstance().GetVulkan().GetCachePath() );
-	path.AddComponent( directory );
+	decPath path(pDevice.GetInstance().GetVulkan().GetCachePath());
+	path.AddComponent(directory);
 	
 	return path;
 }
@@ -226,15 +226,15 @@ void devkPipeline::pDropCache(){
 	deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan();
 	deBaseModule &baseModule = vulkan.GetModule();
 	deVirtualFileSystem &vfs = baseModule.GetVFS();
-	const decPath path( pCachePath() );
+	const decPath path(pCachePath());
 	
-	baseModule.LogInfoFormat( "Vulkan Pipeline: Drop Cache for device %x", pDevice.GetProperties().deviceID );
+	baseModule.LogInfoFormat("Vulkan Pipeline: Drop Cache for device %x", pDevice.GetProperties().deviceID);
 	try{
-		if( vfs.ExistsFile( path ) ){
-			vfs.DeleteFile( path );
+		if(vfs.ExistsFile(path)){
+			vfs.DeleteFile(path);
 		}
 		
-	}catch( const deException &e ){
-		baseModule.LogException( e );
+	}catch(const deException &e){
+		baseModule.LogException(e);
 	}
 }

@@ -39,28 +39,28 @@
 ////////////////////////////
 
 igdeGDCNavigationSpace::igdeGDCNavigationSpace() :
-pLayer( 0 ),
-pSnapDistance( 0.001f ),
-pSnapAngle( 180.0 ),
-pType( deNavigationSpace::estMesh ),
-pBlockingPriority( 0 ){
+pLayer(0),
+pSnapDistance(0.001f),
+pSnapAngle(180.0),
+pType(deNavigationSpace::estMesh),
+pBlockingPriority(0){
 }
 
-igdeGDCNavigationSpace::igdeGDCNavigationSpace( const igdeGDCNavigationSpace &navspace ) :
-pPath( navspace.pPath ),
-pPosition( navspace.pPosition ),
-pOrientation( navspace.pOrientation ),
-pBoneName( navspace.pBoneName ),
-pLayer( navspace.pLayer ),
-pSnapDistance( navspace. pSnapDistance ),
-pSnapAngle( navspace.pSnapAngle ),
-pType( navspace.pType ),
-pBlockingPriority( navspace.pBlockingPriority ),
-pBlockerShapeList( navspace.pBlockerShapeList )
+igdeGDCNavigationSpace::igdeGDCNavigationSpace(const igdeGDCNavigationSpace &navspace) :
+pPath(navspace.pPath),
+pPosition(navspace.pPosition),
+pOrientation(navspace.pOrientation),
+pBoneName(navspace.pBoneName),
+pLayer(navspace.pLayer),
+pSnapDistance(navspace. pSnapDistance),
+pSnapAngle(navspace.pSnapAngle),
+pType(navspace.pType),
+pBlockingPriority(navspace.pBlockingPriority),
+pBlockerShapeList(navspace.pBlockerShapeList)
 {
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
-		pPropertyNames[ i ] = navspace.pPropertyNames[ i ];
+	for(i=0; i<=epAttachRotation; i++){
+		pPropertyNames[i] = navspace.pPropertyNames[i];
 	}
 }
 
@@ -72,70 +72,70 @@ igdeGDCNavigationSpace::~igdeGDCNavigationSpace(){
 // Management
 ///////////////
 
-void igdeGDCNavigationSpace::SetPath( const char *path ){
+void igdeGDCNavigationSpace::SetPath(const char *path){
 	pPath = path;
 }
 
-void igdeGDCNavigationSpace::SetPosition( const decVector &position ){
+void igdeGDCNavigationSpace::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void igdeGDCNavigationSpace::SetOrientation( const decQuaternion &orientation ){
+void igdeGDCNavigationSpace::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void igdeGDCNavigationSpace::SetBoneName( const char *boneName ){
+void igdeGDCNavigationSpace::SetBoneName(const char *boneName){
 	pBoneName = boneName;
 }
 
 
 
-void igdeGDCNavigationSpace::SetLayer( int layer ){
+void igdeGDCNavigationSpace::SetLayer(int layer){
 	pLayer = layer;
 }
 
-void igdeGDCNavigationSpace::SetType( deNavigationSpace::eSpaceTypes type ){
+void igdeGDCNavigationSpace::SetType(deNavigationSpace::eSpaceTypes type){
 	pType = type;
 }
 
-void igdeGDCNavigationSpace::SetBlockingPriority( int priority ){
+void igdeGDCNavigationSpace::SetBlockingPriority(int priority){
 	pBlockingPriority = priority;
 }
 
 
 
-void igdeGDCNavigationSpace::SetBlockerShapeList( const decShapeList &shapeList ){
+void igdeGDCNavigationSpace::SetBlockerShapeList(const decShapeList &shapeList){
 	pBlockerShapeList = shapeList;
 }
 
 
 
-void igdeGDCNavigationSpace::SetSnapDistance( float distance ){
-	pSnapDistance = decMath::max( distance, 0.001f );
+void igdeGDCNavigationSpace::SetSnapDistance(float distance){
+	pSnapDistance = decMath::max(distance, 0.001f);
 }
 
-void igdeGDCNavigationSpace::SetSnapAngle( float angle ){
-	pSnapAngle = decMath::max( angle, 0.0f );
+void igdeGDCNavigationSpace::SetSnapAngle(float angle){
+	pSnapAngle = decMath::max(angle, 0.0f);
 }
 
 
 
-bool igdeGDCNavigationSpace::IsPropertySet( eProperties property ) const{
-	return ! pPropertyNames[ property ].IsEmpty();
+bool igdeGDCNavigationSpace::IsPropertySet(eProperties property) const{
+	return ! pPropertyNames[property].IsEmpty();
 }
 
-const decString &igdeGDCNavigationSpace::GetPropertyName( eProperties property ) const{
-	return pPropertyNames[ property ];
+const decString &igdeGDCNavigationSpace::GetPropertyName(eProperties property) const{
+	return pPropertyNames[property];
 }
 
-void igdeGDCNavigationSpace::SetPropertyName( eProperties property, const char *name ){
-	pPropertyNames[ property ] = name;
+void igdeGDCNavigationSpace::SetPropertyName(eProperties property, const char *name){
+	pPropertyNames[property] = name;
 }
 
-bool igdeGDCNavigationSpace::HasPropertyWithName( const char *name ) const{
+bool igdeGDCNavigationSpace::HasPropertyWithName(const char *name) const{
 	int j;
-	for( j=0; j<=epAttachRotation; j++ ){
-		if( pPropertyNames[ j ] == name ){
+	for(j=0; j<=epAttachRotation; j++){
+		if(pPropertyNames[j] == name){
 			return true;
 		}
 	}

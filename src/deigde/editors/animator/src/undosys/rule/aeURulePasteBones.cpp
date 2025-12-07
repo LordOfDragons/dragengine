@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURulePasteBones::aeURulePasteBones( aeRule* rule, const decStringSet &newValue ) :
-aeUSetRuleBones( rule, newValue )
+aeURulePasteBones::aeURulePasteBones(aeRule* rule, const decStringSet &newValue) :
+aeUSetRuleBones(rule, newValue)
 {
-	SetShortInfo( "Rule paste all bones" );
+	SetShortInfo("Rule paste all bones");
 }
 
 aeURulePasteBones::~aeURulePasteBones(){

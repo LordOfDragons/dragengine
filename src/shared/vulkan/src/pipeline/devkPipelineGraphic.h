@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkPipelineGraphic( devkDevice &device, const devkPipelineConfiguration &configuration );
+	devkPipelineGraphic(devkDevice &device, const devkPipelineConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */

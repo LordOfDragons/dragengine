@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassNetworkMessage( deScriptingDragonScript &ds );
+	deClassNetworkMessage(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassNetworkMessage();
@@ -56,24 +56,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module owning the script class. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	
 	/**
 	 * \brief Network message from script object.
 	 * \details Returns NULL if \em myself is NULL.
 	 */
-	deNetworkMessage *GetNetworkMessage( dsRealObject *myself ) const;
+	deNetworkMessage *GetNetworkMessage(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push network message onto stack.
 	 * \details Pushes a \em null object to the stack if \em collider is NULL.
 	 */
-	void PushNetworkMessage( dsRunTime *rt, deNetworkMessage *message );
+	void PushNetworkMessage(dsRunTime *rt, deNetworkMessage *message);
 	/*@}*/
 	
 	
@@ -90,22 +90,22 @@ private:
 		dsClass *clsFileWrite;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetDataLength );
-	DEF_NATFUNC( nfClear );
+	DEF_NATFUNC(nfGetDataLength);
+	DEF_NATFUNC(nfClear);
 	
-	DEF_NATFUNC( nfGetReader );
-	DEF_NATFUNC( nfGetWriter );
+	DEF_NATFUNC(nfGetReader);
+	DEF_NATFUNC(nfGetWriter);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

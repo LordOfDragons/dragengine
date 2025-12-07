@@ -33,21 +33,21 @@
 // Class deEosSdkFlowInit
 ///////////////////////////
 
-static void fCreateDeviceIdCallback( const EOS_Connect_CreateDeviceIdCallbackInfo *data ){
-	( ( deEosSdkFlowInit* )data->ClientData )->OnCreateDeviceIdCallback( *data );
+static void fCreateDeviceIdCallback(const EOS_Connect_CreateDeviceIdCallbackInfo *data){
+	((deEosSdkFlowInit*)data->ClientData)->OnCreateDeviceIdCallback(*data);
 }
 
-static void fLoginCallback( const EOS_Connect_LoginCallbackInfo *data ){
-	( ( deEosSdkFlowInit* )data->ClientData )->OnLoginCallback( *data );
+static void fLoginCallback(const EOS_Connect_LoginCallbackInfo *data){
+	((deEosSdkFlowInit*)data->ClientData)->OnLoginCallback(*data);
 }
 
 // Constructor, destructor
 ////////////////////////////
 
-deEosSdkFlowInit::deEosSdkFlowInit( deEosSdkServiceEos &service ) :
-deEosSdkFlow( service, decUniqueID() )
+deEosSdkFlowInit::deEosSdkFlowInit(deEosSdkServiceEos &service) :
+deEosSdkFlow(service, decUniqueID())
 {
-	GetModule().LogInfo( "deEosSdkFlowInit: Init service" );
+	GetModule().LogInfo("deEosSdkFlowInit: Init service");
 	CreateDeviceId();
 }
 
@@ -74,8 +74,8 @@ void deEosSdkFlowInit::CreateDeviceId(){
 	options.DeviceModel = "Unknown";
 	#endif
 	
-	GetModule().LogInfo( "deEosSdkFlowInit: Create device id" );
-	EOS_Connect_CreateDeviceId( pService.GetHandleConnect(), &options, this, fCreateDeviceIdCallback );
+	GetModule().LogInfo("deEosSdkFlowInit: Create device id");
+	EOS_Connect_CreateDeviceId(pService.GetHandleConnect(), &options, this, fCreateDeviceIdCallback);
 }
 
 void deEosSdkFlowInit::ConnectLogin(){
@@ -92,57 +92,57 @@ void deEosSdkFlowInit::ConnectLogin(){
 	options.Credentials = &credentials;
 	options.UserLoginInfo = &userLoginInfo;
 	
-	GetModule().LogInfo( "deEosSdkFlowInit: Connect login" );
-	EOS_Connect_Login( pService.GetHandleConnect(), &options, this, fLoginCallback );
+	GetModule().LogInfo("deEosSdkFlowInit: Connect login");
+	EOS_Connect_Login(pService.GetHandleConnect(), &options, this, fLoginCallback);
 }
 
-void deEosSdkFlowInit::FinishFlowEvent( EOS_EResult res ){
-	const deServiceObject::Ref event( deServiceObject::Ref::NewWith() );
-	event->SetStringChildAt( "event", "initialized" );
+void deEosSdkFlowInit::FinishFlowEvent(EOS_EResult res){
+	const deServiceObject::Ref event(deServiceObject::Ref::NewWith());
+	event->SetStringChildAt("event", "initialized");
 	
-	if( res == EOS_EResult::EOS_Success ){
-		event->SetBoolChildAt( "success", true );
+	if(res == EOS_EResult::EOS_Success){
+		event->SetBoolChildAt("success", true);
 		
 	}else{
-		event->SetBoolChildAt( "success", false );
-		event->SetStringChildAt( "error", EOS_EResult_ToString( res ) );
-		event->SetStringChildAt( "message", EOS_EResult_ToString( res ) );
+		event->SetBoolChildAt("success", false);
+		event->SetStringChildAt("error", EOS_EResult_ToString(res));
+		event->SetStringChildAt("message", EOS_EResult_ToString(res));
 	}
 	
-	GetModule().GetGameEngine()->GetServiceManager()->QueueEventReceived( pService.GetService(), event );
+	GetModule().GetGameEngine()->GetServiceManager()->QueueEventReceived(pService.GetService(), event);
 	delete this;
 }
 
 
 
-void deEosSdkFlowInit::OnCreateDeviceIdCallback( const EOS_Connect_CreateDeviceIdCallbackInfo &data ){
-	GetModule().LogInfoFormat( "deEosSdkFlowInit.OnInitCreateDeviceIdCallback: res=%d", ( int )data.ResultCode );
-	switch( data.ResultCode ){
+void deEosSdkFlowInit::OnCreateDeviceIdCallback(const EOS_Connect_CreateDeviceIdCallbackInfo &data){
+	GetModule().LogInfoFormat("deEosSdkFlowInit.OnInitCreateDeviceIdCallback: res=%d", (int)data.ResultCode);
+	switch(data.ResultCode){
 	case EOS_EResult::EOS_DuplicateNotAllowed:
-		GetModule().LogInfo( "deEosSdkFlowInit: Device id already created." );
+		GetModule().LogInfo("deEosSdkFlowInit: Device id already created.");
 		ConnectLogin();
 		break;
 		
 	case EOS_EResult::EOS_Success:
-		GetModule().LogInfo( "deEosSdkFlowInit: Device id created." );
+		GetModule().LogInfo("deEosSdkFlowInit: Device id created.");
 		ConnectLogin();
 		break;
 		
 	default:
-		FinishFlowEvent( data.ResultCode );
+		FinishFlowEvent(data.ResultCode);
 	}
 }
 
-void deEosSdkFlowInit::OnLoginCallback( const EOS_Connect_LoginCallbackInfo &data ){
-	GetModule().LogInfoFormat( "deEosSdkFlowInit.OnInitLoginCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowInit: Connected." );
+void deEosSdkFlowInit::OnLoginCallback(const EOS_Connect_LoginCallbackInfo &data){
+	GetModule().LogInfoFormat("deEosSdkFlowInit.OnInitLoginCallback: res=%d", (int)data.ResultCode);
+	if(data.ResultCode == EOS_EResult::EOS_Success){
+		GetModule().LogInfo("deEosSdkFlowInit: Connected.");
 		pService.productUserId = data.LocalUserId;
-		FinishFlowEvent( EOS_EResult::EOS_Success );
+		FinishFlowEvent(EOS_EResult::EOS_Success);
 		
 	}else{
-		GetModule().LogWarn( "deEosSdkFlowInit: Connect failed. Using device id account is not possible." );
+		GetModule().LogWarn("deEosSdkFlowInit: Connect failed. Using device id account is not possible.");
 		//FinishFlowEvent( data.ResultCode );
-		FinishFlowEvent( EOS_EResult::EOS_Success );
+		FinishFlowEvent(EOS_EResult::EOS_Success);
 	}
 }

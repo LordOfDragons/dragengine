@@ -44,7 +44,7 @@ private:
 	decString pName;
 	decString pDescription;
 	decString pCategory;
-	deImage::Ref pPreviewImages[ 3 ];
+	deImage::Ref pPreviewImages[3];
 	
 	
 	
@@ -56,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create particle emitter. */
-	igdeGDParticleEmitter( const char *path, const char *name );
+	igdeGDParticleEmitter(const char *path, const char *name);
 	
 	/** \brief Create copy of game definition particle emitter. */
-	igdeGDParticleEmitter( const igdeGDParticleEmitter &particleEmitter );
+	igdeGDParticleEmitter(const igdeGDParticleEmitter &particleEmitter);
 	
 protected:
 	/** \brief Clean up particle emitter. */
@@ -72,34 +72,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Category. */
-	inline const decString &GetCategory() const{ return pCategory; }
+	inline const decString &GetCategory() const{return pCategory;}
 	
 	/** \brief Set cathegory. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** \brief Preview image or NULL if not loaded yet. */
-	deImage *GetPreviewImage( int size ) const;
+	deImage *GetPreviewImage(int size) const;
 	
 	/** \brief Set preview image or NULL if not loaded yet. */
-	void SetPreviewImage( int size, deImage *image );
+	void SetPreviewImage(int size, deImage *image);
 	/*@}*/
 };
 

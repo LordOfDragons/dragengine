@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSoundLevelMeterListener( deScriptingDragonScript &ds );
+	deClassSoundLevelMeterListener(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSoundLevelMeterListener();
@@ -59,16 +59,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create script class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Function index for speakerAudible(). */
-	inline int GetFuncIndexSpeakerAudible() const{ return pFuncIndexSpeakerAudible; }
+	inline int GetFuncIndexSpeakerAudible() const{return pFuncIndexSpeakerAudible;}
 	
 	/** \brief Function index for speakerInaudible(). */
-	inline int GetFuncIndexSpeakerInaudible() const{ return pFuncIndexSpeakerInaudible; }
+	inline int GetFuncIndexSpeakerInaudible() const{return pFuncIndexSpeakerInaudible;}
 	
 	
 	
@@ -84,13 +84,13 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfSpeakerAudible );
-	DEF_NATFUNC( nfSpeakerInaudible );
+	DEF_NATFUNC(nfSpeakerAudible);
+	DEF_NATFUNC(nfSpeakerInaudible);
 #undef DEF_NATFUNC
 };
 

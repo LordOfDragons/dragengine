@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableVideoFrame( deoglDynamicSkin &dynamicSkin, const deDSRenderableVideoFrame &renderable );
+	deoglDSRenderableVideoFrame(deoglDynamicSkin &dynamicSkin, const deDSRenderableVideoFrame &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableVideoFrame();
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableVideoFrame &GetRenderableVideoFrame() const{ return pRenderableVideoFrame; }
+	inline const deDSRenderableVideoFrame &GetRenderableVideoFrame() const{return pRenderableVideoFrame;}
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

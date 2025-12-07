@@ -37,8 +37,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMCTrigger( ceWindowMain &windowMain, ceConversation &conversation,
-		ceConversationAction &action, ceCConditionTrigger *condition );
+	ceWPTTIMCTrigger(ceWindowMain &windowMain, ceConversation &conversation,
+		ceConversationAction &action, ceCConditionTrigger *condition);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -51,10 +51,10 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Condition. */
-	inline ceCConditionTrigger *GetConditionTrigger() const{ return ( ceCConditionTrigger* )GetCondition(); }
+	inline ceCConditionTrigger *GetConditionTrigger() const{return (ceCConditionTrigger*)GetCondition();}
 	
 	/** \brief Text representation for test mode. */
-	static const char *GetTestModeText( ceCConditionTrigger::eTestModes testMode );
+	static const char *GetTestModeText(ceCConditionTrigger::eTestModes testMode);
 	
 	/** \brief Update condition. */
 	virtual void Update();

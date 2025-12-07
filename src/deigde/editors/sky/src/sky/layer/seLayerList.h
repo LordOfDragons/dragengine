@@ -58,31 +58,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Layer at index. */
-	seLayer *GetAt( int index ) const;
+	seLayer *GetAt(int index) const;
 	
 	/** \brief Index of layer or -1 if absent. */
-	int IndexOf( seLayer *layer ) const;
+	int IndexOf(seLayer *layer) const;
 	
 	/** \brief Layer is present. */
-	bool Has( seLayer *layer ) const;
+	bool Has(seLayer *layer) const;
 	
 	/** \brief Add layer. */
-	void Add( seLayer *layer );
+	void Add(seLayer *layer);
 	
 	/** \brief Insert layer. */
-	void InsertAt( seLayer *layer, int index );
+	void InsertAt(seLayer *layer, int index);
 	
 	/** \brief Move layer. */
-	void MoveTo( seLayer *layer, int index );
+	void MoveTo(seLayer *layer, int index);
 	
 	/** \brief Remove layer. */
-	void Remove( seLayer *layer );
+	void Remove(seLayer *layer);
 	
 	/** \brief Remove all layers. */
 	void RemoveAll();
 	
 	/** \brief Set list from another list. */
-	seLayerList &operator=( const seLayerList &list );
+	seLayerList &operator=(const seLayerList &list);
 	/*@}*/
 };
 

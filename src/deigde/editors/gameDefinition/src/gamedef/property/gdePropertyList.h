@@ -47,7 +47,7 @@ public:
 	gdePropertyList();
 	
 	/** \brief Create copy of property list. */
-	gdePropertyList( const gdePropertyList &list );
+	gdePropertyList(const gdePropertyList &list);
 	
 	/** \brief Clean up property list. */
 	~gdePropertyList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Property at position. */
-	gdeProperty *GetAt( int index ) const;
+	gdeProperty *GetAt(int index) const;
 	
 	/** \brief Named property or \em NULL if absent. */
-	gdeProperty *GetNamed( const char *name ) const;
+	gdeProperty *GetNamed(const char *name) const;
 	
 	/** \brief Index of named property or -1 if absent. */
-	int IndexOf( gdeProperty *proeprty ) const;
+	int IndexOf(gdeProperty *proeprty) const;
 	
 	/** \brief Index of named property or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Property is present. */
-	bool Has( gdeProperty *proeprty ) const;
+	bool Has(gdeProperty *proeprty) const;
 	
 	/** \brief Named property is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add property. */
-	void Add( gdeProperty *proeprty );
+	void Add(gdeProperty *proeprty);
 	
 	/** \brief Remove property. */
-	void Remove( gdeProperty *proeprty );
+	void Remove(gdeProperty *proeprty);
 	
 	/** \brief Remove all propertyes. */
 	void RemoveAll();
 	
 	/** \brief Set from another property list. */
-	gdePropertyList &operator=( const gdePropertyList &list );
+	gdePropertyList &operator=(const gdePropertyList &list);
 	/*@}*/
 };
 

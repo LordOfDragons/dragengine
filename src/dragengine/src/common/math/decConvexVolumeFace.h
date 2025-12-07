@@ -69,40 +69,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Face normal. */
-	inline const decVector &GetNormal() const{ return pNormal; }
+	inline const decVector &GetNormal() const{return pNormal;}
 	
 	/** \brief Set face normal. */
-	void SetNormal( const decVector &normal );
+	void SetNormal(const decVector &normal);
 	
 	/** \brief Marker value. */
-	inline int GetMarker() const{ return pMarker; }
+	inline int GetMarker() const{return pMarker;}
 	
 	/** \brief Set marker value. */
-	void SetMarker( int marker );
+	void SetMarker(int marker);
 	
 	/** \brief Number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{return pVertexCount;}
 	
 	/** \brief Index of the vertex at the given position. */
-	int GetVertexAt( int position ) const;
+	int GetVertexAt(int position) const;
 	
 	/** \brief Given vertex exists. */
-	bool HasVertex( int vertex ) const;
+	bool HasVertex(int vertex) const;
 	
 	/** \brief Index of the given vertex or -1 if not found. */
-	int IndexOfVertex( int vertex ) const;
+	int IndexOfVertex(int vertex) const;
 	
 	/** \brief Adds a vertex index. */
-	void AddVertex( int vertex );
+	void AddVertex(int vertex);
 	
 	/** \brief Removes all vertices. */
 	void RemoveAllVertices();
 	
 	/** \brief Sorts the vertices in clockwise order around the face normal. */
-	void SortVertices( const decConvexVolume &volume );
+	void SortVertices(const decConvexVolume &volume);
 	
 	/** \brief Triangle is too small. */
-	bool IsTooSmall( const decConvexVolume &volume ) const;
+	bool IsTooSmall(const decConvexVolume &volume) const;
 	/*@}*/
 };
 

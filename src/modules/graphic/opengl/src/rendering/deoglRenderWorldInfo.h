@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create info. */
-	deoglRenderWorldInfo( deoglRenderThread &renderThread );
+	deoglRenderWorldInfo(deoglRenderThread &renderThread);
 	
 	/** Clean up info. */
 	virtual ~deoglRenderWorldInfo();

@@ -63,31 +63,31 @@ enum eNodeTypes{
 // Constructor, destructor
 ////////////////////////////
 
-deoglSCConstructedDefinition::deoglSCConstructedDefinition( const deEngine &engine,
-decMemoryFile *definition, decMemoryFile *verify, const deSkinPropertyConstructed &property ) :
-pEngine( engine ),
-pDefinition( NULL ),
-pVerify( NULL ),
-pCacheValid( true )
+deoglSCConstructedDefinition::deoglSCConstructedDefinition(const deEngine &engine,
+decMemoryFile *definition, decMemoryFile *verify, const deSkinPropertyConstructed &property) :
+pEngine(engine),
+pDefinition(NULL),
+pVerify(NULL),
+pCacheValid(true)
 {
-	if( ! definition || ! verify ){
-		DETHROW( deeInvalidParam );
+	if(! definition || ! verify){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pDefinition = new decMemoryFileWriter( definition, false );
-	pVerify = new decMemoryFileWriter( verify, false );
+	pDefinition = new decMemoryFileWriter(definition, false);
+	pVerify = new decMemoryFileWriter(verify, false);
 	
 	// property contains properties not covered in the content but required for constructing.
 	// these properties are stored first
 	uint8_t flags = 0;
-	if( property.GetTileX() ){
+	if(property.GetTileX()){
 		flags |= 0x1;
 	}
-	if( property.GetTileY() ){
+	if(property.GetTileY()){
 		flags |= 0x2;
 	}
 	
-	switch( property.GetBitCount() ){
+	switch(property.GetBitCount()){
 	case 8:
 		flags |= 0x4;
 		break;
@@ -101,15 +101,15 @@ pCacheValid( true )
 		break;
 	}
 	
-	pDefinition->WriteColor( property.GetColor() );
-	pDefinition->WriteByte( flags );
+	pDefinition->WriteColor(property.GetColor());
+	pDefinition->WriteByte(flags);
 }
 
 deoglSCConstructedDefinition::~deoglSCConstructedDefinition(){
-	if( pVerify ){
+	if(pVerify){
 		pVerify->FreeReference();
 	}
-	if( pDefinition ){
+	if(pDefinition){
 		pDefinition->FreeReference();
 	}
 }
@@ -119,114 +119,114 @@ deoglSCConstructedDefinition::~deoglSCConstructedDefinition(){
 // Visiting
 /////////////
 
-void deoglSCConstructedDefinition::VisitGroup( deSkinPropertyNodeGroup &node ){
+void deoglSCConstructedDefinition::VisitGroup(deSkinPropertyNodeGroup &node){
 	const int count = node.GetNodeCount();
 	int i;
 	
-	pDefinition->WriteByte( ( uint8_t )entGroup );
-	pWriteBasicProperties( node );
-	if( ! pCacheValid ){
+	pDefinition->WriteByte((uint8_t)entGroup);
+	pWriteBasicProperties(node);
+	if(! pCacheValid){
 		return;
 	}
 	
-	for( i=0; i<count; i++ ){
-		node.GetNodeAt( i )->Visit( *this );
-		if( ! pCacheValid ){
+	for(i=0; i<count; i++){
+		node.GetNodeAt(i)->Visit(*this);
+		if(! pCacheValid){
 			return;
 		}
 	}
-	pDefinition->WriteByte( ( uint8_t )entNothing );
+	pDefinition->WriteByte((uint8_t)entNothing);
 }
 
-void deoglSCConstructedDefinition::VisitImage( deSkinPropertyNodeImage &node ){
-	pDefinition->WriteByte( ( uint8_t )entImage );
-	pWriteBasicProperties( node );
-	if( ! pCacheValid ){
+void deoglSCConstructedDefinition::VisitImage(deSkinPropertyNodeImage &node){
+	pDefinition->WriteByte((uint8_t)entImage);
+	pWriteBasicProperties(node);
+	if(! pCacheValid){
 		return;
 	}
 	
 	const deImage * const image = node.GetImage();
-	if( image ){
+	if(image){
 		const decString &filename = image->GetFilename();
-		if( filename.IsEmpty() ){
+		if(filename.IsEmpty()){
 			pCacheValid = false; // this one is problematic. dont do it
 			return;
 		}
 		
 		const deVirtualFileSystem * const vfs = image->GetVirtualFileSystem();
-		if( vfs != pEngine.GetVirtualFileSystem() ){
+		if(vfs != pEngine.GetVirtualFileSystem()){
 			pCacheValid = false;
 			return;
 		}
 		
-		const decPath path( decPath::CreatePathUnix( filename ) );
-		if( ! vfs->CanReadFile( path ) ){
+		const decPath path(decPath::CreatePathUnix(filename));
+		if(! vfs->CanReadFile(path)){
 			pCacheValid = false;
 			return;
 		}
 		
-		pDefinition->WriteString16( filename );
+		pDefinition->WriteString16(filename);
 		
-		pVerify->WriteUInt( ( uint32_t )vfs->GetFileModificationTime( path ) );
+		pVerify->WriteUInt((uint32_t)vfs->GetFileModificationTime(path));
 		
 	}else{
-		pDefinition->WriteString16( "" );
+		pDefinition->WriteString16("");
 	}
 	
-	pDefinition->WritePoint( node.GetRepeat() );
+	pDefinition->WritePoint(node.GetRepeat());
 }
 
-void deoglSCConstructedDefinition::VisitShape( deSkinPropertyNodeShape &node ){
-	pDefinition->WriteByte( ( uint8_t )entShape );
-	pWriteBasicProperties( node );
-	if( ! pCacheValid ){
+void deoglSCConstructedDefinition::VisitShape(deSkinPropertyNodeShape &node){
+	pDefinition->WriteByte((uint8_t)entShape);
+	pWriteBasicProperties(node);
+	if(! pCacheValid){
 		return;
 	}
 	
-	pDefinition->WriteByte( ( uint8_t )node.GetShapeType() );
-	pWriteColor( node.GetFillColor() );
-	pWriteColor( node.GetLineColor() );
-	pWriteFloat( node.GetThickness(), 10.0f ); // 0.1 precision
+	pDefinition->WriteByte((uint8_t)node.GetShapeType());
+	pWriteColor(node.GetFillColor());
+	pWriteColor(node.GetLineColor());
+	pWriteFloat(node.GetThickness(), 10.0f); // 0.1 precision
 }
 
-void deoglSCConstructedDefinition::VisitText( deSkinPropertyNodeText &node ){
-	pDefinition->WriteByte( ( uint8_t )entText );
-	pWriteBasicProperties( node );
-	if( ! pCacheValid ){
+void deoglSCConstructedDefinition::VisitText(deSkinPropertyNodeText &node){
+	pDefinition->WriteByte((uint8_t)entText);
+	pWriteBasicProperties(node);
+	if(! pCacheValid){
 		return;
 	}
 	
 	const deFont * const font = node.GetFont();
-	if( font ){
+	if(font){
 		const decString &filename = font->GetFilename();
-		if( filename.IsEmpty() ){
+		if(filename.IsEmpty()){
 			pCacheValid = false; // this one is problematic. dont do it
 			return;
 		}
 		
 		const deVirtualFileSystem * const vfs = font->GetVirtualFileSystem();
-		if( vfs != pEngine.GetVirtualFileSystem() ){
+		if(vfs != pEngine.GetVirtualFileSystem()){
 			pCacheValid = false;
 			return;
 		}
 		
-		const decPath path( decPath::CreatePathUnix( filename ) );
-		if( ! vfs->CanReadFile( path ) ){
+		const decPath path(decPath::CreatePathUnix(filename));
+		if(! vfs->CanReadFile(path)){
 			pCacheValid = false;
 			return;
 		}
 		
-		pDefinition->WriteString16( filename );
+		pDefinition->WriteString16(filename);
 		
-		pVerify->WriteUInt( ( uint32_t )vfs->GetFileModificationTime( path ) );
+		pVerify->WriteUInt((uint32_t)vfs->GetFileModificationTime(path));
 		
 	}else{
-		pDefinition->WriteString16( "" );
+		pDefinition->WriteString16("");
 	}
 	
-	pWriteFloat( node.GetFontSize(), 10.0f ); // 0.1 precision
-	pDefinition->WriteString16( node.GetText() );
-	pWriteColor( node.GetColor() );
+	pWriteFloat(node.GetFontSize(), 10.0f); // 0.1 precision
+	pDefinition->WriteString16(node.GetText());
+	pWriteColor(node.GetColor());
 }
 
 
@@ -234,34 +234,34 @@ void deoglSCConstructedDefinition::VisitText( deSkinPropertyNodeText &node ){
 // Private Functions
 //////////////////////
 
-void deoglSCConstructedDefinition::pWriteBasicProperties( const deSkinPropertyNode &node ){
-	pDefinition->WritePoint3( node.GetPosition() );
-	pDefinition->WritePoint3( node.GetSize() );
-	pWriteFloat( node.GetRotation(), 100.0f ); // 0.01 degree precision
-	pWriteFloat( node.GetShear(), 100.0f ); // 0.01 degree precision
+void deoglSCConstructedDefinition::pWriteBasicProperties(const deSkinPropertyNode &node){
+	pDefinition->WritePoint3(node.GetPosition());
+	pDefinition->WritePoint3(node.GetSize());
+	pWriteFloat(node.GetRotation(), 100.0f); // 0.01 degree precision
+	pWriteFloat(node.GetShear(), 100.0f); // 0.01 degree precision
 	
-	pWriteFloat( node.GetBrightness(), 100.0f ); // 0.01 precision
-	pWriteFloat( node.GetContrast(), 100.0f ); // 0.01 precision
-	pWriteFloat( node.GetGamma(), 100.0f ); // 0.01 precision
-	pWriteColor( node.GetColorize() );
+	pWriteFloat(node.GetBrightness(), 100.0f); // 0.01 precision
+	pWriteFloat(node.GetContrast(), 100.0f); // 0.01 precision
+	pWriteFloat(node.GetGamma(), 100.0f); // 0.01 precision
+	pWriteColor(node.GetColorize());
 	
-	pWriteFloat( node.GetTransparency(), 255.0f );
+	pWriteFloat(node.GetTransparency(), 255.0f);
 	
-	if( node.GetMask() ){
-		node.GetMask()->Visit( *this );
+	if(node.GetMask()){
+		node.GetMask()->Visit(*this);
 		
 	}else{
-		pDefinition->WriteByte( ( uint8_t )entNothing );
+		pDefinition->WriteByte((uint8_t)entNothing);
 	}
 }
 
-void deoglSCConstructedDefinition::pWriteFloat( float value, float rounding ){
-	pDefinition->WriteShort( ( int16_t )( value * rounding ) );
+void deoglSCConstructedDefinition::pWriteFloat(float value, float rounding){
+	pDefinition->WriteShort((int16_t)(value * rounding));
 }
 
-void deoglSCConstructedDefinition::pWriteColor( const decColor &color ){
-	pDefinition->WriteShort( ( int16_t )( color.r * 255.0f ) );
-	pDefinition->WriteShort( ( int16_t )( color.g * 255.0f ) );
-	pDefinition->WriteShort( ( int16_t )( color.b * 255.0f ) );
-	pDefinition->WriteShort( ( int16_t )( color.a * 255.0f ) );
+void deoglSCConstructedDefinition::pWriteColor(const decColor &color){
+	pDefinition->WriteShort((int16_t)(color.r * 255.0f));
+	pDefinition->WriteShort((int16_t)(color.g * 255.0f));
+	pDefinition->WriteShort((int16_t)(color.b * 255.0f));
+	pDefinition->WriteShort((int16_t)(color.a * 255.0f));
 }

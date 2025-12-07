@@ -49,33 +49,33 @@
 ////////////////////////////
 
 demdlTexCoordSorter::demdlTexCoordSorter() :
-pFaceCount( 0 ),
-pTexCoordSetCount( 0 ),
-pFaceCorners( NULL ),
-pFaceTexCoords( NULL ),
+pFaceCount(0),
+pTexCoordSetCount(0),
+pFaceCorners(NULL),
+pFaceTexCoords(NULL),
 
-pTCBuckets( NULL ),
-pTCBucketEntries( NULL ),
-pTexCoords( NULL ),
-pTexCoordCount( 0 )
+pTCBuckets(NULL),
+pTCBucketEntries(NULL),
+pTexCoords(NULL),
+pTexCoordCount(0)
 {
-	pTCBuckets = new sBucketEntry*[ TCBUCKET_COUNT ];
+	pTCBuckets = new sBucketEntry*[TCBUCKET_COUNT];
 }
 
 demdlTexCoordSorter::~demdlTexCoordSorter(){
-	if( pTCBuckets ){
+	if(pTCBuckets){
 		delete [] pTCBuckets;
 	}
-	if( pTCBucketEntries ){
+	if(pTCBucketEntries){
 		delete [] pTCBucketEntries;
 	}
-	if( pTexCoords ){
+	if(pTexCoords){
 		delete [] pTexCoords;
 	}
-	if( pFaceTexCoords ){
+	if(pFaceTexCoords){
 		delete [] pFaceTexCoords;
 	}
-	if( pFaceCorners ){
+	if(pFaceCorners){
 		delete [] pFaceCorners;
 	}
 }
@@ -85,39 +85,39 @@ demdlTexCoordSorter::~demdlTexCoordSorter(){
 // Management
 ///////////////
 
-void demdlTexCoordSorter::Resize( int faceCount, int texCoordSetCount ){
-	if( faceCount < 0 || texCoordSetCount < 0 ){
-		DETHROW( deeInvalidParam );
+void demdlTexCoordSorter::Resize(int faceCount, int texCoordSetCount){
+	if(faceCount < 0 || texCoordSetCount < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTexCoordCount = 0;
 	pTexCoordSetCount = 0;
 	pFaceCount = 0;
 	
-	if( pTCBucketEntries ){
+	if(pTCBucketEntries){
 		delete [] pTCBucketEntries;
 		pTCBucketEntries = NULL;
 	}
-	if( pTexCoords ){
+	if(pTexCoords){
 		delete [] pTexCoords;
 		pTexCoords = NULL;
 	}
-	if( pFaceTexCoords ){
+	if(pFaceTexCoords){
 		delete [] pFaceTexCoords;
 		pFaceTexCoords = NULL;
 	}
-	if( pFaceCorners ){
+	if(pFaceCorners){
 		delete [] pFaceCorners;
 		pFaceCorners = NULL;
 	}
 	
-	if( faceCount > 0 ){
-		pFaceCorners = new int[ faceCount * 3 ];
+	if(faceCount > 0){
+		pFaceCorners = new int[faceCount * 3];
 		
-		if( texCoordSetCount > 0 ){
-			pFaceTexCoords = new decVector2[ faceCount * 3 * texCoordSetCount ];
-			pTCBucketEntries = new sBucketEntry[ faceCount * 3 ];
-			pTexCoords = new const decVector2*[ faceCount * 3 ];
+		if(texCoordSetCount > 0){
+			pFaceTexCoords = new decVector2[faceCount * 3 * texCoordSetCount];
+			pTCBucketEntries = new sBucketEntry[faceCount * 3];
+			pTexCoords = new const decVector2*[faceCount * 3];
 		}
 	}
 	
@@ -131,22 +131,22 @@ void demdlTexCoordSorter::Sort(){
 	int *corners = pFaceCorners;
 	int f, c;
 	
-	memset( pTCBuckets, 0, sizeof( sBucketEntry* ) * TCBUCKET_COUNT );
+	memset(pTCBuckets, 0, sizeof(sBucketEntry*) * TCBUCKET_COUNT);
 	
-	for( f=0; f<pFaceCount; f++ ){
+	for(f=0; f<pFaceCount; f++){
 		const decVector2 * const baseTexCoords = pFaceTexCoords + strideTexCoords * f;
 		
-		for( c=0; c<3; c++ ){
+		for(c=0; c<3; c++){
 			// calculate hash code over all texture coordinates belonging to corner
 			const decVector2 * const texCoords = baseTexCoords + pTexCoordSetCount * c;
-			const int hash = HashTexCoords( texCoords );
+			const int hash = HashTexCoords(texCoords);
 			
 			// find matching entry in bucket with hash code
 			sBucketEntry *tail = NULL;
-			sBucketEntry *entry = pTCBuckets[ hash ];
+			sBucketEntry *entry = pTCBuckets[hash];
 			
-			while( entry ){
-				if( TexCoordsAreEqual( entry->texCoords, texCoords ) ){
+			while(entry){
+				if(TexCoordsAreEqual(entry->texCoords, texCoords)){
 					// entry found. store index and stop the search
 					*corners++ = entry->index;
 					break;
@@ -156,19 +156,19 @@ void demdlTexCoordSorter::Sort(){
 			}
 			
 			// entry not found. add new entry and use next index
-			if( ! entry ){
-				pTexCoords[ pTexCoordCount ] = texCoords; // for GetTexCoordAt()
+			if(! entry){
+				pTexCoords[pTexCoordCount] = texCoords; // for GetTexCoordAt()
 				*corners++ = pTexCoordCount;
 				
 				nextEntry->texCoords = texCoords;
 				nextEntry->index = pTexCoordCount;
 				nextEntry->next = NULL;
 				
-				if( tail ){
+				if(tail){
 					tail->next = nextEntry;
 					
 				}else{
-					pTCBuckets[ hash ] = nextEntry;
+					pTCBuckets[hash] = nextEntry;
 				}
 				
 				pTexCoordCount++;
@@ -183,33 +183,33 @@ void demdlTexCoordSorter::Sort(){
 	
 	pTexCoordCount = 0;
 	
-	for( f=0; f<pFaceCount; f++ ){
+	for(f=0; f<pFaceCount; f++){
 		const int baseIndexFace = f * 3 * pTexCoordSetCount;
 		
-		for( c=0; c<3; c++ ){
-			const decVector2 * const ptrTexCoord1 = pFaceTexCoords + ( baseIndexFace + pTexCoordSetCount * c );
+		for(c=0; c<3; c++){
+			const decVector2 * const ptrTexCoord1 = pFaceTexCoords + (baseIndexFace + pTexCoordSetCount * c);
 			
-			for( t=0; t<pTexCoordCount; t++ ){
+			for(t=0; t<pTexCoordCount; t++){
 				const decVector2 * const ptrTexCoord2 = pTexCoords + pTexCoordSetCount * t;
 				
-				for( s=0; s<pTexCoordSetCount; s++ ){
-					if( ! ptrTexCoord2[ s ].IsEqualTo( ptrTexCoord1[ s ] ) ){
+				for(s=0; s<pTexCoordSetCount; s++){
+					if(! ptrTexCoord2[s].IsEqualTo(ptrTexCoord1[s])){
 						break; // no match possible, skip the rest
 					}
 				}
 				
-				if( s == pTexCoordSetCount ){
+				if(s == pTexCoordSetCount){
 					break; // all entries match
 				}
 			}
 			
 			*faceCorners++ = t;
 			
-			if( t == pTexCoordCount ){
+			if(t == pTexCoordCount){
 				decVector2 * const ptrTexCoord2 = pTexCoords + pTexCoordSetCount * t;
 				
-				for( s=0; s<pTexCoordSetCount; s++ ){
-					ptrTexCoord2[ s ] = ptrTexCoord1[ s ];
+				for(s=0; s<pTexCoordSetCount; s++){
+					ptrTexCoord2[s] = ptrTexCoord1[s];
 				}
 				
 				pTexCoordCount++;
@@ -221,44 +221,44 @@ void demdlTexCoordSorter::Sort(){
 
 
 
-int demdlTexCoordSorter::GetFaceCornerAt( int face, int corner ) const{
-	if( face < 0 || face >= pFaceCount || corner < 0 || corner > 2 ){
-		DETHROW( deeInvalidParam );
+int demdlTexCoordSorter::GetFaceCornerAt(int face, int corner) const{
+	if(face < 0 || face >= pFaceCount || corner < 0 || corner > 2){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pFaceCorners[ face * 3 + corner ];
+	return pFaceCorners[face * 3 + corner];
 }
 
-void demdlTexCoordSorter::SetFaceCornerAt( int face, int corner, int texCoord ){
-	if( face < 0 || face >= pFaceCount || corner < 0 || corner > 2 || texCoord < 0 ){
-		DETHROW( deeInvalidParam );
+void demdlTexCoordSorter::SetFaceCornerAt(int face, int corner, int texCoord){
+	if(face < 0 || face >= pFaceCount || corner < 0 || corner > 2 || texCoord < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pFaceCorners[ face * 3 + corner ] = texCoord;
+	pFaceCorners[face * 3 + corner] = texCoord;
 }
 
-const decVector2 &demdlTexCoordSorter::GetFaceTexCoordAt( int face, int corner, int texCoordSet ) const{
-	if( face < 0 || face >= pFaceCount || corner < 0 || corner > 2 || texCoordSet < 0 || texCoordSet >= pTexCoordSetCount ){
-		DETHROW( deeInvalidParam );
+const decVector2 &demdlTexCoordSorter::GetFaceTexCoordAt(int face, int corner, int texCoordSet) const{
+	if(face < 0 || face >= pFaceCount || corner < 0 || corner > 2 || texCoordSet < 0 || texCoordSet >= pTexCoordSetCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pFaceTexCoords[ face * 3 * pTexCoordSetCount + pTexCoordSetCount * corner + texCoordSet ];
+	return pFaceTexCoords[face * 3 * pTexCoordSetCount + pTexCoordSetCount * corner + texCoordSet];
 }
 
-void demdlTexCoordSorter::SetFaceTexCoordAt( int face, int corner, int texCoordSet, const decVector2 &texCoord ){
-	if( face < 0 || face >= pFaceCount || corner < 0 || corner > 2 || texCoordSet < 0 || texCoordSet >= pTexCoordSetCount ){
-		DETHROW( deeInvalidParam );
+void demdlTexCoordSorter::SetFaceTexCoordAt(int face, int corner, int texCoordSet, const decVector2 &texCoord){
+	if(face < 0 || face >= pFaceCount || corner < 0 || corner > 2 || texCoordSet < 0 || texCoordSet >= pTexCoordSetCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pFaceTexCoords[ face * 3 * pTexCoordSetCount + pTexCoordSetCount * corner + texCoordSet ] = texCoord;
+	pFaceTexCoords[face * 3 * pTexCoordSetCount + pTexCoordSetCount * corner + texCoordSet] = texCoord;
 }
 
-const decVector2 &demdlTexCoordSorter::GetTexCoordAt( int index, int texCoordSet ) const{
-	if( index < 0 || index >= pTexCoordCount || texCoordSet < 0 || texCoordSet >= pTexCoordSetCount ){
-		DETHROW( deeInvalidParam );
+const decVector2 &demdlTexCoordSorter::GetTexCoordAt(int index, int texCoordSet) const{
+	if(index < 0 || index >= pTexCoordCount || texCoordSet < 0 || texCoordSet >= pTexCoordSetCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTexCoords[ index ][ texCoordSet ];
+	return pTexCoords[index][texCoordSet];
 }
 
 
@@ -266,22 +266,22 @@ const decVector2 &demdlTexCoordSorter::GetTexCoordAt( int index, int texCoordSet
 // Private Functions
 //////////////////////
 
-int demdlTexCoordSorter::HashTexCoords( const decVector2 *texCoords ) const{
+int demdlTexCoordSorter::HashTexCoords(const decVector2 *texCoords) const{
 	float accum = 0.0f;
 	int i;
 	
-	for( i=0; i<pTexCoordSetCount; i++ ){
-		accum += texCoords[ i ].x;
-		accum += texCoords[ i ].y;
+	for(i=0; i<pTexCoordSetCount; i++){
+		accum += texCoords[i].x;
+		accum += texCoords[i].y;
 	}
 	
-	return ( ( int )( ( accum - ( int )accum ) * TCBUCKET_COUNT ) + TCBUCKET_COUNT ) % TCBUCKET_COUNT;
+	return ((int)((accum - (int)accum) * TCBUCKET_COUNT) + TCBUCKET_COUNT) % TCBUCKET_COUNT;
 }
 
-bool demdlTexCoordSorter::TexCoordsAreEqual( const decVector2 *texCoords1, const decVector2 *texCoords2 ) const{
+bool demdlTexCoordSorter::TexCoordsAreEqual(const decVector2 *texCoords1, const decVector2 *texCoords2) const{
 	int i;
-	for( i=0; i<pTexCoordSetCount; i++ ){
-		if( ! texCoords1[ i ].IsEqualTo( texCoords2[ i ] ) ){
+	for(i=0; i<pTexCoordSetCount; i++){
+		if(! texCoords1[i].IsEqualTo(texCoords2[i])){
 			// one texture coordinate does not match. we can stop checking here
 			return false;
 		}

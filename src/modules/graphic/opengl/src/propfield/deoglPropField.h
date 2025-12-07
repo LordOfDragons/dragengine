@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglPropField( deGraphicOpenGl &ogl, dePropField &propField );
+	deoglPropField(deGraphicOpenGl &ogl, dePropField &propField);
 	
 	/** Clean up peer. */
 	virtual ~deoglPropField();
@@ -74,15 +74,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOpenGL() const{return pOgl;}
 	
 	/** Prop field. */
-	inline const dePropField &GetPropField() const{ return pPropField; }
+	inline const dePropField &GetPropField() const{return pPropField;}
 	
 	
 	
 	/** Render prop field. */
-	inline deoglRPropField *GetRPropField() const{ return pRPropField; }
+	inline deoglRPropField *GetRPropField() const{return pRPropField;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -90,13 +90,13 @@ public:
 	
 	
 	/** LOD level. */
-	inline int GetLODLevel() const{ return pLODLevel; }
+	inline int GetLODLevel() const{return pLODLevel;}
 	
 	/** Set lod level not doing the updates yet. */
-	void SetLODLevel( int level );
+	void SetLODLevel(int level);
 	
 	/** Test lod level against the given camera point. */
-	void TestLODLevel( const decDVector &camera );
+	void TestLODLevel(const decDVector &camera);
 	
 	/** Update instance counts. */
 	void UpdateInstanceCounts();
@@ -112,7 +112,7 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type at index. */
-	deoglPropFieldType &GetTypeAt( int index ) const;
+	deoglPropFieldType &GetTypeAt(int index) const;
 	/*@}*/
 	
 	
@@ -130,27 +130,27 @@ public:
 	
 	
 	/** Type has been added. */
-	virtual void TypeAdded( int index, dePropFieldType *type );
+	virtual void TypeAdded(int index, dePropFieldType *type);
 	
 	/** Type has been removed. */
-	virtual void TypeRemoved( int index, dePropFieldType *type );
+	virtual void TypeRemoved(int index, dePropFieldType *type);
 	
 	/** All types have been removed. */
 	virtual void AllTypesRemoved();
 	
 	/** Type changed. */
-	virtual void TypeChanged( int index, dePropFieldType *type );
+	virtual void TypeChanged(int index, dePropFieldType *type);
 	
 	
 	
 	/** Instances changed. */
-	virtual void InstancesChanged( int index, dePropFieldType *type );
+	virtual void InstancesChanged(int index, dePropFieldType *type);
 	
 	/** Instances to Bend States assignments changed. */
-	virtual void AssignmentsChanged( int index, dePropFieldType *type );
+	virtual void AssignmentsChanged(int index, dePropFieldType *type);
 	
 	/** Bend States changed. */
-	virtual void BendStatesChanged( int index, dePropFieldType *type );
+	virtual void BendStatesChanged(int index, dePropFieldType *type);
 	/*@}*/
 	
 private:

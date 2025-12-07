@@ -47,7 +47,7 @@ public:
 	
 	
 	/** Extension. */
-	enum eExtension{	
+	enum eExtension{
 		extKHROpenglEnable, //<! XR_KHR_opengl_enable
 		extKHRVisibilityMask, //<! XR_KHR_visibility_mask
 		extEXTEyeGazeInteraction, //<! XR_EXT_eye_gaze_interaction
@@ -102,7 +102,7 @@ public:
 	struct sSuggestBinding{
 		deoxrAction *action;
 		deoxrPath binding;
-		void Set( deoxrAction *action, const deoxrPath &binding );
+		void Set(deoxrAction *action, const deoxrPath &binding);
 	};
 	
 	
@@ -125,8 +125,8 @@ private:
 	
 	XrInstance pInstance;
 	
-	sExtension pSupportsExtension[ ExtensionCount ];
-	sLayer pSupportsLayer[ LayerCount ];
+	sExtension pSupportsExtension[ExtensionCount];
+	sLayer pSupportsLayer[LayerCount];
 	
 	deoxrPath pPathHandRight, pPathHandLeft, pPathHead, pPathGamepad;
 	
@@ -136,7 +136,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create instance. */
-	deoxrInstance( deVROpenXR &oxr, bool enableDebug );
+	deoxrInstance(deVROpenXR &oxr, bool enableDebug);
 	
 protected:
 	/** Clean up instance. */
@@ -149,56 +149,56 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Shared oxr. */
-	inline deVROpenXR &GetOxr() const{ return pOxr; }
+	inline deVROpenXR &GetOxr() const{return pOxr;}
 	
 	/** Debug support. */
-	inline deoxrDebug &GetDebug(){ return pDebug; }
+	inline deoxrDebug &GetDebug(){return pDebug;}
 	
 	
 	
 	/** Extension is supported. */
-	bool SupportsExtension( eExtension extension ) const;
+	bool SupportsExtension(eExtension extension) const;
 	
 	/** Extension version or 0 if not supported. */
-	uint32_t ExtensionVersion( eExtension extension ) const;
+	uint32_t ExtensionVersion(eExtension extension) const;
 	
 	/** Disable extension support. */
 	void DisableExtension(eExtension extension);
 	
 	
 	/** Layer is supported. */
-	bool SupportsLayer( eLayer layer ) const;
+	bool SupportsLayer(eLayer layer) const;
 	
 	/** Layer version or 0 if not supported. */
-	uint32_t LayerVersion( eLayer layer ) const;
+	uint32_t LayerVersion(eLayer layer) const;
 	
 	
 	
 	/** Instance. */
-	inline XrInstance GetInstance() const{ return pInstance; }
+	inline XrInstance GetInstance() const{return pInstance;}
 	
 	/** Right hand path. */
-	inline const deoxrPath &GetPathHandRight() const{ return pPathHandRight; }
+	inline const deoxrPath &GetPathHandRight() const{return pPathHandRight;}
 	
 	/** Left hand path. */
-	inline const deoxrPath &GetPathHandLeft() const{ return pPathHandLeft; }
+	inline const deoxrPath &GetPathHandLeft() const{return pPathHandLeft;}
 	
 	/** Head path. */
-	inline const deoxrPath &GetPathHead() const{ return pPathHead; }
+	inline const deoxrPath &GetPathHead() const{return pPathHead;}
 	
 	/** Gamepad path. */
-	inline const deoxrPath &GetPathGamepad() const{ return pPathGamepad; }
+	inline const deoxrPath &GetPathGamepad() const{return pPathGamepad;}
 	
 	/** Suggest input bindings. */
-	void SuggestBindings( const deoxrPath &profile, const sSuggestBinding *bindings, int count );
+	void SuggestBindings(const deoxrPath &profile, const sSuggestBinding *bindings, int count);
 	/*@}*/
 	
 	
 	
 	/** \name Oxr Functions */
 	/*@{*/
-	#define INSTANCE_LEVEL_OPENXR_FUNCTION( name ) PFN_##name name;
-	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) PFN_##name name;
+	#define INSTANCE_LEVEL_OPENXR_FUNCTION(name) PFN_##name name;
+	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION(name, extension) PFN_##name name;
 	
 	#include "deoxrFunctionNames.h"
 	/*@}*/
@@ -209,7 +209,7 @@ private:
 	void pCleanUp();
 	void pDetectExtensions();
 	void pDetectLayers();
-	void pCreateInstance( bool enableValidationLayers );
+	void pCreateInstance(bool enableValidationLayers);
 	void pLoadFunctions();
 };
 

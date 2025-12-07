@@ -53,7 +53,7 @@
 ////////////////////////////
 
 deoglVSRetainImageData::deoglVSRetainImageData() :
-pForceLock( false ){
+pForceLock(false){
 }
 
 
@@ -61,27 +61,27 @@ pForceLock( false ){
 // Management
 ///////////////
 
-void deoglVSRetainImageData::RetainPropertyImages( deSkinProperty &property, bool forceLock ){
+void deoglVSRetainImageData::RetainPropertyImages(deSkinProperty &property, bool forceLock){
 	pForceLock = forceLock;
-	property.Visit( *this );
+	property.Visit(*this);
 }
 
 void deoglVSRetainImageData::ReleaseImages(){
 	const int count = pImages.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglImage* )pImages.GetAt( i ) )->ReleasePixelBuffer();
+	for(i=0; i<count; i++){
+		((deoglImage*)pImages.GetAt(i))->ReleasePixelBuffer();
 	}
 	pImages.RemoveAll();
 }
 
-void deoglVSRetainImageData::ProcessImage( deImage &image, bool forceLock ){
-	deoglImage &oglImage = *( ( deoglImage* )image.GetPeerGraphic() );
+void deoglVSRetainImageData::ProcessImage(deImage &image, bool forceLock){
+	deoglImage &oglImage = *((deoglImage*)image.GetPeerGraphic());
 	
 	// NOTE skin use is changed during delayed operations on the render thread by the first
 	//      skin assigning the processed texture
 	
-	if(oglImage.GetRImage()->GetSkinUseTexture() && ! forceLock ){
+	if(oglImage.GetRImage()->GetSkinUseTexture() && ! forceLock){
 		// a skin assigned a texture to this image. it is not required anymore to build it.
 		// disregarded if lock is forced. this is the case for constructed textures which
 		// can not take advantage of reusing a shared image
@@ -93,7 +93,7 @@ void deoglVSRetainImageData::ProcessImage( deImage &image, bool forceLock ){
 	// the skins finish building we can not determine what skin to wait for to build the
 	// texture only once. building too is suboptimal but the only safe solution
 	oglImage.CreatePixelBuffer();
-	pImages.Add( &oglImage );
+	pImages.Add(&oglImage);
 }
 
 
@@ -101,26 +101,26 @@ void deoglVSRetainImageData::ProcessImage( deImage &image, bool forceLock ){
 // Visiting Property
 //////////////////////
 
-void deoglVSRetainImageData::VisitProperty( deSkinProperty& ){
+void deoglVSRetainImageData::VisitProperty(deSkinProperty&){
 }
 
-void deoglVSRetainImageData::VisitValue( deSkinPropertyValue& ){
+void deoglVSRetainImageData::VisitValue(deSkinPropertyValue&){
 }
 
-void deoglVSRetainImageData::VisitColor( deSkinPropertyColor& ){
+void deoglVSRetainImageData::VisitColor(deSkinPropertyColor&){
 }
 
-void deoglVSRetainImageData::VisitImage( deSkinPropertyImage &property ){
-	if( property.GetImage() ){
-		ProcessImage( *property.GetImage(), pForceLock );
+void deoglVSRetainImageData::VisitImage(deSkinPropertyImage &property){
+	if(property.GetImage()){
+		ProcessImage(*property.GetImage(), pForceLock);
 	}
 }
 
-void deoglVSRetainImageData::VisitVideo( deSkinPropertyVideo& ){
+void deoglVSRetainImageData::VisitVideo(deSkinPropertyVideo&){
 }
 
-void deoglVSRetainImageData::VisitConstructed( deSkinPropertyConstructed &property ){
-	VisitGroup( property.GetContent() );
+void deoglVSRetainImageData::VisitConstructed(deSkinPropertyConstructed &property){
+	VisitGroup(property.GetContent());
 }
 
 
@@ -128,36 +128,36 @@ void deoglVSRetainImageData::VisitConstructed( deSkinPropertyConstructed &proper
 // Visiting Node
 //////////////////
 
-void deoglVSRetainImageData::VisitNode( deSkinPropertyNode &node ){
-	if( node.GetMask() ){
-		node.GetMask()->Visit( *this );
+void deoglVSRetainImageData::VisitNode(deSkinPropertyNode &node){
+	if(node.GetMask()){
+		node.GetMask()->Visit(*this);
 	}
 }
 
-void deoglVSRetainImageData::VisitGroup( deSkinPropertyNodeGroup &node ){
-	VisitNode( node );
+void deoglVSRetainImageData::VisitGroup(deSkinPropertyNodeGroup &node){
+	VisitNode(node);
 	
 	const int count = node.GetNodeCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		node.GetNodeAt( i )->Visit( *this );
+	for(i=0; i<count; i++){
+		node.GetNodeAt(i)->Visit(*this);
 	}
 }
 
-void deoglVSRetainImageData::VisitImage( deSkinPropertyNodeImage &node ){
-	VisitNode( node );
+void deoglVSRetainImageData::VisitImage(deSkinPropertyNodeImage &node){
+	VisitNode(node);
 	
-	if( node.GetImage() ){
-		ProcessImage( *node.GetImage(), true );
+	if(node.GetImage()){
+		ProcessImage(*node.GetImage(), true);
 	}
 }
 
-void deoglVSRetainImageData::VisitShape( deSkinPropertyNodeShape &node ){
-	VisitNode( node );
+void deoglVSRetainImageData::VisitShape(deSkinPropertyNodeShape &node){
+	VisitNode(node);
 }
 
-void deoglVSRetainImageData::VisitText( deSkinPropertyNodeText &node ){
-	VisitNode( node );
+void deoglVSRetainImageData::VisitText(deSkinPropertyNodeText &node){
+	VisitNode(node);
 	
 	// we have to retain the image of the font because the font consumes the pixel buffer turning
 	// it into a texture. we need here though direct access to the image data. this is no problem

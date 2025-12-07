@@ -42,7 +42,7 @@ class deEffectFilterKernel;
  * Panel for editing an overlay image effect.
  */
 class meWEFFilterKernel : public FXVerticalFrame{
-	FXDECLARE( meWEFFilterKernel )
+	FXDECLARE(meWEFFilterKernel)
 protected:
 	meWEFFilterKernel();
 	
@@ -77,23 +77,23 @@ private:
 	
 public:
 	// constructor, destructor
-	meWEFFilterKernel( deEffectFilterKernel *effectFilterKernel, meWindowEffects *windowEffects, FXComposite *container );
+	meWEFFilterKernel(deEffectFilterKernel *effectFilterKernel, meWindowEffects *windowEffects, FXComposite *container);
 	virtual ~meWEFFilterKernel();
 	
 	// management
 	void UpdateFilterKernel();
 	
-	void AddTemplate( meWTFilterKernel *aTemplate );
+	void AddTemplate(meWTFilterKernel *aTemplate);
 	
 	// events
-	long onEditRowsCommand( FXObject *sender, FXSelector selector, void *data );
-	long onEditColsCommand( FXObject *sender, FXSelector selector, void *data );
-	long onTableKernelChanged( FXObject *sender, FXSelector selector, void *data );
-	long onEditScaleCommand( FXObject *sender, FXSelector selector, void *data );
-	long onCheckEnableCommand( FXObject *sender, FXSelector selector, void *data );
-	long onCBTemplatesChanged( FXObject *sender, FXSelector selector, void *data );
-	long onBtnApplyTemplateCommand( FXObject *sender, FXSelector selector, void *data );
-	long onBtnSaveTemplateCommand( FXObject *sender, FXSelector selector, void *data );
+	long onEditRowsCommand(FXObject *sender, FXSelector selector, void *data);
+	long onEditColsCommand(FXObject *sender, FXSelector selector, void *data);
+	long onTableKernelChanged(FXObject *sender, FXSelector selector, void *data);
+	long onEditScaleCommand(FXObject *sender, FXSelector selector, void *data);
+	long onCheckEnableCommand(FXObject *sender, FXSelector selector, void *data);
+	long onCBTemplatesChanged(FXObject *sender, FXSelector selector, void *data);
+	long onBtnApplyTemplateCommand(FXObject *sender, FXSelector selector, void *data);
+	long onBtnSaveTemplateCommand(FXObject *sender, FXSelector selector, void *data);
 	
 private:
 	void pAddTemplates();

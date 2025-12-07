@@ -47,7 +47,7 @@ public:
 	lpeLangPackEntryList();
 	
 	/** \brief Create copy of list. */
-	lpeLangPackEntryList( const lpeLangPackEntryList &list );
+	lpeLangPackEntryList(const lpeLangPackEntryList &list);
 	
 	/** \brief Clean up entry list. */
 	~lpeLangPackEntryList();
@@ -61,34 +61,34 @@ public:
 	int GetCount() const;
 	
 	/** \brief Entry at index. */
-	lpeLangPackEntry *GetAt( int index ) const;
+	lpeLangPackEntry *GetAt(int index) const;
 	
 	/** \brief Named entry or NULL if absent. */
-	lpeLangPackEntry *GetNamed( const char *name ) const;
+	lpeLangPackEntry *GetNamed(const char *name) const;
 	
 	/** \brief Index of entry or -1 if absent. */
-	int IndexOf( lpeLangPackEntry *entry ) const;
+	int IndexOf(lpeLangPackEntry *entry) const;
 	
 	/** \brief Index of named entry or -1 if absent. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Entry is present. */
-	bool Has( lpeLangPackEntry *entry ) const;
+	bool Has(lpeLangPackEntry *entry) const;
 	
 	/** \brief Named entry is present. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/** \brief Add entry. */
-	void Add( lpeLangPackEntry *entry );
+	void Add(lpeLangPackEntry *entry);
 	
 	/** \brief Insert entry. */
-	void InsertAt( lpeLangPackEntry *entry, int index );
+	void InsertAt(lpeLangPackEntry *entry, int index);
 	
 	/** \brief Move entry. */
-	void MoveTo( lpeLangPackEntry *entry, int index );
+	void MoveTo(lpeLangPackEntry *entry, int index);
 	
 	/** \brief Remove entry. */
-	void Remove( lpeLangPackEntry *entry );
+	void Remove(lpeLangPackEntry *entry);
 	
 	/** \brief Remove all entries. */
 	void RemoveAll();
@@ -96,7 +96,7 @@ public:
 	
 	
 	/** \brief Set from another list. */
-	lpeLangPackEntryList &operator=( const lpeLangPackEntryList &list );
+	lpeLangPackEntryList &operator=(const lpeLangPackEntryList &list);
 	/*@}*/
 };
 

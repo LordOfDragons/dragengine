@@ -92,7 +92,7 @@ void projConfigurationXml::pWriteConfig(decXmlWriter &writer, const projConfigur
 	
 	pWriteRemoteLauncher(writer, config);
 	
-	writer.WriteClosingTag( "projectEditor", true );
+	writer.WriteClosingTag("projectEditor", true);
 }
 
 void projConfigurationXml::pWriteRemoteLauncher(decXmlWriter &writer,
@@ -115,7 +115,7 @@ void projConfigurationXml::pReadConfig(const decXmlElementTag &root, projConfigu
 			continue;
 		}
 		
-		if(tag->GetName() == "remoteLauncher" ){
+		if(tag->GetName() == "remoteLauncher"){
 			pReadRemoteLauncher(*tag, config);
 			
 		}else{

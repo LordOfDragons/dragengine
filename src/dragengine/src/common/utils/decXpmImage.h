@@ -49,7 +49,7 @@ public:
 	 * \param xpmData Pointer to the xpm data. Usually the pointer to the compiled in xpm data.
 	 * \param flip Determines if the image has to be flippep upside down.
 	 */
-	decXpmImage( const char *xpmData[], bool flip );
+	decXpmImage(const char *xpmData[], bool flip);
 	
 	/** \brief Clean up xpm image object. */
 	~decXpmImage();
@@ -60,20 +60,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Width of the image. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** \brief Height of the image. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** \brief Pointer to the RGB aligned data. */
-	inline const char *GetData() const{ return pData; }
+	inline const char *GetData() const{return pData;}
 	/*@}*/
 	
 	
 	
 private:
-	int pReadInt( const char **pdata );
-	int pReadColor( const char **pdata );
+	int pReadInt(const char **pdata);
+	int pReadColor(const char **pdata);
 };
 
 #endif

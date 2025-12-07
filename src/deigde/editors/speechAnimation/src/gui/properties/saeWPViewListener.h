@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	saeWPViewListener( saeWPView &panel );
+	saeWPViewListener(saeWPView &panel);
 	
 	/** Clean up listener. */
 	virtual ~saeWPViewListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation changed. */
-	virtual void SAnimationChanged( saeSAnimation *sanimation );
+	virtual void SAnimationChanged(saeSAnimation *sanimation);
 	
 	/** Model changed. */
-	virtual void ModelChanged( saeSAnimation *sanimation );
+	virtual void ModelChanged(saeSAnimation *sanimation);
 	
 	/** Sky changed. */
-	virtual void SkyChanged( saeSAnimation *sanimation );
+	virtual void SkyChanged(saeSAnimation *sanimation);
 	
 	/** Camera changed. */
-	virtual void CameraChanged( saeSAnimation *sanimation );
+	virtual void CameraChanged(saeSAnimation *sanimation);
 	/*@}*/
 };
 

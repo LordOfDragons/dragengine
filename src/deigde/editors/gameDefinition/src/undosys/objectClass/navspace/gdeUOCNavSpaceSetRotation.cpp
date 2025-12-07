@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetRotation::gdeUOCNavSpaceSetRotation( gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, const decVector &newValue ) :
-pObjectClass( NULL ),
-pNavSpace( NULL )
+gdeUOCNavSpaceSetRotation::gdeUOCNavSpaceSetRotation(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, const decVector &newValue) :
+pObjectClass(NULL),
+pNavSpace(NULL)
 {
-	if( ! objectClass || ! navspace ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Nav-space set rotation" );
+	SetShortInfo("Nav-space set rotation");
 	
 	pOldValue = navspace->GetRotation();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pNavSpace( NULL )
 }
 
 gdeUOCNavSpaceSetRotation::~gdeUOCNavSpaceSetRotation(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCNavSpaceSetRotation::~gdeUOCNavSpaceSetRotation(){
 ///////////////
 
 void gdeUOCNavSpaceSetRotation::Undo(){
-	pNavSpace->SetRotation( pOldValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetRotation(pOldValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }
 
 void gdeUOCNavSpaceSetRotation::Redo(){
-	pNavSpace->SetRotation( pNewValue );
-	pObjectClass->NotifyNavigationSpaceChanged( pNavSpace );
+	pNavSpace->SetRotation(pNewValue);
+	pObjectClass->NotifyNavigationSpaceChanged(pNavSpace);
 }

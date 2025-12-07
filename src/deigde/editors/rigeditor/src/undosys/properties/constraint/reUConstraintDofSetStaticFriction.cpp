@@ -41,26 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintDofSetStaticFriction::reUConstraintDofSetStaticFriction( reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof, float newValue ){
-	if( ! constraint || ! constraint->GetRig()
-	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+reUConstraintDofSetStaticFriction::reUConstraintDofSetStaticFriction(reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof, float newValue){
+	if(! constraint || ! constraint->GetRig()
+	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
 	pDof = dof;
 	
-	pOldValue = constraint->GetDof( dof ).GetStaticFriction();
+	pOldValue = constraint->GetDof(dof).GetStaticFriction();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Constraint DOF set static friction" );
+	SetShortInfo("Constraint DOF set static friction");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintDofSetStaticFriction::~reUConstraintDofSetStaticFriction(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -71,9 +71,9 @@ reUConstraintDofSetStaticFriction::~reUConstraintDofSetStaticFriction(){
 ///////////////
 
 void reUConstraintDofSetStaticFriction::Undo(){
-	pConstraint->GetDof( pDof ).SetStaticFriction( pOldValue );
+	pConstraint->GetDof(pDof).SetStaticFriction(pOldValue);
 }
 
 void reUConstraintDofSetStaticFriction::Redo(){
-	pConstraint->GetDof( pDof ).SetStaticFriction( pNewValue );
+	pConstraint->GetDof(pDof).SetStaticFriction(pNewValue);
 }

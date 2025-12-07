@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynParameterInt::desynParameterInt( deDESynthesizer &synthesizer ) :
-desynParameter( synthesizer ){
+desynParameterInt::desynParameterInt(deDESynthesizer &synthesizer) :
+desynParameter(synthesizer){
 }
 
 
@@ -49,10 +49,10 @@ desynParameter( synthesizer ){
 
 decString desynParameterInt::GetParameterValue(){
 	decString value;
-	value.Format( "%d", GetParameterInt() );
+	value.Format("%d", GetParameterInt());
 	return value;
 }
 
-void desynParameterInt::SetParameterValue( const char *value ){
-	SetParameterInt( decString( value ).ToInt() );
+void desynParameterInt::SetParameterValue(const char *value){
+	SetParameterInt(decString(value).ToInt());
 }

@@ -40,19 +40,19 @@
 // Constructor, Destructor
 ////////////////////////////
 
-dealFDFileReader::dealFDFileReader( const char *filename, int fileDescriptor, long offset, long length ) :
-pFilename( filename ),
-pFileDescriptor( fileDescriptor ),
-pOffset( offset ),
-pLength( length ),
-pModificationTime( decDateTime::GetSystemTime() )
+dealFDFileReader::dealFDFileReader(const char *filename, int fileDescriptor, long offset, long length) :
+pFilename(filename),
+pFileDescriptor(fileDescriptor),
+pOffset(offset),
+pLength(length),
+pModificationTime(decDateTime::GetSystemTime())
 {
-	if( ! filename || fileDescriptor == 0 ){
-		DETHROW( deeInvalidParam );
+	if(! filename || fileDescriptor == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( lseek( fileDescriptor, offset, SEEK_SET ) == -1 ){
-		DETHROW( deeReadFile );
+	if(lseek(fileDescriptor, offset, SEEK_SET) == -1){
+		DETHROW(deeReadFile);
 	}
 }
 
@@ -69,7 +69,7 @@ const char *dealFDFileReader::GetFilename(){
 }
 
 int dealFDFileReader::GetLength(){
-	return ( int )pLength;
+	return (int)pLength;
 }
 
 TIME_SYSTEM dealFDFileReader::GetModificationTime(){
@@ -77,11 +77,11 @@ TIME_SYSTEM dealFDFileReader::GetModificationTime(){
 }
 
 int dealFDFileReader::GetPosition(){
-	const long position = lseek( pFileDescriptor, 0, SEEK_CUR );
-	if( position < pOffset || position > pOffset + pLength ){
-		DETHROW( deeReadFile );
+	const long position = lseek(pFileDescriptor, 0, SEEK_CUR);
+	if(position < pOffset || position > pOffset + pLength){
+		DETHROW(deeReadFile);
 	}
-	return ( int )( position - pOffset );
+	return (int)(position - pOffset);
 }
 
 
@@ -89,37 +89,37 @@ int dealFDFileReader::GetPosition(){
 // Seeking
 ////////////
 
-void dealFDFileReader::SetPosition( int position ){
-	if( position < 0 || position > ( int )pLength ){
-		DETHROW( deeReadFile );
+void dealFDFileReader::SetPosition(int position){
+	if(position < 0 || position > (int)pLength){
+		DETHROW(deeReadFile);
 	}
-	if( lseek( pFileDescriptor, pOffset + ( long )position, SEEK_SET ) == -1 ){
-		DETHROW( deeReadFile );
-	}
-}
-
-void dealFDFileReader::MovePosition( int offset ){
-	long position = lseek( pFileDescriptor, 0, SEEK_CUR );
-	if( position == -1 ){
-		DETHROW( deeReadFile );
-	}
-	
-	position += ( long )offset;
-	if( position < pOffset || position > pOffset + pLength ){
-		DETHROW( deeReadFile );
-	}
-	
-	if( lseek( pFileDescriptor, position, SEEK_SET ) == -1 ){
-		DETHROW( deeReadFile );
+	if(lseek(pFileDescriptor, pOffset + (long)position, SEEK_SET) == -1){
+		DETHROW(deeReadFile);
 	}
 }
 
-void dealFDFileReader::SetPositionEnd( int position ){
-	if( position > 0 || position < -( int )pLength ){
-		DETHROW( deeReadFile );
+void dealFDFileReader::MovePosition(int offset){
+	long position = lseek(pFileDescriptor, 0, SEEK_CUR);
+	if(position == -1){
+		DETHROW(deeReadFile);
 	}
-	if( lseek( pFileDescriptor, pOffset + pLength + ( long )position, SEEK_SET ) == -1 ){
-		DETHROW( deeReadFile );
+	
+	position += (long)offset;
+	if(position < pOffset || position > pOffset + pLength){
+		DETHROW(deeReadFile);
+	}
+	
+	if(lseek(pFileDescriptor, position, SEEK_SET) == -1){
+		DETHROW(deeReadFile);
+	}
+}
+
+void dealFDFileReader::SetPositionEnd(int position){
+	if(position > 0 || position < -(int)pLength){
+		DETHROW(deeReadFile);
+	}
+	if(lseek(pFileDescriptor, pOffset + pLength + (long)position, SEEK_SET) == -1){
+		DETHROW(deeReadFile);
 	}
 }
 
@@ -128,18 +128,18 @@ void dealFDFileReader::SetPositionEnd( int position ){
 // Reading
 ////////////
 
-void dealFDFileReader::Read( void *buffer, int size ){
-	const long position = lseek( pFileDescriptor, 0, SEEK_CUR );
+void dealFDFileReader::Read(void *buffer, int size){
+	const long position = lseek(pFileDescriptor, 0, SEEK_CUR);
 	const long eof = pOffset + pLength;
-	if( position < pOffset || position > eof ){
-		DETHROW( deeReadFile );
+	if(position < pOffset || position > eof){
+		DETHROW(deeReadFile);
 	}
 	
-	const int readBytes = ( int )read( pFileDescriptor, buffer, decMath::min( size, ( int )( eof - position ) ) );
-	if( readBytes == -1 ){
-		DETHROW( deeReadFile );
+	const int readBytes = (int)read(pFileDescriptor, buffer, decMath::min(size, (int)(eof - position)));
+	if(readBytes == -1){
+		DETHROW(deeReadFile);
 	}
-	if( readBytes < size ){ // eof or something else preventing full read
-		DETHROW( deeReadFile );
+	if(readBytes < size){ // eof or something else preventing full read
+		DETHROW(deeReadFile);
 	}
 }

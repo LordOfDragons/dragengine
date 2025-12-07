@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	meWPSensors( meWindowProperties &windowProperties );
+	meWPSensors(meWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline meWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** \brief Update sensors. */
 	void UpdateSensors();

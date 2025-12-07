@@ -59,19 +59,19 @@ public:
 	int GetShapeCount() const;
 	
 	/** \brief Shape at index. */
-	debpShape *GetShapeAt( int index ) const;
+	debpShape *GetShapeAt(int index) const;
 	
 	/** \brief Add shape. */
-	void AddShape( debpShape *shape );
+	void AddShape(debpShape *shape);
 	
 	/** \brief Remove all shapes. */
 	void RemoveAllShapes();
 	
 	/** \brief Update collision volumes of all shapes using a transformation matrix. */
-	void UpdateWithMatrix( const decDMatrix &transformation );
+	void UpdateWithMatrix(const decDMatrix &transformation);
 	
 	/** \brief Update collision volumes of all shapes using a transformation matrix. */
-	void UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale );
+	void UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale);
 	/*@}*/
 };
 

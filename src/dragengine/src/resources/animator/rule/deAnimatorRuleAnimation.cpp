@@ -41,12 +41,12 @@
 ////////////////////////////
 
 deAnimatorRuleAnimation::deAnimatorRuleAnimation() :
-pMoveName( "idle" ),
-pMoveTime( 0.0f ),
-pEnablePosition( true ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pEnableVertexPositionSet( true ){
+pMoveName("idle"),
+pMoveTime(0.0f),
+pEnablePosition(true),
+pEnableOrientation(true),
+pEnableSize(false),
+pEnableVertexPositionSet(true){
 }
 
 deAnimatorRuleAnimation::~deAnimatorRuleAnimation(){
@@ -57,27 +57,27 @@ deAnimatorRuleAnimation::~deAnimatorRuleAnimation(){
 // Management
 ///////////////
 
-void deAnimatorRuleAnimation::SetMoveName( const char *moveName ){
+void deAnimatorRuleAnimation::SetMoveName(const char *moveName){
 	pMoveName = moveName;
 }
 
-void deAnimatorRuleAnimation::SetMoveTime( float moveTime ){
+void deAnimatorRuleAnimation::SetMoveTime(float moveTime){
 	pMoveTime = moveTime;
 }
 
-void deAnimatorRuleAnimation::SetEnablePosition( bool enabled ){
+void deAnimatorRuleAnimation::SetEnablePosition(bool enabled){
 	pEnablePosition = enabled;
 }
 
-void deAnimatorRuleAnimation::SetEnableOrientation( bool enabled ){
+void deAnimatorRuleAnimation::SetEnableOrientation(bool enabled){
 	pEnableOrientation = enabled;
 }
 
-void deAnimatorRuleAnimation::SetEnableSize( bool enabled ){
+void deAnimatorRuleAnimation::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleAnimation::SetEnableVertexPositionSet( bool enabled ){
+void deAnimatorRuleAnimation::SetEnableVertexPositionSet(bool enabled){
 	pEnableVertexPositionSet = enabled;
 }
 
@@ -86,6 +86,6 @@ void deAnimatorRuleAnimation::SetEnableVertexPositionSet( bool enabled ){
 // Visiting
 /////////////
 
-void deAnimatorRuleAnimation::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitAnimation( *this );
+void deAnimatorRuleAnimation::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitAnimation(*this);
 }

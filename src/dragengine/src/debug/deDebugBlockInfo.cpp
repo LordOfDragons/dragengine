@@ -46,30 +46,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deDebugBlockInfo::deDebugBlockInfo( deEngine &engine ) :
-pEngine( engine ),
-pPadding( 1 ),
-pSpacing( 10 )
+deDebugBlockInfo::deDebugBlockInfo(deEngine &engine) :
+pEngine(engine),
+pPadding(1),
+pSpacing(10)
 {
-	pView.TakeOver( engine.GetCanvasManager()->CreateCanvasView() );
-	pFont.TakeOver( engine.GetFontManager()->LoadDebugFont() );
+	pView.TakeOver(engine.GetCanvasManager()->CreateCanvasView());
+	pFont.TakeOver(engine.GetFontManager()->LoadDebugFont());
 	
-	pViewTitleBg.TakeOver( engine.GetCanvasManager()->CreateCanvasPaint() );
-	pViewTitleBg->SetShapeType( deCanvasPaint::estRectangle );
-	pViewTitleBg->SetThickness( 0.0f );
-	pViewTitleBg->SetFillColor( decColor( 0.5f, 0.25f, 0.25f, 0.5f ) );
-	pViewTitleBg->SetLineColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-	pViewTitleBg->SetOrder( 0.0f );
-	pView->AddCanvas( pViewTitleBg );
+	pViewTitleBg.TakeOver(engine.GetCanvasManager()->CreateCanvasPaint());
+	pViewTitleBg->SetShapeType(deCanvasPaint::estRectangle);
+	pViewTitleBg->SetThickness(0.0f);
+	pViewTitleBg->SetFillColor(decColor(0.5f, 0.25f, 0.25f, 0.5f));
+	pViewTitleBg->SetLineColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+	pViewTitleBg->SetOrder(0.0f);
+	pView->AddCanvas(pViewTitleBg);
 	
-	pViewTitle.TakeOver( engine.GetCanvasManager()->CreateCanvasText() );
-	pViewTitle->SetFont( pFont );
-	pViewTitle->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
-	pViewTitle->SetFontSize( ( float )pFont->GetLineHeight() );
-	pViewTitle->SetText( "" );
-	pViewTitle->SetOrder( 1.0f );
-	pViewTitle->SetSize( pTextSize( pFont, "" ) );
-	pView->AddCanvas( pViewTitle );
+	pViewTitle.TakeOver(engine.GetCanvasManager()->CreateCanvasText());
+	pViewTitle->SetFont(pFont);
+	pViewTitle->SetColor(decColor(1.0f, 1.0f, 1.0f));
+	pViewTitle->SetFontSize((float)pFont->GetLineHeight());
+	pViewTitle->SetText("");
+	pViewTitle->SetOrder(1.0f);
+	pViewTitle->SetSize(pTextSize(pFont, ""));
+	pView->AddCanvas(pViewTitle);
 }
 
 deDebugBlockInfo::~deDebugBlockInfo(){
@@ -82,38 +82,38 @@ deDebugBlockInfo::~deDebugBlockInfo(){
 // Management
 ///////////////
 
-void deDebugBlockInfo::SetFont( deFont *font ){
-	if( ! font ){
-		DETHROW( deeInvalidParam );
+void deDebugBlockInfo::SetFont(deFont *font){
+	if(! font){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( font == pFont ){
+	if(font == pFont){
 		return;
 	}
 	
 	pFont = font;
 	
-	pViewTitle->SetFont( font );
+	pViewTitle->SetFont(font);
 	
 	const int count = pEntries.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		sEntry &entry = *( ( sEntry* )pEntries.GetAt( i ) );
-		entry.viewLabel->SetFont( font );
-		entry.viewText->SetFont( font );
-		entry.viewLabel->SetSize( pTextSize( *font, entry.label ) );
-		entry.viewText->SetSize( pTextSize( *font, entry.text ) );
+	for(i=0; i<count; i++){
+		sEntry &entry = *((sEntry*)pEntries.GetAt(i));
+		entry.viewLabel->SetFont(font);
+		entry.viewText->SetFont(font);
+		entry.viewLabel->SetSize(pTextSize(*font, entry.label));
+		entry.viewText->SetSize(pTextSize(*font, entry.text));
 	}
 	
 	UpdateView();
 }
 
-void deDebugBlockInfo::SetPadding( int padding ){
-	if( padding == pPadding ){
+void deDebugBlockInfo::SetPadding(int padding){
+	if(padding == pPadding){
 		return;
 	}
-	if( padding < 0 ){
-		DETHROW( deeInvalidParam );
+	if(padding < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPadding = padding;
@@ -121,12 +121,12 @@ void deDebugBlockInfo::SetPadding( int padding ){
 	UpdateView();
 }
 
-void deDebugBlockInfo::SetSpacing( int spacing ){
-	if( spacing == pSpacing ){
+void deDebugBlockInfo::SetSpacing(int spacing){
+	if(spacing == pSpacing){
 		return;
 	}
-	if( spacing < 0 ){
-		DETHROW( deeInvalidParam );
+	if(spacing < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSpacing = spacing;
@@ -136,35 +136,35 @@ void deDebugBlockInfo::SetSpacing( int spacing ){
 
 
 
-void deDebugBlockInfo::SetTitle( const char *title ){
-	pViewTitle->SetText( title );
-	pViewTitle->SetSize( pTextSize( pFont, title ) );
+void deDebugBlockInfo::SetTitle(const char *title){
+	pViewTitle->SetText(title);
+	pViewTitle->SetSize(pTextSize(pFont, title));
 }
 
-void deDebugBlockInfo::SetTitleColor( const decColor &color ){
-	pViewTitle->SetColor( color );
+void deDebugBlockInfo::SetTitleColor(const decColor &color){
+	pViewTitle->SetColor(color);
 }
 
-void deDebugBlockInfo::SetTitleBgColor( const decColor &color ){
-	pViewTitleBg->SetFillColor( color );
+void deDebugBlockInfo::SetTitleBgColor(const decColor &color){
+	pViewTitleBg->SetFillColor(color);
 }
 
 
 
 void deDebugBlockInfo::AddToOverlay(){
-	if( pView->GetParentView() ){
+	if(pView->GetParentView()){
 		return;
 	}
 	
-	pEngine.GetGraphicSystem()->GetDebugOverlayCanvas()->AddCanvas( pView );
+	pEngine.GetGraphicSystem()->GetDebugOverlayCanvas()->AddCanvas(pView);
 }
 
 void deDebugBlockInfo::RemoveFromOverlay(){
-	if( ! pView->GetParentView() ){
+	if(! pView->GetParentView()){
 		return;
 	}
 	
-	pEngine.GetGraphicSystem()->GetDebugOverlayCanvas()->RemoveCanvas( pView );
+	pEngine.GetGraphicSystem()->GetDebugOverlayCanvas()->RemoveCanvas(pView);
 }
 
 
@@ -173,8 +173,8 @@ int deDebugBlockInfo::GetEntryCount() const{
 	return pEntries.GetCount();
 }
 
-void deDebugBlockInfo::AddEntry( const char *label, const char *text,
-const decColor &color, const decColor &bgColor ){
+void deDebugBlockInfo::AddEntry(const char *label, const char *text,
+const decColor &color, const decColor &bgColor){
 	deCanvasManager &canvasManager = *pEngine.GetCanvasManager();
 	sEntry * entry = NULL;
 	
@@ -185,83 +185,83 @@ const decColor &color, const decColor &bgColor ){
 		entry->color = color;
 		entry->bgColor = bgColor;
 		
-		entry->view.TakeOver( canvasManager.CreateCanvasView() );
+		entry->view.TakeOver(canvasManager.CreateCanvasView());
 		
-		entry->viewBg.TakeOver( canvasManager.CreateCanvasPaint() );
-		entry->viewBg->SetShapeType( deCanvasPaint::estRectangle );
-		entry->viewBg->SetThickness( 0.0f );
-		entry->viewBg->SetFillColor( bgColor );
-		entry->viewBg->SetLineColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		entry->viewBg->SetOrder( 0.0f );
-		entry->view->AddCanvas( entry->viewBg );
+		entry->viewBg.TakeOver(canvasManager.CreateCanvasPaint());
+		entry->viewBg->SetShapeType(deCanvasPaint::estRectangle);
+		entry->viewBg->SetThickness(0.0f);
+		entry->viewBg->SetFillColor(bgColor);
+		entry->viewBg->SetLineColor(decColor(0.0f, 0.0f, 0.0f, 0.0f));
+		entry->viewBg->SetOrder(0.0f);
+		entry->view->AddCanvas(entry->viewBg);
 		
-		entry->viewLabel.TakeOver( canvasManager.CreateCanvasText() );
-		entry->viewLabel->SetFont( pFont );
-		entry->viewLabel->SetColor( color );
-		entry->viewLabel->SetFontSize( ( float )pFont->GetLineHeight() );
-		entry->viewLabel->SetText( label );
-		entry->viewLabel->SetOrder( 1.0f );
-		entry->viewLabel->SetSize( pTextSize( pFont, label ) );
-		entry->view->AddCanvas( entry->viewLabel );
+		entry->viewLabel.TakeOver(canvasManager.CreateCanvasText());
+		entry->viewLabel->SetFont(pFont);
+		entry->viewLabel->SetColor(color);
+		entry->viewLabel->SetFontSize((float)pFont->GetLineHeight());
+		entry->viewLabel->SetText(label);
+		entry->viewLabel->SetOrder(1.0f);
+		entry->viewLabel->SetSize(pTextSize(pFont, label));
+		entry->view->AddCanvas(entry->viewLabel);
 		
-		entry->viewText.TakeOver( canvasManager.CreateCanvasText() );
-		entry->viewText->SetFont( pFont );
-		entry->viewText->SetColor( color );
-		entry->viewText->SetFontSize( ( float )pFont->GetLineHeight() );
-		entry->viewText->SetText( text );
-		entry->viewText->SetOrder( 2.0f );
-		entry->viewText->SetSize( pTextSize( pFont, text ) );
-		entry->view->AddCanvas( entry->viewText );
+		entry->viewText.TakeOver(canvasManager.CreateCanvasText());
+		entry->viewText->SetFont(pFont);
+		entry->viewText->SetColor(color);
+		entry->viewText->SetFontSize((float)pFont->GetLineHeight());
+		entry->viewText->SetText(text);
+		entry->viewText->SetOrder(2.0f);
+		entry->viewText->SetSize(pTextSize(pFont, text));
+		entry->view->AddCanvas(entry->viewText);
 		
-		pView->AddCanvas( entry->view );
+		pView->AddCanvas(entry->view);
 		
-		pEntries.Add( entry );
+		pEntries.Add(entry);
 		
-	}catch( const deException & ){
-		if( entry ){
+	}catch(const deException &){
+		if(entry){
 			delete entry;
 		}
 		throw;
 	}
 }
 
-void deDebugBlockInfo::SetEntryLabel( int index, const char *label ){
-	sEntry &entry = *( ( sEntry* )pEntries.GetAt( index ) );
+void deDebugBlockInfo::SetEntryLabel(int index, const char *label){
+	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
 	entry.label = label;
-	entry.viewLabel->SetText( label );
-	entry.viewLabel->SetSize( pTextSize( pFont, label ) );
+	entry.viewLabel->SetText(label);
+	entry.viewLabel->SetSize(pTextSize(pFont, label));
 }
 
-void deDebugBlockInfo::SetEntryText( int index, const char *text ){
-	sEntry &entry = *( ( sEntry* )pEntries.GetAt( index ) );
+void deDebugBlockInfo::SetEntryText(int index, const char *text){
+	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
 	entry.text = text;
-	entry.viewText->SetText( text );
-	entry.viewText->SetSize( pTextSize( pFont, text ) );
+	entry.viewText->SetText(text);
+	entry.viewText->SetSize(pTextSize(pFont, text));
 }
 
-void deDebugBlockInfo::SetEntryColor( int index, const decColor &color ){
-	sEntry &entry = *( ( sEntry* )pEntries.GetAt( index ) );
+void deDebugBlockInfo::SetEntryColor(int index, const decColor &color){
+	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
 	entry.color = color;
-	entry.viewLabel->SetColor( color );
-	entry.viewText->SetColor( color );
+	entry.viewLabel->SetColor(color);
+	entry.viewText->SetColor(color);
 }
 
-void deDebugBlockInfo::SetEntryBgColor( int index, const decColor &color ){
-	sEntry &entry = *( ( sEntry* )pEntries.GetAt( index ) );
+void deDebugBlockInfo::SetEntryBgColor(int index, const decColor &color){
+	sEntry &entry = *((sEntry*)pEntries.GetAt(index));
 	entry.bgColor = color;
-	entry.viewBg->SetFillColor( color );
+	entry.viewBg->SetFillColor(color);
 }
 
-void deDebugBlockInfo::RemoveEntry( int index ){
-	sEntry * const entry = ( sEntry* )pEntries.GetAt( index );
-	pView->RemoveCanvas( entry->view );
+void deDebugBlockInfo::RemoveEntry(int index){
+	sEntry * const entry = (sEntry*)pEntries.GetAt(index);
+	pView->RemoveCanvas(entry->view);
 	delete entry;
-	pEntries.RemoveFrom( index );
+	pEntries.RemoveFrom(index);
 }
 
 void deDebugBlockInfo::RemoveAllEntries(){
-	while( pEntries.GetCount() > 0 ){
-		RemoveEntry( pEntries.GetCount() - 1 );
+	while(pEntries.GetCount() > 0){
+		RemoveEntry(pEntries.GetCount() - 1);
 	}
 }
 
@@ -273,68 +273,68 @@ void deDebugBlockInfo::UpdateView(){
 	int maxTextWidth = 0;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const sEntry &entry = *( ( sEntry* )pEntries.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const sEntry &entry = *((sEntry*)pEntries.GetAt(i));
 		const decPoint &labelSize = entry.viewLabel->GetSize();
 		const decPoint &textSize = entry.viewText->GetSize();
-		if( labelSize.x > maxLabelWidth ){
+		if(labelSize.x > maxLabelWidth){
 			maxLabelWidth = labelSize.x;
 		}
-		if( textSize.x > maxTextWidth ){
+		if(textSize.x > maxTextWidth){
 			maxTextWidth = textSize.x;
 		}
 	}
 	
 	const int offsetLabel = pPadding;
 	const int offsetText = pPadding + maxLabelWidth + pSpacing;
-	const int width = pPadding + decMath::max( pViewTitle->GetSize().x,
-		maxLabelWidth + pSpacing + maxTextWidth ) + pPadding;
+	const int width = pPadding + decMath::max(pViewTitle->GetSize().x,
+		maxLabelWidth + pSpacing + maxTextWidth) + pPadding;
 	decPoint position;
 	
-	pViewTitle->SetPosition( decPoint( pPadding, pPadding ) );
-	pViewTitleBg->SetSize( decPoint( width, pPadding * 2 + pViewTitle->GetSize().y ) );
+	pViewTitle->SetPosition(decPoint(pPadding, pPadding));
+	pViewTitleBg->SetSize(decPoint(width, pPadding * 2 + pViewTitle->GetSize().y));
 	position.y += pViewTitleBg->GetSize().y;
 	
-	for( i=0; i<count; i++ ){
-		const sEntry &entry = *( ( sEntry* )pEntries.GetAt( i ) );
-		entry.viewLabel->SetPosition( decPoint( offsetLabel, pPadding ) );
-		entry.viewText->SetPosition( decPoint( offsetText, pPadding ) );
-		entry.view->SetSize( decPoint( width, pPadding * 2 + decMath::max(
-			entry.viewLabel->GetSize().y, entry.viewText->GetSize().y ) ) );
-		entry.viewBg->SetSize( entry.view->GetSize() );
-		entry.view->SetPosition( position );
+	for(i=0; i<count; i++){
+		const sEntry &entry = *((sEntry*)pEntries.GetAt(i));
+		entry.viewLabel->SetPosition(decPoint(offsetLabel, pPadding));
+		entry.viewText->SetPosition(decPoint(offsetText, pPadding));
+		entry.view->SetSize(decPoint(width, pPadding * 2 + decMath::max(
+			entry.viewLabel->GetSize().y, entry.viewText->GetSize().y)));
+		entry.viewBg->SetSize(entry.view->GetSize());
+		entry.view->SetPosition(position);
 		position.y += entry.view->GetSize().y;
 	}
 	
-	pView->SetSize( decPoint( width, position.y ) );
+	pView->SetSize(decPoint(width, position.y));
 }
 
 
 
-decPoint deDebugBlockInfo::pTextSize( const deFont &font, const char *text ){
+decPoint deDebugBlockInfo::pTextSize(const deFont &font, const char *text){
 	decUTF8Decoder utf8Decoder;
-	utf8Decoder.SetString( text );
+	utf8Decoder.SetString(text);
 	
 	int textHeight = font.GetLineHeight();
 	int lineWidth = 0;
 	int textWidth = 0;
 	
-	while( ! utf8Decoder.HasReachedEnd() ){
+	while(! utf8Decoder.HasReachedEnd()){
 		const int character = utf8Decoder.DecodeNextCharacter();
 		
-		if( character == '\n' ){
+		if(character == '\n'){
 			textHeight += font.GetLineHeight();
 			lineWidth = 0;
 			
-		}else if( character >= 0 ){
-			const deFontGlyph &glyph = font.GetGlyph( character );
+		}else if(character >= 0){
+			const deFontGlyph &glyph = font.GetGlyph(character);
 			const int extendEnd = glyph.GetWidth() - glyph.GetAdvance() - glyph.GetBearing();
 			lineWidth += glyph.GetAdvance();
-			if( lineWidth + extendEnd > textWidth ){
+			if(lineWidth + extendEnd > textWidth){
 				textWidth = lineWidth + extendEnd;
 			}
 		}
 	}
 	
-	return decPoint( textWidth, textHeight );
+	return decPoint(textWidth, textHeight);
 }

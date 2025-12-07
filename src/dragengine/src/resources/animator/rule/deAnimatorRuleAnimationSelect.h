@@ -84,40 +84,40 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of move. */
-	inline decStringList &GetMoves(){ return pMoves; }
-	inline const decStringList &GetMoves() const{ return pMoves; }
+	inline decStringList &GetMoves(){return pMoves;}
+	inline const decStringList &GetMoves() const{return pMoves;}
 	
 	/** \brief Position manipulation is enabled. */
-	inline bool GetEnablePosition() const{ return pEnablePosition; }
+	inline bool GetEnablePosition() const{return pEnablePosition;}
 	
 	/** \brief Set if position manipulation is enabled. */
-	void SetEnablePosition( bool enabled );
+	void SetEnablePosition(bool enabled);
 	
 	/** \brief Orientation manipulation is enabled. */
-	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
+	inline bool GetEnableOrientation() const{return pEnableOrientation;}
 	
 	/** \brief Set if orientation manipulation is enabled. */
-	void SetEnableOrientation( bool enabled );
+	void SetEnableOrientation(bool enabled);
 	
 	/** \brief Size manipulation is enabled. */
-	inline bool GetEnableSize() const{ return pEnableSize; }
+	inline bool GetEnableSize() const{return pEnableSize;}
 	
 	/** \brief Set if size manipulation is enabled. */
-	void SetEnableSize( bool enabled );
+	void SetEnableSize(bool enabled);
 	
 	/** \brief Vertex position sets are enabled. */
-	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	inline bool GetEnableVertexPositionSet() const{return pEnableVertexPositionSet;}
 	
 	/** \brief Set if vertex position sets are enabled. */
-	void SetEnableVertexPositionSet( bool enabled );
+	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** \brief Move time target. */
-	inline deAnimatorControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
-	inline const deAnimatorControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
+	inline deAnimatorControllerTarget &GetTargetMoveTime(){return pTargetMoveTime;}
+	inline const deAnimatorControllerTarget &GetTargetMoveTime() const{return pTargetMoveTime;}
 	
 	/** \brief Select target. */
-	inline deAnimatorControllerTarget &GetTargetSelect(){ return pTargetSelect; }
-	inline const deAnimatorControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
+	inline deAnimatorControllerTarget &GetTargetSelect(){return pTargetSelect;}
+	inline const deAnimatorControllerTarget &GetTargetSelect() const{return pTargetSelect;}
 	/*@}*/
 	
 	
@@ -125,7 +125,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visits the rule. */
-	virtual void Visit( deAnimatorRuleVisitor &visitor );
+	virtual void Visit(deAnimatorRuleVisitor &visitor);
 	/*@}*/
 };
 

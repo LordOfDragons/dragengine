@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPAComment( ceWPTopic &parentPanel );
+	ceWPAComment(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Cleans up the property window. */

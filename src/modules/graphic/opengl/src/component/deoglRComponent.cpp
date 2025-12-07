@@ -113,46 +113,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRComponent::deoglRComponent( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRComponent::deoglRComponent(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
 
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldComputeElement::Ref::New( new deoglRComponentWCElement( *this ) ) ),
-pHasEnteredWorld( false ),
+pParentWorld(NULL),
+pOctreeNode(NULL),
+pWorldComputeElement(deoglWorldComputeElement::Ref::New(new deoglRComponentWCElement(*this))),
+pHasEnteredWorld(false),
 
-pVisible( true ),
-pMovementHint( deComponent::emhStationary ),
-pGIImportance( 5 ),
+pVisible(true),
+pMovementHint(deComponent::emhStationary),
+pGIImportance(5),
 
-pStaticTextures( true ),
-pDirtyModelVBOs( true ),
+pStaticTextures(true),
+pDirtyModelVBOs(true),
 
-pDirtyOccMeshVBO( true ),
-pOccMeshSharedSPBElement( NULL ),
-pDirtyOccMeshSharedSPBElement( true ),
+pDirtyOccMeshVBO(true),
+pOccMeshSharedSPBElement(NULL),
+pDirtyOccMeshSharedSPBElement(true),
 
-pDirtyLODVBOs( true ),
-pDirtyLODRenderTaskConfigs( true ),
+pDirtyLODVBOs(true),
+pDirtyLODRenderTaskConfigs(true),
 
-pSkinRendered( renderThread, *this ),
+pSkinRendered(renderThread, *this),
 
-pDirtyTextureTUCs( true ),
-pDirtyTextureParamBlocks( true ),
-pOutlineTextureCount( 0 ),
-pDirtyDecals( true ),
-pDirtyDecalsRenderRenderables( true ),
+pDirtyTextureTUCs(true),
+pDirtyTextureParamBlocks(true),
+pOutlineTextureCount(0),
+pDirtyDecals(true),
+pDirtyDecalsRenderRenderables(true),
 
-pVertexPositionSetWeights( nullptr ),
-pVertexPositionSetCount( 0 ),
+pVertexPositionSetWeights(nullptr),
+pVertexPositionSetCount(0),
 
-pCSOctreeIndex( 0 ),
+pCSOctreeIndex(0),
 
-pWorldMarkedRemove( false ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ),
+pWorldMarkedRemove(false),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL),
 
-pLLPrepareForRenderWorld( this )
+pLLPrepareForRenderWorld(this)
 {
 	pLODErrorScaling = 1.0f;
 	
@@ -198,17 +198,17 @@ pLLPrepareForRenderWorld( this )
 	
 	try{
 		pUniqueKey = renderThread.GetUniqueKey().Get();
-		pSkinState = new deoglSkinState( renderThread, *this );
+		pSkinState = new deoglSkinState(renderThread, *this);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
-	LEAK_CHECK_CREATE( renderThread, Component );
+	LEAK_CHECK_CREATE(renderThread, Component);
 }
 
 deoglRComponent::~deoglRComponent(){
-	LEAK_CHECK_FREE( pRenderThread, Component );
+	LEAK_CHECK_FREE(pRenderThread, Component);
 	pCleanUp();
 }
 
@@ -217,12 +217,12 @@ deoglRComponent::~deoglRComponent(){
 // Management
 ///////////////
 
-void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
-	if( parentWorld == pParentWorld ){
+void deoglRComponent::SetParentWorld(deoglRWorld *parentWorld){
+	if(parentWorld == pParentWorld){
 		return;
 	}
 	
-	if( pParentWorld && /*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic ){
+	if(pParentWorld && /*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic){
 		NotifySkiesUpdateStatic();
 	}
 	
@@ -231,15 +231,15 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 	pSkinRendered.DropDelayedDeletionObjects();
 	
 	/*if( pEnvMap ){
-		pEnvMap->SetWorld( parentWorld );
+		pEnvMap->SetWorld(parentWorld);
 	}*/
 	
 	const int decalCount = pDecals.GetCount();
 	int i;
 	
-	if( pParentWorld ){
-		for( i=0; i<decalCount; i++ ){
-			( ( deoglRDecal* )pDecals.GetAt( i ) )->RemoveFromWorldCompute();
+	if(pParentWorld){
+		for(i=0; i<decalCount; i++){
+			((deoglRDecal*)pDecals.GetAt(i))->RemoveFromWorldCompute();
 		}
 		pWorldComputeElement->RemoveFromCompute();
 		
@@ -247,15 +247,15 @@ void deoglRComponent::SetParentWorld( deoglRWorld *parentWorld ){
 		// calls above can potentially smuggle in an AddPrepareForRenderComponent() call
 		// along complicated ways. if this happens any further prepare for render is not
 		// possible anymore and the object vanishes and even throws exceptions
-		pParentWorld->RemovePrepareForRenderComponent( this );
+		pParentWorld->RemovePrepareForRenderComponent(this);
 	}
 	
 	pParentWorld = parentWorld;
 	
 	pRemoveFromAllLights();
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveComponent( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveComponent(this);
 	}
 	
 	pDirtyRenderEnvMap = true;
@@ -273,7 +273,7 @@ void deoglRComponent::HasEnteredWorld(){
 
 
 
-void deoglRComponent::SetOctreeNode( deoglWorldOctree *octreeNode ){
+void deoglRComponent::SetOctreeNode(deoglWorldOctree *octreeNode){
 	pOctreeNode = octreeNode;
 }
 
@@ -283,7 +283,7 @@ void deoglRComponent::SetOctreeNode( deoglWorldOctree *octreeNode ){
 void deoglRComponent::UpdateOctreeNode(){
 	// WARNING Called during synchronization from main thread.
 	
-	if( ! pParentWorld ){
+	if(! pParentWorld){
 		return;
 	}
 	
@@ -291,7 +291,7 @@ void deoglRComponent::UpdateOctreeNode(){
 	pRemoveFromAllLights();
 	
 	// NotifySkiesUpdateStatic(); // called after ResetRenderStatic() so not required
-	if( pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic ){
+	if(pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic){
 		NotifySkiesUpdateStatic();
 	}
 	
@@ -299,108 +299,108 @@ void deoglRComponent::UpdateOctreeNode(){
 	const int decalCount = pDecals.GetCount();
 	int i;
 	
-	if( pVisible && pModel ){
-		pParentWorld->GetOctree().InsertComponentIntoTree( this );
+	if(pVisible && pModel){
+		pParentWorld->GetOctree().InsertComponentIntoTree(this);
 		
-		if( pWorldComputeElement->GetWorldCompute() ){
+		if(pWorldComputeElement->GetWorldCompute()){
 			pWorldComputeElement->ComputeUpdateElement();
-			for( i=0; i<decalCount; i++ ){
-				( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateWorldCompute();
+			for(i=0; i<decalCount; i++){
+				((deoglRDecal*)pDecals.GetAt(i))->UpdateWorldCompute();
 			}
 			
 		}else{
 			deoglWorldCompute &worldCompute = pParentWorld->GetCompute();
-			worldCompute.AddElement( pWorldComputeElement );
-			for( i=0; i<decalCount; i++ ){
-				( ( deoglRDecal* )pDecals.GetAt( i ) )->AddToWorldCompute( worldCompute );
+			worldCompute.AddElement(pWorldComputeElement);
+			for(i=0; i<decalCount; i++){
+				((deoglRDecal*)pDecals.GetAt(i))->AddToWorldCompute(worldCompute);
 			}
 		}
 		
 		// visit the world for touching lights
 // 			decTimer timer;
-		deoglComponentTestForTouch testForTouching( this );
-		pParentWorld->VisitRegion( pMinExtend, pMaxExtend, testForTouching );
+		deoglComponentTestForTouch testForTouching(this);
+		pParentWorld->VisitRegion(pMinExtend, pMaxExtend, testForTouching);
 // 			hackCSSpecialCount++;
 // 			hackCSSpecialTime += timer.GetElapsedTime();
 		
 	}else{
-		for( i=0; i<decalCount; i++ ){
-			( ( deoglRDecal* )pDecals.GetAt( i ) )->RemoveFromWorldCompute();
+		for(i=0; i<decalCount; i++){
+			((deoglRDecal*)pDecals.GetAt(i))->RemoveFromWorldCompute();
 		}
 		pWorldComputeElement->RemoveFromCompute();
 		
-		if( pOctreeNode ){
-			pOctreeNode->RemoveComponent( this );
+		if(pOctreeNode){
+			pOctreeNode->RemoveComponent(this);
 		}
 	}
 }
 
 
 
-void deoglRComponent::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void deoglRComponent::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
 	pVisible = visible;
 	
-	if( visible && pParentWorld && pHasEnteredWorld ){
-		pParentWorld->GIStatesNotifyComponentBecameVisible( this );
+	if(visible && pParentWorld && pHasEnteredWorld){
+		pParentWorld->GIStatesNotifyComponentBecameVisible(this);
 	}
 	NotifyVisibilityChanged();
 	
-	if( visible ){
+	if(visible){
 		pRequiresPrepareForRender();
 	}
 }
 
-void deoglRComponent::SetMovementHint( deComponent::eMovementHints hint ){
-	if( hint == pMovementHint ){
+void deoglRComponent::SetMovementHint(deComponent::eMovementHints hint){
+	if(hint == pMovementHint){
 		return;
 	}
 	
 	pMovementHint = hint;
 	NotifyMovementHintChanged();
 	
-	if( pRenderMode == ermStatic ){
+	if(pRenderMode == ermStatic){
 		NotifySkiesUpdateStatic();
 	}
 }
 
-void deoglRComponent::SetGIImportance( int importance ){
-	if( importance == pGIImportance ){
+void deoglRComponent::SetGIImportance(int importance){
+	if(importance == pGIImportance){
 		return;
 	}
 	
 	pGIImportance = importance;
 	
-	if( pParentWorld && pHasEnteredWorld ){
-		pParentWorld->GIStatesNotifyComponentChangedGIImportance( this );
+	if(pParentWorld && pHasEnteredWorld){
+		pParentWorld->GIStatesNotifyComponentChangedGIImportance(this);
 	}
 	
 	NotifyGIImportanceChanged();
 }
 
-void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deoglRComponent::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
 	// light shadow matching potentially changed
-	const deoglLightList list( pLightList );
+	const deoglLightList list(pLightList);
 	int i, count = list.GetCount();
-	for( i=0; i<count; i++ ){
-		list.GetAt( i )->TestComponent( this );
+	for(i=0; i<count; i++){
+		list.GetAt(i)->TestComponent(this);
 	}
 	
-	if( /*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic ){
+	if(/*pRenderStatic*/ pMovementHint == deComponent::emhStationary && pRenderMode == ermStatic){
 		NotifySkiesUpdateStatic();
 	}
 	
-	if( pParentWorld && pHasEnteredWorld ){
-		pParentWorld->GIStatesNotifyComponentChangedLayerMask( this );
+	if(pParentWorld && pHasEnteredWorld){
+		pParentWorld->GIStatesNotifyComponentChangedLayerMask(this);
 	}
 	
 	NotifyLayerMaskChanged();
@@ -408,13 +408,13 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
-void deoglRComponent::SetModel( deoglRModel *model ){
-	if( pModel == model ){
+void deoglRComponent::SetModel(deoglRModel *model){
+	if(pModel == model){
 		return;
 	}
 	
 	// required to be guarded until listeners are notified to avoid memory corruptions
-	const deoglRModel::Ref guardModel( pModel );
+	const deoglRModel::Ref guardModel(pModel);
 	pModel = model;
 	
 	InvalidateVAO();
@@ -438,16 +438,16 @@ void deoglRComponent::SetModel( deoglRModel *model ){
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::SetSkin( deoglRSkin *skin ){
-	if( skin == pSkin ){
+void deoglRComponent::SetSkin(deoglRSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	pSkin = skin;
-	if( skin ){
+	if(skin){
 		skin->AddReference();
 	}
 	
@@ -471,19 +471,19 @@ void deoglRComponent::RigChanged(){
 	MarkOccMeshParamBlockDirty();
 }
 
-void deoglRComponent::SetDynamicSkin( deoglComponent &component, deoglRDynamicSkin *dynamicSkin ){
+void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
-	if( dynamicSkin == pDynamicSkin ){
+	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
 	
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
 	
 	pDynamicSkin = dynamicSkin;
 	
-	if( dynamicSkin ){
+	if(dynamicSkin){
 		dynamicSkin->AddReference();
 	}
 	
@@ -491,52 +491,52 @@ void deoglRComponent::SetDynamicSkin( deoglComponent &component, deoglRDynamicSk
 	// force an update to make sure everything matches up again
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		texture.SetSkinState( NULL ); // required since UpdateSkinState can not figure out dynamic skin changed
-		texture.UpdateSkinState( component );
+	for(i=0; i<textureCount; i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		texture.SetSkinState(NULL); // required since UpdateSkinState can not figure out dynamic skin changed
+		texture.UpdateSkinState(component);
 	}
 	
 	// child decals can use the dynamic skin we had so far for their skin state.
 	// force an update to make sure everything matches up again
 	const int decalCount = pDecals.GetCount();
-	for( i=0; i<decalCount; i++ ){
-		deoglRDecal &decal = *( ( deoglRDecal* )pDecals.GetAt( i ) );
-		decal.SetSkinState( NULL ); // required since UpdateSkinState can not figure out dynamic skin changed
+	for(i=0; i<decalCount; i++){
+		deoglRDecal &decal = *((deoglRDecal*)pDecals.GetAt(i));
+		decal.SetSkinState(NULL); // required since UpdateSkinState can not figure out dynamic skin changed
 		decal.UpdateSkinState();
 	}
 	
 	pSkinRendered.SetDirty();
 }
 
-void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
-	if( occlusionMesh == pOcclusionMesh ){
+void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
+	if(occlusionMesh == pOcclusionMesh){
 		return;
 	}
 	
-	if( pDynamicOcclusionMesh ){
+	if(pDynamicOcclusionMesh){
 		delete pDynamicOcclusionMesh;
 		pDynamicOcclusionMesh = NULL;
 	}
 	pOccMeshSharedSPBDoubleSided = nullptr;
 	pOccMeshSharedSPBSingleSided = nullptr;
-	if( pOccMeshSharedSPBElement ){
+	if(pOccMeshSharedSPBElement){
 		pOccMeshSharedSPBElement->FreeReference();
 		pOccMeshSharedSPBElement = NULL;
 	}
-	if( pOcclusionMesh ){
+	if(pOcclusionMesh){
 		pOcclusionMesh->FreeReference();
 	}
 	
 	pOcclusionMesh = occlusionMesh;
 	
-	if( occlusionMesh ){
+	if(occlusionMesh){
 		occlusionMesh->AddReference();
 	}
 	
-	if( occlusionMesh ){
-		if( occlusionMesh->GetWeightsCount() > 0 ){
-			pDynamicOcclusionMesh = new deoglDynamicOcclusionMesh( pRenderThread, pOcclusionMesh, this );
+	if(occlusionMesh){
+		if(occlusionMesh->GetWeightsCount() > 0){
+			pDynamicOcclusionMesh = new deoglDynamicOcclusionMesh(pRenderThread, pOcclusionMesh, this);
 			
 			// update all touching lights since their light volume potentially changes. this works even with
 			// lights storing only components in their reduced extends. if a component has a new occlusion
@@ -559,7 +559,7 @@ void deoglRComponent::SetOcclusionMesh( deoglROcclusionMesh *occlusionMesh ){
 	NotifyOcclusionMeshChanged();
 }
 
-deoglSharedSPBRTIGroup &deoglRComponent::GetOccMeshSharedSPBRTIGroup( bool doubleSided ) const{
+deoglSharedSPBRTIGroup &deoglRComponent::GetOccMeshSharedSPBRTIGroup(bool doubleSided) const{
 	return doubleSided ? pOccMeshSharedSPBDoubleSided : pOccMeshSharedSPBSingleSided;
 }
 
@@ -578,7 +578,7 @@ void deoglRComponent::InvalidateOccMeshSharedSPBRTIGroup(){
 void deoglRComponent::MeshChanged(){
 	pInvalidateLODVBOs();
 	
-	if( pDynamicOcclusionMesh ){
+	if(pDynamicOcclusionMesh){
 		pDynamicOcclusionMesh->ComponentStateChanged();
 		DynOccMeshRequiresPrepareForRender();
 	}
@@ -586,48 +586,48 @@ void deoglRComponent::MeshChanged(){
 
 
 
-void deoglRComponent::InitSkinStateStates( const deComponent &component ){
-	if( pSkinState ){
+void deoglRComponent::InitSkinStateStates(const deComponent &component){
+	if(pSkinState){
 		pSkinState->InitAll();
-		pSkinState->MapBonesAll( component );
+		pSkinState->MapBonesAll(component);
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
+	for(i=0; i<textureCount; i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		if(texture.GetSkinState()){
 			texture.GetSkinState()->InitAll();
-			texture.GetSkinState()->MapBonesAll( component );
+			texture.GetSkinState()->MapBonesAll(component);
 		}
 	}
 }
 
-void deoglRComponent::UpdateSkinStateBones( const deComponent &component ){
-	if( pSkinState ){
-		pSkinState->UpdateBonesAll( component );
+void deoglRComponent::UpdateSkinStateBones(const deComponent &component){
+	if(pSkinState){
+		pSkinState->UpdateBonesAll(component);
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->UpdateBonesAll( component );
+	for(i=0; i<textureCount; i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		if(texture.GetSkinState()){
+			texture.GetSkinState()->UpdateBonesAll(component);
 		}
 	}
 }
 
 void deoglRComponent::UpdateSkinStateStates(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->UpdateAll();
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
+	for(i=0; i<textureCount; i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		if(texture.GetSkinState()){
 			texture.GetSkinState()->UpdateAll();
 		}
 	}
@@ -649,34 +649,34 @@ void deoglRComponent::MarkOccMeshParamBlockDirty(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::UpdateOccmeshInstanceParamBlock( deoglShaderParameterBlock &paramBlock,
-int element ){
-	if( ! pParentWorld ){
-		DETHROW( deeInvalidParam );
+void deoglRComponent::UpdateOccmeshInstanceParamBlock(deoglShaderParameterBlock &paramBlock,
+int element){
+	if(! pParentWorld){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const decDVector &referencePosition = pParentWorld->GetReferencePosition();
-	decDMatrix matrix( pMatrix );
+	decDMatrix matrix(pMatrix);
 	matrix.a14 -= referencePosition.x;
 	matrix.a24 -= referencePosition.y;
 	matrix.a34 -= referencePosition.z;
 	
-	paramBlock.SetParameterDataMat4x3( 0, element, matrix ); // pMatrixModel
+	paramBlock.SetParameterDataMat4x3(0, element, matrix); // pMatrixModel
 }
 
 
 
-void deoglRComponent::UpdateBoneMatrices( const deComponent &component ){
+void deoglRComponent::UpdateBoneMatrices(const deComponent &component){
 	const deRig * const rig = component.GetRig();
 	int i;
 	
-	pUpdateModelRigMappings( component );
+	pUpdateModelRigMappings(component);
 	
-	for( i=0; i<pBoneMatrixCount; i++ ){
-		oglMatrix3x4 &boneMatrix = pBoneMatrices[ i ];
-		const int bone = pModelRigMappings[ i ];
+	for(i=0; i<pBoneMatrixCount; i++){
+		oglMatrix3x4 &boneMatrix = pBoneMatrices[i];
+		const int bone = pModelRigMappings[i];
 		
-		if( bone == -1 ){
+		if(bone == -1){
 			boneMatrix.a11 = 1.0f;
 			boneMatrix.a12 = 0.0f;
 			boneMatrix.a13 = 0.0f;
@@ -691,8 +691,8 @@ void deoglRComponent::UpdateBoneMatrices( const deComponent &component ){
 			boneMatrix.a34 = 0.0f;
 			
 		}else{
-			const decMatrix matrix( rig->GetBoneAt( bone ).GetInverseMatrix()
-				.QuickMultiply( component.GetBoneAt( bone ).GetMatrix() ) );
+			const decMatrix matrix(rig->GetBoneAt(bone).GetInverseMatrix()
+				.QuickMultiply(component.GetBoneAt(bone).GetMatrix()));
 			
 			boneMatrix.a11 = matrix.a11;
 			boneMatrix.a12 = matrix.a12;
@@ -710,71 +710,71 @@ void deoglRComponent::UpdateBoneMatrices( const deComponent &component ){
 	}
 }
 
-void deoglRComponent::UpdateVertexPositionSets( const deComponent &component ){
+void deoglRComponent::UpdateVertexPositionSets(const deComponent &component){
 	const int count = component.GetVertexPositionSetCount();
 	int i;
 	
-	if( count != pVertexPositionSetCount ){
-		if( pVertexPositionSetWeights ){
+	if(count != pVertexPositionSetCount){
+		if(pVertexPositionSetWeights){
 			delete [] pVertexPositionSetWeights;
 			pVertexPositionSetWeights = nullptr;
 			pVertexPositionSetCount = 0;
 		}
 		
-		if( count > 0 ){
-			pVertexPositionSetWeights = new float[ count ];
+		if(count > 0){
+			pVertexPositionSetWeights = new float[count];
 			pVertexPositionSetCount = count;
 		}
 	}
 	
-	for( i=0; i<count; i++ ){
-		pVertexPositionSetWeights[ i ] = component.GetVertexPositionSetWeightAt( i );
+	for(i=0; i<count; i++){
+		pVertexPositionSetWeights[i] = component.GetVertexPositionSetWeightAt(i);
 	}
 }
 
 
 
-int deoglRComponent::GetPointOffset( int lodLevel ) const{
-	deoglRComponentLOD &lod = GetLODAt( lodLevel );
+int deoglRComponent::GetPointOffset(int lodLevel) const{
+	deoglRComponentLOD &lod = GetLODAt(lodLevel);
 	
-	if( lod.GetVAO() ){
+	if(lod.GetVAO()){
 		return lod.GetPointOffset();
 	}
 	
-	if( ! pModel ){
+	if(! pModel){
 		return 0;
 	}
-	deoglSharedVBOBlock * const block = pModel->GetLODAt( lodLevel ).GetVBOBlock();
-	if( block ){
+	deoglSharedVBOBlock * const block = pModel->GetLODAt(lodLevel).GetVBOBlock();
+	if(block){
 		return block->GetOffset();
 	}
 	return 0;
 }
 
-int deoglRComponent::GetIndexOffset( int lodLevel ) const{
-	deoglRComponentLOD &lod = GetLODAt( lodLevel );
+int deoglRComponent::GetIndexOffset(int lodLevel) const{
+	deoglRComponentLOD &lod = GetLODAt(lodLevel);
 	
-	if( lod.GetVAO() ){
+	if(lod.GetVAO()){
 		return lod.GetIndexOffset();
 	}
 	
-	if( ! pModel ){
+	if(! pModel){
 		return 0;
 	}
-	deoglSharedVBOBlock * const block = pModel->GetLODAt( lodLevel ).GetVBOBlock();
-	if( block ){
+	deoglSharedVBOBlock * const block = pModel->GetLODAt(lodLevel).GetVBOBlock();
+	if(block){
 		return block->GetIndexOffset();
 	}
 	return 0;
 }
 
-deoglVAO *deoglRComponent::GetVAO( int lodLevel ) const{
-	const deoglRComponentLOD &lod = GetLODAt( lodLevel );
-	if( lod.GetVAO() ){
+deoglVAO *deoglRComponent::GetVAO(int lodLevel) const{
+	const deoglRComponentLOD &lod = GetLODAt(lodLevel);
+	if(lod.GetVAO()){
 		return lod.GetVAO();
 	}
-	deoglSharedVBOBlock * const block = GetModel()->GetLODAt( lodLevel ).GetVBOBlock();
-	if( block ){
+	deoglSharedVBOBlock * const block = GetModel()->GetLODAt(lodLevel).GetVBOBlock();
+	if(block){
 		return block->GetVBO()->GetVAO();
 	}
 	return nullptr;
@@ -784,8 +784,8 @@ void deoglRComponent::InvalidateVAO(){
 	const int count = pLODs.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->InvalidateVAO();
+	for(i=0; i<count; i++){
+		((deoglRComponentLOD*)pLODs.GetAt(i))->InvalidateVAO();
 	}
 	
 	pWorldComputeElement->ComputeUpdateElementAndGeometries();
@@ -793,50 +793,50 @@ void deoglRComponent::InvalidateVAO(){
 
 
 
-void deoglRComponent::UpdateSkin( float elapsed ){
+void deoglRComponent::UpdateSkin(float elapsed){
 	// WARNING called from main thread during synchronization time
 	
 	const int count = pTextures.GetCount();
 	int i;
 	
 	// advance time and mark tucs/parameters dirty if dynamic channels are present
-	pSkinState->AdvanceTime( elapsed );
+	pSkinState->AdvanceTime(elapsed);
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		//deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		deoglRComponentTexture &texture = GetTextureAt( i );
+		deoglRComponentTexture &texture = GetTextureAt(i);
 		
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->AdvanceTime( elapsed );
+		if(texture.GetSkinState()){
+			texture.GetSkinState()->AdvanceTime(elapsed);
 		}
 		
-		if( texture.GetUseSkinTexture() ){
-			if( texture.GetUseSkinTexture()->GetDynamicChannels() ){
+		if(texture.GetUseSkinTexture()){
+			if(texture.GetUseSkinTexture()->GetDynamicChannels()){
 				texture.MarkParamBlocksDirty();
 				texture.MarkTUCsDirty();
 				
-			}else if( texture.GetUseSkinTexture()->GetCalculatedProperties()
+			}else if(texture.GetUseSkinTexture()->GetCalculatedProperties()
 			|| texture.GetUseSkinTexture()->GetConstructedProperties()
-			|| texture.GetUseSkinTexture()->GetBoneProperties() ){
+			|| texture.GetUseSkinTexture()->GetBoneProperties()){
 				texture.MarkParamBlocksDirty();
 			}
 		}
 	}
 	
 	// update environment map fading
-	if( pRenderEnvMapFade ){
+	if(pRenderEnvMapFade){
 		pRenderEnvMapFadeFactor += pRenderEnvMapFadePerTime * elapsed;
 		
-		if( pRenderEnvMapFadeFactor >= 1.0f ){
-			SetRenderEnvMapFade( NULL );
+		if(pRenderEnvMapFadeFactor >= 1.0f){
+			SetRenderEnvMapFade(NULL);
 			pRenderEnvMapFadeFactor = 1.0f;
 		}
 	}
 	
 	// update skin state in all attached decals
 	const int decalCount = pDecals.GetCount();
-	for( i=0; i<decalCount; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateSkin( elapsed );
+	for(i=0; i<decalCount; i++){
+		((deoglRDecal*)pDecals.GetAt(i))->UpdateSkin(elapsed);
 	}
 }
 
@@ -870,38 +870,38 @@ void debugCompReset(){
 //#include <dragengine/common/utils/decTimer.h>
 //static decTimer timer;
 
-void deoglRComponent::Update( float elapsed ){
-	if( pFirstRender ){
+void deoglRComponent::Update(float elapsed){
+	if(pFirstRender){
 		pFirstRender = false;
 		pStaticSince = 0.0f;
-		SetRenderStatic( pMovementHint == deComponent::emhStationary );
+		SetRenderStatic(pMovementHint == deComponent::emhStationary);
 	}
 	
 	pStaticSince += elapsed;
-	if( pStaticSince > 1.0f ){
-		SetRenderStatic( true );
+	if(pStaticSince > 1.0f){
+		SetRenderStatic(true);
 	}
 }
 
 
 
-void deoglRComponent::AddSkinStateRenderPlans( deoglRenderPlan &plan ){
-	pSkinState->AddRenderPlans( plan );
+void deoglRComponent::AddSkinStateRenderPlans(deoglRenderPlan &plan){
+	pSkinState->AddRenderPlans(plan);
 	
 	int i;
-	for( i=0; i<pTextures.GetCount(); i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkinState() ){
-			texture.GetSkinState()->AddRenderPlans( plan );
+	for(i=0; i<pTextures.GetCount(); i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		if(texture.GetSkinState()){
+			texture.GetSkinState()->AddRenderPlans(plan);
 		}
 	}
 	
-	pSkinRendered.AddRenderPlans( plan );
+	pSkinRendered.AddRenderPlans(plan);
 }
 
 
 
-void deoglRComponent::SetMatrix( const decDMatrix &matrix ){
+void deoglRComponent::SetMatrix(const decDMatrix &matrix){
 	pMatrix = matrix;
 	pInverseMatrix = matrix.QuickInvert();
 	
@@ -912,72 +912,72 @@ void deoglRComponent::SetMatrix( const decDMatrix &matrix ){
 	NotifyBoundariesChanged();
 	
 	/*if( pEnvMap ){
-		pEnvMap->SetPosition( pComponent->GetPosition() );
+		pEnvMap->SetPosition(pComponent->GetPosition());
 	}*/
 }
 
-void deoglRComponent::UpdateExtends( deComponent &component ){
-	if( pModel ){
+void deoglRComponent::UpdateExtends(deComponent &component){
+	if(pModel){
 		const int boneCount = component.GetBoneCount();
 		const deoglRModel &model = pModel;
-		decDVector corners[ 8 ];
+		decDVector corners[8];
 		int i, j;
 		
-		if( boneCount > 0 ){
+		if(boneCount > 0){
 			component.PrepareBones();
 			const decDMatrix &matrix = component.GetMatrix();
 			bool extendsSet = false;
 			
-			if( model.GetHasWeightlessExtends() ){
-				corners[7].Set( model.GetWeightlessExtends().minimum );
-				corners[1].Set( model.GetWeightlessExtends().maximum );
-				corners[0].Set( corners[7].x, corners[1].y, corners[1].z );
-				corners[2].Set( corners[1].x, corners[7].y, corners[1].z );
-				corners[3].Set( corners[7].x, corners[7].y, corners[1].z );
-				corners[4].Set( corners[7].x, corners[1].y, corners[7].z );
-				corners[5].Set( corners[1].x, corners[1].y, corners[7].z );
-				corners[6].Set( corners[1].x, corners[7].y, corners[7].z );
-				for( j=0; j<8; j++ ){
-					corners[ j ] = matrix * corners[ j ];
+			if(model.GetHasWeightlessExtends()){
+				corners[7].Set(model.GetWeightlessExtends().minimum);
+				corners[1].Set(model.GetWeightlessExtends().maximum);
+				corners[0].Set(corners[7].x, corners[1].y, corners[1].z);
+				corners[2].Set(corners[1].x, corners[7].y, corners[1].z);
+				corners[3].Set(corners[7].x, corners[7].y, corners[1].z);
+				corners[4].Set(corners[7].x, corners[1].y, corners[7].z);
+				corners[5].Set(corners[1].x, corners[1].y, corners[7].z);
+				corners[6].Set(corners[1].x, corners[7].y, corners[7].z);
+				for(j=0; j<8; j++){
+					corners[j] = matrix * corners[j];
 					
-					if( extendsSet ){
-						pMinExtend.SetSmallest( corners[ j ] );
-						pMaxExtend.SetLargest( corners[ j ] );
+					if(extendsSet){
+						pMinExtend.SetSmallest(corners[j]);
+						pMaxExtend.SetLargest(corners[j]);
 						
 					}else{
-						pMinExtend = pMaxExtend = corners[ j ];
+						pMinExtend = pMaxExtend = corners[j];
 						extendsSet = true;
 					}
 				}
 			}
 			
-			for( i=0; i<pModelRigMappings.GetCount(); i++ ){
-				if( pModelRigMappings.GetAt( i ) == -1 ){
+			for(i=0; i<pModelRigMappings.GetCount(); i++){
+				if(pModelRigMappings.GetAt(i) == -1){
 					continue;
 				}
 				
-				const deoglRModel::sExtends &boneExtends = model.GetBoneExtends()[ i ];
-				const decDMatrix boneMatrix( decDMatrix( component.GetBoneAt(
-					pModelRigMappings.GetAt( i ) ).GetMatrix() ) * matrix );
+				const deoglRModel::sExtends &boneExtends = model.GetBoneExtends()[i];
+				const decDMatrix boneMatrix(decDMatrix(component.GetBoneAt(
+					pModelRigMappings.GetAt(i)).GetMatrix()) * matrix);
 				
-				corners[7].Set( boneExtends.minimum );
-				corners[1].Set( boneExtends.maximum );
-				corners[0].Set( corners[7].x, corners[1].y, corners[1].z );
-				corners[2].Set( corners[1].x, corners[7].y, corners[1].z );
-				corners[3].Set( corners[7].x, corners[7].y, corners[1].z );
-				corners[4].Set( corners[7].x, corners[1].y, corners[7].z );
-				corners[5].Set( corners[1].x, corners[1].y, corners[7].z );
-				corners[6].Set( corners[1].x, corners[7].y, corners[7].z );
+				corners[7].Set(boneExtends.minimum);
+				corners[1].Set(boneExtends.maximum);
+				corners[0].Set(corners[7].x, corners[1].y, corners[1].z);
+				corners[2].Set(corners[1].x, corners[7].y, corners[1].z);
+				corners[3].Set(corners[7].x, corners[7].y, corners[1].z);
+				corners[4].Set(corners[7].x, corners[1].y, corners[7].z);
+				corners[5].Set(corners[1].x, corners[1].y, corners[7].z);
+				corners[6].Set(corners[1].x, corners[7].y, corners[7].z);
 				
-				for( j=0; j<8; j++ ){
-					corners[ j ] = boneMatrix * corners[ j ];
+				for(j=0; j<8; j++){
+					corners[j] = boneMatrix * corners[j];
 					
-					if( extendsSet ){
-						pMinExtend.SetSmallest( corners[ j ] );
-						pMaxExtend.SetLargest( corners[ j ] );
+					if(extendsSet){
+						pMinExtend.SetSmallest(corners[j]);
+						pMaxExtend.SetLargest(corners[j]);
 						
 					}else{
-						pMinExtend = pMaxExtend = corners[ j ];
+						pMinExtend = pMaxExtend = corners[j];
 						extendsSet = true;
 					}
 				}
@@ -985,46 +985,46 @@ void deoglRComponent::UpdateExtends( deComponent &component ){
 			
 		}else{
 			const decDMatrix &matrix = component.GetMatrix();
-			corners[7] = decDVector( model.GetExtends().minimum );
-			corners[1] = decDVector( model.GetExtends().maximum );
-			corners[0].Set( corners[7].x, corners[1].y, corners[1].z );
-			corners[2].Set( corners[1].x, corners[7].y, corners[1].z );
-			corners[3].Set( corners[7].x, corners[7].y, corners[1].z );
-			corners[4].Set( corners[7].x, corners[1].y, corners[7].z );
-			corners[5].Set( corners[1].x, corners[1].y, corners[7].z );
-			corners[6].Set( corners[1].x, corners[7].y, corners[7].z );
-			for( j=0; j<8; j++ ){
-				corners[ j ] = matrix * corners[ j ];
+			corners[7] = decDVector(model.GetExtends().minimum);
+			corners[1] = decDVector(model.GetExtends().maximum);
+			corners[0].Set(corners[7].x, corners[1].y, corners[1].z);
+			corners[2].Set(corners[1].x, corners[7].y, corners[1].z);
+			corners[3].Set(corners[7].x, corners[7].y, corners[1].z);
+			corners[4].Set(corners[7].x, corners[1].y, corners[7].z);
+			corners[5].Set(corners[1].x, corners[1].y, corners[7].z);
+			corners[6].Set(corners[1].x, corners[7].y, corners[7].z);
+			for(j=0; j<8; j++){
+				corners[j] = matrix * corners[j];
 			}
 			
-			pMinExtend = pMaxExtend = corners[ 0 ];
-			for( j=1; j<8; j++ ){
-				pMinExtend.SetSmallest( corners[ j ] );
-				pMaxExtend.SetLargest( corners[ j ] );
+			pMinExtend = pMaxExtend = corners[0];
+			for(j=1; j<8; j++){
+				pMinExtend.SetSmallest(corners[j]);
+				pMaxExtend.SetLargest(corners[j]);
 			}
 		}
 	}
 	
-	const decDVector position( pMatrix.GetPosition() );
-	pLocalMinExtend = ( pMinExtend - position ).ToVector();
-	pLocalMaxExtend = ( pMaxExtend - position ).ToVector();
+	const decDVector position(pMatrix.GetPosition());
+	pLocalMinExtend = (pMinExtend - position).ToVector();
+	pLocalMaxExtend = (pMaxExtend - position).ToVector();
 	
 	NotifyBoundariesChanged();
 }
 
 
 
-void deoglRComponent::SetSortDistance( float distance ){
+void deoglRComponent::SetSortDistance(float distance){
 	pSortDistance = distance;
 }
 
 
 
-void deoglRComponent::SetLit( bool lit ){
+void deoglRComponent::SetLit(bool lit){
 	pLit = lit;
 }
 
-void deoglRComponent::SetOccluded( bool occluded ){
+void deoglRComponent::SetOccluded(bool occluded){
 	pOccluded = occluded;
 }
 
@@ -1035,8 +1035,8 @@ void deoglRComponent::SetOccluded( bool occluded ){
 // 	pCameraInside = ( relPos >= minExtend && relPos <= maxExtend );
 // }
 
-void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
-	if( renderMode == pRenderMode ){
+void deoglRComponent::SetRenderMode(eRenderModes renderMode){
+	if(renderMode == pRenderMode){
 		return;
 	}
 	
@@ -1044,7 +1044,7 @@ void deoglRComponent::SetRenderMode( eRenderModes renderMode ){
 	pDirtyLODVBOs = true;
 	pRequiresPrepareForRender();
 	
-	if( pMovementHint == deComponent::emhStationary ){
+	if(pMovementHint == deComponent::emhStationary){
 		NotifySkiesUpdateStatic();
 	}
 }
@@ -1056,8 +1056,8 @@ void deoglRComponent::DirtySolid(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::SetRenderStatic( bool isStatic ){
-	if( isStatic == pRenderStatic ){
+void deoglRComponent::SetRenderStatic(bool isStatic){
+	if(isStatic == pRenderStatic){
 		return;
 	}
 	
@@ -1065,10 +1065,10 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 	
 	const int lightCount = pLightList.GetCount();
 	int i;
-	for( i=0; i<lightCount; i++ ){
-		deoglRLight &light = *pLightList.GetAt( i );
-		light.RemoveComponent( this );
-		light.AddComponent( this );
+	for(i=0; i<lightCount; i++){
+		deoglRLight &light = *pLightList.GetAt(i);
+		light.RemoveComponent(this);
+		light.AddComponent(this);
 	}
 	
 	NotifyRenderStaticChanged();
@@ -1077,14 +1077,14 @@ void deoglRComponent::SetRenderStatic( bool isStatic ){
 	pWorldComputeElement->ComputeUpdateElement();
 	
 	const int decalCount = pDecals.GetCount();
-	for( i=0; i<decalCount; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->UpdateWorldCompute();
+	for(i=0; i<decalCount; i++){
+		((deoglRDecal*)pDecals.GetAt(i))->UpdateWorldCompute();
 	}
 }
 
 void deoglRComponent::ResetRenderStatic(){
 	pStaticSince = 0.0f;
-	SetRenderStatic( false );
+	SetRenderStatic(false);
 }
 
 bool deoglRComponent::IsGIStatic() const{
@@ -1093,7 +1093,7 @@ bool deoglRComponent::IsGIStatic() const{
 
 
 
-void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
+void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// note about the switch process. we have to wait setting the fading environment map until the
 	// new environment map has been set. if this is not done the SetRenderEnvMapFade function tries
 	// to add the component to the component list of the same environment map as the current one
@@ -1104,22 +1104,22 @@ void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	// switch may still occur. a possible solution would be to delay the switch until the fading
 	// is finished. for this we would have to keep the dirty flag set, which is currently set
 	// outside somewhere
-	if( envmap == pRenderEnvMap ){
+	if(envmap == pRenderEnvMap){
 		return;
 	}
 	
 	const deoglEnvironmentMap::Ref guard(pRenderEnvMap);
 	
-	if( pRenderEnvMap ){
-		pRenderEnvMap->GetComponentList().RemoveIfExisting( this );
+	if(pRenderEnvMap){
+		pRenderEnvMap->GetComponentList().RemoveIfExisting(this);
 		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
 	
-	if( envmap ){
+	if(envmap){
 		envmap->AddReference();
-		envmap->GetComponentList().Add( this );
+		envmap->GetComponentList().Add(this);
 	}
 	
 	// now it is safe to set the fade env map
@@ -1131,28 +1131,28 @@ void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	}
 }
 
-void deoglRComponent::SetRenderEnvMapFade( deoglEnvironmentMap *envmap ){
-	if( envmap == pRenderEnvMapFade ){
+void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
+	if(envmap == pRenderEnvMapFade){
 		return;
 	}
 	
-	if( pRenderEnvMapFade ){
-		pRenderEnvMapFade->GetComponentList().RemoveIfExisting( this );
+	if(pRenderEnvMapFade){
+		pRenderEnvMapFade->GetComponentList().RemoveIfExisting(this);
 		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
 	
-	if( envmap ){
+	if(envmap){
 		envmap->AddReference();
-		envmap->GetComponentList().Add( this );
+		envmap->GetComponentList().Add(this);
 	}
 	
 	MarkAllTexturesTUCsDirtyEnvMapUse();
 }
 
-void deoglRComponent::SetRenderEnvMapFadePerTime( float fadePerTime ){
-	if( fadePerTime < 0.1f ){
+void deoglRComponent::SetRenderEnvMapFadePerTime(float fadePerTime){
+	if(fadePerTime < 0.1f){
 		pRenderEnvMapFadePerTime = 0.1f;
 		
 	}else{
@@ -1160,15 +1160,15 @@ void deoglRComponent::SetRenderEnvMapFadePerTime( float fadePerTime ){
 	}
 }
 
-void deoglRComponent::SetRenderEnvMapFadeFactor( float factor ){
-	if( factor < 0.0f ){
+void deoglRComponent::SetRenderEnvMapFadeFactor(float factor){
+	if(factor < 0.0f){
 		factor = 0.0f;
 		
-	}else if( factor > 1.0f ){
+	}else if(factor > 1.0f){
 		factor = 1.0f;
 	}
 	
-	if( fabsf( factor - pRenderEnvMapFadeFactor ) > 0.001f ){
+	if(fabsf(factor - pRenderEnvMapFadeFactor) > 0.001f){
 		pRenderEnvMapFadeFactor = factor;
 		
 	}
@@ -1180,19 +1180,19 @@ void deoglRComponent::WorldEnvMapLayoutChanged(){
 }
 
 void deoglRComponent::InvalidateRenderEnvMap(){
-	if( ! pRenderEnvMap && ! pRenderEnvMapFade ){
+	if(! pRenderEnvMap && ! pRenderEnvMapFade){
 		return;
 	}
 	
-	SetRenderEnvMap( nullptr );
-	SetRenderEnvMapFade( nullptr );
+	SetRenderEnvMap(nullptr);
+	SetRenderEnvMapFade(nullptr);
 	pDirtyRenderEnvMap = true;
 	
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap ){
-	if( pRenderEnvMap == envmap || pRenderEnvMapFade == envmap ){
+void deoglRComponent::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
+	if(pRenderEnvMap == envmap || pRenderEnvMapFade == envmap){
 		InvalidateRenderEnvMap();
 	}
 }
@@ -1219,7 +1219,7 @@ void deoglRComponent::WorldReferencePointChanged(){
 #define PFRT_FINAL(...)
 #endif
 
-void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
+void deoglRComponent::PrepareForRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
 	/*
 	if(pDirtyModelVBOs|pDirtyOccMeshVBO|pDirtyOccMeshSharedSPBElement|pDirtyLODVBOs
 	|pDirtyLODRenderTaskConfigs|pDirtyModelRigMappings|pDirtySolid|pDirtyPrepareSkinStateRenderables
@@ -1241,9 +1241,9 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 	pPrepareLODVBOs(); PFRT_SAMPLE(LODVBOs)
 	pPrepareRenderEnvMap(); PFRT_SAMPLE(RenderEnvMap)
 	
-	pCheckRenderModifier( plan.GetCamera() );
+	pCheckRenderModifier(plan.GetCamera());
 	pPrepareSkinStateConstructed(); PFRT_SAMPLE(SkinStateConstructed)
-	pPrepareSkinStateRenderables( mask ); PFRT_SAMPLE(SkinStateRenderables)
+	pPrepareSkinStateRenderables(mask); PFRT_SAMPLE(SkinStateRenderables)
 	pPrepareSolidity(); PFRT_SAMPLE(Solidity)
 	
 	pPrepareParamBlocks(); PFRT_SAMPLE(ParamBlocks)
@@ -1256,7 +1256,7 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 	
 	pPrepareLODRenderTaskConfigs(); PFRT_SAMPLE(LODRenderTaskConfigs)
 	
-	pPrepareDecals( plan, mask ); PFRT_SAMPLE(Decals)
+	pPrepareDecals(plan, mask); PFRT_SAMPLE(Decals)
 	
 	PFRT_FINAL("mv=%dys lv=%dys rem=%dys ssr=%dys s=%dys pb=%dys tt=%dys tpb=%dys omv=%dys dom=%dys omri=%dys lrtc=%dys d=%dys ssc=%dys",
 		(int)(timeModelVBOs*1e6f), (int)(timeLODVBOs*1e6f), (int)(timeRenderEnvMap*1e6f),
@@ -1267,9 +1267,9 @@ void deoglRComponent::PrepareForRender( deoglRenderPlan &plan, const deoglRender
 // 	if(pModel) printf("RComponent.PrepareForRender %s %dys\n", pModel->GetFilename().GetString(), (int)(timer.GetElapsedTime()*1e6f));
 }
 
-void deoglRComponent::PrepareForRenderRender( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
-	pRenderSkinStateRenderables( mask );
-	pPrepareDecalsRenderRenderables( plan, mask );
+void deoglRComponent::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
+	pRenderSkinStateRenderables(mask);
+	pPrepareDecalsRenderRenderables(plan, mask);
 }
 
 
@@ -1285,8 +1285,8 @@ void deoglRComponent::PrepareQuickDispose(){
 	
 	const int count = pDecals.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareQuickDispose();
+	for(i=0; i<count; i++){
+		((deoglRDecal*)pDecals.GetAt(i))->PrepareQuickDispose();
 	}
 }
 
@@ -1299,19 +1299,19 @@ int deoglRComponent::GetLODCount() const{
 	return pLODs.GetCount();
 }
 
-deoglRComponentLOD &deoglRComponent::GetLODAt( int index ) const{
-	return *( ( deoglRComponentLOD* )pLODs.GetAt( index < 0 ? pLODs.GetCount() + index : index ) );
+deoglRComponentLOD &deoglRComponent::GetLODAt(int index) const{
+	return *((deoglRComponentLOD*)pLODs.GetAt(index < 0 ? pLODs.GetCount() + index : index));
 }
 
 void deoglRComponent::RemoveAllLODs(){
 	pLODs.RemoveAll();
 }
 
-void deoglRComponent::AddLOD( deoglRComponentLOD *lod ){
-	pLODs.Add( lod );
+void deoglRComponent::AddLOD(deoglRComponentLOD *lod){
+	pLODs.Add(lod);
 }
 
-void deoglRComponent::SetLODErrorScaling( float errorScaling ){
+void deoglRComponent::SetLODErrorScaling(float errorScaling){
 	pLODErrorScaling = errorScaling;
 }
 
@@ -1328,8 +1328,8 @@ void deoglRComponent::DirtyLODRenderTaskConfigs(){
 void deoglRComponent::UpdateRTSInstances(){
 	const int count = pTextures.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->UpdateRTSInstances();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->UpdateRTSInstances();
 	}
 }
 
@@ -1342,8 +1342,8 @@ int deoglRComponent::GetTextureCount() const{
 	return pTextures.GetCount();
 }
 
-deoglRComponentTexture &deoglRComponent::GetTextureAt( int index ) const{
-	return *( ( deoglRComponentTexture* )pTextures.GetAt( index ) );
+deoglRComponentTexture &deoglRComponent::GetTextureAt(int index) const{
+	return *((deoglRComponentTexture*)pTextures.GetAt(index));
 }
 
 void deoglRComponent::RemoveAllTextures(){
@@ -1351,16 +1351,16 @@ void deoglRComponent::RemoveAllTextures(){
 	pOutlineTextureCount = 0;
 }
 
-void deoglRComponent::AddTexture( deoglRComponentTexture *texture ){
-	pTextures.Add( texture );
+void deoglRComponent::AddTexture(deoglRComponentTexture *texture){
+	pTextures.Add(texture);
 }
 
 void deoglRComponent::InvalidateAllTexturesParamBlocks(){
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->InvalidateParamBlocks();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->InvalidateParamBlocks();
 	}
 }
 
@@ -1368,8 +1368,8 @@ void deoglRComponent::MarkAllTexturesParamBlocksDirty(){
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->MarkParamBlocksDirty();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->MarkParamBlocksDirty();
 	}
 }
 
@@ -1377,8 +1377,8 @@ void deoglRComponent::MarkAllTexturesTUCsDirty(){
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->MarkTUCsDirty();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->MarkTUCsDirty();
 	}
 }
 
@@ -1386,31 +1386,31 @@ void deoglRComponent::MarkAllTexturesTUCsDirtyEnvMapUse(){
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->MarkTUCsDirtyEnvMapUse();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->MarkTUCsDirtyEnvMapUse();
 	}
 }
 
 void deoglRComponent::UpdateStaticTextures(){
 	pStaticTextures = true;
 	
-	if( ! pModel ){
+	if(! pModel){
 		return;
 	}
 	
 	const int count = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+	for(i=0; i<count; i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
 		deoglSkinState * const skinState = texture.GetUseSkinState();
-		if( ! skinState ){
+		if(! skinState){
 			continue;
 		}
 		
-		if( skinState->GetVideoPlayerCount() > 0
+		if(skinState->GetVideoPlayerCount() > 0
 		|| skinState->GetCalculatedPropertyCount() > 0
-		|| skinState->GetConstructedPropertyCount() > 0 ){
+		|| skinState->GetConstructedPropertyCount() > 0){
 			pStaticTextures = false;
 			break;
 		}
@@ -1418,7 +1418,7 @@ void deoglRComponent::UpdateStaticTextures(){
 }
 
 void deoglRComponent::DynamicSkinRenderablesChanged(){
-	if( ! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables() ){
+	if(! pDynamicSkin || ! pSkin || ! pSkin->GetHasRenderables()){
 		return;
 	}
 	
@@ -1429,19 +1429,19 @@ void deoglRComponent::DynamicSkinRenderablesChanged(){
 	const int textureCount = pTextures.GetCount();
 	int i;
 	
-	for( i=0; i<textureCount; i++ ){
-		deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
-		if( texture.GetSkin() || ! pSkin ){
+	for(i=0; i<textureCount; i++){
+		deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
+		if(texture.GetSkin() || ! pSkin){
 			continue;
 		}
 		
-		const int mapping = pModelSkinMappings.GetAt( i );
-		if( mapping == -1 ){
+		const int mapping = pModelSkinMappings.GetAt(i);
+		if(mapping == -1){
 			continue;
 		}
 		
-		const deoglSkinTexture &skinTexture = pSkin->GetTextureAt( mapping );
-		if( ! skinTexture.GetDynamicChannels() ){
+		const deoglSkinTexture &skinTexture = pSkin->GetTextureAt(mapping);
+		if(! skinTexture.GetDynamicChannels()){
 			continue;
 		}
 		
@@ -1450,8 +1450,8 @@ void deoglRComponent::DynamicSkinRenderablesChanged(){
 	}
 }
 
-void deoglRComponent::TextureDynamicSkinRenderablesChanged( deoglRComponentTexture &texture ){
-	if( ! texture.GetUseSkinState() || ! texture.GetUseDynamicSkin() ){
+void deoglRComponent::TextureDynamicSkinRenderablesChanged(deoglRComponentTexture &texture){
+	if(! texture.GetUseSkinState() || ! texture.GetUseDynamicSkin()){
 		return;
 	}
 	
@@ -1462,8 +1462,8 @@ void deoglRComponent::TextureDynamicSkinRenderablesChanged( deoglRComponentTextu
 void deoglRComponent::UpdateRenderableMapping(){
 	// udpate mappings of dynamic skin of component itself
 	pSkinState->RemoveAllRenderables();
-	if( pSkin && pDynamicSkin ){
-		pSkinState->AddRenderables( *pSkin, *pDynamicSkin );
+	if(pSkin && pDynamicSkin){
+		pSkinState->AddRenderables(*pSkin, *pDynamicSkin);
 	}
 	
 	// update mappings of dynamic skins of component textures is done in the texture
@@ -1482,10 +1482,10 @@ void deoglRComponent::UpdateTexturesUseSkin(){
 	
 	pOutlineTextureCount = 0;
 	
-	for( i=0; i<count; i++ ){
-		deoglRComponentTexture &texture = *( deoglRComponentTexture* )pTextures.GetAt( i );
+	for(i=0; i<count; i++){
+		deoglRComponentTexture &texture = *(deoglRComponentTexture*)pTextures.GetAt(i);
 		texture.UpdateUseSkin();
-		if( texture.GetUseSkinTexture() && texture.GetUseSkinTexture()->GetHasOutline() ){
+		if(texture.GetUseSkinTexture() && texture.GetUseSkinTexture()->GetHasOutline()){
 			pOutlineTextureCount++;
 		}
 	}
@@ -1494,7 +1494,7 @@ void deoglRComponent::UpdateTexturesUseSkin(){
 }
 
 void deoglRComponent::DirtyTextureTUCs(){
-	if( pDirtyTextureTUCs ){
+	if(pDirtyTextureTUCs){
 		return;
 	}
 	
@@ -1505,7 +1505,7 @@ void deoglRComponent::DirtyTextureTUCs(){
 }
 
 void deoglRComponent::DirtyTextureParamBlocks(){
-	if( pDirtyTextureParamBlocks ){
+	if(pDirtyTextureParamBlocks){
 		return;
 	}
 	
@@ -1522,20 +1522,20 @@ int deoglRComponent::GetDecalCount() const{
 	return pDecals.GetCount();
 }
 
-deoglRDecal *deoglRComponent::GetDecalAt( int index ) const{
-	return ( deoglRDecal* )pDecals.GetAt( index );
+deoglRDecal *deoglRComponent::GetDecalAt(int index) const{
+	return (deoglRDecal*)pDecals.GetAt(index);
 }
 
-void deoglRComponent::SyncDecalReferences( const deComponent &engComponent ){
+void deoglRComponent::SyncDecalReferences(const deComponent &engComponent){
 	// clear parent component on all decals marked removed. this invalidates decals and
 	// forces rebuilding the decal should they be added somewhere else
 	const int count = pDecals.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglRDecal &decal = *( ( deoglRDecal* )pDecals.GetAt( i ) );
-		if( decal.GetComponentMarkedRemove() ){
-			decal.SetParentComponent( NULL );
+	for(i=0; i<count; i++){
+		deoglRDecal &decal = *((deoglRDecal*)pDecals.GetAt(i));
+		if(decal.GetComponentMarkedRemove()){
+			decal.SetParentComponent(NULL);
 		}
 	}
 	
@@ -1544,15 +1544,15 @@ void deoglRComponent::SyncDecalReferences( const deComponent &engComponent ){
 	pDecals.RemoveAll();
 	
 	deDecal *engDecal = engComponent.GetRootDecal();
-	while( engDecal ){
-		deoglRDecal * const decal = ( ( deoglDecal* )engDecal->GetPeerGraphic() )->GetRDecal();
-		pDecals.Add( decal );
-		decal->SetComponentMarkedRemove( false );
-		decal->SetParentComponent( this );
+	while(engDecal){
+		deoglRDecal * const decal = ((deoglDecal*)engDecal->GetPeerGraphic())->GetRDecal();
+		pDecals.Add(decal);
+		decal->SetComponentMarkedRemove(false);
+		decal->SetParentComponent(this);
 		engDecal = engDecal->GetLLComponentNext();
 	}
 	
-	if( pDecals.GetCount() > 0 ){
+	if(pDecals.GetCount() > 0){
 		DecalRequiresPrepareForRender();
 	}
 }
@@ -1561,8 +1561,8 @@ void deoglRComponent::MarkAllDecalTexturesParamBlocksDirty(){
 	const int count = pDecals.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->MarkParamBlocksDirty();
+	for(i=0; i<count; i++){
+		((deoglRDecal*)pDecals.GetAt(i))->MarkParamBlocksDirty();
 	}
 }
 
@@ -1578,7 +1578,7 @@ void deoglRComponent::DecalRequiresPrepareForRender(){
 ////////////
 
 const decDVector &deoglRComponent::GetCullSphereCenter(){
-	if( pDirtyCulling ){
+	if(pDirtyCulling){
 		pUpdateCullSphere();
 		pDirtyCulling = false;
 	}
@@ -1587,7 +1587,7 @@ const decDVector &deoglRComponent::GetCullSphereCenter(){
 }
 
 float deoglRComponent::GetCullSphereRadius(){
-	if( pDirtyCulling ){
+	if(pDirtyCulling){
 		pUpdateCullSphere();
 		pDirtyCulling = false;
 	}
@@ -1604,47 +1604,47 @@ void deoglRComponent::SetDirtyCulling(){
 // Notifiers
 //////////////
 
-void deoglRComponent::AddListener( deoglComponentListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void deoglRComponent::AddListener(deoglComponentListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void deoglRComponent::RemoveListener( deoglComponentListener *listener ){
-	const int index = pListeners.IndexOf( listener );
-	if( index == -1 ){
+void deoglRComponent::RemoveListener(deoglComponentListener *listener){
+	const int index = pListeners.IndexOf(listener);
+	if(index == -1){
 		return;
 	}
 	
-	pListeners.Remove( listener );
+	pListeners.Remove(listener);
 	
-	if( pListenerIndex >= index ){
+	if(pListenerIndex >= index){
 		pListenerIndex--;
 	}
 }
 
 void deoglRComponent::NotifyBoundariesChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->BoundariesChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->BoundariesChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyComponentDestroyed(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ComponentDestroyed( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->ComponentDestroyed(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyParentWorldChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
+	while(pListenerIndex < pListeners.GetCount()){
 		try{ // temp hack
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ParentWorldChanged( *this );
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->ParentWorldChanged(*this);
 		}catch(const deException &e){ // temp hack
 			pRenderThread.GetLogger().LogException(e);
 		}
@@ -1654,24 +1654,24 @@ void deoglRComponent::NotifyParentWorldChanged(){
 
 void deoglRComponent::NotifyLayerMaskChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->LayerMaskChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->LayerMaskChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyRenderStaticChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->RenderStaticChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->RenderStaticChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyOcclusionMeshChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->OcclusionMeshChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->OcclusionMeshChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1682,67 +1682,67 @@ void deoglRComponent::NotifyTexturesChanged(){
 // 	pStaticTextures = false;
 	
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->TexturesChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->TexturesChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyTUCChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->TUCChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->TUCChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyMovementHintChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->MovementHintChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->MovementHintChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyGIImportanceChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->GIImportanceChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->GIImportanceChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyLightsDirtyLightVolume(){
-	if( ! pRenderStatic || ! pOcclusionMesh ){
+	if(! pRenderStatic || ! pOcclusionMesh){
 		return;
 	}
 	
 	const int lightCount = pLightList.GetCount();
 	int i;
 	
-	for( i=0; i<lightCount; i++ ){
-		pLightList.GetAt( i )->SetLightVolumeDirty();
+	for(i=0; i<lightCount; i++){
+		pLightList.GetAt(i)->SetLightVolumeDirty();
 	}
 }
 
 void deoglRComponent::NotifySkiesUpdateStatic(){
-	if( pParentWorld && ! pFirstRender ){
-		pParentWorld->SkiesNotifyUpdateStaticComponent( this );
+	if(pParentWorld && ! pFirstRender){
+		pParentWorld->SkiesNotifyUpdateStaticComponent(this);
 	}
 }
 
 void deoglRComponent::NotifyVisibilityChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->VisibilityChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->VisibilityChanged(*this);
 		pListenerIndex++;
 	}
 }
 
 void deoglRComponent::NotifyModelChanged(){
 	pListenerIndex = 0;
-	while( pListenerIndex < pListeners.GetCount() ){
-		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ModelChanged( *this );
+	while(pListenerIndex < pListeners.GetCount()){
+		((deoglComponentListener*)pListeners.GetAt(pListenerIndex))->ModelChanged(*this);
 		pListenerIndex++;
 	}
 }
@@ -1751,15 +1751,15 @@ void deoglRComponent::NotifyModelChanged(){
 // Render world usage
 ///////////////////////
 
-void deoglRComponent::SetWorldMarkedRemove( bool marked ){
+void deoglRComponent::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoglRComponent::SetLLWorldPrev( deoglRComponent *component ){
+void deoglRComponent::SetLLWorldPrev(deoglRComponent *component){
 	pLLWorldPrev = component;
 }
 
-void deoglRComponent::SetLLWorldNext( deoglRComponent *component ){
+void deoglRComponent::SetLLWorldNext(deoglRComponent *component){
 	pLLWorldNext = component;
 }
 
@@ -1771,7 +1771,7 @@ void deoglRComponent::SetLLWorldNext( deoglRComponent *component ){
 void deoglRComponent::pCleanUp(){
 	NotifyComponentDestroyed();
 	
-	SetParentWorld( NULL );
+	SetParentWorld(NULL);
 	
 	RemoveAllTextures();
 	RemoveAllLODs();
@@ -1780,46 +1780,46 @@ void deoglRComponent::pCleanUp(){
 	
 	pListeners.RemoveAll();
 	
-	if( pDynamicOcclusionMesh ){
+	if(pDynamicOcclusionMesh){
 		delete pDynamicOcclusionMesh;
 	}
 	
-	if( pBoneMatrices ){
+	if(pBoneMatrices){
 		delete [] pBoneMatrices;
 	}
 	
-	if( pOccMeshSharedSPBElement ){
+	if(pOccMeshSharedSPBElement){
 		pOccMeshSharedSPBElement->FreeReference();
 			// has to be done before pOcclusionMesh mesh is released
 	}
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
-	if( pDynamicSkin ){
+	if(pDynamicSkin){
 		pDynamicSkin->FreeReference();
 	}
-	if( pOcclusionMesh ){
+	if(pOcclusionMesh){
 		pOcclusionMesh->FreeReference();
 	}
-	if( pEnvMap ){
+	if(pEnvMap){
 		pEnvMap->FreeReference();
 	}
-	if( pRenderEnvMap ){
+	if(pRenderEnvMap){
 		pRenderEnvMap->FreeReference();
 	}
-	if( pRenderEnvMapFade ){
+	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->FreeReference();
 	}
 	
-	if( pSkinState ){
+	if(pSkinState){
 		delete pSkinState;
 	}
-	if( pVertexPositionSetWeights ){
+	if(pVertexPositionSetWeights){
 		delete [] pVertexPositionSetWeights;
 	}
 	
-	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	pRenderThread.GetUniqueKey().Return(pUniqueKey);
 }
 
 
@@ -1828,20 +1828,20 @@ void deoglRComponent::pInvalidateLODVBOs(){
 	const int count = pLODs.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->InvalidateVBO();
+	for(i=0; i<count; i++){
+		((deoglRComponentLOD*)pLODs.GetAt(i))->InvalidateVBO();
 	}
 }
 
 
 
 void deoglRComponent::pUpdateModelSkinMappings(){
-	if( ! pModel || ! pSkin ){
+	if(! pModel || ! pSkin){
 		const int count = pModelSkinMappings.GetCount();
 		int i;
 		
-		for( i=0; i<count; i++ ){
-			pModelSkinMappings.SetAt( i, -1 );
+		for(i=0; i<count; i++){
+			pModelSkinMappings.SetAt(i, -1);
 		}
 		return;
 	}
@@ -1851,16 +1851,16 @@ void deoglRComponent::pUpdateModelSkinMappings(){
 	const int count = pModelSkinMappings.GetCount();
 	int i, j;
 	
-	for( i=0; i<count; i++ ){
-		pModelSkinMappings.SetAt( i, -1 );
-		if( ! pSkin ){
+	for(i=0; i<count; i++){
+		pModelSkinMappings.SetAt(i, -1);
+		if(! pSkin){
 			continue;
 		}
 		
-		const decString &name = textureNames.GetAt( i );
-		for( j=0; j<pSkin->GetTextureCount(); j++ ){
-			if( pSkin->GetTextureAt( j ).GetName() == name ){
-				pModelSkinMappings.SetAt( i, j );
+		const decString &name = textureNames.GetAt(i);
+		for(j=0; j<pSkin->GetTextureCount(); j++){
+			if(pSkin->GetTextureAt(j).GetName() == name){
+				pModelSkinMappings.SetAt(i, j);
 				break;
 			}
 		}
@@ -1873,9 +1873,9 @@ void deoglRComponent::pUpdateModelSkinMappings(){
 	
 	// hack
 	/*if( pSkin ){
-		if( pEnvMap ){
-			if( pParentWorld ){
-				pParentWorld->RemoveEnvMap( pEnvMap );
+		if(pEnvMap){
+			if(pParentWorld){
+				pParentWorld->RemoveEnvMap(pEnvMap);
 			}
 			delete pEnvMap;
 			pEnvMap = NULL;
@@ -1887,23 +1887,23 @@ void deoglRComponent::pUpdateModelSkinMappings(){
 
 void deoglRComponent::pResizeModelSkinMappings(){
 	int count = 0;
-	if( pModel ){
+	if(pModel){
 		count = pModel->GetTextureNames().GetCount();
 	}
 	
-	if( count == pModelSkinMappings.GetCount() ){
+	if(count == pModelSkinMappings.GetCount()){
 		return;
 	}
 	
 	pModelSkinMappings.RemoveAll();
 	int i;
-	for( i=0; i<count; i++ ){
-		pModelSkinMappings.Add( -1 );
+	for(i=0; i<count; i++){
+		pModelSkinMappings.Add(-1);
 	}
 }
 
-void deoglRComponent::pUpdateModelRigMappings( const deComponent &component ){
-	if( ! pDirtyModelRigMappings ){
+void deoglRComponent::pUpdateModelRigMappings(const deComponent &component){
+	if(! pDirtyModelRigMappings){
 		return;
 	}
 	
@@ -1913,38 +1913,38 @@ void deoglRComponent::pUpdateModelRigMappings( const deComponent &component ){
 	const int count = pModelRigMappings.GetCount();
 	int i;
 	
-	if( ! pModel || ! rig ){
-		for( i=0; i<count; i++ ){
-			pModelRigMappings.SetAt( i, -1 );
+	if(! pModel || ! rig){
+		for(i=0; i<count; i++){
+			pModelRigMappings.SetAt(i, -1);
 		}
 		return;
 	}
 	
-	for( i=0; i<count; i++ ){
-		pModelRigMappings.SetAt( i, rig->IndexOfBoneNamed( pModel->GetBoneNames().GetAt( i ) ) );
+	for(i=0; i<count; i++){
+		pModelRigMappings.SetAt(i, rig->IndexOfBoneNamed(pModel->GetBoneNames().GetAt(i)));
 	}
 }
 
 void deoglRComponent::pResizeModelRigMappings(){
 	int count = 0;
-	if( pModel ){
+	if(pModel){
 		count = pModel->GetBoneNames().GetCount();
 	}
 	
-	if( count == pModelRigMappings.GetCount() ){
+	if(count == pModelRigMappings.GetCount()){
 		return;
 	}
 	
 	pModelRigMappings.RemoveAll();
 	int i;
-	for( i=0; i<count; i++ ){
-		pModelRigMappings.Add( -1 );
+	for(i=0; i<count; i++){
+		pModelRigMappings.Add(-1);
 	}
 	
 	pDirtyModelRigMappings = true;
 }
 
-void deoglRComponent::pCheckRenderModifier( deoglRCamera *rcamera ){
+void deoglRComponent::pCheckRenderModifier(deoglRCamera *rcamera){
 	// TODO implement modifiers in a proper way
 #if 0
 	int i, count = pComponent->GetModifierCount();
@@ -1954,15 +1954,15 @@ void deoglRComponent::pCheckRenderModifier( deoglRCamera *rcamera ){
 	deSkin *finalSkin = pComponent->GetSkin();
 	
 	// determine the skin to use
-	if( rcamera ){
+	if(rcamera){
 		const deCamera &camera = rcamera->GetCamera()->GetCamera();
 		renderModifierCount = camera.GetRenderModifierCount();
 		
-		for( i=0; i<count; i++ ){
-			modifier = pComponent->GetModifierAt( i );
+		for(i=0; i<count; i++){
+			modifier = pComponent->GetModifierAt(i);
 			renModIndex = modifier->GetModifierIndex();
-			if( renModIndex < renderModifierCount && camera.GetRenderModifierEnabledAt( renModIndex ) ){
-				if( modifier->GetSkin() ){
+			if(renModIndex < renderModifierCount && camera.GetRenderModifierEnabledAt(renModIndex)){
+				if(modifier->GetSkin()){
 					finalSkin = modifier->GetSkin();
 				}
 			}
@@ -1970,14 +1970,14 @@ void deoglRComponent::pCheckRenderModifier( deoglRCamera *rcamera ){
 	}
 	
 	// if the skin changed update the mappings
-	skin = ( ( deoglSkin* )finalSkin->GetPeerGraphic() )->GetRSkin();
+	skin = ((deoglSkin*)finalSkin->GetPeerGraphic())->GetRSkin();
 	
-	if( pSkin != skin ){
-		if( pSkin ){
+	if(pSkin != skin){
+		if(pSkin){
 			pSkin->FreeReference();
 		}
 		pSkin = skin;
-		if( skin ){
+		if(skin){
 			skin->AddReference();
 		}
 		
@@ -1987,26 +1987,26 @@ void deoglRComponent::pCheckRenderModifier( deoglRCamera *rcamera ){
 }
 
 void deoglRComponent::pUpdateRenderMode(){
-	if( ! pModel ){
-		SetRenderMode( ermStatic );
+	if(! pModel){
+		SetRenderMode(ermStatic);
 		return;
 	}
 	
-	const deoglModelLOD &modelLOD = pModel->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = pModel->GetLODAt(0);
 	
-	if( pModel->GetVPSNames().GetCount() > 0 ){
-		SetRenderMode( ermDynamic );
+	if(pModel->GetVPSNames().GetCount() > 0){
+		SetRenderMode(ermDynamic);
 		
-	}else if( modelLOD.GetWeightsEntryCount() > 0 && pModel->GetBoneCount() > 0 ){
-		if( pBoneMatrixCount == 0 ){
-			SetRenderMode( ermStatic );
+	}else if(modelLOD.GetWeightsEntryCount() > 0 && pModel->GetBoneCount() > 0){
+		if(pBoneMatrixCount == 0){
+			SetRenderMode(ermStatic);
 			
 		}else{
-			SetRenderMode( ermDynamic );
+			SetRenderMode(ermDynamic);
 		}
 		
 	}else{
-		SetRenderMode( ermStatic );
+		SetRenderMode(ermStatic);
 	}
 }
 
@@ -2014,17 +2014,17 @@ void deoglRComponent::pUpdateCullSphere(){
 	deoglDCollisionSphere sphere;
 	deoglDCollisionBox box;
 	
-	box.SetFromExtends( pMinExtend, pMaxExtend );
-	box.GetEnclosingSphere( &sphere );
+	box.SetFromExtends(pMinExtend, pMaxExtend);
+	box.GetEnclosingSphere(&sphere);
 	
 	pCullSphereCenter = sphere.GetCenter();
-	pCullSphereRadius = ( float )sphere.GetRadius();
+	pCullSphereRadius = (float)sphere.GetRadius();
 }
 
 
 
 void deoglRComponent::pPrepareSolidity(){
-	if( ! pDirtySolid ){
+	if(! pDirtySolid){
 		return;
 	}
 	pDirtySolid = false;
@@ -2033,37 +2033,37 @@ void deoglRComponent::pPrepareSolidity(){
 	pOutlineSolid = true;
 	pXRaySolid = true;
 	
-	if( ! pModel ){
+	if(! pModel){
 		return;
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
 	
-	if( pSkin ){
+	if(pSkin){
 		// if a skin is assigned check each texture using the components for transparency
-		for( i=0; i<textureCount; i++ ){
-			deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		for(i=0; i<textureCount; i++){
+			deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
 			deoglRSkin *skin = texture.GetSkin();
 			int textureNumber = 0;
 			
-			if( skin && skin->GetTextureCount() == 0 ){
+			if(skin && skin->GetTextureCount() == 0){
 				skin = NULL;
 			}
 			
-			if( ! skin ){
-				const int mapping = pModelSkinMappings.GetAt( i );
-				if( mapping != -1 ){
+			if(! skin){
+				const int mapping = pModelSkinMappings.GetAt(i);
+				if(mapping != -1){
 					textureNumber = mapping;
 					skin = pSkin;
 				}
 			}
 			
-			if( ! skin ){
+			if(! skin){
 				continue;
 			}
 			
-			const deoglSkinTexture &skinTexture = skin->GetTextureAt( textureNumber );
+			const deoglSkinTexture &skinTexture = skin->GetTextureAt(textureNumber);
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
@@ -2072,14 +2072,14 @@ void deoglRComponent::pPrepareSolidity(){
 	}else{
 		// if no skin is assigned the component can only be transparent
 		// if one or more assigned texture skins are transparent
-		for( i =0; i <textureCount; i++ ){
-			deoglRComponentTexture &texture = *( ( deoglRComponentTexture* )pTextures.GetAt( i ) );
+		for(i =0; i <textureCount; i++){
+			deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
 			deoglRSkin *skin = texture.GetSkin();
-			if( ! skin || skin->GetTextureCount() == 0 ){
+			if(! skin || skin->GetTextureCount() == 0){
 				continue;
 			}
 			
-			const deoglSkinTexture &skinTexture = skin->GetTextureAt( 0 );
+			const deoglSkinTexture &skinTexture = skin->GetTextureAt(0);
 			pSolid &= skinTexture.GetSolid();
 			pOutlineSolid &= skinTexture.GetIsOutlineSolid();
 			pXRaySolid &= ! skinTexture.GetXRay() || skinTexture.GetSolid();
@@ -2088,12 +2088,12 @@ void deoglRComponent::pPrepareSolidity(){
 }
 
 void deoglRComponent::pPrepareModelVBOs(){
-	if( ! pDirtyModelVBOs ){
+	if(! pDirtyModelVBOs){
 		return;
 	}
 	pDirtyModelVBOs = false;
 	
-	if( ! pModel ){
+	if(! pModel){
 		return;
 	}
 	
@@ -2101,13 +2101,13 @@ void deoglRComponent::pPrepareModelVBOs(){
 	const int count = model.GetLODCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoglModelLOD &modelLOD = model.GetLODAt( i );
+	for(i=0; i<count; i++){
+		deoglModelLOD &modelLOD = model.GetLODAt(i);
 		
 		modelLOD.PrepareVBOBlock();
 		modelLOD.PrepareVBOBlockVertPosSet();
 		
-		switch( pRenderThread.GetChoices().GetGPUTransformVertices() ){
+		switch(pRenderThread.GetChoices().GetGPUTransformVertices()){
 		case deoglRTChoices::egputvAccurate:
 			
 		case deoglRTChoices::egputvApproximate:
@@ -2121,7 +2121,7 @@ void deoglRComponent::pPrepareModelVBOs(){
 }
 
 void deoglRComponent::pPrepareLODVBOs(){
-	if( ! pDirtyLODVBOs ){
+	if(! pDirtyLODVBOs){
 		return;
 	}
 	pDirtyLODVBOs = false;
@@ -2129,42 +2129,42 @@ void deoglRComponent::pPrepareLODVBOs(){
 	const int count = pLODs.GetCount();
 	int i;
 	
-	if( pRenderMode == ermDynamic ){
-		for( i=0; i<count; i++ ){
-			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->UpdateVBO();
+	if(pRenderMode == ermDynamic){
+		for(i=0; i<count; i++){
+			((deoglRComponentLOD*)pLODs.GetAt(i))->UpdateVBO();
 		}
 		
 	}else{
-		for( i=0; i<count; i++ ){
-			( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->FreeVBO();
+		for(i=0; i<count; i++){
+			((deoglRComponentLOD*)pLODs.GetAt(i))->FreeVBO();
 		}
 	}
 }
 
 void deoglRComponent::pPrepareLODRenderTaskConfigs(){
-	if( ! pDirtyLODRenderTaskConfigs ){
+	if(! pDirtyLODRenderTaskConfigs){
 		return;
 	}
 	pDirtyLODRenderTaskConfigs = false;
 	
 	const int count = pLODs.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentLOD* )pLODs.GetAt( i ) )->UpdateRenderTaskConfigurations();
+	for(i=0; i<count; i++){
+		((deoglRComponentLOD*)pLODs.GetAt(i))->UpdateRenderTaskConfigurations();
 	}
 }
 
 void deoglRComponent::pPrepareRenderEnvMap(){
-	if( ! pDirtyRenderEnvMap ){
+	if(! pDirtyRenderEnvMap){
 		return;
 	}
 	pDirtyRenderEnvMap = false;
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+	if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap){
 		return;
 	}
 	
-	DEASSERT_NOTNULL( pParentWorld )
+	DEASSERT_NOTNULL(pParentWorld)
 	
 	// for the time being we simply pick the environment map that is closest to the component position.
 	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
@@ -2184,75 +2184,75 @@ void deoglRComponent::pPrepareRenderEnvMap(){
 	deoglFindBestEnvMap visitor;
 	decDVector position;
 	
-	position = ( pMinExtend + pMaxExtend ) * 0.5;
+	position = (pMinExtend + pMaxExtend) * 0.5;
 	
-	visitor.SetPosition( position );
+	visitor.SetPosition(position);
 	//pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
-	visitor.VisitList( pParentWorld->GetEnvMapList() );
+	visitor.VisitList(pParentWorld->GetEnvMapList());
 	
-	if( visitor.GetEnvMap() ){
-		SetRenderEnvMap( visitor.GetEnvMap() );
+	if(visitor.GetEnvMap()){
+		SetRenderEnvMap(visitor.GetEnvMap());
 		
-	}else if( pParentWorld->GetSkyEnvironmentMap() ){
-		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
+	}else if(pParentWorld->GetSkyEnvironmentMap()){
+		SetRenderEnvMap(pParentWorld->GetSkyEnvironmentMap());
 		
 	}else{
-		SetRenderEnvMap( nullptr );
-		SetRenderEnvMapFade( nullptr );
+		SetRenderEnvMap(nullptr);
+		SetRenderEnvMapFade(nullptr);
 		pRenderEnvMapFadeFactor = 1.0f;
 	}
 	//pOgl->LogInfoFormat( "update component %p render env map %p\n", pComponent, pRenderEnvMap );
 }
 
-void deoglRComponent::pPrepareSkinStateRenderables( const deoglRenderPlanMasked *plan ){
-	if( ! pDirtyPrepareSkinStateRenderables ){
+void deoglRComponent::pPrepareSkinStateRenderables(const deoglRenderPlanMasked *plan){
+	if(! pDirtyPrepareSkinStateRenderables){
 		return;
 	}
 	pDirtyPrepareSkinStateRenderables = false;
 	pDirtyRenderSkinStateRenderables = true;
 	
-	if( pSkinState ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, plan );
+	if(pSkinState){
+		pSkinState->PrepareRenderables(pSkin, pDynamicSkin, plan);
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateRenderables( plan );
+	for(i=0; i<textureCount; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareSkinStateRenderables(plan);
 	}
 }
 
-void deoglRComponent::pRenderSkinStateRenderables( const deoglRenderPlanMasked *plan ){
-	if( ! pDirtyRenderSkinStateRenderables ){
+void deoglRComponent::pRenderSkinStateRenderables(const deoglRenderPlanMasked *plan){
+	if(! pDirtyRenderSkinStateRenderables){
 		return;
 	}
 	pDirtyRenderSkinStateRenderables = false;
 	
-	if( pSkinState ){
-		pSkinState->RenderRenderables( pSkin, pDynamicSkin, plan );
+	if(pSkinState){
+		pSkinState->RenderRenderables(pSkin, pDynamicSkin, plan);
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->RenderSkinStateRenderables( plan );
+	for(i=0; i<textureCount; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->RenderSkinStateRenderables(plan);
 	}
 }
 
 void deoglRComponent::pPrepareSkinStateConstructed(){
-	if( pSkinState ){
+	if(pSkinState){
 		pSkinState->PrepareConstructedProperties();
 	}
 	
 	const int textureCount = pTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareSkinStateConstructed();
+	for(i=0; i<textureCount; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareSkinStateConstructed();
 	}
 }
 
 void deoglRComponent::pPrepareTextureTUCs(){
-	if( ! pDirtyTextureTUCs ){
+	if(! pDirtyTextureTUCs){
 		return;
 	}
 	
@@ -2260,29 +2260,29 @@ void deoglRComponent::pPrepareTextureTUCs(){
 	
 	const int count = pTextures.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareTUCs();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareTUCs();
 	}
 }
 
 void deoglRComponent::pPrepareParamBlocks(){
-	if( ! pValidOccMeshSharedSPBElement ){
+	if(! pValidOccMeshSharedSPBElement){
 		// shared spb
-		if( pOccMeshSharedSPBElement ){
+		if(pOccMeshSharedSPBElement){
 			pOccMeshSharedSPBElement->FreeReference();
 			pOccMeshSharedSPBElement = NULL;
 		}
 		
-		if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		if(pRenderThread.GetChoices().GetSharedSPBUseSSBO()){
 			pOccMeshSharedSPBElement = pRenderThread.GetBufferObject()
-				.GetSharedSPBList( deoglRTBufferObject::esspblOccMeshInstanceSSBO ).AddElement();
+				.GetSharedSPBList(deoglRTBufferObject::esspblOccMeshInstanceSSBO).AddElement();
 			
 		}else{
-			if( pRenderThread.GetChoices().GetGlobalSharedSPBLists() ){
+			if(pRenderThread.GetChoices().GetGlobalSharedSPBLists()){
 				pOccMeshSharedSPBElement = pRenderThread.GetBufferObject()
-					.GetSharedSPBList( deoglRTBufferObject::esspblOccMeshInstanceUBO ).AddElement();
+					.GetSharedSPBList(deoglRTBufferObject::esspblOccMeshInstanceUBO).AddElement();
 				
-			}else if( pOcclusionMesh ){
+			}else if(pOcclusionMesh){
 				pOccMeshSharedSPBElement = pOcclusionMesh->GetSharedSPBListUBO().AddElement();
 			}
 		}
@@ -2291,19 +2291,19 @@ void deoglRComponent::pPrepareParamBlocks(){
 		pOccMeshSharedSPBDoubleSided = nullptr;
 		pOccMeshSharedSPBSingleSided = nullptr;
 		
-		if( pOccMeshSharedSPBElement && pOcclusionMesh ){
+		if(pOccMeshSharedSPBElement && pOcclusionMesh){
 			deoglSharedSPBRTIGroupList &listDouble = pOcclusionMesh->GetRTIGroupDouble();
-			pOccMeshSharedSPBDoubleSided.TakeOver( listDouble.GetWith( pOccMeshSharedSPBElement->GetSPB() ) );
-			if( ! pOccMeshSharedSPBDoubleSided ){
-				pOccMeshSharedSPBDoubleSided.TakeOver( listDouble.AddWith( pOccMeshSharedSPBElement->GetSPB() ) );
-				pOccMeshSharedSPBDoubleSided->GetRTSInstance()->SetSubInstanceSPB( &pOccMeshSharedSPBElement->GetSPB() );
+			pOccMeshSharedSPBDoubleSided.TakeOver(listDouble.GetWith(pOccMeshSharedSPBElement->GetSPB()));
+			if(! pOccMeshSharedSPBDoubleSided){
+				pOccMeshSharedSPBDoubleSided.TakeOver(listDouble.AddWith(pOccMeshSharedSPBElement->GetSPB()));
+				pOccMeshSharedSPBDoubleSided->GetRTSInstance()->SetSubInstanceSPB(&pOccMeshSharedSPBElement->GetSPB());
 			}
 			
 			deoglSharedSPBRTIGroupList &listSingle = pOcclusionMesh->GetRTIGroupsSingle();
-			pOccMeshSharedSPBSingleSided.TakeOver( listSingle.GetWith( pOccMeshSharedSPBElement->GetSPB() ) );
-			if( ! pOccMeshSharedSPBSingleSided ){
-				pOccMeshSharedSPBSingleSided.TakeOver( listSingle.AddWith( pOccMeshSharedSPBElement->GetSPB() ) );
-				pOccMeshSharedSPBSingleSided->GetRTSInstance()->SetSubInstanceSPB( &pOccMeshSharedSPBElement->GetSPB() );
+			pOccMeshSharedSPBSingleSided.TakeOver(listSingle.GetWith(pOccMeshSharedSPBElement->GetSPB()));
+			if(! pOccMeshSharedSPBSingleSided){
+				pOccMeshSharedSPBSingleSided.TakeOver(listSingle.AddWith(pOccMeshSharedSPBElement->GetSPB()));
+				pOccMeshSharedSPBSingleSided->GetRTSInstance()->SetSubInstanceSPB(&pOccMeshSharedSPBElement->GetSPB());
 			}
 			
 			UpdateRTSInstances();
@@ -2313,10 +2313,10 @@ void deoglRComponent::pPrepareParamBlocks(){
 		pValidOccMeshSharedSPBElement = true;
 	}
 	
-	if( pDirtyOccMeshSharedSPBElement ){
-		if( pOccMeshSharedSPBElement ){
-			UpdateOccmeshInstanceParamBlock( deoglSharedSPBElementMapBuffer( *pOccMeshSharedSPBElement ),
-				pOccMeshSharedSPBElement->GetIndex() );
+	if(pDirtyOccMeshSharedSPBElement){
+		if(pOccMeshSharedSPBElement){
+			UpdateOccmeshInstanceParamBlock(deoglSharedSPBElementMapBuffer(*pOccMeshSharedSPBElement),
+				pOccMeshSharedSPBElement->GetIndex());
 		}
 		
 		pDirtyOccMeshSharedSPBElement = false;
@@ -2324,7 +2324,7 @@ void deoglRComponent::pPrepareParamBlocks(){
 }
 
 void deoglRComponent::pPrepareTextureParamBlocks(){
-	if( ! pDirtyTextureParamBlocks ){
+	if(! pDirtyTextureParamBlocks){
 		return;
 	}
 	
@@ -2332,13 +2332,13 @@ void deoglRComponent::pPrepareTextureParamBlocks(){
 	
 	const int count = pTextures.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRComponentTexture* )pTextures.GetAt( i ) )->PrepareParamBlocks();
+	for(i=0; i<count; i++){
+		((deoglRComponentTexture*)pTextures.GetAt(i))->PrepareParamBlocks();
 	}
 }
 
-void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
-	if( ! pDirtyDecals ){
+void deoglRComponent::pPrepareDecals(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
+	if(! pDirtyDecals){
 		return;
 	}
 	pDirtyDecals = false;
@@ -2346,63 +2346,63 @@ void deoglRComponent::pPrepareDecals( deoglRenderPlan &plan, const deoglRenderPl
 	
 	const int count = pDecals.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRender( plan, mask );
+	for(i=0; i<count; i++){
+		((deoglRDecal*)pDecals.GetAt(i))->PrepareForRender(plan, mask);
 	}
 }
 
-void deoglRComponent::pPrepareDecalsRenderRenderables( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask ){
-	if( ! pDirtyDecalsRenderRenderables ){
+void deoglRComponent::pPrepareDecalsRenderRenderables(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask){
+	if(! pDirtyDecalsRenderRenderables){
 		return;
 	}
 	pDirtyDecalsRenderRenderables = false;
 	
 	const int count = pDecals.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		( ( deoglRDecal* )pDecals.GetAt( i ) )->PrepareForRenderRender( plan, mask );
+	for(i=0; i<count; i++){
+		((deoglRDecal*)pDecals.GetAt(i))->PrepareForRenderRender(plan, mask);
 	}
 }
 
 void deoglRComponent::pPrepareOccMeshVBO(){
-	if( ! pDirtyOccMeshVBO ){
+	if(! pDirtyOccMeshVBO){
 		return;
 	}
 	pDirtyOccMeshVBO = false;
 	
-	if( pOcclusionMesh ){
+	if(pOcclusionMesh){
 		pOcclusionMesh->PrepareVBOBlock();
 	}
 }
 
 void deoglRComponent::pPrepareOccMeshRTSInstances(){
-	if( pOccMeshSharedSPBDoubleSided || pOccMeshSharedSPBSingleSided ){
+	if(pOccMeshSharedSPBDoubleSided || pOccMeshSharedSPBSingleSided){
 		const deoglSharedVBOBlock &block = *pOcclusionMesh->GetVBOBlock();
 		const int pointOffset = pDynamicOcclusionMesh ? 0 : block.GetOffset();
 		
-		if( pOccMeshSharedSPBDoubleSided ){
+		if(pOccMeshSharedSPBDoubleSided){
 			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBDoubleSided->GetRTSInstance();
-			rtsi.SetFirstPoint( pointOffset );
-			rtsi.SetFirstIndex( block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
-			rtsi.SetIndexCount( pOcclusionMesh->GetDoubleSidedFaceCount() * 3 );
+			rtsi.SetFirstPoint(pointOffset);
+			rtsi.SetFirstIndex(block.GetIndexOffset() + pOcclusionMesh->GetSingleSidedFaceCount() * 3);
+			rtsi.SetIndexCount(pOcclusionMesh->GetDoubleSidedFaceCount() * 3);
 		}
 		
-		if( pOccMeshSharedSPBSingleSided ){
+		if(pOccMeshSharedSPBSingleSided){
 			deoglRenderTaskSharedInstance &rtsi = *pOccMeshSharedSPBSingleSided->GetRTSInstance();
-			rtsi.SetFirstPoint( pointOffset );
-			rtsi.SetFirstIndex( block.GetIndexOffset() );
-			rtsi.SetIndexCount( pOcclusionMesh->GetSingleSidedFaceCount() * 3 );
+			rtsi.SetFirstPoint(pointOffset);
+			rtsi.SetFirstIndex(block.GetIndexOffset());
+			rtsi.SetIndexCount(pOcclusionMesh->GetSingleSidedFaceCount() * 3);
 		}
 	}
 }
 
 void deoglRComponent::pPrepareDynOccMesh(){
-	if( ! pDynOccMeshRequiresPrepareForRender ){
+	if(! pDynOccMeshRequiresPrepareForRender){
 		return;
 	}
 	pDynOccMeshRequiresPrepareForRender = false;
 	
-	if( pDynamicOcclusionMesh ){
+	if(pDynamicOcclusionMesh){
 		pDynamicOcclusionMesh->PrepareForRender();
 	}
 }
@@ -2413,17 +2413,17 @@ void deoglRComponent::pResizeBoneMatrices(){
 	const int boneCount = pModel ? pModel->GetBoneCount() : 0;
 	oglMatrix3x4 *matrices = NULL;
 	
-	if( boneCount > 0 ){
-		matrices = new oglMatrix3x4[ boneCount ];
+	if(boneCount > 0){
+		matrices = new oglMatrix3x4[boneCount];
 	}
 	
-	if( pBoneMatrices ){
+	if(pBoneMatrices){
 		delete [] pBoneMatrices;
 	}
 	pBoneMatrices = matrices;
 	pBoneMatrixCount = boneCount;
 	
-	if( pDynamicOcclusionMesh ){
+	if(pDynamicOcclusionMesh){
 		pDynamicOcclusionMesh->ComponentStateChanged();
 		pDynOccMeshRequiresPrepareForRender = true;
 	}
@@ -2435,15 +2435,15 @@ void deoglRComponent::pRemoveFromAllLights(){
 	const int count = pLightList.GetCount();
 	int i;
 	
-	for( i=0; i< count; i++ ){
-		pLightList.GetAt( i )->RemoveComponent( this );
+	for(i=0; i< count; i++){
+		pLightList.GetAt(i)->RemoveComponent(this);
 	}
 	
 	pLightList.RemoveAll();
 }
 
 void deoglRComponent::pRequiresPrepareForRender(){
-	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
-		pParentWorld->AddPrepareForRenderComponent( this );
+	if(! pLLPrepareForRenderWorld.GetList() && pParentWorld){
+		pParentWorld->AddPrepareForRenderComponent(this);
 	}
 }

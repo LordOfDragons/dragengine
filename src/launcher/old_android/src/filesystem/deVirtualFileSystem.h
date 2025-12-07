@@ -87,16 +87,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File exists. */
-	bool ExistsFile( const decPath &path ) const;
+	bool ExistsFile(const decPath &path) const;
 	
 	/** \brief File can be read from. */
-	bool CanReadFile( const decPath &path ) const;
+	bool CanReadFile(const decPath &path) const;
 	
 	/** \brief File can be written to. */
-	bool CanWriteFile( const decPath &path ) const;
+	bool CanWriteFile(const decPath &path) const;
 	
 	/** \brief File can be deleted. */
-	bool CanDeleteFile( const decPath &path ) const;
+	bool CanDeleteFile(const decPath &path) const;
 	
 	
 	
@@ -107,7 +107,7 @@ public:
 	 * 
 	 * \warning File reader has reference counted added. Use decBaseFileReader::Ref::TakeOver().
 	 */
-	decBaseFileReader *OpenFileForReading( const decPath &path ) const;
+	decBaseFileReader *OpenFileForReading(const decPath &path) const;
 	
 	/**
 	 * \brief Open file for writing.
@@ -116,43 +116,43 @@ public:
 	 * 
 	 * \warning File reader has reference counted added. Use decBaseFileWriter::Ref::TakeOver().
 	 */
-	decBaseFileWriter *OpenFileForWriting( const decPath &path ) const;
+	decBaseFileWriter *OpenFileForWriting(const decPath &path) const;
 	
 	/**
 	 * \brief Delete specified file.
 	 * 
 	 * Throws an exception if file can not be deleted.
 	 */
-	void DeleteFile( const decPath &path ) const;
+	void DeleteFile(const decPath &path) const;
 	
 	/**
 	 * \brief Touch file setting the modification time to the current time.
 	 */
-	void TouchFile( const decPath &path ) const;
+	void TouchFile(const decPath &path) const;
 	
 	/** \brief Search files. */
-	void SearchFiles( const decPath &directory, deFileSearchVisitor &visitor ) const;
+	void SearchFiles(const decPath &directory, deFileSearchVisitor &visitor) const;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * Throws an exception if file type can not be retrieved.
 	 */
-	deVFSContainer::eFileTypes GetFileType( const decPath &path ) const;
+	deVFSContainer::eFileTypes GetFileType(const decPath &path) const;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * Throws an exception if file type can not be retrieved.
 	 */
-	uint64_t GetFileSize( const decPath &path ) const;
+	uint64_t GetFileSize(const decPath &path) const;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * Throws an exception if file type can not be retrieved.
 	 */
-	TIME_SYSTEM GetFileModificationTime( const decPath &path ) const;
+	TIME_SYSTEM GetFileModificationTime(const decPath &path) const;
 	/*@}*/
 	
 	
@@ -163,27 +163,27 @@ public:
 	int GetContainerCount() const;
 	
 	/** \brief Container at position. */
-	deVFSContainer *GetContainerAt( int index ) const;
+	deVFSContainer *GetContainerAt(int index) const;
 	
 	/** \brief Index of container or -1 if absent. */
-	int IndexOfContainer( deVFSContainer *container ) const;
+	int IndexOfContainer(deVFSContainer *container) const;
 	
 	/** \brief Container is present. */
-	bool HasContainer( deVFSContainer *container ) const;
+	bool HasContainer(deVFSContainer *container) const;
 	
 	/**
 	 * \brief Add container.
 	 * 
 	 * \warning Breaks thread-safety if called after VFS is in use.
 	 */
-	void AddContainer( deVFSContainer *container );
+	void AddContainer(deVFSContainer *container);
 	
 	/**
 	 * \brief Remove container.
 	 * 
 	 * \warning Breaks thread-safety if called after VFS is in use.
 	 */
-	void RemoveContainer( deVFSContainer *container );
+	void RemoveContainer(deVFSContainer *container);
 	
 	/**
 	 * \brief Remove all containers.
@@ -196,9 +196,9 @@ public:
 	
 	
 private:
-	bool pMatchContainer( deVFSContainer &container,
-		const decPath &absolutePath, decPath &realtivePath ) const;
-	bool pMatchContainerParent( deVFSContainer &container, const decPath &path ) const;
+	bool pMatchContainer(deVFSContainer &container,
+		const decPath &absolutePath, decPath &realtivePath) const;
+	bool pMatchContainerParent(deVFSContainer &container, const decPath &path) const;
 };
 
 #endif

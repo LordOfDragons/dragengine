@@ -50,9 +50,9 @@ extern const int *vResourcePeerCreationOrder;
 // Constructor, Destructor
 ////////////////////////////
 
-deSynthesizerSystem::deSynthesizerSystem( deEngine *engine ) :
-deBaseSystem( engine, "Synthesizer", deModuleSystem::emtSynthesizer ),
-pActiveModule( NULL ){
+deSynthesizerSystem::deSynthesizerSystem(deEngine *engine) :
+deBaseSystem(engine, "Synthesizer", deModuleSystem::emtSynthesizer),
+pActiveModule(NULL){
 }
 
 deSynthesizerSystem::~deSynthesizerSystem(){
@@ -63,37 +63,37 @@ deSynthesizerSystem::~deSynthesizerSystem(){
 // Management
 ///////////////
 
-void deSynthesizerSystem::LoadSound( deSound *sound ){
-	if( ! GetIsRunning() ){
+void deSynthesizerSystem::LoadSound(deSound *sound){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( sound->GetPeerSynthesizer() ){
-		DETHROW( deeInvalidParam );
+	if(sound->GetPeerSynthesizer()){
+		DETHROW(deeInvalidParam);
 	}
-	sound->SetPeerSynthesizer( pActiveModule->CreateSound( sound ) );
+	sound->SetPeerSynthesizer(pActiveModule->CreateSound(sound));
 }
 
-void deSynthesizerSystem::LoadSynthesizer( deSynthesizer *synthesizer ){
-	if( ! GetIsRunning() ){
+void deSynthesizerSystem::LoadSynthesizer(deSynthesizer *synthesizer){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( synthesizer->GetPeerSynthesizer() ){
-		DETHROW( deeInvalidParam );
+	if(synthesizer->GetPeerSynthesizer()){
+		DETHROW(deeInvalidParam);
 	}
-	synthesizer->SetPeerSynthesizer( pActiveModule->CreateSynthesizer( synthesizer ) );
+	synthesizer->SetPeerSynthesizer(pActiveModule->CreateSynthesizer(synthesizer));
 }
 
-void deSynthesizerSystem::LoadSynthesizerInstance( deSynthesizerInstance *instance ){
-	if( ! GetIsRunning() ){
+void deSynthesizerSystem::LoadSynthesizerInstance(deSynthesizerInstance *instance){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( instance->GetPeerSynthesizer() ){
-		DETHROW( deeInvalidParam );
+	if(instance->GetPeerSynthesizer()){
+		DETHROW(deeInvalidParam);
 	}
-	instance->SetPeerSynthesizer( pActiveModule->CreateSynthesizerInstance( instance ) );
+	instance->SetPeerSynthesizer(pActiveModule->CreateSynthesizerInstance(instance));
 }
 
 
@@ -101,9 +101,9 @@ void deSynthesizerSystem::LoadSynthesizerInstance( deSynthesizerInstance *instan
 // Overloadables
 //////////////////
 
-void deSynthesizerSystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseSynthesizerModule* )module->GetModule();
+void deSynthesizerSystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseSynthesizerModule*)module->GetModule();
 }
 
 void deSynthesizerSystem::ClearPermanents(){
@@ -116,13 +116,13 @@ void deSynthesizerSystem::PostStart(){
 	int i;
 	
 	// init module
-	if( ! pActiveModule->Init() ){
-		DETHROW( deeInvalidAction );
+	if(! pActiveModule->Init()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// load synthesizer system related stuff
-	for( i=0; i<engine.GetResourceManagerCount(); i++ ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemSynthesizerLoad();
+	for(i=0; i<engine.GetResourceManagerCount(); i++){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemSynthesizerLoad();
 	}
 }
 
@@ -131,11 +131,11 @@ void deSynthesizerSystem::PreStop(){
 	int i;
 	
 	// remove all parallel tasks if present
-	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	// unload synthesizer system related stuff
-	for( i=engine.GetResourceManagerCount()-1; i>=0; i-- ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemSynthesizerUnload();
+	for(i=engine.GetResourceManagerCount()-1; i>=0; i--){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemSynthesizerUnload();
 	}
 	
 	// shutdown current module

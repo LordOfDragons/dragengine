@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupToggleEnableSize::aeURuleGroupToggleEnableSize( aeRuleGroup *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleGroupToggleEnableSize::aeURuleGroupToggleEnableSize(aeRuleGroup *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -50,9 +50,9 @@ aeURuleGroupToggleEnableSize::aeURuleGroupToggleEnableSize( aeRuleGroup *rule ){
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Rule group toggle enable size" );
+		SetShortInfo("Rule group toggle enable size");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ aeURuleGroupToggleEnableSize::~aeURuleGroupToggleEnableSize(){
 ///////////////
 
 void aeURuleGroupToggleEnableSize::Undo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(! pRule->GetEnableSize());
 }
 
 void aeURuleGroupToggleEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(! pRule->GetEnableSize());
 }
 
 
@@ -81,7 +81,7 @@ void aeURuleGroupToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnableSize::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

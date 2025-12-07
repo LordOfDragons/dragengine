@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new callback. */
-	debpPointContactCallback( const btVector3 &point, const decCollisionFilter &collisionFilter,
-		deBaseScriptingCollider &listener, debpCollisionDetection &colDet );
+	debpPointContactCallback(const btVector3 &point, const decCollisionFilter &collisionFilter,
+		deBaseScriptingCollider &listener, debpCollisionDetection &colDet);
 	/*@}*/
 	
 	
@@ -64,7 +64,7 @@ public:
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Process a collision proxy. */
-	virtual bool process( const btBroadphaseProxy *proxy );
+	virtual bool process(const btBroadphaseProxy *proxy);
 	/*@}*/
 };
 

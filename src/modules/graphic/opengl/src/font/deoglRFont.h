@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render font. */
-	deoglRFont( deoglRenderThread &renderThread, const deFont &font );
+	deoglRFont(deoglRenderThread &renderThread, const deFont &font);
 	
 protected:
 	/** Clean up render font. */
@@ -67,14 +67,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** Font is a colorable font. */
-	inline bool GetIsColorFont() const{ return pIsColorFont; }
+	inline bool GetIsColorFont() const{return pIsColorFont;}
 	
 	/** Glyphs. */
-	inline deoglRFontGlyphs &GetGlyphs(){ return pGlyphs; }
-	inline const deoglRFontGlyphs &GetGlyphs() const{ return pGlyphs; }
+	inline deoglRFontGlyphs &GetGlyphs(){return pGlyphs;}
+	inline const deoglRFontGlyphs &GetGlyphs() const{return pGlyphs;}
 	
 	
 	/** Finalize after asynchronous resource loading. */

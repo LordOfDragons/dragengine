@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSCategoryListener::gdeWPSCategoryListener( gdeWPSCategory &panel ) :
-pPanel( panel ){
+gdeWPSCategoryListener::gdeWPSCategoryListener(gdeWPSCategory &panel) :
+pPanel(panel){
 }
 
 gdeWPSCategoryListener::~gdeWPSCategoryListener(){
@@ -52,44 +52,44 @@ gdeWPSCategoryListener::~gdeWPSCategoryListener(){
 // Management
 ///////////////
 
-void gdeWPSCategoryListener::ObjectClassCategoriesChanged( gdeGameDefinition* ){
-	if( ! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectObjectClass ){
+void gdeWPSCategoryListener::ObjectClassCategoriesChanged(gdeGameDefinition*){
+	if(! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectObjectClass){
 		pPanel.UpdateCategory();
 	}
 }
 
-void gdeWPSCategoryListener::SkinCategoriesChanged( gdeGameDefinition* ){
-	if( ! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectSkin ){
+void gdeWPSCategoryListener::SkinCategoriesChanged(gdeGameDefinition*){
+	if(! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectSkin){
 		pPanel.UpdateCategory();
 	}
 }
 
-void gdeWPSCategoryListener::SkyCategoriesChanged( gdeGameDefinition* ){
-	if( ! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectSky ){
+void gdeWPSCategoryListener::SkyCategoriesChanged(gdeGameDefinition*){
+	if(! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectSky){
 		pPanel.UpdateCategory();
 	}
 }
 
-void gdeWPSCategoryListener::ParticleEmitterCategoriesChanged( gdeGameDefinition* ){
-	if( ! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectParticleEmitter ){
+void gdeWPSCategoryListener::ParticleEmitterCategoriesChanged(gdeGameDefinition*){
+	if(! pPanel.GetCategory() || pPanel.GetCategoryType() == gdeUCategoryBase::ectParticleEmitter){
 		pPanel.UpdateCategory();
 	}
 }
 
-void gdeWPSCategoryListener::ActiveCategoryChanged( gdeGameDefinition* ){
+void gdeWPSCategoryListener::ActiveCategoryChanged(gdeGameDefinition*){
 	pPanel.UpdateCategory();
 }
 
 
 
-void gdeWPSCategoryListener::ObjectClassStructureChanged( gdeGameDefinition* ){
-	if( pPanel.GetCategory() && pPanel.GetCategoryType() == gdeUCategoryBase::ectObjectClass ){
+void gdeWPSCategoryListener::ObjectClassStructureChanged(gdeGameDefinition*){
+	if(pPanel.GetCategory() && pPanel.GetCategoryType() == gdeUCategoryBase::ectObjectClass){
 		pPanel.UpdateListElements();
 	}
 }
 
-void gdeWPSCategoryListener::ObjectClassNameChanged( gdeGameDefinition*, gdeObjectClass* ){
-	if( pPanel.GetCategory() && pPanel.GetCategoryType() == gdeUCategoryBase::ectObjectClass ){
+void gdeWPSCategoryListener::ObjectClassNameChanged(gdeGameDefinition*, gdeObjectClass*){
+	if(pPanel.GetCategory() && pPanel.GetCategoryType() == gdeUCategoryBase::ectObjectClass){
 		pPanel.UpdateListElements();
 	}
 }

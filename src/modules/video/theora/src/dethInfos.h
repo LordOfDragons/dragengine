@@ -64,36 +64,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Info struct. */
-	inline th_info &GetInfo(){ return pInfo; }
+	inline th_info &GetInfo(){return pInfo;}
 	
 	/** \brief Comment struct. */
-	inline th_comment &GetComment(){ return pComment; }
+	inline th_comment &GetComment(){return pComment;}
 	
 	/** \brief Setup pointer. */
-	inline th_setup_info *GetSetupInfo() const{ return pSetupInfo; }
+	inline th_setup_info *GetSetupInfo() const{return pSetupInfo;}
 	
 	/** \brief Set setup pointer. */
-	void SetSetupInfo( th_setup_info *info );
+	void SetSetupInfo(th_setup_info *info);
 	
 	/** \brief Header finished reading. */
-	inline bool GetHeaderFinished() const{ return pHeaderFinished; }
+	inline bool GetHeaderFinished() const{return pHeaderFinished;}
 	
 	/** \brief Set if header finished reading. */
-	void SetHeaderFinished( bool headerFinished );
+	void SetHeaderFinished(bool headerFinished);
 	
 	
 	
 	/** \brief Audio info struct. */
-	inline vorbis_info &GetAudioInfo(){ return pAudioInfo; }
+	inline vorbis_info &GetAudioInfo(){return pAudioInfo;}
 	
 	/** \brief Audio comment struct. */
-	inline vorbis_comment &GetAudioComment(){ return pAudioComment; }
+	inline vorbis_comment &GetAudioComment(){return pAudioComment;}
 	
 	/** \brief Audio header finished reading. */
-	inline bool GetAudioHeaderFinished() const{ return pAudioHeaderFinished; }
+	inline bool GetAudioHeaderFinished() const{return pAudioHeaderFinished;}
 	
 	/** \brief Set if audio header finished reading. */
-	void SetAudioHeaderFinished( bool headerFinished );
+	void SetAudioHeaderFinished(bool headerFinished);
 	/*@}*/
 };
 

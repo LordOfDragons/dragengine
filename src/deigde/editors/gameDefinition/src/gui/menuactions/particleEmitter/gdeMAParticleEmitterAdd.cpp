@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAParticleEmitterAdd::gdeMAParticleEmitterAdd( gdeWindowMain &windowMain ) :
-gdeBaseAction( windowMain, "Add Particle Emitter...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add particle emitter" )
+gdeMAParticleEmitterAdd::gdeMAParticleEmitterAdd(gdeWindowMain &windowMain) :
+gdeBaseAction(windowMain, "Add Particle Emitter...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add particle emitter")
 {
 }
 
@@ -59,30 +59,30 @@ gdeBaseAction( windowMain, "Add Particle Emitter...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAParticleEmitterAdd::OnAction( gdeGameDefinition &gameDefinition ){
+igdeUndo *gdeMAParticleEmitterAdd::OnAction(gdeGameDefinition &gameDefinition){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	decString filename;
 	//dialog.SetFilename( ... last particleEmitter? what directory? );
 	
-	if( ! igdeCommonDialogs::GetFileOpen( &pWindowMain,
+	if(! igdeCommonDialogs::GetFileOpen(&pWindowMain,
 	"Select particle emitter", *gameDefinition.GetPreviewVFS(),
 	*environment.GetOpenFilePatternList( igdeEnvironment::efpltParticleEmitter ), filename ) ){
 		return NULL;
 	}
 	
-	if( gameDefinition.GetParticleEmitters().HasWithPath( filename ) ){
-		igdeCommonDialogs::Information( &pWindowMain, "Add Particle Emitter",
-			"Particle emitter with path exists already." );
+	if(gameDefinition.GetParticleEmitters().HasWithPath(filename)){
+		igdeCommonDialogs::Information(&pWindowMain, "Add Particle Emitter",
+			"Particle emitter with path exists already.");
 		return NULL;
 	}
 	
-	decString filetitle( decPath::CreatePathUnix( filename ).GetLastComponent() );
-	const int delimiter = filetitle.FindReverse( '.' );
-	if( delimiter != -1 ){
-		filetitle = filetitle.GetLeft( delimiter );
+	decString filetitle(decPath::CreatePathUnix(filename).GetLastComponent());
+	const int delimiter = filetitle.FindReverse('.');
+	if(delimiter != -1){
+		filetitle = filetitle.GetLeft(delimiter);
 	}
 	
 	const gdeParticleEmitter::Ref particleEmitter(gdeParticleEmitter::Ref::NewWith(filename, filetitle));
-	return new gdeUAddParticleEmitter( &gameDefinition,
-		particleEmitter );
+	return new gdeUAddParticleEmitter(&gameDefinition,
+		particleEmitter);
 }

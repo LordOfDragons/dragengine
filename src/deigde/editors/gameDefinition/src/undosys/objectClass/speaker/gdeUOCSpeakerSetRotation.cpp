@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRotation::gdeUOCSpeakerSetRotation( gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, const decVector &newValue ) :
-pObjectClass( NULL ),
-pSpeaker( NULL )
+gdeUOCSpeakerSetRotation::gdeUOCSpeakerSetRotation(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const decVector &newValue) :
+pObjectClass(NULL),
+pSpeaker(NULL)
 {
-	if( ! objectClass || ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Speaker set orientation" );
+	SetShortInfo("Speaker set orientation");
 	
 	pOldValue = speaker->GetRotation();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pSpeaker( NULL )
 }
 
 gdeUOCSpeakerSetRotation::~gdeUOCSpeakerSetRotation(){
-	if( pSpeaker ){
+	if(pSpeaker){
 		pSpeaker->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCSpeakerSetRotation::~gdeUOCSpeakerSetRotation(){
 ///////////////
 
 void gdeUOCSpeakerSetRotation::Undo(){
-	pSpeaker->SetRotation( pOldValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetRotation(pOldValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }
 
 void gdeUOCSpeakerSetRotation::Redo(){
-	pSpeaker->SetRotation( pNewValue );
-	pObjectClass->NotifySpeakerChanged( pSpeaker );
+	pSpeaker->SetRotation(pNewValue);
+	pObjectClass->NotifySpeakerChanged(pSpeaker);
 }

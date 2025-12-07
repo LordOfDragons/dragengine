@@ -67,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if silent. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline deSynthesizer *GetSynthesizer() const{return pSynthesizer;}
 	
 	/** \brief Set synthesizer or NULL if silent. */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	
 	
@@ -87,13 +87,13 @@ public:
 	 * 
 	 * This is the number of controllers in the child synthesizer if present or 0 if absent.
 	 */
-	inline int GetConnectionCount() const{ return pConnectionCount; }
+	inline int GetConnectionCount() const{return pConnectionCount;}
 	
 	/** \brief Index of local controller for child controller. */
-	int GetConnectionAt( int childController ) const;
+	int GetConnectionAt(int childController) const;
 	
 	/** \brief Set index of local controller for child controller. */
-	void SetConnectionAt( int childController, int localController );
+	void SetConnectionAt(int childController, int localController);
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

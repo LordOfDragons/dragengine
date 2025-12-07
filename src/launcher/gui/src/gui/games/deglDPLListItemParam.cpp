@@ -44,7 +44,7 @@
 // Class deglDPLListItemParam
 //////////////////////////////
 
-FXIMPLEMENT( deglDPLListItemParam, FXListItem, nullptr, 0 )
+FXIMPLEMENT(deglDPLListItemParam, FXListItem, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
@@ -52,13 +52,13 @@ FXIMPLEMENT( deglDPLListItemParam, FXListItem, nullptr, 0 )
 deglDPLListItemParam::deglDPLListItemParam(){
 }
 
-deglDPLListItemParam::deglDPLListItemParam( const FXString &text, const char *parameterName, FXFont *font ) :
-FXListItem( text ),
-pFont( font ),
-pParameterName( parameterName )
+deglDPLListItemParam::deglDPLListItemParam(const FXString &text, const char *parameterName, FXFont *font) :
+FXListItem(text),
+pFont(font),
+pParameterName(parameterName)
 {
-	if( ! parameterName || ! font ){
-		DETHROW( deeInvalidParam );
+	if(! parameterName || ! font){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -70,55 +70,55 @@ deglDPLListItemParam::~deglDPLListItemParam(){
 // Management
 ///////////////
 
-void deglDPLListItemParam::SetFont( FXFont *font ){
-	if( ! font ){
-		DETHROW( deeInvalidParam );
+void deglDPLListItemParam::SetFont(FXFont *font){
+	if(! font){
+		DETHROW(deeInvalidParam);
 	}
 	pFont = font;
 }
 
-void deglDPLListItemParam::draw( const FXList *list, FXDC &dc, FXint xx, FXint yy, FXint w, FXint h ) const {
+void deglDPLListItemParam::draw(const FXList *list, FXDC &dc, FXint xx, FXint yy, FXint w, FXint h) const {
 	FXint ih = 0;
 	FXint th = 0;
 	
-	if( icon ){
+	if(icon){
 		ih = icon->getHeight();
 	}
-	if( ! label.empty() ){
+	if(! label.empty()){
 		th = pFont->getFontHeight();
 	}
 	
-	if( isSelected() ){
-		dc.setForeground( list->getSelBackColor() );
+	if(isSelected()){
+		dc.setForeground(list->getSelBackColor());
 		
 	}else{
-		dc.setForeground( list->getBackColor() );
+		dc.setForeground(list->getBackColor());
 	}
-	dc.fillRectangle( xx, yy, w, h );
+	dc.fillRectangle(xx, yy, w, h);
 	
-	if( hasFocus() ){
-		dc.drawFocusRectangle( xx + 1, yy + 1, w - 2, h - 2 );
+	if(hasFocus()){
+		dc.drawFocusRectangle(xx + 1, yy + 1, w - 2, h - 2);
 	}
 	xx += SIDE_SPACING / 2;
 	
-	if( icon ){
-		dc.drawIcon( icon, xx, yy + ( h - ih ) / 2 );
+	if(icon){
+		dc.drawIcon(icon, xx, yy + (h - ih) / 2);
 		xx += ICON_SPACING + icon->getWidth();
 	}
 	
-	if( ! label.empty() ){
-		dc.setFont( pFont );
+	if(! label.empty()){
+		dc.setFont(pFont);
 		
-		if( ! isEnabled() ){
-			dc.setForeground( makeShadowColor( list->getBackColor() ) );
+		if(! isEnabled()){
+			dc.setForeground(makeShadowColor(list->getBackColor()));
 			
-		}else if( isSelected() ){
-			dc.setForeground( list->getSelTextColor() );
+		}else if(isSelected()){
+			dc.setForeground(list->getSelTextColor());
 			
 		}else{
-			dc.setForeground( list->getTextColor() );
+			dc.setForeground(list->getTextColor());
 		}
 		
-		dc.drawText( xx, yy + ( h - th ) / 2 + pFont->getFontAscent(), label );
+		dc.drawText(xx, yy + (h - th) / 2 + pFont->getFontAscent(), label);
 	}
 }

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPropertyAdd( gdeObjectClass *objectClass, gdeProperty *property );
+	gdeUOCPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property);
 	
 protected:
 	/** \brief Clean up undo action. */

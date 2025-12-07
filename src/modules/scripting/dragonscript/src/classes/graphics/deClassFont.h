@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassFont( deScriptingDragonScript &ds );
+	deClassFont(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassFont();
@@ -54,19 +54,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Font or \em NULL if object is \em NULL. */
-	deFont *GetFont( dsRealObject *object ) const;
+	deFont *GetFont(dsRealObject *object) const;
 	
 	/** \brief Font size or 0 if object is \em NULL. */
-	int GetFontSize( dsRealObject *object ) const;
+	int GetFontSize(dsRealObject *object) const;
 	
 	/** \brief Pushe font on stack or null object if \em font is \em NULL. */
-	void PushFont( dsRunTime *rt, deFont *font, int size );
+	void PushFont(dsRunTime *rt, deFont *font, int size);
 	
 	
 	
@@ -87,29 +87,29 @@ private:
 		dsClass *clsResourceListener;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewSize );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewSize);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
-	DEF_NATFUNC( nfGetSize );
+	DEF_NATFUNC(nfGetFilename);
+	DEF_NATFUNC(nfGetSize);
 	DEF_NATFUNC(nfGetBaseLine);
 	
-	DEF_NATFUNC( nfGetTextSize );
-	DEF_NATFUNC( nfGetCharWidth );
-	DEF_NATFUNC( nfGetCharAdvance );
-	DEF_NATFUNC( nfGetCharBearing );
-	DEF_NATFUNC( nfGetMaxWidth );
-	DEF_NATFUNC( nfHasGlyph );
+	DEF_NATFUNC(nfGetTextSize);
+	DEF_NATFUNC(nfGetCharWidth);
+	DEF_NATFUNC(nfGetCharAdvance);
+	DEF_NATFUNC(nfGetCharBearing);
+	DEF_NATFUNC(nfGetMaxWidth);
+	DEF_NATFUNC(nfHasGlyph);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

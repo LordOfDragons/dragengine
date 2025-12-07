@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetPathSkin::gdeUOCTextureSetPathSkin( gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const char *newValue ) :
-pObjectClass( NULL ),
-pTexture( NULL )
+gdeUOCTextureSetPathSkin::gdeUOCTextureSetPathSkin(gdeObjectClass *objectClass,
+gdeOCComponentTexture* texture, const char *newValue) :
+pObjectClass(NULL),
+pTexture(NULL)
 {
-	if( ! objectClass || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Texture set skin path" );
+	SetShortInfo("Texture set skin path");
 	
 	pOldValue = texture->GetPathSkin();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pTexture( NULL )
 }
 
 gdeUOCTextureSetPathSkin::~gdeUOCTextureSetPathSkin(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCTextureSetPathSkin::~gdeUOCTextureSetPathSkin(){
 ///////////////
 
 void gdeUOCTextureSetPathSkin::Undo(){
-	pTexture->SetPathSkin( pOldValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetPathSkin(pOldValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }
 
 void gdeUOCTextureSetPathSkin::Redo(){
-	pTexture->SetPathSkin( pNewValue );
-	pObjectClass->NotifyTextureChanged( pTexture );
+	pTexture->SetPathSkin(pNewValue);
+	pObjectClass->NotifyTextureChanged(pTexture);
 }

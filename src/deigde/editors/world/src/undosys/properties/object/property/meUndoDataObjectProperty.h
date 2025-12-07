@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataObjectProperty( meObject *object );
+	meUndoDataObjectProperty(meObject *object);
 	
 protected:
 	/** \brief Clean up undo data object. */
@@ -62,18 +62,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object pointer. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline meObject *GetObject() const{return pObject;}
 	/** Retrieves the old property value. */
-	inline const decString &GetOldValue() const{ return pOldValue; }
+	inline const decString &GetOldValue() const{return pOldValue;}
 	/** Sets the old property value. */
-	void SetOldValue( const char *value );
+	void SetOldValue(const char *value);
 	/** Determines if the property exists already before the redo operation. */
-	inline bool GetPropertyExists() const{ return pPropertyExists; }
+	inline bool GetPropertyExists() const{return pPropertyExists;}
 	/** Sets if the property exists already before the redo operation. */
-	void SetPropertyExists( bool exists );
+	void SetPropertyExists(bool exists);
 	/** Retrieves the old property list. */
-	inline decStringDictionary &GetOldProperties(){ return pOldProperties; }
-	inline const decStringDictionary &GetOldProperties() const{ return pOldProperties; }
+	inline decStringDictionary &GetOldProperties(){return pOldProperties;}
+	inline const decStringDictionary &GetOldProperties() const{return pOldProperties;}
 	/*@}*/
 };
 

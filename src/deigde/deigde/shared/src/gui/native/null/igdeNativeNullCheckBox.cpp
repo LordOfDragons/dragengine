@@ -39,7 +39,7 @@ igdeNativeNullCheckBox::igdeNativeNullCheckBox(){
 igdeNativeNullCheckBox::~igdeNativeNullCheckBox(){
 }
 
-igdeNativeNullCheckBox *igdeNativeNullCheckBox::CreateNativeWidget( igdeCheckBox& ){
+igdeNativeNullCheckBox *igdeNativeNullCheckBox::CreateNativeWidget(igdeCheckBox&){
 	return new igdeNativeNullCheckBox;
 }
 

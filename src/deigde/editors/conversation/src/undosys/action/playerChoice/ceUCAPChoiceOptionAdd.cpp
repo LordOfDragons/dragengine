@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd( ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int index ){
-	if( ! topic || ! playerChoice || ! option ){
-		DETHROW( deeInvalidParam );
+ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int index){
+	if(! topic || ! playerChoice || ! option){
+		DETHROW(deeInvalidParam);
 	}
-	if( index < 0 || index > playerChoice->GetOptions().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > playerChoice->GetOptions().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -54,7 +54,7 @@ ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd( ceConversationTopic *topic, ceCAPl
 	pOption = NULL;
 	pIndex = index;
 	
-	SetShortInfo( "Player Choice Add Option" );
+	SetShortInfo("Player Choice Add Option");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -67,13 +67,13 @@ ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd( ceConversationTopic *topic, ceCAPl
 }
 
 ceUCAPChoiceOptionAdd::~ceUCAPChoiceOptionAdd(){
-	if( pOption ){
+	if(pOption){
 		pOption->FreeReference();
 	}
-	if( pPlayerChoice ){
+	if(pPlayerChoice){
 		pPlayerChoice->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -84,11 +84,11 @@ ceUCAPChoiceOptionAdd::~ceUCAPChoiceOptionAdd(){
 ///////////////
 
 void ceUCAPChoiceOptionAdd::Undo(){
-	pPlayerChoice->GetOptions().Remove( pOption );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->GetOptions().Remove(pOption);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }
 
 void ceUCAPChoiceOptionAdd::Redo(){
-	pPlayerChoice->GetOptions().InsertAt( pOption, pIndex );
-	pTopic->NotifyActionStructureChanged( pPlayerChoice );
+	pPlayerChoice->GetOptions().InsertAt(pOption, pIndex);
+	pTopic->NotifyActionStructureChanged(pPlayerChoice);
 }

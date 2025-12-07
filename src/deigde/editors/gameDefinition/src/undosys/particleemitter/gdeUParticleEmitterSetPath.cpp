@@ -40,14 +40,14 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetPath::gdeUParticleEmitterSetPath(
-gdeParticleEmitter *particleEmitter, const char *newValue ) :
-pParticleEmitter( NULL )
+gdeParticleEmitter *particleEmitter, const char *newValue) :
+pParticleEmitter(NULL)
 {
-	if( ! particleEmitter ){
-		DETHROW( deeInvalidParam );
+	if(! particleEmitter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Particle emitter set path" );
+	SetShortInfo("Particle emitter set path");
 	
 	pOldValue = particleEmitter->GetPath();
 	pNewValue = newValue;
@@ -57,7 +57,7 @@ pParticleEmitter( NULL )
 }
 
 gdeUParticleEmitterSetPath::~gdeUParticleEmitterSetPath(){
-	if( pParticleEmitter ){
+	if(pParticleEmitter){
 		pParticleEmitter->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ gdeUParticleEmitterSetPath::~gdeUParticleEmitterSetPath(){
 ///////////////
 
 void gdeUParticleEmitterSetPath::Undo(){
-	pParticleEmitter->SetPath( pOldValue );
+	pParticleEmitter->SetPath(pOldValue);
 }
 
 void gdeUParticleEmitterSetPath::Redo(){
-	pParticleEmitter->SetPath( pNewValue );
+	pParticleEmitter->SetPath(pNewValue);
 }

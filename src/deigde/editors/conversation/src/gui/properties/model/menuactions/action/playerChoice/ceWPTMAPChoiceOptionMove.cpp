@@ -50,21 +50,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionMove::ceWPTMAPChoiceOptionMove( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionMove::ceWPTMAPChoiceOptionMove(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic, ceCAPlayerChoice &playerChoice,
-ceCAPlayerChoiceOption *option, int index, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( option ),
-pIndex( index )
+ceCAPlayerChoiceOption *option, int index, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(option),
+pIndex(index)
 {
-	if( ! option ){
-		DETHROW( deeInvalidParam );
+	if(! option){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled( index >= 0 && index < playerChoice.GetOptions().GetCount() );
+	SetEnabled(index >= 0 && index < playerChoice.GetOptions().GetCount());
 }
 
 

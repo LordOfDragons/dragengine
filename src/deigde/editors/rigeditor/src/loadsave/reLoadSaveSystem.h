@@ -50,36 +50,36 @@ private:
 	
 public:
 	// constructor, destructor
-	reLoadSaveSystem( reWindowMain &windowMain );
+	reLoadSaveSystem(reWindowMain &windowMain);
 	~reLoadSaveSystem();
 	
 	// rigs management
 	/** Retrieves the main window. */
-	inline reWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline reWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** Retrieves the number of load save rigs. */
-	inline int GetLSRigCount() const{ return pLSRigCount; }
+	inline int GetLSRigCount() const{return pLSRigCount;}
 	/** Retrieves the load save rig at the given index. */
-	reLSRig *GetLSRigAt( int index ) const;
+	reLSRig *GetLSRigAt(int index) const;
 	/** Retrieves the index of the load save rig. */
-	int IndexOfLSRig( reLSRig *lsRig ) const;
+	int IndexOfLSRig(reLSRig *lsRig) const;
 	/** Determines if the save rig exists. */
-	bool HasLSRig( reLSRig *lsRig ) const;
+	bool HasLSRig(reLSRig *lsRig) const;
 	/** Retrieves the index of the load save rig matching the given filename. */
-	int IndexOfLSRigMatching( const char *filename );
+	int IndexOfLSRigMatching(const char *filename);
 	/** Adds a load save rig. */
-	void AddLSRig( reLSRig *lsRig );
+	void AddLSRig(reLSRig *lsRig);
 	/** Removes a load save rig. */
-	void RemoveLSRig( reLSRig *lsRig );
+	void RemoveLSRig(reLSRig *lsRig);
 	/** Removes all load save rigs. */
 	void RemoveAllLSRigs();
 	/** Updates the load save rig list from the engine. */
 	void UpdateLSRigs();
 	
 	/** Loads the rig from file if possible. */
-	reRig *LoadRig( const char *filename );
+	reRig *LoadRig(const char *filename);
 	/** Saves the rig to file if possible. */
-	void SaveRig( reRig *rig, const char *filename );
+	void SaveRig(reRig *rig, const char *filename);
 	
 private:
 	void pCleanUp();

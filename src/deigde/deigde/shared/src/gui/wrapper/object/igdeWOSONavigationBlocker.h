@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSONavigationBlocker( igdeWObject &wrapper, const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix );
+	igdeWOSONavigationBlocker(igdeWObject &wrapper, const igdeGDCNavigationBlocker &gdNavigationBlocker, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSONavigationBlocker();
@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationBlocker resource. */
-	inline deNavigationBlocker *GetNavigationBlocker() const{ return pNavigationBlocker; }
+	inline deNavigationBlocker *GetNavigationBlocker() const{return pNavigationBlocker;}
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -77,10 +77,10 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading();
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	virtual void Visit(igdeWOSOVisitor &visitor);
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	

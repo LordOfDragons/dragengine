@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPControllerListener( seWPController &panel );
+	seWPControllerListener(seWPController &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPControllerListener();
@@ -55,27 +55,27 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Synthesizer changed. */
-	virtual void SynthesizerChanged( seSynthesizer *synthesizer );
+	virtual void SynthesizerChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active controller changed. */
-	virtual void ActiveControllerChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ActiveControllerChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller changed. */
-	virtual void ControllerChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller range changed. */
-	virtual void ControllerRangeChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerRangeChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller curve changed. */
-	virtual void ControllerCurveChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerCurveChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( seSynthesizer *synthesizer );
+	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
 	/*@}*/
 };
 

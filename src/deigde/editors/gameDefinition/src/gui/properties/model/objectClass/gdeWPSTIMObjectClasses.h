@@ -39,7 +39,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMObjectClasses( gdeWPSTreeModel &tree );
+	gdeWPSTIMObjectClasses(gdeWPSTreeModel &tree);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -52,7 +52,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Model with object class or \em NULL. */
-	gdeWPSTIMObjectClass *GetChildWith( gdeObjectClass *objectClass ) const;
+	gdeWPSTIMObjectClass *GetChildWith(gdeObjectClass *objectClass) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -69,10 +69,10 @@ public:
 	virtual void OnAddedToTree();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	
 	/** \brief Select object mest matching name. */
-	virtual void SelectBestMatching( const char *string );
+	virtual void SelectBestMatching(const char *string);
 	/*@}*/
 };
 

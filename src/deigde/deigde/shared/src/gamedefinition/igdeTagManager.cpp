@@ -42,7 +42,7 @@
 igdeTagManager::igdeTagManager(){
 }
 
-igdeTagManager::igdeTagManager( const igdeTagManager &tagManager ){
+igdeTagManager::igdeTagManager(const igdeTagManager &tagManager){
 	pTags = tagManager.pTags;
 }
 
@@ -58,37 +58,37 @@ int igdeTagManager::GetTagCount() const{
 	return pTags.GetCount();
 }
 
-const decString &igdeTagManager::GetTagAt( int index ) const{
-	return pTags.GetAt( index );
+const decString &igdeTagManager::GetTagAt(int index) const{
+	return pTags.GetAt(index);
 }
 
-bool igdeTagManager::HasTag( const char *tag ) const{
-	return pTags.Has( tag );
+bool igdeTagManager::HasTag(const char *tag) const{
+	return pTags.Has(tag);
 }
 
-int igdeTagManager::IndexOfTag( const char *tag ) const{
-	if( ! tag ){
-		DETHROW( deeInvalidParam );
+int igdeTagManager::IndexOfTag(const char *tag) const{
+	if(! tag){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTags.IndexOf( tag );
+	return pTags.IndexOf(tag);
 }
 
-void igdeTagManager::AddTag( const char *tag ){
-	if( ! tag || ! tag[ 0 ] ){
-		DETHROW( deeInvalidParam );
+void igdeTagManager::AddTag(const char *tag){
+	if(! tag || ! tag[0]){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( ! pTags.Has( tag ) ){
-		pTags.Add( tag );
+	if(! pTags.Has(tag)){
+		pTags.Add(tag);
 	}
 }
 
-void igdeTagManager::RemoveTag( const char *tag ){
-	const int index = pTags.IndexOf( tag );
+void igdeTagManager::RemoveTag(const char *tag){
+	const int index = pTags.IndexOf(tag);
 	
-	if( index != -1 ){
-		pTags.RemoveFrom( index );
+	if(index != -1){
+		pTags.RemoveFrom(index);
 	}
 }
 
@@ -98,16 +98,16 @@ void igdeTagManager::RemoveAllTags(){
 
 
 
-bool igdeTagManager::HasAllOf( const igdeTagManager &tags ) const{
+bool igdeTagManager::HasAllOf(const igdeTagManager &tags) const{
 	const int tagCount = tags.GetTagCount();
 	int i;
 	
-	if( tagCount == 0 ){
+	if(tagCount == 0){
 		return false;
 	}
 	
-	for( i=0; i<tagCount; i++ ){
-		if( ! pTags.Has( tags.GetTagAt( i ) ) ){
+	for(i=0; i<tagCount; i++){
+		if(! pTags.Has(tags.GetTagAt(i))){
 			return false;
 		}
 	}
@@ -115,12 +115,12 @@ bool igdeTagManager::HasAllOf( const igdeTagManager &tags ) const{
 	return true;
 }
 
-bool igdeTagManager::HasAnyOf( const igdeTagManager &tags ) const{
+bool igdeTagManager::HasAnyOf(const igdeTagManager &tags) const{
 	const int tagCount = tags.GetTagCount();
 	int i;
 	
-	for( i=0; i<tagCount; i++ ){
-		if( pTags.Has( tags.GetTagAt( i ) ) ){
+	for(i=0; i<tagCount; i++){
+		if(pTags.Has(tags.GetTagAt(i))){
 			return true;
 		}
 	}
@@ -128,18 +128,18 @@ bool igdeTagManager::HasAnyOf( const igdeTagManager &tags ) const{
 	return false;
 }
 
-bool igdeTagManager::HasNoneOf( const igdeTagManager &tags ) const{
-	return ! HasAnyOf( tags );
+bool igdeTagManager::HasNoneOf(const igdeTagManager &tags) const{
+	return ! HasAnyOf(tags);
 }
 
 
 
-void igdeTagManager::AddTagsFrom( const igdeTagManager &tags ){
+void igdeTagManager::AddTagsFrom(const igdeTagManager &tags){
 	const int tagCount = tags.GetTagCount();
 	int i;
 	
-	for( i=0; i<tagCount; i++ ){
-		AddTag( tags.GetTagAt( i ) );
+	for(i=0; i<tagCount; i++){
+		AddTag(tags.GetTagAt(i));
 	}
 }
 
@@ -149,8 +149,8 @@ decStringSet igdeTagManager::ToSet() const{
 	const int count = pTags.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		set.Add( pTags.GetAt( i ) );
+	for(i=0; i<count; i++){
+		set.Add(pTags.GetAt(i));
 	}
 	
 	return set;
@@ -161,18 +161,18 @@ decStringSet igdeTagManager::ToSet() const{
 // Operators
 //////////////
 
-igdeTagManager &igdeTagManager::operator=( const igdeTagManager &tags ){
+igdeTagManager &igdeTagManager::operator=(const igdeTagManager &tags){
 	pTags = tags.pTags;
 	return *this;
 }
 
-igdeTagManager &igdeTagManager::operator=( const decStringSet &tags ){
+igdeTagManager &igdeTagManager::operator=(const decStringSet &tags){
 	const int count = tags.GetCount();
 	int i;
 	
 	pTags.RemoveAll();
-	for( i=0; i<count; i++ ){
-		pTags.Add( tags.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pTags.Add(tags.GetAt(i));
 	}
 	
 	return *this;

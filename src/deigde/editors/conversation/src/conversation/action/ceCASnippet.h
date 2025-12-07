@@ -57,19 +57,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** File to look for. */
-	inline const decString &GetFile() const{ return pFile; }
+	inline const decString &GetFile() const{return pFile;}
 	
 	/** Set file to look for. */
 	void SetFile(const char *file);
 	
 	/** Topic to look for. */
-	inline const decString &GetTopic() const{ return pTopic; }
+	inline const decString &GetTopic() const{return pTopic;}
 	
 	/** Set topic to look for. */
 	void SetTopic(const char *topic);
 	
 	/** Create side lane. */
-	inline bool GetCreateSideLane() const{ return pCreateSideLane; }
+	inline bool GetCreateSideLane() const{return pCreateSideLane;}
 	
 	/** Set create side lane. */
 	void SetCreateSideLane(bool createSideLane);

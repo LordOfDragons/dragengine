@@ -37,7 +37,7 @@
 ////////////////////////////
 
 deDecalBoneState::deDecalBoneState(){
-	pSize.Set( 1.0f, 1.0f, 1.0f );
+	pSize.Set(1.0f, 1.0f, 1.0f);
 }
 
 deDecalBoneState::~deDecalBoneState(){
@@ -48,14 +48,14 @@ deDecalBoneState::~deDecalBoneState(){
 // Management
 ///////////////
 
-void deDecalBoneState::SetPosition( const decVector &position ){
+void deDecalBoneState::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deDecalBoneState::SetRotation( const decQuaternion &rotation ){
+void deDecalBoneState::SetRotation(const decQuaternion &rotation){
 	pRotation = rotation;
 }
 
-void deDecalBoneState::SetSize( const decVector &size ){
+void deDecalBoneState::SetSize(const decVector &size){
 	pSize = size;
 }

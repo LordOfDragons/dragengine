@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font resource manager. */
-	deFontManager( deEngine *engine );
+	deFontManager(deEngine *engine);
 	
 	/** \brief Clean up font resource manager and reports leaking resources. */
 	virtual ~deFontManager();
@@ -64,22 +64,22 @@ public:
 	deFont *GetRootFont() const;
 	
 	/** \brief Font with filename or NULL. */
-	deFont *GetFontWith( const char *filename ) const;
+	deFont *GetFontWith(const char *filename) const;
 	
 	/** \brief Font with filename or NULL. */
-	deFont *GetFontWith( deVirtualFileSystem *vfs, const char *filename ) const;
+	deFont *GetFontWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new font. */
-	deFont *CreateFont( const char *filename, deFontBuilder &builder );
+	deFont *CreateFont(const char *filename, deFontBuilder &builder);
 	
 	/** \brief Create new font. */
-	deFont *CreateFont( deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder );
+	deFont *CreateFont(deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder);
 	
 	/** \brief Load font from file relative to base path. */
-	deFont *LoadFont( const char *filename, const char *basePath );
+	deFont *LoadFont(const char *filename, const char *basePath);
 	
 	/** \brief Load font from file relative to base path. */
-	deFont *LoadFont( deVirtualFileSystem *vfs, const char *filename, const char *basePath );
+	deFont *LoadFont(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Load debug font. */
 	deFont *LoadDebugFont();
@@ -89,7 +89,7 @@ public:
 	 * 
 	 * \warning To be used only by deResourceLoader.
 	 */
-	void AddLoadedFont( deFont *font );
+	void AddLoadedFont(deFont *font);
 	
 	/**
 	 * \brief Load font size if supported and required.
@@ -124,13 +124,13 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	virtual void RemoveResource( deResource *resource );
+	virtual void RemoveResource(deResource *resource);
 	/*@}*/
 	
 	
 	
 private:
-	void pLoadFontSources( deFont *font );
+	void pLoadFontSources(deFont *font);
 };
 
 #endif

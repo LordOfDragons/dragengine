@@ -36,7 +36,7 @@ class deglDialogGameProblems;
  * Shows problems with systems.
  */
 class deglDGPPanelSystem : public FXVerticalFrame{
-	FXDECLARE( deglDGPPanelSystem )
+	FXDECLARE(deglDGPPanelSystem)
 protected:
 	deglDGPPanelSystem();
 	
@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dialog. */
-	deglDGPPanelSystem( deglDialogGameProblems *parentDialog, FXComposite *container );
+	deglDGPPanelSystem(deglDialogGameProblems *parentDialog, FXComposite *container);
 	
 	/** Clean up dialog. */
 	virtual ~deglDGPPanelSystem();
@@ -98,10 +98,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent dialog. */
-	inline deglDialogGameProblems *GetParentDialog() const{ return pParentDialog; }
+	inline deglDialogGameProblems *GetParentDialog() const{return pParentDialog;}
 	
 	/** System is working. */
-	inline bool GetStatusWorking() const{ return pStatusWorking; }
+	inline bool GetStatusWorking() const{return pStatusWorking;}
 	
 	/** Update modules. */
 	void UpdateSystemModuleLists();
@@ -110,30 +110,30 @@ public:
 	void UpdatePanel();
 	
 	/** Update a system. */
-	void UpdateSystem( sSystem &system, const char *moduleName );
+	void UpdateSystem(sSystem &system, const char *moduleName);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCBModGraChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModInpChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModPhyChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAmrChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAIChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModCRChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModAudChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModNetChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModSynChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBModVRChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBModGraChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModInpChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModPhyChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAmrChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAIChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModCRChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModAudChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModNetChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModSynChanged(FXObject *sender, FXSelector selector, void *data);
+	long onCBModVRChanged(FXObject *sender, FXSelector selector, void *data);
 	/*@}*/
 	
 	
 	
 private:
-	void pCreateSystem( sSystem &system, const char *textLabel, const char *toolText,
-		int comboBoxSelector, FXComposite *container );
+	void pCreateSystem(sSystem &system, const char *textLabel, const char *toolText,
+		int comboBoxSelector, FXComposite *container);
 };
 
 #endif

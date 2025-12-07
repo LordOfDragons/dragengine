@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeWindowLoggerListener::igdeWindowLoggerListener( igdeWindowLogger &window ) :
-pWindow( window ){
+igdeWindowLoggerListener::igdeWindowLoggerListener(igdeWindowLogger &window) :
+pWindow(window){
 }
 
 igdeWindowLoggerListener::~igdeWindowLoggerListener(){
@@ -52,12 +52,12 @@ igdeWindowLoggerListener::~igdeWindowLoggerListener(){
 // Management
 ///////////////
 
-void igdeWindowLoggerListener::MessageAdded( igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry ){
+void igdeWindowLoggerListener::MessageAdded(igdeLoggerHistory *history, igdeLoggerHistoryEntry &entry){
 	// potentially called from threads. logger is locked while MessageAdded() is called
 	pWindow.OnLogAdded();
 }
 
-void igdeWindowLoggerListener::HistoryCleared( igdeLoggerHistory *history ){
+void igdeWindowLoggerListener::HistoryCleared(igdeLoggerHistory *history){
 	// potentially called from threads. logger is locked while HistoryCleared() is called
 	pWindow.OnLogsCleared(); // potentially called from threads. only this method is safe!
 }

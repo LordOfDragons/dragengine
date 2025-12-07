@@ -52,10 +52,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Height terrain has been destroyed. */
-	virtual void HeightTerrainDestroyed( deoglRHeightTerrain &heightTerrain );
+	virtual void HeightTerrainDestroyed(deoglRHeightTerrain &heightTerrain);
 	
 	/** Sectors changed. */
-	virtual void SectorsChanged( deoglRHeightTerrain &heightTerrain );
+	virtual void SectorsChanged(deoglRHeightTerrain &heightTerrain);
 	/*@}*/
 };
 

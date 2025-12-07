@@ -43,33 +43,33 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRule::dearRule( dearAnimatorInstance &instance, const dearAnimator &animator,
-	int firstLink, const deAnimatorRule &rule ) :
-pInstance( instance ),
-pAnimator( animator ),
-pRule( rule ),
+dearRule::dearRule(dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRule &rule) :
+pInstance(instance),
+pAnimator(animator),
+pRule(rule),
 
-pBoneMappings( nullptr ),
-pBoneMappingCount( 0 ),
-pUseAllBones( false ),
+pBoneMappings(nullptr),
+pBoneMappingCount(0),
+pUseAllBones(false),
 
-pVPSMappings( nullptr ),
-pVPSMappingCount( 0 ),
-pUseAllVPS( false ),
+pVPSMappings(nullptr),
+pVPSMappingCount(0),
+pUseAllVPS(false),
 
-pTargetBlendFactor( rule.GetTargetBlendFactor(), firstLink ),
+pTargetBlendFactor(rule.GetTargetBlendFactor(), firstLink),
 
-pBlendMode( rule.GetBlendMode() ),
-pBlendFactor( rule.GetBlendFactor() ),
-pInvertBlendFactor( rule.GetInvertBlendFactor() ),
-pEnabled( rule.GetEnabled() ){
+pBlendMode(rule.GetBlendMode()),
+pBlendFactor(rule.GetBlendFactor()),
+pInvertBlendFactor(rule.GetInvertBlendFactor()),
+pEnabled(rule.GetEnabled()){
 }
 
 dearRule::~dearRule(){
-	if( pVPSMappings ){
+	if(pVPSMappings){
 		delete [] pVPSMappings;
 	}
-	if( pBoneMappings ){
+	if(pBoneMappings){
 		delete [] pBoneMappings;
 	}
 }
@@ -89,16 +89,16 @@ int dearRule::GetBoneMappingCount() const{
 	return pUseAllBones ? pInstance.GetBoneStateList().GetStateCount() : pBoneMappingCount;
 }
 
-int dearRule::GetBoneMappingFor( int boneIndex ) const{
-	if( pUseAllBones ){
-		DEASSERT_TRUE( boneIndex >= 0 )
-		DEASSERT_TRUE( boneIndex < pInstance.GetBoneStateList().GetStateCount() )
+int dearRule::GetBoneMappingFor(int boneIndex) const{
+	if(pUseAllBones){
+		DEASSERT_TRUE(boneIndex >= 0)
+		DEASSERT_TRUE(boneIndex < pInstance.GetBoneStateList().GetStateCount())
 		return boneIndex;
 		
 	}else{
-		DEASSERT_TRUE( boneIndex >= 0 )
-		DEASSERT_TRUE( boneIndex < pBoneMappingCount )
-		return pBoneMappings[ boneIndex ];
+		DEASSERT_TRUE(boneIndex >= 0)
+		DEASSERT_TRUE(boneIndex < pBoneMappingCount)
+		return pBoneMappings[boneIndex];
 	}
 }
 
@@ -108,23 +108,23 @@ int dearRule::GetVPSMappingCount() const{
 	return pUseAllVPS ? pInstance.GetVPSStateList().GetStateCount() : pVPSMappingCount;
 }
 
-int dearRule::GetVPSMappingFor( int vpsIndex ) const{
-	if( pUseAllVPS ){
-		DEASSERT_TRUE( vpsIndex >= 0 )
-		DEASSERT_TRUE( vpsIndex < pInstance.GetVPSStateList().GetStateCount() )
+int dearRule::GetVPSMappingFor(int vpsIndex) const{
+	if(pUseAllVPS){
+		DEASSERT_TRUE(vpsIndex >= 0)
+		DEASSERT_TRUE(vpsIndex < pInstance.GetVPSStateList().GetStateCount())
 		return vpsIndex;
 		
 	}else{
-		DEASSERT_TRUE( vpsIndex >= 0 )
-		DEASSERT_TRUE( vpsIndex < pVPSMappingCount )
-		return pVPSMappings[ vpsIndex ];
+		DEASSERT_TRUE(vpsIndex >= 0)
+		DEASSERT_TRUE(vpsIndex < pVPSMappingCount)
+		return pVPSMappings[vpsIndex];
 	}
 }
 
 
 
 float dearRule::GetBlendFactor() const{
-	const float blendFactor = pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
+	const float blendFactor = pTargetBlendFactor.GetValue(pInstance, pBlendFactor);
 	return pInvertBlendFactor ? 1.0f - blendFactor : blendFactor;
 }
 
@@ -134,17 +134,17 @@ dearAnimation *dearRule::GetUseAnimation() const{
 
 
 
-void dearRule::CaptureStateInto( int ){
+void dearRule::CaptureStateInto(int){
 }
 
-void dearRule::StoreFrameInto( int, const char *, float ){
+void dearRule::StoreFrameInto(int, const char *, float){
 }
 
 bool dearRule::RebuildInstance() const{
 	return false;
 }
 
-void dearRule::ControllerChanged( int ){
+void dearRule::ControllerChanged(int){
 }
 
 void dearRule::RuleChanged(){
@@ -167,14 +167,14 @@ void dearRule::pUpdateBoneMappings(){
 	pUseAllBones = boneCount == 0;
 	
 	// if the count differs recreate the array
-	if( pBoneMappingCount != boneCount ){
+	if(pBoneMappingCount != boneCount){
 		int *newArray = nullptr;
 		
-		if( boneCount > 0 ){
-			newArray = new int[ boneCount ];
+		if(boneCount > 0){
+			newArray = new int[boneCount];
 		}
 		
-		if( pBoneMappings ){
+		if(pBoneMappings){
 			delete [] pBoneMappings;
 		}
 		pBoneMappings = newArray;
@@ -183,8 +183,8 @@ void dearRule::pUpdateBoneMappings(){
 	
 	// update the bone mappings. the bones in the animator are the
 	// same as the bones in the component rig.
-	for( i=0; i<pBoneMappingCount; i++ ){
-		pBoneMappings[ i ] = stalist.IndexOfStateNamed( boneList.GetAt( i ) );
+	for(i=0; i<pBoneMappingCount; i++){
+		pBoneMappings[i] = stalist.IndexOfStateNamed(boneList.GetAt(i));
 	}
 }
 
@@ -198,14 +198,14 @@ void dearRule::pUpdateVPSMappings(){
 	pUseAllVPS = vpsCount == 0;
 	
 	// if the count differs recreate the array
-	if( pVPSMappingCount != vpsCount ){
+	if(pVPSMappingCount != vpsCount){
 		int *newArray = nullptr;
 		
-		if( vpsCount > 0 ){
-			newArray = new int[ vpsCount ];
+		if(vpsCount > 0){
+			newArray = new int[vpsCount];
 		}
 		
-		if( pVPSMappings ){
+		if(pVPSMappings){
 			delete [] pVPSMappings;
 		}
 		pVPSMappings = newArray;
@@ -214,7 +214,7 @@ void dearRule::pUpdateVPSMappings(){
 	
 	// update the vertex position set mappings. the vertex position sets in the animator are the
 	// same as the vertex position sets in the component model.
-	for( i=0; i<pVPSMappingCount; i++ ){
-		pVPSMappings[ i ] = stalist.IndexOfStateNamed( vpsList.GetAt( i ) );
+	for(i=0; i<pVPSMappingCount; i++){
+		pVPSMappings[i] = stalist.IndexOfStateNamed(vpsList.GetAt(i));
 	}
 }

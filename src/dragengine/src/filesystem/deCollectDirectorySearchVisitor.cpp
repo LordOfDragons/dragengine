@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deCollectDirectorySearchVisitor::deCollectDirectorySearchVisitor( bool recursive ) :
-pRecursion( recursive ){
+deCollectDirectorySearchVisitor::deCollectDirectorySearchVisitor(bool recursive) :
+pRecursion(recursive){
 }
 
 deCollectDirectorySearchVisitor::~deCollectDirectorySearchVisitor(){
@@ -50,7 +50,7 @@ deCollectDirectorySearchVisitor::~deCollectDirectorySearchVisitor(){
 // Management
 ///////////////
 
-void deCollectDirectorySearchVisitor::SetRecursion( bool recursion ){
+void deCollectDirectorySearchVisitor::SetRecursion(bool recursion){
 	pRecursion = recursion;
 }
 
@@ -59,18 +59,18 @@ void deCollectDirectorySearchVisitor::SetRecursion( bool recursion ){
 // Visiting
 /////////////
 
-bool deCollectDirectorySearchVisitor::VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
+bool deCollectDirectorySearchVisitor::VisitFile(const deVirtualFileSystem &vfs, const decPath &path){
 	return true;
 }
 
-bool deCollectDirectorySearchVisitor::VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path ){
-	pDirectories.Add( path );
-	if( pRecursion ){
-		vfs.SearchFiles( path, *this );
+bool deCollectDirectorySearchVisitor::VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path){
+	pDirectories.Add(path);
+	if(pRecursion){
+		vfs.SearchFiles(path, *this);
 	}
 	return true;
 }
 
-bool deCollectDirectorySearchVisitor::VisitSpecial( const deVirtualFileSystem &vfs, const decPath &path ){
+bool deCollectDirectorySearchVisitor::VisitSpecial(const deVirtualFileSystem &vfs, const decPath &path){
 	return true;
 }

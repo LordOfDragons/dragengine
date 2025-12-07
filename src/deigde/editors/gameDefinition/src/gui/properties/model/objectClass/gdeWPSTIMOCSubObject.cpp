@@ -40,24 +40,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCSubObject::gdeWPSTIMOCSubObject( gdeWPSTreeModel &tree, eTypes type,
-	gdeObjectClass *objectClass, int index ) :
-gdeWPSTreeItemModel( tree, type ),
-pObjectClass( NULL ),
-pIndex( index )
+gdeWPSTIMOCSubObject::gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type,
+	gdeObjectClass *objectClass, int index) :
+gdeWPSTreeItemModel(tree, type),
+pObjectClass(NULL),
+pIndex(index)
 {
-	if( ! objectClass ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
 }
 
 gdeWPSTIMOCSubObject::~gdeWPSTIMOCSubObject(){
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -74,19 +74,19 @@ bool gdeWPSTIMOCSubObject::IsValid() const{
 void gdeWPSTIMOCSubObject::ValidateObjectClassName(){
 }
 
-int gdeWPSTIMOCSubObject::Compare( const gdeWPSTreeItemModel &item ) const{
-	const gdeWPSTIMOCSubObject &other = ( const gdeWPSTIMOCSubObject & )item;
+int gdeWPSTIMOCSubObject::Compare(const gdeWPSTreeItemModel &item) const{
+	const gdeWPSTIMOCSubObject &other = (const gdeWPSTIMOCSubObject &)item;
 	
-	if( GetType() < item.GetType() ){
+	if(GetType() < item.GetType()){
 		return -1;
 		
-	}else if( GetType() > item.GetType() ){
+	}else if(GetType() > item.GetType()){
 		return 1;
 		
-	}else if( pIndex < other.pIndex ){
+	}else if(pIndex < other.pIndex){
 		return -1;
 		
-	}else if( pIndex > other.pIndex ){
+	}else if(pIndex > other.pIndex){
 		return 1;
 		
 	}else{
@@ -94,8 +94,8 @@ int gdeWPSTIMOCSubObject::Compare( const gdeWPSTreeItemModel &item ) const{
 	}
 }
 
-void gdeWPSTIMOCSubObject::SelectBestMatching( const char *string ){
-	if( GetParent() ){
-		( ( gdeWPSTreeItemModel* )GetParent() )->SelectBestMatching( string );
+void gdeWPSTIMOCSubObject::SelectBestMatching(const char *string){
+	if(GetParent()){
+		((gdeWPSTreeItemModel*)GetParent())->SelectBestMatching(string);
 	}
 }

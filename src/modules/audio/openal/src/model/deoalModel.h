@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create model peer. */
-	deoalModel( deAudioOpenAL &oal, const deModel &model );
+	deoalModel(deAudioOpenAL &oal, const deModel &model);
 	
 	/** \brief Clean up model peer. */
 	virtual ~deoalModel();
@@ -61,13 +61,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{ return pOal; }
+	inline deAudioOpenAL &GetOal() const{return pOal;}
 	
 	/** \brief Model. */
-	inline const deModel &GetModel() const{ return pModel; }
+	inline const deModel &GetModel() const{return pModel;}
 	
 	/** \brief Audio model. */
-	inline deoalAModel *GetAModel() const{ return pAModel; }
+	inline deoalAModel *GetAModel() const{return pAModel;}
 	/*@}*/
 };
 

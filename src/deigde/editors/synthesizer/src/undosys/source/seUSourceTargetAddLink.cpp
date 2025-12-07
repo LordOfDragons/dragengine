@@ -41,16 +41,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceTargetAddLink::seUSourceTargetAddLink( seSource *source, seControllerTarget *target, seLink *link ) :
-pSource( NULL ),
-pTarget( NULL ),
-pLink( NULL )
+seUSourceTargetAddLink::seUSourceTargetAddLink(seSource *source, seControllerTarget *target, seLink *link) :
+pSource(NULL),
+pTarget(NULL),
+pLink(NULL)
 {
-	if( ! source || ! target || ! link ){
-		DETHROW( deeInvalidParam );
+	if(! source || ! target || ! link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Source Target Add Link" );
+	SetShortInfo("Source Target Add Link");
 	
 	pSource = source;
 	pSource->AddReference();
@@ -62,10 +62,10 @@ pLink( NULL )
 }
 
 seUSourceTargetAddLink::~seUSourceTargetAddLink(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ seUSourceTargetAddLink::~seUSourceTargetAddLink(){
 ///////////////
 
 void seUSourceTargetAddLink::Undo(){
-	pTarget->RemoveLink( pLink );
+	pTarget->RemoveLink(pLink);
 	pSource->NotifySourceChanged();
 }
 
 void seUSourceTargetAddLink::Redo(){
-	pTarget->AddLink( pLink );
+	pTarget->AddLink(pLink);
 	pSource->NotifySourceChanged();
 }

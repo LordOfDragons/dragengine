@@ -44,19 +44,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglDynamicTBO::deoglDynamicTBO( deoglRenderThread &renderThread, int componentCount, int dataTypeSize ) :
-pRenderThread( renderThread ),
-pComponentCount( componentCount ),
-pDataTypeSize( dataTypeSize ),
-pVBO( 0 ),
-pTBO( 0 ),
-pData( NULL ),
-pDataSize( 0 ),
-pDataCount( 0 ),
-pMemUse( renderThread.GetMemoryManager().GetConsumption().bufferObject.tbo )
+deoglDynamicTBO::deoglDynamicTBO(deoglRenderThread &renderThread, int componentCount, int dataTypeSize) :
+pRenderThread(renderThread),
+pComponentCount(componentCount),
+pDataTypeSize(dataTypeSize),
+pVBO(0),
+pTBO(0),
+pData(NULL),
+pDataSize(0),
+pDataCount(0),
+pMemUse(renderThread.GetMemoryManager().GetConsumption().bufferObject.tbo)
 {
-	if( componentCount < 1 || componentCount > 4 || dataTypeSize < 1 || dataTypeSize > 4 ){
-		DETHROW( deeInvalidParam );
+	if(componentCount < 1 || componentCount > 4 || dataTypeSize < 1 || dataTypeSize > 4){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -69,47 +69,47 @@ deoglDynamicTBO::~deoglDynamicTBO(){
 // Management
 ///////////////
 
-void deoglDynamicTBO::IncreaseDataCount( int byAmount ){
-	if( byAmount < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBO::IncreaseDataCount(int byAmount){
+	if(byAmount < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( byAmount == 0 ){
+	if(byAmount == 0){
 		return;
 	}
 	
-	pEnlarge( byAmount );
+	pEnlarge(byAmount);
 	pDataCount += byAmount;
 }
 
-void deoglDynamicTBO::SetDataCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBO::SetDataCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( count > pDataCount ){
-		pEnlarge( count - pDataCount );
+	if(count > pDataCount){
+		pEnlarge(count - pDataCount);
 	}
 	pDataCount = count;
 }
 
 int deoglDynamicTBO::GetPixelCount() const{
 	int count = pDataCount / pComponentCount;
-	if( pDataCount % pComponentCount != 0 ){
+	if(pDataCount % pComponentCount != 0){
 		count++;
 	}
 	return count;
 }
 
-void deoglDynamicTBO::IncreasePixelCount( int byAmount ){
-	IncreaseDataCount( byAmount * pComponentCount );
+void deoglDynamicTBO::IncreasePixelCount(int byAmount){
+	IncreaseDataCount(byAmount * pComponentCount);
 }
 
-void deoglDynamicTBO::SetPixelCount( int count ){
-	SetDataCount( count * pComponentCount );
+void deoglDynamicTBO::SetPixelCount(int count){
+	SetDataCount(count * pComponentCount);
 }
 
-int deoglDynamicTBO::GetPixelOffset( int pixel ) const{
-	if( pixel < 0 ){
-		DETHROW( deeInvalidParam );
+int deoglDynamicTBO::GetPixelOffset(int pixel) const{
+	if(pixel < 0){
+		DETHROW(deeInvalidParam);
 	}
 	return pixel * pComponentCount;
 }
@@ -118,74 +118,74 @@ void deoglDynamicTBO::Clear(){
 	pDataCount = 0;
 }
 
-void deoglDynamicTBO::AddTBO( const deoglDynamicTBO &tbo ){
-	if( tbo.pDataTypeSize != pDataTypeSize ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBO::AddTBO(const deoglDynamicTBO &tbo){
+	if(tbo.pDataTypeSize != pDataTypeSize){
+		DETHROW(deeInvalidParam);
 	}
-	if( tbo.pDataCount == 0 ){
+	if(tbo.pDataCount == 0){
 		return;
 	}
 	
-	pEnlarge( tbo.pDataCount );
-	memcpy( pData + pDataCount * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize );
+	pEnlarge(tbo.pDataCount);
+	memcpy(pData + pDataCount * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize);
 	pDataCount += tbo.pDataCount;
 }
 
-void deoglDynamicTBO::SetTBO( int offset, const deoglDynamicTBO &tbo ){
-	if( tbo.pDataTypeSize != pDataTypeSize ){
-		DETHROW( deeInvalidParam );
+void deoglDynamicTBO::SetTBO(int offset, const deoglDynamicTBO &tbo){
+	if(tbo.pDataTypeSize != pDataTypeSize){
+		DETHROW(deeInvalidParam);
 	}
-	if( tbo.pDataCount == 0 ){
+	if(tbo.pDataCount == 0){
 		return;
 	}
-	if( offset < 0 || offset + tbo.pDataCount - 1 >= pDataCount ){
-		DETHROW( deeInvalidParam );
+	if(offset < 0 || offset + tbo.pDataCount - 1 >= pDataCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	memcpy( pData + offset * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize );
+	memcpy(pData + offset * pDataTypeSize, tbo.pData, tbo.pDataCount * tbo.pDataTypeSize);
 }
 
 void deoglDynamicTBO::Update(){
-	if( pDataCount == 0 ){
+	if(pDataCount == 0){
 		return;
 	}
 	
 	pEnsurePadding();
 	pEnsureVBO();
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBO));
 	
 	const int size = pDataCount * pDataTypeSize;
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, size, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_TEXTURE_BUFFER, size, pData, GL_STREAM_DRAW ) );
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, size, pData, GL_STREAM_DRAW));
 	
 	pEnsureTBO();
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, 0));
 }
 
-void deoglDynamicTBO::Update( int offset, int count ){
-	if( count == 0 ){
+void deoglDynamicTBO::Update(int offset, int count){
+	if(count == 0){
 		return;
 	}
 	
 	pEnsurePadding();
 	
-	if( offset < 0 || count < 0 || offset + count > GetPixelCount() ){
-		DETHROW( deeInvalidParam );
+	if(offset < 0 || count < 0 || offset + count > GetPixelCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pEnsureVBO();
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, pVBO ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBO));
 	
 	const int byteOffset = offset * pComponentCount * pDataTypeSize;
-	OGL_CHECK( pRenderThread, pglBufferSubData( GL_TEXTURE_BUFFER, byteOffset,
-		count * pComponentCount * pDataTypeSize, pData + byteOffset ) );
+	OGL_CHECK(pRenderThread, pglBufferSubData(GL_TEXTURE_BUFFER, byteOffset,
+		count * pComponentCount * pDataTypeSize, pData + byteOffset));
 	
 	pEnsureTBO();
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_TEXTURE_BUFFER, 0 ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, 0));
 }
 
 
@@ -195,25 +195,25 @@ void deoglDynamicTBO::Update( int offset, int count ){
 
 void deoglDynamicTBO::pCleanUp(){
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLTexture( pTBO );
-	dops.DeleteOpenGLBuffer( pVBO );
+	dops.DeleteOpenGLTexture(pTBO);
+	dops.DeleteOpenGLBuffer(pVBO);
 	
 	pMemUse = 0;
-	if( pData ){
+	if(pData){
 		delete [] pData;
 	}
 }
 
-void deoglDynamicTBO::pEnlarge( int count ){
-	if( pDataCount + count <= pDataSize ){
+void deoglDynamicTBO::pEnlarge(int count){
+	if(pDataCount + count <= pDataSize){
 		return;
 	}
 	
-	const int newSize = ( pDataCount + count ) * 3 / 2 + 1;
-	uint8_t * const newArray = new uint8_t[ newSize * pDataTypeSize ];
+	const int newSize = (pDataCount + count) * 3 / 2 + 1;
+	uint8_t * const newArray = new uint8_t[newSize * pDataTypeSize];
 	
-	if( pData ){
-		memcpy( newArray, pData, pDataCount * pDataTypeSize );
+	if(pData){
+		memcpy(newArray, pData, pDataCount * pDataTypeSize);
 		delete [] pData;
 	}
 	
@@ -222,37 +222,37 @@ void deoglDynamicTBO::pEnlarge( int count ){
 }
 
 void deoglDynamicTBO::pEnsureVBO(){
-	if( pVBO ){
+	if(pVBO){
 		return;
 	}
 	
-	OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBO ) );
-	if( ! pVBO ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
+	if(! pVBO){
+		DETHROW(deeOutOfMemory);
 	}
 	
 	pMemUse = pDataCount * pDataTypeSize;
 }
 
 void deoglDynamicTBO::pEnsureTBO(){
-	if( pTBO ){
+	if(pTBO){
 		return;
 	}
 	
-	OGL_CHECK( pRenderThread, glGenTextures( 1, &pTBO ) );
-	if( ! pTBO ){
-		DETHROW( deeOutOfMemory );
+	OGL_CHECK(pRenderThread, glGenTextures(1, &pTBO));
+	if(! pTBO){
+		DETHROW(deeOutOfMemory);
 	}
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	tsmgr.EnableBareTBO( 0, pTBO );
-	OGL_CHECK( pRenderThread, pglTexBuffer( GL_TEXTURE_BUFFER, GetTBOFormat(), pVBO ) );
-	tsmgr.DisableStage( 0 );
+	tsmgr.EnableBareTBO(0, pTBO);
+	OGL_CHECK(pRenderThread, pglTexBuffer(GL_TEXTURE_BUFFER, GetTBOFormat(), pVBO));
+	tsmgr.DisableStage(0);
 }
 
 void deoglDynamicTBO::pEnsurePadding(){
 	const int remainder = pDataCount % pComponentCount;
-	if( remainder > 0 ){
-		pEnlarge( pComponentCount - remainder );
+	if(remainder > 0){
+		pEnlarge(pComponentCount - remainder);
 	}
 }

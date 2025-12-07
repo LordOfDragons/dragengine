@@ -46,9 +46,9 @@
 /////////////////////////////////
 
 deoalRTWOVRayHitsClosest::deoalRTWOVRayHitsClosest() :
-pHasResult( false ),
-pFrontFacing( true ),
-pLimitDistance( 1.0f ){
+pHasResult(false),
+pFrontFacing(true),
+pLimitDistance(1.0f){
 }
 
 deoalRTWOVRayHitsClosest::~deoalRTWOVRayHitsClosest(){
@@ -59,15 +59,15 @@ deoalRTWOVRayHitsClosest::~deoalRTWOVRayHitsClosest(){
 // Visiting
 /////////////
 
-void deoalRTWOVRayHitsClosest::SetHasResult( bool hasResult ){
+void deoalRTWOVRayHitsClosest::SetHasResult(bool hasResult){
 	pHasResult = hasResult;
 }
 
-void deoalRTWOVRayHitsClosest::SetFrontFacing( bool frontFacing ){
+void deoalRTWOVRayHitsClosest::SetFrontFacing(bool frontFacing){
 	pFrontFacing = frontFacing;
 }
 
-void deoalRTWOVRayHitsClosest::SetLimitDistance( float limitDistance ){
+void deoalRTWOVRayHitsClosest::SetLimitDistance(float limitDistance){
 	pLimitDistance = limitDistance;
 }
 
@@ -94,7 +94,7 @@ void deoalRTWOVRayHitsClosest::EndTiming(){
 
 
 
-void deoalRTWOVRayHitsClosest::VisitBVH( const deoalRTWorldBVH & bvh ){
+void deoalRTWOVRayHitsClosest::VisitBVH(const deoalRTWorldBVH & bvh){
 	#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
 	timingAllCount++;
 	timerAll.Reset();
@@ -102,8 +102,8 @@ void deoalRTWOVRayHitsClosest::VisitBVH( const deoalRTWorldBVH & bvh ){
 	
 	pHasResult = false;
 	
-	if( bvh.GetVisitNodeCount() > 0 ){
-		pVisitNode( bvh, bvh.GetVisitNodes()[ 0 ] );
+	if(bvh.GetVisitNodeCount() > 0){
+		pVisitNode(bvh, bvh.GetVisitNodes()[0]);
 	}
 	
 	#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
@@ -111,7 +111,7 @@ void deoalRTWOVRayHitsClosest::VisitBVH( const deoalRTWorldBVH & bvh ){
 	#endif
 }
 
-void deoalRTWOVRayHitsClosest::VisitComponent( const deoalRTWorldBVH::sVisitComponent &rtcomponent ){
+void deoalRTWOVRayHitsClosest::VisitComponent(const deoalRTWorldBVH::sVisitComponent &rtcomponent){
 	// WARNING everything in here has to be thread-safe
 	#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
 	timingComponentCount++;
@@ -121,26 +121,26 @@ void deoalRTWOVRayHitsClosest::VisitComponent( const deoalRTWorldBVH::sVisitComp
 	const deoalAComponent &component = *rtcomponent.component;
 	const deoalAModel &model = *component.GetModel();
 	
-	const decVector rayOrigin( rtcomponent.inverseMatrix * GetRayOrigin() );
-	const decVector rayDirection( rtcomponent.inverseMatrix.TransformNormal( GetRayDirection() ) );
+	const decVector rayOrigin(rtcomponent.inverseMatrix * GetRayOrigin());
+	const decVector rayDirection(rtcomponent.inverseMatrix.TransformNormal(GetRayDirection()));
 	
-	deoalMOVRayHitsClosest visitor( *rtcomponent.component, model );
-	visitor.SetRay( rayOrigin, rayDirection );
-	visitor.SetFrontFacing( pFrontFacing );
-	visitor.SetLimitDistance( pLimitDistance );
+	deoalMOVRayHitsClosest visitor(*rtcomponent.component, model);
+	visitor.SetRay(rayOrigin, rayDirection);
+	visitor.SetFrontFacing(pFrontFacing);
+	visitor.SetLimitDistance(pLimitDistance);
 	
 	#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
 	timingComponent += timerComponent.GetElapsedTime();
 	#endif
 	
-	if( component.GetBVH() ){
-		visitor.VisitBVH( *component.GetBVH() );
+	if(component.GetBVH()){
+		visitor.VisitBVH(*component.GetBVH());
 		
 	}else{
-		visitor.VisitBVH( *model.GetRTBVH() );
+		visitor.VisitBVH(*model.GetRTBVH());
 	}
 	
-	if( ! visitor.GetHasResult() || visitor.GetResultDistance() >= pLimitDistance ){
+	if(! visitor.GetHasResult() || visitor.GetResultDistance() >= pLimitDistance){
 		#ifdef RTWOVRAYHITSCLOSEST_DO_TIMING
 		const float elapsed = timerComponent.GetElapsedTime();
 		timingComponentOctree += elapsed;
@@ -154,14 +154,14 @@ void deoalRTWOVRayHitsClosest::VisitComponent( const deoalRTWorldBVH::sVisitComp
 	}
 	
 	const decDMatrix &matrix = component.GetMatrix();
-	decVector normal( matrix.TransformNormal( visitor.GetResultNormal() ) );
-	if( component.GetHasScaling() ){
+	decVector normal(matrix.TransformNormal(visitor.GetResultNormal()));
+	if(component.GetHasScaling()){
 		normal.Normalize();
 	}
 	
-	pResult.SetComponentFace( visitor.GetRayLength() * visitor.GetResultDistance(),
+	pResult.SetComponentFace(visitor.GetRayLength() * visitor.GetResultDistance(),
 		component.GetMatrix() * visitor.GetResultPoint(), normal, rtcomponent.component,
-		visitor.GetResultFace(), pFrontFacing );
+		visitor.GetResultFace(), pFrontFacing);
 	pHasResult = true;
 	
 	pLimitDistance = visitor.GetResultDistance();
@@ -187,63 +187,63 @@ struct sSortNode{
 	float distance;
 };
 
-void deoalRTWOVRayHitsClosest::pVisitNode( const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node ){
+void deoalRTWOVRayHitsClosest::pVisitNode(const deoalRTWorldBVH &bvh, const deoalRTWorldBVH::sVisitNode &node){
 	// visit components
-	if( node.componentCount > 0 ){
+	if(node.componentCount > 0){
 		const deoalRTWorldBVH::sVisitComponent * const components =
 			bvh.GetVisitComponents() + node.firstComponent;
 		float closestDistance;
 		int i;
 		
-		for( i=0; i<node.componentCount; i++ ){
-			const deoalRTWorldBVH::sVisitComponent &component = components[ i ];
-			if( pRayHitsBox( component.center, component.halfSize, closestDistance )
-			&& closestDistance < pLimitDistance ){
-				VisitComponent( component );
+		for(i=0; i<node.componentCount; i++){
+			const deoalRTWorldBVH::sVisitComponent &component = components[i];
+			if(pRayHitsBox(component.center, component.halfSize, closestDistance)
+			&& closestDistance < pLimitDistance){
+				VisitComponent(component);
 			}
 		}
 		
 	// visit child nodes if hit by ray
 	}else{
 		#if 1
-		const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[ node.node1 ];
-		const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[ node.node2 ];
+		const deoalRTWorldBVH::sVisitNode &child1 = bvh.GetVisitNodes()[node.node1];
+		const deoalRTWorldBVH::sVisitNode &child2 = bvh.GetVisitNodes()[node.node2];
 		float closestDistance;
 		
-		if( ( child2.center - child1.center ) * GetRayDirection() > 0.0f ){
-			if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
-			&& closestDistance < pLimitDistance ){
-				pVisitNode( bvh, child1 );
+		if((child2.center - child1.center) * GetRayDirection() > 0.0f){
+			if(pRayHitsBox(child1.center, child1.halfSize, closestDistance)
+			&& closestDistance < pLimitDistance){
+				pVisitNode(bvh, child1);
 			}
 			
-			if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
-			&& closestDistance < pLimitDistance ){
-				pVisitNode( bvh, child2 );
+			if(pRayHitsBox(child2.center, child2.halfSize, closestDistance)
+			&& closestDistance < pLimitDistance){
+				pVisitNode(bvh, child2);
 			}
 			
 		}else{
-			if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
-			&& closestDistance < pLimitDistance ){
-				pVisitNode( bvh, child2 );
+			if(pRayHitsBox(child2.center, child2.halfSize, closestDistance)
+			&& closestDistance < pLimitDistance){
+				pVisitNode(bvh, child2);
 			}
 			
-			if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
-			&& closestDistance < pLimitDistance ){
-				pVisitNode( bvh, child1 );
+			if(pRayHitsBox(child1.center, child1.halfSize, closestDistance)
+			&& closestDistance < pLimitDistance){
+				pVisitNode(bvh, child1);
 			}
 		}
 		
 		#else
 		float closestDistance;
 		
-		if( pRayHitsBox( child1.center, child1.halfSize, closestDistance )
-		&& closestDistance < pLimitDistance ){
-			pVisitNode( bvh, child1 );
+		if(pRayHitsBox(child1.center, child1.halfSize, closestDistance)
+		&& closestDistance < pLimitDistance){
+			pVisitNode(bvh, child1);
 		}
 		
-		if( pRayHitsBox( child2.center, child2.halfSize, closestDistance )
-		&& closestDistance < pLimitDistance ){
-			pVisitNode( bvh, child2 );
+		if(pRayHitsBox(child2.center, child2.halfSize, closestDistance)
+		&& closestDistance < pLimitDistance){
+			pVisitNode(bvh, child2);
 		}
 		#endif
 	}

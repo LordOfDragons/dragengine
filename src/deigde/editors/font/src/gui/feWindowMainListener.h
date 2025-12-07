@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	feWindowMainListener( feWindowMain &window );
+	feWindowMainListener(feWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~feWindowMainListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( feFont *font );
+	virtual void ModeChanged(feFont *font);
 	
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( feFont *font );
+	virtual void StateChanged(feFont *font);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( feFont *font );
+	virtual void UndoChanged(feFont *font);
 	/*@}*/
 };
 

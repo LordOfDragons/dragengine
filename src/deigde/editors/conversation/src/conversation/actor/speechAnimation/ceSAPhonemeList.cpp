@@ -55,19 +55,19 @@ int ceSAPhonemeList::GetCount() const{
 	return pPhonemes.GetCount();
 }
 
-ceSAPhoneme *ceSAPhonemeList::GetAt( int index ) const{
-	return ( ceSAPhoneme* )pPhonemes.GetAt( index );
+ceSAPhoneme *ceSAPhonemeList::GetAt(int index) const{
+	return (ceSAPhoneme*)pPhonemes.GetAt(index);
 }
 
-ceSAPhoneme *ceSAPhonemeList::GetIPA( int ipa ) const{
+ceSAPhoneme *ceSAPhonemeList::GetIPA(int ipa) const{
 	const int count = pPhonemes.GetCount();
 	ceSAPhoneme *phoneme;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		phoneme = ( ceSAPhoneme* )pPhonemes.GetAt( p );
+	for(p=0; p<count; p++){
+		phoneme = (ceSAPhoneme*)pPhonemes.GetAt(p);
 		
-		if( phoneme->GetIPA() == ipa ){
+		if(phoneme->GetIPA() == ipa){
 			return phoneme;
 		}
 	}
@@ -75,16 +75,16 @@ ceSAPhoneme *ceSAPhonemeList::GetIPA( int ipa ) const{
 	return NULL;
 }
 
-int ceSAPhonemeList::IndexOf( ceSAPhoneme *phoneme ) const{
-	return pPhonemes.IndexOf( phoneme );
+int ceSAPhonemeList::IndexOf(ceSAPhoneme *phoneme) const{
+	return pPhonemes.IndexOf(phoneme);
 }
 
-int ceSAPhonemeList::IndexOfIPA( int ipa ) const{
+int ceSAPhonemeList::IndexOfIPA(int ipa) const{
 	const int count = pPhonemes.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( ceSAPhoneme* )pPhonemes.GetAt( p ) )->GetIPA() == ipa ){
+	for(p=0; p<count; p++){
+		if(((ceSAPhoneme*)pPhonemes.GetAt(p))->GetIPA() == ipa){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int ceSAPhonemeList::IndexOfIPA( int ipa ) const{
 	return -1;
 }
 
-bool ceSAPhonemeList::Has( ceSAPhoneme *phoneme ) const{
-	return pPhonemes.Has( phoneme );
+bool ceSAPhonemeList::Has(ceSAPhoneme *phoneme) const{
+	return pPhonemes.Has(phoneme);
 }
 
-bool ceSAPhonemeList::HasIPA( int ipa ) const{
+bool ceSAPhonemeList::HasIPA(int ipa) const{
 	const int count = pPhonemes.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( ceSAPhoneme* )pPhonemes.GetAt( p ) )->GetIPA() == ipa ){
+	for(p=0; p<count; p++){
+		if(((ceSAPhoneme*)pPhonemes.GetAt(p))->GetIPA() == ipa){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceSAPhonemeList::HasIPA( int ipa ) const{
 	return false;
 }
 
-void ceSAPhonemeList::Add( ceSAPhoneme *phoneme ){
-	if( ! phoneme || HasIPA( phoneme->GetIPA() ) ) DETHROW( deeInvalidParam );
+void ceSAPhonemeList::Add(ceSAPhoneme *phoneme){
+	if(! phoneme || HasIPA(phoneme->GetIPA())) DETHROW(deeInvalidParam);
 	
-	pPhonemes.Add( phoneme );
+	pPhonemes.Add(phoneme);
 }
 
-void ceSAPhonemeList::Remove( ceSAPhoneme *phoneme ){
-	pPhonemes.Remove( phoneme );
+void ceSAPhonemeList::Remove(ceSAPhoneme *phoneme){
+	pPhonemes.Remove(phoneme);
 }
 
 void ceSAPhonemeList::RemoveAll(){
@@ -125,7 +125,7 @@ void ceSAPhonemeList::RemoveAll(){
 
 
 
-ceSAPhonemeList &ceSAPhonemeList::operator=( const ceSAPhonemeList &list ){
+ceSAPhonemeList &ceSAPhonemeList::operator=(const ceSAPhonemeList &list){
 	pPhonemes = list.pPhonemes;
 	return *this;
 }

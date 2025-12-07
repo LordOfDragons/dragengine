@@ -62,8 +62,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeSpinTextField( igdeEnvironment &environment, int lower, int upper,
-		int columns, const char *description = "" );
+	igdeSpinTextField(igdeEnvironment &environment, int lower, int upper,
+		int columns, const char *description = "");
 	
 	
 	
@@ -83,19 +83,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief SpinTextField is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
-	inline int GetColumns() const{ return pColumns; }
+	inline int GetColumns() const{return pColumns;}
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -103,27 +103,27 @@ public:
 	
 	
 	/** \brief Value. */
-	inline int GetValue() const{ return pValue; }
+	inline int GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( int value );
+	void SetValue(int value);
 	
 	/** \brief Range lower value. */
-	inline int GetLower() const{ return pLower; }
+	inline int GetLower() const{return pLower;}
 	
 	/** \brief Range upper value. */
-	inline int GetUpper() const{ return pUpper; }
+	inline int GetUpper() const{return pUpper;}
 	
 	/** \brief Set range. */
-	void SetRange( int lower, int upper );
+	void SetRange(int lower, int upper);
 	
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeSpinTextFieldListener *listener );
+	void AddListener(igdeSpinTextFieldListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeSpinTextFieldListener *listener );
+	void RemoveListener(igdeSpinTextFieldListener *listener);
 	
 	/** \brief Notify listeners value changed. */
 	virtual void NotifyValueChanged();

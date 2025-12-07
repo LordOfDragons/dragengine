@@ -67,19 +67,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of triangles. */
-	inline int GetTriangleCount() const{ return pTriangleCount; }
+	inline int GetTriangleCount() const{return pTriangleCount;}
 	
 	/** First vertex of triangle at index. */
-	const decVector &GetTriangleVertex1( int triangle ) const;
+	const decVector &GetTriangleVertex1(int triangle) const;
 	
 	/** Second vertex of triangle at index. */
-	const decVector &GetTriangleVertex2( int triangle ) const;
+	const decVector &GetTriangleVertex2(int triangle) const;
 	
 	/** Third vertex of triangle at index. */
-	const decVector &GetTriangleVertex3( int triangle ) const;
+	const decVector &GetTriangleVertex3(int triangle) const;
 	
 	/** Add triangle. */
-	void AddTriangle( const decVector &vertex1, const decVector &vertex2, const decVector &vertex3 );
+	void AddTriangle(const decVector &vertex1, const decVector &vertex2, const decVector &vertex3);
 	
 	/** Remove all triangles. */
 	void RemoveAllTriangles();
@@ -90,17 +90,17 @@ public:
 	/** \name Sorting */
 	/*@{*/
 	/** Sort objects linear. */
-	void SortLinear( const decVector &position, const decVector &view );
+	void SortLinear(const decVector &position, const decVector &view);
 	
 	/** Sort objects radial. */
-	void SortRadial( const decVector &position );
+	void SortRadial(const decVector &position);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pQuickSortDistance( int left, int right );
+	void pQuickSortDistance(int left, int right);
 };
 
 #endif

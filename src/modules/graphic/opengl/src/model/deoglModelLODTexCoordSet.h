@@ -55,20 +55,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture coordinates. */
-	inline decVector2 *GetTextureCoordinates() const{ return pTexCoords; }
+	inline decVector2 *GetTextureCoordinates() const{return pTexCoords;}
 	/** Retrieves the number of texture coordinates. */
-	inline int GetTextureCoordinateCount() const{ return pTexCoordCount; }
+	inline int GetTextureCoordinateCount() const{return pTexCoordCount;}
 	/** Sets the number of texture coordinates. */
-	void SetTextureCoordinateCount( int count, bool copyContent );
+	void SetTextureCoordinateCount(int count, bool copyContent);
 	
 	/** Retrieves the tangents. */
-	inline decVector *GetTangents() const{ return pTangents; }
+	inline decVector *GetTangents() const{return pTangents;}
 	/** Retrieves the negate tangents. */
-	inline bool *GetNegateTangents() const{ return pNegateTangents; }
+	inline bool *GetNegateTangents() const{return pNegateTangents;}
 	/** Retrieves the tangent count. */
-	inline int GetTangentCount() const{ return pTangentCount; }
+	inline int GetTangentCount() const{return pTangentCount;}
 	/** Sets the tangent count. */
-	void SetTangentCount( int count );
+	void SetTangentCount(int count);
 	/*@}*/
 	
 private:

@@ -44,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file pattern. */
-	igdeFilePattern( const char *name, const char *pattern, const char *defaultExtension );
+	igdeFilePattern(const char *name, const char *pattern, const char *defaultExtension);
 	
 	/** \brief Create copy of a file pattern. */
-	igdeFilePattern( const igdeFilePattern &filePattern );
+	igdeFilePattern(const igdeFilePattern &filePattern);
 	
 	/** \brief Clean up file pattern. */
 	~igdeFilePattern();
@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief File pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** \brief Default extension. */
-	inline const decString &GetDefaultExtension() const{ return pDefExtension; }
+	inline const decString &GetDefaultExtension() const{return pDefExtension;}
 	/*@}*/
 };
 

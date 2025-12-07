@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new collision listener. */
-	reCLApplyPush( reRig *rig );
+	reCLApplyPush(reRig *rig);
 	/** Cleans up the collision listener. */
 	virtual ~reCLApplyPush();
 	/*@}*/
@@ -67,16 +67,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the ray position. */
-	inline const decDVector &GetRayPosition() const{ return pRayPosition; }
+	inline const decDVector &GetRayPosition() const{return pRayPosition;}
 	/** \brief Retrieves the ray direction. */
-	inline const decDVector &GetRayDirection() const{ return pRayDirection; }
+	inline const decDVector &GetRayDirection() const{return pRayDirection;}
 	
 	/** Sets the ray. */
-	void SetRay( const decDVector &position, const decVector &direction );
+	void SetRay(const decDVector &position, const decVector &direction);
 	/** Sets the push. */
-	void SetPush( const decVector &push );
+	void SetPush(const decVector &push);
 	/** Sets the collider. */
-	void SetCollider( deCollider *collider );
+	void SetCollider(deCollider *collider);
 	
 	/** \brief Reset visitor. */
 	void Reset();
@@ -88,7 +88,7 @@ public:
 	 * \details Calls Reset(), then RayHits on the world with the provided
 	 *          layer maks and then ApplyPush().
 	 */
-	void ApplyPushIn( deBasePhysicsWorld &phyWorld, const decLayerMask &layerMask );
+	void ApplyPushIn(deBasePhysicsWorld &phyWorld, const decLayerMask &layerMask);
 	/*@}*/
 	
 	/** \name Notifications */
@@ -98,17 +98,17 @@ public:
 	 * you have to update the info object with the response to the collision. In
 	 * all other cases you do must not modify the info object.
 	 */
-	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
+	virtual void CollisionResponse(deCollider *owner, deCollisionInfo *info);
 	/**
 	 * Determines if this collider can be hit by the given collider.
 	 */
-	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
+	virtual bool CanHitCollider(deCollider *owner, deCollider *collider);
 	/**
 	 * Notifies the scripts that the properties of this collider have changed and
 	 * that the attached element has to update. This is usually called after the
 	 * collision detection but can also be called multiple times.
 	 */
-	virtual void ColliderChanged( deCollider *owner );
+	virtual void ColliderChanged(deCollider *owner);
 };
 
 #endif

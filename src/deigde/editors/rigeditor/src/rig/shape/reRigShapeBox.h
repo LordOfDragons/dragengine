@@ -43,7 +43,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig box shape. */
-	reRigShapeBox( deEngine *engine );
+	reRigShapeBox(deEngine *engine);
 	/** Cleans up the rig shape shape. */
 	virtual ~reRigShapeBox();
 	/*@}*/
@@ -51,14 +51,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the half extends. */
-	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
+	inline const decVector &GetHalfExtends() const{return pHalfExtends;}
 	/** Sets the half extends. */
-	void SetHalfExtends( const decVector &halfExtends );
+	void SetHalfExtends(const decVector &halfExtends);
 	
 	/** Creates a copy of this shape. */
 	virtual reRigShape *Duplicate() const;
 	/** Uniformly scale shape. */
-	virtual void Scale( float scale );
+	virtual void Scale(float scale);
 	
 	/** Creates shape. */
 	virtual decShape *CreateShape();

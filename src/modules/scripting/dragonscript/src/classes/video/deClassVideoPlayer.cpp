@@ -57,12 +57,12 @@ struct sVPNatDat{
 /////////////////////
 
 // public func new()
-deClassVideoPlayer::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsVP,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassVideoPlayer::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsVP,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassVideoPlayer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sVPNatDat &nd = *( ( sVPNatDat* )p_GetNativeData( myself ) );
-	deClassVideoPlayer &clsVP = *( ( deClassVideoPlayer* )GetOwnerClass() );
+	sVPNatDat &nd = *((sVPNatDat*)p_GetNativeData(myself));
+	deClassVideoPlayer &clsVP = *((deClassVideoPlayer*)GetOwnerClass());
 	deVideoPlayerManager &vpmgr = *clsVP.GetDS()->GetGameEngine()->GetVideoPlayerManager();
 	
 	// clear (important)
@@ -70,21 +70,21 @@ void deClassVideoPlayer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create video player
 	nd.videoPlayer = vpmgr.CreateVideoPlayer();
-	if( ! nd.videoPlayer ) DSTHROW( dueOutOfMemory );
+	if(! nd.videoPlayer) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
-deClassVideoPlayer::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsVP,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassVideoPlayer::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsVP,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassVideoPlayer::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassVideoPlayer::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sVPNatDat &nd = *( ( sVPNatDat* )p_GetNativeData( myself ) );
+	sVPNatDat &nd = *((sVPNatDat*)p_GetNativeData(myself));
 	
-	if( nd.videoPlayer ){
+	if(nd.videoPlayer){
 		nd.videoPlayer->FreeReference();
 		nd.videoPlayer = NULL;
 	}
@@ -93,189 +93,189 @@ void deClassVideoPlayer::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myse
 
 
 // public func Video getVideo()
-deClassVideoPlayer::nfGetVideo::nfGetVideo( const sInitData &init ) : dsFunction( init.clsVP,
-"getVideo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVid ){
+deClassVideoPlayer::nfGetVideo::nfGetVideo(const sInitData &init) : dsFunction(init.clsVP,
+"getVideo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVid){
 }
-void deClassVideoPlayer::nfGetVideo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
-	deClassVideoPlayer &clsVP = *( ( deClassVideoPlayer* )GetOwnerClass() );
+void deClassVideoPlayer::nfGetVideo::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
+	deClassVideoPlayer &clsVP = *((deClassVideoPlayer*)GetOwnerClass());
 	
-	clsVP.GetDS()->GetClassVideo()->PushVideo( rt, videoPlayer.GetVideo() );
+	clsVP.GetDS()->GetClassVideo()->PushVideo(rt, videoPlayer.GetVideo());
 }
 
 // public func void setVideo( Video video )
-deClassVideoPlayer::nfSetVideo::nfSetVideo( const sInitData &init ) : dsFunction( init.clsVP,
-"setVideo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVid ); // video
+deClassVideoPlayer::nfSetVideo::nfSetVideo(const sInitData &init) : dsFunction(init.clsVP,
+"setVideo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVid); // video
 }
-void deClassVideoPlayer::nfSetVideo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
-	deClassVideoPlayer &clsVP = *( ( deClassVideoPlayer* )GetOwnerClass() );
-	dsRealObject *object = rt->GetValue( 0 )->GetRealObject();
+void deClassVideoPlayer::nfSetVideo::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
+	deClassVideoPlayer &clsVP = *((deClassVideoPlayer*)GetOwnerClass());
+	dsRealObject *object = rt->GetValue(0)->GetRealObject();
 	
-	if( object ){
-		videoPlayer.SetVideo( clsVP.GetDS()->GetClassVideo()->GetVideo( object ) );
+	if(object){
+		videoPlayer.SetVideo(clsVP.GetDS()->GetClassVideo()->GetVideo(object));
 		
 	}else{
-		videoPlayer.SetVideo( NULL );
+		videoPlayer.SetVideo(NULL);
 	}
 }
 
 
 
 // public func float getLooping()
-deClassVideoPlayer::nfGetLooping::nfGetLooping( const sInitData &init ) : dsFunction( init.clsVP,
-"getLooping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassVideoPlayer::nfGetLooping::nfGetLooping(const sInitData &init) : dsFunction(init.clsVP,
+"getLooping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassVideoPlayer::nfGetLooping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfGetLooping::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushBool( videoPlayer.GetLooping() );
+	rt->PushBool(videoPlayer.GetLooping());
 }
 
 // public func void setLooping( bool looping )
-deClassVideoPlayer::nfSetLooping::nfSetLooping( const sInitData &init ) : dsFunction( init.clsVP,
-"setLooping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // looping
+deClassVideoPlayer::nfSetLooping::nfSetLooping(const sInitData &init) : dsFunction(init.clsVP,
+"setLooping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // looping
 }
-void deClassVideoPlayer::nfSetLooping::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfSetLooping::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	videoPlayer.SetLooping( rt->GetValue( 0 )->GetBool() );
+	videoPlayer.SetLooping(rt->GetValue(0)->GetBool());
 }
 
 // public func float getPlayFrom()
-deClassVideoPlayer::nfGetPlayFrom::nfGetPlayFrom( const sInitData &init ) : dsFunction( init.clsVP,
-"getPlayFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassVideoPlayer::nfGetPlayFrom::nfGetPlayFrom(const sInitData &init) : dsFunction(init.clsVP,
+"getPlayFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassVideoPlayer::nfGetPlayFrom::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfGetPlayFrom::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushFloat( videoPlayer.GetPlayFrom() );
+	rt->PushFloat(videoPlayer.GetPlayFrom());
 }
 
 // public func float getPlayTo()
-deClassVideoPlayer::nfGetPlayTo::nfGetPlayTo( const sInitData &init ) : dsFunction( init.clsVP,
-"getPlayTo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassVideoPlayer::nfGetPlayTo::nfGetPlayTo(const sInitData &init) : dsFunction(init.clsVP,
+"getPlayTo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassVideoPlayer::nfGetPlayTo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfGetPlayTo::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushFloat( videoPlayer.GetPlayTo() );
+	rt->PushFloat(videoPlayer.GetPlayTo());
 }
 
 // public func void setPlayRange( float playFrom, float playTo )
-deClassVideoPlayer::nfSetPlayRange::nfSetPlayRange( const sInitData &init ) : dsFunction( init.clsVP,
-"setPlayRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // playFrom
-	p_AddParameter( init.clsFlt ); // playTo
+deClassVideoPlayer::nfSetPlayRange::nfSetPlayRange(const sInitData &init) : dsFunction(init.clsVP,
+"setPlayRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // playFrom
+	p_AddParameter(init.clsFlt); // playTo
 }
-void deClassVideoPlayer::nfSetPlayRange::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfSetPlayRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	videoPlayer.SetPlayRange( rt->GetValue( 0 )->GetFloat(), rt->GetValue( 1 )->GetFloat() );
+	videoPlayer.SetPlayRange(rt->GetValue(0)->GetFloat(), rt->GetValue(1)->GetFloat());
 }
 
 // public func float getPlayPosition()
-deClassVideoPlayer::nfGetPlayPosition::nfGetPlayPosition( const sInitData &init ) : dsFunction( init.clsVP,
-"getPlayPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassVideoPlayer::nfGetPlayPosition::nfGetPlayPosition(const sInitData &init) : dsFunction(init.clsVP,
+"getPlayPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassVideoPlayer::nfGetPlayPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfGetPlayPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushFloat( videoPlayer.GetPlayPosition() );
+	rt->PushFloat(videoPlayer.GetPlayPosition());
 }
 
 // public func void setPlayPosition( float position )
-deClassVideoPlayer::nfSetPlayPosition::nfSetPlayPosition( const sInitData &init ) : dsFunction( init.clsVP,
-"setPlayPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // position
+deClassVideoPlayer::nfSetPlayPosition::nfSetPlayPosition(const sInitData &init) : dsFunction(init.clsVP,
+"setPlayPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // position
 }
-void deClassVideoPlayer::nfSetPlayPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfSetPlayPosition::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	videoPlayer.SetPlayPosition( rt->GetValue( 0 )->GetFloat() );
+	videoPlayer.SetPlayPosition(rt->GetValue(0)->GetFloat());
 }
 
 // public func float getPlaySpeed()
-deClassVideoPlayer::nfGetPlaySpeed::nfGetPlaySpeed( const sInitData &init ) : dsFunction( init.clsVP,
-"getPlaySpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassVideoPlayer::nfGetPlaySpeed::nfGetPlaySpeed(const sInitData &init) : dsFunction(init.clsVP,
+"getPlaySpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassVideoPlayer::nfGetPlaySpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfGetPlaySpeed::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushFloat( videoPlayer.GetPlaySpeed() );
+	rt->PushFloat(videoPlayer.GetPlaySpeed());
 }
 
 // public func void setPlaySpeed( float playSpeed )
-deClassVideoPlayer::nfSetPlaySpeed::nfSetPlaySpeed( const sInitData &init ) : dsFunction( init.clsVP,
-"setPlaySpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // playSpeed
+deClassVideoPlayer::nfSetPlaySpeed::nfSetPlaySpeed(const sInitData &init) : dsFunction(init.clsVP,
+"setPlaySpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // playSpeed
 }
-void deClassVideoPlayer::nfSetPlaySpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfSetPlaySpeed::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	videoPlayer.SetPlaySpeed( rt->GetValue( 0 )->GetFloat() );
+	videoPlayer.SetPlaySpeed(rt->GetValue(0)->GetFloat());
 }
 
 
 
 // public func bool isPlaying()
-deClassVideoPlayer::nfIsPlaying::nfIsPlaying( const sInitData &init ) : dsFunction( init.clsVP,
-"isPlaying", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassVideoPlayer::nfIsPlaying::nfIsPlaying(const sInitData &init) : dsFunction(init.clsVP,
+"isPlaying", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassVideoPlayer::nfIsPlaying::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfIsPlaying::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushBool( videoPlayer.GetPlaying() );
+	rt->PushBool(videoPlayer.GetPlaying());
 }
 
 // public func bool isPaused()
-deClassVideoPlayer::nfIsPaused::nfIsPaused( const sInitData &init ) : dsFunction( init.clsVP,
-"isPaused", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassVideoPlayer::nfIsPaused::nfIsPaused(const sInitData &init) : dsFunction(init.clsVP,
+"isPaused", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassVideoPlayer::nfIsPaused::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfIsPaused::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushBool( videoPlayer.GetPaused() );
+	rt->PushBool(videoPlayer.GetPaused());
 }
 
 // public func bool isStopped()
-deClassVideoPlayer::nfIsStopped::nfIsStopped( const sInitData &init ) : dsFunction( init.clsVP,
-"isStopped", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassVideoPlayer::nfIsStopped::nfIsStopped(const sInitData &init) : dsFunction(init.clsVP,
+"isStopped", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassVideoPlayer::nfIsStopped::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfIsStopped::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	rt->PushBool( videoPlayer.GetStopped() );
+	rt->PushBool(videoPlayer.GetStopped());
 }
 
 // public func void play()
-deClassVideoPlayer::nfPlay::nfPlay( const sInitData &init ) : dsFunction( init.clsVP,
-"play", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassVideoPlayer::nfPlay::nfPlay(const sInitData &init) : dsFunction(init.clsVP,
+"play", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassVideoPlayer::nfPlay::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfPlay::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
 	videoPlayer.Play();
 }
 
 // public func void stop()
-deClassVideoPlayer::nfStop::nfStop( const sInitData &init ) : dsFunction( init.clsVP,
-"stop", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassVideoPlayer::nfStop::nfStop(const sInitData &init) : dsFunction(init.clsVP,
+"stop", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassVideoPlayer::nfStop::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfStop::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
 	videoPlayer.Stop();
 }
 
 // public func void pause()
-deClassVideoPlayer::nfPause::nfPause( const sInitData &init ) : dsFunction( init.clsVP,
-"pause", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassVideoPlayer::nfPause::nfPause(const sInitData &init) : dsFunction(init.clsVP,
+"pause", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassVideoPlayer::nfPause::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfPause::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
 	videoPlayer.Pause();
 }
@@ -283,46 +283,46 @@ void deClassVideoPlayer::nfPause::RunFunction( dsRunTime *rt, dsValue *myself ){
 
 
 // public func void update( float elapsed )
-deClassVideoPlayer::nfUpdate::nfUpdate( const sInitData &init ) : dsFunction( init.clsVP,
-"update", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // elapsed
+deClassVideoPlayer::nfUpdate::nfUpdate(const sInitData &init) : dsFunction(init.clsVP,
+"update", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // elapsed
 }
-void deClassVideoPlayer::nfUpdate::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer &videoPlayer = *( ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer );
+void deClassVideoPlayer::nfUpdate::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer &videoPlayer = *(((sVPNatDat*)p_GetNativeData(myself))->videoPlayer);
 	
-	videoPlayer.Update( rt->GetValue( 0 )->GetFloat() );
+	videoPlayer.Update(rt->GetValue(0)->GetFloat());
 }
 
 
 
 // public func int hashCode()
-deClassVideoPlayer::nfHashCode::nfHashCode( const sInitData &init ) :
-dsFunction( init.clsVP, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassVideoPlayer::nfHashCode::nfHashCode(const sInitData &init) :
+dsFunction(init.clsVP, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
-void deClassVideoPlayer::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer *videoPlayer = ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer;
+void deClassVideoPlayer::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer *videoPlayer = ((sVPNatDat*)p_GetNativeData(myself))->videoPlayer;
 	
-	rt->PushInt( ( int )( intptr_t )videoPlayer );
+	rt->PushInt((int)(intptr_t)videoPlayer);
 }
 
 // public func bool equals( Object object )
-deClassVideoPlayer::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsVP, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // object
+deClassVideoPlayer::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsVP, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // object
 }
-void deClassVideoPlayer::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deVideoPlayer *videoPlayer = ( ( sVPNatDat* )p_GetNativeData( myself ) )->videoPlayer;
-	deClassVideoPlayer *clsVP = ( deClassVideoPlayer* )GetOwnerClass();
-	dsValue *obj = rt->GetValue( 0 );
+void deClassVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deVideoPlayer *videoPlayer = ((sVPNatDat*)p_GetNativeData(myself))->videoPlayer;
+	deClassVideoPlayer *clsVP = (deClassVideoPlayer*)GetOwnerClass();
+	dsValue *obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsVP ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsVP)){
+		rt->PushBool(false);
 		
 	}else{
-		deVideoPlayer *otherVideoPlayer = ( ( sVPNatDat* )p_GetNativeData( obj ) )->videoPlayer;
+		deVideoPlayer *otherVideoPlayer = ((sVPNatDat*)p_GetNativeData(obj))->videoPlayer;
 		
-		rt->PushBool( videoPlayer == otherVideoPlayer );
+		rt->PushBool(videoPlayer == otherVideoPlayer);
 	}
 }
 
@@ -334,19 +334,19 @@ void deClassVideoPlayer::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself )
 // Constructor
 ////////////////
 
-deClassVideoPlayer::deClassVideoPlayer( deScriptingDragonScript *ds ) :
-dsClass( "VideoPlayer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ){
-	if( ! ds ) DSTHROW( dueInvalidParam );
+deClassVideoPlayer::deClassVideoPlayer(deScriptingDragonScript *ds) :
+dsClass("VideoPlayer", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
+	if(! ds) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pDS = ds;
 	
 	// store information into parser info
-	GetParserInfo()->SetParent( DENS_GUI );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_GUI);
+	GetParserInfo()->SetBase("Object");
 	
 	// do the rest
-	p_SetNativeDataSize( sizeof( sVPNatDat ) );
+	p_SetNativeDataSize(sizeof(sVPNatDat));
 }
 
 deClassVideoPlayer::~deClassVideoPlayer(){
@@ -357,7 +357,7 @@ deClassVideoPlayer::~deClassVideoPlayer(){
 // Management
 ///////////////
 
-void deClassVideoPlayer::CreateClassMembers( dsEngine *engine ){
+void deClassVideoPlayer::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -370,57 +370,57 @@ void deClassVideoPlayer::CreateClassMembers( dsEngine *engine ){
 	init.clsVid = pDS->GetClassVideo();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetVideo( init ) );
-	AddFunction( new nfSetVideo( init ) );
+	AddFunction(new nfGetVideo(init));
+	AddFunction(new nfSetVideo(init));
 	
-	AddFunction( new nfGetLooping( init ) );
-	AddFunction( new nfSetLooping( init ) );
-	AddFunction( new nfGetPlayFrom( init ) );
-	AddFunction( new nfGetPlayTo( init ) );
-	AddFunction( new nfSetPlayRange( init ) );
-	AddFunction( new nfGetPlayPosition( init ) );
-	AddFunction( new nfSetPlayPosition( init ) );
-	AddFunction( new nfGetPlaySpeed( init ) );
-	AddFunction( new nfSetPlaySpeed( init ) );
+	AddFunction(new nfGetLooping(init));
+	AddFunction(new nfSetLooping(init));
+	AddFunction(new nfGetPlayFrom(init));
+	AddFunction(new nfGetPlayTo(init));
+	AddFunction(new nfSetPlayRange(init));
+	AddFunction(new nfGetPlayPosition(init));
+	AddFunction(new nfSetPlayPosition(init));
+	AddFunction(new nfGetPlaySpeed(init));
+	AddFunction(new nfSetPlaySpeed(init));
 	
-	AddFunction( new nfIsPlaying( init ) );
-	AddFunction( new nfIsPaused( init ) );
-	AddFunction( new nfIsStopped( init ) );
-	AddFunction( new nfPlay( init ) );
-	AddFunction( new nfPause( init ) );
-	AddFunction( new nfStop( init ) );
+	AddFunction(new nfIsPlaying(init));
+	AddFunction(new nfIsPaused(init));
+	AddFunction(new nfIsStopped(init));
+	AddFunction(new nfPlay(init));
+	AddFunction(new nfPause(init));
+	AddFunction(new nfStop(init));
 	
-	AddFunction( new nfUpdate( init ) );
+	AddFunction(new nfUpdate(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 }
 
-deVideoPlayer *deClassVideoPlayer::GetVideoPlayer( dsRealObject *myself ) const{
-	if( ! myself ){
+deVideoPlayer *deClassVideoPlayer::GetVideoPlayer(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
 	
-	return ( ( sVPNatDat* )p_GetNativeData( myself->GetBuffer() ) )->videoPlayer;
+	return ((sVPNatDat*)p_GetNativeData(myself->GetBuffer()))->videoPlayer;
 }
 
-void deClassVideoPlayer::PushVideoPlayer( dsRunTime *rt, deVideoPlayer *videoPlayer ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassVideoPlayer::PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlayer){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! videoPlayer ){
-		rt->PushObject( NULL, this );
+	if(! videoPlayer){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sVPNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->videoPlayer = videoPlayer;
+	rt->CreateObjectNakedOnStack(this);
+	((sVPNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->videoPlayer = videoPlayer;
 	videoPlayer->AddReference();
 }

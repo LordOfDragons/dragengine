@@ -42,14 +42,14 @@
 ////////////////////////////
 
 deSynthesizerSource::deSynthesizerSource() :
-pSynthesizer( NULL ),
-pMixMode( emmAdd ),
-pBlendFactor( 1.0f ),
-pEnabled( true ),
-pMinVolume( 1.0f ),
-pMaxVolume( 1.0f ),
-pMinPanning( 0.0f ),
-pMaxPanning( 0.0f ){
+pSynthesizer(NULL),
+pMixMode(emmAdd),
+pBlendFactor(1.0f),
+pEnabled(true),
+pMinVolume(1.0f),
+pMaxVolume(1.0f),
+pMinPanning(0.0f),
+pMaxPanning(0.0f){
 }
 
 deSynthesizerSource::~deSynthesizerSource(){
@@ -60,38 +60,38 @@ deSynthesizerSource::~deSynthesizerSource(){
 // Management
 ///////////////
 
-void deSynthesizerSource::SetSynthesizer( deSynthesizer *synthesizer ){
+void deSynthesizerSource::SetSynthesizer(deSynthesizer *synthesizer){
 	pSynthesizer = synthesizer;
 }
 
-void deSynthesizerSource::SetEnabled( bool enabled ){
+void deSynthesizerSource::SetEnabled(bool enabled){
 	pEnabled = enabled;
 }
 
-void deSynthesizerSource::SetMixMode( eMixModes mode ){
-	if( mode < emmBlend || mode > emmAdd ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerSource::SetMixMode(eMixModes mode){
+	if(mode < emmBlend || mode > emmAdd){
+		DETHROW(deeInvalidParam);
 	}
 	pMixMode = mode;
 }
 
-void deSynthesizerSource::SetBlendFactor( float factor ){
+void deSynthesizerSource::SetBlendFactor(float factor){
 	pBlendFactor = factor;
 }
 
-void deSynthesizerSource::SetMinVolume( float volume ){
+void deSynthesizerSource::SetMinVolume(float volume){
 	pMinVolume = volume;
 }
 
-void deSynthesizerSource::SetMaxVolume( float volume ){
+void deSynthesizerSource::SetMaxVolume(float volume){
 	pMaxVolume = volume;
 }
 
-void deSynthesizerSource::SetMinPanning( float panning ){
+void deSynthesizerSource::SetMinPanning(float panning){
 	pMinPanning = panning;
 }
 
-void deSynthesizerSource::SetMaxPanning( float panning ){
+void deSynthesizerSource::SetMaxPanning(float panning){
 	pMaxPanning = panning;
 }
 
@@ -104,19 +104,19 @@ int deSynthesizerSource::GetEffectCount() const{
 	return pEffects.GetCount();
 }
 
-deSynthesizerEffect *deSynthesizerSource::GetEffectAt( int index ) const{
-	return ( deSynthesizerEffect* )pEffects.GetAt( index );
+deSynthesizerEffect *deSynthesizerSource::GetEffectAt(int index) const{
+	return (deSynthesizerEffect*)pEffects.GetAt(index);
 }
 
-void deSynthesizerSource::AddEffect( deSynthesizerEffect *effect ){
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerSource::AddEffect(deSynthesizerEffect *effect){
+	if(! effect){
+		DETHROW(deeInvalidParam);
 	}
-	pEffects.Add( effect );
+	pEffects.Add(effect);
 }
 
-void deSynthesizerSource::RemoveEffect( deSynthesizerEffect *effect ){
-	pEffects.Remove( effect );
+void deSynthesizerSource::RemoveEffect(deSynthesizerEffect *effect){
+	pEffects.Remove(effect);
 }
 
 void deSynthesizerSource::RemoveAllEffects(){
@@ -128,6 +128,6 @@ void deSynthesizerSource::RemoveAllEffects(){
 // Visiting
 /////////////
 
-void deSynthesizerSource::Visit( deSynthesizerSourceVisitor &visitor ){
-	visitor.VisitSource( *this );
+void deSynthesizerSource::Visit(deSynthesizerSourceVisitor &visitor){
+	visitor.VisitSource(*this);
 }

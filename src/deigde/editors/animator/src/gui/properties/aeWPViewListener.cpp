@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPViewListener::aeWPViewListener( aeWPView &panel ) :
-pPanel( panel ){
+aeWPViewListener::aeWPViewListener(aeWPView &panel) :
+pPanel(panel){
 }
 
 aeWPViewListener::~aeWPViewListener(){
@@ -51,16 +51,16 @@ aeWPViewListener::~aeWPViewListener(){
 // Notifications
 //////////////////
 
-void aeWPViewListener::RigChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::RigChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateBoneList();
 }
 
-void aeWPViewListener::AnimatorChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::AnimatorChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -68,8 +68,8 @@ void aeWPViewListener::AnimatorChanged( aeAnimator *animator ){
 	pPanel.UpdateView();
 }
 
-void aeWPViewListener::ModelChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::ModelChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -78,24 +78,24 @@ void aeWPViewListener::ModelChanged( aeAnimator *animator ){
 	pPanel.UpdateView();
 }
 
-void aeWPViewListener::SkyChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::SkyChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateSky();
 }
 
-void aeWPViewListener::EnvObjectChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::EnvObjectChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateEnvObject();
 }
 
-void aeWPViewListener::AnimationChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::AnimationChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -104,16 +104,16 @@ void aeWPViewListener::AnimationChanged( aeAnimator *animator ){
 	pPanel.UpdateView();
 }
 
-void aeWPViewListener::PlaybackChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::PlaybackChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdatePlayback();
 }
 
-void aeWPViewListener::ViewChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::ViewChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -122,16 +122,16 @@ void aeWPViewListener::ViewChanged( aeAnimator *animator ){
 
 
 
-void aeWPViewListener::CameraChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::CameraChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
 	pPanel.UpdateCamera();
 }
 
-void aeWPViewListener::CameraViewChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::CameraViewChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -140,8 +140,8 @@ void aeWPViewListener::CameraViewChanged( aeAnimator *animator ){
 
 
 
-void aeWPViewListener::ActiveAttachmentChanged( aeAnimator *animator, aeAttachment* ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::ActiveAttachmentChanged(aeAnimator *animator, aeAttachment*){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	
@@ -149,16 +149,16 @@ void aeWPViewListener::ActiveAttachmentChanged( aeAnimator *animator, aeAttachme
 	pPanel.UpdateAttachment();
 }
 
-void aeWPViewListener::AttachmentChanged( aeAnimator*, aeAttachment *attachment ){
-	if( pPanel.GetAttachment() != attachment ){
+void aeWPViewListener::AttachmentChanged(aeAnimator*, aeAttachment *attachment){
+	if(pPanel.GetAttachment() != attachment){
 		return;
 	}
 	
 	pPanel.UpdateAttachmentList();
 }
 
-void aeWPViewListener::AttachmentStructureChanged( aeAnimator *animator ){
-	if( pPanel.GetAnimator() != animator ){
+void aeWPViewListener::AttachmentStructureChanged(aeAnimator *animator){
+	if(pPanel.GetAnimator() != animator){
 		return;
 	}
 	

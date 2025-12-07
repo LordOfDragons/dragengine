@@ -41,26 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintDofSetSpringStiffness::reUConstraintDofSetSpringStiffness( reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof, float newValue ){
-	if( ! constraint || ! constraint->GetRig()
-	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+reUConstraintDofSetSpringStiffness::reUConstraintDofSetSpringStiffness(reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof, float newValue){
+	if(! constraint || ! constraint->GetRig()
+	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
 	pDof = dof;
 	
-	pOldValue = constraint->GetDof( dof ).GetSpringStiffness();
+	pOldValue = constraint->GetDof(dof).GetSpringStiffness();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Constraint DOF set spring stiffness" );
+	SetShortInfo("Constraint DOF set spring stiffness");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintDofSetSpringStiffness::~reUConstraintDofSetSpringStiffness(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -71,9 +71,9 @@ reUConstraintDofSetSpringStiffness::~reUConstraintDofSetSpringStiffness(){
 ///////////////
 
 void reUConstraintDofSetSpringStiffness::Undo(){
-	pConstraint->GetDof( pDof ).SetSpringStiffness( pOldValue );
+	pConstraint->GetDof(pDof).SetSpringStiffness(pOldValue);
 }
 
 void reUConstraintDofSetSpringStiffness::Redo(){
-	pConstraint->GetDof( pDof ).SetSpringStiffness( pNewValue );
+	pConstraint->GetDof(pDof).SetSpringStiffness(pNewValue);
 }

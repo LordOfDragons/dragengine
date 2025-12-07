@@ -36,20 +36,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deService::deService( deServiceManager *manager, const char *name ) :
-deResource( manager ),
-pName( name ),
-pServiceModule( nullptr ),
-pPeerService( nullptr ),
-pPeerScripting( nullptr ){
+deService::deService(deServiceManager *manager, const char *name) :
+deResource(manager),
+pName(name),
+pServiceModule(nullptr),
+pPeerService(nullptr),
+pPeerScripting(nullptr){
 }
 
 deService::~deService(){
-	( ( deServiceManager* )GetResourceManager() )->RemoveAllMatchingEvents( this );
-	if( pPeerScripting ){
+	((deServiceManager*)GetResourceManager())->RemoveAllMatchingEvents(this);
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
-	if( pPeerService ){
+	if(pPeerService){
 		delete pPeerService;
 	}
 }
@@ -59,67 +59,67 @@ deService::~deService(){
 // Management
 ///////////////
 
-void deService::StartRequest( const decUniqueID &id, const deServiceObject &request ){
-	DEASSERT_NOTNULL( pPeerService )
+void deService::StartRequest(const decUniqueID &id, const deServiceObject &request){
+	DEASSERT_NOTNULL(pPeerService)
 	
-	pPeerService->StartRequest( id, request );
+	pPeerService->StartRequest(id, request);
 }
 
-void deService::CancelRequest( const decUniqueID &id ){
-	DEASSERT_NOTNULL( pPeerService )
+void deService::CancelRequest(const decUniqueID &id){
+	DEASSERT_NOTNULL(pPeerService)
 	
-	pPeerService->CancelRequest( id );
+	pPeerService->CancelRequest(id);
 }
 
-void deService::RequestResponse( const decUniqueID &id,
-const deServiceObject::Ref &response, bool finished ){
-	DEASSERT_NOTNULL( response )
+void deService::RequestResponse(const decUniqueID &id,
+const deServiceObject::Ref &response, bool finished){
+	DEASSERT_NOTNULL(response)
 	
-	if( pPeerScripting ){
-		pPeerScripting->RequestResponse( id, response, finished );
+	if(pPeerScripting){
+		pPeerScripting->RequestResponse(id, response, finished);
 		
 	}else{
 		response->FreeReference();
 	}
 }
 
-void deService::RequestFailed( const decUniqueID &id, const deServiceObject::Ref &error ){
-	DEASSERT_NOTNULL( error )
+void deService::RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error){
+	DEASSERT_NOTNULL(error)
 	
-	if( pPeerScripting ){
-		pPeerScripting->RequestFailed( id, error );
+	if(pPeerScripting){
+		pPeerScripting->RequestFailed(id, error);
 		
 	}else{
 		error->FreeReference();
 	}
 }
 
-void deService::EventReceived( const deServiceObject::Ref &event ){
-	DEASSERT_NOTNULL( event )
+void deService::EventReceived(const deServiceObject::Ref &event){
+	DEASSERT_NOTNULL(event)
 	
-	if( pPeerScripting ){
-		pPeerScripting->EventReceived( event );
+	if(pPeerScripting){
+		pPeerScripting->EventReceived(event);
 		
 	}else{
 		event->FreeReference();
 	}
 }
 
-deServiceObject::Ref deService::RunAction( const deServiceObject &action ){
-	DEASSERT_NOTNULL( pPeerService )
+deServiceObject::Ref deService::RunAction(const deServiceObject &action){
+	DEASSERT_NOTNULL(pPeerService)
 	
-	return pPeerService->RunAction( action );
+	return pPeerService->RunAction(action);
 }
 
 // System Peers
 /////////////////
 
-void deService::SetPeerService( deBaseServiceModule *module, deBaseServiceService *peer ){
-	if( peer == pPeerService ){
+void deService::SetPeerService(deBaseServiceModule *module, deBaseServiceService *peer){
+	if(peer == pPeerService){
 		return;
 	}
 	
-	if( pPeerService ){
+	if(pPeerService){
 		delete pPeerService;
 	}
 	
@@ -127,12 +127,12 @@ void deService::SetPeerService( deBaseServiceModule *module, deBaseServiceServic
 	pPeerService = peer;
 }
 
-void deService::SetPeerScripting( deBaseScriptingService *peer ){
-	if( peer == pPeerScripting ){
+void deService::SetPeerScripting(deBaseScriptingService *peer){
+	if(peer == pPeerScripting){
 		return;
 	}
 	
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 	

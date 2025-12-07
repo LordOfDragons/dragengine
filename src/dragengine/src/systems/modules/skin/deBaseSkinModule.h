@@ -40,7 +40,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseSkinModule( deLoadableModule &loadableModule );
+	deBaseSkinModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseSkinModule();
@@ -51,10 +51,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load skin. */
-	virtual void LoadSkin( decBaseFileReader &reader, deSkin &skin ) = 0;
+	virtual void LoadSkin(decBaseFileReader &reader, deSkin &skin) = 0;
 	
 	/** \brief Save skin. */
-	virtual void SaveSkin( decBaseFileWriter &writer, const deSkin &skin ) = 0;
+	virtual void SaveSkin(decBaseFileWriter &writer, const deSkin &skin) = 0;
 	/*@}*/
 };
 

@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWPUndoHistory( igdeEnvironment &environment );
+	saeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** Clean up panel. */
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline saeSAnimation *GetSAnimation() const{return pSAnimation;}
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	/*@}*/
 };
 

@@ -38,13 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetBoneName::seUPropertySetBoneName( seProperty *property, const char *newName ) :
-pProperty( property ),
-pOldName( property ? property->GetBoneName().GetString() : "" ),
-pNewName( newName )
+seUPropertySetBoneName::seUPropertySetBoneName(seProperty *property, const char *newName) :
+pProperty(property),
+pOldName(property ? property->GetBoneName().GetString() : ""),
+pNewName(newName)
 {
-	DEASSERT_NOTNULL( property )
-	SetShortInfo( "Property Set Bone" );
+	DEASSERT_NOTNULL(property)
+	SetShortInfo("Property Set Bone");
 }
 
 seUPropertySetBoneName::~seUPropertySetBoneName(){
@@ -56,9 +56,9 @@ seUPropertySetBoneName::~seUPropertySetBoneName(){
 ///////////////
 
 void seUPropertySetBoneName::Undo(){
-	pProperty->SetBoneName( pOldName );
+	pProperty->SetBoneName(pOldName);
 }
 
 void seUPropertySetBoneName::Redo(){
-	pProperty->SetBoneName( pNewName );
+	pProperty->SetBoneName(pNewName);
 }

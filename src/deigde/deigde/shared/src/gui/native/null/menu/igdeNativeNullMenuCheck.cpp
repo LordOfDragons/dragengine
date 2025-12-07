@@ -39,7 +39,7 @@ igdeNativeNullMenuCheck::igdeNativeNullMenuCheck(){
 igdeNativeNullMenuCheck::~igdeNativeNullMenuCheck(){
 }
 
-igdeNativeNullMenuCheck *igdeNativeNullMenuCheck::CreateNativeWidget( igdeMenuCheck& ){
+igdeNativeNullMenuCheck *igdeNativeNullMenuCheck::CreateNativeWidget(igdeMenuCheck&){
 	return new igdeNativeNullMenuCheck;
 }
 

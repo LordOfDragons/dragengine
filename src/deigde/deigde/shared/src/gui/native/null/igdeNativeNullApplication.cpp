@@ -53,16 +53,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeNullApplication::igdeNativeNullApplication( igdeApplication &owner ) :
-pOwner( owner ),
-pQuitRequested( false ){
+igdeNativeNullApplication::igdeNativeNullApplication(igdeApplication &owner) :
+pOwner(owner),
+pQuitRequested(false){
 }
 
 igdeNativeNullApplication::~igdeNativeNullApplication(){
 }
 
-igdeNativeNullApplication *igdeNativeNullApplication::CreateNativeApplication( igdeApplication &application ){
-	return new igdeNativeNullApplication( application );
+igdeNativeNullApplication *igdeNativeNullApplication::CreateNativeApplication(igdeApplication &application){
+	return new igdeNativeNullApplication(application);
 }
 
 void igdeNativeNullApplication::DestroyNativeApplication(){
@@ -75,31 +75,31 @@ void igdeNativeNullApplication::DestroyNativeApplication(){
 ///////////////
 
 #ifdef OS_UNIX
-void igdeNativeNullApplication::GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args ){
+void igdeNativeNullApplication::GetOSStartUpArguments(decUnicodeStringList &arguments, int argCount, char **args){
 	int i;
-	for( i=1; i<argCount; i++ ){
-		arguments.Add( decUnicodeString::NewFromUTF8( args[ i ] ) );
+	for(i=1; i<argCount; i++){
+		arguments.Add(decUnicodeString::NewFromUTF8(args[i]));
 	}
 }
 
 #elif defined OS_W32
-void igdeNativeNullApplication::GetOSStartUpArguments( decUnicodeStringList &arguments,
-const decUnicodeArgumentList &windowsArguments ){
+void igdeNativeNullApplication::GetOSStartUpArguments(decUnicodeStringList &arguments,
+const decUnicodeArgumentList &windowsArguments){
 	const int count = windowsArguments.GetArgumentCount();
 	int i;
-	for( i=1; i<count; i++ ){
-		arguments.Add( *windowsArguments.GetArgumentAt( i ) );
+	for(i=1; i<count; i++){
+		arguments.Add(*windowsArguments.GetArgumentAt(i));
 	}
 }
 #endif
 
-void igdeNativeNullApplication::Initialize( decUnicodeStringList& ){
+void igdeNativeNullApplication::Initialize(decUnicodeStringList&){
 }
 
 void igdeNativeNullApplication::Run(){
-	while( ! pQuitRequested ){
+	while(! pQuitRequested){
 		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
-		if( mainWindow ){
+		if(mainWindow){
 			mainWindow->OnFrameUpdate();
 		}
 	}
@@ -109,30 +109,30 @@ void igdeNativeNullApplication::Quit(){
 	pQuitRequested = true;
 }
 
-decColor igdeNativeNullApplication::GetSystemColor( igdeEnvironment::eSystemColors color ) const{
-	switch( color ){
+decColor igdeNativeNullApplication::GetSystemColor(igdeEnvironment::eSystemColors color) const{
+	switch(color){
 	case igdeEnvironment::escWindowForeground:
 	case igdeEnvironment::escWidgetForeground:
 	case igdeEnvironment::escWidgetSelectedBackground:
-		return decColor( 0.0f, 0.0f, 0.0f );
+		return decColor(0.0f, 0.0f, 0.0f);
 		
 	case igdeEnvironment::escWidgetBackground:
-		return decColor( 0.65f, 0.65f, 0.65f );
+		return decColor(0.65f, 0.65f, 0.65f);
 		
 	case igdeEnvironment::escWidgetHighlight:
-		return decColor( 0.9f, 0.9f, 0.9f );
+		return decColor(0.9f, 0.9f, 0.9f);
 		
 	case igdeEnvironment::escWidgetShadow:
-		return decColor( 0.2f, 0.2f, 0.2f );
+		return decColor(0.2f, 0.2f, 0.2f);
 		
 	case igdeEnvironment::escWindowBackground:
 	case igdeEnvironment::escWidgetSelectedForeground:
 	default:
-		return decColor( 1.0f, 1.0f, 1.0f );
+		return decColor(1.0f, 1.0f, 1.0f);
 	}
 }
 
-void igdeNativeNullApplication::GetAppFontConfig( igdeFont::sConfiguration &config ) const{
+void igdeNativeNullApplication::GetAppFontConfig(igdeFont::sConfiguration &config) const{
 	config.name = "Courier";
 	config.size = 12.0;
 	config.bold = false;
@@ -141,19 +141,19 @@ void igdeNativeNullApplication::GetAppFontConfig( igdeFont::sConfiguration &conf
 	config.strikeThrough = false;
 }
 
-void igdeNativeNullApplication::ShowError( const deException &exception ) const{
-	pOwner.GetMainWindow()->GetLogger()->LogError( "IGDE", exception.FormatOutput().Join( "\n" ) );
+void igdeNativeNullApplication::ShowError(const deException &exception) const{
+	pOwner.GetMainWindow()->GetLogger()->LogError("IGDE", exception.FormatOutput().Join("\n"));
 }
 
-void igdeNativeNullApplication::RunModalWhileShown( igdeWindow &window ){
-	igdeNativeNullWindow * const native = ( igdeNativeNullWindow* )window.GetNativeWidget();
-	if( ! native ){
-		DETHROW( deeInvalidParam );
+void igdeNativeNullApplication::RunModalWhileShown(igdeWindow &window){
+	igdeNativeNullWindow * const native = (igdeNativeNullWindow*)window.GetNativeWidget();
+	if(! native){
+		DETHROW(deeInvalidParam);
 	}
 	
-	while( ! pQuitRequested && ! native->GetIsClosed() ){
+	while(! pQuitRequested && ! native->GetIsClosed()){
 		igdeMainWindow * const mainWindow = pOwner.GetMainWindow();
-		if( mainWindow ){
+		if(mainWindow){
 			mainWindow->OnFrameUpdate();
 		}
 		

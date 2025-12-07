@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeContainerFixed::igdeContainerFixed( igdeEnvironment &environment ) :
-igdeContainer( environment ){
+igdeContainerFixed::igdeContainerFixed(igdeEnvironment &environment) :
+igdeContainer(environment){
 }
 
 igdeContainerFixed::~igdeContainerFixed(){
@@ -52,23 +52,23 @@ igdeContainerFixed::~igdeContainerFixed(){
 ///////////////
 
 void igdeContainerFixed::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerFixed *const native = igdeNativeContainerFixed::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeContainerFixed *const native = igdeNativeContainerFixed::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeContainerFixed::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerFixed *const native = ( igdeNativeContainerFixed* )GetNativeWidget();
+	igdeNativeContainerFixed *const native = (igdeNativeContainerFixed*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
 }

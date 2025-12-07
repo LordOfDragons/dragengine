@@ -39,18 +39,18 @@
 ////////////////////////////
 
 gdeOCSnapPoint::gdeOCSnapPoint() :
-pSnapDistance( 0.1f ),
-pSnapToRotation( true ){
+pSnapDistance(0.1f),
+pSnapToRotation(true){
 }
 
-gdeOCSnapPoint::gdeOCSnapPoint( const gdeOCSnapPoint &snapPoint ) :
-pName( snapPoint.pName ),
+gdeOCSnapPoint::gdeOCSnapPoint(const gdeOCSnapPoint &snapPoint) :
+pName(snapPoint.pName),
 
-pPosition( snapPoint.pPosition ),
-pRotation( snapPoint.pRotation ),
+pPosition(snapPoint.pPosition),
+pRotation(snapPoint.pRotation),
 
-pSnapDistance( snapPoint.pSnapDistance ),
-pSnapToRotation( snapPoint.pSnapToRotation ){
+pSnapDistance(snapPoint.pSnapDistance),
+pSnapToRotation(snapPoint.pSnapToRotation){
 }
 
 gdeOCSnapPoint::~gdeOCSnapPoint(){
@@ -61,26 +61,26 @@ gdeOCSnapPoint::~gdeOCSnapPoint(){
 // Management
 ///////////////
 
-void gdeOCSnapPoint::SetName( const char *name ){
+void gdeOCSnapPoint::SetName(const char *name){
 	pName = name;
 }
 
 
 
-void gdeOCSnapPoint::SetPosition( const decDVector &position ){
+void gdeOCSnapPoint::SetPosition(const decDVector &position){
 	pPosition = position;
 }
 
-void gdeOCSnapPoint::SetRotation( const decVector &orientation ){
+void gdeOCSnapPoint::SetRotation(const decVector &orientation){
 	pRotation = orientation;
 }
 
 
 
-void gdeOCSnapPoint::SetSnapDistance( float distance ){
-	pSnapDistance = decMath::max( distance, 0.0f );
+void gdeOCSnapPoint::SetSnapDistance(float distance){
+	pSnapDistance = decMath::max(distance, 0.0f);
 }
 
-void gdeOCSnapPoint::SetSnapToRotation( bool snapToRotation ){
+void gdeOCSnapPoint::SetSnapToRotation(bool snapToRotation){
 	pSnapToRotation = snapToRotation;
 }

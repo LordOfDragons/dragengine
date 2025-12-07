@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetName::seULayerSetName( seLayer *layer, const char *newName ) :
-pLayer( NULL ),
-pNewName( newName )
+seULayerSetName::seULayerSetName(seLayer *layer, const char *newName) :
+pLayer(NULL),
+pNewName(newName)
 {
-	if( ! layer ){
-		DETHROW( deeInvalidParam );
+	if(! layer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Layer Name" );
+	SetShortInfo("Set Layer Name");
 	
 	pOldName = layer->GetName();
 	
@@ -56,7 +56,7 @@ pNewName( newName )
 }
 
 seULayerSetName::~seULayerSetName(){
-	if( pLayer ){
+	if(pLayer){
 		pLayer->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seULayerSetName::~seULayerSetName(){
 ///////////////
 
 void seULayerSetName::Undo(){
-	pLayer->SetName( pOldName );
+	pLayer->SetName(pOldName);
 }
 
 void seULayerSetName::Redo(){
-	pLayer->SetName( pNewName );
+	pLayer->SetName(pNewName);
 }

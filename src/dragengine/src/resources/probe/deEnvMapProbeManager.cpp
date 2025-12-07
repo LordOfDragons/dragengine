@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEnvMapProbeManager::deEnvMapProbeManager( deEngine *engine ) : deResourceManager( engine, ertEnvMapProbe ){
-	SetLoggingName( "environment map probe" );
+deEnvMapProbeManager::deEnvMapProbeManager(deEngine *engine) : deResourceManager(engine, ertEnvMapProbe){
+	SetLoggingName("environment map probe");
 }
 
 deEnvMapProbeManager::~deEnvMapProbeManager(){
@@ -58,21 +58,21 @@ int deEnvMapProbeManager::GetEnvMapProbeCount() const{
 }
 
 deEnvMapProbe *deEnvMapProbeManager::GetRootEnvMapProbe() const{
-	return ( deEnvMapProbe* )pEnvMapProbes.GetRoot();
+	return (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 }
 
 deEnvMapProbe *deEnvMapProbeManager::CreateEnvMapProbe(){
 	deEnvMapProbe *envMapProbe = NULL;
 	
 	try{
-		envMapProbe = new deEnvMapProbe( this );
+		envMapProbe = new deEnvMapProbe(this);
 		
-		GetGraphicSystem()->LoadEnvMapProbe( envMapProbe );
+		GetGraphicSystem()->LoadEnvMapProbe(envMapProbe);
 		
-		pEnvMapProbes.Add( envMapProbe );
+		pEnvMapProbes.Add(envMapProbe);
 		
-	}catch( const deException & ){
-		if( envMapProbe ){
+	}catch(const deException &){
+		if(envMapProbe){
 			envMapProbe->FreeReference();
 		}
 		throw;
@@ -86,8 +86,8 @@ deEnvMapProbe *deEnvMapProbeManager::CreateEnvMapProbe(){
 void deEnvMapProbeManager::ReleaseLeakingResources(){
 	int count = GetEnvMapProbeCount();
 	
-	if( count > 0 ){
-		LogWarnFormat( "%i leaking environment map probes", count );
+	if(count > 0){
+		LogWarnFormat("%i leaking environment map probes", count);
 		pEnvMapProbes.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 	}
 }
@@ -98,29 +98,29 @@ void deEnvMapProbeManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deEnvMapProbeManager::SystemGraphicLoad(){
-	deEnvMapProbe *envMapProbe = ( deEnvMapProbe* )pEnvMapProbes.GetRoot();
+	deEnvMapProbe *envMapProbe = (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
-	while( envMapProbe ){
-		if( ! envMapProbe->GetPeerGraphic() ){
-			grasys.LoadEnvMapProbe( envMapProbe );
+	while(envMapProbe){
+		if(! envMapProbe->GetPeerGraphic()){
+			grasys.LoadEnvMapProbe(envMapProbe);
 		}
 		
-		envMapProbe = ( deEnvMapProbe* )envMapProbe->GetLLManagerNext();
+		envMapProbe = (deEnvMapProbe*)envMapProbe->GetLLManagerNext();
 	}
 }
 
 void deEnvMapProbeManager::SystemGraphicUnload(){
-	deEnvMapProbe *envMapProbe = ( deEnvMapProbe* )pEnvMapProbes.GetRoot();
+	deEnvMapProbe *envMapProbe = (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 	
-	while( envMapProbe ){
-		envMapProbe->SetPeerGraphic( NULL );
-		envMapProbe = ( deEnvMapProbe* )envMapProbe->GetLLManagerNext();
+	while(envMapProbe){
+		envMapProbe->SetPeerGraphic(NULL);
+		envMapProbe = (deEnvMapProbe*)envMapProbe->GetLLManagerNext();
 	}
 }
 
 
 
-void deEnvMapProbeManager::RemoveResource( deResource *resource ){
-	pEnvMapProbes.RemoveIfPresent( resource );
+void deEnvMapProbeManager::RemoveResource(deResource *resource){
+	pEnvMapProbes.RemoveIfPresent(resource);
 }

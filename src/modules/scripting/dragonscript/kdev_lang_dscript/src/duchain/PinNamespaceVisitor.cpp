@@ -32,18 +32,18 @@ using KDevelop::DeclarationPointer;
 
 namespace DragonScript {
 
-PinNamespaceVisitor::PinNamespaceVisitor( const EditorIntegrator &editorIntegrator, const DUContext *ctx ) :
-pEditorIntegrator( editorIntegrator ),
-pContext( ctx )
+PinNamespaceVisitor::PinNamespaceVisitor(const EditorIntegrator &editorIntegrator, const DUContext *ctx) :
+pEditorIntegrator(editorIntegrator),
+pContext(ctx)
 {
-	Q_ASSERT( ctx );
-	Q_ASSERT( ctx->topContext() );
+	Q_ASSERT(ctx);
+	Q_ASSERT(ctx->topContext());
 }
 
 
 
-void PinNamespaceVisitor::visitFullyQualifiedClassname( FullyQualifiedClassnameAst *node ){
-	if( ! node->nameSequence || node->nameSequence->count() == 0 ){
+void PinNamespaceVisitor::visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node){
+	if(! node->nameSequence || node->nameSequence->count() == 0){
 		return;
 	}
 	
@@ -53,43 +53,43 @@ void PinNamespaceVisitor::visitFullyQualifiedClassname( FullyQualifiedClassnameA
 	QVector<QString> names;
 	
 	do{
-		nodes.append( iter->element );
-		names.append( pEditorIntegrator.tokenText( iter->element->name ) );
+		nodes.append(iter->element);
+		names.append(pEditorIntegrator.tokenText(iter->element->name));
 		iter = iter->next;
-	}while( iter != end );
+	}while(iter != end);
 	
 	qDebug() << "PinNamespaceVisitor::visitFullyQualifiedClassname:" << names;
 	
-	findNamespaceIn( pContext, nodes, names, 0 );
+	findNamespaceIn(pContext, nodes, names, 0);
 }
 
-void PinNamespaceVisitor::findNamespaceIn( const DUContext *searchContext,
-const QVector<IdentifierAst*> nodes, const QVector<QString> &names, int index ){
+void PinNamespaceVisitor::findNamespaceIn(const DUContext *searchContext,
+const QVector<IdentifierAst*> nodes, const QVector<QString> &names, int index){
 	const bool isLast = index == names.size() - 1;
 	
 // 	QList<Declaration*> declarations( searchContext->findLocalDeclarations(
 // 		names.at( index ), CursorInRevision::invalid() ) );
-	QVector<Declaration*> declarations( Helpers::declarationsForName( names.at( index ),
-		CursorInRevision::invalid(), DUChainPointer<const DUContext>( searchContext ) ) );
+	QVector<Declaration*> declarations(Helpers::declarationsForName(names.at(index),
+		CursorInRevision::invalid(), DUChainPointer<const DUContext>(searchContext)));
 	
-	qDebug() << "PinNamespaceVisitor::findNamespaceIn:" << names.at( index ) << "found" << declarations;
-	if( declarations.isEmpty() ){
+	qDebug() << "PinNamespaceVisitor::findNamespaceIn:" << names.at(index) << "found" << declarations;
+	if(declarations.isEmpty()){
 		//qDebug() << "PinNamespaceVisitor::findNamespaceIn:" << names.at( index )
 		//	<< "not found in" << searchContext;
 		return;
 	}
 	
-	foreach( Declaration *declaration, declarations ){
+	foreach(Declaration *declaration, declarations){
 		DUContext * const context = declaration->internalContext();
-		if( ! context ){
+		if(! context){
 			continue;
 		}
 		
-		if( isLast ){
-			pNamespaces.append( DUChainPointer<const DUContext>( context ) );
+		if(isLast){
+			pNamespaces.append(DUChainPointer<const DUContext>(context));
 			
 		}else{
-			findNamespaceIn( context, nodes, names, index + 1 );
+			findNamespaceIn(context, nodes, names, index + 1);
 		}
 	}
 }

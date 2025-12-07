@@ -57,9 +57,9 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-projTestRunCommandThread::projTestRunCommandThread( projTestRunProcess &process ) :
-pProcess( process ),
-pAbort( false ){
+projTestRunCommandThread::projTestRunCommandThread(projTestRunProcess &process) :
+pProcess(process),
+pAbort(false){
 }
 
 projTestRunCommandThread::~projTestRunCommandThread(){
@@ -73,18 +73,18 @@ projTestRunCommandThread::~projTestRunCommandThread(){
 void projTestRunCommandThread::Run(){
 	int command;
 	
-	while( ! pAbort ){
+	while(! pAbort){
 		// read a command from the pipe. blocks the thread until the pipe has a command.
 		// in the unholy case of the game crashing an exception is thrown. in this case
 		// we just go home an leave the cleaning up to the parent process.
 		try{
 			command = ReadCommandFromPipe();
 			
-		}catch( const deException & ){
+		}catch(const deException &){
 			break;
 		}
 		
-		switch( command ){
+		switch(command){
 		case projTestRunConstants::ecQuit:
 			// although we are in a separate thread we can simply call Quit on the game
 			// engine. this is because the Quit call just sets a quit request variable
@@ -103,7 +103,7 @@ void projTestRunCommandThread::Run(){
 			break;
 			
 		default:
-			pProcess.WriteUCharToPipe( projTestRunConstants::ercFailed );
+			pProcess.WriteUCharToPipe(projTestRunConstants::ercFailed);
 		}
 	}
 }
@@ -114,7 +114,7 @@ void projTestRunCommandThread::Abort(){
 	
 	/*
 	// if fungetc returns 0xff the call succeeded. if it returns EOF it failed
-	fungetc( 0xff, pProcess.GetPipeIn() );
+	fungetc(0xff, pProcess.GetPipeIn());
 	Stop();
 	*/
 }
@@ -127,21 +127,21 @@ int projTestRunCommandThread::ReadCommandFromPipe(){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if( ! ReadFile( pProcess.GetPipeIn(), &command, sizeof( command ), &bytesRead, NULL ) ){
-		DETHROW( deeInvalidAction );
+	if(! ReadFile(pProcess.GetPipeIn(), &command, sizeof(command), &bytesRead, NULL)){
+		DETHROW(deeInvalidAction);
 	}
-	if( bytesRead < sizeof( command ) ){
-		DETHROW( deeInvalidAction );
+	if(bytesRead < sizeof(command)){
+		DETHROW(deeInvalidAction);
 	}
 	
 	#else
-	while( ! pAbort ){
-		const ssize_t bytes = read( pProcess.GetPipeIn(), &command, sizeof( command ) );
-		if( bytes == sizeof( command ) ){
+	while(! pAbort){
+		const ssize_t bytes = read(pProcess.GetPipeIn(), &command, sizeof(command));
+		if(bytes == sizeof(command)){
 			break;
 		}
-		if( bytes == -1 && errno != EINTR ){
-			DETHROW( deeInvalidAction );
+		if(bytes == -1 && errno != EINTR){
+			DETHROW(deeInvalidAction);
 		}
 	}
 	#endif

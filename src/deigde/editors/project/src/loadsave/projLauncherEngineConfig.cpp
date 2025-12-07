@@ -52,8 +52,8 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-projLauncherEngineConfig::projLauncherEngineConfig( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+projLauncherEngineConfig::projLauncherEngineConfig(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 projLauncherEngineConfig::~projLauncherEngineConfig(){
@@ -65,22 +65,22 @@ projLauncherEngineConfig::~projLauncherEngineConfig(){
 ///////////////
 
 void projLauncherEngineConfig::ReadFromFile(
-decBaseFileReader &reader, projTestRunner &testRunner ){
+decBaseFileReader &reader, projTestRunner &testRunner){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser parser( testRunner.GetWindowMain().GetLogger() );
+	decXmlParser parser(testRunner.GetWindowMain().GetLogger());
 	
-	parser.ParseXml( &reader, xmlDoc );
+	parser.ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "launcherConfig" ){
-		DETHROW( deeInvalidParam );
+	if(! root || root->GetName() != "launcherConfig"){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, testRunner );
+	pReadConfig(*root, testRunner);
 }
 
 
@@ -89,98 +89,98 @@ decBaseFileReader &reader, projTestRunner &testRunner ){
 //////////////////////
 
 void projLauncherEngineConfig::pReadConfig(
-const decXmlElementTag &root, projTestRunner &testRunner ){
+const decXmlElementTag &root, projTestRunner &testRunner){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "profiles" ){
-			pReadProfiles( *tag, testRunner );
+		if(tagName == "profiles"){
+			pReadProfiles(*tag, testRunner);
 			
-		}else if( tagName == "activeProfile" ){
-			testRunner.SetDefaultLauncherProfileName( GetCDataString( *tag ) );
+		}else if(tagName == "activeProfile"){
+			testRunner.SetDefaultLauncherProfileName(GetCDataString(*tag));
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
 void projLauncherEngineConfig::pReadProfiles(
-const decXmlElementTag &root, projTestRunner &testRunner ){
+const decXmlElementTag &root, projTestRunner &testRunner){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "profile" ){
-			pReadProfile( *tag, testRunner );
+		if(tag->GetName() == "profile"){
+			pReadProfile(*tag, testRunner);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
 void projLauncherEngineConfig::pReadProfile(
-const decXmlElementTag &root, projTestRunner &testRunner ){
+const decXmlElementTag &root, projTestRunner &testRunner){
 	const int elementCount = root.GetElementCount();
 	projTRProfile *profile = NULL;
 	int i;
 	
 	try{
 		profile = new projTRProfile;
-		profile->SetName( GetAttributeString( root, "name" ) );
+		profile->SetName(GetAttributeString(root, "name"));
 		
-		for( i=0; i<elementCount; i++ ){
-			const decXmlElementTag * const tag = root.GetElementIfTag( i );
-			if( ! tag ){
+		for(i=0; i<elementCount; i++){
+			const decXmlElementTag * const tag = root.GetElementIfTag(i);
+			if(! tag){
 				continue;
 			}
 			
 			const decString &tagName = tag->GetName();
 			
-			if( tagName == "systems" ){
-				pReadProfileSystems( *tag, *profile );
+			if(tagName == "systems"){
+				pReadProfileSystems(*tag, *profile);
 				
-			}else if( tagName == "disableModuleVersions" ){
+			}else if(tagName == "disableModuleVersions"){
 				profile->GetDisableModuleVersions().SetAt(
-					GetAttributeString( *tag, "name" ),
-					GetAttributeString( *tag, "version" ) );
+					GetAttributeString(*tag, "name"),
+					GetAttributeString(*tag, "version"));
 				
-			}else if( tagName == "modules" ){
-				pReadProfileModules( *tag, *profile );
+			}else if(tagName == "modules"){
+				pReadProfileModules(*tag, *profile);
 				
-			}else if( tagName == "runArguments" ){
-				profile->SetRunArguments( GetCDataString( *tag ) );
+			}else if(tagName == "runArguments"){
+				profile->SetRunArguments(GetCDataString(*tag));
 				
-			}else if( tagName == "replaceRunArguments" ){
-				profile->SetReplaceRunArguments( GetCDataInt( *tag ) != 0 );
+			}else if(tagName == "replaceRunArguments"){
+				profile->SetReplaceRunArguments(GetCDataInt(*tag) != 0);
 				
-			}else if( tagName == "window" ){
-				pReadProfileWindow( *tag, *profile );
+			}else if(tagName == "window"){
+				pReadProfileWindow(*tag, *profile);
 				
 			}else{
-				LogWarnUnknownTag( root, *tag );
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
 		
-		testRunner.GetLauncherProfiles().Add( profile );
+		testRunner.GetLauncherProfiles().Add(profile);
 		profile->FreeReference();
 		
-	}catch( const deException & ){
-		if( profile ){
+	}catch(const deException &){
+		if(profile){
 			profile->FreeReference();
 		}
 		throw;
@@ -188,157 +188,157 @@ const decXmlElementTag &root, projTestRunner &testRunner ){
 }
 
 void projLauncherEngineConfig::pReadProfileSystems(
-const decXmlElementTag &root, projTRProfile &profile ){
+const decXmlElementTag &root, projTRProfile &profile){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "graphic" ){
-			profile.SetModuleGraphic( GetCDataString( *tag ) );
+		if(tagName == "graphic"){
+			profile.SetModuleGraphic(GetCDataString(*tag));
 			
-		}else if( tagName == "input" ){
-			profile.SetModuleInput( GetCDataString( *tag ) );
+		}else if(tagName == "input"){
+			profile.SetModuleInput(GetCDataString(*tag));
 			
-		}else if( tagName == "physics" ){
-			profile.SetModulePhysics( GetCDataString( *tag ) );
+		}else if(tagName == "physics"){
+			profile.SetModulePhysics(GetCDataString(*tag));
 			
-		}else if( tagName == "animator" ){
-			profile.SetModuleAnimator( GetCDataString( *tag ) );
+		}else if(tagName == "animator"){
+			profile.SetModuleAnimator(GetCDataString(*tag));
 			
-		}else if( tagName == "ai" ){
-			profile.SetModuleAI( GetCDataString( *tag ) );
+		}else if(tagName == "ai"){
+			profile.SetModuleAI(GetCDataString(*tag));
 			
-		}else if( tagName == "crashRecovery" ){
-			profile.SetModuleCrashRecovery( GetCDataString( *tag ) );
+		}else if(tagName == "crashRecovery"){
+			profile.SetModuleCrashRecovery(GetCDataString(*tag));
 			
-		}else if( tagName == "audio" ){
-			profile.SetModuleAudio( GetCDataString( *tag ) );
+		}else if(tagName == "audio"){
+			profile.SetModuleAudio(GetCDataString(*tag));
 			
-		}else if( tagName == "synthesizer" ){
-			profile.SetModuleSynthesizer( GetCDataString( *tag ) );
+		}else if(tagName == "synthesizer"){
+			profile.SetModuleSynthesizer(GetCDataString(*tag));
 			
-		}else if( tagName == "network" ){
-			profile.SetModuleNetwork( GetCDataString( *tag ) );
+		}else if(tagName == "network"){
+			profile.SetModuleNetwork(GetCDataString(*tag));
 			
-		}else if( tagName == "vr" ){
-			profile.SetModuleVR( GetCDataString( *tag ) );
+		}else if(tagName == "vr"){
+			profile.SetModuleVR(GetCDataString(*tag));
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
 void projLauncherEngineConfig::pReadProfileModules(
-const decXmlElementTag &root, projTRProfile &profile ){
+const decXmlElementTag &root, projTRProfile &profile){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "module" ){
-			pReadProfileModule( *tag, profile );
+		if(tag->GetName() == "module"){
+			pReadProfileModule(*tag, profile);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
 void projLauncherEngineConfig::pReadProfileModule(
-const decXmlElementTag &root, projTRProfile &profile ){
-	const decString module( GetAttributeString( root, "name" ) );
+const decXmlElementTag &root, projTRProfile &profile){
+	const decString module(GetAttributeString(root, "name"));
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "parameters" ){
-			pReadProfileModuleParameters( *tag, profile, module );
+		if(tagName == "parameters"){
+			pReadProfileModuleParameters(*tag, profile, module);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
 void projLauncherEngineConfig::pReadProfileModuleParameters(
-const decXmlElementTag &root, projTRProfile &profile, const char *module ){
+const decXmlElementTag &root, projTRProfile &profile, const char *module){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "parameter" ){
+		if(tag->GetName() == "parameter"){
 			projTRPParameter *parameter = NULL;
 			
 			try{
 				parameter = new projTRPParameter;
-				parameter->SetModule( module );
-				parameter->SetName( GetAttributeString( *tag, "name" ) );
-				parameter->SetValue( GetCDataString( *tag ) );
+				parameter->SetModule(module);
+				parameter->SetName(GetAttributeString(*tag, "name"));
+				parameter->SetValue(GetCDataString(*tag));
 				
-				profile.GetParameters().Add( parameter );
+				profile.GetParameters().Add(parameter);
 				parameter->FreeReference();
 				
-			}catch( const deException & ){
-				if( parameter ){
+			}catch(const deException &){
+				if(parameter){
 					parameter->FreeReference();
 				}
 				throw;
 			}
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
 void projLauncherEngineConfig::pReadProfileWindow(
-const decXmlElementTag &root, projTRProfile &profile ){
+const decXmlElementTag &root, projTRProfile &profile){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
 		
-		if( tagName == "width" ){
-			profile.SetWidth( GetCDataInt( *tag ) );
+		if(tagName == "width"){
+			profile.SetWidth(GetCDataInt(*tag));
 			
-		}else if( tagName == "height" ){
-			profile.SetHeight( GetCDataInt( *tag ) );
+		}else if(tagName == "height"){
+			profile.SetHeight(GetCDataInt(*tag));
 			
-		}else if( tagName == "fullScreen" ){
-			profile.SetFullScreen( GetCDataInt( *tag ) != 0 );
+		}else if(tagName == "fullScreen"){
+			profile.SetFullScreen(GetCDataInt(*tag) != 0);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

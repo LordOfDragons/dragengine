@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupAddNode( sePropertyNodeGroup *node, sePropertyNode *child );
+	seUPNGroupAddNode(sePropertyNodeGroup *node, sePropertyNode *child);
 	
 protected:
 	/** \brief Clean up undo. */

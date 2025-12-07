@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassCaptureCanvas( deScriptingDragonScript &ds );
+	deClassCaptureCanvas(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassCaptureCanvas();
@@ -56,23 +56,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve capture canvas from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deCaptureCanvas *GetCaptureCanvas( dsRealObject *myself ) const;
+	deCaptureCanvas *GetCaptureCanvas(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push capture canvas onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCaptureCanvas( dsRunTime *rt, deCaptureCanvas *captureCanvas );
+	void PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *captureCanvas);
 	/*@}*/
 	
 private:
@@ -81,24 +81,24 @@ private:
 		dsClass *clsCView, *clsImage;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCanvasView );
-	DEF_NATFUNC( nfSetCanvasView );
-	DEF_NATFUNC( nfGetImage );
-	DEF_NATFUNC( nfSetImage );
-	DEF_NATFUNC( nfDropImage );
-	DEF_NATFUNC( nfGetCapture );
-	DEF_NATFUNC( nfSetCapture );
+	DEF_NATFUNC(nfGetCanvasView);
+	DEF_NATFUNC(nfSetCanvasView);
+	DEF_NATFUNC(nfGetImage);
+	DEF_NATFUNC(nfSetImage);
+	DEF_NATFUNC(nfDropImage);
+	DEF_NATFUNC(nfGetCapture);
+	DEF_NATFUNC(nfSetCapture);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

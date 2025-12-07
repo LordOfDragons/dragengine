@@ -51,13 +51,13 @@ deLoadableModuleVisitor::~deLoadableModuleVisitor(){
 // Visiting
 /////////////
 
-void deLoadableModuleVisitor::VisitLoadableModule( deLoadableModule &module ){
+void deLoadableModuleVisitor::VisitLoadableModule(deLoadableModule &module){
 }
 
-void deLoadableModuleVisitor::VisitInternalModule( deInternalModule &module ){
-	VisitLoadableModule( module );
+void deLoadableModuleVisitor::VisitInternalModule(deInternalModule &module){
+	VisitLoadableModule(module);
 }
 
-void deLoadableModuleVisitor::VisitLibraryModule( deLibraryModule &module ){
-	VisitLoadableModule( module );
+void deLoadableModuleVisitor::VisitLibraryModule(deLibraryModule &module){
+	VisitLoadableModule(module);
 }

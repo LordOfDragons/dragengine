@@ -38,7 +38,7 @@ class igdeNativeFoxNVSocket;
  * \brief FOX toolkit Native NodeView Slot.
  */
 class igdeNativeFoxNVSlot : public FXHorizontalFrame{
-	FXDECLARE( igdeNativeFoxNVSlot )
+	FXDECLARE(igdeNativeFoxNVSlot)
 protected:
 	   igdeNativeFoxNVSlot();
 	
@@ -64,14 +64,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxNVSlot( igdeNVSlot &owner, FXComposite *parent,
-		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxNVSlot(igdeNVSlot &owner, FXComposite *parent,
+		const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxNVSlot();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxNVSlot* CreateNativeWidget( igdeNVSlot &owner );
+	static igdeNativeFoxNVSlot* CreateNativeWidget(igdeNVSlot &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -88,7 +88,7 @@ public:
 	
 	
 	/** \brief Owner. */
-	inline igdeNVSlot &GetOwner() const{ return *pOwner; }
+	inline igdeNVSlot &GetOwner() const{return *pOwner;}
 	
 	
 	
@@ -129,29 +129,29 @@ public:
 	
 	
 	
-	static int NVSlotFlags( const igdeNVSlot &owner );
-	static igdeFont *NVSlotFont( const igdeNVSlot &owner, const igdeGuiTheme &guitheme );
-	static int NVSlotPadLeft( const igdeGuiTheme &guitheme );
-	static int NVSlotPadRight( const igdeGuiTheme &guitheme );
-	static int NVSlotPadTop( const igdeGuiTheme &guitheme );
-	static int NVSlotPadBottom( const igdeGuiTheme &guitheme );
+	static int NVSlotFlags(const igdeNVSlot &owner);
+	static igdeFont *NVSlotFont(const igdeNVSlot &owner, const igdeGuiTheme &guitheme);
+	static int NVSlotPadLeft(const igdeGuiTheme &guitheme);
+	static int NVSlotPadRight(const igdeGuiTheme &guitheme);
+	static int NVSlotPadTop(const igdeGuiTheme &guitheme);
+	static int NVSlotPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onPaint( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onPaint(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	
-	long onSocketCommand( FXObject*, FXSelector, void* );
-	long onSocketLeftMouseDown( FXObject*, FXSelector, void* );
-	long onSocketMouseMoved( FXObject*, FXSelector, void* );
-	long onSocketLeftMouseUp( FXObject*, FXSelector, void* );
-	long onSocketDndEnter( FXObject*, FXSelector, void* );
-	long onSocketDndLeave( FXObject*, FXSelector, void* );
-	long onSocketDndDrop( FXObject*, FXSelector, void* );
-	long onSocketDndMotion( FXObject*, FXSelector, void* );
+	long onSocketCommand(FXObject*, FXSelector, void*);
+	long onSocketLeftMouseDown(FXObject*, FXSelector, void*);
+	long onSocketMouseMoved(FXObject*, FXSelector, void*);
+	long onSocketLeftMouseUp(FXObject*, FXSelector, void*);
+	long onSocketDndEnter(FXObject*, FXSelector, void*);
+	long onSocketDndLeave(FXObject*, FXSelector, void*);
+	long onSocketDndDrop(FXObject*, FXSelector, void*);
+	long onSocketDndMotion(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

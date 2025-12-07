@@ -50,8 +50,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAIfElseIfCase( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index );
+	ceWPTTIMAIfElseIfCase(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -64,22 +64,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline ceCAIfElseCase *GetIfCase() const{return pIfCase;}
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Parent if-else model. */
 	ceWPTTIMAIfElse *GetModelIfElse() const;
 	
 	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAIfElseIfCaseCondition *GetChildCondition() const{ return pCondition; }
+	inline ceWPTTIMAIfElseIfCaseCondition *GetChildCondition() const{return pCondition;}
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAIfElseIfCaseActions *GetChildActions() const{ return pActions; }
+	inline ceWPTTIMAIfElseIfCaseActions *GetChildActions() const{return pActions;}
 	
 	/** \brief Update if-case. */
 	void Update();
@@ -91,7 +91,7 @@ public:
 	virtual void OnExpandedChanged();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	

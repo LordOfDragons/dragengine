@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionRedo::igdeActionRedo( igdeEnvironment &environment, igdeUndoSystem *undoSystem ) :
+igdeActionRedo::igdeActionRedo(igdeEnvironment &environment, igdeUndoSystem *undoSystem) :
 igdeAction(
 	"Redo",
-	environment.GetStockIcon( igdeEnvironment::esiRedo ),
+	environment.GetStockIcon(igdeEnvironment::esiRedo),
 	"Redo last action",
 	deInputEvent::ekcR,
-	igdeHotKey( deInputEvent::esmControl, deInputEvent::ekcY ) ),
-pEnvironment( environment ),
-pUndoSystem( undoSystem ){
+	igdeHotKey(deInputEvent::esmControl, deInputEvent::ekcY)),
+pEnvironment(environment),
+pUndoSystem(undoSystem){
 }
 
 igdeActionRedo::~igdeActionRedo(){
@@ -59,8 +59,8 @@ igdeActionRedo::~igdeActionRedo(){
 // Management
 ///////////////
 
-void igdeActionRedo::SetUndoSystem( igdeUndoSystem *undoSystem ){
-	if( undoSystem == pUndoSystem ){
+void igdeActionRedo::SetUndoSystem(igdeUndoSystem *undoSystem){
+	if(undoSystem == pUndoSystem){
 		return;
 	}
 	
@@ -71,11 +71,11 @@ void igdeActionRedo::SetUndoSystem( igdeUndoSystem *undoSystem ){
 
 
 void igdeActionRedo::OnAction(){
-	if( pUndoSystem && pUndoSystem->GetRedoableCount() > 0 ){
+	if(pUndoSystem && pUndoSystem->GetRedoableCount() > 0){
 		pUndoSystem->Redo();
 	}
 }
 
 void igdeActionRedo::Update(){
-	SetEnabled( pUndoSystem && pUndoSystem->GetRedoableCount() > 0 );
+	SetEnabled(pUndoSystem && pUndoSystem->GetRedoableCount() > 0);
 }

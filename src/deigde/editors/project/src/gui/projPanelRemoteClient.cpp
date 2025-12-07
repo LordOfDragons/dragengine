@@ -70,7 +70,7 @@ class cActionDisconnect : public igdeAction{
 public:
 	cActionDisconnect(projPanelRemoteClient &panel) : igdeAction("Disconnect",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit), "Disconnect remote client"),
-	pPanel(panel){ }
+	pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.Disconnect();
@@ -103,7 +103,7 @@ public:
 	cActionSynchronize(projPanelRemoteClient &panel) : igdeAction("Synchronize",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
 		"Synchronize profile specific project data to client"),
-	pPanel(panel){ }
+	pPanel(panel){}
 	
 	void OnAction() override{
 		pPanel.Synchronize();

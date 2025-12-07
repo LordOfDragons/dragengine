@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableValue( deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable );
+	deoglDSRenderableValue(deoglDynamicSkin &dynamicSkin, const deDSRenderableValue &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableValue();
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableValue &GetRenderableValue() const{ return pRenderableValue; }
+	inline const deDSRenderableValue &GetRenderableValue() const{return pRenderableValue;}
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

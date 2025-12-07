@@ -46,16 +46,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCanvasCanvasView::deoglCanvasCanvasView( deGraphicOpenGl &ogl, deCanvasCanvasView &canvas ) :
-deoglCanvas( ogl, canvas ),
-pCanvasCanvasView( canvas ),
-pRCanvasCanvasView( NULL ),
-pCanvasView( NULL ){
+deoglCanvasCanvasView::deoglCanvasCanvasView(deGraphicOpenGl &ogl, deCanvasCanvasView &canvas) :
+deoglCanvas(ogl, canvas),
+pCanvasCanvasView(canvas),
+pRCanvasCanvasView(NULL),
+pCanvasView(NULL){
 }
 
 deoglCanvasCanvasView::~deoglCanvasCanvasView(){
-	if( pCanvasView ){
-		pCanvasView->RemoveListener( this );
+	if(pCanvasView){
+		pCanvasView->RemoveListener(this);
 	}
 }
 
@@ -70,18 +70,18 @@ void deoglCanvasCanvasView::DropRCanvas(){
 }
 
 void deoglCanvasCanvasView::SyncContentToRender(){
-	if( pCanvasView ){
+	if(pCanvasView){
 		pCanvasView->SyncToRender();
-		pRCanvasCanvasView->SetCanvasView( pCanvasView->GetRCanvasView() );
+		pRCanvasCanvasView->SetCanvasView(pCanvasView->GetRCanvasView());
 		
 	}else{
-		pRCanvasCanvasView->SetCanvasView( NULL );
+		pRCanvasCanvasView->SetCanvasView(NULL);
 	}
 	
-	const float repeatScaleU = ( float )pCanvasCanvasView.GetRepeatX();
-	const float repeatScaleV = ( float )pCanvasCanvasView.GetRepeatY();
-	pRCanvasCanvasView->SetTCTransform( decTexMatrix2::CreateScale( repeatScaleU, repeatScaleV ) );
-	pRCanvasCanvasView->SetTCClampMaximum( decVector2( repeatScaleU, repeatScaleV ) );
+	const float repeatScaleU = (float)pCanvasCanvasView.GetRepeatX();
+	const float repeatScaleV = (float)pCanvasCanvasView.GetRepeatY();
+	pRCanvasCanvasView->SetTCTransform(decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV));
+	pRCanvasCanvasView->SetTCClampMaximum(decVector2(repeatScaleU, repeatScaleV));
 }
 
 void deoglCanvasCanvasView::CanvasViewDestroyed(){
@@ -98,13 +98,13 @@ void deoglCanvasCanvasView::CanvasViewRequiresSync(){
 //////////////////
 
 void deoglCanvasCanvasView::ContentChanged(){
-	if( pCanvasView ){
-		pCanvasView->RemoveListener( this );
+	if(pCanvasView){
+		pCanvasView->RemoveListener(this);
 	}
 	
-	if( pCanvasCanvasView.GetCanvasView() ){
-		pCanvasView = ( deoglCanvasView* )pCanvasCanvasView.GetCanvasView()->GetPeerGraphic();
-		pCanvasView->AddListener( this );
+	if(pCanvasCanvasView.GetCanvasView()){
+		pCanvasView = (deoglCanvasView*)pCanvasCanvasView.GetCanvasView()->GetPeerGraphic();
+		pCanvasView->AddListener(this);
 		
 	}else{
 		pCanvasView = NULL;
@@ -119,6 +119,6 @@ void deoglCanvasCanvasView::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasCanvasView::CreateRCanvas(){
-	pRCanvasCanvasView = new deoglRCanvasCanvasView( GetOgl().GetRenderThread() );
+	pRCanvasCanvasView = new deoglRCanvasCanvasView(GetOgl().GetRenderThread());
 	return pRCanvasCanvasView;
 }

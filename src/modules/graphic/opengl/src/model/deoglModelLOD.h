@@ -136,9 +136,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new model lod. */
-	deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &engModel );
+	deoglModelLOD(deoglRModel &model, int lodIndex, const deModel &engModel);
 	/** Creates a new model lod from cache. */
-	deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader );
+	deoglModelLOD(deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader);
 	/** Cleans up the model lod. */
 	~deoglModelLOD();
 	/*@}*/
@@ -146,9 +146,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent model. */
-	inline deoglRModel &GetModel() const{ return pModel; }
+	inline deoglRModel &GetModel() const{return pModel;}
 	/** Retrieves the lod index. */
-	inline int GetLODIndex() const{ return pLODIndex; }
+	inline int GetLODIndex() const{return pLODIndex;}
 	
 	
 	
@@ -161,109 +161,109 @@ public:
 	void PrepareVBOBlockVertPosSet();
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline deoglSharedVBOBlock *GetVBOBlock() const{return pVBOBlock;}
 	// inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
 	// inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
 	// inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
-	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
-	inline deoglSharedVBOBlock *GetVBOBlockVertPosSet() const{ return pVBOBlockVertPosSet; }
+	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{return pVBOBlockWithWeight;}
+	inline deoglSharedVBOBlock *GetVBOBlockVertPosSet() const{return pVBOBlockVertPosSet;}
 	
 	/** Index buffer object. */
 	GLuint GetIBO();
 	
 	/** Index buffer object data type. */
-	inline deoglVBOLayout::eIndexTypes GetIBOType() const{ return pIBOType; }
+	inline deoglVBOLayout::eIndexTypes GetIBOType() const{return pIBOType;}
 	
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** Texture at index. */
-	deoglModelTexture &GetTextureAt( int index );
-	const deoglModelTexture &GetTextureAt( int index ) const;
+	deoglModelTexture &GetTextureAt(int index);
+	const deoglModelTexture &GetTextureAt(int index) const;
 	
 	/** Texture render task instance group. */
-	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt( int texture ) const;
+	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt(int texture) const;
 	
 	/** Model has double sided textures. */
-	inline bool GetDoubleSided() const{ return pDoubleSided; }
+	inline bool GetDoubleSided() const{return pDoubleSided;}
 	
 	/** Model has decal textures. */
-	inline bool GetDecal() const{ return pDecal; }
+	inline bool GetDecal() const{return pDecal;}
 	
 	/** Retrieves the positions. */
-	inline oglModelPosition *GetPositions() const{ return pPositions; }
+	inline oglModelPosition *GetPositions() const{return pPositions;}
 	/** Retrieves the number of positions. */
-	inline int GetPositionCount() const{ return pPositionCount; }
+	inline int GetPositionCount() const{return pPositionCount;}
 	
 	/** Retrieves the texture coordinates. */
-	inline decVector2 *GetTextureCoordinates() const{ return pTexCoords; }
+	inline decVector2 *GetTextureCoordinates() const{return pTexCoords;}
 	/** Retrieves the number of texture coordinates. */
-	inline int GetTextureCoordinatesCount() const{ return pTexCoordCount; }
+	inline int GetTextureCoordinatesCount() const{return pTexCoordCount;}
 	
 	/** Retrieves the normals. */
-	inline decVector *GetNormals() const{ return pNormals; }
+	inline decVector *GetNormals() const{return pNormals;}
 	/** Retrieves the normal count. */
-	inline int GetNormalCount() const{ return pNormalCount; }
+	inline int GetNormalCount() const{return pNormalCount;}
 	
 	/** Retrieves the tangents. */
-	inline decVector *GetTangents() const{ return pTangents; }
+	inline decVector *GetTangents() const{return pTangents;}
 	/** Retrieves the negate tangents. */
-	inline bool *GetNegateTangents() const{ return pNegateTangents; }
+	inline bool *GetNegateTangents() const{return pNegateTangents;}
 	/** Retrieves the tangent count. */
-	inline int GetTangentCount() const{ return pTangentCount; }
+	inline int GetTangentCount() const{return pTangentCount;}
 	
 	/** Retrieves the weights entries. */
-	inline oglModelWeight *GetWeightsEntries() const{ return pWeightsEntries; }
+	inline oglModelWeight *GetWeightsEntries() const{return pWeightsEntries;}
 	/** Retrieves the number of weights entries. */
-	inline int GetWeightsEntryCount() const{ return pWeightsEntryCount; }
+	inline int GetWeightsEntryCount() const{return pWeightsEntryCount;}
 	/** Retrieves the weights entries count list. */
-	inline int *GetWeightsCounts() const{ return pWeightsCounts; }
+	inline int *GetWeightsCounts() const{return pWeightsCounts;}
 	/** Retrieves the number of weights. */
-	inline int GetWeightsCount() const{ return pWeightsCount; }
+	inline int GetWeightsCount() const{return pWeightsCount;}
 	
 	/** Retrieves the vertices. */
-	inline oglModelVertex *GetVertices() const{ return pVertices; }
+	inline oglModelVertex *GetVertices() const{return pVertices;}
 	/** Retrieves the vertex count. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{return pVertexCount;}
 	
 	/** Retrieves the faces. */
-	inline deoglModelFace *GetFaces() const{ return pFaces; }
+	inline deoglModelFace *GetFaces() const{return pFaces;}
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	
 	/** Retrieves the number of texture coordinate sets. */
-	inline int GetTextureCoordinateSetCount() const{ return pTexCoordSetCount; }
+	inline int GetTextureCoordinateSetCount() const{return pTexCoordSetCount;}
 	/** Retrieves the texture coordinate set at the given index. */
-	const deoglModelLODTexCoordSet &GetTextureCoordSetAt( int index ) const;
+	const deoglModelLODTexCoordSet &GetTextureCoordSetAt(int index) const;
 	
 	/** Count of vertex position sets. */
-	inline int GetVertexPositionSetCount() const{ return pVertPosSetCount; }
+	inline int GetVertexPositionSetCount() const{return pVertPosSetCount;}
 	
 	/** Vertex position set at index. */
-	const deoglModelLODVertPosSet &GetVertexPositionSetAt( int index ) const;
+	const deoglModelLODVertPosSet &GetVertexPositionSetAt(int index) const;
 	
 	/** Octree or \em NULL if there is none. */
-	inline deoglModelOctree *GetOctree() const{ return pOctree; }
+	inline deoglModelOctree *GetOctree() const{return pOctree;}
 	
 	/** Prepare octree if not existing already. */
 	void PrepareOctree();
 	
 	/** Retrieves the maximum error in meters compared to LOD 0. */
-	inline float GetMaxError() const{ return pMaxError; }
+	inline float GetMaxError() const{return pMaxError;}
 	/** Retrieves the average error in meters compared to LOD 0. */
-	inline float GetAvgError() const{ return pAvgError; }
+	inline float GetAvgError() const{return pAvgError;}
 	
 	/** Load from cache file. */
-	void LoadFromCache( decBaseFileReader &reader );
+	void LoadFromCache(decBaseFileReader &reader);
 	/** Save to cache file. */
-	void SaveToCache( decBaseFileWriter &writer );
+	void SaveToCache(decBaseFileWriter &writer);
 	
 	
 	
 	/** GI Local BVH or NULL. */
-	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{return pGIBVHLocal;}
 	
 	/** Prepare GI Local BVH if not build yet. */
 	void PrepareGILocalBVH();
@@ -272,8 +272,8 @@ public:
 private:
 	void pCleanUp();
 	void pCalcTangents();
-	void pBuildArrays( const deModel &engModel );
-	void pCalcErrorMetrics( const deModel &engModel );
+	void pBuildArrays(const deModel &engModel);
+	void pCalcErrorMetrics(const deModel &engModel);
 	void pOptimizeVertexCache();
 	void pWriteVBOData();
 	// void pWriteVBODataPositionWeight();

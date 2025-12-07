@@ -129,7 +129,7 @@ public:
 	/**
 	 * \brief Process all events in the application event queue.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule );
+	virtual void ProcessEventLoop(bool sendToInputModule);
 	/*@}*/
 	
 	
@@ -145,7 +145,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
 	 * than GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	virtual decPoint GetDisplayCurrentResolution(int display);
 	
 	/**
 	 * \brief Current refresh rate of display.
@@ -153,7 +153,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
 	 * than GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display );
+	virtual int GetDisplayCurrentRefreshRate(int display);
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -161,7 +161,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
 	 * than GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display );
+	virtual int GetDisplayResolutionCount(int display);
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -172,7 +172,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution );
+	virtual decPoint GetDisplayResolution(int display, int resolution);
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
@@ -195,7 +195,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display );
+	virtual int GetDisplayCurrentScaleFactor(int display);
 	/*@}*/
 	
 	
@@ -214,13 +214,13 @@ public:
 	/** \name Android related */
 	/*@{*/
 	/** \brief Java VM. */
-	inline JavaVM *GetJavaVM() const{ return pConfig.javavm; }
+	inline JavaVM *GetJavaVM() const{return pConfig.javavm;}
 	
 	/** \brief Activity. */
-	inline jobject GetActivity() const{ return pConfig.activity; }
+	inline jobject GetActivity() const{return pConfig.activity;}
 	
 	/** \brief Window. */
-	inline ANativeWindow *GetNativeWindow() const{ return pConfig.nativeWindow; }
+	inline ANativeWindow *GetNativeWindow() const{return pConfig.nativeWindow;}
 	
 	
 	
@@ -231,7 +231,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline void *GetWindow() const{ return pCurWindow; }
+	inline void *GetWindow() const{return pCurWindow;}
 	
 	/**
 	 * \brief Set current game window.
@@ -243,10 +243,10 @@ public:
 	 * window as otherwise input modules relying on message or event queues
 	 * will not get them.
 	 */
-	void SetWindow( void *window );
+	void SetWindow(void *window);
 	
 	/** \brief Hosting main window or 0 if not set. */
-	inline void *GetHostingMainWindow() const{ return pHostingMainWindow; }
+	inline void *GetHostingMainWindow() const{return pHostingMainWindow;}
 	
 	/**
 	 * \brief Set hosting main window or 0 if not set.
@@ -256,10 +256,10 @@ public:
 	 * window of the hosting application that can be used to obtain visuals
 	 * from. It is not necessary the one rendered into later on.
 	 */
-	void SetHostingMainWindow( void *window );
+	void SetHostingMainWindow(void *window);
 	
 	/** \brief Hosting render window or 0 if not set. */
-	inline void *GetHostingRenderWindow() const{ return pHostingRenderWindow; }
+	inline void *GetHostingRenderWindow() const{return pHostingRenderWindow;}
 	
 	/**
 	 * \brief Set hosting render window or 0 if not set.
@@ -269,7 +269,7 @@ public:
 	 * window on which the graphic module has to render from now on. This window
 	 * can be the same as the hosting main window but can also be different from it.
 	 */
-	void SetHostingRenderWindow( void *window );
+	void SetHostingRenderWindow(void *window);
 	
 	/** \brief Determine if a hosting main window is set. */
 	bool HasHostingMainWindow() const;
@@ -278,13 +278,13 @@ public:
 	bool HasHostingRenderWindow() const;
 	
 	/** \brief Application is frozen. */
-	inline bool GetAppFrozen() const{ return pAppFrozen; }
+	inline bool GetAppFrozen() const{return pAppFrozen;}
 	
 	/** \brief Set if application is frozen. */
-	void SetAppFrozen( bool frozen );
+	void SetAppFrozen(bool frozen);
 	
 	/** \brief Content area. */
-	inline const decBoundary &GetContentRect() const{ return pContentRect; }
+	inline const decBoundary &GetContentRect() const{return pContentRect;}
 	
 	/** \brief Set content area. */
 	void SetContentRect(const decBoundary &rect);

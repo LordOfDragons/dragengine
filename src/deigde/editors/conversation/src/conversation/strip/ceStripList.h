@@ -52,30 +52,30 @@ public:
 	/** Retrieves the number of entries. */
 	int GetCount() const;
 	/** Retrieves the entry at the given duration. */
-	ceStrip *GetAt( int index ) const;
+	ceStrip *GetAt(int index) const;
 	/** Retrieves the index of the entry or -1 if not found. */
-	int IndexOf( ceStrip *entry ) const;
+	int IndexOf(ceStrip *entry) const;
 	/** Determines if an entry exists. */
-	bool Has( ceStrip *entry ) const;
+	bool Has(ceStrip *entry) const;
 	/** Adds an entry. */
-	void Add( ceStrip *entry );
+	void Add(ceStrip *entry);
 	/** Inserts an entry. */
-	void InsertAt( ceStrip *entry, int index );
+	void InsertAt(ceStrip *entry, int index);
 	/** Moves an entry to a new position. */
-	void MoveTo( ceStrip *entry, int index );
+	void MoveTo(ceStrip *entry, int index);
 	/** Removes an entry. */
-	void Remove( ceStrip *entry );
+	void Remove(ceStrip *entry);
 	/** Removes all entries. */
 	void RemoveAll();
 	
 	/** Adds copies of entries of another list to this list. */
-	void AddCopyFrom( const ceStripList &list );
+	void AddCopyFrom(const ceStripList &list);
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Set this list to the content of another list. */
-	ceStripList &operator=( const ceStripList &list );
+	ceStripList &operator=(const ceStripList &list);
 	/*@}*/
 };
 

@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new lumimeter. */
-	deLumimeter( deLumimeterManager *manager );
+	deLumimeter(deLumimeterManager *manager);
 	
 protected:
 	/**
@@ -93,34 +93,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Direction. */
-	inline const decVector &GetDirection() const{ return pDirection; }
+	inline const decVector &GetDirection() const{return pDirection;}
 	
 	/** \brief Set direction. */
-	void SetDirection( const decVector &direction );
+	void SetDirection(const decVector &direction);
 	
 	/** \brief Cone inner angle. */
-	inline float GetConeInnerAngle() const{ return pConeInnerAngle; }
+	inline float GetConeInnerAngle() const{return pConeInnerAngle;}
 	
 	/** \brief Set cone inner angle. */
-	void SetConeInnerAngle( float angle );
+	void SetConeInnerAngle(float angle);
 	
 	/** \brief Cone outer angle. */
-	inline float GetConeOuterAngle() const{ return pConeOuterAngle; }
+	inline float GetConeOuterAngle() const{return pConeOuterAngle;}
 	
 	/** \brief Set cone outer angle. */
-	void SetConeOuterAngle( float angle );
+	void SetConeOuterAngle(float angle);
 	
 	/** \brief Cone exponent. */
-	inline float GetConeExponent() const{ return pConeExponent; }
+	inline float GetConeExponent() const{return pConeExponent;}
 	
 	/** \brief Set cone exponent. */
-	void SetConeExponent( float exponent );
+	void SetConeExponent(float exponent);
 	/*@}*/
 	
 	
@@ -139,10 +139,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer. */
-	inline deBaseGraphicLumimeter *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicLumimeter *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicLumimeter *peer );
+	void SetPeerGraphic(deBaseGraphicLumimeter *peer);
 	/*@}*/
 	
 	
@@ -150,22 +150,22 @@ public:
 	/** \name Linked List */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous lumimeter in the parent world linked list. */
-	inline deLumimeter *GetLLWorldPrev() const{ return pLLWorldPrev; }
+	inline deLumimeter *GetLLWorldPrev() const{return pLLWorldPrev;}
 	
 	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldPrev( deLumimeter *lumimeter );
+	void SetLLWorldPrev(deLumimeter *lumimeter);
 	
 	/** \brief Next lumimeter in the parent world linked list. */
-	inline deLumimeter *GetLLWorldNext() const{ return pLLWorldNext; }
+	inline deLumimeter *GetLLWorldNext() const{return pLLWorldNext;}
 	
 	/** \brief Set next lumimeter in the parent world linked list. */
-	void SetLLWorldNext( deLumimeter *lumimeter );
+	void SetLLWorldNext(deLumimeter *lumimeter);
 	/*@}*/
 };
 

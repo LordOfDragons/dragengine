@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeUControllerPaste( aeAnimator *animator, const aeControllerList &controllerList );
+	aeUControllerPaste(aeAnimator *animator, const aeControllerList &controllerList);
 	
 protected:
 	/** Clean up undo. */

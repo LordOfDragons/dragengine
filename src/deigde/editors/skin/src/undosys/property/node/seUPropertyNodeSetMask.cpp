@@ -41,15 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetMask::seUPropertyNodeSetMask( sePropertyNode *node, sePropertyNode *mask ) :
-pNode( NULL ),
-pMask( NULL )
+seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode *node, sePropertyNode *mask) :
+pNode(NULL),
+pMask(NULL)
 {
-	if( ! node || ! node->GetProperty() || node->GetMask() || ! mask ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty() || node->GetMask() || ! mask){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node set mask" );
+	SetShortInfo("Node set mask");
 	
 	pOldPosition = mask->GetPosition();
 	pOldSize = mask->GetSize();
@@ -64,10 +64,10 @@ pMask( NULL )
 }
 
 seUPropertyNodeSetMask::~seUPropertyNodeSetMask(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
-	if( pMask ){
+	if(pMask){
 		pMask->FreeReference();
 	}
 }
@@ -78,22 +78,22 @@ seUPropertyNodeSetMask::~seUPropertyNodeSetMask(){
 ///////////////
 
 void seUPropertyNodeSetMask::Undo(){
-	pNode->SetMask( NULL );
+	pNode->SetMask(NULL);
 	
-	pMask->SetPosition( pOldPosition );
-	pMask->SetSize( pOldSize );
-	pMask->SetRotation( pOldRotation );
-	pMask->SetShearing( pOldShearing );
+	pMask->SetPosition(pOldPosition);
+	pMask->SetSize(pOldSize);
+	pMask->SetRotation(pOldRotation);
+	pMask->SetShearing(pOldShearing);
 	
-	pNode->GetParent()->AddNode( pMask );
+	pNode->GetParent()->AddNode(pMask);
 }
 
 void seUPropertyNodeSetMask::Redo(){
-	const decTexMatrix2 matrix( ( pMask->CreateParentTransformMatrix().ToTexMatrix()
+	const decTexMatrix2 matrix((pMask->CreateParentTransformMatrix().ToTexMatrix()
 		* pNode->CreateParentTransformMatrix().Invert() ).ToTexMatrix2() );
 	
-	pNode->GetProperty()->GetNodeSelection().Remove( pMask );
-	pNode->GetParent()->RemoveNode( pMask );
-	pMask->SetFromMatrix( matrix, pOldSize, pOldRotation );
-	pNode->SetMask( pMask );
+	pNode->GetProperty()->GetNodeSelection().Remove(pMask);
+	pNode->GetParent()->RemoveNode(pMask);
+	pMask->SetFromMatrix(matrix, pOldSize, pOldRotation);
+	pNode->SetMask(pMask);
 }

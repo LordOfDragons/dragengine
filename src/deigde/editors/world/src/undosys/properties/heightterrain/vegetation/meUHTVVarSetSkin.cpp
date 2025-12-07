@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetSkin::meUHTVVarSetSkin( meHTVVariation *variation, const char *newPath ){
-	if( ! variation || ! newPath ) DETHROW( deeInvalidParam );
+meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPath){
+	if(! variation || ! newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
 	
 	pOldPath = variation->GetPathSkin();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Vegetation Layer Variation Set Skin" );
+	SetShortInfo("Vegetation Layer Variation Set Skin");
 	
 	variation->AddReference();
 }
 
 meUHTVVarSetSkin::~meUHTVVarSetSkin(){
-	if( pVariation ) pVariation->FreeReference();
+	if(pVariation) pVariation->FreeReference();
 }
 
 
@@ -62,9 +62,9 @@ meUHTVVarSetSkin::~meUHTVVarSetSkin(){
 ///////////////
 
 void meUHTVVarSetSkin::Undo(){
-	pVariation->SetPathSkin( pOldPath.GetString() );
+	pVariation->SetPathSkin(pOldPath.GetString());
 }
 
 void meUHTVVarSetSkin::Redo(){
-	pVariation->SetPathSkin( pNewPath.GetString() );
+	pVariation->SetPathSkin(pNewPath.GetString());
 }

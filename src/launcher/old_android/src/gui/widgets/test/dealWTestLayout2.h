@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWTestLayout2( dealDisplay &display );
+	dealWTestLayout2(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWTestLayout2();
@@ -50,13 +50,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Add layout of three sample texts. */
-	void AddLayout( dealWidgetLabel::eAlignments verticalAlign );
+	void AddLayout(dealWidgetLabel::eAlignments verticalAlign);
 	
 	/** \brief Add layout of three sample texts. */
-	void AddLayout2( dealWidgetLabel::eAlignments verticalAlign );
+	void AddLayout2(dealWidgetLabel::eAlignments verticalAlign);
 	
 	/** \brief Add layout of a long sample text. */
-	void AddLayout3( dealWidgetLabel::eAlignments align );
+	void AddLayout3(dealWidgetLabel::eAlignments align);
 	/*@}*/
 };
 

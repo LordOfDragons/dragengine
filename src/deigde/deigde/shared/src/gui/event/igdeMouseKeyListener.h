@@ -74,7 +74,7 @@ public:
 	 * \param[in] keyCode Engine key code or deInputEvent::ekcUndefined if not mapped.
 	 * \param[in] key Native OS key.
 	 */
-	virtual void OnKeyPress( igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key );
+	virtual void OnKeyPress(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key);
 	
 	/**
 	 * \brief User released down key while view is focused.
@@ -83,7 +83,7 @@ public:
 	 * \param[in] keyCode Engine key code or deInputEvent::ekcUndefined if not mapped.
 	 * \param[in] key Native OS key.
 	 */
-	virtual void OnKeyRelease( igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key );
+	virtual void OnKeyRelease(igdeWidget *widget, deInputEvent::eKeyCodes keyCode, int key);
 	
 	/**
 	 * \brief User pressed down mouse button.
@@ -95,7 +95,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of press. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonPress( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	virtual void OnButtonPress(igdeWidget *widget, int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User released mouse button.
@@ -107,7 +107,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnButtonRelease( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	virtual void OnButtonRelease(igdeWidget *widget, int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User double clicked mouse button.
@@ -121,7 +121,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of press. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnDoubleClicked( igdeWidget *widget, int button, const decPoint &position, int modifiers );
+	virtual void OnDoubleClicked(igdeWidget *widget, int button, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User moved mouse.
@@ -131,7 +131,7 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseMoved( igdeWidget *widget, const decPoint &position, int modifiers );
+	virtual void OnMouseMoved(igdeWidget *widget, const decPoint &position, int modifiers);
 	
 	/**
 	 * \brief User wheeled mouse.
@@ -142,21 +142,21 @@ public:
 	 * \param[in] modifiers Modifier keys pressed at the time of release. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnMouseWheeled( igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers );
+	virtual void OnMouseWheeled(igdeWidget *widget, const decPoint &position, const decPoint &change, int modifiers);
 	
 	/**
 	 * \brief Mouse entered widget.
 	 * 
 	 * \param[in] widget Widget sending the event.
 	 */
-	virtual void OnMouseEnter( igdeWidget *widget );
+	virtual void OnMouseEnter(igdeWidget *widget);
 	
 	/**
 	 * \brief Mouse left widget.
 	 * 
 	 * \param[in] widget Widget sending the event.
 	 */
-	virtual void OnMouseLeave( igdeWidget *widget );
+	virtual void OnMouseLeave(igdeWidget *widget);
 	/*@}*/
 };
 

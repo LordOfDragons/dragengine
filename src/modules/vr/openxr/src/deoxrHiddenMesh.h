@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load hidden mesh. */
-	deoxrHiddenMesh( deoxrSession &session, XrViewConfigurationType viewConfig, uint32_t viewIndex );
+	deoxrHiddenMesh(deoxrSession &session, XrViewConfigurationType viewConfig, uint32_t viewIndex);
 	
 protected:
 	/** Clean up hidden mesh. */
@@ -71,22 +71,22 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** Session. */
-	inline deoxrSession &GetSession() const{ return pSession; }
+	inline deoxrSession &GetSession() const{return pSession;}
 	
 	/** View configuration. */
-	inline XrViewConfigurationType GetViewConfig() const{ return pViewConfig; }
+	inline XrViewConfigurationType GetViewConfig() const{return pViewConfig;}
 	
 	/** View index. */
-	inline uint32_t GetViewIndex() const{ return pViewIndex; }
+	inline uint32_t GetViewIndex() const{return pViewIndex;}
 	
 	/** Fov. */
-	inline XrFovf GetFov() const{ return pFov; }
+	inline XrFovf GetFov() const{return pFov;}
 	
 	/** Set fov. */
-	void SetFov( XrFovf fov );
+	void SetFov(XrFovf fov);
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline deModel *GetModel() const{return pModel;}
 	
 	/** Update model. */
 	void UpdateModel();
@@ -95,10 +95,10 @@ public:
 	
 	
 private:
-	void pFetchData( XrVisibilityMaskKHR &mask ) const;
-	void pProjectVertices( XrVisibilityMaskKHR &mask ) const;
-	void pMapVerticesToWindow( XrVisibilityMaskKHR &mask ) const;
-	void pFitVertices( XrVisibilityMaskKHR &mask ) const;
+	void pFetchData(XrVisibilityMaskKHR &mask) const;
+	void pProjectVertices(XrVisibilityMaskKHR &mask) const;
+	void pMapVerticesToWindow(XrVisibilityMaskKHR &mask) const;
+	void pFitVertices(XrVisibilityMaskKHR &mask) const;
 };
 
 #endif

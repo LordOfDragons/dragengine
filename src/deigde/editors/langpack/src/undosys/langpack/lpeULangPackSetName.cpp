@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackSetName::lpeULangPackSetName( lpeLangPack *langpack, const decUnicodeString &newName ) :
-pLangPack( NULL ),
-pNewName( newName )
+lpeULangPackSetName::lpeULangPackSetName(lpeLangPack *langpack, const decUnicodeString &newName) :
+pLangPack(NULL),
+pNewName(newName)
 {
-	if( ! langpack ){
-		DETHROW( deeInvalidParam );
+	if(! langpack){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "LangPack set name" );
+	SetShortInfo("LangPack set name");
 	
 	pOldName = langpack->GetName();
 	
@@ -56,7 +56,7 @@ pNewName( newName )
 }
 
 lpeULangPackSetName::~lpeULangPackSetName(){
-	if( pLangPack ){
+	if(pLangPack){
 		pLangPack->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ lpeULangPackSetName::~lpeULangPackSetName(){
 ///////////////
 
 void lpeULangPackSetName::Undo(){
-	pLangPack->SetName( pOldName );
+	pLangPack->SetName(pOldName);
 }
 
 void lpeULangPackSetName::Redo(){
-	pLangPack->SetName( pNewName );
+	pLangPack->SetName(pNewName);
 }

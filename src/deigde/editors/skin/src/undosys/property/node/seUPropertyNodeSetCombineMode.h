@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetCombineMode( sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue );
+	seUPropertyNodeSetCombineMode(sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue);
 	
 protected:
 	/** \brief Clean up undo. */

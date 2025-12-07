@@ -39,13 +39,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create timer. */
-	igdeNativeNullTimer( igdeTimer &owner );
+	igdeNativeNullTimer(igdeTimer &owner);
 	
 	/** \brief Clean up timer. */
 	virtual ~igdeNativeNullTimer();
 	
 	/** \brief Create native timer. */
-	static igdeNativeNullTimer* CreateNativeTimer( igdeTimer &owner );
+	static igdeNativeNullTimer* CreateNativeTimer(igdeTimer &owner);
 	
 	/** \brief Destroy native timer. */
 	virtual void DestroyNativeTimer();

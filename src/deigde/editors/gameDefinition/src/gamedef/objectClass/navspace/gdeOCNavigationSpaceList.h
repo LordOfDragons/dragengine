@@ -47,7 +47,7 @@ public:
 	gdeOCNavigationSpaceList();
 	
 	/** \brief Create copy of object class navigation space list. */
-	gdeOCNavigationSpaceList( const gdeOCNavigationSpaceList &list );
+	gdeOCNavigationSpaceList(const gdeOCNavigationSpaceList &list);
 	
 	/** \brief Clean up object class navigation space list. */
 	~gdeOCNavigationSpaceList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Object class navigation space at position. */
-	gdeOCNavigationSpace *GetAt( int index ) const;
+	gdeOCNavigationSpace *GetAt(int index) const;
 	
 	/** \brief Index of named object class navigation space or -1 if absent. */
-	int IndexOf( gdeOCNavigationSpace *space ) const;
+	int IndexOf(gdeOCNavigationSpace *space) const;
 	
 	/** \brief Object class navigation space is present. */
-	bool Has( gdeOCNavigationSpace *space ) const;
+	bool Has(gdeOCNavigationSpace *space) const;
 	
 	/** \brief Add object class navigation space. */
-	void Add( gdeOCNavigationSpace *space );
+	void Add(gdeOCNavigationSpace *space);
 	
 	/** \brief Remove object class navigation space. */
-	void Remove( gdeOCNavigationSpace *space );
+	void Remove(gdeOCNavigationSpace *space);
 	
 	/** \brief Remove all object class navigation spaces. */
 	void RemoveAll();
 	
 	/** \brief Set from another object class navigation space list. */
-	gdeOCNavigationSpaceList &operator=( const gdeOCNavigationSpaceList &list );
+	gdeOCNavigationSpaceList &operator=(const gdeOCNavigationSpaceList &list);
 	/*@}*/
 };
 

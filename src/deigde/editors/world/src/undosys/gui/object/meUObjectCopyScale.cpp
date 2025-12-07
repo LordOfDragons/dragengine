@@ -38,24 +38,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectCopyScale::meUObjectCopyScale( meWorld *world, bool copyX, bool copyY, bool copyZ ) :
-pCopyX( copyX ),
-pCopyY( copyY ),
-pCopyZ( copyZ )
+meUObjectCopyScale::meUObjectCopyScale(meWorld *world, bool copyX, bool copyY, bool copyZ) :
+pCopyX(copyX),
+pCopyY(copyY),
+pCopyZ(copyZ)
 {
-	if( ! world || ! world->GetSelectionObject().GetActive() ){
-		DETHROW( deeInvalidParam );
+	if(! world || ! world->GetSelectionObject().GetActive()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const meObjectList &list = world->GetSelectionObject().GetSelected();
 	const int count = list.GetCount();
 	int i;
 	
-	SetShortInfo( "Copy Object Scale" );
-	SetLongInfo( "Copy Object Scale" );
+	SetShortInfo("Copy Object Scale");
+	SetLongInfo("Copy Object Scale");
 	
-	for( i=0; i<count; i++ ){
-		pObjects.Add( meUndoDataObject::Ref::NewWith(list.GetAt( i )) );
+	for(i=0; i<count; i++){
+		pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
 	}
 	
 	pNewSize = world->GetSelectionObject().GetActive()->GetSize();
@@ -73,12 +73,12 @@ void meUObjectCopyScale::Undo(){
 	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		object->SetSize( data.GetOldSize() );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
+		object->SetSize(data.GetOldSize());
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
 	}
 }
 
@@ -86,23 +86,23 @@ void meUObjectCopyScale::Redo(){
 	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const meUndoDataObject &data = *((meUndoDataObject*)pObjects.GetAt(i));
 		meObject * const object = data.GetObject();
 		
-		decVector size( data.GetOldSize() );
+		decVector size(data.GetOldSize());
 		
-		if( pCopyX ){
+		if(pCopyX){
 			size.x = pNewSize.x;
 		}
-		if( pCopyY ){
+		if(pCopyY){
 			size.y = pNewSize.y;
 		}
-		if( pCopyZ ){
+		if(pCopyZ){
 			size.z = pNewSize.z;
 		}
 		
-		object->SetSize( size );
-		object->GetWorld()->NotifyObjectGeometryChanged( object );
+		object->SetSize(size);
+		object->GetWorld()->NotifyObjectGeometryChanged(object);
 	}
 }

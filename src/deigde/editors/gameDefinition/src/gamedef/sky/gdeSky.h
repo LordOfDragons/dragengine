@@ -63,10 +63,10 @@ public:
 	gdeSky();
 	
 	/** \brief Create sky. */
-	gdeSky( const char *path, const char *name );
+	gdeSky(const char *path, const char *name);
 	
 	/** \brief Create copy of sky. */
-	gdeSky( const gdeSky &particleEmitter );
+	gdeSky(const gdeSky &particleEmitter);
 	
 	/** \brief Clean up sky. */
 	virtual ~gdeSky();
@@ -77,42 +77,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Set parent game definition. */
-	void SetGameDefinition( gdeGameDefinition *gamedef );
+	void SetGameDefinition(gdeGameDefinition *gamedef);
 	
 	
 	
 	/** \brief Path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Cathegory. */
-	inline const decString &GetCategory() const{ return pCategory; }
+	inline const decString &GetCategory() const{return pCategory;}
 	
 	/** \brief Set cathegory. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** \brief Tags. */
-	inline const decStringSet &GetTags() const{ return pTags; }
+	inline const decStringSet &GetTags() const{return pTags;}
 	
 	/** \brief Set tags. */
-	void SetTags( const decStringSet &tags );
+	void SetTags(const decStringSet &tags);
 	/*@}*/
 	
 	
@@ -120,19 +120,19 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Controllers. */
-	const gdeSkyControllerList &GetControllers() const{ return pControllers; }
+	const gdeSkyControllerList &GetControllers() const{return pControllers;}
 	
 	/** \brief Add controller. */
-	void AddController( gdeSkyController *controller );
+	void AddController(gdeSkyController *controller);
 	
 	/** \brief Remove controller. */
-	void RemoveController( gdeSkyController *controller );
+	void RemoveController(gdeSkyController *controller);
 	
 	/** \brief Remove controllers. */
 	void RemoveAllControllers();
 	
 	/** \brief Notify controller changed. */
-	void NotifyControllerChanged( gdeSkyController *controller );
+	void NotifyControllerChanged(gdeSkyController *controller);
 	/*@}*/
 };
 

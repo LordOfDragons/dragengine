@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create debug. */
-	devkDebug( devkInstance &instance );
+	devkDebug(devkInstance &instance);
 	
 	/** Clean up debug. */
 	~devkDebug();
@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
+	inline devkInstance &GetInstance() const{return pInstance;}
 	
 	/** Debug mode is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** Enable or disable debug mode. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -73,12 +73,12 @@ private:
 	void pRegisterReportCallback();
 	void pUnregisterReportCallback();
 	
-	void DebugMessage( const char* layerPrefix, const char* message );
+	void DebugMessage(const char* layerPrefix, const char* message);
 	
 	static VKAPI_ATTR VkBool32 VKAPI_CALL DebugMessageCallback(
 		VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType,
 		uint64_t object, size_t location, int32_t messageCode,
-		const char* pLayerPrefix, const char* pMessage, void* pUserData );
+		const char* pLayerPrefix, const char* pMessage, void* pUserData);
 };
 
 #endif

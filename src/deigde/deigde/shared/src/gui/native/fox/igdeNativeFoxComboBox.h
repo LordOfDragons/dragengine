@@ -39,7 +39,7 @@ class igdeWidget;
  * FOX Native comboBox.
  */
 class igdeNativeFoxComboBox : public FXComboBox{
-	FXDECLARE( igdeNativeFoxComboBox )
+	FXDECLARE(igdeNativeFoxComboBox)
 	
 protected:
 	igdeNativeFoxComboBox();
@@ -59,14 +59,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxComboBox( igdeComboBox &owner, FXComposite *parent, int layoutFlags,
-		const igdeGuiTheme &guitheme );
+	igdeNativeFoxComboBox(igdeComboBox &owner, FXComposite *parent, int layoutFlags,
+		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxComboBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxComboBox* CreateNativeWidget( igdeComboBox &owner );
+	static igdeNativeFoxComboBox* CreateNativeWidget(igdeComboBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -80,34 +80,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	virtual void BuildList();
-	virtual void UpdateItem( int index );
-	virtual void SyncSelection( bool changing );
+	virtual void UpdateItem(int index);
+	virtual void SyncSelection(bool changing);
 	virtual void OnInvalidValueChanged();
 	virtual void UpdateText();
-	virtual void InsertItem( int index, const igdeListItem &item );
-	virtual void RemoveItem( int index );
+	virtual void InsertItem(int index, const igdeListItem &item);
+	virtual void RemoveItem(int index);
 	virtual void RemoveAllItems();
-	virtual void MoveItem( int fromIndex, int toIndex );
+	virtual void MoveItem(int fromIndex, int toIndex);
 	virtual void Focus();
 	virtual void UpdateRowCount();
 	virtual void UpdateEnabled();
 	virtual void UpdateEditable();
 	virtual void UpdateDescription();
 	
-	static int ComboBoxFlags( const igdeComboBox &owner );
-	static igdeFont *ComboBoxFont( const igdeComboBox &owner, const igdeGuiTheme &guitheme );
-	static int ComboBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int ComboBoxPadRight( const igdeGuiTheme &guitheme );
-	static int ComboBoxPadTop( const igdeGuiTheme &guitheme );
-	static int ComboBoxPadBottom( const igdeGuiTheme &guitheme );
+	static int ComboBoxFlags(const igdeComboBox &owner);
+	static igdeFont *ComboBoxFont(const igdeComboBox &owner, const igdeGuiTheme &guitheme);
+	static int ComboBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int ComboBoxPadRight(const igdeGuiTheme &guitheme);
+	static int ComboBoxPadTop(const igdeGuiTheme &guitheme);
+	static int ComboBoxPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

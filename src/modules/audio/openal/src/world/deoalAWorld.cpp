@@ -48,41 +48,41 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalAWorld::deoalAWorld( deoalAudioThread &audioThread, const decDVector &size ) :
-pAudioThread( audioThread ),
+deoalAWorld::deoalAWorld(deoalAudioThread &audioThread, const decDVector &size) :
+pAudioThread(audioThread),
 
-pRootComponent( nullptr ),
-pTailComponent( nullptr ),
-pComponentCount( 0 ),
+pRootComponent(nullptr),
+pTailComponent(nullptr),
+pComponentCount(0),
 
-pRootSpeaker( nullptr ),
-pTailSpeaker( nullptr ),
-pSpeakerCount( 0 ),
+pRootSpeaker(nullptr),
+pTailSpeaker(nullptr),
+pSpeakerCount(0),
 
-pRootMicrophone( nullptr ),
-pTailMicrophone( nullptr ),
-pMicrophoneCount( 0 ),
+pRootMicrophone(nullptr),
+pTailMicrophone(nullptr),
+pMicrophoneCount(0),
 
-pRootSoundLevelMeter( nullptr ),
-pTailSoundLevelMeter( nullptr ),
-pSoundLevelMeterCount( 0 ),
+pRootSoundLevelMeter(nullptr),
+pTailSoundLevelMeter(nullptr),
+pSoundLevelMeterCount(0),
 
-pOctree( nullptr ),
-pSpeakerGain( 1.0f )
+pOctree(nullptr),
+pSpeakerGain(1.0f)
 {
 	try{
-		pOctree = new deoalWorldOctree( decDVector(), size * 0.5 );
+		pOctree = new deoalWorldOctree(decDVector(), size * 0.5);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 	
-	LEAK_CHECK_CREATE( audioThread, World );
+	LEAK_CHECK_CREATE(audioThread, World);
 }
 
 deoalAWorld::~deoalAWorld(){
-	LEAK_CHECK_FREE( pAudioThread, World );
+	LEAK_CHECK_FREE(pAudioThread, World);
 	
 	pCleanUp();
 }
@@ -92,15 +92,15 @@ deoalAWorld::~deoalAWorld(){
 // Management
 ///////////////
 
-void deoalAWorld::VisitRegion( const decDVector &center, const decDVector &halfSize,
-deoalWorldOctreeVisitor &visitor ){
-	pOctree->VisitNodesColliding( &visitor, center - halfSize, center + halfSize );
+void deoalAWorld::VisitRegion(const decDVector &center, const decDVector &halfSize,
+deoalWorldOctreeVisitor &visitor){
+	pOctree->VisitNodesColliding(&visitor, center - halfSize, center + halfSize);
 }
 
-void deoalAWorld::InvalidateEnvProbes( const decDVector &minExtend,
-const decDVector &maxExtend, const decLayerMask &layerMask ){
-	deoalWOVInvalidateEnvProbes visitor( minExtend, maxExtend, layerMask );
-	VisitRegion( minExtend, maxExtend, visitor );
+void deoalAWorld::InvalidateEnvProbes(const decDVector &minExtend,
+const decDVector &maxExtend, const decLayerMask &layerMask){
+	deoalWOVInvalidateEnvProbes visitor(minExtend, maxExtend, layerMask);
+	VisitRegion(minExtend, maxExtend, visitor);
 }
 
 
@@ -109,19 +109,19 @@ bool deoalAWorld::IsAudible() const{
 	return pAudioThread.GetActiveWorld() == this;
 }
 
-void deoalAWorld::SetAllSpeakersEnabled( bool enabled ){
+void deoalAWorld::SetAllSpeakersEnabled(bool enabled){
 	// WARNING Called during synchronization time from main thread.
 	
 	deoalASpeaker *speaker = pRootSpeaker;
-	while( speaker ){
-		speaker->SetEnabled( enabled );
+	while(speaker){
+		speaker->SetEnabled(enabled);
 		speaker = speaker->GetLLWorldNext();
 	}
 }
 
 void deoalAWorld::UpdateAllSpeakers(){
 	deoalASpeaker *speaker = pRootSpeaker;
-	while( speaker ){
+	while(speaker){
 		speaker->PrepareProcessAudio();
 		speaker = speaker->GetLLWorldNext();
 	}
@@ -129,7 +129,7 @@ void deoalAWorld::UpdateAllSpeakers(){
 
 void deoalAWorld::UpdateSoundLevelMetering(){
 	deoalASoundLevelMeter *soundLevelMeter = pRootSoundLevelMeter;
-	while( soundLevelMeter ){
+	while(soundLevelMeter){
 		soundLevelMeter->FindSpeakers();
 		soundLevelMeter->MeterSpeakers();
 		soundLevelMeter = soundLevelMeter->GetLLWorldNext();
@@ -143,17 +143,17 @@ void deoalAWorld::PrepareProcessAudio(){
 
 void deoalAWorld::ProcessDeactivate(){
 	deoalASpeaker *speaker = pRootSpeaker;
-	while( speaker ){
+	while(speaker){
 		speaker->ProcessDeactivate();
 		speaker = speaker->GetLLWorldNext();
 	}
 }
 
-void deoalAWorld::SetAllMicLayerMask( const decLayerMask &layerMask ){
+void deoalAWorld::SetAllMicLayerMask(const decLayerMask &layerMask){
 	pAllMicLayerMask = layerMask;
 }
 
-void deoalAWorld::SetSpeakerGain( float gain ){
+void deoalAWorld::SetSpeakerGain(float gain){
 	pSpeakerGain = gain;
 }
 
@@ -162,56 +162,56 @@ void deoalAWorld::SetSpeakerGain( float gain ){
 // Components
 ///////////////
 
-void deoalAWorld::AddComponent( deoalAComponent *component ){
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+void deoalAWorld::AddComponent(deoalAComponent *component){
+	if(! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( component->GetParentWorld() ){
-		if( component->GetWorldMarkedRemove() ){
-			component->GetParentWorld()->RemoveComponent( component );
+	if(component->GetParentWorld()){
+		if(component->GetWorldMarkedRemove()){
+			component->GetParentWorld()->RemoveComponent(component);
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	if( pTailComponent ){
-		pTailComponent->SetLLWorldNext( component );
-		component->SetLLWorldPrev( pTailComponent );
-		component->SetLLWorldNext( nullptr );
+	if(pTailComponent){
+		pTailComponent->SetLLWorldNext(component);
+		component->SetLLWorldPrev(pTailComponent);
+		component->SetLLWorldNext(nullptr);
 		pTailComponent = component;
 		
 	}else{
 		pTailComponent = component;
 		pRootComponent = component;
-		component->SetLLWorldPrev( nullptr );
-		component->SetLLWorldNext( nullptr );
+		component->SetLLWorldPrev(nullptr);
+		component->SetLLWorldNext(nullptr);
 	}
 	
 	component->AddReference();
 	pComponentCount++;
 	
-	component->SetParentWorld( this );
+	component->SetParentWorld(this);
 }
 
-void deoalAWorld::RemoveComponent( deoalAComponent *component ){
-	if( component->GetParentWorld() != this ){
-		DETHROW( deeInvalidParam );
+void deoalAWorld::RemoveComponent(deoalAComponent *component){
+	if(component->GetParentWorld() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	component->SetParentWorld( nullptr );
-	component->SetWorldMarkedRemove( false );
+	component->SetParentWorld(nullptr);
+	component->SetWorldMarkedRemove(false);
 	
-	if( component->GetLLWorldPrev() ){
-		component->GetLLWorldPrev()->SetLLWorldNext( component->GetLLWorldNext() );
+	if(component->GetLLWorldPrev()){
+		component->GetLLWorldPrev()->SetLLWorldNext(component->GetLLWorldNext());
 		
 	}else{
 		pRootComponent = component->GetLLWorldNext();
 	}
 	
-	if( component->GetLLWorldNext() ){
-		component->GetLLWorldNext()->SetLLWorldPrev( component->GetLLWorldPrev() );
+	if(component->GetLLWorldNext()){
+		component->GetLLWorldNext()->SetLLWorldPrev(component->GetLLWorldPrev());
 		
 	}else{
 		pTailComponent = component->GetLLWorldPrev();
@@ -222,12 +222,12 @@ void deoalAWorld::RemoveComponent( deoalAComponent *component ){
 }
 
 void deoalAWorld::RemoveAllComponents(){
-	while( pRootComponent ){
+	while(pRootComponent){
 		deoalAComponent * const next = pRootComponent->GetLLWorldNext();
-		pRootComponent->SetLLWorldPrev( nullptr ); // ensure root has no prev
+		pRootComponent->SetLLWorldPrev(nullptr); // ensure root has no prev
 		
-		pRootComponent->SetParentWorld( nullptr );
-		pRootComponent->SetWorldMarkedRemove( false );
+		pRootComponent->SetParentWorld(nullptr);
+		pRootComponent->SetWorldMarkedRemove(false);
 		pComponentCount--;
 		pRootComponent->FreeReference();
 		
@@ -239,11 +239,11 @@ void deoalAWorld::RemoveAllComponents(){
 
 void deoalAWorld::RemoveRemovalMarkedComponents(){
 	deoalAComponent *component = pRootComponent;
-	while( component ){
+	while(component){
 		deoalAComponent * const next = component->GetLLWorldNext();
 		
-		if( component->GetWorldMarkedRemove() ){
-			RemoveComponent( component );
+		if(component->GetWorldMarkedRemove()){
+			RemoveComponent(component);
 		}
 		
 		component = next;
@@ -255,68 +255,68 @@ void deoalAWorld::RemoveRemovalMarkedComponents(){
 // Speakers
 ///////////////
 
-void deoalAWorld::AddSpeaker( deoalASpeaker *speaker ){
+void deoalAWorld::AddSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( ! speaker ){
-		DETHROW( deeInvalidParam );
+	if(! speaker){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( speaker->GetParentWorld() ){
-		if( speaker->GetWorldMarkedRemove() ){
-			speaker->GetParentWorld()->RemoveSpeaker( speaker );
+	if(speaker->GetParentWorld()){
+		if(speaker->GetWorldMarkedRemove()){
+			speaker->GetParentWorld()->RemoveSpeaker(speaker);
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	if( pTailSpeaker ){
-		pTailSpeaker->SetLLWorldNext( speaker );
-		speaker->SetLLWorldPrev( pTailSpeaker );
-		speaker->SetLLWorldNext( nullptr );
+	if(pTailSpeaker){
+		pTailSpeaker->SetLLWorldNext(speaker);
+		speaker->SetLLWorldPrev(pTailSpeaker);
+		speaker->SetLLWorldNext(nullptr);
 		pTailSpeaker = speaker;
 		
 	}else{
 		pTailSpeaker = speaker;
 		pRootSpeaker = speaker;
-		speaker->SetLLWorldPrev( nullptr );
-		speaker->SetLLWorldNext( nullptr );
+		speaker->SetLLWorldPrev(nullptr);
+		speaker->SetLLWorldNext(nullptr);
 	}
 	
 	speaker->AddReference();
 	pSpeakerCount++;
 	
-	speaker->SetParentWorld( this );
-	speaker->SetPositionless( false ); // TODO using option
-	speaker->SetEnabled( false ); // ensure it is disabled. active microphone will enable
+	speaker->SetParentWorld(this);
+	speaker->SetPositionless(false); // TODO using option
+	speaker->SetEnabled(false); // ensure it is disabled. active microphone will enable
 }
 
-void deoalAWorld::RemoveSpeaker( deoalASpeaker *speaker ){
+void deoalAWorld::RemoveSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( speaker->GetParentWorld() != this ){
-		DETHROW( deeInvalidParam );
+	if(speaker->GetParentWorld() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pAudioThread.GetActiveMicrophone() ){
-		pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( speaker );
+	if(pAudioThread.GetActiveMicrophone()){
+		pAudioThread.GetActiveMicrophone()->InvalidateSpeaker(speaker);
 	}
 	
-	speaker->SetParentWorld( nullptr );
-	speaker->SetEnabled( false );
-	speaker->SetPositionless( true );
-	speaker->SetWorldMarkedRemove( false );
+	speaker->SetParentWorld(nullptr);
+	speaker->SetEnabled(false);
+	speaker->SetPositionless(true);
+	speaker->SetWorldMarkedRemove(false);
 	
-	if( speaker->GetLLWorldPrev() ){
-		speaker->GetLLWorldPrev()->SetLLWorldNext( speaker->GetLLWorldNext() );
+	if(speaker->GetLLWorldPrev()){
+		speaker->GetLLWorldPrev()->SetLLWorldNext(speaker->GetLLWorldNext());
 		
 	}else{
 		pRootSpeaker = speaker->GetLLWorldNext();
 	}
 	
-	if( speaker->GetLLWorldNext() ){
-		speaker->GetLLWorldNext()->SetLLWorldPrev( speaker->GetLLWorldPrev() );
+	if(speaker->GetLLWorldNext()){
+		speaker->GetLLWorldNext()->SetLLWorldPrev(speaker->GetLLWorldPrev());
 		
 	}else{
 		pTailSpeaker = speaker->GetLLWorldPrev();
@@ -329,17 +329,17 @@ void deoalAWorld::RemoveSpeaker( deoalASpeaker *speaker ){
 void deoalAWorld::RemoveAllSpeakers(){
 	// WARNING Called during synchronization time from main thread.
 	
-	while( pRootSpeaker ){
+	while(pRootSpeaker){
 		deoalASpeaker * const next = pRootSpeaker->GetLLWorldNext();
-		pRootSpeaker->SetLLWorldPrev( nullptr ); // ensure root has no prev
+		pRootSpeaker->SetLLWorldPrev(nullptr); // ensure root has no prev
 		
-		if( pAudioThread.GetActiveMicrophone() ){
-			pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( pRootSpeaker );
+		if(pAudioThread.GetActiveMicrophone()){
+			pAudioThread.GetActiveMicrophone()->InvalidateSpeaker(pRootSpeaker);
 		}
 		
-		pRootSpeaker->SetParentWorld( nullptr );
-		pRootSpeaker->SetWorldMarkedRemove( false );
-		pRootSpeaker->SetEnabled( false );
+		pRootSpeaker->SetParentWorld(nullptr);
+		pRootSpeaker->SetWorldMarkedRemove(false);
+		pRootSpeaker->SetEnabled(false);
 		
 		pSpeakerCount--;
 		pRootSpeaker->FreeReference();
@@ -354,11 +354,11 @@ void deoalAWorld::RemoveRemovalMarkedSpeakers(){
 	// WARNING Called during synchronization time from main thread.
 	
 	deoalASpeaker *speaker = pRootSpeaker;
-	while( speaker ){
+	while(speaker){
 		deoalASpeaker * const next = speaker->GetLLWorldNext();
 		
-		if( speaker->GetWorldMarkedRemove() ){
-			RemoveSpeaker( speaker );
+		if(speaker->GetWorldMarkedRemove()){
+			RemoveSpeaker(speaker);
 		}
 		
 		speaker = next;
@@ -370,56 +370,56 @@ void deoalAWorld::RemoveRemovalMarkedSpeakers(){
 // Microphones
 ///////////////
 
-void deoalAWorld::AddMicrophone( deoalAMicrophone *microphone ){
-	if( ! microphone ){
-		DETHROW( deeInvalidParam );
+void deoalAWorld::AddMicrophone(deoalAMicrophone *microphone){
+	if(! microphone){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( microphone->GetParentWorld() ){
-		if( microphone->GetWorldMarkedRemove() ){
-			microphone->GetParentWorld()->RemoveMicrophone( microphone );
+	if(microphone->GetParentWorld()){
+		if(microphone->GetWorldMarkedRemove()){
+			microphone->GetParentWorld()->RemoveMicrophone(microphone);
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	if( pTailMicrophone ){
-		pTailMicrophone->SetLLWorldNext( microphone );
-		microphone->SetLLWorldPrev( pTailMicrophone );
-		microphone->SetLLWorldNext( nullptr );
+	if(pTailMicrophone){
+		pTailMicrophone->SetLLWorldNext(microphone);
+		microphone->SetLLWorldPrev(pTailMicrophone);
+		microphone->SetLLWorldNext(nullptr);
 		pTailMicrophone = microphone;
 		
 	}else{
 		pTailMicrophone = microphone;
 		pRootMicrophone = microphone;
-		microphone->SetLLWorldPrev( nullptr );
-		microphone->SetLLWorldNext( nullptr );
+		microphone->SetLLWorldPrev(nullptr);
+		microphone->SetLLWorldNext(nullptr);
 	}
 	
 	microphone->AddReference();
 	pMicrophoneCount++;
 	
-	microphone->SetParentWorld( this );
+	microphone->SetParentWorld(this);
 }
 
-void deoalAWorld::RemoveMicrophone( deoalAMicrophone *microphone ){
-	if( microphone->GetParentWorld() != this ){
-		DETHROW( deeInvalidParam );
+void deoalAWorld::RemoveMicrophone(deoalAMicrophone *microphone){
+	if(microphone->GetParentWorld() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	microphone->SetParentWorld( nullptr );
-	microphone->SetWorldMarkedRemove( false );
+	microphone->SetParentWorld(nullptr);
+	microphone->SetWorldMarkedRemove(false);
 	
-	if( microphone->GetLLWorldPrev() ){
-		microphone->GetLLWorldPrev()->SetLLWorldNext( microphone->GetLLWorldNext() );
+	if(microphone->GetLLWorldPrev()){
+		microphone->GetLLWorldPrev()->SetLLWorldNext(microphone->GetLLWorldNext());
 		
 	}else{
 		pRootMicrophone = microphone->GetLLWorldNext();
 	}
 	
-	if( microphone->GetLLWorldNext() ){
-		microphone->GetLLWorldNext()->SetLLWorldPrev( microphone->GetLLWorldPrev() );
+	if(microphone->GetLLWorldNext()){
+		microphone->GetLLWorldNext()->SetLLWorldPrev(microphone->GetLLWorldPrev());
 		
 	}else{
 		pTailMicrophone = microphone->GetLLWorldPrev();
@@ -430,12 +430,12 @@ void deoalAWorld::RemoveMicrophone( deoalAMicrophone *microphone ){
 }
 
 void deoalAWorld::RemoveAllMicrophones(){
-	while( pRootMicrophone ){
+	while(pRootMicrophone){
 		deoalAMicrophone * const next = pRootMicrophone->GetLLWorldNext();
-		pRootMicrophone->SetLLWorldPrev( nullptr ); // ensure root has no prev
+		pRootMicrophone->SetLLWorldPrev(nullptr); // ensure root has no prev
 		
-		pRootMicrophone->SetParentWorld( nullptr );
-		pRootMicrophone->SetWorldMarkedRemove( false );
+		pRootMicrophone->SetParentWorld(nullptr);
+		pRootMicrophone->SetWorldMarkedRemove(false);
 		pMicrophoneCount--;
 		pRootMicrophone->FreeReference();
 		
@@ -447,11 +447,11 @@ void deoalAWorld::RemoveAllMicrophones(){
 
 void deoalAWorld::RemoveRemovalMarkedMicrophones(){
 	deoalAMicrophone *microphone = pRootMicrophone;
-	while( microphone ){
+	while(microphone){
 		deoalAMicrophone * const next = microphone->GetLLWorldNext();
 		
-		if( microphone->GetWorldMarkedRemove() ){
-			RemoveMicrophone( microphone );
+		if(microphone->GetWorldMarkedRemove()){
+			RemoveMicrophone(microphone);
 		}
 		
 		microphone = next;
@@ -463,60 +463,60 @@ void deoalAWorld::RemoveRemovalMarkedMicrophones(){
 // SoundLevelMeters
 /////////////////////
 
-void deoalAWorld::AddSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter ){
+void deoalAWorld::AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( ! soundLevelMeter ){
-		DETHROW( deeInvalidParam );
+	if(! soundLevelMeter){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( soundLevelMeter->GetParentWorld() ){
-		if( soundLevelMeter->GetWorldMarkedRemove() ){
-			soundLevelMeter->GetParentWorld()->RemoveSoundLevelMeter( soundLevelMeter );
+	if(soundLevelMeter->GetParentWorld()){
+		if(soundLevelMeter->GetWorldMarkedRemove()){
+			soundLevelMeter->GetParentWorld()->RemoveSoundLevelMeter(soundLevelMeter);
 			
 		}else{
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 	}
 	
-	if( pTailSoundLevelMeter ){
-		pTailSoundLevelMeter->SetLLWorldNext( soundLevelMeter );
-		soundLevelMeter->SetLLWorldPrev( pTailSoundLevelMeter );
-		soundLevelMeter->SetLLWorldNext( nullptr );
+	if(pTailSoundLevelMeter){
+		pTailSoundLevelMeter->SetLLWorldNext(soundLevelMeter);
+		soundLevelMeter->SetLLWorldPrev(pTailSoundLevelMeter);
+		soundLevelMeter->SetLLWorldNext(nullptr);
 		pTailSoundLevelMeter = soundLevelMeter;
 		
 	}else{
 		pTailSoundLevelMeter = soundLevelMeter;
 		pRootSoundLevelMeter = soundLevelMeter;
-		soundLevelMeter->SetLLWorldPrev( nullptr );
-		soundLevelMeter->SetLLWorldNext( nullptr );
+		soundLevelMeter->SetLLWorldPrev(nullptr);
+		soundLevelMeter->SetLLWorldNext(nullptr);
 	}
 	
 	soundLevelMeter->AddReference();
 	pSoundLevelMeterCount++;
 	
-	soundLevelMeter->SetParentWorld( this );
+	soundLevelMeter->SetParentWorld(this);
 }
 
-void deoalAWorld::RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter ){
+void deoalAWorld::RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( soundLevelMeter->GetParentWorld() != this ){
-		DETHROW( deeInvalidParam );
+	if(soundLevelMeter->GetParentWorld() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	soundLevelMeter->SetParentWorld( nullptr );
-	soundLevelMeter->SetWorldMarkedRemove( false );
+	soundLevelMeter->SetParentWorld(nullptr);
+	soundLevelMeter->SetWorldMarkedRemove(false);
 	
-	if( soundLevelMeter->GetLLWorldPrev() ){
-		soundLevelMeter->GetLLWorldPrev()->SetLLWorldNext( soundLevelMeter->GetLLWorldNext() );
+	if(soundLevelMeter->GetLLWorldPrev()){
+		soundLevelMeter->GetLLWorldPrev()->SetLLWorldNext(soundLevelMeter->GetLLWorldNext());
 		
 	}else{
 		pRootSoundLevelMeter = soundLevelMeter->GetLLWorldNext();
 	}
 	
-	if( soundLevelMeter->GetLLWorldNext() ){
-		soundLevelMeter->GetLLWorldNext()->SetLLWorldPrev( soundLevelMeter->GetLLWorldPrev() );
+	if(soundLevelMeter->GetLLWorldNext()){
+		soundLevelMeter->GetLLWorldNext()->SetLLWorldPrev(soundLevelMeter->GetLLWorldPrev());
 		
 	}else{
 		pTailSoundLevelMeter = soundLevelMeter->GetLLWorldPrev();
@@ -529,12 +529,12 @@ void deoalAWorld::RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter 
 void deoalAWorld::RemoveAllSoundLevelMeters(){
 	// WARNING Called during synchronization time from main thread.
 	
-	while( pRootSoundLevelMeter ){
+	while(pRootSoundLevelMeter){
 		deoalASoundLevelMeter * const next = pRootSoundLevelMeter->GetLLWorldNext();
-		pRootSoundLevelMeter->SetLLWorldPrev( nullptr ); // ensure root has no prev
+		pRootSoundLevelMeter->SetLLWorldPrev(nullptr); // ensure root has no prev
 		
-		pRootSoundLevelMeter->SetParentWorld( nullptr );
-		pRootSoundLevelMeter->SetWorldMarkedRemove( false );
+		pRootSoundLevelMeter->SetParentWorld(nullptr);
+		pRootSoundLevelMeter->SetWorldMarkedRemove(false);
 		
 		pSoundLevelMeterCount--;
 		pRootSoundLevelMeter->FreeReference();
@@ -549,11 +549,11 @@ void deoalAWorld::RemoveRemovalMarkedSoundLevelMeters(){
 	// WARNING Called during synchronization time from main thread.
 	
 	deoalASoundLevelMeter *soundLevelMeter = pRootSoundLevelMeter;
-	while( soundLevelMeter ){
+	while(soundLevelMeter){
 		deoalASoundLevelMeter * const next = soundLevelMeter->GetLLWorldNext();
 		
-		if( soundLevelMeter->GetWorldMarkedRemove() ){
-			RemoveSoundLevelMeter( soundLevelMeter );
+		if(soundLevelMeter->GetWorldMarkedRemove()){
+			RemoveSoundLevelMeter(soundLevelMeter);
 		}
 		
 		soundLevelMeter = next;
@@ -572,28 +572,28 @@ void deoalAWorld::pCleanUp(){
 	// 
 	// this also means ClearAll() is not called on the octree since PrepareQuickDispose()
 	// is called on the octree content
-	while( pRootComponent ){
+	while(pRootComponent){
 		deoalAComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();
 		pRootComponent->FreeReference();
 		pRootComponent = next;
 	}
 	
-	while( pRootSpeaker ){
+	while(pRootSpeaker){
 		deoalASpeaker * const next = pRootSpeaker->GetLLWorldNext();
 		pRootSpeaker->PrepareQuickDispose();
 		pRootSpeaker->FreeReference();
 		pRootSpeaker = next;
 	}
 	
-	while( pRootMicrophone ){
+	while(pRootMicrophone){
 		deoalAMicrophone * const next = pRootMicrophone->GetLLWorldNext();
 		pRootMicrophone->PrepareQuickDispose();
 		pRootMicrophone->FreeReference();
 		pRootMicrophone = next;
 	}
 	
-	if( pOctree ){
+	if(pOctree){
 		delete pOctree;
 	}
 }

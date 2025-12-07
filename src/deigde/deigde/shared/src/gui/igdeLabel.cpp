@@ -46,35 +46,35 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeLabel::igdeLabel( igdeEnvironment &environment, const char *text, int alignment ) :
-igdeWidget( environment ),
-pText( text ),
-pAlignment( alignment ){
+igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text, int alignment) :
+igdeWidget(environment),
+pText(text),
+pAlignment(alignment){
 }
 
-igdeLabel::igdeLabel( igdeEnvironment &environment, const char *text,
-	const char *description, int alignment ) :
-igdeWidget( environment ),
-pText( text ),
-pAlignment( alignment ),
-pDescription( description ){
+igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
+	const char *description, int alignment) :
+igdeWidget(environment),
+pText(text),
+pAlignment(alignment),
+pDescription(description){
 }
 
-igdeLabel::igdeLabel( igdeEnvironment &environment, const char *text,
-	igdeIcon *icon, int alignment ) :
-igdeWidget( environment ),
-pText( text ),
-pAlignment( alignment ),
-pIcon( icon ){
+igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
+	igdeIcon *icon, int alignment) :
+igdeWidget(environment),
+pText(text),
+pAlignment(alignment),
+pIcon(icon){
 }
 
-igdeLabel::igdeLabel( igdeEnvironment &environment, const char *text,
-	const char *description, igdeIcon *icon, int alignment ) :
-igdeWidget( environment ),
-pText( text ),
-pAlignment( alignment ),
-pDescription( description ),
-pIcon( icon ){
+igdeLabel::igdeLabel(igdeEnvironment &environment, const char *text,
+	const char *description, igdeIcon *icon, int alignment) :
+igdeWidget(environment),
+pText(text),
+pAlignment(alignment),
+pDescription(description),
+pIcon(icon){
 }
 
 igdeLabel::~igdeLabel(){
@@ -86,8 +86,8 @@ igdeLabel::~igdeLabel(){
 // Management
 ///////////////
 
-void igdeLabel::SetText( const char *text ){
-	if( pText == text ){
+void igdeLabel::SetText(const char *text){
+	if(pText == text){
 		return;
 	}
 	
@@ -95,8 +95,8 @@ void igdeLabel::SetText( const char *text ){
 	OnTextChanged();
 }
 
-void igdeLabel::SetAlignment( int alignment ){
-	if( pAlignment == alignment ){
+void igdeLabel::SetAlignment(int alignment){
+	if(pAlignment == alignment){
 		return;
 	}
 	
@@ -104,8 +104,8 @@ void igdeLabel::SetAlignment( int alignment ){
 	OnAlignmentChanged();
 }
 
-void igdeLabel::SetDescription( const char *description ){
-	if( pDescription == description ){
+void igdeLabel::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -113,8 +113,8 @@ void igdeLabel::SetDescription( const char *description ){
 	OnDescriptionChanged();
 }
 
-void igdeLabel::SetIcon( igdeIcon *icon ){
-	if( pIcon == icon ){
+void igdeLabel::SetIcon(igdeIcon *icon){
+	if(pIcon == icon){
 		return;
 	}
 	
@@ -125,46 +125,46 @@ void igdeLabel::SetIcon( igdeIcon *icon ){
 
 
 void igdeLabel::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeLabel * const native = igdeNativeLabel::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeLabel * const native = igdeNativeLabel::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 }
 
 void igdeLabel::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	( ( igdeNativeLabel* )GetNativeWidget() )->DestroyNativeWidget();
+	((igdeNativeLabel*)GetNativeWidget())->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeLabel::OnTextChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateText();
+	if(GetNativeWidget()){
+		((igdeNativeLabel*)GetNativeWidget())->UpdateText();
 	}
 }
 
 void igdeLabel::OnAlignmentChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateAlignment();
+	if(GetNativeWidget()){
+		((igdeNativeLabel*)GetNativeWidget())->UpdateAlignment();
 	}
 }
 
 void igdeLabel::OnDescriptionChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateDescription();
+	if(GetNativeWidget()){
+		((igdeNativeLabel*)GetNativeWidget())->UpdateDescription();
 	}
 }
 
 void igdeLabel::OnIconChanged(){
-	if( GetNativeWidget() ){
-		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateIcon();
+	if(GetNativeWidget()){
+		((igdeNativeLabel*)GetNativeWidget())->UpdateIcon();
 	}
 }

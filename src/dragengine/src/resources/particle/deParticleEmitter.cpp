@@ -44,11 +44,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deParticleEmitter::deParticleEmitter( deParticleEmitterManager *manager ) :
-deResource( manager ),
-pControllers( NULL ),
-pControllerCount( 0 ),
-pControllerSize( 0 )
+deParticleEmitter::deParticleEmitter(deParticleEmitterManager *manager) :
+deResource(manager),
+pControllers(NULL),
+pControllerCount(0),
+pControllerSize(0)
 {
 	pEmitBurst = false;
 	pBurstLifetime = 1.0f;
@@ -63,20 +63,20 @@ pControllerSize( 0 )
 }
 
 deParticleEmitter::~deParticleEmitter(){
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		delete pPeerPhysics;
 		pPeerPhysics = NULL;
 	}
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
 	
-	if( pTypes ){
+	if(pTypes){
 		delete [] pTypes;
 	}
 	RemoveAllControllers();
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 	}
 }
@@ -86,27 +86,27 @@ deParticleEmitter::~deParticleEmitter(){
 // Management
 ///////////////
 
-void deParticleEmitter::SetBurstLifetime( float lifetime ){
-	if( fabsf( lifetime - pBurstLifetime ) > FLOAT_SAFE_EPSILON ){
+void deParticleEmitter::SetBurstLifetime(float lifetime){
+	if(fabsf(lifetime - pBurstLifetime) > FLOAT_SAFE_EPSILON){
 		pBurstLifetime = lifetime;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->BurstChanged();
 		}
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->BurstChanged();
 		}
 	}
 }
 
-void deParticleEmitter::SetEmitBurst( bool emitBurst ){
-	if( emitBurst != pEmitBurst ){
+void deParticleEmitter::SetEmitBurst(bool emitBurst){
+	if(emitBurst != pEmitBurst){
 		pEmitBurst = emitBurst;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->BurstChanged();
 		}
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->BurstChanged();
 		}
 	}
@@ -114,70 +114,70 @@ void deParticleEmitter::SetEmitBurst( bool emitBurst ){
 
 
 
-void deParticleEmitter::SetTypeCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deParticleEmitter::SetTypeCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( count != pTypeCount ){
+	if(count != pTypeCount){
 		deParticleEmitterType *newArray = NULL;
 		
-		if( count > 0 ){
-			newArray = new deParticleEmitterType[ count ];
+		if(count > 0){
+			newArray = new deParticleEmitterType[count];
 		}
 		
-		if( pTypes ){
+		if(pTypes){
 			delete [] pTypes;
 		}
 		
 		pTypes = newArray;
 		pTypeCount = count;
 		
-		if( pPeerGraphic ){
+		if(pPeerGraphic){
 			pPeerGraphic->TypeCountChanged();
 		}
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->TypeCountChanged();
 		}
 	}
 }
 
-deParticleEmitterType &deParticleEmitter::GetTypeAt( int index ){
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+deParticleEmitterType &deParticleEmitter::GetTypeAt(int index){
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
-const deParticleEmitterType &deParticleEmitter::GetTypeAt( int index ) const{
-	if( index < 0 || index >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+const deParticleEmitterType &deParticleEmitter::GetTypeAt(int index) const{
+	if(index < 0 || index >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pTypes[ index ];
+	return pTypes[index];
 }
 
-void deParticleEmitter::NotifyTypeChangedAt( int type ){
-	if( type < 0 || type >= pTypeCount ){
-		DETHROW( deeInvalidParam );
+void deParticleEmitter::NotifyTypeChangedAt(int type){
+	if(type < 0 || type >= pTypeCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->TypeChanged( type );
+	if(pPeerGraphic){
+		pPeerGraphic->TypeChanged(type);
 	}
-	if( pPeerPhysics ){
-		pPeerPhysics->TypeChanged( type );
+	if(pPeerPhysics){
+		pPeerPhysics->TypeChanged(type);
 	}
 }
 
 
 
-void deParticleEmitter::SetGraphicModuleSimulates( bool graphicModuleSimulates ){
-	if( graphicModuleSimulates != pGraphicModuleSimlates ){
+void deParticleEmitter::SetGraphicModuleSimulates(bool graphicModuleSimulates){
+	if(graphicModuleSimulates != pGraphicModuleSimlates){
 		pGraphicModuleSimlates = graphicModuleSimulates;
 		
-		if( pPeerPhysics ){
+		if(pPeerPhysics){
 			pPeerPhysics->GraphicModuleRequestsChanged();
 		}
 	}
@@ -188,21 +188,21 @@ void deParticleEmitter::SetGraphicModuleSimulates( bool graphicModuleSimulates )
 // Controller Management
 //////////////////////////
 
-deParticleEmitterController *deParticleEmitter::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+deParticleEmitterController *deParticleEmitter::GetControllerAt(int index) const{
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
-int deParticleEmitter::IndexOfController( deParticleEmitterController *controller ) const{
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+int deParticleEmitter::IndexOfController(deParticleEmitterController *controller) const{
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ] == controller ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i] == controller){
 			return i;
 		}
 	}
@@ -210,10 +210,10 @@ int deParticleEmitter::IndexOfController( deParticleEmitterController *controlle
 	return -1;
 }
 
-int deParticleEmitter::IndexOfControllerNamed( const char *name ) const{
+int deParticleEmitter::IndexOfControllerNamed(const char *name) const{
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ]->GetName() == name ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i]->GetName() == name){
 			return i;
 		}
 	}
@@ -221,13 +221,13 @@ int deParticleEmitter::IndexOfControllerNamed( const char *name ) const{
 	return -1;
 }
 
-bool deParticleEmitter::HasController( deParticleEmitterController *controller ) const{
-	if( ! controller ) DETHROW( deeInvalidParam );
+bool deParticleEmitter::HasController(deParticleEmitterController *controller) const{
+	if(! controller) DETHROW(deeInvalidParam);
 	
 	int i;
 	
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ] == controller ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i] == controller){
 			return true;
 		}
 	}
@@ -235,72 +235,72 @@ bool deParticleEmitter::HasController( deParticleEmitterController *controller )
 	return false;
 }
 
-void deParticleEmitter::AddController( deParticleEmitterController *controller ){
-	if( ! controller ) DETHROW( deeInvalidParam );
+void deParticleEmitter::AddController(deParticleEmitterController *controller){
+	if(! controller) DETHROW(deeInvalidParam);
 	
-	if( pControllerCount == pControllerSize ){
+	if(pControllerCount == pControllerSize){
 		int i, newSize = pControllerSize * 3 / 2 + 1;
-		deParticleEmitterController **newArray = new deParticleEmitterController*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pControllers ){
-			for( i=0; i<pControllerSize; i++ ) newArray[ i ] = pControllers[ i ];
+		deParticleEmitterController **newArray = new deParticleEmitterController*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pControllers){
+			for(i=0; i<pControllerSize; i++) newArray[i] = pControllers[i];
 			delete [] pControllers;
 		}
 		pControllers = newArray;
 		pControllerSize = newSize;
 	}
-	pControllers[ pControllerCount ] = controller;
+	pControllers[pControllerCount] = controller;
 	pControllerCount++;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ControllerCountChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->ControllerCountChanged();
 	}
 }
 
-void deParticleEmitter::RemoveController( deParticleEmitterController *controller ){
-	int index = IndexOfController( controller );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void deParticleEmitter::RemoveController(deParticleEmitterController *controller){
+	int index = IndexOfController(controller);
+	if(index == -1) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=index+1; i<pControllerCount; i++ ){
-		pControllers[ i - 1 ] = pControllers[ i ];
+	for(i=index+1; i<pControllerCount; i++){
+		pControllers[i - 1] = pControllers[i];
 	}
 	pControllerCount--;
 	delete controller;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ControllerCountChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->ControllerCountChanged();
 	}
 }
 
 void deParticleEmitter::RemoveAllControllers(){
-	while( pControllerCount > 0 ){
-		delete pControllers[ pControllerCount - 1 ];
+	while(pControllerCount > 0){
+		delete pControllers[pControllerCount - 1];
 		pControllerCount--;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ControllerCountChanged();
 	}
-	if( pPeerPhysics ){
+	if(pPeerPhysics){
 		pPeerPhysics->ControllerCountChanged();
 	}
 }
 
-void deParticleEmitter::NotifyControllerChangedAt( int index ){
-	if( index < 0 || index >= pControllerCount ) DETHROW( deeInvalidParam );
+void deParticleEmitter::NotifyControllerChangedAt(int index){
+	if(index < 0 || index >= pControllerCount) DETHROW(deeInvalidParam);
 	
-	if( pPeerGraphic ){
-		pPeerGraphic->ControllerChanged( index );
+	if(pPeerGraphic){
+		pPeerGraphic->ControllerChanged(index);
 	}
-	if( pPeerPhysics ){
-		pPeerPhysics->ControllerChanged( index );
+	if(pPeerPhysics){
+		pPeerPhysics->ControllerChanged(index);
 	}
 }
 
@@ -309,9 +309,9 @@ void deParticleEmitter::NotifyControllerChangedAt( int index ){
 // System Peers
 /////////////////
 
-void deParticleEmitter::SetPeerGraphic( deBaseGraphicParticleEmitter *peer ){
-	if( peer != pPeerGraphic ){
-		if( pPeerGraphic ){
+void deParticleEmitter::SetPeerGraphic(deBaseGraphicParticleEmitter *peer){
+	if(peer != pPeerGraphic){
+		if(pPeerGraphic){
 			delete pPeerGraphic;
 		}
 		
@@ -319,9 +319,9 @@ void deParticleEmitter::SetPeerGraphic( deBaseGraphicParticleEmitter *peer ){
 	}
 }
 
-void deParticleEmitter::SetPeerPhysics( deBasePhysicsParticleEmitter *peer ){
-	if( peer != pPeerPhysics ){
-		if( pPeerPhysics ){
+void deParticleEmitter::SetPeerPhysics(deBasePhysicsParticleEmitter *peer){
+	if(peer != pPeerPhysics){
+		if(pPeerPhysics){
 			delete pPeerPhysics;
 		}
 		

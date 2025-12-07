@@ -51,38 +51,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Convert widget position to screen position. */
-	static decPoint WidgetToScreen( const igdeWidget &widget, const decPoint &position );
+	static decPoint WidgetToScreen(const igdeWidget &widget, const decPoint &position);
 	
 	/** \brief Cursor position inside widget. */
-	static decPoint GetCursorPosition( const igdeWidget &widget );
+	static decPoint GetCursorPosition(const igdeWidget &widget);
 	
 	/** \brief Widget size. */
-	static decPoint GetSize( const igdeWidget &widget );
+	static decPoint GetSize(const igdeWidget &widget);
 	
 	/** \brief Update visibility. */
-	static void UpdateVisible( const igdeWidget &widget );
+	static void UpdateVisible(const igdeWidget &widget);
 	
 	/** \brief Window has native parent. */
-	static bool HasNativeParent( const igdeWidget &widget );
+	static bool HasNativeParent(const igdeWidget &widget);
 	
 	/** \brief Get OS specific native widget handle. */
 	#ifdef OS_UNIX
-	static Window NativeWidgetID( const igdeWidget &widget );
+	static Window NativeWidgetID(const igdeWidget &widget);
 	#endif
 	#ifdef OS_W32
-	static HWND NativeWidgetID( const igdeWidget &widget );
+	static HWND NativeWidgetID(const igdeWidget &widget);
 	#endif
 	
 	/** \brief Get OS specific native parent widget handle. */
 	#ifdef OS_UNIX
-	static Window NativeWidgetParentID( const igdeWidget &widget );
+	static Window NativeWidgetParentID(const igdeWidget &widget);
 	#endif
 	#ifdef OS_W32
-	static HWND NativeWidgetParentID( const igdeWidget &widget );
+	static HWND NativeWidgetParentID(const igdeWidget &widget);
 	#endif
 	
 	/** \brief Detach native window. */
-	static void DetachNativeWindow( const igdeWidget &widget );
+	static void DetachNativeWindow(const igdeWidget &widget);
 	
 	/** \brief Get display connection. */
 	#ifdef OS_UNIX

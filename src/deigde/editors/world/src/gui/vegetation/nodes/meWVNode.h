@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNode( meWindowVegetation &windowVegetation, meHTVRule *rule );
+	meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Vegetation editor window. */
-	inline meWindowVegetation &GetWindowVegetation() const{ return pWindowVegetation; }
+	inline meWindowVegetation &GetWindowVegetation() const{return pWindowVegetation;}
 	
 	/** \brief Rule. */
-	inline meHTVRule *GetRule() const{ return pRule; }
+	inline meHTVRule *GetRule() const{return pRule;}
 	
 	/** \brief Update node. */
 	virtual void Update();

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeTextSetText( sePropertyNodeText *node, const char *newValue );
+	seUPropertyNodeTextSetText(sePropertyNodeText *node, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set text. */
-	void SetNewValue( const char *text );
+	void SetNewValue(const char *text);
 	
 	/** \brief Undo action. */
 	virtual void Undo();

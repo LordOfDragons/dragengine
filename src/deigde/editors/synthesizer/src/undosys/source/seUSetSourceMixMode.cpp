@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceMixMode::seUSetSourceMixMode( seSource *source, deSynthesizerSource::eMixModes newMode ) :
-pSource( NULL )
+seUSetSourceMixMode::seUSetSourceMixMode(seSource *source, deSynthesizerSource::eMixModes newMode) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldMode = source->GetMixMode();
@@ -53,9 +53,9 @@ pSource( NULL )
 		pSource = source;
 		pSource->AddReference();
 		
-		SetShortInfo( "Source set blend mode" );
+		SetShortInfo("Source set blend mode");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ seUSetSourceMixMode::~seUSetSourceMixMode(){
 ///////////////
 
 void seUSetSourceMixMode::Undo(){
-	pSource->SetMixMode( pOldMode );
+	pSource->SetMixMode(pOldMode);
 }
 
 void seUSetSourceMixMode::Redo(){
-	pSource->SetMixMode( pNewMode );
+	pSource->SetMixMode(pNewMode);
 }
 
 
@@ -84,7 +84,7 @@ void seUSetSourceMixMode::Redo(){
 //////////////////////
 
 void seUSetSourceMixMode::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

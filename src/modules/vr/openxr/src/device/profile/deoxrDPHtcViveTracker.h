@@ -47,7 +47,7 @@ private:
 		deoxrAction::Ref action;
 		int number;
 		
-		Tracker( const deoxrPath &path, int number );
+		Tracker(const deoxrPath &path, int number);
 		virtual ~Tracker();
 	};
 	
@@ -59,7 +59,7 @@ private:
 		const deoxrPath path;
 		const deoxrAction::Ref action;
 		
-		RoleAction( const deoxrPath &path, const deoxrAction::Ref &action );
+		RoleAction(const deoxrPath &path, const deoxrAction::Ref &action);
 		virtual ~RoleAction();
 	};
 	
@@ -74,7 +74,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHtcViveTracker( deoxrInstance &instance );
+	deoxrDPHtcViveTracker(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */
@@ -96,7 +96,7 @@ public:
 	virtual void CheckAttached();
 	
 	/** Create actions for action set. */
-	virtual void CreateActions( deoxrActionSet &actionSet );
+	virtual void CreateActions(deoxrActionSet &actionSet);
 	
 	/** Suggest bindings. */
 	virtual void SuggestBindings();
@@ -108,22 +108,22 @@ public:
 	
 	
 private:
-	void pAddRoleAction( deoxrActionSet &actionSet, const char *roleType, const char *localizedNameSuffix );
-	const RoleAction *pGetRoleActionWith( const deoxrPath &path ) const;
+	void pAddRoleAction(deoxrActionSet &actionSet, const char *roleType, const char *localizedNameSuffix);
+	const RoleAction *pGetRoleActionWith(const deoxrPath &path) const;
 	
-	Tracker *pGetTrackerWith( deoxrDevice *device ) const;
-	Tracker *pGetTrackerWith( XrPath path ) const;
-	Tracker *pGetTrackerWithRole( XrPath path ) const;
-	decString pSerialFromPath( const deoxrPath &path ) const;
-	decString pNameForTracker( const Tracker &tracker ) const;
-	decString pLocalizedNameForTracker( const Tracker &tracker ) const;
+	Tracker *pGetTrackerWith(deoxrDevice *device) const;
+	Tracker *pGetTrackerWith(XrPath path) const;
+	Tracker *pGetTrackerWithRole(XrPath path) const;
+	decString pSerialFromPath(const deoxrPath &path) const;
+	decString pNameForTracker(const Tracker &tracker) const;
+	decString pLocalizedNameForTracker(const Tracker &tracker) const;
 	
 	void pRemoveAllDevices();
 	void pLoadTrackerDatabase();
 	void pSaveTrackerDatabase();
 	
-	void pAddDevice( Tracker &tracker );
-	void pTrySuggestBindings( int restrictCount );
+	void pAddDevice(Tracker &tracker);
+	void pTrySuggestBindings(int restrictCount);
 };
 
 #endif

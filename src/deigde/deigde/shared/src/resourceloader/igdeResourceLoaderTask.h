@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	igdeResourceLoaderTask( const char *filename, deResourceLoader::eResourceType resourceType );
+	igdeResourceLoaderTask(const char *filename, deResourceLoader::eResourceType resourceType);
 	
 protected:
 	/** \brief Clean up file fialog. */
@@ -71,10 +71,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** \brief Resource type. */
-	inline deResourceLoader::eResourceType GetResourceType() const{ return pResourceType; }
+	inline deResourceLoader::eResourceType GetResourceType() const{return pResourceType;}
 	/*@}*/
 	
 	
@@ -82,24 +82,24 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** \brief Add listener. */
-	void AddListener( igdeResourceLoaderListener *listener );
+	void AddListener(igdeResourceLoaderListener *listener);
 	
 	/** \brief Remove listener if present. */
-	void RemoveListener( igdeResourceLoaderListener *listener );
+	void RemoveListener(igdeResourceLoaderListener *listener);
 	
 	/**
 	 * \brief Notify all that the loading finished successfully.
 	 * 
 	 * Processed listeners are removed after the call returns.
 	 */
-	void NotifyLoadingFinished( deLogger &logger, deFileResource *resource );
+	void NotifyLoadingFinished(deLogger &logger, deFileResource *resource);
 	
 	/**
 	 * \brief Notify all that the loading failed.
 	 * 
 	 * Processed listeners are removed after the call returns.
 	 */
-	void NotifyLoadingFailed( deLogger &logger );
+	void NotifyLoadingFailed(deLogger &logger);
 	/*@}*/
 };
 

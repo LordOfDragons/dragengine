@@ -52,7 +52,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-aeConfigurationXML::aeConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+aeConfigurationXML::aeConfigurationXML(deLogger *logger, const char *loggerSource) : igdeBaseXML(logger, loggerSource){
 }
 
 aeConfigurationXML::~aeConfigurationXML(){
@@ -63,28 +63,28 @@ aeConfigurationXML::~aeConfigurationXML(){
 // Management
 ///////////////
 
-void aeConfigurationXML::ReadFromFile( decBaseFileReader &reader, aeConfiguration &config ){
+void aeConfigurationXML::ReadFromFile(decBaseFileReader &reader, aeConfiguration &config){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
+	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "animatorEditor" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "animatorEditor") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void aeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const aeConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void aeConfigurationXML::WriteToFile(decBaseFileWriter &writer, const aeConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
 
 
@@ -92,80 +92,80 @@ void aeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const aeConfigu
 // Private Functions
 //////////////////////
 
-void aeConfigurationXML::pWriteConfig( decXmlWriter &writer, const aeConfiguration &config ){
-	writer.WriteOpeningTag( "animatorEditor", false, true );
+void aeConfigurationXML::pWriteConfig(decXmlWriter &writer, const aeConfiguration &config){
+	writer.WriteOpeningTag("animatorEditor", false, true);
 	
-	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
+	config.GetWindowMain().GetRecentFiles().WriteToXml(writer);
 	
-	pWriteKey( writer, "locoKeyForward", config.GetLocoKeyForward() );
-	pWriteKey( writer, "locoKeyBackwards", config.GetLocoKeyBackwards() );
-	pWriteKey( writer, "locoKeyLeft", config.GetLocoKeyLeft() );
-	pWriteKey( writer, "locoKeyRight", config.GetLocoKeyRight() );
-	pWriteKey( writer, "locoKeyCrouch", config.GetLocoKeyCrouch() );
-	pWriteKey( writer, "locoKeyRun", config.GetLocoKeyRun() );
+	pWriteKey(writer, "locoKeyForward", config.GetLocoKeyForward());
+	pWriteKey(writer, "locoKeyBackwards", config.GetLocoKeyBackwards());
+	pWriteKey(writer, "locoKeyLeft", config.GetLocoKeyLeft());
+	pWriteKey(writer, "locoKeyRight", config.GetLocoKeyRight());
+	pWriteKey(writer, "locoKeyCrouch", config.GetLocoKeyCrouch());
+	pWriteKey(writer, "locoKeyRun", config.GetLocoKeyRun());
 	
-	writer.WriteClosingTag( "animatorEditor", true );
+	writer.WriteClosingTag("animatorEditor", true);
 }
 
-void aeConfigurationXML::pWriteKey( decXmlWriter &writer, const char *name, deInputEvent::eKeyCodes key ){
-	if( key < deInputEvent::ekcA || key > deInputEvent::ekcZ ){
+void aeConfigurationXML::pWriteKey(decXmlWriter &writer, const char *name, deInputEvent::eKeyCodes key){
+	if(key < deInputEvent::ekcA || key > deInputEvent::ekcZ){
 		return;
 	}
 	
-	const char value[ 2 ] = { ( char )( 'a' + ( key - deInputEvent::ekcA ) ), 0 };
-	writer.WriteDataTagString( name, value );
+	const char value[2] = {(char)('a' + (key - deInputEvent::ekcA)), 0};
+	writer.WriteDataTagString(name, value);
 }
 
 
 
-void aeConfigurationXML::pReadConfig( const decXmlElementTag &root, aeConfiguration &config ){
+void aeConfigurationXML::pReadConfig(const decXmlElementTag &root, aeConfiguration &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(! tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentFiles" ){
-			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentFiles"){
+			config.GetWindowMain().GetRecentFiles().ReadFromXml(*tag);
 			
-		}else if( tag->GetName() == "locoKeyForward" ){
-			config.SetLocoKeyForward( pReadKey( *tag, config.GetLocoKeyForward() ) );
+		}else if(tag->GetName() == "locoKeyForward"){
+			config.SetLocoKeyForward(pReadKey(*tag, config.GetLocoKeyForward()));
 			
-		}else if( tag->GetName() == "locoKeyBackwards" ){
-			config.SetLocoKeyBackwards( pReadKey( *tag, config.GetLocoKeyBackwards() ) );
+		}else if(tag->GetName() == "locoKeyBackwards"){
+			config.SetLocoKeyBackwards(pReadKey(*tag, config.GetLocoKeyBackwards()));
 			
-		}else if( tag->GetName() == "locoKeyLeft" ){
-			config.SetLocoKeyLeft( pReadKey( *tag, config.GetLocoKeyLeft() ) );
+		}else if(tag->GetName() == "locoKeyLeft"){
+			config.SetLocoKeyLeft(pReadKey(*tag, config.GetLocoKeyLeft()));
 			
-		}else if( tag->GetName() == "locoKeyRight" ){
-			config.SetLocoKeyRight( pReadKey( *tag, config.GetLocoKeyRight() ) );
+		}else if(tag->GetName() == "locoKeyRight"){
+			config.SetLocoKeyRight(pReadKey(*tag, config.GetLocoKeyRight()));
 			
-		}else if( tag->GetName() == "locoKeyCrouch" ){
-			config.SetLocoKeyCrouch( pReadKey( *tag, config.GetLocoKeyCrouch() ) );
+		}else if(tag->GetName() == "locoKeyCrouch"){
+			config.SetLocoKeyCrouch(pReadKey(*tag, config.GetLocoKeyCrouch()));
 			
-		}else if( tag->GetName() == "locoKeyRun" ){
-			config.SetLocoKeyRun( pReadKey( *tag, config.GetLocoKeyRun() ) );
+		}else if(tag->GetName() == "locoKeyRun"){
+			config.SetLocoKeyRun(pReadKey(*tag, config.GetLocoKeyRun()));
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
-deInputEvent::eKeyCodes aeConfigurationXML::pReadKey( const decXmlElementTag &root,
-deInputEvent::eKeyCodes defaultKey ){
-	const char * const code = GetCDataString( root );
-	if( ! code || strlen( code ) != 1 ){
+deInputEvent::eKeyCodes aeConfigurationXML::pReadKey(const decXmlElementTag &root,
+deInputEvent::eKeyCodes defaultKey){
+	const char * const code = GetCDataString(root);
+	if(! code || strlen(code) != 1){
 		return defaultKey;
 	}
 	
-	int code2 = tolower( code[ 0 ] );
-	if( code2 < 'a' || code2 > 'z' ){
+	int code2 = tolower(code[0]);
+	if(code2 < 'a' || code2 > 'z'){
 		return defaultKey;
 	}
 	
-	return ( deInputEvent::eKeyCodes )( deInputEvent::ekcA + ( code2 - 'a' ) );
+	return (deInputEvent::eKeyCodes)(deInputEvent::ekcA + (code2 - 'a'));
 }

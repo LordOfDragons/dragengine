@@ -65,7 +65,7 @@ public:
 	aeRuleInverseKinematic();
 	
 	/** Create copy of an inverse kinematic rule. */
-	aeRuleInverseKinematic( const aeRuleInverseKinematic &copy );
+	aeRuleInverseKinematic(const aeRuleInverseKinematic &copy);
 	
 	/** Clean up the animator rule. */
 	virtual ~aeRuleInverseKinematic();
@@ -74,95 +74,95 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Goal position. */
-	inline const decVector &GetGoalPosition() const{ return pGoalPosition; }
+	inline const decVector &GetGoalPosition() const{return pGoalPosition;}
 	
 	/** Set goal position. */
-	void SetGoalPosition( const decVector &position );
+	void SetGoalPosition(const decVector &position);
 	
 	/** Goal orientation. */
-	inline const decVector &GetGoalOrientation() const{ return pGoalOrientation; }
+	inline const decVector &GetGoalOrientation() const{return pGoalOrientation;}
 	
 	/** Set goal orientation. */
-	void SetGoalOrientation( const decVector &orientation );
+	void SetGoalOrientation(const decVector &orientation);
 	
 	/** Local position. */
-	inline const decVector &GetLocalPosition() const{ return pLocalPosition; }
+	inline const decVector &GetLocalPosition() const{return pLocalPosition;}
 	
 	/** Set local position. */
-	void SetLocalPosition( const decVector &position );
+	void SetLocalPosition(const decVector &position);
 	
 	/** Local orientation. */
-	inline const decVector &GetLocalOrientation() const{ return pLocalOrientation; }
+	inline const decVector &GetLocalOrientation() const{return pLocalOrientation;}
 	
 	/** Set local orientation. */
-	void SetLocalOrientation( const decVector &orientation );
+	void SetLocalOrientation(const decVector &orientation);
 	
 	/** Adjust orientation. */
-	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
+	inline bool GetAdjustOrientation() const{return pAdjustOrientation;}
 	
 	/** Set if the orientation is adjusted. */
-	void SetAdjustOrientation( bool adjustOrientation );
+	void SetAdjustOrientation(bool adjustOrientation);
 	
 	/** Use solver bone to obtain target position and orientation. */
-	inline bool GetUseSolverBone() const{ return pUseSolverBone; }
+	inline bool GetUseSolverBone() const{return pUseSolverBone;}
 	
 	/** Set if solver bone is used to obtain target position and orientation. */
-	void SetUseSolverBone( bool useSolverBone );
+	void SetUseSolverBone(bool useSolverBone);
 	
 	/** Name of the solver bone if used. */
-	inline const decString &GetSolverBone() const{ return pSolverBone; }
+	inline const decString &GetSolverBone() const{return pSolverBone;}
 	
 	/** Set the name of the solver bone. */
-	void SetSolverBone( const char *boneName );
+	void SetSolverBone(const char *boneName);
 	
 	
 	
 	/** Limit reach in meters. 0 disables reach limit. */
-	inline float GetReachRange() const{ return pReachRange; }
+	inline float GetReachRange() const{return pReachRange;}
 	
 	/** Set limit reach in meters. 0 disables reach limit. */
-	void SetReachRange( float range );
+	void SetReachRange(float range);
 	
 	/** Bone to use as reach origin or an empty string to use a constant position. */
-	inline const decString &GetReachBone() const{ return pReachBone; }
+	inline const decString &GetReachBone() const{return pReachBone;}
 	
 	/**
 	 * Set bone to use as reach origin or an empty string to use a constant position.
 	 * \throws deeInvalidParam \em bone is \em NULL.
 	 */
-	void SetReachBone( const char *bone );
+	void SetReachBone(const char *bone);
 	
 	/** Reach center if no bone is used. */
-	inline const decVector &GetReachCenter() const{ return pReachCenter; }
+	inline const decVector &GetReachCenter() const{return pReachCenter;}
 	
 	/** Set reach center if no bone is used. */
-	void SetReachCenter( const decVector &center );
+	void SetReachCenter(const decVector &center);
 	
 	
 	
 	/** Goal position target. */
-	inline aeControllerTarget &GetTargetGoalPosition(){ return pTargetGoalPosition; }
-	inline const aeControllerTarget &GetTargetGoalPosition() const{ return pTargetGoalPosition; }
+	inline aeControllerTarget &GetTargetGoalPosition(){return pTargetGoalPosition;}
+	inline const aeControllerTarget &GetTargetGoalPosition() const{return pTargetGoalPosition;}
 	
 	/** Goal orientation target. */
-	inline aeControllerTarget &GetTargetGoalOrientation(){ return pTargetGoalOrientation; }
-	inline const aeControllerTarget &GetTargetGoalOrientation() const{ return pTargetGoalOrientation; }
+	inline aeControllerTarget &GetTargetGoalOrientation(){return pTargetGoalOrientation;}
+	inline const aeControllerTarget &GetTargetGoalOrientation() const{return pTargetGoalOrientation;}
 	
 	/** Local position target. */
-	inline aeControllerTarget &GetTargetLocalPosition(){ return pTargetLocalPosition; }
-	inline const aeControllerTarget &GetTargetLocalPosition() const{ return pTargetLocalPosition; }
+	inline aeControllerTarget &GetTargetLocalPosition(){return pTargetLocalPosition;}
+	inline const aeControllerTarget &GetTargetLocalPosition() const{return pTargetLocalPosition;}
 	
 	/** Local orientation target. */
-	inline aeControllerTarget &GetTargetLocalOrientation(){ return pTargetLocalOrientation; }
-	inline const aeControllerTarget &GetTargetLocalOrientation() const{ return pTargetLocalOrientation; }
+	inline aeControllerTarget &GetTargetLocalOrientation(){return pTargetLocalOrientation;}
+	inline const aeControllerTarget &GetTargetLocalOrientation() const{return pTargetLocalOrientation;}
 	
 	/** Reach range target. */
-	inline aeControllerTarget &GetTargetReachRange(){ return pTargetReachRange; }
-	inline const aeControllerTarget &GetTargetReachRange() const{ return pTargetReachRange; }
+	inline aeControllerTarget &GetTargetReachRange(){return pTargetReachRange;}
+	inline const aeControllerTarget &GetTargetReachRange() const{return pTargetReachRange;}
 	
 	/** Reach center target. */
-	inline aeControllerTarget &GetTargetReachCenter(){ return pTargetReachCenter; }
-	inline const aeControllerTarget &GetTargetReachCenter() const{ return pTargetReachCenter; }
+	inline aeControllerTarget &GetTargetReachCenter(){return pTargetReachCenter;}
+	inline const aeControllerTarget &GetTargetReachCenter() const{return pTargetReachCenter;}
 	
 	
 	
@@ -173,10 +173,10 @@ public:
 	virtual void UpdateTargets();
 	
 	/** Retrieve the number of targets using a given link. */
-	virtual int CountLinkUsage( aeLink *link ) const;
+	virtual int CountLinkUsage(aeLink *link) const;
 	
 	/** Remove a link from all targets using it. */
-	virtual void RemoveLinkFromTargets( aeLink *link );
+	virtual void RemoveLinkFromTargets(aeLink *link);
 	
 	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
@@ -187,13 +187,13 @@ public:
 	virtual aeRule *CreateCopy() const;
 	
 	/** List all links of all rule targets. */
-	virtual void ListLinks( aeLinkList& list );
+	virtual void ListLinks(aeLinkList& list);
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
 	/** Copy another inverse kinematic rule to this inverse kinematic rule. */
-	virtual aeRuleInverseKinematic &operator=( const aeRuleInverseKinematic &copy );
+	virtual aeRuleInverseKinematic &operator=(const aeRuleInverseKinematic &copy);
 	/*@}*/
 };
 

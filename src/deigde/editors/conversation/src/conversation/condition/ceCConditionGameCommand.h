@@ -49,7 +49,7 @@ public:
 	/** \brief Creates a new conversation condition. */
 	ceCConditionGameCommand();
 	/** \brief Creates a new conversation condition. */
-	ceCConditionGameCommand( const ceCConditionGameCommand &condition );
+	ceCConditionGameCommand(const ceCConditionGameCommand &condition);
 	/** \brief Cleans up the conversation condition. */
 	virtual ~ceCConditionGameCommand();
 	/*@}*/
@@ -57,13 +57,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the command. */
-	inline const decString &GetCommand() const{ return pCommand; }
+	inline const decString &GetCommand() const{return pCommand;}
 	/** \brief Sets the command. */
-	void SetCommand( const char *command );
+	void SetCommand(const char *command);
 	/** \brief Determines if the result is true if the command returned false. */
-	inline bool GetNegate() const{ return pNegate; }
+	inline bool GetNegate() const{return pNegate;}
 	/** \brief Sets if the result is true if the command returned false. */
-	void SetNegate( bool negate );
+	void SetNegate(bool negate);
 	
 	/** \brief Create a copy of this condition. */
     virtual ceConversationCondition *CreateCopy() const;

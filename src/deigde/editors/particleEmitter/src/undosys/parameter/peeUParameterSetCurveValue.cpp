@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetCurveValue::peeUParameterSetCurveValue( peeType *type,
-	peeParameter *parameter, const decCurveBezier &newCurve ) :
-peeUParameterSetCurve( type, parameter, newCurve )
+peeUParameterSetCurveValue::peeUParameterSetCurveValue(peeType *type,
+	peeParameter *parameter, const decCurveBezier &newCurve) :
+peeUParameterSetCurve(type, parameter, newCurve)
 {
-	SetShortInfo( "Set Parameter Cast Curve" );
+	SetShortInfo("Set Parameter Cast Curve");
 	pOldCurve = parameter->GetCurveValue();
 }
 
@@ -57,9 +57,9 @@ peeUParameterSetCurveValue::~peeUParameterSetCurveValue(){
 ///////////////
 
 void peeUParameterSetCurveValue::Undo(){
-	pParameter->SetCurveValue( pOldCurve );
+	pParameter->SetCurveValue(pOldCurve);
 }
 
 void peeUParameterSetCurveValue::Redo(){
-	pParameter->SetCurveValue( pNewCurve );
+	pParameter->SetCurveValue(pNewCurve);
 }

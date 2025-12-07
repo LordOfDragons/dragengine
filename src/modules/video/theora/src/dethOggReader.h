@@ -59,7 +59,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new ogg file. */
-	dethOggReader( deVideoTheora &module, decBaseFileReader &reader );
+	dethOggReader(deVideoTheora &module, decBaseFileReader &reader);
 	/** Cleans up the ogg file. */
 	~dethOggReader();
 	/*@}*/
@@ -67,26 +67,26 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Read streams and find theora header. */
-	void ReadStreamHeaders( dethInfos &infos );
+	void ReadStreamHeaders(dethInfos &infos);
 	
 	/** Reads data from the file returning the amount of data read. */
-	int ReadFromFile( char *buffer, int size );
+	int ReadFromFile(char *buffer, int size);
 	/** Reads a page. */
-	bool ReadPage( ogg_page &page );
+	bool ReadPage(ogg_page &page);
 	/** Reads next page with the given serial ignoring all others inbetween. */
-	bool ReadPage( ogg_page &page, int serial );
+	bool ReadPage(ogg_page &page, int serial);
 	
 	/** Retrieves the current frame. */
-	inline int GetCurrentFrame() const{ return pCurFrame; }
+	inline int GetCurrentFrame() const{return pCurFrame;}
 	/** Rewind. */
 	void Rewind();
 	/** Seek to frame. */
-	void SeekFrame( int frame );
+	void SeekFrame(int frame);
 	
 	/** Retrieves the stream or NULL if not found. */
-	inline dethStreamReader *GetStream() const{ return pStream; }
+	inline dethStreamReader *GetStream() const{return pStream;}
 	/** Create default color conversion matrix. */
-	void DefaultColorConversionMatrix( decColorMatrix3 &matrix );
+	void DefaultColorConversionMatrix(decColorMatrix3 &matrix);
 	/*@}*/
 };
 

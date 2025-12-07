@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gizmo. */
-	igdeGizmoMove( igdeEnvironment &environment );
+	igdeGizmoMove(igdeEnvironment &environment);
 	
 	
 	
@@ -115,13 +115,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active action or eaNone. */
-	inline eActions GetAction() const{ return pAction; }
+	inline eActions GetAction() const{return pAction;}
 	
 	/** \brief Get object position. */
 	virtual decDVector GetObjectPosition() = 0;
 	
 	/** \brief Set object position. */
-	virtual void SetObjectPosition( const decDVector &position ) = 0;
+	virtual void SetObjectPosition(const decDVector &position) = 0;
 	
 	/** \brief Get object orientation. */
 	virtual decQuaternion GetObjectOrientation();
@@ -137,7 +137,7 @@ public:
 	 * 
 	 * Default implementation applies no limits.
 	 */
-	virtual decDVector LimitPosition( const decDVector &position );
+	virtual decDVector LimitPosition(const decDVector &position);
 	
 	/**
 	 * \brief Object position or orientation changed.
@@ -163,7 +163,7 @@ protected:
 	 * - "move view" to eaMoveView
 	 * - everything else to eaNone
 	 */
-	virtual eActions pShapeNameToAction( const decString &shapeName ) const;
+	virtual eActions pShapeNameToAction(const decString &shapeName) const;
 	
 	/**
 	 * \brief Start editing.
@@ -179,9 +179,9 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual bool OnStartEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
+	virtual bool OnStartEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
 		const decDMatrix &viewMatrix, const decDVector &hitPoint,
-		const decString &shapeName, int modifiers ) override;
+		const decString &shapeName, int modifiers) override;
 	
 	/**
 	 * \brief Update editing.
@@ -194,8 +194,8 @@ protected:
 	 * \param[in] modifiers Modifier keys pressed at the time of event. OR combination of
 	 *                      values from deInputEvent::eStateModifiers.
 	 */
-	virtual void OnUpdateEditing( const decDVector &rayOrigin, const decDVector &rayDirection,
-		const decDMatrix &viewMatrix, int modifiers ) override;
+	virtual void OnUpdateEditing(const decDVector &rayOrigin, const decDVector &rayDirection,
+		const decDMatrix &viewMatrix, int modifiers) override;
 	
 	/**
 	 * \brief Stop editing.
@@ -204,7 +204,7 @@ protected:
 	 * 
 	 * Called by StopEditing() after a prior to an OnStartEditing() call returning true.
 	 */
-	virtual void OnStopEditing( bool cancel ) override;
+	virtual void OnStopEditing(bool cancel) override;
 	
 	/** \brief Added to world. */
 	virtual void OnAddToWorld() override;

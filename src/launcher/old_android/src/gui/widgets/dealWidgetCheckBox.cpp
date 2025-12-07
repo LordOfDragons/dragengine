@@ -48,20 +48,20 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetCheckBox::dealWidgetCheckBox( dealDisplay &display, dealImage *image, const char *label ) :
-dealWidgetLayoutFlow( display, true, 0, eltTop, eltCenterFill ),
+dealWidgetCheckBox::dealWidgetCheckBox(dealDisplay &display, dealImage *image, const char *label) :
+dealWidgetLayoutFlow(display, true, 0, eltTop, eltCenterFill),
 
-pLabel( NULL ),
-pImage( NULL ),
-pBoxImageUnchecked( NULL ),
-pBoxImageChecked( NULL ),
-pChecked( false )
+pLabel(NULL),
+pImage(NULL),
+pBoxImageUnchecked(NULL),
+pBoxImageChecked(NULL),
+pChecked(false)
 {
-	SetGap( display.GetDefaultFontSize() / 4 );
-	SetPadding( display.GetDefaultFontSize() / 4, display.GetDefaultFontSize() / 4 );
+	SetGap(display.GetDefaultFontSize() / 4);
+	SetPadding(display.GetDefaultFontSize() / 4, display.GetDefaultFontSize() / 4);
 	pBuildContent();
-	SetLabel( label );
-	SetImage( image );
+	SetLabel(label);
+	SetImage(image);
 }
 
 dealWidgetCheckBox::~dealWidgetCheckBox(){
@@ -72,19 +72,19 @@ dealWidgetCheckBox::~dealWidgetCheckBox(){
 // Management
 ///////////////
 
-void dealWidgetCheckBox::SetFromGuiTheme( const dealGuiTheme &guitheme ){
-	dealWidget::SetFromGuiTheme( guitheme );
+void dealWidgetCheckBox::SetFromGuiTheme(const dealGuiTheme &guitheme){
+	dealWidget::SetFromGuiTheme(guitheme);
 	
-	SetBackgroundColor( guitheme.GetCheckBoxBackgroundColor() );
-	pLabel->SetColor( guitheme.GetCheckBoxTextColor() );
+	SetBackgroundColor(guitheme.GetCheckBoxBackgroundColor());
+	pLabel->SetColor(guitheme.GetCheckBoxTextColor());
 	
-	pBoxImageUnchecked->SetImage( guitheme.GetCheckBoxImageUnchecked() );
-	pBoxImageUnchecked->SetScaling( guitheme.GetCheckBoxImageScale() );
-	pBoxImageUnchecked->SetColorize( guitheme.GetCheckBoxImageUncheckedColorize() );
+	pBoxImageUnchecked->SetImage(guitheme.GetCheckBoxImageUnchecked());
+	pBoxImageUnchecked->SetScaling(guitheme.GetCheckBoxImageScale());
+	pBoxImageUnchecked->SetColorize(guitheme.GetCheckBoxImageUncheckedColorize());
 	
-	pBoxImageChecked->SetImage( guitheme.GetCheckBoxImageChecked() );
-	pBoxImageChecked->SetScaling( guitheme.GetCheckBoxImageScale() );
-	pBoxImageChecked->SetColorize( guitheme.GetCheckBoxImageCheckedColorize() );
+	pBoxImageChecked->SetImage(guitheme.GetCheckBoxImageChecked());
+	pBoxImageChecked->SetScaling(guitheme.GetCheckBoxImageScale());
+	pBoxImageChecked->SetColorize(guitheme.GetCheckBoxImageCheckedColorize());
 }
 
 
@@ -93,8 +93,8 @@ const decColor &dealWidgetCheckBox::GetTextColor() const{
 	return pLabel->GetColor();
 }
 
-void dealWidgetCheckBox::SetTextColor( const decColor &color ){
-	pLabel->SetColor( color );
+void dealWidgetCheckBox::SetTextColor(const decColor &color){
+	pLabel->SetColor(color);
 }
 
 
@@ -103,38 +103,38 @@ const decString &dealWidgetCheckBox::GetLabel() const{
 	return pLabel->GetText();
 }
 
-void dealWidgetCheckBox::SetLabel( const char *label ){
-	if( pLabel->GetText() == label ){
+void dealWidgetCheckBox::SetLabel(const char *label){
+	if(pLabel->GetText() == label){
 		return;
 	}
 	
-	pLabel->SetText( label );
-	pLabel->SetVisible( ! pLabel->GetText().IsEmpty() );
+	pLabel->SetText(label);
+	pLabel->SetVisible(! pLabel->GetText().IsEmpty());
 }
 
 dealImage *dealWidgetCheckBox::GetImage() const{
 	return pImage->GetImage();
 }
 
-void dealWidgetCheckBox::SetImage( dealImage *image ){
-	if( pImage->GetImage() == image ){
+void dealWidgetCheckBox::SetImage(dealImage *image){
+	if(pImage->GetImage() == image){
 		return;
 	}
 	
-	pImage->SetImage( image );
-	pImage->SetVisible( image != NULL );
+	pImage->SetImage(image);
+	pImage->SetVisible(image != NULL);
 }
 
 
 
-void dealWidgetCheckBox::SetChecked( bool checked ){
-	if( checked == pChecked ){
+void dealWidgetCheckBox::SetChecked(bool checked){
+	if(checked == pChecked){
 		return;
 	}
 	
 	pChecked = checked;
-	pBoxImageChecked->SetVisible( checked );
-	pBoxImageUnchecked->SetVisible( ! checked );
+	pBoxImageChecked->SetVisible(checked);
+	pBoxImageUnchecked->SetVisible(! checked);
 	
 	OnStateChanged();
 }
@@ -145,10 +145,10 @@ void dealWidgetCheckBox::OnEnabledChanged(){
 	dealWidgetLayoutFlow::OnEnabledChanged();
 	
 	const bool enabled = GetEnabled();
-	pImage->SetEnabled( enabled );
-	pLabel->SetEnabled( enabled );
-	pBoxImageUnchecked->SetEnabled( enabled );
-	pBoxImageChecked->SetEnabled( enabled );
+	pImage->SetEnabled(enabled);
+	pLabel->SetEnabled(enabled);
+	pBoxImageUnchecked->SetEnabled(enabled);
+	pBoxImageChecked->SetEnabled(enabled);
 }
 
 void dealWidgetCheckBox::OnStateChanged(){
@@ -156,23 +156,23 @@ void dealWidgetCheckBox::OnStateChanged(){
 
 
 
-void dealWidgetCheckBox::OnKeyPress( int keycode ){
+void dealWidgetCheckBox::OnKeyPress(int keycode){
 }
 
-void dealWidgetCheckBox::OnKeyRelease( int keycode ){
+void dealWidgetCheckBox::OnKeyRelease(int keycode){
 }
 
-void dealWidgetCheckBox::OnMousePress( int buttons, const decPoint &position ){
-	if( ! GetEnabled() ){
+void dealWidgetCheckBox::OnMousePress(int buttons, const decPoint &position){
+	if(! GetEnabled()){
 		return;
 	}
 	
-	if( buttons != 0 ){
+	if(buttons != 0){
 		// buttons checked while touching screen. protects also against multiple touching
 		return;
 	}
 	
-	SetChecked( ! pChecked );
+	SetChecked(! pChecked);
 }
 
 
@@ -184,22 +184,22 @@ void dealWidgetCheckBox::pBuildContent(){
 	dealDisplay &display = GetDisplay();
 	
 	// content
-	dealWidgetLayoutStack * const boxes = new dealWidgetLayoutStack( display, false );
+	dealWidgetLayoutStack * const boxes = new dealWidgetLayoutStack(display, false);
 	
-	pBoxImageUnchecked = new dealWidgetImage( display );
-	boxes->AddWidget( pBoxImageUnchecked );
+	pBoxImageUnchecked = new dealWidgetImage(display);
+	boxes->AddWidget(pBoxImageUnchecked);
 	
-	pBoxImageChecked = new dealWidgetImage( display );
-	pBoxImageChecked->SetVisible( false );
-	boxes->AddWidget( pBoxImageChecked );
+	pBoxImageChecked = new dealWidgetImage(display);
+	pBoxImageChecked->SetVisible(false);
+	boxes->AddWidget(pBoxImageChecked);
 	
-	AddWidget( boxes );
+	AddWidget(boxes);
 	
-	pImage = new dealWidgetImage( display );
-	pImage->SetVisible( false );
-	AddWidget( pImage );
+	pImage = new dealWidgetImage(display);
+	pImage->SetVisible(false);
+	AddWidget(pImage);
 	
-	pLabel = new dealWidgetLabel( display, "" );
-	pLabel->SetVisible( false );
-	AddWidget( pLabel );
+	pLabel = new dealWidgetLabel(display, "");
+	pLabel->SetVisible(false);
+	AddWidget(pLabel);
 }

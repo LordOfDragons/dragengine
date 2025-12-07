@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseVideoModule( deLoadableModule &loadableModule );
+	deBaseVideoModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~deBaseVideoModule();
@@ -54,24 +54,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Load video information from file. */
-	virtual void InitLoadVideo( decBaseFileReader &reader, deBaseVideoInfo &info ) = 0;
+	virtual void InitLoadVideo(decBaseFileReader &reader, deBaseVideoInfo &info) = 0;
 	
 	/**
 	 * \brief Save video.
 	 *
 	 * You can be sure that the file provided has been rewinded prior to this function call.
 	 */
-	virtual void SaveVideo( decBaseFileWriter &writer, const deVideo &video ) = 0;
+	virtual void SaveVideo(decBaseFileWriter &writer, const deVideo &video) = 0;
 	
 	/** \brief Create video decoder peer. */
-	virtual deBaseVideoDecoder *CreateDecoder( decBaseFileReader *reader ) = 0;
+	virtual deBaseVideoDecoder *CreateDecoder(decBaseFileReader *reader) = 0;
 	
 	/**
 	 * \brief Create video audio decoder peer.
 	 * 
 	 * If no video audio is present or module does not support audio null is returned..
 	 */
-	virtual deBaseVideoAudioDecoder *CreateAudioDecoder( decBaseFileReader *reader ) = 0;
+	virtual deBaseVideoAudioDecoder *CreateAudioDecoder(decBaseFileReader *reader) = 0;
 	/*@}*/
 };
 

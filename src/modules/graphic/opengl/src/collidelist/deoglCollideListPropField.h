@@ -64,7 +64,7 @@ public:
 	void Clear();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decDVector &referencePosition);
 	
 	
 	
@@ -72,19 +72,19 @@ public:
 	bool GetIsEmpty() const;
 	
 	/** Prop field. */
-	inline deoglRPropField *GetPropField() const{ return pPropField; }
+	inline deoglRPropField *GetPropField() const{return pPropField;}
 	
 	/** Set prop field. */
-	void SetPropField( deoglRPropField *propField );
+	void SetPropField(deoglRPropField *propField);
 	
 	/** Count of types. */
-	inline int GetTypeCount() const{ return pTypeCount; }
+	inline int GetTypeCount() const{return pTypeCount;}
 	
 	/** Type at the index. */
-	deoglCollideListPropFieldType *GetTypeAt( int index ) const;
+	deoglCollideListPropFieldType *GetTypeAt(int index) const;
 	
 	/** Add type. */
-	deoglCollideListPropFieldType *AddType( deoglRPropFieldType *type );
+	deoglCollideListPropFieldType *AddType(deoglRPropFieldType *type);
 	
 	/** Remove all types. */
 	void RemoveAllTypes();

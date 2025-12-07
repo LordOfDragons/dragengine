@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new peer. */
-	deoglVideoPlayer( deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer );
+	deoglVideoPlayer(deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer);
 	
 	/** Clean up peer. */
 	virtual ~deoglVideoPlayer();
@@ -79,20 +79,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenGL module. */
-	inline deGraphicOpenGl &GetOpenGL(){ return pOgl; }
-	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOpenGL(){return pOgl;}
+	inline const deGraphicOpenGl &GetOpenGL() const{return pOgl;}
 	
 	/** Video player. */
-	inline const deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deVideoPlayer &GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** Current frame. */
-	inline int GetCurrentFrame() const{ return pCurFrame; }
+	inline int GetCurrentFrame() const{return pCurFrame;}
 	
 	/** Render video player or \em NULL if not existing. */
-	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
+	inline deoglRVideoPlayer *GetRVideoPlayer() const{return pRVideoPlayer;}
 	
 	/** Set current frame. */
-	void SetCurrentFrame( int frame );
+	void SetCurrentFrame(int frame);
 	
 	/** Update next frame. */
 	void UpdateNextFrame();
@@ -105,12 +105,12 @@ public:
 	
 	
 	/** Renderables to notify about dirty events. */
-	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
-	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
+	inline decPointerSet &GetNotifyRenderables(){return pNotifyRenderables;}
+	inline const decPointerSet &GetNotifyRenderables() const{return pNotifyRenderables;}
 	
 	/** Canvas to notify about dirty events. */
-	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
-	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
+	inline decPointerSet &GetNotifyCanvas(){return pNotifyCanvas;}
+	inline const decPointerSet &GetNotifyCanvas() const{return pNotifyCanvas;}
 	/*@}*/
 	
 	
@@ -133,7 +133,7 @@ public:
 	 * Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged( bool seeking );
+	virtual void PlayPositionChanged(bool seeking);
 	
 	/** Play state changed. */
 	virtual void PlayStateChanged();

@@ -66,17 +66,17 @@ class cTextInterval : public igdeTextFieldListener {
 	ceWPAWait &pPanel;
 	
 public:
-	cTextInterval( ceWPAWait &panel ) : pPanel( panel ){ }
+	cTextInterval(ceWPAWait &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAWait * const action = pPanel.GetAction();
-		if( ! topic || ! action ){
+		if(! topic || ! action){
 			return;
 		}
 		
 		const float interval = textField->GetFloat();
-		if( fabsf( interval - action->GetInterval() ) < FLOAT_SAFE_EPSILON ){
+		if(fabsf(interval - action->GetInterval()) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -95,13 +95,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAWait::ceWPAWait( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAWait::ceWPAWait(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.EditFloat( *this, "Interval:", "Interval in seconds to test condition",
-		pEditInterval, new cTextInterval( *this ) );
+	helper.EditFloat(*this, "Interval:", "Interval in seconds to test condition",
+		pEditInterval, new cTextInterval(*this));
 }
 
 ceWPAWait::~ceWPAWait(){
@@ -115,8 +115,8 @@ ceWPAWait::~ceWPAWait(){
 ceCAWait *ceWPAWait::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatWait ){
-		return ( ceCAWait* )action;
+	if(action && action->GetType() == ceConversationAction::eatWait){
+		return (ceCAWait*)action;
 		
 	}else{
 		return NULL;
@@ -128,8 +128,8 @@ void ceWPAWait::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditInterval->SetFloat( action->GetInterval() );
+	if(action){
+		pEditInterval->SetFloat(action->GetInterval());
 		
 	}else{
 		pEditInterval->ClearText();

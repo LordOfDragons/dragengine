@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataDecalProperty::meUndoDataDecalProperty( meDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUndoDataDecalProperty::meUndoDataDecalProperty(meDecal *decal){
+	if(! decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPropertyExists = false;
@@ -51,7 +51,7 @@ meUndoDataDecalProperty::meUndoDataDecalProperty( meDecal *decal ){
 }
 
 meUndoDataDecalProperty::~meUndoDataDecalProperty(){
-	if( pDecal ){
+	if(pDecal){
 		pDecal->FreeReference();
 	}
 }
@@ -61,10 +61,10 @@ meUndoDataDecalProperty::~meUndoDataDecalProperty(){
 // Management
 ///////////////
 
-void meUndoDataDecalProperty::SetOldValue( const char *value ){
+void meUndoDataDecalProperty::SetOldValue(const char *value){
 	pOldValue = value;
 }
 
-void meUndoDataDecalProperty::SetPropertyExists( bool exists ){
+void meUndoDataDecalProperty::SetPropertyExists(bool exists){
 	pPropertyExists = exists;
 }

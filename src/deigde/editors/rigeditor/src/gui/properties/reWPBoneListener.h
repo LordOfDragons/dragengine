@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPBoneListener( reWPBone &panel );
+	reWPBoneListener(reWPBone &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPBoneListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief A bone changed. */
-	void BoneChanged( reRig *rig, reRigBone *bone );
+	void BoneChanged(reRig *rig, reRigBone *bone);
 	
 	/** \brief The active bone changed. */
-	void ActiveBoneChanged( reRig *rig );
+	void ActiveBoneChanged(reRig *rig);
 	/*@}*/
 };
 

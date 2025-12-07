@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSTPipelinesDecal::deoglSTPipelinesDecal( const deoglSkinTexture &texture ) :
-deoglSkinTexturePipelines( texture ){
+deoglSTPipelinesDecal::deoglSTPipelinesDecal(const deoglSkinTexture &texture) :
+deoglSkinTexturePipelines(texture){
 }
 
 deoglSTPipelinesDecal::~deoglSTPipelinesDecal(){
@@ -60,23 +60,23 @@ const char *deoglSTPipelinesDecal::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesDecal::pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ){
+void deoglSTPipelinesDecal::pPreparePipelines(const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetSharedSPB( true );
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmDecal );
+	baseShaderConfig.SetSharedSPB(true);
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmDecal);
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometry(baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
-	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
-	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth(baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter(baseShaderConfig, cinfo, batched);
 	// pPrepareMask( baseShaderConfig, cinfo, batched);
-	pPrepareAllShadow( baseShaderConfig, cinfo, batched);
+	pPrepareAllShadow(baseShaderConfig, cinfo, batched);
 	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
 	// pPrepareLuminance( baseShaderConfig, cinfo, batched);
 	// pPrepareGIMaterial( baseShaderConfig, cinfo, batched);
 }
 
-void deoglSTPipelinesDecal::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
+void deoglSTPipelinesDecal::pPipelineConfigGeometry(deoglPipelineConfiguration &config){
 	deoglSkinTexturePipelines::pPipelineConfigGeometry(config);
 	
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
@@ -95,10 +95,10 @@ void deoglSTPipelinesDecal::pPipelineConfigCounter(deoglPipelineConfiguration &c
 	pSetDepthOffset(config);
 }
 
-void deoglSTPipelinesDecal::pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
-	deoglSkinTexturePipelines::pSetTexturesGeometry( config, cinfo );
+void deoglSTPipelinesDecal::pSetTexturesGeometry(deoglSkinShaderConfig &config, const ChannelInfo &cinfo){
+	deoglSkinTexturePipelines::pSetTexturesGeometry(config, cinfo);
 	
-	config.SetTextureRenderColor( false );
+	config.SetTextureRenderColor(false);
 }
 
 void deoglSTPipelinesDecal::pSetDepthOffset(deoglPipelineConfiguration &config){

@@ -38,7 +38,7 @@ igdeNativeNullContainerForm::igdeNativeNullContainerForm(){
 igdeNativeNullContainerForm::~igdeNativeNullContainerForm(){
 }
 
-igdeNativeNullContainerForm *igdeNativeNullContainerForm::CreateNativeWidget( igdeContainerForm& ){
+igdeNativeNullContainerForm *igdeNativeNullContainerForm::CreateNativeWidget(igdeContainerForm&){
 	return new igdeNativeNullContainerForm();
 }
 

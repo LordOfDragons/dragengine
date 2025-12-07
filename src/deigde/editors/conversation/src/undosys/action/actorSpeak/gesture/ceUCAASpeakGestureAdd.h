@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakGestureAdd( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, int index );
+	ceUCAASpeakGestureAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakGestureAdd();

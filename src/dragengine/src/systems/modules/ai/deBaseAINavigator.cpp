@@ -60,39 +60,39 @@ void deBaseAINavigator::ParametersChanged(){
 
 
 
-bool deBaseAINavigator::NearestPoint( const decDVector &point, float radius,
-decDVector &nearestPoint, int &nearestType ){
+bool deBaseAINavigator::NearestPoint(const decDVector &point, float radius,
+decDVector &nearestPoint, int &nearestType){
 	return false;
 }
 
-bool deBaseAINavigator::LineCollide( const decDVector &origin, const decVector &direction,
-float &distance ){
+bool deBaseAINavigator::LineCollide(const decDVector &origin, const decVector &direction,
+float &distance){
 	return false;
 }
 
-void deBaseAINavigator::FindPath( deNavigatorPath &path, const decDVector &start,
-const decDVector &goal ){
+void deBaseAINavigator::FindPath(deNavigatorPath &path, const decDVector &start,
+const decDVector &goal){
 	path.RemoveAll();
 }
 
-bool deBaseAINavigator::PathCollideRay( const deNavigatorPath &path, deCollider &collider,
-int &hitAfterPoint, float &hitDistance ){
+bool deBaseAINavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
+int &hitAfterPoint, float &hitDistance){
 	return false;
 }
 
-bool deBaseAINavigator::PathCollideRay( const deNavigatorPath &path, deCollider &collider,
+bool deBaseAINavigator::PathCollideRay(const deNavigatorPath &path, deCollider &collider,
 const decDVector &startPosition, int nextPoint, float maxDistance, int &hitAfterPoint,
-float &hitDistance ){
+float &hitDistance){
 	return false;
 }
 
-bool deBaseAINavigator::PathCollideShape( const deNavigatorPath &path, deCollider &collider,
-deCollider &agent, int &hitAfterPoint, float &hitDistance ){
+bool deBaseAINavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
+deCollider &agent, int &hitAfterPoint, float &hitDistance){
 	return false;
 }
 
-bool deBaseAINavigator::PathCollideShape( const deNavigatorPath &path, deCollider &collider,
+bool deBaseAINavigator::PathCollideShape(const deNavigatorPath &path, deCollider &collider,
 deCollider &agent, const decDVector &startPosition, int nextPoint, float maxDistance,
-int &hitAfterPoint, float &hitDistance ){
+int &hitAfterPoint, float &hitDistance){
 	return false;
 }

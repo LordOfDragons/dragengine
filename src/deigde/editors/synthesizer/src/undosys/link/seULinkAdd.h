@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkAdd( seSynthesizer *synthesizer, seLink *link );
+	seULinkAdd(seSynthesizer *synthesizer, seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */

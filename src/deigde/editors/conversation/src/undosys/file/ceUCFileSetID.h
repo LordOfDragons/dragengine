@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCFileSetID( const ceConversation &conversation, ceConversationFile *file, const char *newID );
+	ceUCFileSetID(const ceConversation &conversation, ceConversationFile *file, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCFileSetID();
@@ -78,10 +78,10 @@ public:
 	
 	
 private:
-	void pSetID( const char *id );
+	void pSetID(const char *id);
 	
-	void pAddSnippets( ceConversationTopic *topic, const char *matchGroupID,
-		const ceConversationActionList &actions );
+	void pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
+		const ceConversationActionList &actions);
 };
 
 #endif

@@ -44,10 +44,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeTaskSyncGameDefinition::saeTaskSyncGameDefinition( saeWindowMain &windowMain ) :
-pWindowMain( windowMain )
+saeTaskSyncGameDefinition::saeTaskSyncGameDefinition(saeWindowMain &windowMain) :
+pWindowMain(windowMain)
 {
-	SetMessage( "Speech Animation Editor: Synchronize Game Definition" );
+	SetMessage("Speech Animation Editor: Synchronize Game Definition");
 }
 
 saeTaskSyncGameDefinition::~saeTaskSyncGameDefinition(){
@@ -59,7 +59,7 @@ saeTaskSyncGameDefinition::~saeTaskSyncGameDefinition(){
 ///////////////
 
 bool saeTaskSyncGameDefinition::Step(){
-	if( ! pWindowMain.GetSAnimation() ){
+	if(! pWindowMain.GetSAnimation()){
 		return false;
 	}
 	

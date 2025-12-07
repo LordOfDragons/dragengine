@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseElseAddAction::ceWPTMAIfElseElseAddAction( ceWindowMain &windowMain,
+ceWPTMAIfElseElseAddAction::ceWPTMAIfElseElseAddAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceConversationAction::eActionTypes actionType, int index ) :
-ceWPTMACreateAction( windowMain, conversation, actionType ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIndex( index )
+ceCAIfElse &ifElse, ceConversationAction::eActionTypes actionType, int index) :
+ceWPTMACreateAction(windowMain, conversation, actionType),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIndex(index)
 {
-	if( index < 0 || index > ifElse.GetElseActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > ifElse.GetElseActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -57,6 +57,6 @@ pIndex( index )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAIfElseElseAddAction::CreateUndo( ceConversationAction *action ){
-	return new ceUCAIfElseAdd( pTopic, pIfElse, NULL, action, pIndex );
+igdeUndo *ceWPTMAIfElseElseAddAction::CreateUndo(ceConversationAction *action){
+	return new ceUCAIfElseAdd(pTopic, pIfElse, NULL, action, pIndex);
 }

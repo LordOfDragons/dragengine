@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file logger. */
-	deLoggerFile( decBaseFileWriter *writer );
+	deLoggerFile(decBaseFileWriter *writer);
 	
 protected:
 	/**
@@ -77,25 +77,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File writer. */
-	inline decBaseFileWriter *GetWriter() const{ return pWriter; }
+	inline decBaseFileWriter *GetWriter() const{return pWriter;}
 	
 	
 	
 	/** \brief Log information message. */
-	virtual void LogInfo( const char *source, const char *message );
+	virtual void LogInfo(const char *source, const char *message);
 	
 	/** \brief Log warning message. */
-	virtual void LogWarn( const char *source, const char *message );
+	virtual void LogWarn(const char *source, const char *message);
 	
 	/** \brief Log error message. */
-	virtual void LogError( const char *source, const char *message );
+	virtual void LogError(const char *source, const char *message);
 	/*@}*/
 	
 	
 	
 protected:
-	inline deMutex &GetMutex(){ return pMutex; }
-	void LogPrefix( const char *source, const char *message, const char *prefix );
+	inline deMutex &GetMutex(){return pMutex;}
+	void LogPrefix(const char *source, const char *message, const char *prefix);
 };
 
 #endif

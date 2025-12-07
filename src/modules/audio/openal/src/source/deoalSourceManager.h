@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create openal sources manager. */
-	deoalSourceManager( deoalAudioThread &audioThread );
+	deoalSourceManager(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up openal sources manager. */
 	~deoalSourceManager();
@@ -74,7 +74,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	
 	
@@ -82,13 +82,13 @@ public:
 	int GetSourceCount() const;
 	
 	/** \brief Number of bound sources. */
-	inline int GetCountBound() const{ return pCountBound; }
+	inline int GetCountBound() const{return pCountBound;}
 	
 	/** \brief Number of unbound sources. */
-	inline int GetCountUnbound() const{ return pCountUnbound; }
+	inline int GetCountUnbound() const{return pCountUnbound;}
 	
 	/** \brief Managed source by index for debug purpose. */
-	deoalSource *GetSourceAt( int index ) const;
+	deoalSource *GetSourceAt(int index) const;
 	
 	/**
 	 * \brief Bind source.
@@ -97,15 +97,15 @@ public:
 	 *          due to limitations of the underlaying hardware the source with the
 	 *          lowest importance is rebound.
 	 */
-	deoalSource *BindSource( void *owner );
+	deoalSource *BindSource(void *owner);
 	
 	/** \brief Unbind source. */
-	void UnbindSource( deoalSource *source );
+	void UnbindSource(deoalSource *source);
 	
 	
 	
 	/** \brief Dnformation for developer mode display. */
-	void DebugOutput( decUnicodeString &output );
+	void DebugOutput(decUnicodeString &output);
 	
 	/** \brief Print a quick status line to the console. */
 	void PrintStatusLine();

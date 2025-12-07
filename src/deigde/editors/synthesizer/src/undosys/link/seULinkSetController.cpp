@@ -41,42 +41,42 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetController::seULinkSetController( seLink *link, seController *newController ) :
-pLink( NULL ),
-pOldController( NULL ),
-pNewController( NULL )
+seULinkSetController::seULinkSetController(seLink *link, seController *newController) :
+pLink(NULL),
+pOldController(NULL),
+pNewController(NULL)
 {
-	if( ! link ){
-		DETHROW( deeInvalidParam );
+	if(! link){
+		DETHROW(deeInvalidParam);
 	}
-	if( link->GetController() == newController ){
-		DETHROW( deeInvalidParam );
+	if(link->GetController() == newController){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Link Controller" );
+	SetShortInfo("Set Link Controller");
 	
 	pLink = link;
 	pLink->AddReference();
 	
 	pOldController = link->GetController();
-	if( pOldController ){
+	if(pOldController){
 		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
-	if( pNewController ){
+	if(pNewController){
 		pNewController->AddReference();
 	}
 }
 
 seULinkSetController::~seULinkSetController(){
-	if( pNewController ){
+	if(pNewController){
 		pNewController->FreeReference();
 	}
-	if( pOldController ){
+	if(pOldController){
 		pOldController->FreeReference();
 	}
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
 }
@@ -87,9 +87,9 @@ seULinkSetController::~seULinkSetController(){
 ///////////////
 
 void seULinkSetController::Undo(){
-	pLink->SetController( pOldController );
+	pLink->SetController(pOldController);
 }
 
 void seULinkSetController::Redo(){
-	pLink->SetController( pNewController );
+	pLink->SetController(pNewController);
 }

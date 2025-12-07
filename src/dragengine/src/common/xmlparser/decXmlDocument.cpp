@@ -42,7 +42,7 @@
 ////////////////////////////
 
 decXmlDocument::decXmlDocument() :
-pStandalone( false ){
+pStandalone(false){
 }
 
 decXmlDocument::~decXmlDocument(){
@@ -53,23 +53,23 @@ decXmlDocument::~decXmlDocument(){
 // Management
 ///////////////
 
-void decXmlDocument::SetEncoding( const char *encoding ){
+void decXmlDocument::SetEncoding(const char *encoding){
 	pEncoding = encoding;
 }
 
-void decXmlDocument::SetDocType( const char *docType ){
+void decXmlDocument::SetDocType(const char *docType){
 	pDocType = docType;
 }
 
-void decXmlDocument::SetSystemLiteral( const char *sysLit ){
+void decXmlDocument::SetSystemLiteral(const char *sysLit){
 	pSysLit = sysLit;
 }
 
-void decXmlDocument::SetPublicLiteral( const char *pubLit ){
+void decXmlDocument::SetPublicLiteral(const char *pubLit){
 	pPubLit = pubLit;
 }
 
-void decXmlDocument::SetStandalone( bool standalone ){
+void decXmlDocument::SetStandalone(bool standalone){
 	pStandalone = standalone;
 }
 
@@ -77,9 +77,9 @@ decXmlElementTag *decXmlDocument::GetRoot() const{
 	const int count = GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		decXmlElement * const element = GetElementAt( i );
-		if( element->CanCastToElementTag() ){
+	for(i=0; i<count; i++){
+		decXmlElement * const element = GetElementAt(i);
+		if(element->CanCastToElementTag()){
 			return element->CastToElementTag();
 		}
 	}
@@ -89,19 +89,19 @@ decXmlElementTag *decXmlDocument::GetRoot() const{
 
 
 
-void decXmlDocument::Visit( decXmlVisitor &visitor ){
-	visitor.VisitDocument( *this );
+void decXmlDocument::Visit(decXmlVisitor &visitor){
+	visitor.VisitDocument(*this);
 }
 
 
 
 void decXmlDocument::CleanCharData(){
 	decXmlVisitorCleanCharData visitor;
-	Visit( visitor );
+	Visit(visitor);
 }
 void decXmlDocument::StripComments(){
 	decXmlVisitorStripComments visitor;
-	Visit( visitor );
+	Visit(visitor);
 }
 
 

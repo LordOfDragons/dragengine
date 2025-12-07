@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native textField.
  */
 class igdeNativeFoxTextField : public FXTextField{
-	FXDECLARE( igdeNativeFoxTextField )
+	FXDECLARE(igdeNativeFoxTextField)
 	
 protected:
 	igdeNativeFoxTextField();
@@ -59,14 +59,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxTextField( igdeTextField &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxTextField(igdeTextField &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxTextField();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxTextField* CreateNativeWidget( igdeTextField &owner );
+	static igdeNativeFoxTextField* CreateNativeWidget(igdeTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -86,23 +86,23 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEditable();
 	virtual int GetCursorPosition() const;
-	virtual void SetCursorPosition( int position );
+	virtual void SetCursorPosition(int position);
 	
-	static int TextFieldFlags( const igdeTextField &owner );
-	static igdeFont *TextFieldFont( const igdeTextField &owner, const igdeGuiTheme &guitheme );
-	static int TextFieldPadLeft( const igdeGuiTheme &guitheme );
-	static int TextFieldPadRight( const igdeGuiTheme &guitheme );
-	static int TextFieldPadTop( const igdeGuiTheme &guitheme );
-	static int TextFieldPadBottom( const igdeGuiTheme &guitheme );
+	static int TextFieldFlags(const igdeTextField &owner);
+	static igdeFont *TextFieldFont(const igdeTextField &owner, const igdeGuiTheme &guitheme);
+	static int TextFieldPadLeft(const igdeGuiTheme &guitheme);
+	static int TextFieldPadRight(const igdeGuiTheme &guitheme);
+	static int TextFieldPadTop(const igdeGuiTheme &guitheme);
+	static int TextFieldPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onChanged( FXObject*, FXSelector, void* );
-	long onKeyPress( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onChanged(FXObject*, FXSelector, void*);
+	long onKeyPress(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

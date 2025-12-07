@@ -65,8 +65,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeLoadSaveSystem::aeLoadSaveSystem( aeWindowMain *wndMain ){
-	if( ! wndMain ) DETHROW( deeInvalidParam );
+aeLoadSaveSystem::aeLoadSaveSystem(aeWindowMain *wndMain){
+	if(! wndMain) DETHROW(deeInvalidParam);
 	
 	pWndMain = wndMain;
 	pLSAnimator = NULL;
@@ -74,12 +74,12 @@ aeLoadSaveSystem::aeLoadSaveSystem( aeWindowMain *wndMain ){
 	pLSAttConfig = NULL;
 	
 	try{
-		pLSAnimator = new aeLSAnimator( this );
-		pLSAttConfig = new aeLoadSaveAttachmentConfig( wndMain->GetEnvironment().GetLogger(), LOGSOURCE );
+		pLSAnimator = new aeLSAnimator(this);
+		pLSAttConfig = new aeLoadSaveAttachmentConfig(wndMain->GetEnvironment().GetLogger(), LOGSOURCE);
 		
 		pBuildFilePattern();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -94,26 +94,26 @@ aeLoadSaveSystem::~aeLoadSaveSystem(){
 // Management
 ///////////////
 
-aeAnimator *aeLoadSaveSystem::LoadAnimator( const char* filename ){
-	const decBaseFileReader::Ref fileReader( decBaseFileReader::Ref::New(
+aeAnimator *aeLoadSaveSystem::LoadAnimator(const char* filename){
+	const decBaseFileReader::Ref fileReader(decBaseFileReader::Ref::New(
 		pWndMain->GetEnvironment().GetFileSystemGame()
-			->OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) );
+			->OpenFileForReading(decPath::CreatePathUnix(filename))));
 	
-	const aeAnimator::Ref animator( aeAnimator::Ref::NewWith(*pWndMain) );
+	const aeAnimator::Ref animator(aeAnimator::Ref::NewWith(*pWndMain));
 	
-	animator->SetFilePath( filename );  // required for relative loading
+	animator->SetFilePath(filename);  // required for relative loading
 	
-	pLSAnimator->LoadAnimator( animator, fileReader );
-	animator->SetChanged( false );
-	animator->SetSaved( true );
+	pLSAnimator->LoadAnimator(animator, fileReader);
+	animator->SetChanged(false);
+	animator->SetSaved(true);
 	
 	animator->AddReference(); // required to hand over reference to caller
 	return animator;
 }
 
-void aeLoadSaveSystem::SaveAnimator( aeAnimator *animator, const char *filename ){
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+void aeLoadSaveSystem::SaveAnimator(aeAnimator *animator, const char *filename){
+	if(! animator){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLSAnimator->SaveAnimator(animator, decBaseFileWriter::Ref::New(
@@ -123,13 +123,13 @@ void aeLoadSaveSystem::SaveAnimator( aeAnimator *animator, const char *filename 
 
 
 
-void aeLoadSaveSystem::LoadAttConfig( const char *filename, aeAnimator &animator ){
+void aeLoadSaveSystem::LoadAttConfig(const char *filename, aeAnimator &animator){
 	pLSAttConfig->LoadAttachmentConfig(animator, decBaseFileReader::Ref::New(
 		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix(filename))));
 }
 
-void aeLoadSaveSystem::SaveAttConfig( const char *filename, const aeAnimator &animator ){
+void aeLoadSaveSystem::SaveAttConfig(const char *filename, const aeAnimator &animator){
 	pLSAttConfig->SaveAttachmentConfig(animator, decBaseFileWriter::Ref::New(
 		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));
@@ -141,10 +141,10 @@ void aeLoadSaveSystem::SaveAttConfig( const char *filename, const aeAnimator &an
 //////////////////////	
 
 void aeLoadSaveSystem::pCleanUp(){
-	if( pLSAttConfig ){
+	if(pLSAttConfig){
 		delete pLSAttConfig;
 	}
-	if( pLSAnimator ){
+	if(pLSAnimator){
 		delete pLSAnimator;
 	}
 }
@@ -154,12 +154,12 @@ void aeLoadSaveSystem::pBuildFilePattern(){
 	decString pattern;
 	
 	try{
-		pattern.Format( "*%s", pLSAttConfig->GetPattern().GetString() );
-		filePattern = new igdeFilePattern( pLSAttConfig->GetName(), pattern, pLSAttConfig->GetPattern() );
-		pFPAttConfig.AddFilePattern( filePattern );
+		pattern.Format("*%s", pLSAttConfig->GetPattern().GetString());
+		filePattern = new igdeFilePattern(pLSAttConfig->GetName(), pattern, pLSAttConfig->GetPattern());
+		pFPAttConfig.AddFilePattern(filePattern);
 		
-	}catch( const deException & ){
-		if( filePattern ){
+	}catch(const deException &){
+		if(filePattern){
 			delete filePattern;
 		}
 		throw;

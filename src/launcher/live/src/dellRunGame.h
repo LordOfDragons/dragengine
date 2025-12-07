@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create run game. */
-	dellRunGame( dellLauncher &launcher );
+	dellRunGame(dellLauncher &launcher);
 	
 	/** Clean up run game. */
 	~dellRunGame();
@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline dellLauncher &GetLauncher() const{ return pLauncher; }
+	inline dellLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** Parse arguments. */
 	bool ParseArguments();
@@ -91,7 +91,7 @@ public:
 	void ShowProfileProblems();
 	
 	/** Show module problem if there are any. */
-	void ShowModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType );
+	void ShowModuleProblem(const char *moduleName, deModuleSystem::eModuleTypes moduleType);
 	
 	/** Run game. */
 	void Run();

@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create resource URL. */
-	deModioResourceUrl( const decString &url );
+	deModioResourceUrl(const decString &url);
 	/*@}*/
 	
 	
@@ -51,17 +51,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Component at index or throws invalid URL exception. */
-	const decString &getComponentAt( int index, const char *paramName = "url" ) const;
+	const decString &getComponentAt(int index, const char *paramName = "url") const;
 	
 	/** Format URL. */
-	static decString FormatUrl( const char *part1, const char *part2,
-		const char *part3, const char *part4 );
+	static decString FormatUrl(const char *part1, const char *part2,
+		const char *part3, const char *part4);
 	
-	static decString FormatUrl( const char *part1, std::int64_t id,
-		const char *part2, const char *part3 );
+	static decString FormatUrl(const char *part1, std::int64_t id,
+		const char *part2, const char *part3);
 	
-	static decString FormatUrl( const char *part1, std::int64_t id,
-		const char *part2, int index, const char *part3 );
+	static decString FormatUrl(const char *part1, std::int64_t id,
+		const char *part2, int index, const char *part3);
 	/*@}*/
 };
 

@@ -63,7 +63,7 @@ public:
 	 * \param[in] redirectPath Path to redirect to in \em vfs.
 	 * \param[in] container Container to redirect to.
 	 */
-	deVFSRedirect( const decPath &rootPath, const decPath &redirectPath, deVFSContainer *container );
+	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath, deVFSContainer *container);
 	
 	/**
 	 * \brief Create container redirecting to \em redirectPath in a virtual file system.
@@ -79,8 +79,8 @@ public:
 	 * \param[in] vfs Virtual file system to redirect to.
 	 * \param[in] holfVFSReference Container holds a reference to \em vfs.
 	 */
-	deVFSRedirect( const decPath &rootPath, const decPath &redirectPath,
-		deVirtualFileSystem *vfs, bool holdVFSReference );
+	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
+		deVirtualFileSystem *vfs, bool holdVFSReference);
 	
 protected:
 	/**
@@ -98,7 +98,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Redirect path in the same virtual file system. */
-	inline const decPath &GetRedirectPath(){ return pRedirectPath; }
+	inline const decPath &GetRedirectPath(){return pRedirectPath;}
 	
 	
 	
@@ -107,7 +107,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path );
+	virtual bool ExistsFile(const decPath &path);
 	
 	/**
 	 * \brief File can be read.
@@ -116,7 +116,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path );
+	virtual bool CanReadFile(const decPath &path);
 	
 	/**
 	 * \brief File can be written.
@@ -128,14 +128,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path );
+	virtual bool CanWriteFile(const decPath &path);
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path );
+	virtual bool CanDeleteFile(const decPath &path);
 	
 	/**
 	 * \brief Open file for reading.
@@ -144,7 +144,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path );
+	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
 	
 	/**
 	 * \brief Open file for writing.
@@ -155,43 +155,43 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path );
+	virtual void DeleteFile(const decPath &path);
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path );
+	virtual void TouchFile(const decPath &path);
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher);
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual eFileTypes GetFileType( const decPath &path );
+	virtual eFileTypes GetFileType(const decPath &path);
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path );
+	virtual uint64_t GetFileSize(const decPath &path);
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path);
 	/*@}*/
 };
 

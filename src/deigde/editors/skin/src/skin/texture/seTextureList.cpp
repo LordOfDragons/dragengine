@@ -55,19 +55,19 @@ int seTextureList::GetCount() const{
 	return pTextures.GetCount();
 }
 
-seTexture *seTextureList::GetAt( int index ) const{
-	return ( seTexture* )pTextures.GetAt( index );
+seTexture *seTextureList::GetAt(int index) const{
+	return (seTexture*)pTextures.GetAt(index);
 }
 
-seTexture *seTextureList::GetNamed( const char *name ) const{
+seTexture *seTextureList::GetNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	seTexture *texture;
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		texture = ( seTexture* )pTextures.GetAt( p );
+	for(p=0; p<count; p++){
+		texture = (seTexture*)pTextures.GetAt(p);
 		
-		if( texture->GetName().Equals( name ) ){
+		if(texture->GetName().Equals(name)){
 			return texture;
 		}
 	}
@@ -75,16 +75,16 @@ seTexture *seTextureList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int seTextureList::IndexOf( seTexture *texture ) const{
-	return pTextures.IndexOf( texture );
+int seTextureList::IndexOf(seTexture *texture) const{
+	return pTextures.IndexOf(texture);
 }
 
-int seTextureList::IndexOfNamed( const char *name ) const{
+int seTextureList::IndexOfNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( seTexture* )pTextures.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((seTexture*)pTextures.GetAt(p))->GetName().Equals(name)){
 			return p;
 		}
 	}
@@ -92,16 +92,16 @@ int seTextureList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool seTextureList::Has( seTexture *texture ) const{
-	return pTextures.Has( texture );
+bool seTextureList::Has(seTexture *texture) const{
+	return pTextures.Has(texture);
 }
 
-bool seTextureList::HasNamed( const char *name ) const{
+bool seTextureList::HasNamed(const char *name) const{
 	const int count = pTextures.GetCount();
 	int p;
 	
-	for( p=0; p<count; p++ ){
-		if( ( ( seTexture* )pTextures.GetAt( p ) )->GetName().Equals( name ) ){
+	for(p=0; p<count; p++){
+		if(((seTexture*)pTextures.GetAt(p))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,24 +109,24 @@ bool seTextureList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void seTextureList::Add( seTexture *texture ){
-	if( ! texture || HasNamed( texture->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void seTextureList::Add(seTexture *texture){
+	if(! texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pTextures.Add( texture );
+	pTextures.Add(texture);
 }
 
-void seTextureList::InsertAt( seTexture *texture, int index ){
-	if( ! texture || HasNamed( texture->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void seTextureList::InsertAt(seTexture *texture, int index){
+	if(! texture || HasNamed(texture->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pTextures.Insert( texture, index );
+	pTextures.Insert(texture, index);
 }
 
-void seTextureList::MoveTo( seTexture *texture, int index ){
-	pTextures.Move( texture, index );
+void seTextureList::MoveTo(seTexture *texture, int index){
+	pTextures.Move(texture, index);
 }
 
-void seTextureList::Remove( seTexture *texture ){
-	pTextures.Remove( texture );
+void seTextureList::Remove(seTexture *texture){
+	pTextures.Remove(texture);
 }
 
 void seTextureList::RemoveAll(){
@@ -135,7 +135,7 @@ void seTextureList::RemoveAll(){
 
 
 
-seTextureList &seTextureList::operator=( const seTextureList &list ){
+seTextureList &seTextureList::operator=(const seTextureList &list){
 	pTextures = list.pTextures;
 	return *this;
 }

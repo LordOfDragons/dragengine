@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker peer. */
-	deoalFakeSpeaker( deoalAudioThread &audioThread );
+	deoalFakeSpeaker(deoalAudioThread &audioThread);
 	
 protected:
 	/** Clean up speaker peer. */
@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	/** Update effects. */
 	void UpdateEffects();
 	
 	/** Environment. */
-	inline deoalEnvironment *GetEnvironment() const{ return pEnvironment; }
+	inline deoalEnvironment *GetEnvironment() const{return pEnvironment;}
 	/*@}*/
 };
 

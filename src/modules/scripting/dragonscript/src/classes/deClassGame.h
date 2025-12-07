@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassGame( deScriptingDragonScript &ds );
+	deClassGame(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassGame();
@@ -56,10 +56,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/*@}*/
 	
 	
@@ -75,23 +75,23 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfInputEvent );
-	DEF_NATFUNC( nfInitGame );
-	DEF_NATFUNC( nfCleanUp );
-	DEF_NATFUNC( nfOnFrameUpdate );
-	DEF_NATFUNC( nfOnResizeRenderWindow );
-	DEF_NATFUNC( nfOnAppActivate );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfInputEvent);
+	DEF_NATFUNC(nfInitGame);
+	DEF_NATFUNC(nfCleanUp);
+	DEF_NATFUNC(nfOnFrameUpdate);
+	DEF_NATFUNC(nfOnResizeRenderWindow);
+	DEF_NATFUNC(nfOnAppActivate);
 	
-	DEF_NATFUNC( nfGetArgumentCount );
-	DEF_NATFUNC( nfGetArgumentAt );
-	DEF_NATFUNC( nfGetRestartInfo );
+	DEF_NATFUNC(nfGetArgumentCount);
+	DEF_NATFUNC(nfGetArgumentAt);
+	DEF_NATFUNC(nfGetRestartInfo);
 #undef DEF_NATFUNC
 };
 

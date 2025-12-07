@@ -42,7 +42,7 @@ feClipboard::feClipboard(){
 }
 
 feClipboard::~feClipboard(){
-	if( pClip ) delete pClip;
+	if(pClip) delete pClip;
 }
 
 
@@ -54,7 +54,7 @@ bool feClipboard::HasClip() const{
 	return pClip != NULL;
 }
 
-void feClipboard::SetClip( feBaseClip *clip ){
-	if( pClip ) delete pClip;
+void feClipboard::SetClip(feBaseClip *clip){
+	if(pClip) delete pClip;
 	pClip = clip;
 }

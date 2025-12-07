@@ -70,12 +70,12 @@ class cTextName : public igdeTextFieldListener {
 	ceWPASetVariable &pPanel;
 	
 public:
-	cTextName( ceWPASetVariable &panel ) : pPanel( panel ){ }
+	cTextName(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetName() ){
+		if(! topic || ! action || textField->GetText() == action->GetName()){
 			return;
 		}
 		
@@ -88,18 +88,18 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPASetVariable &pPanel;
 	
 public:
-	cComboOperator( ceWPASetVariable &panel ) : pPanel( panel ){ }
+	cComboOperator(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
-		if( ! topic || ! action || ! comboBox->GetSelectedItem() ){
+		if(! topic || ! action || ! comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const ceCASetVariable::eOperators newOperator =
-			( ceCASetVariable::eOperators )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( newOperator == action->GetOperator() ){
+			(ceCASetVariable::eOperators)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(newOperator == action->GetOperator()){
 			return;
 		}
 		
@@ -112,13 +112,13 @@ class cTextValue : public igdeTextFieldListener {
 	ceWPASetVariable &pPanel;
 	
 public:
-	cTextValue( ceWPASetVariable &panel ) : pPanel( panel ){ }
+	cTextValue(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
 		const int value = textField->GetInteger();
-		if( ! topic || ! action || value == action->GetValue() ){
+		if(! topic || ! action || value == action->GetValue()){
 			return;
 		}
 		
@@ -131,12 +131,12 @@ class cTextValueVariable : public igdeTextFieldListener {
 	ceWPASetVariable &pPanel;
 	
 public:
-	cTextValueVariable( ceWPASetVariable &panel ) : pPanel( panel ){ }
+	cTextValueVariable(ceWPASetVariable &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
+	virtual void OnTextChanged(igdeTextField *textField){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCASetVariable * const action = pPanel.GetAction();
-		if( ! topic || ! action || textField->GetText() == action->GetValueVariable() ){
+		if(! topic || ! action || textField->GetText() == action->GetValueVariable()){
 			return;
 		}
 		
@@ -155,25 +155,25 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPASetVariable::ceWPASetVariable( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPASetVariable::ceWPASetVariable(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.EditString( *this, "Name:", "Name of the variable to set or empty to have no effect",
-		pEditName, new cTextName( *this ) );
+	helper.EditString(*this, "Name:", "Name of the variable to set or empty to have no effect",
+		pEditName, new cTextName(*this));
 	
-	helper.ComboBox( *this, "Operator:", "How to apply the value to the variable",
-		pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "Set", NULL, ( void* )( intptr_t )ceCASetVariable::eopSet );
-	pCBOperator->AddItem( "Increment", NULL, ( void* )( intptr_t )ceCASetVariable::eopIncrement );
-	pCBOperator->AddItem( "Decrement", NULL, ( void* )( intptr_t )ceCASetVariable::eopDecrement );
-	pCBOperator->AddItem( "Random", NULL, ( void* )( intptr_t )ceCASetVariable::eopRandom );
+	helper.ComboBox(*this, "Operator:", "How to apply the value to the variable",
+		pCBOperator, new cComboOperator(*this));
+	pCBOperator->AddItem("Set", NULL, (void*)(intptr_t)ceCASetVariable::eopSet);
+	pCBOperator->AddItem("Increment", NULL, (void*)(intptr_t)ceCASetVariable::eopIncrement);
+	pCBOperator->AddItem("Decrement", NULL, (void*)(intptr_t)ceCASetVariable::eopDecrement);
+	pCBOperator->AddItem("Random", NULL, (void*)(intptr_t)ceCASetVariable::eopRandom);
 	
-	helper.EditInteger( *this, "Value:", "Value to use for operation (integer value)",
-		pEditValue, new cTextValue( *this ) );
-	helper.EditString( *this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
-		pEditValueVariable, new cTextValueVariable( *this ) );
+	helper.EditInteger(*this, "Value:", "Value to use for operation (integer value)",
+		pEditValue, new cTextValue(*this));
+	helper.EditString(*this, "Variable:", "Variable value to use for operation or empty string to use 'Value'",
+		pEditValueVariable, new cTextValueVariable(*this));
 }
 
 ceWPASetVariable::~ceWPASetVariable(){
@@ -187,8 +187,8 @@ ceWPASetVariable::~ceWPASetVariable(){
 ceCASetVariable *ceWPASetVariable::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatSetVariable ){
-		return ( ceCASetVariable* )action;
+	if(action && action->GetType() == ceConversationAction::eatSetVariable){
+		return (ceCASetVariable*)action;
 		
 	}else{
 		return NULL;
@@ -200,15 +200,15 @@ void ceWPASetVariable::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pEditName->SetText( action->GetName() );
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )action->GetOperator() );
-		pEditValue->SetInteger( action->GetValue() );
-		pEditValueVariable->SetText( action->GetValueVariable() );
+	if(action){
+		pEditName->SetText(action->GetName());
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)action->GetOperator());
+		pEditValue->SetInteger(action->GetValue());
+		pEditValueVariable->SetText(action->GetValueVariable());
 		
 	}else{
 		pEditName->ClearText();
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )ceCASetVariable::eopSet );
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)ceCASetVariable::eopSet);
 		pEditValue->ClearText();
 		pEditValueVariable->ClearText();
 	}

@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCComponentToggleAttachTarget::gdeUOCComponentToggleAttachTarget(
-gdeObjectClass *objectClass, gdeOCComponent *component ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeObjectClass *objectClass, gdeOCComponent *component) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component toggle attach target" );
+	SetShortInfo("Component toggle attach target");
 	
 	pComponent = component;
 	component->AddReference();
@@ -59,10 +59,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentToggleAttachTarget::~gdeUOCComponentToggleAttachTarget(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCComponentToggleAttachTarget::~gdeUOCComponentToggleAttachTarget(){
 ///////////////
 
 void gdeUOCComponentToggleAttachTarget::Undo(){
-	pComponent->SetAttachTarget( ! pComponent->GetAttachTarget() );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetAttachTarget(! pComponent->GetAttachTarget());
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentToggleAttachTarget::Redo(){

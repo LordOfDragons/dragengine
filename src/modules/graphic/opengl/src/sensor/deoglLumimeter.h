@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create lumimeter peer. */
-	deoglLumimeter( deGraphicOpenGl &ogl, const deLumimeter &lumimeter );
+	deoglLumimeter(deGraphicOpenGl &ogl, const deLumimeter &lumimeter);
 	
 	/** Clean up lumimeter peer. */
 	virtual ~deoglLumimeter();
@@ -66,12 +66,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Lumimeter. */
-	inline const deLumimeter &GetLumimeter() const{ return pLumimeter; }
+	inline const deLumimeter &GetLumimeter() const{return pLumimeter;}
 	
 	
 	
 	/** Render lumimter. */
-	inline deoglRLumimeter *GetRLumimeter() const{ return pRLumimeter; }
+	inline deoglRLumimeter *GetRLumimeter() const{return pRLumimeter;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTRoomEstimate( deoalRTParallelEnvProbe &owner );
+	deoalRTPTRoomEstimate(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
@@ -127,65 +127,65 @@ public:
 	
 	
 	/** \brief Set world. */
-	void SetWorld( deoalAWorld *world );
+	void SetWorld(deoalAWorld *world);
 	
 	/** \brief Set environment probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set index of first ray from configuration to process. */
-	void SetFirstRay( int firstRay );
+	void SetFirstRay(int firstRay);
 	
 	/** \brief Set number of rays from configuration to process. */
 	#ifndef RTPTRE_ONE_TASK_PER_RAY
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	#endif
 	
 	/** \brief Position to trace from. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Maximum range to trace rays for. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/** \brief Initial length of rays for testing before enlarging. */
-	void SetInitialRayLength( float length );
+	void SetInitialRayLength(float length);
 	
 	/** \brief Layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	/** \brief Room volume sum. */
-	inline float GetRoomVolume() const{ return pRoomVolume; }
+	inline float GetRoomVolume() const{return pRoomVolume;}
 	
 	/** \brief Room surface sum. */
-	inline float GetRoomSurface() const{ return pRoomSurface; }
+	inline float GetRoomSurface() const{return pRoomSurface;}
 	
 	/** \brief Sabine sum for medium frequencies. */
-	inline float GetSabineMedium() const{ return pSabineMedium; }
+	inline float GetSabineMedium() const{return pSabineMedium;}
 	
 	/** \brief Sabine sum for low frequencies. */
-	inline float GetSabineLow() const{ return pSabineLow; }
+	inline float GetSabineLow() const{return pSabineLow;}
 	
 	/** \brief Sabine sum for high frequencies. */
-	inline float GetSabineHigh() const{ return pSabineHigh; }
+	inline float GetSabineHigh() const{return pSabineHigh;}
 	
 	/** \brief Absorption sum for low frequencies. */
-	inline float GetAbsorptionLow() const{ return pAbsorptionLow; }
+	inline float GetAbsorptionLow() const{return pAbsorptionLow;}
 	
 	/** \brief Absorption sum for medium frequencies. */
-	inline float GetAbsorptionMedium() const{ return pAbsorptionMedium; }
+	inline float GetAbsorptionMedium() const{return pAbsorptionMedium;}
 	
 	/** \brief Absorption sum for high frequencies. */
-	inline float GetAbsorptionHigh() const{ return pAbsorptionHigh; }
+	inline float GetAbsorptionHigh() const{return pAbsorptionHigh;}
 	
 	/** \brief Number of rays hitting room geometry. */
-	inline int GetHitCount() const{ return pHitCount; }
+	inline int GetHitCount() const{return pHitCount;}
 	/*@}*/
 	
 	
@@ -202,7 +202,7 @@ public:
 	
 	
 private:
-	bool pTraceRay( const decVector &direction, sHitResult &hitResult );
+	bool pTraceRay(const decVector &direction, sHitResult &hitResult);
 };
 
 #endif

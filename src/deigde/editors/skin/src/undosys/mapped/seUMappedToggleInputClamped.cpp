@@ -34,12 +34,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedToggleInputClamped::seUMappedToggleInputClamped( seMapped *mapped ) :
-pMapped( mapped )
+seUMappedToggleInputClamped::seUMappedToggleInputClamped(seMapped *mapped) :
+pMapped(mapped)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Input Clamped" );
+	SetShortInfo("Set Mapped Input Clamped");
 }
 
 seUMappedToggleInputClamped::~seUMappedToggleInputClamped(){
@@ -51,7 +51,7 @@ seUMappedToggleInputClamped::~seUMappedToggleInputClamped(){
 ///////////////
 
 void seUMappedToggleInputClamped::Undo(){
-	pMapped->SetInputClamped( ! pMapped->GetInputClamped() );
+	pMapped->SetInputClamped(! pMapped->GetInputClamped());
 }
 
 void seUMappedToggleInputClamped::Redo(){

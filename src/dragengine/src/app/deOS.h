@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine object or NULL if not existing. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Set engine object or NULL if not existing. */
-	void SetEngine( deEngine * engine );
+	void SetEngine(deEngine * engine);
 	
 	/** \brief Engine path. */
 	virtual decString GetPathEngine() = 0;
@@ -94,17 +94,17 @@ public:
 	 * to false if you want to clear the event queue after a lengthy operation to
 	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule ) = 0;
+	virtual void ProcessEventLoop(bool sendToInputModule) = 0;
 	
 	/** \brief Application is active. */
-	inline bool GetAppActive() const{ return pAppActive; }
+	inline bool GetAppActive() const{return pAppActive;}
 	
 	/**
 	 * \brief Set if application is active.
 	 * 
 	 * Sends notifications to affected engine modules if required.
 	 */
-	virtual void SetAppActive( bool active );
+	virtual void SetAppActive(bool active);
 	
 	/**
 	 * \brief Current user locale language (ISO 639 language code) in lower case.
@@ -132,7 +132,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
 	 * than GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display ) = 0;
+	virtual decPoint GetDisplayCurrentResolution(int display) = 0;
 	
 	/**
 	 * \brief Current refresh rate of display.
@@ -140,7 +140,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
 	 * than GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display ) = 0;
+	virtual int GetDisplayCurrentRefreshRate(int display) = 0;
 	
 	/**
 	 * \brief Number of resolutions supported on display.
@@ -148,7 +148,7 @@ public:
 	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
 	 * than GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display ) = 0;
+	virtual int GetDisplayResolutionCount(int display) = 0;
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -159,7 +159,7 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution ) = 0;
+	virtual decPoint GetDisplayResolution(int display, int resolution) = 0;
 	
 	/**
 	 * \brief Current global scaling factor for display.
@@ -170,7 +170,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display ) = 0;
+	virtual int GetDisplayCurrentScaleFactor(int display) = 0;
 	/*@}*/
 	
 	

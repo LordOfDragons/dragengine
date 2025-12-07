@@ -52,90 +52,90 @@
 // Constructor, destructor
 ////////////////////////////
 
-seProperty::seProperty( deEngine *engine, const char *name ) :
-pEngine( engine ),
+seProperty::seProperty(deEngine *engine, const char *name) :
+pEngine(engine),
 
-pTexture( NULL ),
+pTexture(NULL),
 
-pName( name ),
-pValueType( evtColor ),
+pName(name),
+pValueType(evtColor),
 
-pValue( 0.0f ),
+pValue(0.0f),
 
-pColor( 1.0f, 1.0f, 1.0f ),
+pColor(1.0f, 1.0f, 1.0f),
 
-pVideoSharedTime( true ),
+pVideoSharedTime(true),
 
-pNodeGroup( NULL ),
-pEngNodeGroup( NULL ),
-pActiveNodeGroup( NULL ),
-pNodeSelection( *this ),
-pActiveNodeLayer( 0 ),
-pNodeTileX( false ),
-pNodeTileY( false ),
-pNodeBitCount( 8 ),
+pNodeGroup(NULL),
+pEngNodeGroup(NULL),
+pActiveNodeGroup(NULL),
+pNodeSelection(*this),
+pActiveNodeLayer(0),
+pNodeTileX(false),
+pNodeTileY(false),
+pNodeBitCount(8),
 
-pSelected( false ),
-pActive( false )
+pSelected(false),
+pActive(false)
 {
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
+	if(! engine){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pNodeGroup = new sePropertyNodeGroup( *engine );
-	pNodeGroup->SetProperty( this );
+	pNodeGroup = new sePropertyNodeGroup(*engine);
+	pNodeGroup->SetProperty(this);
 }
 
-seProperty::seProperty( const seProperty &property ) :
-pEngine( property.pEngine ),
+seProperty::seProperty(const seProperty &property) :
+pEngine(property.pEngine),
 
-pTexture( NULL ),
+pTexture(NULL),
 
-pName( property.pName ),
-pValueType( property.pValueType ),
-pRenderableName( property.pRenderableName ),
-pBoneName( property.pBoneName ),
+pName(property.pName),
+pValueType(property.pValueType),
+pRenderableName(property.pRenderableName),
+pBoneName(property.pBoneName),
 
-pValue( property.pValue ),
+pValue(property.pValue),
 
-pColor( property.pColor ),
+pColor(property.pColor),
 
-pPathImage( property.pPathImage ),
-pEngImage( property.pEngImage ),
+pPathImage(property.pPathImage),
+pEngImage(property.pEngImage),
 
-pPathVideo( property.pPathVideo ),
-pEngVideo( property.pEngVideo ),
-pVideoSharedTime( property.pVideoSharedTime ),
+pPathVideo(property.pPathVideo),
+pEngVideo(property.pEngVideo),
+pVideoSharedTime(property.pVideoSharedTime),
 
-pNodeGroup( NULL ),
-pEngNodeGroup( NULL ),
-pActiveNodeGroup( NULL ),
-pNodeSelection( *this ),
-pActiveNodeLayer( 0 ),
-pNodeColor( property.pNodeColor ),
-pNodeTileX( property.pNodeTileX ),
-pNodeTileY( property.pNodeTileY ),
-pNodeBitCount( property.pNodeBitCount ),
+pNodeGroup(NULL),
+pEngNodeGroup(NULL),
+pActiveNodeGroup(NULL),
+pNodeSelection(*this),
+pActiveNodeLayer(0),
+pNodeColor(property.pNodeColor),
+pNodeTileX(property.pNodeTileX),
+pNodeTileY(property.pNodeTileY),
+pNodeBitCount(property.pNodeBitCount),
 
-pSelected( false ),
-pActive( false )
+pSelected(false),
+pActive(false)
 {
-	pMappedComponents[ 0 ] = property.pMappedComponents[ 0 ];
-	pMappedComponents[ 1 ] = property.pMappedComponents[ 1 ];
-	pMappedComponents[ 2 ] = property.pMappedComponents[ 2 ];
-	pMappedComponents[ 3 ] = property.pMappedComponents[ 3 ];
+	pMappedComponents[0] = property.pMappedComponents[0];
+	pMappedComponents[1] = property.pMappedComponents[1];
+	pMappedComponents[2] = property.pMappedComponents[2];
+	pMappedComponents[3] = property.pMappedComponents[3];
 	
-	pNodeGroup = new sePropertyNodeGroup( *property.pNodeGroup );
-	pNodeGroup->SetProperty( this );
+	pNodeGroup = new sePropertyNodeGroup(*property.pNodeGroup);
+	pNodeGroup->SetProperty(this);
 }
 
 seProperty::~seProperty(){
-	if( pActiveNodeGroup ){
+	if(pActiveNodeGroup){
 		pActiveNodeGroup->FreeReference();
 	}
 	pNodeSelection.RemoveAll();
-	if( pNodeGroup ){
-		pNodeGroup->SetProperty( NULL );
+	if(pNodeGroup){
+		pNodeGroup->SetProperty(NULL);
 		pNodeGroup->FreeReference();
 	}
 }
@@ -145,8 +145,8 @@ seProperty::~seProperty(){
 // Management
 ///////////////
 
-void seProperty::SetTexture( seTexture *texture ){
-	if( texture == pTexture ){
+void seProperty::SetTexture(seTexture *texture){
+	if(texture == pTexture){
 		return;
 	}
 	
@@ -154,12 +154,12 @@ void seProperty::SetTexture( seTexture *texture ){
 	UpdateResources();
 }
 
-void seProperty::SetName( const char *name ){
+void seProperty::SetName(const char *name){
 	pName = name;
 }
 
-void seProperty::SetRenderableName( const char *name ){
-	if( pRenderableName.Equals( name ) ){
+void seProperty::SetRenderableName(const char *name){
+	if(pRenderableName.Equals(name)){
 		return;
 	}
 	
@@ -167,8 +167,8 @@ void seProperty::SetRenderableName( const char *name ){
 	NotifyChanged();
 }
 
-void seProperty::SetBoneName( const char *name ){
-	if( pBoneName.Equals( name ) ){
+void seProperty::SetBoneName(const char *name){
+	if(pBoneName.Equals(name)){
 		return;
 	}
 	
@@ -176,8 +176,8 @@ void seProperty::SetBoneName( const char *name ){
 	NotifyChanged();
 }
 
-void seProperty::SetValueType( eValueTypes type ){
-	if( type == pValueType ){
+void seProperty::SetValueType(eValueTypes type){
+	if(type == pValueType){
 		return;
 	}
 	
@@ -185,8 +185,8 @@ void seProperty::SetValueType( eValueTypes type ){
 	NotifyChanged();
 }
 
-void seProperty::SetValue( float value ){
-	if( fabsf( value - pValue ) < FLOAT_SAFE_EPSILON ){
+void seProperty::SetValue(float value){
+	if(fabsf(value - pValue) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -194,8 +194,8 @@ void seProperty::SetValue( float value ){
 	NotifyChanged();
 }
 
-void seProperty::SetColor( const decColor &color ){
-	if( color.IsEqualTo( pColor ) ){
+void seProperty::SetColor(const decColor &color){
+	if(color.IsEqualTo(pColor)){
 		return;
 	}
 	
@@ -203,8 +203,8 @@ void seProperty::SetColor( const decColor &color ){
 	NotifyChanged();
 }
 
-void seProperty::SetImagePath( const char *imagePath ){
-	if( pPathImage.Equals( imagePath ) ){
+void seProperty::SetImagePath(const char *imagePath){
+	if(pPathImage.Equals(imagePath)){
 		return;
 	}
 	
@@ -216,21 +216,21 @@ void seProperty::SetImagePath( const char *imagePath ){
 void seProperty::UpdateImage(){
 	deImage::Ref image;
 	
-	if( ! pPathImage.IsEmpty() && pTexture && pTexture->GetSkin() ){
+	if(! pPathImage.IsEmpty() && pTexture && pTexture->GetSkin()){
 		try{
-			image.TakeOver( pEngine->GetImageManager()->LoadImage(
-				pPathImage, pTexture->GetSkin()->GetDirectoryPath() ) );
+			image.TakeOver(pEngine->GetImageManager()->LoadImage(
+				pPathImage, pTexture->GetSkin()->GetDirectoryPath()));
 			
-		}catch( const deException &e ){
-			pTexture->GetSkin()->GetLogger()->LogException( "Skin Editor", e );
+		}catch(const deException &e){
+			pTexture->GetSkin()->GetLogger()->LogException("Skin Editor", e);
 		}
 	}
 	
 	pEngImage = image;
 }
 
-void seProperty::SetVideoPath( const char *videoPath ){
-	if( pPathVideo.Equals( videoPath ) ){
+void seProperty::SetVideoPath(const char *videoPath){
+	if(pPathVideo.Equals(videoPath)){
 		return;
 	}
 	
@@ -242,21 +242,21 @@ void seProperty::SetVideoPath( const char *videoPath ){
 void seProperty::UpdateVideo(){
 	deVideo::Ref video;
 	
-	if( ! pPathVideo.IsEmpty() && pTexture && pTexture->GetSkin() ){
+	if(! pPathVideo.IsEmpty() && pTexture && pTexture->GetSkin()){
 		try{
-			video.TakeOver( pEngine->GetVideoManager()->LoadVideo(
-				pPathVideo, pTexture->GetSkin()->GetDirectoryPath(), false ) );
+			video.TakeOver(pEngine->GetVideoManager()->LoadVideo(
+				pPathVideo, pTexture->GetSkin()->GetDirectoryPath(), false));
 			
-		}catch( const deException &e ){
-			pTexture->GetSkin()->GetLogger()->LogException( "Skin Editor", e );
+		}catch(const deException &e){
+			pTexture->GetSkin()->GetLogger()->LogException("Skin Editor", e);
 		}
 	}
 	
 	pEngVideo = video;
 }
 
-void seProperty::SetVideoSharedTime( bool shareTime ){
-	if( shareTime == pVideoSharedTime ){
+void seProperty::SetVideoSharedTime(bool shareTime){
+	if(shareTime == pVideoSharedTime){
 		return;
 	}
 	
@@ -266,37 +266,37 @@ void seProperty::SetVideoSharedTime( bool shareTime ){
 
 
 
-const seMapped::Ref &seProperty::GetMappedComponent( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index <= 3 )
+const seMapped::Ref &seProperty::GetMappedComponent(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= 3)
 	
-	return pMappedComponents[ index ];
+	return pMappedComponents[index];
 }
 
-void seProperty::SetMappedComponent( int index, seMapped *mapped ){
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index <= 3 )
+void seProperty::SetMappedComponent(int index, seMapped *mapped){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= 3)
 	
-	pMappedComponents[ index ] = mapped;
+	pMappedComponents[index] = mapped;
 	NotifyChanged();
 }
 
 
 
-void seProperty::SetNodeGroup( sePropertyNodeGroup *nodeGroup ){
-	if( ! nodeGroup || nodeGroup->GetProperty() ){
-		DETHROW( deeInvalidParam );
+void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
+	if(! nodeGroup || nodeGroup->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNodeSelection.RemoveAll();
 	
-	pNodeGroup->SetProperty( NULL );
+	pNodeGroup->SetProperty(NULL);
 	pNodeGroup->FreeReference();
 	
 	pNodeGroup = nodeGroup;
 	
 	nodeGroup->AddReference();
-	nodeGroup->SetProperty( this );
+	nodeGroup->SetProperty(this);
 	
 	nodeGroup->NotifyChanged();
 	nodeGroup->NotifyStructreChanged();
@@ -309,8 +309,8 @@ void seProperty::UpdateEngineNodeGroup(){
 	// TODO
 }
 
-void seProperty::SetActiveNodeGroup( sePropertyNodeGroup *node ){
-	if( node == pActiveNodeGroup ){
+void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
+	if(node == pActiveNodeGroup){
 		return;
 	}
 	
@@ -319,44 +319,44 @@ void seProperty::SetActiveNodeGroup( sePropertyNodeGroup *node ){
 	
 	pNodeSelection.RemoveAll();
 	
-	if( pActiveNodeGroup ){
-		pActiveNodeGroup->SetActiveGroup( false );
+	if(pActiveNodeGroup){
+		pActiveNodeGroup->SetActiveGroup(false);
 		pActiveNodeGroup->FreeReference();
 	}
 	
 	pActiveNodeGroup = node;
 	
-	if( node ){
+	if(node){
 		node->AddReference();
-		node->SetActiveGroup( true );
+		node->SetActiveGroup(true);
 	}
 	
-	if( pTexture && pTexture->GetSkin() ){
+	if(pTexture && pTexture->GetSkin()){
 		seSkin &skin = *pTexture->GetSkin();
-		if( selectionChanged ){
-			skin.NotifyPropertyNodeSelectionChanged( pTexture, this );
+		if(selectionChanged){
+			skin.NotifyPropertyNodeSelectionChanged(pTexture, this);
 		}
-		if( activeNodeChanged ){
-			skin.NotifyPropertyActiveNodeChanged( pTexture, this );
+		if(activeNodeChanged){
+			skin.NotifyPropertyActiveNodeChanged(pTexture, this);
 		}
-		skin.NotifyPropertyActiveNodeGroupChanged( pTexture, this );
+		skin.NotifyPropertyActiveNodeGroupChanged(pTexture, this);
 	}
 }
 
-void seProperty::SetActiveNodeLayer( int layer ){
-	if( layer == pActiveNodeLayer ){
+void seProperty::SetActiveNodeLayer(int layer){
+	if(layer == pActiveNodeLayer){
 		return;
 	}
 	
 	pActiveNodeLayer = layer;
 	
-	if( pTexture && pTexture->GetSkin() ){
-		pTexture->GetSkin()->NotifyPropertyActiveNodeLayerChanged( pTexture, this );
+	if(pTexture && pTexture->GetSkin()){
+		pTexture->GetSkin()->NotifyPropertyActiveNodeLayerChanged(pTexture, this);
 	}
 }
 
-void seProperty::SetNodeColor( const decColor &color ){
-	if( color.IsEqualTo( pNodeColor ) ){
+void seProperty::SetNodeColor(const decColor &color){
+	if(color.IsEqualTo(pNodeColor)){
 		return;
 	}
 	
@@ -364,8 +364,8 @@ void seProperty::SetNodeColor( const decColor &color ){
 	NotifyChanged();
 }
 
-void seProperty::SetNodeTileX( bool tileX ){
-	if( tileX == pNodeTileX ){
+void seProperty::SetNodeTileX(bool tileX){
+	if(tileX == pNodeTileX){
 		return;
 	}
 	
@@ -373,8 +373,8 @@ void seProperty::SetNodeTileX( bool tileX ){
 	NotifyChanged();
 }
 
-void seProperty::SetNodeTileY( bool tileY ){
-	if( tileY == pNodeTileY ){
+void seProperty::SetNodeTileY(bool tileY){
+	if(tileY == pNodeTileY){
 		return;
 	}
 	
@@ -382,12 +382,12 @@ void seProperty::SetNodeTileY( bool tileY ){
 	NotifyChanged();
 }
 
-void seProperty::SetNodeBitCount( int bitCount ){
-	if( bitCount == pNodeBitCount ){
+void seProperty::SetNodeBitCount(int bitCount){
+	if(bitCount == pNodeBitCount){
 		return;
 	}
 	
-	switch( bitCount ){
+	switch(bitCount){
 	case 8:
 	case 16:
 	case 32:
@@ -396,29 +396,29 @@ void seProperty::SetNodeBitCount( int bitCount ){
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
-void seProperty::SetSelected( bool selected ){
+void seProperty::SetSelected(bool selected){
 	pSelected = selected;
 }
 
-void seProperty::SetActive( bool active ){
+void seProperty::SetActive(bool active){
 	pActive = active;
 }
 
 void seProperty::NotifyChanged(){
-	if( ! pTexture ){
+	if(! pTexture){
 		return;
 	}
 	
 	pTexture->InvalidateEngineSkin();
 	
-	if( pTexture->GetSkin() ){
-		pTexture->GetSkin()->NotifyPropertyChanged( pTexture, this );
+	if(pTexture->GetSkin()){
+		pTexture->GetSkin()->NotifyPropertyChanged(pTexture, this);
 	}
 }
 
@@ -428,22 +428,22 @@ void seProperty::UpdateResources(){
 	pNodeGroup->UpdateResources();
 }
 
-void seProperty::InitDefaults( const igdeTexturePropertyList &knownPropertyList ){
-	const igdeTextureProperty * const knownProperty = knownPropertyList.GetNamed( pName );
-	if( ! knownProperty ){
+void seProperty::InitDefaults(const igdeTexturePropertyList &knownPropertyList){
+	const igdeTextureProperty * const knownProperty = knownPropertyList.GetNamed(pName);
+	if(! knownProperty){
 		return;
 	}
 	
-	SetValue( knownProperty->GetDefaultValue() );
-	SetColor( knownProperty->GetDefaultColor() );
+	SetValue(knownProperty->GetDefaultValue());
+	SetColor(knownProperty->GetDefaultColor());
 	
-	if( knownProperty->GetComponentCount() == 1 ){
-		SetValueType( seProperty::evtValue );
-		SetNodeColor( decColor( knownProperty->GetDefaultValue(),
-			knownProperty->GetDefaultValue(), knownProperty->GetDefaultValue() ) );
+	if(knownProperty->GetComponentCount() == 1){
+		SetValueType(seProperty::evtValue);
+		SetNodeColor(decColor(knownProperty->GetDefaultValue(),
+			knownProperty->GetDefaultValue(), knownProperty->GetDefaultValue()));
 		
 	}else{
-		SetValueType( seProperty::evtColor );
-		SetNodeColor( knownProperty->GetDefaultColor() );
+		SetValueType(seProperty::evtColor);
+		SetNodeColor(knownProperty->GetDefaultColor());
 	}
 }

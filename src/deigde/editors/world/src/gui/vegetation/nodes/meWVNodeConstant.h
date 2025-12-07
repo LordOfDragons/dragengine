@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeConstant( meWindowVegetation &windowVegetation, meHTVRuleConstant *rule );
+	meWVNodeConstant(meWindowVegetation &windowVegetation, meHTVRuleConstant *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleConstant *GetRuleConstant() const{ return pRuleConstant; }
+	inline meHTVRuleConstant *GetRuleConstant() const{return pRuleConstant;}
 	
 	/** \brief Update node. */
 	virtual void Update();

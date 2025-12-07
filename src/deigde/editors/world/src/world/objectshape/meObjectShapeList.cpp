@@ -57,48 +57,48 @@ int meObjectShapeList::GetCount() const{
 	return pObjectShapes.GetCount();
 }
 
-meObjectShape *meObjectShapeList::GetAt( int position ) const{
-	return ( meObjectShape* )pObjectShapes.GetAt( position );
+meObjectShape *meObjectShapeList::GetAt(int position) const{
+	return (meObjectShape*)pObjectShapes.GetAt(position);
 }
 
-int meObjectShapeList::IndexOf( meObjectShape *objectShape ) const{
-	return pObjectShapes.IndexOf( objectShape );
+int meObjectShapeList::IndexOf(meObjectShape *objectShape) const{
+	return pObjectShapes.IndexOf(objectShape);
 }
 
-bool meObjectShapeList::Has( meObjectShape *objectShape ) const{
-	return pObjectShapes.Has( objectShape );
+bool meObjectShapeList::Has(meObjectShape *objectShape) const{
+	return pObjectShapes.Has(objectShape);
 }
 
-void meObjectShapeList::Add( meObjectShape *objectShape ){
-	if( ! objectShape ){
-		DETHROW( deeInvalidParam );
+void meObjectShapeList::Add(meObjectShape *objectShape){
+	if(! objectShape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjectShapes.Add( objectShape );
+	pObjectShapes.Add(objectShape);
 }
 
-void meObjectShapeList::AddIfAbsent( meObjectShape *objectShape ){
-	if( ! objectShape ){
-		DETHROW( deeInvalidParam );
+void meObjectShapeList::AddIfAbsent(meObjectShape *objectShape){
+	if(! objectShape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjectShapes.AddIfAbsent( objectShape );
+	pObjectShapes.AddIfAbsent(objectShape);
 }
 
-void meObjectShapeList::Remove( meObjectShape *objectShape ){
-	if( ! objectShape ){
-		DETHROW( deeInvalidParam );
+void meObjectShapeList::Remove(meObjectShape *objectShape){
+	if(! objectShape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjectShapes.Remove( objectShape );
+	pObjectShapes.Remove(objectShape);
 }
 
-void meObjectShapeList::RemoveIfPresent( meObjectShape *objectShape ){
-	if( ! objectShape ){
-		DETHROW( deeInvalidParam );
+void meObjectShapeList::RemoveIfPresent(meObjectShape *objectShape){
+	if(! objectShape){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pObjectShapes.RemoveIfPresent( objectShape );
+	pObjectShapes.RemoveIfPresent(objectShape);
 }
 
 void meObjectShapeList::RemoveAll(){
@@ -107,7 +107,7 @@ void meObjectShapeList::RemoveAll(){
 
 
 
-void meObjectShapeList::CreateShapeList( decShapeList &list ) const{
+void meObjectShapeList::CreateShapeList(decShapeList &list) const{
 	const int count = pObjectShapes.GetCount();
 	decShape *shape = NULL;
 	int i;
@@ -115,31 +115,31 @@ void meObjectShapeList::CreateShapeList( decShapeList &list ) const{
 	list.RemoveAll();
 	
 	try{
-		for( i=0; i<count; i++ ){
-			shape = ( ( meObjectShape* )pObjectShapes.GetAt( i ) )->GetShape()->Copy();
-			list.Add( shape );
+		for(i=0; i<count; i++){
+			shape = ((meObjectShape*)pObjectShapes.GetAt(i))->GetShape()->Copy();
+			list.Add(shape);
 			shape = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( shape ){
+	}catch(const deException &){
+		if(shape){
 			delete shape;
 		}
 		throw;
 	}
 }
 
-void meObjectShapeList::CreatePropertyString( decString &string ) const{
+void meObjectShapeList::CreatePropertyString(decString &string) const{
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	
-	CreateShapeList( shapeList );
-	codec.EncodeShapeList( shapeList, string );
+	CreateShapeList(shapeList);
+	codec.EncodeShapeList(shapeList, string);
 }
 
 
 
-meObjectShapeList &meObjectShapeList::operator=( const meObjectShapeList &list ){
+meObjectShapeList &meObjectShapeList::operator=(const meObjectShapeList &list){
 	pObjectShapes = list.pObjectShapes;
 	return *this;
 }

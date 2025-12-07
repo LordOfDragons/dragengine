@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetOptions::gdeUOCPSetOptions( gdeObjectClass *objectClass,
-gdeProperty *property, const decStringList &newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCPSetOptions::gdeUOCPSetOptions(gdeObjectClass *objectClass,
+gdeProperty *property, const decStringList &newValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class property set options" );
+	SetShortInfo("Object class property set options");
 	
 	pOldValue = property->GetOptions();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pProperty( NULL )
 }
 
 gdeUOCPSetOptions::~gdeUOCPSetOptions(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -77,10 +77,10 @@ gdeUOCPSetOptions::~gdeUOCPSetOptions(){
 
 void gdeUOCPSetOptions::Undo(){
 	pProperty->GetOptions() = pOldValue;
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }
 
 void gdeUOCPSetOptions::Redo(){
 	pProperty->GetOptions() = pNewValue;
-	pObjectClass->NotifyPropertyChanged( pProperty );
+	pObjectClass->NotifyPropertyChanged(pProperty);
 }

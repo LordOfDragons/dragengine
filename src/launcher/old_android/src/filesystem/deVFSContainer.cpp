@@ -35,13 +35,13 @@
 ////////////////////////////
 
 deVFSContainer::deVFSContainer() :
-pRootPath( decPath::CreatePathUnix( "/" ) ),
-pHidden( false ){
+pRootPath(decPath::CreatePathUnix("/")),
+pHidden(false){
 }
 
-deVFSContainer::deVFSContainer( const decPath &rootPath ) :
-pRootPath( rootPath ),
-pHidden( false ){
+deVFSContainer::deVFSContainer(const decPath &rootPath) :
+pRootPath(rootPath),
+pHidden(false){
 }
 
 deVFSContainer::~deVFSContainer(){
@@ -52,6 +52,6 @@ deVFSContainer::~deVFSContainer(){
 // Management
 ///////////////
 
-void deVFSContainer::SetHidden( bool hidden ){
+void deVFSContainer::SetHidden(bool hidden){
 	pHidden = hidden;
 }

@@ -37,11 +37,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValueInteger::deNetworkValueInteger( eValueFormats format, int64_t value ) :
-pFormat( format ),
-pValue( value )
+deNetworkValueInteger::deNetworkValueInteger(eValueFormats format, int64_t value) :
+pFormat(format),
+pValue(value)
 {
-	switch( format ){
+	switch(format){
 	case evfSInt8:
 	case evfSInt16:
 	case evfSInt32:
@@ -53,7 +53,7 @@ pValue( value )
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -65,7 +65,7 @@ deNetworkValueInteger::~deNetworkValueInteger(){
 // Management
 ///////////////
 
-void deNetworkValueInteger::SetInt( int64_t value ){
+void deNetworkValueInteger::SetInt(int64_t value){
 	pValue = value;
 }
 
@@ -74,6 +74,6 @@ void deNetworkValueInteger::SetInt( int64_t value ){
 // Visiting
 /////////////
 
-void deNetworkValueInteger::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitInteger( this );
+void deNetworkValueInteger::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitInteger(this);
 }

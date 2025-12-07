@@ -39,22 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deVideoAudioDecoder::deVideoAudioDecoder( deVideoManager &manager, deVideo *video ) :
-pVideoManager( manager ),
-pVideo( video ),
-pPeerVideo( NULL ),
-pLLManagerPrev( NULL ),
-pLLManagerNext( NULL )
+deVideoAudioDecoder::deVideoAudioDecoder(deVideoManager &manager, deVideo *video) :
+pVideoManager(manager),
+pVideo(video),
+pPeerVideo(NULL),
+pLLManagerPrev(NULL),
+pLLManagerNext(NULL)
 {
-	if( ! video ){
-		DETHROW( deeInvalidParam );
+	if(! video){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deVideoAudioDecoder::~deVideoAudioDecoder(){
-	SetPeerVideo( NULL );
+	SetPeerVideo(NULL);
 	
-	pVideoManager.RemoveAudioDecoder( this );
+	pVideoManager.RemoveAudioDecoder(this);
 }
 
 
@@ -63,24 +63,24 @@ deVideoAudioDecoder::~deVideoAudioDecoder(){
 ///////////////
 
 int deVideoAudioDecoder::GetPosition(){
-	if( ! pPeerVideo ){
-		DETHROW( deeInvalidParam );
+	if(! pPeerVideo){
+		DETHROW(deeInvalidParam);
 	}
 	return pPeerVideo->GetPosition();
 }
 
-void deVideoAudioDecoder::SetPosition( int position ){
-	if( ! pPeerVideo ){
-		DETHROW( deeInvalidParam );
+void deVideoAudioDecoder::SetPosition(int position){
+	if(! pPeerVideo){
+		DETHROW(deeInvalidParam);
 	}
-	pPeerVideo->SetPosition( position );
+	pPeerVideo->SetPosition(position);
 }
 
-int deVideoAudioDecoder::ReadSamples( void *buffer, int size ){
-	if( ! pPeerVideo ){
-		DETHROW( deeInvalidParam );
+int deVideoAudioDecoder::ReadSamples(void *buffer, int size){
+	if(! pPeerVideo){
+		DETHROW(deeInvalidParam);
 	}
-	return pPeerVideo->ReadSamples( buffer, size );
+	return pPeerVideo->ReadSamples(buffer, size);
 }
 
 
@@ -88,22 +88,22 @@ int deVideoAudioDecoder::ReadSamples( void *buffer, int size ){
 // System Peers
 /////////////////
 
-void deVideoAudioDecoder::SetPeerVideo( deBaseVideoAudioDecoder *peer ){
-	if( peer == pPeerVideo ){
+void deVideoAudioDecoder::SetPeerVideo(deBaseVideoAudioDecoder *peer){
+	if(peer == pPeerVideo){
 		return;
 	}
 	
-	if( pPeerVideo ){
+	if(pPeerVideo){
 		delete pPeerVideo;
 	}
 	pPeerVideo = peer;
 }
 
-void deVideoAudioDecoder::SetLLManagerNext( deVideoAudioDecoder *resource ){
+void deVideoAudioDecoder::SetLLManagerNext(deVideoAudioDecoder *resource){
 	pLLManagerNext = resource;
 }
 
-void deVideoAudioDecoder::SetLLManagerPrev( deVideoAudioDecoder *resource ){
+void deVideoAudioDecoder::SetLLManagerPrev(deVideoAudioDecoder *resource){
 	pLLManagerPrev = resource;
 }
 

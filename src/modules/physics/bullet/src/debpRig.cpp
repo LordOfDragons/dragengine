@@ -40,11 +40,11 @@
 // constructor, destructor
 ////////////////////////////
 
-debpRig::debpRig( dePhysicsBullet &bullet, const deRig &rig ) :
-pBullet( bullet ),
-pRig( rig ),
-pMass( 0.0f ),
-pInvMass( 0.0f )
+debpRig::debpRig(dePhysicsBullet &bullet, const deRig &rig) :
+pBullet(bullet),
+pRig(rig),
+pMass(0.0f),
+pInvMass(0.0f)
 {
 	pCalculateMass();
 }
@@ -74,11 +74,11 @@ void debpRig::pCalculateMass(){
 	pMass = 0.0f;
 	pInvMass = 0.0f;
 	
-	for( i=0; i<boneCount; i++ ){
-		pMass += pRig.GetBoneAt( i ).GetMass();
+	for(i=0; i<boneCount; i++){
+		pMass += pRig.GetBoneAt(i).GetMass();
 	}
 	
-	if( pMass > FLOAT_SAFE_EPSILON ){
+	if(pMass > FLOAT_SAFE_EPSILON){
 		pInvMass = 1.0f / pMass;
 	}
 }

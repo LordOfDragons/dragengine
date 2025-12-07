@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create opengl texture sampler configuration. */
-	deoglTexSamplerConfig( deoglRenderThread &renderThread );
+	deoglTexSamplerConfig(deoglRenderThread &renderThread);
 	
 	/** Clean up opengl texture sampler configuration. */
 	~deoglTexSamplerConfig();
@@ -64,45 +64,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sampler object handle. */
-	inline GLuint GetSamplerObject() const{ return pSamplerObject; }
+	inline GLuint GetSamplerObject() const{return pSamplerObject;}
 	
 	
 	
 	/** Minimum lod level. */
-	inline int GetMinLodLevel() const{ return pMinLodLevel; }
+	inline int GetMinLodLevel() const{return pMinLodLevel;}
 	
 	/** Set minimum lod level. */
-	void SetMinLodLevel( int level );
+	void SetMinLodLevel(int level);
 	
 	/** Maximum lod level. */
-	inline int GetMaxLodLevel() const{ return pMaxLodLevel; }
+	inline int GetMaxLodLevel() const{return pMaxLodLevel;}
 	
 	/** Set maximum lod level. */
-	void SetMaxLodLevel( int level );
+	void SetMaxLodLevel(int level);
 	
 	/** Filter mode. */
-	inline deoglTextureStageManager::eTextureFiltering GetFilterMode() const{ return pFilterMode; }
+	inline deoglTextureStageManager::eTextureFiltering GetFilterMode() const{return pFilterMode;}
 	
 	/** Set filter mode. */
-	void SetFilterMode( deoglTextureStageManager::eTextureFiltering filterMode );
+	void SetFilterMode(deoglTextureStageManager::eTextureFiltering filterMode);
 	
 	/** Wrapping mode. */
-	inline GLenum GetWrapMode() const{ return pWrapMode; }
+	inline GLenum GetWrapMode() const{return pWrapMode;}
 	
 	/** Set wrapping mode. */
-	void SetWrapMode( GLenum wrapMode );
+	void SetWrapMode(GLenum wrapMode);
 	
 	/** Texture uses depth compare mode. */
-	inline bool GetDepthCompareMode() const{ return pDepthCompareMode; }
+	inline bool GetDepthCompareMode() const{return pDepthCompareMode;}
 	
 	/** Set if texture uses depth compare mode. */
-	void SetDepthCompareMode( bool depthCompareMode );
+	void SetDepthCompareMode(bool depthCompareMode);
 	
 	/** Depth compare function. */
-	inline GLenum GetDepthCompareFunc() const{ return pDepthCompareFunc; }
+	inline GLenum GetDepthCompareFunc() const{return pDepthCompareFunc;}
 	
 	/** Set depth compare function. */
-	void SetDepthCompareFunc( GLenum func );
+	void SetDepthCompareFunc(GLenum func);
 	/*@}*/
 };
 

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetPropertyName( gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponent::eProperties property, const char *newValue );
+	gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponent::eProperties property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -45,13 +45,13 @@
 
 aeALGroundChecker::aeALGroundChecker(){
 	pColInfo = new deCollisionInfo;
-	if( ! pColInfo ) DETHROW( deeOutOfMemory );
+	if(! pColInfo) DETHROW(deeOutOfMemory);
 	
 	pHasCollision = false;
 }
 
 aeALGroundChecker::~aeALGroundChecker(){
-	if( pColInfo ) pColInfo->FreeReference();
+	if(pColInfo) pColInfo->FreeReference();
 }
 
 
@@ -69,25 +69,25 @@ void aeALGroundChecker::Reset(){
 // Notifications
 //////////////////
 
-void aeALGroundChecker::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	if( ! pHasCollision || info->GetDistance() < pColInfo->GetDistance() ){
-		if( info->IsHTSector() ){
-			pColInfo->SetHTSector( info->GetHeightTerrain(), info->GetHTSector() );
+void aeALGroundChecker::CollisionResponse(deCollider *owner, deCollisionInfo *info){
+	if(! pHasCollision || info->GetDistance() < pColInfo->GetDistance()){
+		if(info->IsHTSector()){
+			pColInfo->SetHTSector(info->GetHeightTerrain(), info->GetHTSector());
 			
-		}else if( info->GetCollider() ){
-			pColInfo->SetCollider( info->GetCollider(), info->GetBone(), info->GetShape(), info->GetFace() );
+		}else if(info->GetCollider()){
+			pColInfo->SetCollider(info->GetCollider(), info->GetBone(), info->GetShape(), info->GetFace());
 			
 		}else{
 			return;
 		}
 		
-		pColInfo->SetDistance( info->GetDistance() );
-		pColInfo->SetNormal( info->GetNormal() );
+		pColInfo->SetDistance(info->GetDistance());
+		pColInfo->SetNormal(info->GetNormal());
 		
 		pHasCollision = true;
 	}
 }
 
-bool aeALGroundChecker::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool aeALGroundChecker::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }

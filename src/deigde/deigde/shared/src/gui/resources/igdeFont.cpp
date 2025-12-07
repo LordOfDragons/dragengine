@@ -38,23 +38,23 @@
 ///////////////////////////////////
 
 igdeFont::sConfiguration::sConfiguration() :
-size( 10.0f ),
-bold( false ),
-italic( false ),
-underline( false ),
-strikeThrough( false ){
+size(10.0f),
+bold(false),
+italic(false),
+underline(false),
+strikeThrough(false){
 }
 
-igdeFont::sConfiguration::sConfiguration( const igdeFont::sConfiguration &config ) :
-name( config.name ),
-size( config.size ),
-bold( config.bold ),
-italic( config.italic ),
-underline( config.underline ),
-strikeThrough( config.strikeThrough ){
+igdeFont::sConfiguration::sConfiguration(const igdeFont::sConfiguration &config) :
+name(config.name),
+size(config.size),
+bold(config.bold),
+italic(config.italic),
+underline(config.underline),
+strikeThrough(config.strikeThrough){
 }
 
-igdeFont::sConfiguration &igdeFont::sConfiguration::operator=( const igdeFont::sConfiguration &config ){
+igdeFont::sConfiguration &igdeFont::sConfiguration::operator=(const igdeFont::sConfiguration &config){
 	name = config.name;
 	size = config.size;
 	bold = config.bold;
@@ -64,9 +64,9 @@ igdeFont::sConfiguration &igdeFont::sConfiguration::operator=( const igdeFont::s
 	return *this;
 }
 
-bool igdeFont::sConfiguration::operator==( const sConfiguration &config ) const{
+bool igdeFont::sConfiguration::operator==(const sConfiguration &config) const{
 	return name == config.name
-		&& fabsf( size - config.size ) <= 0.01f
+		&& fabsf(size - config.size) <= 0.01f
 		&& bold == config.bold
 		&& italic == config.italic
 		&& underline == config.underline
@@ -81,26 +81,26 @@ bool igdeFont::sConfiguration::operator==( const sConfiguration &config ) const{
 // Constructor, destructor
 ////////////////////////////
 
-igdeFont::igdeFont( igdeEnvironment &environment, const sConfiguration &config ) :
-pEnvironment( environment ),
-pNativeFont( NULL ),
-pName( config.name ),
-pSize( config.size ),
-pBold( config.bold ),
-pItalic( config.italic ),
-pUnderline( config.underline ),
-pStrikeThrough( config.strikeThrough )
+igdeFont::igdeFont(igdeEnvironment &environment, const sConfiguration &config) :
+pEnvironment(environment),
+pNativeFont(NULL),
+pName(config.name),
+pSize(config.size),
+pBold(config.bold),
+pItalic(config.italic),
+pUnderline(config.underline),
+pStrikeThrough(config.strikeThrough)
 {
-	if( config.size <= 0.0f ){
-		DETHROW( deeInvalidParam );
+	if(config.size <= 0.0f){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pNativeFont = igdeNativeFont::CreateNativeFont( *this );
+	pNativeFont = igdeNativeFont::CreateNativeFont(*this);
 }
 
 igdeFont::~igdeFont(){
-	if( pNativeFont ){
-		( ( igdeNativeFont* )pNativeFont )->DestroyNativeFont();
+	if(pNativeFont){
+		((igdeNativeFont*)pNativeFont)->DestroyNativeFont();
 	}
 }
 
@@ -109,7 +109,7 @@ igdeFont::~igdeFont(){
 // Management
 ///////////////
 
-void igdeFont::GetConfig( sConfiguration &config ) const{
+void igdeFont::GetConfig(sConfiguration &config) const{
 	config.name = pName;
 	config.size = pSize;
 	config.bold = pBold;
@@ -118,7 +118,7 @@ void igdeFont::GetConfig( sConfiguration &config ) const{
 	config.strikeThrough = pStrikeThrough;
 }
 
-decPoint igdeFont::TextSize( const char *text ) const{
+decPoint igdeFont::TextSize(const char *text) const{
 	DEASSERT_NOTNULL(text)
 	return ((igdeNativeFont*)pNativeFont)->TextSize(text);
 }

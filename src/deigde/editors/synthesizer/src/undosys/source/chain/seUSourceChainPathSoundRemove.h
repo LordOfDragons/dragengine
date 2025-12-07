@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceChainPathSoundRemove( seSourceChain *source, int index );
+	seUSourceChainPathSoundRemove(seSourceChain *source, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

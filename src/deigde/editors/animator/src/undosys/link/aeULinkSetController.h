@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeULinkSetController( aeLink *link, aeController *newController );
+	aeULinkSetController(aeLink *link, aeController *newController);
 protected:
 	/** Clean up undo. */
 	virtual ~aeULinkSetController();

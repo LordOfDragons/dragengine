@@ -41,21 +41,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglVideo::deoglVideo( deGraphicOpenGl &ogl, deVideo &video ) :
-pOgl( ogl ),
-pVideo( video ),
-pRVideo( NULL ),
+deoglVideo::deoglVideo(deGraphicOpenGl &ogl, deVideo &video) :
+pOgl(ogl),
+pVideo(video),
+pRVideo(NULL),
 
-pCachedFrameCount( 0 ),
-pCacheFrames( false )
+pCachedFrameCount(0),
+pCacheFrames(false)
 {
 	pDetermineCacheParams();
-	pRVideo = new deoglRVideo( ogl.GetRenderThread(), pVideo.GetWidth(),
-		pVideo.GetHeight(), pVideo.GetComponentCount(), pCachedFrameCount );
+	pRVideo = new deoglRVideo(ogl.GetRenderThread(), pVideo.GetWidth(),
+		pVideo.GetHeight(), pVideo.GetComponentCount(), pCachedFrameCount);
 }
 
 deoglVideo::~deoglVideo(){
-	if( pRVideo ){
+	if(pRVideo){
 		pRVideo->FreeReference();
 	}
 }
@@ -69,30 +69,30 @@ bool deoglVideo::AllFramesAreCached() const{
 	return pRVideo->GetFrameCountToCache() == 0;
 }
 
-bool deoglVideo::IsFrameReady( int frame ) const{
-	if( ! pCacheFrames ){
+bool deoglVideo::IsFrameReady(int frame) const{
+	if(! pCacheFrames){
 		return false;
 	}
-	return pRVideo->GetTexture( frame ) != NULL;
+	return pRVideo->GetTexture(frame) != NULL;
 }
 
-bool deoglVideo::CanCacheFrame( int frame ) const{
-	if( ! pCacheFrames ){
+bool deoglVideo::CanCacheFrame(int frame) const{
+	if(! pCacheFrames){
 		return false;
 	}
-	if( pRVideo->GetUpdateFrame() != -1 ){
+	if(pRVideo->GetUpdateFrame() != -1){
 		return false;
 	}
-	return pRVideo->GetTexture( frame ) == NULL;
+	return pRVideo->GetTexture(frame) == NULL;
 }
 
-deoglPixelBuffer::Ref deoglVideo::CacheFrame( int frame, deoglPixelBuffer *pixelBuffer ){
-	DEASSERT_NOTNULL( pCacheFrames )
-	return pRVideo->SetPixelBuffer( frame, pixelBuffer );
+deoglPixelBuffer::Ref deoglVideo::CacheFrame(int frame, deoglPixelBuffer *pixelBuffer){
+	DEASSERT_NOTNULL(pCacheFrames)
+	return pRVideo->SetPixelBuffer(frame, pixelBuffer);
 }
 
-deoglTexture *deoglVideo::GetCachedFrameTexture( int frame ) const{
-	return pCacheFrames ? pRVideo->GetTexture( frame ) : nullptr;
+deoglTexture *deoglVideo::GetCachedFrameTexture(int frame) const{
+	return pCacheFrames ? pRVideo->GetTexture(frame) : nullptr;
 }
 
 
@@ -114,15 +114,15 @@ void deoglVideo::pDetermineCacheParams(){
 	const int frameBytes = width * height * 3;
 	const int thresholdFrames = 24000000 / frameBytes;
 	
-	pCacheFrames = ( frameCount <= thresholdFrames );
+	pCacheFrames = (frameCount <= thresholdFrames);
 	
 	/*
-	pOgl.LogInfoFormat( "Video '%s': size=%ix%i frames=%i frameBytes=%i"
+	pOgl.LogInfoFormat("Video '%s': size=%ix%i frames=%i frameBytes=%i"
 		" thresholdFrames=%i cacheFrames=%d", pVideo.GetFilename().GetString(), width,
-		height, frameCount, frameBytes, thresholdFrames, pCacheFrames );
+		height, frameCount, frameBytes, thresholdFrames, pCacheFrames);
 	*/
 	
-	if( pCacheFrames ){
+	if(pCacheFrames){
 		pCachedFrameCount = frameCount;
 	}
 }

@@ -46,22 +46,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceActionsMoveAction::ceWPTMAPChoiceActionsMoveAction( ceWindowMain &windowMain,
+ceWPTMAPChoiceActionsMoveAction::ceWPTMAPChoiceActionsMoveAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAPlayerChoice &playerChoice, ceConversationAction *action,
-int index, const char *text, igdeIcon *icon ) :
-ceWPTMenuAction( windowMain, text, icon ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pAction( action ),
-pIndex( index )
+int index, const char *text, igdeIcon *icon) :
+ceWPTMenuAction(windowMain, text, icon),
+pConversation(&conversation),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pAction(action),
+pIndex(index)
 {
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetEnabled( index >= 0 && index < playerChoice.GetActions().GetCount() );
+	SetEnabled(index >= 0 && index < playerChoice.GetActions().GetCount());
 }
 
 
@@ -70,8 +70,8 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAPChoiceActionsMoveAction::OnAction(){
-	if( pIndex < 0 || pIndex > pPlayerChoice->GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(pIndex < 0 || pIndex > pPlayerChoice->GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	pConversation->GetUndoSystem()->Add(ceUCAPChoiceActionMove::Ref::NewWith(

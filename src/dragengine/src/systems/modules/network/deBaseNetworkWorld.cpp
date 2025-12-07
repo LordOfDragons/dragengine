@@ -43,10 +43,10 @@ deBaseNetworkWorld::~deBaseNetworkWorld(){
 // Notifications
 //////////////////
 
-void deBaseNetworkWorld::NetworkStateAdded( deNetworkState *state ){
+void deBaseNetworkWorld::NetworkStateAdded(deNetworkState *state){
 }
 
-void deBaseNetworkWorld::NetworkStateRemoved( deNetworkState *state ){
+void deBaseNetworkWorld::NetworkStateRemoved(deNetworkState *state){
 }
 
 void deBaseNetworkWorld::AllNetworkStatesRemoved(){

@@ -36,10 +36,10 @@
 ////////////////////////////
 
 aeUSetRuleFStaScaleVertexPositionSet::aeUSetRuleFStaScaleVertexPositionSet(
-	aeRuleForeignState *rule, float newScale ) :
-pRule( nullptr )
+	aeRuleForeignState *rule, float newScale) :
+pRule(nullptr)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	try{
 		pRule = rule;
@@ -48,9 +48,9 @@ pRule( nullptr )
 		pOldScale = rule->GetScaleVertexPositionSet();
 		pNewScale = newScale;
 		
-		SetShortInfo( "Set foreign state rule vertex position set scale" );
+		SetShortInfo("Set foreign state rule vertex position set scale");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleFStaScaleVertexPositionSet::~aeUSetRuleFStaScaleVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleFStaScaleVertexPositionSet::Undo(){
-	pRule->SetScaleVertexPositionSet( pOldScale );
+	pRule->SetScaleVertexPositionSet(pOldScale);
 }
 
 void aeUSetRuleFStaScaleVertexPositionSet::Redo(){
-	pRule->SetScaleVertexPositionSet( pNewScale );
+	pRule->SetScaleVertexPositionSet(pNewScale);
 }
 
 
@@ -79,7 +79,7 @@ void aeUSetRuleFStaScaleVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaScaleVertexPositionSet::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

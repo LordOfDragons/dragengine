@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCSpeakerListener( gdeWPSOCSpeaker &panel );
+	gdeWPSOCSpeakerListener(gdeWPSOCSpeaker &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSOCSpeakerListener();
@@ -55,28 +55,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** \brief Object class speakers changed. */
-	virtual void OCSpeakersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCSpeakersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** \brief Object class speaker changed. */
-	virtual void OCSpeakerChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+	virtual void OCSpeakerChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 	
 	/** \brief Active object class speaker changed. */
-	virtual void ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCSpeakerChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

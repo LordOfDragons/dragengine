@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPLayerListener::seWPLayerListener( seWPLayer &panel ) :
-pPanel( panel ){
+seWPLayerListener::seWPLayerListener(seWPLayer &panel) :
+pPanel(panel){
 }
 
 seWPLayerListener::~seWPLayerListener(){
@@ -54,64 +54,64 @@ seWPLayerListener::~seWPLayerListener(){
 // Management
 ///////////////
 
-void seWPLayerListener::LinkStructureChanged( seSky* ){
+void seWPLayerListener::LinkStructureChanged(seSky*){
 	pPanel.UpdateLinkList();
 }
 
-void seWPLayerListener::LinkNameChanged( seSky*, seLink* ){
+void seWPLayerListener::LinkNameChanged(seSky*, seLink*){
 	pPanel.UpdateLinkList();
 }
 
 
 
-void seWPLayerListener::LayerStructureChanged( seSky* ){
+void seWPLayerListener::LayerStructureChanged(seSky*){
 	pPanel.UpdateLayerList();
 }
 
-void seWPLayerListener::LayerChanged( seSky*, seLayer *layer ){
-	if( layer->GetActive() ){
+void seWPLayerListener::LayerChanged(seSky*, seLayer *layer){
+	if(layer->GetActive()){
 		pPanel.UpdateLayer();
 	}
 }
 
-void seWPLayerListener::LayerNameChanged( seSky*, seLayer* ){
+void seWPLayerListener::LayerNameChanged(seSky*, seLayer*){
 	pPanel.UpdateLayerList();
 }
 
-void seWPLayerListener::ActiveLayerChanged( seSky* ){
+void seWPLayerListener::ActiveLayerChanged(seSky*){
 	pPanel.SelectActiveLayer();
 }
 
 
 
-void seWPLayerListener::BodyStructureChanged( seSky*, seLayer *layer ){
-	if( layer->GetActive() ){
+void seWPLayerListener::BodyStructureChanged(seSky*, seLayer *layer){
+	if(layer->GetActive()){
 		pPanel.UpdateBodyList();
 	}
 }
 
-void seWPLayerListener::BodyChanged( seSky*, seLayer *layer, seBody *body ){
-	if( layer->GetActive() && body->GetActive() ){
+void seWPLayerListener::BodyChanged(seSky*, seLayer *layer, seBody *body){
+	if(layer->GetActive() && body->GetActive()){
 		pPanel.UpdateBody();
 	}
 }
 
-void seWPLayerListener::ActiveBodyChanged( seSky*, seLayer *layer ){
-	if( layer->GetActive() ){
+void seWPLayerListener::ActiveBodyChanged(seSky*, seLayer *layer){
+	if(layer->GetActive()){
 		pPanel.SelectActiveBody();
 	}
 }
 
 
 
-void seWPLayerListener::TargetChanged( seSky*, seLayer* layer, deSkyLayer::eTargets ){
-	if( layer->GetActive() ){
+void seWPLayerListener::TargetChanged(seSky*, seLayer* layer, deSkyLayer::eTargets){
+	if(layer->GetActive()){
 		pPanel.UpdateTarget();
 	}
 }
 
-void seWPLayerListener::ActiveTargetChanged( seSky*, seLayer *layer ){
-	if( layer->GetActive() ){
+void seWPLayerListener::ActiveTargetChanged(seSky*, seLayer *layer){
+	if(layer->GetActive()){
 		pPanel.SelectActiveTarget();
 	}
 }

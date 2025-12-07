@@ -42,8 +42,8 @@
 igdeGameDefinitionList::igdeGameDefinitionList(){
 }
 
-igdeGameDefinitionList::igdeGameDefinitionList( const igdeGameDefinitionList &list ) :
-pGameDefinitions( list.pGameDefinitions ){
+igdeGameDefinitionList::igdeGameDefinitionList(const igdeGameDefinitionList &list) :
+pGameDefinitions(list.pGameDefinitions){
 }
 
 igdeGameDefinitionList::~igdeGameDefinitionList(){
@@ -58,21 +58,21 @@ int igdeGameDefinitionList::GetCount() const{
 	return pGameDefinitions.GetCount();
 }
 
-igdeGameDefinition *igdeGameDefinitionList::GetAt( int index ) const{
-	return ( igdeGameDefinition* )pGameDefinitions.GetAt( index );
+igdeGameDefinition *igdeGameDefinitionList::GetAt(int index) const{
+	return (igdeGameDefinition*)pGameDefinitions.GetAt(index);
 }
 
-igdeGameDefinition *igdeGameDefinitionList::GetWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+igdeGameDefinition *igdeGameDefinitionList::GetWithID(const char *id) const{
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pGameDefinitions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		igdeGameDefinition * const gd = ( igdeGameDefinition* )pGameDefinitions.GetAt( i );
-		if( gd->GetID() == id ){
+	for(i=0; i<count; i++){
+		igdeGameDefinition * const gd = (igdeGameDefinition*)pGameDefinitions.GetAt(i);
+		if(gd->GetID() == id){
 			return gd;
 		}
 	}
@@ -80,24 +80,24 @@ igdeGameDefinition *igdeGameDefinitionList::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-int igdeGameDefinitionList::IndexOf( igdeGameDefinition *gameDefinition ) const{
-	return pGameDefinitions.IndexOf( gameDefinition );
+int igdeGameDefinitionList::IndexOf(igdeGameDefinition *gameDefinition) const{
+	return pGameDefinitions.IndexOf(gameDefinition);
 }
 
-bool igdeGameDefinitionList::Has( igdeGameDefinition *gameDefinition ) const{
-	return pGameDefinitions.Has( gameDefinition );
+bool igdeGameDefinitionList::Has(igdeGameDefinition *gameDefinition) const{
+	return pGameDefinitions.Has(gameDefinition);
 }
 
-bool igdeGameDefinitionList::HasWithID( const char *id ) const{
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+bool igdeGameDefinitionList::HasWithID(const char *id) const{
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pGameDefinitions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeGameDefinition* )pGameDefinitions.GetAt( i ) )->GetID() == id ){
+	for(i=0; i<count; i++){
+		if(((igdeGameDefinition*)pGameDefinitions.GetAt(i))->GetID() == id){
 			return true;
 		}
 	}
@@ -105,15 +105,15 @@ bool igdeGameDefinitionList::HasWithID( const char *id ) const{
 	return false;
 }
 
-void igdeGameDefinitionList::Add( igdeGameDefinition *gameDefinition ){
-	if( ! gameDefinition || HasWithID( gameDefinition->GetID() ) ){
-		DETHROW( deeInvalidParam );
+void igdeGameDefinitionList::Add(igdeGameDefinition *gameDefinition){
+	if(! gameDefinition || HasWithID(gameDefinition->GetID())){
+		DETHROW(deeInvalidParam);
 	}
-	pGameDefinitions.Add( gameDefinition );
+	pGameDefinitions.Add(gameDefinition);
 }
 
-void igdeGameDefinitionList::Remove( igdeGameDefinition *gameDefinition ){
-	pGameDefinitions.Remove( gameDefinition );
+void igdeGameDefinitionList::Remove(igdeGameDefinition *gameDefinition){
+	pGameDefinitions.Remove(gameDefinition);
 }
 
 void igdeGameDefinitionList::RemoveAll(){
@@ -125,7 +125,7 @@ void igdeGameDefinitionList::RemoveAll(){
 // Operators
 //////////////
 
-igdeGameDefinitionList &igdeGameDefinitionList::operator=( const igdeGameDefinitionList &list ){
+igdeGameDefinitionList &igdeGameDefinitionList::operator=(const igdeGameDefinitionList &list){
 	pGameDefinitions = list.pGameDefinitions;
 	return *this;
 }

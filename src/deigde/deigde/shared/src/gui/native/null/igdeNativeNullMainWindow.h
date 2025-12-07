@@ -43,13 +43,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeNullMainWindow( igdeMainWindow &owner );
+	igdeNativeNullMainWindow(igdeMainWindow &owner);
 	
 	/** \brief Clean up container. */
 	virtual ~igdeNativeNullMainWindow();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullMainWindow* CreateNativeWidget( igdeMainWindow &owner );
+	static igdeNativeNullMainWindow* CreateNativeWidget(igdeMainWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief System color. */
-	decColor GetSystemColor( igdeEnvironment::eSystemColors color ) const;
+	decColor GetSystemColor(igdeEnvironment::eSystemColors color) const;
 	
 	/** \brief Update window state. */
 	void UpdateWindowState();
@@ -87,7 +87,7 @@ public:
 	void SetWindowState();
 	
 	/** \brief Get main app font config. */
-	static void GetAppFontConfig( igdeFont::sConfiguration &config );
+	static void GetAppFontConfig(igdeFont::sConfiguration &config);
 	/*@}*/
 };
 

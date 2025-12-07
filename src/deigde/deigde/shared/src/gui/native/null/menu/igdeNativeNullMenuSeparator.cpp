@@ -39,7 +39,7 @@ igdeNativeNullMenuSeparator::igdeNativeNullMenuSeparator(){
 igdeNativeNullMenuSeparator::~igdeNativeNullMenuSeparator(){
 }
 
-igdeNativeNullMenuSeparator *igdeNativeNullMenuSeparator::CreateNativeWidget( igdeMenuSeparator& ){
+igdeNativeNullMenuSeparator *igdeNativeNullMenuSeparator::CreateNativeWidget(igdeMenuSeparator&){
 	return new igdeNativeNullMenuSeparator;
 }
 

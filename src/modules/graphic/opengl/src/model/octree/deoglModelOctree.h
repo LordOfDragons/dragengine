@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new octree. */
-	deoglModelOctree( const decVector &center, const decVector &halfExtend );
+	deoglModelOctree(const decVector &center, const decVector &halfExtend);
 	/** Cleans up the octree. */
 	virtual ~deoglModelOctree();
 	/*@}*/
@@ -57,25 +57,25 @@ public:
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual deoglOctree *CreateOctree( int octant ) const;
+	virtual deoglOctree *CreateOctree(int octant) const;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent();
 	/** Clears all faces from the tree. */
 	void ClearFaces();
 	/** Adds a face into the octree. */
-	void InsertFaceIntoTree( deoglModelFace *face, int maxDepth );
+	void InsertFaceIntoTree(deoglModelFace *face, int maxDepth);
 	
 	/** TEMPORARY HACK!. */
-	void VisitNodesCollidingVolume( deoglModelOctreeVisitor &visitor, deoglCollisionVolume &volume );
+	void VisitNodesCollidingVolume(deoglModelOctreeVisitor &visitor, deoglCollisionVolume &volume);
 	
 	/** Retrieves the list of faces. */
-	inline deoglModelFaceList &GetFaceList(){ return pFaces; }
-	inline const deoglModelFaceList &GetFaceList() const{ return pFaces; }
+	inline deoglModelFaceList &GetFaceList(){return pFaces;}
+	inline const deoglModelFaceList &GetFaceList() const{return pFaces;}
 	/*@}*/
 	
 private:
-	deoglModelOctree *pGetNodeFor( const decVector &center, const decVector &halfExtend, int maxDepth );
-	deoglModelOctree *pGetNodeFor( const decVector &position, int maxDepth );
+	deoglModelOctree *pGetNodeFor(const decVector &center, const decVector &halfExtend, int maxDepth);
+	deoglModelOctree *pGetNodeFor(const decVector &position, int maxDepth);
 };
 
 #endif

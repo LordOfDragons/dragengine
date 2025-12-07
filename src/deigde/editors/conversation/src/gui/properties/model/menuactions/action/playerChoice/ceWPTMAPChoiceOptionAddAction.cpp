@@ -39,18 +39,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAPChoiceOptionAddAction::ceWPTMAPChoiceOptionAddAction( ceWindowMain &windowMain,
+ceWPTMAPChoiceOptionAddAction::ceWPTMAPChoiceOptionAddAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
 ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption &option,
-ceConversationAction::eActionTypes actionType, int index ) :
-ceWPTMACreateAction( windowMain, conversation, actionType ),
-pTopic( &topic ),
-pPlayerChoice( &playerChoice ),
-pOption( &option ),
-pIndex( index )
+ceConversationAction::eActionTypes actionType, int index) :
+ceWPTMACreateAction(windowMain, conversation, actionType),
+pTopic(&topic),
+pPlayerChoice(&playerChoice),
+pOption(&option),
+pIndex(index)
 {
-	if( index < 0 || index > option.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > option.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -59,6 +59,6 @@ pIndex( index )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAPChoiceOptionAddAction::CreateUndo( ceConversationAction *action ){
-	return new ceUCAPChoiceActionAdd( pTopic, pPlayerChoice, pOption, action, pIndex );
+igdeUndo *ceWPTMAPChoiceOptionAddAction::CreateUndo(ceConversationAction *action){
+	return new ceUCAPChoiceActionAdd(pTopic, pPlayerChoice, pOption, action, pIndex);
 }

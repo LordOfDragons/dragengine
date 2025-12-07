@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetPosFrom::ceUCCShotSetPosFrom( ceCameraShot *cameraShot, const decVector &newPos ){
-	if( ! cameraShot ){
-		DETHROW( deeInvalidParam );
+ceUCCShotSetPosFrom::ceUCCShotSetPosFrom(ceCameraShot *cameraShot, const decVector &newPos){
+	if(! cameraShot){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set Start Position" );
+	SetShortInfo("Camera Shot Set Start Position");
 	
 	pOldPos = cameraShot->GetPositionFrom();
 	pNewPos = newPos;
@@ -56,7 +56,7 @@ ceUCCShotSetPosFrom::ceUCCShotSetPosFrom( ceCameraShot *cameraShot, const decVec
 }
 
 ceUCCShotSetPosFrom::~ceUCCShotSetPosFrom(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ ceUCCShotSetPosFrom::~ceUCCShotSetPosFrom(){
 ///////////////
 
 void ceUCCShotSetPosFrom::Undo(){
-	pCameraShot->SetPositionFrom( pOldPos );
+	pCameraShot->SetPositionFrom(pOldPos);
 }
 
 void ceUCCShotSetPosFrom::Redo(){
-	pCameraShot->SetPositionFrom( pNewPos );
+	pCameraShot->SetPositionFrom(pNewPos);
 }

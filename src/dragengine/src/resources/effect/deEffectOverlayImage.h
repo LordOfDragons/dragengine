@@ -47,7 +47,7 @@ public:
 	
 private:
 	deImage::Ref pImage;
-	decVector2 pTexCoords[ 4 ];
+	decVector2 pTexCoords[4];
 	float pTransparency;
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create effect overlay image. */
-	deEffectOverlayImage( deEffectManager *manager );
+	deEffectOverlayImage(deEffectManager *manager);
 	
 protected:
 	/**
@@ -74,28 +74,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline deImage *GetImage() const{return pImage;}
 	
 	/** \brief Set image or NULL if not set. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/**
 	 * \brief Texture coordinates for corner.
 	 * \throw deeOutOfBoundary \em corner is less than 0 or greater than 3.
 	 */
-	const decVector2 &GetTextureCoordinatesFor( int corner ) const;
+	const decVector2 &GetTextureCoordinatesFor(int corner) const;
 	
 	/**
 	 * \brief Set texture coordinates for corner.
 	 * \throw deeOutOfBoundary \em corner is less than 0 or greater than 3.
 	 */
-	void SetTextureCoordinatesFor( int corner, const decVector2 &textureCoordinates );
+	void SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates);
 	
 	/** \brief Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** \brief Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	/*@}*/
 	
 	
@@ -103,7 +103,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	virtual void Visit(deEffectVisitor &visitor);
 	/*@}*/
 };
 

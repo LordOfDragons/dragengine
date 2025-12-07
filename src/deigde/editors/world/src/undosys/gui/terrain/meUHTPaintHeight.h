@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTPaintHeight( int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, float *oldHeights );
+	meUHTPaintHeight(int drawMode, meWorld *world, const decPoint &sector, const decPoint &grid, const decPoint &size, float *oldHeights);
 	/** \brief Clean up object. */
 	virtual ~meUHTPaintHeight();
 	/*@}*/
@@ -74,7 +74,7 @@ public:
 private:
 	void pCleanUp();
 	void pSaveHeights();
-	void pRestoreHeights( float *heights );
+	void pRestoreHeights(float *heights);
 };
 
 // end of include only once

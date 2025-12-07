@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create connection. */
-	fbxRigBone( fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel );
+	fbxRigBone(fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel);
 	
 protected:
 	/** \brief Clean up connection. */
@@ -90,55 +90,55 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Rig. */
-	inline fbxRig &GetRig() const{ return pRig; }
+	inline fbxRig &GetRig() const{return pRig;}
 	
 	/** \brief Pose bone node. */
-	inline fbxNode &GetNodePoseBone() const{ return pNodePoseBone; }
+	inline fbxNode &GetNodePoseBone() const{return pNodePoseBone;}
 	
 	/** \brief Model node. */
-	inline fbxNode &GetNodeModel() const{ return pNodeModel; }
+	inline fbxNode &GetNodeModel() const{return pNodeModel;}
 	
 	/** \brief Bone name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Set bone name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Node model ID. */
-	inline int64_t GetNodeModelID() const{ return pNodeModelID; }
+	inline int64_t GetNodeModelID() const{return pNodeModelID;}
 	
 	/** \brief Parent or NULL. */
-	inline fbxRigBone *GetParent() const{ return pParent; }
+	inline fbxRigBone *GetParent() const{return pParent;}
 	
 	/** \brief Fbx matrix. */
-	inline const decMatrix &GetFbxMatrix() const{ return pFbxMatrix; }
+	inline const decMatrix &GetFbxMatrix() const{return pFbxMatrix;}
 	
 	/** \brief World matrix. */
-	inline const decMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** \brief Inverse matrix. */
-	inline const decMatrix &GetMatrixInverse() const{ return pMatrixInverse; }
+	inline const decMatrix &GetMatrixInverse() const{return pMatrixInverse;}
 	
 	/** \brief Bone matrix relative to parent. */
-	inline const decMatrix &GetBoneMatrix() const{ return pBoneMatrix; }
+	inline const decMatrix &GetBoneMatrix() const{return pBoneMatrix;}
 	
 	/** \brief Animation calculation matrix. */
-	inline const decMatrix &GetAnimMatrix() const{ return pAnimMatrix; }
+	inline const decMatrix &GetAnimMatrix() const{return pAnimMatrix;}
 	
 	/** \brief Position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Rotation order. */
-	inline fbxScene::eRotationOrder GetRotationOrder() const{ return pRotationOrder; }
+	inline fbxScene::eRotationOrder GetRotationOrder() const{return pRotationOrder;}
 	
 	
 	
@@ -146,7 +146,7 @@ public:
 	void Prepare();
 	
 	/** \brief Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

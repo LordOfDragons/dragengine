@@ -107,7 +107,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPLayer( seWindowProperties &windowProperties );
+	seWPLayer(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -120,10 +120,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Monitored sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline seSky *GetSky() const{return pSky;}
 	
 	/** \brief Set sky to monitor. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Sky path changed. */
 	void OnSkyPathChanged();
@@ -164,18 +164,18 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLayerAdd() const{ return pActionLayerAdd; }
-	inline igdeAction *GetActionLayerRemove() const{ return pActionLayerRemove; }
-	inline igdeAction *GetActionLayerUp() const{ return pActionLayerUp; }
-	inline igdeAction *GetActionLayerDown() const{ return pActionLayerDown; }
+	inline igdeAction *GetActionLayerAdd() const{return pActionLayerAdd;}
+	inline igdeAction *GetActionLayerRemove() const{return pActionLayerRemove;}
+	inline igdeAction *GetActionLayerUp() const{return pActionLayerUp;}
+	inline igdeAction *GetActionLayerDown() const{return pActionLayerDown;}
 	
-	inline igdeAction *GetActionBodyAdd() const{ return pActionBodyAdd; }
-	inline igdeAction *GetActionBodyRemove() const{ return pActionBodyRemove; }
-	inline igdeAction *GetActionBodyUp() const{ return pActionBodyUp; }
-	inline igdeAction *GetActionBodyDown() const{ return pActionBodyDown; }
+	inline igdeAction *GetActionBodyAdd() const{return pActionBodyAdd;}
+	inline igdeAction *GetActionBodyRemove() const{return pActionBodyRemove;}
+	inline igdeAction *GetActionBodyUp() const{return pActionBodyUp;}
+	inline igdeAction *GetActionBodyDown() const{return pActionBodyDown;}
 	
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline igdeAction *GetActionLinkAdd() const{return pActionLinkAdd;}
+	inline igdeAction *GetActionLinkRemove() const{return pActionLinkRemove;}
 	/*@}*/
 };
 

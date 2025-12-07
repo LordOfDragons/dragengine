@@ -44,25 +44,25 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnValueFloat::debnValueFloat( deNetworkValueFloat &valueFloat ) :
-pValueFloat( valueFloat ),
-pLastValue( valueFloat.GetFloat() )
+debnValueFloat::debnValueFloat(deNetworkValueFloat &valueFloat) :
+pValueFloat(valueFloat),
+pLastValue(valueFloat.GetFloat())
 {
-	switch( valueFloat.GetFormat() ){
+	switch(valueFloat.GetFormat()){
 	case deNetworkValue::evfFloat16:
-		SetDataType( evtFloat16 );
+		SetDataType(evtFloat16);
 		break;
 		
 	case deNetworkValue::evfFloat32:
-		SetDataType( evtFloat32 );
+		SetDataType(evtFloat32);
 		break;
 		
 	case deNetworkValue::evfFloat64:
-		SetDataType( evtFloat64 );
+		SetDataType(evtFloat64);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -74,8 +74,8 @@ debnValueFloat::~debnValueFloat(){
 // Management
 ///////////////
 
-bool debnValueFloat::UpdateValue( bool force ){
-	if( ! force && fabs( pValueFloat.GetFloat() - pLastValue ) <= pValueFloat.GetPrecision() ){
+bool debnValueFloat::UpdateValue(bool force){
+	if(! force && fabs(pValueFloat.GetFloat() - pLastValue) <= pValueFloat.GetPrecision()){
 		return false;
 	}
 	
@@ -83,10 +83,10 @@ bool debnValueFloat::UpdateValue( bool force ){
 	return true;
 }
 
-void debnValueFloat::ReadValue( decBaseFileReader &reader ){
-	switch( GetDataType() ){
+void debnValueFloat::ReadValue(decBaseFileReader &reader){
+	switch(GetDataType()){
 	case evtFloat16:
-		pLastValue = halfToFloat( reader.ReadUShort() );
+		pLastValue = halfToFloat(reader.ReadUShort());
 		break;
 		
 	case evtFloat32:
@@ -101,21 +101,21 @@ void debnValueFloat::ReadValue( decBaseFileReader &reader ){
 		return;
 	}
 	
-	pValueFloat.SetFloat( pLastValue );
+	pValueFloat.SetFloat(pLastValue);
 }
 
-void debnValueFloat::WriteValue( decBaseFileWriter &writer ){
-	switch( GetDataType() ){
+void debnValueFloat::WriteValue(decBaseFileWriter &writer){
+	switch(GetDataType()){
 	case evtFloat16:
-		writer.WriteUShort( floatToHalf( ( float )pValueFloat.GetFloat() ) );
+		writer.WriteUShort(floatToHalf((float)pValueFloat.GetFloat()));
 		break;
 		
 	case evtFloat32:
-		writer.WriteFloat( ( float )pValueFloat.GetFloat() );
+		writer.WriteFloat((float)pValueFloat.GetFloat());
 		break;
 		
 	case evtFloat64:
-		writer.WriteDouble( pValueFloat.GetFloat() );
+		writer.WriteDouble(pValueFloat.GetFloat());
 		break;
 		
 	default:

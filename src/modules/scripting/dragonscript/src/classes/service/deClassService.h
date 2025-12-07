@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create class. */
-	deClassService( deScriptingDragonScript &ds );
+	deClassService(deScriptingDragonScript &ds);
 	
 	/** Clean up class. */
 	virtual ~deClassService();
@@ -57,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Service or nullptr if myself is nullptr. */
-	deService *GetService( dsRealObject *myself ) const;
+	deService *GetService(dsRealObject *myself) const;
 	
 	/** Push service which can be nullptr. */
-	void PushService( dsRunTime *rt, deService *service );
+	void PushService(dsRunTime *rt, deService *service);
 	
 	/** Next identifier. */
 	decUniqueID NextId();
@@ -89,28 +89,28 @@ private:
 		dsClass *clsServiceListener;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetName );
+	DEF_NATFUNC(nfGetName);
 	
-	DEF_NATFUNC( nfGetListener );
-	DEF_NATFUNC( nfSetListener );
+	DEF_NATFUNC(nfGetListener);
+	DEF_NATFUNC(nfSetListener);
 	
-	DEF_NATFUNC( nfNextId );
-	DEF_NATFUNC( nfStartRequest );
-	DEF_NATFUNC( nfStartRequest2 );
-	DEF_NATFUNC( nfCancelRequest );
-	DEF_NATFUNC( nfRunAction );
+	DEF_NATFUNC(nfNextId);
+	DEF_NATFUNC(nfStartRequest);
+	DEF_NATFUNC(nfStartRequest2);
+	DEF_NATFUNC(nfCancelRequest);
+	DEF_NATFUNC(nfRunAction);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

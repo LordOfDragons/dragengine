@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new virtual file system list item. */
-	igdeNativeFoxVFSListItem( const decPath &path, const FXString &text, FXIcon *bi=NULL, FXIcon *mi=NULL );
+	igdeNativeFoxVFSListItem(const decPath &path, const FXString &text, FXIcon *bi=NULL, FXIcon *mi=NULL);
 	/** \brief Cleans up the virtual file system list. */
 	virtual ~igdeNativeFoxVFSListItem();
 	/*@}*/
@@ -56,24 +56,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the path. */
-	inline const decPath &GetPath() const{ return pPath; }
+	inline const decPath &GetPath() const{return pPath;}
 	
 	/** \brief Retrieves the file name. */
-	inline const FXString &GetFileName() const{ return pFileName; }
+	inline const FXString &GetFileName() const{return pFileName;}
 	/** \brief Sets the file name. */
-	void SetFileName( const char *filename );
+	void SetFileName(const char *filename);
 	/** \brief Retrieves the file type. */
-	inline deVFSContainer::eFileTypes GetFileType() const{ return pFileType; }
+	inline deVFSContainer::eFileTypes GetFileType() const{return pFileType;}
 	/** \brief Sets the file type. */
-	void SetFileType( deVFSContainer::eFileTypes fileType );
+	void SetFileType(deVFSContainer::eFileTypes fileType);
 	/** \brief Retrieves the file size. */
-	inline int GetFileSize() const{ return pFileSize; }
+	inline int GetFileSize() const{return pFileSize;}
 	/** \brief Sets the file size. */
-	void SetFileSize( int fileSize );
+	void SetFileSize(int fileSize);
 	/** \brief Retrieves the file modification time. */
-	inline TIME_SYSTEM GetFileModificationTime() const{ return pFileModificationTime; }
+	inline TIME_SYSTEM GetFileModificationTime() const{return pFileModificationTime;}
 	/** \brief Sets the file modification time. */
-	void SetFileModificationTime( TIME_SYSTEM time );
+	void SetFileModificationTime(TIME_SYSTEM time);
 	
 	/** \brief Determines if this is a directory. */
 	bool IsDirectory() const;
@@ -86,23 +86,23 @@ public:
 	 *          |m|file modification time|
 	 *          |t|file type|
 	 */
-	void UpdateText( const char *pattern );
+	void UpdateText(const char *pattern);
 	/*@}*/
 	
 	/** \name Sorting */
 	/*@{*/
 	/** \brief Sort ascending by file name. */
-	static FXint fSortNameAsc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortNameAsc(const FXIconItem *item1, const FXIconItem *item2);
 	/** \brief Sort descending by file name. */
-	static FXint fSortNameDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortNameDesc(const FXIconItem *item1, const FXIconItem *item2);
 	/** \brief Sort ascending by file size. */
-	static FXint fSortSizeAsc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortSizeAsc(const FXIconItem *item1, const FXIconItem *item2);
 	/** \brief Sort descending by file size. */
-	static FXint fSortSizeDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortSizeDesc(const FXIconItem *item1, const FXIconItem *item2);
 	/** \brief Sort ascending by file modification time. */
-	static FXint fSortModTimeAsc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortModTimeAsc(const FXIconItem *item1, const FXIconItem *item2);
 	/** \brief Sort descending by file modification time. */
-	static FXint fSortModTimeDesc( const FXIconItem *item1, const FXIconItem *item2 );
+	static FXint fSortModTimeDesc(const FXIconItem *item1, const FXIconItem *item2);
 	/*@}*/
 };
 

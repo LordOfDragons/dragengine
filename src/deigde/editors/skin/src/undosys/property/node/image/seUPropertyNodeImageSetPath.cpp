@@ -39,15 +39,15 @@
 ////////////////////////////
 
 seUPropertyNodeImageSetPath::seUPropertyNodeImageSetPath(
-sePropertyNodeImage *node, const char *newValue ) :
-pNode( NULL ),
-pNewValue( newValue )
+sePropertyNodeImage *node, const char *newValue) :
+pNode(NULL),
+pNewValue(newValue)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Node image set path" );
+	SetShortInfo("Node image set path");
 	
 	pOldValue = node->GetPath();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 seUPropertyNodeImageSetPath::~seUPropertyNodeImageSetPath(){
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUPropertyNodeImageSetPath::~seUPropertyNodeImageSetPath(){
 ///////////////
 
 void seUPropertyNodeImageSetPath::Undo(){
-	pNode->SetPath( pOldValue );
+	pNode->SetPath(pOldValue);
 }
 
 void seUPropertyNodeImageSetPath::Redo(){
-	pNode->SetPath( pNewValue );
+	pNode->SetPath(pNewValue);
 }

@@ -56,19 +56,19 @@ public:
 	/** Retrieves the number of textures. */
 	int GetTextureCount() const;
 	/** Retrieves the texture at the given position. */
-	meObjectTexture *GetTextureAt( int position ) const;
+	meObjectTexture *GetTextureAt(int position) const;
 	/** Retrieves the index of the given texture or -1 if not found. */
-	int IndexOfTexture( meObjectTexture *texture ) const;
+	int IndexOfTexture(meObjectTexture *texture) const;
 	/** Determines if the given texture exists. */
-	bool HasTexture( meObjectTexture *texture );
+	bool HasTexture(meObjectTexture *texture);
 	/** Adds an texture throwing an exception if already existing. */
-	void AddTexture( meObjectTexture *texture );
+	void AddTexture(meObjectTexture *texture);
 	/** Adds an texture if not existing already. */
-	void AddTextureIfAbsent( meObjectTexture *texture );
+	void AddTextureIfAbsent(meObjectTexture *texture);
 	/** Removes an texture throwing an exception if not existing. */
-	void RemoveTexture( meObjectTexture *texture );
+	void RemoveTexture(meObjectTexture *texture);
 	/** Removes an texture if existing. */
-	void RemoveTextureIfPresent( meObjectTexture *texture );
+	void RemoveTextureIfPresent(meObjectTexture *texture);
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/*@}*/

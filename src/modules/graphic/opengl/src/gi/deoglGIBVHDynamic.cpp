@@ -43,20 +43,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglGIBVHDynamic::deoglGIBVHDynamic( deoglGIBVHLocal &bvhLocal ) :
-pGIBVHLocal( bvhLocal ),
-pTBONodeBox( NULL ),
-pTBOVertex( NULL ),
-pBlockUsageCount( 0 )
+deoglGIBVHDynamic::deoglGIBVHDynamic(deoglGIBVHLocal &bvhLocal) :
+pGIBVHLocal(bvhLocal),
+pTBONodeBox(NULL),
+pTBOVertex(NULL),
+pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32( bvhLocal.GetRenderThread(), 4 );
-		pTBONodeBox->SetDataCount( bvhLocal.GetTBONodeBox()->GetDataCount() );
+		pTBONodeBox = new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4);
+		pTBONodeBox->SetDataCount(bvhLocal.GetTBONodeBox()->GetDataCount());
 		
-		pTBOVertex = new deoglDynamicTBOFloat32( bvhLocal.GetRenderThread(), 4 );
-		pTBOVertex->SetDataCount( bvhLocal.GetTBOVertex()->GetDataCount() );
+		pTBOVertex = new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4);
+		pTBOVertex->SetDataCount(bvhLocal.GetTBOVertex()->GetDataCount());
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -73,54 +73,54 @@ deoglGIBVHDynamic::~deoglGIBVHDynamic(){
 
 void deoglGIBVHDynamic::UpdateBVHExtends(){
 	const deoglBVHNode * const rootNode = pGIBVHLocal.GetBVH().GetRootNode();
-	if( ! rootNode ){
+	if(! rootNode){
 		return;
 	}
 	
-	pCalcNodeExtends( *rootNode, pMinExtend, pMaxExtend );
-	pWriteNodeExtends( 0, pMinExtend, pMaxExtend );
+	pCalcNodeExtends(*rootNode, pMinExtend, pMaxExtend);
+	pWriteNodeExtends(0, pMinExtend, pMaxExtend);
 	
-	if( pBlockNode ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNode )->WriteToTBO();
+	if(pBlockNode){
+		((deoglDynamicTBOBlock*)(deObject*)pBlockNode)->WriteToTBO();
 	}
 }
 
-void deoglGIBVHDynamic::UpdateVertices( const oglModelPosition *positions, int count ){
-	if( count != pTBOVertex->GetPixelCount() ){
-		DETHROW( deeInvalidParam );
+void deoglGIBVHDynamic::UpdateVertices(const oglModelPosition *positions, int count){
+	if(count != pTBOVertex->GetPixelCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	float *data = pTBOVertex->GetDataFloat();
 	int i;
-	for( i=0; i<count; i++, data+=4 ){
-		const decVector &position = positions[ i ].position;
-		data[ 0 ] = position.x;
-		data[ 1 ] = position.y;
-		data[ 2 ] = position.z;
+	for(i=0; i<count; i++, data+=4){
+		const decVector &position = positions[i].position;
+		data[0] = position.x;
+		data[1] = position.y;
+		data[2] = position.z;
 		// data[ 3 ] = 0.0f;
 	}
 	
-	if( pBlockVertex ){
+	if(pBlockVertex){
 		pBlockVertex->WriteToTBO();
 	}
 }
 
-void deoglGIBVHDynamic::UpdateVertices( const oglVector3 *positions, int count ){
-	if( count != pTBOVertex->GetPixelCount() ){
-		DETHROW( deeInvalidParam );
+void deoglGIBVHDynamic::UpdateVertices(const oglVector3 *positions, int count){
+	if(count != pTBOVertex->GetPixelCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	float *data = pTBOVertex->GetDataFloat();
 	int i;
-	for( i=0; i<count; i++, data+=4 ){
-		const oglVector3 &position = positions[ i ];
-		data[ 0 ] = position.x;
-		data[ 1 ] = position.y;
-		data[ 2 ] = position.z;
+	for(i=0; i<count; i++, data+=4){
+		const oglVector3 &position = positions[i];
+		data[0] = position.x;
+		data[1] = position.y;
+		data[2] = position.z;
 		// data[ 3 ] = 0.0f;
 	}
 	
-	if( pBlockVertex ){
+	if(pBlockVertex){
 		pBlockVertex->WriteToTBO();
 	}
 }
@@ -128,27 +128,27 @@ void deoglGIBVHDynamic::UpdateVertices( const oglVector3 *positions, int count )
 
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockNode(){
-	if( ! pBlockNode ){
-		pBlockNode.TakeOver( pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBONode()
-			->AddBlock( pGIBVHLocal.GetTBOIndex(), pTBONodeBox ) );
+	if(! pBlockNode){
+		pBlockNode.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBONode()
+			->AddBlock(pGIBVHLocal.GetTBOIndex(), pTBONodeBox));
 	}
 	return pBlockNode;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockVertex(){
-	if( ! pBlockVertex ){
-		pBlockVertex.TakeOver( pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBOVertex()
-			->AddBlock( pTBOVertex ) );
+	if(! pBlockVertex){
+		pBlockVertex.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBOVertex()
+			->AddBlock(pTBOVertex));
 	}
 	return pBlockVertex;
 }
 
 void deoglGIBVHDynamic::DropBlocks(){
-	if( pBlockNode ){
+	if(pBlockNode){
 		pBlockNode->Drop();
 		pBlockNode = NULL;
 	}
-	if( pBlockVertex ){
+	if(pBlockVertex){
 		pBlockVertex->Drop();
 		pBlockVertex = NULL;
 	}
@@ -159,12 +159,12 @@ void deoglGIBVHDynamic::AddBlockUsage(){
 }
 
 void deoglGIBVHDynamic::RemoveBlockUsage(){
-	if( pBlockUsageCount == 0 ){
+	if(pBlockUsageCount == 0){
 		return;
 	}
 	
 	pBlockUsageCount--;
-	if( pBlockUsageCount == 0 ){
+	if(pBlockUsageCount == 0){
 		DropBlocks();
 	}
 }
@@ -177,79 +177,79 @@ void deoglGIBVHDynamic::RemoveBlockUsage(){
 void deoglGIBVHDynamic::pCleanUp(){
 	DropBlocks();
 	
-	if( pTBONodeBox ){
+	if(pTBONodeBox){
 		pTBONodeBox->FreeReference();
 	}
-	if( pTBOVertex ){
+	if(pTBOVertex){
 		pTBOVertex->FreeReference();
 	}
 }
 
-void deoglGIBVHDynamic::pCalcNodeExtends( const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend ){
+void deoglGIBVHDynamic::pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend){
 	const int primitiveCount = node.GetPrimitiveCount();
 	const int firstIndex = node.GetFirstIndex();
 	
-	if( primitiveCount == 0 ){
-		const deoglBVHNode &nodeLeft = pGIBVHLocal.GetBVH().GetNodeAt( firstIndex );
+	if(primitiveCount == 0){
+		const deoglBVHNode &nodeLeft = pGIBVHLocal.GetBVH().GetNodeAt(firstIndex);
 		decVector minExtendLeft, maxExtendLeft;
-		pCalcNodeExtends( nodeLeft, minExtendLeft, maxExtendLeft );
-		      pWriteNodeExtends( firstIndex, minExtendLeft, maxExtendLeft );
+		pCalcNodeExtends(nodeLeft, minExtendLeft, maxExtendLeft);
+		      pWriteNodeExtends(firstIndex, minExtendLeft, maxExtendLeft);
 		
-		const deoglBVHNode &nodeRight = pGIBVHLocal.GetBVH().GetNodeAt( firstIndex + 1 );
+		const deoglBVHNode &nodeRight = pGIBVHLocal.GetBVH().GetNodeAt(firstIndex + 1);
 		decVector minExtendRight, maxExtendRight;
-		pCalcNodeExtends( nodeRight, minExtendRight, maxExtendRight );
-		      pWriteNodeExtends( firstIndex + 1, minExtendRight, maxExtendRight );
+		pCalcNodeExtends(nodeRight, minExtendRight, maxExtendRight);
+		      pWriteNodeExtends(firstIndex + 1, minExtendRight, maxExtendRight);
 		
-		minExtend = minExtendLeft.Smallest( minExtendRight );
-		maxExtend = maxExtendLeft.Largest( maxExtendRight );
+		minExtend = minExtendLeft.Smallest(minExtendRight);
+		maxExtend = maxExtendLeft.Largest(maxExtendRight);
 		
 	}else{
 		const uint16_t *face = pGIBVHLocal.GetTBOFace()->GetDataUInt() + firstIndex * 4;
 		const float * const vertices = pTBOVertex->GetDataFloat();
 		int i;
 		
-		for( i=0; i<primitiveCount; i++, face+=4 ){
-			const float * const v1 = vertices + face[ 0 ] * 4;
-			const decVector p1( v1[ 0 ], v1[ 1 ], v1[ 2 ] );
-			if( i > 0 ){
-				minExtend.SetSmallest( p1 );
-				maxExtend.SetLargest( p1 );
+		for(i=0; i<primitiveCount; i++, face+=4){
+			const float * const v1 = vertices + face[0] * 4;
+			const decVector p1(v1[0], v1[1], v1[2]);
+			if(i > 0){
+				minExtend.SetSmallest(p1);
+				maxExtend.SetLargest(p1);
 				
 			}else{
 				minExtend = maxExtend = p1;
 			}
 			
-			const float * const v2 = vertices + face[ 1 ] * 4;
-			const decVector p2( v2[ 0 ], v2[ 1 ], v2[ 2 ] );
-			minExtend.SetSmallest( p2 );
-			maxExtend.SetLargest( p2 );
+			const float * const v2 = vertices + face[1] * 4;
+			const decVector p2(v2[0], v2[1], v2[2]);
+			minExtend.SetSmallest(p2);
+			maxExtend.SetLargest(p2);
 			
-			const float * const v3 = vertices + face[ 2 ] * 4;
-			const decVector p3( v3[ 0 ], v3[ 1 ], v3[ 2 ] );
-			minExtend.SetSmallest( p3 );
-			maxExtend.SetLargest( p3 );
+			const float * const v3 = vertices + face[2] * 4;
+			const decVector p3(v3[0], v3[1], v3[2]);
+			minExtend.SetSmallest(p3);
+			maxExtend.SetLargest(p3);
 		}
 		
 		// make sure boundaries have at least a minimum thickness or else ray casting code
 		// can fail to detect the box. slightly enlarging the box is fine enough and makes
 		// hitting boxes more robust
 		const float margin = 1e-5f; // 0.01mm
-		const decVector enlarge( decVector().Largest( decVector( margin, margin, margin ) - ( maxExtend - minExtend ) ) * 0.5f );
+		const decVector enlarge(decVector().Largest(decVector(margin, margin, margin) - (maxExtend - minExtend)) * 0.5f);
 		minExtend -= enlarge;
 		maxExtend += enlarge;
 	}
 }
 
-void deoglGIBVHDynamic::pWriteNodeExtends( int index, const decVector &minExtend, const decVector &maxExtend ){
+void deoglGIBVHDynamic::pWriteNodeExtends(int index, const decVector &minExtend, const decVector &maxExtend){
 	float * const data = pTBONodeBox->GetDataFloat() + index * 8;
 	
-	data[ 0 ] = minExtend.x;
-	data[ 1 ] = minExtend.y;
-	data[ 2 ] = minExtend.z;
+	data[0] = minExtend.x;
+	data[1] = minExtend.y;
+	data[2] = minExtend.z;
 	//data[ 3 ] = 0.0f;
 	
-	data[ 4 ] = maxExtend.x;
-	data[ 5 ] = maxExtend.y;
-	data[ 6 ] = maxExtend.z;
+	data[4] = maxExtend.x;
+	data[5] = maxExtend.y;
+	data[6] = maxExtend.z;
 	//data[ 7 ] = 0.0f;
 }

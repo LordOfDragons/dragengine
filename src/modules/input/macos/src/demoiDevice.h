@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	demoiDevice( deMacOSInput &module, eSources source );
+	demoiDevice(deMacOSInput &module, eSources source);
 	
 protected:
 	/** \brief Clean up device. */
@@ -90,89 +90,89 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief MacOS input module. */
-	inline deMacOSInput &GetModule() const{ return pModule; }
+	inline deMacOSInput &GetModule() const{return pModule;}
 	
     /** \brief Index. */
-    inline int GetIndex() const{ return pIndex; }
+    inline int GetIndex() const{return pIndex;}
     
     /** \brief Set index. */
-    void SetIndex( int index );
+    void SetIndex(int index);
     
     /** \brief Source. */
-    inline eSources GetSource() const{ return pSource; }
+    inline eSources GetSource() const{return pSource;}
     
 	
 	
 	/** \brief Device type. */
-	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
+	inline deInputDevice::eDeviceTypes GetType() const{return pType;}
 	
 	/** \brief Set device type. */
-	void SetType( deInputDevice::eDeviceTypes type );
+	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** \brief Identifier. */
- 	inline const decString &GetID() const{ return pID; }
+ 	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Set identifier. */
- 	void SetID( const char *id );
+ 	void SetID(const char *id);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	
 	
 	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
+	inline int GetButtonCount() const{return pButtonCount;}
 	
 	/** \brief Set number of buttons. */
-	void SetButtonCount( int count );
+	void SetButtonCount(int count);
 	
 	/** \brief Button at index. */
-	demoiDeviceButton &GetButtonAt( int index ) const;
+	demoiDeviceButton &GetButtonAt(int index) const;
 	
 	/** \brief Button with identifier or \em NULL if absent. */
-	demoiDeviceButton *GetButtonWithID( const char *id ) const;
+	demoiDeviceButton *GetButtonWithID(const char *id) const;
 	
 	/** \brief Index of button with identifier or -1 if absent. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	
     /** \brief Index of button with MO code or -1 if absent. */
-    int IndexOfButtonWithMOCode( int code ) const;
+    int IndexOfButtonWithMOCode(int code) const;
     
 	
 	
 	/** \brief Number of axiss. */
-	inline int GetAxisCount() const{ return pAxisCount; }
+	inline int GetAxisCount() const{return pAxisCount;}
 	
 	/** \brief Set number of axiss. */
-	void SetAxisCount( int count );
+	void SetAxisCount(int count);
 	
 	/** \brief Axis at index. */
-	demoiDeviceAxis &GetAxisAt( int index ) const;
+	demoiDeviceAxis &GetAxisAt(int index) const;
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
-	demoiDeviceAxis *GetAxisWithID( const char *id ) const;
+	demoiDeviceAxis *GetAxisWithID(const char *id) const;
 	
 	/** \brief Index of axis with identifier or -1 if absent. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	
     /** \brief Index of axis with MO code or -1 if absent. */
-    int IndexOfAxisWithMOCode( int code ) const;
+    int IndexOfAxisWithMOCode(int code) const;
     
     
     
     /** \brief One or more axis values are dirty. */
-    inline bool GetDirtyAxisValues() const{ return pDirtyAxisValues; }
+    inline bool GetDirtyAxisValues() const{return pDirtyAxisValues;}
     
     /** \brief Set if one or more axis values are dirty. */
-    void SetDirtyAxisValues( bool dirty );
+    void SetDirtyAxisValues(bool dirty);
     
 	
 	
 	/** \brief Update engine input device information. */
-	void GetInfo( deInputDevice &info ) const;
+	void GetInfo(deInputDevice &info) const;
     
     /** \brief Update device state. */
     virtual void Update();

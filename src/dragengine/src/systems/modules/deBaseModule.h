@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create base module. */
-	deBaseModule( deLoadableModule &loadableModule );
+	deBaseModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up base module. */
 	virtual ~deBaseModule();
@@ -81,34 +81,34 @@ public:
 	 * \param[in] index Index of the parameter
 	 * \param[in] parameter Object to fill with information about the parameter
 	 */
-	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual void GetParameterInfo(int index, deModuleParameter &parameter) const;
 	
 	/** \brief Index of named parameter or -1 if not found. */
-	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual int IndexOfParameterNamed(const char *name) const;
 	
 	/** \brief Value of named parameter. */
-	virtual decString GetParameterValue( const char *name ) const;
+	virtual decString GetParameterValue(const char *name) const;
 	
 	/** \brief Numeric value of named parameter. */
-	int GetParameterInt( const char *name ) const;
+	int GetParameterInt(const char *name) const;
 	
 	/** \brief Numeric value of named parameter. */
-	float GetParameterFloat( const char *name ) const;
+	float GetParameterFloat(const char *name) const;
 	
 	/** \brief Boolean value of named parameter. */
-	bool GetParameterBool( const char *name ) const;
+	bool GetParameterBool(const char *name) const;
 	
 	/** \brief Set value of named parameter. */
-	virtual void SetParameterValue( const char *name, const char *value );
+	virtual void SetParameterValue(const char *name, const char *value);
 	
 	/** \brief Set numeric value of named parameter. */
-	void SetParameterFloat( const char *name, float value );
+	void SetParameterFloat(const char *name, float value);
 	
 	/** \brief Set numeric value of named parameter. */
-	void SetParameterInt( const char *name, int value );
+	void SetParameterInt(const char *name, int value);
 	
 	/** \brief Set boolean value of named parameter. */
-	void SetParameterBool( const char *name, bool value );
+	void SetParameterBool(const char *name, bool value);
 	/*@}*/
 	
 	
@@ -142,7 +142,7 @@ public:
 	 * \param[in] command The command to send to the module as a list of arguments.
 	 * \param[out] answer Unicode string to hold the answer returned from the module.
 	 */
-	virtual void SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	virtual void SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	/*@}*/
 	
 	
@@ -189,7 +189,7 @@ public:
 	 * The stored files are kept across restarting the application. If the disk consumption
 	 * grows old files are automatically removed without asking first to keep the size limit.
 	 */
-	inline deVirtualFileSystem &GetVFS() const { return *pVFS; }
+	inline deVirtualFileSystem &GetVFS() const {return *pVFS;}
 	
 	/**
 	 * \brief Native path to read only shares directory.
@@ -207,46 +207,46 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Output information message on console. */
-	void LogInfo( const char *message );
+	void LogInfo(const char *message);
 	
 	/** \brief Output formated information message on console. */
-	void LogInfoFormat( const char *message, ... )
+	void LogInfoFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 		
 	/** \brief Output formated information message on console. */
-	void LogInfoFormatUsing( const char *message, va_list args );
+	void LogInfoFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output warning message on console. */
-	void LogWarn( const char *message );
+	void LogWarn(const char *message);
 	
 	/** \brief Output formated warning message on console. */
-	void LogWarnFormat( const char *message, ... )
+	void LogWarnFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 		
 	/** \brief Output formated warning message on console. */
-	void LogWarnFormatUsing( const char *message, va_list args );
+	void LogWarnFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output error message on console. */
-	void LogError( const char *message );
+	void LogError(const char *message);
 	
 	/** \brief Output formated error message on console. */
-	void LogErrorFormat( const char *message, ... )
+	void LogErrorFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 		
 	/** \brief Output formated error message on console. */
-	void LogErrorFormatUsing( const char *message, va_list args );
+	void LogErrorFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output exception as error message on console. */
-	void LogException( const deException &exception );
+	void LogException(const deException &exception);
 	/*@}*/
 	
 	
@@ -260,21 +260,21 @@ public:
 	 * \param[in] sourceLine The line number where the error occurred.
 	 * \return Created trace point or NULL if an error occurred.
 	 */
-	deErrorTracePoint *SetErrorTrace( const char *error, const char *sourceFunc, int sourceLine );
+	deErrorTracePoint *SetErrorTrace(const char *error, const char *sourceFunc, int sourceLine);
 	
 	/**
 	 * \brief Add trace point and sets the error if the trace is empty.
 	 * \param[in] exception Exception to use as source for the error information.
 	 * \return Created trace point or NULL if an error occurred.
 	 */
-	deErrorTracePoint *SetErrorTrace( const deException &exception );
+	deErrorTracePoint *SetErrorTrace(const deException &exception);
 	
 	/**
 	 * \brief Add trace point to the engine error trace with an empty error.
 	 * \param[in] sourceFunc Name of the source file where the error occurred.
 	 * \param[in] sourceLine The line number where the error occurred.
 	 */
-	deErrorTracePoint *AddErrorTracePoint( const char *sourceFunc, int sourceLine );
+	deErrorTracePoint *AddErrorTracePoint(const char *sourceFunc, int sourceLine);
 	/*@}*/
 	
 	

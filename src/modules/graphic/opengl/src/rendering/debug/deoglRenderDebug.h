@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderDebug( deoglRenderThread &renderThread );
+	deoglRenderDebug(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderDebug();
@@ -82,29 +82,29 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Debug font. */
-	inline deoglDebugFont &GetDebugFont() const{ return *pDebugFont; }
+	inline deoglDebugFont &GetDebugFont() const{return *pDebugFont;}
 	
 	
 	
 	/** Display texture. */
-	void DisplayTexture( deoglRenderPlan &plan, deoglTexture *texture, bool gammaCorrect );
+	void DisplayTexture(deoglRenderPlan &plan, deoglTexture *texture, bool gammaCorrect);
 	
 	/** Display texture level. */
-	void DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture *texture, int level, bool gammaCorrect );
+	void DisplayTextureLevel(deoglRenderPlan &plan, deoglTexture *texture, int level, bool gammaCorrect);
 	
 	/** Display array texture layer. */
-	void DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect );
+	void DisplayArrayTextureLayer(deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect);
 	
 	/** Display array texture layer. */
-	void DisplayArrayTextureLayerLevel( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, int level, bool gammaCorrect );
+	void DisplayArrayTextureLayerLevel(deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, int level, bool gammaCorrect);
 	
 	
 	
 	/** Render component static information as colored boxes. */
-	void RenderComponentsStatic( sRenderParameters &params );
+	void RenderComponentsStatic(sRenderParameters &params);
 	
 	/** Render component using a colored box using the component extends. */
-	void RenderComponentBox( sRenderParameters &params, deoglRComponent &component, const decColor &color );
+	void RenderComponentBox(sRenderParameters &params, deoglRComponent &component, const decColor &color);
 	
 	
 	
@@ -112,7 +112,7 @@ public:
 	void BeginRenderText();
 	
 	/** Add rendered text to TBO. */
-	void AddRenderText( const decPoint &viewport, const char *text, int x, int y, const decColor &color );
+	void AddRenderText(const decPoint &viewport, const char *text, int x, int y, const decColor &color);
 	
 	/** Finish render text. */
 	void EndRenderText();
@@ -123,7 +123,7 @@ public:
 	void BeginRenderRectangle();
 	
 	/** Add rendered filled rectangle to TBO. */
-	void AddRenderRectangle( const decPoint &viewport, int x1, int y1, int x2, int y2, const decColor &color );
+	void AddRenderRectangle(const decPoint &viewport, int x1, int y1, int x2, int y2, const decColor &color);
 	
 	/** Finish render filled rectangle. */
 	void EndRenderRectangle();

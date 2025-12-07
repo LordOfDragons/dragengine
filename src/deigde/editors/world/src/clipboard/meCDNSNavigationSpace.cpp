@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCDNSNavigationSpace::meCDNSNavigationSpace( meNavigationSpace *navspace ){
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+meCDNSNavigationSpace::meCDNSNavigationSpace(meNavigationSpace *navspace){
+	if(! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pPosition = navspace->GetPosition();
@@ -56,7 +56,7 @@ meCDNSNavigationSpace::~meCDNSNavigationSpace(){
 // Management
 ///////////////
 
-void meCDNSNavigationSpace::UpdateNavSpace( meNavigationSpace &navspace ) const{
-	navspace.SetPosition( pPosition );
-	navspace.SetOrientation( pOrientation );
+void meCDNSNavigationSpace::UpdateNavSpace(meNavigationSpace &navspace) const{
+	navspace.SetPosition(pPosition);
+	navspace.SetOrientation(pOrientation);
 }

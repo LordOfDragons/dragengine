@@ -531,7 +531,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 		rtframebuffer.Activate(fbo);
 		fbo->DetachAllImages();
 		
-		const GLenum buffers[1] = { GL_NONE };
+		const GLenum buffers[1] = {GL_NONE};
 		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
 		if(pFormat->GetIsDepth()){
 			fbo->AttachDepthTextureLevel((deoglTexture*)this, level);

@@ -100,7 +100,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	projPanelTestRun( projWindowMain &windowMain );
+	projPanelTestRun(projWindowMain &windowMain);
 	
 	/** \brief Clean up view. */
 	virtual ~projPanelTestRun();
@@ -111,16 +111,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline projProject *GetProject() const{return pProject;}
 	
 	/** \brief Set synthesizer. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	
 	/** \brief Test runner or \em NULL. */
-	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }
+	inline projTestRunner *GetTestRunner() const{return pTestRunner;}
 	
 	
 	
@@ -140,10 +140,10 @@ public:
 	void LoadConfig();
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** \brief Update logs. */
-	void UpdateLogs( bool lastLogs = false );
+	void UpdateLogs(bool lastLogs = false);
 	
 	/** \brief Clear logs. */
 	void ClearLogs();
@@ -161,7 +161,7 @@ public:
 	projProfile *GetSelectedProfile() const;
 	
 	/** \brief Select profile. */
-	void SelectProfile( projProfile *profile );
+	void SelectProfile(projProfile *profile);
 	
 	/** \brief Select launcher profile. */
 	void SelectLauncherProfile();

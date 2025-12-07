@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block list. */
-	deoglSharedSPBListUBO( deoglRenderThread &renderThread, deoglSPBlockUBO *layout );
+	deoglSharedSPBListUBO(deoglRenderThread &renderThread, deoglSPBlockUBO *layout);
 	/*@}*/
 	
 	

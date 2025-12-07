@@ -63,19 +63,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of states. */
-	inline int GetStateCount() const{ return pStateCount; }
+	inline int GetStateCount() const{return pStateCount;}
 	/** Sets the number of states. */
-	void SetStateCount( int count );
+	void SetStateCount(int count);
 	/** Retrieves the given state. */
-	dearBoneState *GetStateAt( int index ) const;
+	dearBoneState *GetStateAt(int index) const;
 	/** Retrieves the index of the state with the given rig bone name. */
-	int IndexOfStateNamed( const char *name ) const;
+	int IndexOfStateNamed(const char *name) const;
 	
 	/** Creates a copy of this list. */
 	dearBoneStateList *CreateCopy() const;
 	
 	/** Copy another state list to this list. */
-	void SetFrom( const dearBoneStateList &stateList );
+	void SetFrom(const dearBoneStateList &stateList);
 	
 	/** Updates the states. */
 	void UpdateStates();
@@ -83,19 +83,19 @@ public:
 	void MarkDirty();
 	
 	/** Updates the mappings. */
-	void UpdateMappings( const deAnimator &animator );
+	void UpdateMappings(const deAnimator &animator);
 	
 	/** Apply states to an engine component. */
-	void ApplyToComponent( deComponent *component ) const;
+	void ApplyToComponent(deComponent *component) const;
 	
 	/** Apply states to an engine component. */
-	void ApplyToComponent( deComponent *component, deAnimatorRule::eBlendModes blendMode, float blendFactor ) const;
+	void ApplyToComponent(deComponent *component, deAnimatorRule::eBlendModes blendMode, float blendFactor) const;
 	
 	/** Apply states to an animator module component. */
-	void ApplyToComponent( dearComponent &component ) const;
+	void ApplyToComponent(dearComponent &component) const;
 	
 	/** Apply states to an animator module component. */
-	void ApplyToComponent( dearComponent &component, deAnimatorRule::eBlendModes blendMode, float blendFactor ) const;
+	void ApplyToComponent(dearComponent &component, deAnimatorRule::eBlendModes blendMode, float blendFactor) const;
 	/*@}*/
 };
 

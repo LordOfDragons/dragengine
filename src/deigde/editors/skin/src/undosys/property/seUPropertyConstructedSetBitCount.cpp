@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount( seProperty *property, int newValue ) :
-pProperty( NULL ),
-pNewValue( newValue )
+seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount(seProperty *property, int newValue) :
+pProperty(NULL),
+pNewValue(newValue)
 {
-	if( ! property ){
-		DETHROW( deeInvalidParam );
+	if(! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Property constructed bit count" );
+	SetShortInfo("Property constructed bit count");
 	
 	pOldValue = property->GetNodeBitCount();
 	
@@ -55,7 +55,7 @@ pNewValue( newValue )
 }
 
 seUPropertyConstructedSetBitCount::~seUPropertyConstructedSetBitCount(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -66,9 +66,9 @@ seUPropertyConstructedSetBitCount::~seUPropertyConstructedSetBitCount(){
 ///////////////
 
 void seUPropertyConstructedSetBitCount::Undo(){
-	pProperty->SetNodeBitCount( pOldValue );
+	pProperty->SetNodeBitCount(pOldValue);
 }
 
 void seUPropertyConstructedSetBitCount::Redo(){
-	pProperty->SetNodeBitCount( pNewValue );
+	pProperty->SetNodeBitCount(pNewValue);
 }

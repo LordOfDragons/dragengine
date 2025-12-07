@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullGroupBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullGroupBox* CreateNativeWidget( igdeGroupBox &owner );
+	static igdeNativeNullGroupBox* CreateNativeWidget(igdeGroupBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

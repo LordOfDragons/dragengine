@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassCache( deScriptingDragonScript &ds );
+	deClassCache(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassCache();
@@ -59,13 +59,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Directories. */
-	inline decStringSet &GetDirectories(){ return pDirectories; }
+	inline decStringSet &GetDirectories(){return pDirectories;}
 	/*@}*/
 	
 	
@@ -86,18 +86,18 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfRead );
-	DEF_NATFUNC( nfWrite );
-	DEF_NATFUNC( nfDelete );
-	DEF_NATFUNC( nfDeleteAll );
+	DEF_NATFUNC(nfRead);
+	DEF_NATFUNC(nfWrite);
+	DEF_NATFUNC(nfDelete);
+	DEF_NATFUNC(nfDeleteAll);
 #undef DEF_NATFUNC
 };
 

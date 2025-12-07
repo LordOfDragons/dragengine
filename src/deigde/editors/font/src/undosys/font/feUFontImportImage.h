@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontImportImage( feFontImage *fontImage, deImage *newImage, const char *newPath );
+	feUFontImportImage(feFontImage *fontImage, deImage *newImage, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -83,8 +83,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pStoreColors( deImage &image, decColor *colors );
-	void pRestoreColors( deImage &image, decColor *colors );
+	void pStoreColors(deImage &image, decColor *colors);
+	void pRestoreColors(deImage &image, decColor *colors);
 };
 
 #endif

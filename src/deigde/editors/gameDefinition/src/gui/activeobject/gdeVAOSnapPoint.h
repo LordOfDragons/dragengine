@@ -58,8 +58,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object snap point. */
-	gdeVAOSnapPoint( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint );
+	gdeVAOSnapPoint(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCSnapPoint *ocsnapPoint);
 	
 protected:
 	/**
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pOCSnapPoint; }
+	inline gdeOCSnapPoint *GetOCSnapPoint() const{return pOCSnapPoint;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

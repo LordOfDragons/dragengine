@@ -40,7 +40,7 @@ public:
 	/*@{*/
 	/** \brief Condition to set active after condition is removed. */
 	static ceConversationCondition *ActivateConditionAfterRemove(
-		const ceConversationConditionList &list, ceConversationCondition *removedCondition );
+		const ceConversationConditionList &list, ceConversationCondition *removedCondition);
 	/*@}*/
 };
 

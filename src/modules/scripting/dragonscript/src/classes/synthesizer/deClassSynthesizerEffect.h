@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassSynthesizerEffect( deScriptingDragonScript &ds );
+	deClassSynthesizerEffect(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassSynthesizerEffect();
@@ -65,25 +65,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Effect or \em NULL if deleted or myself is \em NULL. */
-	deSynthesizerEffect *GetEffect( dsRealObject *myself ) const;
+	deSynthesizerEffect *GetEffect(dsRealObject *myself) const;
 	
 	/** \brief Assigns effect or \em NULL. */
-	void AssignEffect( dsRealObject *myself, deSynthesizerEffect *effect );
+	void AssignEffect(dsRealObject *myself, deSynthesizerEffect *effect);
 	
 	/** \brief Assigns synthesizer source or \em NULL. */
-	void AssignSource( dsRealObject *myself, deSynthesizerSource *source );
+	void AssignSource(dsRealObject *myself, deSynthesizerSource *source);
 	
 	/**
 	 * \brief Pushes a effect.
 	 * \details Delegates the call to the matching effect script class.
 	 */
-	void PushEffect( dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect );
+	void PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect);
 	/*@}*/
 	
 	
@@ -100,16 +100,16 @@ private:
 		dsClass *clsObject;
 	};
 	#define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfSetEnabled );
-	DEF_NATFUNC( nfSetStrength );
+	DEF_NATFUNC(nfSetEnabled);
+	DEF_NATFUNC(nfSetStrength);
 #undef DEF_NATFUNC
 };
 

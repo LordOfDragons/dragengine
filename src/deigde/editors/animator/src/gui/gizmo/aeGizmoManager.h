@@ -47,7 +47,7 @@ public:
 public:
 	/** \name Management */
 	/*@{*/
-	virtual igdeGizmo *GizmoFromColliderUserPointer( void *userPointer ) override;
+	virtual igdeGizmo *GizmoFromColliderUserPointer(void *userPointer) override;
 	/*@}*/
 };
 

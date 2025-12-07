@@ -45,12 +45,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeAdd::meUObjectShapeAdd( meObject *object, const char *property, const decShape &shape ){
-	if( ! object || ! property ){
-		DETHROW( deeInvalidParam );
+meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, const decShape &shape){
+	if(! object || ! property){
+		DETHROW(deeInvalidParam);
 	}
-	if( ! object->GetWorld() ){
-		DETHROW( deeInvalidParam );
+	if(! object->GetWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	igdeCodecPropertyString codec;
@@ -59,28 +59,28 @@ meUObjectShapeAdd::meUObjectShapeAdd( meObject *object, const char *property, co
 	
 	pObject = NULL;
 	
-	SetShortInfo( "Object-Shape add" );
-	SetLongInfo( "Object-Shape add" );
+	SetShortInfo("Object-Shape add");
+	SetLongInfo("Object-Shape add");
 	
-	pPropertyExists = object->GetProperties().Has( property );
-	if( pPropertyExists ){
-		pOldValue = object->GetProperties().GetAt( property );
+	pPropertyExists = object->GetProperties().Has(property);
+	if(pPropertyExists){
+		pOldValue = object->GetProperties().GetAt(property);
 	}
 	
-	codec.DecodeShapeList( pOldValue.GetString(), shapeList );
+	codec.DecodeShapeList(pOldValue.GetString(), shapeList);
 	
 	try{
 		copyShape = shape.Copy();
-		shapeList.Add( copyShape );
+		shapeList.Add(copyShape);
 		
-	}catch( const deException & ){
-		if( copyShape ){
+	}catch(const deException &){
+		if(copyShape){
 			delete copyShape;
 		}
 		throw;
 	}
 	
-	codec.EncodeShapeList( shapeList, pNewValue );
+	codec.EncodeShapeList(shapeList, pNewValue);
 	
 	pProperty = property;
 	pObject = object;
@@ -88,7 +88,7 @@ meUObjectShapeAdd::meUObjectShapeAdd( meObject *object, const char *property, co
 }
 
 meUObjectShapeAdd::~meUObjectShapeAdd(){
-	if( pObject ){
+	if(pObject){
 		pObject->FreeReference();
 	}
 }
@@ -99,14 +99,14 @@ meUObjectShapeAdd::~meUObjectShapeAdd(){
 ///////////////
 
 void meUObjectShapeAdd::Undo(){
-	if( pPropertyExists ){
-		pObject->SetProperty( pProperty.GetString(), pOldValue.GetString() );
+	if(pPropertyExists){
+		pObject->SetProperty(pProperty.GetString(), pOldValue.GetString());
 		
 	}else{
-		pObject->RemoveProperty( pProperty.GetString() );
+		pObject->RemoveProperty(pProperty.GetString());
 	}
 }
 
 void meUObjectShapeAdd::Redo(){
-	pObject->SetProperty( pProperty.GetString(), pNewValue.GetString() );
+	pObject->SetProperty(pProperty.GetString(), pNewValue.GetString());
 }

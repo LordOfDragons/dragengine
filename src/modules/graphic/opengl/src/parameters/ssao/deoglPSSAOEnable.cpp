@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSAOEnable::deoglPSSAOEnable( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "ssaoEnable" );
-	SetDescription( "Enables Screen Space Ambient Occlusion (SSAO)."
+deoglPSSAOEnable::deoglPSSAOEnable(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("ssaoEnable");
+	SetDescription("Enables Screen Space Ambient Occlusion (SSAO)."
 		" This adds gradual shadows near touching surfaces but works only for geometry visible on screen.");
-	SetCategory( ecBasic );
-	SetDisplayName( "SSAO" );
-	SetDefaultValue( "1" );
+	SetCategory(ecBasic);
+	SetDisplayName("SSAO");
+	SetDefaultValue("1");
 }
 
 deoglPSSAOEnable::~deoglPSSAOEnable(){
@@ -61,6 +61,6 @@ bool deoglPSSAOEnable::GetParameterBool(){
 	return pOgl.GetConfiguration().GetSSAOEnable();
 }
 
-void deoglPSSAOEnable::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetSSAOEnable( value );
+void deoglPSSAOEnable::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetSSAOEnable(value);
 }

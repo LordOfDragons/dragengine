@@ -75,7 +75,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	peeWindowCurves( peeWindowMain &windowMain );
+	peeWindowCurves(peeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -88,7 +88,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline peeWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Active type. */
 	peeType *GetType() const;
@@ -100,10 +100,10 @@ public:
 	eCurves GetCurve() const;
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline peeEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Update curve. */
 	void UpdateCurve();

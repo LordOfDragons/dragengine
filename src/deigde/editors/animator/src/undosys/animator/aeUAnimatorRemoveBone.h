@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUAnimatorRemoveBone( aeAnimator *animator, const char *pattern );
+	aeUAnimatorRemoveBone(aeAnimator *animator, const char *pattern);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUAnimatorRemoveBone();

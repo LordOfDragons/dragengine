@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeDialogBrowserSkin( igdeEnvironment &environment, const char *title = "Select Skin" );
+	igdeDialogBrowserSkin(igdeEnvironment &environment, const char *title = "Select Skin");
 	
 protected:
 	/** \brief Clean up selection dialog. */
@@ -58,24 +58,24 @@ public:
 	igdeGDSkin *GetSelectedSkin() const;
 	
 	/** \brief Set selected skin. */
-	void SetSelectedSkin( igdeGDSkin *gdSkin );
+	void SetSelectedSkin(igdeGDSkin *gdSkin);
 	
 	
 	
 	/** \brief Convenience method to select skin. */
-	static bool SelectSkin( igdeWidget *owner, igdeGDSkin* &skin, const char *title = "Select Skin" );
+	static bool SelectSkin(igdeWidget *owner, igdeGDSkin* &skin, const char *title = "Select Skin");
 	
 	/** \brief Convenience method to select skin. */
-	static bool SelectSkin( igdeWidget *owner, decString &skin, const char *title = "Select Skin" );
+	static bool SelectSkin(igdeWidget *owner, decString &skin, const char *title = "Select Skin");
 	/*@}*/
 	
 	
 	
 protected:
 	virtual igdeGDCategory *GetRootCategory() const;
-	virtual void AddItemsToList( igdeGDAddToListVisitor &visitor );
-	virtual void RebuildItemPreview( igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener );
-	virtual void GetSelectedItemInfo( decString &info );
+	virtual void AddItemsToList(igdeGDAddToListVisitor &visitor);
+	virtual void RebuildItemPreview(igdeGDPreviewManager &pvmgr, igdeGDPreviewListener *listener);
+	virtual void GetSelectedItemInfo(decString &info);
 };
 
 #endif

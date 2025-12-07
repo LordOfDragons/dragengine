@@ -40,16 +40,16 @@
 ////////////////////////////////
 
 // constructor, destructor
-deCrashRecoverySystem::deCrashRecoverySystem( deEngine *engine ) : deBaseSystem( engine, "Crash-Recovery", deModuleSystem::emtCrashRecovery ){
+deCrashRecoverySystem::deCrashRecoverySystem(deEngine *engine) : deBaseSystem(engine, "Crash-Recovery", deModuleSystem::emtCrashRecovery){
 	pActiveModule = NULL;
 }
 deCrashRecoverySystem::~deCrashRecoverySystem(){
 }
 
 // extend those
-void deCrashRecoverySystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseCrashRecoveryModule* )module->GetModule();
+void deCrashRecoverySystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseCrashRecoveryModule*)module->GetModule();
 }
 void deCrashRecoverySystem::ClearPermanents(){
 	deBaseSystem::ClearPermanents();
@@ -58,17 +58,17 @@ void deCrashRecoverySystem::ClearPermanents(){
 
 // overload those
 void deCrashRecoverySystem::PostStart(){
-	if( ! pActiveModule->Init() ) DETHROW( deeInvalidAction );
+	if(! pActiveModule->Init()) DETHROW(deeInvalidAction);
 }
 void deCrashRecoverySystem::PreStop(){
 	// remove all parallel tasks if present
-	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	GetEngine()->GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	pActiveModule->CleanUp();
 }
 
 // management
 bool deCrashRecoverySystem::RecoverFromError(){
-	if( ! GetIsRunning() ) return false;
+	if(! GetIsRunning()) return false;
 	return pActiveModule->RecoverFromError();
 }

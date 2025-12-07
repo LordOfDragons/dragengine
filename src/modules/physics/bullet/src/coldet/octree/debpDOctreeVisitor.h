@@ -46,7 +46,7 @@ public:
 	/** @name Visiting */
 	/*@{*/
 	/** Visits an octree node. */
-	virtual void VisitNode( debpDOctree *node, int intersection );
+	virtual void VisitNode(debpDOctree *node, int intersection);
 	/*@}*/
 };
 

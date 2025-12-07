@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCompSetVector::meUHTVRuleCompSetVector( meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector ){
-	if( ! vlayer || ! rule ) DETHROW( deeInvalidParam );
+meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector){
+	if(! vlayer || ! rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
 	pRule = NULL;
 	
-	SetShortInfo( "Vegetation Layer Rule Combine Set Vector" );
-	SetMemoryConsumption( sizeof( meUHTVRuleCompSetVector ) );
+	SetShortInfo("Vegetation Layer Rule Combine Set Vector");
+	SetMemoryConsumption(sizeof(meUHTVRuleCompSetVector));
 	
 	pOldVector = rule->GetVector();
 	pNewVector = nvector;
@@ -59,8 +59,8 @@ meUHTVRuleCompSetVector::meUHTVRuleCompSetVector( meHTVegetationLayer *vlayer, m
 }
 
 meUHTVRuleCompSetVector::~meUHTVRuleCompSetVector(){
-	if( pRule ) pRule->FreeReference();
-	if( pVLayer ) pVLayer->FreeReference();
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
 
 
@@ -69,11 +69,11 @@ meUHTVRuleCompSetVector::~meUHTVRuleCompSetVector(){
 ///////////////
 
 void meUHTVRuleCompSetVector::Undo(){
-	pRule->SetVector( pOldVector );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetVector(pOldVector);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleCompSetVector::Redo(){
-	pRule->SetVector( pNewVector );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetVector(pNewVector);
+	pVLayer->NotifyRuleChanged(pRule);
 }

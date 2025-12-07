@@ -117,7 +117,7 @@ private:
 	
 	bool pDirtyAxesValues;
 	
-	static Atom pXDeviceTypeAtoms[ dexsiDevice::exdtOther ];
+	static Atom pXDeviceTypeAtoms[dexsiDevice::exdtOther];
 	static bool pXDeviceTypeAtomsReady;
 	
 	
@@ -126,10 +126,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	dexsiDevice( deXSystemInput &module, eSources source );
+	dexsiDevice(deXSystemInput &module, eSources source);
 	
 	/** Create device from device information. */
-	dexsiDevice( deXSystemInput &module, const XIDeviceInfo &info );
+	dexsiDevice(deXSystemInput &module, const XIDeviceInfo &info);
 	
 protected:
 	/** Clean up device. */
@@ -142,51 +142,51 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** X-System input module. */
-	inline deXSystemInput &GetModule() const{ return pModule; }
+	inline deXSystemInput &GetModule() const{return pModule;}
 	
 	/** Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** Source. */
-	inline eSources GetSource() const{ return pSource; }
+	inline eSources GetSource() const{return pSource;}
 	
 	
 	
 	/** Device type. */
-	inline deInputDevice::eDeviceTypes GetType() const{ return pType; }
+	inline deInputDevice::eDeviceTypes GetType() const{return pType;}
 	
 	/** Set device type. */
-	void SetType( deInputDevice::eDeviceTypes type );
+	void SetType(deInputDevice::eDeviceTypes type);
 	
 	/** Identifier. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Display image. */
-	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{return pDisplayImage;}
 	
 	/** Display icons (deImage*). */
-	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	inline const decObjectOrderedSet &GetDisplayIcons() const{return pDisplayIcons;}
 	
 	/** Set display image and icons. */
-	void SetDisplayImages( const char *name );
+	void SetDisplayImages(const char *name);
 	
 	/** Display text. */
-	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	inline const decString &GetDisplayText() const{return pDisplayText;}
 	
 	/** Set display text. */
-	void SetDisplayText( const char *text );
+	void SetDisplayText(const char *text);
 	
 	
 	
@@ -194,22 +194,22 @@ public:
 	int GetButtonCount() const;
 	
 	/** Add button. */
-	void AddButton( dexsiDeviceButton *button );
+	void AddButton(dexsiDeviceButton *button);
 	
 	/** Button at index. */
-	dexsiDeviceButton *GetButtonAt( int index ) const;
+	dexsiDeviceButton *GetButtonAt(int index) const;
 	
 	/** Button with identifier or \em NULL if absent. */
-	dexsiDeviceButton *GetButtonWithID( const char *id ) const;
+	dexsiDeviceButton *GetButtonWithID(const char *id) const;
 	
 	/** Button with X11 code or \em NULL if absent. */
-	dexsiDeviceButton *GetButtonWithX11Code( int code ) const;
+	dexsiDeviceButton *GetButtonWithX11Code(int code) const;
 	
 	/** Index of button with identifier or -1 if absent. */
-	int IndexOfButtonWithID( const char *id ) const;
+	int IndexOfButtonWithID(const char *id) const;
 	
 	/** Index of button with X11 code or -1 if absent. */
-	int IndexOfButtonWithX11Code( int code ) const;
+	int IndexOfButtonWithX11Code(int code) const;
 	
 	
 	
@@ -217,22 +217,22 @@ public:
 	int GetAxisCount() const;
 	
 	/** Add axis. */
-	void AddAxis( dexsiDeviceAxis *axis );
+	void AddAxis(dexsiDeviceAxis *axis);
 	
 	/** Axis at index. */
-	dexsiDeviceAxis *GetAxisAt( int index ) const;
+	dexsiDeviceAxis *GetAxisAt(int index) const;
 	
 	/** Axis with identifier or \em NULL if absent. */
-	dexsiDeviceAxis *GetAxisWithID( const char *id ) const;
+	dexsiDeviceAxis *GetAxisWithID(const char *id) const;
 	
 	/** Axis with X11 code or \em NULL if absent. */
-	dexsiDeviceAxis *GetAxisWithX11Code( int code ) const;
+	dexsiDeviceAxis *GetAxisWithX11Code(int code) const;
 	
 	/** Index of axis with identifier or -1 if absent. */
-	int IndexOfAxisWithID( const char *id ) const;
+	int IndexOfAxisWithID(const char *id) const;
 	
 	/** Index of axis with X11 code or -1 if absent. */
-	int IndexOfAxisWithX11Code( int code ) const;
+	int IndexOfAxisWithX11Code(int code) const;
 	
 	
 	
@@ -240,46 +240,46 @@ public:
 	int GetFeedbackCount() const;
 	
 	/** Add feedback. */
-	void AddFeedback( dexsiDeviceFeedback *feedback );
+	void AddFeedback(dexsiDeviceFeedback *feedback);
 	
 	/** Feedback at index. */
-	dexsiDeviceFeedback *GetFeedbackAt( int index ) const;
+	dexsiDeviceFeedback *GetFeedbackAt(int index) const;
 	
 	/** Feedback with identifier or \em NULL if absent. */
-	dexsiDeviceFeedback *GetFeedbackWithID( const char *id ) const;
+	dexsiDeviceFeedback *GetFeedbackWithID(const char *id) const;
 	
 	/** Index of feedback with identifier or -1 if absent. */
-	int IndexOfFeedbackWithID( const char *id ) const;
+	int IndexOfFeedbackWithID(const char *id) const;
 	
 	
 	
 	/** First key code. */
-	inline int GetX11FirstKeyCode() const{ return pX11FirstKeyCode; }
+	inline int GetX11FirstKeyCode() const{return pX11FirstKeyCode;}
 	
 	/** Key code count. */
-	inline int GetX11KeyCodeCount() const{ return pX11KeyCodeCount; }
+	inline int GetX11KeyCodeCount() const{return pX11KeyCodeCount;}
 	
 	/** Reset key code map. */
-	void ResetX11KeyCodeMap( int firstKeyCode, int keyCodeCount );
+	void ResetX11KeyCodeMap(int firstKeyCode, int keyCodeCount);
 	
 	/** Set key code map entry. */
-	void SetLookupX11KeyCode( int keyCode, int button );
+	void SetLookupX11KeyCode(int keyCode, int button);
 	
 	/** Get button for key code or -1 if not found. */
-	int LookupX11KeyCode( int keyCode ) const;
+	int LookupX11KeyCode(int keyCode) const;
 	
 	
 	
 	/** One or more axes values are dirty. */
-	inline bool GetDirtyAxesValues() const{ return pDirtyAxesValues; }
+	inline bool GetDirtyAxesValues() const{return pDirtyAxesValues;}
 	
 	/** Set if one or more axes values are dirty. */
-	void SetDirtyAxesValues( bool dirty );
+	void SetDirtyAxesValues(bool dirty);
 	
 	
 	
 	/** Update engine input device information. */
-	void GetInfo( deInputDevice &info ) const;
+	void GetInfo(deInputDevice &info) const;
 	
 	/** Update device state. */
 	virtual void Update();

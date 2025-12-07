@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalClonePropertiesToSelected( const meDecalList &list, const decStringDictionary &propertyList );
+	meUDecalClonePropertiesToSelected(const meDecalList &list, const decStringDictionary &propertyList);
 	
 protected:
 	/** \brief Clean up undo decal. */
@@ -66,12 +66,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of decals to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline decObjectList &GetList(){return pList;}
+	inline const decObjectList &GetList() const{return pList;}
 	
 	/** \brief List of properties to apply. */
-	inline decStringDictionary &GetPropertyList(){ return pPropertyList; }
-	inline const decStringDictionary &GetPropertyList() const{ return pPropertyList; }
+	inline decStringDictionary &GetPropertyList(){return pPropertyList;}
+	inline const decStringDictionary &GetPropertyList() const{return pPropertyList;}
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -34,7 +34,7 @@ class igdeToolBarSeparator;
  * FOX Native separator.
  */
 class igdeNativeFoxToolBarSeparator : public FXSeparator{
-	FXDECLARE( igdeNativeFoxToolBarSeparator )
+	FXDECLARE(igdeNativeFoxToolBarSeparator)
 	
 protected:
 	igdeNativeFoxToolBarSeparator();
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxToolBarSeparator( igdeToolBarSeparator &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxToolBarSeparator(igdeToolBarSeparator &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxToolBarSeparator();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxToolBarSeparator* CreateNativeWidget( igdeToolBarSeparator &owner );
+	static igdeNativeFoxToolBarSeparator* CreateNativeWidget(igdeToolBarSeparator &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

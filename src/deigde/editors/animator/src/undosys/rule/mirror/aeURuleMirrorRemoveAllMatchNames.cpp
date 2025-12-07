@@ -33,20 +33,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleMirrorRemoveAllMatchNames::aeURuleMirrorRemoveAllMatchNames( aeRuleMirror *rule ) :
-pRule( rule )
+aeURuleMirrorRemoveAllMatchNames::aeURuleMirrorRemoveAllMatchNames(aeRuleMirror *rule) :
+pRule(rule)
 {
-	if( ! rule || rule->GetMatchNameCount() == 0 ){
-		DETHROW( deeInvalidAction );
+	if(! rule || rule->GetMatchNameCount() == 0){
+		DETHROW(deeInvalidAction);
 	}
 	
 	const int count = rule->GetMatchNameCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pMatchNames.Add( rule->GetMatchNameAt( i ) );
+	for(i=0; i<count; i++){
+		pMatchNames.Add(rule->GetMatchNameAt(i));
 	}
 	
-	SetShortInfo( "Mirror rule remove all match names" );
+	SetShortInfo("Mirror rule remove all match names");
 }
 
 aeURuleMirrorRemoveAllMatchNames::~aeURuleMirrorRemoveAllMatchNames(){
@@ -60,8 +60,8 @@ aeURuleMirrorRemoveAllMatchNames::~aeURuleMirrorRemoveAllMatchNames(){
 void aeURuleMirrorRemoveAllMatchNames::Undo(){
 	const int count = pMatchNames.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pRule->AddMatchName( ( aeRuleMirror::cMatchName* )pMatchNames.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pRule->AddMatchName((aeRuleMirror::cMatchName*)pMatchNames.GetAt(i));
 	}
 }
 

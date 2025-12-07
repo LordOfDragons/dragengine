@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	dewiDeviceWinRTController( deWindowsInput &module, wrgi::RawGameController const &controller );
+	dewiDeviceWinRTController(deWindowsInput &module, wrgi::RawGameController const &controller);
 	
 protected:
 	/** Clean up device. */
@@ -81,25 +81,25 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** NonRoamableId. */
-	inline const wrgi::RawGameController &GetController() const{ return pController; }
+	inline const wrgi::RawGameController &GetController() const{return pController;}
 
 	/** Update device state. */
 	virtual void Update();
 
 	/** Axis reading. */
-	double GetReadingAxis( int index ) const;
+	double GetReadingAxis(int index) const;
 
 	/** Switch position reading. */
-	wrgi::GameControllerSwitchPosition GetReadingSwitch( int index ) const;
+	wrgi::GameControllerSwitchPosition GetReadingSwitch(int index) const;
 
 	/** Button reading. */
-	bool GetReadingButton( int index ) const;
+	bool GetReadingButton(int index) const;
 
 	/** Reading time. */
-	inline DWORD GetReadingTime() const{ return pReadingTime; }
+	inline DWORD GetReadingTime() const{return pReadingTime;}
 
 	/** Battery report. Can be nullptr. */
-	inline const wrdp::BatteryReport &GetBatteryReport() const{ return pBatteryReport; }
+	inline const wrdp::BatteryReport &GetBatteryReport() const{return pBatteryReport;}
 	/*@}*/
 };
 

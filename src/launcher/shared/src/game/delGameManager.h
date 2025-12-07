@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game manager. */
-	delGameManager( delLauncher &launcher );
+	delGameManager(delLauncher &launcher);
 	
 	/** \brief Clean up game manager. */
 	~delGameManager();
@@ -65,14 +65,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Launcher. */
-	inline delLauncher &GetLauncher() const{ return pLauncher; }
+	inline delLauncher &GetLauncher() const{return pLauncher;}
 	
 	/** \brief Game list. */
-	inline delGameList &GetGames(){ return pGames; }
-	inline const delGameList &GetGames() const{ return pGames; }
+	inline delGameList &GetGames(){return pGames;}
+	inline const delGameList &GetGames() const{return pGames;}
 	
 	/** \brief Load list of games from game directory. */
-	void LoadGames( delEngineInstance &instance );
+	void LoadGames(delEngineInstance &instance);
 	
 	/** \brief Create default profile from the current engine state. */
 	void CreateDefaultProfile();
@@ -84,20 +84,20 @@ public:
 	void ApplyProfileChanges();
 	
 	/** \brief Load game from disk file. */
-	void LoadGameFromDisk( delEngineInstance &instance, const decString &path, delGameList &list );
+	void LoadGameFromDisk(delEngineInstance &instance, const decString &path, delGameList &list);
 	
 	/** \brief Profile list. */
-	inline delGameProfileList &GetProfiles(){ return pProfiles; }
-	inline const delGameProfileList &GetProfiles() const{ return pProfiles; }
+	inline delGameProfileList &GetProfiles(){return pProfiles;}
+	inline const delGameProfileList &GetProfiles() const{return pProfiles;}
 	
 	/** \brief Active profile or NULL if none is active. */
-	inline delGameProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline delGameProfile *GetActiveProfile() const{return pActiveProfile;}
 	
 	/** \brief Set active profile or NULL if none is active. */
-	void SetActiveProfile( delGameProfile *profile );
+	void SetActiveProfile(delGameProfile *profile);
 	
 	/** \brief Default profile. */
-	inline delGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }
+	inline delGameProfile *GetDefaultProfile() const{return pDefaultProfile;}
 	
 	/** \brief Pulse checking. */
 	void PulseChecking();
@@ -115,10 +115,10 @@ public:
 	
 	
 private:
-	void pScanGameDefFiles( delEngineInstance &instance, deVirtualFileSystem &vfs,
-		const decPath &baseDir, const decPath &directory );
+	void pScanGameDefFiles(delEngineInstance &instance, deVirtualFileSystem &vfs,
+		const decPath &baseDir, const decPath &directory);
 	
-	void pProcessFoundFiles( delEngineInstance &instance, const decPath &path );
+	void pProcessFoundFiles(delEngineInstance &instance, const decPath &path);
 };
 
 #endif

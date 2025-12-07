@@ -44,8 +44,8 @@
 //////////////////////////////
 
 decShapeVisitorIdentify::decShapeVisitorIdentify() :
-pShape( NULL ),
-pType( estUnknown ){
+pShape(NULL),
+pType(estUnknown){
 }
 
 decShapeVisitorIdentify::~decShapeVisitorIdentify(){
@@ -57,38 +57,38 @@ decShapeVisitorIdentify::~decShapeVisitorIdentify(){
 /////////////
 
 decShapeSphere &decShapeVisitorIdentify::CastToSphere() const{
-	if( pType != estSphere ){
-		DETHROW( deeInvalidParam );
+	if(pType != estSphere){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( decShapeSphere* )pShape );
+	return *((decShapeSphere*)pShape);
 }
 
 decShapeBox &decShapeVisitorIdentify::CastToBox() const{
-	if( pType != estBox ){
-		DETHROW( deeInvalidParam );
+	if(pType != estBox){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( decShapeBox* )pShape );
+	return *((decShapeBox*)pShape);
 }
 
 decShapeCylinder &decShapeVisitorIdentify::CastToCylinder() const{
-	if( pType != estCylinder ){
-		DETHROW( deeInvalidParam );
+	if(pType != estCylinder){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( decShapeCylinder* )pShape );
+	return *((decShapeCylinder*)pShape);
 }
 
 decShapeCapsule &decShapeVisitorIdentify::CastToCapsule() const{
-	if( pType != estCapsule ){
-		DETHROW( deeInvalidParam );
+	if(pType != estCapsule){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( decShapeCapsule* )pShape );
+	return *((decShapeCapsule*)pShape);
 }
 
 decShapeHull &decShapeVisitorIdentify::CastToHull() const{
-	if( pType != estHull ){
-		DETHROW( deeInvalidParam );
+	if(pType != estHull){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( decShapeHull* )pShape );
+	return *((decShapeHull*)pShape);
 }
 
 
@@ -98,32 +98,32 @@ void decShapeVisitorIdentify::Reset(){
 }
 
 
-void decShapeVisitorIdentify::VisitShape( decShape &shape ){
+void decShapeVisitorIdentify::VisitShape(decShape &shape){
 	pShape = &shape;
 	pType = estUnknown;
 }
 
-void decShapeVisitorIdentify::VisitShapeSphere( decShapeSphere &sphere ){
+void decShapeVisitorIdentify::VisitShapeSphere(decShapeSphere &sphere){
 	pShape = &sphere;
 	pType = estSphere;
 }
 
-void decShapeVisitorIdentify::VisitShapeBox( decShapeBox &box ){
+void decShapeVisitorIdentify::VisitShapeBox(decShapeBox &box){
 	pShape = &box;
 	pType = estBox;
 }
 
-void decShapeVisitorIdentify::VisitShapeCylinder( decShapeCylinder &cylinder ){
+void decShapeVisitorIdentify::VisitShapeCylinder(decShapeCylinder &cylinder){
 	pShape = &cylinder;
 	pType = estCylinder;
 }
 
-void decShapeVisitorIdentify::VisitShapeCapsule( decShapeCapsule &capsule ){
+void decShapeVisitorIdentify::VisitShapeCapsule(decShapeCapsule &capsule){
 	pShape = &capsule;
 	pType = estCapsule;
 }
 
-void decShapeVisitorIdentify::VisitShapeHull( decShapeHull &hull ){
+void decShapeVisitorIdentify::VisitShapeHull(decShapeHull &hull){
 	pShape = &hull;
 	pType = estHull;
 }

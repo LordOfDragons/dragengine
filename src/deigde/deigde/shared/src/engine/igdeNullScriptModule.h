@@ -40,7 +40,7 @@ public:
 	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
 		typedef deTObjectReference<cModule> Ref;
-		cModule( deModuleSystem *system );
+		cModule(deModuleSystem *system);
 		virtual ~cModule();
 		virtual void CreateModule();
 	};
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	igdeNullScriptModule( deLoadableModule &loadableModule );
+	igdeNullScriptModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
 	virtual ~igdeNullScriptModule();
@@ -85,7 +85,7 @@ public:
 	 * those requirements. After the Init function has exited the scripting
 	 * module is ready to operate the game.
 	 */
-	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	virtual bool Init(const char *scriptDirectory, const char *gameObject);
 	
 	/** \brief Shut down scripting module and frees all resources. */
 	virtual void ShutDown();
@@ -96,32 +96,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create peer for the given collider object. */
-	virtual deBaseScriptingCollider *CreateCollider( deCollider *collider );
+	virtual deBaseScriptingCollider *CreateCollider(deCollider *collider);
 	
 	/** \brief Create peer for the given server object. */
-	virtual deBaseScriptingServer *CreateServer( deServer *server );
+	virtual deBaseScriptingServer *CreateServer(deServer *server);
 	
 	/** \brief Create peer for the given connection object. */
-	virtual deBaseScriptingConnection *CreateConnection( deConnection *connection );
+	virtual deBaseScriptingConnection *CreateConnection(deConnection *connection);
 	
 	/** \brief Create peer for the given network state object. */
-	virtual deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state );
+	virtual deBaseScriptingNetworkState *CreateNetworkState(deNetworkState *state);
 	
 	/** \brief Create peer for the given touch sensor object. */
-	virtual deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor );
+	virtual deBaseScriptingTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor);
 	
 	/** \brief Create peer for the given prop field object. */
-	virtual deBaseScriptingPropField *CreatePropField( dePropField *propField );
+	virtual deBaseScriptingPropField *CreatePropField(dePropField *propField);
 	
 	/** \brief Create peer for the given particle emitter instance object or NULL if not used. */
 	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
-		deParticleEmitterInstance *instance );
+		deParticleEmitterInstance *instance);
 	
 	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter);
 	
 	/** \brief Create deSpeaker peer. */
-	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	virtual deBaseScriptingSpeaker *CreateSpeaker(deSpeaker *speaker);
 	
 	/**
 	 * \brief Initialize game scripts.
@@ -157,7 +157,7 @@ public:
 	 * \brief Send the given event to game scripts.
 	 * \return true if the call has been successfull or false otherwise
 	 */
-	virtual bool SendEvent( deInputEvent *event );
+	virtual bool SendEvent(deInputEvent *event);
 	
 	/**
 	 * \brief User requested window to be closed.

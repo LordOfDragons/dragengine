@@ -72,7 +72,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPController( aeWindowProperties &windowProperties );
+	aeWPController(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -85,13 +85,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline aeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline aeAnimator *GetAnimator() const{return pAnimator;}
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Active controller. */
 	aeController *GetController() const;

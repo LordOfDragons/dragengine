@@ -46,7 +46,7 @@ deoglComponentSet::deoglComponentSet(){
 }
 
 deoglComponentSet::~deoglComponentSet(){
-	if( pComponents ){
+	if(pComponents){
 		delete [] pComponents;
 	}
 }
@@ -56,23 +56,23 @@ deoglComponentSet::~deoglComponentSet(){
 // Management
 ///////////////
 
-deoglRComponent *deoglComponentSet::GetAt( int index ) const{
-	if( index < 0 || index >= pComponentCount ){
-		DETHROW( deeInvalidParam );
+deoglRComponent *deoglComponentSet::GetAt(int index) const{
+	if(index < 0 || index >= pComponentCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pComponents[ index ];
+	return pComponents[index];
 }
 
-int deoglComponentSet::IndexOfComponent( deoglRComponent *component ) const{
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+int deoglComponentSet::IndexOfComponent(deoglRComponent *component) const{
+	if(! component){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pComponentCount; i++ ){
-		if( component == pComponents[ i ] ){
+	for(i=0; i<pComponentCount; i++){
+		if(component == pComponents[i]){
 			return i;
 		}
 	}
@@ -80,15 +80,15 @@ int deoglComponentSet::IndexOfComponent( deoglRComponent *component ) const{
 	return -1;
 }
 
-bool deoglComponentSet::Has( deoglRComponent *component ) const{
-	if( ! component ){
-		DETHROW( deeInvalidParam );
+bool deoglComponentSet::Has(deoglRComponent *component) const{
+	if(! component){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	for( i=0; i<pComponentCount; i++ ){
-		if( component == pComponents[ i ] ){
+	for(i=0; i<pComponentCount; i++){
+		if(component == pComponents[i]){
 			return true;
 		}
 	}
@@ -96,57 +96,57 @@ bool deoglComponentSet::Has( deoglRComponent *component ) const{
 	return false;
 }
 
-void deoglComponentSet::Add( deoglRComponent *component ){
-	if( Has( component ) ){
-		DETHROW( deeInvalidParam );
+void deoglComponentSet::Add(deoglRComponent *component){
+	if(Has(component)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pAddComponent( component );
+	pAddComponent(component);
 }
 
-bool deoglComponentSet::AddIfMissing( deoglRComponent *component ){
-	if( Has( component ) ){
+bool deoglComponentSet::AddIfMissing(deoglRComponent *component){
+	if(Has(component)){
 		return false;
 	}
 	
-	pAddComponent( component );
+	pAddComponent(component);
 	return true;
 }
 
-void deoglComponentSet::Remove( deoglRComponent *component ){
-	const int index = IndexOfComponent( component );
+void deoglComponentSet::Remove(deoglRComponent *component){
+	const int index = IndexOfComponent(component);
 	
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	if(index == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pComponentCount - 1 ){
-		pComponents[ index ] = pComponents[ pComponentCount - 1 ];
+	if(index < pComponentCount - 1){
+		pComponents[index] = pComponents[pComponentCount - 1];
 	}
 	pComponentCount--;
 }
 
-bool deoglComponentSet::RemoveIfExisting( deoglRComponent *component ){
-	const int index = IndexOfComponent( component );
+bool deoglComponentSet::RemoveIfExisting(deoglRComponent *component){
+	const int index = IndexOfComponent(component);
 	
-	if( index == -1 ){
+	if(index == -1){
 		return false;
 	}
 	
-	if( index < pComponentCount - 1 ){
-		pComponents[ index ] = pComponents[ pComponentCount - 1 ];
+	if(index < pComponentCount - 1){
+		pComponents[index] = pComponents[pComponentCount - 1];
 	}
 	pComponentCount--;
 	return true;
 }
 
-void deoglComponentSet::RemoveFrom( int index ){
-	if( index < 0 || index >= pComponentCount ){
-		DETHROW( deeInvalidParam );
+void deoglComponentSet::RemoveFrom(int index){
+	if(index < 0 || index >= pComponentCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < pComponentCount - 1 ){
-		pComponents[ index ] = pComponents[ pComponentCount - 1 ];
+	if(index < pComponentCount - 1){
+		pComponents[index] = pComponents[pComponentCount - 1];
 	}
 	pComponentCount--;
 }
@@ -157,24 +157,24 @@ void deoglComponentSet::RemoveAll(){
 
 
 
-void deoglComponentSet::MarkAll( bool mark ){
+void deoglComponentSet::MarkAll(bool mark){
 	int i;
 	
-	for( i=0; i<pComponentCount; i++ ){
-		pComponents[ i ]->SetMarked( mark );
+	for(i=0; i<pComponentCount; i++){
+		pComponents[i]->SetMarked(mark);
 	}
 }
 
-void deoglComponentSet::RemoveAllMarked( bool mark ){
+void deoglComponentSet::RemoveAllMarked(bool mark){
 	int last = 0;
 	int i;
 	
-	for( i=0; i<pComponentCount; i++ ){
-		if( pComponents[ i ]->GetMarked() != mark ){
-			if( i != last ){
-				deoglRComponent * const swap = pComponents[ last ];
-				pComponents[ last ] = pComponents[ i ];
-				pComponents[ i ] = swap;
+	for(i=0; i<pComponentCount; i++){
+		if(pComponents[i]->GetMarked() != mark){
+			if(i != last){
+				deoglRComponent * const swap = pComponents[last];
+				pComponents[last] = pComponents[i];
+				pComponents[i] = swap;
 			}
 			last++;
 		}
@@ -187,14 +187,14 @@ void deoglComponentSet::RemoveAllMarked( bool mark ){
 // Private Functions
 //////////////////////
 
-void deoglComponentSet::pAddComponent( deoglRComponent *component ){
-	if( pComponentCount == pComponentSize ){
+void deoglComponentSet::pAddComponent(deoglRComponent *component){
+	if(pComponentCount == pComponentSize){
 		int newSize = pComponentCount + 10; // * 3 / 2 + 1;
-		deoglRComponent **newArray = new deoglRComponent*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deoglRComponent **newArray = new deoglRComponent*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
 		
-		if( pComponents ){
-			memcpy( newArray, pComponents, sizeof( deoglRComponent* ) * pComponentSize );
+		if(pComponents){
+			memcpy(newArray, pComponents, sizeof(deoglRComponent*) * pComponentSize);
 			delete [] pComponents;
 		}
 		
@@ -202,5 +202,5 @@ void deoglComponentSet::pAddComponent( deoglRComponent *component ){
 		pComponentSize = newSize;
 	}
 	
-	pComponents[ pComponentCount++ ] = component;
+	pComponents[pComponentCount++] = component;
 }

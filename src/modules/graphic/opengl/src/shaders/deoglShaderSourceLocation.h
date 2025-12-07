@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader source location. */
-	deoglShaderSourceLocation( const char *inputFile, int inputLine, int outputLine );
+	deoglShaderSourceLocation(const char *inputFile, int inputLine, int outputLine);
 	
 	/** Clean up shader source location. */
 	virtual ~deoglShaderSourceLocation();
@@ -60,13 +60,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Input file. */
-	inline const decString &GetInputFile() const{ return pInputFile; }
+	inline const decString &GetInputFile() const{return pInputFile;}
 	
 	/** Input line. */
-	inline int GetInputLine() const{ return pInputLine; }
+	inline int GetInputLine() const{return pInputLine;}
 	
 	/** Output line. */
-	inline int GetOutputLine() const{ return pOutputLine; }
+	inline int GetOutputLine() const{return pOutputLine;}
 	/*@}*/
 };
 

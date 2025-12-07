@@ -50,9 +50,9 @@
 // Constructors
 /////////////////
 
-debpRayResultCallback::debpRayResultCallback( deCollisionInfo *colinfo ){
-	if( ! colinfo ){
-		DETHROW( deeInvalidParam );
+debpRayResultCallback::debpRayResultCallback(deCollisionInfo *colinfo){
+	if(! colinfo){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pColInfo = colinfo;
@@ -71,10 +71,10 @@ void debpRayResultCallback::Reset(){
 
 
 
-void debpRayResultCallback::SetTestRay( const decDVector &rayOrigin, const decDVector &rayDirection,
-	const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void debpRayResultCallback::SetTestRay(const decDVector &rayOrigin, const decDVector &rayDirection,
+	const decCollisionFilter *collisionFilter, deBaseScriptingCollider *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRayOrigin = rayOrigin;
@@ -88,37 +88,37 @@ void debpRayResultCallback::SetTestRay( const decDVector &rayOrigin, const decDV
 // Bullet
 ///////////
 
-bool debpRayResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const{
+bool debpRayResultCallback::needsCollision(btBroadphaseProxy *proxy0) const{
 	// basic bullet filtering
-	if( ! RayResultCallback::needsCollision( proxy0 ) ){
+	if(! RayResultCallback::needsCollision(proxy0)){
 		return false;
 	}
 	
 	// determine the collision partner using the custom pointer
-	const btCollisionObject &collisionObject = *( ( btCollisionObject* )proxy0->m_clientObject );
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )collisionObject.getUserPointer() );
+	const btCollisionObject &collisionObject = *((btCollisionObject*)proxy0->m_clientObject);
+	const debpCollisionObject &colObj = *((debpCollisionObject*)collisionObject.getUserPointer());
 	
 	// test against a collider
-	if( colObj.IsOwnerCollider() ){
+	if(colObj.IsOwnerCollider()){
 		debpCollider * const collider = colObj.GetOwnerCollider();
 		
 		// check if a collision is possible according to layer mask
 		deCollider * const engCollider = &collider->GetCollider();
-		if( pCollisionFilter && pCollisionFilter->CollidesNot( engCollider->GetCollisionFilter() ) ){
+		if(pCollisionFilter && pCollisionFilter->CollidesNot(engCollider->GetCollisionFilter())){
 			return false;
 		}
 		
 		// check if a collision is possible according to the collider listener
-		if( ! pListener->CanHitCollider( NULL, engCollider ) ){
+		if(! pListener->CanHitCollider(NULL, engCollider)){
 			return false;
 		}
 		//printf( "needsCollision %p\n", colObj.GetOwnerCollider() );
 		return true;
 		
 	// test against a height terrain sector
-	}else if( colObj.IsOwnerHTSector() ){
-		if( pCollisionFilter && pCollisionFilter->CollidesNot( colObj.GetOwnerHTSector()->
-		GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter() ) ){
+	}else if(colObj.IsOwnerHTSector()){
+		if(pCollisionFilter && pCollisionFilter->CollidesNot(colObj.GetOwnerHTSector()->
+		GetHeightTerrain()->GetHeightTerrain()->GetCollisionFilter())){
 			return false;
 		}
 		
@@ -129,42 +129,42 @@ bool debpRayResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) const{
 	return false;
 }
 
-btScalar debpRayResultCallback::addSingleResult( btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace ){
-	const debpCollisionObject &colObj = *( ( debpCollisionObject* )rayResult.m_collisionObject->getUserPointer() );
+btScalar debpRayResultCallback::addSingleResult(btCollisionWorld::LocalRayResult &rayResult, bool normalInWorldSpace){
+	const debpCollisionObject &colObj = *((debpCollisionObject*)rayResult.m_collisionObject->getUserPointer());
 	bool callListener = false;
 	
-	if( colObj.IsOwnerCollider() ){
-		pColInfo->SetCollider( &colObj.GetOwnerCollider()->GetCollider(), colObj.GetOwnerBone(),
-			( int )( intptr_t )rayResult.m_collisionShape->getUserPointer() - 1,
-			-1 /* convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index */ );
+	if(colObj.IsOwnerCollider()){
+		pColInfo->SetCollider(&colObj.GetOwnerCollider()->GetCollider(), colObj.GetOwnerBone(),
+			(int)(intptr_t)rayResult.m_collisionShape->getUserPointer() - 1,
+			-1 /* convexResult.m_localShapeInfo->m_triangleIndex; // problem... bullet index not our index */);
 		callListener = true;
 		
-	}else if( colObj.IsOwnerHTSector() ){
+	}else if(colObj.IsOwnerHTSector()){
 		const debpHTSector &htsector = *colObj.GetOwnerHTSector();
-		pColInfo->SetHTSector( htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector() );
+		pColInfo->SetHTSector(htsector.GetHeightTerrain()->GetHeightTerrain(), htsector.GetSector());
 		callListener = true;
 	}
 	
-	if( callListener ){
+	if(callListener){
 		btVector3 hitNormal;
-		if( normalInWorldSpace ){
+		if(normalInWorldSpace){
 			hitNormal = rayResult.m_hitNormalLocal;
 			
 		}else{
 			hitNormal = rayResult.m_collisionObject->getWorldTransform().getBasis() * rayResult.m_hitNormalLocal;
 		}
 		
-		pColInfo->SetDistance( ( float )rayResult.m_hitFraction );
-		pColInfo->SetNormal( decVector( ( float )hitNormal.x(), ( float )hitNormal.y(), ( float )hitNormal.z() ) );
+		pColInfo->SetDistance((float)rayResult.m_hitFraction);
+		pColInfo->SetNormal(decVector((float)hitNormal.x(), (float)hitNormal.y(), (float)hitNormal.z()));
 		
-		pListener->CollisionResponse( NULL, pColInfo );
+		pListener->CollisionResponse(NULL, pColInfo);
 	}
 	
 	// bullet uses m_closestHitFraction after addSingleResult returns to determine if
 	// further collision tests are required. so we hijack the variable for the purpose
 	// of stopping collision testing if the game requests.
-	if( pColInfo->GetStopTesting() ){
-		m_closestHitFraction = ( btScalar )0.0f;
+	if(pColInfo->GetStopTesting()){
+		m_closestHitFraction = (btScalar)0.0f;
 	}
 	
 	return m_closestHitFraction; // no idea what the return value does. other implementations use m_closestHitFraction

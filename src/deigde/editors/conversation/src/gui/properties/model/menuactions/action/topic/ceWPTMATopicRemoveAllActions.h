@@ -48,8 +48,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMATopicRemoveAllActions( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic );
+	ceWPTMATopicRemoveAllActions(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic);
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief Create undo action for adding action. */
 	virtual igdeUndo *CreateUndo();

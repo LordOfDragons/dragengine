@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetCollisionResponse( peeType *type, deParticleEmitterType::eCollisionResponses newResponse );
+	peeUTypeSetCollisionResponse(peeType *type, deParticleEmitterType::eCollisionResponses newResponse);
 	
 protected:
 	/** \brief Clean up undo action. */

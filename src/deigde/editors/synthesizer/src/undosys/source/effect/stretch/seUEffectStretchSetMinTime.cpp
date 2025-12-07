@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUEffectStretchSetMinTime::seUEffectStretchSetMinTime( seEffectStretch *effect, float newTime ) :
-pSource( NULL )
+seUEffectStretchSetMinTime::seUEffectStretchSetMinTime(seEffectStretch *effect, float newTime) :
+pSource(NULL)
 {
-	if( ! effect ){
-		DETHROW( deeInvalidParam );
+	if(! effect){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Effect stretch set minimum time" );
+	SetShortInfo("Effect stretch set minimum time");
 	
 	pOldTime = effect->GetMinTime();
 	pNewTime = newTime;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUEffectStretchSetMinTime::~seUEffectStretchSetMinTime(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUEffectStretchSetMinTime::~seUEffectStretchSetMinTime(){
 ///////////////
 
 void seUEffectStretchSetMinTime::Undo(){
-	pSource->SetMinTime( pOldTime );
+	pSource->SetMinTime(pOldTime);
 }
 
 void seUEffectStretchSetMinTime::Redo(){
-	pSource->SetMinTime( pNewTime );
+	pSource->SetMinTime(pNewTime);
 }

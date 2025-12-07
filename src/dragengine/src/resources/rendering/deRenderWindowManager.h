@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create render window resource manager. */
-	deRenderWindowManager( deEngine *engine );
+	deRenderWindowManager(deEngine *engine);
 	
 	/** \brief Clean up render window resource manager and reports leaking resources. */
 	virtual ~deRenderWindowManager();
@@ -107,7 +107,7 @@ public:
 	 * 
 	 * For use by deRenderWindow only.
 	 */
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

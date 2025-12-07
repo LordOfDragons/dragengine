@@ -67,38 +67,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Material does not affect sound. */
-	inline bool GetNoSound() const{ return pNoSound; }
+	inline bool GetNoSound() const{return pNoSound;}
 	
 	/** \brief Absorption as percentage of incoming sound volume. */
-	inline float GetAbsorption() const{ return pAbsorption; }
+	inline float GetAbsorption() const{return pAbsorption;}
 	
 	/** \brief Absorption scale factor for low frequencies. */
-	inline float GetAbsorptionLower() const{ return pAbsorptionLower; }
+	inline float GetAbsorptionLower() const{return pAbsorptionLower;}
 	
 	/** \brief Absorption scale factor for high frequencies. */
-	inline float GetAbsorptionUpper() const{ return pAbsorptionUpper; }
+	inline float GetAbsorptionUpper() const{return pAbsorptionUpper;}
 	
 	/** \brief Transmission range. */
-	inline float GetTransmission() const{ return pTransmission; }
+	inline float GetTransmission() const{return pTransmission;}
 	
 	/** \brief Transmission range scale factor for low frequencies. */
-	inline float GetTransmissionLower() const{ return pTransmissionLower; }
+	inline float GetTransmissionLower() const{return pTransmissionLower;}
 	
 	/** \brief Transmission range scale factor for high frequencies. */
-	inline float GetTransmissionUpper() const{ return pTransmissionUpper; }
+	inline float GetTransmissionUpper() const{return pTransmissionUpper;}
 	
 	
 	
 	/** \brief Material affects sound. */
-	inline bool GetAffectsSound() const{ return pAffectsSound; }
+	inline bool GetAffectsSound() const{return pAffectsSound;}
 	
 	
 	
 	/** \brief Process properties. */
-	void ProcessProperties( const deSkinTexture &texture );
+	void ProcessProperties(const deSkinTexture &texture);
 	/*@}*/
 };
 

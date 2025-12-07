@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render plan compute. */
-	deoglRenderPlanCompute( deoglRenderPlan &plan );
+	deoglRenderPlanCompute(deoglRenderPlan &plan);
 	
 protected:
 	/** Clean up render plan compute. */
@@ -120,30 +120,30 @@ public:
 	void UpdateElementGeometries();
 	
 	/** Build occlusion render task. */
-	void BuildRTOcclusion( const deoglRenderPlanMasked *mask );
+	void BuildRTOcclusion(const deoglRenderPlanMasked *mask);
 	
 	/** Ready occlusion render task. */
-	void ReadyRTOcclusion( const deoglRenderPlanMasked *mask );
+	void ReadyRTOcclusion(const deoglRenderPlanMasked *mask);
 	
-	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{ return pUBOFindConfig; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{ return pSSBOCounters; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{ return pSSBOVisibleElements; }
-	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{ return pSSBOVisibleElements2; }
+	inline const deoglSPBlockUBO::Ref &GetUBOFindConfig() const{return pUBOFindConfig;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOCounters() const{return pSSBOCounters;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements() const{return pSSBOVisibleElements;}
+	inline const deoglSPBlockSSBO::Ref &GetSSBOVisibleElements2() const{return pSSBOVisibleElements2;}
 	
 	void SwapVisibleElements();
 	
-	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{ return pRTOcclusion; }
+	inline const deoglComputeRenderTask::Ref &GetRTOcclusion() const{return pRTOcclusion;}
 	/*@}*/
 	
 	
 	
 protected:
 	void pPrepareFindConfig();
-	void pPrepareBuffer( deoglSPBlockSSBO &ssbo, int count );
-	void pSetFrustumPlane( deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance );
-	void pCalculateFrustumBoundaryBox( decDVector &frustumMinExtend, decDVector &frustumMaxExtend );
+	void pPrepareBuffer(deoglSPBlockSSBO &ssbo, int count);
+	void pSetFrustumPlane(deoglSPBlockUBO &ubo, int index, const decDVector &normal, double distance);
+	void pCalculateFrustumBoundaryBox(decDVector &frustumMinExtend, decDVector &frustumMaxExtend);
 	float pCalculateErrorScaling();
-	void pCullLayerMask( deoglSPBlockUBO &ubo );
+	void pCullLayerMask(deoglSPBlockUBO &ubo);
 };
 
 #endif

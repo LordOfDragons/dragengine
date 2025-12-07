@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	meCDProperties( const decStringDictionary &properties );
+	meCDProperties(const decStringDictionary &properties);
 	
 protected:
 	/**
@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties. */
-	inline const decStringDictionary &GetProperties() const{ return pProperties; }
+	inline const decStringDictionary &GetProperties() const{return pProperties;}
 	/*@}*/
 };
 

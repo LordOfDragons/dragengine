@@ -48,12 +48,12 @@
 ////////////////////////////
 
 aeCLClosestHit::aeCLClosestHit() :
-pHitDistance( 0.0f ),
-pHasHit( false ),
-pHitCollider( nullptr ),
-pHitBone( -1 ),
-pHitShape( -1 ),
-pHitGizmo( nullptr ){
+pHitDistance(0.0f),
+pHasHit(false),
+pHitCollider(nullptr),
+pHitBone(-1),
+pHitShape(-1),
+pHitGizmo(nullptr){
 }
 
 aeCLClosestHit::~aeCLClosestHit(){
@@ -73,16 +73,16 @@ void aeCLClosestHit::Reset(){
 	pHitGizmo = nullptr;
 }
 
-void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
-	if( ! pHitCollider ){
+void aeCLClosestHit::IdentifyHitElement(igdeEnvironment &environment){
+	if(! pHitCollider){
 		return;
 	}
 	
 	aeElementVisitable * const visitable =
-		( aeElementVisitable* )environment.GetColliderUserPointer( pHitCollider );
+		(aeElementVisitable*)environment.GetColliderUserPointer(pHitCollider);
 	
-	if( visitable ){
-		visitable->VisitElement( *this );
+	if(visitable){
+		visitable->VisitElement(*this);
 	}
 }
 
@@ -91,10 +91,10 @@ void aeCLClosestHit::IdentifyHitElement( igdeEnvironment &environment ){
 // Notifications
 //////////////////
 
-void aeCLClosestHit::CollisionResponse( deCollider*, deCollisionInfo *info ){
+void aeCLClosestHit::CollisionResponse(deCollider*, deCollisionInfo *info){
 	float distance = info->GetDistance();
 	
-	if( pHasHit && distance >= pHitDistance ){
+	if(pHasHit && distance >= pHitDistance){
 		return;
 	}
 	
@@ -106,11 +106,11 @@ void aeCLClosestHit::CollisionResponse( deCollider*, deCollisionInfo *info ){
 	pHasHit = true;
 }
 
-bool aeCLClosestHit::CanHitCollider( deCollider*, deCollider* ){
+bool aeCLClosestHit::CanHitCollider(deCollider*, deCollider*){
 	return true;
 }
 
-void aeCLClosestHit::ColliderChanged( deCollider* ){
+void aeCLClosestHit::ColliderChanged(deCollider*){
 }
 
 
@@ -118,6 +118,6 @@ void aeCLClosestHit::ColliderChanged( deCollider* ){
 // Visiting
 /////////////
 
-void aeCLClosestHit::VisitGizmo( igdeGizmo *gizmo ){
+void aeCLClosestHit::VisitGizmo(igdeGizmo *gizmo){
 	pHitGizmo = gizmo;
 }

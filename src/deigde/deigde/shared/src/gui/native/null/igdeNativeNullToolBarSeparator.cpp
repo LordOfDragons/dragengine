@@ -39,7 +39,7 @@ igdeNativeNullToolBarSeparator::igdeNativeNullToolBarSeparator(){
 igdeNativeNullToolBarSeparator::~igdeNativeNullToolBarSeparator(){
 }
 
-igdeNativeNullToolBarSeparator *igdeNativeNullToolBarSeparator::CreateNativeWidget( igdeToolBarSeparator& ){
+igdeNativeNullToolBarSeparator *igdeNativeNullToolBarSeparator::CreateNativeWidget(igdeToolBarSeparator&){
 	return new igdeNativeNullToolBarSeparator;
 }
 

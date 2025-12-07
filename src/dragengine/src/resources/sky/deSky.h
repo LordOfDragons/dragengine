@@ -76,7 +76,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky resource. */
-	deSky( deSkyManager *manager );
+	deSky(deSkyManager *manager);
 	
 protected:
 	/**
@@ -94,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Background color. */
-	inline const decColor &GetBgColor() const{ return pBgColor; }
+	inline const decColor &GetBgColor() const{return pBgColor;}
 	
 	/** \brief Set background color. */
-	void SetBgColor( const decColor &color );
+	void SetBgColor(const decColor &color);
 	/*@}*/
 	
 	
@@ -105,62 +105,62 @@ public:
 	/** \name Controllers */
 	/*@{*/
 	/** \brief Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	inline int GetControllerCount() const{return pControllerCount;}
 	
 	/**
 	 * \brief Set number of controllers.
 	 * 
 	 * Sets all controllers to default vaules.
 	 */
-	void SetControllerCount( int count );
+	void SetControllerCount(int count);
 	
 	/**
 	 * \brief Controller at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
 	 * to GetControllerCount().
 	 */
-	deSkyController &GetControllerAt( int index ) const;
+	deSkyController &GetControllerAt(int index) const;
 	
 	/** \brief Index of named controller or -1 if absent. */
-	int IndexOfControllerNamed( const char *name ) const;
+	int IndexOfControllerNamed(const char *name) const;
 	
 	
 	
 	/** \brief Number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{return pLinkCount;}
 	
 	/**
 	 * \brief Set number of links.
 	 * 
 	 * Sets all links to default vaules.
 	 */
-	void SetLinkCount( int count );
+	void SetLinkCount(int count);
 	
 	/**
 	 * \brief Link at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
 	 * to GetLinkCount().
 	 */
-	deSkyLink &GetLinkAt( int index ) const;
+	deSkyLink &GetLinkAt(int index) const;
 	
 	
 	
 	/** \brief Number of layers. */
-	inline int GetLayerCount() const{ return pLayerCount; }
+	inline int GetLayerCount() const{return pLayerCount;}
 	
 	/**
 	 * \brief Set number of layers.
 	 * 
 	 * Sets all links to default vaules.
 	 */
-	void SetLayerCount( int count );
+	void SetLayerCount(int count);
 	
 	/**
 	 * \brief Layer at index.
 	 * \throws deeOutOfBoundary \em index is less than 0 or larger than or equal
 	 * to GetLayerCount().
 	 */
-	deSkyLayer &GetLayerAt( int index ) const;
+	deSkyLayer &GetLayerAt(int index) const;
 	
 	
 	
@@ -178,10 +178,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Graphic system peer or NULL if not set. */
-	inline deBaseGraphicSky *GetPeerGraphic() const{ return pPeerGraphic; }
+	inline deBaseGraphicSky *GetPeerGraphic() const{return pPeerGraphic;}
 	
 	/** \brief Set graphic system peer. */
-	void SetPeerGraphic( deBaseGraphicSky *peer );
+	void SetPeerGraphic(deBaseGraphicSky *peer);
 	/*@}*/
 };
 

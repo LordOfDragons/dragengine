@@ -180,7 +180,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device. */
-	devkDevice( devkInstance &instance, VkPhysicalDevice physicalDevice, const DeviceConfig &config );
+	devkDevice(devkInstance &instance, VkPhysicalDevice physicalDevice, const DeviceConfig &config);
 	
 protected:
 	/** Clean up device. */
@@ -193,43 +193,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner instance. */
-	inline devkInstance &GetInstance() const{ return pInstance; }
+	inline devkInstance &GetInstance() const{return pInstance;}
 	
 	/** Physical device. */
-	inline VkPhysicalDevice GetPhysicalDevice() const{ return pPhysicalDevice; }
+	inline VkPhysicalDevice GetPhysicalDevice() const{return pPhysicalDevice;}
 	
 	/** Device properties. */
-	inline const VkPhysicalDeviceProperties &GetProperties() const{ return pProperties; }
+	inline const VkPhysicalDeviceProperties &GetProperties() const{return pProperties;}
 	
 	/** Configuration. */
-	inline const DeviceConfig &GetConfig() const{ return pConfig; }
+	inline const DeviceConfig &GetConfig() const{return pConfig;}
 	
 	/** Device. */
-	inline VkDevice GetDevice() const{ return pDevice; }
-	inline operator VkDevice() const{ return pDevice; }
+	inline VkDevice GetDevice() const{return pDevice;}
+	inline operator VkDevice() const{return pDevice;}
 	
 	/** Descriptor set layout manager. */
-	inline devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager(){ return pDescriptorSetLayoutManager; }
-	inline const devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager() const{ return pDescriptorSetLayoutManager; }
+	inline devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager(){return pDescriptorSetLayoutManager;}
+	inline const devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager() const{return pDescriptorSetLayoutManager;}
 	
 	/** Shader module manager. */
-	inline devkShaderModuleManager &GetShaderModuleManager(){ return pShaderModuleManager; }
-	inline const devkShaderModuleManager &GetShaderModuleManager() const{ return pShaderModuleManager; }
+	inline devkShaderModuleManager &GetShaderModuleManager(){return pShaderModuleManager;}
+	inline const devkShaderModuleManager &GetShaderModuleManager() const{return pShaderModuleManager;}
 	
 	/** Pipeline manager. */
-	inline devkPipelineManager &GetPipelineManager(){ return pPipelineManager; }
-	inline const devkPipelineManager &GetPipelineManager() const{ return pPipelineManager; }
+	inline devkPipelineManager &GetPipelineManager(){return pPipelineManager;}
+	inline const devkPipelineManager &GetPipelineManager() const{return pPipelineManager;}
 	
 	/** Extension is supported. */
-	bool SupportsExtension( eExtension extension ) const;
+	bool SupportsExtension(eExtension extension) const;
 	
 	/** Extension version or 0 if not supported. */
-	uint32_t ExtensionVersion( eExtension extension ) const;
+	uint32_t ExtensionVersion(eExtension extension) const;
 	
 	
 	
 	/** Count of supported formats. */
-	inline int GetSupportedFormatCount() const{ return pSupportedFormatCount; }
+	inline int GetSupportedFormatCount() const{return pSupportedFormatCount;}
 	
 	/** Supported format at index. */
 	const devkFormat &GetSupportedFormatAt(int index) const;
@@ -243,11 +243,11 @@ public:
 	
 	
 	/** Device memory properties. */
-	inline const VkPhysicalDeviceMemoryProperties &GetMemoryProperties() const{ return pMemoryProperties; }
+	inline const VkPhysicalDeviceMemoryProperties &GetMemoryProperties() const{return pMemoryProperties;}
 	
 	/** Index of matching memory type. */
-	uint32_t IndexOfMemoryType( VkMemoryPropertyFlags property, uint32_t bits ) const;
-	uint32_t IndexOfMemoryType( VkMemoryPropertyFlags property, const VkMemoryRequirements &requirements ) const;
+	uint32_t IndexOfMemoryType(VkMemoryPropertyFlags property, uint32_t bits) const;
+	uint32_t IndexOfMemoryType(VkMemoryPropertyFlags property, const VkMemoryRequirements &requirements) const;
 	
 	
 	
@@ -255,36 +255,36 @@ public:
 	int GetGraphicQueueCount() const;
 	
 	/** Graphic queue at index. */
-	devkQueue &GetGraphicQueueAt( int index ) const;
+	devkQueue &GetGraphicQueueAt(int index) const;
 	
 	/** First graphic queue. */
-	inline devkQueue &GetGraphicQueue() const{ return GetGraphicQueueAt( 0 ); }
+	inline devkQueue &GetGraphicQueue() const{return GetGraphicQueueAt(0);}
 	
 	/** Count of compute queues. */
 	int GetComputeQueueCount() const;
 	
 	/** Compute queue at index. */
-	devkQueue &GetComputeQueueAt( int index ) const;
+	devkQueue &GetComputeQueueAt(int index) const;
 	
 	/** First compute queue. */
-	devkQueue &GetComputeQueue() const{ return GetComputeQueueAt( 0 ); }
+	devkQueue &GetComputeQueue() const{return GetComputeQueueAt(0);}
 	
 	/** Count of transfer queues. */
 	int GetTransferQueueCount() const;
 	
 	/** Get transfer queue at index. */
-	devkQueue &GetTransferQueueAt( int index ) const;
+	devkQueue &GetTransferQueueAt(int index) const;
 	
 	/** Get first transfer queue. */
-	devkQueue &GetTransferQueue() const{ return GetTransferQueueAt( 0 ); }
+	devkQueue &GetTransferQueue() const{return GetTransferQueueAt(0);}
 	/*@}*/
 	
 	
 	
 	/** \name Vulkan Functions */
 	/*@{*/
-	#define DEVICE_LEVEL_VULKAN_FUNCTION( name ) PFN_##name name;
-	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) PFN_##name name;
+	#define DEVICE_LEVEL_VULKAN_FUNCTION(name) PFN_##name name;
+	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION(name, extension) PFN_##name name;
 	
 	#include "devkFunctionNames.h"
 	

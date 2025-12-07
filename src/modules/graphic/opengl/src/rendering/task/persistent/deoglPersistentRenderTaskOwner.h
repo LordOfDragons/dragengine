@@ -71,36 +71,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Owner object or NULL. */
-	inline void *GetOwner() const{ return pOwner; }
+	inline void *GetOwner() const{return pOwner;}
 	
 	/** Hash. */
-	inline unsigned int GetHash() const{ return pHash; }
+	inline unsigned int GetHash() const{return pHash;}
 	
 	/** Set owner object or NULL. */
-	void SetOwner( void *owner, unsigned int hash );
+	void SetOwner(void *owner, unsigned int hash);
 	
 	/** Update marker. */
-	inline bool GetUpdateMarker() const{ return pUpdateMarker; }
+	inline bool GetUpdateMarker() const{return pUpdateMarker;}
 	
 	/** Set update marker. */
-	inline void SetUpdateMarker( bool marker ){ pUpdateMarker = marker; }
+	inline void SetUpdateMarker(bool marker){pUpdateMarker = marker;}
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	/** Set extends. */
-	void SetExtends( const decDVector &minExtend, const decDVector &maxExtend );
+	void SetExtends(const decDVector &minExtend, const decDVector &maxExtend);
 	
 	
 	
 	/** Owner component or NULL. */
-	inline deoglRComponent *GetComponent() const{ return pComponent; }
+	inline deoglRComponent *GetComponent() const{return pComponent;}
 	
 	/** Set owner component or NULL. */
-	void SetComponent( deoglRComponent *component );
+	void SetComponent(deoglRComponent *component);
 	
 	
 	
@@ -108,10 +108,10 @@ public:
 	int GetInstanceCount() const;
 	
 	/** Instance at index. */
-	deoglPersistentRenderTaskInstance *GetInstanceAt( int index ) const;
+	deoglPersistentRenderTaskInstance *GetInstanceAt(int index) const;
 	
 	/** Add instance. */
-	void AddInstance( deoglPersistentRenderTaskInstance *instance );
+	void AddInstance(deoglPersistentRenderTaskInstance *instance);
 	
 	/** Remove all instances. */
 	void RemoveAllInstances();
@@ -122,10 +122,10 @@ public:
 	int GetSubInstanceCount() const;
 	
 	/** Sub instance at index. */
-	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt( int index ) const;
+	deoglPersistentRenderTaskSubInstance *GetSubInstanceAt(int index) const;
 	
 	/** Add sub instance. */
-	void AddSubInstance( deoglPersistentRenderTaskSubInstance *subInstance );
+	void AddSubInstance(deoglPersistentRenderTaskSubInstance *subInstance);
 	
 	/** Remove all sub instances. */
 	void RemoveAllSubInstances();
@@ -138,8 +138,8 @@ public:
 	
 	
 	/** Render task linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLTask(){ return pLLTask; }
-	inline const decPointerLinkedList::cListEntry &GetLLTask() const{ return pLLTask; }
+	inline decPointerLinkedList::cListEntry &GetLLTask(){return pLLTask;}
+	inline const decPointerLinkedList::cListEntry &GetLLTask() const{return pLLTask;}
 	/*@}*/
 };
 

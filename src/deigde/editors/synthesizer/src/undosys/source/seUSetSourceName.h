@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceName( seSource *source, const char *newName );
+	seUSetSourceName(seSource *source, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

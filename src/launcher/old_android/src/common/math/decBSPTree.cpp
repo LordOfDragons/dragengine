@@ -38,7 +38,7 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-decBSPTree::decBSPTree( const decVector &normal, float distance ){
+decBSPTree::decBSPTree(const decVector &normal, float distance){
 	pNodeFront = NULL;
 	pNodeBack = NULL;
 	pNormal = normal;
@@ -47,8 +47,8 @@ decBSPTree::decBSPTree( const decVector &normal, float distance ){
 }
 
 decBSPTree::~decBSPTree(){
-	if( pNodeBack ) delete pNodeBack;
-	if( pNodeFront ) delete pNodeFront;
+	if(pNodeBack) delete pNodeBack;
+	if(pNodeFront) delete pNodeFront;
 }
 
 
@@ -56,47 +56,47 @@ decBSPTree::~decBSPTree(){
 // Management
 ///////////////
 
-void decBSPTree::SetParent( decBSPTree *parent ){
+void decBSPTree::SetParent(decBSPTree *parent){
 	pParent = parent;
 }
 
-void decBSPTree::SetFrontNode( decBSPTree *node ){
-	if( pNodeFront != node ){
-		if( pNodeFront ) delete pNodeFront;
+void decBSPTree::SetFrontNode(decBSPTree *node){
+	if(pNodeFront != node){
+		if(pNodeFront) delete pNodeFront;
 		pNodeFront = node;
 	}
 }
 
-void decBSPTree::SetBackNode( decBSPTree *node ){
-	if( pNodeBack != node ){
-		if( pNodeBack ) delete pNodeBack;
+void decBSPTree::SetBackNode(decBSPTree *node){
+	if(pNodeBack != node){
+		if(pNodeBack) delete pNodeBack;
 		pNodeBack = node;
 	}
 }
 
-void decBSPTree::ClearTree( bool clearNodes ){
+void decBSPTree::ClearTree(bool clearNodes){
 	ClearNodeContent();
 	
-	if( pNodeFront ){
-		pNodeFront->ClearTree( clearNodes );
-		if( clearNodes ){
+	if(pNodeFront){
+		pNodeFront->ClearTree(clearNodes);
+		if(clearNodes){
 			delete pNodeFront;
 			pNodeFront = NULL;
 		}
 	}
 	
-	if( pNodeBack ){
-		pNodeBack->ClearTree( clearNodes );
-		if( clearNodes ){
+	if(pNodeBack){
+		pNodeBack->ClearTree(clearNodes);
+		if(clearNodes){
 			delete pNodeBack;
 			pNodeBack = NULL;
 		}
 	}
 }
 
-decBSPTree *decBSPTree::CreateBSPTree( const decVector &normal, float distance ) const{
-	decBSPTree *bspTree = new decBSPTree( normal, distance );
-	if( ! bspTree ) DETHROW( deeOutOfMemory );
+decBSPTree *decBSPTree::CreateBSPTree(const decVector &normal, float distance) const{
+	decBSPTree *bspTree = new decBSPTree(normal, distance);
+	if(! bspTree) DETHROW(deeOutOfMemory);
 	
 	return bspTree;
 }
@@ -104,23 +104,23 @@ decBSPTree *decBSPTree::CreateBSPTree( const decVector &normal, float distance )
 void decBSPTree::ClearNodeContent(){
 }
 
-void decBSPTree::AddCoplanarFace( const decBSPTreeFace &face ){
+void decBSPTree::AddCoplanarFace(const decBSPTreeFace &face){
 }
 
-int decBSPTree::TestFaceAgainstNode( const decBSPTreeFace &face ) const{
+int decBSPTree::TestFaceAgainstNode(const decBSPTreeFace &face) const{
 	int v, vertexCount = face.GetVertexCount();
 	int side = esCoplanar;
 	float dot;
 	
-	for( v=0; v<vertexCount; v++ ){
-		dot = face.GetVertexAt( v ) * pNormal - pDistance;
+	for(v=0; v<vertexCount; v++){
+		dot = face.GetVertexAt(v) * pNormal - pDistance;
 		
-		if( dot > 1e-5f ){
-			if( side == esBack ) return esOverlaping;
+		if(dot > 1e-5f){
+			if(side == esBack) return esOverlaping;
 			side = esFront;
 			
-		}else if( dot < -1e-5f ){
-			if( side == esFront ) return esOverlaping;
+		}else if(dot < -1e-5f){
+			if(side == esFront) return esOverlaping;
 			side = esBack;
 		}
 	}
@@ -128,40 +128,40 @@ int decBSPTree::TestFaceAgainstNode( const decBSPTreeFace &face ) const{
 	return side;
 }
 
-bool decBSPTree::IsFaceInsideTree( const decBSPTreeFace &face ) const{
-	int side = TestFaceAgainstNode( face );
+bool decBSPTree::IsFaceInsideTree(const decBSPTreeFace &face) const{
+	int side = TestFaceAgainstNode(face);
 	
-	if( side == esCoplanar ){
+	if(side == esCoplanar){
 		return true;
 		
-	}else if( side == esFront ){
-		if( pNodeFront ){
-			return pNodeFront->IsFaceInsideTree( face );
+	}else if(side == esFront){
+		if(pNodeFront){
+			return pNodeFront->IsFaceInsideTree(face);
 			
 		}else{
 			return true;
 		}
 		
-	}else if( side == esBack ){
-		if( pNodeBack ){
-			return pNodeBack->IsFaceInsideTree( face );
+	}else if(side == esBack){
+		if(pNodeBack){
+			return pNodeBack->IsFaceInsideTree(face);
 			
 		}else{
 			return false;
 		}
 		
 	}else{
-		if( pNodeFront || pNodeBack ){
+		if(pNodeFront || pNodeBack){
 			decBSPTreeFace front, back;
 			
-			SplitFace( face, front, back );
+			SplitFace(face, front, back);
 			
-			if( pNodeFront ){
-				if( pNodeFront->IsFaceInsideTree( front ) ) return true;
+			if(pNodeFront){
+				if(pNodeFront->IsFaceInsideTree(front)) return true;
 			}
 			
-			if( pNodeBack ){
-				if( pNodeBack->IsFaceInsideTree( back ) ) return true;
+			if(pNodeBack){
+				if(pNodeBack->IsFaceInsideTree(back)) return true;
 			}
 			
 			return false;
@@ -172,7 +172,7 @@ bool decBSPTree::IsFaceInsideTree( const decBSPTreeFace &face ) const{
 	}
 }
 
-void decBSPTree::SplitFace( const decBSPTreeFace &face, decBSPTreeFace &front, decBSPTreeFace &back ) const{
+void decBSPTree::SplitFace(const decBSPTreeFace &face, decBSPTreeFace &front, decBSPTreeFace &back) const{
 	int v, vertexCount = face.GetVertexCount();
 	decVector cut, edge;
 	int side1, side2;
@@ -181,108 +181,108 @@ void decBSPTree::SplitFace( const decBSPTreeFace &face, decBSPTreeFace &front, d
 	front.RemoveAllVertices();
 	back.RemoveAllVertices();
 	
-	for( v=0; v<vertexCount; v++ ){
-		const decVector &v1 = face.GetVertexAt( v );
-		const decVector &v2 = face.GetVertexAt( ( v + 1 ) % vertexCount );
+	for(v=0; v<vertexCount; v++){
+		const decVector &v1 = face.GetVertexAt(v);
+		const decVector &v2 = face.GetVertexAt((v + 1) % vertexCount);
 		
 		dot = v1 * pNormal - pDistance;
-		if( dot > 1e-5f ){
+		if(dot > 1e-5f){
 			side1 = 1;
-		}else if( dot < -1e-5f ){
+		}else if(dot < -1e-5f){
 			side1 = -1;
 		}else{
 			side1 = 0;
 		}
 		
 		dot = v2 * pNormal - pDistance;
-		if( dot > 1e-5f ){
+		if(dot > 1e-5f){
 			side2 = 1;
-		}else if( dot < -1e-5f ){
+		}else if(dot < -1e-5f){
 			side2 = -1;
 		}else{
 			side2 = 0;
 		}
 		
-		if( side1 >= 0 ){
-			front.AddVertex( v1 );
+		if(side1 >= 0){
+			front.AddVertex(v1);
 		}
-		if( side1 <= 0 ){
-			back.AddVertex( v1 );
+		if(side1 <= 0){
+			back.AddVertex(v1);
 		}
-		if( side1 != side2 && side1 != 0 && side2 != 0 ){
+		if(side1 != side2 && side1 != 0 && side2 != 0){
 			edge = v2 - v1;
-			cut = v1 + edge * ( ( pDistance - pNormal * v1 ) / ( pNormal * edge ) );
-			front.AddVertex( cut );
-			back.AddVertex( cut );
+			cut = v1 + edge * ((pDistance - pNormal * v1) / (pNormal * edge));
+			front.AddVertex(cut);
+			back.AddVertex(cut);
 		}
 	}
 }
 
-void decBSPTree::InsertFaceIntoTree( const decBSPTreeFace &face ){
-	int side = TestFaceAgainstNode( face );
+void decBSPTree::InsertFaceIntoTree(const decBSPTreeFace &face){
+	int side = TestFaceAgainstNode(face);
 	float faceDot;
 	
-	if( side == esCoplanar ){
-		AddCoplanarFace( face );
+	if(side == esCoplanar){
+		AddCoplanarFace(face);
 		
 	}else{
-		const decVector &v1 = face.GetVertexAt( 0 );
-		const decVector &v2 = face.GetVertexAt( 1 );
-		const decVector &v3 = face.GetVertexAt( 2 );
+		const decVector &v1 = face.GetVertexAt(0);
+		const decVector &v2 = face.GetVertexAt(1);
+		const decVector &v3 = face.GetVertexAt(2);
 		
-		decVector faceNormal = ( v2 - v1 ) % ( v3 - v2 );
+		decVector faceNormal = (v2 - v1) % (v3 - v2);
 		faceNormal.Normalize();
 		
 		faceDot = faceNormal * v2;
 		
-		if( side == esFront ){
-			if( pNodeFront ){
-				pNodeFront->InsertFaceIntoTree( face );
+		if(side == esFront){
+			if(pNodeFront){
+				pNodeFront->InsertFaceIntoTree(face);
 				
 			}else{
-				pNodeFront = CreateBSPTree( faceNormal, faceDot );
-				if( ! pNodeFront ) DETHROW( deeOutOfMemory );
+				pNodeFront = CreateBSPTree(faceNormal, faceDot);
+				if(! pNodeFront) DETHROW(deeOutOfMemory);
 				
-				pNodeFront->AddCoplanarFace( face );
+				pNodeFront->AddCoplanarFace(face);
 			}
 			
-		}else if( side == esBack ){
-			if( pNodeBack ){
-				pNodeBack->InsertFaceIntoTree( face );
+		}else if(side == esBack){
+			if(pNodeBack){
+				pNodeBack->InsertFaceIntoTree(face);
 				
 			}else{
-				pNodeBack = CreateBSPTree( faceNormal, faceDot );
-				if( ! pNodeBack ) DETHROW( deeOutOfMemory );
+				pNodeBack = CreateBSPTree(faceNormal, faceDot);
+				if(! pNodeBack) DETHROW(deeOutOfMemory);
 				
-				pNodeBack->AddCoplanarFace( face );
+				pNodeBack->AddCoplanarFace(face);
 			}
 			
 		}else{
 			decBSPTreeFace front, back;
 			
-			SplitFace( face, front, back );
+			SplitFace(face, front, back);
 			
-			if( front.GetVertexCount() > 0 ){
-				if( pNodeFront ){
-					pNodeFront->InsertFaceIntoTree( front );
+			if(front.GetVertexCount() > 0){
+				if(pNodeFront){
+					pNodeFront->InsertFaceIntoTree(front);
 					
 				}else{
-					pNodeFront = CreateBSPTree( faceNormal, faceDot );
-					if( ! pNodeFront ) DETHROW( deeOutOfMemory );
+					pNodeFront = CreateBSPTree(faceNormal, faceDot);
+					if(! pNodeFront) DETHROW(deeOutOfMemory);
 					
-					pNodeFront->AddCoplanarFace( front );
+					pNodeFront->AddCoplanarFace(front);
 				}
 			}
 			
-			if( back.GetVertexCount() > 0 ){
-				if( pNodeBack ){
-					pNodeBack->InsertFaceIntoTree( back );
+			if(back.GetVertexCount() > 0){
+				if(pNodeBack){
+					pNodeBack->InsertFaceIntoTree(back);
 					
 				}else{
-					pNodeBack = CreateBSPTree( faceNormal, faceDot );
-					if( ! pNodeBack ) DETHROW( deeOutOfMemory );
+					pNodeBack = CreateBSPTree(faceNormal, faceDot);
+					if(! pNodeBack) DETHROW(deeOutOfMemory);
 					
-					pNodeBack->AddCoplanarFace( back );
+					pNodeBack->AddCoplanarFace(back);
 				}
 			}
 		}

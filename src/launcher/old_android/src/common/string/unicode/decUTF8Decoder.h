@@ -49,17 +49,17 @@ public:
 	/** @name Accessors and Mutators */
 	/*@{*/
 	/** Retrieves the string in use. */
-	inline const char *GetString() const{ return pString; }
+	inline const char *GetString() const{return pString;}
 	/** Retrieves the position in the string. */
-	inline int GetPosition() const{ return pPosition; }
+	inline int GetPosition() const{return pPosition;}
 	/** Retrieves the length of the string. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{return pLength;}
 	/** Determines if the end of the string has been reached. */
 	bool HasReachedEnd() const;
 	/** Sets the encoder to use the given string and sets the position. */
-	void SetString( const char *string );
+	void SetString(const char *string);
 	/** Sets the position. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	/**
 	 * Decodes the next unicode character from the string. If the string end has been
 	 * reached or the encoded character is invalid -1 is returned. Otherwise the

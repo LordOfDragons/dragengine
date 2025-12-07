@@ -38,29 +38,29 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeListHeader::igdeListHeader( const char *title, int size ) :
-pTitle( title ),
-pSize( size )
+igdeListHeader::igdeListHeader(const char *title, int size) :
+pTitle(title),
+pSize(size)
 {
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeListHeader::igdeListHeader( const char *title, igdeIcon *icon, int size ) :
-pTitle( title ),
-pIcon( icon ),
-pSize( size )
+igdeListHeader::igdeListHeader(const char *title, igdeIcon *icon, int size) :
+pTitle(title),
+pIcon(icon),
+pSize(size)
 {
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeListHeader::igdeListHeader( const igdeListHeader &listHeader ) :
-pTitle( listHeader.pTitle ),
-pIcon( listHeader.pIcon ),
-pSize( listHeader.pSize ){
+igdeListHeader::igdeListHeader(const igdeListHeader &listHeader) :
+pTitle(listHeader.pTitle),
+pIcon(listHeader.pIcon),
+pSize(listHeader.pSize){
 }
 
 igdeListHeader::~igdeListHeader(){
@@ -71,24 +71,24 @@ igdeListHeader::~igdeListHeader(){
 // Management
 ///////////////
 
-void igdeListHeader::SetTitle( const char *title ){
+void igdeListHeader::SetTitle(const char *title){
 	pTitle = title;
 }
 
-void igdeListHeader::SetIcon( igdeIcon *icon ){
+void igdeListHeader::SetIcon(igdeIcon *icon){
 	pIcon = icon;
 }
 
-void igdeListHeader::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeListHeader::SetSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pSize = size;
 }
 
 
 
-igdeListHeader &igdeListHeader::operator=( const igdeListHeader &listHeader ){
+igdeListHeader &igdeListHeader::operator=(const igdeListHeader &listHeader){
 	pTitle = listHeader.pTitle;
 	pIcon = listHeader.pIcon;
 	pSize = listHeader.pSize;

@@ -37,40 +37,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglTerrainMaskImage::deoglTerrainMaskImage( deImage &image ) :
-pImage( image ),
-pWidth( image.GetWidth() ),
-pHeight( image.GetHeight() ),
-pData8( NULL ),
-pData16( NULL ),
-pData32( NULL ),
-pRetained( false )
+deoglTerrainMaskImage::deoglTerrainMaskImage(deImage &image) :
+pImage(image),
+pWidth(image.GetWidth()),
+pHeight(image.GetHeight()),
+pData8(NULL),
+pData16(NULL),
+pData32(NULL),
+pRetained(false)
 {
 	image.RetainImageData();
 	pRetained = true;
 	
-	if( image.GetBitCount() == 8 ){
+	if(image.GetBitCount() == 8){
 		pData8 = image.GetDataGrayscale8();
-		if( ! pData8 ){
-			DETHROW( deeInvalidParam );
+		if(! pData8){
+			DETHROW(deeInvalidParam);
 		}
 		
-	}else if( image.GetBitCount() == 16 ){
+	}else if(image.GetBitCount() == 16){
 		pData16 = image.GetDataGrayscale16();
-		if( ! pData16 ){
-			DETHROW( deeInvalidParam );
+		if(! pData16){
+			DETHROW(deeInvalidParam);
 		}
 		
 	}else{
 		pData32 = image.GetDataGrayscale32();
-		if( ! pData32 ){
-			DETHROW( deeInvalidParam );
+		if(! pData32){
+			DETHROW(deeInvalidParam);
 		}
 	}
 }
 
 deoglTerrainMaskImage::~deoglTerrainMaskImage(){
-	if( pRetained ){
+	if(pRetained){
 		pImage.ReleaseImageData();
 	}
 }
@@ -80,26 +80,26 @@ deoglTerrainMaskImage::~deoglTerrainMaskImage(){
 // Management
 ///////////////
 
-float deoglTerrainMaskImage::GetMaskValueAt( int x, int y ) const{
-	if( pData8 ){
-		return ( float )( pData8[ pWidth * y + x ].value ) * THM_8BIT_PTOH;
+float deoglTerrainMaskImage::GetMaskValueAt(int x, int y) const{
+	if(pData8){
+		return (float)(pData8[pWidth * y + x].value) * THM_8BIT_PTOH;
 		
-	}else if( pData16 ){
-		return ( float )( pData16[ pWidth * y + x ].value ) * THM_16BIT_PTOH;
+	}else if(pData16){
+		return (float)(pData16[pWidth * y + x].value) * THM_16BIT_PTOH;
 		
 	}else{
-		return pData32[ pWidth * y + x ].value;
+		return pData32[pWidth * y + x].value;
 	}
 }
 
-float deoglTerrainMaskImage::GetMaskValueAt( int index ) const{
-	if( pData8 ){
-		return ( float )( pData8[ index ].value ) * THM_8BIT_PTOH;
+float deoglTerrainMaskImage::GetMaskValueAt(int index) const{
+	if(pData8){
+		return (float)(pData8[index].value) * THM_8BIT_PTOH;
 		
-	}else if( pData16 ){
-		return ( float )( pData16[ index ].value ) * THM_16BIT_PTOH;
+	}else if(pData16){
+		return (float)(pData16[index].value) * THM_16BIT_PTOH;
 		
 	}else{
-		return pData32[ index ].value;
+		return pData32[index].value;
 	}
 }

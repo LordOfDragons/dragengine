@@ -28,8 +28,8 @@
 // Class deBaseAnimatorModule
 ///////////////////////////////
 
-deBaseAnimatorModule::deBaseAnimatorModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseAnimatorModule::deBaseAnimatorModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseAnimatorModule::~deBaseAnimatorModule(){

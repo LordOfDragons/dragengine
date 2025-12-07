@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Map block. */
-	deoglSPBSingleUse( const deoglRenderThread &renderThread, deoglShaderParameterBlock *block );
+	deoglSPBSingleUse(const deoglRenderThread &renderThread, deoglShaderParameterBlock *block);
 	
 protected:
 	/** Unmap block if mapped. */

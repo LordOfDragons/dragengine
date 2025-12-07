@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProjectSetGameObject::projUProjectSetGameObject(
-projProject *project, const char *newValue ) :
-pProject( NULL ),
-pNewValue( newValue )
+projProject *project, const char *newValue) :
+pProject(NULL),
+pNewValue(newValue)
 {
-	if( ! project ){
-		DETHROW( deeInvalidParam );
+	if(! project){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Project set game object" );
+	SetShortInfo("Project set game object");
 	
 	pOldValue = project->GetGameObject();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProjectSetGameObject::~projUProjectSetGameObject(){
-	if( pProject ){
+	if(pProject){
 		pProject->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProjectSetGameObject::~projUProjectSetGameObject(){
 ///////////////
 
 void projUProjectSetGameObject::Undo(){
-	pProject->SetGameObject( pOldValue );
+	pProject->SetGameObject(pOldValue);
 }
 
 void projUProjectSetGameObject::Redo(){
-	pProject->SetGameObject( pNewValue );
+	pProject->SetGameObject(pNewValue);
 }

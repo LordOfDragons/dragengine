@@ -39,31 +39,31 @@
 ////////////////////////////
 
 igdeHotKey::igdeHotKey() :
-pKeyCode( deInputEvent::ekcUndefined ),
-pKey( 0 ),
-pModifiers( deInputEvent::esmNone ){
+pKeyCode(deInputEvent::ekcUndefined),
+pKey(0),
+pModifiers(deInputEvent::esmNone){
 }
 
-igdeHotKey::igdeHotKey( int modifiers, deInputEvent::eKeyCodes keyCode ) :
-pKeyCode( keyCode ),
-pKey( 0 ),
-pModifiers( modifiers ){
+igdeHotKey::igdeHotKey(int modifiers, deInputEvent::eKeyCodes keyCode) :
+pKeyCode(keyCode),
+pKey(0),
+pModifiers(modifiers){
 }
 
-igdeHotKey::igdeHotKey( int modifiers, int key ) :
-pKeyCode( deInputEvent::ekcUndefined ),
-pKey( key ),
-pModifiers( modifiers )
+igdeHotKey::igdeHotKey(int modifiers, int key) :
+pKeyCode(deInputEvent::ekcUndefined),
+pKey(key),
+pModifiers(modifiers)
 {
-	if( key < 0 ){
-		DETHROW( deeInvalidParam );
+	if(key < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-igdeHotKey::igdeHotKey( const igdeHotKey &hotKey ) :
-pKeyCode( hotKey.pKeyCode ),
-pKey( hotKey.pKey ),
-pModifiers( hotKey.pModifiers ){
+igdeHotKey::igdeHotKey(const igdeHotKey &hotKey) :
+pKeyCode(hotKey.pKeyCode),
+pKey(hotKey.pKey),
+pModifiers(hotKey.pModifiers){
 }
 
 
@@ -71,18 +71,18 @@ pModifiers( hotKey.pModifiers ){
 // Management
 ///////////////
 
-void igdeHotKey::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
+void igdeHotKey::SetKeyCode(deInputEvent::eKeyCodes keyCode){
 	pKeyCode = keyCode;
 }
 
-void igdeHotKey::SetKey( int key ){
-	if( key < 0 ){
-		DETHROW( deeInvalidParam );
+void igdeHotKey::SetKey(int key){
+	if(key < 0){
+		DETHROW(deeInvalidParam);
 	}
 	pKey = key;
 }
 
-void igdeHotKey::SetModifiers( int modifiers ){
+void igdeHotKey::SetModifiers(int modifiers){
 	pModifiers = modifiers;
 }
 
@@ -91,11 +91,11 @@ void igdeHotKey::SetModifiers( int modifiers ){
 // Operators
 //////////////
 
-const bool igdeHotKey::operator==( const igdeHotKey &hotKey ) const{
+const bool igdeHotKey::operator==(const igdeHotKey &hotKey) const{
 	return pKeyCode == hotKey.pKeyCode && pKey == hotKey.pKey && pModifiers == hotKey.pModifiers;
 }
 
-igdeHotKey &igdeHotKey::operator=( const igdeHotKey &hotKey ){
+igdeHotKey &igdeHotKey::operator=(const igdeHotKey &hotKey){
 	pKeyCode = hotKey.pKeyCode;
 	pKey = hotKey.pKey;
 	pModifiers = hotKey.pModifiers;

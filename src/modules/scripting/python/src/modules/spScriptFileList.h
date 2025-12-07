@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new list. */
-	spScriptFileList( ScriptingPython *sp );
+	spScriptFileList(ScriptingPython *sp);
 	/** \brief Cleans up the list. */
 	~spScriptFileList();
 	/*@}*/
@@ -56,21 +56,21 @@ public:
 	/** \brief Retrieves the number of files. */
 	int GetCount() const;
 	/** \brief Retrieves the file at the given position. */
-	spScriptFile *GetAt( int index ) const;
+	spScriptFile *GetAt(int index) const;
 	/** \brief Retrieves the file with the given fullname or NULL if not found. */
-	spScriptFile *GetWithFullName( const char *fullname ) const;
+	spScriptFile *GetWithFullName(const char *fullname) const;
 	/** \brief Retrieves the index of the given file or -1 if not found. */
-	int IndexOf( spScriptFile *file ) const;
+	int IndexOf(spScriptFile *file) const;
 	/** \brief Retrieves the index of the file with the given fullname or -1 if not found. */
-	int IndexOfWithFullName( const char *fullname ) const;
+	int IndexOfWithFullName(const char *fullname) const;
 	/** \brief Determines if a file exists. */
-	bool Has( spScriptFile *file ) const;
+	bool Has(spScriptFile *file) const;
 	/** \brief Determines if a file with the given fullname exists. */
-	bool HasWithFullName( const char *fullname ) const;
+	bool HasWithFullName(const char *fullname) const;
 	/** \brief Adds a file. */
-	void Add( spScriptFile *file );
+	void Add(spScriptFile *file);
 	/** \brief Removes a file. */
-	void Remove( spScriptFile *file );
+	void Remove(spScriptFile *file);
 	/** \brief Removes all files. */
 	void RemoveAll();
 	

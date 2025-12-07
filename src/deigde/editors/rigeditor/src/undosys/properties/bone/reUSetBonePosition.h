@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetBonePosition( reRigBone *bone, const decVector &position );
+	reUSetBonePosition(reRigBone *bone, const decVector &position);
 	
 protected:
 	/** \brief Clean up undo. */

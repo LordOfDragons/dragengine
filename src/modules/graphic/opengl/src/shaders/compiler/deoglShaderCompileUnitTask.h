@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Unit to compile. */
-	inline deoglShaderProgramUnit *GetUnit() const{ return pUnit; }
+	inline deoglShaderProgramUnit *GetUnit() const{return pUnit;}
 	/*@}*/
 };
 

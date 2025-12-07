@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new MODULE. */
-	ScriptingPython( deLoadableModule &loadableModule );
+	ScriptingPython(deLoadableModule &loadableModule);
 	/** \brief Cleans up the MODULE. */
 	virtual ~ScriptingPython();
 	/*@}*/
@@ -96,32 +96,32 @@ public:
 	 *          those requirements. After the Init function has exited the scripting
 	 *          module is ready to operate the game.
 	 */
-	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	virtual bool Init(const char *scriptDirectory, const char *gameObject);
 	/** \brief Shuts down the scripting module and frees all resources. */
 	virtual void ShutDown();
 	
 	/** \brief Creates a peer for the given collider object. */
-	virtual deBaseScriptingCollider *CreateCollider( deCollider *collider );
+	virtual deBaseScriptingCollider *CreateCollider(deCollider *collider);
 	/** \brief Creates a peer for the given server object. */
-	virtual deBaseScriptingServer *CreateServer( deServer *server );
+	virtual deBaseScriptingServer *CreateServer(deServer *server);
 	/** \brief Creates a peer for the given connection object. */
-	virtual deBaseScriptingConnection *CreateConnection( deConnection *connection );
+	virtual deBaseScriptingConnection *CreateConnection(deConnection *connection);
 	/** \brief Creates a peer for the given network state object. */
-	virtual deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state );
+	virtual deBaseScriptingNetworkState *CreateNetworkState(deNetworkState *state);
 	/** \brief Creates a peer for the given touch sensor object. */
-	virtual deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor );
+	virtual deBaseScriptingTouchSensor *CreateTouchSensor(deTouchSensor *touchSensor);
 	/** \brief Creates a peer for the given prop field object. */
-	virtual deBaseScriptingPropField *CreatePropField( dePropField *propField );
+	virtual deBaseScriptingPropField *CreatePropField(dePropField *propField);
 	
 	/** \brief Create peer for the given particle emitter instance object or NULL if not used. */
 	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
-		deParticleEmitterInstance *instance );
+		deParticleEmitterInstance *instance);
 	
 	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter(deSoundLevelMeter *meter);
 	
 	/** \brief Create deSpeaker peer. */
-	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	virtual deBaseScriptingSpeaker *CreateSpeaker(deSpeaker *speaker);
 	
 	/**
 	 * \brief Initializes the game scripts.
@@ -148,7 +148,7 @@ public:
 	 * \brief Send the given event to game scripts.
 	 * \returns true if the call has been successfull or false otherwise
 	 */
-	virtual bool SendEvent( deInputEvent *event );
+	virtual bool SendEvent(deInputEvent *event);
 	
 	/** \brief Python cleanup. */
 	void PythonCleanUp();
@@ -157,7 +157,7 @@ public:
 	static ScriptingPython *GetSP();
 	
 	/** \brief Calls a function without any arguments. */
-	bool CallFunction( const char *functionName );
+	bool CallFunction(const char *functionName);
 	
 	/** \brief Add python exception to the module trace. */
 	void SetErrorTracePython();
@@ -166,27 +166,27 @@ public:
 	void LogExceptionPython();
 	
 	/** \brief Retrieve a namespace. */
-	inline spBaseModule *GetNamespaceDragengine() const{ return pNamespaceDragengine; }
-	inline spBaseModule *GetNamespaceScenery() const{ return pNamespaceScenery; }
-	inline spBaseModule *GetNamespaceGui() const{ return pNamespaceGui; }
+	inline spBaseModule *GetNamespaceDragengine() const{return pNamespaceDragengine;}
+	inline spBaseModule *GetNamespaceScenery() const{return pNamespaceScenery;}
+	inline spBaseModule *GetNamespaceGui() const{return pNamespaceGui;}
 	
 	/** \brief Retrieve a type. */
-	inline spTypeModuleLoader *GetTypeModuleLoader() const{ return pTypeModuleLoader; }
-	inline spModuleEngine *GetModuleEngine() const{ return pModuleEngine; }
-	inline spModuleGraphicSystem *GetModuleGraphicSystem() const{ return pModuleGraphicSystem; }
-	inline spTypeCanvas *GetTypeCanvas() const{ return pTypeCanvas; }
-	inline spTypeWorld *GetTypeWorld() const{ return pTypeWorld; }
+	inline spTypeModuleLoader *GetTypeModuleLoader() const{return pTypeModuleLoader;}
+	inline spModuleEngine *GetModuleEngine() const{return pModuleEngine;}
+	inline spModuleGraphicSystem *GetModuleGraphicSystem() const{return pModuleGraphicSystem;}
+	inline spTypeCanvas *GetTypeCanvas() const{return pTypeCanvas;}
+	inline spTypeWorld *GetTypeWorld() const{return pTypeWorld;}
 	
 	/** \brief Retrieves the script directory. */
-	inline const decString &GetScriptPath() const{ return pScriptPath; }
+	inline const decString &GetScriptPath() const{return pScriptPath;}
 	
 	/** \brief Retrieves the list of script files. */
-	inline spScriptFileList &GetScriptFileList() const{ return *pScriptFileList; }
+	inline spScriptFileList &GetScriptFileList() const{return *pScriptFileList;}
 	/*@}*/
 	
 private:
 	void pCreateModules();
-	void pLoadGameScript( const char *directory, const char *gameClass );
+	void pLoadGameScript(const char *directory, const char *gameClass);
 };
 
 #endif

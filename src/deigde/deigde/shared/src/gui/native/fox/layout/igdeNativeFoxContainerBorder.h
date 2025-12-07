@@ -34,7 +34,7 @@ class igdeContainerBorder;
  * FOX Native button.
  */
 class igdeNativeFoxContainerBorder : public FXPacker{
-	FXDECLARE( igdeNativeFoxContainerBorder )
+	FXDECLARE(igdeNativeFoxContainerBorder)
 	
 protected:
 	igdeNativeFoxContainerBorder();
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxContainerBorder( igdeContainerBorder &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxContainerBorder(igdeContainerBorder &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxContainerBorder();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxContainerBorder* CreateNativeWidget( igdeContainerBorder &owner );
+	static igdeNativeFoxContainerBorder* CreateNativeWidget(igdeContainerBorder &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -72,8 +72,8 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onResize( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onResize(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

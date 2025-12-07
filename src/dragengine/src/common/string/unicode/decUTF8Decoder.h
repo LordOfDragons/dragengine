@@ -56,22 +56,22 @@ public:
 	/** \name Accessors and Mutators */
 	/*@{*/
 	/** \brief String in use. */
-	inline const char *GetString() const{ return pString; }
+	inline const char *GetString() const{return pString;}
 	
 	/** \brief Position in the string. */
-	inline int GetPosition() const{ return pPosition; }
+	inline int GetPosition() const{return pPosition;}
 	
 	/** \brief Length of the string. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{return pLength;}
 	
 	/** \brief End of the string has been reached. */
 	bool HasReachedEnd() const;
 	
 	/** \brief Set encoder to use the given string and sets the position. */
-	void SetString( const char *string );
+	void SetString(const char *string);
 	
 	/** \brief Set position. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	
 	/**
 	 * \brief Decode next unicode character from the string.

@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTDebug( deoglRenderThread &renderThread );
+	deoglRTDebug(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTDebug();
@@ -68,43 +68,43 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Debug save texture. */
-	inline deoglDebugSaveTexture &GetDebugSaveTexture() const{ return *pDebugSaveTexture; }
+	inline deoglDebugSaveTexture &GetDebugSaveTexture() const{return *pDebugSaveTexture;}
 	
 	/** Developer mode. */
-	inline deoglDeveloperMode &GetDeveloperMode() const{ return *pDeveloperMode; }
+	inline deoglDeveloperMode &GetDeveloperMode() const{return *pDeveloperMode;}
 	
 	/**
 	 * Open file for writing safely from inside render thread.
 	 * \details Creates a temporary file writer with the content written to the actual file
 	 *          once the render thread synchronizes with the main thread.
 	 */
-	decBaseFileWriter *OpenFileForWriting( const decPath &path );
+	decBaseFileWriter *OpenFileForWriting(const decPath &path);
 	
 	/** Debug information list. */
-	inline deoglDebugInformationList &GetDebugInformationList(){ return pDebugInformation; }
-	inline const deoglDebugInformationList &GetDebugInformationList() const{ return pDebugInformation; }
+	inline deoglDebugInformationList &GetDebugInformationList(){return pDebugInformation;}
+	inline const deoglDebugInformationList &GetDebugInformationList() const{return pDebugInformation;}
 	
 	/** Enable hardware debug output. */
-	inline bool GetEnableHwDebugOutput() const{ return pEnableHwDebugOutput; }
+	inline bool GetEnableHwDebugOutput() const{return pEnableHwDebugOutput;}
 	
 	/** Set enable hardware debug output. */
-	void SetEnableHwDebugOutput( bool enable );
+	void SetEnableHwDebugOutput(bool enable);
 	
 	/** Debug memory consumption. */
-	inline deoglDebugMemoryConsumption &GetDebugMemoryConsumption(){ return pDebugMemoryConsumption; }
-	inline const deoglDebugMemoryConsumption &GetDebugMemoryConsumption() const{ return pDebugMemoryConsumption; }
+	inline deoglDebugMemoryConsumption &GetDebugMemoryConsumption(){return pDebugMemoryConsumption;}
+	inline const deoglDebugMemoryConsumption &GetDebugMemoryConsumption() const{return pDebugMemoryConsumption;}
 	
 	/** Debug trace grouping is enabled. */
-	inline bool GetEnableDebugTrace() const{ return pEnableDebugTrace; }
+	inline bool GetEnableDebugTrace() const{return pEnableDebugTrace;}
 	
 	/** Begin debug group for structuring GPU traces. */
-	void BeginDebugGroup( const char *name, int id );
+	void BeginDebugGroup(const char *name, int id);
 	
 	/** End debug group for structuring GPU traces. */
 	void EndDebugGroup();
 	
 	/** Set debug object label. */
-	void SetDebugObjectLabel( GLenum type, GLuint object, const char *name );
+	void SetDebugObjectLabel(GLenum type, GLuint object, const char *name);
 	/*@}*/
 	
 	

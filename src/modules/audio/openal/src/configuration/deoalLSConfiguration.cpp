@@ -49,9 +49,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalLSConfiguration::deoalLSConfiguration( deAudioOpenAL &oal, deoalConfiguration &config ) :
-pOal( oal ),
-pConfig( config ){
+deoalLSConfiguration::deoalLSConfiguration(deAudioOpenAL &oal, deoalConfiguration &config) :
+pOal(oal),
+pConfig(config){
 }
 
 deoalLSConfiguration::~deoalLSConfiguration(){
@@ -64,8 +64,8 @@ deoalLSConfiguration::~deoalLSConfiguration(){
 
 void deoalLSConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pOal.GetVFS();
-	const decPath path( decPath::CreatePathNative( "/config/openal.xml" ) );
-	if( ! vfs.ExistsFile( path ) ){
+	const decPath path(decPath::CreatePathNative("/config/openal.xml"));
+	if(! vfs.ExistsFile(path)){
 		return;
 	}
 	
@@ -80,10 +80,10 @@ void deoalLSConfiguration::SaveConfig(){
 // Private Functions
 //////////////////////
 
-decXmlElementTag *deoalLSConfiguration::pGetTagAt( const decXmlElementTag &tag, int index ){
-	decXmlElement &element = *tag.GetElementAt( index );
+decXmlElementTag *deoalLSConfiguration::pGetTagAt(const decXmlElementTag &tag, int index){
+	decXmlElement &element = *tag.GetElementAt(index);
 	
-	if( element.CanCastToElementTag() ){
+	if(element.CanCastToElementTag()){
 		return element.CastToElementTag();
 		
 	}else{
@@ -91,17 +91,17 @@ decXmlElementTag *deoalLSConfiguration::pGetTagAt( const decXmlElementTag &tag, 
 	}
 }
 
-decXmlAttValue *deoalLSConfiguration::pFindAttribute( const decXmlElementTag &tag, const char *name ){
+decXmlAttValue *deoalLSConfiguration::pFindAttribute(const decXmlElementTag &tag, const char *name){
 	const int count = tag.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		decXmlElement &element = *tag.GetElementAt( i );
+	for(i=0; i<count; i++){
+		decXmlElement &element = *tag.GetElementAt(i);
 		
-		if( element.CanCastToAttValue() ){
+		if(element.CanCastToAttValue()){
 			decXmlAttValue * const value = element.CastToAttValue();
 			
-			if( value->GetName() == name ){
+			if(value->GetName() == name){
 				return value;
 			}
 		}
@@ -110,49 +110,49 @@ decXmlAttValue *deoalLSConfiguration::pFindAttribute( const decXmlElementTag &ta
 	return NULL;
 }
 
-const char *deoalLSConfiguration::pGetAttributeString( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+const char *deoalLSConfiguration::pGetAttributeString(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
+	if(value){
 		return value->GetValue();
 		
 	}else{
-		pOal.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.",
-			name, tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		pOal.LogErrorFormat("Missing Attribute '%s' in tag '%s'.",
+			name, tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
-int deoalLSConfiguration::pGetAttributeInt( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+int deoalLSConfiguration::pGetAttributeInt(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
+	if(value){
 		return value->GetValue().ToInt();
 		
 	}else{
-		pOal.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.",
-			name, tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		pOal.LogErrorFormat("Missing Attribute '%s' in tag '%s'.",
+			name, tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
-float deoalLSConfiguration::pGetAttributeFloat( const decXmlElementTag &tag, const char *name ){
-	const decXmlAttValue * const value = pFindAttribute( tag, name );
+float deoalLSConfiguration::pGetAttributeFloat(const decXmlElementTag &tag, const char *name){
+	const decXmlAttValue * const value = pFindAttribute(tag, name);
 	
-	if( value ){
+	if(value){
 		return value->GetValue().ToFloat();
 		
 	}else{
-		pOal.LogErrorFormat( "Missing Attribute '%s' in tag '%s'.",
-			name, tag.GetName().GetString() );
-		DETHROW( deeInvalidParam );
+		pOal.LogErrorFormat("Missing Attribute '%s' in tag '%s'.",
+			name, tag.GetName().GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
-const char *deoalLSConfiguration::pGetCData( const decXmlElementTag &tag, const char *defaultValue ){
+const char *deoalLSConfiguration::pGetCData(const decXmlElementTag &tag, const char *defaultValue){
 	decXmlCharacterData * const cdata = tag.GetFirstData();
 	
-	if( cdata ){
+	if(cdata){
 		return cdata->GetData();
 		
 	}else{
@@ -160,15 +160,15 @@ const char *deoalLSConfiguration::pGetCData( const decXmlElementTag &tag, const 
 	}
 }
 
-bool deoalLSConfiguration::pGetCDataBool( const decXmlElementTag &tag, bool defaultValue ){
-	const decString value( pGetCData( tag, defaultValue ? "true" : "false" ) );
-	return value.EqualsInsensitive( "true" ) || value.EqualsInsensitive( "yes" ) || value == "1";
+bool deoalLSConfiguration::pGetCDataBool(const decXmlElementTag &tag, bool defaultValue){
+	const decString value(pGetCData(tag, defaultValue ? "true" : "false"));
+	return value.EqualsInsensitive("true") || value.EqualsInsensitive("yes") || value == "1";
 }
 
-int deoalLSConfiguration::pGetCDataInt( const decXmlElementTag &tag, int defaultValue ){
+int deoalLSConfiguration::pGetCDataInt(const decXmlElementTag &tag, int defaultValue){
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
-	if( cdata ){
+	if(cdata){
 		return cdata->GetData().ToInt();
 		
 	}else{
@@ -176,10 +176,10 @@ int deoalLSConfiguration::pGetCDataInt( const decXmlElementTag &tag, int default
 	}
 }
 
-float deoalLSConfiguration::pGetCDataFloat( const decXmlElementTag &tag, float defaultValue ){
+float deoalLSConfiguration::pGetCDataFloat(const decXmlElementTag &tag, float defaultValue){
 	const decXmlCharacterData * const cdata = tag.GetFirstData();
 	
-	if( cdata ){
+	if(cdata){
 		return cdata->GetData().ToFloat();
 		
 	}else{
@@ -189,129 +189,129 @@ float deoalLSConfiguration::pGetCDataFloat( const decXmlElementTag &tag, float d
 
 
 
-void deoalLSConfiguration::pLoadConfig( decBaseFileReader *file ){
+void deoalLSConfiguration::pLoadConfig(decBaseFileReader *file){
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser( pOal.GetGameEngine()->GetLogger() ).ParseXml( file, xmlDoc );
+	decXmlParser(pOal.GetGameEngine()->GetLogger()).ParseXml(file, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "config" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "config") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// read properties
 	const int elementCount = root->GetElementCount();
 	int i;
 	
-	for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = pGetTagAt( *root, i );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = pGetTagAt(*root, i);
+		if(! tag){
 			continue;
 		}
 		
 		const decString &name = tag->GetName();
 		
-		if( name == "deviceName" ){
-			pConfig.SetDeviceName( pGetCData( *tag, pConfig.GetDeviceName() ) );
+		if(name == "deviceName"){
+			pConfig.SetDeviceName(pGetCData(*tag, pConfig.GetDeviceName()));
 			
-		}else if( name == "enableEfx" ){
-			pConfig.SetEnableEFX( pGetCDataBool( *tag, pConfig.GetEnableEFX() ) );
+		}else if(name == "enableEfx"){
+			pConfig.SetEnableEFX(pGetCDataBool(*tag, pConfig.GetEnableEFX()));
 		
 		
 		
-		}else if( name == "streamBufSizeThreshold" ){
-			pConfig.SetStreamBufSizeThreshold( pGetCDataInt( *tag,
-				pConfig.GetStreamBufSizeThreshold() ) );
+		}else if(name == "streamBufSizeThreshold"){
+			pConfig.SetStreamBufSizeThreshold(pGetCDataInt(*tag,
+				pConfig.GetStreamBufSizeThreshold()));
 			
-		}else if( name == "disableExtension" ){
-			pConfig.GetDisableExtensions().Add( pGetCData( *tag, "" ) );
-			pConfig.SetDirty( true );
+		}else if(name == "disableExtension"){
+			pConfig.GetDisableExtensions().Add(pGetCData(*tag, ""));
+			pConfig.SetDirty(true);
 			
-		}else if( name == "AuralizationMode" ){
-			const decString value( pGetCData( *tag, "" ) );
+		}else if(name == "AuralizationMode"){
+			const decString value(pGetCData(*tag, ""));
 			
-			if( value == "disabled" ){
-				pConfig.SetAuralizationMode( deoalConfiguration::eamDisabled );
+			if(value == "disabled"){
+				pConfig.SetAuralizationMode(deoalConfiguration::eamDisabled);
 				
-			}else if( value == "directSound" ){
-				pConfig.SetAuralizationMode( deoalConfiguration::eamDirectSound );
+			}else if(value == "directSound"){
+				pConfig.SetAuralizationMode(deoalConfiguration::eamDirectSound);
 				
-			}else if( value == "full" ){
-				pConfig.SetAuralizationMode( deoalConfiguration::eamFull );
-				
-			}else{
-				pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Value '%s'.",
-				root->GetName().GetString(), tag->GetLineNumber(),
-				tag->GetPositionNumber(), tag->GetName().GetString() );
-			}
-			
-		}else if( name == "AuralizationQuality" ){
-			const decString value( pGetCData( *tag, "" ) );
-			
-			if( value == "veryLow" ){
-				pConfig.SetAuralizationQuality( deoalConfiguration::eaqVeryLow );
-				
-			}else if( value == "low" ){
-				pConfig.SetAuralizationQuality( deoalConfiguration::eaqLow );
-				
-			}else if( value == "medium" ){
-				pConfig.SetAuralizationQuality( deoalConfiguration::eaqMedium );
-				
-			}else if( value == "high" ){
-				pConfig.SetAuralizationQuality( deoalConfiguration::eaqHigh );
-				
-			}else if( value == "veryHigh" ){
-				pConfig.SetAuralizationQuality( deoalConfiguration::eaqVeryHigh );
+			}else if(value == "full"){
+				pConfig.SetAuralizationMode(deoalConfiguration::eamFull);
 				
 			}else{
-				pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Value '%s'.",
+				pOal.LogWarnFormat("openal.xml %s(%i:%i): Unknown Value '%s'.",
 				root->GetName().GetString(), tag->GetLineNumber(),
-				tag->GetPositionNumber(), tag->GetName().GetString() );
+				tag->GetPositionNumber(), tag->GetName().GetString());
 			}
 			
-		}else if( name == "estimateRoomRayCount" ){
-			pConfig.SetEstimateRoomRayCount( pGetCDataInt( *tag,
-				pConfig.GetEstimateRoomRayCount() ) );
-		
-		
-		
-		}else if( name == "frameRateLimit" ){
-			pConfig.SetFrameRateLimit( pGetCDataInt( *tag, pConfig.GetFrameRateLimit() ) );
+		}else if(name == "AuralizationQuality"){
+			const decString value(pGetCData(*tag, ""));
 			
-		}else if( name == "asyncAudioSkipSyncTimeRatio" ){
-			pConfig.SetAsyncAudioSkipSyncTimeRatio( pGetCDataFloat( *tag,
-				pConfig.GetAsyncAudioSkipSyncTimeRatio() ) );
+			if(value == "veryLow"){
+				pConfig.SetAuralizationQuality(deoalConfiguration::eaqVeryLow);
+				
+			}else if(value == "low"){
+				pConfig.SetAuralizationQuality(deoalConfiguration::eaqLow);
+				
+			}else if(value == "medium"){
+				pConfig.SetAuralizationQuality(deoalConfiguration::eaqMedium);
+				
+			}else if(value == "high"){
+				pConfig.SetAuralizationQuality(deoalConfiguration::eaqHigh);
+				
+			}else if(value == "veryHigh"){
+				pConfig.SetAuralizationQuality(deoalConfiguration::eaqVeryHigh);
+				
+			}else{
+				pOal.LogWarnFormat("openal.xml %s(%i:%i): Unknown Value '%s'.",
+				root->GetName().GetString(), tag->GetLineNumber(),
+				tag->GetPositionNumber(), tag->GetName().GetString());
+			}
 			
-		}else if( name == "asyncAudio" ){
-			pConfig.SetAsyncAudio( pGetCDataBool( *tag, pConfig.GetAsyncAudio() ) );
+		}else if(name == "estimateRoomRayCount"){
+			pConfig.SetEstimateRoomRayCount(pGetCDataInt(*tag,
+				pConfig.GetEstimateRoomRayCount()));
 		
 		
 		
-		}else if( name == "useSharedEffectSlots" ){
-			pConfig.SetUseSharedEffectSlots( pGetCDataBool(
+		}else if(name == "frameRateLimit"){
+			pConfig.SetFrameRateLimit(pGetCDataInt(*tag, pConfig.GetFrameRateLimit()));
+			
+		}else if(name == "asyncAudioSkipSyncTimeRatio"){
+			pConfig.SetAsyncAudioSkipSyncTimeRatio(pGetCDataFloat(*tag,
+				pConfig.GetAsyncAudioSkipSyncTimeRatio()));
+			
+		}else if(name == "asyncAudio"){
+			pConfig.SetAsyncAudio(pGetCDataBool(*tag, pConfig.GetAsyncAudio()));
+		
+		
+		
+		}else if(name == "useSharedEffectSlots"){
+			pConfig.SetUseSharedEffectSlots(pGetCDataBool(
 				*tag, pConfig.GetUseSharedEffectSlots() ) );
 		
-		}else if( name == "shareEnvironmentThreshold" ){
-			pConfig.SetShareEnvironmentThreshold( pGetCDataFloat(
+		}else if(name == "shareEnvironmentThreshold"){
+			pConfig.SetShareEnvironmentThreshold(pGetCDataFloat(
 				*tag, pConfig.GetShareEnvironmentThreshold() ) );
 		
-		}else if( name == "switchSharedEnvironmentThreshold" ){
-			pConfig.SetSwitchSharedEnvironmentThreshold( pGetCDataFloat(
+		}else if(name == "switchSharedEnvironmentThreshold"){
+			pConfig.SetSwitchSharedEnvironmentThreshold(pGetCDataFloat(
 				*tag, pConfig.GetSwitchSharedEnvironmentThreshold() ) );
 		
-		}else if( name == "maxSharedEffectSlots" ){
-			pConfig.SetMaxSharedEffectSlots( pGetCDataInt(
+		}else if(name == "maxSharedEffectSlots"){
+			pConfig.SetMaxSharedEffectSlots(pGetCDataInt(
 				*tag, pConfig.GetMaxSharedEffectSlots() ) );
 			
 			
 			
 		}else{
-			pOal.LogWarnFormat( "openal.xml %s(%i:%i): Unknown Tag %s.",
+			pOal.LogWarnFormat("openal.xml %s(%i:%i): Unknown Tag %s.",
 				root->GetName().GetString(), tag->GetLineNumber(),
-				tag->GetPositionNumber(), tag->GetName().GetString() );
+				tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
 }

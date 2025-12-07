@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPHTCVivePro( deoxrInstance &instance );
+	deoxrDPHTCVivePro(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */

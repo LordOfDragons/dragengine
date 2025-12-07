@@ -150,7 +150,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create audio thread. */
-	deoalAudioThread( deAudioOpenAL &oal );
+	deoalAudioThread(deAudioOpenAL &oal);
 	
 	/** Clean up audio thread. */
 	virtual ~deoalAudioThread();
@@ -161,26 +161,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** OpenAL module. */
-	inline deAudioOpenAL &GetOal() const{ return pOal; }
+	inline deAudioOpenAL &GetOal() const{return pOal;}
 	
 	
 	
 	/** Async audio. */
-	inline bool GetAsyncAudio() const{ return pAsyncAudio; }
+	inline bool GetAsyncAudio() const{return pAsyncAudio;}
 	
 	/** Set async audio. */
-	void SetAsyncAudio( bool asyncAudio );
+	void SetAsyncAudio(bool asyncAudio);
 	
 	
 	
 	/** Active microphone. */
-	inline deoalAMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
+	inline deoalAMicrophone *GetActiveMicrophone() const{return pActiveMicrophone;}
 	
 	/** Set active microphone. */
-	void SetActiveMicrophone( deoalAMicrophone *microphone );
+	void SetActiveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Active world if a microphone is active and has a parent world. */
-	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
+	inline deoalAWorld *GetActiveWorld() const{return pActiveWorld;}
 	
 	
 	
@@ -241,99 +241,99 @@ public:
 	
 	
 	/** Context. */
-	inline deoalATContext &GetContext(){ return *pContext; }
-	inline const deoalATContext &GetContext() const{ return *pContext; }
+	inline deoalATContext &GetContext(){return *pContext;}
+	inline const deoalATContext &GetContext() const{return *pContext;}
 	
 	
 	
 	/** Logger. */
-	inline deoalATLogger &GetLogger() const{ return *pLogger; }
+	inline deoalATLogger &GetLogger() const{return *pLogger;}
 	
 	/** Debug information. */
-	inline deoalDebugInfo &GetDebugInfo() const{ return *pDebugInfo; }
+	inline deoalDebugInfo &GetDebugInfo() const{return *pDebugInfo;}
 	
 	/** Debug. */
-	inline deoalATDebug &GetDebug() const{ return *pDebug; }
-	inline bool HasDebug() const{ return pDebug != nullptr; }
+	inline deoalATDebug &GetDebug() const{return *pDebug;}
+	inline bool HasDebug() const{return pDebug != nullptr;}
 	
 	/** Delayed. */
-	inline deoalATDelayed &GetDelayed() const{ return *pDelayed; }
+	inline deoalATDelayed &GetDelayed() const{return *pDelayed;}
 	
 	/** Ray tracing. */
-	inline deoalATRayTracing &GetRayTracing() const{ return *pRayTracing; }
+	inline deoalATRayTracing &GetRayTracing() const{return *pRayTracing;}
 	
 	/** Shared speaker list. */
-	inline deoalSpeakerList &GetSpeakerList() const{ return *pSpeakerList; }
+	inline deoalSpeakerList &GetSpeakerList() const{return *pSpeakerList;}
 	
 	/** Caches. */
-	inline deoalCaches &GetCaches() const{ return *pCaches; }
+	inline deoalCaches &GetCaches() const{return *pCaches;}
 	
 	/** Shared decode buffer. */
-	inline deoalDecodeBuffer &GetDecodeBuffer() const{ return *pDecodeBuffer; }
+	inline deoalDecodeBuffer &GetDecodeBuffer() const{return *pDecodeBuffer;}
 	
 	/** Configuration. */
-	inline deoalConfiguration &GetConfiguration(){ return pConfiguration; }
-	inline const deoalConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline deoalConfiguration &GetConfiguration(){return pConfiguration;}
+	inline const deoalConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** Leak tracker. */
-	inline deoalATLeakTracker &GetLeakTracker(){ return pLeakTracker; }
+	inline deoalATLeakTracker &GetLeakTracker(){return pLeakTracker;}
 	
 	/** Extensions. */
-	inline deoalExtensions &GetExtensions() const{ return *pExtensions; }
+	inline deoalExtensions &GetExtensions() const{return *pExtensions;}
 	
 	/** Capabilities. */
-	inline deoalCapabilities &GetCapabilities() const{ return *pCapabilities; }
+	inline deoalCapabilities &GetCapabilities() const{return *pCapabilities;}
 	
 	/** Effect slot manager. */
-	inline deoalEffectSlotManager &GetEffectSlotManager() const{ return *pEffectSlotManager; }
+	inline deoalEffectSlotManager &GetEffectSlotManager() const{return *pEffectSlotManager;}
 	
 	/** Shared effect slot manager. */
-	inline deoalSharedEffectSlotManager &GetSharedEffectSlotManager() const{ return *pSharedEffectSlotManager; }
+	inline deoalSharedEffectSlotManager &GetSharedEffectSlotManager() const{return *pSharedEffectSlotManager;}
 	
 	/** Source manager. */
-	inline deoalSourceManager &GetSourceManager() const{ return *pSourceManager; }
+	inline deoalSourceManager &GetSourceManager() const{return *pSourceManager;}
 	
 	/** Shared buffer list. */
-	inline deoalSharedBufferList &GetSharedBufferList() const{ return *pSharedBufferList; }
+	inline deoalSharedBufferList &GetSharedBufferList() const{return *pSharedBufferList;}
 	
 	/** Parallel env-probe ray-tracer. */
-	inline deoalRTParallelEnvProbe &GetRTParallelEnvProbe() const{ return *pRTParallelEnvProbe; }
+	inline deoalRTParallelEnvProbe &GetRTParallelEnvProbe() const{return *pRTParallelEnvProbe;}
 	
 	/** Shared ray trace result for direct sound tracing. */
-	inline deoalRayTraceResult &GetRTResultDirect() const{ return *pRTResultDirect; }
+	inline deoalRayTraceResult &GetRTResultDirect() const{return *pRTResultDirect;}
 	
 	/** Shared ray trace hit element list. */
-	inline deoalRayTraceHitElementList &GetRTHitElementList() const{ return *pRTHitElementList; }
+	inline deoalRayTraceHitElementList &GetRTHitElementList() const{return *pRTHitElementList;}
 	
 	/** Shared sound ray interaction list. */
-	inline deoalSoundRayInteractionList &GetSRInteractionList() const{ return *pSRInteractionList; }
+	inline deoalSoundRayInteractionList &GetSRInteractionList() const{return *pSRInteractionList;}
 	
 	/** Shared ray hits element world octree visitor. */
-	inline deoalWOVRayHitsElement &GetWOVRayHitsElement() const{ return *pWOVRayHitsElement; }
+	inline deoalWOVRayHitsElement &GetWOVRayHitsElement() const{return *pWOVRayHitsElement;}
 	
 	/** Shared collect elements world octree visitor. */
-	inline deoalWOVCollectElements &GetWOVCollectElements() const{ return *pWOVCollectElements; }
+	inline deoalWOVCollectElements &GetWOVCollectElements() const{return *pWOVCollectElements;}
 	
 	
 	
 	/** Elapsed time. */
-	inline float GetElapsed() const{ return pElapsed; }
+	inline float GetElapsed() const{return pElapsed;}
 	
 	/** Elapsed time since the last full update. */
-	inline float GetElapsedFull() const{ return pElapsedFull; }
+	inline float GetElapsedFull() const{return pElapsedFull;}
 	
 	/** FPS Rate. */
-	inline int GetFPSRate() const{ return pFPSRate; }
+	inline int GetFPSRate() const{return pFPSRate;}
 	
 	
 	
 	/** Main thread time history. */
-	inline decTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
-	inline const decTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
+	inline decTimeHistory &GetTimeHistoryMain(){return pTimeHistoryMain;}
+	inline const decTimeHistory &GetTimeHistoryMain() const{return pTimeHistoryMain;}
 	
 	/** Audio thread time history. */
-	inline decTimeHistory &GetTimeHistoryAudio(){ return pTimeHistoryAudio; }
-	inline const decTimeHistory &GetTimeHistoryAudio() const{ return pTimeHistoryAudio; }
+	inline decTimeHistory &GetTimeHistoryAudio(){return pTimeHistoryAudio;}
+	inline const decTimeHistory &GetTimeHistoryAudio() const{return pTimeHistoryAudio;}
 	/*@}*/
 	
 	
@@ -343,7 +343,7 @@ private:
 	
 	void pInitThreadPhase1();
 	void pCleanUpThread();
-	void pLimitFrameRate( float elapsed );
+	void pLimitFrameRate(float elapsed);
 	
 	void pSyncConfiguration();
 	void pPrepareConfiguration();

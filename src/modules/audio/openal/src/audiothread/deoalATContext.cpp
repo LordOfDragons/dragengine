@@ -44,10 +44,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalATContext::deoalATContext( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ),
-pDevice( nullptr ),
-pContext( nullptr ){
+deoalATContext::deoalATContext(deoalAudioThread &audioThread) :
+pAudioThread(audioThread),
+pDevice(nullptr),
+pContext(nullptr){
 }
 
 deoalATContext::~deoalATContext(){
@@ -64,18 +64,18 @@ void deoalATContext::OpenDevice(){
 	
 	pScanForDevices();
 	
-	if( deviceName.IsEmpty() ){
-		logger.LogInfo( "Open default device" );
-		pDevice = alcOpenDevice( nullptr );
+	if(deviceName.IsEmpty()){
+		logger.LogInfo("Open default device");
+		pDevice = alcOpenDevice(nullptr);
 		
 	}else{
-		logger.LogInfoFormat( "Open device '%s' instead of default", deviceName.GetString() );
-		pDevice = alcOpenDevice( deviceName );
+		logger.LogInfoFormat("Open device '%s' instead of default", deviceName.GetString());
+		pDevice = alcOpenDevice(deviceName);
 	}
 	
-	if( ! pDevice ){
-		logger.LogErrorFormat( "alcOpenDevice(%s) failed", deviceName.GetString() );
-		DETHROW( deeInvalidParam );
+	if(! pDevice){
+		logger.LogErrorFormat("alcOpenDevice(%s) failed", deviceName.GetString());
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -87,25 +87,25 @@ void deoalATContext::CreateContext(){
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	
 	int index = 0;
-	ALCint attributes[ 9 ];
+	ALCint attributes[9];
 	
-	attributes[ index++ ] = ALC_MONO_SOURCES;
-	attributes[ index++ ] = 1024 * 8;
+	attributes[index++] = ALC_MONO_SOURCES;
+	attributes[index++] = 1024 * 8;
 	
-	attributes[ index++ ] = ALC_STEREO_SOURCES;
-	attributes[ index++ ] = 1024 * 8;
+	attributes[index++] = ALC_STEREO_SOURCES;
+	attributes[index++] = 1024 * 8;
 	
-	if( extensions.GetHasEFX() ){
-		attributes[ index++ ] = ALC_MAX_AUXILIARY_SENDS;
-		attributes[ index++ ] = 1;
+	if(extensions.GetHasEFX()){
+		attributes[index++] = ALC_MAX_AUXILIARY_SENDS;
+		attributes[index++] = 1;
 			// a send can have both an effect and a filter. to do environment simulation
 			// it is enough to have a reverb effect and a low-pass filter. thus 1 send
 			// is enough to simulate 1 indirect sound path
 	}
 	
-	if( extensions.GetHasHRTF() ){
-		attributes[ index++ ] = ALC_HRTF_SOFT;
-		attributes[ index++ ] = ALC_DONT_CARE_SOFT;
+	if(extensions.GetHasHRTF()){
+		attributes[index++] = ALC_HRTF_SOFT;
+		attributes[index++] = ALC_DONT_CARE_SOFT;
 			// let driver choose when to use HRTF. we can force it with ALC_TRUE but then
 			// it is possible the user is using a surround system where HRTF is not good.
 			// we check later on though if HRTF is currently in use.
@@ -115,18 +115,18 @@ void deoalATContext::CreateContext(){
 	//ALC_REFRESH = 50 // Hz => ignored by OpenALSoft
  
 	
-	attributes[ index++ ] = ALC_INVALID;
+	attributes[index++] = ALC_INVALID;
 	
-	pContext = alcCreateContext( pDevice, attributes );
-	if( ! pContext ){
-		logger.LogError( "alcCreateContext failed" );
-		DETHROW( deeInvalidParam );
+	pContext = alcCreateContext(pDevice, attributes);
+	if(! pContext){
+		logger.LogError("alcCreateContext failed");
+		DETHROW(deeInvalidParam);
 	}
 	
 	// make the context current
-	if( alcMakeContextCurrent( pContext ) == AL_FALSE ){
-		logger.LogError( "alcMakeContextCurrent failed" );
-		DETHROW( deeInvalidParam );
+	if(alcMakeContextCurrent(pContext) == AL_FALSE){
+		logger.LogError("alcMakeContextCurrent failed");
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -135,22 +135,22 @@ void deoalATContext::LogContextInfo(){
 	ALint frequency;
 	ALint refresh;
 	
-	OAL_CHECK( pAudioThread, alcGetIntegerv( pDevice, ALC_FREQUENCY, 1, &frequency ) );
-	OAL_CHECK( pAudioThread, alcGetIntegerv( pDevice, ALC_REFRESH, 1, &refresh ) );
+	OAL_CHECK(pAudioThread, alcGetIntegerv(pDevice, ALC_FREQUENCY, 1, &frequency));
+	OAL_CHECK(pAudioThread, alcGetIntegerv(pDevice, ALC_REFRESH, 1, &refresh));
 	
-	logger.LogInfoFormat( "Context: Mixing Frequency = %i Hz", frequency );
-	logger.LogInfoFormat( "Context: Refresh Interval = %i Hz", refresh );
+	logger.LogInfoFormat("Context: Mixing Frequency = %i Hz", frequency);
+	logger.LogInfoFormat("Context: Refresh Interval = %i Hz", refresh);
 }
 
 void deoalATContext::CleanUp(){
-	if( pContext ){
-		alcMakeContextCurrent( nullptr );
-		alcDestroyContext( pContext );
+	if(pContext){
+		alcMakeContextCurrent(nullptr);
+		alcDestroyContext(pContext);
 		pContext = nullptr;
 	}
 	
-	if( pDevice ){
-		alcCloseDevice( pDevice );
+	if(pDevice){
+		alcCloseDevice(pDevice);
 		pDevice = nullptr;
 	}
 }
@@ -166,33 +166,33 @@ void deoalATContext::pScanForDevices(){
 	int position, len;
 	
 	// query for the information
-	defaultDevice = alcGetString( nullptr, ALC_DEFAULT_DEVICE_SPECIFIER );
+	defaultDevice = alcGetString(nullptr, ALC_DEFAULT_DEVICE_SPECIFIER);
 	
-	if( alcIsExtensionPresent( nullptr, "ALC_ENUMERATE_ALL_EXT" ) == AL_TRUE ){
-		defaultDevice = alcGetString( nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER );
-		devices = alcGetString( nullptr, ALC_ALL_DEVICES_SPECIFIER );
+	if(alcIsExtensionPresent(nullptr, "ALC_ENUMERATE_ALL_EXT") == AL_TRUE){
+		defaultDevice = alcGetString(nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);
+		devices = alcGetString(nullptr, ALC_ALL_DEVICES_SPECIFIER);
 		
-	}else if( alcIsExtensionPresent( nullptr, "ALC_ENUMERATION_EXT" ) == AL_TRUE ){
-		devices = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
+	}else if(alcIsExtensionPresent(nullptr, "ALC_ENUMERATION_EXT") == AL_TRUE){
+		devices = alcGetString(nullptr, ALC_DEVICE_SPECIFIER);
 	}
 	
 	// log devices
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	
-	if( devices ) {
-		logger.LogInfo( "devices:" );
+	if(devices) {
+		logger.LogInfo("devices:");
 		position = 0;
-		while( devices[ position ] ){
-			len = ( int )strlen( devices + position );
-			if( len > 0 ){
-				logger.LogInfoFormat( "- %s", devices + position );
+		while(devices[position]){
+			len = (int)strlen(devices + position);
+			if(len > 0){
+				logger.LogInfoFormat("- %s", devices + position);
 				position += len + 1;
 			}
 		}
 		
 	}else{
-		logger.LogError( "devices(all): < query failed >" );
+		logger.LogError("devices(all): < query failed >");
 	}
 	
-	logger.LogInfoFormat( "default device: '%s'", defaultDevice ? defaultDevice : "< query failed >" );
+	logger.LogInfoFormat("default device: '%s'", defaultDevice ? defaultDevice : "< query failed >");
 }

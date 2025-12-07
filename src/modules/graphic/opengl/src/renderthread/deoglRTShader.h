@@ -92,7 +92,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglTexUnitsConfigList *pTexUnitsConfigList;
-	deoglTexSamplerConfig *pTexSamplerConfigs[ ETSC_COUNT ];
+	deoglTexSamplerConfig *pTexSamplerConfigs[ETSC_COUNT];
 	
 	deoglShaderManager *pShaderManager;
 	deoglSkinShaderManager *pSkinShaderManager;
@@ -108,7 +108,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread texture related object. */
-	deoglRTShader( deoglRenderThread &renderThread );
+	deoglRTShader(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread texture related object. */
 	virtual ~deoglRTShader();
@@ -119,33 +119,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Texture units configuration manager. */
-	inline deoglTexUnitsConfigList &GetTexUnitsConfigList() const{ return *pTexUnitsConfigList; }
+	inline deoglTexUnitsConfigList &GetTexUnitsConfigList() const{return *pTexUnitsConfigList;}
 	
 	/** Texture sampler configuration. */
-	deoglTexSamplerConfig *GetTexSamplerConfig( const eTextureSamplerConfigurations type ) const;
+	deoglTexSamplerConfig *GetTexSamplerConfig(const eTextureSamplerConfigurations type) const;
 	
 	/** Shader manager. */
-	inline deoglShaderManager &GetShaderManager() const{ return *pShaderManager; }
+	inline deoglShaderManager &GetShaderManager() const{return *pShaderManager;}
 	
 	/** Skin shader manager. */
-	inline deoglSkinShaderManager &GetSkinShaderManager() const{ return *pSkinShaderManager; }
+	inline deoglSkinShaderManager &GetSkinShaderManager() const{return *pSkinShaderManager;}
 	
 	/** Light shader manager. */
-	inline deoglLightShaderManager &GetLightShaderManager() const{ return *pLightShaderManager; }
+	inline deoglLightShaderManager &GetLightShaderManager() const{return *pLightShaderManager;}
 	
 	/** Current shader program or NULL if none is set. */
-	inline const deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
+	inline const deoglShaderProgram *GetActiveShader() const{return pCurShaderProg;}
 	
 	/** Activate shader if not active yet. */
-	void ActivateShader( const deoglShaderProgram *shader );
+	void ActivateShader(const deoglShaderProgram *shader);
 	
 	/** Add common defines. */
-	void SetCommonDefines( deoglShaderDefines &defines ) const;
+	void SetCommonDefines(deoglShaderDefines &defines) const;
 	
 	
 	
 	/** SSBO skin textures. */
-	inline const deoglSPBlockSSBO::Ref &GetSSBOSkinTextures() const{ return pSSBOSkinTextures; }
+	inline const deoglSPBlockSSBO::Ref &GetSSBOSkinTextures() const{return pSSBOSkinTextures;}
 	
 	/** Invalidate SSBO skin textures. */
 	void InvalidateSSBOSkinTextures();

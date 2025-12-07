@@ -68,7 +68,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shared vbo. */
-	deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize );
+	deoglSharedVBO(deoglSharedVBOList *parentList, int size, int indexSize);
 	/** Cleans up the shared vbo. */
 	virtual ~deoglSharedVBO();
 	/*@}*/
@@ -76,31 +76,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent list. */
-	inline deoglSharedVBOList *GetParentList() const{ return pParentList; }
+	inline deoglSharedVBOList *GetParentList() const{return pParentList;}
 	/** Prepare if required. */
 	void Prepare();
 	/** Retrieves the VBO. */
-	inline GLuint GetVBO() const{ return pVBO; }
+	inline GLuint GetVBO() const{return pVBO;}
 	/** Retrieves the IBO. */
-	inline GLuint GetIBO() const{ return pIBO; }
+	inline GLuint GetIBO() const{return pIBO;}
 	/** Retrieves the VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline deoglVAO *GetVAO() const{return pVAO;}
 	/** Retrieves the used size. */
-	inline int GetUsedSize() const{ return pUsedSize; }
+	inline int GetUsedSize() const{return pUsedSize;}
 	/** Retrieves the size. */
-	inline int GetSize() const{ return pSize; }
+	inline int GetSize() const{return pSize;}
 	/** Retrieves the used index size. */
-	inline int GetIndexUsedSize() const{ return pIndexUsedSize; }
+	inline int GetIndexUsedSize() const{return pIndexUsedSize;}
 	/** Retrieves the index size. */
-	inline int GetIndexSize() const{ return pIndexSize; }
+	inline int GetIndexSize() const{return pIndexSize;}
 	/** Updates the used sizes. */
 	void UpdateUsedSizes();
 	/** Marks the VBO dirty. */
 	void MarkDirty();
 	
 	/** Memory consumption. */
-	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{ return pMemUseVBO; }
-	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{ return pMemUseIBO; }
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{return pMemUseVBO;}
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{return pMemUseIBO;}
 	/*@}*/
 	
 	/** \name Data Management */
@@ -108,18 +108,18 @@ public:
 	/** Retrieves the number of blocks. */
 	int GetBlockCount() const;
 	/** Retrieves the block at the given location. */
-	deoglSharedVBOBlock *GetBlockAt( int index ) const;
+	deoglSharedVBOBlock *GetBlockAt(int index) const;
 	
 	/**
 	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
 	 * location has been found or NULL if there is not enough space left in the VBO.
 	 */
-	deoglSharedVBOBlock *AddBlock( int size, int indexCount = 0 );
+	deoglSharedVBOBlock *AddBlock(int size, int indexCount = 0);
 	/** Removes a block of data returning the space to the pool of free space. */
-	void RemoveBlock( deoglSharedVBOBlock *block );
+	void RemoveBlock(deoglSharedVBOBlock *block);
 	
 	/** Index of first empty block with minimum size and index count available or NULL if not found. */
-	int IndexOfEmptyBlockWithMinSize( int size, int indexCount );
+	int IndexOfEmptyBlockWithMinSize(int size, int indexCount);
 	/*@}*/
 	
 private:

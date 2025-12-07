@@ -47,7 +47,7 @@ public:
 	igdeTemplateFileList();
 	
 	/** \brief Create copy of project template file list. */
-	igdeTemplateFileList( const igdeTemplateFileList &list );
+	igdeTemplateFileList(const igdeTemplateFileList &list);
 	
 	/** \brief Clean up project template file list. */
 	~igdeTemplateFileList();
@@ -61,19 +61,19 @@ public:
 	int GetCount() const;
 	
 	/** \brief Project template file at index. */
-	igdeTemplateFile *GetAt( int index ) const;
+	igdeTemplateFile *GetAt(int index) const;
 	
 	/** \brief Index of project template file or -1 if absent. */
-	int IndexOf( igdeTemplateFile *file ) const;
+	int IndexOf(igdeTemplateFile *file) const;
 	
 	/** \brief Project template file is present. */
-	bool Has( igdeTemplateFile *file ) const;
+	bool Has(igdeTemplateFile *file) const;
 	
 	/** \brief Add project template file. */
-	void Add( igdeTemplateFile *file );
+	void Add(igdeTemplateFile *file);
 	
 	/** \brief Remove project template file. */
-	void Remove( igdeTemplateFile *file );
+	void Remove(igdeTemplateFile *file);
 	
 	/** \brief Remove all project template files. */
 	void RemoveAll();
@@ -84,7 +84,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy list. */
-	igdeTemplateFileList &operator=( const igdeTemplateFileList &list );
+	igdeTemplateFileList &operator=(const igdeTemplateFileList &list);
 	/*@}*/
 };
 

@@ -39,19 +39,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pProperty( property )
+gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL),
+pProperty(property)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set property name" );
+	SetShortInfo("Component set property name");
 	
-	pOldValue = component->GetPropertyName( property );
+	pOldValue = component->GetPropertyName(property);
 	pNewValue = newValue;
 	
 	pComponent = component;
@@ -62,10 +62,10 @@ pProperty( property )
 }
 
 gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
 ///////////////
 
 void gdeUOCComponentSetPropertyName::Undo(){
-	pComponent->SetPropertyName( pProperty, pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPropertyName(pProperty, pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetPropertyName::Redo(){
-	pComponent->SetPropertyName( pProperty, pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetPropertyName(pProperty, pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

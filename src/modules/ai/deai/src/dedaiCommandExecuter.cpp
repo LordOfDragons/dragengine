@@ -44,9 +44,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-dedaiCommandExecuter::dedaiCommandExecuter( deDEAIModule *deai ){
-	if( ! deai ){
-		DETHROW( deeInvalidParam );
+dedaiCommandExecuter::dedaiCommandExecuter(deDEAIModule *deai){
+	if(! deai){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDEAI = deai;
@@ -60,17 +60,17 @@ dedaiCommandExecuter::~dedaiCommandExecuter(){
 // Management
 ///////////////
 
-void dedaiCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( command.GetArgumentCount() == 0 ){
-		answer.SetFromUTF8( "No command provided." );
+void dedaiCommandExecuter::ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(command.GetArgumentCount() == 0){
+		answer.SetFromUTF8("No command provided.");
 		
-	}else if( command.MatchesArgumentAt( 0, "help" ) ){
-		pHelp( command, answer );
+	}else if(command.MatchesArgumentAt(0, "help")){
+		pHelp(command, answer);
 		
-	}else if( ! pDEAI->GetDeveloperMode().ExecuteCommand( command, answer ) ){
-		answer.SetFromUTF8( "Unknown command '" );
-		answer += *command.GetArgumentAt( 0 );
-		answer.AppendFromUTF8( "'." );
+	}else if(! pDEAI->GetDeveloperMode().ExecuteCommand(command, answer)){
+		answer.SetFromUTF8("Unknown command '");
+		answer += *command.GetArgumentAt(0);
+		answer.AppendFromUTF8("'.");
 	}
 }
 
@@ -79,6 +79,6 @@ void dedaiCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command
 // Private functions
 //////////////////////
 
-void dedaiCommandExecuter::pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	answer.SetFromUTF8( "help => Displays this help screen.\n" );
+void dedaiCommandExecuter::pHelp(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	answer.SetFromUTF8("help => Displays this help screen.\n");
 }

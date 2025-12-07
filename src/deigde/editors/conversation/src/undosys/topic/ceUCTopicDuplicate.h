@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicDuplicate( ceConversationFile *file, const ceConversationTopic &topic, const char *newID );
+	ceUCTopicDuplicate(ceConversationFile *file, const ceConversationTopic &topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCTopicDuplicate();
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate topic. */
-	inline ceConversationTopic *GetDuplicateTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetDuplicateTopic() const{return pTopic;}
 	
 	/** \brief Undo action. */
 	virtual void Undo();

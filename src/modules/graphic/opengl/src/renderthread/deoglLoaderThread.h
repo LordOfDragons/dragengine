@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create loader thread. */
-	deoglLoaderThread( deoglRenderThread &renderThread );
+	deoglLoaderThread(deoglRenderThread &renderThread);
 	
 	/** Clean up loader thread. */
 	virtual ~deoglLoaderThread();
@@ -73,16 +73,16 @@ public:
 	bool IsEnabled();
 	
 	/** Enable context. */
-	void EnableContext( bool enable );
+	void EnableContext(bool enable);
 	
 	/** Add task to process. Returns true if added or false if loader is disabled. */
-	bool AddTask( deoglLoaderThreadTask *task );
+	bool AddTask(deoglLoaderThreadTask *task);
 	
 	/**
 	 * Add task and wait for it to be processed then returns.
 	 * Returns true if process or false if loader is disabled.
 	 */
-	bool AwaitTask( deoglLoaderThreadTask *task );
+	bool AwaitTask(deoglLoaderThreadTask *task);
 	/*@}*/
 	
 	

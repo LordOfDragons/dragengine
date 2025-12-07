@@ -58,16 +58,16 @@ public:
 	int GetCount() const;
 	
 	/** \brief Child at index. */
-	debpDebugInformation *GetAt( int index ) const;
+	debpDebugInformation *GetAt(int index) const;
 	
 	/** \brief Add child. */
-	void Add( debpDebugInformation *child );
+	void Add(debpDebugInformation *child);
 	
 	/** \brief Remove child. */
-	void Remove( debpDebugInformation *child );
+	void Remove(debpDebugInformation *child);
 	
 	/** \brief Remove child if present. */
-	void RemoveIfPresent( debpDebugInformation *child );
+	void RemoveIfPresent(debpDebugInformation *child);
 	
 	/** \brief Remove all children. */
 	void RemoveAll();

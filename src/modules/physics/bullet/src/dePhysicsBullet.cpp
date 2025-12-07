@@ -68,7 +68,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *BulletCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *BulletCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -78,11 +78,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *BulletCreateModule( deLoadableModule *loadabl
 // entry function
 ///////////////////
 
-deBaseModule *BulletCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *BulletCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	try{
-		module = new dePhysicsBullet( *loadableModule );
-	}catch( const deException & ){
+		module = new dePhysicsBullet(*loadableModule);
+	}catch(const deException &){
 		return NULL;
 	}
 	return module;
@@ -151,32 +151,32 @@ const char *ShapeTypeNames[] = {
 // constructor, destructor
 ////////////////////////////
 
-dePhysicsBullet::dePhysicsBullet( deLoadableModule &loadableModule ) :
-deBasePhysicsModule( loadableModule ),
-pConfiguration( NULL ),
-pDeveloperMode( *this ),
-pCommandExecuter( NULL ),
-pParameters( NULL ),
-pColInfo( NULL ),
-pCollisionDetection( NULL ),
-pDebug( *this )
+dePhysicsBullet::dePhysicsBullet(deLoadableModule &loadableModule) :
+deBasePhysicsModule(loadableModule),
+pConfiguration(NULL),
+pDeveloperMode(*this),
+pCommandExecuter(NULL),
+pParameters(NULL),
+pColInfo(NULL),
+pCollisionDetection(NULL),
+pDebug(*this)
 {
 	gContactAddedCallback = debpCollisionObject::CallbackAddContact;
 	
-	pCommandExecuter = new debpCommandExecuter( this );
-	pConfiguration = new debpConfiguration( this );
+	pCommandExecuter = new debpCommandExecuter(this);
+	pConfiguration = new debpConfiguration(this);
 	
 	// create parameters
 	pParameters = new debpParameterList;
-	pParameters->AddParameter( new debpPSimulatePropFields( *this ) );
+	pParameters->AddParameter(new debpPSimulatePropFields(*this));
 }
 
 dePhysicsBullet::~dePhysicsBullet(){
 	CleanUp();
 	
-	if( pConfiguration ) delete pConfiguration;
-	if( pCommandExecuter ) delete pCommandExecuter;
-	if( pParameters ) delete pParameters;
+	if(pConfiguration) delete pConfiguration;
+	if(pCommandExecuter) delete pCommandExecuter;
+	if(pParameters) delete pParameters;
 }
 
 
@@ -185,7 +185,7 @@ dePhysicsBullet::~dePhysicsBullet(){
 ///////////////
 
 bool dePhysicsBullet::Init(){
-	pCollisionDetection = new debpCollisionDetection( *this );
+	pCollisionDetection = new debpCollisionDetection(*this);
 	pColInfo = new deCollisionInfo;
 	
 	pConfiguration->LoadConfig();
@@ -197,17 +197,17 @@ bool dePhysicsBullet::Init(){
 }
 
 void dePhysicsBullet::CleanUp(){
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfig();
 	}
 	
-	if( pColInfo ){
+	if(pColInfo){
 		pColInfo->Clear(); // just to be safe in case somebody still holds a reference
 		pColInfo->FreeReference();
 		pColInfo = NULL;
 	}
 	
-	if( pCollisionDetection ){
+	if(pCollisionDetection){
 		delete pCollisionDetection;
 		pCollisionDetection = NULL;
 	}
@@ -222,28 +222,28 @@ int dePhysicsBullet::GetParameterCount() const{
 	return pParameters->GetParameterCount();
 }
 
-void dePhysicsBullet::GetParameterInfo( int index, deModuleParameter &info ) const{
-	info = pParameters->GetParameterAt( index );
+void dePhysicsBullet::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters->GetParameterAt(index);
 }
 
-int dePhysicsBullet::IndexOfParameterNamed( const char *name ) const{
-	return pParameters->IndexOfParameterNamed( name );
+int dePhysicsBullet::IndexOfParameterNamed(const char *name) const{
+	return pParameters->IndexOfParameterNamed(name);
 }
 
-decString dePhysicsBullet::GetParameterValue( const char *name ) const{
-	return pParameters->GetParameterNamed( name ).GetParameterValue();
+decString dePhysicsBullet::GetParameterValue(const char *name) const{
+	return pParameters->GetParameterNamed(name).GetParameterValue();
 }
 
-void dePhysicsBullet::SetParameterValue( const char *name, const char *value ){
-	pParameters->GetParameterNamed( name ).SetParameterValue( value );
+void dePhysicsBullet::SetParameterValue(const char *name, const char *value){
+	pParameters->GetParameterNamed(name).SetParameterValue(value);
 }
 
-void dePhysicsBullet::SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( pCommandExecuter ){
-		pCommandExecuter->ExecuteCommand( command, answer );
+void dePhysicsBullet::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(pCommandExecuter){
+		pCommandExecuter->ExecuteCommand(command, answer);
 		
 	}else{
-		answer.SetFromUTF8( "Internal Error!" );
+		answer.SetFromUTF8("Internal Error!");
 	}
 }
 
@@ -252,74 +252,74 @@ void dePhysicsBullet::SendCommand( const decUnicodeArgumentList &command, decUni
 // physics management
 ///////////////////////
 
-deBasePhysicsComponent *dePhysicsBullet::CreateComponent( deComponent *comp ){
-	return new debpComponent( *this, comp );
+deBasePhysicsComponent *dePhysicsBullet::CreateComponent(deComponent *comp){
+	return new debpComponent(*this, comp);
 }
 
-deBasePhysicsModel *dePhysicsBullet::CreateModel( deModel *model ){
-	return new debpModel( *this, *model );
+deBasePhysicsModel *dePhysicsBullet::CreateModel(deModel *model){
+	return new debpModel(*this, *model);
 }
 
-deBasePhysicsSkin *dePhysicsBullet::CreateSkin( deSkin *skin ){
-	return new debpSkin( skin );
+deBasePhysicsSkin *dePhysicsBullet::CreateSkin(deSkin *skin){
+	return new debpSkin(skin);
 }
 
-deBasePhysicsRig *dePhysicsBullet::CreateRig( deRig *rig ){
-	return new debpRig( *this, *rig );
+deBasePhysicsRig *dePhysicsBullet::CreateRig(deRig *rig){
+	return new debpRig(*this, *rig);
 }
 
-deBasePhysicsWorld *dePhysicsBullet::CreateWorld( deWorld *world ){
-	return new debpWorld( *this, *world );
+deBasePhysicsWorld *dePhysicsBullet::CreateWorld(deWorld *world){
+	return new debpWorld(*this, *world);
 }
 
-deBasePhysicsCollider *dePhysicsBullet::CreateCollider( deCollider *collider ){
+deBasePhysicsCollider *dePhysicsBullet::CreateCollider(deCollider *collider){
 	deColliderVisitorIdentify identify;
 	
-	collider->Visit( identify );
+	collider->Visit(identify);
 	
-	if( identify.IsVolume() ){
-		return new debpColliderVolume( this, identify.CastToVolume() );
+	if(identify.IsVolume()){
+		return new debpColliderVolume(this, identify.CastToVolume());
 		
-	}else if( identify.IsComponent() ){
-		return new debpColliderComponent( this, identify.CastToComponent() );
+	}else if(identify.IsComponent()){
+		return new debpColliderComponent(this, identify.CastToComponent());
 		
-	}else if( identify.IsRigged() ){
-		return new debpColliderRig( this, identify.CastToRig() );
+	}else if(identify.IsRigged()){
+		return new debpColliderRig(this, identify.CastToRig());
 	}
 	
-	DETHROW( deeOutOfMemory );
+	DETHROW(deeOutOfMemory);
 }
 
-deBasePhysicsDecal *dePhysicsBullet::CreateDecal( deDecal *decal ){
-	return new debpDecal( decal );
+deBasePhysicsDecal *dePhysicsBullet::CreateDecal(deDecal *decal){
+	return new debpDecal(decal);
 }
 
-deBasePhysicsTouchSensor *dePhysicsBullet::CreateTouchSensor( deTouchSensor *touchSensor ){
-	return new debpTouchSensor( *this, *touchSensor );
+deBasePhysicsTouchSensor *dePhysicsBullet::CreateTouchSensor(deTouchSensor *touchSensor){
+	return new debpTouchSensor(*this, *touchSensor);
 }
 
-deBasePhysicsHeightTerrain *dePhysicsBullet::CreateHeightTerrain( deHeightTerrain *heightTerrain ){
-	return new debpHeightTerrain( this, heightTerrain );
+deBasePhysicsHeightTerrain *dePhysicsBullet::CreateHeightTerrain(deHeightTerrain *heightTerrain){
+	return new debpHeightTerrain(this, heightTerrain);
 }
 
-deBasePhysicsPropField *dePhysicsBullet::CreatePropField( dePropField *propField ){
-	return new debpPropField( this, propField );
+deBasePhysicsPropField *dePhysicsBullet::CreatePropField(dePropField *propField){
+	return new debpPropField(this, propField);
 }
 
-deBasePhysicsForceField *dePhysicsBullet::CreateForceField( deForceField *forceField ){
-	return new debpForceField( *this, *forceField );
+deBasePhysicsForceField *dePhysicsBullet::CreateForceField(deForceField *forceField){
+	return new debpForceField(*this, *forceField);
 }
 
-deBasePhysicsParticleEmitter *dePhysicsBullet::CreateParticleEmitter( deParticleEmitter *emitter ){
-	return new debpParticleEmitter( this, emitter );
+deBasePhysicsParticleEmitter *dePhysicsBullet::CreateParticleEmitter(deParticleEmitter *emitter){
+	return new debpParticleEmitter(this, emitter);
 }
 
-deBasePhysicsParticleEmitterInstance *dePhysicsBullet::CreateParticleEmitterInstance( deParticleEmitterInstance *instance ){
-	return new debpParticleEmitterInstance( this, instance );
+deBasePhysicsParticleEmitterInstance *dePhysicsBullet::CreateParticleEmitterInstance(deParticleEmitterInstance *instance){
+	return new debpParticleEmitterInstance(this, instance);
 }
 
-deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter( deSmokeEmitter *smokeEmitter ){
-	return new debpSmokeEmitter( this, smokeEmitter );
+deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter(deSmokeEmitter *smokeEmitter){
+	return new debpSmokeEmitter(this, smokeEmitter);
 }
 
 #ifdef WITH_INTERNAL_MODULE

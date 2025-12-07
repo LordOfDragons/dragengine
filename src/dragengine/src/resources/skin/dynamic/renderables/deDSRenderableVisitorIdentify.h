@@ -86,30 +86,30 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Renderable type. */
-	inline eRenderableTypes GetType() const{ return pType; }
+	inline eRenderableTypes GetType() const{return pType;}
 	
 	
 	
 	/** \brief Rendereable is an unknown renderable. */
-	inline bool IsUnknown() const{ return pType == eptUnknown; }
+	inline bool IsUnknown() const{return pType == eptUnknown;}
 	
 	/** \brief Rendereable is a value renderable. */
-	inline bool IsValue() const{ return pType == eptValue; }
+	inline bool IsValue() const{return pType == eptValue;}
 	
 	/** \brief Rendereable is a color renderable. */
-	inline bool IsColor() const{ return pType == eptColor; }
+	inline bool IsColor() const{return pType == eptColor;}
 	
 	/** \brief Rendereable is an image renderable. */
-	inline bool IsImage() const{ return pType == eptImage; }
+	inline bool IsImage() const{return pType == eptImage;}
 	
 	/** \brief Rendereable is a canvas renderable. */
-	inline bool IsCanvas() const{ return pType == eptCanvas; }
+	inline bool IsCanvas() const{return pType == eptCanvas;}
 	
 	/** \brief Rendereable is a video frame renderable. */
-	inline bool IsVideoFrame() const{ return pType == eptVideoFrame; }
+	inline bool IsVideoFrame() const{return pType == eptVideoFrame;}
 	
 	/** \brief Rendereable is a camera renderable. */
-	inline bool IsCamera() const{ return pType == eptCamera; }
+	inline bool IsCamera() const{return pType == eptCamera;}
 	
 	
 	
@@ -160,25 +160,25 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit renderable. */
-	virtual void VisitRenderable( deDSRenderable &renderable );
+	virtual void VisitRenderable(deDSRenderable &renderable);
 	
 	/** \brief Visit value renderable. */
-	virtual void VisitValue( deDSRenderableValue &renderable );
+	virtual void VisitValue(deDSRenderableValue &renderable);
 	
 	/** \brief Visit color renderable. */
-	virtual void VisitColor( deDSRenderableColor &renderable );
+	virtual void VisitColor(deDSRenderableColor &renderable);
 	
 	/** \brief Visit image renderable. */
-	virtual void VisitImage( deDSRenderableImage &renderable );
+	virtual void VisitImage(deDSRenderableImage &renderable);
 	
 	/** \brief Visit canvas renderable. */
-	virtual void VisitCanvas( deDSRenderableCanvas &renderable );
+	virtual void VisitCanvas(deDSRenderableCanvas &renderable);
 	
 	/** \brief Visit video frame renderable. */
-	virtual void VisitVideoFrame( deDSRenderableVideoFrame &renderable );
+	virtual void VisitVideoFrame(deDSRenderableVideoFrame &renderable);
 	
 	/** \brief Visit camera renderable. */
-	virtual void VisitCamera( deDSRenderableCamera &renderable );
+	virtual void VisitCamera(deDSRenderableCamera &renderable);
 	/*@}*/
 };
 

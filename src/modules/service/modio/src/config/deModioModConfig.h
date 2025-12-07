@@ -51,7 +51,7 @@ public:
 	deModioModConfig();
 	
 	/** Load mod config. */
-	deModioModConfig( decBaseFileReader &reader );
+	deModioModConfig(decBaseFileReader &reader);
 	
 protected:
 	/** Delete mod config. */
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Write config to file. */
-	void WriteToFile( decBaseFileWriter &writer );
+	void WriteToFile(decBaseFileWriter &writer);
 	/*@}*/
 };
 

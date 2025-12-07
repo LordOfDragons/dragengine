@@ -46,31 +46,31 @@
 
 
 
-igdeGDCComponent *meHelpers::FindFirstComponent( const igdeGDClass *gdclass ){
-	return gdclass ? FindFirstComponent( *gdclass ) : NULL;
+igdeGDCComponent *meHelpers::FindFirstComponent(const igdeGDClass *gdclass){
+	return gdclass ? FindFirstComponent(*gdclass) : NULL;
 }
 
-igdeGDCComponent *meHelpers::FindFirstComponent( const igdeGDClass &gdclass ){
+igdeGDCComponent *meHelpers::FindFirstComponent(const igdeGDClass &gdclass){
 	igdeGDCComponent *component = NULL;
 	decString prefix;
-	return FindFirstComponent( gdclass, prefix, component ) ? component : NULL;
+	return FindFirstComponent(gdclass, prefix, component) ? component : NULL;
 }
 
-bool meHelpers::FindFirstComponent( const igdeGDClass &gdclass, igdeGDCComponent* &component ){
+bool meHelpers::FindFirstComponent(const igdeGDClass &gdclass, igdeGDCComponent* &component){
 	decString prefix;
-	return FindFirstComponent( gdclass, prefix, component );
+	return FindFirstComponent(gdclass, prefix, component);
 }
 
-bool meHelpers::FindFirstComponent( const igdeGDClass &gdclass, decString &prefix, igdeGDCComponent* &component ){
-	if( gdclass.GetComponentList().GetCount() > 0 ){
-		component = gdclass.GetComponentList().GetAt( 0 );
+bool meHelpers::FindFirstComponent(const igdeGDClass &gdclass, decString &prefix, igdeGDCComponent* &component){
+	if(gdclass.GetComponentList().GetCount() > 0){
+		component = gdclass.GetComponentList().GetAt(0);
 		prefix.Empty();
 		return true;
 	}
 	const int count = gdclass.GetInheritClassCount();
-	for( int i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
-		if( inherit.GetClass() && meHelpers::FindFirstComponent( *inherit.GetClass(), prefix, component ) ){
+	for(int i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+		if(inherit.GetClass() && meHelpers::FindFirstComponent(*inherit.GetClass(), prefix, component)){
 			prefix = inherit.GetPropertyPrefix() + prefix;
 			return true;
 		}
@@ -80,31 +80,31 @@ bool meHelpers::FindFirstComponent( const igdeGDClass &gdclass, decString &prefi
 
 
 
-igdeGDCLight *meHelpers::FindFirstLight( const igdeGDClass *gdclass ){
-	return gdclass ? FindFirstLight( *gdclass ) : NULL;
+igdeGDCLight *meHelpers::FindFirstLight(const igdeGDClass *gdclass){
+	return gdclass ? FindFirstLight(*gdclass) : NULL;
 }
 
-igdeGDCLight *meHelpers::FindFirstLight( const igdeGDClass &gdclass ){
+igdeGDCLight *meHelpers::FindFirstLight(const igdeGDClass &gdclass){
 	igdeGDCLight *light = NULL;
 	decString prefix;
-	return FindFirstLight( gdclass, prefix, light ) ? light : NULL;
+	return FindFirstLight(gdclass, prefix, light) ? light : NULL;
 }
 
-bool meHelpers::FindFirstLight( const igdeGDClass &gdclass, igdeGDCLight* &light ){
+bool meHelpers::FindFirstLight(const igdeGDClass &gdclass, igdeGDCLight* &light){
 	decString prefix;
-	return FindFirstLight( gdclass, prefix, light );
+	return FindFirstLight(gdclass, prefix, light);
 }
 
-bool meHelpers::FindFirstLight( const igdeGDClass &gdclass, decString &prefix, igdeGDCLight* &light ){
-	if( gdclass.GetLightList().GetCount() > 0 ){
-		light = gdclass.GetLightList().GetAt( 0 );
+bool meHelpers::FindFirstLight(const igdeGDClass &gdclass, decString &prefix, igdeGDCLight* &light){
+	if(gdclass.GetLightList().GetCount() > 0){
+		light = gdclass.GetLightList().GetAt(0);
 		prefix.Empty();
 		return true;
 	}
 	const int count = gdclass.GetInheritClassCount();
-	for( int i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
-		if( inherit.GetClass() && meHelpers::FindFirstLight( *inherit.GetClass(), prefix, light ) ){
+	for(int i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+		if(inherit.GetClass() && meHelpers::FindFirstLight(*inherit.GetClass(), prefix, light)){
 			prefix = inherit.GetPropertyPrefix() + prefix;
 			return true;
 		}
@@ -114,31 +114,31 @@ bool meHelpers::FindFirstLight( const igdeGDClass &gdclass, decString &prefix, i
 
 
 
-igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace( const igdeGDClass *gdclass ){
-	return gdclass ? FindFirstNavigationSpace( *gdclass ) : NULL;
+igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace(const igdeGDClass *gdclass){
+	return gdclass ? FindFirstNavigationSpace(*gdclass) : NULL;
 }
 
-igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass ){
+igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace(const igdeGDClass &gdclass){
 	igdeGDCNavigationSpace *navigationSpace = NULL;
 	decString prefix;
-	return FindFirstNavigationSpace( gdclass, prefix, navigationSpace ) ? navigationSpace : NULL;
+	return FindFirstNavigationSpace(gdclass, prefix, navigationSpace) ? navigationSpace : NULL;
 }
 
-bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace ){
+bool meHelpers::FindFirstNavigationSpace(const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace){
 	decString prefix;
-	return FindFirstNavigationSpace( gdclass, prefix, navigationSpace );
+	return FindFirstNavigationSpace(gdclass, prefix, navigationSpace);
 }
 
-bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace ){
-	if( gdclass.GetNavigationSpaceList().GetCount() > 0 ){
-		navigationSpace = gdclass.GetNavigationSpaceList().GetAt( 0 );
+bool meHelpers::FindFirstNavigationSpace(const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace){
+	if(gdclass.GetNavigationSpaceList().GetCount() > 0){
+		navigationSpace = gdclass.GetNavigationSpaceList().GetAt(0);
 		prefix.Empty();
 		return true;
 	}
 	const int count = gdclass.GetInheritClassCount();
-	for( int i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
-		if( inherit.GetClass() && meHelpers::FindFirstNavigationSpace( *inherit.GetClass(), prefix, navigationSpace ) ){
+	for(int i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+		if(inherit.GetClass() && meHelpers::FindFirstNavigationSpace(*inherit.GetClass(), prefix, navigationSpace)){
 			prefix = inherit.GetPropertyPrefix() + prefix;
 			return true;
 		}
@@ -148,31 +148,31 @@ bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, decString 
 
 
 
-igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker( const igdeGDClass *gdclass ){
-	return gdclass ? FindFirstNavigationBlocker( *gdclass ) : NULL;
+igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker(const igdeGDClass *gdclass){
+	return gdclass ? FindFirstNavigationBlocker(*gdclass) : NULL;
 }
 
-igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass ){
+igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker(const igdeGDClass &gdclass){
 	igdeGDCNavigationBlocker *navigationBlocker = NULL;
 	decString prefix;
-	return FindFirstNavigationBlocker( gdclass, prefix, navigationBlocker ) ? navigationBlocker : NULL;
+	return FindFirstNavigationBlocker(gdclass, prefix, navigationBlocker) ? navigationBlocker : NULL;
 }
 
-bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker ){
+bool meHelpers::FindFirstNavigationBlocker(const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker){
 	decString prefix;
-	return FindFirstNavigationBlocker( gdclass, prefix, navigationBlocker );
+	return FindFirstNavigationBlocker(gdclass, prefix, navigationBlocker);
 }
 
-bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker ){
-	if( gdclass.GetNavigationBlockerList().GetCount() > 0 ){
-		navigationBlocker = gdclass.GetNavigationBlockerList().GetAt( 0 );
+bool meHelpers::FindFirstNavigationBlocker(const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker){
+	if(gdclass.GetNavigationBlockerList().GetCount() > 0){
+		navigationBlocker = gdclass.GetNavigationBlockerList().GetAt(0);
 		prefix.Empty();
 		return true;
 	}
 	const int count = gdclass.GetInheritClassCount();
-	for( int i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
-		if( inherit.GetClass() && meHelpers::FindFirstNavigationBlocker( *inherit.GetClass(), prefix, navigationBlocker ) ){
+	for(int i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+		if(inherit.GetClass() && meHelpers::FindFirstNavigationBlocker(*inherit.GetClass(), prefix, navigationBlocker)){
 			prefix = inherit.GetPropertyPrefix() + prefix;
 			return true;
 		}
@@ -217,45 +217,45 @@ bool meHelpers::FindFirstCamera(const igdeGDClass &gdclass, decString &prefix, i
 
 
 
-void meHelpers::GetPatternTypePropertyNames( const igdeGDClass &gdclass,
-igdeGDProperty::ePathPatternTypes patternType, decStringList &names ){
+void meHelpers::GetPatternTypePropertyNames(const igdeGDClass &gdclass,
+igdeGDProperty::ePathPatternTypes patternType, decStringList &names){
 	decStringSet allPropNames;
-	gdclass.AddPropertyNames( allPropNames, true );
+	gdclass.AddPropertyNames(allPropNames, true);
 	
 	const int allPropNameCount = allPropNames.GetCount();
 	int i;
 	
-	for( i=0; i<allPropNameCount; i++ ){
-		const igdeGDProperty &gdprop = *gdclass.GetPropertyNamed( allPropNames.GetAt( i ) );
-		if( gdprop.GetType() == igdeGDProperty::eptPath && gdprop.GetPathPatternType() == patternType ){
-			names.Add( allPropNames.GetAt( i ) );
+	for(i=0; i<allPropNameCount; i++){
+		const igdeGDProperty &gdprop = *gdclass.GetPropertyNamed(allPropNames.GetAt(i));
+		if(gdprop.GetType() == igdeGDProperty::eptPath && gdprop.GetPathPatternType() == patternType){
+			names.Add(allPropNames.GetAt(i));
 		}
 	}
 }
 
 
 
-void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName ){
-	const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( object->GetGDClass() );
+void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName){
+	const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent(object->GetGDClass());
 	const igdeGDCCTexture *gdctexture = NULL;
-	if( gdcomponent ){
-		gdctexture = gdcomponent->GetTextureList().GetNamed( textureName );
+	if(gdcomponent){
+		gdctexture = gdcomponent->GetTextureList().GetNamed(textureName);
 	}
-	if( ! gdctexture && object->GetGDClass() ){
-		gdctexture = object->GetGDClass()->GetComponentTextures().GetNamed( textureName );
+	if(! gdctexture && object->GetGDClass()){
+		gdctexture = object->GetGDClass()->GetComponentTextures().GetNamed(textureName);
 	}
-	meHelpers::CreateTexture( texture, object, textureName, gdctexture );
+	meHelpers::CreateTexture(texture, object, textureName, gdctexture);
 }
 
 void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object,
-const char *textureName, const igdeGDCCTexture *gdctexture ){
-	decColor initialColor( 1.0f, 1.0f, 1.0f );
-	decVector2 initialTexCoordOffset( 0.0f, 0.0f );
-	decVector2 initialTexCoordScale( 1.0f, 1.0f );
-	float initialTexCoordRotation( 0.0f );
+const char *textureName, const igdeGDCCTexture *gdctexture){
+	decColor initialColor(1.0f, 1.0f, 1.0f);
+	decVector2 initialTexCoordOffset(0.0f, 0.0f);
+	decVector2 initialTexCoordScale(1.0f, 1.0f);
+	float initialTexCoordRotation(0.0f);
 	decString initialSkin;
 	
-	if( gdctexture ){
+	if(gdctexture){
 		initialSkin = gdctexture->GetPathSkin();
 		initialColor = gdctexture->GetColorTint();
 		initialTexCoordOffset = gdctexture->GetOffset();
@@ -264,9 +264,9 @@ const char *textureName, const igdeGDCCTexture *gdctexture ){
 	}
 	
 	texture.TakeOverWith(object->GetEnvironment(), textureName);
-	texture->SetSkinPath( initialSkin );
-	texture->SetColorTint( initialColor );
-	texture->SetTexCoordOffset( initialTexCoordOffset );
-	texture->SetTexCoordScaling( initialTexCoordScale );
-	texture->SetTexCoordRotation( initialTexCoordRotation );
+	texture->SetSkinPath(initialSkin);
+	texture->SetColorTint(initialColor);
+	texture->SetTexCoordOffset(initialTexCoordOffset);
+	texture->SetTexCoordScaling(initialTexCoordScale);
+	texture->SetTexCoordRotation(initialTexCoordRotation);
 }

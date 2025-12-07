@@ -88,7 +88,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	deoalMOVRayHitsClosest( deoalAComponent &component, const deoalAModel &model );
+	deoalMOVRayHitsClosest(deoalAComponent &component, const deoalAModel &model);
 	
 	/** \brief Clean up visitor. */
 	virtual ~deoalMOVRayHitsClosest();
@@ -99,51 +99,51 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Ray origin. */
-	inline const decVector &GetRayOrigin() const{ return pRayOrigin; }
+	inline const decVector &GetRayOrigin() const{return pRayOrigin;}
 	
 	/** \brief Ray direction. */
-	inline const decVector &GetRayDirection() const{ return pRayDirection; }
+	inline const decVector &GetRayDirection() const{return pRayDirection;}
 	
 	/** \brief Ray length. */
-	inline float GetRayLength() const{ return pRayLength; }
+	inline float GetRayLength() const{return pRayLength;}
 	
 	/** \brief Ray box minimum extend. */
-	inline const decVector &GetRayBoxMin() const{ return pRayBoxMin; }
+	inline const decVector &GetRayBoxMin() const{return pRayBoxMin;}
 	
 	/** \brief Ray box maximum extend. */
-	inline const decVector &GetRayBoxMax() const{ return pRayBoxMax; }
+	inline const decVector &GetRayBoxMax() const{return pRayBoxMax;}
 	
 	/** \brief Set test ray. */
-	void SetRay( const decVector &origin, const decVector &direction );
+	void SetRay(const decVector &origin, const decVector &direction);
 	
 	/** \brief Find front facing hits otherwise back facing hits. */
-	inline bool GetFrontFacing() const{ return pFrontFacing; }
+	inline bool GetFrontFacing() const{return pFrontFacing;}
 	
 	/** \brief Set to find front facing hits or back facing hits. */
-	void SetFrontFacing( bool frontFacing );
+	void SetFrontFacing(bool frontFacing);
 	
 	/** \brief Limit distance. */
-	inline float GetLimitDistance() const{ return pLimitDistance; }
+	inline float GetLimitDistance() const{return pLimitDistance;}
 	
 	/** \brief Set limit distance. */
-	void SetLimitDistance( float limitDistance );
+	void SetLimitDistance(float limitDistance);
 	
 	
 	
 	/** \brief Result is set. */
-	inline bool GetHasResult() const{ return pHasResult; }
+	inline bool GetHasResult() const{return pHasResult;}
 	
 	/** \brief Result distance. */
-	inline float GetResultDistance() const{ return pResultDistance; }
+	inline float GetResultDistance() const{return pResultDistance;}
 	
 	/** \brief Result point. */
-	inline const decVector GetResultPoint() const{ return pResultPoint; }
+	inline const decVector GetResultPoint() const{return pResultPoint;}
 	
 	/** \brief Result normal. */
-	inline const decVector &GetResultNormal() const{ return *pResultNormal; }
+	inline const decVector &GetResultNormal() const{return *pResultNormal;}
 	
 	/** \brief Result face index. */
-	inline int GetResultFace() const{ return pResultFace; }
+	inline int GetResultFace() const{return pResultFace;}
 	
 	
 	
@@ -157,26 +157,26 @@ public:
 	 * 
 	 * The default implementation calls VisitNode(deoalDOctree*,int) then visits child nodes.
 	 */
-	virtual void VisitNode( deoalModelOctree &node );
+	virtual void VisitNode(deoalModelOctree &node);
 	
 	/** \brief Visit octree node. */
-	virtual void VisitNode( deoalOctree *node, int intersection );
+	virtual void VisitNode(deoalOctree *node, int intersection);
 	
 	/** \brief Visit optimized ray-trace octree node. */
-	void VisitOctree( const deoalModelRTOctree &octree );
+	void VisitOctree(const deoalModelRTOctree &octree);
 	
 	/** \brief Visit optimized ray-trace BVH node. */
-	void VisitBVH( const deoalModelRTBVH &bvh );
+	void VisitBVH(const deoalModelRTBVH &bvh);
 	/*@}*/
 	
 	
 	
 protected:
-	void pVisitNode( const deoalModelOctree &node );
-	void pVisitNode( const deoalModelRTOctree &octree, const deoalModelRTOctree::sNode &node );
-	void pVisitNode( const deoalModelRTBVH &bvh, const deoalModelRTBVH::sNode &node );
-	bool pRayHitsBox( const decVector &center, const decVector &halfExtends, float &closestDistance );
-	void pSetResult( float distance, const decVector &point, const decVector &normal, int face );
+	void pVisitNode(const deoalModelOctree &node);
+	void pVisitNode(const deoalModelRTOctree &octree, const deoalModelRTOctree::sNode &node);
+	void pVisitNode(const deoalModelRTBVH &bvh, const deoalModelRTBVH::sNode &node);
+	bool pRayHitsBox(const decVector &center, const decVector &halfExtends, float &closestDistance);
+	void pSetResult(float distance, const decVector &point, const decVector &normal, int face);
 };
 
 #endif

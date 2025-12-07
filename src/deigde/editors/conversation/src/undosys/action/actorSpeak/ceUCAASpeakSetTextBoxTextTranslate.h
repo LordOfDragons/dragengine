@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	ceUCAASpeakSetTextBoxTextTranslate( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText );
+	ceUCAASpeakSetTextBoxTextTranslate(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText);
 	
 protected:
 	/** Clean up undo. */

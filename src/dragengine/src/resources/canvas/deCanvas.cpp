@@ -40,25 +40,25 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deCanvas::deCanvas( deCanvasManager *manager ) :
-deResource( manager ),
+deCanvas::deCanvas(deCanvasManager *manager) :
+deResource(manager),
 
-pSize( 20, 20 ),
-pVisible( true ),
-pOrder( 0.0f ),
-pTransparency( 1.0f ),
-pBlendMode( ebmBlend ),
+pSize(20, 20),
+pVisible(true),
+pOrder(0.0f),
+pTransparency(1.0f),
+pBlendMode(ebmBlend),
 
-pPeerGraphic( NULL ),
+pPeerGraphic(NULL),
 
-pParentMask( NULL ),
-pParentView( NULL ),
-pLLViewPrev( NULL ),
-pLLViewNext( NULL ){
+pParentMask(NULL),
+pParentView(NULL),
+pLLViewPrev(NULL),
+pLLViewNext(NULL){
 }
 
 deCanvas::~deCanvas(){
-	SetPeerGraphic( NULL );
+	SetPeerGraphic(NULL);
 }
 
 
@@ -66,118 +66,118 @@ deCanvas::~deCanvas(){
 // Management
 ///////////////
 
-void deCanvas::SetPosition( const decPoint &position ){
-	if( position == pPosition ){
+void deCanvas::SetPosition(const decPoint &position){
+	if(position == pPosition){
 		return;
 	}
 	
 	pPosition = position;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->PositionChanged();
 	}
 }
 
-void deCanvas::SetSize( const decPoint &size ){
-	if( size == pSize ){
+void deCanvas::SetSize(const decPoint &size){
+	if(size == pSize){
 		return;
 	}
 	
 	pSize = size;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->SizeChanged();
 	}
 }
 
-void deCanvas::SetTransform( const decTexMatrix2 &transform ){
-	if( transform.IsEqualTo( pTransform ) ){
+void deCanvas::SetTransform(const decTexMatrix2 &transform){
+	if(transform.IsEqualTo(pTransform)){
 		return;
 	}
 	
 	pTransform = transform;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->TransformChanged();
 	}
 }
 
-void deCanvas::SetColorTransform( const decColorMatrix &transform ){
-	if( transform.IsEqualTo( pColorTransform ) ){
+void deCanvas::SetColorTransform(const decColorMatrix &transform){
+	if(transform.IsEqualTo(pColorTransform)){
 		return;
 	}
 	
 	pColorTransform = transform;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ColorTransformChanged();
 	}
 }
 
-void deCanvas::SetVisible( bool visible ){
-	if( visible == pVisible ){
+void deCanvas::SetVisible(bool visible){
+	if(visible == pVisible){
 		return;
 	}
 	
 	pVisible = visible;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->VisibleChanged();
 	}
 }
 
-void deCanvas::SetOrder( float order ){
-	if( fabsf( order - pOrder ) < FLOAT_SAFE_EPSILON ){
+void deCanvas::SetOrder(float order){
+	if(fabsf(order - pOrder) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pOrder = order;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->OrderChanged();
 	}
 }
 
-void deCanvas::SetTransparency( float transparency ){
-	if( fabsf( transparency - pTransparency ) < FLOAT_SAFE_EPSILON ){
+void deCanvas::SetTransparency(float transparency){
+	if(fabsf(transparency - pTransparency) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pTransparency = transparency;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->TransparencyChanged();
 	}
 }
 
-void deCanvas::SetBlendMode( eBlendModes blendMode ){
-	if( blendMode < ebmBlend || blendMode > ebmAdd ){
-		DETHROW( deeInvalidParam );
+void deCanvas::SetBlendMode(eBlendModes blendMode){
+	if(blendMode < ebmBlend || blendMode > ebmAdd){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( blendMode == pBlendMode ){
+	if(blendMode == pBlendMode){
 		return;
 	}
 	
 	pBlendMode = blendMode;
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->BlendModeChanged();
 	}
 }
 
-void deCanvas::SetMask( deCanvas *mask ){
-	if( pMask == mask ){
+void deCanvas::SetMask(deCanvas *mask){
+	if(pMask == mask){
 		return;
 	}
 	
-	if( mask && ( mask->GetParentMask() || mask->GetParentView() ) ){
-		DETHROW( deeInvalidParam );
+	if(mask && (mask->GetParentMask() || mask->GetParentView())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pMask ){
+	if(pMask){
 		pMask->pParentMask = NULL;
 	}
 	
 	pMask = mask;
 	
-	if( mask ){
+	if(mask){
 		mask->pParentMask = this;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->MaskChanged();
 	}
 }
@@ -185,7 +185,7 @@ void deCanvas::SetMask( deCanvas *mask ){
 
 
 void deCanvas::NotifyContentChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ContentChanged();
 	}
 }
@@ -195,12 +195,12 @@ void deCanvas::NotifyContentChanged(){
 // System Peers
 /////////////////
 
-void deCanvas::SetPeerGraphic( deBaseGraphicCanvas *peer ){
-	if( peer == pPeerGraphic ){
+void deCanvas::SetPeerGraphic(deBaseGraphicCanvas *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;
@@ -211,8 +211,8 @@ void deCanvas::SetPeerGraphic( deBaseGraphicCanvas *peer ){
 // Visiting
 /////////////
 
-void deCanvas::Visit( deCanvasVisitor &visitor ){
-	visitor.VisitCanvas( *this );
+void deCanvas::Visit(deCanvasVisitor &visitor){
+	visitor.VisitCanvas(*this);
 }
 
 
@@ -220,18 +220,18 @@ void deCanvas::Visit( deCanvasVisitor &visitor ){
 // Linked List
 ////////////////
 
-void deCanvas::SetParentMask( deCanvas *canvas ){
+void deCanvas::SetParentMask(deCanvas *canvas){
 	pParentMask = canvas;
 }
 
-void deCanvas::SetParentView( deCanvasView *view ){
+void deCanvas::SetParentView(deCanvasView *view){
 	pParentView = view;
 }
 
-void deCanvas::SetLLViewPrev( deCanvas *canvas ){
+void deCanvas::SetLLViewPrev(deCanvas *canvas){
 	pLLViewPrev = canvas;
 }
 
-void deCanvas::SetLLViewNext( deCanvas *canvas ){
+void deCanvas::SetLLViewNext(deCanvas *canvas){
 	pLLViewNext = canvas;
 }

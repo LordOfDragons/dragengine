@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeEditorWindow( igdeEditorModule &editorModule );
+	igdeEditorWindow(igdeEditorModule &editorModule);
 	
 	
 	
@@ -79,14 +79,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Editor module. */
-	inline igdeEditorModule &GetEditorModule() const{ return pEditorModule; }
+	inline igdeEditorModule &GetEditorModule() const{return pEditorModule;}
 	
 	/** \brief Parent editor module is the active module. */
-	inline bool GetActiveModule() const{ return pActiveModule; }
+	inline bool GetActiveModule() const{return pActiveModule;}
 	
 	/** \brief Recent files. */
-	inline igdeRecentFiles &GetRecentFiles(){ return pRecentFiles; }
-	inline const igdeRecentFiles &GetRecentFiles() const{ return pRecentFiles; }
+	inline igdeRecentFiles &GetRecentFiles(){return pRecentFiles;}
+	inline const igdeRecentFiles &GetRecentFiles() const{return pRecentFiles;}
 	
 	/** \brief Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
@@ -112,7 +112,7 @@ public:
 #endif
 	
 	/** \brief Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * \brief Retrieves a list of changed documents.
@@ -123,12 +123,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * \brief Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * \brief Requests a document to be saved.
@@ -138,7 +138,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * \brief Recent files changed.
@@ -170,7 +170,7 @@ public:
 	virtual igdeStepableTask *OnGameDefinitionChanged();
 	
 	/** \brief Display exception error in a message dialog. */
-	void DisplayException( const deException &exception );
+	void DisplayException(const deException &exception);
 	/*@}*/
 	
 	
@@ -185,13 +185,13 @@ public:
 	int GetSharedMenuCount() const;
 	
 	/** \brief Shared menu at index. */
-	igdeMenuCascade *GetSharedMenuAt( int index ) const;
+	igdeMenuCascade *GetSharedMenuAt(int index) const;
 	
 	/** \brief Add shared menu. */
-	void AddSharedMenu( igdeMenuCascade *menu );
+	void AddSharedMenu(igdeMenuCascade *menu);
 	
 	/** \brief Remove shared menu. */
-	void RemoveSharedMenu( igdeMenuCascade *menu );
+	void RemoveSharedMenu(igdeMenuCascade *menu);
 	
 	/** \brief Remove all shared menus. */
 	void RemoveAllSharedMenus();
@@ -209,13 +209,13 @@ public:
 	int GetSharedToolBarCount() const;
 	
 	/** \brief Shared toolbar at index. */
-	igdeToolBar *GetSharedToolBarAt( int index ) const;
+	igdeToolBar *GetSharedToolBarAt(int index) const;
 	
 	/** \brief Add shared tool bar. */
-	void AddSharedToolBar( igdeToolBar *toolbar );
+	void AddSharedToolBar(igdeToolBar *toolbar);
 	
 	/** \brief Remove shared tool bar. */
-	void RemoveSharedToolBar( igdeToolBar *toolbar );
+	void RemoveSharedToolBar(igdeToolBar *toolbar);
 	
 	/** \brief Remove all shared tool bars. */
 	void RemoveAllSharedToolBars();
@@ -230,10 +230,10 @@ public:
 	 */
 	/*@{*/
 	/** \brief Add action to be updated when UpdateAllActions() is called. */
-	void AddUpdateAction( igdeAction *action );
+	void AddUpdateAction(igdeAction *action);
 	
 	/** \brief Remove action to be updated when UpdateAllActions() is called. */
-	void RemoveUpdateAction( igdeAction *action );
+	void RemoveUpdateAction(igdeAction *action);
 	
 	/** \brief Remove all update actions. */
 	void RemoveAllUpdateActions();

@@ -125,7 +125,7 @@ public:
 	 * - Line color is black.
 	 * - Fill color is transparent.
 	 */
-	deCanvasPaint( deCanvasManager *manager );
+	deCanvasPaint(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -143,35 +143,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Shape type. */
-	inline eShapeTypes GetShapeType() const{ return pShapeType; }
+	inline eShapeTypes GetShapeType() const{return pShapeType;}
 	
 	/**
 	 * \brief Set shape type.
 	 * \throws deeInvalidParam \em shapeType is not a member of deCanvasPaint::eShapeTypes.
 	 */
-	void SetShapeType( eShapeTypes shapeType );
+	void SetShapeType(eShapeTypes shapeType);
 	
 	/** \brief Line color. */
-	inline const decColor &GetLineColor() const{ return pLineColor; }
+	inline const decColor &GetLineColor() const{return pLineColor;}
 	
 	/** \brief Set line color. */
-	void SetLineColor( const decColor &color );
+	void SetLineColor(const decColor &color);
 	
 	/** \brief Fill color. */
-	inline const decColor &GetFillColor() const{ return pFillColor; }
+	inline const decColor &GetFillColor() const{return pFillColor;}
 	
 	/** \brief Set fill color. */
-	void SetFillColor( const decColor &color );
+	void SetFillColor(const decColor &color);
 	
 	/** \brief Line thickness in units. */
-	inline float GetThickness() const{ return pThickness; }
+	inline float GetThickness() const{return pThickness;}
 	
 	/**
 	 * \brief Line thickness in units.
 	 * 
 	 * \em thickness is clamped to 0 or larger.
 	 */
-	void SetThickness( float thickness );
+	void SetThickness(float thickness);
 	
 	/**
 	 * \brief Round corner in X direction as percentage.
@@ -179,7 +179,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	inline float GetRoundCornerX() const{ return pRoundCornerX; }
+	inline float GetRoundCornerX() const{return pRoundCornerX;}
 	
 	/**
 	 * \brief Set round corner in X direction as percentage.
@@ -187,7 +187,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerX( float roundCorner );
+	void SetRoundCornerX(float roundCorner);
 	
 	/**
 	 * \brief Round corner in Y direction as percentage.
@@ -195,7 +195,7 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	inline float GetRoundCornerY() const{ return pRoundCornerY; }
+	inline float GetRoundCornerY() const{return pRoundCornerY;}
 	
 	/**
 	 * \brief Set round corner in Y direction as percentage.
@@ -203,35 +203,35 @@ public:
 	 * Used by estRectangle shape type. Value of 0 indicates no non-round corners while
 	 * value of 1 indicates fully round corners (aka ellipse).
 	 */
-	void SetRoundCornerY( float roundCorner );
+	void SetRoundCornerY(float roundCorner);
 	
 	/**
 	 * \brief Start angle in degrees radians from 0 to 2PI.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	inline float GetStartAngle() const{ return pStartAngle; }
+	inline float GetStartAngle() const{return pStartAngle;}
 	
 	/**
 	 * \brief Set start angle in radians from 0 to 2PI.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetStartAngle( float angle );
+	void SetStartAngle(float angle);
 	
 	/**
 	 * \brief End angle in radians from 0 to 2PI.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	inline float GetEndAngle() const{ return pEndAngle; }
+	inline float GetEndAngle() const{return pEndAngle;}
 	
 	/**
 	 * \brief Set end angle in radians from 0 to 2PI.
 	 * 
 	 * Used by estEllipse and estPie shape type. Angle is measured clock wise.
 	 */
-	void SetEndAngle( float angle );
+	void SetEndAngle(float angle);
 	/*@}*/
 	
 	
@@ -239,24 +239,24 @@ public:
 	/** \name Points */
 	/*@{*/
 	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pPointCount; }
+	inline int GetPointCount() const{return pPointCount;}
 	
 	/**
 	 * \brief Point at position.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount().
 	 */
-	const decPoint &GetPointAt( int position ) const;
+	const decPoint &GetPointAt(int position) const;
 	
 	/** \brief Add a point. */
-	void AddPoint( const decPoint &point );
+	void AddPoint(const decPoint &point);
 	
 	/**
 	 * \brief Remove a point.
 	 * \throws deeInvalidParam \em position is less than 0.
 	 * \throws deeInvalidParam \em position is larger or equal to GetPointCount().
 	 */
-	void RemovePointFrom( int position );
+	void RemovePointFrom(int position);
 	
 	/** \brief Remove all points. */
 	void RemoveAllPoints();
@@ -267,7 +267,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 };
 

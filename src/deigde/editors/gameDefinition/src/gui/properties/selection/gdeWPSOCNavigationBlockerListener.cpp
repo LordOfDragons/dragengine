@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSOCNavigationBlockerListener::gdeWPSOCNavigationBlockerListener( gdeWPSOCNavigationBlocker &panel ) :
-pPanel( panel ){
+gdeWPSOCNavigationBlockerListener::gdeWPSOCNavigationBlockerListener(gdeWPSOCNavigationBlocker &panel) :
+pPanel(panel){
 }
 
 gdeWPSOCNavigationBlockerListener::~gdeWPSOCNavigationBlockerListener(){
@@ -53,21 +53,12 @@ gdeWPSOCNavigationBlockerListener::~gdeWPSOCNavigationBlockerListener(){
 // Management
 ///////////////
 
-void gdeWPSOCNavigationBlockerListener::BasePathChanged( gdeGameDefinition *gameDefinition ){
-	if( pPanel.GetGameDefinition() != gameDefinition ){
+void gdeWPSOCNavigationBlockerListener::BasePathChanged(gdeGameDefinition *gameDefinition){
+	if(pPanel.GetGameDefinition() != gameDefinition){
 		return;
 	}
 	
-	if( gameDefinition->GetIsProjectGameDef() ){
-		return;
-	}
-	
-	pPanel.UpdatePropertyList();
-	pPanel.UpdateNavigationBlocker();
-}
-
-void gdeWPSOCNavigationBlockerListener::BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition ){
-	if( pPanel.GetGameDefinition() != gameDefinition ){
+	if(gameDefinition->GetIsProjectGameDef()){
 		return;
 	}
 	
@@ -75,49 +66,58 @@ void gdeWPSOCNavigationBlockerListener::BaseGameDefinitionsChanged( gdeGameDefin
 	pPanel.UpdateNavigationBlocker();
 }
 
+void gdeWPSOCNavigationBlockerListener::BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition){
+	if(pPanel.GetGameDefinition() != gameDefinition){
+		return;
+	}
+	
+	pPanel.UpdatePropertyList();
+	pPanel.UpdateNavigationBlocker();
+}
 
 
-void gdeWPSOCNavigationBlockerListener::OCPropertyNameChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeProperty* ){
-	if( pPanel.GetObjectClass() != objectClass ){
+
+void gdeWPSOCNavigationBlockerListener::OCPropertyNameChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeProperty*){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCNavigationBlockerListener::OCPropertiesChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationBlockerListener::OCPropertiesChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdatePropertyList();
 }
 
-void gdeWPSOCNavigationBlockerListener::ActiveObjectClassChanged( gdeGameDefinition* ){
+void gdeWPSOCNavigationBlockerListener::ActiveObjectClassChanged(gdeGameDefinition*){
 	pPanel.UpdatePropertyList();
 }
 
 
 
-void gdeWPSOCNavigationBlockerListener::OCNavigationBlockersChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationBlockerListener::OCNavigationBlockersChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
 	pPanel.UpdateNavigationBlocker();
 }
 
-void gdeWPSOCNavigationBlockerListener::OCNavigationBlockerChanged( gdeGameDefinition*,
-gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ){
-	if( pPanel.GetObjectClass() != objectClass ){
+void gdeWPSOCNavigationBlockerListener::OCNavigationBlockerChanged(gdeGameDefinition*,
+gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker){
+	if(pPanel.GetObjectClass() != objectClass){
 		return;
 	}
-	if( pPanel.GetNavigationBlocker() != navblocker ){
+	if(pPanel.GetNavigationBlocker() != navblocker){
 		return;
 	}
 	pPanel.UpdateNavigationBlocker();
 }
 
-void gdeWPSOCNavigationBlockerListener::ActiveOCNavigationBlockerChanged( gdeGameDefinition* ){
+void gdeWPSOCNavigationBlockerListener::ActiveOCNavigationBlockerChanged(gdeGameDefinition*){
 	pPanel.UpdateNavigationBlocker();
 }

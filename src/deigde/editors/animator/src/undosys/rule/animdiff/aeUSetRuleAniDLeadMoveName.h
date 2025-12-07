@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleAniDLeadMoveName( aeRuleAnimationDifference *rule, const char *newName );
+	aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference *rule, const char *newName);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleAniDLeadMoveName();

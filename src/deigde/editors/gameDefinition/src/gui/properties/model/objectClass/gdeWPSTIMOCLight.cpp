@@ -47,27 +47,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMOCLight::gdeWPSTIMOCLight( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCLight *light, int index ) :
-gdeWPSTIMOCSubObject( tree, etObjectClassLight, objectClass, index ),
-pLight( NULL )
+gdeWPSTIMOCLight::gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+	gdeOCLight *light, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassLight, objectClass, index),
+pLight(NULL)
 {
-	if( ! light ){
-		DETHROW( deeInvalidParam );
+	if(! light){
+		DETHROW(deeInvalidParam);
 	}
 	
 	decString text;
-	text.Format( "Light #%d", index + 1 );
-	SetText( text );
+	text.Format("Light #%d", index + 1);
+	SetText(text);
 	
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pLight = light;
 	light->AddReference();
 }
 
 gdeWPSTIMOCLight::~gdeWPSTIMOCLight(){
-	if( pLight ){
+	if(pLight){
 		pLight->FreeReference();
 	}
 }
@@ -78,16 +78,16 @@ gdeWPSTIMOCLight::~gdeWPSTIMOCLight(){
 ///////////////
 
 void gdeWPSTIMOCLight::Validate(){
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon(
-		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning ) );
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(
+		IsValid() ? igdeEnvironment::esiNew : igdeEnvironment::esiWarning));
 	ItemChanged();
 }
 
 bool gdeWPSTIMOCLight::IsValid() const{
 	deVirtualFileSystem &vfs = *GetWindowMain().GetEnvironment().GetFileSystemGame();
 	
-	if( ! pLight->GetLightSkinPath().IsEmpty()
-	&& ! vfs.ExistsFile( decPath::CreatePathUnix( pLight->GetLightSkinPath() ) ) ){
+	if(! pLight->GetLightSkinPath().IsEmpty()
+	&& ! vfs.ExistsFile(decPath::CreatePathUnix(pLight->GetLightSkinPath()))){
 		return false;
 	}
 	
@@ -101,20 +101,20 @@ void gdeWPSTIMOCLight::OnAddedToTree(){
 }
 
 void gdeWPSTIMOCLight::OnSelected(){
-	GetGameDefinition().SetActiveObjectClass( GetObjectClass() );
-	GetGameDefinition().SetActiveOCLight( pLight );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotOCLight );
+	GetGameDefinition().SetActiveObjectClass(GetObjectClass());
+	GetGameDefinition().SetActiveOCLight(pLight);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotOCLight);
 }
 
-void gdeWPSTIMOCLight::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMOCLight::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCLightAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCLightRemove() );
-	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCLightAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCLightRemove());
+	helper.MenuSeparator(contextMenu);
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCLightCopy() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCLightCut() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionOCLightPaste() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCLightCopy());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCLightCut());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCLightPaste());
 }

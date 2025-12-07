@@ -50,26 +50,26 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of points. */
-	inline int GetCount() const{ return pPointCount; }
+	inline int GetCount() const{return pPointCount;}
 	/** Determines if the list is empty. */
-	inline bool IsEmpty() const{ return pPointCount == 0; }
+	inline bool IsEmpty() const{return pPointCount == 0;}
 	/** Retrieves the top point. */
 	const decVector &GetFirst() const;
 	/** Retrieves the given point from the start of the list. */
-	const decVector &GetAt( int index ) const;
+	const decVector &GetAt(int index) const;
 	/** Add a point to the end of the list. */
-	void Add( const decVector &point );
+	void Add(const decVector &point);
 	/** Removes the first point. */
 	void RemoveFirst();
 	/** Remove the given number of points from the start of the list. */
-	void RemoveFirst( int count );
+	void RemoveFirst(int count);
 	/** Removes the given point from the start of the list. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	/** Removes all points. */
 	void RemoveAll();
 	
 	/** Transform point list by a matrix. */
-	void Transform( const decMatrix &matrix );
+	void Transform(const decMatrix &matrix);
 	/*@}*/
 };
 

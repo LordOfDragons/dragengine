@@ -39,20 +39,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceToggleEnabled::seUSourceToggleEnabled( seSource *source ) :
-pSource( NULL )
+seUSourceToggleEnabled::seUSourceToggleEnabled(seSource *source) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
 		pSource = source;
 		pSource->AddReference();
 		
-		SetShortInfo( "Toggle source enabled" );
+		SetShortInfo("Toggle source enabled");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -68,11 +68,11 @@ seUSourceToggleEnabled::~seUSourceToggleEnabled(){
 ///////////////
 
 void seUSourceToggleEnabled::Undo(){
-	pSource->SetEnabled( ! pSource->GetEnabled() );
+	pSource->SetEnabled(! pSource->GetEnabled());
 }
 
 void seUSourceToggleEnabled::Redo(){
-	pSource->SetEnabled( ! pSource->GetEnabled() );
+	pSource->SetEnabled(! pSource->GetEnabled());
 }
 
 
@@ -81,7 +81,7 @@ void seUSourceToggleEnabled::Redo(){
 //////////////////////
 
 void seUSourceToggleEnabled::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

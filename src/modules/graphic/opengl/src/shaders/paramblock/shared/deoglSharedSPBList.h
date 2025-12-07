@@ -51,7 +51,7 @@ protected:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared shader parameter block list. */
-	deoglSharedSPBList( deoglRenderThread &renderThread, deoglShaderParameterBlock *layout );
+	deoglSharedSPBList(deoglRenderThread &renderThread, deoglShaderParameterBlock *layout);
 	
 public:
 	/** Clean up shared shader parameter block list. */
@@ -63,10 +63,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Layout reference. */
-	inline const deoglShaderParameterBlock::Ref &GetLayout() const{ return pLayout; }
+	inline const deoglShaderParameterBlock::Ref &GetLayout() const{return pLayout;}
 	
 	/** Maximum number of elements per block. */
 	int GetSize() const;
@@ -75,7 +75,7 @@ public:
 	int GetCount() const;
 	
 	/** Block at index. */
-	deoglSharedSPB *GetAt( int index ) const;
+	deoglSharedSPB *GetAt(int index) const;
 	
 	/**
 	 * Add element.

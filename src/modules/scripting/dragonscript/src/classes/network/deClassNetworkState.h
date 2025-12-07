@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new native script class. */
-	deClassNetworkState( deScriptingDragonScript &ds );
+	deClassNetworkState(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up native script class. */
 	virtual ~deClassNetworkState();
@@ -57,19 +57,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Script module. */
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Network state from object. */
-	deNetworkState *GetNetworkState( dsRealObject *myself ) const;
+	deNetworkState *GetNetworkState(dsRealObject *myself) const;
 	
 	/** \brief Push network state. */
-	void PushNetworkState( dsRunTime *rt, deNetworkState *state );
+	void PushNetworkState(dsRunTime *rt, deNetworkState *state);
 	
-	inline dsClass *GetClassNetworkStateValueType() const{ return pClsNetworkStateValueType; }
-	inline dsClass *GetClassNetworkStateValueFormat() const{ return pClsNetworkStateValueFormat; }
+	inline dsClass *GetClassNetworkStateValueType() const{return pClsNetworkStateValueType;}
+	inline dsClass *GetClassNetworkStateValueFormat() const{return pClsNetworkStateValueFormat;}
 	/*@}*/
 	
 	
@@ -86,47 +86,47 @@ private:
 		dsClass *clsMemoryFile;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetReadOnly );
+	DEF_NATFUNC(nfGetReadOnly);
 	
-	DEF_NATFUNC( nfGetValueCount );
-	DEF_NATFUNC( nfAddValue );
-	DEF_NATFUNC( nfGetValueFormatAt );
-	DEF_NATFUNC( nfGetValueIntAt );
-	DEF_NATFUNC( nfGetValueFloatAt );
-	DEF_NATFUNC( nfGetValueStringAt );
-	DEF_NATFUNC( nfGetValuePoint2At );
-	DEF_NATFUNC( nfGetValuePoint3At );
-	DEF_NATFUNC( nfGetValueVector2At );
-	DEF_NATFUNC( nfGetValueVector3At );
-	DEF_NATFUNC( nfGetValueDVector3At );
-	DEF_NATFUNC( nfGetValueQuaternionAt );
-	DEF_NATFUNC( nfSetValueIntAt );
-	DEF_NATFUNC( nfSetValueFloatAt );
-	DEF_NATFUNC( nfSetValueStringAt );
-	DEF_NATFUNC( nfSetValuePoint2At );
-	DEF_NATFUNC( nfSetValuePoint3At );
-	DEF_NATFUNC( nfSetValueVector2At );
-	DEF_NATFUNC( nfSetValueVector3At );
-	DEF_NATFUNC( nfSetValueDVector3At );
-	DEF_NATFUNC( nfSetValueQuaternionAt );
-	DEF_NATFUNC( nfGetValuePrecisionAt );
-	DEF_NATFUNC( nfSetValuePrecisionAt );
-	DEF_NATFUNC( nfGetValueDataAt );
-	DEF_NATFUNC( nfSetValueDataAt );
+	DEF_NATFUNC(nfGetValueCount);
+	DEF_NATFUNC(nfAddValue);
+	DEF_NATFUNC(nfGetValueFormatAt);
+	DEF_NATFUNC(nfGetValueIntAt);
+	DEF_NATFUNC(nfGetValueFloatAt);
+	DEF_NATFUNC(nfGetValueStringAt);
+	DEF_NATFUNC(nfGetValuePoint2At);
+	DEF_NATFUNC(nfGetValuePoint3At);
+	DEF_NATFUNC(nfGetValueVector2At);
+	DEF_NATFUNC(nfGetValueVector3At);
+	DEF_NATFUNC(nfGetValueDVector3At);
+	DEF_NATFUNC(nfGetValueQuaternionAt);
+	DEF_NATFUNC(nfSetValueIntAt);
+	DEF_NATFUNC(nfSetValueFloatAt);
+	DEF_NATFUNC(nfSetValueStringAt);
+	DEF_NATFUNC(nfSetValuePoint2At);
+	DEF_NATFUNC(nfSetValuePoint3At);
+	DEF_NATFUNC(nfSetValueVector2At);
+	DEF_NATFUNC(nfSetValueVector3At);
+	DEF_NATFUNC(nfSetValueDVector3At);
+	DEF_NATFUNC(nfSetValueQuaternionAt);
+	DEF_NATFUNC(nfGetValuePrecisionAt);
+	DEF_NATFUNC(nfSetValuePrecisionAt);
+	DEF_NATFUNC(nfGetValueDataAt);
+	DEF_NATFUNC(nfSetValueDataAt);
 	
-	DEF_NATFUNC( nfGetStateListener );
-	DEF_NATFUNC( nfSetStateListener );
+	DEF_NATFUNC(nfGetStateListener);
+	DEF_NATFUNC(nfSetStateListener);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

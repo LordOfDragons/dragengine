@@ -52,16 +52,16 @@ private:
 	
 public:
 	// constructor, destructor
-	debpDecal( deDecal *decal );
+	debpDecal(deDecal *decal);
 	~debpDecal();
 	
 	// management
-	inline deDecal *GetDecal() const{ return pDecal; }
+	inline deDecal *GetDecal() const{return pDecal;}
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	/** Retrieves the faces array. */
-	inline debpDecalFace *GetFaces() const{ return pFaces; }
+	inline debpDecalFace *GetFaces() const{return pFaces;}
 	
 	/** Marks the decal dirty. */
 	void MarkDirty();
@@ -69,14 +69,14 @@ public:
 	void Update();
 	
 	/** Retrieves the parent component. */
-	inline debpComponent *GetParentComponent() const{ return pParentComponent; }
+	inline debpComponent *GetParentComponent() const{return pParentComponent;}
 	/** Sets the parent component or NULL. */
-	void SetParentComponent( debpComponent *component );
+	void SetParentComponent(debpComponent *component);
 	
 	/** Determines if the decal touches with the given volume. */
-	bool TouchesVolume( debpDCollisionVolume *volume ) const;
+	bool TouchesVolume(debpDCollisionVolume *volume) const;
 	/** Determines if a point is in the decal. */
-	bool TouchesPoint( const decVector &point ) const;
+	bool TouchesPoint(const decVector &point) const;
 	/*@}*/
 	
 	/** @name Notifications */

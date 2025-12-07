@@ -60,7 +60,7 @@ public:
 	meHTVRuleRandom();
 	
 	/** \brief Create copy of rule. */
-	meHTVRuleRandom( const meHTVRuleRandom &rule );
+	meHTVRuleRandom(const meHTVRuleRandom &rule);
 	
 	/** Cleans up the rule. */
 	virtual ~meHTVRuleRandom();
@@ -71,9 +71,9 @@ public:
 	/** Resets the rule state. */
 	virtual void Reset();
 	/** Retrieves the value of a given output slot. */
-	virtual float GetOutputSlotValueAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual float GetOutputSlotValueAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	/** Retrieves the vector of a given output slot. */
-	virtual decVector GetOutputSlotVectorAt( int slot, meHTVEvaluationEnvironment &evalEnv );
+	virtual decVector GetOutputSlotVectorAt(int slot, meHTVEvaluationEnvironment &evalEnv);
 	
 	/** \brief Copy rule. */
 	virtual meHTVRule *Copy() const;

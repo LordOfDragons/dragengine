@@ -73,82 +73,82 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeGameDefinition::gdeGameDefinition( igdeEnvironment* environment ) :
-igdeEditableEntity( environment ),
+gdeGameDefinition::gdeGameDefinition(igdeEnvironment* environment) :
+igdeEditableEntity(environment),
 
-pWorld( NULL ),
+pWorld(NULL),
 
-pSky( NULL ),
+pSky(NULL),
 
-pCamera( NULL ),
-pViewRatio( 1.0f ),
+pCamera(NULL),
+pViewRatio(1.0f),
 
-pIsProjectGameDef( false ),
+pIsProjectGameDef(false),
 
-pVFSPath( "/" ),
+pVFSPath("/"),
 
-pActiveCategory( NULL ),
-pActiveObjectClass( NULL ),
-pActiveOCBillboard( NULL ),
-pActiveOCCamera( NULL ),
-pActiveOCComponent( NULL ),
-pActiveOCEnvMapProbe( NULL ),
-pActiveOCLight( NULL ),
-pActiveOCNavigationBlocker( NULL ),
-pActiveOCNavigationSpace( NULL ),
-pActiveOCParticleEmitter( NULL ),
-pActiveOCForceField( NULL ),
-pActiveOCSnapPoint( NULL ),
-pActiveOCSpeaker( NULL ),
-pActiveParticleEmitter( NULL ),
-pActiveSkin( NULL ),
-pActiveSky( NULL ),
+pActiveCategory(NULL),
+pActiveObjectClass(NULL),
+pActiveOCBillboard(NULL),
+pActiveOCCamera(NULL),
+pActiveOCComponent(NULL),
+pActiveOCEnvMapProbe(NULL),
+pActiveOCLight(NULL),
+pActiveOCNavigationBlocker(NULL),
+pActiveOCNavigationSpace(NULL),
+pActiveOCParticleEmitter(NULL),
+pActiveOCForceField(NULL),
+pActiveOCSnapPoint(NULL),
+pActiveOCSpeaker(NULL),
+pActiveParticleEmitter(NULL),
+pActiveSkin(NULL),
+pActiveSky(NULL),
 
-pSelectedObjectType( eotNoSelection ),
+pSelectedObjectType(eotNoSelection),
 
-pVFS( NULL ),
-pPreviewVFS( NULL )
+pVFS(NULL),
+pPreviewVFS(NULL)
 {
 	deEngine * const engine = GetEngine();
 	
 	try{
-		SetFilePath( "new.gamedef.xml" );
+		SetFilePath("new.gamedef.xml");
 		
 		// create world
 		pWorld = engine->GetWorldManager()->CreateWorld();
-		pWorld->SetGravity( decVector( 0.0f, -9.81f, 0.0f ) );
-		pWorld->SetDisableLights( false );
+		pWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
+		pWorld->SetDisableLights(false);
 		
 		// create camera
-		pCamera = new igdeCamera( engine );
-		pCamera->SetEngineWorld( pWorld );
+		pCamera = new igdeCamera(engine);
+		pCamera->SetEngineWorld(pWorld);
 		pCamera->Reset();
-		pCamera->SetPosition( decDVector( 0.0, /*1.0*/0.0, 0.0 ) );
-		pCamera->SetOrientation( decVector( 0.0f, 180.0f, 0.0f ) );
-		pCamera->SetDistance( 5.0f );
-		pCamera->SetHighestIntensity( 20.0f );
-		pCamera->SetLowestIntensity( 18.0f );
-		pCamera->SetAdaptionTime( 4.0f );
+		pCamera->SetPosition(decDVector(0.0, /*1.0*/0.0, 0.0));
+		pCamera->SetOrientation(decVector(0.0f, 180.0f, 0.0f));
+		pCamera->SetDistance(5.0f);
+		pCamera->SetHighestIntensity(20.0f);
+		pCamera->SetLowestIntensity(18.0f);
+		pCamera->SetAdaptionTime(4.0f);
 		
 		// create sky
-		pSky = new igdeWSky( *environment );
+		pSky = new igdeWSky(*environment);
 		pSky->SetGDDefaultSky();
-		pSky->SetWorld( pWorld );
+		pSky->SetWorld(pWorld);
 		
 		// create the environment wrapper object
 		pEnvObject.TakeOver(new igdeWObject(*environment));
-		pEnvObject->SetWorld( pWorld );
-		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
-		pEnvObject->SetVisible( false ); // otherwise a stupid placeholder box shows
+		pEnvObject->SetWorld(pWorld);
+		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
+		pEnvObject->SetVisible(false); // otherwise a stupid placeholder box shows
 		
 		decLayerMask layerMask;
-		layerMask.SetBit( 1 );
-		pEnvObject->SetCollisionFilter( decCollisionFilter( layerMask ) );
-		pEnvObject->SetCollisionFilterFallback( decCollisionFilter( layerMask ) );
+		layerMask.SetBit(1);
+		pEnvObject->SetCollisionFilter(decCollisionFilter(layerMask));
+		pEnvObject->SetCollisionFilterFallback(decCollisionFilter(layerMask));
 		
 		//pEnvObject->SetGDClassName( "IGDETestTerrain" );
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -163,16 +163,16 @@ gdeGameDefinition::~gdeGameDefinition(){
 // Management
 ///////////////
 
-void gdeGameDefinition::SetViewRatio( float viewRatio ){
-	pViewRatio = decMath::max( viewRatio, 0.1f );
+void gdeGameDefinition::SetViewRatio(float viewRatio){
+	pViewRatio = decMath::max(viewRatio, 0.1f);
 }
 
-void gdeGameDefinition::SetIsProjectGameDef( bool isProjectGameDef ){
+void gdeGameDefinition::SetIsProjectGameDef(bool isProjectGameDef){
 	pIsProjectGameDef = isProjectGameDef;
 }
 
-void gdeGameDefinition::SetID( const char *id ){
-	if( pID == id ){
+void gdeGameDefinition::SetID(const char *id){
+	if(pID == id){
 		return;
 	}
 	
@@ -181,8 +181,8 @@ void gdeGameDefinition::SetID( const char *id ){
 	NotifyGameDefinitionChanged();
 }
 
-void gdeGameDefinition::SetDescription( const char *description ){
-	if( pDescription == description ){
+void gdeGameDefinition::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
@@ -191,16 +191,16 @@ void gdeGameDefinition::SetDescription( const char *description ){
 	NotifyGameDefinitionChanged();
 }
 
-void gdeGameDefinition::SetBasePath( const char *path ){
-	if( pBasePath == path ){
+void gdeGameDefinition::SetBasePath(const char *path){
+	if(pBasePath == path){
 		return;
 	}
 	
 	pBasePath = path;
 	
-	if( ! pIsProjectGameDef ){
+	if(! pIsProjectGameDef){
 		pPreviewVFS = NULL;
-		if( pVFS ){
+		if(pVFS){
 			pVFS->FreeReference();
 			pVFS = NULL;
 		}
@@ -209,16 +209,16 @@ void gdeGameDefinition::SetBasePath( const char *path ){
 	NotifyBasePathChanged();
 }
 
-void gdeGameDefinition::SetVFSPath( const char *path ){
-	if( pVFSPath == path ){
+void gdeGameDefinition::SetVFSPath(const char *path){
+	if(pVFSPath == path){
 		return;
 	}
 	
 	pVFSPath = path;
 	
-	if( ! pIsProjectGameDef ){
+	if(! pIsProjectGameDef){
 		pPreviewVFS = NULL;
-		if( pVFS ){
+		if(pVFS){
 			pVFS->FreeReference();
 			pVFS = NULL;
 		}
@@ -227,8 +227,8 @@ void gdeGameDefinition::SetVFSPath( const char *path ){
 	NotifyBasePathChanged();
 }
 
-void gdeGameDefinition::SetScriptModule( const char *identifier ){
-	if( pScriptModule == identifier ){
+void gdeGameDefinition::SetScriptModule(const char *identifier){
+	if(pScriptModule == identifier){
 		return;
 	}
 	
@@ -239,66 +239,66 @@ void gdeGameDefinition::SetScriptModule( const char *identifier ){
 
 
 
-void gdeGameDefinition::SetBaseGameDefinitionIDList( const decStringList &ids ){
+void gdeGameDefinition::SetBaseGameDefinitionIDList(const decStringList &ids){
 	pBaseGameDefinitionIDList = ids;
 }
 
-void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSystem ){
+void gdeGameDefinition::UpdateBaseGameDefinitions(gdeLoadSaveSystem &loadSaveSystem){
 	const int oldCount = pBaseGameDefinitions.GetCount();
 	decObjectList list;
 	int i, j;
 	
 	const int count = pBaseGameDefinitionIDList.GetCount();
-	for( i=0; i<count; i++ ){
-		const decString &id = pBaseGameDefinitionIDList.GetAt( i );
+	for(i=0; i<count; i++){
+		const decString &id = pBaseGameDefinitionIDList.GetAt(i);
 		
 		// check if game definition has been already loaded in the previous call to
 		// UpdateBaseGameDefinitions(). avoids reloading all base game definitions
-		for( j=0; j<oldCount; j++ ){
-			gdeGameDefinition * const checkGameDef = ( gdeGameDefinition* )pBaseGameDefinitions.GetAt( j );
-			if( checkGameDef->GetID() == id ){
-				list.Add( checkGameDef );
+		for(j=0; j<oldCount; j++){
+			gdeGameDefinition * const checkGameDef = (gdeGameDefinition*)pBaseGameDefinitions.GetAt(j);
+			if(checkGameDef->GetID() == id){
+				list.Add(checkGameDef);
 				break;
 			}
 		}
-		if( j < oldCount ){
+		if(j < oldCount){
 			continue;  // already loaded
 		}
 		
 		// resolve game definition id using the environment
-		GetEnvironment()->GetLogger()->LogInfoFormat( LOGSOURCE,
-			"UpdateBaseGameDefinitions: Resolving Base Game Definition ID '%s'", id.GetString() );
+		GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+			"UpdateBaseGameDefinitions: Resolving Base Game Definition ID '%s'", id.GetString());
 		
-		const igdeGameDefinition * const sharedGameDefinition = GetEnvironment()->GetSharedGameDefinition( id );
-		if( ! sharedGameDefinition ){
-			GetEnvironment()->GetLogger()->LogInfoFormat( LOGSOURCE,
-				"UpdateBaseGameDefinitions: Failed resolving Game Definition ID '%s'", id.GetString() );
+		const igdeGameDefinition * const sharedGameDefinition = GetEnvironment()->GetSharedGameDefinition(id);
+		if(! sharedGameDefinition){
+			GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+				"UpdateBaseGameDefinitions: Failed resolving Game Definition ID '%s'", id.GetString());
 			continue;
 		}
 		
 		// load game definitions. this potentially loads base game definitions too
 		const decString &path = sharedGameDefinition->GetFilename();
-		GetEnvironment()->GetLogger()->LogInfoFormat( LOGSOURCE,
-			"UpdateBaseGameDefinitions: Loading Game Definition '%s'", path.GetString() );
+		GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+			"UpdateBaseGameDefinitions: Loading Game Definition '%s'", path.GetString());
 		
 		gdeGameDefinition::Ref gameDefinition;
 		try{
 			gameDefinition.TakeOver(loadSaveSystem.LoadGameDefinition(path));
 			
-		}catch( const deException &e ){
-			GetEnvironment()->GetLogger()->LogInfoFormat( LOGSOURCE,
-				"UpdateBaseGameDefinitions: Failed Loading Game Definition '%s'", path.GetString() );
-			GetEnvironment()->GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			GetEnvironment()->GetLogger()->LogInfoFormat(LOGSOURCE,
+				"UpdateBaseGameDefinitions: Failed Loading Game Definition '%s'", path.GetString());
+			GetEnvironment()->GetLogger()->LogException(LOGSOURCE, e);
 			continue;
 		}
 		
-		gameDefinition->UpdateBaseGameDefinitions( loadSaveSystem );
+		gameDefinition->UpdateBaseGameDefinitions(loadSaveSystem);
 		
-		gameDefinition->SetFilePath( path );
-		gameDefinition->SetChanged( false );
-		gameDefinition->SetSaved( true );
+		gameDefinition->SetFilePath(path);
+		gameDefinition->SetChanged(false);
+		gameDefinition->SetSaved(true);
 		
-		list.Add( gameDefinition );
+		list.Add(gameDefinition);
 	}
 	
 	pBaseGameDefinitions = list;
@@ -311,14 +311,14 @@ int gdeGameDefinition::GetBaseGameDefinitionCount() const{
 	return pBaseGameDefinitions.GetCount();
 }
 
-const gdeGameDefinition &gdeGameDefinition::GetBaseGameDefinitionAt( int index ) const{
-	return *( ( const gdeGameDefinition * )pBaseGameDefinitions.GetAt( index ) );
+const gdeGameDefinition &gdeGameDefinition::GetBaseGameDefinitionAt(int index) const{
+	return *((const gdeGameDefinition *)pBaseGameDefinitions.GetAt(index));
 }
 
 
 
-void gdeGameDefinition::SetDefaultObjectClass( const char *objectClass ){
-	if( pDefaultObjectClass == objectClass ){
+void gdeGameDefinition::SetDefaultObjectClass(const char *objectClass){
+	if(pDefaultObjectClass == objectClass){
 		return;
 	}
 	
@@ -327,8 +327,8 @@ void gdeGameDefinition::SetDefaultObjectClass( const char *objectClass ){
 	NotifyGameDefinitionChanged();
 }
 
-void gdeGameDefinition::SetDefaultSkin( const char *skin ){
-	if( pDefaultSkin == skin ){
+void gdeGameDefinition::SetDefaultSkin(const char *skin){
+	if(pDefaultSkin == skin){
 		return;
 	}
 	
@@ -337,8 +337,8 @@ void gdeGameDefinition::SetDefaultSkin( const char *skin ){
 	NotifyGameDefinitionChanged();
 }
 
-void gdeGameDefinition::SetDefaultSky( const char *sky ){
-	if( pDefaultSky == sky ){
+void gdeGameDefinition::SetDefaultSky(const char *sky){
+	if(pDefaultSky == sky){
 		return;
 	}
 	
@@ -349,18 +349,18 @@ void gdeGameDefinition::SetDefaultSky( const char *sky ){
 
 
 
-const gdeCategory *gdeGameDefinition::FindCategoryObjectClass( const char *path ) const{
-	const gdeCategory *category = pCategoriesObjectClass.GetWithPath( path );
-	if( category ){
+const gdeCategory *gdeGameDefinition::FindCategoryObjectClass(const char *path) const{
+	const gdeCategory *category = pCategoriesObjectClass.GetWithPath(path);
+	if(category){
 		return category;
 	}
 	
 	const int count = pBaseGameDefinitions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		category = ( ( const gdeGameDefinition * )pBaseGameDefinitions.GetAt( i ) )->FindCategoryObjectClass( path );
-		if( category ){
+	for(i=0; i<count; i++){
+		category = ((const gdeGameDefinition *)pBaseGameDefinitions.GetAt(i))->FindCategoryObjectClass(path);
+		if(category){
 			return category;
 		}
 	}
@@ -369,18 +369,18 @@ const gdeCategory *gdeGameDefinition::FindCategoryObjectClass( const char *path 
 }
 
 const decStringSet &gdeGameDefinition::GetObjectClassCategoryNameList(){
-	if( pObjectClassCategoryNameList.GetCount() > 0 ){
+	if(pObjectClassCategoryNameList.GetCount() > 0){
 		return pObjectClassCategoryNameList;
 	}
 	
 	int i, count = pObjectClasses.GetCount();
-	for( i=0; i<count; i++ ){
-		pObjectClassCategoryNameList.Add( pCategoriesObjectClass.GetAt( i )->GetName() );
+	for(i=0; i<count; i++){
+		pObjectClassCategoryNameList.Add(pCategoriesObjectClass.GetAt(i)->GetName());
 	}
 	
 	count = pBaseGameDefinitions.GetCount();
-	for( i=0; i<count; i++ ){
-		pObjectClassCategoryNameList += ( ( gdeGameDefinition* )pBaseGameDefinitions.GetAt( i ) )->GetObjectClassCategoryNameList();
+	for(i=0; i<count; i++){
+		pObjectClassCategoryNameList += ((gdeGameDefinition*)pBaseGameDefinitions.GetAt(i))->GetObjectClassCategoryNameList();
 	}
 	
 	return pObjectClassCategoryNameList;
@@ -388,18 +388,18 @@ const decStringSet &gdeGameDefinition::GetObjectClassCategoryNameList(){
 
 
 
-void gdeGameDefinition::SetActiveCategory( gdeCategory *category ){
-	if( category == pActiveCategory ){
+void gdeGameDefinition::SetActiveCategory(gdeCategory *category){
+	if(category == pActiveCategory){
 		return;
 	}
 	
-	if( pActiveCategory ){
+	if(pActiveCategory){
 		pActiveCategory->FreeReference();
 	}
 	
 	pActiveCategory = category;
 	
-	if( category ){
+	if(category){
 		category->AddReference();
 	}
 	
@@ -414,9 +414,9 @@ void gdeGameDefinition::UpdateUsedTagsObjectClass(){
 	
 	pUsedTagsObjectClass.RemoveAll();
 	
-	for( i=0; i<count; i++ ){
-		pUsedTagsObjectClass += pObjectClasses.GetAt( i )->GetHideTags();
-		pUsedTagsObjectClass += pObjectClasses.GetAt( i )->GetPartialHideTags();
+	for(i=0; i<count; i++){
+		pUsedTagsObjectClass += pObjectClasses.GetAt(i)->GetHideTags();
+		pUsedTagsObjectClass += pObjectClasses.GetAt(i)->GetPartialHideTags();
 	}
 	
 	pUsedTagsObjectClass.SortAscending();
@@ -430,31 +430,31 @@ void gdeGameDefinition::NotifyWorldPropertiesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->WorldPropertiesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->WorldPropertiesChanged(this);
 	}
 }
 
-void gdeGameDefinition::NotifyWorldPropertyChanged( gdeProperty *property ){
+void gdeGameDefinition::NotifyWorldPropertyChanged(gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->WorldPropertyChanged( this, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->WorldPropertyChanged(this, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyWorldPropertyNameChanged( gdeProperty *property ){
+void gdeGameDefinition::NotifyWorldPropertyNameChanged(gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->WorldPropertyNameChanged( this, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->WorldPropertyNameChanged(this, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 
@@ -463,37 +463,37 @@ void gdeGameDefinition::NotifyDecalPropertiesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->DecalPropertiesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->DecalPropertiesChanged(this);
 	}
 }
 
-void gdeGameDefinition::NotifyDecalPropertyChanged( gdeProperty *property ){
+void gdeGameDefinition::NotifyDecalPropertyChanged(gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->DecalPropertyChanged( this, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->DecalPropertyChanged(this, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyDecalPropertyNameChanged( gdeProperty *property ){
+void gdeGameDefinition::NotifyDecalPropertyNameChanged(gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->DecalPropertyNameChanged( this, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->DecalPropertyNameChanged(this, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 
 
-void gdeGameDefinition::SetAutoFindPathObjectClasses( const decStringList &list ){
-	if( list == pAutoFindPathObjectClasses ){
+void gdeGameDefinition::SetAutoFindPathObjectClasses(const decStringList &list){
+	if(list == pAutoFindPathObjectClasses){
 		return;
 	}
 	pAutoFindPathObjectClasses = list;
@@ -504,15 +504,15 @@ void gdeGameDefinition::NotifyAutoFindPathObjectClassesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->AutoFindPathObjectClassesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->AutoFindPathObjectClassesChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::SetAutoFindPathSkins( const decStringList &list ){
-	if( list == pAutoFindPathSkins ){
+void gdeGameDefinition::SetAutoFindPathSkins(const decStringList &list){
+	if(list == pAutoFindPathSkins){
 		return;
 	}
 	pAutoFindPathSkins = list;
@@ -523,15 +523,15 @@ void gdeGameDefinition::NotifyAutoFindPathSkinsChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->AutoFindPathSkinsChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->AutoFindPathSkinsChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::SetAutoFindPathSkies( const decStringList &list ){
-	if( list == pAutoFindPathSkies ){
+void gdeGameDefinition::SetAutoFindPathSkies(const decStringList &list){
+	if(list == pAutoFindPathSkies){
 		return;
 	}
 	pAutoFindPathSkies = list;
@@ -542,17 +542,17 @@ void gdeGameDefinition::NotifyAutoFindPathSkiesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->AutoFindPathSkiesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->AutoFindPathSkiesChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 
 
-void gdeGameDefinition::SetSelectedObjectType( eObjectTypes objectType ){
-	if( objectType == pSelectedObjectType ){
+void gdeGameDefinition::SetSelectedObjectType(eObjectTypes objectType){
+	if(objectType == pSelectedObjectType){
 		return;
 	}
 	
@@ -566,11 +566,11 @@ void gdeGameDefinition::UpdateDefinedUsedIDs(){
 	decStringSet usedIDs;
 	int i;
 	
-	for( i=0; i<occount; i++ ){
-		pObjectClasses.GetAt( i )->GetDefinedUsedIDs( definedIDs, usedIDs );
+	for(i=0; i<occount; i++){
+		pObjectClasses.GetAt(i)->GetDefinedUsedIDs(definedIDs, usedIDs);
 	}
 	
-	if( definedIDs == pDefinedIDs && usedIDs == pUsedIDs ){
+	if(definedIDs == pDefinedIDs && usedIDs == pUsedIDs){
 		return;
 	}
 	
@@ -581,46 +581,46 @@ void gdeGameDefinition::UpdateDefinedUsedIDs(){
 
 
 
-void gdeGameDefinition::Update( float elapsed ){
-	pEnvObject->Update( elapsed );
+void gdeGameDefinition::Update(float elapsed){
+	pEnvObject->Update(elapsed);
 	
-	pWorld->ProcessPhysics( elapsed );
-	pWorld->Update( elapsed );
+	pWorld->ProcessPhysics(elapsed);
+	pWorld->Update(elapsed);
 }
 
 
 
 deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
-	if( pPreviewVFS ){
+	if(pPreviewVFS){
 		return pPreviewVFS;
 	}
 	
-	if( pIsProjectGameDef ){ // pBasePath == GetEnvironment()->GetGameProject()->GetPathProject() ){
+	if(pIsProjectGameDef){ // pBasePath == GetEnvironment()->GetGameProject()->GetPathProject()){
 		pPreviewVFS = GetEngine()->GetVirtualFileSystem();
 		
-		if( pVFS ){
+		if(pVFS){
 			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 		
 	}else{
-		if( ! pVFS ){
+		if(! pVFS){
 			deVFSDiskDirectory *container = NULL;
 			
 			try{
 				pVFS = new deVirtualFileSystem;
 				
-				container = new deVFSDiskDirectory( decPath::CreatePathUnix( pVFSPath ),
-					decPath::CreatePathNative( pBasePath ) );
-				container->SetReadOnly( true );
-				pVFS->AddContainer( container );
+				container = new deVFSDiskDirectory(decPath::CreatePathUnix(pVFSPath),
+					decPath::CreatePathNative(pBasePath));
+				container->SetReadOnly(true);
+				pVFS->AddContainer(container);
 				container->FreeReference();
 				
-			}catch( const deException & ){
-				if( container ){
+			}catch(const deException &){
+				if(container){
 					container->FreeReference();
 				}
-				if( pVFS ){
+				if(pVFS){
 					pVFS->FreeReference();
 					pVFS = NULL;
 				}
@@ -640,53 +640,53 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 // Object classes
 ///////////////////
 
-void gdeGameDefinition::AddObjectClass( gdeObjectClass *objectClass ){
-	pObjectClasses.Add( objectClass );
-	objectClass->SetGameDefinition( this );
+void gdeGameDefinition::AddObjectClass(gdeObjectClass *objectClass){
+	pObjectClasses.Add(objectClass);
+	objectClass->SetGameDefinition(this);
 	
 	pClassNameList.RemoveAll();
 	
 	NotifyObjectClassStructureChanged();
 	
-	if( ! pActiveObjectClass ){
-		SetActiveObjectClass( objectClass );
+	if(! pActiveObjectClass){
+		SetActiveObjectClass(objectClass);
 	}
 }
 
-void gdeGameDefinition::RemoveObjectClass( gdeObjectClass *objectClass ){
-	if( ! objectClass || objectClass->GetGameDefinition() != this ){
-		DETHROW( deeInvalidParam );
+void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
+	if(! objectClass || objectClass->GetGameDefinition() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( objectClass == pActiveObjectClass ){
-		SetActiveOCBillboard( NULL );
-		SetActiveOCCamera( NULL );
-		SetActiveOCComponent( NULL );
-		SetActiveOCEnvMapProbe( NULL );
-		SetActiveOCLight( NULL );
-		SetActiveOCNavigationBlocker( NULL );
-		SetActiveOCNavigationSpace( NULL );
-		SetActiveOCParticleEmitter( NULL );
-		SetActiveOCForceField( NULL );
-		SetActiveOCSnapPoint( NULL );
-		SetActiveOCSpeaker( NULL );
+	if(objectClass == pActiveObjectClass){
+		SetActiveOCBillboard(NULL);
+		SetActiveOCCamera(NULL);
+		SetActiveOCComponent(NULL);
+		SetActiveOCEnvMapProbe(NULL);
+		SetActiveOCLight(NULL);
+		SetActiveOCNavigationBlocker(NULL);
+		SetActiveOCNavigationSpace(NULL);
+		SetActiveOCParticleEmitter(NULL);
+		SetActiveOCForceField(NULL);
+		SetActiveOCSnapPoint(NULL);
+		SetActiveOCSpeaker(NULL);
 		SetActiveOCWorld(nullptr);
 		
-		if( pObjectClasses.GetCount() == 1 ){
-			SetActiveObjectClass( NULL );
+		if(pObjectClasses.GetCount() == 1){
+			SetActiveObjectClass(NULL);
 			
 		}else{
-			if( pObjectClasses.GetAt( 0 ) == objectClass ){
-				SetActiveObjectClass( pObjectClasses.GetAt( 1 ) );
+			if(pObjectClasses.GetAt(0) == objectClass){
+				SetActiveObjectClass(pObjectClasses.GetAt(1));
 				
 			}else{
-				SetActiveObjectClass( pObjectClasses.GetAt( 0 ) );
+				SetActiveObjectClass(pObjectClasses.GetAt(0));
 			}
 		}
 	}
 	
-	objectClass->SetGameDefinition( NULL );
-	pObjectClasses.Remove( objectClass );
+	objectClass->SetGameDefinition(NULL);
+	pObjectClasses.Remove(objectClass);
 	
 	pClassNameList.RemoveAll();
 	
@@ -697,22 +697,22 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 	const int count = pObjectClasses.GetCount();
 	int i;
 	
-	SetActiveOCSpeaker( NULL );
-	SetActiveOCSnapPoint( NULL );
-	SetActiveOCParticleEmitter( NULL );
-	SetActiveOCForceField( NULL );
-	SetActiveOCNavigationSpace( NULL );
-	SetActiveOCNavigationBlocker( NULL );
-	SetActiveOCLight( NULL );
-	SetActiveOCEnvMapProbe( NULL );
-	SetActiveOCComponent( NULL );
-	SetActiveOCCamera( NULL );
-	SetActiveOCBillboard( NULL );
+	SetActiveOCSpeaker(NULL);
+	SetActiveOCSnapPoint(NULL);
+	SetActiveOCParticleEmitter(NULL);
+	SetActiveOCForceField(NULL);
+	SetActiveOCNavigationSpace(NULL);
+	SetActiveOCNavigationBlocker(NULL);
+	SetActiveOCLight(NULL);
+	SetActiveOCEnvMapProbe(NULL);
+	SetActiveOCComponent(NULL);
+	SetActiveOCCamera(NULL);
+	SetActiveOCBillboard(NULL);
 	SetActiveOCWorld(nullptr);
-	SetActiveObjectClass( NULL );
+	SetActiveObjectClass(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pObjectClasses.GetAt( i )->SetGameDefinition( NULL );
+	for(i=0; i<count; i++){
+		pObjectClasses.GetAt(i)->SetGameDefinition(NULL);
 	}
 	pObjectClasses.RemoveAll();
 	
@@ -721,18 +721,18 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 	NotifyObjectClassStructureChanged();
 }
 
-const gdeObjectClass * const gdeGameDefinition::FindObjectClass( const char *name ) const{
-	const gdeObjectClass *objectClass = pObjectClasses.GetNamed( name );
-	if( objectClass ){
+const gdeObjectClass * const gdeGameDefinition::FindObjectClass(const char *name) const{
+	const gdeObjectClass *objectClass = pObjectClasses.GetNamed(name);
+	if(objectClass){
 		return objectClass;
 	}
 	
 	const int count = pBaseGameDefinitions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		objectClass = ( ( const gdeGameDefinition * )pBaseGameDefinitions.GetAt( i ) )->FindObjectClass( name );
-		if( objectClass ){
+	for(i=0; i<count; i++){
+		objectClass = ((const gdeGameDefinition *)pBaseGameDefinitions.GetAt(i))->FindObjectClass(name);
+		if(objectClass){
 			return objectClass;
 		}
 	}
@@ -741,18 +741,18 @@ const gdeObjectClass * const gdeGameDefinition::FindObjectClass( const char *nam
 }
 
 const decStringSet &gdeGameDefinition::GetClassNameList(){
-	if( pClassNameList.GetCount() > 0 ){
+	if(pClassNameList.GetCount() > 0){
 		return pClassNameList;
 	}
 	
 	int i, count = pObjectClasses.GetCount();
-	for( i=0; i<count; i++ ){
-		pClassNameList.Add( pObjectClasses.GetAt( i )->GetName() );
+	for(i=0; i<count; i++){
+		pClassNameList.Add(pObjectClasses.GetAt(i)->GetName());
 	}
 	
 	count = pBaseGameDefinitions.GetCount();
-	for( i=0; i<count; i++ ){
-		pClassNameList += ( ( gdeGameDefinition* )pBaseGameDefinitions.GetAt( i ) )->GetClassNameList();
+	for(i=0; i<count; i++){
+		pClassNameList += ((gdeGameDefinition*)pBaseGameDefinitions.GetAt(i))->GetClassNameList();
 	}
 	
 	return pClassNameList;
@@ -764,18 +764,18 @@ bool gdeGameDefinition::HasActiveObjectClass() const{
 	return pActiveObjectClass != NULL;
 }
 
-void gdeGameDefinition::SetActiveObjectClass( gdeObjectClass *objectClass ){
-	if( objectClass == pActiveObjectClass ){
+void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
+	if(objectClass == pActiveObjectClass){
 		return;
 	}
 	
-	if( pActiveObjectClass ){
+	if(pActiveObjectClass){
 		pActiveObjectClass->FreeReference();
 	}
 	
 	pActiveObjectClass = objectClass;
 	
-	if( objectClass ){
+	if(objectClass){
 		objectClass->AddReference();
 	}
 	
@@ -788,18 +788,18 @@ bool gdeGameDefinition::HasActiveOCBillboard() const{
 	return pActiveOCBillboard != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCBillboard( gdeOCBillboard *billboard ){
-	if( billboard == pActiveOCBillboard ){
+void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
+	if(billboard == pActiveOCBillboard){
 		return;
 	}
 	
-	if( pActiveOCBillboard ){
+	if(pActiveOCBillboard){
 		pActiveOCBillboard->FreeReference();
 	}
 	
 	pActiveOCBillboard = billboard;
 	
-	if( billboard ){
+	if(billboard){
 		billboard->AddReference();
 	}
 	
@@ -812,18 +812,18 @@ bool gdeGameDefinition::HasActiveOCCamera() const{
 	return pActiveOCCamera != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCCamera( gdeOCCamera *camera ){
-	if( camera == pActiveOCCamera ){
+void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
+	if(camera == pActiveOCCamera){
 		return;
 	}
 	
-	if( pActiveOCCamera ){
+	if(pActiveOCCamera){
 		pActiveOCCamera->FreeReference();
 	}
 	
 	pActiveOCCamera = camera;
 	
-	if( camera ){
+	if(camera){
 		camera->AddReference();
 	}
 	
@@ -836,18 +836,18 @@ bool gdeGameDefinition::HasActiveOCComponent() const{
 	return pActiveOCComponent != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCComponent( gdeOCComponent *component ){
-	if( component == pActiveOCComponent ){
+void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
+	if(component == pActiveOCComponent){
 		return;
 	}
 	
-	if( pActiveOCComponent ){
+	if(pActiveOCComponent){
 		pActiveOCComponent->FreeReference();
 	}
 	
 	pActiveOCComponent = component;
 	
-	if( component ){
+	if(component){
 		component->AddReference();
 	}
 	
@@ -860,18 +860,18 @@ bool gdeGameDefinition::HasActiveOCEnvMapProbe() const{
 	return pActiveOCEnvMapProbe != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCEnvMapProbe( gdeOCEnvMapProbe *envMapProbe ){
-	if( envMapProbe == pActiveOCEnvMapProbe ){
+void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
+	if(envMapProbe == pActiveOCEnvMapProbe){
 		return;
 	}
 	
-	if( pActiveOCEnvMapProbe ){
+	if(pActiveOCEnvMapProbe){
 		pActiveOCEnvMapProbe->FreeReference();
 	}
 	
 	pActiveOCEnvMapProbe = envMapProbe;
 	
-	if( envMapProbe ){
+	if(envMapProbe){
 		envMapProbe->AddReference();
 	}
 	
@@ -884,18 +884,18 @@ bool gdeGameDefinition::HasActiveOCLight() const{
 	return pActiveOCLight != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCLight( gdeOCLight *light ){
-	if( light == pActiveOCLight ){
+void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
+	if(light == pActiveOCLight){
 		return;
 	}
 	
-	if( pActiveOCLight ){
+	if(pActiveOCLight){
 		pActiveOCLight->FreeReference();
 	}
 	
 	pActiveOCLight = light;
 	
-	if( light ){
+	if(light){
 		light->AddReference();
 	}
 	
@@ -908,18 +908,18 @@ bool gdeGameDefinition::HasActiveOCNavigationBlocker() const{
 	return pActiveOCNavigationBlocker != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCNavigationBlocker( gdeOCNavigationBlocker *navblocker ){
-	if( navblocker == pActiveOCNavigationBlocker ){
+void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker){
+	if(navblocker == pActiveOCNavigationBlocker){
 		return;
 	}
 	
-	if( pActiveOCNavigationBlocker ){
+	if(pActiveOCNavigationBlocker){
 		pActiveOCNavigationBlocker->FreeReference();
 	}
 	
 	pActiveOCNavigationBlocker = navblocker;
 	
-	if( navblocker ){
+	if(navblocker){
 		navblocker->AddReference();
 	}
 	
@@ -932,18 +932,18 @@ bool gdeGameDefinition::HasActiveOCNavigationSpace() const{
 	return pActiveOCNavigationSpace != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCNavigationSpace( gdeOCNavigationSpace *navSpace ){
-	if( navSpace == pActiveOCNavigationSpace ){
+void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpace){
+	if(navSpace == pActiveOCNavigationSpace){
 		return;
 	}
 	
-	if( pActiveOCNavigationSpace ){
+	if(pActiveOCNavigationSpace){
 		pActiveOCNavigationSpace->FreeReference();
 	}
 	
 	pActiveOCNavigationSpace = navSpace;
 	
-	if( navSpace ){
+	if(navSpace){
 		navSpace->AddReference();
 	}
 	
@@ -956,18 +956,18 @@ bool gdeGameDefinition::HasActiveOCParticleEmitter() const{
 	return pActiveOCParticleEmitter != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCParticleEmitter( gdeOCParticleEmitter *emitter ){
-	if( emitter == pActiveOCParticleEmitter ){
+void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter){
+	if(emitter == pActiveOCParticleEmitter){
 		return;
 	}
 	
-	if( pActiveOCParticleEmitter ){
+	if(pActiveOCParticleEmitter){
 		pActiveOCParticleEmitter->FreeReference();
 	}
 	
 	pActiveOCParticleEmitter = emitter;
 	
-	if( emitter ){
+	if(emitter){
 		emitter->AddReference();
 	}
 	
@@ -980,18 +980,18 @@ bool gdeGameDefinition::HasActiveOCForceField() const{
 	return pActiveOCForceField != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCForceField( gdeOCForceField *field ){
-	if( field == pActiveOCForceField ){
+void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
+	if(field == pActiveOCForceField){
 		return;
 	}
 	
-	if( pActiveOCForceField ){
+	if(pActiveOCForceField){
 		pActiveOCForceField->FreeReference();
 	}
 	
 	pActiveOCForceField = field;
 	
-	if( field ){
+	if(field){
 		field->AddReference();
 	}
 	
@@ -1004,18 +1004,18 @@ bool gdeGameDefinition::HasActiveOCSnapPoint() const{
 	return pActiveOCSnapPoint != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCSnapPoint( gdeOCSnapPoint *snappoint ){
-	if( snappoint == pActiveOCSnapPoint ){
+void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
+	if(snappoint == pActiveOCSnapPoint){
 		return;
 	}
 	
-	if( pActiveOCSnapPoint ){
+	if(pActiveOCSnapPoint){
 		pActiveOCSnapPoint->FreeReference();
 	}
 	
 	pActiveOCSnapPoint = snappoint;
 	
-	if( snappoint ){
+	if(snappoint){
 		snappoint->AddReference();
 	}
 	
@@ -1028,18 +1028,18 @@ bool gdeGameDefinition::HasActiveOCSpeaker() const{
 	return pActiveOCSpeaker != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCSpeaker( gdeOCSpeaker *speaker ){
-	if( speaker == pActiveOCSpeaker ){
+void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker *speaker){
+	if(speaker == pActiveOCSpeaker){
 		return;
 	}
 	
-	if( pActiveOCSpeaker ){
+	if(pActiveOCSpeaker){
 		pActiveOCSpeaker->FreeReference();
 	}
 	
 	pActiveOCSpeaker = speaker;
 	
-	if( speaker ){
+	if(speaker){
 		speaker->AddReference();
 	}
 	
@@ -1066,37 +1066,37 @@ void gdeGameDefinition::SetActiveOCWorld(gdeOCWorld *world){
 // ParticleEmitters
 /////////////////////
 
-void gdeGameDefinition::AddParticleEmitter( gdeParticleEmitter *particleEmitter ){
-	pParticleEmitters.Add( particleEmitter );
-	particleEmitter->SetGameDefinition( this );
+void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter *particleEmitter){
+	pParticleEmitters.Add(particleEmitter);
+	particleEmitter->SetGameDefinition(this);
 	NotifyParticleEmitterStructureChanged();
 	
-	if( ! pActiveParticleEmitter ){
-		SetActiveParticleEmitter( particleEmitter );
+	if(! pActiveParticleEmitter){
+		SetActiveParticleEmitter(particleEmitter);
 	}
 }
 
-void gdeGameDefinition::RemoveParticleEmitter( gdeParticleEmitter *particleEmitter ){
-	if( ! particleEmitter || particleEmitter->GetGameDefinition() != this ){
-		DETHROW( deeInvalidParam );
+void gdeGameDefinition::RemoveParticleEmitter(gdeParticleEmitter *particleEmitter){
+	if(! particleEmitter || particleEmitter->GetGameDefinition() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( particleEmitter == pActiveParticleEmitter ){
-		if( pParticleEmitters.GetCount() == 1 ){
-			SetActiveParticleEmitter( NULL );
+	if(particleEmitter == pActiveParticleEmitter){
+		if(pParticleEmitters.GetCount() == 1){
+			SetActiveParticleEmitter(NULL);
 			
 		}else{
-			if( pParticleEmitters.GetAt( 0 ) == particleEmitter ){
-				SetActiveParticleEmitter( pParticleEmitters.GetAt( 1 ) );
+			if(pParticleEmitters.GetAt(0) == particleEmitter){
+				SetActiveParticleEmitter(pParticleEmitters.GetAt(1));
 				
 			}else{
-				SetActiveParticleEmitter( pParticleEmitters.GetAt( 0 ) );
+				SetActiveParticleEmitter(pParticleEmitters.GetAt(0));
 			}
 		}
 	}
 	
-	particleEmitter->SetGameDefinition( NULL );
-	pParticleEmitters.Remove( particleEmitter );
+	particleEmitter->SetGameDefinition(NULL);
+	pParticleEmitters.Remove(particleEmitter);
 	NotifyParticleEmitterStructureChanged();
 }
 
@@ -1104,10 +1104,10 @@ void gdeGameDefinition::RemoveAllParticleEmitters(){
 	const int count = pParticleEmitters.GetCount();
 	int i;
 	
-	SetActiveParticleEmitter( NULL );
+	SetActiveParticleEmitter(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pParticleEmitters.GetAt( i )->SetGameDefinition( NULL );
+	for(i=0; i<count; i++){
+		pParticleEmitters.GetAt(i)->SetGameDefinition(NULL);
 	}
 	pParticleEmitters.RemoveAll();
 	NotifyParticleEmitterStructureChanged();
@@ -1117,18 +1117,18 @@ bool gdeGameDefinition::HasActiveParticleEmitter() const{
 	return pActiveParticleEmitter != NULL;
 }
 
-void gdeGameDefinition::SetActiveParticleEmitter( gdeParticleEmitter *particleEmitter ){
-	if( particleEmitter == pActiveParticleEmitter ){
+void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter){
+	if(particleEmitter == pActiveParticleEmitter){
 		return;
 	}
 	
-	if( pActiveParticleEmitter ){
+	if(pActiveParticleEmitter){
 		pActiveParticleEmitter->FreeReference();
 	}
 	
 	pActiveParticleEmitter = particleEmitter;
 	
-	if( particleEmitter ){
+	if(particleEmitter){
 		particleEmitter->AddReference();
 	}
 	
@@ -1140,37 +1140,37 @@ void gdeGameDefinition::SetActiveParticleEmitter( gdeParticleEmitter *particleEm
 // Skins
 //////////
 
-void gdeGameDefinition::AddSkin( gdeSkin *skin ){
-	pSkins.Add( skin );
-	skin->SetGameDefinition( this );
+void gdeGameDefinition::AddSkin(gdeSkin *skin){
+	pSkins.Add(skin);
+	skin->SetGameDefinition(this);
 	NotifySkinStructureChanged();
 	
-	if( ! pActiveSkin ){
-		SetActiveSkin( skin );
+	if(! pActiveSkin){
+		SetActiveSkin(skin);
 	}
 }
 
-void gdeGameDefinition::RemoveSkin( gdeSkin *skin ){
-	if( ! skin || skin->GetGameDefinition() != this ){
-		DETHROW( deeInvalidParam );
+void gdeGameDefinition::RemoveSkin(gdeSkin *skin){
+	if(! skin || skin->GetGameDefinition() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( skin == pActiveSkin ){
-		if( pSkins.GetCount() == 1 ){
-			SetActiveSkin( NULL );
+	if(skin == pActiveSkin){
+		if(pSkins.GetCount() == 1){
+			SetActiveSkin(NULL);
 			
 		}else{
-			if( pSkins.GetAt( 0 ) == skin ){
-				SetActiveSkin( pSkins.GetAt( 1 ) );
+			if(pSkins.GetAt(0) == skin){
+				SetActiveSkin(pSkins.GetAt(1));
 				
 			}else{
-				SetActiveSkin( pSkins.GetAt( 0 ) );
+				SetActiveSkin(pSkins.GetAt(0));
 			}
 		}
 	}
 	
-	skin->SetGameDefinition( NULL );
-	pSkins.Remove( skin );
+	skin->SetGameDefinition(NULL);
+	pSkins.Remove(skin);
 	NotifySkinStructureChanged();
 }
 
@@ -1178,10 +1178,10 @@ void gdeGameDefinition::RemoveAllSkins(){
 	const int count = pSkins.GetCount();
 	int i;
 	
-	SetActiveSkin( NULL );
+	SetActiveSkin(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pSkins.GetAt( i )->SetGameDefinition( NULL );
+	for(i=0; i<count; i++){
+		pSkins.GetAt(i)->SetGameDefinition(NULL);
 	}
 	pSkins.RemoveAll();
 	NotifySkinStructureChanged();
@@ -1191,18 +1191,18 @@ bool gdeGameDefinition::HasActiveSkin() const{
 	return pActiveSkin != NULL;
 }
 
-void gdeGameDefinition::SetActiveSkin( gdeSkin *skin ){
-	if( skin == pActiveSkin ){
+void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
+	if(skin == pActiveSkin){
 		return;
 	}
 	
-	if( pActiveSkin ){
+	if(pActiveSkin){
 		pActiveSkin->FreeReference();
 	}
 	
 	pActiveSkin = skin;
 	
-	if( skin ){
+	if(skin){
 		skin->AddReference();
 	}
 	
@@ -1214,37 +1214,37 @@ void gdeGameDefinition::SetActiveSkin( gdeSkin *skin ){
 // Skins
 //////////
 
-void gdeGameDefinition::AddSky( gdeSky *sky ){
-	pSkies.Add( sky );
-	sky->SetGameDefinition( this );
+void gdeGameDefinition::AddSky(gdeSky *sky){
+	pSkies.Add(sky);
+	sky->SetGameDefinition(this);
 	NotifySkyStructureChanged();
 	
-	if( ! pActiveSky ){
-		SetActiveSky( sky );
+	if(! pActiveSky){
+		SetActiveSky(sky);
 	}
 }
 
-void gdeGameDefinition::RemoveSky( gdeSky *sky ){
-	if( ! sky || sky->GetGameDefinition() != this ){
-		DETHROW( deeInvalidParam );
+void gdeGameDefinition::RemoveSky(gdeSky *sky){
+	if(! sky || sky->GetGameDefinition() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( sky == pActiveSky ){
-		if( pSkies.GetCount() == 1 ){
-			SetActiveSky( NULL );
+	if(sky == pActiveSky){
+		if(pSkies.GetCount() == 1){
+			SetActiveSky(NULL);
 			
 		}else{
-			if( pSkies.GetAt( 0 ) == sky ){
-				SetActiveSky( pSkies.GetAt( 1 ) );
+			if(pSkies.GetAt(0) == sky){
+				SetActiveSky(pSkies.GetAt(1));
 				
 			}else{
-				SetActiveSky( pSkies.GetAt( 0 ) );
+				SetActiveSky(pSkies.GetAt(0));
 			}
 		}
 	}
 	
-	sky->SetGameDefinition( NULL );
-	pSkies.Remove( sky );
+	sky->SetGameDefinition(NULL);
+	pSkies.Remove(sky);
 	NotifySkyStructureChanged();
 }
 
@@ -1252,10 +1252,10 @@ void gdeGameDefinition::RemoveAllSkies(){
 	const int count = pSkies.GetCount();
 	int i;
 	
-	SetActiveSky( NULL );
+	SetActiveSky(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pSkies.GetAt( i )->SetGameDefinition( NULL );
+	for(i=0; i<count; i++){
+		pSkies.GetAt(i)->SetGameDefinition(NULL);
 	}
 	pSkies.RemoveAll();
 	NotifySkyStructureChanged();
@@ -1265,18 +1265,18 @@ bool gdeGameDefinition::HasActiveSky() const{
 	return pActiveSky != NULL;
 }
 
-void gdeGameDefinition::SetActiveSky( gdeSky *sky ){
-	if( sky == pActiveSky ){
+void gdeGameDefinition::SetActiveSky(gdeSky *sky){
+	if(sky == pActiveSky){
 		return;
 	}
 	
-	if( pActiveSky ){
+	if(pActiveSky){
 		pActiveSky->FreeReference();
 	}
 	
 	pActiveSky = sky;
 	
-	if( sky ){
+	if(sky){
 		sky->AddReference();
 	}
 	
@@ -1288,15 +1288,15 @@ void gdeGameDefinition::SetActiveSky( gdeSky *sky ){
 // Listeners
 //////////////
 
-void gdeGameDefinition::AddListener( gdeGameDefinitionListener *listener ){
-	if( ! listener ){
-		DETHROW( deeInvalidParam );
+void gdeGameDefinition::AddListener(gdeGameDefinitionListener *listener){
+	if(! listener){
+		DETHROW(deeInvalidParam);
 	}
-	pListeners.Add( listener );
+	pListeners.Add(listener);
 }
 
-void gdeGameDefinition::RemoveListener( gdeGameDefinitionListener *listener ){
-	pListeners.RemoveIfPresent( listener );
+void gdeGameDefinition::RemoveListener(gdeGameDefinitionListener *listener){
+	pListeners.RemoveIfPresent(listener);
 }
 
 
@@ -1305,8 +1305,8 @@ void gdeGameDefinition::NotifyStateChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->StateChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->StateChanged(this);
 	}
 }
 
@@ -1314,8 +1314,8 @@ void gdeGameDefinition::NotifyUndoChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->UndoChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->UndoChanged(this);
 	}
 }
 
@@ -1323,8 +1323,8 @@ void gdeGameDefinition::NotifyViewChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ViewChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ViewChanged(this);
 	}
 }
 
@@ -1332,41 +1332,41 @@ void gdeGameDefinition::NotifyGameDefinitionChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->GameDefinitionChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->GameDefinitionChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyBasePathChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->BasePathChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->BasePathChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyBaseGameDefinitionsChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->BaseGameDefinitionsChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->BaseGameDefinitionsChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifySkyChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkyChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkyChanged(this);
 	}
 }
 
@@ -1374,8 +1374,8 @@ void gdeGameDefinition::NotifyEnvObjectChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->EnvObjectChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->EnvObjectChanged(this);
 	}
 }
 
@@ -1383,8 +1383,8 @@ void gdeGameDefinition::NotifyCameraChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->CameraChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->CameraChanged(this);
 	}
 }
 
@@ -1392,8 +1392,8 @@ void gdeGameDefinition::NotifySelectedObjectChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SelectedObjectChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SelectedObjectChanged(this);
 	}
 }
 
@@ -1403,52 +1403,52 @@ void gdeGameDefinition::NotifyObjectClassCategoriesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ObjectClassCategoriesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ObjectClassCategoriesChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifySkinCategoriesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkinCategoriesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkinCategoriesChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifySkyCategoriesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkyCategoriesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkyCategoriesChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyParticleEmitterCategoriesChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ParticleEmitterCategoriesChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ParticleEmitterCategoriesChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyActiveCategoryChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveCategoryChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveCategoryChanged(this);
 	}
 }
 
@@ -1458,8 +1458,8 @@ void gdeGameDefinition::NotifyObjectClassUsedTagsChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ObjectClassUsedTagsChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ObjectClassUsedTagsChanged(this);
 	}
 }
 
@@ -1467,8 +1467,8 @@ void gdeGameDefinition::NotifyDefinedUsedIDsChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->DefinedUsedIDsChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->DefinedUsedIDsChanged(this);
 	}
 }
 
@@ -1478,450 +1478,450 @@ void gdeGameDefinition::NotifyObjectClassStructureChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ObjectClassStructureChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ObjectClassStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyObjectClassChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyObjectClassChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ObjectClassChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ObjectClassChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyObjectClassNameChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyObjectClassNameChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ObjectClassNameChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ObjectClassNameChanged(this, objectClass);
 	}
 	
 	pClassNameList.RemoveAll();
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertyChanged( gdeObjectClass *objectClass, gdeProperty *property ){
+void gdeGameDefinition::NotifyOCPropertyChanged(gdeObjectClass *objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCPropertyChanged( this, objectClass, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCPropertyChanged(this, objectClass, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertyNameChanged( gdeObjectClass *objectClass, gdeProperty *property ){
+void gdeGameDefinition::NotifyOCPropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCPropertyNameChanged( this, objectClass, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCPropertyNameChanged(this, objectClass, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertiesChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCPropertiesChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCPropertiesChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCPropertiesChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertyValuesChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCPropertyValuesChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCPropertyValuesChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCPropertyValuesChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturePropertyChanged( gdeObjectClass *objectClass, gdeProperty *property ){
+void gdeGameDefinition::NotifyOCTexturePropertyChanged(gdeObjectClass *objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTexturePropertyChanged( this, objectClass, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCTexturePropertyChanged(this, objectClass, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturePropertyNameChanged( gdeObjectClass *objectClass, gdeProperty *property ){
+void gdeGameDefinition::NotifyOCTexturePropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTexturePropertyNameChanged( this, objectClass, property );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCTexturePropertyNameChanged(this, objectClass, property);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturePropertiesChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCTexturePropertiesChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTexturePropertiesChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCTexturePropertiesChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCInheritChanged( gdeObjectClass *objectClass, gdeOCInherit *inherit ){
+void gdeGameDefinition::NotifyOCInheritChanged(gdeObjectClass *objectClass, gdeOCInherit *inherit){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCInheritChanged( this, objectClass, inherit );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCInheritChanged(this, objectClass, inherit);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCInheritsChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCInheritsChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCInheritsChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCInheritsChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCBillboardsChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCBillboardsChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCBillboardsChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCBillboardsChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCBillboardChanged( gdeObjectClass *objectClass, gdeOCBillboard *billboard ){
+void gdeGameDefinition::NotifyOCBillboardChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCBillboardChanged( this, objectClass, billboard );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCBillboardChanged(this, objectClass, billboard);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCCamerasChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCCamerasChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCCamerasChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCCamerasChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCCameraChanged( gdeObjectClass *objectClass, gdeOCCamera *camera ){
+void gdeGameDefinition::NotifyOCCameraChanged(gdeObjectClass *objectClass, gdeOCCamera *camera){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCCameraChanged( this, objectClass, camera );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCCameraChanged(this, objectClass, camera);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentsChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCComponentsChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCComponentsChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCComponentsChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentChanged( gdeObjectClass *objectClass, gdeOCComponent *component ){
+void gdeGameDefinition::NotifyOCComponentChanged(gdeObjectClass *objectClass, gdeOCComponent *component){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCComponentChanged( this, objectClass, component );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCComponentChanged(this, objectClass, component);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyOCComponentActiveTextureChanged(
-gdeObjectClass *objectClass, gdeOCComponent *component ){
+gdeObjectClass *objectClass, gdeOCComponent *component){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCComponentActiveTextureChanged( this, objectClass, component );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCComponentActiveTextureChanged(this, objectClass, component);
 	}
 }
 
-void gdeGameDefinition::NotifyOCComponentTextureChanged( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture ){
+void gdeGameDefinition::NotifyOCComponentTextureChanged(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCComponentTextureChanged( this, objectClass, component, texture );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCComponentTextureChanged(this, objectClass, component, texture);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentTextureNameChanged( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture ){
+void gdeGameDefinition::NotifyOCComponentTextureNameChanged(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCComponentTextureNameChanged( this, objectClass, component, texture );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCComponentTextureNameChanged(this, objectClass, component, texture);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentTexturePropertiesChanged( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture ){
+void gdeGameDefinition::NotifyOCComponentTexturePropertiesChanged(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCComponentTexturePropertiesChanged( this, objectClass, component, texture );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCComponentTexturePropertiesChanged(this, objectClass, component, texture);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCEnvMapProbesChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCEnvMapProbesChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCEnvMapProbesChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCEnvMapProbesChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCEnvMapProbeChanged( gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe ){
+void gdeGameDefinition::NotifyOCEnvMapProbeChanged(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )
-			->OCEnvMapProbeChanged( this, objectClass, envMapProbe );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))
+			->OCEnvMapProbeChanged(this, objectClass, envMapProbe);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCLightsChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCLightsChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCLightsChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCLightsChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCLightChanged( gdeObjectClass *objectClass, gdeOCLight *light ){
+void gdeGameDefinition::NotifyOCLightChanged(gdeObjectClass *objectClass, gdeOCLight *light){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCLightChanged( this, objectClass, light );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCLightChanged(this, objectClass, light);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCNavigationBlockersChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCNavigationBlockersChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCNavigationBlockersChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCNavigationBlockersChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyOCNavigationBlockerChanged(
-gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker ){
+gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCNavigationBlockerChanged( this, objectClass, navblocker );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCNavigationBlockerChanged(this, objectClass, navblocker);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCNavigationSpacesChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCNavigationSpacesChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCNavigationSpacesChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCNavigationSpacesChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyOCNavigationSpaceChanged(
-gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace ){
+gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCNavigationSpaceChanged( this, objectClass, navspace );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCNavigationSpaceChanged(this, objectClass, navspace);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCParticleEmittersChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCParticleEmittersChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCParticleEmittersChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCParticleEmittersChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyOCParticleEmitterChanged(
-gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter ){
+gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCParticleEmitterChanged( this, objectClass, emitter );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCParticleEmitterChanged(this, objectClass, emitter);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCForceFieldsChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCForceFieldsChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCForceFieldsChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCForceFieldsChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyOCForceFieldChanged(
-gdeObjectClass *objectClass, gdeOCForceField *field ){
+gdeObjectClass *objectClass, gdeOCForceField *field){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCForceFieldChanged( this, objectClass, field );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCForceFieldChanged(this, objectClass, field);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSnapPointsChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCSnapPointsChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCSnapPointsChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCSnapPointsChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSnapPointChanged( gdeObjectClass *objectClass,
-gdeOCSnapPoint *snappoint ){
+void gdeGameDefinition::NotifyOCSnapPointChanged(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snappoint){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCSnapPointChanged( this, objectClass, snappoint );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCSnapPointChanged(this, objectClass, snappoint);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSnapPointNameChanged( gdeObjectClass *objectClass,
-gdeOCSnapPoint *snappoint ){
+void gdeGameDefinition::NotifyOCSnapPointNameChanged(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snappoint){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCSnapPointNameChanged( this, objectClass, snappoint );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCSnapPointNameChanged(this, objectClass, snappoint);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSpeakersChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCSpeakersChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCSpeakersChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCSpeakersChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSpeakerChanged( gdeObjectClass *objectClass, gdeOCSpeaker *speaker ){
+void gdeGameDefinition::NotifyOCSpeakerChanged(gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			OCSpeakerChanged( this, objectClass, speaker );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			OCSpeakerChanged(this, objectClass, speaker);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyOCWorldsChanged(gdeObjectClass *objectClass){
@@ -1946,34 +1946,34 @@ void gdeGameDefinition::NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCW
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturesChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCTexturesChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTexturesChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCTexturesChanged(this, objectClass);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTextureChanged( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+void gdeGameDefinition::NotifyOCTextureChanged(gdeObjectClass *objectClass, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCTextureChanged( this, objectClass, texture );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCTextureChanged(this, objectClass, texture);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCActiveTextureChanged( gdeObjectClass *objectClass ){
+void gdeGameDefinition::NotifyOCActiveTextureChanged(gdeObjectClass *objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->OCActiveTextureChanged( this, objectClass );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCActiveTextureChanged(this, objectClass);
 	}
 }
 
@@ -1981,8 +1981,8 @@ void gdeGameDefinition::NotifyActiveObjectClassChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveObjectClassChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveObjectClassChanged(this);
 	}
 }
 
@@ -1990,8 +1990,8 @@ void gdeGameDefinition::NotifyActiveOCBillboardChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCBillboardChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCBillboardChanged(this);
 	}
 }
 
@@ -1999,8 +1999,8 @@ void gdeGameDefinition::NotifyActiveOCCameraChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCCameraChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCCameraChanged(this);
 	}
 }
 
@@ -2008,8 +2008,8 @@ void gdeGameDefinition::NotifyActiveOCComponentChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCComponentChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCComponentChanged(this);
 	}
 }
 
@@ -2017,8 +2017,8 @@ void gdeGameDefinition::NotifyActiveOCEnvMapProbeChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCEnvMapProbeChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCEnvMapProbeChanged(this);
 	}
 }
 
@@ -2026,8 +2026,8 @@ void gdeGameDefinition::NotifyActiveOCLightChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCLightChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCLightChanged(this);
 	}
 }
 
@@ -2035,8 +2035,8 @@ void gdeGameDefinition::NotifyActiveOCNavigationBlockerChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCNavigationBlockerChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCNavigationBlockerChanged(this);
 	}
 }
 
@@ -2044,8 +2044,8 @@ void gdeGameDefinition::NotifyActiveOCNavigationSpaceChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCNavigationSpaceChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCNavigationSpaceChanged(this);
 	}
 }
 
@@ -2053,8 +2053,8 @@ void gdeGameDefinition::NotifyActiveOCParticleEmitterChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCParticleEmitterChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCParticleEmitterChanged(this);
 	}
 }
 
@@ -2062,8 +2062,8 @@ void gdeGameDefinition::NotifyActiveOCForceFieldChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCForceFieldChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCForceFieldChanged(this);
 	}
 }
 
@@ -2071,8 +2071,8 @@ void gdeGameDefinition::NotifyActiveOCSnapPointChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCSnapPointChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCSnapPointChanged(this);
 	}
 }
 
@@ -2080,8 +2080,8 @@ void gdeGameDefinition::NotifyActiveOCSpeakerChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCSpeakerChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCSpeakerChanged(this);
 	}
 }
 
@@ -2100,41 +2100,41 @@ void gdeGameDefinition::NotifyParticleEmitterStructureChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ParticleEmitterStructureChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ParticleEmitterStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyParticleEmitterChanged( gdeParticleEmitter *particleEmitter ){
+void gdeGameDefinition::NotifyParticleEmitterChanged(gdeParticleEmitter *particleEmitter){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ParticleEmitterChanged( this, particleEmitter );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ParticleEmitterChanged(this, particleEmitter);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyParticleEmitterNameChanged( gdeParticleEmitter *particleEmitter ){
+void gdeGameDefinition::NotifyParticleEmitterNameChanged(gdeParticleEmitter *particleEmitter){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ParticleEmitterNameChanged( this, particleEmitter );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ParticleEmitterNameChanged(this, particleEmitter);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyActiveParticleEmitterChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveParticleEmitterChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveParticleEmitterChanged(this);
 	}
 }
 
@@ -2144,41 +2144,41 @@ void gdeGameDefinition::NotifySkinStructureChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkinStructureChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkinStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifySkinChanged( gdeSkin *skin ){
+void gdeGameDefinition::NotifySkinChanged(gdeSkin *skin){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkinChanged( this, skin );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkinChanged(this, skin);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifySkinNameChanged( gdeSkin *skin ){
+void gdeGameDefinition::NotifySkinNameChanged(gdeSkin *skin){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkinNameChanged( this, skin );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkinNameChanged(this, skin);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyActiveSkinChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveSkinChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveSkinChanged(this);
 	}
 }
 
@@ -2188,66 +2188,66 @@ void gdeGameDefinition::NotifySkyStructureChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkyStructureChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkyStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifySkyChanged( gdeSky *sky ){
+void gdeGameDefinition::NotifySkyChanged(gdeSky *sky){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkyChanged( this, sky );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkyChanged(this, sky);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifySkyNameChanged( gdeSky *sky ){
+void gdeGameDefinition::NotifySkyNameChanged(gdeSky *sky){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->SkyNameChanged( this, sky );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->SkyNameChanged(this, sky);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 void gdeGameDefinition::NotifyActiveSkyChanged(){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveSkyChanged( this );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveSkyChanged(this);
 	}
 }
 
-void gdeGameDefinition::NotifySkyControllerStructureChanged( gdeSky *sky ){
+void gdeGameDefinition::NotifySkyControllerStructureChanged(gdeSky *sky){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			SkyControllerStructureChanged( this, sky );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			SkyControllerStructureChanged(this, sky);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifySkyControllerChanged( gdeSky *sky, gdeSkyController *controller ){
+void gdeGameDefinition::NotifySkyControllerChanged(gdeSky *sky, gdeSkyController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<listenerCount; i++ ){
-		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->
-			SkyControllerChanged( this, sky, controller );
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->
+			SkyControllerChanged(this, sky, controller);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 
@@ -2265,7 +2265,7 @@ void gdeGameDefinition::pCleanUp(){
 	RemoveAllParticleEmitters();
 	RemoveAllObjectClasses();
 
-	SetActiveCategory( NULL );
+	SetActiveCategory(NULL);
 	pCategoriesObjectClass.RemoveAll();
 	pCategoriesSkin.RemoveAll();
 	pCategoriesSky.RemoveAll();
@@ -2273,19 +2273,19 @@ void gdeGameDefinition::pCleanUp(){
 	
 	pBaseGameDefinitions.RemoveAll();
 	
-	if( pSky ){
+	if(pSky){
 		delete pSky;
 	}
 	pEnvObject = nullptr;
-	if( pCamera ){
+	if(pCamera){
 		delete pCamera;
 	}
 	
-	if( pWorld ){
+	if(pWorld){
 		pWorld->FreeReference();
 	}
 	
-	if( pVFS ){
+	if(pVFS){
 		pVFS->FreeReference();
 	}
 }

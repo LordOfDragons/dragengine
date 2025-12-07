@@ -160,7 +160,7 @@ public:
 	deoglLightShaderConfig();
 	
 	/** Create copy of light shader configuration. */
-	deoglLightShaderConfig( const deoglLightShaderConfig &config );
+	deoglLightShaderConfig(const deoglLightShaderConfig &config);
 	
 	/** Clean up light shader configuration. */
 	~deoglLightShaderConfig();
@@ -176,201 +176,201 @@ public:
 	
 	
 	/** Light mode. */
-	inline eLightModes GetLightMode() const{ return pLightMode; }
+	inline eLightModes GetLightMode() const{return pLightMode;}
 	
 	/** Set light mode. */
-	void SetLightMode( eLightModes lightMode );
+	void SetLightMode(eLightModes lightMode);
 	
 	/** Shadow tap mode. */
-	inline eShadowTapModes GetShadowTapMode() const{ return pShadowTapMode; }
+	inline eShadowTapModes GetShadowTapMode() const{return pShadowTapMode;}
 	
 	/** Set shadow tap mode. */
-	void SetShadowTapMode( eShadowTapModes shadowTapMode );
+	void SetShadowTapMode(eShadowTapModes shadowTapMode);
 	
 	/** Shadow mapping algorithm for the first texture set. */
 	inline eShadowMappingAlgorithms GetShadowMappingAlgorithm1() const{
-		return pShadowMappingAlgorithm1; }
+		return pShadowMappingAlgorithm1;}
 	
 	/** Set shadow mapping algorithm for the first texture set. */
-	void SetShadowMappingAlgorithm1( eShadowMappingAlgorithms shadowMappingAlgorithm );
+	void SetShadowMappingAlgorithm1(eShadowMappingAlgorithms shadowMappingAlgorithm);
 	
 	/** Shadow mapping algorithm for the second texture set. */
 	inline eShadowMappingAlgorithms GetShadowMappingAlgorithm2() const{
-		return pShadowMappingAlgorithm2; }
+		return pShadowMappingAlgorithm2;}
 	
 	/** Set shadow mapping algorithm for the second texture set. */
-	void SetShadowMappingAlgorithm2( eShadowMappingAlgorithms shadowMappingAlgorithm );
+	void SetShadowMappingAlgorithm2(eShadowMappingAlgorithms shadowMappingAlgorithm);
 	
 	/** Material normal mode. */
-	inline eMaterialNormalModes GetMaterialNormalModeDec() const{ return pMaterialNormalModeDec; }
+	inline eMaterialNormalModes GetMaterialNormalModeDec() const{return pMaterialNormalModeDec;}
 	
 	/** Set material normal mode. */
-	void SetMaterialNormalModeDec( eMaterialNormalModes materialNormalMode );
+	void SetMaterialNormalModeDec(eMaterialNormalModes materialNormalMode);
 	
 	/** Material normal mode. */
-	inline eMaterialNormalModes GetMaterialNormalModeEnc() const{ return pMaterialNormalModeEnc; }
+	inline eMaterialNormalModes GetMaterialNormalModeEnc() const{return pMaterialNormalModeEnc;}
 	
 	/** Set material normal mode. */
-	void SetMaterialNormalModeEnc( eMaterialNormalModes materialNormalMode );
+	void SetMaterialNormalModeEnc(eMaterialNormalModes materialNormalMode);
 	
 	/** Particle mode. */
-	inline eParticleModes GetParticleMode() const{ return pParticleMode; }
+	inline eParticleModes GetParticleMode() const{return pParticleMode;}
 	
 	/** Set particle mode. */
-	void SetParticleMode( eParticleModes mode );
+	void SetParticleMode(eParticleModes mode);
 	
 	
 	
 	/** Input depth has to be decoded. */
-	inline bool GetDecodeInDepth() const{ return pDecodeInDepth; }
+	inline bool GetDecodeInDepth() const{return pDecodeInDepth;}
 	
 	/** Set if input depth has to be decoded. */
-	void SetDecodeInDepth( bool decodeInDepth );
+	void SetDecodeInDepth(bool decodeInDepth);
 	
 	/** Input shadow has to be decoded. */
-	inline bool GetDecodeInShadow() const{ return pDecodeInShadow; }
+	inline bool GetDecodeInShadow() const{return pDecodeInShadow;}
 	
 	/** Set if input shadow has to be decoded. */
-	void SetDecodeInShadow( bool decodeInShadow );
+	void SetDecodeInShadow(bool decodeInShadow);
 	
 	/** Output depth has to be encoded. */
-	inline bool GetEncodeOutDepth() const{ return pEncodeOutDepth; }
+	inline bool GetEncodeOutDepth() const{return pEncodeOutDepth;}
 	
 	/** Set if output depth has to be encoded. */
-	void SetEncodeOutDepth( bool encodeOutDepth );
+	void SetEncodeOutDepth(bool encodeOutDepth);
 	
 	/** Hardware depth comparison is used. */
-	inline bool GetHWDepthCompare() const{ return pHWDepthCompare; }
+	inline bool GetHWDepthCompare() const{return pHWDepthCompare;}
 	
 	/** Set hardware depth comparison is used. */
-	void SetHWDepthCompare( bool hwDepthCompare );
+	void SetHWDepthCompare(bool hwDepthCompare);
 	
 	/** Second shadow matrix equals the first one. */
-	inline bool GetShadowMatrix2EqualsMatrix1() const{ return pShadowMatrix2EqualsMatrix1; }
+	inline bool GetShadowMatrix2EqualsMatrix1() const{return pShadowMatrix2EqualsMatrix1;}
 	
 	/** Set if second shadow matrix equals the first one. */
-	void SetShadowMatrix2EqualsMatrix1( bool shadowMatrix2EqualsMatrix1 );
+	void SetShadowMatrix2EqualsMatrix1(bool shadowMatrix2EqualsMatrix1);
 	
 	/** Use inverse depth for shadow maps. */
-	inline bool GetShadowInverseDepth() const{ return pShadowInverseDepth; }
+	inline bool GetShadowInverseDepth() const{return pShadowInverseDepth;}
 	
 	/** Set if inverse depth is used for shadow maps. */
-	void SetShadowInverseDepth( bool shadowInverseDepth );
+	void SetShadowInverseDepth(bool shadowInverseDepth);
 	
 	/** Ambient lighting has to be used. */
-	inline bool GetAmbientLighting() const{ return pAmbientLighting; }
+	inline bool GetAmbientLighting() const{return pAmbientLighting;}
 	
 	/** Set ambient lighting has to be used. */
-	void SetAmbientLighting( bool ambientLighting );
+	void SetAmbientLighting(bool ambientLighting);
 	
 	/** Full screen quad rendering has to be used. */
-	inline bool GetFullScreenQuad() const{ return pFullScreenQuad; }
+	inline bool GetFullScreenQuad() const{return pFullScreenQuad;}
 	
 	/** Set if full screen quad rendering has to be used. */
-	void SetFullScreenQuad( bool fullScreenQuad );
+	void SetFullScreenQuad(bool fullScreenQuad);
 	
 	/** Sub-surface separation has to be used. */
-	inline bool GetSubSurface() const{ return pSubSurface; }
+	inline bool GetSubSurface() const{return pSubSurface;}
 	
 	/** Set if sub-surface separation has to be used. */
-	void SetSubSurface( bool subSurface );
+	void SetSubSurface(bool subSurface);
 	
 	/** Luminance only. */
-	inline bool GetLuminanceOnly() const{ return pLuminanceOnly; }
+	inline bool GetLuminanceOnly() const{return pLuminanceOnly;}
 	
 	/** Set luminance only. */
-	void SetLuminanceOnly( bool luminanceOnly );
+	void SetLuminanceOnly(bool luminanceOnly);
 	
 	/** GI ray. */
-	inline bool GetGIRay() const{ return pGIRay; }
+	inline bool GetGIRay() const{return pGIRay;}
 	
 	/** Set GI ray. */
-	void SetGIRay( bool giRay );
+	void SetGIRay(bool giRay);
 	
 	/** Render dual view using geometry shader. */
-	inline bool GetGSRenderStereo() const{ return pGSRenderStereo; }
+	inline bool GetGSRenderStereo() const{return pGSRenderStereo;}
 	
 	/** Set render dual view using geometry shader. */
-	void SetGSRenderStereo( bool gsRenderStereo );
+	void SetGSRenderStereo(bool gsRenderStereo);
 	
 	/** Render dual view using vertex shader. */
-	inline bool GetVSRenderStereo() const{ return pVSRenderStereo; }
+	inline bool GetVSRenderStereo() const{return pVSRenderStereo;}
 	
 	/** Set render dual view using vertex shader. */
-	void SetVSRenderStereo( bool vsRenderStereo );
+	void SetVSRenderStereo(bool vsRenderStereo);
 	
 	
 	
 	/** Noise texture is used. */
-	inline bool GetTextureNoise() const{ return pTextureNoise; }
+	inline bool GetTextureNoise() const{return pTextureNoise;}
 	
 	/** Set if noise texture is used. */
-	void SetTextureNoise( bool isUsed );
+	void SetTextureNoise(bool isUsed);
 	
 	
 	
 	/** Color texture is used. */
-	inline bool GetTextureColor() const{ return pTextureColor; }
+	inline bool GetTextureColor() const{return pTextureColor;}
 	
 	/** Set if color texture is used. */
-	void SetTextureColor( bool useTexture );
+	void SetTextureColor(bool useTexture);
 	
 	/** Omni-direction color cube texture is used. */
-	inline bool GetTextureColorOmnidirCube() const{ return pTextureColorOmniCube; }
+	inline bool GetTextureColorOmnidirCube() const{return pTextureColorOmniCube;}
 	
 	/** Set if omni-direction color cube texture is used. */
-	void SetTextureColorOmnidirCube( bool useTexture );
+	void SetTextureColorOmnidirCube(bool useTexture);
 	
 	/** Omni-direction color equi-rectangular texture is used. */
-	inline bool GetTextureColorOmnidirEquirect() const{ return pTextureColorOmniEquirect; }
+	inline bool GetTextureColorOmnidirEquirect() const{return pTextureColorOmniEquirect;}
 	
 	/** Set if omni-direction color equi-rectangular texture is used. */
-	void SetTextureColorOmnidirEquirect( bool useTexture );
+	void SetTextureColorOmnidirEquirect(bool useTexture);
 	
 	
 	
 	/** First shadow map solid texture are used. */
-	inline bool GetTextureShadow1Solid() const{ return pTextureShadow1Solid; }
+	inline bool GetTextureShadow1Solid() const{return pTextureShadow1Solid;}
 	
 	/** Set if first shadow map solid texture is used. */
-	void SetTextureShadow1Solid( bool isUsed );
+	void SetTextureShadow1Solid(bool isUsed);
 	
 	/** First shadow map transparent textures is used. */
-	inline bool GetTextureShadow1Transparent() const{ return pTextureShadow1Transparent; }
+	inline bool GetTextureShadow1Transparent() const{return pTextureShadow1Transparent;}
 	
 	/** Set if first shadow map transparent textures is used. */
-	void SetTextureShadow1Transparent( bool isUsed );
+	void SetTextureShadow1Transparent(bool isUsed);
 	
 	/** Second shadow map solid texture is used. */
-	inline bool GetTextureShadow2Solid() const{ return pTextureShadow2Solid; }
+	inline bool GetTextureShadow2Solid() const{return pTextureShadow2Solid;}
 	
 	/** Set if second shadow map solid texture is used. */
-	void SetTextureShadow2Solid( bool isUsed );
+	void SetTextureShadow2Solid(bool isUsed);
 	
 	/** Second shadow map transparent textures is used. */
-	inline bool GetTextureShadow2Transparent() const{ return pTextureShadow2Transparent; }
+	inline bool GetTextureShadow2Transparent() const{return pTextureShadow2Transparent;}
 	
 	/** Set if second shadow map transparent textures is used. */
-	void SetTextureShadow2Transparent( bool isUsed );
+	void SetTextureShadow2Transparent(bool isUsed);
 	
 	/** Shadow ambient map texture is used. */
-	inline bool GetTextureShadow1Ambient() const{ return pTextureShadow1Ambient; }
+	inline bool GetTextureShadow1Ambient() const{return pTextureShadow1Ambient;}
 	
 	/** Set if shadow ambient map is used. */
-	void SetTextureShadow1Ambient( bool isUsed );
+	void SetTextureShadow1Ambient(bool isUsed);
 	
 	/** Shadow ambient map texture is used. */
-	inline bool GetTextureShadow2Ambient() const{ return pTextureShadow2Ambient; }
+	inline bool GetTextureShadow2Ambient() const{return pTextureShadow2Ambient;}
 	
 	/** Set if shadow ambient map is used. */
-	void SetTextureShadow2Ambient( bool isUsed );
+	void SetTextureShadow2Ambient(bool isUsed);
 	
 	
 	
 	/** Key. */
-	inline uint32_t GetKey1() const{ return pKey1; }
-	inline uint32_t GetKey2() const{ return pKey2; }
-	inline uint32_t GetKey3() const{ return pKey3; }
+	inline uint32_t GetKey1() const{return pKey1;}
+	inline uint32_t GetKey2() const{return pKey2;}
+	inline uint32_t GetKey3() const{return pKey3;}
 	
 	/** Update key. */
 	void UpdateKey();
@@ -381,7 +381,7 @@ public:
 	/** \name Debug */
 	/*@{*/
 	/** Create short string list with the configuration. */
-	void DebugGetConfigString( decString &string ) const;
+	void DebugGetConfigString(decString &string) const;
 	/*@}*/
 	
 	
@@ -389,10 +389,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Copy the shader configuration to this shader configuration. */
-	deoglLightShaderConfig &operator=( const deoglLightShaderConfig &config );
+	deoglLightShaderConfig &operator=(const deoglLightShaderConfig &config);
 	
 	/** Shader configuration is the same as this shader configuration. */
-	bool operator==( const deoglLightShaderConfig &config ) const;
+	bool operator==(const deoglLightShaderConfig &config) const;
 	/*@}*/
 };
 

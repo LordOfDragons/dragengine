@@ -55,21 +55,21 @@ int delGameList::GetCount() const{
 	return pGames.GetCount();
 }
 
-delGame *delGameList::GetAt( int index ) const{
-	return ( delGame* )pGames.GetAt( index );
+delGame *delGameList::GetAt(int index) const{
+	return (delGame*)pGames.GetAt(index);
 }
 
-delGame *delGameList::GetWithID( const decUuid &id ) const{
-	if( ! id ){
-		DETHROW_INFO( deeInvalidParam, "id is 0 uuid" );
+delGame *delGameList::GetWithID(const decUuid &id) const{
+	if(! id){
+		DETHROW_INFO(deeInvalidParam, "id is 0 uuid");
 	}
 	
 	const int count = pGames.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGame * const game = ( delGame* )pGames.GetAt( i );
-		if( game->GetIdentifier() == id ){
+	for(i=0; i<count; i++){
+		delGame * const game = (delGame*)pGames.GetAt(i);
+		if(game->GetIdentifier() == id){
 			return game;
 		}
 	}
@@ -77,36 +77,36 @@ delGame *delGameList::GetWithID( const decUuid &id ) const{
 	return NULL;
 }
 
-delGameList delGameList::GetWithAlias( const char *alias ) const{
+delGameList delGameList::GetWithAlias(const char *alias) const{
 	const int count = pGames.GetCount();
 	delGameList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delGame * const game = ( delGame* )pGames.GetAt( i );
-		if( game->GetAliasIdentifier().Equals( alias ) ){
-			list.Add( game );
+	for(i=0; i<count; i++){
+		delGame * const game = (delGame*)pGames.GetAt(i);
+		if(game->GetAliasIdentifier().Equals(alias)){
+			list.Add(game);
 		}
 	}
 	
 	return list;
 }
 
-bool delGameList::Has( delGame *game ) const{
-	return pGames.Has( game );
+bool delGameList::Has(delGame *game) const{
+	return pGames.Has(game);
 }
 
-bool delGameList::HasWithID( const decUuid &id ) const{
-	if( ! id ){
-		DETHROW_INFO( deeInvalidParam, "id is 0 uuid" );
+bool delGameList::HasWithID(const decUuid &id) const{
+	if(! id){
+		DETHROW_INFO(deeInvalidParam, "id is 0 uuid");
 	}
 	
 	const int count = pGames.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const delGame * const game = ( delGame* )pGames.GetAt( i );
-		if( game->GetIdentifier() == id ){
+	for(i=0; i<count; i++){
+		const delGame * const game = (delGame*)pGames.GetAt(i);
+		if(game->GetIdentifier() == id){
 			return true;
 		}
 	}
@@ -114,21 +114,21 @@ bool delGameList::HasWithID( const decUuid &id ) const{
 	return false;
 }
 
-int delGameList::IndexOf( delGame *game ) const{
-	return pGames.IndexOf( game );
+int delGameList::IndexOf(delGame *game) const{
+	return pGames.IndexOf(game);
 }
 
-int delGameList::IndexOfWithID( const decUuid &id ) const{
-	if( ! id ){
-		DETHROW_INFO( deeInvalidParam, "id is 0 uuid" );
+int delGameList::IndexOfWithID(const decUuid &id) const{
+	if(! id){
+		DETHROW_INFO(deeInvalidParam, "id is 0 uuid");
 	}
 	
 	const int count = pGames.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const delGame * const game = ( delGame* )pGames.GetAt( i );
-		if( game->GetIdentifier() == id ){
+	for(i=0; i<count; i++){
+		const delGame * const game = (delGame*)pGames.GetAt(i);
+		if(game->GetIdentifier() == id){
 			return i;
 		}
 	}
@@ -136,24 +136,24 @@ int delGameList::IndexOfWithID( const decUuid &id ) const{
 	return -1;
 }
 
-void delGameList::Add( delGame *game ){
-	if( ! game ){
-		DETHROW_INFO( deeNullPointer, "game" );
+void delGameList::Add(delGame *game){
+	if(! game){
+		DETHROW_INFO(deeNullPointer, "game");
 	}
-	if( HasWithID( game->GetIdentifier() ) ){
-		DETHROW( deeInvalidParam );
+	if(HasWithID(game->GetIdentifier())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pGames.Add( game );
+	pGames.Add(game);
 }
 
-void delGameList::Remove( delGame *game ){
-	const int index = IndexOf( game );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "game is absent" );
+void delGameList::Remove(delGame *game){
+	const int index = IndexOf(game);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "game is absent");
 	}
 	
-	pGames.RemoveFrom( index );
+	pGames.RemoveFrom(index);
 }
 
 void delGameList::RemoveAll(){

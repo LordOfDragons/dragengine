@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetCurve::seUMappedSetCurve( seMapped *mapped, const decCurveBezier &newCurve ) :
-pMapped( mapped ),
-pOldCurve( mapped ? mapped->GetCurve() : decCurveBezier() ),
-pNewCurve( newCurve )
+seUMappedSetCurve::seUMappedSetCurve(seMapped *mapped, const decCurveBezier &newCurve) :
+pMapped(mapped),
+pOldCurve(mapped ? mapped->GetCurve() : decCurveBezier()),
+pNewCurve(newCurve)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Curve" );
+	SetShortInfo("Set Mapped Curve");
 }
 
 seUMappedSetCurve::~seUMappedSetCurve(){
@@ -52,14 +52,14 @@ seUMappedSetCurve::~seUMappedSetCurve(){
 // Management
 ///////////////
 
-void seUMappedSetCurve::SetCurve( const decCurveBezier &curve ){
+void seUMappedSetCurve::SetCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 
 void seUMappedSetCurve::Undo(){
-	pMapped->SetCurve( pOldCurve );
+	pMapped->SetCurve(pOldCurve);
 }
 
 void seUMappedSetCurve::Redo(){
-	pMapped->SetCurve( pNewCurve );
+	pMapped->SetCurve(pNewCurve);
 }

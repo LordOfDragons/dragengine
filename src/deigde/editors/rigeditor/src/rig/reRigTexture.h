@@ -54,7 +54,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig texture. */
-	reRigTexture( deEngine *engine, const char *name );
+	reRigTexture(deEngine *engine, const char *name);
 	/** Cleans up the rig texture. */
 	~reRigTexture();
 	/*@}*/
@@ -62,18 +62,18 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the game engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** Retrieves the name of the texture. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Retrieves the skin file path. */
-	inline const decString &GetSkinPath() const{ return pSkinPath; }
+	inline const decString &GetSkinPath() const{return pSkinPath;}
 	/** Sets the skin file path. */
-	void SetSkinPath( const char *skinPath );
+	void SetSkinPath(const char *skinPath);
 	/** Loads the skin. */
 	void LoadSkin();
 	/** Retrieves the engine skin or NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline deSkin *GetEngineSkin() const{return pEngSkin;}
 	/*@}*/
 	
 private:

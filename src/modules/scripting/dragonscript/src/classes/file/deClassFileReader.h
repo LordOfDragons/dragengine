@@ -43,7 +43,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassFileReader( deScriptingDragonScript *ds );
+	deClassFileReader(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	virtual ~deClassFileReader();
 	/*@}*/
@@ -51,15 +51,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the fileReader or NULL if myself is NULL. */
-	decBaseFileReader *GetFileReader( dsRealObject *myself ) const;
+	decBaseFileReader *GetFileReader(dsRealObject *myself) const;
 	/** Retrieves the stream version. */
-	int GetStreamVersion( dsRealObject *myself ) const;
+	int GetStreamVersion(dsRealObject *myself) const;
 	/** Pushes the file reader on the stack. File reader can be NULL to push a null object. */
-	void PushFileReader( dsRunTime *rt, decBaseFileReader *fileReader );
+	void PushFileReader(dsRunTime *rt, decBaseFileReader *fileReader);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/*@}*/
 	
 private:
@@ -68,44 +68,44 @@ private:
 		dsClass *clsTimeDate;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewZCompressed );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewZCompressed);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
-	DEF_NATFUNC( nfGetLength );
-	DEF_NATFUNC( nfGetPosition );
-	DEF_NATFUNC( nfSetPosition );
-	DEF_NATFUNC( nfMovePosition );
-	DEF_NATFUNC( nfSetPositionEnd );
+	DEF_NATFUNC(nfGetFilename);
+	DEF_NATFUNC(nfGetLength);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfSetPosition);
+	DEF_NATFUNC(nfMovePosition);
+	DEF_NATFUNC(nfSetPositionEnd);
 	
-	DEF_NATFUNC( nfGetStreamVersion );
-	DEF_NATFUNC( nfSetStreamVersion );
+	DEF_NATFUNC(nfGetStreamVersion);
+	DEF_NATFUNC(nfSetStreamVersion);
 	
-	DEF_NATFUNC( nfEOF );
-	DEF_NATFUNC( nfReadChar );
-	DEF_NATFUNC( nfReadByte );
-	DEF_NATFUNC( nfReadShort );
-	DEF_NATFUNC( nfReadUShort );
-	DEF_NATFUNC( nfReadInt );
-	DEF_NATFUNC( nfReadUInt );
-	DEF_NATFUNC( nfReadVarUInt );
-	DEF_NATFUNC( nfReadFloat );
-	DEF_NATFUNC( nfReadString8 );
-	DEF_NATFUNC( nfReadString16 );
-	DEF_NATFUNC( nfReadString32 );
-	DEF_NATFUNC( nfReadVarString );
-	DEF_NATFUNC( nfReadString );
-	DEF_NATFUNC( nfSkipString8 );
-	DEF_NATFUNC( nfSkipString16 );
-	DEF_NATFUNC( nfSkipString32 );
-	DEF_NATFUNC( nfSkipVarString );
-	DEF_NATFUNC( nfReadTimeDate );
+	DEF_NATFUNC(nfEOF);
+	DEF_NATFUNC(nfReadChar);
+	DEF_NATFUNC(nfReadByte);
+	DEF_NATFUNC(nfReadShort);
+	DEF_NATFUNC(nfReadUShort);
+	DEF_NATFUNC(nfReadInt);
+	DEF_NATFUNC(nfReadUInt);
+	DEF_NATFUNC(nfReadVarUInt);
+	DEF_NATFUNC(nfReadFloat);
+	DEF_NATFUNC(nfReadString8);
+	DEF_NATFUNC(nfReadString16);
+	DEF_NATFUNC(nfReadString32);
+	DEF_NATFUNC(nfReadVarString);
+	DEF_NATFUNC(nfReadString);
+	DEF_NATFUNC(nfSkipString8);
+	DEF_NATFUNC(nfSkipString16);
+	DEF_NATFUNC(nfSkipString32);
+	DEF_NATFUNC(nfSkipVarString);
+	DEF_NATFUNC(nfReadTimeDate);
 #undef DEF_NATFUNC
 };
 

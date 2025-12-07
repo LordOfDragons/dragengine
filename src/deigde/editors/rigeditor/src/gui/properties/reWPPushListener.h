@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	reWPPushListener( reWPPush &panel );
+	reWPPushListener(reWPPush &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~reWPPushListener();
@@ -55,10 +55,10 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief A push changed. */
-	void PushChanged( reRig *rig, reRigPush *push );
+	void PushChanged(reRig *rig, reRigPush *push);
 	
 	/** \brief The active push changed. */
-	void ActivePushChanged( reRig *rig );
+	void ActivePushChanged(reRig *rig);
 	/*@}*/
 };
 

@@ -40,32 +40,32 @@
 ////////////////////////////
 
 deAnimationMove::deAnimationMove() :
-pPlaytime( 0 ),
-pFPS( 25.0f ),
-pLists( nullptr ),
-pListCount( 0 ),
-pListSize( 0 ),
-pVertexPositionSetLists( nullptr ),
-pVertexPositionSetListCount( 0 ),
-pVertexPositionSetListSize( 0 ){
+pPlaytime(0),
+pFPS(25.0f),
+pLists(nullptr),
+pListCount(0),
+pListSize(0),
+pVertexPositionSetLists(nullptr),
+pVertexPositionSetListCount(0),
+pVertexPositionSetListSize(0){
 }
 
 deAnimationMove::~deAnimationMove(){
 	int i;
 	
-	if( pLists ){
-		for( i=0; i<pListCount; i++ ){
-			if( pLists[ i ] ){
-				delete pLists[ i ];
+	if(pLists){
+		for(i=0; i<pListCount; i++){
+			if(pLists[i]){
+				delete pLists[i];
 			}
 		}
 		delete [] pLists;
 	}
 	
-	if( pVertexPositionSetLists ){
-		for( i=0; i<pVertexPositionSetListCount; i++ ){
-			if( pVertexPositionSetLists[ i ] ){
-				delete pVertexPositionSetLists[ i ];
+	if(pVertexPositionSetLists){
+		for(i=0; i<pVertexPositionSetListCount; i++){
+			if(pVertexPositionSetLists[i]){
+				delete pVertexPositionSetLists[i];
 			}
 		}
 		delete [] pVertexPositionSetLists;
@@ -77,35 +77,35 @@ deAnimationMove::~deAnimationMove(){
 // management
 ///////////////
 
-void deAnimationMove::SetName( const char *name ){
+void deAnimationMove::SetName(const char *name){
 	pName = name;
 }
 
-void deAnimationMove::SetPlaytime( float playtime ){
-	pPlaytime = decMath::max( playtime, 0.0f );
+void deAnimationMove::SetPlaytime(float playtime){
+	pPlaytime = decMath::max(playtime, 0.0f);
 }
 
-void deAnimationMove::SetFPS( float fps ){
-	pFPS = decMath::max( fps, 1.0f );
+void deAnimationMove::SetFPS(float fps){
+	pFPS = decMath::max(fps, 1.0f);
 }
 
-deAnimationKeyframeList *deAnimationMove::GetKeyframeList( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pListCount )
+deAnimationKeyframeList *deAnimationMove::GetKeyframeList(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pListCount)
 	
-	return pLists[ index ];
+	return pLists[index];
 }
 
-void deAnimationMove::AddKeyframeList( deAnimationKeyframeList *list ){
-	DEASSERT_NOTNULL( list );
+void deAnimationMove::AddKeyframeList(deAnimationKeyframeList *list){
+	DEASSERT_NOTNULL(list);
 	
-	if( pListCount == pListSize ){
+	if(pListCount == pListSize){
 		const int newSize = pListCount * 3 / 2 + 1;
 		int i;
-		deAnimationKeyframeList ** const newArray = new deAnimationKeyframeList*[ newSize ];
-		if( pLists ){
-			for( i=0; i<pListCount; i++ ){
-				newArray[ i ] = pLists[ i ];
+		deAnimationKeyframeList ** const newArray = new deAnimationKeyframeList*[newSize];
+		if(pLists){
+			for(i=0; i<pListCount; i++){
+				newArray[i] = pLists[i];
 			}
 			delete [] pLists;
 		}
@@ -113,28 +113,28 @@ void deAnimationMove::AddKeyframeList( deAnimationKeyframeList *list ){
 		pListSize = newSize;
 	}
 	
-	pLists[ pListCount ] = list;
+	pLists[pListCount] = list;
 	pListCount++;
 }
 
-deAnimationKeyframeVertexPositionSetList *deAnimationMove::GetVertexPositionSetKeyframeList( int index ) const{
-	DEASSERT_TRUE( index >= 0 )
-	DEASSERT_TRUE( index < pVertexPositionSetListCount )
+deAnimationKeyframeVertexPositionSetList *deAnimationMove::GetVertexPositionSetKeyframeList(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pVertexPositionSetListCount)
 	
-	return pVertexPositionSetLists[ index ];
+	return pVertexPositionSetLists[index];
 }
 
-void deAnimationMove::AddVertexPositionSetKeyframeList( deAnimationKeyframeVertexPositionSetList *list ){
-	DEASSERT_NOTNULL( list );
+void deAnimationMove::AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSetList *list){
+	DEASSERT_NOTNULL(list);
 	
-	if( pVertexPositionSetListCount == pVertexPositionSetListSize ){
+	if(pVertexPositionSetListCount == pVertexPositionSetListSize){
 		const int newSize = pVertexPositionSetListCount * 3 / 2 + 1;
 		int i;
 		deAnimationKeyframeVertexPositionSetList ** const newArray =
-			new deAnimationKeyframeVertexPositionSetList*[ newSize ];
-		if( pVertexPositionSetLists ){
-			for( i=0; i<pVertexPositionSetListCount; i++ ){
-				newArray[ i ] = pVertexPositionSetLists[ i ];
+			new deAnimationKeyframeVertexPositionSetList*[newSize];
+		if(pVertexPositionSetLists){
+			for(i=0; i<pVertexPositionSetListCount; i++){
+				newArray[i] = pVertexPositionSetLists[i];
 			}
 			delete [] pVertexPositionSetLists;
 		}
@@ -142,7 +142,7 @@ void deAnimationMove::AddVertexPositionSetKeyframeList( deAnimationKeyframeVerte
 		pVertexPositionSetListSize = newSize;
 	}
 	
-	pVertexPositionSetLists[ pVertexPositionSetListCount ] = list;
+	pVertexPositionSetLists[pVertexPositionSetListCount] = list;
 	pVertexPositionSetListCount++;
 }
 

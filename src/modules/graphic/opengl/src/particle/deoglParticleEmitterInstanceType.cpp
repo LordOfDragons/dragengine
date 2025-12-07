@@ -53,17 +53,17 @@
 ////////////////////////////
 
 deoglParticleEmitterInstanceType::deoglParticleEmitterInstanceType(
-deoglParticleEmitterInstance &instance, int index ) :
-pEmitterInstance( instance ),
-pIndex( index ),
-pRType( NULL ),
-pDirtyType( true ),
-pDirtyParamBlocks( true )
+deoglParticleEmitterInstance &instance, int index) :
+pEmitterInstance(instance),
+pIndex(index),
+pRType(NULL),
+pDirtyType(true),
+pDirtyParamBlocks(true)
 {
 	try{
-		pRType = new deoglRParticleEmitterInstanceType( *instance.GetRInstance(), index );
+		pRType = new deoglRParticleEmitterInstanceType(*instance.GetRInstance(), index);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -79,34 +79,34 @@ deoglParticleEmitterInstanceType::~deoglParticleEmitterInstanceType(){
 ///////////////
 
 void deoglParticleEmitterInstanceType::SyncToRender(){
-	if( pDirtyType ){
-		const deParticleEmitterInstanceType &itype = pEmitterInstance.GetInstance().GetTypeAt( pIndex );
-		if( itype.GetDynamicSkin() ){
-			pRType->SetDynamicSkin( ( ( deoglDynamicSkin* )itype.GetDynamicSkin()->GetPeerGraphic() )->GetRDynamicSkin() );
+	if(pDirtyType){
+		const deParticleEmitterInstanceType &itype = pEmitterInstance.GetInstance().GetTypeAt(pIndex);
+		if(itype.GetDynamicSkin()){
+			pRType->SetDynamicSkin(((deoglDynamicSkin*)itype.GetDynamicSkin()->GetPeerGraphic())->GetRDynamicSkin());
 			
 		}else{
-			pRType->SetDynamicSkin( NULL );
+			pRType->SetDynamicSkin(NULL);
 		}
 		
 		deoglParticleEmitter * const emitter = pEmitterInstance.GetEmitter();
-		if( emitter ){
-			const deParticleEmitterType &etype = emitter->GetParticleEmitter().GetTypeAt( pIndex );
+		if(emitter){
+			const deParticleEmitterType &etype = emitter->GetParticleEmitter().GetTypeAt(pIndex);
 			
-			if( etype.GetSkin() ){
-				pRType->SetUseSkin( ( ( deoglSkin* )etype.GetSkin()->GetPeerGraphic() )->GetRSkin() );
+			if(etype.GetSkin()){
+				pRType->SetUseSkin(((deoglSkin*)etype.GetSkin()->GetPeerGraphic())->GetRSkin());
 				
 			}else{
-				pRType->SetUseSkin( NULL );
+				pRType->SetUseSkin(NULL);
 			}
 			
 		}else{
-			pRType->SetUseSkin( NULL );
+			pRType->SetUseSkin(NULL);
 		}
 		
 		pDirtyType = false;
 	}
 	
-	if( pDirtyParamBlocks ){
+	if(pDirtyParamBlocks){
 		pRType->InvalidateParamBlocks();
 		pDirtyParamBlocks = false;
 	}
@@ -130,7 +130,7 @@ void deoglParticleEmitterInstanceType::TypeChanged(){
 //////////////////////
 
 void deoglParticleEmitterInstanceType::pCleanUp(){
-	if( pRType ){
+	if(pRType){
 		pRType->FreeReference();
 	}
 }

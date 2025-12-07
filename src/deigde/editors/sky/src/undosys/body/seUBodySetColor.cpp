@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetColor::seUBodySetColor( seBody *body, const decColor &newColor ) :
-pBody( NULL ),
-pNewColor( newColor )
+seUBodySetColor::seUBodySetColor(seBody *body, const decColor &newColor) :
+pBody(NULL),
+pNewColor(newColor)
 {
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+	if(! body){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Body Color" );
+	SetShortInfo("Set Body Color");
 	
 	pOldColor = body->GetColor();
 	
@@ -56,7 +56,7 @@ pNewColor( newColor )
 }
 
 seUBodySetColor::~seUBodySetColor(){
-	if( pBody ){
+	if(pBody){
 		pBody->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUBodySetColor::~seUBodySetColor(){
 ///////////////
 
 void seUBodySetColor::Undo(){
-	pBody->SetColor( pOldColor );
+	pBody->SetColor(pOldColor);
 }
 
 void seUBodySetColor::Redo(){
-	pBody->SetColor( pNewColor );
+	pBody->SetColor(pNewColor);
 }

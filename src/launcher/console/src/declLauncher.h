@@ -71,19 +71,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Command line arguments. */
-	inline const decUnicodeArgumentList &GetArgumentList() const{ return pArgList; }
+	inline const decUnicodeArgumentList &GetArgumentList() const{return pArgList;}
 	
 	/** Add argument to the command line argument list. */
-	void AddArgument( const decUnicodeString &argument );
+	void AddArgument(const decUnicodeString &argument);
 	
 	/** Configuration. */
-	inline declConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline declConfiguration &GetConfiguration() const{return *pConfiguration;}
 	
 	/** Engine logger. */
-	inline const deLogger::Ref &GetEngineLogger() const{ return pEngineLogger; }
+	inline const deLogger::Ref &GetEngineLogger() const{return pEngineLogger;}
 	
 	/** Engine logger debug. */
-	inline const deLogger::Ref &GetEngineLoggerDebug() const{ return pEngineLoggerDebug; }
+	inline const deLogger::Ref &GetEngineLoggerDebug() const{return pEngineLoggerDebug;}
 	
 	/** Print syntax. */
 	void PrintSyntax();

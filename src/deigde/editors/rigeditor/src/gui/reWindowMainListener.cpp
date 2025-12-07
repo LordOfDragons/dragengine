@@ -33,8 +33,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWindowMainListener::reWindowMainListener( reWindowMain &window ) :
-pWindow( window ){
+reWindowMainListener::reWindowMainListener(reWindowMain &window) :
+pWindow(window){
 }
 
 reWindowMainListener::~reWindowMainListener(){
@@ -45,82 +45,82 @@ reWindowMainListener::~reWindowMainListener(){
 // Management
 ///////////////
 
-void reWindowMainListener::ModeChanged( reRig *rig ){
+void reWindowMainListener::ModeChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::StateChanged( reRig *rig ){
+void reWindowMainListener::StateChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::UndoChanged( reRig *rig ){
-	pWindow.UpdateAllActions();
-}
-
-
-
-void reWindowMainListener::BoneSelectedChanged( reRig *rig, reRigBone *bone ){
-	pWindow.UpdateAllActions();
-}
-
-void reWindowMainListener::AllBonesDeselected( reRig *rig ){
-	pWindow.UpdateAllActions();
-}
-
-void reWindowMainListener::ActiveBoneChanged( reRig *rig ){
+void reWindowMainListener::UndoChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
 
 
-void reWindowMainListener::ShapeCountChanged( reRig *rig ){
+void reWindowMainListener::BoneSelectedChanged(reRig *rig, reRigBone *bone){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::ShapeSelectedChanged( reRig *rig, reRigShape *shape ){
+void reWindowMainListener::AllBonesDeselected(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::AllShapesDeselected( reRig *rig ){
-	pWindow.UpdateAllActions();
-}
-
-void reWindowMainListener::ActiveShapeChanged( reRig *rig ){
+void reWindowMainListener::ActiveBoneChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
 
 
-void reWindowMainListener::ConstraintCountChanged( reRig *rig ){
+void reWindowMainListener::ShapeCountChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::AllConstraintsDeselected( reRig *rig ){
+void reWindowMainListener::ShapeSelectedChanged(reRig *rig, reRigShape *shape){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::ConstraintSelectedChanged( reRig *rig, reRigConstraint *constraint ){
+void reWindowMainListener::AllShapesDeselected(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::ActiveConstraintChanged( reRig *rig ){
+void reWindowMainListener::ActiveShapeChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
 
 
-void reWindowMainListener::PushCountChanged( reRig *rig ){
+void reWindowMainListener::ConstraintCountChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::AllPushesDeselected( reRig *rig ){
+void reWindowMainListener::AllConstraintsDeselected(reRig *rig){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::PushSelectedChanged( reRig *rig, reRigPush *push ){
+void reWindowMainListener::ConstraintSelectedChanged(reRig *rig, reRigConstraint *constraint){
 	pWindow.UpdateAllActions();
 }
 
-void reWindowMainListener::ActivePushChanged( reRig *rig ){
+void reWindowMainListener::ActiveConstraintChanged(reRig *rig){
+	pWindow.UpdateAllActions();
+}
+
+
+
+void reWindowMainListener::PushCountChanged(reRig *rig){
+	pWindow.UpdateAllActions();
+}
+
+void reWindowMainListener::AllPushesDeselected(reRig *rig){
+	pWindow.UpdateAllActions();
+}
+
+void reWindowMainListener::PushSelectedChanged(reRig *rig, reRigPush *push){
+	pWindow.UpdateAllActions();
+}
+
+void reWindowMainListener::ActivePushChanged(reRig *rig){
 	pWindow.UpdateAllActions();
 }

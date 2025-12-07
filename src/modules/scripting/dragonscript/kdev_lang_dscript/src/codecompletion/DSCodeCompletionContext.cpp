@@ -25,23 +25,23 @@ using KTextEditor::View;
 
 namespace DragonScript {
 
-DSCodeCompletionContext::DSCodeCompletionContext( const DSCodeCompletionWorker &worker,
+DSCodeCompletionContext::DSCodeCompletionContext(const DSCodeCompletionWorker &worker,
 DUContextPointer context, const QString& contextText, const QString& followingText,
-const CursorInRevision& position, int depth ) :
-CodeCompletionContext( context, contextText, position, depth ),
-pWorker( worker ),
-pContextText( contextText ),
-pPosition( position )
+const CursorInRevision& position, int depth) :
+CodeCompletionContext(context, contextText, position, depth),
+pWorker(worker),
+pContextText(contextText),
+pPosition(position)
 {
-	Q_UNUSED( followingText );
+	Q_UNUSED(followingText);
 	qDebug() << "KDevDScript: DSCodeCompletionContext():" << contextText << position
 		<< context->localScopeIdentifier().toString() << context->range();
 }
 
 QList<CompletionTreeItemPointer> DSCodeCompletionContext::completionItems(
-bool &abort, bool fullCompletion ){
-	Q_UNUSED( fullCompletion );
-	Q_UNUSED( abort );
+bool &abort, bool fullCompletion){
+	Q_UNUSED(fullCompletion);
+	Q_UNUSED(abort);
 	
 	DUChainReadLocker lock();
 	
@@ -53,18 +53,18 @@ bool &abort, bool fullCompletion ){
 	
 	qDebug() << "KDevDScript: DSCodeCompletionContext(): uses" << usesCount;
 	
-	for( i=0; i<usesCount; i++ ){
-		qDebug() << "KDevDScript: DSCodeCompletionContext(): test" << uses[ i ].m_range;
-		if( uses[ i ].m_range.start >= pPosition ){
+	for(i=0; i<usesCount; i++){
+		qDebug() << "KDevDScript: DSCodeCompletionContext(): test" << uses[i].m_range;
+		if(uses[i].m_range.start >= pPosition){
 			break;
 		}
 		lastUse = uses + i;
 	}
 	
-	if( lastUse ){
+	if(lastUse){
 		TopDUContext * const top = context->topContext();
-		const Declaration * const decl = lastUse->usedDeclaration( top );
-		if( decl ){
+		const Declaration * const decl = lastUse->usedDeclaration(top);
+		if(decl){
 			qDebug() << "KDevDScript: DSCodeCompletionContext(): lastUse" << decl->toString();
 		}
 	}

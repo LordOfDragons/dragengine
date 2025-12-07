@@ -48,8 +48,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMACopyActions( ceWindowMain &windowMain,
-		const ceConversationActionList &actions );
+	ceWPTMACopyActions(ceWindowMain &windowMain,
+		const ceConversationActionList &actions);
 	/*@}*/
 	
 	
@@ -57,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Actions. */
-	inline const ceConversationActionList &GetActions() const{ return *pActions; }
+	inline const ceConversationActionList &GetActions() const{return *pActions;}
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

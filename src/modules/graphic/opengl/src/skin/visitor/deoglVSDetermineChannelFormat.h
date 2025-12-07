@@ -66,8 +66,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglVSDetermineChannelFormat( deoglRenderThread &renderThread, const deoglRSkin &skin,
-		const deoglSkinTexture &oglTex, const deSkinTexture &tex );
+	deoglVSDetermineChannelFormat(deoglRenderThread &renderThread, const deoglRSkin &skin,
+		const deoglSkinTexture &oglTex, const deSkinTexture &tex);
 	
 	/** Clean up visitor. */
 	virtual ~deoglVSDetermineChannelFormat();
@@ -78,86 +78,86 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Process channel to determine required channel format. */
-	void ProcessChannel( deoglSkinChannel::eChannelTypes channel );
+	void ProcessChannel(deoglSkinChannel::eChannelTypes channel);
 	
 	
 	
 	/** Channel has defined format. */
-	inline bool GetIsDefined() const{ return pIsDefined; }
+	inline bool GetIsDefined() const{return pIsDefined;}
 	
 	/** Required texture size. */
-	inline const decPoint3 &GetRequiredSize() const{ return pRequiredSize; }
+	inline const decPoint3 &GetRequiredSize() const{return pRequiredSize;}
 	
 	/** Required component count. */
-	inline int GetRequiredComponentCount() const{ return pRequiredComponentCount; }
+	inline int GetRequiredComponentCount() const{return pRequiredComponentCount;}
 	
 	/** Float format is required. */
-	inline bool GetRequiresFloat() const{ return pRequiresFloat; }
+	inline bool GetRequiresFloat() const{return pRequiresFloat;}
 	
 	/** Channel is uniform. */
-	inline bool GetIsUniform() const{ return pIsUniform; }
+	inline bool GetIsUniform() const{return pIsUniform;}
 	
 	/** Channel is dynamic. */
-	inline bool GetIsDynamic() const{ return pIsDynamic; }
+	inline bool GetIsDynamic() const{return pIsDynamic;}
 	
 	/** Mip mapping is allowed. */
-	inline bool GetAllowMipMap() const{ return pAllowMipMap; }
+	inline bool GetAllowMipMap() const{return pAllowMipMap;}
 	
 	/** Shared image. */
-	inline deoglRImage *GetSharedImage() const{ return pSharedImage; }
+	inline deoglRImage *GetSharedImage() const{return pSharedImage;}
 	
 	/** Texture type. */
-	inline deoglSkinChannel::eTextureType GetTextureType() const{ return pTextureType; }
+	inline deoglSkinChannel::eTextureType GetTextureType() const{return pTextureType;}
 	
 	
 	
 	/** Visit property. */
-	void VisitProperty( deSkinProperty &property );
+	void VisitProperty(deSkinProperty &property);
 	
 	/** Set required size. */
-	bool SetRequiredSize( const decPoint3 &size );
+	bool SetRequiredSize(const decPoint3 &size);
 	
 	/** Set use image if possible. */
-	void SetSharedImage( deoglRImage *image );
+	void SetSharedImage(deoglRImage *image);
 	
 	/** Log warning for an image not having square size. */
-	void WarnImageNotSquareSize( const deSkinPropertyImage &property ) const;
+	void WarnImageNotSquareSize(const deSkinPropertyImage &property) const;
 	
 	/** Log warning for an image not support for omnidirection mapping. */
-	void WarnImageNotOmnidirectional( const deSkinPropertyImage &property ) const;
+	void WarnImageNotOmnidirectional(const deSkinPropertyImage &property) const;
 	
 	/** Log warning for an image with a size not matching the other images in a combined channel. */
-	void WarnImageIncompatibleSize( const deSkinPropertyImage &property ) const;
+	void WarnImageIncompatibleSize(const deSkinPropertyImage &property) const;
 	
 	/** Log warning for an image with an unsupported number of components. */
-	void WarnImageIncompatibleComponentCount( const deSkinPropertyImage &property, int componentCount ) const;
+	void WarnImageIncompatibleComponentCount(const deSkinPropertyImage &property, int componentCount) const;
 	
 	/** Log warning for an image with a size not matching the other images in a combined channel. */
-	void WarnImageIncompatibleSize( const deSkinPropertyConstructed &property ) const;
+	void WarnImageIncompatibleSize(const deSkinPropertyConstructed &property) const;
 	
 	/** Log warning for an image not having square size. */
-	void WarnImageNotSquareSize( const deSkinPropertyConstructed &property ) const;
+	void WarnImageNotSquareSize(const deSkinPropertyConstructed &property) const;
 	
 	/** Log warning for an image not support for omnidirection mapping. */
-	void WarnImageNotOmnidirectional( const deSkinPropertyConstructed &property ) const;
+	void WarnImageNotOmnidirectional(const deSkinPropertyConstructed &property) const;
 	/*@}*/
 	
 	
 	
 private:
-	bool pChannelMatches( const deoglSkinPropertyMap::ePropertyTypes channelType ) const;
-	void pProcessPropertyImage( const deSkinPropertyImage &property,
-		const deoglSkinPropertyMap::ePropertyTypes channelType );
-	void pProcessPropertyColorVideo( const deoglSkinPropertyMap::ePropertyTypes channelType );
-	void pProcessPropertyValue( const deoglSkinPropertyMap::ePropertyTypes channelType );
-	void pProcessPropertyConstructed( const deSkinPropertyConstructed &property,
-		const deoglSkinPropertyMap::ePropertyTypes channelType );
+	bool pChannelMatches(const deoglSkinPropertyMap::ePropertyTypes channelType) const;
+	void pProcessPropertyImage(const deSkinPropertyImage &property,
+		const deoglSkinPropertyMap::ePropertyTypes channelType);
+	void pProcessPropertyColorVideo(const deoglSkinPropertyMap::ePropertyTypes channelType);
+	void pProcessPropertyValue(const deoglSkinPropertyMap::ePropertyTypes channelType);
+	void pProcessPropertyConstructed(const deSkinPropertyConstructed &property,
+		const deoglSkinPropertyMap::ePropertyTypes channelType);
 	
-	void pSetFromNoSize( int requiredComponentCount, int requiredDepth = 1 );
-	void pSetFromImage( const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1 );
-	void pSetFromImageCube( const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1 );
-	void pSetFromConstructed( const deSkinPropertyConstructed &property, int requiredComponentCount );
-	void pSetFromConstructedCube( const deSkinPropertyConstructed &property, int requiredComponentCount );
+	void pSetFromNoSize(int requiredComponentCount, int requiredDepth = 1);
+	void pSetFromImage(const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1);
+	void pSetFromImageCube(const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1);
+	void pSetFromConstructed(const deSkinPropertyConstructed &property, int requiredComponentCount);
+	void pSetFromConstructedCube(const deSkinPropertyConstructed &property, int requiredComponentCount);
 };
 
 #endif

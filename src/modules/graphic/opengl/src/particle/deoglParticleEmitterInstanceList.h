@@ -57,38 +57,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of instances. */
-	inline int GetCount() const{ return pInstanceCount; }
+	inline int GetCount() const{return pInstanceCount;}
 	
 	/** Index of the instance or -1 if not in the list. */
-	int IndexOf( deoglRParticleEmitterInstance *instance ) const;
+	int IndexOf(deoglRParticleEmitterInstance *instance) const;
 	
 	/** Instance exists. */
-	bool Has( deoglRParticleEmitterInstance *instance ) const;
+	bool Has(deoglRParticleEmitterInstance *instance) const;
 	
 	/** Instance at the given index. */
-	deoglRParticleEmitterInstance *GetAt( int index ) const;
+	deoglRParticleEmitterInstance *GetAt(int index) const;
 	
 	/** Add instance. */
-	void Add( deoglRParticleEmitterInstance *instance );
+	void Add(deoglRParticleEmitterInstance *instance);
 	
 	/** Add instance if missing in the list. Returns true if added. */
-	bool AddIfMissing( deoglRParticleEmitterInstance *instance );
+	bool AddIfMissing(deoglRParticleEmitterInstance *instance);
 	
 	/** Remove instance. */
-	void Remove( deoglRParticleEmitterInstance *instance );
+	void Remove(deoglRParticleEmitterInstance *instance);
 	
 	/** Remove instance if existing in the list. Returns true if removed. */
-	bool RemoveIfExisting( deoglRParticleEmitterInstance *instance );
+	bool RemoveIfExisting(deoglRParticleEmitterInstance *instance);
 	
 	/** Remove instance from the given index. */
-	void RemoveFrom( int index );
+	void RemoveFrom(int index);
 	
 	/** Remove all instances. */
 	void RemoveAll();
 	/*@}*/
 	
 private:
-	void pAddInstance( deoglRParticleEmitterInstance *instance );
+	void pAddInstance(deoglRParticleEmitterInstance *instance);
 };
 
 #endif

@@ -38,38 +38,38 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAnimatorAddVertexPositionSet::aeUAnimatorAddVertexPositionSet( aeAnimator *animator, const char *pattern ) :
-pAnimator( animator )
+aeUAnimatorAddVertexPositionSet::aeUAnimatorAddVertexPositionSet(aeAnimator *animator, const char *pattern) :
+pAnimator(animator)
 {
-	DEASSERT_NOTNULL( pattern )
+	DEASSERT_NOTNULL(pattern)
 	
 	const decStringSet &sets = animator->GetListVertexPositionSets();
 	const deComponent * const engComponent = animator->GetEngineComponent();
 	const deModel * const engModel = engComponent ? engComponent->GetModel() : nullptr;
 	
-	if( engModel ){
+	if(engModel){
 		const int setCount = engModel->GetVertexPositionSetCount();
 		int i;
 		
-		for( i=0; i<setCount; i++ ){
-			const decString &set = engModel->GetVertexPositionSetAt( i )->GetName();
+		for(i=0; i<setCount; i++){
+			const decString &set = engModel->GetVertexPositionSetAt(i)->GetName();
 			
-			if( set.MatchesPattern( pattern ) && ! sets.Has( set ) ){
-				pVertexPositionSets.Add( set );
+			if(set.MatchesPattern(pattern) && ! sets.Has(set)){
+				pVertexPositionSets.Add(set);
 			}
 		}
 		
 	}else{
-		if( ! sets.Has( pattern ) ){
-			pVertexPositionSets.Add( pattern );
+		if(! sets.Has(pattern)){
+			pVertexPositionSets.Add(pattern);
 		}
 	}
 	
-	if( pVertexPositionSets.GetCount() == 1 ){
-		SetShortInfo( "Animator add vertex position set" );
+	if(pVertexPositionSets.GetCount() == 1){
+		SetShortInfo("Animator add vertex position set");
 		
 	}else{
-		SetShortInfo( "Animator add vertex position sets" );
+		SetShortInfo("Animator add vertex position sets");
 	}
 }
 
@@ -85,8 +85,8 @@ void aeUAnimatorAddVertexPositionSet::Undo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->RemoveVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->RemoveVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }
 
@@ -94,7 +94,7 @@ void aeUAnimatorAddVertexPositionSet::Redo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->AddVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->AddVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }

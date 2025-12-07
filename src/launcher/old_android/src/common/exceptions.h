@@ -40,7 +40,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeInvalidParam( const char *file, int line );
+	deeInvalidParam(const char *file, int line);
 };
 
 /**
@@ -54,7 +54,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeOutOfMemory( const char *file, int line );
+	deeOutOfMemory(const char *file, int line);
 };
 
 /**
@@ -68,7 +68,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeOutOfBoundary( const char *file, int line );
+	deeOutOfBoundary(const char *file, int line);
 };
 
 /**
@@ -82,7 +82,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeStackEmpty( const char *file, int line );
+	deeStackEmpty(const char *file, int line);
 };
 
 /**
@@ -96,7 +96,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeStackOverflow( const char *file, int line );
+	deeStackOverflow(const char *file, int line);
 };
 
 /**
@@ -110,7 +110,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeDivisionByZero( const char *file, int line );
+	deeDivisionByZero(const char *file, int line);
 };
 
 /**
@@ -124,7 +124,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeNullPointer( const char *file, int line );
+	deeNullPointer(const char *file, int line);
 };
 
 /**
@@ -138,7 +138,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeInvalidAction( const char *file, int line );
+	deeInvalidAction(const char *file, int line);
 };
 
 /**
@@ -152,7 +152,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeInvalidFormat( const char *file, int line );
+	deeInvalidFormat(const char *file, int line);
 };
 
 /**
@@ -166,7 +166,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeFileNotFound( const char *file, int line );
+	deeFileNotFound(const char *file, int line);
 };
 
 /**
@@ -180,7 +180,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeFileExists( const char *file, int line );
+	deeFileExists(const char *file, int line);
 };
 
 /**
@@ -194,7 +194,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeOpenFile( const char *file, int line );
+	deeOpenFile(const char *file, int line);
 };
 
 /**
@@ -208,7 +208,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeReadFile( const char *file, int line );
+	deeReadFile(const char *file, int line);
 };
 
 /**
@@ -222,7 +222,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeWriteFile( const char *file, int line );
+	deeWriteFile(const char *file, int line);
 };
 
 /**
@@ -236,7 +236,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeInvalidFileFormat( const char *file, int line );
+	deeInvalidFileFormat(const char *file, int line);
 };
 
 /**
@@ -250,7 +250,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeDirectoryNotFound( const char *file, int line );
+	deeDirectoryNotFound(const char *file, int line);
 };
 
 /**
@@ -264,7 +264,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeDirectoryRead( const char *file, int line );
+	deeDirectoryRead(const char *file, int line);
 };
 
 /**
@@ -278,7 +278,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeInvalidSyntax( const char *file, int line );
+	deeInvalidSyntax(const char *file, int line);
 };
 
 /**
@@ -292,7 +292,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeScriptError( const char *file, int line );
+	deeScriptError(const char *file, int line);
 };
 
 /**
@@ -306,7 +306,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeNoModuleFound( const char *file, int line );
+	deeNoModuleFound(const char *file, int line);
 };
 
 /**
@@ -320,7 +320,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeTestFailed( const char *file, int line );
+	deeTestFailed(const char *file, int line);
 };
 
 /**
@@ -334,7 +334,7 @@ public:
 	 * \param[in] file Name of the source file where the exception occurred. If \em NULL set to a default string.
 	 * \param[in] line Line number in file where the exception occurred. If \em NULL set to a default string.
 	 */
-	deeAssertion( const char *file, int line );
+	deeAssertion(const char *file, int line);
 };
 
 
@@ -345,7 +345,7 @@ public:
  *          and line information are obtained from the location the macro is expanded.
  * \param cls Class name of the exception to throw
  */
-#define DETHROW( cls ) throw cls( __FILE__, __LINE__ )
+#define DETHROW(cls) throw cls(__FILE__, __LINE__)
 
 /**
  * \brief Throw an exception of the given type with additional construction parameters.
@@ -353,7 +353,7 @@ public:
  *          and line information are obtained from the location the macro is expanded.
  * \param cls Class name of the exception to throw
  */
-#define DETHROWX( cls, ... ) throw cls( __FILE__, __LINE__, __VA_ARGS__ )
+#define DETHROWX(cls, ...) throw cls(__FILE__, __LINE__, __VA_ARGS__)
 
 /**
  * \brief Throw an exception of the given type with additional information.
@@ -365,6 +365,6 @@ public:
  * \param info Constant string to assign to the exception object as
  *             additional information
  */
-#define DETHROW_INFO( cls, info ) throw cls( __FILE__, __LINE__ )
+#define DETHROW_INFO(cls, info) throw cls(__FILE__, __LINE__)
 
 #endif

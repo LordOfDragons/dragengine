@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetDirection::gdeUOCForceFieldSetDirection( gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const decVector &newValue ) :
-pObjectClass( NULL ),
-pForceField( NULL )
+gdeUOCForceFieldSetDirection::gdeUOCForceFieldSetDirection(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const decVector &newValue) :
+pObjectClass(NULL),
+pForceField(NULL)
 {
-	if( ! objectClass || ! forceField ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! forceField){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Force field set direction" );
+	SetShortInfo("Force field set direction");
 	
 	pOldValue = forceField->GetDirection();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pForceField( NULL )
 }
 
 gdeUOCForceFieldSetDirection::~gdeUOCForceFieldSetDirection(){
-	if( pForceField ){
+	if(pForceField){
 		pForceField->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCForceFieldSetDirection::~gdeUOCForceFieldSetDirection(){
 ///////////////
 
 void gdeUOCForceFieldSetDirection::Undo(){
-	pForceField->SetDirection( pOldValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetDirection(pOldValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }
 
 void gdeUOCForceFieldSetDirection::Redo(){
-	pForceField->SetDirection( pNewValue );
-	pObjectClass->NotifyForceFieldChanged( pForceField );
+	pForceField->SetDirection(pNewValue);
+	pObjectClass->NotifyForceFieldChanged(pForceField);
 }

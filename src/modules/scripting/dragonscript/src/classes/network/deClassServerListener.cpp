@@ -40,12 +40,12 @@
 /////////////////////
 
 // public func Connection incomingConnection()
-deClassServerListener::nfClientConnected::nfClientConnected( const sInitData &init ) :
-dsFunction( init.clsSvrL, "clientConnected", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCon );
+deClassServerListener::nfClientConnected::nfClientConnected(const sInitData &init) :
+dsFunction(init.clsSvrL, "clientConnected", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCon);
 }
-void deClassServerListener::nfClientConnected::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassServerListener::nfClientConnected::RunFunction(dsRunTime *rt, dsValue *myself){
 }
 
 
@@ -54,25 +54,25 @@ void deClassServerListener::nfClientConnected::RunFunction( dsRunTime *rt, dsVal
 ////////////////////////////////
 
 // constructor
-deClassServerListener::deClassServerListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr ) :
-dsClass( "ServerListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassServerListener::deClassServerListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("ServerListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
 	// set parser info
-	GetParserInfo()->SetParent( DENS_DRAGENGINE );
+	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	
 	// do the rest
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 deClassServerListener::~deClassServerListener(){
 }
 
 // management
-void deClassServerListener::CreateClassMembers( dsEngine *engine ){
+void deClassServerListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -86,7 +86,7 @@ void deClassServerListener::CreateClassMembers( dsEngine *engine ){
 	init.clsCon = pClsCon;
 	
 	// add functions
-	AddFunction( new nfClientConnected( init ) );
+	AddFunction(new nfClientConnected(init));
 	
 	// calculate member offsets
 	CalcMemberOffsets();

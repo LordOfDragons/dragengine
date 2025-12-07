@@ -129,7 +129,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	ceWPTopic( ceWindowProperties &windowProperties );
+	ceWPTopic(ceWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -142,16 +142,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Main window. */
-	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline ceWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline ceConversation *GetConversation() const{return pConversation;}
 	
 	/** Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Action tree model. */
-	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }
+	inline ceWPTTreeModel *GetActionTreeModel() const{return pModelTreeActions;}
 	
 	/** Active action tree item model. */
 	ceWPTTreeItemModel *GetActionTreeItem();
@@ -220,7 +220,7 @@ public:
 	
 	
 	/** Locate action from active topic in tree and make it visible. */
-	void LocateAction( ceConversationAction *action );
+	void LocateAction(ceConversationAction *action);
 	
 	/** Start playing starting with action selected in tree. */
 	void PlayActionFromHere();

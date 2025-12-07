@@ -44,28 +44,28 @@ decDVector4::decDVector4(){
 	w = 1.0;
 }
 
-decDVector4::decDVector4( double nx, double ny, double nz ){
+decDVector4::decDVector4(double nx, double ny, double nz){
 	x = nx;
 	y = ny;
 	z = nz;
 	w = 1.0;
 }
 
-decDVector4::decDVector4( double nx, double ny, double nz, double nw ){
+decDVector4::decDVector4(double nx, double ny, double nz, double nw){
 	x = nx;
 	y = ny;
 	z = nz;
 	w = nw;
 }
 
-decDVector4::decDVector4( const decDVector4 &v ){
+decDVector4::decDVector4(const decDVector4 &v){
 	x = v.x;
 	y = v.y;
 	z = v.z;
 	w = v.w;
 }
 
-decDVector4::decDVector4( const decVector4 &v ){
+decDVector4::decDVector4(const decVector4 &v){
 	x = v.x;
 	y = v.y;
 	z = v.z;
@@ -78,14 +78,14 @@ decDVector4::decDVector4( const decVector4 &v ){
 ///////////////
 
 double decDVector4::Length(){
-	return sqrt( x * x + y * y + z * z );
+	return sqrt(x * x + y * y + z * z);
 }
 
 void decDVector4::Normalize(){
-	const double len = sqrt( x * x + y * y + z * z );
+	const double len = sqrt(x * x + y * y + z * z);
 	
-	if( len == 0.0 ){
-		DETHROW( deeDivisionByZero );
+	if(len == 0.0){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	x /= len;
@@ -94,17 +94,17 @@ void decDVector4::Normalize(){
 }
 
 const decDVector4 decDVector4::Normalized() const{
-	const double len = sqrt( x * x + y * y + z * z );
+	const double len = sqrt(x * x + y * y + z * z);
 	
-	if( len == 0.0 ){
-		DETHROW( deeDivisionByZero );
+	if(len == 0.0){
+		DETHROW(deeDivisionByZero);
 	}
 	
-	return decDVector4( x / len, y / len, z / len );
+	return decDVector4(x / len, y / len, z / len);
 }
 
 const decDVector4 decDVector4::Absolute() const{
-	return decDVector4( fabs( x ), fabs( y ), fabs( z ), fabs( w ) );
+	return decDVector4(fabs(x), fabs(y), fabs(z), fabs(w));
 }
 
 void decDVector4::SetZero(){
@@ -114,7 +114,7 @@ void decDVector4::SetZero(){
 	w = 1.0;
 }
 
-void decDVector4::Set( double nx, double ny, double nz, double nw ){
+void decDVector4::Set(double nx, double ny, double nz, double nw){
 	x = nx;
 	y = ny;
 	z = nz;
@@ -122,7 +122,7 @@ void decDVector4::Set( double nx, double ny, double nz, double nw ){
 }
 
 decVector4 decDVector4::ToVector4() const{
-	return decVector4( ( double )x, ( double )y, ( double )z, ( double )w );
+	return decVector4((double)x, (double)y, (double)z, (double)w);
 }
 
 
@@ -131,10 +131,10 @@ decVector4 decDVector4::ToVector4() const{
 //////////////
 
 decDVector4 decDVector4::operator-(){
-	return decDVector4( -x, -y, -z );
+	return decDVector4(-x, -y, -z);
 }
 
-decDVector4 &decDVector4::operator=( const decDVector4 &v ){
+decDVector4 &decDVector4::operator=(const decDVector4 &v){
 	x = v.x;
 	y = v.y;
 	z = v.z;
@@ -142,21 +142,21 @@ decDVector4 &decDVector4::operator=( const decDVector4 &v ){
 	return *this;
 }
 
-decDVector4 &decDVector4::operator+=( const decDVector4 &v ){
+decDVector4 &decDVector4::operator+=(const decDVector4 &v){
 	x += v.x;
 	y += v.y;
 	z += v.z;
 	return *this;
 }
 
-decDVector4 &decDVector4::operator-=( const decDVector4 &v ){
+decDVector4 &decDVector4::operator-=(const decDVector4 &v){
 	x -= v.x;
 	y -= v.y;
 	z -= v.z;
 	return *this;
 }
 
-decDVector4 &decDVector4::operator*=( double k ){
+decDVector4 &decDVector4::operator*=(double k){
 	x *= k;
 	y *= k;
 	z *= k;
@@ -164,8 +164,8 @@ decDVector4 &decDVector4::operator*=( double k ){
 }
 
 decDVector4 &decDVector4::operator/=(double k){
-	if( k == 0.0 ){
-		DETHROW( deeDivisionByZero );
+	if(k == 0.0){
+		DETHROW(deeDivisionByZero);
 	}
 	
 	x /= k;
@@ -175,45 +175,45 @@ decDVector4 &decDVector4::operator/=(double k){
 	return *this;
 }
 
-decDVector4 decDVector4::operator+( const decDVector4 &v ) const{
-	return decDVector4( x + v.x, y + v.y, z + v.z );
+decDVector4 decDVector4::operator+(const decDVector4 &v) const{
+	return decDVector4(x + v.x, y + v.y, z + v.z);
 }
 
-decDVector4 decDVector4::operator-( const decDVector4 &v ) const{
-	return decDVector4( x - v.x, y - v.y, z - v.z );
+decDVector4 decDVector4::operator-(const decDVector4 &v) const{
+	return decDVector4(x - v.x, y - v.y, z - v.z);
 }
 
-decDVector4 decDVector4::operator*( double k ) const{
-	return decDVector4( x * k, y * k, z * k );
+decDVector4 decDVector4::operator*(double k) const{
+	return decDVector4(x * k, y * k, z * k);
 }
 
-double decDVector4::operator*( const decDVector4 &v ) const{
+double decDVector4::operator*(const decDVector4 &v) const{
 	return x * v.x + y * v.y + z * v.z;
 }
 
-decDVector4 decDVector4::operator/( double k ) const{
-	if( k == 0.0 ){
-		DETHROW( deeDivisionByZero );
+decDVector4 decDVector4::operator/(double k) const{
+	if(k == 0.0){
+		DETHROW(deeDivisionByZero);
 	}
-	return decDVector4( x / k, y / k, z / k );
+	return decDVector4(x / k, y / k, z / k);
 }
 
-decDVector4 decDVector4::operator%( const decDVector4 &v ) const{
-	return decDVector4( y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x );
+decDVector4 decDVector4::operator%(const decDVector4 &v) const{
+	return decDVector4(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 }
 
-bool decDVector4::operator<( const decDVector4 &v ) const{
+bool decDVector4::operator<(const decDVector4 &v) const{
 	return x < v.x && y < v.y && z < v.z;
 }
 
-bool decDVector4::operator>( const decDVector4 &v ) const{
+bool decDVector4::operator>(const decDVector4 &v) const{
 	return x > v.x && y > v.y && z > v.z;
 }
 
-bool decDVector4::operator<=( const decDVector4 &v ) const{
+bool decDVector4::operator<=(const decDVector4 &v) const{
 	return x <= v.x && y <= v.y && z <= v.z;
 }
 
-bool decDVector4::operator>=( const decDVector4 &v ) const{
+bool decDVector4::operator>=(const decDVector4 &v) const{
 	return x >= v.x && y >= v.y && z >= v.z;
 }

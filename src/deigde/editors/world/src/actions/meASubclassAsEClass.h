@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	meASubclassAsEClass( meWindowMain &window );
+	meASubclassAsEClass(meWindowMain &window);
 	/*@}*/
 	
 	
@@ -69,20 +69,20 @@ public:
 	
 	
 protected:
-	void WriteEClass( const meObject &object, const igdeGDClass &gdclass,
-		const decString &classname, decXmlWriter &writer, const decString &basePath );
+	void WriteEClass(const meObject &object, const igdeGDClass &gdclass,
+		const decString &classname, decXmlWriter &writer, const decString &basePath);
 	
-	void WriteEClassProperties( const meObject &object, const igdeGDClass &gdclass,
-		decXmlWriter &writer, const decString &basePath );
+	void WriteEClassProperties(const meObject &object, const igdeGDClass &gdclass,
+		decXmlWriter &writer, const decString &basePath);
 	
-	void WriteEClassProperty( const decString &property, const decString &value,
-		const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePath );
+	void WriteEClassProperty(const decString &property, const decString &value,
+		const igdeGDProperty *gdProperty, decXmlWriter &writer, const decString &basePath);
 	
-	void WriteEClassTextureReplacements( const meObject &object,
-		decXmlWriter &writer, const decString &basePath );
+	void WriteEClassTextureReplacements(const meObject &object,
+		decXmlWriter &writer, const decString &basePath);
 	
-	void WriteEClassTextureReplacements( const meObjectTexture &texture,
-		decXmlWriter &writer, const decString &basePath );
+	void WriteEClassTextureReplacements(const meObjectTexture &texture,
+		decXmlWriter &writer, const decString &basePath);
 };
 
 #endif

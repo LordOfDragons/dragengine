@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create model peer. */
-	deoglModel( deGraphicOpenGl &ogl, const deModel &model );
+	deoglModel(deGraphicOpenGl &ogl, const deModel &model);
 	
 	/** Cleans up the opengl model. */
 	virtual ~deoglModel();
@@ -58,13 +58,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Model resource. */
-	inline const deModel &GetModel() const{ return pModel; }
+	inline const deModel &GetModel() const{return pModel;}
 	
 	/** Render model. */
-	inline deoglRModel *GetRModel() const{ return pRModel; }
+	inline deoglRModel *GetRModel() const{return pRModel;}
 	/*@}*/
 	
 private:

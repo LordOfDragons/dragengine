@@ -40,16 +40,16 @@
 ////////////////////////////
 
 deAnimatorRuleBoneTransformator::deAnimatorRuleBoneTransformator() :
-pMinScaling( 1.0f, 1.0f, 1.0f ),
-pMaxScaling( 1.0f, 1.0f, 1.0f ),
-pAxis( 0.0f, 0.0f, 1.0f ),
-pMinAngle( 0.0f ),
-pMaxAngle( 0.0f ),
-pCoordinateFrame( ecfComponent ),
-pEnablePosition( false ),
-pEnableOrientation( true ),
-pEnableSize( false ),
-pUseAxis( false ),
+pMinScaling(1.0f, 1.0f, 1.0f),
+pMaxScaling(1.0f, 1.0f, 1.0f),
+pAxis(0.0f, 0.0f, 1.0f),
+pMinAngle(0.0f),
+pMaxAngle(0.0f),
+pCoordinateFrame(ecfComponent),
+pEnablePosition(false),
+pEnableOrientation(true),
+pEnableSize(false),
+pUseAxis(false),
 pInputSource(eisTargetBlend){
 }
 
@@ -60,63 +60,63 @@ deAnimatorRuleBoneTransformator::~deAnimatorRuleBoneTransformator(){
 // Management
 ///////////////
 
-void deAnimatorRuleBoneTransformator::SetMinimumTranslation( const decVector &translation ){
+void deAnimatorRuleBoneTransformator::SetMinimumTranslation(const decVector &translation){
 	pMinTranslation = translation;
 }
 
-void deAnimatorRuleBoneTransformator::SetMaximumTranslation( const decVector &translation ){
+void deAnimatorRuleBoneTransformator::SetMaximumTranslation(const decVector &translation){
 	pMaxTranslation = translation;
 }
 
-void deAnimatorRuleBoneTransformator::SetMinimumRotation( const decVector &rotation ){
+void deAnimatorRuleBoneTransformator::SetMinimumRotation(const decVector &rotation){
 	pMinRotation = rotation;
 }
 
-void deAnimatorRuleBoneTransformator::SetMaximumRotation( const decVector &rotation ){
+void deAnimatorRuleBoneTransformator::SetMaximumRotation(const decVector &rotation){
 	pMaxRotation = rotation;
 }
 
-void deAnimatorRuleBoneTransformator::SetMinimumScaling( const decVector &scaling ){
+void deAnimatorRuleBoneTransformator::SetMinimumScaling(const decVector &scaling){
 	pMinScaling = scaling;
 }
 
-void deAnimatorRuleBoneTransformator::SetMaximumScaling( const decVector &scaling ){
+void deAnimatorRuleBoneTransformator::SetMaximumScaling(const decVector &scaling){
 	pMaxScaling = scaling;
 }
 
-void deAnimatorRuleBoneTransformator::SetAxis( const decVector &axis ){
+void deAnimatorRuleBoneTransformator::SetAxis(const decVector &axis){
 	pAxis = axis;
 }
 
-void deAnimatorRuleBoneTransformator::SetMinimumAngle( float angle ){
+void deAnimatorRuleBoneTransformator::SetMinimumAngle(float angle){
 	pMinAngle = angle;
 }
 
-void deAnimatorRuleBoneTransformator::SetMaximumAngle( float angle ){
+void deAnimatorRuleBoneTransformator::SetMaximumAngle(float angle){
 	pMaxAngle = angle;
 }
 
-void deAnimatorRuleBoneTransformator::SetUseAxis( bool useAxis ){
+void deAnimatorRuleBoneTransformator::SetUseAxis(bool useAxis){
 	pUseAxis = useAxis;
 }
 
-void deAnimatorRuleBoneTransformator::SetCoordinateFrame( eCoordinateFrames coordinateFrame ){
+void deAnimatorRuleBoneTransformator::SetCoordinateFrame(eCoordinateFrames coordinateFrame){
 	pCoordinateFrame = coordinateFrame;
 }
 
-void deAnimatorRuleBoneTransformator::SetEnablePosition( bool enable ){
+void deAnimatorRuleBoneTransformator::SetEnablePosition(bool enable){
 	pEnablePosition = enable;
 }
 
-void deAnimatorRuleBoneTransformator::SetEnableOrientation( bool enable ){
+void deAnimatorRuleBoneTransformator::SetEnableOrientation(bool enable){
 	pEnableOrientation = enable;
 }
 
-void deAnimatorRuleBoneTransformator::SetEnableSize( bool enabled ){
+void deAnimatorRuleBoneTransformator::SetEnableSize(bool enabled){
 	pEnableSize = enabled;
 }
 
-void deAnimatorRuleBoneTransformator::SetTargetBone( const char *boneName ){
+void deAnimatorRuleBoneTransformator::SetTargetBone(const char *boneName){
 	pTargetBone = boneName;
 }
 
@@ -132,6 +132,6 @@ void deAnimatorRuleBoneTransformator::SetInputSource(eInputSources source){
 // Visiting
 /////////////
 
-void deAnimatorRuleBoneTransformator::Visit( deAnimatorRuleVisitor &visitor ){
-	visitor.VisitBoneTransformator( *this );
+void deAnimatorRuleBoneTransformator::Visit(deAnimatorRuleVisitor &visitor){
+	visitor.VisitBoneTransformator(*this);
 }

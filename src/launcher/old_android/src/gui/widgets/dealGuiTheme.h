@@ -46,14 +46,14 @@ private:
 	decColor pButtonBackgroundColor;
 	decColor pButtonTextColor;
 	dealImage *pButtonBackgroundImage;
-	int pButtonBackgroundImageBorder[ 4 ];
+	int pButtonBackgroundImageBorder[4];
 	float pButtonBackgroundImageScale;
 	decColor pButtonBackgroundImageColorize;
 	
 	decColor pButtonPressedBackgroundColor;
 	decColor pButtonPressedTextColor;
 	dealImage *pButtonPressedBackgroundImage;
-	int pButtonPressedBackgroundImageBorder[ 4 ];
+	int pButtonPressedBackgroundImageBorder[4];
 	float pButtonPressedBackgroundImageScale;
 	decColor pButtonPressedBackgroundImageColorize;
 	
@@ -81,10 +81,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui theme. */
-	dealGuiTheme( dealDisplay &display );
+	dealGuiTheme(dealDisplay &display);
 	
 	/** \brief Create copy of gui theme. */
-	dealGuiTheme( const dealGuiTheme &copy );
+	dealGuiTheme(const dealGuiTheme &copy);
 	
 	/** \brief Clean up gui theme. */
 	virtual ~dealGuiTheme();
@@ -95,192 +95,192 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Widget background color. */
-	inline const decColor &GetWidgetBackgroundColor() const{ return pWidgetBackgroundColor; }
+	inline const decColor &GetWidgetBackgroundColor() const{return pWidgetBackgroundColor;}
 	
 	/** \brief Set widget background color. */
-	void SetWidgetBackgroundColor( const decColor &color );
+	void SetWidgetBackgroundColor(const decColor &color);
 	
 	/** \brief Widget text color. */
-	inline const decColor &GetWidgetTextColor() const{ return pWidgetTextColor; }
+	inline const decColor &GetWidgetTextColor() const{return pWidgetTextColor;}
 	
 	/** \brief Set widget text color. */
-	void SetWidgetTextColor( const decColor &color );
+	void SetWidgetTextColor(const decColor &color);
 	
 	/** \brief Widget text font. */
-	inline dealFont *GetWidgetTextFont() const{ return pWidgetTextFont; }
+	inline dealFont *GetWidgetTextFont() const{return pWidgetTextFont;}
 	
 	/** \brief Set widget text font. */
-	void SetWidgetTextFont( dealFont *font );
+	void SetWidgetTextFont(dealFont *font);
 	
 	/** \brief Widget text font size. */
-	inline int GetWidgetTextFontSize() const{ return pWidgetTextFontSize; }
+	inline int GetWidgetTextFontSize() const{return pWidgetTextFontSize;}
 	
 	/** \brief Set widget text font size. */
-	void SetWidgetTextFontSize( int size );
+	void SetWidgetTextFontSize(int size);
 	
 	
 	
 	/** \brief Button background color. */
-	inline const decColor &GetButtonBackgroundColor() const{ return pButtonBackgroundColor; }
+	inline const decColor &GetButtonBackgroundColor() const{return pButtonBackgroundColor;}
 	
 	/** \brief Set button background color. */
-	void SetButtonBackgroundColor( const decColor &color );
+	void SetButtonBackgroundColor(const decColor &color);
 	
 	/** \brief Button text color. */
-	inline const decColor &GetButtonTextColor() const{ return pButtonTextColor; }
+	inline const decColor &GetButtonTextColor() const{return pButtonTextColor;}
 	
 	/** \brief Set button text color. */
-	void SetButtonTextColor( const decColor &color );
+	void SetButtonTextColor(const decColor &color);
 	
 	/** \brief Button background image or \em NULL if not used. */
-	inline dealImage *GetButtonBackgroundImage() const{ return pButtonBackgroundImage; }
+	inline dealImage *GetButtonBackgroundImage() const{return pButtonBackgroundImage;}
 	
 	/** \brief Set button background image or \em NULL if not used. */
-	void SetButtonBackgroundImage( dealImage *image );
+	void SetButtonBackgroundImage(dealImage *image);
 	
 	/** \brief Button background image border. */
-	int GetButtonBackgroundImageBorder( int border ) const;
+	int GetButtonBackgroundImageBorder(int border) const;
 	
 	/** \brief Set button background image border. */
-	void SetButtonBackgroundImageBorder( int border, int size );
+	void SetButtonBackgroundImageBorder(int border, int size);
 	
 	/** \brief Button background image scale. */
-	inline float GetButtonBackgroundImageScale() const{ return pButtonBackgroundImageScale; }
+	inline float GetButtonBackgroundImageScale() const{return pButtonBackgroundImageScale;}
 	
 	/** \brief Set button background image scale. */
-	void SetButtonBackgroundImageScale( float scale );
+	void SetButtonBackgroundImageScale(float scale);
 	
 	/** \brief Button background image colorize. */
-	inline const decColor &GetButtonBackgroundImageColorize() const{ return pButtonBackgroundImageColorize; }
+	inline const decColor &GetButtonBackgroundImageColorize() const{return pButtonBackgroundImageColorize;}
 	
 	/** \brief Set button background image colorize. */
-	void SetButtonBackgroundImageColorize( const decColor &color );
+	void SetButtonBackgroundImageColorize(const decColor &color);
 	
 	
 	
 	/** \brief Pressed buttno background color. */
-	inline const decColor &GetButtonPressedBackgroundColor() const{ return pButtonPressedBackgroundColor; }
+	inline const decColor &GetButtonPressedBackgroundColor() const{return pButtonPressedBackgroundColor;}
 	
 	/** \brief Set pressed button background color. */
-	void SetButtonPressedBackgroundColor( const decColor &color );
+	void SetButtonPressedBackgroundColor(const decColor &color);
 	
 	/** \brief Pressed button text color. */
-	inline const decColor &GetButtonPressedTextColor() const{ return pButtonPressedTextColor; }
+	inline const decColor &GetButtonPressedTextColor() const{return pButtonPressedTextColor;}
 	
 	/** \brief Set pressed button text color. */
-	void SetButtonPressedTextColor( const decColor &color );
+	void SetButtonPressedTextColor(const decColor &color);
 	
 	/** \brief Pressed button background image or \em NULL if not used. */
-	inline dealImage *GetButtonPressedBackgroundImage() const{ return pButtonPressedBackgroundImage; }
+	inline dealImage *GetButtonPressedBackgroundImage() const{return pButtonPressedBackgroundImage;}
 	
 	/** \brief Set pressed button background image or \em NULL if not used. */
-	void SetButtonPressedBackgroundImage( dealImage *image );
+	void SetButtonPressedBackgroundImage(dealImage *image);
 	
 	/** \brief Pressed button background image border. */
-	int GetButtonPressedBackgroundImageBorder( int border ) const;
+	int GetButtonPressedBackgroundImageBorder(int border) const;
 	
 	/** \brief Set pressed button background image border. */
-	void SetButtonPressedBackgroundImageBorder( int border, int size );
+	void SetButtonPressedBackgroundImageBorder(int border, int size);
 	
 	/** \brief Pressed button background image scale. */
-	inline float GetButtonPressedBackgroundImageScale() const{ return pButtonPressedBackgroundImageScale; }
+	inline float GetButtonPressedBackgroundImageScale() const{return pButtonPressedBackgroundImageScale;}
 	
 	/** \brief Set pressed button background image scale. */
-	void SetButtonPressedBackgroundImageScale( float scale );
+	void SetButtonPressedBackgroundImageScale(float scale);
 	
 	/** \brief Pressed button background image colorize. */
-	inline const decColor &GetButtonPressedBackgroundImageColorize() const{ return pButtonPressedBackgroundImageColorize; }
+	inline const decColor &GetButtonPressedBackgroundImageColorize() const{return pButtonPressedBackgroundImageColorize;}
 	
 	/** \brief Set pressed button background image colorize. */
-	void SetButtonPressedBackgroundImageColorize( const decColor &color );
+	void SetButtonPressedBackgroundImageColorize(const decColor &color);
 	
 	
 	
 	/** \brief Check box background color. */
-	inline const decColor &GetCheckBoxBackgroundColor() const{ return pCheckBoxBackgroundColor; }
+	inline const decColor &GetCheckBoxBackgroundColor() const{return pCheckBoxBackgroundColor;}
 	
 	/** \brief Set check box background color. */
-	void SetCheckBoxBackgroundColor( const decColor &color );
+	void SetCheckBoxBackgroundColor(const decColor &color);
 	
 	/** \brief Check box text color. */
-	inline const decColor &GetCheckBoxTextColor() const{ return pCheckBoxTextColor; }
+	inline const decColor &GetCheckBoxTextColor() const{return pCheckBoxTextColor;}
 	
 	/** \brief Set check box text color. */
-	void SetCheckBoxTextColor( const decColor &color );
+	void SetCheckBoxTextColor(const decColor &color);
 	
 	/** \brief Check box image unchecked. */
-	inline dealImage *GetCheckBoxImageUnchecked() const{ return pCheckBoxImageUnchecked; }
+	inline dealImage *GetCheckBoxImageUnchecked() const{return pCheckBoxImageUnchecked;}
 	
 	/** \brief Set check box image unchecked. */
-	void SetCheckBoxImageUnchecked( dealImage *image );
+	void SetCheckBoxImageUnchecked(dealImage *image);
 	
 	/** \brief Check box image checked. */
-	inline dealImage *GetCheckBoxImageChecked() const{ return pCheckBoxImageChecked; }
+	inline dealImage *GetCheckBoxImageChecked() const{return pCheckBoxImageChecked;}
 	
 	/** \brief Set check box image checked. */
-	void SetCheckBoxImageChecked( dealImage *image );
+	void SetCheckBoxImageChecked(dealImage *image);
 	
 	/** \brief Check box image scale. */
-	inline float GetCheckBoxImageScale() const{ return pCheckBoxImageScale; }
+	inline float GetCheckBoxImageScale() const{return pCheckBoxImageScale;}
 	
 	/** \brief Set check box image scale. */
-	void SetCheckBoxImageScale( float scale );
+	void SetCheckBoxImageScale(float scale);
 	
 	/** \brief Check box image unchecked colorize. */
-	inline const decColor &GetCheckBoxImageUncheckedColorize() const{ return pCheckBoxImageUncheckedColorize; }
+	inline const decColor &GetCheckBoxImageUncheckedColorize() const{return pCheckBoxImageUncheckedColorize;}
 	
 	/** \brief Set check box image unchecked colorize. */
-	void SetCheckBoxImageUncheckedColorize( const decColor &color );
+	void SetCheckBoxImageUncheckedColorize(const decColor &color);
 	
 	/** \brief Check box image checked colorize. */
-	inline const decColor &GetCheckBoxImageCheckedColorize() const{ return pCheckBoxImageCheckedColorize; }
+	inline const decColor &GetCheckBoxImageCheckedColorize() const{return pCheckBoxImageCheckedColorize;}
 	
 	/** \brief Set check box image checked colorize. */
-	void SetCheckBoxImageCheckedColorize( const decColor &color );
+	void SetCheckBoxImageCheckedColorize(const decColor &color);
 	
 	
 	
 	/** \brief Option box background color. */
-	inline const decColor &GetOptionBoxBackgroundColor() const{ return pOptionBoxBackgroundColor; }
+	inline const decColor &GetOptionBoxBackgroundColor() const{return pOptionBoxBackgroundColor;}
 	
 	/** \brief Set option box background color. */
-	void SetOptionBoxBackgroundColor( const decColor &color );
+	void SetOptionBoxBackgroundColor(const decColor &color);
 	
 	/** \brief Option box text color. */
-	inline const decColor &GetOptionBoxTextColor() const{ return pOptionBoxTextColor; }
+	inline const decColor &GetOptionBoxTextColor() const{return pOptionBoxTextColor;}
 	
 	/** \brief Set option box text color. */
-	void SetOptionBoxTextColor( const decColor &color );
+	void SetOptionBoxTextColor(const decColor &color);
 	
 	/** \brief Option box image deselected. */
-	inline dealImage *GetOptionBoxImageDeselected() const{ return pOptionBoxImageDeselected; }
+	inline dealImage *GetOptionBoxImageDeselected() const{return pOptionBoxImageDeselected;}
 	
 	/** \brief Set option box image deselected. */
-	void SetOptionBoxImageDeselected( dealImage *image );
+	void SetOptionBoxImageDeselected(dealImage *image);
 	
 	/** \brief Option box image selected. */
-	inline dealImage *GetOptionBoxImageSelected() const{ return pOptionBoxImageSelected; }
+	inline dealImage *GetOptionBoxImageSelected() const{return pOptionBoxImageSelected;}
 	
 	/** \brief Set option box image selected. */
-	void SetOptionBoxImageSelected( dealImage *image );
+	void SetOptionBoxImageSelected(dealImage *image);
 	
 	/** \brief Option box image scale. */
-	inline float GetOptionBoxImageScale() const{ return pOptionBoxImageScale; }
+	inline float GetOptionBoxImageScale() const{return pOptionBoxImageScale;}
 	
 	/** \brief Set option box image scale. */
-	void SetOptionBoxImageScale( float scale );
+	void SetOptionBoxImageScale(float scale);
 	
 	/** \brief Option box image deselected colorize. */
-	inline const decColor &GetOptionBoxImageDeselectedColorize() const{ return pOptionBoxImageDeselectedColorize; }
+	inline const decColor &GetOptionBoxImageDeselectedColorize() const{return pOptionBoxImageDeselectedColorize;}
 	
 	/** \brief Set option box image deselected colorize. */
-	void SetOptionBoxImageDeselectedColorize( const decColor &color );
+	void SetOptionBoxImageDeselectedColorize(const decColor &color);
 	
 	/** \brief Option box image selected colorize. */
-	inline const decColor &GetOptionBoxImageSelectedColorize() const{ return pOptionBoxImageSelectedColorize; }
+	inline const decColor &GetOptionBoxImageSelectedColorize() const{return pOptionBoxImageSelectedColorize;}
 	
 	/** \brief Set option box image selected colorize. */
-	void SetOptionBoxImageSelectedColorize( const decColor &color );
+	void SetOptionBoxImageSelectedColorize(const decColor &color);
 	/*@}*/
 };
 

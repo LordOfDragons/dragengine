@@ -45,23 +45,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMSkin::gdeWPSTIMSkin( gdeWPSTreeModel &tree, gdeSkin *skin ) :
-gdeWPSTreeItemModel( tree, etSkin ),
-pSkin( NULL )
+gdeWPSTIMSkin::gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin) :
+gdeWPSTreeItemModel(tree, etSkin),
+pSkin(NULL)
 {
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
+	if(! skin){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetText( skin->GetName() );
-	SetIcon( GetWindowMain().GetEnvironment().GetStockIcon( igdeEnvironment::esiNew ) );
+	SetText(skin->GetName());
+	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSkin = skin;
 	skin->AddReference();
 }
 
 gdeWPSTIMSkin::~gdeWPSTIMSkin(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 }
@@ -72,32 +72,32 @@ gdeWPSTIMSkin::~gdeWPSTIMSkin(){
 ///////////////
 
 void gdeWPSTIMSkin::NameChanged(){
-	SetText( pSkin->GetName() );
+	SetText(pSkin->GetName());
 	ParentSortItems();
 }
 
 
 
-int gdeWPSTIMSkin::Compare( const gdeWPSTreeItemModel &item ) const{
-	const gdeWPSTIMSkin &other = ( const gdeWPSTIMSkin & )item;
-	return pSkin->GetName().Compare( other.GetSkin()->GetName() );
+int gdeWPSTIMSkin::Compare(const gdeWPSTreeItemModel &item) const{
+	const gdeWPSTIMSkin &other = (const gdeWPSTIMSkin &)item;
+	return pSkin->GetName().Compare(other.GetSkin()->GetName());
 }
 
 void gdeWPSTIMSkin::OnSelected(){
-	GetGameDefinition().SetActiveSkin( pSkin );
-	GetGameDefinition().SetSelectedObjectType( gdeGameDefinition::eotSkin );
+	GetGameDefinition().SetActiveSkin(pSkin);
+	GetGameDefinition().SetSelectedObjectType(gdeGameDefinition::eotSkin);
 }
 
-void gdeWPSTIMSkin::OnContextMenu( igdeMenuCascade &contextMenu ){
+void gdeWPSTIMSkin::OnContextMenu(igdeMenuCascade &contextMenu){
 	const gdeWindowMain &windowMain = GetWindowMain();
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand( contextMenu, windowMain.GetActionSkinAdd() );
-	helper.MenuCommand( contextMenu, windowMain.GetActionSkinRemove() );
+	helper.MenuCommand(contextMenu, windowMain.GetActionSkinAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionSkinRemove());
 }
 
-void gdeWPSTIMSkin::SelectBestMatching( const char *string ){
-	if( GetParent() ){
-		( ( gdeWPSTreeItemModel* )GetParent() )->SelectBestMatching( string );
+void gdeWPSTIMSkin::SelectBestMatching(const char *string){
+	if(GetParent()){
+		((gdeWPSTreeItemModel*)GetParent())->SelectBestMatching(string);
 	}
 }

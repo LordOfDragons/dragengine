@@ -47,7 +47,7 @@ public:
 	dedsSTNText();
 
 	/** Create text node with text. */
-	dedsSTNText( const char *text );
+	dedsSTNText(const char *text);
 	
 protected:
 	/** Cleans up the text node. */
@@ -60,10 +60,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 
 	/** Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	/*@}*/
 };
 

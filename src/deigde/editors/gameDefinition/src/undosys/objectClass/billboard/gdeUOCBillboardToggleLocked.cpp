@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleLocked::gdeUOCBillboardToggleLocked(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard toggle locked" );
+	SetShortInfo("Billboard toggle locked");
 	
 	pBillboard = billboard;
 	billboard->AddReference();
@@ -59,10 +59,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardToggleLocked::~gdeUOCBillboardToggleLocked(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -73,8 +73,8 @@ gdeUOCBillboardToggleLocked::~gdeUOCBillboardToggleLocked(){
 ///////////////
 
 void gdeUOCBillboardToggleLocked::Undo(){
-	pBillboard->SetLocked( ! pBillboard->GetLocked() );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetLocked(! pBillboard->GetLocked());
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardToggleLocked::Redo(){

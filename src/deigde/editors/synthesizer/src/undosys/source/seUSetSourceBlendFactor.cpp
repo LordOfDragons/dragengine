@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSetSourceBlendFactor::seUSetSourceBlendFactor( seSource *source, float newFactor ) :
-pSource( NULL )
+seUSetSourceBlendFactor::seUSetSourceBlendFactor(seSource *source, float newFactor) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldFactor = source->GetBlendFactor();
@@ -54,9 +54,9 @@ pSource( NULL )
 		pSource = source;
 		pSource->AddReference();
 		
-		SetShortInfo( "Source set blend factor" );
+		SetShortInfo("Source set blend factor");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -72,11 +72,11 @@ seUSetSourceBlendFactor::~seUSetSourceBlendFactor(){
 ///////////////
 
 void seUSetSourceBlendFactor::Undo(){
-	pSource->SetBlendFactor( pOldFactor );
+	pSource->SetBlendFactor(pOldFactor);
 }
 
 void seUSetSourceBlendFactor::Redo(){
-	pSource->SetBlendFactor( pNewFactor );
+	pSource->SetBlendFactor(pNewFactor);
 }
 
 
@@ -85,7 +85,7 @@ void seUSetSourceBlendFactor::Redo(){
 //////////////////////
 
 void seUSetSourceBlendFactor::pCleanUp(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }

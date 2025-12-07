@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSynthesizerSetSampleRate::seUSynthesizerSetSampleRate( seSynthesizer *synthesizer, int newSampleRate ) :
-pSynthesizer( NULL )
+seUSynthesizerSetSampleRate::seUSynthesizerSetSampleRate(seSynthesizer *synthesizer, int newSampleRate) :
+pSynthesizer(NULL)
 {
-	if( ! synthesizer ){
-		DETHROW( deeInvalidParam );
+	if(! synthesizer){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldSampleRate = synthesizer->GetSampleRate();
@@ -54,9 +54,9 @@ pSynthesizer( NULL )
 		pSynthesizer = synthesizer;
 		pSynthesizer->AddReference();
 		
-		SetShortInfo( "Synthesizer set sample rate" );
+		SetShortInfo("Synthesizer set sample rate");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -72,11 +72,11 @@ seUSynthesizerSetSampleRate::~seUSynthesizerSetSampleRate(){
 ///////////////
 
 void seUSynthesizerSetSampleRate::Undo(){
-	pSynthesizer->SetSampleRate( pOldSampleRate );
+	pSynthesizer->SetSampleRate(pOldSampleRate);
 }
 
 void seUSynthesizerSetSampleRate::Redo(){
-	pSynthesizer->SetSampleRate( pNewSampleRate );
+	pSynthesizer->SetSampleRate(pNewSampleRate);
 }
 
 
@@ -85,7 +85,7 @@ void seUSynthesizerSetSampleRate::Redo(){
 //////////////////////
 
 void seUSynthesizerSetSampleRate::pCleanUp(){
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

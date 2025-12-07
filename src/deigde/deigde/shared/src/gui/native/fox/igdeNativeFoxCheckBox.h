@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native button.
  */
 class igdeNativeFoxCheckBox : public FXCheckButton{
-	FXDECLARE( igdeNativeFoxCheckBox )
+	FXDECLARE(igdeNativeFoxCheckBox)
 	
 protected:
 	igdeNativeFoxCheckBox();
@@ -56,14 +56,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxCheckBox( igdeCheckBox &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
+	igdeNativeFoxCheckBox(igdeCheckBox &owner, FXComposite *parent,
+		int layoutFlags, const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxCheckBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxCheckBox* CreateNativeWidget( igdeCheckBox &owner );
+	static igdeNativeFoxCheckBox* CreateNativeWidget(igdeCheckBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -85,22 +85,22 @@ public:
 	virtual void UpdateIcon();
 	virtual void UpdateEnabled();
 	
-	static const char *CheckBoxText( const igdeCheckBox &owner );
-	static FXIcon *CheckBoxIcon( const igdeCheckBox &owner );
-	static int CheckBoxFlags( const igdeCheckBox &owner );
-	static igdeFont *CheckBoxFont( const igdeCheckBox &owner, const igdeGuiTheme &guitheme );
-	static int CheckBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int CheckBoxPadRight( const igdeGuiTheme &guitheme );
-	static int CheckBoxPadTop( const igdeGuiTheme &guitheme );
-	static int CheckBoxPadBottom( const igdeGuiTheme &guitheme );
+	static const char *CheckBoxText(const igdeCheckBox &owner);
+	static FXIcon *CheckBoxIcon(const igdeCheckBox &owner);
+	static int CheckBoxFlags(const igdeCheckBox &owner);
+	static igdeFont *CheckBoxFont(const igdeCheckBox &owner, const igdeGuiTheme &guitheme);
+	static int CheckBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int CheckBoxPadRight(const igdeGuiTheme &guitheme);
+	static int CheckBoxPadTop(const igdeGuiTheme &guitheme);
+	static int CheckBoxPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onCommand( FXObject*, FXSelector, void* );
-	long onUpdate( FXObject*, FXSelector, void* );
+	long onCommand(FXObject*, FXSelector, void*);
+	long onUpdate(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

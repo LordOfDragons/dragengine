@@ -48,12 +48,12 @@ deBaseScriptingConnection::~deBaseScriptingConnection(){
 void deBaseScriptingConnection::ConnectionClosed(){
 }
 
-void deBaseScriptingConnection::MessageProgress( int ){
+void deBaseScriptingConnection::MessageProgress(int){
 }
 
-void deBaseScriptingConnection::MessageReceived( deNetworkMessage* ){
+void deBaseScriptingConnection::MessageReceived(deNetworkMessage*){
 }
 
-bool deBaseScriptingConnection::LinkState( deNetworkState*, deNetworkMessage* ){
+bool deBaseScriptingConnection::LinkState(deNetworkState*, deNetworkMessage*){
 	return false;
 }

@@ -35,8 +35,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUSetRuleFStaEnableVertexPositionSet::aeUSetRuleFStaEnableVertexPositionSet( aeRuleForeignState *rule ){
-	DEASSERT_NOTNULL( rule )
+aeUSetRuleFStaEnableVertexPositionSet::aeUSetRuleFStaEnableVertexPositionSet(aeRuleForeignState *rule){
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -44,9 +44,9 @@ aeUSetRuleFStaEnableVertexPositionSet::aeUSetRuleFStaEnableVertexPositionSet( ae
 		pRule = rule;
 		pRule->AddReference();
 		
-		SetShortInfo( "Set bone rotator rule enable vertex position set" );
+		SetShortInfo("Set bone rotator rule enable vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -62,11 +62,11 @@ aeUSetRuleFStaEnableVertexPositionSet::~aeUSetRuleFStaEnableVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleFStaEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 void aeUSetRuleFStaEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 
@@ -75,5 +75,5 @@ void aeUSetRuleFStaEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableVertexPositionSet::pCleanUp(){
-	if( pRule ) pRule->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

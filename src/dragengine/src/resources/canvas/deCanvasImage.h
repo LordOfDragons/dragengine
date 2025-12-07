@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create canvas. */
-	deCanvasImage( deCanvasManager *manager );
+	deCanvasImage(deCanvasManager *manager);
 	
 protected:
 	/**
@@ -67,28 +67,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline deImage *GetImage() const{return pImage;}
 	
 	/** \brief Set image or NULL to unset. */
-	void SetImage( deImage *image );
+	void SetImage(deImage *image);
 	
 	/** \brief Repeat count along X axis. */
-	inline int GetRepeatX() const{ return pRepeatX; }
+	inline int GetRepeatX() const{return pRepeatX;}
 	
 	/**
 	 * \brief Set repeat count along X axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatX( int count );
+	void SetRepeatX(int count);
 	
 	/** \brief Repeat count along Y axis. */
-	inline int GetRepeatY() const{ return pRepeatY; }
+	inline int GetRepeatY() const{return pRepeatY;}
 	
 	/**
 	 * \brief Set repeat count along Y axis.
 	 * \throws deeInvalidParam \em count is less than 1.
 	 */
-	void SetRepeatY( int count );
+	void SetRepeatY(int count);
 	/*@}*/
 	
 	
@@ -96,7 +96,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit canvas. */
-	virtual void Visit( deCanvasVisitor &visitor );
+	virtual void Visit(deCanvasVisitor &visitor);
 	/*@}*/
 };
 

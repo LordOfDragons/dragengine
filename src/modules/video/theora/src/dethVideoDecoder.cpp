@@ -44,23 +44,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-dethVideoDecoder::dethVideoDecoder( deVideoTheora &module, decBaseFileReader *file ) :
-deBaseVideoDecoder( file ),
-pModule( module ),
-pReader( NULL )
+dethVideoDecoder::dethVideoDecoder(deVideoTheora &module, decBaseFileReader *file) :
+deBaseVideoDecoder(file),
+pModule(module),
+pReader(NULL)
 {
 	(void)pModule;
 	dethInfos infos;
 	
 	try{
-		pReader = new dethOggReader( module, *file );
+		pReader = new dethOggReader(module, *file);
 		
-		pReader->ReadStreamHeaders( infos );
-		if( ! infos.GetHeaderFinished() ){
-			DETHROW( deeInvalidParam );
+		pReader->ReadStreamHeaders(infos);
+		if(! infos.GetHeaderFinished()){
+			DETHROW(deeInvalidParam);
 		}
-		if( ! pReader->GetStream() ){
-			DETHROW( deeInvalidParam );
+		if(! pReader->GetStream()){
+			DETHROW(deeInvalidParam);
 		}
 		
 		pWidth = infos.GetWidth();
@@ -74,28 +74,28 @@ pReader( NULL )
 		pPictureX = infos.GetInfo().pic_x;
 		pPictureY = infos.GetInfo().pic_y;
 		
-		if( infos.GetInfo().pixel_fmt == TH_PF_420 ){ // 4:2:0 format
+		if(infos.GetInfo().pixel_fmt == TH_PF_420){ // 4:2:0 format
 			pInternalPixelFormat = epf420;
 			
-		}else if( infos.GetInfo().pixel_fmt == TH_PF_422 ){ // 4:2:2 format
+		}else if(infos.GetInfo().pixel_fmt == TH_PF_422){ // 4:2:2 format
 			pInternalPixelFormat = epf422;
 			
-		}else if( infos.GetInfo().pixel_fmt == TH_PF_444 ){ // 4:4:4 format
+		}else if(infos.GetInfo().pixel_fmt == TH_PF_444){ // 4:4:4 format
 			pInternalPixelFormat = epf444;
 			
 		}else{
 			pInternalPixelFormat = epfUnsupported;
 		}
 		
-		DefConvParams( pConvParams );
+		DefConvParams(pConvParams);
 		
 		/*
-		const char *pfstrs[] = { "4:4:4", "4:2:2", "4:2:0", "-" };
-		module.LogInfoFormat( "Decoder: width=%i height=%i pixelFormat=%i "
+		const char *pfstrs[] = {"4:4:4", "4:2:2", "4:2:0", "-"};
+		module.LogInfoFormat("Decoder: width=%i height=%i pixelFormat=%i "
 			"frameCount=%i frameRate=%g frameWidth=%i frameHeight=%i pictureX=%i "
 			"pictureY=%i internalPixelFormat=%s",
 				pWidth, pHeight, pPixelFormat, pFrameCount, pFrameRate, pFrameWidth,
-				pFrameHeight, pPictureX, pPictureY, pfstrs[ pInternalPixelFormat ] );
+				pFrameHeight, pPictureX, pPictureY, pfstrs[pInternalPixelFormat]);
 		*/
 		
 		pReader->Rewind();
@@ -103,7 +103,7 @@ pReader( NULL )
 		//pReader->SeekFrame( 100 );
 		//pReader->Rewind();
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pCleanUp();
 		e.PrintError();
 		throw;
@@ -123,13 +123,13 @@ int dethVideoDecoder::GetPosition(){
 	return pReader->GetCurrentFrame();
 }
 
-void dethVideoDecoder::SetPosition( int position ){
-	pReader->SeekFrame( position );
+void dethVideoDecoder::SetPosition(int position){
+	pReader->SeekFrame(position);
 }
 
-bool dethVideoDecoder::DecodeFrame( void *buffer, int ){
+bool dethVideoDecoder::DecodeFrame(void *buffer, int){
 	th_ycbcr_buffer tbuffer;
-	if( ! pReader->GetStream()->GetDecodedFrame( tbuffer ) ){
+	if(! pReader->GetStream()->GetDecodedFrame(tbuffer)){
 		return false;
 	}
 	
@@ -167,26 +167,26 @@ bool dethVideoDecoder::DecodeFrame( void *buffer, int ){
 	//pModule.LogInfoFormat( "plane 1: width=%i height=%i stride=%i", tbuffer[ 1 ].width, tbuffer[ 1 ].height, tbuffer[ 1 ].stride );
 	//pModule.LogInfoFormat( "plane 2: width=%i height=%i stride=%i", tbuffer[ 2 ].width, tbuffer[ 2 ].height, tbuffer[ 2 ].stride );
 	
-	ptrY = tbuffer[ 0 ].data;
-	ptrCb = tbuffer[ 1 ].data;
-	ptrCr = tbuffer[ 2 ].data;
-	strideY = tbuffer[ 0 ].stride;
-	strideCb = tbuffer[ 1 ].stride;
-	strideCr = tbuffer[ 2 ].stride;
-	ptrDest = ( sRGB8* )buffer;
+	ptrY = tbuffer[0].data;
+	ptrCb = tbuffer[1].data;
+	ptrCr = tbuffer[2].data;
+	strideY = tbuffer[0].stride;
+	strideCb = tbuffer[1].stride;
+	strideCr = tbuffer[2].stride;
+	ptrDest = (sRGB8*)buffer;
 	
-	if( pInternalPixelFormat == epf444 ){
-		for( y=0; y<pHeight; y++ ){
+	if(pInternalPixelFormat == epf444){
+		for(y=0; y<pHeight; y++){
 			py = pPictureY + pHeight - 1 - y;
 			ptrLineY = ptrY + py * strideY;
 			ptrLineCb = ptrCb + py * strideCb;
 			ptrLineCr = ptrCr + py * strideCr;
 			
-			for( x=0; x<pWidth; x++ ){
+			for(x=0; x<pWidth; x++){
 				px = pPictureX + x;
-				ptrDest->red = ptrLineY[ px ];
-				ptrDest->green = ptrLineCb[ px ];
-				ptrDest->blue = ptrLineCr[ px ];
+				ptrDest->red = ptrLineY[px];
+				ptrDest->green = ptrLineCb[px];
+				ptrDest->blue = ptrLineCr[px];
 				ptrDest++;
 			}
 		}
@@ -195,19 +195,19 @@ bool dethVideoDecoder::DecodeFrame( void *buffer, int ){
 		
 		return true;
 		
-	}else if( pInternalPixelFormat == epf422 ){
-		for( y=0; y<pHeight; y++ ){
+	}else if(pInternalPixelFormat == epf422){
+		for(y=0; y<pHeight; y++){
 			py = pPictureY + pHeight - 1 - y;
 			ptrLineY = ptrY + py * strideY;
 			ptrLineCb = ptrCb + py * strideCb;
 			ptrLineCr = ptrCr + py * strideCr;
 			
-			for( x=0; x<pWidth; x++ ){
+			for(x=0; x<pWidth; x++){
 				px = pPictureX + x;
-				ptrDest->red = ptrLineY[ px ];
+				ptrDest->red = ptrLineY[px];
 				px >>= 1;
-				ptrDest->green = ptrLineCb[ px ];
-				ptrDest->blue = ptrLineCr[ px ];
+				ptrDest->green = ptrLineCb[px];
+				ptrDest->blue = ptrLineCr[px];
 				ptrDest++;
 			}
 		}
@@ -216,20 +216,20 @@ bool dethVideoDecoder::DecodeFrame( void *buffer, int ){
 		
 		return true;
 		
-	}else if( pInternalPixelFormat == epf420 ) {
-		for( y=0; y<pHeight; y++ ){
+	}else if(pInternalPixelFormat == epf420) {
+		for(y=0; y<pHeight; y++){
 			py = pPictureY + pHeight - 1 - y;
 			ptrLineY = ptrY + py * strideY;
 			py >>= 1;
 			ptrLineCb = ptrCb + py * strideCb;
 			ptrLineCr = ptrCr + py * strideCr;
 			
-			for( x=0; x<pWidth; x++ ){
+			for(x=0; x<pWidth; x++){
 				px = pPictureX + x;
-				ptrDest->red = ptrLineY[ px ];
+				ptrDest->red = ptrLineY[px];
 				px >>= 1;
-				ptrDest->green = ptrLineCb[ px ];
-				ptrDest->blue = ptrLineCr[ px ];
+				ptrDest->green = ptrLineCb[px];
+				ptrDest->blue = ptrLineCr[px];
 				ptrDest++;
 			}
 		}
@@ -244,7 +244,7 @@ bool dethVideoDecoder::DecodeFrame( void *buffer, int ){
 
 
 
-void dethVideoDecoder::DefConvParams( sConversionParamers &convParams ){
+void dethVideoDecoder::DefConvParams(sConversionParamers &convParams){
 	// offsets: 16, 128, 128
 	// exculsions: 219, 224, 224
 	// kr = 0.299
@@ -295,36 +295,36 @@ void dethVideoDecoder::DefConvParams( sConversionParamers &convParams ){
 	float kr = 0.299f;
 	float kb = 0.114f;
 	
-	float c1 = 2.0f * ( 1.0f - kr );
-	float c2 = -2.0f * ( 1.0f - kb ) * kb / ( 1.0f - kb - kr );
-	float c3 = -2.0f * ( 1.0f - kr ) * kr / ( 1.0f - kb - kr );
-	float c4 = 2.0f * ( 1.0f - kb );
+	float c1 = 2.0f * (1.0f - kr);
+	float c2 = -2.0f * (1.0f - kb) * kb / (1.0f - kb - kr);
+	float c3 = -2.0f * (1.0f - kr) * kr / (1.0f - kb - kr);
+	float c4 = 2.0f * (1.0f - kb);
 	
 	// calculate matrix from parameters
 	// | 0 1  2  3 |   | a11 a12 a13 a14 |
 	// | 4 5  6  7 | = | a21 a22 a23 a24 |
 	// | 8 9 10 11 |   | a31 a32 a33 a34 |
-	convParams.matrix[ 0 ] = 1.0f / excY;
-	convParams.matrix[ 1 ] = 0.0f;
-	convParams.matrix[ 2 ] = c1 / excCr;
-	convParams.matrix[ 3 ] = -offY / excY - c1 * offCr / excCr;
+	convParams.matrix[0] = 1.0f / excY;
+	convParams.matrix[1] = 0.0f;
+	convParams.matrix[2] = c1 / excCr;
+	convParams.matrix[3] = -offY / excY - c1 * offCr / excCr;
 	
-	convParams.matrix[ 4 ] = convParams.matrix[ 0 ];
-	convParams.matrix[ 5 ] = c2 / excCb;
-	convParams.matrix[ 6 ] = c3 / excCr;
-	convParams.matrix[ 7 ] = -offY / excY - c2 * offCb / excCb - c3 * offCr / excCr;
+	convParams.matrix[4] = convParams.matrix[0];
+	convParams.matrix[5] = c2 / excCb;
+	convParams.matrix[6] = c3 / excCr;
+	convParams.matrix[7] = -offY / excY - c2 * offCb / excCb - c3 * offCr / excCr;
 	
-	convParams.matrix[ 8 ] = convParams.matrix[ 0 ];
-	convParams.matrix[ 9 ] = c4 / excCb;
-	convParams.matrix[ 10 ] = 0.0f;
-	convParams.matrix[ 11 ] = -offY / excY - c4 * offCb / excCb;
+	convParams.matrix[8] = convParams.matrix[0];
+	convParams.matrix[9] = c4 / excCb;
+	convParams.matrix[10] = 0.0f;
+	convParams.matrix[11] = -offY / excY - c4 * offCb / excCb;
 	
 	/*
-	pModule.LogInfoFormat( "conversion constants: c1=%f c2=%f c3=%f c4=%f", c1, c2, c3, c4 );
-	pModule.LogInfo( "color conversion matrix:" );
-	pModule.LogInfoFormat( "  | %f %f %f %f |", convParams.matrix[ 0 ], convParams.matrix[ 1 ], convParams.matrix[ 2 ], convParams.matrix[ 3 ] );
-	pModule.LogInfoFormat( "  | %f %f %f %f |", convParams.matrix[ 4 ], convParams.matrix[ 5 ], convParams.matrix[ 6 ], convParams.matrix[ 7 ] );
-	pModule.LogInfoFormat( "  | %f %f %f %f |", convParams.matrix[ 8 ], convParams.matrix[ 9 ], convParams.matrix[ 10 ], convParams.matrix[ 11 ] );
+	pModule.LogInfoFormat("conversion constants: c1=%f c2=%f c3=%f c4=%f", c1, c2, c3, c4);
+	pModule.LogInfo("color conversion matrix:");
+	pModule.LogInfoFormat("  | %f %f %f %f |", convParams.matrix[0], convParams.matrix[1], convParams.matrix[2], convParams.matrix[3]);
+	pModule.LogInfoFormat("  | %f %f %f %f |", convParams.matrix[4], convParams.matrix[5], convParams.matrix[6], convParams.matrix[7]);
+	pModule.LogInfoFormat("  | %f %f %f %f |", convParams.matrix[8], convParams.matrix[9], convParams.matrix[10], convParams.matrix[11]);
 	*/
 	
 	// for the default values above the constants and matrix take these values:
@@ -348,62 +348,62 @@ void dethVideoDecoder::DefConvParams( sConversionParamers &convParams ){
 	convParams.c4 = 1.772f;
 }
 /*
-void dethVideoDecoder::ConvertColors( void *buffer ){
-	sRGB8 *pixels = ( sRGB8* )buffer;
+void dethVideoDecoder::ConvertColors(void *buffer){
+	sRGB8 *pixels = (sRGB8*)buffer;
 	int p, pixelCount = pWidth * pHeight;
 	float y, pb, pr;
 	int value;
 	
-	for( p=0; p<pixelCount; p++ ){
-		y = ( float )( pixels->red - pConvParams.offY ) * pConvParams.exclY;
-		pb = ( float )( pixels->green - pConvParams.offCb ) * pConvParams.exclCb;
-		pr = ( float )( pixels->blue - pConvParams.offCr ) * pConvParams.exclCr;
+	for(p=0; p<pixelCount; p++){
+		y = (float)(pixels->red - pConvParams.offY) * pConvParams.exclY;
+		pb = (float)(pixels->green - pConvParams.offCb) * pConvParams.exclCb;
+		pr = (float)(pixels->blue - pConvParams.offCr) * pConvParams.exclCr;
 		
-		value = ( int )( ( y + pConvParams.c1 * pr ) * 255.0f );
-		if( value < 0 ) value = 0;
-		if( value > 255 ) value = 255;
+		value = (int)((y + pConvParams.c1 * pr) * 255.0f);
+		if(value < 0) value = 0;
+		if(value > 255) value = 255;
 		pixels->red = value;
 		
-		value = ( int )( ( y + pConvParams.c2 * pb + pConvParams.c3 * pr ) * 255.0f );
-		if( value < 0 ) value = 0;
-		if( value > 255 ) value = 255;
+		value = (int)((y + pConvParams.c2 * pb + pConvParams.c3 * pr) * 255.0f);
+		if(value < 0) value = 0;
+		if(value > 255) value = 255;
 		pixels->green = value;
 		
-		value = ( int )( ( y + pConvParams.c4 * pb ) * 255.0f );
-		if( value < 0 ) value = 0;
-		if( value > 255 ) value = 255;
+		value = (int)((y + pConvParams.c4 * pb) * 255.0f);
+		if(value < 0) value = 0;
+		if(value > 255) value = 255;
 		pixels->blue = value;
 		
 		pixels++;
 	}
 }
 */
-void dethVideoDecoder::ConvertColors( void *buffer ){
-	sRGB8 *pixels = ( sRGB8* )buffer;
+void dethVideoDecoder::ConvertColors(void *buffer){
+	sRGB8 *pixels = (sRGB8*)buffer;
 	int p, pixelCount = pWidth * pHeight;
 	decColor color;
 	int value;
 	
-	for( p=0; p<pixelCount; p++ ){
-		color.r = ( float )pixels->red / 255.0f;
-		color.g = ( float )pixels->green / 255.0f;
-		color.b = ( float )pixels->blue / 255.0f;
+	for(p=0; p<pixelCount; p++){
+		color.r = (float)pixels->red / 255.0f;
+		color.g = (float)pixels->green / 255.0f;
+		color.b = (float)pixels->blue / 255.0f;
 		
 		color = pClrConvMat * color;
 		
-		value = ( int )( color.r * 255.0f );
-		if( value < 0 ) value = 0;
-		if( value > 255 ) value = 255;
+		value = (int)(color.r * 255.0f);
+		if(value < 0) value = 0;
+		if(value > 255) value = 255;
 		pixels->red = value;
 		
-		value = ( int )( color.g * 255.0f );
-		if( value < 0 ) value = 0;
-		if( value > 255 ) value = 255;
+		value = (int)(color.g * 255.0f);
+		if(value < 0) value = 0;
+		if(value > 255) value = 255;
 		pixels->green = value;
 		
-		value = ( int )( color.b * 255.0f );
-		if( value < 0 ) value = 0;
-		if( value > 255 ) value = 255;
+		value = (int)(color.b * 255.0f);
+		if(value < 0) value = 0;
+		if(value > 255) value = 255;
 		pixels->blue = value;
 		
 		pixels++;
@@ -416,7 +416,7 @@ void dethVideoDecoder::ConvertColors( void *buffer ){
 //////////////////////
 
 void dethVideoDecoder::pCleanUp(){
-	if( pReader ){
+	if(pReader){
 		delete pReader;
 	}
 }

@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPropertyAdd::gdeUGDWPropertyAdd( gdeGameDefinition *gamedef, gdeProperty *property ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDWPropertyAdd::gdeUGDWPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! gamedef || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition add property" );
+	SetShortInfo("Game definition add property");
 	
 	pGameDefinition = gamedef;
 	gamedef->AddReference();
@@ -58,10 +58,10 @@ pProperty( NULL )
 }
 
 gdeUGDWPropertyAdd::~gdeUGDWPropertyAdd(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -72,11 +72,11 @@ gdeUGDWPropertyAdd::~gdeUGDWPropertyAdd(){
 ///////////////
 
 void gdeUGDWPropertyAdd::Undo(){
-	pGameDefinition->GetWorldProperties().Remove( pProperty );
+	pGameDefinition->GetWorldProperties().Remove(pProperty);
 	pGameDefinition->NotifyWorldPropertiesChanged();
 }
 
 void gdeUGDWPropertyAdd::Redo(){
-	pGameDefinition->GetWorldProperties().Add( pProperty );
+	pGameDefinition->GetWorldProperties().Add(pProperty);
 	pGameDefinition->NotifyWorldPropertiesChanged();
 }

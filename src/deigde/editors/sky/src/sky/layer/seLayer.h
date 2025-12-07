@@ -71,7 +71,7 @@ private:
 	seBodyList pBodies;
 	seBody *pActiveBody;
 	
-	seControllerTarget pTargets[ deSkyLayer::etAmbientIntensity + 1 ];
+	seControllerTarget pTargets[deSkyLayer::etAmbientIntensity + 1];
 	deSkyLayer::eTargets pActiveTarget;
 	
 	bool pSelected;
@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create layer. */
-	seLayer( igdeEnvironment &environment );
+	seLayer(igdeEnvironment &environment);
 	
 	/** \brief Clean up layer. */
 	virtual ~seLayer();
@@ -98,106 +98,106 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine. */
-	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironment &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parent sky or \em NULL. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline seSky *GetSky() const{return pSky;}
 	
 	/** \brief Set parent sky or \em NULL. */
-	void SetSky( seSky *sky );
+	void SetSky(seSky *sky);
 	
 	/** \brief Offset. */
-	inline const decVector &GetOffset() const{ return pOffset; }
+	inline const decVector &GetOffset() const{return pOffset;}
 	
 	/** \brief Set offset. */
-	void SetOffset( const decVector &offset );
+	void SetOffset(const decVector &offset);
 	
 	/** \brief Orientation. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	
 	/** \brief Set blending color. */
-	void SetColor( const decColor &color );
+	void SetColor(const decColor &color);
 	
 	/** \brief Intensity. */
-	inline float GetIntensity() const{ return pIntensity; }
+	inline float GetIntensity() const{return pIntensity;}
 	
 	/** \brief Set intensity. */
-	void SetIntensity( float intensity );
+	void SetIntensity(float intensity);
 	
 	/** \brief Transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	
 	/** \brief Set transparency. */
-	void SetTransparency( float transparency );
+	void SetTransparency(float transparency);
 	
 	/** \brief Skin path. */
-	inline const decString &GetSkinPath() const{ return pPathSkin; }
+	inline const decString &GetSkinPath() const{return pPathSkin;}
 	
 	/** \brief Set skin path. */
-	void SetSkinPath( const char *skinPath );
+	void SetSkinPath(const char *skinPath);
 	
 	/** \brief Engine skin or \em NULL. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline deSkin *GetEngineSkin() const{return pEngSkin;}
 	
 	/** \brief Light orientation. */
-	inline const decVector &GetLightOrientation() const{ return pLightOrientation; }
+	inline const decVector &GetLightOrientation() const{return pLightOrientation;}
 	
 	/** \brief Set light orientation. */
-	void SetLightOrientation( const decVector &orientation );
+	void SetLightOrientation(const decVector &orientation);
 	
 	/** \brief Light color. */
-	inline const decColor &GetLightColor() const{ return pLightColor; }
+	inline const decColor &GetLightColor() const{return pLightColor;}
 	
 	/** \brief Set light color. */
-	void SetLightColor( const decColor &color );
+	void SetLightColor(const decColor &color);
 	
 	/** \brief Light intensity. */
-	inline float GetLightIntensity() const{ return pLightIntensity; }
+	inline float GetLightIntensity() const{return pLightIntensity;}
 	
 	/** \brief Set light intensity. */
-	void SetLightIntensity( float intensity );
+	void SetLightIntensity(float intensity);
 	
 	/** \brief Ambient light intensity. */
-	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
+	inline float GetAmbientIntensity() const{return pAmbientIntensity;}
 	
 	/** \brief Set ambient light intensity. */
-	void SetAmbientIntensity( float intensity );
+	void SetAmbientIntensity(float intensity);
 	
 	/** \brief Layer intensity is multiplied by total sky light intensity. */
-	inline bool GetMuliplyBySkyLight() const{ return pMulBySkyLight; }
+	inline bool GetMuliplyBySkyLight() const{return pMulBySkyLight;}
 	
 	/** \brief Set if layer intensity is multiplied by total sky light intensity. */
-	void SetMultiplyBySkyLight( bool multiply );
+	void SetMultiplyBySkyLight(bool multiply);
 	
 	/** \brief Layer color is multiplied by total sky light color. */
-	inline bool GetMuliplyBySkyColor() const{ return pMulBySkyColor; }
+	inline bool GetMuliplyBySkyColor() const{return pMulBySkyColor;}
 	
 	/** \brief Set if layer color is multiplied by total sky light color. */
-	void SetMultiplyBySkyColor( bool multiply );
+	void SetMultiplyBySkyColor(bool multiply);
 	
 	/** \brief Layer is active one. */
-	inline bool GetActive() const{ return pActive; }
+	inline bool GetActive() const{return pActive;}
 	
 	/** \brief Set if layer is active one. */
-	void SetActive( bool active );
+	void SetActive(bool active);
 	
 	/** \brief Layer is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** \brief Set if layer is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	/** \brief Update relative resources after changing the base path. */
 	void UpdateRelativeResources();
@@ -208,28 +208,28 @@ public:
 	/** \name Bodies */
 	/*@{*/
 	/** \brief Bodies. */
-	const seBodyList &GetBodies() const{ return pBodies; }
+	const seBodyList &GetBodies() const{return pBodies;}
 	
 	/** \brief Add body. */
-	void AddBody( seBody *body );
+	void AddBody(seBody *body);
 	
 	/** \brief Insert body. */
-	void InsertBodyAt( seBody *body, int index );
+	void InsertBodyAt(seBody *body, int index);
 	
 	/** \brief Move body. */
-	void MoveBodyTo( seBody *body, int index );
+	void MoveBodyTo(seBody *body, int index);
 	
 	/** \brief Removes body. */
-	void RemoveBody( seBody *body );
+	void RemoveBody(seBody *body);
 	
 	/** \brief Remove all bodies. */
 	void RemoveAllBodies();
 	
 	/** \brief Active body or \em NULL. */
-	inline seBody *GetActiveBody() const{ return pActiveBody; }
+	inline seBody *GetActiveBody() const{return pActiveBody;}
 	
 	/** \brief Set active body or \em NULL. */
-	void SetActiveBody( seBody *body );
+	void SetActiveBody(seBody *body);
 	/*@}*/
 	
 	
@@ -237,17 +237,17 @@ public:
 	/** \name Targets */
 	/*@{*/
 	/** \brief Target. */
-	const seControllerTarget &GetTarget( deSkyLayer::eTargets target ) const;
-	seControllerTarget &GetTarget( deSkyLayer::eTargets target );
+	const seControllerTarget &GetTarget(deSkyLayer::eTargets target) const;
+	seControllerTarget &GetTarget(deSkyLayer::eTargets target);
 	
 	/** \brief Active target. */
-	inline deSkyLayer::eTargets GetActiveTarget() const{ return pActiveTarget; }
+	inline deSkyLayer::eTargets GetActiveTarget() const{return pActiveTarget;}
 	
 	/** \brief Set active target. */
-	void SetActiveTarget( deSkyLayer::eTargets target );
+	void SetActiveTarget(deSkyLayer::eTargets target);
 	
 	/** \brief Notify listeners target changed. */
-	void NotifyTargetChanged( deSkyLayer::eTargets target );
+	void NotifyTargetChanged(deSkyLayer::eTargets target);
 	/*@}*/
 	
 	

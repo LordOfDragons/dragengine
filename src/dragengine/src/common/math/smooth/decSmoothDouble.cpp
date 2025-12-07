@@ -36,29 +36,29 @@
 ////////////////////////////
 
 decSmoothDouble::decSmoothDouble() :
-pValue( 0.0 ),
-pGoal( 0.0 ),
-pAdjustTime( 1.0 ),
-pAdjustRange( 1.0 ),
-pChangeSpeed( 0.0 ),
-pFactorTime( 0.0 ),
-pFactorLimit( 0.0 ),
-pFactorDrop( 0.0 ),
-pSmoothed( true )
+pValue(0.0),
+pGoal(0.0),
+pAdjustTime(1.0),
+pAdjustRange(1.0),
+pChangeSpeed(0.0),
+pFactorTime(0.0),
+pFactorLimit(0.0),
+pFactorDrop(0.0),
+pSmoothed(true)
 {
 	pUpdateFactors();
 }
 
-decSmoothDouble::decSmoothDouble( const decSmoothDouble &copy ) :
-pValue( copy.pValue ),
-pGoal( copy.pGoal ),
-pAdjustTime( copy.pAdjustTime ),
-pAdjustRange( copy.pAdjustRange ),
-pChangeSpeed( copy.pChangeSpeed ),
-pFactorTime( copy.pFactorTime ),
-pFactorLimit( copy.pFactorLimit ),
-pFactorDrop( copy.pFactorDrop ),
-pSmoothed( copy.pSmoothed )
+decSmoothDouble::decSmoothDouble(const decSmoothDouble &copy) :
+pValue(copy.pValue),
+pGoal(copy.pGoal),
+pAdjustTime(copy.pAdjustTime),
+pAdjustRange(copy.pAdjustRange),
+pChangeSpeed(copy.pChangeSpeed),
+pFactorTime(copy.pFactorTime),
+pFactorLimit(copy.pFactorLimit),
+pFactorDrop(copy.pFactorDrop),
+pSmoothed(copy.pSmoothed)
 {
 }
 
@@ -70,25 +70,25 @@ decSmoothDouble::~decSmoothDouble(){
 // Management
 ///////////////
 
-void decSmoothDouble::SetValue( double value ){
+void decSmoothDouble::SetValue(double value){
 	pValue = value;
 }
 
-void decSmoothDouble::SetGoal( double goal ){
+void decSmoothDouble::SetGoal(double goal){
 	pGoal = goal;
 }
 
-void decSmoothDouble::SetAdjustTime( double adjustTime ){
-	pAdjustTime = decMath::max( adjustTime, 0.0 );
+void decSmoothDouble::SetAdjustTime(double adjustTime){
+	pAdjustTime = decMath::max(adjustTime, 0.0);
 	pUpdateFactors();
 }
 
-void decSmoothDouble::SetAdjustRange( double range ){
-	pAdjustRange = decMath::max( range, 0.0 );
+void decSmoothDouble::SetAdjustRange(double range){
+	pAdjustRange = decMath::max(range, 0.0);
 	pUpdateFactors();
 }
 
-void decSmoothDouble::SetChangeSpeed( double changeSpeed ){
+void decSmoothDouble::SetChangeSpeed(double changeSpeed){
 	pChangeSpeed = changeSpeed;
 }
 
@@ -100,47 +100,47 @@ void decSmoothDouble::Reset(){
 	pChangeSpeed = 0.0;
 }
 
-void decSmoothDouble::Update( double elapsed ){
-	if( elapsed < 0.001 ){
+void decSmoothDouble::Update(double elapsed){
+	if(elapsed < 0.001){
 		return;
 	}
 	
 	double value = pGoal;
 	
-	if( pSmoothed ){
-		const double factorTime = decMath::min( elapsed * pFactorTime, 1.0 );
+	if(pSmoothed){
+		const double factorTime = decMath::min(elapsed * pFactorTime, 1.0);
 		const double maxAdjust = value - pValue;
 		double adjustValue = maxAdjust * factorTime;
 		
 		const double drop = pFactorDrop * elapsed;
-		if( maxAdjust > 0.0 ){
+		if(maxAdjust > 0.0){
 			adjustValue += drop;
-			if( adjustValue > maxAdjust ){
+			if(adjustValue > maxAdjust){
 				adjustValue = maxAdjust;
 			}
 			
 		}else{
 			adjustValue -= drop;
-			if( adjustValue < maxAdjust ){
+			if(adjustValue < maxAdjust){
 				adjustValue = maxAdjust;
 			}
 		}
 		
-		const double changeSpeedDifference = ( adjustValue / elapsed ) - pChangeSpeed;
+		const double changeSpeedDifference = (adjustValue / elapsed) - pChangeSpeed;
 		
 		const double limitChangeSpeed = pFactorLimit * elapsed;
 		
-		if( changeSpeedDifference > limitChangeSpeed && pValue < value ){
-			adjustValue = ( pChangeSpeed + limitChangeSpeed ) * elapsed;
+		if(changeSpeedDifference > limitChangeSpeed && pValue < value){
+			adjustValue = (pChangeSpeed + limitChangeSpeed) * elapsed;
 			
-		}else if( changeSpeedDifference < -limitChangeSpeed && pValue > value ){
-			adjustValue = ( pChangeSpeed - limitChangeSpeed ) * elapsed;
+		}else if(changeSpeedDifference < -limitChangeSpeed && pValue > value){
+			adjustValue = (pChangeSpeed - limitChangeSpeed) * elapsed;
 		}
 		
 		value = pValue + adjustValue;
 	}
 	
-	pChangeSpeed = ( value - pValue ) / elapsed;
+	pChangeSpeed = (value - pValue) / elapsed;
 	pValue = value;
 }
 
@@ -149,15 +149,15 @@ void decSmoothDouble::Update( double elapsed ){
 // Operators
 //////////////
 
-bool decSmoothDouble::operator==( const decSmoothDouble &other ) const{
-	return fabs( pValue - other.pValue ) < DOUBLE_SAFE_EPSILON;
+bool decSmoothDouble::operator==(const decSmoothDouble &other) const{
+	return fabs(pValue - other.pValue) < DOUBLE_SAFE_EPSILON;
 }
 
-bool decSmoothDouble::operator!=( const decSmoothDouble &other ) const{
-	return fabs( pValue - other.pValue ) >= DOUBLE_SAFE_EPSILON;
+bool decSmoothDouble::operator!=(const decSmoothDouble &other) const{
+	return fabs(pValue - other.pValue) >= DOUBLE_SAFE_EPSILON;
 }
 
-decSmoothDouble &decSmoothDouble::operator=( const decSmoothDouble &other ){
+decSmoothDouble &decSmoothDouble::operator=(const decSmoothDouble &other){
 	pValue = other.pValue;
 	pGoal = other.pGoal;
 	pAdjustTime = other.pAdjustTime;
@@ -176,7 +176,7 @@ decSmoothDouble &decSmoothDouble::operator=( const decSmoothDouble &other ){
 //////////////////////
 
 void decSmoothDouble::pUpdateFactors(){
-	if( pAdjustTime < 0.001 ){
+	if(pAdjustTime < 0.001){
 		pFactorTime = 0.0;
 		pFactorLimit = 0.0;
 		pFactorDrop = 0.0;
@@ -184,7 +184,7 @@ void decSmoothDouble::pUpdateFactors(){
 		
 	}else{
 		pFactorTime = 4.0 / pAdjustTime;
-		pFactorLimit = pow( 4.0, 1.0 + log( 1.0 / pAdjustTime ) / log( 2.0 ) ) * pAdjustRange;
+		pFactorLimit = pow(4.0, 1.0 + log(1.0 / pAdjustTime) / log(2.0)) * pAdjustRange;
 		pFactorDrop = pAdjustRange * 0.0025 / pAdjustTime; // 0.25% drop of entire range over entire time
 		pSmoothed = true;
 	}

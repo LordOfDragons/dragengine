@@ -73,7 +73,7 @@
 	static decTimer timer;
 	
 	#define DEBUG_RESET_TIMERS	timer.Reset(); timerTotal.Reset()
-	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat( "Rule State Snapshot = %iys", ( int )( timer.GetElapsedTime() * 1000000.0 ) )
+	#define DEBUG_PRINT_TIMER	GetModule().LogInfoFormat("Rule State Snapshot = %iys", (int)(timer.GetElapsedTime() * 1000000.0))
 #else
 	#define DEBUG_RESET_TIMERS
 	#define DEBUG_PRINT_TIMER
@@ -84,30 +84,30 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleStateSnapshot::dearRuleStateSnapshot( dearAnimatorInstance &instance,
-const dearAnimator &animator, int firstLink, const deAnimatorRuleStateSnapshot &rule ) :
-dearRule( instance, animator, firstLink, rule ),
+dearRuleStateSnapshot::dearRuleStateSnapshot(dearAnimatorInstance &instance,
+const dearAnimator &animator, int firstLink, const deAnimatorRuleStateSnapshot &rule) :
+dearRule(instance, animator, firstLink, rule),
 //pStateSnapshot( rule ),
 
-pAnimStates( nullptr ),
-pAnimStateCount( 0 ),
+pAnimStates(nullptr),
+pAnimStateCount(0),
 
-pAnimVPSStates( nullptr ),
-pAnimVPSStateCount( 0 ),
+pAnimVPSStates(nullptr),
+pAnimVPSStateCount(0),
 
-pEnablePosition( rule.GetEnablePosition() ),
-pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() ),
-pEnableVPS( rule.GetEnableVertexPositionSet() ),
-pUseLastState( rule.GetUseLastState() ),
-pID( rule.GetID() )
+pEnablePosition(rule.GetEnablePosition()),
+pEnableOrientation(rule.GetEnableOrientation()),
+pEnableSize(rule.GetEnableSize()),
+pEnableVPS(rule.GetEnableVertexPositionSet()),
+pUseLastState(rule.GetUseLastState()),
+pID(rule.GetID())
 {
 	instance.SetCaptureComponentState(); // gives us access to a captured state during apply
 	RuleChanged();
 }
 
 dearRuleStateSnapshot::~dearRuleStateSnapshot(){
-	if( pAnimStates ){
+	if(pAnimStates){
 		delete [] pAnimStates;
 	}
 }
@@ -117,14 +117,14 @@ dearRuleStateSnapshot::~dearRuleStateSnapshot(){
 // Management
 ///////////////
 
-void dearRuleStateSnapshot::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
+void dearRuleStateSnapshot::Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
+	if(! GetEnabled()){
 		return;
 	}
 	
 	const float blendFactor = GetBlendFactor();
-	if( blendFactor < FLOAT_SAFE_EPSILON ){
+	if(blendFactor < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
@@ -134,90 +134,90 @@ DEBUG_RESET_TIMERS;
 	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
-	if( pUseLastState ){
+	if(pUseLastState){
 		dearComponent * const arcomponent = instance.GetComponent();
 		
-		if( arcomponent ){
-			for( i=0; i<boneCount; i++ ){
-				const int animatorBone = GetBoneMappingFor( i );
-				if( animatorBone == -1 ){
+		if(arcomponent){
+			for(i=0; i<boneCount; i++){
+				const int animatorBone = GetBoneMappingFor(i);
+				if(animatorBone == -1){
 					continue;
 				}
 				
-				dearBoneState &state = *stalist.GetStateAt( animatorBone );
-				if( state.GetRigIndex() == -1 ){
+				dearBoneState &state = *stalist.GetStateAt(animatorBone);
+				if(state.GetRigIndex() == -1){
 					continue;
 				}
 				
-				stalist.GetStateAt( animatorBone )->BlendWith(
-					arcomponent->GetBoneStateAt( state.GetRigIndex() ), blendMode,
-					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				stalist.GetStateAt(animatorBone)->BlendWith(
+					arcomponent->GetBoneStateAt(state.GetRigIndex()), blendMode,
+					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
-			for( i=0; i<vpsCount; i++ ){
-				const int animatorVps = GetVPSMappingFor( i );
-				if( animatorVps == -1 ){
+			for(i=0; i<vpsCount; i++){
+				const int animatorVps = GetVPSMappingFor(i);
+				if(animatorVps == -1){
 					continue;
 				}
 				
-				dearVPSState &state = vpsstalist.GetStateAt( animatorVps );
-				if( state.GetModelIndex() == -1 ){
+				dearVPSState &state = vpsstalist.GetStateAt(animatorVps);
+				if(state.GetModelIndex() == -1){
 					continue;
 				}
 				
-				vpsstalist.GetStateAt( animatorVps ).BlendWith(
-					arcomponent->GetVPSStateAt( state.GetModelIndex() ),
-					blendMode, blendFactor, pEnableVPS );
+				vpsstalist.GetStateAt(animatorVps).BlendWith(
+					arcomponent->GetVPSStateAt(state.GetModelIndex()),
+					blendMode, blendFactor, pEnableVPS);
 			}
 			
 		}else{
-			for( i=0; i<boneCount; i++ ){
-				const int animatorBone = GetBoneMappingFor( i );
-				if( animatorBone == -1 ){
+			for(i=0; i<boneCount; i++){
+				const int animatorBone = GetBoneMappingFor(i);
+				if(animatorBone == -1){
 					continue;
 				}
 				
-				stalist.GetStateAt( animatorBone )->BlendWithDefault( blendMode,
-					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				stalist.GetStateAt(animatorBone)->BlendWithDefault(blendMode,
+					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 			}
 			
-			for( i=0; i<vpsCount; i++ ){
-				const int animatorVps = GetVPSMappingFor( i );
-				if( animatorVps == -1 ){
+			for(i=0; i<vpsCount; i++){
+				const int animatorVps = GetVPSMappingFor(i);
+				if(animatorVps == -1){
 					continue;
 				}
 				
-				vpsstalist.GetStateAt( animatorVps ).BlendWithDefault(
-					blendMode, blendFactor, pEnableVPS );
+				vpsstalist.GetStateAt(animatorVps).BlendWithDefault(
+					blendMode, blendFactor, pEnableVPS);
 			}
 		}
 		
 	}else{
-		for( i=0; i<boneCount; i++ ){
-			const int animatorBone = GetBoneMappingFor( i );
-			if( animatorBone == -1 ){
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
 				continue;
 			}
 			
-			stalist.GetStateAt( animatorBone )->BlendWith( pAnimStates[ i ],
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			stalist.GetStateAt(animatorBone)->BlendWith(pAnimStates[i],
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize);
 		}
 		
-		for( i=0; i<vpsCount; i++ ){
-			const int animatorVps = GetVPSMappingFor( i );
-			if( animatorVps == -1 ){
+		for(i=0; i<vpsCount; i++){
+			const int animatorVps = GetVPSMappingFor(i);
+			if(animatorVps == -1){
 				continue;
 			}
 			
-			vpsstalist.GetStateAt( animatorVps ).BlendWith( pAnimVPSStates[ i ],
-				blendMode, blendFactor, pEnableVPS );
+			vpsstalist.GetStateAt(animatorVps).BlendWith(pAnimVPSStates[i],
+				blendMode, blendFactor, pEnableVPS);
 		}
 	}
 DEBUG_PRINT_TIMER;
 }
 
-void dearRuleStateSnapshot::CaptureStateInto( int identifier ){
-	if( pUseLastState || pID != identifier ){
+void dearRuleStateSnapshot::CaptureStateInto(int identifier){
+	if(pUseLastState || pID != identifier){
 		return;
 	}
 	
@@ -229,47 +229,47 @@ void dearRuleStateSnapshot::CaptureStateInto( int identifier ){
 	const dearComponent * const arcomponent = instance.GetComponent();
 	int i;
 	
-	if( arcomponent ){
+	if(arcomponent){
 		deComponent &component = arcomponent->GetComponent();
 		
-		for( i=0; i<boneCount; i++ ){
-			const int animatorBone = GetBoneMappingFor( i );
-			if( animatorBone == -1 ){
-				pAnimStates[ i ].Reset();
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
+				pAnimStates[i].Reset();
 				continue;
 			}
 			
-			const deComponentBone &componentBone = component.GetBoneAt( animatorBone );
-			pAnimStates[ i ].SetPosition( componentBone.GetPosition() );
-			pAnimStates[ i ].SetOrientation( componentBone.GetRotation() );
-			pAnimStates[ i ].SetSize( componentBone.GetScale() );
+			const deComponentBone &componentBone = component.GetBoneAt(animatorBone);
+			pAnimStates[i].SetPosition(componentBone.GetPosition());
+			pAnimStates[i].SetOrientation(componentBone.GetRotation());
+			pAnimStates[i].SetSize(componentBone.GetScale());
 		}
 		
-		for( i=0; i<vpsCount; i++ ){
-			const int animatorVps = GetVPSMappingFor( i );
-			if( animatorVps == -1 ){
-				pAnimVPSStates[ i ].Reset();
+		for(i=0; i<vpsCount; i++){
+			const int animatorVps = GetVPSMappingFor(i);
+			if(animatorVps == -1){
+				pAnimVPSStates[i].Reset();
 				continue;
 			}
 			
-			pAnimVPSStates[ i ].SetWeight( component.GetVertexPositionSetWeightAt( animatorVps ) );
+			pAnimVPSStates[i].SetWeight(component.GetVertexPositionSetWeightAt(animatorVps));
 		}
 		
 	}else{
-		for( i=0; i<boneCount; i++ ){
-			pAnimStates[ i ].Reset();
+		for(i=0; i<boneCount; i++){
+			pAnimStates[i].Reset();
 		}
 		
-		for( i=0; i<vpsCount; i++ ){
-			pAnimVPSStates[ i ].Reset();
+		for(i=0; i<vpsCount; i++){
+			pAnimVPSStates[i].Reset();
 		}
 	}
 }
 
-void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName, float moveTime ){
-	DEASSERT_NOTNULL( moveName )
+void dearRuleStateSnapshot::StoreFrameInto(int identifier, const char *moveName, float moveTime){
+	DEASSERT_NOTNULL(moveName)
 	
-	if( pUseLastState || pID != identifier ){
+	if(pUseLastState || pID != identifier){
 		return;
 	}
 	
@@ -284,79 +284,79 @@ void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName
 	
 	const dearAnimation * const animation = GetUseAnimation();
 	dearAnimationMove *move = nullptr;
-	if( animation ){
-		move = animation->GetMoveNamed( moveName );
+	if(animation){
+		move = animation->GetMoveNamed(moveName);
 	}
 	
-	if( move ){
+	if(move){
 		const deAnimation &engAnimation = *animation->GetAnimation();
 		
-		for( i=0; i<boneCount; i++ ){
-			const int animatorBone = GetBoneMappingFor( i );
-			if( animatorBone == -1 ){
+		for(i=0; i<boneCount; i++){
+			const int animatorBone = GetBoneMappingFor(i);
+			if(animatorBone == -1){
 				continue;
 			}
 			
 			const int animationBone = engAnimation.FindBone(
-				stateList.GetStateAt( animatorBone )->GetRigBoneName() );
-			if( animationBone == -1 ){
-				pAnimStates[ i ].Reset();
+				stateList.GetStateAt(animatorBone)->GetRigBoneName());
+			if(animationBone == -1){
+				pAnimStates[i].Reset();
 				continue;
 			}
 			
 			// determine keyframe containing the move time
-			const dearAnimationKeyframeList &kflist = *move->GetKeyframeListAt( animationBone );
-			const dearAnimationKeyframe * const keyframe = kflist.GetWithTime( moveTime );
+			const dearAnimationKeyframeList &kflist = *move->GetKeyframeListAt(animationBone);
+			const dearAnimationKeyframe * const keyframe = kflist.GetWithTime(moveTime);
 			
 			// if there are no keyframes use the default state
-			if( ! keyframe ){
-				pAnimStates[ i ].Reset();
+			if(! keyframe){
+				pAnimStates[i].Reset();
 				continue;
 			}
 			
 			// calculate bone data
 			const float time = moveTime - keyframe->GetTime();
 			
-			pAnimStates[ i ].SetPosition( keyframe->InterpolatePosition( time ) );
-			pAnimStates[ i ].SetOrientation( keyframe->InterpolateRotation( time ) );
-			pAnimStates[ i ].SetSize( keyframe->InterpolateScaling( time ) );
+			pAnimStates[i].SetPosition(keyframe->InterpolatePosition(time));
+			pAnimStates[i].SetOrientation(keyframe->InterpolateRotation(time));
+			pAnimStates[i].SetSize(keyframe->InterpolateScaling(time));
 		}
 		
-		for( i=0; i<vpsCount; i++ ){
-			const int animatorVps = GetVPSMappingFor( i );
-			if( animatorVps == -1 ){
+		for(i=0; i<vpsCount; i++){
+			const int animatorVps = GetVPSMappingFor(i);
+			if(animatorVps == -1){
 				continue;
 			}
 			
 			const int animationVps = engAnimation.GetVertexPositionSets().IndexOf(
-				vpsstateList.GetStateAt( animatorVps ).GetName() );
-			if( animationVps == -1 ){
-				pAnimVPSStates[ i ].Reset();
+				vpsstateList.GetStateAt(animatorVps).GetName());
+			if(animationVps == -1){
+				pAnimVPSStates[i].Reset();
 				continue;
 			}
 			
 			// determine keyframe containing the move time
-			const dearAnimationKeyframeVPSList &kflist = *move->GetKeyframeVPSListAt( animationVps );
-			const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime( moveTime );
+			const dearAnimationKeyframeVPSList &kflist = *move->GetKeyframeVPSListAt(animationVps);
+			const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime(moveTime);
 			
 			// if there are no keyframes use the default state
-			if( ! keyframe ){
-				pAnimVPSStates[ i ].Reset();
+			if(! keyframe){
+				pAnimVPSStates[i].Reset();
 				continue;
 			}
 			
 			// calculate bone data
 			const float time = moveTime - keyframe->GetTime();
-			pAnimVPSStates[ i ].SetWeight( keyframe->InterpolateWeight( time ) );
+			pAnimVPSStates[i].SetWeight(keyframe->InterpolateWeight(time));
 		}
 		
 	}else{
-		for( i=0; i<boneCount; i++ ){
-			pAnimStates[ i ].Reset();
+		for(i=0; i<boneCount; i++){
+			pAnimStates[i].Reset();
 		}
 		
-		for( i=0; i<vpsCount; i++ ){
-			pAnimVPSStates[ i ].Reset();
+		for(i=0; i<vpsCount; i++){
+			pAnimVPSStates[i].Reset();
 		}
 	}
 }
@@ -364,7 +364,7 @@ void dearRuleStateSnapshot::StoreFrameInto( int identifier, const char *moveName
 void dearRuleStateSnapshot::RuleChanged(){
 	dearRule::RuleChanged();
 	
-	if( ! pUseLastState ){
+	if(! pUseLastState){
 		pUpdateStates();
 		pUpdateVPSStates();
 	}
@@ -377,36 +377,36 @@ void dearRuleStateSnapshot::RuleChanged(){
 
 void dearRuleStateSnapshot::pUpdateStates(){
 	const int boneCount = GetBoneMappingCount();
-	if( pAnimStateCount == boneCount ){
+	if(pAnimStateCount == boneCount){
 		return;
 	}
 	
-	if( pAnimStates ){
+	if(pAnimStates){
 		delete [] pAnimStates;
 		pAnimStates = nullptr;
 		pAnimStateCount = 0;
 	}
 	
-	if( boneCount > 0 ){
-		pAnimStates = new dearAnimationState[ boneCount ];
+	if(boneCount > 0){
+		pAnimStates = new dearAnimationState[boneCount];
 		pAnimStateCount = boneCount;
 	}
 }
 
 void dearRuleStateSnapshot::pUpdateVPSStates(){
 	const int vpsCount = GetVPSMappingCount();
-	if( pAnimVPSStateCount == vpsCount ){
+	if(pAnimVPSStateCount == vpsCount){
 		return;
 	}
 	
-	if( pAnimVPSStates ){
+	if(pAnimVPSStates){
 		delete [] pAnimVPSStates;
 		pAnimVPSStates = nullptr;
 		pAnimVPSStateCount = 0;
 	}
 	
-	if( vpsCount > 0 ){
-		pAnimVPSStates = new dearAnimationVPSState[ vpsCount ];
+	if(vpsCount > 0){
+		pAnimVPSStates = new dearAnimationVPSState[vpsCount];
 		pAnimVPSStateCount = vpsCount;
 	}
 }

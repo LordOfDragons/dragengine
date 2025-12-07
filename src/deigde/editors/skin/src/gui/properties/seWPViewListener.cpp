@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPViewListener::seWPViewListener( seWPView &panel ) :
-pPanel( panel ){
+seWPViewListener::seWPViewListener(seWPView &panel) :
+pPanel(panel){
 }
 
 seWPViewListener::~seWPViewListener(){
@@ -51,32 +51,32 @@ seWPViewListener::~seWPViewListener(){
 // Management
 ///////////////
 
-void seWPViewListener::SkinChanged( seSkin *skin ){
-	if( pPanel.GetSkin() != skin ){
+void seWPViewListener::SkinChanged(seSkin *skin){
+	if(pPanel.GetSkin() != skin){
 		return;
 	}
 	
 	pPanel.UpdateView();
 }
 
-void seWPViewListener::SkyChanged( seSkin *skin ){
-	if( pPanel.GetSkin() != skin ){
+void seWPViewListener::SkyChanged(seSkin *skin){
+	if(pPanel.GetSkin() != skin){
 		return;
 	}
 	
 	pPanel.UpdateSky();
 }
 
-void seWPViewListener::EnvObjectChanged( seSkin *skin ){
-	if( pPanel.GetSkin() != skin ){
+void seWPViewListener::EnvObjectChanged(seSkin *skin){
+	if(pPanel.GetSkin() != skin){
 		return;
 	}
 	
 	pPanel.UpdateEnvObject();
 }
 
-void seWPViewListener::ViewChanged( seSkin *skin ){
-	if( pPanel.GetSkin() != skin ){
+void seWPViewListener::ViewChanged(seSkin *skin){
+	if(pPanel.GetSkin() != skin){
 		return;
 	}
 	
@@ -84,8 +84,8 @@ void seWPViewListener::ViewChanged( seSkin *skin ){
 	pPanel.UpdateView();
 }
 
-void seWPViewListener::CameraChanged( seSkin *skin ){
-	if( pPanel.GetSkin() != skin ){
+void seWPViewListener::CameraChanged(seSkin *skin){
+	if(pPanel.GetSkin() != skin){
 		return;
 	}
 	

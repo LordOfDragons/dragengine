@@ -55,36 +55,36 @@ int ceTextBoxTextList::GetCount() const{
 	return pTexts.GetCount();
 }
 
-ceTextBoxText *ceTextBoxTextList::GetAt( int index ) const{
-	return ( ceTextBoxText* )pTexts.GetAt( index );
+ceTextBoxText *ceTextBoxTextList::GetAt(int index) const{
+	return (ceTextBoxText*)pTexts.GetAt(index);
 }
 
-int ceTextBoxTextList::IndexOf( ceTextBoxText *text ) const{
-	return pTexts.IndexOf( text );
+int ceTextBoxTextList::IndexOf(ceTextBoxText *text) const{
+	return pTexts.IndexOf(text);
 }
 
-bool ceTextBoxTextList::Has( ceTextBoxText *text ) const{
-	return pTexts.Has( text );
+bool ceTextBoxTextList::Has(ceTextBoxText *text) const{
+	return pTexts.Has(text);
 }
 
-void ceTextBoxTextList::Add( ceTextBoxText *text ){
-	if( ! text ) DETHROW( deeInvalidParam );
+void ceTextBoxTextList::Add(ceTextBoxText *text){
+	if(! text) DETHROW(deeInvalidParam);
 	
-	pTexts.Add( text );
+	pTexts.Add(text);
 }
 
-void ceTextBoxTextList::InsertAt( ceTextBoxText *text, int index ){
-	if( ! text ) DETHROW( deeInvalidParam );
+void ceTextBoxTextList::InsertAt(ceTextBoxText *text, int index){
+	if(! text) DETHROW(deeInvalidParam);
 	
-	pTexts.Insert( text, index );
+	pTexts.Insert(text, index);
 }
 
-void ceTextBoxTextList::MoveTo( ceTextBoxText *text, int index ){
-	pTexts.Move( text, index );
+void ceTextBoxTextList::MoveTo(ceTextBoxText *text, int index){
+	pTexts.Move(text, index);
 }
 
-void ceTextBoxTextList::Remove( ceTextBoxText *text ){
-	pTexts.Remove( text );
+void ceTextBoxTextList::Remove(ceTextBoxText *text){
+	pTexts.Remove(text);
 }
 
 void ceTextBoxTextList::RemoveAll(){
@@ -93,7 +93,7 @@ void ceTextBoxTextList::RemoveAll(){
 
 
 
-ceTextBoxTextList &ceTextBoxTextList::operator=( const ceTextBoxTextList &list ){
+ceTextBoxTextList &ceTextBoxTextList::operator=(const ceTextBoxTextList &list){
 	pTexts = list.pTexts;
 	return *this;
 }

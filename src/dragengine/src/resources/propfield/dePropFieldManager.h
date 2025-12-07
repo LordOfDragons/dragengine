@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new resource manager. */
-	dePropFieldManager( deEngine *engine );
+	dePropFieldManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
 	virtual ~dePropFieldManager();
@@ -101,7 +101,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

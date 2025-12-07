@@ -38,7 +38,7 @@
 /////////////////////////////////
 
 dedaiCostTable::dedaiCostTable() :
-pChanged( false ){
+pChanged(false){
 }
 
 dedaiCostTable::~dedaiCostTable(){
@@ -57,24 +57,24 @@ int dedaiCostTable::GetTypeCount() const{
 	return pTypes.GetCount();
 }
 
-int dedaiCostTable::GetTypeAt( int index ) const{
-	return pTypes.GetAt( index );
+int dedaiCostTable::GetTypeAt(int index) const{
+	return pTypes.GetAt(index);
 }
 
-int dedaiCostTable::GetTypeWith( int typeNumber ){
-	int index = pTypes.IndexOf( typeNumber );
+int dedaiCostTable::GetTypeWith(int typeNumber){
+	int index = pTypes.IndexOf(typeNumber);
 	
-	if( index == -1 ){
+	if(index == -1){
 		index = pTypes.GetCount();
-		pTypes.Add( typeNumber );
+		pTypes.Add(typeNumber);
 	}
 	
 	return index;
 }
 
-int dedaiCostTable::GetTypeWith( int typeNumber, int defaultValue ) const{
-	const int index = pTypes.IndexOf( typeNumber );
-	if( index == -1 ){
+int dedaiCostTable::GetTypeWith(int typeNumber, int defaultValue) const{
+	const int index = pTypes.IndexOf(typeNumber);
+	if(index == -1){
 		return defaultValue;
 	}
 	return index;

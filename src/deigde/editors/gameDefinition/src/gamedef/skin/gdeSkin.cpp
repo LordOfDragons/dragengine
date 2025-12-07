@@ -41,23 +41,23 @@
 ////////////////////////////
 
 gdeSkin::gdeSkin() :
-pGameDefinition( NULL ){
+pGameDefinition(NULL){
 }
 
-gdeSkin::gdeSkin( const char *path, const char *name ) :
-pGameDefinition( NULL ),
-pPath( path ),
-pName( name ){
+gdeSkin::gdeSkin(const char *path, const char *name) :
+pGameDefinition(NULL),
+pPath(path),
+pName(name){
 }
 
-gdeSkin::gdeSkin( const gdeSkin &skin ) :
-pGameDefinition( NULL ),
+gdeSkin::gdeSkin(const gdeSkin &skin) :
+pGameDefinition(NULL),
 
-pPath( skin.pPath ),
-pName( skin.pName ),
-pDescription( skin.pDescription ),
-pCategory( skin.pCategory ),
-pTags( skin.pTags ){
+pPath(skin.pPath),
+pName(skin.pName),
+pDescription(skin.pDescription),
+pCategory(skin.pCategory),
+pTags(skin.pTags){
 }
 
 gdeSkin::~gdeSkin(){
@@ -69,69 +69,69 @@ gdeSkin::~gdeSkin(){
 // Management
 ///////////////
 
-void gdeSkin::SetGameDefinition( gdeGameDefinition *gamedef ){
+void gdeSkin::SetGameDefinition(gdeGameDefinition *gamedef){
 	pGameDefinition = gamedef;
 }
 
 
 
-void gdeSkin::SetPath( const char *path ){
-	if( pPath == path ){
+void gdeSkin::SetPath(const char *path){
+	if(pPath == path){
 		return;
 	}
 	
 	pPath = path;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkinChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkinChanged(this);
 	}
 }
 
-void gdeSkin::SetName( const char *name ){
-	if( pName == name ){
+void gdeSkin::SetName(const char *name){
+	if(pName == name){
 		return;
 	}
 	
 	pName = name;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkinNameChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkinNameChanged(this);
 	}
 }
 
-void gdeSkin::SetDescription( const char *description ){
-	if( pDescription == description ){
+void gdeSkin::SetDescription(const char *description){
+	if(pDescription == description){
 		return;
 	}
 	
 	pDescription = description;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkinChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkinChanged(this);
 	}
 }
 
-void gdeSkin::SetCategory( const char *category ){
-	if( pCategory == category ){
+void gdeSkin::SetCategory(const char *category){
+	if(pCategory == category){
 		return;
 	}
 	
 	pCategory = category;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkinChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkinChanged(this);
 	}
 }
 
-void gdeSkin::SetTags( const decStringSet &tags ){
-	if( pTags == tags ){
+void gdeSkin::SetTags(const decStringSet &tags){
+	if(pTags == tags){
 		return;
 	}
 	
 	pTags = tags;
 	
-	if( pGameDefinition ){
-		pGameDefinition->NotifySkinChanged( this );
+	if(pGameDefinition){
+		pGameDefinition->NotifySkinChanged(this);
 	}
 }
 
@@ -141,5 +141,5 @@ void gdeSkin::SetTags( const decStringSet &tags ){
 //////////////////////
 
 void gdeSkin::pCleanUp(){
-	SetGameDefinition( NULL );
+	SetGameDefinition(NULL);
 }

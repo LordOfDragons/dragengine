@@ -34,7 +34,7 @@ class igdeMenuSeparator;
  * FOX native widget.
  */
 class igdeNativeFoxMenuSeparator : public FXMenuSeparator{
-	FXDECLARE( igdeNativeFoxMenuSeparator )
+	FXDECLARE(igdeNativeFoxMenuSeparator)
 	
 protected:
 	igdeNativeFoxMenuSeparator();
@@ -46,13 +46,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxMenuSeparator( igdeMenuSeparator &owner, FXComposite *parent );
+	igdeNativeFoxMenuSeparator(igdeMenuSeparator &owner, FXComposite *parent);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxMenuSeparator();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxMenuSeparator* CreateNativeWidget( igdeMenuSeparator &owner );
+	static igdeNativeFoxMenuSeparator* CreateNativeWidget(igdeMenuSeparator &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

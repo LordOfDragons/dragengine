@@ -76,77 +76,77 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinChannel::deoglSkinChannel( deoglRenderThread &renderThread, eChannelTypes type ) :
-pRenderThread( renderThread ),
-pType( type ),
+deoglSkinChannel::deoglSkinChannel(deoglRenderThread &renderThread, eChannelTypes type) :
+pRenderThread(renderThread),
+pType(type),
 
-pSize( 1, 1, 1 ),
-pComponentCount( 0 ),
-pFloatFormat( false ),
-pCompressed( true ),
+pSize(1, 1, 1),
+pComponentCount(0),
+pFloatFormat(false),
+pCompressed(true),
 
-pFactorU( 1.0f ),
-pFactorV( 1.0f ),
-pTexture( NULL ),
-pCubeMap( NULL ),
-pArrayTexture( NULL ),
-pCombinedTexture( NULL ),
+pFactorU(1.0f),
+pFactorV(1.0f),
+pTexture(NULL),
+pCubeMap(NULL),
+pArrayTexture(NULL),
+pCombinedTexture(NULL),
 pTextureType(ett2d),
 
-pIsCached( false ),
-pCanBeCached( false ),
-pCacheVerify( NULL ),
-pCacheConstrDefSource1( NULL ),
-pCacheConstrDefSource2( NULL ),
-pCacheConstrVerifySource1( NULL ),
-pCacheConstrVerifySource2( NULL ),
+pIsCached(false),
+pCanBeCached(false),
+pCacheVerify(NULL),
+pCacheConstrDefSource1(NULL),
+pCacheConstrDefSource2(NULL),
+pCacheConstrVerifySource1(NULL),
+pCacheConstrVerifySource2(NULL),
 
-pDelayedCombineImage1( NULL ),
-pDelayedCombineImage2( NULL ),
+pDelayedCombineImage1(NULL),
+pDelayedCombineImage2(NULL),
 
-pUniform( true ),
-pDynamic( false ),
+pUniform(true),
+pDynamic(false),
 
-pImage( nullptr ),
+pImage(nullptr),
 
-pVideo( NULL ),
-pVideoPlayer( -1 ),
-pSharedVideoPlayer( true ),
-pRenderable( -1 ),
-pDynamicConstructed( -1 ),
+pVideo(NULL),
+pVideoPlayer(-1),
+pSharedVideoPlayer(true),
+pRenderable(-1),
+pDynamicConstructed(-1),
 
-pSolidityFilterPriority( 0.5f ){
+pSolidityFilterPriority(0.5f){
 }
 
 deoglSkinChannel::~deoglSkinChannel(){
-	if( pCombinedTexture ){
+	if(pCombinedTexture){
 		pCombinedTexture->RemoveUsage();
 	}
 	
-	if( pArrayTexture ){
+	if(pArrayTexture){
 		delete pArrayTexture;
 	}
-	if( pCubeMap ){
+	if(pCubeMap){
 		delete pCubeMap;
 	}
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
 	}
 	
-	if( pCacheConstrDefSource1 ){
+	if(pCacheConstrDefSource1){
 		pCacheConstrDefSource1->FreeReference();
 	}
-	if( pCacheConstrDefSource2 ){
+	if(pCacheConstrDefSource2){
 		pCacheConstrDefSource2->FreeReference();
 	}
-	if( pCacheConstrVerifySource1 ){
+	if(pCacheConstrVerifySource1){
 		pCacheConstrVerifySource1->FreeReference();
 	}
-	if( pCacheConstrVerifySource2 ){
+	if(pCacheConstrVerifySource2){
 		pCacheConstrVerifySource2->FreeReference();
 	}
 	
-	if( pCacheVerify ){
+	if(pCacheVerify){
 		pCacheVerify->FreeReference();
 	}
 }
@@ -161,12 +161,12 @@ void deoglSkinChannel::FinalizeAsyncResLoading(){
 	
 	pHoldImage = pImage; // claim reference in main thread
 	
-	if( pDelayedCombineImage1 ){
+	if(pDelayedCombineImage1){
 		pCombinedImage1 = pDelayedCombineImage1->GetRImage();
 		pDelayedCombineImage1 = nullptr;
 	}
 	
-	if( pDelayedCombineImage2 ){
+	if(pDelayedCombineImage2){
 		pCombinedImage2 = pDelayedCombineImage2->GetRImage();
 		pDelayedCombineImage2 = nullptr;
 	}
@@ -174,33 +174,33 @@ void deoglSkinChannel::FinalizeAsyncResLoading(){
 
 
 
-void deoglSkinChannel::SetSize( const decPoint3 &size ){
-	if( ! ( size > decPoint3() ) ){
-		DETHROW( deeInvalidParam );
+void deoglSkinChannel::SetSize(const decPoint3 &size){
+	if(! (size > decPoint3())){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSize = size;
 }
 
-void deoglSkinChannel::SetComponentCount( int componentCount ){
-	if( componentCount < 1 || componentCount > 4 ){
-		DETHROW( deeInvalidParam );
+void deoglSkinChannel::SetComponentCount(int componentCount){
+	if(componentCount < 1 || componentCount > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pComponentCount = componentCount;
 }
 
-void deoglSkinChannel::SetFactorU( float factor ){
+void deoglSkinChannel::SetFactorU(float factor){
 	pFactorU = factor;
 }
 
-void deoglSkinChannel::SetFactorV( float factor ){
+void deoglSkinChannel::SetFactorV(float factor){
 	pFactorV = factor;
 }
 
-void deoglSkinChannel::SetCombinedTexture( deoglCombinedTexture *combinedTexture ){
-	if( combinedTexture != pCombinedTexture ){
-		if( pCombinedTexture ){
+void deoglSkinChannel::SetCombinedTexture(deoglCombinedTexture *combinedTexture){
+	if(combinedTexture != pCombinedTexture){
+		if(pCombinedTexture){
 			pCombinedTexture->RemoveUsage();
 		}
 		pCombinedTexture = combinedTexture;
@@ -209,39 +209,39 @@ void deoglSkinChannel::SetCombinedTexture( deoglCombinedTexture *combinedTexture
 
 
 
-void deoglSkinChannel::SetPixelBufferMipMap( deoglPixelBufferMipMap *pbmipmap ){
+void deoglSkinChannel::SetPixelBufferMipMap(deoglPixelBufferMipMap *pbmipmap){
 	pPixelBufferMipMap = pbmipmap;
 }
 
-void deoglSkinChannel::SetIsCached( bool isCached ){
+void deoglSkinChannel::SetIsCached(bool isCached){
 	pIsCached = isCached;
 }
 
-void deoglSkinChannel::SetCanBeCached( bool canBeCached ){
+void deoglSkinChannel::SetCanBeCached(bool canBeCached){
 	pCanBeCached = canBeCached;
 }
 
-void deoglSkinChannel::SetCacheID( const char *cacheID ){
+void deoglSkinChannel::SetCacheID(const char *cacheID){
 	pCacheID = cacheID;
 }
 
 
 
-void deoglSkinChannel::SetUniformColor( const decColor& color ){
+void deoglSkinChannel::SetUniformColor(const decColor& color){
 	pUniformColor = color;
 }
 
-bool deoglSkinChannel::IsComponentStatic( int component ) const{
-	if( component < 0 || component > 3 ){
-		DETHROW( deeInvalidParam );
+bool deoglSkinChannel::IsComponentStatic(int component) const{
+	if(component < 0 || component > 3){
+		DETHROW(deeInvalidParam);
 	}
-	return pUniformColorMask[ component ];
+	return pUniformColorMask[component];
 }
 
 bool deoglSkinChannel::HasStaticComponent() const{
 	int i;
-	for( i=0; i<pComponentCount; i++ ){
-		if( pUniformColorMask[ i ] ){
+	for(i=0; i<pComponentCount; i++){
+		if(pUniformColorMask[i]){
 			return true;
 		}
 	}
@@ -250,8 +250,8 @@ bool deoglSkinChannel::HasStaticComponent() const{
 
 bool deoglSkinChannel::AllComponentsStatic() const{
 	int i;
-	for( i=0; i<pComponentCount; i++ ){
-		if( ! pUniformColorMask[ i ] ){
+	for(i=0; i<pComponentCount; i++){
+		if(! pUniformColorMask[i]){
 			return false;
 		}
 	}
@@ -262,41 +262,41 @@ bool deoglSkinChannel::AllComponentsNotStatic() const{
 	return ! HasStaticComponent();
 }
 
-void deoglSkinChannel::SetUniform( bool uniform ){
+void deoglSkinChannel::SetUniform(bool uniform){
 	pUniform = uniform;
 }
 
-void deoglSkinChannel::SetDynamic( bool dynamic ){
+void deoglSkinChannel::SetDynamic(bool dynamic){
 	pDynamic = dynamic;
 }
 
-void deoglSkinChannel::SetVideo( deVideo *video ){
+void deoglSkinChannel::SetVideo(deVideo *video){
 	pVideo = video;
 }
 
-void deoglSkinChannel::SetVideoPlayer( int index ){
+void deoglSkinChannel::SetVideoPlayer(int index){
 	pVideoPlayer = index;
 }
 
-void deoglSkinChannel::SetSharedVideoPlayer( bool shared ){
+void deoglSkinChannel::SetSharedVideoPlayer(bool shared){
 	pSharedVideoPlayer = shared;
 }
 
-void deoglSkinChannel::SetRenderable( int index ){
+void deoglSkinChannel::SetRenderable(int index){
 	pRenderable = index;
 }
 
-void deoglSkinChannel::SetDynamicConstructed( int index ){
+void deoglSkinChannel::SetDynamicConstructed(int index){
 	pDynamicConstructed = index;
 }
 
 
 
-void deoglSkinChannel::PrepareChannel( deoglRSkin &skin, deoglSkinTexture &texture,
-const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFormat ){
+void deoglSkinChannel::PrepareChannel(deoglRSkin &skin, deoglSkinTexture &texture,
+const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFormat){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
-	if( channelFormat.GetSharedImage() ){
+	if(channelFormat.GetSharedImage()){
 		// if shared image exists store it and claim reference during main thread time.
 		// this is done always no matter if the image is build or just used
 		pImage = channelFormat.GetSharedImage();
@@ -323,35 +323,35 @@ const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFor
 	}
 	
 	if(!hasSkinUse){
-		pCreatePixelBufferMipMap( texture, channelFormat );
-		if( pPixelBufferMipMap ){
+		pCreatePixelBufferMipMap(texture, channelFormat);
+		if(pPixelBufferMipMap){
 			// the actual creation of the texture will be done during the delayed creation of the skin
-			pCreateTextureObject( texture );
+			pCreateTextureObject(texture);
 			pCanBeCached = true;
 		}
 	}
 	
 	const int propertyCount = engTexture.GetPropertyCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		pPrepareProperty( skin, texture, *engTexture.GetPropertyAt( i ) );
+	for(i=0; i<propertyCount; i++){
+		pPrepareProperty(skin, texture, *engTexture.GetPropertyAt(i));
 	}
 	
 	pBuildCacheID();
 	pBuildCacheVerify();
 }
 
-void deoglSkinChannel::BuildChannel( const deSkinTexture &engTexture ){
+void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
-	if( ! pPixelBufferMipMap ){
+	if(! pPixelBufferMipMap){
 		return; // texture is completly uniform
 	}
 	
 	const int propertyCount = engTexture.GetPropertyCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		pBuildProperty( *engTexture.GetPropertyAt( i ) );
+	for(i=0; i<propertyCount; i++){
+		pBuildProperty(*engTexture.GetPropertyAt(i));
 	}
 	
 	//printf( "type=%i mask=%i,%i,%i,%i color=%g,%g,%g,%g\n", pType, pUniformColorMask[0],
@@ -362,24 +362,24 @@ void deoglSkinChannel::BuildChannel( const deSkinTexture &engTexture ){
 }
 
 void deoglSkinChannel::ClearCacheData(){
-	if( pCacheVerify ){
+	if(pCacheVerify){
 		pCacheVerify->FreeReference();
 		pCacheVerify = NULL;
 	}
 	
-	if( pCacheConstrDefSource1 ){
+	if(pCacheConstrDefSource1){
 		pCacheConstrDefSource1->FreeReference();
 		pCacheConstrDefSource1 = NULL;
 	}
-	if( pCacheConstrDefSource2 ){
+	if(pCacheConstrDefSource2){
 		pCacheConstrDefSource2->FreeReference();
 		pCacheConstrDefSource2 = NULL;
 	}
-	if( pCacheConstrVerifySource1 ){
+	if(pCacheConstrVerifySource1){
 		pCacheConstrVerifySource1->FreeReference();
 		pCacheConstrVerifySource1 = NULL;
 	}
-	if( pCacheConstrVerifySource2 ){
+	if(pCacheConstrVerifySource2){
 		pCacheConstrVerifySource2->FreeReference();
 		pCacheConstrVerifySource2 = NULL;
 	}
@@ -432,13 +432,13 @@ void deoglSkinChannel::GenerateConeMap(){
 	decTimer timer;
 	
 	// see http://http.developer.nvidia.com/GPUGems3/gpugems3_ch18.html
-	const deoglPixelBuffer &pixelBufferBase = pPixelBufferMipMap->GetPixelBuffer( 0 );
+	const deoglPixelBuffer &pixelBufferBase = pPixelBufferMipMap->GetPixelBuffer(0);
 	deoglPixelBuffer::sByte2 * const data = pixelBufferBase.GetPointerByte2();
 	const int height = pixelBufferBase.GetHeight();
 	const int width = pixelBufferBase.GetWidth();
 	const int depth = pixelBufferBase.GetDepth();
-	const float factorX = 1.0f / ( float )width;
-	const float factorY = 1.0f / ( float )height;
+	const float factorX = 1.0f / (float)width;
+	const float factorY = 1.0f / (float)height;
 	const float factorHeight = 1.0f / 255.0f;
 	decVector destination;
 	decVector direction;
@@ -448,34 +448,34 @@ void deoglSkinChannel::GenerateConeMap(){
 	float bestConeRadius;
 	int x, y, z, x2, y2, i, x3, y3;
 	const int stepCount = 16; //128;
-	const float stepFactor = 1.0f / ( float )stepCount;
+	const float stepFactor = 1.0f / (float)stepCount;
 	float dx, dy;
 	
 	source.z = 1.0; // top
-	for( z=0; z<depth; z++ ){
+	for(z=0; z<depth; z++){
 		deoglPixelBuffer::sByte2 * const layer = data + width * height * z;
 		
-		for( y=0; y<height; y++ ){
+		for(y=0; y<height; y++){
 			deoglPixelBuffer::sByte2 * const line = layer + width * y;
-			source.y = factorY * ( float )y;
+			source.y = factorY * (float)y;
 			
-			printf( "line %i:%i\n", z, y );
-			for( x=0; x<width; x++ ){
-				const float sh = factorHeight * ( float )line[ x ].r;
-				source.x = factorX * ( float )x;
+			printf("line %i:%i\n", z, y);
+			for(x=0; x<width; x++){
+				const float sh = factorHeight * (float)line[x].r;
+				source.x = factorX * (float)x;
 				bestConeRadius = 1.0f;
 				
-				for( y2=0; y2<height; y2++ ){
+				for(y2=0; y2<height; y2++){
 					const deoglPixelBuffer::sByte2 * const line2 = layer + width * y2;
-					destination.y = factorY * ( float )y2;
+					destination.y = factorY * (float)y2;
 					
-					for( x2=0; x2<width; x2++ ){
-						destination.z = factorHeight * ( float )line2[ x2 ].r;
-						if( destination.z == source.z ){
+					for(x2=0; x2<width; x2++){
+						destination.z = factorHeight * (float)line2[x2].r;
+						if(destination.z == source.z){
 							continue; // avoid div-by zero and anyways if dest is on the same height as source it's no solution
 						}
 						
-						destination.x = factorX * ( float )x2;
+						destination.x = factorX * (float)x2;
 						
 						direction = destination - source;
 						// scale direction so it runs from destination to bottom and split it into the appropriate step size
@@ -484,57 +484,57 @@ void deoglSkinChannel::GenerateConeMap(){
 						test = destination; // so destination is not modified
 						x3 = x2;
 						y3 = y2;
-						for( i=0; i<stepCount; i++ ){
+						for(i=0; i<stepCount; i++){
 							test += direction;
 							
-							x3 = ( int )( test.x * width );
-							if( x3 < 0 ){
+							x3 = (int)(test.x * width);
+							if(x3 < 0){
 								x3 = 0;
-							}else if( x3 >= width ){
+							}else if(x3 >= width){
 								x3 = width - 1;
 							}
 							
-							y3 = ( int )( test.y * height );
-							if( y3 < 0 ){
+							y3 = (int)(test.y * height);
+							if(y3 < 0){
 								y3 = 0;
-							}else if( y3 >= height ){
+							}else if(y3 >= height){
 								y3 = height - 1;
 							}
 							
-							if( factorHeight * ( float )layer[ width * y3 + x3 ].r <= test.z ){
+							if(factorHeight * (float)layer[width * y3 + x3].r <= test.z){
 								break;
 							}
 						}
 						
-						if( test.z > sh ){ // destination has to be above source
-							dx = factorX * ( float )( x3 - x );
+						if(test.z > sh){ // destination has to be above source
+							dx = factorX * (float)(x3 - x);
 							//dx = test.x - source.x;
-							dy = factorY * ( float )( y3 - y );
+							dy = factorY * (float)(y3 - y);
 							//dy = test.y - source.y;
-							coneRadius = sqrtf( dx * dx + dy * dy ) / ( test.z - sh );
-							if( coneRadius < bestConeRadius ){
+							coneRadius = sqrtf(dx * dx + dy * dy) / (test.z - sh);
+							if(coneRadius < bestConeRadius){
 								bestConeRadius = coneRadius;
 							}
 						}
 					}
 					
-					if( x2 < width ){
+					if(x2 < width){
 						break;
 					}
 				}
 				
-				line[ x ].g = ( GLubyte )( 255.0f * bestConeRadius );
+				line[x].g = (GLubyte)(255.0f * bestConeRadius);
 			}
 		}
 	}
 	
-	printf( "GenerateConeMap in %fs\n", timer.GetElapsedTime() );
+	printf("GenerateConeMap in %fs\n", timer.GetElapsedTime());
 }
 
 
 
-const char *deoglSkinChannel::ChannelNameFor( eChannelTypes type ){
-	switch( type ){
+const char *deoglSkinChannel::ChannelNameFor(eChannelTypes type){
+	switch(type){
 	case ectColor:
 		return "Color";
 		
@@ -604,8 +604,8 @@ const char *deoglSkinChannel::ChannelNameFor( eChannelTypes type ){
 
 bool deoglSkinChannel::ChannelTypeMatchingPropertyType(
 deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglSkinChannel::eChannelTypes& channelType ){
-	switch( propertyType ){
+deoglSkinChannel::eChannelTypes& channelType){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptColor:
 		channelType = ectColor;
 		return true;
@@ -702,105 +702,105 @@ deoglSkinChannel::eChannelTypes& channelType ){
 //////////////////////
 
 void deoglSkinChannel::pInitUniformColor(){
-	pUniformColorMask[ 0 ] = true;
-	pUniformColorMask[ 1 ] = true;
-	pUniformColorMask[ 2 ] = true;
-	pUniformColorMask[ 3 ] = true;
+	pUniformColorMask[0] = true;
+	pUniformColorMask[1] = true;
+	pUniformColorMask[2] = true;
+	pUniformColorMask[3] = true;
 	
-	switch( pType ){
+	switch(pType){
 	case ectColor:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 		
 	case ectColorTintMask:
-		pUniformColor.Set( 1.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(1.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectTransparency:
-		pUniformColor.Set( 1.0f, 1.0f, 1.0f, 1.0f );
+		pUniformColor.Set(1.0f, 1.0f, 1.0f, 1.0f);
 		break;
 		
 	case ectColorOmnidirCube:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 		
 	case ectColorOmnidirEquirect:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 		
 	case ectSolidity:
-		pUniformColor.Set( 1.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(1.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectNormal:
-		pUniformColor.Set( 0.5f, 0.5f, 1.0f, 0.0f );
+		pUniformColor.Set(0.5f, 0.5f, 1.0f, 0.0f);
 		break;
 		
 	case ectHeight:
-		pUniformColor.Set( 1.0f, 1.0f, 0.0f, 0.0f );
+		pUniformColor.Set(1.0f, 1.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectEmissivity:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectRefractDistort:
-		pUniformColor.Set( 0.5f, 0.5f, 0.0f, 0.0f );
+		pUniformColor.Set(0.5f, 0.5f, 0.0f, 0.0f);
 		break;
 		
 	case ectAO:
-		pUniformColor.Set( 1.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(1.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectReflectivity:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectRoughness:
-		pUniformColor.Set( 1.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(1.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectEnvironmentMap:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 		
 	case ectEnvironmentRoom:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 		
 	case ectEnvironmentRoomMask:
-		pUniformColor.Set( 1.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(1.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectEnvironmentRoomEmissivity:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 1.0f);
 		break;
 		
 	case ectAbsorption:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectRimEmissivity:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectNonPbrAlbedo:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	case ectNonPbrMetalness:
-		pUniformColor.Set( 0.0f, 0.0f, 0.0f, 0.0f );
+		pUniformColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 		break;
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
-bool deoglSkinChannel::pIsPropertyValidForType( deoglSkinPropertyMap::ePropertyTypes propertyType ) const{
+bool deoglSkinChannel::pIsPropertyValidForType(deoglSkinPropertyMap::ePropertyTypes propertyType) const{
 	eChannelTypes channelType;
 	
-	if( ChannelTypeMatchingPropertyType( propertyType, channelType ) ){
+	if(ChannelTypeMatchingPropertyType(propertyType, channelType)){
 		return pType == channelType;
 		
 	}else{
@@ -810,25 +810,25 @@ bool deoglSkinChannel::pIsPropertyValidForType( deoglSkinPropertyMap::ePropertyT
 
 
 
-void deoglSkinChannel::pCreatePixelBufferMipMap( deoglSkinTexture &texture,
-const deoglVSDetermineChannelFormat &channelFormat ){
+void deoglSkinChannel::pCreatePixelBufferMipMap(deoglSkinTexture &texture,
+const deoglVSDetermineChannelFormat &channelFormat){
 	const decPoint3 &pixelBufferSize = channelFormat.GetRequiredSize();
 	deoglPixelBuffer::ePixelFormats pixelBufferFormat = deoglPixelBuffer::epfByte3;
 	bool mipMapped = false;
 	
-	SetPixelBufferMipMap( nullptr );
+	SetPixelBufferMipMap(nullptr);
 	
 	pSize = channelFormat.GetRequiredSize();
 	pComponentCount = channelFormat.GetRequiredComponentCount();
 	pFloatFormat = channelFormat.GetRequiresFloat();
 	pCompressed = true;
-	pFactorU = ( float )pSize.x / ( float )pixelBufferSize.x;
-	pFactorV = ( float )pSize.y / ( float )pixelBufferSize.y;
+	pFactorU = (float)pSize.x / (float)pixelBufferSize.x;
+	pFactorV = (float)pSize.y / (float)pixelBufferSize.y;
 	pUniform = channelFormat.GetIsUniform();
 	pDynamic = channelFormat.GetIsDynamic();
 	
 	// determine if mip mapped and compressed has to be used
-	if( pSize.x < 2 && pSize.y < 2 ){
+	if(pSize.x < 2 && pSize.y < 2){
 		// otherwise some drivers run into problems like messing up the texture while trying to
 		// create mip maps for a texture which has only one mip map level
 		mipMapped = false;
@@ -837,10 +837,10 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 	}else{
 		mipMapped = channelFormat.GetAllowMipMap();
 		
-		if( pType == ectNormal ){
+		if(pType == ectNormal){
 			pCompressed = true;
 			
-		}else if( texture.GetHintNoCompression() ){
+		}else if(texture.GetHintNoCompression()){
 			pCompressed = false;
 			
 		}else{
@@ -848,7 +848,7 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 		}
 	}
 	
-	if( ! pRenderThread.GetConfiguration().GetUseTextureCompression() ){
+	if(! pRenderThread.GetConfiguration().GetUseTextureCompression()){
 		pCompressed = false;
 	}
 	
@@ -862,24 +862,24 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 #endif
 	
 	// determine the pixel buffer format to use
-	if( pComponentCount == 1 ){
-		if( pFloatFormat ){
+	if(pComponentCount == 1){
+		if(pFloatFormat){
 			pixelBufferFormat = deoglPixelBuffer::epfFloat1;
 			
 		}else{
 			pixelBufferFormat = deoglPixelBuffer::epfByte1;
 		}
 		
-	}else if( pComponentCount == 2 ){
-		if( pFloatFormat ){
+	}else if(pComponentCount == 2){
+		if(pFloatFormat){
 			pixelBufferFormat = deoglPixelBuffer::epfFloat2;
 			
 		}else{
 			pixelBufferFormat = deoglPixelBuffer::epfByte2;
 		}
 		
-	}else if( pComponentCount == 3 ){
-		if( pFloatFormat ){
+	}else if(pComponentCount == 3){
+		if(pFloatFormat){
 			pixelBufferFormat = deoglPixelBuffer::epfFloat3;
 			
 		}else{
@@ -887,7 +887,7 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 		}
 		
 	}else{ // componentCount == 4
-		if( pFloatFormat ){
+		if(pFloatFormat){
 			pixelBufferFormat = deoglPixelBuffer::epfFloat4;
 			
 		}else{
@@ -897,91 +897,91 @@ const deoglVSDetermineChannelFormat &channelFormat ){
 	
 	// create pixel buffer if required and fill it
 	//if( ! pUniform ){
-		if( mipMapped ){
-			pPixelBufferMipMap.TakeOver( new deoglPixelBufferMipMap( pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100 ) );
+		if(mipMapped){
+			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100));
 			
 		}else{
-			pPixelBufferMipMap.TakeOver( new deoglPixelBufferMipMap( pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0 ) );
+			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0));
 		}
 	//}
 }
 
-void deoglSkinChannel::pCreateTextureObject( const deoglSkinTexture &texture ){
+void deoglSkinChannel::pCreateTextureObject(const deoglSkinTexture &texture){
 	const bool mipMapped = pPixelBufferMipMap->GetPixelBufferCount() > 1;
 	
-	switch( pType ){
+	switch(pType){
 	case ectColorOmnidirCube:
 	case ectEnvironmentMap:
 	case ectEnvironmentRoom:
 	case ectEnvironmentRoomEmissivity:
-		pCubeMap = new deoglCubeMap( pRenderThread );
-		pCubeMap->SetMipMapped( mipMapped );
-		pCubeMap->SetSize( pSize.x );
-		pCubeMap->SetMapingFormat( pComponentCount, pFloatFormat, pCompressed );
+		pCubeMap = new deoglCubeMap(pRenderThread);
+		pCubeMap->SetMipMapped(mipMapped);
+		pCubeMap->SetSize(pSize.x);
+		pCubeMap->SetMapingFormat(pComponentCount, pFloatFormat, pCompressed);
 		break;
 		
 	default:
-		if( texture.GetVariationU() || texture.GetVariationV() ){
-			pArrayTexture = new deoglArrayTexture( pRenderThread );
-			pArrayTexture->SetMipMapped( mipMapped );
-			pArrayTexture->SetSize( pSize.x, pSize.y, pSize.z );
-			pArrayTexture->SetMapingFormat( pComponentCount, pFloatFormat, pCompressed );
+		if(texture.GetVariationU() || texture.GetVariationV()){
+			pArrayTexture = new deoglArrayTexture(pRenderThread);
+			pArrayTexture->SetMipMapped(mipMapped);
+			pArrayTexture->SetSize(pSize.x, pSize.y, pSize.z);
+			pArrayTexture->SetMapingFormat(pComponentCount, pFloatFormat, pCompressed);
 			
 		}else{
-			pTexture = new deoglTexture( pRenderThread );
-			pTexture->SetMipMapped( mipMapped );
-			pTexture->SetSize( pSize.x, pSize.y );
-			pTexture->SetMapingFormat( pComponentCount, pFloatFormat, pCompressed );
+			pTexture = new deoglTexture(pRenderThread);
+			pTexture->SetMipMapped(mipMapped);
+			pTexture->SetSize(pSize.x, pSize.y);
+			pTexture->SetMapingFormat(pComponentCount, pFloatFormat, pCompressed);
 		}
 	}
 }
 
-void deoglSkinChannel::pPrepareProperty( deoglRSkin &skin, deoglSkinTexture &texture,
-deSkinProperty &property ){
+void deoglSkinChannel::pPrepareProperty(deoglRSkin &skin, deoglSkinTexture &texture,
+deSkinProperty &property){
 	pCacheID.Empty();
 	
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
-		deoglSkinPropertyMap::GetTypeFor( property.GetType() );
+		deoglSkinPropertyMap::GetTypeFor(property.GetType());
 	
-	if( ! pIsPropertyValidForType( propertyType ) ){
+	if(! pIsPropertyValidForType(propertyType)){
 		return;
 	}
 	
 	deSkinPropertyVisitorIdentify identify;
-	property.Visit( identify );
+	property.Visit(identify);
 	
-	if( identify.IsImage() ){
-		pPreparePropertyImage( propertyType, texture, identify.CastToImage() );
+	if(identify.IsImage()){
+		pPreparePropertyImage(propertyType, texture, identify.CastToImage());
 		
-	}else if( identify.IsColor() ){
-		pPreparePropertyColor( propertyType, texture, identify.CastToColor() );
+	}else if(identify.IsColor()){
+		pPreparePropertyColor(propertyType, texture, identify.CastToColor());
 		
-	}else if( identify.IsValue() ){
-		pPreparePropertyValue( propertyType, texture, identify.CastToValue() );
+	}else if(identify.IsValue()){
+		pPreparePropertyValue(propertyType, texture, identify.CastToValue());
 		
-	}else if( identify.IsVideo() ){
-		pPreparePropertyVideo( propertyType, skin, texture, identify.CastToVideo() );
+	}else if(identify.IsVideo()){
+		pPreparePropertyVideo(propertyType, skin, texture, identify.CastToVideo());
 		
-	}else if( identify.IsConstructed() ){
-		pPreparePropertyConstructed( propertyType, skin, texture, identify.CastToConstructed() );
+	}else if(identify.IsConstructed()){
+		pPreparePropertyConstructed(propertyType, skin, texture, identify.CastToConstructed());
 		
-	}else if( identify.IsMapped() ){
-		pPreparePropertyMapped( propertyType, skin, texture, identify.CastToMapped() );
+	}else if(identify.IsMapped()){
+		pPreparePropertyMapped(propertyType, skin, texture, identify.CastToMapped());
 	}
 	
-	if( ! property.GetRenderable().IsEmpty() ){
-		pRenderable = skin.AddRenderable( property.GetRenderable() );
-		texture.SetRenderableChannels( true );
+	if(! property.GetRenderable().IsEmpty()){
+		pRenderable = skin.AddRenderable(property.GetRenderable());
+		texture.SetRenderableChannels(true);
 	}
 }
 
-void deoglSkinChannel::pPreparePropertyValue( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglSkinTexture &texture, const deSkinPropertyValue &property ){
+void deoglSkinChannel::pPreparePropertyValue(deoglSkinPropertyMap::ePropertyTypes propertyType,
+deoglSkinTexture &texture, const deSkinPropertyValue &property){
 	const float value = property.GetValue();
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptColor:
 	case deoglSkinPropertyMap::eptColorOmnidir:
 	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
@@ -1001,7 +1001,7 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		pUniformColor.r = value;
 		pUniformColor.g = value;
 		pUniformColor.b = value;
-		texture.SetHasEmissivity( value > 0.001f );
+		texture.SetHasEmissivity(value > 0.001f);
 		break;
 		
 	case deoglSkinPropertyMap::eptHeight:
@@ -1018,31 +1018,31 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//pUniformColor.a = value; // if combined with color
-		if( value < 0.999f ){
+		if(value < 0.999f){
 			pUniformColor.r = value;
-			texture.SetHasTransparency( true );
+			texture.SetHasTransparency(true);
 		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		if( value < 0.999f ){
+		if(value < 0.999f){
 			pUniformColor.r = value;
 			
-			texture.SetHasSolidity( true );
+			texture.SetHasSolidity(true);
 			
 			const float realValue = texture.GetSolidityInvert() ? 1.0f - value : value;
 			
-			if( texture.GetSolidityMasked() ){
-				texture.SetHasZeroSolidity( realValue < 0.5f );
+			if(texture.GetSolidityMasked()){
+				texture.SetHasZeroSolidity(realValue < 0.5f);
 				
 			}else{
-				texture.SetHasZeroSolidity( realValue < 0.001f );
+				texture.SetHasZeroSolidity(realValue < 0.001f);
 			}
 		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidityFilterPriority:
-		pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
+		pSolidityFilterPriority = decMath::clamp(value, 0.0f, 1.0f);
 		break;
 		
 	case deoglSkinPropertyMap::eptRefractionDistort:
@@ -1055,11 +1055,11 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 	}
 }
 
-void deoglSkinChannel::pPreparePropertyColor( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglSkinTexture &texture, const deSkinPropertyColor &property ){
+void deoglSkinChannel::pPreparePropertyColor(deoglSkinPropertyMap::ePropertyTypes propertyType,
+deoglSkinTexture &texture, const deSkinPropertyColor &property){
 	const decColor &color = property.GetColor();
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptHeight:
 	case deoglSkinPropertyMap::eptColorTintMask:
 	case deoglSkinPropertyMap::eptRoughness:
@@ -1094,30 +1094,30 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 		pUniformColor.r = color.r;
 		pUniformColor.g = color.g;
 		pUniformColor.b = color.b;
-		texture.SetHasEmissivity( color.r > 0.001f || color.g > 0.001f || color.b > 0.001f );
+		texture.SetHasEmissivity(color.r > 0.001f || color.g > 0.001f || color.b > 0.001f);
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//pUniformColor.a = color.r; // if combined with color
-		if( color.r < 0.999f ){
+		if(color.r < 0.999f){
 			pUniformColor.r = color.r;
-			texture.SetHasTransparency( true );
+			texture.SetHasTransparency(true);
 		}
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		if( color.r < 0.999f ){
+		if(color.r < 0.999f){
 			pUniformColor.r = color.r;
 			
-			texture.SetHasSolidity( true );
+			texture.SetHasSolidity(true);
 			
 			const float realValue = texture.GetSolidityInvert() ? 1.0f - color.r : color.r;
 			
-			if( texture.GetSolidityMasked() ){
-				texture.SetHasZeroSolidity( realValue < 0.5f );
+			if(texture.GetSolidityMasked()){
+				texture.SetHasZeroSolidity(realValue < 0.5f);
 				
 			}else{
-				texture.SetHasZeroSolidity( realValue < 0.001f );
+				texture.SetHasZeroSolidity(realValue < 0.001f);
 			}
 		}
 		break;
@@ -1127,14 +1127,14 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 	}
 }
 
-void deoglSkinChannel::pPreparePropertyImage( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglSkinTexture &texture, const deSkinPropertyImage &property ){
+void deoglSkinChannel::pPreparePropertyImage(deoglSkinPropertyMap::ePropertyTypes propertyType,
+deoglSkinTexture &texture, const deSkinPropertyImage &property){
 	const deImage * const image = property.GetImage();
-	if( ! image ){
+	if(! image){
 		return;
 	}
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptColor:
 	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
 	case deoglSkinPropertyMap::eptColorTintMask:
@@ -1152,31 +1152,31 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptRimEmissivity:
 	case deoglSkinPropertyMap::eptNonPbrAlbedo:
 	case deoglSkinPropertyMap::eptNonPbrMetalness:
-		if( image->GetComponentCount() == 1 ){
-			pClearUniformMasks( 0, 100, 100, 100 );
-			pClearUniformMasks( 1, 100, 100, 100 );
-			pClearUniformMasks( 2, 100, 100, 100 );
+		if(image->GetComponentCount() == 1){
+			pClearUniformMasks(0, 100, 100, 100);
+			pClearUniformMasks(1, 100, 100, 100);
+			pClearUniformMasks(2, 100, 100, 100);
 			
 		}else{
-			pClearUniformMasks( 0, 1, 2, 3 );
+			pClearUniformMasks(0, 1, 2, 3);
 		}
-		pDelayedCombineImage1 = ( deoglImage* )image->GetPeerGraphic();
+		pDelayedCombineImage1 = (deoglImage*)image->GetPeerGraphic();
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
 	case deoglSkinPropertyMap::eptEnvironmentMap:
 	case deoglSkinPropertyMap::eptEnvironmentRoom:
 	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		if( image->GetDepth() == 6 ){
-			if( image->GetComponentCount() == 1 ){
-				pClearUniformMasks( 0, 100, 100, 100 );
-				pClearUniformMasks( 1, 100, 100, 100 );
-				pClearUniformMasks( 2, 100, 100, 100 );
+		if(image->GetDepth() == 6){
+			if(image->GetComponentCount() == 1){
+				pClearUniformMasks(0, 100, 100, 100);
+				pClearUniformMasks(1, 100, 100, 100);
+				pClearUniformMasks(2, 100, 100, 100);
 				
 			}else{
-				pClearUniformMasks( 0, 1, 2, 3 );
+				pClearUniformMasks(0, 1, 2, 3);
 			}
-			pDelayedCombineImage1 = ( deoglImage* )image->GetPeerGraphic();
+			pDelayedCombineImage1 = (deoglImage*)image->GetPeerGraphic();
 		}
 		break;
 		
@@ -1184,24 +1184,24 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property ){
 		break;
 	}
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptTransparency:
-		texture.SetHasTransparency( true );
+		texture.SetHasTransparency(true);
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		texture.SetHasSolidity( true );
-		texture.SetHasZeroSolidity( false );
+		texture.SetHasSolidity(true);
+		texture.SetHasZeroSolidity(false);
 		break;
 		
 	case deoglSkinPropertyMap::eptEmissivity:
 	case deoglSkinPropertyMap::eptRimEmissivity:
-		texture.SetHasEmissivity( true );
+		texture.SetHasEmissivity(true);
 		break;
 		
 	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		if( image->GetDepth() == 6 ){
-			texture.SetHasEmissivity( true );
+		if(image->GetDepth() == 6){
+			texture.SetHasEmissivity(true);
 		}
 		break;
 		
@@ -1210,10 +1210,10 @@ deoglSkinTexture &texture, const deSkinPropertyImage &property ){
 	}
 }
 
-void deoglSkinChannel::pPreparePropertyVideo( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property ){
+void deoglSkinChannel::pPreparePropertyVideo(deoglSkinPropertyMap::ePropertyTypes propertyType,
+deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property){
 	pVideo = property.GetVideo();
-	if( ! pVideo ){
+	if(! pVideo){
 		return;
 	}
 	
@@ -1226,19 +1226,19 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property
 	// if the video is going to be cached set the channel dynamic. this is required
 	// since with cached videos the texture used changes with each frame in contrary
 	// to not cached videos where all frames are uploaded into the same texture
-	deoglVideo &oglVideo = *( ( deoglVideo* )pVideo->GetPeerGraphic() );
-	if( oglVideo.CacheFrames() ){
-		texture.SetDynamicChannels( true );
+	deoglVideo &oglVideo = *((deoglVideo*)pVideo->GetPeerGraphic());
+	if(oglVideo.CacheFrames()){
+		texture.SetDynamicChannels(true);
 	}
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptTransparency:
-		texture.SetHasTransparency( true );
+		texture.SetHasTransparency(true);
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		texture.SetHasSolidity( true );
-		texture.SetHasZeroSolidity( false );
+		texture.SetHasSolidity(true);
+		texture.SetHasZeroSolidity(false);
 		break;
 		
 	default:
@@ -1246,19 +1246,19 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyVideo &property
 	}
 }
 
-void deoglSkinChannel::pPreparePropertyMapped( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &property ){
-	texture.SetCalculatedProperties( true );
+void deoglSkinChannel::pPreparePropertyMapped(deoglSkinPropertyMap::ePropertyTypes propertyType,
+deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &property){
+	texture.SetCalculatedProperties(true);
 	pCanBeCached = false;
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptTransparency:
-		texture.SetHasTransparency( true );
+		texture.SetHasTransparency(true);
 		break;
 		
 	case deoglSkinPropertyMap::eptSolidity:
-		texture.SetHasSolidity( true );
-		texture.SetHasZeroSolidity( false );
+		texture.SetHasSolidity(true);
+		texture.SetHasZeroSolidity(false);
 		break;
 		
 	default:
@@ -1266,15 +1266,15 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyMapped &propert
 	}
 }
 
-void deoglSkinChannel::pPreparePropertyConstructed( deoglSkinPropertyMap::ePropertyTypes propertyType,
-deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &property ){
+void deoglSkinChannel::pPreparePropertyConstructed(deoglSkinPropertyMap::ePropertyTypes propertyType,
+deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &property){
 	int targetRed = 100;
 	int targetGreen = 100;
 	int targetBlue = 100;
 	int targetAlpha = 100;
 	bool second = false;
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptColorTintMask:
 	case deoglSkinPropertyMap::eptHeight:
 	case deoglSkinPropertyMap::eptAmbientOcclusion:
@@ -1310,8 +1310,8 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 		
 	case deoglSkinPropertyMap::eptSolidity:
 		targetRed = 0;
-		texture.SetHasSolidity( true );
-		texture.SetHasZeroSolidity( false );
+		texture.SetHasSolidity(true);
+		texture.SetHasZeroSolidity(false);
 		break;
 		
 	case deoglSkinPropertyMap::eptEmissivity:
@@ -1320,13 +1320,13 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 		targetRed = 0;
 		targetGreen = 1;
 		targetBlue = 2;
-		texture.SetHasEmissivity( true );
+		texture.SetHasEmissivity(true);
 		break;
 		
 	case deoglSkinPropertyMap::eptTransparency:
 		//targetRed = 3; // if combined with color
 		targetRed = 0;
-		texture.SetHasTransparency( true );
+		texture.SetHasTransparency(true);
 		second = true;
 		break;
 		
@@ -1340,55 +1340,55 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 		break;
 	}
 	
-	if( targetRed == 100 && targetGreen == 100 && targetBlue == 100 && targetAlpha == 100 ){
+	if(targetRed == 100 && targetGreen == 100 && targetBlue == 100 && targetAlpha == 100){
 		return;
 	}
 	
-	pClearUniformMasks( targetRed, targetGreen, targetBlue, targetAlpha );
+	pClearUniformMasks(targetRed, targetGreen, targetBlue, targetAlpha);
 	
 	// calculate constructed definition. this is used for the cache id and cache file header
 	decMemoryFile *memoryFileDef;
 	decMemoryFile *memoryFileVerify;
 	
-	if( second ){
-		if( pCacheConstrDefSource2 || pCacheConstrVerifySource2 ){
+	if(second){
+		if(pCacheConstrDefSource2 || pCacheConstrVerifySource2){
 			pCanBeCached = false;
 			return;
 		}
 		
-		pCacheConstrDefSource2 = new decMemoryFile( "" );
+		pCacheConstrDefSource2 = new decMemoryFile("");
 		memoryFileDef = pCacheConstrDefSource2;
 		
-		pCacheConstrVerifySource2 = new decMemoryFile( "" );
+		pCacheConstrVerifySource2 = new decMemoryFile("");
 		memoryFileVerify = pCacheConstrVerifySource2;
 		
 	}else{
-		if( pCacheConstrDefSource1 || pCacheConstrVerifySource1 ){
+		if(pCacheConstrDefSource1 || pCacheConstrVerifySource1){
 			pCanBeCached = false;
 			return;
 		}
 		
-		pCacheConstrDefSource1 = new decMemoryFile( "" );
+		pCacheConstrDefSource1 = new decMemoryFile("");
 		memoryFileDef = pCacheConstrDefSource1;
 		
-		pCacheConstrVerifySource1 = new decMemoryFile( "" );
+		pCacheConstrVerifySource1 = new decMemoryFile("");
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
 	// dynamic constructed
-	if( deoglSCConstructedDynamic::IsDynamic( property.GetContent() ) ){
-		pDynamicConstructed = skin.AddConstructedProperty( deoglSkinConstructedProperty::Ref::New(
-			new deoglSkinConstructedProperty( property ) ) );
-		texture.SetConstructedProperties( true );
+	if(deoglSCConstructedDynamic::IsDynamic(property.GetContent())){
+		pDynamicConstructed = skin.AddConstructedProperty(deoglSkinConstructedProperty::Ref::New(
+			new deoglSkinConstructedProperty(property)));
+		texture.SetConstructedProperties(true);
 		pCanBeCached = false;
 		return;
 	}
 	
 	// caching
-	deoglSCConstructedDefinition visitor( *pRenderThread.GetOgl().GetGameEngine(),
-		memoryFileDef, memoryFileVerify, property );
-	property.GetContent().Visit( visitor );
-	if( ! visitor.GetCacheValid() ){
+	deoglSCConstructedDefinition visitor(*pRenderThread.GetOgl().GetGameEngine(),
+		memoryFileDef, memoryFileVerify, property);
+	property.GetContent().Visit(visitor);
+	if(! visitor.GetCacheValid()){
 		pCanBeCached = false;
 		return;
 	}
@@ -1400,19 +1400,19 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 	#pragma GCC diagnostic ignored "-Warray-bounds"
 #endif
 
-void deoglSkinChannel::pClearUniformMasks( int targetRed, int targetGreen,
-int targetBlue, int targetAlpha ){
-	if( targetRed < pComponentCount ){
-		pUniformColorMask[ targetRed ] = false;
+void deoglSkinChannel::pClearUniformMasks(int targetRed, int targetGreen,
+int targetBlue, int targetAlpha){
+	if(targetRed < pComponentCount){
+		pUniformColorMask[targetRed] = false;
 	}
-	if( targetGreen < pComponentCount ){
-		pUniformColorMask[ targetGreen ] = false;
+	if(targetGreen < pComponentCount){
+		pUniformColorMask[targetGreen] = false;
 	}
-	if( targetBlue < pComponentCount ){
-		pUniformColorMask[ targetBlue ] = false;
+	if(targetBlue < pComponentCount){
+		pUniformColorMask[targetBlue] = false;
 	}
-	if( targetAlpha < pComponentCount ){
-		pUniformColorMask[ targetAlpha ] = false;
+	if(targetAlpha < pComponentCount){
+		pUniformColorMask[targetAlpha] = false;
 	}
 }
 
@@ -1420,7 +1420,7 @@ int targetBlue, int targetAlpha ){
 	#pragma GCC diagnostic pop
 #endif
 
-static uint32_t vCRC32Table[] = { /* CRC polynomial 0xedb88320 */
+static uint32_t vCRC32Table[] = {/* CRC polynomial 0xedb88320 */
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
 	0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
 	0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,
@@ -1466,14 +1466,14 @@ static uint32_t vCRC32Table[] = { /* CRC polynomial 0xedb88320 */
 	0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-decString deoglSkinChannel::pCRC32String( const decString &string ) const{
+decString deoglSkinChannel::pCRC32String(const decString &string) const{
 	// calculate crc
 	const int len = string.GetLength();
 	uint32_t crc32 = 0xffffffff;
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		crc32 = vCRC32Table[ ( crc32 ^ ( uint8_t )string[ i ] ) & 0xff ] ^ ( crc32 >> 8 );
+	for(i=0; i<len; i++){
+		crc32 = vCRC32Table[(crc32 ^ (uint8_t)string[i]) & 0xff] ^ (crc32 >> 8);
 	}
 	crc32 = ~crc32;
 	
@@ -1481,31 +1481,31 @@ decString deoglSkinChannel::pCRC32String( const decString &string ) const{
 	decString result;
 	int shift = 28;
 	
-	result.Set( '0', 8 );
+	result.Set('0', 8);
 	
-	for( i=0; i<8; i++, shift-=4 ){
-		const int nibble = ( crc32 >> shift ) & 0xf;
+	for(i=0; i<8; i++, shift-=4){
+		const int nibble = (crc32 >> shift) & 0xf;
 		
-		if( nibble < 10 ){
-			result[ i ] = ( char )( '0' + nibble );
+		if(nibble < 10){
+			result[i] = (char)('0' + nibble);
 			
 		}else{
-			result[ i ] = ( char )( 'a' + ( nibble - 10 ) );
+			result[i] = (char)('a' + (nibble - 10));
 		}
 	}
 	
 	return result;
 }
 
-decString deoglSkinChannel::pCRC32Data( const decMemoryFile &data ) const{
+decString deoglSkinChannel::pCRC32Data(const decMemoryFile &data) const{
 	// calculate crc
 	const char * const ptrdata = data.GetPointer();
 	const int len = data.GetLength();
 	uint32_t crc32 = 0xffffffff;
 	int i;
 	
-	for( i=0; i<len; i++ ){
-		crc32 = vCRC32Table[ ( crc32 ^ ( uint8_t )ptrdata[ i ] ) & 0xff ] ^ ( crc32 >> 8 );
+	for(i=0; i<len; i++){
+		crc32 = vCRC32Table[(crc32 ^ (uint8_t)ptrdata[i]) & 0xff] ^ (crc32 >> 8);
 	}
 	crc32 = ~crc32;
 	
@@ -1513,43 +1513,43 @@ decString deoglSkinChannel::pCRC32Data( const decMemoryFile &data ) const{
 	decString result;
 	int shift = 28;
 	
-	result.Set( '0', 8 );
+	result.Set('0', 8);
 	
-	for( i=0; i<8; i++, shift-=4 ){
-		const int nibble = ( crc32 >> shift ) & 0xf;
+	for(i=0; i<8; i++, shift-=4){
+		const int nibble = (crc32 >> shift) & 0xf;
 		
-		if( nibble < 10 ){
-			result[ i ] = ( char )( '0' + nibble );
+		if(nibble < 10){
+			result[i] = (char)('0' + nibble);
 			
 		}else{
-			result[ i ] = ( char )( 'a' + ( nibble - 10 ) );
+			result[i] = (char)('a' + (nibble - 10));
 		}
 	}
 	
 	return result;
 }
 
-decString deoglSkinChannel::pColor2CacheBinary( const decColor &color ) const{
+decString deoglSkinChannel::pColor2CacheBinary(const decColor &color) const{
 	const uint64_t bincolor = 
-		( ( ( uint64_t )( uint16_t )( int16_t )( color.r * 255.0f ) ) << 48 )
-		+ ( ( ( uint64_t )( uint16_t )( int16_t )( color.g * 255.0f ) ) << 32 )
-		+ ( ( ( uint64_t )( uint16_t )( int16_t )( color.b * 255.0f ) ) << 16 )
-		+ ( uint64_t )( uint16_t )( int16_t )( color.a * 255.0f );
+		(((uint64_t)(uint16_t)(int16_t)(color.r * 255.0f)) << 48)
+		+ (((uint64_t)(uint16_t)(int16_t)(color.g * 255.0f)) << 32)
+		+ (((uint64_t)(uint16_t)(int16_t)(color.b * 255.0f)) << 16)
+		+ (uint64_t)(uint16_t)(int16_t)(color.a * 255.0f);
 	
 	decString result;
 	int shift = 60;
 	int i;
 	
-	result.Set( '0', 16 );
+	result.Set('0', 16);
 	
-	for( i=0; i<16; i++ ){
-		const int nibble = ( bincolor >> shift ) & 0xf;
+	for(i=0; i<16; i++){
+		const int nibble = (bincolor >> shift) & 0xf;
 		
-		if( nibble < 10 ){
-			result[ i ] = ( char )( '0' + nibble );
+		if(nibble < 10){
+			result[i] = (char)('0' + nibble);
 			
 		}else{
-			result[ i ] = ( char )( 'a' + ( nibble - 10 ) );
+			result[i] = (char)('a' + (nibble - 10));
 		}
 	}
 	
@@ -1616,98 +1616,98 @@ void deoglSkinChannel::pBuildCacheID(){
 	// property. if the resource does not belong to the virtual file system used by the game
 	// engine the cache id is not used to avoid problems
 	
-	if( ! pCanBeCached ){
+	if(! pCanBeCached){
 		return;
 	}
-	if( pComponentCount < 1 ){
+	if(pComponentCount < 1){
 		return;
 	}
-	if( AllComponentsStatic() /*HasStaticComponent()*/ ){
+	if(AllComponentsStatic() /*HasStaticComponent()*/){
 		return;
 	}
-	if( pPixelBufferMipMap->GetPixelBufferCount() == 0 ){
+	if(pPixelBufferMipMap->GetPixelBufferCount() == 0){
 		return;
 	}
 	
 	// for images update the cache id sources if present
-	if( pDelayedCombineImage1 ){
+	if(pDelayedCombineImage1){
 		const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
-		if( filename.IsEmpty() ){
+		if(filename.IsEmpty()){
 			pCanBeCached = false; // this one is problematic. dont do it
 			return;
 		}
 		
-		if( pDelayedCombineImage1->GetImage().GetVirtualFileSystem() !=
-		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem() ){
+		if(pDelayedCombineImage1->GetImage().GetVirtualFileSystem() !=
+		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem()){
 			pCanBeCached = false;
 			return;
 		}
 		
-		if( ! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile(
-		decPath::CreatePathUnix( filename ) ) ){
+		if(! pDelayedCombineImage1->GetImage().GetVirtualFileSystem()->CanReadFile(
+		decPath::CreatePathUnix(filename))){
 			pCanBeCached = false;
 			return;
 		}
 		
 		pCacheIDSource1 = "I";
-		pCacheIDSource1.Append( filename );
+		pCacheIDSource1.Append(filename);
 	}
 	
-	if( pDelayedCombineImage2 ){
+	if(pDelayedCombineImage2){
 		const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
-		if( filename.IsEmpty() ){
+		if(filename.IsEmpty()){
 			pCanBeCached = false; // this one is problematic. dont do it
 			return;
 		}
 		
-		if( pDelayedCombineImage2->GetImage().GetVirtualFileSystem() !=
-		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem() ){
+		if(pDelayedCombineImage2->GetImage().GetVirtualFileSystem() !=
+		pRenderThread.GetOgl().GetGameEngine()->GetVirtualFileSystem()){
 			pCanBeCached = false;
 			return;
 		}
 		
-		if( ! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile(
-		decPath::CreatePathUnix( filename ) ) ){
+		if(! pDelayedCombineImage2->GetImage().GetVirtualFileSystem()->CanReadFile(
+		decPath::CreatePathUnix(filename))){
 			pCanBeCached = false;
 			return;
 		}
 		
 		pCacheIDSource2 = "I";
-		pCacheIDSource2.Append( filename );
+		pCacheIDSource2.Append(filename);
 	}
 	
 	// for constructed update the cache id sources if present
-	if( pCacheConstrDefSource1 ){
+	if(pCacheConstrDefSource1){
 		pCacheIDSource1 = "C";
-		pCacheIDSource1.Append( pCRC32Data( *pCacheConstrDefSource1 ) );
+		pCacheIDSource1.Append(pCRC32Data(*pCacheConstrDefSource1));
 		
 		/*
-		pRenderThread.GetOgl().LogInfoFormat( "CACHE ID: %s", pCacheIDSource1.GetString() );
+		pRenderThread.GetOgl().LogInfoFormat("CACHE ID: %s", pCacheIDSource1.GetString());
 		decString hex;
 		const char * const data = pCacheConstrDefSource1->GetPointer();
 		const int size = pCacheConstrDefSource1->GetLength();
-		for( int i=0; i<size; i++ ){
-			hex.AppendFormat( "%02x ", data[i] );
+		for(int i=0; i<size; i++){
+			hex.AppendFormat("%02x ", data[i]);
 		}
-		pRenderThread.GetOgl().LogInfoFormat( "DEF STR1: %s", hex.GetString() );
+		pRenderThread.GetOgl().LogInfoFormat("DEF STR1: %s", hex.GetString());
 		*/
 	}
 	
-	if( pCacheConstrDefSource2 ){
+	if(pCacheConstrDefSource2){
 		pCacheIDSource2 = "C";
-		pCacheIDSource2.Append( pCRC32Data( *pCacheConstrDefSource2 ) );
+		pCacheIDSource2.Append(pCRC32Data(*pCacheConstrDefSource2));
 	}
 	
 	// add compression and mip map filtering parameter
 	bool compressed = false;
 	
-	if( pTexture ){
+	if(pTexture){
 		compressed = pTexture->GetFormat()->GetIsCompressed();
 		
-	}else if( pCubeMap ){
+	}else if(pCubeMap){
 		compressed = pCubeMap->GetFormat()->GetIsCompressed();
 		
-	}else if( pArrayTexture ){
+	}else if(pArrayTexture){
 		compressed = pArrayTexture->GetFormat()->GetIsCompressed();
 		
 	}else{
@@ -1716,13 +1716,13 @@ void deoglSkinChannel::pBuildCacheID(){
 		return;
 	}
 	
-	pCacheID.AppendCharacter( compressed ? 'c' : '-' );
+	pCacheID.AppendCharacter(compressed ? 'c' : '-');
 	
-	if( pPixelBufferMipMap->GetPixelBufferCount() == 1 ){
-		pCacheID.AppendCharacter( '-' );
+	if(pPixelBufferMipMap->GetPixelBufferCount() == 1){
+		pCacheID.AppendCharacter('-');
 		
 	}else{
-		switch( pType ){
+		switch(pType){
 		case ectAbsorption:
 		case ectColor:
 		case ectColorTintMask:
@@ -1741,45 +1741,45 @@ void deoglSkinChannel::pBuildCacheID(){
 		case ectRimEmissivity:
 		case ectNonPbrAlbedo:
 		case ectNonPbrMetalness:
-			pCacheID.AppendCharacter( 'b' );
+			pCacheID.AppendCharacter('b');
 			break;
 			
 		case ectSolidity:
-			if( pSolidityFilterPriority < 0.35f ){
-				pCacheID.AppendCharacter( 'M' ); // minimum filter
+			if(pSolidityFilterPriority < 0.35f){
+				pCacheID.AppendCharacter('M'); // minimum filter
 				
-			}else if( pSolidityFilterPriority > 0.65f ){
-				pCacheID.AppendCharacter( 'm' ); // maximum filter
+			}else if(pSolidityFilterPriority > 0.65f){
+				pCacheID.AppendCharacter('m'); // maximum filter
 				
 			}else{
-				pCacheID.AppendCharacter( 'b' ); // box filter (averaging)
+				pCacheID.AppendCharacter('b'); // box filter (averaging)
 			}
 			break;
 			
 		case ectNormal:
-			pCacheID.AppendCharacter( 'n' );
+			pCacheID.AppendCharacter('n');
 			break;
 			
 		case ectAO:
-			pCacheID.AppendCharacter( 'm' );
+			pCacheID.AppendCharacter('m');
 			break;
 		};
 	}
 	
 	// assemble the cache id
-	pCacheID.Append( pColor2CacheBinary( pUniformColor ) );
+	pCacheID.Append(pColor2CacheBinary(pUniformColor));
 	
-	pCacheID.AppendCharacter( ';' );
-	pCacheID.Append( pCacheIDSource1 );
+	pCacheID.AppendCharacter(';');
+	pCacheID.Append(pCacheIDSource1);
 	
-	if( ! pCacheIDSource2.IsEmpty() ){
-		pCacheID.AppendCharacter( ';' );
-		pCacheID.Append( pCacheIDSource2 );
+	if(! pCacheIDSource2.IsEmpty()){
+		pCacheID.AppendCharacter(';');
+		pCacheID.Append(pCacheIDSource2);
 	}
 	
 	/*
-	printf( "CacheID '%s' (%p %p)(%p %p) \n", pCacheID.GetString(), pDelayedCombineImage1,
-		pDelayedCombineImage2, pCacheConstrDefSource1, pCacheConstrDefSource2 );
+	printf("CacheID '%s' (%p %p)(%p %p) \n", pCacheID.GetString(), pDelayedCombineImage1,
+		pDelayedCombineImage2, pCacheConstrDefSource1, pCacheConstrDefSource2);
 	*/
 }
 
@@ -1805,114 +1805,114 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	// crc32 applied.
 	//   <construction-definition UInt8[]>
 	
-	if( pCacheID.IsEmpty() || ! pCanBeCached ){
+	if(pCacheID.IsEmpty() || ! pCanBeCached){
 		return;
 	}
 	
-	if( ! pCacheVerify ){
-		pCacheVerify = new decMemoryFile( "" );
+	if(! pCacheVerify){
+		pCacheVerify = new decMemoryFile("");
 	}
 	
 	decMemoryFileWriter *writer = NULL;
 	
 	try{
-		writer = new decMemoryFileWriter( pCacheVerify, false );
+		writer = new decMemoryFileWriter(pCacheVerify, false);
 		
 		// source 1 verify
-		if( pDelayedCombineImage1 ){
+		if(pDelayedCombineImage1){
 			const decString &filename = pDelayedCombineImage1->GetImage().GetFilename();
-			if( filename.IsEmpty() ){
-				DETHROW( deeInvalidAction ); // this one is problematic. dont do it
+			if(filename.IsEmpty()){
+				DETHROW(deeInvalidAction); // this one is problematic. dont do it
 			}
 			
-			const decPath path( decPath::CreatePathUnix( filename ) );
-			writer->WriteUInt( ( uint32_t )pDelayedCombineImage1->GetImage().
-				GetVirtualFileSystem()->GetFileModificationTime( path ) );
+			const decPath path(decPath::CreatePathUnix(filename));
+			writer->WriteUInt((uint32_t)pDelayedCombineImage1->GetImage().
+				GetVirtualFileSystem()->GetFileModificationTime(path));
 			
-		}else if( pCacheConstrVerifySource1 ){
-			if( pCacheConstrDefSource1->GetLength() > 0 ){
-				writer->Write( pCacheConstrDefSource1->GetPointer(), pCacheConstrDefSource1->GetLength() );
+		}else if(pCacheConstrVerifySource1){
+			if(pCacheConstrDefSource1->GetLength() > 0){
+				writer->Write(pCacheConstrDefSource1->GetPointer(), pCacheConstrDefSource1->GetLength());
 			}
-			if( pCacheConstrVerifySource1->GetLength() > 0 ){
-				writer->Write( pCacheConstrVerifySource1->GetPointer(), pCacheConstrVerifySource1->GetLength() );
+			if(pCacheConstrVerifySource1->GetLength() > 0){
+				writer->Write(pCacheConstrVerifySource1->GetPointer(), pCacheConstrVerifySource1->GetLength());
 			}
 		}
 		
 		// source 2 verify
-		if( pDelayedCombineImage2 ){
+		if(pDelayedCombineImage2){
 			const decString &filename = pDelayedCombineImage2->GetImage().GetFilename();
-			if( filename.IsEmpty() ){
-				DETHROW( deeInvalidParam ); // this one is problematic. dont do it
+			if(filename.IsEmpty()){
+				DETHROW(deeInvalidParam); // this one is problematic. dont do it
 			}
 			
-			const decPath path( decPath::CreatePathUnix( filename ) );
-			writer->WriteUInt( ( uint32_t )pDelayedCombineImage2->GetImage().
-				GetVirtualFileSystem()->GetFileModificationTime( path ) );
+			const decPath path(decPath::CreatePathUnix(filename));
+			writer->WriteUInt((uint32_t)pDelayedCombineImage2->GetImage().
+				GetVirtualFileSystem()->GetFileModificationTime(path));
 			
-		}else if( pCacheConstrVerifySource2 ){
-			if( pCacheConstrDefSource2->GetLength() > 0 ){
-				writer->Write( pCacheConstrDefSource2->GetPointer(), pCacheConstrDefSource2->GetLength() );
+		}else if(pCacheConstrVerifySource2){
+			if(pCacheConstrDefSource2->GetLength() > 0){
+				writer->Write(pCacheConstrDefSource2->GetPointer(), pCacheConstrDefSource2->GetLength());
 			}
-			if( pCacheConstrVerifySource2->GetLength() > 0 ){
-				writer->Write( pCacheConstrVerifySource2->GetPointer(), pCacheConstrVerifySource2->GetLength() );
+			if(pCacheConstrVerifySource2->GetLength() > 0){
+				writer->Write(pCacheConstrVerifySource2->GetPointer(), pCacheConstrVerifySource2->GetLength());
 			}
 		}
 		
 		writer->FreeReference();
 		
-	}catch( const deException & ){
-		if( writer ){
+	}catch(const deException &){
+		if(writer){
 			writer->FreeReference();
 		}
 		throw;
 	}
 	
 	/*
-	printf( "Verify %d '%s'\n", pCacheVerify->GetLength(), pCacheID.GetString() );
-	if( pCacheVerify->GetLength() > 8 ){
-		printf( "  " );
-		for( int i=0; i<pCacheVerify->GetLength(); i++ ){
-			printf( "%02x ", ( uint8_t )pCacheVerify->GetPointer()[i] );
+	printf("Verify %d '%s'\n", pCacheVerify->GetLength(), pCacheID.GetString());
+	if(pCacheVerify->GetLength() > 8){
+		printf("  ");
+		for(int i=0; i<pCacheVerify->GetLength(); i++){
+			printf("%02x ", (uint8_t)pCacheVerify->GetPointer()[i]);
 		}
-		printf( "\n" );
+		printf("\n");
 	}
 	*/
 }
 
 
 
-void deoglSkinChannel::pBuildProperty( deSkinProperty &property ){
+void deoglSkinChannel::pBuildProperty(deSkinProperty &property){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects.
 	//      in particular calling AddReference on render objects can lead to ugly bugs
 	
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
-		deoglSkinPropertyMap::GetTypeFor( property.GetType() );
+		deoglSkinPropertyMap::GetTypeFor(property.GetType());
 	
-	if( ! pIsPropertyValidForType( propertyType ) ){
+	if(! pIsPropertyValidForType(propertyType)){
 		return;
 	}
 	
 	deSkinPropertyVisitorIdentify identify;
-	property.Visit( identify );
+	property.Visit(identify);
 	
-	if( identify.IsImage() ){
-		pBuildPropertyImage( propertyType, identify.CastToImage() );
+	if(identify.IsImage()){
+		pBuildPropertyImage(propertyType, identify.CastToImage());
 		
-	}else if( identify.IsConstructed() ){
-		pBuildPropertyConstructed( propertyType, identify.CastToConstructed() );
+	}else if(identify.IsConstructed()){
+		pBuildPropertyConstructed(propertyType, identify.CastToConstructed());
 	}
 }
 
-void deoglSkinChannel::pBuildPropertyImage( deoglSkinPropertyMap::ePropertyTypes propertyType,
-const deSkinPropertyImage &property ){
+void deoglSkinChannel::pBuildPropertyImage(deoglSkinPropertyMap::ePropertyTypes propertyType,
+const deSkinPropertyImage &property){
 	const deImage * const image = property.GetImage();
-	if( ! image ){
+	if(! image){
 		return;
 	}
 	
 	int i;
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptColor:
 	case deoglSkinPropertyMap::eptColorOmnidirEquirect:
 	case deoglSkinPropertyMap::eptTransparency:
@@ -1930,28 +1930,28 @@ const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptRimEmissivity:
 	case deoglSkinPropertyMap::eptNonPbrAlbedo:
 	case deoglSkinPropertyMap::eptNonPbrMetalness:
-		if( image->GetComponentCount() == 1 ){
-			pWriteImageToPixelBuffer( *image, 0, 100, 100, 100 );
-			pWriteImageToPixelBuffer( *image, 1, 100, 100, 100 );
-			pWriteImageToPixelBuffer( *image, 2, 100, 100, 100 );
+		if(image->GetComponentCount() == 1){
+			pWriteImageToPixelBuffer(*image, 0, 100, 100, 100);
+			pWriteImageToPixelBuffer(*image, 1, 100, 100, 100);
+			pWriteImageToPixelBuffer(*image, 2, 100, 100, 100);
 			
 		}else{
-			pWriteImageToPixelBuffer( *image, 0, 1, 2, 3 );
+			pWriteImageToPixelBuffer(*image, 0, 1, 2, 3);
 		}
 		break;
 		
 	case deoglSkinPropertyMap::eptColorOmnidir:
-		if( image->GetDepth() == 6 ){
-			if( image->GetComponentCount() == 1 ){
-				for( i=0; i<6; i++ ){
-					pWriteImageToPixelBuffer( *image, i, i, 0, 100, 100, 100 );
-					pWriteImageToPixelBuffer( *image, i, i, 1, 100, 100, 100 );
-					pWriteImageToPixelBuffer( *image, i, i, 2, 100, 100, 100 );
+		if(image->GetDepth() == 6){
+			if(image->GetComponentCount() == 1){
+				for(i=0; i<6; i++){
+					pWriteImageToPixelBuffer(*image, i, i, 0, 100, 100, 100);
+					pWriteImageToPixelBuffer(*image, i, i, 1, 100, 100, 100);
+					pWriteImageToPixelBuffer(*image, i, i, 2, 100, 100, 100);
 				}
 				
 			}else{
-				for( i=0; i<6; i++ ){
-					pWriteImageToPixelBuffer( *image, i, i, 0, 1, 2, 3 );
+				for(i=0; i<6; i++){
+					pWriteImageToPixelBuffer(*image, i, i, 0, 1, 2, 3);
 				}
 			}
 		}
@@ -1960,13 +1960,13 @@ const deSkinPropertyImage &property ){
 	case deoglSkinPropertyMap::eptEnvironmentMap:
 	case deoglSkinPropertyMap::eptEnvironmentRoom:
 	case deoglSkinPropertyMap::eptEnvironmentRoomEmissivity:
-		if( image->GetDepth() == 6 ){
-			pWriteImageToPixelBuffer( *image, 0, 0, 0, 1, 2, 3 ); // positive x
-			pWriteImageToPixelBuffer( *image, 1, 1, 0, 1, 2, 3 ); // negative x
-			pWriteImageToPixelBuffer( *image, 2, 2, 0, 1, 2, 3 ); // positive y
-			pWriteImageToPixelBuffer( *image, 3, 3, 0, 1, 2, 3 ); // negative y
-			pWriteImageToPixelBuffer( *image, 4, 4, 0, 1, 2, 3 ); // positive z
-			pWriteImageToPixelBuffer( *image, 5, 5, 0, 1, 2, 3 ); // negative z
+		if(image->GetDepth() == 6){
+			pWriteImageToPixelBuffer(*image, 0, 0, 0, 1, 2, 3); // positive x
+			pWriteImageToPixelBuffer(*image, 1, 1, 0, 1, 2, 3); // negative x
+			pWriteImageToPixelBuffer(*image, 2, 2, 0, 1, 2, 3); // positive y
+			pWriteImageToPixelBuffer(*image, 3, 3, 0, 1, 2, 3); // negative y
+			pWriteImageToPixelBuffer(*image, 4, 4, 0, 1, 2, 3); // positive z
+			pWriteImageToPixelBuffer(*image, 5, 5, 0, 1, 2, 3); // negative z
 		}
 		break;
 		
@@ -1975,14 +1975,14 @@ const deSkinPropertyImage &property ){
 	}
 }
 
-void deoglSkinChannel::pBuildPropertyConstructed( deoglSkinPropertyMap::ePropertyTypes propertyType,
-const deSkinPropertyConstructed &property ){
+void deoglSkinChannel::pBuildPropertyConstructed(deoglSkinPropertyMap::ePropertyTypes propertyType,
+const deSkinPropertyConstructed &property){
 	int targetRed = 100;
 	int targetGreen = 100;
 	int targetBlue = 100;
 	int targetAlpha = 100;
 	
-	switch( propertyType ){
+	switch(propertyType){
 	case deoglSkinPropertyMap::eptColorTintMask:
 	case deoglSkinPropertyMap::eptSolidity:
 	case deoglSkinPropertyMap::eptHeight:
@@ -2034,24 +2034,24 @@ const deSkinPropertyConstructed &property ){
 		break;
 	}
 	
-	if( targetRed == 100 && targetGreen == 100 && targetBlue == 100 && targetAlpha == 100 ){
+	if(targetRed == 100 && targetGreen == 100 && targetBlue == 100 && targetAlpha == 100){
 		return;
 	}
 	
-	deoglSCBuildConstructed visitor( *this );
-	if( ! visitor.BuildFromProperty( property, targetRed, targetGreen, targetBlue, targetAlpha ) ){
+	deoglSCBuildConstructed visitor(*this);
+	if(! visitor.BuildFromProperty(property, targetRed, targetGreen, targetBlue, targetAlpha)){
 		return;
 	}
 }
 
-void deoglSkinChannel::pWriteImageToPixelBuffer( const deImage &image,
-int targetRed, int targetGreen, int targetBlue, int targetAlpha ){
-	pWriteImageToPixelBuffer( image, 0, 0, targetRed, targetGreen, targetBlue, targetAlpha );
+void deoglSkinChannel::pWriteImageToPixelBuffer(const deImage &image,
+int targetRed, int targetGreen, int targetBlue, int targetAlpha){
+	pWriteImageToPixelBuffer(image, 0, 0, targetRed, targetGreen, targetBlue, targetAlpha);
 }
 
-void deoglSkinChannel::pWriteImageToPixelBuffer( const deImage &image,
-int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int targetAlpha ){
-	const int targets[ 4 ] = { targetRed, targetGreen, targetBlue, targetAlpha };
+void deoglSkinChannel::pWriteImageToPixelBuffer(const deImage &image,
+int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int targetAlpha){
+	const int targets[4] = {targetRed, targetGreen, targetBlue, targetAlpha};
 	const float factor2 = 1.0f / 65535.0f;
 	const float factor1 = 1.0f / 255.0f;
 	int i, x, y;
@@ -2060,22 +2060,22 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	const int componentCount = image.GetComponentCount();
 	const int bitCount = image.GetBitCount();
 	
-	if( ! pPixelBufferMipMap ){
+	if(! pPixelBufferMipMap){
 		return;
 	}
 	
-	if( image.GetWidth() > pSize.x ){
+	if(image.GetWidth() > pSize.x){
 		return;
 	}
-	if( image.GetHeight() > pSize.y ){
+	if(image.GetHeight() > pSize.y){
 		return;
 	}
 	
-	if( srcLayer < 0 || srcLayer >= image.GetDepth() ){
-		DETHROW( deeInvalidParam );
+	if(srcLayer < 0 || srcLayer >= image.GetDepth()){
+		DETHROW(deeInvalidParam);
 	}
-	if( destLayer < 0 || destLayer >= pSize.z ){
-		DETHROW( deeInvalidParam );
+	if(destLayer < 0 || destLayer >= pSize.z){
+		DETHROW(deeInvalidParam);
 	}
 	
 	// get the right pointer for the image data
@@ -2086,97 +2086,97 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 	const GLubyte *srcDataPb8 = NULL;
 	const GLfloat *srcDataPb32 = NULL;
 	
-	deoglPixelBuffer * const pixelBuffer = ( ( deoglImage* )image.GetPeerGraphic() )->GetPixelBuffer();
+	deoglPixelBuffer * const pixelBuffer = ((deoglImage*)image.GetPeerGraphic())->GetPixelBuffer();
 	
-	if( pixelBuffer ){
+	if(pixelBuffer){
 		// image skin pixel buffer is used for memory optimization
 		
-		switch( pixelBuffer->GetFormat() ){
+		switch(pixelBuffer->GetFormat()){
 		case deoglPixelBuffer::epfByte1:
 		case deoglPixelBuffer::epfByte2:
 		case deoglPixelBuffer::epfByte3:
 		case deoglPixelBuffer::epfByte4:
-			srcDataPb8 = ( GLubyte* )pixelBuffer->GetPointer() + ( srcLayerSize * srcLayer );
+			srcDataPb8 = (GLubyte*)pixelBuffer->GetPointer() + (srcLayerSize * srcLayer);
 			break;
 			
 		case deoglPixelBuffer::epfFloat1:
 		case deoglPixelBuffer::epfFloat2:
 		case deoglPixelBuffer::epfFloat3:
 		case deoglPixelBuffer::epfFloat4:
-			srcDataPb32 = ( GLfloat* )pixelBuffer->GetPointer() + ( srcLayerSize * srcLayer );
+			srcDataPb32 = (GLfloat*)pixelBuffer->GetPointer() + (srcLayerSize * srcLayer);
 			break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
-	}else if( image.GetData() ){
+	}else if(image.GetData()){
 		// direct memory access is used for regular mode and as fallback
 		
-		if( bitCount == 8 ){
-			srcData8 = ( unsigned char * )image.GetData() + ( srcLayerSize * srcLayer );
+		if(bitCount == 8){
+			srcData8 = (unsigned char *)image.GetData() + (srcLayerSize * srcLayer);
 			
-		}else if( bitCount == 16 ){
-			srcData16 = ( unsigned short * )image.GetData() + ( srcLayerSize * srcLayer );
+		}else if(bitCount == 16){
+			srcData16 = (unsigned short *)image.GetData() + (srcLayerSize * srcLayer);
 			
 		}else{
-			srcData32 = ( float* )image.GetData() + ( srcLayerSize * srcLayer );
+			srcData32 = (float*)image.GetData() + (srcLayerSize * srcLayer);
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	// copy the pixels to the right place
-	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer(0);
 	
-	if( pFloatFormat ){
+	if(pFloatFormat){
 		// TODO if srcDataPb32 is not NULL, component count matches and targets[] in range
 		//      are (0,1,2,3) a direct memory copy can be used. after the combined textures
 		//      are removed this should always be the case
 		
-		GLfloat *destData = ( GLfloat* )pixbuf.GetPointer() + ( pSize.x * pSize.y * pComponentCount * destLayer );
-		GLfloat pixels[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f }; // silence -Werror=maybe-uninitialized
+		GLfloat *destData = (GLfloat*)pixbuf.GetPointer() + (pSize.x * pSize.y * pComponentCount * destLayer);
+		GLfloat pixels[4] = {0.0f, 0.0f, 0.0f, 0.0f}; // silence -Werror=maybe-uninitialized
 		GLfloat *destRow;
 		
-		for( y=0; y<pSize.y; y++ ){
+		for(y=0; y<pSize.y; y++){
 			destRow = destData + pComponentCount * pSize.x * y;
 			
-			for( x=0; x<pSize.x; x++ ){
-				if( srcDataPb8 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLfloat )( srcDataPb8[ i ] * factor1 );
+			for(x=0; x<pSize.x; x++){
+				if(srcDataPb8){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLfloat)(srcDataPb8[i] * factor1);
 					}
 					srcDataPb8 += componentCount;
 					
-				}else if( srcDataPb32 ) {
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = srcDataPb32[ i ];
+				}else if(srcDataPb32) {
+					for(i=0; i<componentCount; i++){
+						pixels[i] = srcDataPb32[i];
 					}
 					srcDataPb32 += componentCount;
 					
-				}else if( srcData8 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLfloat )( srcData8[ i ] * factor1 );
+				}else if(srcData8){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLfloat)(srcData8[i] * factor1);
 					}
 					srcData8 += componentCount;
 					
-				}else if( srcData16 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLfloat )( srcData16[ i ] * factor2 );
+				}else if(srcData16){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLfloat)(srcData16[i] * factor2);
 					}
 					srcData16 += componentCount;
 					
 				}else{
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLfloat )srcData32[ i ];
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLfloat)srcData32[i];
 					}
 					srcData32 += componentCount;
 				}
 				
-				for( i=0; i<pComponentCount; i++ ){
-					if( targets[ i ] < pComponentCount ){
-						destRow[ targets[ i ] ] = pixels[ i ];
+				for(i=0; i<pComponentCount; i++){
+					if(targets[i] < pComponentCount){
+						destRow[targets[i]] = pixels[i];
 					}
 				}
 				destRow += pComponentCount;
@@ -2188,48 +2188,48 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 		//      are (0,1,2,3) a direct memory copy can be used. after the combined textures
 		//      are removed this should always be the case
 		
-		GLubyte *destData = ( GLubyte* )pixbuf.GetPointer() + ( pSize.x * pSize.y * pComponentCount * destLayer );
-		GLubyte pixels[ 4 ] = { 0, 0, 0, 0 }; // silence -Werror=maybe-uninitialized
+		GLubyte *destData = (GLubyte*)pixbuf.GetPointer() + (pSize.x * pSize.y * pComponentCount * destLayer);
+		GLubyte pixels[4] = {0, 0, 0, 0}; // silence -Werror=maybe-uninitialized
 		GLubyte *destRow;
 		
-		for( y=0; y<pSize.y; y++ ){
+		for(y=0; y<pSize.y; y++){
 			destRow = destData + pComponentCount * pSize.x * y;
 			
-			for( x=0; x<pSize.x; x++ ){
-				if( srcDataPb8 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = srcDataPb8[ i ];
+			for(x=0; x<pSize.x; x++){
+				if(srcDataPb8){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = srcDataPb8[i];
 					}
 					srcDataPb8 += componentCount;
 					
-				}else if( srcDataPb32 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLubyte )( srcDataPb32[ i ] * 255.0f );
+				}else if(srcDataPb32){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLubyte)(srcDataPb32[i] * 255.0f);
 					}
 					srcDataPb32 += componentCount;
 					
-				}else if( srcData8 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLubyte )srcData8[ i ];
+				}else if(srcData8){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLubyte)srcData8[i];
 					}
 					srcData8 += componentCount;
 					
-				}else if( srcData16 ){
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLubyte )( srcData16[ i ] >> 8 );
+				}else if(srcData16){
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLubyte)(srcData16[i] >> 8);
 					}
 					srcData16 += componentCount;
 					
 				}else{
-					for( i=0; i<componentCount; i++ ){
-						pixels[ i ] = ( GLubyte )( srcData32[ i ] * 255.0f );
+					for(i=0; i<componentCount; i++){
+						pixels[i] = (GLubyte)(srcData32[i] * 255.0f);
 					}
 					srcData32 += componentCount;
 				}
 				
-				for( i=0; i<pComponentCount; i++ ){
-					if( targets[ i ] < pComponentCount ){
-						destRow[ targets[ i ] ] = pixels[ i ];
+				for(i=0; i<pComponentCount; i++){
+					if(targets[i] < pComponentCount){
+						destRow[targets[i]] = pixels[i];
 					}
 				}
 				destRow += pComponentCount;
@@ -2239,120 +2239,120 @@ int srcLayer, int destLayer, int targetRed, int targetGreen, int targetBlue, int
 }
 
 void deoglSkinChannel::pFillWithUniformColor(){
-	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixbuf = pPixelBufferMipMap->GetPixelBuffer(0);
 	const int pixelCount = pSize.x * pSize.y * pSize.z;
 	int i;
 	
-	if( pFloatFormat ){
-		const GLfloat oglR = ( GLfloat )pUniformColor.r;
-		const GLfloat oglG = ( GLfloat )pUniformColor.g;
-		const GLfloat oglB = ( GLfloat )pUniformColor.b;
-		const GLfloat oglA = ( GLfloat )pUniformColor.a;
+	if(pFloatFormat){
+		const GLfloat oglR = (GLfloat)pUniformColor.r;
+		const GLfloat oglG = (GLfloat)pUniformColor.g;
+		const GLfloat oglB = (GLfloat)pUniformColor.b;
+		const GLfloat oglA = (GLfloat)pUniformColor.a;
 		
-		if( pComponentCount == 1 ){
+		if(pComponentCount == 1){
 			deoglPixelBuffer::sFloat1 * const dest = pixbuf.GetPointerFloat1();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
 			}
 			
-		}else if( pComponentCount == 2 ){
+		}else if(pComponentCount == 2){
 			deoglPixelBuffer::sFloat2 * const dest = pixbuf.GetPointerFloat2();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
-				if( pUniformColorMask[ 1 ] ){
-					dest[ i ].g = oglG;
+				if(pUniformColorMask[1]){
+					dest[i].g = oglG;
 				}
 			}
 			
-		}else if( pComponentCount == 3 ){
+		}else if(pComponentCount == 3){
 			deoglPixelBuffer::sFloat3 * const dest = pixbuf.GetPointerFloat3();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
-				if( pUniformColorMask[ 1 ] ){
-					dest[ i ].g = oglG;
+				if(pUniformColorMask[1]){
+					dest[i].g = oglG;
 				}
-				if( pUniformColorMask[ 2 ] ){
-					dest[ i ].b = oglB;
+				if(pUniformColorMask[2]){
+					dest[i].b = oglB;
 				}
 			}
 			
 		}else{
 			deoglPixelBuffer::sFloat4 * const dest = pixbuf.GetPointerFloat4();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
-				if( pUniformColorMask[ 1 ] ){
-					dest[ i ].g = oglG;
+				if(pUniformColorMask[1]){
+					dest[i].g = oglG;
 				}
-				if( pUniformColorMask[ 2 ] ){
-					dest[ i ].b = oglB;
+				if(pUniformColorMask[2]){
+					dest[i].b = oglB;
 				}
-				if( pUniformColorMask[ 3 ] ){
-					dest[ i ].a = oglA;
+				if(pUniformColorMask[3]){
+					dest[i].a = oglA;
 				}
 			}
 		}
 		
 	}else{
-		const GLubyte oglR = ( GLubyte )( pUniformColor.r * 255.0f );
-		const GLubyte oglG = ( GLubyte )( pUniformColor.g * 255.0f );
-		const GLubyte oglB = ( GLubyte )( pUniformColor.b * 255.0f );
-		const GLubyte oglA = ( GLubyte )( pUniformColor.a * 255.0f );
+		const GLubyte oglR = (GLubyte)(pUniformColor.r * 255.0f);
+		const GLubyte oglG = (GLubyte)(pUniformColor.g * 255.0f);
+		const GLubyte oglB = (GLubyte)(pUniformColor.b * 255.0f);
+		const GLubyte oglA = (GLubyte)(pUniformColor.a * 255.0f);
 		
-		if( pComponentCount == 1 ){
+		if(pComponentCount == 1){
 			deoglPixelBuffer::sByte1 * const dest = pixbuf.GetPointerByte1();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
 			}
 			
-		}else if( pComponentCount == 2 ){
+		}else if(pComponentCount == 2){
 			deoglPixelBuffer::sByte2 * const dest = pixbuf.GetPointerByte2();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
-				if( pUniformColorMask[ 1 ] ){
-					dest[ i ].g = oglG;
+				if(pUniformColorMask[1]){
+					dest[i].g = oglG;
 				}
 			}
 			
-		}else if( pComponentCount == 3 ){
+		}else if(pComponentCount == 3){
 			deoglPixelBuffer::sByte3 * const dest = pixbuf.GetPointerByte3();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
-				if( pUniformColorMask[ 1 ] ){
-					dest[ i ].g = oglG;
+				if(pUniformColorMask[1]){
+					dest[i].g = oglG;
 				}
-				if( pUniformColorMask[ 2 ] ){
-					dest[ i ].b = oglB;
+				if(pUniformColorMask[2]){
+					dest[i].b = oglB;
 				}
 			}
 			
 		}else{
 			deoglPixelBuffer::sByte4 * const dest = pixbuf.GetPointerByte4();
-			for( i=0; i<pixelCount; i++ ){
-				if( pUniformColorMask[ 0 ] ){
-					dest[ i ].r = oglR;
+			for(i=0; i<pixelCount; i++){
+				if(pUniformColorMask[0]){
+					dest[i].r = oglR;
 				}
-				if( pUniformColorMask[ 1 ] ){
-					dest[ i ].g = oglG;
+				if(pUniformColorMask[1]){
+					dest[i].g = oglG;
 				}
-				if( pUniformColorMask[ 2 ] ){
-					dest[ i ].b = oglB;
+				if(pUniformColorMask[2]){
+					dest[i].b = oglB;
 				}
-				if( pUniformColorMask[ 3 ] ){
-					dest[ i ].a = oglA;
+				if(pUniformColorMask[3]){
+					dest[i].a = oglA;
 				}
 			}
 		}

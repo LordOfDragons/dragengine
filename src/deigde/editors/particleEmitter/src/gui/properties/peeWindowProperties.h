@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	peeWindowProperties( peeWindowMain &windowMain );
+	peeWindowProperties(peeWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up the window. */
@@ -65,10 +65,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline peeWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline peeWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Set emitter. */
-	void SetEmitter( peeEmitter *emitter );
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Emitter path changed. */
 	void OnEmitterPathChanged();

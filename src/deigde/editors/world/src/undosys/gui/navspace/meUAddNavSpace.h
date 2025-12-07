@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUAddNavSpace( meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace );
+	meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUAddNavSpace();
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space to add. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline meNavigationSpace *GetNavSpace() const{return pNavSpace;}
 	
 	/** \brief Undo the action. */
 	virtual void Undo();

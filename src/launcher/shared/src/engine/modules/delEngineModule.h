@@ -105,121 +105,121 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module type. */
-	inline deModuleSystem::eModuleTypes GetType() const{ return pType; }
+	inline deModuleSystem::eModuleTypes GetType() const{return pType;}
 	
 	/** \brief Set module type. */
-	void SetType( deModuleSystem::eModuleTypes type );
+	void SetType(deModuleSystem::eModuleTypes type);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decUnicodeString &GetDescription () const{ return pDescription; }
+	inline const decUnicodeString &GetDescription () const{return pDescription;}
 	
 	/** \brief Set description. */
-	void SetDescription( const decUnicodeString &description );
+	void SetDescription(const decUnicodeString &description);
 	
 	/** \brief Author. */
-	inline const decUnicodeString &GetAuthor() const{ return pAuthor; }
+	inline const decUnicodeString &GetAuthor() const{return pAuthor;}
 	
 	/** \brief Set author. */
-	void SetAuthor( const decUnicodeString &author );
+	void SetAuthor(const decUnicodeString &author);
 	
 	/** \brief Version. */
-	inline const decString &GetVersion() const{ return pVersion; }
+	inline const decString &GetVersion() const{return pVersion;}
 	
 	/** \brief Set version. */
-	void SetVersion( const char *version );
+	void SetVersion(const char *version);
 	
 	/** \brief Directory name. */
-	inline const decString &GetDirectoryName() const{ return pDirName; }
+	inline const decString &GetDirectoryName() const{return pDirName;}
 	
 	/** \brief Set directory name. */
-	void SetDirectoryName( const char *dirname );
+	void SetDirectoryName(const char *dirname);
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	/** \brief Set pattern. */
-	void SetPattern( const char *pattern );
+	void SetPattern(const char *pattern);
 	
 	/**
 	 * \brief Priority of module.
 	 * 
 	 * Used to find best module. Higher priority takes precedence.
 	 */
-	inline int GetPriority() const{ return pPriority; }
+	inline int GetPriority() const{return pPriority;}
 	
 	/**
 	 * \brief Set module priority.
 	 * 
 	 * Used to find best module. Higher priority takes precedence.
 	 */
-	void SetPriority( int priority );
+	void SetPriority(int priority);
 	
 	/** \brief Fallback module. */
-	inline bool GetIsFallback() const{ return pIsFallback; }
+	inline bool GetIsFallback() const{return pIsFallback;}
 	
 	/** \brief Set if fallback module. */
-	void SetIsFallback( bool isFallback );
+	void SetIsFallback(bool isFallback);
 	
 	/** \brief Module status. */
-	inline eModuleStatus GetStatus() const{ return pStatus; }
+	inline eModuleStatus GetStatus() const{return pStatus;}
 	
 	/** \brief Set module status. */
-	void SetStatus( eModuleStatus status );
+	void SetStatus(eModuleStatus status);
 	
 	/** \brief Module error code. */
-	inline int GetErrorCode() const{ return pErrorCode; }
+	inline int GetErrorCode() const{return pErrorCode;}
 	
 	/** \brief Set module error code. */
-	void SetErrorCode( int errorCode );
+	void SetErrorCode(int errorCode);
 	
 	/** \brief Library file name. */
-	inline const decString &GetLibFileName() const{ return pLibFileName; }
+	inline const decString &GetLibFileName() const{return pLibFileName;}
 	
 	/** \brief Set library file name. */
-	void SetLibFileName( const char *name );
+	void SetLibFileName(const char *name);
 	
 	/** \brief Size in bytes the library file should have. */
-	inline int GetLibFileSizeShould() const{ return pLibFileSizeShould; }
+	inline int GetLibFileSizeShould() const{return pLibFileSizeShould;}
 	
 	/** \brief Set he size in bytes the library file should have. */
-	void SetLibFileSizeShould( int size );
+	void SetLibFileSizeShould(int size);
 	
 	/** \brief Size in bytes the library file actually has. */
-	inline int GetLibFileSizeIs() const{ return pLibFileSizeIs; }
+	inline int GetLibFileSizeIs() const{return pLibFileSizeIs;}
 	
 	/** \brief Set size in bytes the library file actually has. */
-	void SetLibFileSizeIs( int size );
+	void SetLibFileSizeIs(int size);
 	
 	/** \brief Hash value the library file should have. */
-	inline const decString &GetLibFileHashShould() const{ return pLibFileHashShould; }
+	inline const decString &GetLibFileHashShould() const{return pLibFileHashShould;}
 	
 	/** \brief Set hash value the library file should have. */
-	void SetLibFileHashShould( const char *hash );
+	void SetLibFileHashShould(const char *hash);
 	
 	/** \brief Hash value the library file actually has. */
-	inline const decString &GetLibFileHashIs() const{ return pLibFileHashIs; }
+	inline const decString &GetLibFileHashIs() const{return pLibFileHashIs;}
 	
 	/** \brief Set hash value the library file actually has. */
-	void SetLibFileHashIs( const char *hash );
+	void SetLibFileHashIs(const char *hash);
 	
 	/** \brief Entry point name. */
-	inline const decString &GetLibFileEntryPoint() const{ return pLibFileEntryPoint; }
+	inline const decString &GetLibFileEntryPoint() const{return pLibFileEntryPoint;}
 	
 	/** \brief Set entry point name. */
-	void SetLibFileEntryPoint( const char *name );
+	void SetLibFileEntryPoint(const char *name);
 	
 	/** \brief Parameters. */
-	inline delEMParameterList &GetParameters(){ return pParameters; }
-	inline const delEMParameterList &GetParameters() const{ return pParameters; }
+	inline delEMParameterList &GetParameters(){return pParameters;}
+	inline const delEMParameterList &GetParameters() const{return pParameters;}
 	
 	/** \brief Calculate file size and hashes. */
-	void CalcSizeAndHashes( delLauncher &launcher );
+	void CalcSizeAndHashes(delLauncher &launcher);
 	/*@}*/
 };
 

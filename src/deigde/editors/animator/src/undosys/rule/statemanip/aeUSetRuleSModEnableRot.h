@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModEnableRot( aeRuleStateManipulator *rule );
+	aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModEnableRot();

@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedSetRenderable::seUMappedSetRenderable( seMapped *mapped, const char *newRenderable ) :
-pMapped( mapped ),
-pOldValue( mapped ? mapped->GetRenderable().GetString() : "" ),
-pNewValue( newRenderable )
+seUMappedSetRenderable::seUMappedSetRenderable(seMapped *mapped, const char *newRenderable) :
+pMapped(mapped),
+pOldValue(mapped ? mapped->GetRenderable().GetString() : ""),
+pNewValue(newRenderable)
 {
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Set Mapped Renderable" );
+	SetShortInfo("Set Mapped Renderable");
 }
 
 seUMappedSetRenderable::~seUMappedSetRenderable(){
@@ -53,9 +53,9 @@ seUMappedSetRenderable::~seUMappedSetRenderable(){
 ///////////////
 
 void seUMappedSetRenderable::Undo(){
-	pMapped->SetRenderable( pOldValue );
+	pMapped->SetRenderable(pOldValue);
 }
 
 void seUMappedSetRenderable::Redo(){
-	pMapped->SetRenderable( pNewValue );
+	pMapped->SetRenderable(pNewValue);
 }

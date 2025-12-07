@@ -57,31 +57,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Game at index. */
-	delGame *GetAt( int index ) const;
+	delGame *GetAt(int index) const;
 	
 	/** \brief Game with identifier or NULL if not found. */
-	delGame *GetWithID( const decUuid &id ) const;
+	delGame *GetWithID(const decUuid &id) const;
 	
 	/** \brief Games with identifier or empty list. */
-	delGameList GetWithAlias( const char *alias ) const;
+	delGameList GetWithAlias(const char *alias) const;
 	
 	/** \brief Game is present. */
-	bool Has( delGame *game ) const;
+	bool Has(delGame *game) const;
 	
 	/** \brief Game with identifier eixsts. */
-	bool HasWithID( const decUuid &id ) const;
+	bool HasWithID(const decUuid &id) const;
 	
 	/** \brief Index of game or -1 if not found. */
-	int IndexOf( delGame *game ) const;
+	int IndexOf(delGame *game) const;
 	
 	/** \brief Index of game with identifier or -1 if not found. */
-	int IndexOfWithID( const decUuid &id ) const;
+	int IndexOfWithID(const decUuid &id) const;
 	
 	/** \brief Add game. */
-	void Add( delGame *game );
+	void Add(delGame *game);
 	
 	/** \brief Remove game. */
-	void Remove( delGame *game );
+	void Remove(delGame *game);
 	
 	/** \brief Remove all games. */
 	void RemoveAll();

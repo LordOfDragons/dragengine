@@ -38,15 +38,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkValueData::deNetworkValueData( int length ) :
-pData( NULL ),
-pLength( 0 )
+deNetworkValueData::deNetworkValueData(int length) :
+pData(NULL),
+pLength(0)
 {
-	SetLength( length );
+	SetLength(length);
 }
 
 deNetworkValueData::~deNetworkValueData(){
-	if( pData ){
+	if(pData){
 		delete [] pData;
 	}
 }
@@ -56,23 +56,23 @@ deNetworkValueData::~deNetworkValueData(){
 // Management
 ///////////////
 
-void deNetworkValueData::SetLength( int length ){
-	if( length < 0 ){
-		DETHROW( deeInvalidParam );
+void deNetworkValueData::SetLength(int length){
+	if(length < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( length == pLength ){
+	if(length == pLength){
 		return;
 	}
 	
-	if( pData ){
+	if(pData){
 		delete [] pData;
 		pData = NULL;
 		pLength = 0;
 	}
 	
-	if( length > 0 ){
-		pData = new uint8_t[ length ];
+	if(length > 0){
+		pData = new uint8_t[length];
 		pLength = length;
 	}
 }
@@ -82,6 +82,6 @@ void deNetworkValueData::SetLength( int length ){
 // Visiting
 /////////////
 
-void deNetworkValueData::Visit( deNetworkValueVisitor &visitor ){
-	visitor.VisitData( this );
+void deNetworkValueData::Visit(deNetworkValueVisitor &visitor){
+	visitor.VisitData(this);
 }

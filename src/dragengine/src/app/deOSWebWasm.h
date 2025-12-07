@@ -95,10 +95,10 @@ public:
 	void ProcessEventLoop(bool sendToInputModule) override;
 	
 	/** \brief Canvas identifier. */
-	inline const decString &GetCanvasId() const{ return pConfig.canvasId; }
+	inline const decString &GetCanvasId() const{return pConfig.canvasId;}
 	
 	/** \brief Canvas size. */
-	inline const decPoint &GetCanvasSize() const{ return pConfig.canvasSize; }
+	inline const decPoint &GetCanvasSize() const{return pConfig.canvasSize;}
 	/*@}*/
 	
 	
@@ -189,7 +189,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline void *GetWindow() const{ return pCurWindow; }
+	inline void *GetWindow() const{return pCurWindow;}
 	
 	/**
 	 * \brief Set current game window.
@@ -204,7 +204,7 @@ public:
 	void SetWindow(void *window);
 	
 	/** \brief Hosting main window or 0 if not set. */
-	inline void *GetHostingMainWindow() const{ return pHostingMainWindow; }
+	inline void *GetHostingMainWindow() const{return pHostingMainWindow;}
 	
 	/**
 	 * \brief Set hosting main window or 0 if not set.
@@ -217,7 +217,7 @@ public:
 	void SetHostingMainWindow(void *window);
 	
 	/** \brief Hosting render window or 0 if not set. */
-	inline void *GetHostingRenderWindow() const{ return pHostingRenderWindow; }
+	inline void *GetHostingRenderWindow() const{return pHostingRenderWindow;}
 	
 	/**
 	 * \brief Set hosting render window or 0 if not set.
@@ -236,13 +236,13 @@ public:
 	bool HasHostingRenderWindow() const;
 	
 	/** \brief Application is frozen. */
-	inline bool GetAppFrozen() const{ return pAppFrozen; }
+	inline bool GetAppFrozen() const{return pAppFrozen;}
 	
 	/** \brief Set if application is frozen. */
 	void SetAppFrozen(bool frozen);
 	
 	/** \brief Content area. */
-	inline const decBoundary &GetContentRect() const{ return pContentRect; }
+	inline const decBoundary &GetContentRect() const{return pContentRect;}
 	
 	/** \brief Set content area. */
 	void SetContentRect(const decBoundary &rect);

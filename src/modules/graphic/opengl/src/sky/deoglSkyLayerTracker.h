@@ -82,86 +82,86 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the threshold for squared distance changes in orientation values. */
-	inline float GetThresholdOrientation() const{ return pThresholdOrientation; }
+	inline float GetThresholdOrientation() const{return pThresholdOrientation;}
 	/** Sets the threshold for squared distance changes in orientation values. */
-	void SetThresholdOrientation( float threshold );
+	void SetThresholdOrientation(float threshold);
 	/** Retrieves the threshold for absolute value changes in intensity values. */
-	inline float GetThresholdIntensity() const{ return pThresholdIntensity; }
+	inline float GetThresholdIntensity() const{return pThresholdIntensity;}
 	/** Sets the threshold for absolute value changes in intensity values. */
-	void SetThresholdIntensity( float threshold );
+	void SetThresholdIntensity(float threshold);
 	/** Retrieves the threshold for absolute value changes in transparency values. */
-	inline float GetThresholdTransparency() const{ return pThresholdTransparency; }
+	inline float GetThresholdTransparency() const{return pThresholdTransparency;}
 	/** Sets the threshold for absolute value changes in transparency values. */
-	void SetThresholdTransparency( float threshold );
+	void SetThresholdTransparency(float threshold);
 	/** Retrieves the threshold for squared distance changes in color values. */
-	inline float GetThresholdColor() const{ return pThresholdColor; }
+	inline float GetThresholdColor() const{return pThresholdColor;}
 	/** Sets the threshold for squared distance changes in color values. */
-	void SetThresholdColor( float threshold );
+	void SetThresholdColor(float threshold);
 	
 	/** Retrieves the last layer orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	/**
 	 * Updates the last layer orientation if the new orientation is more than the orientation
 	 * threshold apart from the last layer orientation. Returns true if the last layer
 	 * orientation changed or false otherwise.
 	 */
-	bool UpdateOrientation( const decQuaternion &orientation );
+	bool UpdateOrientation(const decQuaternion &orientation);
 	/** Retrieves the last layer color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	/**
 	 * Updates the last layer color if the new color is more than the color threshold apart
 	 * from the last layer color. Returns true if the last layer color changed or false otherwise.
 	 */
-	bool UpdateColor( const decColor &color );
+	bool UpdateColor(const decColor &color);
 	/** Retrieves the last layer intensity. */
-	inline float GetIntensity() const{ return pIntensity; }
+	inline float GetIntensity() const{return pIntensity;}
 	/**
 	 * Updates the last layer intensity if the new intensity is more than the intensity threshold
 	 * apart from the last layer intensity. Returns true if the last layer intensity changed or
 	 * false otherwise.
 	 */
-	bool UpdateIntensity( float intensity );
+	bool UpdateIntensity(float intensity);
 	/** Retrieves the Last layer transparency. */
-	inline float GetTransparency() const{ return pTransparency; }
+	inline float GetTransparency() const{return pTransparency;}
 	/**
 	 * Updates the last layer transparency. if the new transparency is more than the transparency
 	 * threshold apart from the last layer transparency. Returns true if the last layer
 	 * transparency changed or false otherwise.
 	 */
-	bool UpdateTransparency( float transparency );
+	bool UpdateTransparency(float transparency);
 	
 	/** Retrieves the last light orientation. */
-	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
+	inline const decQuaternion &GetLightOrientation() const{return pLightOrientation;}
 	/**
 	 * Updates the last layer light orientation if the new orientation is more than the orientation
 	 * threshold apart from the last layer light orientation. Returns true if the last layer light
 	 * orientation changed or false otherwise.
 	 */
-	bool UpdateLightOrientation( const decQuaternion &orientation );
+	bool UpdateLightOrientation(const decQuaternion &orientation);
 	/** Retrieves the last light color. */
-	inline const decColor &GetLightColor() const{ return pLightColor; }
+	inline const decColor &GetLightColor() const{return pLightColor;}
 	/**
 	 * Updates the last layer light color if the new color is more than the color threshold apart
 	 * from the last layer light color. Returns true if the last layer light color changed or
 	 * false otherwise.
 	 */
-	bool UpdateLightColor( const decColor &color );
+	bool UpdateLightColor(const decColor &color);
 	/** Retrieves the last light intensity. */
-	inline float GetLightIntensity() const{ return pLightIntensity; }
+	inline float GetLightIntensity() const{return pLightIntensity;}
 	/**
 	 * Updates the last layer light intensity if the new intensity is more than the intensity
 	 * threshold apart from the last layer light intensity. Returns true if the last layer
 	 * light intensity changed or false otherwise.
 	 */
-	bool UpdateLightIntensity( float intensity );
+	bool UpdateLightIntensity(float intensity);
 	/** Retrieves the last ambient intensity. */
-	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
+	inline float GetAmbientIntensity() const{return pAmbientIntensity;}
 	/**
 	 * Updates the last layer ambient intensity if the new intensity is more than the intensity
 	 * threshold apart from the last layer ambient intensity. Returns true if the last layer
 	 * ambient intensity changed or false otherwise.
 	 */
-	bool UpdateAmbientIntensity( float intensity );
+	bool UpdateAmbientIntensity(float intensity);
 	/*@}*/
 };
 

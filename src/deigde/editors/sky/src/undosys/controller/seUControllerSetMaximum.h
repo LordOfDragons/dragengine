@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerSetMaximum( seController *controller, float newMaximum );
+	seUControllerSetMaximum(seController *controller, float newMaximum);
 	
 protected:
 	/** \brief Clean up undo action. */

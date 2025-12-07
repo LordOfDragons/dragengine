@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNodeClosestVegetation( meWindowVegetation &windowVegetation, meHTVRuleClosestVegetation *rule );
+	meWVNodeClosestVegetation(meWindowVegetation &windowVegetation, meHTVRuleClosestVegetation *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleClosestVegetation *GetRuleClosestVegetation() const{ return pRuleCV; }
+	inline meHTVRuleClosestVegetation *GetRuleClosestVegetation() const{return pRuleCV;}
 	
 	/** \brief Update node. */
 	virtual void Update();

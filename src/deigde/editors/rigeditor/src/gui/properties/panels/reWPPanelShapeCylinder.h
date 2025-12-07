@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	reWPPanelShapeCylinder( reWPShape &wpShapes );
+	reWPPanelShapeCylinder(reWPShape &wpShapes);
 	
 protected:
 	/** Cleans up the panel. */

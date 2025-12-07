@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread logger. */
-	deoglRTLogger( deoglRenderThread &renderThread );
+	deoglRTLogger(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread renderers. */
 	~deoglRTLogger();
@@ -65,46 +65,46 @@ public:
 	
 	
 	/** Outputs an information message on the console. */
-	void LogInfo( const char *message );
+	void LogInfo(const char *message);
 	
 	/** Outputs a formated information message on the console. */
-	void LogInfoFormat( const char *message, ... )
+	void LogInfoFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** Outputs a formated information message on the console. */
-	void LogInfoFormatUsing( const char *message, va_list args );
+	void LogInfoFormatUsing(const char *message, va_list args);
 	
 	/** Outputs a warning message on the console. */
-	void LogWarn( const char *message );
+	void LogWarn(const char *message);
 	
 	/** Outputs a formated warning message on the console. */
-	void LogWarnFormat( const char *message, ... )
+	void LogWarnFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** Outputs a formated warning message on the console. */
-	void LogWarnFormatUsing( const char *message, va_list args );
+	void LogWarnFormatUsing(const char *message, va_list args);
 	
 	/** Outputs an error message on the console. */
-	void LogError( const char *message );
+	void LogError(const char *message);
 	
 	/** Outputs a formated error message on the console. */
-	void LogErrorFormat( const char *message, ... )
+	void LogErrorFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** Outputs a formated error message on the console. */
-	void LogErrorFormatUsing( const char *message, va_list args );
+	void LogErrorFormatUsing(const char *message, va_list args);
 	
 	/** Outputs an exception as error message on the console. */
-	void LogException( const deException &exception );
+	void LogException(const deException &exception);
 	/*@}*/
 };
 

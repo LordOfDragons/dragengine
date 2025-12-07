@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavBlockerCopy::gdeMAOCNavBlockerCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Navigation Blocker",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class navigation blocker" )
+gdeMAOCNavBlockerCopy::gdeMAOCNavBlockerCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Navigation Blocker",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class navigation blocker")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Navigation Blocker",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavBlockerCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker ){
+igdeUndo *gdeMAOCNavBlockerCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationBlocker){
 		return NULL;
 	}
 	
 	gdeOCNavigationBlocker * const navBlocker = gameDefinition.GetActiveOCNavigationBlocker();
-	if( ! navBlocker ){
+	if(! navBlocker){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCNavBlockerCopy::OnActionSubObject( gdeGameDefinition &gameDefin
 
 void gdeMAOCNavBlockerCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationBlocker
-		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL );
+		&& gameDefinition->GetActiveOCNavigationBlocker() != NULL);
 }

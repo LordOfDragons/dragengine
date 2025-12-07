@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglLightPipelinesSky::deoglLightPipelinesSky( const deoglRSkyInstanceLayer &layer ) :
-deoglLightPipelines( layer.GetInstance().GetRenderThread() ),
-pLayer( layer ){
+deoglLightPipelinesSky::deoglLightPipelinesSky(const deoglRSkyInstanceLayer &layer) :
+deoglLightPipelines(layer.GetInstance().GetRenderThread()),
+pLayer(layer){
 }
 
 deoglLightPipelinesSky::~deoglLightPipelinesSky(){
@@ -64,31 +64,31 @@ const char *deoglLightPipelinesSky::GetDebugName() const{
 void deoglLightPipelinesSky::pPreparePipelines(deoglBatchedShaderLoading &batched){
 	// base pipeline configuration
 	deoglPipelineConfiguration basePipelineConfig;
-	pBasePipelineConfig( pLayer.GetInstance().GetRenderThread(), basePipelineConfig );
-	basePipelineConfig.SetEnableDepthTest( false );
-	basePipelineConfig.SetEnableCullFace( false );
+	pBasePipelineConfig(pLayer.GetInstance().GetRenderThread(), basePipelineConfig);
+	basePipelineConfig.SetEnableDepthTest(false);
+	basePipelineConfig.SetEnableCullFace(false);
 	
 	deoglPipelineConfiguration basePipelineConfigGI;
-	pBasePipelineConfigGI( basePipelineConfigGI );
+	pBasePipelineConfigGI(basePipelineConfigGI);
 	
 	// base light shader configuration
 	deoglLightShaderConfig baseShaderConfig;
 	baseShaderConfig.Reset();
-	baseShaderConfig.SetLightMode( deoglLightShaderConfig::elmSky );
-	baseShaderConfig.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esma2D );
-	baseShaderConfig.SetHWDepthCompare( true );
-	baseShaderConfig.SetDecodeInShadow( false );
-	baseShaderConfig.SetTextureNoise( false );
-	baseShaderConfig.SetFullScreenQuad( true );
+	baseShaderConfig.SetLightMode(deoglLightShaderConfig::elmSky);
+	baseShaderConfig.SetShadowMappingAlgorithm1(deoglLightShaderConfig::esma2D);
+	baseShaderConfig.SetHWDepthCompare(true);
+	baseShaderConfig.SetDecodeInShadow(false);
+	baseShaderConfig.SetTextureNoise(false);
+	baseShaderConfig.SetFullScreenQuad(true);
 	
 	// create pipelines for each type and all valid modifications
-	pPrepareNoShadow( basePipelineConfig, baseShaderConfig, batched );
-	pPrepareAmbient( basePipelineConfig, baseShaderConfig, batched );
-	pPrepareSolid1( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareNoShadow(basePipelineConfig, baseShaderConfig, batched);
+	pPrepareAmbient(basePipelineConfig, baseShaderConfig, batched);
+	pPrepareSolid1(basePipelineConfig, baseShaderConfig, batched);
 	
-	pPrepareGIRayNoShadow( basePipelineConfigGI, baseShaderConfig, batched );
-	pPrepareGIRaySolid1( basePipelineConfigGI, baseShaderConfig, batched );
-	pPrepareGIRaySolid2( basePipelineConfigGI, baseShaderConfig, batched );
+	pPrepareGIRayNoShadow(basePipelineConfigGI, baseShaderConfig, batched);
+	pPrepareGIRaySolid1(basePipelineConfigGI, baseShaderConfig, batched);
+	pPrepareGIRaySolid2(basePipelineConfigGI, baseShaderConfig, batched);
 }
 
 
@@ -96,77 +96,77 @@ void deoglLightPipelinesSky::pPreparePipelines(deoglBatchedShaderLoading &batche
 // Private Functions
 //////////////////////
 
-void deoglLightPipelinesSky::pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+void deoglLightPipelinesSky::pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetNonGI( shaconf );
-	shaconf.SetAmbientLighting( true );
+	pSetNonGI(shaconf);
+	shaconf.SetAmbientLighting(true);
 	
-	pCreatePipelines( pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf,
-		etNoShadow, emStereo | emTransparent, batched );
+	pCreatePipelines(pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf,
+		etNoShadow, emStereo | emTransparent, batched);
 }
 
-void deoglLightPipelinesSky::pPrepareAmbient( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+void deoglLightPipelinesSky::pPrepareAmbient(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetNonGI( shaconf );
-	shaconf.SetAmbientLighting( true );
+	pSetNonGI(shaconf);
+	shaconf.SetAmbientLighting(true);
 	
-	pCreatePipelines( pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf,
-		etAmbient, emStereo | emTransparent, batched );
+	pCreatePipelines(pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf,
+		etAmbient, emStereo | emTransparent, batched);
 }
 
-void deoglLightPipelinesSky::pPrepareSolid1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+void deoglLightPipelinesSky::pPrepareSolid1(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetNonGI( shaconf );
-	shaconf.SetAmbientLighting( true );
-	shaconf.SetTextureShadow1Solid( true );
+	pSetNonGI(shaconf);
+	shaconf.SetAmbientLighting(true);
+	shaconf.SetTextureShadow1Solid(true);
 	
-	pCreatePipelines( pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid1, emStereo | emTransparent, batched );
+	pCreatePipelines(pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf,
+		etSolid1, emStereo | emTransparent, batched);
 }
 
-void deoglLightPipelinesSky::pPrepareGIRayNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+void deoglLightPipelinesSky::pPrepareGIRayNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetGI( shaconf );
-	shaconf.SetAmbientLighting( false );
+	pSetGI(shaconf);
+	shaconf.SetAmbientLighting(false);
 	
-	pCreatePipelines( pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf, etGIRayNoShadow, 0, batched );
+	pCreatePipelines(pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf, etGIRayNoShadow, 0, batched);
 }
 
-void deoglLightPipelinesSky::pPrepareGIRaySolid1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+void deoglLightPipelinesSky::pPrepareGIRaySolid1(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetGI( shaconf );
-	shaconf.SetAmbientLighting( false );
-	shaconf.SetTextureShadow1Solid( true );
+	pSetGI(shaconf);
+	shaconf.SetAmbientLighting(false);
+	shaconf.SetTextureShadow1Solid(true);
 	
-	pCreatePipelines( pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid1, 0, batched );
+	pCreatePipelines(pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid1, 0, batched);
 }
 
-void deoglLightPipelinesSky::pPrepareGIRaySolid2( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
-	deoglLightShaderConfig shaconf( baseShaderConfig );
+void deoglLightPipelinesSky::pPrepareGIRaySolid2(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
+	deoglLightShaderConfig shaconf(baseShaderConfig);
 	
-	pSetGI( shaconf );
-	shaconf.SetAmbientLighting( false );
-	shaconf.SetTextureShadow1Solid( true );
-	shaconf.SetTextureShadow2Solid( true );
+	pSetGI(shaconf);
+	shaconf.SetAmbientLighting(false);
+	shaconf.SetTextureShadow1Solid(true);
+	shaconf.SetTextureShadow2Solid(true);
 	
-	pCreatePipelines( pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid2, 0, batched );
+	pCreatePipelines(pLayer.GetInstance().GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid2, 0, batched);
 }
 
 
 
-void deoglLightPipelinesSky::pSetGI( deoglLightShaderConfig &shaconf ){
-	shaconf.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
+void deoglLightPipelinesSky::pSetGI(deoglLightShaderConfig &shaconf){
+	shaconf.SetMaterialNormalModeDec(deoglLightShaderConfig::emnmFloat);
 	
 	// regular sky shadow casting uses PCF 9-Tap mode. for GI shadow map resollution
 	// is rather low and rays spread by a large angle. for this reason 1-Tap mode is
@@ -175,14 +175,14 @@ void deoglLightPipelinesSky::pSetGI( deoglLightShaderConfig &shaconf ){
 	// the 1-Tap version (which uses HW bilinear filtering by the way). This can help
 	// reduce flickering in GI probes due to the smoothing
 	//config.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
-	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
+	shaconf.SetShadowTapMode(deoglLightShaderConfig::estmPcf9);
 	
-	shaconf.SetSubSurface( false );
-	shaconf.SetGIRay( true );
+	shaconf.SetSubSurface(false);
+	shaconf.SetGIRay(true);
 }
 
-void deoglLightPipelinesSky::pSetNonGI( deoglLightShaderConfig &shaconf ){
-	shaconf.SetMaterialNormalModeDec( deoglLightShaderConfig::emnmFloat );
-	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-	shaconf.SetSubSurface( pLayer.GetInstance().GetRenderThread().GetConfiguration().GetSSSSSEnable() );
+void deoglLightPipelinesSky::pSetNonGI(deoglLightShaderConfig &shaconf){
+	shaconf.SetMaterialNormalModeDec(deoglLightShaderConfig::emnmFloat);
+	shaconf.SetShadowTapMode(deoglLightShaderConfig::estmPcf9);
+	shaconf.SetSubSurface(pLayer.GetInstance().GetRenderThread().GetConfiguration().GetSSSSSEnable());
 }

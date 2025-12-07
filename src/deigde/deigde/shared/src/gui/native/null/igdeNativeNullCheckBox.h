@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullCheckBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullCheckBox* CreateNativeWidget( igdeCheckBox &owner );
+	static igdeNativeNullCheckBox* CreateNativeWidget(igdeCheckBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

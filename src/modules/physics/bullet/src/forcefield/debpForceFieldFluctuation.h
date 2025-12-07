@@ -57,10 +57,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Fluctuation direction. */
-	inline float GetDirection() const{ return pDirection; }
+	inline float GetDirection() const{return pDirection;}
 	
 	/** \brief Flucutation strength. */
-	inline float GetStrength() const{ return pStrength; }
+	inline float GetStrength() const{return pStrength;}
 	
 	
 	
@@ -68,7 +68,7 @@ public:
 	void Reset();
 	
 	/** \brief Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	/*@}*/
 };
 

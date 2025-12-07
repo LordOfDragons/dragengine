@@ -69,11 +69,11 @@ struct sTableEntryButton{
 };
 
 static const int vTableRelativeAxisCount = 4;
-static const sTableEntryAxis vTableRelativeAxes[ vTableRelativeAxisCount ]{
-	{ REL_X, deInputDeviceAxis::eatTouchPad, "tpx1", "touchpadX", "", REL_RX, "L" },
-	{ REL_Y, deInputDeviceAxis::eatTouchPad, "tpy1", "touchpadY", "", REL_RY, "L" },
-	{ REL_RX, deInputDeviceAxis::eatTouchPad, "tpx2", "touchpadX", "R"},
-	{ REL_RY, deInputDeviceAxis::eatTouchPad, "tpy2", "touchpadY", "R", 0, nullptr }
+static const sTableEntryAxis vTableRelativeAxes[vTableRelativeAxisCount]{
+	{REL_X, deInputDeviceAxis::eatTouchPad, "tpx1", "touchpadX", "", REL_RX, "L"},
+	{REL_Y, deInputDeviceAxis::eatTouchPad, "tpy1", "touchpadY", "", REL_RY, "L"},
+	{REL_RX, deInputDeviceAxis::eatTouchPad, "tpx2", "touchpadX", "R"},
+	{REL_RY, deInputDeviceAxis::eatTouchPad, "tpy2", "touchpadY", "R", 0, nullptr}
 	/*
 	REL_Z:
 	REL_RZ:
@@ -96,116 +96,116 @@ static const sTableEntryAxis vTableTouchpadAbsAxis[vTableTouchpadAbsAxisCount]{
 
 static const int vTableAbsAxisCount = 27;
 static const sTableEntryAxis vTableAbsAxis[vTableAbsAxisCount]{
-	{ ABS_X, deInputDeviceAxis::eatStick, "sx0", "stickX", "", ABS_RX, "L" },
-	{ ABS_Y, deInputDeviceAxis::eatStick, "sy0", "stickY", "", ABS_RY, "L" },
-	{ ABS_Z, deInputDeviceAxis::eatTrigger, "tr0", "trigger", "", ABS_RZ, "L" },
-	{ ABS_RX, deInputDeviceAxis::eatStick, "sx1", "stickX", "R"},
-	{ ABS_RY, deInputDeviceAxis::eatStick, "sy1", "stickY", "R"},
-	{ ABS_RZ, deInputDeviceAxis::eatTrigger, "tr1", "trigger", "R"},
-	{ ABS_THROTTLE, deInputDeviceAxis::eatThrottle, "thr", "trigger", "Thr"},
-	{ ABS_RUDDER, deInputDeviceAxis::eatThrottle, "rud", "trigger", "Rud"},
-	{ ABS_WHEEL, deInputDeviceAxis::eatSteeringWheel, "wh", "trigger", "Wh"},
-	{ ABS_GAS, deInputDeviceAxis::eatTrigger, "gas", "trigger", "Gas"},
-	{ ABS_BRAKE, deInputDeviceAxis::eatTrigger, "brk", "trigger", "Brk"},
-	{ ABS_HAT0X, deInputDeviceAxis::eatHat, "hx0", "stickX", "", ABS_HAT1X, "1" },
-	{ ABS_HAT0Y, deInputDeviceAxis::eatHat, "hy0", "stickY", "", ABS_HAT1Y, "1" },
-	{ ABS_HAT1X, deInputDeviceAxis::eatHat, "hx1", "stickX", "2"},
-	{ ABS_HAT1Y, deInputDeviceAxis::eatHat, "hy1", "stickY", "2"},
-	{ ABS_HAT2X, deInputDeviceAxis::eatHat, "hx2", "stickX", "3"},
-	{ ABS_HAT2Y, deInputDeviceAxis::eatHat, "hy2", "stickY", "3"},
-	{ ABS_HAT3X, deInputDeviceAxis::eatHat, "hx3", "stickX", "4"},
-	{ ABS_HAT3Y, deInputDeviceAxis::eatHat, "hy3", "stickY", "4"},
-	{ ABS_PRESSURE, deInputDeviceAxis::eatGeneric, "pre", "trigger", "Pre"},
-	{ ABS_DISTANCE, deInputDeviceAxis::eatGeneric, "dis", "trigger", "Dis"},
-	{ ABS_TILT_X, deInputDeviceAxis::eatStick, "tltx", "stickX", "Tlt"},
-	{ ABS_TILT_Y, deInputDeviceAxis::eatStick, "tlty", "stickY", "Tlt"},
-	{ ABS_TOOL_WIDTH, deInputDeviceAxis::eatGeneric, "twi", "trigger", "Twi"},
-	{ ABS_VOLUME, deInputDeviceAxis::eatGeneric, "vol", "trigger", "Vol"},
-	{ ABS_MISC, deInputDeviceAxis::eatGeneric, "misc", "trigger", "Misc"},
+	{ABS_X, deInputDeviceAxis::eatStick, "sx0", "stickX", "", ABS_RX, "L"},
+	{ABS_Y, deInputDeviceAxis::eatStick, "sy0", "stickY", "", ABS_RY, "L"},
+	{ABS_Z, deInputDeviceAxis::eatTrigger, "tr0", "trigger", "", ABS_RZ, "L"},
+	{ABS_RX, deInputDeviceAxis::eatStick, "sx1", "stickX", "R"},
+	{ABS_RY, deInputDeviceAxis::eatStick, "sy1", "stickY", "R"},
+	{ABS_RZ, deInputDeviceAxis::eatTrigger, "tr1", "trigger", "R"},
+	{ABS_THROTTLE, deInputDeviceAxis::eatThrottle, "thr", "trigger", "Thr"},
+	{ABS_RUDDER, deInputDeviceAxis::eatThrottle, "rud", "trigger", "Rud"},
+	{ABS_WHEEL, deInputDeviceAxis::eatSteeringWheel, "wh", "trigger", "Wh"},
+	{ABS_GAS, deInputDeviceAxis::eatTrigger, "gas", "trigger", "Gas"},
+	{ABS_BRAKE, deInputDeviceAxis::eatTrigger, "brk", "trigger", "Brk"},
+	{ABS_HAT0X, deInputDeviceAxis::eatHat, "hx0", "stickX", "", ABS_HAT1X, "1"},
+	{ABS_HAT0Y, deInputDeviceAxis::eatHat, "hy0", "stickY", "", ABS_HAT1Y, "1"},
+	{ABS_HAT1X, deInputDeviceAxis::eatHat, "hx1", "stickX", "2"},
+	{ABS_HAT1Y, deInputDeviceAxis::eatHat, "hy1", "stickY", "2"},
+	{ABS_HAT2X, deInputDeviceAxis::eatHat, "hx2", "stickX", "3"},
+	{ABS_HAT2Y, deInputDeviceAxis::eatHat, "hy2", "stickY", "3"},
+	{ABS_HAT3X, deInputDeviceAxis::eatHat, "hx3", "stickX", "4"},
+	{ABS_HAT3Y, deInputDeviceAxis::eatHat, "hy3", "stickY", "4"},
+	{ABS_PRESSURE, deInputDeviceAxis::eatGeneric, "pre", "trigger", "Pre"},
+	{ABS_DISTANCE, deInputDeviceAxis::eatGeneric, "dis", "trigger", "Dis"},
+	{ABS_TILT_X, deInputDeviceAxis::eatStick, "tltx", "stickX", "Tlt"},
+	{ABS_TILT_Y, deInputDeviceAxis::eatStick, "tlty", "stickY", "Tlt"},
+	{ABS_TOOL_WIDTH, deInputDeviceAxis::eatGeneric, "twi", "trigger", "Twi"},
+	{ABS_VOLUME, deInputDeviceAxis::eatGeneric, "vol", "trigger", "Vol"},
+	{ABS_MISC, deInputDeviceAxis::eatGeneric, "misc", "trigger", "Misc"},
 #ifdef ABS_PROFILE
-	{ ABS_PROFILE, deInputDeviceAxis::eatGeneric, "pro", "trigger", "Pro", 0, nullptr }
+	{ABS_PROFILE, deInputDeviceAxis::eatGeneric, "pro", "trigger", "Pro", 0, nullptr}
 #else
-	{ -1 } // missing on github
+	{-1} // missing on github
 #endif
 };
 
 static const int vTableButtonCount = 64;
-static const sTableEntryButton vTableButton[ vTableButtonCount ]{
+static const sTableEntryButton vTableButton[vTableButtonCount]{
 	// misc
-	{ BTN_0, deInputDeviceButton::ebtAction, "ba0", "button", "0"},
-	{ BTN_1, deInputDeviceButton::ebtAction, "ba1", "button", "1"},
-	{ BTN_2, deInputDeviceButton::ebtAction, "ba2", "button", "2"},
-	{ BTN_3, deInputDeviceButton::ebtAction, "ba3", "button", "3"},
-	{ BTN_4, deInputDeviceButton::ebtAction, "ba4", "button", "4"},
-	{ BTN_5, deInputDeviceButton::ebtAction, "ba5", "button", "5"},
-	{ BTN_6, deInputDeviceButton::ebtAction, "ba6", "button", "6"},
-	{ BTN_7, deInputDeviceButton::ebtAction, "ba7", "button", "7"},
-	{ BTN_8, deInputDeviceButton::ebtAction, "ba8", "button", "8"},
-	{ BTN_9, deInputDeviceButton::ebtAction, "ba9", "button", "9"},
+	{BTN_0, deInputDeviceButton::ebtAction, "ba0", "button", "0"},
+	{BTN_1, deInputDeviceButton::ebtAction, "ba1", "button", "1"},
+	{BTN_2, deInputDeviceButton::ebtAction, "ba2", "button", "2"},
+	{BTN_3, deInputDeviceButton::ebtAction, "ba3", "button", "3"},
+	{BTN_4, deInputDeviceButton::ebtAction, "ba4", "button", "4"},
+	{BTN_5, deInputDeviceButton::ebtAction, "ba5", "button", "5"},
+	{BTN_6, deInputDeviceButton::ebtAction, "ba6", "button", "6"},
+	{BTN_7, deInputDeviceButton::ebtAction, "ba7", "button", "7"},
+	{BTN_8, deInputDeviceButton::ebtAction, "ba8", "button", "8"},
+	{BTN_9, deInputDeviceButton::ebtAction, "ba9", "button", "9"},
 	
 	// mouse
-	{ BTN_LEFT, deInputDeviceButton::ebtAction, "bml", "button", "Left"},
-	{ BTN_RIGHT, deInputDeviceButton::ebtAction, "bmr", "button", "Right"},
-	{ BTN_MIDDLE, deInputDeviceButton::ebtAction, "bmm", "button", "Middle"},
-	{ BTN_SIDE, deInputDeviceButton::ebtAction, "bms", "button", "Side"},
-	{ BTN_EXTRA, deInputDeviceButton::ebtAction, "bme", "button", "Extra"},
-	{ BTN_FORWARD, deInputDeviceButton::ebtAction, "bmf", "button", "Forward"},
-	{ BTN_BACK, deInputDeviceButton::ebtAction, "bmb", "button", "Back"},
-	{ BTN_TASK, deInputDeviceButton::ebtAction, "bmt", "button", "Task"},
+	{BTN_LEFT, deInputDeviceButton::ebtAction, "bml", "button", "Left"},
+	{BTN_RIGHT, deInputDeviceButton::ebtAction, "bmr", "button", "Right"},
+	{BTN_MIDDLE, deInputDeviceButton::ebtAction, "bmm", "button", "Middle"},
+	{BTN_SIDE, deInputDeviceButton::ebtAction, "bms", "button", "Side"},
+	{BTN_EXTRA, deInputDeviceButton::ebtAction, "bme", "button", "Extra"},
+	{BTN_FORWARD, deInputDeviceButton::ebtAction, "bmf", "button", "Forward"},
+	{BTN_BACK, deInputDeviceButton::ebtAction, "bmb", "button", "Back"},
+	{BTN_TASK, deInputDeviceButton::ebtAction, "bmt", "button", "Task"},
 	
 	// joystick
-	{ BTN_TRIGGER, deInputDeviceButton::ebtAction, "bjtr", "button", "Trigger"},
-	{ BTN_THUMB, deInputDeviceButton::ebtAction, "bjtb1", "button", "Thumb"},
-	{ BTN_THUMB2, deInputDeviceButton::ebtAction, "bjtb2", "button", "Thumb2"},
-	{ BTN_TOP, deInputDeviceButton::ebtAction, "bjtop1", "button", "Top"},
-	{ BTN_TOP2, deInputDeviceButton::ebtAction, "bjtop2", "button", "Top2"},
-	{ BTN_PINKIE, deInputDeviceButton::ebtAction, "bjpin", "button", "Pinkie"},
-	{ BTN_BASE, deInputDeviceButton::ebtAction, "bjba1", "button", "Base"},
-	{ BTN_BASE2, deInputDeviceButton::ebtAction, "bjba2", "button", "Base2"},
-	{ BTN_BASE3, deInputDeviceButton::ebtAction, "bjba3", "button", "Base3"},
-	{ BTN_BASE4, deInputDeviceButton::ebtAction, "bjba4", "button", "Base4"},
-	{ BTN_BASE5, deInputDeviceButton::ebtAction, "bjba5", "button", "Base5"},
-	{ BTN_BASE6, deInputDeviceButton::ebtAction, "bjba6", "button", "Base6"},
-	{ BTN_DEAD, deInputDeviceButton::ebtAction, "bjdead", "button", "Dead"},
+	{BTN_TRIGGER, deInputDeviceButton::ebtAction, "bjtr", "button", "Trigger"},
+	{BTN_THUMB, deInputDeviceButton::ebtAction, "bjtb1", "button", "Thumb"},
+	{BTN_THUMB2, deInputDeviceButton::ebtAction, "bjtb2", "button", "Thumb2"},
+	{BTN_TOP, deInputDeviceButton::ebtAction, "bjtop1", "button", "Top"},
+	{BTN_TOP2, deInputDeviceButton::ebtAction, "bjtop2", "button", "Top2"},
+	{BTN_PINKIE, deInputDeviceButton::ebtAction, "bjpin", "button", "Pinkie"},
+	{BTN_BASE, deInputDeviceButton::ebtAction, "bjba1", "button", "Base"},
+	{BTN_BASE2, deInputDeviceButton::ebtAction, "bjba2", "button", "Base2"},
+	{BTN_BASE3, deInputDeviceButton::ebtAction, "bjba3", "button", "Base3"},
+	{BTN_BASE4, deInputDeviceButton::ebtAction, "bjba4", "button", "Base4"},
+	{BTN_BASE5, deInputDeviceButton::ebtAction, "bjba5", "button", "Base5"},
+	{BTN_BASE6, deInputDeviceButton::ebtAction, "bjba6", "button", "Base6"},
+	{BTN_DEAD, deInputDeviceButton::ebtAction, "bjdead", "button", "Dead"},
 	
 	// gamepad
-	{ BTN_A, deInputDeviceButton::ebtAction, "baa", "button", "A"}, // BTN_SOUTH
-	{ BTN_B, deInputDeviceButton::ebtAction, "bab", "button", "B"}, // BTN_EAST
-	{ BTN_C, deInputDeviceButton::ebtAction, "bac", "button", "C"},
-	{ BTN_X, deInputDeviceButton::ebtAction, "bax", "button", "X"}, // BTN_NORTH
-	{ BTN_Y, deInputDeviceButton::ebtAction, "bay", "button", "Y"}, // BTN_WEST
-	{ BTN_Z, deInputDeviceButton::ebtAction, "baz", "button", "Z"},
-	{ BTN_TL, deInputDeviceButton::ebtShoulderLeft, "basl1", "button", "SL", BTN_TL2, "SL1" },
-	{ BTN_TR, deInputDeviceButton::ebtShoulderRight, "basr1", "button", "SR", BTN_TR2, "SL1" },
-	{ BTN_TL2, deInputDeviceButton::ebtShoulderLeft, "basl2", "button", "SL2"},
-	{ BTN_TR2, deInputDeviceButton::ebtShoulderRight, "basr2", "button", "SR2"},
-	{ BTN_SELECT, deInputDeviceButton::ebtSelect, "basel", "button", "Select"},
-	{ BTN_START, deInputDeviceButton::ebtHome, "basta", "button", "Start"},
-	{ BTN_MODE, deInputDeviceButton::ebtAction, "bamod", "button", "Mode"},
-	{ BTN_THUMBL, deInputDeviceButton::ebtStick, "batl", "button", "TL"},
-	{ BTN_THUMBR, deInputDeviceButton::ebtStick, "batr", "button", "TR"},
+	{BTN_A, deInputDeviceButton::ebtAction, "baa", "button", "A"}, // BTN_SOUTH
+	{BTN_B, deInputDeviceButton::ebtAction, "bab", "button", "B"}, // BTN_EAST
+	{BTN_C, deInputDeviceButton::ebtAction, "bac", "button", "C"},
+	{BTN_X, deInputDeviceButton::ebtAction, "bax", "button", "X"}, // BTN_NORTH
+	{BTN_Y, deInputDeviceButton::ebtAction, "bay", "button", "Y"}, // BTN_WEST
+	{BTN_Z, deInputDeviceButton::ebtAction, "baz", "button", "Z"},
+	{BTN_TL, deInputDeviceButton::ebtShoulderLeft, "basl1", "button", "SL", BTN_TL2, "SL1"},
+	{BTN_TR, deInputDeviceButton::ebtShoulderRight, "basr1", "button", "SR", BTN_TR2, "SL1"},
+	{BTN_TL2, deInputDeviceButton::ebtShoulderLeft, "basl2", "button", "SL2"},
+	{BTN_TR2, deInputDeviceButton::ebtShoulderRight, "basr2", "button", "SR2"},
+	{BTN_SELECT, deInputDeviceButton::ebtSelect, "basel", "button", "Select"},
+	{BTN_START, deInputDeviceButton::ebtHome, "basta", "button", "Start"},
+	{BTN_MODE, deInputDeviceButton::ebtAction, "bamod", "button", "Mode"},
+	{BTN_THUMBL, deInputDeviceButton::ebtStick, "batl", "button", "TL"},
+	{BTN_THUMBR, deInputDeviceButton::ebtStick, "batr", "button", "TR"},
 	
 	// digi
-	{ BTN_TOOL_PEN, deInputDeviceButton::ebtAction, "badtp", "button", "Pen"},
-	{ BTN_TOOL_RUBBER, deInputDeviceButton::ebtAction, "badtr", "button", "Rubber"},
-	{ BTN_TOOL_BRUSH, deInputDeviceButton::ebtAction, "badtb", "button", "Brush"},
-	{ BTN_TOOL_PENCIL, deInputDeviceButton::ebtAction, "badtpc", "button", "Pencil"},
-	{ BTN_TOOL_AIRBRUSH, deInputDeviceButton::ebtAction, "badta", "button", "Airbrush"},
-	{ BTN_TOOL_FINGER, deInputDeviceButton::ebtAction, "badtf", "button", "Finger"},
-	{ BTN_TOOL_MOUSE, deInputDeviceButton::ebtAction, "badtm", "button", "Mouse"},
-	{ BTN_TOOL_LENS, deInputDeviceButton::ebtAction, "badtl", "button", "Lens"},
-	{ BTN_TOOL_DOUBLETAP, deInputDeviceButton::ebtAction, "badtt2", "button", "Tap2"},
-	{ BTN_TOOL_TRIPLETAP, deInputDeviceButton::ebtAction, "badtt3", "button", "Tap3"},
-	{ BTN_TOOL_QUADTAP, deInputDeviceButton::ebtAction, "badtt4", "button", "Tap4"},
-	{ BTN_TOOL_QUINTTAP, deInputDeviceButton::ebtAction, "badtt5", "button", "Tap5"},
-	{ BTN_STYLUS, deInputDeviceButton::ebtAction, "bads1", "button", "Stylus" },
-	{ BTN_STYLUS2, deInputDeviceButton::ebtAction, "bads2", "button", "Stylus2" },
-	{ BTN_STYLUS3, deInputDeviceButton::ebtAction, "bads3", "button", "Stylus3" },
-	{ BTN_TOUCH, deInputDeviceButton::ebtAction, "badth", "button", "Touch" },
+	{BTN_TOOL_PEN, deInputDeviceButton::ebtAction, "badtp", "button", "Pen"},
+	{BTN_TOOL_RUBBER, deInputDeviceButton::ebtAction, "badtr", "button", "Rubber"},
+	{BTN_TOOL_BRUSH, deInputDeviceButton::ebtAction, "badtb", "button", "Brush"},
+	{BTN_TOOL_PENCIL, deInputDeviceButton::ebtAction, "badtpc", "button", "Pencil"},
+	{BTN_TOOL_AIRBRUSH, deInputDeviceButton::ebtAction, "badta", "button", "Airbrush"},
+	{BTN_TOOL_FINGER, deInputDeviceButton::ebtAction, "badtf", "button", "Finger"},
+	{BTN_TOOL_MOUSE, deInputDeviceButton::ebtAction, "badtm", "button", "Mouse"},
+	{BTN_TOOL_LENS, deInputDeviceButton::ebtAction, "badtl", "button", "Lens"},
+	{BTN_TOOL_DOUBLETAP, deInputDeviceButton::ebtAction, "badtt2", "button", "Tap2"},
+	{BTN_TOOL_TRIPLETAP, deInputDeviceButton::ebtAction, "badtt3", "button", "Tap3"},
+	{BTN_TOOL_QUADTAP, deInputDeviceButton::ebtAction, "badtt4", "button", "Tap4"},
+	{BTN_TOOL_QUINTTAP, deInputDeviceButton::ebtAction, "badtt5", "button", "Tap5"},
+	{BTN_STYLUS, deInputDeviceButton::ebtAction, "bads1", "button", "Stylus"},
+	{BTN_STYLUS2, deInputDeviceButton::ebtAction, "bads2", "button", "Stylus2"},
+	{BTN_STYLUS3, deInputDeviceButton::ebtAction, "bads3", "button", "Stylus3"},
+	{BTN_TOUCH, deInputDeviceButton::ebtAction, "badth", "button", "Touch"},
 	
 	// wheel
-	{ BTN_GEAR_DOWN, deInputDeviceButton::ebtAction, "bawgd", "button", "GearDown" },
-	{ BTN_GEAR_UP, deInputDeviceButton::ebtAction, "bawgu", "button", "GearUp" }
+	{BTN_GEAR_DOWN, deInputDeviceButton::ebtAction, "bawgd", "button", "GearDown"},
+	{BTN_GEAR_UP, deInputDeviceButton::ebtAction, "bawgu", "button", "GearUp"}
 };
 
 
@@ -215,15 +215,15 @@ static const sTableEntryButton vTableButton[ vTableButtonCount ]{
 // Constructor, destructor
 ////////////////////////////
 
-dexsiDeviceLibEvent::dexsiDeviceLibEvent( deXSystemInput &module, const char *pathDevice ) :
-dexsiDevice( module, esLibevdev ),
+dexsiDeviceLibEvent::dexsiDeviceLibEvent(deXSystemInput &module, const char *pathDevice) :
+dexsiDevice(module, esLibevdev),
 
-pEvdevPath( pathDevice ),
-pEvdevFile( -1 ),
-pEvdevDevice( NULL ),
-pEvdevMapRelAxis( NULL ),
-pEvdevMapAbsAxis( NULL ),
-pEvdevMapKeys( NULL )
+pEvdevPath(pathDevice),
+pEvdevFile(-1),
+pEvdevDevice(NULL),
+pEvdevMapRelAxis(NULL),
+pEvdevMapAbsAxis(NULL),
+pEvdevMapKeys(NULL)
 {
 	// libevdev version
 	// https://www.freedesktop.org/software/libevdev/doc/latest/index.html
@@ -233,34 +233,34 @@ pEvdevMapKeys( NULL )
 	int i, j;
 	
 	// create libevdev device for device at pathDevice
-	pEvdevFile = open( pathDevice, O_RDONLY | O_NONBLOCK );
-	if( pEvdevFile == -1 ){
-		DETHROW_INFO( deeOpenFile, pathDevice );
+	pEvdevFile = open(pathDevice, O_RDONLY | O_NONBLOCK);
+	if(pEvdevFile == -1){
+		DETHROW_INFO(deeOpenFile, pathDevice);
 	}
 	
-	if( libevdev_new_from_fd( pEvdevFile, &pEvdevDevice ) < 0 ){
-		DETHROW_INFO( deeOpenFile, pathDevice );
+	if(libevdev_new_from_fd(pEvdevFile, &pEvdevDevice) < 0){
+		DETHROW_INFO(deeOpenFile, pathDevice);
 	}
 	
 	// retrieve device parameters
-	SetName( libevdev_get_name( pEvdevDevice ) );
+	SetName(libevdev_get_name(pEvdevDevice));
 	
-	const char * const unique = libevdev_get_uniq( pEvdevDevice );
-	if( unique ){
-		string.Format( "%s%d%s", XINP_DEVID_PREFIX, esLibevdev,
-			dexsiDeviceManager::NormalizeID( unique ).GetString() );
+	const char * const unique = libevdev_get_uniq(pEvdevDevice);
+	if(unique){
+		string.Format("%s%d%s", XINP_DEVID_PREFIX, esLibevdev,
+			dexsiDeviceManager::NormalizeID(unique).GetString());
 		
 	}else{
-		const int bustype = libevdev_get_id_bustype( pEvdevDevice );
-		const int vendor = libevdev_get_id_vendor( pEvdevDevice );
-		const int product = libevdev_get_id_product( pEvdevDevice );
-		const int version = libevdev_get_id_version( pEvdevDevice );
+		const int bustype = libevdev_get_id_bustype(pEvdevDevice);
+		const int vendor = libevdev_get_id_vendor(pEvdevDevice);
+		const int product = libevdev_get_id_product(pEvdevDevice);
+		const int version = libevdev_get_id_version(pEvdevDevice);
 		
-		string.Format( "%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
-			bustype, vendor, product, version );
+		string.Format("%s%d%04x%04x%04x%04x", XINP_DEVID_PREFIX, esLibevdev,
+			bustype, vendor, product, version);
 	}
 	
-	SetID( string );
+	SetID(string);
 	
 	// try to identify what kind of device this is
 
@@ -327,81 +327,81 @@ pEvdevMapKeys( NULL )
 	// relative and absolute axes
 	int countAxes = 0;
 	
-	if( hasRelativeAxes ){
-		for( i=0; i<REL_MAX; i++ ){
-			if( libevdev_has_event_code( pEvdevDevice, EV_REL, i ) ){
+	if(hasRelativeAxes){
+		for(i=0; i<REL_MAX; i++){
+			if(libevdev_has_event_code(pEvdevDevice, EV_REL, i)){
 				countAxes++;
 			}
 		}
 	}
 	
-	if( hasAbsoluteAxes ){
-		for( i=0; i<ABS_MAX; i++ ){
-			if( libevdev_has_event_code( pEvdevDevice, EV_ABS, i ) ){
+	if(hasAbsoluteAxes){
+		for(i=0; i<ABS_MAX; i++){
+			if(libevdev_has_event_code(pEvdevDevice, EV_ABS, i)){
 				countAxes++;
 			}
 		}
 	}
 	
-	if( hasRelativeAxes ){
-		pEvdevMapRelAxis = new short[ REL_MAX ];
-		for( i=0; i<REL_MAX; i++ ){
-			pEvdevMapRelAxis[ i ] = -1;
+	if(hasRelativeAxes){
+		pEvdevMapRelAxis = new short[REL_MAX];
+		for(i=0; i<REL_MAX; i++){
+			pEvdevMapRelAxis[i] = -1;
 		}
 	}
-	if( hasAbsoluteAxes ){
-		pEvdevMapAbsAxis = new short[ ABS_MAX ];
-		for( i=0; i<ABS_MAX; i++ ){
-			pEvdevMapAbsAxis[ i ] = -1;
+	if(hasAbsoluteAxes){
+		pEvdevMapAbsAxis = new short[ABS_MAX];
+		for(i=0; i<ABS_MAX; i++){
+			pEvdevMapAbsAxis[i] = -1;
 		}
 	}
 	
 	int indexAxis = 0;
 	
-	if( hasRelativeAxes ){
-		for( i=0; i<REL_MAX; i++ ){
-			if( ! libevdev_has_event_code( pEvdevDevice, EV_REL, i ) ){
+	if(hasRelativeAxes){
+		for(i=0; i<REL_MAX; i++){
+			if(! libevdev_has_event_code(pEvdevDevice, EV_REL, i)){
 				continue;
 			}
 			
-			const dexsiDeviceAxis::Ref axis( dexsiDeviceAxis::Ref::NewWith(module) );
-			AddAxis( axis );
-			axis->SetIndex( indexAxis );
-			axis->SetName( libevdev_event_code_get_name( EV_REL, i ) );
-			axis->SetEvdevCode( i );
-			axis->SetAbsolute( false );
+			const dexsiDeviceAxis::Ref axis(dexsiDeviceAxis::Ref::NewWith(module));
+			AddAxis(axis);
+			axis->SetIndex(indexAxis);
+			axis->SetName(libevdev_event_code_get_name(EV_REL, i));
+			axis->SetEvdevCode(i);
+			axis->SetAbsolute(false);
 			
-			for( j=0; j<vTableRelativeAxisCount; j++ ){
-				const sTableEntryAxis &t = vTableRelativeAxes[ j ];
-				if( t.code != i ){
+			for(j=0; j<vTableRelativeAxisCount; j++){
+				const sTableEntryAxis &t = vTableRelativeAxes[j];
+				if(t.code != i){
 					continue;
 				}
 				
-				axis->SetType( t.type );
-				axis->SetDisplayImages( t.displayName );
-				axis->SetID( t.id );
-				axis->SetDisplayText( t.displayText );
-				if( t.renameDisplayText && libevdev_has_event_code( pEvdevDevice, EV_REL, t.renameCode ) ){
-					axis->SetDisplayText( t.renameDisplayText );
+				axis->SetType(t.type);
+				axis->SetDisplayImages(t.displayName);
+				axis->SetID(t.id);
+				axis->SetDisplayText(t.displayText);
+				if(t.renameDisplayText && libevdev_has_event_code(pEvdevDevice, EV_REL, t.renameCode)){
+					axis->SetDisplayText(t.renameDisplayText);
 				}
 				break;
 			}
 			
-			if( j == vTableRelativeAxisCount ){
-				axis->SetType( deInputDeviceAxis::eatGeneric );
+			if(j == vTableRelativeAxisCount){
+				axis->SetType(deInputDeviceAxis::eatGeneric);
 				
-				string.Format( "ra%d", i );
-				axis->SetID( string );
+				string.Format("ra%d", i);
+				axis->SetID(string);
 				
-				string.Format( "%d", indexAxis + 1 );
-				axis->SetDisplayText( string );
+				string.Format("%d", indexAxis + 1);
+				axis->SetDisplayText(string);
 			}
 			
-			pEvdevMapRelAxis[ i ] = indexAxis++;
+			pEvdevMapRelAxis[i] = indexAxis++;
 		}
 	}
 	
-	if( hasAbsoluteAxes ){
+	if(hasAbsoluteAxes){
 		int nextGeneric = 0;
 		
 		for(i=0; i<ABS_MAX; i++){
@@ -478,108 +478,108 @@ pEvdevMapKeys( NULL )
 	}
 	
 	// keys and buttons
-	if( hasKeys ){
+	if(hasKeys){
 		int countButtons = 0;
 		
-		for( i=BTN_MISC; i<KEY_MAX; i++ ){
-			if( libevdev_has_event_code( pEvdevDevice, EV_KEY, i ) ){
+		for(i=BTN_MISC; i<KEY_MAX; i++){
+			if(libevdev_has_event_code(pEvdevDevice, EV_KEY, i)){
 				countButtons++;
 			}
 		}
 		
-		pEvdevMapKeys = new short[ KEY_MAX - BTN_MISC ];
-		for( i=BTN_MISC; i<KEY_MAX; i++ ){
-			pEvdevMapKeys[ i - BTN_MISC ] = -1;
+		pEvdevMapKeys = new short[KEY_MAX - BTN_MISC];
+		for(i=BTN_MISC; i<KEY_MAX; i++){
+			pEvdevMapKeys[i - BTN_MISC] = -1;
 		}
 		
 		int indexButton = 0;
 		int nextGeneric = 0;
 		
-		for( i=BTN_MISC; i<KEY_MAX; i++ ){
-			if( ! libevdev_has_event_code( pEvdevDevice, EV_KEY, i ) ){
+		for(i=BTN_MISC; i<KEY_MAX; i++){
+			if(! libevdev_has_event_code(pEvdevDevice, EV_KEY, i)){
 				continue;
 			}
 			
-			const dexsiDeviceButton::Ref button( dexsiDeviceButton::Ref::NewWith(module) );
-			AddButton( button );
-			button->SetName( libevdev_event_code_get_name( EV_KEY, i ) );
-			button->SetEvdevCode( i );
+			const dexsiDeviceButton::Ref button(dexsiDeviceButton::Ref::NewWith(module));
+			AddButton(button);
+			button->SetName(libevdev_event_code_get_name(EV_KEY, i));
+			button->SetEvdevCode(i);
 			
-			for( j=0; j<vTableButtonCount; j++ ){
-				const sTableEntryButton &t = vTableButton[ j ];
-				if( t.code != i ){
+			for(j=0; j<vTableButtonCount; j++){
+				const sTableEntryButton &t = vTableButton[j];
+				if(t.code != i){
 					continue;
 				}
 				
-				button->SetType( t.type );
-				button->SetDisplayImages( t.displayName );
-				button->SetID( t.id );
-				button->SetDisplayText( t.displayText );
-				if( t.renameDisplayText && libevdev_has_event_code( pEvdevDevice, EV_KEY, t.renameCode ) ){
-					button->SetDisplayText( t.renameDisplayText );
+				button->SetType(t.type);
+				button->SetDisplayImages(t.displayName);
+				button->SetID(t.id);
+				button->SetDisplayText(t.displayText);
+				if(t.renameDisplayText && libevdev_has_event_code(pEvdevDevice, EV_KEY, t.renameCode)){
+					button->SetDisplayText(t.renameDisplayText);
 				}
 				break;
 			}
 			
-			if( j == vTableButtonCount ){
-				button->SetType( deInputDeviceButton::ebtGeneric );
-				button->SetDisplayImages( "button" );
+			if(j == vTableButtonCount){
+				button->SetType(deInputDeviceButton::ebtGeneric);
+				button->SetDisplayImages("button");
 				
-				string.Format( "bg%d", nextGeneric++ );
-				button->SetID( string );
+				string.Format("bg%d", nextGeneric++);
+				button->SetID(string);
 				
-				string.Format( "%d", nextGeneric );
-				button->SetDisplayText( string );
+				string.Format("%d", nextGeneric);
+				button->SetDisplayText(string);
 			}
 			
-			pEvdevMapKeys[ i - BTN_MISC ] = indexButton++;
+			pEvdevMapKeys[i - BTN_MISC] = indexButton++;
 		}
 	}
 	
 	/*
-	if( libevdev_has_event_type( evdev, EV_SW ) ){
-		pModule.LogInfo( "  switches:" );
-		for( j=0; j<SW_MAX; j++ ){
-			if( libevdev_has_event_code( evdev, EV_SW, j ) ){
-				pModule.LogInfoFormat( "  - 0x%x", j );
+	if(libevdev_has_event_type(evdev, EV_SW)){
+		pModule.LogInfo("  switches:");
+		for(j=0; j<SW_MAX; j++){
+			if(libevdev_has_event_code(evdev, EV_SW, j)){
+				pModule.LogInfoFormat("  - 0x%x", j);
 			}
 		}
 	}
 	
-	if( libevdev_has_event_type( evdev, EV_LED ) ){
-		pModule.LogInfo( "  led:" );
-		for( j=0; j<LED_MAX; j++ ){
-			if( libevdev_has_event_code( evdev, EV_LED, j ) ){
-				pModule.LogInfoFormat( "  - 0x%x", j );
+	if(libevdev_has_event_type(evdev, EV_LED)){
+		pModule.LogInfo("  led:");
+		for(j=0; j<LED_MAX; j++){
+			if(libevdev_has_event_code(evdev, EV_LED, j)){
+				pModule.LogInfoFormat("  - 0x%x", j);
 			}
 		}
 	}
 	*/
 	
 	/*
-	const int slotCount = libevdev_get_num_slots( evdev );
-	pModule.LogInfoFormat( "  slotcount=%d", slotCount );
+	const int slotCount = libevdev_get_num_slots(evdev);
+	pModule.LogInfoFormat("  slotcount=%d", slotCount);
 	//INPUT_PROP_BUTTONPAD;
-	for( j=0; j<slotCount; j++ ){
+	for(j=0; j<slotCount; j++){
 	}
 	*/
 }
 
 dexsiDeviceLibEvent::~dexsiDeviceLibEvent(){
-	if( pEvdevMapKeys ){
+	if(pEvdevMapKeys){
 		delete [] pEvdevMapKeys;
 	}
-	if( pEvdevMapAbsAxis ){
+	if(pEvdevMapAbsAxis){
 		delete [] pEvdevMapAbsAxis;
 	}
-	if( pEvdevMapRelAxis ){
+	if(pEvdevMapRelAxis){
 		delete [] pEvdevMapRelAxis;
 	}
-	if( pEvdevDevice ){
-		libevdev_free( pEvdevDevice );
+	if(pEvdevDevice){
+		libevdev_free(pEvdevDevice);
 	}
-	if( pEvdevFile != -1 ){
-		close( pEvdevFile );
+	if(pEvdevFile != -1){
+		close(pEvdevFile);
 	}
 }
 
@@ -594,52 +594,52 @@ void dexsiDeviceLibEvent::Update(){
 	int flag = LIBEVDEV_READ_FLAG_NORMAL;
 	input_event ev;
 	
-	while( true ){
-		const int result = libevdev_next_event( pEvdevDevice, flag, &ev );
+	while(true){
+		const int result = libevdev_next_event(pEvdevDevice, flag, &ev);
 		
-		if( result == -EAGAIN ){
+		if(result == -EAGAIN){
 			break; // no more events
 			
-		}else if( result == LIBEVDEV_READ_STATUS_SYNC ){
+		}else if(result == LIBEVDEV_READ_STATUS_SYNC){
 			flag = LIBEVDEV_READ_FLAG_SYNC;
 			continue;
 			
 		}else{
-			switch( ev.type ){
+			switch(ev.type){
 			case EV_REL:
-				if( pEvdevMapRelAxis && ev.code >= 0 && ev.code < REL_MAX
-				&& pEvdevMapRelAxis[ ev.code ] != -1 ){
-					GetAxisAt( pEvdevMapRelAxis[ ev.code ] )->EvdevProcessEvent( *this, ev );
+				if(pEvdevMapRelAxis && ev.code >= 0 && ev.code < REL_MAX
+				&& pEvdevMapRelAxis[ev.code] != -1){
+					GetAxisAt(pEvdevMapRelAxis[ev.code])->EvdevProcessEvent(*this, ev);
 				}
 				break;
 				
 			case EV_ABS:
-				if( pEvdevMapAbsAxis && ev.code >= 0 && ev.code < ABS_MAX
-				&& pEvdevMapAbsAxis[ ev.code ] != -1 ){
-					GetAxisAt( pEvdevMapAbsAxis[ ev.code ] )->EvdevProcessEvent( *this, ev );
+				if(pEvdevMapAbsAxis && ev.code >= 0 && ev.code < ABS_MAX
+				&& pEvdevMapAbsAxis[ev.code] != -1){
+					GetAxisAt(pEvdevMapAbsAxis[ev.code])->EvdevProcessEvent(*this, ev);
 				}
 				break;
 				
 			case EV_KEY:
-				if( pEvdevMapKeys && ev.code >= BTN_MISC && ev.code < KEY_MAX
-				&& pEvdevMapKeys[ ev.code - BTN_MISC ] != -1 ){
-					const int code = pEvdevMapKeys[ ev.code - BTN_MISC ];
+				if(pEvdevMapKeys && ev.code >= BTN_MISC && ev.code < KEY_MAX
+				&& pEvdevMapKeys[ev.code - BTN_MISC] != -1){
+					const int code = pEvdevMapKeys[ev.code - BTN_MISC];
 					
-					switch( ev.value ){
+					switch(ev.value){
 					case 0: // release
-						GetButtonAt( code )->SetPressed( false );
-						module.AddButtonReleased( deviceIndex, code, ev.time );
+						GetButtonAt(code)->SetPressed(false);
+						module.AddButtonReleased(deviceIndex, code, ev.time);
 						break;
 						
 					case 1: // press
-						GetButtonAt( code )->SetPressed( true );
-						module.AddButtonPressed( deviceIndex, code, ev.time );
+						GetButtonAt(code)->SetPressed(true);
+						module.AddButtonPressed(deviceIndex, code, ev.time);
 						break;
 						
 					case 2: // auto-repeat (or auto-fire)
-						GetButtonAt( code )->SetPressed( true );
-						module.AddButtonReleased( deviceIndex, code, ev.time );
-						module.AddButtonPressed( deviceIndex, code, ev.time );
+						GetButtonAt(code)->SetPressed(true);
+						module.AddButtonReleased(deviceIndex, code, ev.time);
+						module.AddButtonPressed(deviceIndex, code, ev.time);
 						break;
 					}
 				}

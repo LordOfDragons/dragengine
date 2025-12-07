@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintSetDampingSpring::reUConstraintSetDampingSpring( reRigConstraint *constraint, float newDamping ){
-	if( ! constraint || ! constraint->GetRig() ){
-		DETHROW( deeInvalidParam );
+reUConstraintSetDampingSpring::reUConstraintSetDampingSpring(reRigConstraint *constraint, float newDamping){
+	if(! constraint || ! constraint->GetRig()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
@@ -50,13 +50,13 @@ reUConstraintSetDampingSpring::reUConstraintSetDampingSpring( reRigConstraint *c
 	pOldDamping = constraint->GetSpringDamping();
 	pNewDamping = newDamping;
 	
-	SetShortInfo( "Constraint set spring damping" );
+	SetShortInfo("Constraint set spring damping");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintSetDampingSpring::~reUConstraintSetDampingSpring(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ reUConstraintSetDampingSpring::~reUConstraintSetDampingSpring(){
 ///////////////
 
 void reUConstraintSetDampingSpring::Undo(){
-	pConstraint->SetSpringDamping( pOldDamping );
+	pConstraint->SetSpringDamping(pOldDamping);
 }
 
 void reUConstraintSetDampingSpring::Redo(){
-	pConstraint->SetSpringDamping( pNewDamping );
+	pConstraint->SetSpringDamping(pNewDamping);
 }

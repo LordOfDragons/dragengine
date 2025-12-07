@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleSnapToggleEnableSize( aeRuleStateSnapshot *rule );
+	aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleSnapToggleEnableSize();

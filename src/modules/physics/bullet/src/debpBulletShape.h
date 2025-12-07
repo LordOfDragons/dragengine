@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create bullet shape wrapper taking ownership of bullet shape. */
-	debpBulletShape( btCollisionShape *shape );
+	debpBulletShape(btCollisionShape *shape);
 	
 	/** \brief Clean up bullet shape wrapper deleting wrapped bullet shape. */
 	virtual ~debpBulletShape();
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet shape. */
-	inline btCollisionShape *GetShape() const{ return pShape; }
+	inline btCollisionShape *GetShape() const{return pShape;}
 	/*@}*/
 };
 

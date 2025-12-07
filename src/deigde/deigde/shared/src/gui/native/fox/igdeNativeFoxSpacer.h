@@ -34,7 +34,7 @@ class igdeSpacer;
  * \brief FOX toolkit Native Spacer.
  */
 class igdeNativeFoxSpacer : public FXFrame{
-	FXDECLARE( igdeNativeFoxSpacer )
+	FXDECLARE(igdeNativeFoxSpacer)
 protected:
 	igdeNativeFoxSpacer();
 	
@@ -42,13 +42,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create container. */
-	igdeNativeFoxSpacer( igdeSpacer &owner, FXComposite *parent, int childFlags );
+	igdeNativeFoxSpacer(igdeSpacer &owner, FXComposite *parent, int childFlags);
 	
 	/** \brief Clean up container. */
 	virtual ~igdeNativeFoxSpacer();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSpacer* CreateNativeWidget( igdeSpacer &owner );
+	static igdeNativeFoxSpacer* CreateNativeWidget(igdeSpacer &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -62,13 +62,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Set size. */
-	virtual void SetSize( int width, int height );
+	virtual void SetSize(int width, int height);
 	
 	virtual FXint getDefaultWidth();
 	virtual FXint getDefaultHeight();
 	
 	/** \brief Process layout flags. */
-	static int LayoutFlags( int childFlags );
+	static int LayoutFlags(int childFlags);
 	/*@}*/
 	
 private:

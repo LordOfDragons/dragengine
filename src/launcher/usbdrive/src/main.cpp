@@ -26,14 +26,14 @@
 #include "windowMain.h"
 
 
-int main( int argc, char **argv ){
-	FXApp * const app = new FXApp( "Drag[en]gine USB Drive Launcher", "Drag[en]gine" );
-	app->init( argc, argv );
+int main(int argc, char **argv){
+	FXApp * const app = new FXApp("Drag[en]gine USB Drive Launcher", "Drag[en]gine");
+	app->init(argc, argv);
 	
-	new FXToolTip( app );
+	new FXToolTip(app);
 	app->create();
 	
-	WindowMain * const window = new WindowMain( app );
+	WindowMain * const window = new WindowMain(app);
 	window->create();
 	
 	return app->run();

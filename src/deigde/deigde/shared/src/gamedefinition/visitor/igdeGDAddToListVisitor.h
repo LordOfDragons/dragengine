@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	igdeGDAddToListVisitor( igdeEnvironment &environment, igdeIconListBox *iconListBox, int size );
+	igdeGDAddToListVisitor(igdeEnvironment &environment, igdeIconListBox *iconListBox, int size);
 	
 	/** \brief Clean up visitor. */
 	virtual ~igdeGDAddToListVisitor();
@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Add item to list. */
-	void AddItemToList( const char *caption, deImage &image, void *userPointer );
+	void AddItemToList(const char *caption, deImage &image, void *userPointer);
 	
 	/** \brief Add item to list. */
-	void AddItemToList( igdeListItem::Ref &item, const char *caption, deImage &image, void *userPointer );
+	void AddItemToList(igdeListItem::Ref &item, const char *caption, deImage &image, void *userPointer);
 	/*@}*/
 	
 	
@@ -69,13 +69,13 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit object class. */
-	virtual void VisitObjectClass( igdeGDClass *gdclass );
+	virtual void VisitObjectClass(igdeGDClass *gdclass);
 	
 	/** \brief Visit skin. */
-	virtual void VisitSkin( igdeGDSkin *gdskin );
+	virtual void VisitSkin(igdeGDSkin *gdskin);
 	
 	/** \brief Visits sky. */
-	virtual void VisitSky( igdeGDSky *gdsky );
+	virtual void VisitSky(igdeGDSky *gdsky);
 	/*@}*/
 };
 

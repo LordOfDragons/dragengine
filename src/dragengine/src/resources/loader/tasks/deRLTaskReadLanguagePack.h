@@ -43,8 +43,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	deRLTaskReadLanguagePack( deEngine &engine, deResourceLoader &resourceLoader,
-		deVirtualFileSystem *vfs, const char *path, deLanguagePack *languagePack );
+	deRLTaskReadLanguagePack(deEngine &engine, deResourceLoader &resourceLoader,
+		deVirtualFileSystem *vfs, const char *path, deLanguagePack *languagePack);
 	
 	/** \brief Clean up task. */
 	virtual ~deRLTaskReadLanguagePack();

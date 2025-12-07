@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAWaitActionsAddAction::ceWPTMAWaitActionsAddAction( ceWindowMain &windowMain,
+ceWPTMAWaitActionsAddAction::ceWPTMAWaitActionsAddAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAWait &wait, ceConversationAction::eActionTypes actionType, int index ) :
-ceWPTMACreateAction( windowMain, conversation, actionType ),
-pTopic( &topic ),
-pWait( &wait ),
-pIndex( index )
+ceCAWait &wait, ceConversationAction::eActionTypes actionType, int index) :
+ceWPTMACreateAction(windowMain, conversation, actionType),
+pTopic(&topic),
+pWait(&wait),
+pIndex(index)
 {
-	if( index < 0 || index > wait.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > wait.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -57,6 +57,6 @@ pIndex( index )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMAWaitActionsAddAction::CreateUndo( ceConversationAction *action ){
-	return new ceUCAWaitAdd( pTopic, pWait, action, pIndex );
+igdeUndo *ceWPTMAWaitActionsAddAction::CreateUndo(ceConversationAction *action){
+	return new ceUCAWaitAdd(pTopic, pWait, action, pIndex);
 }

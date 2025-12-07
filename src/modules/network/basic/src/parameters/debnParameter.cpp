@@ -31,8 +31,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnParameter::debnParameter( deNetworkBasic &network ) :
-pNetwork( network ){
+debnParameter::debnParameter(deNetworkBasic &network) :
+pNetwork(network){
 }
 
 debnParameter::~debnParameter(){

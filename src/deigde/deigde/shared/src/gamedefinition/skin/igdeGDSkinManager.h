@@ -68,85 +68,85 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline igdeGDCategory *GetCategories() const{return pCategories;}
 	
 	/** \brief Number of game skins. */
 	int GetSkinCount() const;
 	
 	/** \brief Skin is present. */
-	bool HasSkin( igdeGDSkin *skin ) const;
+	bool HasSkin(igdeGDSkin *skin) const;
 	
 	/** \brief Skin with path is present. */
-	bool HasSkinWithPath( const char *path ) const;
+	bool HasSkinWithPath(const char *path) const;
 	
 	/** \brief Named skin is present. */
-	bool HasSkinWithName( const char *name ) const;
+	bool HasSkinWithName(const char *name) const;
 	
 	/** \brief Skin with name or path is present. */
-	bool HasSkinWithPathOrName( const char *path, const char *name ) const;
+	bool HasSkinWithPathOrName(const char *path, const char *name) const;
 	
 	/** \brief Index of skin or -1 if absent. */
-	int IndexOfSkin( igdeGDSkin *skin ) const;
+	int IndexOfSkin(igdeGDSkin *skin) const;
 	
 	/** \brief Index of skin with path or -1 if absent. */
 	
-	int IndexOfSkinWithPath( const char *path ) const;
+	int IndexOfSkinWithPath(const char *path) const;
 	
 	/** \brief Index of skin with name or -1 if absent. */
-	int IndexOfSkinWithName( const char *name ) const;
+	int IndexOfSkinWithName(const char *name) const;
 	
 	/** \brief Index of skin with name or -1 if absent. */
-	int IndexOfSkinWithPathOrName( const char *path, const char *name ) const;
+	int IndexOfSkinWithPathOrName(const char *path, const char *name) const;
 	
 	/** \brief Game skin at the given index. */
-	igdeGDSkin *GetSkinAt( int index ) const;
+	igdeGDSkin *GetSkinAt(int index) const;
 	
 	/** \brief Game skin with path or NULL if absent. */
-	igdeGDSkin *GetSkinWithPath( const char *path ) const;
+	igdeGDSkin *GetSkinWithPath(const char *path) const;
 	
 	/** \brief Game skin with name or NULL if absent. */
-	igdeGDSkin *GetSkinWithName( const char *name ) const;
+	igdeGDSkin *GetSkinWithName(const char *name) const;
 	
 	/** \brief Add game skin. */
-	void AddSkin( igdeGDSkin *skin );
+	void AddSkin(igdeGDSkin *skin);
 	
 	/** \brief Remove skin. */
-	void RemoveSkin( igdeGDSkin *skin );
+	void RemoveSkin(igdeGDSkin *skin);
 	
 	/** \brief Remove all skins. */
 	void RemoveAllSkins();
 	
 	/** \brief Path of default skin. */
-	inline const decString &GetDefaultSkinPath() const{ return pDefaultSkinPath; }
+	inline const decString &GetDefaultSkinPath() const{return pDefaultSkinPath;}
 	
 	/** \brief Set path of default skin. */
-	void SetDefaultSkinPath( const char *defaultSkinPath );
+	void SetDefaultSkinPath(const char *defaultSkinPath);
 	
 	/** \brief Set of path to use to auto-find skins. */
-	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
-	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
+	inline decStringList &GetAutoFindPath(){return pAutoFindPath;}
+	inline const decStringList &GetAutoFindPath() const{return pAutoFindPath;}
 	
 	/** \brief Visit skins matching the given category. */
-	void VisitSkinsMatchingCategory( igdeGDVisitor &visitor, const igdeGDCategory *category ) const;
+	void VisitSkinsMatchingCategory(igdeGDVisitor &visitor, const igdeGDCategory *category) const;
 	
 	/** \brief Visit skins matching filter. */
-	void VisitMatchingFilter( igdeGDVisitor &visitor, const decString &filter ) const;
+	void VisitMatchingFilter(igdeGDVisitor &visitor, const decString &filter) const;
 	
 	/**
 	 * \brief Updates skin manager using another skin manager.
 	 * 
 	 * Adds copies of skins in the given skin manager . If skin exists it is replaced.
 	 */
-	void UpdateWith( const igdeGDSkinManager &skinManager );
+	void UpdateWith(const igdeGDSkinManager &skinManager);
 	
 	/**
 	 * \brief Update skin manager with found skins.
 	 */
-	void UpdateWithFound( const igdeGDSkinManager &skinManager );
+	void UpdateWithFound(const igdeGDSkinManager &skinManager);
 	
 	/** \brief Find skins and add them. */
-	void FindAndAddSkins( deVirtualFileSystem &vfs, const decPath &directory,
-		const char *pattern = "*.deskin", bool recursive = true );
+	void FindAndAddSkins(deVirtualFileSystem &vfs, const decPath &directory,
+		const char *pattern = "*.deskin", bool recursive = true);
 	/*@}*/
 };
 

@@ -137,7 +137,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPSObject( meWPSelection &wpselection );
+	meWPSObject(meWPSelection &wpselection);
 	
 protected:
 	/** Clean up . */
@@ -150,13 +150,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Selection panel. */
-	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
+	inline meWPSelection &GetWPSelection() const{return pWPSelection;}
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Active object. */
 	meObject *GetActiveObject() const;
@@ -242,32 +242,32 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** For use by listeners only. */
-	void SlideLightProperty( igdeGDCLight::eProperties property, const char *value, bool scrubbing );
+	void SlideLightProperty(igdeGDCLight::eProperties property, const char *value, bool scrubbing);
 	
 	
-	inline igdeAction *GetActionClassBrowse() const{ return pActionClassBrowse; }
-	inline igdeAction *GetActionClassEdit() const{ return pActionClassEdit; }
+	inline igdeAction *GetActionClassBrowse() const{return pActionClassBrowse;}
+	inline igdeAction *GetActionClassEdit() const{return pActionClassEdit;}
 	
-	inline igdeAction *GetActionIdFind() const{ return pActionIdFind; }
+	inline igdeAction *GetActionIdFind() const{return pActionIdFind;}
 	
-	inline igdeAction *GetActionTextureAddCustom() const{ return pActionTextureAddCustom; }
-	inline igdeAction *GetActionTextureAddAllModel() const{ return pActionTextureAddAllModel; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline igdeAction *GetActionTextureRemoveAll() const{ return pActionTextureRemoveAll; }
-	inline igdeAction *GetActionTextureRemoveAllNotModel() const{ return pActionTextureRemoveAllNotModel; }
-	inline igdeAction *GetActionTextureCopyToSelected() const{ return pActionTextureCopyToSelected; }
-	inline igdeAction *GetActionTextureCloneToSelected() const{ return pActionTextureCloneToSelected; }
+	inline igdeAction *GetActionTextureAddCustom() const{return pActionTextureAddCustom;}
+	inline igdeAction *GetActionTextureAddAllModel() const{return pActionTextureAddAllModel;}
+	inline igdeAction *GetActionTextureRemove() const{return pActionTextureRemove;}
+	inline igdeAction *GetActionTextureRemoveAll() const{return pActionTextureRemoveAll;}
+	inline igdeAction *GetActionTextureRemoveAllNotModel() const{return pActionTextureRemoveAllNotModel;}
+	inline igdeAction *GetActionTextureCopyToSelected() const{return pActionTextureCopyToSelected;}
+	inline igdeAction *GetActionTextureCloneToSelected() const{return pActionTextureCloneToSelected;}
 	
-	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
-	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
-	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
+	inline igdeAction *GetActionPropCopyToSel() const{return pActionPropCopyToSel;}
+	inline igdeAction *GetActionPropRemoveFromSel() const{return pActionPropRemoveFromSel;}
+	inline igdeAction *GetActionPropCloneToSel() const{return pActionPropCloneToSel;}
 	/*@}*/
 	
 	
 	
 private:
-	bool pPropertyValue( const meObject &object, const decString &prefix,
-		const decString &name, decString &value ) const;
+	bool pPropertyValue(const meObject &object, const decString &prefix,
+		const decString &name, decString &value) const;
 };
 
 #endif

@@ -45,8 +45,8 @@ desynSharedBufferList::~desynSharedBufferList(){
 	const int count = pBuffers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( desynSharedBuffer* )pBuffers.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (desynSharedBuffer*)pBuffers.GetAt(i);
 	}
 	pBuffers.RemoveAll();
 }
@@ -56,22 +56,22 @@ desynSharedBufferList::~desynSharedBufferList(){
 // Management
 ///////////////
 
-desynSharedBuffer *desynSharedBufferList::ClaimBuffer( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+desynSharedBuffer *desynSharedBufferList::ClaimBuffer(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pBuffers.GetCount();
 	desynSharedBuffer *buffer = NULL;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		buffer = ( desynSharedBuffer* )pBuffers.GetAt( i );
-		if( ! buffer->GetInUse() ){
-			if( size > buffer->GetSize() ){
-				buffer->SetSize( size );
+	for(i=0; i<count; i++){
+		buffer = (desynSharedBuffer*)pBuffers.GetAt(i);
+		if(! buffer->GetInUse()){
+			if(size > buffer->GetSize()){
+				buffer->SetSize(size);
 			}
-			buffer->SetInUse( true );
+			buffer->SetInUse(true);
 			return buffer;
 		}
 	}
@@ -79,23 +79,23 @@ desynSharedBuffer *desynSharedBufferList::ClaimBuffer( int size ){
 	buffer = NULL;
 	try{
 		buffer = new desynSharedBuffer;
-		buffer->SetSize( size );
-		buffer->SetInUse( true );
-		pBuffers.Add( buffer );
+		buffer->SetSize(size);
+		buffer->SetInUse(true);
+		pBuffers.Add(buffer);
 		return buffer;
 		
-	}catch( const deException & ){
-		if( buffer ){
+	}catch(const deException &){
+		if(buffer){
 			delete buffer;
 		}
 		throw;
 	}
 }
 
-void desynSharedBufferList::ReleaseBuffer( desynSharedBuffer *buffer ){
-	if( ! buffer ){
-		DETHROW( deeInvalidParam );
+void desynSharedBufferList::ReleaseBuffer(desynSharedBuffer *buffer){
+	if(! buffer){
+		DETHROW(deeInvalidParam);
 	}
 	
-	buffer->SetInUse( false );
+	buffer->SetInUse(false);
 }

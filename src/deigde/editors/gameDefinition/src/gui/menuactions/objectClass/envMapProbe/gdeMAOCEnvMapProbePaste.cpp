@@ -49,10 +49,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbePaste::gdeMAOCEnvMapProbePaste( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Paste Object Class Environment Map Probe",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-	"Paste object class environment map probe" )
+gdeMAOCEnvMapProbePaste::gdeMAOCEnvMapProbePaste(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Paste Object Class Environment Map Probe",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
+	"Paste object class environment map probe")
 {
 }
 
@@ -61,25 +61,25 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Environment Map Probe",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
-		.GetWithTypeName( gdeClipboardDataOCEnvMapProbe::TYPE_NAME ) );
-	if( ! clip ){
+igdeUndo *gdeMAOCEnvMapProbePaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard()
+		.GetWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME));
+	if(! clip){
 		return NULL;
 	}
 	
 	const gdeClipboardDataOCEnvMapProbe &clipOCEnvMapProbe =
-		( const gdeClipboardDataOCEnvMapProbe & )( igdeClipboardData& )clip;
+		(const gdeClipboardDataOCEnvMapProbe &)(igdeClipboardData&)clip;
 	
 	const gdeOCEnvMapProbe::Ref envMapProbe(gdeOCEnvMapProbe::Ref::NewWith(*clipOCEnvMapProbe.GetEnvMapProbe()));
 	
-	igdeUndo * const undo = new gdeUOCAddEnvMapProbe( &objectClass,
-		envMapProbe );
-	undo->SetShortInfo( "Paste object class environment map probe" );
+	igdeUndo * const undo = new gdeUOCAddEnvMapProbe(&objectClass,
+		envMapProbe);
+	undo->SetShortInfo("Paste object class environment map probe");
 	return undo;
 }
 
 void gdeMAOCEnvMapProbePaste::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL
-		&& pWindowMain.GetClipboard().HasWithTypeName( gdeClipboardDataOCEnvMapProbe::TYPE_NAME ) );
+	SetEnabled(GetActiveObjectClass() != NULL
+		&& pWindowMain.GetClipboard().HasWithTypeName(gdeClipboardDataOCEnvMapProbe::TYPE_NAME));
 }

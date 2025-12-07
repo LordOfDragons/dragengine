@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create global illumination dynamic BVH. */
-	deoglGIBVHDynamic( deoglGIBVHLocal &bvhLocal );
+	deoglGIBVHDynamic(deoglGIBVHLocal &bvhLocal);
 	
 	/** Clean up global illumination dynamic BVH. */
 	~deoglGIBVHDynamic();
@@ -73,20 +73,20 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{return pTBONodeBox;}
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{return pTBOVertex;}
 	
 	/** Local BVH. */
-	inline deoglGIBVHLocal &GetGIBVHLocal(){ return pGIBVHLocal; }
-	inline const deoglGIBVHLocal &GetGIBVHLocal() const{ return pGIBVHLocal; }
+	inline deoglGIBVHLocal &GetGIBVHLocal(){return pGIBVHLocal;}
+	inline const deoglGIBVHLocal &GetGIBVHLocal() const{return pGIBVHLocal;}
 	
 	/** BVH minimum extends. Valid after call to UpdateBVHExtends. */
-	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
 	
 	/** BVH minimum extends. Valid after call to UpdateBVHExtends. */
-	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
 	
 	/**
 	 * Recalculate BVH node extends. Keeps the BVH structure but adjusts to changing vertex
@@ -100,10 +100,10 @@ public:
 	void UpdateBVHExtends();
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglModelPosition *positions, int count );
+	void UpdateVertices(const oglModelPosition *positions, int count);
 	
 	/** Update vertex positions. */
-	void UpdateVertices( const oglVector3 *positions, int count );
+	void UpdateVertices(const oglVector3 *positions, int count);
 	
 	
 	
@@ -132,8 +132,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCalcNodeExtends( const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend );
-	void pWriteNodeExtends( int index, const decVector &minExtend, const decVector &maxExtend );
+	void pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend);
+	void pWriteNodeExtends(int index, const decVector &minExtend, const decVector &maxExtend);
 };
 
 #endif

@@ -42,16 +42,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripsScale::ceUCAASpeakStripsScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak ){
-	if( ! topic || ! actorSpeak ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
+	if(! topic || ! actorSpeak){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActorSpeak = NULL;
 	pOldStates = NULL;
 	
-	SetShortInfo( "Scale strips" );
+	SetShortInfo("Scale strips");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -61,13 +61,13 @@ ceUCAASpeakStripsScale::ceUCAASpeakStripsScale( ceConversationTopic *topic, ceCA
 }
 
 ceUCAASpeakStripsScale::~ceUCAASpeakStripsScale(){
-	if( pOldStates ){
+	if(pOldStates){
 		delete [] pOldStates;
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -77,8 +77,8 @@ ceUCAASpeakStripsScale::~ceUCAASpeakStripsScale(){
 // Management
 ///////////////
 
-void ceUCAASpeakStripsScale::SetStrips( const ceStripList &strips ){
-	if( pOldStates ){
+void ceUCAASpeakStripsScale::SetStrips(const ceStripList &strips){
+	if(pOldStates){
 		delete [] pOldStates;
 		pOldStates = NULL;
 	}
@@ -86,21 +86,21 @@ void ceUCAASpeakStripsScale::SetStrips( const ceStripList &strips ){
 	pStrips = strips;
 	
 	const int count = strips.GetCount();
-	if( count > 0 ){
+	if(count > 0){
 		int i;
 		
-		pOldStates = new sStrip[ count ];
+		pOldStates = new sStrip[count];
 		
-		for( i=0; i<count; i++ ){
-			const ceStrip &strip = *strips.GetAt( i );
-			pOldStates[ i ].pause = strip.GetPause();
-			pOldStates[ i ].duration = strip.GetDuration();
+		for(i=0; i<count; i++){
+			const ceStrip &strip = *strips.GetAt(i);
+			pOldStates[i].pause = strip.GetPause();
+			pOldStates[i].duration = strip.GetDuration();
 		}
 	}
 }
 
-void ceUCAASpeakStripsScale::SetScaling( float scaling ){
-	if( scaling < 0.0f ){
+void ceUCAASpeakStripsScale::SetScaling(float scaling){
+	if(scaling < 0.0f){
 		pScaling = 0.0f;
 		
 	}else{
@@ -114,24 +114,24 @@ void ceUCAASpeakStripsScale::Undo(){
 	const int count = pStrips.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceStrip &strip = *pStrips.GetAt( i );
-		strip.SetPause( pOldStates[ i ].pause );
-		strip.SetDuration( pOldStates[ i ].duration );
+	for(i=0; i<count; i++){
+		ceStrip &strip = *pStrips.GetAt(i);
+		strip.SetPause(pOldStates[i].pause);
+		strip.SetDuration(pOldStates[i].duration);
 	}
 	
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakStripsScale::Redo(){
 	const int count = pStrips.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceStrip &strip = *pStrips.GetAt( i );
-		strip.SetPause( pOldStates[ i ].pause * pScaling );
-		strip.SetDuration( pOldStates[ i ].duration * pScaling );
+	for(i=0; i<count; i++){
+		ceStrip &strip = *pStrips.GetAt(i);
+		strip.SetPause(pOldStates[i].pause * pScaling);
+		strip.SetDuration(pOldStates[i].duration * pScaling);
 	}
 	
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -77,16 +77,16 @@ struct tgaHdr{
 // Constructor, destructor
 ////////////////////////////
 
-decTgaImage::decTgaImage( decBaseFileReader &reader ) :
-pWidth( 0 ),
-pHeight( 0 ),
-pPixels( NULL )
+decTgaImage::decTgaImage(decBaseFileReader &reader) :
+pWidth(0),
+pHeight(0),
+pPixels(NULL)
 {
 	try{
-		pReadTga( reader );
+		pReadTga(reader);
 		
-	}catch( const deException & ){
-		if( pPixels ){
+	}catch(const deException &){
+		if(pPixels){
 			delete [] pPixels;
 		}
 		throw;
@@ -95,7 +95,7 @@ pPixels( NULL )
 }
 
 decTgaImage::~decTgaImage(){
-	if( pPixels ){
+	if(pPixels){
 		delete [] pPixels;
 	}
 }
@@ -105,14 +105,14 @@ decTgaImage::~decTgaImage(){
 // Private function
 /////////////////////
 
-void decTgaImage::pReadTga( decBaseFileReader &reader ){
+void decTgaImage::pReadTga(decBaseFileReader &reader){
 	bool compressed = false;
 	tgaHdr header;
 	
 	// header
-	reader.Read( &header, sizeof( header ) );
+	reader.Read(&header, sizeof(header));
 	
-	switch( header.imageType ){
+	switch(header.imageType){
 	case TYPE_TRUE_COLOR:
 	case TYPE_GRAYSCALE:
 		break;
@@ -126,21 +126,21 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 	case TYPE_RLE_COLOR_MAPPED:
 	default:
 		// not supported
-		DETHROW( deeInvalidFormat );
+		DETHROW(deeInvalidFormat);
 	}
 	
-	switch( header.bpp ){
+	switch(header.bpp){
 	case 8:
 	case 24:
 	case 32:
 		break;
 		
 	default:
-		DETHROW( deeInvalidFormat );
+		DETHROW(deeInvalidFormat);
 	}
 	
-	if( header.idLength > 0 ){
-		reader.MovePosition( header.idLength );
+	if(header.idLength > 0){
+		reader.MovePosition(header.idLength);
 	}
 	
 	// image
@@ -148,7 +148,7 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 	pHeight = header.height;
 	int y, x, fromY, stepY, fromX, stepX, ry, rx;
 	
-	if( header.imgDesc & 0x20 ){ // top -> bottom
+	if(header.imgDesc & 0x20){ // top -> bottom
 		fromY = 0;
 		stepY = 1;
 		
@@ -157,7 +157,7 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 		stepY = -1;
 	}
 	
-	if( header.imgDesc & 0x10 ){ // right -> left
+	if(header.imgDesc & 0x10){ // right -> left
 		fromX = pWidth - 1;
 		stepX = -1;
 		
@@ -166,28 +166,28 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 		stepX = 1;
 	}
 	
-	pPixels = new sPixel[ pWidth * pHeight ];
+	pPixels = new sPixel[pWidth * pHeight];
 	
-	if( compressed ){
+	if(compressed){
 		int remaining = 0;
 		bool isRun = false;
 		sPixel copy;
 		
-		for( ry=fromY,y=0; y<pHeight; ry+=stepY,y++ ){
-			if( header.bpp == 8 ){
+		for(ry=fromY,y=0; y<pHeight; ry+=stepY,y++){
+			if(header.bpp == 8){
 				copy.a = 255;
 				sPixel * const row = pPixels + pWidth * ry;
-				for( rx=fromX,x=0; x<pWidth; rx+=stepX,x++ ){
-					if( remaining == 0 ){
+				for(rx=fromX,x=0; x<pWidth; rx+=stepX,x++){
+					if(remaining == 0){
 						remaining = reader.ReadByte();
-						isRun = ( remaining & 0x80 ) == 0x80;
-						remaining = ( remaining & 0x7f ) + 1;
-						if( isRun ){
+						isRun = (remaining & 0x80) == 0x80;
+						remaining = (remaining & 0x7f) + 1;
+						if(isRun){
 							copy.b = copy.g = copy.r = reader.ReadByte();
 						}
 					}
 					
-					if( isRun ){
+					if(isRun){
 						row[rx] = copy;
 						
 					}else{
@@ -198,22 +198,22 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 					remaining--;
 				}
 				
-			}else if( header.bpp == 24 ){
+			}else if(header.bpp == 24){
 				copy.a = 255;
 				sPixel * const row = pPixels + pWidth * ry;
-				for( rx=fromX,x=0; x<pWidth; rx+=stepX,x++ ){
-					if( remaining == 0 ){
+				for(rx=fromX,x=0; x<pWidth; rx+=stepX,x++){
+					if(remaining == 0){
 						remaining = reader.ReadByte();
-						isRun = ( remaining & 0x80 ) == 0x80;
-						remaining = ( remaining & 0x7f ) + 1;
-						if( isRun ){
+						isRun = (remaining & 0x80) == 0x80;
+						remaining = (remaining & 0x7f) + 1;
+						if(isRun){
 							copy.b = reader.ReadByte();
 							copy.g = reader.ReadByte();
 							copy.r = reader.ReadByte();
 						}
 					}
 					
-					if( isRun ){
+					if(isRun){
 						row[rx] = copy;
 						
 					}else{
@@ -228,12 +228,12 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 				
 			}else{
 				sPixel * const row = pPixels + pWidth * ry;
-				for( rx=fromX,x=0; x<pWidth; rx+=stepX,x++ ){
-					if( remaining == 0 ){
+				for(rx=fromX,x=0; x<pWidth; rx+=stepX,x++){
+					if(remaining == 0){
 						remaining = reader.ReadByte();
-						isRun = ( remaining & 0x80 ) == 0x80;
-						remaining = ( remaining & 0x7f ) + 1;
-						if( isRun ){
+						isRun = (remaining & 0x80) == 0x80;
+						remaining = (remaining & 0x7f) + 1;
+						if(isRun){
 							copy.b = reader.ReadByte();
 							copy.g = reader.ReadByte();
 							copy.r = reader.ReadByte();
@@ -241,7 +241,7 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 						}
 					}
 					
-					if( isRun ){
+					if(isRun){
 						row[rx] = copy;
 						
 					}else{
@@ -257,17 +257,17 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 		}
 		
 	}else{
-		for( ry=fromY,y=0; y<pHeight; ry+=stepY,y++ ){
-			if( header.bpp == 8 ){
+		for(ry=fromY,y=0; y<pHeight; ry+=stepY,y++){
+			if(header.bpp == 8){
 				sPixel * const row = pPixels + pWidth * ry;
-				for( rx=fromX,x=0; x<pWidth; rx+=stepX,x++ ){
+				for(rx=fromX,x=0; x<pWidth; rx+=stepX,x++){
 					row[rx].b = row[rx].g = row[rx].r = reader.ReadByte();
 					row[rx].a = 255;
 				}
 				
-			}else if( header.bpp == 24 ){
+			}else if(header.bpp == 24){
 				sPixel * const row = pPixels + pWidth * ry;
-				for( rx=fromX,x=0; x<pWidth; rx+=stepX,x++ ){
+				for(rx=fromX,x=0; x<pWidth; rx+=stepX,x++){
 					row[rx].b = reader.ReadByte();
 					row[rx].g = reader.ReadByte();
 					row[rx].r = reader.ReadByte();
@@ -276,7 +276,7 @@ void decTgaImage::pReadTga( decBaseFileReader &reader ){
 				
 			}else{
 				sPixel * const row = pPixels + pWidth * ry;
-				for( rx=fromX,x=0; x<pWidth; rx+=stepX,x++ ){
+				for(rx=fromX,x=0; x<pWidth; rx+=stepX,x++){
 					row[rx].b = reader.ReadByte();
 					row[rx].g = reader.ReadByte();
 					row[rx].r = reader.ReadByte();

@@ -45,8 +45,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMActions( ceWindowMain &windowMain, ceConversation &conversation,
-		eTypes type, const ceConversationActionList &actions );
+	ceWPTTIMActions(ceWindowMain &windowMain, ceConversation &conversation,
+		eTypes type, const ceConversationActionList &actions);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -59,7 +59,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Model with action or \em NULL. */
-	ceWPTTIMAction *GetChildWith( ceConversationAction *action ) const;
+	ceWPTTIMAction *GetChildWith(ceConversationAction *action) const;
 	
 	/** \brief Structure changed. */
 	void StructureChanged();
@@ -78,8 +78,8 @@ public:
 	
 	
 	/** \brief Create action model. */
-	static ceWPTTIMAction *CreateActionModel( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationAction *action );
+	static ceWPTTIMAction *CreateActionModel(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationAction *action);
 	/*@}*/
 };
 

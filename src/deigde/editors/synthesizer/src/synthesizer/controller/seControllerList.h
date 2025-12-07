@@ -47,7 +47,7 @@ public:
 	seControllerList();
 	
 	/** \brief Create copy of controller list. */
-	seControllerList( const seControllerList &copy );
+	seControllerList(const seControllerList &copy);
 	
 	/** \brief Clean up controller list. */
 	~seControllerList();
@@ -64,44 +64,44 @@ public:
 	 * \brief Controller at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	seController *GetAt( int index ) const;
+	seController *GetAt(int index) const;
 	
 	/**
 	 * \brief Controller at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	seController *GetNamed( const char *name ) const;
+	seController *GetNamed(const char *name) const;
 	
 	/**
 	 * \brief Index of controller or -1 if not present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	int IndexOf( seController *controller ) const;
+	int IndexOf(seController *controller) const;
 	
 	/**
 	 * \brief Determine if a controller is present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	bool Has( seController *controller ) const;
+	bool Has(seController *controller) const;
 	
 	/**
 	 * \brief Determine if a controller is present in the list.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	
 	/**
 	 * \brief Add controller.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 */
-	void Add( seController *controller );
+	void Add(seController *controller);
 	
 	/**
 	 * \brief Insert controller.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
-	void Insert( seController *controller, int index );
+	void Insert(seController *controller, int index);
 	
 	/**
 	 * \brief Move controller.
@@ -109,14 +109,14 @@ public:
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
-	void Move( seController *controller, int index );
+	void Move(seController *controller, int index);
 	
 	/**
 	 * \brief Remove controller.
 	 * \throws deeInvalidParam \em controller is \em NULL.
 	 * \throws deeInvalidParam \em controller is not present in the list.
 	 */
-	void Remove( seController *controller );
+	void Remove(seController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAll();
@@ -127,10 +127,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy controller list to this controller list. */
-	seControllerList &operator=( const seControllerList &list );
+	seControllerList &operator=(const seControllerList &list);
 	
 	/** \brief Add controllers from controller list if not present in this controller list. */
-	seControllerList &operator+=( const seControllerList &list );
+	seControllerList &operator+=(const seControllerList &list);
 	/*@}*/
 };
 

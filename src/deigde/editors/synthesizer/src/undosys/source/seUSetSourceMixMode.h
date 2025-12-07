@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceMixMode( seSource *source, deSynthesizerSource::eMixModes newMode );
+	seUSetSourceMixMode(seSource *source, deSynthesizerSource::eMixModes newMode);
 	
 protected:
 	/** \brief Clean up undo action. */

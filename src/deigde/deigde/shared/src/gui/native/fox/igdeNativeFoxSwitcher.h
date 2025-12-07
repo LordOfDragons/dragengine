@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native switcher.
  */
 class igdeNativeFoxSwitcher : public FXSwitcher{
-	FXDECLARE( igdeNativeFoxSwitcher )
+	FXDECLARE(igdeNativeFoxSwitcher)
 	
 protected:
 	igdeNativeFoxSwitcher();
@@ -55,13 +55,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxSwitcher( igdeSwitcher &owner, FXComposite *parent, int layoutFlags );
+	igdeNativeFoxSwitcher(igdeSwitcher &owner, FXComposite *parent, int layoutFlags);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxSwitcher();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxSwitcher* CreateNativeWidget( igdeSwitcher &owner );
+	static igdeNativeFoxSwitcher* CreateNativeWidget(igdeSwitcher &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

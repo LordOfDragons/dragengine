@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWPUndoHistoryListener( peeWPUndoHistory &panel );
+	peeWPUndoHistoryListener(peeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~peeWPUndoHistoryListener();
@@ -53,7 +53,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( peeEmitter *emitter );
+	virtual void UndoChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

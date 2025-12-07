@@ -35,8 +35,8 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxMenuBar ) igdeNativeFoxMenuBarMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxMenuBar::onChildLayoutFlags )
+FXDEFMAP(igdeNativeFoxMenuBar) igdeNativeFoxMenuBarMap[] = {
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxMenuBar::onChildLayoutFlags)
 };
 
 
@@ -44,38 +44,38 @@ FXDEFMAP( igdeNativeFoxMenuBar ) igdeNativeFoxMenuBarMap[] = {
 // Class igdeNativeFoxMenuBar
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxMenuBar, FXMenuBar,
-	igdeNativeFoxMenuBarMap, ARRAYNUMBER( igdeNativeFoxMenuBarMap ) )
+FXIMPLEMENT(igdeNativeFoxMenuBar, FXMenuBar,
+	igdeNativeFoxMenuBarMap, ARRAYNUMBER(igdeNativeFoxMenuBarMap))
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeNativeFoxMenuBar::igdeNativeFoxMenuBar(){ }
+igdeNativeFoxMenuBar::igdeNativeFoxMenuBar(){}
 
-igdeNativeFoxMenuBar::igdeNativeFoxMenuBar( igdeMenuBar &powner, FXComposite *pparent, int layoutFlags ) :
-FXMenuBar( pparent, layoutFlags ),
-pOwner( &powner ){
+igdeNativeFoxMenuBar::igdeNativeFoxMenuBar(igdeMenuBar &powner, FXComposite *pparent, int layoutFlags) :
+FXMenuBar(pparent, layoutFlags),
+pOwner(&powner){
 }
 
 igdeNativeFoxMenuBar::~igdeNativeFoxMenuBar(){
 }
 
-igdeNativeFoxMenuBar *igdeNativeFoxMenuBar::CreateNativeWidget( igdeMenuBar &powner ){
-	if( ! powner.GetParent() ){
-		DETHROW( deeInvalidParam );
+igdeNativeFoxMenuBar *igdeNativeFoxMenuBar::CreateNativeWidget(igdeMenuBar &powner){
+	if(! powner.GetParent()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
-	if( ! pparent ){
-		DETHROW( deeInvalidParam );
+	FXComposite * const pparent = (FXComposite*) powner.GetParent()->GetNativeContainer();
+	if(! pparent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return new igdeNativeFoxMenuBar( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+	return new igdeNativeFoxMenuBar(powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags(&powner));
 }
 
 void igdeNativeFoxMenuBar::PostCreateNativeWidget(){
-	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
-	if( pparent.id() ){
+	FXComposite &pparent = *((FXComposite*)pOwner->GetParent()->GetNativeContainer());
+	if(pparent.id()){
 		create();
 	}
 }
@@ -89,8 +89,8 @@ void igdeNativeFoxMenuBar::DestroyNativeWidget(){
 // Events
 ///////////
 
-long igdeNativeFoxMenuBar::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxMenuBar::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
 	return 1;
 }

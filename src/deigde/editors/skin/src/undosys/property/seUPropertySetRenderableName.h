@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetRenderableName( seProperty *property, const char *newName );
+	seUPropertySetRenderableName(seProperty *property, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

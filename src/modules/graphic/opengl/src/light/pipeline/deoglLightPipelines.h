@@ -96,7 +96,7 @@ protected:
 	const static int ModifiersPerType = emCameraInside << 1;
 	
 	deoglRenderThread &pRenderThread;
-	deoglLightPipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];
+	deoglLightPipeline::Ref pPipelines[TypeCount][ModifiersPerType];
 	bool pPrepared;
 	
 	
@@ -105,7 +105,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipelines( deoglRenderThread &renderThread );
+	deoglLightPipelines(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up light pipeline. */
@@ -118,10 +118,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline with type and modifiers or nullptr. */
-	const deoglLightPipeline *GetWith( eTypes type, int modifiers ) const;
+	const deoglLightPipeline *GetWith(eTypes type, int modifiers) const;
 	
 	/** Pipeline with type and modifiers throwing exception it nullptr. */
-	const deoglLightPipeline &GetWithRef( eTypes type, int modifiers ) const;
+	const deoglLightPipeline &GetWithRef(eTypes type, int modifiers) const;
 	
 	/** Prepare pipelines. */
 	void Prepare(deoglBatchedShaderLoading &batched);

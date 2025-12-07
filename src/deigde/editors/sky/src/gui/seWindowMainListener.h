@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWindowMainListener( seWindowMain &window );
+	seWindowMainListener(seWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWindowMainListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( seSky *sky );
+	virtual void StateChanged(seSky *sky);
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( seSky *sky );
+	virtual void UndoChanged(seSky *sky);
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( seSky *sky );
+	virtual void ViewChanged(seSky *sky);
 	/*@}*/
 };
 

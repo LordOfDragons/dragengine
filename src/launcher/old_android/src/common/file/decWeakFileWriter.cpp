@@ -35,11 +35,11 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decWeakFileWriter::decWeakFileWriter( decBaseFileWriter *writer ) :
-pWriter( writer )
+decWeakFileWriter::decWeakFileWriter(decBaseFileWriter *writer) :
+pWriter(writer)
 {
-	if( ! writer ){
-		DETHROW( deeInvalidParam );
+	if(! writer){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -66,6 +66,6 @@ const char *decWeakFileWriter::GetFilename(){
 	return pWriter->GetFilename();
 }
 
-void decWeakFileWriter::Write( const void *buffer, int size ){
-	pWriter->Write( buffer, size );
+void decWeakFileWriter::Write(const void *buffer, int size){
+	pWriter->Write(buffer, size);
 }

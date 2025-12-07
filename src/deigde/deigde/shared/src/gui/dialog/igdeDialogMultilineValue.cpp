@@ -39,22 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeDialogMultilineValue::igdeDialogMultilineValue( igdeEnvironment &environment,
-	const char *title, const char *message, int rows, int columns ) :
-igdeDialog( environment, title )
+igdeDialogMultilineValue::igdeDialogMultilineValue(igdeEnvironment &environment,
+	const char *title, const char *message, int rows, int columns) :
+igdeDialog(environment, title)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
 	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
 	
-	helper.Label( content, message );
-	helper.EditString( content, "", pEditValue, columns, rows, NULL );
+	helper.Label(content, message);
+	helper.EditString(content, "", pEditValue, columns, rows, NULL);
 	
 	igdeContainer::Ref buttonBar;
-	CreateButtonBar( buttonBar, "Accept", "Discard" );
+	CreateButtonBar(buttonBar, "Accept", "Discard");
 	
-	AddContent( content, buttonBar );
+	AddContent(content, buttonBar);
 }
 
 igdeDialogMultilineValue::~igdeDialogMultilineValue(){
@@ -69,6 +69,6 @@ const decString &igdeDialogMultilineValue::GetValue() const{
 	return pEditValue->GetText();
 }
 
-void igdeDialogMultilineValue::SetValue( const char *value ){
-	pEditValue->SetText( value );
+void igdeDialogMultilineValue::SetValue(const char *value){
+	pEditValue->SetText(value);
 }

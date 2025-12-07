@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFacePoseAdd::ceUCFacePoseAdd( ceConversation *conversation, ceFacePose *facePose ){
-	if( ! conversation || ! facePose ) DETHROW( deeInvalidParam );
+ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *facePose){
+	if(! conversation || ! facePose) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
 	pFacePose = NULL;
 	
-	SetShortInfo( "Add Face Pose" );
+	SetShortInfo("Add Face Pose");
 	
 	pConversation = conversation;
 	conversation->AddReference();
@@ -56,10 +56,10 @@ ceUCFacePoseAdd::ceUCFacePoseAdd( ceConversation *conversation, ceFacePose *face
 }
 
 ceUCFacePoseAdd::~ceUCFacePoseAdd(){
-	if( pFacePose ){
+	if(pFacePose){
 		pFacePose->FreeReference();
 	}
-	if( pConversation ){
+	if(pConversation){
 		pConversation->FreeReference();
 	}
 }
@@ -70,10 +70,10 @@ ceUCFacePoseAdd::~ceUCFacePoseAdd(){
 ///////////////
 
 void ceUCFacePoseAdd::Undo(){
-	pConversation->RemoveFacePose( pFacePose );
+	pConversation->RemoveFacePose(pFacePose);
 }
 
 void ceUCFacePoseAdd::Redo(){
-	pConversation->AddFacePose( pFacePose );
-	pConversation->SetActiveFacePose( pFacePose );
+	pConversation->AddFacePose(pFacePose);
+	pConversation->SetActiveFacePose(pFacePose);
 }

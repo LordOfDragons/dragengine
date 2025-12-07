@@ -120,7 +120,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	gdeWPSOCComponent( gdeWindowProperties &windowMain );
+	gdeWPSOCComponent(gdeWindowProperties &windowMain);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -133,10 +133,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline gdeGameDefinition *GetGameDefinition() const{return pGameDefinition;}
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition( gdeGameDefinition *gameDefinition );
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	
@@ -198,7 +198,7 @@ public:
 	 * Marks the list dirty if the path changed. List will be update only when
 	 * PrepareEngineModelPath() is called to keep performance up.
 	 */
-	void SetEngineModelPath( const char *path );
+	void SetEngineModelPath(const char *path);
 	
 	/**
 	 * \brief Prepare engine model texture list if dirty.
@@ -210,13 +210,13 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline const decObjectList &GetActionsTextureAddFromModel() const{ return pActionsTextureAddFromModel; }
-	inline igdeAction *GetActionTexturePropertyValueSet() const{ return pActionTexturePropertyValueSet; }
-	inline igdeAction *GetActionTexturePropertyValueRemove() const{ return pActionTexturePropertyValueRemove; }
-	inline igdeAction *GetActionTexturePropertyValueClear() const{ return pActionTexturePropertyValueClear; }
+	inline igdeActionContextMenu *GetActionTexturesMenu() const{return pActionTexturesMenu;}
+	inline igdeAction *GetActionTextureAdd() const{return pActionTextureAdd;}
+	inline igdeAction *GetActionTextureRemove() const{return pActionTextureRemove;}
+	inline const decObjectList &GetActionsTextureAddFromModel() const{return pActionsTextureAddFromModel;}
+	inline igdeAction *GetActionTexturePropertyValueSet() const{return pActionTexturePropertyValueSet;}
+	inline igdeAction *GetActionTexturePropertyValueRemove() const{return pActionTexturePropertyValueRemove;}
+	inline igdeAction *GetActionTexturePropertyValueClear() const{return pActionTexturePropertyValueClear;}
 	/*@}*/
 };
 

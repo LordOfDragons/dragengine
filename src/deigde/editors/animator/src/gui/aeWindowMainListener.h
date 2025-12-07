@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWindowMainListener( aeWindowMain &windowMain );
+	aeWindowMainListener(aeWindowMain &windowMain);
 	
 	/** Clean up listener. */
 	virtual ~aeWindowMainListener();
@@ -55,40 +55,40 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( aeAnimator *animator );
+	virtual void StateChanged(aeAnimator *animator);
 	
 	/** Undos changed. */
-	virtual void UndoChanged( aeAnimator *animator );
+	virtual void UndoChanged(aeAnimator *animator);
 	
 	/** Animator changed. */
-	virtual void AnimatorChanged( aeAnimator *animator );
+	virtual void AnimatorChanged(aeAnimator *animator);
 	
 	/** View changed. */
-	virtual void ViewChanged( aeAnimator *animator );
+	virtual void ViewChanged(aeAnimator *animator);
 	
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	virtual void ModelChanged(aeAnimator *animator);
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	virtual void AnimationChanged(aeAnimator *animator);
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( aeAnimator *animator, aeController *controller );
+	virtual void ControllerChanged(aeAnimator *animator, aeController *controller);
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( aeAnimator *animator );
+	virtual void ControllerStructureChanged(aeAnimator *animator);
 	
 	/** Active rule changed. */
-	virtual void ActiveRuleChanged( aeAnimator *animator, aeRule *rule );
+	virtual void ActiveRuleChanged(aeAnimator *animator, aeRule *rule);
 	
 	/** Rule changed. */
-	virtual void RuleChanged( aeAnimator *animator, aeRule *rule );
+	virtual void RuleChanged(aeAnimator *animator, aeRule *rule);
 	
 	/** Rule name changed. */
-	virtual void RuleNameChanged( aeAnimator *animator, aeRule *rule );
+	virtual void RuleNameChanged(aeAnimator *animator, aeRule *rule);
 	
 	/** Rule count or order changed. */
-	virtual void RuleStructureChanged( aeAnimator *animator );
+	virtual void RuleStructureChanged(aeAnimator *animator);
 	/*@}*/
 };
 

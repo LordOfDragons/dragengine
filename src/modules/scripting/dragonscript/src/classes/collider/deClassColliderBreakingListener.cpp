@@ -41,22 +41,22 @@
 /////////////////////
 
 // func void colliderConstraintBroke( Collider owner, int constraint )
-deClassColliderBreakingListener::nfColliderConstraintBroke::nfColliderConstraintBroke( const sInitData &init ) :
-dsFunction( init.clsCBL, "colliderConstraintBroke", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // owner
-	p_AddParameter( init.clsInt ); // constraint
+deClassColliderBreakingListener::nfColliderConstraintBroke::nfColliderConstraintBroke(const sInitData &init) :
+dsFunction(init.clsCBL, "colliderConstraintBroke", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // owner
+	p_AddParameter(init.clsInt); // constraint
 }
-void deClassColliderBreakingListener::nfColliderConstraintBroke::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassColliderBreakingListener::nfColliderConstraintBroke::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 // func void rigConstraintBroke( Collider owner, int bone, int constraint )
-deClassColliderBreakingListener::nfRigConstraintBroke::nfRigConstraintBroke( const sInitData &init ) :
-dsFunction( init.clsCBL, "rigConstraintBroke", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsCol ); // owner
-	p_AddParameter( init.clsInt ); // bone
-	p_AddParameter( init.clsInt ); // constraint
+deClassColliderBreakingListener::nfRigConstraintBroke::nfRigConstraintBroke(const sInitData &init) :
+dsFunction(init.clsCBL, "rigConstraintBroke", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCol); // owner
+	p_AddParameter(init.clsInt); // bone
+	p_AddParameter(init.clsInt); // constraint
 }
-void deClassColliderBreakingListener::nfRigConstraintBroke::RunFunction( dsRunTime *RT, dsValue *This ){
+void deClassColliderBreakingListener::nfRigConstraintBroke::RunFunction(dsRunTime *RT, dsValue *This){
 }
 
 
@@ -67,17 +67,17 @@ void deClassColliderBreakingListener::nfRigConstraintBroke::RunFunction( dsRunTi
 // Constructor
 ////////////////
 
-deClassColliderBreakingListener::deClassColliderBreakingListener( deScriptingDragonScript *ds ) :
-dsClass( "ColliderBreakingListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! ds ){
-		DSTHROW( dueInvalidParam );
+deClassColliderBreakingListener::deClassColliderBreakingListener(deScriptingDragonScript *ds) :
+dsClass("ColliderBreakingListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! ds){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	pDS = ds;
 	
-	GetParserInfo()->SetParent( DENS_SCENERY );
+	GetParserInfo()->SetParent(DENS_SCENERY);
 	
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassColliderBreakingListener::~deClassColliderBreakingListener(){
@@ -88,7 +88,7 @@ deClassColliderBreakingListener::~deClassColliderBreakingListener(){
 // Management
 ///////////////
 
-void deClassColliderBreakingListener::CreateClassMembers( dsEngine *engine ){
+void deClassColliderBreakingListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -100,14 +100,14 @@ void deClassColliderBreakingListener::CreateClassMembers( dsEngine *engine ){
 	init.clsCol = pDS->GetClassCollider();
 	
 	// add functions
-	AddFunction( new nfColliderConstraintBroke( init ) ); // function 0
-	AddFunction( new nfRigConstraintBroke( init ) ); // function 1
+	AddFunction(new nfColliderConstraintBroke(init)); // function 0
+	AddFunction(new nfRigConstraintBroke(init)); // function 1
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function indices for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexColliderConstraintBroke = funcList.GetIndexOf( GetFunction( 0 ) );
-	pFuncIndexRigConstraintBroke = funcList.GetIndexOf( GetFunction( 1 ) );
+	pFuncIndexColliderConstraintBroke = funcList.GetIndexOf(GetFunction(0));
+	pFuncIndexRigConstraintBroke = funcList.GetIndexOf(GetFunction(1));
 }

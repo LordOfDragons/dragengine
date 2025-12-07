@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deMsgdkPendingRequest( const deServiceObject::Ref &data = nullptr );
+	deMsgdkPendingRequest(const deServiceObject::Ref &data = nullptr);
 	
 	/** Delete module. */
 	~deMsgdkPendingRequest() override;

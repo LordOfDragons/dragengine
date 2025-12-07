@@ -42,8 +42,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCEnvMapProbe( gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *envMapProbe, int index );
+	gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
+		gdeOCEnvMapProbe *envMapProbe, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Environment map probe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pEnvMapProbe; }
+	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{return pEnvMapProbe;}
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();
@@ -73,7 +73,7 @@ public:
 	virtual void OnSelected();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 };
 

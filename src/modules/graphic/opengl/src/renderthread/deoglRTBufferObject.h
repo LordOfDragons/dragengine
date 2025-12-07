@@ -121,9 +121,9 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	deoglShapeManager *pShapeManager;
-	deoglSharedVBOList *pSharedVBOListByType[ esvbolCanvasPaint + 1 ];
+	deoglSharedVBOList *pSharedVBOListByType[esvbolCanvasPaint + 1];
 	deoglSharedVBOListList *pSharedVBOListList;
-	deoglSharedSPBList *pSharedSPBList[ esspblSkinTextureSSBO + 1 ];
+	deoglSharedSPBList *pSharedSPBList[esspblSkinTextureSSBO + 1];
 	
 	int pInstanceArraySizeUBO;
 	int pInstanceArraySizeSSBO;
@@ -147,7 +147,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread buffer object related. */
-	deoglRTBufferObject( deoglRenderThread &renderThread );
+	deoglRTBufferObject(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread buffer object related. */
 	~deoglRTBufferObject();
@@ -163,49 +163,49 @@ public:
 	
 	
 	/** Shared vbo list list. */
-	inline deoglSharedVBOListList &GetSharedVBOListList() const{ return *pSharedVBOListList; }
+	inline deoglSharedVBOListList &GetSharedVBOListList() const{return *pSharedVBOListList;}
 	
 	/** Shared vbo list by type. */
-	deoglSharedVBOList &GetSharedVBOListForType( eSharedVBOLists type ) const;
+	deoglSharedVBOList &GetSharedVBOListForType(eSharedVBOLists type) const;
 	
 	/** Shared spb list by type. */
-	deoglSharedSPBList &GetSharedSPBList( eSharedSPBLists type ) const;
+	deoglSharedSPBList &GetSharedSPBList(eSharedSPBLists type) const;
 	
 	/** Maximum size of SPB Instance array or 0 unlimited. */
-	inline int GetInstanceArraySizeUBO() const{ return pInstanceArraySizeUBO; }
+	inline int GetInstanceArraySizeUBO() const{return pInstanceArraySizeUBO;}
 	
 	/** Maximum size of SPB Instance array or 0 unlimited. */
-	inline int GetInstanceArraySizeSSBO() const{ return pInstanceArraySizeSSBO; }
+	inline int GetInstanceArraySizeSSBO() const{return pInstanceArraySizeSSBO;}
 	
 	/** Shared shader parameter block layout for skin instances. */
-	inline const deoglSPBlockUBO::Ref &GetLayoutSkinInstanceUBO() const{ return pLayoutSkinInstanceUBO; }
+	inline const deoglSPBlockUBO::Ref &GetLayoutSkinInstanceUBO() const{return pLayoutSkinInstanceUBO;}
 	
 	/** Shared shader parameter block layout for skin instances. */
-	inline const deoglSPBlockSSBO::Ref &GetLayoutSkinInstanceSSBO() const{ return pLayoutSkinInstanceSSBO; }
+	inline const deoglSPBlockSSBO::Ref &GetLayoutSkinInstanceSSBO() const{return pLayoutSkinInstanceSSBO;}
 	
 	/** Occlusion mesh shared shader parameter block layout for skin instances. */
-	inline const deoglSPBlockUBO::Ref &GetLayoutOccMeshInstanceUBO() const{ return pLayoutOccMeshInstanceUBO; }
+	inline const deoglSPBlockUBO::Ref &GetLayoutOccMeshInstanceUBO() const{return pLayoutOccMeshInstanceUBO;}
 	
 	/** Occlusion Mesh shared shader parameter block layout for skin instances. */
-	inline const deoglSPBlockSSBO::Ref &GetLayoutOccMeshInstanceSSBO() const{ return pLayoutOccMeshInstanceSSBO; }
+	inline const deoglSPBlockSSBO::Ref &GetLayoutOccMeshInstanceSSBO() const{return pLayoutOccMeshInstanceSSBO;}
 	
 	/** Shared shader parameter block layout for skin textures. */
-	inline const deoglSPBlockUBO::Ref &GetLayoutSkinTextureUBO() const{ return pLayoutSkinTextureUBO; }
+	inline const deoglSPBlockUBO::Ref &GetLayoutSkinTextureUBO() const{return pLayoutSkinTextureUBO;}
 	
 	/** Shared shader parameter block layout for skin textures. */
-	inline const deoglSPBlockSSBO::Ref &GetLayoutSkinTextureSSBO() const{ return pLayoutSkinTextureSSBO; }
+	inline const deoglSPBlockSSBO::Ref &GetLayoutSkinTextureSSBO() const{return pLayoutSkinTextureSSBO;}
 	
 	/** Billboard SPB list UBO. */
-	inline deoglSharedSPBListUBO &GetBillboardSPBListUBO() const{ return *pBillboardSPBListUBO; }
+	inline deoglSharedSPBListUBO &GetBillboardSPBListUBO() const{return *pBillboardSPBListUBO;}
 	
 	/** Billboard RTI Groups. */
-	inline deoglSharedSPBRTIGroupList &GetBillboardRTIGroups(){ return pBillboardRTIGroups; }
+	inline deoglSharedSPBRTIGroupList &GetBillboardRTIGroups(){return pBillboardRTIGroups;}
 	
 	/** Shape manager. */
-	inline deoglShapeManager &GetShapeManager() const{ return *pShapeManager; }
+	inline deoglShapeManager &GetShapeManager() const{return *pShapeManager;}
 	
 	/** Temporary vbo data large enough to contain the requested amount of bytes. */
-	char *GetTemporaryVBOData( int size );
+	char *GetTemporaryVBOData(int size);
 	/*@}*/
 	
 private:

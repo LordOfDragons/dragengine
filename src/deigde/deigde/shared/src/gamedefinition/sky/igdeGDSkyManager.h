@@ -63,35 +63,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky list. */
-	inline const igdeGDSkyList &GetSkyList() const{ return pSkyList; }
+	inline const igdeGDSkyList &GetSkyList() const{return pSkyList;}
 	
 	/** \brief Add sky. */
-	void AddSky( igdeGDSky *sky );
+	void AddSky(igdeGDSky *sky);
 	
 	/** \brief Remove sky. */
-	void RemoveSky( igdeGDSky *sky );
+	void RemoveSky(igdeGDSky *sky);
 	
 	/** \brief Remove all skies. */
 	void RemoveAllSkies();
 	
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline igdeGDCategory *GetCategories() const{return pCategories;}
 	
 	/** \brief Path of default sky. */
-	inline const decString &GetDefaultPath() const{ return pDefaultPath; }
+	inline const decString &GetDefaultPath() const{return pDefaultPath;}
 	
 	/** \brief Set path of default sky. */
-	void SetDefaultPath( const char *path );
+	void SetDefaultPath(const char *path);
 	
 	/** \brief Set of path to use to auto-find skies. */
-	inline decStringList &GetAutoFindPath(){ return pAutoFindPath; }
-	inline const decStringList &GetAutoFindPath() const{ return pAutoFindPath; }
+	inline decStringList &GetAutoFindPath(){return pAutoFindPath;}
+	inline const decStringList &GetAutoFindPath() const{return pAutoFindPath;}
 	
 	/** \brief Visit skies matching the given category. */
-	void VisitSkiesMatchingCategory( igdeGDVisitor &visitor, const igdeGDCategory *category ) const;
+	void VisitSkiesMatchingCategory(igdeGDVisitor &visitor, const igdeGDCategory *category) const;
 	
 	/** \brief Visit skins matching filter. */
-	void VisitMatchingFilter( igdeGDVisitor &visitor, const decString &filter ) const;
+	void VisitMatchingFilter(igdeGDVisitor &visitor, const decString &filter) const;
 	
 	/**
 	 * \brief Updates the sky manager using another sky manager.
@@ -99,16 +99,16 @@ public:
 	 * Adds copies of skies in the given sky manager .
 	 * If the sky exists already it is replaced.
 	 */
-	void UpdateWith( const igdeGDSkyManager &manager );
+	void UpdateWith(const igdeGDSkyManager &manager);
 	
 	/**
 	 * \brief Update skin manager with found skins.
 	 */
-	void UpdateWithFound( const igdeGDSkyManager &skyManager );
+	void UpdateWithFound(const igdeGDSkyManager &skyManager);
 	
 	/** \brief Find skies and add them. */
-	void FindAndAddSkies( deVirtualFileSystem &vfs, const decPath &directory,
-		const char *pattern = "*.desky", bool recursive = true );
+	void FindAndAddSkies(deVirtualFileSystem &vfs, const decPath &directory,
+		const char *pattern = "*.desky", bool recursive = true);
 	/*@}*/
 };
 

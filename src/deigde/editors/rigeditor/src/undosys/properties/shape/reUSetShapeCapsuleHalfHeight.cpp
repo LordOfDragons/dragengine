@@ -34,15 +34,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight( reRigShapeCapsule *shape, float halfHeight ){
-	if( ! shape ) DETHROW( deeInvalidParam );
+reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *shape, float halfHeight){
+	if(! shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
 	
 	pOldHalfHeight = shape->GetHalfHeight();
 	pNewHalfHeight = halfHeight;
 	
-	SetShortInfo( "Set Capsule Shape Half Height" );
+	SetShortInfo("Set Capsule Shape Half Height");
 	
 	pShape->AddReference();
 }
@@ -57,9 +57,9 @@ reUSetShapeCapsuleHalfHeight::~reUSetShapeCapsuleHalfHeight(){
 ///////////////
 
 void reUSetShapeCapsuleHalfHeight::Undo(){
-	pShape->SetHalfHeight( pOldHalfHeight );
+	pShape->SetHalfHeight(pOldHalfHeight);
 }
 
 void reUSetShapeCapsuleHalfHeight::Redo(){
-	pShape->SetHalfHeight( pNewHalfHeight );
+	pShape->SetHalfHeight(pNewHalfHeight);
 }

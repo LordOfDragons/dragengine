@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUShapeSetProperty( reRigShape *shape, const char *newProperty );
+	reUShapeSetProperty(reRigShape *shape, const char *newProperty);
 	
 protected:
 	/** \brief Clean up undo. */

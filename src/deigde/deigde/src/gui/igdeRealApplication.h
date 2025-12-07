@@ -55,8 +55,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
-	inline igdeEnvironmentIGDE &GetEnvironment(){ return pEnvironment; }
-	inline const igdeEnvironmentIGDE &GetEnvironment() const{ return pEnvironment; }
+	inline igdeEnvironmentIGDE &GetEnvironment(){return pEnvironment;}
+	inline const igdeEnvironmentIGDE &GetEnvironment() const{return pEnvironment;}
 	
 	/** \brief Main window. */
 	igdeWindowMain &GetWindowMain() const;
@@ -68,7 +68,7 @@ protected:
 	 * \brief Initialize application.
 	 * \returns true to run application or false to abord.
 	 */
-	virtual bool Initialize( const decUnicodeStringList &arguments );
+	virtual bool Initialize(const decUnicodeStringList &arguments);
 	
 	/** \brief Clean up application. */
 	virtual void CleanUp();

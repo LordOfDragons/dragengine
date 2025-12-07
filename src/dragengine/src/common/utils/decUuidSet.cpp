@@ -45,19 +45,19 @@ decUuidSet::decUuidSet(){
 	pUuidSize = 0;
 }
 
-decUuidSet::decUuidSet( const decUuidSet &set ){
+decUuidSet::decUuidSet(const decUuidSet &set){
 	const int count = set.GetCount();
 	
 	pUuids = NULL;
 	pUuidCount = 0;
 	pUuidSize = 0;
 	
-	if( count > 0 ){
-		pUuids = new decUuid[ count ];
+	if(count > 0){
+		pUuids = new decUuid[count];
 		pUuidSize = count;
 		
-		while( pUuidCount < count ){
-			pUuids[ pUuidCount ] = set.GetAt( pUuidCount );
+		while(pUuidCount < count){
+			pUuids[pUuidCount] = set.GetAt(pUuidCount);
 			pUuidCount++;
 		}
 	}
@@ -65,7 +65,7 @@ decUuidSet::decUuidSet( const decUuidSet &set ){
 
 decUuidSet::~decUuidSet(){
 	RemoveAll();
-	if( pUuids ){
+	if(pUuids){
 		delete [] pUuids;
 	}
 }
@@ -75,19 +75,19 @@ decUuidSet::~decUuidSet(){
 // Management
 ///////////////
 
-const decUuid &decUuidSet::GetAt( int index ) const{
-	if( index < 0 || index >= pUuidCount ){
-		DETHROW( deeInvalidParam );
+const decUuid &decUuidSet::GetAt(int index) const{
+	if(index < 0 || index >= pUuidCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pUuids[ index ];
+	return pUuids[index];
 }
 
-int decUuidSet::IndexOf( const decUuid &uuid ) const{
+int decUuidSet::IndexOf(const decUuid &uuid) const{
 	int i;
 	
-	for( i=0; i<pUuidCount; i++ ){
-		if( pUuids[ i ] == uuid ){
+	for(i=0; i<pUuidCount; i++){
+		if(pUuids[i] == uuid){
 			return i;
 		}
 	}
@@ -95,37 +95,37 @@ int decUuidSet::IndexOf( const decUuid &uuid ) const{
 	return -1;
 }
 
-bool decUuidSet::Has( const decUuid &uuid ) const{
-	return IndexOf( uuid ) != -1;
+bool decUuidSet::Has(const decUuid &uuid) const{
+	return IndexOf(uuid) != -1;
 }
 
-void decUuidSet::Add( const decUuid &uuid ){
-	if( Has( uuid ) ){
+void decUuidSet::Add(const decUuid &uuid){
+	if(Has(uuid)){
 		return;
 	}
 	
-	if( pUuidCount == pUuidSize ){
+	if(pUuidCount == pUuidSize){
 		const int newSize = pUuidSize * 3 / 2 + 1;
-		decUuid * const newArray = new decUuid[ newSize ];
-		if( pUuids ){
-			memcpy( newArray, pUuids, sizeof( decUuid ) * pUuidSize );
+		decUuid * const newArray = new decUuid[newSize];
+		if(pUuids){
+			memcpy(newArray, pUuids, sizeof(decUuid) * pUuidSize);
 			delete [] pUuids;
 		}
 		pUuids = newArray;
 		pUuidSize = newSize;
 	}
 	
-	pUuids[ pUuidCount ] = uuid;
+	pUuids[pUuidCount] = uuid;
 	pUuidCount++;
 }
 
-void decUuidSet::Remove( const decUuid &uuid ){
-	const int index = IndexOf( uuid );
+void decUuidSet::Remove(const decUuid &uuid){
+	const int index = IndexOf(uuid);
 	int i;
 	
-	if( index != -1 ){
-		for( i=index+1; i<pUuidCount; i++ ){
-			pUuids[ i - 1 ] = pUuids[ i ];
+	if(index != -1){
+		for(i=index+1; i<pUuidCount; i++){
+			pUuids[i - 1] = pUuids[i];
 		}
 		pUuidCount--;
 	}
@@ -140,31 +140,31 @@ void decUuidSet::RemoveAll(){
 // Operators
 //////////////
 
-const decUuid &decUuidSet::operator[]( int index ) const{
-	return GetAt( index );
+const decUuid &decUuidSet::operator[](int index) const{
+	return GetAt(index);
 }
 
-decUuidSet &decUuidSet::operator=( const decUuidSet &set ){
+decUuidSet &decUuidSet::operator=(const decUuidSet &set){
 	const int count = set.GetCount();
 	int i;
 	
 	RemoveAll();
-	for( i=0; i<count; i++ ){
-		Add( set.GetAt( i ) ); // hard coding this call would remove the HasUuid checks
+	for(i=0; i<count; i++){
+		Add(set.GetAt(i)); // hard coding this call would remove the HasUuid checks
 	}
 	
 	return *this;
 }
 
-bool decUuidSet::operator==( const decUuidSet &set ) const{
+bool decUuidSet::operator==(const decUuidSet &set) const{
 	int i;
 	
-	if( set.GetCount() != pUuidCount ){
+	if(set.GetCount() != pUuidCount){
 		return false;
 	}
 	
-	for( i=0; i<pUuidCount; i++ ){
-		if( ! set.Has( pUuids[ i ] ) ){
+	for(i=0; i<pUuidCount; i++){
+		if(! set.Has(pUuids[i])){
 			return false;
 		}
 	}
@@ -172,43 +172,43 @@ bool decUuidSet::operator==( const decUuidSet &set ) const{
 	return true;
 }
 
-bool decUuidSet::operator!=( const decUuidSet &set ) const{
-	return ! ( *this == set );
+bool decUuidSet::operator!=(const decUuidSet &set) const{
+	return ! (*this == set);
 }
 
-decUuidSet decUuidSet::operator+( const decUuidSet &set ) const{
+decUuidSet decUuidSet::operator+(const decUuidSet &set) const{
 	const int count = set.GetCount();
-	decUuidSet newSet( *this );
+	decUuidSet newSet(*this);
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		newSet.Add( set.GetAt( i ) );
+	for(i=0; i<count; i++){
+		newSet.Add(set.GetAt(i));
 	}
 	
 	return newSet;
 }
 
-decUuidSet &decUuidSet::operator+=( const decUuidSet &set ){
+decUuidSet &decUuidSet::operator+=(const decUuidSet &set){
 	const int count = set.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		Add( set.GetAt( i ) );
+	for(i=0; i<count; i++){
+		Add(set.GetAt(i));
 	}
 	
 	return *this;
 }
 
-decUuidSet decUuidSet::operator+( const decUuid &uuid ) const{
-	decUuidSet newList( *this );
+decUuidSet decUuidSet::operator+(const decUuid &uuid) const{
+	decUuidSet newList(*this);
 	
-	newList.Add( uuid );
+	newList.Add(uuid);
 	
 	return newList;
 }
 
-decUuidSet &decUuidSet::operator+=( const decUuid &uuid ){
-	Add( uuid );
+decUuidSet &decUuidSet::operator+=(const decUuid &uuid){
+	Add(uuid);
 	
 	return *this;
 }

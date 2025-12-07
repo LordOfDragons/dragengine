@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetPathPatternType( gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePathPatternTypes newValue );
+	gdeUGDDPSetPathPatternType(gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePathPatternTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

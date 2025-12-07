@@ -33,12 +33,12 @@
 // class devkDescriptorPoolSlot
 /////////////////////////////////
 
-devkDescriptorPoolSlot::devkDescriptorPoolSlot( devkDescriptorPoolPool &pool, VkDescriptorSet set ) :
-pPool( pool ),
-pSet( set )
+devkDescriptorPoolSlot::devkDescriptorPoolSlot(devkDescriptorPoolPool &pool, VkDescriptorSet set) :
+pPool(pool),
+pSet(set)
 {
-	if( ! set ){
-		DETHROW_INFO( deeNullPointer, "set" );
+	if(! set){
+		DETHROW_INFO(deeNullPointer, "set");
 	}
 }
 
@@ -52,5 +52,5 @@ devkDescriptorPoolSlot::~devkDescriptorPoolSlot(){
 ///////////////
 
 void devkDescriptorPoolSlot::ReturnToPool(){
-	pPool.Return( this );
+	pPool.Return(this);
 }

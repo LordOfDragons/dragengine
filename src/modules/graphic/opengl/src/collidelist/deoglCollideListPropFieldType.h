@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */
-	deoglCollideListPropFieldType( deoglCollideListPropField &propField );
+	deoglCollideListPropFieldType(deoglCollideListPropField &propField);
 	
 	/** Clean up prop field type. */
 	~deoglCollideListPropFieldType();
@@ -67,24 +67,24 @@ public:
 	void Clear();
 	
 	/** Start occlusion test. */
-	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decVector &offset );
+	void StartOcclusionTest(deoglOcclusionTest &occlusionTest, const decVector &offset);
 	
 	
 	
 	/** Type. */
-	inline deoglRPropFieldType *GetType() const{ return pType; }
+	inline deoglRPropFieldType *GetType() const{return pType;}
 	
 	/** Set type. */
-	void SetType( deoglRPropFieldType *type );
+	void SetType(deoglRPropFieldType *type);
 	
 	/** Count of clusters. */
-	inline int GetClusterCount() const{ return pClusterCount; }
+	inline int GetClusterCount() const{return pClusterCount;}
 	
 	/** Cluster at index. */
-	deoglCollideListPropFieldCluster &GetClusterAt( int index ) const;
+	deoglCollideListPropFieldCluster &GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	deoglCollideListPropFieldCluster *AddCluster( deoglPropFieldCluster *cluster );
+	deoglCollideListPropFieldCluster *AddCluster(deoglPropFieldCluster *cluster);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();
@@ -95,10 +95,10 @@ public:
 	
 	
 	/** Prop field type is empty. */
-	inline bool GetIsEmpty() const{ return pClusterCount == 0; }
+	inline bool GetIsEmpty() const{return pClusterCount == 0;}
 	
 	/** Prop field type is not empty. */
-	inline bool GetIsNotEmpty() const{ return pClusterCount > 0; }
+	inline bool GetIsNotEmpty() const{return pClusterCount > 0;}
 	/*@}*/
 };
 

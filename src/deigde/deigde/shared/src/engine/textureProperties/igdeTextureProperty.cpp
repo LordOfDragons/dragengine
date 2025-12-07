@@ -37,9 +37,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeTextureProperty::igdeTextureProperty( const char *name ){
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+igdeTextureProperty::igdeTextureProperty(const char *name){
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -56,34 +56,34 @@ igdeTextureProperty::~igdeTextureProperty(){
 // Management
 ///////////////
 
-void igdeTextureProperty::SetType( ePropertyTypes type ){
-	if( type < eptValue || type > eptImage ){
-		DETHROW( deeInvalidParam );
+void igdeTextureProperty::SetType(ePropertyTypes type){
+	if(type < eptValue || type > eptImage){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pType = type;
 }
 
-void igdeTextureProperty::SetDescription( const char *description ){
-	if( ! description ){
-		DETHROW( deeInvalidParam );
+void igdeTextureProperty::SetDescription(const char *description){
+	if(! description){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDescription = description;
 }
 
-void igdeTextureProperty::SetComponentCount( int count ){
-	if( count < 1 || count > 4 ){
-		DETHROW( deeInvalidParam );
+void igdeTextureProperty::SetComponentCount(int count){
+	if(count < 1 || count > 4){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pComponentCount = count;
 }
 
-void igdeTextureProperty::SetDefaultValue( float value ){
+void igdeTextureProperty::SetDefaultValue(float value){
 	pDefaultValue = value;
 }
 
-void igdeTextureProperty::SetDefaultColor( const decColor &color ){
+void igdeTextureProperty::SetDefaultColor(const decColor &color){
 	pDefaultColor = color;
 }

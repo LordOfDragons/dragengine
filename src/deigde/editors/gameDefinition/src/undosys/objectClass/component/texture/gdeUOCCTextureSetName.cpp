@@ -41,17 +41,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetName::gdeUOCCTextureSetName( gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL ),
-pTexture( NULL )
+gdeUOCCTextureSetName::gdeUOCCTextureSetName(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture* texture, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL),
+pTexture(NULL)
 {
-	if( ! objectClass || ! component || ! texture ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component || ! texture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component texture set name" );
+	SetShortInfo("Component texture set name");
 	
 	pOldValue = texture->GetName();
 	pNewValue = newValue;
@@ -67,13 +67,13 @@ pTexture( NULL )
 }
 
 gdeUOCCTextureSetName::~gdeUOCCTextureSetName(){
-	if( pTexture ){
+	if(pTexture){
 		pTexture->FreeReference();
 	}
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -84,11 +84,11 @@ gdeUOCCTextureSetName::~gdeUOCCTextureSetName(){
 ///////////////
 
 void gdeUOCCTextureSetName::Undo(){
-	pTexture->SetName( pOldValue );
-	pObjectClass->NotifyComponentTextureNameChanged( pComponent, pTexture );
+	pTexture->SetName(pOldValue);
+	pObjectClass->NotifyComponentTextureNameChanged(pComponent, pTexture);
 }
 
 void gdeUOCCTextureSetName::Redo(){
-	pTexture->SetName( pNewValue );
-	pObjectClass->NotifyComponentTextureNameChanged( pComponent, pTexture );
+	pTexture->SetName(pNewValue);
+	pObjectClass->NotifyComponentTextureNameChanged(pComponent, pTexture);
 }

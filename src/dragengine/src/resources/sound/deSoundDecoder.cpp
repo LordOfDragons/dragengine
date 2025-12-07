@@ -39,22 +39,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSoundDecoder::deSoundDecoder( deSoundManager &manager, deSound *sound ) :
-pSoundManager( manager ),
-pSound( sound ),
-pPeerSound( NULL ),
-pLLManagerPrev( NULL ),
-pLLManagerNext( NULL )
+deSoundDecoder::deSoundDecoder(deSoundManager &manager, deSound *sound) :
+pSoundManager(manager),
+pSound(sound),
+pPeerSound(NULL),
+pLLManagerPrev(NULL),
+pLLManagerNext(NULL)
 {
-	if( ! sound ){
-		DETHROW( deeInvalidParam );
+	if(! sound){
+		DETHROW(deeInvalidParam);
 	}
 }
 
 deSoundDecoder::~deSoundDecoder(){
-	SetPeerSound( NULL );
+	SetPeerSound(NULL);
 	
-	pSoundManager.RemoveDecoder( this );
+	pSoundManager.RemoveDecoder(this);
 }
 
 
@@ -63,27 +63,27 @@ deSoundDecoder::~deSoundDecoder(){
 ///////////////
 
 int deSoundDecoder::GetPosition(){
-	if( ! pPeerSound ){
-		DETHROW( deeInvalidParam );
+	if(! pPeerSound){
+		DETHROW(deeInvalidParam);
 	}
 	
 	return pPeerSound->GetPosition();
 }
 
-void deSoundDecoder::SetPosition( int position ){
-	if( ! pPeerSound ){
-		DETHROW( deeInvalidParam );
+void deSoundDecoder::SetPosition(int position){
+	if(! pPeerSound){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPeerSound->SetPosition( position );
+	pPeerSound->SetPosition(position);
 }
 
-int deSoundDecoder::ReadSamples( void *buffer, int size ){
-	if( ! pPeerSound ){
-		DETHROW( deeInvalidParam );
+int deSoundDecoder::ReadSamples(void *buffer, int size){
+	if(! pPeerSound){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pPeerSound->ReadSamples( buffer, size );
+	return pPeerSound->ReadSamples(buffer, size);
 }
 
 
@@ -91,22 +91,22 @@ int deSoundDecoder::ReadSamples( void *buffer, int size ){
 // System Peers
 /////////////////
 
-void deSoundDecoder::SetPeerSound( deBaseSoundDecoder *peer ){
-	if( peer == pPeerSound ){
+void deSoundDecoder::SetPeerSound(deBaseSoundDecoder *peer){
+	if(peer == pPeerSound){
 		return;
 	}
 	
-	if( pPeerSound ){
+	if(pPeerSound){
 		delete pPeerSound;
 	}
 	pPeerSound = peer;
 }
 
-void deSoundDecoder::SetLLManagerNext( deSoundDecoder *resource ){
+void deSoundDecoder::SetLLManagerNext(deSoundDecoder *resource){
 	pLLManagerNext = resource;
 }
 
-void deSoundDecoder::SetLLManagerPrev( deSoundDecoder *resource ){
+void deSoundDecoder::SetLLManagerPrev(deSoundDecoder *resource){
 	pLLManagerPrev = resource;
 }
 

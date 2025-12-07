@@ -55,38 +55,38 @@ int seBodyList::GetCount() const{
 	return pBodies.GetCount();
 }
 
-seBody *seBodyList::GetAt( int index ) const{
-	return ( seBody* )pBodies.GetAt( index );
+seBody *seBodyList::GetAt(int index) const{
+	return (seBody*)pBodies.GetAt(index);
 }
 
-int seBodyList::IndexOf( seBody *body ) const{
-	return pBodies.IndexOf( body );
+int seBodyList::IndexOf(seBody *body) const{
+	return pBodies.IndexOf(body);
 }
 
-bool seBodyList::Has( seBody *body ) const{
-	return pBodies.Has( body );
+bool seBodyList::Has(seBody *body) const{
+	return pBodies.Has(body);
 }
 
-void seBodyList::Add( seBody *body ){
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+void seBodyList::Add(seBody *body){
+	if(! body){
+		DETHROW(deeInvalidParam);
 	}
-	pBodies.Add( body );
+	pBodies.Add(body);
 }
 
-void seBodyList::InsertAt( seBody *body, int index ){
-	if( ! body ){
-		DETHROW( deeInvalidParam );
+void seBodyList::InsertAt(seBody *body, int index){
+	if(! body){
+		DETHROW(deeInvalidParam);
 	}
-	pBodies.Insert( body, index );
+	pBodies.Insert(body, index);
 }
 
-void seBodyList::MoveTo( seBody *body, int index ){
-	pBodies.Move( body, index );
+void seBodyList::MoveTo(seBody *body, int index){
+	pBodies.Move(body, index);
 }
 
-void seBodyList::Remove( seBody *body ){
-	pBodies.Remove( body );
+void seBodyList::Remove(seBody *body){
+	pBodies.Remove(body);
 }
 
 void seBodyList::RemoveAll(){
@@ -95,7 +95,7 @@ void seBodyList::RemoveAll(){
 
 
 
-seBodyList &seBodyList::operator=( const seBodyList &list ){
+seBodyList &seBodyList::operator=(const seBodyList &list){
 	pBodies = list.pBodies;
 	return *this;
 }

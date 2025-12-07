@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetName::peeUControllerSetName( peeController *controller, const char *newName ){
-	if( ! controller || ! newName ) DETHROW( deeInvalidParam );
+peeUControllerSetName::peeUControllerSetName(peeController *controller, const char *newName){
+	if(! controller || ! newName) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
 	
-	SetShortInfo( "Set Controller Name" );
+	SetShortInfo("Set Controller Name");
 	
 	pOldName = controller->GetName();
 	pNewName = newName;
@@ -54,7 +54,7 @@ peeUControllerSetName::peeUControllerSetName( peeController *controller, const c
 }
 
 peeUControllerSetName::~peeUControllerSetName(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ peeUControllerSetName::~peeUControllerSetName(){
 ///////////////
 
 void peeUControllerSetName::Undo(){
-	pController->SetName( pOldName.GetString() );
+	pController->SetName(pOldName.GetString());
 }
 
 void peeUControllerSetName::Redo(){
-	pController->SetName( pNewName.GetString() );
+	pController->SetName(pNewName.GetString());
 }

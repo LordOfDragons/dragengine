@@ -39,16 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPBrightness::deoglPBrightness( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "brightness" );
-	SetDescription( "Brightness correction." );
-	SetType( deModuleParameter::eptRanged );
-	SetMinimumValue( -0.5f );
-	SetMaximumValue( 0.5f );
-	SetValueStepSize( 0.05f );
-	SetDisplayName( "Brightness" );
-	SetCategory( ecAdvanced );
-	SetDefaultValue( "0" );
+deoglPBrightness::deoglPBrightness(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("brightness");
+	SetDescription("Brightness correction.");
+	SetType(deModuleParameter::eptRanged);
+	SetMinimumValue(-0.5f);
+	SetMaximumValue(0.5f);
+	SetValueStepSize(0.05f);
+	SetDisplayName("Brightness");
+	SetCategory(ecAdvanced);
+	SetDefaultValue("0");
 }
 
 deoglPBrightness::~deoglPBrightness(){
@@ -63,6 +63,6 @@ float deoglPBrightness::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetBrightness();
 }
 
-void deoglPBrightness::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetBrightness( value );
+void deoglPBrightness::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetBrightness(value);
 }

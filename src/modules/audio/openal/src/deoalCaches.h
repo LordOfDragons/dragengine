@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create caches. */
-	deoalCaches( deoalAudioThread &audioThread );
+	deoalCaches(deoalAudioThread &audioThread);
 	
 	/** \brief Cleans up caches. */
 	~deoalCaches();
@@ -65,7 +65,7 @@ public:
 	void Unlock();
 	
 	/** \brief Sound cache. */
-	inline deCacheHelper &GetSound() const{ return *pSound; }
+	inline deCacheHelper &GetSound() const{return *pSound;}
 	
 	
 	

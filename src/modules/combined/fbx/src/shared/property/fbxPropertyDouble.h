@@ -45,7 +45,7 @@ public:
 	fbxPropertyDouble();
 	
 	/** \brief Load property. */
-	fbxPropertyDouble( decBaseFileReader &reader );
+	fbxPropertyDouble(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
@@ -58,10 +58,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value. */
-	inline double GetValue() const{ return pValue; }
+	inline double GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( double value );
+	void SetValue(double value);
 	
 	/** \brief Casting throwing exception if wrong type. */
 	virtual fbxPropertyDouble &CastDouble();
@@ -76,10 +76,10 @@ public:
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	virtual void Save(decBaseFileWriter &writer);
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;
 	/*@}*/
 };
 

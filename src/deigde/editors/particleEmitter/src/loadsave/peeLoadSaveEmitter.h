@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	peeLoadSaveEmitter( peeLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource );
+	peeLoadSaveEmitter(peeLoadSaveSystem *lssys, deLogger *logger, const char *loggerSource);
 	/*@}*/
 	
 	
@@ -65,33 +65,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Pattern. */
-	inline const decString &GetPattern() const{ return pPattern; }
+	inline const decString &GetPattern() const{return pPattern;}
 	
 	
 	
 	/** \brief Load emitter from file. */
-	void LoadEmitter( peeLoadSaveSystem &lssys, peeEmitter &emitter, decBaseFileReader &reader );
+	void LoadEmitter(peeLoadSaveSystem &lssys, peeEmitter &emitter, decBaseFileReader &reader);
 	
 	/** \brief Save emitter to file. */
-	void SaveEmitter( peeLoadSaveSystem &lssys, const peeEmitter &emitter, decBaseFileWriter &writer );
+	void SaveEmitter(peeLoadSaveSystem &lssys, const peeEmitter &emitter, decBaseFileWriter &writer);
 	/*@}*/
 	
 	
 	
 private:
-	void pWriteEmitter( decXmlWriter &writer, const peeEmitter &emitter );
-	void pWriteController( decXmlWriter &writer, const peeController &controller );
-	void pWriteType( decXmlWriter &writer, const peeEmitter &emitter, const peeType &type );
-	void pWriteParameter( decXmlWriter &writer, const peeEmitter &emitter, const peeType &type,
-		deParticleEmitterType::eParameters parameterType, const char *name );
+	void pWriteEmitter(decXmlWriter &writer, const peeEmitter &emitter);
+	void pWriteController(decXmlWriter &writer, const peeController &controller);
+	void pWriteType(decXmlWriter &writer, const peeEmitter &emitter, const peeType &type);
+	void pWriteParameter(decXmlWriter &writer, const peeEmitter &emitter, const peeType &type,
+		deParticleEmitterType::eParameters parameterType, const char *name);
 	
-	void pReadEmitter( const decXmlElementTag &root, peeEmitter &emitter );
-	void pReadController( const decXmlElementTag &root, peeEmitter &emitter );
-	void pReadType( const decXmlElementTag &root, peeEmitter &emitter );
-	void pReadParameter( const decXmlElementTag &root, peeEmitter &emitter, peeType &type );
+	void pReadEmitter(const decXmlElementTag &root, peeEmitter &emitter);
+	void pReadController(const decXmlElementTag &root, peeEmitter &emitter);
+	void pReadType(const decXmlElementTag &root, peeEmitter &emitter);
+	void pReadParameter(const decXmlElementTag &root, peeEmitter &emitter, peeType &type);
 };
 
 #endif

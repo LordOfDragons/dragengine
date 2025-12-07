@@ -42,29 +42,29 @@
 ////////////////////////////
 
 seUSourceGroupPasteSource::seUSourceGroupPasteSource(
-seSourceGroup *group, const seSourceList &sourceList, int index ) :
-pGroup( NULL ),
-pIndex( index )
+seSourceGroup *group, const seSourceList &sourceList, int index) :
+pGroup(NULL),
+pIndex(index)
 {
 	const int sourceCount = sourceList.GetCount();
 	
-	if( ! group || sourceCount == 0 ){
-		DETHROW( deeInvalidParam );
+	if(! group || sourceCount == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	seSource *source = NULL;
 	int i;
 	
 	try{
-		for( i=0; i<sourceCount; i++ ){
-			source = sourceList.GetAt( i )->CreateCopy();
-			pSourceList.Add( source );
+		for(i=0; i<sourceCount; i++){
+			source = sourceList.GetAt(i)->CreateCopy();
+			pSourceList.Add(source);
 			source->FreeReference();
 			source = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( source ){
+	}catch(const deException &){
+		if(source){
 			source->FreeReference();
 		}
 		throw;
@@ -75,7 +75,7 @@ pIndex( index )
 }
 
 seUSourceGroupPasteSource::~seUSourceGroupPasteSource(){
-	if( pGroup ){
+	if(pGroup){
 		pGroup->FreeReference();
 	}
 }
@@ -89,26 +89,26 @@ void seUSourceGroupPasteSource::Undo(){
 	const int sourceCount = pSourceList.GetCount();
 	int i;
 	
-	for( i=0; i<sourceCount; i++ ){
-		pGroup->RemoveSource( pSourceList.GetAt( i ) );
+	for(i=0; i<sourceCount; i++){
+		pGroup->RemoveSource(pSourceList.GetAt(i));
 	}
 	
 	// remove links added in a prior redo
 	seSynthesizer * const synthesizer = pGroup->GetSynthesizer();
 	
-	if( synthesizer ){
+	if(synthesizer){
 		const int linkCount = pRemoveLinkList.GetCount();
-		for( i=0; i<linkCount; i++ ){
-			synthesizer->RemoveLink( pRemoveLinkList.GetAt( i ) );
+		for(i=0; i<linkCount; i++){
+			synthesizer->RemoveLink(pRemoveLinkList.GetAt(i));
 		}
 		pRemoveLinkList.RemoveAll();
 	}
 	
 	// remove controller added in a prior redo
-	if( synthesizer ){
+	if(synthesizer){
 		const int controllerCount = pRemoveControllerList.GetCount();
-		for( i=0; i<controllerCount; i++ ){
-			synthesizer->RemoveController( pRemoveControllerList.GetAt( i ) );
+		for(i=0; i<controllerCount; i++){
+			synthesizer->RemoveController(pRemoveControllerList.GetAt(i));
 		}
 		pRemoveControllerList.RemoveAll();
 	}
@@ -121,31 +121,31 @@ void seUSourceGroupPasteSource::Redo(){
 	
 	pRemoveLinkList.RemoveAll();
 	
-	for( i=0; i<sourceCount; i++ ){
-		seSource * const source = pSourceList.GetAt( i );
+	for(i=0; i<sourceCount; i++){
+		seSource * const source = pSourceList.GetAt(i);
 		
 		// check if links exist in the synthesizer. if not add them and mark them to remove during undo
-		if( synthesizer ){
+		if(synthesizer){
 			seLinkList linkList;
-			source->ListLinks( linkList );
+			source->ListLinks(linkList);
 			
 			const int linkCount = linkList.GetCount();
-			for( j=0; j<linkCount; j++ ){
-				seLink * const link = linkList.GetAt( j );
-				if( ! synthesizer->GetLinks().Has( link ) ){
+			for(j=0; j<linkCount; j++){
+				seLink * const link = linkList.GetAt(j);
+				if(! synthesizer->GetLinks().Has(link)){
 					seController * const controller = link->GetController();
-					if( controller && ! synthesizer->GetControllers().Has( controller ) ){
-						pRemoveControllerList.Add( controller );
-						synthesizer->AddController( controller );
+					if(controller && ! synthesizer->GetControllers().Has(controller)){
+						pRemoveControllerList.Add(controller);
+						synthesizer->AddController(controller);
 					}
 					
-					pRemoveLinkList.Add( link );
-					synthesizer->AddLink( link );
+					pRemoveLinkList.Add(link);
+					synthesizer->AddLink(link);
 				}
 			}
 		}
 		
 		// insert the source
-		pGroup->InsertSourceAt( source, pIndex + i );
+		pGroup->InsertSourceAt(source, pIndex + i);
 	}
 }

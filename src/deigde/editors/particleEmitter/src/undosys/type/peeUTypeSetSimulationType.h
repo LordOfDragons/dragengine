@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetSimulationType( peeType *type, deParticleEmitterType::eSimulationTypes newSimType );
+	peeUTypeSetSimulationType(peeType *type, deParticleEmitterType::eSimulationTypes newSimType);
 	
 protected:
 	/** \brief Clean up undo action. */

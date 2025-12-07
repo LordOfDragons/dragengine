@@ -45,7 +45,7 @@ public:
 	/** Creates a new music conversation action. */
 	ceCAMusic();
 	/** Creates a new music conversation action. */
-	ceCAMusic( const ceCAMusic &action );
+	ceCAMusic(const ceCAMusic &action);
 	/** Cleans up the music conversation action. */
 	virtual ~ceCAMusic();
 	/*@}*/
@@ -53,9 +53,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the name of the music to use. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Sets the name of the music to use. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** Create a copy of this action. */
     virtual ceConversationAction *CreateCopy() const;

@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPDebugShowCB::deoglPDebugShowCB( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "debugShowCB" );
-	SetDescription( "Shows Collision Boxes around Components" );
-	SetCategory( ecExpert );
+deoglPDebugShowCB::deoglPDebugShowCB(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("debugShowCB");
+	SetDescription("Shows Collision Boxes around Components");
+	SetCategory(ecExpert);
 }
 
 deoglPDebugShowCB::~deoglPDebugShowCB(){
@@ -57,6 +57,6 @@ bool deoglPDebugShowCB::GetParameterBool(){
 	return pOgl.GetConfiguration().GetDebugShowCB();
 }
 
-void deoglPDebugShowCB::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetDebugShowCB( value );
+void deoglPDebugShowCB::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetDebugShowCB(value);
 }

@@ -47,7 +47,7 @@ public:
 	igdeGameDefinitionList();
 	
 	/** \brief Create copy of game definition list. */
-	igdeGameDefinitionList( const igdeGameDefinitionList &list );
+	igdeGameDefinitionList(const igdeGameDefinitionList &list);
 	
 	/** \brief Clean up game definition list. */
 	~igdeGameDefinitionList();
@@ -61,25 +61,25 @@ public:
 	int GetCount() const;
 	
 	/** \brief Game definition at index. */
-	igdeGameDefinition *GetAt( int index ) const;
+	igdeGameDefinition *GetAt(int index) const;
 	
 	/** \brief Game definition with identifier or NULL if absent. */
-	igdeGameDefinition *GetWithID( const char *id ) const;
+	igdeGameDefinition *GetWithID(const char *id) const;
 	
 	/** \brief Index of game definition or -1 if absent. */
-	int IndexOf( igdeGameDefinition *gameDefinition ) const;
+	int IndexOf(igdeGameDefinition *gameDefinition) const;
 	
 	/** \brief Game definition is present. */
-	bool Has( igdeGameDefinition *gameDefinition ) const;
+	bool Has(igdeGameDefinition *gameDefinition) const;
 	
 	/** \brief Game definition with identifier is present. */
-	bool HasWithID( const char *id ) const;
+	bool HasWithID(const char *id) const;
 	
 	/** \brief Add game definition. */
-	void Add( igdeGameDefinition *gameDefinition );
+	void Add(igdeGameDefinition *gameDefinition);
 	
 	/** \brief Remove game definition. */
-	void Remove( igdeGameDefinition *gameDefinition );
+	void Remove(igdeGameDefinition *gameDefinition);
 	
 	/** \brief Remove all game definitions. */
 	void RemoveAll();
@@ -90,7 +90,7 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Copy list. */
-	igdeGameDefinitionList &operator=( const igdeGameDefinitionList &list );
+	igdeGameDefinitionList &operator=(const igdeGameDefinitionList &list);
 	/*@}*/
 };
 

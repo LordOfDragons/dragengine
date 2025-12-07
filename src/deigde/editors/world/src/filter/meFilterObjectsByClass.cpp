@@ -48,7 +48,7 @@ meFilterObjectsByClass::meFilterObjectsByClass(){
 }
 
 meFilterObjectsByClass::~meFilterObjectsByClass(){
-	if( pRejectObject ) pRejectObject->FreeReference();
+	if(pRejectObject) pRejectObject->FreeReference();
 	RemoveAllClassNames();
 }
 
@@ -57,60 +57,60 @@ meFilterObjectsByClass::~meFilterObjectsByClass(){
 // Management
 ///////////////
 
-void meFilterObjectsByClass::SetMatchInclusive( bool matchInclusive ){
+void meFilterObjectsByClass::SetMatchInclusive(bool matchInclusive){
 	pMatchInclusive = matchInclusive;
 }
 
-void meFilterObjectsByClass::SetRejectGhosts( bool rejectGhosts ){
+void meFilterObjectsByClass::SetRejectGhosts(bool rejectGhosts){
 	pRejectGhosts = rejectGhosts;
 }
 
-void meFilterObjectsByClass::SetRejectObject( meObject *object ){
-	if( object != pRejectObject ){
-		if( pRejectObject ) pRejectObject->FreeReference();
+void meFilterObjectsByClass::SetRejectObject(meObject *object){
+	if(object != pRejectObject){
+		if(pRejectObject) pRejectObject->FreeReference();
 		
 		pRejectObject = object;
 		
-		if( object ) object->AddReference();
+		if(object) object->AddReference();
 	}
 }
 
 
 
-void meFilterObjectsByClass::AddClassName( const char *className ){
-	pClassNames.Add( className );
+void meFilterObjectsByClass::AddClassName(const char *className){
+	pClassNames.Add(className);
 }
 
 void meFilterObjectsByClass::RemoveAllClassNames(){
 	pClassNames.RemoveAll();
 }
 
-void meFilterObjectsByClass::SetClassNamesFrom( const decStringSet &set ){
+void meFilterObjectsByClass::SetClassNamesFrom(const decStringSet &set){
 	pClassNames = set;
 }
 
 
 
-bool meFilterObjectsByClass::AcceptObject( meObject *object ) const{
-	if( ! object ) DETHROW( deeInvalidParam );
+bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
+	if(! object) DETHROW(deeInvalidParam);
 	
 	const decString &objclass = object->GetClassName();
 	int c, count = pClassNames.GetCount();
 	
 	// reject if matching the given object
-	if( object == pRejectObject ) return false;
+	if(object == pRejectObject) return false;
 	
 	// reject if this is a ghost object
-	if( pRejectGhosts ){
+	if(pRejectGhosts){
 		const igdeGDClass *gdclass = object->GetGDClass();
-		if( gdclass && ( gdclass->GetIsGhost() || ! gdclass->GetCanInstantiate() ) ){
+		if(gdclass && (gdclass->GetIsGhost() || ! gdclass->GetCanInstantiate())){
 			return false;
 		}
 	}
 	
 	// accept or reject according to class
-	for( c=0; c<count; c++ ){
-		if( objclass.MatchesPattern( pClassNames.GetAt( c )  ) ){
+	for(c=0; c<count; c++){
+		if(objclass.MatchesPattern(pClassNames.GetAt(c))){
 			return pMatchInclusive;
 		}
 	}

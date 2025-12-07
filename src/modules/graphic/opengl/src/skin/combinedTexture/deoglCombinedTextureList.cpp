@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCombinedTextureList::deoglCombinedTextureList( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pRoot( NULL ),
-pTail( NULL ),
-pCount( 0 ){
+deoglCombinedTextureList::deoglCombinedTextureList(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pRoot(NULL),
+pTail(NULL),
+pCount(0){
 }
 
 deoglCombinedTextureList::~deoglCombinedTextureList(){
-	while( pRoot ){
+	while(pRoot){
 		pTail = pRoot;
 		pRoot = pRoot->GetLLNext();
 		delete pTail;
@@ -60,12 +60,12 @@ deoglCombinedTextureList::~deoglCombinedTextureList(){
 // Management
 ///////////////
 
-deoglCombinedTexture *deoglCombinedTextureList::GetWith( const decColor &color, deoglRImage *images[ 4 ] ){
+deoglCombinedTexture *deoglCombinedTextureList::GetWith(const decColor &color, deoglRImage *images[4]){
 	deoglCombinedTexture *combinedTexture = pRoot;
 	
 	// if there exists already a combined texture with these properties add a usage and return it
-	while( combinedTexture ){
-		if( combinedTexture->Equals( color, images ) ){
+	while(combinedTexture){
+		if(combinedTexture->Equals(color, images)){
 			combinedTexture->AddUsage();
 			return combinedTexture;
 		}
@@ -74,14 +74,14 @@ deoglCombinedTexture *deoglCombinedTextureList::GetWith( const decColor &color, 
 	}
 	
 	// otherwise create a new combined texture with these parameters and return it
-	combinedTexture = new deoglCombinedTexture( pRenderThread, color, images );
+	combinedTexture = new deoglCombinedTexture(pRenderThread, color, images);
 	
 	try{
 		combinedTexture->CalcHashCode();
 		
-		if( pTail ){
-			pTail->SetLLNext( combinedTexture );
-			combinedTexture->SetLLPrev( pTail );
+		if(pTail){
+			pTail->SetLLNext(combinedTexture);
+			combinedTexture->SetLLPrev(pTail);
 			pTail = combinedTexture;
 			
 		}else{
@@ -90,7 +90,7 @@ deoglCombinedTexture *deoglCombinedTextureList::GetWith( const decColor &color, 
 		}
 		pCount++;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		delete combinedTexture;
 		throw;
 	}
@@ -100,7 +100,7 @@ deoglCombinedTexture *deoglCombinedTextureList::GetWith( const decColor &color, 
 
 
 
-void deoglCombinedTextureList::Remove( deoglCombinedTexture *config ){
+void deoglCombinedTextureList::Remove(deoglCombinedTexture *config){
 	// WARNING remove usage typically happens during main thread. if the combined texture
 	//         would be removed from it can be potentially deleted. combined texture
 	//         though holds references to render images (which can cause deletion loop)
@@ -109,20 +109,20 @@ void deoglCombinedTextureList::Remove( deoglCombinedTexture *config ){
 	//         texture list has to take care of delaying deletion of the opengl objects
 	//         until a later time. this makes this call main thread safe
 	
-	if( ! config ){
-		DETHROW( deeInvalidParam );
+	if(! config){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( config->GetLLPrev() ){
-		config->GetLLPrev()->SetLLNext( config->GetLLNext() );
+	if(config->GetLLPrev()){
+		config->GetLLPrev()->SetLLNext(config->GetLLNext());
 	}
-	if( config->GetLLNext() ){
-		config->GetLLNext()->SetLLPrev( config->GetLLPrev() );
+	if(config->GetLLNext()){
+		config->GetLLNext()->SetLLPrev(config->GetLLPrev());
 	}
-	if( pRoot == config ){
+	if(pRoot == config){
 		pRoot = config->GetLLNext();
 	}
-	if( pTail == config ){
+	if(pTail == config){
 		pTail = config->GetLLPrev();
 	}
 	pCount--;

@@ -42,14 +42,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglModel::deoglModel( deGraphicOpenGl &ogl, const deModel &model ) :
-pOgl( ogl ),
-pModel( model ),
-pRModel( NULL ){
+deoglModel::deoglModel(deGraphicOpenGl &ogl, const deModel &model) :
+pOgl(ogl),
+pModel(model),
+pRModel(NULL){
 	try{
-		pRModel = new deoglRModel( ogl.GetRenderThread(), model );
+		pRModel = new deoglRModel(ogl.GetRenderThread(), model);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -65,7 +65,7 @@ deoglModel::~deoglModel(){
 //////////////////////
 
 void deoglModel::pCleanUp(){
-	if( pRModel ){
+	if(pRModel){
 		pRModel->FreeReference();
 	}
 }

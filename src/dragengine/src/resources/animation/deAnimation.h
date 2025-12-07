@@ -76,8 +76,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new animation resource with the given resource manager and filename. */
-	deAnimation( deAnimationManager *resourceManager, deVirtualFileSystem *vfs,
-		const char *filename, TIME_SYSTEM modificationTime );
+	deAnimation(deAnimationManager *resourceManager, deVirtualFileSystem *vfs,
+		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:
 	/**
@@ -96,7 +96,7 @@ public:
 	 * \brief Bones of an animation match to those of a model.
 	 * \brief This function is depracted and will be removed soon.
 	 */
-	bool MatchesModel( deModel *model ) const;
+	bool MatchesModel(deModel *model) const;
 	/*@}*/
 	
 	
@@ -104,16 +104,16 @@ public:
 	/** \name Bone Management */
 	/*@{*/
 	/** \brief Count of bones. */
-	inline int GetBoneCount() const{ return pBoneCount; }
+	inline int GetBoneCount() const{return pBoneCount;}
 	
 	/** \brief Bone at the given index. */
-	deAnimationBone *GetBone( int index ) const;
+	deAnimationBone *GetBone(int index) const;
 	
 	/** \brief Index for the bone with the given name or -1 if not found. */
-	int FindBone( const char *name ) const;
+	int FindBone(const char *name) const;
 	
 	/** \brief Adds a new bone */
-	void AddBone( deAnimationBone *bone );
+	void AddBone(deAnimationBone *bone);
 	/*@}*/
 	
 	
@@ -122,8 +122,8 @@ public:
 	 * \brief Vertex position sets.
 	 * \version 1.17
 	 */
-	inline decStringList &GetVertexPositionSets(){ return pVertexPositionSets; }
-	inline const decStringList &GetVertexPositionSets() const{ return pVertexPositionSets; }
+	inline decStringList &GetVertexPositionSets(){return pVertexPositionSets;}
+	inline const decStringList &GetVertexPositionSets() const{return pVertexPositionSets;}
 	/*@}*/
 	
 	
@@ -131,16 +131,16 @@ public:
 	/** \name Move Management */
 	/*@{*/
 	/** \brief Count of moves. */
-	inline int GetMoveCount() const{ return pMoveCount; }
+	inline int GetMoveCount() const{return pMoveCount;}
 	
 	/** \brief Move at the given index. */
-	deAnimationMove *GetMove( int index ) const;
+	deAnimationMove *GetMove(int index) const;
 	
 	/** \brief Index of the move with the given name or -1 if not found. */
-	int FindMove( const char *name ) const;
+	int FindMove(const char *name) const;
 	
 	/** \brief Adds the given move */
-	void AddMove( deAnimationMove *move );
+	void AddMove(deAnimationMove *move);
 	/*@}*/
 	
 	
@@ -148,10 +148,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Animator system peer object. */
-	inline deBaseAnimatorAnimation *GetPeerAnimator() const{ return pPeerAnimator; }
+	inline deBaseAnimatorAnimation *GetPeerAnimator() const{return pPeerAnimator;}
 	
 	/** \brief Set animator system peer object. */
-	void SetPeerAnimator( deBaseAnimatorAnimation *peer );
+	void SetPeerAnimator(deBaseAnimatorAnimation *peer);
 	/*@}*/
 	
 	

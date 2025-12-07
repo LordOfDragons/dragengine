@@ -42,12 +42,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitAdd::ceUCAWaitAdd( ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int index ){
-	if( ! topic || ! wait || ! action ){
-		DETHROW( deeInvalidParam );
+ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int index){
+	if(! topic || ! wait || ! action){
+		DETHROW(deeInvalidParam);
 	}
-	if( index < 0 || index > wait->GetActions().GetCount() ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index > wait->GetActions().GetCount()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -55,7 +55,7 @@ ceUCAWaitAdd::ceUCAWaitAdd( ceConversationTopic *topic, ceCAWait *wait, ceConver
 	pAction = NULL;
 	pIndex = index;
 	
-	SetShortInfo( "Action Wait Add Action" );
+	SetShortInfo("Action Wait Add Action");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -68,13 +68,13 @@ ceUCAWaitAdd::ceUCAWaitAdd( ceConversationTopic *topic, ceCAWait *wait, ceConver
 }
 
 ceUCAWaitAdd::~ceUCAWaitAdd(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pWait ){
+	if(pWait){
 		pWait->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -86,17 +86,17 @@ ceUCAWaitAdd::~ceUCAWaitAdd(){
 
 void ceUCAWaitAdd::Undo(){
 	ceConversationAction * const activateAction =
-		ceUActionHelpers::ActivateActionAfterRemove( pWait->GetActions(), pAction );
+		ceUActionHelpers::ActivateActionAfterRemove(pWait->GetActions(), pAction);
 	
-	pWait->GetActions().Remove( pAction );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().Remove(pAction);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( activateAction ? activateAction : pWait, NULL );
+	pTopic->SetActive(activateAction ? activateAction : pWait, NULL);
 }
 
 void ceUCAWaitAdd::Redo(){
-	pWait->GetActions().InsertAt( pAction, pIndex );
-	pTopic->NotifyActionStructureChanged( pWait );
+	pWait->GetActions().InsertAt(pAction, pIndex);
+	pTopic->NotifyActionStructureChanged(pWait);
 	
-	pTopic->SetActive( pAction, NULL );
+	pTopic->SetActive(pAction, NULL);
 }

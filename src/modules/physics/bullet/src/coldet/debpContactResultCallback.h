@@ -84,7 +84,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create result callback. */
-	debpContactResultCallback( deCollisionInfo *colinfo );
+	debpContactResultCallback(deCollisionInfo *colinfo);
 	/*@}*/
 	
 	
@@ -95,16 +95,16 @@ public:
 	void Reset();
 	
 	/** \brief Set collision filter only test. */
-	void SetTestFilter( const decCollisionFilter *collisionFilter,
-		deBaseScriptingCollider *listener );
+	void SetTestFilter(const decCollisionFilter *collisionFilter,
+		deBaseScriptingCollider *listener);
 	
 	/** \brief Set the shape to test with. */
-	void SetTestShape( btCollisionObject *collisionObject,
-		debpShape *shape, deBaseScriptingCollider *listener );
+	void SetTestShape(btCollisionObject *collisionObject,
+		debpShape *shape, deBaseScriptingCollider *listener);
 	
 	/** \brief Sets the collider to test with. */
-	void SetTestCollider( btCollisionObject *collisionObject,
-		debpCollider *collider, deBaseScriptingCollider *listener );
+	void SetTestCollider(btCollisionObject *collisionObject,
+		debpCollider *collider, deBaseScriptingCollider *listener);
 	
 	void SetTestCollider(debpCollider *collider, deBaseScriptingCollider *listener);
 	
@@ -112,7 +112,7 @@ public:
 	void SetTestCollisionObject(btCollisionObject *collisionObject);
 	
 	/** \brief Ignore multiple contact points to not send them multiple times to the listener. */
-	void SetIgnoreMultipleContactPoints( bool ignore );
+	void SetIgnoreMultipleContactPoints(bool ignore);
 	/*@}*/
 	
 	
@@ -120,11 +120,11 @@ public:
 	/** \name Bullet */
 	/*@{*/
 	/** \brief Collision is possible. */
-	virtual bool needsCollision( btBroadphaseProxy *proxy0 ) const;
+	virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
 	
 	/** \brief Add result filling parameters in collision info. */
-	virtual btScalar addSingleResult( btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
-		int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1 );
+	virtual btScalar addSingleResult(btManifoldPoint &cp, const btCollisionObjectWrapper *colObj0Wrap,
+		int partId0, int index0, const btCollisionObjectWrapper *colObj1Wrap, int partId1, int index1);
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ void RemoteLauncherClient::EngineLogger::LogWarn(const char *source, const char 
     pOwner.SendLog(denLogger::LogSeverity::warning, source, message);
 }
 
-void RemoteLauncherClient::EngineLogger::LogError( const char *source, const char *message ){
+void RemoteLauncherClient::EngineLogger::LogError(const char *source, const char *message){
     std::stringstream ss;
     ss << "[" << source << "] " << message;
     pClientLogger.Log(denLogger::LogSeverity::error, ss.str());

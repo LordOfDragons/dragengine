@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	igdeDEConsole( igdeDialogEngine &dialogEngine );
+	igdeDEConsole(igdeDialogEngine &dialogEngine);
 	
 	
 	
@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	void UpdateModulesList();
-	void AddToConsole( decUnicodeString &text );
+	void AddToConsole(decUnicodeString &text);
 	void ClearConsole();
 	
 	/** \brief Send command. */

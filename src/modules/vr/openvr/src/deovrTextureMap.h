@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Load texture map. */
-	deovrTextureMap( deVROpenVR &ovr, vr::TextureID_t id );
+	deovrTextureMap(deVROpenVR &ovr, vr::TextureID_t id);
 	
 protected:
 	/** Clean up texture map. */
@@ -71,13 +71,13 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** OpenVR ovr. */
-	inline deVROpenVR &GetOvr() const{ return pOvr; }
+	inline deVROpenVR &GetOvr() const{return pOvr;}
 	
 	/** ID. */
-	inline vr::TextureID_t GetID() const{ return pID; }
+	inline vr::TextureID_t GetID() const{return pID;}
 	
 	/** Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline deSkin *GetSkin() const{return pSkin;}
 	/*@}*/
 	
 	

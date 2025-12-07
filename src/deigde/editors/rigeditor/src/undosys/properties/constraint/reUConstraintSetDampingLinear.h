@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetDampingLinear( reRigConstraint *constraint, float newDamping );
+	reUConstraintSetDampingLinear(reRigConstraint *constraint, float newDamping);
 	
 protected:
 	/** \brief Clean up the undo. */

@@ -73,7 +73,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render prop field. */
-	deoglRPropField( deoglRenderThread &renderThread );
+	deoglRPropField(deoglRenderThread &renderThread);
 	
 	/** Clean up render prop field. */
 	virtual ~deoglRPropField();
@@ -84,32 +84,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Parent world or NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** Set parent world or NULL if not set. */
-	void SetParentWorld( deoglRWorld *parentWorld );
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinimumExtend() const{return pMinExtend;}
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaximumExtend() const{return pMaxExtend;}
 	
 	/** Update extends. */
-	void UpdateExtends( const dePropField &propField );
+	void UpdateExtends(const dePropField &propField);
 	
 	
 	
@@ -128,7 +128,7 @@ public:
 	 * given camera matrix. After this is done the instance matrices are ready
 	 * to be used in subsequent rendering calls.
 	 */
-	void PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix );
+	void PrepareInstances(const decDVector &cameraPosition, const decDMatrix &cameraMatrix);
 	
 	
 	
@@ -136,13 +136,13 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type at index. */
-	deoglRPropFieldType &GetTypeAt( int index ) const;
+	deoglRPropFieldType &GetTypeAt(int index) const;
 	
 	/** Remove all types. */
 	void RemoveAllTypes();
 	
 	/** Add type. */
-	void AddType( deoglRPropFieldType* type );
+	void AddType(deoglRPropFieldType* type);
 	
 	/** Type requires prepare for render. */
 	void TypeRequiresPrepareForRender();
@@ -155,14 +155,14 @@ public:
 	
 	
 	/** Marked for removal. For use by deoglRWorld only. Non-thread safe. */
-	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
+	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
 	
 	/** Set marked for removal. */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	
 	/** World prepare for render linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){ return pLLPrepareForRenderWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{ return pLLPrepareForRenderWorld; }
+	inline decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld(){return pLLPrepareForRenderWorld;}
+	inline const decPointerLinkedList::cListEntry &GetLLPrepareForRenderWorld() const{return pLLPrepareForRenderWorld;}
 	/*@}*/
 	
 	

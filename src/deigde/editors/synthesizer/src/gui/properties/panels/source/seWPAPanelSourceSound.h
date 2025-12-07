@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPAPanelSourceSound( seWPSource &wpSource );
+	seWPAPanelSourceSound(seWPSource &wpSource);
 	
 protected:
 	/** \brief Clean up panel. */

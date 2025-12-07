@@ -39,12 +39,12 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxTimer ) igdeNativeFoxTimerMap[] = {
-	FXMAPFUNC( SEL_TIMEOUT, igdeNativeFoxTimer::ID_TIMEOUT, igdeNativeFoxTimer::onTimeout ),
+FXDEFMAP(igdeNativeFoxTimer) igdeNativeFoxTimerMap[] = {
+	FXMAPFUNC(SEL_TIMEOUT, igdeNativeFoxTimer::ID_TIMEOUT, igdeNativeFoxTimer::onTimeout),
 };
 
 
-FXIMPLEMENT( igdeNativeFoxTimer, FXObject, igdeNativeFoxTimerMap, ARRAYNUMBER( igdeNativeFoxTimerMap ) )
+FXIMPLEMENT(igdeNativeFoxTimer, FXObject, igdeNativeFoxTimerMap, ARRAYNUMBER(igdeNativeFoxTimerMap))
 
 
 
@@ -57,16 +57,16 @@ FXIMPLEMENT( igdeNativeFoxTimer, FXObject, igdeNativeFoxTimerMap, ARRAYNUMBER( i
 igdeNativeFoxTimer::igdeNativeFoxTimer(){
 }
 
-igdeNativeFoxTimer::igdeNativeFoxTimer( igdeTimer &powner, FXApp *app ) :
-pApp( app ),
-pOwner( &powner ){
+igdeNativeFoxTimer::igdeNativeFoxTimer(igdeTimer &powner, FXApp *app) :
+pApp(app),
+pOwner(&powner){
 }
 
 igdeNativeFoxTimer::~igdeNativeFoxTimer(){
 }
 
-igdeNativeFoxTimer *igdeNativeFoxTimer::CreateNativeTimer( igdeTimer &powner ){
-	return new igdeNativeFoxTimer( powner, FXApp::instance() );
+igdeNativeFoxTimer *igdeNativeFoxTimer::CreateNativeTimer(igdeTimer &powner){
+	return new igdeNativeFoxTimer(powner, FXApp::instance());
 }
 
 void igdeNativeFoxTimer::DestroyNativeTimer(){
@@ -79,11 +79,11 @@ void igdeNativeFoxTimer::DestroyNativeTimer(){
 ///////////////
 
 void igdeNativeFoxTimer::StartTimer(){
-	pApp->addTimeout( this, ID_TIMEOUT, pOwner->GetTimeout() * 1000000 );
+	pApp->addTimeout(this, ID_TIMEOUT, pOwner->GetTimeout() * 1000000);
 }
 
 void igdeNativeFoxTimer::StopTimer(){
-	pApp->removeTimeout( this, ID_TIMEOUT );
+	pApp->removeTimeout(this, ID_TIMEOUT);
 }
 
 
@@ -91,13 +91,13 @@ void igdeNativeFoxTimer::StopTimer(){
 // Events
 ///////////
 
-long igdeNativeFoxTimer::onTimeout( FXObject*, FXSelector, void* ){
-	if( ! pOwner->GetRunning() ){
+long igdeNativeFoxTimer::onTimeout(FXObject*, FXSelector, void*){
+	if(! pOwner->GetRunning()){
 		// just in case FOX manages to send an event although the user stopped the timer
 		return 1;
 	}
 	
-	if( pOwner->GetRepeating() ){
+	if(pOwner->GetRepeating()){
 		// FOX timers run only once
 		StartTimer();
 		

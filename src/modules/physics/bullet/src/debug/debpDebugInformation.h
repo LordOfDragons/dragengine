@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create debug information. */
-	debpDebugInformation( const char *name );
+	debpDebugInformation(const char *name);
 	
 	/** \brief Clean up debug information. */
 	virtual ~debpDebugInformation();
@@ -78,10 +78,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Clear elapsed time and counter. */
 	void Clear();
@@ -89,47 +89,47 @@ public:
 	
 	
 	/** \brief Elapsed time. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/** \brief Set elapsed time. */
-	void SetElapsedTime( float time );
+	void SetElapsedTime(float time);
 	
 	/** \brief Increment elapsed time. */
-	void IncrementElapsedTime( float time );
+	void IncrementElapsedTime(float time);
 	
 	/** \brief Clear elapsed time. */
 	void ClearElapsedTime();
 	
 	/** \brief Has elapsed time. */
-	inline bool HasElapsedTime() const{ return pHasElapsedTime; }
+	inline bool HasElapsedTime() const{return pHasElapsedTime;}
 	
 	
 	
 	/** \brief Counter. */
-	inline int GetCounter() const{ return pCounter; }
+	inline int GetCounter() const{return pCounter;}
 	
 	/** \brief Set counter. */
-	void SetCounter( int counter );
+	void SetCounter(int counter);
 	
 	/** \brief Increment counter by one. */
 	void IncrementCounter();
 	
 	/** \brief Increment counter. */
-	void IncrementCounter( int count );
+	void IncrementCounter(int count);
 	
 	/** \brief Clear counter. */
 	void ClearCounter();
 	
 	/** \brief Has counter. */
-	inline bool HasCounter() const{ return pHasCounter; }
+	inline bool HasCounter() const{return pHasCounter;}
 	
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	/*@}*/
 };
 

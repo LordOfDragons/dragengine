@@ -39,7 +39,7 @@ igdeNativeNullToolBar::igdeNativeNullToolBar(){
 igdeNativeNullToolBar::~igdeNativeNullToolBar(){
 }
 
-igdeNativeNullToolBar *igdeNativeNullToolBar::CreateNativeWidget( igdeToolBar& ){
+igdeNativeNullToolBar *igdeNativeNullToolBar::CreateNativeWidget(igdeToolBar&){
 	return new igdeNativeNullToolBar;
 }
 

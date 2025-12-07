@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleBTransSetEnableOrien( aeRuleBoneTransformator *rule );
+	aeURuleBTransSetEnableOrien(aeRuleBoneTransformator *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleBTransSetEnableOrien();

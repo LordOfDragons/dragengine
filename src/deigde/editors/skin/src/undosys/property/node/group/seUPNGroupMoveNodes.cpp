@@ -38,44 +38,44 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupMoveNodes::seUPNGroupMoveNodes( sePropertyNodeGroup *node, const sePropertyNodeList &children ) :
-pNode( NULL ),
-pChildren( NULL ),
-pCount( 0 )
+seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
+pNode(NULL),
+pChildren(NULL),
+pCount(0)
 {
-	if( ! node || ! node->GetProperty() ){
-		DETHROW( deeInvalidParam );
+	if(! node || ! node->GetProperty()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = children.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
+	if(count == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	try{
-		pChildren = new sNode[ count ];
+		pChildren = new sNode[count];
 		
-		for( pCount=0; pCount<count; pCount++ ){
-			pChildren[ pCount ].node = children.GetAt( pCount );
-			pChildren[ pCount ].node->AddReference();
-			pChildren[ pCount ].index = node->IndexOfNode( pChildren[ pCount ].node );
+		for(pCount=0; pCount<count; pCount++){
+			pChildren[pCount].node = children.GetAt(pCount);
+			pChildren[pCount].node->AddReference();
+			pChildren[pCount].index = node->IndexOfNode(pChildren[pCount].node);
 		}
 		
 		int i;
-		for( i=1; i<count; i++ ){
-			if( pChildren[ i ].index >= pChildren[ i - 1 ].index ){
+		for(i=1; i<count; i++){
+			if(pChildren[i].index >= pChildren[i - 1].index){
 				continue;
 			}
 			
-			const sNode temp( pChildren[ i - 1 ] );
-			pChildren[ i - 1 ] = pChildren[ i ];
-			pChildren[ i ] = temp;
-			if( i > 1 ){
+			const sNode temp(pChildren[i - 1]);
+			pChildren[i - 1] = pChildren[i];
+			pChildren[i] = temp;
+			if(i > 1){
 				i--;
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -104,19 +104,19 @@ bool seUPNGroupMoveNodes::HasAnyEffect() const{
 
 void seUPNGroupMoveNodes::pCleanUp(){
 	pClearChildNodes();
-	if( pNode ){
+	if(pNode){
 		pNode->FreeReference();
 	}
 }
 
 void seUPNGroupMoveNodes::pClearChildNodes(){
-	if( ! pChildren ){
+	if(! pChildren){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<pCount; i++ ){
-		pChildren[ i ].node->FreeReference();
+	for(i=0; i<pCount; i++){
+		pChildren[i].node->FreeReference();
 	}
 	delete [] pChildren;
 	pChildren = NULL;

@@ -48,18 +48,18 @@
  * 
  * Until then an exception is thrown to keep things compiling for the moment.
  */
-void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvoid *img ){
-	DETHROW( deeInvalidAction );
+void glGetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid *img){
+	DETHROW(deeInvalidAction);
 	
 	/*
 	char *tempData = NULL;
 	
 	try{
-		tempData = new char[ 
-	( pPixelBuffer->GetFormat(), width, height, 1 );
+		tempData = new char[
+	(pPixelBuffer->GetFormat(), width, height, 1);
 	
-	OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
-		pPixelBuffer->GetGLPixelType(), tempData.GetPointer() ) );
+	OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
+		pPixelBuffer->GetGLPixelType(), tempData.GetPointer()));
 	*/
 }
 
@@ -70,7 +70,7 @@ void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvo
  * No direct solution except using GL_LINES rendering with modified buffers. Since this is currently
  * only used for debug rendering a replacement call is made doing nothing.
  */
-void glPolygonMode( GLenum face, GLenum mode ){
+void glPolygonMode(GLenum face, GLenum mode){
 }
 
 /**
@@ -78,19 +78,19 @@ void glPolygonMode( GLenum face, GLenum mode ){
  * 
  * EGL does not have glGetBuffer*. As replacement glMapBufferRange has to be used.
  */
-static void eglGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *data ){
-	if( size == 0 ){
+static void eglGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, void *data){
+	if(size == 0){
 		return;
 	}
 	
-	const void * const mapped = glMapBufferRange( target, offset, size, GL_MAP_READ_BIT );
-	if( ! mapped ){
-		DETHROW( deeInvalidAction );
+	const void * const mapped = glMapBufferRange(target, offset, size, GL_MAP_READ_BIT);
+	if(! mapped){
+		DETHROW(deeInvalidAction);
 	}
 	
-	memcpy( data, mapped, size );
+	memcpy(data, mapped, size);
 	
-	glUnmapBuffer( target );
+	glUnmapBuffer(target);
 }
 
 /**
@@ -99,7 +99,7 @@ static void eglGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size
  * EGL supports no custom named and placed output variables.
  * Replacement is a no-op. Shaders fix this.
  */
-static void eglBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ){
+static void eglBindFragDataLocation(GLuint program, GLuint color, const GLchar *name){
 }
 
 /**
@@ -108,7 +108,7 @@ static void eglBindFragDataLocation( GLuint program, GLuint color, const GLchar 
  * Supported from 3.1 onwards but android has egl 3.0. for the time being the call
  * is silently ignored. problems have to be fixed once known.
  */
-static void eglTexBuffer( GLenum target, GLenum internalformat, GLuint buffer ){
+static void eglTexBuffer(GLenum target, GLenum internalformat, GLuint buffer){
 }
 
 /**
@@ -128,8 +128,8 @@ public:
 		}
 	}
 	
-	inline int GetSize() const{ return pSize; }
-	inline uint8_t *GetData() const{ return pData; }
+	inline int GetSize() const{return pSize;}
+	inline uint8_t *GetData() const{return pData;}
 	
 	void SetSize(int size){
 		DEASSERT_TRUE(size >= 1)
@@ -236,22 +236,22 @@ const void * const *indices, GLsizei drawcount){
 __eglMustCastToProperFunctionPointerType androidGetProcAddress(
 deoglRenderThread &renderThread, const char *name){
 	// find native method
-	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress( name );
-	if( address ){
+	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress(name);
+	if(address){
 		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): native", name);
 		return address;
 	}
 	
 	// return replacement if existing otherwise return NULL
-	if( strcmp( name, "glGetBufferSubData" ) == 0 ){
+	if(strcmp(name, "glGetBufferSubData") == 0){
 		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglGetBufferSubData;
 		
-	}else if( strcmp( name, "glBindFragDataLocation" ) == 0 ){
+	}else if(strcmp(name, "glBindFragDataLocation") == 0){
 		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglBindFragDataLocation;
 		
-	}else if( strcmp( name, "glTexBuffer" ) == 0 ){
+	}else if(strcmp(name, "glTexBuffer") == 0){
 		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglTexBuffer;
 		

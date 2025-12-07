@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCCameraRemove::gdeMAOCCameraRemove( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Remove Object Class Camera",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
-	"Remove object class camera" )
+gdeMAOCCameraRemove::gdeMAOCCameraRemove(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Remove Object Class Camera",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+	"Remove object class camera")
 {
 }
 
@@ -59,22 +59,22 @@ gdeBaseMAOCSubObject( windowMain, "Remove Object Class Camera",
 ///////////////
 
 igdeUndo *gdeMAOCCameraRemove::OnActionSubObject(
-gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera ){
+gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCCamera){
 		return NULL;
 	}
 	
 	gdeOCCamera * const camera = gameDefinition.GetActiveOCCamera();
-	if( ! camera ){
+	if(! camera){
 		return NULL;
 	}
 	
-	return new gdeUOCRemoveCamera( &objectClass, camera );
+	return new gdeUOCRemoveCamera(&objectClass, camera);
 }
 
 void gdeMAOCCameraRemove::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCCamera
-		&& gameDefinition->GetActiveOCCamera() != NULL );
+		&& gameDefinition->GetActiveOCCamera() != NULL);
 }

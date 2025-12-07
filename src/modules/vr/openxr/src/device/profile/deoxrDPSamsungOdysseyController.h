@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPSamsungOdysseyController( deoxrInstance &instance );
+	deoxrDPSamsungOdysseyController(deoxrInstance &instance);
 	
 protected:
 	/** Clean up device profile. */

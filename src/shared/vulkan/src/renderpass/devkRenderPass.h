@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	devkRenderPass( devkDevice &device, const devkRenderPassConfiguration &configuration );
+	devkRenderPass(devkDevice &device, const devkRenderPassConfiguration &configuration);
 	
 protected:
 	/** Clean up pipeline. */
@@ -67,13 +67,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** Configuration. */
-	inline const devkRenderPassConfiguration &GetConfiguration() const{ return pConfiguration; }
+	inline const devkRenderPassConfiguration &GetConfiguration() const{return pConfiguration;}
 	
 	/** RenderPass. */
-	inline VkRenderPass GetRenderPass() const{ return pRenderPass; }
+	inline VkRenderPass GetRenderPass() const{return pRenderPass;}
 	/*@}*/
 	
 	

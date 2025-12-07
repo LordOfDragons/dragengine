@@ -37,10 +37,10 @@
 ////////////////////////////
 
 deHeightTerrainNavSpaceEdge::deHeightTerrainNavSpaceEdge() :
-pPoint1( 0 ),
-pPoint2( 0 ),
-pType1( 0 ),
-pType2( 0 ){
+pPoint1(0),
+pPoint2(0),
+pType1(0),
+pType2(0){
 }
 
 deHeightTerrainNavSpaceEdge::~deHeightTerrainNavSpaceEdge(){
@@ -51,18 +51,18 @@ deHeightTerrainNavSpaceEdge::~deHeightTerrainNavSpaceEdge(){
 // Management
 ///////////////
 
-void deHeightTerrainNavSpaceEdge::SetPoint1( unsigned int navpoint ){
+void deHeightTerrainNavSpaceEdge::SetPoint1(unsigned int navpoint){
 	pPoint1 = navpoint;
 }
 
-void deHeightTerrainNavSpaceEdge::SetPoint2( unsigned int navpoint ){
+void deHeightTerrainNavSpaceEdge::SetPoint2(unsigned int navpoint){
 	pPoint2 = navpoint;
 }
 
-void deHeightTerrainNavSpaceEdge::SetType1( unsigned short type ){
+void deHeightTerrainNavSpaceEdge::SetType1(unsigned short type){
 	pType1 = type;
 }
 
-void deHeightTerrainNavSpaceEdge::SetType2( unsigned short type ){
+void deHeightTerrainNavSpaceEdge::SetType2(unsigned short type){
 	pType2 = type;
 }

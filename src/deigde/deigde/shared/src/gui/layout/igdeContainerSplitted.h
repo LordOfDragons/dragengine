@@ -82,15 +82,15 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerSplitted( igdeEnvironment &environment, eSidePlacement sidePlacement );
+	igdeContainerSplitted(igdeEnvironment &environment, eSidePlacement sidePlacement);
 	
 	/** \brief Create widget. */
-	igdeContainerSplitted( igdeEnvironment &environment,
-		eSidePlacement sidePlacement, int splitPosition );
+	igdeContainerSplitted(igdeEnvironment &environment,
+		eSidePlacement sidePlacement, int splitPosition);
 	
 	/** \brief Create widget. */
-	igdeContainerSplitted( igdeEnvironment &environment,
-		eSidePlacement sidePlacement, float splitPositionRelative );
+	igdeContainerSplitted(igdeEnvironment &environment,
+		eSidePlacement sidePlacement, float splitPositionRelative);
 	
 	
 	
@@ -110,36 +110,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Side placement. */
-	inline eSidePlacement GetSidePlacement() const{ return pSidePlacement; }
+	inline eSidePlacement GetSidePlacement() const{return pSidePlacement;}
 	
 	/** \brief Split position. */
-	inline int GetSplitPosition() const{ return pSplitPosition; }
+	inline int GetSplitPosition() const{return pSplitPosition;}
 	
 	/** \brief Set split position. */
-	void SetSplitPosition( int splitPosition );
+	void SetSplitPosition(int splitPosition);
 	
 	/** \brief Relative split position. */
-	inline float GetSplitPositionRelative() const{ return pSplitPositionRelative; }
+	inline float GetSplitPositionRelative() const{return pSplitPositionRelative;}
 	
 	/** \brief Set relative split position. */
-	void SetSplitPositionRelative( float splitPosition );
+	void SetSplitPositionRelative(float splitPosition);
 	
 	
 	
 	/** \brief Add child to area. */
-	virtual void AddChild( igdeWidget *child, eArea area );
+	virtual void AddChild(igdeWidget *child, eArea area);
 	
 	/** \brief Add child not possible without specifying an area. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();
 	
 	/** \brief Widget in area or NULL. */
-	igdeWidget *GetWidgetIn( eArea area ) const;
+	igdeWidget *GetWidgetIn(eArea area) const;
 	/*@}*/
 	
 	

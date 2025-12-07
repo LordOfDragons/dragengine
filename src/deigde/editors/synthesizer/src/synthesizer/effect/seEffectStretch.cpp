@@ -43,21 +43,21 @@
 ////////////////////////////
 
 seEffectStretch::seEffectStretch() :
-seEffect( deSynthesizerEffectVisitorIdentify::eetStretch ),
-pMinTime( 0.0f ),
-pMaxTime( 0.0f ),
-pMinPitch( 0.0f ),
-pMaxPitch( 0.0f ){
+seEffect(deSynthesizerEffectVisitorIdentify::eetStretch),
+pMinTime(0.0f),
+pMaxTime(0.0f),
+pMinPitch(0.0f),
+pMaxPitch(0.0f){
 }
 
-seEffectStretch::seEffectStretch( const seEffectStretch &copy ) :
-seEffect( copy ),
-pMinTime( copy.pMinTime ),
-pMaxTime( copy.pMaxTime ),
-pMinPitch( copy.pMinPitch ),
-pMaxPitch( copy.pMaxPitch ),
-pTargetTime( copy.pTargetTime ),
-pTargetPitch( copy.pTargetPitch ){
+seEffectStretch::seEffectStretch(const seEffectStretch &copy) :
+seEffect(copy),
+pMinTime(copy.pMinTime),
+pMaxTime(copy.pMaxTime),
+pMinPitch(copy.pMinPitch),
+pMaxPitch(copy.pMaxPitch),
+pTargetTime(copy.pTargetTime),
+pTargetPitch(copy.pTargetPitch){
 }
 
 seEffectStretch::~seEffectStretch(){
@@ -68,54 +68,54 @@ seEffectStretch::~seEffectStretch(){
 // Management
 ///////////////
 
-void seEffectStretch::SetMinTime( float time ){
-	if( fabsf( time - pMinTime ) <= FLOAT_SAFE_EPSILON ){
+void seEffectStretch::SetMinTime(float time){
+	if(fabsf(time - pMinTime) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMinTime = time;
 	
-	if( GetEngineEffect() ){
-		( ( deSynthesizerEffectStretch* )GetEngineEffect() )->SetMinTime( time );
+	if(GetEngineEffect()){
+		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMinTime(time);
 		NotifyEffectChanged();
 	}
 }
 
-void seEffectStretch::SetMaxTime( float time ){
-	if( fabsf( time - pMaxTime ) <= FLOAT_SAFE_EPSILON ){
+void seEffectStretch::SetMaxTime(float time){
+	if(fabsf(time - pMaxTime) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxTime = time;
 	
-	if( GetEngineEffect() ){
-		( ( deSynthesizerEffectStretch* )GetEngineEffect() )->SetMaxTime( time );
+	if(GetEngineEffect()){
+		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMaxTime(time);
 		NotifyEffectChanged();
 	}
 }
 
-void seEffectStretch::SetMinPitch( float shift ){
-	if( fabsf( shift - pMinPitch ) <= FLOAT_SAFE_EPSILON ){
+void seEffectStretch::SetMinPitch(float shift){
+	if(fabsf(shift - pMinPitch) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMinPitch = shift;
 	
-	if( GetEngineEffect() ){
-		( ( deSynthesizerEffectStretch* )GetEngineEffect() )->SetMinPitch( shift );
+	if(GetEngineEffect()){
+		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMinPitch(shift);
 		NotifyEffectChanged();
 	}
 }
 
-void seEffectStretch::SetMaxPitch( float shift ){
-	if( fabsf( shift - pMaxPitch ) <= FLOAT_SAFE_EPSILON ){
+void seEffectStretch::SetMaxPitch(float shift){
+	if(fabsf(shift - pMaxPitch) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pMaxPitch = shift;
 	
-	if( GetEngineEffect() ){
-		( ( deSynthesizerEffectStretch* )GetEngineEffect() )->SetMaxPitch( shift );
+	if(GetEngineEffect()){
+		((deSynthesizerEffectStretch*)GetEngineEffect())->SetMaxPitch(shift);
 		NotifyEffectChanged();
 	}
 }
@@ -125,34 +125,34 @@ void seEffectStretch::SetMaxPitch( float shift ){
 void seEffectStretch::UpdateTargets(){
 	seEffect::UpdateTargets();
 	
-	deSynthesizerEffectStretch * const effect = ( deSynthesizerEffectStretch* )GetEngineEffect();
-	if( effect ){
-		pTargetTime.UpdateEngineTarget( GetSynthesizer(), effect->GetTargetTime() );
-		pTargetPitch.UpdateEngineTarget( GetSynthesizer(), effect->GetTargetPitch() );
+	deSynthesizerEffectStretch * const effect = (deSynthesizerEffectStretch*)GetEngineEffect();
+	if(effect){
+		pTargetTime.UpdateEngineTarget(GetSynthesizer(), effect->GetTargetTime());
+		pTargetPitch.UpdateEngineTarget(GetSynthesizer(), effect->GetTargetPitch());
 	}
 }
 
-int seEffectStretch::CountLinkUsage( seLink *link ) const{
-	int usageCount = seEffect::CountLinkUsage( link );
+int seEffectStretch::CountLinkUsage(seLink *link) const{
+	int usageCount = seEffect::CountLinkUsage(link);
 	
-	if( pTargetTime.HasLink( link ) ){
+	if(pTargetTime.HasLink(link)){
 		usageCount++;
 	}
-	if( pTargetPitch.HasLink( link ) ){
+	if(pTargetPitch.HasLink(link)){
 		usageCount++;
 	}
 	
 	return usageCount;
 }
 
-void seEffectStretch::RemoveLinkFromTargets( seLink *link ){
-	seEffect::RemoveLinkFromTargets( link );
+void seEffectStretch::RemoveLinkFromTargets(seLink *link){
+	seEffect::RemoveLinkFromTargets(link);
 	
-	if( pTargetTime.HasLink( link ) ){
-		pTargetTime.RemoveLink( link );
+	if(pTargetTime.HasLink(link)){
+		pTargetTime.RemoveLink(link);
 	}
-	if( pTargetPitch.HasLink( link ) ){
-		pTargetPitch.RemoveLink( link );
+	if(pTargetPitch.HasLink(link)){
+		pTargetPitch.RemoveLink(link);
 	}
 	
 	UpdateTargets();
@@ -177,18 +177,18 @@ deSynthesizerEffect *seEffectStretch::CreateEngineEffect(){
 		engEffect = new deSynthesizerEffectStretch;
 		
 		// init effect
-		InitEngineEffect( engEffect );
+		InitEngineEffect(engEffect);
 		
-		engEffect->SetMinTime( pMinTime );
-		engEffect->SetMaxTime( pMaxTime );
-		engEffect->SetMinPitch( pMinPitch );
-		engEffect->SetMaxPitch( pMaxPitch );
+		engEffect->SetMinTime(pMinTime);
+		engEffect->SetMaxTime(pMaxTime);
+		engEffect->SetMinPitch(pMinPitch);
+		engEffect->SetMaxPitch(pMaxPitch);
 		
-		pTargetTime.UpdateEngineTarget( GetSynthesizer(), engEffect->GetTargetTime() );
-		pTargetPitch.UpdateEngineTarget( GetSynthesizer(), engEffect->GetTargetPitch() );
+		pTargetTime.UpdateEngineTarget(GetSynthesizer(), engEffect->GetTargetTime());
+		pTargetPitch.UpdateEngineTarget(GetSynthesizer(), engEffect->GetTargetPitch());
 		
-	}catch( const deException & ){
-		if( engEffect ){
+	}catch(const deException &){
+		if(engEffect){
 			engEffect->FreeReference();
 		}
 		throw;
@@ -201,13 +201,13 @@ deSynthesizerEffect *seEffectStretch::CreateEngineEffect(){
 
 
 seEffect *seEffectStretch::CreateCopy() const{
-	return new seEffectStretch( *this );
+	return new seEffectStretch(*this);
 }
 
-void seEffectStretch::ListLinks( seLinkList &list ){
-	seEffect::ListLinks( list );
-	pTargetTime.AddLinksToList( list );
-	pTargetPitch.AddLinksToList( list );
+void seEffectStretch::ListLinks(seLinkList &list){
+	seEffect::ListLinks(list);
+	pTargetTime.AddLinksToList(list);
+	pTargetPitch.AddLinksToList(list);
 }
 
 
@@ -215,13 +215,13 @@ void seEffectStretch::ListLinks( seLinkList &list ){
 // Operators
 //////////////
 
-seEffectStretch &seEffectStretch::operator=( const seEffectStretch &copy ){
-	SetMinTime( copy.pMinTime );
-	SetMaxTime( copy.pMaxTime );
-	SetMinPitch( copy.pMinPitch );
-	SetMaxPitch( copy.pMaxPitch );
+seEffectStretch &seEffectStretch::operator=(const seEffectStretch &copy){
+	SetMinTime(copy.pMinTime);
+	SetMaxTime(copy.pMaxTime);
+	SetMinPitch(copy.pMinPitch);
+	SetMaxPitch(copy.pMaxPitch);
 	pTargetTime = copy.pTargetTime;
 	pTargetPitch = copy.pTargetPitch;
-	seEffect::operator=( copy );
+	seEffect::operator=(copy);
 	return *this;
 }

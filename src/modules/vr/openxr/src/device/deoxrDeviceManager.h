@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device list. */
-	deoxrDeviceManager( deVROpenXR &oxr );
+	deoxrDeviceManager(deVROpenXR &oxr);
 	
 	/** Clean up device list. */
 	~deoxrDeviceManager();
@@ -67,19 +67,19 @@ public:
 	int GetCount() const;
 	
 	/** Device at index. */
-	deoxrDevice *GetAt( int index ) const;
+	deoxrDevice *GetAt(int index) const;
 	
 	/** Device with identifier or nullptr if absent. */
-	deoxrDevice *GetWithID( const char *id ) const;
+	deoxrDevice *GetWithID(const char *id) const;
 	
 	/** Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	int IndexOfWithID(const char *id) const;
 	
 	/** Add device if absent and queue event. */
-	void Add( deoxrDevice *device );
+	void Add(deoxrDevice *device);
 	
 	/** Remove device if present and queue event. */
-	void Remove( deoxrDevice *device );
+	void Remove(deoxrDevice *device);
 	
 	/**
 	 * Update device parameters if present and queue event. If device becomes invalid
@@ -105,12 +105,12 @@ public:
 	void LogDevices();
 	
 	/** Log input device. */
-	void LogDevice( const deoxrDevice &device );
+	void LogDevice(const deoxrDevice &device);
 	
 	
 	
 	/** Normalize identifier. */
-	static decString NormalizeID( const char *id );
+	static decString NormalizeID(const char *id);
 	/*@}*/
 	
 	

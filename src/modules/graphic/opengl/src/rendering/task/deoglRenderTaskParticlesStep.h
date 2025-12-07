@@ -82,65 +82,65 @@ public:
 	void Reset();
 	
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
+	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
 	
 	/** Set pipeline. */
-	void SetPipeline( const deoglPipeline *pipeline );
+	void SetPipeline(const deoglPipeline *pipeline);
 	
 	/** Retrieves the texture shader parameter block or NULL if not used. */
-	inline const deoglShaderParameterBlock *GetParameterBlockTexture() const{ return pParamBlockTexture; }
+	inline const deoglShaderParameterBlock *GetParameterBlockTexture() const{return pParamBlockTexture;}
 	/** Sets the texture shader parameter block or NULL if not used. */
-	void SetParameterBlockTexture( const deoglShaderParameterBlock *block );
+	void SetParameterBlockTexture(const deoglShaderParameterBlock *block);
 	/** Retrieves the instance shader parameter block or NULL if not used. */
-	inline const deoglShaderParameterBlock *GetParameterBlockInstance() const{ return pParamBlockInstance; }
+	inline const deoglShaderParameterBlock *GetParameterBlockInstance() const{return pParamBlockInstance;}
 	/** Sets the instance shader parameter block or NULL if not used. */
-	void SetParameterBlockInstance( const deoglShaderParameterBlock *block );
+	void SetParameterBlockInstance(const deoglShaderParameterBlock *block);
 	/** Retrieves the texture units configuration. */
-	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
+	inline const deoglTexUnitsConfig *GetTUC() const{return pTUC;}
 	/** Sets the texture units configuration. */
-	void SetTUC( const deoglTexUnitsConfig *tuc );
+	void SetTUC(const deoglTexUnitsConfig *tuc);
 	
 	/** Retrieves the vao. */
-	inline const deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deoglVAO *GetVAO() const{return pVAO;}
 	/** Sets the vao. */
-	void SetVAO( const deoglVAO *vao );
+	void SetVAO(const deoglVAO *vao);
 	/** Retrieves the skin. */
-	inline const deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin *GetSkin() const{return pSkin;}
 	/** Sets the skin. */
-	void SetSkin( const deoglRSkin *skin );
+	void SetSkin(const deoglRSkin *skin);
 	/** Retrieves the dynamic skin. */
-	inline const deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin *GetDynamicSkin() const{return pDynamicSkin;}
 	/** Sets the dynamic skin. */
-	void SetDynamicSkin( const deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin(const deoglRDynamicSkin *dynamicSkin);
 	/** Retrieves the texture index. */
-	inline int GetTexture() const{ return pTexture; }
+	inline int GetTexture() const{return pTexture;}
 	/** Sets the texture index. */
-	void SetTexture( int texture );
+	void SetTexture(int texture);
 	
 	/** Retrieves the first index to render. */
-	inline int GetFirstIndex() const{ return pFirstIndex; }
+	inline int GetFirstIndex() const{return pFirstIndex;}
 	/** Sets the first index to render. */
-	void SetFirstIndex( int firstIndex );
+	void SetFirstIndex(int firstIndex);
 	/** Retrieves the number of indices to render. */
-	inline int GetIndexCount() const{ return pIndexCount; }
+	inline int GetIndexCount() const{return pIndexCount;}
 	/** Sets the number of indices to render. */
-	void SetIndexCount( int indexCount );
+	void SetIndexCount(int indexCount);
 	/** Increment the number if indices to render. */
-	void IncrementIndexCount( int amount );
+	void IncrementIndexCount(int amount);
 	/** Retrieves the primitive type. */
-	inline GLenum GetPrimitiveType() const{ return pPrimitiveType; }
+	inline GLenum GetPrimitiveType() const{return pPrimitiveType;}
 	/** Sets the primitive type. */
-	void SetPrimitiveType( GLenum primitiveType );
+	void SetPrimitiveType(GLenum primitiveType);
 	/*@}*/
 	
 	/** \name Instances */
 	/*@{*/
 	/** Retrieves the direct pointer to the instances. */
-	inline sInstance *GetInstances() const{ return pInstances; }
+	inline sInstance *GetInstances() const{return pInstances;}
 	/** Retrieves the number of instances. */
-	inline int GetInstanceCount() const{ return pInstanceCount; }
+	inline int GetInstanceCount() const{return pInstanceCount;}
 	/** Retrieves the instance at the given position. */
-	sInstance &GetInstanceAt( int index ) const;
+	sInstance &GetInstanceAt(int index) const;
 	/** Adds an instance. */
 	sInstance &AddInstance();
 	/** Removes all instances. */

@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglParameterInt::deoglParameterInt( deGraphicOpenGl &oal ) : deoglParameter( oal ){
-	SetType( eptNumeric );
+deoglParameterInt::deoglParameterInt(deGraphicOpenGl &oal) : deoglParameter(oal){
+	SetType(eptNumeric);
 }
 
 
@@ -49,10 +49,10 @@ deoglParameterInt::deoglParameterInt( deGraphicOpenGl &oal ) : deoglParameter( o
 
 decString deoglParameterInt::GetParameterValue(){
 	decString value;
-	value.Format( "%d", GetParameterInt() );
+	value.Format("%d", GetParameterInt());
 	return value;
 }
 
-void deoglParameterInt::SetParameterValue( const char *value ){
-	SetParameterInt( decString( value ).ToInt() );
+void deoglParameterInt::SetParameterValue(const char *value){
+	SetParameterInt(decString(value).ToInt());
 }

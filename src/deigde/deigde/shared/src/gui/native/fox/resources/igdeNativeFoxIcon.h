@@ -42,27 +42,27 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native icon. */
-	static void *CreateNativeIcon( deImage &image );
+	static void *CreateNativeIcon(deImage &image);
 	
 	/** \brief Create native icon. */
-	static void *CreateNativeIconPNG( decBaseFileReader &reader );
+	static void *CreateNativeIconPNG(decBaseFileReader &reader);
 	
 	/** \brief Duplicate native icon. */
-	static void *DuplicateNativeIcon( void *native );
+	static void *DuplicateNativeIcon(void *native);
 	
 	/** \brief Destroy native icon. */
-	static void DestroyNativeIcon( void *native );
+	static void DestroyNativeIcon(void *native);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	static decPoint GetSize( void *native );
-	static void Scale( const decPoint &size, void *native );
-	static void UpdatePixels( void *native, deImage &image );
+	static decPoint GetSize(void *native);
+	static void Scale(const decPoint &size, void *native);
+	static void UpdatePixels(void *native, deImage &image);
 	
-	static void CopyPixelData( deImage &image, FXColor *foxData );
+	static void CopyPixelData(deImage &image, FXColor *foxData);
 	/*@}*/
 };
 

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create list. */
-	deoglCombinedTextureList( deoglRenderThread &pRenderThread );
+	deoglCombinedTextureList(deoglRenderThread &pRenderThread);
 	
 	/** Clean up list. */
 	~deoglCombinedTextureList();
@@ -59,15 +59,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
 	/** Number of combined textures in the list. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{return pCount;}
 	
 	/** Root combined texture. */
-	inline deoglCombinedTexture *GetRoot() const{ return pRoot; }
+	inline deoglCombinedTexture *GetRoot() const{return pRoot;}
 	
 	/**
 	 * Combined texture with parameters.
@@ -75,13 +75,13 @@ public:
 	 *          texture. To remove a usage use the RemoveUsage function on the returned
 	 *          combined texture.
 	 */
-	deoglCombinedTexture *GetWith( const decColor &color, deoglRImage *images[ 4 ] );
+	deoglCombinedTexture *GetWith(const decColor &color, deoglRImage *images[4]);
 	
 	/**
 	 * Remove combined texture.
 	 * \details For use by deoglCombinedTexture only.
 	 */
-	void Remove( deoglCombinedTexture *combinedTexture );
+	void Remove(deoglCombinedTexture *combinedTexture);
 	/*@}*/
 };
 

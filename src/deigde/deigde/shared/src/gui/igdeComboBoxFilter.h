@@ -61,16 +61,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create combobox. */
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, const char *description = "");
 	
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, bool editable,
-		const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, bool editable,
+		const char *description = "");
 	
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, int rows,
-		const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, int rows,
+		const char *description = "");
 	
-	igdeComboBoxFilter( igdeEnvironment &environment, int columns, int rows, bool editable,
-		const char *description = "" );
+	igdeComboBoxFilter(igdeEnvironment &environment, int columns, int rows, bool editable,
+		const char *description = "");
 	
 	
 	
@@ -94,26 +94,26 @@ public:
 	void FilterItems();
 	
 	/** \brief Filter case insensitive. */
-	inline bool GetFilterCaseInsensitive() const{ return pFilterCaseInsensitive; }
+	inline bool GetFilterCaseInsensitive() const{return pFilterCaseInsensitive;}
 	
 	/** \brief Set if filtering is case insensitive. */
-	void SetFilterCaseInsentive( bool caseInsensitive );
+	void SetFilterCaseInsentive(bool caseInsensitive);
 	
 	/** \brief Filter string. */
-	inline const decString &GetFilterString() const{ return pFilterString; }
+	inline const decString &GetFilterString() const{return pFilterString;}
 	
 	/**
 	 * \brief Set filter string.
 	 * 
 	 * Calls FilterItems() if the filter string changed.
 	 */
-	void SetFilterString( const char *filterString );
+	void SetFilterString(const char *filterString);
 	
 	/** \brief Number of stored filter items. */
 	int GetFilterItemCount() const;
 	
 	/** \brief Stored filter item at index. */
-	igdeListItem *GetFilterItemAt( int index ) const;
+	igdeListItem *GetFilterItemAt(int index) const;
 	/*@}*/
 	
 	
@@ -139,19 +139,19 @@ public:
 	
 protected:
 	/** \brief Item added. */
-	virtual void OnItemAdded( int index );
+	virtual void OnItemAdded(int index);
 	
 	/** \brief Item removed. */
-	virtual void OnItemRemoved( int index );
+	virtual void OnItemRemoved(int index);
 	
 	/** \brief All items removed. */
 	virtual void OnAllItemsRemoved();
 	
 	/** \brief Item changed. */
-	virtual void OnItemChanged( int index );
+	virtual void OnItemChanged(int index);
 	
 	/** \brief Item moved. */
-	virtual void OnItemMoved( int fromIndex, int toIndex );
+	virtual void OnItemMoved(int fromIndex, int toIndex);
 	
 	/** \brief Items sorted. */
 	virtual void OnItemsSorted();

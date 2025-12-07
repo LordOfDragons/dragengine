@@ -41,16 +41,16 @@ private:
 	deScriptingDragonScript *pScrMgr;
 public:
 	// constructor
-	deClassColor( deEngine *gameEngine, deScriptingDragonScript *scriptManager );
+	deClassColor(deEngine *gameEngine, deScriptingDragonScript *scriptManager);
 	~deClassColor();
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	void InitStatics( dsRunTime *RT );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	const decColor &GetColor( dsRealObject *This ) const;
-	void PushColor( dsRunTime *RT, const decColor &color );
-	void AddColorConstant( dsRunTime *RT, const char *name, const decColor &color );
+	void CreateClassMembers(dsEngine *engine);
+	void InitStatics(dsRunTime *RT);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	const decColor &GetColor(dsRealObject *This) const;
+	void PushColor(dsRunTime *RT, const decColor &color);
+	void AddColorConstant(dsRunTime *RT, const char *name, const decColor &color);
 
 private:
 	struct sInitData{
@@ -59,47 +59,47 @@ private:
 		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfNew3 );
-	DEF_NATFUNC( nfNewRGB );
-	DEF_NATFUNC( nfNewRGBA );
-	DEF_NATFUNC( nfNewHSV );
-	DEF_NATFUNC( nfNewHSL );
-	DEF_NATFUNC( nfNewCMYK );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfNew3);
+	DEF_NATFUNC(nfNewRGB);
+	DEF_NATFUNC(nfNewRGBA);
+	DEF_NATFUNC(nfNewHSV);
+	DEF_NATFUNC(nfNewHSL);
+	DEF_NATFUNC(nfNewCMYK);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetRed );
-	DEF_NATFUNC( nfGetGreen );
-	DEF_NATFUNC( nfGetBlue );
-	DEF_NATFUNC( nfGetAlpha );
-	DEF_NATFUNC( nfClamp );
-	DEF_NATFUNC( nfInvert );
+	DEF_NATFUNC(nfGetRed);
+	DEF_NATFUNC(nfGetGreen);
+	DEF_NATFUNC(nfGetBlue);
+	DEF_NATFUNC(nfGetAlpha);
+	DEF_NATFUNC(nfClamp);
+	DEF_NATFUNC(nfInvert);
 	
-	DEF_NATFUNC( nfIsEqual );
-	DEF_NATFUNC( nfIsEqual2 );
+	DEF_NATFUNC(nfIsEqual);
+	DEF_NATFUNC(nfIsEqual2);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfOpAdd );
-	DEF_NATFUNC( nfOpSubtract );
-	DEF_NATFUNC( nfOpScale );
-	DEF_NATFUNC( nfOpDivide );
-	DEF_NATFUNC( nfOpMultiply );
+	DEF_NATFUNC(nfOpAdd);
+	DEF_NATFUNC(nfOpSubtract);
+	DEF_NATFUNC(nfOpScale);
+	DEF_NATFUNC(nfOpDivide);
+	DEF_NATFUNC(nfOpMultiply);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
-	DEF_NATFUNC( nfToStringPrecision );
-	DEF_NATFUNC( nfToHSV );
-	DEF_NATFUNC( nfToHSL );
-	DEF_NATFUNC( nfToCMYK );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
+	DEF_NATFUNC(nfToStringPrecision);
+	DEF_NATFUNC(nfToHSV);
+	DEF_NATFUNC(nfToHSL);
+	DEF_NATFUNC(nfToCMYK);
 #undef DEF_NATFUNC
 };
 

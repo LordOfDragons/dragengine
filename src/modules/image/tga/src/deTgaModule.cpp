@@ -39,7 +39,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -51,11 +51,11 @@ MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule( deLoadableModule *loadableMo
 // has to be named CreateModule returning deBaseModule.
 // returns NULL on error.
 /////////////////////////////////////////////////////////
-deBaseModule *TGACreateModule( deLoadableModule *loadableModule ){
+deBaseModule *TGACreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	try{
-		module = new deTgaModule( *loadableModule );
-	}catch( const deException & ){
+		module = new deTgaModule(*loadableModule);
+	}catch(const deException &){
 		return NULL;
 	}
 	return module;
@@ -67,8 +67,8 @@ deBaseModule *TGACreateModule( deLoadableModule *loadableModule ){
 //////////////////////
 
 // constructor, destructor
-deTgaModule::deTgaModule( deLoadableModule &loadableModule ) :
-deBaseImageModule( loadableModule ){
+deTgaModule::deTgaModule(deLoadableModule &loadableModule) :
+deBaseImageModule(loadableModule){
 }
 deTgaModule::~deTgaModule(){
 }
@@ -92,7 +92,7 @@ deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
 			delete infos;
 			return NULL;
 		}
-	}catch( const deException & ){
+	}catch(const deException &){
 		if(infos) delete infos;
 		throw;
 	}
@@ -146,9 +146,9 @@ void deTgaModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	}
 }
 void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
-	if( image.GetBitCount() != 8 ) DETHROW( deeInvalidParam );
+	if(image.GetBitCount() != 8) DETHROW(deeInvalidParam);
 	int componentCount = image.GetComponentCount();
-	if( componentCount != 1 && componentCount != 3 && componentCount != 4 ) DETHROW( deeInvalidParam );
+	if(componentCount != 1 && componentCount != 3 && componentCount != 4) DETHROW(deeInvalidParam);
 	
 	sRGBA8 *dataRGBA;
 	sRGB8 *dataRGB;
@@ -160,9 +160,9 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	// write header
 	header.idLength = 0;
 	header.clrMapType = 0;
-	if( componentCount == 4 ){
+	if(componentCount == 4){
 		header.imageType = 1;
-	}else if( componentCount == 3 ){
+	}else if(componentCount == 3){
 		header.imageType = 2;
 	}else{
 		header.imageType = 3;
@@ -179,7 +179,7 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	file.Write(&header, sizeof(header));
 	// save pixel data
 	size = width * height;
-	if( componentCount == 4 ){
+	if(componentCount == 4){
 		dataRGBA = image.GetDataRGBA8();
 		for(p=0; p<size; p++){
 			file.WriteByte(dataRGBA[p].blue);
@@ -187,7 +187,7 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 			file.WriteByte(dataRGBA[p].red);
 			file.WriteByte(dataRGBA[p].alpha);
 		}
-	}else if( componentCount == 3 ){
+	}else if(componentCount == 3){
 		dataRGB = image.GetDataRGB8();
 		for(p=0; p<size; p++){
 			file.WriteByte(dataRGB[p].blue);

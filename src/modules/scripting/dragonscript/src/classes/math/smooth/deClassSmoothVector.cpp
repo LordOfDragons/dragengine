@@ -58,11 +58,11 @@ struct sSmVecNatDat{
 /////////////////////////////
 
 // public func new()
-deClassSmoothVector::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsSmVector,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSmoothVector::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSmVector,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSmoothVector::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sSmVecNatDat &nd = *( ( sSmVecNatDat* )p_GetNativeData( myself ) );
+void deClassSmoothVector::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sSmVecNatDat &nd = *((sSmVecNatDat*)p_GetNativeData(myself));
 	
 	nd.smoothVector = NULL;
 	
@@ -70,33 +70,33 @@ void deClassSmoothVector::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 }
 
 // public func new( SmoothVector smoothFloat )
-deClassSmoothVector::nfNewCopy::nfNewCopy( const sInitData &init ) : dsFunction( init.clsSmVector,
-DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsSmVector ); // smoothFloat
+deClassSmoothVector::nfNewCopy::nfNewCopy(const sInitData &init) : dsFunction(init.clsSmVector,
+DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsSmVector); // smoothFloat
 }
-void deClassSmoothVector::nfNewCopy::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sSmVecNatDat &nd = *( ( sSmVecNatDat* )p_GetNativeData( myself ) );
-	deClassSmoothVector &clsSmoothVector = *( ( deClassSmoothVector* )GetOwnerClass() );
+void deClassSmoothVector::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
+	sSmVecNatDat &nd = *((sSmVecNatDat*)p_GetNativeData(myself));
+	deClassSmoothVector &clsSmoothVector = *((deClassSmoothVector*)GetOwnerClass());
 	
 	nd.smoothVector = NULL;
 	
-	const decSmoothVector &copy = clsSmoothVector.GetSmoothVector( rt->GetValue( 0 )->GetRealObject() );
-	nd.smoothVector = new decSmoothVector( copy );
+	const decSmoothVector &copy = clsSmoothVector.GetSmoothVector(rt->GetValue(0)->GetRealObject());
+	nd.smoothVector = new decSmoothVector(copy);
 }
 
 
 // public func destructor()
-deClassSmoothVector::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsSmVector,
-DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSmoothVector::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsSmVector,
+DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSmoothVector::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSmoothVector::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSmVecNatDat &nd = *( ( sSmVecNatDat* )p_GetNativeData( myself ) );
+	sSmVecNatDat &nd = *((sSmVecNatDat*)p_GetNativeData(myself));
 	
-	if( nd.smoothVector ){
+	if(nd.smoothVector){
 		delete nd.smoothVector;
 		nd.smoothVector = NULL;
 	}
@@ -108,137 +108,137 @@ void deClassSmoothVector::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mys
 //////////////
 
 // public func Vector getValue()
-deClassSmoothVector::nfGetValue::nfGetValue( const sInitData &init ) : dsFunction( init.clsSmVector,
-"getValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassSmoothVector::nfGetValue::nfGetValue(const sInitData &init) : dsFunction(init.clsSmVector,
+"getValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassSmoothVector::nfGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
-	const deScriptingDragonScript &ds = ( ( deClassSmoothVector* )GetOwnerClass() )->GetDS();
+void deClassSmoothVector::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
+	const deScriptingDragonScript &ds = ((deClassSmoothVector*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassVector()->PushVector( rt, smoothFloat.GetValue() );
+	ds.GetClassVector()->PushVector(rt, smoothFloat.GetValue());
 }
 
 // public func void setValue( Vector value )
-deClassSmoothVector::nfSetValue::nfSetValue( const sInitData &init ) : dsFunction( init.clsSmVector,
-"setValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // value
+deClassSmoothVector::nfSetValue::nfSetValue(const sInitData &init) : dsFunction(init.clsSmVector,
+"setValue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // value
 }
-void deClassSmoothVector::nfSetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
-	const deScriptingDragonScript &ds = ( ( deClassSmoothVector* )GetOwnerClass() )->GetDS();
+void deClassSmoothVector::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
+	const deScriptingDragonScript &ds = ((deClassSmoothVector*)GetOwnerClass())->GetDS();
 	
-	const decVector &value = ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() );
-	smoothFloat.SetValue( value );
+	const decVector &value = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
+	smoothFloat.SetValue(value);
 }
 
 // public func Vector getGoal()
-deClassSmoothVector::nfGetGoal::nfGetGoal( const sInitData &init ) : dsFunction( init.clsSmVector,
-"getGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+deClassSmoothVector::nfGetGoal::nfGetGoal(const sInitData &init) : dsFunction(init.clsSmVector,
+"getGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
-void deClassSmoothVector::nfGetGoal::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
-	const deScriptingDragonScript &ds = ( ( deClassSmoothVector* )GetOwnerClass() )->GetDS();
+void deClassSmoothVector::nfGetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
+	const deScriptingDragonScript &ds = ((deClassSmoothVector*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassVector()->PushVector( rt, smoothFloat.GetGoal() );
+	ds.GetClassVector()->PushVector(rt, smoothFloat.GetGoal());
 }
 
 // public func void setGoal( Vector goal )
-deClassSmoothVector::nfSetGoal::nfSetGoal( const sInitData &init ) : dsFunction( init.clsSmVector,
-"setGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsVec ); // goal
+deClassSmoothVector::nfSetGoal::nfSetGoal(const sInitData &init) : dsFunction(init.clsSmVector,
+"setGoal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsVec); // goal
 }
-void deClassSmoothVector::nfSetGoal::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
-	const deScriptingDragonScript &ds = ( ( deClassSmoothVector* )GetOwnerClass() )->GetDS();
+void deClassSmoothVector::nfSetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
+	const deScriptingDragonScript &ds = ((deClassSmoothVector*)GetOwnerClass())->GetDS();
 	
-	const decVector &value = ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() );
-	smoothFloat.SetGoal( value );
+	const decVector &value = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
+	smoothFloat.SetGoal(value);
 }
 
 // public func float getAdjustTime()
-deClassSmoothVector::nfGetAdjustTime::nfGetAdjustTime( const sInitData &init ) : dsFunction( init.clsSmVector,
-"getAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothVector::nfGetAdjustTime::nfGetAdjustTime(const sInitData &init) : dsFunction(init.clsSmVector,
+"getAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothVector::nfGetAdjustTime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfGetAdjustTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	rt->PushFloat( smoothFloat.GetAdjustTime() );
+	rt->PushFloat(smoothFloat.GetAdjustTime());
 }
 
 // public void setAdjustTime( float adjustTime )
-deClassSmoothVector::nfSetAdjustTime::nfSetAdjustTime( const sInitData &init ) : dsFunction( init.clsSmVector,
-"setAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothVector::nfSetAdjustTime::nfSetAdjustTime(const sInitData &init) : dsFunction(init.clsSmVector,
+"setAdjustTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothVector::nfSetAdjustTime::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfSetAdjustTime::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	smoothFloat.SetAdjustTime( rt->GetValue( 0 )->GetFloat() );
+	smoothFloat.SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
 
 // public func float getAdjustRange()
-deClassSmoothVector::nfGetAdjustRange::nfGetAdjustRange( const sInitData &init ) : dsFunction( init.clsSmVector,
-"getAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothVector::nfGetAdjustRange::nfGetAdjustRange(const sInitData &init) : dsFunction(init.clsSmVector,
+"getAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothVector::nfGetAdjustRange::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfGetAdjustRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	rt->PushFloat( smoothFloat.GetAdjustRange() );
+	rt->PushFloat(smoothFloat.GetAdjustRange());
 }
 
 // public func void setAdjustRange( float range )
-deClassSmoothVector::nfSetAdjustRange::nfSetAdjustRange( const sInitData &init ) : dsFunction( init.clsSmVector,
-"setAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // range
+deClassSmoothVector::nfSetAdjustRange::nfSetAdjustRange(const sInitData &init) : dsFunction(init.clsSmVector,
+"setAdjustRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // range
 }
-void deClassSmoothVector::nfSetAdjustRange::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfSetAdjustRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	smoothFloat.SetAdjustRange( rt->GetValue( 0 )->GetFloat() );
+	smoothFloat.SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
 
 // public func float getChangeSpeed()
-deClassSmoothVector::nfGetChangeSpeed::nfGetChangeSpeed( const sInitData &init ) : dsFunction( init.clsSmVector,
-"getChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+deClassSmoothVector::nfGetChangeSpeed::nfGetChangeSpeed(const sInitData &init) : dsFunction(init.clsSmVector,
+"getChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
-void deClassSmoothVector::nfGetChangeSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfGetChangeSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	rt->PushFloat( smoothFloat.GetChangeSpeed() );
+	rt->PushFloat(smoothFloat.GetChangeSpeed());
 }
 
 // public func void setChangeSpeed( float changeSpeed )
-deClassSmoothVector::nfSetChangeSpeed::nfSetChangeSpeed( const sInitData &init ) : dsFunction( init.clsSmVector,
-"setChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // value
+deClassSmoothVector::nfSetChangeSpeed::nfSetChangeSpeed(const sInitData &init) : dsFunction(init.clsSmVector,
+"setChangeSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // value
 }
-void deClassSmoothVector::nfSetChangeSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfSetChangeSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	smoothFloat.SetChangeSpeed( rt->GetValue( 0 )->GetFloat() );
+	smoothFloat.SetChangeSpeed(rt->GetValue(0)->GetFloat());
 }
 
 
 
 // public func void reset()
-deClassSmoothVector::nfReset::nfReset( const sInitData &init ) : dsFunction( init.clsSmVector,
-"reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSmoothVector::nfReset::nfReset(const sInitData &init) : dsFunction(init.clsSmVector,
+"reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSmoothVector::nfReset::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
 	smoothFloat.Reset();
 }
 
 // public func void update( float elapsed )
-deClassSmoothVector::nfUpdate::nfUpdate( const sInitData &init ) : dsFunction( init.clsSmVector,
-"update", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // elapsed
+deClassSmoothVector::nfUpdate::nfUpdate(const sInitData &init) : dsFunction(init.clsSmVector,
+"update", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFlt); // elapsed
 }
-void deClassSmoothVector::nfUpdate::RunFunction( dsRunTime *rt, dsValue *myself ){
-	decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfUpdate::RunFunction(dsRunTime *rt, dsValue *myself){
+	decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	
-	smoothFloat.Update( rt->GetValue( 0 )->GetFloat() );
+	smoothFloat.Update(rt->GetValue(0)->GetFloat());
 }
 
 
@@ -247,59 +247,59 @@ void deClassSmoothVector::nfUpdate::RunFunction( dsRunTime *rt, dsValue *myself 
 //////////////////
 
 // static public func SmoothVector readFromFile( FileReader reader )
-deClassSmoothVector::nfReadFromFile::nfReadFromFile( const sInitData &init ) : dsFunction( init.clsSmVector,
-"readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSmVector ){
-	p_AddParameter( init.clsFileReader ); // reader
+deClassSmoothVector::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunction(init.clsSmVector,
+"readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSmVector){
+	p_AddParameter(init.clsFileReader); // reader
 }
-void deClassSmoothVector::nfReadFromFile::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassSmoothVector &clsSmoothVector = *( ( deClassSmoothVector* )GetOwnerClass() );
+void deClassSmoothVector::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassSmoothVector &clsSmoothVector = *((deClassSmoothVector*)GetOwnerClass());
 	const deClassFileReader &clsFileReader = *clsSmoothVector.GetDS().GetClassFileReader();
-	decBaseFileReader * const reader = clsFileReader.GetFileReader( rt->GetValue( 0 )->GetRealObject() );
+	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
-	if( ! reader ){
-		DSTHROW( dueNullPointer );
+	if(! reader){
+		DSTHROW(dueNullPointer);
 	}
 	
 	decSmoothVector smoothVector;
 	const int version = reader->ReadByte();
 	
-	switch( version ){
+	switch(version){
 	case 0:
-		smoothVector.SetValue( reader->ReadVector() );
-		smoothVector.SetGoal( reader->ReadVector() );
-		smoothVector.SetAdjustRange( reader->ReadFloat() );
-		smoothVector.SetAdjustTime( reader->ReadFloat() );
-		smoothVector.SetChangeSpeed( reader->ReadFloat() );
+		smoothVector.SetValue(reader->ReadVector());
+		smoothVector.SetGoal(reader->ReadVector());
+		smoothVector.SetAdjustRange(reader->ReadFloat());
+		smoothVector.SetAdjustTime(reader->ReadFloat());
+		smoothVector.SetChangeSpeed(reader->ReadFloat());
 		break;
 		
 	default:
-		DSTHROW( dueInvalidParam );
+		DSTHROW(dueInvalidParam);
 	}
 	
-	clsSmoothVector.PushSmoothVector( rt, smoothVector );
+	clsSmoothVector.PushSmoothVector(rt, smoothVector);
 }
 
 // public func void writeToFile( FileWriter writer )
-deClassSmoothVector::nfWriteToFile::nfWriteToFile( const sInitData &init ) : dsFunction( init.clsSmVector,
-"writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFileWriter ); // writer
+deClassSmoothVector::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(init.clsSmVector,
+"writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFileWriter); // writer
 }
-void deClassSmoothVector::nfWriteToFile::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothVector = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
-	const deClassSmoothVector &clsSmoothVector = *( ( deClassSmoothVector* )GetOwnerClass() );
+void deClassSmoothVector::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothVector = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
+	const deClassSmoothVector &clsSmoothVector = *((deClassSmoothVector*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsSmoothVector.GetDS().GetClassFileWriter();
-	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter( rt->GetValue( 0 )->GetRealObject() );
+	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
-	if( ! writer ){
-		DSTHROW( dueNullPointer );
+	if(! writer){
+		DSTHROW(dueNullPointer);
 	}
 	
-	writer->WriteByte( 0 ); // version 0
-	writer->WriteVector( smoothVector.GetValue() );
-	writer->WriteVector( smoothVector.GetGoal() );
-	writer->WriteFloat( smoothVector.GetAdjustRange() );
-	writer->WriteFloat( smoothVector.GetAdjustTime() );
-	writer->WriteFloat( smoothVector.GetChangeSpeed() );
+	writer->WriteByte(0); // version 0
+	writer->WriteVector(smoothVector.GetValue());
+	writer->WriteVector(smoothVector.GetGoal());
+	writer->WriteFloat(smoothVector.GetAdjustRange());
+	writer->WriteFloat(smoothVector.GetAdjustTime());
+	writer->WriteFloat(smoothVector.GetChangeSpeed());
 }
 
 
@@ -308,35 +308,35 @@ void deClassSmoothVector::nfWriteToFile::RunFunction( dsRunTime *rt, dsValue *my
 //////////////////////
 
 // public func bool equals( Object other )
-deClassSmoothVector::nfEquals::nfEquals( const sInitData &init ) : dsFunction( init.clsSmVector,
-"equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // other
+deClassSmoothVector::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsSmVector,
+"equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // other
 }
-void deClassSmoothVector::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
-	deClassSmoothVector * const clsSmoothVector = ( deClassSmoothVector* )GetOwnerClass();
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassSmoothVector::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
+	deClassSmoothVector * const clsSmoothVector = (deClassSmoothVector*)GetOwnerClass();
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsSmoothVector ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsSmoothVector)){
+		rt->PushBool(false);
 		
 	}else{
-		const decSmoothVector &otherSmoothVector = clsSmoothVector->GetSmoothVector( obj->GetRealObject() );
-		rt->PushBool( smoothFloat == otherSmoothVector );
+		const decSmoothVector &otherSmoothVector = clsSmoothVector->GetSmoothVector(obj->GetRealObject());
+		rt->PushBool(smoothFloat == otherSmoothVector);
 	}
 }
 
 // public func String toString()
-deClassSmoothVector::nfToString::nfToString( const sInitData &init ) : dsFunction( init.clsSmVector,
-"toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassSmoothVector::nfToString::nfToString(const sInitData &init) : dsFunction(init.clsSmVector,
+"toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassSmoothVector::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const decSmoothVector &smoothFloat = *( ( sSmVecNatDat* )p_GetNativeData( myself ) )->smoothVector;
+void deClassSmoothVector::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decSmoothVector &smoothFloat = *((sSmVecNatDat*)p_GetNativeData(myself))->smoothVector;
 	decString str;
 	
-	str.Format( "[%g,%g,%g]", smoothFloat.GetValue().x, smoothFloat.GetValue().y, smoothFloat.GetValue().z );
+	str.Format("[%g,%g,%g]", smoothFloat.GetValue().x, smoothFloat.GetValue().y, smoothFloat.GetValue().z);
 	
-	rt->PushString( str );
+	rt->PushString(str);
 }
 
 
@@ -347,13 +347,13 @@ void deClassSmoothVector::nfToString::RunFunction( dsRunTime *rt, dsValue *mysel
 // Constructor, Destructor
 ////////////////////////////
 
-deClassSmoothVector::deClassSmoothVector( deScriptingDragonScript &ds ) :
-dsClass( "SmoothVector", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds ){
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+deClassSmoothVector::deClassSmoothVector(deScriptingDragonScript &ds) :
+dsClass("SmoothVector", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds){
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSmVecNatDat ) );
+	p_SetNativeDataSize(sizeof(sSmVecNatDat));
 }
 
 deClassSmoothVector::~deClassSmoothVector(){
@@ -364,7 +364,7 @@ deClassSmoothVector::~deClassSmoothVector(){
 // Management
 ///////////////
 
-void deClassSmoothVector::CreateClassMembers( dsEngine *engine ){
+void deClassSmoothVector::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -380,53 +380,53 @@ void deClassSmoothVector::CreateClassMembers( dsEngine *engine ){
 	init.clsFileWriter = pDS.GetClassFileWriter();
 	
 	// add functions
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfNewCopy( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfNewCopy(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetValue( init ) );
-	AddFunction( new nfSetValue( init ) );
-	AddFunction( new nfGetGoal( init ) );
-	AddFunction( new nfSetGoal( init ) );
-	AddFunction( new nfGetAdjustTime( init ) );
-	AddFunction( new nfSetAdjustTime( init ) );
-	AddFunction( new nfGetAdjustRange( init ) );
-	AddFunction( new nfSetAdjustRange( init ) );
-	AddFunction( new nfGetChangeSpeed( init ) );
-	AddFunction( new nfSetChangeSpeed( init ) );
+	AddFunction(new nfGetValue(init));
+	AddFunction(new nfSetValue(init));
+	AddFunction(new nfGetGoal(init));
+	AddFunction(new nfSetGoal(init));
+	AddFunction(new nfGetAdjustTime(init));
+	AddFunction(new nfSetAdjustTime(init));
+	AddFunction(new nfGetAdjustRange(init));
+	AddFunction(new nfSetAdjustRange(init));
+	AddFunction(new nfGetChangeSpeed(init));
+	AddFunction(new nfSetChangeSpeed(init));
 	
-	AddFunction( new nfReset( init ) );
-	AddFunction( new nfUpdate( init ) );
+	AddFunction(new nfReset(init));
+	AddFunction(new nfUpdate(init));
 	
-	AddFunction( new nfReadFromFile( init ) );
-	AddFunction( new nfWriteToFile( init ) );
+	AddFunction(new nfReadFromFile(init));
+	AddFunction(new nfWriteToFile(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfToString( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfToString(init));
 }
 
-const decSmoothVector &deClassSmoothVector::GetSmoothVector( dsRealObject *myself ) const{
-	if( ! myself ){
-		DSTHROW( dueNullPointer );
+const decSmoothVector &deClassSmoothVector::GetSmoothVector(dsRealObject *myself) const{
+	if(! myself){
+		DSTHROW(dueNullPointer);
 	}
 	
-	return *( ( sSmVecNatDat* )p_GetNativeData( myself->GetBuffer() ) )->smoothVector;
+	return *((sSmVecNatDat*)p_GetNativeData(myself->GetBuffer()))->smoothVector;
 }
 
-void deClassSmoothVector::PushSmoothVector( dsRunTime *rt, const decSmoothVector &smoothFloat ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassSmoothVector::PushSmoothVector(dsRunTime *rt, const decSmoothVector &smoothFloat){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sSmVecNatDat &nd = *( ( sSmVecNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sSmVecNatDat &nd = *((sSmVecNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.smoothVector = NULL;
 	
 	try{
-		nd.smoothVector = new decSmoothVector( smoothFloat );
+		nd.smoothVector = new decSmoothVector(smoothFloat);
 		
-	}catch( ... ){
-		rt->RemoveValues( 1 ); // remove pushed object
+	}catch(...){
+		rt->RemoveValues(1); // remove pushed object
 		throw;
 	}
 }

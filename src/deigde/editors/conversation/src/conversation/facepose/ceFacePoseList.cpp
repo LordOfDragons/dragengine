@@ -55,19 +55,19 @@ int ceFacePoseList::GetCount() const{
 	return pFacePoses.GetCount();
 }
 
-ceFacePose *ceFacePoseList::GetAt( int index ) const{
-	return ( ceFacePose* )pFacePoses.GetAt( index );
+ceFacePose *ceFacePoseList::GetAt(int index) const{
+	return (ceFacePose*)pFacePoses.GetAt(index);
 }
 
-ceFacePose *ceFacePoseList::GetNamed( const char *name ) const{
+ceFacePose *ceFacePoseList::GetNamed(const char *name) const{
 	const int count = pFacePoses.GetCount();
 	ceFacePose *facePose;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		facePose = ( ceFacePose* )pFacePoses.GetAt( i );
+	for(i=0; i<count; i++){
+		facePose = (ceFacePose*)pFacePoses.GetAt(i);
 		
-		if( facePose->GetName().Equals( name ) ){
+		if(facePose->GetName().Equals(name)){
 			return facePose;
 		}
 	}
@@ -75,16 +75,16 @@ ceFacePose *ceFacePoseList::GetNamed( const char *name ) const{
 	return NULL;
 }
 
-int ceFacePoseList::IndexOf( ceFacePose *facePose ) const{
-	return pFacePoses.IndexOf( facePose );
+int ceFacePoseList::IndexOf(ceFacePose *facePose) const{
+	return pFacePoses.IndexOf(facePose);
 }
 
-int ceFacePoseList::IndexOfNamed( const char *name ) const{
+int ceFacePoseList::IndexOfNamed(const char *name) const{
 	const int count = pFacePoses.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceFacePose* )pFacePoses.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceFacePose*)pFacePoses.GetAt(i))->GetName().Equals(name)){
 			return i;
 		}
 	}
@@ -92,16 +92,16 @@ int ceFacePoseList::IndexOfNamed( const char *name ) const{
 	return -1;
 }
 
-bool ceFacePoseList::Has( ceFacePose *facePose ) const{
-	return pFacePoses.Has( facePose );
+bool ceFacePoseList::Has(ceFacePose *facePose) const{
+	return pFacePoses.Has(facePose);
 }
 
-bool ceFacePoseList::HasNamed( const char *name ) const{
+bool ceFacePoseList::HasNamed(const char *name) const{
 	const int count = pFacePoses.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( ceFacePose* )pFacePoses.GetAt( i ) )->GetName().Equals( name ) ){
+	for(i=0; i<count; i++){
+		if(((ceFacePose*)pFacePoses.GetAt(i))->GetName().Equals(name)){
 			return true;
 		}
 	}
@@ -109,14 +109,14 @@ bool ceFacePoseList::HasNamed( const char *name ) const{
 	return false;
 }
 
-void ceFacePoseList::Add( ceFacePose *facePose ){
-	if( ! facePose || HasNamed( facePose->GetName().GetString() ) ) DETHROW( deeInvalidParam );
+void ceFacePoseList::Add(ceFacePose *facePose){
+	if(! facePose || HasNamed(facePose->GetName().GetString())) DETHROW(deeInvalidParam);
 	
-	pFacePoses.Add( facePose );
+	pFacePoses.Add(facePose);
 }
 
-void ceFacePoseList::Remove( ceFacePose *facePose ){
-	pFacePoses.Remove( facePose );
+void ceFacePoseList::Remove(ceFacePose *facePose){
+	pFacePoses.Remove(facePose);
 }
 
 void ceFacePoseList::RemoveAll(){
@@ -125,12 +125,12 @@ void ceFacePoseList::RemoveAll(){
 
 
 
-ceFacePoseList &ceFacePoseList::operator=( const ceFacePoseList &list ){
+ceFacePoseList &ceFacePoseList::operator=(const ceFacePoseList &list){
 	pFacePoses = list.pFacePoses;
 	return *this;
 }
 
-ceFacePoseList &ceFacePoseList::operator+=( const ceFacePoseList &list ){
+ceFacePoseList &ceFacePoseList::operator+=(const ceFacePoseList &list){
 	pFacePoses += list.pFacePoses;
 	return *this;
 }

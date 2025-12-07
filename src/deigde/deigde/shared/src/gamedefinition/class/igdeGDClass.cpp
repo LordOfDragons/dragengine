@@ -58,9 +58,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDClass::igdeGDClass( const char *name ){
-	if( ! name || strlen( name ) == 0 ){
-		DETHROW( deeInvalidParam );
+igdeGDClass::igdeGDClass(const char *name){
+	if(! name || strlen(name) == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pName = name;
@@ -78,13 +78,13 @@ igdeGDClass::igdeGDClass( const char *name ){
 	try{
 		pCamera = new igdeGDCamera;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
+igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 	igdeGDCSnapPoint *snappoint = NULL;
 	int i, count;
 	
@@ -97,8 +97,8 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		pDescription = gdclass.pDescription;
 		pScaleMode = gdclass.pScaleMode;
 		
-		if( gdclass.pCamera ){
-			pCamera = new igdeGDCamera( *gdclass.pCamera );
+		if(gdclass.pCamera){
+			pCamera = new igdeGDCamera(*gdclass.pCamera);
 		}
 		pHasCamera = gdclass.pHasCamera;
 		pIsGhost = gdclass.pIsGhost;
@@ -108,44 +108,44 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		
 		pCategory = gdclass.pCategory;
 		
-		pListProperties.SetToDeepCopyFrom( gdclass.pListProperties );
+		pListProperties.SetToDeepCopyFrom(gdclass.pListProperties);
 		pPropertyValues = gdclass.pPropertyValues;
-		pTextureProperties.SetToDeepCopyFrom( gdclass.pTextureProperties );
-		pListBillboards.SetToDeepCopyFrom( gdclass.pListBillboards );
-		pListComponents.SetToDeepCopyFrom( gdclass.pListComponents );
-		pListLights.SetToDeepCopyFrom( gdclass.pListLights );
+		pTextureProperties.SetToDeepCopyFrom(gdclass.pTextureProperties);
+		pListBillboards.SetToDeepCopyFrom(gdclass.pListBillboards);
+		pListComponents.SetToDeepCopyFrom(gdclass.pListComponents);
+		pListLights.SetToDeepCopyFrom(gdclass.pListLights);
 		
 		count = gdclass.pSnapPoints.GetCount();
-		for( i=0; i<count; i++ ){
-			snappoint = new igdeGDCSnapPoint( *gdclass.pSnapPoints.GetAt( i ) );
-			pSnapPoints.Add( snappoint );
+		for(i=0; i<count; i++){
+			snappoint = new igdeGDCSnapPoint(*gdclass.pSnapPoints.GetAt(i));
+			pSnapPoints.Add(snappoint);
 			snappoint->FreeReference();
 			snappoint = NULL;
 		}
 		
-		pListParticleEmitters.SetToDeepCopyFrom( gdclass.pListParticleEmitters );
-		pListForceFields.SetToDeepCopyFrom( gdclass.pListForceFields );
-		pListEnvMapProbes.SetToDeepCopyFrom( gdclass.pListEnvMapProbes );
-		pListSpeakers.SetToDeepCopyFrom( gdclass.pListSpeakers );
-		pListNavigationSpaces.SetToDeepCopyFrom( gdclass.pListNavigationSpaces );
-		pListNavigationBlockers.SetToDeepCopyFrom( gdclass.pListNavigationBlockers );
+		pListParticleEmitters.SetToDeepCopyFrom(gdclass.pListParticleEmitters);
+		pListForceFields.SetToDeepCopyFrom(gdclass.pListForceFields);
+		pListEnvMapProbes.SetToDeepCopyFrom(gdclass.pListEnvMapProbes);
+		pListSpeakers.SetToDeepCopyFrom(gdclass.pListSpeakers);
+		pListNavigationSpaces.SetToDeepCopyFrom(gdclass.pListNavigationSpaces);
+		pListNavigationBlockers.SetToDeepCopyFrom(gdclass.pListNavigationBlockers);
 		pListWorlds.SetToDeepCopyFrom(gdclass.pListWorlds);
 		
 		pHideTags = gdclass.pHideTags;
 		pPartialHideTags = gdclass.pPartialHideTags;
 		
 		count = gdclass.pInheritClasses.GetCount();
-		for( i=0; i<count; i++ ){
+		for(i=0; i<count; i++){
 			pInheritClasses.Add(igdeGDClassInherit::Ref::NewWith(
 				*( ( igdeGDClassInherit* )gdclass.pInheritClasses.GetAt( i ) ) ) );
 		}
 		
 		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;
 		pPathEClass = gdclass.pPathEClass;
-		pComponentTextures.SetToDeepCopyFrom( gdclass.pComponentTextures );
+		pComponentTextures.SetToDeepCopyFrom(gdclass.pComponentTextures);
 		
-	}catch( const deException & ){
-		if( snappoint ){
+	}catch(const deException &){
+		if(snappoint){
 			snappoint->FreeReference();
 		}
 		
@@ -163,23 +163,23 @@ igdeGDClass::~igdeGDClass(){
 // Management
 ///////////////
 
-void igdeGDClass::SetDescription( const char *description ){
+void igdeGDClass::SetDescription(const char *description){
 	pDescription = description;
 }
 
-void igdeGDClass::SetScaleMode( eScaleModes mode ){
+void igdeGDClass::SetScaleMode(eScaleModes mode){
 	pScaleMode = mode;
 }
 
-void igdeGDClass::SetHasCamera( bool hasCamera ){
+void igdeGDClass::SetHasCamera(bool hasCamera){
 	pHasCamera = hasCamera;
 }
 
-void igdeGDClass::SetIsGhost( bool isGhost ){
+void igdeGDClass::SetIsGhost(bool isGhost){
 	pIsGhost = isGhost;
 }
 
-void igdeGDClass::SetCanInstantiate( bool canInstantiate ){
+void igdeGDClass::SetCanInstantiate(bool canInstantiate){
 	pCanInstantiate = canInstantiate;
 }
 
@@ -187,15 +187,15 @@ void igdeGDClass::SetIsAttachableBehavior(bool isAttachableBehavior){
 	pIsAttachableBehavior = isAttachableBehavior;
 }
 
-void igdeGDClass::SetCategory( const char *category ){
-	if( ! category ){
-		DETHROW( deeInvalidParam );
+void igdeGDClass::SetCategory(const char *category){
+	if(! category){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pCategory = category;
 }
 
-void igdeGDClass::SetInheritSubObjects( int filter ){
+void igdeGDClass::SetInheritSubObjects(int filter){
 	pInheritSubObjects = filter;
 }
 
@@ -205,21 +205,21 @@ int igdeGDClass::GetInheritClassCount() const{
 	return pInheritClasses.GetCount();
 }
 
-igdeGDClassInherit *igdeGDClass::GetInheritClassAt( int index ) const{
-	return ( igdeGDClassInherit* )pInheritClasses.GetAt( index );
+igdeGDClassInherit *igdeGDClass::GetInheritClassAt(int index) const{
+	return (igdeGDClassInherit*)pInheritClasses.GetAt(index);
 }
 
-void igdeGDClass::AddInheritClass( igdeGDClassInherit *inheritClass ){
-	if( ! inheritClass ){
-		DETHROW( deeInvalidParam );
+void igdeGDClass::AddInheritClass(igdeGDClassInherit *inheritClass){
+	if(! inheritClass){
+		DETHROW(deeInvalidParam);
 	}
-	pInheritClasses.Add( inheritClass );
+	pInheritClasses.Add(inheritClass);
 }
 
-void igdeGDClass::ResolveInheritClasses( const igdeGDClassManager &classManager ){
+void igdeGDClass::ResolveInheritClasses(const igdeGDClassManager &classManager){
 	const int count = pInheritClasses.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
 		inherit.ResolveClass(classManager);
 		inherit.AddAutoPrefixedPropertiesTo(*this);
@@ -230,16 +230,16 @@ void igdeGDClass::RemoveAllInheritClasses(){
 	pInheritClasses.RemoveAll();
 }
 
-bool igdeGDClass::Inherits( igdeGDClass *gdclass ) const{
-	if( ! gdclass || gdclass == this ){
+bool igdeGDClass::Inherits(igdeGDClass *gdclass) const{
+	if(! gdclass || gdclass == this){
 		return false;
 	}
 	
 	const int count = pInheritClasses.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		igdeGDClass * const inheritClass = ( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) )->GetClass();
-		if( inheritClass == gdclass || inheritClass->Inherits( gdclass ) ){
+	for(i=0; i<count; i++){
+		igdeGDClass * const inheritClass = ((igdeGDClassInherit*)pInheritClasses.GetAt(i))->GetClass();
+		if(inheritClass == gdclass || inheritClass->Inherits(gdclass)){
 			return true;
 		}
 	}
@@ -254,18 +254,18 @@ void igdeGDClass::Check(){
 
 
 
-void igdeGDClass::SetPreviewImage( deImage *image ){
-	if( image == pPreviewImage ){
+void igdeGDClass::SetPreviewImage(deImage *image){
+	if(image == pPreviewImage){
 		return;
 	}
 	
-	if( pPreviewImage ){
+	if(pPreviewImage){
 		pPreviewImage->FreeReference();
 	}
 	
 	pPreviewImage = image;
 	
-	if( image ){
+	if(image){
 		image->AddReference();
 	}
 }
@@ -274,25 +274,25 @@ void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){
 	pDefaultInheritPropertyPrefix = prefix;
 }
 
-void igdeGDClass::SetPathEClass( const decString &pathEClass ){
+void igdeGDClass::SetPathEClass(const decString &pathEClass){
 	pPathEClass = pathEClass;
 }
 
-void igdeGDClass::GetDeepComponentTextures( igdeGDCCTextureList &list ) const{
+void igdeGDClass::GetDeepComponentTextures(igdeGDCCTextureList &list) const{
 	const int textureCount = pComponentTextures.GetCount();
 	int i;
-	for( i=0; i<textureCount; i++ ){
-		igdeGDCCTexture * const texture = pComponentTextures.GetAt( i );
-		if( ! list.HasNamed( texture->GetName() ) ){
-			list.Add( texture );
+	for(i=0; i<textureCount; i++){
+		igdeGDCCTexture * const texture = pComponentTextures.GetAt(i);
+		if(! list.HasNamed(texture->GetName())){
+			list.Add(texture);
 		}
 	}
 	
 	const int inheritCount = pInheritClasses.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( inherit.GetClass() ){
-			inherit.GetClass()->GetDeepComponentTextures( list );
+	for(i=0; i<inheritCount; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(inherit.GetClass()){
+			inherit.GetClass()->GetDeepComponentTextures(list);
 		}
 	}
 }
@@ -302,47 +302,47 @@ void igdeGDClass::GetDeepComponentTextures( igdeGDCCTextureList &list ) const{
 // Properties
 ///////////////
 
-void igdeGDClass::AddProperty( igdeGDProperty *property ){
-	pListProperties.Add( property );
+void igdeGDClass::AddProperty(igdeGDProperty *property){
+	pListProperties.Add(property);
 }
 
-void igdeGDClass::RemoveProperty( igdeGDProperty *property ){
-	pListProperties.Remove( property );
+void igdeGDClass::RemoveProperty(igdeGDProperty *property){
+	pListProperties.Remove(property);
 }
 
 void igdeGDClass::RemoveAllProperties(){
 	pListProperties.RemoveAll();
 }
 
-void igdeGDClass::SetPropertyValues( const decStringDictionary &values ){
+void igdeGDClass::SetPropertyValues(const decStringDictionary &values){
 	pPropertyValues = values;
 }
 
-igdeGDProperty *igdeGDClass::GetPropertyNamed( const char *name ) const{
+igdeGDProperty *igdeGDClass::GetPropertyNamed(const char *name) const{
 	const igdeGDClass *gdclass = this;
-	igdeGDProperty *property = gdclass->pListProperties.GetNamed( name );
-	if( property ){
+	igdeGDProperty *property = gdclass->pListProperties.GetNamed(name);
+	if(property){
 		return property;
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = ( int )strlen( name );
+	const int nameLen = (int)strlen(name);
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( ! inherit.GetClass() ){
+	for(i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(! inherit.GetClass()){
 			continue;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
-		if( nameLen < prefixLen || strncmp( name, prefix, prefixLen ) != 0 ){
+		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
 			continue;
 		}
 		
-		property = inherit.GetClass()->GetPropertyNamed( name + prefixLen );
-		if( property ){
+		property = inherit.GetClass()->GetPropertyNamed(name + prefixLen);
+		if(property){
 			return property;
 		}
 	}
@@ -350,40 +350,40 @@ igdeGDProperty *igdeGDClass::GetPropertyNamed( const char *name ) const{
 	return NULL;
 }
 
-bool igdeGDClass::GetDefaultPropertyValue( const char *name, decString &value) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
 	const decString *checkValue;
-	if( pPropertyValues.GetAt( name, &checkValue ) ){
+	if(pPropertyValues.GetAt(name, &checkValue)){
 		value = *checkValue;
 		return true;
 	}
 	
-	igdeGDProperty * const property = pListProperties.GetNamed( name );
-	if( property ){
+	igdeGDProperty * const property = pListProperties.GetNamed(name);
+	if(property){
 		value = property->GetDefaultValue();
 		return true;
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = ( int )strlen( name );
+	const int nameLen = (int)strlen(name);
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( ! inherit.GetClass() ){
+	for(i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(! inherit.GetClass()){
 			continue;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
-		if( nameLen < prefixLen || strncmp( name, prefix, prefixLen ) != 0 ){
+		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
 			continue;
 		}
 		
-		if( inherit.GetClass()->GetDefaultPropertyValue( name + prefixLen, value ) ){
+		if(inherit.GetClass()->GetDefaultPropertyValue(name + prefixLen, value)){
 			return true;
 		}
 	}
@@ -391,27 +391,27 @@ bool igdeGDClass::GetDefaultPropertyValue( const char *name, decString &value) c
 	return false;
 }
 
-bool igdeGDClass::HasDefaultPropertyValue( const char *name ) const{
+bool igdeGDClass::HasDefaultPropertyValue(const char *name) const{
 	decString value;
-	return GetDefaultPropertyValue( name, value );
+	return GetDefaultPropertyValue(name, value);
 }
 
-void igdeGDClass::AddPropertyNames( decStringSet &set, bool inherited ) const{
+void igdeGDClass::AddPropertyNames(decStringSet &set, bool inherited) const{
 	const int propertyCount = pListProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( pListProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(pListProperties.GetAt(i)->GetName());
 	}
 	
-	if( ! inherited ){
+	if(! inherited){
 		return;
 	}
 	
 	const int inheritCount = pInheritClasses.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( inherit.GetClass() ){
-			inherit.GetClass()->pAddPropertyNames( set, inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(inherit.GetClass()){
+			inherit.GetClass()->pAddPropertyNames(set, inherit.GetPropertyPrefix());
 		}
 	}
 }
@@ -421,47 +421,47 @@ void igdeGDClass::AddPropertyNames( decStringSet &set, bool inherited ) const{
 // Texture properties
 ///////////////////////
 
-void igdeGDClass::SetTextureProperties( const igdeGDPropertyList &properties ){
+void igdeGDClass::SetTextureProperties(const igdeGDPropertyList &properties){
 	pTextureProperties = properties;
 }
 
-void igdeGDClass::AddTextureProperty( igdeGDProperty *property ){
-	pTextureProperties.Add( property );
+void igdeGDClass::AddTextureProperty(igdeGDProperty *property){
+	pTextureProperties.Add(property);
 }
 
-void igdeGDClass::RemoveTextureProperty( igdeGDProperty *property ){
-	pTextureProperties.Remove( property );
+void igdeGDClass::RemoveTextureProperty(igdeGDProperty *property){
+	pTextureProperties.Remove(property);
 }
 
 void igdeGDClass::RemoveAllTextureProperties(){
 	pTextureProperties.RemoveAll();
 }
 
-igdeGDProperty *igdeGDClass::GetTexturePropertyNamed( const char *name ) const{
+igdeGDProperty *igdeGDClass::GetTexturePropertyNamed(const char *name) const{
 	const igdeGDClass *gdclass = this;
-	igdeGDProperty *property = gdclass->pTextureProperties.GetNamed( name );
-	if( property ){
+	igdeGDProperty *property = gdclass->pTextureProperties.GetNamed(name);
+	if(property){
 		return property;
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = ( int )strlen( name );
+	const int nameLen = (int)strlen(name);
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( ! inherit.GetClass() ){
+	for(i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(! inherit.GetClass()){
 			continue;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
-		if( nameLen < prefixLen || strncmp( name, prefix, prefixLen ) != 0 ){
+		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
 			continue;
 		}
 		
-		property = inherit.GetClass()->GetTexturePropertyNamed( name + prefixLen );
-		if( property ){
+		property = inherit.GetClass()->GetTexturePropertyNamed(name + prefixLen);
+		if(property){
 			return property;
 		}
 	}
@@ -469,34 +469,34 @@ igdeGDProperty *igdeGDClass::GetTexturePropertyNamed( const char *name ) const{
 	return NULL;
 }
 
-bool igdeGDClass::GetDefaultTexturePropertyValue( const char *name, decString &value ) const{
-	if( ! name ){
-		DETHROW( deeInvalidParam );
+bool igdeGDClass::GetDefaultTexturePropertyValue(const char *name, decString &value) const{
+	if(! name){
+		DETHROW(deeInvalidParam);
 	}
 	
-	igdeGDProperty * const property = pTextureProperties.GetNamed( name );
-	if( property ){
+	igdeGDProperty * const property = pTextureProperties.GetNamed(name);
+	if(property){
 		value = property->GetDefaultValue();
 		return true;
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = ( int )strlen( name );
+	const int nameLen = (int)strlen(name);
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( ! inherit.GetClass() ){
+	for(i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(! inherit.GetClass()){
 			continue;
 		}
 		
 		const decString &prefix = inherit.GetPropertyPrefix();
 		const int prefixLen = prefix.GetLength();
-		if( nameLen < prefixLen || strncmp( name, prefix, prefixLen ) != 0 ){
+		if(nameLen < prefixLen || strncmp(name, prefix, prefixLen) != 0){
 			continue;
 		}
 		
-		if( inherit.GetClass()->GetDefaultTexturePropertyValue( name + prefixLen, value ) ){
+		if(inherit.GetClass()->GetDefaultTexturePropertyValue(name + prefixLen, value)){
 			return true;
 		}
 	}
@@ -504,27 +504,27 @@ bool igdeGDClass::GetDefaultTexturePropertyValue( const char *name, decString &v
 	return false;
 }
 
-bool igdeGDClass::HasDefaultTexturePropertyValue( const char *name ) const{
+bool igdeGDClass::HasDefaultTexturePropertyValue(const char *name) const{
 	decString value;
-	return GetDefaultTexturePropertyValue( name, value );
+	return GetDefaultTexturePropertyValue(name, value);
 }
 
-void igdeGDClass::AddTexturePropertyNames( decStringSet &set, bool inherited ) const{
+void igdeGDClass::AddTexturePropertyNames(decStringSet &set, bool inherited) const{
 	const int propertyCount = pTextureProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( pTextureProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(pTextureProperties.GetAt(i)->GetName());
 	}
 	
-	if( ! inherited ){
+	if(! inherited){
 		return;
 	}
 	
 	const int inheritCount = pInheritClasses.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( inherit.GetClass() ){
-			inherit.GetClass()->pAddTexturePropertyNames( set, inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(inherit.GetClass()){
+			inherit.GetClass()->pAddTexturePropertyNames(set, inherit.GetPropertyPrefix());
 		}
 	}
 }
@@ -534,24 +534,24 @@ void igdeGDClass::AddTexturePropertyNames( decStringSet &set, bool inherited ) c
 // Components
 ///////////////
 
-void igdeGDClass::AddComponent( igdeGDCComponent *component ){
-	pListComponents.Add( component );
+void igdeGDClass::AddComponent(igdeGDCComponent *component){
+	pListComponents.Add(component);
 }
 
-void igdeGDClass::RemoveComponent( igdeGDCComponent *component ){
-	pListComponents.Remove( component );
+void igdeGDClass::RemoveComponent(igdeGDCComponent *component){
+	pListComponents.Remove(component);
 }
 
 void igdeGDClass::RemoveAllComponents(){
 	pListComponents.RemoveAll();
 }
 
-bool igdeGDClass::HasComponentLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasComponentLinkedProperty(const char *name) const{
 	const int count = pListComponents.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListComponents.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListComponents.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -559,28 +559,28 @@ bool igdeGDClass::HasComponentLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCComponentList igdeGDClass::GetComponentsWithLinkedProperty( const char *name ) const{
+const igdeGDCComponentList igdeGDClass::GetComponentsWithLinkedProperty(const char *name) const{
 	const int count = pListComponents.GetCount();
 	igdeGDCComponentList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListComponents.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListComponents.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListComponents.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListComponents.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetComponentIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetComponentIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListComponents.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListComponents.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListComponents.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -592,12 +592,12 @@ const decIntList igdeGDClass::GetComponentIndicesWithLinkedProperty( const char 
 // Lights
 ///////////
 
-void igdeGDClass::AddLight( igdeGDCLight *light ){
-	pListLights.Add( light );
+void igdeGDClass::AddLight(igdeGDCLight *light){
+	pListLights.Add(light);
 }
 
-void igdeGDClass::RemoveLight( igdeGDCLight *light ){
-	pListLights.Remove( light );
+void igdeGDClass::RemoveLight(igdeGDCLight *light){
+	pListLights.Remove(light);
 	// notify;
 }
 
@@ -606,12 +606,12 @@ void igdeGDClass::RemoveAllLights(){
 	// notify;
 }
 
-bool igdeGDClass::HasLightLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasLightLinkedProperty(const char *name) const{
 	const int count = pListLights.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListLights.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListLights.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -619,28 +619,28 @@ bool igdeGDClass::HasLightLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCLightList igdeGDClass::GetLightWithLinkedProperty( const char *name ) const{
+const igdeGDCLightList igdeGDClass::GetLightWithLinkedProperty(const char *name) const{
 	const int count = pListLights.GetCount();
 	igdeGDCLightList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListLights.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListLights.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListLights.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListLights.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetLightIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetLightIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListLights.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListLights.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListLights.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -652,12 +652,12 @@ const decIntList igdeGDClass::GetLightIndicesWithLinkedProperty( const char *nam
 // Billboards
 ///////////
 
-void igdeGDClass::AddBillboard( igdeGDCBillboard *billboard ){
-	pListBillboards.Add( billboard );
+void igdeGDClass::AddBillboard(igdeGDCBillboard *billboard){
+	pListBillboards.Add(billboard);
 }
 
-void igdeGDClass::RemoveBillboard( igdeGDCBillboard *billboard ){
-	pListBillboards.Remove( billboard );
+void igdeGDClass::RemoveBillboard(igdeGDCBillboard *billboard){
+	pListBillboards.Remove(billboard);
 	// notify;
 }
 
@@ -666,12 +666,12 @@ void igdeGDClass::RemoveAllBillboards(){
 	// notify;
 }
 
-bool igdeGDClass::HasBillboardLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasBillboardLinkedProperty(const char *name) const{
 	const int count = pListBillboards.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListBillboards.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListBillboards.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -679,28 +679,28 @@ bool igdeGDClass::HasBillboardLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCBillboardList igdeGDClass::GetBillboardWithLinkedProperty( const char *name ) const{
+const igdeGDCBillboardList igdeGDClass::GetBillboardWithLinkedProperty(const char *name) const{
 	const int count = pListBillboards.GetCount();
 	igdeGDCBillboardList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListBillboards.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListBillboards.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListBillboards.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListBillboards.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetBillboardIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetBillboardIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListBillboards.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListBillboards.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListBillboards.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -712,24 +712,24 @@ const decIntList igdeGDClass::GetBillboardIndicesWithLinkedProperty( const char 
 // Speakers
 /////////////
 
-void igdeGDClass::AddSpeaker( igdeGDCSpeaker *speaker ){
-	pListSpeakers.Add( speaker );
+void igdeGDClass::AddSpeaker(igdeGDCSpeaker *speaker){
+	pListSpeakers.Add(speaker);
 }
 
-void igdeGDClass::RemoveSpeaker( igdeGDCSpeaker *speaker ){
-	pListSpeakers.Remove( speaker );
+void igdeGDClass::RemoveSpeaker(igdeGDCSpeaker *speaker){
+	pListSpeakers.Remove(speaker);
 }
 
 void igdeGDClass::RemoveAllSpeakers(){
 	pListSpeakers.RemoveAll();
 }
 
-bool igdeGDClass::HasSpeakerLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasSpeakerLinkedProperty(const char *name) const{
 	const int count = pListSpeakers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListSpeakers.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListSpeakers.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -737,28 +737,28 @@ bool igdeGDClass::HasSpeakerLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCSpeakerList igdeGDClass::GetSpeakerWithLinkedProperty( const char *name ) const{
+const igdeGDCSpeakerList igdeGDClass::GetSpeakerWithLinkedProperty(const char *name) const{
 	const int count = pListSpeakers.GetCount();
 	igdeGDCSpeakerList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListSpeakers.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListSpeakers.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListSpeakers.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListSpeakers.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetSpeakerIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetSpeakerIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListSpeakers.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListSpeakers.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListSpeakers.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -770,24 +770,24 @@ const decIntList igdeGDClass::GetSpeakerIndicesWithLinkedProperty( const char *n
 // Navigation spaces
 //////////////////////
 
-void igdeGDClass::AddNavigationSpace( igdeGDCNavigationSpace *navSpace ){
-	pListNavigationSpaces.Add( navSpace );
+void igdeGDClass::AddNavigationSpace(igdeGDCNavigationSpace *navSpace){
+	pListNavigationSpaces.Add(navSpace);
 }
 
-void igdeGDClass::RemoveNavigationSpace( igdeGDCNavigationSpace *navSpace ){
-	pListNavigationSpaces.Remove( navSpace );
+void igdeGDClass::RemoveNavigationSpace(igdeGDCNavigationSpace *navSpace){
+	pListNavigationSpaces.Remove(navSpace);
 }
 
 void igdeGDClass::RemoveAllNavigationSpaces(){
 	pListNavigationSpaces.RemoveAll();
 }
 
-bool igdeGDClass::HasNavSpaceLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasNavSpaceLinkedProperty(const char *name) const{
 	const int count = pListNavigationSpaces.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListNavigationSpaces.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListNavigationSpaces.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -795,28 +795,28 @@ bool igdeGDClass::HasNavSpaceLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCNavigationSpaceList igdeGDClass::GetNavSpaceWithLinkedProperty( const char *name ) const{
+const igdeGDCNavigationSpaceList igdeGDClass::GetNavSpaceWithLinkedProperty(const char *name) const{
 	const int count = pListNavigationSpaces.GetCount();
 	igdeGDCNavigationSpaceList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListNavigationSpaces.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListNavigationSpaces.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListNavigationSpaces.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListNavigationSpaces.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetNavSpaceIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetNavSpaceIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListNavigationSpaces.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListNavigationSpaces.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListNavigationSpaces.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -828,24 +828,24 @@ const decIntList igdeGDClass::GetNavSpaceIndicesWithLinkedProperty( const char *
 // Navigation blockers
 //////////////////////
 
-void igdeGDClass::AddNavigationBlocker( igdeGDCNavigationBlocker *blocker ){
-	pListNavigationBlockers.Add( blocker );
+void igdeGDClass::AddNavigationBlocker(igdeGDCNavigationBlocker *blocker){
+	pListNavigationBlockers.Add(blocker);
 }
 
-void igdeGDClass::RemoveNavigationBlocker( igdeGDCNavigationBlocker *blocker ){
-	pListNavigationBlockers.Remove( blocker );
+void igdeGDClass::RemoveNavigationBlocker(igdeGDCNavigationBlocker *blocker){
+	pListNavigationBlockers.Remove(blocker);
 }
 
 void igdeGDClass::RemoveAllNavigationBlockers(){
 	pListNavigationBlockers.RemoveAll();
 }
 
-bool igdeGDClass::HasNavBlockerLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasNavBlockerLinkedProperty(const char *name) const{
 	const int count = pListNavigationBlockers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListNavigationBlockers.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListNavigationBlockers.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -853,28 +853,28 @@ bool igdeGDClass::HasNavBlockerLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCNavigationBlockerList igdeGDClass::GetNavBlockerWithLinkedProperty( const char *name ) const{
+const igdeGDCNavigationBlockerList igdeGDClass::GetNavBlockerWithLinkedProperty(const char *name) const{
 	const int count = pListNavigationBlockers.GetCount();
 	igdeGDCNavigationBlockerList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListNavigationBlockers.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListNavigationBlockers.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListNavigationBlockers.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListNavigationBlockers.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetNavBlockerIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetNavBlockerIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListNavigationBlockers.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListNavigationBlockers.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListNavigationBlockers.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -917,7 +917,7 @@ const igdeGDCWorldList igdeGDClass::GetWorldsWithLinkedProperty(const char *name
 	int i;
 	
 	for(i=0; i<count; i++){
-		if( pListWorlds.GetAt(i)->HasPropertyWithName(name)){
+		if(pListWorlds.GetAt(i)->HasPropertyWithName(name)){
 			list.Add(pListWorlds.GetAt(i));
 		}
 	}
@@ -945,12 +945,12 @@ const decIntList igdeGDClass::GetWorldIndicesWithLinkedProperty(const char *name
 // SnapPoints
 ////////////
 
-void igdeGDClass::AddSnapPoint( igdeGDCSnapPoint *snappoint ){
-	pSnapPoints.Add( snappoint );
+void igdeGDClass::AddSnapPoint(igdeGDCSnapPoint *snappoint){
+	pSnapPoints.Add(snappoint);
 }
 
-void igdeGDClass::RemoveSnapPoint( igdeGDCSnapPoint *snappoint ){
-	pSnapPoints.Remove( snappoint );
+void igdeGDClass::RemoveSnapPoint(igdeGDCSnapPoint *snappoint){
+	pSnapPoints.Remove(snappoint);
 }
 
 void igdeGDClass::RemoveAllSnapPoints(){
@@ -962,12 +962,12 @@ void igdeGDClass::RemoveAllSnapPoints(){
 // Particle Emitters
 //////////////////////
 
-void igdeGDClass::AddParticleEmitter( igdeGDCParticleEmitter *emitter){
-	pListParticleEmitters.Add( emitter );
+void igdeGDClass::AddParticleEmitter(igdeGDCParticleEmitter *emitter){
+	pListParticleEmitters.Add(emitter);
 }
 
-void igdeGDClass::RemoveParticleEmitter( igdeGDCParticleEmitter *emitter ){
-	pListParticleEmitters.Remove( emitter );
+void igdeGDClass::RemoveParticleEmitter(igdeGDCParticleEmitter *emitter){
+	pListParticleEmitters.Remove(emitter);
 	// notify;
 }
 
@@ -981,12 +981,12 @@ void igdeGDClass::RemoveAllParticleEmitters(){
 // Force Fields
 /////////////////
 
-void igdeGDClass::AddForceField( igdeGDCForceField *field ){
-	pListForceFields.Add( field );
+void igdeGDClass::AddForceField(igdeGDCForceField *field){
+	pListForceFields.Add(field);
 }
 
-void igdeGDClass::RemoveForceField( igdeGDCForceField *field ){
-	pListForceFields.Remove( field );
+void igdeGDClass::RemoveForceField(igdeGDCForceField *field){
+	pListForceFields.Remove(field);
 	// notify;
 }
 
@@ -1000,12 +1000,12 @@ void igdeGDClass::RemoveAllForceFields(){
 // Environment Map Probes
 ///////////////////////////
 
-void igdeGDClass::AddEnvironmentMapProbe( igdeGDCEnvMapProbe *probe ){
-	pListEnvMapProbes.Add( probe );
+void igdeGDClass::AddEnvironmentMapProbe(igdeGDCEnvMapProbe *probe){
+	pListEnvMapProbes.Add(probe);
 }
 
-void igdeGDClass::RemoveEnvironmentMapProbe( igdeGDCEnvMapProbe *probe ){
-	pListEnvMapProbes.Remove( probe );
+void igdeGDClass::RemoveEnvironmentMapProbe(igdeGDCEnvMapProbe *probe){
+	pListEnvMapProbes.Remove(probe);
 	// notify;
 }
 
@@ -1014,12 +1014,12 @@ void igdeGDClass::RemoveAllEnvironmentMapProbes(){
 	// notify;
 }
 
-bool igdeGDClass::HasEnvMapProbesLinkedProperty( const char *name ) const{
+bool igdeGDClass::HasEnvMapProbesLinkedProperty(const char *name) const{
 	const int count = pListEnvMapProbes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListEnvMapProbes.GetAt( i )->HasPropertyWithName( name ) ){
+	for(i=0; i<count; i++){
+		if(pListEnvMapProbes.GetAt(i)->HasPropertyWithName(name)){
 			return true;
 		}
 	}
@@ -1027,28 +1027,28 @@ bool igdeGDClass::HasEnvMapProbesLinkedProperty( const char *name ) const{
 	return false;
 }
 
-const igdeGDCEnvMapProbeList igdeGDClass::GetEnvMapProbesWithLinkedProperty( const char *name ) const{
+const igdeGDCEnvMapProbeList igdeGDClass::GetEnvMapProbesWithLinkedProperty(const char *name) const{
 	const int count = pListEnvMapProbes.GetCount();
 	igdeGDCEnvMapProbeList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListEnvMapProbes.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( pListEnvMapProbes.GetAt( i ) );
+	for(i=0; i<count; i++){
+		if(pListEnvMapProbes.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListEnvMapProbes.GetAt(i));
 		}
 	}
 	
 	return list;
 }
 
-const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty( const char *name ) const{
+const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const char *name) const{
 	const int count = pListEnvMapProbes.GetCount();
 	decIntList list;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( pListEnvMapProbes.GetAt( i )->HasPropertyWithName( name ) ){
-			list.Add( i );
+	for(i=0; i<count; i++){
+		if(pListEnvMapProbes.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
 		}
 	}
 	
@@ -1061,7 +1061,7 @@ const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty( const ch
 //////////////////////
 
 void igdeGDClass::pCleanUp(){
-	if( pPreviewImage ){
+	if(pPreviewImage){
 		pPreviewImage->FreeReference();
 	}
 	
@@ -1076,39 +1076,39 @@ void igdeGDClass::pCleanUp(){
 	RemoveAllBillboards();
 	RemoveAllComponents();
 	RemoveAllWorlds();
-	if( pCamera ){
+	if(pCamera){
 		delete pCamera;
 	}
 }
 
-void igdeGDClass::pAddPropertyNames( decStringSet &set, const decString &prefix ) const{
+void igdeGDClass::pAddPropertyNames(decStringSet &set, const decString &prefix) const{
 	const int propertyCount = pListProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( prefix + pListProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(prefix + pListProperties.GetAt(i)->GetName());
 	}
 	
 	const int inheritCount = pInheritClasses.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( inherit.GetClass() ){
-			inherit.GetClass()->pAddPropertyNames( set, prefix + inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(inherit.GetClass()){
+			inherit.GetClass()->pAddPropertyNames(set, prefix + inherit.GetPropertyPrefix());
 		}
 	}
 }
 
-void igdeGDClass::pAddTexturePropertyNames( decStringSet &set, const decString &prefix ) const{
+void igdeGDClass::pAddTexturePropertyNames(decStringSet &set, const decString &prefix) const{
 	const int propertyCount = pTextureProperties.GetCount();
 	int i;
-	for( i=0; i<propertyCount; i++ ){
-		set.Add( prefix + pTextureProperties.GetAt( i )->GetName() );
+	for(i=0; i<propertyCount; i++){
+		set.Add(prefix + pTextureProperties.GetAt(i)->GetName());
 	}
 	
 	const int inheritCount = pInheritClasses.GetCount();
-	for( i=0; i<inheritCount; i++ ){
-		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
-		if( inherit.GetClass() ){
-			inherit.GetClass()->pAddTexturePropertyNames( set, prefix + inherit.GetPropertyPrefix() );
+	for(i=0; i<inheritCount; i++){
+		const igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		if(inherit.GetClass()){
+			inherit.GetClass()->pAddTexturePropertyNames(set, prefix + inherit.GetPropertyPrefix());
 		}
 	}
 }

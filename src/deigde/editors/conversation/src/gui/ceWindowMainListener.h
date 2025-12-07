@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	ceWindowMainListener( ceWindowMain &window );
+	ceWindowMainListener(ceWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	~ceWindowMainListener();
@@ -55,13 +55,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( ceConversation *conversation );
+	virtual void StateChanged(ceConversation *conversation);
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( ceConversation *conversation );
+	virtual void UndoChanged(ceConversation *conversation);
 	
 	/** \brief View properties changed. */
-	virtual void ViewChanged( ceConversation *conversation );
+	virtual void ViewChanged(ceConversation *conversation);
 	/*@}*/
 };
 

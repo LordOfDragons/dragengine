@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin. */
-	deoglRDynamicSkin( deoglRenderThread &renderThread );
+	deoglRDynamicSkin(deoglRenderThread &renderThread);
 	
 protected:
 	/** Clean up render dynamic skin. */
@@ -65,25 +65,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Number of renderables. */
 	int GetRenderableCount() const;
 	
 	/** Renderable at index. */
-	deoglRDSRenderable *GetRenderableAt( int index ) const;
+	deoglRDSRenderable *GetRenderableAt(int index) const;
 	
 	/** Named renderable or \em NULL if absent. */
-	deoglRDSRenderable *GetRenderableNamed( const char *name ) const;
+	deoglRDSRenderable *GetRenderableNamed(const char *name) const;
 	
 	/** Index of named renderable or -1 if absent. */
-	int IndexOfRenderableNamed( const char *name ) const;
+	int IndexOfRenderableNamed(const char *name) const;
 	
 	/** Remove all renderables. */
 	void RemoveAllRenderables();
 	
 	/** Add renderable. */
-	void AddRenderable( deoglRDSRenderable *renderable );
+	void AddRenderable(deoglRDSRenderable *renderable);
 	/*@}*/
 };
 

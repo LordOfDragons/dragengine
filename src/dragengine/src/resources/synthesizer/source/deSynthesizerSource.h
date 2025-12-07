@@ -96,7 +96,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent synthesizer. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline deSynthesizer *GetSynthesizer() const{return pSynthesizer;}
 	
 	/**
 	 * \brief Set parent synthesizer.
@@ -104,65 +104,65 @@ public:
 	 * This function has to be used only by the deSynthesizer class to
 	 * assign itself as a parent. Do not call this function directly.
 	 */
-	void SetSynthesizer( deSynthesizer *synthesizer );
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	/** \brief Source is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if source is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Mixing mode. */
-	inline eMixModes GetMixMode() const{ return pMixMode; }
+	inline eMixModes GetMixMode() const{return pMixMode;}
 	
 	/** \brief Set mixing mode. */
-	void SetMixMode( eMixModes mode );
+	void SetMixMode(eMixModes mode);
 	
 	/** \brief Blend factor. */
-	inline float GetBlendFactor() const{ return pBlendFactor; }
+	inline float GetBlendFactor() const{return pBlendFactor;}
 	
 	/** \brief Set blend factor. */
-	void SetBlendFactor( float factor );
+	void SetBlendFactor(float factor);
 	
 	
 	
 	/** \brief Volume minimum relative to speaker volume in the range from 0 to 1. */
-	inline float GetMinVolume() const{ return pMinVolume; }
+	inline float GetMinVolume() const{return pMinVolume;}
 	
 	/** \brief Set minimum volume relative to speaker volume in the range from 0 to 1. */
-	void SetMinVolume( float volume );
+	void SetMinVolume(float volume);
 	
 	/** \brief Maximum volume relative to speaker volume in the range from 0 to 1. */
-	inline float GetMaxVolume() const{ return pMaxVolume; }
+	inline float GetMaxVolume() const{return pMaxVolume;}
 	
 	/** \brief Set maximum volume relative to speaker volume in the range from 0 to 1. */
-	void SetMaxVolume( float volume );
+	void SetMaxVolume(float volume);
 	
 	/** \brief Minimum panning in the range from -1(left) to 1(right). */
-	inline float GetMinPanning() const{ return pMinPanning; }
+	inline float GetMinPanning() const{return pMinPanning;}
 	
 	/** \brief Set minimum panning in the range from -1(left) to 1(right). */
-	void SetMinPanning( float panning );
+	void SetMinPanning(float panning);
 	
 	/** \brief Maximum panning in the range from -1(left) to 1(right). */
-	inline float GetMaxPanning() const{ return pMaxPanning; }
+	inline float GetMaxPanning() const{return pMaxPanning;}
 	
 	/** \brief Set maximum panning in the range from -1(left) to 1(right). */
-	void SetMaxPanning( float panning );
+	void SetMaxPanning(float panning);
 	
 	
 	
 	/** \brief Blend factor target. */
-	inline deSynthesizerControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
-	inline const deSynthesizerControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
+	inline deSynthesizerControllerTarget &GetTargetBlendFactor(){return pTargetBlendFactor;}
+	inline const deSynthesizerControllerTarget &GetTargetBlendFactor() const{return pTargetBlendFactor;}
 	
 	/** \brief Volume target. */
-	inline deSynthesizerControllerTarget &GetTargetVolume(){ return pTargetVolume; }
-	inline const deSynthesizerControllerTarget &GetTargetVolume() const{ return pTargetVolume; }
+	inline deSynthesizerControllerTarget &GetTargetVolume(){return pTargetVolume;}
+	inline const deSynthesizerControllerTarget &GetTargetVolume() const{return pTargetVolume;}
 	
 	/** \brief Panning target. */
-	inline deSynthesizerControllerTarget &GetTargetPanning(){ return pTargetPanning; }
-	inline const deSynthesizerControllerTarget &GetTargetPanning() const{ return pTargetPanning; }
+	inline deSynthesizerControllerTarget &GetTargetPanning(){return pTargetPanning;}
+	inline const deSynthesizerControllerTarget &GetTargetPanning() const{return pTargetPanning;}
 	/*@}*/
 	
 	
@@ -173,13 +173,13 @@ public:
 	int GetEffectCount() const;
 	
 	/** \brief Effect at index. */
-	deSynthesizerEffect *GetEffectAt( int index ) const;
+	deSynthesizerEffect *GetEffectAt(int index) const;
 	
 	/** \brief Add effect. */
-	void AddEffect( deSynthesizerEffect *effect );
+	void AddEffect(deSynthesizerEffect *effect);
 	
 	/** \brief Remove effect. */
-	void RemoveEffect( deSynthesizerEffect *effect );
+	void RemoveEffect(deSynthesizerEffect *effect);
 	
 	/** \brief Remove all effects. */
 	void RemoveAllEffects();
@@ -190,7 +190,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit source. */
-	virtual void Visit( deSynthesizerSourceVisitor &visitor );
+	virtual void Visit(deSynthesizerSourceVisitor &visitor);
 	/*@}*/
 };
 

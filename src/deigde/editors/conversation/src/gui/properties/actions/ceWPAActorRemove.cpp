@@ -67,12 +67,12 @@ class cComboActorID : public igdeComboBoxListener {
 	ceWPAActorRemove &pPanel;
 	
 public:
-	cComboActorID( ceWPAActorRemove &panel ) : pPanel( panel ){ }
+	cComboActorID(ceWPAActorRemove &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceCAActorRemove * const action = pPanel.GetAction();
-		if( ! topic || ! action  || comboBox->GetText() == action->GetActor() ){
+		if(! topic || ! action  || comboBox->GetText() == action->GetActor()){
 			return;
 		}
 		
@@ -91,13 +91,13 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPAActorRemove::ceWPAActorRemove( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
+ceWPAActorRemove::ceWPAActorRemove(ceWPTopic &parentPanel) : ceWPAction(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	
-	CreateGUICommon( *this );
+	CreateGUICommon(*this);
 	
-	helper.ComboBox( *this, "Actor ID:", true, "ID of the actor to remove from conversation",
-		pCBActorID, new cComboActorID( *this ) );
+	helper.ComboBox(*this, "Actor ID:", true, "ID of the actor to remove from conversation",
+		pCBActorID, new cComboActorID(*this));
 	pCBActorID->SetDefaultSorter();
 }
 
@@ -112,8 +112,8 @@ ceWPAActorRemove::~ceWPAActorRemove(){
 ceCAActorRemove *ceWPAActorRemove::GetAction() const{
 	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
-	if( action && action->GetType() == ceConversationAction::eatActorRemove ){
-		return ( ceCAActorRemove* )action;
+	if(action && action->GetType() == ceConversationAction::eatActorRemove){
+		return (ceCAActorRemove*)action;
 		
 	}else{
 		return NULL;
@@ -125,8 +125,8 @@ void ceWPAActorRemove::UpdateAction(){
 	
 	UpdateCommonParams();
 	
-	if( action ){
-		pCBActorID->SetText( action->GetActor() );
+	if(action){
+		pCBActorID->SetText(action->GetActor());
 		
 	}else{
 		pCBActorID->ClearText();
@@ -137,5 +137,5 @@ void ceWPAActorRemove::UpdateAction(){
 
 void ceWPAActorRemove::UpdateActorIDLists(){
 	ceWPAction::UpdateActorIDLists();
-	UpdateComboBoxWithActorIDList( pCBActorID );
+	UpdateComboBoxWithActorIDList(pCBActorID);
 }

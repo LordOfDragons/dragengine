@@ -47,25 +47,25 @@ public:
 	/** \name Utils */
 	/*@{*/
 	/** Convert XrVector3f to decVector. */
-	static decVector Convert( const XrVector3f &vector );
+	static decVector Convert(const XrVector3f &vector);
 	
 	/** Convert euler XrVector3f to decVector. */
-	static decVector ConvertEuler( const XrVector3f &vector );
+	static decVector ConvertEuler(const XrVector3f &vector);
 	
 	/** Convert XrQuaternionf to decQuaternion. */
-	static decQuaternion Convert( const XrQuaternionf &quaternion );
+	static decQuaternion Convert(const XrQuaternionf &quaternion);
 	
 	/** Convert decQuaternion to XrQuaternionf. */
-	static void Convert( const decQuaternion &quaternion, XrQuaternionf &xrquat );
+	static void Convert(const decQuaternion &quaternion, XrQuaternionf &xrquat);
 	
 	/** Convert decVector to XrQuaternionf. */
-	static void Convert( const decVector &rotation, XrQuaternionf &xrquat );
+	static void Convert(const decVector &rotation, XrQuaternionf &xrquat);
 	
 	/** Convert decVector to XrVector3f. */
 	static void Convert(const decVector &position, XrVector3f &xrpos);
 	
 	/** Convert XrPosef to decMatrix. */
-	static decMatrix Convert( const XrPosef &pose );
+	static decMatrix Convert(const XrPosef &pose);
 	
 	/** Convert decMatrix to XrPosef. */
 	static void Convert(const decMatrix &matrix, XrPosef &pose);

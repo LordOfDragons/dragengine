@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	lpeWPUndoHistoryListener( lpeWPUndoHistory &panel );
+	lpeWPUndoHistoryListener(lpeWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~lpeWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Undo changed. */
-	virtual void UndoChanged( lpeLangPack *langpack );
+	virtual void UndoChanged(lpeLangPack *langpack);
 	/*@}*/
 };
 

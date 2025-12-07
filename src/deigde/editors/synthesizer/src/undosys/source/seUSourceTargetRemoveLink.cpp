@@ -42,16 +42,16 @@
 ////////////////////////////
 
 seUSourceTargetRemoveLink::seUSourceTargetRemoveLink(
-seSource *source, seControllerTarget *target, seLink *link ) :
-pSource( NULL ),
-pTarget( NULL ),
-pLink( NULL )
+seSource *source, seControllerTarget *target, seLink *link) :
+pSource(NULL),
+pTarget(NULL),
+pLink(NULL)
 {
-	if( ! source || ! target || ! link ){
-		DETHROW( deeInvalidParam );
+	if(! source || ! target || ! link){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Source Target Remove Link" );
+	SetShortInfo("Source Target Remove Link");
 	
 	pSource = source;
 	pSource->AddReference();
@@ -63,10 +63,10 @@ pLink( NULL )
 }
 
 seUSourceTargetRemoveLink::~seUSourceTargetRemoveLink(){
-	if( pLink ){
+	if(pLink){
 		pLink->FreeReference();
 	}
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -77,11 +77,11 @@ seUSourceTargetRemoveLink::~seUSourceTargetRemoveLink(){
 ///////////////
 
 void seUSourceTargetRemoveLink::Undo(){
-	pTarget->AddLink( pLink );
+	pTarget->AddLink(pLink);
 	pSource->NotifySourceChanged();
 }
 
 void seUSourceTargetRemoveLink::Redo(){
-	pTarget->RemoveLink( pLink );
+	pTarget->RemoveLink(pLink);
 	pSource->NotifySourceChanged();
 }

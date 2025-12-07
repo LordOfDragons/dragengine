@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPSelectionListener( meWPSelection &panel );
+	meWPSelectionListener(meWPSelection &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPSelectionListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Element or work mode changed. */
-	virtual void ModeChanged( meWorld *world );
+	virtual void ModeChanged(meWorld *world);
 	/*@}*/
 };
 

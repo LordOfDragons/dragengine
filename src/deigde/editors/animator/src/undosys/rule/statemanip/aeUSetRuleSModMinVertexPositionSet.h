@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMinVertexPositionSet( aeRuleStateManipulator *rule, float newMin );
+	aeUSetRuleSModMinVertexPositionSet(aeRuleStateManipulator *rule, float newMin);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModMinVertexPositionSet();

@@ -48,9 +48,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoxrDeviceManager::deoxrDeviceManager( deVROpenXR &oxr ) :
-pOxr( oxr ),
-pNotifyAttachedDetached( false ){
+deoxrDeviceManager::deoxrDeviceManager(deVROpenXR &oxr) :
+pOxr(oxr),
+pNotifyAttachedDetached(false){
 }
 
 deoxrDeviceManager::~deoxrDeviceManager(){
@@ -62,7 +62,7 @@ deoxrDeviceManager::~deoxrDeviceManager(){
 ///////////////
 
 void deoxrDeviceManager::Clear(){
-	if( pDevices.GetCount() > 0 ){
+	if(pDevices.GetCount() > 0){
 		pNotifyAttachedDetached = true;
 	}
 	
@@ -75,17 +75,17 @@ int deoxrDeviceManager::GetCount() const{
 	return pDevices.GetCount();
 }
 
-deoxrDevice *deoxrDeviceManager::GetAt( int index ) const{
-	return ( deoxrDevice* )pDevices.GetAt( index );
+deoxrDevice *deoxrDeviceManager::GetAt(int index) const{
+	return (deoxrDevice*)pDevices.GetAt(index);
 }
 
-deoxrDevice *deoxrDeviceManager::GetWithID( const char *id ) const{
+deoxrDevice *deoxrDeviceManager::GetWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoxrDevice * const device = ( deoxrDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		deoxrDevice * const device = (deoxrDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return device;
 		}
 	}
@@ -93,13 +93,13 @@ deoxrDevice *deoxrDeviceManager::GetWithID( const char *id ) const{
 	return nullptr;
 }
 
-int deoxrDeviceManager::IndexOfWithID( const char *id ) const{
+int deoxrDeviceManager::IndexOfWithID(const char *id) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoxrDevice * const device = ( deoxrDevice* )pDevices.GetAt( i );
-		if( device->GetID() == id ){
+	for(i=0; i<count; i++){
+		deoxrDevice * const device = (deoxrDevice*)pDevices.GetAt(i);
+		if(device->GetID() == id){
 			return i;
 		}
 	}
@@ -107,36 +107,36 @@ int deoxrDeviceManager::IndexOfWithID( const char *id ) const{
 	return -1;
 }
 
-void deoxrDeviceManager::Add( deoxrDevice *device ){
-	if( ! device ){
-		DETHROW_INFO( deeNullPointer, "device" );
+void deoxrDeviceManager::Add(deoxrDevice *device){
+	if(! device){
+		DETHROW_INFO(deeNullPointer, "device");
 	}
 	
-	device->SetIndex( pDevices.GetCount() );
-	pDevices.Add( device );
+	device->SetIndex(pDevices.GetCount());
+	pDevices.Add(device);
 	
-	pOxr.LogInfoFormat( "Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
+	pOxr.LogInfoFormat("Input Device Added: id='%s' type=%d axes=%d buttons=%d feedbacks=%d",
 		device->GetID().GetString(), device->GetType(), device->GetAxisCount(),
-		device->GetButtonCount(), device->GetFeedbackCount() );
-	LogDevice( *device );
+		device->GetButtonCount(), device->GetFeedbackCount());
+	LogDevice(*device);
 	
 	pNotifyAttachedDetached = true;
 }
 
-void deoxrDeviceManager::Remove( deoxrDevice *device ){
-	const int index = pDevices.IndexOf( device );
-	if( index == -1 ){
-		DETHROW_INFO( deeInvalidParam, "device not in list" );
+void deoxrDeviceManager::Remove(deoxrDevice *device){
+	const int index = pDevices.IndexOf(device);
+	if(index == -1){
+		DETHROW_INFO(deeInvalidParam, "device not in list");
 	}
 	
-	pOxr.LogInfoFormat( "Input Device Removed: id='%s'", device->GetID().GetString() );
+	pOxr.LogInfoFormat("Input Device Removed: id='%s'", device->GetID().GetString());
 	
-	pDevices.RemoveFrom( index );
+	pDevices.RemoveFrom(index);
 	
 	const int count = pDevices.GetCount();
 	int i;
-	for( i=index; i<count; i++ ){
-		GetAt( i )->SetIndex( i );
+	for(i=index; i<count; i++){
+		GetAt(i)->SetIndex(i);
 	}
 	
 	pNotifyAttachedDetached = true;
@@ -145,23 +145,23 @@ void deoxrDeviceManager::Remove( deoxrDevice *device ){
 void deoxrDeviceManager::TrackDeviceStates(){
 	const int count = pDevices.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		GetAt( i )->TrackStates();
+	for(i=0; i<count; i++){
+		GetAt(i)->TrackStates();
 	}
 }
 
 void deoxrDeviceManager::CheckNotifyAttachedDetached(){
-	if( ! pNotifyAttachedDetached ){
+	if(! pNotifyAttachedDetached){
 		return;
 	}
 	
 	pNotifyAttachedDetached = false;
 	
 	deInputEvent event;
-	event.SetType( deInputEvent::eeDevicesAttachedDetached );
-	event.SetSource( deInputEvent::esVR );
-	pOxr.InputEventSetTimestamp( event );
-	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
+	event.SetType(deInputEvent::eeDevicesAttachedDetached);
+	event.SetSource(deInputEvent::esVR);
+	pOxr.InputEventSetTimestamp(event);
+	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent(event);
 }
 
 void deoxrDeviceManager::ReferenceSpaceChanged(){
@@ -178,78 +178,78 @@ void deoxrDeviceManager::LogDevices(){
 	const int count = pDevices.GetCount();
 	int i, j;
 	
-	pOxr.LogInfo( "Input Devices:" );
+	pOxr.LogInfo("Input Devices:");
 	
-	for( i=0; i<count; i++ ){
-		const deoxrDevice &device = *( ( deoxrDevice* )pDevices.GetAt( i ) );
-		pOxr.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
-			device.GetID().GetString(), device.GetType() );
+	for(i=0; i<count; i++){
+		const deoxrDevice &device = *((deoxrDevice*)pDevices.GetAt(i));
+		pOxr.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
+			device.GetID().GetString(), device.GetType());
 		
 		const int componentCount = device.GetComponentCount();
-		if( componentCount > 0 ){
-			pOxr.LogInfo( "  Components:" );
-			for( j=0; j<componentCount; j++ ){
-				const deoxrDeviceComponent &component = *device.GetComponentAt( j );
-				pOxr.LogInfoFormat( "    - '%s' (%s)", component.GetName().GetString(),
-					component.GetID().GetString() );
+		if(componentCount > 0){
+			pOxr.LogInfo("  Components:");
+			for(j=0; j<componentCount; j++){
+				const deoxrDeviceComponent &component = *device.GetComponentAt(j);
+				pOxr.LogInfoFormat("    - '%s' (%s)", component.GetName().GetString(),
+					component.GetID().GetString());
 			}
 		}
 		
 		const int axisCount = device.GetAxisCount();
-		if( axisCount > 0 ){
-			pOxr.LogInfo( "  Axes:" );
-			for( j=0; j<axisCount; j++ ){
-				const deoxrDeviceAxis &axis = *device.GetAxisAt( j );
-				pOxr.LogInfoFormat( "    - '%s' (%s) [%s]", axis.GetName().GetString(),
+		if(axisCount > 0){
+			pOxr.LogInfo("  Axes:");
+			for(j=0; j<axisCount; j++){
+				const deoxrDeviceAxis &axis = *device.GetAxisAt(j);
+				pOxr.LogInfoFormat("    - '%s' (%s) [%s]", axis.GetName().GetString(),
 					axis.GetID().GetString(), axis.GetInputDeviceComponent()
-						? axis.GetInputDeviceComponent()->GetID().GetString() : "" );
+						? axis.GetInputDeviceComponent()->GetID().GetString() : "");
 			}
 		}
 		
 		const int buttonCount = device.GetButtonCount();
-		if( buttonCount > 0 ){
-			pOxr.LogInfo( "  Buttons:" );
-			for( j=0; j<buttonCount; j++ ){
-				const deoxrDeviceButton &button = *device.GetButtonAt( j );
-				pOxr.LogInfoFormat( "    - '%s' (%s) [%s] => %d",
+		if(buttonCount > 0){
+			pOxr.LogInfo("  Buttons:");
+			for(j=0; j<buttonCount; j++){
+				const deoxrDeviceButton &button = *device.GetButtonAt(j);
+				pOxr.LogInfoFormat("    - '%s' (%s) [%s] => %d",
 					button.GetName().GetString(), button.GetID().GetString(), button.GetInputDeviceComponent()
-						? button.GetInputDeviceComponent()->GetID().GetString() : "", j );
+						? button.GetInputDeviceComponent()->GetID().GetString() : "", j);
 			}
 		}
 	}
 }
 
-void deoxrDeviceManager::LogDevice( const deoxrDevice &device ){
-	pOxr.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
-		device.GetID().GetString(), device.GetType() );
+void deoxrDeviceManager::LogDevice(const deoxrDevice &device){
+	pOxr.LogInfoFormat("- '%s' (%s) [%d]", device.GetName().GetString(),
+		device.GetID().GetString(), device.GetType());
 	
 	const int componentCount = device.GetComponentCount();
 	int i;
-	if( componentCount > 0 ){
-		pOxr.LogInfo( "  Components:" );
-		for( i=0; i<componentCount; i++ ){
-			const deoxrDeviceComponent &component = *device.GetComponentAt( i );
-			pOxr.LogInfoFormat( "    - '%s' (%s)", component.GetName().GetString(),
-				component.GetID().GetString() );
+	if(componentCount > 0){
+		pOxr.LogInfo("  Components:");
+		for(i=0; i<componentCount; i++){
+			const deoxrDeviceComponent &component = *device.GetComponentAt(i);
+			pOxr.LogInfoFormat("    - '%s' (%s)", component.GetName().GetString(),
+				component.GetID().GetString());
 		}
 	}
 	
 	const int axisCount = device.GetAxisCount();
-	if( axisCount > 0 ){
-		pOxr.LogInfo( "  Axes:" );
-		for( i=0; i<axisCount; i++ ){
-			const deoxrDeviceAxis &axis = *device.GetAxisAt( i );
-			pOxr.LogInfoFormat( "    - '%s' (%s) [%s]", axis.GetName().GetString(),
+	if(axisCount > 0){
+		pOxr.LogInfo("  Axes:");
+		for(i=0; i<axisCount; i++){
+			const deoxrDeviceAxis &axis = *device.GetAxisAt(i);
+			pOxr.LogInfoFormat("    - '%s' (%s) [%s]", axis.GetName().GetString(),
 				axis.GetID().GetString(), axis.GetInputDeviceComponent()
-					? axis.GetInputDeviceComponent()->GetID().GetString() : "" );
+					? axis.GetInputDeviceComponent()->GetID().GetString() : "");
 		}
 	}
 	
 	const int buttonCount = device.GetButtonCount();
-	if( buttonCount > 0 ){
-		pOxr.LogInfo( "  Buttons:" );
-		for( i=0; i<buttonCount; i++ ){
-			const deoxrDeviceButton &button = *device.GetButtonAt( i );
+	if(buttonCount > 0){
+		pOxr.LogInfo("  Buttons:");
+		for(i=0; i<buttonCount; i++){
+			const deoxrDeviceButton &button = *device.GetButtonAt(i);
 			pOxr.LogInfoFormat("    - '%s' (%s) [%s]%s%s => %d",
 				button.GetName().GetString(),
 				button.GetID().GetString(),
@@ -264,29 +264,29 @@ void deoxrDeviceManager::LogDevice( const deoxrDevice &device ){
 
 
 
-decString deoxrDeviceManager::NormalizeID( const char *id ){
-	if( ! id ){
-		DETHROW( deeInvalidParam );
+decString deoxrDeviceManager::NormalizeID(const char *id){
+	if(! id){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int len = ( int )strlen( id );
-	if( len == 0 ){
+	const int len = (int)strlen(id);
+	if(len == 0){
 		return decString();
 	}
 	
 	decString nid;
-	nid.Set( ' ', len );
+	nid.Set(' ', len);
 	
 	int i;
-	for( i=0; i<len; i++ ){
-		if( ( id[ i ]  >= 'A' && id[ i ] <= 'Z' )
-		|| ( id[ i ] >= 'a' && id[ i ] <= 'z' )
-		|| ( id[ i ] >= '0' && id[ i ] <= '9' )
-		|| id[ i ] == '_' ){
-			nid[ i ] = id[ i ];
+	for(i=0; i<len; i++){
+		if((id[i]  >= 'A' && id[i] <= 'Z')
+		|| (id[i] >= 'a' && id[i] <= 'z')
+		|| (id[i] >= '0' && id[i] <= '9')
+		|| id[i] == '_'){
+			nid[i] = id[i];
 			
 		}else{
-			nid[ i ] = '_';
+			nid[i] = '_';
 		}
 	}
 	

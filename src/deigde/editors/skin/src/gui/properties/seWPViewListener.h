@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPViewListener( seWPView &panel );
+	seWPViewListener(seWPView &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPViewListener();
@@ -55,19 +55,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin parameters changed. */
-	virtual void SkinChanged( seSkin *skin );
+	virtual void SkinChanged(seSkin *skin);
 	
 	/** \brief The sky changed. */
-	virtual void SkyChanged( seSkin *skin );
+	virtual void SkyChanged(seSkin *skin);
 	
 	/** \brief The environment component changed. */
-	virtual void EnvObjectChanged( seSkin *skin );
+	virtual void EnvObjectChanged(seSkin *skin);
 	
 	/** \brief The view changed. */
-	virtual void ViewChanged( seSkin *skin );
+	virtual void ViewChanged(seSkin *skin);
 	
 	/** \brief The camera changed. */
-	virtual void CameraChanged( seSkin *skin );
+	virtual void CameraChanged(seSkin *skin);
 	/*@}*/
 };
 

@@ -51,15 +51,15 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	/** Sets the index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	/** Retrieves the vertex list. */
-	inline decIntSet &GetVertices(){ return pVertices; }
-	inline const decIntSet &GetVertices() const{ return pVertices; }
+	inline decIntSet &GetVertices(){return pVertices;}
+	inline const decIntSet &GetVertices() const{return pVertices;}
 	/** Retrieves the edges list. */
-	inline decPointerSet &GetEdges(){ return pEdges; }
-	inline const decPointerSet &GetEdges() const{ return pEdges; }
+	inline decPointerSet &GetEdges(){return pEdges;}
+	inline const decPointerSet &GetEdges() const{return pEdges;}
 	/*@}*/
 };
 

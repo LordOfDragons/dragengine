@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObjectDecal::meUAddObjectDecal( meWorld *world, meObject *parentObject ){
-	if( ! world || ! parentObject ) DETHROW( deeInvalidParam );
+meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
+	if(! world || ! parentObject) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pDecal = NULL;
@@ -51,11 +51,11 @@ meUAddObjectDecal::meUAddObjectDecal( meWorld *world, meObject *parentObject ){
 	parentObject->AddReference();
 	
 	try{
-		pDecal = new meDecal( world->GetEnvironment() );
-		SetShortInfo( "Add Object Decal" );
+		pDecal = new meDecal(world->GetEnvironment());
+		SetShortInfo("Add Object Decal");
 		UpdateInfos();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,7 +71,7 @@ meUAddObjectDecal::~meUAddObjectDecal(){
 ///////////////
 
 void meUAddObjectDecal::UpdateInfos(){
-	SetLongInfo( "" );
+	SetLongInfo("");
 }
 
 
@@ -82,20 +82,20 @@ void meUAddObjectDecal::UpdateInfos(){
 void meUAddObjectDecal::Undo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
-	selection.Remove( pDecal );
-	if( pDecal->GetActive() ) selection.ActivateNext();
+	selection.Remove(pDecal);
+	if(pDecal->GetActive()) selection.ActivateNext();
 	
-	pParentObject->RemoveDecal( pDecal );
+	pParentObject->RemoveDecal(pDecal);
 }
 
 void meUAddObjectDecal::Redo(){
 	meDecalSelection &selection = pWorld->GetSelectionDecal();
 	
-	pParentObject->AddDecal( pDecal );
+	pParentObject->AddDecal(pDecal);
 	
 	selection.Reset();
-	selection.Add( pDecal );
-	selection.SetActive( pDecal );
+	selection.Add(pDecal);
+	selection.SetActive(pDecal);
 }
 
 
@@ -104,6 +104,6 @@ void meUAddObjectDecal::Redo(){
 //////////////////////
 
 void meUAddObjectDecal::pCleanUp(){
-	if( pDecal ) pDecal->FreeReference();
-	if( pParentObject ) pParentObject->FreeReference();
+	if(pDecal) pDecal->FreeReference();
+	if(pParentObject) pParentObject->FreeReference();
 }

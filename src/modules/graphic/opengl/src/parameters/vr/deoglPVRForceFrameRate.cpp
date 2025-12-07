@@ -41,26 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPVRForceFrameRate::deoglPVRForceFrameRate( deGraphicOpenGl &ogl ) :
-deoglParameter( ogl )
+deoglPVRForceFrameRate::deoglPVRForceFrameRate(deGraphicOpenGl &ogl) :
+deoglParameter(ogl)
 {
-	SetName( "vrForceFrameRate" );
-	SetDescription( "Force frame rate for VR rendering."
+	SetName("vrForceFrameRate");
+	SetDescription("Force frame rate for VR rendering."
 		" By default the graphic module switches to suitable frame rates depending on scene complexity. "
 		" If switching happens too often frame rate can be locked for smoother experience.");
-	SetType( eptSelection );
-	SetCategory( ecBasic );
-	SetDisplayName( "VR Force Frame Rate" );
+	SetType(eptSelection);
+	SetCategory(ecBasic);
+	SetDisplayName("VR Force Frame Rate");
 	
-	const deModuleParameter::SelectionEntry entries[ 5 ] = {
-		{ "0", "Automatic", "Graphic module selects frame rate dynamically." },
-		{ "90", "90", "Force frame rate of 90. This is the native VR frame rate." },
-		{ "45", "45", "Force frame rate of 45. Uses reprojection to fill in the missed frames." },
-		{ "30", "30", "Force frame rate of 30. Uses more reprojection to fill in the missed frames." },
-		{ "15", "15", "Force frame rate of 15. Uses lots of reprojection to fill in the missed frames." }
+	const deModuleParameter::SelectionEntry entries[5] = {
+		{"0", "Automatic", "Graphic module selects frame rate dynamically."},
+		{"90", "90", "Force frame rate of 90. This is the native VR frame rate."},
+		{"45", "45", "Force frame rate of 45. Uses reprojection to fill in the missed frames."},
+		{"30", "30", "Force frame rate of 30. Uses more reprojection to fill in the missed frames."},
+		{"15", "15", "Force frame rate of 15. Uses lots of reprojection to fill in the missed frames."}
 	};
-	AddSelectionEntries( entries, 5 );
-	SetDefaultValue( "0" );
+	AddSelectionEntries(entries, 5);
+	SetDefaultValue("0");
 }
 
 deoglPVRForceFrameRate::~deoglPVRForceFrameRate(){
@@ -73,10 +73,10 @@ deoglPVRForceFrameRate::~deoglPVRForceFrameRate(){
 
 decString deoglPVRForceFrameRate::GetParameterValue(){
 	decString value;
-	value.Format( "%d", pOgl.GetConfiguration().GetVRForceFrameRate() );
+	value.Format("%d", pOgl.GetConfiguration().GetVRForceFrameRate());
 	return value;
 }
 
-void deoglPVRForceFrameRate::SetParameterValue( const char *value ){
-	pOgl.GetConfiguration().SetVRForceFrameRate( decString( value ).ToInt() );
+void deoglPVRForceFrameRate::SetParameterValue(const char *value){
+	pOgl.GetConfiguration().SetVRForceFrameRate(decString(value).ToInt());
 }

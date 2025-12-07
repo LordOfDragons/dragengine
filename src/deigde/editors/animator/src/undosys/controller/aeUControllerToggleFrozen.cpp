@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerToggleFrozen::aeUControllerToggleFrozen( aeController *controller ) :
-pController( controller )
+aeUControllerToggleFrozen::aeUControllerToggleFrozen(aeController *controller) :
+pController(controller)
 {
-	if( ! controller || ! controller->GetAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(! controller || ! controller->GetAnimator()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set controller toggle frozen" );
+	SetShortInfo("Set controller toggle frozen");
 }
 
 aeUControllerToggleFrozen::~aeUControllerToggleFrozen(){
@@ -59,8 +59,8 @@ aeUControllerToggleFrozen::~aeUControllerToggleFrozen(){
 ///////////////
 
 void aeUControllerToggleFrozen::Undo(){
-	aeController &controller = ( aeController& )( deObject& )pController;
-	controller.SetFrozen( ! controller.GetFrozen() );
+	aeController &controller = (aeController&)(deObject&)pController;
+	controller.SetFrozen(! controller.GetFrozen());
 }
 
 void aeUControllerToggleFrozen::Redo(){

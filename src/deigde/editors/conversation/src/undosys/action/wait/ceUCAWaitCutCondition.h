@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitCutCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition );
+	ceUCAWaitCutCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition);
 	/*@}*/
 };
 

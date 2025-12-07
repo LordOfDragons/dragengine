@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCFilePaste( ceConversation *conversation, const ceConversationFileList &files );
+	ceUCFilePaste(ceConversation *conversation, const ceConversationFileList &files);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCFilePaste();
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of files. */
-	inline const ceConversationFileList &GetFiles() const{ return pFiles; }
+	inline const ceConversationFileList &GetFiles() const{return pFiles;}
 	
 	/** \brief Undo action. */
 	virtual void Undo();

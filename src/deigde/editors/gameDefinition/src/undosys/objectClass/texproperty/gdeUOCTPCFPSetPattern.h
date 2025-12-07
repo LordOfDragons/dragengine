@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPCFPSetPattern( gdeObjectClass *objectClass, gdeProperty *property,
-		gdeFilePattern *filePattern, const char *newValue );
+	gdeUOCTPCFPSetPattern(gdeObjectClass *objectClass, gdeProperty *property,
+		gdeFilePattern *filePattern, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -61,8 +61,8 @@ class deoalAudioThread;
 #endif
 
 #ifdef OAL_CHECKCOMMANDS
-void dbgCheckOalError( deoalAudioThread &audioThread, const char *file, int line );
-#	define OAL_CHECK(audioThread,cmd)	alGetError(); cmd; dbgCheckOalError( audioThread, __FILE__, __LINE__ )
+void dbgCheckOalError(deoalAudioThread &audioThread, const char *file, int line);
+#	define OAL_CHECK(audioThread,cmd)	alGetError(); cmd; dbgCheckOalError(audioThread, __FILE__, __LINE__)
 #	define OAL_IF_CHECK(audioThread)	audioThread
 #else
 #	define OAL_CHECK(audioThread,cmd)	cmd
@@ -104,54 +104,54 @@ struct sSampleStereo16{
 
 
 /** \brief 8-bit sample zero value. */
-#define SAMPLE8_ZERO		( Sample8 )0
+#define SAMPLE8_ZERO		(Sample8)0
 
 /** \brief 8-bit sample minimum value. */
-#define SAMPLE8_MIN			( Sample8 )-128
+#define SAMPLE8_MIN			(Sample8)-128
 
 /** \brief 8-bit sample minimum value. */
 #define SAMPLE8_MIN_F		-128.0f
 
 /** \brief 8-bit sample maximum value. */
-#define SAMPLE8_MAX			( Sample8 )127
+#define SAMPLE8_MAX			(Sample8)127
 
 /** \brief 8-bit sample maximum value. */
 #define SAMPLE8_MAX_F		127.0f
 
 /** \brief 8-bit sample range. */
-#define SAMPLE8_RANGE		( Sample8 )127
+#define SAMPLE8_RANGE		(Sample8)127
 
 /** \brief 8-bit sample range as floating point value. */
 #define SAMPLE8_RANGE_F		127.0f
 
 /** \brief 8-bit sample to floating point value. */
-inline float sample8ToFloat( const Sample8 sample ){ return ( 1.0f / SAMPLE8_RANGE_F ) * ( float )sample; }
+inline float sample8ToFloat(const Sample8 sample){return (1.0f / SAMPLE8_RANGE_F) * (float)sample;}
 
 
 
 /** \brief 16-bit sample zero value. */
-#define SAMPLE16_ZERO		( Sample16 )0
+#define SAMPLE16_ZERO		(Sample16)0
 
 /** \brief 16-bit sample minimum value. */
-#define SAMPLE16_MIN		( Sample16 )-32768
+#define SAMPLE16_MIN		(Sample16)-32768
 
 /** \brief 16-bit sample minimum value. */
 #define SAMPLE16_MIN_F		-32768.0f
 
 /** \brief 16-bit sample maximum value. */
-#define SAMPLE16_MAX		( Sample16 )32767
+#define SAMPLE16_MAX		(Sample16)32767
 
 /** \brief 16-bit sample maximum value. */
 #define SAMPLE16_MAX_F		32767.0f
 
 /** \brief 16-bit sample range. */
-#define SAMPLE16_RANGE		( Sample16 )32767
+#define SAMPLE16_RANGE		(Sample16)32767
 
 /** \brief 16-bit sample range as floating point value. */
 #define SAMPLE16_RANGE_F	32767.0f
 
 /** \brief 16-bit sample to floating point value. */
-inline float sample16ToFloat( const Sample16 sample ){ return ( 1.0f / SAMPLE16_RANGE_F ) * ( float )sample; }
+inline float sample16ToFloat(const Sample16 sample){return (1.0f / SAMPLE16_RANGE_F) * (float)sample;}
 
 
 
@@ -159,7 +159,7 @@ inline float sample16ToFloat( const Sample16 sample ){ return ( 1.0f / SAMPLE16_
 #define SOUND_SPEED 343.0f
 
 /** \brief Inverse sound speed (s/m). */
-#define INV_SOUND_SPEED ( 1.0f / SOUND_SPEED )
+#define INV_SOUND_SPEED (1.0f / SOUND_SPEED)
 
 
 #endif

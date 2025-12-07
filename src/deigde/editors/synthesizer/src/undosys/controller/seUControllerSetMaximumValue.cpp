@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetMaximumValue::seUControllerSetMaximumValue( seController *controller, float newValue ) :
-pController( controller ),
-pNewValue( newValue )
+seUControllerSetMaximumValue::seUControllerSetMaximumValue(seController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	if( ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! controller){
+		DETHROW(deeInvalidParam);
 	}
 	pOldValue = controller->GetMaximumValue();
 }
@@ -60,9 +60,9 @@ seUControllerSetMaximumValue::~seUControllerSetMaximumValue(){
 ///////////////
 
 void seUControllerSetMaximumValue::Undo(){
-	( ( seController& )( deObject& )pController ).SetMaximumValue( pOldValue );
+	((seController&)(deObject&)pController).SetMaximumValue(pOldValue);
 }
 
 void seUControllerSetMaximumValue::Redo(){
-	( ( seController& )( deObject& )pController ).SetMaximumValue( pNewValue );
+	((seController&)(deObject&)pController).SetMaximumValue(pNewValue);
 }

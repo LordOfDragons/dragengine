@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWindowMainListener::meWindowMainListener( meWindowMain &windowMain ) :
-pWindowMain( windowMain ){
+meWindowMainListener::meWindowMainListener(meWindowMain &windowMain) :
+pWindowMain(windowMain){
 }
 
 meWindowMainListener::~meWindowMainListener(){
@@ -52,46 +52,46 @@ meWindowMainListener::~meWindowMainListener(){
 // Notifications
 //////////////////
 
-void meWindowMainListener::ModeChanged( meWorld* ){
+void meWindowMainListener::ModeChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
-void meWindowMainListener::StateChanged( meWorld* ){
+void meWindowMainListener::StateChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
-void meWindowMainListener::HTStateChanged( meWorld* ){
+void meWindowMainListener::HTStateChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
-void meWindowMainListener::UndoChanged( meWorld* ){
+void meWindowMainListener::UndoChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
-void meWindowMainListener::LightingChanged( meWorld* ){
+void meWindowMainListener::LightingChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
-void meWindowMainListener::EditingChanged( meWorld* ){
-	pWindowMain.UpdateAllActions();
-}
-
-
-
-void meWindowMainListener::ObjectSelectionChanged( meWorld* ){
-	pWindowMain.UpdateAllActions();
-}
-
-void meWindowMainListener::ObjectChanged( meWorld*, meObject* ){
+void meWindowMainListener::EditingChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
 
 
-void meWindowMainListener::DecalSelectionChanged( meWorld* ){
+void meWindowMainListener::ObjectSelectionChanged(meWorld*){
 	pWindowMain.UpdateAllActions();
 }
 
-void meWindowMainListener::DecalChanged( meWorld*, meDecal* ){
+void meWindowMainListener::ObjectChanged(meWorld*, meObject*){
+	pWindowMain.UpdateAllActions();
+}
+
+
+
+void meWindowMainListener::DecalSelectionChanged(meWorld*){
+	pWindowMain.UpdateAllActions();
+}
+
+void meWindowMainListener::DecalChanged(meWorld*, meDecal*){
 	pWindowMain.UpdateAllActions();
 }

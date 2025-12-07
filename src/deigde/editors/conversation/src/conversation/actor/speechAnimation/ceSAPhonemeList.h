@@ -52,26 +52,26 @@ public:
 	/** Retrieves the number of phonemes. */
 	int GetCount() const;
 	/** Retrieves the phoneme at the given position. */
-	ceSAPhoneme *GetAt( int index ) const;
+	ceSAPhoneme *GetAt(int index) const;
 	/** Retrieves the phoneme with the given ipa symbol or NULL if not found. */
-	ceSAPhoneme *GetIPA( int ipa ) const;
+	ceSAPhoneme *GetIPA(int ipa) const;
 	/** Retrieves the index of the given phoneme or -1 if not found. */
-	int IndexOf( ceSAPhoneme *phoneme ) const;
+	int IndexOf(ceSAPhoneme *phoneme) const;
 	/** Retrieves the index of the phoneme with the given ipa symbol or -1 if not found. */
-	int IndexOfIPA( int ipa ) const;
+	int IndexOfIPA(int ipa) const;
 	/** Determines if a phoneme exists. */
-	bool Has( ceSAPhoneme *phoneme ) const;
+	bool Has(ceSAPhoneme *phoneme) const;
 	/** Determines if a phoneme with the given ipa symbol exists. */
-	bool HasIPA( int ipa ) const;
+	bool HasIPA(int ipa) const;
 	/** Adds a phoneme. */
-	void Add( ceSAPhoneme *phoneme );
+	void Add(ceSAPhoneme *phoneme);
 	/** Removes a phoneme. */
-	void Remove( ceSAPhoneme *phoneme );
+	void Remove(ceSAPhoneme *phoneme);
 	/** Removes all phonemes. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	ceSAPhonemeList &operator=( const ceSAPhonemeList &list );
+	ceSAPhonemeList &operator=(const ceSAPhonemeList &list);
 	/*@}*/
 };
 

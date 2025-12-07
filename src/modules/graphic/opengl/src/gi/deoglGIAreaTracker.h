@@ -71,7 +71,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create visitor. */
-	deoglGIAreaTracker( int giimportance );
+	deoglGIAreaTracker(int giimportance);
 	/*@}*/
 	
 	
@@ -79,42 +79,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** World or NULL. */
-	inline deoglRWorld *GetWorld() const{ return pWorld; }
+	inline deoglRWorld *GetWorld() const{return pWorld;}
 	
 	/** Set world or NULL. */
-	void SetWorld( deoglRWorld *world );
+	void SetWorld(deoglRWorld *world);
 	
 	/** Half-extends. */
-	inline const decDVector &GetHalfExtends() const{ return pHalfExtends; }
+	inline const decDVector &GetHalfExtends() const{return pHalfExtends;}
 	
 	/** Set half extends. */
-	void SetHalfExtends( const decDVector &halfExtends );
+	void SetHalfExtends(const decDVector &halfExtends);
 	
 	/** Layer mask. */
-	const decLayerMask &GetLayerMask(){ return pLayerMask; }
+	const decLayerMask &GetLayerMask(){return pLayerMask;}
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** Position distance threshold before updating tracking. */
-	inline double GetUpdateThreshold() const{ return pUpdateThreshold; }
+	inline double GetUpdateThreshold() const{return pUpdateThreshold;}
 	
 	/** Set position distance threshold before updating tracking. */
-	void SetUpdateThreshold( double threshold );
+	void SetUpdateThreshold(double threshold);
 	
 	/** Set GI importance. */
-	void SetGIImportance( int importance );
+	void SetGIImportance(int importance);
 	
 	
 	
 	/** Position tracking is valid for. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Tracking is valid. If not becomes valid after next update. */
-	inline bool GetValid() const{ return pValid; }
+	inline bool GetValid() const{return pValid;}
 	
 	
 	
@@ -124,13 +124,13 @@ public:
 	
 	
 	/** List of instances entering area. Valid after Update() has been called. */
-	inline const deoglCollideList &GetEntering() const{ return pEntering; }
+	inline const deoglCollideList &GetEntering() const{return pEntering;}
 	
 	/** List of instances leaving area. Valid after Update() has been called. */
-	inline const deoglCollideList &GetLeaving() const{ return pLeaving; }
+	inline const deoglCollideList &GetLeaving() const{return pLeaving;}
 	
 	/** All instances area leaving. Valid after Update() has been called. */
-	inline bool GetAllLeaving() const{ return pAllLeaving; }
+	inline bool GetAllLeaving() const{return pAllLeaving;}
 	
 	/** Entering or leaving list is not empty or all leaving flag is set. */
 	bool HasChanged() const;
@@ -142,27 +142,27 @@ public:
 	void ClearChanges();
 	
 	/** Reject component. */
-	bool RejectComponent( const deoglRComponent &component ) const;
+	bool RejectComponent(const deoglRComponent &component) const;
 	
 	/** Component touches current box. */
-	bool ComponentTouches( const deoglRComponent &component ) const;
+	bool ComponentTouches(const deoglRComponent &component) const;
 	
 	
 	
 	/** GI importance from GI quality. */
-	static int GIImportanceFromGIQuality( deoglConfiguration::eGIQuality quality );
+	static int GIImportanceFromGIQuality(deoglConfiguration::eGIQuality quality);
 	/*@}*/
 	
 	
 	
 private:
-	void pVisitNodeColliding( const deoglWorldOctree &node );
-	void pVisitNode( const deoglWorldOctree &node );
-	void pVisitComponents( const deoglWorldOctree &node );
+	void pVisitNodeColliding(const deoglWorldOctree &node);
+	void pVisitNode(const deoglWorldOctree &node);
+	void pVisitComponents(const deoglWorldOctree &node);
 	
-	void pVisitNodeCollidingNewOnly( const deoglWorldOctree &node );
-	void pVisitNodeNewOnly( const deoglWorldOctree &node );
-	void pVisitComponentsNewOnly( const deoglWorldOctree &node );
+	void pVisitNodeCollidingNewOnly(const deoglWorldOctree &node);
+	void pVisitNodeNewOnly(const deoglWorldOctree &node);
+	void pVisitComponentsNewOnly(const deoglWorldOctree &node);
 };
 
 #endif

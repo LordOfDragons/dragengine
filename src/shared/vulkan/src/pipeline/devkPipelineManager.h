@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline manager. */
-	devkPipelineManager( devkDevice &device );
+	devkPipelineManager(devkDevice &device);
 	
 	/** Clean up pipelines manager. */
 	~devkPipelineManager();
@@ -59,19 +59,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	inline devkDevice &GetDevice() const{return pDevice;}
 	
 	/** Count of pipelines. */
 	int GetCount() const;
 	
 	/** Pipeline at index. Caller does not hold reference. */
-	devkPipeline *GetAt( int index ) const;
+	devkPipeline *GetAt(int index) const;
 	
 	/** Pipeline with configuration creating it if absent. Caller does not hold reference. */
-	devkPipeline *GetWith( const devkPipelineConfiguration &configuration );
+	devkPipeline *GetWith(const devkPipelineConfiguration &configuration);
 	
 	/** Pipeline with configuration is present. */
-	bool HasWith( const devkPipelineConfiguration &configuration ) const;
+	bool HasWith(const devkPipelineConfiguration &configuration) const;
 	
 	/** Remove all pipelines. */
 	void Clear();

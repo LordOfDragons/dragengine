@@ -43,8 +43,8 @@ igdeResourceLoaderListener::~igdeResourceLoaderListener(){
 // Notifications
 //////////////////
 
-void igdeResourceLoaderListener::LoadingFinished( const igdeResourceLoaderTask &, deFileResource* ){
+void igdeResourceLoaderListener::LoadingFinished(const igdeResourceLoaderTask &, deFileResource*){
 }
 
-void igdeResourceLoaderListener::LoadingFailed( const igdeResourceLoaderTask & ){
+void igdeResourceLoaderListener::LoadingFailed(const igdeResourceLoaderTask &){
 }

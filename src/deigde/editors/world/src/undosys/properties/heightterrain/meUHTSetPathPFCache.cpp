@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathPFCache::meUHTSetPathPFCache( meWorld *world, meHeightTerrainSector *sector, const char *newPath ){
-	if( ! world || ! sector || ! newPath ) DETHROW( deeInvalidParam );
+meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
+	if(! world || ! sector || ! newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
@@ -50,13 +50,13 @@ meUHTSetPathPFCache::meUHTSetPathPFCache( meWorld *world, meHeightTerrainSector 
 	pOldPath = sector->GetPathPFCacheImage();
 	pNewPath = newPath;
 	
-	SetShortInfo( "Set Height Terrain Prop Field Cache Path" );
+	SetShortInfo("Set Height Terrain Prop Field Cache Path");
 	
 	world->AddReference();
 }
 
 meUHTSetPathPFCache::~meUHTSetPathPFCache(){
-	if( pWorld ) pWorld->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
 
 
@@ -66,9 +66,9 @@ meUHTSetPathPFCache::~meUHTSetPathPFCache(){
 
 
 void meUHTSetPathPFCache::Undo(){
-	pSector->SetPathPFCache( pOldPath.GetString() );
+	pSector->SetPathPFCache(pOldPath.GetString());
 }
 
 void meUHTSetPathPFCache::Redo(){
-	pSector->SetPathPFCache( pNewPath.GetString() );
+	pSector->SetPathPFCache(pNewPath.GetString());
 }

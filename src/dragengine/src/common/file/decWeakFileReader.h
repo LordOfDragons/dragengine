@@ -55,7 +55,7 @@ public:
 	 * 
 	 * \throws deeInvalidParam \em reader is NULL.
 	 */
-	decWeakFileReader( decBaseFileReader *reader );
+	decWeakFileReader(decBaseFileReader *reader);
 	
 protected:
 	/**
@@ -97,13 +97,13 @@ public:
 	virtual int GetPosition();
 	
 	/** \brief Set file position for the next read action. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset );
+	virtual void MovePosition(int offset);
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position );
+	virtual void SetPositionEnd(int position);
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
@@ -111,7 +111,7 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 * \throws deeInvalidParam Error decompressing content.
 	 */
-	virtual void Read( void *buffer, int size );
+	virtual void Read(void *buffer, int size);
 	
 	/** \brief Duplicate file reader. */
 	virtual decBaseFileReader::Ref Duplicate();

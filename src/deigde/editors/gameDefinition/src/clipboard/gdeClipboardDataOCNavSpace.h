@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCNavSpace( gdeOCNavigationSpace *navSpace );
+	gdeClipboardDataOCNavSpace(gdeOCNavigationSpace *navSpace);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavSpace. */
-	gdeOCNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	gdeOCNavigationSpace *GetNavSpace() const{return pNavSpace;}
 	/*@}*/
 };
 

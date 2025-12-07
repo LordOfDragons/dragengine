@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	meWindowChangelog( meWindowMain &windowMain );
+	meWindowChangelog(meWindowMain &windowMain);
 	
 protected:
 	/** \brief Clean up window. */
@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline meWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update changelog list. */
 	void UpdateChangelog();
 	
 	/** \brief Save entry. */
-	void SaveEntry( meWCEntry *entry );
+	void SaveEntry(meWCEntry *entry);
 	
 	/** \brief Save all entries. */
 	void SaveAllEntries();

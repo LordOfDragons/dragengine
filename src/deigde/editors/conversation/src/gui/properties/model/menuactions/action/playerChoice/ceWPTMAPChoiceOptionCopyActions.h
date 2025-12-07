@@ -43,8 +43,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceOptionCopyActions( ceWindowMain &windowMain,
-		const ceCAPlayerChoiceOption &option );
+	ceWPTMAPChoiceOptionCopyActions(ceWindowMain &windowMain,
+		const ceCAPlayerChoiceOption &option);
 	/*@}*/
 };
 

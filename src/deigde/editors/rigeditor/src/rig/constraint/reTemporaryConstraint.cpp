@@ -47,11 +47,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reTemporaryConstraint::reTemporaryConstraint( reRig *rig, reRigBone *bone,
-const decDVector &position, const decQuaternion &orientation ){
-	if( ! rig ) DETHROW( deeInvalidParam );
+reTemporaryConstraint::reTemporaryConstraint(reRig *rig, reRigBone *bone,
+const decDVector &position, const decQuaternion &orientation){
+	if(! rig) DETHROW(deeInvalidParam);
 	
-	decDMatrix matrix( decDMatrix::CreateWorld( position, orientation ) );
+	decDMatrix matrix(decDMatrix::CreateWorld(position, orientation));
 	deColliderComponent *simcol = rig->GetEngineSimulationCollider();
 	
 	pPosition = position;
@@ -60,45 +60,45 @@ const decDVector &position, const decQuaternion &orientation ){
 	pEngSimCollider = NULL;
 	pEngConstraint = NULL;
 	
-	if( simcol ){
+	if(simcol){
 		pEngConstraint = new deColliderConstraint;
 		
 		try{
-			pEngConstraint->SetPosition2( position.ToVector() );
-			pEngConstraint->SetOrientation2( orientation );
+			pEngConstraint->SetPosition2(position.ToVector());
+			pEngConstraint->SetOrientation2(orientation);
 			
 			pEngConstraint->SetToBallJoint();
 			
-			if( bone ){
-				pEngConstraint->SetBone( bone->GetOrder() );
+			if(bone){
+				pEngConstraint->SetBone(bone->GetOrder());
 				
-				matrix *= decDMatrix( bone->GetInversePoseMatrix() );
+				matrix *= decDMatrix(bone->GetInversePoseMatrix());
 				
 			}else{
-				pEngConstraint->SetBone( -1 );
+				pEngConstraint->SetBone(-1);
 				
-				matrix *= decDMatrix( rig->GetPoseMatrix() ).Invert();
+				matrix *= decDMatrix(rig->GetPoseMatrix()).Invert();
 			}
 			
-			pEngConstraint->SetPosition1( matrix.GetPosition().ToVector() );
-			pEngConstraint->SetOrientation1( matrix.ToQuaternion() );
+			pEngConstraint->SetPosition1(matrix.GetPosition().ToVector());
+			pEngConstraint->SetOrientation1(matrix.ToQuaternion());
 			
-			simcol->AddConstraint( pEngConstraint );
+			simcol->AddConstraint(pEngConstraint);
 			
-		}catch( const deException & ){
-			if( pEngConstraint ) delete pEngConstraint;
+		}catch(const deException &){
+			if(pEngConstraint) delete pEngConstraint;
 			throw;
 		}
 	}
 	
 	pEngSimCollider = simcol;
-	if( simcol ) simcol->AddReference();
+	if(simcol) simcol->AddReference();
 }
 
 reTemporaryConstraint::~reTemporaryConstraint(){
-	if( pEngSimCollider ){
-		if( pEngConstraint ){
-			pEngSimCollider->RemoveConstraint( pEngConstraint );
+	if(pEngSimCollider){
+		if(pEngConstraint){
+			pEngSimCollider->RemoveConstraint(pEngConstraint);
 		}
 		
 		pEngSimCollider->FreeReference();
@@ -110,24 +110,24 @@ reTemporaryConstraint::~reTemporaryConstraint(){
 // Management
 ///////////////
 
-void reTemporaryConstraint::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void reTemporaryConstraint::SetPosition(const decDVector &position){
+	if(! position.IsEqualTo(pPosition)){
 		pPosition = position;
 		
-		if( pEngConstraint ){
-			pEngConstraint->SetPosition2( pPosition.ToVector() );
+		if(pEngConstraint){
+			pEngConstraint->SetPosition2(pPosition.ToVector());
 		}
 		
 		pNotifyConstraintChanged();
 	}
 }
 
-void reTemporaryConstraint::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void reTemporaryConstraint::SetOrientation(const decQuaternion &orientation){
+	if(! orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
 		
-		if( pEngConstraint ){
-			pEngConstraint->SetOrientation2( orientation );
+		if(pEngConstraint){
+			pEngConstraint->SetOrientation2(orientation);
 		}
 		
 		pNotifyConstraintChanged();
@@ -136,56 +136,56 @@ void reTemporaryConstraint::SetOrientation( const decQuaternion &orientation ){
 
 
 
-void reTemporaryConstraint::SetLinearLowerLimits( const decVector &lowerLimits ){
-	if( ! lowerLimits.IsEqualTo( pLinearLowerLimits ) ){
+void reTemporaryConstraint::SetLinearLowerLimits(const decVector &lowerLimits){
+	if(! lowerLimits.IsEqualTo(pLinearLowerLimits)){
 		pLinearLowerLimits = lowerLimits;
 		
-		if( pEngConstraint ){
-			pEngConstraint->GetDofLinearX().SetLowerLimit( pLinearLowerLimits.x );
-			pEngConstraint->GetDofLinearY().SetLowerLimit( pLinearLowerLimits.y );
-			pEngConstraint->GetDofLinearZ().SetLowerLimit( pLinearLowerLimits.z );
+		if(pEngConstraint){
+			pEngConstraint->GetDofLinearX().SetLowerLimit(pLinearLowerLimits.x);
+			pEngConstraint->GetDofLinearY().SetLowerLimit(pLinearLowerLimits.y);
+			pEngConstraint->GetDofLinearZ().SetLowerLimit(pLinearLowerLimits.z);
 		}
 		
 		pNotifyConstraintChanged();
 	}
 }
 
-void reTemporaryConstraint::SetLinearUpperLimits( const decVector &upperLimits ){
-	if( ! upperLimits.IsEqualTo( pLinearUpperLimits ) ){
+void reTemporaryConstraint::SetLinearUpperLimits(const decVector &upperLimits){
+	if(! upperLimits.IsEqualTo(pLinearUpperLimits)){
 		pLinearUpperLimits = upperLimits;
 		
-		if( pEngConstraint ){
-			pEngConstraint->GetDofLinearX().SetUpperLimit( pLinearUpperLimits.x );
-			pEngConstraint->GetDofLinearY().SetUpperLimit( pLinearUpperLimits.y );
-			pEngConstraint->GetDofLinearZ().SetUpperLimit( pLinearUpperLimits.z );
+		if(pEngConstraint){
+			pEngConstraint->GetDofLinearX().SetUpperLimit(pLinearUpperLimits.x);
+			pEngConstraint->GetDofLinearY().SetUpperLimit(pLinearUpperLimits.y);
+			pEngConstraint->GetDofLinearZ().SetUpperLimit(pLinearUpperLimits.z);
 		}
 		
 		pNotifyConstraintChanged();
 	}
 }
 
-void reTemporaryConstraint::SetAngularLowerLimits( const decVector &lowerLimits ){
-	if( ! lowerLimits.IsEqualTo( pAngularLowerLimits ) ){
+void reTemporaryConstraint::SetAngularLowerLimits(const decVector &lowerLimits){
+	if(! lowerLimits.IsEqualTo(pAngularLowerLimits)){
 		pAngularLowerLimits = lowerLimits;
 		
-		if( pEngConstraint ){
-			pEngConstraint->GetDofAngularX().SetLowerLimit( pAngularLowerLimits.x * DEG2RAD );
-			pEngConstraint->GetDofAngularY().SetLowerLimit( pAngularLowerLimits.y * DEG2RAD );
-			pEngConstraint->GetDofAngularZ().SetLowerLimit( pAngularLowerLimits.z * DEG2RAD );
+		if(pEngConstraint){
+			pEngConstraint->GetDofAngularX().SetLowerLimit(pAngularLowerLimits.x * DEG2RAD);
+			pEngConstraint->GetDofAngularY().SetLowerLimit(pAngularLowerLimits.y * DEG2RAD);
+			pEngConstraint->GetDofAngularZ().SetLowerLimit(pAngularLowerLimits.z * DEG2RAD);
 		}
 		
 		pNotifyConstraintChanged();
 	}
 }
 
-void reTemporaryConstraint::SetAngularUpperLimits( const decVector &upperLimits ){
-	if( ! upperLimits.IsEqualTo( pAngularUpperLimits ) ){
+void reTemporaryConstraint::SetAngularUpperLimits(const decVector &upperLimits){
+	if(! upperLimits.IsEqualTo(pAngularUpperLimits)){
 		pAngularUpperLimits = upperLimits;
 		
-		if( pEngConstraint ){
-			pEngConstraint->GetDofAngularX().SetUpperLimit( pAngularUpperLimits.x * DEG2RAD );
-			pEngConstraint->GetDofAngularY().SetUpperLimit( pAngularUpperLimits.y * DEG2RAD );
-			pEngConstraint->GetDofAngularZ().SetUpperLimit( pAngularUpperLimits.z * DEG2RAD );
+		if(pEngConstraint){
+			pEngConstraint->GetDofAngularX().SetUpperLimit(pAngularUpperLimits.x * DEG2RAD);
+			pEngConstraint->GetDofAngularY().SetUpperLimit(pAngularUpperLimits.y * DEG2RAD);
+			pEngConstraint->GetDofAngularZ().SetUpperLimit(pAngularUpperLimits.z * DEG2RAD);
 		}
 		
 		pNotifyConstraintChanged();
@@ -198,7 +198,7 @@ void reTemporaryConstraint::SetAngularUpperLimits( const decVector &upperLimits 
 //////////////////////
 
 void reTemporaryConstraint::pNotifyConstraintChanged(){
-	if( pEngSimCollider && pEngConstraint ){
-		pEngSimCollider->NotifyConstraintChanged( pEngSimCollider->IndexOfConstraint( pEngConstraint ) );
+	if(pEngSimCollider && pEngConstraint){
+		pEngSimCollider->NotifyConstraintChanged(pEngSimCollider->IndexOfConstraint(pEngConstraint));
 	}
 }

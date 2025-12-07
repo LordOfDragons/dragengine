@@ -35,14 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnPReliableTimeout::debnPReliableTimeout( deNetworkBasic &network ) :
-debnParameterFloat( network )
+debnPReliableTimeout::debnPReliableTimeout(deNetworkBasic &network) :
+debnParameterFloat(network)
 {
-	SetName( "reliableTimeout" );
-	SetDescription( "Timeout in seconds for reliable messages." );
-	SetCategory( ecExpert );
-	SetDisplayName( "Reliable Timeout" );
-	SetDefaultValue( "3" );
+	SetName("reliableTimeout");
+	SetDescription("Timeout in seconds for reliable messages.");
+	SetCategory(ecExpert);
+	SetDisplayName("Reliable Timeout");
+	SetDefaultValue("3");
 }
 
 
@@ -53,6 +53,6 @@ float debnPReliableTimeout::GetParameterFloat(){
 	return pNetwork.GetConfiguration().GetReliableTimeout();
 }
 
-void debnPReliableTimeout::SetParameterFloat( float value ){
-	pNetwork.GetConfiguration().SetReliableTimeout( value );
+void debnPReliableTimeout::SetParameterFloat(float value){
+	pNetwork.GetConfiguration().SetReliableTimeout(value);
 }

@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */
-	deoglRPropFieldType( deoglRPropField &propField );
+	deoglRPropFieldType(deoglRPropField &propField);
 	
 	/** Clean up prop field type. */
 	virtual ~deoglRPropFieldType();
@@ -92,41 +92,41 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Prop field. */
-	inline deoglRPropField &GetPropField() const{ return pPropField; }
+	inline deoglRPropField &GetPropField() const{return pPropField;}
 	
 	
 	
 	/** Model or NULL if not set. */
-	inline deoglRModel *GetModel() const{ return pModel; }
+	inline deoglRModel *GetModel() const{return pModel;}
 	
 	/**
 	 * Set model or NULL if not set.
 	 * \warning Called during synchronization from main thread.
 	 */
-	void SetModel( deoglRModel *model );
+	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline deoglRSkin *GetSkin() const{return pSkin;}
 	
 	/**
 	 * Set skin or NULL if not set.
 	 * \warning Called during synchronization from main thread.
 	 */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL if not valid. */
-	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
+	inline deoglSkinTexture *GetUseSkinTexture() const{return pUseSkinTexture;}
 	
 	
 	
 	/** Minimum extend. */
-	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
 	
 	/** Maximum extend. */
-	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
 	
 	/** Bending factor. */
-	inline float GetBendFactor() const{ return pBendFactor; }
+	inline float GetBendFactor() const{return pBendFactor;}
 	
 	
 	
@@ -134,16 +134,16 @@ public:
 	 * Rebuild instances.
 	 * \warning Called during synchronization from main thread.
 	 */
-	void RebuildInstances( const dePropFieldType &type );
+	void RebuildInstances(const dePropFieldType &type);
 	
 	/** Add clusters with a point sieve. */
-	void AddClustersWithSieve( const dePropFieldType &type );
+	void AddClustersWithSieve(const dePropFieldType &type);
 	
 	/** Add clusters with a cluster generator. */
-	void AddClustersWithGenerator( const dePropFieldType &type );
+	void AddClustersWithGenerator(const dePropFieldType &type);
 	
 	/** Add clusters from a cluster generator. */
-	void AddClustersFromGenerator(  const dePropFieldType &type, const deoglPFClusterGenerator &generator );
+	void AddClustersFromGenerator(const dePropFieldType &type, const deoglPFClusterGenerator &generator);
 	
 	
 	
@@ -151,7 +151,7 @@ public:
 	void PrepareForRender();
 	
 	/** Update instances. */
-	void UpdateInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix );
+	void UpdateInstances(const decDVector &cameraPosition, const decDMatrix &cameraMatrix);
 	
 	
 	
@@ -159,10 +159,10 @@ public:
 	int GetClusterCount() const;
 	
 	/** Cluster at index. */
-	deoglPropFieldCluster *GetClusterAt( int index ) const;
+	deoglPropFieldCluster *GetClusterAt(int index) const;
 	
 	/** Add cluster. */
-	void AddCluster( deoglPropFieldCluster *cluster );
+	void AddCluster(deoglPropFieldCluster *cluster);
 	
 	/** Remove all clusters. */
 	void RemoveAllClusters();
@@ -176,12 +176,12 @@ public:
 	 * Prepare bend states.
 	 * \warning Called during synchronization from main thread.
 	 */
-	void PrepareBendStateData( const dePropFieldType &type );
+	void PrepareBendStateData(const dePropFieldType &type);
 	
 	
 	
 	/** Parameter block or NULL if there is no valid skin texture. */
-	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{ return pParamBlock; }
+	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{return pParamBlock;}
 	
 	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
@@ -193,7 +193,7 @@ public:
 	void MarkTUCsDirty();
 	
 	/** Update instance parameter shader parameter block. */
-	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
+	void UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader);
 	
 	
 	
@@ -203,7 +203,7 @@ public:
 	
 	
 	/** Add to world compute. */
-	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	void AddToWorldCompute(deoglWorldCompute &worldCompute);
 	
 	/** Update world compute. */
 	void UpdateWorldCompute();

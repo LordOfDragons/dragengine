@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	seWPDynamicSkin( seWindowProperties &windowProperties );
+	seWPDynamicSkin(seWindowProperties &windowProperties);
 	
 protected:
 	/** \brief Clean up panel. */
@@ -92,13 +92,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Properties window. */
-	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline seWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline seSkin *GetSkin() const{return pSkin;}
 	
 	/** \brief Set skin. */
-	void SetSkin( seSkin *skin );
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Active renderable. */
 	seDynamicSkinRenderable *GetRenderable() const;

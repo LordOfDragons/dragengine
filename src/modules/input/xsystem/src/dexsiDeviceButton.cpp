@@ -42,15 +42,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-dexsiDeviceButton::dexsiDeviceButton( deXSystemInput &module ) :
-pModule( module ),
-pPressed( false ),
-pType( deInputDeviceButton::ebtGeneric ),
-pX11Code( 0 ),
-pEvdevCode( 0 ),
-pKeyCode( deInputEvent::ekcUndefined ),
-pMatchPriority( 10 ),
-pKeyLocation( deInputEvent::eklNone ){
+dexsiDeviceButton::dexsiDeviceButton(deXSystemInput &module) :
+pModule(module),
+pPressed(false),
+pType(deInputDeviceButton::ebtGeneric),
+pX11Code(0),
+pEvdevCode(0),
+pKeyCode(deInputEvent::ekcUndefined),
+pMatchPriority(10),
+pKeyLocation(deInputEvent::eklNone){
 }
 
 dexsiDeviceButton::~dexsiDeviceButton(){
@@ -61,29 +61,29 @@ dexsiDeviceButton::~dexsiDeviceButton(){
 // Management
 ///////////////
 
-void dexsiDeviceButton::SetID( const char *id ){
+void dexsiDeviceButton::SetID(const char *id){
 	pID = id;
 }
 
-void dexsiDeviceButton::SetName( const char *name ){
+void dexsiDeviceButton::SetName(const char *name){
 	pName = name;
 }
 
-void dexsiDeviceButton::SetPressed( bool pressed ){
+void dexsiDeviceButton::SetPressed(bool pressed){
 	pPressed = pressed;
 }
 
-void dexsiDeviceButton::SetType( deInputDeviceButton::eButtonTypes type ){
+void dexsiDeviceButton::SetType(deInputDeviceButton::eButtonTypes type){
 	pType = type;
 }
 
 
 
-void dexsiDeviceButton::SetDisplayImages( const char *name ){
+void dexsiDeviceButton::SetDisplayImages(const char *name){
 	pDisplayImage = NULL;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(! name){
 		return;
 	}
 	
@@ -92,63 +92,63 @@ void dexsiDeviceButton::SetDisplayImages( const char *name ){
 	const char * const basePath = "/share/image/button";
 	decString filename;
 	
-	filename.Format( "%s/%s/image.png", basePath, name );
-	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
+	filename.Format("%s/%s/image.png", basePath, name);
+	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
 	
-	const int sizes[ 4 ] = {128, 64, 32, 16};
+	const int sizes[4] = {128, 64, 32, 16};
 	deImage::Ref icon;
 	int i;
 	
-	for( i=0; i<4; i++ ){
-		filename.Format( "%s/%s/icon%d.png", basePath, name, sizes[ i ] );
-		icon.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
-		pDisplayIcons.Add( ( deImage* )icon );
+	for(i=0; i<4; i++){
+		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
+		icon.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+		pDisplayIcons.Add((deImage*)icon);
 	}
 }
 
-void dexsiDeviceButton::SetDisplayImages( const dexsiDeviceButton &button ){
+void dexsiDeviceButton::SetDisplayImages(const dexsiDeviceButton &button){
 	pDisplayImage = button.pDisplayImage;
 	pDisplayIcons = button.pDisplayIcons;
 }
 
-void dexsiDeviceButton::SetDisplayText( const char *text ){
+void dexsiDeviceButton::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
 
 
-void dexsiDeviceButton::SetX11Code( int code ){
+void dexsiDeviceButton::SetX11Code(int code){
 	pX11Code = code;
 }
 
-void dexsiDeviceButton::SetEvdevCode( int code ){
+void dexsiDeviceButton::SetEvdevCode(int code){
 	pEvdevCode = code;
 }
 
-void dexsiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
+void dexsiDeviceButton::SetKeyCode(deInputEvent::eKeyCodes keyCode){
 	pKeyCode = keyCode;
 }
 
-void dexsiDeviceButton::SetMatchPriority( int priority ){
+void dexsiDeviceButton::SetMatchPriority(int priority){
 	pMatchPriority = priority;
 }
 
-void dexsiDeviceButton::SetKeyLocation( deInputEvent::eKeyLocation location ){
+void dexsiDeviceButton::SetKeyLocation(deInputEvent::eKeyLocation location){
 	pKeyLocation = location;
 }
 
 
 
-void dexsiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
+void dexsiDeviceButton::GetInfo(deInputDeviceButton &info) const{
 	int i;
 	
-	info.SetID( pID );
-	info.SetName( pName );
-	info.SetType( pType );
+	info.SetID(pID);
+	info.SetName(pName);
+	info.SetType(pType);
 	
-	info.SetDisplayImage( pDisplayImage );
-	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+	info.SetDisplayImage(pDisplayImage);
+	for(i=0; i<pDisplayIcons.GetCount(); i++){
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
-	info.SetDisplayText( pDisplayText );
+	info.SetDisplayText(pDisplayText);
 }

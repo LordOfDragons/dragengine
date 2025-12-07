@@ -58,16 +58,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of entries. */
-	inline int GetCount() const{ return pCount; }
+	inline int GetCount() const{return pCount;}
 	
 	/** Clear map. */
 	void Clear();
 	
 	/** Init map. */
-	void Init( const dearRule &rule );
+	void Init(const dearRule &rule);
 	
 	/** Animation vertex position set index for rule vertex position set index or -1. */
-	int GetAt( int ruleVPSIndex ) const;
+	int GetAt(int ruleVPSIndex) const;
 	/*@}*/
 };
 

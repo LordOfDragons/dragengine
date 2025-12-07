@@ -38,9 +38,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalParameterFloat::deoalParameterFloat( deAudioOpenAL &oal ) : deoalParameter( oal )
+deoalParameterFloat::deoalParameterFloat(deAudioOpenAL &oal) : deoalParameter(oal)
 {
-	SetType( deModuleParameter::eptNumeric );
+	SetType(deModuleParameter::eptNumeric);
 }
 
 deoalParameterFloat::~deoalParameterFloat(){
@@ -54,17 +54,17 @@ deoalParameterFloat::~deoalParameterFloat(){
 decString deoalParameterFloat::GetParameterValue(){
 	decString value;
 	
-	value.Format( "%f", GetParameterFloat() );
+	value.Format("%f", GetParameterFloat());
 	
 	int len = value.GetLength();
-	while( len > 1 ){
+	while(len > 1){
 		len--;
-		if( value[ len ] == '.' ){
-			value[ len ] = 0;
+		if(value[len] == '.'){
+			value[len] = 0;
 			break;
 			
-		}else if( value[ len ] == '0' ){
-			value[ len ] = 0;
+		}else if(value[len] == '0'){
+			value[len] = 0;
 			
 		}else{
 			break;
@@ -74,6 +74,6 @@ decString deoalParameterFloat::GetParameterValue(){
 	return value;
 }
 
-void deoalParameterFloat::SetParameterValue( const char *value ){
-	SetParameterFloat( decString( value ).ToFloat() );
+void deoalParameterFloat::SetParameterValue(const char *value){
+	SetParameterFloat(decString(value).ToFloat());
 }

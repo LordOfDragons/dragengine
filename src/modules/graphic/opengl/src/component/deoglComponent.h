@@ -107,7 +107,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component peer. */
-	deoglComponent( deGraphicOpenGl &ogl, deComponent &component );
+	deoglComponent(deGraphicOpenGl &ogl, deComponent &component);
 	
 	/** Clean up component peer. */
 	virtual ~deoglComponent();
@@ -118,48 +118,48 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Engine resource component. */
-	inline deComponent &GetComponent() const{ return pComponent; }
+	inline deComponent &GetComponent() const{return pComponent;}
 	
 	
 	
 	/** Render component. */
-	inline deoglRComponent *GetRComponent() const{ return pRComponent; }
+	inline deoglRComponent *GetRComponent() const{return pRComponent;}
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	
 	
 	/** Parent world or \em NULL if not in a world. */
-	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/**
 	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
-	void SetParentWorld( deoglWorld *world );
+	void SetParentWorld(deoglWorld *world);
 	
 	
 	
 	/** Number of LODs. */
-	inline int GetLODCount() const{ return pLODCount; }
+	inline int GetLODCount() const{return pLODCount;}
 	
 	/** LOD at index. */
-	deoglComponentLOD &GetLODAt( int index ) const;
+	deoglComponentLOD &GetLODAt(int index) const;
 	
 	
 	
 	/** Number of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** Texture at index. */
-	deoglComponentTexture &GetTextureAt( int index );
+	deoglComponentTexture &GetTextureAt(int index);
 	
 	
 	
@@ -184,8 +184,8 @@ public:
 	/*@{*/
 	virtual void DynamicSkinDestroyed();
 	virtual void DynamicSkinRenderablesChanged();
-	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
-	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableChanged(deoglDSRenderable &renderable);
+	virtual void DynamicSkinRenderableRequiresSync(deoglDSRenderable &renderable);
 	/*@}*/
 	
 	
@@ -248,10 +248,10 @@ public:
 	
 	
 	/** Decal has been added. */
-	virtual void DecalAdded( deDecal *decal );
+	virtual void DecalAdded(deDecal *decal);
 	
 	/** Decal has been removed. */
-	virtual void DecalRemoved( deDecal *decal );
+	virtual void DecalRemoved(deDecal *decal);
 	
 	/** All decals have been removed. */
 	virtual void AllDecalsRemoved();
@@ -262,7 +262,7 @@ public:
 	 * Retrieve index of the texture of the face closest to a position or -1 if not found.
 	 * \details Limits the search to the provided radius.
 	 */
-	virtual int IndexOfTextureClosestTo( const decVector &vector, float radius );
+	virtual int IndexOfTextureClosestTo(const decVector &vector, float radius);
 	
 	/** Retrieve index of the face closest to a position or -1 if not found. */
 	//int IndexOfFaceClosestTo( const decVector &vector, float radius );
@@ -273,8 +273,8 @@ public:
 	
 	
 	/** World syncing linked list. */
-	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
-	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
+	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){return pLLSyncWorld;}
+	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{return pLLSyncWorld;}
 	/*@}*/
 	
 	

@@ -53,7 +53,7 @@ public:
 	decLayerMask();
 	
 	/** \brief Create new layer mask as a copy of another layer mask. */
-	decLayerMask( const decLayerMask &layerMask );
+	decLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Cleans up layer mask. */
 	~decLayerMask();
@@ -70,16 +70,16 @@ public:
 	void FillMask();
 	
 	/** \brief Sets a bit in the range from 0 to 63 inclusive. */
-	void SetBit( int bit );
+	void SetBit(int bit);
 	
 	/** \brief Clears a bit in the range from 0 to 63 inclusive. */
-	void ClearBit( int bit );
+	void ClearBit(int bit);
 	
 	/** \brief Determines if a bit is set in the range from 0 to 63 inclusive. */
-	bool IsBitSet( int bit ) const;
+	bool IsBitSet(int bit) const;
 	
 	/** \brief Determines if a bit is not set in the range from 0 to 63 inclusive. */
-	bool IsBitCleared( int bit ) const;
+	bool IsBitCleared(int bit) const;
 	
 	/** \brief Layer mask has no bits set. */
 	bool IsEmpty() const;
@@ -91,10 +91,10 @@ public:
 	bool IsFull() const;
 	
 	/** \brief Determines if this mask shares at least one bit with another mask. */
-	bool Matches( const decLayerMask &layerMask ) const;
+	bool Matches(const decLayerMask &layerMask) const;
 	
 	/** \brief Determines if this mask shares no bits with another mask. */
-	bool MatchesNot( const decLayerMask &layerMask ) const;
+	bool MatchesNot(const decLayerMask &layerMask) const;
 	
 	/**
 	 * \brief Retrieves a bit string representation.
@@ -111,7 +111,7 @@ public:
 	 * on the front of the string with bits following up to the bit 63. If the string
 	 * is less than 64 characters long all bits outside the range are set to cleared.
 	 */
-	void SetFromBitString( const char *string );
+	void SetFromBitString(const char *string);
 	
 	/**
 	 * \brief Retrieves a hexadecimal string representation.
@@ -134,19 +134,19 @@ public:
 	 * down to the lowest bit. If the string is less than 16 characters long all bits
 	 * outside the range are set to cleared.
 	 */
-	void SetFromHexString( const char *string );
+	void SetFromHexString(const char *string);
 	
 	/** \brief Read layer mask from file reader. */
-	static decLayerMask ReadFromFile( decBaseFileReader &reader );
+	static decLayerMask ReadFromFile(decBaseFileReader &reader);
 	
 	/** \brief Write layer mask to file writer. */
-	void WriteToFile( decBaseFileWriter &writer ) const;
+	void WriteToFile(decBaseFileWriter &writer) const;
 	
 	/** \brief Mask value. */
-	inline uint64_t GetMask() const{ return pMask; }
+	inline uint64_t GetMask() const{return pMask;}
 	
 	/** \brief Set mask value. */
-	void SetMask( uint64_t mask );
+	void SetMask(uint64_t mask);
 	/*@}*/
 	
 	
@@ -154,31 +154,31 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Layer masks are equal. */
-	bool operator==( const decLayerMask &layerMask ) const;
+	bool operator==(const decLayerMask &layerMask) const;
 	
 	/** \brief Layer masks  are not equal. */
-	bool operator!=( const decLayerMask &layerMask ) const;
+	bool operator!=(const decLayerMask &layerMask) const;
 	
 	/** \brief Sets this layer mask to another one. */
-	decLayerMask &operator=( const decLayerMask &layerMask );
+	decLayerMask &operator=(const decLayerMask &layerMask);
 	
 	/** \brief Sets all bits that are set in another one. */
-	decLayerMask &operator|=( const decLayerMask &layerMask );
+	decLayerMask &operator|=(const decLayerMask &layerMask);
 	
 	/** \brief Clears all bits that are not set in another one. */
-	decLayerMask &operator&=( const decLayerMask &layerMask );
+	decLayerMask &operator&=(const decLayerMask &layerMask);
 	
 	/** \brief Sets bits that are different between this layer mask and another one. */
-	decLayerMask &operator^=( const decLayerMask &layerMask );
+	decLayerMask &operator^=(const decLayerMask &layerMask);
 	
 	/** \brief Retrieves a layermask with all bits set that are set in either this layer mask or another one. */
-	decLayerMask operator|( const decLayerMask &layerMask ) const;
+	decLayerMask operator|(const decLayerMask &layerMask) const;
 	
 	/** \brief Retrieves a layermask with all bits set that are set in both this layer mask and another one. */
-	decLayerMask operator&( const decLayerMask &layerMask ) const;
+	decLayerMask operator&(const decLayerMask &layerMask) const;
 	
 	/** \brief Retrieves a layermask with all bits set that are different between this layer mask and another one. */
-	decLayerMask operator^( const decLayerMask &layerMask ) const;
+	decLayerMask operator^(const decLayerMask &layerMask) const;
 	
 	/** \brief Inverse layermask with all bits inverted. */
 	decLayerMask operator~() const;

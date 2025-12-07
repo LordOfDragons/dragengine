@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUSetShapeCapsuleHalfHeight( reRigShapeCapsule *shape, float halfHeight );
+	reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *shape, float halfHeight);
 	
 protected:
 	/** \brief Clean up undo. */

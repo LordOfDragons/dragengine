@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUEffectStretchSetMinTime( seEffectStretch *effect, float newTime );
+	seUEffectStretchSetMinTime(seEffectStretch *effect, float newTime);
 	
 protected:
 	/** \brief Clean up undo action. */

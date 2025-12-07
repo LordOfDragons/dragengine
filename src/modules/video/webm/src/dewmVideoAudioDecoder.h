@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create decoder. */
-	dewmVideoAudioDecoder( deVideoWebm &module, decBaseFileReader *file );
+	dewmVideoAudioDecoder(deVideoWebm &module, decBaseFileReader *file);
 	
 	/** Clean up decoder. */
 	virtual ~dewmVideoAudioDecoder();
@@ -69,7 +69,7 @@ public:
 	virtual int GetPosition();
 	
 	/** Set file position in samples from the beginning. */
-	virtual void SetPosition( int position );
+	virtual void SetPosition(int position);
 	
 	/**
 	 * Read chunk of sound data from current file position and advance.
@@ -80,7 +80,7 @@ public:
 	 * has been reached. If reading fails an error is signaled using the engine error
 	 * signaling and 0 returned.
 	 */
-	virtual int ReadSamples( void *buffer, int size );
+	virtual int ReadSamples(void *buffer, int size);
 	/*@}*/
 	
 	

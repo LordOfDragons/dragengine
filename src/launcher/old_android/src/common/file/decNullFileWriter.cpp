@@ -37,8 +37,8 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decNullFileWriter::decNullFileWriter( const char *filename ) :
-pFilename( filename ){
+decNullFileWriter::decNullFileWriter(const char *filename) :
+pFilename(filename){
 }
 
 decNullFileWriter::~decNullFileWriter(){
@@ -53,13 +53,13 @@ int decNullFileWriter::GetPosition(){
 	return 0;
 }
 
-void decNullFileWriter::SetPosition( int position ){
+void decNullFileWriter::SetPosition(int position){
 }
 
-void decNullFileWriter::MovePosition( int offset ){
+void decNullFileWriter::MovePosition(int offset){
 }
 
-void decNullFileWriter::SetPositionEnd( int position ){
+void decNullFileWriter::SetPositionEnd(int position){
 }
 
 
@@ -71,5 +71,5 @@ const char *decNullFileWriter::GetFilename(){
 	return pFilename;
 }
 
-void decNullFileWriter::Write( const void *buffer, int size ){
+void decNullFileWriter::Write(const void *buffer, int size){
 }

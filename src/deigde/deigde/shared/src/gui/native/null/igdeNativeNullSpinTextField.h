@@ -42,7 +42,7 @@ public:
 	virtual ~igdeNativeNullSpinTextField();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullSpinTextField* CreateNativeWidget( igdeSpinTextField &owner );
+	static igdeNativeNullSpinTextField* CreateNativeWidget(igdeSpinTextField &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

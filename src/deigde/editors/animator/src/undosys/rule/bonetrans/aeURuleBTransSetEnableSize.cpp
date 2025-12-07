@@ -39,21 +39,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetEnableSize::aeURuleBTransSetEnableSize( aeRuleBoneTransformator *rule ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetEnableSize::aeURuleBTransSetEnableSize(aeRuleBoneTransformator *rule){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
 	
-	SetShortInfo( "Bone transformator toggle enable size" );
+	SetShortInfo("Bone transformator toggle enable size");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleBTransSetEnableSize::~aeURuleBTransSetEnableSize(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -68,5 +68,5 @@ void aeURuleBTransSetEnableSize::Undo(){
 }
 
 void aeURuleBTransSetEnableSize::Redo(){
-	pRule->SetEnableSize( ! pRule->GetEnableSize() );
+	pRule->SetEnableSize(! pRule->GetEnableSize());
 }

@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUFontSetLineHeight::feUFontSetLineHeight( feFont *font, int newLineHeight ) :
-pFont( font )
+feUFontSetLineHeight::feUFontSetLineHeight(feFont *font, int newLineHeight) :
+pFont(font)
 {
-	if( newLineHeight < 1 ) DETHROW( deeInvalidParam );
+	if(newLineHeight < 1) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Font set line height" );
+	SetShortInfo("Font set line height");
 	
 	pOldHeight = font->GetLineHeight();
 	pNewHeight = newLineHeight;
@@ -58,9 +58,9 @@ feUFontSetLineHeight::~feUFontSetLineHeight(){
 ///////////////
 
 void feUFontSetLineHeight::Undo(){
-	pFont->SetLineHeight( pOldHeight );
+	pFont->SetLineHeight(pOldHeight);
 }
 
 void feUFontSetLineHeight::Redo(){
-	pFont->SetLineHeight( pNewHeight );
+	pFont->SetLineHeight(pNewHeight);
 }

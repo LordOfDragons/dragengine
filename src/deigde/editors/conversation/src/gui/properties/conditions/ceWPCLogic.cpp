@@ -63,19 +63,19 @@ class cComboOperator : public igdeComboBoxListener {
 	ceWPCLogic &pPanel;
 	
 public:
-	cComboOperator( ceWPCLogic &panel ) : pPanel( panel ){ }
+	cComboOperator(ceWPCLogic &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
 		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
 		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
 		ceCConditionLogic * const condition = pPanel.GetCondition();
-		if( ! topic || ! action || ! condition || ! comboBox->GetSelectedItem() ){
+		if(! topic || ! action || ! condition || ! comboBox->GetSelectedItem()){
 			return;
 		}
 		
 		const ceCConditionLogic::eOperators newOperator =
-			( ceCConditionLogic::eOperators )( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( newOperator == condition->GetOperator() ){
+			(ceCConditionLogic::eOperators)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		if(newOperator == condition->GetOperator()){
 			return;
 		}
 		
@@ -92,15 +92,15 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-ceWPCLogic::ceWPCLogic( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
+ceWPCLogic::ceWPCLogic(ceWPTopic &parentPanel) : ceWPCondition(parentPanel){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
 	igdeContainer::Ref formLine;
 	
-	helper.ComboBox( *this, "Operator:", "Logic to apply to the conditions",
-		pCBOperator, new cComboOperator( *this ) );
-	pCBOperator->AddItem( "None", NULL, ( void* )( intptr_t )ceCConditionLogic::eopNone );
-	pCBOperator->AddItem( "Any", NULL, ( void* )( intptr_t )ceCConditionLogic::eopAny );
-	pCBOperator->AddItem( "All", NULL, ( void* )( intptr_t )ceCConditionLogic::eopAll );
+	helper.ComboBox(*this, "Operator:", "Logic to apply to the conditions",
+		pCBOperator, new cComboOperator(*this));
+	pCBOperator->AddItem("None", NULL, (void*)(intptr_t)ceCConditionLogic::eopNone);
+	pCBOperator->AddItem("Any", NULL, (void*)(intptr_t)ceCConditionLogic::eopAny);
+	pCBOperator->AddItem("All", NULL, (void*)(intptr_t)ceCConditionLogic::eopAll);
 }
 
 ceWPCLogic::~ceWPCLogic(){
@@ -114,8 +114,8 @@ ceWPCLogic::~ceWPCLogic(){
 ceCConditionLogic *ceWPCLogic::GetCondition() const{
 	ceConversationCondition * const condition = pParentPanel.GetTreeCondition();
 	
-	if( condition && condition->GetType() == ceConversationCondition::ectLogic ){
-		return ( ceCConditionLogic* )condition;
+	if(condition && condition->GetType() == ceConversationCondition::ectLogic){
+		return (ceCConditionLogic*)condition;
 		
 	}else{
 		return NULL;
@@ -125,10 +125,10 @@ ceCConditionLogic *ceWPCLogic::GetCondition() const{
 void ceWPCLogic::UpdateCondition(){
 	const ceCConditionLogic * const condition = GetCondition();
 	
-	if( condition ){
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )condition->GetOperator() );
+	if(condition){
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)condition->GetOperator());
 		
 	}else{
-		pCBOperator->SetSelectionWithData( ( void* )( intptr_t )ceCConditionLogic::eopAll );
+		pCBOperator->SetSelectionWithData((void*)(intptr_t)ceCConditionLogic::eopAll);
 	}
 }

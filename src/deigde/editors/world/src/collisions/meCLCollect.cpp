@@ -101,7 +101,7 @@ void meCLCollect::Reset(){
 // Notifications
 //////////////////
 
-void meCLCollect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void meCLCollect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	if(info->IsHTSector()){
 		if(!pTestHeightTerrain){
 			return;

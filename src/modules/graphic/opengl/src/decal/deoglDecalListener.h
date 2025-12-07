@@ -53,16 +53,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Decal has been destroyed. */
-	virtual void DecalDestroyed( deoglRDecal &decal );
+	virtual void DecalDestroyed(deoglRDecal &decal);
 	
 	/** Decal geometry changed. */
-	virtual void GeometryChanged( deoglRDecal &decal );
+	virtual void GeometryChanged(deoglRDecal &decal);
 	
 	/** Texture changed. */
-	virtual void TextureChanged( deoglRDecal &decal );
+	virtual void TextureChanged(deoglRDecal &decal);
 	
 	/** TUC changed. */
-	virtual void TUCChanged( deoglRDecal &decal );
+	virtual void TUCChanged(deoglRDecal &decal);
 	/*@}*/
 };
 

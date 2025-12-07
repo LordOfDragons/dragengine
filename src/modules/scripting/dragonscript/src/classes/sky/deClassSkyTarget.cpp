@@ -54,26 +54,26 @@ struct sSkyTargetNatDat{
 /////////////////////
 
 // private func new()
-deClassSkyTarget::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid ){
+deClassSkyTarget::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsSkyTarget, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyTarget::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	DSTHROW( dueInvalidParam );
+void deClassSkyTarget::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	DSTHROW(dueInvalidParam);
 }
 
 // public func destructor()
-deClassSkyTarget::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSkyTarget::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsSkyTarget, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyTarget::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSkyTarget::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSkyTargetNatDat &nd = *( ( sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	if( nd.sky ){
+	sSkyTargetNatDat &nd = *((sSkyTargetNatDat*)p_GetNativeData(myself));
+	if(nd.sky){
 		nd.sky->FreeReference();
 		nd.sky = NULL;
 	}
@@ -86,100 +86,100 @@ void deClassSkyTarget::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself
 ///////////////
 
 // public func Sky getSky()
-deClassSkyTarget::nfGetSky::nfGetSky( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "getSky", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSky ){
+deClassSkyTarget::nfGetSky::nfGetSky(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "getSky", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
-void deClassSkyTarget::nfGetSky::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassSkyTarget* )GetOwnerClass() )->GetDS();
+void deClassSkyTarget::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassSkyTarget*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassSky()->PushSky( rt, nd.sky );
+	ds.GetClassSky()->PushSky(rt, nd.sky);
 }
 
 // public func int getLayerIndex()
-deClassSkyTarget::nfGetLayerIndex::nfGetLayerIndex( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "getLayerIndex", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassSkyTarget::nfGetLayerIndex::nfGetLayerIndex(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "getLayerIndex", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassSkyTarget::nfGetLayerIndex::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
+void deClassSkyTarget::nfGetLayerIndex::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
 	
-	rt->PushInt( nd.layer );
+	rt->PushInt(nd.layer);
 }
 
 // public func int getTarget()
-deClassSkyTarget::nfGetTarget::nfGetTarget( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "getTarget", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassSkyTarget::nfGetTarget::nfGetTarget(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "getTarget", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassSkyTarget::nfGetTarget::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
+void deClassSkyTarget::nfGetTarget::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
 	
-	rt->PushInt( nd.target );
+	rt->PushInt(nd.target);
 }
 
 
 
 // public func int getLinkCount()
-deClassSkyTarget::nfGetLinkCount::nfGetLinkCount( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "getLinkCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassSkyTarget::nfGetLinkCount::nfGetLinkCount(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "getLinkCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassSkyTarget::nfGetLinkCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	const deSkyControllerTarget &target = nd.sky->GetLayerAt( nd.layer ).GetTarget( nd.target );
+void deClassSkyTarget::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	const deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
-	rt->PushInt( target.GetLinkCount() );
+	rt->PushInt(target.GetLinkCount());
 }
 
 // public func int getLinkAt( int index )
-deClassSkyTarget::nfGetLinkAt::nfGetLinkAt( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "getLinkAt", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
-	p_AddParameter( init.clsInt ); // index
+deClassSkyTarget::nfGetLinkAt::nfGetLinkAt(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "getLinkAt", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+	p_AddParameter(init.clsInt); // index
 }
-void deClassSkyTarget::nfGetLinkAt::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	const deSkyControllerTarget &target = nd.sky->GetLayerAt( nd.layer ).GetTarget( nd.target );
+void deClassSkyTarget::nfGetLinkAt::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	const deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
-	rt->PushInt( target.GetLinkAt( rt->GetValue( 0 )->GetInt() ) );
+	rt->PushInt(target.GetLinkAt(rt->GetValue(0)->GetInt()));
 }
 
 // public func void addLink( int link )
-deClassSkyTarget::nfAddLink::nfAddLink( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "addLink", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // link
+deClassSkyTarget::nfAddLink::nfAddLink(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "addLink", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // link
 }
-void deClassSkyTarget::nfAddLink::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	deSkyControllerTarget &target = nd.sky->GetLayerAt( nd.layer ).GetTarget( nd.target );
+void deClassSkyTarget::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
-	target.AddLink( rt->GetValue( 0 )->GetInt() );
+	target.AddLink(rt->GetValue(0)->GetInt());
 }
 
 // public func void removeLink( int link )
-deClassSkyTarget::nfRemoveLink::nfRemoveLink( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "removeLink", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // link
+deClassSkyTarget::nfRemoveLink::nfRemoveLink(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "removeLink", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // link
 }
-void deClassSkyTarget::nfRemoveLink::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	deSkyControllerTarget &target = nd.sky->GetLayerAt( nd.layer ).GetTarget( nd.target );
+void deClassSkyTarget::nfRemoveLink::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
-	target.RemoveLink( rt->GetValue( 0 )->GetInt() );
+	target.RemoveLink(rt->GetValue(0)->GetInt());
 }
 
 // public func void removeAllLinks()
-deClassSkyTarget::nfRemoveAllLinks::nfRemoveAllLinks( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "removeAllLinks", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSkyTarget::nfRemoveAllLinks::nfRemoveAllLinks(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "removeAllLinks", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyTarget::nfRemoveAllLinks::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	deSkyControllerTarget &target = nd.sky->GetLayerAt( nd.layer ).GetTarget( nd.target );
+void deClassSkyTarget::nfRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	deSkyControllerTarget &target = nd.sky->GetLayerAt(nd.layer).GetTarget(nd.target);
 	
 	target.RemoveAllLinks();
 }
@@ -187,22 +187,22 @@ void deClassSkyTarget::nfRemoveAllLinks::RunFunction( dsRunTime *rt, dsValue *my
 
 
 // public func bool equals( Object obj )
-deClassSkyTarget::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsSkyTarget, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassSkyTarget::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsSkyTarget, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassSkyTarget::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassSkyTarget * const clsSkyTarget = ( deClassSkyTarget* )GetOwnerClass();
-	const sSkyTargetNatDat &nd = *( ( const sSkyTargetNatDat* )p_GetNativeData( myself ) );
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassSkyTarget::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassSkyTarget * const clsSkyTarget = (deClassSkyTarget*)GetOwnerClass();
+	const sSkyTargetNatDat &nd = *((const sSkyTargetNatDat*)p_GetNativeData(myself));
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsSkyTarget ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsSkyTarget)){
+		rt->PushBool(false);
 		
 	}else{
-		const sSkyTargetNatDat &other = *( ( const sSkyTargetNatDat* )p_GetNativeData( obj ) );
-		rt->PushBool( nd.sky == other.sky && nd.layer == other.layer
-			&& nd.target == other.target );
+		const sSkyTargetNatDat &other = *((const sSkyTargetNatDat*)p_GetNativeData(obj));
+		rt->PushBool(nd.sky == other.sky && nd.layer == other.layer
+			&& nd.target == other.target);
 	}
 }
 
@@ -214,14 +214,14 @@ void deClassSkyTarget::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 // Constructor, destructor
 ////////////////////////////
 
-deClassSkyTarget::deClassSkyTarget( deScriptingDragonScript &ds ) :
-dsClass( "SkyTarget", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassSkyTarget::deClassSkyTarget(deScriptingDragonScript &ds) :
+dsClass("SkyTarget", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSkyTargetNatDat ) );
+	p_SetNativeDataSize(sizeof(sSkyTargetNatDat));
 }
 
 deClassSkyTarget::~deClassSkyTarget(){
@@ -232,7 +232,7 @@ deClassSkyTarget::~deClassSkyTarget(){
 // Management
 ///////////////
 
-void deClassSkyTarget::CreateClassMembers( dsEngine *engine ){
+void deClassSkyTarget::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsSkyTarget = this;
@@ -246,33 +246,33 @@ void deClassSkyTarget::CreateClassMembers( dsEngine *engine ){
 	
 	init.clsSky = pDS.GetClassSky();
 	
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetSky( init ) );
-	AddFunction( new nfGetLayerIndex( init ) );
-	AddFunction( new nfGetTarget( init ) );
+	AddFunction(new nfGetSky(init));
+	AddFunction(new nfGetLayerIndex(init));
+	AddFunction(new nfGetTarget(init));
 	
-	AddFunction( new nfGetLinkCount( init ) );
-	AddFunction( new nfGetLinkAt( init ) );
-	AddFunction( new nfAddLink( init ) );
-	AddFunction( new nfRemoveLink( init ) );
-	AddFunction( new nfRemoveAllLinks( init ) );
+	AddFunction(new nfGetLinkCount(init));
+	AddFunction(new nfGetLinkAt(init));
+	AddFunction(new nfAddLink(init));
+	AddFunction(new nfRemoveLink(init));
+	AddFunction(new nfRemoveAllLinks(init));
 	
-	AddFunction( new nfEquals( init ) );
+	AddFunction(new nfEquals(init));
 	
 	CalcMemberOffsets();
 }
 
-void deClassSkyTarget::PushTarget( dsRunTime *rt, deSky *sky, int layer,
-deSkyLayer::eTargets target ){
-	if( ! rt || ! sky || layer < 0 || layer >= sky->GetLayerCount()
-	|| target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity ){
-		DSTHROW( dueInvalidParam );
+void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky *sky, int layer,
+deSkyLayer::eTargets target){
+	if(! rt || ! sky || layer < 0 || layer >= sky->GetLayerCount()
+	|| target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sSkyTargetNatDat &nd = *( ( sSkyTargetNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sSkyTargetNatDat &nd = *((sSkyTargetNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
 	sky->AddReference();
 	nd.layer = layer;

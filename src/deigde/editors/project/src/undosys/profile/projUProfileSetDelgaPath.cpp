@@ -40,15 +40,15 @@
 ////////////////////////////
 
 projUProfileSetDelgaPath::projUProfileSetDelgaPath(
-projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projProfile *profile, const char *newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set delga path" );
+	SetShortInfo("Profile set delga path");
 	
 	pOldValue = profile->GetDelgaPath();
 	
@@ -57,7 +57,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetDelgaPath::~projUProfileSetDelgaPath(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -68,9 +68,9 @@ projUProfileSetDelgaPath::~projUProfileSetDelgaPath(){
 ///////////////
 
 void projUProfileSetDelgaPath::Undo(){
-	pProfile->SetDelgaPath( pOldValue );
+	pProfile->SetDelgaPath(pOldValue);
 }
 
 void projUProfileSetDelgaPath::Redo(){
-	pProfile->SetDelgaPath( pNewValue );
+	pProfile->SetDelgaPath(pNewValue);
 }

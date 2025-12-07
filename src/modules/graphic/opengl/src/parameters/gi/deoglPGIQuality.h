@@ -36,14 +36,14 @@ class deoglPGIQuality : public deoglParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	deoglPGIQuality( deGraphicOpenGl &ogl );
+	deoglPGIQuality(deGraphicOpenGl &ogl);
 	virtual ~deoglPGIQuality();
 	/*@}*/
 	
 	/** \name Parameter Value */
 	/*@{*/
 	virtual decString GetParameterValue();
-	virtual void SetParameterValue( const char *value );
+	virtual void SetParameterValue(const char *value);
 	/*@}*/
 };
 

@@ -53,7 +53,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new ogg file. */
-	dethStreamReader( dethOggReader *reader, int serial );
+	dethStreamReader(dethOggReader *reader, int serial);
 	/** Cleans up the ogg file. */
 	~dethStreamReader();
 	/*@}*/
@@ -61,30 +61,30 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the serial. */
-	inline int GetSerial() const{ return pSerial; }
+	inline int GetSerial() const{return pSerial;}
 	/** Retrieves the stream state. */
-	inline ogg_stream_state &GetStreamState(){ return pStreamState; }
+	inline ogg_stream_state &GetStreamState(){return pStreamState;}
 	/** Retrieves the frame index for a granule position. */
-	int GranuleToFrame( ogg_int64_t granule ) const;
+	int GranuleToFrame(ogg_int64_t granule) const;
 	/** Retrieves the i-frame index for a granule position. */
-	int GranuleToIFrame( ogg_int64_t granule ) const;
+	int GranuleToIFrame(ogg_int64_t granule) const;
 	/** Retrieves the p-frame index for a granule position. */
-	int GranuleToPFrame( ogg_int64_t granule ) const;
+	int GranuleToPFrame(ogg_int64_t granule) const;
 	/** Convert a i/p-frame into a granule. */
-	ogg_int64_t FrameToGranule( int iframe, int pframe ) const;
+	ogg_int64_t FrameToGranule(int iframe, int pframe) const;
 	/** Sets granule position. */
-	void SetGranulePosition( ogg_int64_t granule );
+	void SetGranulePosition(ogg_int64_t granule);
 	
 	/** Add a page. */
-	void AddPage( ogg_page &page );
+	void AddPage(ogg_page &page);
 	/** Add packet to decoder. */
-	int AddPacketToDecoder( ogg_packet &packet, ogg_int64_t &granule );
+	int AddPacketToDecoder(ogg_packet &packet, ogg_int64_t &granule);
 	/** Reads a packet. */
-	int ReadPacket( ogg_packet &packet );
+	int ReadPacket(ogg_packet &packet);
 	/** Peek a packet. */
-	int PeekPacket( ogg_packet &packet );
+	int PeekPacket(ogg_packet &packet);
 	/** Submit a packet. */
-	void SubmitPacket( ogg_packet &packet );
+	void SubmitPacket(ogg_packet &packet);
 	/**
 	 * Tries to read a full theora header. Stores information in the provided
 	 * video info object. Returns true if the read packets are part of the
@@ -93,12 +93,12 @@ public:
 	 * in the video info object. Hence call ReadTheoraHeader as long as it
 	 * returns true and the header finished flag is not set.
 	 */
-	bool ReadTheoraHeader( dethInfos &infos );
+	bool ReadTheoraHeader(dethInfos &infos);
 	
 	/** Reset stream. */
 	void Reset();
 	/** Retrieve next decoded frame if existing. */
-	bool GetDecodedFrame( th_ycbcr_buffer &buffer );
+	bool GetDecodedFrame(th_ycbcr_buffer &buffer);
 	/*@}*/
 };
 

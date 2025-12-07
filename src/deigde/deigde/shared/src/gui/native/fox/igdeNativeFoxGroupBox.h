@@ -38,7 +38,7 @@ class igdeWidget;
  * FOX Native groupBox.
  */
 class igdeNativeFoxGroupBox : public FXGroupBox{
-	FXDECLARE( igdeNativeFoxGroupBox )
+	FXDECLARE(igdeNativeFoxGroupBox)
 	
 protected:
 	igdeNativeFoxGroupBox();
@@ -58,14 +58,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeFoxGroupBox( igdeGroupBox &owner, FXComposite *parent, int layoutFlags,
-		const igdeGuiTheme &guitheme );
+	igdeNativeFoxGroupBox(igdeGroupBox &owner, FXComposite *parent, int layoutFlags,
+		const igdeGuiTheme &guitheme);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxGroupBox();
 	
 	/** \brief Create native widget. */
-	static igdeNativeFoxGroupBox* CreateNativeWidget( igdeGroupBox &owner );
+	static igdeNativeFoxGroupBox* CreateNativeWidget(igdeGroupBox &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -85,20 +85,20 @@ public:
 	virtual void UpdateTitleAlignment();
 	virtual void UpdateStretchLast();
 	
-	static int GroupBoxFlags( const igdeGroupBox &owner );
-	static igdeFont *GroupBoxFont( const igdeGroupBox &owner, const igdeGuiTheme &guitheme );
-	static int GroupBoxPadLeft( const igdeGuiTheme &guitheme );
-	static int GroupBoxPadRight( const igdeGuiTheme &guitheme );
-	static int GroupBoxPadTop( const igdeGuiTheme &guitheme );
-	static int GroupBoxPadBottom( const igdeGuiTheme &guitheme );
+	static int GroupBoxFlags(const igdeGroupBox &owner);
+	static igdeFont *GroupBoxFont(const igdeGroupBox &owner, const igdeGuiTheme &guitheme);
+	static int GroupBoxPadLeft(const igdeGuiTheme &guitheme);
+	static int GroupBoxPadRight(const igdeGuiTheme &guitheme);
+	static int GroupBoxPadTop(const igdeGuiTheme &guitheme);
+	static int GroupBoxPadBottom(const igdeGuiTheme &guitheme);
 	/*@}*/
 	
 	
 	
 	/** \name Events */
 	/*@{*/
-	long onLeftMouseDown( FXObject*, FXSelector, void* );
-	long onChildLayoutFlags( FXObject*, FXSelector, void* );
+	long onLeftMouseDown(FXObject*, FXSelector, void*);
+	long onChildLayoutFlags(FXObject*, FXSelector, void*);
 	/*@}*/
 };
 

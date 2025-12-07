@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create scrollbox. */
-	igdeContainerScroll( igdeEnvironment &environment, bool canScrollX = true, bool canScrollY = true );
+	igdeContainerScroll(igdeEnvironment &environment, bool canScrollX = true, bool canScrollY = true);
 	
 	
 	
@@ -68,15 +68,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Can scroll X. */
-	inline bool GetCanScrollX() const{ return pCanScrollX; }
+	inline bool GetCanScrollX() const{return pCanScrollX;}
 	
 	/** \brief Can scroll Y. */
-	inline bool GetCanScrollY() const{ return pCanScrollY; }
+	inline bool GetCanScrollY() const{return pCanScrollY;}
 	
 	
 	
 	/** \brief Add child. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	/*@}*/
 	
 	

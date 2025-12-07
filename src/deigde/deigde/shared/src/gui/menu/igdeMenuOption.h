@@ -51,10 +51,10 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuOption( igdeEnvironment &environment );
+	igdeMenuOption(igdeEnvironment &environment);
 	
 	/** \brief Create menu entry. */
-	igdeMenuOption( igdeEnvironment &environment, igdeAction *action );
+	igdeMenuOption(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -74,15 +74,15 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Menu entry is selected. */
-	inline bool GetSelected() const{ return pSelected; }
+	inline bool GetSelected() const{return pSelected;}
 	
 	/** \brief Set if menu entry is selected. */
-	void SetSelected( bool selected );
+	void SetSelected(bool selected);
 	
 	
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	/*@}*/
 	
 	

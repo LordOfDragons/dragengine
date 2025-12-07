@@ -42,53 +42,53 @@
 // Constructor, destructor
 ////////////////////////////
 
-deWebpImageInfo::deWebpImageInfo( decBaseFileReader &reader ) :
-pFilename( reader.GetFilename() ),
-pWidth( 0 ),
-pHeight( 0 ),
-pHasAlpha( false ),
-	pIsGrayscale ( false )
+deWebpImageInfo::deWebpImageInfo(decBaseFileReader &reader) :
+pFilename(reader.GetFilename()),
+pWidth(0),
+pHeight(0),
+pHasAlpha(false),
+	pIsGrayscale (false)
 {
 	const int size = reader.GetLength();
-	pData.TakeOver( new decMemoryFile( "data" ) );
-	pData->Resize( size );
-	reader.Read( pData->GetPointer(), size );
+	pData.TakeOver(new decMemoryFile("data"));
+	pData->Resize(size);
+	reader.Read(pData->GetPointer(), size);
 	
 	WebPBitstreamFeatures features;
-	Assert( WebPGetFeatures( ( uint8_t* )pData->GetPointer(), size, &features ) );
+	Assert(WebPGetFeatures((uint8_t*)pData->GetPointer(), size, &features));
 	
 	pWidth = features.width;
 	pHeight = features.height;
 	pHasAlpha = features.has_alpha;
 	
 	// look for exif user comments to handle the "grayscale" problem
-	WebPData wpdata = { ( const uint8_t* )pData->GetPointer(), ( size_t )size };
-	WebPDemuxer * const demux = WebPDemux( &wpdata );
-	DEASSERT_NOTNULL( demux )
+	WebPData wpdata = {(const uint8_t*)pData->GetPointer(), (size_t)size};
+	WebPDemuxer * const demux = WebPDemux(&wpdata);
+	DEASSERT_NOTNULL(demux)
 	
-	const uint32_t flags = WebPDemuxGetI( demux, WEBP_FF_FORMAT_FLAGS );
-	if( ( flags & EXIF_FLAG ) == EXIF_FLAG ){
+	const uint32_t flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
+	if((flags & EXIF_FLAG) == EXIF_FLAG){
 		WebPChunkIterator iter = {};
-		if( WebPDemuxGetChunk( demux, "EXIF", 1, &iter ) == 1 ){
+		if(WebPDemuxGetChunk(demux, "EXIF", 1, &iter) == 1){
 			static const char * const tagGrayscale = "dewebp:grayscale";
 			static const int tagGrayscaleLen = (int)strlen(tagGrayscale);
 			
-			const char * const exif = ( const char* )iter.chunk.bytes;
-			const int exifLen = ( int )iter.chunk.size;
+			const char * const exif = (const char*)iter.chunk.bytes;
+			const int exifLen = (int)iter.chunk.size;
 			int i;
 			
-			for( i=0; i<exifLen; i++ ){
-				if( strncmp( exif + i, tagGrayscale, tagGrayscaleLen ) == 0 ){
+			for(i=0; i<exifLen; i++){
+				if(strncmp(exif + i, tagGrayscale, tagGrayscaleLen) == 0){
 					pIsGrayscale = true;
 					break;
 				}
 			}
 			
-			WebPDemuxReleaseChunkIterator( &iter );
+			WebPDemuxReleaseChunkIterator(&iter);
 		}
 	}
 	
-	WebPDemuxDelete( demux );
+	WebPDemuxDelete(demux);
 }
 
 deWebpImageInfo::~deWebpImageInfo(){
@@ -112,7 +112,7 @@ int deWebpImageInfo::GetDepth(){
 }
 
 int deWebpImageInfo::GetComponentCount(){
-	if( pHasAlpha ){
+	if(pHasAlpha){
 		return pIsGrayscale ? 2 : 4;
 		
 	}else{
@@ -124,33 +124,33 @@ int deWebpImageInfo::GetBitCount(){
 	return 8;
 }
 
-void deWebpImageInfo::Assert( VP8StatusCode statusCode ) const{
-	switch( statusCode ){
+void deWebpImageInfo::Assert(VP8StatusCode statusCode) const{
+	switch(statusCode){
 	case VP8_STATUS_OK:
 		return;
 		
 	case VP8_STATUS_OUT_OF_MEMORY:
-		DETHROW( deeOutOfMemory );
+		DETHROW(deeOutOfMemory);
 		
 	case VP8_STATUS_INVALID_PARAM:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 		
 	case VP8_STATUS_BITSTREAM_ERROR:
-		DETHROW_INFO( deeInvalidFileFormat, "Bit stream error" );
+		DETHROW_INFO(deeInvalidFileFormat, "Bit stream error");
 		
 	case VP8_STATUS_UNSUPPORTED_FEATURE:
-		DETHROW_INFO( deeInvalidFileFormat, "Unsupported feature" );
+		DETHROW_INFO(deeInvalidFileFormat, "Unsupported feature");
 		
 	case VP8_STATUS_SUSPENDED:
-		DETHROW_INFO( deeInvalidFileFormat, "Suspended" );
+		DETHROW_INFO(deeInvalidFileFormat, "Suspended");
 		
 	case VP8_STATUS_USER_ABORT:
-		DETHROW_INFO( deeInvalidFileFormat, "User abort" );
+		DETHROW_INFO(deeInvalidFileFormat, "User abort");
 		
 	case VP8_STATUS_NOT_ENOUGH_DATA:
-		DETHROW_INFO( deeInvalidFileFormat, "Not enough data" );
+		DETHROW_INFO(deeInvalidFileFormat, "Not enough data");
 		
 	default:
-		DETHROW( deeInvalidFileFormat );
+		DETHROW(deeInvalidFileFormat);
 	}
 }

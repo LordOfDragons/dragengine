@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpaceCopy::gdeMAOCNavSpaceCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Navigation Space",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class navigation space" )
+gdeMAOCNavSpaceCopy::gdeMAOCNavSpaceCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Navigation Space",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class navigation space")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Navigation Space",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpaceCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace ){
+igdeUndo *gdeMAOCNavSpaceCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCNavigationSpace){
 		return NULL;
 	}
 	
 	gdeOCNavigationSpace * const navSpace = gameDefinition.GetActiveOCNavigationSpace();
-	if( ! navSpace ){
+	if(! navSpace){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCNavSpaceCopy::OnActionSubObject( gdeGameDefinition &gameDefinit
 
 void gdeMAOCNavSpaceCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCNavigationSpace
-		&& gameDefinition->GetActiveOCNavigationSpace() != NULL );
+		&& gameDefinition->GetActiveOCNavigationSpace() != NULL);
 }

@@ -117,17 +117,17 @@ public:
 	/** \name Building */
 	/*@{*/
 	/** \brief BVH position in world coordinates. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/**
 	 * \brief Begin building tree.
 	 * 
 	 * Clears visit and build nodes. Sets position.
 	 */
-	void Build( const decDVector &position );
+	void Build(const decDVector &position);
 	
 	/** \brief Add component during build phase. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/**
 	 * \brief Finish building octree.
@@ -142,16 +142,16 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit nodes array. */
-	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes; }
+	inline const sVisitNode *GetVisitNodes() const{return pVisitNodes;}
 	
 	/** \brief Visit node count. */
-	inline int GetVisitNodeCount() const{ return pVisitNodeCount; }
+	inline int GetVisitNodeCount() const{return pVisitNodeCount;}
 	
 	/** \brief Visit components array. */
-	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents; }
+	inline const sVisitComponent *GetVisitComponents() const{return pVisitComponents;}
 	
 	/** \brief Visit component count. */
-	inline int GetVisitComponentCount() const{ return pVisitComponentCount; }
+	inline int GetVisitComponentCount() const{return pVisitComponentCount;}
 	/*@}*/
 	
 	
@@ -159,10 +159,10 @@ public:
 private:
 	int pAddBuildNode();
 	int pAddBuildComponent();
-	void pUpdateNodeExtends( sBuildNode &node ) const;
-	void pSplitNode( int nodeIndex );
-	void pNodeAddComponent( sBuildNode &node, int componentIndex );
-	void pBuildVisitNode( const sBuildNode &buildNode );
+	void pUpdateNodeExtends(sBuildNode &node) const;
+	void pSplitNode(int nodeIndex);
+	void pNodeAddComponent(sBuildNode &node, int componentIndex);
+	void pBuildVisitNode(const sBuildNode &buildNode);
 };
 
 #endif

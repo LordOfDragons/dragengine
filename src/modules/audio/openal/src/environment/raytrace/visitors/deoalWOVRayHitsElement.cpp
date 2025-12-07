@@ -51,8 +51,8 @@
 /////////////////////////////////
 
 deoalWOVRayHitsElement::deoalWOVRayHitsElement() :
-pResult( NULL ),
-pThresholdTransmit( 1e-3f )
+pResult(NULL),
+pThresholdTransmit(1e-3f)
 {
 	(void)pThresholdTransmit; // not used yet
 }
@@ -65,7 +65,7 @@ deoalWOVRayHitsElement::~deoalWOVRayHitsElement(){
 // Visiting
 /////////////
 
-void deoalWOVRayHitsElement::SetResult( deoalRayTraceResult *result ){
+void deoalWOVRayHitsElement::SetResult(deoalRayTraceResult *result){
 	pResult = result;
 }
 
@@ -184,7 +184,7 @@ all=78.118 comp=29.009(9924) compOctree=28.842(9891) face=0.000(0) rayAdd=9891 r
 furthermore it's slower as expected due to the mutex locking. 
  */
 
-void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
+void deoalWOVRayHitsElement::VisitComponent(deoalAComponent *component){
 	// WARNING everything in here has to be thread-safe
 	#ifdef WOVRAYHITSELEMENT_DO_TIMING
 		timingComponentCount++;
@@ -193,27 +193,27 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 	
 	deoalAModel &model = *component->GetModel();
 	
-	if( ! model.GetRTBVH() && ! component->GetBVH() ){
+	if(! model.GetRTBVH() && ! component->GetBVH()){
 		return;
 	}
 	
 	const decDMatrix &invMatrix = component->GetInverseMatrix();
-	const decVector rayOrigin( invMatrix * GetRayOrigin() );
-	const decVector rayDirection( invMatrix.TransformNormal( GetRayDirection() ) );
+	const decVector rayOrigin(invMatrix * GetRayOrigin());
+	const decVector rayDirection(invMatrix.TransformNormal(GetRayDirection()));
 	
 	// check if ray is cached in the model
 	#ifdef USE_RAY_CACHE
-		const decVector cacheRayOrigin( pClampToBox( component->GetModel()->GetMinExtend(),
-			component->GetModel()->GetMaxExtend(), rayOrigin, rayDirection ) );
-		const decVector cacheRayDirection( rayOrigin + rayDirection - cacheRayOrigin );
+		const decVector cacheRayOrigin(pClampToBox(component->GetModel()->GetMinExtend(),
+			component->GetModel()->GetMaxExtend(), rayOrigin, rayDirection));
+		const decVector cacheRayDirection(rayOrigin + rayDirection - cacheRayOrigin);
 		const float cacheRayDirectionLen = cacheRayDirection.Length();
 		const deoalRayCacheRay * const cachedRay =
-			model.GetRayCache().FindRay( cacheRayOrigin, cacheRayDirection );
+			model.GetRayCache().FindRay(cacheRayOrigin, cacheRayDirection);
 		
 		// NOTE if a cached ray is present it has to be long enough. by using a too short
 		//      cached ray we might miss collisions which results in bad problems
-		if( cachedRay && cachedRay->GetLength() >= cacheRayDirectionLen - 0.001f ){
-			const float distanceOffset = decMath::max( ( cacheRayDirection / cacheRayDirectionLen )
+		if(cachedRay && cachedRay->GetLength() >= cacheRayDirectionLen - 0.001f){
+			const float distanceOffset = decMath::max((cacheRayDirection / cacheRayDirectionLen)
 				* ( cachedRay->GetOrigin() - rayOrigin ), 0.0f );
 			const decDMatrix &matrix = component->GetMatrix();
 			const bool hasScaling = component->GetHasScaling();
@@ -223,20 +223,20 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 			// add hits but only those shorter than the required length. required since the
 			// cached ray can be longer. by not adding hits beyond the range we avoid not
 			// required calculations
-			for( i=0; i<hitCount; i++ ){
-				const deoalRayCacheRayHit &hit = cachedRay->GetHitAt( i );
-				if( hit.GetDistance() > cacheRayDirectionLen ){
+			for(i=0; i<hitCount; i++){
+				const deoalRayCacheRayHit &hit = cachedRay->GetHitAt(i);
+				if(hit.GetDistance() > cacheRayDirectionLen){
 					continue;
 				}
 				
-				const decDVector point( matrix * hit.GetPoint() );
-				decVector normal( matrix.TransformNormal( hit.GetNormal() ) );
-				if( hasScaling ){
+				const decDVector point(matrix * hit.GetPoint());
+				decVector normal(matrix.TransformNormal(hit.GetNormal()));
+				if(hasScaling){
 					normal.Normalize();
 				}
 				
-				pResult->AddElement( distanceOffset + hit.GetDistance(), point, normal,
-					component, hit.GetFaceIndex(), hit.GetForwardFacing() );
+				pResult->AddElement(distanceOffset + hit.GetDistance(), point, normal,
+					component, hit.GetFaceIndex(), hit.GetForwardFacing());
 			}
 			
 			#ifdef WOVRAYHITSELEMENT_DO_TIMING
@@ -247,28 +247,28 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 	#endif
 	
 	// ray is not cached or too short. do ray tracing to find the results
-	deoalMOVRayHitsFaces visitor( *component, model );
+	deoalMOVRayHitsFaces visitor(*component, model);
 	
 	#ifdef USE_RAY_CACHE
-		visitor.SetRay( cacheRayOrigin, cacheRayDirection );
+		visitor.SetRay(cacheRayOrigin, cacheRayDirection);
 		pComponentResult.RemoveAllElements();
-		visitor.SetResult( &pComponentResult );
-		visitor.SetResultInWorldSpace( false );
+		visitor.SetResult(&pComponentResult);
+		visitor.SetResultInWorldSpace(false);
 	#else
-		visitor.SetRay( rayOrigin, rayDirection );
-		visitor.SetResult( pResult );
-		visitor.SetResultInWorldSpace( true );
+		visitor.SetRay(rayOrigin, rayDirection);
+		visitor.SetResult(pResult);
+		visitor.SetResultInWorldSpace(true);
 	#endif
 	
 	#ifdef WOVRAYHITSELEMENT_DO_TIMING
 		timingComponent += timerComponent.GetElapsedTime();
 	#endif
 	
-	if( component->GetBVH() ){
-		visitor.VisitBVH( *component->GetBVH() );
+	if(component->GetBVH()){
+		visitor.VisitBVH(*component->GetBVH());
 		
 	}else{
-		visitor.VisitBVH( *model.GetRTBVH() );
+		visitor.VisitBVH(*model.GetRTBVH());
 	}
 	
 	#ifdef WOVRAYHITSELEMENT_DO_TIMING
@@ -295,7 +295,7 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 	// all non-dynamic components requires to store them for full transmissiona ll the way.
 	// not a problem actually since values are transmission applied by the cache user and
 	// the used ray length has no influence outside the model
-	if( elementCount > 0 ){
+	if(elementCount > 0){
 		float transmissionLow = 0.0f;
 		float transmissionMedium = 0.0f;
 		float transmissionHigh = 0.0f;
@@ -305,34 +305,34 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 		float gainHigh = 1.0f;
 		float distanceFront;
 		
-		for( i=0; i<elementCount; i++ ){
-			const deoalRayTraceHitElement &element = pComponentResult.GetElementAt( i );
+		for(i=0; i<elementCount; i++){
+			const deoalRayTraceHitElement &element = pComponentResult.GetElementAt(i);
 			
-			if( inTransmission ){
-				if( element.GetForwardFacing() ){
+			if(inTransmission){
+				if(element.GetForwardFacing()){
 					continue;
 				}
 				
 				const float thickness = element.GetDistance() - distanceFront;
-				gainLow = decMath::linearStep( thickness, 0.0f, transmissionLow, gainLow, 0.0f );
-				gainMedium = decMath::linearStep( thickness, 0.0f, transmissionMedium, gainMedium, 0.0f );
-				gainHigh = decMath::linearStep( thickness, 0.0f, transmissionHigh, gainHigh, 0.0f );
+				gainLow = decMath::linearStep(thickness, 0.0f, transmissionLow, gainLow, 0.0f);
+				gainMedium = decMath::linearStep(thickness, 0.0f, transmissionMedium, gainMedium, 0.0f);
+				gainHigh = decMath::linearStep(thickness, 0.0f, transmissionHigh, gainHigh, 0.0f);
 				inTransmission = false;
 				
-				if( gainLow <= pThresholdTransmit || gainMedium <= pThresholdTransmit
-				|| gainHigh <= pThresholdTransmit ){
+				if(gainLow <= pThresholdTransmit || gainMedium <= pThresholdTransmit
+				|| gainHigh <= pThresholdTransmit){
 					break;
 				}
 				
 			}else{
-				if( ! element.GetForwardFacing() ){
+				if(! element.GetForwardFacing()){
 					continue;
 				}
 				
-				if( element.GetComponent() ){
+				if(element.GetComponent()){
 					const deoalAComponentTexture &texture = element.GetComponent()->GetTextureAt(
 						element.GetComponent()->GetModel()->GetFaceAt(
-							element.GetComponentFace() ).GetTexture() );
+							element.GetComponentFace()).GetTexture());
 					
 					distanceFront = element.GetDistance();
 					transmissionLow = texture.GetTransmissionLow();
@@ -343,8 +343,8 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 					gainHigh *= 1.0f - texture.GetAbsorptionHigh();
 					inTransmission = true;
 					
-					if( gainLow <= pThresholdTransmit || gainMedium <= pThresholdTransmit
-					|| gainHigh <= pThresholdTransmit ){
+					if(gainLow <= pThresholdTransmit || gainMedium <= pThresholdTransmit
+					|| gainHigh <= pThresholdTransmit){
 						break;
 					}
 					
@@ -355,8 +355,8 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 		}
 		
 		maxElementCount = i;
-		if( i < elementCount ){
-			maxLength = pComponentResult.GetElementAt( i ).GetDistance();
+		if(i < elementCount){
+			maxLength = pComponentResult.GetElementAt(i).GetDistance();
 		}
 	}
 	#endif
@@ -368,25 +368,25 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 	
 	// cache the ray. removes all matching rays before adding the new one. to prevent race
 	// conditions if more than one task tries to replace the same ray the longest one is kept
-	model.GetRayCache().CacheRay( cacheRayOrigin, cacheRayDirection,
-		maxLength, pComponentResult, maxElementCount );
+	model.GetRayCache().CacheRay(cacheRayOrigin, cacheRayDirection,
+		maxLength, pComponentResult, maxElementCount);
 	
 	// add the elements to the result
-	const float distanceOffset = cacheRayDirection.Normalized() * ( cacheRayOrigin - rayOrigin );
+	const float distanceOffset = cacheRayDirection.Normalized() * (cacheRayOrigin - rayOrigin);
 	const decDMatrix &matrix = component->GetMatrix();
 	const bool hasScaling = component->GetHasScaling();
 	
-	for( i=0; i<maxElementCount; i++ ){
-		const deoalRayTraceHitElement &element = pComponentResult.GetElementAt( i );
+	for(i=0; i<maxElementCount; i++){
+		const deoalRayTraceHitElement &element = pComponentResult.GetElementAt(i);
 		
-		const decDVector point( matrix * element.GetPoint() );
-		decVector normal( matrix.TransformNormal( element.GetNormal() ) );
-		if( hasScaling ){
+		const decDVector point(matrix * element.GetPoint());
+		decVector normal(matrix.TransformNormal(element.GetNormal()));
+		if(hasScaling){
 			normal.Normalize();
 		}
 		
-		pResult->AddElement( distanceOffset + element.GetDistance(), point, normal,
-			element.GetComponent(), element.GetComponentFace(), element.GetForwardFacing() );
+		pResult->AddElement(distanceOffset + element.GetDistance(), point, normal,
+			element.GetComponent(), element.GetComponentFace(), element.GetForwardFacing());
 	}
 	
 	#endif
@@ -397,38 +397,38 @@ void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 // Protected functions
 ////////////////////////
 
-decVector deoalWOVRayHitsElement::pClampToBox( const decVector &minExtend,
-const decVector &maxExtend, const decVector &rayOrigin, const decVector &rayDirection ){
-	if( rayOrigin >= minExtend && rayOrigin <= maxExtend ){
+decVector deoalWOVRayHitsElement::pClampToBox(const decVector &minExtend,
+const decVector &maxExtend, const decVector &rayOrigin, const decVector &rayDirection){
+	if(rayOrigin >= minExtend && rayOrigin <= maxExtend){
 		return rayOrigin;
 	}
 	
 	float bestLambda = 1.0f;
 	float lambda;
 	
-	if( fabsf( rayDirection.x ) > FLOAT_SAFE_EPSILON ){
+	if(fabsf(rayDirection.x) > FLOAT_SAFE_EPSILON){
 		const float invRayDirection = 1.0f / rayDirection.x;
 		
-		lambda = invRayDirection * ( minExtend.x - rayOrigin.x );
-		if( lambda >= 0.0f && lambda <= 1.0f ){
+		lambda = invRayDirection * (minExtend.x - rayOrigin.x);
+		if(lambda >= 0.0f && lambda <= 1.0f){
 			const float y = rayOrigin.y + rayDirection.y * lambda;
-			if( y >= minExtend.y && y <= maxExtend.y ){
+			if(y >= minExtend.y && y <= maxExtend.y){
 				const float z = rayOrigin.z + rayDirection.z * lambda;
-				if( z >= minExtend.z && z <= maxExtend.z ){
-					if( lambda < bestLambda ){
+				if(z >= minExtend.z && z <= maxExtend.z){
+					if(lambda < bestLambda){
 						bestLambda = lambda;
 					}
 				}
 			}
 		}
 		
-		lambda = invRayDirection * ( maxExtend.x - rayOrigin.x );
-		if( lambda >= 0.0f && lambda <= 1.0f ){
+		lambda = invRayDirection * (maxExtend.x - rayOrigin.x);
+		if(lambda >= 0.0f && lambda <= 1.0f){
 			const float y = rayOrigin.y + rayDirection.y * lambda;
-			if( y >= minExtend.y && y <= maxExtend.y ){
+			if(y >= minExtend.y && y <= maxExtend.y){
 				const float z = rayOrigin.z + rayDirection.z * lambda;
-				if( z >= minExtend.z && z <= maxExtend.z ){
-					if( lambda < bestLambda ){
+				if(z >= minExtend.z && z <= maxExtend.z){
+					if(lambda < bestLambda){
 						bestLambda = lambda;
 					}
 				}
@@ -436,29 +436,29 @@ const decVector &maxExtend, const decVector &rayOrigin, const decVector &rayDire
 		}
 	}
 	
-	if( fabsf( rayDirection.y ) > FLOAT_SAFE_EPSILON ){
+	if(fabsf(rayDirection.y) > FLOAT_SAFE_EPSILON){
 		const float invRayDirection = 1.0f / rayDirection.y;
 		
-		lambda = invRayDirection * ( maxExtend.y - rayOrigin.y );
-		if( lambda >= 0.0f && lambda <= 1.0f ){
+		lambda = invRayDirection * (maxExtend.y - rayOrigin.y);
+		if(lambda >= 0.0f && lambda <= 1.0f){
 			const float x = rayOrigin.x + rayDirection.x * lambda;
-			if( x >= minExtend.x && x <= maxExtend.x ){
+			if(x >= minExtend.x && x <= maxExtend.x){
 				const float z = rayOrigin.z + rayDirection.z * lambda;
-				if( z >= minExtend.z && z <= maxExtend.z ){
-					if( lambda < bestLambda ){
+				if(z >= minExtend.z && z <= maxExtend.z){
+					if(lambda < bestLambda){
 						bestLambda = lambda;
 					}
 				}
 			}
 		}
 		
-		lambda = invRayDirection * ( minExtend.y - rayOrigin.y );
-		if( lambda >= 0.0f && lambda <= 1.0f ){
+		lambda = invRayDirection * (minExtend.y - rayOrigin.y);
+		if(lambda >= 0.0f && lambda <= 1.0f){
 			const float x = rayOrigin.x + rayDirection.x * lambda;
-			if( x >= minExtend.x && x <= maxExtend.x ){
+			if(x >= minExtend.x && x <= maxExtend.x){
 				const float z = rayOrigin.z + rayDirection.z * lambda;
-				if( z >= minExtend.z && z <= maxExtend.z ){
-					if( lambda < bestLambda ){
+				if(z >= minExtend.z && z <= maxExtend.z){
+					if(lambda < bestLambda){
 						bestLambda = lambda;
 					}
 				}
@@ -466,29 +466,29 @@ const decVector &maxExtend, const decVector &rayOrigin, const decVector &rayDire
 		}
 	}
 	
-	if( fabsf( rayDirection.z ) > FLOAT_SAFE_EPSILON ){
+	if(fabsf(rayDirection.z) > FLOAT_SAFE_EPSILON){
 		const float invRayDirection = 1.0f / rayDirection.z;
 		
-		lambda = invRayDirection * ( maxExtend.z - rayOrigin.z );
-		if( lambda >= 0.0f && lambda <= 1.0f ){
+		lambda = invRayDirection * (maxExtend.z - rayOrigin.z);
+		if(lambda >= 0.0f && lambda <= 1.0f){
 			const float x = rayOrigin.x + rayDirection.x * lambda;
-			if( x >= minExtend.x && x <= maxExtend.x ){
+			if(x >= minExtend.x && x <= maxExtend.x){
 				const float y = rayOrigin.y + rayDirection.y * lambda;
-				if( y >= minExtend.y && y <= maxExtend.y ){
-					if( lambda < bestLambda ){
+				if(y >= minExtend.y && y <= maxExtend.y){
+					if(lambda < bestLambda){
 						bestLambda = lambda;
 					}
 				}
 			}
 		}
 		
-		lambda = invRayDirection * ( minExtend.z - rayOrigin.z );
-		if( lambda >= 0.0f && lambda <= 1.0f ){
+		lambda = invRayDirection * (minExtend.z - rayOrigin.z);
+		if(lambda >= 0.0f && lambda <= 1.0f){
 			const float x = rayOrigin.x + rayDirection.x * lambda;
-			if( x >= minExtend.x && x <= maxExtend.x ){
+			if(x >= minExtend.x && x <= maxExtend.x){
 				const float y = rayOrigin.y + rayDirection.y * lambda;
-				if( y >= minExtend.y && y <= maxExtend.y ){
-					if( lambda < bestLambda ){
+				if(y >= minExtend.y && y <= maxExtend.y){
+					if(lambda < bestLambda){
 						bestLambda = lambda;
 					}
 				}

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassMutableID( deScriptingDragonScript &ds );
+	deClassMutableID(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassMutableID();
@@ -56,16 +56,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Dragonscript module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Unique id from real object. */
-	decUniqueID &GetMutableID( dsRealObject *myself ) const;
+	decUniqueID &GetMutableID(dsRealObject *myself) const;
 	
 	/** \brief Push unique id onto stack. */
-	void PushMutableID( dsRunTime *rt, const decUniqueID &id );
+	void PushMutableID(dsRunTime *rt, const decUniqueID &id);
 	/*@}*/
 	
 private:
@@ -74,52 +74,52 @@ private:
 		dsClass *clsFileReader, *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewValue );
-	DEF_NATFUNC( nfNewUniqueID );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewValue);
+	DEF_NATFUNC(nfNewUniqueID);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetBitCount );
-	DEF_NATFUNC( nfSetBitCount );
-	DEF_NATFUNC( nfGetByteAt );
-	DEF_NATFUNC( nfSetByteAt );
-	DEF_NATFUNC( nfIncrement );
-	DEF_NATFUNC( nfIncrementByInt );
-	DEF_NATFUNC( nfIncrementByUniqueID );
-	DEF_NATFUNC( nfIncrementByMutableID );
-	DEF_NATFUNC( nfDecrement );
-	DEF_NATFUNC( nfDecrementByInt );
-	DEF_NATFUNC( nfDecrementByUniqueID );
-	DEF_NATFUNC( nfDecrementByMutableID );
-	DEF_NATFUNC( nfReset );
+	DEF_NATFUNC(nfGetBitCount);
+	DEF_NATFUNC(nfSetBitCount);
+	DEF_NATFUNC(nfGetByteAt);
+	DEF_NATFUNC(nfSetByteAt);
+	DEF_NATFUNC(nfIncrement);
+	DEF_NATFUNC(nfIncrementByInt);
+	DEF_NATFUNC(nfIncrementByUniqueID);
+	DEF_NATFUNC(nfIncrementByMutableID);
+	DEF_NATFUNC(nfDecrement);
+	DEF_NATFUNC(nfDecrementByInt);
+	DEF_NATFUNC(nfDecrementByUniqueID);
+	DEF_NATFUNC(nfDecrementByMutableID);
+	DEF_NATFUNC(nfReset);
 	
-	DEF_NATFUNC( nfSetFrom );
-	DEF_NATFUNC( nfSetFromMutable );
+	DEF_NATFUNC(nfSetFrom);
+	DEF_NATFUNC(nfSetFromMutable);
 	
-	DEF_NATFUNC( nfToUniqueID );
-	DEF_NATFUNC( nfNextID );
+	DEF_NATFUNC(nfToUniqueID);
+	DEF_NATFUNC(nfNextID);
 	
-	DEF_NATFUNC( nfToHexString );
-	DEF_NATFUNC( nfSetFromHexString );
+	DEF_NATFUNC(nfToHexString);
+	DEF_NATFUNC(nfSetFromHexString);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfOpLess );
-	DEF_NATFUNC( nfOpLessEqual );
-	DEF_NATFUNC( nfOpGreater );
-	DEF_NATFUNC( nfOpGreaterEqual );
+	DEF_NATFUNC(nfOpLess);
+	DEF_NATFUNC(nfOpLessEqual);
+	DEF_NATFUNC(nfOpGreater);
+	DEF_NATFUNC(nfOpGreaterEqual);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
 #undef DEF_NATFUNC
 };
 

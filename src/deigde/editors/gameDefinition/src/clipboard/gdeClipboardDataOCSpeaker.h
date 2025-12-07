@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSpeaker( gdeOCSpeaker *speaker );
+	gdeClipboardDataOCSpeaker(gdeOCSpeaker *speaker);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker. */
-	gdeOCSpeaker *GetSpeaker() const{ return pSpeaker; }
+	gdeOCSpeaker *GetSpeaker() const{return pSpeaker;}
 	/*@}*/
 };
 

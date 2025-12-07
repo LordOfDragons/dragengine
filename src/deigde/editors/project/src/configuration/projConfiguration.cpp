@@ -117,7 +117,7 @@ void projConfiguration::SaveConfiguration(){
 		projConfigurationXml(pWindowMain.GetLogger(), LOGSOURCE).WriteToFile(
 			decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
 		
-	}catch( const deException &e ){
+	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }

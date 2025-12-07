@@ -41,23 +41,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynSynthesizerLink::desynSynthesizerLink( const deSynthesizerLink &link ) :
-pController( link.GetController() ),
-pRepeat( link.GetRepeat() ),
-pCurve( link.GetCurve() ){
+desynSynthesizerLink::desynSynthesizerLink(const deSynthesizerLink &link) :
+pController(link.GetController()),
+pRepeat(link.GetRepeat()),
+pCurve(link.GetCurve()){
 }
 
-desynSynthesizerLink::desynSynthesizerLink( const deSynthesizerLink &link, const decIntList &controllerMapping ) :
-pController( link.GetController() ),
-pRepeat( link.GetRepeat() ),
-pCurve( link.GetCurve() )
+desynSynthesizerLink::desynSynthesizerLink(const deSynthesizerLink &link, const decIntList &controllerMapping) :
+pController(link.GetController()),
+pRepeat(link.GetRepeat()),
+pCurve(link.GetCurve())
 {
-	if( pController == -1 ){
+	if(pController == -1){
 		return;
 	}
 	
-	if( pController < controllerMapping.GetCount() ){
-		pController = controllerMapping.GetAt( pController );
+	if(pController < controllerMapping.GetCount()){
+		pController = controllerMapping.GetAt(pController);
 		
 	}else{
 		pController = -1;
@@ -72,17 +72,17 @@ desynSynthesizerLink::~desynSynthesizerLink(){
 // Management
 ///////////////
 
-float desynSynthesizerLink::GetValue( const desynSynthesizerInstance &instance, int sample, float defaultValue ) const{
-	if( pController == -1 ){
+float desynSynthesizerLink::GetValue(const desynSynthesizerInstance &instance, int sample, float defaultValue) const{
+	if(pController == -1){
 		return defaultValue;
 	}
 	
-	float value = instance.GetControllerAt( pController ).GetValue( sample );
+	float value = instance.GetControllerAt(pController).GetValue(sample);
 	
-	if( pRepeat > 1 ){
-		value *= ( float )pRepeat;
-		value -= floorf( value );
+	if(pRepeat > 1){
+		value *= (float)pRepeat;
+		value -= floorf(value);
 	}
 	
-	return pCurve.Evaluate( value );
+	return pCurve.Evaluate(value);
 }

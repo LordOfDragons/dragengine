@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPAnimatorListener( aeWPAnimator &panel );
+	aeWPAnimatorListener(aeWPAnimator &panel);
 	
 	/** Clean up listener. */
 	virtual ~aeWPAnimatorListener();
@@ -55,16 +55,16 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Animator changed. */
-	virtual void AnimatorChanged( aeAnimator *animator );
+	virtual void AnimatorChanged(aeAnimator *animator);
 	
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	virtual void ModelChanged(aeAnimator *animator);
 	
 	/** Rig changed. */
-	virtual void RigChanged( aeAnimator *animator );
+	virtual void RigChanged(aeAnimator *animator);
 	
 	/** Animation changed. */
-	virtual void AnimationChanged( aeAnimator *animator );
+	virtual void AnimationChanged(aeAnimator *animator);
 	/*@}*/
 };
 

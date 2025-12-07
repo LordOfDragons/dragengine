@@ -34,14 +34,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMappedAdd::seUMappedAdd( seSkin *skin, seMapped *mapped ) :
-pMapped( mapped ),
-pSkin( skin )
+seUMappedAdd::seUMappedAdd(seSkin *skin, seMapped *mapped) :
+pMapped(mapped),
+pSkin(skin)
 {
-	DEASSERT_NOTNULL( pSkin )
-	DEASSERT_NOTNULL( pMapped )
+	DEASSERT_NOTNULL(pSkin)
+	DEASSERT_NOTNULL(pMapped)
 	
-	SetShortInfo( "Add Mapped" );
+	SetShortInfo("Add Mapped");
 }
 
 seUMappedAdd::~seUMappedAdd(){
@@ -53,10 +53,10 @@ seUMappedAdd::~seUMappedAdd(){
 ///////////////
 
 void seUMappedAdd::Undo(){
-	pSkin->RemoveMapped( pMapped );
+	pSkin->RemoveMapped(pMapped);
 }
 
 void seUMappedAdd::Redo(){
-	pSkin->AddMapped( pMapped );
-	pSkin->SetActiveMapped( pMapped );
+	pSkin->AddMapped(pMapped);
+	pSkin->SetActiveMapped(pMapped);
 }

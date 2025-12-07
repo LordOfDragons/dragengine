@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleBTransSetScaleMax::aeURuleBTransSetScaleMax( aeRuleBoneTransformator *rule, const decVector &newMax ){
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+aeURuleBTransSetScaleMax::aeURuleBTransSetScaleMax(aeRuleBoneTransformator *rule, const decVector &newMax){
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRule = NULL;
@@ -53,9 +53,9 @@ aeURuleBTransSetScaleMax::aeURuleBTransSetScaleMax( aeRuleBoneTransformator *rul
 		pOldMax = rule->GetMaximumScaling();
 		pNewMax = newMax;
 		
-		SetShortInfo( "Bone transformator Set maximum scaling" );
+		SetShortInfo("Bone transformator Set maximum scaling");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -71,11 +71,11 @@ aeURuleBTransSetScaleMax::~aeURuleBTransSetScaleMax(){
 ///////////////
 
 void aeURuleBTransSetScaleMax::Undo(){
-	pRule->SetMaximumScaling( pOldMax );
+	pRule->SetMaximumScaling(pOldMax);
 }
 
 void aeURuleBTransSetScaleMax::Redo(){
-	pRule->SetMaximumScaling( pNewMax );
+	pRule->SetMaximumScaling(pNewMax);
 }
 
 
@@ -84,7 +84,7 @@ void aeURuleBTransSetScaleMax::Redo(){
 //////////////////////
 
 void aeURuleBTransSetScaleMax::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

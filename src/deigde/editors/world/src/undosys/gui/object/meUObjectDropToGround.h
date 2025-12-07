@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUObjectDropToGround( meWorld *world, const meObjectList &objects );
+	meUObjectDropToGround(meWorld *world, const meObjectList &objects);
 	/** \brief Clean up object. */
 	virtual ~meUObjectDropToGround();
 	/*@}*/
@@ -75,9 +75,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Sets if the objects can be dropped on other objects. */
-	void SetDropOnObjects( bool dropOnObjects );
+	void SetDropOnObjects(bool dropOnObjects);
 	/** Sets if the objects are aligned with the ground or just dropped down. */
-	void SetAlign( bool align );
+	void SetAlign(bool align);
 	
 	/** \brief Undo. */
 	virtual void Undo();

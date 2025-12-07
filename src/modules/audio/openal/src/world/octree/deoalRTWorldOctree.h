@@ -56,7 +56,7 @@ public:
 	struct sBuildNode{
 		decVector center;
 		decVector halfSize;
-		int child[ 8 ];
+		int child[8];
 		int childCount;
 		int firstComponent;
 		int lastComponent;
@@ -139,27 +139,27 @@ public:
 	/** \name Building */
 	/*@{*/
 	/** \brief Octree position in world coordinates. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Octree half extends in world coordinates. */
-	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
+	inline const decVector &GetHalfExtends() const{return pHalfExtends;}
 	
 	/**
 	 * \brief Begin building octree.
 	 * 
 	 * Clears visit and build nodes. Sets position and half extends.
 	 */
-	void Build( const decDVector &position, const decVector &halfExtends );
+	void Build(const decDVector &position, const decVector &halfExtends);
 	
 	/**
 	 * \brief Begin building octree.
 	 * 
 	 * Clears visit and build nodes. Sets position and half extends.
 	 */
-	void Build( const decDVector &position, double radius );
+	void Build(const decDVector &position, double radius);
 	
 	/** \brief Add component during build phase. */
-	void AddComponent( deoalAComponent *component );
+	void AddComponent(deoalAComponent *component);
 	
 	/**
 	 * \brief Finish building octree.
@@ -174,28 +174,28 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit nodes array. */
-	inline const sVisitNode *GetVisitNodes() const{ return pVisitNodes; }
+	inline const sVisitNode *GetVisitNodes() const{return pVisitNodes;}
 	
 	/** \brief Visit node count. */
-	inline int GetVisitNodeCount() const{ return pVisitNodeCount; }
+	inline int GetVisitNodeCount() const{return pVisitNodeCount;}
 	
 	/** \brief Visit components array. */
-	inline const sVisitComponent *GetVisitComponents() const{ return pVisitComponents; }
+	inline const sVisitComponent *GetVisitComponents() const{return pVisitComponents;}
 	
 	/** \brief Visit component count. */
-	inline int GetVisitComponentCount() const{ return pVisitComponentCount; }
+	inline int GetVisitComponentCount() const{return pVisitComponentCount;}
 	/*@}*/
 	
 	
 	
 private:
-	int pGetBuildNodeFor( const decVector &center, const decVector &halfSize );
-	int pGetBuildNodeFor( int nodeIndex, const decVector &center, const decVector &halfSize );
-	int pGetBuildOctantFor( sBuildNode &node, const decVector &center, const decVector &halfSize ) const;
+	int pGetBuildNodeFor(const decVector &center, const decVector &halfSize);
+	int pGetBuildNodeFor(int nodeIndex, const decVector &center, const decVector &halfSize);
+	int pGetBuildOctantFor(sBuildNode &node, const decVector &center, const decVector &halfSize) const;
 	int pAddBuildNode();
 	int pAddBuildComponent();
-	void pGatherCounts( const sBuildNode &node );
-	void pBuildVisitNode( const sBuildNode &buildNode, sVisitNode &node );
+	void pGatherCounts(const sBuildNode &node);
+	void pBuildVisitNode(const sBuildNode &buildNode, sVisitNode &node);
 };
 
 #endif

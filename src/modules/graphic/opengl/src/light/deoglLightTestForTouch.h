@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	deoglLightTestForTouch( deoglRLight &touchSensor );
+	deoglLightTestForTouch(deoglRLight &touchSensor);
 	/** Cleans up the visitor. */
 	virtual ~deoglLightTestForTouch();
 	/*@}*/
@@ -58,7 +58,7 @@ public:
 	 * Visits an octree node. The default implementation is to visit all
 	 * world elements stored in the node.
 	 */
-	virtual void VisitNode( deoglDOctree *node, int intersection );
+	virtual void VisitNode(deoglDOctree *node, int intersection);
 	/*@}*/
 };
 

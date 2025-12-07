@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaBone( aeRuleForeignState *rule, const char *newName );
+	aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *newName);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaBone();

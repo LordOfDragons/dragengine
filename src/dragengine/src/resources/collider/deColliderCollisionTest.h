@@ -83,7 +83,7 @@ public:
 	deColliderCollisionTest();
 	
 	/** \brief Create copy of a collider collision test. */
-	deColliderCollisionTest( const deColliderCollisionTest &collisionTester );
+	deColliderCollisionTest(const deColliderCollisionTest &collisionTester);
 	
 protected:
 	/**
@@ -101,74 +101,74 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Touch sensor to use for testing or NULL to use the parent collider world. */
-	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
+	inline deTouchSensor *GetTouchSensor() const{return pTouchSensor;}
 	
 	/** \brief Set touch sensor to use for testing or NULL to use the parent collider world. */
-	void SetTouchSensor( deTouchSensor *touchSensor );
+	void SetTouchSensor(deTouchSensor *touchSensor);
 	
 	
 	
 	/** \brief Collider or NULL to test using a ray. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline deCollider *GetCollider() const{return pCollider;}
 	
 	/** \brief Set collider or NULL to test using a ray. */
-	void SetCollider( deCollider *collider );
+	void SetCollider(deCollider *collider);
 	
 	/** \brief Collision filter. */
-	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }
+	inline const decCollisionFilter &GetCollisionFilter() const{return pCollisionFilter;}
 	
 	/** \brief Set collision filter. */
-	void SetCollisionFilter( const decCollisionFilter &filter );
+	void SetCollisionFilter(const decCollisionFilter &filter);
 	
 	
 	
 	/** \brief Component to use to retrieve bone position from or NULL if not used. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline deComponent *GetComponent() const{return pComponent;}
 	
 	/** \brief Set component to use to retrieve bone position from or NULL if not used. */
-	void SetComponent( deComponent *component );
+	void SetComponent(deComponent *component);
 	
 	/** \brief Bone to apply origin to for testing or empty string to use parent collider position. */
-	inline const decString &GetBone() const{ return pBone; }
+	inline const decString &GetBone() const{return pBone;}
 	
 	/** \brief Set bone to apply origin to for testing or empty string to use parent collider position. */
-	void SetBone( const char *name );
+	void SetBone(const char *name);
 	
 	/** \brief Cast origin. */
-	inline const decVector &GetOrigin() const{ return pOrigin; }
+	inline const decVector &GetOrigin() const{return pOrigin;}
 	
 	/** \brief Set cast origin. */
-	void SetOrigin( const decVector &origin );
+	void SetOrigin(const decVector &origin);
 	
 	/**
 	 * \brief Cast orientation.
 	 * \version 1.16
 	 */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/**
 	 * \brief Set cast orientation.
 	 * \version 1.16
 	 */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Cast direction. */
-	inline const decVector &GetDirection() const{ return pDirection; }
+	inline const decVector &GetDirection() const{return pDirection;}
 	
 	/** \brief Set cast direction. */
-	void SetDirection( const decVector &direction );
+	void SetDirection(const decVector &direction);
 	
 	/** \brief Local direction. */
-	inline bool GetLocalDirection() const{ return pLocalDirection; }
+	inline bool GetLocalDirection() const{return pLocalDirection;}
 	
 	/** \brief Set if direction is local. */
-	void SetLocalDirection( bool localDirection );
+	void SetLocalDirection(bool localDirection);
 	
 	/** \brief Collision test is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if collision test is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
@@ -180,10 +180,10 @@ public:
 	 * 
 	 * \warning Do not change the content of this object. It is potentially shared.
 	 */
-	deCollisionInfo *GetCollisionInfoAt( int index ) const;
+	deCollisionInfo *GetCollisionInfoAt(int index) const;
 	
 	/** \brief Add collision information. */
-	void AddCollisionInfo( deCollisionInfo *info );
+	void AddCollisionInfo(deCollisionInfo *info);
 	
 	/** \brief Remove all collision information. */
 	void RemoveAllCollisionInfo();
@@ -191,28 +191,28 @@ public:
 	
 	
 	/** \brief Test origin used by physics module. */
-	inline const decDVector &GetTestOrigin() const{ return pTestOrigin; }
+	inline const decDVector &GetTestOrigin() const{return pTestOrigin;}
 	
 	/** \brief Set test origin used by physics module. */
-	void SetTestOrigin( const decDVector &origin );
+	void SetTestOrigin(const decDVector &origin);
 	
 	/**
 	 * \brief Test orientation used by physics module.
 	 * \version 1.16
 	 */
-	inline const decQuaternion &GetTestOrientation() const{ return pTestOrientation; }
+	inline const decQuaternion &GetTestOrientation() const{return pTestOrientation;}
 	
 	/**
 	 * \brief Set test orientation used by physics module.
 	 * \version 1.16
 	 */
-	void SetTestOrientation( const decQuaternion &orientation );
+	void SetTestOrientation(const decQuaternion &orientation);
 	
 	/** \brief Test direction used by physics module. */
-	inline const decDVector &GetTestDirection() const{ return pTestDirection; }
+	inline const decDVector &GetTestDirection() const{return pTestDirection;}
 	
 	/** \brief Set test direction used by physics module. */
-	void SetTestDirection( const decDVector &direction );
+	void SetTestDirection(const decDVector &direction);
 	/*@}*/
 	
 	
@@ -220,7 +220,7 @@ public:
 	/** \name Operator */
 	/*@{*/
 	/** \brief Copy a collider collision test to this collider collision test. */
-	deColliderCollisionTest &operator=( const deColliderCollisionTest &collisionTest );
+	deColliderCollisionTest &operator=(const deColliderCollisionTest &collisionTest);
 	/*@}*/
 };
 

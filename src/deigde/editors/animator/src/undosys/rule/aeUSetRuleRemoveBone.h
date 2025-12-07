@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeUSetRuleRemoveBone( aeRule *rule, const char *pattern );
+	aeUSetRuleRemoveBone(aeRule *rule, const char *pattern);
 	
 protected:
 	/** Clean up undo. */

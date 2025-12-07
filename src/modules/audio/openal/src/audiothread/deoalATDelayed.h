@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create delayed operations object. */
-	deoalATDelayed( deoalAudioThread &audioThread );
+	deoalATDelayed(deoalAudioThread &audioThread);
 	
 	/** \brief Clean up delayed operations object. */
 	~deoalATDelayed();
@@ -62,12 +62,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Audio thread. */
-	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
+	inline deoalAudioThread &GetAudioThread() const{return pAudioThread;}
 	
 	
 	
 	/** \brief Has free operations (not thread-safe). */
-	inline bool GetHasFreeOperations() const{ return pHasFreeOperations; }
+	inline bool GetHasFreeOperations() const{return pHasFreeOperations;}
 	
 	/**
 	 * \brief Process free operations (thread-safe).
@@ -76,12 +76,12 @@ public:
 	 *                  a maximum number of objects is deleted to avoid hickups if a large
 	 *                  amount of delete task piled up.
 	 */
-	void ProcessFreeOperations( bool deleteAll );
+	void ProcessFreeOperations(bool deleteAll);
 	
 	
 	
 	/** \brief Add deletion (thread-safe). */
-	void AddDeletion( deoalDelayedDeletion *deletion );
+	void AddDeletion(deoalDelayedDeletion *deletion);
 	/*@}*/
 };
 

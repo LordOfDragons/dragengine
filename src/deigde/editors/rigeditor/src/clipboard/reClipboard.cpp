@@ -40,7 +40,7 @@ reClipboard::reClipboard(){
 }
 
 reClipboard::~reClipboard(){
-	if( pClip ) delete pClip;
+	if(pClip) delete pClip;
 }
 
 
@@ -52,7 +52,7 @@ bool reClipboard::HasClip() const{
 	return pClip != NULL;
 }
 
-void reClipboard::SetClip( reBaseClip *clip ){
-	if( pClip ) delete pClip;
+void reClipboard::SetClip(reBaseClip *clip){
+	if(pClip) delete pClip;
 	pClip = clip;
 }

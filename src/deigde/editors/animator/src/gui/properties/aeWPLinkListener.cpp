@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeWPLinkListener::aeWPLinkListener( aeWPLink &panel ) :
-pPanel( panel ){
+aeWPLinkListener::aeWPLinkListener(aeWPLink &panel) :
+pPanel(panel){
 }
 
 aeWPLinkListener::~aeWPLinkListener(){
@@ -51,40 +51,40 @@ aeWPLinkListener::~aeWPLinkListener(){
 // Notifications
 //////////////////
 
-void aeWPLinkListener::ModelChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPLinkListener::ModelChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateModelVertexPositionSetList();
 }
 
-void aeWPLinkListener::RigChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPLinkListener::RigChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateRigBoneList();
 }
 
-void aeWPLinkListener::ControllerNameChanged( aeAnimator *animator, aeController* ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPLinkListener::ControllerNameChanged(aeAnimator *animator, aeController*){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void aeWPLinkListener::ControllerStructureChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPLinkListener::ControllerStructureChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
 	pPanel.UpdateControllerList();
 }
 
-void aeWPLinkListener::ActiveLinkChanged( aeAnimator *animator, aeLink* ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPLinkListener::ActiveLinkChanged(aeAnimator *animator, aeLink*){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	
@@ -92,16 +92,16 @@ void aeWPLinkListener::ActiveLinkChanged( aeAnimator *animator, aeLink* ){
 	pPanel.UpdateLink();
 }
 
-void aeWPLinkListener::LinkChanged( aeAnimator*, aeLink *link ){
-	if( link != pPanel.GetLink() ){
+void aeWPLinkListener::LinkChanged(aeAnimator*, aeLink *link){
+	if(link != pPanel.GetLink()){
 		return;
 	}
 	
 	pPanel.UpdateLink();
 }
 
-void aeWPLinkListener::LinkNameChanged( aeAnimator*, aeLink *link ){
-	if( link != pPanel.GetLink() ){
+void aeWPLinkListener::LinkNameChanged(aeAnimator*, aeLink *link){
+	if(link != pPanel.GetLink()){
 		return;
 	}
 	
@@ -109,8 +109,8 @@ void aeWPLinkListener::LinkNameChanged( aeAnimator*, aeLink *link ){
 	pPanel.UpdateLink();
 }
 
-void aeWPLinkListener::LinkStructureChanged( aeAnimator *animator ){
-	if( animator != pPanel.GetAnimator() ){
+void aeWPLinkListener::LinkStructureChanged(aeAnimator *animator){
+	if(animator != pPanel.GetAnimator()){
 		return;
 	}
 	

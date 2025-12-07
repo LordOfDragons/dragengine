@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create xml character data. */
-	decXmlCharacterData( const char *data );
+	decXmlCharacterData(const char *data);
 	
 protected:
 	/** \brief Clean up xml character data. */
@@ -60,23 +60,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data. */
-	inline const decString &GetData() const{ return pData; }
+	inline const decString &GetData() const{return pData;}
 	
 	/** \brief Set data. */
-	void SetData( const char *data );
+	void SetData(const char *data);
 	
 	/** \brief Append data. */
-	void AppendData( const char *data );
+	void AppendData(const char *data);
 	
 	/** \brief Append character. */
-	void AppendCharacter( char character );
+	void AppendCharacter(char character);
 	/*@}*/
 	
 	
 	
 	/** \name Visiting */
 	/*@{*/
-	void Visit( decXmlVisitor &visitor );
+	void Visit(decXmlVisitor &visitor);
 	/*@}*/
 	
 	

@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUPasteObject( meWorld *world, meClipboardDataObject *clip );
+	meUPasteObject(meWorld *world, meClipboardDataObject *clip);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUPasteObject();

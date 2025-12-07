@@ -58,7 +58,7 @@ public:
 	decSmoothDVector();
 	
 	/** \brief Create copy of a smooth dvector. */
-	decSmoothDVector( const decSmoothDVector &copy );
+	decSmoothDVector(const decSmoothDVector &copy);
 	
 	/** \brief Clean up smooth dvector. */
 	~decSmoothDVector();
@@ -69,34 +69,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Current value. */
-	inline const decDVector &GetValue() const{ return pValue; }
+	inline const decDVector &GetValue() const{return pValue;}
 	
 	/** \brief Set current value. */
-	void SetValue( const decDVector &value );
+	void SetValue(const decDVector &value);
 	
 	/** \brief Goal value. */
-	inline const decDVector &GetGoal() const{ return pGoal; }
+	inline const decDVector &GetGoal() const{return pGoal;}
 	
 	/** \brief Set goal value. */
-	void SetGoal( const decDVector &goal );
+	void SetGoal(const decDVector &goal);
 	
 	/** \brief Adjustment time in seconds. */
-	inline double GetAdjustTime() const{ return pAdjustTime; }
+	inline double GetAdjustTime() const{return pAdjustTime;}
 	
 	/** \brief Adjustment time in seconds. Clamped to 0 or larger. */
-	void SetAdjustTime( double adjustTime );
+	void SetAdjustTime(double adjustTime);
 	
 	/** \brief Adjustment range in units. */
-	inline double GetAdjustRange() const{ return pAdjustRange; }
+	inline double GetAdjustRange() const{return pAdjustRange;}
 	
 	/** \brief Set adjustment range in units. Clamped to 0 or larger. */
-	void SetAdjustRange( double range );
+	void SetAdjustRange(double range);
 	
 	/** \brief Change speed of the value in units per second. */
-	inline double GetChangeSpeed() const{ return pChangeSpeed; }
+	inline double GetChangeSpeed() const{return pChangeSpeed;}
 	
 	/** \brief Set change speed of the value in units per second. */
-	void SetChangeSpeed( double changeSpeed );
+	void SetChangeSpeed(double changeSpeed);
 	
 	
 	
@@ -109,7 +109,7 @@ public:
 	 * Goal is not modified.
 	 * \param[in] elapsed Elapsed time in seconds. If less than 0.001s update is skipped.
 	 */
-	void Update( double elapsed );
+	void Update(double elapsed);
 	/*@}*/
 	
 	
@@ -121,17 +121,17 @@ public:
 	 * 
 	 * Two smooth dvectors are equal if their value is equal.
 	 */
-	bool operator==( const decSmoothDVector &other ) const;
+	bool operator==(const decSmoothDVector &other) const;
 	
 	/**
 	 * \brief Determine if two smooth dvector are not equal.
 	 * 
 	 * Two smooth dvectors are not equal if their value is not equal.
 	 */
-	bool operator!=( const decSmoothDVector &other ) const;
+	bool operator!=(const decSmoothDVector &other) const;
 	
 	/** \brief Copy another smooth dvector to this smooth dvector. */
-	decSmoothDVector &operator=( const decSmoothDVector &other );
+	decSmoothDVector &operator=(const decSmoothDVector &other);
 	/*@}*/
 	
 	

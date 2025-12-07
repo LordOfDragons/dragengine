@@ -44,7 +44,7 @@ public:
 	deSkyControllerTarget();
 	
 	/** \brief Create copy of target. */
-	deSkyControllerTarget( const deSkyControllerTarget &target );
+	deSkyControllerTarget(const deSkyControllerTarget &target);
 	
 	/** \brief Clean up target. */
 	~deSkyControllerTarget();
@@ -62,19 +62,19 @@ public:
 	 * \throws deeOutOfBoundary \em index is less than 0 or greater than or equal
 	 * to GetLinkCount().
 	 */
-	int GetLinkAt( int index ) const;
+	int GetLinkAt(int index) const;
 	
 	/** \brief Link is present. */
-	bool HasLink( int link ) const;
+	bool HasLink(int link) const;
 	
 	/** \brief Add link. */
-	void AddLink( int link );
+	void AddLink(int link);
 	
 	/**
 	 * \brief Remove link.
 	 * \throws deeInvalidParam \em link is absent.
 	 */
-	void RemoveLink( int link );
+	void RemoveLink(int link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();

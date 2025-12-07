@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSetSourceMinVolume( seSource *source, float newValue );
+	seUSetSourceMinVolume(seSource *source, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

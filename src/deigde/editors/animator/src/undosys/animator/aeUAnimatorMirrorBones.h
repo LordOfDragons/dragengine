@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	aeUAnimatorMirrorBones( aeAnimator *animator );
+	aeUAnimatorMirrorBones(aeAnimator *animator);
 	
 protected:
 	/** Clean up undo. */

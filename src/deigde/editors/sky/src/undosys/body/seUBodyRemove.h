@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodyRemove( seBody *body );
+	seUBodyRemove(seBody *body);
 	
 protected:
 	/** \brief Clean up undo action. */

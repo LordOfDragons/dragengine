@@ -35,14 +35,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglOcclusionTestPool::deoglOcclusionTestPool( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglOcclusionTestPool::deoglOcclusionTestPool(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglOcclusionTestPool::~deoglOcclusionTestPool(){
 	int count = pOcclusionTests.GetCount();
-	while( count > 0 ){
-		delete ( deoglOcclusionTest* )pOcclusionTests.GetAt( --count );
+	while(count > 0){
+		delete (deoglOcclusionTest*)pOcclusionTests.GetAt(--count);
 	}
 }
 
@@ -53,21 +53,21 @@ deoglOcclusionTestPool::~deoglOcclusionTestPool(){
 
 deoglOcclusionTest *deoglOcclusionTestPool::Get(){
 	const int index = pOcclusionTests.GetCount() - 1;
-	if( index < 0 ){
-		return new deoglOcclusionTest( pRenderThread );
+	if(index < 0){
+		return new deoglOcclusionTest(pRenderThread);
 	}
 	
-	deoglOcclusionTest * const occlusionTest = ( deoglOcclusionTest* )pOcclusionTests.GetAt( index );
-	pOcclusionTests.RemoveFrom( index );
+	deoglOcclusionTest * const occlusionTest = (deoglOcclusionTest*)pOcclusionTests.GetAt(index);
+	pOcclusionTests.RemoveFrom(index);
 	return occlusionTest;
 }
 
-void deoglOcclusionTestPool::Return( deoglOcclusionTest *occlusionTest ){
-	if( ! occlusionTest ){
-		DETHROW( deeInvalidParam );
+void deoglOcclusionTestPool::Return(deoglOcclusionTest *occlusionTest){
+	if(! occlusionTest){
+		DETHROW(deeInvalidParam);
 	}
 	
 	occlusionTest->RemoveAllInputData();
 	
-	pOcclusionTests.Add( occlusionTest );
+	pOcclusionTests.Add(occlusionTest);
 }

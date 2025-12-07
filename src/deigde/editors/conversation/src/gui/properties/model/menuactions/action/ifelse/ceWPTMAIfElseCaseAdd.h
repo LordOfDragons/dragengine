@@ -51,8 +51,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAIfElseCaseAdd( ceWindowMain &windowMain,
-		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse );
+	ceWPTMAIfElseCaseAdd(ceWindowMain &windowMain,
+		ceConversation &conversation, ceConversationTopic &topic, ceCAIfElse &ifElse);
 	/*@}*/
 	
 	
@@ -60,13 +60,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Conversation. */
-	inline ceConversation &GetConversation() const{ return *pConversation; }
+	inline ceConversation &GetConversation() const{return *pConversation;}
 	
 	/** \brief Topic. */
-	inline ceConversationTopic &GetTopic() const{ return *pTopic; }
+	inline ceConversationTopic &GetTopic() const{return *pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAIfElse &GetIfElse() const{ return *pIfElse; }
+	inline ceCAIfElse &GetIfElse() const{return *pIfElse;}
 	
 	/** \brief Do menu action. */
 	virtual void OnAction();

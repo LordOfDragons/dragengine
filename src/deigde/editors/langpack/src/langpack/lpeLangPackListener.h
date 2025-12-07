@@ -58,28 +58,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Changed or saved state changed. */
-	virtual void StateChanged( lpeLangPack *langpack );
+	virtual void StateChanged(lpeLangPack *langpack);
 	
 	/** Undo changed. */
-	virtual void UndoChanged( lpeLangPack *langpack );
+	virtual void UndoChanged(lpeLangPack *langpack);
 	
 	/** Language pack parameters changed. */
-	virtual void LangPackChanged( lpeLangPack *langpack );
+	virtual void LangPackChanged(lpeLangPack *langpack);
 	
 	/** Entries have been added or removed. */
-	virtual void EntryStructureChanged ( lpeLangPack *langpack );
+	virtual void EntryStructureChanged (lpeLangPack *langpack);
 	
 	/** An entry changed. */
-	virtual void EntryChanged( lpeLangPack *langpack, lpeLangPackEntry *entry );
+	virtual void EntryChanged(lpeLangPack *langpack, lpeLangPackEntry *entry);
 	
 	/** An entry name changed. */
-	virtual void EntryNameChanged( lpeLangPack *langpack, lpeLangPackEntry *entry );
+	virtual void EntryNameChanged(lpeLangPack *langpack, lpeLangPackEntry *entry);
 	
 	/** Selection of one or mote entries changed. */
-	virtual void EntrySelectionChanged( lpeLangPack *langpack );
+	virtual void EntrySelectionChanged(lpeLangPack *langpack);
 	
 	/** Active entry changed. */
-	virtual void ActiveEntryChanged( lpeLangPack *langpack );
+	virtual void ActiveEntryChanged(lpeLangPack *langpack);
 	/*@}*/
 };
 

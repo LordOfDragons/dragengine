@@ -40,12 +40,12 @@
 // Events
 ///////////
 
-FXDEFMAP( igdeNativeFoxDialog ) igdeNativeFoxDialogMap[] = {
-	FXMAPFUNC( SEL_CLOSE, 0, igdeNativeFoxDialog::onClose ),
-	FXMAPFUNC( SEL_COMMAND, FXDialogBox::ID_ACCEPT, igdeNativeFoxDialog::onCmdAccept ),
-	FXMAPFUNC( SEL_COMMAND, FXDialogBox::ID_CANCEL, igdeNativeFoxDialog::onCmdCancel ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxDialog::onChildLayoutFlags ),
-	FXMAPFUNC( SEL_IGDE_FRAME_UPDATE, 0, igdeNativeFoxDialog::onFrameUpdate )
+FXDEFMAP(igdeNativeFoxDialog) igdeNativeFoxDialogMap[] = {
+	FXMAPFUNC(SEL_CLOSE, 0, igdeNativeFoxDialog::onClose),
+	FXMAPFUNC(SEL_COMMAND, FXDialogBox::ID_ACCEPT, igdeNativeFoxDialog::onCmdAccept),
+	FXMAPFUNC(SEL_COMMAND, FXDialogBox::ID_CANCEL, igdeNativeFoxDialog::onCmdCancel),
+	FXMAPFUNC(SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, igdeNativeFoxDialog::onChildLayoutFlags),
+	FXMAPFUNC(SEL_IGDE_FRAME_UPDATE, 0, igdeNativeFoxDialog::onFrameUpdate)
 };
 
 
@@ -53,21 +53,21 @@ FXDEFMAP( igdeNativeFoxDialog ) igdeNativeFoxDialogMap[] = {
 // Class igdeNativeFoxDialog
 //////////////////////////////
 
-FXIMPLEMENT( igdeNativeFoxDialog, FXDialogBox, igdeNativeFoxDialogMap, ARRAYNUMBER( igdeNativeFoxDialogMap ) )
+FXIMPLEMENT(igdeNativeFoxDialog, FXDialogBox, igdeNativeFoxDialogMap, ARRAYNUMBER(igdeNativeFoxDialogMap))
 
 // Constructor, destructor
 ////////////////////////////
 
 
-igdeNativeFoxDialog::igdeNativeFoxDialog(){ }
+igdeNativeFoxDialog::igdeNativeFoxDialog(){}
 
-igdeNativeFoxDialog::igdeNativeFoxDialog( igdeDialog &powner, FXWindow *pparent,
-const igdeGuiTheme &guitheme ) :
-FXDialogBox( pparent, powner.GetTitle().GetString(), DialogFlags( powner ), 0, 0, 0, 0,
-	DialogPadLeft( guitheme ), DialogPadRight( guitheme ),
-	DialogPadTop( guitheme ), DialogPadBottom( guitheme ),
-	0, 0 ),
-pOwner( &powner )
+igdeNativeFoxDialog::igdeNativeFoxDialog(igdeDialog &powner, FXWindow *pparent,
+const igdeGuiTheme &guitheme) :
+FXDialogBox(pparent, powner.GetTitle().GetString(), DialogFlags(powner), 0, 0, 0, 0,
+	DialogPadLeft(guitheme), DialogPadRight(guitheme),
+	DialogPadTop(guitheme), DialogPadBottom(guitheme),
+	0, 0),
+pOwner(&powner)
 {
 	UpdateIcon();
 }
@@ -100,7 +100,7 @@ void igdeNativeFoxDialog::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxDialog::UpdateEnabled(){
-	if( pOwner->GetEnabled() ){
+	if(pOwner->GetEnabled()){
 		enable();
 		
 	}else{
@@ -109,74 +109,74 @@ void igdeNativeFoxDialog::UpdateEnabled(){
 }
 
 void igdeNativeFoxDialog::UpdatePosition(){
-	if( pOwner->GetPosition().x == getX() && pOwner->GetPosition().y == getY() ){
+	if(pOwner->GetPosition().x == getX() && pOwner->GetPosition().y == getY()){
 		return;
 	}
 	
-	move( pOwner->GetPosition().x, pOwner->GetPosition().y );
+	move(pOwner->GetPosition().x, pOwner->GetPosition().y);
 }
 
 void igdeNativeFoxDialog::UpdateIcon(){
-	FXIcon * const iicon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
-	setIcon( iicon );
-	setMiniIcon( iicon );
+	FXIcon * const iicon = pOwner->GetIcon() ? (FXIcon*)pOwner->GetIcon()->GetNativeIcon() : NULL;
+	setIcon(iicon);
+	setMiniIcon(iicon);
 }
 
 void igdeNativeFoxDialog::UpdateTitle(){
-	setTitle( pOwner->GetTitle().GetString() );
+	setTitle(pOwner->GetTitle().GetString());
 }
 
 void igdeNativeFoxDialog::UpdateSize(){
-	resize( pOwner->GetSize().x, pOwner->GetSize().y );
+	resize(pOwner->GetSize().x, pOwner->GetSize().y);
 }
 
 void igdeNativeFoxDialog::ShowDialog(){
 	show(getParent() ? PLACEMENT_OWNER : PLACEMENT_SCREEN);
 }
 
-void igdeNativeFoxDialog::CloseDialog( bool accepted ){
-	if( accepted ){
-		tryHandle( this, FXSEL( SEL_COMMAND, FXDialogBox::ID_ACCEPT ), NULL );
+void igdeNativeFoxDialog::CloseDialog(bool accepted){
+	if(accepted){
+		tryHandle(this, FXSEL(SEL_COMMAND, FXDialogBox::ID_ACCEPT), NULL);
 		
 	}else{
-		tryHandle( this, FXSEL( SEL_COMMAND, FXDialogBox::ID_CANCEL ), NULL );
+		tryHandle(this, FXSEL(SEL_COMMAND, FXDialogBox::ID_CANCEL), NULL);
 	}
 }
 
 
 
-int igdeNativeFoxDialog::DialogFlags( const igdeDialog &powner ){
+int igdeNativeFoxDialog::DialogFlags(const igdeDialog &powner){
 	int fflags = DECOR_TITLE | DECOR_BORDER | DECOR_CLOSE | DECOR_MENU;
 	
-	if( powner.GetCanResize() ){
+	if(powner.GetCanResize()){
 		fflags |=  DECOR_RESIZE; //DECOR_STRETCHABLE, DECOR_SHRINKABLE
 	}
 	
 	return fflags;
 }
 
-int igdeNativeFoxDialog::DialogPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::dialogPaddingLeft, DEFAULT_PAD );
+int igdeNativeFoxDialog::DialogPadLeft(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::dialogPaddingLeft, DEFAULT_PAD);
 }
 
-int igdeNativeFoxDialog::DialogPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::dialogPaddingRight, DEFAULT_PAD );
+int igdeNativeFoxDialog::DialogPadRight(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::dialogPaddingRight, DEFAULT_PAD);
 }
 
-int igdeNativeFoxDialog::DialogPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::dialogPaddingTop, DEFAULT_PAD );
+int igdeNativeFoxDialog::DialogPadTop(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::dialogPaddingTop, DEFAULT_PAD);
 }
 
-int igdeNativeFoxDialog::DialogPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::dialogPaddingBottom, DEFAULT_PAD );
+int igdeNativeFoxDialog::DialogPadBottom(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::dialogPaddingBottom, DEFAULT_PAD);
 }
 
-int igdeNativeFoxDialog::DialogPadContent( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::dialogPaddingContent, DEFAULT_PAD );
+int igdeNativeFoxDialog::DialogPadContent(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::dialogPaddingContent, DEFAULT_PAD);
 }
 
-int igdeNativeFoxDialog::DialogPadButtons( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::dialogPaddingButtons, DEFAULT_PAD );
+int igdeNativeFoxDialog::DialogPadButtons(const igdeGuiTheme &guitheme){
+	return guitheme.GetIntProperty(igdeGuiThemePropertyNames::dialogPaddingButtons, DEFAULT_PAD);
 }
 
 
@@ -184,17 +184,17 @@ int igdeNativeFoxDialog::DialogPadButtons( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxDialog::onClose( FXObject*, FXSelector, void* ){
+long igdeNativeFoxDialog::onClose(FXObject*, FXSelector, void*){
 	return pOwner->Cancel() ? 0 : 1;
 }
 
-long igdeNativeFoxDialog::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
+long igdeNativeFoxDialog::onChildLayoutFlags(FXObject*, FXSelector, void *pdata){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *((igdeUIFoxHelper::sChildLayoutFlags*)pdata);
 	clflags.flags = LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }
 
-long igdeNativeFoxDialog::onFrameUpdate( FXObject*, FXSelector, void* ){
+long igdeNativeFoxDialog::onFrameUpdate(FXObject*, FXSelector, void*){
 	pOwner->OnFrameUpdate();
 	return 1;
 }

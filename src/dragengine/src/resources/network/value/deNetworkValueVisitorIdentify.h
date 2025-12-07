@@ -75,37 +75,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Vvalue type. */
-	inline eNetworkValues GetType() const{ return pType; }
+	inline eNetworkValues GetType() const{return pType;}
 	
 	/** \brief Is unknown value. */
-	inline bool IsUnknown() const{ return pType == envtUnknown; }
+	inline bool IsUnknown() const{return pType == envtUnknown;}
 	
 	/** \brief Is integer value. */
-	inline bool IsInteger() const{ return pType == envtInteger; }
+	inline bool IsInteger() const{return pType == envtInteger;}
 	
 	/** \brief Is float value. */
-	inline bool IsFloat() const{ return pType == envtFloat; }
+	inline bool IsFloat() const{return pType == envtFloat;}
 	
 	/** \brief Is string value. */
-	inline bool IsString() const{ return pType == envtString; }
+	inline bool IsString() const{return pType == envtString;}
 	
 	/** \brief Is data value. */
-	inline bool IsData() const{ return pType == envtData; }
+	inline bool IsData() const{return pType == envtData;}
 	
 	/** \brief Is point-2 value. */
-	inline bool IsPoint2() const{ return pType == envtPoint2; }
+	inline bool IsPoint2() const{return pType == envtPoint2;}
 	
 	/** \brief Is point-3 value. */
-	inline bool IsPoint3() const{ return pType == envtPoint3; }
+	inline bool IsPoint3() const{return pType == envtPoint3;}
 	
 	/** \brief Is vector-2 value. */
-	inline bool IsVector2() const{ return pType == envtVector2; }
+	inline bool IsVector2() const{return pType == envtVector2;}
 	
 	/** \brief Is vector-3 value. */
-	inline bool IsVector3() const{ return pType == envtVector3; }
+	inline bool IsVector3() const{return pType == envtVector3;}
 	
 	/** \brief Is quaternion value. */
-	inline bool IsQuaternion() const{ return pType == envtQuaternion; }
+	inline bool IsQuaternion() const{return pType == envtQuaternion;}
 	
 	/** \brief Cast to integer network value. */
 	deNetworkValueInteger *CastToInteger() const;
@@ -143,34 +143,34 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void VisitValue( deNetworkValue *value );
+	virtual void VisitValue(deNetworkValue *value);
 	
 	/** \brief Visit integer network value. */
-	virtual void VisitInteger( deNetworkValueInteger *value );
+	virtual void VisitInteger(deNetworkValueInteger *value);
 	
 	/** \brief Visit float network value. */
-	virtual void VisitFloat( deNetworkValueFloat *value );
+	virtual void VisitFloat(deNetworkValueFloat *value);
 	
 	/** \brief Visit string network value. */
-	virtual void VisitString( deNetworkValueString *value );
+	virtual void VisitString(deNetworkValueString *value);
 	
 	/** \brief Visit data network value. */
-	virtual void VisitData( deNetworkValueData *value );
+	virtual void VisitData(deNetworkValueData *value);
 	
 	/** \brief Visit point-2 network value. */
-	virtual void VisitPoint2( deNetworkValuePoint2 *value );
+	virtual void VisitPoint2(deNetworkValuePoint2 *value);
 	
 	/** \brief Visit point-3 network value. */
-	virtual void VisitPoint3( deNetworkValuePoint3 *value );
+	virtual void VisitPoint3(deNetworkValuePoint3 *value);
 	
 	/** \brief Visit vector-2 network value. */
-	virtual void VisitVector2( deNetworkValueVector2 *value );
+	virtual void VisitVector2(deNetworkValueVector2 *value);
 	
 	/** \brief Visit vector-3 network value. */
-	virtual void VisitVector3( deNetworkValueVector3 *value );
+	virtual void VisitVector3(deNetworkValueVector3 *value);
 	
 	/** \brief Visit quaternion network value. */
-	virtual void VisitQuaternion( deNetworkValueQuaternion *value );
+	virtual void VisitQuaternion(deNetworkValueQuaternion *value);
 	/*@}*/
 };
 

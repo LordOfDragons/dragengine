@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	debpComponent( dePhysicsBullet &bullet, deComponent *comp );
+	debpComponent(dePhysicsBullet &bullet, deComponent *comp);
 	
 	/** \brief Clean up peer. */
 	~debpComponent();
@@ -93,28 +93,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Bullet module. */
-	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
+	inline dePhysicsBullet &GetBullet() const{return pBullet;}
 	
 	/** \brief Component resource. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline deComponent *GetComponent() const{return pComponent;}
 	
 	/** \brief Component is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if component is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Minimum extends. */
-	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
+	inline const decVector &GetMinimumExtend() const{return pMinExtend;}
 	
 	/** \brief Maximum extends. */
-	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
+	inline const decVector &GetMaximumExtend() const{return pMaxExtend;}
 	
-	inline int GetIndex() const{ return pIndex; }
-	void SetIndex( int index );
+	inline int GetIndex() const{return pIndex;}
+	void SetIndex(int index);
 	
 	/** \brief Model or NULL. */
-	inline debpModel *GetModel() const{ return pModel; }
+	inline debpModel *GetModel() const{return pModel;}
 	
 	/** \brief Prepare mesh. */
 	void PrepareMesh();
@@ -129,24 +129,24 @@ public:
 	void PrepareWeights();
 	
 	/** \brief Weights at index. */
-	const decMatrix &GetWeights( int index ) const;
+	const decMatrix &GetWeights(int index) const;
 	
 	/** \brief Vertex at index. */
-	const decVector &GetVertex( int index ) const;
+	const decVector &GetVertex(int index) const;
 	
 	/** Retrieves the linked collider or NULL if not linked. */
-	inline debpColliderComponent *GetLinkedCollider() const{ return pLinkedCollider; }
+	inline debpColliderComponent *GetLinkedCollider() const{return pLinkedCollider;}
 	
 	/** Sets the linked collider or NULL if not linked. */
-	void SetLinkedCollider( debpColliderComponent *collider );
+	void SetLinkedCollider(debpColliderComponent *collider);
 	
 	
 	
 	/** \brief Bone. */
-	sBone &GetBoneAt( int index ) const;
+	sBone &GetBoneAt(int index) const;
 	
 	/** \brief Prepare bone. */
-	void PrepareBone( int index );
+	void PrepareBone(int index);
 	
 	/** \brief Set dirty flag of all bones. */
 	void SetAllBoneDirty();
@@ -155,7 +155,7 @@ public:
 	void ClearAllBoneDirty();
 	
 	/** \brief Model to rig mapping for bone. */
-	int GetModelRigMapping( int bone ) const;
+	int GetModelRigMapping(int bone) const;
 	/*@}*/
 	
 	
@@ -204,7 +204,7 @@ public:
 	 * \param[in] point Point on the surface to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsAt( const decVector &point, deDecalList &list );
+	virtual void FindDecalsAt(const decVector &point, deDecalList &list);
 	
 	/**
 	 * \brief Collect decals in contact with shape.
@@ -214,7 +214,7 @@ public:
 	 * \param[in] shape Shape to test.
 	 * \param[out] list List of decals to fill in. Not emptied before filling.
 	 */
-	virtual void FindDecalsTouching( decShape *shape, deDecalList &list );
+	virtual void FindDecalsTouching(decShape *shape, deDecalList &list);
 	/*@}*/
 	
 	
@@ -224,7 +224,7 @@ private:
 	void pRebuildBoneArrays();
 	void pChangeModel();
 	void pUpdateModelRigMappings();
-	void pPrepareBone( int index );
+	void pPrepareBone(int index);
 };
 
 #endif

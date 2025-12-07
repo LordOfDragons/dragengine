@@ -58,42 +58,42 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of states. */
-	inline int GetStateCount() const{ return pStateCount; }
+	inline int GetStateCount() const{return pStateCount;}
 	
 	/** Set count of states. */
-	void SetStateCount( int count );
+	void SetStateCount(int count);
 	
 	/** State at index. */
-	dearVPSState &GetStateAt( int index ) const;
+	dearVPSState &GetStateAt(int index) const;
 	
 	/** Index of named state or -1. */
-	int IndexOfStateNamed( const char *name ) const;
+	int IndexOfStateNamed(const char *name) const;
 	
 	/** Create copy of state list. */
 	dearVPSStateList *CreateCopy() const;
 	
 	/** Copy another state list to this list. */
-	void SetFrom( const dearVPSStateList &stateList );
+	void SetFrom(const dearVPSStateList &stateList);
 	
 	/** Mark dirty. */
 	void MarkDirty();
 	
 	/** Update mappings. */
-	void UpdateMappings( const deAnimator &animator, const deComponent *component );
+	void UpdateMappings(const deAnimator &animator, const deComponent *component);
 	
 	/** Apply states to engine component. */
-	void ApplyToComponent( deComponent &component ) const;
+	void ApplyToComponent(deComponent &component) const;
 	
 	/** Apply states to engine component. */
-	void ApplyToComponent( deComponent &component,
-		deAnimatorRule::eBlendModes blendMode, float blendFactor ) const;
+	void ApplyToComponent(deComponent &component,
+		deAnimatorRule::eBlendModes blendMode, float blendFactor) const;
 	
 	/** Apply states to animator module component. */
-	void ApplyToComponent( dearComponent &component ) const;
+	void ApplyToComponent(dearComponent &component) const;
 	
 	/** Apply states to animator module component. */
-	void ApplyToComponent( dearComponent &component,
-		deAnimatorRule::eBlendModes blendMode, float blendFactor ) const;
+	void ApplyToComponent(dearComponent &component,
+		deAnimatorRule::eBlendModes blendMode, float blendFactor) const;
 	/*@}*/
 };
 

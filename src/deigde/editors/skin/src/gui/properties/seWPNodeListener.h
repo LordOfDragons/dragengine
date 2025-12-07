@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	seWPNodeListener( seWPNode &panel );
+	seWPNodeListener(seWPNode &panel);
 	
 	/** Clean up listener. */
 	virtual ~seWPNodeListener();
@@ -55,33 +55,33 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Mapped have been added or removed. */
-	virtual void MappedStructureChanged( seSkin *skin );
+	virtual void MappedStructureChanged(seSkin *skin);
 	
 	/** Mapped name changed. */
-	virtual void MappedNameChanged( seSkin *skin, seMapped *mapped );
+	virtual void MappedNameChanged(seSkin *skin, seMapped *mapped);
 	
 	
 	
 	/** Active texture changed. */
-	virtual void ActiveTextureChanged( seSkin *skin );
+	virtual void ActiveTextureChanged(seSkin *skin);
 	
 	/** Property changed. */
-	virtual void PropertyChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Active property changed. */
-	virtual void ActivePropertyChanged( seSkin *skin, seTexture *texture );
+	virtual void ActivePropertyChanged(seSkin *skin, seTexture *texture);
 	
 	/** Property node changed. */
-	virtual void PropertyNodeChanged( seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node );
+	virtual void PropertyNodeChanged(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node);
 	
 	/** Property node structre changed. */
-	virtual void PropertyNodeStructureChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyNodeStructureChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Property selected nodes changed. */
-	virtual void PropertyNodeSelectionChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyNodeSelectionChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	
 	/** Active property node changed. */
-	virtual void PropertyActiveNodeChanged( seSkin *skin, seTexture *texture, seProperty *property );
+	virtual void PropertyActiveNodeChanged(seSkin *skin, seTexture *texture, seProperty *property);
 	/*@}*/
 };
 

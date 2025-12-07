@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeTabBook( igdeEnvironment &environment );
+	igdeTabBook(igdeEnvironment &environment);
 	
 	
 	
@@ -73,28 +73,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active panel index. */
-	inline int GetActivePanel() const{ return pActivePanel; }
+	inline int GetActivePanel() const{return pActivePanel;}
 	
 	/** \brief Set active panel by index. */
-	void SetActivePanel( int index );
+	void SetActivePanel(int index);
 	
 	
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child, const char *text );
+	virtual void AddChild(igdeWidget *child, const char *text);
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child, const char *text, igdeIcon *icon );
+	virtual void AddChild(igdeWidget *child, const char *text, igdeIcon *icon);
 	
 	/** \brief Add child . */
-	virtual void AddChild( igdeWidget *child, const char *text, igdeIcon *icon,
-		const char *description );
+	virtual void AddChild(igdeWidget *child, const char *text, igdeIcon *icon,
+		const char *description);
 	
 	/** \brief Add child not possible without header information. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();
@@ -121,7 +121,7 @@ public:
 		decString description;
 		igdeIcon::Ref icon;
 		
-		cHeader( const char *text, igdeIcon *icon, const char *description );
+		cHeader(const char *text, igdeIcon *icon, const char *description);
 		virtual ~cHeader();
 	};
 	

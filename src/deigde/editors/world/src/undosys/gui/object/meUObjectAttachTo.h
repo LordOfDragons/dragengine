@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectAttachTo( meWorld *world, const meObjectList &objects, meObject *attachTo );
+	meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo);
 	
 	/** \brief Clean up undo action. */
 	virtual ~meUObjectAttachTo();

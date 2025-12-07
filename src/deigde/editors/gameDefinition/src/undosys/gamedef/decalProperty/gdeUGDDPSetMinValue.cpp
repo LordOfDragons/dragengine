@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetMinValue::gdeUGDDPSetMinValue( gdeGameDefinition *gamedef, gdeProperty *property, float newValue ) :
-pGameDefinition( NULL ),
-pProperty( NULL )
+gdeUGDDPSetMinValue::gdeUGDDPSetMinValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue) :
+pGameDefinition(NULL),
+pProperty(NULL)
 {
-	if( ! gamedef || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! gamedef || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Game definition property set minimum value" );
+	SetShortInfo("Game definition property set minimum value");
 	
 	pOldValue = property->GetMinimumValue();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUGDDPSetMinValue::~gdeUGDDPSetMinValue(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pGameDefinition ){
+	if(pGameDefinition){
 		pGameDefinition->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUGDDPSetMinValue::~gdeUGDDPSetMinValue(){
 ///////////////
 
 void gdeUGDDPSetMinValue::Undo(){
-	pProperty->SetMinimumValue( pOldValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetMinimumValue(pOldValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }
 
 void gdeUGDDPSetMinValue::Redo(){
-	pProperty->SetMinimumValue( pNewValue );
-	pGameDefinition->NotifyDecalPropertyChanged( pProperty );
+	pProperty->SetMinimumValue(pNewValue);
+	pGameDefinition->NotifyDecalPropertyChanged(pProperty);
 }

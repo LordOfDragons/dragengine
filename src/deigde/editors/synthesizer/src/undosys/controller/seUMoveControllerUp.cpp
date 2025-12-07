@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMoveControllerUp::seUMoveControllerUp( seSynthesizer *synthesizer, seController *controller ) :
-pSynthesizer( NULL ),
-pController( NULL )
+seUMoveControllerUp::seUMoveControllerUp(seSynthesizer *synthesizer, seController *controller) :
+pSynthesizer(NULL),
+pController(NULL)
 {
-	if( ! synthesizer || ! controller ){
-		DETHROW( deeInvalidParam );
+	if(! synthesizer || ! controller){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndex = synthesizer->GetControllers().IndexOf( controller );
-	if( pIndex < 1 ){
-		DETHROW( deeInvalidParam );
+	pIndex = synthesizer->GetControllers().IndexOf(controller);
+	if(pIndex < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSynthesizer = synthesizer;
@@ -70,11 +70,11 @@ seUMoveControllerUp::~seUMoveControllerUp(){
 ///////////////
 
 void seUMoveControllerUp::Undo(){
-	pSynthesizer->MoveControllerTo( pController, pIndex );
+	pSynthesizer->MoveControllerTo(pController, pIndex);
 }
 
 void seUMoveControllerUp::Redo(){
-	pSynthesizer->MoveControllerTo( pController, pIndex - 1 );
+	pSynthesizer->MoveControllerTo(pController, pIndex - 1);
 }
 
 
@@ -83,10 +83,10 @@ void seUMoveControllerUp::Redo(){
 //////////////////////
 
 void seUMoveControllerUp::pCleanUp(){
-	if( pController ){
+	if(pController){
 		pController->FreeReference();
 	}
-	if( pSynthesizer ){
+	if(pSynthesizer){
 		pSynthesizer->FreeReference();
 	}
 }

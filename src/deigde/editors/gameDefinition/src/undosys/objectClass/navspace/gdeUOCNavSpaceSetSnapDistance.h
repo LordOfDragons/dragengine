@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetSnapDistance( gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, float newValue );
+	gdeUOCNavSpaceSetSnapDistance(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

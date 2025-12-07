@@ -46,7 +46,7 @@ deoccmWeightSet::deoccmWeightSet(){
 }
 
 deoccmWeightSet::~deoccmWeightSet(){
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 	}
 }
@@ -56,43 +56,43 @@ deoccmWeightSet::~deoccmWeightSet(){
 // Management
 ///////////////
 
-int deoccmWeightSet::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+int deoccmWeightSet::GetBoneAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pWeights[ index ].bone;
+	return pWeights[index].bone;
 }
 
-float deoccmWeightSet::GetWeightAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+float deoccmWeightSet::GetWeightAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pWeights[ index ].weight;
+	return pWeights[index].weight;
 }
 
-float deoccmWeightSet::GetWeightFor( int bone ) const{
+float deoccmWeightSet::GetWeightFor(int bone) const{
 	int i;
 	
-	for( i=0; i<pCount; i++ ){
-		if( pWeights[ i ].bone == bone ){
-			return pWeights[ i ].weight;
+	for(i=0; i<pCount; i++){
+		if(pWeights[i].bone == bone){
+			return pWeights[i].weight;
 		}
 	}
 	
 	return 0;
 }
 
-void deoccmWeightSet::Set( int bone, float weight ){
+void deoccmWeightSet::Set(int bone, float weight){
 	sWeight *newArray;
 	int i, j;
 	
-	if( weight == 0 ){
-		for( i=0; i<pCount; i++ ){
-			if( pWeights[ i ].bone == bone ){
-				for( j=i+1; j<pCount; j++ ){
-					pWeights[ j - 1 ] = pWeights[ j ];
+	if(weight == 0){
+		for(i=0; i<pCount; i++){
+			if(pWeights[i].bone == bone){
+				for(j=i+1; j<pCount; j++){
+					pWeights[j - 1] = pWeights[j];
 				}
 				pCount--;
 				return;
@@ -100,34 +100,34 @@ void deoccmWeightSet::Set( int bone, float weight ){
 		}
 		
 	}else{
-		for( i=0; i<pCount; i++ ){
-			if( pWeights[ i ].bone == bone ){
-				pWeights[ i ].weight = weight;
+		for(i=0; i<pCount; i++){
+			if(pWeights[i].bone == bone){
+				pWeights[i].weight = weight;
 				return;
 			}
 		}
 		
-		newArray = new sWeight[ pCount + 1 ];
-		if( pWeights ){
-			for( i=0; i<pCount; i++ ){
-				newArray[ i ] = pWeights[ i ];
+		newArray = new sWeight[pCount + 1];
+		if(pWeights){
+			for(i=0; i<pCount; i++){
+				newArray[i] = pWeights[i];
 			}
 			delete [] pWeights;
 		}
 		
 		pWeights = newArray;
-		pWeights[ pCount ].bone = bone;
-		pWeights[ pCount ].weight = weight;
+		pWeights[pCount].bone = bone;
+		pWeights[pCount].weight = weight;
 		pCount++;
 	}
 }
 
-void deoccmWeightSet::SetGroupedIndex( int index ){
+void deoccmWeightSet::SetGroupedIndex(int index){
 	pGroupedIndex = index;
 }
 
 void deoccmWeightSet::RemoveAll(){
-	if( pWeights ){
+	if(pWeights){
 		delete [] pWeights;
 		pWeights = NULL;
 		pCount = 0;
@@ -135,33 +135,33 @@ void deoccmWeightSet::RemoveAll(){
 }
 
 void deoccmWeightSet::Normalize(){
-	if( pCount > 0 ){
+	if(pCount > 0){
 		float sum = 0, factor;
 		int i;
 		
-		for( i=0; i<pCount; i++ ){
-			sum += pWeights[ i ].weight;
+		for(i=0; i<pCount; i++){
+			sum += pWeights[i].weight;
 		}
 		
-		if( sum > 1e-5f ){
+		if(sum > 1e-5f){
 			factor = 1.0f / sum;
 			
-			for( i=0; i<pCount; i++){
-				pWeights[ i ].weight *= factor;
+			for(i=0; i<pCount; i++){
+				pWeights[i].weight *= factor;
 			}
 		}
 	}
 }
 
-bool deoccmWeightSet::Equals( const deoccmWeightSet &weight ) const{
+bool deoccmWeightSet::Equals(const deoccmWeightSet &weight) const{
 	int i;
 	
-	if( pCount != weight.pCount ){
+	if(pCount != weight.pCount){
 		return false;
 	}
 	
-	for( i=0; i<pCount; i++ ){
-		if( fabs( pWeights[ i ].weight - weight.GetWeightFor( pWeights[ i ].bone ) ) > 0.001f ){
+	for(i=0; i<pCount; i++){
+		if(fabs(pWeights[i].weight - weight.GetWeightFor(pWeights[i].bone)) > 0.001f){
 			return false;
 		}
 	}

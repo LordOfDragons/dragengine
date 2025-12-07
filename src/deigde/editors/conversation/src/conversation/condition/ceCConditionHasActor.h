@@ -46,7 +46,7 @@ public:
 	/** Creates a new conversation condition. */
 	ceCConditionHasActor();
 	/** Creates a new conversation condition. */
-	ceCConditionHasActor( const ceCConditionHasActor &condition );
+	ceCConditionHasActor(const ceCConditionHasActor &condition);
 	/** Cleans up the conversation condition. */
 	virtual ~ceCConditionHasActor();
 	/*@}*/
@@ -54,13 +54,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the actor id. */
-	inline const decString &GetActor() const{ return pActor; }
+	inline const decString &GetActor() const{return pActor;}
 	/** Sets the actor id. */
-	void SetActor( const char *id );
+	void SetActor(const char *id);
 	/** Determines if the test is for non-existence instead of existence. */
-	inline bool GetNegate() const{ return pNegate; }
+	inline bool GetNegate() const{return pNegate;}
 	/** Sets if the test is for non-existence instead of existence. */
-	void SetNegate( bool negate );
+	void SetNegate(bool negate);
 	
 	/** Create a copy of this condition. */
     virtual ceConversationCondition *CreateCopy() const;

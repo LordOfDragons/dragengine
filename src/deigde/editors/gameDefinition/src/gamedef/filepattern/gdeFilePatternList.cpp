@@ -42,8 +42,8 @@
 gdeFilePatternList::gdeFilePatternList(){
 }
 
-gdeFilePatternList::gdeFilePatternList( const gdeFilePatternList &list ) :
-pPatterns( list.pPatterns ){
+gdeFilePatternList::gdeFilePatternList(const gdeFilePatternList &list) :
+pPatterns(list.pPatterns){
 }
 
 gdeFilePatternList::~gdeFilePatternList(){
@@ -58,28 +58,28 @@ int gdeFilePatternList::GetCount() const{
 	return pPatterns.GetCount();
 }
 
-gdeFilePattern *gdeFilePatternList::GetAt( int index ) const{
-	return ( gdeFilePattern* )pPatterns.GetAt( index );
+gdeFilePattern *gdeFilePatternList::GetAt(int index) const{
+	return (gdeFilePattern*)pPatterns.GetAt(index);
 }
 
-int gdeFilePatternList::IndexOf( gdeFilePattern *pattern ) const{
-	return pPatterns.IndexOf( pattern );
+int gdeFilePatternList::IndexOf(gdeFilePattern *pattern) const{
+	return pPatterns.IndexOf(pattern);
 }
 
-bool gdeFilePatternList::Has( gdeFilePattern *pattern ) const{
-	return pPatterns.Has( pattern );
+bool gdeFilePatternList::Has(gdeFilePattern *pattern) const{
+	return pPatterns.Has(pattern);
 }
 
-void gdeFilePatternList::Add( gdeFilePattern *pattern ){
-	if( ! pattern || Has( pattern ) ){
-		DETHROW( deeInvalidParam );
+void gdeFilePatternList::Add(gdeFilePattern *pattern){
+	if(! pattern || Has(pattern)){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPatterns.Add( pattern );
+	pPatterns.Add(pattern);
 }
 
-void gdeFilePatternList::Remove( gdeFilePattern *pattern ){
-	pPatterns.Remove( pattern );
+void gdeFilePatternList::Remove(gdeFilePattern *pattern){
+	pPatterns.Remove(pattern);
 }
 
 void gdeFilePatternList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeFilePatternList::RemoveAll(){
 
 
 
-gdeFilePatternList &gdeFilePatternList::operator=( const gdeFilePatternList &list ){
+gdeFilePatternList &gdeFilePatternList::operator=(const gdeFilePatternList &list){
 	pPatterns = list.pPatterns;
 	return *this;
 }

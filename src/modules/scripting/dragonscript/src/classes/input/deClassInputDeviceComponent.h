@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassInputDeviceComponent( deScriptingDragonScript &ds );
+	deClassInputDeviceComponent(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
 	virtual ~deClassInputDeviceComponent();
@@ -58,15 +58,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push component. */
-	void PushComponent( dsRunTime *rt, dedsInputDevice *device, int index );
+	void PushComponent(dsRunTime *rt, dedsInputDevice *device, int index);
 	
-	inline dsClass *GetClassInputDeviceComponentType() const{ return pClsInputDeviceComponentType; }
+	inline dsClass *GetClassInputDeviceComponentType() const{return pClsInputDeviceComponentType;}
 	/*@}*/
 	
 	
@@ -86,27 +86,27 @@ private:
 		dsClass *clsImage;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetInputDevice );
-	DEF_NATFUNC( nfGetComponentIndex );
+	DEF_NATFUNC(nfGetInputDevice);
+	DEF_NATFUNC(nfGetComponentIndex);
 	
-	DEF_NATFUNC( nfGetID );
-	DEF_NATFUNC( nfGetName);
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfGetDisplayImage );
-	DEF_NATFUNC( nfGetDisplayIconCount );
-	DEF_NATFUNC( nfGetDisplayIconAt );
-	DEF_NATFUNC( nfGetLargestDisplayIconX );
-	DEF_NATFUNC( nfGetLargestDisplayIconY );
-	DEF_NATFUNC( nfGetDisplayText );
+	DEF_NATFUNC(nfGetID);
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfGetDisplayImage);
+	DEF_NATFUNC(nfGetDisplayIconCount);
+	DEF_NATFUNC(nfGetDisplayIconAt);
+	DEF_NATFUNC(nfGetLargestDisplayIconX);
+	DEF_NATFUNC(nfGetLargestDisplayIconY);
+	DEF_NATFUNC(nfGetDisplayText);
 	
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

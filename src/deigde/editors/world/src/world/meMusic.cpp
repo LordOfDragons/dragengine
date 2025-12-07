@@ -47,11 +47,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meMusic::meMusic( meWorld &world ) :
-pWorld( world ),
-pSpeaker( world.GetEngine()->GetSpeakerManager()->CreateSpeaker() )
+meMusic::meMusic(meWorld &world) :
+pWorld(world),
+pSpeaker(world.GetEngine()->GetSpeakerManager()->CreateSpeaker())
 {
-	world.GetMicrophone()->AddSpeaker( pSpeaker );
+	world.GetMicrophone()->AddSpeaker(pSpeaker);
 }
 
 meMusic::~meMusic(){
@@ -63,21 +63,21 @@ meMusic::~meMusic(){
 // Management
 ///////////////
 
-void meMusic::SetPath( const char *path ){
-	if( pPath == path ){
+void meMusic::SetPath(const char *path){
+	if(pPath == path){
 		return;
 	}
 	
-	pSpeaker->SetSound( nullptr );
+	pSpeaker->SetSound(nullptr);
 	
 	pPath = path;
 	
-	if( ! pPath.IsEmpty() ){
+	if(! pPath.IsEmpty()){
 		try{
-			pSpeaker->SetSound( pWorld.GetEngine()->GetSoundManager()->LoadSound( path, "/", false ) );
+			pSpeaker->SetSound(pWorld.GetEngine()->GetSoundManager()->LoadSound(path, "/", false));
 			
-		}catch( const deException &e ){
-			pWorld.GetEnvironment()->GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			pWorld.GetEnvironment()->GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
 	
@@ -88,12 +88,12 @@ float meMusic::GetVolume() const{
 	return pSpeaker->GetVolume();
 }
 
-void meMusic::SetVolume( float volume ){
-	if( fabsf( volume - pSpeaker->GetVolume() ) < 0.001f ){
+void meMusic::SetVolume(float volume){
+	if(fabsf(volume - pSpeaker->GetVolume()) < 0.001f){
 		return;
 	}
 	
-	pSpeaker->SetVolume( volume );
+	pSpeaker->SetVolume(volume);
 	pWorld.NotifyMusicChanged();
 }
 
@@ -114,7 +114,7 @@ void meMusic::Stop(){
 //////////////////////
 
 void meMusic::pCleanUp(){
-	if( pSpeaker ){
-		pWorld.GetMicrophone()->RemoveSpeaker( pSpeaker );
+	if(pSpeaker){
+		pWorld.GetMicrophone()->RemoveSpeaker(pSpeaker);
 	}
 }

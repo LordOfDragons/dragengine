@@ -39,10 +39,10 @@
 /////////////////////////////////
 
 dealConfigWindow::dealConfigWindow() :
-pX( 0 ),
-pY( 0 ),
-pWidth( 500 ),
-pHeight( 400 ){
+pX(0),
+pY(0),
+pWidth(500),
+pHeight(400){
 }
 
 dealConfigWindow::~dealConfigWindow(){
@@ -53,18 +53,18 @@ dealConfigWindow::~dealConfigWindow(){
 // Management
 ///////////////
 
-void dealConfigWindow::SetX( int x ){
+void dealConfigWindow::SetX(int x){
 	pX = x;
 }
 
-void dealConfigWindow::SetY( int y ){
+void dealConfigWindow::SetY(int y){
 	pY = y;
 }
 
-void dealConfigWindow::SetWidth( int width ){
+void dealConfigWindow::SetWidth(int width){
 	pWidth = width;
 }
 
-void dealConfigWindow::SetHeight( int height ){
+void dealConfigWindow::SetHeight(int height){
 	pHeight = height;
 }

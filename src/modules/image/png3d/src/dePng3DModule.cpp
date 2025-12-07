@@ -45,7 +45,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *PNG3DCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *PNG3DCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
@@ -55,13 +55,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *PNG3DCreateModule( deLoadableModule *loadable
 // Entry Point
 ////////////////
 
-deBaseModule *PNG3DCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *PNG3DCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new dePng3DModule( *loadableModule );
+		module = new dePng3DModule(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		return NULL;
 	}
 	
@@ -76,8 +76,8 @@ deBaseModule *PNG3DCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-dePng3DModule::dePng3DModule( deLoadableModule &loadableModule ) :
-deBaseImageModule( loadableModule ){
+dePng3DModule::dePng3DModule(deLoadableModule &loadableModule) :
+deBaseImageModule(loadableModule){
 }
 
 dePng3DModule::~dePng3DModule(){
@@ -88,36 +88,36 @@ dePng3DModule::~dePng3DModule(){
 // Loading, Saving
 ////////////////////
 
-deBaseImageInfo *dePng3DModule::InitLoadImage( decBaseFileReader &file ){
+deBaseImageInfo *dePng3DModule::InitLoadImage(decBaseFileReader &file){
 	dePng3DImageInfo *infos = NULL;
-	dePng3DTarball tarball( this );
+	dePng3DTarball tarball(this);
 	
 	try{
-		infos = new dePng3DImageInfo( file.GetFilename() );
-		if( ! infos ) DETHROW( deeOutOfMemory );
+		infos = new dePng3DImageInfo(file.GetFilename());
+		if(! infos) DETHROW(deeOutOfMemory);
 		
-		tarball.Get3DImageInfos( *infos, file );
+		tarball.Get3DImageInfos(*infos, file);
 		
-	}catch( const deException & ){
-		if( infos ) delete infos;
+	}catch(const deException &){
+		if(infos) delete infos;
 		throw;
 	}
 	
 	return infos;
 }
 
-void dePng3DModule::LoadImage( decBaseFileReader &file, deImage &image, deBaseImageInfo &infos ){
-	dePng3DTarball tarball( this );
+void dePng3DModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
+	dePng3DTarball tarball(this);
 	
-	file.SetPosition( 0 );
+	file.SetPosition(0);
 	
-	tarball.Load3DImage( ( dePng3DImageInfo& )infos, file, image );
+	tarball.Load3DImage((dePng3DImageInfo&)infos, file, image);
 }
 
-void dePng3DModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
-	dePng3DTarball tarball( this );
+void dePng3DModule::SaveImage(decBaseFileWriter &file, const deImage &image){
+	dePng3DTarball tarball(this);
 	
-	tarball.Save3DImage( file, image );
+	tarball.Save3DImage(file, image);
 }
 
 #ifdef WITH_INTERNAL_MODULE

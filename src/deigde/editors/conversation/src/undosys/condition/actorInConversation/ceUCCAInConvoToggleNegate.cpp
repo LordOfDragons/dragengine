@@ -42,17 +42,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAInConvoToggleNegate::ceUCCAInConvoToggleNegate( ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorInConversation *condition ) :
-pTopic( NULL ),
-pAction( NULL ),
-pCondition( NULL )
+ceUCCAInConvoToggleNegate::ceUCCAInConvoToggleNegate(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorInConversation *condition) :
+pTopic(NULL),
+pAction(NULL),
+pCondition(NULL)
 {
-	if( ! topic || ! action || ! condition ){
-		DETHROW( deeInvalidParam );
+	if(! topic || ! action || ! condition){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Actor in conversation negate" );
+	SetShortInfo("Actor in conversation negate");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -65,13 +65,13 @@ pCondition( NULL )
 }
 
 ceUCCAInConvoToggleNegate::~ceUCCAInConvoToggleNegate(){
-	if( pCondition ){
+	if(pCondition){
 		pCondition->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -82,11 +82,11 @@ ceUCCAInConvoToggleNegate::~ceUCCAInConvoToggleNegate(){
 ///////////////
 
 void ceUCCAInConvoToggleNegate::Undo(){
-	pCondition->SetNegate( ! pCondition->GetNegate() );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetNegate(! pCondition->GetNegate());
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }
 
 void ceUCCAInConvoToggleNegate::Redo(){
-	pCondition->SetNegate( ! pCondition->GetNegate() );
-	pTopic->NotifyConditionChanged( pAction, pCondition );
+	pCondition->SetNegate(! pCondition->GetNegate());
+	pTopic->NotifyConditionChanged(pAction, pCondition);
 }

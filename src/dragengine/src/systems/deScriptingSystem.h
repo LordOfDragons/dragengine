@@ -78,7 +78,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new scripting system linked to the given engine. */
-	deScriptingSystem( deEngine *engine );
+	deScriptingSystem(deEngine *engine);
 	
 	/** \brief Clean up scripting system. */
 	~deScriptingSystem();
@@ -89,38 +89,38 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active module. */
-	inline deBaseScriptingModule *GetActiveModule() const{ return pActiveModule; }
+	inline deBaseScriptingModule *GetActiveModule() const{return pActiveModule;}
 	
 	/** \brief Directory relative to the game directory where the scripts are located. */
-	inline const decString &GetScriptDirectory() const{ return pScriptDirectory; }
+	inline const decString &GetScriptDirectory() const{return pScriptDirectory;}
 	
 	/** \brief Set directory relative to the game directory where the scripts are located. */
-	void SetScriptDirectory( const char *scriptDirectory );
+	void SetScriptDirectory(const char *scriptDirectory);
 	
 	/**
 	 * \brief Script version for compatibility.
 	 * \version 1.9
 	 */
-	inline const decString &GetScriptVersion() const{ return pScriptVersion; }
+	inline const decString &GetScriptVersion() const{return pScriptVersion;}
 	
 	/**
 	 * \brief Set script version for compatibility.
 	 * \version 1.9
 	 */
-	void SetScriptVersion( const char *scriptVersion );
+	void SetScriptVersion(const char *scriptVersion);
 	
 	/** \brief Initial game object to create. */
-	inline const decString &GetGameObject() const{ return pGameObject; }
+	inline const decString &GetGameObject() const{return pGameObject;}
 	
 	/** \brief Set initial game object to create. */
-	void SetGameObject( const char *gameObject );
+	void SetGameObject(const char *gameObject);
 	
 	/**
 	 * \brief Add virtual file system container for module shared data.
 	 * 
 	 * No container is added if no module is active or the active module has no shared data.
 	 */
-	void AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const;
+	void AddVFSSharedDataDir(deVirtualFileSystem &vfs) const;
 	
 	/**
 	 * \brief Add stage specific VFS containers.
@@ -145,7 +145,7 @@ public:
 	 * - emtScript
 	 * - emtService
 	 */
-	void AddVFSContainers( deVirtualFileSystem &vfs, const char *stage );
+	void AddVFSContainers(deVirtualFileSystem &vfs, const char *stage);
 	
 	/**
 	 * \brief Scripts are executed in edit mode.
@@ -153,7 +153,7 @@ public:
 	 * In this mode the scripts are reduced to what is required by an editing application.
 	 * The edit mode can only be changed while the system is not running.
 	 */
-	inline bool GetEditMode() const{ return pEditMode; }
+	inline bool GetEditMode() const{return pEditMode;}
 	
 	/**
 	 * \brief Set if scripts are executed in edit mode.
@@ -161,7 +161,7 @@ public:
 	 * In this mode the scripts are reduced to what is required by an editing application.
 	 * The edit mode can only be changed while the system is not running.
 	 */
-	void SetEditMode( bool editMode );
+	void SetEditMode(bool editMode);
 	
 	/** \brief Inits the game if not running. */
 	void InitGame();
@@ -185,37 +185,37 @@ public:
 	void OnAppActivate();
 	
 	/** \brief Event has to be processed. */
-	void SendEvent( deInputEvent *event );
+	void SendEvent(deInputEvent *event);
 	
 	/** \brief Create peer object for the given collider using the active module and assigns it. */
-	void LoadCollider( deCollider *collider );
+	void LoadCollider(deCollider *collider);
 	
 	/** \brief Create peer object for the given server using the active module and assigns it. */
-	void LoadServer( deServer *server );
+	void LoadServer(deServer *server);
 	
 	/** \brief Create peer object for the given connection using the active module and assigns it. */
-	void LoadConnection( deConnection *connection );
+	void LoadConnection(deConnection *connection);
 	
 	/** \brief Create peer object for the given network state using the active module and assigns it. */
-	void LoadNetworkState( deNetworkState *state );
+	void LoadNetworkState(deNetworkState *state);
 	
 	/** \brief Create peer object for the given touch sensor using the active module and assigns it. */
-	void LoadTouchSensor( deTouchSensor *touchSensor );
+	void LoadTouchSensor(deTouchSensor *touchSensor);
 	
 	/** \brief Create peer object for the given prop field using the active module and assigns it. */
-	void LoadPropField( dePropField *propField );
+	void LoadPropField(dePropField *propField);
 	
 	/** \brief Create peer object for the given particle emitter instance using the active module and assigns it. */
-	void LoadParticleEmitterInstance( deParticleEmitterInstance *instance );
+	void LoadParticleEmitterInstance(deParticleEmitterInstance *instance);
 	
 	/** \brief Create deSoundLevelMeter peer using active module and assigns it. */
-	void LoadSoundLevelMeter( deSoundLevelMeter *meter );
+	void LoadSoundLevelMeter(deSoundLevelMeter *meter);
 	
 	/** \brief Create deSpeaker peer using active module and assigns it. */
-	void LoadSpeaker( deSpeaker *speaker );
+	void LoadSpeaker(deSpeaker *speaker);
 	
 	/** \brief Create deService peer using active module and assigns it. */
-	void CreateService( deService *service );
+	void CreateService(deService *service);
 	/*@}*/
 	
 	
@@ -227,7 +227,7 @@ public:
 	 * 
 	 * Do not forget to call the super function.
 	 */
-	virtual void SetActiveModule( deLoadableModule *module );
+	virtual void SetActiveModule(deLoadableModule *module);
 	
 	/**
 	 * \brief Clearcross references and links that could lead to memory leaks.

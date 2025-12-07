@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassCanvasCanvasView( deScriptingDragonScript &ds );
+	deClassCanvasCanvasView(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassCanvasCanvasView();
@@ -56,23 +56,23 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve canvas canvas view from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deCanvasCanvasView *GetCanvas( dsRealObject *myself ) const;
+	deCanvasCanvasView *GetCanvas(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push canvas canvas view onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas( dsRunTime *rt, deCanvasCanvasView *canvas );
+	void PushCanvas(dsRunTime *rt, deCanvasCanvasView *canvas);
 	/*@}*/
 	
 private:
@@ -81,23 +81,23 @@ private:
 		dsClass *clsCView;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetCanvasView );
-	DEF_NATFUNC( nfSetCanvasView );
-	DEF_NATFUNC( nfGetRepeatX );
-	DEF_NATFUNC( nfSetRepeatX );
-	DEF_NATFUNC( nfGetRepeatY );
-	DEF_NATFUNC( nfSetRepeatY );
+	DEF_NATFUNC(nfGetCanvasView);
+	DEF_NATFUNC(nfSetCanvasView);
+	DEF_NATFUNC(nfGetRepeatX);
+	DEF_NATFUNC(nfSetRepeatX);
+	DEF_NATFUNC(nfGetRepeatY);
+	DEF_NATFUNC(nfSetRepeatY);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

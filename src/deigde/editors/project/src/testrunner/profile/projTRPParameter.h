@@ -62,22 +62,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
-	inline const decString &GetModule() const{ return pModule; }
+	inline const decString &GetModule() const{return pModule;}
 	
 	/** \brief Set module name. */
-	void SetModule( const char *name );
+	void SetModule(const char *name);
 	
 	/** \brief Parameter name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set parameter name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Parameter value. */
-	inline const decString &GetValue() const{ return pValue; }
+	inline const decString &GetValue() const{return pValue;}
 	
 	/** \brief Set parameter value. */
-	void SetValue( const char *value );
+	void SetValue(const char *value);
 	/*@}*/
 };
 

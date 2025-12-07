@@ -41,26 +41,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUConstraintDofSetKinematicFriction::reUConstraintDofSetKinematicFriction( reRigConstraint *constraint,
-deColliderConstraint::eDegreesOfFreedom dof, float newValue ){
-	if( ! constraint || ! constraint->GetRig()
-	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
+reUConstraintDofSetKinematicFriction::reUConstraintDofSetKinematicFriction(reRigConstraint *constraint,
+deColliderConstraint::eDegreesOfFreedom dof, float newValue){
+	if(! constraint || ! constraint->GetRig()
+	|| dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pConstraint = constraint;
 	pDof = dof;
 	
-	pOldValue = constraint->GetDof( dof ).GetKinematicFriction();
+	pOldValue = constraint->GetDof(dof).GetKinematicFriction();
 	pNewValue = newValue;
 	
-	SetShortInfo( "Constraint DOF set kinematic friction" );
+	SetShortInfo("Constraint DOF set kinematic friction");
 	
 	pConstraint->AddReference();
 }
 
 reUConstraintDofSetKinematicFriction::~reUConstraintDofSetKinematicFriction(){
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 	}
 }
@@ -71,9 +71,9 @@ reUConstraintDofSetKinematicFriction::~reUConstraintDofSetKinematicFriction(){
 ///////////////
 
 void reUConstraintDofSetKinematicFriction::Undo(){
-	pConstraint->GetDof( pDof ).SetKinematicFriction( pOldValue );
+	pConstraint->GetDof(pDof).SetKinematicFriction(pOldValue);
 }
 
 void reUConstraintDofSetKinematicFriction::Redo(){
-	pConstraint->GetDof( pDof ).SetKinematicFriction( pNewValue );
+	pConstraint->GetDof(pDof).SetKinematicFriction(pNewValue);
 }

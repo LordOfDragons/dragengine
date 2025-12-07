@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeMultiMath( meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule );
+	meWVNodeMultiMath(meWindowVegetation &windowVegetation, meHTVRuleMultiMath *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleMultiMath *GetRuleMultiMath() const{ return pRuleMultiMath; }
+	inline meHTVRuleMultiMath *GetRuleMultiMath() const{return pRuleMultiMath;}
 	
 	/** \brief Update node. */
 	virtual void Update();

@@ -45,19 +45,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglEffectOverlayImage::deoglEffectOverlayImage( deGraphicOpenGl &ogl,
-const deEffectOverlayImage &effect ) :
-deoglEffect( ogl, effect ),
+deoglEffectOverlayImage::deoglEffectOverlayImage(deGraphicOpenGl &ogl,
+const deEffectOverlayImage &effect) :
+deoglEffect(ogl, effect),
 
-pEffectOverlayImage( effect ),
+pEffectOverlayImage(effect),
 
-pREffectOverlayImage( NULL ),
+pREffectOverlayImage(NULL),
 
-pDirtyTransparency( true ),
-pDirtyImage( true )
+pDirtyTransparency(true),
+pDirtyImage(true)
 {
-	pREffectOverlayImage = new deoglREffectOverlayImage( ogl.GetRenderThread() );
-	InitREffect( pREffectOverlayImage );
+	pREffectOverlayImage = new deoglREffectOverlayImage(ogl.GetRenderThread());
+	InitREffect(pREffectOverlayImage);
 }
 
 deoglEffectOverlayImage::~deoglEffectOverlayImage(){
@@ -71,21 +71,21 @@ deoglEffectOverlayImage::~deoglEffectOverlayImage(){
 void deoglEffectOverlayImage::SyncToRender(){
 	deoglEffect::SyncToRender();
 	
-	if( pDirtyImage ){
-		if( pEffectOverlayImage.GetImage() ){
-			deoglImage * const oglImage = ( deoglImage* )pEffectOverlayImage.GetImage()->GetPeerGraphic();
+	if(pDirtyImage){
+		if(pEffectOverlayImage.GetImage()){
+			deoglImage * const oglImage = (deoglImage*)pEffectOverlayImage.GetImage()->GetPeerGraphic();
 			oglImage->SyncToRender();
-			pREffectOverlayImage->SetImage( oglImage->GetRImage() );
+			pREffectOverlayImage->SetImage(oglImage->GetRImage());
 			
 		}else{
-			pREffectOverlayImage->SetImage( NULL );
+			pREffectOverlayImage->SetImage(NULL);
 		}
 		
 		pDirtyImage = false;
 	}
 	
-	if( pDirtyTransparency ){
-		pREffectOverlayImage->SetTransparency( pEffectOverlayImage.GetTransparency() );
+	if(pDirtyTransparency){
+		pREffectOverlayImage->SetTransparency(pEffectOverlayImage.GetTransparency());
 		pDirtyTransparency = false;
 	}
 }

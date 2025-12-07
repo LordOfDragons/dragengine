@@ -38,10 +38,10 @@
 /////////////////////////////////
 
 deglConfigWindow::deglConfigWindow() :
-pX( 10 ),
-pY( 50 ),
-pWidth( 800 ),
-pHeight( 400 ){
+pX(10),
+pY(50),
+pWidth(800),
+pHeight(400){
 }
 
 deglConfigWindow::~deglConfigWindow(){
@@ -52,18 +52,18 @@ deglConfigWindow::~deglConfigWindow(){
 // Management
 ///////////////
 
-void deglConfigWindow::SetX( int x ){
+void deglConfigWindow::SetX(int x){
 	pX = x;
 }
 
-void deglConfigWindow::SetY( int y ){
+void deglConfigWindow::SetY(int y){
 	pY = y;
 }
 
-void deglConfigWindow::SetWidth( int width ){
+void deglConfigWindow::SetWidth(int width){
 	pWidth = width;
 }
 
-void deglConfigWindow::SetHeight( int height ){
+void deglConfigWindow::SetHeight(int height){
 	pHeight = height;
 }

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassHeightTerrain( deScriptingDragonScript &ds );
+	deClassHeightTerrain(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassHeightTerrain();
@@ -61,18 +61,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Height terrain from object or NULL. */
-	deHeightTerrain *GetHeightTerrain( dsRealObject *myself ) const;
+	deHeightTerrain *GetHeightTerrain(dsRealObject *myself) const;
 	
 	/** \brief Push height terrain or NULL. */
-	void PushHeightTerrain( dsRunTime *rt, deHeightTerrain *hterrain );
+	void PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hterrain);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
-	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
+	inline dsClass *GetClassNavigationSpaceType() const{return pClsNavigationSpaceType;}
 	/*@}*/
 	
 private:
@@ -96,95 +96,95 @@ private:
 		dsClass *clsNavigationSpaceType;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetSectorSize );
-	DEF_NATFUNC( nfGetSectorResolution );
+	DEF_NATFUNC(nfGetSectorSize);
+	DEF_NATFUNC(nfGetSectorResolution);
 	
-	DEF_NATFUNC( nfGetBaseHeight );
-	DEF_NATFUNC( nfSetBaseHeight );
-	DEF_NATFUNC( nfGetHeightScaling );
-	DEF_NATFUNC( nfSetHeightScaling );
-	DEF_NATFUNC( nfGetCollisionFilter );
-	DEF_NATFUNC( nfSetCollisionFilter );
+	DEF_NATFUNC(nfGetBaseHeight);
+	DEF_NATFUNC(nfSetBaseHeight);
+	DEF_NATFUNC(nfGetHeightScaling);
+	DEF_NATFUNC(nfSetHeightScaling);
+	DEF_NATFUNC(nfGetCollisionFilter);
+	DEF_NATFUNC(nfSetCollisionFilter);
 	
 	// sectors
-	DEF_NATFUNC( nfGetSectorCount );
-	DEF_NATFUNC( nfHasSector );
-	DEF_NATFUNC( nfIndexOfSector );
-	DEF_NATFUNC( nfAddSector );
-	DEF_NATFUNC( nfRemoveSector );
-	DEF_NATFUNC( nfRemoveAllSectors );
+	DEF_NATFUNC(nfGetSectorCount);
+	DEF_NATFUNC(nfHasSector);
+	DEF_NATFUNC(nfIndexOfSector);
+	DEF_NATFUNC(nfAddSector);
+	DEF_NATFUNC(nfRemoveSector);
+	DEF_NATFUNC(nfRemoveAllSectors);
 	
-	DEF_NATFUNC( nfGetHeightImage );
-	DEF_NATFUNC( nfSetHeightImage );
+	DEF_NATFUNC(nfGetHeightImage);
+	DEF_NATFUNC(nfSetHeightImage);
 	
-	DEF_NATFUNC( nfSetVisibilityFromImage );
+	DEF_NATFUNC(nfSetVisibilityFromImage);
 	
 	// textures
-	DEF_NATFUNC( nfGetTextureCount );
-	DEF_NATFUNC( nfAddTexture );
-	DEF_NATFUNC( nfTextureGetSkin );
-	DEF_NATFUNC( nfTextureSetSkin );
-	DEF_NATFUNC( nfTextureGetUVOffset );
-	DEF_NATFUNC( nfTextureSetUVOffset );
-	DEF_NATFUNC( nfTextureGetUVScaling );
-	DEF_NATFUNC( nfTextureSetUVScaling );
-	DEF_NATFUNC( nfTextureGetUVRotation );
-	DEF_NATFUNC( nfTextureSetUVRotation );
-	DEF_NATFUNC( nfTextureGetMask );
-	DEF_NATFUNC( nfTextureSetMask );
+	DEF_NATFUNC(nfGetTextureCount);
+	DEF_NATFUNC(nfAddTexture);
+	DEF_NATFUNC(nfTextureGetSkin);
+	DEF_NATFUNC(nfTextureSetSkin);
+	DEF_NATFUNC(nfTextureGetUVOffset);
+	DEF_NATFUNC(nfTextureSetUVOffset);
+	DEF_NATFUNC(nfTextureGetUVScaling);
+	DEF_NATFUNC(nfTextureSetUVScaling);
+	DEF_NATFUNC(nfTextureGetUVRotation);
+	DEF_NATFUNC(nfTextureSetUVRotation);
+	DEF_NATFUNC(nfTextureGetMask);
+	DEF_NATFUNC(nfTextureSetMask);
 	
 	// decals
-	DEF_NATFUNC( nfGetDecalCount );
-	DEF_NATFUNC( nfAddDecal );
-	DEF_NATFUNC( nfRemoveDecal );
-	DEF_NATFUNC( nfRemoveAllDecals );
+	DEF_NATFUNC(nfGetDecalCount);
+	DEF_NATFUNC(nfAddDecal);
+	DEF_NATFUNC(nfRemoveDecal);
+	DEF_NATFUNC(nfRemoveAllDecals);
 	
 	// navspaces
-	DEF_NATFUNC( nfGetNavSpaceCount );
-	DEF_NATFUNC( nfAddNavSpace );
-	DEF_NATFUNC( nfRemoveNavSpaceAt );
-	DEF_NATFUNC( nfRemoveAllNavSpaces );
+	DEF_NATFUNC(nfGetNavSpaceCount);
+	DEF_NATFUNC(nfAddNavSpace);
+	DEF_NATFUNC(nfRemoveNavSpaceAt);
+	DEF_NATFUNC(nfRemoveAllNavSpaces);
 	
-	DEF_NATFUNC( nfNavSpaceGetType );
-	DEF_NATFUNC( nfNavSpaceSetType );
-	DEF_NATFUNC( nfNavSpaceGetLayer );
-	DEF_NATFUNC( nfNavSpaceSetLayer );
-	DEF_NATFUNC( nfNavSpaceGetSnapDistance );
-	DEF_NATFUNC( nfNavSpaceSetSnapDistance );
-	DEF_NATFUNC( nfNavSpaceGetSnapAngle );
-	DEF_NATFUNC( nfNavSpaceSetSnapAngle );
+	DEF_NATFUNC(nfNavSpaceGetType);
+	DEF_NATFUNC(nfNavSpaceSetType);
+	DEF_NATFUNC(nfNavSpaceGetLayer);
+	DEF_NATFUNC(nfNavSpaceSetLayer);
+	DEF_NATFUNC(nfNavSpaceGetSnapDistance);
+	DEF_NATFUNC(nfNavSpaceSetSnapDistance);
+	DEF_NATFUNC(nfNavSpaceGetSnapAngle);
+	DEF_NATFUNC(nfNavSpaceSetSnapAngle);
 	
-	DEF_NATFUNC( nfNavSpaceGetCornerCount );
-	DEF_NATFUNC( nfNavSpaceSetCornerCount );
-	DEF_NATFUNC( nfNavSpaceGetCornerAt );
-	DEF_NATFUNC( nfNavSpaceSetCornerAt );
+	DEF_NATFUNC(nfNavSpaceGetCornerCount);
+	DEF_NATFUNC(nfNavSpaceSetCornerCount);
+	DEF_NATFUNC(nfNavSpaceGetCornerAt);
+	DEF_NATFUNC(nfNavSpaceSetCornerAt);
 	
-	DEF_NATFUNC( nfNavSpaceGetEdgeCount );
-	DEF_NATFUNC( nfNavSpaceSetEdgeCount );
-	DEF_NATFUNC( nfNavSpaceEdgeGetPoint1 );
-	DEF_NATFUNC( nfNavSpaceEdgeGetPoint2 );
-	DEF_NATFUNC( nfNavSpaceEdgeGetType1 );
-	DEF_NATFUNC( nfNavSpaceEdgeGetType2 );
-	DEF_NATFUNC( nfNavSpaceSetEdgeAt );
+	DEF_NATFUNC(nfNavSpaceGetEdgeCount);
+	DEF_NATFUNC(nfNavSpaceSetEdgeCount);
+	DEF_NATFUNC(nfNavSpaceEdgeGetPoint1);
+	DEF_NATFUNC(nfNavSpaceEdgeGetPoint2);
+	DEF_NATFUNC(nfNavSpaceEdgeGetType1);
+	DEF_NATFUNC(nfNavSpaceEdgeGetType2);
+	DEF_NATFUNC(nfNavSpaceSetEdgeAt);
 	
-	DEF_NATFUNC( nfNavSpaceGetFaceCount );
-	DEF_NATFUNC( nfNavSpaceSetFaceCount );
-	DEF_NATFUNC( nfNavSpaceFaceGetCornerCount );
-	DEF_NATFUNC( nfNavSpaceFaceGetType );
-	DEF_NATFUNC( nfNavSpaceSetFaceAt );
-	DEF_NATFUNC( nfNavSpaceLayoutChanged );
+	DEF_NATFUNC(nfNavSpaceGetFaceCount);
+	DEF_NATFUNC(nfNavSpaceSetFaceCount);
+	DEF_NATFUNC(nfNavSpaceFaceGetCornerCount);
+	DEF_NATFUNC(nfNavSpaceFaceGetType);
+	DEF_NATFUNC(nfNavSpaceSetFaceAt);
+	DEF_NATFUNC(nfNavSpaceLayoutChanged);
 	
 	// special
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

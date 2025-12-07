@@ -40,39 +40,39 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWTFilterKernel::meWTFilterKernel( const char *name, int rows, int cols, float scale ){
-	if( ! name || ! name[ 0 ] || rows < 1 || cols < 1 ) DETHROW( deeInvalidParam );
-	if( ( rows % 2 ) == 0 || ( cols % 2 ) == 0 ) DETHROW( deeInvalidParam );
+meWTFilterKernel::meWTFilterKernel(const char *name, int rows, int cols, float scale){
+	if(! name || ! name[0] || rows < 1 || cols < 1) DETHROW(deeInvalidParam);
+	if((rows % 2) == 0 || (cols % 2) == 0) DETHROW(deeInvalidParam);
 	int i, size;
 	
 	pName = NULL;
 	pKernel = NULL;
 	pKernelRows = rows;
 	pKernelCols = cols;
-	pScale = decMath::max( scale, 0.0f );
+	pScale = decMath::max(scale, 0.0f);
 	
 	try{
-		pName = new char[ strlen( name ) + 1 ];
-		if( ! pName ) DETHROW( deeOutOfMemory );
-		strcpy( pName, name );
+		pName = new char[strlen(name) + 1];
+		if(! pName) DETHROW(deeOutOfMemory);
+		strcpy(pName, name);
 		
-		pKernel = new float[ rows * cols ];
-		if( ! pKernel ) DETHROW( deeOutOfMemory );
+		pKernel = new float[rows * cols];
+		if(! pKernel) DETHROW(deeOutOfMemory);
 		
 		size = rows * cols;
-		for( i=0; i<size; i++ ) pKernel[ i ] = 0.0f;
-		pKernel[ ( ( rows - 1 ) / 2  ) * cols + ( cols - 1 ) / 2 ] = 1.0f;
+		for(i=0; i<size; i++) pKernel[i] = 0.0f;
+		pKernel[((rows - 1) / 2) * cols + (cols - 1) / 2] = 1.0f;
 		
-	}catch( const deException & ){
-		if( pKernel ) delete [] pKernel;
-		if( pName ) delete [] pName;
+	}catch(const deException &){
+		if(pKernel) delete [] pKernel;
+		if(pName) delete [] pName;
 		throw;
 	}
 }
 
 meWTFilterKernel::~meWTFilterKernel(){
-	if( pKernel ) delete [] pKernel;
-	if( pName ) delete [] pName;
+	if(pKernel) delete [] pKernel;
+	if(pName) delete [] pName;
 }
 
 
@@ -80,19 +80,19 @@ meWTFilterKernel::~meWTFilterKernel(){
 // Management
 ///////////////
 
-float meWTFilterKernel::GetKernelValueAt( int row, int col ) const{
-	if( row < 0 || row >= pKernelRows ) DETHROW( deeInvalidParam );
-	if( col < 0 || col >= pKernelCols ) DETHROW( deeInvalidParam );
-	return pKernel[ row * pKernelCols + col ];
+float meWTFilterKernel::GetKernelValueAt(int row, int col) const{
+	if(row < 0 || row >= pKernelRows) DETHROW(deeInvalidParam);
+	if(col < 0 || col >= pKernelCols) DETHROW(deeInvalidParam);
+	return pKernel[row * pKernelCols + col];
 }
 
-void meWTFilterKernel::SetKernelValueAt( int row, int col, float value ){
-	if( row < 0 || row >= pKernelRows ) DETHROW( deeInvalidParam );
-	if( col < 0 || col >= pKernelCols ) DETHROW( deeInvalidParam );
-	pKernel[ row * pKernelCols + col ] = value;
+void meWTFilterKernel::SetKernelValueAt(int row, int col, float value){
+	if(row < 0 || row >= pKernelRows) DETHROW(deeInvalidParam);
+	if(col < 0 || col >= pKernelCols) DETHROW(deeInvalidParam);
+	pKernel[row * pKernelCols + col] = value;
 }
 
-void meWTFilterKernel::SetScale( float scale ){
+void meWTFilterKernel::SetScale(float scale){
 	pScale = scale;
 }
 

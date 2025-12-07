@@ -36,9 +36,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakBodyLAScale::ceUCAASpeakBodyLAScale( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak )
-: ceUCAASpeakStripsScale( topic, actorSpeak ){
-	SetShortInfo( "Scale body look-at" );
+ceUCAASpeakBodyLAScale::ceUCAASpeakBodyLAScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak)
+: ceUCAASpeakStripsScale(topic, actorSpeak){
+	SetShortInfo("Scale body look-at");
 }
 
 ceUCAASpeakBodyLAScale::~ceUCAASpeakBodyLAScale(){

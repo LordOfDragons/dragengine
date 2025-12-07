@@ -39,18 +39,18 @@
 ////////////////////////////
 
 ceCASetVariable::ceCASetVariable() :
-ceConversationAction( eatSetVariable ),
-pName( "Variable" ),
-pOperator( eopSet ),
-pValue( 0 ){
+ceConversationAction(eatSetVariable),
+pName("Variable"),
+pOperator(eopSet),
+pValue(0){
 }
 
-ceCASetVariable::ceCASetVariable( const ceCASetVariable &action ) :
-ceConversationAction( action ),
-pName( action.pName ),
-pOperator( action.pOperator ),
-pValue( action.pValue ),
-pValueVariable( action.pValueVariable ){
+ceCASetVariable::ceCASetVariable(const ceCASetVariable &action) :
+ceConversationAction(action),
+pName(action.pName),
+pOperator(action.pOperator),
+pValue(action.pValue),
+pValueVariable(action.pValueVariable){
 }
 
 ceCASetVariable::~ceCASetVariable(){
@@ -61,27 +61,27 @@ ceCASetVariable::~ceCASetVariable(){
 // Management
 ///////////////
 
-void ceCASetVariable::SetName( const char *name ){
+void ceCASetVariable::SetName(const char *name){
 	pName = name;
 }
 
-void ceCASetVariable::SetOperator( eOperators aOperator ){
-	if( aOperator < eopSet || aOperator > eopRandom ){
-		DETHROW( deeInvalidParam );
+void ceCASetVariable::SetOperator(eOperators aOperator){
+	if(aOperator < eopSet || aOperator > eopRandom){
+		DETHROW(deeInvalidParam);
 	}
 	pOperator = aOperator;
 }
 
-void ceCASetVariable::SetValue( int value ){
+void ceCASetVariable::SetValue(int value){
 	pValue = value;
 }
 
-void ceCASetVariable::SetValueVariable( const char *value ){
+void ceCASetVariable::SetValueVariable(const char *value){
 	pValueVariable = value;
 }
 
 
 
 ceConversationAction *ceCASetVariable::CreateCopy() const{
-	return new ceCASetVariable( *this );
+	return new ceCASetVariable(*this);
 }

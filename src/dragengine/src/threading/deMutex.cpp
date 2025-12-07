@@ -42,46 +42,46 @@
 
 deMutex::deMutex()
 #ifdef OS_W32
-: pMutex( NULL )
+: pMutex(NULL)
 #endif
 {
 #if defined OS_UNIX || defined OS_BEOS
 	/*
-	const int result = pthread_mutex_init( &pMutex, NULL );
-	if( result != 0 ){
-		if( result == ENOMEM ) DETHROW( deeOutOfMemory );
-		if( result == EAGAIN ) DETHROW_INFO( deeOutOfMemory, "lack of resources" );
-		if( result == EPERM ) DETHROW_INFO( deeInvalidAction, "permission denied" );
-		if( result == EBUSY ) DETHROW_INFO( deeInvalidAction, "double initialization" );
-		DETHROW_INFO( deeInvalidAction, "unknown error" );
+	const int result = pthread_mutex_init(&pMutex, NULL);
+	if(result != 0){
+		if(result == ENOMEM) DETHROW(deeOutOfMemory);
+		if(result == EAGAIN) DETHROW_INFO(deeOutOfMemory, "lack of resources");
+		if(result == EPERM) DETHROW_INFO(deeInvalidAction, "permission denied");
+		if(result == EBUSY) DETHROW_INFO(deeInvalidAction, "double initialization");
+		DETHROW_INFO(deeInvalidAction, "unknown error");
 	}
 	*/
-	if( pthread_mutex_init( &pMutex, NULL ) != 0 ){
-		DETHROW( deeOutOfMemory );
+	if(pthread_mutex_init(&pMutex, NULL) != 0){
+		DETHROW(deeOutOfMemory);
 	}
 #endif
 
 #ifdef OS_W32
-	pMutex = CreateMutex( NULL, FALSE, NULL );
-	if( pMutex == NULL ){
-		DETHROW( deeOutOfMemory );
+	pMutex = CreateMutex(NULL, FALSE, NULL);
+	if(pMutex == NULL){
+		DETHROW(deeOutOfMemory);
 	}
 #endif
 }
 
 deMutex::~deMutex(){
 #if defined OS_UNIX || defined OS_BEOS
-	const int result = pthread_mutex_destroy( &pMutex );
-	if( result != 0 ){
-		if( result == EBUSY ) printf( "[MUTEX] %p: Still locked!\n", this );
-		if( result == EINVAL ) printf( "[MUTEX] %p: Invalid mutex!\n", this );
-		printf( "[MUTEX] %p: Cleanup failed ( %i )\n", this, result );
+	const int result = pthread_mutex_destroy(&pMutex);
+	if(result != 0){
+		if(result == EBUSY) printf("[MUTEX] %p: Still locked!\n", this);
+		if(result == EINVAL) printf("[MUTEX] %p: Invalid mutex!\n", this);
+		printf("[MUTEX] %p: Cleanup failed (%i)\n", this, result);
 	}
 #endif
 
 #ifdef OS_W32
-	if( pMutex != NULL ){
-		CloseHandle( pMutex );
+	if(pMutex != NULL){
+		CloseHandle(pMutex);
 	}
 #endif
 }
@@ -93,21 +93,21 @@ deMutex::~deMutex(){
 
 void deMutex::Lock(){
 #if defined OS_UNIX || defined OS_BEOS
-	if( pthread_mutex_lock( &pMutex ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_lock(&pMutex) != 0){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 	
 #ifdef OS_W32
-	if( WaitForSingleObject( pMutex, INFINITE ) != WAIT_OBJECT_0 ){
-		DETHROW( deeInvalidAction );
+	if(WaitForSingleObject(pMutex, INFINITE) != WAIT_OBJECT_0){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 }
 
 bool deMutex::TryLock(){
 #if defined OS_UNIX || defined OS_BEOS
-	switch( pthread_mutex_trylock( &pMutex ) ){
+	switch(pthread_mutex_trylock(&pMutex)){
 	case 0:
 		return true;
 		
@@ -115,12 +115,12 @@ bool deMutex::TryLock(){
 		return false;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 #endif
 	
 #ifdef OS_W32
-	switch( WaitForSingleObject( pMutex, 0 ) ){
+	switch(WaitForSingleObject(pMutex, 0)){
 	case WAIT_OBJECT_0:
 		return true;
 		
@@ -128,23 +128,23 @@ bool deMutex::TryLock(){
 		return false;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 #endif
 }
 
-bool deMutex::TryLock( int timeout ){
+bool deMutex::TryLock(int timeout){
 #if defined OS_UNIX || defined OS_BEOS
 	timespec ts;
-	clock_gettime( CLOCK_REALTIME, &ts );
+	clock_gettime(CLOCK_REALTIME, &ts);
 	ts.tv_sec += timeout / 1000;
-	ts.tv_nsec += ( long )( timeout % 1000 ) * 1000000L;
-	if( ts.tv_nsec >= 1000000000L ){
+	ts.tv_nsec += (long)(timeout % 1000) * 1000000L;
+	if(ts.tv_nsec >= 1000000000L){
 		ts.tv_sec++;
 		ts.tv_nsec %= 1000000000L;
 	}
 	
-	switch( pthread_mutex_timedlock( &pMutex, &ts ) ){
+	switch(pthread_mutex_timedlock(&pMutex, &ts)){
 	case 0:
 		return true;
 		
@@ -152,12 +152,12 @@ bool deMutex::TryLock( int timeout ){
 		return false;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 #endif
 	
 #ifdef OS_W32
-	switch( WaitForSingleObject( pMutex, timeout ) ){
+	switch(WaitForSingleObject(pMutex, timeout)){
 	case WAIT_OBJECT_0:
 		return true;
 		
@@ -165,21 +165,21 @@ bool deMutex::TryLock( int timeout ){
 		return false;
 		
 	default:
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 #endif
 }
 
 void deMutex::Unlock(){
 #if defined OS_UNIX || defined OS_BEOS
-	if( pthread_mutex_unlock( &pMutex ) != 0 ){
-		DETHROW( deeInvalidAction );
+	if(pthread_mutex_unlock(&pMutex) != 0){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 	
 #ifdef OS_W32
-	if( ! ReleaseMutex( pMutex ) ){
-		DETHROW( deeInvalidAction );
+	if(! ReleaseMutex(pMutex)){
+		DETHROW(deeInvalidAction);
 	}
 #endif
 }

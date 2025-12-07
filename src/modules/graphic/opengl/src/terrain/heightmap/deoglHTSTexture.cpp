@@ -64,11 +64,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTSTexture::deoglHTSTexture( deoglRHTSector &sector, int index ) :
-pSector( sector )
+deoglHTSTexture::deoglHTSTexture(deoglRHTSector &sector, int index) :
+pSector(sector)
 {
-	if( index < 0 ){
-		DETHROW( deeInvalidParam );
+	if(index < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pIndex = index;
@@ -98,27 +98,27 @@ deoglHTSTexture::~deoglHTSTexture(){
 // Management
 ///////////////
 
-void deoglHTSTexture::SetMatrix( const decTexMatrix &matrix ){
+void deoglHTSTexture::SetMatrix(const decTexMatrix &matrix){
 	pMatrix = matrix;
 	MarkParamBlocksDirty();
 }
 
-void deoglHTSTexture::SetSkin( deoglRSkin *skin ){
-	if( skin == pSkin ){
+void deoglHTSTexture::SetSkin(deoglRSkin *skin){
+	if(skin == pSkin){
 		return;
 	}
 	
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	pSkin = skin;
-	if( skin ){
+	if(skin){
 		skin->AddReference();
 	}
 	
 	pUseSkinTexture = NULL;
-	if( skin && skin->GetTextureCount() > 0 ){
-		pUseSkinTexture = &skin->GetTextureAt( 0 );
+	if(skin && skin->GetTextureCount() > 0){
+		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
 	
 	InvalidateParamBlocks();
@@ -143,8 +143,8 @@ void deoglHTSTexture::MarkTUCsDirty(){
 
 
 
-deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType( deoglSkinTexturePipelines::eTypes type ) const{
-	switch( type ){
+deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType(deoglSkinTexturePipelines::eTypes type) const{
+	switch(type){
 	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
 		
@@ -171,55 +171,55 @@ deoglTexUnitsConfig *deoglHTSTexture::GetTUCForPipelineType( deoglSkinTexturePip
 		return GetTUCLuminance();
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
 
 
-deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const{
-	if( ! pUseSkinTexture ){
+deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor(deoglSkinTexturePipelines::eTypes type) const{
+	if(! pUseSkinTexture){
 		return NULL;
 	}
 	
 	deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-		GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
-		GetWithRef( type ).GetShader();
-	deoglTexUnitConfig units[ deoglSkinShader::ETT_COUNT ];
+		GetAt(deoglSkinTexturePipelinesList::eptHeightMap1).
+		GetWithRef(type).GetShader();
+	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
 	deoglRDynamicSkin *dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
 	if(skinShader.GetTextureUnitCount() > 0){
-		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
-		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
-			pSector.GetHeightTerrain().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr );
+		skinShader.SetTUCCommon(&units[0], *pUseSkinTexture, skinState, dynamicSkin);
+		skinShader.SetTUCPerObjectEnvMap(&units[0],
+			pSector.GetHeightTerrain().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr);
 		
-		target = skinShader.GetTextureTarget( deoglSkinShader::ettHeightMapMask );
-		if( target != -1 ){
+		target = skinShader.GetTextureTarget(deoglSkinShader::ettHeightMapMask);
+		if(target != -1){
 			deoglTexture ** const textureMasks = pSector.GetMaskTextures();
 			const int arrayLayer = pIndex >> 2;
 			
-			if( textureMasks && textureMasks[ arrayLayer ] && textureMasks[ arrayLayer ]->GetTexture() ){
-				units[ target ].EnableTexture( textureMasks[ arrayLayer ],
-					renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+			if(textureMasks && textureMasks[arrayLayer] && textureMasks[arrayLayer]->GetTexture()){
+				units[target].EnableTexture(textureMasks[arrayLayer],
+					renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest));
 				
 			}else{
-				units[ target ].EnableTexture( renderThread.GetDefaultTextures().GetAO(),
-					renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+				units[target].EnableTexture(renderThread.GetDefaultTextures().GetAO(),
+					renderThread.GetShader().GetTexSamplerConfig(deoglRTShader::etscClampNearest));
 			}
 		}
 		
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetTextureUnitCount(),
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+			&units[0], skinShader.GetTextureUnitCount(),
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	
-	if( ! tuc ){
-		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith( NULL, 0,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+	if(! tuc){
+		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(NULL, 0,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 	}
 	tuc->EnsureRTSTexture();
 	
@@ -228,57 +228,57 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::
 
 
 
-void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader ){
+void deoglHTSTexture::UpdateInstanceParamBlock(deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader){
 	deoglRDynamicSkin *useDynamicSkin = NULL;
 	deoglSkinState *useSkinState = NULL;
 	
-	if( ! pUseSkinTexture ){
+	if(! pUseSkinTexture){
 		return;
 	}
 	
 	const float sectorDim = pSector.GetHeightTerrain().GetSectorSize();
-	const decDMatrix matrixModel( pSector.CalcWorldMatrix() );
+	const decDMatrix matrixModel(pSector.CalcWorldMatrix());
 	
-	const deoglSPBMapBuffer mapped( paramBlock );
+	const deoglSPBMapBuffer mapped(paramBlock);
 	int target;
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-	if( target != -1 ){
-		paramBlock.SetParameterDataMat4x3( target, matrixModel );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixModel);
+	if(target != -1){
+		paramBlock.SetParameterDataMat4x3(target, matrixModel);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
-	if( target != -1 ){
-		paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixNormal);
+	if(target != -1){
+		paramBlock.SetParameterDataMat3x3(target, decDMatrix()); // inverse of 0-rotation
 	}
 	
 	// per texture properties
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
-	if( target != -1 ){
-		paramBlock.SetParameterDataMat3x2( target, pMatrix );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutMatrixTexCoord);
+	if(target != -1){
+		paramBlock.SetParameterDataMat3x2(target, pMatrix);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutHeightTerrainMaskTCTransform );
-	if( target != -1 ){
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutHeightTerrainMaskTCTransform);
+	if(target != -1){
 		/*
-		deImage * const image = pHTSector->GetSector()->GetTextureAt( pIndex )->GetMaskImage();
+		deImage * const image = pHTSector->GetSector()->GetTextureAt(pIndex)->GetMaskImage();
 		int imageHeight = 1024;
 		int imageWidth = 1024;
 		
-		if( image ){
+		if(image){
 			imageWidth = image->GetWidth();
 			imageHeight = image->GetHeight();
 		}
 		
-		paramBlock.SetParameterDataVec4( target, ( float )( imageWidth - 1 ) / sectorDim, ( float )( imageHeight - 1 ) / sectorDim,
-			( float )( imageWidth - 1 ) * 0.5f, ( float )( imageHeight - 1 ) * 0.5f );
+		paramBlock.SetParameterDataVec4(target, (float)(imageWidth - 1) / sectorDim, (float)(imageHeight - 1) / sectorDim,
+			(float)(imageWidth - 1) * 0.5f, (float)(imageHeight - 1) * 0.5f);
 		*/
-		paramBlock.SetParameterDataVec2( target, 1.0f / sectorDim, 1.0f / sectorDim );
+		paramBlock.SetParameterDataVec2(target, 1.0f / sectorDim, 1.0f / sectorDim);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutHeightTerrainMaskSelector );
-	if( target != -1 ){
-		paramBlock.SetParameterDataIVec2( target, 0 /*pIndex >> 2*/, pIndex & 0x3 );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutHeightTerrainMaskSelector);
+	if(target != -1){
+		paramBlock.SetParameterDataIVec2(target, 0 /*pIndex >> 2*/, pIndex & 0x3);
 	}
 	
 	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
@@ -286,30 +286,30 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 		paramBlock.SetParameterDataBool(target, false);
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
-	if( target != -1 ){
-		paramBlock.SetParameterDataFloat( target, 0.0f ); // TODO
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutEnvMapFade);
+	if(target != -1){
+		paramBlock.SetParameterDataFloat(target, 0.0f); // TODO
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
-	if( target != -1 ){
-		if( useSkinState ){
-			paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutVariationSeed);
+	if(target != -1){
+		if(useSkinState){
+			paramBlock.SetParameterDataVec2(target, useSkinState->GetVariationSeed());
 			
 		}else{
-			paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
+			paramBlock.SetParameterDataVec2(target, 0.0f, 0.0f);
 		}
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
-	if( target != -1 ){
-		paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 1.0f, 0.0f );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutInstSkinClipPlaneNormal);
+	if(target != -1){
+		paramBlock.SetParameterDataVec4(target, 0.0f, 0.0f, 1.0f, 0.0f);
 	}
 	
-	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+	skinShader.SetTexParamsInInstParamSPB(paramBlock, *pUseSkinTexture);
 	
 	// per texture dynamic texture properties
-	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
+	skinShader.SetDynTexParamsInInstParamSPB(paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin);
 }
 
 void deoglHTSTexture::PrepareForRender(){
@@ -323,27 +323,27 @@ void deoglHTSTexture::PrepareForRender(){
 //////////////////////
 
 void deoglHTSTexture::pCleanUp(){
-	if( pSkin ){
+	if(pSkin){
 		pSkin->FreeReference();
 	}
 	
-	if( pTUCDepth ){
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
 	}
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	if( pTUCShadow ){
+	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
 		pTUCShadow = NULL;
 	}
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
 		pTUCEnvMap = NULL;
 	}
-	if( pTUCLuminance ){
+	if(pTUCLuminance){
 		pTUCLuminance->RemoveUsage();
 		pTUCLuminance = NULL;
 	}
@@ -352,22 +352,22 @@ void deoglHTSTexture::pCleanUp(){
 
 
 void deoglHTSTexture::pPrepareParamBlock(){
-	if( ! pDirtyParamBlock ){
+	if(! pDirtyParamBlock){
 		return;
 	}
 	pDirtyParamBlock = false;
 	
-	if( ! pValidParamBlock ){
+	if(! pValidParamBlock){
 		pParamBlock = nullptr;
 		
-		if( pUseSkinTexture ){
+		if(pUseSkinTexture){
 			deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
-				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
-				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
+				GetAt(deoglSkinTexturePipelinesList::eptHeightMap1).
+				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry.TakeOver( new deoglSPBlockUBO( *pSector.GetHeightTerrain()
-					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO() ) );
+				pParamBlockGeometry.TakeOver(new deoglSPBlockUBO(*pSector.GetHeightTerrain()
+					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO()));
 				
 			}else{*/
 				pParamBlock = skinShader.CreateSPBInstParam();
@@ -378,11 +378,11 @@ void deoglHTSTexture::pPrepareParamBlock(){
 		pDirtyParamBlock = true;
 	}
 	
-	if( pDirtyParamBlock ){
-		if( pParamBlock ){
-			UpdateInstanceParamBlock( pParamBlock, *pUseSkinTexture->GetPipelines().
-				GetAt( deoglSkinTexturePipelinesList::eptHeightMap1 ).
-				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
+	if(pDirtyParamBlock){
+		if(pParamBlock){
+			UpdateInstanceParamBlock(pParamBlock, *pUseSkinTexture->GetPipelines().
+				GetAt(deoglSkinTexturePipelinesList::eptHeightMap1).
+				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader());
 		}
 		
 		pDirtyParamBlock = false;
@@ -390,70 +390,70 @@ void deoglHTSTexture::pPrepareParamBlock(){
 }
 
 void deoglHTSTexture::pPrepareTUCs(){
-	if( ! pDirtyTUCs ){
+	if(! pDirtyTUCs){
 		return;
 	}
 	pDirtyTUCs = false;
 	
 	// depth
-	if( pTUCDepth ){
+	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;
 	}
-	pTUCDepth = BareGetTUCFor( deoglSkinTexturePipelines::etDepth );
+	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
 	
 	// geometry
-	if( pTUCGeometry ){
+	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
 		pTUCGeometry = NULL;
 	}
-	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
+	pTUCGeometry = BareGetTUCFor(deoglSkinTexturePipelines::etGeometry);
 	
 	// shadow
-	if( pTUCShadow ){
+	if(pTUCShadow){
 		pTUCShadow->RemoveUsage();
 		pTUCShadow = NULL;
 	}
-	pTUCShadow = BareGetTUCFor( deoglSkinTexturePipelines::etShadowProjection );
+	pTUCShadow = BareGetTUCFor(deoglSkinTexturePipelines::etShadowProjection);
 	
 	// envmap
-	if( pTUCEnvMap ){
+	if(pTUCEnvMap){
 		pTUCEnvMap->RemoveUsage();
 		pTUCEnvMap = NULL;
 	}
 	
-	if( pUseSkinTexture ){
+	if(pUseSkinTexture){
 		deoglRenderThread &renderThread = pSector.GetHeightTerrain().GetRenderThread();
 		deoglRDynamicSkin *dynamicSkin = NULL;
 		deoglSkinState *skinState = NULL;
-		deoglTexUnitConfig unit[ 8 ];
+		deoglTexUnitConfig unit[8];
 		
-		if( pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV() ){
-			unit[ 0 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+		if(pUseSkinTexture->GetVariationU() || pUseSkinTexture->GetVariationV()){
+			unit[0].EnableArrayTextureFromChannel(renderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectColor, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetColorArray() );
+				renderThread.GetDefaultTextures().GetColorArray());
 			
-			unit[ 1 ].EnableArrayTextureFromChannel( renderThread, *pUseSkinTexture,
+			unit[1].EnableArrayTextureFromChannel(renderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetEmissivityArray() );
+				renderThread.GetDefaultTextures().GetEmissivityArray());
 			
 		}else{
-			unit[ 0 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+			unit[0].EnableTextureFromChannel(renderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectColor, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetColor() );
+				renderThread.GetDefaultTextures().GetColor());
 			
-			unit[ 1 ].EnableTextureFromChannel( renderThread, *pUseSkinTexture,
+			unit[1].EnableTextureFromChannel(renderThread, *pUseSkinTexture,
 				deoglSkinChannel::ectEmissivity, skinState, dynamicSkin,
-				renderThread.GetDefaultTextures().GetEmissivity() );
+				renderThread.GetDefaultTextures().GetEmissivity());
 		}
 		
-		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith( &unit[ 0 ], 2,
-			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		pTUCEnvMap = renderThread.GetShader().GetTexUnitsConfigList().GetWith(&unit[0], 2,
+			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock());
 		pTUCEnvMap->EnsureRTSTexture();
 	}
 	
 	// luminance
-	if( pTUCLuminance ){
+	if(pTUCLuminance){
 		pTUCLuminance->RemoveUsage();
 		pTUCLuminance = NULL;
 	}

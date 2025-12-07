@@ -41,8 +41,8 @@
 ////////////////////////////
 
 deColliderVisitorIdentify::deColliderVisitorIdentify() :
-pCollider( NULL ),
-pType( ectUnknown ){
+pCollider(NULL),
+pType(ectUnknown){
 }
 
 deColliderVisitorIdentify::~deColliderVisitorIdentify(){
@@ -54,27 +54,27 @@ deColliderVisitorIdentify::~deColliderVisitorIdentify(){
 ///////////////
 
 deColliderVolume &deColliderVisitorIdentify::CastToVolume() const{
-	if( pType != ectVolume ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectVolume){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deColliderVolume* )pCollider );
+	return *((deColliderVolume*)pCollider);
 }
 
 deColliderRig &deColliderVisitorIdentify::CastToRig() const{
-	if( pType != ectRig ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectRig){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deColliderRig* )pCollider );
+	return *((deColliderRig*)pCollider);
 }
 
 deColliderComponent &deColliderVisitorIdentify::CastToComponent() const{
-	if( pType != ectComponent ){
-		DETHROW( deeInvalidParam );
+	if(pType != ectComponent){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *( ( deColliderComponent* )pCollider );
+	return *((deColliderComponent*)pCollider);
 }
 
 
@@ -89,22 +89,22 @@ void deColliderVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deColliderVisitorIdentify::VisitCollider( deCollider &collider ){
+void deColliderVisitorIdentify::VisitCollider(deCollider &collider){
 	pCollider = &collider;
 	pType = ectUnknown;
 }
 
-void deColliderVisitorIdentify::VisitVolume( deColliderVolume &collider ){
+void deColliderVisitorIdentify::VisitVolume(deColliderVolume &collider){
 	pCollider = &collider;
 	pType = ectVolume;
 }
 
-void deColliderVisitorIdentify::VisitRig( deColliderRig &collider ){
+void deColliderVisitorIdentify::VisitRig(deColliderRig &collider){
 	pCollider = &collider;
 	pType = ectRig;
 }
 
-void deColliderVisitorIdentify::VisitComponent( deColliderComponent &collider ){
+void deColliderVisitorIdentify::VisitComponent(deColliderComponent &collider){
 	pCollider = &collider;
 	pType = ectComponent;
 }

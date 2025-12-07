@@ -43,13 +43,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	igdeNativeNullDialog( igdeDialog &owner );
+	igdeNativeNullDialog(igdeDialog &owner);
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeNullDialog();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullDialog* CreateNativeWidget( igdeDialog &owner, igdeWidget *ownerOwner );
+	static igdeNativeNullDialog* CreateNativeWidget(igdeDialog &owner, igdeWidget *ownerOwner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -69,12 +69,12 @@ public:
 	virtual void UpdateSize();
 	virtual void ShowDialog();
 	
-	virtual void CloseDialog( bool accepted );
+	virtual void CloseDialog(bool accepted);
 	
 	virtual void OnFrameUpdate();
 	
-	static int DialogPadContent( const igdeGuiTheme &guitheme );
-	static int DialogPadButtons( const igdeGuiTheme &guitheme );
+	static int DialogPadContent(const igdeGuiTheme &guitheme);
+	static int DialogPadButtons(const igdeGuiTheme &guitheme);
 	/*@}*/
 };
 

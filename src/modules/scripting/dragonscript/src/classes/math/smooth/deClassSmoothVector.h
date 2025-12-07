@@ -43,7 +43,7 @@ private:
 	
 public:
 	/** \brief Create a new class. */
-	deClassSmoothVector( deScriptingDragonScript &ds );
+	deClassSmoothVector(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up the class. */
 	virtual ~deClassSmoothVector();
@@ -52,17 +52,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief DragonScript module. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Smooth vector from object. */
-	const decSmoothVector &GetSmoothVector( dsRealObject *myself ) const;
+	const decSmoothVector &GetSmoothVector(dsRealObject *myself) const;
 	
 	/** \brief Push smooth vector. */
-	void PushSmoothVector( dsRunTime *rt, const decSmoothVector &smoothVector );
+	void PushSmoothVector(dsRunTime *rt, const decSmoothVector &smoothVector);
 	/*@}*/
 	
 private:
@@ -72,34 +72,34 @@ private:
 		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetValue );
-	DEF_NATFUNC( nfSetValue );
-	DEF_NATFUNC( nfGetGoal );
-	DEF_NATFUNC( nfSetGoal );
-	DEF_NATFUNC( nfGetAdjustTime );
-	DEF_NATFUNC( nfSetAdjustTime );
-	DEF_NATFUNC( nfGetAdjustRange );
-	DEF_NATFUNC( nfSetAdjustRange );
-	DEF_NATFUNC( nfGetChangeSpeed );
-	DEF_NATFUNC( nfSetChangeSpeed );
+	DEF_NATFUNC(nfGetValue);
+	DEF_NATFUNC(nfSetValue);
+	DEF_NATFUNC(nfGetGoal);
+	DEF_NATFUNC(nfSetGoal);
+	DEF_NATFUNC(nfGetAdjustTime);
+	DEF_NATFUNC(nfSetAdjustTime);
+	DEF_NATFUNC(nfGetAdjustRange);
+	DEF_NATFUNC(nfSetAdjustRange);
+	DEF_NATFUNC(nfGetChangeSpeed);
+	DEF_NATFUNC(nfSetChangeSpeed);
 	
-	DEF_NATFUNC( nfReset );
-	DEF_NATFUNC( nfUpdate );
+	DEF_NATFUNC(nfReset);
+	DEF_NATFUNC(nfUpdate);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfToString);
 #undef DEF_NATFUNC
 };
 

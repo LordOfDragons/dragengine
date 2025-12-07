@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new visitor. */
-	deoglVolumeShape( deoglRenderThread &renderThread );
+	deoglVolumeShape(deoglRenderThread &renderThread);
 	/** Cleans up the visitor. */
 	~deoglVolumeShape();
 	/*@}*/
@@ -56,11 +56,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the shape. */
-	inline deoglShape *GetShape() const{ return pShape; }
+	inline deoglShape *GetShape() const{return pShape;}
 	/** Retrieves the first matrix. */
-	inline const decMatrix &GetMatrix1() const{ return pMatrix1; }
+	inline const decMatrix &GetMatrix1() const{return pMatrix1;}
 	/** Retrieves the second matrix. */
-	inline const decMatrix &GetMatrix2() const{ return pMatrix2; }
+	inline const decMatrix &GetMatrix2() const{return pMatrix2;}
 	
 	/** Resets the visitor. */
 	void Reset();
@@ -69,22 +69,22 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	virtual void VisitShape(decShape &shape);
 	
 	/** Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	virtual void VisitShapeSphere(decShapeSphere &sphere);
 	
 	/** Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	virtual void VisitShapeBox(decShapeBox &box);
 	
 	/** Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
 	
 	/** Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
 	
 	/** Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	virtual void VisitShapeHull(decShapeHull &hull);
 	/*@}*/
 };
 

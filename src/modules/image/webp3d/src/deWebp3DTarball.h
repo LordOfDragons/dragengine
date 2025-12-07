@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create handler. */
-	deWebp3DTarball( deWebp3DModule &module );
+	deWebp3DTarball(deWebp3DModule &module);
 	
 	/** Clean up handler. */
 	~deWebp3DTarball();
@@ -64,25 +64,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get image properties. */
-	void Get3DImageInfos( deWebp3DImageInfo &infos, decBaseFileReader &file );
+	void Get3DImageInfos(deWebp3DImageInfo &infos, decBaseFileReader &file);
 	
 	/** Load image. */
-	void Load3DImage( deWebp3DImageInfo &infos, decBaseFileReader &file, deImage &image );
+	void Load3DImage(deWebp3DImageInfo &infos, decBaseFileReader &file, deImage &image);
 	
 	/** Save image. */
-	void Save3DImage( decBaseFileWriter &file, const deImage &image );
+	void Save3DImage(decBaseFileWriter &file, const deImage &image);
 	
 	/** Read image properties from an image in the tarball. */
-	void Get2DImageInfos( sImageInfo &infos2D, decBaseFileReader &file, int size );
+	void Get2DImageInfos(sImageInfo &infos2D, decBaseFileReader &file, int size);
 	
 	/** Load image slice from the tarball. */
-	void Load2DImage( deWebp3DImageInfo &info3D, decBaseFileReader &file, int size, void *imagedata );
+	void Load2DImage(deWebp3DImageInfo &info3D, decBaseFileReader &file, int size, void *imagedata);
 	
 	/** Write image slice to a memory file. */
-	void Save2DImage( int width, int height, bool hasAlpha, decBaseFileWriter &file, const void *imagedata );
+	void Save2DImage(int width, int height, bool hasAlpha, decBaseFileWriter &file, const void *imagedata);
 	
 	/** Assert status code. .*/
-	void Assert( VP8StatusCode statusCode ) const;
+	void Assert(VP8StatusCode statusCode) const;
 	/*@}*/
 };
 

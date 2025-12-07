@@ -133,7 +133,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create speaker. */
-	deSpeaker( deSpeakerManager *manager );
+	deSpeaker(deSpeakerManager *manager);
 	
 protected:
 	/**
@@ -151,89 +151,89 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	inline eSpeakerType GetType() const{ return pType; }
+	inline eSpeakerType GetType() const{return pType;}
 	
 	/** \brief Set type. */
-	void SetType( eSpeakerType type );
+	void SetType(eSpeakerType type);
 	
 	/** \brief Sound or NULL if not set. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline deSound *GetSound() const{return pSound;}
 	
 	/** \brief Set sound or NULL if not set. */
-	void SetSound( deSound *sound );
+	void SetSound(deSound *sound);
 	
 	/** \brief Synthesizer or NULL if not set. */
-	inline deSynthesizerInstance *GetSynthesizer() const{ return pSynthesizer; }
+	inline deSynthesizerInstance *GetSynthesizer() const{return pSynthesizer;}
 	
 	/** \brief Set synthesizer or NULL if not set. */
-	void SetSynthesizer( deSynthesizerInstance *synthesizer );
+	void SetSynthesizer(deSynthesizerInstance *synthesizer);
 	
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline deVideoPlayer *GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** \brief Set video player or NULL if not set. */
-	void SetVideoPlayer( deVideoPlayer *videoPlayer );
+	void SetVideoPlayer(deVideoPlayer *videoPlayer);
 	
 	
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Velocity in m/s. */
-	inline const decVector &GetVelocity() const{ return pVelocity; }
+	inline const decVector &GetVelocity() const{return pVelocity;}
 	
 	/** \brief Set velocity in m/s. */
-	void SetVelocity( const decVector &velocity );
+	void SetVelocity(const decVector &velocity);
 	
 	
 	
 	/** \brief Speaker is muted. */
-	inline bool GetMuted() const{ return pMuted; }
+	inline bool GetMuted() const{return pMuted;}
 	
 	/** \brief Set if speaker is muted. */
-	void SetMuted( bool muted );
+	void SetMuted(bool muted);
 	
 	/** \brief Speaker is playing once or is looping. */
-	inline bool GetLooping() const{ return pLooping; }
+	inline bool GetLooping() const{return pLooping;}
 	
 	/** \brief Set if speaker is playing once or is looping. */
-	void SetLooping( bool looping );
+	void SetLooping(bool looping);
 	
 	/** \brief Start play position in samples. */
-	inline int GetPlayFrom() const{ return pPlayFrom; }
+	inline int GetPlayFrom() const{return pPlayFrom;}
 	
 	/** \brief End play position in samples. */
-	inline int GetPlayTo() const{ return pPlayTo; }
+	inline int GetPlayTo() const{return pPlayTo;}
 	
 	/** \brief Set play position in samples. */
-	void SetPlayPosition( int playFrom, int playTo );
+	void SetPlayPosition(int playFrom, int playTo);
 	
 	/** \brief Play speed. */
-	inline float GetPlaySpeed() const{ return pPlaySpeed; }
+	inline float GetPlaySpeed() const{return pPlaySpeed;}
 	
 	/** \brief Set play speed. */
-	void SetPlaySpeed( float playSpeed );
+	void SetPlaySpeed(float playSpeed);
 	
 	/** \brief Volume. */
-	inline float GetVolume() const{ return pVolume; }
+	inline float GetVolume() const{return pVolume;}
 	
 	/** \brief Set volume. */
-	void SetVolume( float volume );
+	void SetVolume(float volume);
 	
 	/** \brief Range beyond which the sound is inaudible. */
-	inline float GetRange() const{ return pRange; }
+	inline float GetRange() const{return pRange;}
 	
 	/** \brief Set range beyond which the sound is inaudible. */
-	void SetRange( float range );
+	void SetRange(float range);
 	
 	/**
 	 * \brief Roll off factor.
@@ -241,7 +241,7 @@ public:
 	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
 	 * apply weaker attenuation.
 	 */
-	inline float GetRollOff() const{ return pRollOff; }
+	inline float GetRollOff() const{return pRollOff;}
 	
 	/**
 	 * \brief Set roll off factor.
@@ -249,7 +249,7 @@ public:
 	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
 	 * apply weaker attenuation.
 	 */
-	void SetRollOff( float rollOff );
+	void SetRollOff(float rollOff);
 	
 	/**
 	 * \brief Distance offset for attenuation calculation.
@@ -259,7 +259,7 @@ public:
 	 * calculation to make the sound appear coming from far away. Requires increasing the volume
 	 * to compensate for the distance increased attenuation.
 	 */
-	inline float GetDistanceOffset() const{ return pDistanceOffset; }
+	inline float GetDistanceOffset() const{return pDistanceOffset;}
 	
 	/**
 	 * \brief Set distance offset for attenuation calculation.
@@ -269,36 +269,36 @@ public:
 	 * calculation to make the sound appear coming from far away. Requires increasing the volume
 	 * to compensate for the distance increased attenuation.
 	 */
-	void SetDistanceOffset( float distanceOffset );
+	void SetDistanceOffset(float distanceOffset);
 	
 	/** \brief Sound shape. */
-	inline const decShapeList &GetShape() const{ return pShape; }
+	inline const decShapeList &GetShape() const{return pShape;}
 	
 	/** \brief Set sound shape. */
-	void SetShape( const decShapeList &shape );
+	void SetShape(const decShapeList &shape);
 	
 	/** \brief Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
 	/** \brief Play state. */
-	inline ePlayStates GetPlayState() const{ return pPlayState; }
+	inline ePlayStates GetPlayState() const{return pPlayState;}
 	
 	/** \brief Speaker is playing. */
-	inline bool GetPlaying() const{ return pPlayState == epsPlaying; }
+	inline bool GetPlaying() const{return pPlayState == epsPlaying;}
 	
 	/** \brief Speaker is paused. */
-	inline bool GetPaused() const{ return pPlayState == epsPaused; }
+	inline bool GetPaused() const{return pPlayState == epsPaused;}
 	
 	/** \brief Speaker is stopped. */
-	inline bool GetStopped() const{ return pPlayState == epsStopped; }
+	inline bool GetStopped() const{return pPlayState == epsStopped;}
 	
 	/** \brief Set play state. */
-	void SetPlayState( ePlayStates playState );
+	void SetPlayState(ePlayStates playState);
 	
 	/** \brief Start playing. */
 	void Play();
@@ -315,16 +315,16 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Audio system peer or NULL if not set. */
-	inline deBaseAudioSpeaker *GetPeerAudio() const{ return pPeerAudio; }
+	inline deBaseAudioSpeaker *GetPeerAudio() const{return pPeerAudio;}
 	
 	/** \brief Set audio system peer or NULL if not set. */
-	void SetPeerAudio( deBaseAudioSpeaker *peer );
+	void SetPeerAudio(deBaseAudioSpeaker *peer);
 	
 	/** \brief Scripting system peer. */
-	inline deBaseScriptingSpeaker *GetPeerScripting() const{ return pPeerScripting; }
+	inline deBaseScriptingSpeaker *GetPeerScripting() const{return pPeerScripting;}
 	
 	/** \brief Set scripting system peer. */
-	void SetPeerScripting( deBaseScriptingSpeaker *peer );
+	void SetPeerScripting(deBaseScriptingSpeaker *peer);
 	/*@}*/
 	
 	
@@ -332,22 +332,22 @@ public:
 	/** \name Linked list world */
 	/*@{*/
 	/** \brief Parent world or NULL. */
-	inline deWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** \brief Set parent world or NULL. */
-	void SetParentWorld( deWorld *world );
+	void SetParentWorld(deWorld *world);
 	
 	/** \brief Previous speaker in the parent world linked list. */
-	inline deSpeaker *GetLLWorldPrev() const{ return pLLWorldPrev; }
+	inline deSpeaker *GetLLWorldPrev() const{return pLLWorldPrev;}
 	
 	/** \brief Set next speaker in the parent world linked list. */
-	void SetLLWorldPrev( deSpeaker *speaker );
+	void SetLLWorldPrev(deSpeaker *speaker);
 	
 	/** \brief Next speaker in the parent world linked list. */
-	inline deSpeaker *GetLLWorldNext() const{ return pLLWorldNext; }
+	inline deSpeaker *GetLLWorldNext() const{return pLLWorldNext;}
 	
 	/** \brief Set next speaker in the parent world linked list. */
-	void SetLLWorldNext( deSpeaker *speaker );
+	void SetLLWorldNext(deSpeaker *speaker);
 	/*@}*/
 	
 	
@@ -355,22 +355,22 @@ public:
 	/** \name Linked list microphone */
 	/*@{*/
 	/** \brief Parent microphone or NULL. */
-	inline deMicrophone *GetParentMicrophone() const{ return pParentMicrophone; }
+	inline deMicrophone *GetParentMicrophone() const{return pParentMicrophone;}
 	
 	/** \brief Set parent microphone or NULL. */
-	void SetParentMicrophone( deMicrophone *microphone );
+	void SetParentMicrophone(deMicrophone *microphone);
 	
 	/** \brief Previous speaker in the parent microphone linked list. */
-	inline deSpeaker *GetLLMicrophonePrev() const{ return pLLMicrophonePrev; }
+	inline deSpeaker *GetLLMicrophonePrev() const{return pLLMicrophonePrev;}
 	
 	/** \brief Set next speaker in the parent microphone linked list. */
-	void SetLLMicrophonePrev( deSpeaker *speaker );
+	void SetLLMicrophonePrev(deSpeaker *speaker);
 	
 	/** \brief Next speaker in the parent microphone linked list. */
-	inline deSpeaker *GetLLMicrophoneNext() const{ return pLLMicrophoneNext; }
+	inline deSpeaker *GetLLMicrophoneNext() const{return pLLMicrophoneNext;}
 	
 	/** \brief Set next speaker in the parent microphone linked list. */
-	void SetLLMicrophoneNext( deSpeaker *speaker );
+	void SetLLMicrophoneNext(deSpeaker *speaker);
 	/*@}*/
 	
 	

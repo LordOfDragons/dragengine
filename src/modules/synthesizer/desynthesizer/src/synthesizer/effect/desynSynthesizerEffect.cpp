@@ -42,16 +42,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynSynthesizerEffect::desynSynthesizerEffect( const desynSynthesizer &synthesizer,
-int firstLink, desynSynthesizerSource &source, const deSynthesizerEffect &effect ) :
-pSynthesizer( synthesizer ),
-pSource( source ),
-pDisabled( true ),
-pStateDataOffset( 0 ),
+desynSynthesizerEffect::desynSynthesizerEffect(const desynSynthesizer &synthesizer,
+int firstLink, desynSynthesizerSource &source, const deSynthesizerEffect &effect) :
+pSynthesizer(synthesizer),
+pSource(source),
+pDisabled(true),
+pStateDataOffset(0),
 
-pTargetStrength( synthesizer, firstLink, effect.GetTargetStrength() ),
+pTargetStrength(synthesizer, firstLink, effect.GetTargetStrength()),
 
-pPreviousEffect( NULL ){
+pPreviousEffect(NULL){
 }
 
 desynSynthesizerEffect::~desynSynthesizerEffect(){
@@ -66,57 +66,57 @@ deDESynthesizer &desynSynthesizerEffect::GetModule() const{
 	return pSynthesizer.GetModule();
 }
 
-void desynSynthesizerEffect::SetDisabled( bool disabled ){
+void desynSynthesizerEffect::SetDisabled(bool disabled){
 	pDisabled = disabled;
 }
 
-void desynSynthesizerEffect::SetStateDataOffset( int offset ){
-	pStateDataOffset = decMath::max( offset, 0 );
+void desynSynthesizerEffect::SetStateDataOffset(int offset){
+	pStateDataOffset = decMath::max(offset, 0);
 }
 
 
 
-void desynSynthesizerEffect::SetPreviousEffect( desynSynthesizerEffect *effect ){
+void desynSynthesizerEffect::SetPreviousEffect(desynSynthesizerEffect *effect){
 	pPreviousEffect = effect;
 }
 
 
 
-float desynSynthesizerEffect::GetStrength( const desynSynthesizerInstance &instance, int sample ) const{
-	return pTargetStrength.GetValue( instance, sample, 1.0f );
+float desynSynthesizerEffect::GetStrength(const desynSynthesizerInstance &instance, int sample) const{
+	return pTargetStrength.GetValue(instance, sample, 1.0f);
 }
 
 
 
-int desynSynthesizerEffect::StateDataSize( int offset ){
+int desynSynthesizerEffect::StateDataSize(int offset){
 	pStateDataOffset = offset;
 	return 0;
 }
 
-void desynSynthesizerEffect::InitStateData( char *stateData ){
+void desynSynthesizerEffect::InitStateData(char *stateData){
 }
 
-void desynSynthesizerEffect::CleanUpStateData( char *stateData ){
+void desynSynthesizerEffect::CleanUpStateData(char *stateData){
 }
 
 
 
-void desynSynthesizerEffect::GenerateSound( const desynSynthesizerInstance &instance,
-char *stateData, float *buffer, int samples, float curveOffset, float curveFactor ){
-	if( pPreviousEffect ){
-		pPreviousEffect->GenerateSound( instance, stateData, buffer, samples, curveOffset, curveFactor );
+void desynSynthesizerEffect::GenerateSound(const desynSynthesizerInstance &instance,
+char *stateData, float *buffer, int samples, float curveOffset, float curveFactor){
+	if(pPreviousEffect){
+		pPreviousEffect->GenerateSound(instance, stateData, buffer, samples, curveOffset, curveFactor);
 		
 	}else{
-		pSource.GenerateSourceSound( instance, stateData, buffer, samples, curveOffset, curveFactor );
+		pSource.GenerateSourceSound(instance, stateData, buffer, samples, curveOffset, curveFactor);
 	}
 }
 
-void desynSynthesizerEffect::SkipSound( const desynSynthesizerInstance &instance,
-char *stateData, int samples, float curveOffset, float curveFactor ){
-	if( pPreviousEffect ){
-		pPreviousEffect->SkipSound( instance, stateData, samples, curveOffset, curveFactor );
+void desynSynthesizerEffect::SkipSound(const desynSynthesizerInstance &instance,
+char *stateData, int samples, float curveOffset, float curveFactor){
+	if(pPreviousEffect){
+		pPreviousEffect->SkipSound(instance, stateData, samples, curveOffset, curveFactor);
 		
 	}else{
-		pSource.SkipSourceSound( instance, stateData, samples, curveOffset, curveFactor );
+		pSource.SkipSourceSound(instance, stateData, samples, curveOffset, curveFactor);
 	}
 }

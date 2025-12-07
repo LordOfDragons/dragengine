@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound decoder. */
-	deSoundDecoder( deSoundManager &manager, deSound *sound );
+	deSoundDecoder(deSoundManager &manager, deSound *sound);
 	
 protected:
 	/**
@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound. */
-	deSound *GetSound() const{ return pSound; }
+	deSound *GetSound() const{return pSound;}
 	
 	
 	
@@ -87,7 +87,7 @@ public:
 	int GetPosition();
 	
 	/** \brief Set file position in samples from the beginning. */
-	void SetPosition( int position );
+	void SetPosition(int position);
 	
 	/**
 	 * \brief Read chunk of sound data from current file position and advance.
@@ -98,7 +98,7 @@ public:
 	 * has been reached. If reading fails an error is signaled using the engine error
 	 * signaling and 0 returned.
 	 */
-	int ReadSamples( void *buffer, int size );
+	int ReadSamples(void *buffer, int size);
 	/*@}*/
 	
 	
@@ -106,10 +106,10 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Decoder peer. */
-	inline deBaseSoundDecoder *GetPeerSound() const{ return pPeerSound; }
+	inline deBaseSoundDecoder *GetPeerSound() const{return pPeerSound;}
 	
 	/** \brief Set decoder peer. */
-	void SetPeerSound( deBaseSoundDecoder *peer );
+	void SetPeerSound(deBaseSoundDecoder *peer);
 	/*@}*/
 	
 	
@@ -120,22 +120,22 @@ public:
 	 */
 	/*@{*/
 	/** \brief Previous resource in the resource manager linked list. */
-	inline deSoundDecoder *GetLLManagerPrev() const{ return pLLManagerPrev; }
+	inline deSoundDecoder *GetLLManagerPrev() const{return pLLManagerPrev;}
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	void SetLLManagerPrev( deSoundDecoder *resource );
+	void SetLLManagerPrev(deSoundDecoder *resource);
 	
 	/** \brief Next resource in the resource manager linked list. */
-	inline deSoundDecoder *GetLLManagerNext() const{ return pLLManagerNext; }
+	inline deSoundDecoder *GetLLManagerNext() const{return pLLManagerNext;}
 	
 	/**
 	 * \brief Set next resource in the resource manager linked list.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	void SetLLManagerNext( deSoundDecoder *resource );
+	void SetLLManagerNext(deSoundDecoder *resource);
 	
 	/**
 	 * \brief Marks the resource leaking.

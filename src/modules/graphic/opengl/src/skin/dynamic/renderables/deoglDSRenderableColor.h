@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderable. */
-	deoglDSRenderableColor( deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable );
+	deoglDSRenderableColor(deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable);
 	
 	/** Clean up peer. */
 	virtual ~deoglDSRenderableColor();
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Renderable. */
-	inline const deDSRenderableColor &GetRenderableColor() const{ return pRenderableColor; }
+	inline const deDSRenderableColor &GetRenderableColor() const{return pRenderableColor;}
 	
 	/** Render renderable. */
 	virtual deoglRDSRenderable *GetRRenderable() const;

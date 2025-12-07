@@ -40,13 +40,13 @@
 /////////////////////////////////
 
 deoalSoundRayInteractionList::deoalSoundRayInteractionList() :
-pRays( NULL ),
-pCount( 0 ),
-pSize( 0 ){
+pRays(NULL),
+pCount(0),
+pSize(0){
 }
 
 deoalSoundRayInteractionList::~deoalSoundRayInteractionList(){
-	if( pRays ){
+	if(pRays){
 		delete [] pRays;
 	}
 }
@@ -56,44 +56,44 @@ deoalSoundRayInteractionList::~deoalSoundRayInteractionList(){
 // Manegement
 ///////////////
 
-const deoalSoundRayInteraction &deoalSoundRayInteractionList::GetAt( int index ) const{
-	if( index < 0 || index >= pCount ){
-		DETHROW( deeInvalidParam );
+const deoalSoundRayInteraction &deoalSoundRayInteractionList::GetAt(int index) const{
+	if(index < 0 || index >= pCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pRays[ index ];
+	return pRays[index];
 }
 
 deoalSoundRayInteraction &deoalSoundRayInteractionList::Add(){
-	if( pCount == pSize ){
+	if(pCount == pSize){
 		const int newSize = pSize + 10;
-		deoalSoundRayInteraction * const newArray = new deoalSoundRayInteraction[ newSize ];
-		if( pRays ){
-			memcpy( newArray, pRays, sizeof( deoalSoundRayInteraction ) * pSize );
+		deoalSoundRayInteraction * const newArray = new deoalSoundRayInteraction[newSize];
+		if(pRays){
+			memcpy(newArray, pRays, sizeof(deoalSoundRayInteraction) * pSize);
 			delete [] pRays;
 		}
 		pRays = newArray;
 		pSize = newSize;
 	}
 	
-	return pRays[ pCount++ ];
+	return pRays[pCount++];
 }
 
 void deoalSoundRayInteractionList::RemoveAll(){
 	pCount = 0;
 }
 
-void deoalSoundRayInteractionList::ReserveSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void deoalSoundRayInteractionList::ReserveSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
-	if( size <= pSize ){
+	if(size <= pSize){
 		return;
 	}
 	
-	deoalSoundRayInteraction * const newArray = new deoalSoundRayInteraction[ size ];
-	if( pRays ){
-		memcpy( newArray, pRays, sizeof( deoalSoundRayInteraction ) * pSize );
+	deoalSoundRayInteraction * const newArray = new deoalSoundRayInteraction[size];
+	if(pRays){
+		memcpy(newArray, pRays, sizeof(deoalSoundRayInteraction) * pSize);
 		delete [] pRays;
 	}
 	pRays = newArray;
@@ -106,18 +106,18 @@ void deoalSoundRayInteractionList::ReserveSize( int size ){
 //////////////
 
 deoalSoundRayInteractionList &deoalSoundRayInteractionList::operator=(
-const deoalSoundRayInteractionList &list ){
+const deoalSoundRayInteractionList &list){
 	RemoveAll();
-	return operator+=( list );
+	return operator+=(list);
 }
 
 deoalSoundRayInteractionList &deoalSoundRayInteractionList::operator+=(
-const deoalSoundRayInteractionList &list ){
-	ReserveSize( pCount + list.pCount );
+const deoalSoundRayInteractionList &list){
+	ReserveSize(pCount + list.pCount);
 	
 	int i;
-	for( i=0; i<list.pCount; i++ ){
-		Add() = list.pRays[ i ];
+	for(i=0; i<list.pCount; i++){
+		Add() = list.pRays[i];
 	}
 	return *this;
 }

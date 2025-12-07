@@ -54,31 +54,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnState::debnState( deNetworkState &state ) :
-pState( state ),
-pValues( NULL ),
-pValueCount( 0 ),
-pValueSize( 0 ),
-pLinks( NULL ),
-pParentWorld( NULL )
+debnState::debnState(deNetworkState &state) :
+pState(state),
+pValues(NULL),
+pValueCount(0),
+pValueSize(0),
+pLinks(NULL),
+pParentWorld(NULL)
 {
 	pLinks = new debnStateLinkList;
 }
 
 debnState::~debnState(){
-	if( pLinks ){
+	if(pLinks){
 		const int count = pLinks->GetLinkCount();
 		int i;
-		for( i=0; i<count; i++ ){
-			pLinks->GetLinkAt( i )->DropState();
+		for(i=0; i<count; i++){
+			pLinks->GetLinkAt(i)->DropState();
 		}
 		delete pLinks;
 	}
 	
-	if( pValues ){
-		while( pValueCount > 0 ){
+	if(pValues){
+		while(pValueCount > 0){
 			pValueCount--;
-			delete pValues[ pValueCount ];
+			delete pValues[pValueCount];
 		}
 		delete [] pValues;
 	}
@@ -92,141 +92,141 @@ debnState::~debnState(){
 void debnState::Update(){
 }
 
-void debnState::LinkReadValues( decBaseFileReader &reader, debnStateLink &link ){
+void debnState::LinkReadValues(decBaseFileReader &reader, debnStateLink &link){
 	deBaseScriptingNetworkState * const scrState = pState.GetPeerScripting();
 	const int count = reader.ReadByte();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		const int index = reader.ReadUShort();
-		if( index < 0 || index >= pValueCount ){
-			DETHROW( deeInvalidParam );
+		if(index < 0 || index >= pValueCount){
+			DETHROW(deeInvalidParam);
 		}
 		
-		pValues[ index ]->ReadValue( reader );
-		InvalidateValueExcept( index, link );
+		pValues[index]->ReadValue(reader);
+		InvalidateValueExcept(index, link);
 		
-		if( scrState ){
-			scrState->StateValueChanged( index );
+		if(scrState){
+			scrState->StateValueChanged(index);
 		}
 	}
 	
-	link.SetChanged( link.HasChangedValues() );
+	link.SetChanged(link.HasChangedValues());
 }
 
-void debnState::LinkReadAllValues( decBaseFileReader &reader, debnStateLink &link ){
+void debnState::LinkReadAllValues(decBaseFileReader &reader, debnStateLink &link){
 	deBaseScriptingNetworkState * const scrState = pState.GetPeerScripting();
 	const int count = pState.GetValueCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pValues[ i ]->ReadValue( reader );
-		InvalidateValue( i );
+	for(i=0; i<count; i++){
+		pValues[i]->ReadValue(reader);
+		InvalidateValue(i);
 		
-		if( scrState ){
-			scrState->StateValueChanged( i );
+		if(scrState){
+			scrState->StateValueChanged(i);
 		}
 	}
 	
-	if( ! link.HasChangedValues() ){
-		link.SetChanged( false );
+	if(! link.HasChangedValues()){
+		link.SetChanged(false);
 	}
 }
 
-bool debnState::LinkReadAndVerifyAllValues( decBaseFileReader &reader ){
+bool debnState::LinkReadAndVerifyAllValues(decBaseFileReader &reader){
 	deBaseScriptingNetworkState *scrState = pState.GetPeerScripting();
 	int i;
 	
-	if( reader.ReadUShort() != pValueCount ){
+	if(reader.ReadUShort() != pValueCount){
 		return false;
 	}
 	
-	for( i=0; i<pValueCount; i++ ){
-		const eValueTypes type = ( eValueTypes )reader.ReadByte();
-		if( type != pValues[ i ]->GetDataType() ){
+	for(i=0; i<pValueCount; i++){
+		const eValueTypes type = (eValueTypes)reader.ReadByte();
+		if(type != pValues[i]->GetDataType()){
 			return false;
 		}
 		
-		pValues[ i ]->ReadValue( reader );
-		InvalidateValue( i );
+		pValues[i]->ReadValue(reader);
+		InvalidateValue(i);
 		
-		if( scrState ){
-			scrState->StateValueChanged( i );
+		if(scrState){
+			scrState->StateValueChanged(i);
 		}
 	}
 	
 	return i == pValueCount;
 }
 
-void debnState::LinkWriteValues( decBaseFileWriter &writer ){
+void debnState::LinkWriteValues(decBaseFileWriter &writer){
 	int i;
-	for( i=0; i<pValueCount; i++ ){
-		pValues[ i ]->WriteValue( writer );
+	for(i=0; i<pValueCount; i++){
+		pValues[i]->WriteValue(writer);
 	}
 }
 
-void debnState::LinkWriteValuesWithVerify( decBaseFileWriter &writer ){
-	writer.WriteUShort( pValueCount );
+void debnState::LinkWriteValuesWithVerify(decBaseFileWriter &writer){
+	writer.WriteUShort(pValueCount);
 	
 	int i;
-	for( i=0; i<pValueCount; i++ ){
-		writer.WriteByte( ( uint8_t )pValues[ i ]->GetDataType() );
-		pValues[ i ]->WriteValue( writer );
+	for(i=0; i<pValueCount; i++){
+		writer.WriteByte((uint8_t)pValues[i]->GetDataType());
+		pValues[i]->WriteValue(writer);
 	}
 }
 
-void debnState::LinkWriteValues( decBaseFileWriter &writer, debnStateLink &link ){
+void debnState::LinkWriteValues(decBaseFileWriter &writer, debnStateLink &link){
 	int i, changedCount = 0;
-	for( i=0; i<pValueCount; i++ ){
-		if( link.GetValueChangedAt( i ) ){
+	for(i=0; i<pValueCount; i++){
+		if(link.GetValueChangedAt(i)){
 			changedCount++;
 		}
 	}
-	if( changedCount > 255 ){
+	if(changedCount > 255){
 		changedCount = 255;
 	}
 	
-	writer.WriteByte( ( uint8_t )changedCount );
+	writer.WriteByte((uint8_t)changedCount);
 	
-	for( i=0; i<pValueCount; i++ ){
-		if( ! link.GetValueChangedAt( i ) ){
+	for(i=0; i<pValueCount; i++){
+		if(! link.GetValueChangedAt(i)){
 			continue;
 		}
 		
-		writer.WriteUShort( ( uint16_t )i );
-		pValues[ i ]->WriteValue( writer );
+		writer.WriteUShort((uint16_t)i);
+		pValues[i]->WriteValue(writer);
 		
-		link.SetValueChangedAt( i, false );
+		link.SetValueChangedAt(i, false);
 		
 		changedCount--;
-		if( changedCount == 0 ){
+		if(changedCount == 0){
 			break;
 		}
 	}
 	
-	link.SetChanged( link.HasChangedValues() );
+	link.SetChanged(link.HasChangedValues());
 }
 
-void debnState::InvalidateValue( int index ){
+void debnState::InvalidateValue(int index){
 	const int count = pLinks->GetLinkCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pLinks->GetLinkAt( i )->SetValueChangedAt( index, true );
+	for(i=0; i<count; i++){
+		pLinks->GetLinkAt(i)->SetValueChangedAt(index, true);
 	}
 }
 
-void debnState::InvalidateValueExcept( int index, debnStateLink &link ){
+void debnState::InvalidateValueExcept(int index, debnStateLink &link){
 	const int count = pLinks->GetLinkCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		debnStateLink * const updateLink = pLinks->GetLinkAt( i );
-		updateLink->SetValueChangedAt( index, updateLink != &link );
+	for(i=0; i<count; i++){
+		debnStateLink * const updateLink = pLinks->GetLinkAt(i);
+		updateLink->SetValueChangedAt(index, updateLink != &link);
 	}
 }
 
 
 
-void debnState::SetParentWorld( debnWorld *world ){
+void debnState::SetParentWorld(debnWorld *world){
 	pParentWorld = world;
 }
 
@@ -235,32 +235,32 @@ void debnState::SetParentWorld( debnWorld *world ){
 // Notifications
 //////////////////
 
-void debnState::ValueAdded( int index, deNetworkValue *value ){
-	if( ! value ) DETHROW( deeInvalidParam );
+void debnState::ValueAdded(int index, deNetworkValue *value){
+	if(! value) DETHROW(deeInvalidParam);
 	debnVisitorValueCreate visitorCreate;
 	
-	if( pValueCount == pValueSize ){
+	if(pValueCount == pValueSize){
 		int newSize = pValueSize * 3 / 2 + 1;
-		debnValue **newArray = new debnValue*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pValues ){
-			memcpy( newArray, pValues, sizeof( debnValue* ) * pValueSize );
+		debnValue **newArray = new debnValue*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pValues){
+			memcpy(newArray, pValues, sizeof(debnValue*) * pValueSize);
 			delete [] pValues;
 		}
 		pValues = newArray;
 		pValueSize = newSize;
 	}
 	
-	value->Visit( visitorCreate );
-	if( ! visitorCreate.GetValue() ) DETHROW( deeInvalidParam );
+	value->Visit(visitorCreate);
+	if(! visitorCreate.GetValue()) DETHROW(deeInvalidParam);
 	
-	pValues[ pValueCount ] = visitorCreate.GetValue();
+	pValues[pValueCount] = visitorCreate.GetValue();
 	pValueCount++;
 }
 
-void debnState::ValueChanged( int index, deNetworkValue* ){
+void debnState::ValueChanged(int index, deNetworkValue*){
 //	printf( "value %i at state %p changed\n", index, pState );
-	if( ! pValues[ index ]->UpdateValue( false ) ){
+	if(! pValues[index]->UpdateValue(false)){
 		// value did not change enough to require synchronize links
 		return;
 	}
@@ -268,7 +268,7 @@ void debnState::ValueChanged( int index, deNetworkValue* ){
 	const int count = pLinks->GetLinkCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pLinks->GetLinkAt( i )->SetValueChangedAt( index, true );
+	for(i=0; i<count; i++){
+		pLinks->GetLinkAt(i)->SetValueChangedAt(index, true);
 	}
 }

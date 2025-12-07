@@ -41,15 +41,15 @@
 ////////////////////////////
 
 gdeUOCEnvMapProbeSetInfluencePriority::gdeUOCEnvMapProbeSetInfluencePriority(
-gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int newValue ) :
-pObjectClass( NULL ),
-pEnvMapProbe( NULL )
+gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int newValue) :
+pObjectClass(NULL),
+pEnvMapProbe(NULL)
 {
-	if( ! objectClass || ! envMapProbe ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! envMapProbe){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Env-map probe set influence priority" );
+	SetShortInfo("Env-map probe set influence priority");
 	
 	pOldValue = envMapProbe->GetInfluencePriority();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pEnvMapProbe( NULL )
 }
 
 gdeUOCEnvMapProbeSetInfluencePriority::~gdeUOCEnvMapProbeSetInfluencePriority(){
-	if( pEnvMapProbe ){
+	if(pEnvMapProbe){
 		pEnvMapProbe->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCEnvMapProbeSetInfluencePriority::~gdeUOCEnvMapProbeSetInfluencePriority(){
 ///////////////
 
 void gdeUOCEnvMapProbeSetInfluencePriority::Undo(){
-	pEnvMapProbe->SetInfluencePriority( pOldValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetInfluencePriority(pOldValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }
 
 void gdeUOCEnvMapProbeSetInfluencePriority::Redo(){
-	pEnvMapProbe->SetInfluencePriority( pNewValue );
-	pObjectClass->NotifyEnvMapProbeChanged( pEnvMapProbe );
+	pEnvMapProbe->SetInfluencePriority(pNewValue);
+	pObjectClass->NotifyEnvMapProbeChanged(pEnvMapProbe);
 }

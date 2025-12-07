@@ -95,7 +95,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	meWPWorld( meWindowProperties &windowProperties );
+	meWPWorld(meWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up . */
@@ -107,13 +107,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline meWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline meWorld *GetWorld() const{return pWorld;}
 	
 	/** Set world. */
-	void SetWorld( meWorld *world );
+	void SetWorld(meWorld *world);
 	
 	/** Update world. */
 	void UpdateWorld();
@@ -156,7 +156,7 @@ public:
 	void UpdateIdentifierLists();
 	
 	/** Select PFType. */
-	void SelectPFType( mePathFindTestType *type );
+	void SelectPFType(mePathFindTestType *type);
 	
 	
 	
@@ -165,9 +165,9 @@ public:
 	
 	
 	
-	inline igdeAction* GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
-	inline igdeAction* GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
-	inline igdeAction* GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
+	inline igdeAction* GetActionPFTTypeAdd() const{return pActionPFTTypeAdd;}
+	inline igdeAction* GetActionPFTTypeRemove() const{return pActionPFTTypeRemove;}
+	inline igdeAction* GetActionPFTTypeClear() const{return pActionPFTTypeClear;}
 };
 
 #endif

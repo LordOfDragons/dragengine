@@ -43,27 +43,27 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMicrophone::deMicrophone( deMicrophoneManager *manager ) :
-deResource( manager ),
+deMicrophone::deMicrophone(deMicrophoneManager *manager) :
+deResource(manager),
 
-pType( emtPoint ),
+pType(emtPoint),
 
-pMuted( false ),
-pVolume( 1.0f ),
-pSpeakerGain( 1.0f ),
-pEnableAuralization( true ),
+pMuted(false),
+pVolume(1.0f),
+pSpeakerGain(1.0f),
+pEnableAuralization(true),
 
-pSpeakerRoot( NULL ),
-pSpeakerTail( NULL ),
-pSpeakerCount( 0 ),
+pSpeakerRoot(NULL),
+pSpeakerTail(NULL),
+pSpeakerCount(0),
 
-pPeerAudio( NULL ),
+pPeerAudio(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL )
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL)
 {
-	pLayerMask.SetBit( 0 );
+	pLayerMask.SetBit(0);
 }
 
 deMicrophone::~deMicrophone(){
@@ -75,127 +75,127 @@ deMicrophone::~deMicrophone(){
 // Management
 ///////////////
 
-void deMicrophone::SetType( eMicrophoneType type ){
-	if( type < emtPoint || type > emtDirected ){
-		DETHROW( deeInvalidParam );
+void deMicrophone::SetType(eMicrophoneType type){
+	if(type < emtPoint || type > emtDirected){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( type == pType ){
+	if(type == pType){
 		return;
 	}
 	
 	pType = type;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->TypeChanged();
 	}
 }
 
 
 
-void deMicrophone::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deMicrophone::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PositionChanged();
 	}
 }
 
-void deMicrophone::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void deMicrophone::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->OrientationChanged();
 	}
 }
 
-void deMicrophone::SetVelocity( const decVector &velocity ){
-	if( velocity.IsEqualTo( pVelocity ) ){
+void deMicrophone::SetVelocity(const decVector &velocity){
+	if(velocity.IsEqualTo(pVelocity)){
 		return;
 	}
 	
 	pVelocity = velocity;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->VelocityChanged();
 	}
 }
 
 
 
-void deMicrophone::SetMuted( bool muted ){
-	if( muted == pMuted ){
+void deMicrophone::SetMuted(bool muted){
+	if(muted == pMuted){
 		return;
 	}
 	
 	pMuted = muted;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->MutedChanged();
 	}
 }
 
-void deMicrophone::SetVolume( float volume ){
-	if( volume < 0.0f ){
+void deMicrophone::SetVolume(float volume){
+	if(volume < 0.0f){
 		volume = 0.0f;
 	}
 	
-	if( fabsf( volume - pVolume ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(volume - pVolume) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pVolume = volume;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->VolumeChanged();
 	}
 }
 
 
 
-void deMicrophone::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deMicrophone::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->LayerMaskChanged();
 	}
 }
 
-void deMicrophone::SetSpeakerGain( float gain ){
-	gain = decMath::max( gain, 0.0f );
-	if( fabsf( gain - pSpeakerGain ) < FLOAT_SAFE_EPSILON ){
+void deMicrophone::SetSpeakerGain(float gain){
+	gain = decMath::max(gain, 0.0f);
+	if(fabsf(gain - pSpeakerGain) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pSpeakerGain = gain;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SpeakerGainChanged();
 	}
 }
 
 
 
-void deMicrophone::SetEnableAuralization( bool enable ){
-	if( enable == pEnableAuralization ){
+void deMicrophone::SetEnableAuralization(bool enable){
+	if(enable == pEnableAuralization){
 		return;
 	}
 	
 	pEnableAuralization = enable;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->EnableAuralizationChanged();
 	}
 }
@@ -205,66 +205,66 @@ void deMicrophone::SetEnableAuralization( bool enable ){
 // Speakers
 /////////////
 
-void deMicrophone::AddSpeaker( deSpeaker *speaker ){
-	if( ! speaker || speaker->GetParentMicrophone() || speaker->GetParentWorld() ){
-		DETHROW( deeInvalidParam );
+void deMicrophone::AddSpeaker(deSpeaker *speaker){
+	if(! speaker || speaker->GetParentMicrophone() || speaker->GetParentWorld()){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pSpeakerTail ){
-		pSpeakerTail->SetLLMicrophoneNext( speaker );
-		speaker->SetLLMicrophonePrev( pSpeakerTail );
-		speaker->SetLLMicrophoneNext( NULL ); // not required by definition, just to make sure...
+	if(pSpeakerTail){
+		pSpeakerTail->SetLLMicrophoneNext(speaker);
+		speaker->SetLLMicrophonePrev(pSpeakerTail);
+		speaker->SetLLMicrophoneNext(NULL); // not required by definition, just to make sure...
 		
 	}else{
-		speaker->SetLLMicrophonePrev( NULL ); // not required by definition, just to make sure...
-		speaker->SetLLMicrophoneNext( NULL ); // not required by definition, just to make sure...
+		speaker->SetLLMicrophonePrev(NULL); // not required by definition, just to make sure...
+		speaker->SetLLMicrophoneNext(NULL); // not required by definition, just to make sure...
 		pSpeakerRoot = speaker;
 	}
 	
 	pSpeakerTail = speaker;
 	pSpeakerCount++;
-	speaker->SetParentMicrophone( this );
+	speaker->SetParentMicrophone(this);
 	speaker->AddReference();
 	
-	if( pPeerAudio ){
-		pPeerAudio->SpeakerAdded( speaker );
+	if(pPeerAudio){
+		pPeerAudio->SpeakerAdded(speaker);
 	}
 }
 
-void deMicrophone::RemoveSpeaker( deSpeaker *speaker ){
-	if( ! speaker || speaker->GetParentMicrophone() != this ){
-		DETHROW( deeInvalidParam );
+void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
+	if(! speaker || speaker->GetParentMicrophone() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( speaker->GetLLMicrophonePrev() ){
-		speaker->GetLLMicrophonePrev()->SetLLMicrophoneNext( speaker->GetLLMicrophoneNext() );
+	if(speaker->GetLLMicrophonePrev()){
+		speaker->GetLLMicrophonePrev()->SetLLMicrophoneNext(speaker->GetLLMicrophoneNext());
 	}
-	if( speaker->GetLLMicrophoneNext() ){
-		speaker->GetLLMicrophoneNext()->SetLLMicrophonePrev( speaker->GetLLMicrophonePrev() );
+	if(speaker->GetLLMicrophoneNext()){
+		speaker->GetLLMicrophoneNext()->SetLLMicrophonePrev(speaker->GetLLMicrophonePrev());
 	}
-	if( speaker == pSpeakerRoot ){
+	if(speaker == pSpeakerRoot){
 		pSpeakerRoot = speaker->GetLLMicrophoneNext();
 	}
-	if( speaker == pSpeakerTail ){
+	if(speaker == pSpeakerTail){
 		pSpeakerTail = speaker->GetLLMicrophonePrev();
 	}
 	pSpeakerCount--;
 	
-	speaker->SetParentMicrophone( NULL );
-	speaker->SetLLMicrophonePrev( NULL );
-	speaker->SetLLMicrophoneNext( NULL );
-	if( pPeerAudio ){
-		pPeerAudio->SpeakerRemoved( speaker );
+	speaker->SetParentMicrophone(NULL);
+	speaker->SetLLMicrophonePrev(NULL);
+	speaker->SetLLMicrophoneNext(NULL);
+	if(pPeerAudio){
+		pPeerAudio->SpeakerRemoved(speaker);
 	}
 	speaker->FreeReference();
 }
 
 void deMicrophone::RemoveAllSpeakers(){
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->AllSpeakersRemoved();
 	}
 	
-	while( pSpeakerTail ){
+	while(pSpeakerTail){
 		deSpeaker * const next = pSpeakerTail->GetLLMicrophonePrev();
 		pSpeakerTail->FreeReference();
 		pSpeakerTail = next;
@@ -278,12 +278,12 @@ void deMicrophone::RemoveAllSpeakers(){
 // System Peers
 /////////////////
 
-void deMicrophone::SetPeerAudio( deBaseAudioMicrophone *audMicrophone ){
-	if( audMicrophone == pPeerAudio ){
+void deMicrophone::SetPeerAudio(deBaseAudioMicrophone *audMicrophone){
+	if(audMicrophone == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	
@@ -295,15 +295,15 @@ void deMicrophone::SetPeerAudio( deBaseAudioMicrophone *audMicrophone ){
 // Linked List
 ////////////////
 
-void deMicrophone::SetParentWorld( deWorld *world ){
+void deMicrophone::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deMicrophone::SetLLWorldPrev( deMicrophone *microphone ){
+void deMicrophone::SetLLWorldPrev(deMicrophone *microphone){
 	pLLWorldPrev = microphone;
 }
 
-void deMicrophone::SetLLWorldNext( deMicrophone *microphone ){
+void deMicrophone::SetLLWorldNext(deMicrophone *microphone){
 	pLLWorldNext = microphone;
 }
 
@@ -313,7 +313,7 @@ void deMicrophone::SetLLWorldNext( deMicrophone *microphone ){
 //////////////////////
 
 void deMicrophone::pCleanUp(){
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 		pPeerAudio = NULL;
 	}

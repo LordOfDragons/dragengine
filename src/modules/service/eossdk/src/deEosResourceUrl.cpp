@@ -32,30 +32,30 @@
 // Constructor, destructor
 ////////////////////////////
 
-deEosResourceUrl::deEosResourceUrl( const decString &nurl ) :
-url( nurl )
+deEosResourceUrl::deEosResourceUrl(const decString &nurl) :
+url(nurl)
 {
-	const int index = nurl.FindString( "://" );
-	DEASSERT_TRUE( index != -1 );
+	const int index = nurl.FindString("://");
+	DEASSERT_TRUE(index != -1);
 	
-	type = nurl.GetLeft( index );
-	components = nurl.GetMiddle( index + 3 ).Split( '/' );
+	type = nurl.GetLeft(index);
+	components = nurl.GetMiddle(index + 3).Split('/');
 }
 
 
 // Management
 ///////////////
 
-const decString &deEosResourceUrl::getComponentAt( int index, const char *paramName ) const{
-	if( index < 0 || index >= components.GetCount() ){
-		DETHROW_INFO( deeInvalidParam, paramName );
+const decString &deEosResourceUrl::getComponentAt(int index, const char *paramName) const{
+	if(index < 0 || index >= components.GetCount()){
+		DETHROW_INFO(deeInvalidParam, paramName);
 	}
-	return components.GetAt( index );
+	return components.GetAt(index);
 }
 
-decString deEosResourceUrl::FormatUrl( const char *part1, const char *part2,
-const char *part3, const char *part4 ){
+decString deEosResourceUrl::FormatUrl(const char *part1, const char *part2,
+const char *part3, const char *part4){
 	decString url;
-	url.Format( "res://%s/%s/%s/%s", part1, part2, part3, part4 );
+	url.Format("res://%s/%s/%s/%s", part1, part2, part3, part4);
 	return url;
 }

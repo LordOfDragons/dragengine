@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared video player list. */
-	deoglSharedVideoPlayerList( deGraphicOpenGl &ogl );
+	deoglSharedVideoPlayerList(deGraphicOpenGl &ogl);
 	
 	/** Clean up shared video player list. */
 	~deoglSharedVideoPlayerList();
@@ -68,13 +68,13 @@ public:
 	 * Shared video player with matching parameters.
 	 * \details Creates the shared video player if not existing yet.
 	 */
-	deoglSharedVideoPlayer *GetVideoPlayerFor( deVideo *video, int currentFrame, float playbackSpeed );
+	deoglSharedVideoPlayer *GetVideoPlayerFor(deVideo *video, int currentFrame, float playbackSpeed);
 	
 	/**
 	 * Update all shared video players.
 	 * \details Called from the main thread.
 	 */
-	void UpdateAll( float elapsed );
+	void UpdateAll(float elapsed);
 	
 	/**
 	 * Update render thread counterparts of all shared video players.
@@ -86,7 +86,7 @@ public:
 	 * Remove shared video player.
 	 * \details For use by deoglSharedVideoPlayer only.
 	 */
-	void RemoveSharedVideoPlayer( deoglSharedVideoPlayer *sharedVideoPlayer );
+	void RemoveSharedVideoPlayer(deoglSharedVideoPlayer *sharedVideoPlayer);
 	/*@}*/
 };
 

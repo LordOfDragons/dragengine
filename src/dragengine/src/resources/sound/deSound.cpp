@@ -39,44 +39,44 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSound::deSound( deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
+deSound::deSound(deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
 	TIME_SYSTEM modificationTime, int bytesPerSample, int sampleRate, int sampleCount,
-	int channelCount ) :
-deFileResource( manager, vfs, filename, modificationTime ),
+	int channelCount) :
+deFileResource(manager, vfs, filename, modificationTime),
 
-pBytesPerSample( bytesPerSample ),
-pSampleCount( sampleCount ),
-pChannelCount( channelCount ),
-pSampleRate( sampleRate ),
+pBytesPerSample(bytesPerSample),
+pSampleCount(sampleCount),
+pChannelCount(channelCount),
+pSampleRate(sampleRate),
 
-pPeerAudio( NULL ),
-pPeerSynthesizer( NULL )
+pPeerAudio(NULL),
+pPeerSynthesizer(NULL)
 {
-	if( bytesPerSample < 1 || sampleCount < 0 || sampleRate < 1 || channelCount < 1 ){
-		DETHROW( deeInvalidParam );
+	if(bytesPerSample < 1 || sampleCount < 0 || sampleRate < 1 || channelCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pPlayTime = ( float )( sampleCount / sampleRate )
-		+ ( float )( sampleCount % sampleRate ) / ( float )sampleRate;
+	pPlayTime = (float)(sampleCount / sampleRate)
+		+ (float)(sampleCount % sampleRate) / (float)sampleRate;
 }
 
-deSound::deSound( deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
-	TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ),
+deSound::deSound(deSoundManager *manager, deVirtualFileSystem *vfs, const char *filename,
+	TIME_SYSTEM modificationTime) :
+deFileResource(manager, vfs, filename, modificationTime),
 
-pBytesPerSample( 0 ),
-pSampleCount( 0 ),
-pChannelCount( 0 ),
-pSampleRate( 0 ),
-pPlayTime( 0.0f ),
+pBytesPerSample(0),
+pSampleCount(0),
+pChannelCount(0),
+pSampleRate(0),
+pPlayTime(0.0f),
 
-pPeerAudio( NULL ),
-pPeerSynthesizer( NULL ){
+pPeerAudio(NULL),
+pPeerSynthesizer(NULL){
 }
 
 deSound::~deSound(){
-	SetPeerAudio( NULL ),
-	SetPeerSynthesizer( NULL );
+	SetPeerAudio(NULL),
+	SetPeerSynthesizer(NULL);
 }
 
 
@@ -89,24 +89,24 @@ deSound::~deSound(){
 // System Peers
 /////////////////
 
-void deSound::SetPeerAudio( deBaseAudioSound *peer ){
-	if( peer == pPeerAudio ){
+void deSound::SetPeerAudio(deBaseAudioSound *peer){
+	if(peer == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	
 	pPeerAudio = peer;
 }
 
-void deSound::SetPeerSynthesizer( deBaseSynthesizerSound *peer ){
-	if( peer == pPeerSynthesizer ){
+void deSound::SetPeerSynthesizer(deBaseSynthesizerSound *peer){
+	if(peer == pPeerSynthesizer){
 		return;
 	}
 	
-	if( pPeerSynthesizer ){
+	if(pPeerSynthesizer){
 		delete pPeerSynthesizer;
 	}
 	
@@ -118,10 +118,10 @@ void deSound::SetPeerSynthesizer( deBaseSynthesizerSound *peer ){
 // Special
 ////////////
 
-void deSound::FinalizeConstruction( int bytesPerSample, int sampleRate,
-int sampleCount, int channelCount ){
-	if( bytesPerSample < 1 || sampleCount < 0 || sampleRate < 1 || channelCount < 1 ){
-		DETHROW( deeInvalidParam );
+void deSound::FinalizeConstruction(int bytesPerSample, int sampleRate,
+int sampleCount, int channelCount){
+	if(bytesPerSample < 1 || sampleCount < 0 || sampleRate < 1 || channelCount < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBytesPerSample = bytesPerSample;
@@ -129,6 +129,6 @@ int sampleCount, int channelCount ){
 	pChannelCount = channelCount;
 	pSampleRate = sampleRate;
 	
-	pPlayTime = ( float )( sampleCount / sampleRate )
-		+ ( float )( sampleCount % sampleRate ) / ( float )sampleRate;
+	pPlayTime = (float)(sampleCount / sampleRate)
+		+ (float)(sampleCount % sampleRate) / (float)sampleRate;
 }

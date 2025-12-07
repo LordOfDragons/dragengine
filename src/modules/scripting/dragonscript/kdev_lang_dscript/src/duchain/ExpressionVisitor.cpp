@@ -32,70 +32,70 @@ using KDevelop::DocumentRange;
 
 namespace DragonScript {
 
-ExpressionVisitor::ExpressionVisitor( const EditorIntegrator &editorIntegrator, const DUContext *ctx ) :
-DynamicLanguageExpressionVisitor( ctx ),
-pEditorIntegrator( editorIntegrator )
+ExpressionVisitor::ExpressionVisitor(const EditorIntegrator &editorIntegrator, const DUContext *ctx) :
+DynamicLanguageExpressionVisitor(ctx),
+pEditorIntegrator(editorIntegrator)
 {
-	Q_ASSERT( context() );
-	Q_ASSERT( context()->topContext() );
+	Q_ASSERT(context());
+	Q_ASSERT(context()->topContext());
 }
 
 
 
-void ExpressionVisitor::setAllowVoid( bool allowVoid ){
+void ExpressionVisitor::setAllowVoid(bool allowVoid){
 	pAllowVoid = allowVoid;
 }
 
 
 
-void ExpressionVisitor::visitExpressionConstant( ExpressionConstantAst *node ){
-	const int kind = pEditorIntegrator.session().tokenStream()->at( node->value ).kind;
+void ExpressionVisitor::visitExpressionConstant(ExpressionConstantAst *node){
+	const int kind = pEditorIntegrator.session().tokenStream()->at(node->value).kind;
 	KDevelop::AbstractType::Ptr typePtr;
 	ClassDeclaration *classDecl;
 	DeclarationPointer declPtr;
 	
-	switch( kind ){
+	switch(kind){
 	case TokenTypeWrapper::TokenType::Token_LITERAL_BYTE:
-		Helpers::getTypeByte( declPtr, typePtr );
-		encounter( typePtr, declPtr );
+		Helpers::getTypeByte(declPtr, typePtr);
+		encounter(typePtr, declPtr);
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_LITERAL_INTEGER:
-		Helpers::getTypeInt( declPtr, typePtr );
-		encounter( typePtr, declPtr );
+		Helpers::getTypeInt(declPtr, typePtr);
+		encounter(typePtr, declPtr);
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_LITERAL_FLOAT:
-		Helpers::getTypeFloat( declPtr, typePtr );
-		encounter( typePtr, declPtr );
+		Helpers::getTypeFloat(declPtr, typePtr);
+		encounter(typePtr, declPtr);
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_LITERAL_STRING:
-		Helpers::getTypeString( declPtr, typePtr );
-		encounter( typePtr, declPtr );
+		Helpers::getTypeString(declPtr, typePtr);
+		encounter(typePtr, declPtr);
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_TRUE:
 	case TokenTypeWrapper::TokenType::Token_FALSE:
-		Helpers::getTypeBool( declPtr, typePtr );
-		encounter( typePtr, declPtr );
+		Helpers::getTypeBool(declPtr, typePtr);
+		encounter(typePtr, declPtr);
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_NULL:
-		encounter( Helpers::getTypeNull() );
+		encounter(Helpers::getTypeNull());
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_THIS:
-		classDecl = Helpers::thisClassDeclFor( DUChainPointer<const DUContext>( context() ) );
-		if( classDecl ){
-			encounter( classDecl->abstractType(), DeclarationPointer( classDecl ) );
+		classDecl = Helpers::thisClassDeclFor(DUChainPointer<const DUContext>(context()));
+		if(classDecl){
+			encounter(classDecl->abstractType(), DeclarationPointer(classDecl));
 		}
 		break;
 		
 	case TokenTypeWrapper::TokenType::Token_SUPER:
-		classDecl = Helpers::superClassDeclFor( DUChainPointer<const DUContext>( context() ) );
-		if( classDecl ){
-			encounter( classDecl->abstractType(), DeclarationPointer( classDecl ) );
+		classDecl = Helpers::superClassDeclFor(DUChainPointer<const DUContext>(context()));
+		if(classDecl){
+			encounter(classDecl->abstractType(), DeclarationPointer(classDecl));
 		}
 		break;
 		
@@ -105,75 +105,75 @@ void ExpressionVisitor::visitExpressionConstant( ExpressionConstantAst *node ){
 	}
 }
 
-void ExpressionVisitor::visitFullyQualifiedClassname( FullyQualifiedClassnameAst *node ){
-	if( ! node->nameSequence ){
+void ExpressionVisitor::visitFullyQualifiedClassname(FullyQualifiedClassnameAst *node){
+	if(! node->nameSequence){
 		return;
 	}
-	if( node->nameSequence->count() == 0 ){
+	if(node->nameSequence->count() == 0){
 		qDebug() << "ExpressionVisitor::visitFullyQualifiedClassname: node->nameSequence->count() is 0!!!!!!";
 		return;
 	}
 	
 	const KDevPG::ListNode<IdentifierAst*> *iter = node->nameSequence->front();
 	const KDevPG::ListNode<IdentifierAst*> *end = iter;
-	DUChainPointer<const DUContext> searchContext( context() );
-	CursorInRevision findNameBefore( pEditorIntegrator.findPosition( *iter->element, EditorIntegrator::BackEdge ) );
+	DUChainPointer<const DUContext> searchContext(context());
+	CursorInRevision findNameBefore(pEditorIntegrator.findPosition(*iter->element, EditorIntegrator::BackEdge));
 	bool checkForVoid = pAllowVoid;
 	
 	do{
 		/*
 		CursorInRevision findNameBefore;
-		if( m_scanUntilCursor.isValid() ){
+		if(m_scanUntilCursor.isValid()){
 			findNameBefore = m_scanUntilCursor;
 			
-		}else if( m_forceGlobalSearching ){
+		}else if(m_forceGlobalSearching){
 			findNameBefore = CursorInRevision::invalid();
 			
 		}else{
-			findNameBefore = pEditorIntegrator.findPosition( *iter->element, EditorIntegrator::BackEdge );
+			findNameBefore = pEditorIntegrator.findPosition(*iter->element, EditorIntegrator::BackEdge);
 		}*/
 		
-		const QString name( pEditorIntegrator.tokenText( iter->element->name ) );
+		const QString name(pEditorIntegrator.tokenText(iter->element->name));
 		
 		Declaration *decl = nullptr;
 		
-		if( checkForVoid && name == "void" ){
-			setLastIsAlias( false );
-			encounter( Helpers::getTypeVoid() );
+		if(checkForVoid && name == "void"){
+			setLastIsAlias(false);
+			encounter(Helpers::getTypeVoid());
 			searchContext = nullptr;
 			
 		}else{
-			if( searchContext ){
-				decl = Helpers::declarationForName( name, findNameBefore, searchContext );
+			if(searchContext){
+				decl = Helpers::declarationForName(name, findNameBefore, searchContext);
 			}
 			
-			if( ! decl ){
-				if( m_reportUnknownNames ){
-					addUnknownName( name );
+			if(! decl){
+				if(m_reportUnknownNames){
+					addUnknownName(name);
 				}
 				encounterUnknown();
 				return;
 			}
 			
-			setLastIsAlias( dynamic_cast<AliasDeclaration*>( decl )
-				|| dynamic_cast<ClassDeclaration*>( decl ) );
-			encounter( decl->abstractType(), DeclarationPointer( decl ) );
+			setLastIsAlias(dynamic_cast<AliasDeclaration*>(decl)
+				|| dynamic_cast<ClassDeclaration*>(decl));
+			encounter(decl->abstractType(), DeclarationPointer(decl));
 			
 			searchContext = decl->internalContext();
 		}
 		
 		checkForVoid = false;
-		findNameBefore = CursorInRevision( INT_MAX, INT_MAX );
+		findNameBefore = CursorInRevision(INT_MAX, INT_MAX);
 		iter = iter->next;
-	}while( iter != end );
+	}while(iter != end);
 }
 
-void ExpressionVisitor::addUnknownName( const QString& name ){
-	if( m_parentVisitor ){
-		static_cast<ExpressionVisitor*>( m_parentVisitor )->addUnknownName( name );
+void ExpressionVisitor::addUnknownName(const QString& name){
+	if(m_parentVisitor){
+		static_cast<ExpressionVisitor*>(m_parentVisitor)->addUnknownName(name);
 		
-	}else if( ! m_unknownNames.contains( name ) ){
-		m_unknownNames.insert( name );
+	}else if(! m_unknownNames.contains(name)){
+		m_unknownNames.insert(name);
 	}
 }
 

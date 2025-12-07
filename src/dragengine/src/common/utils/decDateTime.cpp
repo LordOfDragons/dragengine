@@ -50,14 +50,14 @@
 ////////////////////////////
 
 decDateTime::decDateTime(){
-	SetFrom( GetSystemTime() );
+	SetFrom(GetSystemTime());
 }
 
-decDateTime::decDateTime( const TIME_SYSTEM systemTime ){
-	SetFrom( systemTime );
+decDateTime::decDateTime(const TIME_SYSTEM systemTime){
+	SetFrom(systemTime);
 }
 
-decDateTime::decDateTime( const decDateTime &dateTime ){
+decDateTime::decDateTime(const decDateTime &dateTime){
 	pYear = dateTime.pYear;
 	pMonth = dateTime.pMonth;
 	pDay = dateTime.pDay;
@@ -74,27 +74,27 @@ decDateTime::~decDateTime(){
 // management
 ///////////////
 
-void decDateTime::SetYear( int year ){
+void decDateTime::SetYear(int year){
 	pYear = year;
 }
 
-void decDateTime::SetMonth( int month ){
+void decDateTime::SetMonth(int month){
 	pMonth = month;
 }
 
-void decDateTime::SetDay( int day ){
+void decDateTime::SetDay(int day){
 	pDay = day;
 }
 
-void decDateTime::SetHour( int hour ){
+void decDateTime::SetHour(int hour){
 	pHour = hour;
 }
 
-void decDateTime::SetMinute( int minute ){
+void decDateTime::SetMinute(int minute){
 	pMinute = minute;
 }
 
-void decDateTime::SetSecond( int second ){
+void decDateTime::SetSecond(int second){
 	pSecond = second;
 }
 
@@ -103,7 +103,7 @@ void decDateTime::SetSecond( int second ){
 TIME_SYSTEM decDateTime::ToSystemTime() const{
 	tm tmval;
 	
-	memset( &tmval, '\0', sizeof( tmval ) );
+	memset(&tmval, '\0', sizeof(tmval));
 	tmval.tm_year = pYear - 1900;
 	tmval.tm_mon = pMonth;
 	tmval.tm_mday = pDay + 1;
@@ -111,27 +111,27 @@ TIME_SYSTEM decDateTime::ToSystemTime() const{
 	tmval.tm_min = pMinute;
 	tmval.tm_sec = pSecond;
 	
-	const time_t mtime = mktime( &tmval );
-	if( mtime == -1 ){
-		DETHROW( deeInvalidParam );
+	const time_t mtime = mktime(&tmval);
+	if(mtime == -1){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return ( TIME_SYSTEM )mtime;
+	return (TIME_SYSTEM)mtime;
 }
 
-void decDateTime::SetFrom( const TIME_SYSTEM systemTime ){
-	const time_t stime = ( time_t )systemTime;
+void decDateTime::SetFrom(const TIME_SYSTEM systemTime){
+	const time_t stime = (time_t)systemTime;
 	tm tmval;
 	
 #ifdef OS_W32
 	#ifdef OS_W32_VS
-		localtime_s( &tmval, &stime );
+		localtime_s(&tmval, &stime);
 	#else
-		tmval = *localtime( &stime );
+		tmval = *localtime(&stime);
 	#endif
 #else
-	if( ! localtime_r( &stime, &tmval ) ){
-		DETHROW( deeInvalidParam );
+	if(! localtime_r(&stime, &tmval)){
+		DETHROW(deeInvalidParam);
 	}
 #endif // OS_W32
 	
@@ -148,26 +148,26 @@ void decDateTime::SetFrom( const TIME_SYSTEM systemTime ){
 TIME_SYSTEM decDateTime::GetSystemTime(){
 #ifdef OS_UNIX
 	timeval tval;
-	if( gettimeofday( &tval, NULL ) == -1 ){
-		DETHROW( deeInvalidParam );
+	if(gettimeofday(&tval, NULL) == -1){
+		DETHROW(deeInvalidParam);
 	}
-	return ( TIME_SYSTEM )tval.tv_sec;
+	return (TIME_SYSTEM)tval.tv_sec;
 #endif
 	
 #ifdef OS_W32
 	// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
 	// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
 	// until 00:00:00 January 1, 1970 
-	static const uint64_t epoch = ( uint64_t )116444736000000000ULL;
+	static const uint64_t epoch = (uint64_t)116444736000000000ULL;
 	
 	SYSTEMTIME systemTime;
 	FILETIME fileTime;
 	uint64_t time;
 	
-	::GetSystemTime( &systemTime );
-	SystemTimeToFileTime( &systemTime, &fileTime );
-	time = ( uint64_t )fileTime.dwLowDateTime + ( ( uint64_t )fileTime.dwHighDateTime << 32 );
+	::GetSystemTime(&systemTime);
+	SystemTimeToFileTime(&systemTime, &fileTime);
+	time = (uint64_t)fileTime.dwLowDateTime + ((uint64_t)fileTime.dwHighDateTime << 32);
 	
-	return ( TIME_SYSTEM )( ( time - epoch ) / 10000000L );
+	return (TIME_SYSTEM)((time - epoch) / 10000000L);
 #endif
 }

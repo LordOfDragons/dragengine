@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCComponent( gdeOCComponent *component );
+	gdeClipboardDataOCComponent(gdeOCComponent *component);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	gdeOCComponent *GetComponent() const{ return pComponent; }
+	gdeOCComponent *GetComponent() const{return pComponent;}
 	/*@}*/
 };
 

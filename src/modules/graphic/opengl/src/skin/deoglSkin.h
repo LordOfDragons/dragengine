@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin. */
-	deoglSkin( deGraphicOpenGl &ogl, const deSkin &skin );
+	deoglSkin(deGraphicOpenGl &ogl, const deSkin &skin);
 	
 	/** Clean up skin. */
 	virtual ~deoglSkin();
@@ -58,15 +58,15 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl module. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Skin resource. */
-	inline const deSkin &GetSkin() const{ return pSkin; }
+	inline const deSkin &GetSkin() const{return pSkin;}
 	
 	
 	
 	/** Render skin. */
-	inline deoglRSkin *GetRSkin() const{ return pRSkin; }
+	inline deoglRSkin *GetRSkin() const{return pRSkin;}
 
 
 	/** Recreate deoglRSkin. */

@@ -108,7 +108,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create ray trace parallel task. */
-	deoalRTPTEnvProbeFull( deoalRTParallelEnvProbe &owner );
+	deoalRTPTEnvProbeFull(deoalRTParallelEnvProbe &owner);
 	
 protected:
 	/** \brief Clean up ray trace parallel task. */
@@ -129,45 +129,45 @@ public:
 	
 	
 	/** \brief Set world. */
-	void SetWorld( deoalAWorld *world );
+	void SetWorld(deoalAWorld *world);
 	
 	/** \brief Set environment probe. */
-	void SetEnvProbe( const deoalEnvProbe *envProbe );
+	void SetEnvProbe(const deoalEnvProbe *envProbe);
 	
 	/** \brief Set environment probe configuration. */
-	void SetProbeConfig( const deoalRayTraceConfig *probeConfig );
+	void SetProbeConfig(const deoalRayTraceConfig *probeConfig);
 	
 	/** \brief Set index of first ray from configuration to process. */
-	void SetFirstRay( int firstRay );
+	void SetFirstRay(int firstRay);
 	
 	/** \brief Set number of rays from configuration to process. */
-	void SetRayCount( int rayCount );
+	void SetRayCount(int rayCount);
 	
 	/** \brief Listener position. */
-	void SetListenerPosition( const decDVector &position );
+	void SetListenerPosition(const decDVector &position);
 	
 	/** \brief Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
 	/** \brief Minimum extend. */
-	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** \brief Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	/** \brief Gain low frequencies. */
-	inline float GetGainLow() const{ return pGainLow; }
+	inline float GetGainLow() const{return pGainLow;}
 	
 	/** \brief Gain medium frequencies. */
-	inline float GetGainMedium() const{ return pGainMedium; }
+	inline float GetGainMedium() const{return pGainMedium;}
 	
 	/** \brief Gain high frequencies. */
-	inline float GetGainHigh() const{ return pGainHigh; }
+	inline float GetGainHigh() const{return pGainHigh;}
 	
 	/** \brief Delay. */
-	inline float GetDelay() const{ return pDelay; }
+	inline float GetDelay() const{return pDelay;}
 	/*@}*/
 	
 	
@@ -184,8 +184,8 @@ public:
 	
 	
 protected:
-	void pTraceRay( const sTraceRay &ray, const sTraceGain &gain );
-	void pUpdateExtends( const decDVector &position );
+	void pTraceRay(const sTraceRay &ray, const sTraceGain &gain);
+	void pUpdateExtends(const decDVector &position);
 };
 
 #endif

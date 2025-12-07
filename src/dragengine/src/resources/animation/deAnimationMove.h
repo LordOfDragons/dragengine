@@ -103,16 +103,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the move. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name of the move */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Playtime of the move which is the largest time of all keyframes. */
-	inline float GetPlaytime() const{ return pPlaytime; }
+	inline float GetPlaytime() const{return pPlaytime;}
 	
 	/** \brief Set playtime for the move which is the largest time of all keyframes. */
-	void SetPlaytime( float playtime );
+	void SetPlaytime(float playtime);
 	
 	/**
 	 * \brief Frames per second.
@@ -120,7 +120,7 @@ public:
 	 * 
 	 * Used for saving only if animation file format requires sampling.
 	 */
-	inline float GetFPS() const{ return pFPS; }
+	inline float GetFPS() const{return pFPS;}
 	
 	/**
 	 * \brief Set frames per second.
@@ -128,34 +128,34 @@ public:
 	 * 
 	 * Used for saving only if animation file format requires sampling.
 	 */
-	void SetFPS( float fps );
+	void SetFPS(float fps);
 	
 	/** \brief Count of keyframe lists. */
-	inline int GetKeyframeListCount() const{ return pListCount; }
+	inline int GetKeyframeListCount() const{return pListCount;}
 	
 	/** \brief Keyframe at the given index. */
-	deAnimationKeyframeList *GetKeyframeList( int index ) const;
+	deAnimationKeyframeList *GetKeyframeList(int index) const;
 	
 	/** \brief Adds a keyframe list */
-	void AddKeyframeList( deAnimationKeyframeList *list );
+	void AddKeyframeList(deAnimationKeyframeList *list);
 	
 	/**
 	 * \brief Count of keyframe lists.
 	 * \version 1.17
 	 */
-	inline int GetVertexPositionSetKeyframeListCount() const{ return pVertexPositionSetListCount; }
+	inline int GetVertexPositionSetKeyframeListCount() const{return pVertexPositionSetListCount;}
 	
 	/**
 	 * \brief Keyframe at the given index.
 	 * \version 1.17
 	 */
-	deAnimationKeyframeVertexPositionSetList *GetVertexPositionSetKeyframeList( int index ) const;
+	deAnimationKeyframeVertexPositionSetList *GetVertexPositionSetKeyframeList(int index) const;
 	
 	/**
 	 * \brief Adds a keyframe list.
 	 * \version 1.17
 	 */
-	void AddVertexPositionSetKeyframeList( deAnimationKeyframeVertexPositionSetList *list );
+	void AddVertexPositionSetKeyframeList(deAnimationKeyframeVertexPositionSetList *list);
 	
 	/**
 	 * \brief Create bezier curve from bone keyframes.

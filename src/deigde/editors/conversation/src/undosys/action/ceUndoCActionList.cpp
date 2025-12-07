@@ -55,26 +55,26 @@ int ceUndoCActionList::GetCount() const{
 	return pActions.GetCount();
 }
 
-ceUndoCAction *ceUndoCActionList::GetAt( int index ) const{
-	return ( ceUndoCAction* )pActions.GetAt( index );
+ceUndoCAction *ceUndoCActionList::GetAt(int index) const{
+	return (ceUndoCAction*)pActions.GetAt(index);
 }
 
-int ceUndoCActionList::IndexOf( ceUndoCAction *action ) const{
-	return pActions.IndexOf( action );
+int ceUndoCActionList::IndexOf(ceUndoCAction *action) const{
+	return pActions.IndexOf(action);
 }
 
-bool ceUndoCActionList::Has( ceUndoCAction *action ) const{
-	return pActions.Has( action );
+bool ceUndoCActionList::Has(ceUndoCAction *action) const{
+	return pActions.Has(action);
 }
 
-void ceUndoCActionList::Add( ceUndoCAction *action ){
-	if( ! action ) DETHROW( deeInvalidParam );
+void ceUndoCActionList::Add(ceUndoCAction *action){
+	if(! action) DETHROW(deeInvalidParam);
 	
-	pActions.Add( action );
+	pActions.Add(action);
 }
 
-void ceUndoCActionList::Remove( ceUndoCAction *action ){
-	pActions.Remove( action );
+void ceUndoCActionList::Remove(ceUndoCAction *action){
+	pActions.Remove(action);
 }
 
 void ceUndoCActionList::RemoveAll(){
@@ -83,7 +83,7 @@ void ceUndoCActionList::RemoveAll(){
 
 
 
-ceUndoCActionList &ceUndoCActionList::operator=( const ceUndoCActionList &list ){
+ceUndoCActionList &ceUndoCActionList::operator=(const ceUndoCActionList &list){
 	pActions = list.pActions;
 	return *this;
 }

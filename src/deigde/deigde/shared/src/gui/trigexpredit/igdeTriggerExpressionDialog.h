@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
-	igdeTriggerExpressionDialog( igdeEnvironment &environment, const igdeTriggerTargetList &targetList,
-		igdeTriggerExpressionParser &parser, const char *title = "Edit Trigger Expression" );
+	igdeTriggerExpressionDialog(igdeEnvironment &environment, const igdeTriggerTargetList &targetList,
+		igdeTriggerExpressionParser &parser, const char *title = "Edit Trigger Expression");
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	const decString &GetExpression() const;
 	
 	/** \brief Set expression. */
-	void SetExpression( const char *expression );
+	void SetExpression(const char *expression);
 	/*@}*/
 };
 

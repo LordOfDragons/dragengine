@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerSetDefaultValue::aeUControllerSetDefaultValue( aeController *controller, float newValue ) :
-pController( controller ),
-pNewValue( newValue )
+aeUControllerSetDefaultValue::aeUControllerSetDefaultValue(aeController *controller, float newValue) :
+pController(controller),
+pNewValue(newValue)
 {
-	DEASSERT_NOTNULL( controller )
-	DEASSERT_NOTNULL( controller->GetAnimator() )
+	DEASSERT_NOTNULL(controller)
+	DEASSERT_NOTNULL(controller->GetAnimator())
 	
 	pOldValue = controller->GetDefaultValue();
-	SetShortInfo( "Set controller default value" );
+	SetShortInfo("Set controller default value");
 }
 
 aeUControllerSetDefaultValue::~aeUControllerSetDefaultValue(){
@@ -59,9 +59,9 @@ aeUControllerSetDefaultValue::~aeUControllerSetDefaultValue(){
 ///////////////
 
 void aeUControllerSetDefaultValue::Undo(){
-	pController->SetDefaultValue( pOldValue );
+	pController->SetDefaultValue(pOldValue);
 }
 
 void aeUControllerSetDefaultValue::Redo(){
-	pController->SetDefaultValue( pNewValue );
+	pController->SetDefaultValue(pNewValue);
 }

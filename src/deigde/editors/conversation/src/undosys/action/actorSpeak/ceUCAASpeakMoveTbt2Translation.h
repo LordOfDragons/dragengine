@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	ceUCAASpeakMoveTbt2Translation( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-		ceLangPackEntry *entry, bool addEntry, const decUnicodeString &text );
+	ceUCAASpeakMoveTbt2Translation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+		ceLangPackEntry *entry, bool addEntry, const decUnicodeString &text);
 	
 protected:
 	/** Clean up undo. */

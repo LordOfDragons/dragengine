@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	lpeIGDEModule( igdeEnvironment &environment );
+	lpeIGDEModule(igdeEnvironment &environment);
 	
 	/** \brief Clean up module. */
 	virtual ~lpeIGDEModule();

@@ -53,7 +53,7 @@ public:
 	 * Update font.
 	 * \param elapsed Seconds elapsed since last update
 	 */
-	virtual void Update( float elapsed );
+	virtual void Update(float elapsed);
 	
 	/** \brief Font size added. */
 	virtual void FontSizeAdded(int lineHeight, deFontSize *size);

@@ -77,7 +77,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
-	deoglRenderGeometry( deoglRenderThread &renderThread );
+	deoglRenderGeometry(deoglRenderThread &renderThread);
 	/** Cleans up the renderer. */
 	~deoglRenderGeometry();
 	/*@}*/
@@ -85,28 +85,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the ambient. */
-	inline const decColor &GetAmbient() const{ return pAmbient; }
+	inline const decColor &GetAmbient() const{return pAmbient;}
 	/** Sets the ambient light color. */
-	void SetAmbient( const decColor &color );
+	void SetAmbient(const decColor &color);
 	/*@}*/
 	
 	/** \name Rendering */
 	/*@{*/
 	/** Render a render task. */
-	void RenderTask( const deoglRenderTask &renderTask );
-	void RenderTask( const deoglComputeRenderTask &renderTask );
-	void RenderTask( const deoglPersistentRenderTask &renderTask );
+	void RenderTask(const deoglRenderTask &renderTask);
+	void RenderTask(const deoglComputeRenderTask &renderTask);
+	void RenderTask(const deoglPersistentRenderTask &renderTask);
 	
-	void CopyVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO &transformed,
-		int firstPoint, int pointCount );
+	void CopyVNT(GLuint vao, GLuint vbo, const deoglSPBlockSSBO &transformed,
+		int firstPoint, int pointCount);
 	
-	sVertexPositionSetParams *GetVertexPositionSetParams( int count );
+	sVertexPositionSetParams *GetVertexPositionSetParams(int count);
 	
-	void VPSTransformVNT( GLuint vaoModelData, GLuint vboVertexPositionSetData,
-		const sVertexPositionSetParams *params, int paramCount, const deoglSPBlockSSBO &transformed );
+	void VPSTransformVNT(GLuint vaoModelData, GLuint vboVertexPositionSetData,
+		const sVertexPositionSetParams *params, int paramCount, const deoglSPBlockSSBO &transformed);
 	
-	void ApproxTransformVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
-		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount, bool inplace );
+	void ApproxTransformVNT(GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
+		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount, bool inplace);
 	/*@}*/
 	
 private:

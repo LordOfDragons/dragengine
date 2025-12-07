@@ -56,26 +56,26 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */
-	igdeMenuCascade( igdeEnvironment &environment );
+	igdeMenuCascade(igdeEnvironment &environment);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text, igdeIcon *icon );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text, igdeIcon *icon);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text,
-		deInputEvent::eKeyCodes mnemonic );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text,
+		deInputEvent::eKeyCodes mnemonic);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text,
-		igdeIcon *icon, const char *description );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text,
+		igdeIcon *icon, const char *description);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text,
-		igdeIcon *icon, const char *description, const igdeHotKey &hotKey );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text,
+		igdeIcon *icon, const char *description, const igdeHotKey &hotKey);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic);
 	
-	igdeMenuCascade( igdeEnvironment &environment, const char *text, igdeIcon *icon,
-		const char *description, deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey );
+	igdeMenuCascade(igdeEnvironment &environment, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic, const igdeHotKey &hotKey);
 	
 	
 	
@@ -95,51 +95,51 @@ public:
 	/** \text Management */
 	/*@{*/
 	/** \brief Text shown in the menu entry. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text shown in the menu entry. */
-	void SetText( const char *text );
+	void SetText(const char *text);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Hot-Key. */
-	const igdeHotKey &GetHotKey() const{ return pHotKey; }
+	const igdeHotKey &GetHotKey() const{return pHotKey;}
 	
 	/** \brief Set Hot-Key. */
-	void SetHotKey( const igdeHotKey &hotKey );
+	void SetHotKey(const igdeHotKey &hotKey);
 	
 	/** \brief Mnemonic key or ekcUndefined if not used. */
-	inline deInputEvent::eKeyCodes GetMnemonic() const{ return pMnemonic; }
+	inline deInputEvent::eKeyCodes GetMnemonic() const{return pMnemonic;}
 	
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
-	void SetMnemonic( deInputEvent::eKeyCodes mnemonic );
+	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	inline igdeIcon *GetIcon() const{return pIcon;}
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if menu entry is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	
 	
 	/** \brief Show menu as pop-up menu at mouse cursor. */
-	void Popup( igdeWidget &owner );
+	void Popup(igdeWidget &owner);
 	
 	/** \brief Show menu as pop-up menu at widget position. */
-	void Popup( igdeWidget &owner, const decPoint &position );
+	void Popup(igdeWidget &owner, const decPoint &position);
 	
 	/** \brief Show menu as pop-up menu at the bottom wdge of widget. */
-	void PopupBottom( igdeWidget &owner );
+	void PopupBottom(igdeWidget &owner);
 	/*@}*/
 	
 	
@@ -189,7 +189,7 @@ protected:
 	virtual void OnEnabledChanged();
 	
 	/** \brief Show menu as pop-up menu at screen position. */
-	virtual void PopupAt( igdeWidget &owner, const decPoint &position );
+	virtual void PopupAt(igdeWidget &owner, const decPoint &position);
 	/*@}*/
 };
 

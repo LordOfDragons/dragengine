@@ -36,19 +36,19 @@
 ////////////////////////////
 
 aeURuleAnimSelectToggleEnableVertexPositionSet::aeURuleAnimSelectToggleEnableVertexPositionSet(
-aeRuleAnimationSelect *rule ) :
-pRule( nullptr )
+aeRuleAnimationSelect *rule) :
+pRule(nullptr)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
-	SetShortInfo( "Rule animation toggle enable vertex position set" );
+	SetShortInfo("Rule animation toggle enable vertex position set");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnableVertexPositionSet::~aeURuleAnimSelectToggleEnableVertexPositionSet(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -59,9 +59,9 @@ aeURuleAnimSelectToggleEnableVertexPositionSet::~aeURuleAnimSelectToggleEnableVe
 ///////////////
 
 void aeURuleAnimSelectToggleEnableVertexPositionSet::Undo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }
 
 void aeURuleAnimSelectToggleEnableVertexPositionSet::Redo(){
-	pRule->SetEnableVertexPositionSet( ! pRule->GetEnableVertexPositionSet() );
+	pRule->SetEnableVertexPositionSet(! pRule->GetEnableVertexPositionSet());
 }

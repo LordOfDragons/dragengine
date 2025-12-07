@@ -39,17 +39,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAnimatorSetRigPath::aeUAnimatorSetRigPath( aeAnimator *animator, const char *newValue ) :
-pAnimator( animator ),
-pNewValue( newValue )
+aeUAnimatorSetRigPath::aeUAnimatorSetRigPath(aeAnimator *animator, const char *newValue) :
+pAnimator(animator),
+pNewValue(newValue)
 {
-	if( ! animator ){
-		DETHROW( deeInvalidParam );
+	if(! animator){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldValue = animator->GetRigPath();
 	
-	SetShortInfo( "Animator set rig path" );
+	SetShortInfo("Animator set rig path");
 }
 
 aeUAnimatorSetRigPath::~aeUAnimatorSetRigPath(){
@@ -61,9 +61,9 @@ aeUAnimatorSetRigPath::~aeUAnimatorSetRigPath(){
 ///////////////
 
 void aeUAnimatorSetRigPath::Undo(){
-	pAnimator->SetRigPath( pOldValue );
+	pAnimator->SetRigPath(pOldValue);
 }
 
 void aeUAnimatorSetRigPath::Redo(){
-	pAnimator->SetRigPath( pNewValue );
+	pAnimator->SetRigPath(pNewValue);
 }

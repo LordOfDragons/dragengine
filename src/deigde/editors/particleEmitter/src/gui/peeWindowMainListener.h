@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	peeWindowMainListener( peeWindowMain &window );
+	peeWindowMainListener(peeWindowMain &window);
 	
 	/** \brief Clean up listener. */
 	~peeWindowMainListener();
@@ -55,34 +55,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( peeEmitter *emitter );
+	virtual void StateChanged(peeEmitter *emitter);
 	
 	/** \brief Undo changed. */
-	virtual void UndoChanged( peeEmitter *emitter );
+	virtual void UndoChanged(peeEmitter *emitter);
 	
 	/** \brief Emitter changed. */
-	virtual void EmitterChanged( peeEmitter *emitter );
+	virtual void EmitterChanged(peeEmitter *emitter);
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( peeEmitter *emitter );
+	virtual void ControllerStructureChanged(peeEmitter *emitter);
 	
 	/** Active controller changed. */
-	virtual void ActiveControllerChanged( peeEmitter *emitter );
+	virtual void ActiveControllerChanged(peeEmitter *emitter);
 	
 	/** \brief Type count or order changed. */
-	virtual void TypeStructureChanged( peeEmitter *emitter );
+	virtual void TypeStructureChanged(peeEmitter *emitter);
 	
 	/** \brief Active type active trail controller changed. */
-	virtual void TypeActiveTrailControllerChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeActiveTrailControllerChanged(peeEmitter *emitter, peeType *type);
 	
 	/** \brief Active type active emit controller changed. */
-	virtual void TypeActiveEmitControllerChanged( peeEmitter *emitter, peeType *type );
+	virtual void TypeActiveEmitControllerChanged(peeEmitter *emitter, peeType *type);
 	
 	/** \brief Active type parameter changed. */
-	virtual void ActiveTypeParameterChanged( peeEmitter *emitter, peeType *type );
+	virtual void ActiveTypeParameterChanged(peeEmitter *emitter, peeType *type);
 	
 	/** \brief Active type changed. */
-	virtual void ActiveTypeChanged( peeEmitter *emitter );
+	virtual void ActiveTypeChanged(peeEmitter *emitter);
 	/*@}*/
 };
 

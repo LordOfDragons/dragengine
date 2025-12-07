@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValuePoint2( eValueFormats format, const decPoint &value );
+	deNetworkValuePoint2(eValueFormats format, const decPoint &value);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValuePoint2();
@@ -62,13 +62,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value format. */
-	inline eValueFormats GetFormat() const{ return pFormat; }
+	inline eValueFormats GetFormat() const{return pFormat;}
 	
 	/** \brief Value. */
-	inline const decPoint &GetPoint() const{ return pValue; }
+	inline const decPoint &GetPoint() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetPoint( const decPoint &value );
+	void SetPoint(const decPoint &value);
 	/*@}*/
 	
 	
@@ -76,7 +76,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create font generator. */
-	feGenerateFont( igdeEnvironment &environment );
+	feGenerateFont(igdeEnvironment &environment);
 	
 	/** \brief Clean up font generator. */
 	~feGenerateFont();
@@ -71,22 +71,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set font configuration to use for generating. */
-	void SetFontConfig( const igdeFont::sConfiguration &config );
+	void SetFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** \brief Set range to generate glyphs for. */
-	void SetCodeRange( int first, int last );
+	void SetCodeRange(int first, int last);
 	
 	/** \brief Border size in pixels. */
-	inline int GetBorderSize() const{ return pBorderSize; }
+	inline int GetBorderSize() const{return pBorderSize;}
 	
 	/** \brief Set border size in pixels. */
-	void SetBorderSize( int borderSize );
+	void SetBorderSize(int borderSize);
 	
 	/** \brief Amount of pixels to enlarge the glyph box with. */
-	inline int GetEnlargeGlyph() const{ return pEnlargeGlyph; }
+	inline int GetEnlargeGlyph() const{return pEnlargeGlyph;}
 	
 	/** \brief Set amount of pixels to enlarge the glyph box with. */
-	void SetEnlargeGlpyh( int enlarge );
+	void SetEnlargeGlpyh(int enlarge);
 	
 	/** \brief Generate font with properties. */
 	feFont *GenerateFont();
@@ -95,9 +95,9 @@ public:
 	
 	
 private:
-	void pAddGlyphs( feFont &font );
-	void pCalcLayout( feFont &font );
-	void pRenderImage( feFont &font );
+	void pAddGlyphs(feFont &font);
+	void pCalcLayout(feFont &font);
+	void pRenderImage(feFont &font);
 };
 
 #endif

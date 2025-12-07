@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates parameter. */
-	debnPReliableResendInterval( deNetworkBasic &network );
+	debnPReliableResendInterval(deNetworkBasic &network);
 	/*@}*/
 	
 	
@@ -47,7 +47,7 @@ public:
 	virtual float GetParameterFloat();
 	
 	/** Set current value. */
-	virtual void SetParameterFloat( float value );
+	virtual void SetParameterFloat(float value);
 	/*@}*/
 };
 

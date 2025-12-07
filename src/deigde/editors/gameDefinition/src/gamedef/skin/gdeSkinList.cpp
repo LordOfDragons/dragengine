@@ -43,8 +43,8 @@
 gdeSkinList::gdeSkinList(){
 }
 
-gdeSkinList::gdeSkinList( const gdeSkinList &list ) :
-pSkins( list.pSkins ){
+gdeSkinList::gdeSkinList(const gdeSkinList &list) :
+pSkins(list.pSkins){
 }
 
 gdeSkinList::~gdeSkinList(){
@@ -59,18 +59,18 @@ int gdeSkinList::GetCount() const{
 	return pSkins.GetCount();
 }
 
-gdeSkin *gdeSkinList::GetAt( int index ) const{
-	return ( gdeSkin* )pSkins.GetAt( index );
+gdeSkin *gdeSkinList::GetAt(int index) const{
+	return (gdeSkin*)pSkins.GetAt(index);
 }
 
-gdeSkin *gdeSkinList::GetWithPath( const char *path ) const{
+gdeSkin *gdeSkinList::GetWithPath(const char *path) const{
 	const int count = pSkins.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		gdeSkin * const skin = ( gdeSkin* )pSkins.GetAt( i );
+	for(i=0; i<count; i++){
+		gdeSkin * const skin = (gdeSkin*)pSkins.GetAt(i);
 		
-		if( skin->GetPath() == path ){
+		if(skin->GetPath() == path){
 			return skin;
 		}
 	}
@@ -78,16 +78,16 @@ gdeSkin *gdeSkinList::GetWithPath( const char *path ) const{
 	return NULL;
 }
 
-int gdeSkinList::IndexOf( gdeSkin *skin ) const{
-	return pSkins.IndexOf( skin );
+int gdeSkinList::IndexOf(gdeSkin *skin) const{
+	return pSkins.IndexOf(skin);
 }
 
-int gdeSkinList::IndexOfWithPath( const char *path ) const{
+int gdeSkinList::IndexOfWithPath(const char *path) const{
 	const int count = pSkins.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeSkin* )pSkins.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((gdeSkin*)pSkins.GetAt(i))->GetPath() == path){
 			return i;
 		}
 	}
@@ -95,16 +95,16 @@ int gdeSkinList::IndexOfWithPath( const char *path ) const{
 	return -1;
 }
 
-bool gdeSkinList::Has( gdeSkin *skin ) const{
-	return pSkins.Has( skin );
+bool gdeSkinList::Has(gdeSkin *skin) const{
+	return pSkins.Has(skin);
 }
 
-bool gdeSkinList::HasWithPath( const char *path ) const{
+bool gdeSkinList::HasWithPath(const char *path) const{
 	const int count = pSkins.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( gdeSkin* )pSkins.GetAt( i ) )->GetPath() == path ){
+	for(i=0; i<count; i++){
+		if(((gdeSkin*)pSkins.GetAt(i))->GetPath() == path){
 			return true;
 		}
 	}
@@ -112,16 +112,16 @@ bool gdeSkinList::HasWithPath( const char *path ) const{
 	return false;
 }
 
-void gdeSkinList::Add( gdeSkin *skin ){
-	if( ! skin || HasWithPath( skin->GetPath() ) ){
-		DETHROW( deeInvalidParam );
+void gdeSkinList::Add(gdeSkin *skin){
+	if(! skin || HasWithPath(skin->GetPath())){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pSkins.Add( skin );
+	pSkins.Add(skin);
 }
 
-void gdeSkinList::Remove( gdeSkin *skin ){
-	pSkins.Remove( skin );
+void gdeSkinList::Remove(gdeSkin *skin){
+	pSkins.Remove(skin);
 }
 
 void gdeSkinList::RemoveAll(){
@@ -130,7 +130,7 @@ void gdeSkinList::RemoveAll(){
 
 
 
-gdeSkinList &gdeSkinList::operator=( const gdeSkinList &list ){
+gdeSkinList &gdeSkinList::operator=(const gdeSkinList &list){
 	pSkins = list.pSkins;
 	return *this;
 }

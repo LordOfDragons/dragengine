@@ -40,16 +40,16 @@
 ////////////////////////////
 
 lpeULangPackSetDescription::lpeULangPackSetDescription(
-	lpeLangPack *langpack, const decUnicodeString &newDescription ) :
-pLangPack( NULL ),
-pNewDescription( newDescription )
+	lpeLangPack *langpack, const decUnicodeString &newDescription) :
+pLangPack(NULL),
+pNewDescription(newDescription)
 {
-	if( ! langpack ){
-		DETHROW( deeInvalidParam );
+	if(! langpack){
+		DETHROW(deeInvalidParam);
 	}
 	
 	
-	SetShortInfo( "LangPack set description" );
+	SetShortInfo("LangPack set description");
 	
 	pOldDescription = langpack->GetDescription();
 	
@@ -58,7 +58,7 @@ pNewDescription( newDescription )
 }
 
 lpeULangPackSetDescription::~lpeULangPackSetDescription(){
-	if( pLangPack ){
+	if(pLangPack){
 		pLangPack->FreeReference();
 	}
 }
@@ -69,9 +69,9 @@ lpeULangPackSetDescription::~lpeULangPackSetDescription(){
 ///////////////
 
 void lpeULangPackSetDescription::Undo(){
-	pLangPack->SetDescription( pOldDescription );
+	pLangPack->SetDescription(pOldDescription);
 }
 
 void lpeULangPackSetDescription::Redo(){
-	pLangPack->SetDescription( pNewDescription );
+	pLangPack->SetDescription(pNewDescription);
 }

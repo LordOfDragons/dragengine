@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	debiDeviceJoystick( deBeOSInput &module, const char *name );
+	debiDeviceJoystick(deBeOSInput &module, const char *name);
 	
 	
 	
@@ -65,10 +65,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Device name. */
-	inline const decString &GetName() const{ return pDevName; }
+	inline const decString &GetName() const{return pDevName;}
 	
 	/** \brief Joystick instance. */
-	inline BJoystick *GetJoystick() const{ return pJoystick; }
+	inline BJoystick *GetJoystick() const{return pJoystick;}
 	
 	
 	

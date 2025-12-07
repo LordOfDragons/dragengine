@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create peer. */
-	deoalVideoPlayer( deAudioOpenAL &oal, deVideoPlayer &videoPlayer );
+	deoalVideoPlayer(deAudioOpenAL &oal, deVideoPlayer &videoPlayer);
 	
 	/** \brief Clean up peer. */
 	virtual ~deoalVideoPlayer();
@@ -70,21 +70,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deAudioOpenAL &GetOal() const{ return pOal; }
+	inline deAudioOpenAL &GetOal() const{return pOal;}
 	
 	/** \brief VideoPlayer. */
-	inline deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
+	inline deVideoPlayer &GetVideoPlayer() const{return pVideoPlayer;}
 	
 	/** \brief Audio peer. */
-	inline deoalAVideoPlayer *GetAVideoPlayer() const{ return pAVideoPlayer; }
+	inline deoalAVideoPlayer *GetAVideoPlayer() const{return pAVideoPlayer;}
 	
 	
 	
 	/** \brief Add speaker to track. */
-	void AddSpeaker( deoalSpeaker *speaker );
+	void AddSpeaker(deoalSpeaker *speaker);
 	
 	/** \brief Remove speaker to track. */
-	void RemoveSpeaker( deoalSpeaker *speaker );
+	void RemoveSpeaker(deoalSpeaker *speaker);
 	
 	/**
 	 * \brief Synchronize.
@@ -113,7 +113,7 @@ public:
 	 * \brief Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
-	virtual void PlayPositionChanged( bool seeking );
+	virtual void PlayPositionChanged(bool seeking);
 	
 	/** \brief Play state changed. */
 	virtual void PlayStateChanged();

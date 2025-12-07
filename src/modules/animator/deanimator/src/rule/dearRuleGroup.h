@@ -65,8 +65,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create rule. */
-	dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator &animator,
-		int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping );
+	dearRuleGroup(dearAnimatorInstance &instance, const dearAnimator &animator,
+		int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping);
 	
 	/** Clean up animator. */
 	virtual ~dearRuleGroup();
@@ -80,13 +80,13 @@ public:
 	 * Capture animator state.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void CaptureStateInto( int identifier );
+	virtual void CaptureStateInto(int identifier);
 	
 	/**
 	 * Store animation frame.
 	 * \details The default implementation throws an exception.
 	 */
-	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
+	virtual void StoreFrameInto(int identifier, const char *moveName, float moveTime);
 	
 	/**
 	 * Check if a full rebuild of the animator instance is required.
@@ -94,10 +94,10 @@ public:
 	virtual bool RebuildInstance() const;
 	
 	/** Apply to animator. */
-	virtual void Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist );
+	virtual void Apply(dearBoneStateList &stalist, dearVPSStateList &vpsstalist);
 	
 	/** Controller changed. */
-	virtual void ControllerChanged( int controller );
+	virtual void ControllerChanged(int controller);
 	
 	/** Rule changed. */
 	virtual void RuleChanged();
@@ -105,7 +105,7 @@ public:
 	
 private:
 	void pCleanUp();
-	void pCreateRules( int firstLink, const decIntList &controllerMapping );
+	void pCreateRules(int firstLink, const decIntList &controllerMapping);
 };
 
 #endif

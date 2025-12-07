@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer effect. */
-	desynSynthesizerEffect( const desynSynthesizer &synthesizer, int firstLink,
-		desynSynthesizerSource &source, const deSynthesizerEffect &effect );
+	desynSynthesizerEffect(const desynSynthesizer &synthesizer, int firstLink,
+		desynSynthesizerSource &source, const deSynthesizerEffect &effect);
 	
 	/** \brief Clean up synthesizer effect. */
 	virtual ~desynSynthesizerEffect();
@@ -72,48 +72,48 @@ public:
 	deDESynthesizer &GetModule() const;
 	
 	/** \brief Parent synthesizer. */
-	inline const desynSynthesizer &GetSynthesizer() const{ return pSynthesizer; }
+	inline const desynSynthesizer &GetSynthesizer() const{return pSynthesizer;}
 	
 	/** \brief Parent source. */
-	inline desynSynthesizerSource &GetSource() const{ return pSource; }
+	inline desynSynthesizerSource &GetSource() const{return pSource;}
 	
 	
 	
 	/** \brief Effect is disabled. */
-	inline bool GetDisabled() const{ return pDisabled; }
+	inline bool GetDisabled() const{return pDisabled;}
 	
 	/** \brief Set if effect is disabled. */
-	void SetDisabled( bool disabled );
+	void SetDisabled(bool disabled);
 	
 	/** \brief Offset in bytes to state data in synthesizer instances. */
-	inline int GetStateDataOffset() const{ return pStateDataOffset; }
+	inline int GetStateDataOffset() const{return pStateDataOffset;}
 	
 	/** \brief Set offset in bytes to state data in synthesizer instances. */
-	void SetStateDataOffset( int offset );
+	void SetStateDataOffset(int offset);
 	
 	
 	
 	/** \brief Nearest curve evaluate position. */
-	inline int NearestCurveEvalPosition( int indexSample, float curveOffset, float curveFactor ) const{
-		return ( int )( curveOffset + curveFactor * ( float )indexSample );
+	inline int NearestCurveEvalPosition(int indexSample, float curveOffset, float curveFactor) const{
+		return (int)(curveOffset + curveFactor * (float)indexSample);
 	}
 	
 	/** \brief Strength target. */
-	inline const desynSynthesizerTarget &GetTargetStrength() const{ return pTargetStrength; }
+	inline const desynSynthesizerTarget &GetTargetStrength() const{return pTargetStrength;}
 	
 	
 	
 	/** \brief Previous effect or \em NULL if this is the first effect in the source. */
-	inline desynSynthesizerEffect *GetPreviousEffect() const{ return pPreviousEffect; }
+	inline desynSynthesizerEffect *GetPreviousEffect() const{return pPreviousEffect;}
 	
 	/** \brief Set previous effect or \em NULL if this is the first effect in the source. */
-	void SetPreviousEffect( desynSynthesizerEffect *effect );
+	void SetPreviousEffect(desynSynthesizerEffect *effect);
 	
 	
 	
 	
 	/** \brief Strength. */
-	float GetStrength( const desynSynthesizerInstance &instance, int sample ) const;
+	float GetStrength(const desynSynthesizerInstance &instance, int sample) const;
 	
 	
 	
@@ -122,13 +122,13 @@ public:
 	 * \details Store state data position and return required state data size. Default implementation
 	 *          stores the offset and returns 0.
 	 */
-	virtual int StateDataSize( int offset );
+	virtual int StateDataSize(int offset);
 	
 	/** \brief Init state data. */
-	virtual void InitStateData( char *stateData );
+	virtual void InitStateData(char *stateData);
 	
 	/** \brief Clean up state data. */
-	virtual void CleanUpStateData( char *stateData );
+	virtual void CleanUpStateData(char *stateData);
 	
 	/**
 	 * \brief Generate sound.
@@ -136,16 +136,16 @@ public:
 	 * \param[out] buffer Buffer to store samples in.
 	 * \param[in] samples Number of samples to produce.
 	 */
-	virtual void GenerateSound( const desynSynthesizerInstance &instance, char *stateData,
-		float *buffer, int samples, float curveOffset, float curveFactor );
+	virtual void GenerateSound(const desynSynthesizerInstance &instance, char *stateData,
+		float *buffer, int samples, float curveOffset, float curveFactor);
 	
 	/**
 	 * \brief Skip sound.
 	 * \param[in,out] stateData State at start of skipping. Update with state after skipping.
 	 * \param[in] samples Number of samples to skip.
 	 */
-	virtual void SkipSound( const desynSynthesizerInstance &instance, char *stateData,
-		int samples, float curveOffset, float curveFactor );
+	virtual void SkipSound(const desynSynthesizerInstance &instance, char *stateData,
+		int samples, float curveOffset, float curveFactor);
 	/*@}*/
 };
 

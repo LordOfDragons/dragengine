@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectCloneTexturesToSelected( const meObjectList &list, const meObjectTextureList &textureList );
+	meUObjectCloneTexturesToSelected(const meObjectList &list, const meObjectTextureList &textureList);
 	
 protected:
 	/** \brief Clean up undo object. */
@@ -60,11 +60,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the list of objects to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline decObjectList &GetList(){return pList;}
+	inline const decObjectList &GetList() const{return pList;}
 	/** Retrieves the list of textures to apply. */
-	inline meObjectTextureList &GetPropertyList(){ return pTextureList; }
-	inline const meObjectTextureList &GetPropertyList() const{ return pTextureList; }
+	inline meObjectTextureList &GetPropertyList(){return pTextureList;}
+	inline const meObjectTextureList &GetPropertyList() const{return pTextureList;}
 	
 	/** \brief Undo. */
 	virtual void Undo();

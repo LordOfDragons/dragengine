@@ -60,22 +60,22 @@ reCLHitListEntry::~reCLHitListEntry(){
 ///////////////
 
 void reCLHitListEntry::Clear(){
-	if( pBone ){
+	if(pBone){
 		pBone->FreeReference();
 		pBone = NULL;
 	}
 	
-	if( pShape ){
+	if(pShape){
 		pShape->FreeReference();
 		pShape = NULL;
 	}
 	
-	if( pConstraint ){
+	if(pConstraint){
 		pConstraint->FreeReference();
 		pConstraint = NULL;
 	}
 	
-	if( pPush ){
+	if(pPush){
 		pPush->FreeReference();
 		pPush = NULL;
 	}
@@ -83,61 +83,61 @@ void reCLHitListEntry::Clear(){
 	pDistance = 0.0f;
 }
 
-void reCLHitListEntry::SetBone( reRigBone *bone ){
-	if( bone != pBone ){
-		if( pBone ) pBone->FreeReference();
+void reCLHitListEntry::SetBone(reRigBone *bone){
+	if(bone != pBone){
+		if(pBone) pBone->FreeReference();
 		
 		pBone = bone;
 		
-		if( bone ) bone->AddReference();
+		if(bone) bone->AddReference();
 	}
 }
 
-void reCLHitListEntry::SetShape( reRigShape *shape ){
-	if( shape != pShape ){
-		if( pShape ) pShape->FreeReference();
+void reCLHitListEntry::SetShape(reRigShape *shape){
+	if(shape != pShape){
+		if(pShape) pShape->FreeReference();
 		
 		pShape = shape;
 		
-		if( shape ) shape->AddReference();
+		if(shape) shape->AddReference();
 	}
 }
 
-void reCLHitListEntry::SetConstraint( reRigConstraint *constraint ){
-	if( constraint != pConstraint ){
-		if( pConstraint ) pConstraint->FreeReference();
+void reCLHitListEntry::SetConstraint(reRigConstraint *constraint){
+	if(constraint != pConstraint){
+		if(pConstraint) pConstraint->FreeReference();
 		
 		pConstraint = constraint;
 		
-		if( constraint ) constraint->AddReference();
+		if(constraint) constraint->AddReference();
 	}
 }
 
-void reCLHitListEntry::SetPush( reRigPush *push ){
-	if( push != pPush ){
-		if( pPush ) pPush->FreeReference();
+void reCLHitListEntry::SetPush(reRigPush *push){
+	if(push != pPush){
+		if(pPush) pPush->FreeReference();
 		
 		pPush = push;
 		
-		if( push ) push->AddReference();
+		if(push) push->AddReference();
 	}
 }
 
-void reCLHitListEntry::SetDistance( float distance ){
+void reCLHitListEntry::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void reCLHitListEntry::SetNormal( const decVector &normal ){
+void reCLHitListEntry::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
-int reCLHitListEntry::CompareTo( const reCLHitListEntry &entry ) const{
+int reCLHitListEntry::CompareTo(const reCLHitListEntry &entry) const{
 	float difference = entry.GetDistance() - pDistance;
 	
-	if( difference > 1e-5f ){
+	if(difference > 1e-5f){
 		return -1;
 		
-	}else if( difference < -1e-5f ){
+	}else if(difference < -1e-5f){
 		return 1;
 		
 	}else{

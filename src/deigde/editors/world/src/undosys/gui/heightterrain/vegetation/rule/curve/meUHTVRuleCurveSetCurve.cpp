@@ -40,17 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCurveSetCurve::meUHTVRuleCurveSetCurve( meHTVegetationLayer *vlayer,
-	meHTVRuleCurve *rule, const decCurveBezier &newCurve ) :
-pVLayer( NULL ),
-pRule( NULL ),
-pNewCurve( newCurve )
+meUHTVRuleCurveSetCurve::meUHTVRuleCurveSetCurve(meHTVegetationLayer *vlayer,
+	meHTVRuleCurve *rule, const decCurveBezier &newCurve) :
+pVLayer(NULL),
+pRule(NULL),
+pNewCurve(newCurve)
 {
-	if( ! vlayer || ! rule ){
-		DETHROW( deeInvalidParam );
+	if(! vlayer || ! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Vegetation Layer Rule Curve Set Curve" );
+	SetShortInfo("Vegetation Layer Rule Curve Set Curve");
 	
 	pOldCurve = rule->GetCurve();
 	
@@ -62,10 +62,10 @@ pNewCurve( newCurve )
 }
 
 meUHTVRuleCurveSetCurve::~meUHTVRuleCurveSetCurve(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
-	if( pVLayer ){
+	if(pVLayer){
 		pVLayer->FreeReference();
 	}
 }
@@ -75,16 +75,16 @@ meUHTVRuleCurveSetCurve::~meUHTVRuleCurveSetCurve(){
 // Management
 ///////////////
 
-void meUHTVRuleCurveSetCurve::SetNewCurve( const decCurveBezier &curve ){
+void meUHTVRuleCurveSetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
 
 void meUHTVRuleCurveSetCurve::Undo(){
-	pRule->SetCurve( pOldCurve );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetCurve(pOldCurve);
+	pVLayer->NotifyRuleChanged(pRule);
 }
 
 void meUHTVRuleCurveSetCurve::Redo(){
-	pRule->SetCurve( pNewCurve );
-	pVLayer->NotifyRuleChanged( pRule );
+	pRule->SetCurve(pNewCurve);
+	pVLayer->NotifyRuleChanged(pRule);
 }

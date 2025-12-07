@@ -44,8 +44,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalATLeakTracker::deoalATLeakTracker( deoalAudioThread &audioThread ) :
-pAudioThread( audioThread ){
+deoalATLeakTracker::deoalATLeakTracker(deoalAudioThread &audioThread) :
+pAudioThread(audioThread){
 }
 
 deoalATLeakTracker::~deoalATLeakTracker(){
@@ -56,10 +56,10 @@ deoalATLeakTracker::~deoalATLeakTracker(){
 // Management
 ///////////////
 
-void deoalATLeakTracker::ReportLeaks( const char *name, const decPointerSet &tracker ){
-	deMutexGuard lock( pMutex );
+void deoalATLeakTracker::ReportLeaks(const char *name, const decPointerSet &tracker){
+	deMutexGuard lock(pMutex);
 	
-	if( tracker.GetCount() == 0 ){
+	if(tracker.GetCount() == 0){
 		return;
 	}
 	
@@ -69,32 +69,32 @@ void deoalATLeakTracker::ReportLeaks( const char *name, const decPointerSet &tra
 	decString line;
 	int i;
 	
-	logger.LogInfoFormat( "%i Leaks for %s", count, name );
-	for( i=0; i<count; i++ ){
-		line.AppendFormat( " %p(%i)", tracker.GetAt( i ),
-			( ( deObject* )tracker.GetAt( i ) )->GetRefCount() );
+	logger.LogInfoFormat("%i Leaks for %s", count, name);
+	for(i=0; i<count; i++){
+		line.AppendFormat(" %p(%i)", tracker.GetAt(i),
+			((deObject*)tracker.GetAt(i))->GetRefCount());
 		
-		if( ( ( i + 1 ) % entriesPerLine ) == 0 ){
-			logger.LogInfo( line );
+		if(((i + 1) % entriesPerLine) == 0){
+			logger.LogInfo(line);
 			line.Empty();
 		}
 	}
 	
-	if( ! line.IsEmpty() ){
-		logger.LogInfo( line );
+	if(! line.IsEmpty()){
+		logger.LogInfo(line);
 	}
 }
 
 
 
 #ifdef ENABLE_LEAK_TRACKING
-void deoalATLeakTracker::AddTracked( decPointerSet &list, void *object ){
-	deMutexGuard lock( pMutex );
-	list.Add( object );
+void deoalATLeakTracker::AddTracked(decPointerSet &list, void *object){
+	deMutexGuard lock(pMutex);
+	list.Add(object);
 }
 
-void deoalATLeakTracker::RemoveTracked( decPointerSet &list, void *object ) {
-	deMutexGuard lock( pMutex );
-	list.Remove( object );
+void deoalATLeakTracker::RemoveTracked(decPointerSet &list, void *object) {
+	deMutexGuard lock(pMutex);
+	list.Remove(object);
 }
 #endif

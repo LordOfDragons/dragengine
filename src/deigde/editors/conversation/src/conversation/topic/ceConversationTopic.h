@@ -59,10 +59,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create conversation topic. */
-	ceConversationTopic( const char *id = "Topic" );
+	ceConversationTopic(const char *id = "Topic");
 	
 	/** \brief Create copy of conversation topic. */
-	ceConversationTopic( const ceConversationTopic &topic );
+	ceConversationTopic(const ceConversationTopic &topic);
 	
 	/** \brief Clean up conversation topic. */
 	virtual ~ceConversationTopic();
@@ -73,49 +73,49 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent file or \em NULL if not set. */
-	inline ceConversationFile *GetFile() const{ return pFile; }
+	inline ceConversationFile *GetFile() const{return pFile;}
 	
 	/** \brief Set parent file or \em NULL if not set. */
-	void SetFile( ceConversationFile *file );
+	void SetFile(ceConversationFile *file);
 	
 	
 	
 	/** \brief Identifier. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	
 	/** \brief Set identifier. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	
 	/** \brief Actions. */
-	inline ceConversationActionList &GetActionList(){ return pActions; }
-	inline const ceConversationActionList &GetActionList() const{ return pActions; }
+	inline ceConversationActionList &GetActionList(){return pActions;}
+	inline const ceConversationActionList &GetActionList() const{return pActions;}
 	
 	/** \brief Active action or \em NULL if none is active. */
-	inline ceConversationAction *GetActiveAction() const{ return pActiveAction; }
+	inline ceConversationAction *GetActiveAction() const{return pActiveAction;}
 	
 	/** \brief Active condition or \em NULL if none is active. */
-	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
+	inline ceConversationCondition *GetActiveCondition() const{return pActiveCondition;}
 	
 	/** \brief Set active element. */
-	void SetActive( ceConversationAction *action, ceConversationCondition *condition );
+	void SetActive(ceConversationAction *action, ceConversationCondition *condition);
 	
 	/** Find missing words. */
-	void FindMissingWords( decStringSet &missingWords ) const;
-	void FindMissingWords( const ceConversationActionList &actions, decStringSet &missingWords ) const;
+	void FindMissingWords(decStringSet &missingWords) const;
+	void FindMissingWords(const ceConversationActionList &actions, decStringSet &missingWords) const;
 	
 	
 	
 	/** \brief Notify listeners action structure changed. */
-	void NotifyActionStructureChanged( ceConversationAction *action );
+	void NotifyActionStructureChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners action changed. */
-	void NotifyActionChanged( ceConversationAction *action );
+	void NotifyActionChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners condition structure changed. */
-	void NotifyConditionStructureChanged( ceConversationAction *action );
+	void NotifyConditionStructureChanged(ceConversationAction *action);
 	
 	/** \brief Notify listeners condition changed. */
-	void NotifyConditionChanged( ceConversationAction *action, ceConversationCondition *condition );
+	void NotifyConditionChanged(ceConversationAction *action, ceConversationCondition *condition);
 	/*@}*/
 };
 

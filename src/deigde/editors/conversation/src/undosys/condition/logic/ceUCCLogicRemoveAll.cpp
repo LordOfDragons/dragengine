@@ -42,17 +42,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicRemoveAll::ceUCCLogicRemoveAll( ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionLogic *logic ) :
-pTopic( NULL ),
-pAction( NULL ),
-pLogic( NULL )
+ceUCCLogicRemoveAll::ceUCCLogicRemoveAll(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionLogic *logic) :
+pTopic(NULL),
+pAction(NULL),
+pLogic(NULL)
 {
-	if( ! topic || ! action || ! logic ){
-		DETHROW( deeInvalidParam );
+	if(! topic || ! action || ! logic){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Logic remove all conditions" );
+	SetShortInfo("Logic remove all conditions");
 	
 	pConditions = logic->GetConditions();
 	
@@ -67,13 +67,13 @@ pLogic( NULL )
 }
 
 ceUCCLogicRemoveAll::~ceUCCLogicRemoveAll(){
-	if( pLogic ){
+	if(pLogic){
 		pLogic->FreeReference();
 	}
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -85,12 +85,12 @@ ceUCCLogicRemoveAll::~ceUCCLogicRemoveAll(){
 
 void ceUCCLogicRemoveAll::Undo(){
 	pLogic->GetConditions() = pConditions;
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pTopic->NotifyConditionStructureChanged(pAction);
 	
-	pTopic->SetActive( pAction, pConditions.GetCount() > 0 ? pConditions.GetAt( 0 ) : NULL );
+	pTopic->SetActive(pAction, pConditions.GetCount() > 0 ? pConditions.GetAt(0) : NULL);
 }
 
 void ceUCCLogicRemoveAll::Redo(){
 	pLogic->GetConditions().RemoveAll();
-	pTopic->NotifyConditionStructureChanged( pAction );
+	pTopic->NotifyConditionStructureChanged(pAction);
 }

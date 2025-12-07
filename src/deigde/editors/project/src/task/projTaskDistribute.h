@@ -103,8 +103,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	projTaskDistribute( projWindowMain &windowMain,
-		const projProject &project, const projProfile &profile );
+	projTaskDistribute(projWindowMain &windowMain,
+		const projProject &project, const projProfile &profile);
 	
 	/** \brief Clean up task. */
 	virtual ~projTaskDistribute();
@@ -115,24 +115,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Main window. */
-	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
+	inline projWindowMain &GetWindowMain() const{return pWindowMain;}
 	
 	/** \brief Project. */
-	inline const projProject &GetProject() const{ return pProject; }
+	inline const projProject &GetProject() const{return pProject;}
 	
 	/** \brief Profile. */
-	inline const projProfile &GetProfile() const{ return pProfile; }
+	inline const projProfile &GetProfile() const{return pProfile;}
 	
 	
 	
 	/** \brief Delga file size. */
-	inline long GetDelgaSize() const{ return pDelgaSize; }
+	inline long GetDelgaSize() const{return pDelgaSize;}
 	
 	/** \brief Number of directories in delga file. */
-	inline int GetDelgaDirectoryCount() const{ return pDelgaDirectoryCount; }
+	inline int GetDelgaDirectoryCount() const{return pDelgaDirectoryCount;}
 	
 	/** \brief Number of files in delga file. */
-	inline int GetDelgaFileCount() const{ return pDelgaFileCount; }
+	inline int GetDelgaFileCount() const{return pDelgaFileCount;}
 	
 	
 	
@@ -150,38 +150,38 @@ public:
 	
 	
 	/** \brief Write data to delga file for internal use only. */
-	void WriteToDelga( const void *buffer, long length );
+	void WriteToDelga(const void *buffer, long length);
 	
 	/** \brief Get delga file position for internal use only. */
-	inline long GetDelgaPosition() const{ return pDelgaPosition; }
+	inline long GetDelgaPosition() const{return pDelgaPosition;}
 	
 	/** \brief Seek delga file for internal use only. */
-	void SeekDelgaFile( long offset, int zlibOrigin );
+	void SeekDelgaFile(long offset, int zlibOrigin);
 	/*@}*/
 	
 	
 	
 private:
-	bool pExcludedByBaseGameDefPath( const decPath &path );
-	bool pExcludedByPattern( const decPath &path );
+	bool pExcludedByBaseGameDefPath(const decPath &path);
+	bool pExcludedByPattern(const decPath &path);
 	void pBuildExcludeBaseGameDefPath();
 	void pCreateDelgaWriter();
 	void pCloseDelgaWriter();
-	void pScanDirectory( const decPath &path );
+	void pScanDirectory(const decPath &path);
 	void pProcessFiles();
-	void pProcessFile( const decPath &path );
-	decString pGetFileExtension( const decPath &path ) const;
-	deLoadableModule *pGetMatchingModule( const decString &extension ) const;
-	const char *pGetModuleTypeName( deModuleSystem::eModuleTypes type ) const;
-	void pCopyFile( const decPath &path );
-	void pZipBeginFile( const decPath &path, bool compress );
-	void pZipWriteFile( const void *buffer, long size );
+	void pProcessFile(const decPath &path);
+	decString pGetFileExtension(const decPath &path) const;
+	deLoadableModule *pGetMatchingModule(const decString &extension) const;
+	const char *pGetModuleTypeName(deModuleSystem::eModuleTypes type) const;
+	void pCopyFile(const decPath &path);
+	void pZipBeginFile(const decPath &path, bool compress);
+	void pZipWriteFile(const void *buffer, long size);
 	void pZipCloseFile();
-	void pZipWriteMemoryFile( const decMemoryFile &memoryFile );
+	void pZipWriteMemoryFile(const decMemoryFile &memoryFile);
 	void pCloseDirectory();
 	void pWriteGameXml();
-	void pWriteGameXml( decXmlWriter &writer );
-	void pWriteGameXmlRequiredFormats( decXmlWriter &writer );
+	void pWriteGameXml(decXmlWriter &writer);
+	void pWriteGameXmlRequiredFormats(decXmlWriter &writer);
 	cProcessDirectory *GetProcessDirectory();
 };
 

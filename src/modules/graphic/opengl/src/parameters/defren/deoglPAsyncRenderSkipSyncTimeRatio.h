@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglPAsyncRenderSkipSyncTimeRatio( deGraphicOpenGl &ogl );
+	deoglPAsyncRenderSkipSyncTimeRatio(deGraphicOpenGl &ogl);
 	
 	/** Clean up parameter. */
 	virtual ~deoglPAsyncRenderSkipSyncTimeRatio();
@@ -50,7 +50,7 @@ public:
 	virtual float GetParameterFloat();
 	
 	/** Set current value. */
-	virtual void SetParameterFloat( float value );
+	virtual void SetParameterFloat(float value);
 	/*@}*/
 };
 

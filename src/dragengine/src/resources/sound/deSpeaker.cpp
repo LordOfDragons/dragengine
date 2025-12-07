@@ -49,34 +49,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSpeaker::deSpeaker( deSpeakerManager *manager ) :
-deResource( manager ),
+deSpeaker::deSpeaker(deSpeakerManager *manager) :
+deResource(manager),
 
-pType( estPoint ),
+pType(estPoint),
 
-pMuted( false ),
-pPlayState( epsStopped ),
-pLooping( false ),
-pPlayFrom( 0 ),
-pPlayTo( 0 ),
-pPlaySpeed( 1.0f ),
-pVolume( 1.0f ),
-pRange( 1.0f ),
-pRollOff( 1.0f ),
-pDistanceOffset( 0.0f ),
+pMuted(false),
+pPlayState(epsStopped),
+pLooping(false),
+pPlayFrom(0),
+pPlayTo(0),
+pPlaySpeed(1.0f),
+pVolume(1.0f),
+pRange(1.0f),
+pRollOff(1.0f),
+pDistanceOffset(0.0f),
 
-pPeerAudio( NULL ),
-pPeerScripting( NULL ),
+pPeerAudio(NULL),
+pPeerScripting(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ),
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL),
 
-pParentMicrophone( NULL ),
-pLLMicrophonePrev( NULL ),
-pLLMicrophoneNext( NULL )
+pParentMicrophone(NULL),
+pLLMicrophonePrev(NULL),
+pLLMicrophoneNext(NULL)
 {
-	pLayerMask.SetBit( 0 );
+	pLayerMask.SetBit(0);
 }
 
 deSpeaker::~deSpeaker(){
@@ -88,31 +88,31 @@ deSpeaker::~deSpeaker(){
 // Management
 ///////////////
 
-void deSpeaker::SetType( eSpeakerType type ){
-	if( type < estPoint || type > estDirected ){
-		DETHROW( deeInvalidParam );
+void deSpeaker::SetType(eSpeakerType type){
+	if(type < estPoint || type > estDirected){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( type == pType ){
+	if(type == pType){
 		return;
 	}
 	
 	pType = type;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->TypeChanged();
 	}
 }
 
-void deSpeaker::SetSound( deSound *sound ){
-	if( sound == pSound ){
+void deSpeaker::SetSound(deSound *sound){
+	if(sound == pSound){
 		return;
 	}
 	
 	pSound = sound;
 	
 	pPlayFrom = 0;
-	if( sound ){
+	if(sound){
 		pPlayTo = sound->GetSampleCount();
 		
 	}else{
@@ -120,245 +120,245 @@ void deSpeaker::SetSound( deSound *sound ){
 	}
 	
 	// notify the audio peer
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SourceChanged();
 	}
 }
 
-void deSpeaker::SetSynthesizer( deSynthesizerInstance *synthesizer ){
-	if( synthesizer == pSynthesizer ){
+void deSpeaker::SetSynthesizer(deSynthesizerInstance *synthesizer){
+	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	pPlayFrom = 0;
-	if( synthesizer ){
+	if(synthesizer){
 		pPlayTo = synthesizer->GetSampleCount();
 		
 	}else{
 		pPlayTo = 0;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SourceChanged();
 	}
 }
 
-void deSpeaker::SetVideoPlayer( deVideoPlayer *videoPlayer ){
-	if( videoPlayer == pVideoPlayer ){
+void deSpeaker::SetVideoPlayer(deVideoPlayer *videoPlayer){
+	if(videoPlayer == pVideoPlayer){
 		return;
 	}
 	
 	pVideoPlayer = videoPlayer;
 	
 	pPlayFrom = 0;
-	if( videoPlayer && videoPlayer->GetVideo() ){
+	if(videoPlayer && videoPlayer->GetVideo()){
 		pPlayTo = videoPlayer->GetVideo()->GetSampleCount();
 		
 	}else{
 		pPlayTo = 0;
 	}
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->SourceChanged();
 	}
 }
 
 
 
-void deSpeaker::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void deSpeaker::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PositionChanged();
 	}
 }
 
-void deSpeaker::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void deSpeaker::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->OrientationChanged();
 	}
 }
 
-void deSpeaker::SetVelocity( const decVector &velocity ){
-	if( velocity.IsEqualTo( pVelocity ) ){
+void deSpeaker::SetVelocity(const decVector &velocity){
+	if(velocity.IsEqualTo(pVelocity)){
 		return;
 	}
 	
 	pVelocity = velocity;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->VelocityChanged();
 	}
 }
 
 
 
-void deSpeaker::SetMuted( bool muted ){
-	if( muted == pMuted ){
+void deSpeaker::SetMuted(bool muted){
+	if(muted == pMuted){
 		return;
 	}
 	
 	pMuted = muted;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->MutedChanged();
 	}
 }
 
-void deSpeaker::SetLooping( bool looping ){
-	if( looping == pLooping ){
+void deSpeaker::SetLooping(bool looping){
+	if(looping == pLooping){
 		return;
 	}
 	
 	pLooping = looping;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->LoopingChanged();
 	}
 }
 
-void deSpeaker::SetPlayPosition( int playFrom, int playTo ){
-	playFrom = decMath::max( playFrom, 0 );
-	playTo = decMath::max( playTo, playFrom );
+void deSpeaker::SetPlayPosition(int playFrom, int playTo){
+	playFrom = decMath::max(playFrom, 0);
+	playTo = decMath::max(playTo, playFrom);
 	
-	if( playFrom == pPlayFrom && playTo == pPlayTo ){
+	if(playFrom == pPlayFrom && playTo == pPlayTo){
 		return;
 	}
 	
 	pPlayFrom = playFrom;
 	pPlayTo = playTo;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlayPositionChanged();
 	}
 }
 
-void deSpeaker::SetPlaySpeed( float playSpeed ){
-	playSpeed = decMath::max( playSpeed, 0.0f );
+void deSpeaker::SetPlaySpeed(float playSpeed){
+	playSpeed = decMath::max(playSpeed, 0.0f);
 	
-	if( fabsf( playSpeed - pPlaySpeed ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(playSpeed - pPlaySpeed) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pPlaySpeed = playSpeed;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlaySpeedChanged();
 	}
 }
 
-void deSpeaker::SetVolume( float volume ){
-	volume = decMath::max( volume, 0.0f );
+void deSpeaker::SetVolume(float volume){
+	volume = decMath::max(volume, 0.0f);
 	
-	if( fabsf( volume - pVolume ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(volume - pVolume) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pVolume = volume;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->VolumeChanged();
 	}
 }
 
-void deSpeaker::SetRange( float range ){
-	range = decMath::max( range, 0.01f );
+void deSpeaker::SetRange(float range){
+	range = decMath::max(range, 0.01f);
 	
-	if( fabsf( range - pRange ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(range - pRange) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pRange = range;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->RangeChanged();
 	}
 }
 
-void deSpeaker::SetRollOff( float rollOff ){
-	rollOff = decMath::clamp( rollOff, 0.0f, 1.0f );
+void deSpeaker::SetRollOff(float rollOff){
+	rollOff = decMath::clamp(rollOff, 0.0f, 1.0f);
 	
-	if( fabsf( rollOff - pRollOff ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(rollOff - pRollOff) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pRollOff = rollOff;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->RollOffChanged();
 	}
 }
 
-void deSpeaker::SetDistanceOffset( float distanceOffset ){
-	distanceOffset = decMath::max( distanceOffset, 0.0f );
+void deSpeaker::SetDistanceOffset(float distanceOffset){
+	distanceOffset = decMath::max(distanceOffset, 0.0f);
 	
-	if( fabsf( distanceOffset - pDistanceOffset ) <= FLOAT_SAFE_EPSILON ){
+	if(fabsf(distanceOffset - pDistanceOffset) <= FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
 	pDistanceOffset = distanceOffset;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->DistanceOffsetChanged();
 	}
 }
 
-void deSpeaker::SetShape( const decShapeList &shape ){
+void deSpeaker::SetShape(const decShapeList &shape){
 	pShape = shape;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->ShapeChanged();
 	}
 }
 
-void deSpeaker::SetLayerMask( const decLayerMask &layerMask ){
-	if( layerMask == pLayerMask ){
+void deSpeaker::SetLayerMask(const decLayerMask &layerMask){
+	if(layerMask == pLayerMask){
 		return;
 	}
 	
 	pLayerMask = layerMask;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->LayerMaskChanged();
 	}
 }
 
 
 
-void deSpeaker::SetPlayState( ePlayStates playState ){
-	if( playState == pPlayState ){
+void deSpeaker::SetPlayState(ePlayStates playState){
+	if(playState == pPlayState){
 		return;
 	}
 	
 	pPlayState = playState;
 	
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		pPeerAudio->PlayStateChanged();
 	}
 }
 
 void deSpeaker::Play(){
-	SetPlayState( epsPlaying );
+	SetPlayState(epsPlaying);
 }
 
 void deSpeaker::Stop(){
-	SetPlayState( epsStopped );
+	SetPlayState(epsStopped);
 }
 
 void deSpeaker::Pause(){
-	SetPlayState( epsPaused );
+	SetPlayState(epsPaused);
 }
 
 
@@ -366,23 +366,23 @@ void deSpeaker::Pause(){
 // System Peers
 /////////////////
 
-void deSpeaker::SetPeerAudio( deBaseAudioSpeaker *audSpeaker ){
-	if( audSpeaker == pPeerAudio ){
+void deSpeaker::SetPeerAudio(deBaseAudioSpeaker *audSpeaker){
+	if(audSpeaker == pPeerAudio){
 		return;
 	}
 	
-	if( pPeerAudio){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 	   pPeerAudio = audSpeaker;
 }
 
-void deSpeaker::SetPeerScripting( deBaseScriptingSpeaker *peer ){
-	if( peer == pPeerScripting ){
+void deSpeaker::SetPeerScripting(deBaseScriptingSpeaker *peer){
+	if(peer == pPeerScripting){
 		return;
 	}
 	
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 	pPeerScripting = peer;
@@ -393,15 +393,15 @@ void deSpeaker::SetPeerScripting( deBaseScriptingSpeaker *peer ){
 // Linked list world
 //////////////////////
 
-void deSpeaker::SetParentWorld( deWorld *world ){
+void deSpeaker::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deSpeaker::SetLLWorldPrev( deSpeaker *speaker ){
+void deSpeaker::SetLLWorldPrev(deSpeaker *speaker){
 	pLLWorldPrev = speaker;
 }
 
-void deSpeaker::SetLLWorldNext( deSpeaker *speaker ){
+void deSpeaker::SetLLWorldNext(deSpeaker *speaker){
 	pLLWorldNext = speaker;
 }
 
@@ -410,15 +410,15 @@ void deSpeaker::SetLLWorldNext( deSpeaker *speaker ){
 // Linked list microphone
 ///////////////////////////
 
-void deSpeaker::SetParentMicrophone( deMicrophone *microphone ){
+void deSpeaker::SetParentMicrophone(deMicrophone *microphone){
 	pParentMicrophone = microphone;
 }
 
-void deSpeaker::SetLLMicrophonePrev( deSpeaker *speaker ){
+void deSpeaker::SetLLMicrophonePrev(deSpeaker *speaker){
 	pLLMicrophonePrev = speaker;
 }
 
-void deSpeaker::SetLLMicrophoneNext( deSpeaker *speaker ){
+void deSpeaker::SetLLMicrophoneNext(deSpeaker *speaker){
 	pLLMicrophoneNext = speaker;
 }
 
@@ -428,10 +428,10 @@ void deSpeaker::SetLLMicrophoneNext( deSpeaker *speaker ){
 //////////////////////
 
 void deSpeaker::pCleanUp(){
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
-	if( pPeerAudio ){
+	if(pPeerAudio){
 		delete pPeerAudio;
 	}
 }

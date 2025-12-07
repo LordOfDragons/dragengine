@@ -52,8 +52,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-feFontImage::feFontImage( deEngine *engine ){
-	if( ! engine ) DETHROW( deeInvalidParam );
+feFontImage::feFontImage(deEngine *engine){
+	if(! engine) DETHROW(deeInvalidParam);
 	
 	pEngine = engine;
 	pEngImage = NULL;
@@ -67,21 +67,21 @@ feFontImage::feFontImage( deEngine *engine ){
 	pSaved = false;
 	
 	try{
-		pEngImage = pEngine->GetImageManager()->CreateImage( pWidth, pHeight, 1, 4, 8 );
+		pEngImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
 		
 		sRGBA8 * const pixels = pEngImage->GetDataRGBA8();
 		const int pixelCount = pWidth * pHeight;
 		int i;
-		for( i=0; i<pixelCount; i++ ){
-			pixels[ i ].red = 0;
-			pixels[ i ].green = 0;
-			pixels[ i ].blue = 0;
-			pixels[ i ].alpha = 255;
+		for(i=0; i<pixelCount; i++){
+			pixels[i].red = 0;
+			pixels[i].green = 0;
+			pixels[i].blue = 0;
+			pixels[i].alpha = 255;
 		}
 		
 		pEngImage->NotifyImageDataChanged();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -97,14 +97,14 @@ feFontImage::~feFontImage(){
 // Management
 ///////////////
 
-void feFontImage::SetParentFont( feFont* font ){
+void feFontImage::SetParentFont(feFont* font){
 	pParentFont = font;
 }
 
 
 
-void feFontImage::SetSize( int width, int height ){
-	if( width < 1 || height < 1 ) DETHROW( deeInvalidParam );
+void feFontImage::SetSize(int width, int height){
+	if(width < 1 || height < 1) DETHROW(deeInvalidParam);
 	
 	deImage *engImage = NULL;
 	
@@ -112,95 +112,95 @@ void feFontImage::SetSize( int width, int height ){
 	pHeight = height;
 	
 	try{
-		engImage = pEngine->GetImageManager()->CreateImage( pWidth, pHeight, 1, 4, 8 );
+		engImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
 		
-		if( pEngImage ){
+		if(pEngImage){
 			pEngImage->FreeReference();
 		}
 		
 		pEngImage = engImage;
 		engImage->RetainImageData();
 		
-	}catch( const deException & ){
-		if( engImage ) engImage->FreeReference();
+	}catch(const deException &){
+		if(engImage) engImage->FreeReference();
 		throw;
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
-void feFontImage::SetFilename( const char* filename, bool load ){
-	if( ! filename ) DETHROW( deeInvalidParam );
+void feFontImage::SetFilename(const char* filename, bool load){
+	if(! filename) DETHROW(deeInvalidParam);
 	
-	if( ! pFilename.Equals( filename ) ){
+	if(! pFilename.Equals(filename)){
 		pFilename = filename;
 		
-		if( load ){
+		if(load){
 			LoadImage();
 			
 		}else{
-			SetSaved( true );
-			SetChanged( true );
+			SetSaved(true);
+			SetChanged(true);
 		}
 	}
 }
 
-void feFontImage::SetChanged( bool changed ){
+void feFontImage::SetChanged(bool changed){
 	pChanged = changed;
 	NotifyImageChanged();
 }
 
-void feFontImage::SetSaved( bool saved ){
+void feFontImage::SetSaved(bool saved){
 	pSaved = saved;
 }
 
 void feFontImage::LoadImage(){
-	if( pEngImage ){
+	if(pEngImage){
 		pEngImage->FreeReference();
 		pEngImage = NULL;
 	}
 	
-	if( ! pFilename.IsEmpty() ){
+	if(! pFilename.IsEmpty()){
 		const char *basePath = "/";
 		
-		if( pParentFont ){
+		if(pParentFont){
 			basePath = pParentFont->GetDirectoryPath();
 		}
 		
-		if( pParentFont ){
-			pParentFont->GetLogger()->LogInfoFormat( LOGSOURCE, "FontImage.LoadImage: basePath='%s' path='%s'", basePath, pFilename.GetString() );
+		if(pParentFont){
+			pParentFont->GetLogger()->LogInfoFormat(LOGSOURCE, "FontImage.LoadImage: basePath='%s' path='%s'", basePath, pFilename.GetString());
 		}
 		
 		try{
-			pEngImage = pEngine->GetImageManager()->LoadImage( pFilename.GetString(), basePath );
+			pEngImage = pEngine->GetImageManager()->LoadImage(pFilename.GetString(), basePath);
 			pEngImage->RetainImageData();
 			
-		}catch( const deException &e ){
-			if( pParentFont ){
-				pParentFont->GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			if(pParentFont){
+				pParentFont->GetLogger()->LogException(LOGSOURCE, e);
 			}
 		}
 	}
 	
-	if( pEngImage ){
+	if(pEngImage){
 		pWidth = pEngImage->GetWidth();
 		pHeight = pEngImage->GetHeight();
 		
-		SetSaved( true );
-		SetChanged( false );
+		SetSaved(true);
+		SetChanged(false);
 		
 	}else{
-		SetSaved( false );
-		SetChanged( true );
+		SetSaved(false);
+		SetChanged(true);
 	}
 }
 
 
 
 void feFontImage::NotifyImageChanged(){
-	if( pParentFont ){
-		pParentFont->SetChanged( true );
-		pParentFont->NotifyImageChanged( this );
+	if(pParentFont){
+		pParentFont->SetChanged(true);
+		pParentFont->NotifyImageChanged(this);
 	}
 }
 
@@ -210,7 +210,7 @@ void feFontImage::NotifyImageChanged(){
 //////////////////////
 
 void feFontImage::pCleanUp(){
-	if( pEngImage ){
+	if(pEngImage){
 		pEngImage->FreeReference();
 	}
 }

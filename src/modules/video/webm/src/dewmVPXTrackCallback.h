@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create callback. */
-	dewmVPXTrackCallback( deVideoWebm &module );
+	dewmVPXTrackCallback(deVideoWebm &module);
 	
 	/** Clean up callback. */
 	virtual ~dewmVPXTrackCallback();
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set resource buffers to use for next frame. */
-	void SetResBuffer( void *buffer );
+	void SetResBuffer(void *buffer);
 	
 	/** Rewind. */
 	void Rewind();
@@ -76,9 +76,9 @@ public:
 	
 	
 protected:
-	virtual bool pOpenTrack( const webm::TrackEntry &track );
-	virtual void pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining );
-	virtual void pProcessAdditional( const std::vector<unsigned char> &data );
+	virtual bool pOpenTrack(const webm::TrackEntry &track);
+	virtual void pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining);
+	virtual void pProcessAdditional(const std::vector<unsigned char> &data);
 };
 
 #endif

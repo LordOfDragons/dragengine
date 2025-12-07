@@ -52,26 +52,26 @@ public:
 	/** Retrieves the number of variables. */
 	int GetCount() const;
 	/** Retrieves the variable at the given position. */
-	cePlaybackVariable *GetAt( int index ) const;
+	cePlaybackVariable *GetAt(int index) const;
 	/** Retrieves the named variable or NULL if not found. */
-	cePlaybackVariable *GetNamed( const char *name ) const;
+	cePlaybackVariable *GetNamed(const char *name) const;
 	/** Retrieves the index of a variable or -1 if not found. */
-	int IndexOf( cePlaybackVariable *variable ) const;
+	int IndexOf(cePlaybackVariable *variable) const;
 	/** Retrieves the index of a named variable or -1 if not found. */
-	int IndexOfNamed( const char *name ) const;
+	int IndexOfNamed(const char *name) const;
 	/** Determines if a variable exists. */
-	bool Has( cePlaybackVariable *variable ) const;
+	bool Has(cePlaybackVariable *variable) const;
 	/** Determines if a named variable exists. */
-	bool HasNamed( const char *name ) const;
+	bool HasNamed(const char *name) const;
 	/** Sets a variable adding it if not existing. */
-	void Set( const char *name, int value );
+	void Set(const char *name, int value);
 	/** Removes a variable. */
-	void Remove( cePlaybackVariable *variable );
+	void Remove(cePlaybackVariable *variable);
 	/** Removes all variables. */
 	void RemoveAll();
 	
 	/** Sets the list from another list. */
-	cePlaybackVariableList &operator=( const cePlaybackVariableList &list );
+	cePlaybackVariableList &operator=(const cePlaybackVariableList &list);
 	/*@}*/
 };
 

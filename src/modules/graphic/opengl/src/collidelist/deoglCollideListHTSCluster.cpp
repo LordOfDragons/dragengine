@@ -47,10 +47,10 @@
 ////////////////////////////
 
 deoglCollideListHTSCluster::deoglCollideListHTSCluster() :
-pCluster( nullptr ),
-pIndex( 0 ),
-pCulled( false ),
-pCascadeMask( 0 ){
+pCluster(nullptr),
+pIndex(0),
+pCulled(false),
+pCascadeMask(0){
 }
 
 deoglCollideListHTSCluster::~deoglCollideListHTSCluster(){
@@ -61,8 +61,8 @@ deoglCollideListHTSCluster::~deoglCollideListHTSCluster(){
 // Management
 ///////////////
 
-void deoglCollideListHTSCluster::SetCluster( deoglHTViewSectorCluster *cluster ){
-	DEASSERT_NOTNULL( cluster )
+void deoglCollideListHTSCluster::SetCluster(deoglHTViewSectorCluster *cluster){
+	DEASSERT_NOTNULL(cluster)
 	pCluster = cluster;
 	pCoordinates = cluster->GetCoordinate();
 	pIndex = pCoordinates.y * cluster->GetSector().GetSector().GetClusterCount() + pCoordinates.x;
@@ -76,22 +76,22 @@ void deoglCollideListHTSCluster::Clear(){
 	pCluster = nullptr;
 }
 
-void deoglCollideListHTSCluster::SetCulled( bool culled ){
+void deoglCollideListHTSCluster::SetCulled(bool culled){
 	pCulled = culled;
 }
 
-void deoglCollideListHTSCluster::SetCascadeMask( int mask ){
+void deoglCollideListHTSCluster::SetCascadeMask(int mask){
 	pCascadeMask = mask;
 }
 
 void deoglCollideListHTSCluster::StartOcclusionTest(
-deoglOcclusionTest &occlusionTest, const decVector &offset ){
-	const deoglHTSCluster &cluster = pCluster->GetSector().GetSector().GetClusterAt( pCoordinates.x, pCoordinates.y );
-	const decVector realOffset( cluster.GetCenter() + offset );
+deoglOcclusionTest &occlusionTest, const decVector &offset){
+	const deoglHTSCluster &cluster = pCluster->GetSector().GetSector().GetClusterAt(pCoordinates.x, pCoordinates.y);
+	const decVector realOffset(cluster.GetCenter() + offset);
 	
 	pCulled = false;
-	occlusionTest.AddInputData( realOffset - cluster.GetHalfExtends(),
-		realOffset + cluster.GetHalfExtends(), this );
+	occlusionTest.AddInputData(realOffset - cluster.GetHalfExtends(),
+		realOffset + cluster.GetHalfExtends(), this);
 }
 
 void deoglCollideListHTSCluster::OcclusionTestInvisible(){

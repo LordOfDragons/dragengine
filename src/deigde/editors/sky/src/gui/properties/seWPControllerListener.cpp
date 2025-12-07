@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seWPControllerListener::seWPControllerListener( seWPController &panel ) :
-pPanel( panel ){
+seWPControllerListener::seWPControllerListener(seWPController &panel) :
+pPanel(panel){
 }
 
 seWPControllerListener::~seWPControllerListener(){
@@ -52,26 +52,26 @@ seWPControllerListener::~seWPControllerListener(){
 // Management
 ///////////////
 
-void seWPControllerListener::ControllerStructureChanged( seSky *sky ){
+void seWPControllerListener::ControllerStructureChanged(seSky *sky){
 	pPanel.UpdateControllerList();
 }
 
-void seWPControllerListener::ControllerChanged( seSky *sky, seController *controller ){
-	if( controller->GetActive() ){
+void seWPControllerListener::ControllerChanged(seSky *sky, seController *controller){
+	if(controller->GetActive()){
 		pPanel.UpdateController();
 	}
 }
 
-void seWPControllerListener::ControllerNameChanged( seSky* sky, seController* controller ){
+void seWPControllerListener::ControllerNameChanged(seSky* sky, seController* controller){
 	pPanel.UpdateControllerList();
 }
 
-void seWPControllerListener::ControllerValueChanged( seSky *sky, seController *controller ){
-	if( controller->GetActive() ){
+void seWPControllerListener::ControllerValueChanged(seSky *sky, seController *controller){
+	if(controller->GetActive()){
 		pPanel.UpdateControllerValue();
 	}
 }
 
-void seWPControllerListener::ActiveControllerChanged( seSky *sky ){
+void seWPControllerListener::ActiveControllerChanged(seSky *sky){
 	pPanel.SelectActiveController();
 }

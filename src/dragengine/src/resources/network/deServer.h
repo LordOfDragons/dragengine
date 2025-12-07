@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create server object. */
-	deServer( deServerManager *manager );
+	deServer(deServerManager *manager);
 	
 protected:
 	/**
@@ -77,14 +77,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Address. */
-	inline const decString &GetAddress() const{ return pAddress; }
+	inline const decString &GetAddress() const{return pAddress;}
 	
 	/**
 	 * \brief Set address.
 	 * 
 	 * Intended to be used by the network module only so  do not call it otherwise.
 	 */
-	void SetAddress( const char *address );
+	void SetAddress(const char *address);
 	
 	/**
 	 * \brief Start listening on address for incoming connections.
@@ -92,7 +92,7 @@ public:
 	 * The format of the address is specific to the network module.
 	 * Returns true if listening or false if something went wrong.
 	 */
-	bool ListenOn( const char *address );
+	bool ListenOn(const char *address);
 	
 	/** \brief Stop listening. */
 	void StopListening();
@@ -103,16 +103,16 @@ public:
 	/** \name System Peers */
 	/*@{*/
 	/** \brief Network system peer object. */
-	inline deBaseNetworkServer *GetPeerNetwork() const{ return pPeerNetwork; }
+	inline deBaseNetworkServer *GetPeerNetwork() const{return pPeerNetwork;}
 	
 	/** \brief Set network system peer object. */
-	void SetPeerNetwork( deBaseNetworkServer *peer );
+	void SetPeerNetwork(deBaseNetworkServer *peer);
 	
 	/** \brief Scripting system peer object. */
-	inline deBaseScriptingServer *GetPeerScripting() const{ return pPeerScripting; }
+	inline deBaseScriptingServer *GetPeerScripting() const{return pPeerScripting;}
 	
 	/** \brief Set scripting system peer object. */
-	void SetPeerScripting( deBaseScriptingServer *peer );
+	void SetPeerScripting(deBaseScriptingServer *peer);
 	/*@}*/
 };
 

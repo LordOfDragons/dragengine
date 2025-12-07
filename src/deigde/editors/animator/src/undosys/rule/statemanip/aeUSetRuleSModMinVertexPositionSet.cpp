@@ -35,9 +35,9 @@
 ////////////////////////////
 
 aeUSetRuleSModMinVertexPositionSet::aeUSetRuleSModMinVertexPositionSet(
-	aeRuleStateManipulator *rule, float newMin )
+	aeRuleStateManipulator *rule, float newMin)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -48,9 +48,9 @@ aeUSetRuleSModMinVertexPositionSet::aeUSetRuleSModMinVertexPositionSet(
 		pOldMin = rule->GetMinimumVertexPositionSet();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Set state manipulator rule minimum vertex position set" );
+		SetShortInfo("Set state manipulator rule minimum vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeUSetRuleSModMinVertexPositionSet::~aeUSetRuleSModMinVertexPositionSet(){
 ///////////////
 
 void aeUSetRuleSModMinVertexPositionSet::Undo(){
-	pRule->SetMinimumVertexPositionSet( pOldMin );
+	pRule->SetMinimumVertexPositionSet(pOldMin);
 }
 
 void aeUSetRuleSModMinVertexPositionSet::Redo(){
-	pRule->SetMinimumVertexPositionSet( pNewMin );
+	pRule->SetMinimumVertexPositionSet(pNewMin);
 }
 
 
@@ -79,7 +79,7 @@ void aeUSetRuleSModMinVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinVertexPositionSet::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

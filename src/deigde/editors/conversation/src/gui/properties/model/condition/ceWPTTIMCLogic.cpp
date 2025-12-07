@@ -53,12 +53,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMCLogic::ceWPTTIMCLogic( ceWindowMain &windowMain,
-ceConversation &conversation, ceConversationAction &action, ceCConditionLogic *condition ) :
-ceWPTTIMConditions( windowMain, etConditionLogic, conversation, action,
-	condition, condition->GetConditions() )
+ceWPTTIMCLogic::ceWPTTIMCLogic(ceWindowMain &windowMain,
+ceConversation &conversation, ceConversationAction &action, ceCConditionLogic *condition) :
+ceWPTTIMConditions(windowMain, etConditionLogic, conversation, action,
+	condition, condition->GetConditions())
 {
-	SetIcon( windowMain.GetIconConditionLogic() );
+	SetIcon(windowMain.GetIconConditionLogic());
 	Update();
 }
 
@@ -70,8 +70,8 @@ ceWPTTIMCLogic::~ceWPTTIMCLogic(){
 // Management
 ///////////////
 
-const char *ceWPTTIMCLogic::GetOperatorText( ceCConditionLogic::eOperators anOperator ){
-	switch( anOperator ){
+const char *ceWPTTIMCLogic::GetOperatorText(ceCConditionLogic::eOperators anOperator){
+	switch(anOperator){
 	case ceCConditionLogic::eopNone:
 		return "none";
 		
@@ -82,7 +82,7 @@ const char *ceWPTTIMCLogic::GetOperatorText( ceCConditionLogic::eOperators anOpe
 		return "all";
 		
 	default:
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -90,18 +90,18 @@ void ceWPTTIMCLogic::Update(){
 	const ceCConditionLogic &condition = *GetConditionLogic();
 	
 	decString text;
-	text.Format( "Logic (%s)", GetOperatorText( condition.GetOperator() ) );
-	SetText( text );
+	text.Format("Logic (%s)", GetOperatorText(condition.GetOperator()));
+	SetText(text);
 	
 	ceWPTTIMConditions::Update();
 	
-	SetExpanded( condition.GetTIMExpanded() );
+	SetExpanded(condition.GetTIMExpanded());
 }
 
-void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
-	ceWPTTIMConditions::OnContextMenu( contextMenu );
+void ceWPTTIMCLogic::OnContextMenu(igdeMenuCascade &contextMenu){
+	ceWPTTIMConditions::OnContextMenu(contextMenu);
 	
-	if( ! GetTreeItem() ){
+	if(! GetTreeItem()){
 		return;
 	}
 	
@@ -109,7 +109,7 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(! topic){
 		return;
 	}
 	
@@ -121,25 +121,25 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	int i;
 	
 	// child action specific
-	helper.MenuSeparator( contextMenu );
+	helper.MenuSeparator(contextMenu);
 	
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
-		environment, "Logic: Add Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
-	contextMenu.AddChild( subMenu );
+		environment, "Logic: Add Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMACLogicAddCondition( windowMain, conversation, *topic,
-			action, logic, ceWPTTIMCondition::ListAddMenuConditions[ i ] ), true );
+	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMACLogicAddCondition(windowMain, conversation, *topic,
+			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]), true);
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicClearCondition( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMACLogicClearCondition(windowMain, conversation,
 		*topic, action, logic ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicPasteCondition( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMACLogicPasteCondition(windowMain, conversation,
 		*topic, action, logic ), true );
 }
 
-void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
-	if( ! GetTreeItem() ){
+void ceWPTTIMCLogic::ContextMenuCondition(igdeMenuCascade &contextMenu, ceConversationCondition *condition){
+	if(! GetTreeItem()){
 		return;
 	}
 	
@@ -147,7 +147,7 @@ void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConve
 	ceConversation &conversation = GetConversation();
 	ceConversationTopic * const topic = conversation.GetActiveFile()
 		? conversation.GetActiveFile()->GetActiveTopic() : NULL;
-	if( ! topic ){
+	if(! topic){
 		return;
 	}
 	
@@ -160,25 +160,25 @@ void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConve
 	
 	// child action specific
 	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
-		environment, "Add Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
-	contextMenu.AddChild( subMenu );
+		environment, "Add Condition", environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	contextMenu.AddChild(subMenu);
 	
-	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
-		helper.MenuCommand( subMenu, new ceWPTMACLogicAddCondition( windowMain, conversation, *topic,
-			action, logic, ceWPTTIMCondition::ListAddMenuConditions[ i ] ), true );
+	for(i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++){
+		helper.MenuCommand(subMenu, new ceWPTMACLogicAddCondition(windowMain, conversation, *topic,
+			action, logic, ceWPTTIMCondition::ListAddMenuConditions[i]), true);
 	}
 	
-	helper.MenuCommand( contextMenu, new ceWPTMACopyCondition( windowMain, condition ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicCutCondition( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMACopyCondition(windowMain, condition), true);
+	helper.MenuCommand(contextMenu, new ceWPTMACLogicCutCondition(windowMain, conversation,
 		*topic, action, logic, condition ), true );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicPasteCondition( windowMain, conversation,
+	helper.MenuCommand(contextMenu, new ceWPTMACLogicPasteCondition(windowMain, conversation,
 		*topic, action, logic ), true );
 	
-	helper.MenuSeparator( contextMenu );
-	helper.MenuCommand( contextMenu, new ceWPTMACLogicRemoveCondition( windowMain, conversation,
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, new ceWPTMACLogicRemoveCondition(windowMain, conversation,
 		*topic, action, logic, condition ), true );
 }
 
 void ceWPTTIMCLogic::OnExpandedChanged(){
-	GetConditionLogic()->SetTIMExpanded( GetExpanded() );
+	GetConditionLogic()->SetTIMExpanded(GetExpanded());
 }

@@ -43,17 +43,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRCanvasCanvasView::deoglRCanvasCanvasView( deoglRenderThread &renderThread ) :
-deoglRCanvas( renderThread ),
-pCanvasView( NULL ),
-pTCClampMin( 0.0f, 0.0f ),
-pTCClampMax( 1.0f, 1.0f ){
-	LEAK_CHECK_CREATE( renderThread, CanvasCanvasView );
+deoglRCanvasCanvasView::deoglRCanvasCanvasView(deoglRenderThread &renderThread) :
+deoglRCanvas(renderThread),
+pCanvasView(NULL),
+pTCClampMin(0.0f, 0.0f),
+pTCClampMax(1.0f, 1.0f){
+	LEAK_CHECK_CREATE(renderThread, CanvasCanvasView);
 }
 
 deoglRCanvasCanvasView::~deoglRCanvasCanvasView(){
-	LEAK_CHECK_FREE( GetRenderThread(), CanvasCanvasView );
-	SetCanvasView( NULL );
+	LEAK_CHECK_FREE(GetRenderThread(), CanvasCanvasView);
+	SetCanvasView(NULL);
 }
 
 
@@ -61,55 +61,55 @@ deoglRCanvasCanvasView::~deoglRCanvasCanvasView(){
 // Management
 ///////////////
 
-void deoglRCanvasCanvasView::SetCanvasView( deoglRCanvasView *canvasView ){
-	if( canvasView == pCanvasView ){
+void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView *canvasView){
+	if(canvasView == pCanvasView){
 		return;
 	}
 	
-	if( pCanvasView ){
+	if(pCanvasView){
 		pCanvasView->FreeReference();
 	}
 	pCanvasView = canvasView;
-	if( canvasView ){
+	if(canvasView){
 		canvasView->AddReference();
 	}
 }
 
-void deoglRCanvasCanvasView::SetTCTransform( const decTexMatrix2 &transform ){
+void deoglRCanvasCanvasView::SetTCTransform(const decTexMatrix2 &transform){
 	pTCTransform = transform;
 }
 
-void deoglRCanvasCanvasView::SetTCClampMinimum( const decVector2 &clamp ){
+void deoglRCanvasCanvasView::SetTCClampMinimum(const decVector2 &clamp){
 	pTCClampMin = clamp;
 }
 
-void deoglRCanvasCanvasView::SetTCClampMaximum( const decVector2 &clamp ){
+void deoglRCanvasCanvasView::SetTCClampMaximum(const decVector2 &clamp){
 	pTCClampMax = clamp;
 }
 
 
 
-void deoglRCanvasCanvasView::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
-	deoglRCanvas::PrepareForRender( renderPlanMask );
-	if( pCanvasView ){
-		pCanvasView->PrepareRenderTarget( renderPlanMask, 4, 8 );
+void deoglRCanvasCanvasView::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){
+	deoglRCanvas::PrepareForRender(renderPlanMask);
+	if(pCanvasView){
+		pCanvasView->PrepareRenderTarget(renderPlanMask, 4, 8);
 	}
 }
 
-void deoglRCanvasCanvasView::PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask ){
-	deoglRCanvas::PrepareForRenderRender( renderPlanMask );
-	if( pCanvasView ){
-		pCanvasView->RenderRenderTarget( renderPlanMask );
+void deoglRCanvasCanvasView::PrepareForRenderRender(const deoglRenderPlanMasked *renderPlanMask){
+	deoglRCanvas::PrepareForRenderRender(renderPlanMask);
+	if(pCanvasView){
+		pCanvasView->RenderRenderTarget(renderPlanMask);
 	}
 }
 
-void deoglRCanvasCanvasView::Render( const deoglRenderCanvasContext &context ){
-	if( ! pCanvasView ){
+void deoglRCanvasCanvasView::Render(const deoglRenderCanvasContext &context){
+	if(! pCanvasView){
 		return;
 	}
 	
-	deoglRenderCanvasContext viewContext( context, *this );
-	viewContext.SetTCClampMinimum( pTCClampMin );
-	viewContext.SetTCClampMaximum( pTCClampMax );
-	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasCanvasView( viewContext, *this );
+	deoglRenderCanvasContext viewContext(context, *this);
+	viewContext.SetTCClampMinimum(pTCClampMin);
+	viewContext.SetTCClampMaximum(pTCClampMax);
+	GetRenderThread().GetRenderers().GetCanvas().DrawCanvasCanvasView(viewContext, *this);
 }

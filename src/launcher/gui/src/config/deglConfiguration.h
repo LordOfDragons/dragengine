@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create configuration. */
-	deglConfiguration( deglLauncher &launcher );
+	deglConfiguration(deglLauncher &launcher);
 	
 	/** Clean up configuration. */
 	~deglConfiguration();
@@ -79,20 +79,20 @@ public:
 	void SaveConfiguration();
 	
 	/** Main window configuration. */
-	inline deglConfigWindow &GetWindowMain(){ return pWindowMain; }
-	inline const deglConfigWindow &GetWindowMain() const{ return pWindowMain; }
+	inline deglConfigWindow &GetWindowMain(){return pWindowMain;}
+	inline const deglConfigWindow &GetWindowMain() const{return pWindowMain;}
 	
 	/** Background color for valid elements. */
-	inline FXColor GetBackColorValid() const{ return pClrValidBack; }
+	inline FXColor GetBackColorValid() const{return pClrValidBack;}
 	
 	/** Background color for problem elements. */
-	inline FXColor GetBackColorProblem() const{ return pClrProblemBack; }
+	inline FXColor GetBackColorProblem() const{return pClrProblemBack;}
 	
 	/** Text color for valid elements. */
-	inline FXColor GetTextColorValid() const{ return pClrValidText; }
+	inline FXColor GetTextColorValid() const{return pClrValidText;}
 	
 	/** Text color for problem elements. */
-	inline FXColor GetTextColorProblem() const{ return pClrProblemText; }
+	inline FXColor GetTextColorProblem() const{return pClrProblemText;}
 	/*@}*/
 };
 

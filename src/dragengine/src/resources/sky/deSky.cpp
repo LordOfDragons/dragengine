@@ -43,34 +43,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSky::deSky( deSkyManager *manager ) :
-deResource( manager ),
+deSky::deSky(deSkyManager *manager) :
+deResource(manager),
 
-pControllers( NULL ),
-pControllerCount( 0 ),
+pControllers(NULL),
+pControllerCount(0),
 
-pLinks( NULL ),
-pLinkCount( 0 ),
+pLinks(NULL),
+pLinkCount(0),
 
-pLayers( NULL ),
-pLayerCount( 0 ),
+pLayers(NULL),
+pLayerCount(0),
 
-pPeerGraphic( NULL ){
+pPeerGraphic(NULL){
 }
 
 deSky::~deSky(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
 	
-	if( pLayers ){
+	if(pLayers){
 		delete [] pLayers;
 	}
-	if( pLinks ){
+	if(pLinks){
 		delete [] pLinks;
 	}
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 	}
 }
@@ -80,40 +80,40 @@ deSky::~deSky(){
 // Management
 ///////////////
 
-void deSky::SetBgColor( const decColor &color ){
+void deSky::SetBgColor(const decColor &color){
 	pBgColor = color;
 }
 
 
 
-void deSky::SetControllerCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deSky::SetControllerCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pControllers ){
+	if(pControllers){
 		delete [] pControllers;
 		pControllers = NULL;
 		pControllerCount = 0;
 	}
 	
-	if( count > 0 ){
-		pControllers = new deSkyController[ count ];
+	if(count > 0){
+		pControllers = new deSkyController[count];
 		pControllerCount = count;
 	}
 }
 
-deSkyController &deSky::GetControllerAt( int index ) const{
-	if( index < 0 || index >= pControllerCount ){
-		DETHROW( deeInvalidParam );
+deSkyController &deSky::GetControllerAt(int index) const{
+	if(index < 0 || index >= pControllerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pControllers[ index ];
+	return pControllers[index];
 }
 
-int deSky::IndexOfControllerNamed( const char *name ) const{
+int deSky::IndexOfControllerNamed(const char *name) const{
 	int i;
-	for( i=0; i<pControllerCount; i++ ){
-		if( pControllers[ i ].GetName() == name ){
+	for(i=0; i<pControllerCount; i++){
+		if(pControllers[i].GetName() == name){
 			return i;
 		}
 	}
@@ -123,60 +123,60 @@ int deSky::IndexOfControllerNamed( const char *name ) const{
 
 
 
-void deSky::SetLinkCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deSky::SetLinkCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pLinks ){
+	if(pLinks){
 		delete [] pLinks;
 		pLinks = NULL;
 		pLinkCount = 0;
 	}
 	
-	if( count > 0 ){
-		pLinks = new deSkyLink[ count ];
+	if(count > 0){
+		pLinks = new deSkyLink[count];
 		pLinkCount = count;
 	}
 }
 
-deSkyLink &deSky::GetLinkAt( int index ) const{
-	if( index < 0 || index >= pLinkCount ){
-		DETHROW( deeInvalidParam );
+deSkyLink &deSky::GetLinkAt(int index) const{
+	if(index < 0 || index >= pLinkCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pLinks[ index ];
+	return pLinks[index];
 }
 
 
 
-void deSky::SetLayerCount( int count ){
-	if( count < 0 ){
-		DETHROW( deeInvalidParam );
+void deSky::SetLayerCount(int count){
+	if(count < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pLayers ){
+	if(pLayers){
 		delete [] pLayers;
 		pLayers = NULL;
 		pLayerCount = 0;
 	}
 	
-	if( count > 0 ){
-		pLayers = new deSkyLayer[ count ];
+	if(count > 0){
+		pLayers = new deSkyLayer[count];
 		pLayerCount = count;
 	}
 }
 
-deSkyLayer &deSky::GetLayerAt( int index ) const{
-	if( index < 0 || index >= pLayerCount ){
-		DETHROW( deeInvalidParam );
+deSkyLayer &deSky::GetLayerAt(int index) const{
+	if(index < 0 || index >= pLayerCount){
+		DETHROW(deeInvalidParam);
 	}
-	return pLayers[ index ];
+	return pLayers[index];
 }
 
 
 
 void deSky::NotifyParametersChanged(){
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->ParametersChanged();
 	}
 }
@@ -186,12 +186,12 @@ void deSky::NotifyParametersChanged(){
 // System Peers
 /////////////////
 
-void deSky::SetPeerGraphic( deBaseGraphicSky *peer ){
-	if( peer == pPeerGraphic ){
+void deSky::SetPeerGraphic(deBaseGraphicSky *peer){
+	if(peer == pPeerGraphic){
 		return;
 	}
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		delete pPeerGraphic;
 	}
 	pPeerGraphic = peer;

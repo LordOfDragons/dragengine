@@ -39,7 +39,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shape. */
-	deoglShapeSphere( deoglRenderThread &renderThread );
+	deoglShapeSphere(deoglRenderThread &renderThread);
 	/** Cleans up the shape. */
 	virtual ~deoglShapeSphere();
 	/*@}*/
@@ -47,12 +47,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Calculate matrix for box parameters. */
-	void CalcMatrix( decMatrix &matrix, const decVector &position, float radius );
+	void CalcMatrix(decMatrix &matrix, const decVector &position, float radius);
 	
 	/** Add lines data. */
-	virtual void AddVBOLines( sVBOData *data );
+	virtual void AddVBOLines(sVBOData *data);
 	/** Add faces data. */
-	virtual void AddVBOFaces( sVBOData *data );
+	virtual void AddVBOFaces(sVBOData *data);
 	/*@}*/
 };
 

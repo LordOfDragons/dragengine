@@ -32,7 +32,7 @@
 /////////////////////////////////
 
 dearComponentVPSState::dearComponentVPSState() :
-pWeight( 0.0f ){
+pWeight(0.0f){
 }
 
 dearComponentVPSState::~dearComponentVPSState(){
@@ -43,6 +43,6 @@ dearComponentVPSState::~dearComponentVPSState(){
 // Management
 ///////////////
 
-void dearComponentVPSState::SetWeight( float weight ){
+void dearComponentVPSState::SetWeight(float weight){
 	pWeight = weight;
 }

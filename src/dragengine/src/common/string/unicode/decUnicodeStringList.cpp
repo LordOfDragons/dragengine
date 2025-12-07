@@ -44,19 +44,19 @@ decUnicodeStringList::decUnicodeStringList(){
 	pStringSize = 0;
 }
 
-decUnicodeStringList::decUnicodeStringList( const decUnicodeStringList &list ){
+decUnicodeStringList::decUnicodeStringList(const decUnicodeStringList &list){
 	const int count = list.GetCount();
 	
 	pStrings = NULL;
 	pStringCount = 0;
 	pStringSize = 0;
 	
-	if( count > 0 ){
-		pStrings = new decUnicodeString*[ count ];
+	if(count > 0){
+		pStrings = new decUnicodeString*[count];
 		pStringSize = count;
 		
-		while( pStringCount < count ){
-			pStrings[ pStringCount ] = new decUnicodeString( list.GetAt( pStringCount ) );
+		while(pStringCount < count){
+			pStrings[pStringCount] = new decUnicodeString(list.GetAt(pStringCount));
 			pStringCount++;
 		}
 	}
@@ -64,7 +64,7 @@ decUnicodeStringList::decUnicodeStringList( const decUnicodeStringList &list ){
 
 decUnicodeStringList::~decUnicodeStringList(){
 	RemoveAll();
-	if( pStrings ){
+	if(pStrings){
 		delete [] pStrings;
 	}
 }
@@ -74,27 +74,27 @@ decUnicodeStringList::~decUnicodeStringList(){
 // Management
 ///////////////
 
-const decUnicodeString &decUnicodeStringList::GetAt( int index ) const{
-	if( index < 0 || index >= pStringCount ){
-		DETHROW( deeInvalidParam );
+const decUnicodeString &decUnicodeStringList::GetAt(int index) const{
+	if(index < 0 || index >= pStringCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return *pStrings[ index ];
+	return *pStrings[index];
 }
 
-void decUnicodeStringList::SetAt( int index, const decUnicodeString &string ){
-	if( index < 0 || index >= pStringCount ){
-		DETHROW( deeInvalidParam );
+void decUnicodeStringList::SetAt(int index, const decUnicodeString &string){
+	if(index < 0 || index >= pStringCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	*pStrings[ index ] = string;
 }
 
-int decUnicodeStringList::IndexOf( const decUnicodeString &string ) const{
+int decUnicodeStringList::IndexOf(const decUnicodeString &string) const{
 	int s;
 	
-	for( s=0; s<pStringCount; s++ ){
-		if( pStrings[ s ]->Equals( string ) ){
+	for(s=0; s<pStringCount; s++){
+		if(pStrings[s]->Equals(string)){
 			return s;
 		}
 	}
@@ -102,104 +102,104 @@ int decUnicodeStringList::IndexOf( const decUnicodeString &string ) const{
 	return -1;
 }
 
-bool decUnicodeStringList::Has( const decUnicodeString &string ) const{
-	return IndexOf( string ) != -1;
+bool decUnicodeStringList::Has(const decUnicodeString &string) const{
+	return IndexOf(string) != -1;
 }
 
-void decUnicodeStringList::Add( const decUnicodeString &string ){
-	if( pStringCount == pStringSize ){
+void decUnicodeStringList::Add(const decUnicodeString &string){
+	if(pStringCount == pStringSize){
 		const int newSize = pStringSize * 3 / 2 + 1;
-		decUnicodeString ** const newArray = new decUnicodeString*[ newSize ];
-		if( pStrings ){
-			memcpy( newArray, pStrings, sizeof( decUnicodeString* ) * pStringSize );
+		decUnicodeString ** const newArray = new decUnicodeString*[newSize];
+		if(pStrings){
+			memcpy(newArray, pStrings, sizeof(decUnicodeString*) * pStringSize);
 			delete [] pStrings;
 		}
 		pStrings = newArray;
 		pStringSize = newSize;
 	}
 	
-	pStrings[ pStringCount ] = new decUnicodeString( string );
+	pStrings[pStringCount] = new decUnicodeString(string);
 	pStringCount++;
 }
 
-void decUnicodeStringList::InsertAt( const decUnicodeString &string, int index ){
-	if( index < 0 || index > pStringCount ){
-		DETHROW( deeInvalidParam );
+void decUnicodeStringList::InsertAt(const decUnicodeString &string, int index){
+	if(index < 0 || index > pStringCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int i;
 	
-	if( pStringCount == pStringSize ){
+	if(pStringCount == pStringSize){
 		const int newSize = pStringSize * 3 / 2 + 1;
-		decUnicodeString ** const newArray = new decUnicodeString*[ newSize ];
-		if( pStrings ){
-			memcpy( newArray, pStrings, sizeof( decUnicodeString* ) * pStringSize );
+		decUnicodeString ** const newArray = new decUnicodeString*[newSize];
+		if(pStrings){
+			memcpy(newArray, pStrings, sizeof(decUnicodeString*) * pStringSize);
 			delete [] pStrings;
 		}
 		pStrings = newArray;
 		pStringSize = newSize;
 	}
 	
-	for( i=pStringCount; i>index; i-- ){
-		pStrings[ i ] = pStrings[ i - 1 ];
+	for(i=pStringCount; i>index; i--){
+		pStrings[i] = pStrings[i - 1];
 	}
-	pStrings[ index ] = new decUnicodeString( string );
+	pStrings[index] = new decUnicodeString(string);
 	pStringCount++;
 }
 
-void decUnicodeStringList::Move( int from, int to ){
-	if( from < 0 || from >= pStringCount || to < 0 || to >= pStringCount ){
-		DETHROW( deeInvalidParam );
+void decUnicodeStringList::Move(int from, int to){
+	if(from < 0 || from >= pStringCount || to < 0 || to >= pStringCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	decUnicodeString * const tempString = pStrings[ from ];
+	decUnicodeString * const tempString = pStrings[from];
 	int i;
 	
-	if( to < from ){
-		for( i=from; i>to; i-- ){
-			pStrings[ i ] = pStrings[ i - 1 ];
+	if(to < from){
+		for(i=from; i>to; i--){
+			pStrings[i] = pStrings[i - 1];
 		}
 		
-	}else if( to > from ){
-		for( i=from; i<to; i++ ){
-			pStrings[ i ] = pStrings[ i + 1 ];
+	}else if(to > from){
+		for(i=from; i<to; i++){
+			pStrings[i] = pStrings[i + 1];
 		}
 	}
 	
-	pStrings[ to ] = tempString;
+	pStrings[to] = tempString;
 }
 
-void decUnicodeStringList::RemoveFrom( int index ){
-	if( index < 0 || index >= pStringCount ){
-		DETHROW( deeInvalidParam );
+void decUnicodeStringList::RemoveFrom(int index){
+	if(index < 0 || index >= pStringCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	int s;
 	
-	delete pStrings[ index ];
+	delete pStrings[index];
 	
-	for( s=index+1; s<pStringCount; s++ ){
-		pStrings[ s - 1 ] = pStrings[ s ];
+	for(s=index+1; s<pStringCount; s++){
+		pStrings[s - 1] = pStrings[s];
 	}
 	pStringCount--;
 }
 
 void decUnicodeStringList::RemoveAll(){
-	while( pStringCount > 0 ){
+	while(pStringCount > 0){
 		pStringCount--;
-		delete pStrings[ pStringCount ];
+		delete pStrings[pStringCount];
 	}
 }
 
 void decUnicodeStringList::SortAscending(){
-	if( pStringCount > 1 ){
-		pSortAscending( 0, pStringCount - 1 );
+	if(pStringCount > 1){
+		pSortAscending(0, pStringCount - 1);
 	}
 }
 
 void decUnicodeStringList::SortDescending(){
-	if( pStringCount > 1 ){
-		pSortDescending( 0, pStringCount - 1 );
+	if(pStringCount > 1){
+		pSortDescending(0, pStringCount - 1);
 	}
 }
 
@@ -208,35 +208,35 @@ void decUnicodeStringList::SortDescending(){
 // Operators
 //////////////
 
-const decUnicodeString &decUnicodeStringList::operator[]( int index ) const{
-	return GetAt( index );
+const decUnicodeString &decUnicodeStringList::operator[](int index) const{
+	return GetAt(index);
 }
 
-decUnicodeStringList &decUnicodeStringList::operator=( const decUnicodeStringList &list ){
+decUnicodeStringList &decUnicodeStringList::operator=(const decUnicodeStringList &list){
 	const int count = list.GetCount();
 	int s;
 	
 	RemoveAll();
-	for( s=0; s<count; s++ ){
-		Add( list.GetAt( s ) );
+	for(s=0; s<count; s++){
+		Add(list.GetAt(s));
 	}
 	
 	return *this;
 }
 
-bool decUnicodeStringList::operator!=( const decUnicodeStringList &list ){
-	return ! ( *this == list );
+bool decUnicodeStringList::operator!=(const decUnicodeStringList &list){
+	return ! (*this == list);
 }
 
-bool decUnicodeStringList::operator==( const decUnicodeStringList &list ){
+bool decUnicodeStringList::operator==(const decUnicodeStringList &list){
 	int i;
 	
-	if( list.GetCount() != pStringCount ){
+	if(list.GetCount() != pStringCount){
 		return false;
 	}
 	
-	for( i=0; i<pStringCount; i++ ){
-		if( *pStrings[ i ] != list.GetAt( i ) ){
+	for(i=0; i<pStringCount; i++){
+		if(*pStrings[i] != list.GetAt(i)){
 			return false;
 		}
 	}
@@ -244,39 +244,39 @@ bool decUnicodeStringList::operator==( const decUnicodeStringList &list ){
 	return true;
 }
 
-decUnicodeStringList decUnicodeStringList::operator+( const decUnicodeStringList &list ) const{
+decUnicodeStringList decUnicodeStringList::operator+(const decUnicodeStringList &list) const{
 	const int count = list.GetCount();
-	decUnicodeStringList newList( *this );
+	decUnicodeStringList newList(*this);
 	int s;
 	
-	for( s=0; s<count; s++ ){
-		newList.Add( list.GetAt( s ) );
+	for(s=0; s<count; s++){
+		newList.Add(list.GetAt(s));
 	}
 	
 	return newList;
 }
 
-decUnicodeStringList &decUnicodeStringList::operator+=( const decUnicodeStringList &list ){
+decUnicodeStringList &decUnicodeStringList::operator+=(const decUnicodeStringList &list){
 	const int count = list.GetCount();
 	int s;
 	
-	for( s=0; s<count; s++ ){
-		Add( list.GetAt( s ) );
+	for(s=0; s<count; s++){
+		Add(list.GetAt(s));
 	}
 	
 	return *this;
 }
 
-decUnicodeStringList decUnicodeStringList::operator+( const decUnicodeString &string ) const{
-	decUnicodeStringList newList( *this );
+decUnicodeStringList decUnicodeStringList::operator+(const decUnicodeString &string) const{
+	decUnicodeStringList newList(*this);
 	
-	newList.Add( string );
+	newList.Add(string);
 	
 	return newList;
 }
 
-decUnicodeStringList &decUnicodeStringList::operator+=( const decUnicodeString &string ){
-	Add( string );
+decUnicodeStringList &decUnicodeStringList::operator+=(const decUnicodeString &string){
+	Add(string);
 	return *this;
 }
 
@@ -285,64 +285,64 @@ decUnicodeStringList &decUnicodeStringList::operator+=( const decUnicodeString &
 // Private Functions
 //////////////////////
 
-void decUnicodeStringList::pSortAscending( int left, int right ){
-	decUnicodeString * const pivot = pStrings[ left ];
+void decUnicodeStringList::pSortAscending(int left, int right){
+	decUnicodeString * const pivot = pStrings[left];
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( *pStrings[ right ] >= *pivot ) && ( left < right ) ){
+	while(left < right){
+		while((*pStrings[right] >= *pivot) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pStrings[ left ] = pStrings[ right ];
+		if(left != right){
+			pStrings[left] = pStrings[right];
 			left++;
 		}
-		while( ( *pStrings[ left ] <= *pivot ) && ( left < right ) ){
+		while((*pStrings[left] <= *pivot) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pStrings[ right ] = pStrings[ left ];
+		if(left != right){
+			pStrings[right] = pStrings[left];
 			right--;
 		}
 	}
 	
-	pStrings[ left ] = pivot;
-	if( l_hold < left ){
-		pSortAscending( l_hold, left - 1 );
+	pStrings[left] = pivot;
+	if(l_hold < left){
+		pSortAscending(l_hold, left - 1);
 	}
-	if( r_hold > left ){
-		pSortAscending( left + 1, r_hold );
+	if(r_hold > left){
+		pSortAscending(left + 1, r_hold);
 	}
 }
 
-void decUnicodeStringList::pSortDescending( int left, int right ){
-	decUnicodeString * const pivot = pStrings[ left ];
+void decUnicodeStringList::pSortDescending(int left, int right){
+	decUnicodeString * const pivot = pStrings[left];
 	const int r_hold = right;
 	const int l_hold = left;
 	
-	while( left < right ){
-		while( ( *pStrings[ right ] <= *pivot ) && ( left < right ) ){
+	while(left < right){
+		while((*pStrings[right] <= *pivot) && (left < right)){
 			right--;
 		}
-		if( left != right ){
-			pStrings[ left ] = pStrings[ right ];
+		if(left != right){
+			pStrings[left] = pStrings[right];
 			left++;
 		}
-		while( ( *pStrings[ left ] >= *pivot ) && ( left < right ) ){
+		while((*pStrings[left] >= *pivot) && (left < right)){
 			left++;
 		}
-		if( left != right ){
-			pStrings[ right ] = pStrings[ left ];
+		if(left != right){
+			pStrings[right] = pStrings[left];
 			right--;
 		}
 	}
 	
-	pStrings[ left ] = pivot;
-	if( l_hold < left ){
-		pSortDescending( l_hold, left - 1 );
+	pStrings[left] = pivot;
+	if(l_hold < left){
+		pSortDescending(l_hold, left - 1);
 	}
-	if( r_hold > left ){
-		pSortDescending( left + 1, r_hold );
+	if(r_hold > left){
+		pSortDescending(left + 1, r_hold);
 	}
 }

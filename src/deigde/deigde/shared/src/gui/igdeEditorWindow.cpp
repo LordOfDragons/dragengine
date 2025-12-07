@@ -49,11 +49,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeEditorWindow::igdeEditorWindow( igdeEditorModule &editorModule ) :
-igdeContainerBox( editorModule.GetEnvironment(), igdeContainerBox::eaY ),
-pEditorModule( editorModule ),
-pActiveModule( false ),
-pRecentFiles( *this, true, 10 ){
+igdeEditorWindow::igdeEditorWindow(igdeEditorModule &editorModule) :
+igdeContainerBox(editorModule.GetEnvironment(), igdeContainerBox::eaY),
+pEditorModule(editorModule),
+pActiveModule(false),
+pRecentFiles(*this, true, 10){
 }
 
 igdeEditorWindow::~igdeEditorWindow(){
@@ -96,22 +96,22 @@ void igdeEditorWindow::OnDeactivate(){
 void igdeEditorWindow::SaveResourceHandlers(){
 	const int count = GetChildCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		GetChildAt( i )->DestroyNativeWidget();
+	for(i=0; i<count; i++){
+		GetChildAt(i)->DestroyNativeWidget();
 	}
 }
 #endif
 
-void igdeEditorWindow::OnFrameUpdate( float ){
+void igdeEditorWindow::OnFrameUpdate(float){
 }
 
-void igdeEditorWindow::GetChangedDocuments( decStringList& ){
+void igdeEditorWindow::GetChangedDocuments(decStringList&){
 }
 
-void igdeEditorWindow::LoadDocument( const char * ){
+void igdeEditorWindow::LoadDocument(const char *){
 }
 
-bool igdeEditorWindow::SaveDocument( const char * ){
+bool igdeEditorWindow::SaveDocument(const char *){
 	return false;
 }
 
@@ -125,9 +125,9 @@ igdeStepableTask *igdeEditorWindow::OnGameDefinitionChanged(){
 	return NULL;
 }
 
-void igdeEditorWindow::DisplayException( const deException &exception ){
-	GetLogger()->LogException( pEditorModule.GetLoggingName(), exception );
-	igdeCommonDialogs::Exception( this, exception );
+void igdeEditorWindow::DisplayException(const deException &exception){
+	GetLogger()->LogException(pEditorModule.GetLoggingName(), exception);
+	igdeCommonDialogs::Exception(this, exception);
 }
 
 
@@ -139,25 +139,25 @@ int igdeEditorWindow::GetSharedMenuCount() const{
 	return pSharedMenus.GetCount();
 }
 
-igdeMenuCascade *igdeEditorWindow::GetSharedMenuAt( int index ) const{
-	return ( igdeMenuCascade* )pSharedMenus.GetAt( index );
+igdeMenuCascade *igdeEditorWindow::GetSharedMenuAt(int index) const{
+	return (igdeMenuCascade*)pSharedMenus.GetAt(index);
 }
 
-void igdeEditorWindow::AddSharedMenu( igdeMenuCascade *menu ){
-	if( ! menu ){
-		DETHROW( deeInvalidParam );
+void igdeEditorWindow::AddSharedMenu(igdeMenuCascade *menu){
+	if(! menu){
+		DETHROW(deeInvalidParam);
 	}
-	pSharedMenus.Add( menu );
+	pSharedMenus.Add(menu);
 	
-	if( pActiveModule ){
+	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedMenusChanged();
 	}
 }
 
-void igdeEditorWindow::RemoveSharedMenu( igdeMenuCascade *menu ){
-	pSharedMenus.Remove( menu );
+void igdeEditorWindow::RemoveSharedMenu(igdeMenuCascade *menu){
+	pSharedMenus.Remove(menu);
 	
-	if( pActiveModule ){
+	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedMenusChanged();
 	}
 }
@@ -165,7 +165,7 @@ void igdeEditorWindow::RemoveSharedMenu( igdeMenuCascade *menu ){
 void igdeEditorWindow::RemoveAllSharedMenus(){
 	pSharedMenus.RemoveAll();
 	
-	if( pActiveModule ){
+	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedMenusChanged();
 	}
 }
@@ -179,25 +179,25 @@ int igdeEditorWindow::GetSharedToolBarCount() const{
 	return pSharedToolBars.GetCount();
 }
 
-igdeToolBar *igdeEditorWindow::GetSharedToolBarAt( int index ) const{
-	return ( igdeToolBar* )pSharedToolBars.GetAt( index );
+igdeToolBar *igdeEditorWindow::GetSharedToolBarAt(int index) const{
+	return (igdeToolBar*)pSharedToolBars.GetAt(index);
 }
 
-void igdeEditorWindow::AddSharedToolBar( igdeToolBar *toolbar ){
-	if( ! toolbar ){
-		DETHROW( deeInvalidParam );
+void igdeEditorWindow::AddSharedToolBar(igdeToolBar *toolbar){
+	if(! toolbar){
+		DETHROW(deeInvalidParam);
 	}
-	pSharedToolBars.Add( toolbar );
+	pSharedToolBars.Add(toolbar);
 	
-	if( pActiveModule ){
+	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedToolBarsChanged();
 	}
 }
 
-void igdeEditorWindow::RemoveSharedToolBar( igdeToolBar *toolbar ){
-	pSharedToolBars.Remove( toolbar );
+void igdeEditorWindow::RemoveSharedToolBar(igdeToolBar *toolbar){
+	pSharedToolBars.Remove(toolbar);
 	
-	if( pActiveModule ){
+	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedToolBarsChanged();
 	}
 }
@@ -205,7 +205,7 @@ void igdeEditorWindow::RemoveSharedToolBar( igdeToolBar *toolbar ){
 void igdeEditorWindow::RemoveAllSharedToolBars(){
 	pSharedToolBars.RemoveAll();
 	
-	if( pActiveModule ){
+	if(pActiveModule){
 		GetEnvironment().ActiveModuleSharedToolBarsChanged();
 	}
 }
@@ -215,15 +215,15 @@ void igdeEditorWindow::RemoveAllSharedToolBars(){
 // Update Actions
 ///////////////////
 
-void igdeEditorWindow::AddUpdateAction( igdeAction *action ){
-	if( ! action ){
-		DETHROW( deeInvalidParam );
+void igdeEditorWindow::AddUpdateAction(igdeAction *action){
+	if(! action){
+		DETHROW(deeInvalidParam);
 	}
-	pUpdateActions.AddIfAbsent( action );
+	pUpdateActions.AddIfAbsent(action);
 }
 
-void igdeEditorWindow::RemoveUpdateAction( igdeAction *action ){
-	pUpdateActions.RemoveIfPresent( action );
+void igdeEditorWindow::RemoveUpdateAction(igdeAction *action){
+	pUpdateActions.RemoveIfPresent(action);
 }
 
 void igdeEditorWindow::RemoveAllUpdateActions(){
@@ -234,8 +234,8 @@ void igdeEditorWindow::UpdateAllActions(){
 	const int count = pUpdateActions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( igdeAction* )pUpdateActions.GetAt( i ) )->Update();
+	for(i=0; i<count; i++){
+		((igdeAction*)pUpdateActions.GetAt(i))->Update();
 	}
 }
 
@@ -248,7 +248,7 @@ void igdeEditorWindow::CreateNativeWidget(){
 	igdeContainerBox::CreateNativeWidget();
 	
 #ifdef OS_W32
-	if( ! pActiveModule ){
+	if(! pActiveModule){
 		SaveResourceHandlers();
 	}
 #endif

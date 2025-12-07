@@ -56,10 +56,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new navigation information. */
-	dedsNavigationInfo( deScriptingDragonScript &ds );
+	dedsNavigationInfo(deScriptingDragonScript &ds);
 	
 	/** \brief Create copy of a navigation information. */
-	dedsNavigationInfo( const dedsNavigationInfo &info );
+	dedsNavigationInfo(const dedsNavigationInfo &info);
 	
 	/** \brief Clean up the navigation information. */
 	virtual ~dedsNavigationInfo();
@@ -70,16 +70,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Cost type at position if position is not \em null. */
-	inline int GetCostType() const{ return pCostType; }
+	inline int GetCostType() const{return pCostType;}
 	
 	/** \brief Set cost type at position. */
-	void SetCostType( int costType );
+	void SetCostType(int costType);
 	
 	
 	
@@ -87,20 +87,20 @@ public:
 	 * \brief Index along navigation path.
 	 * \details -1 indicates navigation start position towards first path point.
 	 */
-	inline int GetPathIndex() const{ return pPathIndex; }
+	inline int GetPathIndex() const{return pPathIndex;}
 	
 	/**
 	 * \brief Set index along navigation path.
 	 * \details -1 indicates navigation start position towards first path point.
 	 * \throws dueEInvalidParam \em index is less than -1.
 	 */
-	void SetPathIndex( int index );
+	void SetPathIndex(int index);
 	
 	/** \brief Factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
-	inline float GetPathFactor() const{ return pPathFactor; }
+	inline float GetPathFactor() const{return pPathFactor;}
 	
 	/** \brief Set factor along path between getPathIndex() and getPathIndex()+1 from 0 to 1. */
-	void SetPathFactor( float factor );
+	void SetPathFactor(float factor);
 	/*@}*/
 };
 

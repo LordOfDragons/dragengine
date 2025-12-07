@@ -38,12 +38,12 @@ const char * const gdeClipboardDataOCBillboard::TYPE_NAME = "OCBillboard";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCBillboard::gdeClipboardDataOCBillboard( gdeOCBillboard *billboard ) :
-igdeClipboardData( TYPE_NAME ),
-pBillboard( NULL )
+gdeClipboardDataOCBillboard::gdeClipboardDataOCBillboard(gdeOCBillboard *billboard) :
+igdeClipboardData(TYPE_NAME),
+pBillboard(NULL)
 {
-	if( ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pBillboard = billboard;
@@ -51,7 +51,7 @@ pBillboard( NULL )
 }
 
 gdeClipboardDataOCBillboard::~gdeClipboardDataOCBillboard(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
 }

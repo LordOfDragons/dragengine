@@ -54,15 +54,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOSpeaker::gdeVAOSpeaker( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCSpeaker *ocspeaker ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCSpeaker( ocspeaker ),
-pDDSCenter( NULL ),
-pDDSCoordSystem( NULL )
+gdeVAOSpeaker::gdeVAOSpeaker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCSpeaker *ocspeaker) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCSpeaker(ocspeaker),
+pDDSCenter(NULL),
+pDDSCoordSystem(NULL)
 {
-	if( ! ocspeaker ){
-		DETHROW( deeInvalidParam );
+	if(! ocspeaker){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOCSpeaker->AddReference();
@@ -72,7 +72,7 @@ pDDSCoordSystem( NULL )
 		pUpdateDDShapes();
 		pUpdateDDShapeColor();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -106,18 +106,18 @@ void gdeVAOSpeaker::SelectedObjectChanged(){
 void gdeVAOSpeaker::pCleanUp(){
 	pReleaseResources();
 	
-	if( pDDSCoordSystem ){
+	if(pDDSCoordSystem){
 		delete pDDSCoordSystem;
 	}
-	if( pDDSCenter ){
+	if(pDDSCenter){
 		delete pDDSCenter;
 	}
-	if( pDebugDrawer ){
-		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
+	if(pDebugDrawer){
+		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
 	}
 	
-	if( pOCSpeaker ){
+	if(pOCSpeaker){
 		pOCSpeaker->FreeReference();
 	}
 }
@@ -128,46 +128,46 @@ void gdeVAOSpeaker::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
-	pDebugDrawer->SetXRay( true );
-	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
+	pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
+	pDebugDrawer->SetXRay(true);
+	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer(pDebugDrawer);
 	
 	// create center shape
 	pDDSCenter = new igdeWDebugDrawerShape;
-	pDDSCenter->AddSphereShape( 0.05f, decVector() );
-	pDDSCenter->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCenter->AddSphereShape(0.05f, decVector());
+	pDDSCenter->SetParentDebugDrawer(pDebugDrawer);
 	
 	// create coordinate system shape
 	pDDSCoordSystem = new igdeWCoordSysArrows;
-	pDDSCoordSystem->SetArrowLength( 0.2f );
-	pDDSCoordSystem->SetArrowSize( 0.01f );
-	pDDSCoordSystem->SetParentDebugDrawer( pDebugDrawer );
+	pDDSCoordSystem->SetArrowLength(0.2f);
+	pDDSCoordSystem->SetArrowSize(0.01f);
+	pDDSCoordSystem->SetParentDebugDrawer(pDebugDrawer);
 }
 
 void gdeVAOSpeaker::pUpdateDDShapes(){
-	const decVector position( PropertyVector( pOCSpeaker->GetPropertyName(
-		gdeOCSpeaker::epAttachPosition ), pOCSpeaker->GetPosition() ) );
-	const decQuaternion orientation( PropertyQuaternion( pOCSpeaker->GetPropertyName(
-		gdeOCSpeaker::epAttachRotation ), pOCSpeaker->GetRotation() ) );
+	const decVector position(PropertyVector(pOCSpeaker->GetPropertyName(
+		gdeOCSpeaker::epAttachPosition), pOCSpeaker->GetPosition()));
+	const decQuaternion orientation(PropertyQuaternion(pOCSpeaker->GetPropertyName(
+		gdeOCSpeaker::epAttachRotation), pOCSpeaker->GetRotation()));
 	
-	pDDSCenter->SetPosition( position );
-	pDDSCenter->SetOrientation( orientation );
+	pDDSCenter->SetPosition(position);
+	pDDSCenter->SetOrientation(orientation);
 	
-	pDDSCoordSystem->SetPosition( position );
-	pDDSCoordSystem->SetOrientation( orientation );
+	pDDSCoordSystem->SetPosition(position);
+	pDDSCoordSystem->SetOrientation(orientation);
 }
 
 void gdeVAOSpeaker::pUpdateDDShapeColor(){
 	const gdeConfiguration &config = pView.GetWindowMain().GetConfiguration();
 	
-	if( pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
-	&& pView.GetGameDefinition()->GetActiveOCSpeaker() == pOCSpeaker ){
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorSpeakerActive(), 1.0f ) );
-		pDDSCenter->SetFillColor( config.GetColorSpeakerActive() );
+	if(pView.GetGameDefinition()->GetSelectedObjectType() == gdeGameDefinition::eotOCSpeaker
+	&& pView.GetGameDefinition()->GetActiveOCSpeaker() == pOCSpeaker){
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorSpeakerActive(), 1.0f));
+		pDDSCenter->SetFillColor(config.GetColorSpeakerActive());
 		
 	}else{
-		pDDSCenter->SetEdgeColor( decColor( config.GetColorSpeaker(), 0.25f ) );
-		pDDSCenter->SetFillColor( config.GetColorSpeaker() );
+		pDDSCenter->SetEdgeColor(decColor(config.GetColorSpeaker(), 0.25f));
+		pDDSCenter->SetFillColor(config.GetColorSpeaker());
 	}
 }
 

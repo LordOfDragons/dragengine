@@ -55,17 +55,17 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of links. */
-	inline int GetLinkCount() const{ return pLinkCount; }
+	inline int GetLinkCount() const{return pLinkCount;}
 	/** Retrieves the head link or NULL. */
-	inline debnStateLink *GetHeadLink() const{ return pHeadLink; }
+	inline debnStateLink *GetHeadLink() const{return pHeadLink;}
 	/** Retrieves the link with the given identifier or NULL if not found. */
-	debnStateLink *GetLinkWithIdentifier( int identifier ) const;
+	debnStateLink *GetLinkWithIdentifier(int identifier) const;
 	/** Retrieves the link with the given network state or NULL if not found. */
-	debnStateLink *GetLinkWithNetworkState( debnState *networkState ) const;
+	debnStateLink *GetLinkWithNetworkState(debnState *networkState) const;
 	/** Add a link. */
-	void AddLink( debnStateLink *link );
+	void AddLink(debnStateLink *link);
 	/** Removes a link. */
-	void RemoveLink( debnStateLink *link );
+	void RemoveLink(debnStateLink *link);
 	/** Removes all links. */
 	void RemoveAllLinks();
 	

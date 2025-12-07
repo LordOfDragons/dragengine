@@ -38,7 +38,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new module. */
-	spModuleGraphicSystem( ScriptingPython &sp );
+	spModuleGraphicSystem(ScriptingPython &sp);
 	/** \brief Cleans up the module. */
 	virtual ~spModuleGraphicSystem();
 	/*@}*/
@@ -49,11 +49,11 @@ public:
 	
 	/** \name Functions */
 	/*@{*/
-	static PyObject *cfGetWindowWidth( PyObject *myself );
-	static PyObject *cfGetWindowHeight( PyObject *myself );
-	static PyObject *cfSetWindowGeometry( PyObject *myself, PyObject *args );
-	static PyObject *cfSetWindowTitle( PyObject *myself, PyObject *args );
-	static PyObject *cfGetPrimaryCanvas( PyObject *myself );
+	static PyObject *cfGetWindowWidth(PyObject *myself);
+	static PyObject *cfGetWindowHeight(PyObject *myself);
+	static PyObject *cfSetWindowGeometry(PyObject *myself, PyObject *args);
+	static PyObject *cfSetWindowTitle(PyObject *myself, PyObject *args);
+	static PyObject *cfGetPrimaryCanvas(PyObject *myself);
 	/*@}*/
 };
 

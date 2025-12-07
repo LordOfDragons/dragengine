@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUControllerSetFromMove::aeUControllerSetFromMove( aeController *controller,
-	float newMinimumValue, float newMaximumValue ) :
-pController( controller ),
-pNewMinimumValue( newMinimumValue ),
-pNewMaximumValue( newMaximumValue )
+aeUControllerSetFromMove::aeUControllerSetFromMove(aeController *controller,
+	float newMinimumValue, float newMaximumValue) :
+pController(controller),
+pNewMinimumValue(newMinimumValue),
+pNewMaximumValue(newMaximumValue)
 {
-	if( ! controller || ! controller->GetAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(! controller || ! controller->GetAnimator()){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pOldMinimumValue = controller->GetMinimumValue();
 	pOldMaximumValue = controller->GetMaximumValue();
-	SetShortInfo( "Set controller from move" );
+	SetShortInfo("Set controller from move");
 }
 
 aeUControllerSetFromMove::~aeUControllerSetFromMove(){
@@ -64,15 +64,15 @@ aeUControllerSetFromMove::~aeUControllerSetFromMove(){
 ///////////////
 
 void aeUControllerSetFromMove::Undo(){
-	aeController &controller = ( aeController& )( deObject& )pController;
-	controller.SetMinimumValue( pOldMinimumValue );
-	controller.SetMaximumValue( pOldMaximumValue );
-	controller.SetCurrentValue( pOldMinimumValue );
+	aeController &controller = (aeController&)(deObject&)pController;
+	controller.SetMinimumValue(pOldMinimumValue);
+	controller.SetMaximumValue(pOldMaximumValue);
+	controller.SetCurrentValue(pOldMinimumValue);
 }
 
 void aeUControllerSetFromMove::Redo(){
-	aeController &controller = ( aeController& )( deObject& )pController;
-	controller.SetMinimumValue( pNewMinimumValue );
-	controller.SetMaximumValue( pNewMaximumValue );
-	controller.SetCurrentValue( pNewMinimumValue );
+	aeController &controller = (aeController&)(deObject&)pController;
+	controller.SetMinimumValue(pNewMinimumValue);
+	controller.SetMaximumValue(pNewMaximumValue);
+	controller.SetCurrentValue(pNewMinimumValue);
 }

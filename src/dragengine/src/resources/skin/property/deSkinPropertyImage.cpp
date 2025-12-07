@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-deSkinPropertyImage::deSkinPropertyImage( const char *type ) :
-deSkinProperty( type ){
+deSkinPropertyImage::deSkinPropertyImage(const char *type) :
+deSkinProperty(type){
 }
 
 deSkinPropertyImage::~deSkinPropertyImage(){
@@ -50,11 +50,11 @@ deSkinPropertyImage::~deSkinPropertyImage(){
 // Management
 ///////////////
 
-void deSkinPropertyImage::SetPath( const char *path ){
+void deSkinPropertyImage::SetPath(const char *path){
 	pPath = path;
 }
 
-void deSkinPropertyImage::SetImage( deImage *image ){
+void deSkinPropertyImage::SetImage(deImage *image){
 	pImage = image;
 }
 
@@ -63,6 +63,6 @@ void deSkinPropertyImage::SetImage( deImage *image ){
 // Visiting
 /////////////
 
-void deSkinPropertyImage::Visit( deSkinPropertyVisitor &visitor ){
-	visitor.VisitImage( *this );
+void deSkinPropertyImage::Visit(deSkinPropertyVisitor &visitor){
+	visitor.VisitImage(*this);
 }

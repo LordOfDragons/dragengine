@@ -38,13 +38,13 @@
 ////////////////////////////
 
 desynSharedBuffer::desynSharedBuffer() :
-pBuffer( NULL ),
-pSize( 0 ),
-pInUse( false ){
+pBuffer(NULL),
+pSize(0),
+pInUse(false){
 }
 
 desynSharedBuffer::~desynSharedBuffer(){
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 }
@@ -54,23 +54,23 @@ desynSharedBuffer::~desynSharedBuffer(){
 // Management
 ///////////////
 
-void desynSharedBuffer::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void desynSharedBuffer::SetSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 		pBuffer = NULL;
 		pSize = 0;
 	}
 	
-	if( size > 0 ){
-		pBuffer = new float[ size ];
+	if(size > 0){
+		pBuffer = new float[size];
 		pSize = size;
 	}
 }
 
-void desynSharedBuffer::SetInUse( bool inUse ){
+void desynSharedBuffer::SetInUse(bool inUse){
 	pInUse = inUse;
 }

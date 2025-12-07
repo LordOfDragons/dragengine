@@ -46,16 +46,16 @@
 ////////////////////////////
 
 deoglCollideListLight::deoglCollideListLight() :
-pLight( NULL ),
-pCulled( false ),
-pCameraInside( false ),
-pCameraInsideOccQueryBox( true ),
-pOcclusionQuery( nullptr ),
-pOccQueryValid( false ){
+pLight(NULL),
+pCulled(false),
+pCameraInside(false),
+pCameraInsideOccQueryBox(true),
+pOcclusionQuery(nullptr),
+pOccQueryValid(false){
 }
 
 deoglCollideListLight::~deoglCollideListLight(){
-	if( pOcclusionQuery ){
+	if(pOcclusionQuery){
 		delete pOcclusionQuery;
 	}
 }
@@ -66,23 +66,23 @@ deoglCollideListLight::~deoglCollideListLight(){
 ///////////////
 
 void deoglCollideListLight::Clear(){
-	SetLight( nullptr );
+	SetLight(nullptr);
 	pCulled = false;
 	pOccQueryValid = false;
 }
 
-void deoglCollideListLight::SetLight( deoglRLight *light ){
+void deoglCollideListLight::SetLight(deoglRLight *light){
 	pLight = light;
 }
 
-void deoglCollideListLight::SetCulled( bool culled ){
+void deoglCollideListLight::SetCulled(bool culled){
 	pCulled = culled;
 }
 
-void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
-	DEASSERT_NOTNULL( pLight )
+void deoglCollideListLight::TestInside(const deoglRenderPlan &plan){
+	DEASSERT_NOTNULL(pLight)
 	
-	if( pCulled ){ // happens if affecting GI but not camera
+	if(pCulled){ // happens if affecting GI but not camera
 		pCameraInside = false;
 		pCameraInsideOccQueryBox = false;
 		return;
@@ -102,24 +102,24 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 	// 
 	// if the light volume is used for rendering the occlusion query then the camera inside
 	// result is working.
-	const decDVector vsm( safetyMargin, safetyMargin, safetyMargin );
-	pCameraInsideOccQueryBox = ( cameraPosition >= minExtend - vsm ) && ( cameraPosition <= maxExtend + vsm );
+	const decDVector vsm(safetyMargin, safetyMargin, safetyMargin);
+	pCameraInsideOccQueryBox = (cameraPosition >= minExtend - vsm) && (cameraPosition <= maxExtend + vsm);
 	
 	// for camera inside light use a slightly different test which uses a larger box. this is
 	// required since the light volume is a low resolution mesh and thus is larger than the
 	// mathematically perfect volume
 	const float imageDistance = plan.GetCameraImageDistance();
-	const float nx = imageDistance * tanf( plan.GetCameraFov() * 0.5f );
-	const float ny = imageDistance * tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f );
-	const float nd = sqrtf( nx * nx + ny * ny + imageDistance * imageDistance ) + safetyMargin;
-	const decDVector extend( nd, nd, nd );
+	const float nx = imageDistance * tanf(plan.GetCameraFov() * 0.5f);
+	const float ny = imageDistance * tanf(plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f);
+	const float nd = sqrtf(nx * nx + ny * ny + imageDistance * imageDistance) + safetyMargin;
+	const decDVector extend(nd, nd, nd);
 	
-	pCameraInside = ( cameraPosition >= minExtend - extend ) && ( cameraPosition <= maxExtend + extend );
+	pCameraInside = (cameraPosition >= minExtend - extend) && (cameraPosition <= maxExtend + extend);
 	
 	// if the camera is not inside the extends box then there is no chance to inside the
 	// light volumes at all. to avoid flickering the box is slightly enlarged as the
 	// camera near plane has a certain distance from the position itself
-	if( ! pCameraInside ){
+	if(! pCameraInside){
 		return;
 	}
 	
@@ -128,7 +128,7 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 	// clipping plane. this can be achieved by not just testing on what side the point
 	// is on a plane but adding a small offset. a too large offset only causes a full
 	// screen render that might not have been necessary but is never wrong
-	const decVector localCameraPosition( pLight->GetInverseMatrix() * cameraPosition );
+	const decVector localCameraPosition(pLight->GetInverseMatrix() * cameraPosition);
 	const decConvexVolumeList &convexVolumeList = *pLight->GetConvexVolumeList();
 	const int volumeCount = convexVolumeList.GetVolumeCount();
 	bool insideVolume;
@@ -142,39 +142,39 @@ void deoglCollideListLight::TestInside( const deoglRenderPlan &plan ){
 	
 	pCameraInside = false;
 	
-	for( i=0; i<volumeCount; i++ ){
-		const decConvexVolume &convexVolume = *convexVolumeList.GetVolumeAt( i );
+	for(i=0; i<volumeCount; i++){
+		const decConvexVolume &convexVolume = *convexVolumeList.GetVolumeAt(i);
 		const int faceCount = convexVolume.GetFaceCount();
 		
 		insideVolume = true;
 		
-		for( j=0; j<faceCount; j++ ){
-			const decConvexVolumeFace &convexVolumeFace = *convexVolume.GetFaceAt( j );
+		for(j=0; j<faceCount; j++){
+			const decConvexVolumeFace &convexVolumeFace = *convexVolume.GetFaceAt(j);
 			const decVector &normal = convexVolumeFace.GetNormal();
-			const decVector &point = convexVolume.GetVertexAt( convexVolumeFace.GetVertexAt( 0 ) );
+			const decVector &point = convexVolume.GetVertexAt(convexVolumeFace.GetVertexAt(0));
 			
-			if( normal * ( localCameraPosition - point ) > nd ){
+			if(normal * (localCameraPosition - point) > nd){
 				insideVolume = false;
 				break;
 			}
 		}
 		
-		if( insideVolume ){
+		if(insideVolume){
 			pCameraInside = true;
 			break;
 		}
 	}
 }
 
-void deoglCollideListLight::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
-const decDVector &cameraPosition ){
-	DEASSERT_NOTNULL( pLight )
+void deoglCollideListLight::StartOcclusionTest(deoglOcclusionTest &occlusionTest,
+const decDVector &cameraPosition){
+	DEASSERT_NOTNULL(pLight)
 	
 	pCulled = false;
 	
 	occlusionTest.AddInputData(
-		( pLight->GetMinimumExtend() - cameraPosition ).ToVector(),
-		( pLight->GetMaximumExtend() - cameraPosition ).ToVector(), this );
+		(pLight->GetMinimumExtend() - cameraPosition).ToVector(),
+		(pLight->GetMaximumExtend() - cameraPosition).ToVector(), this);
 }
 
 void deoglCollideListLight::OcclusionTestInvisible(){
@@ -182,18 +182,18 @@ void deoglCollideListLight::OcclusionTestInvisible(){
 }
 
 deoglOcclusionQuery &deoglCollideListLight::GetOcclusionQuery(){
-	if( ! pOcclusionQuery ){
-		DEASSERT_NOTNULL( pLight )
-		pOcclusionQuery = new deoglOcclusionQuery( pLight->GetRenderThread() );
+	if(! pOcclusionQuery){
+		DEASSERT_NOTNULL(pLight)
+		pOcclusionQuery = new deoglOcclusionQuery(pLight->GetRenderThread());
 	}
 	return *pOcclusionQuery;
 }
 
 bool deoglCollideListLight::IsHiddenByOccQuery() const{
-	DEASSERT_NOTNULL( pLight )
+	DEASSERT_NOTNULL(pLight)
 	
 // 	if( ! pCameraInside && pOcclusionQuery ){
-	if( ! pCameraInsideOccQueryBox && pOcclusionQuery && pOccQueryValid ){
+	if(! pCameraInsideOccQueryBox && pOcclusionQuery && pOccQueryValid){
 		// check if the query result exists already
 		//if( pOcclusionQuery->HasResult() ){
 			// retrieve the result. later on we are going to store this value
@@ -206,6 +206,6 @@ bool deoglCollideListLight::IsHiddenByOccQuery() const{
 	return false;
 }
 
-void deoglCollideListLight::SetOcclusionQueryValid( bool valid ){
+void deoglCollideListLight::SetOcclusionQueryValid(bool valid){
 	pOccQueryValid = valid;
 }

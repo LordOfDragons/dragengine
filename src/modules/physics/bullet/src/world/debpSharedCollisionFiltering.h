@@ -52,26 +52,26 @@ public:
 	/** \name Filtering */
 	/*@{*/
 	/** \brief Check if collision body can hit collision body. */
-	bool CanBodyHitBody( const btCollisionObject &body0, const btCollisionObject &body1 ) const;
+	bool CanBodyHitBody(const btCollisionObject &body0, const btCollisionObject &body1) const;
 	
 	/** \brief Check if collision object can hit collision object. */
-	bool CanCObjHitCObj( const debpCollisionObject &colObj0, const debpCollisionObject &colObj1 ) const;
+	bool CanCObjHitCObj(const debpCollisionObject &colObj0, const debpCollisionObject &colObj1) const;
 	
 	
 	/** \brief Check if collider can hit collision object. */
-	bool CanColliderHitCObj( const debpCollisionObject &colObj0, const debpCollider &collider0,
-		const debpCollisionObject &colObj1 ) const;
+	bool CanColliderHitCObj(const debpCollisionObject &colObj0, const debpCollider &collider0,
+		const debpCollisionObject &colObj1) const;
 	
 	/** \brief Check if height terrain can hit with collision object. */
-	bool CanHTerrainHitCObj( const debpHTSector &htsector, const debpCollisionObject &colObj1 ) const;
+	bool CanHTerrainHitCObj(const debpHTSector &htsector, const debpCollisionObject &colObj1) const;
 	
 	/** \brief Check if touch sensor can hit collision object. */
-	bool CanTSensorHitCObj( const debpTouchSensor &touchSensor, const debpCollisionObject &colObj1 ) const;
+	bool CanTSensorHitCObj(const debpTouchSensor &touchSensor, const debpCollisionObject &colObj1) const;
 	
 	
 	/** \brief Check if two colliders can collide. */
-	bool CanColliderHitCollider( const debpCollisionObject &colObj0, const debpCollider &collider0,
-		const debpCollisionObject &colObj1, const debpCollider &collider1 ) const;
+	bool CanColliderHitCollider(const debpCollisionObject &colObj0, const debpCollider &collider0,
+		const debpCollisionObject &colObj1, const debpCollider &collider1) const;
 	/*@}*/
 };
 

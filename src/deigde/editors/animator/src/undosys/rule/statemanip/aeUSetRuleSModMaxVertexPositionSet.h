@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleSModMaxVertexPositionSet( aeRuleStateManipulator *rule, float newMax );
+	aeUSetRuleSModMaxVertexPositionSet(aeRuleStateManipulator *rule, float newMax);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleSModMaxVertexPositionSet();

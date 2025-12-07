@@ -73,10 +73,10 @@ public:
 	void Clear();
 	
 	/** \brief Height terrain or NULL if not set. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline deHeightTerrain *GetHeightTerrain() const{return pHeightTerrain;}
 	
 	/** \brief Set height terrain or NULL if not set. */
-	void SetHeightTerrain( deHeightTerrain *heightTerrain );
+	void SetHeightTerrain(deHeightTerrain *heightTerrain);
 	/*@}*/
 	
 	
@@ -84,22 +84,22 @@ public:
 	/** \name Components */
 	/*@{*/
 	/** \brief Number of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** \brief Component at the given index. */
-	deComponent *GetComponentAt( int index ) const;
+	deComponent *GetComponentAt(int index) const;
 	
 	/** \brief Index of the given component or -1 if not found. */
-	int IndexOfComponent( deComponent *component ) const;
+	int IndexOfComponent(deComponent *component) const;
 	
 	/** \brief Given component exists. */
-	bool HasComponent( deComponent *component ) const;
+	bool HasComponent(deComponent *component) const;
 	
 	/** \brief Adds a component. */
-	void AddComponent( deComponent *component );
+	void AddComponent(deComponent *component);
 	
 	/** \brief Removes a component. */
-	void RemoveComponent( deComponent *component );
+	void RemoveComponent(deComponent *component);
 	
 	/** \brief Removes all components. */
 	void RemoveAllComponents();

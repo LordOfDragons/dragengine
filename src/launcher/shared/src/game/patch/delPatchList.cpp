@@ -42,8 +42,8 @@
 delPatchList::delPatchList(){
 }
 
-delPatchList::delPatchList( const delPatchList &list ) :
-pPatches( list.pPatches ){
+delPatchList::delPatchList(const delPatchList &list) :
+pPatches(list.pPatches){
 }
 
 delPatchList::~delPatchList(){
@@ -59,19 +59,19 @@ int delPatchList::GetCount() const{
 	return pPatches.GetCount();
 }
 
-delPatch *delPatchList::GetAt( int index ) const{
-	return ( delPatch* )pPatches.GetAt( index );
+delPatch *delPatchList::GetAt(int index) const{
+	return (delPatch*)pPatches.GetAt(index);
 }
 
-delPatch *delPatchList::GetWithID( const decUuid &id ) const{
-	DEASSERT_TRUE( id )
+delPatch *delPatchList::GetWithID(const decUuid &id) const{
+	DEASSERT_TRUE(id)
 	
 	const int count = pPatches.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delPatch * const patch = ( delPatch* )pPatches.GetAt( i );
-		if( patch->GetIdentifier() == id ){
+	for(i=0; i<count; i++){
+		delPatch * const patch = (delPatch*)pPatches.GetAt(i);
+		if(patch->GetIdentifier() == id){
 			return patch;
 		}
 	}
@@ -79,19 +79,19 @@ delPatch *delPatchList::GetWithID( const decUuid &id ) const{
 	return nullptr;
 }
 
-bool delPatchList::Has( delPatch *patch ) const{
-	return pPatches.Has( patch );
+bool delPatchList::Has(delPatch *patch) const{
+	return pPatches.Has(patch);
 }
 
-bool delPatchList::HasWithID( const decUuid &id ) const{
-	DEASSERT_TRUE( id )
+bool delPatchList::HasWithID(const decUuid &id) const{
+	DEASSERT_TRUE(id)
 	
 	const int count = pPatches.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const delPatch &patch = *( ( delPatch* )pPatches.GetAt( i ) );
-		if( patch.GetIdentifier() == id ){
+	for(i=0; i<count; i++){
+		const delPatch &patch = *((delPatch*)pPatches.GetAt(i));
+		if(patch.GetIdentifier() == id){
 			return true;
 		}
 	}
@@ -99,19 +99,19 @@ bool delPatchList::HasWithID( const decUuid &id ) const{
 	return false;
 }
 
-int delPatchList::IndexOf( delPatch *patch ) const{
-	return pPatches.IndexOf( patch );
+int delPatchList::IndexOf(delPatch *patch) const{
+	return pPatches.IndexOf(patch);
 }
 
-int delPatchList::IndexOfWithID( const decUuid &id ) const{
-	DEASSERT_TRUE( id )
+int delPatchList::IndexOfWithID(const decUuid &id) const{
+	DEASSERT_TRUE(id)
 	
 	const int count = pPatches.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const delPatch &patch = *( ( delPatch* )pPatches.GetAt( i ) );
-		if( patch.GetIdentifier() == id ){
+	for(i=0; i<count; i++){
+		const delPatch &patch = *((delPatch*)pPatches.GetAt(i));
+		if(patch.GetIdentifier() == id){
 			return i;
 		}
 	}
@@ -119,27 +119,27 @@ int delPatchList::IndexOfWithID( const decUuid &id ) const{
 	return -1;
 }
 
-void delPatchList::Add( delPatch *patch ){
-	DEASSERT_NOTNULL( patch )
-	DEASSERT_FALSE( HasWithID( patch->GetIdentifier() ) )
+void delPatchList::Add(delPatch *patch){
+	DEASSERT_NOTNULL(patch)
+	DEASSERT_FALSE(HasWithID(patch->GetIdentifier()))
 	
-	pPatches.Add( patch );
+	pPatches.Add(patch);
 }
 
-void delPatchList::AddAll( const delPatchList &list ){
+void delPatchList::AddAll(const delPatchList &list){
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delPatch * const patch = ( delPatch* )list.GetAt( i );
-		if( ! HasWithID( patch->GetIdentifier() ) ){
-			pPatches.Add( patch );
+	for(i=0; i<count; i++){
+		delPatch * const patch = (delPatch*)list.GetAt(i);
+		if(! HasWithID(patch->GetIdentifier())){
+			pPatches.Add(patch);
 		}
 	}
 }
 
-void delPatchList::Remove( delPatch *patch ){
-	pPatches.RemoveFrom( pPatches.IndexOf( patch ) );
+void delPatchList::Remove(delPatch *patch){
+	pPatches.RemoveFrom(pPatches.IndexOf(patch));
 }
 
 void delPatchList::RemoveAll(){

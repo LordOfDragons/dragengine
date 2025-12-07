@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURotateShape( reRigShapeList &list );
+	reURotateShape(reRigShapeList &list);
 	
 protected:
 	/** \brief Clean up undo. */

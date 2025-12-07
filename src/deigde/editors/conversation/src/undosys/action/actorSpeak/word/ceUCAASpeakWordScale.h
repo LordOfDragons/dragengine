@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakWordSetDuration( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, float newDuration );
+	ceUCAASpeakWordSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, float newDuration);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakWordSetDuration();
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set new duration. */
-	void SetNewDuration( float duration );
+	void SetNewDuration(float duration);
 	
 	/** \brief Undo. */
 	virtual void Undo();

@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedSPBListSSBO::deoglSharedSPBListSSBO( deoglRenderThread &renderThread,
-deoglSPBlockSSBO *layout ) :
-deoglSharedSPBList( renderThread, layout ),
-pLayoutSSBO( *layout ){
+deoglSharedSPBListSSBO::deoglSharedSPBListSSBO(deoglRenderThread &renderThread,
+deoglSPBlockSSBO *layout) :
+deoglSharedSPBList(renderThread, layout),
+pLayoutSSBO(*layout){
 }
 
 
@@ -51,5 +51,5 @@ pLayoutSSBO( *layout ){
 ///////////////
 
 deoglShaderParameterBlock::Ref deoglSharedSPBListSSBO::pCreateBlock() const{
-	 return deoglShaderParameterBlock::Ref::New( new deoglSPBlockSSBO( pLayoutSSBO ) );
+	 return deoglShaderParameterBlock::Ref::New(new deoglSPBlockSSBO(pLayoutSSBO));
 }

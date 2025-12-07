@@ -37,9 +37,9 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deModelBone::deModelBone( const char *name ) :
-pName( name ),
-pParent( -1 ){
+deModelBone::deModelBone(const char *name) :
+pName(name),
+pParent(-1){
 }
 
 deModelBone::~deModelBone(){
@@ -50,22 +50,22 @@ deModelBone::~deModelBone(){
 // Management
 //////////////
 
-void deModelBone::SetParent( int bone ){
-	if( bone < -1 ){
-		DETHROW( deeInvalidParam );
+void deModelBone::SetParent(int bone){
+	if(bone < -1){
+		DETHROW(deeInvalidParam);
 	}
 	pParent = bone;
 }
 
-void deModelBone::SetPosition( const decVector &position ){
+void deModelBone::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deModelBone::SetOrientation( const decQuaternion &orientation ){
+void deModelBone::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void deModelBone::SetMatrix( const decMatrix &matrix ){
+void deModelBone::SetMatrix(const decMatrix &matrix){
 	pMatrix = matrix;
 	pInverseMatrix = pMatrix.Invert();
 }

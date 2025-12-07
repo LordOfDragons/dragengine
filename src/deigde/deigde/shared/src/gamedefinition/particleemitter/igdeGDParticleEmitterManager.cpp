@@ -42,9 +42,9 @@
 ////////////////////////////
 
 igdeGDParticleEmitterManager::igdeGDParticleEmitterManager() :
-pDefaultPath( "default" )
+pDefaultPath("default")
 {
-	pCategories.TakeOver( new igdeGDCategory( "Particle Emitters" ) );
+	pCategories.TakeOver(new igdeGDCategory("Particle Emitters"));
 }
 
 igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
@@ -55,52 +55,52 @@ igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
 // Management
 ///////////////
 
-void igdeGDParticleEmitterManager::AddEmitter( igdeGDParticleEmitter *emitter ){
-	if( ! emitter ){
-		DETHROW( deeInvalidParam );
+void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter *emitter){
+	if(! emitter){
+		DETHROW(deeInvalidParam);
 	}
-	pEmitterList.Add( emitter );
+	pEmitterList.Add(emitter);
 }
 
-void igdeGDParticleEmitterManager::RemoveEmitter( igdeGDParticleEmitter *emitter ){
-	pEmitterList.Remove( emitter );
+void igdeGDParticleEmitterManager::RemoveEmitter(igdeGDParticleEmitter *emitter){
+	pEmitterList.Remove(emitter);
 }
 
 void igdeGDParticleEmitterManager::RemoveAllEmitters(){
 	pEmitterList.RemoveAll();
 }
 
-void igdeGDParticleEmitterManager::SetDefaultPath( const char *path ){
+void igdeGDParticleEmitterManager::SetDefaultPath(const char *path){
 	pDefaultPath = path;
 }
 
 
 
-void igdeGDParticleEmitterManager::UpdateWith( const igdeGDParticleEmitterManager &particleEmitterManager ){
+void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager &particleEmitterManager){
 	const int count = particleEmitterManager.GetEmitterList().GetCount();
 	igdeGDParticleEmitter *emitter = NULL;
 	igdeGDParticleEmitter *emitterCheck;
 	int i;
 	
 	try{
-		for( i=0; i<count; i++ ){
-			emitter = new igdeGDParticleEmitter( *particleEmitterManager.GetEmitterList().GetAt( i ) );
-			emitterCheck = pEmitterList.GetWithPath( emitter->GetPath().GetString() );
-			if( emitterCheck ){
-				RemoveEmitter( emitterCheck );
+		for(i=0; i<count; i++){
+			emitter = new igdeGDParticleEmitter(*particleEmitterManager.GetEmitterList().GetAt(i));
+			emitterCheck = pEmitterList.GetWithPath(emitter->GetPath().GetString());
+			if(emitterCheck){
+				RemoveEmitter(emitterCheck);
 			}
-			AddEmitter( emitter );
+			AddEmitter(emitter);
 			emitter = NULL;
 		}
 		
-	}catch( const deException & ){
-		if( emitter ){
+	}catch(const deException &){
+		if(emitter){
 			emitter->FreeReference();
 		}
 		throw;
 	}
 	
-	pCategories->UpdateWith( particleEmitterManager.pCategories );
+	pCategories->UpdateWith(particleEmitterManager.pCategories);
 	
 	pDefaultPath = particleEmitterManager.pDefaultPath;
 }

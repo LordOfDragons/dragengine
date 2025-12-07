@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	meWPUndoHistoryListener( meWPUndoHistory &panel );
+	meWPUndoHistoryListener(meWPUndoHistory &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~meWPUndoHistoryListener();
@@ -55,7 +55,7 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Undos changed. */
-	virtual void UndoChanged( meWorld *world );
+	virtual void UndoChanged(meWorld *world);
 	/*@}*/
 };
 

@@ -43,96 +43,96 @@ seSkyListener::~seSkyListener(){
 // Notifications
 //////////////////
 
-void seSkyListener::StateChanged( seSky*  ){
+void seSkyListener::StateChanged(seSky*){
 }
 
-void seSkyListener::UndoChanged( seSky*  ){
+void seSkyListener::UndoChanged(seSky*){
 }
 
-void seSkyListener::SkyChanged( seSky*  ){
+void seSkyListener::SkyChanged(seSky*){
 }
 
-void seSkyListener::EnvObjectChanged( seSky*  ){
+void seSkyListener::EnvObjectChanged(seSky*){
 }
 
-void seSkyListener::ViewChanged( seSky*  ){
+void seSkyListener::ViewChanged(seSky*){
 }
 
-void seSkyListener::CameraChanged( seSky*  ){
-}
-
-
-
-void seSkyListener::ControllerStructureChanged( seSky*  ){
-}
-
-void seSkyListener::ControllerChanged( seSky* , seController* ){
-}
-
-void seSkyListener::ControllerNameChanged( seSky*, seController* ){
-}
-
-void seSkyListener::ControllerValueChanged( seSky* , seController* ){
-}
-
-void seSkyListener::ControllerSelectionChanged( seSky*  ){
-}
-
-void seSkyListener::ActiveControllerChanged( seSky*  ){
+void seSkyListener::CameraChanged(seSky*){
 }
 
 
 
-void seSkyListener::LinkStructureChanged( seSky*  ){
+void seSkyListener::ControllerStructureChanged(seSky*){
 }
 
-void seSkyListener::LinkChanged( seSky* , seLink* ){
+void seSkyListener::ControllerChanged(seSky* , seController*){
 }
 
-void seSkyListener::LinkNameChanged( seSky*, seLink* ){
+void seSkyListener::ControllerNameChanged(seSky*, seController*){
 }
 
-void seSkyListener::LinkSelectionChanged( seSky*  ){
+void seSkyListener::ControllerValueChanged(seSky* , seController*){
 }
 
-void seSkyListener::ActiveLinkChanged( seSky*  ){
+void seSkyListener::ControllerSelectionChanged(seSky*){
 }
 
-
-
-void seSkyListener::LayerStructureChanged( seSky*  ){
-}
-
-void seSkyListener::LayerChanged( seSky* , seLayer* ){
-}
-
-void seSkyListener::LayerNameChanged( seSky*, seLayer* ){
-}
-
-void seSkyListener::LayerSelectionChanged( seSky*  ){
-}
-
-void seSkyListener::ActiveLayerChanged( seSky*  ){
+void seSkyListener::ActiveControllerChanged(seSky*){
 }
 
 
 
-void seSkyListener::BodyStructureChanged( seSky* , seLayer* ){
+void seSkyListener::LinkStructureChanged(seSky*){
 }
 
-void seSkyListener::BodyChanged( seSky* , seLayer*, seBody* ){
+void seSkyListener::LinkChanged(seSky* , seLink*){
 }
 
-void seSkyListener::BodySelectionChanged( seSky* , seLayer* ){
+void seSkyListener::LinkNameChanged(seSky*, seLink*){
 }
 
-void seSkyListener::ActiveBodyChanged( seSky* , seLayer* ){
+void seSkyListener::LinkSelectionChanged(seSky*){
+}
+
+void seSkyListener::ActiveLinkChanged(seSky*){
 }
 
 
 
-void seSkyListener::TargetChanged( seSky* , seLayer*, deSkyLayer::eTargets ){
+void seSkyListener::LayerStructureChanged(seSky*){
 }
 
-void seSkyListener::ActiveTargetChanged( seSky* , seLayer* ){
+void seSkyListener::LayerChanged(seSky* , seLayer*){
+}
+
+void seSkyListener::LayerNameChanged(seSky*, seLayer*){
+}
+
+void seSkyListener::LayerSelectionChanged(seSky*){
+}
+
+void seSkyListener::ActiveLayerChanged(seSky*){
+}
+
+
+
+void seSkyListener::BodyStructureChanged(seSky* , seLayer*){
+}
+
+void seSkyListener::BodyChanged(seSky* , seLayer*, seBody*){
+}
+
+void seSkyListener::BodySelectionChanged(seSky* , seLayer*){
+}
+
+void seSkyListener::ActiveBodyChanged(seSky* , seLayer*){
+}
+
+
+
+void seSkyListener::TargetChanged(seSky* , seLayer*, deSkyLayer::eTargets){
+}
+
+void seSkyListener::ActiveTargetChanged(seSky* , seLayer*){
 }

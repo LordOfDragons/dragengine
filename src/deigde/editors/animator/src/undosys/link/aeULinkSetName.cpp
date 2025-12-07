@@ -40,22 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeULinkSetName::aeULinkSetName( aeLink *link, const char *newName ){
-	if( ! link || ! newName ) DETHROW( deeInvalidParam );
+aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
+	if(! link || ! newName) DETHROW(deeInvalidParam);
 	
 	pLink = NULL;
 	
 	pOldName = link->GetName();
 	pNewName = newName;
 	
-	SetShortInfo( "Set Link Name" );
+	SetShortInfo("Set Link Name");
 	
 	pLink = link;
 	pLink->AddReference();
 }
 
 aeULinkSetName::~aeULinkSetName(){
-	if( pLink ) pLink->FreeReference();
+	if(pLink) pLink->FreeReference();
 }
 
 
@@ -64,9 +64,9 @@ aeULinkSetName::~aeULinkSetName(){
 ///////////////
 
 void aeULinkSetName::Undo(){
-	pLink->SetName( pOldName.GetString() );
+	pLink->SetName(pOldName.GetString());
 }
 
 void aeULinkSetName::Redo(){
-	pLink->SetName( pNewName.GetString() );
+	pLink->SetName(pNewName.GetString());
 }

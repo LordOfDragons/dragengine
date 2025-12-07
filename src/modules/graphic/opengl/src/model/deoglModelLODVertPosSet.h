@@ -60,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** VBO offset. */
-	inline int GetVBOOffset() const{ return pVBOOffset; }
+	inline int GetVBOOffset() const{return pVBOOffset;}
 	
 	/** Set VBO offset. */
-	void SetVBOOffset( int offset );
+	void SetVBOOffset(int offset);
 	
 	/** Positions. */
-	inline sPosition *GetPositions() const{ return pPositions; }
+	inline sPosition *GetPositions() const{return pPositions;}
 	
 	/** Count of positions. */
-	inline int GetPositionCount() const{ return pPositionCount; }
+	inline int GetPositionCount() const{return pPositionCount;}
 	
 	/** Set count of positions. */
-	void SetPositionCount( int count );
+	void SetPositionCount(int count);
 	/*@}*/
 	
 	

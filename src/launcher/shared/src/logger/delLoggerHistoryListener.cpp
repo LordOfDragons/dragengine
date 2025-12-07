@@ -42,8 +42,8 @@ delLoggerHistoryListener::~delLoggerHistoryListener(){
 // Management
 ///////////////
 
-void delLoggerHistoryListener::MessageAdded( const delLoggerHistory &, const delLoggerHistoryEntry & ){
+void delLoggerHistoryListener::MessageAdded(const delLoggerHistory &, const delLoggerHistoryEntry &){
 }
 
-void delLoggerHistoryListener::HistoryCleared( const delLoggerHistory & ){
+void delLoggerHistoryListener::HistoryCleared(const delLoggerHistory &){
 }

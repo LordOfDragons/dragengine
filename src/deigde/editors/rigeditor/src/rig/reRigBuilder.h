@@ -47,7 +47,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new rig builder. */
-	reRigBuilder( reRig *rig );
+	reRigBuilder(reRig *rig);
 	/** Cleans up the rig. */
 	virtual ~reRigBuilder();
 	/*@}*/
@@ -55,9 +55,9 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Build rig into the provided rig object. */
-	virtual void BuildRig( deRig *engRig );
+	virtual void BuildRig(deRig *engRig);
 	/** Build rig bone. */
-	void BuildRigBone( deRig *engRig, reRigBone *rigBone );
+	void BuildRigBone(deRig *engRig, reRigBone *rigBone);
 	/*@}*/
 };
 

@@ -46,19 +46,19 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deColliderRig::deColliderRig( deColliderManager *manager ) :
-deCollider( manager ),
-pBones( NULL ),
-pBoneCount( 0 ){
+deColliderRig::deColliderRig(deColliderManager *manager) :
+deCollider(manager),
+pBones(NULL),
+pBoneCount(0){
 }
 
 deColliderRig::~deColliderRig(){
-	if( pBones ){
+	if(pBones){
 		int i;
 		
-		for( i=0; i<pBoneCount; i++ ){
-			if( pBones[ i ] ){
-				delete pBones[ i ];
+		for(i=0; i<pBoneCount; i++){
+			if(pBones[i]){
+				delete pBones[i];
 			}
 		}
 		
@@ -71,8 +71,8 @@ deColliderRig::~deColliderRig(){
 // Management
 ///////////////
 
-void deColliderRig::SetRig( deRig *rig ){
-	if( rig == pRig ){
+void deColliderRig::SetRig(deRig *rig){
+	if(rig == pRig){
 		return;
 	}
 	
@@ -80,31 +80,31 @@ void deColliderRig::SetRig( deRig *rig ){
 	
 	// determine the bone count of the component if existing
 	int boneCount = 0;
-	if( rig ){
+	if(rig){
 		boneCount = rig->GetBoneCount();
 	}
 	
 	// if the count changed resize the bones array
-	if( boneCount != pBoneCount ){
+	if(boneCount != pBoneCount){
 		deColliderBone **bones = NULL;
 		int i;
 		
-		if( boneCount > 0 ){
+		if(boneCount > 0){
 			try{
-				bones = new deColliderBone*[ boneCount ];
-				for( i=0; i<boneCount; i++ ){
-					bones[ i ] = NULL;
+				bones = new deColliderBone*[boneCount];
+				for(i=0; i<boneCount; i++){
+					bones[i] = NULL;
 				}
 				
-				for( i=0; i<boneCount; i++ ){
-					bones[ i ] = new deColliderBone( this, i );
+				for(i=0; i<boneCount; i++){
+					bones[i] = new deColliderBone(this, i);
 				}
 				
-			}catch( const deException & ){
-				if( bones ){
-					for( i=0; i<boneCount; i++ ){
-						if( bones[ i ] ){
-							delete bones[ i ];
+			}catch(const deException &){
+				if(bones){
+					for(i=0; i<boneCount; i++){
+						if(bones[i]){
+							delete bones[i];
 						}
 					}
 					delete [] bones;
@@ -113,7 +113,7 @@ void deColliderRig::SetRig( deRig *rig ){
 			}
 		}
 		
-		if( pBones ){
+		if(pBones){
 			delete [] pBones;
 			pBones = NULL;
 		}
@@ -126,104 +126,104 @@ void deColliderRig::SetRig( deRig *rig ){
 	pNotifyRigChanged();
 }
 
-deColliderBone &deColliderRig::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+deColliderBone &deColliderRig::GetBoneAt(int index) const{
+	if(index < 0 || index >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
-	return *pBones[ index ];
+	return *pBones[index];
 }
 
 
 
-void deColliderRig::CopyStatesFromColliderRig( const deColliderRig &collider ){
-	if( ! pRig ){
+void deColliderRig::CopyStatesFromColliderRig(const deColliderRig &collider){
+	if(! pRig){
 		return;
 	}
 	
 	const deRig * const rig = collider.GetRig();
-	if( ! rig ){
+	if(! rig){
 		return;
 	}
 	
 	int i;
-	for( i=0; i<pBoneCount; i++ ){
-		const int bone2 = rig->IndexOfBoneNamed( pRig->GetBoneAt( i ).GetName() );
-		if( bone2 == -1 ){
+	for(i=0; i<pBoneCount; i++){
+		const int bone2 = rig->IndexOfBoneNamed(pRig->GetBoneAt(i).GetName());
+		if(bone2 == -1){
 			continue;
 		}
 		
-		const deColliderBone &colbone2 = collider.GetBoneAt( bone2 );
-		const decVector &cmpTo = pRig->GetBoneAt( i ).GetCentralMassPoint();
-		const decVector &cmpFrom = rig->GetBoneAt( bone2 ).GetCentralMassPoint();
+		const deColliderBone &colbone2 = collider.GetBoneAt(bone2);
+		const decVector &cmpTo = pRig->GetBoneAt(i).GetCentralMassPoint();
+		const decVector &cmpFrom = rig->GetBoneAt(bone2).GetCentralMassPoint();
 		
-		pBones[ i ]->SetPosition( colbone2.GetMatrix() * ( cmpTo - cmpFrom ) );
-		pBones[ i ]->SetOrientation( colbone2.GetOrientation() );
-		pBones[ i ]->SetLinearVelocity( colbone2.GetLinearVelocity() );
-		pBones[ i ]->SetAngularVelocity( colbone2.GetAngularVelocity() );
-		pBones[ i ]->UpdateMatrix();
+		pBones[i]->SetPosition(colbone2.GetMatrix() * (cmpTo - cmpFrom));
+		pBones[i]->SetOrientation(colbone2.GetOrientation());
+		pBones[i]->SetLinearVelocity(colbone2.GetLinearVelocity());
+		pBones[i]->SetAngularVelocity(colbone2.GetAngularVelocity());
+		pBones[i]->UpdateMatrix();
 	}
 }
 
-void deColliderRig::CopyStateFromColliderRig( int bone, const deColliderRig &collider ){
-	if( ! pRig || bone < 0 || bone >= pBoneCount ){
+void deColliderRig::CopyStateFromColliderRig(int bone, const deColliderRig &collider){
+	if(! pRig || bone < 0 || bone >= pBoneCount){
 		return;
 	}
 	
 	const deRig * const rig = collider.GetRig();
-	if( ! rig ){
+	if(! rig){
 		return;
 	}
 	
-	const int bone2 = rig->IndexOfBoneNamed( pRig->GetBoneAt( bone ).GetName() );
-	if( bone2 == -1 ){
+	const int bone2 = rig->IndexOfBoneNamed(pRig->GetBoneAt(bone).GetName());
+	if(bone2 == -1){
 		return;
 	}
 	
-	const deColliderBone &colbone2 = collider.GetBoneAt( bone2 );
-	const decVector &cmpTo = pRig->GetBoneAt( bone ).GetCentralMassPoint();
-	const decVector &cmpFrom = rig->GetBoneAt( bone2 ).GetCentralMassPoint();
+	const deColliderBone &colbone2 = collider.GetBoneAt(bone2);
+	const decVector &cmpTo = pRig->GetBoneAt(bone).GetCentralMassPoint();
+	const decVector &cmpFrom = rig->GetBoneAt(bone2).GetCentralMassPoint();
 	
-	pBones[ bone ]->SetPosition( colbone2.GetMatrix() * ( cmpTo - cmpFrom ) );
-	pBones[ bone ]->SetOrientation( colbone2.GetOrientation() );
-	pBones[ bone ]->SetLinearVelocity( colbone2.GetLinearVelocity() );
-	pBones[ bone ]->SetAngularVelocity( colbone2.GetAngularVelocity() );
-	pBones[ bone ]->UpdateMatrix();
+	pBones[bone]->SetPosition(colbone2.GetMatrix() * (cmpTo - cmpFrom));
+	pBones[bone]->SetOrientation(colbone2.GetOrientation());
+	pBones[bone]->SetLinearVelocity(colbone2.GetLinearVelocity());
+	pBones[bone]->SetAngularVelocity(colbone2.GetAngularVelocity());
+	pBones[bone]->UpdateMatrix();
 }
 
-void deColliderRig::CopyStateFromColliderRig( int boneFrom, int boneTo, const deColliderRig &collider ){
-	if( ! pRig || boneTo < 0 || boneTo >= pBoneCount ){
+void deColliderRig::CopyStateFromColliderRig(int boneFrom, int boneTo, const deColliderRig &collider){
+	if(! pRig || boneTo < 0 || boneTo >= pBoneCount){
 		return;
 	}
 	
 	const deRig * const rig = collider.GetRig();
-	if( ! rig || boneFrom < 0 || boneFrom >= rig->GetBoneCount() ){
+	if(! rig || boneFrom < 0 || boneFrom >= rig->GetBoneCount()){
 		return;
 	}
 	
-	const deColliderBone &colbone2 = collider.GetBoneAt( boneFrom );
-	const decVector &cmpTo = pRig->GetBoneAt( boneTo ).GetCentralMassPoint();
-	const decVector &cmpFrom = rig->GetBoneAt( boneFrom ).GetCentralMassPoint();
+	const deColliderBone &colbone2 = collider.GetBoneAt(boneFrom);
+	const decVector &cmpTo = pRig->GetBoneAt(boneTo).GetCentralMassPoint();
+	const decVector &cmpFrom = rig->GetBoneAt(boneFrom).GetCentralMassPoint();
 	
-	pBones[ boneTo ]->SetPosition( colbone2.GetMatrix() * ( cmpTo - cmpFrom ) );
-	pBones[ boneTo ]->SetOrientation( colbone2.GetOrientation() );
-	pBones[ boneTo ]->SetLinearVelocity( colbone2.GetLinearVelocity() );
-	pBones[ boneTo ]->SetAngularVelocity( colbone2.GetAngularVelocity() );
-	pBones[ boneTo ]->UpdateMatrix();
+	pBones[boneTo]->SetPosition(colbone2.GetMatrix() * (cmpTo - cmpFrom));
+	pBones[boneTo]->SetOrientation(colbone2.GetOrientation());
+	pBones[boneTo]->SetLinearVelocity(colbone2.GetLinearVelocity());
+	pBones[boneTo]->SetAngularVelocity(colbone2.GetAngularVelocity());
+	pBones[boneTo]->UpdateMatrix();
 }
 
 
 
-void deColliderRig::EnableBoneConstraint( int bone, int constraint, bool enable ){
+void deColliderRig::EnableBoneConstraint(int bone, int constraint, bool enable){
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->EnableBoneConstraint( bone, constraint, enable );
+	if(phyCollider){
+		phyCollider->EnableBoneConstraint(bone, constraint, enable);
 	}
 }
 
-void deColliderRig::ReplaceBoneConstraint( int bone, int constraint, const deRigConstraint &replacement ) {
+void deColliderRig::ReplaceBoneConstraint(int bone, int constraint, const deRigConstraint &replacement) {
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ReplaceBoneConstraint( bone, constraint, replacement );
+	if(phyCollider){
+		phyCollider->ReplaceBoneConstraint(bone, constraint, replacement);
 	}
 }
 
@@ -232,69 +232,69 @@ void deColliderRig::ReplaceBoneConstraint( int bone, int constraint, const deRig
 // Forces
 ///////////
 
-void deColliderRig::ApplyBoneImpuls( int bone, const decVector &impuls ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+void deColliderRig::ApplyBoneImpuls(int bone, const decVector &impuls){
+	if(bone < 0 || bone >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ApplyBoneImpuls( bone, impuls );
+	if(phyCollider){
+		phyCollider->ApplyBoneImpuls(bone, impuls);
 	}
 }
 
-void deColliderRig::ApplyBoneImpulsAt( int bone, const decVector &impuls, const decVector &point ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+void deColliderRig::ApplyBoneImpulsAt(int bone, const decVector &impuls, const decVector &point){
+	if(bone < 0 || bone >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ApplyBoneImpulsAt( bone, impuls, point );
+	if(phyCollider){
+		phyCollider->ApplyBoneImpulsAt(bone, impuls, point);
 	}
 }
 
-void deColliderRig::ApplyBoneTorqueImpuls( int bone, const decVector &torqueImpuls ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+void deColliderRig::ApplyBoneTorqueImpuls(int bone, const decVector &torqueImpuls){
+	if(bone < 0 || bone >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ApplyBoneTorqueImpuls( bone, torqueImpuls );
+	if(phyCollider){
+		phyCollider->ApplyBoneTorqueImpuls(bone, torqueImpuls);
 	}
 }
 
-void deColliderRig::ApplyBoneForce( int bone, const decVector &force ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+void deColliderRig::ApplyBoneForce(int bone, const decVector &force){
+	if(bone < 0 || bone >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ApplyBoneForce( bone, force );
+	if(phyCollider){
+		phyCollider->ApplyBoneForce(bone, force);
 	}
 }
 
-void deColliderRig::ApplyBoneForceAt( int bone, const decVector &force, const decVector &point ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+void deColliderRig::ApplyBoneForceAt(int bone, const decVector &force, const decVector &point){
+	if(bone < 0 || bone >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ApplyBoneForceAt( bone, force, point );
+	if(phyCollider){
+		phyCollider->ApplyBoneForceAt(bone, force, point);
 	}
 }
 
-void deColliderRig::ApplyBoneTorque( int bone, const decVector &torque ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
+void deColliderRig::ApplyBoneTorque(int bone, const decVector &torque){
+	if(bone < 0 || bone >= pBoneCount){
+		DETHROW(deeInvalidParam);
 	}
 	
 	deBasePhysicsCollider * const phyCollider = GetPeerPhysics();
-	if( phyCollider ){
-		phyCollider->ApplyBoneTorque( bone, torque );
+	if(phyCollider){
+		phyCollider->ApplyBoneTorque(bone, torque);
 	}
 }
 
@@ -303,6 +303,6 @@ void deColliderRig::ApplyBoneTorque( int bone, const decVector &torque ){
 // Visiting
 /////////////
 
-void deColliderRig::Visit( deColliderVisitor &visitor ){
-	visitor.VisitRig( *this );
+void deColliderRig::Visit(deColliderVisitor &visitor){
+	visitor.VisitRig(*this);
 }

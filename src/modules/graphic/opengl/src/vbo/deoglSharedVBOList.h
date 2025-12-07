@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shared vbo list. */
-	deoglSharedVBOList( deoglRenderThread &renderThread, const deoglVBOLayout &layout,
-		GLenum drawType, int maxSize, int maxIndexSize );
+	deoglSharedVBOList(deoglRenderThread &renderThread, const deoglVBOLayout &layout,
+		GLenum drawType, int maxSize, int maxIndexSize);
 	
 	/** Clean up shared vbo list. */
 	~deoglSharedVBOList();
@@ -69,37 +69,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Layout. */
-	inline const deoglVBOLayout &GetLayout() const{ return pLayout; }
+	inline const deoglVBOLayout &GetLayout() const{return pLayout;}
 	
 	/** Draw type. */
-	inline GLenum GetDrawType() const{ return pDrawType; }
+	inline GLenum GetDrawType() const{return pDrawType;}
 	
 	/** Maximum VBO size. */
-	inline int GetMaxSize() const{ return pMaxSize; }
+	inline int GetMaxSize() const{return pMaxSize;}
 	
 	/** Maximum count of points. */
-	inline int GetMaxPointCount() const{ return pMaxPointCount; }
+	inline int GetMaxPointCount() const{return pMaxPointCount;}
 	
 	/** Maximum IBO size. */
-	inline int GetMaxIndexSize() const{ return pMaxIndexSize; }
+	inline int GetMaxIndexSize() const{return pMaxIndexSize;}
 	
 	/** Maximum count of indices. */
-	inline int GetMaxIndexCount() const{ return pMaxIndexCount; }
+	inline int GetMaxIndexCount() const{return pMaxIndexCount;}
 	
 	/** VBO list matches the layout and draw type. */
-	bool Matches( const deoglVBOLayout &layout, GLenum drawType ) const;
+	bool Matches(const deoglVBOLayout &layout, GLenum drawType) const;
 	
 	/** Count of VBOs. */
 	int GetCount() const;
 	
 	/** VBO at index. */
-	deoglSharedVBO *GetAt( int index ) const;
+	deoglSharedVBO *GetAt(int index) const;
 	
 	/** Add block of data to a matching VBO returning the resulting block. */
-	deoglSharedVBOBlock *AddData( int size, int indexCount = 0 );
+	deoglSharedVBOBlock *AddData(int size, int indexCount = 0);
 	
 	/** Prepare all VBOs not yet prepared. */
 	void PrepareVBOs();

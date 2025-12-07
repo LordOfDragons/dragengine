@@ -41,18 +41,18 @@
 ////////////////////////////
 
 deoglRenderableColorArrayTextureManager::deoglRenderableColorArrayTextureManager(
-	deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pArrayTextures( NULL ),
-pArrayTextureCount( 0 ),
-pArrayTextureSize( 0 ){
+	deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pArrayTextures(NULL),
+pArrayTextureCount(0),
+pArrayTextureSize(0){
 }
 
 deoglRenderableColorArrayTextureManager::~deoglRenderableColorArrayTextureManager(){
-	if( pArrayTextures ){
-		while( pArrayTextureCount > 0 ){
+	if(pArrayTextures){
+		while(pArrayTextureCount > 0){
 			pArrayTextureCount--;
-			delete pArrayTextures[ pArrayTextureCount ];
+			delete pArrayTextures[pArrayTextureCount];
 		}
 		delete [] pArrayTextures;
 	}
@@ -63,36 +63,36 @@ deoglRenderableColorArrayTextureManager::~deoglRenderableColorArrayTextureManage
 // Management
 ///////////////
 
-const deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager::GetAt( int index ) const{
-	if( index < 0 || index >= pArrayTextureCount ){
-		DETHROW( deeInvalidParam );
+const deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager::GetAt(int index) const{
+	if(index < 0 || index >= pArrayTextureCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pArrayTextures[ index ];
+	return pArrayTextures[index];
 }
 
 deoglRenderableColorArrayTexture *deoglRenderableColorArrayTextureManager::GetWith(
-int width, int height, int layerCount, int componentCount, bool isFloat ){
+int width, int height, int layerCount, int componentCount, bool isFloat){
 	deoglRenderableColorArrayTexture *texture = NULL;
 	int i;
 	
 	// find the texture with the matching format
-	for( i=0; i<pArrayTextureCount; i++ ){
-		if( ! pArrayTextures[ i ]->GetInUse() && pArrayTextures[ i ]->Matches(
-		width, height, layerCount, componentCount, isFloat ) ){
-			texture = pArrayTextures[ i ];
+	for(i=0; i<pArrayTextureCount; i++){
+		if(! pArrayTextures[i]->GetInUse() && pArrayTextures[i]->Matches(
+		width, height, layerCount, componentCount, isFloat)){
+			texture = pArrayTextures[i];
 			break;
 		}
 	}
 	
 	// if not found create a new one
-	if( ! texture ){
-		if( pArrayTextureCount == pArrayTextureSize ){
+	if(! texture){
+		if(pArrayTextureCount == pArrayTextureSize){
 			int newSize = pArrayTextureSize * 3 / 2 + 1;
-			deoglRenderableColorArrayTexture **newArray = new deoglRenderableColorArrayTexture*[ newSize ];
+			deoglRenderableColorArrayTexture **newArray = new deoglRenderableColorArrayTexture*[newSize];
 			
-			if( pArrayTextures ){
-				memcpy( newArray, pArrayTextures, sizeof( deoglRenderableColorArrayTexture* ) * pArrayTextureSize );
+			if(pArrayTextures){
+				memcpy(newArray, pArrayTextures, sizeof(deoglRenderableColorArrayTexture*) * pArrayTextureSize);
 				delete [] pArrayTextures;
 			}
 			
@@ -100,14 +100,14 @@ int width, int height, int layerCount, int componentCount, bool isFloat ){
 			pArrayTextureSize = newSize;
 		}
 		
-		texture = new deoglRenderableColorArrayTexture( pRenderThread,
-			width, height, layerCount, componentCount, isFloat );
+		texture = new deoglRenderableColorArrayTexture(pRenderThread,
+			width, height, layerCount, componentCount, isFloat);
 		
-		pArrayTextures[ pArrayTextureCount ] = texture;
+		pArrayTextures[pArrayTextureCount] = texture;
 		pArrayTextureCount++;
 	}
 	
 	// mark the texture in use and return it
-	texture->SetInUse( true );
+	texture->SetInUse(true);
 	return texture;
 }

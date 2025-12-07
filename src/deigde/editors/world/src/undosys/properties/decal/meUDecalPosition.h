@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalPosition( meDecal *decal, const decDVector &newPosition );
+	meUDecalPosition(meDecal *decal, const decDVector &newPosition);
 	
 protected:
 	/** \brief Clean up undo object. */

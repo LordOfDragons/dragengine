@@ -83,7 +83,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deEosSdkServiceEos( deEosSdk &module, deService *service, const deServiceObject::Ref &data );
+	deEosSdkServiceEos(deEosSdk &module, deService *service, const deServiceObject::Ref &data);
 	
 	/** Delete module. */
 	~deEosSdkServiceEos() override;
@@ -94,10 +94,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Get module. */
-	inline deEosSdk &GetModule() const{ return pModule; }
+	inline deEosSdk &GetModule() const{return pModule;}
 	
 	/** Service. */
-	inline deService *GetService() const{ return pService; }
+	inline deService *GetService() const{return pService;}
 	
 	/** Get handles. */
 	EOS_HAuth GetHandleAuth();
@@ -116,46 +116,46 @@ public:
 	 * in responses to allow matching them to requests. The id can also be used to cancel
 	 * a request at any time.
 	 */
-	void StartRequest( const decUniqueID &id, const deServiceObject &request ) override;
+	void StartRequest(const decUniqueID &id, const deServiceObject &request) override;
 	
 	/** Cancel service request if running. */
-	void CancelRequest( const decUniqueID &id ) override;
+	void CancelRequest(const decUniqueID &id) override;
 	
 	/** Run action returning result immediately. */
-	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	deServiceObject::Ref RunAction(const deServiceObject &action) override;
 	/*@}*/
 	
 	
 	
 	/** \name Request */
 	/*@{*/
-	deEosSdkPendingRequest *GetPendingRequestWithId( const decUniqueID &id ) const;
-	deEosSdkPendingRequest::Ref RemoveFirstPendingRequestWithId( const decUniqueID &id );
-	deEosSdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction( const char *function );
-	deEosSdkPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
-		const decString &function, const deServiceObject::Ref &data = nullptr );
+	deEosSdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
+	deEosSdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
+	deEosSdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
+	deEosSdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
+		const decString &function, const deServiceObject::Ref &data = nullptr);
 	
-	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
+	void QueryUserInfo(const decUniqueID &id, const deServiceObject& request);
 	
-	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
-	deServiceObject::Ref IsUserLoggedIn( const deServiceObject& action );
+	deServiceObject::Ref CopyIdToken(const deServiceObject& action);
+	deServiceObject::Ref IsUserLoggedIn(const deServiceObject& action);
 	deServiceObject::Ref GetUserFeatures();
 	
-	void FailRequest( const decUniqueID &id, const deException &e );
-	void FailRequest( const decUniqueID &id, EOS_EResult res );
-	void FailRequest( const deEosSdkPendingRequest::Ref &request, const deException &e );
-	void FailRequest( const deEosSdkPendingRequest::Ref &request, EOS_EResult res );
+	void FailRequest(const decUniqueID &id, const deException &e);
+	void FailRequest(const decUniqueID &id, EOS_EResult res);
+	void FailRequest(const deEosSdkPendingRequest::Ref &request, const deException &e);
+	void FailRequest(const deEosSdkPendingRequest::Ref &request, EOS_EResult res);
 	/*@}*/
 	
 	
 	
 	/** \name EOS Callbacks */
 	/*@{*/
-	void OnQueryUserInfoCallback( const decUniqueID &id,
-		const EOS_UserInfo_QueryUserInfoCallbackInfo &data );
+	void OnQueryUserInfoCallback(const decUniqueID &id,
+		const EOS_UserInfo_QueryUserInfoCallbackInfo &data);
 
 	void OnDisplaySettingsUpdatedCallback(
-		const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo &data );
+		const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo &data);
 	/*@}*/
 	
 	
@@ -163,7 +163,7 @@ public:
 	/** \name deEosSdk::cFrameUpdater */
 	/*@{*/
 	/** Frame update. */
-	void FrameUpdate( float elapsed ) override;
+	void FrameUpdate(float elapsed) override;
 	/*@}*/
 	
 	

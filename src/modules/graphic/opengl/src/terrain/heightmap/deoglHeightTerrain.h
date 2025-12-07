@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglHeightTerrain( deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain );
+	deoglHeightTerrain(deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain);
 	
 	/** Clean up peer. */
 	virtual ~deoglHeightTerrain();
@@ -66,16 +66,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Opengl object. */
-	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	inline deGraphicOpenGl &GetOgl() const{return pOgl;}
 	
 	/** Height terrain. */
-	inline const deHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain &GetHeightTerrain() const{return pHeightTerrain;}
 	
 	/** Render height terrain. */
-	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{ return pRHeightTerrain; }
+	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{return pRHeightTerrain;}
 	
 	/** Update. */
-	void Update( float elapsed );
+	void Update(float elapsed);
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();
@@ -89,33 +89,33 @@ public:
 	virtual void ParametersChanged();
 	
 	/** Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates);
 	
 	
 	
 	/** Sector has been added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	virtual void SectorAdded(deHeightTerrainSector *sector);
 	
 	/** Sector has been removed. */
-	virtual void SectorRemoved( int index );
+	virtual void SectorRemoved(int index);
 	
 	/** All sectors have been removed. */
 	virtual void AllSectorsRemoved();
 	
 	/** Sector changed. */
-	virtual void SectorChanged( int index );
+	virtual void SectorChanged(int index);
 	
 	
 	
 	/** Decal has been added. */
-	virtual void DecalAdded( int sector, deDecal *decal );
+	virtual void DecalAdded(int sector, deDecal *decal);
 	
 	/** Decal has been removed. */
-	virtual void DecalRemoved( int sector, deDecal *decal );
+	virtual void DecalRemoved(int sector, deDecal *decal);
 	
 	/** All decals have been removed. */
-	virtual void AllDecalsRemoved( int sector );
+	virtual void AllDecalsRemoved(int sector);
 	/*@}*/
 	
 private:

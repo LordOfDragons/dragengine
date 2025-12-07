@@ -47,15 +47,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCaseCutAction::ceWPTMAIfElseCaseCutAction( ceWindowMain &windowMain,
+ceWPTMAIfElseCaseCutAction::ceWPTMAIfElseCaseCutAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, ceConversationAction *action ) :
-ceWPTMACopyAction( windowMain, action, "Cut Action",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) ),
-pConversation( &conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ){
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, ceConversationAction *action) :
+ceWPTMACopyAction(windowMain, action, "Cut Action",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut)),
+pConversation(&conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase){
 }
 
 
@@ -68,6 +68,6 @@ void ceWPTMAIfElseCaseCutAction::OnAction(){
 	
 	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::NewWith(
 		pTopic, pIfElse, pIfCase, GetAction()));
-	undo->SetShortInfo( "Cut Action" );
-	pConversation->GetUndoSystem()->Add( undo );
+	undo->SetShortInfo("Cut Action");
+	pConversation->GetUndoSystem()->Add(undo);
 }

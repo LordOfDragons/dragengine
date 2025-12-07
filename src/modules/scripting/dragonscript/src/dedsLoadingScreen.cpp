@@ -42,14 +42,14 @@
 // Constructor
 ////////////////
 
-dedsLoadingScreen::dedsLoadingScreen( deScriptingDragonScript &ds ) :
-pDS( ds )
+dedsLoadingScreen::dedsLoadingScreen(deScriptingDragonScript &ds) :
+pDS(ds)
 {
 	try{
 		pCreateScreen();
 		Update();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -89,50 +89,50 @@ void dedsLoadingScreen::Update(){
 //////////////////////
 
 void dedsLoadingScreen::pCreateScreen(){
-	pDS.LogInfo( "Create loading screen" );
+	pDS.LogInfo("Create loading screen");
 	deEngine &engine = *pDS.GetGameEngine();
 	deCanvasManager &canvasManager = *engine.GetCanvasManager();
 	deImageManager &imageManager = *engine.GetImageManager();
 	
 	deCanvasView * const content = engine.GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
-	DEASSERT_NOTNULL( content )
+	DEASSERT_NOTNULL(content)
 	
-	pCanvasBackground.TakeOver( canvasManager.CreateCanvasPaint() );
-	pCanvasBackground->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
-	pCanvasBackground->SetShapeType( deCanvasPaint::estRectangle );
-	pCanvasBackground->SetThickness( 0.0f );
-	pCanvasBackground->SetOrder( ( float )content->GetCanvasCount() );
-	content->AddCanvas( pCanvasBackground );
+	pCanvasBackground.TakeOver(canvasManager.CreateCanvasPaint());
+	pCanvasBackground->SetFillColor(decColor(0.0f, 0.0f, 0.0f));
+	pCanvasBackground->SetShapeType(deCanvasPaint::estRectangle);
+	pCanvasBackground->SetThickness(0.0f);
+	pCanvasBackground->SetOrder((float)content->GetCanvasCount());
+	content->AddCanvas(pCanvasBackground);
 	
-	const deImage::Ref image( deImage::Ref::New(
-		imageManager.LoadImage( "loadingScreen.webp", "/shareddata/images" ) ) );
+	const deImage::Ref image(deImage::Ref::New(
+		imageManager.LoadImage("loadingScreen.webp", "/shareddata/images")));
 	
-	pCanvasImage.TakeOver( canvasManager.CreateCanvasImage() );
-	pCanvasImage->SetImage( image );
-	pCanvasImage->SetSize( decPoint( image->GetWidth(), image->GetHeight() ) );
-	pCanvasImage->SetOrder( ( float )content->GetCanvasCount() );
-	pCanvasImage->SetTransparency( 0.5f );
-	content->AddCanvas( pCanvasImage );
+	pCanvasImage.TakeOver(canvasManager.CreateCanvasImage());
+	pCanvasImage->SetImage(image);
+	pCanvasImage->SetSize(decPoint(image->GetWidth(), image->GetHeight()));
+	pCanvasImage->SetOrder((float)content->GetCanvasCount());
+	pCanvasImage->SetTransparency(0.5f);
+	content->AddCanvas(pCanvasImage);
 }
 
 void dedsLoadingScreen::pCleanUp(){
-	pDS.LogInfo( "Clean up loading screen" );
+	pDS.LogInfo("Clean up loading screen");
 	deCanvasView * const content = pDS.GetGameEngine()->GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
 	
-	if( pCanvasImage ){
-		if( content ){
+	if(pCanvasImage){
+		if(content){
 			try{
-				content->RemoveCanvas( pCanvasImage );
-			}catch( ... ){}
+				content->RemoveCanvas(pCanvasImage);
+			}catch(...){}
 		}
 		pCanvasImage = nullptr;
 	}
 	
-	if( pCanvasBackground ){
-		if( content ){
+	if(pCanvasBackground){
+		if(content){
 			try{
-				content->RemoveCanvas( pCanvasBackground );
-			}catch( ... ){}
+				content->RemoveCanvas(pCanvasBackground);
+			}catch(...){}
 		}
 		pCanvasBackground = nullptr;
 	}

@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglRCanvasRenderWorld( deoglRenderThread &renderThread );
+	deoglRCanvasRenderWorld(deoglRenderThread &renderThread);
 	
 	/** Clean up peer. */
 	virtual ~deoglRCanvasRenderWorld();
@@ -56,18 +56,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera or \em NULL if not set. */
-	inline deoglRCamera *GetCamera() const{ return pCamera; }
+	inline deoglRCamera *GetCamera() const{return pCamera;}
 	
 	/** Set camera or \em NULL if not set. */
-	void SetCamera( deoglRCamera *camera );
+	void SetCamera(deoglRCamera *camera);
 	
 	
 	
 	/** Prepare for rendering. */
-	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	virtual void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask);
 	
 	/** Render. */
-	virtual void Render( const deoglRenderCanvasContext &context );
+	virtual void Render(const deoglRenderCanvasContext &context);
 	/*@}*/
 };
 

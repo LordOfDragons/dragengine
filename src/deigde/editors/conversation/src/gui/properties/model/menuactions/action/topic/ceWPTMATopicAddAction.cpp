@@ -37,15 +37,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMATopicAddAction::ceWPTMATopicAddAction( ceWindowMain &windowMain,
+ceWPTMATopicAddAction::ceWPTMATopicAddAction(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceConversationAction::eActionTypes actionType, int index ) :
-ceWPTMACreateAction( windowMain, conversation, actionType ),
-pTopic( &topic ),
-pIndex( index )
+ceConversationAction::eActionTypes actionType, int index) :
+ceWPTMACreateAction(windowMain, conversation, actionType),
+pTopic(&topic),
+pIndex(index)
 {
-	if( index < 0 || index > topic.GetActionList().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > topic.GetActionList().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -54,6 +54,6 @@ pIndex( index )
 // Management
 ///////////////
 
-igdeUndo *ceWPTMATopicAddAction::CreateUndo( ceConversationAction *action ){
-	return new ceUCActionAdd( pTopic, action, pIndex );
+igdeUndo *ceWPTMATopicAddAction::CreateUndo(ceConversationAction *action){
+	return new ceUCActionAdd(pTopic, action, pIndex);
 }

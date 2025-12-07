@@ -42,31 +42,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTMAIfElseCasePasteActions::ceWPTMAIfElseCasePasteActions( ceWindowMain &windowMain,
+ceWPTMAIfElseCasePasteActions::ceWPTMAIfElseCasePasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index ) :
-ceWPTMAPasteActions( windowMain, conversation ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ),
-pIndex( index )
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index) :
+ceWPTMAPasteActions(windowMain, conversation),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase),
+pIndex(index)
 {
-	if( index < 0 || index > ifCase.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > ifCase.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
-ceWPTMAIfElseCasePasteActions::ceWPTMAIfElseCasePasteActions( ceWindowMain &windowMain,
+ceWPTMAIfElseCasePasteActions::ceWPTMAIfElseCasePasteActions(ceWindowMain &windowMain,
 ceConversation &conversation, ceConversationTopic &topic,
-ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index, const char *text ) :
-ceWPTMAPasteActions( windowMain, conversation, text ),
-pTopic( &topic ),
-pIfElse( &ifElse ),
-pIfCase( &ifCase ),
-pIndex( index )
+ceCAIfElse &ifElse, ceCAIfElseCase &ifCase, int index, const char *text) :
+ceWPTMAPasteActions(windowMain, conversation, text),
+pTopic(&topic),
+pIfElse(&ifElse),
+pIfCase(&ifCase),
+pIndex(index)
 {
-	if( index < 0 || index > ifCase.GetActions().GetCount() ){
-		DETHROW( deeInvalidAction );
+	if(index < 0 || index > ifCase.GetActions().GetCount()){
+		DETHROW(deeInvalidAction);
 	}
 }
 
@@ -75,6 +75,6 @@ pIndex( index )
 // Management
 ///////////////
 
-ceUCActionPaste *ceWPTMAIfElseCasePasteActions::CreateUndo( const ceConversationActionList &actions ){
-	return new ceUCAIfElsePaste( pTopic, pIfElse, pIfCase, actions, pIndex );
+ceUCActionPaste *ceWPTMAIfElseCasePasteActions::CreateUndo(const ceConversationActionList &actions){
+	return new ceUCAIfElsePaste(pTopic, pIfElse, pIfCase, actions, pIndex);
 }

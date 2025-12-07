@@ -42,7 +42,7 @@ igdeFilePatternList::igdeFilePatternList(){
 	pFilePatternSize = 0;
 }
 
-igdeFilePatternList::igdeFilePatternList( const igdeFilePatternList &list ){
+igdeFilePatternList::igdeFilePatternList(const igdeFilePatternList &list){
 	pFilePatterns = NULL;
 	pFilePatternCount = 0;
 	pFilePatternSize = 0;
@@ -51,7 +51,7 @@ igdeFilePatternList::igdeFilePatternList( const igdeFilePatternList &list ){
 
 igdeFilePatternList::~igdeFilePatternList(){
 	RemoveAllFilePatterns();
-	if( pFilePatterns ){
+	if(pFilePatterns){
 		delete [] pFilePatterns;
 	}
 }
@@ -61,18 +61,18 @@ igdeFilePatternList::~igdeFilePatternList(){
 // Management
 ///////////////
 
-igdeFilePattern *igdeFilePatternList::GetFilePatternAt( int index ) const{
-	if( index < 0 || index >= pFilePatternCount ) DETHROW( deeOutOfBoundary );
+igdeFilePattern *igdeFilePatternList::GetFilePatternAt(int index) const{
+	if(index < 0 || index >= pFilePatternCount) DETHROW(deeOutOfBoundary);
 	
-	return pFilePatterns[ index ];
+	return pFilePatterns[index];
 }
 
-int igdeFilePatternList::IndexOfFilePattern( igdeFilePattern *filePattern ) const{
-	if( ! filePattern ) DETHROW( deeInvalidParam );
+int igdeFilePatternList::IndexOfFilePattern(igdeFilePattern *filePattern) const{
+	if(! filePattern) DETHROW(deeInvalidParam);
 	int f;
 	
-	for( f=0; f<pFilePatternCount; f++ ){
-		if( filePattern == pFilePatterns[ f ] ){
+	for(f=0; f<pFilePatternCount; f++){
+		if(filePattern == pFilePatterns[f]){
 			return f;
 		}
 	}
@@ -80,12 +80,12 @@ int igdeFilePatternList::IndexOfFilePattern( igdeFilePattern *filePattern ) cons
 	return -1;
 }
 
-bool igdeFilePatternList::HasFilePattern( igdeFilePattern *filePattern ) const{
-	if( ! filePattern ) DETHROW( deeInvalidParam );
+bool igdeFilePatternList::HasFilePattern(igdeFilePattern *filePattern) const{
+	if(! filePattern) DETHROW(deeInvalidParam);
 	int f;
 	
-	for( f=0; f<pFilePatternCount; f++ ){
-		if( filePattern == pFilePatterns[ f ] ){
+	for(f=0; f<pFilePatternCount; f++){
+		if(filePattern == pFilePatterns[f]){
 			return true;
 		}
 	}
@@ -93,31 +93,31 @@ bool igdeFilePatternList::HasFilePattern( igdeFilePattern *filePattern ) const{
 	return false;
 }
 
-void igdeFilePatternList::AddFilePattern( igdeFilePattern *filePattern ){
-	if( HasFilePattern( filePattern ) ) DETHROW( deeInvalidParam );
+void igdeFilePatternList::AddFilePattern(igdeFilePattern *filePattern){
+	if(HasFilePattern(filePattern)) DETHROW(deeInvalidParam);
 	
-	if( pFilePatternCount == pFilePatternSize ){
+	if(pFilePatternCount == pFilePatternSize){
 		int newSize = pFilePatternSize * 3 / 2 + 1;
-		igdeFilePattern **newArray = new igdeFilePattern*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
-		if( pFilePatterns ){
-			memcpy( newArray, pFilePatterns, sizeof( igdeFilePattern* ) * pFilePatternSize );
+		igdeFilePattern **newArray = new igdeFilePattern*[newSize];
+		if(! newArray) DETHROW(deeOutOfMemory);
+		if(pFilePatterns){
+			memcpy(newArray, pFilePatterns, sizeof(igdeFilePattern*) * pFilePatternSize);
 			delete [] pFilePatterns;
 		}
 		pFilePatterns = newArray;
 		pFilePatternSize = newSize;
 	}
 	
-	pFilePatterns[ pFilePatternCount ] = filePattern;
+	pFilePatterns[pFilePatternCount] = filePattern;
 	pFilePatternCount++;
 }
 
-void igdeFilePatternList::RemoveFilePattern( igdeFilePattern *filePattern ){
-	int i, index = IndexOfFilePattern( filePattern );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+void igdeFilePatternList::RemoveFilePattern(igdeFilePattern *filePattern){
+	int i, index = IndexOfFilePattern(filePattern);
+	if(index == -1) DETHROW(deeInvalidParam);
 	
-	for( i=index+1; i<pFilePatternCount; i++ ){
-		pFilePatterns[ i - 1 ] = pFilePatterns[ i ];
+	for(i=index+1; i<pFilePatternCount; i++){
+		pFilePatterns[i - 1] = pFilePatterns[i];
 	}
 	pFilePatternCount--;
 	
@@ -125,9 +125,9 @@ void igdeFilePatternList::RemoveFilePattern( igdeFilePattern *filePattern ){
 }
 
 void igdeFilePatternList::RemoveAllFilePatterns(){
-	while( pFilePatternCount > 0 ){
+	while(pFilePatternCount > 0){
 		pFilePatternCount--;
-		delete pFilePatterns[ pFilePatternCount ];
+		delete pFilePatterns[pFilePatternCount];
 	}
 }
 
@@ -136,21 +136,21 @@ void igdeFilePatternList::RemoveAllFilePatterns(){
 // Operators
 //////////////
 
-igdeFilePatternList &igdeFilePatternList::operator=( const igdeFilePatternList &list ){
+igdeFilePatternList &igdeFilePatternList::operator=(const igdeFilePatternList &list){
 	const int count = list.GetFilePatternCount();
 	igdeFilePattern *filePattern = NULL;
 	int i;
 	
 	RemoveAllFilePatterns();
 	
-	for( i=0; i<count; i++ ){
+	for(i=0; i<count; i++){
 		try{
-			filePattern = new igdeFilePattern( *list.GetFilePatternAt( i ) );
-			AddFilePattern( filePattern );
+			filePattern = new igdeFilePattern(*list.GetFilePatternAt(i));
+			AddFilePattern(filePattern);
 			filePattern = NULL;
 			
-		}catch( const deException & ){
-			if( filePattern ){
+		}catch(const deException &){
+			if(filePattern){
 				delete filePattern;
 			}
 			throw;

@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	seWPLinkListener( seWPLink &panel );
+	seWPLinkListener(seWPLink &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~seWPLinkListener();
@@ -55,24 +55,24 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Controller name changed. */
-	virtual void ControllerNameChanged( seSynthesizer *synthesizer, seController *controller );
+	virtual void ControllerNameChanged(seSynthesizer *synthesizer, seController *controller);
 	
 	/** \brief Controller count or order changed. */
-	virtual void ControllerStructureChanged( seSynthesizer *synthesizer );
+	virtual void ControllerStructureChanged(seSynthesizer *synthesizer);
 	
 	
 	
 	/** \brief Active link changed. */
-	virtual void ActiveLinkChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void ActiveLinkChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link changed. */
-	virtual void LinkChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void LinkChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link name changed. */
-	virtual void LinkNameChanged( seSynthesizer *synthesizer, seLink *link );
+	virtual void LinkNameChanged(seSynthesizer *synthesizer, seLink *link);
 	
 	/** \brief Link count or order changed. */
-	virtual void LinkStructureChanged( seSynthesizer *synthesizer );
+	virtual void LinkStructureChanged(seSynthesizer *synthesizer);
 	/*@}*/
 };
 

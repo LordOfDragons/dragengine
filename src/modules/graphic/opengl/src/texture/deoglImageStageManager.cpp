@@ -55,13 +55,13 @@
 //////////////////////////////////////////
 
 deoglImageStageManager::sStage::sStage() :
-texture( 0 ),
-type( 0 ),
-level( 0 ),
-layer( 0 ),
-access( eaReadWrite ),
-layered( false ),
-format( 0 ){
+texture(0),
+type(0),
+level(0),
+layer(0),
+access(eaReadWrite),
+layered(false),
+format(0){
 }
 
 
@@ -72,8 +72,8 @@ format( 0 ){
 // Constructor, destructor
 ////////////////////////////
 
-deoglImageStageManager::deoglImageStageManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+deoglImageStageManager::deoglImageStageManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
 
 deoglImageStageManager::~deoglImageStageManager(){
@@ -86,8 +86,8 @@ deoglImageStageManager::~deoglImageStageManager(){
 
 int deoglImageStageManager::GetEnabledStageCount() const{
 	int i;
-	for( i=0; i<OGL_MAX_IMAGE_STAGES; i++ ){
-		if( pStages[ i ].type == 0 ){
+	for(i=0; i<OGL_MAX_IMAGE_STAGES; i++){
+		if(pStages[i].type == 0){
 			return i;
 		}
 	}
@@ -95,90 +95,90 @@ int deoglImageStageManager::GetEnabledStageCount() const{
 	return OGL_MAX_IMAGE_STAGES;
 }
 
-GLenum deoglImageStageManager::GetStageType( int stage ) const{
-	if( stage < 0 || stage >= OGL_MAX_IMAGE_STAGES ){
-		DETHROW( deeInvalidParam );
+GLenum deoglImageStageManager::GetStageType(int stage) const{
+	if(stage < 0 || stage >= OGL_MAX_IMAGE_STAGES){
+		DETHROW(deeInvalidParam);
 	}
 	
-	return pStages[ stage ].type;
+	return pStages[stage].type;
 }
 
 
 
-void deoglImageStageManager::Enable( int stage, const deoglTexture &texture, int level, eAccess access ){
-	if( ! texture.GetFormat() ){
-		DETHROW_INFO( deeNullPointer, "texture.format" );
+void deoglImageStageManager::Enable(int stage, const deoglTexture &texture, int level, eAccess access){
+	if(! texture.GetFormat()){
+		DETHROW_INFO(deeNullPointer, "texture.format");
 	}
 	
-	BindImage( stage, texture.GetTexture(), GL_TEXTURE_2D, level, 0, access, false,
-		( GLenum )texture.GetFormat()->GetFormat() );
+	BindImage(stage, texture.GetTexture(), GL_TEXTURE_2D, level, 0, access, false,
+		(GLenum)texture.GetFormat()->GetFormat());
 }
 
-void deoglImageStageManager::Enable( int stage, const deoglCubeMap &cubemap, int level, eAccess access ){
-	if( ! cubemap.GetFormat() ){
-		DETHROW_INFO( deeNullPointer, "cubemap.format" );
+void deoglImageStageManager::Enable(int stage, const deoglCubeMap &cubemap, int level, eAccess access){
+	if(! cubemap.GetFormat()){
+		DETHROW_INFO(deeNullPointer, "cubemap.format");
 	}
 	
-	BindImage( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, level, 0, access, true,
-		( GLenum )cubemap.GetFormat()->GetFormat() );
+	BindImage(stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, level, 0, access, true,
+		(GLenum)cubemap.GetFormat()->GetFormat());
 }
 
-void deoglImageStageManager::Enable( int stage, const deoglCubeMap &cubemap, int level, int face, eAccess access ){
-	if( ! cubemap.GetFormat() ){
-		DETHROW_INFO( deeNullPointer, "cubemap.format" );
+void deoglImageStageManager::Enable(int stage, const deoglCubeMap &cubemap, int level, int face, eAccess access){
+	if(! cubemap.GetFormat()){
+		DETHROW_INFO(deeNullPointer, "cubemap.format");
 	}
 	
-	BindImage( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, level, face, access, false,
-		( GLenum )cubemap.GetFormat()->GetFormat() );
+	BindImage(stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, level, face, access, false,
+		(GLenum)cubemap.GetFormat()->GetFormat());
 }
 
-void deoglImageStageManager::Enable( int stage, const deoglArrayTexture &texture, int level, eAccess access ){
-	if( ! texture.GetFormat() ){
-		DETHROW_INFO( deeNullPointer, "texture.format" );
+void deoglImageStageManager::Enable(int stage, const deoglArrayTexture &texture, int level, eAccess access){
+	if(! texture.GetFormat()){
+		DETHROW_INFO(deeNullPointer, "texture.format");
 	}
 	
-	BindImage( stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, level, 0, access, true,
-		( GLenum )texture.GetFormat()->GetFormat() );
+	BindImage(stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, level, 0, access, true,
+		(GLenum)texture.GetFormat()->GetFormat());
 }
 
-void deoglImageStageManager::Enable( int stage, const deoglArrayTexture &texture, int level, int layer, eAccess access ){
-	if( ! texture.GetFormat() ){
-		DETHROW_INFO( deeNullPointer, "texture.format" );
+void deoglImageStageManager::Enable(int stage, const deoglArrayTexture &texture, int level, int layer, eAccess access){
+	if(! texture.GetFormat()){
+		DETHROW_INFO(deeNullPointer, "texture.format");
 	}
 	
-	BindImage( stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, level, layer, access, false,
-		( GLenum )texture.GetFormat()->GetFormat() );
+	BindImage(stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, level, layer, access, false,
+		(GLenum)texture.GetFormat()->GetFormat());
 }
 
-void deoglImageStageManager::EnableTBO( int stage, GLuint tbo, eAccess access, GLenum format ){
-	BindImage( stage, tbo, GL_TEXTURE_BUFFER, 0, 0, access, false, format );
+void deoglImageStageManager::EnableTBO(int stage, GLuint tbo, eAccess access, GLenum format){
+	BindImage(stage, tbo, GL_TEXTURE_BUFFER, 0, 0, access, false, format);
 }
 
-void deoglImageStageManager::EnableSkin( int stage, const deoglRSkin &skin, int texture,
-deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, eAccess access ){
-	if( stage < 0 || stage >= OGL_MAX_IMAGE_STAGES || ! defaultTexture ){
-		DETHROW( deeInvalidParam );
+void deoglImageStageManager::EnableSkin(int stage, const deoglRSkin &skin, int texture,
+deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, eAccess access){
+	if(stage < 0 || stage >= OGL_MAX_IMAGE_STAGES || ! defaultTexture){
+		DETHROW(deeInvalidParam);
 	}
 	
-	deoglSkinChannel * const textureChannel = skin.GetTextureAt( texture ).GetChannelAt( channel );
+	deoglSkinChannel * const textureChannel = skin.GetTextureAt(texture).GetChannelAt(channel);
 	deoglTexture *useTexture = defaultTexture;
 	
-	if( textureChannel ){
+	if(textureChannel){
 		deoglTexture *channelTexture = textureChannel->GetTexture();
 		
-		if( textureChannel->GetImage() ){
+		if(textureChannel->GetImage()){
 			channelTexture = textureChannel->GetImage()->GetTexture();
 			
-		}else if( textureChannel->GetCombinedTexture() ){
+		}else if(textureChannel->GetCombinedTexture()){
 			channelTexture = textureChannel->GetCombinedTexture()->GetTexture();
 		}
 		
-		if( channelTexture ){
+		if(channelTexture){
 			useTexture = channelTexture;
 		}
 	}
 	
-	Enable( stage, *useTexture, 0, access );
+	Enable(stage, *useTexture, 0, access);
 }
 
 void deoglImageStageManager::EnableRenderDocDebug(int stage, int flag){
@@ -190,57 +190,57 @@ void deoglImageStageManager::EnableRenderDocDebug(int stage, int flag){
 
 
 
-void deoglImageStageManager::DisableStage( int stage ){
-	if( stage < 0 || stage >= OGL_MAX_IMAGE_STAGES ){
-		DETHROW( deeInvalidParam );
+void deoglImageStageManager::DisableStage(int stage){
+	if(stage < 0 || stage >= OGL_MAX_IMAGE_STAGES){
+		DETHROW(deeInvalidParam);
 	}
-	if( pStages[ stage ].type == 0 ){
+	if(pStages[stage].type == 0){
 		return;
 	}
 	
-	if( pStages[ stage ].texture != 0 ){
+	if(pStages[stage].texture != 0){
 		// unbind seems impossible. just leave the binding and consider it cleared
-		pStages[ stage ].texture = 0;
+		pStages[stage].texture = 0;
 	}
 	
-	pStages[ stage ].type = 0;
-	pStages[ stage ].level = 0;
-	pStages[ stage ].layer = 0;
-	pStages[ stage ].access = eaReadWrite;
-	pStages[ stage ].layered = false;
-	pStages[ stage ].format = 0;
+	pStages[stage].type = 0;
+	pStages[stage].level = 0;
+	pStages[stage].layer = 0;
+	pStages[stage].access = eaReadWrite;
+	pStages[stage].layered = false;
+	pStages[stage].format = 0;
 }
 
-void deoglImageStageManager::DisableStagesAbove( int stage ){
+void deoglImageStageManager::DisableStagesAbove(int stage){
 	int i;
-	for( i=stage+1; i<OGL_MAX_IMAGE_STAGES; i++ ){
-		DisableStage( i );
+	for(i=stage+1; i<OGL_MAX_IMAGE_STAGES; i++){
+		DisableStage(i);
 	}
 }
 
 void deoglImageStageManager::DisableAllStages(){
-	DisableStagesAbove( -1 );
+	DisableStagesAbove(-1);
 }
 
 
 
-void deoglImageStageManager::BindImage( int stage, GLuint texture, GLenum type,
-int level, int layer, eAccess access, bool layered, GLenum format ){
+void deoglImageStageManager::BindImage(int stage, GLuint texture, GLenum type,
+int level, int layer, eAccess access, bool layered, GLenum format){
 	DEASSERT_TRUE(stage >= 0)
 	DEASSERT_TRUE(stage < OGL_MAX_IMAGE_STAGES)
 	
-	if( pStages[ stage ].texture == texture
-	&& pStages[ stage ].type == type
-	&& pStages[ stage ].level == level
-	&& pStages[ stage ].layer == layer
-	&& pStages[ stage ].layered == layered
-	&& pStages[ stage ].access == access
-	&& pStages[ stage ].format == format ){
+	if(pStages[stage].texture == texture
+	&& pStages[stage].type == type
+	&& pStages[stage].level == level
+	&& pStages[stage].layer == layer
+	&& pStages[stage].layered == layered
+	&& pStages[stage].access == access
+	&& pStages[stage].format == format){
 		return;
 	}
 	
 	GLenum glaccess = GL_READ_WRITE;
-	switch( access ){
+	switch(access){
 	case eaRead:
 		glaccess = GL_READ_ONLY;
 		break;
@@ -254,22 +254,22 @@ int level, int layer, eAccess access, bool layered, GLenum format ){
 		break;
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindImageTexture( stage, texture, level, layered, layer, glaccess, format ) );
-	pStages[ stage ].texture = texture;
-	pStages[ stage ].level = level;
-	pStages[ stage ].layer = layer;
-	pStages[ stage ].layered = layered;
-	pStages[ stage ].access = access;
-	pStages[ stage ].format = format;
+	OGL_CHECK(pRenderThread, pglBindImageTexture(stage, texture, level, layered, layer, glaccess, format));
+	pStages[stage].texture = texture;
+	pStages[stage].level = level;
+	pStages[stage].layer = layer;
+	pStages[stage].layered = layered;
+	pStages[stage].access = access;
+	pStages[stage].format = format;
 }
 
 
 
 void deoglImageStageManager::LogCurrentState() const{
 	int i;
-	for( i=0; i<OGL_MAX_IMAGE_STAGES; i++ ){
+	for(i=0; i<OGL_MAX_IMAGE_STAGES; i++){
 		const char *access = "?";
-		switch( pStages[ i ].access ){
+		switch(pStages[i].access){
 		case eaRead:
 			access = "r";
 			break;
@@ -285,7 +285,7 @@ void deoglImageStageManager::LogCurrentState() const{
 		
 		pRenderThread.GetLogger().LogInfoFormat(
 			"Image Stage %2d: type=0x%.4x texture=0x%.4x level=%d layer=%d layered=%s access=%s format=0x%.4x",
-			i, pStages[ i ].type, pStages[ i ].texture, pStages[ i ].level, pStages[ i ].layer,
-			pStages[ i ].layered ? "true" : "false", access, pStages[ i ].format );
+			i, pStages[i].type, pStages[i].texture, pStages[i].level, pStages[i].layer,
+			pStages[i].layered ? "true" : "false", access, pStages[i].format);
 	}
 }

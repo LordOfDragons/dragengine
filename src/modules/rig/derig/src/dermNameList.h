@@ -59,25 +59,25 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the number of names. */
-	inline int GetNameCount() const{ return pNameCount; }
+	inline int GetNameCount() const{return pNameCount;}
 
 	/** Retrieves the name at the given index. */
-	const decString &GetNameAt( int index ) const;
+	const decString &GetNameAt(int index) const;
 
 	/** Retrieves the number of the name at the given index. */
-	int GetNameNumberAt( int index ) const;
+	int GetNameNumberAt(int index) const;
 
 	/** Sets the number of the name at the given index. */
-	void SetNameNumberAt( int index, int number );
+	void SetNameNumberAt(int index, int number);
 
 	/** Retrieves the index of the given name or -1 if not found. */
-	int IndexOfName( const char *name ) const;
+	int IndexOfName(const char *name) const;
 
 	/** Determines if the given name exists. */
-	bool HasName( const char *name ) const;
+	bool HasName(const char *name) const;
 
 	/** Adds a new name. */
-	int AddName( const char *name );
+	int AddName(const char *name);
 	/*@}*/
 };
 

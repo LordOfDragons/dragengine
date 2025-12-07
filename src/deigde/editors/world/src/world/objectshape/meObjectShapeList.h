@@ -54,29 +54,29 @@ public:
 	/** Retrieves the number of object shapes. */
 	int GetCount() const;
 	/** Retrieves the object shape at the given position. */
-	meObjectShape *GetAt( int position ) const;
+	meObjectShape *GetAt(int position) const;
 	/** Retrieves the index of the given object shape or -1 if not found. */
-	int IndexOf( meObjectShape *objectShape ) const;
+	int IndexOf(meObjectShape *objectShape) const;
 	/** Determines if the given object shape exists. */
-	bool Has( meObjectShape *objectShape ) const;
+	bool Has(meObjectShape *objectShape) const;
 	/** Adds an object shape throwing an exception if already existing. */
-	void Add( meObjectShape *objectShape );
+	void Add(meObjectShape *objectShape);
 	/** Adds an object shape if not existing already. */
-	void AddIfAbsent( meObjectShape *objectShape );
+	void AddIfAbsent(meObjectShape *objectShape);
 	/** Removes an object shape throwing an exception if not existing. */
-	void Remove( meObjectShape *objectShape );
+	void Remove(meObjectShape *objectShape);
 	/** Removes an object shape if existing. */
-	void RemoveIfPresent( meObjectShape *objectShape );
+	void RemoveIfPresent(meObjectShape *objectShape);
 	/** Removes all object shapes. */
 	void RemoveAll();
 	
 	/** Creates a shape list from this list. */
-	void CreateShapeList( decShapeList &list ) const;
+	void CreateShapeList(decShapeList &list) const;
 	/** Create property string from shape list. */
-	void CreatePropertyString( decString &string ) const;
+	void CreatePropertyString(decString &string) const;
 	
 	/** Sets the list to the contain the same object shapes as another list. */
-	meObjectShapeList &operator=( const meObjectShapeList &list );
+	meObjectShapeList &operator=(const meObjectShapeList &list);
 	/*@}*/
 };
 

@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetCreator::projUProfileSetCreator( projProfile *profile, const char *newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetCreator::projUProfileSetCreator(projProfile *profile, const char *newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set creator" );
+	SetShortInfo("Profile set creator");
 	
 	pOldValue = profile->GetCreator();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetCreator::~projUProfileSetCreator(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ projUProfileSetCreator::~projUProfileSetCreator(){
 ///////////////
 
 void projUProfileSetCreator::Undo(){
-	pProfile->SetCreator( pOldValue );
+	pProfile->SetCreator(pOldValue);
 }
 
 void projUProfileSetCreator::Redo(){
-	pProfile->SetCreator( pNewValue );
+	pProfile->SetCreator(pNewValue);
 }

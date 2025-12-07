@@ -40,11 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNavigationBlocker::deNavigationBlocker( deNavigationBlockerManager *manager ) :
-deResource( manager ),
-pBlockingPriority( 0 )
+deNavigationBlocker::deNavigationBlocker(deNavigationBlockerManager *manager) :
+deResource(manager),
+pBlockingPriority(0)
 {
-	pScaling.Set( 1.0f, 1.0f, 1.0f );
+	pScaling.Set(1.0f, 1.0f, 1.0f);
 	
 	pLayer = 0;
 	pSpaceType = deNavigationSpace::estGrid;
@@ -58,7 +58,7 @@ pBlockingPriority( 0 )
 }
 
 deNavigationBlocker::~deNavigationBlocker(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		delete pPeerAI;
 		pPeerAI = NULL;
 	}
@@ -69,77 +69,77 @@ deNavigationBlocker::~deNavigationBlocker(){
 // Management
 ///////////////
 
-void deNavigationBlocker::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
+void deNavigationBlocker::SetPosition(const decDVector &position){
+	if(! position.IsEqualTo(pPosition)){
 		pPosition = position;
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->PositionChanged();
 		}
 	}
 }
 
-void deNavigationBlocker::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
+void deNavigationBlocker::SetOrientation(const decQuaternion &orientation){
+	if(! orientation.IsEqualTo(pOrientation)){
 		pOrientation = orientation;
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->OrientationChanged();
 		}
 	}
 }
 
-void deNavigationBlocker::SetScaling( const decVector &scaling ){
-	if( ! scaling.IsEqualTo( pScaling ) ){
+void deNavigationBlocker::SetScaling(const decVector &scaling){
+	if(! scaling.IsEqualTo(pScaling)){
 		pScaling = scaling;
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->ScalingChanged();
 		}
 	}
 }
 
-void deNavigationBlocker::SetLayer( int layer ){
-	if( layer != pLayer ){
+void deNavigationBlocker::SetLayer(int layer){
+	if(layer != pLayer){
 		pLayer = layer;
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->LayerChanged();
 		}
 	}
 }
 
-void deNavigationBlocker::SetSpaceType( deNavigationSpace::eSpaceTypes spaceType ){
-	if( spaceType < deNavigationSpace::estGrid || spaceType > deNavigationSpace::estVolume ){
-		DETHROW( deeInvalidParam );
+void deNavigationBlocker::SetSpaceType(deNavigationSpace::eSpaceTypes spaceType){
+	if(spaceType < deNavigationSpace::estGrid || spaceType > deNavigationSpace::estVolume){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( spaceType != pSpaceType ){
+	if(spaceType != pSpaceType){
 		pSpaceType = spaceType;
-		if( pPeerAI ){
+		if(pPeerAI){
 			pPeerAI->SpaceTypeChanged();
 		}
 	}
 }
 
-void deNavigationBlocker::SetBlockingPriority( int priority ){
-	if( priority == pBlockingPriority ){
+void deNavigationBlocker::SetBlockingPriority(int priority){
+	if(priority == pBlockingPriority){
 		return;
 	}
 	
 	pBlockingPriority = priority;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->BlockingPriorityChanged();
 	}
 }
 
 
 
-void deNavigationBlocker::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void deNavigationBlocker::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
 	pEnabled = enabled;
 	
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->EnabledChanged();
 	}
 }
@@ -147,7 +147,7 @@ void deNavigationBlocker::SetEnabled( bool enabled ){
 
 
 void deNavigationBlocker::NotifyShapeListChanged(){
-	if( pPeerAI ){
+	if(pPeerAI){
 		pPeerAI->ShapeChanged();
 	}
 }
@@ -157,8 +157,8 @@ void deNavigationBlocker::NotifyShapeListChanged(){
 // System Peers
 /////////////////
 
-void deNavigationBlocker::SetPeerAI( deBaseAINavigationBlocker *peer ){
-	if( pPeerAI ){
+void deNavigationBlocker::SetPeerAI(deBaseAINavigationBlocker *peer){
+	if(pPeerAI){
 		delete pPeerAI;
 	}
 	pPeerAI = peer;
@@ -169,14 +169,14 @@ void deNavigationBlocker::SetPeerAI( deBaseAINavigationBlocker *peer ){
 // Linked List
 ////////////////
 
-void deNavigationBlocker::SetParentWorld( deWorld *world ){
+void deNavigationBlocker::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deNavigationBlocker::SetLLWorldPrev( deNavigationBlocker *blocker ){
+void deNavigationBlocker::SetLLWorldPrev(deNavigationBlocker *blocker){
 	pLLWorldPrev = blocker;
 }
 
-void deNavigationBlocker::SetLLWorldNext( deNavigationBlocker *blocker ){
+void deNavigationBlocker::SetLLWorldNext(deNavigationBlocker *blocker){
 	pLLWorldNext = blocker;
 }

@@ -61,54 +61,54 @@ struct sSkinNatDat{
 /////////////////////
 
 // public constructor Load( string name )
-deClassSkin::nfLoad::nfLoad( const sInitData &init ) :
-dsFunction( init.clsSkin, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // name
+deClassSkin::nfLoad::nfLoad(const sInitData &init) :
+dsFunction(init.clsSkin, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsString); // name
 }
-void deClassSkin::nfLoad::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sSkinNatDat &nd = *( ( sSkinNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassSkin* )GetOwnerClass() )->GetDS();
+void deClassSkin::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
+	sSkinNatDat &nd = *((sSkinNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
 	deSkinManager &skinMgr = *ds.GetGameEngine()->GetSkinManager();
 	
 	// reset all
 	nd.skin = NULL;
 	
 	// load skin
-	nd.skin = skinMgr.LoadSkin( rt->GetValue( 0 )->GetString(), "/" );
+	nd.skin = skinMgr.LoadSkin(rt->GetValue(0)->GetString(), "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
-deClassSkin::nfLoadAsynchron::nfLoadAsynchron( const sInitData &init ) :
-dsFunction( init.clsSkin, "loadAsynchron", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
-	p_AddParameter( init.clsResourceListener ); // listener
+deClassSkin::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) :
+dsFunction(init.clsSkin, "loadAsynchron", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
+	p_AddParameter(init.clsResourceListener); // listener
 }
-void deClassSkin::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deScriptingDragonScript &ds = ( ( deClassSkin* )GetOwnerClass() )->GetDS();
+void deClassSkin::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
+	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
 	
-	const char * const filename = rt->GetValue( 0 )->GetString();
-	dsRealObject * const listener = rt->GetValue( 1 )->GetRealObject();
-	if( ! listener ){
-		DSTHROW( dueNullPointer );
+	const char * const filename = rt->GetValue(0)->GetString();
+	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
+	if(! listener){
+		DSTHROW(dueNullPointer);
 	}
 	
-	ds.GetResourceLoader()->AddRequest( filename, deResourceLoader::ertSkin, listener );
+	ds.GetResourceLoader()->AddRequest(filename, deResourceLoader::ertSkin, listener);
 }
 
 // public destructor Destructor()
-deClassSkin::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsSkin, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSkin::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsSkin, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkin::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSkin::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSkinNatDat &nd = *( ( sSkinNatDat* )p_GetNativeData( myself ) );
-	if( nd.skin ){
+	sSkinNatDat &nd = *((sSkinNatDat*)p_GetNativeData(myself));
+	if(nd.skin){
 		nd.skin->FreeReference();
 		nd.skin = NULL;
 	}
@@ -117,245 +117,245 @@ void deClassSkin::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
 
 
 // public func string GetFilename()
-deClassSkin::nfGetFilename::nfGetFilename( const sInitData &init ) :
-dsFunction( init.clsSkin, "getFilename", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+deClassSkin::nfGetFilename::nfGetFilename(const sInitData &init) :
+dsFunction(init.clsSkin, "getFilename", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
-void deClassSkin::nfGetFilename::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	rt->PushString( skin.GetFilename() );
+void deClassSkin::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	rt->PushString(skin.GetFilename());
 }
 
 // public func int getTextureCount()
-deClassSkin::nfGetTextureCount::nfGetTextureCount( const sInitData &init ) :
-dsFunction( init.clsSkin, "getTextureCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+deClassSkin::nfGetTextureCount::nfGetTextureCount(const sInitData &init) :
+dsFunction(init.clsSkin, "getTextureCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
-void deClassSkin::nfGetTextureCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	rt->PushInt( skin.GetTextureCount() );
+void deClassSkin::nfGetTextureCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	rt->PushInt(skin.GetTextureCount());
 }
 
 // public func int indexOfTextureNamed( String name )
-deClassSkin::nfIndexOfTextureNamed::nfIndexOfTextureNamed( const sInitData &init ) :
-dsFunction( init.clsSkin, "indexOfTextureNamed", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
-	p_AddParameter( init.clsString ); // name
+deClassSkin::nfIndexOfTextureNamed::nfIndexOfTextureNamed(const sInitData &init) :
+dsFunction(init.clsSkin, "indexOfTextureNamed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+	p_AddParameter(init.clsString); // name
 }
-void deClassSkin::nfIndexOfTextureNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const char * const name = rt->GetValue( 0 )->GetString();
+void deClassSkin::nfIndexOfTextureNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const char * const name = rt->GetValue(0)->GetString();
 	
-	rt->PushInt( skin.IndexOfTextureNamed( name ) );
+	rt->PushInt(skin.IndexOfTextureNamed(name));
 }
 
 
 
 // public func String textureGetName( int texture )
-deClassSkin::nfTextureGetName::nfTextureGetName( const sInitData &init ) :
-dsFunction( init.clsSkin, "textureGetName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
-	p_AddParameter( init.clsInteger ); // texture
+deClassSkin::nfTextureGetName::nfTextureGetName(const sInitData &init) :
+dsFunction(init.clsSkin, "textureGetName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
+	p_AddParameter(init.clsInteger); // texture
 }
-void deClassSkin::nfTextureGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
+void deClassSkin::nfTextureGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
 	
-	rt->PushString( texture.GetName() );
+	rt->PushString(texture.GetName());
 }
 
 // public func int textureGetPropertyCount( int texture )
-deClassSkin::nfTextureGetPropertyCount::nfTextureGetPropertyCount( const sInitData &init ) :
-dsFunction( init.clsSkin, "textureGetPropertyCount", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
-	p_AddParameter( init.clsInteger ); // texture
+deClassSkin::nfTextureGetPropertyCount::nfTextureGetPropertyCount(const sInitData &init) :
+dsFunction(init.clsSkin, "textureGetPropertyCount", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+	p_AddParameter(init.clsInteger); // texture
 }
-void deClassSkin::nfTextureGetPropertyCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
+void deClassSkin::nfTextureGetPropertyCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
 	
-	rt->PushInt( texture.GetPropertyCount() );
+	rt->PushInt(texture.GetPropertyCount());
 }
 
 // public func int textureIndexOfPropertyNamed( int texture, String property )
-deClassSkin::nfTextureIndexOfPropertyNamed::nfTextureIndexOfPropertyNamed( const sInitData &init ) :
-dsFunction( init.clsSkin, "textureIndexOfPropertyNamed", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsString ); // property
+deClassSkin::nfTextureIndexOfPropertyNamed::nfTextureIndexOfPropertyNamed(const sInitData &init) :
+dsFunction(init.clsSkin, "textureIndexOfPropertyNamed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsString); // property
 }
-void deClassSkin::nfTextureIndexOfPropertyNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
+void deClassSkin::nfTextureIndexOfPropertyNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
 	
-	const char * const name = rt->GetValue( 1 )->GetString();
+	const char * const name = rt->GetValue(1)->GetString();
 	const int count = texture.GetPropertyCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( texture.GetPropertyAt( i )->GetType() == name ){
-			rt->PushInt( i );
+	for(i=0; i<count; i++){
+		if(texture.GetPropertyAt(i)->GetType() == name){
+			rt->PushInt(i);
 			return;
 		}
 	}
 	
-	rt->PushInt( -1 );
+	rt->PushInt(-1);
 }
 
 
 
 // public func String propertyGetName( int texture, int property )
-deClassSkin::nfPropertyGetName::nfPropertyGetName( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetName::nfPropertyGetName(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	const deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
+void deClassSkin::nfPropertyGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	const deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
 	
-	rt->PushString( property.GetType() );
+	rt->PushString(property.GetType());
 }
 
 // public func String propertyGetRenderable( int texture, int property )
-deClassSkin::nfPropertyGetRenderable::nfPropertyGetRenderable( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetRenderable", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetRenderable::nfPropertyGetRenderable(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetRenderable", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetRenderable::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	const deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
+void deClassSkin::nfPropertyGetRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	const deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
 	
-	rt->PushString( property.GetRenderable() );
+	rt->PushString(property.GetRenderable());
 }
 
 // public func SkinPropertyType propertyGetType( int texture, int property )
-deClassSkin::nfPropertyGetType::nfPropertyGetType( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetType", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSkinPropertyType ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetType::nfPropertyGetType(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetType", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSkinPropertyType){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetType::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
+void deClassSkin::nfPropertyGetType::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
 	
 	deSkinPropertyVisitorIdentify visitor;
-	property.Visit( visitor );
-	rt->PushValue( ( ( deClassSkin* )GetOwnerClass() )->GetClassSkinPropertyType()
-		->GetVariable( visitor.GetType() )->GetStaticValue() );
+	property.Visit(visitor);
+	rt->PushValue(((deClassSkin*)GetOwnerClass())->GetClassSkinPropertyType()
+		->GetVariable(visitor.GetType())->GetStaticValue());
 }
 
 // public func float propertyGetValue( int texture, int property )
-deClassSkin::nfPropertyGetValue::nfPropertyGetValue( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetValue::nfPropertyGetValue(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
+void deClassSkin::nfPropertyGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
 	
 	deSkinPropertyVisitorIdentify visitor;
-	property.Visit( visitor );
-	rt->PushFloat( visitor.CastToValue().GetValue() );
+	property.Visit(visitor);
+	rt->PushFloat(visitor.CastToValue().GetValue());
 }
 
 // public func Color propertyGetColor( int texture, int property )
-deClassSkin::nfPropertyGetColor::nfPropertyGetColor( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetColor", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsColor ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetColor::nfPropertyGetColor(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetColor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetColor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
-	deScriptingDragonScript &ds = ( ( deClassSkin* )GetOwnerClass() )->GetDS();
+void deClassSkin::nfPropertyGetColor::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
+	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
 	
 	deSkinPropertyVisitorIdentify visitor;
-	property.Visit( visitor );
-	ds.GetClassColor()->PushColor( rt, visitor.CastToColor().GetColor() );
+	property.Visit(visitor);
+	ds.GetClassColor()->PushColor(rt, visitor.CastToColor().GetColor());
 }
 
 // public func Image propertyGetImage( int texture, int property )
-deClassSkin::nfPropertyGetImage::nfPropertyGetImage( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetImage", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsImage ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetImage::nfPropertyGetImage(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetImage", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetImage::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
-	deScriptingDragonScript &ds = ( ( deClassSkin* )GetOwnerClass() )->GetDS();
+void deClassSkin::nfPropertyGetImage::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
+	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
 	
 	deSkinPropertyVisitorIdentify visitor;
-	property.Visit( visitor );
-	ds.GetClassImage()->PushImage( rt, visitor.CastToImage().GetImage() );
+	property.Visit(visitor);
+	ds.GetClassImage()->PushImage(rt, visitor.CastToImage().GetImage());
 }
 
 // public func Video propertyGetVideo( int texture, int property )
-deClassSkin::nfPropertyGetVideo::nfPropertyGetVideo( const sInitData &init ) :
-dsFunction( init.clsSkin, "propertyGetVideo", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVideo ){
-	p_AddParameter( init.clsInteger ); // texture
-	p_AddParameter( init.clsInteger ); // property
+deClassSkin::nfPropertyGetVideo::nfPropertyGetVideo(const sInitData &init) :
+dsFunction(init.clsSkin, "propertyGetVideo", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVideo){
+	p_AddParameter(init.clsInteger); // texture
+	p_AddParameter(init.clsInteger); // property
 }
-void deClassSkin::nfPropertyGetVideo::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deSkin &skin = *( ( sSkinNatDat* )p_GetNativeData( myself ) )->skin;
-	const deSkinTexture &texture = *skin.GetTextureAt( rt->GetValue( 0 )->GetInt() );
-	deSkinProperty &property = *texture.GetPropertyAt( rt->GetValue( 1 )->GetInt() );
-	deScriptingDragonScript &ds = ( ( deClassSkin* )GetOwnerClass() )->GetDS();
+void deClassSkin::nfPropertyGetVideo::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkin &skin = *((sSkinNatDat*)p_GetNativeData(myself))->skin;
+	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
+	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
+	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
 	
 	deSkinPropertyVisitorIdentify visitor;
-	property.Visit( visitor );
-	ds.GetClassVideo()->PushVideo( rt, visitor.CastToVideo().GetVideo() );
+	property.Visit(visitor);
+	ds.GetClassVideo()->PushVideo(rt, visitor.CastToVideo().GetVideo());
 }
 
 
 
 // public func int hashCode()
-deClassSkin::nfHashCode::nfHashCode( const sInitData &init ) :
+deClassSkin::nfHashCode::nfHashCode(const sInitData &init) :
 dsFunction(init.clsSkin, "hashCode", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
-void deClassSkin::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkinNatDat &nd = *( ( sSkinNatDat* )p_GetNativeData( myself ) );
+void deClassSkin::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkinNatDat &nd = *((sSkinNatDat*)p_GetNativeData(myself));
 	
 	// hash code = memory location
-	rt->PushInt( ( int )( intptr_t )nd.skin );
+	rt->PushInt((int)(intptr_t)nd.skin);
 }
 
 // public func bool equals( Object obj )
-deClassSkin::nfEquals::nfEquals( const sInitData &init ) :
+deClassSkin::nfEquals::nfEquals(const sInitData &init) :
 dsFunction(init.clsSkin, "equals", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObject ); // obj
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObject); // obj
 }
-void deClassSkin::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkinNatDat &nd = *( ( sSkinNatDat* )p_GetNativeData( myself ) );
-	deClassSkin * const clsSkin = ( deClassSkin* )GetOwnerClass();
-	dsValue * const object = rt->GetValue( 0 );
+void deClassSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkinNatDat &nd = *((sSkinNatDat*)p_GetNativeData(myself));
+	deClassSkin * const clsSkin = (deClassSkin*)GetOwnerClass();
+	dsValue * const object = rt->GetValue(0);
 	
-	if( object->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! object->GetRealObject()
-	|| object->GetRealObject()->GetType() != clsSkin ){
-		rt->PushBool( false );
+	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! object->GetRealObject()
+	|| object->GetRealObject()->GetType() != clsSkin){
+		rt->PushBool(false);
 		
 	}else{
-		const sSkinNatDat &other = *( ( sSkinNatDat* )p_GetNativeData( object ) );
-		rt->PushBool( nd.skin == other.skin );
+		const sSkinNatDat &other = *((sSkinNatDat*)p_GetNativeData(object));
+		rt->PushBool(nd.skin == other.skin);
 	}
 }
 
@@ -367,14 +367,14 @@ void deClassSkin::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 // Constructor, destructor
 ////////////////////////////
 
-deClassSkin::deClassSkin( deScriptingDragonScript &ds ) :
-dsClass( "Skin", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassSkin::deClassSkin(deScriptingDragonScript &ds) :
+dsClass("Skin", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSkinNatDat ) );
+	p_SetNativeDataSize(sizeof(sSkinNatDat));
 }
 
 deClassSkin::~deClassSkin(){
@@ -385,8 +385,8 @@ deClassSkin::~deClassSkin(){
 // Management
 ///////////////
 
-void deClassSkin::CreateClassMembers( dsEngine *engine ){
-	pClsSkinPropertyType = engine->GetClass( "Dragengine.Scenery.SkinPropertyType" );
+void deClassSkin::CreateClassMembers(dsEngine *engine){
+	pClsSkinPropertyType = engine->GetClass("Dragengine.Scenery.SkinPropertyType");
 	
 	sInitData init;
 	init.clsSkin = this;
@@ -403,51 +403,51 @@ void deClassSkin::CreateClassMembers( dsEngine *engine ){
 	init.clsSkinPropertyType = pClsSkinPropertyType;
 	
 	// functions
-	AddFunction( new nfLoad( init ) );
-	AddFunction( new nfLoadAsynchron( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfLoad(init));
+	AddFunction(new nfLoadAsynchron(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetFilename( init ) );
+	AddFunction(new nfGetFilename(init));
 	
-	AddFunction( new nfGetTextureCount( init ) );
-	AddFunction( new nfIndexOfTextureNamed( init ) );
+	AddFunction(new nfGetTextureCount(init));
+	AddFunction(new nfIndexOfTextureNamed(init));
 	
-	AddFunction( new nfTextureGetName( init ) );
-	AddFunction( new nfTextureGetPropertyCount( init ) );
-	AddFunction( new nfTextureIndexOfPropertyNamed( init ) );
+	AddFunction(new nfTextureGetName(init));
+	AddFunction(new nfTextureGetPropertyCount(init));
+	AddFunction(new nfTextureIndexOfPropertyNamed(init));
 	
-	AddFunction( new nfPropertyGetName( init ) );
-	AddFunction( new nfPropertyGetRenderable( init ) );
-	AddFunction( new nfPropertyGetType( init ) );
-	AddFunction( new nfPropertyGetValue( init ) );
-	AddFunction( new nfPropertyGetColor( init ) );
-	AddFunction( new nfPropertyGetImage( init ) );
-	AddFunction( new nfPropertyGetVideo( init ) );
+	AddFunction(new nfPropertyGetName(init));
+	AddFunction(new nfPropertyGetRenderable(init));
+	AddFunction(new nfPropertyGetType(init));
+	AddFunction(new nfPropertyGetValue(init));
+	AddFunction(new nfPropertyGetColor(init));
+	AddFunction(new nfPropertyGetImage(init));
+	AddFunction(new nfPropertyGetVideo(init));
 	
-	AddFunction( new nfEquals( init ) );
-	AddFunction( new nfHashCode( init ) );
+	AddFunction(new nfEquals(init));
+	AddFunction(new nfHashCode(init));
 	
 	CalcMemberOffsets();
 }
 
-deSkin *deClassSkin::GetSkin( dsRealObject *myself ) const{
-	if( ! myself ){
+deSkin *deClassSkin::GetSkin(dsRealObject *myself) const{
+	if(! myself){
 		return NULL;
 	}
-	return ( ( sSkinNatDat* )p_GetNativeData( myself->GetBuffer() ) )->skin;
+	return ((sSkinNatDat*)p_GetNativeData(myself->GetBuffer()))->skin;
 }
 
-void deClassSkin::PushSkin( dsRunTime *rt, deSkin *skin ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassSkin::PushSkin(dsRunTime *rt, deSkin *skin){
+	if(! rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! skin ){
-		rt->PushObject( NULL, this );
+	if(! skin){
+		rt->PushObject(NULL, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sSkinNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->skin = skin;
+	rt->CreateObjectNakedOnStack(this);
+	((sSkinNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->skin = skin;
 	skin->AddReference();
 }

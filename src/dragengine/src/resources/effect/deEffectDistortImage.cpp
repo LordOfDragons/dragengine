@@ -41,11 +41,11 @@
 // constructor, destructor
 ////////////////////////////
 
-deEffectDistortImage::deEffectDistortImage( deEffectManager *manager ) : deEffect( manager ){
-	pTexCoords[ 0 ].Set( 0.0f, 0.0f );
-	pTexCoords[ 1 ].Set( 1.0f, 0.0f );
-	pTexCoords[ 2 ].Set( 1.0f, 1.0f );
-	pTexCoords[ 3 ].Set( 0.0f, 1.0f );
+deEffectDistortImage::deEffectDistortImage(deEffectManager *manager) : deEffect(manager){
+	pTexCoords[0].Set(0.0f, 0.0f);
+	pTexCoords[1].Set(1.0f, 0.0f);
+	pTexCoords[2].Set(1.0f, 1.0f);
+	pTexCoords[3].Set(0.0f, 1.0f);
 	pStrengthU = 0.01f;
 	pStrengthV = 0.01f;
 }
@@ -58,50 +58,50 @@ deEffectDistortImage::~deEffectDistortImage(){
 // Management
 ///////////////
 
-void deEffectDistortImage::SetImage( deImage *image ){
-	if( image == pImage ){
+void deEffectDistortImage::SetImage(deImage *image){
+	if(image == pImage){
 		return;
 	}
 	
 	pImage = image;
 	
 	deBaseGraphicEffect *graEff = GetPeerGraphic();
-	if( graEff ){
+	if(graEff){
 		graEff->ImageChanged();
 	}
 }
 
-const decVector2 &deEffectDistortImage::GetTextureCoordinatesFor( int corner ) const{
-	if( corner < 0 || corner > 3 ) DETHROW( deeInvalidParam );
-	return pTexCoords[ corner ];
+const decVector2 &deEffectDistortImage::GetTextureCoordinatesFor(int corner) const{
+	if(corner < 0 || corner > 3) DETHROW(deeInvalidParam);
+	return pTexCoords[corner];
 }
 
-void deEffectDistortImage::SetTextureCoordinatesFor( int corner, const decVector2 &textureCoordinates ){
-	if( corner < 0 || corner > 3 ) DETHROW( deeInvalidParam );
+void deEffectDistortImage::SetTextureCoordinatesFor(int corner, const decVector2 &textureCoordinates){
+	if(corner < 0 || corner > 3) DETHROW(deeInvalidParam);
 	
-	if( ! textureCoordinates.IsEqualTo( pTexCoords[ corner ] ) ){
-		pTexCoords[ corner ] = textureCoordinates;
+	if(! textureCoordinates.IsEqualTo(pTexCoords[corner])){
+		pTexCoords[corner] = textureCoordinates;
 		
 		deBaseGraphicEffect *graEffect = GetPeerGraphic();
-		if( graEffect ) graEffect->TextureCoordinatesChanged();
+		if(graEffect) graEffect->TextureCoordinatesChanged();
 	}
 }
 
-void deEffectDistortImage::SetStrengthU( float strength ){
-	if( fabs( strength - pStrengthU ) > 1e-5 ){
+void deEffectDistortImage::SetStrengthU(float strength){
+	if(fabs(strength - pStrengthU) > 1e-5){
 		pStrengthU = strength;
 		
 		deBaseGraphicEffect *graEffect = GetPeerGraphic();
-		if( graEffect ) graEffect->StrengthChanged();
+		if(graEffect) graEffect->StrengthChanged();
 	}
 }
 
-void deEffectDistortImage::SetStrengthV( float strength ){
-	if( fabs( strength - pStrengthV ) > 1e-5 ){
+void deEffectDistortImage::SetStrengthV(float strength){
+	if(fabs(strength - pStrengthV) > 1e-5){
 		pStrengthV = strength;
 		
 		deBaseGraphicEffect *graEffect = GetPeerGraphic();
-		if( graEffect ) graEffect->StrengthChanged();
+		if(graEffect) graEffect->StrengthChanged();
 	}
 }
 
@@ -110,6 +110,6 @@ void deEffectDistortImage::SetStrengthV( float strength ){
 // Visiting
 /////////////
 
-void deEffectDistortImage::Visit( deEffectVisitor &visitor ){
-	visitor.VisitDistortImage( *this );
+void deEffectDistortImage::Visit(deEffectVisitor &visitor){
+	visitor.VisitDistortImage(*this);
 }

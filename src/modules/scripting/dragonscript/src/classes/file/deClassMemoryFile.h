@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassMemoryFile( deScriptingDragonScript &ds );
+	deClassMemoryFile(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassMemoryFile();
@@ -56,18 +56,18 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Memory file or \em NULL if myself is \em NULL. */
-	decMemoryFile *GetMemoryFile( dsRealObject *myself ) const;
+	decMemoryFile *GetMemoryFile(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Pushe memory file on stack.
 	 * \details Memory file can be \em NULL in which case a null object is pushed. */
-	void PushMemoryFile( dsRunTime *rt, decMemoryFile *memoryFile );
+	void PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile);
 	
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	/*@}*/
 	
 	
@@ -88,23 +88,23 @@ private:
 	};
 	
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewCopy );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewCopy);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
-	DEF_NATFUNC( nfGetSize );
-	DEF_NATFUNC( nfSetSize );
+	DEF_NATFUNC(nfGetFilename);
+	DEF_NATFUNC(nfGetSize);
+	DEF_NATFUNC(nfSetSize);
 	
-	DEF_NATFUNC( nfGetReader );
-	DEF_NATFUNC( nfGetWriter );
-	DEF_NATFUNC( nfGetReaderZCompressed );
-	DEF_NATFUNC( nfGetWriterZCompressed );
+	DEF_NATFUNC(nfGetReader);
+	DEF_NATFUNC(nfGetWriter);
+	DEF_NATFUNC(nfGetReaderZCompressed);
+	DEF_NATFUNC(nfGetWriterZCompressed);
 #undef DEF_NATFUNC
 };
 

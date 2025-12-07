@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create move. */
-	fbxAnimationCurve( fbxNode &nodeCurve );
+	fbxAnimationCurve(fbxNode &nodeCurve);
 	
 protected:
 	/** \brief Clean up move. */
@@ -72,16 +72,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Curve node. */
-	inline fbxNode &GetNodeCurve() const{ return pNodeCurve; }
+	inline fbxNode &GetNodeCurve() const{return pNodeCurve;}
 	
 	/** \brief Time property. */
-	inline fbxProperty &GetPropertyTime() const{ return *pPropertyTime; }
+	inline fbxProperty &GetPropertyTime() const{return *pPropertyTime;}
 	
 	/** \brief Value property. */
-	inline fbxProperty &GetPropertyValue() const{ return *pPropertyValue; }
+	inline fbxProperty &GetPropertyValue() const{return *pPropertyValue;}
 	
 	/** \brief Default value. */
-	inline const decVector &GetDefaultValue() const{ return pDefaultValue; }
+	inline const decVector &GetDefaultValue() const{return pDefaultValue;}
 	/*@}*/
 };
 

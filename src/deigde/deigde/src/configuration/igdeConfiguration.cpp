@@ -280,14 +280,14 @@ void igdeConfiguration::LocatePath(){
 	decPath path, pathHome;
 
 #ifdef OS_W32
-	TCHAR value[ 256 ];
+	TCHAR value[256];
 #else
 	const char *value;
 #endif
 	
 #ifdef OS_W32
 	decString pathIgde = deOSWindows::GetRegistryValue("SOFTWARE\\Drag[en]gine", "PathIgde", IGDE_PATH);
-	if(GetEnvironmentVariable(L"DEIGDE_PATH", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_PATH", &value[0], sizeof(value))){
 		pathIgde = deOSWindows::WideToUtf8(value);
 	}
 	pathIgde = deOSWindows::ParseNativePath(pathIgde);
@@ -303,7 +303,7 @@ void igdeConfiguration::LocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DEIGDE_SYS_CONFIG", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_SYS_CONFIG", &value[0], sizeof(value))){
 		pPathConfigSystem = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -375,7 +375,7 @@ void igdeConfiguration::LocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DEIGDE_USER_CONFIG", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_USER_CONFIG", &value[0], sizeof(value))){
 		pPathConfigUser = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -390,7 +390,7 @@ void igdeConfiguration::LocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DEIGDE_PROJECTS", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_PROJECTS", &value[0], sizeof(value))){
 		pPathProjects = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -412,7 +412,7 @@ void igdeConfiguration::LocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DEIGDE_SHARES", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_SHARES", &value[0], sizeof(value))){
 		pPathShares = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -454,7 +454,7 @@ void igdeConfiguration::LocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DEIGDE_LIB", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_LIB", &value[0], sizeof(value))){
 		pPathLib = deOSWindows::WideToUtf8(value);
 	}
 #else
@@ -478,7 +478,7 @@ void igdeConfiguration::LocatePath(){
 #endif
 	
 #ifdef OS_W32
-	if(GetEnvironmentVariable(L"DEIGDE_LOGS", &value[ 0 ], sizeof(value))){
+	if(GetEnvironmentVariable(L"DEIGDE_LOGS", &value[0], sizeof(value))){
 		pPathLogs = deOSWindows::WideToUtf8(value);
 	}
 #else

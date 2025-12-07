@@ -240,7 +240,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create resource manager. */
-	deResourceManager( deEngine *engine, eResourceType type );
+	deResourceManager(deEngine *engine, eResourceType type);
 	
 	/** \brief Clean up resource manager. */
 	virtual ~deResourceManager();
@@ -251,16 +251,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game engine. */
-	inline deEngine *GetEngine() const{ return pEngine; }
+	inline deEngine *GetEngine() const{return pEngine;}
 	
 	/** \brief Resources type stored in this manager. */
-	inline int GetResourceType() const{ return pResourceType; }
+	inline int GetResourceType() const{return pResourceType;}
 	
 	/** \brief Name to use as the source for this module for logging. */
-	inline const decString &GetLoggingName() const{ return pLoggingName; }
+	inline const decString &GetLoggingName() const{return pLoggingName;}
 	
 	/** \brief Set name to use as the source for this module for logging. */
-	void SetLoggingName( const char *name );
+	void SetLoggingName(const char *name);
 	
 	/** \brief Release leaking resource and report them. */
 	virtual void ReleaseLeakingResources();
@@ -360,46 +360,46 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** \brief Output information message on the console. */
-	void LogInfo( const char *message );
+	void LogInfo(const char *message);
 	
 	/** \brief Output formated information message on the console. */
-	void LogInfoFormat( const char *message, ... )
+	void LogInfoFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** \brief Output formated information message on the console. */
-	void LogInfoFormatUsing( const char *message, va_list args );
+	void LogInfoFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output warning message on the console. */
-	void LogWarn( const char *message );
+	void LogWarn(const char *message);
 	
 	/** \brief Output formated warning message on the console. */
-	void LogWarnFormat( const char *message, ... )
+	void LogWarnFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** \brief Output formated warning message on the console. */
-	void LogWarnFormatUsing( const char *message, va_list args );
+	void LogWarnFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output error message on the console. */
-	void LogError( const char *message );
+	void LogError(const char *message);
 	
 	/** \brief Output formated error message on the console. */
-	void LogErrorFormat( const char *message, ... )
+	void LogErrorFormat(const char *message, ...)
 		#ifdef __GNUC__
 		__attribute__ ((format (printf, 2, 3)))
 		#endif
 		;
 	
 	/** \brief Output formated error message on the console. */
-	void LogErrorFormatUsing( const char *message, va_list args );
+	void LogErrorFormatUsing(const char *message, va_list args);
 	
 	/** \brief Output exception as error message on the console. */
-	void LogException( const deException &exception );
+	void LogException(const deException &exception);
 	/*@}*/
 	
 	
@@ -410,7 +410,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Removes the given resource from the manager without freeing it. */
-	virtual void RemoveResource( deResource *resource ) = 0;
+	virtual void RemoveResource(deResource *resource) = 0;
 	/*@}*/
 };
 

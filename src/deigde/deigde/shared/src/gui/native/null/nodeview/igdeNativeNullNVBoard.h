@@ -46,7 +46,7 @@ public:
 	virtual ~igdeNativeNullNVBoard();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullNVBoard* CreateNativeWidget( igdeNVBoard &owner );
+	static igdeNativeNullNVBoard* CreateNativeWidget(igdeNVBoard &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -80,31 +80,31 @@ public:
 	
 	
 	/** \brief Begin create link drag and drop. */
-	void BeginCreateLink( igdeNativeNullNVSlot *source );
+	void BeginCreateLink(igdeNativeNullNVSlot *source);
 	
 	/** \brief Link drag and drop source or NULL. */
-	inline igdeNativeNullNVSlot *GetCreateLinkSource() const{ return nullptr; }
+	inline igdeNativeNullNVSlot *GetCreateLinkSource() const{return nullptr;}
 	
 	/** \brief Set create link drag and drop position. */
-	void SetCreateLinkPosition( const decPoint &position );
+	void SetCreateLinkPosition(const decPoint &position);
 	
 	/** \brief Create link drag and drop target or NULL. */
-	inline igdeNativeNullNVSlot *GetCreateLinkTarget() const{ return nullptr; }
+	inline igdeNativeNullNVSlot *GetCreateLinkTarget() const{return nullptr;}
 	
 	/** \brief Set create link drag and drop target or NULL. */
-	void SetCreateLinkTarget( igdeNativeNullNVSlot *target );
+	void SetCreateLinkTarget(igdeNativeNullNVSlot *target);
 	
 	/** \brief Finish create link drag and drop. */
 	void FinishCreateLink();
 	
 	/** \brief Link closest to position inside range in board coordinate system or NULL. */
-	igdeNVLink *ClosestLinkNear( const decPoint &position, float range ) const;
+	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
 	/** \brief Hover link or NULL. */
-	inline igdeNVLink *GetHoverLink() const{ return nullptr; }
+	inline igdeNVLink *GetHoverLink() const{return nullptr;}
 	
 	/** \brief Set hover link. */
-	void SetHoverLink( igdeNVLink *link );
+	void SetHoverLink(igdeNVLink *link);
 	/*@}*/
 };
 

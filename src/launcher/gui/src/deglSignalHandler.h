@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create signal handler. */
-	deglSignalHandler( deglLauncher &launcher );
+	deglSignalHandler(deglLauncher &launcher);
 	
 	/** Clean up signal handler. */
 	~deglSignalHandler();
@@ -52,7 +52,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Launcher. */
-	inline deglLauncher &GetLauncher() const{ return pLauncher; }
+	inline deglLauncher &GetLauncher() const{return pLauncher;}
 	/*@}*/
 	
 	

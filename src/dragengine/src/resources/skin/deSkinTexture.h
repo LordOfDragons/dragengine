@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new skin texture with the given name. */
-	deSkinTexture( const char *name );
+	deSkinTexture(const char *name);
 	
 	/** \brief Clean up skin texture. */
 	~deSkinTexture();
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Name of the texture. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/*@}*/
 	
 	
@@ -72,25 +72,25 @@ public:
 	/** \name Properties */
 	/*@{*/
 	/** \brief Count of properties. */
-	inline int GetPropertyCount() const{ return pPropertyCount; }
+	inline int GetPropertyCount() const{return pPropertyCount;}
 	
 	/** \brief Property at the given index. */
-	deSkinProperty *GetPropertyAt( int index ) const;
+	deSkinProperty *GetPropertyAt(int index) const;
 	
 	/** \brief Property with the given type or NULL if not found. */
-	deSkinProperty *GetPropertyWithType( const char *type ) const;
+	deSkinProperty *GetPropertyWithType(const char *type) const;
 	
 	/** \brief Index of the property or -1 if not found. */
-	int IndexOfProperty( deSkinProperty *property ) const;
+	int IndexOfProperty(deSkinProperty *property) const;
 	
 	/** \brief Determines if a property exists. */
-	bool HasProperty( deSkinProperty *property ) const;
+	bool HasProperty(deSkinProperty *property) const;
 	
 	/** \brief Determines if a property with the given type exists. */
-	bool HasPropertyWithType( const char *type ) const;
+	bool HasPropertyWithType(const char *type) const;
 	
 	/** \brief Adds a property. */
-	void AddProperty( deSkinProperty *property );
+	void AddProperty(deSkinProperty *property);
 	/*@}*/
 };
 

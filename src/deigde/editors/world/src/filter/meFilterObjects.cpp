@@ -47,6 +47,6 @@ meFilterObjects::~meFilterObjects(){
 // Management
 ///////////////
 
-bool meFilterObjects::AcceptObject( meObject *object ) const{
+bool meFilterObjects::AcceptObject(meObject *object) const{
 	return true;
 }

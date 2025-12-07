@@ -61,26 +61,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the parent conversation or NULL if not set. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline ceConversation *GetConversation() const{return pConversation;}
 	/** \brief Sets the parent conversation or NULL if not set. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Retrieves the id. */
-	inline const decString &GetID() const{ return pID; }
+	inline const decString &GetID() const{return pID;}
 	/** \brief Sets the id. */
-	void SetID( const char *id );
+	void SetID(const char *id);
 	/** \brief Retrieves the alias id. */
-	inline const decString &GetAliasID() const{ return pAliasID; }
+	inline const decString &GetAliasID() const{return pAliasID;}
 	/** \brief Sets the alias id. */
-	void SetAliasID( const char *id );
+	void SetAliasID(const char *id);
 	/** \brief Retrieves the position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	/** \brief Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** \brief Retrieves the orientation. */
-	inline const decVector &GetOrientation() const{ return pOrientation; }
+	inline const decVector &GetOrientation() const{return pOrientation;}
 	/** \brief Sets the orientation. */
-	void SetOrientation( const decVector &orientation );
+	void SetOrientation(const decVector &orientation);
 	
 	/** \brief Notifies all that the coordinate system changed. */
 	void NotifyCoordSystemChanged();

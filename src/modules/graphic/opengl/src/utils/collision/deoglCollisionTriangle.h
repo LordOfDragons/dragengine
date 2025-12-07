@@ -43,7 +43,7 @@
  */
 class deoglCollisionTriangle : public deoglCollisionVolume{
 private:
-	decVector pCorners[ 3 ], pEdges[ 3 ];
+	decVector pCorners[3], pEdges[3];
 	decVector pNormal;
 	float pDist;
 public:
@@ -52,122 +52,122 @@ public:
 	/** Creates a new collision triangle with all points 0. */
 	deoglCollisionTriangle();
 	/** Creates a new collision triangle from the given parameters. */
-	deoglCollisionTriangle( const decVector &corner1, const decVector &corner2, const decVector &corner3 );
+	deoglCollisionTriangle(const decVector &corner1, const decVector &corner2, const decVector &corner3);
 	/**
 	 * Creates a new collision triangle from the given parameters.
 	 * Here you can also specify the normal of the triangle. Do not use
 	 * this function anymore as it depracted and will be removed soon.
 	 */
-	deoglCollisionTriangle( const decVector &corner1, const decVector &corner2, const decVector &corner3, const decVector &normal );
+	deoglCollisionTriangle(const decVector &corner1, const decVector &corner2, const decVector &corner3, const decVector &normal);
 	/** Cleans up the collision triangle. */
 	virtual ~deoglCollisionTriangle();
 	/*@}*/
 	
 	/** \name First Stage Dispatch */
 	/*@{*/
-	virtual bool VolumeHitsVolume( deoglCollisionVolume *volume );
-	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
+	virtual bool VolumeHitsVolume(deoglCollisionVolume *volume);
+	virtual float VolumeMoveHitsVolume(deoglCollisionVolume *volume, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Second Stage Dispatch */
 	/*@{*/
-	virtual bool SphereHitsVolume( deoglCollisionSphere *sphere );
-	virtual bool CylinderHitsVolume( deoglCollisionCylinder *cylinder );
-	virtual bool CapsuleHitsVolume( deoglCollisionCapsule *capsule );
-	virtual bool BoxHitsVolume( deoglCollisionBox *box );
-	virtual bool TriangleHitsVolume( deoglCollisionTriangle *triangle );
-	virtual bool FrustumHitsVolume( deoglCollisionFrustum *frustum );
-	virtual float SphereMoveHitsVolume( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
-	virtual float CylinderMoveHitsVolume( deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
-	virtual float CapsuleMoveHitsVolume( deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
-	virtual float BoxMoveHitsVolume( deoglCollisionBox *box, const decVector &displacement, decVector *normal );
-	virtual float TriangleMoveHitsVolume( deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
-	virtual float FrustumMoveHitsVolume( deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
-	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
+	virtual bool SphereHitsVolume(deoglCollisionSphere *sphere);
+	virtual bool CylinderHitsVolume(deoglCollisionCylinder *cylinder);
+	virtual bool CapsuleHitsVolume(deoglCollisionCapsule *capsule);
+	virtual bool BoxHitsVolume(deoglCollisionBox *box);
+	virtual bool TriangleHitsVolume(deoglCollisionTriangle *triangle);
+	virtual bool FrustumHitsVolume(deoglCollisionFrustum *frustum);
+	virtual float SphereMoveHitsVolume(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
+	virtual float CylinderMoveHitsVolume(deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
+	virtual float CapsuleMoveHitsVolume(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
+	virtual float BoxMoveHitsVolume(deoglCollisionBox *box, const decVector &displacement, decVector *normal);
+	virtual float TriangleMoveHitsVolume(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
+	virtual float FrustumMoveHitsVolume(deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal);
+	virtual float PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Enclosing Volumes */
 	/*@{*/
-	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
-	virtual void GetEnclosingBox( deoglCollisionBox *box );
+	virtual void GetEnclosingSphere(deoglCollisionSphere *sphere);
+	virtual void GetEnclosingBox(deoglCollisionBox *box);
 	/*@}*/
 	
 	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
-	virtual bool IsPointInside( const decVector &point );
+	virtual bool IsPointInside(const decVector &point);
 	/** Retrieves the closest point on the volume. */
-	virtual decVector ClosestPointTo( const decVector &point );
+	virtual decVector ClosestPointTo(const decVector &point);
 	/*@}*/
 	
 	/** \name Visiting */
 	/*{*/
-	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
+	virtual void Visit(deoglCollisionVolumeVisitor *visitor);
 	/*}*/
 	
 	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this triangle. */
-	bool SphereHitsTriangle( deoglCollisionSphere *sphere );
+	bool SphereHitsTriangle(deoglCollisionSphere *sphere);
 	/**
 	 * Determines if the given cylinder hits this triangle.
 	 * @warning Not implemented yet and returns always false.
 	 */
-	bool CylinderHitsTriangle( deoglCollisionCylinder *cylinder );
+	bool CylinderHitsTriangle(deoglCollisionCylinder *cylinder);
 	/**
 	 * Determines if the given capsule hits this triangle.
 	 * @warning Not implemented yet and returns always false.
 	 */
-	bool CapsuleHitsTriangle( deoglCollisionCapsule *capsule );
+	bool CapsuleHitsTriangle(deoglCollisionCapsule *capsule);
 	/** Determines if the given box hits this triangle. */
-	bool BoxHitsTriangle( deoglCollisionBox *box );
+	bool BoxHitsTriangle(deoglCollisionBox *box);
 	/**
 	 * Determines if the given triangle hits this triangle.
 	 * @warning Not implemented yet and returns always false.
 	 */
-	bool TriangleHitsTriangle( deoglCollisionTriangle *triangle );
+	bool TriangleHitsTriangle(deoglCollisionTriangle *triangle);
 	
 	/** Determines the distance of the given sphere to move until colliding with this triangle. */
-	float SphereMoveHitsTriangle( deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal );
+	float SphereMoveHitsTriangle(deoglCollisionSphere *sphere, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given cylinder to move until colliding with this triangle.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CylinderMoveHitsTriangle( deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal );
+	float CylinderMoveHitsTriangle(deoglCollisionCylinder *cylinder, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given capsule to move until colliding with this triangle.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float CapsuleMoveHitsTriangle( deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal );
+	float CapsuleMoveHitsTriangle(deoglCollisionCapsule *capsule, const decVector &displacement, decVector *normal);
 	/** Determines the distance of the given box to move until colliding with this triangle. */
-	float BoxMoveHitsTriangle( deoglCollisionBox *box, const decVector &displacement, decVector *normal );
+	float BoxMoveHitsTriangle(deoglCollisionBox *box, const decVector &displacement, decVector *normal);
 	/**
 	 * Determines the distance of the given triangle to move until colliding with this triangle.
 	 * @warning Function is not implemented yet and always returns 1.
 	 */
-	float TriangleMoveHitsTriangle( deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal );
+	float TriangleMoveHitsTriangle(deoglCollisionTriangle *triangle, const decVector &displacement, decVector *normal);
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	inline const decVector &GetCorner1() const{ return pCorners[ 0 ]; }
-	inline const decVector &GetCorner2() const{ return pCorners[ 1 ]; }
-	inline const decVector &GetCorner3() const{ return pCorners[ 2 ]; }
-	inline const decVector &GetNormal() const{ return pNormal; }
+	inline const decVector &GetCorner1() const{return pCorners[0];}
+	inline const decVector &GetCorner2() const{return pCorners[1];}
+	inline const decVector &GetCorner3() const{return pCorners[2];}
+	inline const decVector &GetNormal() const{return pNormal;}
 	/**
 	 * Retrieves the precalculated distance value. The distance
 	 * is the dot product between the first corner point and
 	 * the triangle normal.
 	 */
-	inline float GetDistance() const{ return pDist; }
+	inline float GetDistance() const{return pDist;}
 	/** Sets the corners of the triangle and calculates the normal and distance. */
-	void SetCorners( const decVector &corner1, const decVector &corner2, const decVector &corner3 );
+	void SetCorners(const decVector &corner1, const decVector &corner2, const decVector &corner3);
 	/**
 	 * Sets the corners of the triangle and calculates the distance.
 	 * Here you can set the normal yourself. Do not use this function
 	 * anymore as it is depracted and will be removed soon.
 	 */
-	void SetCorners( const decVector &corner1, const decVector &corner2, const decVector &corner3, const decVector &normal );
+	void SetCorners(const decVector &corner1, const decVector &corner2, const decVector &corner3, const decVector &normal);
 	/*@}*/
 };
 

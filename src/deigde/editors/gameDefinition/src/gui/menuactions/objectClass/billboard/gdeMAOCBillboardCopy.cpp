@@ -47,10 +47,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCBillboardCopy::gdeMAOCBillboardCopy( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Copy Object Class Billboard",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
-	"Copy object class billboard" )
+gdeMAOCBillboardCopy::gdeMAOCBillboardCopy(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Copy Object Class Billboard",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
+	"Copy object class billboard")
 {
 }
 
@@ -59,13 +59,13 @@ gdeBaseMAOCSubObject( windowMain, "Copy Object Class Billboard",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject( gdeGameDefinition &gameDefinition, gdeObjectClass & ){
-	if( gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard ){
+igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject(gdeGameDefinition &gameDefinition, gdeObjectClass &){
+	if(gameDefinition.GetSelectedObjectType() != gdeGameDefinition::eotOCBillboard){
 		return NULL;
 	}
 	
 	gdeOCBillboard * const billboard = gameDefinition.GetActiveOCBillboard();
-	if( ! billboard ){
+	if(! billboard){
 		return NULL;
 	}
 	
@@ -77,7 +77,7 @@ igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 
 void gdeMAOCBillboardCopy::Update(){
 	const gdeGameDefinition * const gameDefinition = pWindowMain.GetActiveGameDefinition();
-	SetEnabled( gameDefinition
+	SetEnabled(gameDefinition
 		&& gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCBillboard
-		&& gameDefinition->GetActiveOCBillboard() != NULL );
+		&& gameDefinition->GetActiveOCBillboard() != NULL);
 }

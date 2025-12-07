@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglLightPipeline( const deoglPipeline *pipeline, const deoglLightShader::Ref &shader );
+	deoglLightPipeline(const deoglPipeline *pipeline, const deoglLightShader::Ref &shader);
 	
 protected:
 	/** Clean up light pipeline. */
@@ -61,10 +61,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
+	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
 	
 	/** Shader. */
-	inline const deoglLightShader::Ref &GetShader() const{ return pShader; }
+	inline const deoglLightShader::Ref &GetShader() const{return pShader;}
 	/*@}*/
 };
 

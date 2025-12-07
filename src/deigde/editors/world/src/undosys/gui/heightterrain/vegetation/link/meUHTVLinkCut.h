@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVLinkCut( meHTVegetationLayer *vlayer );
+	meUHTVLinkCut(meHTVegetationLayer *vlayer);
 	/** \brief Clean up object. */
 	virtual ~meUHTVLinkCut();
 	/*@}*/
@@ -64,9 +64,9 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Number of links to cut. */
-	inline int GetCutLinkCount() const{ return pLinkCount; }
+	inline int GetCutLinkCount() const{return pLinkCount;}
 	/** Adds a link to cut. */
-	void AddLinkToCut( meHTVRLink *link );
+	void AddLinkToCut(meHTVRLink *link);
 	
 	/** \brief Undo. */
 	virtual void Undo();

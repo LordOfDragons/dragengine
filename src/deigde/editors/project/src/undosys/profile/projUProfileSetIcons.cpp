@@ -39,15 +39,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetIcons::projUProfileSetIcons( projProfile *profile, const decStringSet &newValue ) :
-pProfile( NULL ),
-pNewValue( newValue )
+projUProfileSetIcons::projUProfileSetIcons(projProfile *profile, const decStringSet &newValue) :
+pProfile(NULL),
+pNewValue(newValue)
 {
-	if( ! profile ){
-		DETHROW( deeInvalidParam );
+	if(! profile){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Profile set icons" );
+	SetShortInfo("Profile set icons");
 	
 	pOldValue = profile->GetIcons();
 	
@@ -56,7 +56,7 @@ pNewValue( newValue )
 }
 
 projUProfileSetIcons::~projUProfileSetIcons(){
-	if( pProfile ){
+	if(pProfile){
 		pProfile->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ projUProfileSetIcons::~projUProfileSetIcons(){
 ///////////////
 
 void projUProfileSetIcons::Undo(){
-	pProfile->SetIcons( pOldValue );
+	pProfile->SetIcons(pOldValue);
 }
 
 void projUProfileSetIcons::Redo(){
-	pProfile->SetIcons( pNewValue );
+	pProfile->SetIcons(pNewValue);
 }

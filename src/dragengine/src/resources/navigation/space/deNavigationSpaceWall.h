@@ -53,16 +53,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Index of the face. */
-	inline unsigned short GetFace() const{ return pFace; }
+	inline unsigned short GetFace() const{return pFace;}
 	
 	/** \brief Set index of the face. */
-	void SetFace( unsigned short face );
+	void SetFace(unsigned short face);
 	
 	/** \brief Type to use for crossing the face. */
-	inline unsigned short GetType() const{ return pType; }
+	inline unsigned short GetType() const{return pType;}
 	
 	/** \brief Set type to use for crossing the face. */
-	void SetType( unsigned short type );
+	void SetType(unsigned short type);
 	/*@}*/
 };
 

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoalSkin::deoalSkin( deAudioOpenAL &oal, const deSkin &skin ) :
-pOal( oal ),
-pSkin( skin ),
-pASkin( new deoalASkin( oal.GetAudioThread(), skin ) ){
+deoalSkin::deoalSkin(deAudioOpenAL &oal, const deSkin &skin) :
+pOal(oal),
+pSkin(skin),
+pASkin(new deoalASkin(oal.GetAudioThread(), skin)){
 }
 
 deoalSkin::~deoalSkin(){
-	if( pASkin ){
+	if(pASkin){
 		pASkin->FreeReference();
 	}
 }

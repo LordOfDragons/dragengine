@@ -40,32 +40,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-void igdeContainerForm::RemoveChild( igdeWidget *child ){
-	igdeContainer::RemoveChild( child );
+void igdeContainerForm::RemoveChild(igdeWidget *child){
+	igdeContainer::RemoveChild(child);
 	
-	if( ! GetNativeContainer() ){
+	if(! GetNativeContainer()){
 		return;
 	}
 	
 	const int count = GetChildCount();
-	if( count < 1 ){
+	if(count < 1){
 		return;
 	}
 	
-	( ( igdeNativeContainerForm* )GetNativeContainer() )->ChildRemoved();
+	((igdeNativeContainerForm*)GetNativeContainer())->ChildRemoved();
 }
 
 
 
-igdeContainerForm::igdeContainerForm( igdeEnvironment &environment, eStretching stretching,
-	int columnSpacing, int rowSpacing ) :
-igdeContainer( environment ),
-pStretching( stretching ),
-pColumnSpacing( columnSpacing ),
-pRowSpacing( rowSpacing )
+igdeContainerForm::igdeContainerForm(igdeEnvironment &environment, eStretching stretching,
+	int columnSpacing, int rowSpacing) :
+igdeContainer(environment),
+pStretching(stretching),
+pColumnSpacing(columnSpacing),
+pRowSpacing(rowSpacing)
 {
-	if( columnSpacing < 0 || rowSpacing < 0 ){
-		DETHROW( deeInvalidParam );
+	if(columnSpacing < 0 || rowSpacing < 0){
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -78,23 +78,23 @@ igdeContainerForm::~igdeContainerForm(){
 ///////////////
 
 void igdeContainerForm::CreateNativeWidget(){
-	if( GetNativeWidget() ){
+	if(GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerForm * const native = igdeNativeContainerForm::CreateNativeWidget( *this );
-	SetNativeWidget( native );
+	igdeNativeContainerForm * const native = igdeNativeContainerForm::CreateNativeWidget(*this);
+	SetNativeWidget(native);
 	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
 
 void igdeContainerForm::DestroyNativeWidget(){
-	if( ! GetNativeWidget() ){
+	if(! GetNativeWidget()){
 		return;
 	}
 	
-	igdeNativeContainerForm * const native = ( igdeNativeContainerForm* )GetNativeWidget();
+	igdeNativeContainerForm * const native = (igdeNativeContainerForm*)GetNativeWidget();
 	DropNativeWidget();
 	native->DestroyNativeWidget();
 }

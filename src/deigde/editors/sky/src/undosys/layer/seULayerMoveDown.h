@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerMoveDown( seLayer *layer );
+	seULayerMoveDown(seLayer *layer);
 	
 protected:
 	/** \brief Clean up undo action. */

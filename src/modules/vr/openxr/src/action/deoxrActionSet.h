@@ -58,8 +58,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create action set. */
-	deoxrActionSet( deoxrInstance &instance, const char *name = "dragengine",
-		const char *localizedName = "Drag[en]gine" );
+	deoxrActionSet(deoxrInstance &instance, const char *name = "dragengine",
+		const char *localizedName = "Drag[en]gine");
 	
 protected:
 	/** Clean up space. */
@@ -72,50 +72,50 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Instance. */
-	inline deoxrInstance &GetInstance() const{ return pInstance; }
+	inline deoxrInstance &GetInstance() const{return pInstance;}
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Localized name. */
-	inline const decString &GetLocalizedName() const{ return pLocalizedName; }
+	inline const decString &GetLocalizedName() const{return pLocalizedName;}
 	
 	/** ActionSet. */
-	inline XrActionSet GetActionSet() const{ return pActionSet; }
+	inline XrActionSet GetActionSet() const{return pActionSet;}
 	
 	/** Count of actions. */
 	int GetActionCount() const;
 	
 	/** Action at index. */
-	deoxrAction *GetActionAt( int index ) const;
+	deoxrAction *GetActionAt(int index) const;
 	
 	/** Named action or nullptr. */
-	deoxrAction *GetActionNamed( const char *name ) const;
+	deoxrAction *GetActionNamed(const char *name) const;
 	
 	/** Add action. */
-	void AddAction( deoxrAction *action );
+	void AddAction(deoxrAction *action);
 	
 	/** Add action. */
-	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName );
+	deoxrAction *AddAction(deoxrAction::eType, const char *name, const char *localizedName);
 	
 	/** Add action. */
-	deoxrAction *AddAction( deoxrAction::eType, const char *name, const char *localizedName,
-		const XrPath *subactionPath, int subactionPathCount );
+	deoxrAction *AddAction(deoxrAction::eType, const char *name, const char *localizedName,
+		const XrPath *subactionPath, int subactionPathCount);
 	
 	/** Add boolean action. */
-	deoxrAction *AddBoolAction( const char *name, const char *localizedName );
+	deoxrAction *AddBoolAction(const char *name, const char *localizedName);
 	
 	/** Add float action. */
-	deoxrAction *AddFloatAction( const char *name, const char *localizedName );
+	deoxrAction *AddFloatAction(const char *name, const char *localizedName);
 	
 	/** Add vector2 action. */
-	deoxrAction *AddVector2Action( const char *name, const char *localizedName );
+	deoxrAction *AddVector2Action(const char *name, const char *localizedName);
 	
 	/** Add pose action. */
-	deoxrAction *AddPoseAction( const char *name, const char *localizedName );
+	deoxrAction *AddPoseAction(const char *name, const char *localizedName);
 	
 	/** Add vibration action. */
-	deoxrAction *AddVibrationAction( const char *name, const char *localizedName );
+	deoxrAction *AddVibrationAction(const char *name, const char *localizedName);
 	/*@}*/
 	
 	

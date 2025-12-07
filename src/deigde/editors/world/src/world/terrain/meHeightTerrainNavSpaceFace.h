@@ -60,31 +60,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent type or \em NULL. */
-	inline meHeightTerrainNavSpaceType *GetType() const{ return pType; }
+	inline meHeightTerrainNavSpaceType *GetType() const{return pType;}
 	
 	/** \brief Set parent type or \em NULL. */
-	void SetType( meHeightTerrainNavSpaceType *type );
+	void SetType(meHeightTerrainNavSpaceType *type);
 	
 	
 	
 	/** \brief Navigation points. */
-	decIntList &GetNavPoints(){ return pNavPoints; }
-	const decIntList &GetNavPoints() const{ return pNavPoints; }
+	decIntList &GetNavPoints(){return pNavPoints;}
+	const decIntList &GetNavPoints() const{return pNavPoints;}
 	
 	/** \brief Order navigation points clock-wise. */
-	void OrderClockwise( int pointsPerRow );
+	void OrderClockwise(int pointsPerRow);
 	
 	/** \brief Navigation points are matching order independent. */
-	bool NavPointsMatch( const decIntList &navpoints ) const;
+	bool NavPointsMatch(const decIntList &navpoints) const;
 	
 	/** \brief Face has navigation point. */
-	bool HasNavPoint( int navpoint ) const;
+	bool HasNavPoint(int navpoint) const;
 	
 	/** \brief Face has edge. */
-	bool HasNavEdge( int navpoint1, int navpoint2 ) const;
+	bool HasNavEdge(int navpoint1, int navpoint2) const;
 	
 	/** \brief All face navigation points are contained in a list in any order. */
-	bool HasAllNavPointsIn( const decIntList &navpoints ) const;
+	bool HasAllNavPointsIn(const decIntList &navpoints) const;
 	/*@}*/
 };
 

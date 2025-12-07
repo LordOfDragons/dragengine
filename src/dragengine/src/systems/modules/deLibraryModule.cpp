@@ -55,7 +55,7 @@
 
 #define LOGSOURCE "Dragengine"
 
-typedef deBaseModule* ( *FUNC_CREATEMODULE )( deLoadableModule* );
+typedef deBaseModule* (*FUNC_CREATEMODULE)(deLoadableModule*);
 
 
 
@@ -65,9 +65,9 @@ typedef deBaseModule* ( *FUNC_CREATEMODULE )( deLoadableModule* );
 // Constructor, destructor
 ////////////////////////////
 
-deLibraryModule::deLibraryModule( deModuleSystem *system, const char *xmlDefFilename ) : deLoadableModule( system ){
-	if( ! xmlDefFilename ){
-		DETHROW( deeInvalidParam );
+deLibraryModule::deLibraryModule(deModuleSystem *system, const char *xmlDefFilename) : deLoadableModule(system){
+	if(! xmlDefFilename){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLibFileSize = 0;
@@ -78,9 +78,9 @@ deLibraryModule::deLibraryModule( deModuleSystem *system, const char *xmlDefFile
 	#endif
 	
 	try{
-		pLoadXML( xmlDefFilename );
+		pLoadXML(xmlDefFilename);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -96,14 +96,14 @@ deLibraryModule::~deLibraryModule(){
 //////////////////////
 
 void deLibraryModule::LoadModule(){
-	if( IsLoaded() ){
-		DETHROW( deeInvalidAction );
+	if(IsLoaded()){
+		DETHROW(deeInvalidAction);
 	}
 	
-	if( ! pVerifyLibrary( pLibFileName ) ){
+	if(! pVerifyLibrary(pLibFileName)){
 		return;
 	}
-	if( ! pLoadLibrary( pLibFileName ) ){
+	if(! pLoadLibrary(pLibFileName)){
 		return;
 	}
 	
@@ -111,27 +111,27 @@ void deLibraryModule::LoadModule(){
 }
 
 void deLibraryModule::UnloadModule(){
-	if( ! IsLoaded() || IsLocked() ){
-		DETHROW( deeInvalidAction );
+	if(! IsLoaded() || IsLocked()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// destroy module and clear error code
-	SetModule( NULL );
-	SetErrorCode( eecSuccess );
+	SetModule(NULL);
+	SetErrorCode(eecSuccess);
 	
 	// close library if a handler exist
-	if( pLibHandle ){
+	if(pLibHandle){
 		#ifdef OS_BEOS
-		unload_add_on( pLibHandle );
+		unload_add_on(pLibHandle);
 		#endif
 		
 		#ifdef HAS_LIB_DL
-		dlclose( pLibHandle );
+		dlclose(pLibHandle);
 		pLibHandle = NULL;
 		#endif
 		
 		#ifdef OS_W32
-		FreeLibrary( pLibHandle );
+		FreeLibrary(pLibHandle);
 		pLibHandle = NULL;
 		#endif
 	}
@@ -155,8 +155,8 @@ deLibraryModule *deLibraryModule::CastToLibraryModule(){
 // Visiting
 /////////////
 
-void deLibraryModule::Visit( deLoadableModuleVisitor &visitor ){
-	visitor.VisitLibraryModule( *this );
+void deLibraryModule::Visit(deLoadableModuleVisitor &visitor){
+	visitor.VisitLibraryModule(*this);
 }
 
 
@@ -165,71 +165,71 @@ void deLibraryModule::Visit( deLoadableModuleVisitor &visitor ){
 //////////////////////
 
 void deLibraryModule::pCleanUp(){
-	if( pLibHandle ){
-		SetModule( NULL );
+	if(pLibHandle){
+		SetModule(NULL);
 		
 		#ifdef OS_BEOS
-		unload_add_on( pLibHandle );
+		unload_add_on(pLibHandle);
 		#endif
 		
 		#ifdef HAS_LIB_DL
-		dlclose( pLibHandle );
+		dlclose(pLibHandle);
 		#endif
 		
 		#ifdef OS_W32
-		FreeLibrary( pLibHandle );
+		FreeLibrary(pLibHandle);
 		#endif
 	}
 	
 	pUnloadPreloadedLibraries();
 }
 
-bool deLibraryModule::pLoadLibrary( const char *filename ){
+bool deLibraryModule::pLoadLibrary(const char *filename){
 	deLogger &logger = *GetSystem()->GetEngine()->GetLogger();
 	FUNC_CREATEMODULE funcCreateModule;
 	
 	// preload libraries if required
 	pPreloadLibraries();
-	if( GetErrorCode() != eecSuccess ){
+	if(GetErrorCode() != eecSuccess){
 		return false;
 	}
 	
 	// try loading module located at pLibFileName
 	#ifdef OS_BEOS
 	decPath pathLib;
-	pathLib.SetFromNative( filename );
+	pathLib.SetFromNative(filename);
 	pathLib.RemoveLastComponent(); // module.xml
-	decString newEnvVarLibPath( pathLib.GetPathNative() );
+	decString newEnvVarLibPath(pathLib.GetPathNative());
 	
-	const char * const checkEnvVarLibPath = getenv( "LIBRARY_PATH" );
+	const char * const checkEnvVarLibPath = getenv("LIBRARY_PATH");
 	decString oldEnvVarLibPath;
-	if( checkEnvVarLibPath ){
+	if(checkEnvVarLibPath){
 		oldEnvVarLibPath = checkEnvVarLibPath;
 		newEnvVarLibPath = newEnvVarLibPath + ":" + checkEnvVarLibPath;
 	}
-	setenv( "LIBRARY_PATH", newEnvVarLibPath, 1 );
+	setenv("LIBRARY_PATH", newEnvVarLibPath, 1);
 	
-	pLibHandle = load_add_on( filename );
+	pLibHandle = load_add_on(filename);
 	
-	if( checkEnvVarLibPath ){
-		setenv( "LIBRARY_PATH", oldEnvVarLibPath, 1 );
+	if(checkEnvVarLibPath){
+		setenv("LIBRARY_PATH", oldEnvVarLibPath, 1);
 		
 	}else{
-		unsetenv( "LIBRARY_PATH" );
+		unsetenv("LIBRARY_PATH");
 	}
 	
-	if( pLibHandle < 0 ){
-		logger.LogErrorFormat( LOGSOURCE, "load_add_on failed: %s", strerror( pLibHandle ) );
-		SetErrorCode( eecLibFileOpenFailed );
+	if(pLibHandle < 0){
+		logger.LogErrorFormat(LOGSOURCE, "load_add_on failed: %s", strerror(pLibHandle));
+		SetErrorCode(eecLibFileOpenFailed);
 		return false;
 	}
 	#endif
 	
 	#ifdef HAS_LIB_DL
-	pLibHandle = dlopen( filename, RTLD_NOW );
-	if( ! pLibHandle ){
-		logger.LogErrorFormat( LOGSOURCE, "dlerror: %s.", dlerror() );
-		SetErrorCode( eecLibFileOpenFailed );
+	pLibHandle = dlopen(filename, RTLD_NOW);
+	if(! pLibHandle){
+		logger.LogErrorFormat(LOGSOURCE, "dlerror: %s.", dlerror());
+		SetErrorCode(eecLibFileOpenFailed);
 		return false;
 	}
 	#endif
@@ -240,58 +240,58 @@ bool deLibraryModule::pLoadLibrary( const char *filename ){
 	//oldPath.Set( ' ', requiredLength );
 	//GetCurrentDirectory( requiredLength + 1, ( LPTSTR )oldPath.GetString() );
 	decPath pathLib;
-	pathLib.SetFromNative( filename );
+	pathLib.SetFromNative(filename);
 	pathLib.RemoveLastComponent();
 	//SetCurrentDirectory( pathLib.GetPathNative() );
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( pathLib.GetPathNative(), widePath, MAX_PATH );
-	SetDllDirectory( widePath );
-	deOSWindows::Utf8ToWide( filename, widePath, MAX_PATH );
-	pLibHandle = LoadLibrary( widePath );
-	SetDllDirectory( NULL );
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide(pathLib.GetPathNative(), widePath, MAX_PATH);
+	SetDllDirectory(widePath);
+	deOSWindows::Utf8ToWide(filename, widePath, MAX_PATH);
+	pLibHandle = LoadLibrary(widePath);
+	SetDllDirectory(NULL);
 	//SetCurrentDirectory( oldPath.GetString() );
-	if( ! pLibHandle ){
+	if(! pLibHandle){
 		int err = GetLastError();
-		wchar_t messageBuffer[ 251 ];
-		FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, err, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
-			messageBuffer, 250, NULL );
+		wchar_t messageBuffer[251];
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			messageBuffer, 250, NULL);
 		
-		logger.LogErrorFormat( LOGSOURCE, "LoadLibrary(err=%i): %s.",
-			err, deOSWindows::WideToUtf8( messageBuffer ).GetString() );
+		logger.LogErrorFormat(LOGSOURCE, "LoadLibrary(err=%i): %s.",
+			err, deOSWindows::WideToUtf8(messageBuffer).GetString());
 	}
 	#endif
 	
-	if( ! pLibHandle ){
-		SetErrorCode( eecLibFileOpenFailed );
+	if(! pLibHandle){
+		SetErrorCode(eecLibFileOpenFailed);
 		return false;
 	}
 	
 	// look for the entry point function
 	#ifdef OS_BEOS
-	if( get_image_symbol( pLibHandle, pLibFileEntryPoint,
-	B_SYMBOL_TYPE_TEXT, ( void** )&funcCreateModule ) != B_OK ){
+	if(get_image_symbol(pLibHandle, pLibFileEntryPoint,
+	B_SYMBOL_TYPE_TEXT, (void**)&funcCreateModule) != B_OK){
 		funcCreateModule = NULL;
 	}
 	#endif
 	
 	#ifdef HAS_LIB_DL
-	funcCreateModule = ( FUNC_CREATEMODULE )dlsym( pLibHandle, pLibFileEntryPoint );
+	funcCreateModule = (FUNC_CREATEMODULE)dlsym(pLibHandle, pLibFileEntryPoint);
 	#endif
 	
 	#ifdef OS_W32
-	funcCreateModule = ( FUNC_CREATEMODULE )GetProcAddress( pLibHandle, pLibFileEntryPoint );
+	funcCreateModule = (FUNC_CREATEMODULE)GetProcAddress(pLibHandle, pLibFileEntryPoint);
 	#endif
 	
-	if( ! funcCreateModule ){
-		SetErrorCode( eecLibFileEntryPointNotFound );
+	if(! funcCreateModule){
+		SetErrorCode(eecLibFileEntryPointNotFound);
 		return false;
 	}
 	
 	// create package
-	SetModule( funcCreateModule( this ) );
-	if( ! GetModule() ){
-		SetErrorCode( eecLibFileCreateModuleFailed );
+	SetModule(funcCreateModule(this));
+	if(! GetModule()){
+		SetErrorCode(eecLibFileCreateModuleFailed);
 		return false;
 	}
 	
@@ -299,16 +299,16 @@ bool deLibraryModule::pLoadLibrary( const char *filename ){
 	return true;
 }
 
-void deLibraryModule::pLoadXML( const char* filename ){
+void deLibraryModule::pLoadXML(const char* filename){
 	decDiskFileReader *reader = NULL;
 	
 	try{
-		reader = new decDiskFileReader( filename );
-		pParseXML( filename, *reader );
+		reader = new decDiskFileReader(filename);
+		pParseXML(filename, *reader);
 		reader->FreeReference();
 		
-	}catch( const deException & ){
-		if( reader ){
+	}catch(const deException &){
+		if(reader){
 			reader->FreeReference();
 		}
 		throw;
@@ -317,8 +317,8 @@ void deLibraryModule::pLoadXML( const char* filename ){
 	pVerifyModule();
 }
 
-void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader ){
-	decXmlParser parser( GetSystem()->GetEngine()->GetLogger() );
+void deLibraryModule::pParseXML(const char *filename, decBaseFileReader &reader){
+	decXmlParser parser(GetSystem()->GetEngine()->GetLogger());
 	decStringList &patternList = GetPatternList();
 	decXmlElementTag *root, *tag, *tag2;
 	decXmlElement *element;
@@ -326,24 +326,24 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 	int i, j;
 	
 	decPath basePath;
-	basePath.SetFromNative( filename );
+	basePath.SetFromNative(filename);
 	basePath.RemoveLastComponent(); // module.xml
 	basePath.RemoveLastComponent(); // version
-	SetDirectoryName( basePath.GetLastComponent() );
+	SetDirectoryName(basePath.GetLastComponent());
 	
 	// reset parameters so we can test later on
-	SetName( "" );
-	SetDescription( "" );
-	SetAuthor( "" );
-	SetVersion( "" );
-	SetType( deModuleSystem::emtUnknown );
+	SetName("");
+	SetDescription("");
+	SetAuthor("");
+	SetVersion("");
+	SetType(deModuleSystem::emtUnknown);
 	patternList.RemoveAll();
-	SetDefaultExtension( "" );
+	SetDefaultExtension("");
 	
 	// parse xml
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	parser.ParseXml( &reader, xmlDoc );
+	parser.ParseXml(&reader, xmlDoc);
 	
 	// some cleanup visiting
 	xmlDoc->StripComments();
@@ -351,179 +351,179 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 	
 	// interpretate xml
 	root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "module" ) != 0 ){
-		DETHROW( deeInvalidParam );
+	if(! root || strcmp(root->GetName(), "module") != 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=0; i<root->GetElementCount(); i++ ){
-		element = root->GetElementAt( i );
-		if( ! element->CanCastToElementTag() ) continue;
+	for(i=0; i<root->GetElementCount(); i++){
+		element = root->GetElementAt(i);
+		if(! element->CanCastToElementTag()) continue;
 		
 		tag = element->CastToElementTag();
 		
-		if( tag->GetName() == "name" ){
-			if( tag->GetFirstData() ){
-				SetName( tag->GetFirstData()->GetData() );
+		if(tag->GetName() == "name"){
+			if(tag->GetFirstData()){
+				SetName(tag->GetFirstData()->GetData());
 				
 			}else{
-				SetName( "" );
+				SetName("");
 			}
 			
-		}else if( tag->GetName() == "description" ){
-			if( tag->GetFirstData() ){
-				SetDescription( tag->GetFirstData()->GetData() );
+		}else if(tag->GetName() == "description"){
+			if(tag->GetFirstData()){
+				SetDescription(tag->GetFirstData()->GetData());
 				
 			}else{
-				SetDescription( "" );
+				SetDescription("");
 			}
 			
-		}else if( tag->GetName() == "author" ){
-			if( tag->GetFirstData() ){
-				SetAuthor( tag->GetFirstData()->GetData() );
+		}else if(tag->GetName() == "author"){
+			if(tag->GetFirstData()){
+				SetAuthor(tag->GetFirstData()->GetData());
 				
 			}else{
-				SetAuthor( "" );
+				SetAuthor("");
 			}
 			
-		}else if( tag->GetName() == "version" ){
-			if( tag->GetFirstData() ){
-				SetVersion( tag->GetFirstData()->GetData() );
+		}else if(tag->GetName() == "version"){
+			if(tag->GetFirstData()){
+				SetVersion(tag->GetFirstData()->GetData());
 				
 			}else{
-				SetVersion( "" );
+				SetVersion("");
 			}
 			
-		}else if( tag->GetName() == "type" ){
-			if( tag->GetFirstData() ){
-				SetType( deModuleSystem::GetTypeFromString( tag->GetFirstData()->GetData() ) );
+		}else if(tag->GetName() == "type"){
+			if(tag->GetFirstData()){
+				SetType(deModuleSystem::GetTypeFromString(tag->GetFirstData()->GetData()));
 				
 			}else{
-				SetType( deModuleSystem::emtUnknown );
+				SetType(deModuleSystem::emtUnknown);
 			}
 			
-		}else if( tag->GetName() == "pattern" ){
-			if( tag->GetFirstData() ){
-				patternList.Add( tag->GetFirstData()->GetData() );
+		}else if(tag->GetName() == "pattern"){
+			if(tag->GetFirstData()){
+				patternList.Add(tag->GetFirstData()->GetData());
 			}
 			
-		}else if( tag->GetName() == "defaultExtension" ){
-			if( tag->GetFirstData() ){
-				SetDefaultExtension( tag->GetFirstData()->GetData() );
+		}else if(tag->GetName() == "defaultExtension"){
+			if(tag->GetFirstData()){
+				SetDefaultExtension(tag->GetFirstData()->GetData());
 				
 			}else{
-				SetDefaultExtension( "" );
+				SetDefaultExtension("");
 			}
 			
-		}else if( tag->GetName() == "library" ){
-			for( j=0; j<tag->GetElementCount(); j++ ){
-				element = tag->GetElementAt( j );
-				if( ! element->CanCastToElementTag() ){
+		}else if(tag->GetName() == "library"){
+			for(j=0; j<tag->GetElementCount(); j++){
+				element = tag->GetElementAt(j);
+				if(! element->CanCastToElementTag()){
 					continue;
 				}
 				
 				tag2 = element->CastToElementTag();
 				
-				if( strcmp( tag2->GetName(), "file" ) == 0 ){
-					if( tag2->GetFirstData() ){
+				if(strcmp(tag2->GetName(), "file") == 0){
+					if(tag2->GetFirstData()){
 						filepath = tag2->GetFirstData()->GetData();
 						
 					}else{
 						filepath = "";
 					}
 					
-					if( decPath::IsNativePathAbsolute( filepath ) ){
+					if(decPath::IsNativePathAbsolute(filepath)){
 						pLibFileName = filepath;
 						
 					}else{
 						decPath libPath;
-						libPath.SetFromNative( filename );
+						libPath.SetFromNative(filename);
 						libPath.RemoveLastComponent(); // module.xml
-						libPath.AddNativePath( filepath );
+						libPath.AddNativePath(filepath);
 						pLibFileName = libPath.GetPathNative();
 					}
 					
-				}else if( strcmp( tag2->GetName(), "size" ) == 0 ){
-					pLibFileSize = ( int )strtol( tag2->GetFirstData()->GetData(), NULL, 10 );
+				}else if(strcmp(tag2->GetName(), "size") == 0){
+					pLibFileSize = (int)strtol(tag2->GetFirstData()->GetData(), NULL, 10);
 					
-				}else if( strcmp( tag2->GetName(), "sha1" ) == 0 ){
-					if( tag2->GetFirstData() ){
+				}else if(strcmp(tag2->GetName(), "sha1") == 0){
+					if(tag2->GetFirstData()){
 						pLibFileHash = tag2->GetFirstData()->GetData();
 						
 					}else{
 						pLibFileHash = "";
 					}
 					
-				}else if( strcmp( tag2->GetName(), "entrypoint" ) == 0 ){
-					if( tag2->GetFirstData() ){
+				}else if(strcmp(tag2->GetName(), "entrypoint") == 0){
+					if(tag2->GetFirstData()){
 						pLibFileEntryPoint = tag2->GetFirstData()->GetData();
 						
 					}else{
 						pLibFileEntryPoint = "";
 					}
 					
-				}else if( strcmp( tag2->GetName(), "preloadLibrary" ) == 0 ){
-					if( tag2->GetFirstData() ){
+				}else if(strcmp(tag2->GetName(), "preloadLibrary") == 0){
+					if(tag2->GetFirstData()){
 						decPath libPath;
-						libPath.SetFromNative( filename );
+						libPath.SetFromNative(filename);
 						libPath.RemoveLastComponent(); // module.xml
-						libPath.AddNativePath( tag2->GetFirstData()->GetData() );
-						pPreloadLibraryPath.Add( libPath.GetPathNative() );
+						libPath.AddNativePath(tag2->GetFirstData()->GetData());
+						pPreloadLibraryPath.Add(libPath.GetPathNative());
 					}
 				}
 			}
 			
-		}else if( tag->GetName() == "data" ){
+		}else if(tag->GetName() == "data"){
 			/*
-			for( j=0; j<tag->GetElementCount(); j++ ){
-				element = tag->GetElementAt( j );
-				if( ! element->CanCastToElementTag() ) continue;
+			for(j=0; j<tag->GetElementCount(); j++){
+				element = tag->GetElementAt(j);
+				if(! element->CanCastToElementTag()) continue;
 				tag2 = element->CastToElementTag();
-				if( strcmp( tag2->GetName(), "directory" ) == 0 ){
+				if(strcmp(tag2->GetName(), "directory") == 0){
 					// todo
 				}
 			}
 			*/
 			
-		}else if( tag->GetName() == "fallback" ){
-			SetIsFallback( true );
+		}else if(tag->GetName() == "fallback"){
+			SetIsFallback(true);
 			
-		}else if( tag->GetName() == "noSaving" ){
-			SetNoSaving( true );
+		}else if(tag->GetName() == "noSaving"){
+			SetNoSaving(true);
 			
-		}else if( tag->GetName() == "noCompress" ){
-			SetNoCompress( true );
+		}else if(tag->GetName() == "noCompress"){
+			SetNoCompress(true);
 			
-		}else if( tag->GetName() == "priority" ){
-			if( tag->GetFirstData() ){
-				SetPriority( tag->GetFirstData()->GetData().ToInt() );
+		}else if(tag->GetName() == "priority"){
+			if(tag->GetFirstData()){
+				SetPriority(tag->GetFirstData()->GetData().ToInt());
 			}
 		}
 	}
 	
-	if( GetDefaultExtension().IsEmpty() && patternList.GetCount() > 0 ){
-		SetDefaultExtension( patternList.GetAt( 0 ) );
+	if(GetDefaultExtension().IsEmpty() && patternList.GetCount() > 0){
+		SetDefaultExtension(patternList.GetAt(0));
 	}
 }
 
-bool deLibraryModule::pVerifyLibrary( const char* filename ){
+bool deLibraryModule::pVerifyLibrary(const char* filename){
 #ifdef OS_W32
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( filename, widePath, MAX_PATH );
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide(filename, widePath, MAX_PATH);
 	
 	WIN32_FILE_ATTRIBUTE_DATA fa;
-	if( ! GetFileAttributesExW( widePath, GetFileExInfoStandard, &fa ) ){
-		SetErrorCode( eecLibFileNotFound );
+	if(! GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+		SetErrorCode(eecLibFileNotFound);
 		return false;
 	}
 	
-	if( ( fa.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
-		SetErrorCode( eecLibFileNotRegularFile );
+	if((fa.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY){
+		SetErrorCode(eecLibFileNotRegularFile);
 		return false;
 	}
 	
 	#ifndef NO_ENGINE_MODULE_CHECKS
-	if( ( ( uint64_t )fa.nFileSizeHigh << 32 ) + ( uint64_t )fa.nFileSizeLow != ( uint64_t )pLibFileSize ){
-		SetErrorCode( eecLibFileSizeMismatch );
+	if(((uint64_t)fa.nFileSizeHigh << 32) + (uint64_t)fa.nFileSizeLow != (uint64_t)pLibFileSize){
+		SetErrorCode(eecLibFileSizeMismatch);
 		return false;
 	}
 	#endif
@@ -532,21 +532,21 @@ bool deLibraryModule::pVerifyLibrary( const char* filename ){
 	struct stat fs;
 	
 	// get file attributes
-	if( stat( filename, &fs ) != 0){ // not found
-		SetErrorCode( eecLibFileNotFound );
+	if(stat(filename, &fs) != 0){ // not found
+		SetErrorCode(eecLibFileNotFound);
 		return false;
 	}
 	
 	// check that this is really a file
-	if( ! S_ISREG( fs.st_mode ) ){
-		SetErrorCode( eecLibFileNotRegularFile );
+	if(! S_ISREG(fs.st_mode)){
+		SetErrorCode(eecLibFileNotRegularFile);
 		return false;
 	}
 	
 	// check that the file size matches the one specified
 	#ifndef NO_ENGINE_MODULE_CHECKS
-	if( fs.st_size != pLibFileSize ){
-		SetErrorCode( eecLibFileSizeMismatch );
+	if(fs.st_size != pLibFileSize){
+		SetErrorCode(eecLibFileSizeMismatch);
 		return false;
 	}
 	#endif
@@ -559,27 +559,27 @@ bool deLibraryModule::pVerifyLibrary( const char* filename ){
 }
 
 void deLibraryModule::pVerifyModule(){
-	if( GetName().IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(GetName().IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( GetType() == deModuleSystem::emtUnknown ){
-		DETHROW( deeInvalidParam );
+	if(GetType() == deModuleSystem::emtUnknown){
+		DETHROW(deeInvalidParam);
 	}
-	if( GetAuthor().IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(GetAuthor().IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( GetVersion().IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(GetVersion().IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pLibFileName.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pLibFileName.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
-	if( pLibFileEntryPoint.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pLibFileEntryPoint.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 	/*
-	if( pLibFileHash.IsEmpty() ){
-		DETHROW( deeInvalidParam );
+	if(pLibFileHash.IsEmpty()){
+		DETHROW(deeInvalidParam);
 	}
 	*/
 }
@@ -594,21 +594,21 @@ void deLibraryModule::pPreloadLibraries(){
 	decPath path;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decString &filename = pPreloadLibraryPath.GetAt( i );
-		path.SetFromNative( filename );
+	for(i=0; i<count; i++){
+		const decString &filename = pPreloadLibraryPath.GetAt(i);
+		path.SetFromNative(filename);
 		
-		handleLibrary = load_add_on( filename );
-		if( ! handleLibrary ){
-			logger.LogErrorFormat( LOGSOURCE, "Preloaded %s: load_add_on failed: %s",
-				path.GetLastComponent().GetString(), strerror( pLibHandle ) );
-			SetErrorCode( eecLibFileOpenFailed );
+		handleLibrary = load_add_on(filename);
+		if(! handleLibrary){
+			logger.LogErrorFormat(LOGSOURCE, "Preloaded %s: load_add_on failed: %s",
+				path.GetLastComponent().GetString(), strerror(pLibHandle));
+			SetErrorCode(eecLibFileOpenFailed);
 			return;
 		}
 		
-		pPreloadedLibraries.Add( ( void* )( intptr_t )handleLibrary );
+		pPreloadedLibraries.Add((void*)(intptr_t)handleLibrary);
 		handleLibrary = 0;
-		logger.LogInfoFormat( LOGSOURCE, "  - Preloaded %s", path.GetLastComponent().GetString() );
+		logger.LogInfoFormat(LOGSOURCE, "  - Preloaded %s", path.GetLastComponent().GetString());
 	}
 	#endif
 	#endif
@@ -622,21 +622,21 @@ void deLibraryModule::pPreloadLibraries(){
 	decPath path;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decString &filename = pPreloadLibraryPath.GetAt( i );
-		path.SetFromNative( filename );
+	for(i=0; i<count; i++){
+		const decString &filename = pPreloadLibraryPath.GetAt(i);
+		path.SetFromNative(filename);
 		
-		handleLibrary = dlopen( filename, RTLD_NOW );
+		handleLibrary = dlopen(filename, RTLD_NOW);
 		
-		if( ! handleLibrary ){
-			logger.LogErrorFormat( LOGSOURCE, "%s dlerror: %s.", path.GetLastComponent().GetString(), dlerror() );
-			SetErrorCode( eecLibFileOpenFailed );
+		if(! handleLibrary){
+			logger.LogErrorFormat(LOGSOURCE, "%s dlerror: %s.", path.GetLastComponent().GetString(), dlerror());
+			SetErrorCode(eecLibFileOpenFailed);
 			return;
 		}
 		
-		pPreloadedLibraries.Add( handleLibrary );
+		pPreloadedLibraries.Add(handleLibrary);
 		handleLibrary = NULL;
-		logger.LogInfoFormat( LOGSOURCE, "  - Preloaded %s", path.GetLastComponent().GetString() );
+		logger.LogInfoFormat(LOGSOURCE, "  - Preloaded %s", path.GetLastComponent().GetString());
 	}
 	#endif
 }
@@ -645,10 +645,10 @@ void deLibraryModule::pUnloadPreloadedLibraries(){
 	// beos
 	#ifdef OS_BEOS
 	int index = pPreloadedLibraries.GetCount();
-	while( index > 0 ){
+	while(index > 0){
 		index--;
-		unload_add_on( ( image_id )( intptr_t )pPreloadedLibraries.GetAt( index ) );
-		pPreloadedLibraries.RemoveFrom( index );
+		unload_add_on((image_id)(intptr_t)pPreloadedLibraries.GetAt(index));
+		pPreloadedLibraries.RemoveFrom(index);
 	}
 	#endif
 	
@@ -657,10 +657,10 @@ void deLibraryModule::pUnloadPreloadedLibraries(){
 	#if defined OS_UNIX && ! defined OS_BEOS
 	int index = pPreloadedLibraries.GetCount();
 	
-	while( index > 0 ){
+	while(index > 0){
 		index--;
-		dlclose( pPreloadedLibraries.GetAt( index ) );
-		pPreloadedLibraries.RemoveFrom( index );
+		dlclose(pPreloadedLibraries.GetAt(index));
+		pPreloadedLibraries.RemoveFrom(index);
 	}
 	#endif
 }

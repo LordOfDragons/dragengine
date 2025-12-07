@@ -65,7 +65,7 @@ public:
 		/** \name Constructors and Destructors */
 		/*@{*/
 		/** \brief Creates a new collision test shape. */
-		cShape( btConvexShape *shape, const btTransform &transform );
+		cShape(btConvexShape *shape, const btTransform &transform);
 		/** \brief Cleans up the shape. */
 		~cShape();
 		/*@}*/
@@ -73,9 +73,9 @@ public:
 		/** \name Management */
 		/*@{*/
 		/** \brief Retrieves the convex shape. */
-		inline const btConvexShape *GetShape() const{ return pShape; }
+		inline const btConvexShape *GetShape() const{return pShape;}
 		/** \brief Retrieves the transform. */
-		inline const btTransform &GetTransform() const{ return pTransform; }
+		inline const btTransform &GetTransform() const{return pTransform;}
 		/*@}*/
 	};
 	
@@ -90,7 +90,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sweep collision test. */
-	debpSweepCollisionTest( debpCollisionDetection &coldet );
+	debpSweepCollisionTest(debpCollisionDetection &coldet);
 	
 	/** \brief Clean up the visitor. */
 	virtual ~debpSweepCollisionTest();
@@ -99,26 +99,26 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Retrieves the list of cShape pointers. */
-	inline const decPointerList &GetShapeList() const{ return pShapeList; }
+	inline const decPointerList &GetShapeList() const{return pShapeList;}
 	
 	/** \brief Add a shape from a decShape. */
-	void AddShape( decShape &shape, const decVector &scale );
+	void AddShape(decShape &shape, const decVector &scale);
 	/** \brief Adds all shapes from a decShapeList. */
-	void AddShapes( const decShapeList &list, const decVector &scale );
+	void AddShapes(const decShapeList &list, const decVector &scale);
 	/** \brief Remove all shapes. */
 	void RemoveAllShapes();
 	
 	/** \brief Script callback safe sweep test for collision in a world. */
-	void SweepTest( debpCollisionWorld &world, const btTransform &from, const btTransform &to,
-		debpCollisionWorld::ConvexResultCallback &resultCallback );
+	void SweepTest(debpCollisionWorld &world, const btTransform &from, const btTransform &to,
+		debpCollisionWorld::ConvexResultCallback &resultCallback);
 	
 	/** \brief Script callback safe Sweep test for collision in a ghost object. */
-	void SweepTest( debpGhostObject &ghostObject, const btTransform &from, const btTransform &to,
-		debpCollisionWorld::ConvexResultCallback &resultCallback );
+	void SweepTest(debpGhostObject &ghostObject, const btTransform &from, const btTransform &to,
+		debpCollisionWorld::ConvexResultCallback &resultCallback);
 	
 	/** \brief Script callback safe sweep test for collision against collider. */
-	void SweepTest( debpCollider &collider, const btTransform &from, const btTransform &to,
-		debpCollisionWorld::ConvexResultCallback &resultCallback );
+	void SweepTest(debpCollider &collider, const btTransform &from, const btTransform &to,
+		debpCollisionWorld::ConvexResultCallback &resultCallback);
 	/*@}*/
 	
 	
@@ -127,22 +127,22 @@ protected:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void VisitShape( decShape &shape );
+	virtual void VisitShape(decShape &shape);
 	
 	/** \brief Visit sphere shape. */
-	virtual void VisitShapeSphere( decShapeSphere &sphere );
+	virtual void VisitShapeSphere(decShapeSphere &sphere);
 	
 	/** \brief Visit box shape. */
-	virtual void VisitShapeBox( decShapeBox &box );
+	virtual void VisitShapeBox(decShapeBox &box);
 	
 	/** \brief Visit cylinder shape. */
-	virtual void VisitShapeCylinder( decShapeCylinder &cylinder );
+	virtual void VisitShapeCylinder(decShapeCylinder &cylinder);
 	
 	/** \brief Visit capsule shape. */
-	virtual void VisitShapeCapsule( decShapeCapsule &capsule );
+	virtual void VisitShapeCapsule(decShapeCapsule &capsule);
 	
 	/** \brief Visit hull shape. */
-	virtual void VisitShapeHull( decShapeHull &hull );
+	virtual void VisitShapeHull(decShapeHull &hull);
 	/*@}*/
 	
 	
@@ -150,7 +150,7 @@ protected:
 private:
 	void SweepTest(btCollisionObject &collisionObject, const btVector3 &castShapeAabbMin, 
 		const btVector3 &castShapeAabbMax, const btTransform &rfrom, const btTransform &rto,
-		const btConvexShape &castShape, debpCollisionWorld::ConvexResultCallback &resultCallback );
+		const btConvexShape &castShape, debpCollisionWorld::ConvexResultCallback &resultCallback);
 };
 
 #endif

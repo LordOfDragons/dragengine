@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitCutCondition::ceUCAWaitCutCondition( ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition ) :
-ceUCAWaitSetCondition( topic, wait, newCondition ){
-	SetShortInfo( "Action Wait Cut Condition" );
+ceUCAWaitCutCondition::ceUCAWaitCutCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition) :
+ceUCAWaitSetCondition(topic, wait, newCondition){
+	SetShortInfo("Action Wait Cut Condition");
 }

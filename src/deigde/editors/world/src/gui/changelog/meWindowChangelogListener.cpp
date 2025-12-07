@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWindowChangelogListener::meWindowChangelogListener( meWindowChangelog &window ) :
-pWindow( window ){
+meWindowChangelogListener::meWindowChangelogListener(meWindowChangelog &window) :
+pWindow(window){
 }
 
 meWindowChangelogListener::~meWindowChangelogListener(){
@@ -51,10 +51,10 @@ meWindowChangelogListener::~meWindowChangelogListener(){
 // Notifications
 //////////////////
 
-void meWindowChangelogListener::StateChanged( meWorld* ){
+void meWindowChangelogListener::StateChanged(meWorld*){
 	pWindow.UpdateChangelog();
 }
 
-void meWindowChangelogListener::HTStateChanged( meWorld* ){
+void meWindowChangelogListener::HTStateChanged(meWorld*){
 	pWindow.UpdateChangelog();
 }

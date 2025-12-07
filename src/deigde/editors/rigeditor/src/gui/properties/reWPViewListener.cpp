@@ -37,8 +37,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPViewListener::reWPViewListener( reWPView &panel ) :
-pPanel( panel ){
+reWPViewListener::reWPViewListener(reWPView &panel) :
+pPanel(panel){
 }
 
 reWPViewListener::~reWPViewListener(){
@@ -49,24 +49,24 @@ reWPViewListener::~reWPViewListener(){
 // Management
 ///////////////
 
-void reWPViewListener::RootBoneChanged( reRig *rig ){
+void reWPViewListener::RootBoneChanged(reRig *rig){
 	pPanel.UpdateView();
 }
 
-void reWPViewListener::ResourceChanged( reRig *rig ){
+void reWPViewListener::ResourceChanged(reRig *rig){
 	pPanel.UpdateMoveList();
 	pPanel.UpdateResources();
 }
 
-void reWPViewListener::SkyChanged( reRig *rig ){
+void reWPViewListener::SkyChanged(reRig *rig){
 	pPanel.UpdateSky();
 }
 
-void reWPViewListener::EnvObjectChanged( reRig *rig ){
+void reWPViewListener::EnvObjectChanged(reRig *rig){
 	pPanel.UpdateEnvObject();
 }
 
-void reWPViewListener::ViewChanged( reRig *rig ){
+void reWPViewListener::ViewChanged(reRig *rig){
 	pPanel.UpdateResources();
 	pPanel.UpdateCamera();
 	pPanel.UpdateView();
@@ -74,22 +74,22 @@ void reWPViewListener::ViewChanged( reRig *rig ){
 
 
 
-void reWPViewListener::CameraChanged( reRig *rig ){
+void reWPViewListener::CameraChanged(reRig *rig){
 	pPanel.UpdateCamera();
 }
 
-void reWPViewListener::CameraViewChanged( reRig *rig ){
+void reWPViewListener::CameraViewChanged(reRig *rig){
 	pPanel.UpdateCameraView();
 }
 
 
 
-void reWPViewListener::BoneCountChanged( reRig *rig ){
+void reWPViewListener::BoneCountChanged(reRig *rig){
 	pPanel.UpdateBoneList();
 	pPanel.UpdateCamera();
 }
 
-void reWPViewListener::BoneChanged( reRig *rig, reRigBone *bone ){
+void reWPViewListener::BoneChanged(reRig *rig, reRigBone *bone){
 	pPanel.UpdateBoneList();
 	pPanel.UpdateCamera();
 }

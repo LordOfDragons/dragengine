@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game config xml read/save. */
-	dealGameConfigXML( deLogger *logger, const char *loggingSource, dealGameManager &gameManager );
+	dealGameConfigXML(deLogger *logger, const char *loggingSource, dealGameManager &gameManager);
 	
 	/** \brief Clean up game config xml read/save. */
 	virtual ~dealGameConfigXML();
@@ -58,32 +58,32 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, dealGame &game );
+	void ReadFromFile(decBaseFileReader &reader, dealGame &game);
 	
 	/** \brief Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const dealGame &game );
+	void WriteToFile(decBaseFileWriter &writer, const dealGame &game);
 	/*@}*/
 	
 private:
-	void pWriteConfig( decXmlWriter &writer, const dealGame &game );
-	void pWriteProfiles( decXmlWriter &writer, const dealGame &game );
-	void pWriteProfile( decXmlWriter &writer, const dealGameProfile &profile );
-	void pWriteProfileSystems( decXmlWriter &writer, const dealGameProfile &profile );
-	void pWriteProfileDisableModuleVersions( decXmlWriter &writer, const dealGameProfile &profile );
-	void pWriteProfileModules( decXmlWriter &writer, const dealGameProfile &profile );
-	void pWriteProfileModule( decXmlWriter &writer, const dealGPModule &module );
-	void pWriteProfileModuleParameters( decXmlWriter &writer, const dealGPModule &module );
-	void pWriteProfileWindow( decXmlWriter &writer, const dealGameProfile &profile );
+	void pWriteConfig(decXmlWriter &writer, const dealGame &game);
+	void pWriteProfiles(decXmlWriter &writer, const dealGame &game);
+	void pWriteProfile(decXmlWriter &writer, const dealGameProfile &profile);
+	void pWriteProfileSystems(decXmlWriter &writer, const dealGameProfile &profile);
+	void pWriteProfileDisableModuleVersions(decXmlWriter &writer, const dealGameProfile &profile);
+	void pWriteProfileModules(decXmlWriter &writer, const dealGameProfile &profile);
+	void pWriteProfileModule(decXmlWriter &writer, const dealGPModule &module);
+	void pWriteProfileModuleParameters(decXmlWriter &writer, const dealGPModule &module);
+	void pWriteProfileWindow(decXmlWriter &writer, const dealGameProfile &profile);
 	
-	void pReadConfig( const decXmlElementTag &root, dealGame &game );
-	void pReadProfiles( const decXmlElementTag &root, dealGame &game );
-	void pReadProfile( const decXmlElementTag &root, dealGame &game );
-	void pReadProfileSystems( const decXmlElementTag &root, dealGameProfile &profile );
-	void pReadProfileDisableModuleVersions( const decXmlElementTag &root, dealGameProfile &profile );
-	void pReadProfileModules( const decXmlElementTag &root, dealGameProfile &profile );
-	void pReadProfileModule( const decXmlElementTag &root, dealGameProfile &profile );
-	void pReadProfileModuleParameters( const decXmlElementTag &root, dealGPModule &module );
-	void pReadProfileWindow( const decXmlElementTag &root, dealGameProfile &profile );
+	void pReadConfig(const decXmlElementTag &root, dealGame &game);
+	void pReadProfiles(const decXmlElementTag &root, dealGame &game);
+	void pReadProfile(const decXmlElementTag &root, dealGame &game);
+	void pReadProfileSystems(const decXmlElementTag &root, dealGameProfile &profile);
+	void pReadProfileDisableModuleVersions(const decXmlElementTag &root, dealGameProfile &profile);
+	void pReadProfileModules(const decXmlElementTag &root, dealGameProfile &profile);
+	void pReadProfileModule(const decXmlElementTag &root, dealGameProfile &profile);
+	void pReadProfileModuleParameters(const decXmlElementTag &root, dealGPModule &module);
+	void pReadProfileWindow(const decXmlElementTag &root, dealGameProfile &profile);
 };
 
 #endif

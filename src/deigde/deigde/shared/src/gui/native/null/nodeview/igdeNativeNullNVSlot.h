@@ -45,7 +45,7 @@ public:
 	virtual ~igdeNativeNullNVSlot();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullNVSlot* CreateNativeWidget( igdeNVSlot &owner );
+	static igdeNativeNullNVSlot* CreateNativeWidget(igdeNVSlot &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();

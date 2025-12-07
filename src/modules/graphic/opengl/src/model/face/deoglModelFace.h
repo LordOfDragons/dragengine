@@ -34,7 +34,7 @@
  */
 class deoglModelFace{
 private:
-	int pVertices[ 3 ];
+	int pVertices[3];
 	decVector pFaceNormal;
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -54,45 +54,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the first vertex. */
-	inline int GetVertex1() const{ return pVertices[ 0 ]; }
+	inline int GetVertex1() const{return pVertices[0];}
 	/** Sets the first vertex. */
-	void SetVertex1( int vertex );
+	void SetVertex1(int vertex);
 	/** Retrieves the second vertex. */
-	inline int GetVertex2() const{ return pVertices[ 1 ]; }
+	inline int GetVertex2() const{return pVertices[1];}
 	/** Sets the second vertex. */
-	void SetVertex2( int vertex );
+	void SetVertex2(int vertex);
 	/** Retrieves the third vertex. */
-	inline int GetVertex3() const{ return pVertices[ 2 ]; }
+	inline int GetVertex3() const{return pVertices[2];}
 	/** Sets the third vertex. */
-	void SetVertex3( int vertex );
+	void SetVertex3(int vertex);
 	/** Retrieves the given vertex. */
-	inline int GetVertexAt( int index ) const{ return pVertices[ index ]; }
+	inline int GetVertexAt(int index) const{return pVertices[index];}
 	/** Sets the given vertex. */
-	void SetVertexAt( int index, int vertex );
+	void SetVertexAt(int index, int vertex);
 	
 	/** Retrieves the face normal. */
-	inline const decVector &GetFaceNormal() const{ return pFaceNormal; }
+	inline const decVector &GetFaceNormal() const{return pFaceNormal;}
 	/** Sets the face normal. */
-	void SetFaceNormal( const decVector &normal );
+	void SetFaceNormal(const decVector &normal);
 	/** Retrieves the minimum extend. */
-	inline const decVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decVector &GetMinExtend() const{return pMinExtend;}
 	/** Retrieves the maximum extend. */
-	inline const decVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decVector &GetMaxExtend() const{return pMaxExtend;}
 	/** Sets the extends. */
-	void SetExtends( const decVector &minExtend, const decVector &maxExtend );
+	void SetExtends(const decVector &minExtend, const decVector &maxExtend);
 	/** Retrieves the center. */
-	inline const decVector &GetCenter() const{ return pCenter; }
+	inline const decVector &GetCenter() const{return pCenter;}
 	/** Sets the center. */
-	void SetCenter( const decVector &center );
+	void SetCenter(const decVector &center);
 	
 	/** Retrieves the texture. */
-	inline int GetTexture() const{ return pTexture; }
+	inline int GetTexture() const{return pTexture;}
 	/** Sets the texture. */
-	void SetTexture( int texture );
+	void SetTexture(int texture);
 	/** Retrieves the index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	/** Sets the index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	/*@}*/
 };
 

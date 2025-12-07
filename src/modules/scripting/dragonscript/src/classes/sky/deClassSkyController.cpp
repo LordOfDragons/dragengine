@@ -56,30 +56,30 @@ struct sSkyCtrlNatDat{
 /////////////////////
 
 // private func new()
-deClassSkyController::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid ){
+deClassSkyController::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyController::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	DSTHROW( dueInvalidParam );
+void deClassSkyController::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	DSTHROW(dueInvalidParam);
 }
 
 // public func destructor()
-deClassSkyController::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSkyController::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyController::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassSkyController::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSkyCtrlNatDat &nd = *( ( sSkyCtrlNatDat* )p_GetNativeData( myself ) );
-	if( nd.sky ){
+	sSkyCtrlNatDat &nd = *((sSkyCtrlNatDat*)p_GetNativeData(myself));
+	if(nd.sky){
 		nd.sky->FreeReference();
 		nd.sky = NULL;
 	}
-	if( nd.instance ){
+	if(nd.instance){
 		nd.instance->FreeReference();
 		nd.instance = NULL;
 	}
@@ -92,334 +92,334 @@ void deClassSkyController::nfDestructor::RunFunction( dsRunTime *rt, dsValue *my
 ///////////////
 
 // public func Sky getSky()
-deClassSkyController::nfGetSky::nfGetSky( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getSky", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSky ){
+deClassSkyController::nfGetSky::nfGetSky(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getSky", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
-void deClassSkyController::nfGetSky::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassSkyController* )GetOwnerClass() )->GetDS();
+void deClassSkyController::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassSkyController*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassSky()->PushSky( rt, nd.sky );
+	ds.GetClassSky()->PushSky(rt, nd.sky);
 }
 
 // public func SkyInstance getSkyInstance()
-deClassSkyController::nfGetSkyInstance::nfGetSkyInstance( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getSkyInstance", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyInst ){
+deClassSkyController::nfGetSkyInstance::nfGetSkyInstance(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getSkyInstance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyInst){
 }
-void deClassSkyController::nfGetSkyInstance::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
-	deScriptingDragonScript &ds = ( ( deClassSkyController* )GetOwnerClass() )->GetDS();
+void deClassSkyController::nfGetSkyInstance::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassSkyController*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassSkyInstance()->PushInstance( rt, nd.instance );
+	ds.GetClassSkyInstance()->PushInstance(rt, nd.instance);
 }
 
 // public func int getControllerIndex()
-deClassSkyController::nfGetControllerIndex::nfGetControllerIndex( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getControllerIndex", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+deClassSkyController::nfGetControllerIndex::nfGetControllerIndex(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getControllerIndex", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
-void deClassSkyController::nfGetControllerIndex::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetControllerIndex::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	
-	rt->PushInt( nd.index );
+	rt->PushInt(nd.index);
 }
 
 
 
 // public func String getName()
-deClassSkyController::nfGetName::nfGetName( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+deClassSkyController::nfGetName::nfGetName(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
-void deClassSkyController::nfGetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushString( controller.GetName() );
+	rt->PushString(controller.GetName());
 }
 
 // public func void setName( String name )
-deClassSkyController::nfSetName::nfSetName( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setName", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsStr ); // name
+deClassSkyController::nfSetName::nfSetName(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setName", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // name
 }
-void deClassSkyController::nfSetName::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	controller.SetName( rt->GetValue( 0 )->GetString() );
+	controller.SetName(rt->GetValue(0)->GetString());
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func float getLower()
-deClassSkyController::nfGetLower::nfGetLower( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getLower", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassSkyController::nfGetLower::nfGetLower(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getLower", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSkyController::nfGetLower::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetLower::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushFloat( controller.GetMinimumValue() );
+	rt->PushFloat(controller.GetMinimumValue());
 }
 
 // public func float getUpper()
-deClassSkyController::nfGetUpper::nfGetUpper( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getUpper", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassSkyController::nfGetUpper::nfGetUpper(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getUpper", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSkyController::nfGetUpper::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetUpper::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushFloat( controller.GetMaximumValue() );
+	rt->PushFloat(controller.GetMaximumValue());
 }
 
 // public func void setRange( float lower, float upper )
-deClassSkyController::nfSetRange::nfSetRange( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setRange", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFloat ); // lower
-	p_AddParameter( init.clsFloat ); // upper
+deClassSkyController::nfSetRange::nfSetRange(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setRange", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // lower
+	p_AddParameter(init.clsFloat); // upper
 }
-void deClassSkyController::nfSetRange::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetRange::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
-	const float lower = rt->GetValue( 0 )->GetFloat();
-	const float upper = rt->GetValue( 1 )->GetFloat();
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	const float lower = rt->GetValue(0)->GetFloat();
+	const float upper = rt->GetValue(1)->GetFloat();
 	
-	controller.SetValueRange( lower, upper );
+	controller.SetValueRange(lower, upper);
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func float getValue()
-deClassSkyController::nfGetValue::nfGetValue( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassSkyController::nfGetValue::nfGetValue(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassSkyController::nfGetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushFloat( controller.GetCurrentValue() );
+	rt->PushFloat(controller.GetCurrentValue());
 }
 
 // public func void setValue( float value )
-deClassSkyController::nfSetValue::nfSetValue( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setValue", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFloat ); // value
+deClassSkyController::nfSetValue::nfSetValue(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setValue", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // value
 }
-void deClassSkyController::nfSetValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
-	const float value = rt->GetValue( 0 )->GetFloat();
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	const float value = rt->GetValue(0)->GetFloat();
 	
-	controller.SetCurrentValue( value );
+	controller.SetCurrentValue(value);
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func bool getFrozen()
-deClassSkyController::nfGetFrozen::nfGetFrozen( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getFrozen", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassSkyController::nfGetFrozen::nfGetFrozen(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getFrozen", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassSkyController::nfGetFrozen::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetFrozen::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushBool( controller.GetFrozen() );
+	rt->PushBool(controller.GetFrozen());
 }
 
 // public func void setFrozen( bool frozen )
-deClassSkyController::nfSetFrozen::nfSetFrozen( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setFrozen", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // frozen
+deClassSkyController::nfSetFrozen::nfSetFrozen(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setFrozen", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // frozen
 }
-void deClassSkyController::nfSetFrozen::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetFrozen::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
-	const bool frozen = rt->GetValue( 0 )->GetBool();
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	const bool frozen = rt->GetValue(0)->GetBool();
 	
-	controller.SetFrozen( frozen );
+	controller.SetFrozen(frozen);
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func bool getClamp()
-deClassSkyController::nfGetClamp::nfGetClamp( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "getClamp", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassSkyController::nfGetClamp::nfGetClamp(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "getClamp", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassSkyController::nfGetClamp::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfGetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushBool( controller.GetClamp() );
+	rt->PushBool(controller.GetClamp());
 }
 
 // public func void setClamp( bool clamp )
-deClassSkyController::nfSetClamp::nfSetClamp( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setClamp", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsBool ); // clamp
+deClassSkyController::nfSetClamp::nfSetClamp(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setClamp", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // clamp
 }
-void deClassSkyController::nfSetClamp::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
-	const bool clamp = rt->GetValue( 0 )->GetBool();
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	const bool clamp = rt->GetValue(0)->GetBool();
 	
-	controller.SetClamp( clamp );
+	controller.SetClamp(clamp);
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 
 
 // public func void increment( float amount )
-deClassSkyController::nfIncrement::nfIncrement( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "increment", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFloat ); // amount
+deClassSkyController::nfIncrement::nfIncrement(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "increment", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // amount
 }
-void deClassSkyController::nfIncrement::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfIncrement::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
-	const float amount = rt->GetValue( 0 )->GetFloat();
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	const float amount = rt->GetValue(0)->GetFloat();
 	
-	controller.SetCurrentValue( controller.GetCurrentValue() + amount );
+	controller.SetCurrentValue(controller.GetCurrentValue() + amount);
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func void setToLower()
-deClassSkyController::nfSetToLower::nfSetToLower( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setToLower", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSkyController::nfSetToLower::nfSetToLower(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setToLower", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyController::nfSetToLower::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetToLower::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	controller.SetCurrentValue( controller.GetMaximumValue() );
+	controller.SetCurrentValue(controller.GetMaximumValue());
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func void setToUpper()
-deClassSkyController::nfSetToUpper::nfSetToUpper( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "setToUpper", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassSkyController::nfSetToUpper::nfSetToUpper(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "setToUpper", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassSkyController::nfSetToUpper::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfSetToUpper::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	controller.SetCurrentValue( controller.GetMinimumValue() );
+	controller.SetCurrentValue(controller.GetMinimumValue());
 	
-	if( nd.instance ){
-		nd.instance->NotifyControllerChangedAt( nd.index );
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
 	}
 }
 
 // public func bool isAtLower()
-deClassSkyController::nfIsAtLower::nfIsAtLower( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "isAtLower", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassSkyController::nfIsAtLower::nfIsAtLower(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "isAtLower", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassSkyController::nfIsAtLower::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfIsAtLower::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushBool( controller.GetCurrentValue()
-		<= controller.GetMinimumValue() + FLOAT_SAFE_EPSILON );
+	rt->PushBool(controller.GetCurrentValue()
+		<= controller.GetMinimumValue() + FLOAT_SAFE_EPSILON);
 }
 
 // public func bool isAtUpper( int controller )
-deClassSkyController::nfIsAtUpper::nfIsAtUpper( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "isAtUpper", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+deClassSkyController::nfIsAtUpper::nfIsAtUpper(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "isAtUpper", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
-void deClassSkyController::nfIsAtUpper::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
+void deClassSkyController::nfIsAtUpper::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
 	const deSkyController &controller = nd.sky
-		? nd.sky->GetControllerAt( nd.index )
-		: nd.instance->GetControllerAt( nd.index );
+		? nd.sky->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
 	
-	rt->PushBool( controller.GetCurrentValue()
-		>= controller.GetMaximumValue() - FLOAT_SAFE_EPSILON );
+	rt->PushBool(controller.GetCurrentValue()
+		>= controller.GetMaximumValue() - FLOAT_SAFE_EPSILON);
 }
 
 
 
 // public func bool equals( Object obj )
-deClassSkyController::nfEquals::nfEquals( const sInitData &init ) :
-dsFunction( init.clsSkyCtrl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsObj ); // obj
+deClassSkyController::nfEquals::nfEquals(const sInitData &init) :
+dsFunction(init.clsSkyCtrl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsObj); // obj
 }
-void deClassSkyController::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deClassSkyController * const clsSkyCtrl = ( deClassSkyController* )GetOwnerClass();
-	const sSkyCtrlNatDat &nd = *( ( const sSkyCtrlNatDat* )p_GetNativeData( myself ) );
-	dsValue * const obj = rt->GetValue( 0 );
+void deClassSkyController::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassSkyController * const clsSkyCtrl = (deClassSkyController*)GetOwnerClass();
+	const sSkyCtrlNatDat &nd = *((const sSkyCtrlNatDat*)p_GetNativeData(myself));
+	dsValue * const obj = rt->GetValue(0);
 	
-	if( ! p_IsObjOfType( obj, clsSkyCtrl ) ){
-		rt->PushBool( false );
+	if(! p_IsObjOfType(obj, clsSkyCtrl)){
+		rt->PushBool(false);
 		
 	}else{
-		const sSkyCtrlNatDat &other = *( ( const sSkyCtrlNatDat* )p_GetNativeData( obj ) );
-		rt->PushBool( nd.sky == other.sky && nd.instance == other.instance
-			&& nd.index == other.index );
+		const sSkyCtrlNatDat &other = *((const sSkyCtrlNatDat*)p_GetNativeData(obj));
+		rt->PushBool(nd.sky == other.sky && nd.instance == other.instance
+			&& nd.index == other.index);
 	}
 }
 
@@ -431,14 +431,14 @@ void deClassSkyController::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself
 // Constructor, destructor
 ////////////////////////////
 
-deClassSkyController::deClassSkyController( deScriptingDragonScript &ds ) :
-dsClass( "SkyController", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ),
-pDS( ds )
+deClassSkyController::deClassSkyController(deScriptingDragonScript &ds) :
+dsClass("SkyController", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pDS(ds)
 {
-	GetParserInfo()->SetParent( DENS_SCENERY );
-	GetParserInfo()->SetBase( "Object" );
+	GetParserInfo()->SetParent(DENS_SCENERY);
+	GetParserInfo()->SetBase("Object");
 	
-	p_SetNativeDataSize( sizeof( sSkyCtrlNatDat ) );
+	p_SetNativeDataSize(sizeof(sSkyCtrlNatDat));
 }
 
 deClassSkyController::~deClassSkyController(){
@@ -449,7 +449,7 @@ deClassSkyController::~deClassSkyController(){
 // Management
 ///////////////
 
-void deClassSkyController::CreateClassMembers( dsEngine *engine ){
+void deClassSkyController::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	init.clsSkyCtrl = this;
@@ -464,56 +464,56 @@ void deClassSkyController::CreateClassMembers( dsEngine *engine ){
 	init.clsSky = pDS.GetClassSky();
 	init.clsSkyInst = pDS.GetClassSkyInstance();
 	
-	AddFunction( new nfNew( init ) );
-	AddFunction( new nfDestructor( init ) );
+	AddFunction(new nfNew(init));
+	AddFunction(new nfDestructor(init));
 	
-	AddFunction( new nfGetSky( init ) );
-	AddFunction( new nfGetSkyInstance( init ) );
-	AddFunction( new nfGetControllerIndex( init ) );
+	AddFunction(new nfGetSky(init));
+	AddFunction(new nfGetSkyInstance(init));
+	AddFunction(new nfGetControllerIndex(init));
 	
-	AddFunction( new nfGetName( init ) );
-	AddFunction( new nfSetName( init ) );
-	AddFunction( new nfGetLower( init ) );
-	AddFunction( new nfGetUpper( init ) );
-	AddFunction( new nfSetRange( init ) );
-	AddFunction( new nfGetValue( init ) );
-	AddFunction( new nfSetValue( init ) );
-	AddFunction( new nfGetFrozen( init ) );
-	AddFunction( new nfSetFrozen( init ) );
-	AddFunction( new nfGetClamp( init ) );
-	AddFunction( new nfSetClamp( init ) );
+	AddFunction(new nfGetName(init));
+	AddFunction(new nfSetName(init));
+	AddFunction(new nfGetLower(init));
+	AddFunction(new nfGetUpper(init));
+	AddFunction(new nfSetRange(init));
+	AddFunction(new nfGetValue(init));
+	AddFunction(new nfSetValue(init));
+	AddFunction(new nfGetFrozen(init));
+	AddFunction(new nfSetFrozen(init));
+	AddFunction(new nfGetClamp(init));
+	AddFunction(new nfSetClamp(init));
 	
-	AddFunction( new nfIncrement( init ) );
-	AddFunction( new nfSetToLower( init ) );
-	AddFunction( new nfSetToUpper( init ) );
-	AddFunction( new nfIsAtLower( init ) );
-	AddFunction( new nfIsAtUpper( init ) );
+	AddFunction(new nfIncrement(init));
+	AddFunction(new nfSetToLower(init));
+	AddFunction(new nfSetToUpper(init));
+	AddFunction(new nfIsAtLower(init));
+	AddFunction(new nfIsAtUpper(init));
 	
-	AddFunction( new nfEquals( init ) );
+	AddFunction(new nfEquals(init));
 	
 	CalcMemberOffsets();
 }
 
-void deClassSkyController::PushController( dsRunTime *rt, deSky *sky, int index ){
-	if( ! rt || ! sky || index < 0 || index >= sky->GetControllerCount() ){
-		DSTHROW( dueInvalidParam );
+void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
+	if(! rt || ! sky || index < 0 || index >= sky->GetControllerCount()){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sSkyCtrlNatDat &nd = *( ( sSkyCtrlNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sSkyCtrlNatDat &nd = *((sSkyCtrlNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
 	sky->AddReference();
 	nd.instance = NULL;
 	nd.index = index;
 }
 
-void deClassSkyController::PushController( dsRunTime *rt, deSkyInstance *instance, int index ){
-	if( ! rt || ! instance || index < 0 || index >= instance->GetControllerCount() ){
-		DSTHROW( dueInvalidParam );
+void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance, int index){
+	if(! rt || ! instance || index < 0 || index >= instance->GetControllerCount()){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sSkyCtrlNatDat &nd = *( ( sSkyCtrlNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sSkyCtrlNatDat &nd = *((sSkyCtrlNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = NULL;
 	nd.instance = instance;
 	instance->AddReference();

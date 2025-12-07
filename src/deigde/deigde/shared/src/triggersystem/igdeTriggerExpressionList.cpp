@@ -54,48 +54,48 @@ int igdeTriggerExpressionList::GetCount() const{
 	return pExpressions.GetCount();
 }
 
-igdeTriggerExpression *igdeTriggerExpressionList::GetAt( int position ) const{
-	return ( igdeTriggerExpression* )pExpressions.GetAt( position );
+igdeTriggerExpression *igdeTriggerExpressionList::GetAt(int position) const{
+	return (igdeTriggerExpression*)pExpressions.GetAt(position);
 }
 
-int igdeTriggerExpressionList::IndexOf( igdeTriggerExpression *expression ) const{
-	return pExpressions.IndexOf( expression );
+int igdeTriggerExpressionList::IndexOf(igdeTriggerExpression *expression) const{
+	return pExpressions.IndexOf(expression);
 }
 
-bool igdeTriggerExpressionList::Has( igdeTriggerExpression *expression ) const{
-	return pExpressions.Has( expression );
+bool igdeTriggerExpressionList::Has(igdeTriggerExpression *expression) const{
+	return pExpressions.Has(expression);
 }
 
-void igdeTriggerExpressionList::Add( igdeTriggerExpression *expression ){
-	if( ! expression ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerExpressionList::Add(igdeTriggerExpression *expression){
+	if(! expression){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pExpressions.Add( expression );
+	pExpressions.Add(expression);
 }
 
-void igdeTriggerExpressionList::AddIfAbsent( igdeTriggerExpression *expression ){
-	if( ! expression ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerExpressionList::AddIfAbsent(igdeTriggerExpression *expression){
+	if(! expression){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pExpressions.AddIfAbsent( expression );
+	pExpressions.AddIfAbsent(expression);
 }
 
-void igdeTriggerExpressionList::Remove( igdeTriggerExpression *expression ){
-	if( ! expression ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerExpressionList::Remove(igdeTriggerExpression *expression){
+	if(! expression){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pExpressions.Remove( expression );
+	pExpressions.Remove(expression);
 }
 
-void igdeTriggerExpressionList::RemoveIfPresent( igdeTriggerExpression *expression ){
-	if( ! expression ){
-		DETHROW( deeInvalidParam );
+void igdeTriggerExpressionList::RemoveIfPresent(igdeTriggerExpression *expression){
+	if(! expression){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pExpressions.RemoveIfPresent( expression );
+	pExpressions.RemoveIfPresent(expression);
 }
 
 void igdeTriggerExpressionList::RemoveAll(){

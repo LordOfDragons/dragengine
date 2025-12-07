@@ -39,26 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetTrailController::peeUTypeSetTrailController( peeType *type,
-deParticleEmitterType::eEmitControllers controller, const char *newTarget ) :
-pType( NULL ),
-pController( controller ),
-pNewTarget( newTarget )
+peeUTypeSetTrailController::peeUTypeSetTrailController(peeType *type,
+deParticleEmitterType::eEmitControllers controller, const char *newTarget) :
+pType(NULL),
+pController(controller),
+pNewTarget(newTarget)
 {
-	if( ! type ){
-		DETHROW( deeInvalidParam );
+	if(! type){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Set Type Trail Controller" );
+	SetShortInfo("Set Type Trail Controller");
 	
-	pOldTarget = type->GetTrailController( controller );
+	pOldTarget = type->GetTrailController(controller);
 	
 	pType = type;
 	type->AddReference();
 }
 
 peeUTypeSetTrailController::~peeUTypeSetTrailController(){
-	if( pType ){
+	if(pType){
 		pType->FreeReference();
 	}
 }
@@ -69,9 +69,9 @@ peeUTypeSetTrailController::~peeUTypeSetTrailController(){
 ///////////////
 
 void peeUTypeSetTrailController::Undo(){
-	pType->SetTrailController( pController, pOldTarget );
+	pType->SetTrailController(pController, pOldTarget);
 }
 
 void peeUTypeSetTrailController::Redo(){
-	pType->SetTrailController( pController, pNewTarget );
+	pType->SetTrailController(pController, pNewTarget);
 }

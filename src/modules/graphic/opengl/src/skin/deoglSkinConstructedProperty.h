@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin constructed property. */
-	deoglSkinConstructedProperty( const deSkinPropertyConstructed &constructed );
+	deoglSkinConstructedProperty(const deSkinPropertyConstructed &constructed);
 	
 protected:
 	/** Cleans up the skin constructed property. */
@@ -63,13 +63,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Node. */
-	inline const deoglSkinStateCNGroup &GetContent() const{ return pContent; }
+	inline const deoglSkinStateCNGroup &GetContent() const{return pContent;}
 	
 	/** Bit count. */
-	inline int GetBitCount() const{ return pBitCount; }
+	inline int GetBitCount() const{return pBitCount;}
 	
 	/** Base color. */
-	inline const decColor &GetColor() const{ return pColor; }
+	inline const decColor &GetColor() const{return pColor;}
 	/*@}*/
 };
 

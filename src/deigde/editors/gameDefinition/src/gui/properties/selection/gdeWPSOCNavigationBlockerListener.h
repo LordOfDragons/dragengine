@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	gdeWPSOCNavigationBlockerListener( gdeWPSOCNavigationBlocker &panel );
+	gdeWPSOCNavigationBlockerListener(gdeWPSOCNavigationBlocker &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~gdeWPSOCNavigationBlockerListener();
@@ -55,36 +55,36 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Base path changed. */
-	virtual void BasePathChanged( gdeGameDefinition *gameDefinition );
+	virtual void BasePathChanged(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Base game definitions changed. */
-	virtual void BaseGameDefinitionsChanged( gdeGameDefinition *gameDefinition );
+	virtual void BaseGameDefinitionsChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** \brief Object property name changed. */
-	virtual void OCPropertyNameChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeProperty *property );
+	virtual void OCPropertyNameChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** \brief Object properties changed. */
-	virtual void OCPropertiesChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCPropertiesChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** \brief Active object class changed. */
-	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveObjectClassChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	
 	/** \brief Object class navigation blockers changed. */
-	virtual void OCNavigationBlockersChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass );
+	virtual void OCNavigationBlockersChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass);
 	
 	/** \brief Object class navigation blocker changed. */
-	virtual void OCNavigationBlockerChanged( gdeGameDefinition *gameDefinition,
-		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker );
+	virtual void OCNavigationBlockerChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker);
 	
 	/** \brief Active object class navigation blocker changed. */
-	virtual void ActiveOCNavigationBlockerChanged( gdeGameDefinition *gameDefinition );
+	virtual void ActiveOCNavigationBlockerChanged(gdeGameDefinition *gameDefinition);
 	/*@}*/
 };
 

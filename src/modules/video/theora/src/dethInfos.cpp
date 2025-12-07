@@ -39,26 +39,26 @@
 ////////////////////////////
 
 dethInfos::dethInfos() :
-pSetupInfo( NULL ),
-pHeaderFinished( false ),
-pAudioHeaderFinished( false )
+pSetupInfo(NULL),
+pHeaderFinished(false),
+pAudioHeaderFinished(false)
 {
-	th_info_init( &pInfo );
-	th_comment_init( &pComment );
+	th_info_init(&pInfo);
+	th_comment_init(&pComment);
 	
-	vorbis_info_init( &pAudioInfo );
-	vorbis_comment_init( &pAudioComment );
+	vorbis_info_init(&pAudioInfo);
+	vorbis_comment_init(&pAudioComment);
 }
 
 dethInfos::~dethInfos(){
-	if( pSetupInfo ){
-		th_setup_free( pSetupInfo );
+	if(pSetupInfo){
+		th_setup_free(pSetupInfo);
 	}
-	th_comment_clear( &pComment );
-	th_info_clear( &pInfo );
+	th_comment_clear(&pComment);
+	th_info_clear(&pInfo);
 	
-	vorbis_comment_clear( &pAudioComment );
-	vorbis_info_clear( &pAudioInfo );
+	vorbis_comment_clear(&pAudioComment);
+	vorbis_info_clear(&pAudioInfo);
 }
 
 
@@ -66,14 +66,14 @@ dethInfos::~dethInfos(){
 // Management
 ///////////////
 
-void dethInfos::SetSetupInfo( th_setup_info *info ){
+void dethInfos::SetSetupInfo(th_setup_info *info){
 	pSetupInfo = info;
 }
 
-void dethInfos::SetHeaderFinished( bool headerFinished ){
+void dethInfos::SetHeaderFinished(bool headerFinished){
 	pHeaderFinished = headerFinished;
 }
 
-void dethInfos::SetAudioHeaderFinished( bool headerFinished ){
+void dethInfos::SetAudioHeaderFinished(bool headerFinished){
 	pAudioHeaderFinished = headerFinished;
 }

@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	gdeUOCTextureSetName( gdeObjectClass *objectClass,
-		gdeOCComponentTexture *texture, const char *newValue );
+	gdeUOCTextureSetName(gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture, const char *newValue);
 	
 protected:
 	/** Clean up undo action. */

@@ -56,7 +56,7 @@ public:
 	 * Create descriptor pool slot.
 	 * \warning For use by devkDescriptorPoolPool only.
 	 */
-	devkDescriptorPoolSlot( devkDescriptorPoolPool &pool, VkDescriptorSet set );
+	devkDescriptorPoolSlot(devkDescriptorPoolPool &pool, VkDescriptorSet set);
 	
 protected:
 	/** Clean up descriptor pool slot. */
@@ -69,10 +69,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pool. */
-	inline devkDescriptorPoolPool &GetPool() const{ return pPool; }
+	inline devkDescriptorPoolPool &GetPool() const{return pPool;}
 	
 	/** Vulkan descriptor set. */
-	inline VkDescriptorSet GetSet() const{ return pSet; }
+	inline VkDescriptorSet GetSet() const{return pSet;}
 	
 	/** Return to pool. */
 	void ReturnToPool();

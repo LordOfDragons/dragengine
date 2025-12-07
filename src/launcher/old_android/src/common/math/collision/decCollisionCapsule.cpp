@@ -52,20 +52,20 @@ decCollisionCapsule::decCollisionCapsule(){
 	ClearOrientation();
 }
 
-decCollisionCapsule::decCollisionCapsule( const decVector &center, float halfHeight, float topRadius, float bottomRadius ){
-	SetPosition( center );
-	SetHalfHeight( halfHeight );
-	SetTopRadius( topRadius );
-	SetBottomRadius( bottomRadius );
+decCollisionCapsule::decCollisionCapsule(const decVector &center, float halfHeight, float topRadius, float bottomRadius){
+	SetPosition(center);
+	SetHalfHeight(halfHeight);
+	SetTopRadius(topRadius);
+	SetBottomRadius(bottomRadius);
 	ClearOrientation();
 }
 
-decCollisionCapsule::decCollisionCapsule( const decVector &center, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation ){
-	SetPosition( center );
-	SetHalfHeight( halfHeight );
-	SetTopRadius( topRadius );
-	SetBottomRadius( bottomRadius );
-	SetOrientation( orientation );
+decCollisionCapsule::decCollisionCapsule(const decVector &center, float halfHeight, float topRadius, float bottomRadius, const decQuaternion &orientation){
+	SetPosition(center);
+	SetHalfHeight(halfHeight);
+	SetTopRadius(topRadius);
+	SetBottomRadius(bottomRadius);
+	SetOrientation(orientation);
 }
 
 decCollisionCapsule::~decCollisionCapsule(){
@@ -76,12 +76,12 @@ decCollisionCapsule::~decCollisionCapsule(){
 // Double Dispatching Calls
 /////////////////////////////
 
-bool decCollisionCapsule::VolumeHitsVolume( decCollisionVolume *volume ){
-	return volume->CapsuleHitsVolume( this );
+bool decCollisionCapsule::VolumeHitsVolume(decCollisionVolume *volume){
+	return volume->CapsuleHitsVolume(this);
 }
 
-float decCollisionCapsule::VolumeMoveHitsVolume( decCollisionVolume *volume, const decVector &displacement, decVector *normal ){
-	return volume->CapsuleMoveHitsVolume( this, displacement, normal );
+float decCollisionCapsule::VolumeMoveHitsVolume(decCollisionVolume *volume, const decVector &displacement, decVector *normal){
+	return volume->CapsuleMoveHitsVolume(this, displacement, normal);
 }
 
 
@@ -89,63 +89,63 @@ float decCollisionCapsule::VolumeMoveHitsVolume( decCollisionVolume *volume, con
 // First Stage Calls
 //////////////////////
 
-bool decCollisionCapsule::SphereHitsVolume( decCollisionSphere *sphere ){
-	return SphereHitsCapsule( sphere );
+bool decCollisionCapsule::SphereHitsVolume(decCollisionSphere *sphere){
+	return SphereHitsCapsule(sphere);
 }
 
-bool decCollisionCapsule::CylinderHitsVolume( decCollisionCylinder *cylinder ){
-	return CylinderHitsCapsule( cylinder );
+bool decCollisionCapsule::CylinderHitsVolume(decCollisionCylinder *cylinder){
+	return CylinderHitsCapsule(cylinder);
 }
 
-bool decCollisionCapsule::CapsuleHitsVolume( decCollisionCapsule *capsule ){
-	return CapsuleHitsCapsule( capsule );
+bool decCollisionCapsule::CapsuleHitsVolume(decCollisionCapsule *capsule){
+	return CapsuleHitsCapsule(capsule);
 }
 
-bool decCollisionCapsule::BoxHitsVolume( decCollisionBox *box ){
-	return box->CapsuleHitsBox( this );
+bool decCollisionCapsule::BoxHitsVolume(decCollisionBox *box){
+	return box->CapsuleHitsBox(this);
 }
 
-bool decCollisionCapsule::TriangleHitsVolume( decCollisionTriangle *triangle ){
-	return triangle->CapsuleHitsTriangle( this );
+bool decCollisionCapsule::TriangleHitsVolume(decCollisionTriangle *triangle){
+	return triangle->CapsuleHitsTriangle(this);
 }
 
-bool decCollisionCapsule::FrustumHitsVolume( decCollisionFrustum *frustum ){
-	return frustum->CapsuleHitsFrustum( this );
+bool decCollisionCapsule::FrustumHitsVolume(decCollisionFrustum *frustum){
+	return frustum->CapsuleHitsFrustum(this);
 }
 
 
 
-float decCollisionCapsule::SphereMoveHitsVolume( decCollisionSphere *sphere, const decVector &displacement, decVector *normal ){
-	return SphereMoveHitsCapsule( sphere, displacement, normal );
+float decCollisionCapsule::SphereMoveHitsVolume(decCollisionSphere *sphere, const decVector &displacement, decVector *normal){
+	return SphereMoveHitsCapsule(sphere, displacement, normal);
 }
 
-float decCollisionCapsule::CylinderMoveHitsVolume( decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal ){
-	return CylinderMoveHitsCapsule( cylinder, displacement, normal );
+float decCollisionCapsule::CylinderMoveHitsVolume(decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal){
+	return CylinderMoveHitsCapsule(cylinder, displacement, normal);
 }
 
-float decCollisionCapsule::CapsuleMoveHitsVolume( decCollisionCapsule *capsule, const decVector &displacement, decVector *normal ){
-	return CapsuleMoveHitsCapsule( capsule, displacement, normal );
+float decCollisionCapsule::CapsuleMoveHitsVolume(decCollisionCapsule *capsule, const decVector &displacement, decVector *normal){
+	return CapsuleMoveHitsCapsule(capsule, displacement, normal);
 }
 
-float decCollisionCapsule::BoxMoveHitsVolume( decCollisionBox *box, const decVector &displacement, decVector *normal ){
-	float distance = box->CapsuleMoveHitsBox( this, -displacement, normal );
-	if( normal ) normal->Negate();
+float decCollisionCapsule::BoxMoveHitsVolume(decCollisionBox *box, const decVector &displacement, decVector *normal){
+	float distance = box->CapsuleMoveHitsBox(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-float decCollisionCapsule::TriangleMoveHitsVolume( decCollisionTriangle *triangle, const decVector &displacement, decVector *normal ){
-	float distance = triangle->CapsuleMoveHitsTriangle( this, -displacement, normal );
-	if( normal ) normal->Negate();
+float decCollisionCapsule::TriangleMoveHitsVolume(decCollisionTriangle *triangle, const decVector &displacement, decVector *normal){
+	float distance = triangle->CapsuleMoveHitsTriangle(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-float decCollisionCapsule::FrustumMoveHitsVolume( decCollisionFrustum *frustum, const decVector &displacement, decVector *normal ){
-	float distance = frustum->CapsuleMoveHitsFrustum( this, -displacement, normal );
-	if( normal ) normal->Negate();
+float decCollisionCapsule::FrustumMoveHitsVolume(decCollisionFrustum *frustum, const decVector &displacement, decVector *normal){
+	float distance = frustum->CapsuleMoveHitsFrustum(this, -displacement, normal);
+	if(normal) normal->Negate();
 	return distance;
 }
 
-float decCollisionCapsule::PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal ){
+float decCollisionCapsule::PointMoveHitsVolume(const decVector &point, const decVector &displacement, decVector *normal){
 	// TODO
 	return 1.0;
 }
@@ -155,37 +155,37 @@ float decCollisionCapsule::PointMoveHitsVolume( const decVector &point, const de
 // Enclosing Volumes
 //////////////////////
 
-void decCollisionCapsule::GetEnclosingSphere( decCollisionSphere *sphere ){
-	if( ! sphere ) DETHROW( deeInvalidParam );
+void decCollisionCapsule::GetEnclosingSphere(decCollisionSphere *sphere){
+	if(! sphere) DETHROW(deeInvalidParam);
 	
 	// TODO: this is cylinder code => convert to capsule code
 	
 	// the sphere is not fully optial. the real sphere is slightly smaller and has a
 	// different center along the y-axis. the difference is though rather small.
-	if( pTopRadius > pBottomRadius ){
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius ) );
+	if(pTopRadius > pBottomRadius){
+		sphere->SetAll(pPosition, sqrt(pHalfHeight * pHalfHeight + pTopRadius * pTopRadius));
 		
 	}else{
-		sphere->SetAll( pPosition, sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius ) );
+		sphere->SetAll(pPosition, sqrt(pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius));
 	}
 }
 
-void decCollisionCapsule::GetEnclosingBox( decCollisionBox *box ){
-	if( ! box ) DETHROW( deeInvalidParam );
+void decCollisionCapsule::GetEnclosingBox(decCollisionBox *box){
+	if(! box) DETHROW(deeInvalidParam);
 	float size;
 	
 	// TODO: this is cylinder code => convert to capsule code
 	
 	// TODO: better approximation
-	if( pTopRadius > pBottomRadius ){
-		size = sqrt( pHalfHeight * pHalfHeight + pTopRadius * pTopRadius );
+	if(pTopRadius > pBottomRadius){
+		size = sqrt(pHalfHeight * pHalfHeight + pTopRadius * pTopRadius);
 		
 	}else{
-		size = sqrt( pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius );
+		size = sqrt(pHalfHeight * pHalfHeight + pBottomRadius * pBottomRadius);
 	}
 	
-	box->SetCenter( pPosition );
-	box->SetHalfSize( decVector( size, size, size ) );
+	box->SetCenter(pPosition);
+	box->SetHalfSize(decVector(size, size, size));
 	box->ClearOrientation();
 }
 
@@ -194,60 +194,60 @@ void decCollisionCapsule::GetEnclosingBox( decCollisionBox *box ){
 // Miscelanous Functions
 //////////////////////////
 
-bool decCollisionCapsule::IsPointInside( const decVector &point ){
-	decVector localPoint = WorldToLocal( point );
+bool decCollisionCapsule::IsPointInside(const decVector &point){
+	decVector localPoint = WorldToLocal(point);
 	float radius = pTopRadius;
 	float y = localPoint.y;
 	
-	if( pHalfHeight > 1e-5f ){
+	if(pHalfHeight > 1e-5f){
 		// this here is not correct if the radi are different. correctly the radius different moves the
 		// line segment to check against up or down. this will be done later on
-		if( y < -pHalfHeight ){
+		if(y < -pHalfHeight){
 			y = -pHalfHeight;
 		}
-		if( y > pHalfHeight ){
+		if(y > pHalfHeight){
 			y = pHalfHeight;
 		}
 		
-		radius = pBottomRadius + ( pTopRadius - pBottomRadius ) * ( y * 0.5f / pHalfHeight + 0.5f );
+		radius = pBottomRadius + (pTopRadius - pBottomRadius) * (y * 0.5f / pHalfHeight + 0.5f);
 	}
 	
-	localPoint.y -= y; // localPoint - decDVector( 0.0f, y, 0.0f )
+	localPoint.y -= y; // localPoint - decDVector(0.0f, y, 0.0f)
 	
 	return localPoint.Length() <= radius;
 }
 
-decVector decCollisionCapsule::ClosestPointTo( const decVector &point ){
+decVector decCollisionCapsule::ClosestPointTo(const decVector &point){
 	// todo
 	return point;
 }
 
-decVector decCollisionCapsule::NormalAtPoint( const decVector &point ){
+decVector decCollisionCapsule::NormalAtPoint(const decVector &point){
 	// TODO: implement
-	return decVector( 1.0, 0.0, 0.0 );
+	return decVector(1.0, 0.0, 0.0);
 }
 
-bool decCollisionCapsule::RayHitsVolume( const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance ){
-	if( pOriented ){
-		if( pTapered ){
-			return decCollisionDetection::RayHitsTaperedCapsule( WorldToLocal( rayOrigin ),
-				NormalWorldToLocal( rayDirection ), decVector(), pHalfHeight, pTopRadius,
-				pBottomRadius, hitDistance );
+bool decCollisionCapsule::RayHitsVolume(const decVector &rayOrigin, const decVector &rayDirection, float &hitDistance){
+	if(pOriented){
+		if(pTapered){
+			return decCollisionDetection::RayHitsTaperedCapsule(WorldToLocal(rayOrigin),
+				NormalWorldToLocal(rayDirection), decVector(), pHalfHeight, pTopRadius,
+				pBottomRadius, hitDistance);
 			
 		}else{
-			return decCollisionDetection::RayHitsCapsule( WorldToLocal( rayOrigin ),
-				NormalWorldToLocal( rayDirection ), decVector(), pHalfHeight, pTopRadius,
-				hitDistance );
+			return decCollisionDetection::RayHitsCapsule(WorldToLocal(rayOrigin),
+				NormalWorldToLocal(rayDirection), decVector(), pHalfHeight, pTopRadius,
+				hitDistance);
 		}
 		
 	}else{
-		if( pTapered ){
-			return decCollisionDetection::RayHitsTaperedCapsule( rayOrigin, rayDirection, pPosition,
-				pHalfHeight, pTopRadius, pBottomRadius, hitDistance );
+		if(pTapered){
+			return decCollisionDetection::RayHitsTaperedCapsule(rayOrigin, rayDirection, pPosition,
+				pHalfHeight, pTopRadius, pBottomRadius, hitDistance);
 			
 		}else{
-			return decCollisionDetection::RayHitsCapsule( rayOrigin, rayDirection, pPosition,
-				pHalfHeight, pTopRadius, hitDistance );
+			return decCollisionDetection::RayHitsCapsule(rayOrigin, rayDirection, pPosition,
+				pHalfHeight, pTopRadius, hitDistance);
 		}
 	}
 }
@@ -257,9 +257,9 @@ bool decCollisionCapsule::RayHitsVolume( const decVector &rayOrigin, const decVe
 // Visiting
 /////////////
 
-void decCollisionCapsule::Visit( decCollisionVolumeVisitor *visitor ){
-	if( ! visitor ) DETHROW( deeInvalidParam );
-	visitor->VisitCapsule( this );
+void decCollisionCapsule::Visit(decCollisionVolumeVisitor *visitor){
+	if(! visitor) DETHROW(deeInvalidParam);
+	visitor->VisitCapsule(this);
 }
 
 
@@ -267,27 +267,27 @@ void decCollisionCapsule::Visit( decCollisionVolumeVisitor *visitor ){
 // collision routines
 ///////////////////////
 
-bool decCollisionCapsule::SphereHitsCapsule( decCollisionSphere *sphere ){
-	printf( "decCollisionCapsule::SphereHitsCapsule not implemented yet.\n" );
+bool decCollisionCapsule::SphereHitsCapsule(decCollisionSphere *sphere){
+	printf("decCollisionCapsule::SphereHitsCapsule not implemented yet.\n");
 	/*
 	const decVector center = sphere->GetCenter();
 	return decCollisionDetection::SegmentSegmentDistance(
-		pStartPoint, pEndPoint, center, center )
+		pStartPoint, pEndPoint, center, center)
 		<= pRadius + sphere->GetRadius();
 	*/
 	return false;
 }
 
-bool decCollisionCapsule::CylinderHitsCapsule( decCollisionCylinder *cylinder ){
-	printf( "decCollisionCapsule::CylinderHitsCapsule not implemented yet.\n" );
+bool decCollisionCapsule::CylinderHitsCapsule(decCollisionCylinder *cylinder){
+	printf("decCollisionCapsule::CylinderHitsCapsule not implemented yet.\n");
 	return false;
 }
 
-bool decCollisionCapsule::CapsuleHitsCapsule( decCollisionCapsule *capsule ){
-	printf( "decCollisionCapsule::CapsuleHitsCapsule not implemented yet.\n" );
+bool decCollisionCapsule::CapsuleHitsCapsule(decCollisionCapsule *capsule){
+	printf("decCollisionCapsule::CapsuleHitsCapsule not implemented yet.\n");
 	/*
 	return decCollisionDetection::SegmentSegmentDistance(
-		pStartPoint, pEndPoint, capsule->pStartPoint, capsule->pEndPoint )
+		pStartPoint, pEndPoint, capsule->pStartPoint, capsule->pEndPoint)
 		<= pRadius + capsule->pRadius;
 	*/
 	return false;
@@ -295,18 +295,18 @@ bool decCollisionCapsule::CapsuleHitsCapsule( decCollisionCapsule *capsule ){
 
 
 
-float decCollisionCapsule::SphereMoveHitsCapsule( decCollisionSphere *sphere, const decVector &displacement, decVector *normal ){
-	printf( "decCollisionCapsule::SphereMoveHitsCapsule not implemented yet.\n" );
+float decCollisionCapsule::SphereMoveHitsCapsule(decCollisionSphere *sphere, const decVector &displacement, decVector *normal){
+	printf("decCollisionCapsule::SphereMoveHitsCapsule not implemented yet.\n");
 	return 1.0f;
 }
 
-float decCollisionCapsule::CylinderMoveHitsCapsule( decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal ){
-	printf( "decCollisionCapsule::CylinderMoveHitsCapsule not implemented yet.\n" );
+float decCollisionCapsule::CylinderMoveHitsCapsule(decCollisionCylinder *cylinder, const decVector &displacement, decVector *normal){
+	printf("decCollisionCapsule::CylinderMoveHitsCapsule not implemented yet.\n");
 	return 1.0f;
 }
 
-float decCollisionCapsule::CapsuleMoveHitsCapsule( decCollisionCapsule *capsule, const decVector &displacement, decVector *normal ){
-	printf( "decCollisionCapsule::CapsuleMoveHitsCapsule not implemented yet.\n" );
+float decCollisionCapsule::CapsuleMoveHitsCapsule(decCollisionCapsule *capsule, const decVector &displacement, decVector *normal){
+	printf("decCollisionCapsule::CapsuleMoveHitsCapsule not implemented yet.\n");
 	return 1.0f;
 }
 
@@ -315,33 +315,33 @@ float decCollisionCapsule::CapsuleMoveHitsCapsule( decCollisionCapsule *capsule,
 // Management
 ///////////////
 
-void decCollisionCapsule::SetPosition( const decVector &position ){
+void decCollisionCapsule::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void decCollisionCapsule::SetOrientation( const decQuaternion &orientation ){
-	decMatrix matrix = decMatrix::CreateFromQuaternion( orientation );
+void decCollisionCapsule::SetOrientation(const decQuaternion &orientation){
+	decMatrix matrix = decMatrix::CreateFromQuaternion(orientation);
 	
 	pOrientation = orientation;
 	
-	pAxisX.Set( matrix.TransformRight() );
-	pAxisY.Set( matrix.TransformUp() );
-	pAxisZ.Set( matrix.TransformView() );
+	pAxisX.Set(matrix.TransformRight());
+	pAxisY.Set(matrix.TransformUp());
+	pAxisZ.Set(matrix.TransformView());
 	
-	pOriented = ! pOrientation.IsEqualTo( decQuaternion() );
+	pOriented = ! pOrientation.IsEqualTo(decQuaternion());
 }
 
 void decCollisionCapsule::ClearOrientation(){
 	pOrientation = decQuaternion();
 	
-	pAxisX.Set( 1.0f, 0.0f, 0.0f );
-	pAxisY.Set( 0.0f, 1.0f, 0.0f );
-	pAxisZ.Set( 0.0f, 0.0f, 1.0f );
+	pAxisX.Set(1.0f, 0.0f, 0.0f);
+	pAxisY.Set(0.0f, 1.0f, 0.0f);
+	pAxisZ.Set(0.0f, 0.0f, 1.0f);
 	pOriented = false;
 }
 
-void decCollisionCapsule::SetHalfHeight( float halfHeight ){
-	if( halfHeight < 1e-6f ){
+void decCollisionCapsule::SetHalfHeight(float halfHeight){
+	if(halfHeight < 1e-6f){
 		pHalfHeight = 0.0f;
 		
 	}else{
@@ -349,30 +349,30 @@ void decCollisionCapsule::SetHalfHeight( float halfHeight ){
 	}
 }
 
-void decCollisionCapsule::SetTopRadius( float topRadius ){
-	if( topRadius < 1e-6f ){
+void decCollisionCapsule::SetTopRadius(float topRadius){
+	if(topRadius < 1e-6f){
 		pTopRadius = 0.0f;
 		
 	}else{
 		pTopRadius = topRadius;
 	}
 	
-	pTapered = ( fabsf( pTopRadius - pBottomRadius ) > 1e-6f );
+	pTapered = (fabsf(pTopRadius - pBottomRadius) > 1e-6f);
 }
 
-void decCollisionCapsule::SetBottomRadius( float bottomRadius ){
-	if( bottomRadius < 1e-6f ){
+void decCollisionCapsule::SetBottomRadius(float bottomRadius){
+	if(bottomRadius < 1e-6f){
 		pBottomRadius = 0.0f;
 		
 	}else{
 		pBottomRadius = bottomRadius;
 	}
 	
-	pTapered = ( fabsf( pTopRadius - pBottomRadius ) > 1e-6f );
+	pTapered = (fabsf(pTopRadius - pBottomRadius) > 1e-6f);
 }
 
-void decCollisionCapsule::SetRadius( float radius ){
-	if( radius < 1e-6f ){
+void decCollisionCapsule::SetRadius(float radius){
+	if(radius < 1e-6f){
 		pTopRadius = 0.0f;
 		pBottomRadius = 0.0f;
 		
@@ -386,20 +386,20 @@ void decCollisionCapsule::SetRadius( float radius ){
 
 
 
-decVector decCollisionCapsule::WorldToLocal( const decVector &point ) const{
+decVector decCollisionCapsule::WorldToLocal(const decVector &point) const{
 	decVector tp = point - pPosition;
-	return decVector( pAxisX * tp, pAxisY * tp, pAxisZ * tp );
+	return decVector(pAxisX * tp, pAxisY * tp, pAxisZ * tp);
 }
 
-decVector decCollisionCapsule::LocalToWorld( const decVector &point ) const{
+decVector decCollisionCapsule::LocalToWorld(const decVector &point) const{
 	return pPosition + pAxisX * point.x + pAxisY * point.y + pAxisZ * point.z;
 }
 
-decVector decCollisionCapsule::NormalWorldToLocal( const decVector &normal ) const{
-	return decVector( pAxisX * normal, pAxisY * normal, pAxisZ * normal );
+decVector decCollisionCapsule::NormalWorldToLocal(const decVector &normal) const{
+	return decVector(pAxisX * normal, pAxisY * normal, pAxisZ * normal);
 }
 
-decVector decCollisionCapsule::NormalLocalToWorld( const decVector &normal ) const{
+decVector decCollisionCapsule::NormalLocalToWorld(const decVector &normal) const{
 	return pAxisX * normal.x + pAxisY * normal.y + pAxisZ * normal.z;
 }
 

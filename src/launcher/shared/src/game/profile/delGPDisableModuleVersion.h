@@ -52,10 +52,10 @@ public:
 	delGPDisableModuleVersion();
 	
 	/** \brief Create game profile disable module version. */
-	delGPDisableModuleVersion( const char *name, const char *version );
+	delGPDisableModuleVersion(const char *name, const char *version);
 	
 	/** \brief Create copy of game profile disable module version. */
-	delGPDisableModuleVersion( const delGPDisableModuleVersion &copy );
+	delGPDisableModuleVersion(const delGPDisableModuleVersion &copy);
 	
 protected:
 	/** \brief Clean up game profile disable module version. */
@@ -68,16 +68,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set module name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Module version. */
-	inline const decString &GetVersion() const{ return pVersion; }
+	inline const decString &GetVersion() const{return pVersion;}
 	
 	/** \brief Set module version. */
-	void SetVersion( const char *version );
+	void SetVersion(const char *version);
 	/*@}*/
 	
 	
@@ -89,17 +89,17 @@ public:
 	 * 
 	 * Two disable module versions are the same if they have the same name and version.
 	 */
-	bool operator==( const delGPDisableModuleVersion &other ) const;
+	bool operator==(const delGPDisableModuleVersion &other) const;
 	
 	/**
 	 * \brief Determine if two disable module versions are not the same.
 	 * 
 	 * Two disable module versions are the same if they have the same name and version.
 	 */
-	bool operator!=( const delGPDisableModuleVersion &other ) const;
+	bool operator!=(const delGPDisableModuleVersion &other) const;
 	
 	/** \brief Set disable module version to another one. */
-	delGPDisableModuleVersion &operator=( const delGPDisableModuleVersion &other );
+	delGPDisableModuleVersion &operator=(const delGPDisableModuleVersion &other);
 	/*@}*/
 };
 

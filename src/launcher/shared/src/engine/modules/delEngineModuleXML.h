@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create engine module xml read. */
-	delEngineModuleXML( deLogger *logger, const char *loggerSource );
+	delEngineModuleXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up engine module xml read. */
 	virtual ~delEngineModuleXML();
@@ -53,14 +53,14 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( const char *filename, decBaseFileReader &reader, delEngineModule &module );
+	void ReadFromFile(const char *filename, decBaseFileReader &reader, delEngineModule &module);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadModule( const decXmlElementTag &root, delEngineModule &module );
-	void pReadModuleLibrary( const decXmlElementTag &root, delEngineModule &module );
+	void pReadModule(const decXmlElementTag &root, delEngineModule &module);
+	void pReadModuleLibrary(const decXmlElementTag &root, delEngineModule &module);
 };
 
 #endif

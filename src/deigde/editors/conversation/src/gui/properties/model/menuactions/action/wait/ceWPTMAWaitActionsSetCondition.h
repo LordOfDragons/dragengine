@@ -49,9 +49,9 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAWaitActionsSetCondition( ceWindowMain &windowMain,
+	ceWPTMAWaitActionsSetCondition(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic, ceCAWait &wait,
-		ceConversationCondition::eConditionTypes conditionType );
+		ceConversationCondition::eConditionTypes conditionType);
 	/*@}*/
 	
 	
@@ -59,13 +59,13 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAWait *GetWait() const{ return pWait; }
+	inline ceCAWait *GetWait() const{return pWait;}
 	
 	/** \brief Create undo action for adding action. */
-	virtual igdeUndo *CreateUndo( ceConversationCondition *condition );
+	virtual igdeUndo *CreateUndo(ceConversationCondition *condition);
 	/*@}*/
 };
 

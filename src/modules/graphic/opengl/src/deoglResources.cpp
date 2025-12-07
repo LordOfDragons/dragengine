@@ -38,8 +38,8 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deoglResources::deoglResources( deGraphicOpenGl &ogl ) :
-pOgl( ogl )
+deoglResources::deoglResources(deGraphicOpenGl &ogl) :
+pOgl(ogl)
 {
 	(void)pOgl;
 }

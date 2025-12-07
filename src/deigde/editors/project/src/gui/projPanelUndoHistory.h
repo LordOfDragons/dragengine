@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view. */
-	projPanelUndoHistory( igdeEnvironment &environment );
+	projPanelUndoHistory(igdeEnvironment &environment);
 	
 	/** \brief Clean up view. */
 	virtual ~projPanelUndoHistory();
@@ -58,10 +58,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline projProject *GetProject() const{return pProject;}
 	
 	/** \brief Set synthesizer. */
-	void SetProject( projProject *project );
+	void SetProject(projProject *project);
 	/*@}*/
 };
 

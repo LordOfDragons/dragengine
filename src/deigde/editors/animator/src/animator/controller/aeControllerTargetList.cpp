@@ -43,8 +43,8 @@
 aeControllerTargetList::aeControllerTargetList(){
 }
 
-aeControllerTargetList::aeControllerTargetList( const aeControllerTargetList &copy ) :
-pTargets( copy.pTargets ){
+aeControllerTargetList::aeControllerTargetList(const aeControllerTargetList &copy) :
+pTargets(copy.pTargets){
 }
 
 aeControllerTargetList::~aeControllerTargetList(){
@@ -59,38 +59,38 @@ int aeControllerTargetList::GetCount() const{
 	return pTargets.GetCount();
 }
 
-aeControllerTarget *aeControllerTargetList::GetAt( int index ) const{
-	return ( aeControllerTarget* )pTargets.GetAt( index );
+aeControllerTarget *aeControllerTargetList::GetAt(int index) const{
+	return (aeControllerTarget*)pTargets.GetAt(index);
 }
 
-int aeControllerTargetList::IndexOf( aeControllerTarget *target ) const{
-	return pTargets.IndexOf( target );
+int aeControllerTargetList::IndexOf(aeControllerTarget *target) const{
+	return pTargets.IndexOf(target);
 }
 
-bool aeControllerTargetList::Has( aeControllerTarget *target ) const{
-	return pTargets.Has( target );
+bool aeControllerTargetList::Has(aeControllerTarget *target) const{
+	return pTargets.Has(target);
 }
 
-void aeControllerTargetList::Add( aeControllerTarget *target ){
-	if( ! target || Has( target ) ){
-		DETHROW( deeInvalidParam );
+void aeControllerTargetList::Add(aeControllerTarget *target){
+	if(! target || Has(target)){
+		DETHROW(deeInvalidParam);
 	}
-	pTargets.Add( target );
+	pTargets.Add(target);
 }
 
-void aeControllerTargetList::Insert( aeControllerTarget *target, int index ){
-	if( ! target || Has( target ) ){
-		DETHROW( deeInvalidParam );
+void aeControllerTargetList::Insert(aeControllerTarget *target, int index){
+	if(! target || Has(target)){
+		DETHROW(deeInvalidParam);
 	}
-	pTargets.Insert( target, index );
+	pTargets.Insert(target, index);
 }
 
-void aeControllerTargetList::Move( aeControllerTarget *target, int index ){
-	pTargets.Move( target, index );
+void aeControllerTargetList::Move(aeControllerTarget *target, int index){
+	pTargets.Move(target, index);
 }
 
-void aeControllerTargetList::Remove( aeControllerTarget *target ){
-	pTargets.RemoveFrom( pTargets.IndexOf( target ) );
+void aeControllerTargetList::Remove(aeControllerTarget *target){
+	pTargets.RemoveFrom(pTargets.IndexOf(target));
 }
 
 void aeControllerTargetList::RemoveAll(){
@@ -102,7 +102,7 @@ void aeControllerTargetList::RemoveAll(){
 // Operators
 //////////////
 
-aeControllerTargetList &aeControllerTargetList::operator=( const aeControllerTargetList &list ){
+aeControllerTargetList &aeControllerTargetList::operator=(const aeControllerTargetList &list){
 	pTargets = list.pTargets;
 	return *this;
 }

@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetSkinPath::gdeUOCBillboardSetSkinPath( gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const char *newValue ) :
-pObjectClass( NULL ),
-pBillboard( NULL )
+gdeUOCBillboardSetSkinPath::gdeUOCBillboardSetSkinPath(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const char *newValue) :
+pObjectClass(NULL),
+pBillboard(NULL)
 {
-	if( ! objectClass || ! billboard ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! billboard){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Billboard set skin path" );
+	SetShortInfo("Billboard set skin path");
 	
 	pOldValue = billboard->GetSkinPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pBillboard( NULL )
 }
 
 gdeUOCBillboardSetSkinPath::~gdeUOCBillboardSetSkinPath(){
-	if( pBillboard ){
+	if(pBillboard){
 		pBillboard->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCBillboardSetSkinPath::~gdeUOCBillboardSetSkinPath(){
 ///////////////
 
 void gdeUOCBillboardSetSkinPath::Undo(){
-	pBillboard->SetSkinPath( pOldValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetSkinPath(pOldValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }
 
 void gdeUOCBillboardSetSkinPath::Redo(){
-	pBillboard->SetSkinPath( pNewValue );
-	pObjectClass->NotifyBillboardChanged( pBillboard );
+	pBillboard->SetSkinPath(pNewValue);
+	pObjectClass->NotifyBillboardChanged(pBillboard);
 }

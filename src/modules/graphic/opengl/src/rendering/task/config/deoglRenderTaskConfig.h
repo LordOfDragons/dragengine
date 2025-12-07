@@ -54,10 +54,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of textures. */
-	inline int GetTextureCount() const{ return pTextureCount; }
+	inline int GetTextureCount() const{return pTextureCount;}
 	
 	/** Texture at index. */
-	deoglRenderTaskConfigTexture &GetTextureAt( int index ) const;
+	deoglRenderTaskConfigTexture &GetTextureAt(int index) const;
 	
 	/** Add texture. */
 	deoglRenderTaskConfigTexture &AddTexture();

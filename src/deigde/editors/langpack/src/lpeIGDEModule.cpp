@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeIGDEModule::lpeIGDEModule( igdeEnvironment &environment ) :
-igdeEditorModule( environment ){
+lpeIGDEModule::lpeIGDEModule(igdeEnvironment &environment) :
+igdeEditorModule(environment){
 }
 
 lpeIGDEModule::~lpeIGDEModule(){
@@ -51,7 +51,7 @@ lpeIGDEModule::~lpeIGDEModule(){
 ///////////////
 
 void lpeIGDEModule::Start(){
-	if( ! GetEditorWindow() ){
-		SetEditorWindow( new lpeWindowMain( *this ) );
+	if(! GetEditorWindow()){
+		SetEditorWindow(new lpeWindowMain(*this));
 	}
 }

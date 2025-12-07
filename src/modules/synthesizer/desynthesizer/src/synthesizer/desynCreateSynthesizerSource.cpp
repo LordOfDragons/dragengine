@@ -43,10 +43,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-desynCreateSynthesizerSource::desynCreateSynthesizerSource( desynSynthesizer &synthesizer, int firstLink ) :
-pSynthesizer( synthesizer ),
-pFirstLink( firstLink ),
-pSource( NULL ){
+desynCreateSynthesizerSource::desynCreateSynthesizerSource(desynSynthesizer &synthesizer, int firstLink) :
+pSynthesizer(synthesizer),
+pFirstLink(firstLink),
+pSource(NULL){
 }
 
 desynCreateSynthesizerSource::~desynCreateSynthesizerSource(){
@@ -67,26 +67,26 @@ void desynCreateSynthesizerSource::Reset(){
 // Visiting
 /////////////
 
-void desynCreateSynthesizerSource::VisitSource( deSynthesizerSource &source ){
+void desynCreateSynthesizerSource::VisitSource(deSynthesizerSource &source){
 	pSource = NULL;
 }
 
-void desynCreateSynthesizerSource::VisitSound( deSynthesizerSourceSound &source ){
-	pSource = new desynSynthesizerSourceSound( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitSound(deSynthesizerSourceSound &source){
+	pSource = new desynSynthesizerSourceSound(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitWave( deSynthesizerSourceWave &source ){
-	pSource = new desynSynthesizerSourceWave( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitWave(deSynthesizerSourceWave &source){
+	pSource = new desynSynthesizerSourceWave(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitChain( deSynthesizerSourceChain &source ){
-	pSource = new desynSynthesizerSourceChain( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitChain(deSynthesizerSourceChain &source){
+	pSource = new desynSynthesizerSourceChain(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitSynthesizer( deSynthesizerSourceSynthesizer &source ){
-	pSource = new desynSynthesizerSourceSynthesizer( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitSynthesizer(deSynthesizerSourceSynthesizer &source){
+	pSource = new desynSynthesizerSourceSynthesizer(pSynthesizer, pFirstLink, source);
 }
 
-void desynCreateSynthesizerSource::VisitGroup( deSynthesizerSourceGroup &source ){
-	pSource = new desynSynthesizerSourceGroup( pSynthesizer, pFirstLink, source );
+void desynCreateSynthesizerSource::VisitGroup(deSynthesizerSourceGroup &source){
+	pSource = new desynSynthesizerSourceGroup(pSynthesizer, pFirstLink, source);
 }

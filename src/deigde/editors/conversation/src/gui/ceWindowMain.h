@@ -58,8 +58,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTS( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTS(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -67,8 +67,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTA( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTA(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -76,8 +76,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesCTGS( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesCTGS(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -85,8 +85,8 @@ private:
 		ceWindowMain &pWindowMain;
 		
 	public:
-		cRecentFilesLangPack( ceWindowMain &windowMain );
-		void OpenFile( const char *filename ) override;
+		cRecentFilesLangPack(ceWindowMain &windowMain);
+		void OpenFile(const char *filename) override;
 		void FilesChanged() override;
 	};
 	
@@ -173,7 +173,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create main window. */
-	ceWindowMain( ceIGDEModule &module );
+	ceWindowMain(ceIGDEModule &module);
 	
 protected:
 	/** Clean up main window. */
@@ -192,80 +192,80 @@ public:
 	void ResetViews();
 	
 	/** Configuration. */
-	inline ceConfiguration &GetConfiguration() const{ return *pConfiguration; }
+	inline ceConfiguration &GetConfiguration() const{return *pConfiguration;}
 	
 	/** Clipboard. */
-	inline igdeClipboard &GetClipboard(){ return pClipboard; }
-	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
+	inline igdeClipboard &GetClipboard(){return pClipboard;}
+	inline const igdeClipboard &GetClipboard() const{return pClipboard;}
 	
 	/** Load save system. */
-	inline ceLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
+	inline ceLoadSaveSystem &GetLoadSaveSystem() const{return *pLoadSaveSystem;}
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline ceConversation *GetConversation() const{return pConversation;}
 	
 	/** Set conversation. */
-	void SetConversation( ceConversation *conversation );
+	void SetConversation(ceConversation *conversation);
 	
 	/** Create new conversation. */
 	void CreateNewConversation();
 	
 	/** Save conversation to file. */
-	void SaveConversation( const char *filename );
+	void SaveConversation(const char *filename);
 	
 	/** Properties window. */
-	inline ceWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
+	inline ceWindowProperties &GetWindowProperties() const{return *pWindowProperties;}
 	
 	/** Show found missing words dialog. */
-	void ShowFoundMissingWordsDialog( decStringSet &missingWords );
+	void ShowFoundMissingWordsDialog(decStringSet &missingWords);
 	
 	/** Recent files. */
-	inline cRecentFilesCTS &GetRecentFilesCTS(){ return pRecentFilesCTS; }
-	inline cRecentFilesCTA &GetRecentFilesCTA(){ return pRecentFilesCTA; }
-	inline cRecentFilesCTGS &GetRecentFilesCTGS(){ return pRecentFilesCTGS; }
-	inline cRecentFilesLangPack &GetRecentFilesLangPack(){ return pRecentFilesLangPack; }
+	inline cRecentFilesCTS &GetRecentFilesCTS(){return pRecentFilesCTS;}
+	inline cRecentFilesCTA &GetRecentFilesCTA(){return pRecentFilesCTA;}
+	inline cRecentFilesCTGS &GetRecentFilesCTGS(){return pRecentFilesCTGS;}
+	inline cRecentFilesLangPack &GetRecentFilesLangPack(){return pRecentFilesLangPack;}
 	
 	/** Open conversation test actor. */
-	void LoadCTA( const char *filename );
+	void LoadCTA(const char *filename);
 	
 	/** Attach language pack. */
-	void AttachLangPack( const char *filename );
+	void AttachLangPack(const char *filename);
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconActionCameraShot() const{ return pIconActionCameraShot; }
-	inline igdeIcon *GetIconActionMusic() const{ return pIconActionMusic; }
-	inline igdeIcon *GetIconActionActorSpeak() const{ return pIconActionActorSpeak; }
-	inline igdeIcon *GetIconActionIfElse() const{ return pIconActionIfElse; }
-	inline igdeIcon *GetIconActionIfElseCaseIf() const{ return pIconActionIfElseCaseIf; }
-	inline igdeIcon *GetIconActionIfElseCaseElse() const{ return pIconActionIfElseCaseElse; }
-	inline igdeIcon *GetIconActionPlayerChoice() const{ return pIconActionPlayerChoice; }
-	inline igdeIcon *GetIconActionOption() const{ return pIconActionOption; }
-	inline igdeIcon *GetIconActionSnippet() const{ return pIconActionSnippet; }
-	inline igdeIcon *GetIconActionStop() const{ return pIconActionStop; }
-	inline igdeIcon *GetIconActionActorCommand() const{ return pIconActionActorCommand; }
-	inline igdeIcon *GetIconActionCommand() const{ return pIconActionCommand; }
-	inline igdeIcon *GetIconActionVariable() const{ return pIconActionVariable; }
-	inline igdeIcon *GetIconActionWait() const{ return pIconActionWait; }
-	inline igdeIcon *GetIconActionTrigger() const{ return pIconActionTrigger; }
-	inline igdeIcon *GetIconActionActorAdd() const{ return pIconActionActorAdd; }
-	inline igdeIcon *GetIconActionActorRemove() const{ return pIconActionActorRemove; }
-	inline igdeIcon *GetIconActionCoordSysAdd() const{ return pIconActionCoordSysAdd; }
-	inline igdeIcon *GetIconActionCoordSysRemove() const{ return pIconActionCoordSysRemove; }
-	inline igdeIcon *GetIconActionComment() const{ return pIconActionComment; }
+	inline igdeIcon *GetIconActionCameraShot() const{return pIconActionCameraShot;}
+	inline igdeIcon *GetIconActionMusic() const{return pIconActionMusic;}
+	inline igdeIcon *GetIconActionActorSpeak() const{return pIconActionActorSpeak;}
+	inline igdeIcon *GetIconActionIfElse() const{return pIconActionIfElse;}
+	inline igdeIcon *GetIconActionIfElseCaseIf() const{return pIconActionIfElseCaseIf;}
+	inline igdeIcon *GetIconActionIfElseCaseElse() const{return pIconActionIfElseCaseElse;}
+	inline igdeIcon *GetIconActionPlayerChoice() const{return pIconActionPlayerChoice;}
+	inline igdeIcon *GetIconActionOption() const{return pIconActionOption;}
+	inline igdeIcon *GetIconActionSnippet() const{return pIconActionSnippet;}
+	inline igdeIcon *GetIconActionStop() const{return pIconActionStop;}
+	inline igdeIcon *GetIconActionActorCommand() const{return pIconActionActorCommand;}
+	inline igdeIcon *GetIconActionCommand() const{return pIconActionCommand;}
+	inline igdeIcon *GetIconActionVariable() const{return pIconActionVariable;}
+	inline igdeIcon *GetIconActionWait() const{return pIconActionWait;}
+	inline igdeIcon *GetIconActionTrigger() const{return pIconActionTrigger;}
+	inline igdeIcon *GetIconActionActorAdd() const{return pIconActionActorAdd;}
+	inline igdeIcon *GetIconActionActorRemove() const{return pIconActionActorRemove;}
+	inline igdeIcon *GetIconActionCoordSysAdd() const{return pIconActionCoordSysAdd;}
+	inline igdeIcon *GetIconActionCoordSysRemove() const{return pIconActionCoordSysRemove;}
+	inline igdeIcon *GetIconActionComment() const{return pIconActionComment;}
 	
-	inline igdeIcon *GetIconConditionLogic() const{ return pIconConditionLogic; }
-	inline igdeIcon *GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
-	inline igdeIcon *GetIconConditionCommand() const{ return pIconConditionCommand; }
-	inline igdeIcon *GetIconConditionVariable() const{ return pIconConditionVariable; }
-	inline igdeIcon *GetIconConditionHasActor() const{ return pIconConditionHasActor; }
-	inline igdeIcon *GetIconConditionActorInConversation() const{ return pIconConditionActorInConversation; }
-	inline igdeIcon *GetIconConditionTrigger() const{ return pIconConditionTrigger; }
+	inline igdeIcon *GetIconConditionLogic() const{return pIconConditionLogic;}
+	inline igdeIcon *GetIconConditionActorCommand() const{return pIconConditionActorCommand;}
+	inline igdeIcon *GetIconConditionCommand() const{return pIconConditionCommand;}
+	inline igdeIcon *GetIconConditionVariable() const{return pIconConditionVariable;}
+	inline igdeIcon *GetIconConditionHasActor() const{return pIconConditionHasActor;}
+	inline igdeIcon *GetIconConditionActorInConversation() const{return pIconConditionActorInConversation;}
+	inline igdeIcon *GetIconConditionTrigger() const{return pIconConditionTrigger;}
 	
-	inline igdeIcon *GetIconPlayAction() const{ return pIconPlayAction; }
-	inline igdeIcon *GetIconPlayFromHere() const{ return pIconPlayFromHere; }
-	inline igdeIcon *GetIconPlayPause() const{ return pIconPlayPause; }
-	inline igdeIcon *GetIconPlaySelectCurAction() const{ return pIconPlaySelectCurAction; }
+	inline igdeIcon *GetIconPlayAction() const{return pIconPlayAction;}
+	inline igdeIcon *GetIconPlayFromHere() const{return pIconPlayFromHere;}
+	inline igdeIcon *GetIconPlayPause() const{return pIconPlayPause;}
+	inline igdeIcon *GetIconPlaySelectCurAction() const{return pIconPlaySelectCurAction;}
 	
 	
 	
@@ -292,7 +292,7 @@ public:
 	virtual void OnDeactivate();
 	
 	/** Game like frame update. */
-	virtual void OnFrameUpdate( float elapsed );
+	virtual void OnFrameUpdate(float elapsed);
 	
 	/**
 	 * Retrieves a list of changed documents.
@@ -303,12 +303,12 @@ public:
 	 * saving. The filename is later used in calls to \ref SaveDocument to save the file
 	 * if requested by the user. All other files are discarded.
 	 */
-	virtual void GetChangedDocuments( decStringList &list );
+	virtual void GetChangedDocuments(decStringList &list);
 	
 	/**
 	 * Requests a document to be loaded.
 	 */
-	virtual void LoadDocument( const char *filename );
+	virtual void LoadDocument(const char *filename);
 	
 	/**
 	 * Requests a document to be saved.
@@ -318,7 +318,7 @@ public:
 	 * 
 	 * \returns True if the saving has been successful or false otherwise.
 	 */
-	virtual bool SaveDocument( const char *filename );
+	virtual bool SaveDocument(const char *filename);
 	
 	/**
 	 * Recent files changed.
@@ -358,9 +358,9 @@ private:
 	void pCreateToolBarFile();
 	void pCreateToolBarEdit();
 	void pCreateMenu();
-	void pCreateMenuFile( igdeMenuCascade &menu );
-	void pCreateMenuEdit( igdeMenuCascade &menu );
-	void pCreateMenuView( igdeMenuCascade &menu );
+	void pCreateMenuFile(igdeMenuCascade &menu);
+	void pCreateMenuEdit(igdeMenuCascade &menu);
+	void pCreateMenuView(igdeMenuCascade &menu);
 };
 
 #endif

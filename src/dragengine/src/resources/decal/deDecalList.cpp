@@ -45,7 +45,7 @@ deDecalList::deDecalList(){
 
 deDecalList::~deDecalList(){
 	RemoveAllDecals();
-	if( pDecals ) delete [] pDecals;
+	if(pDecals) delete [] pDecals;
 }
 
 
@@ -53,18 +53,18 @@ deDecalList::~deDecalList(){
 // Management
 ///////////////
 
-deDecal *deDecalList::GetDecalAt( int index ) const{
-	if( index < 0 || index >= pDecalCount ) DETHROW( deeInvalidParam );
+deDecal *deDecalList::GetDecalAt(int index) const{
+	if(index < 0 || index >= pDecalCount) DETHROW(deeInvalidParam);
 	
-	return pDecals[ index ];
+	return pDecals[index];
 }
 
-bool deDecalList::HasDecal( deDecal *decal ) const{
-	if( ! decal ) DETHROW( deeInvalidParam );
+bool deDecalList::HasDecal(deDecal *decal) const{
+	if(! decal) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pDecalCount; i++ ){
-		if( decal == pDecals[ i ] ){
+	for(i=0; i<pDecalCount; i++){
+		if(decal == pDecals[i]){
 			return true;
 		}
 	}
@@ -72,12 +72,12 @@ bool deDecalList::HasDecal( deDecal *decal ) const{
 	return false;
 }
 
-int deDecalList::IndexOfDecal( deDecal *decal ) const{
-	if( ! decal ) DETHROW( deeInvalidParam );
+int deDecalList::IndexOfDecal(deDecal *decal) const{
+	if(! decal) DETHROW(deeInvalidParam);
 	int i;
 	
-	for( i=0; i<pDecalCount; i++ ){
-		if( decal == pDecals[ i ] ){
+	for(i=0; i<pDecalCount; i++){
+		if(decal == pDecals[i]){
 			return i;
 		}
 	}
@@ -85,29 +85,29 @@ int deDecalList::IndexOfDecal( deDecal *decal ) const{
 	return -1;
 }
 
-void deDecalList::AddDecal( deDecal *decal ){
-	if( HasDecal( decal ) ) DETHROW( deeInvalidParam );
+void deDecalList::AddDecal(deDecal *decal){
+	if(HasDecal(decal)) DETHROW(deeInvalidParam);
 	
-	if( pDecalCount == pDecalSize ){
+	if(pDecalCount == pDecalSize){
 		int newSize = pDecalSize * 3 / 2 + 1;
-		deDecal **newArray = new deDecal*[ newSize ];
-		if( pDecals ){
-			memcpy( newArray, pDecals, sizeof( deDecal* ) * pDecalSize );
+		deDecal **newArray = new deDecal*[newSize];
+		if(pDecals){
+			memcpy(newArray, pDecals, sizeof(deDecal*) * pDecalSize);
 			delete [] pDecals;
 		}
 		pDecals = newArray;
 		pDecalSize = newSize;
 	}
 	
-	pDecals[ pDecalCount ] = decal;
+	pDecals[pDecalCount] = decal;
 	pDecalCount++;
 	
 	decal->AddReference();
 }
 
 void deDecalList::RemoveAllDecals(){
-	while( pDecalCount > 0 ){
+	while(pDecalCount > 0){
 		pDecalCount--;
-		pDecals[ pDecalCount ]->FreeReference();
+		pDecals[pDecalCount]->FreeReference();
 	}
 }

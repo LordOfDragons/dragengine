@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleLimitSetCFrame( aeRuleLimit *rule, deAnimatorRuleLimit::eCoordinateFrames newCoordFrame );
+	aeURuleLimitSetCFrame(aeRuleLimit *rule, deAnimatorRuleLimit::eCoordinateFrames newCoordFrame);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleLimitSetCFrame();

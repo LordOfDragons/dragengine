@@ -48,7 +48,7 @@ decConvexFaceClipper::decConvexFaceClipper(){
 }
 
 decConvexFaceClipper::~decConvexFaceClipper(){
-	if( pVertices ) delete [] pVertices;
+	if(pVertices) delete [] pVertices;
 }
 
 
@@ -56,53 +56,53 @@ decConvexFaceClipper::~decConvexFaceClipper(){
 // Management
 ///////////////
 
-void decConvexFaceClipper::SetNormal( const decDVector &normal ){
+void decConvexFaceClipper::SetNormal(const decDVector &normal){
 	pNormal = normal;
 }
 
-const decDVector &decConvexFaceClipper::GetVertexAt( int position ) const{
-	if( position < 0 || position >= pVertexCount ) DETHROW( deeInvalidParam );
+const decDVector &decConvexFaceClipper::GetVertexAt(int position) const{
+	if(position < 0 || position >= pVertexCount) DETHROW(deeInvalidParam);
 	
-	return pVertices[ position ];
+	return pVertices[position];
 }
 
-bool decConvexFaceClipper::HasVertex( const decDVector &vertex ) const{
+bool decConvexFaceClipper::HasVertex(const decDVector &vertex) const{
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex.IsEqualTo( pVertices[ i ] ) ) return true;
+	for(i=0; i<pVertexCount; i++){
+		if(vertex.IsEqualTo(pVertices[i])) return true;
 	}
 	
 	return false;
 }
 
-int decConvexFaceClipper::IndexOfVertex( const decDVector &vertex ) const{
+int decConvexFaceClipper::IndexOfVertex(const decDVector &vertex) const{
 	int i;
 	
-	for( i=0; i<pVertexCount; i++ ){
-		if( vertex.IsEqualTo( pVertices[ i ] ) ) return i;
+	for(i=0; i<pVertexCount; i++){
+		if(vertex.IsEqualTo(pVertices[i])) return i;
 	}
 	
 	return -1;
 }
 
-void decConvexFaceClipper::AddVertex( const decDVector &vertex ){
-	decDVector *newArray = new decDVector[ pVertexCount + 1 ];
-	if( ! newArray ) DETHROW( deeOutOfMemory );
+void decConvexFaceClipper::AddVertex(const decDVector &vertex){
+	decDVector *newArray = new decDVector[pVertexCount + 1];
+	if(! newArray) DETHROW(deeOutOfMemory);
 	
-	if( pVertices ){
+	if(pVertices){
 		int i;
-		for( i=0; i<pVertexCount; i++ ) newArray[ i ] = pVertices[ i ];
+		for(i=0; i<pVertexCount; i++) newArray[i] = pVertices[i];
 		delete [] pVertices;
 	}
 	pVertices = newArray;
 	
-	pVertices[ pVertexCount ] = vertex;
+	pVertices[pVertexCount] = vertex;
 	pVertexCount++;
 }
 
 void decConvexFaceClipper::RemoveAllVertices(){
-	if( pVertices ){
+	if(pVertices){
 		delete [] pVertices;
 		pVertices = NULL;
 	}
@@ -111,7 +111,7 @@ void decConvexFaceClipper::RemoveAllVertices(){
 
 
 
-void decConvexFaceClipper::ClipByPlane( const decDVector &planeNormal, const decDVector &planePosition ){
+void decConvexFaceClipper::ClipByPlane(const decDVector &planeNormal, const decDVector &planePosition){
 	double planeDot = planeNormal * planePosition;
 	decDVector edgeDirection, cutVertexPosition;
 	decDVector *oldVertices = pVertices;
@@ -125,28 +125,28 @@ void decConvexFaceClipper::ClipByPlane( const decDVector &planeNormal, const dec
 	pVertexCount = 0;
 	
 	try{
-		for( v=0; v<oldVertexCount; v++ ){
+		for(v=0; v<oldVertexCount; v++){
 			// get the first and second vertex of this edge
 			vertexFirst = v;
-			vertexSecond = ( v + 1 ) % oldVertexCount;
+			vertexSecond = (v + 1) % oldVertexCount;
 			
 			// determine if the vertices are in front of the split plane
-			dotFirst = planeNormal * oldVertices[ vertexFirst ] - planeDot;
-			if( dotFirst > EQUALITY_THRESHOLD ){
+			dotFirst = planeNormal * oldVertices[vertexFirst] - planeDot;
+			if(dotFirst > EQUALITY_THRESHOLD){
 				sideFirst = 1;
 				
-			}else if( dotFirst < -EQUALITY_THRESHOLD ){
+			}else if(dotFirst < -EQUALITY_THRESHOLD){
 				sideFirst = -1;
 				
 			}else{
 				sideFirst = 0;
 			}
 			
-			dotSecond = planeNormal * oldVertices[ vertexSecond ] - planeDot;
-			if( dotSecond > EQUALITY_THRESHOLD ){
+			dotSecond = planeNormal * oldVertices[vertexSecond] - planeDot;
+			if(dotSecond > EQUALITY_THRESHOLD){
 				sideSecond = 1;
 				
-			}else if( dotSecond < -EQUALITY_THRESHOLD ){
+			}else if(dotSecond < -EQUALITY_THRESHOLD){
 				sideSecond = -1;
 				
 			}else{
@@ -154,38 +154,38 @@ void decConvexFaceClipper::ClipByPlane( const decDVector &planeNormal, const dec
 			}
 			
 			// add vertex if front side or on the cut plane
-			if( sideFirst != -1 ){
-				AddVertex( oldVertices[ vertexFirst ] );
+			if(sideFirst != -1){
+				AddVertex(oldVertices[vertexFirst]);
 			}
 			
 			// if both are on different sides add cut vertex
-			if( sideFirst != 0 && sideSecond != 0 && sideFirst != sideSecond ){
+			if(sideFirst != 0 && sideSecond != 0 && sideFirst != sideSecond){
 				// calculate the cut vertex
-				edgeDirection = oldVertices[ vertexSecond ] - oldVertices[ vertexFirst ];
-				lambda = ( planeDot - planeNormal * oldVertices[ vertexFirst ] )
-					/ ( planeNormal * edgeDirection );
-				cutVertexPosition = oldVertices[ vertexFirst ] + edgeDirection * lambda;
+				edgeDirection = oldVertices[vertexSecond] - oldVertices[vertexFirst];
+				lambda = (planeDot - planeNormal * oldVertices[vertexFirst])
+					/ (planeNormal * edgeDirection);
+				cutVertexPosition = oldVertices[vertexFirst] + edgeDirection * lambda;
 				
 				// add vertex
-				AddVertex( cutVertexPosition );
+				AddVertex(cutVertexPosition);
 			}
 		}
 		
 		// old vertices no more needed
-		if( oldVertices ) delete [] oldVertices;
+		if(oldVertices) delete [] oldVertices;
 		
-	}catch( const deException & ){
-		if( oldVertices ) delete [] oldVertices;
+	}catch(const deException &){
+		if(oldVertices) delete [] oldVertices;
 		throw;
 	}
 }
 
-void decConvexFaceClipper::Transform( const decDMatrix &matrix ){
+void decConvexFaceClipper::Transform(const decDMatrix &matrix){
 	int v;
 	
-	for( v=0; v<pVertexCount; v++ ){
-		pVertices[ v ] = matrix * pVertices[ v ];
+	for(v=0; v<pVertexCount; v++){
+		pVertices[v] = matrix * pVertices[v];
 	}
 	
-	pNormal = matrix.TransformNormal( pNormal );
+	pNormal = matrix.TransformNormal(pNormal);
 }

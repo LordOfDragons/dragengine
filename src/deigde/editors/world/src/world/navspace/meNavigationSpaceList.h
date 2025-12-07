@@ -52,19 +52,19 @@ public:
 	/** Retrieves the number of navigation spaces. */
 	int GetCount() const;
 	/** Retrieves the navigation space at the given position. */
-	meNavigationSpace *GetAt( int position ) const;
+	meNavigationSpace *GetAt(int position) const;
 	/** Retrieves the index of the given navigation space or -1 if not found. */
-	int IndexOf( meNavigationSpace *navspace ) const;
+	int IndexOf(meNavigationSpace *navspace) const;
 	/** Determines if the given navigation space exists. */
-	bool Has( meNavigationSpace *navspace );
+	bool Has(meNavigationSpace *navspace);
 	/** Adds an navigation space throwing an exception if already existing. */
-	void Add( meNavigationSpace *navspace );
+	void Add(meNavigationSpace *navspace);
 	/** Adds an navigation space if not existing already. */
-	void AddIfAbsent( meNavigationSpace *navspace );
+	void AddIfAbsent(meNavigationSpace *navspace);
 	/** Removes an navigation space throwing an exception if not existing. */
-	void Remove( meNavigationSpace *navspace );
+	void Remove(meNavigationSpace *navspace);
 	/** Removes an navigation space if existing. */
-	void RemoveIfPresent( meNavigationSpace *navspace );
+	void RemoveIfPresent(meNavigationSpace *navspace);
 	/** Removes all navigation spaces. */
 	void RemoveAll();
 	/*@}*/

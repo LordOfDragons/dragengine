@@ -97,7 +97,7 @@ public:
 	};
 	
 private:
-	debpOctree *pNodes[ 8 ];
+	debpOctree *pNodes[8];
 	decVector pCenter;
 	decVector pHalfSize;
 	debpOctree *pParent;
@@ -106,7 +106,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new generic octree object. */
-	debpOctree( const decVector &center, const decVector &halfSize );
+	debpOctree(const decVector &center, const decVector &halfSize);
 	/** Cleans up the generic octree object. */
 	virtual ~debpOctree();
 	/*@}*/
@@ -114,78 +114,78 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the parent of the octree or NULL if a root octree. */
-	inline debpOctree *GetParent() const{ return pParent; }
+	inline debpOctree *GetParent() const{return pParent;}
 	/** Sets the parent of the octree or NULL if a root octree. */
-	void SetParent( debpOctree *parent );
+	void SetParent(debpOctree *parent);
 	/** Retrieves the center of the octree. */
-	inline const decVector &GetCenter() const{ return pCenter; }
+	inline const decVector &GetCenter() const{return pCenter;}
 	/** Retrieves the half size of the octree. */
-	inline const decVector &GetHalfSize() const{ return pHalfSize; }
+	inline const decVector &GetHalfSize() const{return pHalfSize;}
 	/**
 	 * Retrieves one of the 8 child nodes. This is NULL if there
 	 * exists no such node yet. You can use either an index from 0
 	 * to 7 inclusive or use one of the the eOctants constants.
 	 */
-	debpOctree *GetNodeAt( int octant ) const;
+	debpOctree *GetNodeAt(int octant) const;
 	/**
 	 * Sets one of the eight child nodes. You can use either an index from 0
 	 * to 7 inclusive or use one of the the eOctant constants. Node can be
 	 * NULL to remove the child node.
 	 */
-	void SetNodeAt( int octant, debpOctree *octree );
+	void SetNodeAt(int octant, debpOctree *octree);
 	/**
 	 * Looks for the child node in which the given box lies. If the child node
 	 * does not yet exist it is created. If found the node is returned. If
 	 * no node could be found NULL is returned.
 	 */
-	debpOctree *GetNodeAtBox( const decVector &boxCenter, const decVector &boxHalfSize );
+	debpOctree *GetNodeAtBox(const decVector &boxCenter, const decVector &boxHalfSize);
 	/**
 	 * Looks for the child node in which the box lies. If found the node
 	 * is returned. If no node could be found NULL or the node does not exist
 	 * yet NULL is returned.
 	 */
-	debpOctree *FindNodeAtBox( const decVector &boxCenter, const decVector &boxHalfSize ) const;
+	debpOctree *FindNodeAtBox(const decVector &boxCenter, const decVector &boxHalfSize) const;
 	/**
 	 * Looks for the octant in which the element lies. Returns eoNotFound
 	 * if no octant fully contains the element.
 	 */
-	int FindOctantAtBox( const decVector &boxCenter, const decVector &boxHalfSize ) const;
+	int FindOctantAtBox(const decVector &boxCenter, const decVector &boxHalfSize) const;
 	/** Determines if the box is located completely in this node. */
-	bool ContainsBox( const decVector &boxCenter, const decVector &boxHalfSize ) const;
+	bool ContainsBox(const decVector &boxCenter, const decVector &boxHalfSize) const;
 	/**
 	 * Looks for the child node in which the point lies. If found the node
 	 * is returned. If no node could be found NULL or the node does not exist
 	 * yet NULL is returned.
 	 */
-	debpOctree *FindNodeAtPoint( const decVector &point ) const;
+	debpOctree *FindNodeAtPoint(const decVector &point) const;
 	/** Looks for the octant in which the point lies. */
-	int FindOctantAtPoint( const decVector &point ) const;
+	int FindOctantAtPoint(const decVector &point) const;
 	/** Determines if the point is located in this node. */
-	bool ContainsPoint( const decVector &point ) const;
+	bool ContainsPoint(const decVector &point) const;
 	
 	/** Searches for the Node containing a given box. */
-	debpOctree *SearchTreeForBox( const decVector &boxCenter, const decVector &boxHalfSize ) const;
+	debpOctree *SearchTreeForBox(const decVector &boxCenter, const decVector &boxHalfSize) const;
 	/** Searches for the Node where the given point lies in. */
-	debpOctree *SearchTreeForPoint( const decVector &point ) const;
+	debpOctree *SearchTreeForPoint(const decVector &point) const;
 	/** Visits all nodes. */
-	void VisitNodes( debpOctreeVisitor *visitor );
+	void VisitNodes(debpOctreeVisitor *visitor);
 	/** Visits all nodes which collide with the given collision volume. */
-	void VisitNodesColliding( debpOctreeVisitor *visitor, debpCollisionVolume *volume );
+	void VisitNodesColliding(debpOctreeVisitor *visitor, debpCollisionVolume *volume);
 	/** Visits all nodes which collide with the given box. */
-	void VisitNodesColliding( debpOctreeVisitor *visitor, const decVector &boxMinExtend, const decVector &boxMaxExtend );
+	void VisitNodesColliding(debpOctreeVisitor *visitor, const decVector &boxMinExtend, const decVector &boxMaxExtend);
 	/**
 	 * Clears the octree. If clearNodes is set to true all elements are cleared and
 	 * nodes are reset to NULL. Otherwise only all elements are removed but the
 	 * nodes stay intact.
 	 */
-	void ClearTree( bool clearNodes );
+	void ClearTree(bool clearNodes);
 	
 	/**
 	 * Creates new octree for the specified octant. Implement this function
 	 * to create a new octree of your own type. Do not set the parent of
 	 * octree. The caller is responsible for this action if applicable.
 	 */
-	virtual debpOctree *CreateOctree( int octant ) const = 0;
+	virtual debpOctree *CreateOctree(int octant) const = 0;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent() = 0;
 	/*@}*/

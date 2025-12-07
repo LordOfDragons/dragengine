@@ -53,45 +53,45 @@ public:
 	virtual void ParametersChanged();
 	
 	/** \brief Sector added. */
-	virtual void SectorAdded( deHeightTerrainSector *sector );
+	virtual void SectorAdded(deHeightTerrainSector *sector);
 	
 	/** \brief Sector removed. */
-	virtual void SectorRemoved( int sector );
+	virtual void SectorRemoved(int sector);
 	
 	/** \brief All sector removed. */
 	virtual void AllSectorsRemoved();
 	
 	/** \brief Sector changed. */
-	virtual void SectorChanged( int sector );
+	virtual void SectorChanged(int sector);
 	
 	
 	
 	/** \brief Sector heights changed. */
-	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
-		const decPoint &toSector, const decPoint &toCoordinates );
+	virtual void HeightChanged(const decPoint &fromSector, const decPoint &fromCoordinates,
+		const decPoint &toSector, const decPoint &toCoordinates);
 	
 	
 	
 	/** \brief Navigation space added. */
-	virtual void NavSpaceAdded( int sector, deHeightTerrainNavSpace *navspace );
+	virtual void NavSpaceAdded(int sector, deHeightTerrainNavSpace *navspace);
 	
 	/** \brief Navigation space removed. */
-	virtual void NavSpaceRemoved( int sector, int index );
+	virtual void NavSpaceRemoved(int sector, int index);
 	
 	/** \brief All navigation spaces removed. */
-	virtual void AllNavSpacesRemoved( int sector );
+	virtual void AllNavSpacesRemoved(int sector);
 	
 	/** \brief Navigation space layer changed. */
-	virtual void NavSpaceLayerChanged( int sector, int index );
+	virtual void NavSpaceLayerChanged(int sector, int index);
 	
 	/** \brief Navigation space type changed. */
-	virtual void NavSpaceTypeChanged( int sector, int index );
+	virtual void NavSpaceTypeChanged(int sector, int index);
 	
 	/** \brief Navigation space snapping parameters changed. */
-	virtual void NavSpaceSnappingChanged( int sector, int index );
+	virtual void NavSpaceSnappingChanged(int sector, int index);
 	
 	/** \brief Navigation space layout changed. */
-	virtual void NavSpaceLayoutChanged( int sector, int index );
+	virtual void NavSpaceLayoutChanged(int sector, int index);
 	/*@}*/
 };
 

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create view editor. */
-	meViewEditorNavSpaceEdit( meView3D &view );
+	meViewEditorNavSpaceEdit(meView3D &view);
 	
 	/** \brief Clean up view editor. */
 	virtual ~meViewEditorNavSpaceEdit();
@@ -68,16 +68,16 @@ public:
 	virtual void OnResize();
 	
 	/** \brief Left mouse button has been pressed. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonPress(int x, int y, bool shift, bool control);
 	
 	/** \brief Left mouse button has been released. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	virtual void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control);
 	
 	/** \brief Mouse has been moved. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	virtual void OnMouseMove(int x, int y, bool shift, bool control);
 	
 	/** \brief The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	virtual void OnMouseWheel(int steps, bool shift, bool control);
 	/*@}*/
 	
 	

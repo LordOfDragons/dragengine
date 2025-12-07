@@ -54,12 +54,12 @@ int igdeClipboard::GetCount() const{
 	return pData.GetCount();
 }
 
-bool igdeClipboard::HasWithTypeName( const char *typeName ) const{
+bool igdeClipboard::HasWithTypeName(const char *typeName) const{
 	const int count = pData.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		if( ( ( igdeClipboardData* )pData.GetAt( i ) )->GetTypeName() == typeName ){
+	for(i=0; i<count; i++){
+		if(((igdeClipboardData*)pData.GetAt(i))->GetTypeName() == typeName){
 			return true;
 		}
 	}
@@ -67,17 +67,17 @@ bool igdeClipboard::HasWithTypeName( const char *typeName ) const{
 	return false;
 }
 
-igdeClipboardData *igdeClipboard::GetAt( int index ) const{
-	return ( igdeClipboardData* )pData.GetAt( index );
+igdeClipboardData *igdeClipboard::GetAt(int index) const{
+	return (igdeClipboardData*)pData.GetAt(index);
 }
 
-igdeClipboardData *igdeClipboard::GetWithTypeName( const char *typeName ) const{
+igdeClipboardData *igdeClipboard::GetWithTypeName(const char *typeName) const{
 	const int count = pData.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		igdeClipboardData * const data = ( igdeClipboardData* )pData.GetAt( i );
-		if( data->GetTypeName() == typeName ){
+	for(i=0; i<count; i++){
+		igdeClipboardData * const data = (igdeClipboardData*)pData.GetAt(i);
+		if(data->GetTypeName() == typeName){
 			return data;
 		}
 	}
@@ -85,19 +85,19 @@ igdeClipboardData *igdeClipboard::GetWithTypeName( const char *typeName ) const{
 	return NULL;
 }
 
-void igdeClipboard::Set( igdeClipboardData *data ){
-	if( ! data ){
-		DETHROW( deeInvalidParam );
+void igdeClipboard::Set(igdeClipboardData *data){
+	if(! data){
+		DETHROW(deeInvalidParam);
 	}
 	
-	Clear( data->GetTypeName() );
-	pData.Add( data );
+	Clear(data->GetTypeName());
+	pData.Add(data);
 }
 
-void igdeClipboard::Clear( const char *typeName ){
-	igdeClipboardData * const data = GetWithTypeName( typeName );
-	if( data ){
-		pData.Remove( data );
+void igdeClipboard::Clear(const char *typeName){
+	igdeClipboardData * const data = GetWithTypeName(typeName);
+	if(data){
+		pData.Remove(data);
 	}
 }
 

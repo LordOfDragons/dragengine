@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalPropertyRemoveFromSelected( const meDecalList &list, const char *key );
+	meUDecalPropertyRemoveFromSelected(const meDecalList &list, const char *key);
 	
 protected:
 	/** \brief Clean up undo decal. */
@@ -65,8 +65,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of decals to manipulate. */
-	inline decObjectList &GetList(){ return pList; }
-	inline const decObjectList &GetList() const{ return pList; }
+	inline decObjectList &GetList(){return pList;}
+	inline const decObjectList &GetList() const{return pList;}
 	
 	/** \brief Undo action. */
 	virtual void Undo();

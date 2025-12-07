@@ -59,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create active object forceField. */
-	gdeVAOForceField( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCForceField *ocfield );
+	gdeVAOForceField(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+		const decString &propertyPrefix, gdeOCForceField *ocfield);
 	
 protected:
 	/**
@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{ return pOCForceField; }
+	inline gdeOCForceField *GetOCForceField() const{return pOCForceField;}
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources();

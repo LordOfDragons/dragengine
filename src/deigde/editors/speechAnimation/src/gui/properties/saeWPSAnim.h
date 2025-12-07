@@ -81,7 +81,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	saeWPSAnim( saeWindowProperties &windowProperties );
+	saeWPSAnim(saeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -94,13 +94,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline saeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline saeSAnimation *GetSAnimation() const{return pSAnimation;}
 	
 	/** Set speech animation. */
-	void SetSAnimation( saeSAnimation *sanimation );
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Speech animation path changed. */
 	void OnSAnimationPathChanged();
@@ -120,7 +120,7 @@ public:
 	const decString &GetCBNeutralVertexPositionSetText() const;
 	
 	/** Set neutral vertex position set combo box text. */
-	void SetCBNeutralVertexPositionSetText( const char *text );
+	void SetCBNeutralVertexPositionSetText(const char *text);
 	
 	
 	

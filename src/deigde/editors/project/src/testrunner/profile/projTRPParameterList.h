@@ -58,31 +58,31 @@ public:
 	int GetCount() const;
 	
 	/** \brief Parameter at index. */
-	projTRPParameter *GetAt( int index ) const;
+	projTRPParameter *GetAt(int index) const;
 	
 	/** \brief Named parameter with module or \em NULL if absent. */
-	projTRPParameter *GetWith( const char *module, const char *name ) const;
+	projTRPParameter *GetWith(const char *module, const char *name) const;
 	
 	/** \brief Parameter is present. */
-	bool Has( projTRPParameter *parameter ) const;
+	bool Has(projTRPParameter *parameter) const;
 	
 	/** \brief Named parameter with module is present. */
-	bool HasWith( const char *module, const char *name ) const;
+	bool HasWith(const char *module, const char *name) const;
 	
 	/** \brief Index of parameter or -1 if absent. */
-	int IndexOf( projTRPParameter *module ) const;
+	int IndexOf(projTRPParameter *module) const;
 	
 	/** \brief Index of named parameter with module or -1 if absent. */
-	int IndexOfWith( const char *module, const char *name ) const;
+	int IndexOfWith(const char *module, const char *name) const;
 	
 	/** \brief Add parameter. */
-	void Add( projTRPParameter *parameter );
+	void Add(projTRPParameter *parameter);
 	
 	/** \brief Remove parameter. */
-	void Remove( projTRPParameter *parameter );
+	void Remove(projTRPParameter *parameter);
 	
 	/** \brief Remove named parameter with module if present. */
-	void RemoveWith( const char *module, const char *name );
+	void RemoveWith(const char *module, const char *name);
 	
 	/** \brief Remove all parameters. */
 	void RemoveAll();
@@ -90,10 +90,10 @@ public:
 	
 	
 	/** \brief Set parameter. */
-	void Set( const char *module, const char *name, const char *value );
+	void Set(const char *module, const char *name, const char *value);
 	
 	/** \brief Set parameter. */
-	void Set( const projTRPParameter &parameter );
+	void Set(const projTRPParameter &parameter);
 	/*@}*/
 };
 

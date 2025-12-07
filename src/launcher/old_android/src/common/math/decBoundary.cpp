@@ -35,13 +35,13 @@
 /////////////////////
 
 void decBoundary::OrientateRect(){
-	if( x1 > x2 ){
+	if(x1 > x2){
 		const int temp = x2;
 		x2 = x1 + 1;
 		x1 = temp + 1;
 	}
 	
-	if( y1 > y2 ){
+	if(y1 > y2){
 		const int temp = y2;
 		y2 = y1 + 1;
 		y1 = temp + 1;
@@ -49,14 +49,14 @@ void decBoundary::OrientateRect(){
 }
 
 void decBoundary::OrientateLine(){
-	if( x1 == x2 ){
-		if( y1 > y2 ){
+	if(x1 == x2){
+		if(y1 > y2){
 			const int temp = y2;
 			y2 = y1 + 1;
 			y1 = temp + 1;
 		}
 		
-	}else if( x1 > x2 ){
+	}else if(x1 > x2){
 		const int temp1 = y2;
 		y2 = y1;
 		y1 = temp1;
@@ -68,16 +68,16 @@ void decBoundary::OrientateLine(){
 		const int diffx = x2 - x1;
 		const int diffy = y2 - y1;
 		
-		if( diffx > diffy * 0.5 ){
+		if(diffx > diffy * 0.5){
 			x1++;
 			x2++;
 		}
 		
-		if( diffy > diffx * 0.5 ){
+		if(diffy > diffx * 0.5){
 			y1++;
 			y2++;
 			
-		}else if( -diffy > diffx * 0.5 ){
+		}else if(-diffy > diffx * 0.5){
 			y1--;
 			y2--;
 		}
@@ -89,7 +89,7 @@ void decBoundary::OrientateLine(){
 // Operators
 //////////////
 
-decBoundary &decBoundary::operator=( const decBoundary &b ){
+decBoundary &decBoundary::operator=(const decBoundary &b){
 	x1 = b.x1;
 	y1 = b.y1;
 	x2 = b.x2;

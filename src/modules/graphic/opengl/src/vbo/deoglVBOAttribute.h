@@ -100,36 +100,36 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Count of components. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/** Set count of components. */
-	void SetComponentCount( int componentCount );
+	void SetComponentCount(int componentCount);
 	
 	/** Data type. */
-	inline eDataTypes GetDataType() const{ return pDataType; }
+	inline eDataTypes GetDataType() const{return pDataType;}
 	
 	/** Set data type. */
-	void SetDataType( eDataTypes dataType );
+	void SetDataType(eDataTypes dataType);
 	
 	/** Offset. */
-	inline int GetOffset() const{ return pOffset; }
+	inline int GetOffset() const{return pOffset;}
 	
 	/** Set offset. */
-	void SetOffset( int offset );
+	void SetOffset(int offset);
 	
 	/**
 	 * Set VAO attribute from the stored properties.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
-	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int stride ) const;
+	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int stride) const;
 	
 	/**
 	 * Set VAO attribute from the stored properties.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
-	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int stride, int offset ) const;
+	void SetVAOAttributeAt(deoglRenderThread &renderThread, int attribute, int stride, int offset) const;
 	/*@}*/
 	
 	
@@ -137,13 +137,13 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Set attribute. */
-	deoglVBOAttribute &operator=( const deoglVBOAttribute &attribute );
+	deoglVBOAttribute &operator=(const deoglVBOAttribute &attribute);
 	
 	/** Attribute matches another one. */
-	bool operator==( const deoglVBOAttribute &attribute ) const;
+	bool operator==(const deoglVBOAttribute &attribute) const;
 	
 	/** Attribute does not match another one. */
-	bool operator!=( const deoglVBOAttribute &attribute ) const;
+	bool operator!=(const deoglVBOAttribute &attribute) const;
 	/*@}*/
 };
 

@@ -46,20 +46,20 @@ decDCollisionVolumeVisitor::~decDCollisionVolumeVisitor(){
 // Visiting
 /////////////
 
-void decDCollisionVolumeVisitor::VisitSphere( decDCollisionSphere *sphere ){
+void decDCollisionVolumeVisitor::VisitSphere(decDCollisionSphere *sphere){
 }
 
-void decDCollisionVolumeVisitor::VisitCylinder( decDCollisionCylinder *cylinder ){
+void decDCollisionVolumeVisitor::VisitCylinder(decDCollisionCylinder *cylinder){
 }
 
-void decDCollisionVolumeVisitor::VisitCapsule( decDCollisionCapsule *capsule ){
+void decDCollisionVolumeVisitor::VisitCapsule(decDCollisionCapsule *capsule){
 }
 
-void decDCollisionVolumeVisitor::VisitBox( decDCollisionBox *box ){
+void decDCollisionVolumeVisitor::VisitBox(decDCollisionBox *box){
 }
 
-void decDCollisionVolumeVisitor::VisitTriangle( decDCollisionTriangle *triangle ){
+void decDCollisionVolumeVisitor::VisitTriangle(decDCollisionTriangle *triangle){
 }
 
-void decDCollisionVolumeVisitor::VisitFrustum( decDCollisionFrustum *frustum ){
+void decDCollisionVolumeVisitor::VisitFrustum(decDCollisionFrustum *frustum){
 }

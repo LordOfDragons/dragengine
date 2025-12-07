@@ -59,8 +59,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodesResize( const sePropertyNodeList &nodes, const decVector2 &pivot,
-		const decVector2 &origin, float rotation, float shearing );
+	seUPropertyNodesResize(const sePropertyNodeList &nodes, const decVector2 &pivot,
+		const decVector2 &origin, float rotation, float shearing);
 	
 protected:
 	/** \brief Clean up undo. */
@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Set distance. */
-	void SetDistance( const decVector2 &distance );
+	void SetDistance(const decVector2 &distance);
 	
 	/** \brief Undo action. */
 	virtual void Undo();
@@ -85,7 +85,7 @@ public:
 	
 	
 private:
-	void pAddNodes( sePropertyNode *node );
+	void pAddNodes(sePropertyNode *node);
 };
 
 #endif

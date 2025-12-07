@@ -48,16 +48,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileSetID::ceUCFileSetID( const ceConversation &conversation,
-ceConversationFile *file, const char *newID ) :
-pFile( NULL ),
-pNewID( newID )
+ceUCFileSetID::ceUCFileSetID(const ceConversation &conversation,
+ceConversationFile *file, const char *newID) :
+pFile(NULL),
+pNewID(newID)
 {
-	if( ! file || ! newID ){
-		DETHROW( deeInvalidParam );
+	if(! file || ! newID){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "File Set ID" );
+	SetShortInfo("File Set ID");
 	
 	pOldID = file->GetID();
 	
@@ -67,15 +67,15 @@ pNewID( newID )
 	const int groupCount = groups.GetCount();
 	int i;
 	
-	for( i=0; i<groupCount; i++ ){
-		const ceConversationFile &group = *groups.GetAt( i );
+	for(i=0; i<groupCount; i++){
+		const ceConversationFile &group = *groups.GetAt(i);
 		const ceConversationTopicList &topics = group.GetTopicList();
 		const int topicCount = topics.GetCount();
 		int j;
 		
-		for( j=0; j<topicCount; j++ ){
-			ceConversationTopic * const actionTopic = topics.GetAt( j );
-			pAddSnippets( actionTopic, matchGroupID, actionTopic->GetActionList() );
+		for(j=0; j<topicCount; j++){
+			ceConversationTopic * const actionTopic = topics.GetAt(j);
+			pAddSnippets(actionTopic, matchGroupID, actionTopic->GetActionList());
 		}
 	}
 	
@@ -84,7 +84,7 @@ pNewID( newID )
 }
 
 ceUCFileSetID::~ceUCFileSetID(){
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
 }
@@ -95,11 +95,11 @@ ceUCFileSetID::~ceUCFileSetID(){
 ///////////////
 
 void ceUCFileSetID::Undo(){
-	pSetID( pOldID );
+	pSetID(pOldID);
 }
 
 void ceUCFileSetID::Redo(){
-	pSetID( pNewID );
+	pSetID(pNewID);
 }
 
 
@@ -107,67 +107,67 @@ void ceUCFileSetID::Redo(){
 // Private Functions
 //////////////////////
 
-void ceUCFileSetID::pSetID( const char *id ){
-	pFile->SetID( id );
+void ceUCFileSetID::pSetID(const char *id){
+	pFile->SetID(id);
 	
 	const int snippetCount = pSnippets.GetCount();
 	int i;
 	
-	for( i=0; i<snippetCount; i++ ){
-		const ceUndoCAction &undoCAction = *pSnippets.GetAt( i );
-		( ( ceCASnippet* )undoCAction.GetAction() )->SetFile( id );
-		undoCAction.GetTopic()->NotifyActionChanged( undoCAction.GetAction() );
+	for(i=0; i<snippetCount; i++){
+		const ceUndoCAction &undoCAction = *pSnippets.GetAt(i);
+		((ceCASnippet*)undoCAction.GetAction())->SetFile(id);
+		undoCAction.GetTopic()->NotifyActionChanged(undoCAction.GetAction());
 	}
 }
 
-void ceUCFileSetID::pAddSnippets( ceConversationTopic *topic, const char *matchGroupID,
-const ceConversationActionList &actions ){
+void ceUCFileSetID::pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
+const ceConversationActionList &actions){
 	const int count = actions.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		ceConversationAction * const action = actions.GetAt( i );
+	for(i=0; i<count; i++){
+		ceConversationAction * const action = actions.GetAt(i);
 		
-		switch( action->GetType() ){
+		switch(action->GetType()){
 		case ceConversationAction::eatIfElse:{
-			const ceCAIfElse &ifElse = *( ( const ceCAIfElse* )action );
+			const ceCAIfElse &ifElse = *((const ceCAIfElse*)action);
 			
 			const ceCAIfElseCaseList &cases = ifElse.GetCases();
 			const int countCases = cases.GetCount();
 			int j;
-			for( j=0; j<countCases; j++ ){
-				pAddSnippets( topic, matchGroupID, cases.GetAt( j )->GetActions() );
+			for(j=0; j<countCases; j++){
+				pAddSnippets(topic, matchGroupID, cases.GetAt(j)->GetActions());
 			}
 			
-			pAddSnippets( topic, matchGroupID, ifElse.GetElseActions() );
+			pAddSnippets(topic, matchGroupID, ifElse.GetElseActions());
 			}break;
 			
 		case ceConversationAction::eatPlayerChoice:{
-			const ceCAPlayerChoice &playerChoice = *( ( const ceCAPlayerChoice* )action );
+			const ceCAPlayerChoice &playerChoice = *((const ceCAPlayerChoice*)action);
 			const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
 			const int optionCount = options.GetCount();
 			int j;
-			for( j=0; j<optionCount; j++ ){
-				pAddSnippets( topic, matchGroupID, options.GetAt( j )->GetActions() );
+			for(j=0; j<optionCount; j++){
+				pAddSnippets(topic, matchGroupID, options.GetAt(j)->GetActions());
 			}
 			}break;
 			
 		case ceConversationAction::eatWait:
-			pAddSnippets( topic, matchGroupID, ( ( const ceCAWait* )action )->GetActions() );
+			pAddSnippets(topic, matchGroupID, ((const ceCAWait*)action)->GetActions());
 			break;
 			
 		case ceConversationAction::eatSnippet:{
-			ceCASnippet * const snippet = ( ceCASnippet* )action;
-			if( snippet->GetFile() == matchGroupID ){
+			ceCASnippet * const snippet = (ceCASnippet*)action;
+			if(snippet->GetFile() == matchGroupID){
 				ceUndoCAction *undoCAction = NULL;
 				try{
-					undoCAction = new ceUndoCAction( action, topic );
-					pSnippets.Add( undoCAction );
+					undoCAction = new ceUndoCAction(action, topic);
+					pSnippets.Add(undoCAction);
 					undoCAction->FreeReference();
 					undoCAction = NULL;
 					
-				}catch( const deException & ){
-					if( undoCAction ){
+				}catch(const deException &){
+					if(undoCAction){
 						undoCAction->FreeReference();
 					}
 					throw;

@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	meLoadXMLWorldTask( meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file );
+	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file);
 	
 	/** \brief Clean up task. */
 	virtual ~meLoadXMLWorldTask();
@@ -85,15 +85,15 @@ public:
 private:
 	void pCleanUp();
 	
-	void pLoadWorldEditor( const decXmlElementTag &root );
+	void pLoadWorldEditor(const decXmlElementTag &root);
 	void pLoadWorldEditorBackgroundObject(const decXmlElementTag &root);
 	void pLoadWorldEditorLimitBox(const decXmlElementTag &root);
-	void pLoadObject( const decXmlElementTag &root, meObject &object );
-	void pLoadObjectTexture( const decXmlElementTag &root, meObjectTexture &texture );
-	void pLoadObjectTextureTransform( const decXmlElementTag &root, meObjectTexture &texture );
-	void pLoadDecal( const decXmlElementTag &root, meDecal &decal );
-	void pLoadDecalTransform( const decXmlElementTag &root, meDecal &decal );
-	void pLoadNavigationSpace( const decXmlElementTag &root, meNavigationSpace &navspace );
+	void pLoadObject(const decXmlElementTag &root, meObject &object);
+	void pLoadObjectTexture(const decXmlElementTag &root, meObjectTexture &texture);
+	void pLoadObjectTextureTransform(const decXmlElementTag &root, meObjectTexture &texture);
+	void pLoadDecal(const decXmlElementTag &root, meDecal &decal);
+	void pLoadDecalTransform(const decXmlElementTag &root, meDecal &decal);
+	void pLoadNavigationSpace(const decXmlElementTag &root, meNavigationSpace &navspace);
 };
 
 #endif

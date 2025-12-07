@@ -77,20 +77,20 @@ public:
 	virtual int GetPosition() = 0;
 	
 	/** \brief Set file position for the next read action. */
-	virtual void SetPosition( int position ) = 0;
+	virtual void SetPosition(int position) = 0;
 	
 	/** \brief Move file position by the given offset. */
-	virtual void MovePosition( int offset ) = 0;
+	virtual void MovePosition(int offset) = 0;
 	
 	/** \brief Set file position to the given position measured from the end of the file. */
-	virtual void SetPositionEnd( int position ) = 0;
+	virtual void SetPositionEnd(int position) = 0;
 	
 	/**
 	 * \brief Read \em size bytes into \em buffer and advances the file pointer.
 	 * \throws deeInvalidParam \em buffer is NULL.
 	 * \throws deeInvalidParam \em size is less than 1.
 	 */
-	virtual void Read( void *buffer, int size ) = 0;
+	virtual void Read(void *buffer, int size) = 0;
 	/*@}*/
 	
 	
@@ -144,7 +144,7 @@ public:
 	/**
 	 * \brief Read string prefixed by a 1-byte length field and advances the file pointer.
 	 */
-	void ReadString8Into( decString &string );
+	void ReadString8Into(decString &string);
 	
 	/**
 	 * \brief Read a string prefixed by a 2-byte2 length field and advances the file pointer.
@@ -156,7 +156,7 @@ public:
 	/**
 	 * \brief Read string prefixed by a 2-byte2 length field and advances the file pointer.
 	 */
-	void ReadString16Into( decString &string );
+	void ReadString16Into(decString &string);
 	
 	/**
 	 * \brief Read a 3-float vector and advances the file pointer.
@@ -170,7 +170,7 @@ public:
 	 * 
 	 * The vector components are read in the order x, y and z.
 	 */
-	void ReadVectorInto( decVector &vector );
+	void ReadVectorInto(decVector &vector);
 	
 	/**
 	 * \brief Read a 2-float vector and advances the file pointer.
@@ -184,7 +184,7 @@ public:
 	 * 
 	 * The vector components are read in the order x and y.
 	 */
-	void ReadVector2Into( decVector2 &vector );
+	void ReadVector2Into(decVector2 &vector);
 	
 	/**
 	 * \brief Read a 4-float quaternion and advances the file pointer.
@@ -198,7 +198,7 @@ public:
 	 * 
 	 * The quaternion components are read in the order x, y, z and w.
 	 */
-	void ReadQuaternionInto( decQuaternion &quaternion );
+	void ReadQuaternionInto(decQuaternion &quaternion);
 	
 	/**
 	 * \brief Read a 2-int point and advances the file pointer.
@@ -212,7 +212,7 @@ public:
 	 * 
 	 * The point components are read in the order x and y.
 	 */
-	void ReadPointInto( decPoint &point );
+	void ReadPointInto(decPoint &point);
 	
 	/**
 	 * \brief Read a 3-int point and advances the file pointer.
@@ -226,7 +226,7 @@ public:
 	 * 
 	 * The point components are read in the order x, y and z.
 	 */
-	void ReadPoint3Into( decPoint3 &point );
+	void ReadPoint3Into(decPoint3 &point);
 	
 	/**
 	 * \brief Read a 3-double vector and advances the file pointer.
@@ -240,7 +240,7 @@ public:
 	 * 
 	 * The vector components are read in the order x, y and z.
 	 */
-	void ReadDVectorInto( decDVector &vector );
+	void ReadDVectorInto(decDVector &vector);
 	
 	/**
 	 * \brief Read a 4-component color and advances the file pointer.
@@ -254,7 +254,7 @@ public:
 	 * 
 	 * The color components are read in the order r, g, b and a.
 	 */
-	void ReadColorInto( decColor &color );
+	void ReadColorInto(decColor &color);
 	
 	/**
 	 * \brief Read a 3-component color and advances the file pointer.
@@ -268,7 +268,7 @@ public:
 	 * 
 	 * The color components are read in the order r, g and b.
 	 */
-	void ReadColor3Into( decColor &color );
+	void ReadColor3Into(decColor &color);
 	
 	
 	

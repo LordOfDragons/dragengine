@@ -44,7 +44,7 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	deClassEasyXML( deScriptingDragonScript &ds );
+	deClassEasyXML(deScriptingDragonScript &ds);
 	
 	/** \brief Creates a new class. */
 	virtual ~deClassEasyXML();
@@ -55,16 +55,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Scripting module. */
-	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	inline deScriptingDragonScript &GetDS() const{return pDS;}
 	
 	/** \brief Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Get xml document from object or \em NULL if \em myself is \em NULL. */
-	dedsXmlDocument *GetDocument( dsRealObject *myself ) const;
+	dedsXmlDocument *GetDocument(dsRealObject *myself) const;
 	
 	/** \brief Push xml document or \em NULL if \em document is \em NULL. */
-	void PushDocument( dsRunTime *rt, dedsXmlDocument *document );
+	void PushDocument(dsRunTime *rt, dedsXmlDocument *document);
 	/*@}*/
 	
 	
@@ -83,27 +83,27 @@ private:
 		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNewFile );
-	DEF_NATFUNC( nfNewFile2 );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNewFile);
+	DEF_NATFUNC(nfNewFile2);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
+	DEF_NATFUNC(nfGetFilename);
 	
-	DEF_NATFUNC( nfHasParseFailed );
-	DEF_NATFUNC( nfGetParseLog );
-	DEF_NATFUNC( nfGetRootElement );
+	DEF_NATFUNC(nfHasParseFailed);
+	DEF_NATFUNC(nfGetParseLog);
+	DEF_NATFUNC(nfGetRootElement);
 	
-	DEF_NATFUNC( nfSetRootElement );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfSetRootElement);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

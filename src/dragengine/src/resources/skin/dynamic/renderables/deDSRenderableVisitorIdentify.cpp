@@ -57,45 +57,45 @@ deDSRenderableVisitorIdentify::~deDSRenderableVisitorIdentify(){
 ///////////////
 
 deDSRenderableValue &deDSRenderableVisitorIdentify::CastToValue() const{
-	if( pType != eptValue ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptValue){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deDSRenderableValue* )pRenderable );
+	return *((deDSRenderableValue*)pRenderable);
 }
 
 deDSRenderableColor &deDSRenderableVisitorIdentify::CastToColor() const{
-	if( pType != eptColor ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptColor){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deDSRenderableColor* )pRenderable );
+	return *((deDSRenderableColor*)pRenderable);
 }
 
 deDSRenderableImage &deDSRenderableVisitorIdentify::CastToImage() const{
-	if( pType != eptImage ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptImage){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deDSRenderableImage* )pRenderable );
+	return *((deDSRenderableImage*)pRenderable);
 }
 
 deDSRenderableCanvas &deDSRenderableVisitorIdentify::CastToCanvas() const{
-	if( pType != eptCanvas ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptCanvas){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deDSRenderableCanvas* )pRenderable );
+	return *((deDSRenderableCanvas*)pRenderable);
 }
 
 deDSRenderableVideoFrame &deDSRenderableVisitorIdentify::CastToVideoFrame() const{
-	if( pType != eptVideoFrame ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptVideoFrame){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deDSRenderableVideoFrame* )pRenderable );
+	return *((deDSRenderableVideoFrame*)pRenderable);
 }
 
 deDSRenderableCamera &deDSRenderableVisitorIdentify::CastToCamera() const{
-	if( pType != eptCamera ){
-		DETHROW( deeInvalidParam );
+	if(pType != eptCamera){
+		DETHROW(deeInvalidParam);
 	}
-	return *( ( deDSRenderableCamera* )pRenderable );
+	return *((deDSRenderableCamera*)pRenderable);
 }
 
 void deDSRenderableVisitorIdentify::Reset(){
@@ -108,37 +108,37 @@ void deDSRenderableVisitorIdentify::Reset(){
 // Visiting
 /////////////
 
-void deDSRenderableVisitorIdentify::VisitRenderable( deDSRenderable &renderable ){
+void deDSRenderableVisitorIdentify::VisitRenderable(deDSRenderable &renderable){
 	pRenderable = &renderable;
 	pType = eptUnknown;
 }
 
-void deDSRenderableVisitorIdentify::VisitValue( deDSRenderableValue &renderable ){
+void deDSRenderableVisitorIdentify::VisitValue(deDSRenderableValue &renderable){
 	pRenderable = &renderable;
 	pType = eptValue;
 }
 
-void deDSRenderableVisitorIdentify::VisitColor( deDSRenderableColor &renderable ){
+void deDSRenderableVisitorIdentify::VisitColor(deDSRenderableColor &renderable){
 	pRenderable = &renderable;
 	pType = eptColor;
 }
 
-void deDSRenderableVisitorIdentify::VisitImage( deDSRenderableImage &renderable ){
+void deDSRenderableVisitorIdentify::VisitImage(deDSRenderableImage &renderable){
 	pRenderable = &renderable;
 	pType = eptImage;
 }
 
-void deDSRenderableVisitorIdentify::VisitCanvas( deDSRenderableCanvas &renderable ){
+void deDSRenderableVisitorIdentify::VisitCanvas(deDSRenderableCanvas &renderable){
 	pRenderable = &renderable;
 	pType = eptCanvas;
 }
 
-void deDSRenderableVisitorIdentify::VisitVideoFrame( deDSRenderableVideoFrame &renderable ){
+void deDSRenderableVisitorIdentify::VisitVideoFrame(deDSRenderableVideoFrame &renderable){
 	pRenderable = &renderable;
 	pType = eptVideoFrame;
 }
 
-void deDSRenderableVisitorIdentify::VisitCamera( deDSRenderableCamera &renderable ){
+void deDSRenderableVisitorIdentify::VisitCamera(deDSRenderableCamera &renderable){
 	pRenderable = &renderable;
 	pType = eptCamera;
 }

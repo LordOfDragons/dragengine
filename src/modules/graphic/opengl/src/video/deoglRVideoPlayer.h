@@ -62,7 +62,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create video player target. */
-	deoglRVideoPlayer( deoglRenderThread &renderThread );
+	deoglRVideoPlayer(deoglRenderThread &renderThread);
 	
 	/** Clean up video player target. */
 	virtual ~deoglRVideoPlayer();
@@ -73,19 +73,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render video or \em NULL if not set. */
-	inline deoglRVideo *GetVideo() const{ return pVideo; }
+	inline deoglRVideo *GetVideo() const{return pVideo;}
 	
 	/** Set render video or \em NULL if not set. */
-	void SetVideo( deoglRVideo *video );
+	void SetVideo(deoglRVideo *video);
 	
 	/** Cached frame or -1 if not set. */
-	inline deoglTexture *GetCachedFrameTexture() const{ return pCachedFrameTexture; }
+	inline deoglTexture *GetCachedFrameTexture() const{return pCachedFrameTexture;}
 	
 	/** Set cached frame or -1 if not set. */
-	void SetCachedFrameTexture( deoglTexture *texture );
+	void SetCachedFrameTexture(deoglTexture *texture);
 	
 	/** Set update cached frame texture. */
-	void SetUpdateCachedFrameTexture( int updateCachedFrameTexture );
+	void SetUpdateCachedFrameTexture(int updateCachedFrameTexture);
 	
 	/** Has cached frame texture or update cached frame. */
 	bool HasCachedFrameTexture() const;
@@ -93,25 +93,25 @@ public:
 	
 	
 	/** Width of video. */
-	inline int GetWidth() const{ return pWidth; }
+	inline int GetWidth() const{return pWidth;}
 	
 	/** Height of video. */
-	inline int GetHeight() const{ return pHeight; }
+	inline int GetHeight() const{return pHeight;}
 	
 	/** Component count. */
-	inline int GetComponentCount() const{ return pComponentCount; }
+	inline int GetComponentCount() const{return pComponentCount;}
 	
 	/**
 	 * Set video size.
 	 * \details Deletes the texture and pixel buffer if set.
 	 */
-	void SetVideoSize( int width, int height, int componentCount );
+	void SetVideoSize(int width, int height, int componentCount);
 	
 	/**
 	 * Set pixel buffer to update texture with.
 	 * \returns Previously set pixel buffer.
 	 */
-	deoglPixelBuffer::Ref SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref SetPixelBuffer(deoglPixelBuffer *pixelBuffer);
 	
 	/** Texture or \em NULL if not existing. */
 	deoglTexture *GetTexture() const;

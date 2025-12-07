@@ -51,8 +51,8 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	ceWPTTIMAPlayerChoiceOption( ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index );
+	ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMain, ceConversation &conversation,
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */
@@ -65,22 +65,22 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
+	inline ceCAPlayerChoiceOption *GetOption() const{return pOption;}
 	
 	/** \brief Index. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Set index. */
-	void SetIndex( int index );
+	void SetIndex(int index);
 	
 	/** \brief Parent player choice model. */
 	ceWPTTIMAPlayerChoice *GetModelPlayerChoice() const;
 	
 	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{ return pCondition; }
+	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{return pCondition;}
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{ return pActions; }
+	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{return pActions;}
 	
 	/** \brief Update if-case. */
 	void Update();
@@ -92,7 +92,7 @@ public:
 	virtual void OnExpandedChanged();
 	
 	/** \brief User requests context menu for selected item. */
-	virtual void OnContextMenu( igdeMenuCascade &contextMenu );
+	virtual void OnContextMenu(igdeMenuCascade &contextMenu);
 	/*@}*/
 	
 	

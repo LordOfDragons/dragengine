@@ -46,7 +46,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new script class. */
-	deClassVideo( deScriptingDragonScript *ds );
+	deClassVideo(deScriptingDragonScript *ds);
 	/** Cleans up the script class. */
 	virtual ~deClassVideo();
 	/*@}*/
@@ -54,13 +54,13 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Create class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	/** Retrieves the video or NULL if myself is NULL. */
-	deVideo *GetVideo( dsRealObject *myself ) const;
+	deVideo *GetVideo(dsRealObject *myself) const;
 	/** Pushes the video on the stack. Video can be NULL to push a null object. */
-	void PushVideo( dsRunTime *rt, deVideo *video );
+	void PushVideo(dsRunTime *rt, deVideo *video);
 	/** Retrieves the dragon script module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/*@}*/
 	
 private:
@@ -70,26 +70,26 @@ private:
 		dsClass *clsResNot;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
-	DEF_NATFUNC( nfGetWidth );
-	DEF_NATFUNC( nfGetHeight );
-	DEF_NATFUNC( nfGetSize );
-	DEF_NATFUNC( nfGetFrameCount );
-	DEF_NATFUNC( nfGetFrameRate );
-	DEF_NATFUNC( nfGetPlayTime );
+	DEF_NATFUNC(nfGetFilename);
+	DEF_NATFUNC(nfGetWidth);
+	DEF_NATFUNC(nfGetHeight);
+	DEF_NATFUNC(nfGetSize);
+	DEF_NATFUNC(nfGetFrameCount);
+	DEF_NATFUNC(nfGetFrameRate);
+	DEF_NATFUNC(nfGetPlayTime);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfEquals2 );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfEquals2);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

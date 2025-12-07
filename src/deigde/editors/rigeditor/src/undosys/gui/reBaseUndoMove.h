@@ -55,10 +55,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Distance. */
-	inline decVector GetDistance() const{ return pDist; }
+	inline decVector GetDistance() const{return pDist;}
 	
 	/** \brief Set distance. */
-	void SetDistance( const decVector &distance );
+	void SetDistance(const decVector &distance);
 	
 	/** \brief Progressive redo. */
 	virtual void ProgressiveRedo();

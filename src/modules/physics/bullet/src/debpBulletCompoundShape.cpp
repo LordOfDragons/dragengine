@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpBulletCompoundShape::debpBulletCompoundShape( btCompoundShape *shape ) :
-debpBulletShape( shape ){
+debpBulletCompoundShape::debpBulletCompoundShape(btCompoundShape *shape) :
+debpBulletShape(shape){
 }
 
 debpBulletCompoundShape::~debpBulletCompoundShape(){
@@ -53,9 +53,9 @@ debpBulletCompoundShape::~debpBulletCompoundShape(){
 // Management
 ///////////////
 
-void debpBulletCompoundShape::AddChildShape( debpBulletShape *shape ){
-	if( ! shape ){
-		DETHROW( deeInvalidParam );
+void debpBulletCompoundShape::AddChildShape(debpBulletShape *shape){
+	if(! shape){
+		DETHROW(deeInvalidParam);
 	}
-	pChildShapes.Add( shape );
+	pChildShapes.Add(shape);
 }

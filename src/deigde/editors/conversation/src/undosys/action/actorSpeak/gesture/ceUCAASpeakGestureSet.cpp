@@ -42,9 +42,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureSet::ceUCAASpeakGestureSet( ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, ceStrip *newStrip ){
-	if( ! topic || ! actorSpeak || ! gesture || ! newStrip ){
-		DETHROW( deeInvalidParam );
+ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, ceStrip *newStrip){
+	if(! topic || ! actorSpeak || ! gesture || ! newStrip){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
@@ -53,9 +53,9 @@ ceUCAASpeakGestureSet::ceUCAASpeakGestureSet( ceConversationTopic *topic, ceCAAc
 	pOldStrip = NULL;
 	pNewStrip = NULL;
 	
-	SetShortInfo( "Set gesture" );
+	SetShortInfo("Set gesture");
 	
-	pOldStrip = new ceStrip( *gesture );
+	pOldStrip = new ceStrip(*gesture);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,19 +71,19 @@ ceUCAASpeakGestureSet::ceUCAASpeakGestureSet( ceConversationTopic *topic, ceCAAc
 }
 
 ceUCAASpeakGestureSet::~ceUCAASpeakGestureSet(){
-	if( pNewStrip ){
+	if(pNewStrip){
 		pNewStrip->FreeReference();
 	}
-	if( pOldStrip ){
+	if(pOldStrip){
 		pOldStrip->FreeReference();
 	}
-	if( pGesture ){
+	if(pGesture){
 		pGesture->FreeReference();
 	}
-	if( pActorSpeak ){
+	if(pActorSpeak){
 		pActorSpeak->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -95,10 +95,10 @@ ceUCAASpeakGestureSet::~ceUCAASpeakGestureSet(){
 
 void ceUCAASpeakGestureSet::Undo(){
 	*pGesture = *pOldStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }
 
 void ceUCAASpeakGestureSet::Redo(){
 	*pGesture = *pNewStrip;
-	pTopic->NotifyActionChanged( pActorSpeak );
+	pTopic->NotifyActionChanged(pActorSpeak);
 }

@@ -40,28 +40,28 @@
 ////////////////////////////
 
 aeUAnimatorRemoveVertexPositionSet::aeUAnimatorRemoveVertexPositionSet(
-	aeAnimator* animator, const char* pattern ) :
-pAnimator( animator )
+	aeAnimator* animator, const char* pattern) :
+pAnimator(animator)
 {
-	DEASSERT_NOTNULL( pattern )
+	DEASSERT_NOTNULL(pattern)
 	
 	const decStringSet &sets = animator->GetListVertexPositionSets();
 	const int setCount = sets.GetCount();
 	int i;
 	
-	for( i=0; i<setCount; i++ ){
-		const decString &set = sets.GetAt( i );
+	for(i=0; i<setCount; i++){
+		const decString &set = sets.GetAt(i);
 		
-		if( set.MatchesPattern( pattern ) ){
-			pVertexPositionSets.Add( set );
+		if(set.MatchesPattern(pattern)){
+			pVertexPositionSets.Add(set);
 		}
 	}
 	
-	if( pVertexPositionSets.GetCount() == 1 ){
-		SetShortInfo( "Animator remove vertex position set" );
+	if(pVertexPositionSets.GetCount() == 1){
+		SetShortInfo("Animator remove vertex position set");
 		
 	}else{
-		SetShortInfo( "Animator remove vertex position sets" );
+		SetShortInfo("Animator remove vertex position sets");
 	}
 }
 
@@ -77,8 +77,8 @@ void aeUAnimatorRemoveVertexPositionSet::Undo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->AddVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->AddVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }
 
@@ -86,7 +86,7 @@ void aeUAnimatorRemoveVertexPositionSet::Redo(){
 	const int count = pVertexPositionSets.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		pAnimator->RemoveVertexPositionSet( pVertexPositionSets.GetAt( i ) );
+	for(i=0; i<count; i++){
+		pAnimator->RemoveVertexPositionSet(pVertexPositionSets.GetAt(i));
 	}
 }

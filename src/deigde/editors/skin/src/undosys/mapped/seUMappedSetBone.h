@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUMappedSetBone( seMapped *mapped, const char *newBone );
+	seUMappedSetBone(seMapped *mapped, const char *newBone);
 	
 protected:
 	/** Clean up undo. */

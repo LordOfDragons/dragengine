@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component debug. */
-	deoalComponentDebug( deoalComponent &component );
+	deoalComponentDebug(deoalComponent &component);
 	
 	/** \brief Clean up component debug. */
 	~deoalComponentDebug();

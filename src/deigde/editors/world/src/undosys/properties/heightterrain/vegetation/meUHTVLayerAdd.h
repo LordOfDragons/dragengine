@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVLayerAdd( meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer );
+	meUHTVLayerAdd(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer);
 	
 protected:
 	/** \brief Clean up undo object. */

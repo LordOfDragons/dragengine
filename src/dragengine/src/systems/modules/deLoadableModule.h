@@ -99,7 +99,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new loadable module. */
-	deLoadableModule( deModuleSystem *system );
+	deLoadableModule(deModuleSystem *system);
 	
 protected:
 	/** \brief Clean up loadable module. */
@@ -112,100 +112,100 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Linked module system. */
-	inline deModuleSystem *GetSystem() const{ return pSystem; }
+	inline deModuleSystem *GetSystem() const{return pSystem;}
 	
 	/** \brief Name to use as the source for this module for logging. */
-	inline const decString &GetLoggingName() const{ return pLoggingName; }
+	inline const decString &GetLoggingName() const{return pLoggingName;}
 	
 	/** \brief Set name to use as the source for this module for logging. */
-	void SetLoggingName( const char *name );
+	void SetLoggingName(const char *name);
 	
 	/** \brief Set default logging name which is "Module &lt;module-name&gt;". */
 	void SetDefaultLoggingName();
 	
 	/** \brief Unique name of the module. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set unique name of the module. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Type of the module. */
-	inline deModuleSystem::eModuleTypes GetType() const{ return pType; }
+	inline deModuleSystem::eModuleTypes GetType() const{return pType;}
 	
 	/** \brief Set type of the module. */
-	void SetType( deModuleSystem::eModuleTypes type );
+	void SetType(deModuleSystem::eModuleTypes type);
 	
 	/** \brief Description of the module. */
-	inline const decString GetDescription() const{ return pDescription; }
+	inline const decString GetDescription() const{return pDescription;}
 	
 	/** \brief Set description of the module. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Author of the module. */
-	inline const decString &GetAuthor() const{ return pAuthor; }
+	inline const decString &GetAuthor() const{return pAuthor;}
 	
 	/** \brief Set author of the module. */
-	void SetAuthor( const char *author );
+	void SetAuthor(const char *author);
 	
 	/** \brief Version of the module. */
-	inline const decString &GetVersion() const{ return pVersion; }
+	inline const decString &GetVersion() const{return pVersion;}
 	
 	/** \brief Set version of the module. */
-	void SetVersion( const char *version );
+	void SetVersion(const char *version);
 	
 	/** \brief File pattern list recognized by this module if a multiple type module. */
-	inline decStringList &GetPatternList(){ return pPatternList; }
-	inline const decStringList &GetPatternList() const{ return pPatternList; }
+	inline decStringList &GetPatternList(){return pPatternList;}
+	inline const decStringList &GetPatternList() const{return pPatternList;}
 	
 	/** \brief Default extension to be used for saving files if this is a multiple type module. */
-	inline const decString &GetDefaultExtension() const{ return pDefaultExtension; }
+	inline const decString &GetDefaultExtension() const{return pDefaultExtension;}
 	
 	/** \brief Set default extension to be used for saving files if this is a multiple type module. */
-	void SetDefaultExtension( const char *extension );
+	void SetDefaultExtension(const char *extension);
 	
 	/** \brief Directory name for this module. */
-	inline const decString &GetDirectoryName() const{ return pDirName; }
+	inline const decString &GetDirectoryName() const{return pDirName;}
 	
 	/** \brief Set directory name for this module. */
-	void SetDirectoryName( const char *dirName );
+	void SetDirectoryName(const char *dirName);
 	
 	/**
 	 * \brief Priority of module.
 	 * 
 	 * Used to find best module. Higher priority takes precedence.
 	 */
-	inline int GetPriority() const{ return pPriority; }
+	inline int GetPriority() const{return pPriority;}
 	
 	/**
 	 * \brief Set module priority.
 	 * 
 	 * Used to find best module. Higher priority takes precedence.
 	 */
-	void SetPriority( int priority );
+	void SetPriority(int priority);
 	
 	/** \brief Determines if this module is a fallback module. */
-	inline bool GetIsFallback() const{ return pFallback; }
+	inline bool GetIsFallback() const{return pFallback;}
 	
 	/** \brief Sets if this module is a fallback module. */
-	void SetIsFallback( bool fallback );
+	void SetIsFallback(bool fallback);
 	
 	/** \brief Module does not support saving. */
-	inline bool GetNoSaving() const{ return pNoSaving; }
+	inline bool GetNoSaving() const{return pNoSaving;}
 	
 	/** \brief Set if module does not support saving. */
-	void SetNoSaving( bool noSaving );
+	void SetNoSaving(bool noSaving);
 	
 	/**
 	 * \brief Files are compressed.
 	 * \version 1.12
 	 */
-	inline bool GetNoCompress() const{ return pNoCompress; }
+	inline bool GetNoCompress() const{return pNoCompress;}
 	
 	/**
 	 * \brief Set if files are compressed.
 	 * \version 1.12
 	 */
-	void SetNoCompress( bool noCompress );
+	void SetNoCompress(bool noCompress);
 	
 	/**
 	 * \brief Determines if the module is enabled.
@@ -215,7 +215,7 @@ public:
 	 * with multiple type modules where the launcher does not set the
 	 * module version to be used explicitely. By default modules are enabled.
 	 */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/**
 	 * \brief Sets if the module is enabled.
@@ -225,7 +225,7 @@ public:
 	 * with multiple type modules where the launcher does not set the
 	 * module version to be used explicitely. By default modules are enabled.
 	 */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	/*@}*/
 	
 	
@@ -233,10 +233,10 @@ public:
 	/** \name Module Management */
 	/*@{*/
 	/** \brief Module if loaded or NULL. */
-	inline deBaseModule *GetModule() const{ return pModule; }
+	inline deBaseModule *GetModule() const{return pModule;}
 	
 	/** \brief Set module if loaded of NULL. */
-	void SetModule( deBaseModule *module );
+	void SetModule(deBaseModule *module);
 	
 	/**
 	 * \brief Loads the module from the appropriate source.
@@ -253,13 +253,13 @@ public:
 	bool IsLoaded() const;
 	
 	/** \brief Error code from the last load attempt. */
-	inline int GetErrorCode() const{ return pErrorCode; }
+	inline int GetErrorCode() const{return pErrorCode;}
 	
 	/** \brief Set error code. */
-	void SetErrorCode( int code );
+	void SetErrorCode(int code);
 	
 	/** \brief Determines if the module is locked. */
-	inline bool IsLocked() const{ return pLockCount > 0; }
+	inline bool IsLocked() const{return pLockCount > 0;}
 	
 	/** \brief Locks the module and increases the lock counter. */
 	virtual void Lock();
@@ -290,7 +290,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit module. */
-	virtual void Visit( deLoadableModuleVisitor &visitor );
+	virtual void Visit(deLoadableModuleVisitor &visitor);
 	/*@}*/
 	
 	

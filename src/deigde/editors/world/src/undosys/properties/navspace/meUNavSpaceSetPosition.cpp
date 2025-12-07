@@ -41,19 +41,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetPosition::meUNavSpaceSetPosition( meNavigationSpace *navspace, const decDVector &newPosition ){
-	if( ! navspace ){
-		DETHROW( deeInvalidParam );
+meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, const decDVector &newPosition){
+	if(! navspace){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld *world = navspace->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pNavSpace = NULL;
 	
-	SetShortInfo( "NavSpace Set Position" );
+	SetShortInfo("NavSpace Set Position");
 	
 	pOldPosition = navspace->GetPosition();
 	pNewPosition = newPosition;
@@ -63,7 +63,7 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition( meNavigationSpace *navspace, con
 }
 
 meUNavSpaceSetPosition::~meUNavSpaceSetPosition(){
-	if( pNavSpace ){
+	if(pNavSpace){
 		pNavSpace->FreeReference();
 	}
 }
@@ -74,11 +74,11 @@ meUNavSpaceSetPosition::~meUNavSpaceSetPosition(){
 ///////////////
 
 void meUNavSpaceSetPosition::Undo(){
-	pNavSpace->SetPosition( pOldPosition );
-	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemNavSpace );
+	pNavSpace->SetPosition(pOldPosition);
+	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemNavSpace);
 }
 
 void meUNavSpaceSetPosition::Redo(){
-	pNavSpace->SetPosition( pNewPosition );
-	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemNavSpace );
+	pNavSpace->SetPosition(pNewPosition);
+	pNavSpace->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemNavSpace);
 }

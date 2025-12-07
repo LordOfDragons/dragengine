@@ -42,12 +42,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionSelectDirectory::igdeActionSelectDirectory( igdeEnvironment &environment,
-	igdeTextField &textField, bool useGameVFS ) :
-igdeAction( "...", NULL, "Select directory" ),
-pEnvironment( environment ),
-pUseGameVFS( useGameVFS ),
-pTextField( textField ){
+igdeActionSelectDirectory::igdeActionSelectDirectory(igdeEnvironment &environment,
+	igdeTextField &textField, bool useGameVFS) :
+igdeAction("...", NULL, "Select directory"),
+pEnvironment(environment),
+pUseGameVFS(useGameVFS),
+pTextField(textField){
 }
 
 igdeActionSelectDirectory::~igdeActionSelectDirectory(){
@@ -60,40 +60,40 @@ igdeActionSelectDirectory::~igdeActionSelectDirectory(){
 
 void igdeActionSelectDirectory::OnAction(){
 	igdeContainer * const parent = pTextField.GetParent();
-	if( ! parent ){
+	if(! parent){
 		return;
 	}
 	
-	decString directory( pTextField.GetText() );
-	if( directory.IsEmpty() ){
+	decString directory(pTextField.GetText());
+	if(directory.IsEmpty()){
 		directory = DefaultDirectory();
 	}
 	
-	const decString oldDirectory( directory );
+	const decString oldDirectory(directory);
 	
-	if( pUseGameVFS ){
-		if( ! igdeCommonDialogs::GetDirectory( &pTextField, GetText(), *pEnvironment.GetFileSystemGame(), directory ) ){
+	if(pUseGameVFS){
+		if(! igdeCommonDialogs::GetDirectory(&pTextField, GetText(), *pEnvironment.GetFileSystemGame(), directory)){
 			return;
 		}
 		
 	}else{
-		if( ! igdeCommonDialogs::GetDirectory( &pTextField, GetText(), directory ) ){
+		if(! igdeCommonDialogs::GetDirectory(&pTextField, GetText(), directory)){
 			return;
 		}
 	}
 	
-	if( directory == oldDirectory || ! AcceptDirectory( directory ) ){
+	if(directory == oldDirectory || ! AcceptDirectory(directory)){
 		return;
 	}
 	
-	pTextField.SetText( directory );
+	pTextField.SetText(directory);
 	pTextField.NotifyTextChanged();
 }
 
-bool igdeActionSelectDirectory::AcceptDirectory( decString& ){
+bool igdeActionSelectDirectory::AcceptDirectory(decString&){
 	return true;
 }
 
 decString igdeActionSelectDirectory::DefaultDirectory(){
-	return pUseGameVFS ? decString( "/" ) : decPath::CreateWorkingDirectory().GetPathNative();
+	return pUseGameVFS ? decString("/") : decPath::CreateWorkingDirectory().GetPathNative();
 }

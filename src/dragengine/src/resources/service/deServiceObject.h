@@ -102,28 +102,28 @@ public:
 	deServiceObject();
 	
 	/** \brief Create service object of type evtBoolean. */
-	static deServiceObject::Ref NewBool( bool value );
+	static deServiceObject::Ref NewBool(bool value);
 	
 	/** \brief Create service object of type evtInteger. */
-	static deServiceObject::Ref NewInt( int value );
+	static deServiceObject::Ref NewInt(int value);
 	
 	/** \brief Create service object of type evtFloat. */
-	static deServiceObject::Ref NewFloat( float value );
+	static deServiceObject::Ref NewFloat(float value);
 	
 	/** \brief Create service object of type evtString. */
-	static deServiceObject::Ref NewString( const char *value );
+	static deServiceObject::Ref NewString(const char *value);
 	
 	/** \brief Create service object of type evtResource. */
-	static deServiceObject::Ref NewResource( deResource *value );
+	static deServiceObject::Ref NewResource(deResource *value);
 	
 	/** \brief Create service object of type evtData. */
-	static deServiceObject::Ref NewData( const decMemoryFile::Ref &value );
+	static deServiceObject::Ref NewData(const decMemoryFile::Ref &value);
 	
 	/** \brief Create service object of type evtList. */
 	static deServiceObject::Ref NewList();
 	
 	/** \brief Copy content from another object. */
-	deServiceObject( const deServiceObject &object, bool deep = false );
+	deServiceObject(const deServiceObject &object, bool deep = false);
 	
 protected:
 	/** \brief Clean up service object. */
@@ -136,12 +136,12 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Value type. */
-	inline eValueType GetValueType() const{ return pValueType; }
+	inline eValueType GetValueType() const{return pValueType;}
 	
 	
 	
 	/** \brief Is boolean value. */
-	inline bool IsBoolean() const{ return pValueType == evtBoolean; }
+	inline bool IsBoolean() const{return pValueType == evtBoolean;}
 	
 	/**
 	 * \brief Boolean value.
@@ -153,12 +153,12 @@ public:
 	 * \brief Set object to boolean value.
 	 * \throws EInvalidParam Value type is not evtBoolean.
 	 */
-	void SetBoolean( bool value );
+	void SetBoolean(bool value);
 	
 	
 	
 	/** \brief Is integer value. */
-	inline bool IsInteger() const{ return pValueType == evtInteger; }
+	inline bool IsInteger() const{return pValueType == evtInteger;}
 	
 	/**
 	 * \brief Integer value.
@@ -170,12 +170,12 @@ public:
 	 * \brief Set object to integer value.
 	 * \throws EInvalidParam Value type is not evtInteger.
 	 */
-	void SetInteger( int value );
+	void SetInteger(int value);
 	
 	
 	
 	/** \brief Is float value. */
-	inline bool IsFloat() const{ return pValueType == evtFloat; }
+	inline bool IsFloat() const{return pValueType == evtFloat;}
 	
 	/**
 	 * \brief Float value.
@@ -187,12 +187,12 @@ public:
 	 * \brief Set object to float value.
 	 * \throws EInvalidParam Value type is not evtFloat.
 	 */
-	void SetFloat( float value );
+	void SetFloat(float value);
 	
 	
 	
 	/** \brief Is string value. */
-	inline bool IsString() const{ return pValueType == evtString; }
+	inline bool IsString() const{return pValueType == evtString;}
 	
 	/**
 	 * \brief String value.
@@ -204,12 +204,12 @@ public:
 	 * \brief Set object to string value.
 	 * \throws EInvalidParam Value type is not evtString.
 	 */
-	void SetString( const char *value );
+	void SetString(const char *value);
 	
 	
 	
 	/** \brief Is resource value. */
-	inline bool IsResource() const{ return pValueType == evtResource; }
+	inline bool IsResource() const{return pValueType == evtResource;}
 	
 	/**
 	 * \brief Resource value.
@@ -221,12 +221,12 @@ public:
 	 * \brief Set object to resource value.
 	 * \throws EInvalidParam Value type is not evtResource.
 	 */
-	void SetResource( const deResource::Ref &value );
+	void SetResource(const deResource::Ref &value);
 	
 	
 	
 	/** \brief Is data value. */
-	inline bool IsData() const{ return pValueType == evtData; }
+	inline bool IsData() const{return pValueType == evtData;}
 	
 	/**
 	 * \brief Data value.
@@ -238,15 +238,15 @@ public:
 	 * \brief Set object to data value.
 	 * \throws EInvalidParam Value type is not evtData.
 	 */
-	void SetData( const decMemoryFile::Ref &value );
+	void SetData(const decMemoryFile::Ref &value);
 	
 	
 	
 	/** \brief Is list value. */
-	inline bool IsList() const{ return pValueType == evtList; }
+	inline bool IsList() const{return pValueType == evtList;}
 	
 	/** \brief Is dictionary value. */
-	inline bool IsDictionary() const{ return pValueType == evtDictionary; }
+	inline bool IsDictionary() const{return pValueType == evtDictionary;}
 	
 	/**
 	 * \brief Count of child objects.
@@ -264,19 +264,19 @@ public:
 	 * \brief Child object at index.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	deServiceObject::Ref GetChildAt( int index ) const;
+	deServiceObject::Ref GetChildAt(int index) const;
 	
 	/**
 	 * \brief Child object with key or nullptr if absent.
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	deServiceObject::Ref GetChildAt( const char *key ) const;
+	deServiceObject::Ref GetChildAt(const char *key) const;
 	
 	/**
 	 * \brief Add child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddChild( const deServiceObject::Ref &child );
+	void AddChild(const deServiceObject::Ref &child);
 	
 	/**
 	 * \brief Add child object.
@@ -285,13 +285,13 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetChildAt( const char *key, const deServiceObject::Ref &child );
+	void SetChildAt(const char *key, const deServiceObject::Ref &child);
 	
 	/**
 	 * \brief Add boolean type child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddBoolChild( bool value );
+	void AddBoolChild(bool value);
 	
 	/**
 	 * \brief Add boolean type child object.
@@ -300,13 +300,13 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetBoolChildAt( const char *key, bool value );
+	void SetBoolChildAt(const char *key, bool value);
 	
 	/**
 	 * \brief Add integer type child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddIntChild( int value );
+	void AddIntChild(int value);
 	
 	/**
 	 * \brief Add integer type child object.
@@ -315,13 +315,13 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetIntChildAt( const char *key, int value );
+	void SetIntChildAt(const char *key, int value);
 	
 	/**
 	 * \brief Add float type child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddFloatChild( float value );
+	void AddFloatChild(float value);
 	
 	/**
 	 * \brief Add float type child object.
@@ -330,13 +330,13 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetFloatChildAt( const char *key, float value );
+	void SetFloatChildAt(const char *key, float value);
 	
 	/**
 	 * \brief Add string type child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddStringChild( const char *value );
+	void AddStringChild(const char *value);
 	
 	/**
 	 * \brief Add string type child object.
@@ -345,13 +345,13 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetStringChildAt( const char *key, const char *value );
+	void SetStringChildAt(const char *key, const char *value);
 	
 	/**
 	 * \brief Add resource type child object.
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void AddResourceChild( deResource *value );
+	void AddResourceChild(deResource *value);
 	
 	/**
 	 * \brief Add resource type child object.
@@ -360,13 +360,13 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetResourceChildAt( const char *key, deResource *value );
+	void SetResourceChildAt(const char *key, deResource *value);
 	
 	/**
 	 * \brief Add data type child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddDataChild( const decMemoryFile::Ref &value );
+	void AddDataChild(const decMemoryFile::Ref &value);
 	
 	/**
 	 * \brief Add data type child object.
@@ -375,19 +375,19 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetDataChildAt( const char *key, const decMemoryFile::Ref &value );
+	void SetDataChildAt(const char *key, const decMemoryFile::Ref &value);
 	
 	/**
 	 * \brief Remove child object at index.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void RemoveChild( int index );
+	void RemoveChild(int index);
 	
 	/**
 	 * \brief Remove child object with key if present.
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void RemoveChild( const char *key );
+	void RemoveChild(const char *key);
 	
 	/**
 	 * \brief Remove all child objects.
@@ -401,10 +401,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Service objects are equal. */
-	bool operator==( const deServiceObject &other ) const;
+	bool operator==(const deServiceObject &other) const;
 	
 	/** \brief Service objects are not equal. */
-	bool operator!=( const deServiceObject &other ) const;
+	bool operator!=(const deServiceObject &other) const;
 	/*@}*/
 };
 

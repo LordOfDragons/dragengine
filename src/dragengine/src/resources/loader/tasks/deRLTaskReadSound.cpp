@@ -50,23 +50,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadSound::deRLTaskReadSound( deEngine &engine, deResourceLoader &resourceLoader,
-deVirtualFileSystem *vfs, const char *path, deSound *sound ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertSound ),
-pSucceeded( false )
+deRLTaskReadSound::deRLTaskReadSound(deEngine &engine, deResourceLoader &resourceLoader,
+deVirtualFileSystem *vfs, const char *path, deSound *sound) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertSound),
+pSucceeded(false)
 {
 	LogCreateEnter();
 	// if already loaded set finished
-	if( sound ){
+	if(sound){
 		pSound = sound;
-		SetResource( sound );
-		SetState( esSucceeded );
+		SetResource(sound);
+		SetState(esSucceeded);
 		pSucceeded = true;
 		SetFinished();
 		return;
 	}
 	
-	pSound.TakeOver( new deSound( engine.GetSoundManager(), vfs, path, 0 ) );
+	pSound.TakeOver(new deSound(engine.GetSoundManager(), vfs, path, 0));
 	LogCreateExit();
 }
 
@@ -80,27 +80,27 @@ deRLTaskReadSound::~deRLTaskReadSound(){
 
 void deRLTaskReadSound::Run(){
 	LogRunEnter();
-	deBaseSoundModule * const module = ( deBaseSoundModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtSound, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseSoundModule * const module = (deBaseSoundModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtSound, GetPath());
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
 	deBaseSoundInfo soundInfo;
 	module->InitLoadSound(decBaseFileReader::Ref::New(
 		GetVFS()->OpenFileForReading(vfsPath)), soundInfo);
 	
-	pSound->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pSound->SetAsynchron( true );
-	pSound->FinalizeConstruction( soundInfo.GetBytesPerSample(),
+	pSound->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pSound->SetAsynchron(true);
+	pSound->FinalizeConstruction(soundInfo.GetBytesPerSample(),
 		soundInfo.GetSampleRate(), soundInfo.GetSampleCount(),
-		soundInfo.GetChannelCount() );
+		soundInfo.GetChannelCount());
 	
 	// create peers. modules can request to load the sound data if small enough
-	GetEngine().GetAudioSystem()->LoadSound( pSound );
-	GetEngine().GetSynthesizerSystem()->LoadSound( pSound );
+	GetEngine().GetAudioSystem()->LoadSound(pSound);
+	GetEngine().GetSynthesizerSystem()->LoadSound(pSound);
 	
 	pSucceeded = true;
 	LogRunExit();
@@ -108,29 +108,29 @@ void deRLTaskReadSound::Run(){
 
 void deRLTaskReadSound::Finished(){
 	LogFinishedEnter();
-	if( ! pSucceeded ){
-		SetState( esFailed );
+	if(! pSucceeded){
+		SetState(esFailed);
 		pSound = NULL;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deSoundManager &soundManager = *GetEngine().GetSoundManager();
-	deSound * const checkSound = soundManager.GetSoundWith( GetPath() );
+	deSound * const checkSound = soundManager.GetSoundWith(GetPath());
 	
-	if( checkSound ){
-		SetResource( checkSound );
+	if(checkSound){
+		SetResource(checkSound);
 		
 	}else{
-		pSound->SetAsynchron( false );
-		soundManager.AddLoadedSound( pSound );
-		SetResource( pSound );
+		pSound->SetAsynchron(false);
+		soundManager.AddLoadedSound(pSound);
+		SetResource(pSound);
 	}
 	
-	SetState( esSucceeded );
+	SetState(esSucceeded);
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

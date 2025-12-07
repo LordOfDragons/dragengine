@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new script class. */
-	deClassCanvasPaint( deScriptingDragonScript &ds );
+	deClassCanvasPaint(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up script class. */
 	virtual ~deClassCanvasPaint();
@@ -57,24 +57,24 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Script module. */
-	inline deScriptingDragonScript &GetDS(){ return pDS; }
-	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
-	inline dsClass *GetClassCanvasPaintShape() const{ return pClsCanvasPaintShape; }
+	inline deScriptingDragonScript &GetDS(){return pDS;}
+	inline const deScriptingDragonScript &GetDS() const{return pDS;}
+	inline dsClass *GetClassCanvasPaintShape() const{return pClsCanvasPaintShape;}
 	
 	/** \brief Create script class members. */
-	virtual void CreateClassMembers( dsEngine *engine );
+	virtual void CreateClassMembers(dsEngine *engine);
 	
 	/**
 	 * \brief Retrieve canvas paint from a script object.
 	 * \details Returns \em NULL if \em myself is \em NULL.
 	 */
-	deCanvasPaint *GetCanvas( dsRealObject *myself ) const;
+	deCanvasPaint *GetCanvas(dsRealObject *myself) const;
 	
 	/**
 	 * \brief Push canvas paint onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas( dsRunTime *rt, deCanvasPaint *canvas );
+	void PushCanvas(dsRunTime *rt, deCanvasPaint *canvas);
 	/*@}*/
 	
 private:
@@ -84,37 +84,37 @@ private:
 		dsClass *clsCanvasPaintShape;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetShapeType );
-	DEF_NATFUNC( nfSetShapeType );
-	DEF_NATFUNC( nfGetLineColor );
-	DEF_NATFUNC( nfSetLineColor );
-	DEF_NATFUNC( nfGetFillColor );
-	DEF_NATFUNC( nfSetFillColor );
-	DEF_NATFUNC( nfGetThickness );
-	DEF_NATFUNC( nfSetThickness );
-	DEF_NATFUNC( nfGetRoundCornerX );
-	DEF_NATFUNC( nfSetRoundCornerX );
-	DEF_NATFUNC( nfGetRoundCornerY );
-	DEF_NATFUNC( nfSetRoundCornerY );
-	DEF_NATFUNC( nfGetStartAngle );
-	DEF_NATFUNC( nfSetStartAngle );
-	DEF_NATFUNC( nfGetEndAngle );
-	DEF_NATFUNC( nfSetEndAngle );
-	DEF_NATFUNC( nfGetPointCount );
-	DEF_NATFUNC( nfGetPointAt );
-	DEF_NATFUNC( nfAddPoint );
-	DEF_NATFUNC( nfRemoveAllPoints );
+	DEF_NATFUNC(nfGetShapeType);
+	DEF_NATFUNC(nfSetShapeType);
+	DEF_NATFUNC(nfGetLineColor);
+	DEF_NATFUNC(nfSetLineColor);
+	DEF_NATFUNC(nfGetFillColor);
+	DEF_NATFUNC(nfSetFillColor);
+	DEF_NATFUNC(nfGetThickness);
+	DEF_NATFUNC(nfSetThickness);
+	DEF_NATFUNC(nfGetRoundCornerX);
+	DEF_NATFUNC(nfSetRoundCornerX);
+	DEF_NATFUNC(nfGetRoundCornerY);
+	DEF_NATFUNC(nfSetRoundCornerY);
+	DEF_NATFUNC(nfGetStartAngle);
+	DEF_NATFUNC(nfSetStartAngle);
+	DEF_NATFUNC(nfGetEndAngle);
+	DEF_NATFUNC(nfSetEndAngle);
+	DEF_NATFUNC(nfGetPointCount);
+	DEF_NATFUNC(nfGetPointAt);
+	DEF_NATFUNC(nfAddPoint);
+	DEF_NATFUNC(nfRemoveAllPoints);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

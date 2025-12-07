@@ -36,7 +36,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu actions. */
-	gdeMASkinRemove( gdeWindowMain &windowMain );
+	gdeMASkinRemove(gdeWindowMain &windowMain);
 	/*@}*/
 	
 	
@@ -44,7 +44,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Run action if game definition is not NULL. */
-	virtual igdeUndo *OnAction( gdeGameDefinition &gameDefinition );
+	virtual igdeUndo *OnAction(gdeGameDefinition &gameDefinition);
 	
 	/** \brief Request update of action parameters if required. */
 	virtual void Update();

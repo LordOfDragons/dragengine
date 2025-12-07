@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetOccMeshPath::gdeUOCComponentSetOccMeshPath( gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue ) :
-pObjectClass( NULL ),
-pComponent( NULL )
+gdeUOCComponentSetOccMeshPath::gdeUOCComponentSetOccMeshPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
+pObjectClass(NULL),
+pComponent(NULL)
 {
-	if( ! objectClass || ! component ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! component){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Component set occlusion mesh path" );
+	SetShortInfo("Component set occlusion mesh path");
 	
 	pOldValue = component->GetOcclusionMeshPath();
 	pNewValue = newValue;
@@ -62,10 +62,10 @@ pComponent( NULL )
 }
 
 gdeUOCComponentSetOccMeshPath::~gdeUOCComponentSetOccMeshPath(){
-	if( pComponent ){
+	if(pComponent){
 		pComponent->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ gdeUOCComponentSetOccMeshPath::~gdeUOCComponentSetOccMeshPath(){
 ///////////////
 
 void gdeUOCComponentSetOccMeshPath::Undo(){
-	pComponent->SetOcclusionMeshPath( pOldValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetOcclusionMeshPath(pOldValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }
 
 void gdeUOCComponentSetOccMeshPath::Redo(){
-	pComponent->SetOcclusionMeshPath( pNewValue );
-	pObjectClass->NotifyComponentChanged( pComponent );
+	pComponent->SetOcclusionMeshPath(pNewValue);
+	pObjectClass->NotifyComponentChanged(pComponent);
 }

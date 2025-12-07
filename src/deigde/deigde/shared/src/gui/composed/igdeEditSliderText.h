@@ -58,10 +58,10 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
-		cListenerSlider( igdeEditSliderText &sliderText );
+		cListenerSlider(igdeEditSliderText &sliderText);
 		virtual ~cListenerSlider();
-		virtual void OnValueChanged( igdeSlider *slider );
-		virtual void OnValueChanging(igdeSlider *slider );
+		virtual void OnValueChanged(igdeSlider *slider);
+		virtual void OnValueChanging(igdeSlider *slider);
 	};
 	
 	/** \brief Text field listener. */
@@ -70,10 +70,10 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
-		cListenerTextField( igdeEditSliderText &sliderText );
+		cListenerTextField(igdeEditSliderText &sliderText);
 		virtual ~cListenerTextField();
-		virtual void OnTextChanged( igdeTextField *textField );
-		virtual void OnTextChanging( igdeTextField *textField );
+		virtual void OnTextChanged(igdeTextField *textField);
+		virtual void OnTextChanging(igdeTextField *textField);
 	};
 	
 	
@@ -93,8 +93,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create edit point. */
-	igdeEditSliderText( igdeUIHelper &helper, float lower, float upper,
-		int columns, int precision, float tickSpacing, const char *description = "" );
+	igdeEditSliderText(igdeUIHelper &helper, float lower, float upper,
+		int columns, int precision, float tickSpacing, const char *description = "");
 	
 	
 	
@@ -120,37 +120,37 @@ public:
 	float GetUpper() const;
 	
 	/** \brief Set range. */
-	void SetRange( float lower, float upper );
+	void SetRange(float lower, float upper);
 	
 	/** \brief Tick spacing. */
 	float GetTickSpacing() const;
 	
 	/** \brief Set tick spacing. */
-	void SetTickSpacing( float spacing );
+	void SetTickSpacing(float spacing);
 	
 	/** \brief Value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Precision. */
 	int GetPrecision() const;
 	
 	/** \brief Set precision. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Slider is enabled. */
 	bool GetEnabled() const;
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Description shown in tool tips. */
 	const decString &GetDescription() const;
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -158,10 +158,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeEditSliderTextListener *listener );
+	void AddListener(igdeEditSliderTextListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeEditSliderTextListener *listener );
+	void RemoveListener(igdeEditSliderTextListener *listener);
 	
 	/** \brief Notify listeners value changed and has been accepted by user. */
 	virtual void NotifySliderTextValueChanged();
@@ -173,8 +173,8 @@ public:
 	
 	
 private:
-	void pCreateContent( igdeUIHelper &helper, float lower, float upper, int columns,
-		int precision, float tickSpacing, const char *description );
+	void pCreateContent(igdeUIHelper &helper, float lower, float upper, int columns,
+		int precision, float tickSpacing, const char *description);
 };
 
 #endif

@@ -51,14 +51,14 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsPasteActions( ceWindowMain &windowMain,
+	ceWPTMAPChoiceActionsPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, int index );
+		ceCAPlayerChoice &playerChoice, int index);
 	
 	/** \brief Crete menu action. */
-	ceWPTMAPChoiceActionsPasteActions( ceWindowMain &windowMain,
+	ceWPTMAPChoiceActionsPasteActions(ceWindowMain &windowMain,
 		ceConversation &conversation, ceConversationTopic &topic,
-		ceCAPlayerChoice &playerChoice, int index, const char *text );
+		ceCAPlayerChoice &playerChoice, int index, const char *text);
 	/*@}*/
 	
 	
@@ -66,16 +66,16 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Topic. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline ceConversationTopic *GetTopic() const{return pTopic;}
 	
 	/** \brief If-else action. */
-	inline ceCAPlayerChoice *GetPlayerChoice() const{ return pPlayerChoice; }
+	inline ceCAPlayerChoice *GetPlayerChoice() const{return pPlayerChoice;}
 	
 	/** \brief Index to insert action at. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Create undo action for pasting actions. */
-	virtual ceUCActionPaste *CreateUndo( const ceConversationActionList &actions );
+	virtual ceUCActionPaste *CreateUndo(const ceConversationActionList &actions);
 	/*@}*/
 };
 

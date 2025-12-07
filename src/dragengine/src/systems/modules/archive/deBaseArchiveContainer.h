@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive container peer. */
-	deBaseArchiveContainer( decBaseFileReader *reader );
+	deBaseArchiveContainer(decBaseFileReader *reader);
 	
 	/** \brief Clean up archive container peer. */
 	virtual ~deBaseArchiveContainer();
@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reader. */
-	inline decBaseFileReader *GetReader() const{ return pReader; }
+	inline decBaseFileReader *GetReader() const{return pReader;}
 	
 	
 	
@@ -63,7 +63,7 @@ public:
 	 * 
 	 * Path is elative to the root path.
 	 */
-	virtual bool ExistsFile( const decPath &path ) = 0;
+	virtual bool ExistsFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief File can be read.
@@ -72,7 +72,7 @@ public:
 	 * is usually the same as of ExistsFile unless permissions prevent
 	 * reading of an existing file.
 	 */
-	virtual bool CanReadFile( const decPath &path ) = 0;
+	virtual bool CanReadFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief File can be written.
@@ -84,14 +84,14 @@ public:
 	 * is also allowed in addition to creating a new file. If the
 	 * file exists permission flags can prevent writing.
 	 */
-	virtual bool CanWriteFile( const decPath &path ) = 0;
+	virtual bool CanWriteFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief File can be deleted.
 	 * 
 	 * The path is relative to the root path.
 	 */
-	virtual bool CanDeleteFile( const decPath &path ) = 0;
+	virtual bool CanDeleteFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief Open file for reading.
@@ -100,7 +100,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading( const decPath &path ) = 0;
+	virtual decBaseFileReader *OpenFileForReading(const decPath &path) = 0;
 	
 	/**
 	 * \brief Open file for writing.
@@ -111,45 +111,45 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting( const decPath &path ) = 0;
+	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path) = 0;
 	
 	/**
 	 * \brief Delete file.
 	 * 
 	 * Path is relative to the root path.
 	 */
-	virtual void DeleteFile( const decPath &path ) = 0;
+	virtual void DeleteFile(const decPath &path) = 0;
 	
 	/** \brief Touch file setting the modification time to the current time. */
-	virtual void TouchFile( const decPath &path ) = 0;
+	virtual void TouchFile(const decPath &path) = 0;
 	
 	/**
 	 * \brief Search all visible files and directories.
 	 * 
 	 * All found files and directories are added to the file listing.
 	 */
-	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher ) = 0;
+	virtual void SearchFiles(const decPath &directory, deContainerFileSearch &searcher) = 0;
 	
 	/**
 	 * \brief Type of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual deVFSContainer::eFileTypes GetFileType( const decPath &path ) = 0;
+	virtual deVFSContainer::eFileTypes GetFileType(const decPath &path) = 0;
 	
 	/**
 	 * \brief Size of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual uint64_t GetFileSize( const decPath &path ) = 0;
+	virtual uint64_t GetFileSize(const decPath &path) = 0;
 	
 	/**
 	 * \brief Modification time of file.
 	 * 
 	 * If the file does not exist an exception is thrown.
 	 */
-	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path ) = 0;
+	virtual TIME_SYSTEM GetFileModificationTime(const decPath &path) = 0;
 	/*@}*/
 };
 

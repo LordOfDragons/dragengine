@@ -43,35 +43,35 @@
 /////////////////////
 
 // public func void connectionClosed()
-deClassConnectionListener::nfConnectionClosed::nfConnectionClosed( const sInitData &init ) :
-dsFunction( init.clsConL, "connectionClosed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
+deClassConnectionListener::nfConnectionClosed::nfConnectionClosed(const sInitData &init) :
+dsFunction(init.clsConL, "connectionClosed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
 }
-void deClassConnectionListener::nfConnectionClosed::RunFunction( dsRunTime*, dsValue* ){
+void deClassConnectionListener::nfConnectionClosed::RunFunction(dsRunTime*, dsValue*){
 }
 
 // public func void messageProgress( int bytesReceived )
-deClassConnectionListener::nfMessageProgress::nfMessageProgress( const sInitData &init ) :
-dsFunction( init.clsConL, "messageProgress", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // bytesReceived
+deClassConnectionListener::nfMessageProgress::nfMessageProgress(const sInitData &init) :
+dsFunction(init.clsConL, "messageProgress", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // bytesReceived
 }
-void deClassConnectionListener::nfMessageProgress::RunFunction( dsRunTime*, dsValue* ){
+void deClassConnectionListener::nfMessageProgress::RunFunction(dsRunTime*, dsValue*){
 }
 
 // public func void messageReceived( NetworkMessage message )
-deClassConnectionListener::nfMessageReceived::nfMessageReceived( const sInitData &init ) :
-dsFunction( init.clsConL, "messageReceived", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsNM ); // message
+deClassConnectionListener::nfMessageReceived::nfMessageReceived(const sInitData &init) :
+dsFunction(init.clsConL, "messageReceived", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsNM); // message
 }
-void deClassConnectionListener::nfMessageReceived::RunFunction( dsRunTime*, dsValue* ){
+void deClassConnectionListener::nfMessageReceived::RunFunction(dsRunTime*, dsValue*){
 }
 
 // public func bool linkState( NetworkState state, NetworkMessage message )
-deClassConnectionListener::nfLinkState::nfLinkState( const sInitData &init ) :
-dsFunction( init.clsConL, "linkState", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsNS ); // state
-	p_AddParameter( init.clsNM ); // message
+deClassConnectionListener::nfLinkState::nfLinkState(const sInitData &init) :
+dsFunction(init.clsConL, "linkState", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_ABSTRACT | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsNS); // state
+	p_AddParameter(init.clsNM); // message
 }
-void deClassConnectionListener::nfLinkState::RunFunction( dsRunTime*, dsValue* ){
+void deClassConnectionListener::nfLinkState::RunFunction(dsRunTime*, dsValue*){
 }
 
 
@@ -82,19 +82,19 @@ void deClassConnectionListener::nfLinkState::RunFunction( dsRunTime*, dsValue* )
 // Constructor, Destructors
 /////////////////////////////
 
-deClassConnectionListener::deClassConnectionListener( deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
-dsClass( "ConnectionListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT ){
-	if( ! gameEngine || ! scrMgr ) DSTHROW( dueInvalidParam );
+deClassConnectionListener::deClassConnectionListener(deEngine *gameEngine, deScriptingDragonScript *scrMgr) :
+dsClass("ConnectionListener", DSCT_INTERFACE, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT){
+	if(! gameEngine || ! scrMgr) DSTHROW(dueInvalidParam);
 	
 	// prepare
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
 	// set parser info
-	GetParserInfo()->SetParent( DENS_NETWORKING );
+	GetParserInfo()->SetParent(DENS_NETWORKING);
 	
 	// do the rest
-	p_SetNativeDataSize( 0 );
+	p_SetNativeDataSize(0);
 }
 
 deClassConnectionListener::~deClassConnectionListener(){
@@ -105,7 +105,7 @@ deClassConnectionListener::~deClassConnectionListener(){
 // Management
 ///////////////
 
-void deClassConnectionListener::CreateClassMembers( dsEngine *engine ){
+void deClassConnectionListener::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
@@ -120,17 +120,17 @@ void deClassConnectionListener::CreateClassMembers( dsEngine *engine ){
 	init.clsNS = pClsNS;
 	
 	// add functions
-	AddFunction( new nfConnectionClosed( init ) ); // function 0
-	AddFunction( new nfMessageProgress( init ) ); // function 1
-	AddFunction( new nfMessageReceived( init ) ); // function 2
-	AddFunction( new nfLinkState( init ) ); // function 3
+	AddFunction(new nfConnectionClosed(init)); // function 0
+	AddFunction(new nfMessageProgress(init)); // function 1
+	AddFunction(new nfMessageReceived(init)); // function 2
+	AddFunction(new nfLinkState(init)); // function 3
 	
 	// calculate member offsets
 	CalcMemberOffsets();
 	
 	// store function indices for fast calling
 	const dsFuncList &funcList = *GetFuncList();
-	pFuncIndexMessageReceived = funcList.GetIndexOf( GetFunction( 2 ) );
-	pFuncIndexLinkState = funcList.GetIndexOf( GetFunction( 3 ) );
+	pFuncIndexMessageReceived = funcList.GetIndexOf(GetFunction(2));
+	pFuncIndexLinkState = funcList.GetIndexOf(GetFunction(3));
 }
 

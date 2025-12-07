@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create listener. */
-	aeWPLinkListener( aeWPLink &panel );
+	aeWPLinkListener(aeWPLink &panel);
 	
 protected:
 	/** Clean up listener. */
@@ -57,28 +57,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Model changed. */
-	virtual void ModelChanged( aeAnimator *animator );
+	virtual void ModelChanged(aeAnimator *animator);
 	
 	/** Rig changed. */
-	virtual void RigChanged( aeAnimator *animator );
+	virtual void RigChanged(aeAnimator *animator);
 	
 	/** Controller name changed. */
-	virtual void ControllerNameChanged( aeAnimator *animator, aeController *controller );
+	virtual void ControllerNameChanged(aeAnimator *animator, aeController *controller);
 	
 	/** Controller count or order changed. */
-	virtual void ControllerStructureChanged( aeAnimator *animator );
+	virtual void ControllerStructureChanged(aeAnimator *animator);
 	
 	/** Active link changed. */
-	virtual void ActiveLinkChanged( aeAnimator *animator, aeLink *link );
+	virtual void ActiveLinkChanged(aeAnimator *animator, aeLink *link);
 	
 	/** Link changed. */
-	virtual void LinkChanged( aeAnimator *animator, aeLink *link );
+	virtual void LinkChanged(aeAnimator *animator, aeLink *link);
 	
 	/** Link name changed. */
-	virtual void LinkNameChanged( aeAnimator *animator, aeLink *link );
+	virtual void LinkNameChanged(aeAnimator *animator, aeLink *link);
 	
 	/** Link count or order changed. */
-	virtual void LinkStructureChanged( aeAnimator *animator );
+	virtual void LinkStructureChanged(aeAnimator *animator);
 	/*@}*/
 };
 

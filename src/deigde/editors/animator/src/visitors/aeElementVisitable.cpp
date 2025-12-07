@@ -42,5 +42,5 @@ aeElementVisitable::~aeElementVisitable(){
 // Visiting
 /////////////
 
-void aeElementVisitable::VisitElement( aeElementVisitor& ){
+void aeElementVisitable::VisitElement(aeElementVisitor&){
 }

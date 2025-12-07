@@ -44,7 +44,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	projPanelProfilesListener( projPanelProfiles &panel );
+	projPanelProfilesListener(projPanelProfiles &panel);
 	
 	/** \brief Clean up listener. */
 	virtual ~projPanelProfilesListener();
@@ -55,21 +55,21 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Project changed. */
-	virtual void ProjectChanged( projProject *project );
+	virtual void ProjectChanged(projProject *project);
 	
 	
 	
 	/** \brief Profile count or order changed. */
-	virtual void ProfileStructureChanged( projProject *project );
+	virtual void ProfileStructureChanged(projProject *project);
 	
 	/** \brief Profile changed. */
-	virtual void ProfileChanged( projProject *project, projProfile *profile );
+	virtual void ProfileChanged(projProject *project, projProfile *profile);
 	
 	/** \brief Profile name changed. */
-	virtual void ProfileNameChanged( projProject *project, projProfile *profile );
+	virtual void ProfileNameChanged(projProject *project, projProfile *profile);
 	
 	/** \brief Active profile changed. */
-	virtual void ActiveProfileChanged( projProject *project );
+	virtual void ActiveProfileChanged(projProject *project);
 	/*@}*/
 };
 

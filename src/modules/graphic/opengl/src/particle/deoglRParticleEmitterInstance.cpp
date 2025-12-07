@@ -60,22 +60,22 @@
 // Class deoglRParticleEmitterInstance::WorldComputeElement
 /////////////////////////////////////////////////////////////
 
-deoglRParticleEmitterInstance::WorldComputeElement::WorldComputeElement( deoglRParticleEmitterInstance &emitter ) :
-deoglWorldComputeElement( eetParticleEmitter, &emitter ),
-pEmitter( emitter ){
+deoglRParticleEmitterInstance::WorldComputeElement::WorldComputeElement(deoglRParticleEmitterInstance &emitter) :
+deoglWorldComputeElement(eetParticleEmitter, &emitter),
+pEmitter(emitter){
 }
 
-void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData( sDataElement &data ) const{
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData(sDataElement &data) const{
 	const decDVector &refpos = GetReferencePosition();
-	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
-	data.SetLayerMask( pEmitter.GetLayerMask() );
-	data.flags = ( uint32_t )( deoglWorldCompute::eefParticleEmitter
-		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
+	data.SetExtends(pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos);
+	data.SetLayerMask(pEmitter.GetLayerMask());
+	data.flags = (uint32_t)(deoglWorldCompute::eefParticleEmitter
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic);
 	data.geometryCount = 0; //1;
 	data.highestLod = 0;
 }
 
-void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries(sDataElementGeometry *data) const{
 }
 
 
@@ -86,65 +86,65 @@ void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries( s
 // Constructor, destructor
 ////////////////////////////
 
-deoglRParticleEmitterInstance::deoglRParticleEmitterInstance( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pEmitter( NULL ),
-pParentWorld( NULL ),
-pOctreeNode( NULL ),
+deoglRParticleEmitterInstance::deoglRParticleEmitterInstance(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pEmitter(NULL),
+pParentWorld(NULL),
+pOctreeNode(NULL),
 pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
 
-pBurstTime( 0.0f ),
+pBurstTime(0.0f),
 
-pParticles( NULL ),
-pParticleCount( 0 ),
-pParticleSize( 0 ),
+pParticles(NULL),
+pParticleCount(0),
+pParticleSize(0),
 
-pLocalVBOData( NULL ),
-pSharedVBOData( NULL ),
+pLocalVBOData(NULL),
+pSharedVBOData(NULL),
 
-pIndices( NULL ),
-pIndexCount( 0 ),
-pIndexSize( 0 ),
-pIndexUsedCount( 0 ),
-pDirtyIBO( false ),
+pIndices(NULL),
+pIndexCount(0),
+pIndexSize(0),
+pIndexUsedCount(0),
+pDirtyIBO(false),
 
-pRenderEnvMap( nullptr ),
-pDirtyRenderEnvMap( true ),
+pRenderEnvMap(nullptr),
+pDirtyRenderEnvMap(true),
 
-pVBOShared( 0 ),
-pVBOLocal( 0 ),
-pIBO( 0 ),
-pVAO( NULL ),
+pVBOShared(0),
+pVBOLocal(0),
+pIBO(0),
+pVAO(NULL),
 
-pDirtyParticles( true ),
+pDirtyParticles(true),
 
-pCSOctreeIndex( 0 ),
+pCSOctreeIndex(0),
 
-pWorldMarkedRemove( false ){
-	LEAK_CHECK_CREATE( renderThread, ParticleEmitterInstance );
+pWorldMarkedRemove(false){
+	LEAK_CHECK_CREATE(renderThread, ParticleEmitterInstance);
 }
 
 deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
-	LEAK_CHECK_FREE( pRenderThread, ParticleEmitterInstance );
-	SetParentWorld( NULL );
+	LEAK_CHECK_FREE(pRenderThread, ParticleEmitterInstance);
+	SetParentWorld(NULL);
 	
 	ReleaseParticles();
-	SetEmitter( NULL );
+	SetEmitter(NULL);
 	
-	if( pIndices ){
+	if(pIndices){
 		delete [] pIndices;
 	}
-	if( pRenderEnvMap ){
+	if(pRenderEnvMap){
 		pRenderEnvMap->FreeReference();
 	}
-	if( pVAO ){
+	if(pVAO){
 		delete pVAO;
 	}
 	
 	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
-	dops.DeleteOpenGLBuffer( pIBO );
-	dops.DeleteOpenGLBuffer( pVBOLocal );
-	dops.DeleteOpenGLBuffer( pVBOShared );
+	dops.DeleteOpenGLBuffer(pIBO);
+	dops.DeleteOpenGLBuffer(pVBOLocal);
+	dops.DeleteOpenGLBuffer(pVBOShared);
 }
 
 
@@ -152,35 +152,35 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 // Management
 ///////////////
 
-void deoglRParticleEmitterInstance::SetEmitter( deoglRParticleEmitter *emitter ){
-	if( emitter == pEmitter ){
+void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
+	if(emitter == pEmitter){
 		return;
 	}
 	
-	if( pEmitter ){
+	if(pEmitter){
 		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
-	if( emitter ){
+	if(emitter){
 		emitter->AddReference();
 	}
 }
 
-void deoglRParticleEmitterInstance::SetParentWorld( deoglRWorld *world ){
-	if( world == pParentWorld ){
+void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
+	if(world == pParentWorld){
 		return;
 	}
 	
-	if( pRenderEnvMap ){
-		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting( this );
+	if(pRenderEnvMap){
+		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
 		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
 	pWorldComputeElement->RemoveFromCompute();
-	if( pOctreeNode ){
-		pOctreeNode->RemoveParticleEmitter( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveParticleEmitter(this);
 		pOctreeNode = NULL;
 	}
 	
@@ -189,28 +189,28 @@ void deoglRParticleEmitterInstance::SetParentWorld( deoglRWorld *world ){
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglRParticleEmitterInstance::SetOctreeNode( deoglWorldOctree *node ){
+void deoglRParticleEmitterInstance::SetOctreeNode(deoglWorldOctree *node){
 	pOctreeNode = node;
 }
 
 void deoglRParticleEmitterInstance::UpdateOctreeNode(){
-	if( pParentWorld ){
+	if(pParentWorld){
 		//if( pParticleEmitter->GetVisible() ){
-			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
+			pParentWorld->GetOctree().InsertParticleEmitterIntoTree(this);
 			
-			if( pWorldComputeElement->GetWorldCompute() ){
+			if(pWorldComputeElement->GetWorldCompute()){
 				pWorldComputeElement->ComputeUpdateElement();
 				
 			}else{
-				pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+				pParentWorld->GetCompute().AddElement(pWorldComputeElement);
 			}
 			
 		/*}else{
-			if( pWorldComputeElement->GetIndex() != -1 ){
-				pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+			if(pWorldComputeElement->GetIndex() != -1){
+				pParentWorld->GetCompute().RemoveElement(pWorldComputeElement);
 			}
-			if( pOctreeNode ){
-				pOctreeNode->GetParticleEmittersList().Remove( this );
+			if(pOctreeNode){
+				pOctreeNode->GetParticleEmittersList().Remove(this);
 				pOctreeNode = NULL;
 			}
 		}*/
@@ -219,28 +219,28 @@ void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 
 
 
-void deoglRParticleEmitterInstance::SetBurstTime( float burstTime ){
+void deoglRParticleEmitterInstance::SetBurstTime(float burstTime){
 	pBurstTime = burstTime;
 	InvalidateAllTypesParamBlocks();
 }
 
-void deoglRParticleEmitterInstance::SetPosition( const decDVector &position ){
+void deoglRParticleEmitterInstance::SetPosition(const decDVector &position){
 	pPosition = position;
 	MarkAllTypesParamBlocksDirty();
 }
 
-void deoglRParticleEmitterInstance::SetReferencePosition( const decDVector &position ){
+void deoglRParticleEmitterInstance::SetReferencePosition(const decDVector &position){
 	pReferencePosition = position;
 }
 
-void deoglRParticleEmitterInstance::SetLayerMask( const decLayerMask &layerMask ){
+void deoglRParticleEmitterInstance::SetLayerMask(const decLayerMask &layerMask){
 	pLayerMask = layerMask;
 }
 
 
 
 void deoglRParticleEmitterInstance::PrepareForRender(){
-	if( pEmitter ){
+	if(pEmitter){
 		pEmitter->PrepareForRender();
 	}
 	
@@ -250,46 +250,46 @@ void deoglRParticleEmitterInstance::PrepareForRender(){
 
 
 
-void deoglRParticleEmitterInstance::UpdateExtends( const deParticleEmitterInstance &instance ){
+void deoglRParticleEmitterInstance::UpdateExtends(const deParticleEmitterInstance &instance){
 	const int typeCount = pTypes.GetCount();
 	decVector minExtend, maxExtend;
 	int t, p;
 	
-	for( t=0; t<typeCount; t++ ){
-		const deParticleEmitterInstanceType &type = instance.GetTypeAt( t );
+	for(t=0; t<typeCount; t++){
+		const deParticleEmitterInstanceType &type = instance.GetTypeAt(t);
 		const deParticleEmitterInstanceType::sParticle * const particles = type.GetParticleArray();
 		const int particleCount = type.GetParticleCount();
 		
-		for( p=0; p<particleCount; p++ ){
-			const deParticleEmitterInstanceType::sParticle &particle = particles[ p ];
-			const decVector ppos( particle.positionX, particle.positionY, particle.positionZ );
+		for(p=0; p<particleCount; p++){
+			const deParticleEmitterInstanceType::sParticle &particle = particles[p];
+			const decVector ppos(particle.positionX, particle.positionY, particle.positionZ);
 			
-			minExtend.SetSmallest( ppos );
-			maxExtend.SetLargest( ppos );
+			minExtend.SetSmallest(ppos);
+			maxExtend.SetLargest(ppos);
 		}
 	}
 	
-	pMinExtend = pReferencePosition + decDVector( minExtend ) - decDVector( 0.1, 0.1, 0.1 );
-	pMaxExtend = pReferencePosition + decDVector( maxExtend ) + decDVector( 0.1, 0.1, 0.1 );
+	pMinExtend = pReferencePosition + decDVector(minExtend) - decDVector(0.1, 0.1, 0.1);
+	pMaxExtend = pReferencePosition + decDVector(maxExtend) + decDVector(0.1, 0.1, 0.1);
 }
 
 
 
-void deoglRParticleEmitterInstance::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
-	if( envmap == pRenderEnvMap ){
+void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap *envmap){
+	if(envmap == pRenderEnvMap){
 		return;
 	}
 	
-	if( pRenderEnvMap ){
-		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting( this );
+	if(pRenderEnvMap){
+		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
 		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
 	
-	if( envmap ){
+	if(envmap){
 		envmap->AddReference();
-		envmap->GetParticleEmitterInstanceList().Add( this );
+		envmap->GetParticleEmitterInstanceList().Add(this);
 	}
 	
 	MarkAllTypesTUCsDirty();
@@ -300,12 +300,12 @@ void deoglRParticleEmitterInstance::WorldEnvMapLayoutChanged(){
 }
 
 void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
-	if( ! pDirtyRenderEnvMap ){
+	if(! pDirtyRenderEnvMap){
 		return;
 	}
 	pDirtyRenderEnvMap = false;
 	
-	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+	if(deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap){
 		return;
 	}
 	
@@ -327,42 +327,42 @@ void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
 	deoglFindBestEnvMap visitor;
 	decDVector position;
 	
-	position = pPosition; // ( GetMinExtend() + GetMaxExtend() ) * 0.5;
+	position = pPosition; // (GetMinExtend() + GetMaxExtend()) * 0.5;
 	
-	visitor.SetPosition( position );
+	visitor.SetPosition(position);
 	//pParentWorld->VisitRegion( GetMinimumExtend(), GetMaximumExtend(), visitor );
-	visitor.VisitList( pParentWorld->GetEnvMapList() );
+	visitor.VisitList(pParentWorld->GetEnvMapList());
 	
-	if( visitor.GetEnvMap() ){
-		SetRenderEnvMap( visitor.GetEnvMap() );
+	if(visitor.GetEnvMap()){
+		SetRenderEnvMap(visitor.GetEnvMap());
 		
-	}else if( pParentWorld->GetSkyEnvironmentMap() ){
-		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
+	}else if(pParentWorld->GetSkyEnvironmentMap()){
+		SetRenderEnvMap(pParentWorld->GetSkyEnvironmentMap());
 		
 	}else{
-		SetRenderEnvMap( nullptr );
+		SetRenderEnvMap(nullptr);
 	}
 	//pOgl->LogInfoFormat( "update particle emitter instance %p render env map %p\n", pInstance, pRenderEnvMap );
 }
 
 void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
-	if( ! pRenderEnvMap ){
+	if(! pRenderEnvMap){
 		return;
 	}
 	
-	SetRenderEnvMap( nullptr );
+	SetRenderEnvMap(nullptr);
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglRParticleEmitterInstance::InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap ){
-	if( pRenderEnvMap == envmap ){
+void deoglRParticleEmitterInstance::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
+	if(pRenderEnvMap == envmap){
 		InvalidateRenderEnvMap();
 	}
 }
 
 
 
-void deoglRParticleEmitterInstance::UpdateParticles( const deParticleEmitterInstance &instance ){
+void deoglRParticleEmitterInstance::UpdateParticles(const deParticleEmitterInstance &instance){
 	const int typeCount = pTypes.GetCount();
 	int t, p, particleCount = 0;
 	
@@ -371,27 +371,27 @@ void deoglRParticleEmitterInstance::UpdateParticles( const deParticleEmitterInst
 	pIndexUsedCount = 0;
 	pDirtyIBO = true;
 	
-	if( pEmitter ){
-		for( t=0; t<typeCount; t++ ){
-			deoglRParticleEmitterInstanceType &itype = *( ( deoglRParticleEmitterInstanceType* )pTypes.GetAt( t ) );
-			const deoglRParticleEmitterType &etype = pEmitter->GetTypeAt( t );
-			const int typeParticleCount = instance.GetTypeAt( t ).GetParticleCount();
+	if(pEmitter){
+		for(t=0; t<typeCount; t++){
+			deoglRParticleEmitterInstanceType &itype = *((deoglRParticleEmitterInstanceType*)pTypes.GetAt(t));
+			const deoglRParticleEmitterType &etype = pEmitter->GetTypeAt(t);
+			const int typeParticleCount = instance.GetTypeAt(t).GetParticleCount();
 			
-			itype.SetFirstParticle( particleCount );
-			itype.SetParticleCount( typeParticleCount );
+			itype.SetFirstParticle(particleCount);
+			itype.SetParticleCount(typeParticleCount);
 			particleCount += typeParticleCount;
 			
-			itype.SetFirstIndex( pIndexCount );
+			itype.SetFirstIndex(pIndexCount);
 			
-			switch( etype.GetSimulationType() ){
+			switch(etype.GetSimulationType()){
 			case deParticleEmitterType::estParticle:
-				itype.SetIndexCount( typeParticleCount );
+				itype.SetIndexCount(typeParticleCount);
 				pIndexCount += typeParticleCount;
 				break;
 				
 			case deParticleEmitterType::estBeam:
 			case deParticleEmitterType::estRibbon:
-				itype.SetIndexCount( typeParticleCount * 4 );
+				itype.SetIndexCount(typeParticleCount * 4);
 				pIndexCount += typeParticleCount * 4;
 				break;
 			}
@@ -399,100 +399,100 @@ void deoglRParticleEmitterInstance::UpdateParticles( const deParticleEmitterInst
 	}
 	
 	// ensure a large enough array exists. the data does not have to be conservated.
-	if( particleCount > pParticleSize ){
+	if(particleCount > pParticleSize){
 		// enlarge particle array
-		if( pParticles ){
+		if(pParticles){
 			delete [] pParticles;
 			pParticles = NULL;
 		}
-		pParticles = new sParticle[ particleCount ];
+		pParticles = new sParticle[particleCount];
 		pParticleSize = particleCount;
 		
 		// enlarge local vbo data array
-		if( pLocalVBOData ){
+		if(pLocalVBOData){
 			delete [] pLocalVBOData;
 			pLocalVBOData = NULL;
 		}
-		pLocalVBOData = new sLocalVBOData[ particleCount ];
+		pLocalVBOData = new sLocalVBOData[particleCount];
 		
 		// enlarge shared vbo data array
-		if( pSharedVBOData ){
+		if(pSharedVBOData){
 			delete [] pSharedVBOData;
 			pSharedVBOData = NULL;
 		}
-		pSharedVBOData = new char[ DEPE_SPARTICLE_SIZE * particleCount ];
+		pSharedVBOData = new char[DEPE_SPARTICLE_SIZE * particleCount];
 	}
 	pParticleCount = particleCount;
 	
-	if( pIndexCount > pIndexSize ){
-		if( pIndices ){
+	if(pIndexCount > pIndexSize){
+		if(pIndices){
 			delete [] pIndices;
 			pIndices = NULL;
 		}
-		pIndices = new GLushort[ pIndexCount ];
+		pIndices = new GLushort[pIndexCount];
 		pIndexSize = pIndexCount;
 	}
 	
 	// only if there is an emitter
-	if( pEmitter ){
+	if(pEmitter){
 		// populate particle, local and shared vbo data array with the current particle states
-		for( t=0; t<typeCount; t++ ){
+		for(t=0; t<typeCount; t++){
 			const deoglRParticleEmitterInstanceType &itype =
 				*( ( deoglRParticleEmitterInstanceType* )pTypes.GetAt( t ) );
-			const deoglRParticleEmitterType &etype = pEmitter->GetTypeAt( t );
+			const deoglRParticleEmitterType &etype = pEmitter->GetTypeAt(t);
 			const int firstParticle = itype.GetFirstParticle();
 			const int typeParticleCount = itype.GetParticleCount();
 			
 			// particle state
-			for( p=0; p<typeParticleCount; p++ ){
-				sParticle &particle = pParticles[ firstParticle + p ];
+			for(p=0; p<typeParticleCount; p++){
+				sParticle &particle = pParticles[firstParticle + p];
 				
 				particle.emitterInstance = this;
 				particle.type = t;
 				particle.particle = firstParticle + p;
-				particle.renderType = ( unsigned char )etype.GetSimulationType();
+				particle.renderType = (unsigned char)etype.GetSimulationType();
 				
-				if( p < typeParticleCount - 1 ){
-					particle.ribbonLine[ 2 ] = 1;
+				if(p < typeParticleCount - 1){
+					particle.ribbonLine[2] = 1;
 					
 				}else{
-					particle.ribbonLine[ 2 ] = 0;
+					particle.ribbonLine[2] = 0;
 				}
-				if( p > 0 ){
-					particle.ribbonLine[ 1 ] = -1;
+				if(p > 0){
+					particle.ribbonLine[1] = -1;
 					
 				}else{
-					particle.ribbonLine[ 1 ] = 0;
+					particle.ribbonLine[1] = 0;
 				}
-				if( p > 1 ){
-					particle.ribbonLine[ 0 ] = -2;
+				if(p > 1){
+					particle.ribbonLine[0] = -2;
 					
 				}else{
-					particle.ribbonLine[ 0 ] = particle.ribbonLine[ 1 ];
+					particle.ribbonLine[0] = particle.ribbonLine[1];
 				}
 			}
 			
 			// local vbo data. if not used let it be undefined to not loose time for nothing
 			/*
-			if( engType.GetSimulationType() == deParticleEmitterType::estBeam ){
+			if(engType.GetSimulationType() == deParticleEmitterType::estBeam){
 				float beamFactor = 1.0f;
 				
-				if( typeParticleCount > 1 ){
-					beamFactor /= ( float )( typeParticleCount - 1 );
+				if(typeParticleCount > 1){
+					beamFactor /= (float)(typeParticleCount - 1);
 				}
 				
-				for( p=0; p<typeParticleCount; p++ ){
-					sLocalVBOData &localVBOData = pLocalVBOData[ firstParticle + p ];
+				for(p=0; p<typeParticleCount; p++){
+					sLocalVBOData &localVBOData = pLocalVBOData[firstParticle + p];
 					
-					localVBOData.beamLocation = beamFactor * ( float )p;
+					localVBOData.beamLocation = beamFactor * (float)p;
 				}
 			}
 			*/
 			
 			// shared vbo data.
-			if( typeParticleCount > 0 ){
-				memcpy( pSharedVBOData + DEPE_SPARTICLE_SIZE * firstParticle,
-					instance.GetTypeAt( t ).GetParticleArray(), DEPE_SPARTICLE_SIZE * typeParticleCount );
+			if(typeParticleCount > 0){
+				memcpy(pSharedVBOData + DEPE_SPARTICLE_SIZE * firstParticle,
+					instance.GetTypeAt(t).GetParticleArray(), DEPE_SPARTICLE_SIZE * typeParticleCount);
 			}
 		}
 	}
@@ -500,11 +500,11 @@ void deoglRParticleEmitterInstance::UpdateParticles( const deParticleEmitterInst
 }
 
 void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
-	if( ! pDirtyParticles ){
+	if(! pDirtyParticles){
 		return;
 	}
 	
-	if( pParticleCount == 0 ){
+	if(pParticleCount == 0){
 		pDirtyParticles = false;
 		return;
 	}
@@ -512,75 +512,75 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	// shared vbo
 	const deoglVBOLayout &vboLayoutShared = *pEmitter->GetVBOLayoutShared();
 	
-	if( ! pVBOShared ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOShared ) );
-		if( ! pVBOShared ){
-			DETHROW( deeOutOfMemory );
+	if(! pVBOShared){
+		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOShared));
+		if(! pVBOShared){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOShared ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, NULL, GL_STREAM_DRAW ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, pSharedVBOData, GL_STREAM_DRAW ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShared));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, NULL, GL_STREAM_DRAW));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, DEPE_SPARTICLE_SIZE * pParticleCount, pSharedVBOData, GL_STREAM_DRAW));
 	
 	// local vbo
 	/*
 	const deoglVBOLayout &vboLayoutLocal = *pEmitter->GetVBOLayoutLocal();
 	const int vboLocalStride = vboLayoutLocal.GetStride();
 	
-	if( ! pVBOLocal ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pVBOLocal ) );
-		if( ! pVBOLocal ){
-			DETHROW( deeOutOfMemory );
+	if(! pVBOLocal){
+		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOLocal));
+		if(! pVBOLocal){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOLocal ) );
-	OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, vboLocalStride * pParticleCount, NULL, GL_STREAM_DRAW ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOLocal));
+	OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, vboLocalStride * pParticleCount, NULL, GL_STREAM_DRAW));
 	
-	for( t=0; t<pTypeCount; t++ ){
-		const deParticleEmitterType &engType = pEmitter->GetParticleEmitter()->GetTypeAt( t );
+	for(t=0; t<pTypeCount; t++){
+		const deParticleEmitterType &engType = pEmitter->GetParticleEmitter()->GetTypeAt(t);
 		
-		if( engType.GetSimulationType() == deParticleEmitterType::estBeam ){
-			OGL_CHECK( pRenderThread, pglBufferSubData( GL_ARRAY_BUFFER, vboLocalStride * pTypes[ t ].GetFirstParticle(),
-				vboLocalStride * pTypes[ t ].GetParticleCount(), pLocalVBOData ) );
+		if(engType.GetSimulationType() == deParticleEmitterType::estBeam){
+			OGL_CHECK(pRenderThread, pglBufferSubData(GL_ARRAY_BUFFER, vboLocalStride * pTypes[t].GetFirstParticle(),
+				vboLocalStride * pTypes[t].GetParticleCount(), pLocalVBOData));
 		}
 	}
 	*/
 	
 	// ibo
-	if( ! pIBO ){
-		OGL_CHECK( pRenderThread, pglGenBuffers( 1, &pIBO ) );
-		if( ! pIBO ){
-			DETHROW( deeOutOfMemory );
+	if(! pIBO){
+		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pIBO));
+		if(! pIBO){
+			DETHROW(deeOutOfMemory);
 		}
 	}
 	
 	// vao
-	if( ! pVAO ){
-		pVAO = new deoglVAO( pRenderThread );
-		pVAO->SetIndexType( vboLayoutShared.GetIndexType() );
-		OGL_CHECK( pRenderThread, pglBindVertexArray( pVAO->GetVAO() ) );
+	if(! pVAO){
+		pVAO = new deoglVAO(pRenderThread);
+		pVAO->SetIndexType(vboLayoutShared.GetIndexType());
+		OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO->GetVAO()));
 		
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOShared ) );
-		vboLayoutShared.SetVAOAttributeAt( pRenderThread, 0, 0 );
-		vboLayoutShared.SetVAOAttributeAt( pRenderThread, 1, 1 );
-		vboLayoutShared.SetVAOAttributeAt( pRenderThread, 2, 2 );
-		vboLayoutShared.SetVAOAttributeAt( pRenderThread, 3, 3 );
+		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShared));
+		vboLayoutShared.SetVAOAttributeAt(pRenderThread, 0, 0);
+		vboLayoutShared.SetVAOAttributeAt(pRenderThread, 1, 1);
+		vboLayoutShared.SetVAOAttributeAt(pRenderThread, 2, 2);
+		vboLayoutShared.SetVAOAttributeAt(pRenderThread, 3, 3);
 		
 		/*
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pVBOLocal ) );
-		vboLayoutLocal.SetVAOAttributeAt( *pOgl, 0, 4 );
+		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOLocal));
+		vboLayoutLocal.SetVAOAttributeAt(*pOgl, 0, 4);
 		*/
 		
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
+		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pIBO));
 		
-		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		OGL_CHECK(pRenderThread, pglBindVertexArray(0));
 		
 		pVAO->EnsureRTSVAO();
 	}
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
+	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, 0));
 	
 	pDirtyParticles = false;
 }
@@ -590,17 +590,17 @@ void deoglRParticleEmitterInstance::ReleaseParticles(){
 	pIndexUsedCount = 0;
 	pDirtyIBO = true;
 	
-	if( pSharedVBOData ){
+	if(pSharedVBOData){
 		delete [] pSharedVBOData;
 		pSharedVBOData = NULL;
 	}
 	
-	if( pLocalVBOData ){
+	if(pLocalVBOData){
 		delete [] pLocalVBOData;
 		pLocalVBOData = NULL;
 	}
 	
-	if( pParticles ){
+	if(pParticles){
 		delete [] pParticles;
 		pParticles = NULL;
 		pParticleCount = 0;
@@ -608,13 +608,13 @@ void deoglRParticleEmitterInstance::ReleaseParticles(){
 	}
 }
 
-decVector deoglRParticleEmitterInstance::GetParticlePositionAt( int index ) const{
-	if( index < 0 || index >= pParticleCount ){
-		DETHROW( deeInvalidParam );
+decVector deoglRParticleEmitterInstance::GetParticlePositionAt(int index) const{
+	if(index < 0 || index >= pParticleCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const deParticleEmitterInstanceType::sParticle * const data = ( deParticleEmitterInstanceType::sParticle* )pSharedVBOData;
-	return decVector( data[ index ].positionX, data[ index ].positionY, data[ index ].positionZ );
+	const deParticleEmitterInstanceType::sParticle * const data = (deParticleEmitterInstanceType::sParticle*)pSharedVBOData;
+	return decVector(data[index].positionX, data[index].positionY, data[index].positionZ);
 }
 
 
@@ -639,24 +639,24 @@ int deoglRParticleEmitterInstance::GetTypeCount() const{
 	return pTypes.GetCount();
 }
 
-deoglRParticleEmitterInstanceType &deoglRParticleEmitterInstance::GetTypeAt( int index ) const{
-	return *( ( deoglRParticleEmitterInstanceType* )pTypes.GetAt( index ) );
+deoglRParticleEmitterInstanceType &deoglRParticleEmitterInstance::GetTypeAt(int index) const{
+	return *((deoglRParticleEmitterInstanceType*)pTypes.GetAt(index));
 }
 
 void deoglRParticleEmitterInstance::RemoveAllTypes(){
 	pTypes.RemoveAll();
 }
 
-void deoglRParticleEmitterInstance::AddType( deoglRParticleEmitterInstanceType *type ){
-	pTypes.Add( type );
+void deoglRParticleEmitterInstance::AddType(deoglRParticleEmitterInstanceType *type){
+	pTypes.Add(type);
 }
 
 void deoglRParticleEmitterInstance::InvalidateAllTypesParamBlocks(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRParticleEmitterInstanceType* )pTypes.GetAt( i ) )->InvalidateParamBlocks();
+	for(i=0; i<count; i++){
+		((deoglRParticleEmitterInstanceType*)pTypes.GetAt(i))->InvalidateParamBlocks();
 	}
 }
 
@@ -664,8 +664,8 @@ void deoglRParticleEmitterInstance::MarkAllTypesParamBlocksDirty(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRParticleEmitterInstanceType* )pTypes.GetAt( i ) )->MarkParamBlocksDirty();
+	for(i=0; i<count; i++){
+		((deoglRParticleEmitterInstanceType*)pTypes.GetAt(i))->MarkParamBlocksDirty();
 	}
 }
 
@@ -673,8 +673,8 @@ void deoglRParticleEmitterInstance::MarkAllTypesTUCsDirty(){
 	const int count = pTypes.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRParticleEmitterInstanceType* )pTypes.GetAt( i ) )->MarkTUCsDirty();
+	for(i=0; i<count; i++){
+		((deoglRParticleEmitterInstanceType*)pTypes.GetAt(i))->MarkTUCsDirty();
 	}
 }
 
@@ -688,41 +688,41 @@ void deoglRParticleEmitterInstance::ClearIBO(){
 	pDirtyIBO = true;
 }
 
-void deoglRParticleEmitterInstance::AddIBOEntry( int index ){
-	if( pIndexUsedCount == pIndexCount ){
-		DETHROW( deeInvalidParam );
+void deoglRParticleEmitterInstance::AddIBOEntry(int index){
+	if(pIndexUsedCount == pIndexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndices[ pIndexUsedCount++ ] = ( GLushort )index;
+	pIndices[pIndexUsedCount++] = (GLushort)index;
 	
 	pDirtyIBO = true;
 }
 
-void deoglRParticleEmitterInstance::AddIBOEntries( int index1, int index2, int index3, int index4 ){
-	if( pIndexUsedCount + 4 >= pIndexCount ){
-		DETHROW( deeInvalidParam );
+void deoglRParticleEmitterInstance::AddIBOEntries(int index1, int index2, int index3, int index4){
+	if(pIndexUsedCount + 4 >= pIndexCount){
+		DETHROW(deeInvalidParam);
 	}
 	
-	pIndices[ pIndexUsedCount++ ] = ( GLushort )index1;
-	pIndices[ pIndexUsedCount++ ] = ( GLushort )index2;
-	pIndices[ pIndexUsedCount++ ] = ( GLushort )index3;
-	pIndices[ pIndexUsedCount++ ] = ( GLushort )index4;
+	pIndices[pIndexUsedCount++] = (GLushort)index1;
+	pIndices[pIndexUsedCount++] = (GLushort)index2;
+	pIndices[pIndexUsedCount++] = (GLushort)index3;
+	pIndices[pIndexUsedCount++] = (GLushort)index4;
 	
 	pDirtyIBO = true;
 }
 
 void deoglRParticleEmitterInstance::UpdateIBO(){
-	if( ! pDirtyIBO ){
+	if(! pDirtyIBO){
 		return;
 	}
 	
-	if( pIndexUsedCount > 0 ){
+	if(pIndexUsedCount > 0){
 		const deoglVBOLayout &vboLayout = *pEmitter->GetVBOLayoutShared();
 		const int size = vboLayout.GetIndexSize() * pIndexUsedCount;
 		
-		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, pIBO ) );
-		OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, size, NULL, GL_STREAM_DRAW ) );
-		OGL_CHECK( pRenderThread, pglBufferData( GL_ARRAY_BUFFER, size, pIndices, GL_STREAM_DRAW ) );
+		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pIBO));
+		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, size, NULL, GL_STREAM_DRAW));
+		OGL_CHECK(pRenderThread, pglBufferData(GL_ARRAY_BUFFER, size, pIndices, GL_STREAM_DRAW));
 	}
 	
 	pDirtyIBO = false;
@@ -733,6 +733,6 @@ void deoglRParticleEmitterInstance::UpdateIBO(){
 // Render world usage
 ///////////////////////
 
-void deoglRParticleEmitterInstance::SetWorldMarkedRemove( bool marked ){
+void deoglRParticleEmitterInstance::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }

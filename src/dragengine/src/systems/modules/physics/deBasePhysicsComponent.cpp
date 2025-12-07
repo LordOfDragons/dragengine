@@ -70,10 +70,10 @@ void deBasePhysicsComponent::ParametersChanged(){
 
 
 
-void deBasePhysicsComponent::DecalAdded( deDecal *decal ){
+void deBasePhysicsComponent::DecalAdded(deDecal *decal){
 }
 
-void deBasePhysicsComponent::DecalRemoved( deDecal *decal ){
+void deBasePhysicsComponent::DecalRemoved(deDecal *decal){
 }
 
 void deBasePhysicsComponent::AllDecalsRemoved(){
@@ -84,8 +84,8 @@ void deBasePhysicsComponent::AllDecalsRemoved(){
 // Collision Detection
 ////////////////////////
 
-void deBasePhysicsComponent::FindDecalsAt( const decVector &point, deDecalList &list ){
+void deBasePhysicsComponent::FindDecalsAt(const decVector &point, deDecalList &list){
 }
 
-void deBasePhysicsComponent::FindDecalsTouching( decShape *shape, deDecalList &list ){
+void deBasePhysicsComponent::FindDecalsTouching(decShape *shape, deDecalList &list){
 }

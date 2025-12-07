@@ -60,10 +60,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky. */
-	igdeGDSky( const char *path, const char *name );
+	igdeGDSky(const char *path, const char *name);
 	
 	/** \brief Create copy of game definition sky. */
-	igdeGDSky( const igdeGDSky &sky );
+	igdeGDSky(const igdeGDSky &sky);
 	
 protected:
 	/** \brief Clean up sky. */
@@ -76,34 +76,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Path. */
-	inline const decString &GetPath() const{ return pPath; }
+	inline const decString &GetPath() const{return pPath;}
 	
 	/** \brief Set path. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
 	/** \brief Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** \brief Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Category. */
-	inline const decString &GetCategory() const{ return pCategory; }
+	inline const decString &GetCategory() const{return pCategory;}
 	
 	/** \brief Set category. */
-	void SetCategory( const char *category );
+	void SetCategory(const char *category);
 	
 	/** \brief Preview image or NULL if not loaded yet. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	inline deImage *GetPreviewImage() const{return pPreviewImage;}
 	
 	/** \brief Set preview image or NULL if not loaded yet. */
-	void SetPreviewImage( deImage *image );
+	void SetPreviewImage(deImage *image);
 	/*@}*/
 	
 	
@@ -114,10 +114,10 @@ public:
 	int GetControllerCount() const;
 	
 	/** \brief Controller at index. */
-	igdeGDSkyController *GetControllerAt( int index ) const;
+	igdeGDSkyController *GetControllerAt(int index) const;
 	
 	/** \brief Add controller. */
-	void AddController( igdeGDSkyController *controller );
+	void AddController(igdeGDSkyController *controller);
 	
 	/** \brief Remove controllers. */
 	void RemoveAllControllers();

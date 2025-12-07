@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUSetRuleFStaEnablePos( aeRuleForeignState *rule );
+	aeUSetRuleFStaEnablePos(aeRuleForeignState *rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUSetRuleFStaEnablePos();

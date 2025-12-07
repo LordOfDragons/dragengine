@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */
-	deoglSkinTexturePipeline( const deoglPipeline *pipeline, deoglSkinShader *shader );
+	deoglSkinTexturePipeline(const deoglPipeline *pipeline, deoglSkinShader *shader);
 	
 protected:
 	/** Clean up light pipeline. */
@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Pipeline. */
-	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
+	inline const deoglPipeline *GetPipeline() const{return pPipeline;}
 	
 	/** Shader. */
-	inline deoglSkinShader *GetShader() const{ return pShader; }
+	inline deoglSkinShader *GetShader() const{return pShader;}
 	/*@}*/
 };
 

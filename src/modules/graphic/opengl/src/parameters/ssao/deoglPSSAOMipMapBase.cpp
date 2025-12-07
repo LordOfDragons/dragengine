@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPSSAOMipMapBase::deoglPSSAOMipMapBase( deGraphicOpenGl &ogl ) : deoglParameterFloat( ogl ){
-	SetName( "ssaoMipMapBase" );
-	SetDescription( "Sets the mip map base for screen space ambient occlusion."
+deoglPSSAOMipMapBase::deoglPSSAOMipMapBase(deGraphicOpenGl &ogl) : deoglParameterFloat(ogl){
+	SetName("ssaoMipMapBase");
+	SetDescription("Sets the mip map base for screen space ambient occlusion."
 		" Screen space ambient occlusion is a distance based algorithm sampling in a"
 		" certain radius around geometry. The projection of the sampling radius as"
 		" defined by ssaoRadius onto the screen depends on the distance to the camera."
@@ -54,10 +54,10 @@ deoglPSSAOMipMapBase::deoglPSSAOMipMapBase( deGraphicOpenGl &ogl ) : deoglParame
 		" Larger values cause lower mip map levels to be chosen which reduce flickering"
 		" but raise noise. Higher noise can be compensated by increasing ssaoTapCount"
 		" at the expense of higher runtime cost. The default value of 8 provides a"
-		" reasonable balance between the two." );
-	SetCategory( ecExpert );
-	SetDisplayName( "SSAO MipMap Base" );
-	SetDefaultValue( "8" );
+		" reasonable balance between the two.");
+	SetCategory(ecExpert);
+	SetDisplayName("SSAO MipMap Base");
+	SetDefaultValue("8");
 }
 
 deoglPSSAOMipMapBase::~deoglPSSAOMipMapBase(){
@@ -72,6 +72,6 @@ float deoglPSSAOMipMapBase::GetParameterFloat(){
 	return pOgl.GetConfiguration().GetSSAOMipMapBase();
 }
 
-void deoglPSSAOMipMapBase::SetParameterFloat( float value ){
-	pOgl.GetConfiguration().SetSSAOMipMapBase( value );
+void deoglPSSAOMipMapBase::SetParameterFloat(float value){
+	pOgl.GetConfiguration().SetSSAOMipMapBase(value);
 }

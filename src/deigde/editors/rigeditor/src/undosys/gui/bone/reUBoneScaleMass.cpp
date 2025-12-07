@@ -41,12 +41,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneScaleMass::reUBoneScaleMass( reRig *rig, const decObjectOrderedSet &bones, float newMass ){
-	if( ! rig || bones.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+reUBoneScaleMass::reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones, float newMass){
+	if(! rig || bones.GetCount() == 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( newMass < 0.0f ){
+	if(newMass < 0.0f){
 		newMass = 0.0f;
 	}
 	
@@ -59,46 +59,46 @@ reUBoneScaleMass::reUBoneScaleMass( reRig *rig, const decObjectOrderedSet &bones
 	pBones = NULL;
 	pBoneCount = 0;
 	
-	SetShortInfo( "Scale bone mass" );
+	SetShortInfo("Scale bone mass");
 	
 	try{
-		if( boneCount > 0 ){
+		if(boneCount > 0){
 			// create bones array
-			pBones = new sBone[ boneCount ];
+			pBones = new sBone[boneCount];
 			
 			// store bones summing up the their mass. ignore bones without a shape
-			for( i=0; i<boneCount; i++ ){
-				pBones[ i ].bone = ( reRigBone* )bones.GetAt( i );
+			for(i=0; i<boneCount; i++){
+				pBones[i].bone = (reRigBone*)bones.GetAt(i);
 				
-				if( pBones[ i ].bone->GetShapeCount() == 0 ){
-					pBones[ i ].bone = NULL;
-					pBones[ i ].oldMass = 0.0f;
+				if(pBones[i].bone->GetShapeCount() == 0){
+					pBones[i].bone = NULL;
+					pBones[i].oldMass = 0.0f;
 					
 				}else{
-					pBones[ i ].bone->AddReference();
-					pBones[ i ].oldMass = pBones[ i ].bone->GetMass();
-					oldMass += pBones[ i ].oldMass;
+					pBones[i].bone->AddReference();
+					pBones[i].oldMass = pBones[i].bone->GetMass();
+					oldMass += pBones[i].oldMass;
 				}
 			}
 			
 			pBoneCount = boneCount;
 			
 			// calculate the new mass for each bone
-			if( oldMass < FLOAT_SAFE_EPSILON ){
-				for( i=0; i<boneCount; i++ ){
-					pBones[ i ].newMass = pBones[ i ].oldMass;
+			if(oldMass < FLOAT_SAFE_EPSILON){
+				for(i=0; i<boneCount; i++){
+					pBones[i].newMass = pBones[i].oldMass;
 				}
 				
 			}else{
 				const float factor = newMass / oldMass;
 				
-				for( i=0; i<boneCount; i++ ){
-					pBones[ i ].newMass = pBones[ i ].oldMass * factor;
+				for(i=0; i<boneCount; i++){
+					pBones[i].newMass = pBones[i].oldMass * factor;
 				}
 			}
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -119,9 +119,9 @@ reUBoneScaleMass::~reUBoneScaleMass(){
 void reUBoneScaleMass::Undo(){
 	int i;
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( pBones[ i ].bone ){
-			pBones[ i ].bone->SetMass( pBones[ i ].oldMass );
+	for(i=0; i<pBoneCount; i++){
+		if(pBones[i].bone){
+			pBones[i].bone->SetMass(pBones[i].oldMass);
 		}
 	}
 }
@@ -129,9 +129,9 @@ void reUBoneScaleMass::Undo(){
 void reUBoneScaleMass::Redo(){
 	int i;
 	
-	for( i=0; i<pBoneCount; i++ ){
-		if( pBones[ i ].bone ){
-			pBones[ i ].bone->SetMass( pBones[ i ].newMass );
+	for(i=0; i<pBoneCount; i++){
+		if(pBones[i].bone){
+			pBones[i].bone->SetMass(pBones[i].newMass);
 		}
 	}
 }
@@ -142,18 +142,18 @@ void reUBoneScaleMass::Redo(){
 //////////////////////
 
 void reUBoneScaleMass::pCleanUp(){
-	if( pBones ){
-		while( pBoneCount > 0 ){
+	if(pBones){
+		while(pBoneCount > 0){
 			pBoneCount--;
-			if( pBones[ pBoneCount ].bone ){
-				pBones[ pBoneCount ].bone->FreeReference();
+			if(pBones[pBoneCount].bone){
+				pBones[pBoneCount].bone->FreeReference();
 			}
 		}
 		
 		delete [] pBones;
 	}
 	
-	if( pRig ){
+	if(pRig){
 		pRig->FreeReference();
 	}
 }

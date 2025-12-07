@@ -34,16 +34,16 @@
 //////////////////////////////
 
 deInputDeviceComponent::deInputDeviceComponent() :
-pType( ectGeneric ){
+pType(ectGeneric){
 }
 
-deInputDeviceComponent::deInputDeviceComponent( const deInputDeviceComponent &component ) :
-pID( component.pID ),
-pName( component.pName ),
-pType( component.pType ),
-pDisplayImage( component.pDisplayImage ),
-pDisplayIcons( component.pDisplayIcons ),
-pDisplayText( component.pDisplayText ){
+deInputDeviceComponent::deInputDeviceComponent(const deInputDeviceComponent &component) :
+pID(component.pID),
+pName(component.pName),
+pType(component.pType),
+pDisplayImage(component.pDisplayImage),
+pDisplayIcons(component.pDisplayIcons),
+pDisplayText(component.pDisplayText){
 }
 
 deInputDeviceComponent::~deInputDeviceComponent(){
@@ -54,19 +54,19 @@ deInputDeviceComponent::~deInputDeviceComponent(){
 // Device information
 ///////////////////////
 
-void deInputDeviceComponent::SetID( const char *id ){
+void deInputDeviceComponent::SetID(const char *id){
 	pID = id;
 }
 
-void deInputDeviceComponent::SetName( const char *name ){
+void deInputDeviceComponent::SetName(const char *name){
 	pName = name;
 }
 
-void deInputDeviceComponent::SetType(deInputDeviceComponent:: eComponentTypes type ){
+void deInputDeviceComponent::SetType(deInputDeviceComponent:: eComponentTypes type){
 	pType = type;
 }
 
-void deInputDeviceComponent::SetDisplayImage( deImage *image ){
+void deInputDeviceComponent::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
@@ -74,18 +74,18 @@ int deInputDeviceComponent::GetDisplayIconCount() const{
 	return pDisplayIcons.GetCount();
 }
 
-deImage *deInputDeviceComponent::GetDisplayIconAt( int index ) const{
-	return ( deImage* )pDisplayIcons.GetAt( index );
+deImage *deInputDeviceComponent::GetDisplayIconAt(int index) const{
+	return (deImage*)pDisplayIcons.GetAt(index);
 }
 
-void deInputDeviceComponent::AddDisplayIcon( deImage *image ){
-	if( ! image ){
-		DETHROW( deeNullPointer );
+void deInputDeviceComponent::AddDisplayIcon(deImage *image){
+	if(! image){
+		DETHROW(deeNullPointer);
 	}
-	pDisplayIcons.Add( image );
+	pDisplayIcons.Add(image);
 }
 
-void deInputDeviceComponent::SetDisplayText( const char *text ){
+void deInputDeviceComponent::SetDisplayText(const char *text){
 	pDisplayText = text;
 }
 
@@ -94,7 +94,7 @@ void deInputDeviceComponent::SetDisplayText( const char *text ){
 // Operators
 //////////////
 
-deInputDeviceComponent &deInputDeviceComponent::operator=( const deInputDeviceComponent &component ){
+deInputDeviceComponent &deInputDeviceComponent::operator=(const deInputDeviceComponent &component){
 	pID = component.pID;
 	pName = component.pName;
 	pType = component.pType;

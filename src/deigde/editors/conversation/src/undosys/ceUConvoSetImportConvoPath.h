@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUConvoSetImportConvoPath( ceLoadSaveSystem &lssystem,
-		ceConversation *conversation, const decStringList &newValue );
+	ceUConvoSetImportConvoPath(ceLoadSaveSystem &lssystem,
+		ceConversation *conversation, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new clipboard data. */
-	aeClipboardDataBones( const decStringSet &bones );
+	aeClipboardDataBones(const decStringSet &bones);
 	
 protected:
 	/**
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Boness. */
-	inline const decStringSet &GetBones() const{ return pBones; }
+	inline const decStringSet &GetBones() const{return pBones;}
 	/*@}*/
 };
 

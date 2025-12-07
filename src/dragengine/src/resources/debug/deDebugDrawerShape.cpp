@@ -41,9 +41,9 @@
 /////////////////////////////////
 
 deDebugDrawerShape::deDebugDrawerShape(){
-	pScale.Set( 1.0f, 1.0f, 1.0f );
-	pEdgeColor.Set( 1.0f, 1.0f, 1.0f, 1.0f );
-	pFillColor.Set( 1.0f, 1.0f, 1.0f, 0.0f );
+	pScale.Set(1.0f, 1.0f, 1.0f);
+	pEdgeColor.Set(1.0f, 1.0f, 1.0f, 1.0f);
+	pFillColor.Set(1.0f, 1.0f, 1.0f, 0.0f);
 }
 
 deDebugDrawerShape::~deDebugDrawerShape(){
@@ -55,23 +55,23 @@ deDebugDrawerShape::~deDebugDrawerShape(){
 // Management
 ///////////////
 
-void deDebugDrawerShape::SetPosition( const decVector &position ){
+void deDebugDrawerShape::SetPosition(const decVector &position){
 	pPosition = position;
 }
 
-void deDebugDrawerShape::SetOrientation( const decQuaternion &orientation ){
+void deDebugDrawerShape::SetOrientation(const decQuaternion &orientation){
 	pOrientation = orientation;
 }
 
-void deDebugDrawerShape::SetScale( const decVector &scale ){
+void deDebugDrawerShape::SetScale(const decVector &scale){
 	pScale = scale;
 }
 
-void deDebugDrawerShape::SetEdgeColor( const decColor &color ){
+void deDebugDrawerShape::SetEdgeColor(const decColor &color){
 	pEdgeColor = color;
 }
 
-void deDebugDrawerShape::SetFillColor( const decColor &color ){
+void deDebugDrawerShape::SetFillColor(const decColor &color){
 	pFillColor = color;
 }
 
@@ -84,24 +84,24 @@ int deDebugDrawerShape::GetFaceCount() const{
 	return pFaces.GetCount();
 }
 
-deDebugDrawerShapeFace *deDebugDrawerShape::GetFaceAt( int index ) const{
-	return ( deDebugDrawerShapeFace* )pFaces.GetAt( index );
+deDebugDrawerShapeFace *deDebugDrawerShape::GetFaceAt(int index) const{
+	return (deDebugDrawerShapeFace*)pFaces.GetAt(index);
 }
 
-void deDebugDrawerShape::AddFace( deDebugDrawerShapeFace *face ){
+void deDebugDrawerShape::AddFace(deDebugDrawerShapeFace *face){
 	// no pFaces.Has(face) check. for large number of faces this becomes very slow
-	if( ! face ){
-		DETHROW( deeInvalidParam );
+	if(! face){
+		DETHROW(deeInvalidParam);
 	}
-	pFaces.Add( face );
+	pFaces.Add(face);
 }
 
 void deDebugDrawerShape::RemoveAllFaces(){
 	const int count = pFaces.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		delete ( deDebugDrawerShapeFace* )pFaces.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deDebugDrawerShapeFace*)pFaces.GetAt(i);
 	}
 	pFaces.RemoveAll();
 }

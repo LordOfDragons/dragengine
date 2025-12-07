@@ -47,7 +47,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new base xml read/save. */
-	dealBaseXML( deLogger *logger, const char *loggerSource );
+	dealBaseXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the base xml read/save. */
 	virtual ~dealBaseXML();
 	/*@}*/
@@ -56,21 +56,21 @@ protected:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline deLogger *GetLogger() const{return pLogger;}
 	/** Retrieves the logger source. */
-	inline const decString &GetLoggerSource() const{ return pLoggerSource; }
+	inline const decString &GetLoggerSource() const{return pLoggerSource;}
 	
-	bool pHasAttribute( const decXmlElementTag &tag, const char *name ) const;
-	const char *pGetAttributeString( const decXmlElementTag &tag, const char *name ) const;
-	int pGetAttributeInt( const decXmlElementTag &tag, const char *name ) const;
-	float pGetAttributeFloat( const decXmlElementTag &tag, const char *name ) const;
-	int pGetCDataInt( const decXmlElementTag &tag ) const;
-	float pGetCDataFloat( const decXmlElementTag &tag ) const;
-	const char *pGetCDataString( const decXmlElementTag &tag ) const;
+	bool pHasAttribute(const decXmlElementTag &tag, const char *name) const;
+	const char *pGetAttributeString(const decXmlElementTag &tag, const char *name) const;
+	int pGetAttributeInt(const decXmlElementTag &tag, const char *name) const;
+	float pGetAttributeFloat(const decXmlElementTag &tag, const char *name) const;
+	int pGetCDataInt(const decXmlElementTag &tag) const;
+	float pGetCDataFloat(const decXmlElementTag &tag) const;
+	const char *pGetCDataString(const decXmlElementTag &tag) const;
 	
-	void pErrorUnknownTag( const decXmlElementTag &root, const decXmlElementTag &tag );
-	void pErrorUnknownValue( const decXmlElementTag &tag, const char *value );
-	void pErrorMissingTag( const decXmlElementTag &root, const char *tagName );
+	void pErrorUnknownTag(const decXmlElementTag &root, const decXmlElementTag &tag);
+	void pErrorUnknownValue(const decXmlElementTag &tag, const char *value);
+	void pErrorMissingTag(const decXmlElementTag &root, const char *tagName);
 	/*@}*/
 };
 

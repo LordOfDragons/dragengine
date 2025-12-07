@@ -44,7 +44,7 @@ public:
 	virtual ~igdeNativeNullRenderView();
 	
 	/** \brief Create native widget. */
-	static igdeNativeNullRenderView* CreateNativeWidget( igdeViewRenderWindow &owner );
+	static igdeNativeNullRenderView* CreateNativeWidget(igdeViewRenderWindow &owner);
 	
 	/** \brief Post create native widget. */
 	virtual void PostCreateNativeWidget();
@@ -57,8 +57,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	inline bool GetCanRender() const{ return true; }
-	inline bool GetRenderWindowAttached() const{ return true; }
+	inline bool GetCanRender() const{return true;}
+	inline bool GetRenderWindowAttached() const{return true;}
 	
 	virtual void DropNativeWindow();
 	virtual bool IsReallyVisible() const;

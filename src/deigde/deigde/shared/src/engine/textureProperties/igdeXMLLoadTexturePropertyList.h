@@ -41,7 +41,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create loader. */
-	igdeXMLLoadTexturePropertyList( deLogger *logger );
+	igdeXMLLoadTexturePropertyList(deLogger *logger);
 	
 	/** \brief Clean up loader. */
 	virtual ~igdeXMLLoadTexturePropertyList();
@@ -52,16 +52,16 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Load texture property list. */
-	void ReadFromFile( igdeTexturePropertyList &list, decBaseFileReader &file );
+	void ReadFromFile(igdeTexturePropertyList &list, decBaseFileReader &file);
 	/*@}*/
 	
 	
 	
 private:
-	void pReadList( const decXmlElementTag &root, igdeTexturePropertyList &list );
-	void pReadProperty( const decXmlElementTag &root, igdeTexturePropertyList &list );
-	void pReadDefault( const decXmlElementTag &root, igdeTextureProperty &property );
-	void pReadAffects( const decXmlElementTag &root, igdeTextureProperty &property );
+	void pReadList(const decXmlElementTag &root, igdeTexturePropertyList &list);
+	void pReadProperty(const decXmlElementTag &root, igdeTexturePropertyList &list);
+	void pReadDefault(const decXmlElementTag &root, igdeTextureProperty &property);
+	void pReadAffects(const decXmlElementTag &root, igdeTextureProperty &property);
 };
 
 #endif

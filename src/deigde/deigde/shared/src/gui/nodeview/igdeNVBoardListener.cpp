@@ -43,24 +43,24 @@ igdeNVBoardListener::~igdeNVBoardListener(){
 // Events
 ///////////
 
-void igdeNVBoardListener::AddContextMenuEntries( igdeNVBoard*, igdeMenuCascade&, const decPoint & ){
+void igdeNVBoardListener::AddContextMenuEntries(igdeNVBoard*, igdeMenuCascade&, const decPoint &){
 }
 
-bool igdeNVBoardListener::CanLink( igdeNVBoard*, igdeNVSlot*, igdeNVSlot* ){
+bool igdeNVBoardListener::CanLink(igdeNVBoard*, igdeNVSlot*, igdeNVSlot*){
 	return true;
 }
 
-void igdeNVBoardListener::OnLinkAdded( igdeNVBoard*, igdeNVLink* ){
+void igdeNVBoardListener::OnLinkAdded(igdeNVBoard*, igdeNVLink*){
 }
 
-void igdeNVBoardListener::OnLinkRemoved( igdeNVBoard*, igdeNVSlot*, igdeNVSlot* ){
+void igdeNVBoardListener::OnLinkRemoved(igdeNVBoard*, igdeNVSlot*, igdeNVSlot*){
 }
 
-void igdeNVBoardListener::OnAllLinksRemoved( igdeNVBoard* ){
+void igdeNVBoardListener::OnAllLinksRemoved(igdeNVBoard*){
 }
 
-void igdeNVBoardListener::OnOffsetChanged( igdeNVBoard *board ){
+void igdeNVBoardListener::OnOffsetChanged(igdeNVBoard *board){
 }
 
-void igdeNVBoardListener::OnSizeChanged( igdeNVBoard *board ){
+void igdeNVBoardListener::OnSizeChanged(igdeNVBoard *board){
 }

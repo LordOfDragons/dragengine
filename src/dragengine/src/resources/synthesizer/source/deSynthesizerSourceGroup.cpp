@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deSynthesizerSourceGroup::deSynthesizerSourceGroup() :
-pApplicationType( deSynthesizerSourceGroup::eatAll ){
+pApplicationType(deSynthesizerSourceGroup::eatAll){
 }
 
 deSynthesizerSourceGroup::~deSynthesizerSourceGroup(){
@@ -57,27 +57,27 @@ int deSynthesizerSourceGroup::GetSourceCount() const{
 	return pSources.GetCount();
 }
 
-deSynthesizerSource *deSynthesizerSourceGroup::GetSourceAt( int index ) const{
-	return ( deSynthesizerSource* )pSources.GetAt( index );
+deSynthesizerSource *deSynthesizerSourceGroup::GetSourceAt(int index) const{
+	return (deSynthesizerSource*)pSources.GetAt(index);
 }
 
-int deSynthesizerSourceGroup::IndexOfSource( deSynthesizerSource *source ) const{
-	return pSources.IndexOf( source );
+int deSynthesizerSourceGroup::IndexOfSource(deSynthesizerSource *source) const{
+	return pSources.IndexOf(source);
 }
 
-bool deSynthesizerSourceGroup::HasSource( deSynthesizerSource *source ) const{
-	return pSources.Has( source );
+bool deSynthesizerSourceGroup::HasSource(deSynthesizerSource *source) const{
+	return pSources.Has(source);
 }
 
-void deSynthesizerSourceGroup::AddSource( deSynthesizerSource *source ){
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerSourceGroup::AddSource(deSynthesizerSource *source){
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
-	pSources.Add( source );
+	pSources.Add(source);
 }
 
-void deSynthesizerSourceGroup::RemoveSource( deSynthesizerSource *source ){
-	pSources.Remove( source );
+void deSynthesizerSourceGroup::RemoveSource(deSynthesizerSource *source){
+	pSources.Remove(source);
 }
 
 void deSynthesizerSourceGroup::RemoveAllSources(){
@@ -86,9 +86,9 @@ void deSynthesizerSourceGroup::RemoveAllSources(){
 
 
 
-void deSynthesizerSourceGroup::SetApplicationType( deSynthesizerSourceGroup::eApplicationTypes type ){
-	if( type < deSynthesizerSourceGroup::eatAll || type > deSynthesizerSourceGroup::eatSolo ){
-		DETHROW( deeInvalidParam );
+void deSynthesizerSourceGroup::SetApplicationType(deSynthesizerSourceGroup::eApplicationTypes type){
+	if(type < deSynthesizerSourceGroup::eatAll || type > deSynthesizerSourceGroup::eatSolo){
+		DETHROW(deeInvalidParam);
 	}
 	pApplicationType = type;
 }
@@ -98,6 +98,6 @@ void deSynthesizerSourceGroup::SetApplicationType( deSynthesizerSourceGroup::eAp
 // Visiting
 /////////////
 
-void deSynthesizerSourceGroup::Visit( deSynthesizerSourceVisitor &visitor ){
-	visitor.VisitGroup( *this );
+void deSynthesizerSourceGroup::Visit(deSynthesizerSourceVisitor &visitor){
+	visitor.VisitGroup(*this);
 }

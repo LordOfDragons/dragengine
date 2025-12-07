@@ -39,14 +39,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceWaveSetMaxFrequency::seUSourceWaveSetMaxFrequency( seSourceWave *source, float newFrequency ) :
-pSource( NULL )
+seUSourceWaveSetMaxFrequency::seUSourceWaveSetMaxFrequency(seSourceWave *source, float newFrequency) :
+pSource(NULL)
 {
-	if( ! source ){
-		DETHROW( deeInvalidParam );
+	if(! source){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Source wave set maximum frequency" );
+	SetShortInfo("Source wave set maximum frequency");
 	
 	pOldFrequency = source->GetMaxFrequency();
 	pNewFrequency = newFrequency;
@@ -56,7 +56,7 @@ pSource( NULL )
 }
 
 seUSourceWaveSetMaxFrequency::~seUSourceWaveSetMaxFrequency(){
-	if( pSource ){
+	if(pSource){
 		pSource->FreeReference();
 	}
 }
@@ -67,9 +67,9 @@ seUSourceWaveSetMaxFrequency::~seUSourceWaveSetMaxFrequency(){
 ///////////////
 
 void seUSourceWaveSetMaxFrequency::Undo(){
-	pSource->SetMaxFrequency( pOldFrequency );
+	pSource->SetMaxFrequency(pOldFrequency);
 }
 
 void seUSourceWaveSetMaxFrequency::Redo(){
-	pSource->SetMaxFrequency( pNewFrequency );
+	pSource->SetMaxFrequency(pNewFrequency);
 }

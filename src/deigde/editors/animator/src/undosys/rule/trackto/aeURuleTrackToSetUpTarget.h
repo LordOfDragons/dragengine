@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURuleTrackToSetUpTarget( aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget );
+	aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnimatorRuleTrackTo::eUpTarget newTarget);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleTrackToSetUpTarget();

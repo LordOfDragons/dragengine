@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetIPA::saeUPhonemeSetIPA( saePhoneme *phoneme, int newIPA ){
-	if( ! phoneme ) DETHROW( deeInvalidParam );
+saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
+	if(! phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
 	
-	SetShortInfo( "Phoneme Set IPA" );
+	SetShortInfo("Phoneme Set IPA");
 	
 	pOldIPA = phoneme->GetIPA();
 	pNewIPA = newIPA;
@@ -54,7 +54,7 @@ saeUPhonemeSetIPA::saeUPhonemeSetIPA( saePhoneme *phoneme, int newIPA ){
 }
 
 saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
-	if( pPhoneme ){
+	if(pPhoneme){
 		pPhoneme->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
 ///////////////
 
 void saeUPhonemeSetIPA::Undo(){
-	pPhoneme->SetIPA( pOldIPA );
+	pPhoneme->SetIPA(pOldIPA);
 }
 
 void saeUPhonemeSetIPA::Redo(){
-	pPhoneme->SetIPA( pNewIPA );
+	pPhoneme->SetIPA(pNewIPA);
 }

@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTFramebuffer::deoglRTFramebuffer( deoglRenderThread &renderThread ) :
+deoglRTFramebuffer::deoglRTFramebuffer(deoglRenderThread &renderThread) :
 pManager(renderThread),
 pActive(nullptr),
 pPrimary(deoglFramebuffer::Ref::NewWith(renderThread, true)),

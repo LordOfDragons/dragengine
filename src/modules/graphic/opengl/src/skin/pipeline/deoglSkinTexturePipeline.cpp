@@ -33,12 +33,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinTexturePipeline::deoglSkinTexturePipeline( const deoglPipeline *pipeline, deoglSkinShader *shader ) :
-pPipeline( pipeline ),
-pShader( shader )
+deoglSkinTexturePipeline::deoglSkinTexturePipeline(const deoglPipeline *pipeline, deoglSkinShader *shader) :
+pPipeline(pipeline),
+pShader(shader)
 {
-	DEASSERT_NOTNULL( pipeline )
-	DEASSERT_NOTNULL( shader )
+	DEASSERT_NOTNULL(pipeline)
+	DEASSERT_NOTNULL(shader)
 }
 
 deoglSkinTexturePipeline::~deoglSkinTexturePipeline(){

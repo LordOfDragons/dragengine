@@ -50,9 +50,9 @@ public:
 	 * Visits an octree node.
 	 * \details The default implementation is to visit all faces stored in the node.
 	 */
-	virtual void VisitNode( deoglOctree *node, int intersection );
+	virtual void VisitNode(deoglOctree *node, int intersection);
 	/** Visits a face. */
-	virtual void VisitFace( deoglModelFace *face );
+	virtual void VisitFace(deoglModelFace *face);
 	/*@}*/
 };
 

@@ -51,9 +51,9 @@ extern const int *vResourcePeerCreationOrder;
 // Constructor, Destructor
 ////////////////////////////
 
-deAnimatorSystem::deAnimatorSystem( deEngine *engine ) :
-deBaseSystem( engine, "Animator", deModuleSystem::emtAnimator ),
-pActiveModule( NULL ){
+deAnimatorSystem::deAnimatorSystem(deEngine *engine) :
+deBaseSystem(engine, "Animator", deModuleSystem::emtAnimator),
+pActiveModule(NULL){
 }
 
 deAnimatorSystem::~deAnimatorSystem(){
@@ -64,59 +64,59 @@ deAnimatorSystem::~deAnimatorSystem(){
 // Management
 ///////////////
 
-void deAnimatorSystem::LoadAnimator( deAnimator *animator ){
-	if( ! GetIsRunning() ){
+void deAnimatorSystem::LoadAnimator(deAnimator *animator){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( animator->GetPeerAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(animator->GetPeerAnimator()){
+		DETHROW(deeInvalidParam);
 	}
-	animator->SetPeerAnimator( pActiveModule->CreateAnimator( animator ) );
-	if( ! animator->GetPeerAnimator() ){
-		DETHROW( deeOutOfMemory );
+	animator->SetPeerAnimator(pActiveModule->CreateAnimator(animator));
+	if(! animator->GetPeerAnimator()){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
-void deAnimatorSystem::LoadAnimatorInstance( deAnimatorInstance *instance ){
-	if( ! GetIsRunning() ){
+void deAnimatorSystem::LoadAnimatorInstance(deAnimatorInstance *instance){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( instance->GetPeerAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(instance->GetPeerAnimator()){
+		DETHROW(deeInvalidParam);
 	}
-	instance->SetPeerAnimator( pActiveModule->CreateAnimatorInstance( instance ) );
-	if( ! instance->GetPeerAnimator() ){
-		DETHROW( deeOutOfMemory );
+	instance->SetPeerAnimator(pActiveModule->CreateAnimatorInstance(instance));
+	if(! instance->GetPeerAnimator()){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
-void deAnimatorSystem::LoadAnimation( deAnimation *animation ){
-	if( ! GetIsRunning() ){
+void deAnimatorSystem::LoadAnimation(deAnimation *animation){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( animation->GetPeerAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(animation->GetPeerAnimator()){
+		DETHROW(deeInvalidParam);
 	}
-	animation->SetPeerAnimator( pActiveModule->CreateAnimation( animation ) );
-	if( ! animation->GetPeerAnimator() ){
-		DETHROW( deeOutOfMemory );
+	animation->SetPeerAnimator(pActiveModule->CreateAnimation(animation));
+	if(! animation->GetPeerAnimator()){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
-void deAnimatorSystem::LoadComponent( deComponent *component ){
-	if( ! GetIsRunning() ){
+void deAnimatorSystem::LoadComponent(deComponent *component){
+	if(! GetIsRunning()){
 		return;
 	}
 	
-	if( component->GetPeerAnimator() ){
-		DETHROW( deeInvalidParam );
+	if(component->GetPeerAnimator()){
+		DETHROW(deeInvalidParam);
 	}
-	component->SetPeerAnimator( pActiveModule->CreateComponent( component ) );
-	if( ! component->GetPeerAnimator() ){
-		DETHROW( deeOutOfMemory );
+	component->SetPeerAnimator(pActiveModule->CreateComponent(component));
+	if(! component->GetPeerAnimator()){
+		DETHROW(deeOutOfMemory);
 	}
 }
 
@@ -125,9 +125,9 @@ void deAnimatorSystem::LoadComponent( deComponent *component ){
 // Overloadables
 //////////////////
 
-void deAnimatorSystem::SetActiveModule( deLoadableModule *module ){
-	deBaseSystem::SetActiveModule( module );
-	pActiveModule = ( deBaseAnimatorModule* )module->GetModule();
+void deAnimatorSystem::SetActiveModule(deLoadableModule *module){
+	deBaseSystem::SetActiveModule(module);
+	pActiveModule = (deBaseAnimatorModule*)module->GetModule();
 }
 
 void deAnimatorSystem::ClearPermanents(){
@@ -140,13 +140,13 @@ void deAnimatorSystem::PostStart(){
 	int i;
 	
 	// init module
-	if( ! pActiveModule->Init() ){
-		DETHROW( deeInvalidAction );
+	if(! pActiveModule->Init()){
+		DETHROW(deeInvalidAction);
 	}
 	
 	// load animator system related stuff
-	for( i=0; i<engine.GetResourceManagerCount(); i++ ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemAnimatorLoad();
+	for(i=0; i<engine.GetResourceManagerCount(); i++){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemAnimatorLoad();
 	}
 }
 
@@ -155,11 +155,11 @@ void deAnimatorSystem::PreStop(){
 	int i;
 	
 	// remove all parallel tasks if present
-	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy( pActiveModule );
+	engine.GetParallelProcessing().FinishAndRemoveTasksOwnedBy(pActiveModule);
 	
 	// unload animator system related stuff
-	for( i=engine.GetResourceManagerCount()-1; i>=0; i-- ){
-		engine.GetResourceManagerAt( vResourcePeerCreationOrder[ i ] )->SystemAnimatorUnload();
+	for(i=engine.GetResourceManagerCount()-1; i>=0; i--){
+		engine.GetResourceManagerAt(vResourcePeerCreationOrder[i])->SystemAnimatorUnload();
 	}
 	
 	// shutdown current module

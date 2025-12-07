@@ -50,74 +50,74 @@ deoglEnvironmentMapList::~deoglEnvironmentMapList(){
 // Management
 ///////////////
 
-deoglEnvironmentMap *deoglEnvironmentMapList::GetAt( int index ) const{
-	return ( deoglEnvironmentMap* )pEnvMaps.GetAt( index );
+deoglEnvironmentMap *deoglEnvironmentMapList::GetAt(int index) const{
+	return (deoglEnvironmentMap*)pEnvMaps.GetAt(index);
 }
 
 int deoglEnvironmentMapList::GetCount() const{
 	return pEnvMaps.GetCount();
 }
 
-int deoglEnvironmentMapList::IndexOf( deoglEnvironmentMap *envmap ) const{
-	return pEnvMaps.IndexOf( envmap );
+int deoglEnvironmentMapList::IndexOf(deoglEnvironmentMap *envmap) const{
+	return pEnvMaps.IndexOf(envmap);
 }
 
-bool deoglEnvironmentMapList::Has( deoglEnvironmentMap *envmap ) const{
-	return pEnvMaps.Has( envmap );
+bool deoglEnvironmentMapList::Has(deoglEnvironmentMap *envmap) const{
+	return pEnvMaps.Has(envmap);
 }
 
-void deoglEnvironmentMapList::Add( deoglEnvironmentMap *envmap ){
-	if( ! envmap || pEnvMaps.Has( envmap ) ){
-		DETHROW( deeInvalidParam );
+void deoglEnvironmentMapList::Add(deoglEnvironmentMap *envmap){
+	if(! envmap || pEnvMaps.Has(envmap)){
+		DETHROW(deeInvalidParam);
 	}
-	pEnvMaps.Add( envmap );
+	pEnvMaps.Add(envmap);
 }
 
-bool deoglEnvironmentMapList::AddIfMissing( deoglEnvironmentMap *envmap ){
-	if( ! envmap ){
-		DETHROW( deeInvalidParam );
+bool deoglEnvironmentMapList::AddIfMissing(deoglEnvironmentMap *envmap){
+	if(! envmap){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pEnvMaps.Has( envmap ) ){
+	if(pEnvMaps.Has(envmap)){
 		return false;
 		
 	}else{
-		pEnvMaps.Add( envmap );
+		pEnvMaps.Add(envmap);
 		return true;
 	}
 }
 
-void deoglEnvironmentMapList::Remove( deoglEnvironmentMap *envmap ){
-	if( ! RemoveIfExisting( envmap ) ){
-		DETHROW( deeInvalidParam );
+void deoglEnvironmentMapList::Remove(deoglEnvironmentMap *envmap){
+	if(! RemoveIfExisting(envmap)){
+		DETHROW(deeInvalidParam);
 	}
 }
 
-bool deoglEnvironmentMapList::RemoveIfExisting( deoglEnvironmentMap *envmap ){
-	const int index = pEnvMaps.IndexOf( envmap );
-	if( index == -1 ){
+bool deoglEnvironmentMapList::RemoveIfExisting(deoglEnvironmentMap *envmap){
+	const int index = pEnvMaps.IndexOf(envmap);
+	if(index == -1){
 		return false;
 	}
 	
 	const int count = pEnvMaps.GetCount();
-	if( index < count - 1 ){
-		pEnvMaps.SetAt( index, pEnvMaps.GetAt( count - 1 ) );
+	if(index < count - 1){
+		pEnvMaps.SetAt(index, pEnvMaps.GetAt(count - 1));
 	}
 	
-	pEnvMaps.RemoveFrom( count - 1 );
+	pEnvMaps.RemoveFrom(count - 1);
 	return true;
 }
 
-void deoglEnvironmentMapList::RemoveFrom( int index ){
+void deoglEnvironmentMapList::RemoveFrom(int index){
 	const int count = pEnvMaps.GetCount();
-	if( index < 0 || index >= count ){
-		DETHROW( deeInvalidParam );
+	if(index < 0 || index >= count){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( index < count - 1 ){
-		pEnvMaps.SetAt( index, pEnvMaps.GetAt( count - 1 ) );
+	if(index < count - 1){
+		pEnvMaps.SetAt(index, pEnvMaps.GetAt(count - 1));
 	}
-	pEnvMaps.RemoveFrom( count - 1 );
+	pEnvMaps.RemoveFrom(count - 1);
 }
 
 void deoglEnvironmentMapList::RemoveAll(){

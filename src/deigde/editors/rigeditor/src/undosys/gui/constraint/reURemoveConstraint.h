@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURemoveConstraint( reRigConstraintList &list );
+	reURemoveConstraint(reRigConstraintList &list);
 	
 protected:
 	/** \brief Clean up undo. */

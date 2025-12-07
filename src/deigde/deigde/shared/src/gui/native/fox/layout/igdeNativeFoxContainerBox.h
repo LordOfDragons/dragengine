@@ -38,13 +38,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native widget. */
-	static void* CreateNativeWidget( igdeContainerBox &owner );
+	static void* CreateNativeWidget(igdeContainerBox &owner);
 	
 	/** \brief Post create native widget. */
-	static void PostCreateNativeWidget( igdeContainerBox &owner, void *native );
+	static void PostCreateNativeWidget(igdeContainerBox &owner, void *native);
 	
 	/** \brief Destroy native widget. */
-	static void DestroyNativeWidget( igdeContainerBox &owner, void *native );
+	static void DestroyNativeWidget(igdeContainerBox &owner, void *native);
 	/*@}*/
 };
 

@@ -53,35 +53,35 @@
 /////////////////////////////////
 
 //FXIMPLEMENT( deglDGPPanelFileFormats, FXVerticalFrame, deglDGPPanelFileFormatsMap, ARRAYNUMBER( deglDGPPanelFileFormatsMap ) )
-FXIMPLEMENT( deglDGPPanelFileFormats, FXVerticalFrame, nullptr, 0 )
+FXIMPLEMENT(deglDGPPanelFileFormats, FXVerticalFrame, nullptr, 0)
 
 // Constructor, destructor
 ////////////////////////////
 
-deglDGPPanelFileFormats::deglDGPPanelFileFormats(){ }
+deglDGPPanelFileFormats::deglDGPPanelFileFormats(){}
 
-deglDGPPanelFileFormats::deglDGPPanelFileFormats( deglDialogGameProblems *parentDialog, FXComposite *container ) :
-FXVerticalFrame( container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 0 ),
-pParentDialog( parentDialog ),
-pStatusWorking( false )
+deglDGPPanelFileFormats::deglDGPPanelFileFormats(deglDialogGameProblems *parentDialog, FXComposite *container) :
+FXVerticalFrame(container, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 0),
+pParentDialog(parentDialog),
+pStatusWorking(false)
 {
-	if( ! parentDialog ) DETHROW( deeInvalidParam );
+	if(! parentDialog) DETHROW(deeInvalidParam);
 	
 	FXScrollWindow *scrollWindow;
 	FXVerticalFrame *frameContent;
 	
 	// create content
-	scrollWindow = new FXScrollWindow( this, LAYOUT_FILL_X | LAYOUT_FILL_Y
-		| SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
-	frameContent = new FXVerticalFrame( scrollWindow, LAYOUT_FILL_Y | LAYOUT_FILL_X,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 3 );
+	scrollWindow = new FXScrollWindow(this, LAYOUT_FILL_X | LAYOUT_FILL_Y
+		| SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK);
+	frameContent = new FXVerticalFrame(scrollWindow, LAYOUT_FILL_Y | LAYOUT_FILL_X,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
 	
-	pListFormats = new FXIconList( frameContent, this, ID_LIST_FORMATS,
-		ICONLIST_BROWSESELECT | ICONLIST_DETAILED | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	pListFormats->appendHeader( "Resource Type", nullptr, 110 );
-	pListFormats->appendHeader( "File Format", nullptr, 130 );
-	pListFormats->appendHeader( "Supported by", nullptr, 130 );
-	pListFormats->appendHeader( "Problem", nullptr, 150 );
+	pListFormats = new FXIconList(frameContent, this, ID_LIST_FORMATS,
+		ICONLIST_BROWSESELECT | ICONLIST_DETAILED | LAYOUT_FILL_X | LAYOUT_FILL_Y);
+	pListFormats->appendHeader("Resource Type", nullptr, 110);
+	pListFormats->appendHeader("File Format", nullptr, 130);
+	pListFormats->appendHeader("Supported by", nullptr, 130);
+	pListFormats->appendHeader("Problem", nullptr, 150);
 	
 	RebuildFormatList();
 }
@@ -108,13 +108,13 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 	
 	pListFormats->clearItems();
 	
-	for( f=0; f<formatCount; f++ ){
-		delFileFormat &format = *fileFormats.GetAt( f );
+	for(f=0; f<formatCount; f++){
+		delFileFormat &format = *fileFormats.GetAt(f);
 		const decString &formatPattern = format.GetPattern();
 		formatType = format.GetType();
 		
 		// type string
-		switch( formatType ){
+		switch(formatType){
 		case deModuleSystem::emtAnimation:
 			text = "Animation\t";
 			break;
@@ -160,18 +160,18 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 		}
 		
 		// add file format
-		text.append( formatPattern.GetString() );
-		text.append( '\t' );
+		text.append(formatPattern.GetString());
+		text.append('\t');
 		
 		// add module supporting this file format
 		matchingModule = nullptr;
 		
-		if( ! deModuleSystem::IsSingleType( formatType ) ){
-			for( m=0; m<moduleCount; m++ ){
-				module = modules.GetAt( m );
+		if(! deModuleSystem::IsSingleType(formatType)){
+			for(m=0; m<moduleCount; m++){
+				module = modules.GetAt(m);
 				
-				if( module->GetType() == formatType ){
-					if( formatPattern.MatchesPattern( module->GetPattern() ) ){
+				if(module->GetType() == formatType){
+					if(formatPattern.MatchesPattern(module->GetPattern())){
 						matchingModule = module;
 						break;
 					}
@@ -179,30 +179,30 @@ void deglDGPPanelFileFormats::RebuildFormatList(){
 			}
 		}
 		
-		if( matchingModule ){
-			text.append( matchingModule->GetName().GetString() );
-			text.append( '\t' );
+		if(matchingModule){
+			text.append(matchingModule->GetName().GetString());
+			text.append('\t');
 			
 		}else{
-			text.append( "-\t" );
+			text.append("-\t");
 		}
 		
 		// add status
-		if( matchingModule ){
-			if( module->GetStatus() == delEngineModule::emsReady ){
-				text.append( "-" );
+		if(matchingModule){
+			if(module->GetStatus() == delEngineModule::emsReady){
+				text.append("-");
 				
 			}else{
-				text.append( "Module broken" );
+				text.append("Module broken");
 				pStatusWorking = false;
 			}
 			
 		}else{
-			text.append( "Missing module" );
+			text.append("Missing module");
 			pStatusWorking = false;
 		}
 		
-		pListFormats->appendItem( text, nullptr, nullptr, nullptr );
+		pListFormats->appendItem(text, nullptr, nullptr, nullptr);
 	}
 }
 

@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new collider bone object with the given parent collider. */
-	deColliderBone( deCollider *collider, int index );
+	deColliderBone(deCollider *collider, int index);
 	
 	/** \brief Clean up collider bone object. */
 	~deColliderBone();
@@ -69,55 +69,55 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent collider. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline deCollider *GetCollider() const{return pCollider;}
 	
 	/** \brief Bone index inside the parent collider. */
-	inline int GetIndex() const{ return pIndex; }
+	inline int GetIndex() const{return pIndex;}
 	
 	/** \brief Position relative to parent bone or collider if there is no parent bone. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Set position relative to parent bone or collider if there is no parent bone. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** \brief Orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	
 	/** \brief Set orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	
 	/** \brief Linear velocity in m/s. */
-	inline const decVector &GetLinearVelocity() const{ return pLinearVelocity; }
+	inline const decVector &GetLinearVelocity() const{return pLinearVelocity;}
 	
 	/** \brief Set linear velocity in m/s. */
-	void SetLinearVelocity( const decVector &linVelo );
+	void SetLinearVelocity(const decVector &linVelo);
 	
 	/** \brief Angular velocity in degree/s. */
-	inline const decVector &GetAngularVelocity() const{ return pAngularVelocity; }
+	inline const decVector &GetAngularVelocity() const{return pAngularVelocity;}
 	
 	/** \brief Set angular velocity in degree/s. */
-	void SetAngularVelocity( const decVector &angVelo );
+	void SetAngularVelocity(const decVector &angVelo);
 	
 	/** \brief Matrix. */
-	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	inline const decDMatrix &GetMatrix() const{return pMatrix;}
 	
 	/** \brief Inverse matrix. */
-	inline const decDMatrix &GetInverseMatrix() const{ return pInvMatrix; }
+	inline const decDMatrix &GetInverseMatrix() const{return pInvMatrix;}
 	
 	/** \brief Updates the matrix from the current position and orientation. */
 	void UpdateMatrix();
 	
 	/** \brief Mass factor. */
-	inline float GetMass() const{ return pMass; }
+	inline float GetMass() const{return pMass;}
 	
 	/** \brief Set mass factor. */
-	void SetMass( float mass );
+	void SetMass(float mass);
 	
 	/** \brief Bone is dynamic. */
-	inline bool GetDynamic() const{ return pDynamic; }
+	inline bool GetDynamic() const{return pDynamic;}
 	
 	/** \brief Sets of the bone is dynamic. */
-	void SetDynamic( bool dynamic );
+	void SetDynamic(bool dynamic);
 	/*@}*/
 };
 

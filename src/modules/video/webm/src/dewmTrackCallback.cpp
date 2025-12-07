@@ -38,18 +38,18 @@
 // Constructor, destructor
 ////////////////////////////
 
-dewmTrackCallback::dewmTrackCallback( deVideoWebm &module ) :
-pModule( module ),
-pTrackOpen( false ),
-pTrackNumber( 0 ),
-pBuffer( nullptr ),
-pBufferSize( 0 ),
-pStopParsing( false ),
-pNeedMoreFrames( false ){
+dewmTrackCallback::dewmTrackCallback(deVideoWebm &module) :
+pModule(module),
+pTrackOpen(false),
+pTrackNumber(0),
+pBuffer(nullptr),
+pBufferSize(0),
+pStopParsing(false),
+pNeedMoreFrames(false){
 }
 
 dewmTrackCallback::~dewmTrackCallback(){
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 }
@@ -59,93 +59,93 @@ dewmTrackCallback::~dewmTrackCallback(){
 // Management
 ///////////////
 
-webm::Status dewmTrackCallback::OnSegmentEnd( const webm::ElementMetadata & ){
+webm::Status dewmTrackCallback::OnSegmentEnd(const webm::ElementMetadata &){
 	pEndSegment();
 	pStopParsing = false;
-	return webm::Status( webm::Status::Code::kOkPartial ); // stop here
+	return webm::Status(webm::Status::Code::kOkPartial); // stop here
 }
 
-webm::Status dewmTrackCallback::OnTrackEntry( const webm::ElementMetadata &,
-const webm::TrackEntry &track_entry ){
-	if( pTrackOpen ){
-		return webm::Status( webm::Status::Code::kOkCompleted );
+webm::Status dewmTrackCallback::OnTrackEntry(const webm::ElementMetadata &,
+const webm::TrackEntry &track_entry){
+	if(pTrackOpen){
+		return webm::Status(webm::Status::Code::kOkCompleted);
 	}
-	if( ! track_entry.is_enabled.value() ){
-		return webm::Status( webm::Status::Code::kOkCompleted );
+	if(! track_entry.is_enabled.value()){
+		return webm::Status(webm::Status::Code::kOkCompleted);
 	}
 	
 	try{
-		if( ! pOpenTrack( track_entry ) ){
-			return webm::Status( webm::Status::Code::kOkCompleted );
+		if(! pOpenTrack(track_entry)){
+			return webm::Status(webm::Status::Code::kOkCompleted);
 		}
 		
-	}catch( const deException &e ){
-		pModule.LogException( e );
-		return webm::Status( 100 );
+	}catch(const deException &e){
+		pModule.LogException(e);
+		return webm::Status(100);
 	}
 	
 	pTrackNumber = track_entry.track_number.value();
 	pTrackOpen = true;
-	return webm::Status( webm::Status::Code::kOkCompleted );
+	return webm::Status(webm::Status::Code::kOkCompleted);
 }
 
-webm::Status dewmTrackCallback::OnSimpleBlockBegin( const webm::ElementMetadata &,
-const webm::SimpleBlock &simple_block, webm::Action *action ){
-	return pProcessBlock( simple_block, action );
+webm::Status dewmTrackCallback::OnSimpleBlockBegin(const webm::ElementMetadata &,
+const webm::SimpleBlock &simple_block, webm::Action *action){
+	return pProcessBlock(simple_block, action);
 }
 
-webm::Status dewmTrackCallback::OnBlockGroupBegin( const webm::ElementMetadata &, webm::Action *action ){
+webm::Status dewmTrackCallback::OnBlockGroupBegin(const webm::ElementMetadata &, webm::Action *action){
 	*action = webm::Action::kRead;
-	return webm::Status( webm::Status::Code::kOkCompleted );
+	return webm::Status(webm::Status::Code::kOkCompleted);
 }
 
-webm::Status dewmTrackCallback::OnBlockGroupEnd( const webm::ElementMetadata &,
-const webm::BlockGroup &block_group ){
+webm::Status dewmTrackCallback::OnBlockGroupEnd(const webm::ElementMetadata &,
+const webm::BlockGroup &block_group){
 	// WebM requires BlockMore.id to be 1. since BlockMore.id have to be unique
 	// this means there exists at most 1 BlockMore per BlockGroup
-	if( ! block_group.additions.value().block_mores.empty() ){
+	if(! block_group.additions.value().block_mores.empty()){
 		try{
-			pProcessAdditional( block_group.additions.value().block_mores.front().value().data.value() );
+			pProcessAdditional(block_group.additions.value().block_mores.front().value().data.value());
 			
-		}catch( const deException &e ){
-			pModule.LogException( e );
-			return webm::Status( 100 );
+		}catch(const deException &e){
+			pModule.LogException(e);
+			return webm::Status(100);
 		}
 	}
 	
-	return webm::Status( webm::Status::Code::kOkCompleted );
+	return webm::Status(webm::Status::Code::kOkCompleted);
 }
 
-webm::Status dewmTrackCallback::OnBlockBegin( const webm::ElementMetadata &,
-const webm::Block &block, webm::Action *action ){
-	return pProcessBlock( block, action );
+webm::Status dewmTrackCallback::OnBlockBegin(const webm::ElementMetadata &,
+const webm::Block &block, webm::Action *action){
+	return pProcessBlock(block, action);
 }
 
-webm::Status dewmTrackCallback::OnFrame( const webm::FrameMetadata &, webm::Reader *reader,
-std::uint64_t *bytes_remaining ){
-	if( ! pTrackOpen ){
-		pModule.LogError( "Tried to process frame without open track" );
-		return webm::Status( 100 );
+webm::Status dewmTrackCallback::OnFrame(const webm::FrameMetadata &, webm::Reader *reader,
+std::uint64_t *bytes_remaining){
+	if(! pTrackOpen){
+		pModule.LogError("Tried to process frame without open track");
+		return webm::Status(100);
 	}
 	
-	if( pStopParsing ){
+	if(pStopParsing){
 		pStopParsing = false;
-		return webm::Status( webm::Status::Code::kOkPartial );
+		return webm::Status(webm::Status::Code::kOkPartial);
 	}
 	
 	try{
-		pProcessFrame( *reader, *bytes_remaining );
-		if( *bytes_remaining > 0 ){
+		pProcessFrame(*reader, *bytes_remaining);
+		if(*bytes_remaining > 0){
 			// frame not consumed
-			return webm::Status( webm::Status::Code::kOkPartial );
+			return webm::Status(webm::Status::Code::kOkPartial);
 		}
 		
-	}catch( const deException &e ){
-		pModule.LogException( e );
-		return webm::Status( 100 );
+	}catch(const deException &e){
+		pModule.LogException(e);
+		return webm::Status(100);
 	}
 	
-	if( pNeedMoreFrames ){
+	if(pNeedMoreFrames){
 		pNeedMoreFrames = false;
 		
 	}else{
@@ -154,7 +154,7 @@ std::uint64_t *bytes_remaining ){
 		pStopParsing = true;
 	}
 	
-	return webm::Status( webm::Status::Code::kOkCompleted );
+	return webm::Status(webm::Status::Code::kOkCompleted);
 }
 
 
@@ -162,32 +162,32 @@ std::uint64_t *bytes_remaining ){
 // Protected Functions
 ////////////////////////
 
-void dewmTrackCallback::pProcessFrame( webm::Reader &reader, std::uint64_t &bytes_remaining ){
+void dewmTrackCallback::pProcessFrame(webm::Reader &reader, std::uint64_t &bytes_remaining){
 	std::uint64_t skippedBytes;
-	DEASSERT_TRUE( reader.Skip( bytes_remaining, &skippedBytes ).completed_ok() )
+	DEASSERT_TRUE(reader.Skip(bytes_remaining, &skippedBytes).completed_ok())
 	bytes_remaining = 0;
 }
 
-void dewmTrackCallback::pProcessAdditional( const std::vector<unsigned char> & ){
+void dewmTrackCallback::pProcessAdditional(const std::vector<unsigned char> &){
 }
 
-void dewmTrackCallback::pReadFrameData( webm::Reader &reader, std::uint64_t &bytes_remaining ){
-	if( bytes_remaining > pBufferSize ){
-		if( pBuffer ){
+void dewmTrackCallback::pReadFrameData(webm::Reader &reader, std::uint64_t &bytes_remaining){
+	if(bytes_remaining > pBufferSize){
+		if(pBuffer){
 			delete [] pBuffer;
 			pBuffer = nullptr;
 		}
 		
-		pBuffer = new uint8_t[ bytes_remaining ];
+		pBuffer = new uint8_t[bytes_remaining];
 		pBufferSize = bytes_remaining;
 	}
 	
 	std::uint64_t readCount;
-	DEASSERT_TRUE( reader.Read( bytes_remaining, pBuffer, &readCount ).completed_ok() )
+	DEASSERT_TRUE(reader.Read(bytes_remaining, pBuffer, &readCount).completed_ok())
 	bytes_remaining = 0;
 }
 
-void dewmTrackCallback::SetNeedMoreFrames( bool needMoreFrames ){
+void dewmTrackCallback::SetNeedMoreFrames(bool needMoreFrames){
 	pNeedMoreFrames = needMoreFrames;
 }
 
@@ -199,19 +199,19 @@ void dewmTrackCallback::pEndSegment(){
 // Private Functions
 //////////////////////
 
-webm::Status dewmTrackCallback::pProcessBlock( const webm::Block &block, webm::Action *action ){
-	if( ! pTrackOpen ){
-		pModule.LogError( "Tried to process block without open track" );
+webm::Status dewmTrackCallback::pProcessBlock(const webm::Block &block, webm::Action *action){
+	if(! pTrackOpen){
+		pModule.LogError("Tried to process block without open track");
 		*action = webm::Action::kSkip;
-		return webm::Status( 100 );
+		return webm::Status(100);
 	}
 	
-	if( block.track_number == pTrackNumber ){
+	if(block.track_number == pTrackNumber){
 		*action = webm::Action::kRead;
 		
 	}else{
 		*action = webm::Action::kSkip;
 	}
 	
-	return webm::Status( webm::Status::Code::kOkCompleted );
+	return webm::Status(webm::Status::Code::kOkCompleted);
 }

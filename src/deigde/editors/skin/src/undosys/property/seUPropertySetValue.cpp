@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValue::seUPropertySetValue( seProperty *property, float newValue ){
-	if( ! property ) DETHROW( deeInvalidParam );
+seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
+	if(! property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
 	
-	SetShortInfo( "Property Set Value" );
+	SetShortInfo("Property Set Value");
 	
 	pOldValue = property->GetValue();
 	pNewValue = newValue;
@@ -53,7 +53,7 @@ seUPropertySetValue::seUPropertySetValue( seProperty *property, float newValue )
 }
 
 seUPropertySetValue::~seUPropertySetValue(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
 }
@@ -64,9 +64,9 @@ seUPropertySetValue::~seUPropertySetValue(){
 ///////////////
 
 void seUPropertySetValue::Undo(){
-	pProperty->SetValue( pOldValue );
+	pProperty->SetValue(pOldValue);
 }
 
 void seUPropertySetValue::Redo(){
-	pProperty->SetValue( pNewValue );
+	pProperty->SetValue(pNewValue);
 }

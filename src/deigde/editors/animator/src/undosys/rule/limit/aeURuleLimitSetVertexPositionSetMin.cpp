@@ -35,9 +35,9 @@
 ////////////////////////////
 
 aeURuleLimitSetVertexPositionSetMin::aeURuleLimitSetVertexPositionSetMin(
-	aeRuleLimit *rule, float newMin )
+	aeRuleLimit *rule, float newMin)
 {
-	DEASSERT_NOTNULL( rule )
+	DEASSERT_NOTNULL(rule)
 	
 	pRule = nullptr;
 	
@@ -48,9 +48,9 @@ aeURuleLimitSetVertexPositionSetMin::aeURuleLimitSetVertexPositionSetMin(
 		pOldMin = rule->GetMinimumVertexPositionSet();
 		pNewMin = newMin;
 		
-		SetShortInfo( "Limit Set minimum vertex position set" );
+		SetShortInfo("Limit Set minimum vertex position set");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -66,11 +66,11 @@ aeURuleLimitSetVertexPositionSetMin::~aeURuleLimitSetVertexPositionSetMin(){
 ///////////////
 
 void aeURuleLimitSetVertexPositionSetMin::Undo(){
-	pRule->SetMinimumVertexPositionSet( pOldMin );
+	pRule->SetMinimumVertexPositionSet(pOldMin);
 }
 
 void aeURuleLimitSetVertexPositionSetMin::Redo(){
-	pRule->SetMinimumVertexPositionSet( pNewMin );
+	pRule->SetMinimumVertexPositionSet(pNewMin);
 }
 
 
@@ -79,7 +79,7 @@ void aeURuleLimitSetVertexPositionSetMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetVertexPositionSetMin::pCleanUp(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }

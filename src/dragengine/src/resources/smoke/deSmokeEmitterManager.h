@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new resource manager. */
-	deSmokeEmitterManager( deEngine *engine );
+	deSmokeEmitterManager(deEngine *engine);
 	
 	/** \brief Clean up resource manager and reports leaking resources. */
 	virtual ~deSmokeEmitterManager();
@@ -95,7 +95,7 @@ public:
 	 * called directly from an application.
 	 */
 	/*@{*/
-	void RemoveResource( deResource *resource );
+	void RemoveResource(deResource *resource);
 	/*@}*/
 };
 

@@ -41,24 +41,24 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealDialog::dealDialog( dealDisplay &display, const char *title ) :
-pDisplay( display ),
+dealDialog::dealDialog(dealDisplay &display, const char *title) :
+pDisplay(display),
 
-pTitle( title ),
-pContent( NULL ),
-pPopupDialog( NULL )
+pTitle(title),
+pContent(NULL),
+pPopupDialog(NULL)
 {
-	pContent = new dealWidgetLayoutFlow( display, false, 0,
-		dealWidgetLayoutFlow::eltFill, dealWidgetLayoutFlow::eltFill );
-	pContent->SetSize( decPoint( display.GetWidth(), display.GetHeight() ) );
-	pContent->SetBackgroundColor( decColor( 0.9f, 0.9f, 0.9f ) );
+	pContent = new dealWidgetLayoutFlow(display, false, 0,
+		dealWidgetLayoutFlow::eltFill, dealWidgetLayoutFlow::eltFill);
+	pContent->SetSize(decPoint(display.GetWidth(), display.GetHeight()));
+	pContent->SetBackgroundColor(decColor(0.9f, 0.9f, 0.9f));
 }
 
 dealDialog::~dealDialog(){
-	if( pPopupDialog ){
+	if(pPopupDialog){
 		pPopupDialog->FreeReference();
 	}
-	if( pContent ){
+	if(pContent){
 		pContent->FreeReference();
 	}
 }
@@ -68,34 +68,34 @@ dealDialog::~dealDialog(){
 // Management
 ///////////////
 
-void dealDialog::SetTitle( const char *title ){
-	if( pTitle == title ){
+void dealDialog::SetTitle(const char *title){
+	if(pTitle == title){
 		return;
 	}
 	
 	pTitle = title;
 }
 
-void dealDialog::SetPopupDialog( dealDialog *dialog ){
-	if( pPopupDialog == dialog ){
+void dealDialog::SetPopupDialog(dealDialog *dialog){
+	if(pPopupDialog == dialog){
 		return;
 	}
 	
-	if( pPopupDialog ){
+	if(pPopupDialog){
 		pPopupDialog->OnDeactivate();
 		pPopupDialog->FreeReference();
 	}
 	
 	pPopupDialog = dialog;
 	
-	if( dialog ){
+	if(dialog){
 		dialog->AddReference();
 		
-		const decPoint screenSize( pDisplay.GetWidth(), pDisplay.GetHeight() );
-		const decPoint popupSize( dialog->pContent->GetMinimumSize() );
+		const decPoint screenSize(pDisplay.GetWidth(), pDisplay.GetHeight());
+		const decPoint popupSize(dialog->pContent->GetMinimumSize());
 		
-		dialog->pContent->SetSize( popupSize );
-		dialog->pContent->SetPosition( ( screenSize - popupSize ) / 2 );
+		dialog->pContent->SetSize(popupSize);
+		dialog->pContent->SetPosition((screenSize - popupSize) / 2);
 		
 		dialog->OnActivate();
 	}

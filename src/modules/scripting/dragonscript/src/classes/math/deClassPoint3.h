@@ -41,14 +41,14 @@ private:
 	deScriptingDragonScript *pScrMgr;
 public:
 	// constructor
-	deClassPoint3( deEngine *gameEngine, deScriptingDragonScript *scriptManager );
+	deClassPoint3(deEngine *gameEngine, deScriptingDragonScript *scriptManager);
 	~deClassPoint3();
 	// internal functions
-	void CreateClassMembers( dsEngine *engine );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
-	const decPoint3 &GetPoint( dsRealObject *myself ) const;
-	void PushPoint( dsRunTime *rt, const decPoint3 &point );
+	void CreateClassMembers(dsEngine *engine);
+	inline deEngine *GetGameEngine() const{return pGameEngine;}
+	inline deScriptingDragonScript *GetScriptModule() const{return pScrMgr;}
+	const decPoint3 &GetPoint(dsRealObject *myself) const;
+	void PushPoint(dsRunTime *rt, const decPoint3 &point);
 
 private:
 	struct sInitData{
@@ -58,54 +58,54 @@ private:
 		dsClass *clsDVector;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfNew2 );
-	DEF_NATFUNC( nfNew3 );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfNew2);
+	DEF_NATFUNC(nfNew3);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetX );
-	DEF_NATFUNC( nfGetY );
-	DEF_NATFUNC( nfGetZ );
-	DEF_NATFUNC( nfGet );
-	DEF_NATFUNC( nfGetLength );
-	DEF_NATFUNC( nfSmallest );
-	DEF_NATFUNC( nfSmallest2 );
-	DEF_NATFUNC( nfLargest );
-	DEF_NATFUNC( nfLargest2 );
+	DEF_NATFUNC(nfGetX);
+	DEF_NATFUNC(nfGetY);
+	DEF_NATFUNC(nfGetZ);
+	DEF_NATFUNC(nfGet);
+	DEF_NATFUNC(nfGetLength);
+	DEF_NATFUNC(nfSmallest);
+	DEF_NATFUNC(nfSmallest2);
+	DEF_NATFUNC(nfLargest);
+	DEF_NATFUNC(nfLargest2);
 	
-	DEF_NATFUNC( nfIsEqualTo );
-	DEF_NATFUNC( nfIsAtLeast );
-	DEF_NATFUNC( nfIsAtMost );
-	DEF_NATFUNC( nfIsZero );
+	DEF_NATFUNC(nfIsEqualTo);
+	DEF_NATFUNC(nfIsAtLeast);
+	DEF_NATFUNC(nfIsAtMost);
+	DEF_NATFUNC(nfIsZero);
 	
-	DEF_NATFUNC( nfToVector );
-	DEF_NATFUNC( nfToDVector );
+	DEF_NATFUNC(nfToVector);
+	DEF_NATFUNC(nfToDVector);
 	
-	DEF_NATFUNC( nfCompMultiply );
-	DEF_NATFUNC( nfCompDivide );
+	DEF_NATFUNC(nfCompMultiply);
+	DEF_NATFUNC(nfCompDivide);
 	
-	DEF_NATFUNC( nfReadFromFile );
-	DEF_NATFUNC( nfWriteToFile );
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
-	DEF_NATFUNC( nfOpMinus );
-	DEF_NATFUNC( nfOpAdd );
-	DEF_NATFUNC( nfOpSubtract );
-	DEF_NATFUNC( nfOpScale );
-	DEF_NATFUNC( nfOpDivide );
-	DEF_NATFUNC( nfOpDot );
-	DEF_NATFUNC( nfOpLess );
-	DEF_NATFUNC( nfOpLessEqual );
-	DEF_NATFUNC( nfOpGreater );
-	DEF_NATFUNC( nfOpGreaterEqual );
+	DEF_NATFUNC(nfOpMinus);
+	DEF_NATFUNC(nfOpAdd);
+	DEF_NATFUNC(nfOpSubtract);
+	DEF_NATFUNC(nfOpScale);
+	DEF_NATFUNC(nfOpDivide);
+	DEF_NATFUNC(nfOpDot);
+	DEF_NATFUNC(nfOpLess);
+	DEF_NATFUNC(nfOpLessEqual);
+	DEF_NATFUNC(nfOpGreater);
+	DEF_NATFUNC(nfOpGreaterEqual);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfToString );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfToString);
 #undef DEF_NATFUNC
 };
 

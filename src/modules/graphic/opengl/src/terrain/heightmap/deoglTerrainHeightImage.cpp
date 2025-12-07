@@ -37,17 +37,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglTerrainHeightImage::deoglTerrainHeightImage( deImage &image ) :
-pWidth( image.GetWidth() ),
-pHeight( image.GetHeight() ),
-pData8( NULL ),
-pData16( NULL ),
-pData32( NULL )
+deoglTerrainHeightImage::deoglTerrainHeightImage(deImage &image) :
+pWidth(image.GetWidth()),
+pHeight(image.GetHeight()),
+pData8(NULL),
+pData16(NULL),
+pData32(NULL)
 {
-	if( image.GetBitCount() == 8 ){
+	if(image.GetBitCount() == 8){
 		pData8 = image.GetDataGrayscale8();
 		
-	}else if( image.GetBitCount() == 16 ){
+	}else if(image.GetBitCount() == 16){
 		pData16 = image.GetDataGrayscale16();
 		
 	}else{
@@ -63,26 +63,26 @@ deoglTerrainHeightImage::~deoglTerrainHeightImage(){
 // Management
 ///////////////
 
-float deoglTerrainHeightImage::GetHeightAt( int x, int y ) const{
-	if( pData8 ){
-		return ( float )( pData8[ pWidth * y + x ].value - THM_8BIT_BASE ) * THM_8BIT_PTOH;
+float deoglTerrainHeightImage::GetHeightAt(int x, int y) const{
+	if(pData8){
+		return (float)(pData8[pWidth * y + x].value - THM_8BIT_BASE) * THM_8BIT_PTOH;
 		
-	}else if( pData16 ){
-		return ( float )( pData16[ pWidth * y + x ].value - THM_16BIT_BASE ) * THM_16BIT_PTOH;
+	}else if(pData16){
+		return (float)(pData16[pWidth * y + x].value - THM_16BIT_BASE) * THM_16BIT_PTOH;
 		
 	}else{
-		return pData32[ pWidth * y + x ].value;
+		return pData32[pWidth * y + x].value;
 	}
 }
 
-float deoglTerrainHeightImage::GetHeightAt( int index ) const{
-	if( pData8 ){
-		return ( float )( pData8[ index ].value - THM_8BIT_BASE ) * THM_8BIT_PTOH;
+float deoglTerrainHeightImage::GetHeightAt(int index) const{
+	if(pData8){
+		return (float)(pData8[index].value - THM_8BIT_BASE) * THM_8BIT_PTOH;
 		
-	}else if( pData16 ){
-		return ( float )( pData16[ index ].value - THM_16BIT_BASE ) * THM_16BIT_PTOH;
+	}else if(pData16){
+		return (float)(pData16[index].value - THM_16BIT_BASE) * THM_16BIT_PTOH;
 		
 	}else{
-		return pData32[ index ].value;
+		return pData32[index].value;
 	}
 }

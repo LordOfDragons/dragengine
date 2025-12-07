@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerBorder( igdeEnvironment &environment, int spacing = 0 );
+	igdeContainerBorder(igdeEnvironment &environment, int spacing = 0);
 	
 	
 	
@@ -100,22 +100,22 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Spacing. */
-	inline int GetSpacing() const{ return pSpacing; }
+	inline int GetSpacing() const{return pSpacing;}
 	
 	/** \brief Add child to area. */
-	virtual void AddChild( igdeWidget *child, eArea area );
+	virtual void AddChild(igdeWidget *child, eArea area);
 	
 	/** \brief Add child not possible without specifying an area. */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	/** \brief Remove child. */
-	virtual void RemoveChild( igdeWidget *child );
+	virtual void RemoveChild(igdeWidget *child);
 	
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();
 	
 	/** \brief Widget in area or NULL. */
-	igdeWidget *GetWidgetIn( eArea area ) const;
+	igdeWidget *GetWidgetIn(eArea area) const;
 	/*@}*/
 	
 	

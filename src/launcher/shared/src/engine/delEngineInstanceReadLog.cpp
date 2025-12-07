@@ -40,26 +40,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-delEngineInstanceReadLog::delEngineInstanceReadLog( delEngineInstance &engineInstance, deLogger *logger ) :
-pEngineInstance( engineInstance ),
-pLogger( logger ),
-pBufferSource( nullptr ),
-pBufferSourceLen( 0 ),
-pBufferMessage( nullptr ),
-pBufferMessageLen( 0 )
+delEngineInstanceReadLog::delEngineInstanceReadLog(delEngineInstance &engineInstance, deLogger *logger) :
+pEngineInstance(engineInstance),
+pLogger(logger),
+pBufferSource(nullptr),
+pBufferSourceLen(0),
+pBufferMessage(nullptr),
+pBufferMessageLen(0)
 {
 	(void)pEngineInstance;
-	if( ! logger ){
-		DETHROW_INFO( deeNullPointer, "logger" );
+	if(! logger){
+		DETHROW_INFO(deeNullPointer, "logger");
 	}
 }
 
 delEngineInstanceReadLog::~delEngineInstanceReadLog(){
-	if( pBufferMessage ){
-		free( pBufferMessage );
+	if(pBufferMessage){
+		free(pBufferMessage);
 	}
-	if( pBufferSource ){
-		free( pBufferSource );
+	if(pBufferSource){
+		free(pBufferSource);
 	}
 }
 
@@ -72,40 +72,40 @@ void delEngineInstanceReadLog::Run(){
 	unsigned short length;
 	unsigned char type;
 	
-	while( ReadFromPipe( &type, sizeof( type ) ) ){
-		ReadFromPipe( &length, sizeof( length ) );
-		PrepareBufferSource( length );
-		ReadFromPipe( pBufferSource, length );
-		pBufferSource[ length ] = '\0';
+	while(ReadFromPipe(&type, sizeof(type))){
+		ReadFromPipe(&length, sizeof(length));
+		PrepareBufferSource(length);
+		ReadFromPipe(pBufferSource, length);
+		pBufferSource[length] = '\0';
 		
-		ReadFromPipe( &length, sizeof( length ) );
-		PrepareBufferMessage( length );
-		ReadFromPipe( pBufferMessage, length );
-		pBufferMessage[ length ] = '\0';
+		ReadFromPipe(&length, sizeof(length));
+		PrepareBufferMessage(length);
+		ReadFromPipe(pBufferMessage, length);
+		pBufferMessage[length] = '\0';
 		
-		if( type == delEngineProcess::eltInfo ){
-			pLogger->LogInfo( pBufferSource, pBufferMessage );
+		if(type == delEngineProcess::eltInfo){
+			pLogger->LogInfo(pBufferSource, pBufferMessage);
 			
-		}else if( type == delEngineProcess::eltWarn ){
-			pLogger->LogWarn( pBufferSource, pBufferMessage );
+		}else if(type == delEngineProcess::eltWarn){
+			pLogger->LogWarn(pBufferSource, pBufferMessage);
 			
-		}else if( type == delEngineProcess::eltError ){
-			pLogger->LogError( pBufferSource, pBufferMessage );
+		}else if(type == delEngineProcess::eltError){
+			pLogger->LogError(pBufferSource, pBufferMessage);
 		}
 	}
 }
 
 
 
-bool delEngineInstanceReadLog::ReadFromPipe( void *data, int length ){
+bool delEngineInstanceReadLog::ReadFromPipe(void *data, int length){
 	/*
 #ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	return ReadFile( pEngineInstance->GetPipeLog(), data, length, &bytesRead, NULL ) && ( int )bytesRead == length;
+	return ReadFile(pEngineInstance->GetPipeLog(), data, length, &bytesRead, NULL) && (int)bytesRead == length;
 	
 #else
-	return read( pEngineInstance->GetPipeLog(), data, length ) == length;
+	return read(pEngineInstance->GetPipeLog(), data, length) == length;
 #endif
 	*/
 	return false;
@@ -113,27 +113,27 @@ bool delEngineInstanceReadLog::ReadFromPipe( void *data, int length ){
 
 
 
-void delEngineInstanceReadLog::PrepareBufferSource( int requiredLength ){
-	if( requiredLength <= pBufferSourceLen ){
+void delEngineInstanceReadLog::PrepareBufferSource(int requiredLength){
+	if(requiredLength <= pBufferSourceLen){
 		return;
 	}
 	
-	pBufferSource = ( char* )realloc( pBufferSource, requiredLength + 1 );
-	if( ! pBufferSource ){
-		DETHROW( deeOutOfMemory );
+	pBufferSource = (char*)realloc(pBufferSource, requiredLength + 1);
+	if(! pBufferSource){
+		DETHROW(deeOutOfMemory);
 	}
 	
 	pBufferSourceLen = requiredLength;
 }
 
-void delEngineInstanceReadLog::PrepareBufferMessage( int requiredLength ){
-	if( requiredLength <= pBufferMessageLen ){
+void delEngineInstanceReadLog::PrepareBufferMessage(int requiredLength){
+	if(requiredLength <= pBufferMessageLen){
 		return;
 	}
 	
-	pBufferMessage = ( char* )realloc( pBufferMessage, requiredLength + 1 );
-	if( ! pBufferMessage ){
-		DETHROW( deeOutOfMemory );
+	pBufferMessage = (char*)realloc(pBufferMessage, requiredLength + 1);
+	if(! pBufferMessage){
+		DETHROW(deeOutOfMemory);
 	}
 	
 	pBufferMessageLen = requiredLength;

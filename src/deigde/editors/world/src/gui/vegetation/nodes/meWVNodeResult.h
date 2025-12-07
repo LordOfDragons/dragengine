@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodeResult( meWindowVegetation &windowVegetation, meHTVRuleResult *rule );
+	meWVNodeResult(meWindowVegetation &windowVegetation, meHTVRuleResult *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -64,7 +64,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRuleResult *GetRuleResult() const{ return pRuleResult; }
+	inline meHTVRuleResult *GetRuleResult() const{return pRuleResult;}
 	
 	/** \brief Update node. */
 	virtual void Update();

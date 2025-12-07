@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetContrast( sePropertyNode *node, float newValue );
+	seUPropertyNodeSetContrast(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

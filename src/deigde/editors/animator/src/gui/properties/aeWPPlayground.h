@@ -99,7 +99,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPPlayground( aeWindowProperties &windowProperties );
+	aeWPPlayground(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -112,28 +112,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline aeAnimator *GetAnimator() const{return pAnimator;}
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Leg. */
 	aeAnimatorLocomotionLeg *GetLeg() const;
 	
 	/** Number of controllers. */
-	inline int GetControllerCount() const{ return pControllerCount; }
+	inline int GetControllerCount() const{return pControllerCount;}
 	
 	/** Controller at index. */
-	sController &GetControllerAt( int index ) const;
+	sController &GetControllerAt(int index) const;
 	
 	/** Rebuild controllers list. */
 	void RebuildControllers();
 	
 	/** Update controller. */
-	void UpdateController( aeController *controller );
+	void UpdateController(aeController *controller);
 	
 	/** Update controller value. */
-	void UpdateControllerValue( aeController *controller );
+	void UpdateControllerValue(aeController *controller);
 	
 	/** Update locomotion. */
 	void UpdateLocomotion();

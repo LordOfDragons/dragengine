@@ -64,19 +64,19 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	inline float GetAngle() const{ return pAngle; }
-	void SetAngle( float angle );
-	inline const decPoint3 &GetCenterSector() const{ return pCenterSector; }
-	void SetCenterSector( const decPoint3 &sector );
-	inline const decVector &GetCenterPosition() const{ return pCenterPosition; }
-	void SetCenterPosition( const decVector &position );
-	inline const decVector &GetAxis() const{ return pAxis; }
-	void SetAxis( const decVector &axis );
-	inline bool GetModifyPosition() const{ return pModifyPosition; }
-	void SetModifyPosition( bool modifyPosition );
-	inline bool GetModifyOrientation() const{ return pModifyOrientation; }
-	void SetModifyOrientation( bool modifyOrientation );
-	inline const decMatrix &GetRotationMatrix() const{ return pMatrix; }
+	inline float GetAngle() const{return pAngle;}
+	void SetAngle(float angle);
+	inline const decPoint3 &GetCenterSector() const{return pCenterSector;}
+	void SetCenterSector(const decPoint3 &sector);
+	inline const decVector &GetCenterPosition() const{return pCenterPosition;}
+	void SetCenterPosition(const decVector &position);
+	inline const decVector &GetAxis() const{return pAxis;}
+	void SetAxis(const decVector &axis);
+	inline bool GetModifyPosition() const{return pModifyPosition;}
+	void SetModifyPosition(bool modifyPosition);
+	inline bool GetModifyOrientation() const{return pModifyOrientation;}
+	void SetModifyOrientation(bool modifyOrientation);
+	inline const decMatrix &GetRotationMatrix() const{return pMatrix;}
 	void Update();
 	
 	/** \brief Progressive redo. */

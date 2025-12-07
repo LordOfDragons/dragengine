@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new class. */
-	deClassModel( deScriptingDragonScript *ds );
+	deClassModel(deScriptingDragonScript *ds);
 	/** \brief Cleans up the class. */
 	virtual ~deClassModel();
 	/*@}*/
@@ -53,14 +53,14 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/** \brief Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Retrieves the model from an object. */
-	deModel *GetModel( dsRealObject *myself ) const;
+	deModel *GetModel(dsRealObject *myself) const;
 	/** \brief Pushes a model. */
-	void PushModel( dsRunTime *rt, deModel *model );
+	void PushModel(dsRunTime *rt, deModel *model);
 	/*@}*/
 	
 private:
@@ -68,27 +68,27 @@ private:
 		dsClass *clsMdl, *clsVoid, *clsBool, *clsStr, *clsObj, *clsInt, *clsVec, *clsRN;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfLoad );
-	DEF_NATFUNC( nfLoadAsynchron );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfLoad);
+	DEF_NATFUNC(nfLoadAsynchron);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetFilename );
+	DEF_NATFUNC(nfGetFilename);
 	
-	DEF_NATFUNC( nfGetLodCount );
-	DEF_NATFUNC( nfGetTextureCount );
-	DEF_NATFUNC( nfGetTextureNameAt );
-	DEF_NATFUNC( nfGetFaceCount );
-	DEF_NATFUNC( nfGetVertexCount );
-	DEF_NATFUNC( nfGetMinimumExtend );
-	DEF_NATFUNC( nfGetMaximumExtend );
+	DEF_NATFUNC(nfGetLodCount);
+	DEF_NATFUNC(nfGetTextureCount);
+	DEF_NATFUNC(nfGetTextureNameAt);
+	DEF_NATFUNC(nfGetFaceCount);
+	DEF_NATFUNC(nfGetVertexCount);
+	DEF_NATFUNC(nfGetMinimumExtend);
+	DEF_NATFUNC(nfGetMaximumExtend);
 	
-	DEF_NATFUNC( nfEquals );
-	DEF_NATFUNC( nfHashCode );
+	DEF_NATFUNC(nfEquals);
+	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 

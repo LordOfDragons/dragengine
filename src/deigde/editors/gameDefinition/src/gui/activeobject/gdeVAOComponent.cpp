@@ -92,14 +92,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOComponent::gdeVAOComponent( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCComponent *occomponent ) :
-gdeVAOSubObject( view, objectClass, propertyPrefix ),
-pOCComponent( occomponent ),
-pPlayback( false )
+gdeVAOComponent::gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCComponent *occomponent) :
+gdeVAOSubObject(view, objectClass, propertyPrefix),
+pOCComponent(occomponent),
+pPlayback(false)
 {
-	if( ! occomponent ){
-		DETHROW( deeInvalidParam );
+	if(! occomponent){
+		DETHROW(deeInvalidParam);
 	}
 	
 	occomponent->AddReference();
@@ -110,7 +110,7 @@ pPlayback( false )
 		pCreateAnimator();
 		pAttachComponent();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -125,13 +125,13 @@ gdeVAOComponent::~gdeVAOComponent(){
 // Management
 ///////////////
 
-void gdeVAOComponent::Update( float elapsed ){
-	if( ! pAnimator ){
+void gdeVAOComponent::Update(float elapsed){
+	if(! pAnimator){
 		return;
 	}
 	
-	if( pPlayback && pAnimator->GetControllerCount() > 0 ){
-		pAnimator->GetControllerAt( 0 ).IncrementCurrentValue( elapsed );
+	if(pPlayback && pAnimator->GetControllerCount() > 0){
+		pAnimator->GetControllerAt(0).IncrementCurrentValue(elapsed);
 	}
 	
 	pAnimator->Apply();
@@ -148,40 +148,40 @@ void gdeVAOComponent::RebuildResources(){
 	pAttachComponent();
 }
 
-void gdeVAOComponent::UpdateTexture( gdeOCComponentTexture *texture ){
-	if( ! pComponent ){
+void gdeVAOComponent::UpdateTexture(gdeOCComponentTexture *texture){
+	if(! pComponent){
 		return;
 	}
 	
 	const deModel &model = *pComponent->GetModel();
-	const int index = model.IndexOfTextureNamed( texture->GetName() );
-	if( index == -1 ){
+	const int index = model.IndexOfTextureNamed(texture->GetName());
+	if(index == -1){
 		return;
 	}
 	
-	pUpdateComponentTexture( texture, pComponent->GetTextureAt( index ), index );
+	pUpdateComponentTexture(texture, pComponent->GetTextureAt(index), index);
 }
 
 void gdeVAOComponent::SelectedObjectChanged(){
 }
 
-void gdeVAOComponent::GetExtends( decVector &minExtend, decVector &maxExtend ) const{
+void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) const{
 	minExtend.SetZero();
 	maxExtend.SetZero();
-	if( ! pComponent || ! pComponent->GetModel() ){
+	if(! pComponent || ! pComponent->GetModel()){
 		return;
 	}
 	
-	const deModelLOD &lod = *pComponent->GetModel()->GetLODAt( 0 );
+	const deModelLOD &lod = *pComponent->GetModel()->GetLODAt(0);
 	const int vertexCount = lod.GetVertexCount();
-	if( vertexCount > 0 ){
+	if(vertexCount > 0){
 		const deModelVertex * const vertices = lod.GetVertices();
 		int i;
-		minExtend = maxExtend = vertices[ 0 ].GetPosition();
-		for( i=1; i<vertexCount; i++ ){
-			const decVector &position = vertices[ i ].GetPosition();
-			minExtend.SetSmallest( position );
-			maxExtend.SetLargest( position );
+		minExtend = maxExtend = vertices[0].GetPosition();
+		for(i=1; i<vertexCount; i++){
+			const decVector &position = vertices[i].GetPosition();
+			minExtend.SetSmallest(position);
+			maxExtend.SetLargest(position);
 		}
 	}
 }
@@ -194,7 +194,7 @@ void gdeVAOComponent::GetExtends( decVector &minExtend, decVector &maxExtend ) c
 void gdeVAOComponent::pCleanUp(){
 	pReleaseResources();
 	
-	if( pOCComponent ){
+	if(pOCComponent){
 		pOCComponent->FreeReference();
 	}
 }
@@ -217,57 +217,57 @@ void gdeVAOComponent::pCreateComponent(){
 	decString path;
 	
 	// model
-	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epModel ), pOCComponent->GetModelPath() );
-	if( ! path.IsEmpty() ){
+	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epModel), pOCComponent->GetModelPath());
+	if(! path.IsEmpty()){
 		try{
-			model.TakeOver( engine.GetModelManager()->LoadModel( vfs, path, "/" ) );
+			model.TakeOver(engine.GetModelManager()->LoadModel(vfs, path, "/"));
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
 	
 	// skin
-	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epSkin ), pOCComponent->GetSkinPath() );
-	if( ! path.IsEmpty() ){
+	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epSkin), pOCComponent->GetSkinPath());
+	if(! path.IsEmpty()){
 		try{
-			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
+			skin.TakeOver(engine.GetSkinManager()->LoadSkin(vfs, path, "/"));
 			
-		}catch( const deException & ){
-			skin = environment.GetStockSkin( igdeEnvironment::essError );
+		}catch(const deException &){
+			skin = environment.GetStockSkin(igdeEnvironment::essError);
 		}
 	}
 	
 	// rig
-	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epRig ), pOCComponent->GetRigPath() );
-	if( ! path.IsEmpty() ){
+	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epRig), pOCComponent->GetRigPath());
+	if(! path.IsEmpty()){
 		try{
-			rig.TakeOver( engine.GetRigManager()->LoadRig( vfs, path, "/" ) );
+			rig.TakeOver(engine.GetRigManager()->LoadRig(vfs, path, "/"));
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
 	
 	// occlusion mesh
-	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epOcclusionMesh ), pOCComponent->GetOcclusionMeshPath() );
-	if( ! path.IsEmpty() ){
+	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epOcclusionMesh), pOCComponent->GetOcclusionMeshPath());
+	if(! path.IsEmpty()){
 		try{
-			occlusionMesh.TakeOver( engine.GetOcclusionMeshManager()->LoadOcclusionMesh( vfs, path, "/" ) );
+			occlusionMesh.TakeOver(engine.GetOcclusionMeshManager()->LoadOcclusionMesh(vfs, path, "/"));
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
 	
 	// audio model
-	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epAudioModel ), pOCComponent->GetAudioModelPath() );
-	if( ! path.IsEmpty() ){
+	path = PropertyString(pOCComponent->GetPropertyName(gdeOCComponent::epAudioModel), pOCComponent->GetAudioModelPath());
+	if(! path.IsEmpty()){
 		try{
-			audioModel.TakeOver( engine.GetModelManager()->LoadModel( vfs, path, "/" ) );
+			audioModel.TakeOver(engine.GetModelManager()->LoadModel(vfs, path, "/"));
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
 	
@@ -281,21 +281,21 @@ void gdeVAOComponent::pCreateComponent(){
 	}*/
 	
 	// create component if model and skin are present
-	if( model && skin ){
-		pComponent.TakeOver( engine.GetComponentManager()->CreateComponent( model, skin ) );
-		pView.GetGameDefinition()->GetWorld()->AddComponent( pComponent );
+	if(model && skin){
+		pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(model, skin));
+		pView.GetGameDefinition()->GetWorld()->AddComponent(pComponent);
 	}
-	if( pComponent ){
-		pComponent->SetRig( rig );
-		pComponent->SetOcclusionMesh( occlusionMesh );
-		pComponent->SetAudioModel( audioModel );
+	if(pComponent){
+		pComponent->SetRig(rig);
+		pComponent->SetOcclusionMesh(occlusionMesh);
+		pComponent->SetAudioModel(audioModel);
 	}
 	
 	pCreateComponentTextures();
 }
 
 void gdeVAOComponent::pCreateComponentTextures(){
-	if( ! pComponent ){
+	if(! pComponent){
 		return;
 	}
 	
@@ -303,18 +303,18 @@ void gdeVAOComponent::pCreateComponentTextures(){
 	const int textureCount = model.GetTextureCount();
 	int i;
 	
-	for( i=0; i<textureCount; i++ ){
-		const decString &textureName = model.GetTextureAt( i )->GetName();
-		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().GetNamed( textureName );
-		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().GetNamed( textureName );
+	for(i=0; i<textureCount; i++){
+		const decString &textureName = model.GetTextureAt(i)->GetName();
+		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().GetNamed(textureName);
+		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().GetNamed(textureName);
 		
-		pUpdateComponentTexture( objectClassTexture ? objectClassTexture : componentTexture,
-			pComponent->GetTextureAt( i ), i );
+		pUpdateComponentTexture(objectClassTexture ? objectClassTexture : componentTexture,
+			pComponent->GetTextureAt(i), i);
 	}
 }
 
-void gdeVAOComponent::pUpdateComponentTexture( const gdeOCComponentTexture *texture,
-deComponentTexture &engTexture, int engTextureIndex ){
+void gdeVAOComponent::pUpdateComponentTexture(const gdeOCComponentTexture *texture,
+deComponentTexture &engTexture, int engTextureIndex){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
@@ -323,106 +323,106 @@ deComponentTexture &engTexture, int engTextureIndex ){
 	deSkin *useSkin = NULL;
 	int useTexture = 0;
 	deDynamicSkin *useDynamicSkin = NULL;
-	decVector2 texCoordOffset( 0.0f, 0.0f );
-	decVector2 texCoordScale( 1.0f, 1.0f );
+	decVector2 texCoordOffset(0.0f, 0.0f);
+	decVector2 texCoordScale(1.0f, 1.0f);
 	float texCoordRotation = 0.0f;
 	
-	if( texture ){
+	if(texture){
 		texCoordOffset = texture->GetOffset();
 		texCoordScale = texture->GetScale();
 		texCoordRotation = texture->GetRotation();
 	}
 	
-	if( ! useSkin && texture ){
+	if(! useSkin && texture){
 		try{
-			if( ! texture->GetPathSkin().IsEmpty() ){
-				occtextureSkin.TakeOver( engine.GetSkinManager()->LoadSkin( texture->GetPathSkin(), "/" ) );
+			if(! texture->GetPathSkin().IsEmpty()){
+				occtextureSkin.TakeOver(engine.GetSkinManager()->LoadSkin(texture->GetPathSkin(), "/"));
 			}
 			
-		}catch( const deException & ){
-			occtextureSkin = environment.GetStockSkin( igdeEnvironment::essError );
+		}catch(const deException &){
+			occtextureSkin = environment.GetStockSkin(igdeEnvironment::essError);
 		}
 		
-		if( occtextureSkin ){
+		if(occtextureSkin){
 			useSkin = occtextureSkin;
 			useTexture = 0;
 		}
 	}
 	
-	if( ! useDynamicSkin && texture ){
+	if(! useDynamicSkin && texture){
 		const decColor &gdctColorTint = texture->GetColorTint();
-		const bool gdctHasTint = ! gdctColorTint.IsEqualTo( decColor( 1.0f, 1.0f, 1.0f ) );
+		const bool gdctHasTint = ! gdctColorTint.IsEqualTo(decColor(1.0f, 1.0f, 1.0f));
 		bool gdctRequiresDynamicSkin = false;
 		
-		if( gdctHasTint ){
+		if(gdctHasTint){
 			gdctRequiresDynamicSkin = true;
 		}
 		
-		if( gdctRequiresDynamicSkin ){
-			gdctDynamicSkin.TakeOver( engine.GetDynamicSkinManager()->CreateDynamicSkin() );
-			if( gdctHasTint ){
-				deDSRenderableColor * const renderable = new deDSRenderableColor( "tint" );
-				renderable->SetColor( gdctColorTint );
-				gdctDynamicSkin->AddRenderable( renderable );
+		if(gdctRequiresDynamicSkin){
+			gdctDynamicSkin.TakeOver(engine.GetDynamicSkinManager()->CreateDynamicSkin());
+			if(gdctHasTint){
+				deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
+				renderable->SetColor(gdctColorTint);
+				gdctDynamicSkin->AddRenderable(renderable);
 			}
 		}
 		
 		useDynamicSkin = gdctDynamicSkin;
 	}
 	
-	if( fabsf( texCoordScale.x ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(texCoordScale.x) < FLOAT_SAFE_EPSILON){
 		texCoordScale.x = 1.0f;
 	}
-	if( fabsf( texCoordScale.y ) < FLOAT_SAFE_EPSILON ){
+	if(fabsf(texCoordScale.y) < FLOAT_SAFE_EPSILON){
 		texCoordScale.y = 1.0f;
 	}
 	const decTexMatrix2 texCoordTransform =
-		decTexMatrix2::CreateScale( texCoordScale.x, texCoordScale.y ) *
-		decTexMatrix2::CreateRotation( texCoordRotation * DEG2RAD ) *
-		decTexMatrix2::CreateTranslation( texCoordOffset.x, texCoordOffset.y );
+		decTexMatrix2::CreateScale(texCoordScale.x, texCoordScale.y) *
+		decTexMatrix2::CreateRotation(texCoordRotation * DEG2RAD) *
+		decTexMatrix2::CreateTranslation(texCoordOffset.x, texCoordOffset.y);
 	
-	if( useSkin != engTexture.GetSkin()
+	if(useSkin != engTexture.GetSkin()
 	|| useTexture != engTexture.GetTexture()
 	|| useDynamicSkin != engTexture.GetDynamicSkin()
-	|| ! texCoordTransform.IsEqualTo( engTexture.GetTransform() ) ){
-		engTexture.SetSkin( useSkin );
-		engTexture.SetTexture( useTexture );
-		engTexture.SetTransform( texCoordTransform );
-		engTexture.SetDynamicSkin( useDynamicSkin );
-		pComponent->NotifyTextureChanged( engTextureIndex );
+	|| ! texCoordTransform.IsEqualTo(engTexture.GetTransform())){
+		engTexture.SetSkin(useSkin);
+		engTexture.SetTexture(useTexture);
+		engTexture.SetTransform(texCoordTransform);
+		engTexture.SetDynamicSkin(useDynamicSkin);
+		pComponent->NotifyTextureChanged(engTextureIndex);
 	}
 }
 
 void gdeVAOComponent::pCreateCollider(){
-	if( pComponent ){
-		pCollider.TakeOver( pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderComponent() );
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( pOCComponent->GetColliderResponseType() );
-		pCollider->SetUseLocalGravity( pOCComponent->GetColliderResponseType() != deCollider::ertDynamic );
-		pCollider->SetMass( 5.0f );
-		( ( deColliderComponent& )( deCollider& )pCollider ).SetComponent( pComponent );
+	if(pComponent){
+		pCollider.TakeOver(pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderComponent());
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(pOCComponent->GetColliderResponseType());
+		pCollider->SetUseLocalGravity(pOCComponent->GetColliderResponseType() != deCollider::ertDynamic);
+		pCollider->SetMass(5.0f);
+		((deColliderComponent&)(deCollider&)pCollider).SetComponent(pComponent);
 		
 	}else{
 		decShapeList shapeList;
-		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
+		shapeList.Add(new decShapeBox(decVector(0.1f, 0.1f, 0.1f)));
 		
-		pCollider.TakeOver( pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume() );
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertStatic );
-		pCollider->SetUseLocalGravity( true );
-		pCollider->SetMass( 5.0f );
-		( ( deColliderVolume& )( deCollider& )pCollider ).SetShapes( shapeList );
+		pCollider.TakeOver(pView.GetGameDefinition()->GetEngine()->GetColliderManager()->CreateColliderVolume());
+		pCollider->SetEnabled(true);
+		pCollider->SetResponseType(deCollider::ertStatic);
+		pCollider->SetUseLocalGravity(true);
+		pCollider->SetMass(5.0f);
+		((deColliderVolume&)(deCollider&)pCollider).SetShapes(shapeList);
 	}
 	
 	decLayerMask collisionMask;
-	collisionMask.SetBit( 0 );
-	pCollider->SetCollisionFilter( decCollisionFilter( collisionMask ) );
+	collisionMask.SetBit(0);
+	pCollider->SetCollisionFilter(decCollisionFilter(collisionMask));
 	
-	pView.GetGameDefinition()->GetWorld()->AddCollider( pCollider );
+	pView.GetGameDefinition()->GetWorld()->AddCollider(pCollider);
 }
 
 void gdeVAOComponent::pCreateAnimator(){
-	if( ! pComponent ){
+	if(! pComponent){
 		return;
 	}
 	
@@ -436,119 +436,119 @@ void gdeVAOComponent::pCreateAnimator(){
 	const decString &pathAnimation = pOCComponent->GetAnimationPath();
 	const decString &move = pOCComponent->GetMove();
 	
-	if( pathAnimator.IsEmpty() && pathAnimation.IsEmpty() ){
+	if(pathAnimator.IsEmpty() && pathAnimation.IsEmpty()){
 		return;
 	}
 	
-	if( ! pathAnimation.IsEmpty() && vfs.ExistsFile( decPath::CreatePathUnix( pathAnimation ) ) ){
+	if(! pathAnimation.IsEmpty() && vfs.ExistsFile(decPath::CreatePathUnix(pathAnimation))){
 		try{
-			animation.TakeOver( engine.GetAnimationManager()->LoadAnimation( &vfs, pathAnimation, "/" ) );
+			animation.TakeOver(engine.GetAnimationManager()->LoadAnimation(&vfs, pathAnimation, "/"));
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 			animation = nullptr;
 		}
 	}
 	
-	if( ! pathAnimator.IsEmpty() ){
-		const decPath vfsPath( decPath::CreatePathUnix( pathAnimator ) );
-		if( ! vfs.ExistsFile( vfsPath ) ){
+	if(! pathAnimator.IsEmpty()){
+		const decPath vfsPath(decPath::CreatePathUnix(pathAnimator));
+		if(! vfs.ExistsFile(vfsPath)){
 			return;
 		}
 		
-		igdeLoadAnimator loader( environment, environment.GetLogger(), LOGSOURCE );
+		igdeLoadAnimator loader(environment, environment.GetLogger(), LOGSOURCE);
 		try{
 			const decBaseFileReader::Ref reader(
-				decBaseFileReader::Ref::New( vfs.OpenFileForReading( vfsPath ) ) );
-			animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
-			loader.Load( pathAnimator, animator, reader );
-			animator->SetAnimation( animation );
+				decBaseFileReader::Ref::New(vfs.OpenFileForReading(vfsPath)));
+			animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
+			loader.Load(pathAnimator, animator, reader);
+			animator->SetAnimation(animation);
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 			return;
 		}
 		
-	}else if ( animation ){
-		const int moveIndex = animation->FindMove( move );
-		if( moveIndex == -1 ){
+	}else if (animation){
+		const int moveIndex = animation->FindMove(move);
+		if(moveIndex == -1){
 			return;
 		}
 		
-		animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
-		animator->SetAnimation( animation );
+		animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
+		animator->SetAnimation(animation);
 		
 		deAnimatorController *controller = nullptr;
 		deAnimatorLink *link = nullptr;
 		
 		try{
 			controller = new deAnimatorController;
-			controller->SetName( pOCComponent->GetPlaybackController() );
-			controller->SetValueRange( 0.0f, animation->GetMove( moveIndex )->GetPlaytime() );
-			animator->AddController( controller );
+			controller->SetName(pOCComponent->GetPlaybackController());
+			controller->SetValueRange(0.0f, animation->GetMove(moveIndex)->GetPlaytime());
+			animator->AddController(controller);
 			
-		}catch( const deException &e ){
-			if( controller ){
+		}catch(const deException &e){
+			if(controller){
 				delete controller;
 			}
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 			return;
 		}
 		
 		try{
 			link = new deAnimatorLink;
-			link->SetController( 0 );
+			link->SetController(0);
 			
 			decCurveBezier curve;
 			curve.SetDefaultLinear();
-			link->SetCurve( curve );
-			animator->AddLink( link );
+			link->SetCurve(curve);
+			animator->AddLink(link);
 			
-		}catch( const deException &e ){
-			if( link ){
+		}catch(const deException &e){
+			if(link){
 				delete link;
 			}
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 			return;
 		}
 		
 		try{
 			const deAnimatorRuleAnimation::Ref rule(
-				deAnimatorRuleAnimation::Ref::NewWith() );
-			rule->SetEnableSize( true );
-			rule->SetMoveName( move );
-			rule->GetTargetMoveTime().AddLink( 0 );
-			animator->AddRule( rule );
+				deAnimatorRuleAnimation::Ref::NewWith());
+			rule->SetEnableSize(true);
+			rule->SetMoveName(move);
+			rule->GetTargetMoveTime().AddLink(0);
+			animator->AddRule(rule);
 			
-		}catch( const deException &e ){
-			environment.GetLogger()->LogException( LOGSOURCE, e );
+		}catch(const deException &e){
+			environment.GetLogger()->LogException(LOGSOURCE, e);
 			return;
 		}
 	}
 	
-	pAnimator.TakeOver( engine.GetAnimatorInstanceManager()->CreateAnimatorInstance() );
-	pAnimator->SetComponent( pComponent );
-	pAnimator->SetAnimator( animator );
+	pAnimator.TakeOver(engine.GetAnimatorInstanceManager()->CreateAnimatorInstance());
+	pAnimator->SetComponent(pComponent);
+	pAnimator->SetAnimator(animator);
 	
 	pPlayback = true;
 }
 
 void gdeVAOComponent::pAttachComponent(){
-	if( ! pComponent || ! pCollider ){
+	if(! pComponent || ! pCollider){
 		return;
 	}
 	
 	deColliderAttachment *attachment = NULL;
 	try{
-		attachment = new deColliderAttachment( pCollider );
-		attachment->SetAttachType( deColliderAttachment::eatStatic );
+		attachment = new deColliderAttachment(pCollider);
+		attachment->SetAttachType(deColliderAttachment::eatStatic);
 		//attachment->SetPosition( pOCComponent->GetPosition() );
 		//attachment->SetOrientation( pOCComponent->GetOrientation() );
-		pCollider->AddAttachment( attachment );
+		pCollider->AddAttachment(attachment);
 		attachment = NULL;
 		
-	}catch( const deException & ){
-		if( attachment ){
+	}catch(const deException &){
+		if(attachment){
 			delete attachment;
 		}
 		throw;
@@ -562,14 +562,14 @@ void gdeVAOComponent::pReleaseResources(){
 	
 	pAnimator = NULL;
 	
-	if( pCollider ){
+	if(pCollider){
 		pCollider->RemoveAllAttachments(); // because otherwise cyclic loop with component
-		world.RemoveCollider( pCollider );
+		world.RemoveCollider(pCollider);
 		pCollider = NULL;
 	}
 	
-	if( pComponent ){
-		world.RemoveComponent( pComponent );
+	if(pComponent){
+		world.RemoveComponent(pComponent);
 		pComponent = NULL;
 	}
 }

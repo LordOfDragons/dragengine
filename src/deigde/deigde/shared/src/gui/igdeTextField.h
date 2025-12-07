@@ -63,10 +63,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create textfield. */
-	igdeTextField( igdeEnvironment &environment, int columns, const char *description = "" );
+	igdeTextField(igdeEnvironment &environment, int columns, const char *description = "");
 	
-	igdeTextField( igdeEnvironment &environment, int columns, bool editable,
-		const char *description = "" );
+	igdeTextField(igdeEnvironment &environment, int columns, bool editable,
+		const char *description = "");
 	
 	
 	
@@ -86,45 +86,45 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief TextField is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** \brief Set if button is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Visible columns in edit field. */
-	inline int GetColumns() const{ return pColumns; }
+	inline int GetColumns() const{return pColumns;}
 	
 	/** \brief Text is editable. */
-	inline bool GetEditable() const{ return pEditable; }
+	inline bool GetEditable() const{return pEditable;}
 	
 	/** \brief Set if text is editable. */
-	void SetEditable( bool editable );
+	void SetEditable(bool editable);
 	
 	/** \brief Description shown in tool tips. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description shown in tool tips. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Precision for floating point values as digits after period. */
-	inline int GetPrecision() const{ return pPrecision; }
+	inline int GetPrecision() const{return pPrecision;}
 	
 	/** \brief Set precision for floating point values as digits after period. */
-	void SetPrecision( int precision );
+	void SetPrecision(int precision);
 	
 	/** \brief Mark widget as having an invalue value. */
-	inline bool GetInvalidValue() const{ return pInvalidValue; }
+	inline bool GetInvalidValue() const{return pInvalidValue;}
 	
 	/** \brief Set to mark widget as having an invalid value. */
-	void SetInvalidValue( bool invalidValue );
+	void SetInvalidValue(bool invalidValue);
 	
 	
 	
 	/** \brief Text. */
-	inline const decString &GetText() const{ return pText; }
+	inline const decString &GetText() const{return pText;}
 	
 	/** \brief Set text. */
-	void SetText( const char *text, bool changing = false, bool forceNotify = false );
+	void SetText(const char *text, bool changing = false, bool forceNotify = false);
 	
 	/** \brief Clear text. */
 	void ClearText();
@@ -133,19 +133,19 @@ public:
 	int GetInteger() const;
 	
 	/** \brief Set integer text. */
-	void SetInteger( int value, bool changing = false );
+	void SetInteger(int value, bool changing = false);
 	
 	/** \brief Get floating point text. */
 	float GetFloat() const;
 	
 	/** \brief Set floating point text. */
-	void SetFloat( float value, bool changing = false );
+	void SetFloat(float value, bool changing = false);
 	
 	/** \brief Get double precision floating point text. */
 	double GetDouble() const;
 	
 	/** \brief Set double precision floating point text. */
-	void SetDouble( double value, bool changing = false );
+	void SetDouble(double value, bool changing = false);
 	
 	
 	
@@ -153,7 +153,7 @@ public:
 	int GetCursorPosition() const;
 	
 	/** \brief Set cursor position as offset from start of text. */
-	void SetCursorPosition( int position );
+	void SetCursorPosition(int position);
 	
 	/** \brief Focus widget. */
 	void Focus();
@@ -161,10 +161,10 @@ public:
 	
 	
 	/** \brief Add listener. */
-	void AddListener( igdeTextFieldListener *listener );
+	void AddListener(igdeTextFieldListener *listener);
 	
 	/** \brief Remove listener. */
-	void RemoveListener( igdeTextFieldListener *listener );
+	void RemoveListener(igdeTextFieldListener *listener);
 	
 	/** \brief Notify listeners text changed. */
 	virtual void NotifyTextChanged();

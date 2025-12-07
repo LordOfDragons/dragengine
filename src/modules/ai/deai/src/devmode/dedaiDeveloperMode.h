@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create developer mode. */
-	dedaiDeveloperMode( deDEAIModule &dedai );
+	dedaiDeveloperMode(deDEAIModule &dedai);
 	
 	/** \brief Clean up developer mode. */
 	~dedaiDeveloperMode();
@@ -67,35 +67,35 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Module. */
-	inline deDEAIModule &GetModule() const{ return pDEAI; }
+	inline deDEAIModule &GetModule() const{return pDEAI;}
 	
 	/** \brief Developer mode is enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	
 	
 	/** \brief Show navigation spaces. */
-	inline bool GetShowSpaces() const{ return pShowSpaces; }
+	inline bool GetShowSpaces() const{return pShowSpaces;}
 	
 	/** \brief Show navigation space links. */
-	inline bool GetShowSpaceLinks() const{ return pShowSpaceLinks; }
+	inline bool GetShowSpaceLinks() const{return pShowSpaceLinks;}
 	
 	/** \brief Set space type to highlight on navigation spaces or -1 to disable. */
-	inline int GetSpaceHighlightCostType() const{ return pSpaceHighlightCostType; }
+	inline int GetSpaceHighlightCostType() const{return pSpaceHighlightCostType;}
 	
 	/** \brief Show navigation blockers. */
-	inline bool GetShowBlockers() const{ return pShowBlockers; }
+	inline bool GetShowBlockers() const{return pShowBlockers;}
 	
 	/** \brief Show navigator path. */
-	inline bool GetShowPath() const{ return pShowPath; }
+	inline bool GetShowPath() const{return pShowPath;}
 	
 	/** \brief Show navigator path faces. */
-	inline bool GetShowPathFaces() const{ return pShowPathFaces; }
+	inline bool GetShowPathFaces() const{return pShowPathFaces;}
 	
 	
 	
 	/** \brief Quick debug. */
-	inline int GetQuickDebug() const{ return pQuickDebug; }
+	inline int GetQuickDebug() const{return pQuickDebug;}
 	
 	
 	
@@ -103,7 +103,7 @@ public:
 	 * \brief Execute command.
 	 * \returns \em true if command is recognized.
 	 */
-	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	bool ExecuteCommand(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
 	
 	
@@ -114,23 +114,23 @@ public:
 	void TouchUpdateTracker();
 	
 	/** \brief Update tracker number. */
-	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }
+	inline unsigned int GetUpdateTracker() const{return pUpdateTracker;}
 	/*@}*/
 	
 	
 	
 private:
-	void pCmdHelp( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdEnable( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHelp(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdEnable(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdShowSpaces( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowSpaceLinks( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdSpaceHighlightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowBlockers( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPath( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdShowPathFaces( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdShowSpaces(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowSpaceLinks(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdSpaceHighlightCostType(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowBlockers(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPath(const decUnicodeArgumentList &command, decUnicodeString &answer);
+	void pCmdShowPathFaces(const decUnicodeArgumentList &command, decUnicodeString &answer);
 	
-	void pCmdQuickDebug( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdQuickDebug(const decUnicodeArgumentList &command, decUnicodeString &answer);
 };
 
 #endif

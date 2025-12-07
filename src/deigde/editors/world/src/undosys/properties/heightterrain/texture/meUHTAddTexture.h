@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTAddTexture( meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
+	meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture);
 	
 protected:
 	/** \brief Clean up object. */

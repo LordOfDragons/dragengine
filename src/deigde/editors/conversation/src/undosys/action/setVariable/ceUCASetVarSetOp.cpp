@@ -40,16 +40,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASetVarSetOp::ceUCASetVarSetOp( ceConversationTopic *topic,
-ceCASetVariable *action, ceCASetVariable::eOperators newOperator ){
-	if( ! topic || ! action ) DETHROW( deeInvalidParam );
+ceUCASetVarSetOp::ceUCASetVarSetOp(ceConversationTopic *topic,
+ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
+	if(! topic || ! action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pOldOperator = action->GetOperator();
 	pNewOperator = newOperator;
 	
-	SetShortInfo( "Action SetVariable Set Operator" );
+	SetShortInfo("Action SetVariable Set Operator");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -59,10 +59,10 @@ ceCASetVariable *action, ceCASetVariable::eOperators newOperator ){
 }
 
 ceUCASetVarSetOp::~ceUCASetVarSetOp(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -73,11 +73,11 @@ ceUCASetVarSetOp::~ceUCASetVarSetOp(){
 ///////////////
 
 void ceUCASetVarSetOp::Undo(){
-	pAction->SetOperator( pOldOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetOperator(pOldOperator);
+	pTopic->NotifyActionChanged(pAction);
 }
 
 void ceUCASetVarSetOp::Redo(){
-	pAction->SetOperator( pNewOperator );
-	pTopic->NotifyActionChanged( pAction );
+	pAction->SetOperator(pNewOperator);
+	pTopic->NotifyActionChanged(pAction);
 }

@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd( gdeObjectClass *objectClass, gdeProperty *property ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class add texture property" );
+	SetShortInfo("Object class add texture property");
 	
 	pObjectClass = objectClass;
 	objectClass->AddReference();
@@ -58,10 +58,10 @@ pProperty( NULL )
 }
 
 gdeUOCTexPropertyAdd::~gdeUOCTexPropertyAdd(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -72,11 +72,11 @@ gdeUOCTexPropertyAdd::~gdeUOCTexPropertyAdd(){
 ///////////////
 
 void gdeUOCTexPropertyAdd::Undo(){
-	pObjectClass->GetTextureProperties().Remove( pProperty );
+	pObjectClass->GetTextureProperties().Remove(pProperty);
 	pObjectClass->NotifyTexturePropertiesChanged();
 }
 
 void gdeUOCTexPropertyAdd::Redo(){
-	pObjectClass->GetTextureProperties().Add( pProperty );
+	pObjectClass->GetTextureProperties().Add(pProperty);
 	pObjectClass->NotifyTexturePropertiesChanged();
 }

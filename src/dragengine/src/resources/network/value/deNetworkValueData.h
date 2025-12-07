@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create network value object. */
-	deNetworkValueData( int length );
+	deNetworkValueData(int length);
 	
 	/** \brief Clean up network value object. */
 	virtual ~deNetworkValueData();
@@ -65,17 +65,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Data pointer. */
-	inline uint8_t *GetData() const{ return pData; }
+	inline uint8_t *GetData() const{return pData;}
 	
 	/** \brief Length of the data. */
-	inline int GetLength() const{ return pLength; }
+	inline int GetLength() const{return pLength;}
 	
 	/**
 	 * \brief Set length of data.
 	 * 
 	 * After changing the size the data is undefined. Only values greater than 0 are allowed.
 	 */
-	void SetLength( int length );
+	void SetLength(int length);
 	/*@}*/
 	
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit network value. */
-	virtual void Visit( deNetworkValueVisitor &visitor );
+	virtual void Visit(deNetworkValueVisitor &visitor);
 	/*@}*/
 };
 

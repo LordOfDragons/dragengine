@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCollideListPropFieldType::deoglCollideListPropFieldType( deoglCollideListPropField &propField ) :
-pPropField( propField ),
-pType( NULL ),
-pClusterCount( 0 )
+deoglCollideListPropFieldType::deoglCollideListPropFieldType(deoglCollideListPropField &propField) :
+pPropField(propField),
+pType(NULL),
+pClusterCount(0)
 {
 	(void)pPropField; // silence compiler warning
 }
@@ -51,8 +51,8 @@ pClusterCount( 0 )
 deoglCollideListPropFieldType::~deoglCollideListPropFieldType(){
 	const int count = pClusters.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		delete ( deoglCollideListPropFieldCluster* )pClusters.GetAt( i );
+	for(i=0; i<count; i++){
+		delete (deoglCollideListPropFieldCluster*)pClusters.GetAt(i);
 	}
 }
 
@@ -66,62 +66,62 @@ void deoglCollideListPropFieldType::Clear(){
 	pType = NULL;
 }
 
-void deoglCollideListPropFieldType::SetType( deoglRPropFieldType *type ){
+void deoglCollideListPropFieldType::SetType(deoglRPropFieldType *type){
 	pType = type;
 	RemoveAllClusters();
 }
 
-void deoglCollideListPropFieldType::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
-const decVector &offset ){
+void deoglCollideListPropFieldType::StartOcclusionTest(deoglOcclusionTest &occlusionTest,
+const decVector &offset){
 	int i;
-	for( i=0; i<pClusterCount; i++ ){
-		( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( i ) )->
-			StartOcclusionTest( occlusionTest, offset );
+	for(i=0; i<pClusterCount; i++){
+		((deoglCollideListPropFieldCluster*)pClusters.GetAt(i))->
+			StartOcclusionTest(occlusionTest, offset);
 	}
 }
 
 
 
-deoglCollideListPropFieldCluster &deoglCollideListPropFieldType::GetClusterAt( int index ) const{
-	return *( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( index ) );
+deoglCollideListPropFieldCluster &deoglCollideListPropFieldType::GetClusterAt(int index) const{
+	return *((deoglCollideListPropFieldCluster*)pClusters.GetAt(index));
 }
 
-deoglCollideListPropFieldCluster *deoglCollideListPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
+deoglCollideListPropFieldCluster *deoglCollideListPropFieldType::AddCluster(deoglPropFieldCluster *cluster){
 	deoglCollideListPropFieldCluster *clcluster = NULL;
 	
-	if( pClusterCount < pClusters.GetCount() ){
-		clcluster = ( deoglCollideListPropFieldCluster* )pClusters.GetAt( pClusterCount );
+	if(pClusterCount < pClusters.GetCount()){
+		clcluster = (deoglCollideListPropFieldCluster*)pClusters.GetAt(pClusterCount);
 		
 	}else{
 		clcluster = new deoglCollideListPropFieldCluster;
-		clcluster->SetCluster( cluster );
-		pClusters.Add( clcluster );
+		clcluster->SetCluster(cluster);
+		pClusters.Add(clcluster);
 	}
 	
-	clcluster->SetCluster( cluster );
+	clcluster->SetCluster(cluster);
 	pClusterCount++;
 	return clcluster;
 }
 
 void deoglCollideListPropFieldType::RemoveAllClusters(){
-	while( pClusterCount > 0 ){
-		( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( --pClusterCount ) )->Clear();
+	while(pClusterCount > 0){
+		((deoglCollideListPropFieldCluster*)pClusters.GetAt(--pClusterCount))->Clear();
 	}
 }
 
 void deoglCollideListPropFieldType::RemoveCulledClusters(){
 	int i, last = 0;
-	for( i=0; i<pClusterCount; i++ ){
-		deoglCollideListPropFieldCluster &cluster = *( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( i ) );
-		if( cluster.GetCulled() ){
+	for(i=0; i<pClusterCount; i++){
+		deoglCollideListPropFieldCluster &cluster = *((deoglCollideListPropFieldCluster*)pClusters.GetAt(i));
+		if(cluster.GetCulled()){
 			cluster.Clear();
 			continue;
 		}
 		
-		if( i != last ){
-			void * const exchange = pClusters.GetAt( last );
-			pClusters.SetAt( last, pClusters.GetAt( i ) );
-			pClusters.SetAt( i, exchange );
+		if(i != last){
+			void * const exchange = pClusters.GetAt(last);
+			pClusters.SetAt(last, pClusters.GetAt(i));
+			pClusters.SetAt(i, exchange);
 		}
 		last++;
 	}

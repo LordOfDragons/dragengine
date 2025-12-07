@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render thread renderers. */
-	deoglRTRenderers( deoglRenderThread &renderThread );
+	deoglRTRenderers(deoglRenderThread &renderThread);
 	
 	/** Clean up render thread renderers. */
 	~deoglRTRenderers();
@@ -91,61 +91,61 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Canvas renderer. */
-	inline deoglRenderCanvas &GetCanvas() const{ return *pCanvas; }
+	inline deoglRenderCanvas &GetCanvas() const{return *pCanvas;}
 	
 	/** Constructed renderer. */
-	inline deoglRenderConstructed &GetConstructed() const{ return *pConstructed; }
+	inline deoglRenderConstructed &GetConstructed() const{return *pConstructed;}
 	
 	/** Compute renderer. */
-	inline deoglRenderCompute &GetCompute() const{ return *pCompute; }
+	inline deoglRenderCompute &GetCompute() const{return *pCompute;}
 	
 	/** Debug renderer. */
-	inline deoglRenderDebug &GetDebug() const{ return *pDebug; }
+	inline deoglRenderDebug &GetDebug() const{return *pDebug;}
 	
 	/** Debug drawer renderer. */
-	inline deoglRenderDebugDrawer &GetDebugDrawer() const{ return *pDebugDrawer; }
+	inline deoglRenderDebugDrawer &GetDebugDrawer() const{return *pDebugDrawer;}
 	
 	/** Render depth pass. */
-	inline deoglRenderDepthPass &GetDepthPass(){ return *pDepthPass; }
+	inline deoglRenderDepthPass &GetDepthPass(){return *pDepthPass;}
 	
 	/** Developer mode renderer. */
-	inline deoglRenderDevMode &GetDevMode() const{ return *pDevMode; }
+	inline deoglRenderDevMode &GetDevMode() const{return *pDevMode;}
 	
 	/** Geometry renderer. */
-	inline deoglRenderGeometry &GetGeometry() const{ return *pGeometry; }
+	inline deoglRenderGeometry &GetGeometry() const{return *pGeometry;}
 	
 	/** Geometry pass renderer. */
-	inline deoglRenderGeometryPass &GetGeometryPass() const{ return *pGeometryPass; }
+	inline deoglRenderGeometryPass &GetGeometryPass() const{return *pGeometryPass;}
 	
 	/** Occlusion renderer. */
-	inline deoglRenderOcclusion &GetOcclusion() const{ return *pOcclusion; }
+	inline deoglRenderOcclusion &GetOcclusion() const{return *pOcclusion;}
 	
 	/** Light renderer. */
-	inline deoglRenderLight &GetLight() const{ return *pLight; }
+	inline deoglRenderLight &GetLight() const{return *pLight;}
 	
 	/** Particles renderer. */
-	inline deoglRenderParticles &GetParticles() const{ return *pParticles; }
+	inline deoglRenderParticles &GetParticles() const{return *pParticles;}
 	
 	/** Reflection renderer. */
-	inline deoglRenderReflection &GetReflection() const{ return *pReflection; }
+	inline deoglRenderReflection &GetReflection() const{return *pReflection;}
 	
 	/** Sky renderer. */
-	inline deoglRenderSky &GetSky() const{ return *pSky; }
+	inline deoglRenderSky &GetSky() const{return *pSky;}
 	
 	/** Tone mapping renderer. */
-	inline deoglRenderToneMap &GetToneMap() const{ return *pToneMap; }
+	inline deoglRenderToneMap &GetToneMap() const{return *pToneMap;}
 	
 	/** Transparent passes renderer. */
-	inline deoglRenderTransparentPasses &GetTransparentPasses(){ return *pTransparentPasses; }
+	inline deoglRenderTransparentPasses &GetTransparentPasses(){return *pTransparentPasses;}
 	
 	/** Transparency counter. */
-	inline deoglRenderTranspCounting &GetTransparencyCounter(){ return *pTransparencyCounter; }
+	inline deoglRenderTranspCounting &GetTransparencyCounter(){return *pTransparencyCounter;}
 	
 	/** VR renderer. */
-	inline deoglRenderVR &GetVR() const{ return *pVR; }
+	inline deoglRenderVR &GetVR() const{return *pVR;}
 	
 	/** World renderer. */
-	inline deoglRenderWorld &GetWorld() const{ return *pWorld; }
+	inline deoglRenderWorld &GetWorld() const{return *pWorld;}
 	
 	
 	

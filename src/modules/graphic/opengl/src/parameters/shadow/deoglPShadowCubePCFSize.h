@@ -37,7 +37,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new parameter. */
-	deoglPShadowCubePCFSize( deGraphicOpenGl &ogl );
+	deoglPShadowCubePCFSize(deGraphicOpenGl &ogl);
 	/** Cleans up the parameter. */
 	virtual ~deoglPShadowCubePCFSize();
 	/*@}*/
@@ -47,7 +47,7 @@ public:
 	/** Retrieves the current value. */
 	virtual float GetParameterFloat();
 	/** Sets the current value. */
-	virtual void SetParameterFloat( float value );
+	virtual void SetParameterFloat(float value);
 	/*@}*/
 };
 

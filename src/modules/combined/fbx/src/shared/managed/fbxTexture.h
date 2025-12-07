@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create connection. */
-	fbxTexture( fbxScene &scene, fbxNode &nodeTexture );
+	fbxTexture(fbxScene &scene, fbxNode &nodeTexture);
 	
 protected:
 	/** Clean up connection. */
@@ -79,38 +79,38 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Scene. */
-	inline fbxScene &GetScene() const{ return pScene; }
+	inline fbxScene &GetScene() const{return pScene;}
 	
 	/** Texture node. */
-	inline fbxNode &GetNodeTexture() const{ return pNodeTexture; }
+	inline fbxNode &GetNodeTexture() const{return pNodeTexture;}
 	
 	
 	
 	/** Texture ID. */
-	inline int64_t GetTextureID() const{ return pTextureID; }
+	inline int64_t GetTextureID() const{return pTextureID;}
 	
 	/** Name. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	
 	/** Set name. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	
 	/** UV Set. */
-	inline const decString &GetUVSet() const{ return pUVSet; }
+	inline const decString &GetUVSet() const{return pUVSet;}
 	
 	/** Use Mip Map. */
-	inline bool GetUseMipMap() const{ return pUseMipMap; }
+	inline bool GetUseMipMap() const{return pUseMipMap;}
 	
 	/** Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** Relative filename. */
-	inline const decString &GetRelativeFilename() const{ return pRelativeFilename; }
+	inline const decString &GetRelativeFilename() const{return pRelativeFilename;}
 	
 	
 	
 	/** Debug print node structure. */
-	void DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose = false ) const;
+	void DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose = false) const;
 	/*@}*/
 };
 

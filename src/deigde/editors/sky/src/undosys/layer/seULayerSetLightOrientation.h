@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetLightOrientation( seLayer *layer, const decVector &newOrientation );
+	seULayerSetLightOrientation(seLayer *layer, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up undo action. */

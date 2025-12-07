@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupSetApplicationType( aeRuleGroup *rule, deAnimatorRuleGroup::eApplicationTypes newType );
+	aeURuleGroupSetApplicationType(aeRuleGroup *rule, deAnimatorRuleGroup::eApplicationTypes newType);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupSetApplicationType();

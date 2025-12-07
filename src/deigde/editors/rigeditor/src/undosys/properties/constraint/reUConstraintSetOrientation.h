@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUConstraintSetOrientation( reRigConstraint *constraint, const decVector &newOrientation );
+	reUConstraintSetOrientation(reRigConstraint *constraint, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up the undo. */

@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new effect filter kernel object with the given resource manager. */
-	deEffectFilterKernel( deEffectManager *manager );
+	deEffectFilterKernel(deEffectManager *manager);
 	
 protected:
 	/**
@@ -76,10 +76,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rows of the filter kernel. */
-	inline int GetKernelRows() const{ return pKernelRows; }
+	inline int GetKernelRows() const{return pKernelRows;}
 	
 	/** \brief Cols of the filter kernel. */
-	inline int GetKernelCols() const{ return pKernelCols; }
+	inline int GetKernelCols() const{return pKernelCols;}
 	
 	/**
 	 * \brief Set the size of the filter kernel.
@@ -88,19 +88,19 @@ public:
 	 * is required as the middle value in the filter kernel corresponds to the pixel
 	 * filtered in the final image.
 	 */
-	void SetKernelSize( int rows, int cols );
+	void SetKernelSize(int rows, int cols);
 	
 	/** \brief Retrieves kernel value at the given location. */
-	float GetKernelValueAt( int row, int col ) const;
+	float GetKernelValueAt(int row, int col) const;
 	
 	/** \brief Set kernel value at the given location. */
-	void SetKernelValueAt( int row, int col, float value );
+	void SetKernelValueAt(int row, int col, float value);
 	
 	/** \brief Scale of kernel. */
-	inline float GetScale() const{ return pScale; }
+	inline float GetScale() const{return pScale;}
 	
 	/** \brief Set scale of kernel. */
-	void SetScale( float scale );
+	void SetScale(float scale);
 	/*@}*/
 	
 	
@@ -108,7 +108,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit effect. */
-	virtual void Visit( deEffectVisitor &visitor );
+	virtual void Visit(deEffectVisitor &visitor);
 	/*@}*/
 };
 

@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeHackBox::debpShapeHackBox( decShapeBox *shape ) :
-debpShapeBox( shape ){
+debpShapeHackBox::debpShapeHackBox(decShapeBox *shape) :
+debpShapeBox(shape){
 }
 
 debpShapeHackBox::~debpShapeHackBox(){

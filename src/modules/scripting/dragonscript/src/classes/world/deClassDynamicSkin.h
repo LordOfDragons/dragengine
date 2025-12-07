@@ -49,7 +49,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new class. */
-	deClassDynamicSkin( deScriptingDragonScript *ds );
+	deClassDynamicSkin(deScriptingDragonScript *ds);
 	/** Cleans up the class. */
 	virtual ~deClassDynamicSkin();
 	/*@}*/
@@ -57,16 +57,16 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the module. */
-	inline deScriptingDragonScript *GetDS() const{ return pDS; }
+	inline deScriptingDragonScript *GetDS() const{return pDS;}
 	/** Creates class members. */
-	void CreateClassMembers( dsEngine *engine );
+	void CreateClassMembers(dsEngine *engine);
 	
 	/** Retrieves the dynamic skin from an object. */
-	deDynamicSkin *GetDynamicSkin( dsRealObject *myself ) const;
+	deDynamicSkin *GetDynamicSkin(dsRealObject *myself) const;
 	/** Pushes a dynamic skin. */
-	void PushDynamicSkin( dsRunTime *rt, deDynamicSkin *dynamicSkin );
+	void PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSkin);
 	
-	inline dsClass *GetClassDynamicSkinRenderableType() const{ return pClsDynamicSkinRenderableType; }
+	inline dsClass *GetClassDynamicSkinRenderableType() const{return pClsDynamicSkinRenderableType;}
 	/*@}*/
 	
 private:
@@ -76,45 +76,45 @@ private:
 		dsClass *clsDynamicSkinRenderableType;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfNew );
-	DEF_NATFUNC( nfDestructor );
+	DEF_NATFUNC(nfNew);
+	DEF_NATFUNC(nfDestructor);
 	
-	DEF_NATFUNC( nfGetRenderableCount );
-	DEF_NATFUNC( nfIndexOfRenderable );
-	DEF_NATFUNC( nfHasRenderable );
-	DEF_NATFUNC( nfAddRenderable );
-	DEF_NATFUNC( nfRemoveRenderable );
-	DEF_NATFUNC( nfRemoveAllRenderables );
+	DEF_NATFUNC(nfGetRenderableCount);
+	DEF_NATFUNC(nfIndexOfRenderable);
+	DEF_NATFUNC(nfHasRenderable);
+	DEF_NATFUNC(nfAddRenderable);
+	DEF_NATFUNC(nfRemoveRenderable);
+	DEF_NATFUNC(nfRemoveAllRenderables);
 	
-	DEF_NATFUNC( nfGetTypeAt );
+	DEF_NATFUNC(nfGetTypeAt);
 	
-	DEF_NATFUNC( nfGetValueAt );
-	DEF_NATFUNC( nfSetValueAt );
+	DEF_NATFUNC(nfGetValueAt);
+	DEF_NATFUNC(nfSetValueAt);
 	
-	DEF_NATFUNC( nfGetColorAt );
-	DEF_NATFUNC( nfSetColorAt );
+	DEF_NATFUNC(nfGetColorAt);
+	DEF_NATFUNC(nfSetColorAt);
 	
-	DEF_NATFUNC( nfGetImageAt );
-	DEF_NATFUNC( nfSetImageAt );
+	DEF_NATFUNC(nfGetImageAt);
+	DEF_NATFUNC(nfSetImageAt);
 	
-	DEF_NATFUNC( nfGetCanvasAt );
-	DEF_NATFUNC( nfSetCanvasAt );
-	DEF_NATFUNC( nfSetCanvasAt2 );
-	DEF_NATFUNC( nfSetCanvasAt3 );
+	DEF_NATFUNC(nfGetCanvasAt);
+	DEF_NATFUNC(nfSetCanvasAt);
+	DEF_NATFUNC(nfSetCanvasAt2);
+	DEF_NATFUNC(nfSetCanvasAt3);
 	
-	DEF_NATFUNC( nfGetCameraAt );
-	DEF_NATFUNC( nfSetCameraAt );
+	DEF_NATFUNC(nfGetCameraAt);
+	DEF_NATFUNC(nfSetCameraAt);
 	
-	DEF_NATFUNC( nfGetVideoPlayerAt );
-	DEF_NATFUNC( nfSetVideoPlayerAt );
+	DEF_NATFUNC(nfGetVideoPlayerAt);
+	DEF_NATFUNC(nfSetVideoPlayerAt);
 	
-	DEF_NATFUNC( nfHashCode );
-	DEF_NATFUNC( nfEquals );
+	DEF_NATFUNC(nfHashCode);
+	DEF_NATFUNC(nfEquals);
 #undef DEF_NATFUNC
 };
 

@@ -58,26 +58,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-deRLTaskReadFontInternal::deRLTaskReadFontInternal( deEngine &engine,
+deRLTaskReadFontInternal::deRLTaskReadFontInternal(deEngine &engine,
 deResourceLoader &resourceLoader, deVirtualFileSystem *vfs, const char *path,
-deRLTaskReadFont *parentTask ) :
-deResourceLoaderTask( engine, resourceLoader, vfs, path, deResourceLoader::ertFont ),
-pSucceeded( false ),
-pAlreadyLoaded( false ),
-pParentTask( parentTask ),
-pInternalTask( NULL )
+deRLTaskReadFont *parentTask) :
+deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertFont),
+pSucceeded(false),
+pAlreadyLoaded(false),
+pParentTask(parentTask),
+pInternalTask(NULL)
 {
-	if( ! parentTask ){
-		DETHROW( deeInvalidParam );
+	if(! parentTask){
+		DETHROW(deeInvalidParam);
 	}
 	
 	LogCreateEnter();
-	pFont.TakeOver( new deFont( engine.GetFontManager(), vfs, path, 0 ) );
+	pFont.TakeOver(new deFont(engine.GetFontManager(), vfs, path, 0));
 	LogCreateExit();
 }
 
 deRLTaskReadFontInternal::~deRLTaskReadFontInternal(){
-	if( pInternalTask ){
+	if(pInternalTask){
 		pInternalTask->FreeReference();
 	}
 }
@@ -90,16 +90,16 @@ deRLTaskReadFontInternal::~deRLTaskReadFontInternal(){
 void deRLTaskReadFontInternal::Run(){
 	LogRunEnter();
 	
-	deBaseFontModule * const module = ( deBaseFontModule* )GetEngine().
-		GetModuleSystem()->GetModuleAbleToLoad( deModuleSystem::emtFont, GetPath() );
-	if( ! module ){
-		DETHROW( deeInvalidParam );
+	deBaseFontModule * const module = (deBaseFontModule*)GetEngine().
+		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtFont, GetPath());
+	if(! module){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
+	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
-	pFont->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
-	pFont->SetAsynchron( true );
+	pFont->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
+	pFont->SetAsynchron(true);
 	module->LoadFont(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pFont);
 	
 	pSucceeded = true;
@@ -109,53 +109,53 @@ void deRLTaskReadFontInternal::Run(){
 void deRLTaskReadFontInternal::Finished(){
 	LogFinishedEnter();
 	
-	if( ! pSucceeded ){
-		SetState( esFailed );
+	if(! pSucceeded){
+		SetState(esFailed);
 		pFont = NULL;
 		LogFinishedExit();
-		GetResourceLoader().FinishTask( this );
+		GetResourceLoader().FinishTask(this);
 		return;
 	}
 	
 	deEngine &engine = GetEngine();
 	deFontManager &fontManager = *engine.GetFontManager();
-	deFont * const checkFont = fontManager.GetFontWith( GetPath() );
+	deFont * const checkFont = fontManager.GetFontWith(GetPath());
 	
-	if( checkFont ){
+	if(checkFont){
 		pAlreadyLoaded = true;
-		SetResource( checkFont );
-		SetState( esSucceeded );
+		SetResource(checkFont);
+		SetState(esSucceeded);
 		
 	}else{
-		pFont->SetAsynchron( false );
-		SetResource( pFont );
-		SetState( esSucceeded );
+		pFont->SetAsynchron(false);
+		SetResource(pFont);
+		SetState(esSucceeded);
 		
 		try{
-			pInternalTask = new deRLTaskReadFontInternal2( engine,
-				GetResourceLoader(), GetVFS(), GetPath(), pFont );
+			pInternalTask = new deRLTaskReadFontInternal2(engine,
+				GetResourceLoader(), GetVFS(), GetPath(), pFont);
 			
-			switch( pInternalTask->GetState() ){
+			switch(pInternalTask->GetState()){
 			case esPending:
-				pParentTask->AddDependsOn( pInternalTask );
-				engine.GetParallelProcessing().AddTask( pInternalTask );
+				pParentTask->AddDependsOn(pInternalTask);
+				engine.GetParallelProcessing().AddTask(pInternalTask);
 				break;
 				
 			case esSucceeded:
 				break;
 				
 			case esFailed:
-				SetState( esFailed );
+				SetState(esFailed);
 				break;
 			}
 			
-		}catch( const deException & ){
-			SetState( esFailed );
+		}catch(const deException &){
+			SetState(esFailed);
 		}
 	}
 	
 	LogFinishedExit();
-	GetResourceLoader().FinishTask( this );
+	GetResourceLoader().FinishTask(this);
 }
 
 

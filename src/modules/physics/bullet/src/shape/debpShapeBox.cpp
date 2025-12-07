@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpShapeBox::debpShapeBox( decShapeBox *shape ) : debpShape( estBox, shape ){
+debpShapeBox::debpShapeBox(decShapeBox *shape) : debpShape(estBox, shape){
 	pSBox = shape;
-	SetCollisionVolume( &pCBox );
+	SetCollisionVolume(&pCBox);
 }
 
 debpShapeBox::~debpShapeBox(){
@@ -52,16 +52,16 @@ debpShapeBox::~debpShapeBox(){
 // Management
 ///////////////
 
-void debpShapeBox::UpdateWithMatrix( const decDMatrix &transformation, const decDVector &scale ){
-	pCBox.SetCenter( transformation * pSBox->GetPosition() );
-	pCBox.SetOrientation( pSBox->GetOrientation() * transformation.ToQuaternion() );
-	pCBox.SetHalfSize( pSBox->GetHalfExtends().Multiply( scale ) );
+void debpShapeBox::UpdateWithMatrix(const decDMatrix &transformation, const decDVector &scale){
+	pCBox.SetCenter(transformation * pSBox->GetPosition());
+	pCBox.SetOrientation(pSBox->GetOrientation() * transformation.ToQuaternion());
+	pCBox.SetHalfSize(pSBox->GetHalfExtends().Multiply(scale));
 }
 
-void debpShapeBox::PrintDebug( dePhysicsBullet &module ){
+void debpShapeBox::PrintDebug(dePhysicsBullet &module){
 	const decDVector &c = pCBox.GetCenter();
 	const decDVector &h = pCBox.GetHalfSize();
 	const decQuaternion &o = pCBox.GetOrientation();
 	
-	module.LogInfoFormat( "box: c=(%.4g,%.4g,%.4g) h=(%.4g,%.4g,%.4g) o=(%.4g,%.4g,%.4g,%.4g)", c.x, c.y, c.z, h.x, h.y, h.z, o.x, o.y, o.z, o.w );
+	module.LogInfoFormat("box: c=(%.4g,%.4g,%.4g) h=(%.4g,%.4g,%.4g) o=(%.4g,%.4g,%.4g,%.4g)", c.x, c.y, c.z, h.x, h.y, h.z, o.x, o.y, o.z, o.w);
 }

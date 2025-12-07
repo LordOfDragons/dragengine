@@ -47,16 +47,16 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sphere shape. */
-	decShapeSphere( float radius );
+	decShapeSphere(float radius);
 	
 	/** \brief Create sphere shape. */
-	decShapeSphere( float radius, const decVector &position );
+	decShapeSphere(float radius, const decVector &position);
 	
 	/** \brief Create tapered sphere shape. */
-	decShapeSphere( float radius, const decVector2 &axisScaling );
+	decShapeSphere(float radius, const decVector2 &axisScaling);
 	
 	/** \brief Create tapered sphere shape. */
-	decShapeSphere( float radius, const decVector2 &axisScaling, const decVector &position );
+	decShapeSphere(float radius, const decVector2 &axisScaling, const decVector &position);
 	
 	/** \brief Clean up sphere shape. */
 	virtual ~decShapeSphere();
@@ -67,16 +67,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Radius. */
-	inline float GetRadius() const{ return pRadius; }
+	inline float GetRadius() const{return pRadius;}
 	
 	/** \brief Set radius. */
-	void SetRadius( float radius );
+	void SetRadius(float radius);
 	
 	/** \brief Axis scaling. */
-	inline const decVector2 &GetAxisScaling() const{ return pAxisScaling; }
+	inline const decVector2 &GetAxisScaling() const{return pAxisScaling;}
 	
 	/** \brief Set axis scaling. */
-	void SetAxisScaling( const decVector2 &axisScaling );
+	void SetAxisScaling(const decVector2 &axisScaling);
 	
 	
 	
@@ -89,7 +89,7 @@ public:
 	/** \name Visiting */
 	/*@{*/
 	/** \brief Visit shape. */
-	virtual void Visit( decShapeVisitor &visitor );
+	virtual void Visit(decShapeVisitor &visitor);
 	/*@}*/
 };
 

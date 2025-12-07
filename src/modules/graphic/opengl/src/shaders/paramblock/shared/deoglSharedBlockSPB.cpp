@@ -42,16 +42,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSharedBlockSPB::deoglSharedBlockSPB( deoglShaderParameterBlock *parameterBlock ) :
-pParameterBlock( parameterBlock ),
-pSize( parameterBlock->GetElementCount() ),
-pUsedElementCount( 0 ),
-pFreeElementCount( pSize )
+deoglSharedBlockSPB::deoglSharedBlockSPB(deoglShaderParameterBlock *parameterBlock) :
+pParameterBlock(parameterBlock),
+pSize(parameterBlock->GetElementCount()),
+pUsedElementCount(0),
+pFreeElementCount(pSize)
 {
-	DEASSERT_TRUE( parameterBlock->GetElementCount() >= 1 )
+	DEASSERT_TRUE(parameterBlock->GetElementCount() >= 1)
 	
 	// add empty block for the element space
-	pElements.Add( deObject::Ref::New( new deoglSharedBlockSPBElement( *this, 0, pFreeElementCount ) ) );
+	pElements.Add(deObject::Ref::New(new deoglSharedBlockSPBElement(*this, 0, pFreeElementCount)));
 }
 
 deoglSharedBlockSPB::~deoglSharedBlockSPB(){
@@ -62,40 +62,40 @@ deoglSharedBlockSPB::~deoglSharedBlockSPB(){
 // Management
 ///////////////
 
-deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement( int count ){
-	DEASSERT_TRUE( count > 0 )
+deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement(int count){
+	DEASSERT_TRUE(count > 0)
 	
 	pCheckSize();
 	
 	// find empty element with enough free space. if found the empty element is removed from
 	// the list of empty elements if required
-	const int index = pIndexOfEmptyElementWithMinCount( count );
-	if( index == -1 ){
+	const int index = pIndexOfEmptyElementWithMinCount(count);
+	if(index == -1){
 		return nullptr;
 	}
 	
-	deoglSharedBlockSPBElement * const element = ( deoglSharedBlockSPBElement* )pElements.GetAt( index );
+	deoglSharedBlockSPBElement * const element = (deoglSharedBlockSPBElement*)pElements.GetAt(index);
 	
 	// if empty block is larger than requested size add empty block with
 	// remaining empty space right after this block
-	if( element->GetCount() > count ){
-		const deObject::Ref emptyElement( deObject::Ref::New( new deoglSharedBlockSPBElement(
+	if(element->GetCount() > count){
+		const deObject::Ref emptyElement(deObject::Ref::New(new deoglSharedBlockSPBElement(
 			*this, element->GetIndex() + count, element->GetCount() - count ) ) );
 		
-		if( index + 1 < pElements.GetCount() ){
+		if(index + 1 < pElements.GetCount()){
 			// not the last element filling up to the available space
-			pElements.Insert( emptyElement, index + 1 );
-			pEmptyElements.Add( emptyElement );
+			pElements.Insert(emptyElement, index + 1);
+			pEmptyElements.Add(emptyElement);
 			
 		}else{
 			// last element filling up to the available space
-			pElements.Add( emptyElement );
+			pElements.Add(emptyElement);
 		}
 	}
 	
 	// turn the block into a non-empty block with the requested size
-	element->SetCount( count );
-	element->SetEmpty( false );
+	element->SetCount(count);
+	element->SetEmpty(false);
 	
 	// book keeping
 	pFreeElementCount -= count;
@@ -104,25 +104,25 @@ deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement( int count ){
 	return element;
 }
 
-void deoglSharedBlockSPB::ReturnElement( deoglSharedBlockSPBElement *element ){
-	int index = pElements.IndexOf( element );
-	DEASSERT_TRUE( index != -1 )
+void deoglSharedBlockSPB::ReturnElement(deoglSharedBlockSPBElement *element){
+	int index = pElements.IndexOf(element);
+	DEASSERT_TRUE(index != -1)
 	
 	bool addToEmptyElements = index < pElements.GetCount() - 1;
 	const int count = element->GetCount();
 	bool merged = false;
 	
 	// turn the block into an empty block
-	element->SetEmpty( true );
+	element->SetEmpty(true);
 	
 	// if the previous block is empty merge this block with the previous block
-	if( index > 0 ){
+	if(index > 0){
 		deoglSharedBlockSPBElement * const mergeElement =
-			( deoglSharedBlockSPBElement* )pElements.GetAt( index - 1 );
-		if( mergeElement->GetEmpty() ){
-			mergeElement->SetCount( mergeElement->GetCount() + count );
+			(deoglSharedBlockSPBElement*)pElements.GetAt(index - 1);
+		if(mergeElement->GetEmpty()){
+			mergeElement->SetCount(mergeElement->GetCount() + count);
 			
-			pElements.RemoveFrom( index );
+			pElements.RemoveFrom(index);
 			
 			addToEmptyElements = false;
 			merged = true;
@@ -131,45 +131,45 @@ void deoglSharedBlockSPB::ReturnElement( deoglSharedBlockSPBElement *element ){
 			
 			// if the previous empty block becomes the last block filling up space up the to
 			// available space remove it from the empty block list
-			if( index == pElements.GetCount() - 1 ){
-				pEmptyElements.RemoveFrom( pEmptyElements.IndexOf( mergeElement ) );
+			if(index == pElements.GetCount() - 1){
+				pEmptyElements.RemoveFrom(pEmptyElements.IndexOf(mergeElement));
 			}
 		}
 	}
 	
 	// if the next block is empty merge the next block with this block
-	if( index < pElements.GetCount() - 1 ){
+	if(index < pElements.GetCount() - 1){
 		deoglSharedBlockSPBElement * const mergeElement =
-			( deoglSharedBlockSPBElement* )pElements.GetAt( index + 1 );
-		if( mergeElement->GetEmpty() ){
-			element->SetCount( count + mergeElement->GetCount() );
+			(deoglSharedBlockSPBElement*)pElements.GetAt(index + 1);
+		if(mergeElement->GetEmpty()){
+			element->SetCount(count + mergeElement->GetCount());
 			
 			// if the next empty block is not the last block filling up space up the to
 			// available space remove it from the empty block list
-			if( index + 1 < pElements.GetCount() - 1 ){
-				pEmptyElements.RemoveFrom( pEmptyElements.IndexOf( mergeElement ) );
+			if(index + 1 < pElements.GetCount() - 1){
+				pEmptyElements.RemoveFrom(pEmptyElements.IndexOf(mergeElement));
 			}
 			
-			pElements.RemoveFrom( index + 1 );
+			pElements.RemoveFrom(index + 1);
 			
 			// if the merged empty block is the last block filling up space up to available
 			// space do not add it to the empty block list
-			if( index == pElements.GetCount() - 1 ){
+			if(index == pElements.GetCount() - 1){
 				addToEmptyElements = false;
 				
-				if( merged ){
+				if(merged){
 					// in this situation the element has been merge with both the previous and
 					// next empty element. in this case the previous empty element becomes the
 					// last element filling up space up to available space and has to be
 					// removed from the empty element list
-					pEmptyElements.RemoveFrom( pEmptyElements.IndexOf( element ) );
+					pEmptyElements.RemoveFrom(pEmptyElements.IndexOf(element));
 				}
 			}
 		}
 	}
 	
-	if( addToEmptyElements ){
-		pEmptyElements.Add( element );
+	if(addToEmptyElements){
+		pEmptyElements.Add(element);
 	}
 	
 	// book keeping
@@ -183,42 +183,42 @@ int deoglSharedBlockSPB::GetFreeElementCountAtEnd() const{
 	return element.GetEmpty() ? element.GetCount() : 0;
 }
 
-void deoglSharedBlockSPB::DebugPrint( deoglRTLogger &logger ) const{
+void deoglSharedBlockSPB::DebugPrint(deoglRTLogger &logger) const{
 	const int count = pElements.GetCount();
 	decStringList list;
 	decString string;
 	int i;
 	
-	logger.LogInfoFormat( "SPB: size=%d used=%d free=%d freeAtEnd=%d",
-		pSize, pUsedElementCount, pFreeElementCount, GetFreeElementCountAtEnd() );
-	for( i=0; i<count; i++ ){
-		const deoglSharedBlockSPBElement * const element = ( deoglSharedBlockSPBElement* )pElements.GetAt( i );
-		string.Format( "[%c:%d,%d]", element->GetEmpty() ? 'E' : 'U', element->GetIndex(), element->GetCount() );
-		list.Add( string );
+	logger.LogInfoFormat("SPB: size=%d used=%d free=%d freeAtEnd=%d",
+		pSize, pUsedElementCount, pFreeElementCount, GetFreeElementCountAtEnd());
+	for(i=0; i<count; i++){
+		const deoglSharedBlockSPBElement * const element = (deoglSharedBlockSPBElement*)pElements.GetAt(i);
+		string.Format("[%c:%d,%d]", element->GetEmpty() ? 'E' : 'U', element->GetIndex(), element->GetCount());
+		list.Add(string);
 	}
-	logger.LogInfo( list.Join( " " ) );
+	logger.LogInfo(list.Join(" "));
 }
 
-int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount( int count ){
+int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount(int count){
 	// check if an empty block with enough space can be reused. this list does not include
 	// the last empty block filling the space up to the available space. this is done like
 	// this to ensure anything but the last space filler block is used if possible
 	const int emptyCount = pEmptyElements.GetCount();
 	int i;
 	
-	for( i=0; i<emptyCount; i++ ){
+	for(i=0; i<emptyCount; i++){
 		deoglSharedBlockSPBElement * const element =
-			( deoglSharedBlockSPBElement* )pEmptyElements.GetAt( i );
-		if( element->GetCount() >= count ){
-			pEmptyElements.RemoveFrom( i );
-			return pElements.IndexOf( element );
+			(deoglSharedBlockSPBElement*)pEmptyElements.GetAt(i);
+		if(element->GetCount() >= count){
+			pEmptyElements.RemoveFrom(i);
+			return pElements.IndexOf(element);
 		}
 	}
 	
 	// check if the last empty block filling up space up to the available space is usable
 	deoglSharedBlockSPBElement * const element =
-		( deoglSharedBlockSPBElement* )pElements.GetAt( pElements.GetCount() - 1 );
-	if( element->GetEmpty() && element->GetCount() >= count ){
+		(deoglSharedBlockSPBElement*)pElements.GetAt(pElements.GetCount() - 1);
+	if(element->GetEmpty() && element->GetCount() >= count){
 		return pElements.GetCount() - 1;
 	}
 	
@@ -228,19 +228,19 @@ int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount( int count ){
 
 void deoglSharedBlockSPB::pCheckSize(){
 	const int change = pParameterBlock->GetElementCount() - pSize;
-	if( change == 0 ){
+	if(change == 0){
 		return;
 	}
 	
-	DEASSERT_TRUE( change > 0 )
+	DEASSERT_TRUE(change > 0)
 	
 	deoglSharedBlockSPBElement * const element =
-		( deoglSharedBlockSPBElement* )pElements.GetAt( pElements.GetCount() - 1 );
-	if( element->GetEmpty() ){
-		element->SetCount( element->GetCount() + change );
+		(deoglSharedBlockSPBElement*)pElements.GetAt(pElements.GetCount() - 1);
+	if(element->GetEmpty()){
+		element->SetCount(element->GetCount() + change);
 		
 	}else{
-		pElements.Add( deObject::Ref::New( new deoglSharedBlockSPBElement( *this, pSize, change ) ) );
+		pElements.Add(deObject::Ref::New(new deoglSharedBlockSPBElement(*this, pSize, change)));
 	}
 	
 	pFreeElementCount += change;

@@ -50,7 +50,7 @@ public:
 	struct sFace{
 		bool consumed;
 		float score;
-		int vertices[ 3 ];
+		int vertices[3];
 	};
 	
 	struct sGroup{
@@ -93,37 +93,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of vertices. */
-	inline int GetVertexCount() const{ return pVertexCount; }
+	inline int GetVertexCount() const{return pVertexCount;}
 	/** Retrieves the vertices. */
-	inline const sVertex *GetVertices() const{ return pVertices; }
+	inline const sVertex *GetVertices() const{return pVertices;}
 	/** Retrieves the indices of the reordered vertices. */
-	inline const int *GetReorderedVertices() const{ return pReorderedVertices; }
+	inline const int *GetReorderedVertices() const{return pReorderedVertices;}
 	/** Sets the number of vertices. This resets the vertices array. */
-	void SetVertexCount( int vertexCount );
+	void SetVertexCount(int vertexCount);
 	
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	/** Retrieves the indices of the reordered faces. */
-	inline const int *GetReorderedFaces() const{ return pReorderedFaces; }
+	inline const int *GetReorderedFaces() const{return pReorderedFaces;}
 	/** Retrieves the faces. */
-	inline const sFace *GetFaces() const{ return pFaces; }
+	inline const sFace *GetFaces() const{return pFaces;}
 	/**
 	 * Sets the number of faces. After this call the faces in the array are undefined. No initialization
 	 * is done for speed reason. Make sure you set all faces using SetFaceAt.
 	 */
-	void SetFaceCount( int faceCount );
+	void SetFaceCount(int faceCount);
 	/** Sets a face. */
-	void SetFaceAt( int face, int vertex1, int vertex2, int vertex3 );
+	void SetFaceAt(int face, int vertex1, int vertex2, int vertex3);
 	
 	/** Retrieves the number of groups. */
-	inline int GetGroupCount() const{ return pGroupCount; }
+	inline int GetGroupCount() const{return pGroupCount;}
 	/**
 	 * Sets the group count. After this call the groups in the array are undefined. No initialization
 	 * is done for speed reason. Make sure you set all groups using SetGroupAt.
 	 */
-	void SetGroupCount( int groupCount );
+	void SetGroupCount(int groupCount);
 	/** Sets a group. */
-	void SetGroupAt( int group, int firstFace, int faceCount );
+	void SetGroupAt(int group, int firstFace, int faceCount);
 	
 	/** Optimize for good vertex cache usage. */
 	void Optimize();
@@ -134,22 +134,22 @@ public:
 	void OptimizeVertexOrder();
 	
 	/** Calculate vertex score. */
-	void CalculateVertexScore( int vertex );
+	void CalculateVertexScore(int vertex);
 	/** Calculate face score. */
-	void CalculateFaceScore( int face );
+	void CalculateFaceScore(int face);
 	/** Add vertex to the top of the cache. If the vertex is in the cache already it is moved. */
-	void AddVertexToCache( int vertex );
+	void AddVertexToCache(int vertex);
 	/** Update scores for all vertices in the cache as well as all faces using vertices in the cache. */
 	void UpdateCacheScores();
 	/** Find the face using a vertex in the cache with the highest score. */
 	int FindBestScoreFaceInCache();
 	/** Find the face with the highest score using a full exhaustive search. */
-	int FindBestScoreFace( int firstFace, int faceLimit );
+	int FindBestScoreFace(int firstFace, int faceLimit);
 	/** Find the next face that is not consumed. */
-	int FindNextFace( int faceLimit );
+	int FindNextFace(int faceLimit);
 	
 	/** Debug print. */
-	void DebugPrint( deoglRenderThread &renderThread );
+	void DebugPrint(deoglRenderThread &renderThread);
 	/*@}*/
 };
 

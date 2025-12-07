@@ -39,26 +39,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalVisible::meUDecalVisible( meDecal *decal ){
-	if( ! decal ){
-		DETHROW( deeInvalidParam );
+meUDecalVisible::meUDecalVisible(meDecal *decal){
+	if(! decal){
+		DETHROW(deeInvalidParam);
 	}
 	
 	meWorld * const world = decal->GetWorld();
-	if( ! world ){
-		DETHROW( deeInvalidParam );
+	if(! world){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pDecal = NULL;
 	
-	SetShortInfo( "Set decal visible" );
+	SetShortInfo("Set decal visible");
 	
 	pDecal = decal;
 	decal->AddReference();
 }
 
 meUDecalVisible::~meUDecalVisible(){
-	if( pDecal ){
+	if(pDecal){
 		pDecal->FreeReference();
 	}
 }
@@ -69,11 +69,11 @@ meUDecalVisible::~meUDecalVisible(){
 ///////////////
 
 void meUDecalVisible::Undo(){
-	pDecal->SetVisible( ! pDecal->GetVisible() );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetVisible(! pDecal->GetVisible());
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }
 
 void meUDecalVisible::Redo(){
-	pDecal->SetVisible( ! pDecal->GetVisible() );
-	pDecal->GetWorld()->GetGuiParameters().SetElementMode( meWorldGuiParameters::eemDecal );
+	pDecal->SetVisible(! pDecal->GetVisible());
+	pDecal->GetWorld()->GetGuiParameters().SetElementMode(meWorldGuiParameters::eemDecal);
 }

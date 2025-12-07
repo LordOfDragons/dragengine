@@ -45,24 +45,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-deNetworkState::deNetworkState( deNetworkStateManager *manager, bool readOnly ) :
-deResource( manager ),
+deNetworkState::deNetworkState(deNetworkStateManager *manager, bool readOnly) :
+deResource(manager),
 
-pReadOnly( readOnly ),
+pReadOnly(readOnly),
 
-pPeerNetwork( NULL ),
-pPeerScripting( NULL ),
+pPeerNetwork(NULL),
+pPeerScripting(NULL),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pParentWorld(NULL),
+pLLWorldPrev(NULL),
+pLLWorldNext(NULL){
 }
 
 deNetworkState::~deNetworkState(){
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		delete pPeerNetwork;
 	}
 }
@@ -82,34 +82,34 @@ int deNetworkState::GetValueCount() const{
 	return pValues.GetCount();
 }
 
-int deNetworkState::IndexOfValue( deNetworkValue *value ) const{
-	return pValues.IndexOf( value );
+int deNetworkState::IndexOfValue(deNetworkValue *value) const{
+	return pValues.IndexOf(value);
 }
 
-deNetworkValue *deNetworkState::GetValueAt( int index ) const{
-	return ( deNetworkValue* )pValues.GetAt( index );
+deNetworkValue *deNetworkState::GetValueAt(int index) const{
+	return (deNetworkValue*)pValues.GetAt(index);
 }
 
-void deNetworkState::AddValue( deNetworkValue *value ){
-	if( ! value ){
-		DETHROW( deeInvalidParam );
+void deNetworkState::AddValue(deNetworkValue *value){
+	if(! value){
+		DETHROW(deeInvalidParam);
 	}
-	pValues.Add( value );
+	pValues.Add(value);
 	
-	if( pPeerNetwork ){
-		pPeerNetwork->ValueAdded( pValues.GetCount() - 1, value );
+	if(pPeerNetwork){
+		pPeerNetwork->ValueAdded(pValues.GetCount() - 1, value);
 	}
 }
 
-void deNetworkState::NotifyValueChanged( int index ) const{
-	if( pPeerNetwork ){
-		pPeerNetwork->ValueChanged( index, GetValueAt( index ) );
+void deNetworkState::NotifyValueChanged(int index) const{
+	if(pPeerNetwork){
+		pPeerNetwork->ValueChanged(index, GetValueAt(index));
 	}
 }
 
-void deNetworkState::NotifyPrecisionChanged( int index ) const{
-	if( pPeerNetwork ){
-		pPeerNetwork->PrecisionChanged( index, GetValueAt( index ) );
+void deNetworkState::NotifyPrecisionChanged(int index) const{
+	if(pPeerNetwork){
+		pPeerNetwork->PrecisionChanged(index, GetValueAt(index));
 	}
 }
 
@@ -118,23 +118,23 @@ void deNetworkState::NotifyPrecisionChanged( int index ) const{
 // System Peers
 /////////////////
 
-void deNetworkState::SetPeerNetwork ( deBaseNetworkState *peer ){
-	if( peer == pPeerNetwork ){
+void deNetworkState::SetPeerNetwork (deBaseNetworkState *peer){
+	if(peer == pPeerNetwork){
 		return;
 	}
 	
-	if( pPeerNetwork ){
+	if(pPeerNetwork){
 		delete pPeerNetwork;
 	}
 	pPeerNetwork = peer;
 }
 
-void deNetworkState::SetPeerScripting( deBaseScriptingNetworkState *peer ){
-	if( peer == pPeerScripting ){
+void deNetworkState::SetPeerScripting(deBaseScriptingNetworkState *peer){
+	if(peer == pPeerScripting){
 		return;
 	}
 	
-	if( pPeerScripting ){
+	if(pPeerScripting){
 		delete pPeerScripting;
 	}
 	pPeerScripting = peer;
@@ -145,14 +145,14 @@ void deNetworkState::SetPeerScripting( deBaseScriptingNetworkState *peer ){
 // Linked List
 ////////////////
 
-void deNetworkState::SetParentWorld( deWorld *world ){
+void deNetworkState::SetParentWorld(deWorld *world){
 	pParentWorld = world;
 }
 
-void deNetworkState::SetLLWorldPrev( deNetworkState *networkState ){
+void deNetworkState::SetLLWorldPrev(deNetworkState *networkState){
 	pLLWorldPrev = networkState;
 }
 
-void deNetworkState::SetLLWorldNext( deNetworkState *networkState ){
+void deNetworkState::SetLLWorldNext(deNetworkState *networkState){
 	pLLWorldNext = networkState;
 }

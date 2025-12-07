@@ -52,19 +52,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *DESynthesizerCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *DESynthesizerCreateModule(deLoadableModule *loadableModule);
 #ifdef  __cplusplus
 }
 #endif
 #endif
 
-deBaseModule *DESynthesizerCreateModule( deLoadableModule *loadableModule ){
+deBaseModule *DESynthesizerCreateModule(deLoadableModule *loadableModule){
 	deBaseModule *module = NULL;
 	
 	try{
-		module = new deDESynthesizer( *loadableModule );
+		module = new deDESynthesizer(*loadableModule);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 	}
 	
 	return module;
@@ -78,25 +78,25 @@ deBaseModule *DESynthesizerCreateModule( deLoadableModule *loadableModule ){
 // Constructor, destructor
 ////////////////////////////
 
-deDESynthesizer::deDESynthesizer( deLoadableModule &loadableModule ) :
-deBaseSynthesizerModule( loadableModule ),
+deDESynthesizer::deDESynthesizer(deLoadableModule &loadableModule) :
+deBaseSynthesizerModule(loadableModule),
 
-pConfiguration( NULL ),
-pCommandExecuter( NULL ),
-pParameterList( NULL ),
+pConfiguration(NULL),
+pCommandExecuter(NULL),
+pParameterList(NULL),
 
-pDecodeBuffer( NULL ),
-pSharedBufferList( NULL ),
-pCaches( NULL )
+pDecodeBuffer(NULL),
+pSharedBufferList(NULL),
+pCaches(NULL)
 {
 	try{
-		pCommandExecuter = new desynCommandExecuter( *this );
-		pConfiguration = new desynConfiguration( *this );
+		pCommandExecuter = new desynCommandExecuter(*this);
+		pConfiguration = new desynConfiguration(*this);
 		
 		pParameterList = new desynParameterList;
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		throw;
 	}
 }
@@ -104,13 +104,13 @@ pCaches( NULL )
 deDESynthesizer::~deDESynthesizer(){
 	CleanUp();
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		delete pConfiguration;
 	}
-	if( pCommandExecuter ){
+	if(pCommandExecuter){
 		delete pCommandExecuter;
 	}
-	if( pParameterList ){
+	if(pParameterList){
 		delete pParameterList;
 	}
 }
@@ -122,45 +122,45 @@ deDESynthesizer::~deDESynthesizer(){
 
 bool deDESynthesizer::Init(){
 	try{
-		pCaches = new desynCaches( *this );
+		pCaches = new desynCaches(*this);
 		pConfiguration->LoadConfig();
-		pDecodeBuffer = new desynDecodeBuffer( ( 44100 / 10 ) * 4 );
+		pDecodeBuffer = new desynDecodeBuffer((44100 / 10) * 4);
 		pSharedBufferList = new desynSharedBufferList;
 		
-	}catch( const deException &e ){
-		LogException( e );
+	}catch(const deException &e){
+		LogException(e);
 		return false;
 	}
 	
 	// debug
 	/*
-	LogWarn( "" );
-	LogWarn( "*********************** DESynthesizer TODO ************************" );
-	LogWarn( "" );
-	LogWarn( "Chain and Sound Sources need Streaming Support." );
-	LogWarn( "" );
-	LogWarn( "*******************************************************************" );
-	LogWarn( "" );
+	LogWarn("");
+	LogWarn("*********************** DESynthesizer TODO ************************");
+	LogWarn("");
+	LogWarn("Chain and Sound Sources need Streaming Support.");
+	LogWarn("");
+	LogWarn("*******************************************************************");
+	LogWarn("");
 	*/
 	
 	return true;
 }
 
 void deDESynthesizer::CleanUp(){
-	if( pSharedBufferList ){
+	if(pSharedBufferList){
 		delete pSharedBufferList;
 		pSharedBufferList = NULL;
 	}
-	if( pDecodeBuffer ){
+	if(pDecodeBuffer){
 		delete pDecodeBuffer;
 		pDecodeBuffer = NULL;
 	}
 	
-	if( pConfiguration ){
+	if(pConfiguration){
 		pConfiguration->SaveConfig();
 	}
 	
-	if( pCaches ){
+	if(pCaches){
 		delete pCaches;
 		pCaches = NULL;
 	}
@@ -171,17 +171,17 @@ void deDESynthesizer::CleanUp(){
 // Synthesizer management
 ///////////////////////////
 
-deBaseSynthesizerSound *deDESynthesizer::CreateSound( deSound *sound ){
-	return new desynSound( *this, *sound );
+deBaseSynthesizerSound *deDESynthesizer::CreateSound(deSound *sound){
+	return new desynSound(*this, *sound);
 }
 
-deBaseSynthesizerSynthesizer *deDESynthesizer::CreateSynthesizer( deSynthesizer *synthesizer ){
-	return new desynSynthesizer( *this, *synthesizer );
+deBaseSynthesizerSynthesizer *deDESynthesizer::CreateSynthesizer(deSynthesizer *synthesizer){
+	return new desynSynthesizer(*this, *synthesizer);
 }
 
 deBaseSynthesizerSynthesizerInstance *deDESynthesizer::CreateSynthesizerInstance(
-deSynthesizerInstance *instance ){
-	return new desynSynthesizerInstance( *this, *instance );
+deSynthesizerInstance *instance){
+	return new desynSynthesizerInstance(*this, *instance);
 }
 
 
@@ -193,28 +193,28 @@ int deDESynthesizer::GetParameterCount() const{
 	return pParameterList->GetParameterCount();
 }
 
-void deDESynthesizer::GetParameterInfo( int index, deModuleParameter &info ) const{
-	info = pParameterList->GetParameterAt( index );
+void deDESynthesizer::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameterList->GetParameterAt(index);
 }
 
-int deDESynthesizer::IndexOfParameterNamed( const char *name ) const{
-	return pParameterList->IndexOfParameterNamed( name );
+int deDESynthesizer::IndexOfParameterNamed(const char *name) const{
+	return pParameterList->IndexOfParameterNamed(name);
 }
 
-decString deDESynthesizer::GetParameterValue( const char *name ) const{
-	return pParameterList->GetParameterNamed( name ).GetParameterValue();
+decString deDESynthesizer::GetParameterValue(const char *name) const{
+	return pParameterList->GetParameterNamed(name).GetParameterValue();
 }
 
-void deDESynthesizer::SetParameterValue( const char *name, const char *value ){
-	pParameterList->GetParameterNamed( name ).SetParameterValue( value );
+void deDESynthesizer::SetParameterValue(const char *name, const char *value){
+	pParameterList->GetParameterNamed(name).SetParameterValue(value);
 }
 
-void deDESynthesizer::SendCommand( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	if( pCommandExecuter ){
-		pCommandExecuter->ExecuteCommand( command, answer );
+void deDESynthesizer::SendCommand(const decUnicodeArgumentList &command, decUnicodeString &answer){
+	if(pCommandExecuter){
+		pCommandExecuter->ExecuteCommand(command, answer);
 		
 	}else{
-		answer.SetFromUTF8( "Internal Error!" );
+		answer.SetFromUTF8("Internal Error!");
 	}
 }
 

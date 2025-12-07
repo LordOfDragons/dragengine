@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPUndoHistory( igdeEnvironment &environment );
+	aeWPUndoHistory(igdeEnvironment &environment);
 	
 protected:
 	/** Clean up panel. */
@@ -59,10 +59,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pWorld; }
+	inline aeAnimator *GetAnimator() const{return pWorld;}
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	/*@}*/
 };
 

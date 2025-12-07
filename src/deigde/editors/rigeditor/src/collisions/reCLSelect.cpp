@@ -54,9 +54,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-reCLSelect::reCLSelect( reRig *rig ){
-	if( ! rig ){
-		DETHROW( deeInvalidParam );
+reCLSelect::reCLSelect(reRig *rig){
+	if(! rig){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pRig = rig;
@@ -76,23 +76,23 @@ reCLSelect::~reCLSelect(){
 // Management
 ///////////////
 
-void reCLSelect::SetToggleSelection( bool toggle ){
+void reCLSelect::SetToggleSelection(bool toggle){
 	pToggleSelection = toggle;
 }
 
-void reCLSelect::SetCanSelectBones( bool canSelect ){
+void reCLSelect::SetCanSelectBones(bool canSelect){
 	pCanSelectBones = canSelect;
 }
 
-void reCLSelect::SetCanSelectShapes( bool canSelect ){
+void reCLSelect::SetCanSelectShapes(bool canSelect){
 	pCanSelectShapes = canSelect;
 }
 
-void reCLSelect::SetCanSelectConstraints( bool canSelect ){
+void reCLSelect::SetCanSelectConstraints(bool canSelect){
 	pCanSelectConstraints = canSelect;
 }
 
-void reCLSelect::SetCanSelectPushes( bool canSelect ){
+void reCLSelect::SetCanSelectPushes(bool canSelect){
 	pCanSelectPushes = canSelect;
 }
 
@@ -103,8 +103,8 @@ void reCLSelect::Reset(){
 void reCLSelect::RunAction(){
 	pHitList.SortByDistance();
 	
-	if( pHitList.GetEntryCount() > 0 ){
-		reCLHitListEntry *entry = pHitList.GetEntryAt( 0 );
+	if(pHitList.GetEntryCount() > 0){
+		reCLHitListEntry *entry = pHitList.GetEntryAt(0);
 		reSelectionConstraints *selectionConstraints = pRig->GetSelectionConstraints();
 		reSelectionShapes *selectionShapes = pRig->GetSelectionShapes();
 		reSelectionPushes *selectionPushes = pRig->GetSelectionPushes();
@@ -115,57 +115,57 @@ void reCLSelect::RunAction(){
 		reRigPush *push = entry->GetPush();
 		
 		// toggle selection state of the hit element
-		if( pToggleSelection ){
-			if( constraint ){
-				if( constraint->GetSelected() ){
-					selectionConstraints->RemoveConstraint( constraint );
+		if(pToggleSelection){
+			if(constraint){
+				if(constraint->GetSelected()){
+					selectionConstraints->RemoveConstraint(constraint);
 					
 				}else{
-					selectionConstraints->AddConstraint( constraint );
+					selectionConstraints->AddConstraint(constraint);
 				}
 				
-			}else if( push ){
-				if( push->GetSelected() ){
-					selectionPushes->RemovePush( push );
+			}else if(push){
+				if(push->GetSelected()){
+					selectionPushes->RemovePush(push);
 					
 				}else{
-					selectionPushes->AddPush( push );
+					selectionPushes->AddPush(push);
 				}
 				
-			}else if( shape ){
-				if( shape->GetSelected() ){
-					selectionShapes->RemoveShape( shape );
+			}else if(shape){
+				if(shape->GetSelected()){
+					selectionShapes->RemoveShape(shape);
 					
 				}else{
-					selectionShapes->AddShape( shape );
+					selectionShapes->AddShape(shape);
 				}
 				
-			}else if( bone ){
-				if( bone->GetSelected() ){
-					selectionBones->RemoveBone( bone );
+			}else if(bone){
+				if(bone->GetSelected()){
+					selectionBones->RemoveBone(bone);
 					
 				}else{
-					selectionBones->AddBone( bone );
+					selectionBones->AddBone(bone);
 				}
 			}
 			
 		// switch to the hit element
 		}else{
-			if( constraint ){
+			if(constraint){
 				selectionConstraints->RemoveAllConstraints();
-				selectionConstraints->AddConstraint( constraint );
+				selectionConstraints->AddConstraint(constraint);
 				
-			}else if( push ){
+			}else if(push){
 				selectionPushes->RemoveAllPushes();
-				selectionPushes->AddPush( push );
+				selectionPushes->AddPush(push);
 				
-			}else if( shape ){
+			}else if(shape){
 				selectionShapes->RemoveAllShapes();
-				selectionShapes->AddShape( shape );
+				selectionShapes->AddShape(shape);
 				
-			}else if( bone ){
+			}else if(bone){
 				selectionBones->RemoveAllBones();
-				selectionBones->AddBone( bone );
+				selectionBones->AddBone(bone);
 			}
 		}
 	}
@@ -176,10 +176,10 @@ void reCLSelect::RunAction(){
 // Notifications
 //////////////////
 
-void reCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
+void reCLSelect::CollisionResponse(deCollider *owner, deCollisionInfo *info){
 	reCLHitListEntry *entry = NULL;
 	
-	if( info->IsCollider() ){
+	if(info->IsCollider()){
 		deCollider *collider = info->GetCollider();
 		reRigConstraint *constraint = NULL;
 		reRigShape *shape = NULL;
@@ -188,91 +188,91 @@ void reCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 		deColliderVisitorIdentify identify;
 		
 		// add hit object
-		collider->Visit( identify );
-		if( identify.IsVolume() ){
+		collider->Visit(identify);
+		if(identify.IsVolume()){
 			deColliderVolume *colliderVolume = &identify.CastToVolume();
 			
 			//if( pCanSelectBones ){
-				bone = pGetBoneFromCollider( colliderVolume );
+				bone = pGetBoneFromCollider(colliderVolume);
 				
-				if( bone ){
+				if(bone){
 					try{
 						entry = new reCLHitListEntry;
-						if( ! entry ) DETHROW( deeOutOfMemory );
+						if(! entry) DETHROW(deeOutOfMemory);
 						
-						entry->SetBone( bone );
-						entry->SetDistance( info->GetDistance() );
-						entry->SetNormal( info->GetNormal() );
+						entry->SetBone(bone);
+						entry->SetDistance(info->GetDistance());
+						entry->SetNormal(info->GetNormal());
 						
-						pHitList.AddEntry( entry );
+						pHitList.AddEntry(entry);
 						entry = NULL;
 						
-					}catch( const deException & ){
-						if( entry ) delete entry;
+					}catch(const deException &){
+						if(entry) delete entry;
 						throw;
 					}
 				}
 			//}
 			
 			//if( pCanSelectShapes ){
-				shape = pGetShapeFromCollider( colliderVolume );
+				shape = pGetShapeFromCollider(colliderVolume);
 				
-				if( shape ){
+				if(shape){
 					try{
 						entry = new reCLHitListEntry;
-						if( ! entry ) DETHROW( deeOutOfMemory );
+						if(! entry) DETHROW(deeOutOfMemory);
 						
-						entry->SetShape( shape );
-						entry->SetDistance( info->GetDistance() );
-						entry->SetNormal( info->GetNormal() );
+						entry->SetShape(shape);
+						entry->SetDistance(info->GetDistance());
+						entry->SetNormal(info->GetNormal());
 						
-						pHitList.AddEntry( entry );
+						pHitList.AddEntry(entry);
 						entry = NULL;
 						
-					}catch( const deException & ){
-						if( entry ) delete entry;
+					}catch(const deException &){
+						if(entry) delete entry;
 						throw;
 					}
 				}
 			//}
 			
 			//if( pCanSelectPushes ){
-				push = pGetPushFromCollider( colliderVolume );
+				push = pGetPushFromCollider(colliderVolume);
 				
-				if( push ){
+				if(push){
 					try{
 						entry = new reCLHitListEntry;
-						if( ! entry ) DETHROW( deeOutOfMemory );
-						entry->SetPush( push );
-						entry->SetDistance( info->GetDistance() );
-						entry->SetNormal( info->GetNormal() );
+						if(! entry) DETHROW(deeOutOfMemory);
+						entry->SetPush(push);
+						entry->SetDistance(info->GetDistance());
+						entry->SetNormal(info->GetNormal());
 						
-						pHitList.AddEntry( entry );
+						pHitList.AddEntry(entry);
 						entry = NULL;
 						
-					}catch( const deException & ){
-						if( entry ) delete entry;
+					}catch(const deException &){
+						if(entry) delete entry;
 						throw;
 					}
 				}
 			//}
 			
 			//if( pCanSelectConstraints ){
-				constraint = pGetConstraintFromCollider( colliderVolume );
+				constraint = pGetConstraintFromCollider(colliderVolume);
 				
-				if( constraint ){
+				if(constraint){
 					try{
 						entry = new reCLHitListEntry;
-						if( ! entry ) DETHROW( deeOutOfMemory );
-						entry->SetConstraint( constraint );
-						entry->SetDistance( info->GetDistance() );
-						entry->SetNormal( info->GetNormal() );
+						if(! entry) DETHROW(deeOutOfMemory);
+						entry->SetConstraint(constraint);
+						entry->SetDistance(info->GetDistance());
+						entry->SetNormal(info->GetNormal());
 						
-						pHitList.AddEntry( entry );
+						pHitList.AddEntry(entry);
 						entry = NULL;
 						
-					}catch( const deException & ){
-						if( entry ) delete entry;
+					}catch(const deException &){
+						if(entry) delete entry;
 						throw;
 					}
 				}
@@ -281,26 +281,26 @@ void reCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 	}
 }
 
-bool reCLSelect::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool reCLSelect::CanHitCollider(deCollider *owner, deCollider *collider){
 	deColliderVisitorIdentify identify;
 	
-	collider->Visit( identify );
-	if( identify.IsVolume() ){
+	collider->Visit(identify);
+	if(identify.IsVolume()){
 		deColliderVolume *colliderVolume = &identify.CastToVolume();
 		
-		if( pCanSelectBones && pGetBoneFromCollider( colliderVolume ) ){
+		if(pCanSelectBones && pGetBoneFromCollider(colliderVolume)){
 			return true;
 		}
 		
-		if( pCanSelectShapes && pGetShapeFromCollider( colliderVolume ) ){
+		if(pCanSelectShapes && pGetShapeFromCollider(colliderVolume)){
 			return true;
 		}
 		
-		if( pCanSelectConstraints && pGetConstraintFromCollider( colliderVolume ) ){
+		if(pCanSelectConstraints && pGetConstraintFromCollider(colliderVolume)){
 			return true;
 		}
 		
-		if( pCanSelectPushes && pGetPushFromCollider( colliderVolume ) ){
+		if(pCanSelectPushes && pGetPushFromCollider(colliderVolume)){
 			return true;
 		}
 	}
@@ -308,7 +308,7 @@ bool reCLSelect::CanHitCollider( deCollider *owner, deCollider *collider ){
 	return false;
 }
 
-void reCLSelect::ColliderChanged( deCollider *owner ){
+void reCLSelect::ColliderChanged(deCollider *owner){
 }
 
 
@@ -316,46 +316,46 @@ void reCLSelect::ColliderChanged( deCollider *owner ){
 // Private Functions
 //////////////////////
 
-reRigBone *reCLSelect::pGetBoneFromCollider( deColliderVolume *collider ) const{
-	return pRig->GetBoneWith( collider );
+reRigBone *reCLSelect::pGetBoneFromCollider(deColliderVolume *collider) const{
+	return pRig->GetBoneWith(collider);
 }
 
-reRigShape *reCLSelect::pGetShapeFromCollider( deColliderVolume *collider ) const{
+reRigShape *reCLSelect::pGetShapeFromCollider(deColliderVolume *collider) const{
 	int b, boneCount = pRig->GetBoneCount();
 	reRigShape *shape = NULL;
 	
 	// check if a rig shape belongs to this collider
-	shape = pRig->GetShapeWith( collider );
-	if( shape ) return shape;
+	shape = pRig->GetShapeWith(collider);
+	if(shape) return shape;
 	
 	// check if a bone shape belongs to this collider
-	for( b=0; b<boneCount; b++ ){
-		shape = pRig->GetBoneAt( b )->GetShapeWith( collider );
-		if( shape ) return shape;
+	for(b=0; b<boneCount; b++){
+		shape = pRig->GetBoneAt(b)->GetShapeWith(collider);
+		if(shape) return shape;
 	}
 	
 	// otherwise no shape belongs to this collider
 	return NULL;
 }
 
-reRigConstraint *reCLSelect::pGetConstraintFromCollider( deColliderVolume *collider ) const{
+reRigConstraint *reCLSelect::pGetConstraintFromCollider(deColliderVolume *collider) const{
 	int b, boneCount = pRig->GetBoneCount();
 	reRigConstraint *constraint = NULL;
 	
 	// check if a rig constraint belongs to this collider
-	constraint = pRig->GetConstraintWith( collider );
-	if( constraint ) return constraint;
+	constraint = pRig->GetConstraintWith(collider);
+	if(constraint) return constraint;
 	
 	// check if a bone constraint belongs to this collider
-	for( b=0; b<boneCount; b++ ){
-		constraint = pRig->GetBoneAt( b )->GetConstraintWith( collider );
-		if( constraint ) return constraint;
+	for(b=0; b<boneCount; b++){
+		constraint = pRig->GetBoneAt(b)->GetConstraintWith(collider);
+		if(constraint) return constraint;
 	}
 	
 	// otherwise no constraint belongs to this collider
 	return NULL;
 }
 
-reRigPush *reCLSelect::pGetPushFromCollider( deColliderVolume *collider ) const{
-	return pRig->GetPushWith( collider );
+reRigPush *reCLSelect::pGetPushFromCollider(deColliderVolume *collider) const{
+	return pRig->GetPushWith(collider);
 }

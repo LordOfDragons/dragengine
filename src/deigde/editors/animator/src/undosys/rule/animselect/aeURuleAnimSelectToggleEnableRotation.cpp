@@ -40,21 +40,21 @@
 ////////////////////////////
 
 aeURuleAnimSelectToggleEnableRotation::aeURuleAnimSelectToggleEnableRotation(
-aeRuleAnimationSelect *rule ) :
-pRule( NULL )
+aeRuleAnimationSelect *rule) :
+pRule(NULL)
 {
-	if( ! rule ){
-		DETHROW( deeInvalidParam );
+	if(! rule){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Rule animation select toggle enable rotation" );
+	SetShortInfo("Rule animation select toggle enable rotation");
 	
 	pRule = rule;
 	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnableRotation::~aeURuleAnimSelectToggleEnableRotation(){
-	if( pRule ){
+	if(pRule){
 		pRule->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ aeURuleAnimSelectToggleEnableRotation::~aeURuleAnimSelectToggleEnableRotation(){
 ///////////////
 
 void aeURuleAnimSelectToggleEnableRotation::Undo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
 }
 
 void aeURuleAnimSelectToggleEnableRotation::Redo(){
-	pRule->SetEnableOrientation( ! pRule->GetEnableOrientation() );
+	pRule->SetEnableOrientation(! pRule->GetEnableOrientation());
 }

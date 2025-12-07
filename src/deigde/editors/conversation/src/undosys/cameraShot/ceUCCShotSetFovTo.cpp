@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetFovTo::ceUCCShotSetFovTo( ceCameraShot *cameraShot, float newFov ){
-	if( ! cameraShot ) DETHROW( deeInvalidParam );
+ceUCCShotSetFovTo::ceUCCShotSetFovTo(ceCameraShot *cameraShot, float newFov){
+	if(! cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
 	
-	SetShortInfo( "Camera Shot Set End Fov" );
+	SetShortInfo("Camera Shot Set End Fov");
 	
 	pOldFov = cameraShot->GetFovTo();
 	pNewFov = newFov;
@@ -54,7 +54,7 @@ ceUCCShotSetFovTo::ceUCCShotSetFovTo( ceCameraShot *cameraShot, float newFov ){
 }
 
 ceUCCShotSetFovTo::~ceUCCShotSetFovTo(){
-	if( pCameraShot ){
+	if(pCameraShot){
 		pCameraShot->FreeReference();
 	}
 }
@@ -65,9 +65,9 @@ ceUCCShotSetFovTo::~ceUCCShotSetFovTo(){
 ///////////////
 
 void ceUCCShotSetFovTo::Undo(){
-	pCameraShot->SetFovTo( pOldFov );
+	pCameraShot->SetFovTo(pOldFov);
 }
 
 void ceUCCShotSetFovTo::Redo(){
-	pCameraShot->SetFovTo( pNewFov );
+	pCameraShot->SetFovTo(pNewFov);
 }

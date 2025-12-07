@@ -53,7 +53,7 @@ deoglTransformVolume::deoglTransformVolume(){
 	pVolume = NULL;
 	
 	pDirtyMatrix = false;
-	pScaling.Set( 1.0f, 1.0f, 1.0f );
+	pScaling.Set(1.0f, 1.0f, 1.0f);
 }
 
 deoglTransformVolume::~deoglTransformVolume(){
@@ -65,17 +65,17 @@ deoglTransformVolume::~deoglTransformVolume(){
 // Management
 ///////////////
 
-void deoglTransformVolume::SetTranslation( const decDVector &translation ){
+void deoglTransformVolume::SetTranslation(const decDVector &translation){
 	pTranslation = translation;
 	pDirtyMatrix = true;
 }
 
-void deoglTransformVolume::SetRotation( const decQuaternion &rotation ){
+void deoglTransformVolume::SetRotation(const decQuaternion &rotation){
 	pRotation = rotation;
 	pDirtyMatrix = true;
 }
 
-void deoglTransformVolume::SetScaling( const decVector &scaling ){
+void deoglTransformVolume::SetScaling(const decVector &scaling){
 	pScaling = scaling;
 }
 
@@ -84,9 +84,9 @@ void deoglTransformVolume::SetScaling( const decVector &scaling ){
 // Convenience Function
 /////////////////////////
 
-deoglDCollisionVolume *deoglTransformVolume::GetVolumeFor( deoglDCollisionVolume *volume ){
-	if( ! volume ) DETHROW( deeInvalidParam );
-	volume->Visit( this );
+deoglDCollisionVolume *deoglTransformVolume::GetVolumeFor(deoglDCollisionVolume *volume){
+	if(! volume) DETHROW(deeInvalidParam);
+	volume->Visit(this);
 	return pVolume;
 }
 
@@ -95,116 +95,116 @@ deoglDCollisionVolume *deoglTransformVolume::GetVolumeFor( deoglDCollisionVolume
 // Visiting
 /////////////
 
-void deoglTransformVolume::VisitSphere( deoglDCollisionSphere *sphere ){
-	if( ! pSphere ){
+void deoglTransformVolume::VisitSphere(deoglDCollisionSphere *sphere){
+	if(! pSphere){
 		pSphere = new deoglDCollisionSphere;
-		if( ! pSphere ) DETHROW( deeOutOfMemory );
+		if(! pSphere) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
 	
-	pSphere->SetCenter( pMatrix * sphere->GetCenter() );
-	pSphere->SetRadius( sphere->GetRadius() );
+	pSphere->SetCenter(pMatrix * sphere->GetCenter());
+	pSphere->SetRadius(sphere->GetRadius());
 	
 	pVolume = pSphere;
 }
 
-void deoglTransformVolume::VisitCylinder( deoglDCollisionCylinder *cylinder ){
-	if( ! pCylinder ){
+void deoglTransformVolume::VisitCylinder(deoglDCollisionCylinder *cylinder){
+	if(! pCylinder){
 		pCylinder = new deoglDCollisionCylinder;
-		if( ! pCylinder ) DETHROW( deeOutOfMemory );
+		if(! pCylinder) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
 	
-	pCylinder->SetPosition( pMatrix * cylinder->GetPosition() );
-	pCylinder->SetOrientation( ( decDMatrix::CreateFromQuaternion( cylinder->GetOrientation() ) * pMatrix ).ToQuaternion() );
-	pCylinder->SetHalfHeight( cylinder->GetHalfHeight() );
-	pCylinder->SetTopRadius( cylinder->GetTopRadius() );
-	pCylinder->SetBottomRadius( cylinder->GetBottomRadius() );
+	pCylinder->SetPosition(pMatrix * cylinder->GetPosition());
+	pCylinder->SetOrientation((decDMatrix::CreateFromQuaternion(cylinder->GetOrientation()) * pMatrix).ToQuaternion());
+	pCylinder->SetHalfHeight(cylinder->GetHalfHeight());
+	pCylinder->SetTopRadius(cylinder->GetTopRadius());
+	pCylinder->SetBottomRadius(cylinder->GetBottomRadius());
 	
 	pVolume = pCylinder;
 }
 
-void deoglTransformVolume::VisitCapsule( deoglDCollisionCapsule *capsule ){
-	if( ! pCapsule ){
+void deoglTransformVolume::VisitCapsule(deoglDCollisionCapsule *capsule){
+	if(! pCapsule){
 		pCapsule = new deoglDCollisionCapsule;
-		if( ! pCapsule ) DETHROW( deeOutOfMemory );
+		if(! pCapsule) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
 	
-	pCapsule->SetPosition( pMatrix * capsule->GetPosition() );
-	pCapsule->SetOrientation( ( decDMatrix::CreateFromQuaternion( capsule->GetOrientation() ) * pMatrix ).ToQuaternion() );
-	pCapsule->SetHalfHeight( capsule->GetHalfHeight() );
-	pCapsule->SetTopRadius( capsule->GetTopRadius() );
-	pCapsule->SetBottomRadius( capsule->GetBottomRadius() );
+	pCapsule->SetPosition(pMatrix * capsule->GetPosition());
+	pCapsule->SetOrientation((decDMatrix::CreateFromQuaternion(capsule->GetOrientation()) * pMatrix).ToQuaternion());
+	pCapsule->SetHalfHeight(capsule->GetHalfHeight());
+	pCapsule->SetTopRadius(capsule->GetTopRadius());
+	pCapsule->SetBottomRadius(capsule->GetBottomRadius());
 	
 	pVolume = pCapsule;
 }
 
-void deoglTransformVolume::VisitBox( deoglDCollisionBox *box ){
-	if( ! pBox ){
+void deoglTransformVolume::VisitBox(deoglDCollisionBox *box){
+	if(! pBox){
 		pBox = new deoglDCollisionBox;
-		if( ! pBox ) DETHROW( deeOutOfMemory );
+		if(! pBox) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
 	
-	pBox->SetCenter( pMatrix * box->GetCenter() );
-	pBox->SetHalfSize( box->GetHalfSize() );
-	pBox->SetOrientation( ( decDMatrix::CreateFromQuaternion( box->GetOrientation() ) * pMatrix ).ToQuaternion() );
+	pBox->SetCenter(pMatrix * box->GetCenter());
+	pBox->SetHalfSize(box->GetHalfSize());
+	pBox->SetOrientation((decDMatrix::CreateFromQuaternion(box->GetOrientation()) * pMatrix).ToQuaternion());
 	
 	pVolume = pBox;
 }
 
-void deoglTransformVolume::VisitTriangle( deoglDCollisionTriangle *triangle ){
-	if( ! pTriangle ){
+void deoglTransformVolume::VisitTriangle(deoglDCollisionTriangle *triangle){
+	if(! pTriangle){
 		pTriangle = new deoglDCollisionTriangle;
-		if( ! pTriangle ) DETHROW( deeOutOfMemory );
+		if(! pTriangle) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
 	
-	pTriangle->SetCorners( pMatrix * triangle->GetCorner1(), pMatrix * triangle->GetCorner2(),
-			pMatrix * triangle->GetCorner3() );
+	pTriangle->SetCorners(pMatrix * triangle->GetCorner1(), pMatrix * triangle->GetCorner2(),
+			pMatrix * triangle->GetCorner3());
 	
 	pVolume = pTriangle;
 }
 
-void deoglTransformVolume::VisitFrustum( deoglDCollisionFrustum *frustum ){
-	if( ! pFrustum ){
+void deoglTransformVolume::VisitFrustum(deoglDCollisionFrustum *frustum){
+	if(! pFrustum){
 		pFrustum = new deoglDCollisionFrustum;
-		if( ! pFrustum ) DETHROW( deeOutOfMemory );
+		if(! pFrustum) DETHROW(deeOutOfMemory);
 	}
 	
 	pUpdateMatrix();
 	
 	decDVector normal, position;
 	
-	position = pMatrix * ( frustum->GetLeftNormal() * -frustum->GetLeftDistance() );
-	normal = pMatrix.TransformNormal( frustum->GetLeftNormal() );
-	pFrustum->SetLeftPlane( normal, -( normal * position ) );
+	position = pMatrix * (frustum->GetLeftNormal() * -frustum->GetLeftDistance());
+	normal = pMatrix.TransformNormal(frustum->GetLeftNormal());
+	pFrustum->SetLeftPlane(normal, -(normal * position));
 	
-	position = pMatrix * ( frustum->GetRightNormal() * -frustum->GetRightDistance() );
-	normal = pMatrix.TransformNormal( frustum->GetRightNormal() );
-	pFrustum->SetRightPlane( normal, -( normal * position ) );
+	position = pMatrix * (frustum->GetRightNormal() * -frustum->GetRightDistance());
+	normal = pMatrix.TransformNormal(frustum->GetRightNormal());
+	pFrustum->SetRightPlane(normal, -(normal * position));
 	
-	position = pMatrix * ( frustum->GetTopNormal() * -frustum->GetTopDistance() );
-	normal = pMatrix.TransformNormal( frustum->GetTopNormal() );
-	pFrustum->SetTopPlane( normal, -( normal * position ) );
+	position = pMatrix * (frustum->GetTopNormal() * -frustum->GetTopDistance());
+	normal = pMatrix.TransformNormal(frustum->GetTopNormal());
+	pFrustum->SetTopPlane(normal, -(normal * position));
 	
-	position = pMatrix * ( frustum->GetBottomNormal() * -frustum->GetBottomDistance() );
-	normal = pMatrix.TransformNormal( frustum->GetBottomNormal() );
-	pFrustum->SetBottomPlane( normal, -( normal * position ) );
+	position = pMatrix * (frustum->GetBottomNormal() * -frustum->GetBottomDistance());
+	normal = pMatrix.TransformNormal(frustum->GetBottomNormal());
+	pFrustum->SetBottomPlane(normal, -(normal * position));
 	
-	position = pMatrix * ( frustum->GetNearNormal() * -frustum->GetNearDistance() );
-	normal = pMatrix.TransformNormal( frustum->GetNearNormal() );
-	pFrustum->SetNearPlane( normal, -( normal * position ) );
+	position = pMatrix * (frustum->GetNearNormal() * -frustum->GetNearDistance());
+	normal = pMatrix.TransformNormal(frustum->GetNearNormal());
+	pFrustum->SetNearPlane(normal, -(normal * position));
 	
-	position = pMatrix * ( frustum->GetFarNormal() * -frustum->GetFarDistance() );
-	normal = pMatrix.TransformNormal( frustum->GetFarNormal() );
-	pFrustum->SetFarPlane( normal, -( normal * position ) );
+	position = pMatrix * (frustum->GetFarNormal() * -frustum->GetFarDistance());
+	normal = pMatrix.TransformNormal(frustum->GetFarNormal());
+	pFrustum->SetFarPlane(normal, -(normal * position));
 	
 	pVolume = pFrustum;
 }
@@ -215,17 +215,17 @@ void deoglTransformVolume::VisitFrustum( deoglDCollisionFrustum *frustum ){
 //////////////////////
 
 void deoglTransformVolume::pCleanUp(){
-	if( pFrustum ) delete pFrustum;
-	if( pTriangle ) delete pTriangle;
-	if( pBox ) delete pBox;
-	if( pCapsule ) delete pCapsule;
-	if( pCylinder ) delete pCylinder;
-	if( pSphere ) delete pSphere;
+	if(pFrustum) delete pFrustum;
+	if(pTriangle) delete pTriangle;
+	if(pBox) delete pBox;
+	if(pCapsule) delete pCapsule;
+	if(pCylinder) delete pCylinder;
+	if(pSphere) delete pSphere;
 }
 
 void deoglTransformVolume::pUpdateMatrix(){
-	if( pDirtyMatrix ){
-		pMatrix.SetWorld( pTranslation, pRotation );
+	if(pDirtyMatrix){
+		pMatrix.SetWorld(pTranslation, pRotation);
 		pDirtyMatrix = false;
 	}
 }

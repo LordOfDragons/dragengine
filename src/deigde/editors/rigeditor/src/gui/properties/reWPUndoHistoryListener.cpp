@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-reWPUndoHistoryListener::reWPUndoHistoryListener( reWPUndoHistory &panel ) :
-pPanel( panel ){
+reWPUndoHistoryListener::reWPUndoHistoryListener(reWPUndoHistory &panel) :
+pPanel(panel){
 }
 
 reWPUndoHistoryListener::~reWPUndoHistoryListener(){
@@ -51,6 +51,6 @@ reWPUndoHistoryListener::~reWPUndoHistoryListener(){
 // Management
 ///////////////
 
-void reWPUndoHistoryListener::UndoChanged( reRig *rig ){
+void reWPUndoHistoryListener::UndoChanged(reRig *rig){
     pPanel.UpdateUndo();
 }

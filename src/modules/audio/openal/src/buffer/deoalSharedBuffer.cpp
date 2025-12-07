@@ -38,13 +38,13 @@
 ////////////////////////////
 
 deoalSharedBuffer::deoalSharedBuffer() :
-pBuffer( NULL ),
-pSize( 0 ),
-pInUse( false ){
+pBuffer(NULL),
+pSize(0),
+pInUse(false){
 }
 
 deoalSharedBuffer::~deoalSharedBuffer(){
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 	}
 }
@@ -54,23 +54,23 @@ deoalSharedBuffer::~deoalSharedBuffer(){
 // Management
 ///////////////
 
-void deoalSharedBuffer::SetSize( int size ){
-	if( size < 0 ){
-		DETHROW( deeInvalidParam );
+void deoalSharedBuffer::SetSize(int size){
+	if(size < 0){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pBuffer ){
+	if(pBuffer){
 		delete [] pBuffer;
 		pBuffer = NULL;
 		pSize = 0;
 	}
 	
-	if( size > 0 ){
-		pBuffer = new float[ size ];
+	if(size > 0){
+		pBuffer = new float[size];
 		pSize = size;
 	}
 }
 
-void deoalSharedBuffer::SetInUse( bool inUse ){
+void deoalSharedBuffer::SetInUse(bool inUse){
 	pInUse = inUse;
 }

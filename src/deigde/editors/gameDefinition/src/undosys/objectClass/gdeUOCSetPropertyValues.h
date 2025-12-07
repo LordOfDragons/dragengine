@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetPropertyValues( gdeObjectClass *objectClass, const decStringDictionary &newValues );
+	gdeUOCSetPropertyValues(gdeObjectClass *objectClass, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -49,8 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create task. */
-	deoglRPTSkyLightBuildRT( deoglRenderPlanSkyLight &plan,
-		deoglCollideList &tempCollideList, int fromLayer, int toLayer );
+	deoglRPTSkyLightBuildRT(deoglRenderPlanSkyLight &plan,
+		deoglCollideList &tempCollideList, int fromLayer, int toLayer);
 	
 	/** Clean up task. */
 	virtual ~deoglRPTSkyLightBuildRT();
@@ -70,16 +70,16 @@ public:
 	virtual decString GetDebugName() const;
 	
 	/** Information for updating render task. */
-	inline float GetElapsedTime() const{ return pElapsedTime; }
+	inline float GetElapsedTime() const{return pElapsedTime;}
 	
 	/** Finished semaphore. */
-	inline deSemaphore &GetSemaphore(){ return pSemaphore; }
+	inline deSemaphore &GetSemaphore(){return pSemaphore;}
 	/*@}*/
 	
 	
 	
 private:
-	void pFilter( int layerIndex );
+	void pFilter(int layerIndex);
 };
 
 #endif

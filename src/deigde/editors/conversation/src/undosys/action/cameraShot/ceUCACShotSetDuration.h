@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCACShotSetDuration( ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration );
+	ceUCACShotSetDuration(ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCACShotSetDuration();

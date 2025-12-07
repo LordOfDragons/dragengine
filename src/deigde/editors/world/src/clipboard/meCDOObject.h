@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object clip data. */
-	meCDOObject( const meObject &object );
+	meCDOObject(const meObject &object);
 	
 	/** \brief Clean up object data object. */
 	~meCDOObject();
@@ -70,37 +70,37 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Classname. */
-	inline const decString &GetClassname() const{ return pClassname; }
+	inline const decString &GetClassname() const{return pClassname;}
 	
 	/** \brief Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** \brief Rotation. */
-	inline const decVector &GetRotation() const{ return pRotation; }
+	inline const decVector &GetRotation() const{return pRotation;}
 	
 	/** \brief Scale. */
-	inline const decVector &GetScale() const{ return pScale; }
+	inline const decVector &GetScale() const{return pScale;}
 	
 	/** \brief Properties. */
-	inline const decStringDictionary &GetProperties() const{ return pProperties; }
+	inline const decStringDictionary &GetProperties() const{return pProperties;}
 	
 	/** \brief Textures. */
-	inline const meObjectTextureList &GetTextures() const{ return pTextures; }
+	inline const meObjectTextureList &GetTextures() const{return pTextures;}
 	
 	/** \brief Attach to index or -1 if not attached to an object. */
-	inline int GetAttachToIndex() const{ return pAttachToIndex; }
+	inline int GetAttachToIndex() const{return pAttachToIndex;}
 	
 	/** \brief Set attach to index or -1 if not attached to an object. */
-	void SetAttachToIndex( int index );
+	void SetAttachToIndex(int index);
 	
 	/** \brief Attach to ID in hex string format or empty string  if not attached. */
-	inline const decString &GetAttachToID() const{ return pAttachToID; }
+	inline const decString &GetAttachToID() const{return pAttachToID;}
 	
 	/** \brief Set attach to ID in hex string format or empty string  if not attached. */
-	void SetAttachToID( const char *id );
+	void SetAttachToID(const char *id);
 	
 	/** \brief Update object with stored data. */
-	void UpdateObject( meObject &object ) const;
+	void UpdateObject(meObject &object) const;
 	/*@}*/
 };
 

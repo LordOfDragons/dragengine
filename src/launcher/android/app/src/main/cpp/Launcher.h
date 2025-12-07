@@ -12,7 +12,7 @@ public:
     explicit Launcher(const sConfig &config);
     ~Launcher() override;
 
-    [[nodiscard]] inline const FDVFSContainer::Ref &GetFDContainer() const{ return pFDContainer; }
+    [[nodiscard]] inline const FDVFSContainer::Ref &GetFDContainer() const{return pFDContainer;}
 
     delGameList ReadDelgaGames(const decString &path);
 

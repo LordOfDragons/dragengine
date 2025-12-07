@@ -58,7 +58,7 @@ public:
 		deoglRParticleEmitterInstance *emitterInstance;
 		int type;
 		int particle;
-		signed char ribbonLine[ 3 ];
+		signed char ribbonLine[3];
 		unsigned char renderType;
 	};
 	
@@ -73,9 +73,9 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRParticleEmitterInstance &pEmitter;
 	public:
-		WorldComputeElement( deoglRParticleEmitterInstance &emitter );
-		virtual void UpdateData( sDataElement &data ) const;
-		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+		WorldComputeElement(deoglRParticleEmitterInstance &emitter);
+		virtual void UpdateData(sDataElement &data) const;
+		virtual void UpdateDataGeometries(sDataElementGeometry *data) const;
 	};
 	
 	
@@ -129,7 +129,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render emitter instance. */
-	deoglRParticleEmitterInstance( deoglRenderThread &renderThread );
+	deoglRParticleEmitterInstance(deoglRenderThread &renderThread);
 	
 	/** Clean up render emitter instance. */
 	virtual ~deoglRParticleEmitterInstance();
@@ -140,31 +140,31 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	
 	
 	/** Emitter or \em NULL if not set. */
-	inline deoglRParticleEmitter *GetEmitter() const{ return pEmitter; }
+	inline deoglRParticleEmitter *GetEmitter() const{return pEmitter;}
 	
 	/** Set emitter or \em NULL if not set. */
-	void SetEmitter( deoglRParticleEmitter *emitter );
+	void SetEmitter(deoglRParticleEmitter *emitter);
 	
 	
 	
 	/** Parent world. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline deoglRWorld *GetParentWorld() const{return pParentWorld;}
 	
 	/** Set parent world. */
-	void SetParentWorld( deoglRWorld *world );
+	void SetParentWorld(deoglRWorld *world);
 	
 	
 	
 	/** Octree node or \em NULL if there is none. */
-	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
+	inline deoglWorldOctree *GetOctreeNode() const{return pOctreeNode;}
 	
 	/** Set octree node or \em NULL if there is none. */
-	void SetOctreeNode( deoglWorldOctree *node );
+	void SetOctreeNode(deoglWorldOctree *node);
 	
 	/** Update octree node. */
 	void UpdateOctreeNode();
@@ -172,28 +172,28 @@ public:
 	
 	
 	/** Burst time. */
-	inline float GetBurstTime() const{ return pBurstTime; }
+	inline float GetBurstTime() const{return pBurstTime;}
 	
 	/** Set burst time. */
-	void SetBurstTime( float burstTime );
+	void SetBurstTime(float burstTime);
 	
 	/** Position. */
-	inline const decDVector &GetPosition() const{ return pPosition; }
+	inline const decDVector &GetPosition() const{return pPosition;}
 	
 	/** Set position. */
-	void SetPosition( const decDVector &position );
+	void SetPosition(const decDVector &position);
 	
 	/** Reference position. */
-	inline const decDVector &GetReferencePosition() const{ return pReferencePosition; }
+	inline const decDVector &GetReferencePosition() const{return pReferencePosition;}
 	
 	/** Set reference position. */
-	void SetReferencePosition( const decDVector &position );
+	void SetReferencePosition(const decDVector &position);
 	
 	/** Layer mask. */
-	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
+	inline const decLayerMask &GetLayerMask() const{return pLayerMask;}
 	
 	/** Set layer mask. */
-	void SetLayerMask( const decLayerMask &layerMask );
+	void SetLayerMask(const decLayerMask &layerMask);
 	
 	
 	
@@ -203,26 +203,26 @@ public:
 	
 	
 	/** VAO. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline deoglVAO *GetVAO() const{return pVAO;}
 	
 	
 	
 	/** Minimum extend. */
-	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
+	inline const decDVector &GetMinExtend() const{return pMinExtend;}
 	
 	/** Maximum extend. */
-	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
+	inline const decDVector &GetMaxExtend() const{return pMaxExtend;}
 	
 	/** Update extends. */
-	void UpdateExtends( const deParticleEmitterInstance &instance );
+	void UpdateExtends(const deParticleEmitterInstance &instance);
 	
 	
 	
 	/** Render environment map or \em NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline deoglEnvironmentMap *GetRenderEnvMap() const{return pRenderEnvMap;}
 	
 	/** Set render environment map or \em NULL if not assigned yet. */
-	void SetRenderEnvMap( deoglEnvironmentMap *envmap );
+	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	
 	
@@ -236,7 +236,7 @@ public:
 	void InvalidateRenderEnvMap();
 	
 	/** Invalidates the render environment map. */
-	void InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap );
+	void InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap);
 	
 	/** World reference point changed. */
 	void WorldReferencePointChanged();
@@ -249,8 +249,8 @@ public:
 	
 	
 	/** Compute shader octree index. */
-	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
-	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
+	inline uint32_t GetCSOctreeIndex() const{return pCSOctreeIndex;}
+	void SetCSOctreeIndex(uint32_t index){pCSOctreeIndex = index;}
 	/*@}*/
 	
 	
@@ -258,13 +258,13 @@ public:
 	/** \name Particles. */
 	/*@{*/
 	/** Particles. */
-	inline const sParticle *GetParticles() const{ return pParticles; }
+	inline const sParticle *GetParticles() const{return pParticles;}
 	
 	/** Number of particles. */
-	inline int GetParticleCount() const{ return pParticleCount; }
+	inline int GetParticleCount() const{return pParticleCount;}
 	
 	/** Update particles. */
-	void UpdateParticles( const deParticleEmitterInstance &instance );
+	void UpdateParticles(const deParticleEmitterInstance &instance);
 	
 	/** Update particles. */
 	void UpdateParticlesVBO();
@@ -276,7 +276,7 @@ public:
 	 * Get particle position.
 	 * \warning Temporary HACK!
 	 */
-	decVector GetParticlePositionAt( int index ) const;
+	decVector GetParticlePositionAt(int index) const;
 	/*@}*/
 	
 	
@@ -287,13 +287,13 @@ public:
 	int GetTypeCount() const;
 	
 	/** Type by index. */
-	deoglRParticleEmitterInstanceType &GetTypeAt( int index ) const;
+	deoglRParticleEmitterInstanceType &GetTypeAt(int index) const;
 	
 	/** Remove all types. */
 	void RemoveAllTypes();
 	
 	/** Add type. */
-	void AddType( deoglRParticleEmitterInstanceType *type );
+	void AddType(deoglRParticleEmitterInstanceType *type);
 	
 	/** Invalidate parameter blocks of all types. */
 	void InvalidateAllTypesParamBlocks();
@@ -310,16 +310,16 @@ public:
 	/** \name Index Buffer */
 	/*@{*/
 	/** Number of indices used in the index buffer. */
-	inline int GetIBOUsedIndexCount() const{ return pIndexUsedCount; }
+	inline int GetIBOUsedIndexCount() const{return pIndexUsedCount;}
 	
 	/** Remove all entries from the index buffer. */
 	void ClearIBO();
 	
 	/** Add index buffer entry. */
-	void AddIBOEntry( int index );
+	void AddIBOEntry(int index);
 	
 	/** Add four index buffer entries at the same time. */
-	void AddIBOEntries( int index1, int index2, int index3, int index4 );
+	void AddIBOEntries(int index1, int index2, int index3, int index4);
 	
 	/** Update index buffer if required. */
 	void UpdateIBO();
@@ -333,13 +333,13 @@ public:
 	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
+	inline bool GetWorldMarkedRemove() const{return pWorldMarkedRemove;}
 	
 	/**
 	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
-	void SetWorldMarkedRemove( bool marked );
+	void SetWorldMarkedRemove(bool marked);
 	/*@}*/
 };
 

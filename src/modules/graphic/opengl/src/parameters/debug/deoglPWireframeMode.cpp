@@ -39,12 +39,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPWireframeMode::deoglPWireframeMode( deGraphicOpenGl &ogl ) : deoglParameterBool( ogl ){
-	SetName( "wireframeMode" );
-	SetDescription( "Renders in wireframe mode" );
-	SetCategory( ecExpert );
-	SetDisplayName( "Wireframe Mode" );
-	SetDefaultValue( "0" );
+deoglPWireframeMode::deoglPWireframeMode(deGraphicOpenGl &ogl) : deoglParameterBool(ogl){
+	SetName("wireframeMode");
+	SetDescription("Renders in wireframe mode");
+	SetCategory(ecExpert);
+	SetDisplayName("Wireframe Mode");
+	SetDefaultValue("0");
 }
 
 deoglPWireframeMode::~deoglPWireframeMode(){
@@ -59,6 +59,6 @@ bool deoglPWireframeMode::GetParameterBool(){
 	return pOgl.GetConfiguration().GetDebugWireframe();
 }
 
-void deoglPWireframeMode::SetParameterBool( bool value ){
-	pOgl.GetConfiguration().SetDebugWireframe( value );
+void deoglPWireframeMode::SetParameterBool(bool value){
+	pOgl.GetConfiguration().SetDebugWireframe(value);
 }

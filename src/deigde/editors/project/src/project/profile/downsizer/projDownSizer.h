@@ -64,7 +64,7 @@ public:
 	projDownSizer();
 	
 	/** \brief Create copy of down-sizer. */
-	projDownSizer( const projDownSizer &downSizer );
+	projDownSizer(const projDownSizer &downSizer);
 	
 protected:
 	/** \brief Clean up down-sizer. */
@@ -77,34 +77,34 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent profile. */
-	inline projProfile *GetProfile() const{ return pProfile; }
+	inline projProfile *GetProfile() const{return pProfile;}
 	
 	/** \brief Set parent profile. */
-	void SetProfile( projProfile *profile );
+	void SetProfile(projProfile *profile);
 	
 	
 	
 	/** \brief Description. */
-	inline const decString &GetDescription() const{ return pDescription; }
+	inline const decString &GetDescription() const{return pDescription;}
 	
 	/** \brief Set description. */
-	void SetDescription( const char *description );
+	void SetDescription(const char *description);
 	
 	/** \brief Set of file patterns to apply down-sizing to. */
-	inline const decStringSet &GetPatterns() const{ return pPatterns; }
-	void SetPatterns( const decStringSet &patterns );
+	inline const decStringSet &GetPatterns() const{return pPatterns;}
+	void SetPatterns(const decStringSet &patterns);
 	
 	/** \brief Target quality level in the range from 100 (best) to 0 (worst). */
-	inline int GetQuality() const{ return pQuality; }
+	inline int GetQuality() const{return pQuality;}
 	
 	/** \brief Set target quality level in the range from 100 (best) to 0 (worst). */
-	void SetQuality( int quality );
+	void SetQuality(int quality);
 	
 	/** \brief Number of times to reduce size by factor 2. */
-	inline int GetScale() const{ return pScale; }
+	inline int GetScale() const{return pScale;}
 	
 	/** \brief Set number of times to reduce size by factor 2. */
-	void SetScale( int scale );
+	void SetScale(int scale);
 	
 	
 	

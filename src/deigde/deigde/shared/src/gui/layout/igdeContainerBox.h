@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	igdeContainerBox( igdeEnvironment &environment, eAxis axis, int spacing = 0 );
+	igdeContainerBox(igdeEnvironment &environment, eAxis axis, int spacing = 0);
 	
 	
 	
@@ -83,10 +83,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Layout axis. */
-	inline eAxis GetAxis() const{ return pAxis; }
+	inline eAxis GetAxis() const{return pAxis;}
 	
 	/** \brief Spacing. */
-	inline int GetSpacing() const{ return pSpacing; }
+	inline int GetSpacing() const{return pSpacing;}
 	/*@}*/
 	
 	

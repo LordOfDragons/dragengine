@@ -41,22 +41,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionRemoveAll::ceUCActionRemoveAll( ceConversationTopic *topic ){
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
+ceUCActionRemoveAll::ceUCActionRemoveAll(ceConversationTopic *topic){
+	if(! topic){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pTopic = NULL;
 	pActionList = topic->GetActionList();
 	
-	SetShortInfo( "Remove All Actions" );
+	SetShortInfo("Remove All Actions");
 	
 	pTopic = topic;
 	topic->AddReference();
 }
 
 ceUCActionRemoveAll::~ceUCActionRemoveAll(){
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -68,14 +68,14 @@ ceUCActionRemoveAll::~ceUCActionRemoveAll(){
 
 void ceUCActionRemoveAll::Undo(){
 	pTopic->GetActionList() = pActionList;
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->NotifyActionStructureChanged(NULL);
 	
-	if( pActionList.GetCount() > 0 ){
-		pTopic->SetActive( pActionList.GetAt( 0 ), NULL );
+	if(pActionList.GetCount() > 0){
+		pTopic->SetActive(pActionList.GetAt(0), NULL);
 	}
 }
 
 void ceUCActionRemoveAll::Redo(){
 	pTopic->GetActionList().RemoveAll();
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->NotifyActionStructureChanged(NULL);
 }

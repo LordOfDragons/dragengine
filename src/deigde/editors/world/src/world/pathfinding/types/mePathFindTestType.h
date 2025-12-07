@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new path find test type. */
-	mePathFindTestType( int typeNumber );
+	mePathFindTestType(int typeNumber);
 	/** Cleans up the path find test type. */
 	virtual ~mePathFindTestType();
 	/*@}*/
@@ -56,21 +56,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the type number. */
-	inline int GetTypeNumber() const{ return pTypeNumber; }
+	inline int GetTypeNumber() const{return pTypeNumber;}
 	/** Sets the type number. */
-	void SetTypeNumber( int typeNumber );
+	void SetTypeNumber(int typeNumber);
 	/** Retrieves the name of the type. */
-	inline const decString &GetName() const{ return pName; }
+	inline const decString &GetName() const{return pName;}
 	/** Sets the name of the type. */
-	void SetName( const char *name );
+	void SetName(const char *name);
 	/** Retrieves the fix cost. */
-	inline float GetFixCost() const{ return pFixCost; }
+	inline float GetFixCost() const{return pFixCost;}
 	/** Sets the fix cost. */
-	void SetFixCost( float fixCost );
+	void SetFixCost(float fixCost);
 	/** Retrieves the cost per meter. */
-	inline float GetCostPerMeter() const{ return pCostPerMeter; }
+	inline float GetCostPerMeter() const{return pCostPerMeter;}
 	/** Sets the cost per meter. */
-	void SetCostPerMeter( float costPerMeter );
+	void SetCostPerMeter(float costPerMeter);
 	/*@}*/
 };
 

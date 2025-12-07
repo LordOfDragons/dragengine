@@ -38,12 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupNodesTop::seUPNGroupNodesTop( sePropertyNodeGroup *node, const sePropertyNodeList &children ) :
-seUPNGroupMoveNodes( node, children )
+seUPNGroupNodesTop::seUPNGroupNodesTop(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
+seUPNGroupMoveNodes(node, children)
 {
-	SetShortInfo( "Move nodes to top" );
+	SetShortInfo("Move nodes to top");
 	
-	if( pCount > 0 && pChildren[ pCount - 1 ].index == node->GetNodeCount() - 1 ){
+	if(pCount > 0 && pChildren[pCount - 1].index == node->GetNodeCount() - 1){
 		pClearChildNodes(); // has no effect
 	}
 }
@@ -58,8 +58,8 @@ seUPNGroupNodesTop::~seUPNGroupNodesTop(){
 
 void seUPNGroupNodesTop::Undo(){
 	int i;
-	for( i=0; i<pCount; i++ ){
-		pNode->MoveNode( pChildren[ i ].node, pChildren[ i ].index );
+	for(i=0; i<pCount; i++){
+		pNode->MoveNode(pChildren[i].node, pChildren[i].index);
 	}
 }
 
@@ -67,7 +67,7 @@ void seUPNGroupNodesTop::Redo(){
 	const int offset = pNode->GetNodeCount() - pCount;
 	int i;
 	
-	for( i=pCount-1; i>=0; i-- ){
-		pNode->MoveNode( pChildren[ i ].node, offset + i );
+	for(i=pCount-1; i>=0; i--){
+		pNode->MoveNode(pChildren[i].node, offset + i);
 	}
 }

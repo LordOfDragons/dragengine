@@ -45,17 +45,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-fbxRigBone::fbxRigBone( fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel ) :
-pRig( rig ),
-pNodePoseBone( nodePoseBone ),
-pNodeModel( nodeModel ),
-pNodeArmature( NULL ),
-pNodeModelID( nodeModel.GetID() ),
-pIndex( 0 ),
-pName( nodeModel.GetPropertyAt( 1 )->CastString().GetValue() ),
-pParent( NULL ),
-pDirty( true ),
-pRotationOrder( fbxScene::ConvRotationOrder( nodeModel.GetPropertyInt( "RotationOrder", 0 ) ) ){
+fbxRigBone::fbxRigBone(fbxRig &rig, fbxNode &nodePoseBone, fbxNode &nodeModel) :
+pRig(rig),
+pNodePoseBone(nodePoseBone),
+pNodeModel(nodeModel),
+pNodeArmature(NULL),
+pNodeModelID(nodeModel.GetID()),
+pIndex(0),
+pName(nodeModel.GetPropertyAt(1)->CastString().GetValue()),
+pParent(NULL),
+pDirty(true),
+pRotationOrder(fbxScene::ConvRotationOrder(nodeModel.GetPropertyInt("RotationOrder", 0))){
 }
 
 fbxRigBone::~fbxRigBone(){
@@ -66,74 +66,74 @@ fbxRigBone::~fbxRigBone(){
 // Management
 ///////////////
 
-void fbxRigBone::SetIndex( int index ){
+void fbxRigBone::SetIndex(int index){
 	pIndex = index;
 }
 
-void fbxRigBone::SetName( const char *name ){
+void fbxRigBone::SetName(const char *name){
 	pName = name;
 }
 
 
 
 void fbxRigBone::Prepare(){
-	if( ! pDirty ){
+	if(! pDirty){
 		return;
 	}
 	
 	decPointerList connections;
-	pRig.GetScene().FindConnections( pNodeModelID, connections );
+	pRig.GetScene().FindConnections(pNodeModelID, connections);
 	const int conCount = connections.GetCount();
 	int i;
 	
-	for( i=0; i<conCount; i++ ){
-		const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );
-		if( connection.GetSource() != pNodeModelID || connection.GetTarget() == 0 ){
+	for(i=0; i<conCount; i++){
+		const fbxConnection &connection = *((fbxConnection*)connections.GetAt(i));
+		if(connection.GetSource() != pNodeModelID || connection.GetTarget() == 0){
 			continue;
 		}
 		
-		fbxRigBone * const bone = pRig.GetBoneWithModelID( connection.GetTarget() );
-		if( bone ){
+		fbxRigBone * const bone = pRig.GetBoneWithModelID(connection.GetTarget());
+		if(bone){
 			pParent = bone;
 			break;
 		}
 		
 		// not a PoseBone which means it has to be the armature node
-		pNodeArmature = pRig.GetScene().NodeWithID( connection.GetTarget() );
+		pNodeArmature = pRig.GetScene().NodeWithID(connection.GetTarget());
 		break;
 	}
 	
 	const decMatrix &modelMatrix = pNodeModel.GetTransformation();
 	pFbxMatrix = modelMatrix;
 	
-	if( pParent ){
+	if(pParent){
 		pParent->Prepare();
-		pFbxMatrix = pFbxMatrix.QuickMultiply( pParent->pFbxMatrix );
-		pMatrix = pFbxMatrix.QuickMultiply( pRig.GetScene().GetTransformation() );
+		pFbxMatrix = pFbxMatrix.QuickMultiply(pParent->pFbxMatrix);
+		pMatrix = pFbxMatrix.QuickMultiply(pRig.GetScene().GetTransformation());
 		pMatrixInverse = pMatrix.Normalized().QuickInvert();
-		pBoneMatrix = pMatrix.QuickMultiply( pParent->pMatrixInverse );
-		pAnimMatrix = pParent->pMatrix.QuickMultiply( pMatrixInverse );
+		pBoneMatrix = pMatrix.QuickMultiply(pParent->pMatrixInverse);
+		pAnimMatrix = pParent->pMatrix.QuickMultiply(pMatrixInverse);
 		
-	}else if( pNodeArmature ){
+	}else if(pNodeArmature){
 		const decMatrix &armMatrix = pNodeArmature->GetTransformation();
 		
-		pFbxMatrix = pFbxMatrix.QuickMultiply( armMatrix );
-		pMatrix = pFbxMatrix.QuickMultiply( pRig.GetScene().GetTransformation() );
+		pFbxMatrix = pFbxMatrix.QuickMultiply(armMatrix);
+		pMatrix = pFbxMatrix.QuickMultiply(pRig.GetScene().GetTransformation());
 		pMatrixInverse = pMatrix.Normalized().QuickInvert();
 		//pBoneMatrix = pMatrix.QuickMultiply( invArmMatrix );
 		pBoneMatrix = pMatrix;
 		pAnimMatrix = armMatrix
-			.QuickMultiply( pRig.GetScene().GetTransformation() )
-			.QuickMultiply( pMatrixInverse );
+			.QuickMultiply(pRig.GetScene().GetTransformation())
+			.QuickMultiply(pMatrixInverse);
 		
 	}else{
-		pMatrix = pFbxMatrix.QuickMultiply( pRig.GetScene().GetTransformation() );
+		pMatrix = pFbxMatrix.QuickMultiply(pRig.GetScene().GetTransformation());
 		pMatrixInverse = pMatrix.Normalized().QuickInvert();
 		pBoneMatrix = pMatrix;
 		pAnimMatrix = pMatrixInverse;
 	}
 	
-	const decMatrix normalized( pBoneMatrix.Normalized() );
+	const decMatrix normalized(pBoneMatrix.Normalized());
 	pPosition = normalized.GetPosition();
 	pOrientation = normalized.ToQuaternion();
 	
@@ -142,9 +142,9 @@ void fbxRigBone::Prepare(){
 
 
 
-void fbxRigBone::DebugPrintStructure( deBaseModule &module, const decString &prefix, bool verbose) const{
-	const decVector rotation( pOrientation.GetEulerAngles() * RAD2DEG );
-	module.LogInfoFormat( "%sBone %d '%s': pos=(%g,%g,%g) rot=(%g,%g,%g) parent=(%s)",
+void fbxRigBone::DebugPrintStructure(deBaseModule &module, const decString &prefix, bool verbose) const{
+	const decVector rotation(pOrientation.GetEulerAngles() * RAD2DEG);
+	module.LogInfoFormat("%sBone %d '%s': pos=(%g,%g,%g) rot=(%g,%g,%g) parent=(%s)",
 		prefix.GetString(), pIndex, pName.GetString(), pPosition.x, pPosition.y, pPosition.z,
-		rotation.x, rotation.y, rotation.z, pParent ? pParent->GetName().GetString() : "<null>" );
+		rotation.x, rotation.y, rotation.z, pParent ? pParent->GetName().GetString() : "<null>");
 }

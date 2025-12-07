@@ -33,10 +33,10 @@ private:
     public:
         Entry(const FDProducer::Ref &producer, int offset, int size);
 
-        inline const FDProducer::Ref &GetProducer() const{ return pProducer; }
-        [[nodiscard]] inline int GetOffset() const{ return pOffset; }
-        [[nodiscard]] inline int GetSize() const{ return pSize; }
-        [[nodiscard]] inline TIME_SYSTEM GetModificationTime() const{ return pModidicationTime; }
+        inline const FDProducer::Ref &GetProducer() const{return pProducer;}
+        [[nodiscard]] inline int GetOffset() const{return pOffset;}
+        [[nodiscard]] inline int GetSize() const{return pSize;}
+        [[nodiscard]] inline TIME_SYSTEM GetModificationTime() const{return pModidicationTime;}
     };
 
     typedef std::unordered_map<std::string,Entry::Ref> MapEntries;

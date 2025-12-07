@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meWVNodePropCount( meWindowVegetation &windowVegetation, meHTVRulePropCount *rule );
+	meWVNodePropCount(meWindowVegetation &windowVegetation, meHTVRulePropCount *rule);
 	
 protected:
 	/** \brief Clean up object. */
@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rule. */
-	inline meHTVRulePropCount *GetRulePropCount() const{ return pRulePC; }
+	inline meHTVRulePropCount *GetRulePropCount() const{return pRulePC;}
 	
 	/** \brief Update node. */
 	virtual void Update();

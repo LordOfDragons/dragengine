@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create clipboard data from selected mapped. */
-	seClipboardDataMapped( const seMappedList &list );
+	seClipboardDataMapped(const seMappedList &list);
 	
 protected:
 	/**
@@ -73,7 +73,7 @@ public:
 	int GetCount() const;
 	
 	/** \brief Mapped at index. */
-	const seMapped &GetAt( int index ) const;
+	const seMapped &GetAt(int index) const;
 	/*@}*/
 };
 

@@ -55,17 +55,17 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the position. */
-	inline const decVector &GetPosition() const{ return pPosition; }
+	inline const decVector &GetPosition() const{return pPosition;}
 	/** Sets the position. */
-	void SetPosition( const decVector &position );
+	void SetPosition(const decVector &position);
 	/** Retrieves the orientation. */
-	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	inline const decQuaternion &GetOrientation() const{return pOrientation;}
 	/** Sets the orientation. */
-	void SetOrientation( const decQuaternion &orientation );
+	void SetOrientation(const decQuaternion &orientation);
 	/** Retrieves the size. */
-	inline const decVector &GetSize() const{ return pSize; }
+	inline const decVector &GetSize() const{return pSize;}
 	/** Sets the size. */
-	void SetSize( const decVector &size );
+	void SetSize(const decVector &size);
 	/** Reset. */
 	void Reset();
 	/*@}*/

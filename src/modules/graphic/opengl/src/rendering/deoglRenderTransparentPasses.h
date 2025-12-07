@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create renderer. */
-	deoglRenderTransparentPasses( deoglRenderThread &renderThread );
+	deoglRenderTransparentPasses(deoglRenderThread &renderThread);
 	
 	/** Clean up renderer. */
 	virtual ~deoglRenderTransparentPasses();
@@ -60,19 +60,19 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/** Render Transparent Passes. */
-	void RenderTransparentPasses( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderTransparentPasses(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render transparent geometry pass. */
-	void RenderTransparentGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderTransparentGeometryPass(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render transparent depth limite pass. */
-	void RenderTransparentLimitDepth( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
+	void RenderTransparentLimitDepth(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray);
 	
 	/** Render volumetric pass. */
-	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
+	void RenderVolumetricPass(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween);
 	
 	/** Copy color texture to temporary texture. */
-	void CopyColorToTemporary( deoglRenderPlan &plan );
+	void CopyColorToTemporary(deoglRenderPlan &plan);
 	/*@}*/
 };
 

@@ -70,7 +70,7 @@ public:
 	 * 
 	 * User entered vector and accepted it.
 	 */
-	virtual void OnVector2Changed( igdeEditVector2 *editVector2 );
+	virtual void OnVector2Changed(igdeEditVector2 *editVector2);
 	/*@}*/
 };
 

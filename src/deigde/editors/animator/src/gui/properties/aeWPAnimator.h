@@ -66,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create panel. */
-	aeWPAnimator( aeWindowProperties &windowProperties );
+	aeWPAnimator(aeWindowProperties &windowProperties);
 	
 protected:
 	/** Clean up panel. */
@@ -79,13 +79,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Properties window. */
-	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	inline aeWindowProperties &GetWindowProperties() const{return pWindowProperties;}
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline aeAnimator *GetAnimator() const{return pAnimator;}
 	
 	/** Set animator. */
-	void SetAnimator( aeAnimator *animator );
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Update animator. */
 	void UpdateAnimator();
@@ -100,7 +100,7 @@ public:
 	const decString &GetCBRigBoneText() const;
 	
 	/** Set rig bone combo box text. */
-	void SetCBRigBoneText( const char *text );
+	void SetCBRigBoneText(const char *text);
 	
 	/** Update rig vertex position set list. */
 	void UpdateModelVertexPositionSetList();
@@ -109,7 +109,7 @@ public:
 	const decString &GetCBModelVertexPositionSetText() const;
 	
 	/** Set vertex position set combo box text. */
-	void SetCBModelVertexPositionSetText( const char *text );
+	void SetCBModelVertexPositionSetText(const char *text);
 	/*@}*/
 };
 

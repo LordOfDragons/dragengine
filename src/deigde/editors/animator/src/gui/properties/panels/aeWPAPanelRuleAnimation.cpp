@@ -74,40 +74,40 @@ protected:
 	aeWPAPanelRuleAnimation &pPanel;
 	
 public:
-	cBaseAction( aeWPAPanelRuleAnimation &panel, const char *text, igdeIcon *icon, const char *description ) :
-	igdeAction( text, icon, description ),
-	pPanel( panel ){ }
+	cBaseAction(aeWPAPanelRuleAnimation &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleAnimation * const rule = ( aeRuleAnimation* )pPanel.GetRule();
-		if( ! animator || ! rule ){
+		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
+		if(! animator || ! rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
-		if( undo ){
-			animator->GetUndoSystem()->Add( undo );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		if(undo){
+			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction( aeAnimator *animator, aeRuleAnimation *rule ) = 0;
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleAnimation *rule) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
-		aeRuleAnimation * const rule = ( aeRuleAnimation* )pPanel.GetRule();
-		if( animator && rule ){
-			Update( *animator, *rule );
+		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
+		if(animator && rule){
+			Update(*animator, *rule);
 			
 		}else{
-			SetEnabled( false );
-			SetSelected( false );
+			SetEnabled(false);
+			SetSelected(false);
 		}
 	}
 	
-	virtual void Update( const aeAnimator &, const aeRuleAnimation & ){
-		SetEnabled( true );
-		SetSelected( false );
+	virtual void Update(const aeAnimator &, const aeRuleAnimation &){
+		SetEnabled(true);
+		SetSelected(false);
 	}
 };
 
@@ -116,11 +116,11 @@ class cComboMoveName : public igdeComboBoxListener{
 	aeWPAPanelRuleAnimation &pPanel;
 	
 public:
-	cComboMoveName( aeWPAPanelRuleAnimation &panel ) : pPanel( panel ){ }
+	cComboMoveName(aeWPAPanelRuleAnimation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeComboBox *comboBox ){
-		aeRuleAnimation * const rule = ( aeRuleAnimation* )pPanel.GetRule();
-		if( ! rule || rule->GetMoveName() == comboBox->GetText() ){
+	virtual void OnTextChanged(igdeComboBox *comboBox){
+		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
+		if(! rule || rule->GetMoveName() == comboBox->GetText()){
 			return;
 		}
 		
@@ -133,12 +133,12 @@ class cTextMoveTime : public igdeTextFieldListener{
 	aeWPAPanelRuleAnimation &pPanel;
 	
 public:
-	cTextMoveTime( aeWPAPanelRuleAnimation &panel ) : pPanel( panel ){ }
+	cTextMoveTime(aeWPAPanelRuleAnimation &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		aeRuleAnimation * const rule = ( aeRuleAnimation* )pPanel.GetRule();
+	virtual void OnTextChanged(igdeTextField *textField){
+		aeRuleAnimation * const rule = (aeRuleAnimation*)pPanel.GetRule();
 		const float value = textField->GetFloat();
-		if( ! rule || fabsf( rule->GetMoveTime() - value ) < FLOAT_SAFE_EPSILON ){
+		if(! rule || fabsf(rule->GetMoveTime() - value) < FLOAT_SAFE_EPSILON){
 			return;
 		}
 		
@@ -148,62 +148,62 @@ public:
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition( aeWPAPanelRuleAnimation &panel ) : cBaseAction( panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is" ){ }
+	cActionEnablePosition(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
+		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimation *rule ){
-		return new aeURuleAnimToggleEnablePosition( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleAnimation *rule){
+		return new aeURuleAnimToggleEnablePosition(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimation &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnablePosition() );
+	virtual void Update(const aeAnimator & , const aeRuleAnimation &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnablePosition());
 	}
 };
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation( aeWPAPanelRuleAnimation &panel ) : cBaseAction( panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is" ){ }
+	cActionEnableRotation(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
+		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimation *rule ){
-		return new aeURuleAnimToggleEnableRotation( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleAnimation *rule){
+		return new aeURuleAnimToggleEnableRotation(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimation &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableOrientation() );
+	virtual void Update(const aeAnimator & , const aeRuleAnimation &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnableOrientation());
 	}
 };
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize( aeWPAPanelRuleAnimation &panel ) : cBaseAction( panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is" ){ }
+	cActionEnableSize(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
+		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimation *rule ){
-		return new aeURuleAnimToggleEnableSize( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleAnimation *rule){
+		return new aeURuleAnimToggleEnableSize(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimation &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableSize() );
+	virtual void Update(const aeAnimator & , const aeRuleAnimation &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnableSize());
 	}
 };
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
-	cActionEnableVertexPositionSet( aeWPAPanelRuleAnimation &panel ) : cBaseAction( panel,
+	cActionEnableVertexPositionSet(aeWPAPanelRuleAnimation &panel) : cBaseAction(panel,
 		"Enable vertex position set manipulation", nullptr,
-		"Determines if vertex position set is modified or kept as it is" ){ }
+		"Determines if vertex position set is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimation *rule ){
-		return new aeURuleAnimToggleEnableVertexPositionSet( rule );
+	virtual igdeUndo *OnAction(aeAnimator*, aeRuleAnimation *rule){
+		return new aeURuleAnimToggleEnableVertexPositionSet(rule);
 	}
 	
-	virtual void Update( const aeAnimator & , const aeRuleAnimation &rule ){
-		SetEnabled( true );
-		SetSelected( rule.GetEnableVertexPositionSet() );
+	virtual void Update(const aeAnimator & , const aeRuleAnimation &rule){
+		SetEnabled(true);
+		SetSelected(rule.GetEnableVertexPositionSet());
 	}
 };
 
@@ -217,26 +217,26 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-aeWPAPanelRuleAnimation::aeWPAPanelRuleAnimation( aeWPRule &wpRule ) :
-aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertAnimation )
+aeWPAPanelRuleAnimation::aeWPAPanelRuleAnimation(aeWPRule &wpRule) :
+aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertAnimation)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
 	
-	helper.GroupBox( *this, groupBox, "Animation:" );
+	helper.GroupBox(*this, groupBox, "Animation:");
 	
-	helper.ComboBoxFilter( groupBox, "Move Name:", true, "Name of animation move to use",
-		pCBMoveName, new cComboMoveName( *this ) );
+	helper.ComboBoxFilter(groupBox, "Move Name:", true, "Name of animation move to use",
+		pCBMoveName, new cComboMoveName(*this));
 	pCBMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Move Time:", "Time relative to move playtime to retrieve",
-		pEditMoveTime, new cTextMoveTime( *this ) );
-	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
-	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
+	helper.EditFloat(groupBox, "Move Time:", "Time relative to move playtime to retrieve",
+		pEditMoveTime, new cTextMoveTime(*this));
+	helper.CheckBox(groupBox, pChkEnablePosition, new cActionEnablePosition(*this), true);
+	helper.CheckBox(groupBox, pChkEnableRotation, new cActionEnableRotation(*this), true);
+	helper.CheckBox(groupBox, pChkEnableSize, new cActionEnableSize(*this), true);
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet(*this), true);
 }
 
 aeWPAPanelRuleAnimation::~aeWPAPanelRuleAnimation(){
@@ -250,18 +250,18 @@ aeWPAPanelRuleAnimation::~aeWPAPanelRuleAnimation(){
 void aeWPAPanelRuleAnimation::UpdateAnimMoveList(){
 	aeWPAPanelRule::UpdateAnimMoveList();
 	
-	const decString moveName( pCBMoveName->GetText() );
+	const decString moveName(pCBMoveName->GetText());
 	
 	pCBMoveName->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deAnimation * const engAnimation = GetAnimator()->GetEngineAnimator()
 			? GetAnimator()->GetEngineAnimator()->GetAnimation() : NULL;
-		if( engAnimation ){
+		if(engAnimation){
 			const int count = engAnimation->GetMoveCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBMoveName->AddItem( engAnimation->GetMove( i )->GetName() );
+			for(i=0; i<count; i++){
+				pCBMoveName->AddItem(engAnimation->GetMove(i)->GetName());
 			}
 		}
 	}
@@ -269,17 +269,17 @@ void aeWPAPanelRuleAnimation::UpdateAnimMoveList(){
 	pCBMoveName->SortItems();
 	pCBMoveName->StoreFilterItems();
 	
-	pCBMoveName->SetText( moveName );
+	pCBMoveName->SetText(moveName);
 }
 
 void aeWPAPanelRuleAnimation::UpdateRule(){
 	aeWPAPanelRule::UpdateRule();
 	
-	const aeRuleAnimation * const rule = ( aeRuleAnimation* )GetRule();
+	const aeRuleAnimation * const rule = (aeRuleAnimation*)GetRule();
 	
-	if( rule ){
-		pCBMoveName->SetText( rule->GetMoveName() );
-		pEditMoveTime->SetFloat( rule->GetMoveTime() );
+	if(rule){
+		pCBMoveName->SetText(rule->GetMoveName());
+		pEditMoveTime->SetFloat(rule->GetMoveTime());
 		
 	}else{
 		pCBMoveName->ClearText();
@@ -287,8 +287,8 @@ void aeWPAPanelRuleAnimation::UpdateRule(){
 	}
 	
 	const bool enabled = rule;
-	pCBMoveName->SetEnabled( enabled );
-	pEditMoveTime->SetEnabled( enabled );
+	pCBMoveName->SetEnabled(enabled);
+	pEditMoveTime->SetEnabled(enabled);
 	
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
@@ -299,8 +299,8 @@ void aeWPAPanelRuleAnimation::UpdateRule(){
 void aeWPAPanelRuleAnimation::UpdateTargetList(){
 	aeWPAPanelRule::UpdateTargetList();
 	
-	aeRuleAnimation * const rule = ( aeRuleAnimation* )GetRule();
-	if( rule ){
-		AddTarget( "Move Time", &rule->GetTargetMoveTime() );
+	aeRuleAnimation * const rule = (aeRuleAnimation*)GetRule();
+	if(rule){
+		AddTarget("Move Time", &rule->GetTargetMoveTime());
 	}
 }

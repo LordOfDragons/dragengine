@@ -48,7 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigShapeSphere::reRigShapeSphere( deEngine *engine ) : reRigShape( engine, estSphere ){
+reRigShapeSphere::reRigShapeSphere(deEngine *engine) : reRigShape(engine, estSphere){
 	pRadius = 0.5f;
 }
 
@@ -60,8 +60,8 @@ reRigShapeSphere::~reRigShapeSphere(){
 // Management
 ///////////////
 
-void reRigShapeSphere::SetRadius( float radius ){
-	if( fabs( radius - pRadius ) > 1e-5f ){
+void reRigShapeSphere::SetRadius(float radius){
+	if(fabs(radius - pRadius) > 1e-5f){
 		pRadius = radius;
 		NotifyShapeChanged();
 	}
@@ -71,26 +71,26 @@ reRigShape *reRigShapeSphere::Duplicate() const{
 	reRigShapeSphere *shape = NULL;
 	
 	try{
-		shape = new reRigShapeSphere( GetEngine() );
-		if( ! shape ) DETHROW( deeOutOfMemory );
+		shape = new reRigShapeSphere(GetEngine());
+		if(! shape) DETHROW(deeOutOfMemory);
 		
-		shape->SetPosition( GetPosition() );
-		shape->SetOrientation( GetOrientation() );
-		shape->SetRadius( GetRadius() );
+		shape->SetPosition(GetPosition());
+		shape->SetOrientation(GetOrientation());
+		shape->SetRadius(GetRadius());
 		
-	}catch( const deException & ){
-		if( shape ) shape->FreeReference();
+	}catch(const deException &){
+		if(shape) shape->FreeReference();
 		throw;
 	}
 	
 	return shape;
 }
 
-void reRigShapeSphere::Scale( float scale ){
-	SetPosition( GetPosition() * scale );
+void reRigShapeSphere::Scale(float scale){
+	SetPosition(GetPosition() * scale);
 	pRadius *= scale;
 }
 
 decShape *reRigShapeSphere::CreateShape(){
-	return new decShapeSphere( pRadius, GetPosition() );
+	return new decShapeSphere(pRadius, GetPosition());
 }

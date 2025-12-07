@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */
-	deoglREffect( deoglRenderThread &renderThread );
+	deoglREffect(deoglRenderThread &renderThread);
 	
 	/** Clean up render effect. */
 	virtual ~deoglREffect();
@@ -60,19 +60,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline deoglRenderThread &GetRenderThread() const{return pRenderThread;}
 	
 	/** Enabled. */
-	inline bool GetEnabled() const{ return pEnabled; }
+	inline bool GetEnabled() const{return pEnabled;}
 	
 	/** Set enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
 	/** Render effect. */
-	virtual void Render( deoglRenderPlan &plan ) = 0;
+	virtual void Render(deoglRenderPlan &plan) = 0;
 };
 
 #endif

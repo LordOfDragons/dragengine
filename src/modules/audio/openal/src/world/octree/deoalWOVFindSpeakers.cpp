@@ -41,14 +41,14 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoalWOVFindSpeakers::deoalWOVFindSpeakers( const decDVector &position,
-	const decLayerMask &layerMask, deoalSpeakerList &speakerList ) :
-pPosition( position ),
-pLayerMask( layerMask ),
-pSpeakerList( speakerList )
+deoalWOVFindSpeakers::deoalWOVFindSpeakers(const decDVector &position,
+	const decLayerMask &layerMask, deoalSpeakerList &speakerList) :
+pPosition(position),
+pLayerMask(layerMask),
+pSpeakerList(speakerList)
 {
-	SetVisitAll( false );
-	SetVisitSpeakers( true );
+	SetVisitAll(false);
+	SetVisitSpeakers(true);
 }
 
 deoalWOVFindSpeakers::~deoalWOVFindSpeakers(){
@@ -59,27 +59,27 @@ deoalWOVFindSpeakers::~deoalWOVFindSpeakers(){
 // Visiting
 /////////////
 
-void deoalWOVFindSpeakers::FindSpeakers( deoalAWorld &world, const decDVector &position,
-const decLayerMask &layerMask, deoalSpeakerList &speakerList ){
-	deoalWOVFindSpeakers visitor( position, layerMask, speakerList );
+void deoalWOVFindSpeakers::FindSpeakers(deoalAWorld &world, const decDVector &position,
+const decLayerMask &layerMask, deoalSpeakerList &speakerList){
+	deoalWOVFindSpeakers visitor(position, layerMask, speakerList);
 	
 	const double visitRange = 0.01;
-	const decDVector visitRangeVector( visitRange, visitRange, visitRange );
-	const decDVector visitBoxMin( position - visitRangeVector );
-	const decDVector visitBoxMax( position + visitRangeVector );
+	const decDVector visitRangeVector(visitRange, visitRange, visitRange);
+	const decDVector visitBoxMin(position - visitRangeVector);
+	const decDVector visitBoxMax(position + visitRangeVector);
 	
-	world.GetOctree()->VisitNodesColliding( &visitor, visitBoxMin, visitBoxMax );
+	world.GetOctree()->VisitNodesColliding(&visitor, visitBoxMin, visitBoxMax);
 }
 
 
 
-void deoalWOVFindSpeakers::VisitSpeaker( deoalASpeaker *speaker ){
-	if( speaker->GetLayerMask().MatchesNot( pLayerMask ) ){
+void deoalWOVFindSpeakers::VisitSpeaker(deoalASpeaker *speaker){
+	if(speaker->GetLayerMask().MatchesNot(pLayerMask)){
 		return;
 	}
-	if( ( speaker->GetPosition() - pPosition ).LengthSquared() > speaker->GetRangeSquared() ){
+	if((speaker->GetPosition() - pPosition).LengthSquared() > speaker->GetRangeSquared()){
 		return;
 	}
 	
-	pSpeakerList.Add( speaker );
+	pSpeakerList.Add(speaker);
 }

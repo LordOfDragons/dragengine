@@ -38,10 +38,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debnParameterBool::debnParameterBool( deNetworkBasic &network ) :
-debnParameter( network )
+debnParameterBool::debnParameterBool(deNetworkBasic &network) :
+debnParameter(network)
 {
-	SetType( eptBoolean );
+	SetType(eptBoolean);
 }
 
 
@@ -53,7 +53,7 @@ decString debnParameterBool::GetParameterValue(){
 	return GetParameterBool() ? "1" : "0";
 }
 
-void debnParameterBool::SetParameterValue( const char *value ){
-	const decString checkValue( decString( value ).GetLower() );
-	SetParameterBool( checkValue == "1" || checkValue == "true" || checkValue == "yes" );
+void debnParameterBool::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	SetParameterBool(checkValue == "1" || checkValue == "true" || checkValue == "yes");
 }

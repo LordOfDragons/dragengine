@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create read-write lock guard and lock read-write lock. */
-	deReadLockGuard( deReadWriteLock &rwlock );
+	deReadLockGuard(deReadWriteLock &rwlock);
 	
 	/** \brief Clean read-write lock guard unlocking read-write lock. */
 	~deReadLockGuard();
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Guard holds the read-lock. */
-	inline bool GetLocked() const{ return pLocked; }
+	inline bool GetLocked() const{return pLocked;}
 	
 	/** \brief Read-lock guarded read-write lock. */
 	void ReadLock();

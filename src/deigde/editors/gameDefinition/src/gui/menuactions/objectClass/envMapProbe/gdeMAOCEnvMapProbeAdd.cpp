@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCEnvMapProbeAdd::gdeMAOCEnvMapProbeAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Environment Map Probe...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class environment map probe" )
+gdeMAOCEnvMapProbeAdd::gdeMAOCEnvMapProbeAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Environment Map Probe...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class environment map probe")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Environment Map Probe...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCEnvMapProbeAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCEnvMapProbeAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddEnvMapProbe(&objectClass, gdeOCEnvMapProbe::Ref::NewWith());
 }
 
 void gdeMAOCEnvMapProbeAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

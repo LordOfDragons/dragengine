@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */
-	deoglCanvasView( deGraphicOpenGl &ogl, deCanvasView &canvas );
+	deoglCanvasView(deGraphicOpenGl &ogl, deCanvasView &canvas);
 	
 	/** Clean up peer. */
 	virtual ~deoglCanvasView();
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render canvas view or \em NULL if not existing. */
-	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
+	inline deoglRCanvasView *GetRCanvasView() const{return pRCanvasView;}
 	
 	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();
@@ -74,7 +74,7 @@ public:
 	void ChildOrderChanged();
 	
 	/** Paint dirty. */
-	inline bool GetDirtyPaint() const{ return pDirtyPaint; }
+	inline bool GetDirtyPaint() const{return pDirtyPaint;}
 	
 	/** Set paint dirty. */
 	void SetDirtyPaint();
@@ -94,10 +94,10 @@ public:
 	/** \name Listeners */
 	/*@{*/
 	/** Add a listener. */
-	void AddListener( deoglCanvasViewListener *listener );
+	void AddListener(deoglCanvasViewListener *listener);
 	
 	/** Remove listener if existing. */
-	void RemoveListener( deoglCanvasViewListener *listener );
+	void RemoveListener(deoglCanvasViewListener *listener);
 	
 	/** Notify all canvas view has been destroyed. */
 	void NotifyDestroyed();

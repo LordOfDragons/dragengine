@@ -35,12 +35,12 @@
 ////////////////////////////
 
 deSkinPropertyNodeShape::deSkinPropertyNodeShape() :
-pShapeType( estRectangle ),
-pThickness( 1.0f )
+pShapeType(estRectangle),
+pThickness(1.0f)
 {
 	int i;
-	for( i=0; i<ShapeMappedCount; i++ ){
-		pShapeMapped[ i ] = -1;
+	for(i=0; i<ShapeMappedCount; i++){
+		pShapeMapped[i] = -1;
 	}
 }
 
@@ -52,31 +52,31 @@ deSkinPropertyNodeShape::~deSkinPropertyNodeShape(){
 // Management
 ///////////////
 
-void deSkinPropertyNodeShape::SetShapeType( eShapeTypes type ){
+void deSkinPropertyNodeShape::SetShapeType(eShapeTypes type){
 	pShapeType = type;
 }
 
-void deSkinPropertyNodeShape::SetFillColor( const decColor &color ){
+void deSkinPropertyNodeShape::SetFillColor(const decColor &color){
 	pFillColor = color;
 }
 
-void deSkinPropertyNodeShape::SetLineColor( const decColor &color ){
+void deSkinPropertyNodeShape::SetLineColor(const decColor &color){
 	pLineColor = color;
 }
 
-void deSkinPropertyNodeShape::SetThickness( float thickness ){
-	pThickness = decMath::max( thickness, 0.0f );
+void deSkinPropertyNodeShape::SetThickness(float thickness){
+	pThickness = decMath::max(thickness, 0.0f);
 }
 
 
 
-int deSkinPropertyNodeShape::GetShapeMappedFor( eShapeMapped mapped ) const{
-	return pShapeMapped[ mapped ];
+int deSkinPropertyNodeShape::GetShapeMappedFor(eShapeMapped mapped) const{
+	return pShapeMapped[mapped];
 }
 
-void deSkinPropertyNodeShape::SetShapeMappedFor( eShapeMapped mapped, int index ){
-	DEASSERT_TRUE( index >= -1 )
-	pShapeMapped[ mapped ] = index;
+void deSkinPropertyNodeShape::SetShapeMappedFor(eShapeMapped mapped, int index){
+	DEASSERT_TRUE(index >= -1)
+	pShapeMapped[mapped] = index;
 }
 
 
@@ -84,6 +84,6 @@ void deSkinPropertyNodeShape::SetShapeMappedFor( eShapeMapped mapped, int index 
 // Visiting
 /////////////
 
-void deSkinPropertyNodeShape::Visit( deSkinPropertyNodeVisitor &visitor ){
-	visitor.VisitShape( *this );
+void deSkinPropertyNodeShape::Visit(deSkinPropertyNodeVisitor &visitor){
+	visitor.VisitShape(*this);
 }

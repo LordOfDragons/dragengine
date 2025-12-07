@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetMinValue::gdeUOCTPSetMinValue( gdeObjectClass *objectClass, gdeProperty *property, float newValue ) :
-pObjectClass( NULL ),
-pProperty( NULL )
+gdeUOCTPSetMinValue::gdeUOCTPSetMinValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
+pObjectClass(NULL),
+pProperty(NULL)
 {
-	if( ! objectClass || ! property ){
-		DETHROW( deeInvalidParam );
+	if(! objectClass || ! property){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Object class texture property set minimum value" );
+	SetShortInfo("Object class texture property set minimum value");
 	
 	pOldValue = property->GetMinimumValue();
 	pNewValue = newValue;
@@ -61,10 +61,10 @@ pProperty( NULL )
 }
 
 gdeUOCTPSetMinValue::~gdeUOCTPSetMinValue(){
-	if( pProperty ){
+	if(pProperty){
 		pProperty->FreeReference();
 	}
-	if( pObjectClass ){
+	if(pObjectClass){
 		pObjectClass->FreeReference();
 	}
 }
@@ -75,11 +75,11 @@ gdeUOCTPSetMinValue::~gdeUOCTPSetMinValue(){
 ///////////////
 
 void gdeUOCTPSetMinValue::Undo(){
-	pProperty->SetMinimumValue( pOldValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetMinimumValue(pOldValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }
 
 void gdeUOCTPSetMinValue::Redo(){
-	pProperty->SetMinimumValue( pNewValue );
-	pObjectClass->NotifyTexturePropertyChanged( pProperty );
+	pProperty->SetMinimumValue(pNewValue);
+	pObjectClass->NotifyTexturePropertyChanged(pProperty);
 }

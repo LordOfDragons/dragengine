@@ -38,14 +38,14 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetLayoutStack::dealWidgetLayoutStack( dealDisplay &display ) :
-dealWidgetLayout( display ),
-pFullSize( true ){
+dealWidgetLayoutStack::dealWidgetLayoutStack(dealDisplay &display) :
+dealWidgetLayout(display),
+pFullSize(true){
 }
 
-dealWidgetLayoutStack::dealWidgetLayoutStack( dealDisplay &display, bool fullSize ) :
-dealWidgetLayout( display ),
-pFullSize( fullSize ){
+dealWidgetLayoutStack::dealWidgetLayoutStack(dealDisplay &display, bool fullSize) :
+dealWidgetLayout(display),
+pFullSize(fullSize){
 }
 
 dealWidgetLayoutStack::~dealWidgetLayoutStack(){
@@ -56,8 +56,8 @@ dealWidgetLayoutStack::~dealWidgetLayoutStack(){
 // Management
 ///////////////
 
-void dealWidgetLayoutStack::SetFullSize( bool fullSize ){
-	if( fullSize == pFullSize ){
+void dealWidgetLayoutStack::SetFullSize(bool fullSize){
+	if(fullSize == pFullSize){
 		return;
 	}
 	
@@ -68,7 +68,7 @@ void dealWidgetLayoutStack::SetFullSize( bool fullSize ){
 
 
 decPoint dealWidgetLayoutStack::GetMinimumSize(){
-	if( GetHasExplicitMinimumSize() ){
+	if(GetHasExplicitMinimumSize()){
 		return GetExplicitMinimumSize();
 	}
 	return GetRealMinimumSize();
@@ -78,63 +78,63 @@ decPoint dealWidgetLayoutStack::GetMinimumSize(){
 
 void dealWidgetLayoutStack::LayoutWidgets(){
 	const int count = GetWidgetCount();
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	const decPoint contentArea( GetContentArea() );
+	const decPoint contentArea(GetContentArea());
 	int i;
 	
-	if( pFullSize ){
-		const decPoint position( GetPaddingLeft(), GetPaddingTop() );
+	if(pFullSize){
+		const decPoint position(GetPaddingLeft(), GetPaddingTop());
 		
-		for( i=0; i<count; i++ ){
-			dealWidget &widget = *GetWidgetAt( i );
-			if( ! widget.GetVisible() ){
+		for(i=0; i<count; i++){
+			dealWidget &widget = *GetWidgetAt(i);
+			if(! widget.GetVisible()){
 				continue;
 			}
 			
-			widget.SetPosition( position );
-			widget.SetSize( contentArea );
+			widget.SetPosition(position);
+			widget.SetSize(contentArea);
 		}
 		
 	}else{
-		const decPoint center( decPoint( GetPaddingLeft(), GetPaddingTop() ) + contentArea / 2 );
+		const decPoint center(decPoint(GetPaddingLeft(), GetPaddingTop()) + contentArea / 2);
 		
-		for( i=0; i<count; i++ ){
-			dealWidget &widget = *GetWidgetAt( i );
-			if( ! widget.GetVisible() ){
+		for(i=0; i<count; i++){
+			dealWidget &widget = *GetWidgetAt(i);
+			if(! widget.GetVisible()){
 				continue;
 			}
 			
-			decPoint widgetSize( widget.GetMinimumSize() );
+			decPoint widgetSize(widget.GetMinimumSize());
 			
-			widget.SetPosition( center - widgetSize / 2 );
-			widget.SetSize( widgetSize );
+			widget.SetPosition(center - widgetSize / 2);
+			widget.SetSize(widgetSize);
 		}
 	}
 }
 
 decPoint dealWidgetLayoutStack::GetRealMinimumSize(){
 	const int count = GetWidgetCount();
-	if( count == 0 ){
-		return decPoint( GetPaddingLeft() + GetPaddingRight(), GetPaddingTop() + GetPaddingBottom() );
+	if(count == 0){
+		return decPoint(GetPaddingLeft() + GetPaddingRight(), GetPaddingTop() + GetPaddingBottom());
 	}
 	
 	decPoint size;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		dealWidget &widget = *GetWidgetAt( i );
-		if( ! widget.GetVisible() ){
+	for(i=0; i<count; i++){
+		dealWidget &widget = *GetWidgetAt(i);
+		if(! widget.GetVisible()){
 			continue;
 		}
 		
-		size.SetLargest( widget.GetMinimumSize() );
+		size.SetLargest(widget.GetMinimumSize());
 	}
 	
 	size.x += GetPaddingLeft() + GetPaddingRight();
 	size.y += GetPaddingTop() + GetPaddingBottom();
 	
-	return decPoint().Largest( size );
+	return decPoint().Largest(size);
 }

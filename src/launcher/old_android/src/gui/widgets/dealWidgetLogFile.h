@@ -68,19 +68,19 @@ private:
 		
 	public:
 		/** \brief Create log entry. */
-		LogEntry( eLogTypes type, const char *source, const char *message );
+		LogEntry(eLogTypes type, const char *source, const char *message);
 		
 		/** \brief Clean up log entry. */
 		virtual ~LogEntry();
 		
 		/** \brief Type. */
-		inline eLogTypes GetType() const{ return pType; }
+		inline eLogTypes GetType() const{return pType;}
 		
 		/** \brief Source. */
-		inline const decString &GetSource() const{ return pSource; }
+		inline const decString &GetSource() const{return pSource;}
 		
 		/** \brief Message. */
-		inline const decString &GetMessage() const{ return pMessage; }
+		inline const decString &GetMessage() const{return pMessage;}
 	};
 	
 	
@@ -106,7 +106,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetLogFile( dealDisplay &display );
+	dealWidgetLogFile(dealDisplay &display);
 	
 	/** \brief Clean up widget. */
 	virtual ~dealWidgetLogFile();
@@ -117,16 +117,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename. */
-	inline const decString &GetFilename() const{ return pFilename; }
+	inline const decString &GetFilename() const{return pFilename;}
 	
 	/** \brief Set filename. */
-	void SetFilename( const char *filename );
+	void SetFilename(const char *filename);
 	
 	/** \brief Check file and update content if required. */
 	void CheckFile();
 	
 	/** \brief Add log line. */
-	void AddLogLine( const decString &line );
+	void AddLogLine(const decString &line);
 	
 	/** \brief Update content from logs. */
 	void UpdateContent();
@@ -134,10 +134,10 @@ public:
 	
 	
 	/** \brief Number of lines to show at minimum size. */
-	inline int GetVisibleLineCount() const{ return pVisibleLineCount; }
+	inline int GetVisibleLineCount() const{return pVisibleLineCount;}
 	
 	/** \brief Set number of lines to show at minimum size. */
-	void SetVisibleLineCount( int lineCount );
+	void SetVisibleLineCount(int lineCount);
 	
 	
 	
@@ -145,7 +145,7 @@ public:
 	virtual decPoint GetMinimumSize();
 	
 	/** \brief Render content. */
-	virtual void RenderContent( const sRenderContext &context );
+	virtual void RenderContent(const sRenderContext &context);
 	/*@}*/
 };
 

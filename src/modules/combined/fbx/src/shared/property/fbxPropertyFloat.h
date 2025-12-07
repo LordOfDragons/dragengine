@@ -45,7 +45,7 @@ public:
 	fbxPropertyFloat();
 	
 	/** \brief Load property. */
-	fbxPropertyFloat( decBaseFileReader &reader );
+	fbxPropertyFloat(decBaseFileReader &reader);
 	
 protected:
 	/** \brief Clean up property. */
@@ -58,10 +58,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Value. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** \brief Set value. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Casting throwing exception if wrong type. */
 	virtual fbxPropertyFloat &CastFloat();
@@ -76,10 +76,10 @@ public:
 	
 	
 	/** \brief Save to file. */
-	virtual void Save( decBaseFileWriter &writer );
+	virtual void Save(decBaseFileWriter &writer);
 	
 	/** \brief Debug print property structure. */
-	virtual void DebugPrintStructure( deBaseModule &logger, const decString &prefix ) const;
+	virtual void DebugPrintStructure(deBaseModule &logger, const decString &prefix) const;
 	/*@}*/
 };
 

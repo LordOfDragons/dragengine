@@ -74,19 +74,19 @@
 ////////////////////////////
 
 deOSWindows::deOSWindows() :
-pInstApp( nullptr ),
-pCurWindow( nullptr ),
-pResolutionCount( 0 ),
-pResolutions( nullptr ),
-pRefreshRate( 60 ),
-pScaleFactor( 100 )
+pInstApp(nullptr),
+pCurWindow(nullptr),
+pResolutionCount(0),
+pResolutions(nullptr),
+pRefreshRate(60),
+pScaleFactor(100)
 {
 	// this is unfortunately returning too small values
 	//pScreenWidth = GetSystemMetrics( SM_CXFULLSCREEN );
 	//pScreenHeight = GetSystemMetrics( SM_CYFULLSCREEN );
 
 	RECT rect;
-	DEASSERT_TRUE( SystemParametersInfoA( SPI_GETWORKAREA, 0, &rect, 0 ) )
+	DEASSERT_TRUE(SystemParametersInfoA(SPI_GETWORKAREA, 0, &rect, 0))
 	pScreenWidth = rect.right - rect.left;
 	pScreenHeight = rect.bottom - rect.top;
 	
@@ -105,104 +105,104 @@ pScaleFactor( 100 )
 	decPath path;
 	
 #ifdef OS_W32_APPSTORE
-	pPathEngineBase = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngine", "" );
-	if( pPathEngineBase.IsEmpty() ){
-		DETHROW_INFO( deeInvalidParam, "PathEngine registry value is not set" );
+	pPathEngineBase = GetRegistryValue("SOFTWARE\\Drag[en]gine", "PathEngine", "");
+	if(pPathEngineBase.IsEmpty()){
+		DETHROW_INFO(deeInvalidParam, "PathEngine registry value is not set");
 	}
 #else
-	pPathEngineBase = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngine", DE_ENGINE_BASE_PATH );
+	pPathEngineBase = GetRegistryValue("SOFTWARE\\Drag[en]gine", "PathEngine", DE_ENGINE_BASE_PATH);
 #endif
 	
 	pPathEngine = pPathEngineBase + "\\Data";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_ENGINE_PATH", &value[ 0 ], valueSize ) > 0 ){
-		pPathEngine = WideToUtf8( value );
+	if(GetEnvironmentVariable(L"DE_ENGINE_PATH", &value[0], valueSize) > 0){
+		pPathEngine = WideToUtf8(value);
 	}
 #else
-	value = getenv( "DE_ENGINE_PATH" );
-	if( value ){
+	value = getenv("DE_ENGINE_PATH");
+	if(value){
 		pPathEngine = value;
 	}
 #endif
 #endif
-	pPathEngine = ParseNativePath( pPathEngine );
+	pPathEngine = ParseNativePath(pPathEngine);
 	
 	//pPathShare = GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathEngineShare", DE_SHARE_PATH );
 	pPathShare = pPathEngineBase + "\\Share";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_SHARE_PATH", &value[ 0 ], valueSize ) > 0 ){
-		pPathShare = WideToUtf8( value );
+	if(GetEnvironmentVariable(L"DE_SHARE_PATH", &value[0], valueSize) > 0){
+		pPathShare = WideToUtf8(value);
 	}
 #else
-	value = getenv( "DE_SHARE_PATH" );
-	if( value ){
+	value = getenv("DE_SHARE_PATH");
+	if(value){
 		pPathShare = value;
 	}
 #endif
 #endif
-	pPathShare = ParseNativePath( pPathShare );
+	pPathShare = ParseNativePath(pPathShare);
 	
 	pPathSystemConfig = pPathEngineBase + "\\Config";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], valueSize ) > 0 ){
-		pPathSystemConfig = WideToUtf8( value );
+	if(GetEnvironmentVariable(L"DE_CONFIG_PATH", &value[0], valueSize) > 0){
+		pPathSystemConfig = WideToUtf8(value);
 	}
 #else
-	value = getenv( "DE_CONFIG_PATH" );
-	if( value ){
+	value = getenv("DE_CONFIG_PATH");
+	if(value){
 		pPathSystemConfig = value;
 	}
 #endif
 #endif
-	pPathSystemConfig = ParseNativePath( pPathSystemConfig );
+	pPathSystemConfig = ParseNativePath(pPathSystemConfig);
 	
 	pPathUserConfig = "@RoamingAppData\\Dragengine\\Config";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CONFIG_PATH", &value[ 0 ], valueSize ) > 0 ){
-		pPathUserConfig = WideToUtf8( value );
+	if(GetEnvironmentVariable(L"DE_CONFIG_PATH", &value[0], valueSize) > 0){
+		pPathUserConfig = WideToUtf8(value);
 	}
 #else
-	value = getenv( "DE_CONFIG_PATH" );
-	if( value ){
+	value = getenv("DE_CONFIG_PATH");
+	if(value){
 		pPathUserConfig = value;
 	}
 #endif
 #endif
-	pPathUserConfig = ParseNativePath( pPathUserConfig );
+	pPathUserConfig = ParseNativePath(pPathUserConfig);
 	
 	pPathUserCache = "@LocalAppData\\Dragengine\\Cache";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CACHE_PATH", &value[ 0 ], valueSize ) > 0 ){
-		pPathUserCache = WideToUtf8( value );
+	if(GetEnvironmentVariable(L"DE_CACHE_PATH", &value[0], valueSize) > 0){
+		pPathUserCache = WideToUtf8(value);
 	}
 #else
-	value = getenv( "DE_CACHE_PATH" );
-	if( value ){
+	value = getenv("DE_CACHE_PATH");
+	if(value){
 		pPathUserCache = value;
 	}
 #endif
 #endif
-	pPathUserCache = ParseNativePath( pPathUserCache );
+	pPathUserCache = ParseNativePath(pPathUserCache);
 	
 	pPathUserCapture = "@LocalAppData\\Dragengine\\Capture";
 #ifndef OS_W32_APPSTORE
 #ifdef OS_W32
-	if( GetEnvironmentVariable( L"DE_CAPTURE_PATH", &value[ 0 ], valueSize ) > 0 ){
-		pPathUserCapture = WideToUtf8( value );
+	if(GetEnvironmentVariable(L"DE_CAPTURE_PATH", &value[0], valueSize) > 0){
+		pPathUserCapture = WideToUtf8(value);
 	}
 #else
-	value = getenv( "DE_CAPTURE_PATH" );
-	if( value ){
+	value = getenv("DE_CAPTURE_PATH");
+	if(value){
 		pPathUserCapture = value;
 	}
 #endif
 #endif
-	pPathUserCapture = ParseNativePath( pPathUserCapture );
+	pPathUserCapture = ParseNativePath(pPathUserCapture);
 }
 
 deOSWindows::~deOSWindows(){
@@ -240,22 +240,22 @@ decString deOSWindows::GetPathUserCapture(){
 
 
 
-void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
+void deOSWindows::ProcessEventLoop(bool sendToInputModule){
 	deBaseInputModule &inputModule = *GetEngine()->GetInputSystem()->GetActiveModule();
 	MSG message;
 	
-	while( PeekMessage( &message, NULL, 0, 0, PM_REMOVE ) ){
-		TranslateMessage( &message );
-		DispatchMessage( &message );
+	while(PeekMessage(&message, NULL, 0, 0, PM_REMOVE)){
+		TranslateMessage(&message);
+		DispatchMessage(&message);
 
 		// if( pCurWindow && message.hwnd == pCurWindow ){
-		switch( message.message ){
+		switch(message.message){
 		case WM_QUIT:
 			GetEngine()->Quit();
 			break;
 			
 		case WM_ACTIVATEAPP:
-			SetAppActive( message.wParam == TRUE );
+			SetAppActive(message.wParam == TRUE);
 			// DispatchMessage( &message );
 			break;
 			
@@ -278,17 +278,17 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			break;
 		}
 		
-		if( sendToInputModule ){
-			inputModule.EventLoop( message );
+		if(sendToInputModule){
+			inputModule.EventLoop(message);
 		}
     }
 }
 
 decString deOSWindows::GetUserLocaleLanguage(){
-	const decString language( pGetUserLanguage() );
-	const int deli = language.Find( '-' );
-	if( deli != -1 ){
-		return language.GetLeft( deli ).GetLower();
+	const decString language(pGetUserLanguage());
+	const int deli = language.Find('-');
+	if(deli != -1){
+		return language.GetLeft(deli).GetLower();
 		
 	}else{
 		return language.GetLower();
@@ -297,15 +297,15 @@ decString deOSWindows::GetUserLocaleLanguage(){
 }
 
 decString deOSWindows::GetUserLocaleTerritory(){
-	const decString language( pGetUserLanguage() );
-	const int deli = language.Find( '-' );
-	if( deli != -1 ){
-		const int deli2 = language.Find( '-', deli + 1 );
-		if( deli2 != -1 ){
-			return language.GetMiddle( deli + 1, deli2 ).GetLower();
+	const decString language(pGetUserLanguage());
+	const int deli = language.Find('-');
+	if(deli != -1){
+		const int deli2 = language.Find('-', deli + 1);
+		if(deli2 != -1){
+			return language.GetMiddle(deli + 1, deli2).GetLower();
 			
 		}else{
-			return language.GetMiddle( deli + 1 ).GetLower();
+			return language.GetMiddle(deli + 1).GetLower();
 		}
 		
 	}else{
@@ -323,34 +323,34 @@ int deOSWindows::GetDisplayCount(){
 	return 1;
 }
 
-decPoint deOSWindows::GetDisplayCurrentResolution( int display ){
-	DEASSERT_TRUE( display == 0 )
+decPoint deOSWindows::GetDisplayCurrentResolution(int display){
+	DEASSERT_TRUE(display == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSWindows::GetDisplayCurrentRefreshRate( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSWindows::GetDisplayCurrentRefreshRate(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return pRefreshRate;
 }
 
-int deOSWindows::GetDisplayResolutionCount( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSWindows::GetDisplayResolutionCount(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return pResolutionCount;
 }
 
-decPoint deOSWindows::GetDisplayResolution( int display, int resolution ){
-	DEASSERT_TRUE( display == 0 )
-	DEASSERT_TRUE( resolution >= 0 )
-	DEASSERT_TRUE( resolution < pResolutionCount )
+decPoint deOSWindows::GetDisplayResolution(int display, int resolution){
+	DEASSERT_TRUE(display == 0)
+	DEASSERT_TRUE(resolution >= 0)
+	DEASSERT_TRUE(resolution < pResolutionCount)
 	
-	return pResolutions[ resolution ];
+	return pResolutions[resolution];
 }
 
-int deOSWindows::GetDisplayCurrentScaleFactor( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSWindows::GetDisplayCurrentScaleFactor(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return pScaleFactor;
 }
@@ -374,11 +374,11 @@ deOSWindows *deOSWindows::CastToOSWindows(){
 // Windows specific
 /////////////////////
 
-void deOSWindows::SetInstApp( HINSTANCE hInstApp ){
+void deOSWindows::SetInstApp(HINSTANCE hInstApp){
 	pInstApp = hInstApp;
 }
 
-void deOSWindows::SetWindow( HWND window ){
+void deOSWindows::SetWindow(HWND window){
 //	RECT windowRect;
 	// check if the is a window at the moment
 	//if( pCurWindow ){
@@ -388,8 +388,8 @@ void deOSWindows::SetWindow( HWND window ){
 	// set new window
 	pCurWindow = window;
 	// show new window if not null
-	if( pCurWindow ){
-		ShowWindow( pCurWindow, SW_SHOW );
+	if(pCurWindow){
+		ShowWindow(pCurWindow, SW_SHOW);
 //		GetClientRect( pCurWindow, &windowRect );
 //		pCurWindowWidth = windowRect.right - windowRect.left;
 //		pCurWindowHeight = windowRect.bottom - windowRect.top;
@@ -398,19 +398,19 @@ void deOSWindows::SetWindow( HWND window ){
 
 
 
-decString deOSWindows::ParseNativePath( const char *path ){
-	const decString spath( path );
+decString deOSWindows::ParseNativePath(const char *path){
+	const decString spath(path);
 	
-	if( spath.IsEmpty() ){
+	if(spath.IsEmpty()){
 		return spath;
 	}
 	
-	if( spath.GetAt( 0 ) != '@' ){
+	if(spath.GetAt(0) != '@'){
 		return spath;
 	}
 	
-	int index = spath.Find( '\\' );
-	if( index == -1 ){
+	int index = spath.Find('\\');
+	if(index == -1){
 		index = spath.GetLength();
 	}
 	
@@ -444,37 +444,37 @@ decString deOSWindows::ParseNativePath( const char *path ){
 	//   returned redirected (real) path
 	DWORD dwFlags = 0x00040000;
 	
-	const decString special( spath.GetMiddle( 1, index ) );
+	const decString special(spath.GetMiddle(1, index));
 	GUID nFolder;
 	
-	if( special == "ProgramFiles" ){
+	if(special == "ProgramFiles"){
 		nFolder = FOLDERID_ProgramFiles;
 		
-	}else if( special == "System" ){
+	}else if(special == "System"){
 		nFolder = FOLDERID_System;
 		
-	}else if( special == "RoamingAppData" ){
+	}else if(special == "RoamingAppData"){
 		nFolder = FOLDERID_RoamingAppData;
 		
-	}else if( special == "ProgramData" ){
+	}else if(special == "ProgramData"){
 		nFolder = FOLDERID_ProgramData;
 		
-	}else if( special == "Public" ){
+	}else if(special == "Public"){
 		nFolder = FOLDERID_Public;
 		
-	}else if( special == "PublicDocuments" ){
+	}else if(special == "PublicDocuments"){
 		nFolder = FOLDERID_PublicDocuments;
 		
-	}else if( special == "PublicGameTasks" ){
+	}else if(special == "PublicGameTasks"){
 		nFolder = FOLDERID_PublicGameTasks;
 		
-	}else if( special == "LocalAppData" ){
+	}else if(special == "LocalAppData"){
 		nFolder = FOLDERID_LocalAppData;
 		
-	}else if( special == "Documents" ){
+	}else if(special == "Documents"){
 		nFolder = FOLDERID_Documents;
 		
-	}else if( special == "Windows" ){
+	}else if(special == "Windows"){
 		nFolder = FOLDERID_Windows;
 		
 	}else{
@@ -482,121 +482,121 @@ decString deOSWindows::ParseNativePath( const char *path ){
 	}
 	
 	PWCHAR folderPath = NULL;
-	if( SHGetKnownFolderPath( nFolder, dwFlags, NULL, &folderPath ) != S_OK ){
-		DETHROW( deeInvalidParam );
+	if(SHGetKnownFolderPath(nFolder, dwFlags, NULL, &folderPath) != S_OK){
+		DETHROW(deeInvalidParam);
 	}
 	
-	const int folderPathLen = ( int )wcslen( folderPath );
+	const int folderPathLen = (int)wcslen(folderPath);
 	decUnicodeString ustrFolderPath;
 	int i;
 	
-	for( i=0; i<folderPathLen; i++ ){
-		ustrFolderPath.AppendCharacter( folderPath[ i ] );
+	for(i=0; i<folderPathLen; i++){
+		ustrFolderPath.AppendCharacter(folderPath[i]);
 	}
 	
-	return ustrFolderPath.ToUTF8() + spath.GetMiddle( index );
+	return ustrFolderPath.ToUTF8() + spath.GetMiddle(index);
 }
 
-void deOSWindows::Utf8ToWide( const char *utf8, wchar_t *wide, int maxSize ){
-	UnicodeToWide( decUnicodeString::NewFromUTF8( utf8 ), wide, maxSize );
+void deOSWindows::Utf8ToWide(const char *utf8, wchar_t *wide, int maxSize){
+	UnicodeToWide(decUnicodeString::NewFromUTF8(utf8), wide, maxSize);
 }
 
-void deOSWindows::UnicodeToWide( const decUnicodeString &unicode, wchar_t *wide, int maxSize ){
+void deOSWindows::UnicodeToWide(const decUnicodeString &unicode, wchar_t *wide, int maxSize){
 	const int count = unicode.GetLength();
 	int i;
 	
-	if( count >= maxSize ){
-		DETHROW( deeInvalidParam );
+	if(count >= maxSize){
+		DETHROW(deeInvalidParam);
 	}
 	
-	for( i=0; i<count; i++ ){
-		wide[ i ] = ( wchar_t )unicode[ i ];
+	for(i=0; i<count; i++){
+		wide[i] = (wchar_t)unicode[i];
 	}
-	wide[ i ] = 0;
+	wide[i] = 0;
 }
 
-decString deOSWindows::WideToUtf8( const wchar_t *wide ){
-	return WideToUnicode( wide ).ToUTF8();
+decString deOSWindows::WideToUtf8(const wchar_t *wide){
+	return WideToUnicode(wide).ToUTF8();
 }
 
-decUnicodeString deOSWindows::WideToUnicode( const wchar_t *wide ){
-	const int count = ( int )wcslen( wide );
+decUnicodeString deOSWindows::WideToUnicode(const wchar_t *wide){
+	const int count = (int)wcslen(wide);
 	decUnicodeString unicode;
 	int i;
 	
-	unicode.Set( 0, count );
-	for( i=0; i<count; i++ ){
-		unicode.SetAt( i, wide[ i ] );
+	unicode.Set(0, count);
+	for(i=0; i<count; i++){
+		unicode.SetAt(i, wide[i]);
 	}
 	
 	return unicode;
 }
 
-decString deOSWindows::GetRegistryValue( const char *key, const char *entry, const char *defaultValue ){
+decString deOSWindows::GetRegistryValue(const char *key, const char *entry, const char *defaultValue){
 	HKEY hKey;
-	if( RegOpenKeyExA( HKEY_LOCAL_MACHINE, key, 0, KEY_READ, &hKey ) != ERROR_SUCCESS ){
+	if(RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_READ, &hKey) != ERROR_SUCCESS){
 		return defaultValue;
 	}
 	
 	DWORD bufferSize = 0;
-	if( RegQueryValueExA( hKey, entry, 0, NULL, NULL, &bufferSize ) != ERROR_SUCCESS ){
-		RegCloseKey( hKey );
+	if(RegQueryValueExA(hKey, entry, 0, NULL, NULL, &bufferSize) != ERROR_SUCCESS){
+		RegCloseKey(hKey);
 		return defaultValue;
 	}
 	
-	CHAR * const buffer = new CHAR[ bufferSize ];
-	if( RegQueryValueExA( hKey, entry, 0, NULL, ( LPBYTE )buffer, &bufferSize ) != ERROR_SUCCESS ){
+	CHAR * const buffer = new CHAR[bufferSize];
+	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer, &bufferSize) != ERROR_SUCCESS){
 		delete [] buffer;
-		RegCloseKey( hKey );
+		RegCloseKey(hKey);
 		return defaultValue;
 	}
 	
-	const decString returnValue( buffer );
+	const decString returnValue(buffer);
 	delete [] buffer;
-	RegCloseKey( hKey );
+	RegCloseKey(hKey);
 	
 	return returnValue;
 }
 
-decString deOSWindows::GetRegistryValueCurrentUser( const char *key, const char *entry, const char *defaultValue ){
+decString deOSWindows::GetRegistryValueCurrentUser(const char *key, const char *entry, const char *defaultValue){
 	HKEY hKey;
-	if( RegOpenKeyExA( HKEY_CURRENT_USER, key, 0, KEY_READ, &hKey ) != ERROR_SUCCESS ){
+	if(RegOpenKeyExA(HKEY_CURRENT_USER, key, 0, KEY_READ, &hKey) != ERROR_SUCCESS){
 		return defaultValue;
 	}
 	
 	DWORD bufferSize = 0;
-	if( RegQueryValueExA( hKey, entry, 0, NULL, NULL, &bufferSize ) != ERROR_SUCCESS ){
-		RegCloseKey( hKey );
+	if(RegQueryValueExA(hKey, entry, 0, NULL, NULL, &bufferSize) != ERROR_SUCCESS){
+		RegCloseKey(hKey);
 		return defaultValue;
 	}
 	
-	CHAR * const buffer = new CHAR[ bufferSize ];
-	if( RegQueryValueExA( hKey, entry, 0, NULL, ( LPBYTE )buffer, &bufferSize ) != ERROR_SUCCESS ){
+	CHAR * const buffer = new CHAR[bufferSize];
+	if(RegQueryValueExA(hKey, entry, 0, NULL, (LPBYTE)buffer, &bufferSize) != ERROR_SUCCESS){
 		delete [] buffer;
-		RegCloseKey( hKey );
+		RegCloseKey(hKey);
 		return defaultValue;
 	}
 	
-	const decString returnValue( buffer );
+	const decString returnValue(buffer);
 	delete [] buffer;
-	RegCloseKey( hKey );
+	RegCloseKey(hKey);
 	
 	return returnValue;
 }
 
-void deOSWindows::SetRegistryValue( const char *key, const char *entry, const char *value ){
+void deOSWindows::SetRegistryValue(const char *key, const char *entry, const char *value){
 	HKEY hKey;
-	if( RegCreateKeyExA( HKEY_LOCAL_MACHINE, key, 0, NULL, 0, KEY_SET_VALUE, NULL, &hKey, NULL )
-	!= ERROR_SUCCESS ){
-		DETHROW( deeInvalidAction );
+	if(RegCreateKeyExA(HKEY_LOCAL_MACHINE, key, 0, NULL, 0, KEY_SET_VALUE, NULL, &hKey, NULL)
+	!= ERROR_SUCCESS){
+		DETHROW(deeInvalidAction);
 	}
 	
-	if( RegSetValueExA( hKey, entry, 0, REG_SZ, ( BYTE* )value, ( DWORD )strlen( value ) ) != ERROR_SUCCESS ){
-		RegCloseKey( hKey );
-		DETHROW( deeInvalidAction );
+	if(RegSetValueExA(hKey, entry, 0, REG_SZ, (BYTE*)value, (DWORD)strlen(value)) != ERROR_SUCCESS){
+		RegCloseKey(hKey);
+		DETHROW(deeInvalidAction);
 	}
 	
-	RegCloseKey( hKey );
+	RegCloseKey(hKey);
 }
 
 
@@ -605,7 +605,7 @@ void deOSWindows::SetRegistryValue( const char *key, const char *entry, const ch
 //////////////////////
 
 void deOSWindows::pCleanUp(){
-	if( pResolutions ){
+	if(pResolutions){
 		delete [] pResolutions;
 	}
 }
@@ -614,17 +614,17 @@ decString deOSWindows::pGetUserLanguage() const{
 	ULONG numLanguages = 0;
 	ULONG langBufSize = 0;
 	
-	if( ! GetUserPreferredUILanguages( MUI_LANGUAGE_NAME, &numLanguages, NULL, &langBufSize ) ){
+	if(! GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, NULL, &langBufSize)){
 		return "en";
 	}
 	
-	wchar_t * const buffer = new wchar_t[ langBufSize ];
-	if( ! GetUserPreferredUILanguages( MUI_LANGUAGE_NAME, &numLanguages, buffer, &langBufSize ) ){
+	wchar_t * const buffer = new wchar_t[langBufSize];
+	if(! GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numLanguages, buffer, &langBufSize)){
 		delete [] buffer;
 		return "en";
 	}
 	
-	const decString language( WideToUtf8( buffer ) );
+	const decString language(WideToUtf8(buffer));
 	delete [] buffer;
 	return language;
 }
@@ -632,50 +632,50 @@ decString deOSWindows::pGetUserLanguage() const{
 void deOSWindows::pFindResolutions(){
 	int count = 0;
 	DEVMODE mode = {};
-	mode.dmSize = sizeof( mode );
+	mode.dmSize = sizeof(mode);
 	mode.dmDriverExtra = 0;
 
-	while( EnumDisplaySettingsW( NULL, count, &mode ) ){
+	while(EnumDisplaySettingsW(NULL, count, &mode)){
 		count++;
 	}
 
-	if( count == 0 ){
-		pResolutions = new decPoint[ 1 ];
-		pResolutions[ 0 ].x = pScreenWidth;
-		pResolutions[ 0 ].y = pScreenHeight;
+	if(count == 0){
+		pResolutions = new decPoint[1];
+		pResolutions[0].x = pScreenWidth;
+		pResolutions[0].y = pScreenHeight;
 		pResolutionCount = 1;
 		return;
 	}
 
-	pResolutions = new decPoint[ count ];
+	pResolutions = new decPoint[count];
 	int i, j;
 
-	for( i=0; i<count; i++ ){
-		DEASSERT_TRUE( EnumDisplaySettingsW( NULL, i, &mode ) );
+	for(i=0; i<count; i++){
+		DEASSERT_TRUE(EnumDisplaySettingsW(NULL, i, &mode));
 
-		const decPoint resolution( ( int )mode.dmPelsWidth, ( int )mode.dmPelsHeight );
+		const decPoint resolution((int)mode.dmPelsWidth, (int)mode.dmPelsHeight);
 		
-		for( j=0; j<pResolutionCount; j++ ){
-			if( pResolutions[ j ] == resolution ){
+		for(j=0; j<pResolutionCount; j++){
+			if(pResolutions[j] == resolution){
 				break;
 			}
 		}
 
-		if( j < pResolutionCount ){
+		if(j < pResolutionCount){
 			continue;
 		}
 
-		pResolutions[ pResolutionCount++ ] = resolution;
+		pResolutions[pResolutionCount++] = resolution;
 	}
 
-	for( i=1; i<pResolutionCount; i++ ){
-		const decPoint &a = pResolutions[ i - 1 ];
-		const decPoint &b = pResolutions[ i ];
-		if( b.x > a.x || ( b.x == a.x && b.y > a.y ) ){
-			const decPoint t( a );
-			pResolutions[ i - 1 ] = b;
-			pResolutions[ i ] = t;
-			if( i > 1 ){
+	for(i=1; i<pResolutionCount; i++){
+		const decPoint &a = pResolutions[i - 1];
+		const decPoint &b = pResolutions[i];
+		if(b.x > a.x || (b.x == a.x && b.y > a.y)){
+			const decPoint t(a);
+			pResolutions[i - 1] = b;
+			pResolutions[i] = t;
+			if(i > 1){
 				i -= 2;
 			}
 		}
@@ -683,20 +683,20 @@ void deOSWindows::pFindResolutions(){
 }
 
 void deOSWindows::pFindScaleFactor(){
-	const POINT ptZero = { 0, 0 };
-	const HMONITOR monitor = MonitorFromPoint( ptZero, MONITOR_DEFAULTTOPRIMARY );
+	const POINT ptZero = {0, 0};
+	const HMONITOR monitor = MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
 	DEVICE_SCALE_FACTOR dsf;
-	if( GetScaleFactorForMonitor( monitor, &dsf ) == S_OK && dsf != 0 ){
-		pScaleFactor = ( int )dsf;
+	if(GetScaleFactorForMonitor(monitor, &dsf) == S_OK && dsf != 0){
+		pScaleFactor = (int)dsf;
 	}
 }
 
 void deOSWindows::pFindRefreshRate(){
 	DEVMODE mode = {};
-	mode.dmSize = sizeof( mode );
+	mode.dmSize = sizeof(mode);
 	mode.dmDriverExtra = 0;
-	if( EnumDisplaySettingsW( NULL, ENUM_CURRENT_SETTINGS, &mode ) && mode.dmDisplayFrequency > 1 ){
-		pRefreshRate = ( int )mode.dmDisplayFrequency;
+	if(EnumDisplaySettingsW(NULL, ENUM_CURRENT_SETTINGS, &mode) && mode.dmDisplayFrequency > 1){
+		pRefreshRate = (int)mode.dmDisplayFrequency;
 	}
 
 	// NOTE fullscreen: https://stackoverflow.com/questions/2382464/win32-full-screen-and-hiding-taskbar

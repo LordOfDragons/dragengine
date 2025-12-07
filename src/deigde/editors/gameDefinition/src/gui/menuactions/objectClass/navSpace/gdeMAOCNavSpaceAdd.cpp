@@ -46,10 +46,10 @@
 // Constructor
 ////////////////
 
-gdeMAOCNavSpaceAdd::gdeMAOCNavSpaceAdd( gdeWindowMain &windowMain ) :
-gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Space...",
-	windowMain.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-	"Add object class navigation space" )
+gdeMAOCNavSpaceAdd::gdeMAOCNavSpaceAdd(gdeWindowMain &windowMain) :
+gdeBaseMAOCSubObject(windowMain, "Add Object Class Navigation Space...",
+	windowMain.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
+	"Add object class navigation space")
 {
 }
 
@@ -58,10 +58,10 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Space...",
 // Management
 ///////////////
 
-igdeUndo *gdeMAOCNavSpaceAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
+igdeUndo *gdeMAOCNavSpaceAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
 	return new gdeUOCAddNavSpace(&objectClass, gdeOCNavigationSpace::Ref::NewWith());
 }
 
 void gdeMAOCNavSpaceAdd::Update(){
-	SetEnabled( GetActiveObjectClass() != NULL );
+	SetEnabled(GetActiveObjectClass() != NULL);
 }

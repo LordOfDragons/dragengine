@@ -313,7 +313,7 @@ public:
 	deInputEvent();
 	
 	/** \brief Create copy of input event. */
-	deInputEvent( const deInputEvent &event );
+	deInputEvent(const deInputEvent &event);
 	
 	/** \brief Clean up the event object. */
 	~deInputEvent();
@@ -324,106 +324,106 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Event type. */
-	inline eEvents GetType() const{ return pType; }
+	inline eEvents GetType() const{return pType;}
 	
 	/**
 	 * \brief Set event type.
 	 * \throws deeInvalidParam \em type is not a member of deInputEvent::eEvents.
 	 */
-	void SetType( eEvents type );
+	void SetType(eEvents type);
 	
 	/** \brief Event device. */
-	inline int GetDevice() const{ return pDevice; }
+	inline int GetDevice() const{return pDevice;}
 	
 	/**
 	 * \brief Set event device.
 	 * \throws deeInvalidParam \em device is less than 0.
 	 */
-	void SetDevice( int device );
+	void SetDevice(int device);
 	
 	/**
 	 * \brief Event code.
 	 * 
 	 * This is a button or axis index.
 	 */
-	inline int GetCode() const{ return pCode; }
+	inline int GetCode() const{return pCode;}
 	
 	/**
 	 * \brief Set event code.
 	 * 
 	 * This is a button or axis index.
 	 */
-	void SetCode( int code );
+	void SetCode(int code);
 	
 	/**
 	 * \brief Event state.
 	 * 
 	 * ORed combination of members of deInputEvent::eStateModifiers.
 	 */
-	inline int GetState() const{ return pState; }
+	inline int GetState() const{return pState;}
 	
 	/**
 	 * \brief Set event state.
 	 * 
 	 * \param[in] code ORed combination of members of deInputEvent::eStateModifiers.
 	 */
-	void SetState( int state );
+	void SetState(int state);
 	
 	/**
 	 * \brief Key code to identify important keys.
 	 * 
 	 * Used for eeKeyPress and eeKeyRelease only.
 	 */
-	inline eKeyCodes GetKeyCode() const{ return pKeyCode; }
+	inline eKeyCodes GetKeyCode() const{return pKeyCode;}
 	
 	/**
 	 * \brief Set key code to identify important keys.
 	 * 
 	 * Used for eeKeyPress and eeKeyRelease only.
 	 */
-	void SetKeyCode( eKeyCodes keyCode );
+	void SetKeyCode(eKeyCodes keyCode);
 	
 	/** \brief Key character if a keyboard event. */
-	inline int GetKeyChar() const{ return pKeyChar; }
+	inline int GetKeyChar() const{return pKeyChar;}
 	
 	/** \brief Set key character if a keyboard event. */
-	void SetKeyChar( int keyChar );
+	void SetKeyChar(int keyChar);
 	
 	/** \brief X position if a mouse event. */
-	inline int GetX() const{ return pX; }
+	inline int GetX() const{return pX;}
 	
 	/** \brief Set X position if a mouse event. */
-	void SetX( int x );
+	void SetX(int x);
 	
 	/** \brief Y position if a mouse event. */
-	inline int GetY() const{ return pY; }
+	inline int GetY() const{return pY;}
 	
 	/** \brief Set Y position if a mouse event. */
-	void SetY( int y );
+	void SetY(int y);
 	
 	/** \brief Value if axis event. */
-	inline float GetValue() const{ return pValue; }
+	inline float GetValue() const{return pValue;}
 	
 	/** \brief Set value if axis event. */
-	void SetValue( float value );
+	void SetValue(float value);
 	
 	/** \brief Time the event occurred. */
-	inline const timeval &GetTime() const{ return pTime; }
+	inline const timeval &GetTime() const{return pTime;}
 	
 	/** \brief Set time the event occurred. */
-	void SetTime( const timeval &eventTime );
+	void SetTime(const timeval &eventTime);
 	
 	/**
 	 * \brief Source of the input event.
 	 * \version 1.6
 	 */
-	inline eSources GetSource() const{ return pSource; }
+	inline eSources GetSource() const{return pSource;}
 	
 	/**
 	 * \brief Set source of the input event.
 	 * \version 1.6
 	 */
-	void SetSource( eSources source );
+	void SetSource(eSources source);
 	
 	/**
 	 * \brief Location of key on keyboard.
@@ -431,7 +431,7 @@ public:
 	 * 
 	 * Used to distinguish between multiple keys producing the same key code.
 	 */
-	inline eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
+	inline eKeyLocation GetKeyLocation() const{return pKeyLocation;}
 	
 	/**
 	 * \brief Set location of key on keyboard.
@@ -439,10 +439,10 @@ public:
 	 * 
 	 * Used to distinguish between multiple keys producing the same key code.
 	 */
-	void SetKeyLocation( eKeyLocation location );
+	void SetKeyLocation(eKeyLocation location);
 	
 	/** \brief Copies properties of another event to this event. */
-	void SetFrom( const deInputEvent &event );
+	void SetFrom(const deInputEvent &event);
 	/*@}*/
 	
 	
@@ -450,10 +450,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Two events are equal. */
-	bool operator==( const deInputEvent &event ) const;
+	bool operator==(const deInputEvent &event) const;
 	
 	/** \brief Copy input event. */
-	deInputEvent &operator=( const deInputEvent &event );
+	deInputEvent &operator=(const deInputEvent &event);
 	/*@}*/
 };
 

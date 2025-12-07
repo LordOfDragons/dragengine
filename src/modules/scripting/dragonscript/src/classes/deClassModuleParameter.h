@@ -47,12 +47,12 @@ public:
 	deClassModuleParameter(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
 	~deClassModuleParameter();
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return p_scrMgr; }
+	inline deScriptingDragonScript *GetScriptModule() const{return p_scrMgr;}
 	void CreateClassMembers(dsEngine *engine);
 	void PushParameter(dsRunTime *RT, deBaseModule *module, int index);
-	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
-	inline dsClass *GetClassModuleParameterType() const{ return pClsModuleParameterType; }
-	inline dsClass *GetClassModuleParameterCategory() const{ return pClsModuleParameterCategory; }
+	inline deEngine *GetGameEngine() const{return p_gameEngine;}
+	inline dsClass *GetClassModuleParameterType() const{return pClsModuleParameterType;}
+	inline dsClass *GetClassModuleParameterCategory() const{return pClsModuleParameterCategory;}
 
 private:
 	struct sInitData{
@@ -62,25 +62,25 @@ private:
 		dsClass *clsModuleParameterCategory;
 	};
 #define DEF_NATFUNC(name) \
-	class name : public dsFunction{ \
+	class name : public dsFunction{\
 	public: \
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
-	DEF_NATFUNC( nfDestructor );
-	DEF_NATFUNC( nfGetName );
-	DEF_NATFUNC( nfGetDescription );
-	DEF_NATFUNC( nfGetType );
-	DEF_NATFUNC( nfGetMinimumValue );
-	DEF_NATFUNC( nfGetMaximumValue );
-	DEF_NATFUNC( nfGetValueStepSize );
-	DEF_NATFUNC( nfGetSelectionEntryCount );
-	DEF_NATFUNC( nfGetSelectionEntryValueAt );
-	DEF_NATFUNC( nfGetSelectionEntryDisplayNameAt );
-	DEF_NATFUNC( nfGetSelectionEntryDescriptionAt );
-	DEF_NATFUNC( nfGetCategory );
-	DEF_NATFUNC( nfGetDisplayName );
-	DEF_NATFUNC( nfGetDefaultValue );
+	DEF_NATFUNC(nfDestructor);
+	DEF_NATFUNC(nfGetName);
+	DEF_NATFUNC(nfGetDescription);
+	DEF_NATFUNC(nfGetType);
+	DEF_NATFUNC(nfGetMinimumValue);
+	DEF_NATFUNC(nfGetMaximumValue);
+	DEF_NATFUNC(nfGetValueStepSize);
+	DEF_NATFUNC(nfGetSelectionEntryCount);
+	DEF_NATFUNC(nfGetSelectionEntryValueAt);
+	DEF_NATFUNC(nfGetSelectionEntryDisplayNameAt);
+	DEF_NATFUNC(nfGetSelectionEntryDescriptionAt);
+	DEF_NATFUNC(nfGetCategory);
+	DEF_NATFUNC(nfGetDisplayName);
+	DEF_NATFUNC(nfGetDefaultValue);
 #undef DEF_NATFUNC
 };
 

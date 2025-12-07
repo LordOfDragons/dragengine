@@ -75,10 +75,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create editor. */
-	igdeTriggerExpressionEditor( igdeEnvironment &environment );
+	igdeTriggerExpressionEditor(igdeEnvironment &environment);
 	
 	/** \brief Create editor. */
-	igdeTriggerExpressionEditor( igdeEnvironment &environment, igdeAction *action );
+	igdeTriggerExpressionEditor(igdeEnvironment &environment, igdeAction *action);
 	
 	
 	
@@ -98,28 +98,28 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parser. */
-	inline igdeTriggerExpressionParser *GetParser() const{ return pParser; }
+	inline igdeTriggerExpressionParser *GetParser() const{return pParser;}
 	
 	/** \brief Set parser. */
-	void SetParser( igdeTriggerExpressionParser *parser );
+	void SetParser(igdeTriggerExpressionParser *parser);
 	
 	/** \brief Target list. */
-	inline const igdeTriggerTargetList *GetTargetList() const{ return pTargetList; }
+	inline const igdeTriggerTargetList *GetTargetList() const{return pTargetList;}
 	
 	/** \brief Set target list. */
-	void SetTargetList( const igdeTriggerTargetList *targetList );
+	void SetTargetList(const igdeTriggerTargetList *targetList);
 	
 	/** \brief Expression. */
-	inline const decString &GetExpression() const{ return pExpression; }
+	inline const decString &GetExpression() const{return pExpression;}
 	
 	/** \brief Set expression. */
-	void SetExpression( const char *expression );
+	void SetExpression(const char *expression);
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline igdeAction *GetAction() const{return pAction;}
 	
 	/** \brief Set action or NULL. */
-	void SetAction( igdeAction *action );
+	void SetAction(igdeAction *action);
 	
 	
 	
@@ -133,10 +133,10 @@ public:
 	void UpdateTree();
 	
 	/** \brief Add expression component to tree. */
-	void AddComponentToTree( igdeTreeItem *parent, igdeTriggerExpressionComponent *component );
+	void AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent *component);
 	
 	/** \brief Update expresion component in the tree. */
-	void UpdateComponentInTree( igdeTreeItem *item, igdeTriggerExpressionComponent *component );
+	void UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent *component);
 	
 	/** \brief Update expression component currently selected in the tree. */
 	void UpdateExpressionComponent();
@@ -154,10 +154,10 @@ public:
 	void UpdateFromTargetList();
 	
 	/** \brief Set index of selected item in the target list or -1 if there is no selection. */
-	void SetSelectedItemInTargetList( int selection );
+	void SetSelectedItemInTargetList(int selection);
 	
 	/** \brief Select target in list. */
-	void SetSelectedItemInTargetList( const char *name );
+	void SetSelectedItemInTargetList(const char *name);
 	
 	
 	
@@ -170,10 +170,10 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	virtual void OnParameterChanged(igdeAction *action);
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	virtual void OnDestroyed(igdeAction *action);
 	/*@}*/
 	
 	

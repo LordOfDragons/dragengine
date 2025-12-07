@@ -43,8 +43,8 @@
 gdeOCNavigationSpaceList::gdeOCNavigationSpaceList(){
 }
 
-gdeOCNavigationSpaceList::gdeOCNavigationSpaceList( const gdeOCNavigationSpaceList &list ) :
-pNavigationSpaces( list.pNavigationSpaces ){
+gdeOCNavigationSpaceList::gdeOCNavigationSpaceList(const gdeOCNavigationSpaceList &list) :
+pNavigationSpaces(list.pNavigationSpaces){
 }
 
 gdeOCNavigationSpaceList::~gdeOCNavigationSpaceList(){
@@ -59,27 +59,27 @@ int gdeOCNavigationSpaceList::GetCount() const{
 	return pNavigationSpaces.GetCount();
 }
 
-gdeOCNavigationSpace *gdeOCNavigationSpaceList::GetAt( int index ) const{
-	return ( gdeOCNavigationSpace* )pNavigationSpaces.GetAt( index );
+gdeOCNavigationSpace *gdeOCNavigationSpaceList::GetAt(int index) const{
+	return (gdeOCNavigationSpace*)pNavigationSpaces.GetAt(index);
 }
 
-int gdeOCNavigationSpaceList::IndexOf( gdeOCNavigationSpace *space ) const{
-	return pNavigationSpaces.IndexOf( space );
+int gdeOCNavigationSpaceList::IndexOf(gdeOCNavigationSpace *space) const{
+	return pNavigationSpaces.IndexOf(space);
 }
 
-bool gdeOCNavigationSpaceList::Has( gdeOCNavigationSpace *space ) const{
-	return pNavigationSpaces.Has( space );
+bool gdeOCNavigationSpaceList::Has(gdeOCNavigationSpace *space) const{
+	return pNavigationSpaces.Has(space);
 }
 
-void gdeOCNavigationSpaceList::Add( gdeOCNavigationSpace *space ){
-	if( ! space || Has( space ) ){
-		DETHROW( deeInvalidParam );
+void gdeOCNavigationSpaceList::Add(gdeOCNavigationSpace *space){
+	if(! space || Has(space)){
+		DETHROW(deeInvalidParam);
 	}
-	pNavigationSpaces.Add( space );
+	pNavigationSpaces.Add(space);
 }
 
-void gdeOCNavigationSpaceList::Remove( gdeOCNavigationSpace *space ){
-	pNavigationSpaces.Remove( space );
+void gdeOCNavigationSpaceList::Remove(gdeOCNavigationSpace *space){
+	pNavigationSpaces.Remove(space);
 }
 
 void gdeOCNavigationSpaceList::RemoveAll(){
@@ -88,7 +88,7 @@ void gdeOCNavigationSpaceList::RemoveAll(){
 
 
 
-gdeOCNavigationSpaceList &gdeOCNavigationSpaceList::operator=( const gdeOCNavigationSpaceList &list ){
+gdeOCNavigationSpaceList &gdeOCNavigationSpaceList::operator=(const gdeOCNavigationSpaceList &list){
 	pNavigationSpaces = list.pNavigationSpaces;
 	return *this;
 }

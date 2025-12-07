@@ -40,19 +40,19 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionMove::ceUCActionMove( ceConversationTopic *topic, ceConversationAction *action, int newIndex ){
-	if( ! topic || ! action ) DETHROW( deeInvalidParam );
+ceUCActionMove::ceUCActionMove(ceConversationTopic *topic, ceConversationAction *action, int newIndex){
+	if(! topic || ! action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
 	pAction = NULL;
 	pNewIndex = newIndex;
-	pOldIndex = topic->GetActionList().IndexOf( action );
+	pOldIndex = topic->GetActionList().IndexOf(action);
 	
-	if( pOldIndex == -1 ) DETHROW( deeInvalidParam );
-	if( pNewIndex < 0 || pNewIndex >= topic->GetActionList().GetCount() ) DETHROW( deeInvalidParam );
-	if( pNewIndex == pOldIndex ) DETHROW( deeInvalidParam );
+	if(pOldIndex == -1) DETHROW(deeInvalidParam);
+	if(pNewIndex < 0 || pNewIndex >= topic->GetActionList().GetCount()) DETHROW(deeInvalidParam);
+	if(pNewIndex == pOldIndex) DETHROW(deeInvalidParam);
 	
-	SetShortInfo( "Move Action" );
+	SetShortInfo("Move Action");
 	
 	pTopic = topic;
 	topic->AddReference();
@@ -62,10 +62,10 @@ ceUCActionMove::ceUCActionMove( ceConversationTopic *topic, ceConversationAction
 }
 
 ceUCActionMove::~ceUCActionMove(){
-	if( pAction ){
+	if(pAction){
 		pAction->FreeReference();
 	}
-	if( pTopic ){
+	if(pTopic){
 		pTopic->FreeReference();
 	}
 }
@@ -76,11 +76,11 @@ ceUCActionMove::~ceUCActionMove(){
 ///////////////
 
 void ceUCActionMove::Undo(){
-	pTopic->GetActionList().MoveTo( pAction, pOldIndex );
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->GetActionList().MoveTo(pAction, pOldIndex);
+	pTopic->NotifyActionStructureChanged(NULL);
 }
 
 void ceUCActionMove::Redo(){
-	pTopic->GetActionList().MoveTo( pAction, pNewIndex );
-	pTopic->NotifyActionStructureChanged( NULL );
+	pTopic->GetActionList().MoveTo(pAction, pNewIndex);
+	pTopic->NotifyActionStructureChanged(NULL);
 }

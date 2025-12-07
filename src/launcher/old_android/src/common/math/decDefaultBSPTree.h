@@ -48,7 +48,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new default bsp tree object. */
-	decDefaultBSPTree( const decVector &normal, float distance );
+	decDefaultBSPTree(const decVector &normal, float distance);
 	/** Cleans up the default bsp tree object. */
 	virtual ~decDefaultBSPTree();
 	/*@}*/
@@ -60,25 +60,25 @@ public:
 	 * to create a new bsp tree of your own type. Do not set the parent of
 	 * bsp tree. The caller is responsible for this action if applicable.
 	 */
-	virtual decBSPTree *CreateBSPTree( const decVector &normal, float distance ) const;
+	virtual decBSPTree *CreateBSPTree(const decVector &normal, float distance) const;
 	/** Clears the content of this node. */
 	virtual void ClearNodeContent();
 	/** Add face as a coplanar face for this node. */
-	virtual void AddCoplanarFace( const decBSPTreeFace &face );
+	virtual void AddCoplanarFace(const decBSPTreeFace &face);
 	/*@}*/
 	
 	/** @name Faces */
 	/*@{*/
 	/** Retrieves the number of faces. */
-	inline int GetFaceCount() const{ return pFaceCount; }
+	inline int GetFaceCount() const{return pFaceCount;}
 	/** Retrieves the face at the given index. */
-	decBSPTreeFace *GetFaceAt( int index ) const;
+	decBSPTreeFace *GetFaceAt(int index) const;
 	/** Retrieves the index of the given face or -1 if not found. */
-	int IndexOfFace( decBSPTreeFace *face ) const;
+	int IndexOfFace(decBSPTreeFace *face) const;
 	/** Adds a face. */
-	void AddFace( decBSPTreeFace *face );
+	void AddFace(decBSPTreeFace *face);
 	/** Removes a face. */
-	void RemoveFace( decBSPTreeFace *face );
+	void RemoveFace(decBSPTreeFace *face);
 	/** Removes all faces. */
 	void RemoveAllFaces();
 	/*@}*/

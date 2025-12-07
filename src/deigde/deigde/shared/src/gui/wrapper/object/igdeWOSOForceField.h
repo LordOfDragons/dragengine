@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object wrapper sub object. */
-	igdeWOSOForceField( igdeWObject &wrapper, const igdeGDCForceField &gdForceField, const decString &prefix );
+	igdeWOSOForceField(igdeWObject &wrapper, const igdeGDCForceField &gdForceField, const decString &prefix);
 	
 	/** \brief Clean up object wrapper sub object. */
 	virtual ~igdeWOSOForceField();
@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ForceField resource. */
-	inline deForceField *GetForceField() const{ return pForceField; }
+	inline deForceField *GetForceField() const{return pForceField;}
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -94,10 +94,10 @@ public:
 	virtual void OnAllSubObjectsFinishedLoading();
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	virtual void Visit(igdeWOSOVisitor &visitor);
 	
 	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
+	void AsyncLoadFinished(bool success);
 	/*@}*/
 	
 	

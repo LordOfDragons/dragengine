@@ -40,22 +40,22 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileDuplicate::ceUCFileDuplicate( ceConversation *conversation, const ceConversationFile &file, const char *newID ) :
-pConversation( NULL ),
-pFile( NULL )
+ceUCFileDuplicate::ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID) :
+pConversation(NULL),
+pFile(NULL)
 {
-	if( ! conversation ){
-		DETHROW( deeInvalidParam );
+	if(! conversation){
+		DETHROW(deeInvalidParam);
 	}
 	
-	SetShortInfo( "Duplicate file" );
+	SetShortInfo("Duplicate file");
 	
 	try{
-		pFile = new ceConversationFile( file );
-		pFile->SetID( newID );
+		pFile = new ceConversationFile(file);
+		pFile->SetID(newID);
 		
-	}catch( const deException & ){
-		if( pFile ){
+	}catch(const deException &){
+		if(pFile){
 			pFile->FreeReference();
 		}
 		throw;
@@ -66,10 +66,10 @@ pFile( NULL )
 }
 
 ceUCFileDuplicate::~ceUCFileDuplicate(){
-	if( pFile ){
+	if(pFile){
 		pFile->FreeReference();
 	}
-	if( pConversation ){
+	if(pConversation){
 		pConversation->FreeReference();
 	}
 }
@@ -80,10 +80,10 @@ ceUCFileDuplicate::~ceUCFileDuplicate(){
 ///////////////
 
 void ceUCFileDuplicate::Undo(){
-	pConversation->RemoveFile( pFile );
+	pConversation->RemoveFile(pFile);
 }
 
 void ceUCFileDuplicate::Redo(){
-	pConversation->AddFile( pFile );
-	pConversation->SetActiveFile( pFile );
+	pConversation->AddFile(pFile);
+	pConversation->SetActiveFile(pFile);
 }
