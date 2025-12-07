@@ -196,10 +196,10 @@ void decXmlWriter::WriteAttributeString(const char *name, const char *string){
 		if(*walker == '<'){
 			pFile->WriteString("&lt;");
 			
-		} else if(*walker == '&'){
+		}else if(*walker == '&'){
 			pFile->WriteString("&amp;");
 			
-		} else if(*walker == '\''){
+		}else if(*walker == '\''){
 			pFile->WriteString("&apos;");
 			
 		}else{
@@ -350,10 +350,10 @@ void decXmlWriter::WriteTextString(const char *text){
 		if(*walker == '<'){
 			pFile->WriteString("&lt;");
 			
-		} else if(*walker == '>'){
+		}else if(*walker == '>'){
 			pFile->WriteString("&gt;");
 			
-		} else if(*walker == '&'){
+		}else if(*walker == '&'){
 			pFile->WriteString("&amp;");
 			
 		}else{
@@ -568,10 +568,10 @@ decString decXmlWriter::EscapeText(const char *text){
 		if(*walker == '<'){
 			escaped.Append("&lt;");
 			
-		} else if(*walker == '>'){
+		}else if(*walker == '>'){
 			escaped.Append("&gt;");
 			
-		} else if(*walker == '&'){
+		}else if(*walker == '&'){
 			escaped.Append("&amp;");
 			
 		}else{

@@ -469,7 +469,7 @@ void gdeVAOComponent::pCreateAnimator(){
 			return;
 		}
 		
-	}else if (animation){
+	}else if(animation){
 		const int moveIndex = animation->FindMove(move);
 		if(moveIndex == -1){
 			return;

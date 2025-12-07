@@ -179,10 +179,10 @@ void deFontModule::pParseFont(decXmlElementTag *root, deFont &font){
 		if(strcmp(tag->GetName(), "image") == 0){
 			font.SetImagePath(pGetAttributeString(tag, "src"));
 			
-		}else if (strcmp(tag->GetName(), "colorFont") == 0){
+		}else if(strcmp(tag->GetName(), "colorFont") == 0){
 			font.SetIsColorFont(true);
 			
-		}else if (strcmp(tag->GetName(), "lineHeight") == 0){
+		}else if(strcmp(tag->GetName(), "lineHeight") == 0){
 			font.SetLineHeight(tag->GetFirstData()->GetData().ToInt());
 			if(!hasBaseLine){
 				font.SetBaseLine(font.GetLineHeight() * 3 / 4);
@@ -192,7 +192,7 @@ void deFontModule::pParseFont(decXmlElementTag *root, deFont &font){
 			font.SetBaseLine(tag->GetFirstData()->GetData().ToInt());
 			hasBaseLine = true;
 			
-		}else if (strcmp(tag->GetName(), "defaults") == 0){
+		}else if(strcmp(tag->GetName(), "defaults") == 0){
 			deFontGlyph &glyph = font.GetUndefinedGlyph();
 			
 			if(pHasAttributeString(tag, "u")){
@@ -223,7 +223,7 @@ void deFontModule::pParseFont(decXmlElementTag *root, deFont &font){
 				}
 			}
 			
-		} else if (strcmp(tag->GetName(), "glyph") == 0) {
+		}else if(strcmp(tag->GetName(), "glyph") == 0) {
 			deFontGlyph &glyph = font.GetGlyphAt(glyphIndex++);
 			
 			if(pHasAttributeString(tag, "code")){

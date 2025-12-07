@@ -930,7 +930,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic(const decXmlElement
 			}else if(tagName == "reachBone"){
 				rule->SetReachBone(GetCDataString(*tag));
 				
-			}else if (tagName == "reachCenter"){
+			}else if(tagName == "reachCenter"){
 				vector.SetZero();
 				ReadVector(*tag, vector);
 				rule->SetReachCenter(vector);

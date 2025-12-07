@@ -104,20 +104,20 @@ void decBaseFileWriter::WriteVarUInt(uint32_t value){
 	if(value < 64){
 		WriteByte((uint8_t)value);
 		
-	} else if(value < 16384){
+	}else if(value < 16384){
 		const uint8_t bytes[2] = {
 			(uint8_t)((1 << 6) | ((value >> 8) & 0x3f)),
 			(uint8_t)(value)};
 		Write(bytes, 2);
 		
-	} else if(value < 4194304){
+	}else if(value < 4194304){
 		const uint8_t bytes[3] = {
 			(uint8_t)((2 << 6) | ((value >> 16) & 0x3f)),
 			(uint8_t)(value >> 8),
 			(uint8_t)(value)};
 		Write(bytes, 3);
 		
-	} else if(value < 1073741824){
+	}else if(value < 1073741824){
 		const uint8_t bytes[4] = {
 			(uint8_t)((3 << 6) | ((value >> 24) & 0x3f)),
 			(uint8_t)(value >> 16),

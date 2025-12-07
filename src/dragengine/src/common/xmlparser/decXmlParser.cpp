@@ -440,16 +440,16 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 				if(strcmp(name, "lt") == 0){
 					pAddCharacterData(container, '<', lineNumber, posNumber);
 					
-				} else if(strcmp(name, "gt") == 0){
+				}else if(strcmp(name, "gt") == 0){
 					pAddCharacterData(container, '>', lineNumber, posNumber);
 					
-				} else if(strcmp(name, "amp") == 0){
+				}else if(strcmp(name, "amp") == 0){
 					pAddCharacterData(container, '&', lineNumber, posNumber);
 					
-				} else if(strcmp(name, "quot") == 0){
+				}else if(strcmp(name, "quot") == 0){
 					pAddCharacterData(container, '"', lineNumber, posNumber);
 					
-				} else if(strcmp(name, "apos") == 0){
+				}else if(strcmp(name, "apos") == 0){
 					pAddCharacterData(container, '\'', lineNumber, posNumber);
 					
 				} else {
@@ -629,19 +629,19 @@ void decXmlParser::ParseAttValue(decXmlAttValue *value){
 					pToken[safeguard] = '<';
 					count = pTokenLen = safeguard + 1;
 					
-				} else if(strncmp(name, "gt", 2) == 0){
+				}else if(strncmp(name, "gt", 2) == 0){
 					pToken[safeguard] = '>';
 					count = pTokenLen = safeguard + 1;
 					
-				} else if(strncmp(name, "amp", 3) == 0){
+				}else if(strncmp(name, "amp", 3) == 0){
 					pToken[safeguard] = '&';
 					count = pTokenLen = safeguard + 1;
 					
-				} else if(strncmp(name, "quot", 4) == 0){
+				}else if(strncmp(name, "quot", 4) == 0){
 					pToken[safeguard] = '"';
 					count = pTokenLen = safeguard + 1;
 					
-				} else if(strncmp(name, "apos", 4) == 0){
+				}else if(strncmp(name, "apos", 4) == 0){
 					pToken[safeguard] = '\'';
 					count = pTokenLen = safeguard + 1;
 				}

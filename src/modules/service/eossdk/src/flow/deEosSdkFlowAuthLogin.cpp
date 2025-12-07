@@ -134,7 +134,7 @@ void deEosSdkFlowAuthLogin::Login(){
 		credentials.Token = pExchangeCode;
 		GetModule().LogInfo("deEosSdkFlowAuthLogin.Login: Logging in user using exchange code");
 		
-	} else if(!pUserId.IsEmpty() && !pUserPassword.IsEmpty()){
+	}else if(!pUserId.IsEmpty() && !pUserPassword.IsEmpty()){
 		/*
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
 		credentials.Id = pUserId;

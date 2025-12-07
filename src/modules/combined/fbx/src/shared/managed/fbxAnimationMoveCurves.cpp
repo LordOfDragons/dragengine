@@ -72,7 +72,7 @@ pRigBone(NULL)
 				}else if(connection.GetProperty() == "d|Y"){
 					pCurveY.TakeOver(new fbxAnimationCurve(node));
 					
-				}else if (connection.GetProperty() == "d|Z"){
+				}else if(connection.GetProperty() == "d|Z"){
 					pCurveZ.TakeOver(new fbxAnimationCurve(node));
 				}
 			}
