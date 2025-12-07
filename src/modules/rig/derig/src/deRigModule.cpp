@@ -1423,7 +1423,7 @@ void deRigModule::pWriteConstraint(decXmlWriter &writer, const deRig &rig, const
 	}
 	
 	const decVector referenceRotation(decMatrix::CreateFromQuaternion(
-		constraint.GetReferenceOrientation()).GetEulerAngles() / DEG2RAD);
+		constraint.GetReferenceOrientation()).GetEulerAngles() * RAD2DEG);
 	if(!referenceRotation.IsZero()){
 		writer.WriteOpeningTagStart("rotation");
 		writer.WriteAttributeFloat("x", referenceRotation.x);

@@ -1112,12 +1112,12 @@ void aeAnimatorLocomotion::PostPhysics(){
 	// determine the up/down and left/right tilt. these are measured in degrees
 	newValue = atanf((pGroundPlaneOffsetFL + pGroundPlaneOffsetFR
 		- pGroundPlaneOffsetBL - pGroundPlaneOffsetBR) * 0.5f
-			/ (pGroundPlaneFront - pGroundPlaneBack)) / DEG2RAD;
+			/ (pGroundPlaneFront - pGroundPlaneBack)) * RAD2DEG;
 	SetTiltUpDown(pTiltUpDown * 0.5f + newValue * 0.5f);
 	
 	newValue = atanf((pGroundPlaneOffsetFL + pGroundPlaneOffsetBL
 		- pGroundPlaneOffsetFR - pGroundPlaneOffsetBR) * 0.5f
-			/ (pGroundPlaneRight - pGroundPlaneLeft)) / DEG2RAD;
+			/ (pGroundPlaneRight - pGroundPlaneLeft)) * RAD2DEG;
 	SetTiltLeftRight(pTiltLeftRight * 0.5f + newValue * 0.5f);
 }
 
@@ -1620,7 +1620,7 @@ void aeAnimatorLocomotion::pUpdateLinearVelocity(float elapsed){
 	pRelativeMovingSpeed = pMovingSpeed;
 	
 	if(pMovingSpeed > 0.001f){ // otherwise undefined orientation
-		SetVelocityOrientation(-atan2f(linearVelocity.x, linearVelocity.z) / DEG2RAD);
+		SetVelocityOrientation(-atan2f(linearVelocity.x, linearVelocity.z) * RAD2DEG);
 	}
 	
 	SetMovingDirection(pVelocityOrientation - pOrientation.GetValue());

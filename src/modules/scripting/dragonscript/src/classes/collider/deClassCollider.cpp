@@ -408,7 +408,7 @@ void deClassCollider::nfGetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *
 	}
 	
 	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
-	ds.GetClassVector()->PushVector(rt, nd.collider->GetAngularVelocity() / DEG2RAD);
+	ds.GetClassVector()->PushVector(rt, nd.collider->GetAngularVelocity() * RAD2DEG);
 }
 
 // public func void setAngularVelocity( Vector angVelo )

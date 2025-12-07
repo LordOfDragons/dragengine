@@ -471,7 +471,7 @@ void meWPSObjectShape::UpdateShapeSphere(const decShapeSphere &sphere){
 void meWPSObjectShape::UpdateShapeBox(const decShapeBox &box){
 	pEditBoxPosition->SetVector(box.GetPosition());
 	pEditBoxRotation->SetVector(decMatrix::CreateFromQuaternion(
-		box.GetOrientation()).GetEulerAngles() / DEG2RAD);
+		box.GetOrientation()).GetEulerAngles() * RAD2DEG);
 	pEditBoxExtends->SetVector(box.GetHalfExtends());
 	pSwitcherShapeType->SetCurrent(espBox);
 }
@@ -479,7 +479,7 @@ void meWPSObjectShape::UpdateShapeBox(const decShapeBox &box){
 void meWPSObjectShape::UpdateShapeCylinder(const decShapeCylinder &cylinder){
 	pEditCylinderPosition->SetVector(cylinder.GetPosition());
 	pEditCylinderRotation->SetVector(decMatrix::CreateFromQuaternion(
-		cylinder.GetOrientation()).GetEulerAngles() / DEG2RAD);
+		cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG);
 	pEditCylinderHeight->SetFloat(cylinder.GetHalfHeight());
 	pEditCylinderRadiusTop->SetFloat(cylinder.GetTopRadius());
 	pEditCylinderRadiusBottom->SetFloat(cylinder.GetBottomRadius());
@@ -489,7 +489,7 @@ void meWPSObjectShape::UpdateShapeCylinder(const decShapeCylinder &cylinder){
 void meWPSObjectShape::UpdateShapeCapsule(const decShapeCapsule &capsule){
 	pEditCapsulePosition->SetVector(capsule.GetPosition());
 	pEditCapsuleRotation->SetVector(decMatrix::CreateFromQuaternion(
-			capsule.GetOrientation()).GetEulerAngles() / DEG2RAD);
+			capsule.GetOrientation()).GetEulerAngles() * RAD2DEG);
 	pEditCapsuleHeight->SetFloat(capsule.GetHalfHeight());
 	pEditCapsuleRadiusTop->SetFloat(capsule.GetTopRadius());
 	pEditCapsuleRadiusBottom->SetFloat(capsule.GetBottomRadius());

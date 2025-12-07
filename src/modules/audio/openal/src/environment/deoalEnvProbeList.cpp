@@ -427,8 +427,8 @@ void deoalEnvProbeList::pCreateProbeConfig(){
 	for(int i=0; i<42; i++){
 		const decDVector &p = pProbeConfig->GetRayDirections()[i];
 		pWorld.GetAudioThread().GetLogger().LogInfoFormat("ProbeConfig Ray %d: (%.3f,%.3f,%.3f) [%.1f, %.1f]",
-			i, p.x, p.y, p.z, atan2(p.z, p.x) / DEG2RAD,
-			atan2(p.y, decVector2(p.x, p.z).Length()) / DEG2RAD);
+			i, p.x, p.y, p.z, atan2(p.z, p.x) * RAD2DEG,
+			atan2(p.y, decVector2(p.x, p.z).Length()) * RAD2DEG);
 	}
 	*/
 	

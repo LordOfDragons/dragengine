@@ -337,7 +337,7 @@ void deainpOverlayCirclePad::GenerateEvents(){
 	const timeval eventTime(androidInput.TimeValNow());
 	
 	if(pAxisLeftRight.GetAxisIndex() == -1 && pAxisUpDown.GetAxisIndex() == -1){
-		const float shiftedAngle = angle / DEG2RAD - 22.5f;
+		const float shiftedAngle = angle * RAD2DEG - 22.5f;
 		
 		if(shiftedAngle < -157.5f){ // down
 			SetPressedAll(false, false, false, true,  false, false, false, false);

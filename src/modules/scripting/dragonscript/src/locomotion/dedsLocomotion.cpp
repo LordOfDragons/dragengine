@@ -933,8 +933,8 @@ void dedsLocomotion::UpdateTiltSingleCast(float elapsed){
 		const decMatrix matrix(decMatrix::CreateFromQuaternion(pAICollider->GetOrientation().Conjugate()));
 		const decVector normal(matrix.TransformNormal(info.GetNormal()));
 		
-		SetTiltHorizontalGoal(atan2f(normal.x, normal.y) / DEG2RAD);
-		SetTiltVerticalGoal(atan2f(normal.z, normal.y) / DEG2RAD);
+		SetTiltHorizontalGoal(atan2f(normal.x, normal.y) * RAD2DEG);
+		SetTiltVerticalGoal(atan2f(normal.z, normal.y) * RAD2DEG);
 		SetTiltOffset(pCCTTiltSingle->GetOrigin().y
 			- info.GetDistance() * pCCTTiltSingle->GetDirection().Length());
 		
@@ -990,10 +990,10 @@ void dedsLocomotion::UpdateTiltWeightCast(float elapsed){
 	
 	// calculate the tilt values. this is "(v1-v2)*0.5 + (v3-v4)*0.5".
 	const float hdiffHorizontal = (heightFrontLeft - heightFrontRight) * 0.5f + (heightBackLeft - heightBackRight) * 0.5f;
-	SetTiltHorizontalGoal(atanf(hdiffHorizontal / spreadHorizontal) / DEG2RAD);
+	SetTiltHorizontalGoal(atanf(hdiffHorizontal / spreadHorizontal) * RAD2DEG);
 	
 	const float hdiffVertical = (heightFrontLeft - heightBackLeft) * 0.5f + (heightFrontRight - heightBackRight) * 0.5f;
-	SetTiltVerticalGoal(atanf(hdiffVertical / spreadFrontBack) / DEG2RAD);
+	SetTiltVerticalGoal(atanf(hdiffVertical / spreadFrontBack) * RAD2DEG);
 	
 	// tilt offset from samples
 	SetTiltOffset((heightFrontLeft + heightFrontRight + heightBackLeft + heightBackRight) * 0.25f);

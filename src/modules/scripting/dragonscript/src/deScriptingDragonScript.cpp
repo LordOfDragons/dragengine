@@ -1895,7 +1895,7 @@ void deScriptingDragonScript::pAddColliderTrace(deErrorTracePoint *tracePoint, d
 		tvCollider = tracePoint->AddValue(name, "<deCollider>");
 		
 		pAddVectorTrace(tvCollider, collider->GetPosition().ToVector(), "position");
-		pAddVectorTrace(tvCollider, decMatrix::CreateFromQuaternion(collider->GetOrientation()).GetEulerAngles() / DEG2RAD, "rotation");
+		pAddVectorTrace(tvCollider, decMatrix::CreateFromQuaternion(collider->GetOrientation()).GetEulerAngles() * RAD2DEG, "rotation");
 	}else{
 		tracePoint->AddValue(name, "<null>");
 	}

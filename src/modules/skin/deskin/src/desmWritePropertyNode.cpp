@@ -82,10 +82,10 @@ void desmWritePropertyNode::WriteNodeCommon(const deSkinPropertyNode &node){
 	pWriter.WriteOpeningTagEnd(true);
 	
 	if(fabsf(node.GetRotation()) > FLOAT_SAFE_EPSILON){
-		pWriter.WriteDataTagFloat("rotation", node.GetRotation() / DEG2RAD);
+		pWriter.WriteDataTagFloat("rotation", node.GetRotation() * RAD2DEG);
 	}
 	if(fabsf(node.GetShear()) > FLOAT_SAFE_EPSILON){
-		pWriter.WriteDataTagFloat("shear", node.GetShear() / DEG2RAD);
+		pWriter.WriteDataTagFloat("shear", node.GetShear() * RAD2DEG);
 	}
 	
 	if(fabsf(node.GetBrightness()) > FLOAT_SAFE_EPSILON){

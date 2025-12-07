@@ -180,7 +180,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSoundLevelMeter::nfGetConeAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	rt->PushFloat(soundLevelMeter.GetConeAngle() / DEG2RAD);
+	rt->PushFloat(soundLevelMeter.GetConeAngle() * RAD2DEG);
 }
 
 // public func setConeAngle( float angle )

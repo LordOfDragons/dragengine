@@ -440,7 +440,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			if(colliderMoveHits.GetHitDistance() == 0.0f){
 				const decVector &n = colinfo->GetNormal();
 				const decVector &pd = pPredictDisp;
-				const float a = acosf(n.Normalized() * pd.Normalized()) / DEG2RAD;
+				const float a = acosf(n.Normalized() * pd.Normalized()) * RAD2DEG;
 				
 				GetBullet()->LogInfoFormat("DetectCustomCollision: Collision n(%g,%g,%g) pd(%g,%g,%g) a=%g",
 					n.x, n.y, n.z, pd.x, pd.y, pd.z, a);
@@ -455,7 +455,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 						const debpShapeBox &sb = (debpShapeBox&)s;
 // 						const decDMatrix m(decDMatrix::CreateWorld(sb.GetShapeBox()->GetPosition(), sb.GetShapeBox()->GetOrientation()) * cc.GetMatrix());
 						const decDVector sp(sb.GetShapeBox()->GetPosition()/*m.GetPosition()*/);
-						const decDVector sr(sb.GetShapeBox()->GetOrientation().GetEulerAngles()/*m.GetEulerAngles()*/ / DEG2RAD);
+						const decDVector sr(sb.GetShapeBox()->GetOrientation().GetEulerAngles()/*m.GetEulerAngles()*/ * RAD2DEG);
 						
 						GetBullet()->LogInfoFormat("  Collider(%g,%g,%g) s=%d p(%g,%g,%g) o(%g,%g,%g)",
 							ccp.x, ccp.y, ccp.z, colinfo->GetShape(), sp.x, sp.y, sp.z, sr.x, sr.y, sr.z);
@@ -565,9 +565,9 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderVolume.GetPosition();
 			const decVector rotation(decMatrix::CreateFromQuaternion(
-				pColliderVolume.GetOrientation()).GetEulerAngles() / DEG2RAD);
+				pColliderVolume.GetOrientation()).GetEulerAngles() * RAD2DEG);
 			const decVector &lvelo = pColliderVolume.GetLinearVelocity();
-			const decVector avelo(pColliderVolume.GetAngularVelocity() / DEG2RAD);
+			const decVector avelo(pColliderVolume.GetAngularVelocity() * RAD2DEG);
 			int i;
 			
 			bullet.LogWarnFormat("STUCK!collider=%p responseType=%i",
@@ -592,7 +592,7 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 				const decDVector &p2 = hc.GetPosition();
 				const decVector o2(hc.GetOrientation().GetEulerAngles() * RAD2DEG);
 				const decVector &lv2 = hc.GetLinearVelocity();
-				const decVector av2(hc.GetAngularVelocity() / DEG2RAD);
+				const decVector av2(hc.GetAngularVelocity() * RAD2DEG);
 				const debpCollider * const bpcol = (debpCollider*)hc.GetPeerPhysics();
 				
 				if(bpcol){

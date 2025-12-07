@@ -636,9 +636,9 @@ void debpColliderComponent::DetectCustomCollision(float elapsed){
 			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderComponent.GetPosition();
 			const decVector rotation(decMatrix::CreateFromQuaternion(
-				pColliderComponent.GetOrientation()).GetEulerAngles() / DEG2RAD);
+				pColliderComponent.GetOrientation()).GetEulerAngles() * RAD2DEG);
 			const decVector &lvelo = pColliderComponent.GetLinearVelocity();
-			const decVector avelo(pColliderComponent.GetAngularVelocity() / DEG2RAD);
+			const decVector avelo(pColliderComponent.GetAngularVelocity() * RAD2DEG);
 			int i;
 			
 			bullet.LogWarnFormat("STUCK!collider=%p responseType=%i",
@@ -854,7 +854,7 @@ void debpColliderComponent::ApplyDisplacement(){
 
 void debpColliderComponent::PredictRotation(float elapsed){
 	pPredictRotation = pAngVelo * elapsed;
-	//if( pHasAngVelo ) printf( "predict rotation (%f,%f,%f)\n", pPredictRotation.x / DEG2RAD, pPredictRotation.y / DEG2RAD, pPredictRotation.z / DEG2RAD );
+	//if( pHasAngVelo ) printf( "predict rotation (%f,%f,%f)\n", pPredictRotation.x * RAD2DEG, pPredictRotation.y * RAD2DEG, pPredictRotation.z * RAD2DEG );
 }
 
 void debpColliderComponent::InterpolateRotation(float percentage){
@@ -871,8 +871,8 @@ void debpColliderComponent::ApplyRotation(){
 		/*
 		const decQuaternion qo = pOrientation;
 		const decQuaternion qn = qo * decMatrix::CreateRotation(pPredictRotation).ToQuaternion();
-		const decVector eo = decMatrix::CreateFromQuaternion(qo).GetEulerAngles() / DEG2RAD;
-		const decVector en = decMatrix::CreateFromQuaternion(qn).GetEulerAngles() / DEG2RAD;
+		const decVector eo = decMatrix::CreateFromQuaternion(qo).GetEulerAngles() * RAD2DEG;
+		const decVector en = decMatrix::CreateFromQuaternion(qn).GetEulerAngles() * RAD2DEG;
 		printf("apply rotation (%f,%f,%f,%f) => (%f,%f,%f,%f)\n", qo.x, qo.y, qo.z, qo.w, qn.x, qn.y, qn.z, qn.w);
 		printf("  euler (%f,%f,%f) => (%f,%f,%f)\n", eo.x, eo.y, eo.z, en.x, en.y, en.z);
 		*/

@@ -202,7 +202,7 @@ void meUObjectDropToGround::Redo(){
 						
 						const decVector &normal = closestElement.GetHitNormal();
 						
-						newRotation.Set(acosf(normal.y) / DEG2RAD, atan2f(normal.x, -normal.z) / DEG2RAD, oldRotation.z);
+						newRotation.Set(acosf(normal.y) * RAD2DEG, atan2f(normal.x, -normal.z) * RAD2DEG, oldRotation.z);
 						
 						closestElement.Reset();
 						

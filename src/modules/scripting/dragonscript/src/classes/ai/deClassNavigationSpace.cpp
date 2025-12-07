@@ -749,7 +749,7 @@ deClassNavigationSpace::nfGetSnapAngle::nfGetSnapAngle(const sInitData &init) : 
 }
 void deClassNavigationSpace::nfGetSnapAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationSpace &navspace = *(((const sNavSpaceNatDat *)p_GetNativeData(myself))->navspace);
-	rt->PushFloat(navspace.GetSnapAngle() / DEG2RAD);
+	rt->PushFloat(navspace.GetSnapAngle() * RAD2DEG);
 }
 
 // public func void setSnapAngle( float angle )

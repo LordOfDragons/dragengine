@@ -97,7 +97,7 @@ void meBaseUndoRotate::TransformElement(decDVector &position, decDVector &rotati
 		view.Normalize();
 		up.Normalize();
 		
-		rotation = decDMatrix::CreateWorld(decDVector(), view, up).GetEulerAngles() / DEG2RAD;
+		rotation = decDMatrix::CreateWorld(decDVector(), view, up).GetEulerAngles() * RAD2DEG;
 		
 		if(fabs(rotation.x) < 1e-5){
 			rotation.x = 0.0;

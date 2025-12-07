@@ -332,7 +332,7 @@ void deClassAnimatorController::nfGetRotation::RunFunction(dsRunTime *rt, dsValu
 		? *nd.animator->GetControllerAt(nd.index)
 		: nd.instance->GetControllerAt(nd.index);
 	
-	clsAC.GetDS().GetClassVector()->PushVector(rt, controller.GetVector() / DEG2RAD);
+	clsAC.GetDS().GetClassVector()->PushVector(rt, controller.GetVector() * RAD2DEG);
 }
 
 // public func void setRotation( Vector rotation )

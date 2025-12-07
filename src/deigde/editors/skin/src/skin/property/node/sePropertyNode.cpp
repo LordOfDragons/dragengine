@@ -235,7 +235,7 @@ float referenceRotation){
 	}
 	
 	decVector2 scaling(matrix.GetScaling());
-	float rotation = matrix.GetRotation() / DEG2RAD;
+	float rotation = matrix.GetRotation() * RAD2DEG;
 	
 	bool flip = (referenceSize.x < 0);
 	if(decMath::normalize(rotation - referenceRotation, -180.0f, 180.0f) > 90.0f){
@@ -258,7 +258,7 @@ float referenceRotation){
 	pRotation = decMath::normalize(rotation, -180.0f, 180.0f);
 	
 	try{
-		pShearing = decMath::clamp(atanf(matrix.GetShearing()) / DEG2RAD, -89.9f, 89.9f);
+		pShearing = decMath::clamp(atanf(matrix.GetShearing()) * RAD2DEG, -89.9f, 89.9f);
 		
 	}catch(const deeDivisionByZero &){
 		pShearing = 0.0f; // y-axis is 0-length or x/y is nearly colinear

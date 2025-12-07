@@ -368,7 +368,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassLight::nfGetSpotAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(((sLigNatDat*)p_GetNativeData(myself))->light);
-	rt->PushFloat(light.GetSpotAngle() / DEG2RAD);
+	rt->PushFloat(light.GetSpotAngle() * RAD2DEG);
 }
 
 // public func void setSpotAngle( float angle )

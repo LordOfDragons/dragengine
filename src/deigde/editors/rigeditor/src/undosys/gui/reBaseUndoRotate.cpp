@@ -87,7 +87,7 @@ void reBaseUndoRotate::Update(){
 	decString info;
 	info.Format("axis(%g,%g,%g) center(%i,%i,%i - %g,%g,%g) angle=%g°",
 		pAxis.x, pAxis.y, pAxis.z, pCenterSector.x, pCenterSector.y, pCenterSector.z,
-		pCenterPosition.x, pCenterPosition.y, pCenterPosition.z, pAngle / DEG2RAD);
+		pCenterPosition.x, pCenterPosition.y, pCenterPosition.z, pAngle * RAD2DEG);
 	SetLongInfo(info.GetString());
 }
 

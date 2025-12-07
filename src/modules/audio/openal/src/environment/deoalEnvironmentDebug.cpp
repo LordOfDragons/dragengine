@@ -257,8 +257,8 @@ void deoalEnvironmentDebug::UpdateInfo(deDebugBlockInfo &debugInfo){
 	if(revReflPan.IsZero()){
 		text = "(+000,+000) %0.000";
 	}else{
-		const float elevation = atan2f(revReflPan.y, revReflPan.z) / DEG2RAD;
-		const float azimuth = atan2f(-revReflPan.x, revReflPan.z) / DEG2RAD;
+		const float elevation = atan2f(revReflPan.y, revReflPan.z) * RAD2DEG;
+		const float azimuth = atan2f(-revReflPan.x, revReflPan.z) * RAD2DEG;
 		text.Format("(%+04d,%+04d) %.3f", (int)(azimuth + 0.5f),
 			(int)(elevation + 0.5f), revReflPan.Length());
 	}
@@ -268,8 +268,8 @@ void deoalEnvironmentDebug::UpdateInfo(deDebugBlockInfo &debugInfo){
 	if(lateRevPan.IsZero()){
 		text = "(+000,+000) %0.000";
 	}else{
-		const float elevation = atan2f(lateRevPan.y, lateRevPan.z) / DEG2RAD;
-		const float azimuth = atan2f(-lateRevPan.x, lateRevPan.z) / DEG2RAD;
+		const float elevation = atan2f(lateRevPan.y, lateRevPan.z) * RAD2DEG;
+		const float azimuth = atan2f(-lateRevPan.x, lateRevPan.z) * RAD2DEG;
 		text.Format("(%+04d,%+04d) %.3f", (int)(azimuth + 0.5f),
 			(int)(elevation + 0.5f), lateRevPan.Length());
 	}

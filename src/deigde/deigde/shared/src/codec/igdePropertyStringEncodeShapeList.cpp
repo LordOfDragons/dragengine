@@ -87,7 +87,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeSphere(decShapeSphere &sphere)
 
 void igdePropertyStringEncodeShapeList::VisitShapeBox(decShapeBox &box){
 	const decVector &position = box.GetPosition();
-	const decVector rotation = decMatrix::CreateFromQuaternion(box.GetOrientation()).GetEulerAngles() / DEG2RAD;
+	const decVector rotation = decMatrix::CreateFromQuaternion(box.GetOrientation()).GetEulerAngles() * RAD2DEG;
 	const decVector &extends = box.GetHalfExtends();
 	
 	pAddSeparator();
@@ -101,7 +101,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeBox(decShapeBox &box){
 
 void igdePropertyStringEncodeShapeList::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const decVector &position = cylinder.GetPosition();
-	const decVector rotation = decMatrix::CreateFromQuaternion(cylinder.GetOrientation()).GetEulerAngles() / DEG2RAD;
+	const decVector rotation = decMatrix::CreateFromQuaternion(cylinder.GetOrientation()).GetEulerAngles() * RAD2DEG;
 	const float height = cylinder.GetHalfHeight();
 	const float topRadius = cylinder.GetTopRadius();
 	const float bottomRadius = cylinder.GetBottomRadius();
@@ -125,7 +125,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeCylinder(decShapeCylinder &cyl
 
 void igdePropertyStringEncodeShapeList::VisitShapeCapsule(decShapeCapsule &capsule){
 	const decVector &position = capsule.GetPosition();
-	const decVector rotation = decMatrix::CreateFromQuaternion(capsule.GetOrientation()).GetEulerAngles() / DEG2RAD;
+	const decVector rotation = decMatrix::CreateFromQuaternion(capsule.GetOrientation()).GetEulerAngles() * RAD2DEG;
 	const float height = capsule.GetHalfHeight();
 	const float topRadius = capsule.GetTopRadius();
 	const float bottomRadius = capsule.GetBottomRadius();
@@ -149,7 +149,7 @@ void igdePropertyStringEncodeShapeList::VisitShapeCapsule(decShapeCapsule &capsu
 
 void igdePropertyStringEncodeShapeList::VisitShapeHull(decShapeHull &hull){
 	const decVector &position = hull.GetPosition();
-	const decVector rotation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() / DEG2RAD);
+	const decVector rotation(decMatrix::CreateFromQuaternion(hull.GetOrientation()).GetEulerAngles() * RAD2DEG);
 	const int pointCount = hull.GetPointCount();
 	
 	pAddSeparator();

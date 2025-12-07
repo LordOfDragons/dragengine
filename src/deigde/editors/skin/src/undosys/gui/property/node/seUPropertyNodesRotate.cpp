@@ -141,7 +141,7 @@ void seUPropertyNodesRotate::Redo(){
 		const decTexMatrix2 matrix(node.CreateScreenTransformMatrix() * pTransform
 			* node.GetParent()->CreateScreenTransformMatrix().Invert().ToTexMatrix2() );
 		
-		float rotation = matrix.GetRotation() / DEG2RAD;
+		float rotation = matrix.GetRotation() * RAD2DEG;
 		if(node.GetSize().x < 0){
 			// node size x is negative. flip result to get correct result
 			rotation += 180.0f;

@@ -151,7 +151,7 @@ deClassLumimeter::nfGetConeInnerAngle::nfGetConeInnerAngle(const sInitData &init
 void deClassLumimeter::nfGetConeInnerAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLumimeter *lumimeter = ((sLumimeterNatDat*)p_GetNativeData(myself))->lumimeter;
 	
-	rt->PushFloat(lumimeter->GetConeInnerAngle() / DEG2RAD);
+	rt->PushFloat(lumimeter->GetConeInnerAngle() * RAD2DEG);
 }
 
 // public func void setConeInnerAngle( float angle )
@@ -172,7 +172,7 @@ deClassLumimeter::nfGetConeOuterAngle::nfGetConeOuterAngle(const sInitData &init
 void deClassLumimeter::nfGetConeOuterAngle::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLumimeter *lumimeter = ((sLumimeterNatDat*)p_GetNativeData(myself))->lumimeter;
 	
-	rt->PushFloat(lumimeter->GetConeOuterAngle() / DEG2RAD);
+	rt->PushFloat(lumimeter->GetConeOuterAngle() * RAD2DEG);
 }
 
 // public func void setConeOuterAngle( float angle )

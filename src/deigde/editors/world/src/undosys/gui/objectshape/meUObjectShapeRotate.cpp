@@ -127,7 +127,7 @@ void meUObjectShapeRotate::Redo(){
 		shapeRotation = matrixShape.GetEulerAngles();
 		
 		position = shapePosition;
-		rotation = shapeRotation / DEG2RAD;
+		rotation = shapeRotation * RAD2DEG;
 		TransformElement(position, rotation);
 		
 		if(modifyOrientation){

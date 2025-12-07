@@ -804,7 +804,7 @@ void deClassMatrix4::nfGetEulerAngles::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = *clsMatrix.GetDS();
 	deClassVector &clsVec = *ds.GetClassVector();
 	
-	clsVec.PushVector(rt, matrix.GetEulerAngles() / DEG2RAD);
+	clsVec.PushVector(rt, matrix.GetEulerAngles() * RAD2DEG);
 }
 
 // public func Matrix getInverse()

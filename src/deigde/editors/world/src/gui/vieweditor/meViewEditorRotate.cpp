@@ -270,7 +270,7 @@ void meViewEditorRotate::OnMouseMove(int x, int y, bool shift, bool control){
 	
 	const decPoint screenPoint = decPoint(GetViewWidth() / 2, GetViewHeight() / 2);
 	const decPoint screenDirection = GetDragCurrent() - screenPoint;
-	float angle = (atan2f((float)-screenDirection.y, (float)screenDirection.x) - pNullAngle) / DEG2RAD;
+	float angle = (atan2f((float)-screenDirection.y, (float)screenDirection.x) - pNullAngle) * RAD2DEG;
 	const meConfiguration &configuration = GetConfiguration();
 	decDVector axis;
 	

@@ -260,7 +260,7 @@ void deoalEnvProbeList::pSubdivideIcoSphere(){
 	pIcoSphere = pIcoSphere.Subdivide();
 	pWorld.GetAudioThread().GetLogger().LogInfoFormat(
 		"pSubdivideIcoSphere: vertices=%d openingAngle=%.1f",
-		pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() / DEG2RAD);
+		pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() * RAD2DEG);
 }
 
 void deoalEnvProbeList::pIncreaseProbeConfigLevels(){
@@ -304,6 +304,6 @@ void deoalEnvProbeList::pIncreaseProbeConfigLevels(){
 	
 	pWorld.GetAudioThread().GetLogger().LogInfoFormat(
 		"pIncreaseProbeConfigLevels: level=%d vertices=%d openingAngle=%.1f",
-		pIcoSphereLevel, pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() / DEG2RAD);
+		pIcoSphereLevel, pIcoSphere.GetVertexCount(), pIcoSphere.GetOpeningAngle() * RAD2DEG);
 }
 #endif

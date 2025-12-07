@@ -64,7 +64,7 @@ void meBaseUndoMove::SetMatrix(const decDMatrix &matrix){
 	pMatrix = matrix;
 	
 	const decDVector displacement(matrix.GetPosition());
-	const decDVector rotation(matrix.GetEulerAngles() / DEG2RAD);
+	const decDVector rotation(matrix.GetEulerAngles() * RAD2DEG);
 	
 	decString info;
 	info.Format("distance(%g,%g,%g) rotation=(%g,%g,%g)",
@@ -84,7 +84,7 @@ void meBaseUndoMove::TransformElement(decDVector &position, decDVector &rotation
 	const decDVector view(matrix.TransformView().Normalized());
 	const decDVector up(matrix.TransformUp().Normalized());
 	
-	rotation = decDMatrix::CreateWorld(decDVector(), view, up).GetEulerAngles() / DEG2RAD;
+	rotation = decDMatrix::CreateWorld(decDVector(), view, up).GetEulerAngles() * RAD2DEG;
 	
 	if(fabs(rotation.x) < FLOAT_SAFE_EPSILON){
 		rotation.x = 0.0;

@@ -408,8 +408,8 @@ void seLoadSaveSkin::LoadPropertyNodeCommon(seSkin &skin, sePropertyNode &node,
 const deSkinPropertyNode &engNode){
 	node.SetPosition(engNode.GetPosition());
 	node.SetSize(engNode.GetSize());
-	node.SetRotation(engNode.GetRotation() / DEG2RAD);
-	node.SetShearing(engNode.GetShear() / DEG2RAD);
+	node.SetRotation(engNode.GetRotation() * RAD2DEG);
+	node.SetShearing(engNode.GetShear() * RAD2DEG);
 	
 	node.SetBrightness(engNode.GetBrightness());
 	node.SetContrast(engNode.GetContrast());

@@ -936,7 +936,7 @@ timer.Reset();
 	
 // 	printf( "touchSensor=%p shape=%p colliderMoveRotateHits pos=(%f,%f,%f) disp(%f,%f,%f) rot(%f,%f,%f)\n", pTouchSensor, this,
 // 		   engCollider->GetPosition().x, engCollider->GetPosition().y, engCollider->GetPosition().z,
-// 		   displacement.x, displacement.y, displacement.z, rotation.x / DEG2RAD, rotation.y / DEG2RAD, rotation.z / DEG2RAD );
+// 		   displacement.x, displacement.y, displacement.z, rotation.x * RAD2DEG, rotation.y * RAD2DEG, rotation.z * RAD2DEG );
 	
 	if(!pGhostObject->GetGhostObject()){
 		return;

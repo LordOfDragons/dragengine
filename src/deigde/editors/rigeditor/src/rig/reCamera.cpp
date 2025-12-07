@@ -139,7 +139,7 @@ void reCamera::Update(){
 			}
 			
 			SetPosition(matrix.GetPosition());
-			SetOrientation(matrix.GetEulerAngles().ToVector() / DEG2RAD);
+			SetOrientation(matrix.GetEulerAngles().ToVector() * RAD2DEG);
 			SetDistance(0.0f);
 			
 		}else{

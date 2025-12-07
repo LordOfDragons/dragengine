@@ -213,5 +213,5 @@ decVector meCLAddDecal::pGetRotationForNormal(const decVector &normal) const{
 		matrix.SetVU(normal, decVector(0.0f, 1.0f, 0.0f));
 	}
 	
-	return matrix.GetEulerAngles() / DEG2RAD;
+	return matrix.GetEulerAngles() * RAD2DEG;
 }

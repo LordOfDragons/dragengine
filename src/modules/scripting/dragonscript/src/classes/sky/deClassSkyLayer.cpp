@@ -155,7 +155,7 @@ void deClassSkyLayer::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myse
 	const deSkyLayer &layer = nd.sky->GetLayerAt(nd.index);
 	deScriptingDragonScript &ds = ((deClassSkyLayer*)GetOwnerClass())->GetDS();
 	
-	ds.GetClassVector()->PushVector(rt, layer.GetOrientation() / DEG2RAD);
+	ds.GetClassVector()->PushVector(rt, layer.GetOrientation() * RAD2DEG);
 }
 
 // public func void setOrientation( Vector orientation )

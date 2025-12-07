@@ -699,7 +699,7 @@ void deClassMatrix::nfGetEulerAngles::RunFunction(dsRunTime *rt, dsValue *myself
 	const deScriptingDragonScript &ds = *clsMatrix.GetDS();
 	deClassVector &clsVec = *ds.GetClassVector();
 	
-	clsVec.PushVector(rt, matrix.GetEulerAngles() / DEG2RAD);
+	clsVec.PushVector(rt, matrix.GetEulerAngles() * RAD2DEG);
 }
 
 // public func Vector getScaling()

@@ -2670,7 +2670,7 @@ decXmlWriter &writer, const gdeOCComponentTexture &texture){
 	}
 	
 	if(fabsf(texture.GetRotation()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("rotate", texture.GetRotation() / DEG2RAD);
+		writer.WriteDataTagFloat("rotate", texture.GetRotation() * RAD2DEG);
 	}
 	
 	const decColor &tint = texture.GetColorTint();
@@ -3484,7 +3484,7 @@ void gdeLoadSaveGameDefinition::pWriteObjectClassTexture(decXmlWriter &writer, c
 		WriteVector2(writer, "scale", texture.GetScale());
 	}
 	if(fabsf(texture.GetRotation()) > FLOAT_SAFE_EPSILON){
-		writer.WriteDataTagFloat("rotate", texture.GetRotation() / DEG2RAD);
+		writer.WriteDataTagFloat("rotate", texture.GetRotation() * RAD2DEG);
 	}
 	if(!decColor(1.0f, 1.0f, 1.0f).IsEqualTo(texture.GetColorTint())){
 		WriteColor(writer, "tint", texture.GetColorTint());

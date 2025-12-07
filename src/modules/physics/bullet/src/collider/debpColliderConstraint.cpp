@@ -832,9 +832,9 @@ void debpColliderConstraint::pCreateConeTwistConstraint(){
 	}
 	
 // 	pBullet.LogInfoFormat( "cone-twist %p", pConstraint );
-// 	pBullet.LogInfoFormat( "  swing(%f,%f,%f)", swing.x / DEG2RAD, swing.y / DEG2RAD, swing.z / DEG2RAD );
+// 	pBullet.LogInfoFormat( "  swing(%f,%f,%f)", swing.x * RAD2DEG, swing.y * RAD2DEG, swing.z * RAD2DEG );
 // 	pBullet.LogInfoFormat( "  center(%f,%f,%f)", center.x, center.y, center.z );
-// 	pBullet.LogInfoFormat( "  aswing(%f,%f,%f)", aswing.x / DEG2RAD, aswing.y / DEG2RAD, aswing.z / DEG2RAD );
+// 	pBullet.LogInfoFormat( "  aswing(%f,%f,%f)", aswing.x * RAD2DEG, aswing.y * RAD2DEG, aswing.z * RAD2DEG );
 // 	pBullet.LogInfoFormat( "  axisMatrix:" );
 // 	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a11, axisMatrix.a12, axisMatrix.a13 );
 // 	pBullet.LogInfoFormat( "    [%f,%f,%f]", axisMatrix.a21, axisMatrix.a22, axisMatrix.a23 );

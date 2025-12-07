@@ -131,7 +131,7 @@ void reURotateShape::Redo(){
 			if(fabs(rotation.y) < 1e-5f) rotation.y = 0.0f;
 			if(fabs(rotation.z) < 1e-5f) rotation.z = 0.0f;
 			
-			shape->SetOrientation(rotation / DEG2RAD);
+			shape->SetOrientation(rotation * RAD2DEG);
 		}
 		
 		// modify position

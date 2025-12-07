@@ -293,7 +293,7 @@ void deClassQuaternion::nfGetEulerAngles::RunFunction(dsRunTime *rt, dsValue *my
 	const deClassQuaternion &clsQuaternion = *((deClassQuaternion*)GetOwnerClass());
 	const deScriptingDragonScript &ds = *clsQuaternion.GetScriptModule();
 	
-	ds.GetClassVector()->PushVector(rt, quaternion.GetEulerAngles() / DEG2RAD);
+	ds.GetClassVector()->PushVector(rt, quaternion.GetEulerAngles() * RAD2DEG);
 }
 
 // public func Quaternion slerp( Quaternion other, float factor )
