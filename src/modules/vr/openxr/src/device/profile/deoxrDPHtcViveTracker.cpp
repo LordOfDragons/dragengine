@@ -439,8 +439,8 @@ void deoxrDPHtcViveTracker::SuggestBindings(){
 			return;
 
 		}catch(const deException &){
-			instance.GetOxr().LogError("Binding HTCXViveTrackerInteraction:V3 failed! "
-				"Broken VR Runtime Detected! Downgrading to HTCXViveTrackerInteraction:V1!");
+			instance.GetOxr().LogError("Binding HTCXViveTrackerInteraction:V3 failed!"
+				"Broken VR Runtime Detected!Downgrading to HTCXViveTrackerInteraction:V1!");
 			count = pRoleActions.GetCount() - 4;
 		}
 	}
