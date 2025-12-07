@@ -220,7 +220,7 @@ void deoxrLoader::pLoadFunctions(){
 		}
 	#define GLOBAL_LEVEL_OPENXR_FUNCTION_WARN(name) \
 		if(xrGetInstanceProcAddr(XR_NULL_HANDLE, #name, (PFN_xrVoidFunction*)&name) != XR_SUCCESS){ \
-			pOxr.LogInfoFormat("Function " #name " not found!Broken VR Runtime!"); \
+			pOxr.LogInfoFormat("Function " #name " not found! Broken VR Runtime!"); \
 		}
 	
 	#include "../deoxrFunctionNames.h"
